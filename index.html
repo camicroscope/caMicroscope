@@ -5,7 +5,12 @@
 More Information on this project, please refer to https://github.com/Lincolnnus/Image-Viewer-->
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-<title>Bio-medical Image Viewer</title>
+<title>Image Viewer</title>
+<link rel="stylesheet" type="text/css" media="all" href="css/iip.compressed.css" />
+<link rel="shortcut icon" href="images/iip-favicon.png" />
+<script type="text/javascript" src="js/mootools-1.2-core-compressed.js"></script>
+<script type="text/javascript" src="js/mootools-1.2-more-compressed.js"></script>
+<script type="text/javascript" src="js/iipmooviewer-1.1-compressed.js"></script>
 <script type="text/javascript" src="js/jquery.min.js"></script>
 <script type="text/javascript" src="js/main.js"></script>
 <script type="text/javascript">
@@ -23,5 +28,6 @@ $(document).ready(function()
 <td>Image Modality</td>
 </tr>
 </table>
+<div style="width:99%;height:99%;margin-left:auto;margin-right:auto" id="targetframe"></div>
 </body>
 </html>
