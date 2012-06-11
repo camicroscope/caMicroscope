@@ -31,3 +31,20 @@ function handleImageListData(data,callback)//get the javascript object from the 
     }
     callback(imageList);
 }
+
+function showImageMeta(imageList)//Show each image meta data in a row
+{
+   for (i=0;i<imageList.length;i++)
+   {
+       $('#imagePad').append('<tr class="imageInfo" onmouseover="highlight(this)" onclick="displayImage(\''+imageList[i]["ImageLocation"]+'\')"><td>'+imageList[i]["PatientName"]+"</td><td>"+imageList[i]["PatientAge"]+"</td><td>"+imageList[i]["ImageModality"]+"</td></tr>");
+   }
+}
+function highlight(x)//lightlight the selected row.
+{
+$('.imageInfo').css("color","black" );
+x.style.color="blue";
+}
+function displayImage(imagelocation)//disply image according to the image location
+{
+   console.log(imagelocation);
+}

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<!-- A Bio-medical HTML Image Viewer Based on the IIPImage viewer developed by Ruven Pillay. 
+More Information on this project, please refer to https://github.com/Lincolnnus/Image-Viewer-->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<title>Bio-medical Image Viewer</title>
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/main.js"></script>
+<script type="text/javascript">
+$(document).ready(function()
+{
+    getImageList(showImageMeta);//Show the Image Meta data
+});
+</script>
+</head>
+<body>
+<table id="imagePad">
+<tr>
+<td>Patient Name</td>
+<td>Patient Age</td>
+<td>Image Modality</td>
+</tr>
+</table>
+</body>
+</html>
