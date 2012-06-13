@@ -3,7 +3,7 @@ var IP = "http://localhost";
 function getImageList(callback)//get the json data from the URL
 {
     
-    var url = IP+"/bio/api/image.php";
+    var url = IP+"/bio/api/test.php";
     var jqxhr = $.getJSON(url, function(data) 
     {
         handleImageListData(data,callback);
@@ -46,26 +46,6 @@ x.style.color="blue";
 function displayImage(imagelocation)//disply image according to the image location
 {
    console.log(imagelocation);
-    // The iipsrv server path (/fcgi-bin/iipsrv.fcgi by default)
-    var server = '/fcgi-bin/iipsrv.fcgi';
-
-    // The *full* image path on the server. This path does *not* need to be in the web
-    // server root directory. On Windows, use Unix style forward slash paths without
-    // the "c:" prefix
-    var images = imagelocation;
-
-    // Copyright or information message
-    var credit = '&copy; copyright or information message';
-
-    // Create our viewer object - note: must assign this to the 'iip' variable.
-    // See documentation for more details of options
-    iip = new IIP( "targetframe", {
-		image: images,
-		server: server,
-		credit: credit, 
-		zoom: 1,
-		render: 'random',
-        showNavButtons: true
-    });
+   window.location="view.html?"+imagelocation;
 }
 
