@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" >
+ <head>
+  <link rel="stylesheet" type="text/css" media="all" href="css/iip.compressed.css" />
+  <link rel="shortcut icon" href="images/iip-favicon.png" />
+  <title>IIPImage JPEG2000</title>
+
+  <script type="text/javascript" src="js/mootools-1.2-core.js"></script>
+  <script type="text/javascript" src="js/mootools-1.2-more.js"></script>
+  <script type="text/javascript" src="js/iipmooviewer-1.1.js"></script>
+
+  <script type="text/javascript">
+   var imglocation=window.location.search;
+   if (imglocation.substring(0,1)=='?'){
+   imglocation=imglocation.substring(1); }
+   console.log(imglocation);
+    var server = '/cgi-bin/iipsrv.fcgi';
+
+    // The *full* image path on the server. This path does *not* need to be in the web
+    // server root directory.
+    var images = imglocation;
+
+    // Copyright or information message
+    var credit = 'IIPImage JPEG2000';
+
+    // Create our viewer object - note: must assign this to the 'iip' variable.
+    // See documentation for more details of options
+    iip = new IIP( "targetframe", {
+		image: images,
+		server: server,
+		credit: credit, 
+		zoom: 1,
+		render: 'random',
+                showNavButtons: true
+    });
+
+  </script>
+
+ </head>
+
+ <body>
+   <div style="width:99%;height:99%;margin-left:auto;margin-right:auto" id="targetframe"></div>
+ </body>
+
+</html>
