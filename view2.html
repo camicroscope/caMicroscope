@@ -49,12 +49,6 @@
 
     // Copyright or information message
     var credit = "<i>Portrait d'une femme à sa toilette</i><br/><b>Titian</b></br>peinture à l'huile, 1515<br/>Musée du Louvre<br/>&copy; C2RMF";
-
-
-    var annotations = new Array();
-    annotations.push( {x: 0.38, y: 0.28, w: 0.14, h: 0.06, text: "<div style='width:300px'><blockquote>« Ce tableau, qui a beaucoup souffert, est cependant encore d’un grand mérite ;la passion est peinte dans les yeux de ces amants. Quelle belle couleur ! Quelle vérité ! C’est de la chair et l’on conçoit aisément l’illusion qu’il pouvait faire en sortant des mains de ce grand maître. »</blockquote>Ce témoignage du peintre François-Bernard Lépicié (1698-1755), secrétaire perpétuel et historiographe de l’Académie royale de peinture et de sculpture, constitue la première description que nous ayons du tableau de Titien à partir du moment où celui-ci entre dans la collection de Louis XIV en 1662.</div>"} );
-
-    annotations.push( {x: 0.32, y: 0.7, w: 0.05, h: 0.05, text: "<div style='width:300px'>La masse de la chevelure est traité de manière très sensuelle et une trace de doigt court le long d’une mèche de la Femme à sa Toilette.</div>"} );
     // Create our viewer object
     // See documentation for more details of options
     var iipmooviewer = new IIPMooViewer( "targetframe", {
@@ -63,48 +57,29 @@
 		credit: credit, 
 		scale: 18.0
     });
-
-    iipmooviewer.annotations=annotations;
   </script>
-  <script src="js/doodle-library.js"></script>
-<link rel="stylesheet" type="text/css" href="css/imgareaselect-default.css" />
-  <script type="text/javascript" src="js/jquery.min.js"></script>
-  <script type="text/javascript" src="js/jquery.imgareaselect.pack.js"></script>
-<script type="text/javascript">
-function finishselect()
-{
-   console.log("finish select");
-}
-function loadimg()
-{
-$('#selectlayer').imgAreaSelect({
-        handles: true,
-        onSelectEnd: finishselect
-    });
-}
-function loadcontrol()
-{
-var c=document.getElementById("myCanvas");
-var ctx=c.getContext("2d");
-ctx.fillStyle="#FF0000";
-ctx.fillRect(0,0,60,40);
-}
-window.addEventListener("load", loadcontrol, false);
-function rectzoom(){loadimg();console.log("haha");}
-</script>
-  <style type="text/css">
-    body{
-      height: 100%;
-      padding: 0;
-      margin: 0;
-    }
-  </style>
-  
  </head>
 
  <body>
    <div style="width:100%;height:100%;position:absolute" id="targetframe"></div>
-   <div style="width:100%;height:100%;position:absolute;z-index:1" id="selectlayer"></div>
-   <canvas id="myCanvas" width="200" height="100"style="position:absolute;left:50px;top:50px;z-index:2" onclick="rectzoom()"></canvas>
+   <div style="width:100%;height:100%;position:absolute;z-index:1;visibility:hidden" id="layer">
+	<svg style="position:absolute;top:20%;left:20%" xmlns="http://www.w3.org/2000/svg" version="1.1">
+	  <circle cx="100" cy="50" r="40" stroke="black"
+	  stroke-width="2" fill="red"/>
+	</svg>
+   </div>
+   <div style="width:10%;height:10%;position:absolute;top:90%;left:2%;z-index:2" id="control">
+       <a style="color:red" id="show">Show Layer</a>
+       <a style="color:red;visibility:hidden" id="hide">Hide Layer</a>
+   </div>
  </body>
+
+  <script>
+    $("show").addEvent('click',function(){this.set({styles:{visibility:'hidden'}}); 
+                                          $("hide").set({styles:{visibility:'visible'}});
+                                          $("layer").set({styles:{visibility:'visible'}});});
+    $("hide").addEvent('click',function(){this.set({styles:{visibility:'hidden'}});
+					 $("show").set({styles:{visibility:'visible'}});
+                                         $("layer").set({styles:{visibility:'hidden'}});});
+  </script>
 </html>
