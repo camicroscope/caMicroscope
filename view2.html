@@ -49,37 +49,49 @@
 
     // Copyright or information message
     var credit = "<i>Portrait d'une femme à sa toilette</i><br/><b>Titian</b></br>peinture à l'huile, 1515<br/>Musée du Louvre<br/>&copy; C2RMF";
-	
+
+
     var annotations = new Array();
     annotations.push( {x: 0.38, y: 0.28, w: 0.14, h: 0.06, text: "<div style='width:300px'><blockquote>« Ce tableau, qui a beaucoup souffert, est cependant encore d’un grand mérite ;la passion est peinte dans les yeux de ces amants. Quelle belle couleur ! Quelle vérité ! C’est de la chair et l’on conçoit aisément l’illusion qu’il pouvait faire en sortant des mains de ce grand maître. »</blockquote>Ce témoignage du peintre François-Bernard Lépicié (1698-1755), secrétaire perpétuel et historiographe de l’Académie royale de peinture et de sculpture, constitue la première description que nous ayons du tableau de Titien à partir du moment où celui-ci entre dans la collection de Louis XIV en 1662.</div>"} );
 
     annotations.push( {x: 0.32, y: 0.7, w: 0.05, h: 0.05, text: "<div style='width:300px'>La masse de la chevelure est traité de manière très sensuelle et une trace de doigt court le long d’une mèche de la Femme à sa Toilette.</div>"} );
-
-    annotations.push( {x: 0.9, y: 0.02, w: 0.07, h: 0.3, text: "<div style='width:300px;padding:1em'><img style='float:right;margin:5px' src='annotations/uv.jpg'/>Le tableau est arrivé dans les collections royales sous un format carré, fut agrandi avant 1695 et rentoilé par deux fois (1695 et 1751). La prise de vue sous fluorescence ultraviolette montre bien l’épais mastic couvrant les agrandissements et permet de préciser leur ampleur. Les rayons ultraviolets permettent en effet de distinguer les accidents de la couche de vernis (repeints sur le vernis, irrégularités de la couche etc). Les agrandissements concernent les bords latéraux et le bord inférieur, tandis qu’une baguette a été posée sur le bord supérieur.</div>"} );
-
-    annotations.push( {x: 0.85, y: 0.7, w: 0.12, h: 0.28, text: "<div style='width:300px;padding:1em'><img style='float:right;margin:5px' src='annotations/ir.jpg'/>L’impression de l’infrarouge en fausses couleurs montre ici clairement le repeint sur le bord latéral senestre venant recouvrir une partie de l’écharpe bleue afin d’homogénéiser les rajouts avec le tableau. Si l’on considère que le tableau a été agrandi, le format original faisait donc apparaître des mains aux bords extrêmes du tableau, comme coupées du corps. L’effet de circularité du bras gauche, prolongeant la courbe de l’épaule, serait absent. Que le cadrage ait été « resserré » constitue une hypothèse somme toute étonnante au regard des éléments que nous venons de souligner. L’autre hypothèse serait que le tableau a été agrandi afin de restituer son format d’origine.</div>"} );
-
-    annotations.push( {x: 0.8, y: 0.77, w: 0.06, h: 0.03, text: "<div style='width:300px;padding:1em'>Selon Jean-Gabriel Goulinat, à qui fut confiée la restauration du tableau en 1940, les couleurs de Titien sont dans un remarquable état de conservation : <blockquote>« Titien a utilisé comme véhicule pour délayer les couleurs sur sa palette la thérébentine de Venise […]a preuve est faite que la thérébentine de Venise bien préparée a contribué à leur durée. Mais ce détail matériel ne suffit pas à expliquer à lui seul la conservation des œuvres de Titien : en revanche, une technique savamment conduite depuis l’enduit de la toile ou du panneau jusqu’à certains glacis de la dernière heure, permet aux chefs d’œuvres de tous les maîtres beaucoup plus encore que le meilleur des véhicules à peindre, de ne pas vieillir au cours des siècles. »</blockquote></div>"} );
-
-    annotations.push( {x: 0.36, y: 0.2, w: 0.22, h: 0.22, text: "<div style='width:300px;padding:1em'><img style='float:right;margin:5px' src='annotations/damage.jpg'/>Au XIXe siècle, l’œuvre subit plusieurs accidents : endommagée par la pluie en 1818, la couleur commença à s’écailler en plusieurs endroits ; la couche picturale fut refixée et restaurée, puis retouchée en 1848. Au début du XXe siècle, plusieurs couches de vernis oxydés assombrissaient le tableau, et malgré l’allègement de vernis réalisé en 1940, la décision de restaurer plus complètement l’œuvre fut prise en 1990. Une fois l’allègement prononcé du vernis effectué, la couche picturale se révéla dans un bien meilleur état que prévu.</div>"} );
-
-    annotations.push( {x: 0.61, y: 0.63, w: 0.03, h: 0.03, text: "<div style='width:300px;padding:1em'>Certains pigments s’altèrent naturellement au fil du temps, mais les variations de couleur sont aussi dues à la transparence accrue de la peinture au fur et à mesure qu’elle vieillit : l’indice de réfraction du liant (souvent l’huile), inférieur à celui des pigments, augmente en vieillissant de sorte que le couple pigment-liant devient au cours du temps plus homogène vis-à-vis de la pénétration de la lumière qu’à l’origine.</div>"} );
-
-    annotations.push( {x: 0.4, y: 0.45, w: 0.14, h: 0.1, text: "<div style='width:300px;padding:1em'>Lorsque l’historien d’art Allessandro Ballarin redécouvre, après la restauration, les couleurs du tableau, il s’extasie devant les subtiles variations à nouveau visibles : <blockquote>« L’ombre du cou et de la joue n’est pas aussi chaude et colorée que l’ombre portée de la tresse de cheveux, dont la masse, par rapport au blanc de la chemise et à la roseur de la chair, scintille avec des vibrations d’or chaud, mais aussi avec des effets de réfraction de la couleur – on dirait qu’il y a du vert dans cet or de la chevelure ! – comme si un rayon de soleil avait fait réfléchir les couleurs tout alentour. »</blockquote></div>"} );
-
     // Create our viewer object
     // See documentation for more details of options
     var iipmooviewer = new IIPMooViewer( "targetframe", {
 		image: images,
 		server: server,
 		credit: credit, 
-		scale: 18.0,
-		annotations: annotations
+		scale: 18.0
     });
 
-
+    iipmooviewer.annotations=annotations;
   </script>
-
+  <script src="js/doodle-library.js"></script>
+<link rel="stylesheet" type="text/css" href="css/imgareaselect-default.css" />
+  <script type="text/javascript" src="js/jquery.min.js"></script>
+  <script type="text/javascript" src="js/jquery.imgareaselect.pack.js"></script>
+<script type="text/javascript">
+function finishselect()
+{
+   console.log("finish select");
+}
+function loadimg()
+{
+$('#selectlayer').imgAreaSelect({
+        handles: true,
+        onSelectEnd: finishselect
+    });
+}
+function loadcontrol()
+{
+var c=document.getElementById("myCanvas");
+var ctx=c.getContext("2d");
+ctx.fillStyle="#FF0000";
+ctx.fillRect(0,0,60,40);
+}
+window.addEventListener("load", loadcontrol, false);
+function rectzoom(){loadimg();console.log("haha");}
+</script>
   <style type="text/css">
     body{
       height: 100%;
@@ -87,11 +99,12 @@
       margin: 0;
     }
   </style>
-
+  
  </head>
 
  <body>
    <div style="width:100%;height:100%;position:absolute" id="targetframe"></div>
+   <div style="width:100%;height:100%;position:absolute;z-index:1" id="selectlayer"></div>
+   <canvas id="myCanvas" width="200" height="100"style="position:absolute;left:50px;top:50px;z-index:2" onclick="rectzoom()"></canvas>
  </body>
-
 </html>
