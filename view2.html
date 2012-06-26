@@ -25,7 +25,6 @@
   <script type="text/javascript" src="js/mootools-more-1.3.2.1.js"></script>
   <script type="text/javascript" src="js/protocols.js"></script>
   <script type="text/javascript" src="js/iipmooviewer-2.0.js"></script>
-
 <!--[if lt IE 7]>
   <script src="http://ie7-js.googlecode.com/svn/version/2.1(beta4)/IE9.js">IE7_PNG_SUFFIX = ".png";</script>
 <![endif]-->
@@ -64,22 +63,15 @@
    <div style="width:100%;height:100%;position:absolute" id="targetframe"></div>
    <div style="width:100%;height:100%;position:absolute;z-index:1;visibility:hidden" id="layer">
 	<svg style="position:absolute;top:20%;left:20%" xmlns="http://www.w3.org/2000/svg" version="1.1">
-	  <circle cx="100" cy="50" r="40" stroke="black"
+	<circle cx="100" cy="50" r="40" stroke="black"
 	  stroke-width="2" fill="red"/>
 	</svg>
+        <object style="position:absolute;top:30%;left:30%;width:10%" data="circle1.svg" type="image/svg+xml"></object>
    </div>
    <div style="width:10%;height:10%;position:absolute;top:90%;left:2%;z-index:2" id="control">
        <a style="color:red" id="show">Show Layer</a>
        <a style="color:red;visibility:hidden" id="hide">Hide Layer</a>
    </div>
+  <script type="text/javascript" src="js/canvas.js"></script>
  </body>
-
-  <script>
-    $("show").addEvent('click',function(){this.set({styles:{visibility:'hidden'}}); 
-                                          $("hide").set({styles:{visibility:'visible'}});
-                                          $("layer").set({styles:{visibility:'visible'}});});
-    $("hide").addEvent('click',function(){this.set({styles:{visibility:'hidden'}});
-					 $("show").set({styles:{visibility:'visible'}});
-                                         $("layer").set({styles:{visibility:'hidden'}});});
-  </script>
 </html>
