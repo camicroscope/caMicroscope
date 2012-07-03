@@ -46,6 +46,6 @@ x.style.color="blue";
 function displayImage(imagelocation)//disply image according to the image location
 {
    console.log(imagelocation);
-   window.location="view.html?"+imagelocation;
+   window.location="view3.html?"+imagelocation;
 }
 
