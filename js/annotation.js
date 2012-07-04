@@ -1,12 +1,16 @@
  // Create annotations if they are contained within our current view
 function showAnnotations(iip,annot)
 {
-    $("layer").set({styles:{width:iip.wid+'px',height:iip.hei+'px',left:(iip.view.w-iip.wid)/2+'px',top:(iip.view.h-iip.hei)/2+'px'}});
-    if( !annot ) return;
-    annot.sort( function(a,b){ return (b.w*b.h)-(a.w*a.h); } );
+    //Clear annotation layer html
+    var layer=$("annotlayer");
+    layer.set({html:""});
+    //Create new annotation div
+    var newannot=new Element('div',{style:"position:absolute;z-index:1"});
+    //Set the width/height according to the iip view and iip wid/hei
+    newannot.set({styles:{width:iip.wid+'px',height:iip.hei+'px',left:(iip.view.w-iip.wid)/2+'px',top:(iip.view.h-iip.hei)/2+'px'}});
     var svgHtml='<svg xmlns="http://www.w3.org/2000/svg" version="1.1">';
     for( var i=0; i<annot.length; i++ ){
-    // Check whether iip annotation is within our view
+    // Check whether the annotation is within the iip view
     if( iip.wid*annot[i].annotx > iip.view.x &&
 	iip.wid*annot[i].annotx < iip.view.x+iip.view.w &&
 	iip.hei*annot[i].annoty > iip.view.y &&
@@ -17,15 +21,15 @@ function showAnnotations(iip,annot)
 	       switch (annot[i].annotdetail[k].annotType)
 	      {
 		  case "rect":
-		   svgHtml+='<rect x="'+iip.wid*annot[i].annotdetail[k].x+'" y="'+iip.hei*annot[i].annotdetail[k].y+'" width="'+iip.wid*annot[i].annotdetail[k].w+'" height="'+iip.wid*annot[i].annotdetail[k].h+'" stroke="black" stroke-width="2" fill="'+annot[i].annotdetail[k].color+'"/>';
+		   svgHtml+='<rect onmouseover="showText(\''+annot[i].annotdetail[k].text+'\')" onmouseout="clearText()" x="'+iip.wid*annot[i].annotdetail[k].x+'" y="'+iip.hei*annot[i].annotdetail[k].y+'" width="'+iip.wid*annot[i].annotdetail[k].w+'" height="'+iip.wid*annot[i].annotdetail[k].h+'" stroke="black" stroke-width="2" fill="'+annot[i].annotdetail[k].color+'"/>';
 		  break;
 		  case "circle":
-		    svgHtml+='<circle cx="'+iip.wid*annot[i].annotdetail[k].x+'" cy="'+iip.hei*annot[i].annotdetail[k].y+'" r="'+iip.wid*annot[i].annotdetail[k].r+'" stroke="black" stroke-width="2" fill="'+annot[i].annotdetail[k].color+'"/>';
+		    svgHtml+='<circle onmouseover="showText(\''+annot[i].annotdetail[k].text+'\')" onmouseout="clearText()" cx="'+iip.wid*annot[i].annotdetail[k].x+'" cy="'+iip.hei*annot[i].annotdetail[k].y+'" r="'+iip.wid*annot[i].annotdetail[k].r+'" stroke="black" stroke-width="2" fill="'+annot[i].annotdetail[k].color+'"/>';
 		  break;
 		  case "polygon":
 		  var points=annot[i].annotdetail[k].points;
 		  p=String.split(points,' ');
-		  svgHtml+='<polygon points="';
+		  svgHtml+='<polygon onmouseover="showText(\''+annot[i].annotdetail[k].text+'\')" onmouseout="clearText()" points="';
 		  for (var j=0;j<p.length;j++)
 		  {
 		     point=String.split(p[j],',');
@@ -36,14 +40,30 @@ function showAnnotations(iip,annot)
 		  svgHtml+='" style="fill:lime;stroke:purple;stroke-width:1"/>';
 		  break;
 		  case "ellipse":
-		  svgHtml+='<ellipse cx="'+iip.wid*annot[i].annotdetail[k].cx+'" cy="'+iip.hei*annot[i].annotdetail[k].cy+'" rx="'+iip.wid*annot[i].annotdetail[k].rx+'" ry="'+iip.hei*annot[i].annotdetail[k].ry+'" style="fill:yellow;stroke:purple;stroke-width:2"/>';
-		  break;
-		  case "svg":console.log("svg");
+		  svgHtml+='<ellipse onmouseover="showText(\''+annot[i].annotdetail[k].text+'\')" onmouseout="clearText()" cx="'+iip.wid*annot[i].annotdetail[k].cx+'" cy="'+iip.hei*annot[i].annotdetail[k].cy+'" rx="'+iip.wid*annot[i].annotdetail[k].rx+'" ry="'+iip.hei*annot[i].annotdetail[k].ry+'" style="fill:yellow;stroke:purple;stroke-width:2"/>';
 		  break;
 		}
         }
       }
     }
       svgHtml+='</svg>';
-      $("layer").set({html:svgHtml});
+      newannot.set({html:svgHtml});
+      //this is one way for svg to be displayed.For more information, can refer to stackoverflow.com/questions/3642035
+      newannot.inject(layer);
 };
+
+function editAnnotation(annot,i)
+{
+ console.log(annot[i]);
+}
+function showText(text)
+{
+   var tiplayer=$("tiplayer");
+   var newtip=new Element('a',{ style:"color:red",html:text});
+   newtip.inject(tiplayer);
+}
+function clearText()
+{
+  $("tiplayer").set({html:""});
+}
+

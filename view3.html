@@ -13,6 +13,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=9" >
 
   <link rel="stylesheet" type="text/css" media="all" href="css/iip.css" />
+  <link rel="stylesheet" type="text/css" media="all" href="css/annot.css" />
 <!--[if lt IE 9]>
   <link rel="stylesheet" type="text/css" media="all" href="css/ie.css" />
 <![endif]-->
@@ -58,28 +59,79 @@
 		scale: 18.0
     });
     var annot = new Array();
-    annot.push( {annotid:1,annotx:0.5,annoty:0.5,annotdetail:[{annotType:"rect",x: 0.5, y: 0.5, w: 0.01, h: 0.01,color:"red", text: ""},{annotType:"circle",x: 0.54, y: 0.5, r:0.02, color:"blue",text: ""},{annotType:"polygon",points:"0.5,0.64 0.54,0.45 0.58,0.64",text:""},{annotType:"ellipse",cx:0.3,cy:0.4,rx:0.02,ry:0.01,text:""}]});
+    annot.push( {annotid:1,annotx:0.5,annoty:0.5,annotdetail:[{annotType:"rect",x: 0.5, y: 0.5, w: 0.01, h: 0.01,color:"red", text: "rect text"},{annotType:"circle",x: 0.54, y: 0.5, r:0.02, color:"blue",text: "sometext"},{annotType:"polygon",points:"0.5,0.64 0.54,0.45 0.58,0.64",text:"polygon text"},{annotType:"ellipse",cx:0.48,cy:0.45,rx:0.02,ry:0.03,text:"somemore text"}]});
+    annot.push( {annotid:2,annotx:0.1,annoty:0.1,annotdetail:[{annotType:"rect",x: 0.1, y: 0.1, w: 0.01, h: 0.01,color:"red", text: "hoho"},{annotType:"circle",x: 0.12, y: 0.14, r:0.02, color:"blue",text: "haha"},{annotType:"polygon",points:"0.14,0.24 0.16,0.20 0.18,0.28",text:"hehe"},{annotType:"ellipse",cx:0.20,cy:0.23,rx:0.02,ry:0.03,text:"hihi"}]});
  </script>
  </head>
 
  <body>
-   <div style="width:100%;height:100%;position:absolute" id="targetframe"></div>
-   <div style="position:absolute;z-index:1;visibility:hidden" id="layer">
-   </div>
-   <div style="width:10%;height:10%;position:absolute;top:90%;left:2%;z-index:2" id="control">
-       <a style="color:red" id="show">Show</a>
-       <a style="color:red;visibility:hidden" id="hide">Hide</a>
-   </div>
-  <script type="text/javascript">
+   <div id="targetframe" style="width:100%;height:100%;position:absolute"></div>
+   <div id="annotlayer"></div>
+   <div id="menu-container" style="width:10%;height:10%;position:absolute;top:10%;left:2%;z-index:2">
+   <ul id="drop_down_menu">
+		<li class="menu">Annotation Controler
+			<ul class="links">
+				<li><a id="create" href="#">Create New Annotation</a></li>
+				<li><a id="edit" href="#">Edit Existed Annotation</a></li>
+				<li><a id="show" href="#">Show/hide Annotation</a></li>
+			</ul>
+		</li>
 
-	$("show").addEvent('click',function(){this.set({styles:{visibility:'hidden'}}); 
-		                                  $("hide").set({styles:{visibility:'visible'}});
-		                                  $("layer").set({styles:{visibility:'visible'}});
-		                                  showAnnotations(iipmooviewer,annot);
-		                                  });
-	$("hide").addEvent('click',function(){this.set({styles:{visibility:'hidden'}});
-		                                 $("show").set({styles:{visibility:'visible'}});
-		                                 $("layer").set({styles:{visibility:'hidden'}});});
+		<li class="menu" id="choosemenu">Choose An Annotation
+			<ul id="chooselink" class="links">
+			</ul>
+		</li>
+
+   </ul>
+   </div>
+   <div id="tiplayer" style="position:absolute;top:80%;left:40%;z-index:2">
+   </div>
+   <div id="editlayer" style="position:absolute;top:80%;left:40%;z-index:2">
+   </div>
+   <script type="text/javascript">
+	$("show").addEvent('click',function(){  console.log($("annotlayer").style.visibility);
+						if($("annotlayer").style.visibility=='visible')
+		                                $("annotlayer").set({styles:{visibility:'hidden'}});
+						else 
+						{ showAnnotations(iipmooviewer,annot);
+						$("annotlayer").set({styles:{visibility:'visible'}});}
+		                              });
+       $("edit").addEvent('click',function(){  
+						var newlink=$("chooselink");
+						newlink.erase('html');
+						for (var i=0;i<annot.length;i++)
+                                               {   var newedit=new Element('li',
+							{	id:'li'+i,
+								html:'<a> Edit Annotation '+i+'</a>',
+								events:{click:function(){editAnnotation(annot,i);}}
+							});
+						   newedit.inject(newlink);
+                                               }
+                                               var canceledit=new Element('li',
+							{	
+								html:'<a> Cancel</a>',
+								events:{click:function(){$("choosemenu").set({styles:{visibility:"hidden"}});}}
+							});
+                                               canceledit.inject(newlink);
+					       $("choosemenu").set({styles:{visibility:"visible"}});
+					    });									   
+	window.addEvent('domready', function(){
+		$('drop_down_menu').getElements('li.menu').each( function( elem ){
+			var list = elem.getElement('ul.links');
+			var myFx = new Fx.Slide(list).hide();
+			elem.addEvents({
+				'mouseenter' : function(){
+					myFx.cancel();
+					myFx.slideIn();
+				},
+				'mouseleave' : function(){
+					myFx.cancel();
+					myFx.slideOut();
+				}
+			});
+		});
+		$("choosemenu").set({styles:{visibility:"hidden"}});
+	});
   </script>
  </body>
 </html>
