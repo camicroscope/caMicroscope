@@ -89,7 +89,7 @@
    <div id="editlayer" style="position:absolute;top:80%;left:40%;z-index:2">
    </div>
    <script type="text/javascript">
-	$("show").addEvent('click',function(){  console.log($("annotlayer").style.visibility);
+	$("show").addEvent('click',function(){  
 						if($("annotlayer").style.visibility=='visible')
 		                                $("annotlayer").set({styles:{visibility:'hidden'}});
 						else 
@@ -103,7 +103,9 @@
                                                {   var newedit=new Element('li',
 							{	id:'li'+i,
 								html:'<a> Edit Annotation '+i+'</a>',
-								events:{click:function(){editAnnotation(annot,i);}}
+								events:{click:function(){
+								highlightAnnotation(iipmooviewer,annot,i);
+								editAnnotation(iipmooviewer,annot,i);}}
 							});
 						   newedit.inject(newlink);
                                                }
