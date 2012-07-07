@@ -9,6 +9,7 @@ function showAnnotations(iip,annot)
     //Set the width/height according to the iip view and iip wid/hei
     newannot.set({styles:{width:iip.wid+'px',height:iip.hei+'px',left:(iip.view.w-iip.wid)/2+'px',top:(iip.view.h-iip.hei)/2+'px'}});
     var svgHtml='<svg xmlns="http://www.w3.org/2000/svg" version="1.1">';
+    //svgHtml+='<g transform="translate('+iip.view.x+','+iip.view.y+')">';
     for( var i=0; i<annot.length; i++ ){
     // Check whether the annotation is within the iip view
     if( iip.wid*annot[i].annotx > iip.view.x &&
@@ -21,7 +22,9 @@ function showAnnotations(iip,annot)
 	       switch (annot[i].annotdetail[k].annotType)
 	      {
 		  case "rect":
-		  svgHtml+='<rect onmouseover="showText(\''+annot[i].annotdetail[k].text+'\')" onmouseout="clearText()" x="'+iip.wid*annot[i].annotdetail[k].x+'" y="'+(iip.hei+iip.view.y)*annot[i].annotdetail[k].y+'" width="'+iip.wid*annot[i].annotdetail[k].w+'" height="'+(iip.hei+iip.view.y)*annot[i].annotdetail[k].h+'" stroke="black" stroke-width="2" fill="'+annot[i].annotdetail[k].color+'"/>';
+		  svgHtml+='<rect onmouseover="showText(\''+annot[i].annotdetail[k].text+'\')" onmouseout="clearText()" x="'+Math.round(iip.wid*annot[i].annotdetail[k].x)+'" y="'+Math.round(iip.hei*annot[i].annotdetail[k].y)+'" width="'+Math.round(iip.wid*annot[i].annotdetail[k].w)+'" height="'+Math.round(iip.hei*annot[i].annotdetail[k].h)+'" stroke="black" stroke-width="2" fill="'+annot[i].annotdetail[k].color+'"/>';
+                  console.log(iip.wid*annot[i].annotdetail[k].x);
+		  console.log(iip.hei*annot[i].annotdetail[k].y);
 		  break;
 		  case "circle":
 		  svgHtml+='<circle onmouseover="showText(\''+annot[i].annotdetail[k].text+'\')" onmouseout="clearText()" cx="'+(iip.wid+iip.view.x)*annot[i].annotdetail[k].x+'" cy="'+(iip.hei+iip.view.y)*annot[i].annotdetail[k].y+'" r="'+(iip.wid+iip.view.x)*annot[i].annotdetail[k].r+'" stroke="black" stroke-width="2" fill="'+annot[i].annotdetail[k].color+'"/>';
@@ -80,9 +83,9 @@ function highlightAnnotation(iip,annot,i)
 	       switch (annot[i].annotdetail[k].annotType)
 	      {
 		  case "rect":
-		  svgHtml+='<rect onmouseover="showText(\''+annot[i].annnotdetail[k].text+'\')" onmouseout="clearText()" x="'+(iip.wid+iip.view.x)*annot[i].annotdetail[k].x+'" y="'+(iip.hei+iip.view.y)*annot[i].annotdetail[k].y+'" width="'+(iip.wid+iip.view.x)*annot[i].annotdetail[k].w+'" height="'+(iip.hei+iip.view.y)*annot[i].annotdetail[k].h+'" stroke="black" stroke-width="2" fill="'+annot[i].annotdetail[k].color+'"/>';
+		  svgHtml+='<rect onmouseover="showText(\''+annot[i].annnotdetail[k].text+'\')" onmouseout="clearText()" x="'+(iip.wid)*annot[i].annotdetail[k].x+'" y="'+(iip.hei)*annot[i].annotdetail[k].y+'" width="'+(iip.wid)*annot[i].annotdetail[k].w+'" height="'+(iip.hei)*annot[i].annotdetail[k].h+'" stroke="black" stroke-width="2" fill="'+annot[i].annotdetail[k].color+'"/>';
 		  break;
-		/*  case "circle":
+		  case "circle":
 		  svgHtml+='<circle onmouseover="showText(\''+annot[i].annotdetail[k].text+'\')" onmouseout="clearText()" cx="'+iip.wid*annot[i].annotdetail[k].x+'" cy="'+iip.hei*annot[i].annotdetail[k].y+'" r="'+iip.wid*annot[i].annotdetail[k].r+'" stroke="black" stroke-width="2" fill="'+annot[i].annotdetail[k].color+'"/>';
 		  break;
 		  case "polygon":
@@ -101,7 +104,7 @@ function highlightAnnotation(iip,annot,i)
 		  break;
 		  case "ellipse":
 		  svgHtml+='<ellipse onmouseover="showText(\''+annot[i].annotdetail[k].text+'\')" onmouseout="clearText()" cx="'+iip.wid*annot[i].annotdetail[k].cx+'" cy="'+iip.hei*annot[i].annotdetail[k].cy+'" rx="'+iip.wid*annot[i].annotdetail[k].rx+'" ry="'+iip.hei*annot[i].annotdetail[k].ry+'" style="fill:yellow;stroke:purple;stroke-width:2"/>';
-		  break;*/
+		  break;
 		}
         }
       }
