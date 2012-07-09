@@ -59,8 +59,8 @@
 		scale: 18.0
     });
     var annot = new Array();
-    annot.push( {annotid:1,annotx:0.5,annoty:0.5,annotdetail:[{annotType:"rect",x: 0.5, y: 0.5, w: 0.01, h: 0.01,color:"red", text: "rect text"},{annotType:"circle",x: 0.54, y: 0.5, r:0.02, color:"blue",text: "sometext"},{annotType:"polygon",points:"0.5,0.64 0.54,0.45 0.58,0.64",text:"polygon text"},{annotType:"ellipse",cx:0.48,cy:0.45,rx:0.02,ry:0.03,text:"somemore text"}]});
-   /* annot.push( {annotid:2,annotx:0.1,annoty:0.1,annotdetail:[{annotType:"rect",x: 0.1, y: 0.1, w: 0.01, h: 0.01,color:"red", text: "hoho"},{annotType:"circle",x: 0.12, y: 0.14, r:0.02, color:"blue",text: "haha"},{annotType:"polygon",points:"0.14,0.24 0.16,0.20 0.18,0.28",text:"hehe"},{annotType:"ellipse",cx:0.20,cy:0.23,rx:0.02,ry:0.03,text:"hihi"}]});*/
+    annot.push( {annotid:1,annotx:0.5,annoty:0.5,annotdetail:[{annotType:"rect",x: 0.5, y: 0.5, w: 0.1, h: 0.1,color:"#FF0000", text: "rect text"},{annotType:"circle",x: 0.54, y: 0.5, r:0.02, color:"blue",text: "sometext"},{annotType:"polygon",points:"0.5,0.64 0.54,0.45 0.58,0.64",color:"green",text:"polygon text"},{annotType:"ellipse",cx:0.48,cy:0.45,rx:0.02,ry:0.03,color:"yellow",text:"somemore text"}]});
+    annot.push( {annotid:2,annotx:0.1,annoty:0.1,annotdetail:[{annotType:"rect",x: 0.1, y: 0.1, w: 0.01, h: 0.01,color:"red", text: "hoho"},{annotType:"circle",x: 0.12, y: 0.14, r:0.02, color:"blue",text: "haha"},{annotType:"polygon",points:"0.14,0.24 0.16,0.20 0.18,0.28",color:"yellow",text:"hehe"},{annotType:"ellipse",cx:0.20,cy:0.23,rx:0.02,ry:0.03,color:"blue",text:"hihi"}]});
  </script>
  </head>
 
@@ -93,7 +93,7 @@
 						if($("annotlayer").style.visibility=='visible')
 		                                $("annotlayer").set({styles:{visibility:'hidden'}});
 						else 
-						{ showAnnotations(iipmooviewer,annot);
+						{ showSVGAnnotations(iipmooviewer,annot);
 						$("annotlayer").set({styles:{visibility:'visible'}});}
 		                              });
        $("edit").addEvent('click',function(){  
@@ -101,11 +101,11 @@
 						newlink.erase('html');
 						for (var i=0;i<annot.length;i++)
                                                {   var newedit=new Element('li',
-							{	id:'li'+i,
+							{	id:'li_'+i,
 								html:'<a> Edit Annotation '+i+'</a>',
 								events:{click:function(){
-								highlightAnnotation(iipmooviewer,annot,i);
-								editAnnotation(iipmooviewer,annot,i);}}
+								highlightAnnotation(iipmooviewer,annot,this.id);
+								editAnnotation(iipmooviewer,annot,this.id);}}
 							});
 						   newedit.inject(newlink);
                                                }
