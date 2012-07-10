@@ -1,51 +1,31 @@
-var IP = "http://localhost";
-//============================ get image metadata list ====================================
-function getImageList(callback)//get the json data from the URL
+function showImageMeta()
 {
-    
-    var url = IP+"/bio/api/test.php";
-    var jqxhr = $.getJSON(url, function(data) 
-    {
-        handleImageListData(data,callback);
-    })
-  
-    .error(function() { 
-        console.log("Fails in get image meta data"); 
-        imageList  = new Array();
-        callback(imageList); 
-    })
+        myElement=$('imagePad');
+        var Image = new Class({
+	    initialize: function(age){
+		this.patientAge = age;
+	    }
+	});
+	var jsonRequest = new Request.JSON({url: IP+'/bio/api/test.php', onSuccess: function(imageList){
+	for (var i=0;i<imageList.length;i++)
+	{
+	      var image = imageList[i];
+              var imageElement=new Element('tr',{
+              'class':'imageInfo',
+              html:'<td>'+image["PatientName"]+'</td><td>'+image["PatientAge"]+'</td><td>'+image["ImageModality"]+'</td>',
+	      events:{'click':function(){displayImage(image["ImageLocation"])},'mouseover':function(){highlight(this)}}
+	      });
+              imageElement.inject(myElement);
+	}
+	}}).get();
 }
-function handleImageListData(data,callback)//get the javascript object from the json data
+function highlight(selected)//lightlight the selected row.
 {
-    imageList  = new Array();
-    imageListArray = data;
-    for (var i=0;i<imageListArray.length;i++)
-    {
-        var image = imageListArray[i];
-        var temp = new Object();
-        temp.PatientName = image["PatientName"];
-        temp.PatientAge = image["PatientAge"];
-        temp.ImageModality = image["ImageModality"];
-        temp.ImageLocation = image["ImageLocation"];
-        imageList[i] = temp;
-    }
-    callback(imageList);
-}
-function showImageMeta(imageList)//Show each image meta data in a row
-{
-   for (i=0;i<imageList.length;i++)
-   {
-       $('#imagePad').append('<tr class="imageInfo" onmouseover="highlight(this)" onclick="displayImage(\''+imageList[i]["ImageLocation"]+'\')"><td>'+imageList[i]["PatientName"]+"</td><td>"+imageList[i]["PatientAge"]+"</td><td>"+imageList[i]["ImageModality"]+"</td></tr>");
-   }
-}
-function highlight(x)//lightlight the selected row.
-{
-$('.imageInfo').css("color","black" );
-x.style.color="blue";
+$$('tr.imageInfo').setStyles({color: 'black'});
+selected.style.color="blue";
 }
 function displayImage(imagelocation)//disply image according to the image location
 {
-   console.log(imagelocation);
    window.location="view3.html?"+imagelocation;
 }
 
