@@ -1,3 +1,4 @@
+var IP='http://localhost';
 function showImageMeta()
 {
         myElement=$('imagePad');

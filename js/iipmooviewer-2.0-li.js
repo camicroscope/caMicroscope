@@ -1169,7 +1169,7 @@ var IIPMooViewer = new Class({
     // Calculate some sizes and create the navigation window
     this.calculateSizes();    
     this.createNavigationWindow();
-    //this.createAnnotations();
+    this.createAnnotations();
 
 
     if( !(Browser.Platform.ios||Browser.Platform.android) ){
@@ -1386,14 +1386,14 @@ var IIPMooViewer = new Class({
 
   // Create annotations if they are contained within our current view
   createAnnotations: function() {
-
     // Sort our annotations by size to make sure it's always possible to interact
     // with annotations within annotations
     if( !this.annotations ) return;
     this.annotations.sort( function(a,b){ return (b.w*b.h)-(a.w*a.h); } );
-
+    $$('div.annotlayer').each(function(el){
+	el.destroy();
+    });
     for( var i=0; i<this.annotations.length; i++ ){
-
       // Check whether this annotation is within our view
       if( this.wid*(this.annotations[i].x+this.annotations[i].w) > this.view.x &&
 	  this.wid*this.annotations[i].x < this.view.x+this.view.w &&
@@ -1403,22 +1403,28 @@ var IIPMooViewer = new Class({
 	  //	  (this.hei*this.annotations[i].x < this.view.x && this.hei*this.annotations[i].y < this.view.y &&
 	  //	   this.wid*(this.annotations[i].x+this.annotations[i].w) > this.view.x+this.view.w && 
       ){
-
-	var annotation = new Element('div', {
+        var newannot=new Element('div',{'class':"annotlayer",style:"position:absolute;z-index:1"});
+        //Set the width/height according to the iip view and iip wid/hei
+        newannot.set({styles:{width:this.wid+'px',height:this.hei+'px',left:(this.view.w-this.wid)/2+'px',top:(this.view.h-this.hei)/2+'px'}});
+	var svgHtml='<svg xmlns="http://www.w3.org/2000/svg" width="'+this.wid+'" height="'+this.hei+'" version="1.1" >';
+	svgHtml+='<rect x="'+Math.round(this.wid*this.annotations[i].x)+'" y="'+Math.round(this.hei*this.annotations[i].y)+'" width="'+Math.round(this.wid*this.annotations[i].w)+'" height="'+Math.round(this.hei*this.annotations[i].h)+'" stroke="black" stroke-width="2" fill="red"/>';
+ 	svgHtml+='</svg>';
+        newannot.set({html:svgHtml});
+        newannot.inject(document.body);
+ 	var annotation = new Element('div', {
           'class': 'annotation',
           'styles': {
             left: Math.round(this.wid * this.annotations[i].x),
             top: Math.round(this.hei * this.annotations[i].y ),
 	    width: this.wid * this.annotations[i].w,
-	    height: this.hei * this.annotations[i].h
+	    height: this.hei * this.annotations[i].h,
 	  }
-        }).inject( this.canvas );
-
+        }).inject(this.canvas);
+        console.log(annotation);
 	if( this.annotationsVisible==false ){
 	  if( Browser.ie&&Browser.version<9 ) annotation.setStyle('visibility','hidden');
 	  else  annotation.setStyle('opacity',0);
 	}
-
 	// On IE, the mouseleave event is triggered on traversal of the border, so add
 	// a transparent background so that it does not trigger inside the div itself
 	if(Browser.ie) annotation.setStyle( 'background-image', 'url('+this.prefix+'blank.gif)' );
