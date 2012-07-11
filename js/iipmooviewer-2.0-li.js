@@ -214,7 +214,8 @@ var IIPMooViewer = new Class({
 
     // Load our image mosaic
     this.loadGrid();
-
+    console.log("Canvas");
+    console.log(this.canvas);
     // Create new annotations
     this.createAnnotations();
     if( this.annotationTip ) this.annotationTip.attach( this.canvas.getChildren('div.annotation') );
@@ -565,7 +566,6 @@ var IIPMooViewer = new Class({
   /* Scroll resulting from a drag of the navigation window
    */
   scrollNavigation: function( e ) {
-
     var xmove = 0;
     var ymove = 0;
 
@@ -1171,7 +1171,6 @@ var IIPMooViewer = new Class({
     this.createNavigationWindow();
     this.createAnnotations();
 
-
     if( !(Browser.Platform.ios||Browser.Platform.android) ){
       var tip_list = 'img.logo, div.toolbar, div.scale';
       if( Browser.ie8||Browser.ie7 ) tip_list = 'img.logo, div.toolbar'; // IE8 bug which triggers window resize
@@ -1384,12 +1383,13 @@ var IIPMooViewer = new Class({
   },
 
 
-  // Create annotations if they are contained within our current view
+    // Create annotations if they are contained within our current view
   createAnnotations: function() {
     // Sort our annotations by size to make sure it's always possible to interact
     // with annotations within annotations
     if( !this.annotations ) return;
     this.annotations.sort( function(a,b){ return (b.w*b.h)-(a.w*a.h); } );
+    // remove the annotations
     $$('div.annotlayer').each(function(el){
 	el.destroy();
     });
@@ -1405,7 +1405,7 @@ var IIPMooViewer = new Class({
       ){
         var newannot=new Element('div',{'class':"annotlayer",style:"position:absolute;z-index:1"});
         //Set the width/height according to the iip view and iip wid/hei
-        newannot.set({styles:{width:this.wid+'px',height:this.hei+'px',left:(this.view.w-this.wid)/2+'px',top:(this.view.h-this.hei)/2+'px'}});
+        newannot.set({styles:{width:this.wid+'px',height:this.hei+'px',left:this.canvas.style.left,top:this.canvas.style.top}});
 	var svgHtml='<svg xmlns="http://www.w3.org/2000/svg" width="'+this.wid+'" height="'+this.hei+'" version="1.1" >';
 	svgHtml+='<rect x="'+Math.round(this.wid*this.annotations[i].x)+'" y="'+Math.round(this.hei*this.annotations[i].y)+'" width="'+Math.round(this.wid*this.annotations[i].w)+'" height="'+Math.round(this.hei*this.annotations[i].h)+'" stroke="black" stroke-width="2" fill="red"/>';
  	svgHtml+='</svg>';
@@ -1420,7 +1420,8 @@ var IIPMooViewer = new Class({
 	    height: this.hei * this.annotations[i].h,
 	  }
         }).inject(this.canvas);
-        console.log(annotation);
+        console.log("new Annot");
+        console.log(newannot);
 	if( this.annotationsVisible==false ){
 	  if( Browser.ie&&Browser.version<9 ) annotation.setStyle('visibility','hidden');
 	  else  annotation.setStyle('opacity',0);
