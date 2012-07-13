@@ -87,7 +87,17 @@
    </div>
    <div id="tiplayer" style="position:absolute;top:80%;left:40%;z-index:2">
    </div>
-   <div id="editlayer" style="position:absolute;top:80%;left:40%;z-index:2">
+   <div id="editlayer" style="position:absolute;width:10%;height:10%;z-index:2;visibility:hidden">
+   <ul id="edit_menu">
+   <li class="menu">Edit
+	<ul class="links">
+		<li><a id="create">Create New Markup</a></li>
+                <li><a id="deleteMarkup">Delete This Markup</a></li>
+		<li><a id="editAnnot">Edit Text Annotations</a></li>
+		<li><a id="cancelEdit">cancel</a></li>
+	</ul>
+   </li>
+   </ul>
    </div>
    <script type="text/javascript">
 	$("show").addEvent('click',function(){  
@@ -95,6 +105,10 @@
 		                                $("annotlayer").set({styles:{visibility:'visible'}});
 						else 
 						{$("annotlayer").set({styles:{visibility:'hidden'}});}
+		                              });
+        $("create").addEvent('click',function(){console.log("create");});
+	$("cancelEdit").addEvent('click',function(){  
+		                                $("editlayer").set({styles:{visibility:'hidden'}});
 		                              });
        $("edit").addEvent('click',function(){  
 						var newlink=$("chooselink");
@@ -139,14 +153,24 @@
 				}
 			});
 		});
+		$('edit_menu').getElements('li.menu').each( function( elem ){
+			var list = elem.getElement('ul.links');
+			var myFx = new Fx.Slide(list).hide();
+			elem.addEvents({
+				'mouseenter' : function(){
+					myFx.cancel();
+					myFx.slideIn();
+				},
+				'mouseleave' : function(){
+					myFx.cancel();
+					myFx.slideOut();
+				}
+			});
+		});
 		$("choosemenu").set({styles:{visibility:"hidden"}});
 	});
-    $("annotlayer").addEvent('click',function(event){
-     /* var pageCoords = "( " + event.pageX + ", " + event.pageY + " )";
-      var clientCoords = "( " + event.clientX + ", " + event.clientY + " )";*/
-      console.log(event.page);
-      console.log(event.client);
-    });
+	$("annotlayer").oncontextmenu=function(event) {
+			    $("editlayer").set({styles:{top:event.pageY,left:event.pageX,visibility:'visible'}});};
   </script>
  </body>
 </html>
