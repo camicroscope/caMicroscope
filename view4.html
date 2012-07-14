@@ -168,9 +168,9 @@
 			});
 		});
 		$("choosemenu").set({styles:{visibility:"hidden"}});
+		$("annotlayer").addEvent('dblclick',function(e) {
+			    $("editlayer").set({styles:{top:e.event.pageY,left:e.event.pageX,visibility:'visible'}});});
 	});
-	$("annotlayer").oncontextmenu=function(event) {
-			    $("editlayer").set({styles:{top:event.pageY,left:event.pageX,visibility:'visible'}});};
   </script>
  </body>
 </html>
