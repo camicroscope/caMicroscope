@@ -56,7 +56,22 @@ function showSVGAnnotations(iip,annot)
 function editAnnotation(iip,annot,i)
 { 
 }
-
+function createAnnotation(iip,annot)
+{
+    //Clear annotation layer html
+   var layer=$("annotlayer");
+   var c=new Element('canvas',{id:"myCanvas",style:"position:absolute;z-index:2",width:iip.wid+'px',height:iip.hei+'px'});
+   c.set({styles:{left:iip.canvas.style.left,top:iip.canvas.style.top}});
+   c.inject( document.body);
+   $("myCanvas").addEvent('click',function(e){ 
+	var ctx=c.getContext("2d");
+   	ctx.fillStyle="#FF0000";
+        ctx.beginPath();
+	ctx.arc(e.event.offsetX,e.event.offsetY,2,0,Math.PI*2,true);
+	ctx.closePath();
+	ctx.fill();});
+   console.log("create");
+}
 function highlightAnnotation(iip,annot,i)
 {
     i=i.split("_")[1];

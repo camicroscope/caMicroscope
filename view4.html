@@ -106,7 +106,9 @@
 						else 
 						{$("annotlayer").set({styles:{visibility:'hidden'}});}
 		                              });
-        $("create").addEvent('click',function(){console.log("create");});
+        $("create").addEvent('click',function(){
+						$("annotlayer").set({styles:{visibility:'visible'}});
+						createAnnotation(iipmooviewer,annot);});
 	$("cancelEdit").addEvent('click',function(){  
 		                                $("editlayer").set({styles:{visibility:'hidden'}});
 		                              });
@@ -170,6 +172,7 @@
 		$("choosemenu").set({styles:{visibility:"hidden"}});
 		$("annotlayer").addEvent('dblclick',function(e) {
 			    $("editlayer").set({styles:{top:e.event.pageY,left:e.event.pageX,visibility:'visible'}});});
+		$("annotlayer").addEvent('click',function(e) { console.log(e);});
 	});
   </script>
  </body>

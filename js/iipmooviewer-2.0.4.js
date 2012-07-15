@@ -1392,9 +1392,7 @@ var IIPMooViewer = new Class({
     var layer=$("annotlayer");
     layer.set({html:""});
     //Create new annotation div
-    var newannot=new Element('div',{style:"position:absolute;z-index:1"});
-    //Set the width/height according to the iip view and iip wid/hei
-    newannot.set({styles:{width:this.wid+'px',height:this.hei+'px',left:this.canvas.style.left,top:this.canvas.style.top}});
+    $("annotlayer").set({styles:{position:'absolute','z-index':1,width:this.wid+'px',height:this.hei+'px',left:this.canvas.style.left,top:this.canvas.style.top}});
     var svgHtml='<svg xmlns="http://www.w3.org/2000/svg" version="1.1">';
     for( var i=0; i<this.annotations.length; i++ ){
     // Check whether the annotation is within the iip view
@@ -1434,9 +1432,8 @@ var IIPMooViewer = new Class({
       }
     }
       svgHtml+='</svg>';
-      newannot.set({html:svgHtml});
+      layer.set({html:svgHtml});
       //this is one way for svg to be displayed.For more information, can refer to stackoverflow.com/questions/3642035
-      newannot.inject(layer);
 
 
     if( !this.annotationTip ){
