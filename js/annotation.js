@@ -3,11 +3,8 @@ function showSVGAnnotations(iip,annot)
 {
     //Clear annotation layer html
     var layer=$("annotlayer");
-    layer.set({html:""});
-    //Create new annotation div
-    var newannot=new Element('div',{style:"position:absolute;z-index:1"});
     //Set the width/height according to the iip view and iip wid/hei
-    newannot.set({styles:{width:iip.wid+'px',height:iip.hei+'px',left:iip.canvas.style.left,top:iip.canvas.style.top}});
+    layer.set({html:"",styles:{position:'absolute','z-index':1,width:iip.wid+'px',height:iip.hei+'px',left:iip.canvas.style.left,top:iip.canvas.style.top}});
     var svgHtml='<svg xmlns="http://www.w3.org/2000/svg" version="1.1">';
     //svgHtml+='<g transform="translate('+iip.view.x+','+iip.view.y+')">';
     for( var i=0; i<annot.length; i++ ){
@@ -43,46 +40,68 @@ function showSVGAnnotations(iip,annot)
 		  case "ellipse":
 		  svgHtml+='<ellipse onmouseover="showText(\''+annot[i].annotdetail[k].text+'\')" onmouseout="clearText()" cx="'+iip.wid*annot[i].annotdetail[k].cx+'" cy="'+iip.hei*annot[i].annotdetail[k].cy+'" rx="'+iip.wid*annot[i].annotdetail[k].rx+'" ry="'+iip.hei*annot[i].annotdetail[k].ry+'" style="fill:yellow;stroke:purple;stroke-width:2"/>';
 		  break;
+ 		  case "polyline":
+		  var points=annot[i].annotdetail[k].points;
+		  p=String.split(points,' ');
+		  svgHtml+='<polyline onmouseover="showText(\''+annot[i].annotdetail[k].text+'\')" onmouseout="clearText()" points="';
+		  for (var j=0;j<p.length;j++)
+		  {
+		     point=String.split(p[j],',');
+		     px=point[0]*iip.wid;
+		     py=point[1]*iip.hei;
+		     svgHtml+=px+','+py+' ';
+		  }
+		  svgHtml+='" style="fill:none;stroke:red;stroke-width:1"/>';
+		  break;
 		}
         }
       }
     }
       svgHtml+='</svg>';
-      newannot.set({html:svgHtml});
+      layer.set({html:svgHtml});
       //this is one way for svg to be displayed.For more information, can refer to stackoverflow.com/questions/3642035
-      newannot.inject(layer);
 };
 
 function editAnnotation(iip,annot,i)
 { 
 }
+var newpoly=[];
+var numpoint=0;
 function createAnnotation(iip,annot)
 {
     //Clear annotation layer html
-   var layer=$("annotlayer");
-   var c=new Element('canvas',{id:"myCanvas",style:"position:absolute;z-index:2",width:iip.wid+'px',height:iip.hei+'px'});
-   c.set({styles:{left:iip.canvas.style.left,top:iip.canvas.style.top}});
-   c.inject( document.body);
+   var layer=$("createlayer");
+   layer.set({styles:{position:'absolute','z-index':1,left:iip.canvas.style.left,top:iip.canvas.style.top,visibility:'visible'}});
+   var c=new Element('canvas',{id:"myCanvas",style:"background-color:grey;opacity:0.6;position:absolute;z-index:2",width:iip.wid+'px',height:iip.hei+'px'});
+   c.inject(layer);
    $("myCanvas").addEvent('click',function(e){ 
 	var ctx=c.getContext("2d");
    	ctx.fillStyle="#FF0000";
         ctx.beginPath();
 	ctx.arc(e.event.offsetX,e.event.offsetY,2,0,Math.PI*2,true);
 	ctx.closePath();
-	ctx.fill();});
-   console.log("create");
+	ctx.fill();
+        newpoly.push( {"x":e.event.offsetX/iip.wid,"y":e.event.offsetY/iip.hei});
+        if(numpoint>0)
+        {
+		ctx.beginPath();
+		ctx.moveTo(newpoly[numpoint].x*iip.wid, newpoly[numpoint].y*iip.hei);
+		ctx.lineTo(newpoly[numpoint-1].x*iip.wid, newpoly[numpoint-1].y*iip.hei);
+		ctx.strokeStyle = "#ff0000";
+		ctx.stroke();
+	}
+        numpoint++;
+    });
 }
 function highlightAnnotation(iip,annot,i)
 {
     i=i.split("_")[1];
     //Clear annotation layer html
     var layer=$("annotlayer");
-    layer.set({html:""});
-    //Create new annotation div
-    var newannot=new Element('div',{style:"position:absolute;z-index:1"});
     //Set the width/height according to the iip view and iip wid/hei
-    newannot.set({styles:{width:iip.wid+'px',height:iip.hei+'px',left:iip.canvas.style.left,top:iip.canvas.style.top}});
+    layer.set({html:"",styles:{position:'absolute','z-index':1,width:iip.wid+'px',height:iip.hei+'px',left:iip.canvas.style.left,top:iip.canvas.style.top}});
     var svgHtml='<svg xmlns="http://www.w3.org/2000/svg" version="1.1">';
+    //svgHtml+='<g transform="translate('+iip.view.x+','+iip.view.y+')">';
     // Check whether the annotation is within the iip view
     if( iip.wid*annot[i].annotx > iip.view.x &&
 	iip.wid*annot[i].annotx < iip.view.x+iip.view.w &&
@@ -94,7 +113,7 @@ function highlightAnnotation(iip,annot,i)
 	       switch (annot[i].annotdetail[k].annotType)
 	      {
 		  case "rect":
-		  svgHtml+='<rect oncontextmenu="test(event)" onmouseover="showText(\''+annot[i].annotdetail[k].text+'\')" onmouseout="clearText()" x="'+iip.wid*annot[i].annotdetail[k].x+'" y="'+iip.hei*annot[i].annotdetail[k].y+'" width="'+iip.wid*annot[i].annotdetail[k].w+'" height="'+iip.hei*annot[i].annotdetail[k].h+'" stroke="black" stroke-width="2" fill="'+annot[i].annotdetail[k].color+'"/>';
+		  svgHtml+='<rect onmouseover="showText(\''+annot[i].annotdetail[k].text+'\')" onmouseout="clearText()" x="'+iip.wid*annot[i].annotdetail[k].x+'" y="'+iip.hei*annot[i].annotdetail[k].y+'" width="'+iip.wid*annot[i].annotdetail[k].w+'" height="'+iip.hei*annot[i].annotdetail[k].h+'" stroke="black" stroke-width="2" fill="'+annot[i].annotdetail[k].color+'"/>';
 		  break;
 		  case "circle":
 		  svgHtml+='<circle onmouseover="showText(\''+annot[i].annotdetail[k].text+'\')" onmouseout="clearText()" cx="'+iip.wid*annot[i].annotdetail[k].x+'" cy="'+iip.hei*annot[i].annotdetail[k].y+'" r="'+iip.wid*annot[i].annotdetail[k].r+'" stroke="black" stroke-width="2" fill="'+annot[i].annotdetail[k].color+'"/>';
@@ -109,19 +128,31 @@ function highlightAnnotation(iip,annot,i)
 		     px=point[0]*iip.wid;
 		     py=point[1]*iip.hei;
 		     svgHtml+=px+','+py+' ';
+
 		  }
 		  svgHtml+='" style="fill:lime;stroke:purple;stroke-width:1"/>';
 		  break;
 		  case "ellipse":
 		  svgHtml+='<ellipse onmouseover="showText(\''+annot[i].annotdetail[k].text+'\')" onmouseout="clearText()" cx="'+iip.wid*annot[i].annotdetail[k].cx+'" cy="'+iip.hei*annot[i].annotdetail[k].cy+'" rx="'+iip.wid*annot[i].annotdetail[k].rx+'" ry="'+iip.hei*annot[i].annotdetail[k].ry+'" style="fill:yellow;stroke:purple;stroke-width:2"/>';
 		  break;
+ 		  case "polyline":
+		  var points=annot[i].annotdetail[k].points;
+		  p=String.split(points,' ');
+		  svgHtml+='<polyline onmouseover="showText(\''+annot[i].annotdetail[k].text+'\')" onmouseout="clearText()" points="';
+		  for (var j=0;j<p.length;j++)
+		  {
+		     point=String.split(p[j],',');
+		     px=point[0]*iip.wid;
+		     py=point[1]*iip.hei;
+		     svgHtml+=px+','+py+' ';
+		  }
+		  svgHtml+='" style="fill:none;stroke:red;stroke-width:1"/>';
+		  break;
 		}
         }
       }
       svgHtml+='</svg>';
-      newannot.set({html:svgHtml});
-      //this is one way for svg to be displayed.For more information, can refer to stackoverflow.com/questions/3642035
-      newannot.inject(layer);
+      layer.set({html:svgHtml});
 }
 function showText(text)
 {
@@ -132,11 +163,6 @@ function showText(text)
 function clearText()
 {
   $("tiplayer").set({html:""});
-}
-
-function test(event)
-{
-  console.log(event);
 }
  // Create canvas annotations if they are contained within our current view
 function showCanvasAnnotations(iip,annot)

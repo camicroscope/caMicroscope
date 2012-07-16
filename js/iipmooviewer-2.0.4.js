@@ -1390,9 +1390,8 @@ var IIPMooViewer = new Class({
     // remove the annotations
      //Clear annotation layer html
     var layer=$("annotlayer");
-    layer.set({html:""});
     //Create new annotation div
-    $("annotlayer").set({styles:{position:'absolute','z-index':1,width:this.wid+'px',height:this.hei+'px',left:this.canvas.style.left,top:this.canvas.style.top}});
+    layer.set({html:"",styles:{position:'absolute','z-index':1,width:this.wid+'px',height:this.hei+'px',left:this.canvas.style.left,top:this.canvas.style.top}});
     var svgHtml='<svg xmlns="http://www.w3.org/2000/svg" version="1.1">';
     for( var i=0; i<this.annotations.length; i++ ){
     // Check whether the annotation is within the iip view
@@ -1426,6 +1425,19 @@ var IIPMooViewer = new Class({
 		  break;
 		  case "ellipse":
 		  svgHtml+='<ellipse onmouseover="showText(\''+this.annotations[i].annotdetail[k].text+'\')" onmouseout="clearText()" cx="'+this.wid*this.annotations[i].annotdetail[k].cx+'" cy="'+this.hei*this.annotations[i].annotdetail[k].cy+'" rx="'+this.wid*this.annotations[i].annotdetail[k].rx+'" ry="'+this.hei*this.annotations[i].annotdetail[k].ry+'" style="fill:yellow;stroke:purple;stroke-width:2"/>';
+		  break;
+                  case "polyline":
+ 		  var points=annot[i].annotdetail[k].points;
+		  p=String.split(points,' ');
+		  svgHtml+='<polyline onmouseover="showText(\''+annot[i].annotdetail[k].text+'\')" onmouseout="clearText()" points="';
+		  for (var j=0;j<p.length;j++)
+		  {
+		     point=String.split(p[j],',');
+		     px=point[0]*this.wid;
+		     py=point[1]*this.hei;
+		     svgHtml+=px+','+py+' ';
+		  }
+		  svgHtml+='" style="fill:none;stroke:red;stroke-width:1"/>';
 		  break;
 		}
         }
