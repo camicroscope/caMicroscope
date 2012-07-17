@@ -39,10 +39,9 @@
     // The *full* image path on the server. This path does *not* need to be in the web
     // server root directory. On Windows, use Unix style forward slash paths without
     // the "c:" prefix
-	var imglocation=window.location.search;
+    var imglocation=window.location.search;
     if (imglocation.substring(0,1)=='?'){
     imglocation=imglocation.substring(1); }
-    console.log(imglocation);
 
     // The *full* image path on the server. This path does *not* need to be in the web
     // server root directory.
@@ -58,11 +57,12 @@
 		credit: credit, 
 		scale: 18.0
     });
-    var annot = new Array();
-    annot.push( {annotid:1,annotx:0.5,annoty:0.5,annotdetail:[{annotType:"rect",x: 0.38, y: 0.28, w: 0.14, h: 0.06,color:"#FF0000", text: "rect text"},{annotType:"circle",x: 0.54, y: 0.5, r:0.02, color:"blue",text: "sometext"},{annotType:"polygon",points:"0.5,0.64 0.54,0.45 0.58,0.64",color:"green",text:"polygon text"},{annotType:"ellipse",cx:0.48,cy:0.45,rx:0.02,ry:0.03,color:"yellow",text:"somemore text"}]});
-    annot.push( {annotid:2,annotx:0.1,annoty:0.1,annotdetail:[{annotType:"rect",x: 0.1, y: 0.1, w: 0.01, h: 0.01,color:"red", text: "hoho"},{annotType:"circle",x: 0.12, y: 0.14, r:0.02, color:"blue",text: "haha"},{annotType:"polygon",points:"0.14,0.24 0.16,0.20 0.18,0.28",color:"yellow",text:"hehe"},{annotType:"ellipse",cx:0.20,cy:0.23,rx:0.02,ry:0.03,color:"blue",text:"hihi"}]});
-    annot.push( {annotid:3,annotx:0.2,annoty:0.2,annotdetail:[{annotType:"polyline",points:"0.14,0.24 0.16,0.20 0.18,0.28",color:"yellow",text:"hehe"}]});
-    iipmooviewer.annotations=annot;
+    var annot;
+    var IP='http://localhost';
+    var jsonRequest = new Request.JSON({url: IP+'/bio/api/annot.php', onSuccess: function(e){
+        annot=JSON.decode(e);
+        iipmooviewer.annotations=annot;
+	}}).get();
  </script>
  </head>
 
@@ -84,7 +84,13 @@
 			<ul id="chooselink" class="links">
 			</ul>
 		</li>
-
+		<li class="menu" id="functionmenu">Functions
+			<ul class="links">
+                                 <li><a>Delete Markup</a></li>
+				 <li><a>Edit Annotation</a></li>
+				 <li><a id="cancelEdit">Cancel</a></li>
+			</ul>
+		</li>
    </ul>
    </div>
    <div id="tiplayer" style="position:absolute;top:80%;left:40%;z-index:2">
@@ -93,10 +99,9 @@
    <ul id="edit_menu">
    <li class="menu">Edit
 	<ul class="links">
-		<li><a id="create">Create New Markup</a></li>
                 <li><a id="deleteMarkup">Delete This Markup</a></li>
 		<li><a id="editAnnot">Edit Text Annotations</a></li>
-		<li><a id="cancelEdit">cancel</a></li>
+		<li><a id="cancel">cancel</a></li>
 	</ul>
    </li>
    </ul>
@@ -110,7 +115,7 @@
 		                              });
         $("create").addEvent('click',function(){
 						$("annotlayer").set({styles:{visibility:'hidden'}});
-						$("tiplayer").set({html:'<input id="newtip" type="text" name="tip" placeholder="Add Tips"> <button id="save">save</button><button id="finish">finish</button>'});
+						$("tiplayer").set({html:'<input id="newtip" type="text" name="tip" placeholder="Add Tips"> <button id="save">save</button><button id="finish">finish/cancel</button>'});
 						createAnnotation(iipmooviewer,annot);
 						$("save").addEvent('click',function(){ 
 						var text=$("newtip").value;
@@ -120,13 +125,23 @@
                                                     points+=newpoly[i].x+','+newpoly[i].y+' ';
 						} 
                                                 points+=newpoly[i].x+','+newpoly[i].y;
-						annot.push( {annotid:3,annotx:0.2,annoty:0.2,annotdetail:[{annotType:"polyline",points:points,color:"yellow",text:text}]});
+						annot.push( {annotid:i,annotx:newpoly[0].x,annoty:newpoly[0].y,annotdetail:[{annotType:"polyline",points:points,color:"yellow",text:text}]});   
+						var jsonRequest = new Request.JSON({url: IP+'/bio/api/annot.php', onSuccess: function(e){
+							alert("success!");
+						}}).post({'annot':annot});
   					        iipmooviewer.annotations=annot;
 						numpoint=0;newpoly=[];$("newtip").value="";});
-                                                $("finish").addEvent('click',function(){ $("tiplayer").set({html:""});$("createlayer").set({styles:{visibility:'hidden'}});						showSVGAnnotations(iipmooviewer,annot); 
-						$("annotlayer").set({styles:{visibility:'visible'}});});
+                                                $("finish").addEvent('click',function(){ 
+							$("tiplayer").set({html:""});
+							$("createlayer").set({styles:{visibility:'hidden'}});
+							showSVGAnnotations(iipmooviewer,annot); 
+							$("annotlayer").set({styles:{visibility:'visible'}});});
 						});
 	$("cancelEdit").addEvent('click',function(){  
+		                                $("editlayer").set({styles:{visibility:'hidden'}});
+						$("functionmenu").set({styles:{visibility:'hidden'}});
+		                              });
+	$("cancel").addEvent('click',function(){  
 		                                $("editlayer").set({styles:{visibility:'hidden'}});
 		                              });
        $("edit").addEvent('click',function(){  
@@ -136,17 +151,17 @@
                                                {   var newedit=new Element('li',
 							{	id:'li_'+i,
 								html:'<a> Edit Annotation '+i+'</a>',
-								events:{click:function(){
-								highlightAnnotation(iipmooviewer,annot,this.id);
-								editAnnotation(iipmooviewer,annot,this.id);
+								events:{'click':function(){
+								editAnnotation(iipmooviewer,annot,this.id);  
+								$("functionmenu").set({styles:{visibility:'visible'}});
 								$("annotlayer").set({styles:{visibility:'visible'}});}}
 							});
 						   newedit.inject(newlink);
-                                               }
+					        }
                                                var canceledit=new Element('li',
 							{	
 								html:'<a> Cancel</a>',
-								events:{click:function(){
+								events:{'click':function(){
 								$("choosemenu").set({styles:{visibility:"hidden"}});
 								if($("annotlayer").style.visibility=='visible')
 								{ showSVGAnnotations(iipmooviewer,annot);
@@ -187,8 +202,7 @@
 			});
 		});
 		$("choosemenu").set({styles:{visibility:"hidden"}});
-		$("annotlayer").addEvent('dblclick',function(e) {
-			    $("editlayer").set({styles:{top:e.event.pageY,left:e.event.pageX,visibility:'visible'}});});
+		$("functionmenu").set({styles:{visibility:"hidden"}});
 	});
   </script>
  </body>

@@ -61,10 +61,6 @@ function showSVGAnnotations(iip,annot)
       layer.set({html:svgHtml});
       //this is one way for svg to be displayed.For more information, can refer to stackoverflow.com/questions/3642035
 };
-
-function editAnnotation(iip,annot,i)
-{ 
-}
 var newpoly=[];
 var numpoint=0;
 function createAnnotation(iip,annot)
@@ -93,13 +89,29 @@ function createAnnotation(iip,annot)
         numpoint++;
     });
 }
-function highlightAnnotation(iip,annot,i)
+function editAnnotation(iip,annot,i)
 {
     i=i.split("_")[1];
     //Clear annotation layer html
     var layer=$("annotlayer");
     //Set the width/height according to the iip view and iip wid/hei
     layer.set({html:"",styles:{position:'absolute','z-index':1,width:iip.wid+'px',height:iip.hei+'px',left:iip.canvas.style.left,top:iip.canvas.style.top}});
+    layer.addEvent('dblclick',function(e) {
+    $("editlayer").set({styles:{top:e.event.pageY,left:e.event.pageX,visibility:'visible'}});});   
+    $("deleteMarkup").addEvent('click',function(e){annot.splice(i,1);
+						var jsonRequest = new Request.JSON({url: IP+'/bio/api/annot.php', onSuccess: function(e){
+						window.location.reload();
+						}}).post({'annot':annot});});  
+    $("editAnnot").addEvent('click',function(e){
+	$("tiplayer").set({html:'<input id="newtip" type="text" name="tip" placeholder="'+annot[i]["annotdetail"][0]["text"]+'"> <button id="update">Update</button>'}); 
+        $("editlayer").set({styles:{visibility:'hidden'}});
+        $("update").addEvent('click',function(e){
+	annot[i]["annotdetail"][0]["text"]=$("newtip").value; 
+        var jsonRequest = new Request.JSON({url: IP+'/bio/api/annot.php', onSuccess: function(e){
+						window.location.reload();
+						}}).post({'annot':annot});
+	});
+    }); 
     var svgHtml='<svg xmlns="http://www.w3.org/2000/svg" version="1.1">';
     //svgHtml+='<g transform="translate('+iip.view.x+','+iip.view.y+')">';
     // Check whether the annotation is within the iip view
