@@ -25,6 +25,7 @@
   <script type="text/javascript" src="js/mootools-core-1.3.2-full-nocompat.js"></script>
   <script type="text/javascript" src="js/mootools-more-1.3.2.1.js"></script>
   <script type="text/javascript" src="js/protocols.js"></script>
+  <script type="text/javascript" src="js/pencil.js"></script>
   <script type="text/javascript" src="js/iipmooviewer-2.0.5.js"></script>
   <script type="text/javascript" src="js/annotation2.js"></script>
 <!--[if lt IE 7]>
@@ -78,6 +79,12 @@
 				<li><a id="show">Show/hide Annotation</a></li>
 			</ul>
 		</li>
+		<li id="annottype" class="menu">Annotation Type
+			<ul class="links">
+				<li><a id="polyline">polyline</a></li>
+				<li><a id="pencil">pencil</a></li>
+			</ul>
+		</li>
    </ul>
    </div>
    <div id="tiplayer" style="position:absolute;top:80%;left:40%;z-index:2">
@@ -101,7 +108,11 @@
 						{$("annotlayer").set({styles:{visibility:'hidden'}});}
 		                              });
         $("create").addEvent('click',function(){
+						$("annottype").set({styles:{visibility:'visible'}});
+						});
+        $("polyline").addEvent('click',function(){
 						$("annotlayer").set({styles:{visibility:'hidden'}});
+						$("annottype").set({styles:{visibility:'hidden'}});
 						$("tiplayer").set({html:'<input id="newtip" type="text" name="tip" placeholder="Add Tips"> <button id="save">save</button><button id="finish">finish/cancel</button>'});
 						createAnnotation(iipmooviewer,annot);
 						$("save").addEvent('click',function(){ 
@@ -153,6 +164,8 @@
 				}
 			});
 		});
+
+		$("annottype").set({styles:{visibility:'hidden'}});
 	});
   </script>
  </body>
