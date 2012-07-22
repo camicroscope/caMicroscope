@@ -1405,7 +1405,7 @@ var IIPMooViewer = new Class({
 	       switch (this.annotations[i].annotdetail[k].annotType)
 	      {
 		  case "rect":
-		  svgHtml+='<rect onmouseover="showText(\''+this.annotations[i].annotdetail[k].text+'\');" onmouseout="clearText()" x="'+this.wid*this.annotations[i].annotdetail[k].x+'" y="'+this.hei*this.annotations[i].annotdetail[k].y+'" width="'+this.wid*this.annotations[i].annotdetail[k].w+'" height="'+this.hei*this.annotations[i].annotdetail[k].h+'" stroke="black" stroke-width="2" fill="'+this.annotations[i].annotdetail[k].color+'"/>';
+		  svgHtml+='<rect onmouseover="edit(event,'+i+');showText(\''+this.annotations[i].annotdetail[k].text+'\');" onmouseout="clearText()" x="'+this.wid*this.annotations[i].annotdetail[k].x+'" y="'+this.hei*this.annotations[i].annotdetail[k].y+'" width="'+this.wid*this.annotations[i].annotdetail[k].w+'" height="'+this.hei*this.annotations[i].annotdetail[k].h+'" stroke="black" stroke-width="2" fill="'+this.annotations[i].annotdetail[k].color+'"/>';
 		  break;
 		  case "circle":
 		  svgHtml+='<circle onmouseover="showText(\''+this.annotations[i].annotdetail[k].text+'\')" onmouseout="clearText()" cx="'+this.wid*this.annotations[i].annotdetail[k].x+'" cy="'+this.hei*this.annotations[i].annotdetail[k].y+'" r="'+this.wid*this.annotations[i].annotdetail[k].r+'" stroke="black" stroke-width="2" fill="'+this.annotations[i].annotdetail[k].color+'"/>';
@@ -1424,7 +1424,7 @@ var IIPMooViewer = new Class({
 		  svgHtml+='" style="fill:lime;stroke:purple;stroke-width:1"/>';
 		  break;
 		  case "ellipse":
-		  svgHtml+='<ellipse onmouseover="showText(\''+this.annotations[i].annotdetail[k].text+'\')" onmouseout="clearText()" cx="'+this.wid*this.annotations[i].annotdetail[k].cx+'" cy="'+this.hei*this.annotations[i].annotdetail[k].cy+'" rx="'+this.wid*this.annotations[i].annotdetail[k].rx+'" ry="'+this.hei*this.annotations[i].annotdetail[k].ry+'" style="fill:yellow;stroke:purple;stroke-width:2"/>';
+		  svgHtml+='<ellipse onmouseover="edit(event,'+i+'); showText(\''+this.annotations[i].annotdetail[k].text+'\')" onmouseout="clearText()" cx="'+this.wid*this.annotations[i].annotdetail[k].cx+'" cy="'+this.hei*this.annotations[i].annotdetail[k].cy+'" rx="'+this.wid*this.annotations[i].annotdetail[k].rx+'" ry="'+this.hei*this.annotations[i].annotdetail[k].ry+'" style="fill:none;stroke:purple;stroke-width:2"/>';
 		  break;
                   case "polyline":
  		  var points=annot[i].annotdetail[k].points;
