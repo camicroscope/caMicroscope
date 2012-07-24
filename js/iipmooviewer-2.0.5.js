@@ -329,7 +329,6 @@ var IIPMooViewer = new Class({
 	if( this.nTilesLoaded >= this.nTilesToLoad ) this.canvas.setStyle( 'cursor', 'move' );
 	continue;
       }
-
       // Iterate over the number of layers we have
       var n;
       for(n=0;n<this.images.length;n++){
@@ -346,7 +345,6 @@ var IIPMooViewer = new Class({
 
 	// Inject into our canvas
 	tile.inject(this.canvas);
-
 	// Get tile URL
 	var src = this.protocol.getTileURL( this.server, this.images[n].src, this.view.res, this.images[n].sds, this.images[n].cnt, k, i, j );
 
@@ -1389,9 +1387,11 @@ var IIPMooViewer = new Class({
     this.annotations.sort( function(a,b){ return (b.w*b.h)-(a.w*a.h); } );
     // remove the annotations
      //Clear annotation layer html
-    var layer=$("annotlayer");
+    var layer;
+    if($("annotlayer")) $("annotlayer").destroy();
+    layer=new Element('div',{id:"annotlayer"});
     //Create new annotation div
-    layer.set({html:"",styles:{position:'absolute','z-index':1,width:this.wid+'px',height:this.hei+'px',left:this.canvas.style.left,top:this.canvas.style.top}});
+    layer.set({html:"",styles:{position:'absolute',width:'100%',height:'100%',left:0,top:0}});
     var svgHtml='<svg xmlns="http://www.w3.org/2000/svg" version="1.1">';
     for( var i=0; i<this.annotations.length; i++ ){
     // Check whether the annotation is within the iip view
@@ -1445,8 +1445,8 @@ var IIPMooViewer = new Class({
     }
       svgHtml+='</svg>';
       layer.set({html:svgHtml});
+      layer.inject(this.canvas);
       //this is one way for svg to be displayed.For more information, can refer to stackoverflow.com/questions/3642035
-
 
     if( !this.annotationTip ){
       var _this = this;
