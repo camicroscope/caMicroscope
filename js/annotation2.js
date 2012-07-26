@@ -1,3 +1,4 @@
+var IP="http://localhost";
  // Create svg annotations if they are contained within our current view
 function showSVGAnnotations(iip,annot)
 {
@@ -14,20 +15,18 @@ function showSVGAnnotations(iip,annot)
 	iip.hei*annot[i].annoty > iip.view.y &&
 	iip.hei*annot[i].annoty < iip.view.y+iip.view.h
 	){
-       for(var k=0;k<annot[i].annotdetail.length;k++)
-      {
-	       switch (annot[i].annotdetail[k].annotType)
+	       switch (annot[i].annotdetail.annotType)
 	      {
 		  case "rect":
-		  svgHtml+='<rect onmouseover="edit(event,'+i+'); showText(\''+annot[i].annotdetail[k].text+'\')" onmouseout="clearText()" x="'+iip.wid*annot[i].annotdetail[k].x+'" y="'+iip.hei*annot[i].annotdetail[k].y+'" width="'+iip.wid*annot[i].annotdetail[k].w+'" height="'+iip.hei*annot[i].annotdetail[k].h+'" stroke="black" stroke-width="2" fill="'+annot[i].annotdetail[k].color+'"/>';
+		  svgHtml+='<rect onmouseover="edit(event,'+i+'); showText(\''+annot[i].annotdetail.text+'\')" onmouseout="clearText()" x="'+iip.wid*annot[i].annotdetail.x+'" y="'+iip.hei*annot[i].annotdetail.y+'" width="'+iip.wid*annot[i].annotdetail.w+'" height="'+iip.hei*annot[i].annotdetail.h+'" stroke="black" stroke-width="2" fill="'+annot[i].annotdetail.color+'"/>';
 		  break;
 		  case "circle":
-		  svgHtml+='<circle onmouseover="showText(\''+annot[i].annotdetail[k].text+'\')" onmouseout="clearText()" cx="'+iip.wid*annot[i].annotdetail[k].x+'" cy="'+iip.hei*annot[i].annotdetail[k].y+'" r="'+iip.wid*annot[i].annotdetail[k].r+'" stroke="black" stroke-width="2" fill="'+annot[i].annotdetail[k].color+'"/>';
+		  svgHtml+='<circle onmouseover="showText(\''+annot[i].annotdetail.text+'\')" onmouseout="clearText()" cx="'+iip.wid*annot[i].annotdetail.x+'" cy="'+iip.hei*annot[i].annotdetail.y+'" r="'+iip.wid*annot[i].annotdetail.r+'" stroke="black" stroke-width="2" fill="'+annot[i].annotdetail.color+'"/>';
 		  break;
 		  case "polygon":
-		  var points=annot[i].annotdetail[k].points;
+		  var points=annot[i].annotdetail.points;
 		  p=String.split(points,' ');
-		  svgHtml+='<polygon onmouseover="showText(\''+annot[i].annotdetail[k].text+'\')" onmouseout="clearText()" points="';
+		  svgHtml+='<polygon onmouseover="showText(\''+annot[i].annotdetail.text+'\')" onmouseout="clearText()" points="';
 		  for (var j=0;j<p.length;j++)
 		  {
 		     point=String.split(p[j],',');
@@ -38,12 +37,12 @@ function showSVGAnnotations(iip,annot)
 		  svgHtml+='" style="fill:lime;stroke:purple;stroke-width:1"/>';
 		  break;
 		  case "ellipse":
-		  svgHtml+='<ellipse onmouseover="edit(event,'+i+'); showText(\''+annot[i].annotdetail[k].text+'\')" onmouseout="clearText()" cx="'+iip.wid*annot[i].annotdetail[k].cx+'" cy="'+iip.hei*annot[i].annotdetail[k].cy+'" rx="'+iip.wid*annot[i].annotdetail[k].rx+'" ry="'+iip.hei*annot[i].annotdetail[k].ry+'" style="fill:none;stroke:purple;stroke-width:2"/>';
+		  svgHtml+='<ellipse onmouseover="edit(event,'+i+'); showText(\''+annot[i].annotdetail.text+'\')" onmouseout="clearText()" cx="'+iip.wid*annot[i].annotdetail.cx+'" cy="'+iip.hei*annot[i].annotdetail.cy+'" rx="'+iip.wid*annot[i].annotdetail.rx+'" ry="'+iip.hei*annot[i].annotdetail.ry+'" style="fill:none;stroke:purple;stroke-width:2"/>';
 		  break;
  		  case "polyline":
-		  var points=annot[i].annotdetail[k].points;
+		  var points=annot[i].annotdetail.points;
 		  p=String.split(points,' ');
-		  svgHtml+='<polyline onmouseover="edit(event,'+i+');showText(\''+annot[i].annotdetail[k].text+'\')" onmouseout="clearText()" points="';
+		  svgHtml+='<polyline onmouseover="edit(event,'+i+');showText(\''+annot[i].annotdetail.text+'\')" onmouseout="clearText()" points="';
 		  for (var j=0;j<p.length;j++)
 		  {
 		     point=String.split(p[j],',');
@@ -53,19 +52,35 @@ function showSVGAnnotations(iip,annot)
 		  }
 		  svgHtml+='" style="fill:none;stroke:red;stroke-width:1"/>';
 		  break;
+		  case "pencil":
+		  var points=annot[i].annotdetail.points;
+		  poly=String.split(points,';');
+		  for (var k=0;k<poly.length;k++)
+		  {
+		     p=String.split(poly[k],' ');
+		     svgHtml+='<polyline onmouseover="edit(event,'+i+');showText(\''+annot[i].annotdetail.text+'\')" onmouseout="clearText()" points="';         
+                     for (var j=0;j<p.length;j++)
+                     {
+			  point=String.split(p[j],',');
+			  px=point[0]*iip.wid;
+			  py=point[1]*iip.hei;
+			  svgHtml+=px+','+py+' ';
+                     }
+		     svgHtml+='" style="fill:none;stroke:red;stroke-width:1"/>';
+		  }
+		  break;
 		}
-        }
       }
     }
       svgHtml+='</svg>';
       layer.set({html:svgHtml});
       //this is one way for svg to be displayed.For more information, can refer to stackoverflow.com/questions/3642035
 };
-var newpoly=[];
-var numpoint=0;
 function createPolyline(iip,annot)
 {
     //Clear annotation layer html
+   var newpoly=[];
+   var numpoint=0;
    var layer=$("createlayer");
    layer.set({html:"",styles:{position:'absolute','z-index':1,left:iip.canvas.style.left,top:iip.canvas.style.top,visibility:'visible'}});
    var c=new Element('canvas',{id:"myCanvas",style:"background-color:grey;opacity:0.6;position:absolute;z-index:2",width:iip.wid+'px',height:iip.hei+'px'});
@@ -88,6 +103,24 @@ function createPolyline(iip,annot)
 	}
         numpoint++;
     });
+	$("tiplayer").set({html:'<input id="newtip" type="text" name="tip" placeholder="Add Tips"> <button id="save">save</button><button id="finish">finish/cancel</button>'});
+	$("save").addEvent('click',function(){ 
+	var text=$("newtip").value;
+	var points="";
+	for (var i=0;i<numpoint-1;i++)
+	{
+	   points+=newpoly[i].x+','+newpoly[i].y+' ';
+	} 
+	points+=newpoly[i].x+','+newpoly[i].y;
+	annot.push( {annotid:i,annotx:newpoly[0].x,annoty:newpoly[0].y,annotdetail:{annotType:"polyline",points:points,color:"yellow",text:text}});   
+	var jsonRequest = new Request.JSON({url: IP+'/bio/api/annot.php', onSuccess: function(e){
+	window.location.reload();
+	}}).post({'annot':annot});});
+	$("finish").addEvent('click',function(){ 
+	$("tiplayer").set({html:""});
+	$("createlayer").set({styles:{visibility:'hidden'}});
+	showSVGAnnotations(iip,annot); 
+	$("annotlayer").set({styles:{visibility:'visible'}});});
 }
 function showText(text)
 {
@@ -118,70 +151,66 @@ function clearText()
 {
   $("tiplayer").set({html:""});
 }
- // Create canvas annotations if they are contained within our current view
-function showCanvasAnnotations(iip,annot)
+function createPencil(iip,annot)
 {
     //Clear annotation layer html
-    var layer=$("annotlayer");
-    layer.set({html:""});
-    //Create new annotation div
-    var newannot=new Element('canvas',{id:"mycanvas",style:"position:absolute;z-index:1"});
-    //Set the width/height according to the iip view and iip wid/hei
-    newannot.set({styles:{width:iip.wid+'px',height:iip.hei+'px',left:Math.round((iip.view.w-iip.wid)/2)+'px',top:Math.round((iip.view.h-iip.hei)/2)+'px'}});
-    newannot.inject(layer);
-    for( var i=0; i<annot.length; i++ ){
-    // Check whether the annotation is within the iip view
-    if( iip.wid*annot[i].annotx > iip.view.x &&
-	iip.wid*annot[i].annotx < iip.view.x+iip.view.w &&
-	iip.hei*annot[i].annoty > iip.view.y &&
-	iip.hei*annot[i].annoty < iip.view.y+iip.view.h
-	){
-       for(var k=0;k<annot[i].annotdetail.length;k++)
-      {
-	       switch (annot[i].annotdetail[k].annotType)
-	      {
-		  case "rect":
-		  var ctx=newannot.getContext("2d");
-		  ctx.fillStyle=annot[i].annotdetail[k].color;
-		  ctx.fillRect(10,20,30,21);
-		 // try to use the relavent coordinates, however,something went wrong with the coordinate system
-                 // will need to fix that later
-		 /*
-		  var x=Math.round(iip.wid*annot[i].annotdetail[k].x);
-                  var y=Math.round(iip.hei*annot[i].annotdetail[k].y);
-                  var w=Math.round(iip.wid*annot[i].annotdetail[k].w);
-		  var h=Math.round(iip.hei*annot[i].annotdetail[k].h);
-                  console.log(x+' '+y+' '+w+' '+h+' ');
-  		  ctx.fillRect(x,y,w,h); */
-		  break;
-		  case "circle":
-                  var ctx=newannot.getContext("2d");
-		  ctx.fillStyle=annot[i].annotdetail[k].color;
-		  ctx.beginPath();
-		  ctx.arc(70,18,15,0,Math.PI*2,true);
-		  ctx.closePath();
-		  ctx.fill();
-		  break;
-		  case "polygon":
-		  var ctx=newannot.getContext("2d");
-		  ctx.fillStyle=annot[i].annotdetail[k].color;
-                  ctx.beginPath();
-		  ctx.moveTo(120,30);
-		  ctx.lineTo(150,50);
-		  ctx.lineTo(130,20);
-		  ctx.stroke();
-		  ctx.closePath();
-		  ctx.fill();
-                  break;
-		  case "ellipse":
-		  drawEllipse(ctx, 10, 20, 50, 40);
-		  break;
-		}
-        }
-      }
-    }
-};
+   var started=false;
+   var pencil=[];
+   var newpoly=[];
+   var numpoint=0;
+   var layer=$("createlayer");
+   layer.set({html:"",styles:{position:'absolute','z-index':1,left:iip.canvas.style.left,top:iip.canvas.style.top,visibility:'visible'}});
+   var c=new Element('canvas',{id:"myCanvas",style:"background-color:grey;opacity:0.6;position:absolute;z-index:2",width:iip.wid+'px',height:iip.hei+'px'});
+   c.inject(layer);
+   var ctx=c.getContext("2d");
+   $("myCanvas").addEvent('mousedown',function(e){ 
+        started=true;
+        newpoly.push( {"x":e.event.offsetX/iip.wid,"y":e.event.offsetY/iip.hei});
+	ctx.beginPath();
+	ctx.moveTo(newpoly[numpoint].x*iip.wid, newpoly[numpoint].y*iip.hei);
+	ctx.strokeStyle = "#ff0000";
+	ctx.stroke();
+        numpoint++;
+    });
+   $("myCanvas").addEvent('mousemove',function(e){ 
+        if(started)
+        {
+	     newpoly.push( {"x":e.event.offsetX/iip.wid,"y":e.event.offsetY/iip.hei});
+	     ctx.lineTo(newpoly[numpoint].x*iip.wid, newpoly[numpoint].y*iip.hei);
+	     numpoint++;
+	     ctx.stroke();
+	}
+    });
+   $("myCanvas").addEvent('mouseup',function(e){ 
+        started=false;
+        pencil.push(newpoly);
+        newpoly=[];
+        numpoint=0;
+    });
+    $("tiplayer").set({html:'<input id="newtip" type="text" name="tip" placeholder="Add Tips"> <button id="save">save</button><button id="finish">finish/cancel</button>'});
+    $("save").addEvent('click',function(){ 
+	var text=$("newtip").value;
+	var points="";
+	for (var i=0;i<pencil.length;i++)
+	{
+            newpoly=pencil[i];
+            for(j=0;j<newpoly.length;j++)
+	    points+=newpoly[j].x+','+newpoly[j].y+' ';
+            points=points.slice(0, -1)
+            points+=';';
+	} 
+        points=points.slice(0,-1);
+	annot.push( {annotid:i,annotx:pencil[0][0].x,annoty:pencil[0][0].y,annotdetail:{annotType:"pencil",points:points,color:"yellow",text:text}});   
+	var jsonRequest = new Request.JSON({url: IP+'/bio/api/annot.php', onSuccess: function(e){
+	window.location.reload();
+	}}).post({'annot':annot});});
 
+	$("finish").addEvent('click',function(){ 
+	$("tiplayer").set({html:""});
+	$("createlayer").set({styles:{visibility:'hidden'}});
+	showSVGAnnotations(iip,annot); 
+	$("annotlayer").set({styles:{visibility:'visible'}});});
+}
 function drawEllipse(ctx, x, y, w, h) {
   var kappa = .5522848;
       ox = (w / 2) * kappa, // control point offset horizontal
@@ -200,14 +229,13 @@ function drawEllipse(ctx, x, y, w, h) {
   ctx.closePath();
   ctx.stroke();
 };
-/* © 2009 ROBO Design
- * http://www.robodesign.ro
- */
 
-function createPencil(iip,annot)
+//Create Pencil Tool
+/*function createPencil(iip,annot)
 {
   //Clear annotation layer html
   var layer=$("createlayer");
+  var 
   var context,canvas;
   // The active tool instance.
   var tool;
@@ -299,13 +327,8 @@ function createPencil(iip,annot)
   };
   init();
 
-};
-
-// vim:set spell spl=en fo=wan1croql tw=80 ts=2 sw=2 sts=2 sta et ai cin fenc=utf-8 ff=unix:
-/* © 2009 ROBO Design
- * http://www.robodesign.ro
- */
-
+};*/
+//Create Rectangle Tool
 function createRect(iip,annot)
 {
   //Clear annotation layer html
@@ -409,8 +432,8 @@ function createRect(iip,annot)
         var tip=prompt("Please Enter Some Descriptions","");
         if ((tip!=null)&&(tip!=""))
         {
-	    annot.push( {annotid:1,annotx:x,annoty:y,annotdetail:[{annotType:"rect",x:x, y:y,w:w,h:h,color:"none",text:tip}]});   
-	    var jsonRequest = new Request.JSON({url: 'http://localhost/bio/api/annot.php', onSuccess: function(e){
+	    annot.push( {annotid:1,annotx:x,annoty:y,annotdetail:{annotType:"rect",x:x, y:y,w:w,h:h,color:"none",text:tip}});   
+	    var jsonRequest = new Request.JSON({url: IP+'/bio/api/annot.php', onSuccess: function(e){
 	    window.location.reload();}}).post({'annot':annot});
         }
         else
@@ -425,8 +448,7 @@ function createRect(iip,annot)
 
 };
 
-// vim:set spell spl=en fo=wan1croql tw=80 ts=2 sw=2 sts=2 sta et ai cin fenc=utf-8 ff=unix:
-
+//Create Ellipse Tool
 function createEllipse(iip,annot)
 {
   //Clear annotation layer html
@@ -544,8 +566,8 @@ function createEllipse(iip,annot)
         var tip=prompt("Please Enter Some Descriptions","");
         if ((tip!=null)&&(tip!=""))
         {
-		annot.push( {annotid:1,annotx:cx,annoty:cy,annotdetail:[{annotType:"ellipse",cx:cx, cy:cy,rx:rx,ry:ry,color:"none",text:tip}]});   
-		var jsonRequest = new Request.JSON({url: 'http://localhost/bio/api/annot.php', onSuccess: function(e){
+		annot.push( {annotid:1,annotx:cx,annoty:cy,annotdetail:{annotType:"ellipse",cx:cx, cy:cy,rx:rx,ry:ry,color:"none",text:tip}});   
+		var jsonRequest = new Request.JSON({url: IP+'/bio/api/annot.php', onSuccess: function(e){
 		window.location.reload();
 		}}).post({'annot':annot});
         }
@@ -560,8 +582,5 @@ function createEllipse(iip,annot)
   init();
 
 };
-
-// vim:set spell spl=en fo=wan1croql tw=80 ts=2 sw=2 sts=2 sta et ai cin fenc=utf-8 ff=unix:
-
 
 

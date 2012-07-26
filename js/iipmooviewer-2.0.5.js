@@ -1400,20 +1400,18 @@ var IIPMooViewer = new Class({
 	this.hei*this.annotations[i].annoty > this.view.y &&
 	this.hei*this.annotations[i].annoty < this.view.y+this.view.h
 	){
-       for(var k=0;k<this.annotations[i].annotdetail.length;k++)
-      {
-	       switch (this.annotations[i].annotdetail[k].annotType)
+	       switch (this.annotations[i].annotdetail.annotType)
 	      {
 		  case "rect":
-		  svgHtml+='<rect onmouseover="edit(event,'+i+');showText(\''+this.annotations[i].annotdetail[k].text+'\');" onmouseout="clearText()" x="'+this.wid*this.annotations[i].annotdetail[k].x+'" y="'+this.hei*this.annotations[i].annotdetail[k].y+'" width="'+this.wid*this.annotations[i].annotdetail[k].w+'" height="'+this.hei*this.annotations[i].annotdetail[k].h+'" stroke="black" stroke-width="2" fill="'+this.annotations[i].annotdetail[k].color+'"/>';
+		  svgHtml+='<rect onmouseover="edit(event,'+i+');showText(\''+this.annotations[i].annotdetail.text+'\');" onmouseout="clearText()" x="'+this.wid*this.annotations[i].annotdetail.x+'" y="'+this.hei*this.annotations[i].annotdetail.y+'" width="'+this.wid*this.annotations[i].annotdetail.w+'" height="'+this.hei*this.annotations[i].annotdetail.h+'" stroke="black" stroke-width="2" fill="'+this.annotations[i].annotdetail.color+'"/>';
 		  break;
 		  case "circle":
-		  svgHtml+='<circle onmouseover="showText(\''+this.annotations[i].annotdetail[k].text+'\')" onmouseout="clearText()" cx="'+this.wid*this.annotations[i].annotdetail[k].x+'" cy="'+this.hei*this.annotations[i].annotdetail[k].y+'" r="'+this.wid*this.annotations[i].annotdetail[k].r+'" stroke="black" stroke-width="2" fill="'+this.annotations[i].annotdetail[k].color+'"/>';
+		  svgHtml+='<circle onmouseover="showText(\''+this.annotations[i].annotdetail.text+'\')" onmouseout="clearText()" cx="'+this.wid*this.annotations[i].annotdetail.x+'" cy="'+this.hei*this.annotations[i].annotdetail.y+'" r="'+this.wid*this.annotations[i].annotdetail.r+'" stroke="black" stroke-width="2" fill="'+this.annotations[i].annotdetail.color+'"/>';
 		  break;
 		  case "polygon":
-		  var points=this.annotations[i].annotdetail[k].points;
+		  var points=this.annotations[i].annotdetail.points;
 		  p=String.split(points,' ');
-		  svgHtml+='<polygon onmouseover="showText(\''+this.annotations[i].annotdetail[k].text+'\')" onmouseout="clearText()" points="';
+		  svgHtml+='<polygon onmouseover="showText(\''+this.annotations[i].annotdetail.text+'\')" onmouseout="clearText()" points="';
 		  for (var j=0;j<p.length;j++)
 		  {
 		     point=String.split(p[j],',');
@@ -1424,12 +1422,12 @@ var IIPMooViewer = new Class({
 		  svgHtml+='" style="fill:lime;stroke:purple;stroke-width:1"/>';
 		  break;
 		  case "ellipse":
-		  svgHtml+='<ellipse onmouseover="edit(event,'+i+'); showText(\''+this.annotations[i].annotdetail[k].text+'\')" onmouseout="clearText()" cx="'+this.wid*this.annotations[i].annotdetail[k].cx+'" cy="'+this.hei*this.annotations[i].annotdetail[k].cy+'" rx="'+this.wid*this.annotations[i].annotdetail[k].rx+'" ry="'+this.hei*this.annotations[i].annotdetail[k].ry+'" style="fill:none;stroke:purple;stroke-width:2"/>';
+		  svgHtml+='<ellipse onmouseover="edit(event,'+i+'); showText(\''+this.annotations[i].annotdetail.text+'\')" onmouseout="clearText()" cx="'+this.wid*this.annotations[i].annotdetail.cx+'" cy="'+this.hei*this.annotations[i].annotdetail.cy+'" rx="'+this.wid*this.annotations[i].annotdetail.rx+'" ry="'+this.hei*this.annotations[i].annotdetail.ry+'" style="fill:none;stroke:purple;stroke-width:2"/>';
 		  break;
                   case "polyline":
- 		  var points=annot[i].annotdetail[k].points;
+ 		  var points=annot[i].annotdetail.points;
 		  p=String.split(points,' ');
-		  svgHtml+='<polyline onmouseover="edit(event,'+i+');showText(\''+annot[i].annotdetail[k].text+'\')" onmouseout="clearText()" points="';
+		  svgHtml+='<polyline onmouseover="edit(event,'+i+');showText(\''+annot[i].annotdetail.text+'\')" onmouseout="clearText()" points="';
 		  for (var j=0;j<p.length;j++)
 		  {
 		     point=String.split(p[j],',');
@@ -1439,8 +1437,24 @@ var IIPMooViewer = new Class({
 		  }
 		  svgHtml+='" style="fill:none;stroke:red;stroke-width:1"/>';
 		  break;
+ 		  case "pencil":
+		  var points=annot[i].annotdetail.points;
+		  poly=String.split(points,';');
+		  for (var k=0;k<poly.length;k++)
+		  {
+		     p=String.split(poly[k],' ');
+		     svgHtml+='<polyline onmouseover="edit(event,'+i+');showText(\''+annot[i].annotdetail.text+'\')" onmouseout="clearText()" points="';         
+                     for (var j=0;j<p.length;j++)
+                     {
+			  point=String.split(p[j],',');
+			  px=point[0]*this.wid;
+			  py=point[1]*this.hei;
+			  svgHtml+=px+','+py+' ';
+                     }
+		     svgHtml+='" style="fill:none;stroke:red;stroke-width:1"/>';
+		  }
+		  break;
 		}
-        }
       }
     }
       svgHtml+='</svg>';
