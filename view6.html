@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+
+ <head>
+  <meta charset="utf-8" />
+  <meta name="author" content="Ruven Pillay &lt;ruven@users.sourceforge.netm&gt;"/>
+  <meta name="keywords" content="IIPImage HTML5 Ajax Internet Imaging IIP Zooming Streaming High Resolution Mootools"/>
+  <meta name="description" content="IIPImage: High Resolution HTML5 Ajax Image Streaming Viewer"/>
+  <meta name="copyright" content="&copy; 2003-2011 Ruven Pillay"/>
+  <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta http-equiv="X-UA-Compatible" content="IE=9" >
+
+  <link rel="stylesheet" type="text/css" media="all" href="css/iip.css" />
+  <link rel="stylesheet" type="text/css" media="all" href="css/annot.css" />
+<!--[if lt IE 9]>
+  <link rel="stylesheet" type="text/css" media="all" href="css/ie.css" />
+<![endif]-->
+
+  <link rel="shortcut icon" href="images/iip-favicon.png" />
+
+  <title>IIPMooViewer 2.0 :: IIPImage High Resolution HTML5 Ajax Image Streaming Viewer</title>
+
+  <script type="text/javascript" src="js/mootools-core-1.3.2-full-nocompat.js"></script>
+  <script type="text/javascript" src="js/mootools-more-1.3.2.1.js"></script>
+  <script type="text/javascript" src="js/protocols.js"></script>
+  <script type="text/javascript" src="js/iipmooviewer-2.0.5.js"></script>
+  <script type="text/javascript" src="js/annotation2.js"></script>
+<!--[if lt IE 7]>
+  <script src="http://ie7-js.googlecode.com/svn/version/2.1(beta4)/IE9.js">IE7_PNG_SUFFIX = ".png";</script>
+<![endif]-->
+
+  <script type="text/javascript">
+
+    // The iipsrv server path (/fcgi-bin/iipsrv.fcgi by default)
+    var server = '/fcgi-bin/iipsrv.fcgi';
+
+    // The *full* image path on the server. This path does *not* need to be in the web
+    // server root directory. On Windows, use Unix style forward slash paths without
+    // the "c:" prefix
+    var imglocation=window.location.search;
+    if (imglocation.substring(0,1)=='?'){
+    imglocation=imglocation.substring(1); }
+
+    // The *full* image path on the server. This path does *not* need to be in the web
+    // server root directory.
+    var images = imglocation;
+    var annot;
+    // Copyright or information message
+    var credit = "<i>Portrait d'une femme à sa toilette</i>&copy; C2RMF";
+    // Create our viewer object
+    // See documentation for more details of options
+    var iipmooviewer = new IIPMooViewer( "targetframe", {
+		image: images,
+		server: server,
+		credit: credit, 
+		scale: 18.0
+    });
+    var IP='http://localhost';
+    var jsonRequest = new Request.JSON({url: IP+'/bio/api/annot.php', onSuccess: function(e){
+        annot=JSON.decode(e);
+        if(annot==null)
+        annot=new Array();
+    	iipmooviewer.annotations=annot;
+	}}).get();
+ </script>
+ </head>
+
+ <body>
+   <div id="targetframe" style="width:100%;height:100%;position:absolute"></div>
+   <div id="tiplayer" style="position:absolute;top:80%;left:40%;z-index:2">
+   </div>
+   <div id="editlayer" style="position:absolute;width:10%;height:10%;z-index:2;visibility:hidden">
+   <ul id="edit_menu">
+   <li class="menu">Edit
+	<ul class="links">
+                <li><a id="deleteMarkup">Delete This Markup</a></li>
+		<li><a id="editAnnot">Edit Text Annotations</a></li>
+		<li><a id="cancel">cancel</a></li>
+	</ul>
+   </li>
+   </ul>
+   </div>
+   <div id="tools" style="position:absolute;color:white;left:40px;top:10px">
+        <div id="h_toggle">tools </div>
+        <div id="h_slide"></div>
+   </div>
+   <div id="meta" style="position:absolute;width:100%;height:15px;bottom:0%;color:white">
+        <hr id="v_toggle"/>
+        <div id="metadata"></div>
+   </div>
+   <script type="text/javascript">					   
+	window.addEvent('domready', function(){
+		$('edit_menu').getElements('li.menu').each( function( elem ){
+			var list = elem.getElement('ul.links');
+			var myFx = new Fx.Slide(list).hide();
+			elem.addEvents({
+				'mouseenter' : function(){
+					myFx.cancel();
+					myFx.slideIn();
+				},
+				'mouseleave' : function(){
+					myFx.cancel();
+					myFx.slideOut();
+				}
+			});
+		});
+
+                var a= new Fx.Slide('h_slide',{mode:'horizontal'});
+                a.slideOut();
+                 $('h_toggle').addEvent('mouseover', function(event){
+		    event.stop();
+                    if($("meta").style.width=='300px')
+                    $("h_slide").set('styles',{'width':'0px'});
+                    else
+                    $("h_slide").set('styles',{'width':'300px'});
+                    $("h_slide").set('html','<a id="polyline">polyline</a><a id="pencil">pencil</a><a id="rect">rectangle</a><a id="ellipse">ellipse</a>');
+		    $("polyline").addEvent('click',function(){
+								createPolyline(iipmooviewer,annot);
+								});	
+		    $("rect").addEvent('click',function(){
+								createRect(iipmooviewer,annot);
+								});
+		    $("pencil").addEvent('click',function(){
+								createPencil(iipmooviewer,annot);
+								});
+		    $("ellipse").addEvent('click',function(){
+							createEllipse(iipmooviewer,annot);
+								});			
+		    a.toggle();
+		  });
+               var myElement = $("meta");
+		myElement.set('tween', {
+		    duration: 'long',
+		    transition: 'bounce:out',
+		    link: 'cancel'
+		});
+               $('v_toggle').addEvent('mouseover',function(event){
+                  event.stop();
+                  if($("meta").style.height=='15px')
+                  {
+    		     myElement.tween('height', 15, 100);
+                     $("metadata").set('html','lalalalala');
+                  }
+                  else
+                  {
+    		     myElement.tween('height', 100, 15);
+                     $("metadata").set('html','');
+		  }
+               });
+	});
+  </script>
+ </body>
+</html>
