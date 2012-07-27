@@ -81,8 +81,8 @@ function createPolyline(iip,annot)
     //Clear annotation layer html
    var newpoly=[];
    var numpoint=0;
-   var layer=$("createlayer");
-   layer.set({html:"",styles:{position:'absolute','z-index':1,left:iip.canvas.style.left,top:iip.canvas.style.top,visibility:'visible'}});
+   var layer=new Element('div',{id:"createlayer",html:"",styles:{position:'absolute','z-index':1,left:0,top:0,visibility:'visible'}});
+   layer.inject(iip.canvas);
    var c=new Element('canvas',{id:"myCanvas",style:"background-color:grey;opacity:0.6;position:absolute;z-index:2",width:iip.wid+'px',height:iip.hei+'px'});
    c.inject(layer);
    $("myCanvas").addEvent('click',function(e){ 
@@ -158,8 +158,8 @@ function createPencil(iip,annot)
    var pencil=[];
    var newpoly=[];
    var numpoint=0;
-   var layer=$("createlayer");
-   layer.set({html:"",styles:{position:'absolute','z-index':1,left:iip.canvas.style.left,top:iip.canvas.style.top,visibility:'visible'}});
+   var layer=new Element('div',{id:"createlayer",html:"",styles:{position:'absolute','z-index':1,left:0,top:0,visibility:'visible'}});
+   layer.inject(iip.canvas);
    var c=new Element('canvas',{id:"myCanvas",style:"background-color:grey;opacity:0.6;position:absolute;z-index:2",width:iip.wid+'px',height:iip.hei+'px'});
    c.inject(layer);
    var ctx=c.getContext("2d");
@@ -332,16 +332,16 @@ function drawEllipse(ctx, x, y, w, h) {
 function createRect(iip,annot)
 {
   //Clear annotation layer html
-  var layer=$("createlayer");
-  var context,canvas;
+   var layer=new Element('div',{id:"createlayer",html:"",styles:{position:'absolute','z-index':1,left:0,top:0,visibility:'visible'}});
+   layer.inject(iip.canvas);
+   var canvas=new Element('canvas',{id:"myCanvas",style:"background-color:grey;opacity:0.6;position:absolute;z-index:2",width:iip.wid+'px',height:iip.hei+'px'});
+   canvas.inject(layer);
+  var context;
   // The active tool instance.
   var tool;
   var tool_default = 'rect';
 
   function init () {
-    layer.set({styles:{position:'absolute','z-index':1,left:iip.canvas.style.left,top:iip.canvas.style.top,visibility:'visible'}});
-    canvas=new Element('canvas',{id:"myCanvas",style:"background-color:grey;opacity:0.6;position:absolute;z-index:2",width:iip.wid+'px',height:iip.hei+'px'});
-    canvas.inject(layer);
     context = canvas.getContext('2d');
     if (!context) {
       alert('Error: failed to getContext!');
@@ -452,16 +452,16 @@ function createRect(iip,annot)
 function createEllipse(iip,annot)
 {
   //Clear annotation layer html
-  var layer=$("createlayer");
-  var context,canvas;
+   var layer=new Element('div',{id:"createlayer",html:"",styles:{position:'absolute','z-index':1,left:0,top:0,visibility:'visible'}});
+   layer.inject(iip.canvas);
+   var canvas=new Element('canvas',{id:"myCanvas",style:"background-color:grey;opacity:0.6;position:absolute;z-index:2",width:iip.wid+'px',height:iip.hei+'px'});
+   canvas.inject(layer);
+  var context;
   // The active tool instance.
   var tool;
   var tool_default = 'ellipse';
 
   function init () {
-    layer.set({styles:{position:'absolute','z-index':1,left:iip.canvas.style.left,top:iip.canvas.style.top,visibility:'visible'}});
-    canvas=new Element('canvas',{id:"myCanvas",style:"background-color:grey;opacity:0.6;position:absolute;z-index:2",width:iip.wid+'px',height:iip.hei+'px'});
-    canvas.inject(layer);
     context = canvas.getContext('2d');
     if (!context) {
       alert('Error: failed to getContext!');
