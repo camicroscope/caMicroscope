@@ -874,7 +874,7 @@ var IIPMooViewer = new Class({
     thumb_width = this.view.w * this.navWinSize;
 
     // For panoramic images, use a large navigation window
-    if( tx > 2*ty ) thumb_width = this.view.w / 2;
+    if( tx > 2*ty ) thumb_width = this.view.w / 4;
 
     //if( (ty/tx)*thumb_width > this.view.h*0.5 ) thumb_width = Math.round( this.view.h * 0.5 * tx/ty );
 

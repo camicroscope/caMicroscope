@@ -26,7 +26,7 @@
   <script type="text/javascript" src="js/mootools-more-1.3.2.1.js"></script>
   <script type="text/javascript" src="js/protocols.js"></script>
   <script type="text/javascript" src="js/iipmooviewer-2.0.5.js"></script>
-  <script type="text/javascript" src="js/annotation2.js"></script>
+  <script type="text/javascript" src="js/annotation3.js"></script>
 <!--[if lt IE 7]>
   <script src="http://ie7-js.googlecode.com/svn/version/2.1(beta4)/IE9.js">IE7_PNG_SUFFIX = ".png";</script>
 <![endif]-->
@@ -55,7 +55,8 @@
 		image: images,
 		server: server,
 		credit: credit, 
-		scale: 18.0
+		scale: 18.0,
+                navWinSize:0.03
     });
     var IP='http://localhost';
     var jsonRequest = new Request.JSON({url: IP+'/bio/api/annot.php', onSuccess: function(e){
@@ -71,7 +72,7 @@
    <div id="targetframe" style="width:100%;height:100%;position:absolute"></div>
    <div id="tiplayer" style="position:absolute;top:80%;left:40%;z-index:2">
    </div>
-   <div id="editlayer" style="position:absolute;width:10%;height:10%;z-index:2;visibility:hidden">
+   <div id="editlayer" style="position:absolute;width:10%;height:10%;z-index:2">
    <ul id="edit_menu">
    <li class="menu">Edit
 	<ul class="links">
@@ -83,8 +84,9 @@
    </ul>
    </div>
    <div id="tools" style="position:absolute;color:white;left:40px;top:10px">
-        <div id="h_toggle">tools </div>
-        <div id="h_slide"></div>
+        <img id="h_toggle" src="images/tool.svg" title="Tools"><img id="zoom" title="mouse zoom" src="images/zoom.svg">
+        <div id="h_slide">
+</div>
    </div>
    <div id="meta" style="position:absolute;width:100%;height:15px;bottom:0%;color:white">
         <hr id="v_toggle"/>
@@ -106,7 +108,7 @@
 				}
 			});
 		});
-
+		$("editlayer").toggle();
                 var a= new Fx.Slide('h_slide',{mode:'horizontal'});
                 a.slideOut();
                  $('h_toggle').addEvent('mouseover', function(event){
@@ -115,19 +117,13 @@
                     $("h_slide").set('styles',{'width':'0px'});
                     else
                     $("h_slide").set('styles',{'width':'300px'});
-                    $("h_slide").set('html','<a id="polyline">polyline</a><a id="pencil">pencil</a><a id="rect">rectangle</a><a id="ellipse">ellipse</a>');
-		    $("polyline").addEvent('click',function(){
-								createPolyline(iipmooviewer,annot);
-								});	
-		    $("rect").addEvent('click',function(){
-								createRect(iipmooviewer,annot);
-								});
-		    $("pencil").addEvent('click',function(){
-								createPencil(iipmooviewer,annot);
-								});
-		    $("ellipse").addEvent('click',function(){
-							createEllipse(iipmooviewer,annot);
-								});			
+                    $("h_slide").set('html','<img id="rect" title="rectangle" src="images/rect.svg"><img id="ellipse" title="ellipse" src="images/ellipse.svg"><img id="polyline" title="polyline" src="images/poly.svg"><img id="pencil" title="pencil" src="images/pencil.svg"><img id="measure" title="Measure Distance" src="images/measure.svg"><img id="hide" title="hide/show Editing" src="images/hide.svg">');
+		    $("polyline").addEvent('click',function(){create(iipmooviewer,annot,'poly');});	
+		    $("rect").addEvent('click',function(){create(iipmooviewer,annot,'rect');});
+		    $("pencil").addEvent('click',function(){create(iipmooviewer,annot,'pencil');});
+		    $("ellipse").addEvent('click',function(){create(iipmooviewer,annot,'ellipse');});
+		    $("measure").addEvent('click',function(){create(iipmooviewer,annot,'measure');});
+	      	    $("hide").addEvent('click',function(){$("editlayer").toggle();});			
 		    a.toggle();
 		  });
                var myElement = $("meta");
@@ -139,9 +135,10 @@
                $('v_toggle').addEvent('mouseover',function(event){
                   event.stop();
                   if($("meta").style.height=='15px')
-                  {
-    		     myElement.tween('height', 15, 100);
-                     $("metadata").set('html','lalalalala');
+                  {     
+    		        myElement.tween('height', 15, 100);
+	                var jsonRequest = new Request.JSON({url: IP+'/bio/api/test.php', onSuccess: function(imageList){
+                        moreImage(imageList,0);}}).get();
                   }
                   else
                   {
@@ -150,6 +147,66 @@
 		  }
                });
 	});
+function highlight(selected)//lightlight the selected row.
+{
+$$('div.imageInfo').setStyles({color: 'white'});
+selected.style.color="blue";
+}
+function displayImage(imagelocation)//disply image according to the image location
+{
+   window.location="view6.html?"+imagelocation;
+}
+function moreImage(imageList,k)
+{
+        var metadata=$("metadata");
+	$("metadata").set('html','');
+        if(k>=9)
+        {
+             var imageElement=new Element('div',{
+		      'class':'imageInfo',
+                      'style':'position:absolute;width:10%;left:2%',
+		      html:'<<',
+		      events:{'click':function(){moreImage(imageList,k-9);},'mouseover':function(){highlight(this)}}
+		      });
+		imageElement.inject(metadata);
+        }
+        if(imageList.length<(k+9))
+        {
+		for (var i=k;i<imageList.length;i++)
+		{
+		      var image = imageList[i];
+		      var imageElement=new Element('div',{
+		      'class':'imageInfo',
+                      'style':'position:absolute;width:10%;left:'+((i-k)*10+5)+'%',
+		      html:'<img src="/fcgi-bin/iipsrv.fcgi?FIF='+image["ImageLocation"]+'&amp;CNT=1&amp;SDS=0,90&amp;JTL=0,0">'+'<a>'+image["PatientName"]+'</a><a>'+image["PatientAge"]+'</a><a>'+image["ImageModality"]+'</a>',
+		      events:{'click':function(){displayImage(image["ImageLocation"])},'mouseover':function(){highlight(this)}}
+		      });
+		      imageElement.inject(metadata);
+		}
+        }
+        else
+	{
+		
+		for (var i=k;i<(k+9);i++)
+		{
+		      var image = imageList[i];
+		      var imageElement=new Element('div',{
+		      'class':'imageInfo',
+                      'style':'position:absolute;width:10%;left:'+((i-k)*10+5)+'%',
+		      html:'<img src="/fcgi-bin/iipsrv.fcgi?FIF='+image["ImageLocation"]+'&amp;CNT=1&amp;SDS=0,90&amp;JTL=0,0">'+'<a>'+image["PatientName"]+'</a><a>'+image["PatientAge"]+'</a><a>'+image["ImageModality"]+'</a>',
+		      events:{'click':function(){displayImage(image["ImageLocation"])},'mouseover':function(){highlight(this)}}
+		      });
+		      imageElement.inject(metadata);
+		}
+                var imageElement=new Element('div',{
+		      'class':'imageInfo',
+                      'style':'position:absolute;width:10%;left:95%',
+		      html:'>>',
+		      events:{'click':function(){moreImage(imageList,k+9);},'mouseover':function(){highlight(this)}}
+		      });
+		imageElement.inject(metadata);
+	}
+}
   </script>
  </body>
 </html>
