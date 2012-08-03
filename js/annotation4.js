@@ -214,6 +214,7 @@ IIPMooViewer.implement({ drawMarkups: function(type)
      var started=false;
      var ctx=canvas.getContext("2d");
      var x0,y0,x1,y1;
+     var ratio=0.05;
      canvas.addEvent('mousedown',function(e){ 
        if (!started)
        {
@@ -249,7 +250,7 @@ IIPMooViewer.implement({ drawMarkups: function(type)
                 ctx.closePath();
                 
        }
-    });
+    }.bind(this));
     break;
   }
 }
