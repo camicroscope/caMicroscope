@@ -157,6 +157,7 @@
         <div id="h_slide" style="width:150px">
 	<img id="rect" title="rectangle" src="images/rect.svg"><img id="ellipse" title="ellipse" src="images/ellipse.svg"><img id="polyline" title="polyline" src="images/poly.svg"><img id="pencil" title="pencil" src="images/pencil.svg"><img id="measure" title="Measure Distance" src="images/measure.svg"><img id="hide" title="hide/show Editing" src="images/hide.svg">
         </div>
+  </div>
    <script>
             var a= new Fx.Slide('h_slide',{mode:'horizontal'});
             a.slideOut().chain(function(){ 
@@ -167,7 +168,8 @@
 	    $("pencil").addEvent('click',function(){iip.drawMarkups('pencil');a.slideOut();});
 	    $("ellipse").addEvent('click',function(){iip.drawMarkups('ellipse');a.slideOut();});
 	    $("measure").addEvent('click',function(){iip.drawMarkups('measure');a.slideOut();});
-      	    $("hide").addEvent('mouseover',function(){a.slideOut();});			
+      	    $("hide").addEvent('mouseover',function(){iip.svg.toggle();});
+	    $("hide").addEvent('click',function(){a.slideOut();this.removeEvent('mouseover');this.removeEvent('click');});			
 	    a.slideIn();
             $("h_slide").addClass("slider");
 	  });});
