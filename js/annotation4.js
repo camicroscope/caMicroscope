@@ -41,7 +41,7 @@ drawMarkups: function(type)
         {
                 //Update Annotations
 		this.annotations.push( {x:x,y:y,w:w,h:h,type:"rect",text:tip});  
-                this.createAnnotations();
+                this.updateAnnotations();
                 //Save Annotations
                 this.saveAnnotations();
         }
@@ -97,7 +97,7 @@ drawMarkups: function(type)
         {
             //Update Annotations
 	    this.annotations.push( {x:x,y:y,w:w,h:h,type:'ellipse',text:tip});   
-            this.createAnnotations(); 
+            this.updateAnnotations();
             //Save Annotations
             this.saveAnnotations();
         }
@@ -171,7 +171,7 @@ drawMarkups: function(type)
 	} 
         points=points.slice(0,-1);
 	this.annotations.push( {x:x,y:y,w:w,h:h,type:"pencil",points:points,text:tip}); 
-        this.createAnnotations(); 
+        this.updateAnnotations();
         this.saveAnnotations();
         //Remove Events and Destroy the Create Layer
 	$("myCanvas").removeEvent('mousedown');
@@ -287,7 +287,7 @@ drawMarkups: function(type)
 		y1=e.event.offsetY;
                 var screen=(Math.sqrt(this.wid*this.wid+this.hei*this.hei));
 		var length=(Math.sqrt((x0-x1)*(x0-x1)+(y0-y1)*(y0-y1)))/screen*ratio+'mm';
-                ruler.set({html:length,styles:{left:x1,top:y1}});
+                ruler.set({html:length,styles:{left:x1+10,top:y1}});
 		ctx.beginPath();
 		ctx.moveTo(x0, y0);
 		ctx.lineTo(x1, y1);
@@ -303,7 +303,7 @@ drawMarkups: function(type)
 //Save Annotations
 saveAnnotations:function()
 {
-      var IP="http://localhost";
+      var IP="http://170.140.138.125";
       var jsonRequest = new Request.JSON({url: IP+'/bio/api/annot2.php', onSuccess: function(e){
 		console.log("saved");
 		}}).post({'annot':this.annotations});
@@ -403,6 +403,7 @@ IIPMooViewer.implement({
                     d.store("tip:text", e)
                 }
 		 svgHtml+='</svg>';
+                 if(this.svg) this.svg.destroy();
                  //inject the SVG Annotations to this.Canvas
            	 this.svg = (new Element("div", {
                  styles: {
@@ -461,7 +462,6 @@ IIPMooViewer.implement({
     },
     destroyAnnotations: function () {
         this.annotationTip && this.annotationTip.detach(this.canvas.getChildren("div.annotation"));
-        if(this.svg)this.svg.destroy();
         this.canvas.getChildren("div.annotation").each(function (a) {
             a.eliminate("tip:text");
             a.destroy()

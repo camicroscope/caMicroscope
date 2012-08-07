@@ -26,7 +26,7 @@
 
   <script type="text/javascript" src="js/mootools-core-1.4.5-full-nocompat-yc.js"></script>
   <script type="text/javascript" src="js/mootools-more-1.4.0.1-compressed.js"></script>
-  <script type="text/javascript" src="js/iipmooviewer-2.0.7.js"></script>
+  <script type="text/javascript" src="js/iipmooviewer-2.0.js"></script>
   <script type="text/javascript" src="js/annotation4.js"></script>
   <script type="text/javascript" src="js/tool.js"></script>
   <script type="text/javascript" src="js/annotations-edit.js"></script>
@@ -45,16 +45,16 @@
 
     // Copyright or information message
     var credit = '&copy; copyright or information message';
-    
-    var iip= new IIPMooViewer( "viewer", {
-			image: image,
-			credit: credit
-		    });
-    var IP='http://localhost';
+    var iip;
+    var IP='http://170.140.138.125';
     var jsonRequest = new Request.JSON({url: IP+'/bio/api/annot2.php', onSuccess: function(e){
 		var annot=JSON.decode(e);
 		if(annot==null) annot=new Array();
-		iip.annotations=annot;
+		iip= new IIPMooViewer( "viewer", {
+					image: image,
+					credit: credit,
+                                        annotations:annot
+				    });
 		}}).get();
   </script>
 
