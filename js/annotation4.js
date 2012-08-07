@@ -303,7 +303,10 @@ drawMarkups: function(type)
 //Save Annotations
 saveAnnotations:function()
 {
-      console.log(this.annotations);
+      var IP="http://localhost";
+      var jsonRequest = new Request.JSON({url: IP+'/bio/api/annot2.php', onSuccess: function(e){
+		console.log("saved");
+		}}).post({'annot':this.annotations});
 }
 });
 
@@ -330,7 +333,7 @@ IIPMooViewer.implement({
                 if(this.annotationsVisible)
                {
 		var svgHtml='<svg xmlns="http://www.w3.org/2000/svg" version="1.1">';
-                for (b = 0; b < a.length; b++) if (this.wid * (a[b].x + a[b].w) > this.view.x && this.wid * a[b].x < this.view.x + this.view.w && this.hei * (a[b].y + a[b].h) > this.view.y && this.hei * a[b].y < this.view.y + this.view.h) {
+                for (b = 0; b < a.length; b++) if (this.wid * (parseFloat(a[b].x) + parseFloat(a[b].w)) > this.view.x && this.wid * parseFloat(a[b].x) < this.view.x + this.view.w && this.hei * (parseFloat(a[b].y) + parseFloat(a[b].h)) > this.view.y && this.hei * parseFloat(a[b].y) < this.view.y + this.view.h) {
                     var c = this, d = "annotation";
                     a[b].category && (d += " " + a[b].category);
 		    switch (a[b].type)
@@ -339,10 +342,10 @@ IIPMooViewer.implement({
 			  svgHtml+='<rect x="'+this.wid*a[b].x+'" y="'+this.hei*a[b].y+'" width="'+this.wid*a[b].w+'" height="'+this.hei*a[b].h+'" stroke="black" stroke-width="2" fill="none"/>';
 			  break;
 			  case "ellipse":
-		          var cx=a[b].x+a[b].w/2;
-			  var cy=a[b].y+a[b].h/2;
-			  var rx=a[b].w/2;
-			  var ry=a[b].h/2;
+		          var cx=parseFloat(a[b].x)+parseFloat(a[b].w)/2;
+			  var cy=parseFloat(a[b].y)+parseFloat(a[b].h)/2;
+			  var rx=parseFloat(a[b].w)/2;
+			  var ry=parseFloat(a[b].h)/2;
 			  svgHtml+='<ellipse cx="'+this.wid*cx+'" cy="'+this.hei*cy+'" rx="'+this.wid*rx+'" ry="'+this.hei*ry+'" style="fill:none;stroke:purple;stroke-width:1"/>';
                           break;
 			  case "pencil":
@@ -458,6 +461,7 @@ IIPMooViewer.implement({
     },
     destroyAnnotations: function () {
         this.annotationTip && this.annotationTip.detach(this.canvas.getChildren("div.annotation"));
+        if(this.svg)this.svg.destroy();
         this.canvas.getChildren("div.annotation").each(function (a) {
             a.eliminate("tip:text");
             a.destroy()
