@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en" >
+
+ <head>
+  <meta charset="utf-8" />
+  <meta name="DC.creator" content="Ruven Pillay &lt;ruven@users.sourceforge.netm&gt;"/>
+  <meta name="DC.title" content="IIPMooViewer 2.0: HTML5 High Resolution Image Viewer"/>
+  <meta name="DC.subject" content="IIPMooViewer; IIPImage; Visualization; HTML5; Ajax; High Resolution; Internet Imaging Protocol; IIP"/>
+  <meta name="DC.description" content="IIPMooViewer is an advanced javascript HTML5 image viewer for streaming high resolution scientific images"/>
+  <meta name="DC.rights" content="Copyright &copy; 2003-2012 Ruven Pillay"/>
+  <meta name="DC.source" content="http://iipimage.sourceforge.net"/>
+  <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta http-equiv="X-UA-Compatible" content="IE=9" />
+
+  <link rel="stylesheet" type="text/css" media="all" href="css/iip2.css" />
+<!--[if lt IE 10]>
+  <link rel="stylesheet" type="text/css" media="all" href="css/ie.compressed.css" />
+<![endif]-->
+
+  <link rel="shortcut icon" href="images/iip-favicon.png" />
+  <link rel="apple-touch-icon" href="images/iip.png" />
+
+  <title>IIPMooViewer 2.0 :: HTML5 High Resolution Image Viewer</title>
+
+  <script type="text/javascript" src="js/mootools-core-1.4.5-full-nocompat-yc.js"></script>
+  <script type="text/javascript" src="js/mootools-more-1.4.0.1-compressed.js"></script>
+  <script type="text/javascript" src="js/iipmooviewer-2.0.7.js"></script>
+  <script type="text/javascript" src="js/annotation4.js"></script>
+  <script type="text/javascript" src="js/tool.js"></script>
+  <script type="text/javascript" src="js/annotations-edit.js"></script>
+
+<!--[if lt IE 7]>
+  <script src="http://ie7-js.googlecode.com/svn/version/2.1(beta4)/IE7.js">IE7_PNG_SUFFIX = ".png";</script>
+<![endif]-->
+
+  <script type="text/javascript">
+
+    // The *full* image path on the server. This path does *not* need to be in the web
+    // server root directory. On Windows, use Unix style forward slash paths without
+    // the "c:" prefix
+    var image = '/usr/share/iip/3.tif';
+
+
+    // Copyright or information message
+    var credit = '&copy; copyright or information message';
+    
+    var iip= new IIPMooViewer( "viewer", {
+			image: image,
+			credit: credit
+		    });
+    var IP='http://localhost';
+    var jsonRequest = new Request.JSON({url: IP+'/bio/api/annot2.php', onSuccess: function(e){
+		var annot=JSON.decode(e);
+		if(annot==null) annot=new Array();
+		iip.annotations=annot;
+		}}).get();
+  </script>
+
+  <style type="text/css">
+    body{
+	height: 100%;
+	padding: 0;
+	margin: 0;
+    }
+    div#viewer{
+	height: 100%;
+	min-height: 100%;
+	width: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+	margin: 0;
+	padding: 0;
+    }	
+    div#show
+    {
+        position:absolute;
+        width:20px;
+        height:40px;
+ 	left:40px;
+	top:10px;
+	z-index:5;
+    }
+    div#tool
+    {
+	position:absolute;
+	color:white;
+	left:60px;
+	top:10px;
+	z-index:5;
+        width:150px;
+    }
+    .slider
+    {
+          margin: 1px;
+	  border: 1px outset #333;
+	  color: #fff;
+	  background: #222;
+	  opacity: 0.85;
+	  font-weight: normal;
+	  padding: 1px;
+	  font-size: 80%;
+	  -moz-border-radius: 0.3em;
+	  -webkit-border-radius: 0.3em;
+	  border-radius: 0.3em;
+	  -moz-box-shadow: 4px 4px 4px rgba(0,0,0,0.75);
+	  -webkit-box-shadow: 4px 4px 4px rgba(0,0,0,0.75);
+	  -o-box-shadow: 4px 4px 4px rgba(0,0,0,0.75);
+	  box-shadow: 4px 4px 4px rgba(0,0,0,0.75);
+	  text-shadow: 0.5px 0.5px 0 grey;
+    }
+    .tiplayer
+    {
+	position:absolute;
+	top:80%;
+	left:40%;
+	z-index:2;
+    }
+    .selected
+    {
+	   background: #fff;
+	   cursor: pointer;
+    }
+    
+  </style>
+
+ </head>
+
+ <body>
+   <div id="viewer"></div>
+   <div id="show" onmouseover="newtool('tool',iip)"></div>
+   <div id="tool"></div>
+ </body>
+
+</html>
