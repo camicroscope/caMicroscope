@@ -1,4 +1,4 @@
-var IP='http://localhost';
+var IP='http://170.140.138.125';
 function showImageMeta()
 {
         myElement=$('imagePad');
@@ -7,26 +7,22 @@ function showImageMeta()
 		this.patientAge = age;
 	    }
 	});
-	var jsonRequest = new Request.JSON({url: IP+'/bio/api/test.php', onSuccess: function(imageList){
+	var jsonRequest = new Request.JSON({url: IP+'/bio/api/image.php', onSuccess: function(imageList){
 	for (var i=0;i<imageList.length;i++)
 	{
 	      var image = imageList[i];
               var imageElement=new Element('tr',{
+              'id':"iid="+image["iid"]+"&location="+image["ImageLocation"],
               'class':'imageInfo',
               html:'<td>'+image["PatientName"]+'</td><td>'+image["PatientAge"]+'</td><td>'+image["ImageModality"]+'</td>',
-	      events:{'click':function(){displayImage(image["ImageLocation"])},'mouseover':function(){highlight(this)}}
+	      events:{'click':function(){displayImage(this.id)},'mouseenter':function(){this.addClass('selected');},'mouseleave':function(){this.removeClass('selected');}}
 	      });
               imageElement.inject(myElement);
 	}
 	}}).get();
 }
-function highlight(selected)//lightlight the selected row.
+function displayImage(url)//disply image according to the image location
 {
-$$('tr.imageInfo').setStyles({color: 'black'});
-selected.style.color="blue";
+   var url="viewer.html?"+url;
+   window.location=url;
 }
-function displayImage(imagelocation)//disply image according to the image location
-{
-   window.location="view3.html?"+imagelocation;
-}
-

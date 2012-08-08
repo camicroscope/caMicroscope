@@ -30,6 +30,15 @@ js/annotation-edit.js is for editing annotations.
 api/annot2.php is for saving and getting annotation meta data.
 api/annot2.txt is the file storing the annotation data. This file has to be set as readable/writable to the public.
 
+view.html is for the drawing testings. You may test it here:http://170.140.138.125/bio/view.html
+
+api/annotation.php is for saving the annotation data to the database.
+api/image.php is for getting the image meta data from the database.
+
+index.html and viewer.html is for the image viewer which is connected to the database. You may test it here.http://170.140.138.125/bio
+
+schema.sql is the database schema
+
 Database Module
 ---------------
 
@@ -39,6 +48,6 @@ One approach for saving annotations is to use databases. As the annotations will
 Image MetaData Viewing Module
 -----------------------------
 
-The metadata is displayed as unsorted list on the button of the image viewer. This utilizes the tween function in Mootools. One example can be shown in view7.html
+The metadata is displayed as unsorted list on the button of the image viewer. This utilizes the tween function in Mootools. One example can be shown in viewer.html
 
 
