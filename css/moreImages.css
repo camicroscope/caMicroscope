@@ -1,0 +1,36 @@
+ul
+{
+    list-style-type: none;
+    padding-left: 0;
+    margin-left: 0;
+}
+li
+{
+    background: left center no-repeat;
+    margin-bottom: 2px;
+}
+
+.selected
+{
+   background: #fff;
+   cursor: pointer;
+}
+.imgselected
+{
+   background: #ccc;
+   cursor: pointer;
+}
+.patientname
+{
+  color:#000;
+  background: #fff;
+}
+.patientage
+{
+  background: #01f;
+}
+.modality
+{
+  color:#fff;
+  background: #000;
+}
