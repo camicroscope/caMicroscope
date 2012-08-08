@@ -225,18 +225,13 @@ IIPMooViewer.implement({
     this.annotations[id].w = (el.getSize(parent).x-2) / this.wid;
     this.annotations[id].h = (el.getSize(parent).y-2) / this.hei;
   },
-
-
   updateAnnotations: function(){
     this.saveAnnotations();
     this.destroyAnnotations();
     this.createAnnotations();
     this.container.addEvent( 'keydown', this.key.bind(this) );
-    if( this.annotationTip ) this.annotationTip.attach( 'div.annotation' );
-    
+    if( this.annotationTip ) this.annotationTip.attach( 'div.annotation' );    
   },
-
-
   toggleEditFlat: function(id){
 
   }
