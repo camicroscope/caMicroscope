@@ -39,8 +39,6 @@ IIPMooViewer.implement({
       y: (this.hei<this.view.h) ? 0.25 : (this.view.y+this.view.h/4)/this.hei,
       w: (this.wid<this.view.w) ? 0.5 : (this.view.w/(2*this.wid)),
       h: (this.hei<this.view.h) ? 0.5 : (this.view.h/(2*this.hei)),
-      category: '',
-      title: '',
       text: ''
     };
 
@@ -110,20 +108,13 @@ IIPMooViewer.implement({
     var form = new Element('form', {
       'class': 'annotation form',
       'styles':{
-        'top': annotation.getSize().y
+        'top': annotation.getSize().y,
+	'width':200
       }
     }).inject( annotation );
 
     // Create our input fields
-    var html = '<table><tr><td>title</td><td><input type="text" name="title" tabindex="1" autofocus';
-    if( this.annotations[id].title ) html += ' value="' + this.annotations[id].title + '"';
-    html += '/></td></tr>';
-
-    html += '<tr><td>category</td><td><input type="text" name="category" tabindex="2"';
-    if( this.annotations[id].category ) html += this.annotations[id].category + '"';
-    html += '/></td></tr>';
-
-    html += '<tr><td colspan="2"><textarea name="text" rows="5" tabindex="3">' + (this.annotations[id].text||'') + '</textarea></td></tr></table>';
+    var html = '<table><tr><td><textarea name="text" rows="5">' + (this.annotations[id].text||'') + '</textarea></td></tr></table>';
 
     form.set( 'html', html );
 
@@ -151,8 +142,6 @@ IIPMooViewer.implement({
       'submit': function(e){
         e.stop();
 	_this.updateShape(this.getParent());
-	_this.annotations[id].category = e.target['category'].value;
-	_this.annotations[id].title = e.target['title'].value;
 	_this.annotations[id].text = e.target['text'].value;
 	delete _this.annotations[id].edit;
 	_this.updateAnnotations();
