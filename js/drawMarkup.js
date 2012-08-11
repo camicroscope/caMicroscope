@@ -227,7 +227,7 @@ drawMarkups: function(type)
      var started=false;
      var ctx=canvas.getContext("2d");
      var x0,y0,x1,y1;
-     var ratio=5.00;//One pixel equals to the length in real situation
+     var ratio=0.005;//One pixel equals to the length in real situation
      var ruler=new Element('div',{id:'ruler',styles:{background:'black',position:'absolute',color:'white',width:'200px'}});;
      canvas.addEvent('mousedown',function(e){ 
        if (!started)
@@ -261,8 +261,9 @@ drawMarkups: function(type)
           	ctx.clearRect(0,0,this.wid,this.hei);
 		x1=e.event.offsetX;
 		y1=e.event.offsetY;
+                var maxLength=(Math.sqrt(this.max_size.w*this.max_size.w+this.max_size.h*this.max_size.h));
                 var screen=(Math.sqrt(this.wid*this.wid+this.hei*this.hei));
-		var length=(Math.sqrt((x0-x1)*(x0-x1)+(y0-y1)*(y0-y1)))/screen*ratio+'mm';
+		var length=((Math.sqrt((x0-x1)*(x0-x1)+(y0-y1)*(y0-y1)))/screen)*maxLength*ratio+'mm';
                 ruler.set({html:length,styles:{left:x1+10,top:y1}});
 		ctx.beginPath();
 		ctx.moveTo(x0, y0);
