@@ -156,6 +156,7 @@ IIPMooViewer.implement({
     // Add a delete event to our annotation
     del.addEvent('click', function(){
 		   _this.annotations.splice(id,1);
+                   saveAnnotations(_this.iid,_this.annotations);
 		 //  delete _this.annotations[id];
 		   _this.updateAnnotations();
 		   _this.fireEvent('annotationChange', _this.annotations);
@@ -215,7 +216,6 @@ IIPMooViewer.implement({
     this.annotations[id].h = (el.getSize(parent).y-2) / this.hei;
   },
   updateAnnotations: function(){
-    this.saveAnnotations();
     this.destroyAnnotations();
     this.createAnnotations();
     this.container.addEvent( 'keydown', this.key.bind(this) );

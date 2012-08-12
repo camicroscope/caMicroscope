@@ -70,6 +70,10 @@ IIPMooViewer.implement({
 			     svgHtml+='" style="fill:none;stroke:red;stroke-width:1"/>';
 			  }
 			  break;
+ 			  case "line":
+                          var points=String.split(a[b].points,',');
+                          svgHtml+='<line x1="'+a[b].x*this.wid+'" y1="'+a[b].y*this.hei+'" x2="'+parseFloat(points[0])*this.wid+'" y2="'+parseFloat(points[1])*this.hei+'" style="stroke:rgb(255,0,0);stroke-width:1"/>';
+			  break;
 		    }
                     d = (new Element("div", {
                         id: a[b].id,
