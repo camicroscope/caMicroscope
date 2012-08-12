@@ -60,7 +60,7 @@
     // Copyright or information message
     var credit = '&copy; copyright or information message';
     var iip;
-    var IP='http://localhost';
+    var IP='http://170.140.138.125';
     var jsonRequest = new Request.JSON({url: IP+'/bio/api/annotation.php', onSuccess: function(e){
 	var annot=e;
 	if((annot==null)||(annot=='NoAnnotations')) annot=new Array();
