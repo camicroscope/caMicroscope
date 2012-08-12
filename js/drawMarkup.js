@@ -1,8 +1,6 @@
-IIPMooViewer.implement({ 
-//Draw Markups
-drawMarkups: function(type)
+var drawMarkups=function(type,container)
 {
-   //Create Markup Layer
+     //Create Markup Layer
    if($("createlayer"))
    {
         //Remove Events and Destroy the Create Layer
@@ -11,9 +9,20 @@ drawMarkups: function(type)
 	$("myCanvas").removeEvent('mousemove');
   	$("createlayer").destroy();
    }
-   var layer=new Element('div',{id:"createlayer",html:"",styles:{position:'absolute','z-index':1,left:this.canvas.style.left,top:this.canvas.style.top}}).inject(document.body);
+   var left=parseInt(container.style.left),
+   top=parseInt(container.style.top),
+   width=parseInt(container.style.width),
+   height=parseInt(container.style.height),
+   oleft=left,
+   otop=top,
+   owidth=width,
+   oheight=height;
+   if (left<0){left=0;width=window.innerWidth;}
+   if (top<0){top=0;height=window.innerHeight;}
+   var layer=new Element('div',{id:"createlayer",html:"",styles:{position:'absolute','z-index':1,left:left,top:top}}).inject(document.body);
    //Create Canvas on the Layer
-   var canvas=new Element('canvas',{id:"myCanvas",width:this.wid+'px',height:this.hei+'px'}).inject(layer);
+   var canvas=new Element('canvas',{id:"myCanvas",width:width,height:height}).inject(layer);
+   var ctx=canvas.getContext("2d");
    //Draw Markups on Canvas
    switch (type)
   {
@@ -24,7 +33,6 @@ drawMarkups: function(type)
           y,//start location y
           w,//width
           h;//height
-      var ctx=canvas.getContext("2d");
       canvas.addEvent('mousedown',function(e){started=true;x=e.event.offsetX;y=e.event.offsetY;});
       canvas.addEvent('mousemove',function(e){ 
       if(started){
@@ -39,23 +47,23 @@ drawMarkups: function(type)
       canvas.addEvent('mouseup',function(e){
         started= false;
         //Save the Percentage Relative to the Picture
-        x=x/this.wid;
-        y=y/this.hei;
-        w=w/this.wid;
-        h=h/this.hei;
+        x=(x+left-oleft)/owidth;
+        y=(y+top-otop)/oheight;
+        w=w/owidth;
+        h=h/oheight;
         var tip=prompt("Please Enter Some Descriptions","");
         if (tip!=null)
         {
                 //Update Annotations
-		this.annotations.push( {x:x,y:y,w:w,h:h,type:"rect",text:tip});  
-                this.updateAnnotations();
+		iip.annotations.push( {x:x,y:y,w:w,h:h,type:"rect",text:tip}); 
+                saveAnnotations(1,iip.annotations);iip.updateAnnotations();
         }
         //Remove Events and Destroy the Create Layer
 	$("myCanvas").removeEvent('mousedown');
 	$("myCanvas").removeEvent('mouseup');
 	$("myCanvas").removeEvent('mousemove');
   	$("createlayer").destroy();
-     }.bind(this));
+     });
      break;
      case "ellipse":
      //Draw Ellipse
@@ -64,7 +72,6 @@ drawMarkups: function(type)
           y,//start location y
           w,//width
           h;//height
-     var ctx=canvas.getContext("2d");
      canvas.addEvent('mousedown',function(e){started=true;x=e.event.offsetX;y=e.event.offsetY;});
      canvas.addEvent('mousemove',function(e){ 
      if(started){
@@ -93,49 +100,45 @@ drawMarkups: function(type)
      canvas.addEvent('mouseup',function(e){
         started= false;
         //Save the Percentage Relative to the Picture
-        x=x/this.wid;
-        y=y/this.hei;
-        w=w/this.wid;
-        h=h/this.hei;
+        x=(x+left-oleft)/owidth;
+        y=(y+top-otop)/oheight;
+        w=w/owidth;
+        h=h/oheight;
         var tip=prompt("Please Enter Some Descriptions","");
         if (tip!=null)
         {
-            //Update Annotations
-	    this.annotations.push( {x:x,y:y,w:w,h:h,type:'ellipse',text:tip});   
-            this.updateAnnotations();
+                //Update Annotations
+		iip.annotations.push( {x:x,y:y,w:w,h:h,type:"ellipse",text:tip});  
+                saveAnnotations(1,iip.annotations);iip.updateAnnotations();
         }
         //Remove Events and Destroy the Create Layer
 	$("myCanvas").removeEvent('mousedown');
 	$("myCanvas").removeEvent('mouseup');
 	$("myCanvas").removeEvent('mousemove');
         $("createlayer").destroy();
-     }.bind(this));
+     });
      break;
      case "pencil":
      //Draw Pencil
      var started=false;
      var pencil=[];//The Pencil Object
      var newpoly=[];//Every Stroke is treated as a Continous Polyline
-     var numpoint=0;//Number of Points in Every Stroke
-     var ctx=canvas.getContext("2d");
      canvas.addEvent('mousedown',function(e){ 
         started=true;
-        newpoly.push( {"x":e.event.offsetX/this.wid,"y":e.event.offsetY/this.hei});//The percentage will be saved
+        newpoly.push( {"x":e.event.offsetX,"y":e.event.offsetY});//The percentage will be saved
 	ctx.beginPath();
-	ctx.moveTo(newpoly[numpoint].x*this.wid, newpoly[numpoint].y*this.hei);
+	ctx.moveTo(e.event.offsetX, e.event.offsetY);
 	ctx.strokeStyle = "#ff0000";
 	ctx.stroke();
-        numpoint++;
-     }.bind(this));
+     });
      canvas.addEvent('mousemove',function(e){ 
        if(started)
        {
-	     newpoly.push( {"x":e.event.offsetX/this.wid,"y":e.event.offsetY/this.hei});
-	     ctx.lineTo(newpoly[numpoint].x*this.wid, newpoly[numpoint].y*this.hei);
-	     numpoint++;
+	     newpoly.push( {"x":e.event.offsetX,"y":e.event.offsetY});
+	     ctx.lineTo(e.event.offsetX,e.event.offsetY);
 	     ctx.stroke();
 	}
-      }.bind(this));
+      });
      canvas.addEvent('mouseup',function(e){ 
         started=false;
         pencil.push(newpoly);//Push the Stroke to the Pencil Object
@@ -152,54 +155,58 @@ drawMarkups: function(type)
             newpoly=pencil[i];
             for(j=0;j<newpoly.length;j++)
             {
-	   	 points+=newpoly[j].x+','+newpoly[j].y+' ';
+	   	 points+=(newpoly[j].x+left-oleft)/owidth+','+(newpoly[j].y+top-otop)/oheight+' ';
                  if (((newpoly[j].x-x)*(newpoly[j].x-x)+(newpoly[j].y-y)*(newpoly[j].y-y))>maxdistance)
                  {
                      maxdistance=((newpoly[j].x-x)*(newpoly[j].x-x)+(newpoly[j].y-y)*(newpoly[j].y-y));
-                     w=Math.abs(newpoly[j].x-x);
-                     h=Math.abs(newpoly[j].y-y);
+                     w=Math.abs(newpoly[j].x-x)/owidth;
+                     h=Math.abs(newpoly[j].y-y)/oheight;
                  }
             }
             points=points.slice(0, -1)
             points+=';';
 	} 
         points=points.slice(0,-1);
-	this.annotations.push( {x:x,y:y,w:w,h:h,type:"pencil",points:points,text:tip}); 
-        this.updateAnnotations();
+        x=(x+left-oleft)/owidth;
+        y=(y+top-otop)/oheight;
+	if (tip!=null)
+        {
+	        iip.annotations.push( {x:x,y:y,w:w,h:h,type:"pencil",points:points,text:tip}); 
+		saveAnnotations(1,iip.annotations);iip.updateAnnotations();
+        }
         //Remove Events and Destroy the Create Layer
 	$("myCanvas").removeEvent('mousedown');
 	$("myCanvas").removeEvent('mouseup');
 	$("myCanvas").removeEvent('mousemove');
         $("createlayer").destroy();
-     }.bind(this));
+     });
      break;
      case "polyline":
         //Create Polylines
         var newpoly=[];//New Polyline
         var numpoint=0;//Number of Points
         canvas.addEvent('mousedown',function(e){ 
-	var ctx=canvas.getContext("2d");
    	ctx.fillStyle="#FF0000";
         ctx.beginPath();
 	ctx.arc(e.event.offsetX,e.event.offsetY,2,0,Math.PI*2,true);
 	ctx.closePath();
 	ctx.fill();
-        newpoly.push( {"x":e.event.offsetX/this.wid,"y":e.event.offsetY/this.hei});
+        newpoly.push( {"x":e.event.offsetX,"y":e.event.offsetY});
         if(numpoint>0)
         {
 		ctx.beginPath();
-		ctx.moveTo(newpoly[numpoint].x*this.wid, newpoly[numpoint].y*this.hei);
-		ctx.lineTo(newpoly[numpoint-1].x*this.wid, newpoly[numpoint-1].y*this.hei);
+		ctx.moveTo(newpoly[numpoint].x, newpoly[numpoint].y);
+		ctx.lineTo(newpoly[numpoint-1].x, newpoly[numpoint-1].y);
 		ctx.strokeStyle = "#ff0000";
 		ctx.stroke();
 	}
         numpoint++;
-        }.bind(this));
+        });
         canvas.addEvent('dblclick',function(e){
-	var ctx=canvas.getContext("2d");
+	
 	ctx.beginPath();
-	ctx.moveTo(newpoly[numpoint-1].x*this.wid, newpoly[numpoint-1].y*this.hei);
-	ctx.lineTo(newpoly[0].x*this.wid, newpoly[0].y*this.hei);
+	ctx.moveTo(newpoly[numpoint-1].x, newpoly[numpoint-1].y);
+	ctx.lineTo(newpoly[0].x, newpoly[0].y);
 	ctx.strokeStyle = "#ff0000";
 	ctx.stroke();
 	var x,y,w,h;
@@ -210,24 +217,36 @@ drawMarkups: function(type)
 	var points="";
 	for (var i=0;i<numpoint-1;i++)
 	{
-	   points+=newpoly[i].x+','+newpoly[i].y+' ';
+	   points+=(newpoly[i].x+left-oleft)/owidth+','+(newpoly[i].y+top-otop)/oheight+' ';
+ 	   if (((newpoly[i].x-x)*(newpoly[i].x-x)+(newpoly[i].y-y)*(newpoly[i].y-y))>maxdistance)
+                 {
+                     maxdistance=((newpoly[i].x-x)*(newpoly[i].x-x)+(newpoly[i].y-y)*(newpoly[i].y-y));
+                     w=Math.abs(newpoly[i].x-x)/owidth;
+                     h=Math.abs(newpoly[i].y-y)/oheight;
+                 }
+
 	} 
-	points+=newpoly[i].x+','+newpoly[i].y;
-	w=Math.abs(newpoly[i].x-x);
-        h=Math.abs(newpoly[i].y-y);
-	this.annotations.push( {x:x,y:y,w:w,h:h,type:"polyline",points:points,text:tip}); 
-        this.createAnnotations(); 
+	points+=(newpoly[i].x+left-oleft)/owidth+','+(newpoly[i].y+top-otop)/oheight;
+        x=(x+left-oleft)/owidth;
+        y=(y+top-otop)/oheight;
+        if(tip!=null)
+        {
+		iip.annotations.push( {x:x,y:y,w:w,h:h,type:"polyline",points:points,text:tip}); 
+		saveAnnotations(1,iip.annotations);iip.updateAnnotations(); 
+        }
         //Remove Events and Destroy the Create Layer
 	$("myCanvas").removeEvent('mousedown');
 	$("myCanvas").removeEvent('mouseup');
 	$("myCanvas").removeEvent('mousemove');
-        $("createlayer").destroy();}.bind(this));
+        $("createlayer").destroy();});
      break;
      case "measure":
      var started=false;
-     var ctx=canvas.getContext("2d");
      var x0,y0,x1,y1;
      var ratio=0.005;//One pixel equals to the length in real situation
+     var maxWidth=4000;
+     var maxHeight=800;
+     var length;
      var ruler=new Element('div',{id:'ruler',styles:{background:'black',position:'absolute',color:'white',width:'200px'}});;
      canvas.addEvent('mousedown',function(e){ 
        if (!started)
@@ -235,7 +254,7 @@ drawMarkups: function(type)
 		x0=e.event.offsetX;
 		y0=e.event.offsetY;
                 started=true;
-                ruler.inject(this.canvas);
+                ruler.inject(iip.canvas);
        }
        else
        {
@@ -247,6 +266,17 @@ drawMarkups: function(type)
 		ctx.strokeStyle = "#ff0000";
 		ctx.stroke();
                 ctx.closePath();
+		var tip=prompt("Save This?",length);
+ 		if(tip!=null)
+    	        {
+		        x=(x0+left-oleft)/owidth;
+	       	        y=(y0+top-otop)/oheight;
+                        w=Math.abs(x1-x0)/owidth;
+                        h=Math.abs(y1-y0)/oheight;
+                        points=(x1+left-oleft)/owidth+","+(y1+top-otop)/oheight;
+			iip.annotations.push( {x:x,y:y,w:w,h:h,type:"line",points:points,text:tip}); 
+			saveAnnotations(1,iip.annotations);iip.updateAnnotations(); 
+     		}
 		$("myCanvas").removeEvent('mousedown');
 		$("myCanvas").removeEvent('mouseup');
 		$("myCanvas").removeEvent('mousemove');
@@ -254,17 +284,17 @@ drawMarkups: function(type)
                 started=false;
 		$("ruler").destroy();
 	}
-    }.bind(this));
+    });
     canvas.addEvent('mousemove',function(e){ 
        if ( started)
        {
-          	ctx.clearRect(0,0,this.wid,this.hei);
+          	ctx.clearRect(0,0,iip.wid,iip.hei);
 		x1=e.event.offsetX;
 		y1=e.event.offsetY;
-                var maxLength=(Math.sqrt(this.max_size.w*this.max_size.w+this.max_size.h*this.max_size.h));
-                var screen=(Math.sqrt(this.wid*this.wid+this.hei*this.hei));
-		var length=((Math.sqrt((x0-x1)*(x0-x1)+(y0-y1)*(y0-y1)))/screen)*maxLength*ratio+'mm';
-                ruler.set({html:length,styles:{left:x1+10,top:y1}});
+                var maxLength=(Math.sqrt(maxWidth*maxWidth+maxHeight*maxHeight));
+                var screen=(Math.sqrt(owidth*owidth+oheight*oheight));
+	        length=((Math.sqrt((x0-x1)*(x0-x1)+(y0-y1)*(y0-y1)))/screen)*maxLength*ratio+'mm';
+                ruler.set({html:length,styles:{left:x1+left-oleft+10,top:y1+top-otop}});
 		ctx.beginPath();
 		ctx.moveTo(x0, y0);
 		ctx.lineTo(x1, y1);
@@ -273,8 +303,7 @@ drawMarkups: function(type)
                 ctx.closePath();
                 
        }
-    }.bind(this));
+    });
     break;
   }
 }
-});
