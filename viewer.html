@@ -138,16 +138,53 @@
 	   background: #fff;
 	   cursor: pointer;
     }
-    .magnify
-    {
-	position:absolute;
-	width:200px;
-	-webkit-border-radius: 20em;
-	-moz-border-radius: 20em;
-	border-color: transparent;
-	height:200px;
-	z-index:2;
-    }
+    .magnify 
+	{
+		width: 200px;
+		height: 200px;
+		position: absolute;
+		top: 0px;
+		left: 0px;
+		overflow: hidden;
+
+		border-radius: 100px; /* Half glass max width height */
+		-moz-border-radius: 100px; /* Half glass max width height */
+		-webkit-border-radius: 0px;
+
+		border: 1px solid white;
+		background-color: white;
+
+		z-index: 1000;
+	}
+
+	.magnify .magnified_content {
+		top: 0px;
+		left: 0px;
+
+		margin-left: -100px; /* Half glass width */
+		margin-top: -100px; /* Half glass height */
+
+		overflow: visible;
+
+		position: absolute;
+		display: block;
+
+		transform:scale(2);
+		-moz-transform:scale(2);
+		-webkit-transform:scale(2);
+		-ms-transform:scale(2);
+		-o-transform:scale(2);
+
+		transform-origin: left top;
+		-moz-transform-origin: left top;
+		-ms-transform-origin: left top;
+		-webkit-transform-origin: left top;
+		-o-transform-origin: left top;
+
+		user-select: none;
+		-moz-user-select: none;
+		-webkit-user-select: none;
+	}
     
   </style>
 

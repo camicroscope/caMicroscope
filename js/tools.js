@@ -57,8 +57,21 @@ var newtool=function(ele,iip)
 var magnify=function()
 {
    if($("magnify")) $("magnify").destroy();
-   var magnify=new Element('div',{id:"magnify",'class':"magnify"}).inject(document.body);
-   iip.svg.hide();iip.canvas.getElements("div.annotation").hide();
-   iip.canvas.getElements("img.layer0").addEvent('mousemove',function(e){ $("magnify").set({styles:{left:e.event.screenX-50,top:e.event.screenY-100},html:'<img width="200" src="'+this.src+'"/>'});});
-   iip.canvas.addEvent('mousedown',function(){iip.svg.show();iip.canvas.getElements("div.annotation").show();if($("magnify")) $("magnify").destroy();});
+   var magnify=new Element('div',{id:"magnify",'class':"magnify"});
+   var content=new Element('div',{'class':"magnified_content",styles:{width:document.getSize().x,height:document.getSize().y}});
+   content.set({html:document.body.innerHTML});
+   content.inject(magnify);
+   magnify.inject(document.body);
+   magnify.makeDraggable({
+   onDrag: function(draggable){
+        var left=parseInt(magnify.style.left);
+        var top=parseInt(magnify.style.top);
+        var scale=2.0;
+        magnify.set({'styles':{left:left,top:top}});
+        content.set({'styles':{left:-scale*left,top:-scale*top}});
+    },
+    onDrop: function(draggable){
+ 	$("magnify").destroy();
+    }
+  });
 }
