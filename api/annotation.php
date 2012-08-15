@@ -17,7 +17,7 @@ switch ($_SERVER['REQUEST_METHOD'])
 	    {
 	        while($row=mysql_fetch_array($res))
                 {
-		        $annotation=array('aid'=>$row['aid'],'x'=>$row['x'],'y'=>$row['y'],'w'=>$row['w'],'h'=>$row['h'],'text'=>$row['text'],'type'=>$row['type'],'points'=>$row['points']);
+		        $annotation=array('aid'=>$row['aid'],'x'=>$row['x'],'y'=>$row['y'],'w'=>$row['w'],'h'=>$row['h'],'text'=>$row['text'],'type'=>$row['type'],'color'=>$row['color'],'points'=>$row['points']);
 		        $annotationList[]=$annotation;
 		}
 		echo json_encode($annotationList);
@@ -34,7 +34,7 @@ switch ($_SERVER['REQUEST_METHOD'])
 		 {	// Formulate Query
 			// This is the best way to perform an SQL query
 			// For more examples, see mysql_real_escape_string()
-			$query = sprintf("UPDATE `annotation` SET iid='%s',x='%s',y='%s',w='%s',h='%s',text='%s',type='%s',points='%s' WHERE aid='%s'",
+			$query = sprintf("UPDATE `annotation` SET iid='%s',x='%s',y='%s',w='%s',h='%s',text='%s',type='%s',points='%s',color='%s' WHERE aid='%s'",
 			        mysql_real_escape_string($iid),
 				mysql_real_escape_string($annotation["x"]),
 				mysql_real_escape_string($annotation["y"]),
@@ -43,6 +43,7 @@ switch ($_SERVER['REQUEST_METHOD'])
 				mysql_real_escape_string($annotation["text"]),
 				mysql_real_escape_string($annotation["type"]),
 				mysql_real_escape_string($annotation["points"]),
+				mysql_real_escape_string($annotation["color"]),
 				mysql_real_escape_string($annotation["aid"]));
 			// Perform Query
 			$result = mysql_query($query);
@@ -60,7 +61,7 @@ switch ($_SERVER['REQUEST_METHOD'])
 			// Formulate Query
 			// This is the best way to perform an SQL query
 			// For more examples, see mysql_real_escape_string()
-			$query = sprintf("INSERT INTO `annotation`(iid,x,y,w,h,text,type,points) VALUES('%s','%s','%s','%s','%s','%s','%s','%s')",
+			$query = sprintf("INSERT INTO `annotation`(iid,x,y,w,h,text,type,points,color) VALUES('%s','%s','%s','%s','%s','%s','%s','%s','%s')",
 			        mysql_real_escape_string($iid),
 				mysql_real_escape_string($annotation["x"]),
 				mysql_real_escape_string($annotation["y"]),
@@ -68,7 +69,8 @@ switch ($_SERVER['REQUEST_METHOD'])
 				mysql_real_escape_string($annotation["h"]),
 				mysql_real_escape_string($annotation["text"]),
 				mysql_real_escape_string($annotation["type"]),
-				mysql_real_escape_string($annotation["points"]));
+				mysql_real_escape_string($annotation["points"]),
+				mysql_real_escape_string($annotation["color"]));
 			// Perform Query
 			$result = mysql_query($query);
 			// Check result

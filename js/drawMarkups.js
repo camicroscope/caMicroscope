@@ -63,6 +63,7 @@ drawMarkups: function(type)
         {
                 //Update Annotations
 		this.annotations.push({x:x,y:y,w:w,h:h,type:"rect",text:tip,color:color});  
+                console.log(this.annotations);
                 saveAnnotations(this.iid,this.annotations);this.updateAnnotations();
         }
         //Remove Events and Destroy the Create Layer
