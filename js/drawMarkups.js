@@ -1,3 +1,6 @@
+var ratio=0.005;//One pixel equals to the length in real situation
+var maxWidth=4000;
+var maxHeight=800;
 IIPMooViewer.implement({ 
 //Draw Markups
 drawMarkups: function(type)
@@ -44,6 +47,7 @@ drawMarkups: function(type)
 	  y=Math.min(e.event.offsetY,y);
 	  w=Math.abs(e.event.offsetX-x);
 	  h=Math.abs(e.event.offsetY-y);
+	  ctx.strokeStyle = color;
 	  ctx.strokeRect(x,y,w,h);
     	}
       });
@@ -58,7 +62,7 @@ drawMarkups: function(type)
         if (tip!=null)
         {
                 //Update Annotations
-		this.annotations.push({x:x,y:y,w:w,h:h,type:"rect",text:tip});  
+		this.annotations.push({x:x,y:y,w:w,h:h,type:"rect",text:tip,color:color});  
                 saveAnnotations(this.iid,this.annotations);this.updateAnnotations();
         }
         //Remove Events and Destroy the Create Layer
@@ -97,6 +101,7 @@ drawMarkups: function(type)
 	ctx.bezierCurveTo(xe, ym + oy, xm + ox, ye, xm, ye);
 	ctx.bezierCurveTo(xm - ox, ye, x, ym + oy, x, ym);
 	ctx.closePath();
+	ctx.strokeStyle = color;
 	ctx.stroke();
     	}
      });
@@ -111,7 +116,7 @@ drawMarkups: function(type)
         if (tip!=null)
         {
                 //Update Annotations
-		this.annotations.push( {x:x,y:y,w:w,h:h,type:"ellipse",text:tip});  
+		this.annotations.push( {x:x,y:y,w:w,h:h,type:"ellipse",text:tip,color:color});  
                 saveAnnotations(this.iid,this.annotations);this.updateAnnotations();
         }
         //Remove Events and Destroy the Create Layer
@@ -131,7 +136,7 @@ drawMarkups: function(type)
         newpoly.push( {"x":e.event.offsetX,"y":e.event.offsetY});//The percentage will be saved
 	ctx.beginPath();
 	ctx.moveTo(e.event.offsetX, e.event.offsetY);
-	ctx.strokeStyle = "#ff0000";
+	ctx.strokeStyle = color;
 	ctx.stroke();
      });
      canvas.addEvent('mousemove',function(e){ 
@@ -174,7 +179,7 @@ drawMarkups: function(type)
         y=(y+top-otop)/oheight;
 	if (tip!=null)
         {
-	        this.annotations.push( {x:x,y:y,w:w,h:h,type:"pencil",points:points,text:tip}); 
+	        this.annotations.push( {x:x,y:y,w:w,h:h,type:"pencil",points:points,text:tip,color:color}); 
 		saveAnnotations(this.iid,this.annotations);this.updateAnnotations();
         }
         //Remove Events and Destroy the Create Layer
@@ -189,7 +194,7 @@ drawMarkups: function(type)
         var newpoly=[];//New Polyline
         var numpoint=0;//Number of Points
         canvas.addEvent('mousedown',function(e){ 
-   	ctx.fillStyle="#FF0000";
+   	ctx.fillStyle=color;
         ctx.beginPath();
 	ctx.arc(e.event.offsetX,e.event.offsetY,2,0,Math.PI*2,true);
 	ctx.closePath();
@@ -200,7 +205,7 @@ drawMarkups: function(type)
 		ctx.beginPath();
 		ctx.moveTo(newpoly[numpoint].x, newpoly[numpoint].y);
 		ctx.lineTo(newpoly[numpoint-1].x, newpoly[numpoint-1].y);
-		ctx.strokeStyle = "#ff0000";
+		ctx.strokeStyle = color;
 		ctx.stroke();
 	}
         numpoint++;
@@ -210,7 +215,7 @@ drawMarkups: function(type)
 	ctx.beginPath();
 	ctx.moveTo(newpoly[numpoint-1].x, newpoly[numpoint-1].y);
 	ctx.lineTo(newpoly[0].x, newpoly[0].y);
-	ctx.strokeStyle = "#ff0000";
+	ctx.strokeStyle = color;
 	ctx.stroke();
 	var x,y,w,h;
         x=newpoly[0].x;
@@ -234,7 +239,7 @@ drawMarkups: function(type)
         y=(y+top-otop)/oheight;
         if(tip!=null)
         {
-		this.annotations.push( {x:x,y:y,w:w,h:h,type:"polyline",points:points,text:tip}); 
+		this.annotations.push( {x:x,y:y,w:w,h:h,type:"polyline",points:points,text:tip,color:color}); 
 		saveAnnotations(this.iid,this.annotations);this.updateAnnotations(); 
         }
         //Remove Events and Destroy the Create Layer
@@ -246,9 +251,6 @@ drawMarkups: function(type)
      case "measure":
      var started=false;
      var x0,y0,x1,y1;
-     var ratio=0.005;//One pixel equals to the length in real situation
-     var maxWidth=4000;
-     var maxHeight=800;
      var length;
      var ruler=new Element('div',{id:'ruler',styles:{background:'black',position:'absolute',color:'white',width:'200px'}});;
      canvas.addEvent('mousedown',function(e){ 
@@ -266,7 +268,7 @@ drawMarkups: function(type)
 		ctx.beginPath();
 		ctx.moveTo(x0, y0);
 		ctx.lineTo(x1, y1);
-		ctx.strokeStyle = "#ff0000";
+		ctx.strokeStyle = color;
 		ctx.stroke();
                 ctx.closePath();
 		var tip=prompt("Save This?",length);
@@ -277,7 +279,7 @@ drawMarkups: function(type)
                         w=Math.abs(x1-x0)/owidth;
                         h=Math.abs(y1-y0)/oheight;
                         points=(x1+left-oleft)/owidth+","+(y1+top-otop)/oheight;
-			this.annotations.push( {x:x,y:y,w:w,h:h,type:"line",points:points,text:tip}); 
+			this.annotations.push( {x:x,y:y,w:w,h:h,type:"line",points:points,text:tip,color:color}); 
 			saveAnnotations(this.iid,this.annotations);this.updateAnnotations(); 
      		}
 		$("myCanvas").removeEvent('mousedown');
@@ -301,10 +303,9 @@ drawMarkups: function(type)
 		ctx.beginPath();
 		ctx.moveTo(x0, y0);
 		ctx.lineTo(x1, y1);
-		ctx.strokeStyle = "#ff0000";
+		ctx.strokeStyle = color;
 		ctx.stroke();
                 ctx.closePath();
-                
        }
     }.bind(this));
     break;

@@ -1,3 +1,6 @@
+var ratio=0.005;//One pixel equals to the length in real situation
+var maxWidth=4000;
+var maxHeight=800;
 var drawMarkups=function(type,container)
 {
      //Create Markup Layer
@@ -41,6 +44,7 @@ var drawMarkups=function(type,container)
 	  y=Math.min(e.event.offsetY,y);
 	  w=Math.abs(e.event.offsetX-x);
 	  h=Math.abs(e.event.offsetY-y);
+	  ctx.strokeStyle = color;
 	  ctx.strokeRect(x,y,w,h);
     	}
       });
@@ -55,7 +59,7 @@ var drawMarkups=function(type,container)
         if (tip!=null)
         {
                 //Update Annotations
-		iip.annotations.push( {x:x,y:y,w:w,h:h,type:"rect",text:tip}); 
+		iip.annotations.push( {x:x,y:y,w:w,h:h,type:"rect",text:tip,color:color}); 
                 saveAnnotations(1,iip.annotations);iip.updateAnnotations();
         }
         //Remove Events and Destroy the Create Layer
@@ -94,6 +98,7 @@ var drawMarkups=function(type,container)
 	ctx.bezierCurveTo(xe, ym + oy, xm + ox, ye, xm, ye);
 	ctx.bezierCurveTo(xm - ox, ye, x, ym + oy, x, ym);
 	ctx.closePath();
+	ctx.strokeStyle = color;
 	ctx.stroke();
     	}
      });
@@ -108,7 +113,7 @@ var drawMarkups=function(type,container)
         if (tip!=null)
         {
                 //Update Annotations
-		iip.annotations.push( {x:x,y:y,w:w,h:h,type:"ellipse",text:tip});  
+		iip.annotations.push( {x:x,y:y,w:w,h:h,type:"ellipse",text:tip,color:color});  
                 saveAnnotations(1,iip.annotations);iip.updateAnnotations();
         }
         //Remove Events and Destroy the Create Layer
@@ -128,7 +133,7 @@ var drawMarkups=function(type,container)
         newpoly.push( {"x":e.event.offsetX,"y":e.event.offsetY});//The percentage will be saved
 	ctx.beginPath();
 	ctx.moveTo(e.event.offsetX, e.event.offsetY);
-	ctx.strokeStyle = "#ff0000";
+	ctx.strokeStyle = color;
 	ctx.stroke();
      });
      canvas.addEvent('mousemove',function(e){ 
@@ -171,7 +176,7 @@ var drawMarkups=function(type,container)
         y=(y+top-otop)/oheight;
 	if (tip!=null)
         {
-	        iip.annotations.push( {x:x,y:y,w:w,h:h,type:"pencil",points:points,text:tip}); 
+	        iip.annotations.push( {x:x,y:y,w:w,h:h,type:"pencil",points:points,text:tip,color:color}); 
 		saveAnnotations(1,iip.annotations);iip.updateAnnotations();
         }
         //Remove Events and Destroy the Create Layer
@@ -186,7 +191,7 @@ var drawMarkups=function(type,container)
         var newpoly=[];//New Polyline
         var numpoint=0;//Number of Points
         canvas.addEvent('mousedown',function(e){ 
-   	ctx.fillStyle="#FF0000";
+   	ctx.fillStyle=color;
         ctx.beginPath();
 	ctx.arc(e.event.offsetX,e.event.offsetY,2,0,Math.PI*2,true);
 	ctx.closePath();
@@ -197,7 +202,7 @@ var drawMarkups=function(type,container)
 		ctx.beginPath();
 		ctx.moveTo(newpoly[numpoint].x, newpoly[numpoint].y);
 		ctx.lineTo(newpoly[numpoint-1].x, newpoly[numpoint-1].y);
-		ctx.strokeStyle = "#ff0000";
+		ctx.strokeStyle = color;
 		ctx.stroke();
 	}
         numpoint++;
@@ -207,7 +212,7 @@ var drawMarkups=function(type,container)
 	ctx.beginPath();
 	ctx.moveTo(newpoly[numpoint-1].x, newpoly[numpoint-1].y);
 	ctx.lineTo(newpoly[0].x, newpoly[0].y);
-	ctx.strokeStyle = "#ff0000";
+	ctx.strokeStyle = color;
 	ctx.stroke();
 	var x,y,w,h;
         x=newpoly[0].x;
@@ -231,7 +236,7 @@ var drawMarkups=function(type,container)
         y=(y+top-otop)/oheight;
         if(tip!=null)
         {
-		iip.annotations.push( {x:x,y:y,w:w,h:h,type:"polyline",points:points,text:tip}); 
+		iip.annotations.push( {x:x,y:y,w:w,h:h,type:"polyline",points:points,text:tip,color:color}); 
 		saveAnnotations(1,iip.annotations);iip.updateAnnotations(); 
         }
         //Remove Events and Destroy the Create Layer
@@ -243,9 +248,6 @@ var drawMarkups=function(type,container)
      case "measure":
      var started=false;
      var x0,y0,x1,y1;
-     var ratio=0.005;//One pixel equals to the length in real situation
-     var maxWidth=4000;
-     var maxHeight=800;
      var length;
      var ruler=new Element('div',{id:'ruler',styles:{background:'black',position:'absolute',color:'white',width:'200px'}});;
      canvas.addEvent('mousedown',function(e){ 
@@ -263,7 +265,7 @@ var drawMarkups=function(type,container)
 		ctx.beginPath();
 		ctx.moveTo(x0, y0);
 		ctx.lineTo(x1, y1);
-		ctx.strokeStyle = "#ff0000";
+		ctx.strokeStyle = color;
 		ctx.stroke();
                 ctx.closePath();
 		var tip=prompt("Save This?",length);
@@ -274,7 +276,7 @@ var drawMarkups=function(type,container)
                         w=Math.abs(x1-x0)/owidth;
                         h=Math.abs(y1-y0)/oheight;
                         points=(x1+left-oleft)/owidth+","+(y1+top-otop)/oheight;
-			iip.annotations.push( {x:x,y:y,w:w,h:h,type:"line",points:points,text:tip}); 
+			iip.annotations.push( {x:x,y:y,w:w,h:h,type:"line",points:points,text:tip,color:color}); 
 			saveAnnotations(1,iip.annotations);iip.updateAnnotations(); 
      		}
 		$("myCanvas").removeEvent('mousedown');
@@ -298,7 +300,7 @@ var drawMarkups=function(type,container)
 		ctx.beginPath();
 		ctx.moveTo(x0, y0);
 		ctx.lineTo(x1, y1);
-		ctx.strokeStyle = "#ff0000";
+		ctx.strokeStyle = color;
 		ctx.stroke();
                 ctx.closePath();
                 

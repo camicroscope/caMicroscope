@@ -27,14 +27,14 @@ IIPMooViewer.implement({
 		    switch (a[b].type)
 		    {
 			  case "rect":
-			  svgHtml+='<rect x="'+this.wid*a[b].x+'" y="'+this.hei*a[b].y+'" width="'+this.wid*a[b].w+'" height="'+this.hei*a[b].h+'" stroke="black" stroke-width="2" fill="none"/>';
+			  svgHtml+='<rect x="'+this.wid*a[b].x+'" y="'+this.hei*a[b].y+'" width="'+this.wid*a[b].w+'" height="'+this.hei*a[b].h+'" stroke="'+a[b].color+'" stroke-width="1" fill="none"/>';
 			  break;
 			  case "ellipse":
 		          var cx=parseFloat(a[b].x)+parseFloat(a[b].w)/2;
 			  var cy=parseFloat(a[b].y)+parseFloat(a[b].h)/2;
 			  var rx=parseFloat(a[b].w)/2;
 			  var ry=parseFloat(a[b].h)/2;
-			  svgHtml+='<ellipse cx="'+this.wid*cx+'" cy="'+this.hei*cy+'" rx="'+this.wid*rx+'" ry="'+this.hei*ry+'" style="fill:none;stroke:purple;stroke-width:1"/>';
+			  svgHtml+='<ellipse cx="'+this.wid*cx+'" cy="'+this.hei*cy+'" rx="'+this.wid*rx+'" ry="'+this.hei*ry+'" style="fill:none;stroke:'+a[b].color+';stroke-width:1"/>';
                           break;
 			  case "pencil":
 	 		  var points=a[b].points;
@@ -50,7 +50,7 @@ IIPMooViewer.implement({
 				  py=point[1]*this.hei;
 				  svgHtml+=px+','+py+' ';
 		             }
-			     svgHtml+='" style="fill:none;stroke:red;stroke-width:1"/>';
+			     svgHtml+='" style="fill:none;stroke:'+a[b].color+';stroke-width:1"/>';
 			  }
 			  break;
 			  case "polyline":
@@ -67,12 +67,12 @@ IIPMooViewer.implement({
 				  py=point[1]*this.hei;
 				  svgHtml+=px+','+py+' ';
 		             }
-			     svgHtml+='" style="fill:none;stroke:red;stroke-width:1"/>';
+			     svgHtml+='" style="fill:none;stroke:'+a[b].color+';stroke-width:1"/>';
 			  }
 			  break;
  			  case "line":
                           var points=String.split(a[b].points,',');
-                          svgHtml+='<line x1="'+a[b].x*this.wid+'" y1="'+a[b].y*this.hei+'" x2="'+parseFloat(points[0])*this.wid+'" y2="'+parseFloat(points[1])*this.hei+'" style="stroke:rgb(255,0,0);stroke-width:1"/>';
+                          svgHtml+='<line x1="'+a[b].x*this.wid+'" y1="'+a[b].y*this.hei+'" x2="'+parseFloat(points[0])*this.wid+'" y2="'+parseFloat(points[1])*this.hei+'" style="stroke:'+a[b].color+';stroke-width:1"/>';
 			  break;
 		    }
                     d = (new Element("div", {

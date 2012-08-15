@@ -1,52 +1,59 @@
-var newtool=function(ele,iip)
+var color='purple';
+var newtool=function(el,iip)
 {
-	var element = $(ele);//The Element to Trigger Tool Slider
+	var element = $(el);//The Element to Trigger Tool Slider
 	if($("slider")) $("slider").destroy();
-	var slider=new Element('div',{id:'slider','class':'slider',styles:"width:180px",html:''}).inject(element);
-	var rectbutton=new Element('img',{'title':'rectangle','src':'images/rect.svg',
+	var slider=new Element('div',{id:'slider','class':'slider',html:''}).inject(element);
+	var rectbutton=new Element('img',{'title':'rectangle','width':'19px','src':'images/rect.svg',
 				   'events':{
 		                        'click':function(){drawMarkups('rect',iip.canvas);},
 					'mouseenter':function(){this.addClass('selected');},
 					'mouseleave':function(){this.removeClass('selected');}
 					   }
 					}).inject(slider);
-	var ellipsebutton=new Element('img',{'title':'ellipse','src':'images/ellipse.svg',
+	var ellipsebutton=new Element('img',{'title':'ellipse','width':'19px','src':'images/ellipse.svg',
 				   'events':{
 					'click':function(){drawMarkups('ellipse',iip.canvas);},
 					'mouseenter':function(){this.addClass('selected');},
 					'mouseleave':function(){this.removeClass('selected');}
 					   }
 					}).inject(slider);
-	var polybutton=new Element('img',{'title':'polyline','src':'images/poly.svg',
+	var polybutton=new Element('img',{'title':'polyline','width':'19px','src':'images/poly.svg',
 				   'events':{
 					'click':function(){drawMarkups('polyline',iip.canvas);},
 					'mouseenter':function(){this.addClass('selected');},
 					'mouseleave':function(){this.removeClass('selected');}
 					   }
 					}).inject(slider);
-	var pencilbutton=new Element('img',{'title':'pencil','src':'images/pencil.svg',
+	var pencilbutton=new Element('img',{'title':'pencil','width':'19px','src':'images/pencil.svg',
 				   'events':{
 					'click':function(){drawMarkups('pencil',iip.canvas);},
 					'mouseenter':function(){this.addClass('selected');},
 					'mouseleave':function(){this.removeClass('selected');}
 					   }
 					}).inject(slider);
-
-	var measurebutton=new Element('img',{'title':'measure','src':'images/measure.svg',
+	var colorbutton=new Element('img',{'title':'Change Color','width':'19px','src':'images/color.svg',
+				   'events':{
+		                        'click':function(){selectColor(slider);},
+					'mouseenter':function(){this.addClass('selected');},
+					'mouseleave':function(){this.removeClass('selected');}
+					   }
+					}).inject(slider);
+	var measurebutton=new Element('img',{'title':'measure','width':'19px','src':'images/measure.svg',
 				   'events':{
 					'click':function(){drawMarkups('measure',iip.canvas);},
 					'mouseenter':function(){this.addClass('selected');},
 					'mouseleave':function(){this.removeClass('selected');}
 					   }
 					}).inject(slider);
-	var magnifybutton=new Element('img',{'title':'magnify','src':'images/magnify.svg',
+	var magnifybutton=new Element('img',{'title':'magnify','width':'19px','src':'images/magnify.svg',
 				   'events':{
 					'click':function(){magnify();},
 					'mouseenter':function(){this.addClass('selected');},
 					'mouseleave':function(){this.removeClass('selected');}
 					   }
 					}).inject(slider);
-	var hidebutton=new Element('img',{'title':'hide','src':'images/hide.svg',
+	var hidebutton=new Element('img',{'title':'hide','width':'19px','src':'images/hide.svg',
 				   'events':{
 					'mouseenter':function(){this.addClass('selected');iip.svg.toggle();},
 					'mouseleave':function(){this.removeClass('selected');},
@@ -75,5 +82,60 @@ var magnify=function()
  	$("magnify").destroy();
     }
   });
+}
+
+var selectColor=function(element)
+{
+	if($("color")) $("color").destroy();
+	var colorContainer=new Element('div',{id:'color'}).inject(element);
+        var blackColor=new Element('img',{'width':'19px','height':'19px','title':'black',	
+				'styles':{'background-color':'black'},
+				'events':{'mouseeneter':function(){this.addClass('selected');},
+					  'mouseleave':function(){this.removeClass('selected');},
+                                           'click':function(){color='black';$("color").destroy();}
+					 }}).inject(colorContainer);
+	var redColor=new Element('img',{'width':'19px','height':'19px','title':'Default',
+				'styles':{'background-color':'red'},
+				'events':{'mouseeneter':function(){this.addClass('selected');},
+					  'mouseleave':function(){this.removeClass('selected');},
+                                           'click':function(){color='red';$("color").destroy();}
+					 }}).inject(colorContainer);
+	var blueColor=new Element('img',{'width':'19px','height':'19px','title':'blue',	
+				'styles':{'background-color':'blue'},
+				'events':{'mouseeneter':function(){this.addClass('selected');},
+					  'mouseleave':function(){this.removeClass('selected');},
+                                           'click':function(){color='blue';$("color").destroy();}
+					 }}).inject(colorContainer);
+	var greenColor=new Element('img',{'width':'19px','height':'19px','title':'lime',	
+				'styles':{'background-color':'lime'},
+				'events':{'mouseeneter':function(){this.addClass('selected');},
+					  'mouseleave':function(){this.removeClass('selected');},
+                                           'click':function(){color='lime';$("color").destroy();}
+					 }}).inject(colorContainer);
+	var purpleColor=new Element('img',{'width':'19px','height':'19px','title':'purple',	
+				'styles':{'background-color':'purple'},
+				'events':{'mouseeneter':function(){this.addClass('selected');},
+					  'mouseleave':function(){this.removeClass('selected');},
+                                           'click':function(){color='purple';$("color").destroy();}
+					 }}).inject(colorContainer);
+	var orangeColor=new Element('img',{'width':'19px','height':'19px','title':'orange',	
+				'styles':{'background-color':'orange'},
+				'events':{'mouseeneter':function(){this.addClass('selected');},
+					  'mouseleave':function(){this.removeClass('selected');},
+                                           'click':function(){color='orange';$("color").destroy();}
+					 }}).inject(colorContainer);
+	var yellowColor=new Element('img',{'width':'19px','height':'19px','title':'yellow',	
+				'styles':{'background-color':'yellow'},
+				'events':{'mouseeneter':function(){this.addClass('selected');},
+					  'mouseleave':function(){this.removeClass('selected');},
+                                           'click':function(){color='yellow';$("color").destroy();}
+					 }}).inject(colorContainer);
+	var pinkColor=new Element('img',{'width':'19px','height':'19px','title':'pink',	
+				'styles':{'background-color':'pink'},
+				'events':{'mouseeneter':function(){this.addClass('selected');},
+					  'mouseleave':function(){this.removeClass('selected');},
+                                           'click':function(){color='pink';$("color").destroy();}
+					 }}).inject(colorContainer);
+        
 }
 
