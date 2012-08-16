@@ -61,12 +61,8 @@ var drawMarkups=function(type,container)
                 //Update Annotations
 		iip.annotations.push( {x:x,y:y,w:w,h:h,type:"rect",text:tip,color:color}); 
                 saveAnnotations(1,iip.annotations);iip.updateAnnotations();
+                drawMarkups(type,container);
         }
-        //Remove Events and Destroy the Create Layer
-	$("myCanvas").removeEvent('mousedown');
-	$("myCanvas").removeEvent('mouseup');
-	$("myCanvas").removeEvent('mousemove');
-  	$("createlayer").destroy();
      });
      break;
      case "ellipse":
@@ -115,12 +111,8 @@ var drawMarkups=function(type,container)
                 //Update Annotations
 		iip.annotations.push( {x:x,y:y,w:w,h:h,type:"ellipse",text:tip,color:color});  
                 saveAnnotations(1,iip.annotations);iip.updateAnnotations();
+		drawMarkups(type,container);
         }
-        //Remove Events and Destroy the Create Layer
-	$("myCanvas").removeEvent('mousedown');
-	$("myCanvas").removeEvent('mouseup');
-	$("myCanvas").removeEvent('mousemove');
-        $("createlayer").destroy();
      });
      break;
      case "pencil":
@@ -178,12 +170,8 @@ var drawMarkups=function(type,container)
         {
 	        iip.annotations.push( {x:x,y:y,w:w,h:h,type:"pencil",points:points,text:tip,color:color}); 
 		saveAnnotations(1,iip.annotations);iip.updateAnnotations();
+		drawMarkups(type,container);
         }
-        //Remove Events and Destroy the Create Layer
-	$("myCanvas").removeEvent('mousedown');
-	$("myCanvas").removeEvent('mouseup');
-	$("myCanvas").removeEvent('mousemove');
-        $("createlayer").destroy();
      });
      break;
      case "polyline":
@@ -238,12 +226,9 @@ var drawMarkups=function(type,container)
         {
 		iip.annotations.push( {x:x,y:y,w:w,h:h,type:"polyline",points:points,text:tip,color:color}); 
 		saveAnnotations(1,iip.annotations);iip.updateAnnotations(); 
+		drawMarkups(type,container);
         }
-        //Remove Events and Destroy the Create Layer
-	$("myCanvas").removeEvent('mousedown');
-	$("myCanvas").removeEvent('mouseup');
-	$("myCanvas").removeEvent('mousemove');
-        $("createlayer").destroy();});
+       });
      break;
      case "measure":
      var started=false;
@@ -278,11 +263,8 @@ var drawMarkups=function(type,container)
                         points=(x1+left-oleft)/owidth+","+(y1+top-otop)/oheight;
 			iip.annotations.push( {x:x,y:y,w:w,h:h,type:"line",points:points,text:tip,color:color}); 
 			saveAnnotations(1,iip.annotations);iip.updateAnnotations(); 
+			drawMarkups(type,container);
      		}
-		$("myCanvas").removeEvent('mousedown');
-		$("myCanvas").removeEvent('mouseup');
-		$("myCanvas").removeEvent('mousemove');
-       	        $("createlayer").destroy();
                 started=false;
 		$("ruler").destroy();
 	}

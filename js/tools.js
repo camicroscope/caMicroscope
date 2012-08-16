@@ -81,6 +81,7 @@ var magnify=function()
  	$("magnify").destroy();
     }
   });
+    magnify.addEvent('click',function(){$("magnify").destroy();});
 }
 var selectColor=function(element)
 {

@@ -79,9 +79,9 @@ var magnify=function()
         content.set({'styles':{left:-scale*left,top:-scale*top}});
     },
     onDrop: function(draggable){
- 	$("magnify").destroy();
     }
   });
+    magnify.addEvent('click',function(){$("magnify").destroy();});
 }
 
 var selectColor=function(element)

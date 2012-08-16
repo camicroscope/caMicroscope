@@ -63,14 +63,8 @@ drawMarkups: function(type)
         {
                 //Update Annotations
 		this.annotations.push({x:x,y:y,w:w,h:h,type:"rect",text:tip,color:color});  
-                console.log(this.annotations);
-                saveAnnotations(this.iid,this.annotations);this.updateAnnotations();
+                saveAnnotations(this.iid,this.annotations);this.updateAnnotations();this.drawMarkups(type);
         }
-        //Remove Events and Destroy the Create Layer
-	$("myCanvas").removeEvent('mousedown');
-	$("myCanvas").removeEvent('mouseup');
-	$("myCanvas").removeEvent('mousemove');
-  	$("createlayer").destroy();
      }.bind(this));
      break;
      case "ellipse":
@@ -118,13 +112,8 @@ drawMarkups: function(type)
         {
                 //Update Annotations
 		this.annotations.push( {x:x,y:y,w:w,h:h,type:"ellipse",text:tip,color:color});  
-                saveAnnotations(this.iid,this.annotations);this.updateAnnotations();
+                saveAnnotations(this.iid,this.annotations);this.updateAnnotations();this.drawMarkups(type);
         }
-        //Remove Events and Destroy the Create Layer
-	$("myCanvas").removeEvent('mousedown');
-	$("myCanvas").removeEvent('mouseup');
-	$("myCanvas").removeEvent('mousemove');
-        $("createlayer").destroy();
      }.bind(this));
      break;
      case "pencil":
@@ -181,13 +170,8 @@ drawMarkups: function(type)
 	if (tip!=null)
         {
 	        this.annotations.push( {x:x,y:y,w:w,h:h,type:"pencil",points:points,text:tip,color:color}); 
-		saveAnnotations(this.iid,this.annotations);this.updateAnnotations();
+		saveAnnotations(this.iid,this.annotations);this.updateAnnotations();this.drawMarkups(type);
         }
-        //Remove Events and Destroy the Create Layer
-	$("myCanvas").removeEvent('mousedown');
-	$("myCanvas").removeEvent('mouseup');
-	$("myCanvas").removeEvent('mousemove');
-        $("createlayer").destroy();
      }.bind(this));
      break;
      case "polyline":
@@ -241,13 +225,8 @@ drawMarkups: function(type)
         if(tip!=null)
         {
 		this.annotations.push( {x:x,y:y,w:w,h:h,type:"polyline",points:points,text:tip,color:color}); 
-		saveAnnotations(this.iid,this.annotations);this.updateAnnotations(); 
-        }
-        //Remove Events and Destroy the Create Layer
-	$("myCanvas").removeEvent('mousedown');
-	$("myCanvas").removeEvent('mouseup');
-	$("myCanvas").removeEvent('mousemove');
-        $("createlayer").destroy();}.bind(this));
+		saveAnnotations(this.iid,this.annotations);this.updateAnnotations();this.drawMarkups(type); 
+        }}.bind(this));
      break;
      case "measure":
      var started=false;
@@ -281,12 +260,8 @@ drawMarkups: function(type)
                         h=Math.abs(y1-y0)/oheight;
                         points=(x1+left-oleft)/owidth+","+(y1+top-otop)/oheight;
 			this.annotations.push( {x:x,y:y,w:w,h:h,type:"line",points:points,text:tip,color:color}); 
-			saveAnnotations(this.iid,this.annotations);this.updateAnnotations(); 
+			saveAnnotations(this.iid,this.annotations);this.updateAnnotations();this.drawMarkups(type); 
      		}
-		$("myCanvas").removeEvent('mousedown');
-		$("myCanvas").removeEvent('mouseup');
-		$("myCanvas").removeEvent('mousemove');
-       	        $("createlayer").destroy();
                 started=false;
 		$("ruler").destroy();
 	}

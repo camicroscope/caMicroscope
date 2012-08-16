@@ -11,6 +11,8 @@ IIPMooViewer.implement({
     },
     createAnnotations: function () {
         if (this.annotations) {
+	    if($("createlayer")) $("createlayer").destroy();
+ 	    if($("magnify")) $("magnify").destroy();
             var a = [], b;
             for (b in this.annotations) this.annotations[b].id = b, a.push(this.annotations[b]);
             if (0 != a.length) {
