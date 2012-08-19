@@ -29,7 +29,6 @@
   <script type="text/javascript" src="js/iipmooviewer-2.0.js"></script>
   <script type="text/javascript" src="js/annotation.js"></script>
   <script type="text/javascript" src="js/tool.js"></script>
-  <script type="text/javascript" src="js/drawMarkup.js"></script>
   <script type="text/javascript" src="js/saveAnnotation.js"></script>
   <script type="text/javascript" src="js/edit.js"></script>
 
@@ -44,11 +43,10 @@
     // the "c:" prefix
     var image = '/usr/share/iip/3.tif';
 
-
     // Copyright or information message
     var credit = '&copy; copyright or information message';
     var iip;
-    var IP='http://170.140.138.125';
+    var IP='http://localhost';
     var jsonRequest = new Request.JSON({url: IP+'/bio/api/annot2.php', onSuccess: function(e){
 		var annot=JSON.decode(e);
 		if(annot==null) annot=new Array();
@@ -58,6 +56,7 @@
                                         annotations:annot
 				    });
 		}}).get();
+    var onetool=new annotools('tool',{left:'60px',top:'10px',canvas:'canvas'});
   </script>
 
   <style type="text/css">
@@ -76,25 +75,7 @@
 	margin: 0;
 	padding: 0;
     }	
-    div#show
-    {
-        position:absolute;
-        width:20px;
-        height:40px;
- 	left:40px;
-	top:10px;
-	z-index:5;
-    }
-    div#tool
-    {
-	position:absolute;
-	color:white;
-	left:60px;
-	top:10px;
-	z-index:5;
-        width:180px;
-    }
-    .slider
+    .annotools
     {
           margin: 1px;
 	  border: 1px outset #333;
@@ -113,72 +94,66 @@
 	  box-shadow: 4px 4px 4px rgba(0,0,0,0.75);
 	  text-shadow: 0.5px 0.5px 0 grey;
     }
-    .tiplayer
-    {
-	position:absolute;
-	top:80%;
-	left:40%;
-	z-index:2;
-    }
     .selected
     {
 	   background: #fff;
 	   cursor: pointer;
     }
+    .colorButton
+    {
+	   width:19px;
+           height:19px;
+    }
+    .toolButton
+    {
+          width:19px;
+    }
     .magnify 
-	{
-		width: 200px;
-		height: 200px;
-		position: absolute;
-		top: 0px;
-		left: 0px;
-		overflow: hidden;
+    {
+	width: 200px;
+	height: 200px;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	overflow: hidden;
+	border-radius: 100px; /* Half glass max width height */
+	-moz-border-radius: 100px; /* Half glass max width height */
+	-webkit-border-radius: 0px;
+	border: 1px solid white;
+	background-color: white;
+	z-index: 1000;
+    }
 
-		border-radius: 100px; /* Half glass max width height */
-		-moz-border-radius: 100px; /* Half glass max width height */
-		-webkit-border-radius: 0px;
+    .magnify .magnified_content 
+    {
+	top: 0px;
+	left: 0px;
+	margin-left: -100px; /* Half glass width */
+	margin-top: -100px; /* Half glass height */
+	overflow: visible;
+	position: absolute;
+	display: block;
+	transform:scale(2);
+	-moz-transform:scale(2);
+	-webkit-transform:scale(2);
+	-ms-transform:scale(2);
+	-o-transform:scale(2);
 
-		border: 1px solid white;
-		background-color: white;
+	transform-origin: left top;
+	-moz-transform-origin: left top;
+	-ms-transform-origin: left top;
+	-webkit-transform-origin: left top;
+	-o-transform-origin: left top;
 
-		z-index: 1000;
-	}
-
-	.magnify .magnified_content {
-		top: 0px;
-		left: 0px;
-
-		margin-left: -100px; /* Half glass width */
-		margin-top: -100px; /* Half glass height */
-
-		overflow: visible;
-
-		position: absolute;
-		display: block;
-
-		transform:scale(2);
-		-moz-transform:scale(2);
-		-webkit-transform:scale(2);
-		-ms-transform:scale(2);
-		-o-transform:scale(2);
-
-		transform-origin: left top;
-		-moz-transform-origin: left top;
-		-ms-transform-origin: left top;
-		-webkit-transform-origin: left top;
-		-o-transform-origin: left top;
-
-		user-select: none;
-		-moz-user-select: none;
-		-webkit-user-select: none;
-	}
+	user-select: none;
+	-moz-user-select: none;
+	-webkit-user-select: none;
+     }
   </style>
-
  </head>
 
  <body>
    <div id="viewer"></div>
-   <div id="show" onmouseover="newtool('tool',iip)"></div>
    <div id="tool"></div>
  </body>
 

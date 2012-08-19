@@ -478,6 +478,7 @@ var IIPMooViewer = new Class({
             html: '<div><div><h2><a href="http://iipimage.sourceforge.net"><img src="' + this.prefix + 'iip.32x32.png"/></a>IIPMooViewer</h2>IIPImage HTML5 Ajax High Resolution Image Viewer - Version ' + this.version + "<br/><ul><li>" + IIPMooViewer.lang.navigate + "</li><li>" + IIPMooViewer.lang.zoomIn + "</li><li>" + IIPMooViewer.lang.zoomOut + "</li><li>" + IIPMooViewer.lang.rotate + "</li><li>" + IIPMooViewer.lang.fullscreen + "<li>" + IIPMooViewer.lang.annotations + "</li><li>" + IIPMooViewer.lang.navigation + "</li></ul><br/>" + IIPMooViewer.lang.more + ' <a href="http://iipimage.sourceforge.net">http://iipimage.sourceforge.net</a></div></div>'
         })).inject(this.container);
         this.canvas = new Element("div", {
+            "id":"canvas",
             "class": "canvas",
             morph: {
                 transition: Fx.Transitions.Quad.easeInOut,

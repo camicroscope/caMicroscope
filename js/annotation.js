@@ -149,10 +149,7 @@ IIPMooViewer.implement({
     toggleAnnotations: function () {
         var a;
         if (a = this.canvas.getElements("div.annotation")) this.annotationsVisible ? (a.addClass("hidden"),
-        this.annotationsVisible = !1, this.showPopUp(IIPMooViewer.lang.annotationsDisabled)) : (a.removeClass("hidden"), this.annotationsVisible = !0);
-        //toggle the SVG as well, however this.svg.toggle();doesn't work:(
-        if(this.svg.style.visibility!='hidden') this.svg.set({styles:{visibility:'hidden'}});
-        else this.svg.set({styles:{visibility:'visible'}});
+        this.annotationsVisible = !1, this.showPopUp(IIPMooViewer.lang.annotationsDisabled),this.svg.set({styles:{visibility:'hidden'}})) : (a.removeClass("hidden"), this.annotationsVisible = !0,this.svg.set({styles:{visibility:'visible'}}));
     },
     destroyAnnotations: function () {
         this.annotationTip && this.annotationTip.detach(this.canvas.getChildren("div.annotation"));
