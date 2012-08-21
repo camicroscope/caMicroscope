@@ -1,4 +1,5 @@
 var color='lime';
+var IP="http://localhost";
 var ratio=0.005;//One pixel equals to the length in real situation
 var maxWidth=4000;
 var maxHeight=800;
@@ -8,11 +9,12 @@ var annotools = new Class({
         this.left=options.left|| '0px';
         this.top=options.top|| '0px';
         this.height=options.height||'20px';
-        this.width=options.width|| '160px';
+        this.width=options.width|| '180px';
         this.zindex=options.zindex|| '100';
         this.canvas=options.canvas;
+        this.iid=options.iid||null;//image id
         this.annotations=options.annot||[];
-        this.annotationVisible=true;
+        this.annotVisible=true;
         this.mode='default';
 	window.addEvent("domready",this.createButtons.bind(this));
         window.addEvent("keydown",function(event){this.keyPress(event.code)}.bind(this));
@@ -31,6 +33,7 @@ var annotools = new Class({
 	this.measurebutton=new Element('img',{'title':'measure','class':'toolButton','src':'images/measure.svg'}).inject(this.tool);
 	this.magnifybutton=new Element('img',{'title':'magnify','class':'toolButton','src':'images/magnify.svg'}).inject(this.tool);
 	this.hidebutton=new Element('img',{'title':'hide','class':'toolButton','src':'images/hide.svg'}).inject(this.tool);
+	this.quitbutton=new Element('img',{'title':'quit','class':'toolButton','src':'images/quit.svg'}).inject(this.tool);
         var toolButtons=document.getElementsByClassName("toolButton");
         for(var i=0;i<toolButtons.length;i++)
         {
@@ -44,12 +47,14 @@ var annotools = new Class({
         this.magnifybutton.addEvents({'click':function(){this.mode='magnify';this.showMessage();this.magnify();}.bind(this)});
         this.colorbutton.addEvents({'click':function(){this.selectColor()}.bind(this)});
         this.hidebutton.addEvents({'click':function(){this.toggleMarkups()}.bind(this)});
+        this.quitbutton.addEvents({'click':function(){this.quitMode();this.quitbutton.hide();}.bind(this)});
         this.messageBox=new Element('div',{'id':'messageBox'}).inject(document.body);
         this.showMessage("Press white space to toggle editing tool");
+        this.quitbutton.hide();
+        
     },
     keyPress:function(code)
     {
-        console.log(code);
         switch (code)
         {
            case 65://press a to toggle annotations
@@ -94,6 +99,7 @@ var annotools = new Class({
 	   oheight=height;
 	 if (left<0){left=0;width=window.innerWidth;}
 	 if (top<0){top=0;height=window.innerHeight;}
+	 this.quitbutton.show();
 	 if($("magnify")) $("magnify").destroy();
          if($("createlayer"))
 	 {
@@ -141,7 +147,7 @@ var annotools = new Class({
 		{
 		        //Update Annotations
                         var newAnnot= {x:x,y:y,w:w,h:h,type:"rect",text:tip,color:color};
-			this.updateAnnot(newAnnot);
+			this.addnewAnnot(newAnnot);
                         this.drawMarkups();
 		}
                 else{ ctx.clearRect(0,0,canvas.width,canvas.height);}
@@ -192,7 +198,7 @@ var annotools = new Class({
 		{
 		        //Update Annotations
 			var newAnnot= {x:x,y:y,w:w,h:h,type:"ellipse",text:tip,color:color};
-			this.updateAnnot(newAnnot);
+			this.addnewAnnot(newAnnot);
                         this.drawMarkups();
 		}
                 else{ ctx.clearRect(0,0,canvas.width,canvas.height);}
@@ -252,7 +258,7 @@ var annotools = new Class({
 		if (tip!=null)
 		{
 			var newAnnot={x:x,y:y,w:w,h:h,type:"pencil",points:points,text:tip,color:color}; 
-			this.updateAnnot(newAnnot);
+			this.addnewAnnot(newAnnot);
                         this.drawMarkups();
 		}
                 else{ ctx.clearRect(0,0,canvas.width,canvas.height);}
@@ -308,7 +314,7 @@ var annotools = new Class({
 		if(tip!=null)
 		{
 			var newAnnot={x:x,y:y,w:w,h:h,type:"polyline",points:points,text:tip,color:color}; 
-			this.updateAnnot(newAnnot);
+			this.addnewAnnot(newAnnot);
                         this.drawMarkups();
 		}
                 else{ ctx.clearRect(0,0,canvas.width,canvas.height);}
@@ -346,7 +352,7 @@ var annotools = new Class({
 		                h=Math.abs(y1-y0)/oheight;
 		                points=(x1+left-oleft)/owidth+","+(y1+top-otop)/oheight;
 				var newAnnot={x:x,y:y,w:w,h:h,type:"line",points:points,text:tip,color:color}; 
-				this.updateAnnot(newAnnot);
+				this.addnewAnnot(newAnnot);
                                 this.drawMarkups();
 	     		}
                	        else{ ctx.clearRect(0,0,canvas.width,canvas.height);}
@@ -378,6 +384,7 @@ var annotools = new Class({
     },
     magnify:function()
    {
+	   this.quitbutton.show();
 	   if($("magnify")) $("magnify").destroy();
            if($("createlayer"))
 	   {
@@ -456,10 +463,10 @@ var annotools = new Class({
         }
         
 	},
-        updateAnnot:function(newAnnot)
+        addnewAnnot:function(newAnnot)
         {
 		this.annotations.push(newAnnot); 
-		saveAnnotations(1,this.annotations);
+		this.saveAnnot(this.iid);
                 this.displayAnnot();
         },
         quitMode:function()
@@ -476,8 +483,9 @@ var annotools = new Class({
         },
         toggleMarkups:function()
         {
-           if(this.svg) this.svg.toggle();
-           else this.displayAnnot();
+           if(this.annotVisible)
+           {this.annotVisible=false;this.svg.toggle();}
+           else {this.annotVisible=true;this.svg.toggle();}
            this.showMessage("annotation toggled");
 	},
         showMessage:function(msg)
@@ -503,14 +511,18 @@ var annotools = new Class({
 	    if($("createlayer")) $("createlayer").destroy();
  	    if($("magnify")) $("magnify").destroy();
             for (b in this.annotations) this.annotations[b].id = b, a.push(this.annotations[b]);
+            container.getElements(".annotcontainer").destroy();
+            if(this.svg) this.svg.destroy();
                //This part is for displaying SVG annotations
-                if(this.annotationVisible)
+                if(this.annotVisible)
                {
 		var svgHtml='<svg xmlns="http://www.w3.org/2000/svg" version="1.1">';
                 for (b = 0; b < a.length; b++) 
                 {
-		    switch (a[b].type)
-		    {
+                    if(((width*a[b].x+left)>0)&&((width*a[b].x+left+width*a[b].w)<window.innerWidth)&&((height*a[b].y+top)>0)&&((height*a[b].y+top+height*a[b].h)<window.innerHeight))
+                    {
+		       switch (a[b].type)
+		       {
 			  case "rect":
 			  svgHtml+='<rect x="'+width*a[b].x+'" y="'+height*a[b].y+'" width="'+width*a[b].w+'" height="'+height*a[b].h+'" stroke="'+a[b].color+'" stroke-width="2" fill="none"/>';
 			  break;
@@ -559,11 +571,27 @@ var annotools = new Class({
                           var points=String.split(a[b].points,',');
                           svgHtml+='<line x1="'+a[b].x*width+'" y1="'+a[b].y*height+'" x2="'+parseFloat(points[0])*width+'" y2="'+parseFloat(points[1])*height+'" style="stroke:'+a[b].color+';stroke-width:2"/>';
 			  break;
-		    }
+		       }
+ 		   var d = new Element("div", {
+                        id: a[b].id,
+                        "class": 'annotcontainer',
+                        styles: {
+                            position:'absolute',
+                            left: Math.round(width * a[b].x),
+                            top: Math.round(height * a[b].y),
+                            width: Math.round(width * a[b].w),
+                            height: Math.round(height * a[b].h)
+                        }
+		    }).inject(container);
+                    var c=this;
+                    d.addEvents({'mouseenter':function(e){e.stop;c.displayTip(this.id)},
+                                 'mouseleave':function(e){e.stop;c.destroyTip()},
+                                 'dblclick':function(e){ e.stop();c.editTip(this.id)}}); 
+                    }
                 }
 		 svgHtml+='</svg>';
                  //inject the SVG Annotations to this.Canvas
-           	 this.svg = (new Element("div", {
+           	 this.svg = new Element("div", {
                  styles: {
                      position:"absolute",
                      left: 0,
@@ -572,13 +600,92 @@ var annotools = new Class({
                      height: '100%'
                    },
 	     	   html:svgHtml
-	        })).inject(container);
+	        }).inject(container);
             }
 	},
-        displayTip:function(b)
+        displayTip:function(id)
         { 
-              console.log(b);
-        }        
+
+            var container=document.id(this.canvas);
+            var width=parseInt(container.offsetWidth),
+	        height=parseInt(container.offsetHeight),
+                annot=this.annotations[id];
+             var d = new Element("div", {
+                        "class": 'annotip',
+                        styles: {
+                            position:'absolute',
+                            left: Math.round(width*annot.x),
+                            top: Math.round(height*annot.y)
+                        },
+                        html:annot.text
+		    }).inject(container);
+             this.showMessage("Double Click to Edit");
+        },
+        destroyTip:function()
+        {    
+            var container=document.id(this.canvas);
+                container.getElements(".annotip").destroy();
+        },
+        editTip:function(id)
+        {
+            var container=document.id(this.canvas);
+                container.getElements(".annotip").destroy();
+            var width=parseInt(container.offsetWidth),
+	        height=parseInt(container.offsetHeight),
+                annot=this.annotations[id];
+            var d = new Element("div", {
+                        "class": 'edittip',
+                        styles: {
+                            position:'absolute',
+                            left: Math.round(width*annot.x),
+                            top: Math.round(height*annot.y+height*annot.h)
+                        }
+		    }).inject(container);
+            d.makeDraggable();
+            var _this=this;
+            var deleteButton=new Element("button",{html:'Delete',events:{'click':function(){d.destroy();_this.deleteAnnot(id)}}}).inject(d);
+            var editButton=new Element("button",{html:'Edit',events:{'click':function(){
+		      var tip=prompt("Make some changes",annot.text);
+                      if(tip!=null)
+	    	      {
+                          _this.annotations[id].text=tip;
+			  _this.saveAnnot(_this.iid);
+			  _this.displayAnnot();
+			  d.destroy();
+	     	      }
+                      else d.destroy();
+               }}}).inject(d);
+            var cancelButton=new Element("button",{html:'Cancel',events:{'click':function(){
+                     d.destroy();
+               }}}).inject(d);
+        },
+        deleteAnnot:function(id)
+        {
+	      this.annotations.splice(id,1);
+              this.saveAnnot(this.iid);
+              this.displayAnnot();
+        },
+        saveAnnot:function(iid)
+        {
+                var _this=this;
+                if(iid)
+                {
+		   var jsonRequest = new Request.JSON({url: IP+'/bio/api/annot2.php',
+                         onSuccess: function(e){
+			_this.showMessage("saved to the server");
+			},onFailue:function(e){
+                       _this.showMessage("Error Saving the Annotations,please check you saveAnnot funciton");}}).post({'annot':this.annotations});
+                }
+                else
+                {
+		   var jsonRequest = new Request.JSON({url: IP+'/bio/api/annot2.php',
+                         onSuccess: function(e){
+			_this.showMessage("saved to the server");
+			},onFailue:function(e){
+                       _this.showMessage("Error Saving the Annotations,please check you saveAnnot funciton");}}).post({'iid':this.iid,'annot':this.annotations});
+                }
+                
+        }
 });
 
 

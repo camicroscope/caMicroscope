@@ -51,6 +51,53 @@
 	   width:19px;
            height:19px;
     }
+    .annotcontainer
+    {
+          z-index:30;
+    }
+    .annotip
+    {
+          width:120px;
+	  margin: 1px;
+	  border: 1px outset #333;
+	  color: #fff;
+	  background: #222;
+	  opacity: 0.70;
+	  font-weight: normal;
+          text-align: center;
+	  padding: 1px;
+	  font-size: 80%;
+	  -moz-border-radius: 0.3em;
+	  -webkit-border-radius: 0.3em;
+	  border-radius: 0.3em;
+	  -moz-box-shadow: 4px 4px 4px rgba(0,0,0,0.75);
+	  -webkit-box-shadow: 4px 4px 4px rgba(0,0,0,0.75);
+	  -o-box-shadow: 4px 4px 4px rgba(0,0,0,0.75);
+	  box-shadow: 4px 4px 4px rgba(0,0,0,0.75);
+	  text-shadow: 0.5px 0.5px 0 grey;
+    }
+    .edittip
+    {
+          z-index:1000px;
+          width:180px;
+	  margin: 1px;
+	  border: 1px outset #333;
+	  color: #fff;
+	  background: #222;
+	  opacity: 0.70;
+	  font-weight: normal;
+          text-align: center;
+	  padding: 1px;
+	  font-size: 60%;
+	  -moz-border-radius: 0.3em;
+	  -webkit-border-radius: 0.3em;
+	  border-radius: 0.3em;
+	  -moz-box-shadow: 4px 4px 4px rgba(0,0,0,0.75);
+	  -webkit-box-shadow: 4px 4px 4px rgba(0,0,0,0.75);
+	  -o-box-shadow: 4px 4px 4px rgba(0,0,0,0.75);
+	  box-shadow: 4px 4px 4px rgba(0,0,0,0.75);
+	  text-shadow: 0.5px 0.5px 0 grey;
+    }
     .toolButton
     {
           width:19px;
