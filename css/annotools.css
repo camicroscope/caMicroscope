@@ -1,0 +1,98 @@
+.annotools
+    {
+          margin: 1px;
+	  border: 1px outset #333;
+	  color: #fff;
+	  background: #222;
+	  opacity: 0.85;
+	  font-weight: normal;
+	  padding: 1px;
+	  font-size: 80%;
+	  -moz-border-radius: 0.3em;
+	  -webkit-border-radius: 0.3em;
+	  border-radius: 0.3em;
+	  -moz-box-shadow: 4px 4px 4px rgba(0,0,0,0.75);
+	  -webkit-box-shadow: 4px 4px 4px rgba(0,0,0,0.75);
+	  -o-box-shadow: 4px 4px 4px rgba(0,0,0,0.75);
+	  box-shadow: 4px 4px 4px rgba(0,0,0,0.75);
+	  text-shadow: 0.5px 0.5px 0 grey;
+    }
+    .selected
+    {
+	   background: #fff;
+	   cursor: pointer;
+    }
+    #messageBox
+    {
+	   position:absolute;
+	   width:180px;
+	   left:30%;
+	   top:5%;
+	   margin: 1px;
+	  border: 1px outset #333;
+	  color: #fff;
+	  background: #222;
+	  opacity: 0.85;
+	  font-weight: normal;
+          text-align: center;
+	  padding: 1px;
+	  font-size: 80%;
+	  -moz-border-radius: 0.3em;
+	  -webkit-border-radius: 0.3em;
+	  border-radius: 0.3em;
+	  -moz-box-shadow: 4px 4px 4px rgba(0,0,0,0.75);
+	  -webkit-box-shadow: 4px 4px 4px rgba(0,0,0,0.75);
+	  -o-box-shadow: 4px 4px 4px rgba(0,0,0,0.75);
+	  box-shadow: 4px 4px 4px rgba(0,0,0,0.75);
+	  text-shadow: 0.5px 0.5px 0 grey;
+    }
+    .colorButton
+    {
+	   width:19px;
+           height:19px;
+    }
+    .toolButton
+    {
+          width:19px;
+    }
+    .magnify 
+    {
+	width: 200px;
+	height: 200px;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	overflow: hidden;
+	border-radius: 100px; /* Half glass max width height */
+	-moz-border-radius: 100px; /* Half glass max width height */
+	-webkit-border-radius: 0px;
+	border: 1px solid white;
+	background-color: white;
+	z-index: 1000;
+    }
+
+    .magnify .magnified_content 
+    {
+	top: 0px;
+	left: 0px;
+	margin-left: -100px; /* Half glass width */
+	margin-top: -100px; /* Half glass height */
+	overflow: visible;
+	position: absolute;
+	display: block;
+	transform:scale(2);
+	-moz-transform:scale(2);
+	-webkit-transform:scale(2);
+	-ms-transform:scale(2);
+	-o-transform:scale(2);
+
+	transform-origin: left top;
+	-moz-transform-origin: left top;
+	-ms-transform-origin: left top;
+	-webkit-transform-origin: left top;
+	-o-transform-origin: left top;
+
+	user-select: none;
+	-moz-user-select: none;
+	-webkit-user-select: none;
+     }

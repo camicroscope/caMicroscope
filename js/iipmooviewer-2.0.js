@@ -96,6 +96,7 @@ var IIPMooViewer = new Class({
             this.canvas.setStyle(this.CSSprefix + "transform-origin", a + " " + b)
         }
         this.loadGrid();
+        if(annotool.annotations) annotool.displayAnnot();
         this.annotations && (this.createAnnotations(), this.annotationTip && this.annotationTip.attach(this.canvas.getChildren("div.annotation")))
     },
     loadGrid: function () {
@@ -989,6 +990,11 @@ IIPMooViewer.lang = {
     rotate: 'To rotate image clockwise: press the "r" key, anti-clockwise: press shift and "r"',
     fullscreen: 'For fullscreen: press the "f" key',
     annotations: 'To toggle any annotations: press the "a" key',
+    pencil: 'To toggle the pencil tool: press the "p" key',
+    poly: 'To toggle the polygon tool: press the "p" key',
+    edit:'To toggle Editing:press "e" key',
+    magnify:'To toggle Magnify glass:press "m" key',
+    
     navigation: 'To show/hide navigation window: press "h" key',
     more: "For more information visit",
     exitFullscreen: 'Press "Esc" to exit fullscreen mode',
