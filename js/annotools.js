@@ -1,4 +1,5 @@
 var color='lime';
+var Dir='http://localhost/bio';
 var ratio=0.005;//One pixel equals to the length in real situation
 var maxWidth=4000;
 var maxHeight=800;
@@ -12,12 +13,31 @@ var annotools = new Class({
         this.zindex=options.zindex|| '100';
         this.canvas=options.canvas;
         this.iid=options.iid||null;//image id
-        this.annotations=options.annot||[];
-        this.annotVisible=false;
+        this.annotVisible=true;
+		this.getAnnot();
         this.mode='default';
-	window.addEvent("domready",this.createButtons.bind(this));
+	    window.addEvent("domready",this.createButtons.bind(this));
         window.addEvent("keydown",function(event){this.keyPress(event.code)}.bind(this));
     },
+	getAnnot:function()
+	{
+		 if(this.iid)
+		{
+			var jsonRequest = new Request.JSON({url: Dir+'/api/annot2.php', onSuccess: function(e){
+			var annot=JSON.decode(e);
+			if(annot==null) annot=new Array();
+					this.annotations=annot;
+			}.bind(this),onFailure:function(e){this.showMessage("cannot get the annotations,please check your getAnnot function");}.bind(this)}).get({'iid':this.iid}); 
+		}
+		else
+		{
+			var jsonRequest = new Request.JSON({url: Dir+'/api/annot2.php', onSuccess: function(e){
+			var annot=JSON.decode(e);
+			if(annot==null) annot=new Array();
+					this.annotations=annot;
+			}.bind(this),onFailure:function(e){this.showMessage("cannot get the annotations,please check your getAnnot funciton");}.bind(this)}).get(); 
+		}
+	},
     createButtons:function()
     {
         this.tool=document.id(this.source);
@@ -50,7 +70,6 @@ var annotools = new Class({
         this.messageBox=new Element('div',{'id':'messageBox'}).inject(document.body);
         this.showMessage("Press white space to toggle annotations");
         this.quitbutton.hide();
-        
     },
     keyPress:function(code)
     {
@@ -465,7 +484,7 @@ var annotools = new Class({
         addnewAnnot:function(newAnnot)
         {
 		this.annotations.push(newAnnot); 
-		this.saveAnnot(this.iid);
+		this.saveAnnot();
                 this.displayAnnot();
         },
         quitMode:function()
@@ -593,7 +612,6 @@ var annotools = new Class({
                     }
                 }
 		 svgHtml+='</svg>';
-                 console.log(this.annotations.length);
                  if (this.annotations.length>0)
                  {
 		 //inject the SVG Annotations to this.Canvas
@@ -608,7 +626,7 @@ var annotools = new Class({
 	     	   html:svgHtml
 		}).inject(container);
                 }
-                else { this.annotVisible=false;this.showMessage("Please Press white space to toggle the Annotations");}
+                else {this.showMessage("Please Press white space to toggle the Annotations");}
             }
 	},
         displayTip:function(id)
@@ -652,19 +670,18 @@ var annotools = new Class({
                         }
 		    }).inject(document.body);
             d.makeDraggable();
-            var _this=this;
-            var deleteButton=new Element("button",{html:'Delete',events:{'click':function(){d.destroy();_this.deleteAnnot(id)}}}).inject(d);
+            var deleteButton=new Element("button",{html:'Delete',events:{'click':function(){d.destroy();this.deleteAnnot(id)}.bind(this)}}).inject(d);
             var editButton=new Element("button",{html:'Edit',events:{'click':function(){
 		      var tip=prompt("Make some changes",annot.text);
                       if(tip!=null)
 	    	      {
                           _this.annotations[id].text=tip;
-			  _this.saveAnnot(_this.iid);
-			  _this.displayAnnot();
+			  this.saveAnnot();
+			  this.displayAnnot();
 			  d.destroy();
 	     	      }
                       else d.destroy();
-               }}}).inject(d);
+               }.bind(this)}}).inject(d);
             var cancelButton=new Element("button",{html:'Cancel',events:{'click':function(){
                      d.destroy();
                }}}).inject(d);
@@ -672,28 +689,27 @@ var annotools = new Class({
         deleteAnnot:function(id)
         {
 	      this.annotations.splice(id,1);
-              this.saveAnnot(this.iid);
+              this.saveAnnot();
               this.displayAnnot();
         },
-        saveAnnot:function(iid)
+        saveAnnot:function()
         {
-                var _this=this;
-                if(iid)
+                if(this.iid)
                 {
-		   var jsonRequest = new Request.JSON({url: IP+'/bio/api/annotation.php',
+		   var jsonRequest = new Request.JSON({url: Dir+'/api/annotation.php',
                          onSuccess: function(e){
-			_this.showMessage("saved to the server");
-			},onFailue:function(e){
-                       _this.showMessage("Error Saving the Annotations,please check you saveAnnot funciton");}}).post({'iid':this.iid,'annot':this.annotations});
+			this.showMessage("saved to the server");
+			}.bind(this),onFailure:function(e){
+                       this.showMessage("Error Saving the Annotations,please check you saveAnnot funciton");}.bind(this)}).post({'iid':this.iid,'annot':this.annotations});
 
                 }
                 else
                 {
-		   var jsonRequest = new Request.JSON({url: IP+'/bio/api/annot2.php',
+		   var jsonRequest = new Request.JSON({url: Dir+'/api/annot2.php',
                          onSuccess: function(e){
-			_this.showMessage("saved to the server");
-			},onFailue:function(e){
-                       _this.showMessage("Error Saving the Annotations,please check you saveAnnot funciton");}}).post({'annot':this.annotations});
+			this.showMessage("saved to the server");
+			}.bind(this),onFailure:function(e){
+                       this.showMessage("Error Saving the Annotations,please check you saveAnnot funciton");}.bind(this)}).post({'annot':this.annotations});
                 }
         }
 });

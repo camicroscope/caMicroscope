@@ -61,12 +61,6 @@
 				image: image,
 				credit: credit
 			    });
-    var IP='http://localhost';
-    var jsonRequest = new Request.JSON({url: IP+'/bio/api/annotation.php', onSuccess: function(e){
-	var annot=e;
-	if((annot==null)||(annot=='NoAnnotations')) annot=new Array();
-         annotool.annotations=annot;
-	}}).get({'iid':iid});
   </script>
 
   <style type="text/css">

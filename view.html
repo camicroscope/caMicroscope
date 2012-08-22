@@ -48,12 +48,6 @@
 					image: image,
 					credit: credit
 				    });
-    var IP='http://localhost';
-    var jsonRequest = new Request.JSON({url: IP+'/bio/api/annot2.php', onSuccess: function(e){
-		var annot=JSON.decode(e);
-		if(annot==null) annot=new Array();
-                annotool.annotations=annot;
-		}}).get();
   </script>
 
   <style type="text/css">
