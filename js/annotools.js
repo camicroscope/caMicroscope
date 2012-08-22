@@ -1,5 +1,4 @@
 var color='lime';
-var IP="http://localhost";
 var ratio=0.005;//One pixel equals to the length in real situation
 var maxWidth=4000;
 var maxHeight=800;
@@ -14,7 +13,7 @@ var annotools = new Class({
         this.canvas=options.canvas;
         this.iid=options.iid||null;//image id
         this.annotations=options.annot||[];
-        this.annotVisible=true;
+        this.annotVisible=false;
         this.mode='default';
 	window.addEvent("domready",this.createButtons.bind(this));
         window.addEvent("keydown",function(event){this.keyPress(event.code)}.bind(this));
@@ -49,7 +48,7 @@ var annotools = new Class({
         this.hidebutton.addEvents({'click':function(){this.toggleMarkups()}.bind(this)});
         this.quitbutton.addEvents({'click':function(){this.quitMode();this.quitbutton.hide();}.bind(this)});
         this.messageBox=new Element('div',{'id':'messageBox'}).inject(document.body);
-        this.showMessage("Press white space to toggle editing tool");
+        this.showMessage("Press white space to toggle annotations");
         this.quitbutton.hide();
         
     },
@@ -57,14 +56,14 @@ var annotools = new Class({
     {
         switch (code)
         {
-           case 65://press a to toggle annotations
-	   this.toggleMarkups();
+           case 84://press t to toggle tools
+           this.tool.toggle();
            break;
            case 81://press q to quit any mode
            this.quitMode();
            break;
-           case 32://press white space to toggle tools
-           this.tool.toggle();
+           case 32://press white space to toggle annotations
+	   this.toggleMarkups();
            break;
 	   case 49://1 for rectangle mode
            this.mode='rect';this.showMessage();this.drawMarkups();
@@ -483,9 +482,13 @@ var annotools = new Class({
         },
         toggleMarkups:function()
         {
-           if(this.annotVisible)
-           {this.annotVisible=false;this.svg.toggle();}
-           else {this.annotVisible=true;this.svg.toggle();}
+           if(this.svg)
+           {
+		   if(this.annotVisible)
+		   {this.annotVisible=false;this.svg.hide();document.getElements(".annotcontainer").hide();}
+		   else {this.annotVisible=true;this.displayAnnot();document.getElements(".annotcontainer").show();}
+           }
+           else { this.annotVisible=true;this.displayAnnot();}
            this.showMessage("annotation toggled");
 	},
         showMessage:function(msg)
@@ -590,17 +593,22 @@ var annotools = new Class({
                     }
                 }
 		 svgHtml+='</svg>';
-                 //inject the SVG Annotations to this.Canvas
-           	 this.svg = new Element("div", {
-                 styles: {
-                     position:"absolute",
-                     left: 0,
-                     top: 0,
-                     width: '100%',
-                     height: '100%'
-                   },
+                 console.log(this.annotations.length);
+                 if (this.annotations.length>0)
+                 {
+		 //inject the SVG Annotations to this.Canvas
+	   	 this.svg = new Element("div", {
+		 styles: {
+		     position:"absolute",
+		     left: 0,
+		     top: 0,
+		     width: '100%',
+		     height: '100%'
+		   },
 	     	   html:svgHtml
-	        }).inject(container);
+		}).inject(container);
+                }
+                else { this.annotVisible=false;this.showMessage("Please Press white space to toggle the Annotations");}
             }
 	},
         displayTip:function(id)
@@ -632,15 +640,17 @@ var annotools = new Class({
                 container.getElements(".annotip").destroy();
             var width=parseInt(container.offsetWidth),
 	        height=parseInt(container.offsetHeight),
+ 		left=parseInt(container.offsetLeft),
+	        top=parseInt(container.offsetTop),
                 annot=this.annotations[id];
             var d = new Element("div", {
                         "class": 'edittip',
                         styles: {
                             position:'absolute',
-                            left: Math.round(width*annot.x),
-                            top: Math.round(height*annot.y+height*annot.h)
+                            left: Math.round(width*annot.x+left),
+                            top: Math.round(height*annot.y+height*annot.h+top)
                         }
-		    }).inject(container);
+		    }).inject(document.body);
             d.makeDraggable();
             var _this=this;
             var deleteButton=new Element("button",{html:'Delete',events:{'click':function(){d.destroy();_this.deleteAnnot(id)}}}).inject(d);
@@ -670,11 +680,12 @@ var annotools = new Class({
                 var _this=this;
                 if(iid)
                 {
-		   var jsonRequest = new Request.JSON({url: IP+'/bio/api/annot2.php',
+		   var jsonRequest = new Request.JSON({url: IP+'/bio/api/annotation.php',
                          onSuccess: function(e){
 			_this.showMessage("saved to the server");
 			},onFailue:function(e){
-                       _this.showMessage("Error Saving the Annotations,please check you saveAnnot funciton");}}).post({'annot':this.annotations});
+                       _this.showMessage("Error Saving the Annotations,please check you saveAnnot funciton");}}).post({'iid':this.iid,'annot':this.annotations});
+
                 }
                 else
                 {
@@ -682,9 +693,8 @@ var annotools = new Class({
                          onSuccess: function(e){
 			_this.showMessage("saved to the server");
 			},onFailue:function(e){
-                       _this.showMessage("Error Saving the Annotations,please check you saveAnnot funciton");}}).post({'iid':this.iid,'annot':this.annotations});
+                       _this.showMessage("Error Saving the Annotations,please check you saveAnnot funciton");}}).post({'annot':this.annotations});
                 }
-                
         }
 });
 
