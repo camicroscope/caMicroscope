@@ -1,4 +1,4 @@
-var IP='http://localhost/bio';
+var IP='http://170.140.138.125';
 function showImageMeta()
 {
         //show the image meta data

@@ -1,4 +1,4 @@
-var IP='http://localhost/bio';
+var IP='http://170.140.138.125';
 var annotools = new Class({
     initialize: function(element,options){
         this.source = element;//The Tool Source Element

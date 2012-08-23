@@ -1,4 +1,4 @@
-var IP="http://localhost/bio";
+var IP="http://170.140.138.125";
 window.addEvent('domready', function() {
         //Add The Image meta data slider at the bottom
         var myElement = $("meta");
