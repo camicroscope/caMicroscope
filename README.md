@@ -1,4 +1,6 @@
 Bio-Medical Image-Viewer
+
+Shaohuan Li(Shao) Google Summer of Code 2012. HTML5 Large Bio-Medical Image Viewer Project.All Rights Reserved.
 ============
 
 About
@@ -21,21 +23,28 @@ Features
 Specifications
 --------------
 
-js/tool.js is for displaying drawing tools when a showTool function is triggered.
+js/iipmooviewer-2.0.js is the Orignial IIPmooviewer with some customization. One big change is to add a displayAnnotation funciton in the requestImages function inside the class. Some small changes would be the size of the navigation window has been adjusted.
 
-js/annotation.js contains mainly three functions:1.DrawMarkups 2.CreateAnnotations 3. Save Annotations.
+js/annotools.js is the main outcome of this project. It is an independent annotation module which can be added to other web services as well.
+All the user needs to do is to create an annotools object and associate the tool tag id with the tag that needs to draw annotations on.
+An example would be like http://170.140.138.125/view.html
 
-js/annotation-edit.js is for editing annotations. 
+The annotools.js can become an independent mootools plugin later. css/annotools.css and some svg imges in the images folder would need to be copied,too.
 
-api/annot2.php is for saving and getting annotation meta data.
-api/annot2.txt is the file storing the annotation data. This file has to be set as readable/writable to the public.
+js/mootools-more.js and mootools-core.js would be the latest mootools framework.
 
-view.html is for the drawing testings. You may test it here:http://170.140.138.125/bio/view.html
+js/main.js is the image meta data handler. js/moreImages.js is the bottom slider which will display the image meta data more conveniently.
 
-api/annotation.php is for saving the annotation data to the database.
-api/image.php is for getting the image meta data from the database.
+api/annot.php is for saving and getting annotation meta data.
+api/annot.txt is the file storing the annotation data. This file has to be set as readable/writable to the public.
 
-index.html and viewer.html is for the image viewer which is connected to the database. You may test it here.http://170.140.138.125/bio
+api/image.php is the phpscript to get the image information from the database
+api/annotation.php is the PHP script to get the annotation info from the database
+api/state.php is to save the state of the viewer. The developers would be using zoomTo(zoom) and moveTo(left,top) to navigate to the saved state.
+
+view.html is for the drawing without connecting to the database.You may test it here:http://170.140.138.125/view.html
+
+index.html and viewer.html is for the image viewer which is connected to the database. You may test it here.http://170.140.138.125
 
 schema.sql is the database schema
 
