@@ -3,12 +3,6 @@
 
  <head>
   <meta charset="utf-8" />
-  <meta name="DC.creator" content="Ruven Pillay &lt;ruven@users.sourceforge.netm&gt;"/>
-  <meta name="DC.title" content="IIPMooViewer 2.0: HTML5 High Resolution Image Viewer"/>
-  <meta name="DC.subject" content="IIPMooViewer; IIPImage; Visualization; HTML5; Ajax; High Resolution; Internet Imaging Protocol; IIP"/>
-  <meta name="DC.description" content="IIPMooViewer is an advanced javascript HTML5 image viewer for streaming high resolution scientific images"/>
-  <meta name="DC.rights" content="Copyright &copy; 2003-2012 Ruven Pillay"/>
-  <meta name="DC.source" content="http://iipimage.sourceforge.net"/>
   <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -25,8 +19,8 @@
 
   <title>IIPMooViewer 2.0 :: HTML5 High Resolution Image Viewer</title>
 
-  <script type="text/javascript" src="js/mootools-core-1.4.5-full-nocompat-yc.js"></script>
-  <script type="text/javascript" src="js/mootools-more-1.4.0.1-compressed.js"></script>
+  <script type="text/javascript" src="js/mootools-core.js"></script>
+  <script type="text/javascript" src="js/mootools-more.js"></script>
   <script type="text/javascript" src="js/iipmooviewer-2.0.js"></script>
   <script type="text/javascript" src="js/annotools.js"></script>
 
@@ -40,15 +34,14 @@
     // server root directory. On Windows, use Unix style forward slash paths without
     // the "c:" prefix
     var image = '/usr/share/iip/3.tif';
-
     // Copyright or information message
     var credit = '&copy; copyright or information message';
+    //the annotools initiliaze the location and the associated tag id
     var annotool=new annotools('tool',{left:'60px',top:'10px',canvas:'canvas'});
     var iip= new IIPMooViewer( "viewer", {
 					image: image,
 					credit: credit
 				    });
-    if(annotool.annotations) annotool.displayAnnot();
   </script>
 
   <style type="text/css">

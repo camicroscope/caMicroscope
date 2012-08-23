@@ -1,84 +1,92 @@
-var color='lime';
-var Dir='http://localhost/bio';
-var ratio=0.005;//One pixel equals to the length in real situation
-var maxWidth=4000;
-var maxHeight=800;
+var IP='http://localhost/bio';
 var annotools = new Class({
     initialize: function(element,options){
-        this.source = element;
-        this.left=options.left|| '0px';
+        this.source = element;//The Tool Source Element
+        this.left=options.left|| '0px';//The Tool Location
+        this.ratio=options.ratio||0.005;//One pixel equals to the length in real situation. Will be used in the measurement tool
+        this.maxWidth=options.maxWidth||4000;//MaxWidth of the Image
+        this.maxHeight=options.maxHeight||800;////MaxHeight of the Image
         this.top=options.top|| '0px';
+        this.color=options.color||'lime';//Default Annotation Color
         this.height=options.height||'20px';
-        this.width=options.width|| '180px';
-        this.zindex=options.zindex|| '100';
-        this.canvas=options.canvas;
-        this.iid=options.iid||null;//image id
-        this.annotVisible=true;
-	this.getAnnot();
-        this.mode='default';
-	    window.addEvent("domready",this.createButtons.bind(this));
-        window.addEvent("keydown",function(event){this.keyPress(event.code)}.bind(this));
+        this.width=options.width|| '200px';
+        this.zindex=options.zindex|| '100';//To Make Sure The Tool Appears in the Front
+        this.canvas=options.canvas;//The canvas Element that The Use will be drawing annotatoins on.
+        this.iid=options.iid||null;//The Image ID
+        this.annotVisible=true;//The Annotations are Set to be visible at the First Loading
+        this.mode='default';//The Mode is Set to Default
+	window.addEvent("domready",function(){
+	this.getAnnot();//Get the annotation information
+        this.createButtons();//Create Buttons
+        }.bind(this));
+        window.addEvent("keydown",function(event){this.keyPress(event.code)}.bind(this));//Add KeyDown Events
     },
-	getAnnot:function()
+    getAnnot:function()//Get Annotation from the API
 	{
-		 if(this.iid)
+		 if(this.iid)//When the database is set. User can refer to the annotation.php for saving the annotations
 		{
-			var jsonRequest = new Request.JSON({url: Dir+'/api/annotation.php', onSuccess: function(e){
-			if(e==null)  {this.annotations=new Array();}
-                        else { this.annotations=e; }
+			var jsonRequest = new Request.JSON({url: IP+'/api/annotation.php', onSuccess: function(e){
+			if(e==null)  this.annotations=new Array();
+                        else  this.annotations=e;
+                        this.displayAnnot();//Display The Annotations
+                        console.log("successfully get annotations");
 			}.bind(this),onFailure:function(e){this.showMessage("cannot get the annotations,please check your getAnnot function");}.bind(this)}).get({'iid':this.iid}); 
 		}
-		else
+		else //When the database is not set, one TXT file will be used to save the Annotation Data. Please Refer to annot.php in the API folder
 		{
-			var jsonRequest = new Request.JSON({url: Dir+'/api/annot2.php', onSuccess: function(e){
+			var jsonRequest = new Request.JSON({url: IP+'/api/annot.php', onSuccess: function(e){
 			var annot=JSON.decode(e);
 			if(annot==null) annot=new Array();
-					this.annotations=annot;
+			this.annotations=annot;//Display The Annotations
+			this.displayAnnot();console.log("successfully get annotations");
 			}.bind(this),onFailure:function(e){this.showMessage("cannot get the annotations,please check your getAnnot funciton");}.bind(this)}).get(); 
 		}
 	},
-    createButtons:function()
+    createButtons:function()//Create Buttons
     {
-        this.tool=document.id(this.source);
+        this.tool=document.id(this.source);//Get The Element with the Source ID.
         this.tool.setStyles({'position':'absolute','left':this.left,'top':this.top,'width':this.width,'height':this.height,'z-index':this.zindex});
-        this.tool.addClass('annotools');
-        this.tool.makeDraggable();
-	this.rectbutton=new Element('img',{'title':'rectangle','class':'toolButton','src':'images/rect.svg'}).inject(this.tool);
-	this.ellipsebutton=new Element('img',{'title':'ellipse','class':'toolButton','src':'images/ellipse.svg'}).inject(this.tool);
-	this.polybutton=new Element('img',{'title':'polyline','class':'toolButton','src':'images/poly.svg'}).inject(this.tool);
-	this.pencilbutton=new Element('img',{'title':'pencil','class':'toolButton','src':'images/pencil.svg'}).inject(this.tool);
-	this.colorbutton=new Element('img',{'title':'Change Color','class':'toolButton','src':'images/color.svg'}).inject(this.tool);
-	this.measurebutton=new Element('img',{'title':'measure','class':'toolButton','src':'images/measure.svg'}).inject(this.tool);
-	this.magnifybutton=new Element('img',{'title':'magnify','class':'toolButton','src':'images/magnify.svg'}).inject(this.tool);
-	this.hidebutton=new Element('img',{'title':'hide','class':'toolButton','src':'images/hide.svg'}).inject(this.tool);
-	this.quitbutton=new Element('img',{'title':'quit','class':'toolButton','src':'images/quit.svg'}).inject(this.tool);
+        this.tool.addClass('annotools');//Update Styles
+        this.tool.makeDraggable();//Make it Draggable.
+	this.rectbutton=new Element('img',{'title':'rectangle','class':'toolButton','src':'images/rect.svg'}).inject(this.tool);//Create Rectangle Tool
+	this.ellipsebutton=new Element('img',{'title':'ellipse','class':'toolButton','src':'images/ellipse.svg'}).inject(this.tool);//Ellipse Tool
+	this.polybutton=new Element('img',{'title':'polyline','class':'toolButton','src':'images/poly.svg'}).inject(this.tool);//Polygon Tool
+	this.pencilbutton=new Element('img',{'title':'pencil','class':'toolButton','src':'images/pencil.svg'}).inject(this.tool);//Pencil Tool
+	this.colorbutton=new Element('img',{'title':'Change Color','class':'toolButton','src':'images/color.svg'}).inject(this.tool);//Select Color
+	this.measurebutton=new Element('img',{'title':'measure','class':'toolButton','src':'images/measure.svg'}).inject(this.tool);//Measurement Tool
+	this.magnifybutton=new Element('img',{'title':'magnify','class':'toolButton','src':'images/magnify.svg'}).inject(this.tool);//Magnify Tool
+	this.hidebutton=new Element('img',{'title':'hide','class':'toolButton','src':'images/hide.svg'}).inject(this.tool);//Show/Hide Button
+	this.savebutton=new Element('img',{'title':'Save Current State','class':'toolButton','src':'images/save.svg'}).inject(this.tool);//Save Button
+	this.quitbutton=new Element('img',{'title':'quit','class':'toolButton','src':'images/quit.svg'}).inject(this.tool);//Quit Button
+        this.rectbutton.addEvents({'click':function(){this.mode='rect';this.drawMarkups();}.bind(this)});//Change Mode
+        this.ellipsebutton.addEvents({'click':function(){this.mode='ellipse';this.drawMarkups();}.bind(this)});
+        this.polybutton.addEvents({'click':function(){this.mode='polyline';this.drawMarkups();}.bind(this)});
+        this.pencilbutton.addEvents({'click':function(){this.mode='pencil';this.drawMarkups();}.bind(this)});
+        this.measurebutton.addEvents({'click':function(){this.mode='measure';this.drawMarkups();}.bind(this)});
+        this.magnifybutton.addEvents({'click':function(){this.mode='magnify';this.magnify();}.bind(this)});
+        this.colorbutton.addEvents({'click':function(){this.selectColor()}.bind(this)});
+        this.hidebutton.addEvents({'click':function(){this.toggleMarkups()}.bind(this)});
+        this.savebutton.addEvents({'click':function(){this.saveState()}.bind(this)});
+        this.quitbutton.addEvents({'click':function(){this.quitMode();this.quitbutton.hide();}.bind(this)});
+        this.messageBox=new Element('div',{'id':'messageBox'}).inject(document.body);//Create A Message Box
+        this.showMessage("Press white space to toggle annotations");
+        this.quitbutton.hide();//Quit Button Will Be Used To Return To the Default Mode
         var toolButtons=document.getElementsByClassName("toolButton");
         for(var i=0;i<toolButtons.length;i++)
         {
             toolButtons[i].addEvents({'mouseenter':function(){this.addClass('selected')},'mouseleave':function(){this.removeClass('selected')}});
         }
-        this.rectbutton.addEvents({'click':function(){this.mode='rect';this.showMessage();this.drawMarkups();}.bind(this)});
-        this.ellipsebutton.addEvents({'click':function(){this.mode='ellipse';this.showMessage();this.drawMarkups();}.bind(this)});
-        this.polybutton.addEvents({'click':function(){this.mode='polyline';this.showMessage();this.drawMarkups();}.bind(this)});
-        this.pencilbutton.addEvents({'click':function(){this.mode='pencil';this.showMessage();this.drawMarkups();}.bind(this)});
-        this.measurebutton.addEvents({'click':function(){this.mode='measure';this.showMessage();this.drawMarkups();}.bind(this)});
-        this.magnifybutton.addEvents({'click':function(){this.mode='magnify';this.showMessage();this.magnify();}.bind(this)});
-        this.colorbutton.addEvents({'click':function(){this.selectColor()}.bind(this)});
-        this.hidebutton.addEvents({'click':function(){this.toggleMarkups()}.bind(this)});
-        this.quitbutton.addEvents({'click':function(){this.quitMode();this.quitbutton.hide();}.bind(this)});
-        this.messageBox=new Element('div',{'id':'messageBox'}).inject(document.body);
-        this.showMessage("Press white space to toggle annotations");
-        this.quitbutton.hide();
     },
-    keyPress:function(code)
+    keyPress:function(code)//Key Down Events Handler
     {
         switch (code)
         {
            case 84://press t to toggle tools
            this.tool.toggle();
            break;
-           case 81://press q to quit any mode
+           case 81://press q to quit current mode and return to the default mode
            this.quitMode();
+	   this.quitbutton.hide();
            break;
            case 32://press white space to toggle annotations
 	   this.toggleMarkups();
@@ -103,10 +111,14 @@ var annotools = new Class({
            break;
         }
     },
-    drawMarkups:function()
+    drawMarkups:function()//Draw Markups
     {
-        var container=document.id(this.canvas);
-        var left=parseInt(container.offsetLeft),
+        this.showMessage();//Show Message
+        var container=document.id(this.canvas); //Get The Canvas Container
+        if(container)
+        {
+	 this.quitbutton.show(); //Show The Quit Button
+         var left=parseInt(container.offsetLeft),//Get The Container Location
 	   top=parseInt(container.offsetTop),
 	   width=parseInt(container.offsetWidth),
 	   height=parseInt(container.offsetHeight),
@@ -114,11 +126,10 @@ var annotools = new Class({
 	   otop=top,
 	   owidth=width,
 	   oheight=height;
-	 if (left<0){left=0;width=window.innerWidth;}
+	 if (left<0){left=0;width=window.innerWidth;}//See Whether The Container is outside The Current ViewPort
 	 if (top<0){top=0;height=window.innerHeight;}
-	 this.quitbutton.show();
-	 if($("magnify")) $("magnify").destroy();
-         if($("createlayer"))
+	 if($("magnify")) $("magnify").destroy();//Destroy The Magnifying Tool
+         if($("createlayer"))//Destroy The CreateAnnotation Layer
 	 {
 		//Remove Events and Destroy the Create Layer
 		$("myCanvas").removeEvent('mousedown');
@@ -126,9 +137,11 @@ var annotools = new Class({
 		$("myCanvas").removeEvent('mousemove');
 	  	$("createlayer").destroy();
 	 }
+          //Recreate The CreateAnnotation Layer Because of The ViewPort Change Issue.
 	 var layer=new Element('div',{id:"createlayer",html:"",styles:{position:'absolute','z-index':1,left:left,top:top}}).inject(document.body);
-	   //Create Canvas on the Layer
+	  //Create Canvas on the CreateAnnotation Layer
          var canvas=new Element('canvas',{id:"myCanvas",width:width,height:height}).inject(layer);
+          //The canvas context
 	 var ctx=canvas.getContext("2d");
 	   //Draw Markups on Canvas
 	   switch (this.mode)
@@ -140,7 +153,7 @@ var annotools = new Class({
 		  y,//start location y
 		  w,//width
 		  h;//height
-	      canvas.addEvent('mousedown',function(e){console.log(e);started=true;x=e.event.layerX;y=e.event.layerY;});
+	      canvas.addEvent('mousedown',function(e){started=true;x=e.event.layerX;y=e.event.layerY;});
 	      canvas.addEvent('mousemove',function(e){
 	      if(started){
 		  ctx.clearRect(0,0,canvas.width,canvas.height);
@@ -148,13 +161,13 @@ var annotools = new Class({
 		  y=Math.min(e.event.layerY,y);
 		  w=Math.abs(e.event.layerX-x);
 		  h=Math.abs(e.event.layerY-y);
-		  ctx.strokeStyle = color;
+		  ctx.strokeStyle = this.color;
 		  ctx.strokeRect(x,y,w,h);
 	    	}
-	      });
+	      }.bind(this));
 	      canvas.addEvent('mouseup',function(e){
 		started= false;
-		//Save the Percentage Relative to the Picture
+		//Save the Percentage Relative to the Container
 		x=(x+left-oleft)/owidth;
 		y=(y+top-otop)/oheight;
 		w=w/owidth;
@@ -163,7 +176,7 @@ var annotools = new Class({
 		if (tip!=null)
 		{
 		        //Update Annotations
-                        var newAnnot= {x:x,y:y,w:w,h:h,type:"rect",text:tip,color:color};
+                        var newAnnot= {x:x,y:y,w:w,h:h,type:"rect",text:tip,color:this.color};
 			this.addnewAnnot(newAnnot);
                         this.drawMarkups();
 		}
@@ -199,13 +212,13 @@ var annotools = new Class({
 		ctx.bezierCurveTo(xe, ym + oy, xm + ox, ye, xm, ye);
 		ctx.bezierCurveTo(xm - ox, ye, x, ym + oy, x, ym);
 		ctx.closePath();
-		ctx.strokeStyle = color;
+		ctx.strokeStyle = this.color;
 		ctx.stroke();
 	    	}
-	     });
+	     }.bind(this));
 	     canvas.addEvent('mouseup',function(e){
 		started= false;
-		//Save the Percentage Relative to the Picture
+		//Save the Percentage Relative to the Container
 		x=(x+left-oleft)/owidth;
 		y=(y+top-otop)/oheight;
 		w=w/owidth;
@@ -214,7 +227,7 @@ var annotools = new Class({
 		if (tip!=null)
 		{
 		        //Update Annotations
-			var newAnnot= {x:x,y:y,w:w,h:h,type:"ellipse",text:tip,color:color};
+			var newAnnot= {x:x,y:y,w:w,h:h,type:"ellipse",text:tip,color:this.color};
 			this.addnewAnnot(newAnnot);
                         this.drawMarkups();
 		}
@@ -231,9 +244,9 @@ var annotools = new Class({
 		newpoly.push( {"x":e.event.layerX,"y":e.event.layerY});//The percentage will be saved
 		ctx.beginPath();
 		ctx.moveTo(e.event.layerX, e.event.layerY);
-		ctx.strokeStyle = color;
+		ctx.strokeStyle = this.color;
 		ctx.stroke();
-	     });
+	     }.bind(this));
 	     canvas.addEvent('mousemove',function(e){ 
 	       if(started)
 	       {
@@ -251,7 +264,7 @@ var annotools = new Class({
 		var x,y,w,h;
 		x=pencil[0][0].x;
 		y=pencil[0][0].y;
-		var maxdistance=0;
+		var maxdistance=0;//The Most Remote Point to Determine the Markup Size
 		var points="";
 		for (var i=0;i<pencil.length;i++)
 		{
@@ -274,7 +287,8 @@ var annotools = new Class({
 		y=(y+top-otop)/oheight;
 		if (tip!=null)
 		{
-			var newAnnot={x:x,y:y,w:w,h:h,type:"pencil",points:points,text:tip,color:color}; 
+                        //Save Annotations
+			var newAnnot={x:x,y:y,w:w,h:h,type:"pencil",points:points,text:tip,color:this.color}; 
 			this.addnewAnnot(newAnnot);
                         this.drawMarkups();
 		}
@@ -286,7 +300,7 @@ var annotools = new Class({
 		var newpoly=[];//New Polyline
 		var numpoint=0;//Number of Points
 		canvas.addEvent('mousedown',function(e){ 
-	   	ctx.fillStyle=color;
+	   	ctx.fillStyle=this.color;
 		ctx.beginPath();
 		ctx.arc(e.event.layerX,e.event.layerY,2,0,Math.PI*2,true);
 		ctx.closePath();
@@ -297,16 +311,16 @@ var annotools = new Class({
 			ctx.beginPath();
 			ctx.moveTo(newpoly[numpoint].x, newpoly[numpoint].y);
 			ctx.lineTo(newpoly[numpoint-1].x, newpoly[numpoint-1].y);
-			ctx.strokeStyle = color;
+			ctx.strokeStyle = this.color;
 			ctx.stroke();
 		}
 		numpoint++;
-		});
+		}.bind(this));
 		canvas.addEvent('dblclick',function(e){
 		ctx.beginPath();
 		ctx.moveTo(newpoly[numpoint-1].x, newpoly[numpoint-1].y);
 		ctx.lineTo(newpoly[0].x, newpoly[0].y);
-		ctx.strokeStyle = color;
+		ctx.strokeStyle = this.color;
 		ctx.stroke();
 		var x,y,w,h;
 		x=newpoly[0].x;
@@ -330,17 +344,20 @@ var annotools = new Class({
 		y=(y+top-otop)/oheight;
 		if(tip!=null)
 		{
-			var newAnnot={x:x,y:y,w:w,h:h,type:"polyline",points:points,text:tip,color:color}; 
+			var newAnnot={x:x,y:y,w:w,h:h,type:"polyline",points:points,text:tip,color:this.color}; 
 			this.addnewAnnot(newAnnot);
                         this.drawMarkups();
 		}
                 else{ ctx.clearRect(0,0,canvas.width,canvas.height);}
 	       }.bind(this));
 	     break;
-	     case "measure":
+	     case "measure"://Measurement Tool
 	     var started=false;
 	     var x0,y0,x1,y1;
 	     var length;
+             var maxWidth=this.maxWidth;
+             var maxHeight=this.maxHeight;
+             var ratio=this.ratio;
 	     var ruler=new Element('div',{id:'ruler',styles:{background:'black',position:'absolute',color:'white',width:'200px'}});;
 	     canvas.addEvent('mousedown',function(e){ 
 	       if (!started)
@@ -357,7 +374,7 @@ var annotools = new Class({
 			ctx.beginPath();
 			ctx.moveTo(x0, y0);
 			ctx.lineTo(x1, y1);
-			ctx.strokeStyle = color;
+			ctx.strokeStyle = this.color;
 			ctx.stroke();
 		        ctx.closePath();
 			var tip=prompt("Save This?",length);
@@ -368,7 +385,7 @@ var annotools = new Class({
 		                w=Math.abs(x1-x0)/owidth;
 		                h=Math.abs(y1-y0)/oheight;
 		                points=(x1+left-oleft)/owidth+","+(y1+top-otop)/oheight;
-				var newAnnot={x:x,y:y,w:w,h:h,type:"line",points:points,text:tip,color:color}; 
+				var newAnnot={x:x,y:y,w:w,h:h,type:"line",points:points,text:tip,color:this.color}; 
 				this.addnewAnnot(newAnnot);
                                 this.drawMarkups();
 	     		}
@@ -390,16 +407,17 @@ var annotools = new Class({
 			ctx.beginPath();
 			ctx.moveTo(x0, y0);
 			ctx.lineTo(x1, y1);
-			ctx.strokeStyle = color;
+			ctx.strokeStyle = this.color;
 			ctx.stroke();
 		        ctx.closePath();
 		        
 	       }
-	    });
+	    }.bind(this));
 	    break;
 	}
+       }else console.log("Container Not SET Correctly Or Not Fully Loaded Yet");
     },
-    magnify:function()
+    magnify:function()//Magnify Tool
    {
 	   this.quitbutton.show();
 	   if($("magnify")) $("magnify").destroy();
@@ -428,7 +446,7 @@ var annotools = new Class({
 	    }
 	  });
     },
-    selectColor:function()
+    selectColor:function()//Pick A Color
     {
       
 	if($("color")) $("color").destroy();
@@ -436,42 +454,42 @@ var annotools = new Class({
         var blackColor=new Element('img',{'class':'colorButton','title':'black',	
 				'styles':{'background-color':'black'},
 				'events':{
-                                           'click':function(){color='black';$("color").destroy();}
+                                           'click':function(){this.color='black';$("color").destroy();}.bind(this)
 					 }}).inject(colorContainer);
 	var redColor=new Element('img',{'class':'colorButton','title':'Default',
 				'styles':{'background-color':'red'},
 				'events':{
-                                           'click':function(){color='red';$("color").destroy();}
+                                           'click':function(){this.color='red';$("color").destroy();}.bind(this)
 					 }}).inject(colorContainer);
 	var blueColor=new Element('img',{'class':'colorButton','title':'blue',	
 				'styles':{'background-color':'blue'},
 				'events':{
-                                           'click':function(){color='blue';$("color").destroy();}
+                                           'click':function(){this.color='blue';$("color").destroy();}.bind(this)
 					 }}).inject(colorContainer);
 	var greenColor=new Element('img',{'class':'colorButton','title':'lime',	
 				'styles':{'background-color':'lime'},
 				'events':{
-                                           'click':function(){color='lime';$("color").destroy();}
+                                           'click':function(){this.color='lime';$("color").destroy();}.bind(this)
 					 }}).inject(colorContainer);
 	var purpleColor=new Element('img',{'class':'colorButton','title':'purple',	
 				'styles':{'background-color':'purple'},
 				'events':{
-                                           'click':function(){color='purple';$("color").destroy();}
+                                           'click':function(){this.color='purple';$("color").destroy();}.bind(this)
 					 }}).inject(colorContainer);
 	var orangeColor=new Element('img',{'class':'colorButton','title':'orange',	
 				'styles':{'background-color':'orange'},
 				'events':{
-                                           'click':function(){color='orange';$("color").destroy();}
+                                           'click':function(){this.color='orange';$("color").destroy();}.bind(this)
 					 }}).inject(colorContainer);
 	var yellowColor=new Element('img',{'class':'colorButton','title':'yellow',	
 				'styles':{'background-color':'yellow'},
 				'events':{
-                                           'click':function(){color='yellow';$("color").destroy();}
+                                           'click':function(){this.color='yellow';$("color").destroy();}.bind(this)
 					 }}).inject(colorContainer);
 	var pinkColor=new Element('img',{'class':'colorButton','title':'pink',	
 				'styles':{'background-color':'pink'},
 				'events':{
-                                           'click':function(){color='pink';$("color").destroy();}
+                                           'click':function(){this.color='pink';$("color").destroy();}.bind(this)
 					 }}).inject(colorContainer);
 	var colorButtons=document.getElementsByClassName("colorButton");
         for(var i=0;i<colorButtons.length;i++)
@@ -480,13 +498,13 @@ var annotools = new Class({
         }
         
 	},
-        addnewAnnot:function(newAnnot)
+        addnewAnnot:function(newAnnot)//Add New Annotations
         {
 		this.annotations.push(newAnnot); 
 		this.saveAnnot();
                 this.displayAnnot();
         },
-        quitMode:function()
+        quitMode:function()//Return To the Default Mode
         {
 	   if($("magnify")) $("magnify").destroy();
            if($("createlayer"))
@@ -498,7 +516,7 @@ var annotools = new Class({
 	  	$("createlayer").destroy();
 	   }
         },
-        toggleMarkups:function()
+        toggleMarkups:function()//Toggle Markups
         {
            if(this.svg)
            {
@@ -509,7 +527,7 @@ var annotools = new Class({
            else { this.annotVisible=true;this.displayAnnot();}
            this.showMessage("annotation toggled");
 	},
-        showMessage:function(msg)
+        showMessage:function(msg)//Show Messages
         {
                if(!(msg)) msg=this.mode+" mode,press q to quit";
                $("messageBox").set({html:msg});
@@ -521,19 +539,21 @@ var annotools = new Class({
 		}).start(0,1).chain(
    		 function(){ this.start(0.5,0); });
         },
-        displayAnnot:function()
+        displayAnnot:function()//Display SVG Annotations
         {
             var a = [], b;
             var container=document.id(this.canvas);
-            var left=parseInt(container.offsetLeft),
-	    top=parseInt(container.offsetTop),
-	    width=parseInt(container.offsetWidth),
-	    height=parseInt(container.offsetHeight);
-	    if($("createlayer")) $("createlayer").destroy();
- 	    if($("magnify")) $("magnify").destroy();
-            for (b in this.annotations) this.annotations[b].id = b, a.push(this.annotations[b]);
-            container.getElements(".annotcontainer").destroy();
-            if(this.svg){ this.svg.html='';this.svg.destroy();}
+            if(container)
+            {
+		    var left=parseInt(container.offsetLeft),
+		    top=parseInt(container.offsetTop),
+		    width=parseInt(container.offsetWidth),
+		    height=parseInt(container.offsetHeight);
+		    if($("createlayer")) $("createlayer").destroy();
+	 	    if($("magnify")) $("magnify").destroy();
+		    for (b in this.annotations) this.annotations[b].id = b, a.push(this.annotations[b]);
+		    container.getElements(".annotcontainer").destroy();
+		    if(this.svg){ this.svg.html='';this.svg.destroy();}
                //This part is for displaying SVG annotations
                 if(this.annotVisible)
                {
@@ -626,9 +646,10 @@ var annotools = new Class({
 		}).inject(container);
                 }
                 else {this.showMessage("Please Press white space to toggle the Annotations");}
-            }
+             }
+            }else{console.log("Canvas Container Not Ready");}
 	},
-        displayTip:function(id)
+        displayTip:function(id)//Display Tips
         { 
 
             var container=document.id(this.canvas);
@@ -646,12 +667,12 @@ var annotools = new Class({
 		    }).inject(container);
              this.showMessage("Double Click to Edit");
         },
-        destroyTip:function()
+        destroyTip:function()//Destroy Tips
         {    
             var container=document.id(this.canvas);
                 container.getElements(".annotip").destroy();
         },
-        editTip:function(id)
+        editTip:function(id)//Edit Tips
         {
             var container=document.id(this.canvas);
                 container.getElements(".annotip").destroy();
@@ -685,17 +706,17 @@ var annotools = new Class({
                      d.destroy();
                }}}).inject(d);
         },
-        deleteAnnot:function(id)
+        deleteAnnot:function(id)//Delete Annotations
         {
 	      this.annotations.splice(id,1);
               this.saveAnnot();
               this.displayAnnot();
         },
-        saveAnnot:function()
+        saveAnnot:function()//Save Annotations
         {
                 if(this.iid)
                 {
-		   var jsonRequest = new Request.JSON({url: Dir+'/api/annotation.php',
+		   var jsonRequest = new Request.JSON({url: IP+'/api/annotation.php',
                          onSuccess: function(e){
 			this.showMessage("saved to the server");
 			}.bind(this),onFailure:function(e){
@@ -704,12 +725,24 @@ var annotools = new Class({
                 }
                 else
                 {
-		   var jsonRequest = new Request.JSON({url: Dir+'/api/annot2.php',
+		   var jsonRequest = new Request.JSON({url: IP+'/api/annot.php',
                          onSuccess: function(e){
 			this.showMessage("saved to the server");
 			}.bind(this),onFailure:function(e){
-                       this.showMessage("Error Saving the Annotations,please check you saveAnnot funciton");}.bind(this)}).post({'annot':this.annotations});
+                       this.showMessage("Error Saving the Annotations,please check you saveAnnot funciton and the api/annot.php function");}.bind(this)}).post({'annot':this.annotations});
                 }
+        },
+        saveState:function()
+        {
+               if(this.iid)
+                {
+		   var jsonRequest = new Request.JSON({url: IP+'/api/state.php',
+                         onSuccess: function(e){
+			this.showMessage("saved to the server");
+			}.bind(this),onFailure:function(e){
+                       this.showMessage("Error Saving the state,please check you saveState funciton");}.bind(this)}).post({'iid':this.iid,'zoom':iip.view.res,'left':iip.view.x,'top':iip.view.y});
+
+                }else this.showMessage("Sorry, This Function is Only Supported With the Database Version");
         }
 });
 

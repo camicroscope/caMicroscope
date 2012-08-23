@@ -93,6 +93,7 @@ switch ($_SERVER['REQUEST_METHOD'])
 		    $message .= 'Whole query: ' . $query;
 		    die($message);
 		}
+                else echo json_encode("success");
             break;
 }
 ?>

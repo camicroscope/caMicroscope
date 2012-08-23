@@ -16,7 +16,7 @@ switch ($_SERVER['REQUEST_METHOD'])
 	    {
 	        while($row=mysql_fetch_array($res))
                 {
-		        $image=array('PatientName'=>$row['pName'],'PatientAge'=>$row['pAge'],'ImageModality'=>$row['modality'],'ImageLocation'=>$row['location'],'iid'=>$row['iid']);
+		        $image=array('PatientName'=>$row['pName'],'PatientAge'=>$row['pAge'],'ImageModality'=>$row['modality'],'ImageLocation'=>$row['location'],'iid'=>$row['iid'],'maxWid'=>$row['maxWid'],'maxHei'=>$row['maxHei'],'ratio'=>$row['ratio']);
 		        $imageList[]=$image;
                 }
 		echo json_encode($imageList);
