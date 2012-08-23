@@ -14,7 +14,7 @@ var annotools = new Class({
         this.canvas=options.canvas;
         this.iid=options.iid||null;//image id
         this.annotVisible=true;
-		this.getAnnot();
+	this.getAnnot();
         this.mode='default';
 	    window.addEvent("domready",this.createButtons.bind(this));
         window.addEvent("keydown",function(event){this.keyPress(event.code)}.bind(this));
@@ -23,10 +23,9 @@ var annotools = new Class({
 	{
 		 if(this.iid)
 		{
-			var jsonRequest = new Request.JSON({url: Dir+'/api/annot2.php', onSuccess: function(e){
-			var annot=JSON.decode(e);
-			if(annot==null) annot=new Array();
-					this.annotations=annot;
+			var jsonRequest = new Request.JSON({url: Dir+'/api/annotation.php', onSuccess: function(e){
+			if(e==null)  {this.annotations=new Array();}
+                        else { this.annotations=e; }
 			}.bind(this),onFailure:function(e){this.showMessage("cannot get the annotations,please check your getAnnot function");}.bind(this)}).get({'iid':this.iid}); 
 		}
 		else
@@ -141,14 +140,14 @@ var annotools = new Class({
 		  y,//start location y
 		  w,//width
 		  h;//height
-	      canvas.addEvent('mousedown',function(e){started=true;x=e.event.offsetX;y=e.event.offsetY;});
-	      canvas.addEvent('mousemove',function(e){ 
+	      canvas.addEvent('mousedown',function(e){console.log(e);started=true;x=e.event.layerX;y=e.event.layerY;});
+	      canvas.addEvent('mousemove',function(e){
 	      if(started){
 		  ctx.clearRect(0,0,canvas.width,canvas.height);
-		  x=Math.min(e.event.offsetX,x);
-		  y=Math.min(e.event.offsetY,y);
-		  w=Math.abs(e.event.offsetX-x);
-		  h=Math.abs(e.event.offsetY-y);
+		  x=Math.min(e.event.layerX,x);
+		  y=Math.min(e.event.layerY,y);
+		  w=Math.abs(e.event.layerX-x);
+		  h=Math.abs(e.event.layerY-y);
 		  ctx.strokeStyle = color;
 		  ctx.strokeRect(x,y,w,h);
 	    	}
@@ -178,14 +177,14 @@ var annotools = new Class({
 		  y,//start location y
 		  w,//width
 		  h;//height
-	     canvas.addEvent('mousedown',function(e){started=true;x=e.event.offsetX;y=e.event.offsetY;});
+	     canvas.addEvent('mousedown',function(e){started=true;x=e.event.layerX;y=e.event.layerY;});
 	     canvas.addEvent('mousemove',function(e){ 
 	     if(started){
 		ctx.clearRect(0,0,canvas.width,canvas.height);
-		x=Math.min(e.event.offsetX,x);
-		y=Math.min(e.event.offsetY,y);
-		w=Math.abs(e.event.offsetX-x);
-		h=Math.abs(e.event.offsetY-y);
+		x=Math.min(e.event.layerX,x);
+		y=Math.min(e.event.layerY,y);
+		w=Math.abs(e.event.layerX-x);
+		h=Math.abs(e.event.layerY-y);
 		var kappa = .5522848;
 		var ox = (w / 2) * kappa; // control point offset horizontal
 		var oy = (h / 2) * kappa; // control point offset vertical
@@ -229,17 +228,17 @@ var annotools = new Class({
 	     var newpoly=[];//Every Stroke is treated as a Continous Polyline
 	     canvas.addEvent('mousedown',function(e){ 
 		started=true;
-		newpoly.push( {"x":e.event.offsetX,"y":e.event.offsetY});//The percentage will be saved
+		newpoly.push( {"x":e.event.layerX,"y":e.event.layerY});//The percentage will be saved
 		ctx.beginPath();
-		ctx.moveTo(e.event.offsetX, e.event.offsetY);
+		ctx.moveTo(e.event.layerX, e.event.layerY);
 		ctx.strokeStyle = color;
 		ctx.stroke();
 	     });
 	     canvas.addEvent('mousemove',function(e){ 
 	       if(started)
 	       {
-		     newpoly.push( {"x":e.event.offsetX,"y":e.event.offsetY});
-		     ctx.lineTo(e.event.offsetX,e.event.offsetY);
+		     newpoly.push( {"x":e.event.layerX,"y":e.event.layerY});
+		     ctx.lineTo(e.event.layerX,e.event.layerY);
 		     ctx.stroke();
 		}
 	      });
@@ -289,10 +288,10 @@ var annotools = new Class({
 		canvas.addEvent('mousedown',function(e){ 
 	   	ctx.fillStyle=color;
 		ctx.beginPath();
-		ctx.arc(e.event.offsetX,e.event.offsetY,2,0,Math.PI*2,true);
+		ctx.arc(e.event.layerX,e.event.layerY,2,0,Math.PI*2,true);
 		ctx.closePath();
 		ctx.fill();
-		newpoly.push( {"x":e.event.offsetX,"y":e.event.offsetY});
+		newpoly.push( {"x":e.event.layerX,"y":e.event.layerY});
 		if(numpoint>0)
 		{
 			ctx.beginPath();
@@ -346,15 +345,15 @@ var annotools = new Class({
 	     canvas.addEvent('mousedown',function(e){ 
 	       if (!started)
 	       {
-			x0=e.event.offsetX;
-			y0=e.event.offsetY;
+			x0=e.event.layerX;
+			y0=e.event.layerY;
 		        started=true;
 		        ruler.inject(iip.canvas);
 	       }
 	       else
 	       {
-			x1=e.event.offsetX;
-			y1=e.event.offsetY;
+			x1=e.event.layerX;
+			y1=e.event.layerY;
 			ctx.beginPath();
 			ctx.moveTo(x0, y0);
 			ctx.lineTo(x1, y1);
@@ -382,8 +381,8 @@ var annotools = new Class({
 	       if ( started)
 	       {
 		  	ctx.clearRect(0,0,iip.wid,iip.hei);
-			x1=e.event.offsetX;
-			y1=e.event.offsetY;
+			x1=e.event.layerX;
+			y1=e.event.layerY;
 		        var maxLength=(Math.sqrt(maxWidth*maxWidth+maxHeight*maxHeight));
 		        var screen=(Math.sqrt(owidth*owidth+oheight*oheight));
 			length=((Math.sqrt((x0-x1)*(x0-x1)+(y0-y1)*(y0-y1)))/screen)*maxLength*ratio+'mm';
@@ -534,11 +533,11 @@ var annotools = new Class({
  	    if($("magnify")) $("magnify").destroy();
             for (b in this.annotations) this.annotations[b].id = b, a.push(this.annotations[b]);
             container.getElements(".annotcontainer").destroy();
-            if(this.svg) this.svg.destroy();
+            if(this.svg){ this.svg.html='';this.svg.destroy();}
                //This part is for displaying SVG annotations
                 if(this.annotVisible)
                {
-		var svgHtml='<svg xmlns="http://www.w3.org/2000/svg" version="1.1">';
+		var svgHtml='<svg xmlns="http://www.w3.org/2000/svg" width="'+width+'px" height="'+height+'px" version="1.1">';
                 for (b = 0; b < a.length; b++) 
                 {
                     if(((width*a[b].x+left)>0)&&((width*a[b].x+left+width*a[b].w)<window.innerWidth)&&((height*a[b].y+top)>0)&&((height*a[b].y+top+height*a[b].h)<window.innerHeight))
@@ -675,7 +674,7 @@ var annotools = new Class({
 		      var tip=prompt("Make some changes",annot.text);
                       if(tip!=null)
 	    	      {
-                          _this.annotations[id].text=tip;
+                          this.annotations[id].text=tip;
 			  this.saveAnnot();
 			  this.displayAnnot();
 			  d.destroy();

@@ -848,7 +848,7 @@ var IIPMooViewer = new Class({
                 this.max_size = a.max_size;
                 this.tileSize = a.tileSize;
                 this.num_resolutions = a.num_resolutions;
-                this.createWindows()
+                this.createWindows();
             }.bind(this),
             onFailure: function () {
                 alert("Error: Unable to get image metadata from server!")
