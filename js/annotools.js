@@ -71,7 +71,7 @@ var annotools = new Class({
         this.messageBox=new Element('div',{'id':'messageBox'}).inject(document.body);//Create A Message Box
         this.showMessage("Press white space to toggle annotations");
         this.quitbutton.hide();//Quit Button Will Be Used To Return To the Default Mode
-        var toolButtons=document.getElementsByClassName("toolButton");
+        var toolButtons=document.getElements(".toolButton");
         for(var i=0;i<toolButtons.length;i++)
         {
             toolButtons[i].addEvents({'mouseenter':function(){this.addClass('selected')},'mouseleave':function(){this.removeClass('selected')}});
@@ -491,7 +491,7 @@ var annotools = new Class({
 				'events':{
                                            'click':function(){this.color='pink';$("color").destroy();}.bind(this)
 					 }}).inject(colorContainer);
-	var colorButtons=document.getElementsByClassName("colorButton");
+	var colorButtons=document.getElements(".colorButton");
         for(var i=0;i<colorButtons.length;i++)
         {
             colorButtons[i].addEvents({'mouseenter':function(){this.addClass('selected')},'mouseleave':function(){this.removeClass('selected')}});
