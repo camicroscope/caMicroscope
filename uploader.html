@@ -1,0 +1,25 @@
+<html>
+<body>
+
+<form action="api/uploader.php" method="post"
+enctype="multipart/form-data">
+<label for="pName">Patient Name</label>
+<input type="text" name="pName"/><br />
+<label for="pAge">Patient Age</label>
+<input type="text" name="pAge"/><br />
+<label for="modality">Modality</label>
+<input type="text" name="modality"/><br />
+<label for="maxWid">Image Max Width(pixels)</label>
+<input type="text" name="maxWid"/><br />
+<label for="maxHei">Image Max Height(pixels)</label>
+<input type="text" name="maxHei"/><br />
+<label for="ratio">Image Ratio(One pixel equals to ?mm in real case)</label>
+<input type="text" name="ratio"/><br />
+<label for="file">Filename:</label>
+<input type="file" name="file" id="file" /> 
+<br />
+<input type="submit" name="submit" value="Submit" />
+</form>
+
+</body>
+</html>
