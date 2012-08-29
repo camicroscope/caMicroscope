@@ -1,3 +1,13 @@
+/*
+Copyright (C) 2012 Shaohuan Li <shaohuan.li@gmail.com>, Ashish Sharma <ashish.sharma@emory.edu>
+This file is part of Biomedical Image Viewer developed under the Google of Summer of Code 2012 program.
+
+Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+*/
 var IP='http://170.140.138.125';
 var annotools = new Class({
     initialize: function(element,options){
@@ -15,33 +25,9 @@ var annotools = new Class({
         this.iid=options.iid||null;//The Image ID
         this.annotVisible=true;//The Annotations are Set to be visible at the First Loading
         this.mode='default';//The Mode is Set to Default
-	window.addEvent("domready",function(){
-	this.getAnnot();//Get the annotation information
-        this.createButtons();//Create Buttons
-        }.bind(this));
+	window.addEvent("domready",function(){ this.getAnnot();this.createButtons();}.bind(this));//Get the annotation information and Create Buttons
         window.addEvent("keydown",function(event){this.keyPress(event.code)}.bind(this));//Add KeyDown Events
     },
-    getAnnot:function()//Get Annotation from the API
-	{
-		 if(this.iid)//When the database is set. User can refer to the annotation.php for saving the annotations
-		{
-			var jsonRequest = new Request.JSON({url: IP+'/api/annotation.php', onSuccess: function(e){
-			if(e==null)  this.annotations=new Array();
-                        else  this.annotations=e;
-                        this.displayAnnot();//Display The Annotations
-                        console.log("successfully get annotations");
-			}.bind(this),onFailure:function(e){this.showMessage("cannot get the annotations,please check your getAnnot function");}.bind(this)}).get({'iid':this.iid}); 
-		}
-		else //When the database is not set, one TXT file will be used to save the Annotation Data. Please Refer to annot.php in the API folder
-		{
-			var jsonRequest = new Request.JSON({url: IP+'/api/annot.php', onSuccess: function(e){
-			var annot=JSON.decode(e);
-			if(annot==null) annot=new Array();
-			this.annotations=annot;//Display The Annotations
-			this.displayAnnot();console.log("successfully get annotations");
-			}.bind(this),onFailure:function(e){this.showMessage("cannot get the annotations,please check your getAnnot funciton");}.bind(this)}).get(); 
-		}
-	},
     createButtons:function()//Create Buttons
     {
         this.tool=document.id(this.source);//Get The Element with the Source ID.
@@ -68,14 +54,38 @@ var annotools = new Class({
         this.hidebutton.addEvents({'click':function(){this.toggleMarkups()}.bind(this)});
         this.savebutton.addEvents({'click':function(){this.saveState()}.bind(this)});
         this.quitbutton.addEvents({'click':function(){this.quitMode();this.quitbutton.hide();}.bind(this)});
-        this.messageBox=new Element('div',{'id':'messageBox'}).inject(document.body);//Create A Message Box
-        this.showMessage("Press white space to toggle annotations");
         this.quitbutton.hide();//Quit Button Will Be Used To Return To the Default Mode
         var toolButtons=document.getElements(".toolButton");
         for(var i=0;i<toolButtons.length;i++)
-        {
-            toolButtons[i].addEvents({'mouseenter':function(){this.addClass('selected')},'mouseleave':function(){this.removeClass('selected')}});
-        }
+        {toolButtons[i].addEvents({'mouseenter':function(){this.addClass('selected')},'mouseleave':function(){this.removeClass('selected')}});}
+        this.messageBox=new Element('div',{'id':'messageBox'}).inject(document.body);//Create A Message Box
+        this.showMessage("Press white space to toggle annotations");
+	this.drawLayer= new Element('div',{html:"",styles:{position:'absolute','z-index':1}}).inject(document.body);//drawLayer will hide by default
+        this.drawCanvas= new Element('canvas').inject(this.drawLayer);
+        this.drawLayer.hide();
+        this.magnifyGlass=new Element('div',{'class':'magnify'}).inject(document.body);//Magnify glass will hide by default
+        this.magnifyGlass.hide();
+    },
+    getAnnot:function()//Get Annotation from the API
+    {
+		 if(this.iid)//When the database is set. User can refer to the annotation.php for saving the annotations
+		{
+			var jsonRequest = new Request.JSON({url: IP+'/api/annotation.php', onSuccess: function(e){
+			if(e==null)  this.annotations=new Array();
+                        else  this.annotations=e;
+                        this.displayAnnot();//Display The Annotations
+                        console.log("successfully get annotations");
+			}.bind(this),onFailure:function(e){this.showMessage("cannot get the annotations,please check your getAnnot function");}.bind(this)}).get({'iid':this.iid}); 
+		}
+		else //When the database is not set, one TXT file will be used to save the Annotation Data. Please Refer to annot.php in the API folder
+		{
+			var jsonRequest = new Request.JSON({url: IP+'/api/annot.php', onSuccess: function(e){
+			var annot=JSON.decode(e);
+			if(annot==null) annot=new Array();
+			this.annotations=annot;//Display The Annotations
+			this.displayAnnot();console.log("successfully get annotations");
+			}.bind(this),onFailure:function(e){this.showMessage("cannot get the annotations,please check your getAnnot funciton");}.bind(this)}).get(); 
+		}
     },
     keyPress:function(code)//Key Down Events Handler
     {
@@ -92,57 +102,53 @@ var annotools = new Class({
 	   this.toggleMarkups();
            break;
 	   case 49://1 for rectangle mode
-           this.mode='rect';this.showMessage();this.drawMarkups();
+           this.mode='rect';this.drawMarkups();
            break;
 	   case 50:// 2 for ellipse mode
-           this.mode='ellipse';this.showMessage();this.drawMarkups();
+           this.mode='ellipse';this.drawMarkups();
            break;
            case 51:// 3 for polyline mode
-           this.mode='polyline';this.showMessage();this.drawMarkups();
+           this.mode='polyline';this.drawMarkups();
            break;
            case 52:// 4 for pencil mode
-           this.mode='pencil';this.showMessage();this.drawMarkups();
+           this.mode='pencil';this.drawMarkups();
            break;
            case 53:// 5 for measurement mode
-           this.mode='measure';this.showMessage();this.drawMarkups();
+           this.mode='measure';this.drawMarkups();
            break;
            case 54:// 6 for magnify mode
-           this.mode='magnify';this.showMessage();this.magnify();
+           this.mode='magnify';this.magnify();
            break;
         }
     },
     drawMarkups:function()//Draw Markups
     {
         this.showMessage();//Show Message
-        var container=document.id(this.canvas); //Get The Canvas Container
-        if(container)
+        this.drawCanvas.removeEvents('mouseup');
+        this.drawCanvas.removeEvents('mousedown');
+        this.drawCanvas.removeEvents('mousemove');
+        this.drawLayer.show();  //Show The Drawing Layer
+	this.quitbutton.show(); //Show The Quit Button
+	this.magnifyGlass.hide();//Hide The Magnifying Tool
+        this.container=document.id(this.canvas); //Get The Canvas Container
+        if(this.container)
         {
-	 this.quitbutton.show(); //Show The Quit Button
-         var left=parseInt(container.offsetLeft),//Get The Container Location
-	   top=parseInt(container.offsetTop),
-	   width=parseInt(container.offsetWidth),
-	   height=parseInt(container.offsetHeight),
+           var left=parseInt(this.container.offsetLeft),//Get The Container Location
+	   top=parseInt(this.container.offsetTop),
+	   width=parseInt(this.container.offsetWidth),
+	   height=parseInt(this.container.offsetHeight),
 	   oleft=left,
 	   otop=top,
 	   owidth=width,
 	   oheight=height;
-	 if (left<0){left=0;width=window.innerWidth;}//See Whether The Container is outside The Current ViewPort
-	 if (top<0){top=0;height=window.innerHeight;}
-	 if($("magnify")) $("magnify").destroy();//Destroy The Magnifying Tool
-         if($("createlayer"))//Destroy The CreateAnnotation Layer
-	 {
-		//Remove Events and Destroy the Create Layer
-		$("myCanvas").removeEvent('mousedown');
-		$("myCanvas").removeEvent('mouseup');
-		$("myCanvas").removeEvent('mousemove');
-	  	$("createlayer").destroy();
-	 }
-          //Recreate The CreateAnnotation Layer Because of The ViewPort Change Issue.
-	 var layer=new Element('div',{id:"createlayer",html:"",styles:{position:'absolute','z-index':1,left:left,top:top}}).inject(document.body);
-	  //Create Canvas on the CreateAnnotation Layer
-         var canvas=new Element('canvas',{id:"myCanvas",width:width,height:height}).inject(layer);
-          //The canvas context
-	 var ctx=canvas.getContext("2d");
+	   if (left<0){left=0;width=window.innerWidth;}//See Whether The Container is outside The Current ViewPort
+	   if (top<0){top=0;height=window.innerHeight;}
+           //Recreate The CreateAnnotation Layer Because of The ViewPort Change Issue.
+           this.drawLayer.set({'styles':{left:left,top:top,width:width,height:height}});
+	   //Create Canvas on the CreateAnnotation Layer
+           this.drawCanvas.set({width:width,height:height});
+           //The canvas context
+	   var ctx=this.drawCanvas.getContext("2d");
 	   //Draw Markups on Canvas
 	   switch (this.mode)
 	  {
@@ -153,10 +159,10 @@ var annotools = new Class({
 		  y,//start location y
 		  w,//width
 		  h;//height
-	      canvas.addEvent('mousedown',function(e){started=true;x=e.event.layerX;y=e.event.layerY;});
-	      canvas.addEvent('mousemove',function(e){
+	      this.drawCanvas.addEvent('mousedown',function(e){started=true;x=e.event.layerX;y=e.event.layerY;});
+	      this.drawCanvas.addEvent('mousemove',function(e){
 	      if(started){
-		  ctx.clearRect(0,0,canvas.width,canvas.height);
+		  ctx.clearRect(0,0,this.drawCanvas.width,this.drawCanvas.height);
 		  x=Math.min(e.event.layerX,x);
 		  y=Math.min(e.event.layerY,y);
 		  w=Math.abs(e.event.layerX-x);
@@ -165,7 +171,7 @@ var annotools = new Class({
 		  ctx.strokeRect(x,y,w,h);
 	    	}
 	      }.bind(this));
-	      canvas.addEvent('mouseup',function(e){
+	      this.drawCanvas.addEvent('mouseup',function(e){
 		started= false;
 		//Save the Percentage Relative to the Container
 		x=(x+left-oleft)/owidth;
@@ -180,7 +186,7 @@ var annotools = new Class({
 			this.addnewAnnot(newAnnot);
                         this.drawMarkups();
 		}
-                else{ ctx.clearRect(0,0,canvas.width,canvas.height);}
+                else{ ctx.clearRect(0,0,this.drawCanvas.width,this.drawCanvas.height);}
 	     }.bind(this));
 	     break;
              case "ellipse":
@@ -190,10 +196,10 @@ var annotools = new Class({
 		  y,//start location y
 		  w,//width
 		  h;//height
-	     canvas.addEvent('mousedown',function(e){started=true;x=e.event.layerX;y=e.event.layerY;});
-	     canvas.addEvent('mousemove',function(e){ 
+	     this.drawCanvas.addEvent('mousedown',function(e){started=true;x=e.event.layerX;y=e.event.layerY;});
+	     this.drawCanvas.addEvent('mousemove',function(e){ 
 	     if(started){
-		ctx.clearRect(0,0,canvas.width,canvas.height);
+		ctx.clearRect(0,0,this.drawCanvas.width,this.drawCanvas.height);
 		x=Math.min(e.event.layerX,x);
 		y=Math.min(e.event.layerY,y);
 		w=Math.abs(e.event.layerX-x);
@@ -216,7 +222,7 @@ var annotools = new Class({
 		ctx.stroke();
 	    	}
 	     }.bind(this));
-	     canvas.addEvent('mouseup',function(e){
+	     this.drawCanvas.addEvent('mouseup',function(e){
 		started= false;
 		//Save the Percentage Relative to the Container
 		x=(x+left-oleft)/owidth;
@@ -231,7 +237,7 @@ var annotools = new Class({
 			this.addnewAnnot(newAnnot);
                         this.drawMarkups();
 		}
-                else{ ctx.clearRect(0,0,canvas.width,canvas.height);}
+                else{ ctx.clearRect(0,0,this.drawCanvas.width,this.drawCanvas.height);}
 	     }.bind(this));
 	     break;
 	     case "pencil":
@@ -239,7 +245,7 @@ var annotools = new Class({
 	     var started=false;
 	     var pencil=[];//The Pencil Object
 	     var newpoly=[];//Every Stroke is treated as a Continous Polyline
-	     canvas.addEvent('mousedown',function(e){ 
+	     this.drawCanvas.addEvent('mousedown',function(e){ 
 		started=true;
 		newpoly.push( {"x":e.event.layerX,"y":e.event.layerY});//The percentage will be saved
 		ctx.beginPath();
@@ -247,7 +253,7 @@ var annotools = new Class({
 		ctx.strokeStyle = this.color;
 		ctx.stroke();
 	     }.bind(this));
-	     canvas.addEvent('mousemove',function(e){ 
+	     this.drawCanvas.addEvent('mousemove',function(e){ 
 	       if(started)
 	       {
 		     newpoly.push( {"x":e.event.layerX,"y":e.event.layerY});
@@ -255,7 +261,7 @@ var annotools = new Class({
 		     ctx.stroke();
 		}
 	      });
-	     canvas.addEvent('mouseup',function(e){ 
+	     this.drawCanvas.addEvent('mouseup',function(e){ 
 		started=false;
 		pencil.push(newpoly);//Push the Stroke to the Pencil Object
 		newpoly=[];//Clear the Stroke
@@ -292,14 +298,14 @@ var annotools = new Class({
 			this.addnewAnnot(newAnnot);
                         this.drawMarkups();
 		}
-                else{ ctx.clearRect(0,0,canvas.width,canvas.height);}
+                else{ ctx.clearRect(0,0,this.drawCanvas.width,this.drawCanvas.height);}
 	     }.bind(this));
 	     break;
 	     case "polyline":
 		//Create Polylines
 		var newpoly=[];//New Polyline
 		var numpoint=0;//Number of Points
-		canvas.addEvent('mousedown',function(e){ 
+		this.drawCanvas.addEvent('mousedown',function(e){ 
 	   	ctx.fillStyle=this.color;
 		ctx.beginPath();
 		ctx.arc(e.event.layerX,e.event.layerY,2,0,Math.PI*2,true);
@@ -316,7 +322,7 @@ var annotools = new Class({
 		}
 		numpoint++;
 		}.bind(this));
-		canvas.addEvent('dblclick',function(e){
+		this.drawCanvas.addEvent('dblclick',function(e){
 		ctx.beginPath();
 		ctx.moveTo(newpoly[numpoint-1].x, newpoly[numpoint-1].y);
 		ctx.lineTo(newpoly[0].x, newpoly[0].y);
@@ -348,7 +354,7 @@ var annotools = new Class({
 			this.addnewAnnot(newAnnot);
                         this.drawMarkups();
 		}
-                else{ ctx.clearRect(0,0,canvas.width,canvas.height);}
+                else{ ctx.clearRect(0,0,this.drawCanvas.width,this.drawCanvas.height);}
 	       }.bind(this));
 	     break;
 	     case "measure"://Measurement Tool
@@ -358,14 +364,15 @@ var annotools = new Class({
              var maxWidth=this.maxWidth;
              var maxHeight=this.maxHeight;
              var ratio=this.ratio;
-	     var ruler=new Element('div',{id:'ruler',styles:{background:'black',position:'absolute',color:'white',width:'200px'}});;
-	     canvas.addEvent('mousedown',function(e){ 
+	     this.ruler=new Element('div',{styles:{background:'black',position:'absolute',color:'white',width:'200px'}}).inject(this.container);
+             this.ruler.hide();
+	     this.drawCanvas.addEvent('mousedown',function(e){ 
 	       if (!started)
 	       {
 			x0=e.event.layerX;
 			y0=e.event.layerY;
 		        started=true;
-		        ruler.inject(iip.canvas);
+		        this.ruler.show();
 	       }
 	       else
 	       {
@@ -385,16 +392,17 @@ var annotools = new Class({
 		                w=Math.abs(x1-x0)/owidth;
 		                h=Math.abs(y1-y0)/oheight;
 		                points=(x1+left-oleft)/owidth+","+(y1+top-otop)/oheight;
+                                this.ruler.destroy();
 				var newAnnot={x:x,y:y,w:w,h:h,type:"line",points:points,text:tip,color:this.color}; 
 				this.addnewAnnot(newAnnot);
                                 this.drawMarkups();
 	     		}
-               	        else{ ctx.clearRect(0,0,canvas.width,canvas.height);}
+               	        else{ ctx.clearRect(0,0,this.drawCanvas.width,this.drawCanvas.height);}
 		        started=false;
-			$("ruler").destroy();
+			this.ruler.destroy();
 		}
 	    }.bind(this));
-	    canvas.addEvent('mousemove',function(e){ 
+	    this.drawCanvas.addEvent('mousemove',function(e){ 
 	       if ( started)
 	       {
 		  	ctx.clearRect(0,0,iip.wid,iip.hei);
@@ -403,7 +411,7 @@ var annotools = new Class({
 		        var maxLength=(Math.sqrt(maxWidth*maxWidth+maxHeight*maxHeight));
 		        var screen=(Math.sqrt(owidth*owidth+oheight*oheight));
 			length=((Math.sqrt((x0-x1)*(x0-x1)+(y0-y1)*(y0-y1)))/screen)*maxLength*ratio+'mm';
-		        ruler.set({html:length,styles:{left:x1+left-oleft+10,top:y1+top-otop}});
+		        this.ruler.set({html:length,styles:{left:x1+left-oleft+10,top:y1+top-otop}});
 			ctx.beginPath();
 			ctx.moveTo(x0, y0);
 			ctx.lineTo(x1, y1);
@@ -415,88 +423,75 @@ var annotools = new Class({
 	    }.bind(this));
 	    break;
 	}
-       }else console.log("Container Not SET Correctly Or Not Fully Loaded Yet");
+       }
+       else this.showMessage("Container Not SET Correctly Or Not Fully Loaded Yet");
     },
     magnify:function()//Magnify Tool
    {
 	   this.quitbutton.show();
-	   if($("magnify")) $("magnify").destroy();
-           if($("createlayer"))
-	   {
-		//Remove Events and Destroy the Create Layer
-		$("myCanvas").removeEvent('mousedown');
-		$("myCanvas").removeEvent('mouseup');
-		$("myCanvas").removeEvent('mousemove');
-	  	$("createlayer").destroy();
-	   }
-	   var magnify=new Element('div',{id:"magnify",'class':"magnify"});
+           this.drawLayer.hide();
+           this.magnifyGlass.hide();
+           this.magnifyGlass.set({html:''});
 	   var content=new Element('div',{'class':"magnified_content",styles:{width:document.getSize().x,height:document.getSize().y}});
 	   content.set({html:document.body.innerHTML});
-	   content.inject(magnify);
-	   magnify.inject(document.body);
-	   magnify.makeDraggable({
+           content.inject(this.magnifyGlass);
+	   var scale=2.0;
+	   var left=parseInt(this.magnifyGlass.style.left);
+	   var top=parseInt(this.magnifyGlass.style.top);
+	   this.magnifyGlass.set({'styles':{left:left,top:top}});
+           content.set({'styles':{left:-scale*left,top:-scale*top}});
+           this.magnifyGlass.show();
+	   this.magnifyGlass.makeDraggable({
 	   onDrag: function(draggable){
-		var left=parseInt(magnify.style.left);
-		var top=parseInt(magnify.style.top);
-		var scale=2.0;
-		magnify.set({'styles':{left:left,top:top}});
+                this.showMessage("drag the magnifying glass");
+		var left=parseInt(this.magnifyGlass.style.left);
+		var top=parseInt(this.magnifyGlass.style.top);
+		this.magnifyGlass.set({'styles':{left:left,top:top}});
 		content.set({'styles':{left:-scale*left,top:-scale*top}});
-	    },
+	    }.bind(this),
 	    onDrop: function(draggable){
-	    }
+              this.showMessage("Press q to quit");
+	    }.bind(this)
 	  });
     },
     selectColor:function()//Pick A Color
     {
       
-	if($("color")) $("color").destroy();
-	var colorContainer=new Element('div',{id:'color'}).inject(this.tool);
+	this.colorContainer=new Element('div').inject(this.tool);
         var blackColor=new Element('img',{'class':'colorButton','title':'black',	
 				'styles':{'background-color':'black'},
-				'events':{
-                                           'click':function(){this.color='black';$("color").destroy();}.bind(this)
-					 }}).inject(colorContainer);
+				'events':{'click':function(){this.color='black';this.colorContainer.destroy();}.bind(this)
+					 }}).inject(this.colorContainer);
 	var redColor=new Element('img',{'class':'colorButton','title':'Default',
 				'styles':{'background-color':'red'},
-				'events':{
-                                           'click':function(){this.color='red';$("color").destroy();}.bind(this)
-					 }}).inject(colorContainer);
+				'events':{'click':function(){this.color='red';this.colorContainer.destroy();}.bind(this)
+					 }}).inject(this.colorContainer);
 	var blueColor=new Element('img',{'class':'colorButton','title':'blue',	
 				'styles':{'background-color':'blue'},
-				'events':{
-                                           'click':function(){this.color='blue';$("color").destroy();}.bind(this)
-					 }}).inject(colorContainer);
+				'events':{'click':function(){this.color='blue';this.colorContainer.destroy();}.bind(this)
+					 }}).inject(this.colorContainer);
 	var greenColor=new Element('img',{'class':'colorButton','title':'lime',	
 				'styles':{'background-color':'lime'},
-				'events':{
-                                           'click':function(){this.color='lime';$("color").destroy();}.bind(this)
-					 }}).inject(colorContainer);
+				'events':{'click':function(){this.color='lime';this.colorContainer.destroy();}.bind(this)
+					 }}).inject(this.colorContainer);
 	var purpleColor=new Element('img',{'class':'colorButton','title':'purple',	
 				'styles':{'background-color':'purple'},
-				'events':{
-                                           'click':function(){this.color='purple';$("color").destroy();}.bind(this)
-					 }}).inject(colorContainer);
+				'events':{'click':function(){this.color='purple';this.colorContainer.destroy();}.bind(this)
+					 }}).inject(this.colorContainer);
 	var orangeColor=new Element('img',{'class':'colorButton','title':'orange',	
 				'styles':{'background-color':'orange'},
-				'events':{
-                                           'click':function(){this.color='orange';$("color").destroy();}.bind(this)
-					 }}).inject(colorContainer);
+				'events':{'click':function(){this.color='orange';this.colorContainer.destroy();}.bind(this)
+					 }}).inject(this.colorContainer);
 	var yellowColor=new Element('img',{'class':'colorButton','title':'yellow',	
 				'styles':{'background-color':'yellow'},
-				'events':{
-                                           'click':function(){this.color='yellow';$("color").destroy();}.bind(this)
-					 }}).inject(colorContainer);
+				'events':{ 'click':function(){this.color='yellow';this.colorContainer.destroy();}.bind(this)
+					 }}).inject(this.colorContainer);
 	var pinkColor=new Element('img',{'class':'colorButton','title':'pink',	
 				'styles':{'background-color':'pink'},
-				'events':{
-                                           'click':function(){this.color='pink';$("color").destroy();}.bind(this)
-					 }}).inject(colorContainer);
+				'events':{'click':function(){this.color='pink';this.colorContainer.destroy();}.bind(this)
+					 }}).inject(this.colorContainer);
 	var colorButtons=document.getElements(".colorButton");
-        for(var i=0;i<colorButtons.length;i++)
-        {
-            colorButtons[i].addEvents({'mouseenter':function(){this.addClass('selected')},'mouseleave':function(){this.removeClass('selected')}});
-        }
-        
+        for(var i=0;i<colorButtons.length;i++){colorButtons[i].addEvents({'mouseenter':function(){this.addClass('selected')},'mouseleave':function(){this.removeClass('selected')}});}
 	},
         addnewAnnot:function(newAnnot)//Add New Annotations
         {
@@ -506,15 +501,8 @@ var annotools = new Class({
         },
         quitMode:function()//Return To the Default Mode
         {
-	   if($("magnify")) $("magnify").destroy();
-           if($("createlayer"))
-	   {
-		//Remove Events and Destroy the Create Layer
-		$("myCanvas").removeEvent('mousedown');
-		$("myCanvas").removeEvent('mouseup');
-		$("myCanvas").removeEvent('mousemove');
-	  	$("createlayer").destroy();
-	   }
+           this.drawLayer.hide();
+           this.magnifyGlass.hide();
         },
         toggleMarkups:function()//Toggle Markups
         {
@@ -530,7 +518,7 @@ var annotools = new Class({
         showMessage:function(msg)//Show Messages
         {
                if(!(msg)) msg=this.mode+" mode,press q to quit";
-               $("messageBox").set({html:msg});
+               this.messageBox.set({html:msg});
 		var myFx = new Fx.Tween('messageBox', {
 		    duration: 'long',
 		    transition: 'bounce:out',
@@ -549,8 +537,8 @@ var annotools = new Class({
 		    top=parseInt(container.offsetTop),
 		    width=parseInt(container.offsetWidth),
 		    height=parseInt(container.offsetHeight);
-		    if($("createlayer")) $("createlayer").destroy();
-	 	    if($("magnify")) $("magnify").destroy();
+                    this.drawLayer.hide();
+	 	    this.magnifyGlass.hide();
 		    for (b in this.annotations) this.annotations[b].id = b, a.push(this.annotations[b]);
 		    container.getElements(".annotcontainer").destroy();
 		    if(this.svg){ this.svg.html='';this.svg.destroy();}
@@ -647,7 +635,7 @@ var annotools = new Class({
                 }
                 else {this.showMessage("Please Press white space to toggle the Annotations");}
              }
-            }else{console.log("Canvas Container Not Ready");}
+            }else{this.showMessage("Canvas Container Not Ready");}
 	},
         displayTip:function(id)//Display Tips
         { 
