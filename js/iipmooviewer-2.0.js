@@ -1,31 +1,3 @@
-/*
-   IIPImage Javascript Viewer <http://iipimage.sourceforge.net>
-                        Version 2.0
-
-   Copyright (c) 2007-2011 Ruven Pillay <ruven@users.sourceforge.net>
-
-
-   Built using the Mootools 1.3.2 javascript framework <http://www.mootools.net>
-
-
-   ---------------------------------------------------------------------------
-
-   This program is free software; you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 3 of the License, or
-   (at your option) any later version.
-
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
-
-   You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-   ---------------------------------------------------------------------------
-*/
 var IIPMooViewer = new Class({
     Extends: Events,
     version: "2.0",
@@ -56,7 +28,7 @@ var IIPMooViewer = new Class({
         this.loadoptions = b.load || null;
         this.credit = b.credit || null;
         this.scale = b.scale || null;
-        this.enableFullscreen = "native";
+        this.enableFullscreen = "page";
         !1 == b.enableFullscreen && (this.enableFullscreen = !1);
         "page" == b.enableFullscreen && (this.enableFullscreen = "page");
         this.fullscreen = null;
@@ -124,7 +96,7 @@ var IIPMooViewer = new Class({
             this.canvas.setStyle(this.CSSprefix + "transform-origin", a + " " + b)
         }
         this.loadGrid();
-        if(annotool.annotations) annotool.displayAnnot();
+        if(annotool.annotations){console.log("displaying Annotations");annotool.displayAnnot();}
         this.annotations && (this.createAnnotations(), this.annotationTip && this.annotationTip.attach(this.canvas.getChildren("div.annotation")))
     },
     loadGrid: function () {
@@ -546,12 +518,12 @@ var IIPMooViewer = new Class({
             })
         }
         this.container.set("tabindex", 0);
-        this.container.focus();
+        //this.container.focus();
         this.container.addEvents({
             keydown: this.key.bind(this),
-            mouseenter: function () {
-                a.container.focus()
-            },
+            //mouseenter: function () {
+            //    a.container.focus()
+            //:},
             mouseout: function () {
                 a.container.blur()
             },
@@ -699,7 +671,9 @@ var IIPMooViewer = new Class({
                 "class": "navcontainer",
                 styles: {
                     position: "absolute",
-                    width: this.navWin.w
+		    //left: 890,
+                    width: this.navWin.w,
+		    //top:50,
                 }
             });
             Browser.Platform.ios && window.navigator.standalone && a.setStyle("top", 20);
@@ -717,6 +691,7 @@ var IIPMooViewer = new Class({
                 var c = new Element("div", {
                     "class": "navwin",
                     styles: {
+			postion: "absolute",
                         height: this.navWin.h
                     }
                 });
@@ -791,6 +766,9 @@ var IIPMooViewer = new Class({
                 "class": "loadBarContainer",
                 html: '<div class="loadBar"></div>',
                 styles: {
+		    postion: "absolute",
+		    //top:50,
+		    //left:890,
                     width: this.navWin.w - 2
                 },
                 tween: {
@@ -825,7 +803,7 @@ var IIPMooViewer = new Class({
         c.setStyle("width", a);
         c.set("html", IIPMooViewer.lang.loading + "&nbsp;:&nbsp;" + Math.round(100 * (this.nTilesLoaded / this.nTilesToLoad)) + "%");
         "0.85" != b.style.opacity && b.setStyles({
-            visibility: "visible",
+	    visibility: "visible",
             opacity: 0.85
         });
         this.nTilesLoaded >= this.nTilesToLoad && b.fade("out")
@@ -876,7 +854,7 @@ var IIPMooViewer = new Class({
                 this.max_size = a.max_size;
                 this.tileSize = a.tileSize;
                 this.num_resolutions = a.num_resolutions;
-                this.createWindows()
+                this.createWindows();
             }.bind(this),
             onFailure: function () {
                 alert("Error: Unable to get image metadata from server!")
@@ -893,6 +871,9 @@ var IIPMooViewer = new Class({
         });
         this.calculateNavSize();
         this.container.getElements("div.navcontainer, div.navcontainer div.loadBarContainer").setStyle("width", this.navWin.w);
+        this.container.getElements("div.navcontainer, div.navcontainer div.loadBarContainer").setStyle("position", "relative");
+        this.container.getElements("div.navcontainer, div.navcontainer div.loadBarContainer").setStyle("top", 50);
+        this.container.getElements("div.navcontainer, div.navcontainer div.loadBarContainer").setStyle("left", 890);
         this.showNavWindow && ((a = this.container.getElement("div.navcontainer")) && a.setStyles({
             top: Browser.Platform.ios && window.navigator.standalone ? 20 : 10,
             left: this.container.getPosition(this.container).x + this.container.getSize().x - this.navWin.w - 10
@@ -930,7 +911,7 @@ var IIPMooViewer = new Class({
         this.view.y = 0 > a ? 0 : a;
         this.canvas.setStyles({
             left: this.wid > this.view.w ? -this.view.x : Math.round((this.view.w - this.wid) / 2),
-            top: this.hei > this.view.h ? -this.view.y : Math.round((this.view.h - this.hei) / 2)
+	top: this.hei > this.view.h ? -this.view.y : Math.round((this.view.h - this.hei) / 2)
         });
         this.constrain()
     },

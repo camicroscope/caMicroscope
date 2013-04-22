@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		  <link rel="stylesheet" href="https://app.divshot.com/css/divshot-util.css">
+  
+    <link rel="stylesheet" href="https://app.divshot.com/themes/spacelab/bootstrap.min.css">
+   <link rel="stylesheet" href="https://app.divshot.com/css/bootstrap-responsive.css">
+  <script class="jsbin" src="bootstrap/js/bootstrap.js"></script>
+  <!--<script type="text/javascript" src="js/mootools-core-1.4.5-full-nocompat-yc.js"></script>
+  <script type="text/javascript" src="js/mootools-more-1.4.0.1-compressed.js"></script>-->
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3/jquery.min.js"></script>
+  <script type="text/javascript">  
+	window.onload = function() {
+	 function getURLParameter(name) {
+        	 return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search)||[,""])[1].replace(/\+/g, '%20'))||null;
+    }
+    var fileLocation = getURLParameter("fileLocation");
+    var iid = getURLParameter("iid");
+    document.getElementById('IframeID').src = "http://localhost/bio/viewer.html?fileLocation=" + fileLocation + "&&iid=" + iid; 
+	}
+  </script>
+	</head>
+	<body style="background-color:black;">
+	 <div class="container" style="width:100%">
+      	  <div class="navbar" style"width:100%;">
+           <div class="navbar-inner" style="width:100%">
+            <div class="container" style="width:100%">
+             <a class="brand" href="http://localhost:9090/DataViewer/">caMicroscope 2.0b</a>
+	     <button type="button" class="btn btn-primary" style="float:right;">Download</button>
+            </div>
+           </div>
+          </div>
+	 <iframe id='IframeID' style="position:absolute;width:100%;height:90%" scrolling="no" frameborder="0"></iframe>
+	</body>
+</html>
