@@ -19,7 +19,6 @@
    <link rel="stylesheet" href="https://app.divshot.com/css/bootstrap-responsive.css">
   <script class="jsbin" src="bootstrap/js/bootstrap.js"></script>
   <link rel="stylesheet" type="text/css" media="all" href="css/iip.css" />
-  <link rel="stylesheet" type="text/css" media="all" href="css/moreImages.css" />
   <link rel="stylesheet" type="text/css" media="all" href="css/annotools.css" />
 <!--[if lt IE 10]>
   <link rel="stylesheet" type="text/css" media="all" href="css/ie.compressed.css" />
@@ -33,8 +32,8 @@
   <script type="text/javascript" src="js/mootools-core-1.4.5-full-nocompat-yc.js"></script>
   <script type="text/javascript" src="js/mootools-more-1.4.0.1-compressed.js"></script>
   <script type="text/javascript" src="js/iipmooviewer-2.0.js"></script>
-  <script type="text/javascript" src="js/annotools.js"></script>
-  <script type="text/javascript" src="js/moreImages.js"></script>
+  <script type="text/javascript" src="js/MD5.js"></script>
+  <script type="text/javascript" src="js/Annotations.js"></script>
 <!--[if lt IE 7]>
   <script src="http://ie7-js.googlecode.com/svn/version/2.1(beta4)/IE7.js">IE7_PNG_SUFFIX = ".png";</script>
 <![endif]-->
@@ -77,10 +76,7 @@
     var image = getURLParameter("fileLocation");
     var iid = gup("iid");
     console.log(iid);
-    //var image=gup('location');//image location
-    //var iid=gup('iid');//image id
-    //var annotool=new annotools('tool',{left:'60px',top:'45px',canvas:'canvas',iid:iid});
-     var annotool=new annotools('tool',{left:'60px',top:'45px',canvas:'canvas',iid:iid});
+    var annotool=new Annotations('tool',{left:'60px',top:'45px',canvas:'canvas',iid:iid});
     if(gup('maxWidth'))annotool.maxWidth=gup('maxWidth');
     if(gup('maxHeight'))annotool.maxHeight=gup('maxHeight');
     if(gup('ratio'))annotool.ratio=gup('ratio');
