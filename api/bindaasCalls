@@ -1,1 +1,2 @@
 http://localhost:9099/services/annotations/Annotations/query/getAnnotsByID?iid=,http://localhost:9099/services/annotations/Annotations/submit/singleInput,http://localhost:9099/services/annotations/Annotations/delete/deleteById?annotId=,
+
