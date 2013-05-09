@@ -11,8 +11,23 @@ var extractDir = function()
         }
         return Dir2;
 }
+var gup = function(name)
+        {
+          name = name.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
+          var regexS = "[\\?&]"+name+"=([^&#]*)";
+          var regex = new RegExp( regexS );
+          var results = regex.exec( window.location.href );
+          if( results == null )
+            return "";
+          else
+            return results[1];
+    }
 
 var Dir = extractDir();
+
+
+
+
 var Annotations = new Class({
     initialize: function(element,options){
         this.source = element;//The Tool Source Element
@@ -27,10 +42,11 @@ var Annotations = new Class({
         this.zindex=options.zindex|| '100';//To Make Sure The Tool Appears in the Front
         this.canvas=options.canvas;//The canvas Element that The Use will be drawing annotatoins on.
 	this.iid=options.iid||null;//The Image ID
-        this.iidDecoded = decodeURI(options.iid);
+	this.iidDecoded = decodeURI(options.iid);
         this.annotVisible=true;//The Annotations are Set to be visible at the First Loading
         this.mode='default';//The Mode is Set to Default
-	window.addEvent("domready",function(){ this.getAnnot();this.createButtons();}.bind(this));//Get the annotation information and Create Buttons
+	this.MaxDimension=options.MaxDimension;
+	window.addEvent("domready",function(){this.getAnnot();this.createButtons();}.bind(this));//Get the annotation information and Create Buttons
         window.addEvent("keydown",function(event){this.keyPress(event.code)}.bind(this));//Add KeyDown Events
     },
     createButtons:function()//Create Buttons
@@ -81,7 +97,7 @@ var Annotations = new Class({
                         else  this.annotations=e;
                         this.displayAnnot();//Display The Annotations
                         console.log("successfully get annotations");
-			}.bind(this),onFailure:function(e){this.showMessage("cannot get the annotations,please check your getAnnot function");}.bind(this)}).get({'iid':this.iid}); 
+			}.bind(this),onFailure:function(e){this.showMessage("cannot get the annotations,please check your getAnnot function");}.bind(this)}).get({'iid':this.iid,'maxWidth':MaxDimension.width,'maxHeight':MaxDimension.height}); 
 		}
 		else //When the database is not set, one TXT file will be used to save the Annotation Data. Please Refer to annot.php in the API folder
 		{
@@ -180,10 +196,24 @@ var Annotations = new Class({
 	      this.drawCanvas.addEvent('mouseup',function(e){
 		started= false;
 		//Save the Percentage Relative to the Container
+		
+		var x1 = x;
+		var y1 = y;
+		var w1 = w;
+		var h1 = h;
+
 		x=(x+left-oleft)/owidth;
 		y=(y+top-otop)/oheight;
 		w=w/owidth;
 		h=h/oheight;
+
+		alert(
+'X= '+x1.toFixed(2)+ '\tY= '+y1.toFixed(2)+ '\tW='+w1.toFixed(2)+ '\tH='+h1.toFixed(2) + '\n' +
+      
+'x= '+x.toFixed(2) + '\ty= '+y.toFixed(2) + '\tw='+w.toFixed(2) + '\th='+h.toFixed(2) +'\n' +
+'L= '+left.toFixed(2) + '\tOL='+oleft.toFixed(2) + '\tT='+top.toFixed(2) + '\tOT='+otop.toFixed(2) +'\n' +
+'OW='+owidth.toFixed(2)+'\tOH='+oheight.toFixed(2)
+);
 		var tip=prompt("Please Enter Some Descriptions","");
 		if (tip!=null)
 		{
@@ -733,7 +763,7 @@ var Annotations = new Class({
                          onSuccess: function(e){
 			this.showMessage("saved to the server");
 			}.bind(this),onFailure:function(e){
-                       this.showMessage("Error Saving the Annotations,please check you saveAnnot funciton");}.bind(this)}).post({'iid':this.iid,'annot':this.annotations});
+                       this.showMessage("Ameen : Error Saving the Annotations,please check you saveAnnot funciton");}.bind(this)}).post({'iid':this.iid,'annot':this.annotations});
 
                 }
                 else
