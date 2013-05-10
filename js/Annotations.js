@@ -763,7 +763,7 @@ var Annotations = new Class({
                          onSuccess: function(e){
 			this.showMessage("saved to the server");
 			}.bind(this),onFailure:function(e){
-                       this.showMessage("Ameen : Error Saving the Annotations,please check you saveAnnot funciton");}.bind(this)}).post({'iid':this.iid,'annot':this.annotations});
+                       this.showMessage("Ameen : Error Saving the Annotations,please check you saveAnnot funciton");}.bind(this)}).post({'iid':this.iid,'annot':this.annotations,'maxWidth':this.MaxDimension.width,'maxHeight':this.MaxDimension.height});
 
                 }
                 else

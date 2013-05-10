@@ -13,11 +13,6 @@
 	  <meta name="apple-mobile-web-app-capable" content="yes" />
 	  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 	  <meta http-equiv="X-UA-Compatible" content="IE=9" />
-	  <link rel="stylesheet" href="https://app.divshot.com/css/divshot-util.css">
-	  
-	    <link rel="stylesheet" href="https://app.divshot.com/themes/spacelab/bootstrap.min.css">
-	   <link rel="stylesheet" href="https://app.divshot.com/css/bootstrap-responsive.css">
-	  <script class="jsbin" src="bootstrap/js/bootstrap.js"></script>
 	  <link rel="stylesheet" type="text/css" media="all" href="css/iip.css" />
 	  <link rel="stylesheet" type="text/css" media="all" href="css/annotools.css" />
 	<!--[if lt IE 10]>
@@ -35,26 +30,9 @@
 	  <script type="text/javascript" src="js/MD5.js"></script>
 	  <script type="text/javascript" src="js/ImageMetadata.js"></script>
 	  <script type="text/javascript" src="js/Annotations.js"></script>
-	<!--[if lt IE 7]>
-	  <script src="http://ie7-js.googlecode.com/svn/version/2.1(beta4)/IE7.js">IE7_PNG_SUFFIX = ".png";</script>
-	<![endif]-->
 	  <script type="text/javascript">
-		if($('.carousel') ){
-		window.addEvent('domready', function(){
-			if (typeof jQuery != 'undefined' && typeof MooTools != 'undefined' ) {
 
-				Element.implement({
-					slide: function(how, mode){
-						return this;
-					}
-				});
-			} 
-		});
-		}
-	</script>
-	  <script type="text/javascript">
-	    var IP="http://localhost";
-	    var server='/iipimage-server/iipsrv.fcgi';
+	    var server='/camic/fastcgi-bin/iipsrv.fcgi';
 	    // The *full* image path on the server. This path does *not* need to be in the web
 	    // server root directory. On Windows, use Unix style forward slash paths without
 	    // the "c:" prefix

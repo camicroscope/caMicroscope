@@ -54,7 +54,8 @@ switch ($_SERVER['REQUEST_METHOD'])
 							$pointY = $pointXY[1]/$maxHeight;
 							$points1 .= $pointX . "," . $pointY . " ";
 						}
-					}	
+					}
+					$points1 = substr($points1,0,-1);	
 					$singleAnnot->x = $x2/$maxWidth;
 					$singleAnnot->y = $y2/$maxHeight;
 					$singleAnnot->w = $w2/$maxWidth;
@@ -70,6 +71,8 @@ switch ($_SERVER['REQUEST_METHOD'])
 		}
 	case 'POST':
 		$annotationList =$_POST["annot"];
+		$maxWidth = $_POST["maxWidth"];
+		$maxHeight = $_POST["maxHeight"];
 		$url = $postUrl;
 		//$url = 'http://localhost:9099/services/annotations/Annotations/submit/singleInput';
 		$count = count($annotationList);
@@ -114,6 +117,7 @@ switch ($_SERVER['REQUEST_METHOD'])
 		}
 		$postRequest = new RestRequest($url,'POST',json_encode($newestAnnot));
 		$postRequest->execute();
+		echo(json_encode("success"));
 		break;
 }
 ?>
