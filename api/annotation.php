@@ -1,11 +1,16 @@
-<?php
+<?php session_start();
 ini_set('display_errors', 'On');
 error_reporting(E_ALL | E_STRICT);
 include_once("RestRequest.php");
-$callList = file_get_contents("bindaasCalls");
-$callArray = explode(',',$callList);
-$getUrl =  $callArray[0];
-$postUrl = $callArray[1];
+require_once 'HTTP/Request2.php';
+$config = require 'config.php';
+$getUrl =  $config['getAllAnnotations'];
+$postUrl = $config['postAnnotation'];
+
+$api_key = '';
+if (!empty($_SESSION['api_key'])) {
+    $api_key = $_SESSION['api_key'];
+}
 switch ($_SERVER['REQUEST_METHOD'])
 {
 	case 'GET':
@@ -14,12 +19,23 @@ switch ($_SERVER['REQUEST_METHOD'])
 			$iid=$_GET["iid"];
 			$maxWidth=$_GET["maxWidth"];
 			$maxHeight=$_GET["maxHeight"];
-			$url = $getUrl . $iid;	
+			$url = $getUrl . $iid . "&api_key=".$api_key;	
+			
+			/*
+			$request = new HTTP_Request2($getUrl,
+                             HTTP_Request2::METHOD_GET, array('use_brackets' => true));
+			$url = $request->getUrl();
+			$url->setQueryVariable('iid', $iid);
+			$url->setQueryVariable('api_key', $api_key);
+			error_log($url);
+			*/
+			
 			//$url = 'http://localhost:9099/services/annotations/Annotations/query/getAnnotsByID?iid=' . $iid;
 			$getRequest = new RestRequest($url,'GET');
 			$getRequest->execute();
 			//Figure out how to parse reponse
 			$annotationList = json_decode($getRequest->responseBody);
+			//$annotationList = json_decode($request->send()->getBody());
 			
 			foreach($annotationList as $singleAnnot)
 			{
@@ -73,7 +89,7 @@ switch ($_SERVER['REQUEST_METHOD'])
 		$annotationList =$_POST["annot"];
 		$maxWidth = $_POST["maxWidth"];
 		$maxHeight = $_POST["maxHeight"];
-		$url = $postUrl;
+		$url = $postUrl . "?api_key=".$api_key;
 		//$url = 'http://localhost:9099/services/annotations/Annotations/submit/singleInput';
 		$count = count($annotationList);
 		$newestAnnot = $annotationList[$count-1];
@@ -118,6 +134,15 @@ switch ($_SERVER['REQUEST_METHOD'])
 		$postRequest = new RestRequest($url,'POST',json_encode($newestAnnot));
 		$postRequest->execute();
 		echo(json_encode("success"));
+		/*
+		$request = new HTTP_Request2($postUrl);
+		$request->setMethod(HTTP_Request2::METHOD_POST)
+			->addPostParameter
+                            
+		$url = $request->getUrl();
+		error_log($url);
+		*/
+
 		break;
 }
 ?>

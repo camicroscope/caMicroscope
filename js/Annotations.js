@@ -24,6 +24,7 @@ var gup = function(name)
     }
 
 var Dir = extractDir();
+console.log("the dir: "+ Dir);
 
 
 
@@ -92,7 +93,9 @@ var Annotations = new Class({
 		 if(this.iid)//When the database is set. User can refer to the annotation.php for saving the annotations
 		{
 		//################Changed call to reference php code that connects to mongo instead of my sql
-			var jsonRequest = new Request.JSON({url:Dir + "/api/annotation.php", onSuccess: function(e){
+			// SBA
+			//var jsonRequest = new Request.JSON({url:Dir + "/api/annotation.php", onSuccess: function(e){
+			var jsonRequest = new Request.JSON({url: "api/annotation.php", onSuccess: function(e){
 			if(e=='NoAnnotations')  this.annotations=new Array();
                         else  this.annotations=e;
                         this.displayAnnot();//Display The Annotations
@@ -101,7 +104,7 @@ var Annotations = new Class({
 		}
 		else //When the database is not set, one TXT file will be used to save the Annotation Data. Please Refer to annot.php in the API folder
 		{
-			var jsonRequest = new Request.JSON({url: Dir+'/api/annot.php', onSuccess: function(e){
+			var jsonRequest = new Request.JSON({url: 'api/annot.php', onSuccess: function(e){
 			var annot=JSON.decode(e);
 			if(annot==null) annot=new Array();
 			this.annotations=annot;//Display The Annotations
@@ -386,7 +389,7 @@ var Annotations = new Class({
 		             h=Math.abs(newpoly[i].y-y)/oheight;
 		         }
 
-		} 
+	} 
 		points+=(newpoly[i].x+left-oleft)/owidth+','+(newpoly[i].y+top-otop)/oheight;
 		x=(x+left-oleft)/owidth;
 		y=(y+top-otop)/oheight;
@@ -539,6 +542,14 @@ var Annotations = new Class({
 	},
         addnewAnnot:function(newAnnot)//Add New Annotations
         {
+		var username = document.getElementById('username').value;
+		newAnnot['username'] = username;
+		newAnnot['color'] = 
+			'#'+(0x1000000+
+				(username.split("").
+					reduce(function(a,b){a=((a<<5)-a)+b.charCodeAt(0);return a&a},0)
+				)
+				*0xffffff).toString(16).substr(1,6);
 		this.annotations.push(newAnnot); 
 		this.saveAnnot();
                 this.displayAnnot();
@@ -748,7 +759,7 @@ var Annotations = new Class({
 	      //########### Do the delete using bindaas instead of on local list.
 	      if(this.iid)
               {
-                var jsonRequest = new Request.JSON({url: Dir+'/api/deleteAnnot.php',onSuccess: function(e){
+                var jsonRequest = new Request.JSON({url: 'api/deleteAnnot.php',onSuccess: function(e){
                         this.showMessage("deleted from server");
                 }.bind(this),onFailure:function(e){
                         this.showMessage("Error deleting the Annotations, please check your deleteAnnot php");}.bind(this)}).get({'annotId':testAnnotId});
@@ -759,7 +770,7 @@ var Annotations = new Class({
         {
                 if(this.iid)
                 {
-		   var jsonRequest = new Request.JSON({url: Dir+'/api/annotation.php',
+		   var jsonRequest = new Request.JSON({url: 'api/annotation.php',
                          onSuccess: function(e){
 			this.showMessage("saved to the server");
 			}.bind(this),onFailure:function(e){
@@ -768,7 +779,7 @@ var Annotations = new Class({
                 }
                 else
                 {
-		   var jsonRequest = new Request.JSON({url: Dir+'/api/annot.php',
+		   var jsonRequest = new Request.JSON({url: 'api/annot.php',
                          onSuccess: function(e){
 			this.showMessage("saved to the server");
 			}.bind(this),onFailure:function(e){
@@ -779,7 +790,7 @@ var Annotations = new Class({
         {
                if(this.iid)
                 {
-		   var jsonRequest = new Request.JSON({url: Dir+'/api/state.php',
+		   var jsonRequest = new Request.JSON({url: 'api/state.php',
                          onSuccess: function(e){
 			this.showMessage("saved to the server");
 			}.bind(this),onFailure:function(e){
