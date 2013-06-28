@@ -9,7 +9,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 //var IP = 'http://170.140.138.125';
-var IP = 'http://glycomicsdev1.cc.emory.edu:81';
+var IP = '';
 var annotools = new Class({
     initialize: function (element, options) {
         this.source = element; //The Tool Source Element
@@ -27,12 +27,18 @@ var annotools = new Class({
         this.annotVisible = true; //The Annotations are Set to be visible at the First Loading
         this.mode = 'default'; //The Mode is Set to Default
         window.addEvent("domready", function () {
-            this.getAnnot();
+            //this.getAnnot();
             this.createButtons();
         }.bind(this)); //Get the annotation information and Create Buttons
         window.addEvent("keydown", function (event) {
             this.keyPress(event.code)
         }.bind(this)); //Add KeyDown Events
+    },
+    setViewer: function(viewer) 
+    {
+        this.viewer = viewer;
+        this.getAnnot2();
+
     },
     createButtons: function () //Create Buttons
     {
@@ -184,6 +190,44 @@ var annotools = new Class({
         }).inject(document.body); //Magnify glass will hide by default
         this.magnifyGlass.hide();
     },
+    getAnnot2: function (viewer) //Get Annotation from the API
+    {
+        if (this.iid) //When the database is set. User can refer to the annotation.php for saving the annotations
+        {
+            var jsonRequest = new Request.JSON({
+                //url: IP + 'api/annotation.php',
+                url: 'api/annotation.php',
+                onSuccess: function (e) {
+                    if (e == null) this.annotations = new Array();
+                    else this.annotations = e;
+                    this.displayAnnot(); //Display The Annotations
+                    //console.log("successfully get annotations");
+                }.bind(this),
+                onFailure: function (e) {
+                    this.showMessage("cannot get the annotations,please check your getAnnot function");
+                }.bind(this)
+            }).get({
+                'iid': this.iid
+            });
+        } else //When the database is not set, one TXT file will be used to save the Annotation Data. Please Refer to annot.php in the API folder
+        {
+            var jsonRequest = new Request.JSON({
+                //url: IP + 'api/annot.php',
+                url:  'api/annot.php',
+                onSuccess: function (e) {
+                    var annot = JSON.decode(e);
+                    if (annot == null) annot = new Array();
+                    this.annotations = annot; //Display The Annotations
+                    this.displayAnnot();
+                    //this.setupHandlers();
+                    console.log("successfully get annotations");
+                }.bind(this),
+                onFailure: function (e) {
+                    this.showMessage("cannot get the annotations,please check your getAnnot funciton");
+                }.bind(this)
+            }).get();
+        }
+    },
     getAnnot: function () //Get Annotation from the API
     {
         if (this.iid) //When the database is set. User can refer to the annotation.php for saving the annotations
@@ -213,6 +257,7 @@ var annotools = new Class({
                     if (annot == null) annot = new Array();
                     this.annotations = annot; //Display The Annotations
                     this.displayAnnot();
+                    this.setupHandlers();
                     console.log("successfully get annotations");
                 }.bind(this),
                 onFailure: function (e) {
@@ -280,8 +325,10 @@ var annotools = new Class({
         this.magnifyGlass.hide(); //Hide The Magnifying Tool
         //this.container = document.id(this.canvas); //Get The Canvas Container
         this.container = document.getElementsByClassName(this.canvas)[0]; //Get The Canvas Container
+        //this.container = document.getElementById('container'); //Get The Canvas Container
         if (this.container) {
-            var left = parseInt(this.container.offsetLeft), //Get The Container Location
+            //var left = parseInt(this.container.offsetLeft), //Get The Container Location
+            var left = parseInt(this.container.getLeft()), //Get The Container Location
                 top = parseInt(this.container.offsetTop),
                 width = parseInt(this.container.offsetWidth),
                 height = parseInt(this.container.offsetHeight),
@@ -289,6 +336,7 @@ var annotools = new Class({
                 otop = top,
                 owidth = width,
                 oheight = height;
+            console.log("left: " + left + " top: " + top + " width: " + width + " height: " + height);
             if (left < 0) {
                 left = 0;
                 width = window.innerWidth;
@@ -372,6 +420,7 @@ var annotools = new Class({
                         w, //width
                         h; //height
                     this.drawCanvas.addEvent('mousedown', function (e) {
+                        console.log("mousedown ellipse");
                         started = true;
                         x = e.event.layerX;
                         y = e.event.layerY;
@@ -404,10 +453,36 @@ var annotools = new Class({
                     this.drawCanvas.addEvent('mouseup', function (e) {
                         started = false;
                         //Save the Percentage Relative to the Container
+                        
                         x = (x + left - oleft) / owidth;
                         y = (y + top - otop) / oheight;
                         w = w / owidth;
                         h = h / oheight;
+                        /*
+                        SBAI
+                        
+                        var p = 
+                            OpenSeadragon.Utils.getMousePosition2(e).minus
+                                (OpenSeadragon.Utils.getElementPosition(viewer.element));
+                        console.log(p.x + ", " + p.y + " | " + 
+                            viewer.viewport.pointFromPixel(p).x + ", " + 
+                                viewer.viewport.pointFromPixel(p).y);
+                        var point = viewer.viewport.pointFromPixel(p);
+                        var pixelPt = viewer.viewport.pixelFromPoint(point);
+
+                        oldX = x;
+                        oldY = y;
+                        x = point.x; 
+                        y = point.y;
+                        var newpt = new Seadragon.Point(w,h);
+                        var wpoint = point.minus(viewer.viewport.pointFromPixel(new Seadragon.Point(oldX, oldY)));
+                        w = wpoint.x;
+                        h = wpoint.y;
+                        console.log("pixelPt: " + pixelPt);
+                        console.log("point: " + point);
+                        console.log("w: " + w +
+                                        ", h: " + h);
+                        */
                         var tip = prompt("Please Enter Some Descriptions", "");
                         if (tip != null) {
                             //Update Annotations
@@ -873,6 +948,284 @@ var annotools = new Class({
             this.start(0.5, 0);
         });
     },
+    setupHandlers: function() 
+    {
+        
+                    var enablePan = 0; // 1 or 0: enable or disable panning (default enabled)
+                    var enableZoom = 1; // 1 or 0: enable or disable zooming (default enabled)
+                    var enableDrag = 0; // 1 or 0: enable or disable dragging (default disabled)
+                    
+                    /// <====
+                    /// END OF CONFIGURATION 
+                    
+                    var root = document.getElementsByTagName('svg')[0]; 
+                    var z = 1;
+                    
+                    var state = 'none', svgRoot, stateTarget, stateOrigin, stateTf;
+                    
+                    if (root != undefined) {
+                        setupHandlers(root);
+                        console.log("setupHandlers complete");
+
+                    }
+                    
+                    function setupHandlers(root){
+                    
+                        if(navigator.userAgent.toLowerCase().indexOf('webkit') >= 0)
+                            window.addEventListener('mousewheel', handleMouseWheel, false); // Chrome/Safari
+                        else
+                            window.addEventListener('DOMMouseScroll', handleMouseWheel, false); // Others
+                    }
+
+                    // Retrieves the root element for SVG manipulation. The element is then cached into the svgRoot global variable.
+                    function getRoot(root) {
+                        if(typeof(svgRoot) == "undefined") {
+                            var g = null;
+                    
+                            g = root.getElementById("viewport");
+                    
+                            if(g == null)
+                                //g = root.getElementsByTagName('g')[0];
+                                g = root.getElementsByTagName('ellipse')[0];
+                    
+                            if(g == null)
+                                alert('Unable to obtain SVG root element');
+                    
+                            setCTM(g, g.getCTM());
+                    
+                            g.removeAttribute("viewBox");
+                    
+                            svgRoot = g;
+                        }
+                    
+                        return svgRoot;
+                    }
+                    
+                    // Instance an SVGPoint object with given event coordinates.
+                    function getEventPoint(evt) {
+                        var p = root.createSVGPoint();
+                    
+                        p.x = evt.clientX;
+                        p.y = evt.clientY;
+                    
+                        return p;
+                    }
+                    
+                    // Sets the current transform matrix of an element.
+                    function setCTM(element, matrix) {
+                        var s = "matrix(" + matrix.a + "," + matrix.b + "," + matrix.c + "," + matrix.d + "," + matrix.e + "," + matrix.f + ")";
+                    
+                        element.setAttribute("transform", s);
+                    }
+                    
+                    // Dumps a matrix to a string (useful for debug).
+                    function dumpMatrix(matrix) {
+                        var s = "[ " + matrix.a + ", " + matrix.c + ", " + matrix.e + "\n  " + matrix.b + ", " + matrix.d + ", " + matrix.f + "\n  0, 0, 1 ]";
+                    
+                        return s;
+                    }
+                    
+                    // Sets attributes of an element.
+                    function setAttributes(element, attributes){
+                        for (var i in attributes)
+                            element.setAttributeNS(null, i, attributes[i]);
+                    }
+                    
+                    function handleMouseWheel(evt) {
+                        if(evt.preventDefault)
+                            evt.preventDefault();
+                        var scrollSensitivity = 0.2; 
+                        //var evt = window.event || e;
+                        var scroll = evt.detail ? evt.detail * scrollSensitivity : (evt.wheelDelta / 120) * scrollSensitivity;
+                        scroll = scroll * -1;
+                    
+                        var transform = document.getElementById("viewport").getAttribute("transform").replace(/ /g,"");
+                    
+                        var vector = transform.substring(transform.indexOf("(")+1,transform.indexOf(")")).split(",");
+                    
+                        vector[0] = (parseFloat(vector[0]) + scroll) + '';
+                        vector[3] = vector[0];
+
+                        vector[4] = parseInt(vector[4]);
+                        vector[5] = parseInt(vector[5]);
+
+                        var p = getEventPoint(evt);
+                        if (scroll < 0) {
+                            vector[4] = vector[4] + 105;
+                            vector[5] = vector[5] + 67;
+
+                        } else {
+                            vector[4] = vector[4] - 105;
+                            vector[5] = vector[5] - 67;
+
+                        }
+                        //console.log(scroll + " " + vector[0] + " " + vector[3]);
+                        console.log("matrix(".concat(vector.join(), ")"));
+                    
+                        document.getElementById("viewport").setAttribute("transform",
+                            "matrix(".concat(vector.join(), ")"));
+                                        
+                        return true;
+
+                    }
+
+                    // Handle mouse wheel event.
+                    function handleMouseWheel2(evt) {
+                        if(!enableZoom)
+                            return;
+                    
+                        if(evt.preventDefault)
+                            evt.preventDefault();
+                    
+                        evt.returnValue = false;
+                    
+                        //var svgDoc = evt.target.ownerDocument;
+                        var svgDoc = evt.target;
+                        //console.log(svgDoc);
+                    
+                        var delta;
+                    
+                        if(evt.wheelDelta)
+                            delta = evt.wheelDelta / 3600; // Chrome/Safari
+                        else
+                            delta = evt.detail / -90; // Mozilla
+                    
+                        console.log("delta: " + delta);
+                        var direction = 1.0211;
+                        if (delta < 0)
+                            direction = -1.0211;
+                    
+                        //var z = 1.1 * (direction + .011); // Zoom factor: 0.9/1.1
+                        z = z + delta; // Zoom factor: 0.9/1.1
+                        console.log("z = " + z);
+                    
+                        var g = getRoot(svgDoc);
+                        //console.log("old g: " + g.rx.baseVal.value + "," + g.ry.baseVal.value + 
+                                    //" " + g.cx.baseVal.value + ", " +g.cy.baseVal.value);
+                        console.log("old g: " + g.getCTM().a + "," + g.getCTM().d + 
+                                    " " + g.getCTM().e + ", " +g.getCTM().f);
+                        
+                        var p = getEventPoint(evt);
+                
+                    
+                        p = p.matrixTransform(g.getCTM().inverse());
+
+                        //p.x = g.cx.baseVal.value;
+                        //p.y = g.cy.baseVal.value;
+
+                        var transMatrix = [1,0,0,1,0,0];
+                    
+                        width  = parseInt(evt.target.getAttributeNS(null, "width"), 10);
+                        height = parseInt(evt.target.getAttributeNS(null, "height"), 10);
+                        // Compute new scale matrix in current mouse position
+                        var k = root.createSVGMatrix().translate(-p.x, -p.y).scale(z).translate(p.x, p.y);
+                        //var k = root.createSVGMatrix().translate((0), (0)).scale(1).translate(0,0);
+                        //var k = root.createSVGMatrix().translate(-p.x, -p.y);
+                        setCTM(g, g.getCTM().multiply(k));
+                    
+                        if(typeof(stateTf) == "undefined")
+                            stateTf = g.getCTM().inverse();
+                        console.log("new g: " + g.getCTM().a + "," + g.getCTM().d + 
+                                    " " + g.getCTM().e + ", " +g.getCTM().f);
+                    
+                        stateTf = stateTf.multiply(k.inverse());
+                    }
+
+                    function pan(dx, dy)
+                    {      
+                      transMatrix[4] += dx;
+                      transMatrix[5] += dy;
+                    
+                      newMatrix = "matrix(" +  transMatrix.join(' ') + ")";
+                      mapMatrix.setAttributeNS(null, "transform", newMatrix);
+                    }
+                    function zoom(scale)
+                    {
+                      for (var i=0; i<transMatrix.length; i++)
+                      {
+                        transMatrix[i] *= scale;
+                      }
+                    
+                      transMatrix[4] += (1-scale)*width/2;
+                      transMatrix[5] += (1-scale)*height/2;
+                    
+                      newMatrix = "matrix(" +  transMatrix.join(' ') + ")";
+                      mapMatrix.setAttributeNS(null, "transform", newMatrix);
+                    }
+                    
+
+    },
+    displayAnnot2: function () //Display SVG Annotations
+    {
+        //var ellipse = new No5.Seajax.Shapes.Ellipse(1500, 500);
+        //ellipse.attachTo(this.viewer, 200, 800);
+        //ellipse.getElement().attr({"fill":"none", "stroke-color":"#ff0000"});
+
+        //setTimeout(function() {
+        //   ellipse.redraw(viewer);
+        //}, 500);
+
+        var a = [],
+            b;
+        //var container = document.id(this.canvas);
+        var container = document.getElementsByClassName(this.canvas)[0]; //Get The Canvas Container
+        if (container) {
+        //if (1==2) {
+            var left = parseInt(container.offsetLeft),
+                top = parseInt(container.offsetTop),
+                width = parseInt(container.offsetWidth),
+                height = parseInt(container.offsetHeight);
+            this.drawLayer.hide();
+            this.magnifyGlass.hide();
+            //for (b in this.annotations) this.annotations[b].id = b, a.push(this.annotations[b]);
+            a = this.annotations;
+            container.getElements(".annotcontainer").destroy();
+            if (this.svg) {
+                this.svg.html = '';
+                this.svg.destroy();
+            }
+
+            //var cx = parseFloat(a[b].x) + parseFloat(a[b].w) / 2;
+            //var cy = parseFloat(a[b].y) + parseFloat(a[b].h) / 2;
+            //var rx = parseFloat(a[b].w) / 2;
+            //var ry = parseFloat(a[b].h) / 2;
+
+            for (b = 0; b < a.length; b++) {
+
+                var cx = (parseInt(a[b].x) + parseInt(a[b].w))/2;
+                var cy = (parseInt(a[b].y) + parseInt(a[b].h))/2;
+                var rx = parseInt(a[b].w)/2;
+                var ry = parseInt(a[b].h)/2;
+
+                /*
+                if (a[b].type != undefined) {
+                    //var cx = parseInt(a[b].x)- parseInt(a[b].w)/2;
+                    //var cy = parseInt(a[b].y)+ parseInt(a[b].h)/2;
+                    //var cx = parseInt(a[b].x);
+                    //var cy = parseInt(a[b].y);
+                    var point = new Seadragon.Point(parseFloat(a[b].x), parseFloat(a[b].y));
+
+                    var cx = point.x;
+                    var cy = point.y;
+                    //var cx = viewer.viewport.pixelFromPoint(point).x;
+                    //var cy = viewer.viewport.pixelFromPoint(point).y;
+                    var rx = parseFloat(a[b].w) / 2;
+                    var ry = parseFloat(a[b].h) / 2;
+        
+                    //var ellipse = new No5.Seajax.Shapes.Ellipse(cx, cy, rx, ry);
+                    var ellipse = new No5.Seajax.Shapes.Ellipse(rx, ry);
+                    ellipse.getElement().attr({"fill":"none", "fill-opacity":"0.2", "stroke":"green", "stroke-width" : "2"});
+                    ellipse.attachTo(this.viewer, cx, cy);
+
+                    setTimeout(function() {
+                        ellipse.redraw(viewer);
+                    }, 500);
+                }
+                */
+
+            }
+        }
+    },
     displayAnnot: function () //Display SVG Annotations
     {
         var a = [],
@@ -895,6 +1248,7 @@ var annotools = new Class({
             //This part is for displaying SVG annotations
             if (this.annotVisible) {
                 var svgHtml = '<svg xmlns="http://www.w3.org/2000/svg" width="' + width + 'px" height="' + height + 'px" version="1.1">';
+                    svgHtml += '<g id="viewport" transform="matrix(1,0,0,1,0,0)">';
                 for (b = 0; b < a.length; b++) {
                     if (((width * a[b].x + left) > 0) && ((width * a[b].x + left + width * a[b].w) < window.innerWidth) && ((height * a[b].y + top) > 0) && ((height * a[b].y + top + height * a[b].h) < window.innerHeight)) {
                         switch (a[b].type) {
@@ -953,7 +1307,8 @@ var annotools = new Class({
                                 width: Math.round(width * a[b].w),
                                 height: Math.round(height * a[b].h)
                             }
-                        }).inject(container);
+                        //}).inject(container);
+                        });
                         var c = this;
                         d.addEvents({
                             'mouseenter': function (e) {
@@ -971,7 +1326,9 @@ var annotools = new Class({
                         });
                     }
                 }
-                svgHtml += '</svg>';
+                svgHtml += '</g></svg>';
+
+
                 if (this.annotations.length > 0) {
                     //inject the SVG Annotations to this.Canvas
                     this.svg = new Element("div", {
