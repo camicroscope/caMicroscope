@@ -27,9 +27,10 @@
       }
 
       #viewer{
-        width:100%;
-        height:100%;
-        margin:0px;
+        width:800px;
+        height:600px;
+        margin-left:auto;
+        margin-right:auto;
         color: white;   /* for error messages */
       }
     </style>
@@ -39,11 +40,8 @@
 
     <div id="container">
 
-        <div class="demoarea">
                 
                 <div id="tool"></div>
-            </div>
-        </div>
 
     </div>
                 <div id="viewer" class="openseadragon"></div>
@@ -51,6 +49,10 @@
     <script type="text/javascript">
 
       var viewer;
+      var state = 'none',stateTarget, stateOrigin, stateTf;
+      var scaleFactor = 1.2;
+      var scale = 1;
+      
       var Seadragon;
       Seadragon = OpenSeadragon;
       OpenSeadragon.Utils = OpenSeadragon; 
@@ -62,8 +64,111 @@
                     });
       viewer.addHandler("open", addOverlays);
       viewer.openDzi("/fastcgi-bin/iipsrv.fcgi?DeepZoom=/u01/app/oracle/images/NLSI0000063.tiff.dzi");
-      //OpenSeadragon.addEvent(viewer.element, "mousemove", showMouse);
+      OpenSeadragon.addEvent(viewer.element, "mousemove", handleMouseMove);
+      OpenSeadragon.addEvent(viewer.element, "mousedown", handleMouseDown);
+      OpenSeadragon.addEvent(viewer.element, "mouseup", handleMouseUp);
+      OpenSeadragon.addEvent(viewer.element, "DOMMouseScroll", handleMouseWheel);
+      var origin = null;
 
+      $('#home_btn').click(  function () {
+            console.log("home clicked");
+            scale = 1;
+            document.getElementById("viewport")
+                .setAttribute('transform','translate(0,0)');  
+        });
+
+      function handleMouseMove(evt) {
+        if(evt.preventDefault)
+            evt.preventDefault();
+
+        if (state == 'pan') {
+
+            var pixel = OpenSeadragon.Utils.getMousePosition(evt).minus
+                (OpenSeadragon.Utils.getElementPosition(viewer.element));
+            var point = viewer.viewport.pointFromPixel(pixel);
+            //console.log("move: " + point.x.toFixed(3) + ", " + point.y.toFixed(3));
+        }
+      }
+
+      function handleMouseDown(evt) {
+        if(evt.preventDefault)
+            evt.preventDefault();
+        state = 'pan';
+        var pixel = OpenSeadragon.Utils.getMousePosition(evt).minus
+            (OpenSeadragon.Utils.getElementPosition(viewer.element));
+        var point = viewer.viewport.pointFromPixel(pixel);
+        stateOrigin = pixel;
+        console.log("down: " + stateOrigin);
+        //console.log("down: " + point.x.toFixed(3) + ", " + point.y.toFixed(3));
+
+      }
+
+
+      function handleMouseWheel(evt) {
+        if(evt.preventDefault)
+            evt.preventDefault();
+               
+ 
+        var pixel = OpenSeadragon.Utils.getMousePosition(evt).minus
+            (OpenSeadragon.Utils.getElementPosition(viewer.element));
+        //var point = viewer.viewport.pointFromPixel(pixel);
+        //stateOrigin = pixel;
+        var delta;
+        if(evt.wheelDelta)
+            delta = evt.wheelDelta / 360; // Chrome/Safari
+        else
+            delta = evt.detail / -9; // Mozilla
+        //scaleFactor = Math.pow(scaleFactor + 1.2, delta);
+
+        if (delta > 0) {
+            scale  = scale * 1.04;
+        } else {
+
+            scale  = scale / 1.04;
+
+        }
+
+        var center = viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(.5,.5));
+        console.log("center: " + center.x + ", " + center.y);
+        var currentTrans = 
+            document.getElementById("viewport").getAttribute("transform").replace(/ /g,"").replace("translate(", "").replace(")","");
+        var coordStr = currentTrans.split(",");
+        var currX = parseInt(coordStr[0]);
+        var currY = parseInt(coordStr[1]);
+        var currPt = new Seadragon.Point(currX, currY);
+        var trans = currPt.minus(pixel);
+        var diff = origin.minus(center);
+        document.getElementById("viewport")
+                    .setAttribute('transform','translate(' + (-diff.x) + ", " + (-diff.y)  + ') scale(' + scale + ')');  
+                    //.setAttribute('transform','scale(' + scale + ') translate(' + (-diff.x) + ", " + (-diff.y)  + ') ');  
+        console.log("zoom: " + pixel.x + ", " + pixel.y + " scaleFactor: " + scaleFactor);
+        //console.log("down: " + point.x.toFixed(3) + ", " + point.y.toFixed(3));
+
+      }
+
+      function handleMouseUp(evt) {
+            if(evt.preventDefault)
+                evt.preventDefault();
+
+            if (state == 'pan') {
+                state = 'up';
+                var pixel = OpenSeadragon.Utils.getMousePosition(evt).minus
+                    (OpenSeadragon.Utils.getElementPosition(viewer.element));
+                var point = viewer.viewport.pointFromPixel(pixel);
+                stateTarget = pixel;
+                console.log("up: " + stateTarget);
+                var transform = document.getElementById("viewport").getAttribute("transform").replace(/ /g,"");
+                var diff = stateTarget.minus(stateOrigin);
+                var currentTrans = 
+                    document.getElementById("viewport").getAttribute("transform").replace(/ /g,"").replace("translate(", "").replace(")","");
+                var coordStr = currentTrans.split(",");
+                var currX = parseInt(coordStr[0]);
+                var currY = parseInt(coordStr[1]);
+                document.getElementById("viewport")
+                        .setAttribute('transform','translate(' + (currX + diff.x) + ", " + (currY + diff.y)  + ')');  
+                console.log("**** diff: " + (currX + diff.x) + ", " + (currY + diff.y));
+            }
+        }
 
 
       function showMousePosition(event) {
@@ -88,7 +193,8 @@
       function addOverlays() {
         var annotool=new annotools('tool',{left:'0px',top:'50px',canvas:'openseadragon-canvas',iid: ''});
         annotool.setViewer(viewer);
-
+        origin = viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(.5,.5));
+        console.log("origin: " + origin.x + ", " + origin.y);
       }
 
      </script>
