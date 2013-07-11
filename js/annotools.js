@@ -503,7 +503,7 @@ var annotools = new Class({
                         w = wpoint.x;
                         h = wpoint.y;
 
-                        var tip = "asdf";//prompt("Please Enter Some Descriptions", "");
+                        var tip = prompt("Please Enter Some Descriptions", "");
                         if (tip != null) {
                             //Update Annotations
                             var newAnnot = {
@@ -584,7 +584,7 @@ var annotools = new Class({
                         w = wpoint.x;
                         h = wpoint.y;
 
-                        var tip = "adf"; //prompt("Please Enter Some Descriptions", "");
+                        var tip = prompt("Please Enter Some Descriptions", "");
                         if (tip != null) {
                             //Update Annotations
                             var newAnnot = {
@@ -641,12 +641,20 @@ var annotools = new Class({
                         var x, y, w, h;
                         x = pencil[0][0].x;
                         y = pencil[0][0].y;
+
+                            var polyPixelPt = new OpenSeadragon.Point(x, y);
+                            var polyPt      = viewer.viewport.pointFromPixel(polyPixelPt); 
+
                         var maxdistance = 0; //The Most Remote Point to Determine the Markup Size
                         var points = "";
                         for (var i = 0; i < pencil.length; i++) {
                             newpoly = pencil[i];
                             for (j = 0; j < newpoly.length; j++) {
-                                points += (newpoly[j].x + left - oleft) / owidth + ',' + (newpoly[j].y + top - otop) / oheight + ' ';
+                                //points += (newpoly[j].x + left - oleft) / owidth + 
+                                //    ',' + (newpoly[j].y + top - otop) / oheight + ' ';
+                                var polyPixelPt = new OpenSeadragon.Point(newpoly[j].x, newpoly[j].y);
+                                var polyPt      = viewer.viewport.pointFromPixel(polyPixelPt); 
+                                points += polyPt.x + ',' + polyPt.y + ' ';
                                 if (((newpoly[j].x - x) * (newpoly[j].x - x) + (newpoly[j].y - y) * (newpoly[j].y - y)) > maxdistance) {
                                     maxdistance = ((newpoly[j].x - x) * (newpoly[j].x - x) + (newpoly[j].y - y) * (newpoly[j].y - y));
                                     w = Math.abs(newpoly[j].x - x) / owidth;
@@ -1249,9 +1257,18 @@ var annotools = new Class({
                                     svgHtml += '<polyline id="'+index+'" points="';
                                     for (var j = 0; j < p.length; j++) {
                                         point = String.split(p[j], ',');
-                                        px = point[0] * width;
-                                        py = point[1] * height;
-                                        svgHtml += px + ',' + py + ' ';
+                                        //px = point[0] * width;
+                                        //py = point[1] * height;
+
+                                        var polyPt = 
+                                            new OpenSeadragon.Point(
+                                                parseFloat(point[0]),
+                                                parseFloat(point[1])
+                                        );
+                                        var polyPixelPt = viewer.viewport.pixelFromPoint(polyPt);
+
+                                        //svgHtml += px + ',' + py + ' ';
+                                        svgHtml += polyPixelPt.x + ',' + polyPixelPt.y + ' ';
                                     }
                                     svgHtml += '" style="fill:none;stroke:' + a[index].color + ';stroke-width:2"/>';
                                 }
