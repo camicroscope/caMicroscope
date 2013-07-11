@@ -53,7 +53,7 @@
       var scale = 1.2;
       var lastCenter = {x: 0, y: 0};
       var objectCenterPts = {};
-      var originalCoords = {};
+      var originalCoords = [];
       var zoom = 1;
       
       var Seadragon;
@@ -85,12 +85,29 @@
                     object.setAttribute("cx", originalObject.cx);
                     object.setAttribute("cy", originalObject.cy);
     
-                } else if (object.tagName == "rect") {
+                } 
+                else if (object.tagName == "rect") {
 
                     object.setAttribute("width", originalObject.width);
                     object.setAttribute("height", originalObject.height);
                     object.setAttribute("x", originalObject.x);
                     object.setAttribute("y", originalObject.y);
+
+                }
+                //else if (object.tagName == "polygon") {
+                else {
+                
+                    var points = String.split(object.getAttribute("points").trim(), ' ');
+                    var newLocationRelPt = originalObject.center;
+                    var distances = originalObject.distances;
+                    var pointsStr = "";
+                    for (var j = 0; j < distances.length-1; j++) {
+                        var pointPair = distances[j].plus(newLocationRelPt);
+                        var pixelPoint = viewer.viewport.pixelFromPoint(pointPair);
+                        pointsStr += pixelPoint.x + "," + pixelPoint.y + " ";
+
+                    }
+                    object.setAttribute("points", pointsStr);
 
                 }
 
@@ -117,14 +134,6 @@
         
                     var newLocation = viewer.viewport.pixelFromPoint(objectCenterPts[i]);
         
-                    $('#groupcenter')[0].appendChild(makeSVG('ellipse',{
-                        'cx': newLocation.x, 
-                            'cy': newLocation.y, 
-                            'rx':4, 
-                            'ry':4, 
-                            'style':'fill:blue;stroke-width:2'}
-                        )
-                    );
                     var distance = newLocation.distanceTo(center);            
                     if (object.tagName == "ellipse") {
 
@@ -133,12 +142,37 @@
                         object.setAttribute("cx", newLocation.x);
                         object.setAttribute("cy", newLocation.y);
 
-                    } else if (object.tagName == "rect") {
+                    } 
+                    else if (object.tagName == "rect") {
 
                         object.setAttribute("width", (bbox.width)*scale);
                         object.setAttribute("height", (bbox.height)*scale);
                         object.setAttribute("x", newLocation.x-(bbox.width/2)*scale);
                         object.setAttribute("y", newLocation.y-(bbox.height/2)*scale);
+
+                    }
+                    else {
+                    
+                        var points = String.split(object.getAttribute("points").trim(), ' ');
+                        console.log(points);
+                        $('#groupcenter')[0].appendChild(makeSVG('ellipse',{
+                                'cx': newLocation.x, 
+                                'cy': newLocation.y, 
+                                'rx':4, 
+                                'ry':4, 
+                                'style':'fill:blue;stroke-width:2'}
+                            )
+                        );
+                        var newLocationRelPt = viewer.viewport.pointFromPixel(newLocation);
+                        var distances = originalCoords[i].distances;
+                        var pointsStr = "";
+                        for (var j = 0; j < distances.length-1; j++) {
+                            var pointPair = distances[j].plus(newLocationRelPt);
+                            var pixelPoint = viewer.viewport.pixelFromPoint(pointPair);
+                            pointsStr += pixelPoint.x + "," + pixelPoint.y + " ";
+
+                        }
+                        object.setAttribute("points", pointsStr);
 
                     }
 
@@ -188,12 +222,38 @@
                         object.setAttribute("cx", newLocation.x);
                         object.setAttribute("cy", newLocation.y);
 
-                    } else if (object.tagName == "rect") {
+                    } 
+                    else if (object.tagName == "rect") {
 
                         object.setAttribute("width", (bbox.width)*scale);
                         object.setAttribute("height", (bbox.height)*scale);
                         object.setAttribute("x", newLocation.x-(bbox.width/2)*scale);
                         object.setAttribute("y", newLocation.y-(bbox.height/2)*scale);
+
+                    }
+                    //else if (object.tagName == "polygon") {
+                    else {
+                    
+                        var points = String.split(object.getAttribute("points").trim(), ' ');
+                        console.log(points);
+                        $('#groupcenter')[0].appendChild(makeSVG('ellipse',{
+                                'cx': newLocation.x, 
+                                'cy': newLocation.y, 
+                                'rx':4, 
+                                'ry':4, 
+                                'style':'fill:blue;stroke-width:2'}
+                            )
+                        );
+                        var newLocationRelPt = viewer.viewport.pointFromPixel(newLocation);
+                        var distances = originalCoords[i].distances;
+                        var pointsStr = "";
+                        for (var j = 0; j < distances.length-1; j++) {
+                            var pointPair = distances[j].plus(newLocationRelPt);
+                            var pixelPoint = viewer.viewport.pixelFromPoint(pointPair);
+                            pointsStr += pixelPoint.x + "," + pixelPoint.y + " ";
+
+                        }
+                        object.setAttribute("points", pointsStr);
 
                     }
                     
@@ -286,12 +346,38 @@
                     object.setAttribute("cx", newLocation.x);
                     object.setAttribute("cy", newLocation.y);
 
-                } else if (object.tagName == "rect") {
+                } 
+                else if (object.tagName == "rect") {
 
                     object.setAttribute("width", (bbox.width)*scale);
                     object.setAttribute("height", (bbox.height)*scale);
                     object.setAttribute("x", newLocation.x-(bbox.width/2)*scale);
                     object.setAttribute("y", newLocation.y-(bbox.height/2)*scale);
+
+                }
+                //else if (object.tagName == "polygon") {
+                else {
+               
+                    var points = String.split(object.getAttribute("points").trim(), ' ');
+                    console.log(points);
+                    $('#groupcenter')[0].appendChild(makeSVG('ellipse',{
+                            'cx': newLocation.x, 
+                            'cy': newLocation.y, 
+                            'rx':4, 
+                            'ry':4, 
+                            'style':'fill:blue;stroke-width:2'}
+                        )
+                    );
+                    var newLocationRelPt = viewer.viewport.pointFromPixel(newLocation);
+                    var distances = originalCoords[i].distances;
+                    var pointsStr = "";
+                    for (var j = 0; j < distances.length-1; j++) {
+                        var pointPair = distances[j].plus(newLocationRelPt);
+                        var pixelPoint = viewer.viewport.pixelFromPoint(pointPair);
+                        pointsStr += pixelPoint.x + "," + pixelPoint.y + " ";
+
+                    }
+                    object.setAttribute("points", pointsStr);
 
                 }
 
@@ -315,8 +401,10 @@
 
                 var diff = pixel.minus(stateOrigin);
 
-                $('#originpt').attr('cx',viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(.5,.5)).x);
-                $('#originpt').attr('cy',viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(.5,.5)).y);
+                $('#originpt').attr('cx',
+                        viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(.5,.5)).x);
+                $('#originpt').attr('cy',
+                        viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(.5,.5)).y);
 
                 for (var i = 0; i < $('#viewport').children().length; i++) { 
 
@@ -329,11 +417,27 @@
                         object.setAttribute("cx", currX + diff.x);
                         object.setAttribute("cy", currY + diff.y);
 
-                    } else if (object.tagName == "rect") {
+                    } 
+                    else if (object.tagName == "rect") {
 
                         object.setAttribute("x", bbox.x + diff.x);
                         object.setAttribute("y", bbox.y + diff.y);
 
+                    }
+                    else {
+               
+                        var points = String.split(object.getAttribute("points").trim(), ' ');
+                        var pointsStr = "";
+                        for (var j = 0; j < points.length; j++) {
+                            var pointPair = String.split(points[j], ",");
+                            pointsStr += (parseFloat(pointPair[0])+diff.x) + 
+                                            "," + 
+                                        (parseFloat(pointPair[1])+diff.y) + " ";
+                            
+
+                        }
+                        object.setAttribute("points", pointsStr);
+    
                     }
                 }
             }

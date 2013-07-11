@@ -266,11 +266,50 @@ var annotools = new Class({
                                 )
                             );
 
-                        } else {
+                        } 
+                        //else if (object.tagName == "polygon") {
+                        else {
                             var bbox = object.getBBox();
-                            var objectCenterPt = new OpenSeadragon.Point(bbox.x+bbox.width/2, bbox.y+bbox.height/2);
-                            var objectCenterRelPt = this.viewer.viewport.pointFromPixel(objectCenterPt);
+                            var objectCenterPt = 
+                                new OpenSeadragon.Point(
+                                    bbox.x+bbox.width/2, 
+                                    bbox.y+bbox.height/2
+                            );
+                            var objectCenterRelPt = 
+                                this.viewer.viewport.pointFromPixel(objectCenterPt);
                             objectCenterPts[i] = objectCenterRelPt;
+                            $('#groupcenter')[0].appendChild(makeSVG('ellipse',{
+                                'cx': objectCenterPt.x, 
+                                    'cy': objectCenterPt.y, 
+                                    'rx':4, 
+                                    'ry':4, 
+                                    'style':'fill:blue;stroke-width:2'}
+                                )
+                            );
+                            var originalCoord = {};
+                            originalCoord.cx     =  objectCenterPt.x;
+                            originalCoord.cy     =  objectCenterPt.y;
+                            var points = 
+                                String.split(object.getAttribute("points").trim(), ' ');
+
+                            var distances = [];
+                            for (var j = 0; j < points.length-1; j++) {
+                                var pointPair = String.split(points[j], ",");
+                                var point = 
+                                        new OpenSeadragon.Point(
+                                            parseFloat(pointPair[0]),
+                                                parseFloat(pointPair[1])
+                                        );
+                                var relPt = this.viewer.viewport.pointFromPixel(point);
+                                var dist = relPt.minus(objectCenterRelPt); 
+                                console.log("dist: " + dist.x +"," + dist.y);
+                                distances.push(dist);
+
+                            }
+
+                            originalCoords[object.id] = {
+                                center: objectCenterRelPt, 
+                                distances: distances};
 
 
                         }
@@ -675,7 +714,12 @@ var annotools = new Class({
                         var tip = prompt("Please Enter Some Descriptions", "");
                         var points = "";
                         for (var i = 0; i < numpoint - 1; i++) {
-                            points += (newpoly[i].x + left - oleft) / owidth + ',' + (newpoly[i].y + top - otop) / oheight + ' ';
+                            //points += (newpoly[i].x + left - oleft) / owidth + ',' + 
+                             //           (newpoly[i].y + top - otop) / oheight + ' ';
+                            var polyPixelPt = new OpenSeadragon.Point(newpoly[i].x, newpoly[i].y);
+                            var polyPt      = viewer.viewport.pointFromPixel(polyPixelPt); 
+                            points += polyPt.x + ',' + polyPt.y + ' ';
+
                             if (((newpoly[i].x - x) * (newpoly[i].x - x) + (newpoly[i].y - y) * (newpoly[i].y - y)) > maxdistance) {
                                 maxdistance = ((newpoly[i].x - x) * (newpoly[i].x - x) + (newpoly[i].y - y) * (newpoly[i].y - y));
                                 w = Math.abs(newpoly[i].x - x) / owidth;
@@ -683,7 +727,13 @@ var annotools = new Class({
                             }
  
                         }
-                        points += (newpoly[i].x + left - oleft) / owidth + ',' + (newpoly[i].y + top - otop) / oheight;
+                        //points += (newpoly[i].x + left - oleft) / owidth + ',' + 
+                                    //(newpoly[i].y + top - otop) / oheight;
+
+                        var polyPixelPt = new OpenSeadragon.Point(newpoly[i].x, newpoly[i].y);
+                        var polyPt      = viewer.viewport.pointFromPixel(polyPixelPt); 
+                        points += polyPt.x + ',' + polyPt.y;
+
                         x = (x + left - oleft) / owidth;
                         y = (y + top - otop) / oheight;
                         if (tip != null) {
@@ -1085,77 +1135,6 @@ var annotools = new Class({
                     
 
     },
-    displayAnnot2: function () //Display SVG Annotations
-    {
-        //var ellipse = new No5.Seajax.Shapes.Ellipse(1500, 500);
-        //ellipse.attachTo(this.viewer, 200, 800);
-        //ellipse.getElement().attr({"fill":"none", "stroke-color":"#ff0000"});
-
-        //setTimeout(function() {
-        //   ellipse.redraw(viewer);
-        //}, 500);
-
-        var a = [],
-            index, b;
-        //var container = document.id(this.canvas);
-        var container = document.getElementsByClassName(this.canvas)[0]; //Get The Canvas Container
-        if (container) {
-        //if (1==2) {
-            var left = parseInt(container.offsetLeft),
-                top = parseInt(container.offsetTop),
-                width = parseInt(container.offsetWidth),
-                height = parseInt(container.offsetHeight);
-            this.drawLayer.hide();
-            this.magnifyGlass.hide();
-            //for (b in this.annotations) this.annotations[index].id = b, a.push(this.annotations[index]);
-            a = this.annotations;
-            container.getElements(".annotcontainer").destroy();
-            if (this.svg) {
-                this.svg.html = '';
-                this.svg.destroy();
-            }
-
-            //var cx = parseFloat(a[index].x) + parseFloat(a[index].w) / 2;
-            //var cy = parseFloat(a[index].y) + parseFloat(a[index].h) / 2;
-            //var rx = parseFloat(a[index].w) / 2;
-            //var ry = parseFloat(a[index].h) / 2;
-
-            for (index = 0; index < a.length; index++) {
-
-                var cx = (parseInt(a[index].x) + parseInt(a[index].w))/2;
-                var cy = (parseInt(a[index].y) + parseInt(a[index].h))/2;
-                var rx = parseInt(a[index].w)/2;
-                var ry = parseInt(a[index].h)/2;
-
-                /*
-                if (a[index].type != undefined) {
-                    //var cx = parseInt(a[index].x)- parseInt(a[index].w)/2;
-                    //var cy = parseInt(a[index].y)+ parseInt(a[index].h)/2;
-                    //var cx = parseInt(a[index].x);
-                    //var cy = parseInt(a[index].y);
-                    var point = new Seadragon.Point(parseFloat(a[index].x), parseFloat(a[index].y));
-
-                    var cx = point.x;
-                    var cy = point.y;
-                    //var cx = viewer.viewport.pixelFromPoint(point).x;
-                    //var cy = viewer.viewport.pixelFromPoint(point).y;
-                    var rx = parseFloat(a[index].w) / 2;
-                    var ry = parseFloat(a[index].h) / 2;
-        
-                    //var ellipse = new No5.Seajax.Shapes.Ellipse(cx, cy, rx, ry);
-                    var ellipse = new No5.Seajax.Shapes.Ellipse(rx, ry);
-                    ellipse.getElement().attr({"fill":"none", "fill-opacity":"0.2", "stroke":"green", "stroke-width" : "2"});
-                    ellipse.attachTo(this.viewer, cx, cy);
-
-                    setTimeout(function() {
-                        ellipse.redraw(viewer);
-                    }, 500);
-                }
-                */
-
-            }
-        }
-    },
     displayAnnot: function () //Display SVG Annotations
     {
         var a = [],
@@ -1267,14 +1246,14 @@ var annotools = new Class({
                                 var poly = String.split(points, ';');
                                 for (var k = 0; k < poly.length; k++) {
                                     var p = String.split(poly[k], ' ');
-                                    svgHtml += '<g transform="scale(1) translate(0,0)" id="poly' + index + '"><polyline points="';
+                                    svgHtml += '<polyline id="'+index+'" points="';
                                     for (var j = 0; j < p.length; j++) {
                                         point = String.split(p[j], ',');
                                         px = point[0] * width;
                                         py = point[1] * height;
                                         svgHtml += px + ',' + py + ' ';
                                     }
-                                    svgHtml += '" style="fill:none;stroke:' + a[index].color + ';stroke-width:2"/></g>';
+                                    svgHtml += '" style="fill:none;stroke:' + a[index].color + ';stroke-width:2"/>';
                                 }
                                 break;
                             case "polyline":
@@ -1282,14 +1261,21 @@ var annotools = new Class({
                                 var poly = String.split(points, ';');
                                 for (var k = 0; k < poly.length; k++) {
                                     var p = String.split(poly[k], ' ');
-                                    svgHtml += '<g  id="poly' + index + '"><polygon points="';
+                                    svgHtml += '<polygon id="'+index+ '" points="';
                                     for (var j = 0; j < p.length; j++) {
                                         point = String.split(p[j], ',');
-                                        px = point[0] * width;
-                                        py = point[1] * height;
-                                        svgHtml += px + ',' + py + ' ';
+                                        //px = point[0] * width;
+                                        //py = point[1] * height;
+                                        var polyPt = 
+                                            new OpenSeadragon.Point(
+                                                parseFloat(point[0]),
+                                                parseFloat(point[1])
+                                        );
+                                        var polyPixelPt = viewer.viewport.pixelFromPoint(polyPt);
+                                        //svgHtml += px + ',' + py + ' ';
+                                        svgHtml += polyPixelPt.x + ',' + polyPixelPt.y + ' ';
                                     }
-                                    svgHtml += '" style="fill:none;stroke:' + a[index].color + ';stroke-width:2"/></g>';
+                                    svgHtml += '" style="fill:none;stroke:' + a[index].color + ';stroke-width:2"/>';
                                 }
                                 break;
                             case "line":
