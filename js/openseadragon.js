@@ -516,7 +516,9 @@ window.OpenSeadragon = window.OpenSeadragon || function( options ){
             springStiffness:        7.0,
             clickTimeThreshold:     300,
             clickDistThreshold:     5,
-            zoomPerClick:           2,
+            // SBA
+            //zoomPerClick:           2,
+            zoomPerClick:           1.2,
             zoomPerScroll:          1.2,
             zoomPerSecond:          1.0,
             animationTime:          1.2,
@@ -4661,6 +4663,7 @@ $.extend( $.Viewer.prototype, $.EventHandler.prototype, $.ControlDock.prototype,
                 element:    this.zoomInButton ? $.getElement( this.zoomInButton ) : null,
                 clickTimeThreshold: this.clickTimeThreshold,
                 clickDistThreshold: this.clickDistThreshold,
+                id:         "zoomin_btn",
                 tooltip:    $.getString( "Tooltips.ZoomIn" ), 
                 srcRest:    resolveUrl( this.prefixUrl, navImages.zoomIn.REST ),
                 srcGroup:   resolveUrl( this.prefixUrl, navImages.zoomIn.GROUP ),
@@ -4679,6 +4682,7 @@ $.extend( $.Viewer.prototype, $.EventHandler.prototype, $.ControlDock.prototype,
                 element:    this.zoomOutButton ? $.getElement( this.zoomOutButton ) : null,
                 clickTimeThreshold: this.clickTimeThreshold,
                 clickDistThreshold: this.clickDistThreshold,
+                id:         "zoomout_btn",
                 tooltip:    $.getString( "Tooltips.ZoomOut" ), 
                 srcRest:    resolveUrl( this.prefixUrl, navImages.zoomOut.REST ), 
                 srcGroup:   resolveUrl( this.prefixUrl, navImages.zoomOut.GROUP ), 
@@ -5354,7 +5358,9 @@ function lightUp() {
 
 function onHome() {
     if ( this.viewport ) {
+        // SBA
         this.viewport.goHome();
+        //this.viewport.zoomTo(1);
     }
 }
 
@@ -11188,7 +11194,7 @@ $.Viewport.prototype = {
     getHomeZoom: function() {
         var aspectFactor = 
             this.contentAspectX / this.getAspectRatio();
-
+        return 1;
         if( this.defaultZoomLevel ){
             return this.defaultZoomLevel;
         } else {

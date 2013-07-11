@@ -37,6 +37,7 @@ var annotools = new Class({
     setViewer: function(viewer) 
     {
         this.viewer = viewer;
+        viewer.viewport.zoomTo(1);
         this.getAnnot2();
 
     },
@@ -190,6 +191,7 @@ var annotools = new Class({
         }).inject(document.body); //Magnify glass will hide by default
         this.magnifyGlass.hide();
     },
+
     getAnnot2: function (viewer) //Get Annotation from the API
     {
         if (this.iid) //When the database is set. User can refer to the annotation.php for saving the annotations
@@ -219,8 +221,64 @@ var annotools = new Class({
                     if (annot == null) annot = new Array();
                     this.annotations = annot; //Display The Annotations
                     this.displayAnnot();
-                    //this.setupHandlers();
-                    console.log("successfully get annotations");
+                    for (var i = 0; i < $('#viewport').children().length; i++) {
+                        var object = $('#viewport').children()[i];
+            
+                        if (object.tagName == "ellipse") {
+                            var originalCoord = {};
+                            originalCoord.cx = object.getAttribute('cx');
+                            originalCoord.cy = object.getAttribute('cy');
+                            originalCoord.rx = object.getAttribute('rx');
+                            originalCoord.ry = object.getAttribute('ry');
+                            originalCoords[i] = originalCoord;
+                            var bbox = object.getBBox();
+                            console.log("original: " + (bbox.width/2) + ", " + (bbox.height/2));
+                            //var ellipseCenter = makeSVG('ellipse', {
+                                //'id': 'center',
+                                //'cx': bbox.x+bbox.width/2, 
+                                //'cy': bbox.y+bbox.height/2, 
+                                //'rx':'4', 
+                                //'ry':'4',
+                                //'style': 'fill:blue;stroke-width:2' 
+                            //});
+                            //$('#groupcenter')[0].appendChild(ellipseCenter);
+                            //var ellipseCenterPt = new OpenSeadragon.Point($('#center')[0].cx.baseVal.value, $('#center')[0].cy.baseVal.value);
+                            var objectCenterPt = new OpenSeadragon.Point(bbox.x+bbox.width/2, bbox.y+bbox.height/2);
+                            var objectCenterRelPt = this.viewer.viewport.pointFromPixel(objectCenterPt);
+                            objectCenterPts[i] = objectCenterRelPt;
+                        } else if (object.tagName == "rect"){
+                            var originalCoord = {};
+                            originalCoord.x     = object.getAttribute('x');
+                            originalCoord.y     = object.getAttribute('y');
+                            originalCoord.width = object.getAttribute('width');
+                            originalCoord.height = object.getAttribute('height');
+                            originalCoords[i] = originalCoord;
+                            var bbox = object.getBBox();
+                            var objectCenterPt = new OpenSeadragon.Point(bbox.x+bbox.width/2, bbox.y+bbox.height/2);
+                            var objectCenterRelPt = this.viewer.viewport.pointFromPixel(objectCenterPt);
+                            objectCenterPts[i] = objectCenterRelPt;
+                            $('#groupcenter')[0].appendChild(makeSVG('ellipse',{
+                                'cx': objectCenterPt.x, 
+                                    'cy': objectCenterPt.y, 
+                                    'rx':4, 
+                                    'ry':4, 
+                                    'style':'fill:blue;stroke-width:2'}
+                                )
+                            );
+
+                        } else {
+                            var bbox = object.getBBox();
+                            var objectCenterPt = new OpenSeadragon.Point(bbox.x+bbox.width/2, bbox.y+bbox.height/2);
+                            var objectCenterRelPt = this.viewer.viewport.pointFromPixel(objectCenterPt);
+                            objectCenterPts[i] = objectCenterRelPt;
+
+
+                        }
+                         
+
+                    };
+
+                    this.setupHandlers();
                 }.bind(this),
                 onFailure: function (e) {
                     this.showMessage("cannot get the annotations,please check your getAnnot funciton");
@@ -239,7 +297,6 @@ var annotools = new Class({
                     if (e == null) this.annotations = new Array();
                     else this.annotations = e;
                     this.displayAnnot(); //Display The Annotations
-                    console.log("successfully get annotations");
                 }.bind(this),
                 onFailure: function (e) {
                     this.showMessage("cannot get the annotations,please check your getAnnot function");
@@ -258,7 +315,6 @@ var annotools = new Class({
                     this.annotations = annot; //Display The Annotations
                     this.displayAnnot();
                     this.setupHandlers();
-                    console.log("successfully get annotations");
                 }.bind(this),
                 onFailure: function (e) {
                     this.showMessage("cannot get the annotations,please check your getAnnot funciton");
@@ -336,7 +392,7 @@ var annotools = new Class({
                 otop = top,
                 owidth = width,
                 oheight = height;
-            console.log("left: " + left + " top: " + top + " width: " + width + " height: " + height);
+            //console.log("left: " + left + " top: " + top + " width: " + width + " height: " + height);
             if (left < 0) {
                 left = 0;
                 width = window.innerWidth;
@@ -389,11 +445,26 @@ var annotools = new Class({
                     this.drawCanvas.addEvent('mouseup', function (e) {
                         started = false;
                         //Save the Percentage Relative to the Container
-                        x = (x + left - oleft) / owidth;
-                        y = (y + top - otop) / oheight;
-                        w = w / owidth;
-                        h = h / oheight;
-                        var tip = prompt("Please Enter Some Descriptions", "");
+                        //x = (x + left - oleft) / owidth;
+                        //y = (y + top - otop) / oheight;
+                        //w = w / owidth;
+                        //h = h / oheight;
+                        var p = 
+                            OpenSeadragon.Utils.getMousePosition2(e).minus
+                                (OpenSeadragon.Utils.getElementPosition(viewer.element));
+                        var point = viewer.viewport.pointFromPixel(p);
+                        var pixelPt = viewer.viewport.pixelFromPoint(point);
+                        var pointFromPixel = viewer.viewport.pointFromPixel(new Seadragon.Point(x, y));
+
+                        var distx = Math.abs(pixelPt.x - x);
+                        var disty = Math.abs(pixelPt.y - y);
+                        x = pointFromPixel.x; 
+                        y = pointFromPixel.y;
+                        var wpoint = point.minus(pointFromPixel);
+                        w = wpoint.x;
+                        h = wpoint.y;
+
+                        var tip = "asdf";//prompt("Please Enter Some Descriptions", "");
                         if (tip != null) {
                             //Update Annotations
                             var newAnnot = {
@@ -406,7 +477,9 @@ var annotools = new Class({
                                 color: this.color
                             };
                             this.addnewAnnot(newAnnot);
-                            this.drawMarkups();
+                            viewer.viewport.zoomTo(1);
+                            //this.drawMarkups();
+                            this.getAnnot2();
                         } else {
                             ctx.clearRect(0, 0, this.drawCanvas.width, this.drawCanvas.height);
                         }
@@ -420,7 +493,6 @@ var annotools = new Class({
                         w, //width
                         h; //height
                     this.drawCanvas.addEvent('mousedown', function (e) {
-                        console.log("mousedown ellipse");
                         started = true;
                         x = e.event.layerX;
                         y = e.event.layerY;
@@ -454,36 +526,26 @@ var annotools = new Class({
                         started = false;
                         //Save the Percentage Relative to the Container
                         
-                        x = (x + left - oleft) / owidth;
-                        y = (y + top - otop) / oheight;
-                        w = w / owidth;
-                        h = h / oheight;
-                        /*
-                        SBAI
-                        
+                        //x = (x + left - oleft) / owidth;
+                        //y = (y + top - otop) / oheight;
+                        //w = w / owidth;
+                        //h = h / oheight;
                         var p = 
                             OpenSeadragon.Utils.getMousePosition2(e).minus
                                 (OpenSeadragon.Utils.getElementPosition(viewer.element));
-                        console.log(p.x + ", " + p.y + " | " + 
-                            viewer.viewport.pointFromPixel(p).x + ", " + 
-                                viewer.viewport.pointFromPixel(p).y);
                         var point = viewer.viewport.pointFromPixel(p);
                         var pixelPt = viewer.viewport.pixelFromPoint(point);
+                        var pointFromPixel = viewer.viewport.pointFromPixel(new Seadragon.Point(x, y));
 
-                        oldX = x;
-                        oldY = y;
-                        x = point.x; 
-                        y = point.y;
-                        var newpt = new Seadragon.Point(w,h);
-                        var wpoint = point.minus(viewer.viewport.pointFromPixel(new Seadragon.Point(oldX, oldY)));
+                        var distx = Math.abs(pixelPt.x - x);
+                        var disty = Math.abs(pixelPt.y - y);
+                        x = pointFromPixel.x; 
+                        y = pointFromPixel.y;
+                        var wpoint = point.minus(pointFromPixel);
                         w = wpoint.x;
                         h = wpoint.y;
-                        console.log("pixelPt: " + pixelPt);
-                        console.log("point: " + point);
-                        console.log("w: " + w +
-                                        ", h: " + h);
-                        */
-                        var tip = prompt("Please Enter Some Descriptions", "");
+
+                        var tip = "adf"; //prompt("Please Enter Some Descriptions", "");
                         if (tip != null) {
                             //Update Annotations
                             var newAnnot = {
@@ -496,7 +558,10 @@ var annotools = new Class({
                                 color: this.color
                             };
                             this.addnewAnnot(newAnnot);
-                            this.drawMarkups();
+                            //this.drawMarkups();
+                            //viewer.viewport.goHome();
+                            viewer.viewport.zoomTo(1);
+                            this.getAnnot2();
                         } else {
                             ctx.clearRect(0, 0, this.drawCanvas.width, this.drawCanvas.height);
                         }
@@ -951,38 +1016,52 @@ var annotools = new Class({
     setupHandlers: function() 
     {
         
-                    var enablePan = 0; // 1 or 0: enable or disable panning (default enabled)
-                    var enableZoom = 1; // 1 or 0: enable or disable zooming (default enabled)
-                    var enableDrag = 0; // 1 or 0: enable or disable dragging (default disabled)
+                    var scale       = 1;
+
+
+
+                    var state = 'none',stateTarget, stateOrigin, stateTf;
                     
-                    /// <====
-                    /// END OF CONFIGURATION 
                     
                     var root = document.getElementsByTagName('svg')[0]; 
                     var z = 1;
-                    
-                    var state = 'none', svgRoot, stateTarget, stateOrigin, stateTf;
+                    setAttributes(root, {
+                        "onmouseup" : "handleMouseUp(evt)",
+                        "onmousedown" : "handleMouseDown(evt)",
+                        "onmousemove" : "handleMouseMove(evt)",
+                        "onmouseout" : "handleMouseUp(evt)", // Decomment this to stop the pan functionality when dragging out of the SVG element
+                    });
                     
                     if (root != undefined) {
                         setupHandlers(root);
-                        console.log("setupHandlers complete");
 
                     }
                     
                     function setupHandlers(root){
                     
-                        if(navigator.userAgent.toLowerCase().indexOf('webkit') >= 0)
+                        if(navigator.userAgent.toLowerCase().indexOf('webkit') >= 0) {
                             window.addEventListener('mousewheel', handleMouseWheel, false); // Chrome/Safari
-                        else
+                            window.addEventListener('mousemove', handleMouseMove, false); // Chrome/Safari
+                            window.addEventListener('mousedown', handleMouseDown, false); // Chrome/Safari
+                            window.addEventListener('mouseup', handleMouseUp, false); // Chrome/Safari
+                        } else {
                             window.addEventListener('DOMMouseScroll', handleMouseWheel, false); // Others
+                        }
                     }
+                    
+                    function setAttributes(element, attributes){
+                        for (i in attributes)
+                            element.setAttributeNS(null, i, attributes[i]);
+                    }
+
 
                     // Retrieves the root element for SVG manipulation. The element is then cached into the svgRoot global variable.
                     function getRoot(root) {
                         if(typeof(svgRoot) == "undefined") {
                             var g = null;
                     
-                            g = root.getElementById("viewport");
+                            //g = root.getElementById("viewport");
+                            g = root.getElemenstByTagName("viewport")[0];
                     
                             if(g == null)
                                 //g = root.getElementsByTagName('g')[0];
@@ -1001,157 +1080,8 @@ var annotools = new Class({
                         return svgRoot;
                     }
                     
-                    // Instance an SVGPoint object with given event coordinates.
-                    function getEventPoint(evt) {
-                        var p = root.createSVGPoint();
-                    
-                        p.x = evt.clientX;
-                        p.y = evt.clientY;
-                    
-                        return p;
-                    }
-                    
-                    // Sets the current transform matrix of an element.
-                    function setCTM(element, matrix) {
-                        var s = "matrix(" + matrix.a + "," + matrix.b + "," + matrix.c + "," + matrix.d + "," + matrix.e + "," + matrix.f + ")";
-                    
-                        element.setAttribute("transform", s);
-                    }
-                    
-                    // Dumps a matrix to a string (useful for debug).
-                    function dumpMatrix(matrix) {
-                        var s = "[ " + matrix.a + ", " + matrix.c + ", " + matrix.e + "\n  " + matrix.b + ", " + matrix.d + ", " + matrix.f + "\n  0, 0, 1 ]";
-                    
-                        return s;
-                    }
-                    
-                    // Sets attributes of an element.
-                    function setAttributes(element, attributes){
-                        for (var i in attributes)
-                            element.setAttributeNS(null, i, attributes[i]);
-                    }
-                    
-                    function handleMouseWheel(evt) {
-                        if(evt.preventDefault)
-                            evt.preventDefault();
-                        var scrollSensitivity = 0.2; 
-                        //var evt = window.event || e;
-                        var scroll = evt.detail ? evt.detail * scrollSensitivity : (evt.wheelDelta / 120) * scrollSensitivity;
-                        scroll = scroll * -1;
-                    
-                        var transform = document.getElementById("viewport").getAttribute("transform").replace(/ /g,"");
-                    
-                        var vector = transform.substring(transform.indexOf("(")+1,transform.indexOf(")")).split(",");
-                    
-                        vector[0] = (parseFloat(vector[0]) + scroll) + '';
-                        vector[3] = vector[0];
 
-                        vector[4] = parseInt(vector[4]);
-                        vector[5] = parseInt(vector[5]);
 
-                        var p = getEventPoint(evt);
-                        if (scroll < 0) {
-                            vector[4] = vector[4] + 105;
-                            vector[5] = vector[5] + 67;
-
-                        } else {
-                            vector[4] = vector[4] - 105;
-                            vector[5] = vector[5] - 67;
-
-                        }
-                        //console.log(scroll + " " + vector[0] + " " + vector[3]);
-                        console.log("matrix(".concat(vector.join(), ")"));
-                    
-                        document.getElementById("viewport").setAttribute("transform",
-                            "matrix(".concat(vector.join(), ")"));
-                                        
-                        return true;
-
-                    }
-
-                    // Handle mouse wheel event.
-                    function handleMouseWheel2(evt) {
-                        if(!enableZoom)
-                            return;
-                    
-                        if(evt.preventDefault)
-                            evt.preventDefault();
-                    
-                        evt.returnValue = false;
-                    
-                        //var svgDoc = evt.target.ownerDocument;
-                        var svgDoc = evt.target;
-                        //console.log(svgDoc);
-                    
-                        var delta;
-                    
-                        if(evt.wheelDelta)
-                            delta = evt.wheelDelta / 3600; // Chrome/Safari
-                        else
-                            delta = evt.detail / -90; // Mozilla
-                    
-                        console.log("delta: " + delta);
-                        var direction = 1.0211;
-                        if (delta < 0)
-                            direction = -1.0211;
-                    
-                        //var z = 1.1 * (direction + .011); // Zoom factor: 0.9/1.1
-                        z = z + delta; // Zoom factor: 0.9/1.1
-                        console.log("z = " + z);
-                    
-                        var g = getRoot(svgDoc);
-                        //console.log("old g: " + g.rx.baseVal.value + "," + g.ry.baseVal.value + 
-                                    //" " + g.cx.baseVal.value + ", " +g.cy.baseVal.value);
-                        console.log("old g: " + g.getCTM().a + "," + g.getCTM().d + 
-                                    " " + g.getCTM().e + ", " +g.getCTM().f);
-                        
-                        var p = getEventPoint(evt);
-                
-                    
-                        p = p.matrixTransform(g.getCTM().inverse());
-
-                        //p.x = g.cx.baseVal.value;
-                        //p.y = g.cy.baseVal.value;
-
-                        var transMatrix = [1,0,0,1,0,0];
-                    
-                        width  = parseInt(evt.target.getAttributeNS(null, "width"), 10);
-                        height = parseInt(evt.target.getAttributeNS(null, "height"), 10);
-                        // Compute new scale matrix in current mouse position
-                        var k = root.createSVGMatrix().translate(-p.x, -p.y).scale(z).translate(p.x, p.y);
-                        //var k = root.createSVGMatrix().translate((0), (0)).scale(1).translate(0,0);
-                        //var k = root.createSVGMatrix().translate(-p.x, -p.y);
-                        setCTM(g, g.getCTM().multiply(k));
-                    
-                        if(typeof(stateTf) == "undefined")
-                            stateTf = g.getCTM().inverse();
-                        console.log("new g: " + g.getCTM().a + "," + g.getCTM().d + 
-                                    " " + g.getCTM().e + ", " +g.getCTM().f);
-                    
-                        stateTf = stateTf.multiply(k.inverse());
-                    }
-
-                    function pan(dx, dy)
-                    {      
-                      transMatrix[4] += dx;
-                      transMatrix[5] += dy;
-                    
-                      newMatrix = "matrix(" +  transMatrix.join(' ') + ")";
-                      mapMatrix.setAttributeNS(null, "transform", newMatrix);
-                    }
-                    function zoom(scale)
-                    {
-                      for (var i=0; i<transMatrix.length; i++)
-                      {
-                        transMatrix[i] *= scale;
-                      }
-                    
-                      transMatrix[4] += (1-scale)*width/2;
-                      transMatrix[5] += (1-scale)*height/2;
-                    
-                      newMatrix = "matrix(" +  transMatrix.join(' ') + ")";
-                      mapMatrix.setAttributeNS(null, "transform", newMatrix);
-                    }
                     
 
     },
@@ -1166,7 +1096,7 @@ var annotools = new Class({
         //}, 500);
 
         var a = [],
-            b;
+            index, b;
         //var container = document.id(this.canvas);
         var container = document.getElementsByClassName(this.canvas)[0]; //Get The Canvas Container
         if (container) {
@@ -1177,7 +1107,7 @@ var annotools = new Class({
                 height = parseInt(container.offsetHeight);
             this.drawLayer.hide();
             this.magnifyGlass.hide();
-            //for (b in this.annotations) this.annotations[b].id = b, a.push(this.annotations[b]);
+            //for (b in this.annotations) this.annotations[index].id = b, a.push(this.annotations[index]);
             a = this.annotations;
             container.getElements(".annotcontainer").destroy();
             if (this.svg) {
@@ -1185,32 +1115,32 @@ var annotools = new Class({
                 this.svg.destroy();
             }
 
-            //var cx = parseFloat(a[b].x) + parseFloat(a[b].w) / 2;
-            //var cy = parseFloat(a[b].y) + parseFloat(a[b].h) / 2;
-            //var rx = parseFloat(a[b].w) / 2;
-            //var ry = parseFloat(a[b].h) / 2;
+            //var cx = parseFloat(a[index].x) + parseFloat(a[index].w) / 2;
+            //var cy = parseFloat(a[index].y) + parseFloat(a[index].h) / 2;
+            //var rx = parseFloat(a[index].w) / 2;
+            //var ry = parseFloat(a[index].h) / 2;
 
-            for (b = 0; b < a.length; b++) {
+            for (index = 0; index < a.length; index++) {
 
-                var cx = (parseInt(a[b].x) + parseInt(a[b].w))/2;
-                var cy = (parseInt(a[b].y) + parseInt(a[b].h))/2;
-                var rx = parseInt(a[b].w)/2;
-                var ry = parseInt(a[b].h)/2;
+                var cx = (parseInt(a[index].x) + parseInt(a[index].w))/2;
+                var cy = (parseInt(a[index].y) + parseInt(a[index].h))/2;
+                var rx = parseInt(a[index].w)/2;
+                var ry = parseInt(a[index].h)/2;
 
                 /*
-                if (a[b].type != undefined) {
-                    //var cx = parseInt(a[b].x)- parseInt(a[b].w)/2;
-                    //var cy = parseInt(a[b].y)+ parseInt(a[b].h)/2;
-                    //var cx = parseInt(a[b].x);
-                    //var cy = parseInt(a[b].y);
-                    var point = new Seadragon.Point(parseFloat(a[b].x), parseFloat(a[b].y));
+                if (a[index].type != undefined) {
+                    //var cx = parseInt(a[index].x)- parseInt(a[index].w)/2;
+                    //var cy = parseInt(a[index].y)+ parseInt(a[index].h)/2;
+                    //var cx = parseInt(a[index].x);
+                    //var cy = parseInt(a[index].y);
+                    var point = new Seadragon.Point(parseFloat(a[index].x), parseFloat(a[index].y));
 
                     var cx = point.x;
                     var cy = point.y;
                     //var cx = viewer.viewport.pixelFromPoint(point).x;
                     //var cy = viewer.viewport.pixelFromPoint(point).y;
-                    var rx = parseFloat(a[b].w) / 2;
-                    var ry = parseFloat(a[b].h) / 2;
+                    var rx = parseFloat(a[index].w) / 2;
+                    var ry = parseFloat(a[index].h) / 2;
         
                     //var ellipse = new No5.Seajax.Shapes.Ellipse(cx, cy, rx, ry);
                     var ellipse = new No5.Seajax.Shapes.Ellipse(rx, ry);
@@ -1229,8 +1159,10 @@ var annotools = new Class({
     displayAnnot: function () //Display SVG Annotations
     {
         var a = [],
-            b;
+            b, index;
         //var container = document.id(this.canvas);
+        var pointsArr = [];
+        var lines = [];
         var container = document.getElementsByClassName(this.canvas)[0]; //Get The Canvas Container
         if (container) {
             var left = parseInt(container.offsetLeft),
@@ -1239,7 +1171,11 @@ var annotools = new Class({
                 height = parseInt(container.offsetHeight);
             this.drawLayer.hide();
             this.magnifyGlass.hide();
-            for (b in this.annotations) this.annotations[b].id = b, a.push(this.annotations[b]);
+            //for (index in this.annotations) this.annotations[index].id = index, a.push(this.annotations[index]);
+            for (index = 0; index < this.annotations.length; index++) {
+                this.annotations[index].id = index; 
+                a.push(this.annotations[index]);
+            }
             container.getElements(".annotcontainer").destroy();
             if (this.svg) {
                 this.svg.html = '';
@@ -1247,65 +1183,129 @@ var annotools = new Class({
             }
             //This part is for displaying SVG annotations
             if (this.annotVisible) {
+                index--;
                 var svgHtml = '<svg xmlns="http://www.w3.org/2000/svg" width="' + width + 'px" height="' + height + 'px" version="1.1">';
-                    svgHtml += '<g id="viewport" transform="matrix(1,0,0,1,0,0)">';
-                for (b = 0; b < a.length; b++) {
-                    if (((width * a[b].x + left) > 0) && ((width * a[b].x + left + width * a[b].w) < window.innerWidth) && ((height * a[b].y + top) > 0) && ((height * a[b].y + top + height * a[b].h) < window.innerHeight)) {
-                        switch (a[b].type) {
+                    svgHtml += '<g id="groupcenter"/>';
+                    svgHtml += '<g id="origin">';
+                    var origin = viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(.5,.5));
+                    svgHtml += '<ellipse id="originpt" cx="' + origin.x + '" cy="' + origin.y + '" rx="' + 4 + '" ry="' + 4  + '" style="fill:blue;stroke:red;stroke-width:2"/>';
+                    svgHtml += '</g>';
+                    svgHtml += '<g id="viewport" transform="translate(0,0)">';
+                for (index = 0; index < a.length; index++) {
+                    if (((width * a[index].x + left) > 0) && ((width * a[index].x + left + width * a[index].w) < window.innerWidth) && ((height * a[index].y + top) > 0) && ((height * a[index].y + top + height * a[index].h) < window.innerHeight)) {
+                        switch (a[index].type) {
                             case "rect":
-                                svgHtml += '<rect x="' + width * a[b].x + '" y="' + height * a[b].y + '" width="' + width * a[b].w + '" height="' + height * a[b].h + '" stroke="' + a[b].color + '" stroke-width="2" fill="none"/>';
+                                var x = parseFloat(a[index].x);
+                                var y = parseFloat(a[index].y);
+                                var w = parseFloat(a[index].w);
+                                var h = parseFloat(a[index].h);
+                                var point = viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(x,y));
+
+                                //svgHtml += '<rect x="' + width * a[index].x + '" y="' + height * a[index].y + '" width="' + width * a[index].w + '" height="' + height * a[index].h + '" stroke="' + a[index].color + '" stroke-width="2" fill="none"/>';
+                                svgHtml += '<rect x="' + point.x + '" y="' + point.y + '" width="' + w*width + '" height="' + width*h + '" stroke="' + a[index].color + '" stroke-width="2" fill="none"/>';
                                 break;
                             case "ellipse":
-                                var cx = parseFloat(a[b].x) + parseFloat(a[b].w) / 2;
-                                var cy = parseFloat(a[b].y) + parseFloat(a[b].h) / 2;
-                                var rx = parseFloat(a[b].w) / 2;
-                                var ry = parseFloat(a[b].h) / 2;
-                                svgHtml += '<ellipse cx="' + width * cx + '" cy="' + height * cy + '" rx="' + width * rx + '" ry="' + height * ry + '" style="fill:none;stroke:' + a[b].color + ';stroke-width:2"/>';
+                                var cx = parseFloat(a[index].x) + parseFloat(a[index].w) / 2;
+                                var cy = parseFloat(a[index].y) + parseFloat(a[index].h) / 2;
+                                var rx = parseFloat(a[index].w) / 2;
+                                var ry = parseFloat(a[index].h) / 2;
+                                //rx = rx*Math.pow(1.2,zoom-1);
+                                //ry = ry*Math.pow(1.2,zoom-1);
+                            /*
+                            var tempPt = 
+                                viewer.viewport.pixelFromPoint(
+                                    new OpenSeadragon.Point(parseFloat(a[index].x), 
+                                            parseFloat(a[index].y)));
+                            var tempPt2 = 
+                                viewer.viewport.pixelFromPoint(
+                                    new OpenSeadragon.Point(parseFloat(a[index].x), 0));
+                                            
+                            var tempPt3 = 
+                                viewer.viewport.pixelFromPoint(
+                                    new OpenSeadragon.Point(parseFloat(a[index].y), 0));
+                                            
+                            var endPt = 
+                                viewer.viewport.pixelFromPoint(
+                                    new OpenSeadragon.Point(parseFloat(a[index].w), 0));
+                            var endPt2 = 
+                                viewer.viewport.pixelFromPoint(
+                                    new OpenSeadragon.Point(parseFloat(a[index].h), 0));
+
+                            var dist2 = endPt2.distanceTo(tempPt3);
+                            var dist = endPt.distanceTo(tempPt2);
+                        var test = makeSVG('ellipse', {
+                            'cx': tempPt.x,
+                            'cy': tempPt.y,
+                            'rx': 2,
+                            'ry': 2,
+                            'style': 'fill:blue;stroke:rgb(255,0,0);stroke-width:2' 
+                        });
+                        var newline = makeSVG('line', {
+                            'x1': tempPt.x,
+                            'y1': tempPt.y,
+                            'x2': tempPt.x + dist,
+                            'y2': tempPt.y,
+                            'style': 'stroke:rgb(255,0,0);stroke-width:2' 
+                        });
+                        var newline2 = makeSVG('line', {
+                            'x1': tempPt.x,
+                            'y1': tempPt.y,
+                            'x2': tempPt.x,
+                            'y2': tempPt.y+dist2,
+                            'style': 'stroke:rgb(255,0,0);stroke-width:2' 
+                        });
+                        points.push(test);
+                        lines.push(newline);
+                        lines.push(newline2);
+                        */
+                                var point = viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(cx,cy));
+
+                                svgHtml += '<ellipse id="' + index + '" cx="' + point.x + '" cy="' + point.y + '" rx="' + width* rx + '" ry="' + width * ry + '" style="fill:none;stroke:' + a[index].color + ';stroke-width:2"/>';
                                 break;
                             case "pencil":
-                                var points = a[b].points;
+                                var points = a[index].points;
                                 var poly = String.split(points, ';');
                                 for (var k = 0; k < poly.length; k++) {
                                     var p = String.split(poly[k], ' ');
-                                    svgHtml += '<polyline points="';
+                                    svgHtml += '<g transform="scale(1) translate(0,0)" id="poly' + index + '"><polyline points="';
                                     for (var j = 0; j < p.length; j++) {
                                         point = String.split(p[j], ',');
                                         px = point[0] * width;
                                         py = point[1] * height;
                                         svgHtml += px + ',' + py + ' ';
                                     }
-                                    svgHtml += '" style="fill:none;stroke:' + a[b].color + ';stroke-width:2"/>';
+                                    svgHtml += '" style="fill:none;stroke:' + a[index].color + ';stroke-width:2"/></g>';
                                 }
                                 break;
                             case "polyline":
-                                var points = a[b].points;
+                                var points = a[index].points;
                                 var poly = String.split(points, ';');
                                 for (var k = 0; k < poly.length; k++) {
                                     var p = String.split(poly[k], ' ');
-                                    svgHtml += '<polygon points="';
+                                    svgHtml += '<g  id="poly' + index + '"><polygon points="';
                                     for (var j = 0; j < p.length; j++) {
                                         point = String.split(p[j], ',');
                                         px = point[0] * width;
                                         py = point[1] * height;
                                         svgHtml += px + ',' + py + ' ';
                                     }
-                                    svgHtml += '" style="fill:none;stroke:' + a[b].color + ';stroke-width:2"/>';
+                                    svgHtml += '" style="fill:none;stroke:' + a[index].color + ';stroke-width:2"/></g>';
                                 }
                                 break;
                             case "line":
-                                var points = String.split(a[b].points, ',');
-                                svgHtml += '<line x1="' + a[b].x * width + '" y1="' + a[b].y * height + '" x2="' + parseFloat(points[0]) * width + '" y2="' + parseFloat(points[1]) * height + '" style="stroke:' + a[b].color + ';stroke-width:2"/>';
+                                var points = String.split(a[index].points, ',');
+                                svgHtml += '<line x1="' + a[index].x * width + '" y1="' + a[index].y * height + '" x2="' + parseFloat(points[0]) * width + '" y2="' + parseFloat(points[1]) * height + '" style="stroke:' + a[index].color + ';stroke-width:2"/>';
                                 break;
                         }
                         var d = new Element("div", {
-                            id: a[b].id,
+                            id: a[index].id,
                             "class": 'annotcontainer',
                             styles: {
                                 position: 'absolute',
-                                left: Math.round(width * a[b].x),
-                                top: Math.round(height * a[b].y),
-                                width: Math.round(width * a[b].w),
-                                height: Math.round(height * a[b].h)
+                                left: Math.round(width * a[index].x),
+                                top: Math.round(height * a[index].y),
+                                width: Math.round(width * a[index].w),
+                                height: Math.round(height * a[index].h)
                             }
                         //}).inject(container);
                         });
@@ -1327,9 +1327,11 @@ var annotools = new Class({
                     }
                 }
                 svgHtml += '</g></svg>';
+                //svgHtml += '</svg>';
 
 
-                if (this.annotations.length > 0) {
+                //if (this.annotations.length > 0) {
+                if (1==1) {
                     //inject the SVG Annotations to this.Canvas
                     this.svg = new Element("div", {
                         styles: {
@@ -1341,6 +1343,12 @@ var annotools = new Class({
                         },
                         html: svgHtml
                     }).inject(container);
+                    for (var j = 0; j < pointsArr.length; j++) {
+                        $('#groupcenter')[0].appendChild(pointsArr[j]);
+                    }
+                    for (j = 0; j < lines.length; j++) {
+                        $('#groupcenter')[0].appendChild(lines[j]);
+                    }
                 } else {
                     this.showMessage("Please Press white space to toggle the Annotations");
                 }
@@ -1483,4 +1491,6 @@ var annotools = new Class({
  
         } else this.showMessage("Sorry, This Function is Only Supported With the Database Version");
     }
+        //var currentTrans = 
+        //    document.getElementById("viewport").getAttribute("transform").replace(/ /g,"").replace("translate(", "").replace(")","");
 });

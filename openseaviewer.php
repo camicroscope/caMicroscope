@@ -50,8 +50,11 @@
 
       var viewer;
       var state = 'none',stateTarget, stateOrigin, stateTf;
-      var scaleFactor = 1.2;
-      var scale = 1;
+      var scale = 1.2;
+      var lastCenter = {x: 0, y: 0};
+      var objectCenterPts = {};
+      var originalCoords = {};
+      var zoom = 1;
       
       var Seadragon;
       Seadragon = OpenSeadragon;
@@ -64,18 +67,153 @@
                     });
       viewer.addHandler("open", addOverlays);
       viewer.openDzi("/fastcgi-bin/iipsrv.fcgi?DeepZoom=/u01/app/oracle/images/NLSI0000063.tiff.dzi");
-      OpenSeadragon.addEvent(viewer.element, "mousemove", handleMouseMove);
-      OpenSeadragon.addEvent(viewer.element, "mousedown", handleMouseDown);
-      OpenSeadragon.addEvent(viewer.element, "mouseup", handleMouseUp);
-      OpenSeadragon.addEvent(viewer.element, "DOMMouseScroll", handleMouseWheel);
-      var origin = null;
+      //OpenSeadragon.addEvent(viewer.element, "mousemove", showMousePosition);
 
       $('#home_btn').click(  function () {
-            console.log("home clicked");
-            scale = 1;
-            document.getElementById("viewport")
-                .setAttribute('transform','translate(0,0)');  
-        });
+            $('#originpt').attr('cx',viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(.5,.5)).x);
+            $('#originpt').attr('cy',viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(.5,.5)).y);
+                
+            zoom = 1;
+            for (var i = 0; i < $('#viewport').children().length; i++) { 
+                var object = $('#viewport').children()[i];
+                var originalObject = originalCoords[i];
+        
+                if (object.tagName == "ellipse") {
+
+                    object.setAttribute("rx", originalObject.rx);
+                    object.setAttribute("ry", originalObject.ry);
+                    object.setAttribute("cx", originalObject.cx);
+                    object.setAttribute("cy", originalObject.cy);
+    
+                } else if (object.tagName == "rect") {
+
+                    object.setAttribute("width", originalObject.width);
+                    object.setAttribute("height", originalObject.height);
+                    object.setAttribute("x", originalObject.x);
+                    object.setAttribute("y", originalObject.y);
+
+                }
+
+            }
+
+      });
+
+      $('#zoomin_btn').click(  function () {
+
+            var center = viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(.5,.5));
+            if (lastCenter.x != center.x || lastCenter.y != center.y) {
+                scale  = 1.2;
+                zoom++;
+                var centerPt =
+                    viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(.5,.5)); 
+                $('#originpt').attr('cx',centerPt.x);
+                $('#originpt').attr('cy',centerPt.y);
+
+                for (var i = 0; i < $('#viewport').children().length; i++) { 
+
+                    var object = $('#viewport').children()[i];
+                    //var centerPt = $('#center')[0];
+                    var bbox = object.getBBox();
+        
+                    var newLocation = viewer.viewport.pixelFromPoint(objectCenterPts[i]);
+        
+                    $('#groupcenter')[0].appendChild(makeSVG('ellipse',{
+                        'cx': newLocation.x, 
+                            'cy': newLocation.y, 
+                            'rx':4, 
+                            'ry':4, 
+                            'style':'fill:blue;stroke-width:2'}
+                        )
+                    );
+                    var distance = newLocation.distanceTo(center);            
+                    if (object.tagName == "ellipse") {
+
+                        object.setAttribute("rx", (bbox.width/2)*scale);
+                        object.setAttribute("ry", (bbox.height/2)*scale);
+                        object.setAttribute("cx", newLocation.x);
+                        object.setAttribute("cy", newLocation.y);
+
+                    } else if (object.tagName == "rect") {
+
+                        object.setAttribute("width", (bbox.width)*scale);
+                        object.setAttribute("height", (bbox.height)*scale);
+                        object.setAttribute("x", newLocation.x-(bbox.width/2)*scale);
+                        object.setAttribute("y", newLocation.y-(bbox.height/2)*scale);
+
+                    }
+
+                }
+            }
+            
+            //console.log("down: " + point.x.toFixed(3) + ", " + point.y.toFixed(3));
+            lastCenter = center; 
+
+
+      });
+      $('#zoomout_btn').click(  function () {
+
+            var center = viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(.5,.5));
+            if (lastCenter.x != center.x || lastCenter.y != center.y) {
+                scale  = 1/1.2;
+                zoom--;
+    
+                var centerPt =
+                    viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(.5,.5)); 
+                $('#originpt').attr('cx',centerPt.x);
+                $('#originpt').attr('cy',centerPt.y);
+
+                for (var i = 0; i < $('#viewport').children().length; i++) { 
+
+                    var object = $('#viewport').children()[i];
+                    //var centerPt = $('#center')[0];
+                    var bbox = object.getBBox();
+        
+                    var newLocation = viewer.viewport.pixelFromPoint(objectCenterPts[i]);
+        
+                    //centerPt.setAttribute("cx", newLocation.x);
+                    //centerPt.setAttribute("cy", newLocation.y)
+                    $('#groupcenter')[0].appendChild(makeSVG('ellipse',{
+                        'cx': newLocation.x, 
+                            'cy': newLocation.y, 
+                            'rx':4, 
+                            'ry':4, 
+                            'style':'fill:blue;stroke-width:2'}
+                        )
+                    );
+
+                    if (object.tagName == "ellipse") {
+
+                        object.setAttribute("rx", (bbox.width/2)*scale);
+                        object.setAttribute("ry", (bbox.height/2)*scale);
+                        object.setAttribute("cx", newLocation.x);
+                        object.setAttribute("cy", newLocation.y);
+
+                    } else if (object.tagName == "rect") {
+
+                        object.setAttribute("width", (bbox.width)*scale);
+                        object.setAttribute("height", (bbox.height)*scale);
+                        object.setAttribute("x", newLocation.x-(bbox.width/2)*scale);
+                        object.setAttribute("y", newLocation.y-(bbox.height/2)*scale);
+
+                    }
+                    
+
+                }
+
+            }
+                        
+            
+            lastCenter = center; 
+
+
+      });
+
+      function makeSVG(tag, attrs) {
+            var el= document.createElementNS('http://www.w3.org/2000/svg', tag);
+            for (var k in attrs)
+                el.setAttribute(k, attrs[k]);
+            return el;
+        }
 
       function handleMouseMove(evt) {
         if(evt.preventDefault)
@@ -96,10 +234,8 @@
         state = 'pan';
         var pixel = OpenSeadragon.Utils.getMousePosition(evt).minus
             (OpenSeadragon.Utils.getElementPosition(viewer.element));
-        var point = viewer.viewport.pointFromPixel(pixel);
+
         stateOrigin = pixel;
-        console.log("down: " + stateOrigin);
-        //console.log("down: " + point.x.toFixed(3) + ", " + point.y.toFixed(3));
 
       }
 
@@ -109,40 +245,61 @@
             evt.preventDefault();
                
  
-        var pixel = OpenSeadragon.Utils.getMousePosition(evt).minus
-            (OpenSeadragon.Utils.getElementPosition(viewer.element));
-        //var point = viewer.viewport.pointFromPixel(pixel);
-        //stateOrigin = pixel;
         var delta;
         if(evt.wheelDelta)
             delta = evt.wheelDelta / 360; // Chrome/Safari
         else
             delta = evt.detail / -9; // Mozilla
-        //scaleFactor = Math.pow(scaleFactor + 1.2, delta);
-
-        if (delta > 0) {
-            scale  = scale * 1.04;
-        } else {
-
-            scale  = scale / 1.04;
-
-        }
 
         var center = viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(.5,.5));
-        console.log("center: " + center.x + ", " + center.y);
-        var currentTrans = 
-            document.getElementById("viewport").getAttribute("transform").replace(/ /g,"").replace("translate(", "").replace(")","");
-        var coordStr = currentTrans.split(",");
-        var currX = parseInt(coordStr[0]);
-        var currY = parseInt(coordStr[1]);
-        var currPt = new Seadragon.Point(currX, currY);
-        var trans = currPt.minus(pixel);
-        var diff = origin.minus(center);
-        document.getElementById("viewport")
-                    .setAttribute('transform','translate(' + (-diff.x) + ", " + (-diff.y)  + ') scale(' + scale + ')');  
-                    //.setAttribute('transform','scale(' + scale + ') translate(' + (-diff.x) + ", " + (-diff.y)  + ') ');  
-        console.log("zoom: " + pixel.x + ", " + pixel.y + " scaleFactor: " + scaleFactor);
-        //console.log("down: " + point.x.toFixed(3) + ", " + point.y.toFixed(3));
+        if (Math.abs(lastCenter.x - center.x) > 1 || Math.abs(lastCenter.y - center.y) > 1) {
+            if (delta > 0) {
+                zoom++;
+                scale  = 1.2;
+            } else {
+                scale  = 1/1.2;
+                zoom--;
+            }
+    
+            var centerPt =
+                viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(.5,.5)); 
+            $('#originpt').attr('cx',centerPt.x);
+            $('#originpt').attr('cy',centerPt.y);
+
+            for (var i = 0; i < $('#viewport').children().length; i++) { 
+
+                var object = $('#viewport').children()[i];
+                //var centerPt = $('#center')[0];
+                var bbox = object.getBBox();
+    
+                var newLocation = 
+                    viewer.viewport.pixelFromPoint(objectCenterPts[i]);
+    
+                //centerPt.setAttribute("cx", newLocation.x);
+                //centerPt.setAttribute("cy", newLocation.y)
+                
+                var distance = newLocation.distanceTo(center);            
+                if (object.tagName == "ellipse") {
+
+                    object.setAttribute("rx", (bbox.width/2)*scale);
+                    object.setAttribute("ry", (bbox.height/2)*scale);
+                    object.setAttribute("cx", newLocation.x);
+                    object.setAttribute("cy", newLocation.y);
+
+                } else if (object.tagName == "rect") {
+
+                    object.setAttribute("width", (bbox.width)*scale);
+                    object.setAttribute("height", (bbox.height)*scale);
+                    object.setAttribute("x", newLocation.x-(bbox.width/2)*scale);
+                    object.setAttribute("y", newLocation.y-(bbox.height/2)*scale);
+
+                }
+
+            }
+
+        } 
+        lastCenter = center; 
+
 
       }
 
@@ -152,21 +309,33 @@
 
             if (state == 'pan') {
                 state = 'up';
-                var pixel = OpenSeadragon.Utils.getMousePosition(evt).minus
-                    (OpenSeadragon.Utils.getElementPosition(viewer.element));
-                var point = viewer.viewport.pointFromPixel(pixel);
-                stateTarget = pixel;
-                console.log("up: " + stateTarget);
-                var transform = document.getElementById("viewport").getAttribute("transform").replace(/ /g,"");
-                var diff = stateTarget.minus(stateOrigin);
-                var currentTrans = 
-                    document.getElementById("viewport").getAttribute("transform").replace(/ /g,"").replace("translate(", "").replace(")","");
-                var coordStr = currentTrans.split(",");
-                var currX = parseInt(coordStr[0]);
-                var currY = parseInt(coordStr[1]);
-                document.getElementById("viewport")
-                        .setAttribute('transform','translate(' + (currX + diff.x) + ", " + (currY + diff.y)  + ')');  
-                console.log("**** diff: " + (currX + diff.x) + ", " + (currY + diff.y));
+                var pixel = 
+                    OpenSeadragon.Utils.getMousePosition(evt).minus
+                        (OpenSeadragon.Utils.getElementPosition(viewer.element));
+
+                var diff = pixel.minus(stateOrigin);
+
+                $('#originpt').attr('cx',viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(.5,.5)).x);
+                $('#originpt').attr('cy',viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(.5,.5)).y);
+
+                for (var i = 0; i < $('#viewport').children().length; i++) { 
+
+                    var object = $('#viewport').children()[i];
+                    var bbox = object.getBBox();
+                    if (object.tagName == "ellipse") {
+
+                        var currX = bbox.x+bbox.width/2; 
+                        var currY = bbox.y+bbox.height/2; 
+                        object.setAttribute("cx", currX + diff.x);
+                        object.setAttribute("cy", currY + diff.y);
+
+                    } else if (object.tagName == "rect") {
+
+                        object.setAttribute("x", bbox.x + diff.x);
+                        object.setAttribute("y", bbox.y + diff.y);
+
+                    }
+                }
             }
         }
 
@@ -193,6 +362,7 @@
       function addOverlays() {
         var annotool=new annotools('tool',{left:'0px',top:'50px',canvas:'openseadragon-canvas',iid: ''});
         annotool.setViewer(viewer);
+        
         origin = viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(.5,.5));
         console.log("origin: " + origin.x + ", " + origin.y);
       }
