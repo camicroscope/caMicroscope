@@ -196,8 +196,8 @@ var annotools = new Class({
         if (this.iid) //When the database is set. User can refer to the annotation.php for saving the annotations
         {
             var jsonRequest = new Request.JSON({
-                //url: IP + 'api/annotation.php',
-                url: 'api/annotation.php',
+                //url: IP + 'api/annotation_relative.php',
+                url: 'api/annotation_relative.php',
                 onSuccess: function (e) {
                     if (e == null) this.annotations = new Array();
                     else this.annotations = e;
@@ -1277,8 +1277,8 @@ var annotools = new Class({
     {
         if (this.iid) {
             var jsonRequest = new Request.JSON({
-                //url: IP + '/api/annotation.php',
-                url:  'api/annotation.php',
+                //url: IP + '/api/annotation_relative.php',
+                url:  'api/annotation_relative.php',
                 onSuccess: function (e) {
                     this.showMessage("saved to the server");
                 }.bind(this),
