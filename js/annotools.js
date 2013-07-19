@@ -37,8 +37,7 @@ var annotools = new Class({
         }.bind(this)); //Add KeyDown Events
 
         this.viewer.viewport.zoomTo(1);
-        //this.iid = "AA00448 0002";
-        this.iid = "AA00448";
+        //this.iid = "AA00448";
         this.getAnnot();
     },
     createButtons: function () //Create Buttons

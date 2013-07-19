@@ -1,3 +1,6 @@
+<?php session_start();
+
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -49,15 +52,14 @@
     
       var viewer = new OpenSeadragon.Viewer({ id: "viewer", prefixUrl: "images/" });
       viewer.addHandler("open", addOverlays);
-      viewer.openDzi("/fastcgi-bin/iipsrv.fcgi?DeepZoom=/u01/app/oracle/images/NLSI0000063.tiff.dzi");
-
+      viewer.openDzi("<?php print_r($_REQUEST['fileLocation']); ?>");
       function addOverlays() {
         var annotationHandler = new AnnotoolsOpenSeadragonHandler(viewer, {});
         var annotool=new annotools('tool',{
             left:'0px',
                 top:'50px',
                 canvas:'openseadragon-canvas',
-                iid: '', 
+                iid: '<?php print_r($_REQUEST['iid']); ?>', 
                 viewer: viewer,
                 annotationHandler: annotationHandler 
         });
@@ -80,3 +82,5 @@
 
 </body>
 </html>
+
+?>
