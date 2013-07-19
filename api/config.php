@@ -1,7 +1,6 @@
 <?php 
 
-$url = "glycomicsdev1.cc.emory.edu:9099";
-//$url = "localhost:9099";
+$url = "localhost:9099";
 
 return array(
     'auth_realm' => "$url/securityTokenService",
