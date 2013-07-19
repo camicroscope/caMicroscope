@@ -1,5 +1,7 @@
 <?php session_start();
 
+$config = require 'api/config.php';
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -52,7 +54,8 @@
     
       var viewer = new OpenSeadragon.Viewer({ id: "viewer", prefixUrl: "images/" });
       viewer.addHandler("open", addOverlays);
-      viewer.openDzi("<?php print_r($_REQUEST['fileLocation']); ?>");
+
+      viewer.openDzi("<?php print_r($config['fastcgi_server']); ?>?DeepZoom=<?php print_r($_REQUEST['fileLocation']); ?>");
       function addOverlays() {
         var annotationHandler = new AnnotoolsOpenSeadragonHandler(viewer, {});
         var annotool=new annotools('tool',{
