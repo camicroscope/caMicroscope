@@ -26,8 +26,8 @@
       }
 
       #viewer{
-        width:800px;
-        height:600px;
+        width:100%;
+        height:100%;
         margin-left:auto;
         margin-right:auto;
         color: white;   /* for error messages */

@@ -37,7 +37,9 @@ var annotools = new Class({
         }.bind(this)); //Add KeyDown Events
 
         this.viewer.viewport.zoomTo(1);
-        this.getAnnot2();
+        //this.iid = "AA00448 0002";
+        this.iid = "AA00448";
+        this.getAnnot();
     },
     createButtons: function () //Create Buttons
     {
@@ -190,7 +192,7 @@ var annotools = new Class({
         this.magnifyGlass.hide();
     },
 
-    getAnnot2: function (viewer) //Get Annotation from the API
+    getAnnot: function (viewer) //Get Annotation from the API
     {
         if (this.iid) //When the database is set. User can refer to the annotation.php for saving the annotations
         {
@@ -201,10 +203,13 @@ var annotools = new Class({
                     if (e == null) this.annotations = new Array();
                     else this.annotations = e;
                     this.displayAnnot(); //Display The Annotations
+                    this.relativeToGlobal();
+                    this.setupHandlers();
                     //console.log("successfully get annotations");
                 }.bind(this),
                 onFailure: function (e) {
                     this.showMessage("cannot get the annotations,please check your getAnnot function");
+                    this.annotations = new Array();
                 }.bind(this)
             }).get({
                 'iid': this.iid
@@ -219,94 +224,7 @@ var annotools = new Class({
                     if (annot == null) annot = new Array();
                     this.annotations = annot; //Display The Annotations
                     this.displayAnnot();
-                    for (var i = 0; i < $('#viewport').children().length; i++) {
-                        var object = $('#viewport').children()[i];
-            
-                        if (object.tagName == "ellipse") {
-                            var originalCoord = {};
-                            originalCoord.cx = object.getAttribute('cx');
-                            originalCoord.cy = object.getAttribute('cy');
-                            originalCoord.rx = object.getAttribute('rx');
-                            originalCoord.ry = object.getAttribute('ry');
-                            this.annotationHandler.originalCoords[i] = originalCoord;
-                            var bbox = object.getBBox();
-                            console.log("original: " + (bbox.width/2) + ", " + (bbox.height/2));
-
-                            var objectCenterPt = new OpenSeadragon.Point(bbox.x+bbox.width/2, bbox.y+bbox.height/2);
-                            var objectCenterRelPt = this.viewer.viewport.pointFromPixel(objectCenterPt);
-                            this.annotationHandler.objectCenterPts[i] = objectCenterRelPt;
-                        } else if (object.tagName == "rect"){
-                            var originalCoord = {};
-                            originalCoord.x     = object.getAttribute('x');
-                            originalCoord.y     = object.getAttribute('y');
-                            originalCoord.width = object.getAttribute('width');
-                            originalCoord.height = object.getAttribute('height');
-                            this.annotationHandler.originalCoords[i] = originalCoord;
-                            var bbox = object.getBBox();
-                            var objectCenterPt = new OpenSeadragon.Point(bbox.x+bbox.width/2, bbox.y+bbox.height/2);
-                            var objectCenterRelPt = this.viewer.viewport.pointFromPixel(objectCenterPt);
-                            this.annotationHandler.objectCenterPts[i] = objectCenterRelPt;
-                            /*
-                            $('#groupcenter')[0].appendChild(makeSVG('ellipse',{
-                                'cx': objectCenterPt.x, 
-                                    'cy': objectCenterPt.y, 
-                                    'rx':4, 
-                                    'ry':4, 
-                                    'style':'fill:blue;stroke-width:2'}
-                                )
-                            );
-                            */
-
-                        } 
-                        else {
-                            var bbox = object.getBBox();
-                            var objectCenterPt = 
-                                new OpenSeadragon.Point(
-                                    bbox.x+bbox.width/2, 
-                                    bbox.y+bbox.height/2
-                            );
-                            var objectCenterRelPt = 
-                                this.viewer.viewport.pointFromPixel(objectCenterPt);
-                            this.annotationHandler.objectCenterPts[i] = objectCenterRelPt;
-                            /*
-                            $('#groupcenter')[0].appendChild(makeSVG('ellipse',{
-                                'cx': objectCenterPt.x, 
-                                    'cy': objectCenterPt.y, 
-                                    'rx':4, 
-                                    'ry':4, 
-                                    'style':'fill:blue;stroke-width:2'}
-                                )
-                            );
-                            */
-                            var originalCoord = {};
-                            originalCoord.cx     =  objectCenterPt.x;
-                            originalCoord.cy     =  objectCenterPt.y;
-                            var points = 
-                                String.split(object.getAttribute("points").trim(), ' ');
-
-                            var distances = [];
-                            for (var j = 0; j < points.length-1; j++) {
-                                var pointPair = String.split(points[j], ",");
-                                var point = 
-                                        new OpenSeadragon.Point(
-                                            parseFloat(pointPair[0]),
-                                                parseFloat(pointPair[1])
-                                        );
-                                var relPt = this.viewer.viewport.pointFromPixel(point);
-                                var dist = relPt.minus(objectCenterRelPt); 
-                                distances.push(dist);
-
-                            }
-
-                            this.annotationHandler.originalCoords[object.id] = {
-                                center: objectCenterRelPt, 
-                                distances: distances};
-
-
-                        }
-
-                    };
-
+                    this.relativeToGlobal();
                     this.setupHandlers();
                 }.bind(this),
                 onFailure: function (e) {
@@ -315,42 +233,7 @@ var annotools = new Class({
             }).get();
         }
     },
-    getAnnot: function () //Get Annotation from the API
-    {
-        if (this.iid) //When the database is set. User can refer to the annotation.php for saving the annotations
-        {
-            var jsonRequest = new Request.JSON({
-                //url: IP + 'api/annotation.php',
-                url: 'api/annotation.php',
-                onSuccess: function (e) {
-                    if (e == null) this.annotations = new Array();
-                    else this.annotations = e;
-                    this.displayAnnot(); //Display The Annotations
-                }.bind(this),
-                onFailure: function (e) {
-                    this.showMessage("cannot get the annotations,please check your getAnnot function");
-                }.bind(this)
-            }).get({
-                'iid': this.iid
-            });
-        } else //When the database is not set, one TXT file will be used to save the Annotation Data. Please Refer to annot.php in the API folder
-        {
-            var jsonRequest = new Request.JSON({
-                //url: IP + 'api/annot.php',
-                url:  'api/annot.php',
-                onSuccess: function (e) {
-                    var annot = JSON.decode(e);
-                    if (annot == null) annot = new Array();
-                    this.annotations = annot; //Display The Annotations
-                    this.displayAnnot();
-                    this.setupHandlers();
-                }.bind(this),
-                onFailure: function (e) {
-                    this.showMessage("cannot get the annotations,please check your getAnnot funciton");
-                }.bind(this)
-            }).get();
-        }
-    },
+    
     keyPress: function (code) //Key Down Events Handler
     {
         switch (code) {
@@ -483,7 +366,7 @@ var annotools = new Class({
                                 (OpenSeadragon.getElementPosition(viewer.element));
                         var point = viewer.viewport.pointFromPixel(p);
                         var pixelPt = viewer.viewport.pixelFromPoint(point);
-                        var pointFromPixel = viewer.viewport.pointFromPixel(new Seadragon.Point(x, y));
+                        var pointFromPixel = viewer.viewport.pointFromPixel(new OpenSeadragon.Point(x, y));
 
                         var distx = Math.abs(pixelPt.x - x);
                         var disty = Math.abs(pixelPt.y - y);
@@ -508,7 +391,7 @@ var annotools = new Class({
                             this.addnewAnnot(newAnnot);
                             viewer.viewport.zoomTo(1);
                             //this.drawMarkups();
-                            this.getAnnot2();
+                            this.getAnnot();
                         } else {
                             ctx.clearRect(0, 0, this.drawCanvas.width, this.drawCanvas.height);
                         }
@@ -586,7 +469,7 @@ var annotools = new Class({
                             //this.drawMarkups();
                             //viewer.viewport.goHome();
                             viewer.viewport.zoomTo(1);
-                            this.getAnnot2();
+                            this.getAnnot();
                         } else {
                             ctx.clearRect(0, 0, this.drawCanvas.width, this.drawCanvas.height);
                         }
@@ -1011,6 +894,7 @@ var annotools = new Class({
     },
     addnewAnnot: function (newAnnot) //Add New Annotations
     {
+        newAnnot.iid = this.iid;
         this.annotations.push(newAnnot);
         this.saveAnnot();
         this.displayAnnot();
@@ -1053,56 +937,99 @@ var annotools = new Class({
             this.start(0.5, 0);
         });
     },
+    relativeToGlobal: function() 
+    {
+            for (var i = 0; i < $('#viewport').children().length; i++) {
+                var object = $('#viewport').children()[i];
+    
+                if (object.tagName == "ellipse") {
+                    var originalCoord = {};
+                    originalCoord.cx = object.getAttribute('cx');
+                    originalCoord.cy = object.getAttribute('cy');
+                    originalCoord.rx = object.getAttribute('rx');
+                    originalCoord.ry = object.getAttribute('ry');
+                    this.annotationHandler.originalCoords[object.id] = originalCoord;
+                    var bbox = object.getBBox();
+                    console.log("original: " + (bbox.width/2) + ", " + (bbox.height/2));
+
+                    var objectCenterPt = new OpenSeadragon.Point(bbox.x+bbox.width/2, bbox.y+bbox.height/2);
+                    var objectCenterRelPt = this.viewer.viewport.pointFromPixel(objectCenterPt);
+                    this.annotationHandler.objectCenterPts[i] = objectCenterRelPt;
+                } else if (object.tagName == "rect"){
+                    var originalCoord = {};
+                    originalCoord.x     = object.getAttribute('x');
+                    originalCoord.y     = object.getAttribute('y');
+                    originalCoord.width = object.getAttribute('width');
+                    originalCoord.height = object.getAttribute('height');
+                    this.annotationHandler.originalCoords[object.id] = originalCoord;
+                    var bbox = object.getBBox();
+                    var objectCenterPt = new OpenSeadragon.Point(bbox.x+bbox.width/2, bbox.y+bbox.height/2);
+                    var objectCenterRelPt = this.viewer.viewport.pointFromPixel(objectCenterPt);
+                    this.annotationHandler.objectCenterPts[i] = objectCenterRelPt;
+
+                } 
+                else {
+                    var bbox = object.getBBox();
+                    var objectCenterPt = 
+                        new OpenSeadragon.Point(
+                            bbox.x+bbox.width/2, 
+                            bbox.y+bbox.height/2
+                    );
+                    var objectCenterRelPt = 
+                        this.viewer.viewport.pointFromPixel(objectCenterPt);
+                    this.annotationHandler.objectCenterPts[i] = objectCenterRelPt;
+                    var originalCoord = {};
+                    originalCoord.cx     =  objectCenterPt.x;
+                    originalCoord.cy     =  objectCenterPt.y;
+                    var points = 
+                        String.split(object.getAttribute("points").trim(), ' ');
+
+                    var distances = [];
+                    for (var j = 0; j < points.length-1; j++) {
+                        var pointPair = String.split(points[j], ",");
+                        var point = 
+                                new OpenSeadragon.Point(
+                                    parseFloat(pointPair[0]),
+                                        parseFloat(pointPair[1])
+                                );
+                        var relPt = this.viewer.viewport.pointFromPixel(point);
+                        var dist = relPt.minus(objectCenterRelPt); 
+                        distances.push(dist);
+
+                    }
+
+                    this.annotationHandler.originalCoords[object.id] = {
+                        center: objectCenterRelPt, 
+                        distances: distances};
+
+
+                }
+
+            };
+
+    },
+        
     setupHandlers: function() 
     {
         
                     
-                    var root = document.getElementsByTagName('svg')[0]; 
+        var root = document.getElementsByTagName('svg')[0]; 
                     
-                    if (root != undefined) {
-                        if(navigator.userAgent.toLowerCase().indexOf('webkit') >= 0) {
-                            window.addEventListener('mousewheel',   this.annotationHandler.handleMouseWheel, false); // Chrome/Safari
-                            window.addEventListener('mousemove',    this.annotationHandler.handleMouseMove, false); // Chrome/Safari
-                            window.addEventListener('mousedown',    this.annotationHandler.handleMouseDown, false); // Chrome/Safari
-                            window.addEventListener('mouseup',      this.annotationHandler.handleMouseUp, false); // Chrome/Safari
-                        } else {
-                            window.addEventListener('DOMMouseScroll', this.annotationHandler.handleMouseWheel, false); // Others
-                            window.addEventListener('mousemove',    this.annotationHandler.handleMouseMove, false); // Chrome/Safari
-                            window.addEventListener('mousedown',    this.annotationHandler.handleMouseDown, false); // Chrome/Safari
-                            window.addEventListener('mouseup',      this.annotationHandler.handleMouseUp, false); // Chrome/Safari
-                        }
+        if (root != undefined) {
+            if(navigator.userAgent.toLowerCase().indexOf('webkit') >= 0) {
+                window.addEventListener('mousewheel',   this.annotationHandler.handleMouseWheel, false); // Chrome/Safari
+                window.addEventListener('mousemove',    this.annotationHandler.handleMouseMove, false); // Chrome/Safari
+                window.addEventListener('mousedown',    this.annotationHandler.handleMouseDown, false); // Chrome/Safari
+                window.addEventListener('mouseup',      this.annotationHandler.handleMouseUp, false); // Chrome/Safari
+    
+            } else {
 
-                    }
-                    
-
-                    // Retrieves the root element for SVG manipulation. The element is then cached into the svgRoot global variable.
-                    function getRoot(root) {
-                        if(typeof(svgRoot) == "undefined") {
-                            var g = null;
-                    
-                            //g = root.getElementById("viewport");
-                            g = root.getElemenstByTagName("viewport")[0];
-                    
-                            if(g == null)
-                                //g = root.getElementsByTagName('g')[0];
-                                g = root.getElementsByTagName('ellipse')[0];
-                    
-                            if(g == null)
-                                alert('Unable to obtain SVG root element');
-                    
-                            setCTM(g, g.getCTM());
-                    
-                            g.removeAttribute("viewBox");
-                    
-                            svgRoot = g;
-                        }
-                    
-                        return svgRoot;
-                    }
-                    
-
-
-                    
+                window.addEventListener('DOMMouseScroll', this.annotationHandler.handleMouseWheel, false); // Others
+                window.addEventListener('mousemove',    this.annotationHandler.handleMouseMove, false); // Chrome/Safari
+                window.addEventListener('mousedown',    this.annotationHandler.handleMouseDown, false); // Chrome/Safari
+                window.addEventListener('mouseup',      this.annotationHandler.handleMouseUp, false); // Chrome/Safari
+            }
+        }
 
     },
     displayAnnot: function () //Display SVG Annotations
@@ -1150,7 +1077,7 @@ var annotools = new Class({
                                 var h = parseFloat(a[index].h);
                                 var point = viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(x,y));
 
-                                svgHtml += '<rect x="' + point.x + '" y="' + point.y + '" width="' + w*width + '" height="' + width*h + '" stroke="' + a[index].color + '" stroke-width="2" fill="none"/>';
+                                svgHtml += '<rect id="' + index + '" x="' + point.x + '" y="' + point.y + '" width="' + w*width + '" height="' + width*h + '" stroke="' + a[index].color + '" stroke-width="2" fill="none"/>';
                                 break;
                             case "ellipse":
                                 var cx = parseFloat(a[index].x) + parseFloat(a[index].w) / 2;

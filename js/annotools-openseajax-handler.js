@@ -17,7 +17,7 @@ var AnnotoolsOpenSeadragonHandler = new Class({
         this.viewer = viewer;
         this.state = 'none';
         this.stateTarget = null;
-        this.stateOrigin = null;;
+        this.stateOrigin = null;
         this.scale = options.ratio || 1.2;
         this.lastCenter = {x: 0, y: 0};
         this.objectCenterPts = {};
@@ -28,9 +28,15 @@ var AnnotoolsOpenSeadragonHandler = new Class({
 
         this._setupOpenSeadragonButtonHandlers();
 
+        // global object reference used when the "this" object is referring to the window 
         window.annotationHandler = this;
     },
 
+    /* 
+        Redefines the button handlers from the OpenSeadragon button bar
+        for the onRelease event. Handles Zoom in, Zoom out, and Home
+        buttons.
+    */
     _setupOpenSeadragonButtonHandlers: function() {
         
         for (var i = 0; i < this.viewer.buttons.buttons.length; i++) {
@@ -178,7 +184,6 @@ var AnnotoolsOpenSeadragonHandler = new Class({
               }
           }
           
-          //console.log("down: " + point.x.toFixed(3) + ", " + point.y.toFixed(3));
           annotationHandler.lastCenter = center; 
     
 
@@ -254,22 +259,16 @@ var AnnotoolsOpenSeadragonHandler = new Class({
       if(evt.preventDefault)
           evt.preventDefault();
     
-      //console.log("handleMouseMove");        
       if (this.state == 'pan') {
-    
-          for (var i = 0; i < $('#viewport').children().length; i++) { 
-                  var object = $('#viewport').children()[i];
-                  //object.setAttribute("style", style="fill:none;stroke-opacity: 0.2;stroke:black;stroke-width:2");
-    
-          }
+          $('svg')[0].hide(); 
           var pixel = OpenSeadragon.getMousePosition(evt).minus
               (OpenSeadragon.getElementPosition(viewer.element));
           var point = viewer.viewport.pointFromPixel(pixel);
-          //console.log("move: " + point.x.toFixed(3) + ", " + point.y.toFixed(3));
       }
 
 
     },
+
     handleMouseUp: function(evt) {
           if(evt.preventDefault)
               evt.preventDefault();
@@ -287,6 +286,7 @@ var AnnotoolsOpenSeadragonHandler = new Class({
               $('#originpt').attr('cy',
                       viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(.5,.5)).y);
     
+            $('svg')[0].show(); 
               for (var i = 0; i < $('#viewport').children().length; i++) { 
     
                   var object = $('#viewport').children()[i];
@@ -326,6 +326,7 @@ var AnnotoolsOpenSeadragonHandler = new Class({
 
 
     },
+
     handleMouseDown: function(evt) {
 
       if(evt.preventDefault)
@@ -334,10 +335,12 @@ var AnnotoolsOpenSeadragonHandler = new Class({
       var pixel = OpenSeadragon.getMousePosition(evt).minus
           (OpenSeadragon.getElementPosition(viewer.element));
     
+      $('svg')[0].hide(); 
       this.stateOrigin = pixel;
 
 
     },
+
     handleMouseWheel: function(evt) {
       if(evt.preventDefault)
           evt.preventDefault();
