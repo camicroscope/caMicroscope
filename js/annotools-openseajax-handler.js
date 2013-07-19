@@ -280,50 +280,63 @@ var AnnotoolsOpenSeadragonHandler = new Class({
                       (OpenSeadragon.getElementPosition(viewer.element));
     
               var diff = pixel.minus(this.stateOrigin);
-    
-              $('#originpt').attr('cx',
-                      viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(.5,.5)).x);
-              $('#originpt').attr('cy',
-                      viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(.5,.5)).y);
-    
-            $('svg')[0].show(); 
-              for (var i = 0; i < $('#viewport').children().length; i++) { 
-    
-                  var object = $('#viewport').children()[i];
-                  //object.setAttribute("style", style="fill:none;stroke:lime;stroke-width:2");
-                  var bbox = object.getBBox();
-                  if (object.tagName == "ellipse") {
-    
-                      var currX = bbox.x+bbox.width/2; 
-                      var currY = bbox.y+bbox.height/2; 
-                      object.setAttribute("cx", currX + diff.x);
-                      object.setAttribute("cy", currY + diff.y);
-    
-                  } 
-                  else if (object.tagName == "rect") {
-    
-                      object.setAttribute("x", bbox.x + diff.x);
-                      object.setAttribute("y", bbox.y + diff.y);
-    
-                  }
-                  else {
-             
-                      var points = String.split(object.getAttribute("points").trim(), ' ');
-                      var pointsStr = "";
-                      for (var j = 0; j < points.length; j++) {
-                          var pointPair = String.split(points[j], ",");
-                          pointsStr += (parseFloat(pointPair[0])+diff.x) + 
-                                          "," + 
-                                      (parseFloat(pointPair[1])+diff.y) + " ";
-                          
-    
-                      }
-                      object.setAttribute("points", pointsStr);
-    
-                  }
+
+              // handles a mouse click (zoom and pan to)
+              // otherwise we will handle the pan event
+              if (diff.x == 0 && diff.y == 0) {
+
+                    setTimeout(function() {
+                        $('svg')[0].show(); 
+                        annotationHandler.handleZoomIn();
+                    }, 25);
+
               }
+              else {
+    
+                $('#originpt').attr('cx',
+                        viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(.5,.5)).x);
+                $('#originpt').attr('cy',
+                        viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(.5,.5)).y);
+    
+                $('svg')[0].show(); 
+                for (var i = 0; i < $('#viewport').children().length; i++) { 
+    
+                    var object = $('#viewport').children()[i];
+                    //object.setAttribute("style", style="fill:none;stroke:lime;stroke-width:2");
+                    var bbox = object.getBBox();
+                    if (object.tagName == "ellipse") {
+    
+                        var currX = bbox.x+bbox.width/2; 
+                        var currY = bbox.y+bbox.height/2; 
+                        object.setAttribute("cx", currX + diff.x);
+                        object.setAttribute("cy", currY + diff.y);
+    
+                    } 
+                    else if (object.tagName == "rect") {
+    
+                        object.setAttribute("x", bbox.x + diff.x);
+                        object.setAttribute("y", bbox.y + diff.y);
+    
+                    }
+                    else {
+             
+                        var points = String.split(object.getAttribute("points").trim(), ' ');
+                        var pointsStr = "";
+                        for (var j = 0; j < points.length; j++) {
+                            var pointPair = String.split(points[j], ",");
+                            pointsStr += (parseFloat(pointPair[0])+diff.x) + 
+                                            "," + 
+                                        (parseFloat(pointPair[1])+diff.y) + " ";
+                            
+    
+                        }
+                        object.setAttribute("points", pointsStr);
+    
+                    }
+                }
           }
 
+        }
 
     },
 
