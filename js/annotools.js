@@ -894,6 +894,7 @@ var annotools = new Class({
     addnewAnnot: function (newAnnot) //Add New Annotations
     {
         newAnnot.iid = this.iid;
+        newAnnot.annotId = MD5(new Date().toString());
         this.annotations.push(newAnnot);
         this.saveAnnot();
         this.displayAnnot();
@@ -949,7 +950,6 @@ var annotools = new Class({
                     originalCoord.ry = object.getAttribute('ry');
                     this.annotationHandler.originalCoords[object.id] = originalCoord;
                     var bbox = object.getBBox();
-                    console.log("original: " + (bbox.width/2) + ", " + (bbox.height/2));
 
                     var objectCenterPt = new OpenSeadragon.Point(bbox.x+bbox.width/2, bbox.y+bbox.height/2);
                     var objectCenterRelPt = this.viewer.viewport.pointFromPixel(objectCenterPt);
@@ -1133,18 +1133,29 @@ var annotools = new Class({
                                 svgHtml += '<line x1="' + a[index].x * width + '" y1="' + a[index].y * height + '" x2="' + parseFloat(points[0]) * width + '" y2="' + parseFloat(points[1]) * height + '" style="stroke:' + a[index].color + ';stroke-width:2"/>';
                                 break;
                         }
+
+                        /*
+                        var x = parseFloat(a[index].x);
+                        var y = parseFloat(a[index].y);
+                        var w = parseFloat(a[index].w);
+                        var h = parseFloat(a[index].h);
+                        var point = viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(x,y));
+
                         var d = new Element("div", {
-                            id: a[index].id,
+                            //id: a[index].id,
+                            id: a[index].annotId,
                             "class": 'annotcontainer',
                             styles: {
                                 position: 'absolute',
-                                left: Math.round(width * a[index].x),
-                                top: Math.round(height * a[index].y),
-                                width: Math.round(width * a[index].w),
-                                height: Math.round(height * a[index].h)
+                                left: point.x,
+                                top: point.y,
+                                width: width*w,
+                                height: width*h
+                                //top: Math.round(height * a[index].y),
+                                //width: Math.round(width * a[index].w),
+                                //height: Math.round(height * a[index].h)
                             }
                         }).inject(container);
-                        //});
                         var c = this;
                         d.addEvents({
                             'mouseenter': function (e) {
@@ -1160,6 +1171,7 @@ var annotools = new Class({
                                 c.editTip(this.id)
                             }
                         });
+                        */
                     }
                 }
                 svgHtml += '</g></svg>';
@@ -1177,6 +1189,38 @@ var annotools = new Class({
                         },
                         html: svgHtml
                     }).inject(container);
+                    console.log("added svg");
+                    var annots = $('svg')[0].getChildren()[2];
+                    for (var k = 0; k < annots.getChildren().length; k++) {
+                        var bbox = annots.getChildren()[k].getBBox();
+                        var d = new Element("div", {
+                            id: k,
+                            "class": 'annotcontainer',
+                            styles: {
+                                position: 'absolute',
+                                left: bbox.x,
+                                top: bbox.y,
+                                width: bbox.width,
+                                height: bbox.height
+                            }
+                        }).inject(container);
+
+                        var c = this;
+                        d.addEvents({
+                            'mouseenter': function (e) {
+                                e.stop;
+                                c.displayTip(this.id);
+                            },
+                            'mouseleave': function (e) {
+                                e.stop;
+                                c.destroyTip();
+                            },
+                            'dblclick': function (e) {
+                                e.stop();
+                                c.editTip(this.id);
+                            }
+                        });
+                    }
                     for (var j = 0; j < pointsArr.length; j++) {
                         $('#groupcenter')[0].appendChild(pointsArr[j]);
                     }
