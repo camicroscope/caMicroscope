@@ -123,7 +123,13 @@ var AnnotoolsOpenSeadragonHandler = new Class({
                   }
                   object.setAttribute("points", pointsStr);
     
-              }
+              } 
+
+              var div    = $('div.annotcontainer')[i];
+              div.style.left   = newLocation.x-(bbox.width/2)*scale + "px";
+              div.style.top    = newLocation.y-(bbox.height/2)*scale + "px";
+              div.style.width  = (bbox.width)*scale + "px";
+              div.style.height = (bbox.height)*scale + "px";
     
           }
 
@@ -140,11 +146,13 @@ var AnnotoolsOpenSeadragonHandler = new Class({
               $('#originpt').attr('cx',centerPt.x);
               $('#originpt').attr('cy',centerPt.y);
               
+
               for (var i = 0; i < $('#viewport').children().length; i++) { 
     
                   var object = $('#viewport').children()[i];
                   //var centerPt = $('#center')[0];
                   var bbox = object.getBBox();
+                  console.log("handleZoomIn: " + bbox.width);
       
                   var newLocation = viewer.viewport.pixelFromPoint(annotationHandler.objectCenterPts[i]);
       
@@ -180,6 +188,14 @@ var AnnotoolsOpenSeadragonHandler = new Class({
                       object.setAttribute("points", pointsStr);
     
                   }
+
+                  var div    = $('div.annotcontainer')[i];
+                  div.style.left   = newLocation.x-(bbox.width/2)*scale + "px";
+                  div.style.top    = newLocation.y-(bbox.height/2)*scale + "px";
+                  div.style.width  = (bbox.width)*scale + "px";
+                  div.style.height = (bbox.height)*scale + "px";
+                  
+                
     
               }
           }
@@ -207,6 +223,7 @@ var AnnotoolsOpenSeadragonHandler = new Class({
                   var object = $('#viewport').children()[i];
                   //var centerPt = $('#center')[0];
                   var bbox = object.getBBox();
+                  console.log("handleZoomOut: " + bbox.width);
       
                   var newLocation = viewer.viewport.pixelFromPoint(annotationHandler.objectCenterPts[i]);
       
@@ -244,13 +261,18 @@ var AnnotoolsOpenSeadragonHandler = new Class({
                       object.setAttribute("points", pointsStr);
     
                   }
+                  var div    = $('div.annotcontainer')[i];
+                  div.style.left   = newLocation.x-(bbox.width/2)*scale + "px";
+                  div.style.top    = newLocation.y-(bbox.height/2)*scale + "px";
+                  div.style.width  = (bbox.width)*scale + "px";
+                  div.style.height = (bbox.height)*scale + "px";
                   
     
               }
     
           }
                       
-          lastCenter = center; 
+          annotationHandler.lastCenter = center; 
     
 
     },
@@ -270,6 +292,8 @@ var AnnotoolsOpenSeadragonHandler = new Class({
     },
 
     handleMouseUp: function(evt) {
+      console.log(evt.target.tagName);
+      //if (evt.target.tagName.toLowerCase() == "button" || evt.target.tagName.toLowerCase() == "div") return;
           if(evt.preventDefault)
               evt.preventDefault();
     
@@ -333,6 +357,14 @@ var AnnotoolsOpenSeadragonHandler = new Class({
                         object.setAttribute("points", pointsStr);
     
                     }
+
+                    var div    = $('div.annotcontainer')[i];
+                    
+                    div.style.left   = (bbox.x + diff.x) + "px";
+                    div.style.top    = (bbox.y  + diff.y)+ "px";
+                    //div.style.width  = (bbox.width)*scale + "px";
+                    //div.style.height = (bbox.height)*scale + "px";
+                    
                 }
           }
 
@@ -342,6 +374,8 @@ var AnnotoolsOpenSeadragonHandler = new Class({
 
     handleMouseDown: function(evt) {
 
+      console.log(evt.target.tagName);
+      if (evt.target.tagName.toLowerCase() == "button" || evt.target.tagName.toLowerCase() == "div") return;
       if(evt.preventDefault)
           evt.preventDefault();
       this.state = 'pan';
@@ -369,8 +403,10 @@ var AnnotoolsOpenSeadragonHandler = new Class({
           if (delta > 0) {
               annotationHandler.zoom++;
               scale  = 1.2;
+              console.log("zoom in: " +  scale);
           } else {
               scale  = 1/1.2;
+              console.log("zoom out: " +  scale);
               annotationHandler.zoom--;
           }
     
@@ -384,6 +420,7 @@ var AnnotoolsOpenSeadragonHandler = new Class({
               var object = $('#viewport').children()[i];
               //var centerPt = $('#center')[0];
               var bbox = object.getBBox();
+              console.log("handleMouseWheel: " + bbox.width);
     
               var newLocation = 
                   viewer.viewport.pixelFromPoint(annotationHandler.objectCenterPts[i]);
@@ -433,6 +470,12 @@ var AnnotoolsOpenSeadragonHandler = new Class({
                   object.setAttribute("points", pointsStr);
     
               }
+                
+                  var div    = $('div.annotcontainer')[i];
+                  div.style.left   = newLocation.x-(bbox.width/2)*scale + "px";
+                  div.style.top    = newLocation.y-(bbox.height/2)*scale + "px";
+                  div.style.width  = (bbox.width)*scale + "px";
+                  div.style.height = (bbox.height)*scale + "px";
     
           }
     

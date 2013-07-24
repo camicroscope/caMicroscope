@@ -1063,7 +1063,7 @@ var annotools = new Class({
                     svgHtml += '<g id="groupcenter"/>';
                     svgHtml += '<g id="origin">';
                     var origin = viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(.5,.5));
-                    svgHtml += '<ellipse id="originpt" cx="' + origin.x + '" cy="' + origin.y + '" rx="' + 4 + '" ry="' + 4  + '" style="fill:blue;stroke:red;stroke-width:2"/>';
+                    svgHtml += '<ellipse id="originpt" cx="' + origin.x + '" cy="' + origin.y + '" rx="' + 4 + '" ry="' + 4  + '" style="display: none"/>';
                     svgHtml += '</g>';
                     svgHtml += '<g id="viewport" transform="translate(0,0)">';
                 for (index = 0; index < a.length; index++) {
@@ -1201,7 +1201,8 @@ var annotools = new Class({
                                 left: bbox.x,
                                 top: bbox.y,
                                 width: bbox.width,
-                                height: bbox.height
+                                height: bbox.height,
+                                border: '1px solid'
                             }
                         }).inject(container);
 
@@ -1294,9 +1295,14 @@ var annotools = new Class({
                 'click': function () {
                     var tip = prompt("Make some changes", annot.text);
                     if (tip != null) {
-                        this.annotations[id].text = tip;
-                        this.saveAnnot();
-                        this.displayAnnot();
+                        var newAnnot = this.annotations[id];
+                        newAnnot.text = tip;
+                        this.deleteAnnot(id);
+                            
+                        //this.saveAnnot();
+                        //this.updateAnnot(this.annotations[id]);
+                        this.addnewAnnot(newAnnot);
+                        //this.displayAnnot();
                         d.destroy();
                     } else d.destroy();
                 }.bind(this)
@@ -1313,9 +1319,57 @@ var annotools = new Class({
     },
     deleteAnnot: function (id) //Delete Annotations
     {
-        this.annotations.splice(id, 1);
-        this.saveAnnot();
+        //this.annotations.splice(id, 1);
+        //this.saveAnnot();
+        //this.displayAnnot();
+        var testAnnotId = this.annotations[id].annotId;	
+	    this.annotations.splice(id,1);
+	    //########### Do the delete using bindaas instead of on local list.
+	    if(this.iid)
+        {
+            var jsonRequest = new Request.JSON({
+                    url: 'api/deleteAnnot.php',
+                    async:false,
+                    onSuccess: function(e){
+                        this.showMessage("deleted from server");
+                }.bind(this),
+                    onFailure:function(e){
+                        this.showMessage("Error deleting the Annotations, please check your deleteAnnot php");
+                }
+                .bind(this)}
+            ).get({'annotId':testAnnotId});
+        }
         this.displayAnnot();
+    },
+    updateAnnot: function (annot) //Save Annotations
+    {
+        if (this.iid) {
+            var jsonRequest = new Request.JSON({
+                url:  'api/updateAnnot.php',
+                onSuccess: function (e) {
+                    this.showMessage("saved to the server");
+                }.bind(this),
+                onFailure: function (e) {
+                    this.showMessage("Error Saving the Annotations,please check you saveAnnot funciton");
+                }.bind(this)
+            }).post({
+                'iid': this.iid,
+                'annot': annot
+            });
+ 
+        } else {
+            var jsonRequest = new Request.JSON({
+                url:  'api/annot.php',
+                onSuccess: function (e) {
+                    this.showMessage("saved to the server");
+                }.bind(this),
+                onFailure: function (e) {
+                    this.showMessage("Error Saving the Annotations,please check you saveAnnot funciton and the api/annot.php function");
+                }.bind(this)
+            }).post({
+                'annot': this.annotations
+            });
+        }
     },
     saveAnnot: function () //Save Annotations
     {
