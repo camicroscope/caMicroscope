@@ -546,7 +546,9 @@ var annotools = new Class({
                                 color: this.color
                             };
                             this.addnewAnnot(newAnnot);
-                            this.drawMarkups();
+                            //this.drawMarkups();
+                            viewer.viewport.zoomTo(1);
+                            this.getAnnot();
                         } else {
                             ctx.clearRect(0, 0, this.drawCanvas.width, this.drawCanvas.height);
                         }
@@ -620,7 +622,9 @@ var annotools = new Class({
                                 color: this.color
                             };
                             this.addnewAnnot(newAnnot);
-                            this.drawMarkups();
+                            //this.drawMarkups();
+                            viewer.viewport.zoomTo(1);
+                            this.getAnnot();
                         } else {
                             ctx.clearRect(0, 0, this.drawCanvas.width, this.drawCanvas.height);
                         }
@@ -1201,8 +1205,8 @@ var annotools = new Class({
                                 left: bbox.x,
                                 top: bbox.y,
                                 width: bbox.width,
-                                height: bbox.height,
-                                border: '1px solid'
+                                height: bbox.height
+                                //border: '1px solid'
                             }
                         }).inject(container);
 
@@ -1221,6 +1225,7 @@ var annotools = new Class({
                                 c.editTip(this.id);
                             }
                         });
+                        this.annotationHandler.originalDivCoords.push(bbox);
                     }
                     for (var j = 0; j < pointsArr.length; j++) {
                         $('#groupcenter')[0].appendChild(pointsArr[j]);

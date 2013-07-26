@@ -22,9 +22,10 @@ var AnnotoolsOpenSeadragonHandler = new Class({
         this.lastCenter = {x: 0, y: 0};
         this.objectCenterPts = {};
         this.originalCoords = [];
+        this.originalDivCoords = [];
         this.zoom = 1;
 
-        this.animateWaitTime = options.animateWaitTime || 25;
+        this.animateWaitTime = options.animateWaitTime || 80;
 
         this._setupOpenSeadragonButtonHandlers();
 
@@ -49,7 +50,7 @@ var AnnotoolsOpenSeadragonHandler = new Class({
                     onZoomInRelease(args);
                     setTimeout(function() {
                         zoomIn();
-                    }, this.animateWaitTime);
+                    }, annotationHandler.animateWaitTime);
                 };
 
             }
@@ -61,7 +62,7 @@ var AnnotoolsOpenSeadragonHandler = new Class({
                     onZoomOutRelease(args);
                     setTimeout(function() {
                         zoomOut();
-                    }, this.animateWaitTime);
+                    }, annotationHandler.animateWaitTime);
                 };
 
             }
@@ -73,7 +74,7 @@ var AnnotoolsOpenSeadragonHandler = new Class({
                     onHomeRelease(args);
                     setTimeout(function() {
                         resetViewer();
-                    }, this.animateWaitTime);
+                    }, annotationHandler.animateWaitTime);
                 };
             }
 
@@ -85,6 +86,7 @@ var AnnotoolsOpenSeadragonHandler = new Class({
 
     resetViewer: function() {
 
+          console.log("resetViewer");
           $('#originpt').attr('cx',viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(.5,.5)).x);
           $('#originpt').attr('cy',viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(.5,.5)).y);
               
@@ -126,10 +128,11 @@ var AnnotoolsOpenSeadragonHandler = new Class({
               } 
 
               var div    = $('div.annotcontainer')[i];
-              div.style.left   = newLocation.x-(bbox.width/2)*scale + "px";
-              div.style.top    = newLocation.y-(bbox.height/2)*scale + "px";
-              div.style.width  = (bbox.width)*scale + "px";
-              div.style.height = (bbox.height)*scale + "px";
+              var originalDivBBox = annotationHandler.originalDivCoords[i];
+              div.style.left   = originalDivBBox.x + "px";
+              div.style.top    = originalDivBBox.y + "px";
+              div.style.width  = originalDivBBox.width + "px";
+              div.style.height = originalDivBBox.height + "px";
     
           }
 
@@ -137,6 +140,7 @@ var AnnotoolsOpenSeadragonHandler = new Class({
 
     handleZoomIn: function() {
 
+          console.log("handleZoomIn");
           var center = viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(.5,.5));
           if (annotationHandler.lastCenter.x != center.x || annotationHandler.lastCenter.y != center.y) {
               scale  = 1.2;
@@ -152,7 +156,6 @@ var AnnotoolsOpenSeadragonHandler = new Class({
                   var object = $('#viewport').children()[i];
                   //var centerPt = $('#center')[0];
                   var bbox = object.getBBox();
-                  console.log("handleZoomIn: " + bbox.width);
       
                   var newLocation = viewer.viewport.pixelFromPoint(annotationHandler.objectCenterPts[i]);
       
@@ -209,6 +212,7 @@ var AnnotoolsOpenSeadragonHandler = new Class({
     handleZoomOut: function() {
 
           var center = viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(.5,.5));
+          console.log("handleZoomOut");
           if (annotationHandler.lastCenter.x != center.x || annotationHandler.lastCenter.y != center.y) {
               scale  = 1/1.2;
               annotationHandler.zoom--;
@@ -223,7 +227,6 @@ var AnnotoolsOpenSeadragonHandler = new Class({
                   var object = $('#viewport').children()[i];
                   //var centerPt = $('#center')[0];
                   var bbox = object.getBBox();
-                  console.log("handleZoomOut: " + bbox.width);
       
                   var newLocation = viewer.viewport.pixelFromPoint(annotationHandler.objectCenterPts[i]);
       
@@ -292,7 +295,8 @@ var AnnotoolsOpenSeadragonHandler = new Class({
     },
 
     handleMouseUp: function(evt) {
-      console.log(evt.target.tagName);
+
+      console.log("handleMouseUp: " + evt.target.tagName);
       //if (evt.target.tagName.toLowerCase() == "button" || evt.target.tagName.toLowerCase() == "div") return;
           if(evt.preventDefault)
               evt.preventDefault();
@@ -374,8 +378,8 @@ var AnnotoolsOpenSeadragonHandler = new Class({
 
     handleMouseDown: function(evt) {
 
-      console.log(evt.target.tagName);
       if (evt.target.tagName.toLowerCase() == "button" || evt.target.tagName.toLowerCase() == "div") return;
+      console.log("handleMouseDown: " + evt.target.tagName);
       if(evt.preventDefault)
           evt.preventDefault();
       this.state = 'pan';
