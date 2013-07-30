@@ -25,7 +25,7 @@ var AnnotoolsOpenSeadragonHandler = new Class({
         this.originalDivCoords = [];
         this.zoom = 1;
 
-        this.animateWaitTime = options.animateWaitTime || 80;
+        this.animateWaitTime = options.animateWaitTime || 300;
 
         this._setupOpenSeadragonButtonHandlers();
 
@@ -47,9 +47,11 @@ var AnnotoolsOpenSeadragonHandler = new Class({
                 var zoomIn = this.handleZoomIn; 
                 button.events.onRelease[0] = function(args){
 
+                    $('svg')[0].setStyle('opacity', 0);
                     onZoomInRelease(args);
                     setTimeout(function() {
                         zoomIn();
+                        $('svg')[0].setStyle('opacity', 1);
                     }, annotationHandler.animateWaitTime);
                 };
 
@@ -59,9 +61,11 @@ var AnnotoolsOpenSeadragonHandler = new Class({
                 var zoomOut = this.handleZoomOut; 
                 button.events.onRelease[0] = function(args){
 
+                    $('svg')[0].setStyle('opacity', 0);
                     onZoomOutRelease(args);
                     setTimeout(function() {
                         zoomOut();
+                        $('svg')[0].setStyle('opacity', 1);
                     }, annotationHandler.animateWaitTime);
                 };
 
@@ -71,9 +75,11 @@ var AnnotoolsOpenSeadragonHandler = new Class({
                 var onHomeRelease = button.events.onRelease[0];
                 button.events.onRelease[0] = function(args){
 
+                    $('svg')[0].setStyle('opacity', 0);
                     onHomeRelease(args);
                     setTimeout(function() {
                         resetViewer();
+                        $('svg')[0].setStyle('opacity', 1);
                     }, annotationHandler.animateWaitTime);
                 };
             }
@@ -285,7 +291,8 @@ var AnnotoolsOpenSeadragonHandler = new Class({
           evt.preventDefault();
     
       if (this.state == 'pan') {
-          $('svg')[0].hide(); 
+          //$('svg')[0].hide(); 
+          $('svg')[0].setStyle('opacity', 0);
           var pixel = OpenSeadragon.getMousePosition(evt).minus
               (OpenSeadragon.getElementPosition(viewer.element));
           var point = viewer.viewport.pointFromPixel(pixel);
@@ -296,8 +303,12 @@ var AnnotoolsOpenSeadragonHandler = new Class({
 
     handleMouseUp: function(evt) {
 
-      console.log("handleMouseUp: " + evt.target.tagName);
-      //if (evt.target.tagName.toLowerCase() == "button" || evt.target.tagName.toLowerCase() == "div") return;
+      if (evt.target.tagName.toLowerCase() == "button" || evt.target.tagName.toLowerCase() == "div") {
+        
+        console.log("handleMouseUp: " + evt.target.tagName);
+        //return;
+            
+      }
           if(evt.preventDefault)
               evt.preventDefault();
     
@@ -314,9 +325,9 @@ var AnnotoolsOpenSeadragonHandler = new Class({
               if (diff.x == 0 && diff.y == 0) {
 
                     setTimeout(function() {
-                        $('svg')[0].show(); 
                         annotationHandler.handleZoomIn();
-                    }, 25);
+                        $('svg')[0].setStyle('opacity', 1);
+                    }, annotationHandler.animateWaitTime);
 
               }
               else {
@@ -326,7 +337,8 @@ var AnnotoolsOpenSeadragonHandler = new Class({
                 $('#originpt').attr('cy',
                         viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(.5,.5)).y);
     
-                $('svg')[0].show(); 
+                //$('svg')[0].show(); 
+                $('svg')[0].setStyle('opacity', 1);
                 for (var i = 0; i < $('#viewport').children().length; i++) { 
     
                     var object = $('#viewport').children()[i];
@@ -378,15 +390,18 @@ var AnnotoolsOpenSeadragonHandler = new Class({
 
     handleMouseDown: function(evt) {
 
-      if (evt.target.tagName.toLowerCase() == "button" || evt.target.tagName.toLowerCase() == "div") return;
-      console.log("handleMouseDown: " + evt.target.tagName);
+      if (evt.target.tagName.toLowerCase() == "button" || evt.target.tagName.toLowerCase() == "div") {
+        console.log("handleMouseDown: " + evt.target.tagName);
+        //return;
+      }
       if(evt.preventDefault)
           evt.preventDefault();
       this.state = 'pan';
       var pixel = OpenSeadragon.getMousePosition(evt).minus
           (OpenSeadragon.getElementPosition(viewer.element));
     
-      $('svg')[0].hide(); 
+      //$('svg')[0].hide(); 
+      $('svg')[0].setStyle('opacity', 0);
       this.stateOrigin = pixel;
 
 
@@ -413,6 +428,7 @@ var AnnotoolsOpenSeadragonHandler = new Class({
               console.log("zoom out: " +  scale);
               annotationHandler.zoom--;
           }
+          $('svg')[0].setStyle('opacity', 0);
     
           var centerPt =
               viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(.5,.5)); 
@@ -484,6 +500,9 @@ var AnnotoolsOpenSeadragonHandler = new Class({
           }
     
       } 
+      setTimeout(function() {
+        $('svg')[0].setStyle('opacity', 1);
+      }, annotationHandler.animateWaitTime);
       annotationHandler.lastCenter = center; 
 
 

@@ -388,7 +388,7 @@ var annotools = new Class({
                                 color: this.color
                             };
                             this.addnewAnnot(newAnnot);
-                            viewer.viewport.zoomTo(1);
+                            //viewer.viewport.zoomTo(1);
                             //this.drawMarkups();
                             this.getAnnot();
                         } else {
@@ -467,7 +467,7 @@ var annotools = new Class({
                             this.addnewAnnot(newAnnot);
                             //this.drawMarkups();
                             //viewer.viewport.goHome();
-                            viewer.viewport.zoomTo(1);
+                            //viewer.viewport.zoomTo(1);
                             this.getAnnot();
                         } else {
                             ctx.clearRect(0, 0, this.drawCanvas.width, this.drawCanvas.height);
@@ -547,7 +547,7 @@ var annotools = new Class({
                             };
                             this.addnewAnnot(newAnnot);
                             //this.drawMarkups();
-                            viewer.viewport.zoomTo(1);
+                            //viewer.viewport.zoomTo(1);
                             this.getAnnot();
                         } else {
                             ctx.clearRect(0, 0, this.drawCanvas.width, this.drawCanvas.height);
@@ -623,7 +623,7 @@ var annotools = new Class({
                             };
                             this.addnewAnnot(newAnnot);
                             //this.drawMarkups();
-                            viewer.viewport.zoomTo(1);
+                            //viewer.viewport.zoomTo(1);
                             this.getAnnot();
                         } else {
                             ctx.clearRect(0, 0, this.drawCanvas.width, this.drawCanvas.height);
@@ -715,7 +715,77 @@ var annotools = new Class({
                     }.bind(this));
                     break;
             }
-        } else this.showMessage("Container Not SET Correctly Or Not Fully Loaded Yet");
+        } 
+        else if (this.container) {
+        //else this.showMessage("Container Not SET Correctly Or Not Fully Loaded Yet");
+                       // switch (a[index].type) {
+                        switch (this.mode) {
+                            case "rect":
+                                var x = parseFloat(a[index].x);
+                                var y = parseFloat(a[index].y);
+                                var w = parseFloat(a[index].w);
+                                var h = parseFloat(a[index].h);
+                                var point = viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(x,y));
+
+                                svgHtml += '<rect id="' + index + '" x="' + point.x + '" y="' + point.y + '" width="' + w*width + '" height="' + width*h + '" stroke="' + a[index].color + '" stroke-width="2" fill="none"/>';
+                                break;
+                            case "ellipse":
+                                var cx = parseFloat(a[index].x) + parseFloat(a[index].w) / 2;
+                                var cy = parseFloat(a[index].y) + parseFloat(a[index].h) / 2;
+                                var rx = parseFloat(a[index].w) / 2;
+                                var ry = parseFloat(a[index].h) / 2;
+
+                                var point = viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(cx,cy));
+
+                                svgHtml += '<ellipse id="' + index + '" cx="' + point.x + '" cy="' + point.y + '" rx="' + width* rx + '" ry="' + width * ry + '" style="fill:none;stroke:' + a[index].color + ';stroke-width:2"/>';
+                                break;
+                            case "pencil":
+                                var points = a[index].points;
+                                var poly = String.split(points, ';');
+                                for (var k = 0; k < poly.length; k++) {
+                                    var p = String.split(poly[k], ' ');
+                                    svgHtml += '<polyline id="'+index+'" points="';
+                                    for (var j = 0; j < p.length; j++) {
+                                        point = String.split(p[j], ',');
+
+                                        var polyPt = 
+                                            new OpenSeadragon.Point(
+                                                parseFloat(point[0]),
+                                                parseFloat(point[1])
+                                        );
+                                        var polyPixelPt = viewer.viewport.pixelFromPoint(polyPt);
+
+                                        svgHtml += polyPixelPt.x + ',' + polyPixelPt.y + ' ';
+                                    }
+                                    svgHtml += '" style="fill:none;stroke:' + a[index].color + ';stroke-width:2"/>';
+                                }
+                                break;
+                            case "polyline":
+                                var points = a[index].points;
+                                var poly = String.split(points, ';');
+                                for (var k = 0; k < poly.length; k++) {
+                                    var p = String.split(poly[k], ' ');
+                                    svgHtml += '<polygon id="'+index+ '" points="';
+                                    for (var j = 0; j < p.length; j++) {
+                                        point = String.split(p[j], ',');
+                                        var polyPt = 
+                                            new OpenSeadragon.Point(
+                                                parseFloat(point[0]),
+                                                parseFloat(point[1])
+                                        );
+                                        var polyPixelPt = viewer.viewport.pixelFromPoint(polyPt);
+                                        svgHtml += polyPixelPt.x + ',' + polyPixelPt.y + ' ';
+                                    }
+                                    svgHtml += '" style="fill:none;stroke:' + a[index].color + ';stroke-width:2"/>';
+                                }
+                                break;
+                            case "line":
+                                var points = String.split(a[index].points, ',');
+                                svgHtml += '<line x1="' + a[index].x * width + '" y1="' + a[index].y * height + '" x2="' + parseFloat(points[0]) * width + '" y2="' + parseFloat(points[1]) * height + '" style="stroke:' + a[index].color + ';stroke-width:2"/>';
+                                break;
+                        }
+                }
+                else this.showMessage("Container Not SET Correctly Or Not Fully Loaded Yet");
     },
     magnify: function () //Magnify Tool
     {
@@ -1087,6 +1157,14 @@ var annotools = new Class({
                                 var cy = parseFloat(a[index].y) + parseFloat(a[index].h) / 2;
                                 var rx = parseFloat(a[index].w) / 2;
                                 var ry = parseFloat(a[index].h) / 2;
+                                // SBA handle displaying the drawing when they are already zoomed in
+                                console.log("index: " + index + "  length: " + length);
+                                if (index == (a.length -1) && annotationHandler.zoom > 1) {
+
+                                    rx = rx*(Math.pow(1.2,annotationHandler.zoom));
+                                    ry = ry*(Math.pow(1.2,annotationHandler.zoom));
+
+                                }
 
                                 var point = viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(cx,cy));
 
