@@ -18,7 +18,6 @@ switch ($_SERVER['REQUEST_METHOD'])
 		{
 			$iid=$_GET["iid"];
 			$url = $getUrl . $iid . "&api_key=".$api_key;	
-			
 			$getRequest = new RestRequest($url,'GET');
 			$getRequest->execute();
 			//Figure out how to parse reponse
