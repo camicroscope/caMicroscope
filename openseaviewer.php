@@ -10,33 +10,31 @@ $config = require 'api/config.php';
 
     <title>OpenSeadragon</title>
 
-    <link rel='stylesheet' 
-          type='text/css'
-          media='screen'
-          href='css/style.css'/>
     <link rel="stylesheet" type="text/css" media="all" href="css/annotools.css" />
 
-    <script src="js/openseadragon.js"></script>
+    <script src="js/openseadragon.min.js"></script>
     <script type="text/javascript" src="js/mootools-core-1.4.5-full-nocompat-yc.js"></script>
     <script type="text/javascript" src="js/mootools-more-1.4.0.1-compressed.js"></script>
     <script src="js/jquery.js"></script>
     <script src="js/annotools-openseajax-handler.js"></script>
     <script src="js/annotools.js"></script>
-      <style type="text/css">
-      html, body {
-        margin: 0px;
-        width:100%;
-        height:100%;
-        font-family: Verdana;
-      }
+    <script src="js/MD5.js"></script>
+    <style type="text/css">
+        .openseadragon
+        {
+            height: 100%;
+            min-height: 100%;
+            width: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            margin: 0;
+            padding: 0;
+            background-color: black;
+            border: 1px solid black;
+            color: white;
+        }
 
-      #viewer{
-        width:100%;
-        height:100%;
-        margin-left:auto;
-        margin-right:auto;
-        color: white;   /* for error messages */
-      }
     </style>
 </head>
 
@@ -48,17 +46,27 @@ $config = require 'api/config.php';
 
     </div>
 
-    <div id="viewer" class="openseadragon"></div>
+    <div class="demoarea">
+
+        <div id="viewer" class="openseadragon"></div>
+
+    </div>
 
     <script type="text/javascript">
-    
-      var viewer = new OpenSeadragon.Viewer({ id: "viewer", prefixUrl: "images/" });
+      var annotool = null;
+
+      var viewer = new OpenSeadragon.Viewer(
+          { id: "viewer", 
+            prefixUrl: "images/",
+            zoomPerClick: 1.2
+          });
       viewer.addHandler("open", addOverlays);
 
-      viewer.openDzi("<?php print_r($config['fastcgi_server']); ?>?DeepZoom=<?php print_r($_REQUEST['fileLocation']); ?>");
+      viewer.open("<?php print_r($config['fastcgi_server']); ?>?DeepZoom=<?php print_r($_REQUEST['fileLocation']); ?>");
       function addOverlays() {
         var annotationHandler = new AnnotoolsOpenSeadragonHandler(viewer, {});
-        var annotool=new annotools('tool',{
+        
+        annotool=new annotools('tool',{
             left:'0px',
                 top:'50px',
                 canvas:'openseadragon-canvas',
@@ -66,6 +74,7 @@ $config = require 'api/config.php';
                 viewer: viewer,
                 annotationHandler: annotationHandler 
         });
+        
       }
 
       if (!String.prototype.format) {
@@ -80,10 +89,11 @@ $config = require 'api/config.php';
         };
       }
 
+      
+
      </script>
 
 
 </body>
 </html>
 
-?>
