@@ -23,7 +23,8 @@ var AnnotoolsOpenSeadragonHandler = new Class({
         this.objectCenterPts = {};
         this.originalCoords = [];
         this.originalDivCoords = [];
-        this.zoom = 1;
+        this.zoom = viewer.viewport.getZoom();
+        this.zoomBase = viewer.viewport.getZoom();
 
         this.animateWaitTime = options.animateWaitTime || 300;
 
@@ -70,7 +71,7 @@ var AnnotoolsOpenSeadragonHandler = new Class({
                 };
 
             }
-            else if (button.tooltip.toLowerCase() == "go home") {
+            else if (button.tooltip.toLowerCase() == "go homdfe") {
                 var resetViewer = this.resetViewer; 
                 var onHomeRelease = button.events.onRelease[0];
                 button.events.onRelease[0] = function(args){
@@ -78,7 +79,7 @@ var AnnotoolsOpenSeadragonHandler = new Class({
                     $('svg')[0].setStyle('opacity', 0);
                     onHomeRelease(args);
                     setTimeout(function() {
-                        resetViewer();
+                        annotool.getAnnot();
                         $('svg')[0].setStyle('opacity', 1);
                     }, annotationHandler.animateWaitTime);
                 };
@@ -90,6 +91,11 @@ var AnnotoolsOpenSeadragonHandler = new Class({
 
     }.protect(),
 
+    goHome: function(annot) {
+
+        annot.getAnnot();
+    },
+
     resetViewer: function() {
 
           console.log("resetViewer");
@@ -100,7 +106,7 @@ var AnnotoolsOpenSeadragonHandler = new Class({
           for (var i = 0; i < $('#viewport').children().length; i++) { 
               var object = $('#viewport').children()[i];
               var originalObject = annotationHandler.originalCoords[i];
-      
+              var zoomLevel = viewer.viewport.getZoom(); 
               if (object.tagName == "ellipse") {
     
                   object.setAttribute("rx", originalObject.rx);
@@ -111,8 +117,8 @@ var AnnotoolsOpenSeadragonHandler = new Class({
               } 
               else if (object.tagName == "rect") {
     
-                  object.setAttribute("width", originalObject.width);
-                  object.setAttribute("height", originalObject.height);
+                  object.setAttribute("width", originalObject.width );
+                  object.setAttribute("height", originalObject.height );
                   object.setAttribute("x", originalObject.x);
                   object.setAttribute("y", originalObject.y);
     
@@ -231,14 +237,10 @@ var AnnotoolsOpenSeadragonHandler = new Class({
               for (var i = 0; i < $('#viewport').children().length; i++) { 
     
                   var object = $('#viewport').children()[i];
-                  //var centerPt = $('#center')[0];
                   var bbox = object.getBBox();
       
                   var newLocation = viewer.viewport.pixelFromPoint(annotationHandler.objectCenterPts[i]);
       
-                  //centerPt.setAttribute("cx", newLocation.x);
-                  //centerPt.setAttribute("cy", newLocation.y)
-    
                   if (object.tagName == "ellipse") {
     
                       object.setAttribute("rx", (bbox.width/2)*scale);
@@ -303,10 +305,11 @@ var AnnotoolsOpenSeadragonHandler = new Class({
 
     handleMouseUp: function(evt) {
 
-      if (evt.target.tagName.toLowerCase() == "button" || evt.target.tagName.toLowerCase() == "div") {
+      //if (evt.target.tagName.toLowerCase() == "button" || evt.target.tagName.toLowerCase() == "div") {
+      if (evt.target.tagName.toLowerCase() == "button") {
         
         console.log("handleMouseUp: " + evt.target.tagName);
-        //return;
+        return;
             
       }
           if(evt.preventDefault)
@@ -390,9 +393,10 @@ var AnnotoolsOpenSeadragonHandler = new Class({
 
     handleMouseDown: function(evt) {
 
-      if (evt.target.tagName.toLowerCase() == "button" || evt.target.tagName.toLowerCase() == "div") {
+      //if (evt.target.tagName.toLowerCase() == "button" || evt.target.tagName.toLowerCase() == "div") {
+      if (evt.target.tagName.toLowerCase() == "button") {
         console.log("handleMouseDown: " + evt.target.tagName);
-        //return;
+        return;
       }
       if(evt.preventDefault)
           evt.preventDefault();
@@ -422,10 +426,8 @@ var AnnotoolsOpenSeadragonHandler = new Class({
           if (delta > 0) {
               annotationHandler.zoom++;
               scale  = 1.2;
-              console.log("zoom in: " +  scale);
           } else {
               scale  = 1/1.2;
-              console.log("zoom out: " +  scale);
               annotationHandler.zoom--;
           }
           $('svg')[0].setStyle('opacity', 0);
@@ -440,7 +442,6 @@ var AnnotoolsOpenSeadragonHandler = new Class({
               var object = $('#viewport').children()[i];
               //var centerPt = $('#center')[0];
               var bbox = object.getBBox();
-              console.log("handleMouseWheel: " + bbox.width);
     
               var newLocation = 
                   viewer.viewport.pixelFromPoint(annotationHandler.objectCenterPts[i]);
@@ -468,15 +469,6 @@ var AnnotoolsOpenSeadragonHandler = new Class({
               else {
              
                   var points = String.split(object.getAttribute("points").trim(), ' ');
-                  
-                  //$('#groupcenter')[0].appendChild(makeSVG('ellipse',{
-                          //'cx': newLocation.x, 
-                          //'cy': newLocation.y, 
-                          //'rx':4, 
-                          //'ry':4, 
-                          //'style':'fill:blue;stroke-width:2'}
-                      //)
-                  //);
                   
                   var newLocationRelPt = viewer.viewport.pointFromPixel(newLocation);
                   var distances = annotationHandler.originalCoords[i].distances;
