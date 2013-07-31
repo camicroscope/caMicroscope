@@ -71,20 +71,6 @@ var AnnotoolsOpenSeadragonHandler = new Class({
                 };
 
             }
-            else if (button.tooltip.toLowerCase() == "go homdfe") {
-                var resetViewer = this.resetViewer; 
-                var onHomeRelease = button.events.onRelease[0];
-                button.events.onRelease[0] = function(args){
-
-                    $('svg')[0].setStyle('opacity', 0);
-                    onHomeRelease(args);
-                    setTimeout(function() {
-                        annotool.getAnnot();
-                        $('svg')[0].setStyle('opacity', 1);
-                    }, annotationHandler.animateWaitTime);
-                };
-            }
-
 
 
         }
@@ -94,60 +80,6 @@ var AnnotoolsOpenSeadragonHandler = new Class({
     goHome: function(annot) {
 
         annot.getAnnot();
-    },
-
-    resetViewer: function() {
-
-          console.log("resetViewer");
-          $('#originpt').attr('cx',viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(.5,.5)).x);
-          $('#originpt').attr('cy',viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(.5,.5)).y);
-              
-          annotationHandler.zoom = 1;
-          for (var i = 0; i < $('#viewport').children().length; i++) { 
-              var object = $('#viewport').children()[i];
-              var originalObject = annotationHandler.originalCoords[i];
-              var zoomLevel = viewer.viewport.getZoom(); 
-              if (object.tagName == "ellipse") {
-    
-                  object.setAttribute("rx", originalObject.rx);
-                  object.setAttribute("ry", originalObject.ry);
-                  object.setAttribute("cx", originalObject.cx);
-                  object.setAttribute("cy", originalObject.cy);
-    
-              } 
-              else if (object.tagName == "rect") {
-    
-                  object.setAttribute("width", originalObject.width );
-                  object.setAttribute("height", originalObject.height );
-                  object.setAttribute("x", originalObject.x);
-                  object.setAttribute("y", originalObject.y);
-    
-              }
-              else {
-              
-                  var points = String.split(object.getAttribute("points").trim(), ' ');
-                  var newLocationRelPt = originalObject.center;
-                  var distances = originalObject.distances;
-                  var pointsStr = "";
-                  for (var j = 0; j < distances.length-1; j++) {
-                      var pointPair = distances[j].plus(newLocationRelPt);
-                      var pixelPoint = viewer.viewport.pixelFromPoint(pointPair);
-                      pointsStr += pixelPoint.x + "," + pixelPoint.y + " ";
-    
-                  }
-                  object.setAttribute("points", pointsStr);
-    
-              } 
-
-              var div    = $('div.annotcontainer')[i];
-              var originalDivBBox = annotationHandler.originalDivCoords[i];
-              div.style.left   = originalDivBBox.x + "px";
-              div.style.top    = originalDivBBox.y + "px";
-              div.style.width  = originalDivBBox.width + "px";
-              div.style.height = originalDivBBox.height + "px";
-    
-          }
-
     },
 
     handleZoomIn: function() {
