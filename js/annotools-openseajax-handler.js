@@ -48,10 +48,10 @@ var AnnotoolsOpenSeadragonHandler = new Class({
                 var zoomIn = this.handleZoomIn; 
                 button.events.onRelease[0] = function(args){
 
-                    $('svg')[0].setStyle('opacity', 0);
+                    $('svg')[0].setStyle('opacity', 1);
                     onZoomInRelease(args);
                     setTimeout(function() {
-                        zoomIn();
+                        //zoomIn();
                         $('svg')[0].setStyle('opacity', 1);
                     }, annotationHandler.animateWaitTime);
                 };
@@ -65,7 +65,7 @@ var AnnotoolsOpenSeadragonHandler = new Class({
                     $('svg')[0].setStyle('opacity', 0);
                     onZoomOutRelease(args);
                     setTimeout(function() {
-                        zoomOut();
+                        //zoomOut();
                         $('svg')[0].setStyle('opacity', 1);
                     }, annotationHandler.animateWaitTime);
                 };
@@ -85,7 +85,7 @@ var AnnotoolsOpenSeadragonHandler = new Class({
     handleZoomIn: function() {
 
           console.log("handleZoomIn");
-          var center = viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(.5,.5));
+	  var center = viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(.5,.5));
           if (annotationHandler.lastCenter.x != center.x || annotationHandler.lastCenter.y != center.y) {
               scale  = 1.2;
               annotationHandler.zoom++;
@@ -259,10 +259,10 @@ var AnnotoolsOpenSeadragonHandler = new Class({
               // otherwise we will handle the pan event
               if (diff.x == 0 && diff.y == 0) {
 
-                    setTimeout(function() {
-                        annotationHandler.handleZoomIn();
+      			 // setTimeout(function() {
+       	                 //annotationHandler.handleZoomIn();
                         $('svg')[0].setStyle('opacity', 1);
-                    }, annotationHandler.animateWaitTime);
+       	            // }, annotationHandler.animateWaitTime);
 
               }
               else {

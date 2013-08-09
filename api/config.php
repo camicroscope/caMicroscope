@@ -1,6 +1,6 @@
 <?php 
 
-$url = "localhost:9099";
+$url = "imaging.cci.emory.edu:9099";
 
 return array(
     'auth_realm' => "$url/securityTokenService",
@@ -13,8 +13,7 @@ return array(
 	
     'getImage' => "$url/services/imageData/Images/query/retrieveMaxWidthAndHeight?Colorado_Code=",
 
-    //'fastcgi_server' => "/camic/fastcgi-bin/iipsrv.fcgi"
-    'fastcgi_server' => "/fastcgi-bin/iipsrv.fcgi"
+    'fastcgi_server' => "/camic/fastcgi-bin/iipsrv.fcgi"
 	
     
 );

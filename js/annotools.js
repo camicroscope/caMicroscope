@@ -97,11 +97,13 @@ var annotools = new Class({
             'class': 'toolButton',
             'src': 'images/save.svg'
         }).inject(this.tool); //Save Button
+/* ASHISH - disable quit button
         this.quitbutton = new Element('img', {
             'title': 'quit',
             'class': 'toolButton',
             'src': 'images/quit.svg'
         }).inject(this.tool); //Quit Button
+*/
         this.rectbutton.addEvents({
             'click': function () {
                 this.mode = 'rect';
@@ -153,6 +155,7 @@ var annotools = new Class({
                 this.saveState()
             }.bind(this)
         });
+/* ASHISH Disable quit button
         this.quitbutton.addEvents({
             'click': function () {
                 this.quitMode();
@@ -160,6 +163,7 @@ var annotools = new Class({
             }.bind(this)
         });
         this.quitbutton.hide(); //Quit Button Will Be Used To Return To the Default Mode
+*/
         var toolButtons = document.getElements(".toolButton");
         for (var i = 0; i < toolButtons.length; i++) {
             toolButtons[i].addEvents({
@@ -239,11 +243,13 @@ var annotools = new Class({
                 //press t to toggle tools
                 this.tool.toggle();
                 break;
+/* ASHISH Disable quit
             case 81:
                 //press q to quit current mode and return to the default mode
                 this.quitMode();
                 this.quitbutton.hide();
                 break;
+*/
             case 32:
                 //press white space to toggle annotations
                 this.toggleMarkups();
@@ -287,7 +293,9 @@ var annotools = new Class({
         this.drawCanvas.removeEvents('mousedown');
         this.drawCanvas.removeEvents('mousemove');
         this.drawLayer.show(); //Show The Drawing Layer
+/* ASHISH Disable quit
         this.quitbutton.show(); //Show The Quit Button
+*/
         this.magnifyGlass.hide(); //Hide The Magnifying Tool
         //this.container = document.id(this.canvas); //Get The Canvas Container
         this.container = document.getElementsByClassName(this.canvas)[0]; //Get The Canvas Container
@@ -713,7 +721,9 @@ var annotools = new Class({
     },
     magnify: function () //Magnify Tool
     {
+/* ASHISH Disable quit
         this.quitbutton.show();
+*/
         this.drawLayer.hide();
         this.magnifyGlass.hide();
         this.magnifyGlass.set({
@@ -763,10 +773,12 @@ var annotools = new Class({
                         top: -scale * top
                     }
                 });
-            }.bind(this),
-            onDrop: function (draggable) {
+            }.bind(this)
+/*ASHISH DIsable quit
+            ,onDrop: function (draggable) {
                 this.showMessage("Press q to quit");
             }.bind(this)
+*/
         });
     },
     selectColor: function () //Pick A Color
@@ -897,11 +909,13 @@ var annotools = new Class({
         this.saveAnnot();
         //this.displayAnnot();
     },
+/*ASHISH DIsable quit
     quitMode: function () //Return To the Default Mode
     {
         this.drawLayer.hide();
         this.magnifyGlass.hide();
     },
+*/
     toggleMarkups: function () //Toggle Markups
     {
         if (this.svg) {
@@ -922,7 +936,9 @@ var annotools = new Class({
     },
     showMessage: function (msg) //Show Messages
     {
+/*ASHISH DIsable quit
         if (!(msg)) msg = this.mode + " mode,press q to quit";
+*/
         this.messageBox.set({
             html: msg
         });
@@ -1370,6 +1386,7 @@ var annotools = new Class({
                 'annot': this.annotations
             });
         }
+    	this.displayAnnot();
     },
     saveAnnot: function () //Save Annotations
     {

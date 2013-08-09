@@ -5,7 +5,7 @@ $config = require 'config.php';
 
 $user     = $_REQUEST['username'];
 $password = $_REQUEST['password'];
-
+$password = urlencode($password);
 
 $realm = $config['auth_realm'];
 $request = new HTTP_Request2("http://$user:$password@$realm");

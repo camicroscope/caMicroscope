@@ -58,7 +58,8 @@ $config = require 'api/config.php';
       var viewer = new OpenSeadragon.Viewer(
           { id: "viewer", 
             prefixUrl: "images/",
-            zoomPerClick: 1.2
+            showNavigator:  true,
+	    zoomPerClick: 1
           });
       viewer.addHandler("open", addOverlays);
 
