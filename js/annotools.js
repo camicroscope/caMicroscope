@@ -250,37 +250,37 @@ var annotools = new Class({
                 this.quitbutton.hide();
                 break;
 */
-            case 32:
-                //press white space to toggle annotations
+            case 72:
+                // h to toggle annotations
                 this.toggleMarkups();
                 break;
-            case 49:
-                //1 for rectangle mode
+            case 82:
+                // r for rectangle mode
                 this.mode = 'rect';
                 this.drawMarkups();
                 break;
-            case 50:
-                // 2 for ellipse mode
+            case 67:
+                // c for circle/ellipse mode
                 this.mode = 'ellipse';
                 this.drawMarkups();
                 break;
-            case 51:
-                // 3 for polyline mode
+            case 80:
+                // p for polyline mode
                 this.mode = 'polyline';
                 this.drawMarkups();
                 break;
-            case 52:
-                // 4 for pencil mode
+            case 70:
+                // f for freeline mode
                 this.mode = 'pencil';
                 this.drawMarkups();
                 break;
-            case 53:
-                // 5 for measurement mode
+            case 77:
+                // m for measurement mode
                 this.mode = 'measure';
                 this.drawMarkups();
                 break;
-            case 54:
-                // 6 for magnify mode
+            case 69:
+                // e for enlarge mode
                 this.mode = 'magnify';
                 this.magnify();
                 break;
