@@ -68,8 +68,10 @@ $config = require 'api/config.php';
         var annotationHandler = new AnnotoolsOpenSeadragonHandler(viewer, {});
         
         annotool=new annotools('tool',{
-            left:'0px',
-                top:'50px',
+           left:'150px',
+                top:'0px',
+                height: '30px',
+                width: '270px',
                 canvas:'openseadragon-canvas',
                 iid: '<?php print_r($_REQUEST['iid']); ?>', 
                 viewer: viewer,

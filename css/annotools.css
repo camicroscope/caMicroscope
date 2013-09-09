@@ -1,109 +1,111 @@
 .annotools
-    {
-          margin: 1px;
-	  border: 1px outset #333;
-	  color: #fff;
-	  background: #222;
-	  opacity: 0.85;
-	  font-weight: normal;
-	  padding: 1px;
-	  font-size: 80%;
-	  -moz-border-radius: 0.3em;
-	  -webkit-border-radius: 0.3em;
-	  border-radius: 0.3em;
-	  -moz-box-shadow: 4px 4px 4px rgba(0,0,0,0.75);
-	  -webkit-box-shadow: 4px 4px 4px rgba(0,0,0,0.75);
-	  -o-box-shadow: 4px 4px 4px rgba(0,0,0,0.75);
-	  box-shadow: 4px 4px 4px rgba(0,0,0,0.75);
-	  text-shadow: 0.5px 0.5px 0 grey;
-    }
-    .selected
-    {
-	   background: #fff;
-	   cursor: pointer;
-    }
-    #messageBox
-    {
-	   position:absolute;
-	   width:180px;
-	   left:30%;
-	   top:5%;
-	   margin: 1px;
-	  border: 1px outset #333;
-	  color: #fff;
-	  background: #222;
-	  opacity: 0.85;
-	  font-weight: normal;
-          text-align: center;
-	  padding: 1px;
-	  font-size: 80%;
-	  -moz-border-radius: 0.3em;
-	  -webkit-border-radius: 0.3em;
-	  border-radius: 0.3em;
-	  -moz-box-shadow: 4px 4px 4px rgba(0,0,0,0.75);
-	  -webkit-box-shadow: 4px 4px 4px rgba(0,0,0,0.75);
-	  -o-box-shadow: 4px 4px 4px rgba(0,0,0,0.75);
-	  box-shadow: 4px 4px 4px rgba(0,0,0,0.75);
-	  text-shadow: 0.5px 0.5px 0 grey;
-    }
-    .colorButton
-    {
-	   width:19px;
-           height:19px;
-    }
-    .annotcontainer
-    {
-          z-index:30;
-    }
-    .annotip
-    {
-          width:120px;
-	  margin: 1px;
-	  border: 1px outset #333;
-	  color: #fff;
-	  background: #222;
-	  opacity: 0.70;
-	  font-weight: normal;
-          text-align: center;
-	  padding: 1px;
-	  font-size: 80%;
-	  -moz-border-radius: 0.3em;
-	  -webkit-border-radius: 0.3em;
-	  border-radius: 0.3em;
-	  -moz-box-shadow: 4px 4px 4px rgba(0,0,0,0.75);
-	  -webkit-box-shadow: 4px 4px 4px rgba(0,0,0,0.75);
-	  -o-box-shadow: 4px 4px 4px rgba(0,0,0,0.75);
-	  box-shadow: 4px 4px 4px rgba(0,0,0,0.75);
-	  text-shadow: 0.5px 0.5px 0 grey;
-    }
-    .edittip
-    {
-          z-index:1000px;
-          width:180px;
-	  margin: 1px;
-	  border: 1px outset #333;
-	  color: #fff;
-	  background: #222;
-	  opacity: 0.70;
-	  font-weight: normal;
-          text-align: center;
-	  padding: 1px;
-	  font-size: 60%;
-	  -moz-border-radius: 0.3em;
-	  -webkit-border-radius: 0.3em;
-	  border-radius: 0.3em;
-	  -moz-box-shadow: 4px 4px 4px rgba(0,0,0,0.75);
-	  -webkit-box-shadow: 4px 4px 4px rgba(0,0,0,0.75);
-	  -o-box-shadow: 4px 4px 4px rgba(0,0,0,0.75);
-	  box-shadow: 4px 4px 4px rgba(0,0,0,0.75);
-	  text-shadow: 0.5px 0.5px 0 grey;
-    }
-    .toolButton
-    {
-          width:19px;
-    }
-    .magnify 
-    {
+{
+	margin: 1px;
+	border: 1px outset #333;
+	color: #fff;
+	background: #222;
+	opacity: 0.85;
+	font-weight: normal;
+	padding: 1px;
+	font-size: 80%;
+	-moz-border-radius: 0.3em;
+	-webkit-border-radius: 0.3em;
+	border-radius: 0.3em;
+	-moz-box-shadow: 4px 4px 4px rgba(0,0,0,0.75);
+	-webkit-box-shadow: 4px 4px 4px rgba(0,0,0,0.75);
+	-o-box-shadow: 4px 4px 4px rgba(0,0,0,0.75);
+	box-shadow: 4px 4px 4px rgba(0,0,0,0.75);
+	text-shadow: 0.5px 0.5px 0 grey;
+}
+.selected
+{
+	background: #fff;
+	-webkit-filter: invert(100%);
+	cursor: pointer;
+}
+
+#messageBox
+{
+	position:absolute;
+	width:180px;
+	left:30%;
+	top:5%;
+	margin: 1px;
+	border: 1px outset #333;
+	color: #fff;
+	background: #222;
+	opacity: 0.85;
+	font-weight: normal;
+	text-align: center;
+	padding: 1px;
+	font-size: 80%;
+	-moz-border-radius: 0.3em;
+	-webkit-border-radius: 0.3em;
+	border-radius: 0.3em;
+	-moz-box-shadow: 4px 4px 4px rgba(0,0,0,0.75);
+	-webkit-box-shadow: 4px 4px 4px rgba(0,0,0,0.75);
+	-o-box-shadow: 4px 4px 4px rgba(0,0,0,0.75);
+	box-shadow: 4px 4px 4px rgba(0,0,0,0.75);
+	text-shadow: 0.5px 0.5px 0 grey;
+}
+.colorButton
+{
+	width:19px;
+	height:19px;
+}
+.annotcontainer
+{
+	z-index:30;
+}
+.annotip
+{
+	width:120px;
+	margin: 1px;
+	border: 1px outset #333;
+	color: #fff;
+	background: #222;
+	opacity: 0.70;
+	font-weight: normal;
+	text-align: center;
+	padding: 1px;
+	font-size: 80%;
+	-moz-border-radius: 0.3em;
+	-webkit-border-radius: 0.3em;
+	border-radius: 0.3em;
+	-moz-box-shadow: 4px 4px 4px rgba(0,0,0,0.75);
+	-webkit-box-shadow: 4px 4px 4px rgba(0,0,0,0.75);
+	-o-box-shadow: 4px 4px 4px rgba(0,0,0,0.75);
+	box-shadow: 4px 4px 4px rgba(0,0,0,0.75);
+	text-shadow: 0.5px 0.5px 0 grey;
+}
+.edittip
+{
+	z-index:1000px;
+	width:180px;
+	margin: 1px;
+	border: 1px outset #333;
+	color: #fff;
+	background: #222;
+	opacity: 0.70;
+	font-weight: normal;
+	text-align: center;
+	padding: 1px;
+	font-size: 60%;
+	-moz-border-radius: 0.3em;
+	-webkit-border-radius: 0.3em;
+	border-radius: 0.3em;
+	-moz-box-shadow: 4px 4px 4px rgba(0,0,0,0.75);
+	-webkit-box-shadow: 4px 4px 4px rgba(0,0,0,0.75);
+	-o-box-shadow: 4px 4px 4px rgba(0,0,0,0.75);
+	box-shadow: 4px 4px 4px rgba(0,0,0,0.75);
+	text-shadow: 0.5px 0.5px 0 grey;
+}
+.toolButton
+{
+	width:30px;
+}
+.magnify 
+{
 	width: 200px;
 	height: 200px;
 	position: absolute;
@@ -116,10 +118,10 @@
 	border: 1px solid white;
 	background-color: white;
 	z-index: 1000;
-    }
+}
 
-    .magnify .magnified_content 
-    {
+.magnify .magnified_content 
+{
 	top: 0px;
 	left: 0px;
 	margin-left: -100px; /* Half glass width */
@@ -142,4 +144,4 @@
 	user-select: none;
 	-moz-user-select: none;
 	-webkit-user-select: none;
-     }
+}

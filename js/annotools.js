@@ -18,8 +18,8 @@ var annotools = new Class({
         this.maxHeight = options.maxHeight || 800; ////MaxHeight of the Image
         this.top = options.top || '0px';
         this.color = options.color || 'lime'; //Default Annotation Color
-        this.height = options.height || '20px';
-        this.width = options.width || '200px';
+        this.height = options.height || '30px';
+        this.width = options.width || '270px';
         this.zindex = options.zindex || '100'; //To Make Sure The Tool Appears in the Front
         this.canvas = options.canvas; //The canvas Element that The Use will be drawing annotatoins on.
         this.iid = options.iid || null; //The Image ID
@@ -51,7 +51,7 @@ var annotools = new Class({
             'z-index': this.zindex
         });
         this.tool.addClass('annotools'); //Update Styles
-        this.tool.makeDraggable(); //Make it Draggable.
+        //this.tool.makeDraggable(); //Make it Draggable.
         this.rectbutton = new Element('img', {
             'title': 'rectangle',
             'class': 'toolButton',
