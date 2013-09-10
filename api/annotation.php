@@ -19,8 +19,7 @@ switch ($_SERVER['REQUEST_METHOD'])
 			$iid=$_GET["iid"];
 			$maxWidth=$_GET["maxWidth"];
 			$maxHeight=$_GET["maxHeight"];
-			$url = $getUrl . $iid . "&api_key=".$api_key;	
-			
+			$url = $getUrl . $iid . "&username=" . $_SESSION['username'] . "&api_key=".$api_key;	
 			/*
 			$request = new HTTP_Request2($getUrl,
                              HTTP_Request2::METHOD_GET, array('use_brackets' => true));
@@ -93,7 +92,8 @@ switch ($_SERVER['REQUEST_METHOD'])
 		//$url = 'http://localhost:9099/services/annotations/Annotations/submit/singleInput';
 		$count = count($annotationList);
 		$newestAnnot = $annotationList[$count-1];
-		if($newestAnnot['type'] == 'rect'||$newestAnnot['type'] == 'ellipse')
+		$newestAnnot["username"] = $_SESSION['username'];
+	    	if($newestAnnot['type'] == 'rect'||$newestAnnot['type'] == 'ellipse')
 		{
 			$x = $newestAnnot['x'];
 			$y = $newestAnnot['y'];

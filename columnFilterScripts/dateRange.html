@@ -1,0 +1,843 @@
+﻿ <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html><head>
+
+	
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<link rel="shortcut icon" type="image/ico" href="http://www.sprymedia.co.uk/media/images/favicon.ico">
+		
+		<title>Using DataTable with column filter plugin - Customize Filters</title>
+		<style type="text/css" title="currentStyle">
+			@import "media/css/demo_page.css";
+			@import "media/css/demo_table.css";
+			@import "media/css/themes/base/jquery-ui.css";
+			@import "media/css/themes/smoothness/jquery-ui-1.7.2.custom.css";
+		</style>
+
+        <script src="media/js/jquery-1.4.4.min.js" type="text/javascript"></script>
+        <script src="media/js/jquery.dataTables.min.js" type="text/javascript"></script>
+
+        <script src="media/js/jquery-ui.js" type="text/javascript"></script>
+
+        <script src="media/js/jquery.dataTables.columnFilter.js" type="text/javascript"></script>
+
+		<script type="text/javascript">
+$(document).ready(function(){
+                $.datepicker.regional[""].dateFormat = 'dd/mm/yy';
+                $.datepicker.setDefaults($.datepicker.regional['']);
+     $('#example').dataTable({
+		"aoColumns": [ 
+			{ "sWidth": "200px" },
+			null,
+			null
+		]
+	} )
+		  .columnFilter({ sPlaceHolder: "head:before",
+			aoColumns: [ { type: "text" },
+				     { type: "date-range", sRangeFormat: "Between {from} and {to} dates" },
+                                     { type: "date-range", sRangeFormat: "Between {from} and {to}"  }
+				]
+
+		});
+});
+
+		</script>
+        <script type="text/javascript">
+
+            var _gaq = _gaq || [];
+            _gaq.push(['_setAccount', 'UA-17838786-4']);
+            _gaq.push(['_trackPageview']);
+
+            (function () {
+                var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+                ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+                var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+            })();
+
+</script>
+	</head>
+
+
+
+
+<body id="dt_example">
+		<div id="container">
+			<a href="index.html">Home</a>
+			<a href="http://code.google.com/p/jquery-datatables-column-filter/wiki/ColumnFilter">Wiki</a> 
+			<div class="full_width big">
+
+				JQuery DataTable Column Filter - Date Range filters
+			</div>
+			
+			<h1>Preamble</h1>
+			<p>
+				DataTables Column Filter add-on enables you to add date range filters where you can filter columns by start and end dates.
+			</p>
+
+			
+	
+			
+			
+			<h1>Live example</h1>
+
+
+
+
+
+
+
+			<div id="demo">
+ <table id="example" class="display">
+                    <thead>
+                        <tr>
+                            <th style="width:150px">Company name</th>
+                            
+                            <th style="width:350px">Date Created</th>
+                            <th style="width:250px">Date Updated</th>
+
+                        </tr>
+                        <tr>
+                            <th>Company name</th>
+                            
+                            <th>Date Created</th>
+                            <th>Date Updated</th>
+                        </tr>
+                    </thead>
+
+                    <tbody> 
+                        <tr>
+                            <td>Emkay Entertainments</td>
+                            
+                            <td>28/05/2011</td>
+                            <td>25/08/2011 00:00:00</td>
+                        </tr>
+                        <tr>
+                            <td>The Empire</td>
+
+                            
+                            <td>16/06/2011</td>
+                            <td>10/07/2011 00:00:00</td>
+                        </tr>
+                        <tr>
+                            <td>Asadul Ltd</td>
+                            
+                            <td>13/07/2011</td>
+                            <td>12/09/2011 00:00:00</td>
+
+                        </tr>
+                        <tr>
+                            <td>Gargamel ltd</td>
+                            
+                            <td>15/05/2011</td>
+                            <td>15/05/2011 00:00:00</td>
+                        </tr>
+                        <tr>
+
+                            <td>Ashley Mark</td>
+                            
+                            <td>15/07/2011</td>
+                            <td>25/08/2011 00:00:00</td>
+                        </tr>
+                        <tr>
+                            <td>MuchMoreMusic Studios</td>
+                            
+                            <td>02/07/2011</td>
+
+                            <td>24/09/2011 00:00:00</td>
+                        </tr>
+                        <tr>
+                            <td>Victoria Music Ltd</td>
+                            
+                            <td>21/07/2011</td>
+                            <td>19/08/2011 00:00:00</td>
+                        </tr>
+
+                        <tr>
+                            <td>Abacus Agent</td>
+                            
+                            <td>08/06/2011</td>
+                            <td>23/08/2011 00:00:00</td>
+                        </tr>
+                        <tr>
+                            <td>Atomic</td>
+
+                            
+                            <td>09/06/2011</td>
+                            <td>04/07/2011 00:00:00</td>
+                        </tr>
+                        <tr>
+                            <td>Pyramid Posters</td>
+                            
+                            <td>30/07/2011</td>
+                            <td>14/10/2011 00:00:00</td>
+
+                        </tr>
+                        <tr>
+                            <td>Kingston Smith Ltd</td>
+                            
+                            <td>06/08/2011</td>
+                            <td>04/09/2011 00:00:00</td>
+                        </tr>
+                        <tr>
+
+                            <td>Garrett Axford PR</td>
+                            
+                            <td>06/07/2011</td>
+                            <td>28/09/2011 00:00:00</td>
+                        </tr>
+                        <tr>
+                            <td>Derek Boulton Management</td>
+                            
+                            <td>12/08/2011</td>
+
+                            <td>22/09/2011 00:00:00</td>
+                        </tr>
+                        <tr>
+                            <td>(TCM)</td>
+                            
+                            <td>15/05/2011</td>
+                            <td>15/05/2011 00:00:00</td>
+                        </tr>
+
+                        <tr>
+                            <td>Billy Russell Management</td>
+                            
+                            <td>14/08/2011</td>
+                            <td>14/10/2011 00:00:00</td>
+                        </tr>
+                        <tr>
+                            <td>Stage Audio Services</td>
+
+                            
+                            <td>22/07/2011</td>
+                            <td>15/08/2011 00:00:00</td>
+                        </tr>
+                        <tr>
+                            <td>Windsong International</td>
+                            
+                            <td>21/06/2011</td>
+                            <td>18/09/2011 00:00:00</td>
+
+                        </tr>
+                        <tr>
+                            <td>Vivante Music Ltd</td>
+                            
+                            <td>19/05/2011</td>
+                            <td>14/07/2011 00:00:00</td>
+                        </tr>
+                        <tr>
+
+                            <td>Way to Blue</td>
+                            
+                            <td>29/07/2011</td>
+                            <td>23/08/2011 00:00:00</td>
+                        </tr>
+                        <tr>
+                            <td>Glasgow City Halls</td>
+                            
+                            <td>10/07/2011</td>
+
+                            <td>14/10/2011 00:00:00</td>
+                        </tr>
+                        <tr>
+                            <td>The List</td>
+                            
+                            <td>07/07/2011</td>
+                            <td>14/09/2011 00:00:00</td>
+                        </tr>
+
+                        <tr>
+                            <td>Wilkinson Turner King</td>
+                            
+                            <td>26/07/2011</td>
+                            <td>08/09/2011 00:00:00</td>
+                        </tr>
+                        <tr>
+                            <td>GSC Solicitors</td>
+
+                            
+                            <td>03/06/2011</td>
+                            <td>24/06/2011 00:00:00</td>
+                        </tr>
+                        <tr>
+                            <td>Vanessa Music Co</td>
+                            
+                            <td>15/05/2011</td>
+                            <td>15/05/2011 00:00:00</td>
+
+                        </tr>
+                        <tr>
+                            <td>Regent Records</td>
+                            
+                            <td>05/06/2011</td>
+                            <td>25/08/2011 00:00:00</td>
+                        </tr>
+                        <tr>
+
+                            <td>BBC Radio Lancashire</td>
+                            
+                            <td>11/08/2011</td>
+                            <td>14/10/2011 00:00:00</td>
+                        </tr>
+                        <tr>
+                            <td>The Citadel Arts Centre</td>
+                            
+                            <td>22/05/2011</td>
+
+                            <td>10/07/2011 00:00:00</td>
+                        </tr>
+                        <tr>
+                            <td>Villa Audio Ltd</td>
+                            
+                            <td>07/08/2011</td>
+                            <td>12/09/2011 00:00:00</td>
+                        </tr>
+
+                        <tr>
+                            <td>Astra travel</td>
+                            
+                            <td>09/06/2011</td>
+                            <td>04/07/2011 00:00:00</td>
+                        </tr>
+                        <tr>
+                            <td>Idle Eyes Printshop</td>
+
+                            
+                            <td>20/06/2011</td>
+                            <td>06/07/2011 00:00:00</td>
+                        </tr>
+                        <tr>
+                            <td>Miggins Music (UK)</td>
+                            
+                            <td>07/06/2011</td>
+                            <td>16/06/2011 00:00:00</td>
+
+                        </tr>
+                        <tr>
+                            <td>Magic 999</td>
+                            
+                            <td>15/08/2011</td>
+                            <td>19/08/2011 00:00:00</td>
+                        </tr>
+                        <tr>
+
+                            <td>Delga Group</td>
+                            
+                            <td>03/07/2011</td>
+                            <td>04/07/2011 00:00:00</td>
+                        </tr>
+                        <tr>
+                            <td>Zane Music</td>
+                            
+                            <td>15/05/2011</td>
+
+                            <td>15/05/2011 00:00:00</td>
+                        </tr>
+                        <tr>
+                            <td>Universal Music</td>
+                            
+                            <td>05/07/2011</td>
+                            <td>06/07/2011 00:00:00</td>
+                        </tr>
+
+                        <tr>
+                            <td>Gotham Records</td>
+                            
+                            <td>23/05/2011</td>
+                            <td>27/05/2011 00:00:00</td>
+                        </tr>
+                        <tr>
+                            <td>Timbuktu Music Ltd</td>
+
+                            
+                            <td>31/07/2011</td>
+                            <td>09/08/2011 00:00:00</td>
+                        </tr>
+                        <tr>
+                            <td>Online Music</td>
+                            
+                            <td>18/07/2011</td>
+                            <td>03/08/2011 00:00:00</td>
+
+                        </tr>
+                        <tr>
+                            <td>Irish Music Magazine</td>
+                            
+                            <td>29/07/2011</td>
+                            <td>23/08/2011 00:00:00</td>
+                        </tr>
+                        <tr>
+
+                            <td>Savoy Records</td>
+                            
+                            <td>31/05/2011</td>
+                            <td>06/07/2011 00:00:00</td>
+                        </tr>
+                        <tr>
+                            <td>Temple Studios</td>
+                            
+                            <td>16/08/2011</td>
+
+                            <td>04/10/2011 00:00:00</td>
+                        </tr>
+                        <tr>
+                            <td>Gravity Shack Studio</td>
+                            
+                            <td>27/05/2011</td>
+                            <td>30/07/2011 00:00:00</td>
+                        </tr>
+
+                        <tr>
+                            <td>Dovehouse Records</td>
+                            
+                            <td>02/08/2011</td>
+                            <td>22/10/2011 00:00:00</td>
+                        </tr>
+                        <tr>
+                            <td>Citysounds Ltd</td>
+
+                            
+                            <td>15/05/2011</td>
+                            <td>15/05/2011 00:00:00</td>
+                        </tr>
+                        <tr>
+                            <td>Revolver Music Publishing</td>
+                            
+                            <td>04/08/2011</td>
+                            <td>25/08/2011 00:00:00</td>
+
+                        </tr>
+                        <tr>
+                            <td>Jug Of Ale</td>
+                            
+                            <td>12/06/2011</td>
+                            <td>26/07/2011 00:00:00</td>
+                        </tr>
+                        <tr>
+
+                            <td>Isles FM 103</td>
+                            
+                            <td>01/07/2011</td>
+                            <td>08/09/2011 00:00:00</td>
+                        </tr>
+                        <tr>
+                            <td>Headscope</td>
+                            
+                            <td>28/06/2011</td>
+
+                            <td>02/10/2011 00:00:00</td>
+                        </tr>
+                        <tr>
+                            <td>Universal Music Ireland</td>
+                            
+                            <td>09/06/2011</td>
+                            <td>04/07/2011 00:00:00</td>
+                        </tr>
+
+                        <tr>
+                            <td>Zander Exports</td>
+                            
+                            <td>19/08/2011</td>
+                            <td>14/10/2011 00:00:00</td>
+                        </tr>
+                        <tr>
+                            <td>Midem (UK)</td>
+
+                            
+                            <td>17/07/2011</td>
+                            <td>14/10/2011 00:00:00</td>
+                        </tr>
+                        <tr>
+                            <td>La Rocka Studios</td>
+                            
+                            <td>16/06/2011</td>
+                            <td>10/07/2011 00:00:00</td>
+
+                        </tr>
+                        <tr>
+                            <td>Warner Home DVD</td>
+                            
+                            <td>24/05/2011</td>
+                            <td>24/07/2011 00:00:00</td>
+                        </tr>
+                        <tr>
+
+                            <td>Music Room</td>
+                            
+                            <td>15/05/2011</td>
+                            <td>15/05/2011 00:00:00</td>
+                        </tr>
+                        <tr>
+                            <td>Blue Planet</td>
+                            
+                            <td>26/05/2011</td>
+
+                            <td>06/07/2011 00:00:00</td>
+                        </tr>
+                        <tr>
+                            <td>Dream 107.7FM</td>
+                            
+                            <td>02/07/2011</td>
+                            <td>24/09/2011 00:00:00</td>
+                        </tr>
+
+                        <tr>
+                            <td>Moneypenny Agency</td>
+                            
+                            <td>01/06/2011</td>
+                            <td>30/06/2011 00:00:00</td>
+                        </tr>
+                        <tr>
+                            <td>Artsun</td>
+
+                            
+                            <td>08/06/2011</td>
+                            <td>23/08/2011 00:00:00</td>
+                        </tr>
+                        <tr>
+                            <td>Clyde 2</td>
+                            
+                            <td>29/07/2011</td>
+                            <td>23/08/2011 00:00:00</td>
+
+                        </tr>
+                        <tr>
+                            <td>9PR</td>
+                            
+                            <td>30/07/2011</td>
+                            <td>14/10/2011 00:00:00</td>
+                        </tr>
+                        <tr>
+
+                            <td>River Studio&#39;s</td>
+                            
+                            <td>17/06/2011</td>
+                            <td>16/07/2011 00:00:00</td>
+                        </tr>
+                        <tr>
+                            <td>Start Entertainments Ltd</td>
+
+                            
+                            <td>06/07/2011</td>
+                            <td>28/09/2011 00:00:00</td>
+                        </tr>
+                        <tr>
+                            <td>Vinyl Tap Mail Order Music</td>
+                            
+                            <td>23/06/2011</td>
+                            <td>03/08/2011 00:00:00</td>
+
+                        </tr>
+                        <tr>
+                            <td>Passion Music</td>
+                            
+                            <td>15/05/2011</td>
+                            <td>15/05/2011 00:00:00</td>
+                        </tr>
+                        <tr>
+
+                            <td>SuperVision Management</td>
+                            
+                            <td>25/06/2011</td>
+                            <td>25/08/2011 00:00:00</td>
+                        </tr>
+                        <tr>
+                            <td>Lite FM</td>
+                            
+                            <td>22/07/2011</td>
+
+                            <td>15/08/2011 00:00:00</td>
+                        </tr>
+                        <tr>
+                            <td>ISIS Duplicating Company</td>
+                            
+                            <td>10/08/2011</td>
+                            <td>07/11/2011 00:00:00</td>
+                        </tr>
+
+                        <tr>
+                            <td>Vanderbeek &amp; Imrie Ltd</td>
+                            
+                            <td>19/05/2011</td>
+                            <td>14/07/2011 00:00:00</td>
+                        </tr>
+                        <tr>
+
+                            <td>Glamorgan University</td>
+                            
+                            <td>09/06/2011</td>
+                            <td>04/07/2011 00:00:00</td>
+                        </tr>
+                        <tr>
+                            <td>Web User</td>
+                            
+                            <td>10/07/2011</td>
+
+                            <td>14/10/2011 00:00:00</td>
+                        </tr>
+                        <tr>
+                            <td>Farnborough Recreation Centre</td>
+                            
+                            <td>18/05/2011</td>
+                            <td>26/07/2011 00:00:00</td>
+                        </tr>
+
+                        <tr>
+                            <td>Robert Owens</td>
+                            
+                            <td>26/07/2011</td>
+                            <td>08/09/2011 00:00:00</td>
+                        </tr>
+                        <tr>
+                            <td>Magick Eye Records</td>
+
+                            
+                            <td>23/07/2011</td>
+                            <td>13/08/2011 00:00:00</td>
+                        </tr>
+                        <tr>
+                            <td>Alexandra Theatre</td>
+                            
+                            <td>15/05/2011</td>
+                            <td>15/05/2011 00:00:00</td>
+
+                        </tr>
+                        <tr>
+                            <td>Keda Records</td>
+                            
+                            <td>25/07/2011</td>
+                            <td>14/10/2011 00:00:00</td>
+                        </tr>
+                        <tr>
+
+                            <td>Independiente Ltd</td>
+                            
+                            <td>11/08/2011</td>
+                            <td>14/10/2011 00:00:00</td>
+                        </tr>
+                        <tr>
+                            <td>Shurwood Management</td>
+                            
+                            <td>11/07/2011</td>
+
+                            <td>29/08/2011 00:00:00</td>
+                        </tr>
+                        <tr>
+                            <td>Fury Records</td>
+                            
+                            <td>07/08/2011</td>
+                            <td>12/09/2011 00:00:00</td>
+                        </tr>
+
+                        <tr>
+                            <td>Northumbria University</td>
+                            
+                            <td>29/07/2011</td>
+                            <td>23/08/2011 00:00:00</td>
+                        </tr>
+                        <tr>
+                            <td>Pop Muzik</td>
+
+                            
+                            <td>20/06/2011</td>
+                            <td>06/07/2011 00:00:00</td>
+                        </tr>
+                        <tr>
+                            <td>Jonsongs Music</td>
+                            
+                            <td>27/07/2011</td>
+                            <td>05/08/2011 00:00:00</td>
+
+                        </tr>
+                        <tr>
+                            <td>Hermana PR</td>
+                            
+                            <td>15/08/2011</td>
+                            <td>19/08/2011 00:00:00</td>
+                        </tr>
+                        <tr>
+
+                            <td>Sugarcane Music</td>
+                            
+                            <td>22/08/2011</td>
+                            <td>23/08/2011 00:00:00</td>
+                        </tr>
+                        <tr>
+                            <td>JFM Records</td>
+                            
+                            <td>15/05/2011</td>
+
+                            <td>15/05/2011 00:00:00</td>
+                        </tr>
+                        <tr>
+                            <td>Black Market Records</td>
+                            
+                            <td>16/05/2011</td>
+                            <td>17/05/2011 00:00:00</td>
+                        </tr>
+
+                        <tr>
+                            <td>Float Your Boat Productions</td>
+                            
+                            <td>23/05/2011</td>
+                            <td>27/05/2011 00:00:00</td>
+                        </tr>
+                        <tr>
+                            <td>Creation Management</td>
+
+                            
+                            <td>11/06/2011</td>
+                            <td>20/06/2011 00:00:00</td>
+                        </tr>
+                        <tr>
+                            <td>Bryter Music</td>
+                            
+                            <td>18/07/2011</td>
+                            <td>03/08/2011 00:00:00</td>
+
+                        </tr>
+                        <tr>
+                            <td>The Headline Agency</td>
+                            
+                            <td>09/06/2011</td>
+                            <td>04/07/2011 00:00:00</td>
+                        </tr>
+                        <tr>
+
+                            <td>MP Promotions</td>
+                            
+                            <td>31/05/2011</td>
+                            <td>06/07/2011 00:00:00</td>
+                        </tr>
+                        <tr>
+                            <td>Modo Production Ltd</td>
+                            
+                            <td>27/06/2011</td>
+
+                            <td>15/08/2011 00:00:00</td>
+                        </tr>
+                        <tr>
+                            <td>Nomadic Music</td>
+                            
+                            <td>27/05/2011</td>
+                            <td>30/07/2011 00:00:00</td>
+                        </tr>
+
+                        <tr>
+                            <td>Reverb Records Ltd</td>
+                            
+                            <td>13/06/2011</td>
+                            <td>02/09/2011 00:00:00</td>
+                        </tr>
+                        <tr>
+                            <td>SIBC</td>
+
+                            
+                            <td>15/05/2011</td>
+                            <td>15/05/2011 00:00:00</td>
+                        </tr>
+                        <tr>
+                            <td>Marken Time Critical Express</td>
+                            
+                            <td>15/06/2011</td>
+                            <td>06/07/2011 00:00:00</td>
+
+                        </tr>
+                        <tr>
+                            <td>102.2 Smooth FM</td>
+                            
+                            <td>12/06/2011</td>
+                            <td>26/07/2011 00:00:00</td>
+                        </tr>
+                        <tr>
+
+                            <td>Chesterfield Arts Centre</td>
+                            
+                            <td>20/08/2011</td>
+                            <td>28/10/2011 00:00:00</td>
+                        </tr>
+                        <tr>
+                            <td>The National Indoor Arena</td>
+                            
+                            <td>28/06/2011</td>
+
+                            <td>02/10/2011 00:00:00</td>
+                        </tr>
+                        <tr>
+                            <td>Salisbury City Hall</td>
+                            
+                            <td>29/07/2011</td>
+                            <td>23/08/2011 00:00:00</td>
+                        </tr>
+
+                        <tr>
+                            <td>Minder Music</td>
+                            
+                            <td>19/08/2011</td>
+                            <td>14/10/2011 00:00:00</td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+
+                        <tr>
+                            <th>Company name</th>
+                          
+                            <th>Date Created</th>
+                            <th>Date Updated</th>
+                        </tr>
+                    </tfoot>
+                </table>
+
+
+			</div>
+			<div class="spacer"></div>
+
+			
+			
+
+			
+			<h1>Initialization code</h1>
+			<p>In the initialization code you should place "date-range" as type of the column filter as shown below:</p>
+			<pre>		
+$(document).ready(function(){
+     $('#example').dataTable()
+		  .columnFilter({ 	sPlaceHolder: "head:before",
+					aoColumns: [ 	{ type: "text" },
+				    	 		{ type: "date-range" },
+                                    			{ type: "date-range" }
+						]
+
+		});
+});
+	</pre>
+<p>In this example is also placed filters before header row using the sPlaceHolder parameter. In this case you will need to add duplicate heading row after the first heading row in the THEAD tag. In this row will be injected filter controls and it will ba placed before heading row that is used by DataTables.</p>
+		<p>Note that date format of the cells must match the date format of the calendar. Filter uses Jquery Date picker UI regional setting and you can change this in the following code:</p>
+<pre>
+                $.datepicker.regional[""].dateFormat = 'dd/mm/yy';
+                $.datepicker.setDefaults($.datepicker.regional['']);
+</pre>
+
+
+			<h1>Other examples</h1>
+			<ul>
+
+				<li><a href="default.html">Basic usage</a></li>
+				<li><a href="customFilters.html">Custom filters</a></li>
+				<li><a href="dateRange.html">Date ranges</a></li>
+				<li><a href="numberRange.html">Number ranges</a></li>
+				<li><a href="serverSide.html">Server-side filtering</a></li>
+			</ul>
+			
+			<div id="footer" style="text-align:center;">
+				<span style="font-size:10px;">
+					DataTables Column Filter Add-on &copy; Jovan Popovic 2011.<br>
+					DataTables designed and created by <a href="http://www.sprymedia.co.uk">Allan Jardine</a> &copy; 2007-2011<br>
+				</span>
+			</div>
+		</div>
+	</body>
+
+
+
+
+
+</html>

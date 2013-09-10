@@ -5,11 +5,9 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<title>index</title>
-
-		<script charset="utf-8" type="text/javascript" src="js/jquery.js"></script>
-
-		<script charset="utf-8" type="text/javascript" src="js/mootools_and_boostrap.js"></script>
-		<link rel="stylesheet" href="css/bootstrap.css" />
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs    /jquery/1.3.2/jquery.min.js"></script>
+		<script charset="utf-8" type="text/javascript" src="/bootstrap/js/mootools_and_boostrap.js"></script>
+		<link rel="stylesheet" href="/bootstrap/css/bootstrap.css" />
 		<style type="text/css">
 			body {
 				padding-top: 150px;

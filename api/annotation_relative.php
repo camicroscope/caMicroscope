@@ -17,7 +17,7 @@ switch ($_SERVER['REQUEST_METHOD'])
 		if(isset($_GET["iid"]))
 		{
 			$iid=$_GET["iid"];
-			$url = $getUrl . $iid . "&api_key=".$api_key;	
+			$url = $getUrl . $iid . "&username=" . $_SESSION['username'] . "&api_key=".$api_key;	
 			$getRequest = new RestRequest($url,'GET');
 			$getRequest->execute();
 			//Figure out how to parse reponse
@@ -34,6 +34,7 @@ switch ($_SERVER['REQUEST_METHOD'])
 		$url = $postUrl . "?api_key=".$api_key;
 		$count = count($annotationList);
 		$newestAnnot = $annotationList[$count-1];
+		$newestAnnot["username"] = $_SESSION['username'];
 		$postRequest = new RestRequest($url,'POST',json_encode($newestAnnot));
 		$postRequest->execute();
 		echo(json_encode("success"));

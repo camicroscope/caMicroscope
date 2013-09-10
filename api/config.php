@@ -10,8 +10,10 @@ return array(
     'postAnnotation' => "$url/services/annotations/Annotations/submit/singleInput",
 	
     'deleteAnnotation' => "$url/services/annotations/Annotations/delete/deleteById?annotId=",
-	
-    'getImage' => "$url/services/imageData/Images/query/retrieveMaxWidthAndHeight?Colorado_Code=",
+
+    'getDimensions' => "$url/services/TCGABreast/TCGAImageMetaData/query/retrieveMaxWidthAndHeight?TCGAId=",
+
+    'getFileLocation' => "$url/services/TCGABreast/TCGAImageMetaData/query/retrieveFileLocation?api_key=",
 
     'fastcgi_server' => "/camic/fastcgi-bin/iipsrv.fcgi"
 	

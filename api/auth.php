@@ -1,13 +1,10 @@
 <?php session_start();
 
 require_once 'HTTP/Request2.php';
-$config = require 'config.php';
-
 $user     = $_REQUEST['username'];
 $password = $_REQUEST['password'];
 $password = urlencode($password);
-
-$realm = $config['auth_realm'];
+$realm = "imaging.cci.emory.edu:9099/securityTokenService";
 $request = new HTTP_Request2("http://$user:$password@$realm");
 
 try {
@@ -18,7 +15,7 @@ try {
 	$_SESSION['api_key'] = $json_output->api_key;
 	error_log(print_r($json_output->api_key, TRUE)); 
 	error_log(print_r($_SESSION['username'], TRUE)); 
-	header("Location: ../viewer.php?fileLocation=/u01/app/oracle/images/NLSI0000063.tiff&iid=AA00448 0002&username=".$user); 
+	header("Location: ../queryBrowser.html"); 
     } else {
         echo 'Unexpected HTTP status: ' . $response->getStatus() . ' ' .
              $response->getReasonPhrase();

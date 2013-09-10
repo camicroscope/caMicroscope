@@ -22,9 +22,6 @@ class RestRequest
 		$this->acceptType		= 'application/json';
 		$this->responseBody		= null;
 		$this->responseInfo		= null;
-		error_log("***************************");
-		error_log($url);
-		error_log("@@@@@@@@@@@@@@@@@@@@@@@@@@@");
 
 		if ($this->requestBody !== null)
 		{

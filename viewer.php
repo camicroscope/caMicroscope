@@ -35,6 +35,7 @@ else {
 
 	  <script type="text/javascript" src="js/mootools-core-1.4.5-full-nocompat-yc.js"></script>
 	  <script type="text/javascript" src="js/mootools-more-1.4.0.1-compressed.js"></script>
+    
 	  <script type="text/javascript" src="js/iipmooviewer-2.0.js"></script>
 	  <script type="text/javascript" src="js/MD5.js"></script>
 	  <script type="text/javascript" src="js/ImageMetadata.js"></script>
@@ -58,18 +59,21 @@ else {
 		  if( results == null )
 		    return "";
 		  else
-		    return results[1];
-	    }
-
-	    //var image = getURLParameter("fileLocation");
-	    var iid = gup("iid");
-	    var image = "<?php print_r($_REQUEST['fileLocation']); ?>";
-	    //var iid = "<?php print_r($_REQUEST['iid']); ?>";
-	    console.log(iid);
+		      return results[1];
+		}
 	    
-	    var imagedata=new ImageMetadata({imageId:iid});
-	    var MaxDimension = imagedata.MaxDimensions;
-    var annotool=new Annotations('tool',{left:'60px',top:'45px',canvas:'canvas',iid:iid,MaxDimension:MaxDimension});
+
+	    var tissueId = gup("tissueId");
+	    
+	    //var iid = "<?php print_r($_REQUEST['iid']); ?>";
+	    console.log(tissueId);
+	    
+	    var imagedata=new ImageMetadata({imageId:tissueId});
+	    var MaxDimension = imagedata.metaData[0];
+	    var temp = imagedata.metaData[1];
+	    var temp2 = temp[0];
+	    var image = temp2["File Location"];
+    var annotool=new Annotations('tool',{left:'60px',top:'45px',canvas:'canvas',iid:tissueId,MaxDimension:MaxDimension});
     if(gup('maxWidth'))annotool.maxWidth=gup('maxWidth');
     if(gup('maxHeight'))annotool.maxHeight=gup('maxHeight');
     if(gup('ratio'))annotool.ratio=gup('ratio');

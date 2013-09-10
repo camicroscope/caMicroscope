@@ -12,7 +12,7 @@ var IP = '';
 var annotools = new Class({
     initialize: function (element, options) {
         this.source = element; //The Tool Source Element
-        this.left = options.left || '0px'; //The Tool Location
+        this.left = options.left || '150px'; //The Tool Location
         this.ratio = options.ratio || 0.005; //One pixel equals to the length in real situation. Will be used in the measurement tool
         this.maxWidth = options.maxWidth || 4000; //MaxWidth of the Image
         this.maxHeight = options.maxHeight || 800; ////MaxHeight of the Image
@@ -21,7 +21,8 @@ var annotools = new Class({
         this.height = options.height || '30px';
         this.width = options.width || '270px';
         this.zindex = options.zindex || '100'; //To Make Sure The Tool Appears in the Front
-        this.canvas = options.canvas; //The canvas Element that The Use will be drawing annotatoins on.
+        this.iidDecoded = decodeURI(options.iid);
+	this.canvas = options.canvas; //The canvas Element that The Use will be drawing annotatoins on.
         this.iid = options.iid || null; //The Image ID
         this.annotVisible = true; //The Annotations are Set to be visible at the First Loading
         this.mode = 'default'; //The Mode is Set to Default
@@ -53,22 +54,22 @@ var annotools = new Class({
         this.tool.addClass('annotools'); //Update Styles
         //this.tool.makeDraggable(); //Make it Draggable.
         this.rectbutton = new Element('img', {
-            'title': 'rectangle',
+            'title': 'Draw Rectangle (r)',
             'class': 'toolButton',
             'src': 'images/rect.svg'
         }).inject(this.tool); //Create Rectangle Tool
         this.ellipsebutton = new Element('img', {
-            'title': 'ellipse',
+            'title': 'Draw Circle (c)',
             'class': 'toolButton',
             'src': 'images/ellipse.svg'
         }).inject(this.tool); //Ellipse Tool
         this.polybutton = new Element('img', {
-            'title': 'polyline',
+            'title': 'Draw Polygon (p)',
             'class': 'toolButton',
             'src': 'images/poly.svg'
         }).inject(this.tool); //Polygon Tool
         this.pencilbutton = new Element('img', {
-            'title': 'pencil',
+            'title': 'Draw Freeline (f)',
             'class': 'toolButton',
             'src': 'images/pencil.svg'
         }).inject(this.tool); //Pencil Tool
@@ -78,17 +79,17 @@ var annotools = new Class({
             'src': 'images/color.svg'
         }).inject(this.tool); //Select Color
         this.measurebutton = new Element('img', {
-            'title': 'measure',
+            'title': 'Measurement Tool (m)',
             'class': 'toolButton',
             'src': 'images/measure.svg'
         }).inject(this.tool); //Measurement Tool
         this.magnifybutton = new Element('img', {
-            'title': 'magnify',
+            'title': 'Loupe (l)',
             'class': 'toolButton',
             'src': 'images/magnify.svg'
         }).inject(this.tool); //Magnify Tool
         this.hidebutton = new Element('img', {
-            'title': 'hide',
+            'title': 'Toggle Markup (t)',
             'class': 'toolButton',
             'src': 'images/hide.svg'
         }).inject(this.tool); //Show/Hide Button
@@ -251,36 +252,36 @@ var annotools = new Class({
                 break;
 */
             case 72:
-                // h to toggle annotations
+                //press white space to toggle annotations
                 this.toggleMarkups();
                 break;
             case 82:
-                // r for rectangle mode
+                //1 for rectangle mode
                 this.mode = 'rect';
                 this.drawMarkups();
                 break;
             case 67:
-                // c for circle/ellipse mode
+                // 2 for ellipse mode
                 this.mode = 'ellipse';
                 this.drawMarkups();
                 break;
             case 80:
-                // p for polyline mode
+                // 3 for polyline mode
                 this.mode = 'polyline';
                 this.drawMarkups();
                 break;
             case 70:
-                // f for freeline mode
+                // 4 for pencil mode
                 this.mode = 'pencil';
                 this.drawMarkups();
                 break;
             case 77:
-                // m for measurement mode
+                // 5 for measurement mode
                 this.mode = 'measure';
                 this.drawMarkups();
                 break;
             case 69:
-                // e for enlarge mode
+                // 6 for magnify mode
                 this.mode = 'magnify';
                 this.magnify();
                 break;
@@ -903,7 +904,7 @@ var annotools = new Class({
     },
     addnewAnnot: function (newAnnot) //Add New Annotations
     {
-        newAnnot.iid = this.iid;
+        newAnnot.iid = this.iidDecoded;
         newAnnot.annotId = MD5(new Date().toString());
         this.annotations.push(newAnnot);
         this.saveAnnot();

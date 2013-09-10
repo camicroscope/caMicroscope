@@ -1,0 +1,111 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  <head>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+    <script type="text/javascript" language="javascript" src="dataTableScripts/media/js/jquery.js"></script>
+    <script type="text/javascript" language="javascript" src="dataTableScripts/media/js/jquery.dataTables.js"></script>
+    <script type="text/javascript" language="javascript" src="columnFilterScripts/media/js/jquery.dataTables.columnFilter.js"></script>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>caMicroscope</title>
+    <link rel="stylesheet" href="https://app.divshot.com/css/divshot-util.css">
+    <link rel="stylesheet" href="https://app.divshot.com/themes/spacelab/bootstrap.min.css">
+    <link rel="stylesheet" href="https://app.divshot.com/css/bootstrap-responsive.css">
+    <link rel="stylesheet" href="css/csv2Json.css">
+    <!--<script class="jsbin" src="http://datatables.net/download/build/jquery.dataTables.nightly.js"></script>-->
+      <script>
+    	
+		$(document).ready(function() {
+			var queries = window.location.search;
+			$.getJSON("api/dataRetreiver.php" + queries,function(displayData){
+
+     		jsonResult = displayData;     
+		
+		var cameFromServer = {
+		 "sScrollY" : "100%",
+		 "sScrollX" : "250%",
+		 "bJqueryUI" : "true",
+		 "sPaginationType" :"bootstrap",
+		 "sdom" : "<'row'<'span6'l><'span6'f>r>t<'row'<'span6'i><'span6'p>>"};
+		 
+		 cameFromServer.aaData = jsonResult[0];
+		 cameFromServer.aoColumns = jsonResult[2];
+		 cameFromServer.nextTableName = jsonResult[1];
+		 cameFromServer.expectedPropertiesNames = jsonResult[6];
+		 cameFromServer.expectedPropertiesIndices = jsonResult[4];
+		 cameFromServer.urlColumnIndex = jsonResult[3];
+		 $('#tableHeading').text(jsonResult[5]);
+
+		   intializedTable = $('#example').dataTable(cameFromServer);
+		
+		  $.extend( $.fn.dataTableExt.oStdClasses, {
+		      "sWrapper": "dataTables_wrapper form-inline"
+		  } );
+		
+		  var oTable = $('#example').dataTable().columnFilter();
+	//oTable.$("#example tbody tr")
+		  $(oTable.fnGetNodes()).click(function () {
+		      var data = oTable.fnGetPosition(this);
+		      var rowData = oTable.fnGetData(data);
+		      var tissueId = rowData[0];
+		      if(cameFromServer.urlColumnIndex == -1)
+		      {
+			    //$.getJSON("api/retrieveImageLink.php?tissueId=" + tissueId,function(link) {
+				//response = link;
+				//window.open(response);
+				window.open("openseaviewer.php?tissueId=" + tissueId);
+			    //});
+		      }
+		      else
+		    	  {
+		    	  	var url = "tableView?tabletype="+cameFromServer.nextTableName;
+		    	  	if(cameFromServer.expectedPropertiesIndices.length > 0)
+		    	  	{
+		    	  		url += "&";
+		    	  		for(var i = 0; i < cameFromServer.expectedPropertiesIndices.length; i++)
+		    	  		{
+		    	  			url+=cameFromServer.expectedPropertiesNames[i]+"="+rowData[cameFromServer.expectedPropertiesIndices[i]];
+		    	  			if(!(i+1) < cameFromServer.expectedPropertiesIndices.length)
+		    	  				url+="&";
+		    	  		}
+		    	  	}
+				window.open(url,"_self");
+		    	  }
+		        });
+			});
+		} );
+    </script>   
+    <script class="jsbin" src="js/paging.js"></script>
+    <script class="jsbin" src="bootstrap/js/bootstrap.js"></script>
+  </head>
+  <body id="dt_example">
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="#">caMicroscope 2.0b</a>
+          <div class="navbar-content">
+            <ul class="nav  pull-right">
+              <li class="active">
+                <span class="label pull-right label-success" id = "tableHeading">tableHeading</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class = "container">
+      <!-- Start BC -->
+      <ul class="breadcrumb">  
+      	<li>  
+   		 <a href="/DataViewer/">Home</a> <span class="divider">></span>  
+  		</li> 
+		  <!-- Bread Crumb -->
+	  </ul> 
+	  <!-- End BC -->
+      <div class="container">
+        <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered" id="example">
+        	<tfoot></tfoot>
+        </table>
+      </div>
+    </div>
+  </body>
+</html>

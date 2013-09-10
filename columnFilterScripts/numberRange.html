@@ -1,0 +1,725 @@
+﻿ <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html><head>
+
+	
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<link rel="shortcut icon" type="image/ico" href="http://www.sprymedia.co.uk/media/images/favicon.ico">
+		
+		<title>Using DataTable with column filter plugin - Number Range Filters</title>
+		<style type="text/css" title="currentStyle">
+			@import "media/css/demo_page.css";
+			@import "media/css/demo_table.css";
+			@import "media/css/themes/base/jquery-ui.css";
+			@import "media/css/themes/smoothness/jquery-ui-1.7.2.custom.css";
+		</style>
+
+        <script src="media/js/jquery-1.4.4.min.js" type="text/javascript"></script>
+        <script src="media/js/jquery.dataTables.min.js" type="text/javascript"></script>
+
+        <script src="media/js/jquery-ui.js" type="text/javascript"></script>
+
+        <script src="media/js/jquery.dataTables.columnFilter.js" type="text/javascript"></script>
+
+		<script type="text/javascript">
+          $(document).ready(function () {
+                $('#example').dataTable().columnFilter({ sPlaceHolder: "head:after",
+                                                             aoColumns: [
+                                                                         { type: "number-range" },
+                                                                         { type: "text" },
+                                                                         { type: "number-range" }
+                                                                         ]
+                });
+
+            });
+
+		</script>
+        <script type="text/javascript">
+
+            var _gaq = _gaq || [];
+            _gaq.push(['_setAccount', 'UA-17838786-4']);
+            _gaq.push(['_trackPageview']);
+
+            (function () {
+                var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+                ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+                var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+            })();
+
+</script>
+	</head>
+
+
+
+
+<body id="dt_example">
+		<div id="container">
+			<a href="index.html">Home</a>
+			<a href="http://code.google.com/p/jquery-datatables-column-filter/wiki/ColumnFilter">Wiki</a> 
+			<div class="full_width big">
+
+				JQuery DataTable Column Filter - Number Range Filters
+			</div>
+			
+			<h1>Preamble</h1>
+			<p>
+				DataTables Column Filter add-on enables you to add number range filters where you can filter columns by the min and max values.
+			</p>
+
+			
+	
+			
+			
+			<h1>Live example</h1>
+
+
+
+
+
+
+
+			<div id="demo">
+ 
+	
+<table id="example" class="display">
+                    <thead>
+                        <tr>
+                            <th>Company ID</th>
+                            <th>Company name</th>
+                            <th>Number of employees</th>
+
+                        </tr>
+                        <tr>
+                            <th>Company ID</th>
+                            <th>Company name</th>
+                            <th>Number of employees</th>
+                        </tr>
+                    </thead>
+
+                    <tbody> 
+                        <tr>
+                            <td>17</td>
+                            <td>Emkay Entertainments</td>
+                            <td>109</td>
+                        </tr>
+                        <tr>
+                            <td>18</td>
+
+                            <td>The Empire</td>
+                            <td>44</td>
+                        </tr>
+                        <tr>
+                            <td>19</td>
+                            <td>Asadul Ltd</td>
+                            <td>81</td>
+
+                        </tr>
+                        <tr>
+                            <td>20</td>
+                            <td>Gargamel ltd</td>
+                            <td>20</td>
+                        </tr>
+                        <tr>
+
+                            <td>21</td>
+                            <td>Ashley Mark Publishing Company</td>
+                            <td>61</td>
+                        </tr>
+                        <tr>
+                            <td>22</td>
+                            <td>MuchMoreMusic Studios</td>
+
+                            <td>104</td>
+                        </tr>
+                        <tr>
+                            <td>23</td>
+                            <td>Victoria Music Ltd</td>
+                            <td>49</td>
+                        </tr>
+
+                        <tr>
+                            <td>24</td>
+                            <td>Abacus Agent</td>
+                            <td>96</td>
+                        </tr>
+                        <tr>
+                            <td>25</td>
+
+                            <td>Atomic</td>
+                            <td>45</td>
+                        </tr>
+                        <tr>
+                            <td>26</td>
+                            <td>Pyramid Posters</td>
+                            <td>96</td>
+
+                        </tr>
+                        <tr>
+                            <td>27</td>
+                            <td>Kingston Smith Financial Services Ltd</td>
+                            <td>49</td>
+                        </tr>
+                        <tr>
+
+                            <td>28</td>
+                            <td>Garrett Axford PR</td>
+                            <td>104</td>
+                        </tr>
+                        <tr>
+                            <td>29</td>
+                            <td>Derek Boulton Management</td>
+
+                            <td>61</td>
+                        </tr>
+                        <tr>
+                            <td>30</td>
+                            <td>Total Concept Management (TCM)</td>
+                            <td>20</td>
+                        </tr>
+
+                        <tr>
+                            <td>31</td>
+                            <td>Billy Russell Management</td>
+                            <td>81</td>
+                        </tr>
+                        <tr>
+                            <td>32</td>
+
+                            <td>Stage Audio Services</td>
+                            <td>44</td>
+                        </tr>
+                        <tr>
+                            <td>33</td>
+                            <td>Windsong International</td>
+                            <td>109</td>
+
+                        </tr>
+                        <tr>
+                            <td>34</td>
+                            <td>Vivante Music Ltd</td>
+                            <td>76</td>
+                        </tr>
+                        <tr>
+
+                            <td>35</td>
+                            <td>Way to Blue</td>
+                            <td>45</td>
+                        </tr>
+                        <tr>
+                            <td>36</td>
+                            <td>Glasgow City Halls</td>
+
+                            <td>116</td>
+                        </tr>
+                        <tr>
+                            <td>37</td>
+                            <td>The List</td>
+                            <td>89</td>
+                        </tr>
+
+                        <tr>
+                            <td>38</td>
+                            <td>Wilkinson Turner King</td>
+                            <td>64</td>
+                        </tr>
+                        <tr>
+                            <td>39</td>
+
+                            <td>GSC Solicitors</td>
+                            <td>41</td>
+                        </tr>
+                        <tr>
+                            <td>40</td>
+                            <td>Vanessa Music Co</td>
+                            <td>20</td>
+
+                        </tr>
+                        <tr>
+                            <td>41</td>
+                            <td>Regent Records</td>
+                            <td>101</td>
+                        </tr>
+                        <tr>
+
+                            <td>42</td>
+                            <td>BBC Radio Lancashire</td>
+                            <td>84</td>
+                        </tr>
+                        <tr>
+                            <td>43</td>
+                            <td>The Citadel Arts Centre</td>
+
+                            <td>69</td>
+                        </tr>
+                        <tr>
+                            <td>44</td>
+                            <td>Villa Audio Ltd</td>
+                            <td>56</td>
+                        </tr>
+
+                        <tr>
+                            <td>45</td>
+                            <td>Astra travel</td>
+                            <td>45</td>
+                        </tr>
+                        <tr>
+                            <td>46</td>
+
+                            <td>Idle Eyes Printshop</td>
+                            <td>36</td>
+                        </tr>
+                        <tr>
+                            <td>47</td>
+                            <td>Miggins Music (UK)</td>
+                            <td>29</td>
+
+                        </tr>
+                        <tr>
+                            <td>48</td>
+                            <td>Magic 999</td>
+                            <td>24</td>
+                        </tr>
+                        <tr>
+
+                            <td>49</td>
+                            <td>Delga Group</td>
+                            <td>21</td>
+                        </tr>
+                        <tr>
+                            <td>50</td>
+                            <td>Zane Music</td>
+
+                            <td>20</td>
+                        </tr>
+                        <tr>
+                            <td>51</td>
+                            <td>Universal Music Operations</td>
+                            <td>21</td>
+                        </tr>
+
+                        <tr>
+                            <td>52</td>
+                            <td>Gotham Records</td>
+                            <td>24</td>
+                        </tr>
+                        <tr>
+                            <td>53</td>
+
+                            <td>Timbuktu Music Ltd</td>
+                            <td>29</td>
+                        </tr>
+                        <tr>
+                            <td>54</td>
+                            <td>Online Music</td>
+                            <td>36</td>
+
+                        </tr>
+                        <tr>
+                            <td>55</td>
+                            <td>Irish Music Magazine</td>
+                            <td>45</td>
+                        </tr>
+                        <tr>
+
+                            <td>56</td>
+                            <td>Savoy Records</td>
+                            <td>56</td>
+                        </tr>
+                        <tr>
+                            <td>57</td>
+                            <td>Temple Studios</td>
+
+                            <td>69</td>
+                        </tr>
+                        <tr>
+                            <td>58</td>
+                            <td>Gravity Shack Studio</td>
+                            <td>84</td>
+                        </tr>
+
+                        <tr>
+                            <td>59</td>
+                            <td>Dovehouse Records</td>
+                            <td>101</td>
+                        </tr>
+                        <tr>
+                            <td>60</td>
+
+                            <td>Citysounds Ltd</td>
+                            <td>20</td>
+                        </tr>
+                        <tr>
+                            <td>61</td>
+                            <td>Revolver Music Publishing</td>
+                            <td>41</td>
+
+                        </tr>
+                        <tr>
+                            <td>62</td>
+                            <td>Jug Of Ale</td>
+                            <td>64</td>
+                        </tr>
+                        <tr>
+
+                            <td>63</td>
+                            <td>Isles FM 103</td>
+                            <td>89</td>
+                        </tr>
+                        <tr>
+                            <td>64</td>
+                            <td>Headscope</td>
+
+                            <td>116</td>
+                        </tr>
+                        <tr>
+                            <td>65</td>
+                            <td>Universal Music Ireland</td>
+                            <td>45</td>
+                        </tr>
+
+                        <tr>
+                            <td>66</td>
+                            <td>Zander Exports</td>
+                            <td>76</td>
+                        </tr>
+                        <tr>
+                            <td>67</td>
+
+                            <td>Midem (UK)</td>
+                            <td>109</td>
+                        </tr>
+                        <tr>
+                            <td>68</td>
+                            <td>La Rocka Studios</td>
+                            <td>44</td>
+
+                        </tr>
+                        <tr>
+                            <td>69</td>
+                            <td>Warner Home DVD</td>
+                            <td>81</td>
+                        </tr>
+                        <tr>
+
+                            <td>70</td>
+                            <td>Music Room</td>
+                            <td>20</td>
+                        </tr>
+                        <tr>
+                            <td>71</td>
+                            <td>Blue Planet</td>
+
+                            <td>61</td>
+                        </tr>
+                        <tr>
+                            <td>72</td>
+                            <td>Dream 107.7FM</td>
+                            <td>104</td>
+                        </tr>
+
+                        <tr>
+                            <td>73</td>
+                            <td>Moneypenny Agency</td>
+                            <td>49</td>
+                        </tr>
+                        <tr>
+                            <td>74</td>
+
+                            <td>Artsun</td>
+                            <td>96</td>
+                        </tr>
+                        <tr>
+                            <td>75</td>
+                            <td>Clyde 2</td>
+                            <td>45</td>
+
+                        </tr>
+                        <tr>
+                            <td>76</td>
+                            <td>9PR</td>
+                            <td>96</td>
+                        </tr>
+                        <tr>
+
+                            <td>77</td>
+                            <td>River Studio&#39;s</td>
+                            <td>49</td>
+                        </tr>
+                        <tr>
+                            <td>78</td>
+
+                            <td>Start Entertainments Ltd</td>
+                            <td>104</td>
+                        </tr>
+                        <tr>
+                            <td>79</td>
+                            <td>Vinyl Tap Mail Order Music</td>
+                            <td>61</td>
+
+                        </tr>
+                        <tr>
+                            <td>80</td>
+                            <td>Passion Music</td>
+                            <td>20</td>
+                        </tr>
+                        <tr>
+
+                            <td>81</td>
+                            <td>SuperVision Management</td>
+                            <td>81</td>
+                        </tr>
+                        <tr>
+                            <td>82</td>
+                            <td>Lite FM</td>
+
+                            <td>44</td>
+                        </tr>
+                        <tr>
+                            <td>83</td>
+                            <td>ISIS Duplicating Company</td>
+                            <td>109</td>
+                        </tr>
+
+                        <tr>
+                            <td>84</td>
+                            <td>Vanderbeek &amp; Imrie Ltd</td>
+                            <td>76</td>
+                        </tr>
+                        <tr>
+
+                            <td>85</td>
+                            <td>Glamorgan University</td>
+                            <td>45</td>
+                        </tr>
+                        <tr>
+                            <td>86</td>
+                            <td>Web User</td>
+
+                            <td>116</td>
+                        </tr>
+                        <tr>
+                            <td>87</td>
+                            <td>Farnborough Recreation Centre</td>
+                            <td>89</td>
+                        </tr>
+
+                        <tr>
+                            <td>88</td>
+                            <td>Robert Owens/Musical Directions</td>
+                            <td>64</td>
+                        </tr>
+                        <tr>
+                            <td>89</td>
+
+                            <td>Magick Eye Records</td>
+                            <td>41</td>
+                        </tr>
+                        <tr>
+                            <td>90</td>
+                            <td>Alexandra Theatre</td>
+                            <td>20</td>
+
+                        </tr>
+                        <tr>
+                            <td>91</td>
+                            <td>Keda Records</td>
+                            <td>101</td>
+                        </tr>
+                        <tr>
+
+                            <td>92</td>
+                            <td>Independiente Ltd</td>
+                            <td>84</td>
+                        </tr>
+                        <tr>
+                            <td>93</td>
+                            <td>Shurwood Management</td>
+
+                            <td>69</td>
+                        </tr>
+                        <tr>
+                            <td>94</td>
+                            <td>Fury Records</td>
+                            <td>56</td>
+                        </tr>
+
+                        <tr>
+                            <td>95</td>
+                            <td>Northumbria University</td>
+                            <td>45</td>
+                        </tr>
+                        <tr>
+                            <td>96</td>
+
+                            <td>Pop Muzik</td>
+                            <td>36</td>
+                        </tr>
+                        <tr>
+                            <td>97</td>
+                            <td>Jonsongs Music</td>
+                            <td>29</td>
+
+                        </tr>
+                        <tr>
+                            <td>98</td>
+                            <td>Hermana PR</td>
+                            <td>24</td>
+                        </tr>
+                        <tr>
+
+                            <td>99</td>
+                            <td>Sugarcane Music</td>
+                            <td>21</td>
+                        </tr>
+                        <tr>
+                            <td>100</td>
+                            <td>JFM Records</td>
+
+                            <td>20</td>
+                        </tr>
+                        <tr>
+                            <td>101</td>
+                            <td>Black Market Records</td>
+                            <td>21</td>
+                        </tr>
+
+                        <tr>
+                            <td>102</td>
+                            <td>Float Your Boat Productions</td>
+                            <td>24</td>
+                        </tr>
+                        <tr>
+                            <td>103</td>
+
+                            <td>Creation Management</td>
+                            <td>29</td>
+                        </tr>
+                        <tr>
+                            <td>104</td>
+                            <td>Bryter Music</td>
+                            <td>36</td>
+
+                        </tr>
+                        <tr>
+                            <td>105</td>
+                            <td>The Headline Agency</td>
+                            <td>45</td>
+                        </tr>
+                        <tr>
+
+                            <td>106</td>
+                            <td>MP Promotions</td>
+                            <td>56</td>
+                        </tr>
+                        <tr>
+                            <td>107</td>
+                            <td>Modo Production Ltd</td>
+
+                            <td>69</td>
+                        </tr>
+                        <tr>
+                            <td>108</td>
+                            <td>Nomadic Music</td>
+                            <td>84</td>
+                        </tr>
+
+                        <tr>
+                            <td>109</td>
+                            <td>Reverb Records Ltd</td>
+                            <td>101</td>
+                        </tr>
+                        <tr>
+                            <td>110</td>
+
+                            <td>SIBC</td>
+                            <td>20</td>
+                        </tr>
+                        <tr>
+                            <td>111</td>
+                            <td>Marken Time Critical Express</td>
+                            <td>41</td>
+
+                        </tr>
+                        <tr>
+                            <td>112</td>
+                            <td>102.2 Smooth FM</td>
+                            <td>64</td>
+                        </tr>
+                        <tr>
+
+                            <td>113</td>
+                            <td>Chesterfield Arts Centre</td>
+                            <td>89</td>
+                        </tr>
+                        <tr>
+                            <td>114</td>
+                            <td>The National Indoor Arena</td>
+
+                            <td>116</td>
+                        </tr>
+                        <tr>
+                            <td>115</td>
+                            <td>Salisbury City Hall</td>
+                            <td>45</td>
+                        </tr>
+
+                        <tr>
+                            <td>116</td>
+                            <td>Minder Music</td>
+                            <td>76</td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+
+                        <tr>
+                            <th>Company ID</th>
+                            <th>Company name</th>
+                            <th>Number of employees</th>
+                        </tr>
+                    </tfoot>
+                </table>
+
+
+
+			</div>
+			<div class="spacer"></div>
+
+			
+			
+
+			
+			<h1>Initialization code</h1>
+			<p>In the initialization code you should place "number-range" as type of the column filter as shown below:</p>
+			<pre>	
+$('#example').dataTable().columnFilter({ sPlaceHolder: "head:after",
+                                                             aoColumns: [
+                                                                         { type: "number-range" },
+                                                                         { type: "text" },
+                                                                         { type: "number-range" }
+                                                                         ]
+                });
+			</pre>
+	<p>In ths example fiter row injected in the second row of the THEAD section of the table so you will need to manually place this duplicate row.</p>
+			<h1>Other examples</h1>
+			<ul>
+
+				<li><a href="default.html">Basic usage</a></li>
+				<li><a href="customFilters.html">Custom filters</a></li>
+				<li><a href="dateRange.html">Date ranges</a></li>
+				<li><a href="numberRange.html">Number ranges</a></li>
+				<li><a href="serverSide.html">Server-side filtering</a></li>
+			</ul>
+			
+			<div id="footer" style="text-align:center;">
+				<span style="font-size:10px;">
+					DataTables Column Filter Add-on &copy; Jovan Popovic 2011.<br>
+					DataTables designed and created by <a href="http://www.sprymedia.co.uk">Allan Jardine</a> &copy; 2007-2011<br>
+				</span>
+			</div>
+		</div>
+	</body>
+
+
+
+
+
+</html>

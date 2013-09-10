@@ -20,20 +20,20 @@ $config = require 'api/config.php';
     <script src="js/annotools.js"></script>
     <script src="js/MD5.js"></script>
     <style type="text/css">
-    .openseadragon
-    {
-        height: 100%;
-        min-height: 100%;
-        width: 100%;
-        position: absolute;
-        top: 0;
-        left: 0;
-        margin: 0;
-        padding: 0;
-        background-color: black;
-        border: 1px solid black;
-        color: white;
-    }
+        .openseadragon
+        {
+            height: 100%;
+            min-height: 100%;
+            width: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            margin: 0;
+            padding: 0;
+            background-color: black;
+            border: 1px solid black;
+            color: white;
+        }
 
     </style>
 </head>
@@ -41,7 +41,7 @@ $config = require 'api/config.php';
 <body>
 
     <div id="container">
-        
+                
         <div id="tool"></div>
 
     </div>
@@ -53,48 +53,62 @@ $config = require 'api/config.php';
     </div>
 
     <script type="text/javascript">
-    var annotool = null;
+      var annotool = null;
+      var tissueId = <?php echo json_encode($_GET['tissueId']); ?>;
+      var fileLocationUrl = "api/retrieveImageLink.php?tissueId=" + tissueId;
+      var fileLocation;
+      $.ajaxSetup({
+	  async: false
+      });
 
-    var viewer = new OpenSeadragon.Viewer(
-      { id: "viewer", 
-      prefixUrl: "images/",
-      showNavigator:  true,
-      zoomPerClick: 1
-  });
-    viewer.addHandler("open", addOverlays);
+      $.getJSON(fileLocationUrl, function(location)
+	  {
+		fileLocation = location;
+	  });
 
-    viewer.open("<?php print_r($config['fastcgi_server']); ?>?DeepZoom=<?php print_r($_REQUEST['fileLocation']); ?>");
-    function addOverlays() {
+      $.ajaxSetup({
+	  async: true
+      });
+      var viewer = new OpenSeadragon.Viewer(
+          { id: "viewer", 
+            prefixUrl: "images/",
+            showNavigator:  true,
+	    zoomPerClick: 1
+          });
+      viewer.addHandler("open", addOverlays);
+
+      viewer.open("<?php print_r($config['fastcgi_server']); ?>?DeepZoom=" + fileLocation);
+      function addOverlays() {
         var annotationHandler = new AnnotoolsOpenSeadragonHandler(viewer, {});
         
         annotool=new annotools('tool',{
-         left:'150px',
-         top:'0px',
-         height: '30px',
-         width: '270px',
-         canvas:'openseadragon-canvas',
-         iid: '<?php print_r($_REQUEST['iid']); ?>', 
-         viewer: viewer,
-         annotationHandler: annotationHandler 
-     });
+            left:'150px',
+                top:'0px',
+		height: '30px',
+		width: '270px',
+                canvas:'openseadragon-canvas',
+                iid: tissueId, 
+                viewer: viewer,
+                annotationHandler: annotationHandler 
+        });
         
-    }
+      }
 
-    if (!String.prototype.format) {
+      if (!String.prototype.format) {
         String.prototype.format = function() {
             var args = arguments;
             return this.replace(/{(\d+)}/g, function(match, number) { 
-                return typeof args[number] != 'undefined'
+            return typeof args[number] != 'undefined'
                 ? args[number]
                 : match
-                ;
+            ;
             });
         };
-    }
+      }
 
-    
+      
 
-    </script>
+     </script>
 
 
 </body>

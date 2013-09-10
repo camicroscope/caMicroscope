@@ -210,13 +210,6 @@ var Annotations = new Class({
 		w=w/owidth;
 		h=h/oheight;
 
-		alert(
-'X= '+x1.toFixed(2)+ '\tY= '+y1.toFixed(2)+ '\tW='+w1.toFixed(2)+ '\tH='+h1.toFixed(2) + '\n' +
-      
-'x= '+x.toFixed(2) + '\ty= '+y.toFixed(2) + '\tw='+w.toFixed(2) + '\th='+h.toFixed(2) +'\n' +
-'L= '+left.toFixed(2) + '\tOL='+oleft.toFixed(2) + '\tT='+top.toFixed(2) + '\tOT='+otop.toFixed(2) +'\n' +
-'OW='+owidth.toFixed(2)+'\tOH='+oheight.toFixed(2)
-);
 		var tip=prompt("Please Enter Some Descriptions","");
 		if (tip!=null)
 		{
@@ -542,9 +535,9 @@ var Annotations = new Class({
 	},
         addnewAnnot:function(newAnnot)//Add New Annotations
         {
-		var username = document.getElementById('username').value;
-		newAnnot['username'] = username;
-		newAnnot['color'] = 
+	    var username = document.getElementById('username').value;
+	    newAnnot['username'] = username;
+	    newAnnot['color'] = 
 			'#'+(0x1000000+
 				(username.split("").
 					reduce(function(a,b){a=((a<<5)-a)+b.charCodeAt(0);return a&a},0)
