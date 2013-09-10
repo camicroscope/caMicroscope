@@ -73,7 +73,7 @@ else {
 	    var temp = imagedata.metaData[1];
 	    var temp2 = temp[0];
 	    var image = temp2["File Location"];
-    var annotool=new Annotations('tool',{left:'60px',top:'45px',canvas:'canvas',iid:tissueId,MaxDimension:MaxDimension});
+    var annotool=new Annotations('tool',{left:'60px',width: '270px',height:'30px',top:'45px',canvas:'canvas',iid:tissueId,MaxDimension:MaxDimension});
     if(gup('maxWidth'))annotool.maxWidth=gup('maxWidth');
     if(gup('maxHeight'))annotool.maxHeight=gup('maxHeight');
     if(gup('ratio'))annotool.ratio=gup('ratio');
