@@ -211,8 +211,6 @@ var annotools = new Class({
 
     getAnnot: function (viewer) //Get Annotation from the API
     {
-        if (this.iid) //When the database is set. User can refer to the annotation.php for saving the annotations
-        {
             var jsonRequest = new Request.JSON({
                 //url: IP + 'api/annotation_relative.php',
                 url: 'api/annotation_relative.php',
@@ -231,24 +229,6 @@ var annotools = new Class({
             }).get({
                 'iid': this.iid
             });
-        } else //When the database is not set, one TXT file will be used to save the Annotation Data. Please Refer to annot.php in the API folder
-        {
-            var jsonRequest = new Request.JSON({
-                //url: IP + 'api/annot.php',
-                url:  'api/annot.php',
-                onSuccess: function (e) {
-                    var annot = JSON.decode(e);
-                    if (annot == null) annot = new Array();
-                    this.annotations = annot; //Display The Annotations
-                    this.displayAnnot();
-                    this.relativeToGlobal();
-                    this.setupHandlers();
-                }.bind(this),
-                onFailure: function (e) {
-                    this.showMessage("cannot get the annotations,please check your getAnnot funciton");
-                }.bind(this)
-            }).get();
-        }
     },
     
     keyPress: function (code) //Key Down Events Handler
@@ -1375,7 +1355,6 @@ var annotools = new Class({
     },
     updateAnnot: function (annot) //Save Annotations
     {
-        if (this.iid) {
             var jsonRequest = new Request.JSON({
                 url:  'api/updateAnnot.php',
                 onSuccess: function (e) {
@@ -1388,20 +1367,6 @@ var annotools = new Class({
                 'iid': this.iid,
                 'annot': annot
             });
- 
-        } else {
-            var jsonRequest = new Request.JSON({
-                url:  'api/annot.php',
-                onSuccess: function (e) {
-                    this.showMessage("saved to the server");
-                }.bind(this),
-                onFailure: function (e) {
-                    this.showMessage("Error Saving the Annotations,please check you saveAnnot funciton and the api/annot.php function");
-                }.bind(this)
-            }).post({
-                'annot': this.annotations
-            });
-        }
     	this.displayAnnot();
     },
     saveAnnot: function () //Save Annotations
