@@ -1,2 +1,0 @@
-http://imaging.cci.emory.edu:9099/services/annotations/Annotations/query/getAnnotsByID?iid=,http://imaging.cci.emory.edu:9099/services/annotations/Annotations/submit/singleInput,http://imaging.cci.emory.edu:9099/services/annotations/Annotations/delete/deleteById?annotId=,http://imaging.cci.emory.edu:9099/services/imageData/Images/query/retrieveMaxWidthAndHeight?Colorado_Code=,
-
