@@ -11,7 +11,7 @@ return array(
 	
     'deleteAnnotation' => "$url/services/annotations/Annotations/delete/deleteById?annotId=",
 
-    'getDimensions' => "$url/services/TCGABreast/TCGAImageMetaData/query/retrieveMaxWidthAndHeight?TCGAId=",
+    'getDimensions' => "$url/services/TCGABreast/TCGAImageMetaData/query/retrieveMaxWidthAndHeight?api_key=",
 
     'getFileLocation' => "$url/services/TCGABreast/TCGAImageMetaData/query/retrieveFileLocation?api_key=",
 

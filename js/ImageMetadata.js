@@ -8,7 +8,7 @@ var ImageMetadata = new Class({
 	},
 	retrieveImageSize:function()
     	{
-       		var jsonRequest = new Request.JSON({url:Dir + "/api/getDimensions.php",async:false, onSuccess: function(e){
+       		var jsonRequest = new Request.JSON({url: "../api/mooMetadataRetriever.php",async:false, onSuccess: function(e){
 		this.metaData=e;
         	}.bind(this),onFailure:function(e){alert("Failed to get dimension");}.bind(this)}).get({'imageId':this.imageId});
     	}
