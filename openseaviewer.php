@@ -35,6 +35,14 @@ $config = require 'api/config.php';
             color: white;
         }
 
+	.navWindow
+	{
+	    position: absolute;
+            z-index: 10001;
+            right: 0;
+            bottom: 0;
+            border: 1px solid yellow;
+	}
     </style>
 </head>
 
@@ -47,9 +55,7 @@ $config = require 'api/config.php';
     </div>
 
     <div class="demoarea">
-
         <div id="viewer" class="openseadragon"></div>
-
     </div>
 
     <script type="text/javascript">
@@ -72,20 +78,20 @@ $config = require 'api/config.php';
       var viewer = new OpenSeadragon.Viewer(
           { id: "viewer", 
             prefixUrl: "images/",
-            showNavigator:  true,
+            showNavigator:  false,
 	    zoomPerClick: 1
           });
       viewer.addHandler("open", addOverlays);
-
+      viewer.clearControls();
       viewer.open("<?php print_r($config['fastcgi_server']); ?>?DeepZoom=" + fileLocation);
       function addOverlays() {
         var annotationHandler = new AnnotoolsOpenSeadragonHandler(viewer, {});
         
         annotool=new annotools('tool',{
-            left:'150px',
+            left:'0px',
                 top:'0px',
 		height: '30px',
-		width: '270px',
+		width: '100%',
                 canvas:'openseadragon-canvas',
                 iid: tissueId, 
                 viewer: viewer,

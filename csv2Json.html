@@ -43,6 +43,33 @@
 		
 		  var oTable = $('#example').dataTable().columnFilter();
 	//oTable.$("#example tbody tr")
+		  $(oTable.fnGetNodes()).hover(function () {
+		      var data = oTable.fnGetPosition(this);
+		      var rowData = oTable.fnGetData(data);
+		      var tissueId = rowData[0];
+		      var fileLocationUrl = "api/getDimensions.php?imageId=" + tissueId;
+		      var metadata;
+		      $.ajaxSetup({
+			async: false
+		      });
+
+		      $.getJSON(fileLocationUrl, function(location)
+			{
+				metadata = location;
+			});
+
+	    	      $.ajaxSetup({
+			async: true
+		      });
+
+		      var temp = metadata[1];
+		      var temp2 = temp[0];
+	   	      var fileLocation = temp2["File Location"];
+		
+		      var modal_html = "<div style='position: absolute; z-index:10000;'> <img src=" + fileLocation + " style='width: 50px; height: 50px;'/></div>";
+		      
+		      $(this).append(modal_html); 
+		  });
 		  $(oTable.fnGetNodes()).click(function () {
 		      var data = oTable.fnGetPosition(this);
 		      var rowData = oTable.fnGetData(data);

@@ -55,7 +55,7 @@ var annotools = new Class({
         //this.tool.makeDraggable(); //Make it Draggable.
         this.rectbutton = new Element('img', {
             'title': 'Draw Rectangle (r)',
-            'class': 'toolButton',
+            'class': 'toolButton firstToolButtonSpace',
             'src': 'images/rect.svg'
         }).inject(this.tool); //Create Rectangle Tool
         this.ellipsebutton = new Element('img', {
@@ -73,7 +73,7 @@ var annotools = new Class({
             'class': 'toolButton',
             'src': 'images/pencil.svg'
         }).inject(this.tool); //Pencil Tool
-        this.colorbutton = new Element('img', {
+        /*this.colorbutton = new Element('img', {
             'title': 'Change Color',
             'class': 'toolButton',
             'src': 'images/color.svg'
@@ -88,16 +88,30 @@ var annotools = new Class({
             'class': 'toolButton',
             'src': 'images/magnify.svg'
         }).inject(this.tool); //Magnify Tool
-        this.hidebutton = new Element('img', {
+	
+       */ this.hidebutton = new Element('img', {
             'title': 'Toggle Markup (t)',
             'class': 'toolButton',
             'src': 'images/hide.svg'
         }).inject(this.tool); //Show/Hide Button
-        this.savebutton = new Element('img', {
+	
+        /*this.savebutton = new Element('img', {
             'title': 'Save Current State',
             'class': 'toolButton',
             'src': 'images/save.svg'
         }).inject(this.tool); //Save Button
+*/
+	
+	this.titleButton = new Element('<p>',{
+		'class' : 'titleButton',
+		'text' : 'caMicroscope'
+	}).inject(this.tool);
+
+	this.iidbutton = new Element('<p>',{
+		'class':'iidButton',
+		'text':'SubjectID :' + this.iid
+	}).inject(this.tool);
+
 /* ASHISH - disable quit button
         this.quitbutton = new Element('img', {
             'title': 'quit',
@@ -129,7 +143,7 @@ var annotools = new Class({
                 this.drawMarkups();
             }.bind(this)
         });
-        this.measurebutton.addEvents({
+        /*this.measurebutton.addEvents({
             'click': function () {
                 this.mode = 'measure';
                 this.drawMarkups();
@@ -145,17 +159,17 @@ var annotools = new Class({
             'click': function () {
                 this.selectColor()
             }.bind(this)
-        });
+        });*/
         this.hidebutton.addEvents({
             'click': function () {
                 this.toggleMarkups()
             }.bind(this)
         });
-        this.savebutton.addEvents({
+        /*this.savebutton.addEvents({
             'click': function () {
                 this.saveState()
             }.bind(this)
-        });
+        });*/
 /* ASHISH Disable quit button
         this.quitbutton.addEvents({
             'click': function () {
@@ -902,6 +916,7 @@ var annotools = new Class({
             });
         }
     },
+
     addnewAnnot: function (newAnnot) //Add New Annotations
     {
         newAnnot.iid = this.iidDecoded;

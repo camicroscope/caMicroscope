@@ -4,13 +4,10 @@
 	border: 1px outset #333;
 	color: #fff;
 	background: #222;
-	opacity: 0.85;
+	opacity: 0.90;
 	font-weight: normal;
 	padding: 1px;
 	font-size: 80%;
-	-moz-border-radius: 0.3em;
-	-webkit-border-radius: 0.3em;
-	border-radius: 0.3em;
 	-moz-box-shadow: 4px 4px 4px rgba(0,0,0,0.75);
 	-webkit-box-shadow: 4px 4px 4px rgba(0,0,0,0.75);
 	-o-box-shadow: 4px 4px 4px rgba(0,0,0,0.75);
@@ -102,7 +99,29 @@
 }
 .toolButton
 {
-	width:30px;
+	width:28px;
+}
+.firstToolButtonSpace
+{
+ 	margin-left: 10px;
+}
+.titleButton
+{
+        position: absolute;
+	right: 50%;
+        top: 0px;
+        font-size: 16px;
+	margin-top: 6px;
+        font-family: Helvetica;
+}
+.iidButton
+{
+	position: absolute;
+	right: 40px;
+	top: 0px;
+	font-size: 14px;
+	margin-top: 7px;
+	font-family: Helvetica Neue;
 }
 .magnify 
 {
