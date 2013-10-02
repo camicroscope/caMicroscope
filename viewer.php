@@ -24,6 +24,8 @@ else {
 	  <meta http-equiv="X-UA-Compatible" content="IE=9" />
 	  <link rel="stylesheet" type="text/css" media="all" href="css/iip.css" />
 	  <link rel="stylesheet" type="text/css" media="all" href="css/annotools.css" />
+	  <link rel="stylesheet" type="text/css" media="all" href="css/modal.css" />
+	  <link rel="stylesheet" type="text/css" media="all" href="css/bootstrap.css" />
 	<!--[if lt IE 10]>
 	  <link rel="stylesheet" type="text/css" media="all" href="css/ie.compressed.css" />
 	<![endif]-->
@@ -32,16 +34,18 @@ else {
 	  <link rel="apple-touch-icon" href="images/iip.png" />
 
 	  <title>IIPMooViewer 2.0 :: HTML5 High Resolution Image Viewer</title>
-
 	  <script type="text/javascript" src="js/mootools-core-1.4.5-full-nocompat-yc.js"></script>
 	  <script type="text/javascript" src="js/mootools-more-1.4.0.1-compressed.js"></script>
+          <script src="js/jquery.js"></script>
     
 	  <script type="text/javascript" src="js/iipmooviewer-2.0.js"></script>
 	  <script type="text/javascript" src="js/MD5.js"></script>
 	  <script type="text/javascript" src="js/ImageMetadata.js"></script>
 	  <script type="text/javascript" src="js/Annotations.js"></script>
-	  <script type="text/javascript">
+          <script src="js/serializeJSON.js"></script>
+          <script src="js/Modal.js"></script>
 
+	  <script>
 	    var server='/camic/fastcgi-bin/iipsrv.fcgi';
 	    // The *full* image path on the server. This path does *not* need to be in the web
 	    // server root directory. On Windows, use Unix style forward slash paths without
@@ -69,11 +73,12 @@ else {
 	    console.log(tissueId);
 	    
 	    var imagedata=new ImageMetadata({imageId:tissueId});
+	    var modal = new Modal();
 	    var MaxDimension = imagedata.metaData[0];
 	    var temp = imagedata.metaData[1];
 	    var temp2 = temp[0];
 	    var image = temp2["File Location"];
-    var annotool=new Annotations('tool',{left:'60px',width: '270px',height:'30px',top:'45px',canvas:'canvas',iid:tissueId,MaxDimension:MaxDimension});
+    var annotool=new Annotations('tool',{left:'60px',width: '270px',height:'30px',top:'45px',canvas:'canvas',iid:tissueId,MaxDimension:MaxDimension,modal:modal});
     if(gup('maxWidth'))annotool.maxWidth=gup('maxWidth');
     if(gup('maxHeight'))annotool.maxHeight=gup('maxHeight');
     if(gup('ratio'))annotool.ratio=gup('ratio');
@@ -86,8 +91,6 @@ else {
 				credit: credit
 			    });
   </script>
-<script>
-</script>
   <style type="text/css">
     body{
 	height: 100%;

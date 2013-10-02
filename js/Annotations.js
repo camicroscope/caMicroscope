@@ -47,6 +47,7 @@ var Annotations = new Class({
         this.annotVisible=true;//The Annotations are Set to be visible at the First Loading
         this.mode='default';//The Mode is Set to Default
 	this.MaxDimension=options.MaxDimension;
+	this.modal = options.modal;
 	window.addEvent("domready",function(){this.getAnnot();this.createButtons();}.bind(this));//Get the annotation information and Create Buttons
         window.addEvent("keydown",function(event){this.keyPress(event.code)}.bind(this));//Add KeyDown Events
     },
@@ -90,13 +91,12 @@ var Annotations = new Class({
     },
     getAnnot:function()//Get Annotation from the API
     {
-			var jsonRequest = new Request.JSON({url: "api/annotation.php", onSuccess: function(e){
+			var jsonRequest = new Request.JSON({url: "api/Data/annotation.php", onSuccess: function(e){
 			if(e=='NoAnnotations')  this.annotations=new Array();
                         else  this.annotations=e;
                         this.displayAnnot();//Display The Annotations
                         console.log("successfully get annotations");
 			}.bind(this),onFailure:function(e){this.showMessage("cannot get the annotations,please check your getAnnot function");}.bind(this)}).get({'iid':this.iid,'maxWidth':MaxDimension.width,'maxHeight':MaxDimension.height}); 
-		}
     },
     keyPress:function(code)//Key Down Events Handler
     {
@@ -197,6 +197,7 @@ var Annotations = new Class({
 		h=h/oheight;
 
 		var tip=prompt("Please Enter Some Descriptions","");
+		//var tip = modal.buildModal();
 		if (tip!=null)
 		{
 		        //Update Annotations
@@ -738,7 +739,7 @@ var Annotations = new Class({
 	      //########### Do the delete using bindaas instead of on local list.
 	      if(this.iid)
               {
-                var jsonRequest = new Request.JSON({url: 'api/deleteAnnot.php',onSuccess: function(e){
+                var jsonRequest = new Request.JSON({url: 'api/Data/deleteAnnot.php',onSuccess: function(e){
                         this.showMessage("deleted from server");
                 }.bind(this),onFailure:function(e){
                         this.showMessage("Error deleting the Annotations, please check your deleteAnnot php");}.bind(this)}).get({'annotId':testAnnotId});
@@ -747,7 +748,7 @@ var Annotations = new Class({
         },
         saveAnnot:function()//Save Annotations
         {
-		   var jsonRequest = new Request.JSON({url: 'api/annotation.php',
+		   var jsonRequest = new Request.JSON({url: 'api/Data/annotation.php',
                          onSuccess: function(e){
 			this.showMessage("saved to the server");
 			}.bind(this),onFailure:function(e){
@@ -757,7 +758,7 @@ var Annotations = new Class({
         {
                if(this.iid)
                 {
-		   var jsonRequest = new Request.JSON({url: 'api/state.php',
+		   var jsonRequest = new Request.JSON({url: 'api/Data/state.php',
                          onSuccess: function(e){
 			this.showMessage("saved to the server");
 			}.bind(this),onFailure:function(e){

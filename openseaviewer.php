@@ -1,6 +1,6 @@
 <?php session_start();
 
-$config = require 'api/config.php';
+$config = require 'api/Configuration/config.php';
 
 ?>
 <!DOCTYPE html>
@@ -61,7 +61,7 @@ $config = require 'api/config.php';
     <script type="text/javascript">
       var annotool = null;
       var tissueId = <?php echo json_encode($_GET['tissueId']); ?>;
-      var fileLocationUrl = "api/osdMetadataRetriever.php?tissueId=" + tissueId;
+      var fileLocationUrl = "api/Data/osdMetadataRetriever.php?tissueId=" + tissueId;
       var fileLocation;
       $.ajaxSetup({
 	  async: false

@@ -47,7 +47,7 @@
 
 		<div class="container">
 
-			<form method="post" id="login" action="api/auth.php" class="form-signin">
+			<form method="post" id="login" action="api/Security/auth.php" class="form-signin">
 				<h2 class="form-signin-heading">caMicroscope</h2>
 				<input type="text" name="username" placeholder="Username" class="input-block-level">
 				<input type="password" name="password" placeholder="Password" class="input-block-level">

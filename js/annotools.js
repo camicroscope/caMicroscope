@@ -213,7 +213,7 @@ var annotools = new Class({
     {
             var jsonRequest = new Request.JSON({
                 //url: IP + 'api/annotation_relative.php',
-                url: 'api/annotation_relative.php',
+                url: 'api/Data/annotation_relative.php',
                 onSuccess: function (e) {
                     if (e == null) this.annotations = new Array();
                     else this.annotations = e;
@@ -1340,7 +1340,7 @@ var annotools = new Class({
 	    if(this.iid)
         {
             var jsonRequest = new Request.JSON({
-                    url: 'api/deleteAnnot.php',
+                    url: 'api/Data/deleteAnnot.php',
                     async:false,
                     onSuccess: function(e){
                         this.showMessage("deleted from server");
@@ -1356,7 +1356,7 @@ var annotools = new Class({
     updateAnnot: function (annot) //Save Annotations
     {
             var jsonRequest = new Request.JSON({
-                url:  'api/updateAnnot.php',
+                url:  'api/Data/updateAnnot.php',
                 onSuccess: function (e) {
                     this.showMessage("saved to the server");
                 }.bind(this),
@@ -1371,10 +1371,9 @@ var annotools = new Class({
     },
     saveAnnot: function () //Save Annotations
     {
-        if (this.iid) {
             var jsonRequest = new Request.JSON({
                 //url: IP + '/api/annotation_relative.php',
-                url:  'api/annotation_relative.php',
+                url:  'api/Data/annotation_relative.php',
                 async:false,
                 onSuccess: function (e) {
                     this.showMessage("saved to the server");
@@ -1386,27 +1385,12 @@ var annotools = new Class({
                 'iid': this.iid,
                 'annot': this.annotations
             });
- 
-        } else {
-            var jsonRequest = new Request.JSON({
-                //url: IP + 'api/annot.php',
-                url:  'api/annot.php',
-                onSuccess: function (e) {
-                    this.showMessage("saved to the server");
-                }.bind(this),
-                onFailure: function (e) {
-                    this.showMessage("Error Saving the Annotations,please check you saveAnnot funciton and the api/annot.php function");
-                }.bind(this)
-            }).post({
-                'annot': this.annotations
-            });
-        }
     },
     saveState: function () {
         if (this.iid) {
             var jsonRequest = new Request.JSON({
                 //url: IP + 'api/state.php',
-                url:  'api/state.php',
+                url:  'api/Data/state.php',
                 onSuccess: function (e) {
                     this.showMessage("saved to the server");
                 }.bind(this),
