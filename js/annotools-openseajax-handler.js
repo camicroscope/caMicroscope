@@ -44,9 +44,9 @@ var AnnotoolsOpenSeadragonHandler = new Class({
         for (var i = 0; i < this.viewer.buttons.buttons.length; i++) {
             var button = this.viewer.buttons.buttons[i];
             if (button.tooltip.toLowerCase() == "zoom in") {
-                var onZoomInRelease = button.events.onRelease[0];
+                var onZoomInRelease = button.onRelease;
                 var zoomIn = this.handleZoomIn; 
-                button.events.onRelease[0] = function(args){
+                button.onRelease = function(args){
 
                     $('svg')[0].setStyle('opacity', 1);
                     onZoomInRelease(args);
@@ -58,9 +58,9 @@ var AnnotoolsOpenSeadragonHandler = new Class({
 
             }
             else if (button.tooltip.toLowerCase() == "zoom out") {
-                var onZoomOutRelease = button.events.onRelease[0];
+                var onZoomOutRelease = button.onRelease;
                 var zoomOut = this.handleZoomOut; 
-                button.events.onRelease[0] = function(args){
+                button.onRelease = function(args){
 
                     $('svg')[0].setStyle('opacity', 0);
                     onZoomOutRelease(args);

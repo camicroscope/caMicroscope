@@ -1062,9 +1062,9 @@ var annotools = new Class({
             var button = this.viewer.buttons.buttons[i];
 
             if (button.tooltip.toLowerCase() == "go home") {
-                var onHomeRelease = button.events.onRelease[0];
+                var onHomeRelease = button.onRelease;
                 var annot = this;
-                button.events.onRelease[0] = function(args){
+                button.onRelease = function(args){
 
                     $('svg')[0].setStyle('opacity', 0);
                     onHomeRelease(args);

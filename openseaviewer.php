@@ -12,7 +12,8 @@ $config = require 'api/Configuration/config.php';
 
     <link rel="stylesheet" type="text/css" media="all" href="css/annotools.css" />
 
-    <script src="js/openseadragon.min.js"></script>
+    <script src="js/openseadragon/openseadragon-bin-1.0.0/openseadragon.js"></script>
+    <script src="js/openseadragon/openseadragon-imaginghelper.min.js"></script>
     <script type="text/javascript" src="js/mootools-core-1.4.5-full-nocompat-yc.js"></script>
     <script type="text/javascript" src="js/mootools-more-1.4.0.1-compressed.js"></script>
     <script src="js/jquery.js"></script>
@@ -82,10 +83,12 @@ $config = require 'api/Configuration/config.php';
             prefixUrl: "images/",
             showNavigator:  false,
 	    zoomPerClick: 1
-          });
+	  });
+
       viewer.addHandler("open", addOverlays);
       viewer.clearControls();
       viewer.open("<?php print_r($config['fastcgi_server']); ?>?DeepZoom=" + fileLocation);
+      var imagingHelper = new OpenSeadragonImaging.ImagingHelper({viewer: viewer});
       function addOverlays() {
         var annotationHandler = new AnnotoolsOpenSeadragonHandler(viewer, {});
         
