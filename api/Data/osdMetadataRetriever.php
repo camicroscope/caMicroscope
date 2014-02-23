@@ -1,4 +1,4 @@
-<?php session_start();
+<?php require '../../../authenticate.php';
 
 include_once("CamicUtils.php");
 

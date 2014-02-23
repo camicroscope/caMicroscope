@@ -48,13 +48,13 @@ class CamicUtils
 			$fileNameWithoutExtension = substr($file,0,-5);
 			if(is_dir($path . $fileNameWithoutExtension))
 			{
-				$link = $path . $fileNameWithoutExtension . "/" . $file . ".dzi";
+				$link = $path . $fileNameWithoutExtension . $file . ".dzi";
 			}
 
 			else
 			{
 				mkdir($path . $fileNameWithoutExtension);
-				$file = $path . $fileNameWithoutExtension . "/" . $file;
+				$file = $path . $fileNameWithoutExtension . $file;
 				symlink($value, $file);
 				symlink($file, $file . ".dzi");
 				$link = $file . ".dzi";

@@ -1,4 +1,4 @@
-<?php session_start();
+<?php require '../authenticate.php';
 
 $config = require 'api/Configuration/config.php';
 
@@ -8,7 +8,7 @@ $config = require 'api/Configuration/config.php';
 <head>
     <meta charset='utf-8'>
 
-    <title>OpenSeadragon</title>
+    <title>[caMicroscope OSD][Subject: <?php echo json_encode($_GET['tissueId']); ?>][User: <?php echo $_SESSION["name"]; ?>]</title>
 
     <link rel="stylesheet" type="text/css" media="all" href="css/annotools.css" />
 
@@ -19,6 +19,8 @@ $config = require 'api/Configuration/config.php';
     <script src="js/annotools-openseajax-handler.js"></script>
     <script src="js/annotools.js"></script>
     <script src="js/MD5.js"></script>
+     <!-- Google Analytics JS -->
+    <script src="analyticstracking.js"></script>
     <style type="text/css">
         .openseadragon
         {
