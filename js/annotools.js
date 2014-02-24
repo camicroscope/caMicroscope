@@ -28,7 +28,8 @@ var annotools = new Class({
         this.mode = 'default'; //The Mode is Set to Default
 
         this.viewer = options.viewer;
-        this.annotationHandler = options.annotationHandler || new AnnotoolsOpenSeadragonHandler();
+        this.imagingHelper = this.viewer.imagingHelper;
+	this.annotationHandler = options.annotationHandler || new AnnotoolsOpenSeadragonHandler();
         window.addEvent("domready", function () {
             //this.getAnnot();
             this.createButtons();
@@ -217,8 +218,9 @@ var annotools = new Class({
                 onSuccess: function (e) {
                     if (e == null) this.annotations = new Array();
                     else this.annotations = e;
-                    this.displayAnnot(); //Display The Annotations
-                    this.relativeToGlobal();
+                    this.convertAllToNative();
+		    this.displayAnnot(); //Display The Annotations
+		    this.relativeToGlobal();
                     this.setupHandlers();
                     //console.log("successfully get annotations");
                 }.bind(this),
@@ -333,66 +335,8 @@ var annotools = new Class({
             //Draw Markups on Canvas
             switch (this.mode) {
                 case "rect":
-                    //Draw Rectangles
-                    var started = false;
-                    var x, //start location x
-                        y, //start location y
-                        w, //width
-                        h; //height
-                    this.drawCanvas.addEvent('mousedown', function (e) {
-                        started = true;
-                        x = e.event.layerX;
-                        y = e.event.layerY;
-                    });
-                    this.drawCanvas.addEvent('mousemove', function (e) {
-                        if (started) {
-                            ctx.clearRect(0, 0, this.drawCanvas.width, this.drawCanvas.height);
-                            x = Math.min(e.event.layerX, x);
-                            y = Math.min(e.event.layerY, y);
-                            w = Math.abs(e.event.layerX - x);
-                            h = Math.abs(e.event.layerY - y);
-                            ctx.strokeStyle = this.color;
-                            ctx.strokeRect(x, y, w, h);
-                        }
-                    }.bind(this));
-                    this.drawCanvas.addEvent('mouseup', function (e) {
-                        started = false;
-                        var p = 
-                                new OpenSeadragon.Point(e.client.x, e.client.y).minus
-                                   (OpenSeadragon.getElementPosition(viewer.element));
-                        var point = viewer.viewport.pointFromPixel(p);
-                        var pixelPt = viewer.viewport.pixelFromPoint(point);
-                        var pointFromPixel = viewer.viewport.pointFromPixel(new OpenSeadragon.Point(x, y));
-
-                        var distx = Math.abs(pixelPt.x - x);
-                        var disty = Math.abs(pixelPt.y - y);
-                        x = pointFromPixel.x; 
-                        y = pointFromPixel.y;
-                        var wpoint = point.minus(pointFromPixel);
-                        w = wpoint.x;
-                        h = wpoint.y;
-
-                        var tip = prompt("Please Enter Some Descriptions", "");
-                        if (tip != null) {
-                            //Update Annotations
-                            var newAnnot = {
-                                x: x,
-                                y: y,
-                                w: w,
-                                h: h,
-                                type: "rect",
-                                text: tip,
-                                color: this.color
-                            };
-                            this.addnewAnnot(newAnnot);
-                            //viewer.viewport.zoomTo(1);
-                            //this.drawMarkups();
-                            this.getAnnot();
-                        } else {
-                            ctx.clearRect(0, 0, this.drawCanvas.width, this.drawCanvas.height);
-                        }
-                    }.bind(this));
-                    break;
+                    this.drawRectangle(ctx);
+		    break;
                 case "ellipse":
                     //Draw Ellipse
                     var started = false;
@@ -1110,7 +1054,7 @@ var annotools = new Class({
                     svgHtml += '</g>';
                     svgHtml += '<g id="viewport" transform="translate(0,0)">';
                 for (index = 0; index < a.length; index++) {
-                    if (((width * a[index].x + left) > 0) && ((width * a[index].x + left + width * a[index].w) < window.innerWidth) && ((height * a[index].y + top) > 0) && ((height * a[index].y + top + height * a[index].h) < window.innerHeight)) {
+    //                if (((width * a[index].x + left) > 0) && ((width * a[index].x + left + width * a[index].w) < window.innerWidth) && ((height * a[index].y + top) > 0) && ((height * a[index].y + top + height * a[index].h) < window.innerHeight)) {
                         switch (a[index].type) {
                             case "rect":
                                 var x = parseFloat(a[index].x);
@@ -1118,11 +1062,18 @@ var annotools = new Class({
                                 var w = parseFloat(a[index].w);
                                 var h = parseFloat(a[index].h);
                                 // handle displaying the drawing when they are already zoomed in
-                                w = w * viewer.viewport.getZoom();
-                                h = h * viewer.viewport.getZoom();
-                                var point = viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(x,y));
 
-                                svgHtml += '<rect id="' + index + '" x="' + point.x + '" y="' + point.y + '" width="' + w*width + '" height="' + width*h + '" stroke="' + a[index].color + '" stroke-width="2" fill="none"/>';
+				w = this.imagingHelper.physicalToLogicalDistance(w);
+				h = this.imagingHelper.physicalToLogicalDistance(h);
+				w = w * viewer.viewport.getZoom();
+				h = h * viewer.viewport.getZoom();
+				h = h/this.imagingHelper.imgAspectRatio;
+
+				var offset = OpenSeadragon.getElementOffset(viewer.canvas);
+
+				x = x + offset.x;
+				y = y + offset.y;
+                                svgHtml += '<rect id="' + index + '" x="' + x + '" y="' + y + '" width="' + w*width + '" height="' + width*h + '" stroke="' + a[index].color + '" stroke-width="2" fill="none"/>';
                                 break;
                             case "ellipse":
                                 var cx = parseFloat(a[index].x) + parseFloat(a[index].w) / 2;
@@ -1244,7 +1195,7 @@ var annotools = new Class({
                 //    this.showMessage("Please Press white space to toggle the Annotations");
                 //}
             }
-        } else {
+        else {
             this.showMessage("Canvas Container Not Ready");
         }
     },
@@ -1385,6 +1336,140 @@ var annotools = new Class({
                 'iid': this.iid,
                 'annot': this.annotations
             });
+    },
+
+    convertToNative: function (annot)
+    {
+	if(annot.type == "rect")
+	{
+	    var x = annot.x;
+	    var y = annot.y;
+	    var w = annot.w;
+	    var h = annot.h;
+
+	    var nativeW = this.imagingHelper.logicalToPhysicalDistance(w);
+	    var nativeH = this.imagingHelper.logicalToPhysicalDistance(h);
+	    var nativeX = this.imagingHelper.logicalToPhysicalX(x);
+	    var nativeY = this.imagingHelper.logicalToPhysicalY(y);
+	    var nativeNumbers = JSON.encode({nativeW:nativeW,nativeH:nativeH,nativeX:nativeX,nativeY:nativeY});
+	    return nativeNumbers;
+	}
+
+	else
+	    return annot;
+    },
+
+    convertFromNative: function(annot,end)
+    {
+	if(annot.type == "rect")
+	{
+	    var x = annot.x;
+	    var y = annot.y;
+	    var w = annot.w;
+	    var h = annot.h;
+	    var x_end = end.x;
+	    var y_end = end.y;
+
+	    var nativeX_end = this.imagingHelper.physicalToLogicalX(x_end);
+	    var nativeY_end = this.imagingHelper.physicalToLogicalY(y_end);
+	    var nativeX = this.imagingHelper.physicalToLogicalX(x);
+	    var nativeY = this.imagingHelper.physicalToLogicalY(y);
+	    var nativeW = nativeX_end - nativeX;
+	    var nativeH = nativeY_end - nativeY;
+
+	    var globalNumber = JSON.encode({nativeW: nativeW, nativeH: nativeH, nativeX: nativeX, nativeY: nativeY});
+
+	    return globalNumber;
+	}
+
+	else
+	    return annot;
+    },
+
+    convertAllToNative: function()
+    {
+	for(index = 0; index < this.annotations.length; index++)
+	{
+	    newannot = JSON.parse(this.convertToNative(this.annotations[index]));
+	    this.annotations[index].x = newannot.nativeX;
+	    this.annotations[index].y = newannot.nativeY;
+	    this.annotations[index].w = newannot.nativeW;
+	    this.annotations[index].h = newannot.nativeH;
+	}
+    },
+
+    drawRectangle: function(ctx)
+    {
+	var started = false;
+	var x,y,w,h;
+
+	this.drawCanvas.addEvent('mousedown',function(e)
+	{
+	    started = true;
+	    startPosition = OpenSeadragon.getMousePosition(e.event);
+	    x = startPosition.x;
+	    y = startPosition.y;
+	});
+
+	this.drawCanvas.addEvent('mousemove',function(e)
+	{
+	    if(started)
+	    {
+		ctx.clearRect(0,0,this.drawCanvas.width, this.drawCanvas.height);
+		var currentMousePosition = OpenSeadragon.getMousePosition(e.event);
+
+		x = Math.min(currentMousePosition.x,x);
+		y = Math.min(currentMousePosition.y,y);
+		w = Math.abs(currentMousePosition.x - x);
+		h = Math.abs(currentMousePosition.y - y);
+
+		ctx.strokeStyle = this.color;
+		ctx.strokeRect(x,y,w,h);
+	    }
+	}.bind(this));
+
+	this.drawCanvas.addEvent('mouseup',function(e)
+	{
+	    started = false;
+	    var startRelativeMousePosition = new OpenSeadragon.Point(x,y).minus(OpenSeadragon.getElementOffset(viewer.canvas));
+	    var endMousePosition = OpenSeadragon.getMousePosition(e.event);
+	    var endRelativeMousePosition = new OpenSeadragon.Point(endMousePosition.x,endMousePosition.y).minus(OpenSeadragon.getElementOffset(viewer.canvas));
+
+	    var wpoint = endRelativeMousePosition.minus(startRelativeMousePosition);
+
+	    w = wpoint.x;
+	    h = wpoint.y;
+	    
+	    var tip = prompt("Please Enter Some Description","");
+
+	    if(tip != null)
+	    {
+		var newAnnot = {
+		    x: startRelativeMousePosition.x,
+		    y: startRelativeMousePosition.y,
+		    w: w,
+		    h: h,
+		    type: "rect",
+		    text: tip,
+		    color: this.color
+		};
+
+		var globalNumbers = JSON.parse(this.convertFromNative(newAnnot, endRelativeMousePosition));
+
+		newAnnot.x = globalNumbers.nativeX;
+		newAnnot.y = globalNumbers.nativeY;
+		newAnnot.w = globalNumbers.nativeW;
+		newAnnot.h = globalNumbers.nativeH;
+
+		this.addnewAnnot(newAnnot);
+		this.getAnnot();
+	    }
+
+	    else
+	    {
+		ctx.clearRect(0,0,this.drawCanvas.width,this.drawCanvas.height);
+	    }
+	}.bind(this));
     },
     saveState: function () {
         if (this.iid) {
