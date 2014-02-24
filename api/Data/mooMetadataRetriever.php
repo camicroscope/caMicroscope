@@ -1,5 +1,5 @@
 <?php
-session_start();
+require '../../../authenticate.php';
 include_once("CamicUtils.php");
 
 $utils = new CamicUtils($_SESSION);

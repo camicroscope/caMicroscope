@@ -1,4 +1,4 @@
-<?php session_start();
+<?php require '../authenticate.php';
 
 $config = require 'api/Configuration/config.php';
 
@@ -8,17 +8,20 @@ $config = require 'api/Configuration/config.php';
 <head>
     <meta charset='utf-8'>
 
-    <title>OpenSeadragon</title>
+    <title>[caMicroscope OSD][Subject: <?php echo json_encode($_GET['tissueId']); ?>][User: <?php echo $_SESSION["name"]; ?>]</title>
 
     <link rel="stylesheet" type="text/css" media="all" href="css/annotools.css" />
 
-    <script src="js/openseadragon.min.js"></script>
+    <script src="js/openseadragon/openseadragon-bin-1.0.0/openseadragon.js"></script>
+    <script src="js/openseadragon/openseadragon-imaginghelper.min.js"></script>
     <script type="text/javascript" src="js/mootools-core-1.4.5-full-nocompat-yc.js"></script>
     <script type="text/javascript" src="js/mootools-more-1.4.0.1-compressed.js"></script>
     <script src="js/jquery.js"></script>
     <script src="js/annotools-openseajax-handler.js"></script>
     <script src="js/annotools.js"></script>
     <script src="js/MD5.js"></script>
+     <!-- Google Analytics JS -->
+    <script src="analyticstracking.js"></script>
     <style type="text/css">
         .openseadragon
         {
@@ -80,10 +83,12 @@ $config = require 'api/Configuration/config.php';
             prefixUrl: "images/",
             showNavigator:  false,
 	    zoomPerClick: 1
-          });
+	  });
+
       viewer.addHandler("open", addOverlays);
       viewer.clearControls();
       viewer.open("<?php print_r($config['fastcgi_server']); ?>?DeepZoom=" + fileLocation);
+      var imagingHelper = new OpenSeadragonImaging.ImagingHelper({viewer: viewer});
       function addOverlays() {
         var annotationHandler = new AnnotoolsOpenSeadragonHandler(viewer, {});
         
