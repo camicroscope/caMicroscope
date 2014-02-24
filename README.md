@@ -1,7 +1,10 @@
 Bio-Medical Image-Viewer
 
-Shaohuan Li <shaohuan.li@gmail.com> Ashish Sharma <ashish.sharma@emory.edu>
-Google Summer of Code 2012. HTML5 Large Bio-Medical Image Viewer Project.
+Ameen Kazerouni <ameen.kazerouni@emory.edu>
+Ashish Sharma <ashish.sharma@emory.edu>
+Sanjay Agravat <sagrava@emory.edu>
+Shaohuan Li <shaohuan.li@gmail.com> 
+
 ============
 
 About
