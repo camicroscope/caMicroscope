@@ -21,7 +21,6 @@ $config = require 'api/Configuration/config.php';
     <script src="js/annotools.js"></script>
     <script src="js/MD5.js"></script>
      <!-- Google Analytics JS -->
-    <script src="analyticstracking.js"></script>
     <style type="text/css">
         .openseadragon
         {
