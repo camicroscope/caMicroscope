@@ -91,7 +91,7 @@ var Annotations = new Class({
     },
     getAnnot:function()//Get Annotation from the API
     {
-			var jsonRequest = new Request.JSON({url: "api/Data/annotation.php", onSuccess: function(e){
+			var jsonRequest = new Request.JSON({url: "api/Data/annotation_relative.php", onSuccess: function(e){
 			if(e=='NoAnnotations')  this.annotations=new Array();
                         else  this.annotations=e;
                         this.displayAnnot();//Display The Annotations
@@ -748,7 +748,7 @@ var Annotations = new Class({
         },
         saveAnnot:function()//Save Annotations
         {
-		   var jsonRequest = new Request.JSON({url: 'api/Data/annotation.php',
+		   var jsonRequest = new Request.JSON({url: 'api/Data/annotation_relative.php',
                          onSuccess: function(e){
 			this.showMessage("saved to the server");
 			}.bind(this),onFailure:function(e){

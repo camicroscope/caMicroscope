@@ -46,7 +46,7 @@ else {
           <script src="js/Modal.js"></script>
 
 	  <script>
-	    var server='/camic/fastcgi-bin/iipsrv.fcgi';
+	    var server='/camicroscope/fastcgi-bin/iipsrv.fcgi';
 	    // The *full* image path on the server. This path does *not* need to be in the web
 	    // server root directory. On Windows, use Unix style forward slash paths without
 	    // the "c:" prefix

@@ -15,7 +15,7 @@ return array(
 
     'getFileLocation' => "$url/services/TCGABreast/TCGABRCAImageMetaData/query/retrieveFileLocation?api_key=",
 
-    'fastcgi_server' => "/camic/fastcgi-bin/iipsrv.fcgi"
+    'fastcgi_server' => "/camicroscope/fastcgi-bin/iipsrv.fcgi"
 	
     
 );
