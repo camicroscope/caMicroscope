@@ -883,7 +883,7 @@ var annotools = new Class({
                         String.split(object.getAttribute("points").trim(), ' ');
 
                     var distances = [];
-                    for (var j = 0; j < points.length-1; j++) {
+                    for (var j = 0; j < points.length; j++) {
                         var pointPair = String.split(points[j], ",");
                         var point = 
                                 new OpenSeadragon.Point(
@@ -1039,19 +1039,14 @@ var annotools = new Class({
                             case "polyline":
                                 var points = a[index].points;
                                 var poly = String.split(points, ';');
+				var offset = OpenSeadragon.getElementOffset(viewer.canvas);
                                 for (var k = 0; k < poly.length; k++) {
                                     var p = String.split(poly[k], ' ');
                                     svgHtml += '<polygon id="'+index+ '" points="';
                                     for (var j = 0; j < p.length; j++) {
                                         point = String.split(p[j], ',');
-                                        //var polyPt = 
-                                          //  new OpenSeadragon.Point(
-                                            //    parseFloat(point[0]),
-                                              //  parseFloat(point[1])
-                                        //);
-					var polyPixelX = point[0];
-					var polyPixelY = point[1];
-                                        //var polyPixelPt = viewer.viewport.pixelFromPoint(polyPt);
+					var polyPixelX = this.imagingHelper.logicalToPhysicalX(point[0]);
+					var polyPixelY = this.imagingHelper.logicalToPhysicalY(point[1]);
                                         svgHtml += polyPixelX + ',' + polyPixelY + ' ';
                                     }
                                     svgHtml += '" style="fill:none;stroke:' + a[index].color + ';stroke-width:2"/>';
@@ -1297,7 +1292,7 @@ var annotools = new Class({
 	    var nativeX = this.imagingHelper.logicalToPhysicalX(x);
 	    var nativeY = this.imagingHelper.logicalToPhysicalY(y);
 	        
-	    var poly_first_split = String.split(point,';');
+	    var poly_first_split = String.split(point,' ');
 	    var points  = "";
 	    for(var k = 0; k < poly_first_split.length - 1; k++)
 	    {
@@ -1305,7 +1300,7 @@ var annotools = new Class({
 
 		var polyPoint = new OpenSeadragon.Point(parseFloat(poly_second_split[0]),parseFloat(poly_second_split[1]));
 
-		points += this.imagingHelper.logicalToPhysicalX(polyPoint.x) + ',' + this.imagingHelper.logicalToPhysicalY(polyPoint.y) + ';';	
+		points += this.imagingHelper.logicalToPhysicalX(polyPoint.x) + ',' + this.imagingHelper.logicalToPhysicalY(polyPoint.y) + ' ';	
 	    }
 
 	    var last_poly_split = String.split(poly_first_split[k],',');
@@ -1349,7 +1344,7 @@ var annotools = new Class({
 	    var w = annot.w;
 	    var h = annot.h;
 	    var point = annot.points;
-	    var poly_first_split = String.split(point,';');
+	    var poly_first_split = String.split(point,' ');
 	    var points  = "";
 	    for(var k = 0; k < poly_first_split.length - 1; k++)
 	    {
@@ -1357,7 +1352,7 @@ var annotools = new Class({
 
 		var polyPoint = new OpenSeadragon.Point(parseFloat(poly_second_split[0]),parseFloat(poly_second_split[1]));
 
-		points += this.imagingHelper.physicalToLogicalX(polyPoint.x) + ',' + this.imagingHelper.physicalToLogicalY(polyPoint.y) + ';';	
+		points += this.imagingHelper.physicalToLogicalX(polyPoint.x) + ',' + this.imagingHelper.physicalToLogicalY(polyPoint.y) + ' ';	
 	    }
 
 	    var last_poly_split = String.split(poly_first_split[k],',');
@@ -1471,6 +1466,43 @@ var annotools = new Class({
 	    }
 	}.bind(this));
     },
+    drawPencil: function(ctx)
+    {
+	var started = false;
+	var pencil = [];
+	var newpoly = [];
+	var relativeStartPoint;
+	this.drawCanvas.addEvent('mousedown',function(e)
+	{
+	    started = true;
+	    var startPoint = OpenSeadragon.getMousePosition(e.event);
+	    relativeStartPoint = startPoint.minus(OpenSeadragon.getElementOffset(viewer.canvas));
+	    newpoly.push({
+		"x":relativeStartPoint.x,
+		"y":relativeStartPoint.y
+		});
+	    ctx.beginPath();
+	    ctx.moveTo(relativeStartPoint.x, relativeStartPoint.y)
+	    ctx.strokeStyle = this.color;
+	    ctx.stroke();
+	}.bind(this));
+
+	this.drawCanvas.addEvent('mousmove',function(e)
+	{
+	    var newPoint = OpenSeadragon.getMousePosition(e.event);
+	    var newRelativePoint = newPoint.minus(OpenSeadragon.getElementOffset(viewer.canvas));
+	    if(started)
+	    {
+		newpoly.push({
+			"x":newRelativePoint.x,
+			"y":newRelativePoint.y
+		    });
+
+		ctx.lineTo(newRelativePoint.x,newRelativePoint.y);
+		ctx.stroke();
+	    }
+	});
+    },
     drawPolyline: function(ctx)
     {
 	var started = true;
@@ -1524,7 +1556,7 @@ var annotools = new Class({
 	    var endMousePosition;
 	    for(var i = 0; i < numpoint -1; i++)
 	    {
-		points += newpoly[i].x + ',' + newpoly[i].y + ';';
+		points += newpoly[i].x + ',' + newpoly[i].y + ' ';
 		if(((newpoly[i].x -x) *( newpoly[i].x - x) + (newpoly[i].y - y) * (newpoly[i].y - y)) > maxdistance)
 		{
 		    maxdistance = ((newpoly[i].x - x) * (newpoly[i].x - x) + (newpoly[i].y - y) * (newpoly[i].y - y));
