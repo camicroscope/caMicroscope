@@ -35,6 +35,23 @@ class CamicUtils
 		return $location;
 	}
 
+	function retrieveMpp($tissueId)
+	{
+	    $mppUrl = $this->CONFIG['getMPP'] . $this->api_key . "&TCGAId=" . $tissueId;
+
+	    $getMPPRequest = new RestRequest($mppUrl, 'GET');
+	    $getMPPRequest -> execute();
+	    $mpplist = json_decode($getMPPRequest->responseBody);
+	    $finalMPP;
+	    foreach($mpplist as $singleMPP)
+	    {
+		$finalMPP = $singleMPP;
+		break;
+	    }
+
+	    return $finalMPP;
+	}
+
 	function setUpSymLinks($fileLocation)
 	{
 		foreach($fileLocation[0] as $key => $value)

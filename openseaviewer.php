@@ -18,6 +18,7 @@ $config = require 'api/Configuration/config.php';
     <script type="text/javascript" src="js/mootools-more-1.4.0.1-compressed.js"></script>
     <script src="js/jquery.js"></script>
     <script src="js/annotools-openseajax-handler.js"></script>
+    <script src="js/OSDImageMetaData.js"></script>
     <script src="js/annotools.js"></script>
     <script src="js/MD5.js"></script>
      <!-- Google Analytics JS -->
@@ -63,20 +64,24 @@ $config = require 'api/Configuration/config.php';
     <script type="text/javascript">
       var annotool = null;
       var tissueId = <?php echo json_encode($_GET['tissueId']); ?>;
-      var fileLocationUrl = "api/Data/osdMetadataRetriever.php?tissueId=" + tissueId;
-      var fileLocation;
-      $.ajaxSetup({
-	  async: false
-      });
+      //var fileLocationUrl = "api/Data/osdMetadataRetriever.php?tissueId=" + tissueId;
+      //var fileLocation;
+      //$.ajaxSetup({
+	//  async: false
+      //});
 
-      $.getJSON(fileLocationUrl, function(location)
-	  {
-		fileLocation = location;
-	  });
+      //$.getJSON(fileLocationUrl, function(location)
+	//  {
+	//	fileLocation = location;
+	 // });
 
-      $.ajaxSetup({
-	  async: true
-      });
+      //$.ajaxSetup({
+	//  async: true
+      // });
+
+      var imagedata = new OSDImageMetaData({imageId:tissueId});
+      var MPP = imagedata.metaData[0];
+      var fileLocation = imagedata.metaData[1];
       var viewer = new OpenSeadragon.Viewer(
           { id: "viewer", 
             prefixUrl: "images/",
@@ -99,7 +104,8 @@ $config = require 'api/Configuration/config.php';
                 canvas:'openseadragon-canvas',
                 iid: tissueId, 
                 viewer: viewer,
-                annotationHandler: annotationHandler 
+		annotationHandler: annotationHandler,
+		mpp:MPP
         });
         
       }

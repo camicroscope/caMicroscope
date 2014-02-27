@@ -29,6 +29,7 @@ var annotools = new Class({
 
         this.viewer = options.viewer;
         this.imagingHelper = this.viewer.imagingHelper;
+	this.mpp = options.mpp;
 	this.annotationHandler = options.annotationHandler || new AnnotoolsOpenSeadragonHandler();
         window.addEvent("domready", function () {
             //this.getAnnot();
@@ -78,13 +79,13 @@ var annotools = new Class({
             'title': 'Change Color',
             'class': 'toolButton',
             'src': 'images/color.svg'
-        }).inject(this.tool); //Select Color
+        }).inject(this.tool); //Select Color*/
         this.measurebutton = new Element('img', {
             'title': 'Measurement Tool (m)',
             'class': 'toolButton',
             'src': 'images/measure.svg'
         }).inject(this.tool); //Measurement Tool
-        this.magnifybutton = new Element('img', {
+       //** this.magnifybutton = new Element('img', {
             'title': 'Loupe (l)',
             'class': 'toolButton',
             'src': 'images/magnify.svg'
@@ -144,13 +145,13 @@ var annotools = new Class({
                 this.drawMarkups();
             }.bind(this)
         });
-        /*this.measurebutton.addEvents({
+        this.measurebutton.addEvents({
             'click': function () {
                 this.mode = 'measure';
                 this.drawMarkups();
             }.bind(this)
         });
-        this.magnifybutton.addEvents({
+        /*this.magnifybutton.addEvents({
             'click': function () {
                 this.mode = 'magnify';
                 this.magnify();
@@ -415,85 +416,8 @@ var annotools = new Class({
                     }.bind(this));
                     break;
                 case "pencil":
-                    //Draw Pencil
-                    var started = false;
-                    var pencil = []; //The Pencil Object
-                    var newpoly = []; //Every Stroke is treated as a Continous Polyline
-                    this.drawCanvas.addEvent('mousedown', function (e) {
-                        started = true;
-                        newpoly.push({
-                            "x": e.event.layerX,
-                            "y": e.event.layerY
-                        }); //The percentage will be saved
-                        ctx.beginPath();
-                        ctx.moveTo(e.event.layerX, e.event.layerY);
-                        ctx.strokeStyle = this.color;
-                        ctx.stroke();
-                    }.bind(this));
-                    this.drawCanvas.addEvent('mousemove', function (e) {
-                        if (started) {
-                            newpoly.push({
-                                "x": e.event.layerX,
-                                "y": e.event.layerY
-                            });
-                            ctx.lineTo(e.event.layerX, e.event.layerY);
-                            ctx.stroke();
-                        }
-                    });
-                    this.drawCanvas.addEvent('mouseup', function (e) {
-                        started = false;
-                        pencil.push(newpoly); //Push the Stroke to the Pencil Object
-                        newpoly = []; //Clear the Stroke
-                        numpoint = 0; //Clear the Points
-                        var tip = prompt("Please Enter Some Descriptions", "");
-                        var x, y, w, h;
-                        x = pencil[0][0].x;
-                        y = pencil[0][0].y;
-
-                            var polyPixelPt = new OpenSeadragon.Point(x, y);
-                            var polyPt      = viewer.viewport.pointFromPixel(polyPixelPt); 
-
-                        var maxdistance = 0; //The Most Remote Point to Determine the Markup Size
-                        var points = "";
-                        for (var i = 0; i < pencil.length; i++) {
-                            newpoly = pencil[i];
-                            for (j = 0; j < newpoly.length; j++) {
-                                var polyPixelPt = new OpenSeadragon.Point(newpoly[j].x, newpoly[j].y);
-                                var polyPt      = viewer.viewport.pointFromPixel(polyPixelPt); 
-                                points += polyPt.x + ',' + polyPt.y + ' ';
-                                if (((newpoly[j].x - x) * (newpoly[j].x - x) + (newpoly[j].y - y) * (newpoly[j].y - y)) > maxdistance) {
-                                    maxdistance = ((newpoly[j].x - x) * (newpoly[j].x - x) + (newpoly[j].y - y) * (newpoly[j].y - y));
-                                    w = Math.abs(newpoly[j].x - x) / owidth;
-                                    h = Math.abs(newpoly[j].y - y) / oheight;
-                                }
-                            }
-                            points = points.slice(0, -1)
-                            points += ';';
-                        }
-                        points = points.slice(0, -1);
-                        x = (x + left - oleft) / owidth;
-                        y = (y + top - otop) / oheight;
-                        if (tip != null) {
-                            //Save Annotations
-                            var newAnnot = {
-                                x: x,
-                                y: y,
-                                w: w,
-                                h: h,
-                                type: "pencil",
-                                points: points,
-                                text: tip,
-                                color: this.color
-                            };
-                            this.addnewAnnot(newAnnot);
-                            //this.drawMarkups();
-                            //viewer.viewport.zoomTo(1);
-                            this.getAnnot();
-                        } else {
-                            ctx.clearRect(0, 0, this.drawCanvas.width, this.drawCanvas.height);
-                        }
-                    }.bind(this));
-                    break;
+		    this.drawPencil(ctx);
+		    break;
                 case "polyline":
                     this.drawPolyline(ctx);
 		    break;
@@ -1023,15 +947,9 @@ var annotools = new Class({
                                     svgHtml += '<polyline id="'+index+'" points="';
                                     for (var j = 0; j < p.length; j++) {
                                         point = String.split(p[j], ',');
-
-                                        var polyPt = 
-                                            new OpenSeadragon.Point(
-                                                parseFloat(point[0]),
-                                                parseFloat(point[1])
-                                        );
-                                        var polyPixelPt = viewer.viewport.pixelFromPoint(polyPt);
-
-                                        svgHtml += polyPixelPt.x + ',' + polyPixelPt.y + ' ';
+					var penPixelX = this.imagingHelper.logicalToPhysicalX(point[0]);
+					var penPixelY = this.imagingHelper.logicalToPhysicalY(point[1]);
+                                        svgHtml += penPixelX + ',' + penPixelY + ' ';
                                     }
                                     svgHtml += '" style="fill:none;stroke:' + a[index].color + ';stroke-width:2"/>';
                                 }
@@ -1279,7 +1197,7 @@ var annotools = new Class({
 	    return nativeNumbers;
 	}
 
-	else if(annot.type == "polyline")
+	else if(annot.type == "polyline" || annot.type == "pencil")
 	{
 	    var x = annot.x;
 	    var y = annot.y;
@@ -1312,6 +1230,9 @@ var annotools = new Class({
 	    var nativeNumbers = JSON.encode({nativeW:nativeW,nativeH:nativeH,nativeX:nativeX,nativeY:nativeY,nativePoints:points});
 	    return nativeNumbers;
 	}
+
+	else
+	    return JSON.encode(annot);
     },
 
     convertFromNative: function(annot,end)
@@ -1337,7 +1258,7 @@ var annotools = new Class({
 	    return globalNumber;
 	}
 
-	else if(annot.type == "polyline")
+	else if(annot.type == "polyline" || annot.type == "pencil")
 	{
 	    var x = annot.x;
 	    var y = annot.y;
@@ -1377,7 +1298,7 @@ var annotools = new Class({
 	}
 
 	else
-	    return annot;
+	    return JSON.encode(annot);
     },
 
     convertAllToNative: function()
@@ -1471,12 +1392,11 @@ var annotools = new Class({
 	var started = false;
 	var pencil = [];
 	var newpoly = [];
-	var relativeStartPoint;
 	this.drawCanvas.addEvent('mousedown',function(e)
 	{
 	    started = true;
 	    var startPoint = OpenSeadragon.getMousePosition(e.event);
-	    relativeStartPoint = startPoint.minus(OpenSeadragon.getElementOffset(viewer.canvas));
+	    var relativeStartPoint = startPoint.minus(OpenSeadragon.getElementOffset(viewer.canvas));
 	    newpoly.push({
 		"x":relativeStartPoint.x,
 		"y":relativeStartPoint.y
@@ -1487,7 +1407,7 @@ var annotools = new Class({
 	    ctx.stroke();
 	}.bind(this));
 
-	this.drawCanvas.addEvent('mousmove',function(e)
+	this.drawCanvas.addEvent('mousemove',function(e)
 	{
 	    var newPoint = OpenSeadragon.getMousePosition(e.event);
 	    var newRelativePoint = newPoint.minus(OpenSeadragon.getElementOffset(viewer.canvas));
@@ -1502,6 +1422,70 @@ var annotools = new Class({
 		ctx.stroke();
 	    }
 	});
+
+	this.drawCanvas.addEvent('mouseup',function(e)
+	{
+	    started = false;
+	    pencil.push(newpoly);
+	    newpoly = [];
+	    numpoint = 0;
+	    var tip = prompt("Please Enter Some Descriptions","");
+	    var x,y,w,h;
+	    x = pencil[0][0].x;
+	    y = pencil[0][0].y;
+
+	    var maxdistance = 0;
+	    var points = "";
+	    var endRelativeMousePosition;
+	    for(var i = 0; i < pencil.length; i++)
+	    {
+		newpoly = pencil[i];
+		for(j = 0; j < newpoly.length - 1; j++)
+		{
+		    points += newpoly[j].x + ',' + newpoly[j].y + ' ';
+		    if(((newpoly[j].x - x) * (newpoly[j].x - x) + (newpoly[j].y -y) * (newpoly[j].y-y)) > maxdistance)
+		    {
+			maxdistance = ((newpoly[j].x - x) * (newpoly[j].x - x) + (newpoly[j].y -y) * (newpoly[j].y-y));
+			var endMousePosition = new OpenSeadragon.Point(newpoly[j].x, newpoly[j].y);
+			endRelativeMousePosition = endMousePosition.minus(OpenSeadragon.getElementOffset(viewer.canvas));
+		    }
+		}
+
+		points = points.slice(0,-1);
+		points += ';';
+	    }
+
+	    points = points.slice(0,-1);
+
+
+	    if(tip != null)
+	    {
+		var newAnnot = {
+		    x:x,
+		    y:y,
+		    w:w,
+		    h:h,
+		    type: 'pencil',
+		    points: points,
+		    text: tip,
+		    color: this.color
+		};
+
+		var globalNumbers = JSON.parse(this.convertFromNative(newAnnot, endRelativeMousePosition));
+		newAnnot.x = globalNumbers.nativeX;
+		newAnnot.y = globalNumbers.nativeY;
+		newAnnot.w = globalNumbers.nativeW;
+		newAnnot.h = globalNumbers.nativeH;
+		newAnnot.points = globalNumbers.points;
+		this.addnewAnnot(newAnnot);
+		this.getAnnot();
+	    }
+
+	    else
+	    {
+		ctx.clearRect(0,0,this.drawCanvas.width,this.drawCanvas.height);
+	    }
+	}.bind(this));
     },
     drawPolyline: function(ctx)
     {

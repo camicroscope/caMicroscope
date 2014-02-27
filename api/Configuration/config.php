@@ -15,6 +15,8 @@ return array(
 
     'getFileLocation' => "$url/services/TCGABreast/TCGABRCAImageMetaData/query/retrieveFileLocation?api_key=",
 
+    'getMPP' => "$url/services/TCGABreast/TCGABRCAImageMetaData/query/retrieveMPP?api_key=",
+
     'fastcgi_server' => "/camicroscope/fastcgi-bin/iipsrv.fcgi"
 	
     
