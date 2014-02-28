@@ -30,6 +30,8 @@ var annotools = new Class({
         this.viewer = options.viewer;
         this.imagingHelper = this.viewer.imagingHelper;
 	this.mpp = options.mpp;
+	this.mppx = parseFloat(this.mpp["mpp-x"]);
+	this.mppy = parseFloat(this.mpp["mpp-y"]);
 	this.annotationHandler = options.annotationHandler || new AnnotoolsOpenSeadragonHandler();
         window.addEvent("domready", function () {
             //this.getAnnot();
@@ -422,89 +424,8 @@ var annotools = new Class({
                     this.drawPolyline(ctx);
 		    break;
                 case "measure":
-                    //Measurement Tool
-                    var started = false;
-                    var x0, y0, x1, y1;
-                    var length;
-                    var maxWidth = this.maxWidth;
-                    var maxHeight = this.maxHeight;
-                    var ratio = this.ratio;
-                    this.ruler = new Element('div', {
-                        styles: {
-                            background: 'black',
-                            position: 'absolute',
-                            color: 'white',
-                            width: '200px'
-                        }
-                    }).inject(this.container);
-                    this.ruler.hide();
-                    this.drawCanvas.addEvent('mousedown', function (e) {
-                        if (!started) {
-                            x0 = e.event.layerX;
-                            y0 = e.event.layerY;
-                            started = true;
-                            this.ruler.show();
-                        } else {
-                            x1 = e.event.layerX;
-                            y1 = e.event.layerY;
-                            ctx.beginPath();
-                            ctx.moveTo(x0, y0);
-                            ctx.lineTo(x1, y1);
-                            ctx.strokeStyle = this.color;
-                            ctx.stroke();
-                            ctx.closePath();
-                            var tip = prompt("Save This?", length);
-                            if (tip != null) {
-                                x = (x0 + left - oleft) / owidth;
-                                y = (y0 + top - otop) / oheight;
-                                w = Math.abs(x1 - x0) / owidth;
-                                h = Math.abs(y1 - y0) / oheight;
-                                points = (x1 + left - oleft) / owidth + "," + (y1 + top - otop) / oheight;
-                                this.ruler.destroy();
-                                var newAnnot = {
-                                    x: x,
-                                    y: y,
-                                    w: w,
-                                    h: h,
-                                    type: "line",
-                                    points: points,
-                                    text: tip,
-                                    color: this.color
-                                };
-                                this.addnewAnnot(newAnnot);
-                                this.drawMarkups();
-                            } else {
-                                ctx.clearRect(0, 0, this.drawCanvas.width, this.drawCanvas.height);
-                            }
-                            started = false;
-                            this.ruler.destroy();
-                        }
-                    }.bind(this));
-                    this.drawCanvas.addEvent('mousemove', function (e) {
-                        if (started) {
-                            ctx.clearRect(0, 0, iip.wid, iip.hei);
-                            x1 = e.event.layerX;
-                            y1 = e.event.layerY;
-                            var maxLength = (Math.sqrt(maxWidth * maxWidth + maxHeight * maxHeight));
-                            var screen = (Math.sqrt(owidth * owidth + oheight * oheight));
-                            length = ((Math.sqrt((x0 - x1) * (x0 - x1) + (y0 - y1) * (y0 - y1))) / screen) * maxLength * ratio + 'mm';
-                            this.ruler.set({
-                                html: length,
-                                styles: {
-                                    left: x1 + left - oleft + 10,
-                                    top: y1 + top - otop
-                                }
-                            });
-                            ctx.beginPath();
-                            ctx.moveTo(x0, y0);
-                            ctx.lineTo(x1, y1);
-                            ctx.strokeStyle = this.color;
-                            ctx.stroke();
-                            ctx.closePath();
- 
-                        }
-                    }.bind(this));
-                    break;
+                    this.drawMeasure(ctx);
+		    break;
             }
         } else this.showMessage("Container Not SET Correctly Or Not Fully Loaded Yet");
         
@@ -788,7 +709,7 @@ var annotools = new Class({
                     var objectCenterRelPt = this.viewer.viewport.pointFromPixel(objectCenterPt);
                     this.annotationHandler.objectCenterPts[i] = objectCenterRelPt;
 
-                } 
+                }
                 else {
                     var bbox = object.getBBox();
                     var objectCenterPt = 
@@ -971,9 +892,26 @@ var annotools = new Class({
                                 }
                                 break;
                             case "line":
-                                var points = String.split(a[index].points, ',');
-                                svgHtml += '<line x1="' + a[index].x * width + '" y1="' + a[index].y * height + '" x2="' + parseFloat(points[0]) * width + '" y2="' + parseFloat(points[1]) * height + '" style="stroke:' + a[index].color + ';stroke-width:2"/>';
-                                break;
+                                /*var points = String.split(a[index].points, ' ');
+				svgHtml = '<line ';
+				for(var j = 0; j < points.length; j++)
+				{
+				    p = String.split(points[j],',');
+				x = this.imagingHelper.logicalToPhysicalX(p[0]);
+				y = this.imagingHelper.logicalToPhysicalY(p[1]);
+				    x = p[0];
+				    y = p[1];
+				    svgHtml += 'x'+(j+1)+'="' + x + '" y'+(j+1)+'="' + y + ' ';
+				}
+
+				svgHtml += 'style=/"stroke:' + a[index].color + ';stroke-width:2"/>';
+                                */
+				var points = String.split(a[index].points, ',');
+				x2 = this.imagingHelper.logicalToPhysicalX(points[0]);
+				y2 = this.imagingHelper.logicalToPhysicalY(points[1]);
+				svgHtml += '<line x1="' + a[index].x  + '" y1="' + a[index].y + '" x2="' + x2 + '" y2="' + y2 + '" style="stroke:' + a[index].color + ';stroke-width:2"/>';
+
+				break;
                         }
 
                     }
@@ -1197,7 +1135,7 @@ var annotools = new Class({
 	    return nativeNumbers;
 	}
 
-	else if(annot.type == "polyline" || annot.type == "pencil")
+	else if(annot.type == "polyline" || annot.type == "pencil" || annot.type == "line")
 	{
 	    var x = annot.x;
 	    var y = annot.y;
@@ -1258,7 +1196,7 @@ var annotools = new Class({
 	    return globalNumber;
 	}
 
-	else if(annot.type == "polyline" || annot.type == "pencil")
+	else if(annot.type == "polyline" || annot.type == "pencil" || annot.type == "line")
 	{
 	    var x = annot.x;
 	    var y = annot.y;
@@ -1487,6 +1425,133 @@ var annotools = new Class({
 	    }
 	}.bind(this));
     },
+
+    drawMeasure: function(ctx)
+    {
+	var started = false;
+	var x0,y0,x1,y1;
+	var length;
+	
+	this.drawCanvas.addEvent('mousedown',function (e) 
+	{
+	    if(!started)
+	    {
+		var startPosition = OpenSeadragon.getMousePosition(e.event);
+		var startRelativeMousePosition = startPosition.minus(OpenSeadragon.getElementOffset(viewer.canvas));
+		x0 = startRelativeMousePosition.x;
+		y0 = startRelativeMousePosition.y;
+		started = true;
+	    }
+
+	    else
+	    {
+		var endPosition = OpenSeadragon.getMousePosition(e.event);
+		var endRelativePosition = endPosition.minus(OpenSeadragon.getElementOffset(viewer.canvas));
+		x1 = endRelativePosition.x;
+		y1 = endRelativePosition.y;
+		ctx.beginPath();
+		ctx.moveTo(x0,y0);
+		ctx.lineTo(x1,y1);
+		ctx.strokeStyle = this.color;
+		ctx.stroke();
+		ctx.closePath();
+
+		var minX, minY = 0;
+		var maxX, maxY = 0
+		if(x1 > x0)
+		{
+		    minX = x0;
+		    maxX = x1;
+		}
+
+		else
+		{
+		    minX = x1;
+		    maxX = x0;
+		}
+		if(y1 > y0)
+		{
+		    minY = y0;
+		    maxY = y1;
+		}
+
+		else
+		{
+		    minY = y1;
+		    maxY = y0;
+		}
+
+		var x_dist = ((this.imagingHelper.physicalToDataX(x0)) - (this.imagingHelper.physicalToDataX(x1)));
+		var y_dist = ((this.imagingHelper.physicalToDataY(y0)) - (this.imagingHelper.physicalToDataY(y1)));
+
+		var x_micron = this.mppx * x_dist;
+		var y_micron = this.mppy * y_dist;
+
+		var length = Math.sqrt(x_micron.pow(2) + y_micron.pow(2));
+		var tip = prompt("Save This?",length + "um");
+		if (tip != null)
+		{
+		    points = (x1 + "," + y1);
+		    var w = 0;
+		    var h = 0;
+		    var newAnnot = 
+		    {
+			x:x0,
+			y:y0,
+			w:w,
+			h:h,
+			type:"line",
+			points: points,
+			text: tip,
+			color: this.color
+		    };
+		    var finalPosition = new OpenSeadragon.Point(maxX,maxY);
+		    var finalRelativePosition = finalPosition.minus(OpenSeadragon.getElementOffset());
+
+		    var globalNumbers = JSON.parse(this.convertFromNative(newAnnot,finalRelativePosition));
+		
+		    var finalRelativePosition = finalPosition.minus(OpenSeadragon.getElementOffset());
+
+		    var globalNumbers = JSON.parse(this.convertFromNative(newAnnot,finalRelativePosition));
+		    newAnnot.x = globalNumbers.nativeX;
+		    newAnnot.y = globalNumbers.nativeY;
+		    newAnnot.w = globalNumbers.nativeW;
+		    newAnnot.h = globalNumbers.nativeH;
+		    newAnnot.points = globalNumbers.points;
+		    this.addnewAnnot(newAnnot);
+		    this.getAnnot();
+		}
+
+		else
+		{
+		    ctx.clearRect(0,0,this.drawCanvas.width,this.drawCanvas.height);
+		}
+
+		started = false;
+	    }
+	}.bind(this));
+
+	this.drawCanvas.addEvent('mousemove', function (e)
+	{
+	    if(started)
+	    {
+		ctx.clearRect(0,0, this.drawCanvas.width, this.drawCanvas.height);
+		var currentPosition = OpenSeadragon.getMousePosition(e.event);
+		var currentRelativePosition = OpenSeadragon.getMousePosition(e.event);
+
+		x1 = currentRelativePosition.x;
+		y1 = currentRelativePosition.y;
+
+		ctx.beginPath();
+		ctx.moveTo(x0,y0);
+		ctx.lineTo(x1,y1);
+		ctx.strokeStyle = this.color;
+		ctx.stroke();
+		ctx.closePath();
+	    }
+	}.bind(this));
+    },
+
     drawPolyline: function(ctx)
     {
 	var started = true;
