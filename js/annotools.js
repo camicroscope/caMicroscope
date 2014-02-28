@@ -85,13 +85,13 @@ var annotools = new Class({
             'class': 'toolButton',
             'src': 'images/measure.svg'
         }).inject(this.tool); //Measurement Tool
-       //** this.magnifybutton = new Element('img', {
+       /* this.magnifybutton = new Element('img', {
             'title': 'Loupe (l)',
             'class': 'toolButton',
             'src': 'images/magnify.svg'
         }).inject(this.tool); //Magnify Tool
-	
-       */ this.hidebutton = new Element('img', {
+	*/
+       this.hidebutton = new Element('img', {
             'title': 'Toggle Markup (t)',
             'class': 'toolButton',
             'src': 'images/hide.svg'
