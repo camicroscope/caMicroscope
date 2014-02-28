@@ -224,7 +224,7 @@
 
             var viewport = this.viewer.viewport;
             var zoom = viewport.viewportToImageZoom(viewport.getZoom(true));
-            var currentPPM = zoom * this.pixelsPerMeter;
+	    var currentPPM = zoom * this.pixelsPerMeter;
             var props = this.sizeAndTextRenderer(currentPPM, this.minWidth);
 
             this.drawScalebar(props.size, props.text);
