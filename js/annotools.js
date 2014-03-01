@@ -1428,6 +1428,7 @@ var annotools = new Class({
 
 	    else
 	    {
+		started = false;
 		var endPosition = OpenSeadragon.getMousePosition(e.event);
 		var endRelativePosition = endPosition.minus(OpenSeadragon.getElementOffset(viewer.canvas));
 		x1 = endRelativePosition.x;
@@ -1505,11 +1506,10 @@ var annotools = new Class({
 		    this.getAnnot();
 		}
 
-		else
+		else if(tip == null)
 		{
 		    ctx.clearRect(0,0,this.drawCanvas.width,this.drawCanvas.height);
 		}
-		started = false;
 	    }
 	}.bind(this));
 
