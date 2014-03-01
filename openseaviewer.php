@@ -14,6 +14,7 @@ $config = require 'api/Configuration/config.php';
 
     <script src="js/openseadragon/openseadragon-bin-1.0.0/openseadragon.js"></script>
     <script src="js/openseadragon/openseadragon-imaginghelper.min.js"></script>
+    <script src="js/openseadragon/openseadragon-scalebar.js"></script>
     <script type="text/javascript" src="js/mootools-core-1.4.5-full-nocompat-yc.js"></script>
     <script type="text/javascript" src="js/mootools-more-1.4.0.1-compressed.js"></script>
     <script src="js/jquery.js"></script>
@@ -64,21 +65,6 @@ $config = require 'api/Configuration/config.php';
     <script type="text/javascript">
       var annotool = null;
       var tissueId = <?php echo json_encode($_GET['tissueId']); ?>;
-      //var fileLocationUrl = "api/Data/osdMetadataRetriever.php?tissueId=" + tissueId;
-      //var fileLocation;
-      //$.ajaxSetup({
-	//  async: false
-      //});
-
-      //$.getJSON(fileLocationUrl, function(location)
-	//  {
-	//	fileLocation = location;
-	 // });
-
-      //$.ajaxSetup({
-	//  async: true
-      // });
-
       var imagedata = new OSDImageMetaData({imageId:tissueId});
       var MPP = imagedata.metaData[0];
       var fileLocation = imagedata.metaData[1];
@@ -93,6 +79,18 @@ $config = require 'api/Configuration/config.php';
       viewer.clearControls();
       viewer.open("<?php print_r($config['fastcgi_server']); ?>?DeepZoom=" + fileLocation);
       var imagingHelper = new OpenSeadragonImaging.ImagingHelper({viewer: viewer});
+      viewer.scalebar({
+	  type: OpenSeadragon.ScalebarType.MAP,
+	  pixelsPerMeter: (1/(parseFloat(this.MPP["mpp-x"])*0.000001)),
+	  xOffset: 5,
+	  yOffset: 10,
+	  stayInsideImage: true,
+	  color: "rgb(150,150,150)",
+	  fontColor: "rgb(100,100,100)",
+	  backgroundColor: "rgba(255,255,255,0.5)",
+	  barThickness: 2
+      });
+
       function addOverlays() {
         var annotationHandler = new AnnotoolsOpenSeadragonHandler(viewer, {});
         
