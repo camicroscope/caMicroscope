@@ -224,6 +224,7 @@ var annotools = new Class({
                     this.convertAllToNative();
 		    this.displayAnnot(); //Display The Annotations
 		    this.relativeToGlobal();
+                    this.setupHandlers();
                     //console.log("successfully get annotations");
                 }.bind(this),
                 onFailure: function (e) {
@@ -891,12 +892,28 @@ var annotools = new Class({
                                 }
                                 break;
                             case "line":
+                                /*var points = String.split(a[index].points, ' ');
+				svgHtml = '<line ';
+				for(var j = 0; j < points.length; j++)
+				{
+				    p = String.split(points[j],',');
+				x = this.imagingHelper.logicalToPhysicalX(p[0]);
+				y = this.imagingHelper.logicalToPhysicalY(p[1]);
+				    x = p[0];
+				    y = p[1];
+				    svgHtml += 'x'+(j+1)+'="' + x + '" y'+(j+1)+'="' + y + ' ';
+				}
+
+				svgHtml += 'style=/"stroke:' + a[index].color + ';stroke-width:2"/>';
+                                */
 				var points = String.split(a[index].points, ',');
 				x2 = this.imagingHelper.logicalToPhysicalX(points[0]);
 				y2 = this.imagingHelper.logicalToPhysicalY(points[1]);
-				svgHtml += '<polygon id="'+index+'" points="'+ a[index].x +','+ a[index].y + ' ' + x2 + ',' + y2 + ' ' + a[index].x + ',' + a[index].y + ' " style="fill:none;stroke:' + a[index].color + ';stroke-width:2"/>';
+				svgHtml += '<line x1="' + a[index].x  + '" y1="' + a[index].y + '" x2="' + x2 + '" y2="' + y2 + '" style="stroke:' + a[index].color + ';stroke-width:2"/>';
+
 				break;
-			}
+                        }
+
                     }
                 }
                 svgHtml += '</g></svg>';
@@ -1428,7 +1445,6 @@ var annotools = new Class({
 
 	    else
 	    {
-		started = false;
 		var endPosition = OpenSeadragon.getMousePosition(e.event);
 		var endRelativePosition = endPosition.minus(OpenSeadragon.getElementOffset(viewer.canvas));
 		x1 = endRelativePosition.x;
@@ -1506,10 +1522,12 @@ var annotools = new Class({
 		    this.getAnnot();
 		}
 
-		else if(tip == null)
+		else
 		{
 		    ctx.clearRect(0,0,this.drawCanvas.width,this.drawCanvas.height);
 		}
+
+		started = false;
 	    }
 	}.bind(this));
 
