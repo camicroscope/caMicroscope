@@ -1240,8 +1240,8 @@ var annotools = new Class({
     drawRectangle: function(ctx)
     {
 	var started = false;
-	var x,y,w,h;
-
+	var min_x,min_y,max_x,max_y,w,h;
+	var startPosition;
 	this.drawCanvas.addEvent('mousedown',function(e)
 	{
 	    started = true;
@@ -1257,28 +1257,30 @@ var annotools = new Class({
 		ctx.clearRect(0,0,this.drawCanvas.width, this.drawCanvas.height);
 		var currentMousePosition = OpenSeadragon.getMousePosition(e.event);
 
-		x = Math.min(currentMousePosition.x,x);
-		y = Math.min(currentMousePosition.y,y);
-		w = Math.abs(currentMousePosition.x - x);
-		h = Math.abs(currentMousePosition.y - y);
-
+		min_x = Math.min(currentMousePosition.x,startPosition.x);
+		min_y = Math.min(currentMousePosition.y,startPosition.y);
+		max_x = Math.max(currentMousePosition.x,startPosition.x);
+		max_y = Math.max(currentMousePosition.y,startPosition.y);
+		w = Math.abs(max_x - min_x);
+		h = Math.abs(max_y - min_y);
 		ctx.strokeStyle = this.color;
-		ctx.strokeRect(x,y,w,h);
+		ctx.strokeRect(min_x,min_y,w,h);
 	    }
 	}.bind(this));
 
 	this.drawCanvas.addEvent('mouseup',function(e)
 	{
 	    started = false;
-	    var startRelativeMousePosition = new OpenSeadragon.Point(x,y).minus(OpenSeadragon.getElementOffset(viewer.canvas));
-	    var endMousePosition = OpenSeadragon.getMousePosition(e.event);
-	    var endRelativeMousePosition = new OpenSeadragon.Point(endMousePosition.x,endMousePosition.y).minus(OpenSeadragon.getElementOffset(viewer.canvas));
+	    var finalMousePosition = new OpenSeadragon.getMousePosition(e.event);
 
-	    var wpoint = endRelativeMousePosition.minus(startRelativeMousePosition);
+		min_x = Math.min(finalMousePosition.x,startPosition.x);
+		min_y = Math.min(finalMousePosition.y,startPosition.y);
+		max_x = Math.max(finalMousePosition.x,startPosition.x);
+		max_y = Math.max(finalMousePosition.y,startPosition.y);
 
-	    w = wpoint.x;
-	    h = wpoint.y;
 	    
+	    var startRelativeMousePosition = new OpenSeadragon.Point(min_x,min_y).minus(OpenSeadragon.getElementOffset(viewer.canvas));
+	    var endRelativeMousePosition = new OpenSeadragon.Point(max_x,max_y).minus(OpenSeadragon.getElementOffset(viewer.canvas));
 	    var tip = prompt("Please Enter Some Description","");
 
 	    if(tip != null)
