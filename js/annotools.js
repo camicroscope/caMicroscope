@@ -932,12 +932,16 @@ var annotools = new Class({
             left = parseInt(container.offsetLeft),
             top = parseInt(container.offsetTop),
             annot = this.annotations[id];
+	var x = this.imagingHelper.physicalToLogicalX(annot.x);
+	var y = this.imagingHelper.physicalToLogicalY(annot.y);
+	var w = this.imagingHelper.physicalToLogicalDistance(annot.w);
+	var h = this.imagingHelper.physicalToLogicalDistance(annot.h);
         var d = new Element("div", {
             "class": 'edittip',
             styles: {
                 position: 'absolute',
-                left: Math.round(width * annot.x + left),
-                top: Math.round(height * annot.y + height * annot.h + top)
+                left: Math.round(width * x + left),
+                top: Math.round(height * y + height * h + top)
             }
         }).inject(document.body);
         d.makeDraggable();
@@ -950,7 +954,7 @@ var annotools = new Class({
                 }.bind(this)
             }
         }).inject(d);
-        var editButton = new Element("button", {
+        /*var editButton = new Element("button", {
             html: 'Edit',
             events: {
                 'click': function () {
@@ -976,7 +980,7 @@ var annotools = new Class({
                     d.destroy();
                 }
             }
-        }).inject(d);
+        }).inject(d);*/
     },
     deleteAnnot: function (id) //Delete Annotations
     {
