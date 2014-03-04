@@ -341,82 +341,8 @@ var annotools = new Class({
                     this.drawRectangle(ctx);
 		    break;
                 case "ellipse":
-                    //Draw Ellipse
-                    var started = false;
-                    var x, //start location x
-                        y, //start location y
-                        w, //width
-                        h; //height
-                    this.drawCanvas.addEvent('mousedown', function (e) {
-                        started = true;
-                        x = e.event.layerX;
-                        y = e.event.layerY;
-                    });
-                    this.drawCanvas.addEvent('mousemove', function (e) {
-                        if (started) {
-                            ctx.clearRect(0, 0, this.drawCanvas.width, this.drawCanvas.height);
-                            x = Math.min(e.event.layerX, x);
-                            y = Math.min(e.event.layerY, y);
-                            w = Math.abs(e.event.layerX - x);
-                            h = Math.abs(e.event.layerY - y);
-                            var kappa = .5522848;
-                            var ox = (w / 2) * kappa; // control point offset horizontal
-                            var oy = (h / 2) * kappa; // control point offset vertical
-                            var xe = x + w; // x-end
-                            var ye = y + h; // y-end
-                            var xm = x + w / 2; // x-middle
-                            var ym = y + h / 2; // y-middle
-                            ctx.beginPath();
-                            ctx.moveTo(x, ym);
-                            ctx.bezierCurveTo(x, ym - oy, xm - ox, y, xm, y);
-                            ctx.bezierCurveTo(xm + ox, y, xe, ym - oy, xe, ym);
-                            ctx.bezierCurveTo(xe, ym + oy, xm + ox, ye, xm, ye);
-                            ctx.bezierCurveTo(xm - ox, ye, x, ym + oy, x, ym);
-                            ctx.closePath();
-                            ctx.strokeStyle = this.color;
-                            ctx.stroke();
-                        }
-                    }.bind(this));
-                    this.drawCanvas.addEvent('mouseup', function (e) {
-                        started = false;
-                        var p = 
-                                new OpenSeadragon.Point(e.client.x, e.client.y).minus
-                                   (OpenSeadragon.getElementPosition(viewer.element));
-                
-                        var point = viewer.viewport.pointFromPixel(p);
-                        var pixelPt = viewer.viewport.pixelFromPoint(point);
-                        var pointFromPixel = viewer.viewport.pointFromPixel(new OpenSeadragon.Point(x, y));
-
-                        var distx = Math.abs(pixelPt.x - x);
-                        var disty = Math.abs(pixelPt.y - y);
-                        x = pointFromPixel.x; 
-                        y = pointFromPixel.y;
-                        var wpoint = point.minus(pointFromPixel);
-                        w = wpoint.x;
-                        h = wpoint.y;
-
-                        var tip = prompt("Please Enter Some Descriptions", "");
-                        if (tip != null) {
-                            //Update Annotations
-                            var newAnnot = {
-                                x: x,
-                                y: y,
-                                w: w,
-                                h: h,
-                                type: "ellipse",
-                                text: tip,
-                                color: this.color
-                            };
-                            this.addnewAnnot(newAnnot);
-                            //this.drawMarkups();
-                            //viewer.viewport.goHome();
-                            //viewer.viewport.zoomTo(1);
-                            this.getAnnot();
-                        } else {
-                            ctx.clearRect(0, 0, this.drawCanvas.width, this.drawCanvas.height);
-                        }
-                    }.bind(this));
-                    break;
+                    this.drawEllipse(ctx);
+		    break;
                 case "pencil":
 		    this.drawPencil(ctx);
 		    break;
@@ -848,17 +774,22 @@ var annotools = new Class({
                                 svgHtml += '<rect id="' + index + '" x="' + x + '" y="' + y + '" width="' + w*width + '" height="' + width*h + '" stroke="' + a[index].color + '" stroke-width="2" fill="none"/>';
                                 break;
                             case "ellipse":
-                                var cx = parseFloat(a[index].x) + parseFloat(a[index].w) / 2;
-                                var cy = parseFloat(a[index].y) + parseFloat(a[index].h) / 2;
-                                var rx = parseFloat(a[index].w) / 2;
-                                var ry = parseFloat(a[index].h) / 2;
+				var offset = OpenSeadragon.getElementOffset(viewer.canvas);
+
+				var x = parseFloat(a[index].x) + offset.x;
+				var y = parseFloat(a[index].y) + offset.y;
+				var w = this.imagingHelper.physicalToLogicalDistance(parseFloat(a[index].w));
+				var h = this.imagingHelper.physicalToLogicalDistance(parseFloat(a[index].h));
+				h = h/this.imagingHelper.imgAspectRatio;
+                                var cx = x + w / 2;
+                                var cy = y + h / 2;
+                                var rx = w / 2;
+                                var ry = h / 2;
                                 // handle displaying the drawing when they are already zoomed in
                                 rx = rx * viewer.viewport.getZoom();
                                 ry = ry * viewer.viewport.getZoom();
 
-                                var point = viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(cx,cy));
-
-                                svgHtml += '<ellipse id="' + index + '" cx="' + point.x + '" cy="' + point.y + '" rx="' + width* rx + '" ry="' + width * ry + '" style="fill:none;stroke:' + a[index].color + ';stroke-width:2"/>';
+                                svgHtml += '<ellipse id="' + index + '" cx="' + cx + '" cy="' + cy + '" rx="' + width* rx + '" ry="' + width * ry + '" style="fill:none;stroke:' + a[index].color + ';stroke-width:2"/>';
                                 break;
                             case "pencil":
                                 var points = a[index].points;
@@ -1105,7 +1036,7 @@ var annotools = new Class({
 
     convertToNative: function (annot)
     {
-	if(annot.type == "rect")
+	if(annot.type == "rect" || annot.type == "ellipse")
 	{
 	    var x = annot.x;
 	    var y = annot.y;
@@ -1160,7 +1091,7 @@ var annotools = new Class({
 
     convertFromNative: function(annot,end)
     {
-	if(annot.type == "rect")
+	if(annot.type == "rect" || annot.type == "ellipse")
 	{
 	    var x = annot.x;
 	    var y = annot.y;
@@ -1237,6 +1168,96 @@ var annotools = new Class({
 	}
     },
 
+    drawEllipse: function(ctx)
+    {
+	var started = false;
+	var min_x,min_y,max_x,max_y,w,h;
+	var startPosition;
+	this.drawCanvas.addEvent('mousedown',function(e)
+	{
+	    started = true;
+	    startPosition = OpenSeadragon.getMousePosition(e.event);
+	    x = startPosition.x;
+	    y = startPosition.y;
+	});
+
+	this.drawCanvas.addEvent('mousemove',function(e)
+	{
+	    if(started)
+	    {
+		ctx.clearRect(0,0,this.drawCanvas.width,this.drawCanvas.height);
+		var currentMousePosition = OpenSeadragon.getMousePosition(e.event);
+
+		min_x = Math.min(currentMousePosition.x,startPosition.x);
+		min_y = Math.min(currentMousePosition.y,startPosition.y);
+		max_x = Math.max(currentMousePosition.x,startPosition.x);
+		max_y = Math.max(currentMousePosition.y,startPosition.y);
+		w = Math.abs(max_x - min_x);
+		h = Math.abs(max_y - min_y);
+
+		var kappa = .5522848;
+		var ox = (w/2) *kappa;
+		var oy = (h/2) *kappa;
+		var xe = min_x + w;
+		var ye = min_y + h;
+		var xm = min_x + w/2;
+		var ym = min_y + h/2;
+
+		ctx.beginPath();
+		ctx.moveTo(min_x,ym);
+		ctx.bezierCurveTo(min_x,ym - oy,xm - ox, min_y, xm, min_y);
+		ctx.bezierCurveTo(xm + ox, min_y, xe, ym - oy, xe, ym);
+		ctx.bezierCurveTo(xe, ym + oy, xm + ox, ye, xm, ye);
+		ctx.bezierCurveTo(xm - ox, ye, min_x, ym + oy, min_x, ym);
+		ctx.closePath();
+		ctx.strokeStyle = this.color;
+		ctx.stroke();
+
+	    }
+	}.bind(this));
+
+	this.drawCanvas.addEvent('mouseup', function (e)
+	{
+	    started = false;
+	    var finalMousePosition = new OpenSeadragon.getMousePosition(e.event);
+	    min_x = Math.min(finalMousePosition.x,startPosition.x);
+	    min_y = Math.min(finalMousePosition.y,startPosition.y);
+	    max_x = Math.max(finalMousePosition.x,startPosition.x);
+	    max_y = Math.max(finalMousePosition.y,startPosition.y);
+
+	    var startRelativeMousePosition = new OpenSeadragon.Point(min_x,min_y).minus(OpenSeadragon.getElementOffset(viewer.canvas));
+	    var endRelativeMousePosition = new OpenSeadragon.Point(max_x,max_y).minus(OpenSeadragon.getElementOffset(viewer.canvas));
+	    var tip = prompt("Please Enter Some Description","");
+
+	    if(tip != null)
+	    {
+		var newAnnot = {
+		    x: startRelativeMousePosition.x,
+		    y: startRelativeMousePosition.y,
+		    w: w,
+		    h: h,
+		    type: "ellipse",
+		    text: tip,
+		    color: this.color
+		};
+
+		var globalNumbers = JSON.parse(this.convertFromNative(newAnnot, endRelativeMousePosition));
+
+		newAnnot.x = globalNumbers.nativeX;
+		newAnnot.y = globalNumbers.nativeY;
+		newAnnot.w = globalNumbers.nativeW;
+		newAnnot.h = globalNumbers.nativeH;
+
+		this.addnewAnnot(newAnnot);
+		this.getAnnot();
+	    }
+
+	    else
+	    {
+		ctx.clearRect(0,0,this.drawCanvas.width,this.drawCanvas.height);
+	    }
+	}.bind(this));
+    },
     drawRectangle: function(ctx)
     {
 	var started = false;
