@@ -778,11 +778,13 @@ var annotools = new Class({
 
 				var x = parseFloat(a[index].x) + offset.x;
 				var y = parseFloat(a[index].y) + offset.y;
-				var w = this.imagingHelper.physicalToLogicalDistance(parseFloat(a[index].w));
-				var h = this.imagingHelper.physicalToLogicalDistance(parseFloat(a[index].h));
+				var w = parseFloat(a[index].w);
+				var h = parseFloat(a[index].h);
 				h = h/this.imagingHelper.imgAspectRatio;
                                 var cx = x + w / 2;
                                 var cy = y + h / 2;
+				w = this.imagingHelper.physicalToLogicalDistance(w);
+				h = this.imagingHelper.physicalToLogicalDistance(h);
                                 var rx = w / 2;
                                 var ry = h / 2;
                                 // handle displaying the drawing when they are already zoomed in
