@@ -215,6 +215,11 @@ var annotools = new Class({
 
     getAnnot: function (viewer) //Get Annotation from the API
     {
+	    var  x,y,x1,y1;
+	    x = this.imagingHelper._viewportOrigin["x"];
+	    y = this.imagingHelper._viewportOrigin["y"];
+	    x1 = x + this.imagingHelper._viewportWidth;
+	    y1 = x + this.imagingHelper._viewportHeight;
             var jsonRequest = new Request.JSON({
                 //url: IP + 'api/annotation_relative.php',
                 url: 'api/Data/annotation_relative.php',
@@ -232,7 +237,11 @@ var annotools = new Class({
                     this.annotations = new Array();
                 }.bind(this)
             }).get({
-                'iid': this.iid
+                'iid': this.iid,
+		'x':x,
+		'y':y,
+		'x1':x1,
+		'y1':y1
             });
     },
     
@@ -1244,7 +1253,8 @@ var annotools = new Class({
 		    h: h,
 		    type: "ellipse",
 		    text: tip,
-		    color: this.color
+		    color: this.color,
+		    loc: new Array()
 		};
 
 		var globalNumbers = JSON.parse(this.convertFromNative(newAnnot, endRelativeMousePosition));
@@ -1253,6 +1263,10 @@ var annotools = new Class({
 		newAnnot.y = globalNumbers.nativeY;
 		newAnnot.w = globalNumbers.nativeW;
 		newAnnot.h = globalNumbers.nativeH;
+		var loc = new Array();
+		loc[0] = parseFloat(newAnnot.x);
+		loc[1] = parseFloat(newAnnot.y);
+		newAnnot.loc = loc;
 
 		this.addnewAnnot(newAnnot);
 		this.getAnnot();
@@ -1309,7 +1323,6 @@ var annotools = new Class({
 	    var startRelativeMousePosition = new OpenSeadragon.Point(min_x,min_y).minus(OpenSeadragon.getElementOffset(viewer.canvas));
 	    var endRelativeMousePosition = new OpenSeadragon.Point(max_x,max_y).minus(OpenSeadragon.getElementOffset(viewer.canvas));
 	    var tip = prompt("Please Enter Some Description","");
-
 	    if(tip != null)
 	    {
 		var newAnnot = {
@@ -1319,7 +1332,8 @@ var annotools = new Class({
 		    h: h,
 		    type: "rect",
 		    text: tip,
-		    color: this.color
+		    color: this.color,
+		    loc: new Array()
 		};
 
 		var globalNumbers = JSON.parse(this.convertFromNative(newAnnot, endRelativeMousePosition));
@@ -1328,7 +1342,10 @@ var annotools = new Class({
 		newAnnot.y = globalNumbers.nativeY;
 		newAnnot.w = globalNumbers.nativeW;
 		newAnnot.h = globalNumbers.nativeH;
-
+		var loc = new Array();
+		loc[0] = parseFloat(newAnnot.x);
+		loc[1] = parseFloat(newAnnot.y);
+		newAnnot.loc = loc;
 		this.addnewAnnot(newAnnot);
 		this.getAnnot();
 	    }
@@ -1420,7 +1437,8 @@ var annotools = new Class({
 		    type: 'pencil',
 		    points: points,
 		    text: tip,
-		    color: this.color
+		    color: this.color,
+		    loc: new Array()
 		};
 
 		var globalNumbers = JSON.parse(this.convertFromNative(newAnnot, endRelativeMousePosition));
@@ -1429,6 +1447,10 @@ var annotools = new Class({
 		newAnnot.w = globalNumbers.nativeW;
 		newAnnot.h = globalNumbers.nativeH;
 		newAnnot.points = globalNumbers.points;
+		var loc = new Array();
+		loc[0] = parseFloat(newAnnot.x);
+		loc[1] = parseFloat(newAnnot.y);
+		newAnnot.loc = loc;
 		this.addnewAnnot(newAnnot);
 		this.getAnnot();
 	    }
@@ -1517,7 +1539,8 @@ var annotools = new Class({
 			type:"line",
 			points: points,
 			text: tip,
-			color: this.color
+			color: this.color,
+			loc: new Array()
 		    };
 		    var finalPosition = new OpenSeadragon.Point(maxX,maxY);
 		    var finalRelativePosition = finalPosition.minus(OpenSeadragon.getElementOffset());
@@ -1532,6 +1555,10 @@ var annotools = new Class({
 		    newAnnot.w = globalNumbers.nativeW;
 		    newAnnot.h = globalNumbers.nativeH;
 		    newAnnot.points = globalNumbers.points;
+		    var loc = new Array();
+		    loc[0] = parseFloat(newAnnot.x);
+		    loc[1] = parseFloat(newAnnot.y);
+		    newAnnot.loc = loc;
 		    this.addnewAnnot(newAnnot);
 		    this.getAnnot();
 		}
@@ -1644,7 +1671,8 @@ var annotools = new Class({
 		    type: 'polyline',
 		    points: points,
 		    text: tip,
-		    color: this.color
+		    color: this.color,
+		    loc: new Array()
 		};
 		
 		var globalNumbers = JSON.parse(this.convertFromNative(newAnnot,endRelativeMousePosition));
@@ -1654,6 +1682,10 @@ var annotools = new Class({
 		newAnnot.w = globalNumbers.nativeW;
 		newAnnot.h = globalNumbers.nativeH;
 		newAnnot.points = globalNumbers.points;
+		var loc = new Array();
+		loc[0] = newAnnot.x;
+		loc[1] = newAnnot.y;
+		newAnnot.loc = loc;
 		this.addnewAnnot(newAnnot);
 		this.getAnnot();
 	    }

@@ -82,7 +82,7 @@ var AnnotoolsOpenSeadragonHandler = new Class({
         annot.getAnnot();
     },
 
-    handleZoomIn: function() {
+    handleZoomIn: function(annot) {
 
           console.log("handleZoomIn");
 	  var center = viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(.5,.5));
@@ -148,9 +148,6 @@ var AnnotoolsOpenSeadragonHandler = new Class({
           }
           
           annotationHandler.lastCenter = center; 
-    
-
-
     },
 
     handleZoomOut: function() {
@@ -216,8 +213,6 @@ var AnnotoolsOpenSeadragonHandler = new Class({
           }
                       
           annotationHandler.lastCenter = center; 
-    
-
     },
 
     handleMouseMove: function(evt) {
