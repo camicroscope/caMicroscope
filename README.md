@@ -1,4 +1,4 @@
-Bio-Medical Image-Viewer
+caMicroscope - A Web Based Annotation and Visualization Platform for Digitized Whole Slide Images
 
 Ameen Kazerouni <ameen.kazerouni@emory.edu>
 
@@ -7,7 +7,6 @@ Ashish Sharma <ashish.sharma@emory.edu>
 Sanjay Agravat <sagrava@emory.edu>
 
 Shaohuan Li <shaohuan.li@gmail.com> 
-
 
 ============
 
