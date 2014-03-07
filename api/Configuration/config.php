@@ -5,13 +5,11 @@ $url = "imaging.cci.emory.edu:9099";
 return array(
     'auth_realm' => "$url/securityTokenService",
 	
-    'getAllAnnotations' => "$url/services/TCGABreast/TCGAAnnotations/query/getAnnotsByID?iid=",
+    'getAllAnnotations' => "$url/services/annotations/Annotations/query/getAnnotsByID?iid=",
 	
-    'getAnnotationsSpatial' => "$url/services/TCGABreast/TCGAAnnotations/query/getAnnotsByIDSpatial?iid=",
-
-    'postAnnotation' => "$url/services/TCGABreast/TCGAAnnotations/submit/singleInput",
+    'postAnnotation' => "$url/services/annotations/Annotations/submit/singleInput",
 	
-    'deleteAnnotation' => "$url/services/TCGABreast/TCGAAnnotations/delete/deleteById?annotId=",
+    'deleteAnnotation' => "$url/services/annotations/Annotations/delete/deleteById?annotId=",
 
     'getDimensions' => "$url/services/TCGABreast/TCGABRCAImageMetaData/query/retrieveMaxWidthAndHeight?api_key=",
 
