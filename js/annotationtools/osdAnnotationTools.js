@@ -11,8 +11,15 @@ Unless required by applicable law or agreed to in writing, software distributed 
 var IP = '';
 var annotools = new Class({
     initialize: function (element, options) {
-	this.suffix = "Firefox/26.0";
-	this.annotationActive = !(navigator.userAgent.indexOf(this.suffix, navigator.userAgent.length - this.suffix.length) !== -1);
+	//this.suffix = "Firefox/26.0";
+	//this.annotationActive = !(navigator.userAgent.indexOf(this.suffix, navigator.userAgent.length - this.suffix.length) !== -1);
+	this.isOpera = !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
+	this.isFirefox = typeof InstallTrigger !== 'undefined';
+	this.isSafari = Object.prototype.toString.call(window.HTMLElement).indexOf('Constructor') > 0;
+	this.isChrome = !!window.chrome && !isOpera;
+	this.isIE = /*@cc_on!@*/false || !!document.documentMode;
+
+	this.annotationActive = !(this.isFirefox || this.isIE || this.isOpera);
 	this.source = element; //The Tool Source Element
         this.left = options.left || '150px'; //The Tool Location
         this.ratio = options.ratio || 0.005; //One pixel equals to the length in real situation. Will be used in the measurement tool
