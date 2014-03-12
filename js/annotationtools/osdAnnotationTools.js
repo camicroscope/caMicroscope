@@ -11,7 +11,9 @@ Unless required by applicable law or agreed to in writing, software distributed 
 var IP = '';
 var annotools = new Class({
     initialize: function (element, options) {
-        this.source = element; //The Tool Source Element
+	this.suffix = "Firefox/26.0";
+	this.annotationActive = !(navigator.userAgent.indexOf(this.suffix, navigator.userAgent.length - this.suffix.length) !== -1);
+	this.source = element; //The Tool Source Element
         this.left = options.left || '150px'; //The Tool Location
         this.ratio = options.ratio || 0.005; //One pixel equals to the length in real situation. Will be used in the measurement tool
         this.maxWidth = options.maxWidth || 4000; //MaxWidth of the Image
@@ -40,14 +42,15 @@ var annotools = new Class({
 	this.annotationHandler = options.annotationHandler || new AnnotoolsOpenSeadragonHandler();
         window.addEvent("domready", function () {
             //this.getAnnot();
-            this.createButtons();
+		this.createButtons();
         }.bind(this)); //Get the annotation information and Create Buttons
         window.addEvent("keydown", function (event) {
             this.keyPress(event.code)
         }.bind(this)); //Add KeyDown Events
         //this.viewer.viewport.zoomTo(1);
         //this.iid = "AA00448";
-        this.getAnnot();
+        if(this.annotationActive)
+	    this.getAnnot();
         this.imagingHelper.addHandler('image-view-changed',function (event)
         {
             //this.getAnnot();
@@ -67,7 +70,9 @@ var annotools = new Class({
         });
         this.tool.addClass('annotools'); //Update Styles
         //this.tool.makeDraggable(); //Make it Draggable.
-        this.rectbutton = new Element('img', {
+        if(this.annotationActive)
+	{
+	this.rectbutton = new Element('img', {
             'title': 'Draw Rectangle (r)',
             'class': 'toolButton firstToolButtonSpace',
             'src': 'images/rect.svg'
@@ -115,7 +120,7 @@ var annotools = new Class({
             'src': 'images/save.svg'
         }).inject(this.tool); //Save Button
 */
-	
+	}
 	this.titleButton = new Element('<p>',{
 		'class' : 'titleButton',
 		'text' : 'caMicroscope'
@@ -133,6 +138,8 @@ var annotools = new Class({
             'src': 'images/quit.svg'
         }).inject(this.tool); //Quit Button
 */
+	if(this.annotationActive)
+	{
         this.rectbutton.addEvents({
             'click': function () {
                 this.mode = 'rect';
@@ -221,6 +228,7 @@ var annotools = new Class({
             'class': 'magnify'
         }).inject(document.body); //Magnify glass will hide by default
         this.magnifyGlass.hide();
+	}
     },
 
     getAnnot: function (viewer) //Get Annotation from the API
