@@ -1,7 +1,8 @@
 $(document).ready(function() {
 
 	$('#submitbtn').click( function () {
-		
+	
+		var viewer = getParameterByName("viewer");
 		var agelt = $('#input01').val();
 		var agegt = $('#input02').val();
 		var pathstage = $('#select05').val();
@@ -25,6 +26,7 @@ $(document).ready(function() {
 		if(pathstage != "Any")
 			url += "&pathologic_stage=" + pathstage;
 			
+		url += "&viewer=" + viewer;
 		window.open(url);	
 		})		 
 	});

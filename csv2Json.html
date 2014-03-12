@@ -45,9 +45,13 @@
 		      if(cameFromServer.urlColumnIndex == -1)
 		      {
 			    //$.getJSON("api/retrieveImageLink.php?tissueId=" + tissueId,function(link) {
+				var viewer = getParameterByName("viewer");
 				//response = link;
 				//window.open(response);
-				window.open("osdCamicroscope.php?tissueId=" + tissueId);
+				if(viewer == "osd")
+				    window.open("osdCamicroscope.php?tissueId=" + tissueId);
+				else if(viewer == "moo")
+				    window.open("mooCamicroscope.php?tissueId=" + tissueId);
 			    //});
 		      }
 		      else
@@ -67,7 +71,15 @@
 		    	  }
 		        });
 			});
-		} );
+		    } );
+
+		    function getParameterByName(name)
+		    {
+			name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+			var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+			results = regex.exec(location.search);
+			return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, "     "));
+		    }
    </script>      
     <script class="jsbin" src="js/datatables/paging.js"></script>
     <script class="jsbin" src="bootstrap/js/bootstrap.js"></script>

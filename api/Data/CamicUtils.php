@@ -22,7 +22,6 @@ class CamicUtils
 			$finalDimensions = $singleDimension;
 			break;
 		}
-		
 		return $finalDimensions;
 	}	
 	function retrieveImageLocation($tissueId)

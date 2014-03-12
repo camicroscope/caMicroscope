@@ -1,6 +1,7 @@
 <?php 
 require '../authenticate.php'; 
-header("Location: queryBrowser.html");
+$viewer = $_GET["viewer"];
+header("Location: queryBrowser.html?viewer=".$viewer);
 die(); 
 ?>
 
