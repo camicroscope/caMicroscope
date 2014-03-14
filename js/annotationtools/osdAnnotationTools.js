@@ -1482,6 +1482,8 @@ var annotools = new Class({
 		    scriptLocation: tip,
 		    color: this.color,
 		    zoomFactor: this.imagingHelper.getZoomFactor(),
+		    maxHeight: this.imagingHelper.imgHeight,
+		    maxWidth: this.imagingHelper.imgWidth,
 		    loc: new Array()
 		};
 
