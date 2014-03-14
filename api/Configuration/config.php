@@ -11,6 +11,8 @@ return array(
 
     'postAnnotation' => "$url/services/TCGABreast/TCGAAnnotations/submit/singleInput",
 	
+    'postJobParameters' => "$url/services/TCGABreast/TCGAJobManager/submit/singleInput",
+
     'deleteAnnotation' => "$url/services/TCGABreast/TCGAAnnotations/delete/deleteById?annotId=",
 
     'getDimensions' => "$url/services/TCGABreast/TCGABRCAImageMetaData/query/retrieveMaxWidthAndHeight?api_key=",

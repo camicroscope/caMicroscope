@@ -16,7 +16,7 @@ var annotools = new Class({
 	this.isOpera = !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
 	this.isFirefox = typeof InstallTrigger !== 'undefined';
 	this.isSafari = Object.prototype.toString.call(window.HTMLElement).indexOf('Constructor') > 0;
-	this.isChrome = !!window.chrome && !isOpera;
+	this.isChrome = !!window.chrome && !this.isOpera;
 	this.isIE = /*@cc_on!@*/false || !!document.documentMode;
 
 	this.annotationActive = !(this.isFirefox || this.isIE || this.isOpera);
@@ -83,7 +83,7 @@ var annotools = new Class({
             'title': 'Draw Rectangle (r)',
             'class': 'toolButton firstToolButtonSpace',
             'src': 'images/rect.svg'
-        }).inject(this.tool); //Create Rectangle Tool
+        }).inject(this.tool);//Create Rectangle Tool
         this.ellipsebutton = new Element('img', {
             'title': 'Draw Circle (c)',
             'class': 'toolButton',
@@ -120,6 +120,11 @@ var annotools = new Class({
             'class': 'toolButton',
             'src': 'images/hide.svg'
         }).inject(this.tool); //Show/Hide Button
+	this.analyzebutton = new Element('img', {
+	    'title': 'Region of Interest (a)',
+	    'class': 'toolButton',
+	    'src': 'images/gear.svg'
+	}).inject(this.tool); //Create analysis button
 	
         /*this.savebutton = new Element('img', {
             'title': 'Save Current State',
@@ -153,6 +158,12 @@ var annotools = new Class({
                 this.drawMarkups();
             }.bind(this)
         }); //Change Mode
+	this.analyzebutton.addEvents({
+	    'click': function() {
+		this.mode = 'analyze';
+		this.drawMarkups();
+	    }.bind(this)
+	});
         this.ellipsebutton.addEvents({
             'click': function () {
                 this.mode = 'ellipse';
@@ -317,6 +328,10 @@ var annotools = new Class({
                 this.mode = 'measure';
                 this.drawMarkups();
                 break;
+	    case 37:
+		this.mode = 'analyze';
+		this.drawMarkups();
+		break;
             case 69:
                 // 6 for magnify mode
                 this.mode = 'magnify';
@@ -390,6 +405,8 @@ var annotools = new Class({
                 case "measure":
                     this.drawMeasure(ctx);
 		    break;
+		case "analyze":
+		    this.markAnalysisRegion(ctx);
             }
         } else this.showMessage("Container Not SET Correctly Or Not Fully Loaded Yet");
         
@@ -584,6 +601,13 @@ var annotools = new Class({
         this.annotations.push(newAnnot);
         this.saveAnnot();
         //this.displayAnnot();
+    },
+
+    addnewJob: function(newAnnot)
+    {
+	newAnnot.iid = this.iidDecoded;
+	newAnnot.jobId = MD5(new Date().toString());
+	this.saveJob(newAnnot);
     },
 /*ASHISH DIsable quit
     quitMode: function () //Return To the Default Mode
@@ -1077,6 +1101,23 @@ var annotools = new Class({
                 'annot': this.annotations
             });
     },
+    saveJob: function (newAnnot) //Save Annotations
+    {
+            var jsonRequest = new Request.JSON({
+                //url: IP + '/api/annotation_relative.php',
+                url:  'api/Data/submitJobParameters.php',
+                async:false,
+                onSuccess: function (e) {
+                    this.showMessage("saved to the job manager");
+                }.bind(this),
+                onFailure: function (e) {
+                    this.showMessage("Error Saving the job,please check you saveAnnot funciton");
+                }.bind(this)
+            }).post({
+                'iid': this.iid,
+                'job': newAnnot
+            });
+    },
 
     convertToNative: function (annot)
     {
@@ -1135,7 +1176,7 @@ var annotools = new Class({
 
     convertFromNative: function(annot,end)
     {
-	if(annot.type == "rect" || annot.type == "ellipse")
+	if(annot.type == "rect" || annot.type == "roi" || annot.type == "ellipse")
 	{
 	    var x = annot.x;
 	    var y = annot.y;
@@ -1376,6 +1417,86 @@ var annotools = new Class({
 		loc[1] = parseFloat(newAnnot.y);
 		newAnnot.loc = loc;
 		this.addnewAnnot(newAnnot);
+		this.getAnnot();
+	    }
+
+	    else
+	    {
+		ctx.clearRect(0,0,this.drawCanvas.width,this.drawCanvas.height);
+	    }
+	}.bind(this));
+    },
+    markAnalysisRegion: function(ctx)
+    {
+	var started = false;
+	var min_x,min_y,max_x,max_y,w,h;
+	var startPosition;
+	this.drawCanvas.addEvent('mousedown',function(e)
+	{
+	    started = true;
+	    startPosition = OpenSeadragon.getMousePosition(e.event);
+	    x = startPosition.x;
+	    y = startPosition.y;
+	});
+
+	this.drawCanvas.addEvent('mousemove',function(e)
+	{
+	    if(started)
+	    {
+		ctx.clearRect(0,0,this.drawCanvas.width, this.drawCanvas.height);
+		var currentMousePosition = OpenSeadragon.getMousePosition(e.event);
+
+		min_x = Math.min(currentMousePosition.x,startPosition.x);
+		min_y = Math.min(currentMousePosition.y,startPosition.y);
+		max_x = Math.max(currentMousePosition.x,startPosition.x);
+		max_y = Math.max(currentMousePosition.y,startPosition.y);
+		w = Math.abs(max_x - min_x);
+		h = Math.abs(max_y - min_y);
+		ctx.fillStyle  = "rgba(0,0,0,0.4)";
+		ctx.fillRect(min_x,min_y,w,h);
+	    }
+	}.bind(this));
+
+	this.drawCanvas.addEvent('mouseup',function(e)
+	{
+	    started = false;
+	    var finalMousePosition = new OpenSeadragon.getMousePosition(e.event);
+
+		min_x = Math.min(finalMousePosition.x,startPosition.x);
+		min_y = Math.min(finalMousePosition.y,startPosition.y);
+		max_x = Math.max(finalMousePosition.x,startPosition.x);
+		max_y = Math.max(finalMousePosition.y,startPosition.y);
+
+	    
+	    var startRelativeMousePosition = new OpenSeadragon.Point(min_x,min_y).minus(OpenSeadragon.getElementOffset(viewer.canvas));
+	    var endRelativeMousePosition = new OpenSeadragon.Point(max_x,max_y).minus(OpenSeadragon.getElementOffset(viewer.canvas));
+	    var tip = prompt("Please Enter Location of Analysis Script","");
+	    if(tip != null)
+	    {
+		var newAnnot = {
+		    x: startRelativeMousePosition.x,
+		    y: startRelativeMousePosition.y,
+		    w: w,
+		    h: h,
+		    type: "roi",
+		    scriptLocation: tip,
+		    color: this.color,
+		    zoomFactor: this.imagingHelper.getZoomFactor(),
+		    loc: new Array()
+		};
+
+		var globalNumbers = JSON.parse(this.convertFromNative(newAnnot, endRelativeMousePosition));
+
+		newAnnot.x = globalNumbers.nativeX;
+		newAnnot.y = globalNumbers.nativeY;
+		newAnnot.w = globalNumbers.nativeW;
+		newAnnot.h = globalNumbers.nativeH;
+		var loc = new Array();
+		loc[0] = parseFloat(newAnnot.x);
+		loc[1] = parseFloat(newAnnot.y);
+		newAnnot.loc = loc;
+		//this.addnewAnnot(newAnnot);
+		this.addnewJob(newAnnot);
 		this.getAnnot();
 	    }
 
