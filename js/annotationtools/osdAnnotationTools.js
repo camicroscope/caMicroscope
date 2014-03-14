@@ -1484,6 +1484,7 @@ var annotools = new Class({
 		    zoomFactor: this.imagingHelper.getZoomFactor(),
 		    maxHeight: this.imagingHelper.imgHeight,
 		    maxWidth: this.imagingHelper.imgWidth,
+		    jobstatus: "InQueue",
 		    loc: new Array()
 		};
 
