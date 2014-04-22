@@ -1,27 +1,27 @@
 <?php 
 
-$url = "imaging.cci.emory.edu:9099";
+$url = "imaging.cci.emory.edu:9099/services/TCGABRCA_Dev";
 
 return array(
     'auth_realm' => "$url/securityTokenService",
 	
-    'getAllAnnotations' => "$url/services/TCGABreast/TCGAAnnotations/query/getAnnotsByID?iid=",
+    'getAllAnnotations' => "$url/Annotations/query/byUserAndImageID?iid=",
 	
-    'getAnnotationsSpatial' => "$url/services/TCGABreast/TCGAAnnotations/query/getAnnotsByIDSpatial?iid=",
+    'getAnnotationsSpatial' => "$url/Annotations/query/byUserImageAndSpatialScope?iid=",
 
-    'postAnnotation' => "$url/services/TCGABreast/TCGAAnnotations/submit/singleInput",
+    'postAnnotation' => "$url/Annotations/submit/singleAnnotation",
 	
-    'postJobParameters' => "$url/services/TCGABreast/TCGAJobManager/submit/singleInput",
+    'postJobParameters' => "$url/AnalysisJobs/submit/singleJob",
 
-    'deleteAnnotation' => "$url/services/TCGABreast/TCGAAnnotations/delete/deleteById?annotId=",
+    'deleteAnnotation' => "$url/Annotations/delete/singleAnnotation?annotId=",
 
-    'getDimensions' => "$url/services/TCGABreast/TCGABRCAImageMetaData/query/retrieveMaxWidthAndHeight?api_key=",
+    'getDimensions' => "$url/ImageMetaData/query/maxWidthAndHeghtByIID?api_key=",
 
-    'getFileLocation' => "$url/services/TCGABreast/TCGABRCAImageMetaData/query/retrieveFileLocation?api_key=",
+    'getFileLocation' => "$url/ImageMetaData/query/fileLocationByIID?api_key=",
 
-    'getMPP' => "$url/services/TCGABreast/TCGABRCAImageMetaData/query/retrieveMPP?api_key=",
+    'getMPP' => "$url/ImageMetaData/query/MPPbyIID?api_key=",
 
-    'fastcgi_server' => "/camicroscope/fastcgi-bin/iipsrv.fcgi"
+    'fastcgi_server' => "/camicdev/fastcgi-bin/iipsrv.fcgi"
 	
     
 );
