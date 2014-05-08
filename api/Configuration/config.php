@@ -9,6 +9,8 @@ return array(
 	
     'getAnnotationsSpatial' => "$url/Annotations/query/byUserImageAndSpatialScope?iid=",
 
+    'downloadAnnotations' => "$url/Annotations/query/byUserImageAndSpatial?iid=",
+
     'postAnnotation' => "$url/Annotations/submit/singleAnnotation",
 	
     'postJobParameters' => "$url/AnalysisJobs/submit/singleJob",

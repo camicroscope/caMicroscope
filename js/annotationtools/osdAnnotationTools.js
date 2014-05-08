@@ -120,7 +120,14 @@ var annotools = new Class({
             'class': 'toolButton',
             'src': 'images/hide.svg'
         }).inject(this.tool); //Show/Hide Button
-	this.analyzebutton = new Element('img', {
+
+       this.downloadannotbutton = new Element('img',{
+	    'title': 'Download Annotations (d)',
+	    'class': 'toolButton',
+	    'src': 'images/download.svg'
+       }).inject(this.tool); //Download Annotations Tool
+
+       this.analyzebutton = new Element('img', {
 	    'title': 'Region of Interest (a)',
 	    'class': 'toolButton',
 	    'src': 'images/gear.svg'
@@ -157,7 +164,13 @@ var annotools = new Class({
                 this.mode = 'rect';
                 this.drawMarkups();
             }.bind(this)
-        }); //Change Mode
+        }); //Change Modei
+	this.downloadannotbutton.addEvents({
+	    'click': function () {
+		this.mode = 'download';
+		this.drawMarkups();
+	    }.bind(this)
+	});
 	this.analyzebutton.addEvents({
 	    'click': function() {
 		this.mode = 'analyze';
@@ -332,6 +345,11 @@ var annotools = new Class({
 		this.mode = 'analyze';
 		this.drawMarkups();
 		break;
+
+	    case 38:
+		this.mode = 'download';
+		this.drawMarkups();
+		break;
             case 69:
                 // 6 for magnify mode
                 this.mode = 'magnify';
@@ -404,6 +422,9 @@ var annotools = new Class({
 		    break;
                 case "measure":
                     this.drawMeasure(ctx);
+		    break;
+		case "download":
+		    this.downloadAnnots(ctx);
 		    break;
 		case "analyze":
 		    this.markAnalysisRegion(ctx);
@@ -608,6 +629,11 @@ var annotools = new Class({
 	newAnnot.iid = this.iidDecoded;
 	newAnnot.jobId = MD5(new Date().toString());
 	this.saveJob(newAnnot);
+    },
+
+    downloadAnnotations: function(newAnnot)
+    {
+	
     },
 /*ASHISH DIsable quit
     quitMode: function () //Return To the Default Mode
@@ -1223,6 +1249,22 @@ var annotools = new Class({
 	    return globalNumber;
 	}
 
+	else if(annot.type == "download")
+	{
+	    var x = annot.x;
+	    var y = annot.y;
+	    var x2 = annot.x2;
+	    var y2 = annot.y2;
+
+	    var nativeX_end = this.imagingHelper.physicalToLogicalX(x2);
+	    var nativeY_end = this.imagingHelper.physicalToLogicalY(y2);
+	    var nativeX = this.imagingHelper.physicalToLogicalX(x);
+	    var nativeY = this.imagingHelper.physicalToLogicalY(y);
+	    
+	    var globalNumber = JSON.encode({nativeX2: nativeX_end, nativeY2: nativeY_end, nativeX: nativeX, nativeY: nativeY});
+
+	    return globalNumber;
+	}
 	else if(annot.type == "polyline" || annot.type == "pencil" || annot.type == "line")
 	{
 	    var x = annot.x;
@@ -1452,6 +1494,87 @@ var annotools = new Class({
 	    }
 	}.bind(this));
     },
+    downloadAnnots: function(ctx)
+    {
+	var started = false;
+	var min_x,min_y,max_x,max_y,w,h;
+	var startPosition;
+	this.drawCanvas.addEvent('mousedown',function(e)
+	{
+	    started = true;
+	    startPosition = OpenSeadragon.getMousePosition(e.event);
+	    x = startPosition.x;
+	    y = startPosition.y;
+	});
+
+	this.drawCanvas.addEvent('mousemove',function(e)
+	{
+	    if(started)
+	    {
+		ctx.clearRect(0,0,this.drawCanvas.width, this.drawCanvas.height);
+		var currentMousePosition = OpenSeadragon.getMousePosition(e.event);
+
+		min_x = Math.min(currentMousePosition.x,startPosition.x);
+		min_y = Math.min(currentMousePosition.y,startPosition.y);
+		max_x = Math.max(currentMousePosition.x,startPosition.x);
+		max_y = Math.max(currentMousePosition.y,startPosition.y);
+		w = Math.abs(max_x - min_x);
+		h = Math.abs(max_y - min_y);
+		ctx.fillStyle  = "rgba(100,100,100,0.4)";
+		ctx.fillRect(min_x,min_y,w,h);
+	    }
+	}.bind(this));
+
+	this.drawCanvas.addEvent('mouseup',function(e)
+	{
+	    started = false;
+	    var finalMousePosition = new OpenSeadragon.getMousePosition(e.event);
+
+		min_x = Math.min(finalMousePosition.x,startPosition.x);
+		min_y = Math.min(finalMousePosition.y,startPosition.y);
+		max_x = Math.max(finalMousePosition.x,startPosition.x);
+		max_y = Math.max(finalMousePosition.y,startPosition.y);
+
+	    
+	    var startRelativeMousePosition = new OpenSeadragon.Point(min_x,min_y).minus(OpenSeadragon.getElementOffset(viewer.canvas));
+	    var endRelativeMousePosition = new OpenSeadragon.Point(max_x,max_y).minus(OpenSeadragon.getElementOffset(viewer.canvas));
+
+	    var tip = prompt("Save? y/n","");
+
+	    if(tip != "n")
+	    {
+		var newAnnot = {
+		    x: startRelativeMousePosition.x,
+		    y: startRelativeMousePosition.y,
+		    x2: endRelativeMousePosition.x,
+		    y2: endRelativeMousePosition.y,
+		    type: "download",
+		};
+
+		var globalNumbers = JSON.parse(this.convertFromNative(newAnnot, endRelativeMousePosition));
+
+		var jsonRequest = new Request.JSON({
+		    url: 'api/Data/downloadAnnotations.php',
+		    onSuccess: function (e) {
+			//window.location.assign("imaging.cci.emory.edu:9099/services/TCGABRCA_Dev/Annotations/query/byUserImageAndSpatial?iid=TCGA-A1-A0SE&X1=0.0&Y1=0.0&X2=1.0&Y2=1.0&username=ameenkazerouni@gmail.com&api_key=7ee800e1-1fdd-4844-b788-59c1a8fe41e1");
+		    }.bind(this),
+		    onFailure: function (e) {
+			this.showMessage("Could not download annotations");
+		    }.bind(this)
+		}).get({
+		    'iid': this.iid,
+		    'x': globalNumbers.nativeX,
+		    'y': globalNumbers.nativeY,
+		    'x1':globalNumbers.nativeX2,
+		    'y1':globalNumbers.nativeY2,
+		    });
+	    }
+    	
+	   ctx.clearRect(0,0,this.drawCanvas.width,this.drawCanvas.height);
+	   this.getAnnot();
+	}.bind(this));
+    },
+
     markAnalysisRegion: function(ctx)
     {
 	var started = false;
