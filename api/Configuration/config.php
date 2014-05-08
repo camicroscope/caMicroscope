@@ -14,7 +14,11 @@ return array(
 	
     'getAnnotationsSpatial' => "$url/services/TCGABreast/TCGAAnnotations/query/getAnnotsByIDSpatial?iid=",
 
+<<<<<<< HEAD
     'postAnnotation' => "$url/services/TCGABreast/TCGAAnnotations/submit/singleInput",
+=======
+    'postAnnotation' => "$url/Annotations/submit/singleAnnotation",
+>>>>>>> parent of 11757e6... Added PhP scripts and code for download annotations button.
 	
     'postJobParameters' => "$url/services/TCGABreast/TCGAJobManager/submit/singleInput",
 
