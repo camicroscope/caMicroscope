@@ -1176,33 +1176,7 @@ var annotools = new Class({
 
     convertFromNative: function(annot,end)
     {
-	if(annot.type == "roi")
-	{
-	    var x = annot.x;
-	    var y = annot.y;
-	    var w = annot.w;
-	    var h = annot.h;
-	    var x_end = end.x;
-	    var y_end = end.y;
-
-	    var logX_end = this.imagingHelper.physicalToLogicalX(x_end);
-	    var logY_end = this.imagingHelper.physicalToLogicalY(y_end);
-	    var logX = this.imagingHelper.physicalToLogicalX(x);
-	    var logY = this.imagingHelper.physicalToLogicalY(y);
-	    
-	    var nativeX = logX * this.imagingHelper.imgWidth;
-	    var nativeY = logY * this.imagingHelper.imgHeight;
-	    var nativeX_end = logX_end * this.imagingHelper.imgWidth;
-	    var nativeY_end = logY_end * this.imagingHelper.imgHeight;
-	    var nativeW = nativeX_end - nativeX;
-	    var nativeH = nativeY_end - nativeY;
-	    //nativeH = nativeH * this.imagingHelper.imgAspectRatio;
-	    var globalNumber = JSON.encode({nativeW: nativeW, nativeH: nativeH, nativeX: nativeX, nativeY: nativeY});
-
-	    return globalNumber;
-	}
-
-	else if(annot.type == "rect" || annot.type == "ellipse")
+	if(annot.type == "rect" || annot.type == "roi" || annot.type == "ellipse")
 	{
 	    var x = annot.x;
 	    var y = annot.y;
@@ -1510,7 +1484,8 @@ var annotools = new Class({
 		    zoomFactor: this.imagingHelper.getZoomFactor(),
 		    maxHeight: this.imagingHelper.imgHeight,
 		    maxWidth: this.imagingHelper.imgWidth,
-		    jobstatus: "InQueue"
+		    jobstatus: "InQueue",
+		    loc: new Array()
 		};
 
 		var globalNumbers = JSON.parse(this.convertFromNative(newAnnot, endRelativeMousePosition));
@@ -1519,6 +1494,10 @@ var annotools = new Class({
 		newAnnot.y = globalNumbers.nativeY;
 		newAnnot.w = globalNumbers.nativeW;
 		newAnnot.h = globalNumbers.nativeH;
+		var loc = new Array();
+		loc[0] = parseFloat(newAnnot.x);
+		loc[1] = parseFloat(newAnnot.y);
+		newAnnot.loc = loc;
 		//this.addnewAnnot(newAnnot);
 		this.addnewJob(newAnnot);
 		this.getAnnot();

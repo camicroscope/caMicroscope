@@ -13,6 +13,8 @@ if (!empty($_SESSION['api_key'])) {
 		$newJob =$_POST["job"];
 		$url = $postUrl . "?api_key=".$api_key;
 		$newJob["username"] = $_SESSION['username'];
+		$newJob["loc"][0] = (float)$newJob["loc"][0];
+		$newJob["loc"][1] = (float)$newJob["loc"][1];
 		$postRequest = new RestRequest($url,'POST',json_encode($newJob));
 		$postRequest->execute();
 		echo(json_encode($newJob));
