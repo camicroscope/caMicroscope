@@ -11,6 +11,7 @@ if (!empty($_SESSION['api_key'])) {
 }
 $annotId=$_GET["annotId"];
 $url = $deleteUrl . $annotId . "&api_key=$api_key";
+echo ($url);
 $deleteRequest = new RestRequest($url,'DELETE');
 $deleteRequest->execute();
 echo "success"
