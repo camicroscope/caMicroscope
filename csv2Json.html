@@ -13,7 +13,7 @@
     	
 		$(document).ready(function() {
 			var queries = window.location.search;
-			$.getJSON("api/Data/dataRetreiver.php" + queries,function(displayData){
+			$.getJSON("api/Data/retreiveClinicalData.php" + queries,function(displayData){
 
      		jsonResult = displayData;     
 		
@@ -48,14 +48,10 @@
 				var viewer = getParameterByName("viewer");
 				//response = link;
 				//window.open(response);
-<<<<<<< HEAD
 				if(viewer == "osd")
 				    window.open("osdCamicroscope.php?tissueId=" + tissueId);
 				else if(viewer == "moo")
 				    window.open("mooCamicroscope.php?tissueId=" + tissueId);
-=======
-				window.open("openseaviewer.php?tissueId=" + tissueId);
->>>>>>> polydev
 			    //});
 		      }
 		      else
@@ -85,7 +81,7 @@
 			return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, "     "));
 		    }
    </script>      
-    <script class="jsbin" src="js/paging.js"></script>
+    <script class="jsbin" src="js/datatables/paging.js"></script>
     <script class="jsbin" src="bootstrap/js/bootstrap.js"></script>
   </head>
   <body id="dt_example">
