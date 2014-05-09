@@ -14,9 +14,6 @@ return array(
 	
     'postJobParameters' => "$url2/AnalysisJobs/submit/singleJob",
 
-    'getAllAnnotations' => "$url2/Annotations/query/getAnnotsByID?iid=",
-	
-	
     'deleteAnnotation' => "$url2/Annotations/delete/singleAnnotation?annotId=",
 
     'getDimensions' => "$url2/ImageMetaData/query/maxWidthAndHeightByIID?api_key=",
@@ -25,7 +22,7 @@ return array(
 
     'getMPP' => "$url2/ImageMetaData/query/MPPbyIID?api_key=",
 
-    'fastcgi_server' => "/camicroscope/fastcgi-bin/iipsrv.fcgi"
+    'fastcgi_server' => "/camicdev/fastcgi-bin/iipsrv.fcgi"
 	
     
 );
