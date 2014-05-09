@@ -971,8 +971,8 @@ var annotools = new Class({
             "class": 'annotip',
             styles: {
                 position: 'absolute',
-                left: Math.round(width * annot.x),
-                top: Math.round(height * annot.y)
+                left: Math.round(width * annot.x + parseInt(container.offsetLeft)),
+                top: Math.round(height * annot.y + parseInt(container.offsetHeight) + parseInt(container.offsetTop))
             },
             html: annot.text
         }).inject(container);
@@ -1016,6 +1016,15 @@ var annotools = new Class({
                 }.bind(this)
             }
         }).inject(d);
+
+	var cancelButton = new Element("button",{
+	    html: 'Cancel',
+	    events: {
+	    'click' : function() {
+		d.destroy();
+		}.bind(this)
+	    }
+	}).inject(d);
         /*var editButton = new Element("button", {
             html: 'Edit',
             events: {
