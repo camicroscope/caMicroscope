@@ -834,6 +834,7 @@ var annotools = new Class({
 				x = x + offset.x;
 				y = y + offset.y;
                                 svgHtml += '<rect id="' + index + '" x="' + x + '" y="' + y + '" width="' + w*width + '" height="' + width*h + '" stroke="' + a[index].color + '" stroke-width="2" fill="none"/>';
+				svgHtml += '<svg height="30" width="200"><text x="'+x+'" y="' + y + '> Test Text! </text></svg>';
                                 break;
                             case "ellipse":
 				var offset = OpenSeadragon.getElementOffset(viewer.canvas);
