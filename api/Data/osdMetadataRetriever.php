@@ -1,4 +1,4 @@
-<?php require '../../../authenticate.php';
+<?php require '../Configuration/setauthentication.php';
 
 include_once("CamicUtils.php");
 

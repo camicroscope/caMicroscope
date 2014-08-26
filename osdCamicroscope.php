@@ -1,4 +1,4 @@
-<?php require '../authenticate.php';
+<?php require 'api/Configuration/setauthentication.php';
 
 $config = require 'api/Configuration/config.php';
 

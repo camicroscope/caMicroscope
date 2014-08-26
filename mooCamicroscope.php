@@ -1,4 +1,4 @@
-<?php require '../authenticate.php';
+<?php require 'api/Configuration/setauthentication.php';
 if(!isset($_SESSION['username']) || empty($_SESSION['username'])) {
 echo '<pre>';
 var_dump($_SESSION);
