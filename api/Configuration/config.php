@@ -19,7 +19,7 @@ return array(
 
     'getMPP' => "$url/services/TCGABreast/TCGABRCAImageMetaData/query/retrieveMPP?api_key=",
 
-    'fastcgi_server' => "/camicroscope/fastcgi-bin/iipsrv.fcgi"
+    'fastcgi_server' => "/camicdev/fastcgi-bin/iipsrv.fcgi"
 	
     
 );
