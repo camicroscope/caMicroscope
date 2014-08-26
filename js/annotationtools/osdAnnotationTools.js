@@ -19,7 +19,8 @@ var annotools = new Class({
 	this.isChrome = !!window.chrome && !isOpera;
 	this.isIE = /*@cc_on!@*/false || !!document.documentMode;
 
-	this.annotationActive = !(this.isFirefox || this.isIE || this.isOpera);
+	//this.annotationActive = !(this.isFirefox || this.isIE || this.isOpera);
+	this.annotationActive = false;
 	this.source = element; //The Tool Source Element
         this.left = options.left || '150px'; //The Tool Location
         this.ratio = options.ratio || 0.005; //One pixel equals to the length in real situation. Will be used in the measurement tool
