@@ -41,7 +41,7 @@
 		  $(oTable.fnGetNodes()).click(function () {
 		      var data = oTable.fnGetPosition(this);
 		      var rowData = oTable.fnGetData(data);
-		      var tissueId = rowData[0];
+		      var tissueId = rowData[1];
 		      if(cameFromServer.urlColumnIndex == -1)
 		      {
 			    //$.getJSON("api/retrieveImageLink.php?tissueId=" + tissueId,function(link) {

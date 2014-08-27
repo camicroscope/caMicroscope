@@ -35,7 +35,6 @@ $expectedPropertiesIndices = array();
 $expectedPropertiesArray = array();
 $metadata = json_decode($getMetaDataRequest->responseBody);
 $data = json_decode($getDataRequest->responseBody);
-
 	if($path1->$tableView->hasLink != "false")
 	{
 		$nextLink = $path1->$tableView->nextLink;
