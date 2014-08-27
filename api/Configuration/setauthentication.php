@@ -11,5 +11,5 @@ $_SESSION["email"] = "guestuser@guest.com";
 $_SESSION["username"] = "guest";
 $_SESSION["name"] = "Guest";
 $_SESSION["last_seen"] = time();
-$_SESSION["api_key"] = $api_key;
+$_SESSION["api_key"] = "d30e5c69-ba87-4440-9638-cd7600c1c4bd";
 ?>
