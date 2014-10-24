@@ -22,6 +22,7 @@ $config = require 'api/Configuration/config.php';
     <script src="js/imagemetadatatools/osdImageMetadata.js"></script>
     <script src="js/annotationtools/osdAnnotationTools.js"></script>
     <script src="js/dependencies/MD5.js"></script>
+
      <!-- Google Analytics JS -->
     <style type="text/css">
         .openseadragon
