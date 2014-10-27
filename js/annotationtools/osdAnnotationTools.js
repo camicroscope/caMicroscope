@@ -16,7 +16,7 @@ var annotools = new Class({
 	this.isOpera = !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
 	this.isFirefox = typeof InstallTrigger !== 'undefined';
 	this.isSafari = Object.prototype.toString.call(window.HTMLElement).indexOf('Constructor') > 0;
-	this.isChrome = !!window.chrome && !isOpera;
+	this.isChrome = !!window.chrome && !this.isOpera;
 	this.isIE = /*@cc_on!@*/false || !!document.documentMode;
 
 	this.annotationActive = !(this.isFirefox || this.isIE || this.isOpera);
@@ -1272,7 +1272,8 @@ var annotools = new Class({
 
 	    var startRelativeMousePosition = new OpenSeadragon.Point(min_x,min_y).minus(OpenSeadragon.getElementOffset(viewer.canvas));
 	    var endRelativeMousePosition = new OpenSeadragon.Point(max_x,max_y).minus(OpenSeadragon.getElementOffset(viewer.canvas));
-	    var tip = prompt("Please Enter Some Description","");
+	    //var tip = prompt("Please Enter Some Description","");
+            tip = this.promptForAnnotation();
 
 	    if(tip != null)
 	    {
@@ -1745,5 +1746,19 @@ var annotools = new Class({
             });
  
         } else this.showMessage("Sorry, This Function is Only Supported With the Database Version");
+    },
+    promptForAnnotation: function(){
+        var SM = new SimpleModal({"btn_ok":"Alert button"});
+        SM.show({
+            "model":"modal",
+            "title":"Title",
+            "contents":"Your message...",
+            /*"param":{
+                "onRequestComplete": function() 
+	            return "test";
+                }
+            }*/
+        });
+    return "test";
     }
 });

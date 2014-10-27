@@ -11,16 +11,17 @@ $config = require 'api/Configuration/config.php';
     <title>[caMicroscope OSD][Subject: <?php echo json_encode($_GET['tissueId']); ?>][User: <?php echo $_SESSION["name"]; ?>]</title>
 
     <link rel="stylesheet" type="text/css" media="all" href="css/annotools.css" />
+    <link rel="stylesheet" type="text/css" media="all" href="css/simplemodal.css" />
 
     <script src="js/openseadragon/openseadragon-bin-1.0.0/openseadragon.js"></script>
     <script src="js/openseadragon/openseadragon-imaginghelper.min.js"></script>
     <script src="js/openseadragon/openseadragon-scalebar.js"></script>
     <script type="text/javascript" src="js/mootools/mootools-core-1.4.5-full-nocompat-yc.js"></script>
     <script type="text/javascript" src="js/mootools/mootools-more-1.4.0.1-compressed.js"></script>
-    <script src="js/dependencies/jquery.js"></script>
     <script src="js/annotationtools/annotools-openseajax-handler.js"></script>
     <script src="js/imagemetadatatools/osdImageMetadata.js"></script>
     <script src="js/annotationtools/osdAnnotationTools.js"></script>
+    <script src="js/dependencies/simple-modal.js"></script>
     <script src="js/dependencies/MD5.js"></script>
      <!-- Google Analytics JS -->
     <style type="text/css">
