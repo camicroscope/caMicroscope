@@ -1263,7 +1263,8 @@ var annotools = new Class({
 
 	this.drawCanvas.addEvent('mouseup', function (e)
 	{
-	    started = false;
+            tip = this.promptForAnnotation();
+	    /*started = false;
 	    var finalMousePosition = new OpenSeadragon.getMousePosition(e.event);
 	    min_x = Math.min(finalMousePosition.x,startPosition.x);
 	    min_y = Math.min(finalMousePosition.y,startPosition.y);
@@ -1273,7 +1274,6 @@ var annotools = new Class({
 	    var startRelativeMousePosition = new OpenSeadragon.Point(min_x,min_y).minus(OpenSeadragon.getElementOffset(viewer.canvas));
 	    var endRelativeMousePosition = new OpenSeadragon.Point(max_x,max_y).minus(OpenSeadragon.getElementOffset(viewer.canvas));
 	    //var tip = prompt("Please Enter Some Description","");
-            tip = this.promptForAnnotation();
 
 	    if(tip != null)
 	    {
@@ -1306,7 +1306,7 @@ var annotools = new Class({
 	    else
 	    {
 		ctx.clearRect(0,0,this.drawCanvas.width,this.drawCanvas.height);
-	    }
+	    }*/
 	}.bind(this));
     },
     drawRectangle: function(ctx)
@@ -1748,16 +1748,23 @@ var annotools = new Class({
         } else this.showMessage("Sorry, This Function is Only Supported With the Database Version");
     },
     promptForAnnotation: function(){
-        var SM = new SimpleModal({"btn_ok":"Alert button"});
+        var title = "Enter a new annotation:";
+        var form =
+        "<form id='annotationForm'> \
+            <p class='annotationLabel'>Note: </p><input type='text' size='40' name='note'><br> \
+            <p class='annotationLabel'>Description: </p><textarea cols='36' name='description'></textarea> \
+        </form>";
+        var SM = new SimpleModal();
+        SM.addButton("Confirm", "btn primary", function(){
+            var jsonText = $('annotationForm').toQueryString();
+            alert(jsonText);
+            this.hide();
+        });
+        SM.addButton("Cancel", "btn secondary");
         SM.show({
             "model":"modal",
-            "title":"Title",
-            "contents":"Your message...",
-            /*"param":{
-                "onRequestComplete": function() 
-	            return "test";
-                }
-            }*/
+            "title":title,
+            "contents":form,
         });
     return "test";
     }
