@@ -6,7 +6,7 @@ $url2 = "http://imaging.cci.emory.edu:9099/services/TCGABRCA_Dev";
 return array(
     'auth_realm' => "$url/securityTokenService",
 
-    'retrieveTemplate' => $url2/AnnotationTemplate/query/RetrieveTemplate",
+    'retrieveTemplate' => "$url2/AnnotationTemplate/query/RetrieveTemplate",
 
     'getAllAnnotations' => "$url2/Annotations/query/byUserAndImageID?iid=",
 	
