@@ -1263,8 +1263,7 @@ var annotools = new Class({
 
 	this.drawCanvas.addEvent('mouseup', function (e)
 	{
-            tip = this.promptForAnnotation();
-	    /*started = false;
+	    started = false;
 	    var finalMousePosition = new OpenSeadragon.getMousePosition(e.event);
 	    min_x = Math.min(finalMousePosition.x,startPosition.x);
 	    min_y = Math.min(finalMousePosition.y,startPosition.y);
@@ -1274,6 +1273,7 @@ var annotools = new Class({
 	    var startRelativeMousePosition = new OpenSeadragon.Point(min_x,min_y).minus(OpenSeadragon.getElementOffset(viewer.canvas));
 	    var endRelativeMousePosition = new OpenSeadragon.Point(max_x,max_y).minus(OpenSeadragon.getElementOffset(viewer.canvas));
 	    //var tip = prompt("Please Enter Some Description","");
+            var tip = this.promptForAnnotation();
 
 	    if(tip != null)
 	    {
@@ -1306,7 +1306,7 @@ var annotools = new Class({
 	    else
 	    {
 		ctx.clearRect(0,0,this.drawCanvas.width,this.drawCanvas.height);
-	    }*/
+	    }
 	}.bind(this));
     },
     drawRectangle: function(ctx)
@@ -1353,7 +1353,7 @@ var annotools = new Class({
 	    
 	    var startRelativeMousePosition = new OpenSeadragon.Point(min_x,min_y).minus(OpenSeadragon.getElementOffset(viewer.canvas));
 	    var endRelativeMousePosition = new OpenSeadragon.Point(max_x,max_y).minus(OpenSeadragon.getElementOffset(viewer.canvas));
-	    var tip = prompt("Please Enter Some Description","");
+	    var tip = promptForAnnotation("Please Enter Some Description","");
 	    if(tip != null)
 	    {
 		var newAnnot = {
@@ -1429,7 +1429,8 @@ var annotools = new Class({
 	    pencil.push(newpoly);
 	    newpoly = [];
 	    numpoint = 0;
-	    var tip = prompt("Please Enter Some Descriptions","");
+	    //var tip = prompt("Please Enter Some Descriptions","");
+	    var tip = promptForAnnotation("Please Enter Some Descriptions","");
 	    var x,y,w,h;
 	    x = pencil[0][0].x;
 	    y = pencil[0][0].y;
@@ -1670,7 +1671,8 @@ var annotools = new Class({
 
 	    var maxdistance = 0;
 
-	    var tip = prompt("Please Enter Some Description","");
+	    //var tip = prompt("Please Enter Some Description","");
+	    var tip = promptForAnnotation("Please Enter Some Description","");
 
 	    var points = "";
 
@@ -1751,13 +1753,13 @@ var annotools = new Class({
         var title = "Enter a new annotation:";
         var form =
         "<form id='annotationForm'> \
-            <p class='annotationLabel'>Note: </p><input type='text' size='40' name='note'><br> \
-            <p class='annotationLabel'>Description: </p><textarea cols='36' name='description'></textarea> \
+            <p class='annotationLabel'>Note: </p><input type='text' size='40' name='note' id='note'><br> \
+            <p class='annotationLabel'>Description: </p><textarea cols='36' name='description' id='description'></textarea> \
         </form>";
         var SM = new SimpleModal();
         SM.addButton("Confirm", "btn primary", function(){
-            var jsonText = $('annotationForm').toQueryString();
-            alert(jsonText);
+            jsonText = "{ \"note\" : \""+$('note').get('value')+"\", \"description\" : \""+$('description').get('value')+"\" }";
+            //alert("Annotation submitted.");
             this.hide();
         });
         SM.addButton("Cancel", "btn secondary");
@@ -1766,6 +1768,6 @@ var annotools = new Class({
             "title":title,
             "contents":form,
         });
-    return "test";
+    return jsonText;
     }
 });
