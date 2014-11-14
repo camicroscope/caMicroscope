@@ -49,11 +49,11 @@ var AnnotoolsOpenSeadragonHandler = new Class({
                 var zoomIn = this.handleZoomIn; 
                 button.onRelease = function(args){
 
-                    $('svg')[0].setStyle('opacity', 1);
+                    $$('svg')[0].setStyle('opacity', 1);
                     onZoomInRelease(args);
                     setTimeout(function() {
                         //zoomIn();
-                        $('svg')[0].setStyle('opacity', 1);
+                        $$('svg')[0].setStyle('opacity', 1);
                     }, annotationHandler.animateWaitTime);
                 };
 
@@ -63,11 +63,11 @@ var AnnotoolsOpenSeadragonHandler = new Class({
                 var zoomOut = this.handleZoomOut; 
                 button.onRelease = function(args){
 
-                    $('svg')[0].setStyle('opacity', 0);
+                    $$('svg')[0].setStyle('opacity', 0);
                     onZoomOutRelease(args);
                     setTimeout(function() {
                         //zoomOut();
-                        $('svg')[0].setStyle('opacity', 1);
+                        $$('svg')[0].setStyle('opacity', 1);
                     }, annotationHandler.animateWaitTime);
                 };
 
@@ -92,14 +92,14 @@ var AnnotoolsOpenSeadragonHandler = new Class({
               annotationHandler.zoom++;
               var centerPt =
                   viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(.5,.5)); 
-              $('#originpt').attr('cx',centerPt.x);
-              $('#originpt').attr('cy',centerPt.y);
+              $('originpt').setProperty('cx',centerPt.x);
+              $('originpt').setProperty('cy',centerPt.y);
               
 
-              for (var i = 0; i < $('#viewport').children().length; i++) { 
+              for (var i = 0; i < $('viewport').getChildren().length; i++) { 
     
-                  var object = $('#viewport').children()[i];
-                  //var centerPt = $('#center')[0];
+                  var object = $('viewport').getChildren()[i];
+                  //var centerPt = $('center')[0];
                   var bbox = object.getBBox();
       
                   var newLocation = viewer.viewport.pixelFromPoint(annotationHandler.objectCenterPts[i]);
@@ -137,7 +137,7 @@ var AnnotoolsOpenSeadragonHandler = new Class({
     
                   }
 
-                  var div    = $('div.annotcontainer')[i];
+                  var div    = $$('div.annotcontainer')[i];
                   div.style.left   = newLocation.x-(bbox.width/2)*scale + "px";
                   div.style.top    = newLocation.y-(bbox.height/2)*scale + "px";
                   div.style.width  = (bbox.width)*scale + "px";
@@ -162,12 +162,12 @@ var AnnotoolsOpenSeadragonHandler = new Class({
     
               var centerPt =
                   viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(.5,.5)); 
-              $('#originpt').attr('cx',centerPt.x);
-              $('#originpt').attr('cy',centerPt.y);
+              $('originpt').setProperty('cx',centerPt.x);
+              $('originpt').setProperty('cy',centerPt.y);
     
-              for (var i = 0; i < $('#viewport').children().length; i++) { 
+              for (var i = 0; i < $('viewport').getChildren().length; i++) { 
     
-                  var object = $('#viewport').children()[i];
+                  var object = $('viewport').getChildren()[i];
                   var bbox = object.getBBox();
       
                   var newLocation = viewer.viewport.pixelFromPoint(annotationHandler.objectCenterPts[i]);
@@ -203,7 +203,7 @@ var AnnotoolsOpenSeadragonHandler = new Class({
                       object.setAttribute("points", pointsStr);
     
                   }
-                  var div    = $('div.annotcontainer')[i];
+                  var div    = $$('div.annotcontainer')[i];
                   div.style.left   = newLocation.x-(bbox.width/2)*scale + "px";
                   div.style.top    = newLocation.y-(bbox.height/2)*scale + "px";
                   div.style.width  = (bbox.width)*scale + "px";
@@ -224,7 +224,7 @@ var AnnotoolsOpenSeadragonHandler = new Class({
     
       if (this.state == 'pan') {
           //$('svg')[0].hide(); 
-          $('svg')[0].setStyle('opacity', 0);
+          $$('svg')[0].setStyle('opacity', 0);
           var pixel = OpenSeadragon.getMousePosition(evt).minus
               (OpenSeadragon.getElementPosition(viewer.element));
           var point = viewer.viewport.pointFromPixel(pixel);
@@ -259,22 +259,22 @@ var AnnotoolsOpenSeadragonHandler = new Class({
 
       			 // setTimeout(function() {
        	                 //annotationHandler.handleZoomIn();
-                        $('svg')[0].setStyle('opacity', 1);
+                        $$('svg')[0].setStyle('opacity', 1);
        	            // }, annotationHandler.animateWaitTime);
 
               }
               else {
     
-                $('#originpt').attr('cx',
+                $('originpt').setProperty('cx',
                         viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(.5,.5)).x);
-                $('#originpt').attr('cy',
+                $('originpt').setProperty('cy',
                         viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(.5,.5)).y);
     
                 //$('svg')[0].show(); 
-                $('svg')[0].setStyle('opacity', 1);
-                for (var i = 0; i < $('#viewport').children().length; i++) { 
+                $$('svg')[0].setStyle('opacity', 1);
+                for (var i = 0; i < $('viewport').getChildren().length; i++) { 
     
-                    var object = $('#viewport').children()[i];
+                    var object = $('viewport').getChildren()[i];
                     //object.setAttribute("style", style="fill:none;stroke:lime;stroke-width:2");
                     var bbox = object.getBBox();
                     if (object.tagName == "ellipse") {
@@ -307,7 +307,7 @@ var AnnotoolsOpenSeadragonHandler = new Class({
     
                     }
 
-                    var div    = $('div.annotcontainer')[i];
+                    var div    = $$('div.annotcontainer')[i];
                     
                     div.style.left   = (bbox.x + diff.x) + "px";
                     div.style.top    = (bbox.y  + diff.y)+ "px";
@@ -335,7 +335,7 @@ var AnnotoolsOpenSeadragonHandler = new Class({
           (OpenSeadragon.getElementPosition(viewer.element));
     
       //$('svg')[0].hide(); 
-      $('svg')[0].setStyle('opacity', 0);
+      $$('svg')[0].setStyle('opacity', 0);
       this.stateOrigin = pixel;
 
 
@@ -360,17 +360,17 @@ var AnnotoolsOpenSeadragonHandler = new Class({
               scale  = 1/1.2;
               annotationHandler.zoom--;
           }
-          $('svg')[0].setStyle('opacity', 0);
+          $$('svg')[0].setStyle('opacity', 0);
     
           var centerPt =
               viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(.5,.5)); 
-          $('#originpt').attr('cx',centerPt.x);
-          $('#originpt').attr('cy',centerPt.y);
+          $('originpt').setProperty('cx',centerPt.x);
+          $('originpt').setProperty('cy',centerPt.y);
     
-          for (var i = 0; i < $('#viewport').children().length; i++) { 
+          for (var i = 0; i < $('viewport').getChildren().length; i++) { 
     
-              var object = $('#viewport').children()[i];
-              //var centerPt = $('#center')[0];
+              var object = $('viewport').getChildren()[i];
+              //var centerPt = $('center')[0];
               var bbox = object.getBBox();
     
               var newLocation = 
@@ -413,7 +413,7 @@ var AnnotoolsOpenSeadragonHandler = new Class({
     
               }
                 
-                  var div    = $('div.annotcontainer')[i];
+                  var div    = $$('div.annotcontainer')[i];
                   div.style.left   = newLocation.x-(bbox.width/2)*scale + "px";
                   div.style.top    = newLocation.y-(bbox.height/2)*scale + "px";
                   div.style.width  = (bbox.width)*scale + "px";
@@ -423,7 +423,7 @@ var AnnotoolsOpenSeadragonHandler = new Class({
     
       } 
       setTimeout(function() {
-        $('svg')[0].setStyle('opacity', 1);
+        $$('svg')[0].setStyle('opacity', 1);
       }, annotationHandler.animateWaitTime);
       annotationHandler.lastCenter = center; 
     }

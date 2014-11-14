@@ -52,9 +52,9 @@ var annotools = new Class({
             //this.getAnnot();
 		this.createButtons();
         }.bind(this)); //Get the annotation information and Create Buttons
-        window.addEvent("keydown", function (event) {
+        /*window.addEvent("keydown", function (event) {
             this.keyPress(event.code)
-        }.bind(this)); //Add KeyDown Events
+        }.bind(this)); //Add KeyDown Events*/
         //this.viewer.viewport.zoomTo(1);
         //this.iid = "AA00448";
         if(this.annotationActive)
@@ -630,8 +630,8 @@ var annotools = new Class({
     },
     relativeToGlobal: function() 
     {
-            for (var i = 0; i < $('#viewport').children().length; i++) {
-                var object = $('#viewport').children()[i];
+            for (var i = 0; i < $('viewport').getChildren().length; i++) {
+                var object = $('viewport').getChildren()[i];
     
                 if (object.tagName == "ellipse") {
                     var originalCoord = {};
@@ -747,7 +747,7 @@ var annotools = new Class({
                 var annot = this;
                 button.onRelease = function(args){
 
-                    $('svg')[0].setStyle('opacity', 0);
+                    $$('svg')[0].setStyle('opacity', 0);
                     onHomeRelease(args);
                     setTimeout(annotationHandler.goHome, annotationHandler.animateWaitTime, annot);
                 };
@@ -889,7 +889,7 @@ var annotools = new Class({
                         html: svgHtml
                     }).inject(container);
                     console.log("added svg");
-                    var annots = $('svg')[0].getChildren()[2];
+                    var annots = $$('svg')[0].getChildren()[2];
                     for (var k = 0; k < annots.getChildren().length; k++) {
                         var bbox = annots.getChildren()[k].getBBox();
                         var d = new Element("div", {
@@ -923,10 +923,10 @@ var annotools = new Class({
                         this.annotationHandler.originalDivCoords.push(bbox);
                     }
                     for (var j = 0; j < pointsArr.length; j++) {
-                        $('#groupcenter')[0].appendChild(pointsArr[j]);
+                        $('groupcenter')[0].appendChild(pointsArr[j]);
                     }
                     for (j = 0; j < lines.length; j++) {
-                        $('#groupcenter')[0].appendChild(lines[j]);
+                        $('groupcenter')[0].appendChild(lines[j]);
                     }
                 //} else {
                 //    this.showMessage("Please Press white space to toggle the Annotations");
@@ -963,8 +963,29 @@ var annotools = new Class({
     },
     editTip: function (id) //Edit Tips
     {
+        var annotation = JSON.parse(this.annotations[id].text);
+        var content = "";
+        for (var key in annotation) {
+            content += "<p>"+key+": "+annotation[key]+"</p>";
+        }
+        content += "<p>Created by: "+this.annotations[id].username+"</p>";
+        var SM = new SimpleModal();
+        SM.addButton("Edit Annotation", "btn primary", function() {
+            this.hide();
+        });
+        SM.addButton("Edit Markup", "btn primary", function() {
+            this.hide();
+        });
+        SM.addButton("Cancel", "btn secondary", function() {
+            this.hide();
+        });
+        SM.show({
+            "model":"modal",
+            "title":"Annotation",
+            "contents":content
+        });
         //var container = document.id(this.canvas);
-        var container = document.getElementsByClassName(this.canvas)[0]; //Get The Canvas Container
+        /*var container = document.getElementsByClassName(this.canvas)[0]; //Get The Canvas Container
         container.getElements(".annotip").destroy();
         var width = parseInt(container.offsetWidth),
             height = parseInt(container.offsetHeight),
@@ -993,7 +1014,7 @@ var annotools = new Class({
                 }.bind(this)
             }
         }).inject(d);
-        /*var editButton = new Element("button", {
+        var editButton = new Element("button", {
             html: 'Edit',
             events: {
                 'click': function () {
@@ -1273,17 +1294,15 @@ var annotools = new Class({
 	    var startRelativeMousePosition = new OpenSeadragon.Point(min_x,min_y).minus(OpenSeadragon.getElementOffset(viewer.canvas));
 	    var endRelativeMousePosition = new OpenSeadragon.Point(max_x,max_y).minus(OpenSeadragon.getElementOffset(viewer.canvas));
 	    //var tip = prompt("Please Enter Some Description","");
-            var tip = this.promptForAnnotation();
 
-	    if(tip != null)
-	    {
+	    //if(tip != null)
+	    //{
 		var newAnnot = {
 		    x: startRelativeMousePosition.x,
 		    y: startRelativeMousePosition.y,
 		    w: w,
 		    h: h,
 		    type: "ellipse",
-		    text: tip,
 		    color: this.color,
 		    loc: new Array()
 		};
@@ -1298,15 +1317,16 @@ var annotools = new Class({
 		loc[0] = parseFloat(newAnnot.x);
 		loc[1] = parseFloat(newAnnot.y);
 		newAnnot.loc = loc;
+                this.promptForAnnotation(this, newAnnot, ctx);
 
-		this.addnewAnnot(newAnnot);
-		this.getAnnot();
-	    }
+		//this.addnewAnnot(newAnnot);
+		//this.getAnnot();
+	    /*}
 
 	    else
 	    {
 		ctx.clearRect(0,0,this.drawCanvas.width,this.drawCanvas.height);
-	    }
+	    }*/
 	}.bind(this));
     },
     drawRectangle: function(ctx)
@@ -1353,7 +1373,28 @@ var annotools = new Class({
 	    
 	    var startRelativeMousePosition = new OpenSeadragon.Point(min_x,min_y).minus(OpenSeadragon.getElementOffset(viewer.canvas));
 	    var endRelativeMousePosition = new OpenSeadragon.Point(max_x,max_y).minus(OpenSeadragon.getElementOffset(viewer.canvas));
-	    var tip = promptForAnnotation("Please Enter Some Description","");
+		var newAnnot = {
+		    x: startRelativeMousePosition.x,
+		    y: startRelativeMousePosition.y,
+		    w: w,
+		    h: h,
+		    type: "rect",
+		    color: this.color,
+		    loc: new Array()
+		};
+
+		var globalNumbers = JSON.parse(this.convertFromNative(newAnnot, endRelativeMousePosition));
+
+		newAnnot.x = globalNumbers.nativeX;
+		newAnnot.y = globalNumbers.nativeY;
+		newAnnot.w = globalNumbers.nativeW;
+		newAnnot.h = globalNumbers.nativeH;
+		var loc = new Array();
+		loc[0] = parseFloat(newAnnot.x);
+		loc[1] = parseFloat(newAnnot.y);
+		newAnnot.loc = loc;
+            this.promptForAnnotation(this, newAnnot, ctx);
+	    /*var tip = prompt();
 	    if(tip != null)
 	    {
 		var newAnnot = {
@@ -1384,7 +1425,7 @@ var annotools = new Class({
 	    else
 	    {
 		ctx.clearRect(0,0,this.drawCanvas.width,this.drawCanvas.height);
-	    }
+	    }*/
 	}.bind(this));
     },
     drawPencil: function(ctx)
@@ -1430,7 +1471,6 @@ var annotools = new Class({
 	    newpoly = [];
 	    numpoint = 0;
 	    //var tip = prompt("Please Enter Some Descriptions","");
-	    var tip = promptForAnnotation("Please Enter Some Descriptions","");
 	    var x,y,w,h;
 	    x = pencil[0][0].x;
 	    y = pencil[0][0].y;
@@ -1459,8 +1499,8 @@ var annotools = new Class({
 	    points = points.slice(0,-1);
 
 
-	    if(tip != null)
-	    {
+	    //if(tip != null)
+	    //{
 		var newAnnot = {
 		    x:x,
 		    y:y,
@@ -1468,7 +1508,7 @@ var annotools = new Class({
 		    h:h,
 		    type: 'pencil',
 		    points: points,
-		    text: tip,
+		    //text: tip,
 		    color: this.color,
 		    loc: new Array()
 		};
@@ -1483,14 +1523,15 @@ var annotools = new Class({
 		loc[0] = parseFloat(newAnnot.x);
 		loc[1] = parseFloat(newAnnot.y);
 		newAnnot.loc = loc;
-		this.addnewAnnot(newAnnot);
-		this.getAnnot();
-	    }
+                this.promptForAnnotation(this, newAnnot, ctx);
+		//this.addnewAnnot(newAnnot);
+		//this.getAnnot();
+	    //}
 
-	    else
+	    /*else
 	    {
 		ctx.clearRect(0,0,this.drawCanvas.width,this.drawCanvas.height);
-	    }
+	    }*/
 	}.bind(this));
     },
 
@@ -1556,9 +1597,9 @@ var annotools = new Class({
 		var y_micron = this.mppy * y_dist;
 
 		var length = Math.sqrt(x_micron.pow(2) + y_micron.pow(2));
-		var tip = prompt("Save This?",length + "um");
-		if (tip != null)
-		{
+		//var tip = prompt("Save This?",length + "um");
+		//if (tip != null)
+		//{
 		    points = (x1 + "," + y1);
 		    var w = 0;
 		    var h = 0;
@@ -1570,7 +1611,7 @@ var annotools = new Class({
 			h:h,
 			type:"line",
 			points: points,
-			text: tip,
+			//text: tip,
 			color: this.color,
 			loc: new Array()
 		    };
@@ -1591,14 +1632,15 @@ var annotools = new Class({
 		    loc[0] = parseFloat(newAnnot.x);
 		    loc[1] = parseFloat(newAnnot.y);
 		    newAnnot.loc = loc;
-		    this.addnewAnnot(newAnnot);
-		    this.getAnnot();
-		}
+                    this.promptForAnnotation(this, newAnnot, ctx);
+		    //this.addnewAnnot(newAnnot);
+		    //this.getAnnot();
+		//}
 
-		else
+		/*else
 		{
 		    ctx.clearRect(0,0,this.drawCanvas.width,this.drawCanvas.height);
-		}
+		}*/
 
 		started = false;
 	    }
@@ -1672,7 +1714,6 @@ var annotools = new Class({
 	    var maxdistance = 0;
 
 	    //var tip = prompt("Please Enter Some Description","");
-	    var tip = promptForAnnotation("Please Enter Some Description","");
 
 	    var points = "";
 
@@ -1694,8 +1735,8 @@ var annotools = new Class({
 
 	    var endRelativeMousePosition = endMousePosition.minus(OpenSeadragon.getElementOffset(viewer.canvas));
 
-	    if(tip != null)
-	    {
+	    //if(tip != null)
+	    //{
 		var newAnnot = {
 		    x: x,
 		    y: y,
@@ -1703,7 +1744,7 @@ var annotools = new Class({
 		    h: h,
 		    type: 'polyline',
 		    points: points,
-		    text: tip,
+		    //text: tip,
 		    color: this.color,
 		    loc: new Array()
 		};
@@ -1719,14 +1760,15 @@ var annotools = new Class({
 		loc[0] = newAnnot.x;
 		loc[1] = newAnnot.y;
 		newAnnot.loc = loc;
-		this.addnewAnnot(newAnnot);
-		this.getAnnot();
-	    }
+                this.promptForAnnotation(this, newAnnot, ctx);
+		//this.addnewAnnot(newAnnot);
+		//this.getAnnot();
+	    //}
 
-	    else
+	    /*else
 	    {
 		ctx.clearRect(0,0, this.drawCanvas.width, this.drawCanvas.height);
-	    }
+	    }*/
 	}.bind(this));
     },
     saveState: function () {
@@ -1749,25 +1791,95 @@ var annotools = new Class({
  
         } else this.showMessage("Sorry, This Function is Only Supported With the Database Version");
     },
-    promptForAnnotation: function(){
+    promptForAnnotation: function(annotools, newAnnot, ctx){
+        var annotationTemplate;
+        var jsonRequest = new Request.JSON({
+	    url: 'api/Data/retreiveTemplate.php', //Fix your spelling, Ameen!
+	    async:false,
+	    onSuccess: function(e){
+                annotationTemplate = JSON.parse(e)[0];
+	    }.bind(annotools),
+	    onFailure:function(e){
+		this.showMessage("Error retrieving AnnotationTemplate, please check your trieveTemplate php");
+	    }.bind(annotools)
+        }).get();
+        var field = [];
+        var form = "<form id='annotationForm'>";
+        var submission = "{ ";
+        for (var key in annotationTemplate) {
+            if (annotationTemplate.hasOwnProperty(key) && key != "_id") {
+                field.push(key);
+                form += "<p class='annotationLabel'>"+key+": </p>";
+                submission += "\""+key+"\" : ";
+	        submission += "__"+key+"__, ";
+                var val = annotationTemplate[key];
+                if (val == "text") {
+                    form += "<input type='text' size='45' name='"+key+"' id='"+key+"' onClick='this.focus();'\><br \>";
+                } else {
+                    var options = val['enumerable'].replace(/ /g,"").split(",");
+                    if (val['multi'] == "true") {
+                        for (var i = 0; i < options.length; i ++) {
+                            form += "<input type='checkbox' name='"+key+"' id='"+options[i]+"' value='"+options[i]+"'>"+options[i]+"</input>";
+                        }
+                    } else {
+                        for (var i = 0; i < options.length; i ++) {
+                            form += "<input type='radio' name='"+key+"' id='"+options[i]+"' value='"+options[i]+"'>"+options[i]+"</input>";
+                        }
+                    }
+                }
+            }
+        }
+        submission = submission.substring(0, submission.length-2)+" }";
+	console.log(submission);
+        form += "</form>";
+        var jsonText;
         var title = "Enter a new annotation:";
-        var form =
-        "<form id='annotationForm'> \
-            <p class='annotationLabel'>Note: </p><input type='text' size='40' name='note' id='note'><br> \
-            <p class='annotationLabel'>Description: </p><textarea cols='36' name='description' id='description'></textarea> \
-        </form>";
         var SM = new SimpleModal();
-        SM.addButton("Confirm", "btn primary", function(){
-            jsonText = "{ \"note\" : \""+$('note').get('value')+"\", \"description\" : \""+$('description').get('value')+"\" }";
-            //alert("Annotation submitted.");
+        SM.addButton("Confirm", "btn primary", function() {
+            for (var i = 0; i < field.length; i ++) {
+                var fieldElem = $$(document.getElementsByName(field[i]));
+                var replacement = "\"";
+                if (fieldElem[0].type == "text") {
+                    replacement += $(field[i]).value+"\"";
+                } else if (fieldElem[0].type == "checkbox") {
+                    replacement = "[ ";
+                    for (var j = 0; j < fieldElem.length; j ++) {
+                        if (fieldElem[j].checked) {
+                            replacement += "\""+fieldElem[j].value+"\" , ";
+                        }
+                    }
+                    replacement = replacement.substring(0, replacement.length-2)+"]";
+                } else if (fieldElem[0].type == "radio") {
+                    for (var j = 0; j < fieldElem.length; j ++) {
+                        if (fieldElem[j].checked) {
+                            replacement += fieldElem[j].value+"\"";
+                            break;
+                        }
+                    }
+                }
+                submission = submission.replace("__"+field[i]+"__", replacement);
+            }
+	    console.log(submission);
+            newAnnot.text = submission;
+            annotools.addnewAnnot(newAnnot);
+            annotools.getAnnot();
+            this.hide();
+            /*window.addEvent("keydown", function (event) {
+                annotools.keyPress(event.code)
+            }.bind(annotools)); //Add KeyDown Events*/
+        });
+        SM.addButton("Cancel", "btn secondary", function() {
+            ctx.clearRect(0, 0, annotools.drawCanvas.width, annotools.drawCanvas.height);
+            annotools.drawLayer.hide();
             this.hide();
         });
-        SM.addButton("Cancel", "btn secondary");
         SM.show({
             "model":"modal",
             "title":title,
             "contents":form,
         });
-    return jsonText;
+        /*window.removeEvent("keydown", function (event) {
+            annotools.keyPress(event.code)
+        }.bind(annotools)); //Add KeyDown Events*/
     }
 });

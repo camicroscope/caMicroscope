@@ -67,7 +67,7 @@ var SimpleModal = new Class({
         draggable:     true,
         keyEsc:        true,
         overlayClick:  true,
-        closeButton:   true, // X close button
+        closeButton:   false, // X close button
         hideHeader:    false, 
         hideFooter:    false,
         lightboxExcessWidth:40,  // Only for Modal Image (excess pixels created from skin)

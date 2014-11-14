@@ -183,8 +183,7 @@
 /* Loading style */
 .simple-modal.loading .simple-modal-body {
   min-height: 60px;
-  //background: transparent url("../images/loader.gif") no-repeat center center;
-  //guess we won't be loading for that long
+  background: transparent url("../images/loader.gif") no-repeat center center;
 }
 .simple-modal.loading .simple-modal-body div.contents {
   display: none;
