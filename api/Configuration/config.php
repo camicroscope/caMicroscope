@@ -13,6 +13,8 @@ return array(
     'getAnnotationsSpatial' => "$url2/Annotations/query/byUserImageAndSpatialScope?iid=",
 
     'postAnnotation' => "$url2/Annotations/submit/singleAnnotation",
+
+    'retrieveAnnotation' => "$url2/Annotations/query/byAnnotId?annotId=",
 	
     'postJobParameters' => "$url2/AnalysisJobs/submit/singleJob",
 

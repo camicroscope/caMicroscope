@@ -65,8 +65,8 @@ var SimpleModal = new Class({
         overlayColor:  "#000000",
         width:         400,
         draggable:     true,
-        keyEsc:        true,
-        overlayClick:  true,
+        keyEsc:        false,
+        overlayClick:  false,
         closeButton:   false, // X close button
         hideHeader:    false, 
         hideFooter:    false,
