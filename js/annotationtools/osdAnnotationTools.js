@@ -848,7 +848,7 @@ var annotools = new Class({
                 window.addEventListener('mousewheel',   this.annotationHandler.handleMouseWheel, false); // Chrome/Safari
                 //window.addEventListener('mousewheel',   this.getAnnot(), false); // Chrome/Safari
             } else {
-                window.addEventListener('DOMMouseScroll', this.annotationHandler.handleMouseWheel, false); // Others
+              window.addEventListener('DOMMouseScroll', this.annotationHandler.handleMouseWheel, false); // Others
                 //window.addEventListener('DOMMouseScroll', this.getAnnot(), false); // Others
             }
             this.addMouseEvents();

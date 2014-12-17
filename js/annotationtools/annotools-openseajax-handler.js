@@ -18,7 +18,7 @@ var AnnotoolsOpenSeadragonHandler = new Class({
         this.state = 'none';
         this.stateTarget = null;
         this.stateOrigin = null;
-        this.scale = options.ratio || 2;
+        this.scale = options.ratio || 1.3;
         this.lastCenter = {x: 0, y: 0};
         this.objectCenterPts = {};
         this.originalCoords = [];
@@ -311,9 +311,6 @@ var AnnotoolsOpenSeadragonHandler = new Class({
                     
                     div.style.left   = (bbox.x + diff.x) + "px";
                     div.style.top    = (bbox.y  + diff.y)+ "px";
-                    //div.style.width  = (bbox.width)*scale + "px";
-                    //div.style.height = (bbox.height)*scale + "px";
-                    
                 }
           }
 
@@ -323,7 +320,6 @@ var AnnotoolsOpenSeadragonHandler = new Class({
 
     handleMouseDown: function(evt) {
 
-      //if (evt.target.tagName.toLowerCase() == "button" || evt.target.tagName.toLowerCase() == "div") {
       if (evt.target.tagName.toLowerCase() == "button") {
         console.log("handleMouseDown: " + evt.target.tagName);
         return;
@@ -334,97 +330,15 @@ var AnnotoolsOpenSeadragonHandler = new Class({
       var pixel = OpenSeadragon.getMousePosition(evt).minus
           (OpenSeadragon.getElementPosition(viewer.element));
     
-      //$('svg')[0].hide(); 
       $$('svg')[0].setStyle('opacity', 0);
       this.stateOrigin = pixel;
-
 
     },
 
     handleMouseWheel: function(evt) {
      if(evt.preventDefault)
           evt.preventDefault();
-    
-      var delta;
-      if(evt.wheelDelta)
-          delta = evt.wheelDelta / 360; // Chrome/Safari
-      else
-          delta = evt.detail / -9; // Mozilla
-    
-      var center = viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(.5,.5));
-      if (Math.abs(annotationHandler.lastCenter.x - center.x) > 1 || Math.abs(annotationHandler.lastCenter.y - center.y) > 1) {
-          if (delta > 0) {
-              annotationHandler.zoom++;
-              scale  = 1.3;
-          } else {
-              scale  = 1/1.3;
-              annotationHandler.zoom--;
-          }
-          $$('svg')[0].setStyle('opacity', 0);
-    
-          var centerPt =
-              viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(.5,.5)); 
-          $('originpt').setProperty('cx',centerPt.x);
-          $('originpt').setProperty('cy',centerPt.y);
-    
-          for (var i = 0; i < $('viewport').getChildren().length; i++) { 
-    
-              var object = $('viewport').getChildren()[i];
-              //var centerPt = $('center')[0];
-              var bbox = object.getBBox();
-    
-              var newLocation = 
-                  viewer.viewport.pixelFromPoint(annotationHandler.objectCenterPts[i]);
-    
-              //centerPt.setAttribute("cx", newLocation.x);
-              //centerPt.setAttribute("cy", newLocation.y)
-              
-              var distance = newLocation.distanceTo(center);            
-              if (object.tagName == "ellipse") {
-    
-                  object.setAttribute("rx", (bbox.width/2)*scale);
-                  object.setAttribute("ry", (bbox.height/2)*scale);
-                  object.setAttribute("cx", newLocation.x);
-                  object.setAttribute("cy", newLocation.y);
-    
-              } 
-              else if (object.tagName == "rect") {
-    
-                  object.setAttribute("width", (bbox.width)*scale);
-                  object.setAttribute("height", (bbox.height)*scale);
-                  object.setAttribute("x", newLocation.x-(bbox.width/2)*scale);
-                  object.setAttribute("y", newLocation.y-(bbox.height/2)*scale);
-    
-              }
-              else {
-             
-                  var points = String.split(object.getAttribute("points").trim(), ' ');
-                  
-                  var newLocationRelPt = viewer.viewport.pointFromPixel(newLocation);
-                  var distances = annotationHandler.originalCoords[i].distances;
-                  var pointsStr = "";
-                  for (var j = 0; j < distances.length-1; j++) {
-                      var pointPair = distances[j].plus(newLocationRelPt);
-                      var pixelPoint = viewer.viewport.pixelFromPoint(pointPair);
-                      pointsStr += pixelPoint.x + "," + pixelPoint.y + " ";
-    
-                  }
-                  object.setAttribute("points", pointsStr);
-    
-              }
-                
-                  var div    = $$('div.annotcontainer')[i];
-                  div.style.left   = newLocation.x-(bbox.width/2)*scale + "px";
-                  div.style.top    = newLocation.y-(bbox.height/2)*scale + "px";
-                  div.style.width  = (bbox.width)*scale + "px";
-                  div.style.height = (bbox.height)*scale + "px";
-    
-          }
-    
-      } 
-      setTimeout(function() {
-        $$('svg')[0].setStyle('opacity', 1);
-      }, annotationHandler.animateWaitTime);
-      annotationHandler.lastCenter = center; 
+          
+     $$('svg')[0].setStyle('opacity', 0);
     }
 });
