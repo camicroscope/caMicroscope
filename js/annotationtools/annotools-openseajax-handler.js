@@ -18,7 +18,7 @@ var AnnotoolsOpenSeadragonHandler = new Class({
         this.state = 'none';
         this.stateTarget = null;
         this.stateOrigin = null;
-        this.scale = options.ratio || 1.2;
+        this.scale = options.ratio || 2;
         this.lastCenter = {x: 0, y: 0};
         this.objectCenterPts = {};
         this.originalCoords = [];
@@ -88,7 +88,7 @@ var AnnotoolsOpenSeadragonHandler = new Class({
           console.log("handleZoomIn");
 	  var center = viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(.5,.5));
           if (annotationHandler.lastCenter.x != center.x || annotationHandler.lastCenter.y != center.y) {
-              scale  = 1.2;
+              scale  = 1.3;
               annotationHandler.zoom++;
               var centerPt =
                   viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(.5,.5)); 
@@ -157,7 +157,7 @@ var AnnotoolsOpenSeadragonHandler = new Class({
           var center = viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(.5,.5));
           console.log("handleZoomOut");
           if (annotationHandler.lastCenter.x != center.x || annotationHandler.lastCenter.y != center.y) {
-              scale  = 1/1.2;
+              scale  = 1/1.3;
               annotationHandler.zoom--;
     
               var centerPt =
@@ -355,9 +355,9 @@ var AnnotoolsOpenSeadragonHandler = new Class({
       if (Math.abs(annotationHandler.lastCenter.x - center.x) > 1 || Math.abs(annotationHandler.lastCenter.y - center.y) > 1) {
           if (delta > 0) {
               annotationHandler.zoom++;
-              scale  = 1.2;
+              scale  = 1.3;
           } else {
-              scale  = 1/1.2;
+              scale  = 1/1.3;
               annotationHandler.zoom--;
           }
           $$('svg')[0].setStyle('opacity', 0);
