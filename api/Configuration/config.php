@@ -12,6 +12,7 @@ return array(
 	
     'getAnnotationsSpatial' => "$url2/Annotations/query/byUserImageAndSpatialScope?iid=",
 
+    'getAnnotationSpatialFilter' => "$url2/Annotations/query/allByFilter?iid=",
     'postAnnotation' => "$url2/Annotations/submit/singleAnnotation",
 
     'retrieveAnnotation' => "$url2/Annotations/query/byAnnotId?annotId=",

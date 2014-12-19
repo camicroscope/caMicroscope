@@ -47,6 +47,7 @@ var annotools = new Class({
 	this.x2 = 1.0;
 	this.y1 = 0.0;
 	this.y2 = 1.0;
+
 	this.annotationHandler = options.annotationHandler || new AnnotoolsOpenSeadragonHandler();
         this.viewer.addHandler('animation-finish',function(event){this.getAnnot();}.bind(this));
 	window.addEvent("domready", function () {
@@ -294,6 +295,45 @@ var annotools = new Class({
 		'y':this.y1,
 		'x1':this.x2,
 		'y1':this.y2
+            });
+    },
+    
+    getAnnotFilter: function (author,grade,multi) //Get Annotation from the API
+    {
+	if(this.initialized)
+	{
+	    this.x1 = this.imagingHelper._viewportOrigin["x"];
+	    this.y1 = this.imagingHelper._viewportOrigin["y"];
+	    this.x2 = this.x1 + this.imagingHelper._viewportWidth;
+	    this.y2 = this.y1 + this.imagingHelper._viewportHeight;
+	}
+
+	this.initialized = true;
+            var jsonRequest = new Request.JSON({
+                //url: IP + 'api/getAnnotSpatial.php',
+                url: 'api/Data/getAnnotSpatialFilter.php',
+                onSuccess: function (e) {
+                    if (e == null) this.annotations = new Array();
+                    else this.annotations = e;
+                    this.convertAllToNative();
+		    this.displayAnnot(); //Display The Annotations
+		    this.relativeToGlobal();
+                    this.setupHandlers();
+                    //console.log("successfully get annotations");
+                }.bind(this),
+                onFailure: function (e) {
+                    this.showMessage("cannot get the annotations,please check your getAnnot function");
+                    this.annotations = new Array();
+                }.bind(this)
+            }).get({
+                'iid': this.iid,
+		'x':this.x1,
+		'y':this.y1,
+		'x1':this.x2,
+		'y1':this.y2,
+		'author':author,
+		'grade':grade,
+		'multi':multi
             });
     },
     
@@ -1905,6 +1945,7 @@ var annotools = new Class({
         }
         var SM = new SimpleModal();
         SM.addButton("Confirm", "btn primary", function() {
+	    var text = '{"text" : [';
             if (mode == "edit") {
                 annotools.deleteAnnot(newAnnot.id);
                 delete newAnnot.id;
@@ -1915,26 +1956,33 @@ var annotools = new Class({
                 for (var i = 0; i < field.length; i ++) {
                     var fieldElem = $$(document.getElementsByName(field[i]));
                     var replacement = "\"";
+		    var value = "";
                     if (fieldElem[0].type == "text") {
-                        replacement += $(field[i]).value+"\"";
-                    } else if (fieldElem[0].type == "checkbox") {
-                        replacement = "[ ";
-                        for (var j = 0; j < fieldElem.length; j ++) {
-                            if (fieldElem[j].checked) {
-                                replacement += "\""+fieldElem[j].value+"\" , ";
-                            }
-                        }
-                        replacement = replacement.substring(0, replacement.length-2)+"]";
+                        replacement += $(field[i]).value + "\"";
+			value = $(field[i]).value;
+		    } else if (fieldElem[0].type = "checkbox") {
+			replacement = "[ ";
+			for (var j = 0; j < fieldElem.length; j++) {
+			    if(fieldElem[j].checked) {
+				replacement += "\""+fieldElem[j].value+"\" , ";
+				value = fieldElem[j].value;
+			    }
+			}
+			replacement = replacement.substring(0,replacement.length-2)+"]";
                     } else if (fieldElem[0].type == "radio") {
                         for (var j = 0; j < fieldElem.length; j ++) {
                             if (fieldElem[j].checked) {
                                 replacement += fieldElem[j].value+"\"";
+				value = fieldElem[j].value;
                                 break;
                             }
                         }
                     }
+		    text += '{"' + field[i] + '":"' + value + '"},';
                     submission = submission.replace("__"+field[i]+"__", replacement);
                 }
+		    text = text.substring(0,text.length - 1);
+		    text += ']}';
             }
             console.log(submission);
             if (mode == "new" || mode == "edit") {
@@ -1944,7 +1992,8 @@ var annotools = new Class({
             } else {
 //====================================================================
 //substitute with the new getAnnotByFilter() function when appropriate using submission as the filter statement
-                annotools.getAnnot();
+                var text_obj = JSON.parse(text);
+		annotools.getAnnotFilter(text_obj.text[0].Author,text_obj.text[1].Grade,text_obj.text[2].Multi);
             }
             annotools.addMouseEvents();
             this.hide();
