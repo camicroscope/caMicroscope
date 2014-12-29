@@ -1838,7 +1838,7 @@ var annotools = new Class({
                 jsonReturn = JSON.parse(e)[0];
 	    }.bind(this),
 	    onFailure:function(e){
-		this.showMessage("Error retrieving AnnotationTemplate, please check your trieveTemplate.php");
+		this.showMessage("Error retrieving AnnotationTemplate, please check your retrieveTemplate.php");
 	    }.bind(this)
         }).get();
 
