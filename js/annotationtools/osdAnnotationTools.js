@@ -207,7 +207,7 @@ var annotools = new Class({
                 this.promptForAnnotation(null, "filter", this, null);
             }.bind(this)
         });
-        this.analyzebutton.addEvents({
+        /*this.analyzebutton.addEvents({
             'click': function () {
                 this.analyze()
             }.bind(this)
@@ -668,7 +668,7 @@ var annotools = new Class({
         }
         this.showMessage("annotation toggled");
     },
-    analyze: function(ctx)
+    /*analyze: function(ctx)
     {
         this.removeMouseEvents();
         this.showMessage(); //Show Message
@@ -765,7 +765,7 @@ var annotools = new Class({
             this.promptForAnalysis(this, analysisBox);
             this.drawLayer.hide();
 	}.bind(this));
-    },
+    },*/
     showMessage: function (msg) //Show Messages
     {
 /*ASHISH DIsable quit
