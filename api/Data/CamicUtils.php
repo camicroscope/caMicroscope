@@ -86,7 +86,7 @@ class CamicUtils
 	    foreach($fileLocation[0] as $key => $value)
 	    {
 		$link = str_replace("tiff","svs",$value);
-		$link = $value . ".dzi";
+		$link = $link . ".dzi";
 	    }
 	    
 	    return $link;
