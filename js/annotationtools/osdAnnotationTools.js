@@ -123,11 +123,11 @@ var annotools = new Class({
             'class': 'toolButton',
             'src': 'images/filter.svg'
         }).inject(this.tool); //Filter Button
-	this.analyzebutton = new Element('img', {
+	/*this.analyzebutton = new Element('img', {
             'title': 'Draw Rectangle (r)',
             'class': 'toolButton firstToolButtonSpace',
             'src': 'images/rect.svg'
-        }).inject(this.tool); //Analysis Tool
+        }).inject(this.tool); //Analysis Tool*/
 	
         /*this.savebutton = new Element('img', {
             'title': 'Save Current State',
