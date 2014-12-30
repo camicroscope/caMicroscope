@@ -26,7 +26,6 @@ $config = require 'api/Configuration/config.php';
     <script src="js/dependencies/jquery.js"></script>
     <!--<script src="js/dependencies/jquery-ui.min.js"></script>-->
     <script src="js/dependencies/simplemodal.js"></script>
-     <!-- Google Analytics JS -->
     <style type="text/css">
         .openseadragon
         {

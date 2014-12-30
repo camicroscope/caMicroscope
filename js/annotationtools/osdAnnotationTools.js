@@ -16,10 +16,7 @@ var annotools = new Class({
 	this.isOpera = !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
 	this.isFirefox = typeof InstallTrigger !== 'undefined';
 	this.isSafari = Object.prototype.toString.call(window.HTMLElement).indexOf('Constructor') > 0;
-	this.isChrome = !!window.chrome && !this.isOpera;
-	this.isIE = /*@cc_on!@*/false || !!document.documentMode;
-
-	this.annotationActive = !(this.isFirefox || this.isIE || this.isOpera);
+	this.isChrome = !!window.chrome;
 	//this.annotationActive = false;
 	this.source = element; //The Tool Source Element
         this.left = options.left || '150px'; //The Tool Location
