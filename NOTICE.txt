@@ -2,7 +2,7 @@
 == NOTICE file for use with caMicroscope, Version 2.0,  ==
 ==========================================================
 
-caMicroscope v2.0
+caMicroscope v3.0
 Copyright 2012 - 2013, Emory University, Atlanta, GA
 
 This product was developed in the Department of Biomedical
