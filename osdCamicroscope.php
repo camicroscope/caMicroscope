@@ -37,7 +37,7 @@ $config = require 'api/Configuration/config.php';
             left: 0;
             margin: 0;
             padding: 0;
-            background-color: black;
+            background-color: #E8E8E8;
             border: 1px solid black;
             color: white;
         }
@@ -76,7 +76,8 @@ $config = require 'api/Configuration/config.php';
           { id: "viewer", 
             prefixUrl: "images/",
             showNavigator:  false,
-	    zoomPerClick: 1
+	    zoomPerClick: 2,
+            maxZoomPixelRatio: 4
 	  });
 
       viewer.addHandler("open", addOverlays);
@@ -101,7 +102,7 @@ $config = require 'api/Configuration/config.php';
         annotool=new annotools('tool',{
             left:'0px',
                 top:'0px',
-		height: '30px',
+		height: '48px',
 		width: '100%',
                 canvas:'openseadragon-canvas',
                 iid: tissueId, 
@@ -127,7 +128,16 @@ $config = require 'api/Configuration/config.php';
       
 
      </script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
+  ga('create', 'UA-46271588-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
 
 </body>
 </html>
