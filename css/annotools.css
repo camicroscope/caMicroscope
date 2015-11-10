@@ -1,23 +1,39 @@
+@font-face {
+    font-family: 'Roboto';
+    src: url('../fonts/Roboto-Regular.ttf');
+}
+@font-face {
+    font-family: 'Roboto-Light';
+    src: url('../fonts/Roboto-Light.ttf');
+}
+@font-face {
+    font-family: 'Roboto-Thin';
+    src: url('../fonts/Roboto-Thin.ttf');
+}
+
 .annotools
 {
-	margin: 1px;
-	border: 1px outset #333;
-	color: #fff;
-	background: #222;
-	opacity: 0.90;
+	color: #FFFFFF;
+	background: #1976D2;
+	opacity: 1;
 	font-weight: normal;
 	padding: 1px;
 	font-size: 80%;
-	-moz-box-shadow: 4px 4px 4px rgba(0,0,0,0.75);
-	-webkit-box-shadow: 4px 4px 4px rgba(0,0,0,0.75);
-	-o-box-shadow: 4px 4px 4px rgba(0,0,0,0.75);
-	box-shadow: 4px 4px 4px rgba(0,0,0,0.75);
-	text-shadow: 0.5px 0.5px 0 grey;
+	height: 48px;
+        -webkit-box-shadow: 0px 0px 8px 2px #000000;
+        -moz-box-shadow: 0px 0px 8px 2px #000000;
+        box-shadow: 0px 0px 8px 2px #000000;
 }
-.selected
+
+.cliked
 {
-	background: #fff;
-	-webkit-filter: invert(100%);
+        width:44px;
+        margin-top: 8px;
+        margin-right: 4px;
+}
+
+.selected2
+{
 	cursor: pointer;
 }
 
@@ -99,29 +115,47 @@
 }
 .toolButton
 {
-	width:28px;
+	width:32px;
+        margin-top: 8px;
+	margin-right: 4px;
+        background:#1976D2;
+        opacity:0.6;
 }
+.toolButton:hover
+{
+        cursor: pointer;
+        opacity: 1;
+}
+
+.spacerButton
+{
+        width:24px;
+        height: 32px;
+        background:#1976D2;
+        opacity:0.7;
+}
+
 .firstToolButtonSpace
 {
- 	margin-left: 10px;
+ 	margin-left: 34px;
 }
 .titleButton
 {
         position: absolute;
-	right: 50%;
-        top: 0px;
-        font-size: 16px;
-	margin-top: 6px;
-        font-family: Helvetica;
+	left: 45%;
+        top: -8px;
+        font-size: 22px;
+	vertical-align: middle;
+        font-family: Roboto-Light;
 }
 .iidButton
 {
 	position: absolute;
-	right: 40px;
-	top: 0px;
-	font-size: 14px;
-	margin-top: 7px;
-	font-family: Helvetica Neue;
+	right: 34px;
+	top:  0px;
+	font-size: 16px;
+	vertical-align: middle;
+	font-family: Roboto;
 }
 .magnify 
 {
