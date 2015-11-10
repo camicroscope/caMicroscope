@@ -27,7 +27,7 @@ return array(
 
     'getMPP' => "$url2/ImageMetaData/query/MPPbyIID?api_key=",
 
-    'fastcgi_server' => "/camicdev/fastcgi-bin/iipsrv.fcgi"
+    'fastcgi_server' => "/phone/fastcgi-bin/iipsrv.fcgi"
 	
     
 );
