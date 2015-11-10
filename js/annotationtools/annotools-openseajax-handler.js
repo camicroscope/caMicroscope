@@ -11,9 +11,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 
-var AnnotoolsOpenSeadragonHandler = new Class({
+var AnnotoolsOpenSeadragonHandler = function(viewer, options){
 
-    initialize: function (viewer, options) {
         this.viewer = viewer;
         this.state = 'none';
         this.stateTarget = null;
@@ -29,18 +28,18 @@ var AnnotoolsOpenSeadragonHandler = new Class({
         this.panning = false;
         this.animateWaitTime = options.animateWaitTime || 300;
 
-        this._setupOpenSeadragonButtonHandlers();
+        //this._setupOpenSeadragonButtonHandlers();
 
         // global object reference used when the "this" object is referring to the window 
         window.annotationHandler = this;
-    },
+    };
 
     /* 
         Redefines the button handlers from the OpenSeadragon button bar
         for the onRelease event. Handles Zoom in, Zoom out, and Home
         buttons.
     */
-    _setupOpenSeadragonButtonHandlers: function() {
+    AnnotoolsOpenSeadragonHandler.prototype._setupOpenSeadragonButtonHandlers= function() {
         
         for (var i = 0; i < this.viewer.buttons.buttons.length; i++) {
             var button = this.viewer.buttons.buttons[i];
@@ -76,14 +75,14 @@ var AnnotoolsOpenSeadragonHandler = new Class({
 
         }
 
-    }.protect(),
+    }.protect();
 
-    goHome: function(annot) {
+    AnnotoolsOpenSeadragonHandler.prototype.goHome= function(annot) {
 
         annot.getAnnot();
-    },
+    };
 
-    handleZoomIn: function(annot) {
+    AnnotoolsOpenSeadragonHandler.prototype.handleZoomIn= function(annot) {
           zooming = true; 
           console.log("handleZoomIn");
 	  var center = viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(.5,.5));
@@ -150,9 +149,9 @@ var AnnotoolsOpenSeadragonHandler = new Class({
           
           annotationHandler.lastCenter = center;
 	zooming = false;
-    },
+    };
 
-    handleZoomOut: function() {
+    AnnotoolsOpenSeadragonHandler.prototype.handleZoomOut= function() {
 	zooming = true;
           var center = viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(.5,.5));
           console.log("handleZoomOut");
@@ -216,9 +215,9 @@ var AnnotoolsOpenSeadragonHandler = new Class({
                       
           annotationHandler.lastCenter = center; 
           zooming = false;
-    },
+    };
 
-    handleMouseMove: function(evt) {
+    AnnotoolsOpenSeadragonHandler.prototype.handleMouseMove= function(evt) {
       if(evt.preventDefault)
           evt.preventDefault();
     
@@ -231,9 +230,9 @@ var AnnotoolsOpenSeadragonHandler = new Class({
       }
 
 
-    },
+    };
 
-    handleMouseUp: function(evt) {
+    AnnotoolsOpenSeadragonHandler.prototype.handleMouseUp= function(evt) {
 
       //if (evt.target.tagName.toLowerCase() == "button" || evt.target.tagName.toLowerCase() == "div") {
       if (evt.target.tagName.toLowerCase() == "button") {
@@ -316,9 +315,9 @@ var AnnotoolsOpenSeadragonHandler = new Class({
 
         }
 
-    },
+    };
 
-    handleMouseDown: function(evt) {
+    AnnotoolsOpenSeadragonHandler.prototype.handleMouseDown= function(evt) {
 
       if (evt.target.tagName.toLowerCase() == "button") {
         console.log("handleMouseDown: " + evt.target.tagName);
@@ -333,12 +332,12 @@ var AnnotoolsOpenSeadragonHandler = new Class({
       $$('svg')[0].setStyle('opacity', 0);
       this.stateOrigin = pixel;
 
-    },
+    };
 
-    handleMouseWheel: function(evt) {
+    AnnotoolsOpenSeadragonHandler.prototype.handleMouseWheel= function(evt) {
      if(evt.preventDefault)
           evt.preventDefault();
           
      $$('svg')[0].setStyle('opacity', 0);
-    }
-});
+    };
+
