@@ -9,8 +9,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 var IP = '';
-var annotools = new Class({
-    initialize: function (element, options) {
+var annotools = function(element, options) {
 	this.isOpera = !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
 	this.isFirefox = typeof InstallTrigger !== 'undefined';
 	this.isSafari = Object.prototype.toString.call(window.HTMLElement).indexOf('Constructor') > 0;
@@ -44,8 +43,16 @@ var annotools = new Class({
 	this.y2 = 1.0;
 
 	this.annotationHandler = options.annotationHandler || new AnnotoolsOpenSeadragonHandler();
-        this.viewer.addHandler('animation-finish',function(event){this.getAnnot();}.bind(this));
-	window.addEvent("domready", function () {
+        this.viewer.addHandler('animation-finish', function (event) {
+            this.getAnnot();
+        }.bind(this));
+        this.viewer.addHandler('animation-start', function (event) {
+            var markup_svg = document.getElementById("markups");
+            if (markup_svg) {
+                markup_svg.destroy()
+            }
+        });
+        window.addEvent("domready", function () {
             //this.getAnnot();
 		this.createButtons();
         }.bind(this)); //Get the annotation information and Create Buttons
@@ -61,8 +68,9 @@ var annotools = new Class({
             //this.getAnnot();
         }.bind(this));
 
-    },
-    createButtons: function () //Create Buttons
+    };
+
+    annotools.prototype.createButtons= function () //Create Buttons
     {
         this.tool = document.id(this.source); //Get The Element with the Source ID.
         this.tool.setStyles({
@@ -78,56 +86,53 @@ var annotools = new Class({
         if(this.annotationActive)
 	{
 	this.rectbutton = new Element('img', {
-            'title': 'Draw Rectangle (r)',
+            'title': 'Draw Rectangle',
             'class': 'toolButton firstToolButtonSpace',
             'src': 'images/rect.svg'
         }).inject(this.tool); //Create Rectangle Tool
         this.ellipsebutton = new Element('img', {
-            'title': 'Draw Circle (c)',
+            'title': 'Draw Ellipse',
             'class': 'toolButton',
             'src': 'images/ellipse.svg'
         }).inject(this.tool); //Ellipse Tool
-        this.polybutton = new Element('img', {
-            'title': 'Draw Polygon (p)',
-            'class': 'toolButton',
-            'src': 'images/poly.svg'
-        }).inject(this.tool); //Polygon Tool
         this.pencilbutton = new Element('img', {
-            'title': 'Draw Freeline (f)',
+            'title': 'Draw Freeline',
             'class': 'toolButton',
             'src': 'images/pencil.svg'
         }).inject(this.tool); //Pencil Tool
-        /*this.colorbutton = new Element('img', {
-            'title': 'Change Color',
-            'class': 'toolButton',
-            'src': 'images/color.svg'
-        }).inject(this.tool); //Select Color*/
+        this.spacer1 = new Element('img', {
+            'class': 'spacerButton',
+            'src': 'images/spacer.svg'
+        }).inject(this.tool);
         this.measurebutton = new Element('img', {
-            'title': 'Measurement Tool (m)',
+            'title': 'Measurement Tool',
             'class': 'toolButton',
             'src': 'images/measure.svg'
         }).inject(this.tool); //Measurement Tool
-       /* this.magnifybutton = new Element('img', {
-            'title': 'Loupe (l)',
-            'class': 'toolButton',
-            'src': 'images/magnify.svg'
-        }).inject(this.tool); //Magnify Tool
-	*/
-       this.hidebutton = new Element('img', {
-            'title': 'Toggle Markups (t)',
-            'class': 'toolButton',
-            'src': 'images/hide.svg'
-        }).inject(this.tool); //Show/Hide Button
-       this.filterbutton = new Element('img', {
+        this.spacer2 = new Element('img', {
+            'class': 'spacerButton',
+            'src': 'images/spacer.svg'
+        }).inject(this.tool);
+        this.filterbutton = new Element('img', {
             'title': 'Filter Markups',
             'class': 'toolButton',
             'src': 'images/filter.svg'
         }).inject(this.tool); //Filter Button
-	/*this.analyzebutton = new Element('img', {
-            'title': 'Draw Rectangle (r)',
-            'class': 'toolButton firstToolButtonSpace',
-            'src': 'images/rect.svg'
-        }).inject(this.tool); //Analysis Tool*/
+        this.hidebutton = new Element('img', {
+            'title': 'Show/Hide Markups',
+            'class': 'toolButton',
+            'src': 'images/hide.svg'
+        }).inject(this.tool); //Show/Hide Button
+	this.fullDownloadButton = new Element('img', {
+            'title': 'Download All Markups (Coming Soon)',
+            'class': 'toolButton',
+            'src': 'images/fullDownload.svg'
+        }).inject(this.tool); //Full Download
+        this.partialDownloadButton = new Element('img', {
+            'title': 'Download Partial Markups (Coming Soon)',
+            'class': 'toolButton',
+            'src': 'images/partDownload.svg'
+        }).inject(this.tool); //Partial Download
 	
         /*this.savebutton = new Element('img', {
             'title': 'Save Current State',
@@ -167,12 +172,12 @@ var annotools = new Class({
                 this.drawMarkups();
             }.bind(this)
         });
-        this.polybutton.addEvents({
+      /*  this.polybutton.addEvents({
             'click': function () {
                 this.mode = 'polyline';
                 this.drawMarkups();
             }.bind(this)
-        });
+        }); */
         this.pencilbutton.addEvents({
             'click': function () {
                 this.mode = 'pencil';
@@ -255,9 +260,9 @@ var annotools = new Class({
         }).inject(document.body); //Magnify glass will hide by default
         this.magnifyGlass.hide();
 	}
-    },
+    };
 
-    getAnnot: function (viewer) //Get Annotation from the API
+    annotools.prototype.getAnnot= function (viewer) //Get Annotation from the API
     {
 	if(this.initialized)
 	{
@@ -291,9 +296,9 @@ var annotools = new Class({
 		'x1':this.x2,
 		'y1':this.y2
             });
-    },
+    };
     
-    getAnnotFilter: function (author,grade,multi) //Get Annotation from the API
+    annotools.prototype.getAnnotFilter= function (author,grade,multi) //Get Annotation from the API
     {
 	if(this.initialized)
 	{
@@ -330,9 +335,9 @@ var annotools = new Class({
 		'grade':grade,
 		'multi':multi
             });
-    },
+    };
     
-    keyPress: function (code) //Key Down Events Handler
+    annotools.prototype.keyPress= function (code) //Key Down Events Handler
     {
         switch (code) {
             case 84:
@@ -381,8 +386,8 @@ var annotools = new Class({
                 this.magnify();
                 break;
         }
-    },
-    drawMarkups: function () //Draw Markups
+    };
+    annotools.prototype.drawMarkups= function () //Draw Markups
     {
         this.showMessage(); //Show Message
         this.drawCanvas.removeEvents('mouseup');
@@ -451,8 +456,9 @@ var annotools = new Class({
             }
         } else this.showMessage("Container Not SET Correctly Or Not Fully Loaded Yet");
         
-    },
-    magnify: function () //Magnify Tool
+    };
+
+    annotools.prototype.magnify= function () //Magnify Tool
     {
 /* ASHISH Disable quit
         this.quitbutton.show();
@@ -513,8 +519,9 @@ var annotools = new Class({
             }.bind(this)
 */
         });
-    },
-    selectColor: function () //Pick A Color
+    };
+    
+    annotools.prototype.selectColor= function () //Pick A Color
     {
  
         this.colorContainer = new Element('div').inject(this.tool);
@@ -633,16 +640,16 @@ var annotools = new Class({
                 }
             });
         }
-    },
+    };
 
-    addnewAnnot: function (newAnnot) //Add New Annotations
+    annotools.prototype.addnewAnnot= function (newAnnot) //Add New Annotations
     {
         newAnnot.iid = this.iidDecoded;
         newAnnot.annotId = MD5(new Date().toString());
         this.annotations.push(newAnnot);
         this.saveAnnot();
         //this.displayAnnot();
-    },
+    };
 /*ASHISH DIsable quit
     quitMode: function () //Return To the Default Mode
     {
@@ -650,7 +657,7 @@ var annotools = new Class({
         this.magnifyGlass.hide();
     },
 */
-    toggleMarkups: function () //Toggle Markups
+    annotools.prototype.toggleMarkups= function () //Toggle Markups
     {
         if (this.svg) {
             if (this.annotVisible) {
@@ -667,7 +674,7 @@ var annotools = new Class({
             this.displayAnnot();
         }
         this.showMessage("annotation toggled");
-    },
+    };
     /*analyze: function(ctx)
     {
         this.removeMouseEvents();
@@ -766,7 +773,7 @@ var annotools = new Class({
             this.drawLayer.hide();
 	}.bind(this));
     },*/
-    showMessage: function (msg) //Show Messages
+    annotools.prototype.showMessage= function (msg) //Show Messages
     {
 /*ASHISH DIsable quit
         if (!(msg)) msg = this.mode + " mode,press q to quit";
@@ -782,8 +789,8 @@ var annotools = new Class({
         }).start(0, 1).chain(function () {
             this.start(0.5, 0);
         });
-    },
-    relativeToGlobal: function() 
+    };
+    annotools.prototype.relativeToGlobal= function() 
     {
             for (var i = 0; i < $('viewport').getChildren().length; i++) {
                 var object = $('viewport').getChildren()[i];
@@ -870,9 +877,9 @@ var annotools = new Class({
 
             };
 
-    },
+    };
         
-    setupHandlers: function() 
+    annotools.prototype.setupHandlers= function() 
     {
         
                     
@@ -904,8 +911,8 @@ var annotools = new Class({
             }
         }
 
-    },
-    displayAnnot: function () //Display SVG Annotations
+    };
+    annotools.prototype.displayAnnot= function () //Display SVG Annotations
     {
         var annotools = this;
         var a = [],
@@ -1086,8 +1093,8 @@ var annotools = new Class({
         else {
             this.showMessage("Canvas Container Not Ready");
         }
-    },
-    displayTip: function (id) //Display Tips
+    };
+    annotools.prototype.displayTip= function (id) //Display Tips
     {
  
         //var container = document.id(this.canvas);
@@ -1105,14 +1112,14 @@ var annotools = new Class({
             html: annot.text
         }).inject(container);
         this.showMessage("Double Click to Edit");
-    },
-    destroyTip: function () //Destroy Tips
+    };
+    annotools.prototype.destroyTip= function () //Destroy Tips
     {
         //var container = document.id(this.canvas);
         var container = document.getElementsByClassName(this.canvas)[0]; //Get The Canvas Container
         container.getElements(".annotip").destroy();
-    },
-    editTip: function (id) //Edit Tips
+    };
+    annotools.prototype.editTip= function (id) //Edit Tips
     {
         this.removeMouseEvents();
         var annotools = this;
@@ -1157,8 +1164,8 @@ var annotools = new Class({
             "title":"Annotation",
             "contents":content
         });
-    },
-    deleteAnnot: function (id) //Delete Annotations
+    };
+    annotools.prototype.deleteAnnot= function (id) //Delete Annotations
     {
         var testAnnotId = this.annotations[id].annotId;	
 	    this.annotations.splice(id,1);
@@ -1178,8 +1185,8 @@ var annotools = new Class({
             ).get({'annotId':testAnnotId});
         }
         this.displayAnnot();
-    },
-    updateAnnot: function (annot) //Save Annotations
+    };
+    annotools.prototype.updateAnnot= function (annot) //Save Annotations
     {
             var jsonRequest = new Request.JSON({
                 url:  'api/Data/updateAnnot.php',
@@ -1194,8 +1201,8 @@ var annotools = new Class({
                 'annot': annot
             });
     	this.displayAnnot();
-    },
-    saveAnnot: function () //Save Annotations
+    };
+    annotools.prototype.saveAnnot= function () //Save Annotations
     {
             var jsonRequest = new Request.JSON({
                 //url: IP + '/api/annotation_relative.php',
@@ -1211,9 +1218,9 @@ var annotools = new Class({
                 'iid': this.iid,
                 'annot': this.annotations
             });
-    },
+    };
 
-    convertToNative: function (annot)
+    annotools.prototype.convertToNative= function (annot)
     {
 	if(annot.type == "rect" || annot.type == "ellipse")
 	{
@@ -1266,9 +1273,9 @@ var annotools = new Class({
 
 	else
 	    return JSON.encode(annot);
-    },
+    };
 
-    convertFromNative: function(annot,end)
+    annotools.prototype.convertFromNative= function(annot,end)
     {
 	if(annot.type == "rect" || annot.type == "ellipse")
 	{
@@ -1332,9 +1339,9 @@ var annotools = new Class({
 
 	else
 	    return JSON.encode(annot);
-    },
+    };
 
-    convertAllToNative: function()
+    annotools.prototype.convertAllToNative= function()
     {
 	for(index = 0; index < this.annotations.length; index++)
 	{
@@ -1345,9 +1352,9 @@ var annotools = new Class({
 	    this.annotations[index].w = newannot.nativeW;
 	    this.annotations[index].h = newannot.nativeH;
 	}
-    },
+    };
 
-    drawEllipse: function(ctx)
+    annotools.prototype.drawEllipse= function(ctx)
     {
         this.removeMouseEvents();
 	var started = false;
@@ -1429,8 +1436,8 @@ var annotools = new Class({
 	    newAnnot.loc = loc;
             this.promptForAnnotation(newAnnot, "new", this, ctx);
 	}.bind(this));
-    },
-    drawRectangle: function(ctx)
+    };
+    annotools.prototype.drawRectangle= function(ctx)
     {
         this.removeMouseEvents();
 	var started = false;
@@ -1497,8 +1504,8 @@ var annotools = new Class({
 	    newAnnot.loc = loc;
             this.promptForAnnotation(newAnnot, "new", this, ctx);
 	}.bind(this));
-    },
-    drawPencil: function(ctx)
+    };
+    annotools.prototype.drawPencil= function(ctx)
     {
         this.removeMouseEvents();
 	var started = false;
@@ -1591,9 +1598,9 @@ var annotools = new Class({
 	    newAnnot.loc = loc;
             this.promptForAnnotation(newAnnot, "new", this, ctx);
 	}.bind(this));
-    },
+    };
 
-    drawMeasure: function(ctx)
+    annotools.prototype.drawMeasure= function(ctx)
     {
         this.removeMouseEvents();
 	var started = false;
@@ -1708,9 +1715,9 @@ var annotools = new Class({
 		ctx.closePath();
 	    }
 	}.bind(this));
-    },
+    };
 
-    drawPolyline: function(ctx)
+    annotools.prototype.drawPolyline= function(ctx)
     {
         this.removeMouseEvents();
 	var started = true;
@@ -1803,8 +1810,8 @@ var annotools = new Class({
 	    newAnnot.loc = loc;
             this.promptForAnnotation(newAnnot, "new", this, ctx);
 	}.bind(this));
-    },
-    saveState: function () {
+    };
+    annotools.prototype.saveState= function () {
         if (this.iid) {
             var jsonRequest = new Request.JSON({
                 //url: IP + 'api/state.php',
@@ -1823,8 +1830,8 @@ var annotools = new Class({
             });
  
         } else this.showMessage("Sorry, This Function is Only Supported With the Database Version");
-    },
-    retrieveTemplate: function() {
+    };
+    annotools.prototype.retrieveTemplate= function() {
 	var jsonReturn = "";
         var jsonRequest = new Request.JSON({
 	    url: 'api/Data/retreiveTemplate.php', //Ameen, fix your spelling!
@@ -1838,8 +1845,8 @@ var annotools = new Class({
         }).get();
 
 	return jsonReturn;
-    },
-    retrieveSingleAnnot: function(annotId) {
+    };
+    annotools.prototype.retrieveSingleAnnot= function(annotId) {
         var jsonReturn;
         var jsonRequest = new Request.JSON({
             url: 'api/Data/retreiveSingleAnnot.php', //Ameen, fix your spelling! Again!
@@ -1853,8 +1860,8 @@ var annotools = new Class({
         }).get({'annotId':annotId});
 
         return jsonReturn;
-    },
-    populateForm: function(annotationTemplateJson, annotationTextJson, mode) {
+    };
+    annotools.prototype.populateForm= function(annotationTemplateJson, annotationTextJson, mode) {
         var form = "";
         for (var key in annotationTemplateJson) {
             if (annotationTemplateJson.hasOwnProperty(key) && key != "_id") {
@@ -1889,8 +1896,8 @@ var annotools = new Class({
             }
         }
         return form;
-    },
-    promptForAnnotation: function(newAnnot, mode, annotools, ctx){
+    };
+    annotools.prototype.promptForAnnotation= function(newAnnot, mode, annotools, ctx){
         var annotationTemplateJson = annotools.retrieveTemplate();
         if (mode == "edit") {
             var id = newAnnot.id;
@@ -2008,8 +2015,8 @@ var annotools = new Class({
             "title":title,
             "contents":form,
         });
-    },
-    promptForAnalysis: function(annotools, analysisBox) {
+    };
+    annotools.prototype.promptForAnalysis= function(annotools, analysisBox) {
         var title = "Analysis Tool";
         var form = "<select id='algorithm'>";
         form += "<option value='canny_edge'>Canny Edge</option>";
@@ -2031,8 +2038,8 @@ var annotools = new Class({
             "title":title,
             "contents":form,
         });
-    },
-    promptForParameters: function(annotools, analysisBox, algorithm) {
+    };
+    annotools.prototype.promptForParameters= function(annotools, analysisBox, algorithm) {
         var title = "Enter the parameters";
         var form = "<form>";
         var field = [];
@@ -2086,17 +2093,17 @@ var annotools = new Class({
             "title":title,
             "contents":form,
         });
-    },
-    addMouseEvents: function() {
+    };
+    annotools.prototype.addMouseEvents= function() {
         window.addEventListener('mousemove',    this.annotationHandler.handleMouseMove, false);
         window.addEventListener('mousedown',    this.annotationHandler.handleMouseDown, false);
         window.addEventListener('mouseup',      this.annotationHandler.handleMouseUp, false);
         //window.addEventListener('mouseup',      this.getAnnot(), false);
-    },
-    removeMouseEvents: function() {
+    };
+    annotools.prototype.removeMouseEvents= function() {
         window.removeEventListener('mousemove',    this.annotationHandler.handleMouseMove, false);
         window.removeEventListener('mousedown',    this.annotationHandler.handleMouseDown, false);
         window.removeEventListener('mouseup',      this.annotationHandler.handleMouseUp, false);
         //window.removeEventListener('mouseup',      this.getAnnot(), false);
-    }
-});
+    };
+
