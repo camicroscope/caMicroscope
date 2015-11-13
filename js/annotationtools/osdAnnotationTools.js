@@ -16,24 +16,24 @@ var annotools = function(element, options) {
 	this.isChrome = !!window.chrome;
 	this.annotationActive = !(this.isFirefox || this.isIE || this.isOpera);
 	this.source = element; //The Tool Source Element
-        this.left = options.left || '150px'; //The Tool Location
-        this.ratio = options.ratio || 0.005; //One pixel equals to the length in real situation. Will be used in the measurement tool
-        this.maxWidth = options.maxWidth || 4000; //MaxWidth of the Image
-        this.maxHeight = options.maxHeight || 800; ////MaxHeight of the Image
-        this.initialized = false;
+    this.left = options.left || '150px'; //The Tool Location
+    this.ratio = options.ratio || 0.005; //One pixel equals to the length in real situation. Will be used in the measurement tool
+    this.maxWidth = options.maxWidth || 4000; //MaxWidth of the Image
+    this.maxHeight = options.maxHeight || 800; ////MaxHeight of the Image
+    this.initialized = false;
 	this.top = options.top || '0px';
-        this.color = options.color || 'lime'; //Default Annotation Color
-        this.height = options.height || '30px';
-        this.width = options.width || '270px';
-        this.zindex = options.zindex || '100'; //To Make Sure The Tool Appears in the Front
-        this.iidDecoded = decodeURI(options.iid);
+    this.color = options.color || 'lime'; //Default Annotation Color
+    this.height = options.height || '30px';
+    this.width = options.width || '270px';
+    this.zindex = options.zindex || '100'; //To Make Sure The Tool Appears in the Front
+    this.iidDecoded = decodeURI(options.iid);
 	this.canvas = options.canvas; //The canvas Element that The Use will be drawing annotatoins on.
-        this.iid = options.iid || null; //The Image ID
-        this.annotVisible = true; //The Annotations are Set to be visible at the First Loading
-        this.mode = 'default'; //The Mode is Set to Default
+    this.iid = options.iid || null; //The Image ID
+    this.annotVisible = true; //The Annotations are Set to be visible at the First Loading
+    this.mode = 'default'; //The Mode is Set to Default
 
-        this.viewer = options.viewer;
-        this.imagingHelper = this.viewer.imagingHelper;
+    this.viewer = options.viewer;
+    this.imagingHelper = this.viewer.imagingHelper;
 	this.mpp = options.mpp;
 	this.mppx = parseFloat(this.mpp["mpp-x"]);
 	this.mppy = parseFloat(this.mpp["mpp-y"]);
@@ -123,7 +123,7 @@ var annotools = function(element, options) {
             'class': 'toolButton',
             'src': 'images/hide.svg'
         }).inject(this.tool); //Show/Hide Button
-	this.fullDownloadButton = new Element('img', {
+	    this.fullDownloadButton = new Element('img', {
             'title': 'Download All Markups (Coming Soon)',
             'class': 'toolButton',
             'src': 'images/fullDownload.svg'
@@ -1833,17 +1833,33 @@ var annotools = function(element, options) {
     };
     annotools.prototype.retrieveTemplate= function() {
 	var jsonReturn = "";
+        /*
+         * Ganesh
+         */
+        
         var jsonRequest = new Request.JSON({
 	    url: 'api/Data/retreiveTemplate.php', //Ameen, fix your spelling!
 	    async:false,
 	    onSuccess: function(e){
                 jsonReturn = JSON.parse(e)[0];
+                console.log(jsonReturn);
 	    }.bind(this),
 	    onFailure:function(e){
 		this.showMessage("Error retrieving AnnotationTemplate, please check your retrieveTemplate.php");
 	    }.bind(this)
         }).get();
-
+     
+        /*
+        var jsonRequest = jQuery.ajax({
+            url: "api/Data/retreiveTemplate.php",
+            success: function(e){
+                console.log(e);
+                jsonReturn  = JSON.parse(e)[0];
+                console.log(jsonReturn);
+            },
+            async: false
+        });
+        */
 	return jsonReturn;
     };
     annotools.prototype.retrieveSingleAnnot= function(annotId) {
