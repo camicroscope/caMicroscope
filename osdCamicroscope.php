@@ -21,6 +21,7 @@ $config = require 'api/Configuration/config.php';
     <script type="text/javascript" src="js/mootools/mootools-more-1.4.0.1-compressed.js"></script>
     <script src="js/annotationtools/annotools-openseajax-handler.js"></script>
     <script src="js/imagemetadatatools/osdImageMetadata.js"></script>
+    <script src="js/annotationtools/annotoolsInit.js"></script>
     <script src="js/annotationtools/osdAnnotationTools.js"></script>
     <script src="js/dependencies/MD5.js"></script>
     <script src="js/dependencies/jquery.js"></script>
