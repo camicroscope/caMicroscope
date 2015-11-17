@@ -32,153 +32,293 @@ var annotools = function(element, options) {
 	this.y2 = 1.0;
 
 	this.annotationHandler = options.annotationHandler || new AnnotoolsOpenSeadragonHandler();
-        this.viewer.addHandler('animation-finish', function (event) {
-            this.getAnnot();
-        }.bind(this));
-        this.viewer.addHandler('animation-start', function (event) {
-            var markup_svg = document.getElementById("markups");
-            if (markup_svg) {
-                markup_svg.destroy()
-            }
-        });
-        window.addEvent("domready", function () {
-            //this.getAnnot();
-		this.createButtons();
-        }.bind(this)); //Get the annotation information and Create Buttons
-        /*window.addEvent("keydown", function (event) {
-            this.keyPress(event.code)
-        }.bind(this)); //Add KeyDown Events*/
-        //this.viewer.viewport.zoomTo(1);
-        //this.iid = "AA00448";
-        if(this.annotationActive)
-	    this.getAnnot();
-        this.imagingHelper.addHandler('image-view-changed',function (event)
-        {
-            //this.getAnnot();
-        }.bind(this));
+    
+    /*
+     * OpenSeaDragon events
+     */
+    this.viewer.addHandler('animation-finish', function (event) {
+        this.getAnnot();
+    }.bind(this));
+    this.viewer.addHandler('animation-start', function (event) {
+        var markup_svg = document.getElementById("markups");
+        if (markup_svg) {
+            markup_svg.destroy()
+        }
+    });
 
-    };
 
-    annotools.prototype.createButtons= function () //Create Buttons
+    window.addEvent("domready", function () {
+        //this.getAnnot();
+    this.createButtons();
+    }.bind(this)); //Get the annotation information and Create Buttons
+    /*window.addEvent("keydown", function (event) {
+        this.keyPress(event.code)
+    }.bind(this)); //Add KeyDown Events*/
+    //this.viewer.vewport.zoomTo(1);
+    //this.iid = "AA00448";
+    
+    if(this.annotationActive)
+        this.getAnnot();
+    this.imagingHelper.addHandler('image-view-changed',function (event)
     {
-        this.tool = document.id(this.source); //Get The Element with the Source ID.
-        this.tool.setStyles({
-            'position': 'absolute',
-            'left': this.left,
-            'top': this.top,
-            'width': this.width,
-            'height': this.height,
-            'z-index': this.zindex
-        });
-        this.tool.addClass('annotools'); //Update Styles
-        //this.tool.makeDraggable(); //Make it Draggable.
-        if(this.annotationActive)
-	{
-	this.rectbutton = new Element('img', {
+        //this.getAnnot();
+    }.bind(this));
+
+};
+
+annotools.prototype.createButtons= function () //Create Buttons
+{
+    console.log(this.source);
+    //this.tool = document.id(this.source); //Get The Element with the Source ID.
+    this.tool = $(this.source);
+    var tool = jQuery("#"+this.source); //Temporary dom element while we clean up mootools
+    
+    this.tool.setStyles({
+        'position': 'absolute',
+        'left': this.left,
+        'top': this.top,
+        'width': this.width,
+        'height': this.height,
+        'z-index': this.zindex
+    });
+    this.tool.addClass('annotools'); //Update Styles
+    //this.tool.makeDraggable(); //Make it Draggable.
+    if(this.annotationActive)
+    {
+        
+        /*
+         * Ganesh
+         * Mootools to Jquery for creation of toolbar buttons
+         */
+        /*
+        this.rectbutton = new Element('img', {
             'title': 'Draw Rectangle',
             'class': 'toolButton firstToolButtonSpace',
             'src': 'images/rect.svg'
         }).inject(this.tool); //Create Rectangle Tool
+        */
+        //console.log(this.rectbutton);
+        //console.log(this.source);
+        //this.rectbutton = new Element(rectbutton);    
+
+        this.rectbutton = jQuery("<img>", {title: "Draw Rectangle", class: "toolButton firstToolButtonSpace", src: "images/rect.svg"});
+        tool.append(this.rectbutton);
+        //console.log(tool);    
+
+
+        /*
         this.ellipsebutton = new Element('img', {
             'title': 'Draw Ellipse',
             'class': 'toolButton',
             'src': 'images/ellipse.svg'
         }).inject(this.tool); //Ellipse Tool
+        */
+        this.ellipsebutton = jQuery("<img>", {
+            'title': 'Draw Ellipse',
+            'class': 'toolButton',
+            'src': 'images/ellipse.svg'
+        });
+        tool.append(this.ellipsebutton);
+
+       
+        /*
         this.pencilbutton = new Element('img', {
             'title': 'Draw Freeline',
             'class': 'toolButton',
             'src': 'images/pencil.svg'
         }).inject(this.tool); //Pencil Tool
+        */
+        this.pencilbutton = jQuery('<img>', {
+            'title': 'Draw Freeline',
+            'class': 'toolButton',
+            'src': 'images/pencil.svg'
+        });
+        tool.append(this.pencilbutton); //Pencil Tool
+        
+        
+        /*
         this.spacer1 = new Element('img', {
             'class': 'spacerButton',
             'src': 'images/spacer.svg'
         }).inject(this.tool);
+        */
+        this.spacer1 = jQuery("<img>", {
+            'class': 'spacerButton', 
+            'src': 'images/spacer.svg'
+        });
+        tool.append(this.spacer1);
+        
+        
+        /*
         this.measurebutton = new Element('img', {
             'title': 'Measurement Tool',
             'class': 'toolButton',
             'src': 'images/measure.svg'
         }).inject(this.tool); //Measurement Tool
+        */
+        this.measurebutton = jQuery('<img>', {
+            'title': 'Measurement Tool',
+            'class': 'toolButton',
+            'src': 'images/measure.svg'
+        });
+        tool.append(this.measurebutton);
+
+
+        /*
         this.spacer2 = new Element('img', {
             'class': 'spacerButton',
             'src': 'images/spacer.svg'
         }).inject(this.tool);
+        */
+        this.spacer2 = jQuery('<img>', {
+            'class': 'spacerButton',
+            'src': 'images/spacer.svg'
+        });
+        tool.append(this.spacer2);
+        
+        /*
         this.filterbutton = new Element('img', {
             'title': 'Filter Markups',
             'class': 'toolButton',
             'src': 'images/filter.svg'
         }).inject(this.tool); //Filter Button
+        */
+        
+        this.filterbutton = jQuery('<img>', {
+            'title': 'Filter Markups',
+            'class': 'toolButton',
+            'src': 'images/filter.svg'
+        });
+        tool.append(this.filterbutton); //Filter Button
+       
+        /*
         this.hidebutton = new Element('img', {
             'title': 'Show/Hide Markups',
             'class': 'toolButton',
             'src': 'images/hide.svg'
         }).inject(this.tool); //Show/Hide Button
-	    this.fullDownloadButton = new Element('img', {
+        */
+        this.hidebutton = jQuery('<img>', {
+            'title': 'Show/Hide Markups',
+            'class': 'toolButton',
+            'src': 'images/hide.svg'
+        });
+        tool.append(this.hidebutton);
+        /*
+        this.fullDownloadButton = new Element('img', {
             'title': 'Download All Markups (Coming Soon)',
             'class': 'toolButton',
             'src': 'images/fullDownload.svg'
         }).inject(this.tool); //Full Download
+        */
+        this.fullDownloadButton = jQuery('<img>', {
+            'title': 'Download All Markups (Coming Soon)',
+            'class': 'toolButton',
+            'src': 'images/fullDownload.svg'
+        });
+        tool.append(this.fullDownloadButton);
+        
+        /*
         this.partialDownloadButton = new Element('img', {
             'title': 'Download Partial Markups (Coming Soon)',
             'class': 'toolButton',
             'src': 'images/partDownload.svg'
         }).inject(this.tool); //Partial Download
-	
+        */
+
+        this.partialDownloadButton = jQuery('<img>', {
+            'title': 'Download Partial Markups (Coming Soon)',
+            'class': 'toolButton',
+            'src': 'images/partDownload.svg'
+        });
+        tool.append(this.partialDownloadButton);  //Partial Download
+
+
         /*this.savebutton = new Element('img', {
             'title': 'Save Current State',
             'class': 'toolButton',
             'src': 'images/save.svg'
         }).inject(this.tool); //Save Button
-*/
-	}
-	this.titleButton = new Element('<p>',{
-		'class' : 'titleButton',
-		'text' : 'caMicroscope'
-	}).inject(this.tool);
+        */
+    }
+    this.titleButton = new Element('<p>',{
+        'class' : 'titleButton',
+        'text' : 'caMicroscope'
+    }).inject(this.tool);
 
-	this.iidbutton = new Element('<p>',{
-		'class':'iidButton',
-		'text':'SubjectID :' + this.iid
-	}).inject(this.tool);
+    this.iidbutton = new Element('<p>',{
+        'class':'iidButton',
+        'text':'SubjectID :' + this.iid
+    }).inject(this.tool);
 
-/* ASHISH - disable quit button
+    /* ASHISH - disable quit button
         this.quitbutton = new Element('img', {
             'title': 'quit',
             'class': 'toolButton',
             'src': 'images/quit.svg'
         }).inject(this.tool); //Quit Button
-*/
-	if(this.annotationActive)
-	{
+    */
+    if(this.annotationActive)
+    {
+        this.rectbutton.on("click", function(){
+            this.mode = 'rect';
+            this.drawMarkups();
+        }.bind(this));
+        /*
         this.rectbutton.addEvents({
             'click': function () {
                 this.mode = 'rect';
                 this.drawMarkups();
             }.bind(this)
         }); //Change Mode
+        */
+        
+        this.ellipsebutton.on("click", function(){
+            this.mode = 'ellipse';
+            this.drawMarkups();
+
+        }.bind(this));
+
+        /*
         this.ellipsebutton.addEvents({
             'click': function () {
                 this.mode = 'ellipse';
                 this.drawMarkups();
             }.bind(this)
         });
+        */
       /*  this.polybutton.addEvents({
             'click': function () {
                 this.mode = 'polyline';
                 this.drawMarkups();
             }.bind(this)
         }); */
+        /*
         this.pencilbutton.addEvents({
             'click': function () {
                 this.mode = 'pencil';
                 this.drawMarkups();
             }.bind(this)
         });
+        */
+        this.pencilbutton.on('click', function () {
+                this.mode = 'pencil';
+                this.drawMarkups();
+        }.bind(this));
+
+
+        /*
         this.measurebutton.addEvents({
             'click': function () {
                 this.mode = 'measure';
                 this.drawMarkups();
             }.bind(this)
         });
+        */
+        this.measurebutton.on('click', function () {
+                this.mode = 'measure';
+                this.drawMarkups();
+        }.bind(this));       
         /*this.magnifybutton.addEvents({
             'click': function () {
                 this.mode = 'magnify';
@@ -190,17 +330,29 @@ var annotools = function(element, options) {
                 this.selectColor()
             }.bind(this)
         });*/
+        /*
         this.hidebutton.addEvents({
             'click': function () {
                 this.toggleMarkups()
             }.bind(this)
         });
+        */
+        this.hidebutton.on('click', function () {
+            this.toggleMarkups()
+        }.bind(this));
+        /*
         this.filterbutton.addEvents({
             'click': function () {
                 this.removeMouseEvents();
                 this.promptForAnnotation(null, "filter", this, null);
             }.bind(this)
         });
+        */
+
+        this.filterbutton.on('click', function () {
+            this.removeMouseEvents();
+            this.promptForAnnotation(null, "filter", this, null);
+        }.bind(this));
         /*this.analyzebutton.addEvents({
             'click': function () {
                 this.analyze()
@@ -211,7 +363,7 @@ var annotools = function(element, options) {
                 this.saveState()
             }.bind(this)
         });*/
-/* ASHISH Disable quit button
+        /* ASHISH Disable quit button
         this.quitbutton.addEvents({
             'click': function () {
                 this.quitMode();
@@ -219,7 +371,7 @@ var annotools = function(element, options) {
             }.bind(this)
         });
         this.quitbutton.hide(); //Quit Button Will Be Used To Return To the Default Mode
-*/
+        */
         var toolButtons = document.getElements(".toolButton");
         for (var i = 0; i < toolButtons.length; i++) {
             toolButtons[i].addEvents({
@@ -248,7 +400,7 @@ var annotools = function(element, options) {
             'class': 'magnify'
         }).inject(document.body); //Magnify glass will hide by default
         this.magnifyGlass.hide();
-	}
+    }
 };
 
 
