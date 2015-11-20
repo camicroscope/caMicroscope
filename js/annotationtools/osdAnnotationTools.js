@@ -9,6 +9,117 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
+
+var annotools = function(element, options) {
+    this.isOpera = !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
+    this.isFirefox = typeof InstallTrigger !== 'undefined';
+    this.isSafari = Object.prototype.toString.call(window.HTMLElement).indexOf('Constructor') > 0;
+    this.isChrome = !!window.chrome;
+    this.annotationActive = !(this.isFirefox || this.isIE || this.isOpera);
+    this.ratio = options.ratio || 0.005; //One pixel equals to the length in real situation. Will be used in the measurement tool
+    this.maxWidth = options.maxWidth || 4000; //MaxWidth of the Image
+    this.maxHeight = options.maxHeight || 800; ////MaxHeight of the Image
+    this.initialized = false;
+    this.color = options.color || 'lime'; //Default Annotation Color
+
+
+
+    this.iidDecoded = decodeURI(options.iid);
+    this.canvas = options.canvas; //The canvas Element that The Use will be drawing annotatoins on.
+    this.iid = options.iid || null; //The Image ID
+    this.annotVisible = true; //The Annotations are Set to be visible at the First Loading
+    this.mode = 'default'; //The Mode is Set to Default
+
+    this.viewer = options.viewer;
+    this.imagingHelper = this.viewer.imagingHelper;
+    this.mpp = options.mpp;
+    this.mppx = parseFloat(this.mpp["mpp-x"]);
+    this.mppy = parseFloat(this.mpp["mpp-y"]);
+    this.x1 = 0.0;
+    this.x2 = 1.0;
+    this.y1 = 0.0;
+    this.y2 = 1.0;
+
+    this.annotationHandler = options.annotationHandler || new AnnotoolsOpenSeadragonHandler();
+    
+    /*
+     * OpenSeaDragon events
+     */
+    this.viewer.addHandler('animation-finish', function (event) {
+        this.getAnnot();
+    }.bind(this));
+    this.viewer.addHandler('animation-start', function (event) {
+        var markup_svg = document.getElementById("markups");
+        if (markup_svg) {
+            markup_svg.destroy()
+        }
+    });
+
+
+    window.addEvent("domready", function () {
+        //this.getAnnot();
+        //ToolBar.createButtons();
+    }.bind(this)); //Get the annotation information and Create Buttons
+   
+    if(this.annotationActive) {
+        this.getAnnot();
+    }
+    this.imagingHelper.addHandler('image-view-changed',function (event)
+    {
+        //this.getAnnot();
+    }.bind(this));
+
+    this.messageBox = new Element('div', {
+        'id': 'messageBox'
+    }).inject(document.body); //Create A Message Box
+    
+
+    this.showMessage("Press white space to toggle annotations");
+    this.drawLayer = jQuery('<div>', {
+        html: "",
+        styles: {
+            position: 'absolute', 
+            'z-index': 1
+        }
+    });
+    jQuery("body").append(this.drawLayer);
+
+    /*
+    this.drawLayer = new Element('div', {
+        html: "",
+        styles: {
+            position: 'absolute',
+            'z-index': 1
+        }
+    }).inject(document.body); //drawLayer will hide by default
+    */
+    this.drawCanvas = jQuery('<canvas>');
+    this.drawLayer.append(this.drawCanvas);
+
+    //this.drawCanvas = new Element('canvas').inject(this.drawLayer);
+    this.drawLayer.hide();
+    /*
+    this.magnifyGlass = new Element('div', {
+        'class': 'magnify'
+    }).inject(document.body); //Magnify glass will hide by default
+    this.magnifyGlass.hide();
+    */
+    this.magnifyGlass = jQuery("<div>", {
+        'class': 'magnify'
+    });
+    jQuery("body").append(this.magnifyGlass);
+    this.magnifyGlass.hide();
+
+
+};
+
+//annotools.prototype.createButtons= 
+
+annotools.prototype.getAnnotationActive = function(){    
+    return this.annotationActive;
+}
+
+
     annotools.prototype.getAnnot= function (viewer) //Get Annotation from the API
     {
 	if(this.initialized)

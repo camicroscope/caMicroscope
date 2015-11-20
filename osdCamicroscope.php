@@ -21,7 +21,7 @@ $config = require 'api/Configuration/config.php';
     <script type="text/javascript" src="js/mootools/mootools-more-1.4.0.1-compressed.js"></script>
     <script src="js/annotationtools/annotools-openseajax-handler.js"></script>
     <script src="js/imagemetadatatools/osdImageMetadata.js"></script>
-    <script src="js/annotationtools/annotoolsInit.js"></script>
+    <script src="js/annotationtools/ToolBar.js"></script>
     <script src="js/annotationtools/osdAnnotationTools.js"></script>
     <script src="js/dependencies/MD5.js"></script>
     <script src="js/dependencies/jquery.js"></script>
@@ -99,17 +99,13 @@ $config = require 'api/Configuration/config.php';
 
       function addOverlays() {
         var annotationHandler = new AnnotoolsOpenSeadragonHandler(viewer, {});
-        
+        console.log(annotools);        
         annotool=new annotools('tool',{
-            left:'0px',
-                top:'0px',
-		height: '48px',
-		width: '100%',
-                canvas:'openseadragon-canvas',
-                iid: tissueId, 
-                viewer: viewer,
-		annotationHandler: annotationHandler,
-		mpp:MPP
+            canvas:'openseadragon-canvas',
+            iid: tissueId, 
+            viewer: viewer,
+		    annotationHandler: annotationHandler,
+		    mpp:MPP
         });
         
       }
@@ -126,7 +122,17 @@ $config = require 'api/Configuration/config.php';
         };
       }
 
-      
+     
+    var toolBar = new ToolBar('tool', {
+            left:'0px',
+            top:'0px',
+		    height: '48px',
+		    width: '100%',
+       
+    });
+    console.log(toolBar);
+    toolBar.createButtons();
+         
 
      </script>
 <script>
