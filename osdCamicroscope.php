@@ -59,11 +59,11 @@ $config = require 'api/Configuration/config.php';
     <div id="container">
                 
         <div id="tool"></div>
+        <div class="demoarea">
+            <div id="viewer" class="openseadragon"></div>
+        </div>
 
-    </div>
 
-    <div class="demoarea">
-        <div id="viewer" class="openseadragon"></div>
     </div>
 
     <script type="text/javascript">
@@ -73,11 +73,11 @@ $config = require 'api/Configuration/config.php';
       var imagedata = new OSDImageMetaData({imageId:tissueId});
       var MPP = imagedata.metaData[0];
       var fileLocation = imagedata.metaData[1];
-      var viewer = new OpenSeadragon.Viewer(
-          { id: "viewer", 
+      var viewer = new OpenSeadragon.Viewer({ 
+            id: "viewer", 
             prefixUrl: "images/",
             showNavigator:  false,
-	    zoomPerClick: 2,
+	        zoomPerClick: 2,
             maxZoomPixelRatio: 4
 	  });
 
@@ -97,18 +97,35 @@ $config = require 'api/Configuration/config.php';
 	  barThickness: 2
       });
 
-      function addOverlays() {
+
+    function isAnnotationActive(){
+        this.isOpera = !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
+        this.isFirefox = typeof InstallTrigger !== 'undefined';
+        this.isSafari = Object.prototype.toString.call(window.HTMLElement).indexOf('Constructor') > 0;
+        this.isChrome = !!window.chrome;
+        this.annotationActive = !(this.isFirefox || this.isIE || this.isOpera);
+        return this.annotationActive;
+    }
+
+    function addOverlays() {
         var annotationHandler = new AnnotoolsOpenSeadragonHandler(viewer, {});
-        console.log(annotools);        
-        annotool=new annotools('tool',{
+            annotool=new annotools({
             canvas:'openseadragon-canvas',
             iid: tissueId, 
             viewer: viewer,
-		    annotationHandler: annotationHandler,
-		    mpp:MPP
+            annotationHandler: annotationHandler,
+            mpp:MPP
         });
-        
-      }
+        var toolBar = new ToolBar('tool', {
+                left:'0px',
+                top:'0px',
+                height: '48px',
+                width: '100%',
+                iid: tissueId
+           
+        });
+        toolBar.createButtons();
+    }
 
       if (!String.prototype.format) {
         String.prototype.format = function() {
@@ -122,19 +139,7 @@ $config = require 'api/Configuration/config.php';
         };
       }
 
-     
-    var toolBar = new ToolBar('tool', {
-            left:'0px',
-            top:'0px',
-		    height: '48px',
-		    width: '100%',
-       
-    });
-    console.log(toolBar);
-    toolBar.createButtons();
-         
-
-     </script>
+          </script>
 <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
