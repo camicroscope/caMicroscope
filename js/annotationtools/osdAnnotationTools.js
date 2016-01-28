@@ -48,11 +48,11 @@ var annotools = function( options) {
         this.getAnnot();
     }.bind(this));
     this.viewer.addHandler('animation-start', function (event) {
-        var markup_svg = document.getElementById("markups");
-        if (markup_svg) {
-            markup_svg.destroy()
-        }
-    });
+    var markup_svg = document.getElementById("markups");
+    if (markup_svg) {
+        markup_svg.destroy()
+    }
+});
 
 
     window.addEvent("domready", function () {
@@ -112,7 +112,163 @@ var annotools = function( options) {
 
 };
 
+var convertGeo = function(points){
+    var p = points.split(' ');
+    var geocoords = []
+    for(var i=0; i< p.length; i++){
+        var pt = p[i].split(',');
+        var ptx = pt[0];
+        var pty = pt[1];
+        geocoords.push([ptx,pty])
+    }
+    var geojson = {}
+    geojson.geometry = {};
+    geojson.geometry.coordinates = [geocoords];
+    //console.log(geojson);
+    return geojson;
+}
 
+
+
+annotools.prototype.convertAnnotationsToGeoJSON = function() {
+    geoJSONs = [];
+    var annotations = this.annotations;
+    console.log("Geeo");
+    
+    for(var i in annotations) {
+        
+        var annotation = annotations[i];
+        //console.log(annotation);
+
+        var points = annotation.points;
+        if(points) { //is a polygon
+            //console.log(points);
+            geo = convertGeo(points);
+            geoJSONs.push(geo);        
+        
+        }
+    }
+    console.log(geoJSONs);
+    return geoJSONs;
+    console.log(geoJSONs);
+}
+
+annotools.prototype.handleGeoJSON = function() {
+
+    geoJSONs = this.convertAnnotationsToGeoJSON();
+    this.geoannotations = geoJSONs;
+    //this.convertAllGeoToNative();
+
+    this.displayGeoJSONAnnot();
+    console.log(geoJSONs);
+    //this.geoJSONtoSVG(geoJSONAnnotation[0]); 
+    //this.generateSVG(geoJSONAnnotation[0]);
+    //console.log(geoJSONAnnotation[0]);
+
+}
+annotools.prototype.convertGeoToNative = function (geoannotation) {
+    var points = geoannotation.geometry.coordinates[0];
+    //console.log(points);
+    var nativePoints = [];
+    for(var i=0; i<points.length; i++){
+        px = points[i][0];
+        py = points[i][0]
+        var polyPoint = new OpenSeadragon.Point(parseFloat(px), parseFloat(py));
+        var pointX = this.imagingHelper.logicalToPhysicalX(polyPoint.x)
+        var pointY = this.imagingHelper.logicalToPhysicalY(polyPoint.y);
+        nativePoints.push([pointX, pointY]);
+    }
+    //console.log(nativePoints);
+    geoannotation.geometry.coordinates = [nativePoints];
+    return geoannotation;
+    
+}
+annotools.prototype.convertAllGeoToNative = function() {
+    var self = this;
+    var annotations = this.geoannotations;
+    for(var i = 0; i < annotations.length; i++){
+        this.geoannotations[i] = this.convertGeoToNative(annotations[i]);
+    }
+    //console.log(this.geoannotations);
+}
+annotools.prototype.displayGeoJSONAnnot = function(){
+    var self = this;
+    var annotations = this.geoannotations;
+    console.log(annotations.length);
+    for(var i=0; i<annotations.length; i++) {
+        var annotation = annotations[i];
+        //console.log(annotation);
+        self.generateSVG(annotation);
+    }
+    
+}
+
+annotools.prototype.generateSVG = function(annotation){ 
+    //console.log(annotation);
+  
+    var nativepoints = annotation.geometry.coordinates[0];
+    var container = document.getElementsByClassName(this.canvas)[0]; //Get The Canvas Container
+    //console.log(nativepoints);
+    //var container = document.getElementsByClassName(this.cavas)[0];
+    //console.log(container);
+    var width = parseInt(container.offsetWidth);
+    var height = parseInt(container.offsetHeight);
+    /* Why is there an ellipse in the center? */
+    var svgHtml = '<svg xmlns="http://www.w3.org/2000/svg" width="' + width + 'px" height="' + height + 'px" version="1.1">';
+        svgHtml += '<g id="groupcenter"/>';
+        svgHtml += '<g id="origin">';
+        var origin = viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(.5,.5));
+        svgHtml += '<ellipse id="originpt" cx="' + origin.x + '" cy="' + origin.y + '" rx="' + 4 + '" ry="' + 4  + '" style="display: none"/>';
+        svgHtml += '</g>';
+        svgHtml += '<g id="viewport" transform="translate(0,0)">';
+    
+    var offset = OpenSeadragon.getElementOffset(viewer.canvas);
+    svgHtml += '<polygon id="'+Math.random()+'" points="';
+    var polySVG = ""
+    for(var k = 0; k < nativepoints.length; k++) {      
+        //console.log(nativepoints[k][0]);
+        var polyPixelX = this.imagingHelper.logicalToPhysicalX(nativepoints[k][0]);
+        var polyPixelY = this.imagingHelper.logicalToPhysicalY(nativepoints[k][1]);
+        //svgHtml += nativepoints[k][0] + ',' + nativepoints[k][1] + ' ';
+        //polySVG += nativepoints[k][0] + ',' + nativepoints[k][1] + ' ';
+        svgHtml += polyPixelX + ',' + polyPixelY + ' ';
+        polySVG += polyPixelX + ',' + polyPixelY + ' ';
+
+    }
+    console.log(polySVG);
+    
+    svgHtml += '" style="fill:none; stroke:red; stroke-width:2.5"/>';
+    
+    this.svg = new Element("div", {
+        styles: {
+            position: "absolute",
+            left: 0,
+            top: 0,
+            width: '100%',
+            height: '100%'
+        },
+        html: svgHtml
+    }).inject(container);
+    
+    //console.log(svgHtml);
+ 
+
+}
+
+annotools.prototype.geoJSONtoSVG = function(geoJSONAnnotation) {
+    var coordinates = geoJSONAnnotation.geometry.coordinates;
+    /*Convert to native*/
+    var points = coordinates[0];
+    var osdpoints = []
+    for(var k = 0; k < points.length; k++) {
+        var polypoint = new OpenSeadragon.Point(points[k][0], points[k][1]);
+        osdpoints.push(polypoint);
+    }
+    this.nativepoints = osdpoints;
+    console.log(osdpoints);
+ 
+    
+}
 
 annotools.prototype.getAnnot= function (viewer) //Get Annotation from the API
 {
@@ -131,8 +287,9 @@ annotools.prototype.getAnnot= function (viewer) //Get Annotation from the API
         onSuccess: function (e) {
             if (e == null) this.annotations = new Array();
             else this.annotations = e;
+            this.handleGeoJSON();
             this.convertAllToNative();
-            this.displayAnnot(); //Display The Annotations
+            //this.displayAnnot(); //Display The Annotations
             this.relativeToGlobal();
             this.setupHandlers();
         //console.log("successfully get annotations");
@@ -152,41 +309,41 @@ annotools.prototype.getAnnot= function (viewer) //Get Annotation from the API
 
 annotools.prototype.getAnnotFilter= function (author,grade,multi) //Get Annotation from the API
 {
-if(this.initialized)
-{
-    this.x1 = this.imagingHelper._viewportOrigin["x"];
-    this.y1 = this.imagingHelper._viewportOrigin["y"];
-    this.x2 = this.x1 + this.imagingHelper._viewportWidth;
-    this.y2 = this.y1 + this.imagingHelper._viewportHeight;
-}
+    if(this.initialized)
+    {
+        this.x1 = this.imagingHelper._viewportOrigin["x"];
+        this.y1 = this.imagingHelper._viewportOrigin["y"];
+        this.x2 = this.x1 + this.imagingHelper._viewportWidth;
+        this.y2 = this.y1 + this.imagingHelper._viewportHeight;
+    }
 
-this.initialized = true;
-        var jsonRequest = new Request.JSON({
-            //url: IP + 'api/getAnnotSpatial.php',
-            url: 'api/Data/getAnnotSpatialFilter.php',
-            onSuccess: function (e) {
-                if (e == null) this.annotations = new Array();
-                else this.annotations = e;
-                this.convertAllToNative();
-        this.displayAnnot(); //Display The Annotations
-        this.relativeToGlobal();
-                this.setupHandlers();
-                //console.log("successfully get annotations");
-            }.bind(this),
-            onFailure: function (e) {
-                this.showMessage("cannot get the annotations,please check your getAnnot function");
-                this.annotations = new Array();
-            }.bind(this)
-        }).get({
-            'iid': this.iid,
-    'x':this.x1,
-    'y':this.y1,
-    'x1':this.x2,
-    'y1':this.y2,
-    'author':author,
-    'grade':grade,
-    'multi':multi
-        });
+    this.initialized = true;
+    var jsonRequest = new Request.JSON({
+        //url: IP + 'api/getAnnotSpatial.php',
+        url: 'api/Data/getAnnotSpatialFilter.php',
+        onSuccess: function (e) {
+            if (e == null) this.annotations = new Array();
+            else this.annotations = e;
+            this.convertAllToNative();
+    this.displayAnnot(); //Display The Annotations
+    this.relativeToGlobal();
+            this.setupHandlers();
+            //console.log("successfully get annotations");
+        }.bind(this),
+        onFailure: function (e) {
+            this.showMessage("cannot get the annotations,please check your getAnnot function");
+            this.annotations = new Array();
+        }.bind(this)
+    }).get({
+        'iid': this.iid,
+        'x':this.x1,
+        'y':this.y1,
+        'x1':this.x2,
+        'y1':this.y2,
+        'author':author,
+        'grade':grade,
+        'multi':multi
+    });
 };
 
 annotools.prototype.keyPress= function (code) //Key Down Events Handler
@@ -844,34 +1001,46 @@ annotools.prototype.displayAnnot= function () //Display SVG Annotations
                             break;
                         case "pencil":
                             var points = a[index].points;
+                            var pencilSVG = ""
                             var poly = String.split(points, ';');
                             for (var k = 0; k < poly.length; k++) {
                                 var p = String.split(poly[k], ' ');
                                 svgHtml += '<polyline id="'+index+'" points="';
                                 for (var j = 0; j < p.length; j++) {
                                     point = String.split(p[j], ',');
-                var penPixelX = this.imagingHelper.logicalToPhysicalX(point[0]);
-                var penPixelY = this.imagingHelper.logicalToPhysicalY(point[1]);
+                                    var penPixelX = this.imagingHelper.logicalToPhysicalX(point[0]);
+                                    var penPixelY = this.imagingHelper.logicalToPhysicalY(point[1]);
                                     svgHtml += penPixelX + ',' + penPixelY + ' ';
+                                    pencilSVG  += penPixelX + ',' + penPixelY + ' ';
+
                                 }
+                                
+                                console.log("pencillll");
+                                console.log(pencilSVG);
                                 svgHtml += '" style="fill:none;stroke:' + a[index].color + ';stroke-width:2"/>';
                             }
                             break;
                         case "polyline":
+                            console.log("polyLineeee");
+                            var polySVG = ""
                             var points = a[index].points;
                             var poly = String.split(points, ';');
-            var offset = OpenSeadragon.getElementOffset(viewer.canvas);
+                            var offset = OpenSeadragon.getElementOffset(viewer.canvas);
                             for (var k = 0; k < poly.length; k++) {
                                 var p = String.split(poly[k], ' ');
                                 svgHtml += '<polygon id="'+index+ '" points="';
+                               
                                 for (var j = 0; j < p.length; j++) {
                                     point = String.split(p[j], ',');
-                var polyPixelX = this.imagingHelper.logicalToPhysicalX(point[0]);
-                var polyPixelY = this.imagingHelper.logicalToPhysicalY(point[1]);
+                                    var polyPixelX = this.imagingHelper.logicalToPhysicalX(point[0]);
+                                    var polyPixelY = this.imagingHelper.logicalToPhysicalY(point[1]);
                                     svgHtml += polyPixelX + ',' + polyPixelY + ' ';
+                                    polySVG += polyPixelX + ',' + polyPixelY + ' ';
+
                                 }
                                 svgHtml += '" style="fill:none;stroke:' + a[index].color + ';stroke-width:2"/>';
                             }
+                            console.log(polySVG);
                             break;
                         case "line":
             var points = String.split(a[index].points, ',');
@@ -883,9 +1052,10 @@ annotools.prototype.displayAnnot= function () //Display SVG Annotations
 
                 }
             }
+            
             svgHtml += '</g></svg>';
-
-
+            //console.log(svgHtml);
+            //console.log(svgHtml);
             //if (this.annotations.length > 0) {
                 //inject the SVG Annotations to this.Canvas
                 this.svg = new Element("div", {
@@ -1074,57 +1244,57 @@ annotools.prototype.saveAnnot= function () //Save Annotations
 
 annotools.prototype.convertToNative= function (annot)
 {
-if(annot.type == "rect" || annot.type == "ellipse")
-{
-    var x = annot.x;
-    var y = annot.y;
-    var w = annot.w;
-    var h = annot.h;
-
-    var nativeW = this.imagingHelper.logicalToPhysicalDistance(w);
-    var nativeH = this.imagingHelper.logicalToPhysicalDistance(h);
-    var nativeX = this.imagingHelper.logicalToPhysicalX(x);
-    var nativeY = this.imagingHelper.logicalToPhysicalY(y);
-    var nativeNumbers = JSON.encode({nativeW:nativeW,nativeH:nativeH,nativeX:nativeX,nativeY:nativeY});
-    return nativeNumbers;
-}
-
-else if(annot.type == "polyline" || annot.type == "pencil" || annot.type == "line")
-{
-    var x = annot.x;
-    var y = annot.y;
-    var w = annot.w;
-    var h = annot.h;
-    var point = annot.points;
-
-    var nativeW = this.imagingHelper.logicalToPhysicalDistance(w);
-    var nativeH = this.imagingHelper.logicalToPhysicalDistance(h);
-    var nativeX = this.imagingHelper.logicalToPhysicalX(x);
-    var nativeY = this.imagingHelper.logicalToPhysicalY(y);
-        
-    var poly_first_split = String.split(point,' ');
-    var points  = "";
-    for(var k = 0; k < poly_first_split.length - 1; k++)
+    if(annot.type == "rect" || annot.type == "ellipse")
     {
-    var poly_second_split = String.split(poly_first_split[k], ',');
+        var x = annot.x;
+        var y = annot.y;
+        var w = annot.w;
+        var h = annot.h;
 
-    var polyPoint = new OpenSeadragon.Point(parseFloat(poly_second_split[0]),parseFloat(poly_second_split[1]));
-
-    points += this.imagingHelper.logicalToPhysicalX(polyPoint.x) + ',' + this.imagingHelper.logicalToPhysicalY(polyPoint.y) + ' ';	
+        var nativeW = this.imagingHelper.logicalToPhysicalDistance(w);
+        var nativeH = this.imagingHelper.logicalToPhysicalDistance(h);
+        var nativeX = this.imagingHelper.logicalToPhysicalX(x);
+        var nativeY = this.imagingHelper.logicalToPhysicalY(y);
+        var nativeNumbers = JSON.encode({nativeW:nativeW,nativeH:nativeH,nativeX:nativeX,nativeY:nativeY});
+        return nativeNumbers;
     }
 
-    var last_poly_split = String.split(poly_first_split[k],',');
+    else if(annot.type == "polyline" || annot.type == "pencil" || annot.type == "line")
+    {
+        var x = annot.x;
+        var y = annot.y;
+        var w = annot.w;
+        var h = annot.h;
+        var point = annot.points;
 
-    var lastPolyPoint = new OpenSeadragon.Point(parseFloat(last_poly_split[0]),parseFloat(last_poly_split[1]));
+        var nativeW = this.imagingHelper.logicalToPhysicalDistance(w);
+        var nativeH = this.imagingHelper.logicalToPhysicalDistance(h);
+        var nativeX = this.imagingHelper.logicalToPhysicalX(x);
+        var nativeY = this.imagingHelper.logicalToPhysicalY(y);
+            
+        var poly_first_split = String.split(point,' ');
+        var points  = "";
+        for(var k = 0; k < poly_first_split.length - 1; k++)
+        {
+        var poly_second_split = String.split(poly_first_split[k], ',');
 
-    points += this.imagingHelper.logicalToPhysicalX(lastPolyPoint.x) + ',' + this.imagingHelper.logicalToPhysicalY(lastPolyPoint.y);
-  
-    var nativeNumbers = JSON.encode({nativeW:nativeW,nativeH:nativeH,nativeX:nativeX,nativeY:nativeY,nativePoints:points});
-    return nativeNumbers;
-}
+        var polyPoint = new OpenSeadragon.Point(parseFloat(poly_second_split[0]),parseFloat(poly_second_split[1]));
 
-else
-    return JSON.encode(annot);
+        points += this.imagingHelper.logicalToPhysicalX(polyPoint.x) + ',' + this.imagingHelper.logicalToPhysicalY(polyPoint.y) + ' ';	
+        }
+
+        var last_poly_split = String.split(poly_first_split[k],',');
+
+        var lastPolyPoint = new OpenSeadragon.Point(parseFloat(last_poly_split[0]),parseFloat(last_poly_split[1]));
+
+        points += this.imagingHelper.logicalToPhysicalX(lastPolyPoint.x) + ',' + this.imagingHelper.logicalToPhysicalY(lastPolyPoint.y);
+      
+        var nativeNumbers = JSON.encode({nativeW:nativeW,nativeH:nativeH,nativeX:nativeX,nativeY:nativeY,nativePoints:points});
+        return nativeNumbers;
+    }
+
+    else
+        return JSON.encode(annot);
 };
 
 annotools.prototype.convertFromNative= function(annot,end)
@@ -1195,15 +1365,15 @@ else
 
 annotools.prototype.convertAllToNative= function()
 {
-for(index = 0; index < this.annotations.length; index++)
-{
-    //unparsed = this.convertToNative(this.annotations[index]);
-    newannot = JSON.parse(this.convertToNative(this.annotations[index]));
-    this.annotations[index].x = newannot.nativeX;
-    this.annotations[index].y = newannot.nativeY;
-    this.annotations[index].w = newannot.nativeW;
-    this.annotations[index].h = newannot.nativeH;
-}
+    for(index = 0; index < this.annotations.length; index++)
+    {
+        //unparsed = this.convertToNative(this.annotations[index]);
+        newannot = JSON.parse(this.convertToNative(this.annotations[index]));
+        this.annotations[index].x = newannot.nativeX;
+        this.annotations[index].y = newannot.nativeY;
+        this.annotations[index].w = newannot.nativeW;
+        this.annotations[index].h = newannot.nativeH;
+    }
 };
 
 annotools.prototype.drawEllipse= function(ctx)
