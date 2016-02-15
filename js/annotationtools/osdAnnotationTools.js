@@ -40,16 +40,20 @@ var annotools = function( options) {
     this.y2 = 1.0;
 
     this.annotationHandler = options.annotationHandler || new AnnotoolsOpenSeadragonHandler();
-    
+    //var it1;
     /*
      * OpenSeaDragon events
      */
     this.viewer.addHandler('animation-finish', function (event) {
+        //t1 = performance.now();
         this.getAnnot();
+        //var t2 = performance.now();
+       // console.log(t2 - t1);
     }.bind(this));
     this.viewer.addHandler('animation-start', function (event) {
     var markup_svg = document.getElementById("markups");
     if (markup_svg) {
+        console.log("destroying");
         markup_svg.destroy()
     }
 });
@@ -112,19 +116,20 @@ var annotools = function( options) {
 
 };
 
+/*
 var convertGeo = function(points){
     var p = points.split(' ');
     var geocoords = []
     for(var i=0; i< p.length; i++){
         var pt = p[i].split(',');
-        var ptx = pt[0];
-        var pty = pt[1];
+        var ptx = +pt[0];
+        var pty = +pt[1];
         geocoords.push([ptx,pty])
     }
     var geojson = {}
     geojson.geometry = {};
     geojson.geometry.coordinates = [geocoords];
-    //console.log(geojson);
+    console.log(geojson);
     return geojson;
 }
 
@@ -195,26 +200,28 @@ annotools.prototype.displayGeoJSONAnnot = function(){
     var self = this;
     var annotations = this.geoannotations;
     console.log(annotations.length);
+    /*
     for(var i=0; i<annotations.length; i++) {
         var annotation = annotations[i];
         //console.log(annotation);
         self.generateSVG(annotation);
     }
+    //
+    this.generateSVG(annotations);
     
 }
 
-annotools.prototype.generateSVG = function(annotation){ 
+annotools.prototype.generateSVG = function(annotations){ 
     //console.log(annotation);
-  
-    var nativepoints = annotation.geometry.coordinates[0];
+    var annotation = annotations[i];
     var container = document.getElementsByClassName(this.canvas)[0]; //Get The Canvas Container
     //console.log(nativepoints);
     //var container = document.getElementsByClassName(this.cavas)[0];
     //console.log(container);
     var width = parseInt(container.offsetWidth);
     var height = parseInt(container.offsetHeight);
-    /* Why is there an ellipse in the center? */
-    var svgHtml = '<svg xmlns="http://www.w3.org/2000/svg" width="' + width + 'px" height="' + height + 'px" version="1.1">';
+     Why is there an ellipse in the center? 
+    var svgHtml = '<svg xmlns="http://www.w3.org/2000/svg" width="' + width + 'px" height="' + height + 'px" version="1.1" id="markups">';
         svgHtml += '<g id="groupcenter"/>';
         svgHtml += '<g id="origin">';
         var origin = viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(.5,.5));
@@ -222,34 +229,39 @@ annotools.prototype.generateSVG = function(annotation){
         svgHtml += '</g>';
         svgHtml += '<g id="viewport" transform="translate(0,0)">';
     
-    var offset = OpenSeadragon.getElementOffset(viewer.canvas);
-    svgHtml += '<polygon id="'+Math.random()+'" points="';
-    var polySVG = ""
-    for(var k = 0; k < nativepoints.length; k++) {      
-        //console.log(nativepoints[k][0]);
-        var polyPixelX = this.imagingHelper.logicalToPhysicalX(nativepoints[k][0]);
-        var polyPixelY = this.imagingHelper.logicalToPhysicalY(nativepoints[k][1]);
-        //svgHtml += nativepoints[k][0] + ',' + nativepoints[k][1] + ' ';
-        //polySVG += nativepoints[k][0] + ',' + nativepoints[k][1] + ' ';
-        svgHtml += polyPixelX + ',' + polyPixelY + ' ';
-        polySVG += polyPixelX + ',' + polyPixelY + ' ';
+    for(var i=0; i < annotations.length; i++){
+        var annotation = annotations[i];
+        var nativepoints = annotation.geometry.coordinates[0];
+
+        var offset = OpenSeadragon.getElementOffset(viewer.canvas);
+        svgHtml += '<polygon id="'+Math.random()+'" points="';
+        var polySVG = ""
+        for(var k = 0; k < nativepoints.length; k++) {      
+            //console.log(nativepoints[k][0]);
+            var polyPixelX = this.imagingHelper.logicalToPhysicalX(nativepoints[k][0]);
+            var polyPixelY = this.imagingHelper.logicalToPhysicalY(nativepoints[k][1]);
+            //svgHtml += nativepoints[k][0] + ',' + nativepoints[k][1] + ' ';
+            //polySVG += nativepoints[k][0] + ',' + nativepoints[k][1] + ' ';
+            svgHtml += polyPixelX + ',' + polyPixelY + ' ';
+            polySVG += polyPixelX + ',' + polyPixelY + ' ';
+
+        }
+        console.log(polySVG);
+        
+        svgHtml += '" style="fill:none; stroke:red; stroke-width:2.5"/>';
+        
 
     }
-    console.log(polySVG);
-    
-    svgHtml += '" style="fill:none; stroke:red; stroke-width:2.5"/>';
-    
-    this.svg = new Element("div", {
-        styles: {
-            position: "absolute",
-            left: 0,
-            top: 0,
-            width: '100%',
-            height: '100%'
-        },
-        html: svgHtml
-    }).inject(container);
-    
+        this.svg = new Element("div", {
+            styles: {
+                position: "absolute",
+                left: 0,
+                top: 0,
+                width: '100%',
+                height: '100%'
+            },
+            html: svgHtml
+        }).inject(container);
     //console.log(svgHtml);
  
 
@@ -257,7 +269,7 @@ annotools.prototype.generateSVG = function(annotation){
 
 annotools.prototype.geoJSONtoSVG = function(geoJSONAnnotation) {
     var coordinates = geoJSONAnnotation.geometry.coordinates;
-    /*Convert to native*/
+    /*Convert to native
     var points = coordinates[0];
     var osdpoints = []
     for(var k = 0; k < points.length; k++) {
@@ -269,9 +281,11 @@ annotools.prototype.geoJSONtoSVG = function(geoJSONAnnotation) {
  
     
 }
-
+*/
 annotools.prototype.getAnnot= function (viewer) //Get Annotation from the API
 {
+    var startTime = performance.now();
+    var self = this;
     if(this.initialized)
     {
         this.x1 = this.imagingHelper._viewportOrigin["x"];
@@ -279,17 +293,53 @@ annotools.prototype.getAnnot= function (viewer) //Get Annotation from the API
         this.x2 = this.x1 + this.imagingHelper._viewportWidth;
         this.y2 = this.y1 + this.imagingHelper._viewportHeight;
     }
+    var max = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(4), this.imagingHelper.physicalToDataY(4));
+    var origin = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(0), this.imagingHelper.physicalToDataY(0));
+    var area = (max.x - origin.x) * (max.y - origin.y);
+    /*
+    console.log(area);
+        console.log(this.iid);
+        console.log(this.x1);
+        console.log(this.y1);
+        console.log(this.x2);
+        console.log(this.y2);
+    */
 
     this.initialized = true;
+    console.log(area);
+    //var url = "api/Data/getAnnotSpatial.php?iid=Test&x=" + this.x1 + "&y=" + this.y1 + "&x1=" + this.x2 + "&y1=" +this.y2 + "&footprint="+area;
+    var url = "http://imaging.cci.emory.edu/nodeApi/getAnnotations?x=" + this.x1 + "&y=" + this.y1 + "&x1=" + this.x2 + "&y1=" +this.y2 + "&footprint="+area;
+
+    console.log(url);
+    jQuery.get(url, function(data){
+        console.log("fetching data");
+        console.log(data);
+        var d = data;
+        //var d = JSON.parse(data);
+        self.annotations = d;
+        console.log("----------");
+        console.log("Number of annoations rendered: "+ d.length);
+        //var renderStartTime = performance.now();
+        self.handleGeoJSON(startTime);
+        //var renderEndTime = performance.now();
+        //console.log(d);
+        //this.handleGeoJSON();
+    });
+    /*
     var jsonRequest = new Request.JSON({
         //url: IP + 'api/getAnnotSpatial.php',
+        
         url: 'api/Data/getAnnotSpatial.php',
         onSuccess: function (e) {
             if (e == null) this.annotations = new Array();
             else this.annotations = e;
+            console.log(e);
             this.handleGeoJSON();
+        
+            //var geoJSON = geoJSONHandler(this.annotations);
+            //geoJSON.handleGeoJSON();
             this.convertAllToNative();
-            //this.displayAnnot(); //Display The Annotations
+            this.displayAnnot(); //Display The Annotations
             this.relativeToGlobal();
             this.setupHandlers();
         //console.log("successfully get annotations");
@@ -299,12 +349,15 @@ annotools.prototype.getAnnot= function (viewer) //Get Annotation from the API
             this.annotations = new Array();
         }.bind(this)
     }).get({
-        'iid': this.iid,
+        'caseId': this.iid,
+        'algorithmId': "tammy-test:7",
         'x':this.x1,
         'y':this.y1,
         'x1':this.x2,
+        'footprint': area,
         'y1':this.y2
     });
+    */
 };
 
 annotools.prototype.getAnnotFilter= function (author,grade,multi) //Get Annotation from the API
@@ -318,6 +371,9 @@ annotools.prototype.getAnnotFilter= function (author,grade,multi) //Get Annotati
     }
 
     this.initialized = true;
+    
+
+
     var jsonRequest = new Request.JSON({
         //url: IP + 'api/getAnnotSpatial.php',
         url: 'api/Data/getAnnotSpatialFilter.php',
@@ -967,30 +1023,30 @@ annotools.prototype.displayAnnot= function () //Display SVG Annotations
                             var h = parseFloat(a[index].h);
                             // handle displaying the drawing when they are already zoomed in
 
-            w = this.imagingHelper.physicalToLogicalDistance(w);
-            h = this.imagingHelper.physicalToLogicalDistance(h);
-            w = w * viewer.viewport.getZoom();
-            h = h * viewer.viewport.getZoom();
-            h = h/this.imagingHelper.imgAspectRatio;
+                            w = this.imagingHelper.physicalToLogicalDistance(w);
+                            h = this.imagingHelper.physicalToLogicalDistance(h);
+                            w = w * viewer.viewport.getZoom();
+                            h = h * viewer.viewport.getZoom();
+                            h = h/this.imagingHelper.imgAspectRatio;
 
-            var offset = OpenSeadragon.getElementOffset(viewer.canvas);
+                            var offset = OpenSeadragon.getElementOffset(viewer.canvas);
 
-            x = x + offset.x;
-            y = y + offset.y;
+                            x = x + offset.x;
+                            y = y + offset.y;
                             svgHtml += '<rect id="' + index + '" x="' + x + '" y="' + y + '" width="' + w*width + '" height="' + width*h + '" stroke="' + a[index].color + '" stroke-width="2" fill="none"/>';
                             break;
                         case "ellipse":
-            var offset = OpenSeadragon.getElementOffset(viewer.canvas);
+                            var offset = OpenSeadragon.getElementOffset(viewer.canvas);
 
-            var x = parseFloat(a[index].x) + offset.x;
-            var y = parseFloat(a[index].y) + offset.y;
-            var w = parseFloat(a[index].w);
-            var h = parseFloat(a[index].h);
-            h = h/this.imagingHelper.imgAspectRatio;
+                            var x = parseFloat(a[index].x) + offset.x;
+                            var y = parseFloat(a[index].y) + offset.y;
+                            var w = parseFloat(a[index].w);
+                            var h = parseFloat(a[index].h);
+                            h = h/this.imagingHelper.imgAspectRatio;
                             var cx = x + w / 2;
                             var cy = y + h / 2;
-            w = this.imagingHelper.physicalToLogicalDistance(w);
-            h = this.imagingHelper.physicalToLogicalDistance(h);
+                            w = this.imagingHelper.physicalToLogicalDistance(w);
+                            h = this.imagingHelper.physicalToLogicalDistance(h);
                             var rx = w / 2;
                             var ry = h / 2;
                             // handle displaying the drawing when they are already zoomed in
@@ -1043,11 +1099,11 @@ annotools.prototype.displayAnnot= function () //Display SVG Annotations
                             console.log(polySVG);
                             break;
                         case "line":
-            var points = String.split(a[index].points, ',');
-            x2 = this.imagingHelper.logicalToPhysicalX(points[0]);
-            y2 = this.imagingHelper.logicalToPhysicalY(points[1]);
-            svgHtml += '<polygon id="'+index+'" points="'+ a[index].x +','+ a[index].y + ' ' + x2 + ',' + y2 + ' ' + a[index].x + ',' + a[index].y + ' " style="fill:none;stroke:' + a[index].color + ';stroke-width:2"/>';
-            break;
+                            var points = String.split(a[index].points, ',');
+                            x2 = this.imagingHelper.logicalToPhysicalX(points[0]);
+                            y2 = this.imagingHelper.logicalToPhysicalY(points[1]);
+                            svgHtml += '<polygon id="'+index+'" points="'+ a[index].x +','+ a[index].y + ' ' + x2 + ',' + y2 + ' ' + a[index].x + ',' + a[index].y + ' " style="fill:none;stroke:' + a[index].color + ';stroke-width:2"/>';
+                            break;
                     }
 
                 }
