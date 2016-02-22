@@ -12,6 +12,9 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 var annotools = function( options) {
 
+    this.AnnotationStore = new AnnotationStore();
+    console.log(this.AnnotationStore);
+    console.log("wooot");
 
     this.annotationActive = isAnnotationActive();
 
@@ -46,7 +49,29 @@ var annotools = function( options) {
      */
     this.viewer.addHandler('animation-finish', function (event) {
         //t1 = performance.now();
-        this.getAnnot();
+        //this.getAnnot();
+        var self = this;
+        //if(this.initialized)
+        //{
+            this.x1 = this.imagingHelper._viewportOrigin["x"];
+            this.y1 = this.imagingHelper._viewportOrigin["y"];
+            this.x2 = this.x1 + this.imagingHelper._viewportWidth;
+            this.y2 = this.y1 + this.imagingHelper._viewportHeight;
+            console.log(this.x1, this.x2, this.y1, this.y2);
+        //}
+        var max = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(4), this.imagingHelper.physicalToDataY(4));
+        var origin = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(0), this.imagingHelper.physicalToDataY(0));
+        var area = (max.x - origin.x) * (max.y - origin.y);
+        console.log(this.x1, this.x2, this.y1, this.y2);
+        this.annotations = this.AnnotationStore.getAnnotations(this.x1, this.y1, this.x2, this.y2, area, function(data){
+            //console.log(data);
+            //console.log(self.annotations);
+            self.annotations = data;
+            self.handleGeoJSON();
+            //console.log(this);  
+        });
+        //console.log(self.annotations);
+        //this.handleGeoJSON();
         //var t2 = performance.now();
        // console.log(t2 - t1);
     }.bind(this));
@@ -65,7 +90,7 @@ var annotools = function( options) {
     }.bind(this)); //Get the annotation information and Create Buttons
    
     if(this.annotationActive){
-        this.getAnnot();
+        //this.getAnnot();
     }
     this.imagingHelper.addHandler('image-view-changed',function (event)
     {
@@ -304,18 +329,19 @@ annotools.prototype.getAnnot= function (viewer) //Get Annotation from the API
         console.log(this.x2);
         console.log(this.y2);
     */
+    
 
     this.initialized = true;
     console.log(area);
-    //var url = "api/Data/getAnnotSpatial.php?iid=Test&x=" + this.x1 + "&y=" + this.y1 + "&x1=" + this.x2 + "&y1=" +this.y2 + "&footprint="+area;
-    var url = "http://imaging.cci.emory.edu/nodeApi/getAnnotations?x=" + this.x1 + "&y=" + this.y1 + "&x1=" + this.x2 + "&y1=" +this.y2 + "&footprint="+area;
+    var url = "api/Data/getAnnotSpatial.php?iid=Test&x=" + this.x1+ "&y=" + this.y1 + "&x1=" + this.x2 + "&y1=" + this.y2 + "&footprint="+area;
+    //var url = "http://imaging.cci.emory.edu/nodeApi/getAnnotations?x=" + this.x1 + "&y=" + this.y1 + "&x1=" + this.x2 + "&y1=" +this.y2 + "&footprint="+area;
 
     console.log(url);
     jQuery.get(url, function(data){
         console.log("fetching data");
-        console.log(data);
-        var d = data;
-        //var d = JSON.parse(data);
+        //console.log(data);
+        //var d = data;
+        var d = JSON.parse(data);
         self.annotations = d;
         console.log("----------");
         console.log("Number of annoations rendered: "+ d.length);
