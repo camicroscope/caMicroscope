@@ -198,3 +198,8 @@
 	-moz-user-select: none;
 	-webkit-user-select: none;
 }
+
+.annotationsvg:hover{
+    cursor: pointer;
+
+}
