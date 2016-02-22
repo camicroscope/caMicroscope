@@ -1,0 +1,36 @@
+{
+  "name": "OpenSeadragonZoomLevels",
+  "version": "1.0.0",
+  "description": "An OpenSeadragon plugin to allow restricting the image zoom to specific levels.",
+  "main": "src/zoom-levels.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/picturae/OpenSeadragonZoomLevels.git"
+  },
+  "keywords": [
+    "openseadragon",
+    "zoom",
+    "levels"
+  ],
+  "author": "Petar Petrov",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/picturae/OpenSeadragonZoomLevels/issues"
+  },
+  "homepage": "https://github.com/picturae/OpenSeadragonZoomLevels#readme",
+  "dependencies": {
+  },
+  "devDependencies": {
+    "gulp": "^3.9.0",
+    "gulp-concat": "^2.6.0",
+    "gulp-jshint": "^1.11.2",
+    "gulp-load-plugins": "^0.10.0",
+    "gulp-plumber": "^1.0.1",
+    "gulp-serve": "^1.2.0",
+    "gulp-sourcemaps": "^1.6.0",
+    "gulp-uglify": "^1.4.2",
+    "gulp-util": "^3.0.6",
+    "jshint-stylish": "^2.0.1"
+  }
+}

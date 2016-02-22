@@ -13,6 +13,7 @@ $config = require 'api/Configuration/config.php';
     <link rel="stylesheet" type="text/css" media="all" href="css/annotools.css" />
     <!--<link rel="stylesheet" type="text/css" media="all" href="css/jquery-ui.min.css" />-->
     <link rel="stylesheet" type="text/css" media="all" href="css/simplemodal.css" />
+    <script src="js/dependencies/jquery.js"></script>
 
     <script src="js/openseadragon/openseadragon-bin-2.0.0/openseadragon.js"></script>
     <script src="js/openseadragon/openseadragon-imaginghelper.min.js"></script>
@@ -23,10 +24,10 @@ $config = require 'api/Configuration/config.php';
     <script src="js/annotationtools/annotools-openseajax-handler.js"></script>
     <script src="js/imagemetadatatools/osdImageMetadata.js"></script>
     <script src="js/annotationtools/ToolBar.js"></script>
+    <script src="js/annotationtools/AnnotationStore.js"></script>
     <script src="js/annotationtools/osdAnnotationTools.js"></script>
     <script src="js/annotationtools/geoJSONHandler.js"></script>
     <script src="js/dependencies/MD5.js"></script>
-    <script src="js/dependencies/jquery.js"></script>
     <!--<script src="js/dependencies/jquery-ui.min.js"></script>-->
     <script src="js/dependencies/simplemodal.js"></script>
     <style type="text/css">
@@ -91,11 +92,12 @@ $config = require 'api/Configuration/config.php';
             prefixUrl: "images/",
             showNavigator:  false,
 	        zoomPerClick: 2,
-            maxZoomPixelRatio: 16
+            maxZoomPixelRatio: 16,
+            animationTime: 0.8
       });
 
       var zoomLevels = viewer.zoomLevels({
-        levels:[0.001, 0.1, 0.2, 0.4, 0.6, 0.8, 1]
+        levels:[0.001, 0.01, 0.2, 0.1,  1]
       });
       viewer.addHandler("open", addOverlays);
       viewer.clearControls();
