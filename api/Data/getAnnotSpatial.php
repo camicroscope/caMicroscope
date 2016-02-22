@@ -8,9 +8,11 @@ $getUrl =  $config['getAnnotationsSpatial'];
 $postUrl = $config['postAnnotation'];
 
 $api_key = '';
+
 if (!empty($_SESSION['api_key'])) {
     $api_key = $_SESSION['api_key'];
 }
+$api_key = 'c0327219-68b2-4a40-9801-fc99e8e1e76f';
 switch ($_SERVER['REQUEST_METHOD'])
 {
 	case 'GET':
@@ -56,7 +58,7 @@ switch ($_SERVER['REQUEST_METHOD'])
             //echo "----";
             //print_r($getRequest);
 			//Figure out how to parse reponse
-			$annotationList = json_decode($getRequest->responseBody);
+			$annotationList = ($getRequest->responseBody);
             //echo json_encode(json_decode($getRequest->responseBody));
             //print_r($getRequest->responseInfo);
             //echo "---\n";
@@ -64,12 +66,16 @@ switch ($_SERVER['REQUEST_METHOD'])
             //echo "---\n";
             //echo $data;
             //echo $annotationList;
-             
+            if($annotationList)
+                echo ($annotationList);
+            else
+                echo "No annotations";
+            /*  
 			if(json_encode($annotationList) == null)
 				echo json_encode("NoAnnotations");
 			else
 				echo json_encode($annotationList);
-            
+             */
             break;
             
         }
