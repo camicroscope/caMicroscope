@@ -9,7 +9,9 @@ return array(
     'retrieveTemplate' => "$url2/AnnotationTemplate/query/RetrieveTemplate",
 
     'getAllAnnotations' => "$url2/Annotations/query/byUserAndImageID?iid=",
-	
+    
+//    'getAnnotationsSpatial' => "http://imaging.cci.emory.edu:9099/services/TCGA/GeoJSONImageMetaData/query/getMarkups?",
+
     'getAnnotationsSpatial' => "$url2/Annotations/query/byUserImageAndSpatialScope?iid=",
 
     'getAnnotationSpatialFilter' => "$url2/Annotations/query/allByFilter?iid=",
