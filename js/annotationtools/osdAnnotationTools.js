@@ -53,17 +53,26 @@ var annotools = function( options) {
         var self = this;
         //if(this.initialized)
         //{
-            this.x1 = this.imagingHelper._viewportOrigin["x"];
+            this.x1 = this.imagingHelper._viewportOrigin["x"] ;
             this.y1 = this.imagingHelper._viewportOrigin["y"];
             this.x2 = this.x1 + this.imagingHelper._viewportWidth;
             this.y2 = this.y1 + this.imagingHelper._viewportHeight;
+
+            boundX1 = this.imagingHelper.physicalToLogicalX(200);
+            boundY1 = this.imagingHelper.physicalToLogicalY(20);
+            boundX2 = this.imagingHelper.physicalToLogicalX(20);
+            boundY2 = this.imagingHelper.physicalToLogicalY(20);
+            var boundX = boundX1 - this.x1;
+            var boundY = boundX;
+            console.log(boundX1 - this.x1);
+            console.log(boundX1, boundX2, boundY1, boundY2); 
             console.log(this.x1, this.x2, this.y1, this.y2);
         //}
         var max = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(4), this.imagingHelper.physicalToDataY(4));
         var origin = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(0), this.imagingHelper.physicalToDataY(0));
         var area = (max.x - origin.x) * (max.y - origin.y);
-        console.log(this.x1, this.x2, this.y1, this.y2);
-        this.annotations = this.AnnotationStore.getAnnotations(this.x1, this.y1, this.x2, this.y2, area, function(data){
+        //console.log(this.x1, this.x2, this.y1, this.y2);
+        this.annotations = this.AnnotationStore.getAnnotations(this.x1, this.y1, this.x2, this.y2, area, boundX, boundY, boundX, boundY, function(data){
             //console.log(data);
             //console.log(self.annotations);
             self.annotations = data;
@@ -76,12 +85,14 @@ var annotools = function( options) {
        // console.log(t2 - t1);
     }.bind(this));
     this.viewer.addHandler('animation-start', function (event) {
-    var markup_svg = document.getElementById("markups");
-    if (markup_svg) {
-        console.log("destroying");
-        markup_svg.destroy()
-    }
-});
+        
+        var markup_svg = document.getElementById("markups");
+        if (markup_svg) {
+            console.log("destroying");
+            markup_svg.destroy();
+            console.log("destroyed");
+        }
+    });
 
 
     window.addEvent("domready", function () {
@@ -121,7 +132,7 @@ var annotools = function( options) {
         }
     }).inject(document.body); //drawLayer will hide by default
     */
-    this.drawCanvas = jQuery('<canvas>');
+    this.drawCanvas = jQuery('<canvas></canvas>');
     this.drawLayer.append(this.drawCanvas);
 
     //this.drawCanvas = new Element('canvas').inject(this.drawLayer);

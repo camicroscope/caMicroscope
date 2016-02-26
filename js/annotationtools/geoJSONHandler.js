@@ -152,7 +152,7 @@ annotools.prototype.generateSVG = function(annotations){
         var annotation = annotations[i];
         var nativepoints = annotation.geometry.coordinates[0];
 
-        var offset = OpenSeadragon.getElementOffset(viewer.canvas);
+        //var offset = OpenSeadragon.getElementOffset(viewer.canvas);
         
         //var svg = 
         svgHtml += '<polygon  class="annotationsvg" id="'+"poly"+i+'" points="';
