@@ -13,7 +13,7 @@ var AnnotationStore = function() {
 AnnotationStore.prototype.getAnnotations = function(x1, y1, x2, y2, footprint, boundX1, boundY1, boundX2, boundY2, callback){
     var self = this;
 
-//    var annotations = this.fetchAnnotations(x1, y1, x2, y2, footprint, callback);
+
         if(Math.round(footprint) != 16){
             self.setCacheBounds(100, -1, 1, 2);
 
@@ -35,10 +35,6 @@ AnnotationStore.prototype.getAnnotations = function(x1, y1, x2, y2, footprint, b
                     console.log("y upper bound");
                 }
 
-                //var x1+=
-
-                //console.log(this.cacheBounds)
-                //console.log(x1, y1, x2, y2);
                 var x_1 = x1-boundX1;
                 var y_1= y1 - boundY1;
                 var x_2= x2+ boundX2;
@@ -47,7 +43,7 @@ AnnotationStore.prototype.getAnnotations = function(x1, y1, x2, y2, footprint, b
                     x_1 = 0;
                 if(y_1 < 0)
                     y_1 = 0;
-//                console.log(x1, x2, y1, y2);
+
                 console.log(x1, x2, y1, y2);
                 console.log(x_1, x_2, y_1, y_2);
                self.setCacheBounds(x_1,y_1,x_2,y_2);
@@ -59,10 +55,6 @@ AnnotationStore.prototype.getAnnotations = function(x1, y1, x2, y2, footprint, b
                 callback(self.annotations);
             }
     }
-
-    //var annotations = this.fetchAnnotations(x1,y1,x2,y2,footprint, callback);
-
-//    return this.annotations;
 
     
 };
@@ -80,56 +72,29 @@ AnnotationStore.prototype.getCacheBounds = function(){
 }
 
 AnnotationStore.prototype.fetchAnnotations = function(x1,y1,x2,y2, footprint, callback){
-    //console.log("fetching from api");
+
     var self = this;
     if(footprint == 16)
         console.log(footprint);
     var midX = x2;
     var midY = y2;
     var url1 = "api/Data/getAnnotSpatial.php?iid=Test&x=" + x1+ "&y=" + y1 + "&x1=" + midX + "&y1=" + midY + "&footprint="+ footprint;
-    var url2 =  "api/Data/getAnnotSpatial.php?iid=Test&x=" + midX+ "&y=" + midY + "&x1=" + x2 + "&y1=" + y2 + "&footprint="+ footprint;
- 
+
     console.log(url1);
     
 
-    //console.log("hellooooo");
+
     jQuery.get(url1, function(data){
-        //console.log(self.getCacheBounds());
-        //console.log(url);
-        //console.log("ajax request done");
-        //console.log(data);
-        //var d = data;
+
+
+
         var d = JSON.parse(data);
         self.annotations = d;
-        //console.log("----------");
-        //console.log("Number of annoations rendered: "+ d.length);
-        //var renderStartTime = performance.now();
+
         console.log("fetched data");
         console.log(d.length);
         callback(d);
-        //return d;
-        //var renderEndTime = performance.now();
-        //console.log(d);
-        //this.handleGeoJSON();
-    }); 
-    jQuery.get(url2, function(data){
-        //console.log(self.getCacheBounds());
-        //console.log(url);
-        //console.log("ajax request done");
-        //console.log(data);
-        //var d = data;
-        var d = JSON.parse(data);
-        self.annotations = d;
-        //console.log("----------");
-        //console.log("Number of annoations rendered: "+ d.length);
-        //var renderStartTime = performance.now();
-        console.log("fetched data");
-        console.log(d.length);
-        callback(d);
-        //return d;
-        //var renderEndTime = performance.now();
-        //console.log(d);
-        //this.handleGeoJSON();
-    }); 
-    
+
+    });
+
 }

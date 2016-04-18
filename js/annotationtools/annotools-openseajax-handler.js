@@ -218,6 +218,7 @@ var AnnotoolsOpenSeadragonHandler = function(viewer, options){
     };
 
     AnnotoolsOpenSeadragonHandler.prototype.handleMouseMove= function(evt) {
+        //console.log("move");
       if(evt.preventDefault)
           evt.preventDefault();
     
@@ -264,9 +265,9 @@ var AnnotoolsOpenSeadragonHandler = function(viewer, options){
               }
               else {
     
-                $('originpt').setProperty('cx',
+                jQuery('originpt').setProperty('cx',
                         viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(.5,.5)).x);
-                $('originpt').setProperty('cy',
+                jQuery('originpt').setProperty('cy',
                         viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(.5,.5)).y);
     
                 //$('svg')[0].show(); 

@@ -11,7 +11,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 
 var annotools = function( options) {
-
+    
     this.AnnotationStore = new AnnotationStore();
     console.log(this.AnnotationStore);
     console.log("wooot");
@@ -43,46 +43,15 @@ var annotools = function( options) {
     this.y2 = 1.0;
 
     this.annotationHandler = options.annotationHandler || new AnnotoolsOpenSeadragonHandler();
-    //var it1;
     /*
      * OpenSeaDragon events
      */
     this.viewer.addHandler('animation-finish', function (event) {
-        //t1 = performance.now();
-        //this.getAnnot();
-        var self = this;
-        //if(this.initialized)
-        //{
-            this.x1 = this.imagingHelper._viewportOrigin["x"] ;
-            this.y1 = this.imagingHelper._viewportOrigin["y"];
-            this.x2 = this.x1 + this.imagingHelper._viewportWidth;
-            this.y2 = this.y1 + this.imagingHelper._viewportHeight;
 
-            boundX1 = this.imagingHelper.physicalToLogicalX(200);
-            boundY1 = this.imagingHelper.physicalToLogicalY(20);
-            boundX2 = this.imagingHelper.physicalToLogicalX(20);
-            boundY2 = this.imagingHelper.physicalToLogicalY(20);
-            var boundX = boundX1 - this.x1;
-            var boundY = boundX;
-            console.log(boundX1 - this.x1);
-            console.log(boundX1, boundX2, boundY1, boundY2); 
-            console.log(this.x1, this.x2, this.y1, this.y2);
-        //}
-        var max = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(4), this.imagingHelper.physicalToDataY(4));
-        var origin = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(0), this.imagingHelper.physicalToDataY(0));
-        var area = (max.x - origin.x) * (max.y - origin.y);
-        //console.log(this.x1, this.x2, this.y1, this.y2);
-        this.annotations = this.AnnotationStore.getAnnotations(this.x1, this.y1, this.x2, this.y2, area, boundX, boundY, boundX, boundY, function(data){
-            //console.log(data);
-            //console.log(self.annotations);
-            self.annotations = data;
-            self.handleGeoJSON();
-            //console.log(this);  
-        });
-        //console.log(self.annotations);
-        //this.handleGeoJSON();
-        //var t2 = performance.now();
-       // console.log(t2 - t1);
+
+        var self = this;
+        self.getAnnot();
+
     }.bind(this));
     this.viewer.addHandler('animation-start', function (event) {
         
@@ -133,10 +102,11 @@ var annotools = function( options) {
     }).inject(document.body); //drawLayer will hide by default
     */
     this.drawCanvas = jQuery('<canvas></canvas>');
+    this.drawCanvas.css({"position": "absolute", "z-index": 1});
     this.drawLayer.append(this.drawCanvas);
 
     //this.drawCanvas = new Element('canvas').inject(this.drawLayer);
-    this.drawLayer.hide();
+    //this.drawLayer.hide();
     /*
     this.magnifyGlass = new Element('div', {
         'class': 'magnify'
@@ -152,249 +122,39 @@ var annotools = function( options) {
 
 };
 
-/*
-var convertGeo = function(points){
-    var p = points.split(' ');
-    var geocoords = []
-    for(var i=0; i< p.length; i++){
-        var pt = p[i].split(',');
-        var ptx = +pt[0];
-        var pty = +pt[1];
-        geocoords.push([ptx,pty])
-    }
-    var geojson = {}
-    geojson.geometry = {};
-    geojson.geometry.coordinates = [geocoords];
-    console.log(geojson);
-    return geojson;
-}
 
-
-
-annotools.prototype.convertAnnotationsToGeoJSON = function() {
-    geoJSONs = [];
-    var annotations = this.annotations;
-    console.log("Geeo");
-    
-    for(var i in annotations) {
-        
-        var annotation = annotations[i];
-        //console.log(annotation);
-
-        var points = annotation.points;
-        if(points) { //is a polygon
-            //console.log(points);
-            geo = convertGeo(points);
-            geoJSONs.push(geo);        
-        
-        }
-    }
-    console.log(geoJSONs);
-    return geoJSONs;
-    console.log(geoJSONs);
-}
-
-annotools.prototype.handleGeoJSON = function() {
-
-    geoJSONs = this.convertAnnotationsToGeoJSON();
-    this.geoannotations = geoJSONs;
-    //this.convertAllGeoToNative();
-
-    this.displayGeoJSONAnnot();
-    console.log(geoJSONs);
-    //this.geoJSONtoSVG(geoJSONAnnotation[0]); 
-    //this.generateSVG(geoJSONAnnotation[0]);
-    //console.log(geoJSONAnnotation[0]);
-
-}
-annotools.prototype.convertGeoToNative = function (geoannotation) {
-    var points = geoannotation.geometry.coordinates[0];
-    //console.log(points);
-    var nativePoints = [];
-    for(var i=0; i<points.length; i++){
-        px = points[i][0];
-        py = points[i][0]
-        var polyPoint = new OpenSeadragon.Point(parseFloat(px), parseFloat(py));
-        var pointX = this.imagingHelper.logicalToPhysicalX(polyPoint.x)
-        var pointY = this.imagingHelper.logicalToPhysicalY(polyPoint.y);
-        nativePoints.push([pointX, pointY]);
-    }
-    //console.log(nativePoints);
-    geoannotation.geometry.coordinates = [nativePoints];
-    return geoannotation;
-    
-}
-annotools.prototype.convertAllGeoToNative = function() {
-    var self = this;
-    var annotations = this.geoannotations;
-    for(var i = 0; i < annotations.length; i++){
-        this.geoannotations[i] = this.convertGeoToNative(annotations[i]);
-    }
-    //console.log(this.geoannotations);
-}
-annotools.prototype.displayGeoJSONAnnot = function(){
-    var self = this;
-    var annotations = this.geoannotations;
-    console.log(annotations.length);
-    /*
-    for(var i=0; i<annotations.length; i++) {
-        var annotation = annotations[i];
-        //console.log(annotation);
-        self.generateSVG(annotation);
-    }
-    //
-    this.generateSVG(annotations);
-    
-}
-
-annotools.prototype.generateSVG = function(annotations){ 
-    //console.log(annotation);
-    var annotation = annotations[i];
-    var container = document.getElementsByClassName(this.canvas)[0]; //Get The Canvas Container
-    //console.log(nativepoints);
-    //var container = document.getElementsByClassName(this.cavas)[0];
-    //console.log(container);
-    var width = parseInt(container.offsetWidth);
-    var height = parseInt(container.offsetHeight);
-     Why is there an ellipse in the center? 
-    var svgHtml = '<svg xmlns="http://www.w3.org/2000/svg" width="' + width + 'px" height="' + height + 'px" version="1.1" id="markups">';
-        svgHtml += '<g id="groupcenter"/>';
-        svgHtml += '<g id="origin">';
-        var origin = viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(.5,.5));
-        svgHtml += '<ellipse id="originpt" cx="' + origin.x + '" cy="' + origin.y + '" rx="' + 4 + '" ry="' + 4  + '" style="display: none"/>';
-        svgHtml += '</g>';
-        svgHtml += '<g id="viewport" transform="translate(0,0)">';
-    
-    for(var i=0; i < annotations.length; i++){
-        var annotation = annotations[i];
-        var nativepoints = annotation.geometry.coordinates[0];
-
-        var offset = OpenSeadragon.getElementOffset(viewer.canvas);
-        svgHtml += '<polygon id="'+Math.random()+'" points="';
-        var polySVG = ""
-        for(var k = 0; k < nativepoints.length; k++) {      
-            //console.log(nativepoints[k][0]);
-            var polyPixelX = this.imagingHelper.logicalToPhysicalX(nativepoints[k][0]);
-            var polyPixelY = this.imagingHelper.logicalToPhysicalY(nativepoints[k][1]);
-            //svgHtml += nativepoints[k][0] + ',' + nativepoints[k][1] + ' ';
-            //polySVG += nativepoints[k][0] + ',' + nativepoints[k][1] + ' ';
-            svgHtml += polyPixelX + ',' + polyPixelY + ' ';
-            polySVG += polyPixelX + ',' + polyPixelY + ' ';
-
-        }
-        console.log(polySVG);
-        
-        svgHtml += '" style="fill:none; stroke:red; stroke-width:2.5"/>';
-        
-
-    }
-        this.svg = new Element("div", {
-            styles: {
-                position: "absolute",
-                left: 0,
-                top: 0,
-                width: '100%',
-                height: '100%'
-            },
-            html: svgHtml
-        }).inject(container);
-    //console.log(svgHtml);
- 
-
-}
-
-annotools.prototype.geoJSONtoSVG = function(geoJSONAnnotation) {
-    var coordinates = geoJSONAnnotation.geometry.coordinates;
-    /*Convert to native
-    var points = coordinates[0];
-    var osdpoints = []
-    for(var k = 0; k < points.length; k++) {
-        var polypoint = new OpenSeadragon.Point(points[k][0], points[k][1]);
-        osdpoints.push(polypoint);
-    }
-    this.nativepoints = osdpoints;
-    console.log(osdpoints);
- 
-    
-}
-*/
 annotools.prototype.getAnnot= function (viewer) //Get Annotation from the API
 {
-    var startTime = performance.now();
-    var self = this;
-    if(this.initialized)
-    {
-        this.x1 = this.imagingHelper._viewportOrigin["x"];
-        this.y1 = this.imagingHelper._viewportOrigin["y"];
-        this.x2 = this.x1 + this.imagingHelper._viewportWidth;
-        this.y2 = this.y1 + this.imagingHelper._viewportHeight;
-    }
+    var self =this;
+    this.x1 = this.imagingHelper._viewportOrigin["x"] ;
+    this.y1 = this.imagingHelper._viewportOrigin["y"];
+    this.x2 = this.x1 + this.imagingHelper._viewportWidth;
+    this.y2 = this.y1 + this.imagingHelper._viewportHeight;
+
+    boundX1 = this.imagingHelper.physicalToLogicalX(200);
+    boundY1 = this.imagingHelper.physicalToLogicalY(20);
+    boundX2 = this.imagingHelper.physicalToLogicalX(20);
+    boundY2 = this.imagingHelper.physicalToLogicalY(20);
+    var boundX = boundX1 - this.x1;
+    var boundY = boundX;
+    console.log(boundX1 - this.x1);
+    console.log(boundX1, boundX2, boundY1, boundY2); 
+    console.log(this.x1, this.x2, this.y1, this.y2);
+    
     var max = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(4), this.imagingHelper.physicalToDataY(4));
     var origin = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(0), this.imagingHelper.physicalToDataY(0));
     var area = (max.x - origin.x) * (max.y - origin.y);
-    /*
-    console.log(area);
-        console.log(this.iid);
-        console.log(this.x1);
-        console.log(this.y1);
-        console.log(this.x2);
-        console.log(this.y2);
-    */
-    
 
-    this.initialized = true;
-    console.log(area);
-    var url = "api/Data/getAnnotSpatial.php?iid=Test&x=" + this.x1+ "&y=" + this.y1 + "&x1=" + this.x2 + "&y1=" + this.y2 + "&footprint="+area;
-    //var url = "http://imaging.cci.emory.edu/nodeApi/getAnnotations?x=" + this.x1 + "&y=" + this.y1 + "&x1=" + this.x2 + "&y1=" +this.y2 + "&footprint="+area;
 
-    console.log(url);
-    jQuery.get(url, function(data){
-        console.log("fetching data");
-        //console.log(data);
-        //var d = data;
-        var d = JSON.parse(data);
-        self.annotations = d;
-        console.log("----------");
-        console.log("Number of annoations rendered: "+ d.length);
-        //var renderStartTime = performance.now();
-        self.handleGeoJSON(startTime);
-        //var renderEndTime = performance.now();
-        //console.log(d);
-        //this.handleGeoJSON();
+    var t1 = performance.now();
+    this.annotations = this.AnnotationStore.getAnnotations(this.x1, this.y1, this.x2, this.y2, area, boundX, boundY, boundX, boundY, function(data){
+        self.annotations = data;
+        self.handleGeoJSON();
+        self.setupHandlers();
+        var t2 = performance.now();
+        console.log("Performance: "+(t2-t1));
     });
-    /*
-    var jsonRequest = new Request.JSON({
-        //url: IP + 'api/getAnnotSpatial.php',
-        
-        url: 'api/Data/getAnnotSpatial.php',
-        onSuccess: function (e) {
-            if (e == null) this.annotations = new Array();
-            else this.annotations = e;
-            console.log(e);
-            this.handleGeoJSON();
-        
-            //var geoJSON = geoJSONHandler(this.annotations);
-            //geoJSON.handleGeoJSON();
-            this.convertAllToNative();
-            this.displayAnnot(); //Display The Annotations
-            this.relativeToGlobal();
-            this.setupHandlers();
-        //console.log("successfully get annotations");
-        }.bind(this),
-        onFailure: function (e) {
-            this.showMessage("cannot get the annotations,please check your getAnnot function");
-            this.annotations = new Array();
-        }.bind(this)
-    }).get({
-        'caseId': this.iid,
-        'algorithmId': "tammy-test:7",
-        'x':this.x1,
-        'y':this.y1,
-        'x1':this.x2,
-        'footprint': area,
-        'y1':this.y2
-    });
-    */
+
 };
 
 annotools.prototype.getAnnotFilter= function (author,grade,multi) //Get Annotation from the API
@@ -492,9 +252,11 @@ annotools.prototype.keyPress= function (code) //Key Down Events Handler
 annotools.prototype.drawMarkups= function () //Draw Markups
 {
     this.showMessage(); //Show Message
-    this.drawCanvas.removeEvents('mouseup');
-    this.drawCanvas.removeEvents('mousedown');
-    this.drawCanvas.removeEvents('mousemove');
+    //this.drawCanvas.off();
+    this.removeMouseEvents();
+    //this.drawCanvas.removeEvents('mouseup');
+    //this.drawCanvas.removeEvents('mousedown');
+    //this.drawCanvas.removeEvents('mousemove');
     this.drawLayer.show(); //Show The Drawing Layer
 /* ASHISH Disable quit
     this.quitbutton.show(); //Show The Quit Button
@@ -523,6 +285,14 @@ annotools.prototype.drawMarkups= function () //Draw Markups
             height = window.innerHeight;
         }
         //Recreate The CreateAnnotation Layer Because of The ViewPort Change Issue.
+        console.log(this.drawLayer);
+        this.drawLayer.css({
+                left: left,
+                top: top,
+                width: width,
+                height: height
+        });
+        /*
         this.drawLayer.set({
             'styles': {
                 left: left,
@@ -531,13 +301,21 @@ annotools.prototype.drawMarkups= function () //Draw Markups
                 height: height
             }
         });
+        */
+        this.drawCanvas.css({
+            width: width, 
+            height: height
+        });
         //Create Canvas on the CreateAnnotation Layer
+        /*
         this.drawCanvas.set({
             width: width,
             height: height
         });
+        */
         //The canvas context
-        var ctx = this.drawCanvas.getContext("2d");
+        var ctx = this.drawCanvas[0].getContext("2d");
+        console.log(this.mode);
         //Draw Markups on Canvas
         switch (this.mode) {
             case "rect":
@@ -983,7 +761,7 @@ annotools.prototype.relativeToGlobal= function()
     
 annotools.prototype.setupHandlers= function() 
 {
-    
+    console.log("setting up handlers"); 
                 
     var root = document.getElementsByTagName('svg')[0]; 
                 
@@ -1471,155 +1249,167 @@ annotools.prototype.convertAllToNative= function()
 
 annotools.prototype.drawEllipse= function(ctx)
 {
+    console.log("ellipsing!");
     this.removeMouseEvents();
-var started = false;
-var min_x,min_y,max_x,max_y,w,h;
-var startPosition;
-this.drawCanvas.addEvent('mousedown',function(e)
-{
-    started = true;
-    startPosition = OpenSeadragon.getMousePosition(e.event);
-    x = startPosition.x;
-    y = startPosition.y;
-});
-
-this.drawCanvas.addEvent('mousemove',function(e)
-{
-    if(started)
+    var started = false;
+    var min_x,min_y,max_x,max_y,w,h;
+    var startPosition;
+    this.drawCanvas.bind("mousedown", function(e){
+        started = true;
+        startPosition = OpenSeadragon.getMousePosition(e.event);
+        x = startPosition.x;
+        y = startPosition.y;       
+    });
+    /*
+    this.drawCanvas.addEventListener('mousedown',function(e)
     {
-    ctx.clearRect(0,0,this.drawCanvas.width,this.drawCanvas.height);
-    var currentMousePosition = OpenSeadragon.getMousePosition(e.event);
+        started = true;
+        startPosition = OpenSeadragon.getMousePosition(e.event);
+        x = startPosition.x;
+        y = startPosition.y;
+    });
+    */
+    this.drawCanvas.bind("mousemove", function(e){
+        
 
-    min_x = Math.min(currentMousePosition.x,startPosition.x);
-    min_y = Math.min(currentMousePosition.y,startPosition.y);
-    max_x = Math.max(currentMousePosition.x,startPosition.x);
-    max_y = Math.max(currentMousePosition.y,startPosition.y);
-    w = Math.abs(max_x - min_x);
-    h = Math.abs(max_y - min_y);
+        if(started)
+        {
+            ctx.clearRect(0,0,this.drawCanvas.width,this.drawCanvas.height);
+            var currentMousePosition = OpenSeadragon.getMousePosition(e.event);
 
-    var kappa = .5522848;
-    var ox = (w/2) *kappa;
-    var oy = (h/2) *kappa;
-    var xe = min_x + w;
-    var ye = min_y + h;
-    var xm = min_x + w/2;
-    var ym = min_y + h/2;
+            min_x = Math.min(currentMousePosition.x,startPosition.x);
+            min_y = Math.min(currentMousePosition.y,startPosition.y);
+            max_x = Math.max(currentMousePosition.x,startPosition.x);
+            max_y = Math.max(currentMousePosition.y,startPosition.y);
+            w = Math.abs(max_x - min_x);
+            h = Math.abs(max_y - min_y);
 
-    ctx.beginPath();
-    ctx.moveTo(min_x,ym);
-    ctx.bezierCurveTo(min_x,ym - oy,xm - ox, min_y, xm, min_y);
-    ctx.bezierCurveTo(xm + ox, min_y, xe, ym - oy, xe, ym);
-    ctx.bezierCurveTo(xe, ym + oy, xm + ox, ye, xm, ye);
-    ctx.bezierCurveTo(xm - ox, ye, min_x, ym + oy, min_x, ym);
-    ctx.closePath();
-    ctx.strokeStyle = this.color;
-    ctx.stroke();
+            var kappa = .5522848;
+            var ox = (w/2) *kappa;
+            var oy = (h/2) *kappa;
+            var xe = min_x + w;
+            var ye = min_y + h;
+            var xm = min_x + w/2;
+            var ym = min_y + h/2;
 
-    }
-}.bind(this));
+            ctx.beginPath();
+            ctx.moveTo(min_x,ym);
+            ctx.bezierCurveTo(min_x,ym - oy,xm - ox, min_y, xm, min_y);
+            ctx.bezierCurveTo(xm + ox, min_y, xe, ym - oy, xe, ym);
+            ctx.bezierCurveTo(xe, ym + oy, xm + ox, ye, xm, ye);
+            ctx.bezierCurveTo(xm - ox, ye, min_x, ym + oy, min_x, ym);
+            ctx.closePath();
+            ctx.strokeStyle = this.color;
+            ctx.stroke();
+        }
 
-this.drawCanvas.addEvent('mouseup', function (e)
-{
-    started = false;
-    var finalMousePosition = new OpenSeadragon.getMousePosition(e.event);
-    min_x = Math.min(finalMousePosition.x,startPosition.x);
-    min_y = Math.min(finalMousePosition.y,startPosition.y);
-    max_x = Math.max(finalMousePosition.x,startPosition.x);
-    max_y = Math.max(finalMousePosition.y,startPosition.y);
+    }.bind(this));   
 
-    var startRelativeMousePosition = new OpenSeadragon.Point(min_x,min_y).minus(OpenSeadragon.getElementOffset(viewer.canvas));
-    var endRelativeMousePosition = new OpenSeadragon.Point(max_x,max_y).minus(OpenSeadragon.getElementOffset(viewer.canvas));
-    var newAnnot = {
-        x: startRelativeMousePosition.x,
-        y: startRelativeMousePosition.y,
-        w: w,
-        h: h,
-        type: "ellipse",
-        color: this.color,
-        loc: new Array()
-    };
-
-    var globalNumbers = JSON.parse(this.convertFromNative(newAnnot, endRelativeMousePosition));
-
-    newAnnot.x = globalNumbers.nativeX;
-    newAnnot.y = globalNumbers.nativeY;
-    newAnnot.w = globalNumbers.nativeW;
-    newAnnot.h = globalNumbers.nativeH;
-    var loc = new Array();
-    loc[0] = parseFloat(newAnnot.x);
-    loc[1] = parseFloat(newAnnot.y);
-    newAnnot.loc = loc;
-        this.promptForAnnotation(newAnnot, "new", this, ctx);
-}.bind(this));
-};
-annotools.prototype.drawRectangle= function(ctx)
-{
-    this.removeMouseEvents();
-var started = false;
-var min_x,min_y,max_x,max_y,w,h;
-var startPosition;
-this.drawCanvas.addEvent('mousedown',function(e)
-{
-    started = true;
-    startPosition = OpenSeadragon.getMousePosition(e.event);
-    x = startPosition.x;
-    y = startPosition.y;
-});
-
-this.drawCanvas.addEvent('mousemove',function(e)
-{
-    if(started)
+    this.drawCanvas.bind('mouseup', function (e)
     {
-    ctx.clearRect(0,0,this.drawCanvas.width, this.drawCanvas.height);
-    var currentMousePosition = OpenSeadragon.getMousePosition(e.event);
-
-    min_x = Math.min(currentMousePosition.x,startPosition.x);
-    min_y = Math.min(currentMousePosition.y,startPosition.y);
-    max_x = Math.max(currentMousePosition.x,startPosition.x);
-    max_y = Math.max(currentMousePosition.y,startPosition.y);
-    w = Math.abs(max_x - min_x);
-    h = Math.abs(max_y - min_y);
-    ctx.strokeStyle = this.color;
-    ctx.strokeRect(min_x,min_y,w,h);
-    }
-}.bind(this));
-
-this.drawCanvas.addEvent('mouseup',function(e)
-{
-    started = false;
-    var finalMousePosition = new OpenSeadragon.getMousePosition(e.event);
-
+        started = false;
+        var finalMousePosition = new OpenSeadragon.getMousePosition(e.event);
         min_x = Math.min(finalMousePosition.x,startPosition.x);
         min_y = Math.min(finalMousePosition.y,startPosition.y);
         max_x = Math.max(finalMousePosition.x,startPosition.x);
         max_y = Math.max(finalMousePosition.y,startPosition.y);
 
-    
-    var startRelativeMousePosition = new OpenSeadragon.Point(min_x,min_y).minus(OpenSeadragon.getElementOffset(viewer.canvas));
-    var endRelativeMousePosition = new OpenSeadragon.Point(max_x,max_y).minus(OpenSeadragon.getElementOffset(viewer.canvas));
-    var newAnnot = {
-        x: startRelativeMousePosition.x,
-        y: startRelativeMousePosition.y,
-        w: w,
-        h: h,
-        type: "rect",
-        color: this.color,
-        loc: new Array()
-    };
+        var startRelativeMousePosition = new OpenSeadragon.Point(min_x,min_y).minus(OpenSeadragon.getElementOffset(viewer.canvas));
+        var endRelativeMousePosition = new OpenSeadragon.Point(max_x,max_y).minus(OpenSeadragon.getElementOffset(viewer.canvas));
+        var newAnnot = {
+            x: startRelativeMousePosition.x,
+            y: startRelativeMousePosition.y,
+            w: w,
+            h: h,
+            type: "ellipse",
+            color: this.color,
+            loc: new Array()
+        };
 
-    var globalNumbers = JSON.parse(this.convertFromNative(newAnnot, endRelativeMousePosition));
+        var globalNumbers = JSON.parse(this.convertFromNative(newAnnot, endRelativeMousePosition));
 
-    newAnnot.x = globalNumbers.nativeX;
-    newAnnot.y = globalNumbers.nativeY;
-    newAnnot.w = globalNumbers.nativeW;
-    newAnnot.h = globalNumbers.nativeH;
-    var loc = new Array();
-    loc[0] = parseFloat(newAnnot.x);
-    loc[1] = parseFloat(newAnnot.y);
-    newAnnot.loc = loc;
-        this.promptForAnnotation(newAnnot, "new", this, ctx);
-}.bind(this));
+        newAnnot.x = globalNumbers.nativeX;
+        newAnnot.y = globalNumbers.nativeY;
+        newAnnot.w = globalNumbers.nativeW;
+        newAnnot.h = globalNumbers.nativeH;
+        var loc = new Array();
+        loc[0] = parseFloat(newAnnot.x);
+        loc[1] = parseFloat(newAnnot.y);
+        newAnnot.loc = loc;
+            this.promptForAnnotation(newAnnot, "new", this, ctx);
+    }.bind(this));
 };
+
+annotools.prototype.drawRectangle= function(ctx)
+{
+    console.log("drawing rectangle");
+    this.removeMouseEvents();
+    var started = false;
+    var min_x,min_y,max_x,max_y,w,h;
+    var startPosition;
+    this.drawCanvas.addEvent('mousedown',function(e)
+    {
+        started = true;
+        startPosition = OpenSeadragon.getMousePosition(e.event);
+        x = startPosition.x;
+        y = startPosition.y;
+    });
+
+    this.drawCanvas.addEvent('mousemove',function(e)
+    {
+        if(started)
+        {
+        ctx.clearRect(0,0,this.drawCanvas.width, this.drawCanvas.height);
+        var currentMousePosition = OpenSeadragon.getMousePosition(e.event);
+
+        min_x = Math.min(currentMousePosition.x,startPosition.x);
+        min_y = Math.min(currentMousePosition.y,startPosition.y);
+        max_x = Math.max(currentMousePosition.x,startPosition.x);
+        max_y = Math.max(currentMousePosition.y,startPosition.y);
+        w = Math.abs(max_x - min_x);
+        h = Math.abs(max_y - min_y);
+        ctx.strokeStyle = this.color;
+        ctx.strokeRect(min_x,min_y,w,h);
+        }
+    }.bind(this));
+
+    this.drawCanvas.addEvent('mouseup',function(e)
+    {
+        started = false;
+        var finalMousePosition = new OpenSeadragon.getMousePosition(e.event);
+
+            min_x = Math.min(finalMousePosition.x,startPosition.x);
+            min_y = Math.min(finalMousePosition.y,startPosition.y);
+            max_x = Math.max(finalMousePosition.x,startPosition.x);
+            max_y = Math.max(finalMousePosition.y,startPosition.y);
+
+        
+        var startRelativeMousePosition = new OpenSeadragon.Point(min_x,min_y).minus(OpenSeadragon.getElementOffset(viewer.canvas));
+        var endRelativeMousePosition = new OpenSeadragon.Point(max_x,max_y).minus(OpenSeadragon.getElementOffset(viewer.canvas));
+        var newAnnot = {
+            x: startRelativeMousePosition.x,
+            y: startRelativeMousePosition.y,
+            w: w,
+            h: h,
+            type: "rect",
+            color: this.color,
+            loc: new Array()
+        };
+
+        var globalNumbers = JSON.parse(this.convertFromNative(newAnnot, endRelativeMousePosition));
+
+        newAnnot.x = globalNumbers.nativeX;
+        newAnnot.y = globalNumbers.nativeY;
+        newAnnot.w = globalNumbers.nativeW;
+        newAnnot.h = globalNumbers.nativeH;
+        var loc = new Array();
+        loc[0] = parseFloat(newAnnot.x);
+        loc[1] = parseFloat(newAnnot.y);
+        newAnnot.loc = loc;
+            this.promptForAnnotation(newAnnot, "new", this, ctx);
+    }.bind(this));
+};
+
 annotools.prototype.drawPencil= function(ctx)
 {
     this.removeMouseEvents();
@@ -2226,12 +2016,15 @@ annotools.prototype.promptForParameters= function(annotools, analysisBox, algori
     });
 };
 annotools.prototype.addMouseEvents= function() {
+    console.log("adding mouse events");
     window.addEventListener('mousemove',    this.annotationHandler.handleMouseMove, false);
     window.addEventListener('mousedown',    this.annotationHandler.handleMouseDown, false);
     window.addEventListener('mouseup',      this.annotationHandler.handleMouseUp, false);
     //window.addEventListener('mouseup',      this.getAnnot(), false);
 };
 annotools.prototype.removeMouseEvents= function() {
+    console.log("removing events");
+    console.log(this.annotationHandler);
     window.removeEventListener('mousemove',    this.annotationHandler.handleMouseMove, false);
     window.removeEventListener('mousedown',    this.annotationHandler.handleMouseDown, false);
     window.removeEventListener('mouseup',      this.annotationHandler.handleMouseUp, false);

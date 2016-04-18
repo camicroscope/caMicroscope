@@ -74,45 +74,44 @@ $config = require 'api/Configuration/config.php';
       var annotool = null;
       var tissueId = <?php echo json_encode($_GET['tissueId']); ?>;
 
+
       var imagedata = new OSDImageMetaData({imageId:tissueId});
       console.log(tissueId);
       console.log(imagedata);
       console.log(tissueId);
       
       var MPP = imagedata.metaData[0];
-        MPP = {
-            "mpp-x":3,
-            "mpp-y": 3
-        };
-      var fileLocation = imagedata.metaData[1];
 
-      fileLocation = "/sharmalab/images/TCGA-BRCA-DX/TCGA-02-0001-01Z-00-DX1.83fce43e-42ac-4dcd-b156-2908e75f2e47.svs.dzi";
+        console.log(imagedata);
+      var fileLocation = imagedata.metaData[1];
+      console.log(fileLocation);
+     
       var viewer = new OpenSeadragon.Viewer({ 
             id: "viewer", 
             prefixUrl: "images/",
-            showNavigator:  false,
+            showNavigator:  true,
 	        zoomPerClick: 2,
-            maxZoomPixelRatio: 16,
+            maxZoomPixelRatio: 2,
             animationTime: 0.8
       });
 
-      var zoomLevels = viewer.zoomLevels({
-        levels:[0.001, 0.01, 0.2, 0.1,  1]
-      });
+//      var zoomLevels = viewer.zoomLevels({
+//        levels:[0.001, 0.01, 0.2, 0.1,  1]
+//      });
       viewer.addHandler("open", addOverlays);
       viewer.clearControls();
       viewer.open("<?php print_r($config['fastcgi_server']); ?>?DeepZoom=" + fileLocation);
       var imagingHelper = new OpenSeadragonImaging.ImagingHelper({viewer: viewer});
       viewer.scalebar({
-	  type: OpenSeadragon.ScalebarType.MAP,
-	  pixelsPerMeter: (1/(parseFloat(this.MPP["mpp-x"])*0.000001)),
-	  xOffset: 5,
-	  yOffset: 10,
-	  stayInsideImage: true,
-	  color: "rgb(150,150,150)",
-	  fontColor: "rgb(100,100,100)",
-	  backgroundColor: "rgba(255,255,255,0.5)",
-	  barThickness: 2
+          type: OpenSeadragon.ScalebarType.MAP,
+          pixelsPerMeter: (1/(parseFloat(this.MPP["mpp-x"])*0.000001)),
+          xOffset: 5,
+          yOffset: 10,
+          stayInsideImage: true,
+          color: "rgb(150,150,150)",
+          fontColor: "rgb(100,100,100)",
+          backgroundColor: "rgba(255,255,255,0.5)",
+          barThickness: 2
       });
 
 
@@ -127,22 +126,38 @@ $config = require 'api/Configuration/config.php';
 
     function addOverlays() {
         var annotationHandler = new AnnotoolsOpenSeadragonHandler(viewer, {});
-            annotool=new annotools({
-            canvas:'openseadragon-canvas',
-            iid: tissueId, 
-            viewer: viewer,
-            annotationHandler: annotationHandler,
-            mpp:MPP
-        });
+        annotool= new annotools({
+                canvas:'openseadragon-canvas',
+                iid: tissueId, 
+                viewer: viewer,
+                annotationHandler: annotationHandler,
+                mpp:MPP
+            });
         var toolBar = new ToolBar('tool', {
                 left:'0px',
                 top:'0px',
                 height: '48px',
                 width: '100%',
-                iid: tissueId
+                iid: tissueId,
+                annotool: annotool
            
         });
         toolBar.createButtons();
+        
+        /*Pan and zoom to point*/
+        var bound_x = <?php echo json_encode($_GET['x']); ?>;
+        var bound_y = <?php echo json_encode($_GET['y']); ?>;
+        var zoom = <?php echo json_encode($_GET['zoom']); ?> || 6;
+
+
+        if(bound_x && bound_y){
+            var ipt = new OpenSeadragon.Point(+bound_x, +bound_y);
+            var vpt = viewer.viewport.imageToViewportCoordinates(ipt);
+            viewer.viewport.panTo(vpt);
+            viewer.viewport.zoomTo(zoom);
+        } else {
+            console.log("bounds not specified");
+        }
     }
 
       if (!String.prototype.format) {
@@ -156,6 +171,16 @@ $config = require 'api/Configuration/config.php';
             });
         };
       }
+
+    /*Zoom to location*/
+    /*
+        x: 19483.04157968738
+        y: 22274.643967801494
+    */
+    /*
+        x: 13083.041579687379
+        y: 19609.643967801494
+    */
 
           </script>
 <script>
