@@ -1,5 +1,7 @@
 var ToolBar = function(element, options){
-
+    console.log(options);
+    this.annotools = options.annotool;
+    console.log(this.annotools);
 
     this.source = element; //The Tool Source Element
     this.top = options.top || '0px';
@@ -44,7 +46,7 @@ ToolBar.prototype.createButtons = function(){
             class: "toolButton firstToolButtonSpace", 
             src: "images/rect.svg"
         });
-        tool.append(this.rectButton);
+        tool.append(this.rectbutton);
 
         this.ellipsebutton = jQuery("<img>", {
             'title': 'Draw Ellipse',
@@ -112,12 +114,13 @@ ToolBar.prototype.createButtons = function(){
          */
         this.rectbutton.on("click", function(){
             this.mode = 'rect';
-            this.drawMarkups();
+            this.annotools.drawMarkups();
         }.bind(this));
 
         this.ellipsebutton.on("click", function(){
             this.mode = 'ellipse';
-            this.drawMarkups();
+            this.annotools.mode = 'ellipse';
+            this.annotools.drawMarkups();
 
         }.bind(this));
 
@@ -206,5 +209,177 @@ ToolBar.prototype.createButtons = function(){
 
     }
 };
+
+ToolBar.prototype.drawMarkups= function () //Draw Markups
+{
+    console.log(this.annotools);
+    //this.showMessage(); //Show Message
+    
+    this.annotools.drawCanvas.removeEvents('mouseup');
+    this.annotools.drawCanvas.removeEvents('mousedown');
+    this.annotools.drawCanvas.removeEvents('mousemove');
+    
+    this.annotools.drawLayer.show(); //Show The Drawing Layer
+/* ASHISH Disable quit
+    this.quitbutton.show(); //Show The Quit Button
+*/
+    this.magnifyGlass.hide(); //Hide The Magnifying Tool
+    this.container = document.id(this.canvas); //Get The Canvas Container
+    this.container = document.getElementsByClassName(this.canvas)[0]; //Get The Canvas Container
+    this.container = document.getElementById('container'); //Get The Canvas Container
+    if (this.container) {
+        //var left = parseInt(this.container.offsetLeft), //Get The Container Location
+        var left = parseInt(this.container.getLeft()), //Get The Container Location
+            top = parseInt(this.container.offsetTop),
+            width = parseInt(this.container.offsetWidth),
+            height = parseInt(this.container.offsetHeight),
+            oleft = left,
+            otop = top,
+            owidth = width,
+            oheight = height;
+        //console.log("left: " + left + " top: " + top + " width: " + width + " height: " + height);
+        if (left < 0) {
+            left = 0;
+            width = window.innerWidth;
+        } //See Whether The Container is outside The Current ViewPort
+        if (top < 0) {
+            top = 0;
+            height = window.innerHeight;
+        }
+        //Recreate The CreateAnnotation Layer Because of The ViewPort Change Issue.
+        this.drawLayer.set({
+            'styles': {
+                left: left,
+                top: top,
+                width: width,
+                height: height
+            }
+        });
+        //Create Canvas on the CreateAnnotation Layer
+        this.drawCanvas.set({
+            width: width,
+            height: height
+        });
+        //The canvas context
+        var ctx = this.drawCanvas.getContext("2d");
+        //Draw Markups on Canvas
+        switch (this.mode) {
+            case "rect":
+                console.log("rectangle");
+                this.drawRectangle(ctx);
+                break;
+            case "ellipse":
+                this.drawEllipse(ctx);
+                break;
+            case "pencil":
+                this.drawPencil(ctx);
+                break;
+            case "polyline":
+                this.drawPolyline(ctx);
+                break;
+            case "measure":
+                this.drawMeasure(ctx);
+                break;
+        }
+    } else this.showMessage("Container Not SET Correctly Or Not Fully Loaded Yet");
+    
+};
+
+
+ToolBar.prototype.drawPencil= function(ctx)
+{
+    this.removeMouseEvents();
+    var started = false;
+    var pencil = [];
+    var newpoly = [];
+    this.drawCanvas.addEvent('mousedown',function(e)
+    {
+        started = true;
+        var startPoint = OpenSeadragon.getMousePosition(e.event);
+        var relativeStartPoint = startPoint.minus(OpenSeadragon.getElementOffset(viewer.canvas));
+        newpoly.push({
+        "x":relativeStartPoint.x,
+        "y":relativeStartPoint.y
+        });
+        ctx.beginPath();
+        ctx.moveTo(relativeStartPoint.x, relativeStartPoint.y)
+        ctx.strokeStyle = this.color;
+        ctx.stroke();
+    }.bind(this));
+
+    this.drawCanvas.addEvent('mousemove',function(e)
+    {
+        var newPoint = OpenSeadragon.getMousePosition(e.event);
+        var newRelativePoint = newPoint.minus(OpenSeadragon.getElementOffset(viewer.canvas));
+        if(started)
+        {
+        newpoly.push({
+            "x":newRelativePoint.x,
+            "y":newRelativePoint.y
+            });
+
+        ctx.lineTo(newRelativePoint.x,newRelativePoint.y);
+        ctx.stroke();
+        }
+    });
+
+    this.drawCanvas.addEvent('mouseup',function(e)
+    {
+        started = false;
+        pencil.push(newpoly);
+        newpoly = [];
+        numpoint = 0;
+        var x,y,w,h;
+        x = pencil[0][0].x;
+        y = pencil[0][0].y;
+
+        var maxdistance = 0;
+        var points = "";
+        var endRelativeMousePosition;
+        for(var i = 0; i < pencil.length; i++)
+        {
+        newpoly = pencil[i];
+        for(j = 0; j < newpoly.length - 1; j++)
+        {
+            points += newpoly[j].x + ',' + newpoly[j].y + ' ';
+            if(((newpoly[j].x - x) * (newpoly[j].x - x) + (newpoly[j].y -y) * (newpoly[j].y-y)) > maxdistance)
+            {
+            maxdistance = ((newpoly[j].x - x) * (newpoly[j].x - x) + (newpoly[j].y -y) * (newpoly[j].y-y));
+            var endMousePosition = new OpenSeadragon.Point(newpoly[j].x, newpoly[j].y);
+            endRelativeMousePosition = endMousePosition.minus(OpenSeadragon.getElementOffset(viewer.canvas));
+            }
+        }
+
+        points = points.slice(0,-1);
+        points += ';';
+        }
+
+        points = points.slice(0,-1);
+
+        var newAnnot = {
+            x:x,
+            y:y,
+            w:w,
+            h:h,
+            type: 'pencil',
+            points: points,
+            color: this.color,
+            loc: new Array()
+        };
+
+        var globalNumbers = JSON.parse(this.convertFromNative(newAnnot, endRelativeMousePosition));
+        newAnnot.x = globalNumbers.nativeX;
+        newAnnot.y = globalNumbers.nativeY;
+        newAnnot.w = globalNumbers.nativeW;
+        newAnnot.h = globalNumbers.nativeH;
+        newAnnot.points = globalNumbers.points;
+        var loc = new Array();
+        loc[0] = parseFloat(newAnnot.x);
+        loc[1] = parseFloat(newAnnot.y);
+        newAnnot.loc = loc;
+            this.promptForAnnotation(newAnnot, "new", this, ctx);
+    }.bind(this));
+};
+
 
 
