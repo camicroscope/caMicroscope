@@ -153,7 +153,9 @@ annotools.prototype.generateSVG = function(annotations){
         var nativepoints = annotation.geometry.coordinates[0];
 
         //var offset = OpenSeadragon.getElementOffset(viewer.canvas);
-        
+        var algorithm_id = annotation.provenance.analysis.execution_id;
+        var color = algorithm_color[algorithm_id];
+
         //var svg = 
         svgHtml += '<polygon  class="annotationsvg" id="'+"poly"+i+'" points="';
 
@@ -170,7 +172,7 @@ annotools.prototype.generateSVG = function(annotations){
         }
         //console.log(polySVG);
         
-        svgHtml += '" style="fill:transparent; stroke:lime; stroke-width:2.5"/>';
+        svgHtml += '" style="fill:transparent; stroke:'+ color +  '; stroke-width:2.5"/>';
     }
         this.svg = new Element("div", {
             styles: {
@@ -210,7 +212,7 @@ annotools.prototype.generateSVG = function(annotations){
 
 
 
-annotools.prototype.handleGeoJSON = function(startTime) {
+annotools.prototype.displayGeoAnnots = function() {
 
     var geoJSONs = this.annotations;
     //geoJSONs = this.convertAnnotationsToGeoJSON();
@@ -219,10 +221,11 @@ annotools.prototype.handleGeoJSON = function(startTime) {
 
     //this.displayGeoJSONAnnot();
     //
-   
+    if(this.annotVisible){ 
     var renderStartTime = performance.now();
     this.generateSVG(geoJSONs);
     var renderEndTime = performance.now();
+    }
     //console.log("Rendering time: " + (renderEndTime - renderStartTime));
 
     //endProfile(startTime);
