@@ -1,7 +1,7 @@
-var AnnotationStore = function() {
-    console.log("annotation store!");
+var AnnotationStore = function(iid) {
+    //console.log("annotation store!");
     this.annotations = [];
-
+    this.iid = iid;
     this.cacheBounds = {
         x1: 100,
         y1: -1,
@@ -10,14 +10,14 @@ var AnnotationStore = function() {
     }
 }
 
-AnnotationStore.prototype.getAnnotations = function(x1, y1, x2, y2, footprint, boundX1, boundY1, boundX2, boundY2, callback){
+AnnotationStore.prototype.getAnnotations = function(x1, y1, x2, y2, footprint,algorithms, boundX1, boundY1, boundX2, boundY2, callback){
     var self = this;
 
 
         if(Math.round(footprint) != 16){
             self.setCacheBounds(100, -1, 1, 2);
 
-            var annotations = this.fetchAnnotations(x1, y1, x2, y2, footprint, callback);
+            var annotations = this.fetchAnnotations(x1, y1, x2, y2, footprint, algorithms, callback);
         } else {
 
             if(this.cacheBounds.x1 > x1 || this.cacheBounds.y1 > y1 || this.cacheBounds.x2 < x2 || this.cacheBounds.y2 < y2){
@@ -49,7 +49,7 @@ AnnotationStore.prototype.getAnnotations = function(x1, y1, x2, y2, footprint, b
                self.setCacheBounds(x_1,y_1,x_2,y_2);
                 //console.log("fetching.........");
                 console.log("Clearing and fetching cache");
-                var annotations = this.fetchAnnotations(x_1,y_1,x_2,y_2,footprint, callback);
+                var annotations = this.fetchAnnotations(x_1,y_1,x_2,y_2,footprint,algorithms, callback);
             } else {
                 console.log("from cache");
                 callback(self.annotations);
@@ -71,15 +71,20 @@ AnnotationStore.prototype.getCacheBounds = function(){
     return this.cacheBounds;
 }
 
-AnnotationStore.prototype.fetchAnnotations = function(x1,y1,x2,y2, footprint, callback){
+AnnotationStore.prototype.fetchAnnotations = function(x1,y1,x2,y2, footprint, algorithms, callback){
 
     var self = this;
     if(footprint == 16)
         console.log(footprint);
     var midX = x2;
     var midY = y2;
-    var url1 = "api/Data/getAnnotSpatial.php?iid=Test&x=" + x1+ "&y=" + y1 + "&x1=" + midX + "&y1=" + midY + "&footprint="+ footprint;
-
+    var algorithms_urlparam = JSON.stringify(algorithms);
+    algorithms_urlparam = algorithms_urlparam.replace("[", "%5B");
+    algorithms_urlparam = algorithms_urlparam.replace("]", "%5D");
+    algorithms_urlparam = algorithms_urlparam.replace(/"/g, "%22");
+    console.log(algorithms_urlparam);
+    var url1 = "api/Data/getMultipleAnnots.php?iid="+  self.iid +"&x=" + x1+ "&y=" + y1 + "&x1=" + midX + "&y1=" + midY + "&footprint="+ footprint + "&algorithms=" + algorithms_urlparam;
+    //var url1 = "http://dragon.cci.emory.edu:9099/services/TCGA/GeoJSONImageMetaData/query/getMultipleMarkups?api_key=4fbb38a3-1821-436c-a44d-8d3bc5efd33e&CaseId=" + self.iid +"&x1=" + x1+ "&y1=" + y1 + "&x2=" + midX + "&y2=" + midY + "&footprint="+ footprint + "&algorithms=" + algorithms_urlparam + "&";
     console.log(url1);
     
 
@@ -87,13 +92,13 @@ AnnotationStore.prototype.fetchAnnotations = function(x1,y1,x2,y2, footprint, ca
     jQuery.get(url1, function(data){
 
 
-
         var d = JSON.parse(data);
         self.annotations = d;
 
-        console.log("fetched data");
-        console.log(d.length);
-        callback(d);
+        //console.log("fetched data");
+        //console.log(d.length);
+        if(callback)
+            callback(d);
 
     });
 
