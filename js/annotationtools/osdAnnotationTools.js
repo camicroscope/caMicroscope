@@ -12,10 +12,10 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 var annotools = function( options) {
     
-    this.AnnotationStore = new AnnotationStore();
+    this.AnnotationStore = new AnnotationStore(options.iid);
     console.log(this.AnnotationStore);
     console.log("wooot");
-
+    
     this.annotationActive = isAnnotationActive();
 
     this.ratio = options.ratio || 0.005; //One pixel equals to the length in real situation. Will be used in the measurement tool
@@ -50,7 +50,7 @@ var annotools = function( options) {
 
 
         var self = this;
-        self.getAnnot();
+        self.getMultiAnnot();
 
     }.bind(this));
     this.viewer.addHandler('animation-start', function (event) {
@@ -122,6 +122,87 @@ var annotools = function( options) {
 
 };
 
+annotools.prototype.destroyMarkups = function(viewer) {
+
+    var markup_svg = document.getElementById("markups");
+    if (markup_svg) {
+        console.log("destroying");
+        markup_svg.destroy();
+        console.log("destroyed");
+    }
+
+}
+
+
+annotools.prototype.getMultiAnnot = function(viewer) {
+
+
+    var opa = [];
+
+    var val1 = "";
+    var val2 = "";
+    var val3 = "";
+    
+    var algorithms = [];
+
+    if (jQuery("#tree").attr("algotree")) {
+    var selalgos = jQuery("#tree").fancytree('getTree').getSelectedNodes();
+    console.log(selalgos);
+    for (i = 0; i < selalgos.length; i++) {
+        algorithms.push(selalgos[i].refKey);
+       //opa["Val" + (i + 1).toString()] = selalgos[i].refKey;
+    }
+    }
+    var self =this;
+    this.x1 = this.imagingHelper._viewportOrigin["x"] ;
+    this.y1 = this.imagingHelper._viewportOrigin["y"];
+    this.x2 = this.x1 + this.imagingHelper._viewportWidth;
+    this.y2 = this.y1 + this.imagingHelper._viewportHeight;
+
+    boundX1 = this.imagingHelper.physicalToLogicalX(200);
+    boundY1 = this.imagingHelper.physicalToLogicalY(20);
+    boundX2 = this.imagingHelper.physicalToLogicalX(20);
+    boundY2 = this.imagingHelper.physicalToLogicalY(20);
+    var boundX = boundX1 - this.x1;
+    var boundY = boundX;
+    console.log(boundX1 - this.x1);
+    console.log(boundX1, boundX2, boundY1, boundY2); 
+    console.log(this.x1, this.x2, this.y1, this.y2);
+    
+    var max = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(4), this.imagingHelper.physicalToDataY(4));
+    var origin = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(0), this.imagingHelper.physicalToDataY(0));
+    var area = (max.x - origin.x) * (max.y - origin.y);
+
+
+    var t1 = performance.now();
+    console.log(algorithms)
+
+    console.log(this.toolBar);
+
+    if(algorithms.length){
+    this.toolBar.titleButton.hide();
+    this.toolBar.ajaxBusy.show();
+    this.annotations = this.AnnotationStore.fetchAnnotations(this.x1, this.y1, this.x2, this.y2, area, algorithms, function(data){
+        console.log("....");
+        self.annotations = data;
+        self.displayGeoAnnots();
+        self.setupHandlers();
+        var t2 = performance.now();
+
+        self.toolBar.titleButton.show();
+        self.toolBar.ajaxBusy.hide();
+        console.log("Performance: "+(t2-t1));
+    });
+    } else {
+        self.destroyMarkups();
+        //destroy canvas
+    }
+   
+
+
+}
+
+
 
 annotools.prototype.getAnnot= function (viewer) //Get Annotation from the API
 {
@@ -145,11 +226,10 @@ annotools.prototype.getAnnot= function (viewer) //Get Annotation from the API
     var origin = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(0), this.imagingHelper.physicalToDataY(0));
     var area = (max.x - origin.x) * (max.y - origin.y);
 
-
     var t1 = performance.now();
     this.annotations = this.AnnotationStore.getAnnotations(this.x1, this.y1, this.x2, this.y2, area, boundX, boundY, boundX, boundY, function(data){
         self.annotations = data;
-        self.handleGeoJSON();
+        self.displayGeoAnnots();
         self.setupHandlers();
         var t2 = performance.now();
         console.log("Performance: "+(t2-t1));
@@ -546,12 +626,13 @@ annotools.prototype.toggleMarkups= function () //Toggle Markups
             document.getElements(".annotcontainer").hide();
         } else {
             this.annotVisible = true;
-            this.displayAnnot();
+            this.displayGeoAnnots();
             document.getElements(".annotcontainer").show();
         }
     } else {
         this.annotVisible = true;
-        this.displayAnnot();
+        
+        this.displayGeoAnnots();
     }
     this.showMessage("annotation toggled");
 };
