@@ -13,8 +13,10 @@ $config = require 'api/Configuration/config.php';
     <link rel="stylesheet" type="text/css" media="all" href="css/annotools.css" />
     <!--<link rel="stylesheet" type="text/css" media="all" href="css/jquery-ui.min.css" />-->
     <link rel="stylesheet" type="text/css" media="all" href="css/simplemodal.css" />
+    <link rel="stylesheet" type="text/css" media="all" href="css/ui.fancytree.min.css" />
+    
     <script src="js/dependencies/jquery.js"></script>
-
+    
     <script src="js/openseadragon/openseadragon-bin-2.0.0/openseadragon.js"></script>
     <script src="js/openseadragon/openseadragon-imaginghelper.min.js"></script>
     <script src="js/openseadragon/openseadragon-scalebar.js"></script>
@@ -28,7 +30,11 @@ $config = require 'api/Configuration/config.php';
     <script src="js/annotationtools/osdAnnotationTools.js"></script>
     <script src="js/annotationtools/geoJSONHandler.js"></script>
     <script src="js/dependencies/MD5.js"></script>
+    <script src="http://code.jquery.com/ui/1.11.2/jquery-ui.min.js" type="text/javascript"></script> 
+    
     <!--<script src="js/dependencies/jquery-ui.min.js"></script>-->
+
+    <script src="js/dependencies/jquery.fancytree-all.min.js"></script>
     <script src="js/dependencies/simplemodal.js"></script>
     <style type="text/css">
         .openseadragon
@@ -62,6 +68,8 @@ $config = require 'api/Configuration/config.php';
     <div id="container">
                 
         <div id="tool"></div>
+    <div id="algosel"><div id="tree"></div></div>
+
         <div class="demoarea">
             <div id="viewer" class="openseadragon"></div>
         </div>
@@ -76,23 +84,27 @@ $config = require 'api/Configuration/config.php';
 
 
       var imagedata = new OSDImageMetaData({imageId:tissueId});
-      console.log(tissueId);
-      console.log(imagedata);
-      console.log(tissueId);
+      //console.log(tissueId);
+      //console.log(imagedata);
+      //console.log(tissueId);
       
       var MPP = imagedata.metaData[0];
 
-        console.log(imagedata);
+        //console.log(imagedata);
       var fileLocation = imagedata.metaData[1];
-      console.log(fileLocation);
+      //console.log(fileLocation);
      
       var viewer = new OpenSeadragon.Viewer({ 
             id: "viewer", 
             prefixUrl: "images/",
             showNavigator:  true,
-	        zoomPerClick: 2,
+            navigatorPosition:   "BOTTOM_RIGHT",
+            zoomPerClick: 2,
+            animationTime: 0.75,
             maxZoomPixelRatio: 2,
-            animationTime: 0.8
+            visibilityRatio: 1,
+            constrainDuringPan: true,
+            zoomPerScroll: 1
       });
 
 //      var zoomLevels = viewer.zoomLevels({
@@ -102,6 +114,8 @@ $config = require 'api/Configuration/config.php';
       viewer.clearControls();
       viewer.open("<?php print_r($config['fastcgi_server']); ?>?DeepZoom=" + fileLocation);
       var imagingHelper = new OpenSeadragonImaging.ImagingHelper({viewer: viewer});
+        imagingHelper.setMaxZoom(2);
+    
       viewer.scalebar({
           type: OpenSeadragon.ScalebarType.MAP,
           pixelsPerMeter: (1/(parseFloat(this.MPP["mpp-x"])*0.000001)),
@@ -113,8 +127,7 @@ $config = require 'api/Configuration/config.php';
           backgroundColor: "rgba(255,255,255,0.5)",
           barThickness: 2
       });
-
-
+    //console.log(viewer);
     function isAnnotationActive(){
         this.isOpera = !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
         this.isFirefox = typeof InstallTrigger !== 'undefined';
@@ -133,6 +146,7 @@ $config = require 'api/Configuration/config.php';
                 annotationHandler: annotationHandler,
                 mpp:MPP
             });
+    console.log(tissueId);
         var toolBar = new ToolBar('tool', {
                 left:'0px',
                 top:'0px',
@@ -142,6 +156,7 @@ $config = require 'api/Configuration/config.php';
                 annotool: annotool
            
         });
+        annotool.toolBar = toolBar;
         toolBar.createButtons();
         
         /*Pan and zoom to point*/

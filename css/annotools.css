@@ -203,3 +203,60 @@
     cursor: pointer;
 
 }
+
+    .navWindow
+    {
+        position: absolute;
+            z-index: 10001;
+            right: 0;
+            bottom: 0;
+            border: 1px solid yellow;
+    }
+    #algosel
+    {
+        width:200px;
+        height:200px;
+        background:white;
+        top:200px;
+        left:200px;
+        position:fixed;
+        cursor:move;
+        border:5px solid black;
+        margin:2px;
+    }
+    
+    #div11 {
+        cursor:move;
+        width:70px;
+        height:70px;
+        background-color:black;
+        border:1px solid black;
+        margin:2px;
+        float:left;
+    }
+
+    .draggable {
+        background-color:yellow;
+    }
+
+
+
+.colorMapButton{
+    width: 128px;
+    height: 32px;
+    padding: 2px;
+}
+
+
+#ajaxBusy{
+    margin-left: 80px;
+    transform: scale(0.7, 1);
+}
+.colorBox{
+    width: 10px;
+    height: 10px;
+    display: inline-block;
+    margin-top: 4px;
+    margin-right: 2px;
+}
+
