@@ -13,12 +13,153 @@ var ToolBar = function(element, options){
     this.iid = options.iid || null; 
     this.annotationActive = isAnnotationActive();
 }
+ToolBar.prototype.showMessage = function(msg){
+    console.log(msg);
+};
 
+
+ToolBar.prototype.algorithmSelector = function() {
+    var self = this;
+    var ftree;
+    xxx = [];
+
+
+}
+
+var available_colors = ["lime", "red", "blue", "orange"];
+var algorithm_color = {};
+
+function goodalgo(data, status) {
+    console.log(data);
+    
+
+    var blob = [];
+    for (i=0;i<data.length;i++) {
+        var n = {};
+        console.log(data[i]);
+        n.title = "<div class='colorBox' style='background:"+available_colors[i]+ "'></div>" + data[i].title;
+        n.key = i.toString();
+        n.refKey = data[i].analysis_execution_id;
+        n.color = available_colors[i];
+        algorithm_color[data[i].analysis_execution_id] = available_colors[i];
+        blob.push(n);
+    }
+    ftree = jQuery("#tree").fancytree({
+        source: [{
+            title: "Algorithms", key: "1", folder: true,
+            children: blob,
+            expanded: true
+        }],
+        minExpandLevel: 1, // 1: root node is not collapsible
+        activeVisible: true, // Make sure, active nodes are visible (expanded).
+        aria: false, // Enable WAI-ARIA support.
+        autoActivate: true, // Automatically activate a node when it is focused (using keys).
+        autoCollapse: false, // Automatically collapse all siblings, when a node is expanded.
+        autoScroll: false, // Automatically scroll nodes into visible area.
+        clickFolderMode: 4, // 1:activate, 2:expand, 3:activate and expand, 4:activate (dblclick expands)
+        checkbox: true, // Show checkboxes.
+        debugLevel: 2, // 0:quiet, 1:normal, 2:debug
+        disabled: false, // Disable control
+        focusOnSelect: false, // Set focus when node is checked by a mouse click
+        generateIds: false, // Generate id attributes like <span id='fancytree-id-KEY'>
+        idPrefix: "ft_", // Used to generate node id´s like <span id='fancytree-id-<key>'>.
+        icons: true, // Display node icons.
+        keyboard: true, // Support keyboard navigation.
+        keyPathSeparator: "/", // Used by node.getKeyPath() and tree.loadKeyPath().
+        minExpandLevel: 1, // 1: root node is not collapsible
+        quicksearch: false, // Navigate to next node by typing the first letters.
+        selectMode: 2, // 1:single, 2:multi, 3:multi-hier
+        tabbable: true, // Whole tree behaves as one single control
+        titlesTabbable: false, // Node titles can receive keyboard focus
+        beforeSelect: function(event, data){
+            // A node is about to be selected: prevent this for folders:
+            if( data.node.isFolder() ){
+                return false;
+            }
+        },
+        select: function(event, data) {
+            jQuery("#tree").attr("algotree",true);
+                var node = data.node;
+                console.log(node.data.color);
+                console.log(node.refKey);
+                console.log(node.color);
+                console.log("!SELECTED NODE : "+node.title);
+                targetType = data.targetType;
+                annotool.getMultiAnnot();
+        }
+    });
+}
+
+ToolBar.prototype.toggleAlgorithmSelector = function() {    
+    if (!jQuery('#algosel').attr("eb")) {
+        jQuery('#algosel').attr("eb", true);
+        //console.log("initializing...");
+        jQuery('#algosel').css({
+           "width": "300px",
+           "zIndex": 199,
+           "visibility": "hidden"
+        });
+        jQuery('#algosel').on('mousedown', function(e) {
+           jQuery(this).addClass('draggable').parents().on('mousemove', function(e) {
+              jQuery('.draggable').offset({
+                 top: e.pageY - jQuery('.draggable').outerHeight() / 2,
+                 left: e.pageX - jQuery('.draggable').outerWidth() / 2
+              }).on('mouseup', function() {
+                 jQuery(this).removeClass('draggable');
+              });
+           });
+           e.preventDefault();
+        }).on('mouseup', function() {
+           jQuery('.draggable').removeClass('draggable');
+        });
+    }
+    if (jQuery('#algosel').css("visibility") == "visible") {
+        jQuery('#algosel').css({
+            "visibility": "hidden"
+    });
+    } else {
+    jQuery('#algosel').css({
+       "visibility": "visible"
+    });
+    }
+    this.showMessage("Algorithm Selection Toggled");
+}
 
 ToolBar.prototype.createButtons = function(){
     //this.tool = jQ(this.source);
     var tool = jQuery("#"+"tool"); //Temporary dom element while we clean up mootools
     console.log("creating buttons...");
+
+    var self =this;
+
+    
+    //Fetch algorithms for Image
+    jQuery(document).ready(function() {
+           //console.log(options);
+        //var self= this;
+        console.log(self.iid);
+        jQuery.get("api/Data/getAlgorithmsForImage.php?iid="+self.iid, function(data){
+            console.log("....");
+            console.log("api/Data/getAlgorithmsForImage.php?iid="+self.iid);
+            d = JSON.parse(data);
+            console.log(d);
+
+            goodalgo(d,null);
+
+        });
+        //console.log("here");
+        jQuery('#submitbtn').click( function () {
+                var selKeys = jQuery("#tree").fancytree('getTree').getSelectedNodes();
+                var param = "";
+                for (i=0;i<selKeys.length;i++) {
+                        param = param + "&Val"+(i+1).toString()+"="+selKeys[i].title;
+                }
+            });
+    });
+
+
+
+
 
 
     tool.css({
@@ -62,18 +203,12 @@ ToolBar.prototype.createButtons = function(){
         });
         tool.append(this.pencilbutton); //Pencil Tool
         
-        this.spacer1 = jQuery("<img>", {
-            'class': 'spacerButton', 
-            'src': 'images/spacer.svg'
-        });
-        tool.append(this.spacer1);
-        
         this.measurebutton = jQuery('<img>', {
             'title': 'Measurement Tool',
             'class': 'toolButton',
             'src': 'images/measure.svg'
         });
-        tool.append(this.measurebutton);
+        //tool.append(this.measurebutton);
 
         this.spacer2 = jQuery('<img>', {
             'class': 'spacerButton',
@@ -94,6 +229,10 @@ ToolBar.prototype.createButtons = function(){
             'src': 'images/hide.svg'
         });
         tool.append(this.hidebutton);
+        
+
+       
+
 
         this.fullDownloadButton = jQuery('<img>', {
             'title': 'Download All Markups (Coming Soon)',
@@ -107,26 +246,33 @@ ToolBar.prototype.createButtons = function(){
             'class': 'toolButton',
             'src': 'images/partDownload.svg'
         });
-        tool.append(this.partialDownloadButton);  //Partial Download
-
+        //tool.append(this.partialDownloadButton);  //Partial Download
+  this.spacer1 = jQuery("<img>", {
+            'class': 'spacerButton', 
+            'src': 'images/spacer.svg'
+        });
+        tool.append(this.spacer1);
+       
         /*
          * Event handlers on click for the buttons
          */
         this.rectbutton.on("click", function(){
-            this.mode = 'rect';
-            this.annotools.drawMarkups();
+           // this.mode = 'rect';
+           // this.annotools.drawMarkups();
+            alert("Creation of markups is disabled on QuIP");
         }.bind(this));
 
         this.ellipsebutton.on("click", function(){
-            this.mode = 'ellipse';
-            this.annotools.mode = 'ellipse';
-            this.annotools.drawMarkups();
-
+            //this.mode = 'ellipse';
+            //this.annotools.mode = 'ellipse';
+            //this.annotools.drawMarkups();
+           alert("Creation of markups is disabled on QuIP");
         }.bind(this));
 
         this.pencilbutton.on('click', function () {
-                this.mode = 'pencil';
-                this.drawMarkups();
+            //    this.mode = 'pencil';
+            //    this.drawMarkups();
+                  alert("Creation of markups is disabled on QuIP");
         }.bind(this));
 
         this.measurebutton.on('click', function () {
@@ -135,12 +281,13 @@ ToolBar.prototype.createButtons = function(){
         }.bind(this));       
 
         this.hidebutton.on('click', function () {
-            this.toggleMarkups()
+            this.annotools.toggleMarkups()
         }.bind(this));
 
         this.filterbutton.on('click', function () {
-            this.removeMouseEvents();
-            this.promptForAnnotation(null, "filter", this, null);
+            this.toggleAlgorithmSelector(); 
+            //this.removeMouseEvents();
+            //this.promptForAnnotation(null, "filter", this, null);
         }.bind(this));
 
         var toolButtons = jQuery(".toolButton");
@@ -182,8 +329,22 @@ ToolBar.prototype.createButtons = function(){
 
 
     }
-    
-    
+    this.colorMapButton = jQuery('<img>', {
+        'class': 'colorMapButton',
+        'title': 'ColorMap',
+        'src': 'images/colors.svg'
+    });
+    tool.append(this.colorMapButton);
+    this.ajaxBusy = jQuery('<img>', {
+        'class': 'colorMapButton',
+        'id': 'ajaxBusy',
+        'style': 'scale(0.5, 1)',
+        'src': 'images/progress_bar.gif'
+    });
+    tool.append(this.ajaxBusy);
+    this.ajaxBusy.hide();
+
+
     this.titleButton = jQuery('<p>',{
         'class' : 'titleButton',
         'text' : 'caMicroscope'
