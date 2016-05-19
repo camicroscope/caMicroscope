@@ -249,7 +249,7 @@
 
 
 #ajaxBusy{
-    margin-left: 80px;
+    margin-left: 140px;
     transform: scale(0.7, 1);
 }
 .colorBox{
@@ -260,3 +260,28 @@
     margin-right: 2px;
 }
 
+
+#panel h4{
+    color: #fff;
+    font-family: Roboto;
+}
+#panel {
+    width: 140px;
+    font-family: Arial, Roboto; 
+    height: 280px;
+    top: 60px;
+    left: 0;
+    position: fixed;
+    z-index: 900999;
+    background: #1976D2;
+    box-shadow:1px 1px 1px 1px  #555;
+    padding: 15px;
+    color: #fff;
+    opacity: 0.9;
+}
+
+#panel ul, #panel li{
+    list-style: none;
+    padding-left:2px;
+    margin: 0;
+}

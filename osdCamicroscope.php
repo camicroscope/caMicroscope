@@ -1,141 +1,142 @@
-<?php require '../authenticate.php';
+    <?php require '../authenticate.php';
 
-$config = require 'api/Configuration/config.php';
+    $config = require 'api/Configuration/config.php';
 
-?>
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset='utf-8'>
+    ?>
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset='utf-8'>
 
-    <title>[caMicroscope OSD][Subject: <?php echo json_encode($_GET['tissueId']); ?>][User: <?php echo $_SESSION["name"]; ?>]</title>
+        <title>[caMicroscope OSD][Subject: <?php echo json_encode($_GET['tissueId']); ?>][User: <?php echo $_SESSION["name"]; ?>]</title>
 
-    <link rel="stylesheet" type="text/css" media="all" href="css/annotools.css" />
-    <!--<link rel="stylesheet" type="text/css" media="all" href="css/jquery-ui.min.css" />-->
-    <link rel="stylesheet" type="text/css" media="all" href="css/simplemodal.css" />
-    <link rel="stylesheet" type="text/css" media="all" href="css/ui.fancytree.min.css" />
-    
-    <script src="js/dependencies/jquery.js"></script>
-    
-    <script src="js/openseadragon/openseadragon-bin-2.0.0/openseadragon.js"></script>
-    <script src="js/openseadragon/openseadragon-imaginghelper.min.js"></script>
-    <script src="js/openseadragon/openseadragon-scalebar.js"></script>
-    <script src="js/openseadragon/openseadragonzoomlevels.js"></script>
-    <script type="text/javascript" src="js/mootools/mootools-core-1.4.5-full-nocompat-yc.js"></script>
-    <script type="text/javascript" src="js/mootools/mootools-more-1.4.0.1-compressed.js"></script>
-    <script src="js/annotationtools/annotools-openseajax-handler.js"></script>
-    <script src="js/imagemetadatatools/osdImageMetadata.js"></script>
-    <script src="js/annotationtools/ToolBar.js"></script>
-    <script src="js/annotationtools/AnnotationStore.js"></script>
-    <script src="js/annotationtools/osdAnnotationTools.js"></script>
-    <script src="js/annotationtools/geoJSONHandler.js"></script>
-    <script src="js/dependencies/MD5.js"></script>
-    <script src="http://code.jquery.com/ui/1.11.2/jquery-ui.min.js" type="text/javascript"></script> 
-    
-    <!--<script src="js/dependencies/jquery-ui.min.js"></script>-->
+        <link rel="stylesheet" type="text/css" media="all" href="css/annotools.css" />
+        <!--<link rel="stylesheet" type="text/css" media="all" href="css/jquery-ui.min.css" />-->
+        <link rel="stylesheet" type="text/css" media="all" href="css/simplemodal.css" />
+        <link rel="stylesheet" type="text/css" media="all" href="css/ui.fancytree.min.css" />
+        
+        <script src="js/dependencies/jquery.js"></script>
+        
+        <script src="js/openseadragon/openseadragon-bin-1.0.0/openseadragon.js"></script>
+        <script src="js/openseadragon/openseadragon-imaginghelper.min.js"></script>
+        <script src="js/openseadragon/openseadragon-scalebar.js"></script>
+        <script src="js/openseadragon/openseadragonzoomlevels.js"></script>
+        <script type="text/javascript" src="js/mootools/mootools-core-1.4.5-full-nocompat-yc.js"></script>
+        <script type="text/javascript" src="js/mootools/mootools-more-1.4.0.1-compressed.js"></script>
+        <script src="js/annotationtools/annotools-openseajax-handler.js"></script>
+        <script src="js/imagemetadatatools/osdImageMetadata.js"></script>
+        <script src="js/annotationtools/ToolBar.js"></script>
+        <script src="js/annotationtools/AnnotationStore.js"></script>
+        <script src="js/annotationtools/osdAnnotationTools.js"></script>
+        <script src="js/annotationtools/geoJSONHandler.js"></script>
+        <script src="js/dependencies/MD5.js"></script>
+        <script src="http://code.jquery.com/ui/1.11.2/jquery-ui.min.js" type="text/javascript"></script> 
+        
+        <!--<script src="js/dependencies/jquery-ui.min.js"></script>-->
 
-    <script src="js/dependencies/jquery.fancytree-all.min.js"></script>
-    <script src="js/dependencies/simplemodal.js"></script>
-    <style type="text/css">
-        .openseadragon
+        <script src="js/dependencies/jquery.fancytree-all.min.js"></script>
+        <script src="js/dependencies/simplemodal.js"></script>
+        <style type="text/css">
+            .openseadragon
+            {
+                height: 100%;
+                min-height: 100%;
+                width: 100%;
+                position: absolute;
+                top: 0;
+                left: 0;
+                margin: 0;
+                padding: 0;
+                background-color: #E8E8E8;
+                border: 1px solid black;
+                color: white;
+            }
+
+        .navWindow
         {
-            height: 100%;
-            min-height: 100%;
-            width: 100%;
             position: absolute;
-            top: 0;
-            left: 0;
-            margin: 0;
-            padding: 0;
-            background-color: #E8E8E8;
-            border: 1px solid black;
-            color: white;
+                z-index: 10001;
+                right: 0;
+                bottom: 0;
+                border: 1px solid yellow;
         }
+        </style>
+    </head>
 
-	.navWindow
-	{
-	    position: absolute;
-            z-index: 10001;
-            right: 0;
-            bottom: 0;
-            border: 1px solid yellow;
-	}
-    </style>
-</head>
+    <body>
 
-<body>
+        <div id="container">
+                    
+            <div id="tool"></div>
+            <div id="panel"></div>
+        <div id="algosel"><div id="tree"></div></div>
 
-    <div id="container">
-                
-        <div id="tool"></div>
-    <div id="algosel"><div id="tree"></div></div>
+            <div class="demoarea">
+                <div id="viewer" class="openseadragon"></div>
+            </div>
+        <div id"navigator"></div>
 
-        <div class="demoarea">
-            <div id="viewer" class="openseadragon"></div>
         </div>
 
-
-    </div>
-
-    <script type="text/javascript">
-      $.noConflict();
-      var annotool = null;
-      var tissueId = <?php echo json_encode($_GET['tissueId']); ?>;
+        <script type="text/javascript">
+          $.noConflict();
+          var annotool = null;
+          var tissueId = <?php echo json_encode($_GET['tissueId']); ?>;
 
 
-      var imagedata = new OSDImageMetaData({imageId:tissueId});
-      //console.log(tissueId);
-      //console.log(imagedata);
-      //console.log(tissueId);
-      
-      var MPP = imagedata.metaData[0];
+          var imagedata = new OSDImageMetaData({imageId:tissueId});
+         
+          var MPP = imagedata.metaData[0];
 
-        //console.log(imagedata);
-      var fileLocation = imagedata.metaData[1];
-      //console.log(fileLocation);
-     
-      var viewer = new OpenSeadragon.Viewer({ 
-            id: "viewer", 
-            prefixUrl: "images/",
-            showNavigator:  true,
-            navigatorPosition:   "BOTTOM_RIGHT",
-            zoomPerClick: 2,
-            animationTime: 0.75,
-            maxZoomPixelRatio: 2,
-            visibilityRatio: 1,
-            constrainDuringPan: true,
-            zoomPerScroll: 1
-      });
 
-//      var zoomLevels = viewer.zoomLevels({
-//        levels:[0.001, 0.01, 0.2, 0.1,  1]
-//      });
-      viewer.addHandler("open", addOverlays);
-      viewer.clearControls();
-      viewer.open("<?php print_r($config['fastcgi_server']); ?>?DeepZoom=" + fileLocation);
-      var imagingHelper = new OpenSeadragonImaging.ImagingHelper({viewer: viewer});
-        imagingHelper.setMaxZoom(2);
-    
-      viewer.scalebar({
-          type: OpenSeadragon.ScalebarType.MAP,
-          pixelsPerMeter: (1/(parseFloat(this.MPP["mpp-x"])*0.000001)),
-          xOffset: 5,
-          yOffset: 10,
-          stayInsideImage: true,
-          color: "rgb(150,150,150)",
-          fontColor: "rgb(100,100,100)",
-          backgroundColor: "rgba(255,255,255,0.5)",
-          barThickness: 2
-      });
+          var fileLocation = imagedata.metaData[1];
+
+         
+          var viewer = new OpenSeadragon.Viewer({ 
+                id: "viewer", 
+                prefixUrl: "images/",
+                showNavigator:  true,
+                navigatorPosition:   "BOTTOM_RIGHT",
+                //navigatorId: "navigator",
+                zoomPerClick: 2,
+                animationTime: 0.75,
+                maxZoomPixelRatio: 2,
+                visibilityRatio: 1,
+                constrainDuringPan: true,
+                //zoomPerScroll: 1
+          });
+            //console.log(viewer.navigator);
+    //      var zoomLevels = viewer.zoomLevels({
+    //        levels:[0.001, 0.01, 0.2, 0.1,  1]
+    //      });
+            
+            viewer.addHandler("open", addOverlays);
+            viewer.clearControls();
+            viewer.open("<?php print_r($config['fastcgi_server']); ?>?DeepZoom=" + fileLocation);
+            var imagingHelper = new OpenSeadragonImaging.ImagingHelper({viewer: viewer});
+            imagingHelper.setMaxZoom(2);
+            //console.log(this.MPP);
+            viewer.scalebar({
+              type: OpenSeadragon.ScalebarType.MAP,
+              pixelsPerMeter: (1/(parseFloat(this.MPP["mpp-x"])*0.000001)),
+              xOffset: 5,
+              yOffset: 10,
+              stayInsideImage: true,
+              color: "rgb(150,150,150)",
+              fontColor: "rgb(100,100,100)",
+              backgroundColor: "rgba(255,255,255,0.5)",
+              barThickness: 2
+            });
     //console.log(viewer);
-    function isAnnotationActive(){
-        this.isOpera = !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
-        this.isFirefox = typeof InstallTrigger !== 'undefined';
-        this.isSafari = Object.prototype.toString.call(window.HTMLElement).indexOf('Constructor') > 0;
-        this.isChrome = !!window.chrome;
-        this.annotationActive = !(this.isFirefox || this.isIE || this.isOpera);
-        return this.annotationActive;
-    }
+function isAnnotationActive(){
+    this.isOpera = !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
+    this.isFirefox = typeof InstallTrigger !== 'undefined';
+    this.isSafari = Object.prototype.toString.call(window.HTMLElement).indexOf('Constructor') > 0;
+    this.isChrome = !!window.chrome;
+    //console.log(this.isFirefox);
+    this.annotationActive = !( this.isIE || this.isOpera);
+    return this.annotationActive;
+}
 
     function addOverlays() {
         var annotationHandler = new AnnotoolsOpenSeadragonHandler(viewer, {});
@@ -146,7 +147,7 @@ $config = require 'api/Configuration/config.php';
                 annotationHandler: annotationHandler,
                 mpp:MPP
             });
-    console.log(tissueId);
+        //console.log(tissueId);
         var toolBar = new ToolBar('tool', {
                 left:'0px',
                 top:'0px',
@@ -159,6 +160,8 @@ $config = require 'api/Configuration/config.php';
         annotool.toolBar = toolBar;
         toolBar.createButtons();
         
+        //var panel = new panel();
+        jQuery("#panel").hide();
         /*Pan and zoom to point*/
         var bound_x = <?php echo json_encode($_GET['x']); ?>;
         var bound_y = <?php echo json_encode($_GET['y']); ?>;
@@ -171,7 +174,7 @@ $config = require 'api/Configuration/config.php';
             viewer.viewport.panTo(vpt);
             viewer.viewport.zoomTo(zoom);
         } else {
-            console.log("bounds not specified");
+            //console.log("bounds not specified");
         }
     }
 

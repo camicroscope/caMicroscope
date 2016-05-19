@@ -11,8 +11,9 @@ Unless required by applicable law or agreed to in writing, software distributed 
 */
 
 
-var AnnotoolsOpenSeadragonHandler = function(viewer, options){
+var AnnotoolsOpenSeadragonHandler = new Class({
 
+    initialize: function (viewer, options) {
         this.viewer = viewer;
         this.state = 'none';
         this.stateTarget = null;
@@ -28,18 +29,18 @@ var AnnotoolsOpenSeadragonHandler = function(viewer, options){
         this.panning = false;
         this.animateWaitTime = options.animateWaitTime || 300;
 
-        //this._setupOpenSeadragonButtonHandlers();
+        this._setupOpenSeadragonButtonHandlers();
 
         // global object reference used when the "this" object is referring to the window 
         window.annotationHandler = this;
-    };
+    },
 
     /* 
         Redefines the button handlers from the OpenSeadragon button bar
         for the onRelease event. Handles Zoom in, Zoom out, and Home
         buttons.
     */
-    AnnotoolsOpenSeadragonHandler.prototype._setupOpenSeadragonButtonHandlers= function() {
+    _setupOpenSeadragonButtonHandlers: function() {
         
         for (var i = 0; i < this.viewer.buttons.buttons.length; i++) {
             var button = this.viewer.buttons.buttons[i];
@@ -75,17 +76,17 @@ var AnnotoolsOpenSeadragonHandler = function(viewer, options){
 
         }
 
-    }.protect();
+    }.protect(),
 
-    AnnotoolsOpenSeadragonHandler.prototype.goHome= function(annot) {
+    goHome: function(annot) {
 
         annot.getAnnot();
-    };
+    },
 
-    AnnotoolsOpenSeadragonHandler.prototype.handleZoomIn= function(annot) {
+    handleZoomIn: function(annot) {
           zooming = true; 
           console.log("handleZoomIn");
-	  var center = viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(.5,.5));
+      var center = viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(.5,.5));
           if (annotationHandler.lastCenter.x != center.x || annotationHandler.lastCenter.y != center.y) {
               scale  = 1.3;
               annotationHandler.zoom++;
@@ -148,11 +149,11 @@ var AnnotoolsOpenSeadragonHandler = function(viewer, options){
           }
           
           annotationHandler.lastCenter = center;
-	zooming = false;
-    };
+    zooming = false;
+    },
 
-    AnnotoolsOpenSeadragonHandler.prototype.handleZoomOut= function() {
-	zooming = true;
+    handleZoomOut: function() {
+    zooming = true;
           var center = viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(.5,.5));
           console.log("handleZoomOut");
           if (annotationHandler.lastCenter.x != center.x || annotationHandler.lastCenter.y != center.y) {
@@ -215,13 +216,14 @@ var AnnotoolsOpenSeadragonHandler = function(viewer, options){
                       
           annotationHandler.lastCenter = center; 
           zooming = false;
-    };
+    },
 
-    AnnotoolsOpenSeadragonHandler.prototype.handleMouseMove= function(evt) {
-        //console.log("move");
-      if(evt.preventDefault)
+    handleMouseMove: function(evt) {
+      //console.log("..");
+      if(evt.preventDefault){
+          //console.log("frozen");
           evt.preventDefault();
-    
+      }
       if (this.state == 'pan') {
           //$('svg')[0].hide(); 
           $$('svg')[0].setStyle('opacity', 0);
@@ -231,9 +233,9 @@ var AnnotoolsOpenSeadragonHandler = function(viewer, options){
       }
 
 
-    };
+    },
 
-    AnnotoolsOpenSeadragonHandler.prototype.handleMouseUp= function(evt) {
+    handleMouseUp: function(evt) {
 
       //if (evt.target.tagName.toLowerCase() == "button" || evt.target.tagName.toLowerCase() == "div") {
       if (evt.target.tagName.toLowerCase() == "button") {
@@ -257,17 +259,17 @@ var AnnotoolsOpenSeadragonHandler = function(viewer, options){
               // otherwise we will handle the pan event
               if (diff.x == 0 && diff.y == 0) {
 
-      			 // setTimeout(function() {
-       	                 //annotationHandler.handleZoomIn();
+                 // setTimeout(function() {
+                         //annotationHandler.handleZoomIn();
                         $$('svg')[0].setStyle('opacity', 1);
-       	            // }, annotationHandler.animateWaitTime);
+                    // }, annotationHandler.animateWaitTime);
 
               }
               else {
     
-                jQuery('originpt').setProperty('cx',
+                $('originpt').setProperty('cx',
                         viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(.5,.5)).x);
-                jQuery('originpt').setProperty('cy',
+                $('originpt').setProperty('cy',
                         viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(.5,.5)).y);
     
                 //$('svg')[0].show(); 
@@ -316,10 +318,10 @@ var AnnotoolsOpenSeadragonHandler = function(viewer, options){
 
         }
 
-    };
+    },
 
-    AnnotoolsOpenSeadragonHandler.prototype.handleMouseDown= function(evt) {
-
+    handleMouseDown: function(evt) {
+        
       if (evt.target.tagName.toLowerCase() == "button") {
         console.log("handleMouseDown: " + evt.target.tagName);
         return;
@@ -333,12 +335,15 @@ var AnnotoolsOpenSeadragonHandler = function(viewer, options){
       $$('svg')[0].setStyle('opacity', 0);
       this.stateOrigin = pixel;
 
-    };
+    },
 
-    AnnotoolsOpenSeadragonHandler.prototype.handleMouseWheel= function(evt) {
+    handleMouseWheel: function(evt) {
      if(evt.preventDefault)
           evt.preventDefault();
           
      $$('svg')[0].setStyle('opacity', 0);
-    };
+    }
+});
+
+
 

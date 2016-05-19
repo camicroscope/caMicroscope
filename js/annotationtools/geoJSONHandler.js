@@ -42,7 +42,7 @@ annotools.prototype.convertAnnotationsToGeoJSON = function() {
 */
 
 function endProfile(startTime){
-    var t2 = performance.now();
+    //nvar t2 = performance.now();
     //console.log(startTime);
     //console.log(t2)
     //console.log("Total time: "+ (t2-startTime));
@@ -54,57 +54,57 @@ annotools.prototype.generateCanvas = function(annotations) {
     //var annotation = annotations[ii];
     var annotations = this.annotations;
     if (annotations){
-    var markup_svg = document.getElementById("markups");
-    if (markup_svg) {
-        //console.log("destroying");
-        markup_svg.destroy()
-    }
-    //console.log(annotations.length);
-    //console.log(this.canvas);
-    var container = document.getElementsByClassName(this.canvas)[0].childNodes[0]; //Get The Canvas Container
-    //console.log(container);
-    var context = container.getContext('2d');
-    context.fillStyle = "#f00";
-        //console.log(nativepoints);
-    //var container = document.getElementsByClassName(this.cavas)[0];
-    //console.log(container);
-    var width = parseInt(container.offsetWidth);
-    var height = parseInt(container.offsetHeight);
-    /* Why is there an ellipse in the center? */
-    /*
-    var svgHtml = '<svg xmlns="http://www.w3.org/2000/svg" width="' + width + 'px" height="' + height + 'px" version="1.1" id="markups">';
-        svgHtml += '<g id="groupcenter"/>';
-        svgHtml += '<g id="origin">';
-        var origin = viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(.5,.5));
-        svgHtml += '<ellipse id="originpt" cx="' + origin.x + '" cy="' + origin.y + '" rx="' + 4 + '" ry="' + 4  + '" style="display: none"/>';
-        svgHtml += '</g>';
-        svgHtml += '<g id="viewport" transform="translate(0,0)">';
-    */
-    for(var i=0; i < annotations.length; i++){
-        var annotation = annotations[i];
-        var nativepoints = annotation.geometry.coordinates[0];
-
-        var offset = OpenSeadragon.getElementOffset(viewer.canvas);
-        //svgHtml += '<polygon id="'+Math.random()+'" points="';
-        //var polySVG = ""
-
-        if(nativepoints.length > 2){
-            context.beginPath();
-            var x0 = this.imagingHelper.logicalToPhysicalX(nativepoints[0][0]);
-            var x1  = this.imagingHelper.logicalToPhysicalY(nativepoints[0][1]);
-            context.moveTo(x0, x1);
+        var markup_svg = document.getElementById("markups");
+        if (markup_svg) {
+            //console.log("destroying");
+            markup_svg.destroy()
         }
-        for(var k=1; k< nativepoints.length; k++){
-            var px = this.imagingHelper.logicalToPhysicalX(nativepoints[k][0]);
-            var py = this.imagingHelper.logicalToPhysicalY(nativepoints[k][1]);
+        //console.log(annotations.length);
+        //console.log(this.canvas);
+        var container = document.getElementsByClassName(this.canvas)[0].childNodes[0]; //Get The Canvas Container
+        //console.log(container);
+        var context = container.getContext('2d');
+        context.fillStyle = "#f00";
+            //console.log(nativepoints);
+        //var container = document.getElementsByClassName(this.cavas)[0];
+        //console.log(container);
+        var width = parseInt(container.offsetWidth);
+        var height = parseInt(container.offsetHeight);
+        /* Why is there an ellipse in the center? */
+        /*
+        var svgHtml = '<svg xmlns="http://www.w3.org/2000/svg" width="' + width + 'px" height="' + height + 'px" version="1.1" id="markups">';
+            svgHtml += '<g id="groupcenter"/>';
+            svgHtml += '<g id="origin">';
+            var origin = viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(.5,.5));
+            svgHtml += '<ellipse id="originpt" cx="' + origin.x + '" cy="' + origin.y + '" rx="' + 4 + '" ry="' + 4  + '" style="display: none"/>';
+            svgHtml += '</g>';
+            svgHtml += '<g id="viewport" transform="translate(0,0)">';
+        */
+        for(var i=0; i < annotations.length; i++){
+            var annotation = annotations[i];
+            var nativepoints = annotation.geometry.coordinates[0];
 
-            context.lineTo(px, py);
+            var offset = OpenSeadragon.getElementOffset(viewer.canvas);
+            //svgHtml += '<polygon id="'+Math.random()+'" points="';
+            //var polySVG = ""
+
+            if(nativepoints.length > 2){
+                context.beginPath();
+                var x0 = this.imagingHelper.logicalToPhysicalX(nativepoints[0][0]);
+                var x1  = this.imagingHelper.logicalToPhysicalY(nativepoints[0][1]);
+                context.moveTo(x0, x1);
+            }
+            for(var k=1; k< nativepoints.length; k++){
+                var px = this.imagingHelper.logicalToPhysicalX(nativepoints[k][0]);
+                var py = this.imagingHelper.logicalToPhysicalY(nativepoints[k][1]);
+
+                context.lineTo(px, py);
+            }
+            context.strokeStyle = 'blue';
+            context.stokeWidth = 6;
+            context.closePath();
+            context.stroke();
         }
-        context.strokeStyle = 'blue';
-        context.stokeWidth = 6;
-        context.closePath();
-        context.stroke();
-    }
     }
 }
     /*
@@ -148,7 +148,7 @@ annotools.prototype.generateSVG = function(annotations){
         svgHtml += '</g>';
         svgHtml += '<g id="viewport" transform="translate(0,0)">';
   
-    for(var i=0; i < annotations.length; i++){
+    for(var i=0; i < annotations.length; i++) {
         var annotation = annotations[i];
         var nativepoints = annotation.geometry.coordinates[0];
 
@@ -170,9 +170,9 @@ annotools.prototype.generateSVG = function(annotations){
             svgHtml += polyPixelX + ',' + polyPixelY + ' ';
 
         }
-        //console.log(polySVG);
-        
-        svgHtml += '" style="fill:transparent; stroke:'+ color +  '; stroke-width:2.5"/>';
+
+        svgHtml += '" style="fill: transparent; stroke: lime; stroke-width:2.5"/>';
+        //svgHtml += '" style="fill:yellow; stroke:'+color+ '; stroke-width:25"/>';
     }
         this.svg = new Element("div", {
             styles: {
@@ -185,29 +185,7 @@ annotools.prototype.generateSVG = function(annotations){
             html: svgHtml
         }).inject(container);
     }
-//    console.log(svgHtml);
-    jQuery(".annotationsvg").mousedown(function(event){
-         event.stopImmediatePropagation();
-        event.stopPropagation();
-        event.preventDefault();       
-    });
-    /*
-    jQuery(".annotationsvg").mouseup(function(event){
-         event.stopImmediatePropagation();
-        event.stopPropagation();
-        event.preventDefault();       
-    });
-    */
-    jQuery(".annotationsvg").unbind("click").click(function(event){
-        event.stopImmediatePropagation();
-        event.stopPropagation();
-        event.preventDefault();
 
-
-
-        alert("annotation");
-
-    });
 }
 
 
@@ -222,9 +200,11 @@ annotools.prototype.displayGeoAnnots = function() {
     //this.displayGeoJSONAnnot();
     //
     if(this.annotVisible){ 
-    var renderStartTime = performance.now();
+    //var renderStartTime = performance.now();
     this.generateSVG(geoJSONs);
-    var renderEndTime = performance.now();
+    //var renderEndTime = performance.now();
+    var renderStartTime = 9;
+    var renderEndTime = 23;
     }
     //console.log("Rendering time: " + (renderEndTime - renderStartTime));
 
