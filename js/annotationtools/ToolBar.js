@@ -1,7 +1,7 @@
 var ToolBar = function(element, options){
-    console.log(options);
+    //console.log(options);
     this.annotools = options.annotool;
-    console.log(this.annotools);
+    //console.log(this.annotools);
 
     this.source = element; //The Tool Source Element
     this.top = options.top || '0px';
@@ -30,13 +30,13 @@ var available_colors = ["lime", "red", "blue", "orange"];
 var algorithm_color = {};
 
 function goodalgo(data, status) {
-    console.log(data);
+    //console.log(data);
     
 
     var blob = [];
     for (i=0;i<data.length;i++) {
         var n = {};
-        console.log(data[i]);
+        //console.log(data[i]);
         n.title = "<div class='colorBox' style='background:"+available_colors[i]+ "'></div>" + data[i].title;
         n.key = i.toString();
         n.refKey = data[i].analysis_execution_id;
@@ -80,9 +80,7 @@ function goodalgo(data, status) {
         select: function(event, data) {
             jQuery("#tree").attr("algotree",true);
                 var node = data.node;
-                console.log(node.data.color);
-                console.log(node.refKey);
-                console.log(node.color);
+
                 console.log("!SELECTED NODE : "+node.title);
                 targetType = data.targetType;
                 annotool.getMultiAnnot();
@@ -128,8 +126,6 @@ ToolBar.prototype.toggleAlgorithmSelector = function() {
 ToolBar.prototype.createButtons = function(){
     //this.tool = jQ(this.source);
     var tool = jQuery("#"+"tool"); //Temporary dom element while we clean up mootools
-    console.log("creating buttons...");
-
     var self =this;
 
     
@@ -137,12 +133,12 @@ ToolBar.prototype.createButtons = function(){
     jQuery(document).ready(function() {
            //console.log(options);
         //var self= this;
-        console.log(self.iid);
+
         jQuery.get("api/Data/getAlgorithmsForImage.php?iid="+self.iid, function(data){
-            console.log("....");
-            console.log("api/Data/getAlgorithmsForImage.php?iid="+self.iid);
+
+
             d = JSON.parse(data);
-            console.log(d);
+
 
             goodalgo(d,null);
 
@@ -257,9 +253,10 @@ ToolBar.prototype.createButtons = function(){
          * Event handlers on click for the buttons
          */
         this.rectbutton.on("click", function(){
-           // this.mode = 'rect';
-           // this.annotools.drawMarkups();
-            alert("Creation of markups is disabled on QuIP");
+            this.mode = 'rect';
+            this.annotools.mode = 'rect';
+            this.annotools.drawMarkups();
+            //alert("Creation of markups is disabled on QuIP");
         }.bind(this));
 
         this.ellipsebutton.on("click", function(){
@@ -270,9 +267,9 @@ ToolBar.prototype.createButtons = function(){
         }.bind(this));
 
         this.pencilbutton.on('click', function () {
-            //    this.mode = 'pencil';
-            //    this.drawMarkups();
-                  alert("Creation of markups is disabled on QuIP");
+                this.mode = 'pencil';
+                this.drawMarkups();
+            //alert("Creation of markups is disabled on QuIP");
         }.bind(this));
 
         this.measurebutton.on('click', function () {
@@ -371,20 +368,22 @@ ToolBar.prototype.createButtons = function(){
     }
 };
 
+
+/*
 ToolBar.prototype.drawMarkups= function () //Draw Markups
 {
-    console.log(this.annotools);
+    //console.log(this.annotools);
     //this.showMessage(); //Show Message
-    
-    this.annotools.drawCanvas.removeEvents('mouseup');
-    this.annotools.drawCanvas.removeEvents('mousedown');
-    this.annotools.drawCanvas.removeEvents('mousemove');
+    this.annotools.removeMouseEvents();
+    //this.annotools.drawCanvas.off('mouseup');
+    //this.annotools.drawCanvas.off('mousedown');
+    //this.annotools.drawCanvas.off('mousemove');
     
     this.annotools.drawLayer.show(); //Show The Drawing Layer
 /* ASHISH Disable quit
     this.quitbutton.show(); //Show The Quit Button
-*/
-    this.magnifyGlass.hide(); //Hide The Magnifying Tool
+
+    //this.magnifyGlass.hide(); //Hide The Magnifying Tool
     this.container = document.id(this.canvas); //Get The Canvas Container
     this.container = document.getElementsByClassName(this.canvas)[0]; //Get The Canvas Container
     this.container = document.getElementById('container'); //Get The Canvas Container
@@ -408,25 +407,25 @@ ToolBar.prototype.drawMarkups= function () //Draw Markups
             height = window.innerHeight;
         }
         //Recreate The CreateAnnotation Layer Because of The ViewPort Change Issue.
-        this.drawLayer.set({
-            'styles': {
+        this.annotools.drawLayer.css({
                 left: left,
                 top: top,
                 width: width,
-                height: height
-            }
+                height: height,
+                background: "#ccc"
         });
         //Create Canvas on the CreateAnnotation Layer
-        this.drawCanvas.set({
+        this.annotools.drawCanvas.css({
             width: width,
             height: height
         });
+        console.log(this.annotools.drawLayer);
         //The canvas context
-        var ctx = this.drawCanvas.getContext("2d");
+        var ctx = this.annotools.drawCanvas[0].getContext("2d");
         //Draw Markups on Canvas
         switch (this.mode) {
             case "rect":
-                console.log("rectangle");
+                //console.log("rectangle");
                 this.drawRectangle(ctx);
                 break;
             case "ellipse":
@@ -443,13 +442,88 @@ ToolBar.prototype.drawMarkups= function () //Draw Markups
                 break;
         }
     } else this.showMessage("Container Not SET Correctly Or Not Fully Loaded Yet");
+ 
+};
+
+
+
+ToolBar.prototype.drawRectangle= function(ctx)
+{
+    //console.log("drawing rectangle...............");    
+    this.annotools.removeMouseEvents();
+    
+    var started = false;
+    var min_x,min_y,max_x,max_y,w,h;
+    var startPosition;
+    this.annotools.drawCanvas.on('mousedown',function(e)
+    {
+        started = true;
+        startPosition = OpenSeadragon.getMousePosition(e.event);
+        x = startPosition.x;
+        y = startPosition.y;
+    });
+
+    this.annotools.drawCanvas.on('mousemove',function(e)
+    {
+        if(started)
+        {
+        //console.log(e.event);
+        ctx.clearRect(0,0,this.drawCanvas.width, this.drawCanvas.height);
+        var currentMousePosition = OpenSeadragon.getMousePosition(e.event);
+
+        min_x = Math.min(currentMousePosition.x,startPosition.x);
+        min_y = Math.min(currentMousePosition.y,startPosition.y);
+        max_x = Math.max(currentMousePosition.x,startPosition.x);
+        max_y = Math.max(currentMousePosition.y,startPosition.y);
+        w = Math.abs(max_x - min_x);
+        h = Math.abs(max_y - min_y);
+        ctx.strokeStyle = this.color;
+        ctx.strokeRect(min_x,min_y,w,h);
+        }
+    }.bind(this));
+
+    this.annotools.drawCanvas.on('mouseup',function(e)
+    {
+        started = false;
+        var finalMousePosition = new OpenSeadragon.getMousePosition(e.event);
+
+            min_x = Math.min(finalMousePosition.x,startPosition.x);
+            min_y = Math.min(finalMousePosition.y,startPosition.y);
+            max_x = Math.max(finalMousePosition.x,startPosition.x);
+            max_y = Math.max(finalMousePosition.y,startPosition.y);
+
+        
+        var startRelativeMousePosition = new OpenSeadragon.Point(min_x,min_y).minus(OpenSeadragon.getElementOffset(viewer.canvas));
+        var endRelativeMousePosition = new OpenSeadragon.Point(max_x,max_y).minus(OpenSeadragon.getElementOffset(viewer.canvas));
+        var newAnnot = {
+            x: startRelativeMousePosition.x,
+            y: startRelativeMousePosition.y,
+            w: w,
+            h: h,
+            type: "rect",
+            color: this.color,
+            loc: new Array()
+        };
+
+        var globalNumbers = JSON.parse(this.convertFromNative(newAnnot, endRelativeMousePosition));
+
+        newAnnot.x = globalNumbers.nativeX;
+        newAnnot.y = globalNumbers.nativeY;
+        newAnnot.w = globalNumbers.nativeW;
+        newAnnot.h = globalNumbers.nativeH;
+        var loc = new Array();
+        loc[0] = parseFloat(newAnnot.x);
+        loc[1] = parseFloat(newAnnot.y);
+        newAnnot.loc = loc;
+            this.promptForAnnotation(newAnnot, "new", this, ctx);
+    }.bind(this));
     
 };
 
 
 ToolBar.prototype.drawPencil= function(ctx)
 {
-    this.removeMouseEvents();
+    this.annotools.removeMouseEvents();
     var started = false;
     var pencil = [];
     var newpoly = [];
@@ -543,4 +617,4 @@ ToolBar.prototype.drawPencil= function(ctx)
 };
 
 
-
+*/
