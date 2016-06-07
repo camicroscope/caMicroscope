@@ -11,6 +11,10 @@
     src: url('../fonts/Roboto-Thin.ttf');
 }
 
+.annotools p{
+    margin: 0;
+}
+
 .annotools
 {
 	color: #FFFFFF;
@@ -143,7 +147,7 @@
 {
         position: absolute;
 	left: 45%;
-        top: -8px;
+        top: 8px;
         font-size: 22px;
 	vertical-align: middle;
         font-family: Roboto-Light;
@@ -152,7 +156,7 @@
 {
 	position: absolute;
 	right: 34px;
-	top:  0px;
+	top:  12px;
 	font-size: 16px;
 	vertical-align: middle;
 	font-family: Roboto;
@@ -264,22 +268,89 @@
 #panel h4{
     color: #fff;
     font-family: Roboto;
+    font-size: 14px;
 }
+#panelBody{
+    scrollbar-face-color: #367CD2;
+    scrollbar-shadow-color: #FFFFFF;
+    scrollbar-highlight-color: #FFFFFF;
+    scrollbar-3dlight-color: #FFFFFF;
+    scrollbar-darkshadow-color: #FFFFFF;
+    scrollbar-track-color: #FFFFFF;
+    scrollbar-arrow-color: #FFFFFF;
+}
+
+/* Let's get this party started */
+#panelBody::-webkit-scrollbar {
+    width: 12px;
+}
+ 
+/* Track */
+#panelBody::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+}
+ 
+/* Handle */
+#panelBody::-webkit-scrollbar-thumb {
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+    background: rgba(15,79,143,0.8); 
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
+}
+
+.panelCancelButton{
+    display: inline-block;
+}
+
+#panelBody input{
+    color: #000;
+}
+#panel .btn{
+    background: #244B71;
+    color: #fff;
+    font-size: 12px;
+    padding: 4px 6px;
+    margin: 8px 0px;
+}
+#panelBody input.btn.btn-primary{
+    background: #A2BA6F;
+    color: #000;
+    padding: 4px 6px;
+    margin: 8px 0px;
+}
+
 #panel {
-    width: 140px;
+    width: 220px;
     font-family: Arial, Roboto; 
-    height: 280px;
+    font-size: 12px;
+    height: 400px;
     top: 60px;
     left: 0;
     position: fixed;
     z-index: 900999;
     background: #1976D2;
     box-shadow:1px 1px 1px 1px  #555;
-    padding: 15px;
+    //padding: 15px;
+    border-radius: 4px;
     color: #fff;
     opacity: 0.9;
+
+}
+#panelHeader {
+    background: #244B71;
+    padding: 5px 20px;
+}
+#panelBody{
+    padding: 25px;
+    overflow-y: scroll;    
+    height: 340px;
 }
 
+#panel input{
+    border: 0;
+}
 #panel ul, #panel li{
     list-style: none;
     padding-left:2px;
