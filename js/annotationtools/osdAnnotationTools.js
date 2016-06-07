@@ -154,7 +154,7 @@ annotools.prototype.getMultiAnnot = function(viewer) {
     for (i = 0; i < selalgos.length; i++) {
         algorithms.push(selalgos[i].refKey);
        //opa["Val" + (i + 1).toString()] = selalgos[i].refKey;
-    }
+        }
     }
     var self =this;
     this.x1 = this.imagingHelper._viewportOrigin["x"] ;
@@ -169,17 +169,17 @@ annotools.prototype.getMultiAnnot = function(viewer) {
     var boundX = boundX1 - this.x1;
     var boundY = boundX;
     
-    var max = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(4), this.imagingHelper.physicalToDataY(4));
+    var max = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(0.2), this.imagingHelper.physicalToDataY(0.2));
     var origin = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(0), this.imagingHelper.physicalToDataY(0));
     var area = (max.x - origin.x) * (max.y - origin.y);
-    algorithms.push("ganesh:algo1");
+    algorithms.push("test");
 
     var t1 = 0;
     if(algorithms.length){
         this.toolBar.titleButton.hide();
         this.toolBar.ajaxBusy.show();
         this.annotations = this.AnnotationStore.fetchAnnotations(this.x1, this.y1, this.x2, this.y2, area, algorithms, function(data){
-            console.log(data);
+            //console.log(data);
             self.annotations = data;
             self.displayGeoAnnots();
             self.setupHandlers();
@@ -673,11 +673,18 @@ annotools.prototype.selectColor= function () //Pick A Color
 
 annotools.prototype.addnewAnnot= function (newAnnot) //Add New Annotations
 {
-    newAnnot.iid = this.iidDecoded;
-    newAnnot.annotId = MD5(new Date().toString());
-    this.annotations.push(newAnnot);
-    this.saveAnnot();
-    //this.displayAnnot();
+    //console.log(this);
+    //newAnnot.iid = this.iid;
+    //newAnnot.annotIdi = MD5(new Date().toString());
+    //console.log(newAnnot);
+    //this.annotations.push(newAnnot);
+    //console.log(this.annotations);
+    console.log(newAnnot);
+    this.saveAnnot(newAnnot);
+    //console.log("saved annotation");
+
+
+    this.displayGeoAnnots();
 };
 /*ASHISH DIsable quit
 quitMode: function () //Return To the Default Mode
@@ -1053,22 +1060,43 @@ annotools.prototype.updateAnnot= function (annot) //Save Annotations
         });
     this.displayAnnot();
 };
-annotools.prototype.saveAnnot= function () //Save Annotations
+annotools.prototype.saveAnnot= function (annotation) //Save Annotations
 {
+        console.log("Save annotation function");
+        console.log(annotation);
+        jQuery.ajax({
+            "type": "POST",
+            url: "api/Data/getAnnotSpatial.php",
+            data: annotation,
+            success: function(res, err){
+                //console.log("response: ");
+                console.log(res);
+                console.log(err);
+                 
+                console.log("succesfully posted");
+            }
+        });
+
+        /*
         var jsonRequest = new Request.JSON({
             //url: IP + '/api/annotation_relative.php',
             url:  'api/Data/getAnnotSpatial.php',
             async:false,
             onSuccess: function (e) {
+                console.log(e);
+                console.log("success");
                 this.showMessage("saved to the server");
             }.bind(this),
             onFailure: function (e) {
+                console.log(e);
+                console.log("fail");
                 this.showMessage("Error Saving the Annotations,please check you saveAnnot funciton");
             }.bind(this)
         }).post({
             'iid': this.iid,
             'annot': this.annotations
         });
+        */
 };
 
 annotools.prototype.convertToNative= function (annot)
@@ -1364,7 +1392,11 @@ annotools.prototype.drawRectangle= function(ctx)
         loc[0] = parseFloat(newAnnot.x);
         loc[1] = parseFloat(newAnnot.y);
         newAnnot.loc = loc;
-            this.promptForAnnotation(newAnnot, "new", this, ctx);
+
+        //convert to geojson 
+        var geoNewAnnot = this.convertRectToGeo(newAnnot);
+        //geoNewAnnot = newAnnot;
+        this.promptForAnnotation(geoNewAnnot, "new", this, ctx);
     }.bind(this));
 };
 
@@ -1459,7 +1491,9 @@ this.drawCanvas.addEvent('mouseup',function(e)
     loc[0] = parseFloat(newAnnot.x);
     loc[1] = parseFloat(newAnnot.y);
     newAnnot.loc = loc;
-        this.promptForAnnotation(newAnnot, "new", this, ctx);
+    console.log(newAnnot);
+    var geojsonAnnot = this.convertPencilToGeo(newAnnot);
+    this.promptForAnnotation(geojsonAnnot, "new", this, ctx);
 }.bind(this));
 };
 
@@ -1781,7 +1815,7 @@ function handleWorkOrder(annot){
     console.log(annot);
 }
 
-annotools.prototype.promptForAnnotation = function(newAnnot, mode, annotools, ctx){
+annotools.prototype.promptForWorkOrder = function(newAnnot, mode, annotools, ctx){
     console.log(newAnnot);
     console.log(mode);
     console.log(annotools);
@@ -1892,127 +1926,78 @@ annotools.prototype.promptForAnnotation = function(newAnnot, mode, annotools, ct
     }.bind(newAnnot));    
 }
 
-/*
+
 annotools.prototype.promptForAnnotation= function(newAnnot, mode, annotools, ctx){
-    var annotationTemplateJson = annotools.retrieveTemplate();
-    if (mode == "edit") {
-        var id = newAnnot.id;
-        newAnnot = annotools.retrieveSingleAnnot(newAnnot.annotId);
-        newAnnot.id = id;
-    }
-    var annotationTextJson = (mode == "edit")?newAnnot.text:null;
-    var form = "<form id='annotationForm'>";
-    if (mode == "new" && newAnnot.type == "line") {
-        form += "<p class='annotationLabel'>Length: "+newAnnot.length+"um</p>";
-    } else {
-        form += annotools.populateForm(annotationTemplateJson, annotationTextJson, mode);
-    }
-    form += "</form>";
-    var field = [];
-    var submission = "";
-    if (mode == "new" || mode == "edit") {
-       submission = "{ ";
-    }
-    for (var key in annotationTemplateJson) {
-        if (annotationTemplateJson.hasOwnProperty(key) && key != "_id") {
-            field.push(key);
-            if (mode == "new" || mode == "edit") {
-                submission += "\""+key+"\" : ";
-                submission += "__"+key+"__, ";
-            } else {
-                submission += key+"="+"__"+key+"__"+"&";
-            }
-        }
-    }
-    if (mode == "new" || mode == "edit") {
-        submission = submission.substring(0, submission.length-2)+" }";
-    } else {
-        submission = submission.substring(0, submission.length-1);
-    }
-    var title;
-    switch(mode) {
-        case "new":
-            title = "Enter a new annotation:";
-            break;
-        case "edit":
-            title = "Edit annotation";
-            break;
-        case "filter":
-            title = "Filter annotations by:";
-            break;
-    }
-    var SM = new SimpleModal();
-    SM.addButton("Confirm", "btn primary", function() {
-    var text = '{"text" : [';
-        if (mode == "edit") {
-            annotools.deleteAnnot(newAnnot.id);
-            delete newAnnot.id;
-        }
-        if (mode == "new" && newAnnot.type == "line") {
-            submission = "{ \"Length\" : \""+newAnnot.length+"nm\" }";
-        } else {
-            for (var i = 0; i < field.length; i ++) {
-                var fieldElem = $$(document.getElementsByName(field[i]));
-                var replacement = "\"";
-        var value = "";
-                if (fieldElem[0].type == "text") {
-                    replacement += $(field[i]).value + "\"";
-        value = $(field[i]).value;
-        } else if (fieldElem[0].type = "checkbox") {
-        replacement = "[ ";
-        for (var j = 0; j < fieldElem.length; j++) {
-            if(fieldElem[j].checked) {
-            replacement += "\""+fieldElem[j].value+"\" , ";
-            value = fieldElem[j].value;
-            }
-        }
-        replacement = replacement.substring(0,replacement.length-2)+"]";
-                } else if (fieldElem[0].type == "radio") {
-                    for (var j = 0; j < fieldElem.length; j ++) {
-                        if (fieldElem[j].checked) {
-                            replacement += fieldElem[j].value+"\"";
-            value = fieldElem[j].value;
-                            break;
-                        }
+
+    jQuery("#panel").show("slide");
+    console.log(newAnnot);
+    jQuery("#panel").html("" +
+        "<div id = 'panelHeader'> <h4>Enter a new annotation </h4></div>"
+    +   "<div id='panelBody'>" 
+            +"<form id ='annotationsForm' action='#'>"
+            +"</form>" 
+
+    +   "</div>"
+    );
+    jQuery.get("api/Data/retreiveTemplate.php", function(data){
+        var schema = JSON.parse(data);
+        schema = JSON.parse(schema)[0];
+        console.log("retrieved template");
+        var formSchema = {
+            "schema": schema,
+            "form": [
+                "*",
+                {
+                    "type": "submit",
+                    "title": "Submit",
+
+                },
+                {
+                    "type": "button",
+                    "title": "Cancel",
+                    "onClick": function(e) {
+                        console.log(e);
+                        e.preventDefault();
+                        //console.log("cancel");
+                        cancelAnnotation();
                     }
                 }
-        text += '{"' + field[i] + '":"' + value + '"},';
-                submission = submission.replace("__"+field[i]+"__", replacement);
-            }
-        text = text.substring(0,text.length - 1);
-        text += ']}';
-        }
-        console.log(submission);
-        if (mode == "new" || mode == "edit") {
-            newAnnot.text = JSON.parse(submission);
+            ]
+        };
+
+
+        formSchema.onSubmit = function(err,val){
+            //Add form data to annotation
+            newAnnot.properties.annotations = val;
+
+            //Post annotation
             annotools.addnewAnnot(newAnnot);
-            annotools.getAnnot();
-        } else {
-//====================================================================
-//substitute with the new getAnnotByFilter() function when appropriate using submission as the filter statement
-            var text_obj = JSON.parse(text);
-    annotools.getAnnotFilter(text_obj.text[0].Author,text_obj.text[1].Grade,text_obj.text[2].Multi);
-        }
-        annotools.addMouseEvents();
-        this.hide();
-        return true;
-    });
-    SM.addButton("Cancel", "btn secondary", function() {
-        if (mode == "new") {
-            ctx.clearRect(0, 0, annotools.drawCanvas.width, annotools.drawCanvas.height);
+        
+            //Hide Panel
+            jQuery("#panel").hide("slide");
             annotools.drawLayer.hide();
+            annotools.addMouseEvents();      
+            return false;
+
         }
-        annotools.addMouseEvents();
-        this.hide();
-        return false;
+
+        var cancelAnnotation = function(){
+            console.log("cancel handler");
+            jQuery("#panel").hide("slide");
+            annotools.drawLayer.hide();
+            annotools.addMouseEvents();      
+        }
+
+        jQuery("#annotationsForm").jsonForm(formSchema);
+
+
     });
-    SM.show({
-        "model":"modal",
-        "title":title,
-        "contents":form,
-    });
+
+
 };
-*/
+
+
+
 annotools.prototype.promptForAnalysis= function(annotools, analysisBox) {
     var title = "Analysis Tool";
     var form = "<select id='algorithm'>";

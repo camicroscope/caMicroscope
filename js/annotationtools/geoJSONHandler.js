@@ -1,3 +1,111 @@
+annotools.prototype.generateGeoTemplate = function(){
+    console.log(this.iid); 
+    var case_id = this.iid; 
+    var geoJSONTemplate = {
+        "type": "Feature",
+        "parent_id": "self",
+        "randval": Math.random(),
+        "geometry": {
+            "type":  "Polygon",
+            "coordinates": []
+        },
+        "normalized": true,
+        "object_type": "annotation", //nucleus?
+        "properties": {
+            "scalar_features": [],
+            "annotations": []
+        },
+        "footprint": 10000,
+        "provenance": {
+            "analysis": {
+                "execution_id": "test"
+            },
+            "image": {
+                "case_id": case_id
+            }
+        },
+        "date": Date.now()
+    }
+    return geoJSONTemplate;
+}
+
+annotools.prototype.convertRectToGeo = function(annotation){
+    console.log(annotation);
+
+
+    var origin = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(annotation.x), this.imagingHelper.physicalToDataY(annotation.y));
+    var max = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(annotation.x+annotation.w), this.imagingHelper.physicalToDataY(annotation.y + annotation.h));
+    console.log(annotation.x);
+    console.log(annotation.y);
+    console.log(annotation.w);
+    console.log(annotation.h);
+    console.log(origin);
+    console.log(max);
+    var area = (max.x - origin.x) * (max.y - origin.y);
+    console.log("area: "+area);
+    var coordinates = [];
+    var x = annotation.x;
+    var y = annotation.y;
+    var w = annotation.w;
+    var h = annotation.h;
+    var geoAnnot = this.generateGeoTemplate();
+    coordinates.push([]);
+    //coordinates[0].push([]);
+    coordinates[0].push([x,y]);
+    coordinates[0].push([x+w, y]);
+    coordinates[0].push([x+w, y+h]);
+    coordinates[0].push([x, y+h]);
+    geoAnnot.x = x;
+    geoAnnot.y = y;
+    geoAnnot.geometry.coordinates = coordinates;
+    //console.log(geoAnnot);
+    return geoAnnot;
+};
+
+annotools.prototype.convertPencilToGeo = function(annotation){
+
+
+    var origin = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(annotation.x), this.imagingHelper.physicalToDataY(annotation.y));
+    var max = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(annotation.x+annotation.w), this.imagingHelper.physicalToDataY(annotation.y + annotation.h));
+    console.log(annotation.x);
+    console.log(annotation.y);
+    console.log(annotation.w);
+    console.log(annotation.h);
+    console.log(origin);
+    console.log(max);
+    var area = (max.x - origin.x) * (max.y - origin.y);
+    console.log("area: "+area);
+    var points = annotation.points;
+    var p = points.split(' ');
+    var geocoords = []
+
+    for(var i=0; i< p.length; i++){
+        var pt = p[i].split(',');
+        var ptx = +pt[0];
+        var pty = +pt[1];
+        geocoords.push([ptx,pty])
+    }
+    console.log(this);
+    var geojson = this.generateGeoTemplate();
+    var coordinates = [];
+    coordinates.push([]);
+    geojson.geometry = {};
+    geojson.geometry.coordinates = [geocoords];
+
+
+    //set x, y and width and height
+    geojson.x = annotation.x;
+    geojson.y = annotation.y;
+    //geojson.w = annotation.w;
+    //geojson.h = annotation.h;
+
+
+    //console.log(geojson);
+    return geojson;
+}
+
+
+
 /*
 var convertGeo = function(points){
     var p = points.split(' ');
@@ -116,9 +224,6 @@ annotools.prototype.generateCanvas = function(annotations) {
     }();
     */
 
-var clickSVG = function(e){
-    console.log(".....");
-}
 
 
 annotools.prototype.generateSVG = function(annotations){ 
@@ -150,6 +255,11 @@ annotools.prototype.generateSVG = function(annotations){
   
     for(var i=0; i < annotations.length; i++) {
         var annotation = annotations[i];
+        //console.log(annotation["_id"]["$oid"]);
+        var id = "";
+        if(annotation["_id"])
+            id = annotation["_id"]["$oid"];
+        //console.log(annotation);
         var nativepoints = annotation.geometry.coordinates[0];
 
         //var offset = OpenSeadragon.getElementOffset(viewer.canvas);
@@ -157,9 +267,9 @@ annotools.prototype.generateSVG = function(annotations){
         var color = algorithm_color[algorithm_id];
 
         //var svg = 
-        svgHtml += '<polygon  class="annotationsvg" id="'+"poly"+i+'" points="';
+        svgHtml += '<polygon  class="annotationsvg" id="'+ id +'" points="';
 
-        //svgHtml += '<polygon onClick="clickSVG()" class="annotationsvg" id="'+"poly"+i+'" points="';
+        //svgHtml += '<polygon onclick="clickSVG(event)" class="annotationsvg" id="'+"poly"+i+'" points="';
         var polySVG = ""
         for(var k = 0; k < nativepoints.length; k++) {      
             //console.log(nativepoints[k][0]);
@@ -174,6 +284,9 @@ annotools.prototype.generateSVG = function(annotations){
         svgHtml += '" style="fill: transparent; stroke: lime; stroke-width:2.5"/>';
         //svgHtml += '" style="fill:yellow; stroke:'+color+ '; stroke-width:25"/>';
     }
+
+
+
         this.svg = new Element("div", {
             styles: {
                 position: "absolute",
@@ -186,78 +299,30 @@ annotools.prototype.generateSVG = function(annotations){
         }).inject(container);
     }
 
+    jQuery(".annotationsvg").mousedown(function(event){
+        console.log("annotation mousedown");
+        switch(event.which){
+            case 3:
+                console.log("right clicked");
+                var panel = jQuery("#panel").show("slide");  
+                console.log(event.target.id);
+                var id = event.target.id; 
+                //jQuery("#panel").hide("slide");
+                break;
+        }
+    });
 }
 
 
 
 annotools.prototype.displayGeoAnnots = function() {
-
     var geoJSONs = this.annotations;
-    //geoJSONs = this.convertAnnotationsToGeoJSON();
-    //this.geoannotations = geoJSONs;
-    //this.convertAllGeoToNative();
-
-    //this.displayGeoJSONAnnot();
-    //
     if(this.annotVisible){ 
-    //var renderStartTime = performance.now();
-    this.generateSVG(geoJSONs);
-    //var renderEndTime = performance.now();
-    var renderStartTime = 9;
-    var renderEndTime = 23;
+        //var renderStartTime = performance.now();
+        this.generateSVG(geoJSONs);
+        //var renderEndTime = performance.now();
+        var renderStartTime = 9;
+        var renderEndTime = 23;
     }
-    //console.log("Rendering time: " + (renderEndTime - renderStartTime));
-
-    //endProfile(startTime);
-    //console.log(geoJSONs);
-    //this.geoJSONtoSVG(geoJSONAnnotation[0]); 
-    //this.generateSVG(geoJSONAnnotation[0]);
-    //console.log(geoJSONAnnotation[0]);
-
 }
-/*
-annotools.prototype.convertGeoToNative = function (geoannotation) {
-    var points = geoannotation.geometry.coordinates[0];
-    //console.log(points);
-    var nativePoints = [];
-    for(var i=0; i<points.length; i++){
-        px = points[i][0];
-        py = points[i][0]
-        var polyPoint = new OpenSeadragon.Point(parseFloat(px), parseFloat(py));
-        var pointX = this.imagingHelper.logicalToPhysicalX(polyPoint.x)
-        var pointY = this.imagingHelper.logicalToPhysicalY(polyPoint.y);
-        nativePoints.push([pointX, pointY]);
-    }
-    //console.log(nativePoints);
-    geoannotation.geometry.coordinates = [nativePoints];
-    return geoannotation;
-    
-}
-annotools.prototype.convertAllGeoToNative = function() {
-    var self = this;
-    var annotations = this.annotations;
-    for(var i = 0; i < annotations.length; i++){
-        this.annotations[i] = this.convertGeoToNative(annotations[i]);
-    }
-    //console.log(this.geoannotations);
-}
-*/
-
-
-
-/*
-annotools.prototype.geoJSONtoSVG = function(geoJSONAnnotation) {
-    var coordinates = geoJSONAnnotation.geometry.coordinates;
-    //Convert to native
-    var points = coordinates[0];
-    var osdpoints = []
-    for(var k = 0; k < points.length; k++) {
-        var polypoint = new OpenSeadragon.Point(points[k][0], points[k][1]);
-        osdpoints.push(polypoint);
-    }
-    this.nativepoints = osdpoints;
-    //console.log(osdpoints);
-
-}
-*/
 
