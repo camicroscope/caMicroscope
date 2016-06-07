@@ -50,18 +50,39 @@ switch ($_SERVER['REQUEST_METHOD'])
         }
         break;
     case 'POST':
-        echo "Posting!!!";
-		$annotationList =$_POST["annot"];
+        //echo "Posting!!!";
+		$annotationList =$_POST;
 		$url = $postUrl . "?api_key=".$api_key;
-		$count = count($annotationList);
-		$newestAnnot = $annotationList[$count-1];
-		$newestAnnot["username"] = $_SESSION['username'];
-		$newestAnnot["loc"][0] = (float)$newestAnnot["loc"][0];
-		$newestAnnot["loc"][1] = (float)$newestAnnot["loc"][1];
-		$postRequest = new RestRequest($url,'POST',json_encode($newestAnnot));
-		$postRequest->execute();
-		echo(json_encode($newestAnnot));
+		//$count = count($annotationList);
+		//$newestAnnot = $annotationList[$count-1];
+		//$newestAnnot["username"] = $_SESSION['username'];
+		//$newestAnnot["loc"][0] = (float)$newestAnnot["loc"][0];
+		//$newestAnnot["loc"][1] = (float)$newestAnnot["loc"][1];
+        //print_r($annotationList);
+        //print_r(json_encode($annotationList), JSON_NUMERIC_CHECK);
+        echo "posting data\n";
+        echo $url;
+        $ch = curl_init();
+        $headers= array('Accept: application/json','Content-Type: application/json'); 
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
 
+        curl_setopt($ch, CURLOPT_POSTFIELDS,json_encode($annotationList, JSON_NUMERIC_CHECK));
+        $result = curl_exec($ch);
+        if($result === false){
+            $result =  curl_error($ch);
+        }
+        curl_close($ch);
+
+        echo $result;
+
+		//$postRequest = new RestRequest($url,'POST',json_encode($annotationList), JSON_NUMERIC_CHECK);
+		//$postRequest->execute();
+        //print_r($postRequest);
+		//echo(json_encode($newestAnnot));
+        echo "done";
 		break;
 }
 ?>
