@@ -225,7 +225,8 @@ ToolBar.prototype.createButtons = function(){
             'src': 'images/hide.svg'
         });
         tool.append(this.hidebutton);
-        
+
+
 
        
 
@@ -236,6 +237,14 @@ ToolBar.prototype.createButtons = function(){
             'src': 'images/fullDownload.svg'
         });
         tool.append(this.fullDownloadButton);
+
+        this.analyticsbutton = jQuery("<img>",{
+            "title": "Analytics Serviecs",
+            "class": "toolButton",
+            "src": "images/analyze.png"
+
+        });
+        tool.append(this.analyticsbutton); 
         
         this.partialDownloadButton = jQuery('<img>', {
             'title': 'Download Partial Markups (Coming Soon)',
@@ -267,8 +276,8 @@ ToolBar.prototype.createButtons = function(){
         }.bind(this));
 
         this.pencilbutton.on('click', function () {
-                this.mode = 'pencil';
-                this.drawMarkups();
+                this.annotools.mode = 'pencil';
+                this.annotools.drawMarkups();
             //alert("Creation of markups is disabled on QuIP");
         }.bind(this));
 
@@ -285,6 +294,10 @@ ToolBar.prototype.createButtons = function(){
             this.toggleAlgorithmSelector(); 
             //this.removeMouseEvents();
             //this.promptForAnnotation(null, "filter", this, null);
+        }.bind(this));
+
+        this.analyticsbutton.on("click", function(){
+            this.annotools.createWorkOrder();
         }.bind(this));
 
         var toolButtons = jQuery(".toolButton");
