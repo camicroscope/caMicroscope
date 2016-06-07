@@ -236,14 +236,15 @@ var AnnotoolsOpenSeadragonHandler = new Class({
     },
 
     handleMouseUp: function(evt) {
-
+      //console.log("mouse up");
       //if (evt.target.tagName.toLowerCase() == "button" || evt.target.tagName.toLowerCase() == "div") {
-      if (evt.target.tagName.toLowerCase() == "button") {
-        
-        console.log("handleMouseUp: " + evt.target.tagName);
+      if (evt.target.tagName.toLowerCase() == "button" || evt.target.tagName.toLowerCase() == "input") {
+        //console.log("here");  
+        //console.log("handleMouseUp: " + evt.target.tagName);
         return;
             
       }
+
           if(evt.preventDefault)
               evt.preventDefault();
     
@@ -267,14 +268,14 @@ var AnnotoolsOpenSeadragonHandler = new Class({
               }
               else {
     
-                $('originpt').setProperty('cx',
+                $$('originpt').setProperty('cx',
                         viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(.5,.5)).x);
-                $('originpt').setProperty('cy',
+                $$('originpt').setProperty('cy',
                         viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(.5,.5)).y);
     
                 //$('svg')[0].show(); 
                 $$('svg')[0].setStyle('opacity', 1);
-                for (var i = 0; i < $('viewport').getChildren().length; i++) { 
+                for (var i = 0; i < $$('viewport').getChildren().length; i++) { 
     
                     var object = $('viewport').getChildren()[i];
                     //object.setAttribute("style", style="fill:none;stroke:lime;stroke-width:2");
@@ -322,8 +323,10 @@ var AnnotoolsOpenSeadragonHandler = new Class({
 
     handleMouseDown: function(evt) {
         
-      if (evt.target.tagName.toLowerCase() == "button") {
-        console.log("handleMouseDown: " + evt.target.tagName);
+
+        //Allow interactions on the annotation creation form elements
+      if (evt.target.tagName.toLowerCase() == "button" || evt.target.tagName.toLowerCase() == "input" || evt.target.tagName.toLowerCase() == "select") {
+
         return;
       }
       if(evt.preventDefault)
