@@ -10,13 +10,27 @@
 
         <title>[caMicroscope OSD][Subject: <?php echo json_encode($_GET['tissueId']); ?>][User: <?php echo $_SESSION["name"]; ?>]</title>
 
+
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
         <link rel="stylesheet" type="text/css" media="all" href="css/annotools.css" />
         <!--<link rel="stylesheet" type="text/css" media="all" href="css/jquery-ui.min.css" />-->
         <link rel="stylesheet" type="text/css" media="all" href="css/simplemodal.css" />
         <link rel="stylesheet" type="text/css" media="all" href="css/ui.fancytree.min.css" />
-        
+    
         <script src="js/dependencies/jquery.js"></script>
-        
+
+        <!--JSON Form dependencies-->
+
+        <script type="text/javascript" src="js/dependencies/underscore.js">
+            console.log(_);
+        </script>
+        <script>console.log("here"); console.log(_);
+        </script>
+        <script type="text/javascript" src="js/dependencies/jsonform.js"></script>
+        <script type="text/javascript" src="js/dependencies/jsv.js"></script>
+        <!--End JSON Form dependencies -->
+
+
         <script src="js/openseadragon/openseadragon-bin-1.0.0/openseadragon.js"></script>
         <script src="js/openseadragon/openseadragon-imaginghelper.min.js"></script>
         <script src="js/openseadragon/openseadragon-scalebar.js"></script>
