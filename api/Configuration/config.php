@@ -23,7 +23,7 @@ return array(
 //    'getMultipleAnnotations' => "$serviceUrl/GeoJSONImageMetaData/query/getMultipleMarkups?",
     'getMultipleAnnotations' => "http://172.17.0.2:9099/services/Camicroscope_Annotations/MarkupLoader/query/getMultipleMarkups?",
 
-    'retrieveTemplate' => "$tempMarkupUrl/AnnotationTemplate/query/RetrieveTemplate",
+    'retrieveTemplate' => "$serviceUrl/AnnotationTemplate/query/retrieveTemplate",
     'getAllAnnotations' => "$tempMarkupUrl/Annotations/query/byUserAndImageID?iid=",
     'getAnnotationsSpatial' => "$serviceUrl/GeoJSONImageMetaData/query/getMarkups?",
     'getAnnotationSpatialFilter' => "$tempMarkupUrl/Annotations/query/allByFilter?iid=",

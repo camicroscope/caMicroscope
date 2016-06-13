@@ -326,53 +326,53 @@ annotools.prototype.keyPress= function (code) //Key Down Events Handler
 
 annotools.prototype.drawMarkups =  function () //Draw Markups
 {
-        this.showMessage(); //Show Message
-        this.drawCanvas.removeEvents('mouseup');
-        this.drawCanvas.removeEvents('mousedown');
-        this.drawCanvas.removeEvents('mousemove');
-        this.drawLayer.show(); //Show The Drawing Layer
-        /* ASHISH Disable quit
-            this.quitbutton.show(); //Show The Quit Button
-        */
-        this.magnifyGlass.hide(); //Hide The Magnifying Tool
-        //this.container = document.id(this.canvas); //Get The Canvas Container
-        this.container = document.getElementsByClassName(this.canvas)[0]; //Get The Canvas Container
-        //this.container = document.getElementById('container'); //Get The Canvas Container
-        if (this.container) {
-            //var left = parseInt(this.container.offsetLeft), //Get The Container Location
-            var left = parseInt(this.container.getLeft()), //Get The Container Location
-                top = parseInt(this.container.offsetTop),
-                width = parseInt(this.container.offsetWidth),
-                height = parseInt(this.container.offsetHeight),
-                oleft = left,
-                otop = top,
-                owidth = width,
-                oheight = height;
-            //console.log("left: " + left + " top: " + top + " width: " + width + " height: " + height);
-            if (left < 0) {
-                left = 0;
-                width = window.innerWidth;
-            } //See Whether The Container is outside The Current ViewPort
-            if (top < 0) {
-                top = 0;
-                height = window.innerHeight;
-            }
-            //Recreate The CreateAnnotation Layer Because of The ViewPort Change Issue.
-            this.drawLayer.set({
-                'styles': {
-                    left: left,
-                    top: top,
-                    width: width,
-                    height: height
-                }
-            });
-            //Create Canvas on the CreateAnnotation Layer
-            this.drawCanvas.set({
+    this.showMessage(); //Show Message
+    this.drawCanvas.removeEvents('mouseup');
+    this.drawCanvas.removeEvents('mousedown');
+    this.drawCanvas.removeEvents('mousemove');
+    this.drawLayer.show(); //Show The Drawing Layer
+    /* ASHISH Disable quit
+        this.quitbutton.show(); //Show The Quit Button
+    */
+    this.magnifyGlass.hide(); //Hide The Magnifying Tool
+    //this.container = document.id(this.canvas); //Get The Canvas Container
+    this.container = document.getElementsByClassName(this.canvas)[0]; //Get The Canvas Container
+    //this.container = document.getElementById('container'); //Get The Canvas Container
+    if (this.container) {
+        //var left = parseInt(this.container.offsetLeft), //Get The Container Location
+        var left = parseInt(this.container.getLeft()), //Get The Container Location
+            top = parseInt(this.container.offsetTop),
+            width = parseInt(this.container.offsetWidth),
+            height = parseInt(this.container.offsetHeight),
+            oleft = left,
+            otop = top,
+            owidth = width,
+            oheight = height;
+        //console.log("left: " + left + " top: " + top + " width: " + width + " height: " + height);
+        if (left < 0) {
+            left = 0;
+            width = window.innerWidth;
+        } //See Whether The Container is outside The Current ViewPort
+        if (top < 0) {
+            top = 0;
+            height = window.innerHeight;
+        }
+        //Recreate The CreateAnnotation Layer Because of The ViewPort Change Issue.
+        this.drawLayer.set({
+            'styles': {
+                left: left,
+                top: top,
                 width: width,
                 height: height
-            });
-            //The canvas context
-            var ctx = this.drawCanvas.getContext("2d");
+            }
+        });
+        //Create Canvas on the CreateAnnotation Layer
+        this.drawCanvas.set({
+            width: width,
+            height: height
+        });
+        //The canvas context
+        var ctx = this.drawCanvas.getContext("2d");
             //Draw Markups on Canvas
             switch (this.mode) {
                 case "rect":
@@ -395,7 +395,130 @@ annotools.prototype.drawMarkups =  function () //Draw Markups
         
 }
 
+annotools.prototype.createWorkOrder = function() {
+    this.showMessage(); //Show Message
+    this.drawCanvas.removeEvents('mouseup');
+    this.drawCanvas.removeEvents('mousedown');
+    this.drawCanvas.removeEvents('mousemove');
+    this.drawLayer.show(); //Show The Drawing Layer
+    /* ASHISH Disable quit
+        this.quitbutton.show(); //Show The Quit Button
+    */
+    this.magnifyGlass.hide(); //Hide The Magnifying Tool
+    //this.container = document.id(this.canvas); //Get The Canvas Container
+    this.container = document.getElementsByClassName(this.canvas)[0]; //Get The Canvas Container
+    //this.container = document.getElementById('container'); //Get The Canvas Container
+    if (this.container) {
+        //var left = parseInt(this.container.offsetLeft), //Get The Container Location
+        var left = parseInt(this.container.getLeft()), //Get The Container Location
+            top = parseInt(this.container.offsetTop),
+            width = parseInt(this.container.offsetWidth),
+            height = parseInt(this.container.offsetHeight),
+            oleft = left,
+            otop = top,
+            owidth = width,
+            oheight = height;
+        //console.log("left: " + left + " top: " + top + " width: " + width + " height: " + height);
+        if (left < 0) {
+            left = 0;
+            width = window.innerWidth;
+        } //See Whether The Container is outside The Current ViewPort
+        if (top < 0) {
+            top = 0;
+            height = window.innerHeight;
+        }
+        //Recreate The CreateAnnotation Layer Because of The ViewPort Change Issue.
+        this.drawLayer.set({
+            'styles': {
+                left: left,
+                top: top,
+                width: width,
+                height: height
+            }
+        });
+        //Create Canvas on the CreateAnnotation Layer
+        this.drawCanvas.set({
+            width: width,
+            height: height
+        });
+        //The canvas context
+        var ctx = this.drawCanvas.getContext("2d");
 
+    console.log("drawing rectangle");
+    this.removeMouseEvents();
+    var started = false;
+    var min_x,min_y,max_x,max_y,w,h;
+    var startPosition;
+    this.drawCanvas.addEvent('mousedown',function(e)
+    {
+        started = true;
+        startPosition = OpenSeadragon.getMousePosition(e.event);
+        x = startPosition.x;
+        y = startPosition.y;
+    });
+
+    this.drawCanvas.addEvent('mousemove',function(e)
+    {
+        if(started)
+        {
+        ctx.clearRect(0,0,this.drawCanvas.width, this.drawCanvas.height);
+        var currentMousePosition = OpenSeadragon.getMousePosition(e.event);
+
+        min_x = Math.min(currentMousePosition.x,startPosition.x);
+        min_y = Math.min(currentMousePosition.y,startPosition.y);
+        max_x = Math.max(currentMousePosition.x,startPosition.x);
+        max_y = Math.max(currentMousePosition.y,startPosition.y);
+        w = Math.abs(max_x - min_x);
+        h = Math.abs(max_y - min_y);
+        ctx.strokeStyle = this.color;
+        ctx.fillStyle = "rgba(255, 255, 255, 0.2)";
+        ctx.fillRect(min_x,min_y, w, h);        
+        ctx.strokeRect(min_x,min_y,w,h);
+        }
+    }.bind(this));
+
+    this.drawCanvas.addEvent('mouseup',function(e)
+    {
+        started = false;
+        var finalMousePosition = new OpenSeadragon.getMousePosition(e.event);
+
+            min_x = Math.min(finalMousePosition.x,startPosition.x);
+            min_y = Math.min(finalMousePosition.y,startPosition.y);
+            max_x = Math.max(finalMousePosition.x,startPosition.x);
+            max_y = Math.max(finalMousePosition.y,startPosition.y);
+
+        
+        var startRelativeMousePosition = new OpenSeadragon.Point(min_x,min_y).minus(OpenSeadragon.getElementOffset(viewer.canvas));
+        var endRelativeMousePosition = new OpenSeadragon.Point(max_x,max_y).minus(OpenSeadragon.getElementOffset(viewer.canvas));
+        var newAnnot = {
+            x: startRelativeMousePosition.x,
+            y: startRelativeMousePosition.y,
+            w: w,
+            h: h,
+            type: "rect",
+            color: this.color,
+            loc: new Array()
+        };
+
+        var globalNumbers = JSON.parse(this.convertFromNative(newAnnot, endRelativeMousePosition));
+
+        newAnnot.x = globalNumbers.nativeX;
+        newAnnot.y = globalNumbers.nativeY;
+        newAnnot.w = globalNumbers.nativeW;
+        newAnnot.h = globalNumbers.nativeH;
+        var loc = new Array();
+        loc[0] = parseFloat(newAnnot.x);
+        loc[1] = parseFloat(newAnnot.y);
+        newAnnot.loc = loc;
+
+        //convert to geojson 
+        //var geoNewAnnot = this.convertRectToGeo(newAnnot);
+        geoNewAnnot = newAnnot;
+        this.promptForWorkOrder(geoNewAnnot, "new", this, ctx);
+    }.bind(this));
+
+    }
+}
 
 /*
 annotools.prototype.drawMarkups= function () //Draw Markups
@@ -1355,6 +1478,8 @@ annotools.prototype.drawRectangle= function(ctx)
         w = Math.abs(max_x - min_x);
         h = Math.abs(max_y - min_y);
         ctx.strokeStyle = this.color;
+        ctx.fillStyle = "rgba(255, 255, 255, 0.2)";
+        ctx.fillRect(min_x,min_y, w, h);        
         ctx.strokeRect(min_x,min_y,w,h);
         }
     }.bind(this));
@@ -1815,6 +1940,7 @@ function handleWorkOrder(annot){
     console.log(annot);
 }
 
+
 annotools.prototype.promptForWorkOrder = function(newAnnot, mode, annotools, ctx){
     console.log(newAnnot);
     console.log(mode);
@@ -1831,10 +1957,28 @@ annotools.prototype.promptForWorkOrder = function(newAnnot, mode, annotools, ctx
         y = parseInt(y);
         w = parseInt(w);
         h = parseInt(h);
+        if(w*h > 1000000){
+            newAnnot.w = annotools.imagingHelper.dataToLogicalX(1000); 
+            newAnnot.h = annotools.imagingHelper.dataToLogicalY(1000);
+            w = 1000;
+            h = 1000; 
+            panel.html(function(){
 
+                return "<div id='panelHeader'><h4> Work Order(Error) </h4></div><div id='panelBody'> Error: Very large ROI. <br />" + "Width: "+ w + "<br />" +"Height: " + h + "<br />Please try creating a smaller ROI. Zooming into the ROI would help.<br /> We currently support 1000X1000 tiles <br />  <button id='cancelWorkOrder'>Cancel</button></div>";
+
+            });
+    jQuery("#cancelWorkOrder").click(function(){
+        console.log("here");
+        jQuery("#panel").hide();
+        annotools.drawLayer.hide();
+        annotools.addMouseEvents();      
+    });
+        return;
+        }
         panel.html(function(){
           
-            return "<h4> Work Order </h4> <ul><li> x1: " + x  + "</li> <li> y1: " +y+ "</li> <li> w: "+ w+"</li> <li>h: "+h +"</li> <li>Algorithm: Test1</li></ul> <br /> <button id='submitWorkOrder'>Submit</button> <button id='cancelWorkOrder'>Cancel</button>";
+            return "<div id='panelHeader'><h4> Work Order </h4></div><div id='panelBody'> <ul><li> x1: " + x  + "</li> <li> y1: " +y+ "</li> <li> w: "+ w+"</li> <li>h: "+h +"</li> <li>Algorithm: SuperSegmenter</li> " 
+                        + "<li>Execution Id:<input id='order-execution_id'></input></li>" + "<li>Notes: <textarea id='order-notes'></textarea>" + "</ul> <br /> <button id='submitWorkOrder'>Submit</button> <button id='cancelWorkOrder'>Cancel</button></div>";
 
         });
 
@@ -1844,29 +1988,6 @@ annotools.prototype.promptForWorkOrder = function(newAnnot, mode, annotools, ctx
         console.log(annotools.imagingHelper.physicalToDataX(annotools.imagingHelper.logicalToPhysicalX((newAnnot.x+newAnnot.w))));
         console.log(annotools.imagingHelper.physicalToDataY(annotools.imagingHelper.logicalToPhysicalY(newAnnot.y+newAnnot.h)));
         */
-        var order ={
-        "input":
-            {
-                "host": "dragon.cci.emory.edu",
-                "port": 9099,
-                "path": "/services/TCGA/GeoJSONMetaData/query/getFileLocationByIID",
-                "case_id": iid, 
-                "x": x,
-                "y": y,
-                "w": w,
-                "h": h,
-                "format": "JPG",
-                "iipServer": "http://dragon.cci.emory.edu/fcgi-bin/iipsrv.fcgi"
-            },
-        "output":
-            {
-                "format": "mask",
-                "host": "dragon.cci.emory.edu",
-                "port": 9099,
-                "path": "/services/DynamicServices/Annotations/submit/json"
-            }
-        };
-    console.log(order);    
 
     jQuery("#cancelWorkOrder").click(function(){
         console.log("here");
@@ -1887,28 +2008,69 @@ annotools.prototype.promptForWorkOrder = function(newAnnot, mode, annotools, ctx
         //annotools.removeMouseEvents();
         //annotools.getMultiAnnot();            
         
-        var order ={
-        "input":
-            {
-                "host": "dragon.cci.emory.edu",
-                "port": 9099,
-                "path": "/services/TCGA/GeoJSONMetaData/query/getFileLocationByIID",
-                "case_id": iid, 
-                "x": x,
-                "y": y,
-                "w": w,
-                "h": h,
-                "format": "JPG",
-                "iipServer": "http://dragon.cci.emory.edu/fcgi-bin/iipsrv.fcgi"
-            },
-        "output":
-            {
-                "format": "mask",
-                "host": "dragon.cci.emory.edu",
-                "port": 9099,
-                "path": "/services/DynamicServices/Annotations/submit/json"
+        var username = "lastlegion";
+        var execution_id = jQuery("#order-execution_id").val();
+        var notes = jQuery("#order-notes").val();
+        var width = 48002;
+        var height = 35558;
+        if(iid == "TCGA-06-0148-01Z-00-DX1"){
+            width = 26001;
+            height = 27968;
+        }
+        var order = {
+            "type": "order",
+            
+            "data":{ 
+                "title": username + " :: " +execution_id,
+                "algorithm": "SuperSegmenter",
+                "execution_id": execution_id,
+                "created_by":  username,
+                "notes": notes,
+                "order":{
+
+                    "metadata": {
+                        "created_on": Date.now(),
+                        "created_by": "lastlegion"
+                    },
+                    "image": {
+                        "width": width,
+                        "height": height,
+                        "case_id": iid
+                    },
+                    "roi": {
+                        "x": x,
+                        "y": y,
+                        "w": w,
+                        "h": h
+                    },
+                    "execution": {
+                        "execution_id": execution_id,
+                          "algorithm": "SuperSegmenter",
+                          "parameters": [
+                            {
+                              "blur": 0.4
+                            },
+                            {
+                              "format": "jpg"
+                            }
+                          ]
+                    }
+                }
             }
         };
+        
+
+
+        /*
+        var order = {
+            "type": "order",
+
+            "data":{ 
+                "created_on": Date.now(),
+                "created_by": "lastlegion"
+            }
+        }
+        */
         jQuery.post("api/Data/workOrder.php", order)
             .done(function(res){
                 console.log(res);
@@ -1917,6 +2079,7 @@ annotools.prototype.promptForWorkOrder = function(newAnnot, mode, annotools, ctx
                     return "Order Submitted!";
                     
                 });
+                panel.hide("slide");
                 
             });
         console.log("submit");
@@ -1925,6 +2088,8 @@ annotools.prototype.promptForWorkOrder = function(newAnnot, mode, annotools, ctx
         
     }.bind(newAnnot));    
 }
+
+
 
 
 annotools.prototype.promptForAnnotation= function(newAnnot, mode, annotools, ctx){
@@ -1939,10 +2104,11 @@ annotools.prototype.promptForAnnotation= function(newAnnot, mode, annotools, ctx
 
     +   "</div>"
     );
-    jQuery.get("api/Data/retreiveTemplate.php", function(data){
+    jQuery.get("api/Data/retrieveTemplate.php", function(data){
         var schema = JSON.parse(data);
         schema = JSON.parse(schema)[0];
-        console.log("retrieved template");
+        console.log(schema);
+        //console.log("retrieved template");
         var formSchema = {
             "schema": schema,
             "form": [

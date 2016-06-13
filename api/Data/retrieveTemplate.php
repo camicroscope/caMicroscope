@@ -13,6 +13,7 @@ $templateUrl = $config['retrieveTemplate'];
 $api_key = $_SESSION['api_key'];
 
 $url = $templateUrl . "?api_key=$api_key";
+//echo $url;
 $templateRequest = new RestRequest($url,'GET');
 $templateRequest->execute();
 echo json_encode($templateRequest->responseBody);
