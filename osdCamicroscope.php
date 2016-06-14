@@ -31,7 +31,7 @@
         <!--End JSON Form dependencies -->
 
 
-        <script src="js/openseadragon/openseadragon-bin-1.0.0/openseadragon.js"></script>
+        <script src="js/openseadragon/openseadragon-bin-2.0.0/openseadragon.js"></script>
         <script src="js/openseadragon/openseadragon-imaginghelper.min.js"></script>
         <script src="js/openseadragon/openseadragon-scalebar.js"></script>
         <script src="js/openseadragon/openseadragonzoomlevels.js"></script>
@@ -45,7 +45,14 @@
         <script src="js/annotationtools/geoJSONHandler.js"></script>
         <script src="js/dependencies/MD5.js"></script>
         <script src="http://code.jquery.com/ui/1.11.2/jquery-ui.min.js" type="text/javascript"></script> 
-        
+    
+
+        <!--Filtering Tools-->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/camanjs/4.1.2/caman.full.js"></script>
+        <script src="js/filteringtools/openseadragon-filtering.js"></script>
+        <script src="js/filteringtools/spinner-slider.js"></script>
+        <script src="js/filteringtools/spinner.js"></script>
+        <!--End Filtering Tools-->    
         <!--<script src="js/dependencies/jquery-ui.min.js"></script>-->
 
         <script src="js/dependencies/jquery.fancytree-all.min.js"></script>
@@ -128,7 +135,7 @@
             viewer.clearControls();
             viewer.open("<?php print_r($config['fastcgi_server']); ?>?DeepZoom=" + fileLocation);
             var imagingHelper = new OpenSeadragonImaging.ImagingHelper({viewer: viewer});
-            imagingHelper.setMaxZoom(2);
+            imagingHelper.setMaxZoom(1);
             //console.log(this.MPP);
             viewer.scalebar({
               type: OpenSeadragon.ScalebarType.MAP,
@@ -141,6 +148,13 @@
               backgroundColor: "rgba(255,255,255,0.5)",
               barThickness: 2
             });
+
+            viewer.setFilterOptions({
+                filters: {
+                    processors: OpenSeadragon.Filters.BRIGHTNESS(0)
+                }
+});
+
     //console.log(viewer);
 function isAnnotationActive(){
     this.isOpera = !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
