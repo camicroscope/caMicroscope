@@ -1940,6 +1940,527 @@ function handleWorkOrder(annot){
     console.log(annot);
 }
 
+/*
+annotools.prototype.showFilterControls = function(newAnnot, mode, annotools, ctx){
+    var panel = jQuery("#panel");
+    panel.show("slide");
+
+    panel.html("<div id='panelHeader'>Filters</div><div id='panelBody'>Brightness: <input type='range' id='controlBright'>"+
+        "<br /> Contrast: <input type='range' min=0 max=2.5 step=0.05 id='controlContrast'><br />"
+            +" Threshold: <input type='range' min=0 max=255 step=1 id='controlThreshhold' /><br />"
+            + "<button class='btn' id='controlSobel'>Sobel Edge Detection</button> <button class='btn' id='controlInvert'>Invert Colors</button>" +
+    "</div>");
+   
+    
+    jQuery("#controlInvert").on("click", function(){
+        viewer.setFilterOptions({
+            filters: {
+                processors: OpenSeadragon.Filters.INVERT()
+            }
+        });
+    });    
+ 
+    jQuery("#controlSobel").on("click", function(){
+        viewer.setFilterOptions({
+            filters: {
+                processors: [
+                    OpenSeadragon.Filters.CONVOLUTION([
+                        0.0625, 0.125, 0.0625,
+                        0.125, 0.25, 0.125,
+                        0.0625, 0.125, 0.625
+                    ]),
+                    OpenSeadragon.Filters.CONVOLUTION([
+                    -1, 0, 1,
+                    -2, 0, 2,
+                    -1, 0, 1
+                    ])
+                ]
+            }
+        });
+    });    
+    jQuery("#controlThreshhold").on("change", function(){
+        var threshhold = 1*jQuery(this).val();
+        console.log(threshhold);
+        viewer.setFilterOptions({
+            filters: {
+                processors: OpenSeadragon.Filters.THRESHOLDING(threshhold)
+            }
+        });
+        console.log(viewer);   
+    });
+
+    jQuery("#controlContrast").on("change", function(){
+        var contrast = 1*jQuery(this).val();
+        console.log(contrast);
+        viewer.setFilterOptions({
+            filters: {
+                processors: OpenSeadragon.Filters.CONTRAST(contrast)
+            }
+        });
+        console.log(viewer);   
+    });
+    jQuery("#controlBright").on("change", function(){
+        //console.log(viewer);
+        var brightness = 1*jQuery(this).val();
+        console.log(brightness);
+        viewer.setFilterOptions({
+            filters: {
+                processors: OpenSeadragon.Filters.BRIGHTNESS(brightness)
+            }
+        });
+        console.log(viewer);
+        //console.log(jQuery(this).val());
+    });
+}
+*/
+
+annotools.prototype.showFilterControls = function(){
+    var panel = jQuery("#panel");
+    var $ = jQuery;
+    panel.show("slide");
+    panel.html("<div id='panelHeader'><h4>Image Filters</h4></div>"
+        + "<div id='panelBody'>"+
+            "<h5>Selected Filters</h5>"+
+            "<ul id='selected'></ul>"+
+            "<h5>Available Filters</h5>"+
+            "<ul id='available'></ul>"
+         +"</div>")
+
+    // List of filters with their templates.
+    var availableFilters = [
+        {
+            name: 'Invert',
+            generate: function() {
+                return {
+                    html: '',
+                    getParams: function() {
+                        return '';
+                    },
+                    getFilter: function() {
+                        /*eslint new-cap: 0*/
+                        return OpenSeadragon.Filters.INVERT();
+                    },
+                    sync: true
+                };
+            }
+        }, {
+            name: 'Contrast',
+            help: 'Range is from 0 to infinity, although sane values are from 0 ' +
+                'to 4 or 5. Values between 0 and 1 will lessen the contrast ' +
+                'while values greater than 1 will increase it.',
+            generate: function(updateCallback) {
+                //var $html = $('<div></div>');
+                var $html = $("<div><input type='range' id='controlContrast' min=0 max=4 step=0.1 /></div>");
+
+
+                return {
+                    html: $html,
+                    getParams: function() {
+                        return $("#controlContrast").val()*1;
+                    },
+                    getFilter: function() {
+                        return OpenSeadragon.Filters.CONTRAST($("#controlContrast").val()*1);
+                    },
+                    sync: true
+                };
+            }
+        }, {
+            name: 'Gamma',
+            help: 'Range is from 0 to infinity, although sane values ' +
+                'are from 0 to 4 or 5. Values between 0 and 1 will ' +
+                'lessen the contrast while values greater than 1 will increase it.',
+            generate: function(updateCallback) {
+                var $html = $('<div><input type="range" id="controlGamma" min=0 max=5 step=0.1 /></div>');
+                return {
+                    html: $html,
+                    getParams: function() {
+                        return $("#controlGamma").val()*1;
+                    },
+                    getFilter: function() {
+                        //var value =;
+                        return OpenSeadragon.Filters.GAMMA($("#controlGamma").val()*1);
+                    }
+                };
+            }
+        },  {
+            name: 'Greyscale',
+            generate: function() {
+                return {
+                    html: '',
+                    getParams: function() {
+                        return '';
+                    },
+                    getFilter: function() {
+                        return OpenSeadragon.Filters.GREYSCALE();
+                    },
+                    sync: true
+                };
+            }
+        }, {
+            name: 'Sobel Edge',
+            generate: function() {
+                return {
+                    html: '',
+                    getParams: function() {
+                        return '';
+                    },
+                    getFilter: function() {
+                        return function(context, callback) {
+                            var imgData = context.getImageData(
+                                0, 0, context.canvas.width, context.canvas.height);
+                            var pixels = imgData.data;
+                            var originalPixels = context.getImageData(0, 0, context.canvas.width, context.canvas.height).data;
+                            var oneRowOffset = context.canvas.width * 4;
+                            var onePixelOffset = 4;
+                            var Gy, Gx;
+                            var idx = 0;
+                            for (var i = 1; i < context.canvas.height - 1; i += 1) {
+                                idx = oneRowOffset * i + 4;
+                                for (var j = 1; j < context.canvas.width - 1; j += 1) {
+                                    Gy = originalPixels[idx - onePixelOffset + oneRowOffset] + 2 * originalPixels[idx + oneRowOffset] + originalPixels[idx + onePixelOffset + oneRowOffset];
+                                    Gy = Gy - (originalPixels[idx - onePixelOffset - oneRowOffset] + 2 * originalPixels[idx - oneRowOffset] + originalPixels[idx + onePixelOffset - oneRowOffset]);
+                                    Gx = originalPixels[idx + onePixelOffset - oneRowOffset] + 2 * originalPixels[idx + onePixelOffset] + originalPixels[idx + onePixelOffset + oneRowOffset];
+                                    Gx = Gx - (originalPixels[idx - onePixelOffset - oneRowOffset] + 2 * originalPixels[idx - onePixelOffset] + originalPixels[idx - onePixelOffset + oneRowOffset]);
+                                    pixels[idx] = Math.sqrt(Gx * Gx + Gy * Gy); // 0.5*Math.abs(Gx) + 0.5*Math.abs(Gy);//100*Math.atan(Gy,Gx);
+                                    pixels[idx + 1] = 0;
+                                    pixels[idx + 2] = 0;
+                                    idx += 4;
+                                }
+                            }
+                            context.putImageData(imgData, 0, 0);
+                            callback();
+                        };
+                    }
+                };
+            }
+        }, {
+            name: 'Brightness',
+            help: 'Brightness must be between -255 (darker) and 255 (brighter).',
+            generate: function(updateCallback) {
+                var $html;
+
+                $html = $("<div><input type='range' id='controlBrightness' min='-255' max=255 step=1 /><span id='valBrightness'></span></div>");
+
+                console.log(updateCallback);
+                return {
+                    html: $html,
+                    getParams: function() {
+                        console.log($("#controlBrightness").val()*1);
+                        return $("#controlBrightness").val()*1;
+                    },
+                    getFilter: function() {
+                        return OpenSeadragon.Filters.BRIGHTNESS($("#controlBrightness").val()*1);
+                    },
+                    sync: true
+                };
+            }
+        }, {
+            name: 'Erosion',
+            help: 'The erosion kernel size must be an odd number.',
+            generate: function(updateCallback) {
+                var $html = $("<div><input type='range' id='controlErosion' min='3' max=51 step=2 /></div>");
+                
+                return {
+                    html: $html,
+                    getParams: function() {
+                        return $("#controlErosion").val()*1;
+                    },
+                    getFilter: function() {
+                        return OpenSeadragon.Filters.MORPHOLOGICAL_OPERATION($("#controlErosion").val()*1, Math.min);
+                    }
+                };
+            }
+        }, {
+            name: 'Dilation',
+            help: 'The dilation kernel size must be an odd number.',
+            generate: function(updateCallback) {
+                var $html = $("<div><input type='range' id='controlDilation' min=1 max=31 step=2 /></div>"); 
+                return {
+                    html: $html,
+                    getParams: function() {
+                        return $("#controlDilation").val()*1;
+                    },
+                    getFilter: function() {
+                        return OpenSeadragon.Filters.MORPHOLOGICAL_OPERATION($("#controlDilation").val()*1, Math.max);
+                    }
+                };
+            }
+        }, {
+            name: 'Thresholding',
+            help: 'The threshold must be between 0 and 255.',
+            generate: function(updateCallback) {
+                var $html = $("<div><input type='range' id='controlThreshholding' min='0' max=255 step=1 /></div>");
+
+                return {
+                    html: $html,
+                    getParams: function() {
+                        return $("#controlThreshholding").val()*1;
+                    },
+                    getFilter: function() {
+                        return OpenSeadragon.Filters.THRESHOLDING($("#controlThreshholding").val()*1);
+                    },
+                    sync: true
+                };
+            }
+        }];
+    availableFilters.sort(function(f1, f2) {
+        return f1.name.localeCompare(f2.name);
+    });
+
+    var idIncrement = 0;
+    var hashTable = {};
+
+    availableFilters.forEach(function(filter) {
+        var $li = $('<li></li>');
+        var $plus = $('<img src="images/plus.png" alt="+" class="button">');
+        $li.append($plus);
+        $li.append(filter.name);
+        $li.appendTo($('#available'));
+        $plus.click(function() {
+            var id = 'selected_' + idIncrement++;
+            var generatedFilter = filter.generate(updateFilters);
+
+
+            hashTable[id] = {
+                name: filter.name,
+                generatedFilter: generatedFilter
+            };
+            var $li = $('<li id="' + id + '"><div class="wdzt-table-layout"><div class="wdzt-row-layout"></div></div></li>');
+            var $minus = $('<div class="wdzt-cell-layout"><img src="images/minus.png" alt="-" class="button"></div>');
+            $li.find('.wdzt-row-layout').append($minus);
+            $li.find('.wdzt-row-layout').append('<div class="wdzt-cell-layout filterLabel">' + filter.name + '</div>');
+            if (filter.help) {
+                var $help = $('<div class="wdzt-cell-layout"><img src="images/help-browser-2.png" alt="help" title="' +
+                    filter.help + '"></div>');
+                $help.tooltip();
+                $li.find('.wdzt-row-layout').append($help);
+            }
+            $li.find('.wdzt-row-layout').append(
+                $('<div class="wdzt-cell-layout wdzt-full-width"></div>')
+                .append(generatedFilter.html));
+            $minus.click(function() {
+                delete hashTable[id];
+                $li.remove();
+                updateFilters();
+            });
+            $li.appendTo($('#selected'));
+            $("#controlBrightness").on("change", function(){
+                    $("#valBrightness").html($("#controlBrightness").val());
+                    updateFilters();
+            })
+            $("#controlNoise").on("change", function(){
+
+                    updateFilters();
+            })
+            $("#controlContrast").on("change", function(){
+
+                    updateFilters();
+            })
+            $("#controlErosion").on("change", function(){
+
+                    updateFilters();
+            })
+            $("#controlDilation").on("change", function(){
+
+                    updateFilters();
+            });
+            $("#controlExposure").on("change", function(){
+
+                    updateFilters();
+            })
+            $("#controlThreshholding").on("change", function(){
+
+                    updateFilters();
+            });
+            $("#controlGamma").on("change", function(){
+
+                    updateFilters();
+            });
+            $("#controlSaturation").on("change", function(){
+
+                    updateFilters();
+            })
+            updateFilters();
+        });
+    });
+
+
+    $('#selected').sortable({
+        containment: 'parent',
+        axis: 'y',
+        tolerance: 'pointer',
+        update: updateFilters
+    });
+
+    function updateFilters() {
+        var filters = [];
+        var sync = true;
+        $('#selected li').each(function() {
+            var id = this.id;
+            var filter = hashTable[id];
+            filters.push(filter.generatedFilter.getFilter());
+            sync &= filter.generatedFilter.sync;
+        });
+        console.log(filters);
+        viewer.setFilterOptions({
+            filters: {
+                processors: filters
+            },
+            loadMode: sync ? 'sync' : 'async'
+        });
+    }
+
+}
+
+
+annotools.prototype.promptForWorkOrder = function(newAnnot, mode, annotools, ctx){
+    console.log(newAnnot);
+    console.log(mode);
+    console.log(annotools);
+    console.log(ctx);
+    
+    var panel = jQuery("#panel").show();  
+    var iid = this.iid;
+        var x = annotools.imagingHelper.physicalToDataX(annotools.imagingHelper.logicalToPhysicalX(newAnnot.x));
+        var y = annotools.imagingHelper.physicalToDataY(annotools.imagingHelper.logicalToPhysicalY(newAnnot.y)); 
+        var w = (annotools.imagingHelper.physicalToDataX(annotools.imagingHelper.logicalToPhysicalX((newAnnot.x+newAnnot.w)))) - x;
+        var h = (annotools.imagingHelper.physicalToDataY(annotools.imagingHelper.logicalToPhysicalY(newAnnot.y+newAnnot.h))) - y;
+        x = parseInt(x);
+        y = parseInt(y);
+        w = parseInt(w);
+        h = parseInt(h);
+        if(w*h > 1000000){
+            newAnnot.w = annotools.imagingHelper.dataToLogicalX(1000); 
+            newAnnot.h = annotools.imagingHelper.dataToLogicalY(1000);
+            w = 1000;
+            h = 1000; 
+            panel.html(function(){
+
+                return "<div id='panelHeader'><h4> Work Order(Error) </h4></div><div id='panelBody'> Error: Very large ROI. <br />" + "Width: "+ w + "<br />" +"Height: " + h + "<br />Please try creating a smaller ROI. Zooming into the ROI would help.<br /> We currently support 1000X1000 tiles <br />  <button id='cancelWorkOrder'>Cancel</button></div>";
+
+            });
+    jQuery("#cancelWorkOrder").click(function(){
+        console.log("here");
+        jQuery("#panel").hide();
+        annotools.drawLayer.hide();
+        annotools.addMouseEvents();      
+    });
+        return;
+        }
+        panel.html(function(){
+          
+            return "<div id='panelHeader'><h4> Work Order </h4></div><div id='panelBody'> <ul><li> x1: " + x  + "</li> <li> y1: " +y+ "</li> <li> w: "+ w+"</li> <li>h: "+h +"</li> <li>Algorithm: SuperSegmenter</li> " 
+                        + "<li>Execution Id:<input id='order-execution_id'></input></li>" + "<li>Notes: <textarea id='order-notes'></textarea>" + "</ul> <br /> <button id='submitWorkOrder'>Submit</button> <button id='cancelWorkOrder'>Cancel</button></div>";
+
+        });
+
+        /*
+        console.log(annotools.imagingHelper.physicalToDataX(annotools.imagingHelper.logicalToPhysicalX(newAnnot.x)));
+        console.log(annotools.imagingHelper.physicalToDataY(annotools.imagingHelper.logicalToPhysicalY(newAnnot.y)));
+        console.log(annotools.imagingHelper.physicalToDataX(annotools.imagingHelper.logicalToPhysicalX((newAnnot.x+newAnnot.w))));
+        console.log(annotools.imagingHelper.physicalToDataY(annotools.imagingHelper.logicalToPhysicalY(newAnnot.y+newAnnot.h)));
+        */
+
+    jQuery("#cancelWorkOrder").click(function(){
+        console.log("here");
+        jQuery("#panel").hide();
+        annotools.drawLayer.hide();
+        annotools.addMouseEvents();      
+    });
+
+
+    jQuery("#submitWorkOrder").click(function(){
+        console.log("events...");
+
+        //annotools.drawCanvas.removeEvents('mouseup');
+        //annotools.drawCanvas.removeEvents('mousedown');
+        //annotools.drawCanvas.removeEvents('mousemove');
+        annotools.drawLayer.hide();
+        annotools.addMouseEvents();      
+        //annotools.removeMouseEvents();
+        //annotools.getMultiAnnot();            
+        
+        var username = "lastlegion";
+        var execution_id = jQuery("#order-execution_id").val();
+        var notes = jQuery("#order-notes").val();
+        var width = 48002;
+        var height = 35558;
+        if(iid == "TCGA-06-0148-01Z-00-DX1"){
+            width = 26001;
+            height = 27968;
+        }
+        var order = {
+            "type": "order",
+            
+            "data":{ 
+                "title": username + " :: " +execution_id,
+                "algorithm": "SuperSegmenter",
+                "execution_id": execution_id,
+                "created_by":  username,
+                "notes": notes,
+                "order":{
+
+                    "metadata": {
+                        "created_on": Date.now(),
+                        "created_by": "lastlegion"
+                    },
+                    "image": {
+                        "width": width,
+                        "height": height,
+                        "case_id": iid
+                    },
+                    "roi": {
+                        "x": x,
+                        "y": y,
+                        "w": w,
+                        "h": h
+                    },
+                    "execution": {
+                        "execution_id": execution_id,
+                          "algorithm": "SuperSegmenter",
+                          "parameters": [
+                            {
+                              "blur": 0.4
+                            },
+                            {
+                              "format": "jpg"
+                            }
+                          ]
+                    }
+                }
+            }
+        };
+        
+
+
+        /*
+        var order = {
+            "type": "order",
+
+            "data":{ 
+                "created_on": Date.now(),
+                "created_by": "lastlegion"
+            }
+        }
+        */
+        jQuery.post("api/Data/workOrder.php", order)
+            .done(function(res){
+                console.log(res);
+                panel.html(function(){
+                annotools.addMouseEvents();
+                    return "Order Submitted!";
+                    
+                });
+                panel.hide("slide");
+                
+            });
+        console.log("submit");
+        console.log(newAnnot);
+        console.log(order);
+        
+    }.bind(newAnnot));    
+}
+
 
 annotools.prototype.promptForWorkOrder = function(newAnnot, mode, annotools, ctx){
     console.log(newAnnot);

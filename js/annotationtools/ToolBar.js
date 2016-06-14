@@ -237,7 +237,12 @@ ToolBar.prototype.createButtons = function(){
             'src': 'images/fullDownload.svg'
         });
         tool.append(this.fullDownloadButton);
-
+  this.spacer1 = jQuery("<img>", {
+            'class': 'spacerButton', 
+            'src': 'images/spacer.svg'
+        });
+        tool.append(this.spacer1);
+       
         this.analyticsbutton = jQuery("<img>",{
             "title": "Analytics Serviecs",
             "class": "toolButton",
@@ -246,18 +251,20 @@ ToolBar.prototype.createButtons = function(){
         });
         tool.append(this.analyticsbutton); 
         
+        this.filterImgButton = jQuery("<img>", {
+            "title": "Image Filtering",
+            "class": "toolButton",
+            "src": "images/insta.png"   
+        })
+        tool.append(this.filterImgButton);
+        
         this.partialDownloadButton = jQuery('<img>', {
             'title': 'Download Partial Markups (Coming Soon)',
             'class': 'toolButton',
             'src': 'images/partDownload.svg'
         });
         //tool.append(this.partialDownloadButton);  //Partial Download
-  this.spacer1 = jQuery("<img>", {
-            'class': 'spacerButton', 
-            'src': 'images/spacer.svg'
-        });
-        tool.append(this.spacer1);
-       
+
         /*
          * Event handlers on click for the buttons
          */
@@ -298,6 +305,10 @@ ToolBar.prototype.createButtons = function(){
 
         this.analyticsbutton.on("click", function(){
             this.annotools.createWorkOrder();
+        }.bind(this));
+        
+        this.filterImgButton.on("click", function(){
+            this.annotools.showFilterControls();
         }.bind(this));
 
         var toolButtons = jQuery(".toolButton");

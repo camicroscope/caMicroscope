@@ -356,3 +356,24 @@
     padding-left:2px;
     margin: 0;
 }
+
+#closeHeader{
+    width: 20px;
+    height: 20px;
+    float: right;
+    display: inline-block;
+    position: relative;
+    top: -30px;
+    
+    background: #ccc;
+}
+
+.wdzt-cell-layout{
+    display: inline-block;
+}
+.wdzt-cell-layout input{
+    margin-left: 20px;
+}
+.wdzt-cell-layout filterLabel{
+    display: inline-block;
+}
