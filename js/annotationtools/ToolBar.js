@@ -2,7 +2,7 @@ var ToolBar = function(element, options){
     //console.log(options);
     this.annotools = options.annotool;
     //console.log(this.annotools);
-
+    this.FilterTools = options.FilterTools;
     this.source = element; //The Tool Source Element
     this.top = options.top || '0px';
     this.left = options.left || '150px'; //The Tool Location   
@@ -308,7 +308,7 @@ ToolBar.prototype.createButtons = function(){
         }.bind(this));
         
         this.filterImgButton.on("click", function(){
-            this.annotools.showFilterControls();
+            this.FilterTools.showFilterControls();
         }.bind(this));
 
         var toolButtons = jQuery(".toolButton");

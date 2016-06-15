@@ -52,6 +52,7 @@
         <script src="js/filteringtools/openseadragon-filtering.js"></script>
         <script src="js/filteringtools/spinner-slider.js"></script>
         <script src="js/filteringtools/spinner.js"></script>
+        <script src="js/filteringtools/FilterTools.js"></script>
         <!--End Filtering Tools-->    
         <!--<script src="js/dependencies/jquery-ui.min.js"></script>-->
 
@@ -168,6 +169,7 @@ function isAnnotationActive(){
 
     function addOverlays() {
         var annotationHandler = new AnnotoolsOpenSeadragonHandler(viewer, {});
+        
         annotool= new annotools({
                 canvas:'openseadragon-canvas',
                 iid: tissueId, 
@@ -175,6 +177,7 @@ function isAnnotationActive(){
                 annotationHandler: annotationHandler,
                 mpp:MPP
             });
+        filteringtools = new FilterTools();
         //console.log(tissueId);
         var toolBar = new ToolBar('tool', {
                 left:'0px',
@@ -182,8 +185,8 @@ function isAnnotationActive(){
                 height: '48px',
                 width: '100%',
                 iid: tissueId,
-                annotool: annotool
-           
+                annotool: annotool,
+                FilterTools: filteringtools
         });
         annotool.toolBar = toolBar;
         toolBar.createButtons();

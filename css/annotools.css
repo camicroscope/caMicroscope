@@ -372,8 +372,24 @@
     display: inline-block;
 }
 .wdzt-cell-layout input{
-    margin-left: 20px;
+    //margin-left: 20px;
+    width: 110px;
+    margin-top: 5px;
+    display: inline-block;
 }
+.wdzt-cell-layout input[type=number]{
+    //margin-left: 20px;
+    width: 38px;
+    margin: 0;
+
+}
+.wdzt-cell-layout input[type=range]::-webkit-slider-runnable-track {
+    //margin-left: 20px;
+    width:50px;
+    width: 14px;
+}
+
+
 .wdzt-cell-layout filterLabel{
     display: inline-block;
 }
