@@ -6,6 +6,7 @@ FilterTools.prototype.showFilterControls = function () {
   panel.show('slide')
   panel.html("<div id='panelHeader'><h4>Image Filters</h4></div>"
     + "<div id='panelBody'>" +
+    '<button id="toggleFilter" class="btn">Toggle</button>' +
     '<h5>Selected Filters</h5>' +
     "<ul id='selected'></ul>" +
     '<h5>Available Filters</h5>' +
@@ -304,6 +305,28 @@ FilterTools.prototype.showFilterControls = function () {
       })
       updateFilters()
     })
+  })
+  var showFilters = true
+  $('#toggleFilter').click(function () {
+    var filters = []
+    $('#selected li').each(function () {
+      var id = this.id
+      var filter = hashTable[id]
+      filters.push(filter.generatedFilter.getFilter())
+    // sync &= filter.generatedFilter.sync
+    })
+
+    if (showFilters) {
+      viewer.setFilterOptions({
+        filters: {processors: []}
+      })
+      showFilters = false
+    } else {
+      viewer.setFilterOptions({
+        filters: {processors: filters}
+      })
+      showFilters = true
+    }
   })
 
   $('#selected').sortable({
