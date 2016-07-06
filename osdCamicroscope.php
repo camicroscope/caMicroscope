@@ -91,6 +91,7 @@
                     
             <div id="tool"></div>
             <div id="panel"></div>
+            <div id="bookmarkURLDiv"></div>
         <div id="algosel"><div id="tree"></div></div>
 
             <div class="demoarea">
@@ -112,7 +113,7 @@
 
 
           var fileLocation = imagedata.metaData[1];
-
+         jQuery("#bookmarkURLDiv").hide();
          
           var viewer = new OpenSeadragon.Viewer({ 
                 id: "viewer", 
@@ -197,7 +198,79 @@ function isAnnotationActive(){
         var bound_x = <?php echo json_encode($_GET['x']); ?>;
         var bound_y = <?php echo json_encode($_GET['y']); ?>;
         var zoom = <?php echo json_encode($_GET['zoom']); ?> || 6;
+        /*
+        var savedFilters = [
+          {'name': 'Brightness', 'value': 100},
+          {'name': 'Erosion', 'value': 3},
+          {'name': 'Invert'}
+        ]
 
+        if (savedFilters) {
+          console.log('some filters are saved')
+          console.log(filteringtools)
+          filteringtools.showFilterControls();
+          for(var i=0; i<savedFilters.length; i++){
+                
+                console.log(i);
+                var f = savedFilters[i];
+                var filterName = f.name;
+                console.log(filterName);
+                jQuery("#"+filterName+"_add").click();
+                jQuery("#control"+filterName).val(f.value);
+                jQuery("#control"+filterName+"Num").val(f.value);
+            }
+        }*/
+
+        var stateID = <?php echo json_encode($_GET['stateID']); ?>;
+
+        //Check if loading from saved state
+        if(stateID){
+            //fetch state from firebase
+            jQuery.get("https://test-8f679.firebaseio.com/camicroscopeStates/"+stateID+".json?auth=kweMPSAo4guxUXUodU0udYFhC27yp59XdTEkTSJ4", function(data){
+
+            var savedFilters = data.state.filters;
+            var viewport = data.state.viewport;
+            var pan = data.state.pan;
+            var zoom = data.state.zoom;
+
+
+            //pan and zoom have preference over viewport
+            if (pan && zoom) {
+
+                viewer.viewport.panTo(pan);
+                viewer.viewport.zoomTo(zoom);
+            
+            } else {
+                if(viewport) {
+                    console.log("here");
+                    var bounds = new OpenSeadragon.Rect(viewport.x, viewport.y, viewport.width, viewport.height);
+                    viewer.viewport.fitBounds(bounds, true);
+                }
+            }
+            // check if there are savedFilters
+            if (savedFilters) {
+              filteringtools.showFilterControls();
+
+              for(var i=0; i<savedFilters.length; i++){
+                    
+
+                    var f = savedFilters[i];
+                    var filterName = f.name;
+
+                    jQuery("#"+filterName+"_add").click();
+                    if(filterName == "SobelEdge"){
+                         console.log("sobel");
+                    }else {
+                        jQuery("#control"+filterName).val(1*f.value);
+                        jQuery("#control"+filterName+"Num").val(1*f.value);
+                
+                    }
+                }
+            }
+            filteringtools.updateFilters();
+        
+        });
+        }
 
         if(bound_x && bound_y){
             var ipt = new OpenSeadragon.Point(+bound_x, +bound_y);
@@ -224,7 +297,7 @@ function isAnnotationActive(){
     /*Zoom to location*/
     /*
         x: 19483.04157968738
-        y: 22274.643967801494
+        y:nnnn22274.643967801494
     */
     /*
         x: 13083.041579687379
