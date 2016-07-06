@@ -1381,6 +1381,8 @@ annotools.prototype.drawEllipse = function (ctx) {
 
 annotools.prototype.drawRectangle = function (ctx) {
   console.log('drawing rectangle')
+  jQuery('html,body').css('cursor', 'crosshair')
+
   this.removeMouseEvents()
   var started = false
   var min_x,min_y,max_x,max_y,w,h
@@ -1534,6 +1536,7 @@ annotools.prototype.drawPencil = function (ctx) {
     newAnnot.loc = loc
     console.log(newAnnot)
     var geojsonAnnot = this.convertPencilToGeo(newAnnot)
+
     this.promptForAnnotation(geojsonAnnot, 'new', this, ctx)
   }.bind(this))
 }
@@ -1940,7 +1943,7 @@ annotools.prototype.promptForWorkOrder = function (newAnnot, mode, annotools, ct
   }
   panel.html(function () {
     return "<div id='panelHeader'><h4> Work Order </h4></div><div id='panelBody'> <ul><li> x1: " + x + '</li> <li> y1: ' + y + '</li> <li> w: ' + w + '</li> <li>h: ' + h + '</li> <li>Algorithm: SuperSegmenter</li> '
-    + "<li>Execution Id:<input id='order-execution_id'></input></li>" + "<li>Notes: <textarea id='order-notes'></textarea>" + "</ul> <br /> <button id='submitWorkOrder'>Submit</button> <button id='cancelWorkOrder'>Cancel</button></div>"
+    + "<li>Execution Id:<input id='order-execution_id'></input></li>" + "<li>Notes: <textarea id='order-notes'></textarea>" + "</ul> <br /> <button id='submitWorkOrder' class='btn btn-primary' >Submit</button> <button class='btn' id='cancelWorkOrder'>Cancel</button></div>"
   })
 
   /*
@@ -2065,7 +2068,7 @@ annotools.prototype.promptForWorkOrder = function (newAnnot, mode, annotools, ct
     w = 1000
     h = 1000
     panel.html(function () {
-      return "<div id='panelHeader'><h4> Work Order(Error) </h4></div><div id='panelBody'> Error: Very large ROI. <br />" + 'Width: ' + w + '<br />' + 'Height: ' + h + "<br />Please try creating a smaller ROI. Zooming into the ROI would help.<br /> We currently support 1000X1000 tiles <br />  <button id='cancelWorkOrder'>Cancel</button></div>"
+      return "<div id='panelHeader'><h4> Work Order(Error) </h4></div><div id='panelBody'> Error: Very large ROI. <br />" + 'Width: ' + w + '<br />' + 'Height: ' + h + "<br />Please try creating a smaller ROI. Zooming into the ROI would help.<br /> We currently support 1000X1000 tiles <br />  <button id='cancelWorkOrder' class='btn' >Cancel</button></div>"
     })
     jQuery('#cancelWorkOrder').click(function () {
       console.log('here')
@@ -2077,7 +2080,7 @@ annotools.prototype.promptForWorkOrder = function (newAnnot, mode, annotools, ct
   }
   panel.html(function () {
     return "<div id='panelHeader'><h4> Work Order </h4></div><div id='panelBody'> <ul><li> x1: " + x + '</li> <li> y1: ' + y + '</li> <li> w: ' + w + '</li> <li>h: ' + h + '</li> <li>Algorithm: SuperSegmenter</li> '
-    + "<li>Execution Id:<input id='order-execution_id'></input></li>" + "<li>Notes: <textarea id='order-notes'></textarea>" + "</ul> <br /> <button id='submitWorkOrder'>Submit</button> <button id='cancelWorkOrder'>Cancel</button></div>"
+    + "<li>Execution Id:<input id='order-execution_id'></input></li>" + "<li>Notes: <textarea id='order-notes'></textarea>" + "</ul> <br /> <button id='submitWorkOrder' class='btn'>Submit</button> <button class='btn' id='cancelWorkOrder'>Cancel</button></div>"
   })
 
   /*
@@ -2182,6 +2185,7 @@ annotools.prototype.promptForWorkOrder = function (newAnnot, mode, annotools, ct
 
 annotools.prototype.promptForAnnotation = function (newAnnot, mode, annotools, ctx) {
   jQuery('#panel').show('slide')
+  jQuery('html,body').css('cursor', 'default')
   console.log(newAnnot)
   jQuery('#panel').html('' +
     "<div id = 'panelHeader'> <h4>Enter a new annotation </h4></div>"
@@ -2221,7 +2225,7 @@ annotools.prototype.promptForAnnotation = function (newAnnot, mode, annotools, c
     formSchema.onSubmit = function (err, val) {
       // Add form data to annotation
       newAnnot.properties.annotations = val
-
+      console.log(newAnnot)
       // Post annotation
       annotools.addnewAnnot(newAnnot)
 
