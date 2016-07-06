@@ -29,7 +29,6 @@ var algorithm_color = {}
 function goodalgo (data, status) {
   // console.log(data)
 
-
   var blob = []
   for (i = 0;i < data.length;i++) {
     var n = {}
@@ -125,7 +124,6 @@ ToolBar.prototype.createButtons = function () {
   var tool = jQuery('#' + 'tool') // Temporary dom element while we clean up mootools
   var self = this
 
-
   // Fetch algorithms for Image
   jQuery(document).ready(function () {
     // console.log(options)
@@ -158,7 +156,6 @@ ToolBar.prototype.createButtons = function () {
   tool.addClass('annotools') // Update Styles
   // this.tool.makeDraggable(); //Make it Draggable.
 
-
   if (this.annotationActive) {
 
     /*
@@ -167,6 +164,7 @@ ToolBar.prototype.createButtons = function () {
      */
     this.rectbutton = jQuery('<img>', {
       title: 'Draw Rectangle',
+      id: 'drawRectangle',
       class: 'toolButton firstToolButtonSpace',
       src: 'images/rect.svg'
     })
@@ -213,8 +211,6 @@ ToolBar.prototype.createButtons = function () {
     })
     tool.append(this.hidebutton)
 
-
-
     this.fullDownloadButton = jQuery('<img>', {
       'title': 'Download All Markups (Coming Soon)',
       'class': 'toolButton',
@@ -242,6 +238,13 @@ ToolBar.prototype.createButtons = function () {
     })
     tool.append(this.filterImgButton)
 
+    this.bookmarkButton = jQuery('<img>', {
+      'title': 'Bookmark/Share current state',
+      'class': 'toolButton',
+      'src': 'images/ic_insert_link_white_24dp_1x.png'
+    })
+    tool.append(this.bookmarkButton)
+
     this.partialDownloadButton = jQuery('<img>', {
       'title': 'Download Partial Markups (Coming Soon)',
       'class': 'toolButton',
@@ -257,6 +260,72 @@ ToolBar.prototype.createButtons = function () {
       this.annotools.mode = 'rect'
       this.annotools.drawMarkups()
     // alert("Creation of markups is disabled on QuIP")
+    }.bind(this))
+
+    this.bookmarkButton.on('click', function () {
+      console.log('bookmark')
+
+      /* Get ViewPort */
+      var bounds = viewer.viewport.getBounds()
+      console.log(bounds)
+
+      /* Get Filters */
+      var filters = []
+      jQuery('#selected li').each(function () {
+        var id = this.id
+        var filter = hashTable[id]
+        // filters.push(filter.generatedFilter.getFilter())
+        // console.log(filter)
+        var f = {}
+        var filterName = filter.name
+        var filterVal = filter.generatedFilter.getParams()
+        f.name = filterName
+        f.value = filterVal
+        filters.push(f)
+      // sync &= filter.generatedFilter.sync
+      })
+      console.log(filters)
+
+      var state = {
+        'state': {
+          'filters': filters,
+          'viewport': bounds,
+          'pan': viewer.viewport.getCenter(),
+          'zoom': viewer.viewport.getZoom(),
+          'tissueId': this.annotools.iid
+        }
+      }
+      console.log(state)
+      // var bookmarkURLDiv = jQuery.create('<div>').addClass('bookmarkURLDiv')
+      var bookmarkURLDiv = jQuery('#bookmarkURLDiv')
+      bookmarkURLDiv.html('')
+      var input = jQuery('<input>')
+      var submit = jQuery('<button>')
+      submit.html("Close");
+      bookmarkURLDiv.append(input)
+      bookmarkURLDiv.append(submit)
+      bookmarkURLDiv.show()
+      jQuery.ajax({
+        'type': 'POST',
+        //'url': 'https://test-8f679.firebaseio.com/camicroscopeStates.json?auth=kweMPSAo4guxUXUodU0udYFhC27yp59XdTEkTSJ4',
+        'url': 'api/Data/loadState.php',
+        'data': JSON.stringify(state),
+        contentType: 'application/json; charset=utf-8',
+        dataType: 'json',
+        success: function (data) {
+          console.log('posted!')
+          console.log(data)
+          var url = 'http://dragon.cci.emory.edu/camicroscope3/osdCamicroscope.php?tissueId=TCGA-02-0001&stateID=' + data.name
+          console.log(url)
+          input.val(url)
+          input.select()
+        }
+      });
+
+      submit.on("click", function() {
+        bookmarkURLDiv.hide();
+      });
+
     }.bind(this))
 
     this.ellipsebutton.on('click', function () {
@@ -347,6 +416,7 @@ ToolBar.prototype.createButtons = function () {
 
   this.titleButton = jQuery('<p>', {
     'class': 'titleButton',
+    'id': 'titleButton',
     'text': 'caMicroscope'
   })
   tool.append(this.titleButton)

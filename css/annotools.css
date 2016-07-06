@@ -393,3 +393,32 @@
 .wdzt-cell-layout filterLabel{
     display: inline-block;
 }
+#savedURL a{
+    color: #fff;
+    display: block;
+    z-index:20000;
+    position: absolute;
+    width: 400px;
+    top: 65px;
+    left: 120px; 
+    background: #244B71;
+}
+#bookmarkURLDiv input{
+    color: #333;
+    width: 100%;
+}
+#bookmarkURLDiv{
+    color: #000;
+    display: block;
+    z-index:20000;
+    position: absolute;
+    width: 480px;
+    top: 65px;
+    left: 320px; 
+    background: #fff;
+    padding: 5px;
+    -webkit-box-shadow: 0px 0px 5px 2px #000000;
+    -moz-box-shadow: 0px 0px 5px 2px #000000;
+    box-shadow: 0px 0px 5px 2px #000000;
+
+}

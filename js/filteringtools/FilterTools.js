@@ -1,5 +1,24 @@
 var FilterTools = function () {}
 
+FilterTools.prototype.updateFilters = function () {
+  var $ = jQuery
+  var filters = []
+  var sync = true
+  $('#selected li').each(function () {
+    var id = this.id
+    var filter = hashTable[id]
+    filters.push(filter.generatedFilter.getFilter())
+    sync &= filter.generatedFilter.sync
+  })
+  // console.log(filters)
+  viewer.setFilterOptions({
+    filters: {
+      processors: filters
+    },
+    loadMode: sync ? 'sync' : 'async'
+  })
+}
+
 FilterTools.prototype.showFilterControls = function () {
   var panel = jQuery('#panel')
   var $ = jQuery
@@ -7,11 +26,56 @@ FilterTools.prototype.showFilterControls = function () {
   panel.html("<div id='panelHeader'><h4>Image Filters</h4></div>"
     + "<div id='panelBody'>" +
     '<button id="toggleFilter" class="btn">Toggle</button>' +
+    '<button id="saveFilter" class="btn">Save</button>' +
+    '<button id="closeFilter" class="btn">Close</button>'+
+    '<div id="savedURL"></div>' +
     '<h5>Selected Filters</h5>' +
     "<ul id='selected'></ul>" +
     '<h5>Available Filters</h5>' +
     "<ul id='available'></ul>"
     + '</div>')
+  
+  $("#closeFilter").click(function(){
+    $("#panel").hide();
+  });
+
+  $('#saveFilter').click(function () {
+    var filters = []
+    $('#selected li').each(function () {
+      var id = this.id
+      var filter = hashTable[id]
+      // filters.push(filter.generatedFilter.getFilter())
+      // console.log(filter)
+      var f = {}
+      var filterName = filter.name
+      var filterVal = filter.generatedFilter.getParams()
+      f.name = filterName
+      f.value = filterVal
+      filters.push(f)
+    // sync &= filter.generatedFilter.sync
+    })
+    console.log(filters)
+    var state = {
+      'state': {
+        'filters': filters
+      }
+    }
+    console.log(state)
+    jQuery.ajax({
+      'type': 'POST',
+      'url': 'https://test-8f679.firebaseio.com/camicroscopeStates.json?auth=kweMPSAo4guxUXUodU0udYFhC27yp59XdTEkTSJ4',
+      'data': JSON.stringify(state),
+      contentType: 'application/json; charset=utf-8',
+      dataType: 'json',
+      success: function (data) {
+        console.log('posted!')
+        console.log(data)
+        var url = 'http://dragon.cci.emory.edu/camicroscope3/osdCamicroscope.php?tissueId=TCGA-02-0001&stateID=' + data.name
+        console.log(url)
+        jQuery('#savedURL').html('<a href="http://dragon.cci.emory.edu/camicroscope3/osdCamicroscope.php?tissueId=TCGA-02-0001&stateID=' + data.name + '">' + url + '</a>')
+      }
+    })
+  })
 
   // List of filters with their templates.
   var availableFilters = [
@@ -37,7 +101,7 @@ FilterTools.prototype.showFilterControls = function () {
         'while values greater than 1 will increase it.',
       generate: function (updateCallback) {
         // var $html = $('<div></div>')
-        var $html = $("<div><input type='range' id='controlContrast' min=0 max=4 step=0.1 /><input type='number' id='controlContrastNum' min='0' max='4' step='0.1'/></div>")
+        var $html = $("<div><input type='range' id='controlContrast' value=1 min=0 max=4 step=0.1 /><input type='number' id='controlContrastNum' min='0' value=1  max='4' step='0.1'/></div>")
 
         return {
           html: $html,
@@ -83,7 +147,7 @@ FilterTools.prototype.showFilterControls = function () {
         }
       }
     }, {
-      name: 'Sobel Edge',
+      name: 'SobelEdge',
       generate: function () {
         return {
           html: '',
@@ -125,9 +189,9 @@ FilterTools.prototype.showFilterControls = function () {
       generate: function (updateCallback) {
         var $html
 
-        $html = $("<div><input type='range' id='controlBrightness' min='-255' max=255 step=1 />   <input type='number' id='controlBrightnessNum' min='-255' max='255' step='1' /></div>")
+        $html = $("<div><input type='range' id='controlBrightness' min='-255' max=255 step=1 />   <input type='number' value=0 id='controlBrightnessNum' min='-255' max='255' step='1' /></div>")
 
-        console.log(updateCallback)
+        // console.log(updateCallback)
         return {
           html: $html,
           getParams: function () {
@@ -144,7 +208,7 @@ FilterTools.prototype.showFilterControls = function () {
       name: 'Erosion',
       help: 'The erosion kernel size must be an odd number.',
       generate: function (updateCallback) {
-        var $html = $("<div><input type='range' id='controlErosion' min='3' max=51 step=2 /><input type='number' id='controlErosionNum' min=3 max=51 step=2 /></div>")
+        var $html = $("<div><input type='range' value=1 id='controlErosion' min='1' max=51 step=2 /><input type='number' id='controlErosionNum' min=1 max=51 step=2 value=1 /></div>")
 
         return {
           html: $html,
@@ -160,7 +224,7 @@ FilterTools.prototype.showFilterControls = function () {
       name: 'Dilation',
       help: 'The dilation kernel size must be an odd number.',
       generate: function (updateCallback) {
-        var $html = $("<div><input type='range' id='controlDilation' min=1 max=31 step=2 /><input type='number' id='controlDilationNum' min=1 mx=31 step=2 /></div>")
+        var $html = $("<div><input type='range' id='controlDilation' value=1 min=1 max=31 step=2 /><input value=1 type='number' id='controlDilationNum' min=1 mx=31 step=2 /></div>")
         return {
           html: $html,
           getParams: function () {
@@ -175,7 +239,7 @@ FilterTools.prototype.showFilterControls = function () {
       name: 'Thresholding',
       help: 'The threshold must be between 0 and 255.',
       generate: function (updateCallback) {
-        var $html = $("<div><input type='range' id='controlThreshholding' min='0' max=255 step=1 /><input type='number' id='controlThreshholdingNum' min=0 max=255 step=1 /></div>")
+        var $html = $("<div><input type='range' id='controlThreshholding' min='0' value=150  max=255 step=1 /><input type='number' id='controlThreshholdingNum' value=150 min=0 max=255 step=1 /></div>")
 
         return {
           html: $html,
@@ -194,11 +258,11 @@ FilterTools.prototype.showFilterControls = function () {
   })
 
   var idIncrement = 0
-  var hashTable = {}
+  hashTable = {}
 
   availableFilters.forEach(function (filter) {
     var $li = $('<li></li>')
-    var $plus = $('<img src="images/plus.png" alt="+" class="button">')
+    var $plus = $('<img src="images/plus.png" alt="+" class="button" id="' + filter.name + '_add">')
     $li.append($plus)
     $li.append(filter.name)
     $li.appendTo($('#available'))
@@ -230,7 +294,8 @@ FilterTools.prototype.showFilterControls = function () {
       })
       $li.appendTo($('#selected'))
 
-      $('#controlBrightness').on('change', function () {
+      $('#controlBrightness').on('change input', function () {
+        console.log('changed brightness')
         $('#controlBrightnessNum').val($('#controlBrightness').val() * 1)
         updateFilters()
       })
@@ -322,6 +387,7 @@ FilterTools.prototype.showFilterControls = function () {
       })
       showFilters = false
     } else {
+      console.log(filters)
       viewer.setFilterOptions({
         filters: {processors: filters}
       })
@@ -345,7 +411,7 @@ FilterTools.prototype.showFilterControls = function () {
       filters.push(filter.generatedFilter.getFilter())
       sync &= filter.generatedFilter.sync
     })
-    console.log(filters)
+    // console.log(filters)
     viewer.setFilterOptions({
       filters: {
         processors: filters
