@@ -28,16 +28,25 @@ var algorithm_color = {}
 
 function goodalgo (data, status) {
   // console.log(data)
+  
+  /*
+  data.push({
 
+    "title": "Human Test",
+    "provenance": {
+      "analysis_execution_id": "humantest"
+    }
+  });
+  */  
   var blob = []
   for (i = 0;i < data.length;i++) {
     var n = {}
-    // console.log(data[i])
+    //console.log(data[i])
     n.title = "<div class='colorBox' style='background:" + available_colors[i] + "'></div>" + data[i].title
     n.key = i.toString()
-    n.refKey = data[i].analysis_execution_id
+    n.refKey = data[i].provenance.analysis_execution_id
     n.color = available_colors[i]
-    algorithm_color[data[i].analysis_execution_id] = available_colors[i]
+    algorithm_color[data[i].provenance.analysis_execution_id] = available_colors[i]
     blob.push(n)
   }
   ftree = jQuery('#tree').fancytree({
@@ -119,10 +128,20 @@ ToolBar.prototype.toggleAlgorithmSelector = function () {
   this.showMessage('Algorithm Selection Toggled')
 }
 
+ToolBar.prototype.setNormalMode = function() {
+  this.annotools.mode = 'normal';
+  jQuery("canvas").css("cursor", "default");
+  jQuery("#drawRectangleButton").removeClass('active');
+  jQuery("#drawFreelineButton").removeClass('active');
+  this.annotools.drawLayer.hide()
+  this.annotools.addMouseEvents()       
+}
+
 ToolBar.prototype.createButtons = function () {
   // this.tool = jQ(this.source)
   var tool = jQuery('#' + 'tool') // Temporary dom element while we clean up mootools
   var self = this
+
 
   // Fetch algorithms for Image
   jQuery(document).ready(function () {
@@ -156,6 +175,7 @@ ToolBar.prototype.createButtons = function () {
   tool.addClass('annotools') // Update Styles
   // this.tool.makeDraggable(); //Make it Draggable.
 
+
   if (this.annotationActive) {
 
     /*
@@ -164,65 +184,70 @@ ToolBar.prototype.createButtons = function () {
      */
     this.rectbutton = jQuery('<img>', {
       title: 'Draw Rectangle',
-      id: 'drawRectangle',
-      class: 'toolButton firstToolButtonSpace',
-      src: 'images/rect.svg'
+      class: 'toolButton firstToolButtonSpace inactive',
+      src: 'images/rect.svg',
+      id: 'drawRectangleButton'
     })
     tool.append(this.rectbutton)
 
     this.ellipsebutton = jQuery('<img>', {
       'title': 'Draw Ellipse',
-      'class': 'toolButton',
+      'class': 'toolButton inactive',
       'src': 'images/ellipse.svg'
     })
     tool.append(this.ellipsebutton)
 
     this.pencilbutton = jQuery('<img>', {
       'title': 'Draw Freeline',
-      'class': 'toolButton',
-      'src': 'images/pencil.svg'
+      'class': 'toolButton inactive',
+      'src': 'images/pencil.svg',
+      'id': 'drawFreelineButton'
     })
     tool.append(this.pencilbutton) // Pencil Tool
 
     this.measurebutton = jQuery('<img>', {
       'title': 'Measurement Tool',
-      'class': 'toolButton',
+      'class': 'toolButton inactive',
       'src': 'images/measure.svg'
     })
     // tool.append(this.measurebutton)
 
     this.spacer2 = jQuery('<img>', {
-      'class': 'spacerButton',
+      'class': 'spacerButton inactive',
       'src': 'images/spacer.svg'
     })
     tool.append(this.spacer2)
 
     this.filterbutton = jQuery('<img>', {
       'title': 'Filter Markups',
-      'class': 'toolButton',
+      'class': 'toolButton inactive',
       'src': 'images/filter.svg'
     })
     tool.append(this.filterbutton) // Filter Button
 
     this.hidebutton = jQuery('<img>', {
       'title': 'Show/Hide Markups',
-      'class': 'toolButton',
+      'class': 'toolButton inactive',
       'src': 'images/hide.svg'
     })
     tool.append(this.hidebutton)
 
+
+    /*
     this.fullDownloadButton = jQuery('<img>', {
       'title': 'Download All Markups (Coming Soon)',
-      'class': 'toolButton',
+      'class': 'toolButton inactive',
       'src': 'images/fullDownload.svg'
     })
     tool.append(this.fullDownloadButton)
+    */
     this.spacer1 = jQuery('<img>', {
-      'class': 'spacerButton',
+      'class': 'spacerButton inactive',
       'src': 'images/spacer.svg'
     })
     tool.append(this.spacer1)
 
+    /*
     this.analyticsbutton = jQuery('<img>', {
       'title': 'Analytics Serviecs',
       'class': 'toolButton',
@@ -237,97 +262,38 @@ ToolBar.prototype.createButtons = function () {
       'src': 'images/insta.png'
     })
     tool.append(this.filterImgButton)
-
-    this.bookmarkButton = jQuery('<img>', {
-      'title': 'Bookmark/Share current state',
-      'class': 'toolButton',
-      'src': 'images/ic_insert_link_white_24dp_1x.png'
-    })
-    tool.append(this.bookmarkButton)
-
+    */
     this.partialDownloadButton = jQuery('<img>', {
       'title': 'Download Partial Markups (Coming Soon)',
-      'class': 'toolButton',
+      'class': 'toolButton inactive',
       'src': 'images/partDownload.svg'
     })
-    // tool.append(this.partialDownloadButton)  //Partial Download
+     tool.append(this.partialDownloadButton)  //Partial Download
 
     /*
      * Event handlers on click for the buttons
      */
     this.rectbutton.on('click', function () {
-      this.mode = 'rect'
-      this.annotools.mode = 'rect'
-      this.annotools.drawMarkups()
+      //console.log(this.mode);
+      if(this.annotools.mode == 'rect'){
+        this.setNormalMode();
+        //this.
+      } else {
+        this.mode = 'rect'
+        this.annotools.mode = 'rect'
+        this.annotools.drawMarkups();
+        jQuery("canvas").css("cursor", "crosshair");
+        jQuery("#drawRectangleButton").addClass("active"); 
+        //console.log(jQuery("#drawRectangleButton")); 
+        jQuery("#drawFreelineButton").removeClass("active");
+
+        //console.log("added class");     
+      }
     // alert("Creation of markups is disabled on QuIP")
     }.bind(this))
-
-    this.bookmarkButton.on('click', function () {
-      console.log('bookmark')
-
-      /* Get ViewPort */
-      var bounds = viewer.viewport.getBounds()
-      console.log(bounds)
-
-      /* Get Filters */
-      var filters = []
-      jQuery('#selected li').each(function () {
-        var id = this.id
-        var filter = hashTable[id]
-        // filters.push(filter.generatedFilter.getFilter())
-        // console.log(filter)
-        var f = {}
-        var filterName = filter.name
-        var filterVal = filter.generatedFilter.getParams()
-        f.name = filterName
-        f.value = filterVal
-        filters.push(f)
-      // sync &= filter.generatedFilter.sync
-      })
-      console.log(filters)
-
-      var state = {
-        'state': {
-          'filters': filters,
-          'viewport': bounds,
-          'pan': viewer.viewport.getCenter(),
-          'zoom': viewer.viewport.getZoom(),
-          'tissueId': this.annotools.iid
-        }
-      }
-      console.log(state)
-      // var bookmarkURLDiv = jQuery.create('<div>').addClass('bookmarkURLDiv')
-      var bookmarkURLDiv = jQuery('#bookmarkURLDiv')
-      bookmarkURLDiv.html('')
-      var input = jQuery('<input>')
-      var submit = jQuery('<button>')
-      submit.html("Close");
-      bookmarkURLDiv.append(input)
-      bookmarkURLDiv.append(submit)
-      bookmarkURLDiv.show()
-      jQuery.ajax({
-        'type': 'POST',
-        //'url': 'https://test-8f679.firebaseio.com/camicroscopeStates.json?auth=kweMPSAo4guxUXUodU0udYFhC27yp59XdTEkTSJ4',
-        'url': 'api/Data/loadState.php',
-        'data': JSON.stringify(state),
-        contentType: 'application/json; charset=utf-8',
-        dataType: 'json',
-        success: function (data) {
-          console.log('posted!')
-          console.log(data)
-          var url = 'http://dragon.cci.emory.edu/camicroscope3/osdCamicroscope.php?tissueId=TCGA-02-0001&stateID=' + data.name
-          console.log(url)
-          input.val(url)
-          input.select()
-        }
-      });
-
-      submit.on("click", function() {
-        bookmarkURLDiv.hide();
-      });
-
-    }.bind(this))
-
+    this.partialDownloadButton.on('click', function(){
+      this.annotools.downloadROI();
+    }.bind(this));
     this.ellipsebutton.on('click', function () {
       // this.mode = 'ellipse'
       // this.annotools.mode = 'ellipse'
@@ -336,9 +302,21 @@ ToolBar.prototype.createButtons = function () {
     }.bind(this))
 
     this.pencilbutton.on('click', function () {
-      this.annotools.mode = 'pencil'
-      this.annotools.drawMarkups()
-    // alert("Creation of markups is disabled on QuIP")
+
+      if(this.annotools.mode == 'pencil'){
+        this.setNormalMode();
+      } else {
+        //set pencil mode
+        this.annotools.mode = 'pencil'
+        this.annotools.drawMarkups()
+        
+        jQuery("canvas").css("cursor", "crosshair");
+        //jQuery("drawFreelineButton").css("opacity", 1);
+        jQuery("#drawRectangleButton").removeClass("active");
+        jQuery("#drawFreelineButton").addClass("active");
+
+      }
+
     }.bind(this))
 
     this.measurebutton.on('click', function () {
@@ -355,7 +333,7 @@ ToolBar.prototype.createButtons = function () {
     // this.removeMouseEvents()
     // this.promptForAnnotation(null, "filter", this, null)
     }.bind(this))
-
+	/*
     this.analyticsbutton.on('click', function () {
       this.annotools.createWorkOrder()
     }.bind(this))
@@ -363,7 +341,7 @@ ToolBar.prototype.createButtons = function () {
     this.filterImgButton.on('click', function () {
       this.FilterTools.showFilterControls()
     }.bind(this))
-
+	*/
     var toolButtons = jQuery('.toolButton')
     toolButtons.each(function () {
       jQuery(this).on({
@@ -416,7 +394,6 @@ ToolBar.prototype.createButtons = function () {
 
   this.titleButton = jQuery('<p>', {
     'class': 'titleButton',
-    'id': 'titleButton',
     'text': 'caMicroscope'
   })
   tool.append(this.titleButton)

@@ -1,6 +1,6 @@
 <?php require '../../../authenticate.php';
-ini_set('display_errors', 'On');
-error_reporting(E_ALL | E_STRICT);
+//ini_set('display_errors', 'On');
+//error_reporting(E_ALL | E_STRICT);
 include_once("RestRequest.php");
 require_once 'HTTP/Request2.php';
 $config = require '../Configuration/config.php';

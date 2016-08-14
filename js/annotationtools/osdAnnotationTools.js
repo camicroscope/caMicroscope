@@ -134,10 +134,13 @@ annotools.prototype.getMultiAnnot = function (viewer) {
     var selalgos = jQuery('#tree').fancytree('getTree').getSelectedNodes()
     // console.log(selalgos)
     for (i = 0; i < selalgos.length; i++) {
+      //console.log(selalgos[i])
       algorithms.push(selalgos[i].refKey)
     // opa["Val" + (i + 1).toString()] = selalgos[i].refKey
     }
   }
+
+  //console.log(algorithms);
   var self = this
   this.x1 = this.imagingHelper._viewportOrigin['x']
   this.y1 = this.imagingHelper._viewportOrigin['y']
@@ -151,10 +154,10 @@ annotools.prototype.getMultiAnnot = function (viewer) {
   var boundX = boundX1 - this.x1
   var boundY = boundX
 
-  var max = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(0.2), this.imagingHelper.physicalToDataY(0.2))
+  var max = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(9), this.imagingHelper.physicalToDataY(9))
   var origin = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(0), this.imagingHelper.physicalToDataY(0))
   var area = (max.x - origin.x) * (max.y - origin.y)
-  algorithms.push('test')
+  //algorithms.push('test')
 
   var t1 = 0
   if (algorithms.length) {
@@ -192,7 +195,7 @@ annotools.prototype.getAnnot = function (viewer) // Get Annotation from the API
   var boundX = boundX1 - this.x1
   var boundY = boundX
 
-  var max = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(4), this.imagingHelper.physicalToDataY(4))
+  var max = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(9), this.imagingHelper.physicalToDataY(4))
   var origin = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(0), this.imagingHelper.physicalToDataY(0))
   var area = (max.x - origin.x) * (max.y - origin.y)
 
@@ -202,7 +205,7 @@ annotools.prototype.getAnnot = function (viewer) // Get Annotation from the API
     self.displayGeoAnnots()
     self.setupHandlers()
   // var t2 = performance.now()
-  // console.log("Performance: "+(t2-t1))
+
   })
 }
 
@@ -320,7 +323,7 @@ annotools.prototype.drawMarkups = function () // Draw Markups
       otop = top,
       owidth = width,
       oheight = height
-    // console.log("left: " + left + " top: " + top + " width: " + width + " height: " + height)
+
     if (left < 0) {
       left = 0
       width = window.innerWidth
@@ -389,7 +392,7 @@ annotools.prototype.createWorkOrder = function () {
       otop = top,
       owidth = width,
       oheight = height
-    // console.log("left: " + left + " top: " + top + " width: " + width + " height: " + height)
+
     if (left < 0) {
       left = 0
       width = window.innerWidth
@@ -415,7 +418,7 @@ annotools.prototype.createWorkOrder = function () {
     // The canvas context
     var ctx = this.drawCanvas.getContext('2d')
 
-    console.log('drawing rectangle')
+   
     this.removeMouseEvents()
     var started = false
     var min_x,min_y,max_x,max_y,w,h
@@ -991,7 +994,7 @@ annotools.prototype.relativeToGlobal = function () {
 }
 
 annotools.prototype.setupHandlers = function () {
-  console.log('setting up handlers')
+  //console.log('setting up handlers')
 
   var root = document.getElementsByTagName('svg')[0]
   // console.log(root); 
@@ -1131,6 +1134,7 @@ annotools.prototype.updateAnnot = function (annot) // Save Annotations
 }
 annotools.prototype.saveAnnot = function (annotation) // Save Annotations
 {
+  var self = this;
   console.log('Save annotation function')
   console.log(annotation)
   jQuery.ajax({
@@ -1138,10 +1142,15 @@ annotools.prototype.saveAnnot = function (annotation) // Save Annotations
     url: 'api/Data/getAnnotSpatial.php',
     data: annotation,
     success: function (res, err) {
-      // console.log("response: ")
+      console.log("response: ")
       console.log(res)
+      if(res == "unauthorized"){
+        alert("Error saving markup! Wrong secret");
+      } else {   
+        alert("Successfully saved markup!");
+      }
       console.log(err)
-
+      self.getMultiAnnot();
       console.log('succesfully posted')
     }
   })
@@ -1381,7 +1390,8 @@ annotools.prototype.drawEllipse = function (ctx) {
 
 annotools.prototype.drawRectangle = function (ctx) {
   console.log('drawing rectangle')
-  jQuery('html,body').css('cursor', 'crosshair')
+
+  /*Highlight drawRectangle button and change cursor*/
 
   this.removeMouseEvents()
   var started = false
@@ -1442,12 +1452,18 @@ annotools.prototype.drawRectangle = function (ctx) {
     var loc = []
     loc[0] = parseFloat(newAnnot.x)
     loc[1] = parseFloat(newAnnot.y)
-    newAnnot.loc = loc
+    newAnnot.loc = loc;
+
+    console.log(newAnnot);
 
     // convert to geojson 
     var geoNewAnnot = this.convertRectToGeo(newAnnot)
     // geoNewAnnot = newAnnot
-    this.promptForAnnotation(geoNewAnnot, 'new', this, ctx)
+    this.promptForAnnotation(geoNewAnnot, 'new', this, ctx);
+    jQuery("canvas").css("cursor", "default");
+    jQuery("#drawRectangleButton").removeClass("active");
+
+
   }.bind(this))
 }
 
@@ -1456,6 +1472,12 @@ annotools.prototype.drawPencil = function (ctx) {
   var started = false
   var pencil = []
   var newpoly = []
+
+  /*Change button and cursor*/
+  jQuery("canvas").css("cursor", "crosshair");
+  //jQuery("#drawFreelineButton").css("opacity", 1);
+  /**/
+
   this.drawCanvas.addEvent('mousedown', function (e) {
     started = true
     var startPoint = OpenSeadragon.getMousePosition(e.event)
@@ -1536,8 +1558,13 @@ annotools.prototype.drawPencil = function (ctx) {
     newAnnot.loc = loc
     console.log(newAnnot)
     var geojsonAnnot = this.convertPencilToGeo(newAnnot)
-
     this.promptForAnnotation(geojsonAnnot, 'new', this, ctx)
+
+    /* Change button back to inactive*/
+    jQuery("canvas").css("cursor", "default");
+    jQuery("#drawFreelineButton").removeClass("active");
+
+
   }.bind(this))
 }
 
@@ -1943,7 +1970,7 @@ annotools.prototype.promptForWorkOrder = function (newAnnot, mode, annotools, ct
   }
   panel.html(function () {
     return "<div id='panelHeader'><h4> Work Order </h4></div><div id='panelBody'> <ul><li> x1: " + x + '</li> <li> y1: ' + y + '</li> <li> w: ' + w + '</li> <li>h: ' + h + '</li> <li>Algorithm: SuperSegmenter</li> '
-    + "<li>Execution Id:<input id='order-execution_id'></input></li>" + "<li>Notes: <textarea id='order-notes'></textarea>" + "</ul> <br /> <button id='submitWorkOrder' class='btn btn-primary' >Submit</button> <button class='btn' id='cancelWorkOrder'>Cancel</button></div>"
+    + "<li>Execution Id:<input id='order-execution_id'></input></li>" + "<li>Notes: <textarea id='order-notes'></textarea>" + "</ul> <br /> <button id='submitWorkOrder'>Submit</button> <button id='cancelWorkOrder'>Cancel</button></div>"
   })
 
   /*
@@ -2068,7 +2095,7 @@ annotools.prototype.promptForWorkOrder = function (newAnnot, mode, annotools, ct
     w = 1000
     h = 1000
     panel.html(function () {
-      return "<div id='panelHeader'><h4> Work Order(Error) </h4></div><div id='panelBody'> Error: Very large ROI. <br />" + 'Width: ' + w + '<br />' + 'Height: ' + h + "<br />Please try creating a smaller ROI. Zooming into the ROI would help.<br /> We currently support 1000X1000 tiles <br />  <button id='cancelWorkOrder' class='btn' >Cancel</button></div>"
+      return "<div id='panelHeader'><h4> Work Order(Error) </h4></div><div id='panelBody'> Error: Very large ROI. <br />" + 'Width: ' + w + '<br />' + 'Height: ' + h + "<br />Please try creating a smaller ROI. Zooming into the ROI would help.<br /> We currently support 1000X1000 tiles <br />  <button id='cancelWorkOrder'>Cancel</button></div>"
     })
     jQuery('#cancelWorkOrder').click(function () {
       console.log('here')
@@ -2080,7 +2107,7 @@ annotools.prototype.promptForWorkOrder = function (newAnnot, mode, annotools, ct
   }
   panel.html(function () {
     return "<div id='panelHeader'><h4> Work Order </h4></div><div id='panelBody'> <ul><li> x1: " + x + '</li> <li> y1: ' + y + '</li> <li> w: ' + w + '</li> <li>h: ' + h + '</li> <li>Algorithm: SuperSegmenter</li> '
-    + "<li>Execution Id:<input id='order-execution_id'></input></li>" + "<li>Notes: <textarea id='order-notes'></textarea>" + "</ul> <br /> <button id='submitWorkOrder' class='btn'>Submit</button> <button class='btn' id='cancelWorkOrder'>Cancel</button></div>"
+    + "<li>Execution Id:<input id='order-execution_id'></input></li>" + "<li>Notes: <textarea id='order-notes'></textarea>" + "</ul> <br /> <button id='submitWorkOrder'>Submit</button> <button id='cancelWorkOrder'>Cancel</button></div>"
   })
 
   /*
@@ -2185,8 +2212,8 @@ annotools.prototype.promptForWorkOrder = function (newAnnot, mode, annotools, ct
 
 annotools.prototype.promptForAnnotation = function (newAnnot, mode, annotools, ctx) {
   jQuery('#panel').show('slide')
-  jQuery('html,body').css('cursor', 'default')
-  console.log(newAnnot)
+  console.log(newAnnot);
+  jQuery('panel').html('');
   jQuery('#panel').html('' +
     "<div id = 'panelHeader'> <h4>Enter a new annotation </h4></div>"
     + "<div id='panelBody'>"
@@ -2196,6 +2223,7 @@ annotools.prototype.promptForAnnotation = function (newAnnot, mode, annotools, c
     + '</div>'
   )
   jQuery.get('api/Data/retrieveTemplate.php', function (data) {
+    console.log(data);
     var schema = JSON.parse(data)
     schema = JSON.parse(schema)[0]
     console.log(schema)
@@ -2225,7 +2253,7 @@ annotools.prototype.promptForAnnotation = function (newAnnot, mode, annotools, c
     formSchema.onSubmit = function (err, val) {
       // Add form data to annotation
       newAnnot.properties.annotations = val
-      console.log(newAnnot)
+
       // Post annotation
       annotools.addnewAnnot(newAnnot)
 
@@ -2233,6 +2261,7 @@ annotools.prototype.promptForAnnotation = function (newAnnot, mode, annotools, c
       jQuery('#panel').hide('slide')
       annotools.drawLayer.hide()
       annotools.addMouseEvents()
+
       return false
     }
 
@@ -2326,19 +2355,19 @@ annotools.prototype.promptForParameters = function (annotools, analysisBox, algo
   })
 }
 annotools.prototype.addMouseEvents = function () {
-  console.log('adding mouse events')
+  //console.log('adding mouse events')
   // console.log(this.annotationHandler)
   window.addEventListener('mousemove', this.annotationHandler.handleMouseMove, false)
-  window.addEventListener('mousedown', this.annotationHandler.handleMouseDown, false)
-  window.addEventListener('mouseup', this.annotationHandler.handleMouseUp, false)
+  //window.addEventListener('mousedown', this.annotationHandler.handleMouseDown, false)
+  //window.addEventListener('mouseup', this.annotationHandler.handleMouseUp, false)
 // window.addEventListener('mouseup',      this.getAnnot(), false)
 }
 annotools.prototype.removeMouseEvents = function () {
-  console.log('removing events')
+  //console.log('removing events')
   // console.log(this.annotationHandler)
   window.removeEventListener('mousemove', this.annotationHandler.handleMouseMove, false)
-  window.removeEventListener('mousedown', this.annotationHandler.handleMouseDown, false)
-  window.removeEventListener('mouseup', this.annotationHandler.handleMouseUp, false)
+  //window.removeEventListener('mousedown', this.annotationHandler.handleMouseDown, false)
+  //window.removeEventListener('mouseup', this.annotationHandler.handleMouseUp, false)
 // window.removeEventListener('mouseup',      this.getAnnot(), false)
 }
 
@@ -2664,4 +2693,196 @@ annotools.prototype.displayAnnot= function () //Display SVG Annotations
 
 *
 *
+*
 */
+
+annotools.prototype.downloadROI = function(){
+  this.showMessage() // Show Message
+  this.drawCanvas.removeEvents('mouseup')
+  this.drawCanvas.removeEvents('mousedown')
+  this.drawCanvas.removeEvents('mousemove')
+  this.drawLayer.show() // Show The Drawing Layer
+  /* ASHISH Disable quit
+      this.quitbutton.show() //Show The Quit Button
+  */
+  this.magnifyGlass.hide() // Hide The Magnifying Tool
+  // this.container = document.id(this.canvas) //Get The Canvas Container
+  this.container = document.getElementsByClassName(this.canvas)[0] // Get The Canvas Container
+  // this.container = document.getElementById('container') //Get The Canvas Container
+  if (this.container) {
+    // var left = parseInt(this.container.offsetLeft), //Get The Container Location
+    var left = parseInt(this.container.getLeft()), // Get The Container Location
+      top = parseInt(this.container.offsetTop),
+      width = parseInt(this.container.offsetWidth),
+      height = parseInt(this.container.offsetHeight),
+      oleft = left,
+      otop = top,
+      owidth = width,
+      oheight = height
+    // console.log("left: " + left + " top: " + top + " width: " + width + " height: " + height)
+    if (left < 0) {
+      left= 0
+      width = window.innerWidth
+    } // See Whether The Container is outside The Current ViewPort
+    if (top < 0) {
+      top = 0
+      height = window.innerHeight
+    }
+    // Recreate The CreateAnnotation Layer Because of The ViewPort Change Issue.
+    this.drawLayer.set({
+      'styles': {
+        left: left,
+        top: top,
+        width: width,
+        height: height
+      }
+    })
+    // Create Canvas on the CreateAnnotation Layer
+    this.drawCanvas.set({
+      width: width,
+      height: height
+    })
+    // The canvas context
+    var ctx = this.drawCanvas.getContext('2d')
+
+    
+    this.removeMouseEvents()
+    var started = false
+    var min_x,min_y,max_x,max_y,w,h
+    var startPosition
+    this.drawCanvas.addEvent('mousedown', function (e) {
+      started = true
+      startPosition = OpenSeadragon.getMousePosition(e.event)
+      x = startPosition.x
+      y = startPosition.y
+    })
+
+    this.drawCanvas.addEvent('mousemove', function (e) {
+      if (started) {
+        ctx.clearRect(0, 0, this.drawCanvas.width, this.drawCanvas.height)
+        var currentMousePosition = OpenSeadragon.getMousePosition(e.event)
+
+        min_x = Math.min(currentMousePosition.x, startPosition.x)
+        min_y = Math.min(currentMousePosition.y, startPosition.y)
+        max_x = Math.max(currentMousePosition.x, startPosition.x)
+        max_y = Math.max(currentMousePosition.y, startPosition.y)
+        w = Math.abs(max_x - min_x)
+        h = Math.abs(max_y - min_y)
+        ctx.strokeStyle = this.color
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.2)'
+        ctx.fillRect(min_x, min_y, w, h)
+        ctx.strokeRect(min_x, min_y, w, h)
+      }
+    }.bind(this))
+
+    this.drawCanvas.addEvent('mouseup', function (e) {
+      started = false
+      var finalMousePosition = new OpenSeadragon.getMousePosition(e.event)
+
+      min_x = Math.min(finalMousePosition.x, startPosition.x)
+      min_y = Math.min(finalMousePosition.y, startPosition.y)
+      max_x = Math.max(finalMousePosition.x, startPosition.x)
+      max_y = Math.max(finalMousePosition.y, startPosition.y)
+
+      var startRelativeMousePosition = new OpenSeadragon.Point(min_x, min_y).minus(OpenSeadragon.getElementOffset(viewer.canvas))
+      var endRelativeMousePosition = new OpenSeadragon.Point(max_x, max_y).minus(OpenSeadragon.getElementOffset(viewer.canvas))
+      var newAnnot = {
+        x: startRelativeMousePosition.x,
+        y: startRelativeMousePosition.y,
+        w: w,
+        h: h,
+        type: 'rect',
+        color: this.color,
+        loc: []
+      }
+
+      var globalNumbers = JSON.parse(this.convertFromNative(newAnnot, endRelativeMousePosition))
+
+      newAnnot.x = globalNumbers.nativeX
+      newAnnot.y = globalNumbers.nativeY
+      newAnnot.w = globalNumbers.nativeW
+      newAnnot.h = globalNumbers.nativeH
+      var loc = []
+      loc[0] = parseFloat(newAnnot.x)
+      loc[1] = parseFloat(newAnnot.y)
+      newAnnot.loc = loc
+
+      // convert to geojson 
+      // var geoNewAnnot = this.convertRectToGeo(newAnnot)
+      geoNewAnnot = newAnnot
+      this.promptForDownload(geoNewAnnot, 'new', this, ctx)
+    }.bind(this))
+  }
+}
+
+
+
+
+annotools.prototype.promptForDownload = function(newAnnot, mode, annotools, ctx) {
+  var panel = jQuery('#panel').show()
+  var iid = this.iid
+  var x = annotools.imagingHelper.physicalToDataX(annotools.imagingHelper.logicalToPhysicalX(newAnnot.x))
+  var y = annotools.imagingHelper.physicalToDataY(annotools.imagingHelper.logicalToPhysicalY(newAnnot.y))
+  var w = (annotools.imagingHelper.physicalToDataX(annotools.imagingHelper.logicalToPhysicalX((newAnnot.x + newAnnot.w)))) - x;
+  var h = (annotools.imagingHelper.physicalToDataY(annotools.imagingHelper.logicalToPhysicalY(newAnnot.y + newAnnot.h))) - y
+  x = parseInt(x)
+  y = parseInt(y)
+  w = parseInt(w)
+  h = parseInt(h)
+  var max = 2000;
+  var url;
+  var iipSrv = "http://quip1.uhmc.sunysb.edu/fcgi-bin/iipsrv.fcgi?IIIF=";
+  console.log(fileLocation);
+  var fileLocationReal = fileLocation.substr(0, fileLocation.length -4);
+  console.log(fileLocationReal);
+    if(w*h > max*max){
+      w = max;
+      h = max;
+
+      url = iipSrv + fileLocationReal + "/"+x+ ","+y+","+w+","+h +"/full/0/default.jpg";
+
+      panel.html(function () {
+      return "<div id='panelHeader'><h4> Download ROI </h4></div><div id='panelBody'> <ul><li> x: " 
+        + x + "</li> <li> y: "
+         + y + "</li> <li> w: " + w + "</li> <li>h: " + h + "</li> </ul> <br /> Error! The ROI was too large. We've resized it to 2000 x 2000 tile<br /> <a href='"+url+ "' target='_blank'> <button class='btn' id='downloadROI'>Download</button></a> <button class='btn' id='cancelWorkOrder'>Cancel</button></div>";
+    });
+    } else {
+
+      url = iipSrv + fileLocationReal + "/"+x+ ","+y+","+w+","+h +"/full/0/default.jpg";
+
+
+      panel.html(function () {
+      return "<div id='panelHeader'><h4> Download ROI </h4></div><div id='panelBody'> <ul><li> x: " 
+        + x + "</li> <li> y: "
+         + y + "</li> <li> w: " + w + "</li> <li>h: " + h + "</li> </ul> <br /> <a href='"+url+ "' target='_blank'> <button class='btn' id='downloadROI'>Download</button></a> <button class='btn' id='cancelWorkOrder'>Cancel</button></div>";
+      });
+    }
+  jQuery('#cancelWorkOrder').click(function () {
+   
+    jQuery('#panel').hide()
+    annotools.drawLayer.hide()
+    annotools.addMouseEvents()
+  })
+  console.log(fileLocation);
+    console.log(fileLocation);
+    console.log(url);
+  jQuery('#submitWorkOrder').click(function () {
+    
+    // annotools.drawCanvas.removeEvents('mouseup')
+    // annotools.drawCanvas.removeEvents('mousedown')
+    // annotools.drawCanvas.removeEvents('mousemove')
+    annotools.drawLayer.hide()
+    annotools.addMouseEvents()
+    // annotools.removeMouseEvents()
+    // annotools.getMultiAnnot();            
+
+    var username = 'lastlegion'
+    var execution_id = jQuery('#order-execution_id').val()
+    var notes = jQuery('#order-notes').val()
+    var width = 48002;
+    var height = 35558;
+
+  }.bind(newAnnot))
+
+}
+

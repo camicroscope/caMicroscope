@@ -1,6 +1,6 @@
 <?php require '../../../authenticate.php';
-ini_set('display_errors', 'On');
-error_reporting(E_ALL | E_STRICT);
+//ini_set('display_errors', 'On');
+//error_reporting(E_ALL | E_STRICT);
 include_once("RestRequest.php");
 $configJson = file_get_contents("../Configuration/ConfigPath.txt");
 $configJson = json_decode($configJson);

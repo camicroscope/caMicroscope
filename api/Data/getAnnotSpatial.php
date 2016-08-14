@@ -1,19 +1,21 @@
 <?php require '../../../authenticate.php';
-ini_set('display_errors', 'On');
-error_reporting(E_ALL | E_STRICT);
+//ini_set('display_errors', 'On');
+//error_reporting(E_ALL | E_STRICT);
 include_once("RestRequest.php");
 require_once 'HTTP/Request2.php';
 $config = require '../Configuration/config.php';
 $getUrl =  $config['getAnnotationsSpatial'];
 $postUrl = $config['postAnnotation'];
 
+$algorithmsForImage = $config['algorithmsForImage'];
+$postAlgorithmForImage = $config['postAlgorithmForImage'];
 $api_key = '';
 
 if (!empty($_SESSION['api_key'])) {
     $api_key = $_SESSION['api_key'];
 }
 //$api_key = 'c0327219-68b2-4a40-9801-fc99e8e1e76f';
-$api_key = '4fbb38a3-1821-436c-a44d-8d3bc5efd33e';
+//$api_key = '4fbb38a3-1821-436c-a44d-8d3bc5efd33e';
 switch ($_SERVER['REQUEST_METHOD'])
 {
 	case 'GET':
@@ -49,40 +51,93 @@ switch ($_SERVER['REQUEST_METHOD'])
             
         }
         break;
-    case 'POST':
-        //echo "Posting!!!";
-		$annotationList =$_POST;
-		$url = $postUrl . "?api_key=".$api_key;
-		//$count = count($annotationList);
-		//$newestAnnot = $annotationList[$count-1];
-		//$newestAnnot["username"] = $_SESSION['username'];
-		//$newestAnnot["loc"][0] = (float)$newestAnnot["loc"][0];
-		//$newestAnnot["loc"][1] = (float)$newestAnnot["loc"][1];
-        //print_r($annotationList);
-        //print_r(json_encode($annotationList), JSON_NUMERIC_CHECK);
-        echo "posting data\n";
-        echo $url;
-        $ch = curl_init();
-        $headers= array('Accept: application/json','Content-Type: application/json'); 
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+  case 'POST':
+    //echo "Posting!!!";
+    $url = $postUrl . "?api_key=".$api_key; 
+    //print_r($url);
+    //echo "\n";
+    $newAnnotation = $_POST;
+    //print_r($_POST);
+    $POSTsecret =  $_POST['properties']['annotations']['secret'];
 
-        curl_setopt($ch, CURLOPT_POSTFIELDS,json_encode($annotationList, JSON_NUMERIC_CHECK));
-        $result = curl_exec($ch);
-        if($result === false){
-            $result =  curl_error($ch);
+    $secrets = array(
+      "human1" => "humantest", // secret => username
+      "prod1" => "humanProd"
+    );
+
+    $authorized = false;
+    $newExecutionId = "";
+    foreach($secrets as $secret => $username){
+      if($POSTsecret === $secret){
+        //set execution_id as $username
+        $newAnnotation['provenance']['analysis']['execution_id'] = $username;
+        $newExecutionId = $username;
+        $authorized = true;
+        $jsonAnnotation = json_encode($newAnnotation, JSON_NUMERIC_CHECK);
+        //print_r(json_encode($newAnnotation)); 
+        $postRequest = new RestRequest($url, 'POST', $jsonAnnotation);
+        $postRequest->execute();
+        //echo "success";
+      } 
+    }
+     $executionExists = False;
+    if($authorized == false){
+      echo "unauthorized";
+    } else {
+
+      //check if executionID exists
+      $url = $algorithmsForImage . "api_key=".$api_key;
+      $iid = $newAnnotation['provenance']['image']['case_id'];
+
+      $url = $url . "&TCGAId=" . $iid;
+    
+      $getExecutionIDs = new RestRequest($url, 'GET');
+      $getExecutionIDs->execute();
+      //echo $url;
+      $executionIDs = json_decode($getExecutionIDs->responseBody);
+      //print_r($executionIDs);
+    
+
+      for($i=0; $i< count($executionIDs); $i++){
+        //echo $i;
+        $executionId = $executionIDs[$i]->provenance->analysis_execution_id;
+        //echo "\n";
+        //echo $executionId;
+        //echo $newExecutionId;
+        //echo strcmp($executionId, $newExecutionId);
+        if(strcmp($newExecutionId, $executionId) == 0){
+          //echo "setting true";
+          $executionExists = True;
         }
-        curl_close($ch);
+      }
 
-        echo $result;
 
-		//$postRequest = new RestRequest($url,'POST',json_encode($annotationList), JSON_NUMERIC_CHECK);
-		//$postRequest->execute();
-        //print_r($postRequest);
-		//echo(json_encode($newestAnnot));
-        echo "done";
+      if($executionExists == True){
+        //echo "execution id exists";
+      } else {
+        //echo "new execution id";
+        //POST this new executionID
+        $provenanceData = new stdClass();
+        $provenanceData->title = $newExecutionId;
+        $provenanceData->provenance = new stdClass();
+        $provenanceData->provenance->analysis_execution_id = $newExecutionId;
+        $provenanceData->provenance->type = "human";
+
+        $provenanceData->image->case_id = $iid;
+        $provenanceData->image->subject_id = $newAnnotation["provenance"]["image"]["subject_id"];
+
+        $url = $postAlgorithmForImage . "api_key=".$api_key;
+        //echo $url;
+        $json = json_encode($provenanceData);
+        $postRequest = new RestRequest($url, 'POST', $json);
+        $postRequest->execute();
+      }
+  
+    }
+
+      //echo "success";
+
+      //print_r($provenanceData);
 		break;
 }
 ?>

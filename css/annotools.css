@@ -36,6 +36,7 @@
         margin-right: 4px;
 }
 
+
 .selected2
 {
 	cursor: pointer;
@@ -123,12 +124,12 @@
         margin-top: 8px;
 	margin-right: 4px;
         background:#1976D2;
-        opacity:0.6;
+ //       opacity:0.6;
 }
 .toolButton:hover
 {
         cursor: pointer;
-        opacity: 1;
+  //      opacity: 1;
 }
 
 .spacerButton
@@ -304,7 +305,8 @@
     display: inline-block;
 }
 
-#panelBody input{
+
+#panelBody input, #panelBody textarea{
     color: #000;
 }
 #panel .btn{
@@ -313,6 +315,9 @@
     font-size: 12px;
     padding: 4px 6px;
     margin: 8px 0px;
+}
+#panel .btn-danger{
+  background: #d9534f; 
 }
 #panelBody input.btn.btn-primary{
     background: #A2BA6F;
@@ -393,32 +398,29 @@
 .wdzt-cell-layout filterLabel{
     display: inline-block;
 }
-#savedURL a{
-    color: #fff;
-    display: block;
-    z-index:20000;
-    position: absolute;
-    width: 400px;
-    top: 65px;
-    left: 120px; 
-    background: #244B71;
-}
-#bookmarkURLDiv input{
-    color: #333;
-    width: 100%;
-}
-#bookmarkURLDiv{
-    color: #000;
-    display: block;
-    z-index:20000;
-    position: absolute;
-    width: 480px;
-    top: 65px;
-    left: 320px; 
-    background: #fff;
-    padding: 5px;
-    -webkit-box-shadow: 0px 0px 5px 2px #000000;
-    -moz-box-shadow: 0px 0px 5px 2px #000000;
-    box-shadow: 0px 0px 5px 2px #000000;
 
+#panelBody textarea{
+	height: 75px;
+}
+#panel a{
+  color: #fff;
+}
+
+.inactive{
+  opacity: 0.6
+}
+.inactive:hover{
+  opacity: 1;
+}
+
+.active{
+  opacity: 1;
+}
+
+.markupFeature{
+  margin-top: 5px;
+}
+.markupFeatureName{
+  display: block;
+  font-weight: 600;
 }

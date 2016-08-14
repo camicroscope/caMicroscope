@@ -7,7 +7,8 @@ class CamicUtils
 	{
 		include_once("RestRequest.php");
 		$this->CONFIG = require '../Configuration/config.php';
-		$this->api_key = $Session['api_key'];
+		//$this->api_key = $Session['api_key'];
+		$this->api_key = "983495a5-6b27-44b5-adf2-ae5e59c23ccf";
 	}
 
 	function getImageDimensions($tissueId)
@@ -28,17 +29,19 @@ class CamicUtils
 	{
 		$fileUrl = $this->CONFIG['getFileLocation'] . $this->api_key . "&TCGAId=" . $tissueId;
 		$fielUrl = str_replace(" ","%20",$fileUrl);
+
 		$getFileLocationRequest = new RestRequest($fileUrl,'GET');
 		$getFileLocationRequest->execute();
 		$location = json_decode($getFileLocationRequest->responseBody);
 		return $location;
+
 	}
 
 
 	function retrieveMpp($tissueId)
 	{
 	    $mppUrl = $this->CONFIG['getMPP'] . $this->api_key . "&TCGAId=" . $tissueId;
-
+	   
 	    $getMPPRequest = new RestRequest($mppUrl, 'GET');
 	    $getMPPRequest -> execute();
 	    $mpplist = json_decode($getMPPRequest->responseBody);
