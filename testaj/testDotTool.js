@@ -1,9 +1,10 @@
-//tmp values for testing; will be setup dynamically
-var width     = 500,
-    height    = 500,
-    tileUri   = "https://ajasniew.github.io/images/ImageGeneral/TCGA-DU-7309-01Z-00-DX1_52577_21739_400_400-1-0_Ex3.PNG",
-    radius    = 4;   // Change according to the size of the point
-    fillColor = "red";
+//tmp values for testing; will be set up dynamically
+var width      = 500,
+    height     = 500,
+    tileUri    = "https://ajasniew.github.io/images/ImageGeneral/TCGA-DU-7309-01Z-00-DX1_52577_21739_400_400-1-0_Ex3.PNG",
+    radius     = 3;   // Change according to the size of the point
+    fillColor  = "#ffff00";  //yellow
+    hoverColor = "#ff2626";  //red
 
 //setup the svg 
 var svgHtmlDot = d3.select("#svgContainer")
@@ -32,13 +33,19 @@ var circleGroup = svgHtmlDot.append("g");
 //draw circle element
 function drawCircle(x, y, size, color) {
     console.log('Drawing circle at', x, y, size);
-    var creation = Date.now();
+    var creation = Date.now(); //the number of milliseconds since midnight January 1, 1970
     var svgCircle = circleGroup.append("circle")
         .attr("cx", x)
         .attr("cy", y)
         .attr("r", size)
         .style("fill", fillColor)
         .attr("id", "circle_" + creation)
+	    .on("mouseover", function(d) {
+  			d3.select(this).attr("r", radius).style("fill", hoverColor);
+			})                  
+		.on("mouseout", function(d) {
+  			d3.select(this).attr("r", radius).style("fill", fillColor);
+		})
         .on("contextmenu", function (d, i) {
             d3.event.preventDefault();
            // react on right-clicking;
@@ -48,5 +55,5 @@ function drawCircle(x, y, size, color) {
 
 //remove circle element
 function removeCircle(id){
-   d3.selectAll('g #'+id).remove();
+   d3.selectAll('g #' + id).remove();
 }
