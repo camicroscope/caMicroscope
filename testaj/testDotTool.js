@@ -1,10 +1,13 @@
 //tmp values for testing; will be set up dynamically
-var width      = 500,
-    height     = 500,
-    tileUri    = "https://ajasniew.github.io/images/ImageGeneral/TCGA-DU-7309-01Z-00-DX1_52577_21739_400_400-1-0_Ex3.PNG",
+var width      = 400,
+    height     = 400,
+    tileUri    = "https://ajasniew.github.io/images/LUAD_400_Det_ST_ASSG2/TCGA-L9-A444-01Z-00-DX1_appMag_40_241_136.png",
     radius     = 3;   // Change according to the size of the point
     fillColor  = "#ffff00";  //yellow
     hoverColor = "#ff2626";  //red
+
+//dataset
+var circleDataset = [];  //an array of circle objects
 
 //setup the svg 
 var svgHtmlDot = d3.select("#svgContainer")
@@ -41,10 +44,10 @@ function drawCircle(x, y, size, color) {
         .style("fill", fillColor)
         .attr("id", "circle_" + creation)
 	    .on("mouseover", function(d) {
-  			d3.select(this).attr("r", radius).style("fill", hoverColor);
+  		    d3.select(this).attr("r", radius).style("fill", hoverColor);
 			})                  
         .on("mouseout", function(d) {
-  			d3.select(this).attr("r", radius).style("fill", fillColor);
+  		    d3.select(this).attr("r", radius).style("fill", fillColor);
 		    })
         .on("contextmenu", function (d, i) {
             d3.event.preventDefault();
