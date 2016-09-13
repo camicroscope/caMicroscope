@@ -15,8 +15,8 @@ var svgHtmlDot = d3.select("#svgContainer")
     
     svgHtmlDot.append("svg:image")
         .attr("xlink:href", tileUri)
-        .attr("x", "0")
-        .attr("y", "0")
+        .attr("x", 0)
+        .attr("y", 0)
         .attr("width", width)
         .attr("height", height);
 
@@ -43,14 +43,19 @@ function drawCircle(x, y, size, color) {
 	    .on("mouseover", function(d) {
   			d3.select(this).attr("r", radius).style("fill", hoverColor);
 			})                  
-		.on("mouseout", function(d) {
+        .on("mouseout", function(d) {
   			d3.select(this).attr("r", radius).style("fill", fillColor);
-		})
+		    })
         .on("contextmenu", function (d, i) {
             d3.event.preventDefault();
            // react on right-clicking;
             removeCircle("circle_" + creation);
-        });
+            });
+	    
+	var svgTooltip = svgCircle.append("title")  //tooltip with circle x, y
+	    .text(function() {
+		    return x + ', ' + y;	  
+			});
 }
 
 //remove circle element
