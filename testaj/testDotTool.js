@@ -1,6 +1,6 @@
 //tmp values for testing; will be set up dynamically
-var width      = 400,
-    height     = 400,
+var tmpWidth   = 400,
+    tmpHeight  = 400,
     tileUri    = "https://ajasniew.github.io/images/LUAD_400_Det_ST_ASSG2/TCGA-L9-A444-01Z-00-DX1_appMag_40_241_136.png",
     radius     = 3;   // Change according to the size of the point
     fillColor  = "#ffff00";  //yellow
@@ -12,16 +12,23 @@ var circleDataset = [];  //an array of circle objects
 //setup the svg 
 var svgHtmlDot = d3.select("#svgContainer")
         .append("svg:svg")
-        .attr("width", width)
-        .attr("height", height)
+        .attr("width", tmpWidth)
+        .attr("height", tmpHeight)
         .style("cursor", "crosshair");
     
-    svgHtmlDot.append("svg:image")
+    svgHtmlDot.append("image")
+	    .attr("id", "currentImage")
         .attr("xlink:href", tileUri)
-        .attr("x", 0)
-        .attr("y", 0)
-        .attr("width", width)
-        .attr("height", height);
+	    .on("load", function(d) {                //get image size dynamically
+            var currentImage = new Image();
+            currentImage.onload = function() {
+                d3.select("#currentImage")
+                .attr("width", this.width)
+                .attr("height", this.height);
+        }
+        currentImage.src = tileUri;
+    });
+        
 
 //group circle elements together
 var circleGroup = svgHtmlDot.append("g");
