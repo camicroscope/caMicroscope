@@ -34,10 +34,12 @@ var svgHtmlDot = d3.select("#svgContainer")
 var circleGroup = svgHtmlDot.append("g");
     
     //.on(action, fn) syntax for attaching an event listener to a DOM selection
-    svgHtmlDot.on('click', function() {
+    svgHtmlDot.on("click", function() {
         var coords = d3.mouse(this);
-        console.log(coords);
-        drawCircle(coords[0], coords[1], radius, fillColor);
+        var xPosition = Math.round(coords[0]);
+        var yPosition = Math.round(coords[1]);
+        console.log(xPosition + " " + yPosition);
+        drawCircle(xPosition, yPosition, radius, fillColor);
     });
 
 //draw circle element
