@@ -269,6 +269,22 @@ ToolBar.prototype.createButtons = function () {
       'src': 'images/partDownload.svg'
     })
      tool.append(this.partialDownloadButton)  //Partial Download
+     
+    // aj start
+    this.spacer1 = jQuery('<img>', {
+      'class': 'spacerButton inactive',
+      'src': 'images/spacer.svg'
+    });
+    tool.append(this.spacer1);
+    
+    this.dotToolButton = jQuery('<img>', {
+      'title': 'Dot Tool',
+      'class': 'toolButton inactive',
+      'src': 'images/analyze.png',
+      'id': 'drawDotButton'
+    });
+    tool.append(this.dotToolButton); // Dot Tool
+    // aj end
 
     /*
      * Event handlers on click for the buttons
