@@ -270,7 +270,6 @@ ToolBar.prototype.createButtons = function () {
     })
      tool.append(this.partialDownloadButton)  //Partial Download
      
-    // aj start
     this.spacer1 = jQuery('<img>', {
       'class': 'spacerButton inactive',
       'src': 'images/spacer.svg'
@@ -284,7 +283,6 @@ ToolBar.prototype.createButtons = function () {
       'id': 'drawDotButton'
     });
     tool.append(this.dotToolButton); // Dot Tool
-    // aj end
 
     /*
      * Event handlers on click for the buttons
