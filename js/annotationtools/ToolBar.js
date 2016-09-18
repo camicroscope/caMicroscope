@@ -133,6 +133,7 @@ ToolBar.prototype.setNormalMode = function() {
   jQuery("canvas").css("cursor", "default");
   jQuery("#drawRectangleButton").removeClass('active');
   jQuery("#drawFreelineButton").removeClass('active');
+  jQuery("#drawDotButton").removeClass("active");   // Dot Tool
   this.annotools.drawLayer.hide()
   this.annotools.addMouseEvents()       
 }
@@ -300,6 +301,7 @@ ToolBar.prototype.createButtons = function () {
         jQuery("#drawRectangleButton").addClass("active"); 
         //console.log(jQuery("#drawRectangleButton")); 
         jQuery("#drawFreelineButton").removeClass("active");
+        jQuery("#drawDotButton").removeClass("active");   // Dot Tool
 
         //console.log("added class");     
       }
@@ -308,6 +310,25 @@ ToolBar.prototype.createButtons = function () {
     this.partialDownloadButton.on('click', function(){
       this.annotools.downloadROI();
     }.bind(this));
+      
+    //Dot Tool start
+    this.dotToolButton.on('click', function(){
+       if (this.annotools.mode === 'dot') {
+          this.setNormalMode();
+       }else{
+           this.mode = 'dot';
+           this.annotools.mode = 'dot';
+           //this.annotools.drawDots();   // need to be implemented
+           alert('Draw Dot Tool need to be implemented');
+           jQuery("canvas").css("cursor", "crosshair");
+           jQuery("svg").css("cursor", "crosshair");
+           jQuery("#drawRectangleButton").removeClass("active");
+           jQuery("#drawFreelineButton").removeClass("active");
+           jQuery("#drawDotButton").addClass("active");
+       }   
+    }.bind(this)); 
+    //Dot Tool end
+      
     this.ellipsebutton.on('click', function () {
       // this.mode = 'ellipse'
       // this.annotools.mode = 'ellipse'
@@ -327,6 +348,7 @@ ToolBar.prototype.createButtons = function () {
         jQuery("canvas").css("cursor", "crosshair");
         //jQuery("drawFreelineButton").css("opacity", 1);
         jQuery("#drawRectangleButton").removeClass("active");
+        jQuery("#drawDotButton").removeClass("active");     // Dot Tool
         jQuery("#drawFreelineButton").addClass("active");
 
       }
