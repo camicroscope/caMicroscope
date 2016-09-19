@@ -60,6 +60,7 @@
         <script src="js/dependencies/jquery.fancytree-all.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.7.0/jquery.modal.js"> </script>
         <script src="js/dependencies/simplemodal.js"></script>
+        <script src="js/dependencies/d3.js"></script>
         <style type="text/css">
             .openseadragon
             {
