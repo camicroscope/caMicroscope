@@ -318,8 +318,7 @@ ToolBar.prototype.createButtons = function () {
        }else{
            this.mode = 'dot';
            this.annotools.mode = 'dot';
-           //this.annotools.drawDots();   // need to be implemented
-           alert('Draw Dot Tool need to be implemented');
+           this.annotools.drawDots();
            jQuery("canvas").css("cursor", "crosshair");
            jQuery("svg").css("cursor", "crosshair");
            jQuery("#drawRectangleButton").removeClass("active");
