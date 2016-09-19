@@ -5,8 +5,8 @@ var tmpWidth   = 400,
     tileUri    = "http://129.49.249.191/fcgi-bin/iipsrv.fcgi?IIIF=/home/data/tcga_data/luad/TCGA-05-4396-01Z-00-DX1.49DD5F68-7473-4945-B384-EA6D5AE383CB.svs/35275,10657,385,282/full/0/default.jpg",
     //http://129.49.249.191/camicroscope/osdCamicroscope.php?tissueId=TCGA-05-4396-01Z-00-DX1&cancerType=luad&x=35275&y=10657
 
-    radius     = 3;   // Change according to the size of the point
-    fillColor  = "#ffff00";  //yellow
+    radius     = 3,   // Change according to the size of the point
+    fillColor  = "#ffff00",  //yellow
     hoverColor = "#ff2626";  //red
 
 //dataset
