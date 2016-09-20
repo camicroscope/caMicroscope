@@ -51,6 +51,7 @@
         <script src="js/annotationtools/ToolBar.js"></script>
         <script src="js/annotationtools/AnnotationStore.js"></script>
         <script src="js/annotationtools/osdAnnotationTools.js"></script>
+		<script src="js/annotationtools/osdAnnotationDotTools.js"></script>
         <script src="js/annotationtools/geoJSONHandler.js"></script>
         <script src="js/dependencies/MD5.js"></script>
         <script src="http://code.jquery.com/ui/1.11.2/jquery-ui.min.js" type="text/javascript"></script> 
