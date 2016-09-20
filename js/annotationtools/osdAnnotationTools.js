@@ -2831,7 +2831,6 @@ annotools.prototype.promptForDownload = function(newAnnot, mode, annotools, ctx)
   h = parseInt(h)
   var max = 2000;
   var url;
-  //var iipSrv = "http://quip1.uhmc.sunysb.edu/fcgi-bin/iipsrv.fcgi?IIIF=";
   var iipSrv = "http://129.49.249.191/fcgi-bin/iipsrv.fcgi?IIIF=";
   console.log(fileLocation);
   var fileLocationReal = fileLocation.substr(0, fileLocation.length -4);
@@ -2887,82 +2886,3 @@ annotools.prototype.promptForDownload = function(newAnnot, mode, annotools, ctx)
 
 }
 
-
-//draw dots start
-annotools.prototype.drawDots = function(){
-    
-    //alert('Comming soon');
-    //console.log("drawing dots...............");    
-    this.annotools.removeMouseEvents();
-    this.magnifyGlass.hide(); // Hide The Magnifying Tool
-    this.removeMouseEvents();
-    
-    //var self =this;
-    
-    var container = document.getElementsByClassName(this.canvas)[0]; // Get The Canvas Container
-    // console.log(nativepoints)
-    // console.log(container)
-    var width = parseInt(container.offsetWidth);
-    var height = parseInt(container.offsetHeight);
-    
-    var radius     = 3,          // Change according to the size of the point
-        fillColor  = "#ffff00",  //yellow
-        hoverColor = "#ff2626";  //red
-
-    //dataset
-    var circleDataset = [];  //an array of circle objects
-    
-    //setup the svg 
-    var svgHtmlDot = d3.select("#container")
-        .append("svg:svg")
-        .attr("width", width)
-        .attr("height", height)
-        .style("cursor", "crosshair");
-    
-    //group circle elements together
-    var circleGroup = svgHtmlDot.append("g");
-    
-    //.on(action, fn) syntax for attaching an event listener to a DOM selection
-    svgHtmlDot.on("click", function() {
-        var coords = d3.mouse(this);
-        var xPosition = Math.round(coords[0]);
-        var yPosition = Math.round(coords[1]);
-        console.log(xPosition + " " + yPosition);
-        drawCircle(xPosition, yPosition, radius, fillColor, circleGroup);
-    });
-    
-}
-
-//draw circle element
-annotools.prototype.drawCircle = function(x, y, size, color, circleGroup) {
-    console.log('Drawing circle at', x, y, size);
-    var creation = Date.now(); //the number of milliseconds since midnight January 1, 1970
-    var svgCircle = circleGroup.append("circle")
-        .attr("cx", x)
-        .attr("cy", y)
-        .attr("r", size)
-        .style("fill", fillColor)
-        .attr("id", "circle_" + creation)
-	    .on("mouseover", function(d) {
-  		    d3.select(this).attr("r", radius).style("fill", hoverColor);
-			})                  
-        .on("mouseout", function(d) {
-  		    d3.select(this).attr("r", radius).style("fill", fillColor);
-		    })
-        .on("contextmenu", function (d, i) {
-            d3.event.preventDefault();
-           // react on right-clicking;
-            removeCircle("circle_" + creation);
-            });
-	    
-	var svgTooltip = svgCircle.append("title")  //tooltip with circle x, y
-	    .text(function() {
-		    return x + ', ' + y;	  
-			});
-}
-
-//remove circle element
-annotools.prototype.removeCircle = function(id) {
-   d3.selectAll('g #' + id).remove();
-}
-//draw dots end
