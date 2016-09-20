@@ -3,4 +3,3 @@ annotools.prototype.drawDots = function() {
   alert('comming soon...');
   
 }
-
