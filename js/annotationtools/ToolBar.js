@@ -278,22 +278,21 @@ ToolBar.prototype.createButtons = function () {
     tool.append(this.spacer1);
     
     this.dotToolButton = jQuery('<img>', {
-      'title': 'Dot Tool',
-      'class': 'toolButton inactive',
-      'src': 'images/analyze.png',
-      'id': 'drawDotButton'
+        'title': 'Dot Tool',
+        'class': 'toolButton inactive',
+        'src': 'images/analyze.png',
+        'id': 'drawDotButton'
     });
     tool.append(this.dotToolButton); // Dot Tool
 	  
-	// Test dot tool
-	this.dotToolTestButton = jQuery('<img>', {
-      'title': 'Dot Tool Test',
-      'class': 'toolButton inactive',
-      'src': 'images/analyze.png',
-      'id': 'testDotToolButton'
+    this.dotToolTestButton = jQuery('<img>', {
+	    'title': 'Dot Tool Test',
+	    'class': 'toolButton inactive',
+        'src': 'images/analyze.png',
+        'id': 'testDotToolButton'
     });
     tool.append(this.dotToolTestButton); // Test Dot Tool
-	// End test dot tool
+	
 
     /*
      * Event handlers on click for the buttons
@@ -321,7 +320,7 @@ ToolBar.prototype.createButtons = function () {
       this.annotools.downloadROI();
     }.bind(this));
       
-    //Dot Tool start
+    // Dot Tool start
     this.dotToolButton.on('click', function(){
        if (this.annotools.mode === 'dot') {
           this.setNormalMode();
@@ -336,13 +335,13 @@ ToolBar.prototype.createButtons = function () {
            jQuery("#drawDotButton").addClass("active");
        }   
     }.bind(this)); 
-    //Dot Tool end
+    // Dot Tool end
 	  
-	//Test dot tool start
-	this.dotToolTestButton.on('click', function(){
-      this.annotools.showDotTools();
+    // Test dot tool start
+    this.dotToolTestButton.on('click', function() {
+	    this.annotools.showDotTools();
     }.bind(this));
-	//Test dot tool end
+    // Test dot tool end
       
     this.ellipsebutton.on('click', function () {
       // this.mode = 'ellipse'
