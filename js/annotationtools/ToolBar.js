@@ -284,6 +284,16 @@ ToolBar.prototype.createButtons = function () {
       'id': 'drawDotButton'
     });
     tool.append(this.dotToolButton); // Dot Tool
+	  
+	// Test dot tool
+	this.dotToolTestButton = jQuery('<img>', {
+      'title': 'Dot Tool Test',
+      'class': 'toolButton inactive',
+      'src': 'images/analyze.png',
+      'id': 'testDotToolButton'
+    });
+    tool.append(this.dotToolTestButton); // Test Dot Tool
+	// End test dot tool
 
     /*
      * Event handlers on click for the buttons
@@ -327,6 +337,12 @@ ToolBar.prototype.createButtons = function () {
        }   
     }.bind(this)); 
     //Dot Tool end
+	  
+	//Test dot tool start
+	this.dotToolTestButton.on('click', function(){
+      this.annotools.showDotTools();
+    }.bind(this));
+	//Test dot tool end
       
     this.ellipsebutton.on('click', function () {
       // this.mode = 'ellipse'
