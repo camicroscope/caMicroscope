@@ -2,16 +2,14 @@
 <html>
     <head>
         <title>Annotation Tool - Dot</title>
-        <!--<script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>-->
-        <!--<script src="https://d3js.org/d3.v4.min.js"></script>-->
         <script src="../js/dependencies/d3.js"></script>
         <script src="../js/dependencies/jquery.js"></script>
         <link rel="stylesheet" href="../css/bootstrap.css">
     </head>
 	<body>
         <div class="container" align="center">
-            <h3><strong>Annotation Tool - Dot</strong></h3><br />
-			<h4><a target="_blank" href="http://129.49.249.191/camicroscope_alina/osdCamicroscope.php?tissueId=TCGA-55-8089-01Z-00-DX1&cancerType=luad&x=8972&y=6122">View ROI in the whole slide image</a></h4>
+            <h3 id="title"><strong>Annotation Tool - Dot</strong></h3><br />
+			<h4 id="caMicLink"></h4>
             <div id="svgContainer" class="row"></div>
             <script src="testDotTool.js"></script>
         </div>

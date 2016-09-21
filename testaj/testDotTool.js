@@ -1,19 +1,53 @@
-//tmp values for testing; will be set up dynamically
-var tmpWidth   = 460,
-    tmpHeight  = 460,
-	tileUri    = "http://129.49.249.191/fcgi-bin/iipsrv.fcgi?IIIF=/home/data/tcga_data/luad/TCGA-55-8089-01Z-00-DX1.da4d99ff-4a7c-45a3-b79c-039c0c9e9712.svs/8972,6122,451,408/full/0/default.jpg",
-    radius     = 3,   // Change according to the size of the point
-    fillColor  = "#ffff00",  //yellow
-    hoverColor = "#ff2626";  //red
+// set up Dot Tool configuration object
+var configDotTool = {
+	defaultWidth: 500,
+	defaultHeight: 500,
+	caMicBaseUrl: 'http://129.49.249.191/camicroscope_alina/osdCamicroscope.php',
+	defaultSubjectId: 'TCGA-55-8089-01Z-00-DX1',
+	defaultCancerType: 'luad',
+	defaultStartX: 8972,
+	defaultStartY: 6122,
+	iiifServerBaseUrl: 'http://129.49.249.191/fcgi-bin/iipsrv.fcgi?IIIF=',
+	defaultFileName: '/home/data/tcga_data/luad/TCGA-55-8089-01Z-00-DX1.da4d99ff-4a7c-45a3-b79c-039c0c9e9712.svs/',
+	defaultRadius: 3,
+	defaultFillColor: '#ffff00',
+	defaultHoverColor: '#ff2626'
+};
 
-//dataset
+// set up tile uri to IIIF Server
+var	tileUri = configDotTool.iiifServerBaseUrl + configDotTool.defaultFileName
+          + configDotTool.defaultStartX + ',' + configDotTool.defaultStartY + ','
+          + configDotTool.defaultWidth + ',' + configDotTool.defaultHeight + "/full/0/default.jpg";
+
+var radius     = configDotTool.defaultRadius,      // Change according to the size of the point
+    fillColor  = configDotTool.defaultFillColor,   //yellow
+    hoverColor = configDotTool.defaultHoverColor;  //red
+
+// dataset
 var circleDataset = [];  //an array of circle objects
 
-//setup the svg 
+// set up URL to view ROI in the whole slide image
+var caMicUri = configDotTool.caMicBaseUrl + '?tissueId=' + configDotTool.defaultSubjectId + '&cancerType=' + 
+	configDotTool.defaultCancerType + '&x=' + configDotTool.defaultStartX + '&y=' + configDotTool.defaultStartY;
+
+// set up link to view ROI in caMicroscope
+$(document).ready(function(){ 
+
+    var link = $('<a>');
+    link.attr('href', caMicUri);
+    link.attr('title', 'View ROI in caMicroscope');
+	link.attr('target', '_blank');
+    link.text('View ROI in the whole slide image');
+    link.addClass('link');
+    
+    $('#caMicLink').html(link);  
+  });  
+
+// set up the svg 
 var svgHtmlDot = d3.select("#svgContainer")
         .append("svg:svg")
-        .attr("width", tmpWidth)
-        .attr("height", tmpHeight)
+        .attr("width", configDotTool.defaultWidth)
+        .attr("height", configDotTool.defaultHeight)
         .style("cursor", "crosshair");
     
     svgHtmlDot.append("image")
@@ -30,7 +64,7 @@ var svgHtmlDot = d3.select("#svgContainer")
     });
         
 
-//group circle elements together
+// group circle elements together
 var circleGroup = svgHtmlDot.append("g");
     
     //.on(action, fn) syntax for attaching an event listener to a DOM selection
@@ -42,7 +76,7 @@ var circleGroup = svgHtmlDot.append("g");
         drawCircle(xPosition, yPosition, radius, fillColor);
     });
 
-//draw circle element
+// draw circle element
 function drawCircle(x, y, size, color) {
     console.log('Drawing circle at', x, y, size);
     var creation = Date.now(); //the number of milliseconds since midnight January 1, 1970
@@ -70,7 +104,7 @@ function drawCircle(x, y, size, color) {
 			});
 }
 
-//remove circle element
+// remove circle element
 function removeCircle(id){
    d3.selectAll('g #' + id).remove();
 }
