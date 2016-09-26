@@ -15,8 +15,8 @@ annotools.prototype.drawDots = function() {
     var width = parseInt(container.offsetWidth);
     var height = parseInt(container.offsetHeight);
 
-    /* Why is there an ellipse in the center? */
-    var svgHtml = '<svg xmlns="http://www.w3.org/2000/svg" width="' + width + 'px" height="' + height + 'px" version="1.1" id="markups">';
+    /* svgHtml */
+    var svgHtml = '<svg xmlns="http://www.w3.org/2000/svg" width="' + width + 'px" height="' + height + 'px" version="1.1" id="markups" style="border: 10px solid #ffff00">';
     svgHtml += '<g id="groupcenter"/>';
     svgHtml += '<g id="origin">';
     var origin = viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(.5, .5));
@@ -35,6 +35,15 @@ annotools.prototype.drawDots = function() {
       },
       html: svgHtml
     }).inject(container);
+	
+	// prevent zoom when the SVG overlay is click
+    jQuery('#markups').mousedown(function (event) {
+        //console.log(event.which);
+        event.preventDefault();
+        event.stopPropagation();
+        event.stopImmediatePropagation();
+    });
+
     
     // d3 start
     var svgHtmlDot = d3.select('svg');
