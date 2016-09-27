@@ -1,4 +1,4 @@
-// set up Dot Tool configuration object
+// NOTE:  this is code is deprecated
 var configDotTool = {
 	defaultWidth: 500,
 	defaultHeight: 500,
@@ -14,10 +14,10 @@ var configDotTool = {
 	defaultHoverColor: '#ff2626'
 };
 
-// set up tile uri to IIIF Server
-var	tileUri = configDotTool.iiifServerBaseUrl + configDotTool.defaultFileName
-          + configDotTool.defaultStartX + ',' + configDotTool.defaultStartY + ','
-          + configDotTool.defaultWidth + ',' + configDotTool.defaultHeight + "/full/0/default.jpg";
+// tile uri to IIP Image server (IIIF protocol)
+var tileUri = configDotTool.iiifServerBaseUrl + configDotTool.defaultFileName
+    + configDotTool.defaultStartX + ',' + configDotTool.defaultStartY + ','
+    + configDotTool.defaultWidth + ',' + configDotTool.defaultHeight + "/full/0/default.jpg";
 
 var radius     = configDotTool.defaultRadius,      // Change according to the size of the point
     fillColor  = configDotTool.defaultFillColor,   //yellow
@@ -26,11 +26,9 @@ var radius     = configDotTool.defaultRadius,      // Change according to the si
 // dataset
 var circleDataset = [];  //an array of circle objects
 
-// set up URL to view ROI in the whole slide image
 var caMicUri = configDotTool.caMicBaseUrl + '?tissueId=' + configDotTool.defaultSubjectId + '&cancerType=' + 
 	configDotTool.defaultCancerType + '&x=' + configDotTool.defaultStartX + '&y=' + configDotTool.defaultStartY;
 
-// set up link to view ROI in caMicroscope
 $(document).ready(function(){ 
 
     var link = $('<a>');
@@ -45,23 +43,23 @@ $(document).ready(function(){
 
 // set up the svg 
 var svgHtmlDot = d3.select("#svgContainer")
-        .append("svg:svg")
-        .attr("width", configDotTool.defaultWidth)
-        .attr("height", configDotTool.defaultHeight)
-        .style("cursor", "crosshair");
+    .append("svg:svg")
+    .attr("width", configDotTool.defaultWidth)
+    .attr("height", configDotTool.defaultHeight)
+    .style("cursor", "crosshair");
     
     svgHtmlDot.append("image")
-	    .attr("id", "currentImage")
+        .attr("id", "currentImage")
         .attr("xlink:href", tileUri)
 	    .on("load", function(d) {                //get image size dynamically
             var currentImage = new Image();
-            currentImage.onload = function() {
-                d3.select("#currentImage")
-                .attr("width", this.width)
-                .attr("height", this.height);
-        }
-        currentImage.src = tileUri;
-    });
+                currentImage.onload = function() {
+                    d3.select("#currentImage")
+                    .attr("width", this.width)
+                    .attr("height", this.height);
+                }
+                currentImage.src = tileUri;
+            });
         
 
 // group circle elements together
@@ -87,24 +85,24 @@ function drawCircle(x, y, size, color) {
         .style("fill", fillColor)
         .attr("id", "circle_" + creation)
 	    .on("mouseover", function(d) {
-  		    d3.select(this).attr("r", radius).style("fill", hoverColor);
-			})                  
-        .on("mouseout", function(d) {
-  		    d3.select(this).attr("r", radius).style("fill", fillColor);
-		    })
-        .on("contextmenu", function (d, i) {
-            d3.event.preventDefault();
-           // react on right-clicking;
-            removeCircle("circle_" + creation);
+  	        d3.select(this).attr("r", radius).style("fill", hoverColor);
+	    })                  
+            .on("mouseout", function(d) {
+  	        d3.select(this).attr("r", radius).style("fill", fillColor);
+	    })
+            .on("contextmenu", function (d, i) {
+                d3.event.preventDefault();
+               // react on right-clicking;
+                removeCircle("circle_" + creation);
             });
 	    
-	var svgTooltip = svgCircle.append("title")  //tooltip with circle x, y
-	    .text(function() {
-		    return x + ', ' + y;	  
-			});
+    var svgTooltip = svgCircle.append("title")  //tooltip with circle x, y
+        .text(function() {
+	    return x + ', ' + y;	  
+	});
 }
 
 // remove circle element
-function removeCircle(id){
-   d3.selectAll('g #' + id).remove();
+function removeCircle(id) {
+    d3.selectAll('g #' + id).remove();
 }
