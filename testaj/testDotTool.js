@@ -1,17 +1,17 @@
-// NOTE:  this is code is deprecated
+// NOTE:  this code is deprecated
 var configDotTool = {
-	defaultWidth: 500,
-	defaultHeight: 500,
-	caMicBaseUrl: 'http://129.49.249.191/camicroscope_alina/osdCamicroscope.php',
-	defaultSubjectId: 'TCGA-55-8089-01Z-00-DX1',
-	defaultCancerType: 'luad',
-	defaultStartX: 8972,
-	defaultStartY: 6122,
-	iiifServerBaseUrl: 'http://129.49.249.191/fcgi-bin/iipsrv.fcgi?IIIF=',
-	defaultFileName: '/home/data/tcga_data/luad/TCGA-55-8089-01Z-00-DX1.da4d99ff-4a7c-45a3-b79c-039c0c9e9712.svs/',
-	defaultRadius: 3,
-	defaultFillColor: '#ffff00',
-	defaultHoverColor: '#ff2626'
+    defaultWidth: 500,
+    defaultHeight: 500,
+    caMicBaseUrl: 'http://129.49.249.191/camicroscope_alina/osdCamicroscope.php',
+    defaultSubjectId: 'TCGA-55-8089-01Z-00-DX1',
+    defaultCancerType: 'luad',
+    defaultStartX: 8972,
+    defaultStartY: 6122,
+    iiifServerBaseUrl: 'http://129.49.249.191/fcgi-bin/iipsrv.fcgi?IIIF=',
+    defaultFileName: '/home/data/tcga_data/luad/TCGA-55-8089-01Z-00-DX1.da4d99ff-4a7c-45a3-b79c-039c0c9e9712.svs/',
+    defaultRadius: 3,
+    defaultFillColor: '#ffff00',
+    defaultHoverColor: '#ff2626'
 };
 
 // tile uri to IIP Image server (IIIF protocol)
@@ -29,8 +29,7 @@ var circleDataset = [];  //an array of circle objects
 var caMicUri = configDotTool.caMicBaseUrl + '?tissueId=' + configDotTool.defaultSubjectId + '&cancerType=' + 
 	configDotTool.defaultCancerType + '&x=' + configDotTool.defaultStartX + '&y=' + configDotTool.defaultStartY;
 
-$(document).ready(function(){ 
-
+$(document).ready(function() { 
     var link = $('<a>');
     link.attr('href', caMicUri);
     link.attr('title', 'View ROI in caMicroscope');
