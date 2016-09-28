@@ -2,19 +2,42 @@
 annotools.prototype.drawDots = function() {
 	
     // alert('comming soon...');
-    var self =this;
+
+    var annotools = this;
+    var pointsArr = [];
 	
+    var container = document.getElementsByClassName(this.canvas)[0]; // get the Canvas Container
+    // console.log(container);
+	
+    var left = parseInt(container.offsetLeft),
+        top = parseInt(container.offsetTop),
+        width = parseInt(container.offsetWidth),
+        height = parseInt(container.offsetHeight);
+    console.log("left: " + left + " top: " + top + " width: " + width + " height: " + height);
+    if ( left < 0 ) {
+        left = 0;
+        width = window.innerWidth;
+    } // see if the container is outside the current viewport
+    if ( top < 0 ) {
+        top = 0;
+        height = window.innerHeight;
+    }
+	
+    this.drawLayer.hide();
+    this.magnifyGlass.hide();  // hide the Magnifying Tool
+        
+        
     var markup_svg = document.getElementById('markups');
     if (markup_svg) {
         // console.log("destroying")
         markup_svg.destroy();
     }
-
-    var container = document.getElementsByClassName(this.canvas)[0]; // get the Canvas Container
-    // console.log(container);
-    var width = parseInt(container.offsetWidth);
-    var height = parseInt(container.offsetHeight);
-
+	
+    if (this.svg) {
+        this.svg.html = '';
+        this.svg.destroy();
+    }
+	
     /* svgHtml */
     var svgHtml = '<svg xmlns="http://www.w3.org/2000/svg" width="' + width + 'px" height="' + height + 'px" version="1.1" id="markups" style="border: 2px solid #ffff00">';
         svgHtml += '<g id="groupcenter"/>';
@@ -44,9 +67,6 @@ annotools.prototype.drawDots = function() {
         event.stopImmediatePropagation();
     });
     
-    // hide the Magnifying Tool
-    self.magnifyGlass.hide();
-    
     // d3.js
     var svgHtmlDot = d3.select('svg');
     var viewPort =  d3.select('#viewport');
@@ -67,6 +87,7 @@ annotools.prototype.drawDots = function() {
             .attr('cy', yPosition)
             .attr('r', 4)
             .style('fill', '#ffff00')
+		    .style('cursor', 'pointer')
             .attr('id', 'circle_' + creation)
             .on('contextmenu', function (d, i) {
                 d3.event.preventDefault();
@@ -82,8 +103,19 @@ annotools.prototype.drawDots = function() {
     });
 	
 
-    // add info panel
+    // panel
     var panel = jQuery('#panel').show();
+        panel.html(function () {
+            return "<div id='panelHeader'><h4> Dot Annotation Tool </h4></div><div id='panelBody'> <ul><li>&nbsp;</li><li>&nbsp;</li><li>&nbsp;</li><li>&nbsp;</li></ul><br /><button class='btn' id='cancelDots'>Cancel</button></div>";
+        });
+
+    jQuery('#cancelDots').click(function () {
+        jQuery('#panel').hide();
+        annotools.drawLayer.hide();
+	annotools.svg.hide();
+        annotools.addMouseEvents();
+    });
+	
 }
 
 
