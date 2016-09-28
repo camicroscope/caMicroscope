@@ -322,13 +322,12 @@ ToolBar.prototype.createButtons = function () {
       
     // Dot Tool start
     this.dotToolButton.on('click', function(){
-       if (this.annotools.mode === 'dot') {
-          this.setNormalMode();
+       if (this.annotools.mode == 'dot') {
+           this.setNormalMode();
        }else{
            this.mode = 'dot';
            this.annotools.mode = 'dot';
            this.annotools.drawDots();
-           jQuery("canvas").css("cursor", "crosshair");
            jQuery("svg").css("cursor", "crosshair");
            jQuery("#drawRectangleButton").removeClass("active");
            jQuery("#drawFreelineButton").removeClass("active");
