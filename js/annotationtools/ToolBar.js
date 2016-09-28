@@ -284,15 +284,16 @@ ToolBar.prototype.createButtons = function () {
         'id': 'drawDotButton'
     });
     tool.append(this.dotToolButton); // Dot Tool
-	  
+	
+    /*
     this.dotToolTestButton = jQuery('<img>', {
-	    'title': 'Dot Tool Test',
-	    'class': 'toolButton inactive',
+        'title': 'Dot Tool Test',
+        'class': 'toolButton inactive',
         'src': 'images/analyze.png',
         'id': 'testDotToolButton'
     });
     tool.append(this.dotToolTestButton); // Test Dot Tool
-	
+    */
 
     /*
      * Event handlers on click for the buttons
@@ -322,24 +323,26 @@ ToolBar.prototype.createButtons = function () {
       
     // Dot Tool start
     this.dotToolButton.on('click', function(){
-       if (this.annotools.mode == 'dot') {
-           this.setNormalMode();
-       }else{
-           this.mode = 'dot';
-           this.annotools.mode = 'dot';
-           this.annotools.drawDots();
-           jQuery("svg").css("cursor", "crosshair");
-           jQuery("#drawRectangleButton").removeClass("active");
-           jQuery("#drawFreelineButton").removeClass("active");
-           jQuery("#drawDotButton").addClass("active");
+        if (this.annotools.mode == 'dot') {
+            this.setNormalMode();
+        }else{
+            this.mode = 'dot';
+            this.annotools.mode = 'dot';
+            this.annotools.drawDots();
+            jQuery("svg").css("cursor", "crosshair");
+            jQuery("#drawRectangleButton").removeClass("active");
+            jQuery("#drawFreelineButton").removeClass("active");
+            jQuery("#drawDotButton").addClass("active");
        }   
     }.bind(this)); 
     // Dot Tool end
 	  
     // Test dot tool start
+    /*
     this.dotToolTestButton.on('click', function() {
 	    this.annotools.showDotTools();
     }.bind(this));
+    */
     // Test dot tool end
       
     this.ellipsebutton.on('click', function () {
