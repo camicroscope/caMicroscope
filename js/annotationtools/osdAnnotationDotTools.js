@@ -112,8 +112,9 @@ annotools.prototype.drawDots = function() {
     jQuery('#cancelDots').click(function () {
         jQuery('#panel').hide();
         annotools.drawLayer.hide();
-	annotools.svg.hide();
+	    annotools.svg.hide();
         annotools.addMouseEvents();
+        jQuery("#drawDotButton").removeClass("active");
     });
 	
 }
