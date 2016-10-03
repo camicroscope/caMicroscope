@@ -2831,7 +2831,7 @@ annotools.prototype.promptForDownload = function(newAnnot, mode, annotools, ctx)
   h = parseInt(h)
   var max = 2000;
   var url;
-  var iipSrv = "http://129.49.249.191/fcgi-bin/iipsrv.fcgi?IIIF=";
+  var iipSrv = "http://quip1.uhmc.sunysb.edu/fcgi-bin/iipsrv.fcgi?IIIF=";
   console.log(fileLocation);
   var fileLocationReal = fileLocation.substr(0, fileLocation.length -4);
   console.log(fileLocationReal);
