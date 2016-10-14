@@ -7,13 +7,15 @@ $config = require '../Configuration/config.php';
 $getUrl =  $config['getMultipleAnnotations'];
 $postUrl = $config['postAnnotation'];
 
-$api_key = '';
+
+//echo $_SESSION['api_key'];
+$api_key = '4fbb38a3-1821-436c-a44d-8d3bc5efd33e';
 
 if (!empty($_SESSION['api_key'])) {
     $api_key = $_SESSION['api_key'];
 }
 //$api_key = 'c0327219-68b2-4a40-9801-fc99e8e1e76f';
-$api_key = '4fbb38a3-1821-436c-a44d-8d3bc5efd33e';
+//$api_key = '4fbb38a3-1821-436c-a44d-8d3bc5efd33e';
 
 		if(isset($_GET["iid"]))
 		{
@@ -30,15 +32,21 @@ $api_key = '4fbb38a3-1821-436c-a44d-8d3bc5efd33e';
             $algorithms = urlencode($_GET["algorithms"]);
             $getUrl  = $getUrl . "api_key=" . $api_key;
             
-
+		
             $url = $getUrl . "&CaseId=" . $iid ."&x1=" . $x . "&y1=" . $y . "&x2=" . $x1 . "&y2=" . $y1 . "&footprint=" . $area . "&algorithms=" . $algorithms;
-
-			$getRequest = new RestRequest($url,'GET');
-            $getRequest->execute();
-
-
+			//echo $url;
+			//$getRequest = new RestRequest($url,'GET');
+//	            $getRequest->execute();
+			
+			$ch = curl_init();
+			curl_setopt($ch, CURLOPT_URL, $url);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+			$output = curl_exec($ch);
+			
+			//echo $output;
+			$annotationList = $output;
 			//Figure out how to parse reponse
-			$annotationList = ($getRequest->responseBody);
+			//$annotationList = ($getRequest->responseBody);
 
             if($annotationList)
                 echo ($annotationList);

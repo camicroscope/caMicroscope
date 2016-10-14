@@ -2,14 +2,15 @@
 
 
 ///new
-$baseUrl = "dragon.cci.emory.edu";
-$serviceUrl = "$baseUrl/services/TCGA";
+$baseUrl = "http://127.0.0.1:9099";
+$serviceUrl = "$baseUrl/services/Camicroscope3-QA";
 
-$imageUrl = "$serviceUrl/ImageData";
+$imageUrl = "$serviceUrl/ImageMetaData";
+
 $templateUrl = "$serviceUrl/AnnotationTemplate";
 $markupUrl = "$serviceUrl/Annotations";
 
-$dynamicServices = "$baseUrl/services/DynamicServices";
+$dynamicServices = $serviceUrl;
 $firebase = "https://test-8f679.firebaseio.com/camicroscopeStates";
 $firebase_key = "kweMPSAo4guxUXUodU0udYFhC27yp59XdTEkTSJ4";
 
@@ -20,8 +21,8 @@ return array(
     /*
      * temp
      */
-    'algorithmsForImage' => "http://dragon.cci.emory.edu:9099/services/quip/Analysis2/query/CompletedAlgorithms?",
-    'getMultipleAnnotations' => "$serviceUrl/GeoJSONImageMetaData/query/getMultipleMarkups?",
+    'algorithmsForImage' => "$serviceUrl/Provenance/query/getAlgorithmsForImage?",
+    'getMultipleAnnotations' => "$serviceUrl/Markups/query/getMultipleMarkups?",
     //'getMultipleAnnotations' => "http://172.17.0.2:9099/services/Camicroscope_Annotations/MarkupLoader/query/getMultipleMarkups?",
 
 
@@ -31,14 +32,14 @@ return array(
     'getAllAnnotations' => "$tempMarkupUrl/Annotations/query/byUserAndImageID?iid=",
     'getAnnotationsSpatial' => "$serviceUrl/GeoJSONImageMetaData/query/getMarkups?",
     'getAnnotationSpatialFilter' => "$tempMarkupUrl/Annotations/query/allByFilter?iid=",
-    'postAnnotation' => "$serviceUrl/GeoJSONImageMetaData/submit/json",
+    'postAnnotation' => "$serviceUrl/Markups/submit/json",
     'retrieveAnnotation' => "$tempMarkupUrl/Annotations/query/byAnnotId?annotId=",
     'postJobParameters' => "$tempMarkupUrl/AnalysisJobs/submit/singleJob",
     'deleteAnnotation' => "$tempMarkupUrl/Annotations/delete/singleAnnotation?annotId=",
     'getDimensions' => "$imageUrl/query/getDimensionsByIID?api_key=",
-    'getFileLocation' => "http://dragon.cci.emory.edu/services/TCGA/GeoJSONMetaData/query/getFileLocationByIID?api_key=",
-    'getMPP' => "http://dragon.cci.emory.edu/services/TCGA/GeoJSONMetaData/query/getMPPByIID?api_key=",
-    'fastcgi_server' => "/fcgi-bin/iipsrv.fcgi",
+    'getFileLocation' => "$imageUrl/query/getFileLocationByIID?api_key=",
+    'getMPP' => "$imageUrl/query/getMPPByIID?api_key=",
+    'fastcgi_server' => "/fastcgi-bin/iipsrv.fcgi",
     'postWorkOrder' => "$dynamicServices/WorkOrders/submit/json"
 );
 

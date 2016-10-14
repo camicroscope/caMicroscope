@@ -35,9 +35,9 @@ function goodalgo (data, status) {
     // console.log(data[i])
     n.title = "<div class='colorBox' style='background:" + available_colors[i] + "'></div>" + data[i].title
     n.key = i.toString()
-    n.refKey = data[i].analysis_execution_id
+    n.refKey = data[i].analysis.execution_id
     n.color = available_colors[i]
-    algorithm_color[data[i].analysis_execution_id] = available_colors[i]
+    algorithm_color[data[i].analysis.execution_id] = available_colors[i]
     blob.push(n)
   }
   ftree = jQuery('#tree').fancytree({
@@ -128,8 +128,10 @@ ToolBar.prototype.createButtons = function () {
   jQuery(document).ready(function () {
     // console.log(options)
     // var self= this
-
-    jQuery.get('api/Data/getAlgorithmsForImage.php?iid=' + self.iid, function (data) {
+    var url = 'api/Data/getAlgorithmsForImage.php?iid=' + self.iid;
+    console.log(url);
+    jQuery.get(url, function (data) {
+      console.log(data);
       d = JSON.parse(data)
 
       goodalgo(d, null)
@@ -236,14 +238,14 @@ ToolBar.prototype.createButtons = function () {
       'class': 'toolButton',
       'src': 'images/insta.png'
     })
-    tool.append(this.filterImgButton)
+    //tool.append(this.filterImgButton)
 
     this.bookmarkButton = jQuery('<img>', {
       'title': 'Bookmark/Share current state',
       'class': 'toolButton',
       'src': 'images/ic_insert_link_white_24dp_1x.png'
     })
-    tool.append(this.bookmarkButton)
+    //tool.append(this.bookmarkButton)
 
     this.partialDownloadButton = jQuery('<img>', {
       'title': 'Download Partial Markups (Coming Soon)',

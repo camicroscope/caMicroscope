@@ -1,4 +1,5 @@
-    <?php require '../authenticate.php';
+    <?php 
+	require '../authenticate.php';
 
     $config = require 'api/Configuration/config.php';
 
@@ -44,7 +45,7 @@
         <script src="js/annotationtools/osdAnnotationTools.js"></script>
         <script src="js/annotationtools/geoJSONHandler.js"></script>
         <script src="js/dependencies/MD5.js"></script>
-        <script src="http://code.jquery.com/ui/1.11.2/jquery-ui.min.js" type="text/javascript"></script> 
+        <script src="https://code.jquery.com/ui/1.11.2/jquery-ui.min.js" type="text/javascript"></script> 
     
 
         <!--Filtering Tools-->

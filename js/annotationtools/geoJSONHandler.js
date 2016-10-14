@@ -269,7 +269,7 @@ annotools.prototype.generateSVG = function (annotations) {
         svgHtml += polyPixelX + ',' + polyPixelY + ' '
       }
 
-      svgHtml += '" style="fill: transparent; stroke: lime; stroke-width:2.5"/>'
+      svgHtml += '" style="fill: transparent; stroke:'+color+'; stroke-width:2.5"/>'
     // svgHtml += '" style="fill:yellow; stroke:'+color+ '; stroke-width:25"/>'
     }
 

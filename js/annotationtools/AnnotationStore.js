@@ -41,8 +41,6 @@ AnnotationStore.prototype.getAnnotations = function (x1, y1, x2, y2, footprint, 
       if (y_1 < 0)
         y_1 = 0
 
-      console.log(x1, x2, y1, y2)
-      console.log(x_1, x_2, y_1, y_2)
       self.setCacheBounds(x_1, y_1, x_2, y_2)
       // console.log("fetching.........")
       console.log('Clearing and fetching cache')
@@ -74,20 +72,27 @@ AnnotationStore.prototype.fetchAnnotations = function (x1, y1, x2, y2, footprint
     console.log(footprint)
   var midX = x2
   var midY = y2
-  algorithms.push('ganesh:algo1')
+
   var algorithms_urlparam = JSON.stringify(algorithms)
   algorithms_urlparam = algorithms_urlparam.replace('[', '%5B')
   algorithms_urlparam = algorithms_urlparam.replace(']', '%5D')
   algorithms_urlparam = algorithms_urlparam.replace(/"/g, '%22')
 
-  // console.log(algorithms_urlparam)
+
   var url1 = 'api/Data/getMultipleAnnots.php?iid=' + self.iid + '&x=' + x1 + '&y=' + y1 + '&x1=' + midX + '&y1=' + midY + '&footprint=' + footprint + '&algorithms=' + algorithms_urlparam
   console.log(url1)
   // var url1 = "http://dragon.cci.emory.edu:9099/services/TCGA/GeoJSONImageMetaData/query/getMultipleMarkups?api_key=4fbb38a3-1821-436c-a44d-8d3bc5efd33e&CaseId=" + self.iid +"&x1=" + x1+ "&y1=" + y1 + "&x2=" + midX + "&y2=" + midY + "&footprint="+ footprint + "&algorithms=" + algorithms_urlparam + "&"
   // console.log(url1)
 
-  jQuery.get(url1, function (data) {
-    var d = JSON.parse(data)
+  jQuery.get(url1, function (data) {  
+
+    var d = {};
+    try{
+	
+    	d = JSON.parse(data);
+    } catch(e){
+	d = []; 
+    }
     self.annotations = d
 
     // console.log("fetched data")
