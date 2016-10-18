@@ -129,7 +129,12 @@ annotools.prototype.getMultiAnnot = function (viewer) {
   var val3 = ''
 
   var algorithms = []
-
+  console.log(ALGORITHM_LIST);
+  console.log(SELECTED_ALGORITHM_LIST);
+  SELECTED_ALGORITHM_LIST = SELECTED_ALGORITHM_LIST.sort();
+  console.log("....");
+  algorithms = SELECTED_ALGORITHM_LIST;
+  /*
   if (jQuery('#tree').attr('algotree')) {
     var selalgos = jQuery('#tree').fancytree('getTree').getSelectedNodes()
     // console.log(selalgos)
@@ -138,6 +143,8 @@ annotools.prototype.getMultiAnnot = function (viewer) {
     // opa["Val" + (i + 1).toString()] = selalgos[i].refKey
     }
   }
+  */
+
   var self = this
   this.x1 = this.imagingHelper._viewportOrigin['x']
   this.y1 = this.imagingHelper._viewportOrigin['y']

@@ -83,40 +83,67 @@ function goodalgo (data, status) {
     }
   })
 }
+var ALGORITHM_LIST = {};
+var SELECTED_ALGORITHM_LIST = [];
+var SELECTED_ALGORITHM_KEYS = [];
 
 ToolBar.prototype.toggleAlgorithmSelector = function () {
-  if (!jQuery('#algosel').attr('eb')) {
-    jQuery('#algosel').attr('eb', true)
-    // console.log("initializing...")
-    jQuery('#algosel').css({
-      'width': '300px',
-      'zIndex': 199,
-      'visibility': 'hidden'
-    })
-    jQuery('#algosel').on('mousedown', function (e) {
-      jQuery(this).addClass('draggable').parents().on('mousemove', function (e) {
-        jQuery('.draggable').offset({
-          top: e.pageY - jQuery('.draggable').outerHeight() / 2,
-          left: e.pageX - jQuery('.draggable').outerWidth() / 2
-        }).on('mouseup', function () {
-          jQuery(this).removeClass('draggable')
-        })
-      })
-      e.preventDefault()
-    }).on('mouseup', function () {
-      jQuery('.draggable').removeClass('draggable')
-    })
-  }
-  if (jQuery('#algosel').css('visibility') == 'visible') {
-    jQuery('#algosel').css({
-      'visibility': 'hidden'
-    })
-  } else {
-    jQuery('#algosel').css({
-      'visibility': 'visible'
-    })
-  }
-  this.showMessage('Algorithm Selection Toggled')
+  var self  = this;
+	jQuery("#panel").show("slide");
+  var url = 'api/Data/getAlgorithmsForImage.php?iid=' + self.iid;
+
+  var htmlStr = "<div id='panelHeader'> <h4>Select Algorithm </h4> </div> <div id='panelBody'> <ul id='algorithmList'>";
+  jQuery.get(url, function (data) {
+
+    d = JSON.parse(data)
+
+    ALGORITHM_LIST = d;
+    for(var i=0; i < d.length; i++){
+
+      htmlStr += "<li><input type='checkbox' value="+i+" /> "+d[i].title + "</li>";
+    }
+
+    htmlStr +="</ul> <br /> <button id='submitAlgorithms' class='btn'>Submit</button> <button class='btn' id='cancelAlgorithms'>Cancel</button> </div>";
+
+    jQuery("#panel").html(htmlStr);
+
+
+
+    jQuery("#algorithmList input[type=checkbox]").each(function() {
+
+      var elem = jQuery(this)
+      var id = (this).value*1;
+      for(var i=0; i < SELECTED_ALGORITHM_KEYS.length; i++){
+        if(SELECTED_ALGORITHM_KEYS[i] == (id)){
+
+          elem.prop('checked', true); 
+        }
+      }
+      
+    });
+
+    self.annotools.getMultiAnnot();
+    
+    jQuery("#submitAlgorithms").click(function(){
+      var selected= [];
+      SELECTED_ALGORITHM_LIST = [];
+      jQuery("#algorithmList input:checked").each(function() {
+        SELECTED_ALGORITHM_LIST.push(ALGORITHM_LIST[(this).value * 1].analysis.execution_id);
+        SELECTED_ALGORITHM_KEYS.push((this).value*1);
+      });
+
+      self.annotools.getMultiAnnot();
+      jQuery("#panel").html("");
+      jQuery("#panel").hide("slide");
+    });
+
+    jQuery("#cancelAlgorithms").click(function(){
+      jQuery("#panel").html("");
+      jQuery("#panel").hide("slide");
+    });
+  });
+  
+    
 }
 
 ToolBar.prototype.createButtons = function () {
