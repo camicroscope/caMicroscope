@@ -8,7 +8,8 @@ class CamicUtils
 		include_once("RestRequest.php");
 		$this->CONFIG = require '../Configuration/config.php';
 		//$this->api_key = $Session['api_key'];
-		$this->api_key = "983495a5-6b27-44b5-adf2-ae5e59c23ccf";
+		// $this->api_key = "983495a5-6b27-44b5-adf2-ae5e59c23ccf";
+		$this->api_key = "e97203a8-896d-4e11-9e7c-32b27cf85175";
 	}
 
 	function getImageDimensions($tissueId)

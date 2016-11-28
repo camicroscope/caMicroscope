@@ -21,33 +21,29 @@ switch ($_SERVER['REQUEST_METHOD'])
 
 		if(isset($_GET["id"]))
 		{
-			$id=$_GET["id"];
-
-      $getUrl  = $getUrl . "api_key=" . $api_key;
-      $url = $getUrl . "&id=" . $id;
+		  $id=$_GET["id"];
+          $getUrl  = $getUrl . "api_key=" . $api_key;
+          $url = $getUrl . "&id=" . $id;
             //echo $url;
-			$getRequest = new RestRequest($url,'GET');
-      $getRequest->execute();
+		  $getRequest = new RestRequest($url,'GET');
+          $getRequest->execute();
 
+		  //Figure out how to parse reponse
+		  $annotationList = json_decode($getRequest->responseBody);
+           //print_r($annotationList[0]['properties']);
 
-			//Figure out how to parse reponse
-			$annotationList = json_decode($getRequest->responseBody);
-      //print_r($annotationList[0]['properties']);
-
-      $annotationList[0]->properties->annotations->secret = "xxxx";
-      //echo "\n---\n";
+          $annotationList[0]->properties->annotations->secret = "xxxx";
+          //echo "\n---\n";
       
-            if($annotationList)
-                echo json_encode($annotationList);
-            else
-                echo "No annotations";      
+          if($annotationList)
+              echo json_encode($annotationList);
+          else
+             echo "No annotations";      
         }
   break;
 
   case 'DELETE':
     echo "PHP Deleteing";
-
-
 
     $d = file_get_contents("php://input");
     print_r($d);
@@ -58,10 +54,6 @@ switch ($_SERVER['REQUEST_METHOD'])
     
     $id = $data['id'];
     $secret = $data['secret'];
-
-
-
-
 
     //Check ID is human
     $getUrl  = $getUrl . "api_key=" . $api_key;
@@ -76,8 +68,6 @@ switch ($_SERVER['REQUEST_METHOD'])
     if($source == "human"){
       if($secret == $annot_secret){
         echo "Source: ".$source;
-
-
         $delUrl = $deleteUrl . "?api_key=".$api_key . "&id=".$id;
         //echo $delUrl;
         $curl = curl_init($delUrl);
@@ -92,18 +82,15 @@ switch ($_SERVER['REQUEST_METHOD'])
         $response = curl_exec($curl);
         print_r($response);
 
-      echo "Deleted!";
+        echo "Deleted!";
       } else {
-        echo "Wrong secret";
+              echo "Wrong secret";
       }
     } else {
-      echo "Failed: Cant delete computer generated annotations";
+           echo "Failed: Cant delete computer generated annotations";
     }
 
-
     //Delete ID
-
-
   break;    
 }
 

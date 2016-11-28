@@ -285,12 +285,17 @@ annotools.prototype.generateSVG = function (annotations) {
       
       if (annotation['_id'])
         id = annotation['_id']['$oid']
-      // console.log(annotation)
+	    //console.log("inside of generateSVG func.");
+        //console.log(id);
+		//console.log(annotation);
       var nativepoints = annotation.geometry.coordinates[0]
 
       // var offset = OpenSeadragon.getElementOffset(viewer.canvas)
       var algorithm_id = annotation.provenance.analysis.execution_id
-      var color = algorithm_color[algorithm_id]
+      var color = algorithm_color[algorithm_id];
+	  //use the same color as algorithm does
+	  if(annotation.color)
+		   color =annotation.color; 
 
       // var svg = 
       svgHtml += '<polygon  class="annotationsvg" id="' + id + '" points="'
@@ -311,6 +316,7 @@ annotools.prototype.generateSVG = function (annotations) {
         color = 'lime'
       svgHtml += '" style="fill:transparent; stroke:'+color+ '; stroke-width:2.5"/>'
     }
+	
     this.svg = new Element('div', {
       styles: {
         position: 'absolute',
@@ -333,9 +339,11 @@ annotools.prototype.generateSVG = function (annotations) {
       ctrl = true;
 
   });
+
   jQuery(document).keyup(function(){
         ctrl = false;
   });
+
   jQuery('.annotationsvg').mousedown(function (event) {
         //console.log(event.which);
         if(ctrl){
@@ -353,6 +361,8 @@ annotools.prototype.generateSVG = function (annotations) {
         jQuery("#"+event.target.id).css("opacity", 1);
         var id = event.target.id
         var url = "api/Data/getProperties.php?id="+id;
+        console.log("id:"+url);
+        console.log("id:"+id);
         var content = "<div id = 'panelHeader'> <h4>Annotation Details </h4></div>"
         + "<div id='panelBody'>";
 

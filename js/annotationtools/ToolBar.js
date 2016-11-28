@@ -134,6 +134,7 @@ ToolBar.prototype.setNormalMode = function() {
   jQuery("#drawRectangleButton").removeClass('active');
   jQuery("#drawFreelineButton").removeClass('active');
   jQuery("#drawDotButton").removeClass("active");   // Dot Tool
+  jQuery("#mergeStep2Button").removeClass("active");   // merge Step2 Button
   this.annotools.drawLayer.hide()
   this.annotools.addMouseEvents()       
 }
@@ -205,8 +206,29 @@ ToolBar.prototype.createButtons = function () {
       'id': 'drawFreelineButton'
     })
     tool.append(this.pencilbutton) // Pencil Tool
-
-    this.measurebutton = jQuery('<img>', {
+	
+   this.spacer2 = jQuery('<img>', {
+      'class': 'spacerButton inactive',
+      'src': 'images/spacer.svg'
+    })
+    tool.append(this.spacer2)
+	
+	this.mergebutton1 = jQuery('<img>', {
+      'title': 'Merge Step 1',
+      'class': 'toolButton inactive',
+      'src': 'images/merge1.png'
+    })
+    tool.append(this.mergebutton1) // Merge step 1
+	
+	this.mergebutton2 = jQuery('<img>', {
+      'title': 'Merge Step 2',
+      'class': 'toolButton inactive',
+      'src': 'images/merge2.png',
+	  'id': 'mergeStep2Button'
+    })
+    tool.append(this.mergebutton2) // Merge step 2
+	
+	this.measurebutton = jQuery('<img>', {
       'title': 'Measurement Tool',
       'class': 'toolButton inactive',
       'src': 'images/measure.svg'
@@ -303,14 +325,36 @@ ToolBar.prototype.createButtons = function () {
         //console.log(jQuery("#drawRectangleButton")); 
         jQuery("#drawFreelineButton").removeClass("active");
         jQuery("#drawDotButton").removeClass("active");   // Dot Tool
-
+		jQuery("#mergeStep2Button").removeClass("active"); // merge step 2 button		
         //console.log("added class");     
       }
     // alert("Creation of markups is disabled on QuIP")
-    }.bind(this))
+    }.bind(this))    
     this.partialDownloadButton.on('click', function(){
       this.annotools.downloadROI();
     }.bind(this));
+	
+	
+	this.mergebutton2.on('click', function () {
+      //console.log(this.mode);
+      if(this.mode == 'merge_step2'){
+		 this.mode = 'normal';
+        this.setNormalMode();
+        //this.
+      } else {
+        this.mode = 'merge_step2'
+        this.annotools.mode = 'rect'
+        this.annotools.drawMarkups();
+        jQuery("canvas").css("cursor", "crosshair");
+		jQuery("#mergeStep2Button").addClass("active"); // merge step 2 button		
+        jQuery("#drawRectangleButton").removeClass("active"); 
+        jQuery("#drawFreelineButton").removeClass("active");
+        jQuery("#drawDotButton").removeClass("active");   // Dot Tool
+        //console.log("added class");     
+      }
+    // alert("Creation of markups is disabled on QuIP")
+    }.bind(this))    
+    	
       
     // Dot Tool start
     this.dotToolButton.on('click', function(){
@@ -323,6 +367,7 @@ ToolBar.prototype.createButtons = function () {
             jQuery("svg").css("cursor", "crosshair");
             jQuery("#drawRectangleButton").removeClass("active");
             jQuery("#drawFreelineButton").removeClass("active");
+			jQuery("#mergeStep2Button").removeClass("active"); // merge step 2 button		
             jQuery("#drawDotButton").addClass("active");
        }   
     }.bind(this)); 
@@ -348,6 +393,7 @@ ToolBar.prototype.createButtons = function () {
         //jQuery("drawFreelineButton").css("opacity", 1);
         jQuery("#drawRectangleButton").removeClass("active");
         jQuery("#drawDotButton").removeClass("active");     // Dot Tool
+		jQuery("#mergeStep2Button").removeClass("active"); // merge step 2 button	
         jQuery("#drawFreelineButton").addClass("active");
 
       }
@@ -368,6 +414,12 @@ ToolBar.prototype.createButtons = function () {
     // this.removeMouseEvents()
     // this.promptForAnnotation(null, "filter", this, null)
     }.bind(this))
+	
+	
+	this.mergebutton1.on('click', function () {
+		this.annotools.mergeStep1();     
+     }.bind(this))	 
+	
 	/*
     this.analyticsbutton.on('click', function () {
       this.annotools.createWorkOrder()
@@ -418,6 +470,7 @@ ToolBar.prototype.createButtons = function () {
     'src': 'images/colors.svg'
   })
   tool.append(this.colorMapButton)
+
   this.ajaxBusy = jQuery('<img>', {
     'class': 'colorMapButton',
     'id': 'ajaxBusy',

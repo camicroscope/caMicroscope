@@ -6,7 +6,7 @@ $cancerType = $_SESSION["cancerType"];
 //echo $cancerType;
 
 ///new
-$baseUrl = "http://localhost:9099";
+$baseUrl = "http://172.17.0.1:9099";
 $serviceUrl = "$baseUrl/services/" . $cancerType;
 $templateUrl = "$baseUrl/services/caMicroscope_Templates";
 
@@ -16,6 +16,8 @@ $templateUrl = "$baseUrl/services/caMicroscope_Templates";
 $imageUrl = "$serviceUrl/ImageMetaData";
 //$templateUrl = "$serviceUrl/AnnotationTemplate";
 $markupUrl = "$serviceUrl/Annotations";
+
+$mergeSegmentUrl = "$serviceUrl/MergeSegmentation";
 
 $analysisMetaDataUrl = "$serviceUrl/Analyses_MetaData";
 
@@ -29,8 +31,10 @@ return array(
      */
     'algorithmsForImage' => "$analysisMetaDataUrl/query/AlgorithmsForIID?",
     'deleteAnnotation' => "$markupUrl/delete/DeleteByOID",
+	'deleteAnnotationWithinRectangle' => "$markupUrl/delete/deleteAnnotationWithinRectangle",
     'postAlgorithmForImage' => "$analysisMetaDataUrl/submit/json?",
-    'getMultipleAnnotations' => "$markupUrl/query/getMultipleMarkups?",
+    'getMultipleAnnotations' => "$markupUrl/query/getMultipleMarkupsClone?",
+	'getMergeSegmentation' => "$mergeSegmentUrl/query/getMergeSegmentation?",
     'getPropertiesForMarkup' => "$markupUrl/query/getPropertiesForMarkup?",
     'getFileLocation' => "$imageUrl/query/getFileLocationForIID?api_key=",
     'getMPP' => "$imageUrl/query/getMPPForIID?api_key=",

@@ -154,7 +154,7 @@ annotools.prototype.getMultiAnnot = function (viewer) {
   var boundX = boundX1 - this.x1
   var boundY = boundX
 
-  var max = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(9), this.imagingHelper.physicalToDataY(9))
+  var max    = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(9), this.imagingHelper.physicalToDataY(9))
   var origin = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(0), this.imagingHelper.physicalToDataY(0))
   var area = (max.x - origin.x) * (max.y - origin.y)
   //algorithms.push('test')
@@ -770,9 +770,14 @@ annotools.prototype.addnewAnnot = function (newAnnot) // Add New Annotations
   // this.annotations.push(newAnnot)
   // console.log(this.annotations)
   console.log(newAnnot)
-  this.saveAnnot(newAnnot)
-  // console.log("saved annotation")
-
+  this.saveAnnot(newAnnot);
+  console.log("saved annotation")
+  if(this.toolBar.mode == 'merge_step2'){
+	 //if(this.save_success == "yes"){
+        this.deleteAnnotationWithinRectangle(newAnnot); 
+       console.log("deleteAnnotationWithinRectangle")
+    //}	  
+  } 
   this.displayGeoAnnots()
 }
 /*ASHISH DIsable quit
@@ -1135,8 +1140,38 @@ annotools.prototype.updateAnnot = function (annot) // Save Annotations
 annotools.prototype.saveAnnot = function (annotation) // Save Annotations
 {
   var self = this;
+  this.save_success="no";
   console.log('Save annotation function')
   console.log(annotation)
+
+  //get algorithm and color info from menu tree
+  var selKeys = jQuery('#tree').fancytree('getTree').getSelectedNodes();
+  console.log(selKeys);		 
+
+  var algorithms =[];
+  var algorithm_colors =[];
+  var selected_algorithm="";
+  var selected_color="";
+	 
+  for (i = 0;i < selKeys.length;i++) {
+        if(selKeys[i].refKey !="humantest" && selKeys[i].refKey !="merge_seq_1")
+			algorithms.push(selKeys[i].refKey);
+		    algorithm_colors.push(selKeys[i].data.color);
+  }
+  var num_algorithm = algorithms.length;	  
+	 
+  if(num_algorithm>1 || num_algorithm<1 )	{
+	alert("Please select one and only one algorithm!");  
+	return false; 
+  }else {
+    selected_algorithm = algorithms[0];
+    selected_color = algorithm_colors[0];
+    console.log(selected_algorithm);	 
+  }
+  
+   annotation.color=selected_color;
+   annotation.algorithm=selected_algorithm;  
+  
   jQuery.ajax({
     'type': 'POST',
     url: 'api/Data/getAnnotSpatial.php',
@@ -1149,9 +1184,10 @@ annotools.prototype.saveAnnot = function (annotation) // Save Annotations
       } else {   
         alert("Successfully saved markup!");
       }
-      console.log(err)
+      console.log(err)	  
       self.getMultiAnnot();
-      console.log('succesfully posted')
+      console.log('succesfully posted');
+      this.save_success="yes";	  
     }
   })
 
@@ -1453,11 +1489,12 @@ annotools.prototype.drawRectangle = function (ctx) {
     loc[0] = parseFloat(newAnnot.x)
     loc[1] = parseFloat(newAnnot.y)
     newAnnot.loc = loc;
-
+    console.log("newAnnot object inside of drawRectangle func:");
     console.log(newAnnot);
-
     // convert to geojson 
     var geoNewAnnot = this.convertRectToGeo(newAnnot)
+    console.log("geoNewAnnot object inside of drawRectangle func:");
+    console.log(geoNewAnnot);
     // geoNewAnnot = newAnnot
     this.promptForAnnotation(geoNewAnnot, 'new', this, ctx);
     jQuery("canvas").css("cursor", "default");
@@ -2253,7 +2290,8 @@ annotools.prototype.promptForAnnotation = function (newAnnot, mode, annotools, c
     formSchema.onSubmit = function (err, val) {
       // Add form data to annotation
       newAnnot.properties.annotations = val
-
+      console.log("inside formSchema.onSubmit of newAnnot object");
+	    console.log(newAnnot);
       // Post annotation
       annotools.addnewAnnot(newAnnot)
 
@@ -2885,4 +2923,204 @@ annotools.prototype.promptForDownload = function(newAnnot, mode, annotools, ctx)
   }.bind(newAnnot))
 
 }
+
+
+annotools.prototype.mergeStep1 = function() {
+    /*
+     var x1= viewer.viewport.getBounds().x; 
+     var y1= viewer.viewport.getBounds().y; 
+     var width = viewer.viewport.getBounds().width;
+     var height = viewer.viewport.getBounds().height;
+     var x2= x1+ width; 
+     var y2= y1+ height;
+	 
+     console.log("inside mergebutton click function, x1 is :" + x1);  
+     console.log("inside mergebutton click function, x1 is :" + y1); 
+     console.log("inside mergebutton click function, width is :" + width); 
+     console.log("inside mergebutton click function, height is :" + height); 
+    // console.log("inside mergebutton click function, x2 is :" + x2);  
+     //console.log("inside mergebutton click function, y2 is :" + y2); 
+	 
+	 // Compute footprint(area)
+    var physicalX1 = this.imagingHelper.logicalToPhysicalX(x1);
+    var physicalY1 = this.imagingHelper.logicalToPhysicalY(y1);
+    var physicalX2 = this.imagingHelper.logicalToPhysicalX(x2);
+    var physicalY2 = this.imagingHelper.logicalToPhysicalY(y2);
+
+    var helper = this.imagingHelper;
+    var dataX1 = helper.physicalToDataX(physicalX1);
+    var dataY1 = helper.physicalToDataY(physicalY1);
+    var dataX2 = helper.physicalToDataX(physicalX2);
+    var dataY2 = helper.physicalToDataY(physicalY2);
+
+    var area = (dataX2 - dataX1)*(dataY2-dataY1);
+	console.log(area); 
+     */
+	 
+   var x1 = this.imagingHelper._viewportOrigin['x'];
+   var y1 = this.imagingHelper._viewportOrigin['y'];
+   var x2 = x1 + this.imagingHelper._viewportWidth;
+   var y2 = y1 + this.imagingHelper._viewportHeight;
+   
+   console.log("inside mergebutton click function, x1 is :" + x1);  
+   console.log("inside mergebutton click function, x1 is :" + y1);     
+   console.log("inside mergebutton click function, x2 is :" + x2);  
+   console.log("inside mergebutton click function, y2 is :" + y2); 
+  
+   /*
+   var max    = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(9), this.imagingHelper.physicalToDataY(9));
+   var origin = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(0), this.imagingHelper.physicalToDataY(0));
+   var area = (max.x - origin.x) * (max.y - origin.y);	
+   console.log(area);	
+	*/
+
+    var physicalX1 = this.imagingHelper.logicalToPhysicalX(x1);
+    var physicalY1 = this.imagingHelper.logicalToPhysicalY(y1);
+    var physicalX2 = this.imagingHelper.logicalToPhysicalX(x2);
+    var physicalY2 = this.imagingHelper.logicalToPhysicalY(y2);
+
+    var helper = this.imagingHelper;
+    var dataX1 = helper.physicalToDataX(physicalX1);
+    var dataY1 = helper.physicalToDataY(physicalY1);
+    var dataX2 = helper.physicalToDataX(physicalX2);
+    var dataY2 = helper.physicalToDataY(physicalY2);
+
+    var area = (dataX2 - dataX1)*(dataY2-dataY1);
+	console.log(area); 	
+	 
+	 //get algorithm and color info from menu tree
+	 var selKeys = jQuery('#tree').fancytree('getTree').getSelectedNodes();
+	 console.log(selKeys);		 
+
+	 var algorithms =[];
+	 var algorithm_colors =[];
+	 var selected_algorithm="";
+	 var selected_color="";
+	 
+	 for (i = 0;i < selKeys.length;i++) {
+        if(selKeys[i].refKey !="humantest" && selKeys[i].refKey !="merge_seq_1")
+			algorithms.push(selKeys[i].refKey);
+		    algorithm_colors.push(selKeys[i].data.color);
+     }
+	 var num_algorithm = algorithms.length;	  
+	 
+     if(num_algorithm>1 || num_algorithm<1 )	{
+		alert("Please select one and only one algorithm!");  
+		return false; 
+	 }else {
+		 selected_algorithm = algorithms[0];
+		 selected_color = algorithm_colors[0];
+	     console.log(selected_algorithm);	 
+	 } 	 
+	 
+	var case_id = this.iid
+    var subject_id = case_id.substr(0,12);
+    if(subject_id.substr(0,4) != "TCGA"){
+      subject_id = "";
+    }
+
+   var geoJSONTemplate = {
+    'type': 'Feature',
+    'parent_id': 'self',
+    'randval': Math.random(),
+    'geometry': {
+      'type': 'Polygon',
+      'coordinates': [
+	        [
+                [
+                    x1, 
+                    y1
+                ], 
+                [
+                    x2, 
+                    y1
+                ], 
+                [
+                    x2, 
+                    y2
+                ], 
+                [
+                    x1, 
+                    y2
+                ]
+            ]	  
+	  ]
+    },
+    'normalized': true,
+    'object_type': 'annotation',
+    'properties': {
+        'annotations': {
+            'region' : '', 
+            'additional_annotation' : 'test', 
+            'additional_notes' : 'test', 
+            'secret' : 'human1'
+        }
+    },
+    'footprint': area,
+    'provenance': {
+      'analysis': {
+        'execution_id': 'humantest',
+        'study_id': '',
+        'source': 'human',
+        'computation': 'segmentation'
+      },
+      'image': {
+        'case_id': case_id,
+        'subject_id': subject_id
+      }
+    },
+    'date': Date.now(),
+	x:x1,
+	y:y1,
+	'algorithm':selected_algorithm,
+	'color':selected_color
+  }
+  
+  var self = this;
+  console.log('Save geoJSONTemplate function')
+  console.log(geoJSONTemplate)
+  jQuery.ajax({
+    'type': 'POST',
+    url: 'api/Data/getAnnotSpatial.php',
+    data: geoJSONTemplate,
+    success: function (res, err) {
+      console.log("response: ")
+      console.log(res)
+      if(res == "unauthorized"){
+        alert("Error saving markup! Wrong secret");
+      } else {   
+        alert("Successfully saved markup!");
+      }
+      console.log(err)
+      self.getMultiAnnot();
+      console.log('succesfully posted')
+    }
+  })  
+	     
+}//end of mergeStep1 func
+
+
+annotools.prototype.deleteAnnotationWithinRectangle = function(newAnnot){
+  var case_id= newAnnot.provenance.image.case_id;
+  var subject_id= newAnnot.provenance.image.subject_id;
+  var execution_id = newAnnot.provenance.analysis.execution_id;
+  console.log(execution_id);
+  
+  var x1=newAnnot.geometry.coordinates[0][0][0];
+  var y1=newAnnot.geometry.coordinates[0][0][1];
+  var x2=newAnnot.geometry.coordinates[0][2][0];
+  var y2=newAnnot.geometry.coordinates[0][2][1];
+  
+  var url1 = "api/Data/deleteAnnotationWithinRectangle.php?case_id="+  case_id + "&subject_id=" + subject_id + "&execution_id=" + execution_id +"&x1=" + x1+ "&y1=" + y1 + "&x2=" + x2 + "&y2=" + y2;
+  console.log(url1);	
+  jQuery.ajax({ url: url1,
+               type: 'DELETE',
+               data:null,
+               success: function(data){
+                   console.log(data);                   
+                  }
+                });
+
+}
+
 
