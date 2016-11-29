@@ -8,6 +8,8 @@ Sanjay Agravat <sagrava@emory.edu>
 
 Shaohuan Li <shaohuan.li@gmail.com> 
 
+[Ganesh Iyer](http://ganeshiyer.net) <ganesh.iyer@emory.edu>
+
 ============
 
 About
