@@ -35,9 +35,9 @@ function goodalgo (data, status) {
     // console.log(data[i])
     n.title = "<div class='colorBox' style='background:" + available_colors[i] + "'></div>" + data[i].title
     n.key = i.toString()
-    n.refKey = data[i].analysis.execution_id
+    n.refKey = data[i].provenance.analysis_execution_id
     n.color = available_colors[i]
-    algorithm_color[data[i].analysis.execution_id] = available_colors[i]
+    algorithm_color[data[i].provenance.analysis_execution_id] = available_colors[i]
     blob.push(n)
   }
   ftree = jQuery('#tree').fancytree({
@@ -130,7 +130,8 @@ ToolBar.prototype.toggleAlgorithmSelector = function () {
       SELECTED_ALGORITHM_LIST = [];
       SELECTED_ALGORITHM_KEYS = [];
       jQuery("#algorithmList input:checked").each(function() {
-        SELECTED_ALGORITHM_LIST.push(ALGORITHM_LIST[(this).value * 1].analysis.execution_id);
+	console.log(ALGORITHM_LIST);
+        SELECTED_ALGORITHM_LIST.push(ALGORITHM_LIST[(this).value * 1].provenance.analysis_execution_id);
         SELECTED_ALGORITHM_KEYS.push((this).value*1);
       });
 
