@@ -86,10 +86,10 @@ function goodalgo (data, status) {
 var ALGORITHM_LIST = {};
 var SELECTED_ALGORITHM_LIST = [];
 var SELECTED_ALGORITHM_KEYS = [];
-
+var AlgorithmSelectorHidden = true;
 ToolBar.prototype.toggleAlgorithmSelector = function () {
   var self  = this;
-	jQuery("#panel").show("slide");
+	//jQuery("#panel").show("slide");
   var url = 'api/Data/getAlgorithmsForImage.php?iid=' + self.iid;
 
   var htmlStr = "<div id='panelHeader'> <h4>Select Algorithm </h4> </div> <div id='panelBody'> <ul id='algorithmList'>";
@@ -100,10 +100,10 @@ ToolBar.prototype.toggleAlgorithmSelector = function () {
     ALGORITHM_LIST = d;
     for(var i=0; i < d.length; i++){
 
-      htmlStr += "<li><input type='checkbox' value="+i+" /> "+d[i].title + "</li>";
+      htmlStr += "<li><input type='checkbox' class='algorithmCheckbox' value="+i+" /> "+d[i].title + "</li>";
     }
 
-    htmlStr +="</ul> <br /> <button id='submitAlgorithms' class='btn'>Submit</button> <button class='btn' id='cancelAlgorithms'>Cancel</button> </div>";
+    htmlStr +="</ul> <br /> <button class='btn' id='cancelAlgorithms'>Hide</button> </div>";
 
     jQuery("#panel").html(htmlStr);
 
@@ -120,10 +120,26 @@ ToolBar.prototype.toggleAlgorithmSelector = function () {
         }
       }
       
+      
     });
 
     self.annotools.getMultiAnnot();
+
+    jQuery('#algorithmList input[type=checkbox]').change(function() {
+      console.log("change");
+      SELECTED_ALGORITHM_LIST = [];
+      SELECTED_ALGORITHM_KEYS = [];
+      jQuery("#algorithmList input:checked").each(function() {
+        SELECTED_ALGORITHM_LIST.push(ALGORITHM_LIST[(this).value * 1].analysis.execution_id);
+        SELECTED_ALGORITHM_KEYS.push((this).value*1);
+      });
+
+      self.annotools.getMultiAnnot();
+
+
+    })
     
+    /*
     jQuery("#submitAlgorithms").click(function(){
       var selected= [];
       SELECTED_ALGORITHM_LIST = [];
@@ -136,13 +152,21 @@ ToolBar.prototype.toggleAlgorithmSelector = function () {
       jQuery("#panel").html("");
       jQuery("#panel").hide("slide");
     });
-
+    */
     jQuery("#cancelAlgorithms").click(function(){
       jQuery("#panel").html("");
       jQuery("#panel").hide("slide");
     });
   });
-  
+   if(AlgorithmSelectorHidden == true){
+   	jQuery("#panel").show("slide");   
+    AlgorithmSelectorHidden = false;
+  } else {
+    jQuery("#panel").html("");
+    jQuery("#panel").hide("slide");
+
+    AlgorithmSelectorHidden = true;
+  } 
     
 }
 
