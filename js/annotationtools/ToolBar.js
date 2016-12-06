@@ -49,83 +49,93 @@ function goodalgo (data, status) {
     algorithm_color[data[i].provenance.analysis_execution_id] = available_colors[i]
     blob.push(n)
   }
-  ftree = jQuery('#tree').fancytree({
-    source: [{
-      title: 'Algorithms', key: '1', folder: true,
-      children: blob,
-      expanded: true
-    }],
-    minExpandLevel: 1, // 1: root node is not collapsible
-    activeVisible: true, // Make sure, active nodes are visible (expanded).
-    aria: false, // Enable WAI-ARIA support.
-    autoActivate: true, // Automatically activate a node when it is focused (using keys).
-    autoCollapse: false, // Automatically collapse all siblings, when a node is expanded.
-    autoScroll: false, // Automatically scroll nodes into visible area.
-    clickFolderMode: 4, // 1:activate, 2:expand, 3:activate and expand, 4:activate (dblclick expands)
-    checkbox: true, // Show checkboxes.
-    debugLevel: 2, // 0:quiet, 1:normal, 2:debug
-    disabled: false, // Disable control
-    focusOnSelect: false, // Set focus when node is checked by a mouse click
-    generateIds: false, // Generate id attributes like <span id='fancytree-id-KEY'>
-    idPrefix: 'ft_', // Used to generate node id´s like <span id='fancytree-id-<key>'>.
-    icons: true, // Display node icons.
-    keyboard: true, // Support keyboard navigation.
-    keyPathSeparator: '/', // Used by node.getKeyPath() and tree.loadKeyPath().
-    minExpandLevel: 1, // 1: root node is not collapsible
-    quicksearch: false, // Navigate to next node by typing the first letters.
-    selectMode: 2, // 1:single, 2:multi, 3:multi-hier
-    tabbable: true, // Whole tree behaves as one single control
-    titlesTabbable: false, // Node titles can receive keyboard focus
-    beforeSelect: function (event, data) {
-      // A node is about to be selected: prevent this for folders:
-      if (data.node.isFolder()) {
-        return false
-      }
-    },
-    select: function (event, data) {
-      jQuery('#tree').attr('algotree', true)
-      var node = data.node
-
-      console.log('!SELECTED NODE : ' + node.title)
-      targetType = data.targetType
-      annotool.getMultiAnnot()
-    }
-  })
 }
-
+var ALGORITHM_LIST = {};
+var SELECTED_ALGORITHM_LIST = [];
+var SELECTED_ALGORITHM_KEYS = [];
+var AlgorithmSelectorHidden = true;
 ToolBar.prototype.toggleAlgorithmSelector = function () {
-  if (!jQuery('#algosel').attr('eb')) {
-    jQuery('#algosel').attr('eb', true)
-    // console.log("initializing...")
-    jQuery('#algosel').css({
-      'width': '300px',
-      'zIndex': 199,
-      'visibility': 'hidden'
+  var self  = this;
+	//jQuery("#panel").show("slide");
+  var url = 'api/Data/getAlgorithmsForImage.php?iid=' + self.iid;
+
+  var htmlStr = "<div id='panelHeader'> <h4>Select Algorithm </h4> </div> <div id='panelBody'> <ul id='algorithmList'>";
+  jQuery.get(url, function (data) {
+
+    d = JSON.parse(data)
+
+    ALGORITHM_LIST = d;
+    for(var i=0; i < d.length; i++){
+
+      htmlStr += "<li><input type='checkbox' class='algorithmCheckbox' value="+i+" /> "+d[i].title + "</li>";
+    }
+
+    htmlStr +="</ul> <br /> <button class='btn' id='cancelAlgorithms'>Hide</button> </div>";
+
+    jQuery("#panel").html(htmlStr);
+
+
+
+    jQuery("#algorithmList input[type=checkbox]").each(function() {
+
+      var elem = jQuery(this)
+      var id = (this).value*1;
+      for(var i=0; i < SELECTED_ALGORITHM_KEYS.length; i++){
+        if(SELECTED_ALGORITHM_KEYS[i] == (id)){
+
+          elem.prop('checked', true); 
+        }
+      }
+      
+      
+    });
+
+    self.annotools.getMultiAnnot();
+
+    jQuery('#algorithmList input[type=checkbox]').change(function() {
+      console.log("change");
+      SELECTED_ALGORITHM_LIST = [];
+      SELECTED_ALGORITHM_KEYS = [];
+      jQuery("#algorithmList input:checked").each(function() {
+	console.log(ALGORITHM_LIST);
+        SELECTED_ALGORITHM_LIST.push(ALGORITHM_LIST[(this).value * 1].provenance.analysis_execution_id);
+        SELECTED_ALGORITHM_KEYS.push((this).value*1);
+      });
+	console.log(self.annotools.getMultiAnnot);
+      self.annotools.getMultiAnnot();
+
+
     })
-    jQuery('#algosel').on('mousedown', function (e) {
-      jQuery(this).addClass('draggable').parents().on('mousemove', function (e) {
-        jQuery('.draggable').offset({
-          top: e.pageY - jQuery('.draggable').outerHeight() / 2,
-          left: e.pageX - jQuery('.draggable').outerWidth() / 2
-        }).on('mouseup', function () {
-          jQuery(this).removeClass('draggable')
-        })
-      })
-      e.preventDefault()
-    }).on('mouseup', function () {
-      jQuery('.draggable').removeClass('draggable')
-    })
-  }
-  if (jQuery('#algosel').css('visibility') == 'visible') {
-    jQuery('#algosel').css({
-      'visibility': 'hidden'
-    })
+    
+    /*
+    jQuery("#submitAlgorithms").click(function(){
+      var selected= [];
+      SELECTED_ALGORITHM_LIST = [];
+      jQuery("#algorithmList input:checked").each(function() {
+        SELECTED_ALGORITHM_LIST.push(ALGORITHM_LIST[(this).value * 1].analysis.execution_id);
+        SELECTED_ALGORITHM_KEYS.push((this).value*1);
+      });
+
+      self.annotools.getMultiAnnot();
+      jQuery("#panel").html("");
+      jQuery("#panel").hide("slide");
+    });
+    */
+    jQuery("#cancelAlgorithms").click(function(){
+      jQuery("#panel").html("");
+      jQuery("#panel").hide("slide");
+    });
+  });
+   if(AlgorithmSelectorHidden == true){
+   	jQuery("#panel").show("slide");   
+    AlgorithmSelectorHidden = false;
   } else {
-    jQuery('#algosel').css({
-      'visibility': 'visible'
-    })
-  }
-  this.showMessage('Algorithm Selection Toggled')
+    jQuery("#panel").html("");
+    jQuery("#panel").hide("slide");
+
+    AlgorithmSelectorHidden = true;
+  } 
+    
 }
 
 ToolBar.prototype.setNormalMode = function() {
@@ -147,8 +157,10 @@ ToolBar.prototype.createButtons = function () {
   jQuery(document).ready(function () {
     // console.log(options)
     // var self= this
-
-    jQuery.get('api/Data/getAlgorithmsForImage.php?iid=' + self.iid, function (data) {
+    var url = 'api/Data/getAlgorithmsForImage.php?iid=' + self.iid;
+    console.log(url);
+    jQuery.get(url, function (data) {
+      console.log(data);
       d = JSON.parse(data)
 
       goodalgo(d, null)
@@ -261,8 +273,20 @@ ToolBar.prototype.createButtons = function () {
       'class': 'toolButton',
       'src': 'images/insta.png'
     })
+<<<<<<< HEAD
     tool.append(this.filterImgButton)
     */
+
+    //tool.append(this.filterImgButton)	
+    //
+    /*
+    this.bookmarkButton = jQuery('<img>', {
+      'title': 'Bookmark/Share current state',
+      'class': 'toolButton',
+      'src': 'images/ic_insert_link_white_24dp_1x.png'
+    })
+    //tool.append(this.bookmarkButton)
+	*/
     this.partialDownloadButton = jQuery('<img>', {
       'title': 'Download Partial Markups (Coming Soon)',
       'class': 'toolButton inactive',
@@ -415,248 +439,4 @@ ToolBar.prototype.createButtons = function () {
   }
 }
 
-/*
-ToolBar.prototype.drawMarkups= function () //Draw Markups
-{
-    //console.log(this.annotools)
-    //this.showMessage() //Show Message
-    this.annotools.removeMouseEvents()
-    //this.annotools.drawCanvas.off('mouseup')
-    //this.annotools.drawCanvas.off('mousedown')
-    //this.annotools.drawCanvas.off('mousemove')
-    
-    this.annotools.drawLayer.show() //Show The Drawing Layer
-/* ASHISH Disable quit
-    this.quitbutton.show() //Show The Quit Button
 
-    //this.magnifyGlass.hide() //Hide The Magnifying Tool
-    this.container = document.id(this.canvas) //Get The Canvas Container
-    this.container = document.getElementsByClassName(this.canvas)[0] //Get The Canvas Container
-    this.container = document.getElementById('container') //Get The Canvas Container
-    if (this.container) {
-        //var left = parseInt(this.container.offsetLeft), //Get The Container Location
-        var left = parseInt(this.container.getLeft()), //Get The Container Location
-            top = parseInt(this.container.offsetTop),
-            width = parseInt(this.container.offsetWidth),
-            height = parseInt(this.container.offsetHeight),
-            oleft = left,
-            otop = top,
-            owidth = width,
-            oheight = height
-        //console.log("left: " + left + " top: " + top + " width: " + width + " height: " + height)
-        if (left < 0) {
-            left = 0
-            width = window.innerWidth
-        } //See Whether The Container is outside The Current ViewPort
-        if (top < 0) {
-            top = 0
-            height = window.innerHeight
-        }
-        //Recreate The CreateAnnotation Layer Because of The ViewPort Change Issue.
-        this.annotools.drawLayer.css({
-                left: left,
-                top: top,
-                width: width,
-                height: height,
-                background: "#ccc"
-        })
-        //Create Canvas on the CreateAnnotation Layer
-        this.annotools.drawCanvas.css({
-            width: width,
-            height: height
-        })
-        console.log(this.annotools.drawLayer)
-        //The canvas context
-        var ctx = this.annotools.drawCanvas[0].getContext("2d")
-        //Draw Markups on Canvas
-        switch (this.mode) {
-            case "rect":
-                //console.log("rectangle")
-                this.drawRectangle(ctx)
-                break
-            case "ellipse":
-                this.drawEllipse(ctx)
-                break
-            case "pencil":
-                this.drawPencil(ctx)
-                break
-            case "polyline":
-                this.drawPolyline(ctx)
-                break
-            case "measure":
-                this.drawMeasure(ctx)
-                break
-        }
-    } else this.showMessage("Container Not SET Correctly Or Not Fully Loaded Yet")
- 
-}
-
-ToolBar.prototype.drawRectangle= function(ctx)
-{
-    //console.log("drawing rectangle...............");    
-    this.annotools.removeMouseEvents()
-    
-    var started = false
-    var min_x,min_y,max_x,max_y,w,h
-    var startPosition
-    this.annotools.drawCanvas.on('mousedown',function(e)
-    {
-        started = true
-        startPosition = OpenSeadragon.getMousePosition(e.event)
-        x = startPosition.x
-        y = startPosition.y
-    })
-
-    this.annotools.drawCanvas.on('mousemove',function(e)
-    {
-        if(started)
-        {
-        //console.log(e.event)
-        ctx.clearRect(0,0,this.drawCanvas.width, this.drawCanvas.height)
-        var currentMousePosition = OpenSeadragon.getMousePosition(e.event)
-
-        min_x = Math.min(currentMousePosition.x,startPosition.x)
-        min_y = Math.min(currentMousePosition.y,startPosition.y)
-        max_x = Math.max(currentMousePosition.x,startPosition.x)
-        max_y = Math.max(currentMousePosition.y,startPosition.y)
-        w = Math.abs(max_x - min_x)
-        h = Math.abs(max_y - min_y)
-        ctx.strokeStyle = this.color
-        ctx.strokeRect(min_x,min_y,w,h)
-        }
-    }.bind(this))
-
-    this.annotools.drawCanvas.on('mouseup',function(e)
-    {
-        started = false
-        var finalMousePosition = new OpenSeadragon.getMousePosition(e.event)
-
-            min_x = Math.min(finalMousePosition.x,startPosition.x)
-            min_y = Math.min(finalMousePosition.y,startPosition.y)
-            max_x = Math.max(finalMousePosition.x,startPosition.x)
-            max_y = Math.max(finalMousePosition.y,startPosition.y)
-
-        
-        var startRelativeMousePosition = new OpenSeadragon.Point(min_x,min_y).minus(OpenSeadragon.getElementOffset(viewer.canvas))
-        var endRelativeMousePosition = new OpenSeadragon.Point(max_x,max_y).minus(OpenSeadragon.getElementOffset(viewer.canvas))
-        var newAnnot = {
-            x: startRelativeMousePosition.x,
-            y: startRelativeMousePosition.y,
-            w: w,
-            h: h,
-            type: "rect",
-            color: this.color,
-            loc: new Array()
-        }
-
-        var globalNumbers = JSON.parse(this.convertFromNative(newAnnot, endRelativeMousePosition))
-
-        newAnnot.x = globalNumbers.nativeX
-        newAnnot.y = globalNumbers.nativeY
-        newAnnot.w = globalNumbers.nativeW
-        newAnnot.h = globalNumbers.nativeH
-        var loc = new Array()
-        loc[0] = parseFloat(newAnnot.x)
-        loc[1] = parseFloat(newAnnot.y)
-        newAnnot.loc = loc
-            this.promptForAnnotation(newAnnot, "new", this, ctx)
-    }.bind(this))
-    
-}
-
-ToolBar.prototype.drawPencil= function(ctx)
-{
-    this.annotools.removeMouseEvents()
-    var started = false
-    var pencil = []
-    var newpoly = []
-    this.drawCanvas.addEvent('mousedown',function(e)
-    {
-        started = true
-        var startPoint = OpenSeadragon.getMousePosition(e.event)
-        var relativeStartPoint = startPoint.minus(OpenSeadragon.getElementOffset(viewer.canvas))
-        newpoly.push({
-        "x":relativeStartPoint.x,
-        "y":relativeStartPoint.y
-        })
-        ctx.beginPath()
-        ctx.moveTo(relativeStartPoint.x, relativeStartPoint.y)
-        ctx.strokeStyle = this.color
-        ctx.stroke()
-    }.bind(this))
-
-    this.drawCanvas.addEvent('mousemove',function(e)
-    {
-        var newPoint = OpenSeadragon.getMousePosition(e.event)
-        var newRelativePoint = newPoint.minus(OpenSeadragon.getElementOffset(viewer.canvas))
-        if(started)
-        {
-        newpoly.push({
-            "x":newRelativePoint.x,
-            "y":newRelativePoint.y
-            })
-
-        ctx.lineTo(newRelativePoint.x,newRelativePoint.y)
-        ctx.stroke()
-        }
-    })
-
-    this.drawCanvas.addEvent('mouseup',function(e)
-    {
-        started = false
-        pencil.push(newpoly)
-        newpoly = []
-        numpoint = 0
-        var x,y,w,h
-        x = pencil[0][0].x
-        y = pencil[0][0].y
-
-        var maxdistance = 0
-        var points = ""
-        var endRelativeMousePosition
-        for(var i = 0; i < pencil.length; i++)
-        {
-        newpoly = pencil[i]
-        for(j = 0; j < newpoly.length - 1; j++)
-        {
-            points += newpoly[j].x + ',' + newpoly[j].y + ' '
-            if(((newpoly[j].x - x) * (newpoly[j].x - x) + (newpoly[j].y -y) * (newpoly[j].y-y)) > maxdistance)
-            {
-            maxdistance = ((newpoly[j].x - x) * (newpoly[j].x - x) + (newpoly[j].y -y) * (newpoly[j].y-y))
-            var endMousePosition = new OpenSeadragon.Point(newpoly[j].x, newpoly[j].y)
-            endRelativeMousePosition = endMousePosition.minus(OpenSeadragon.getElementOffset(viewer.canvas))
-            }
-        }
-
-        points = points.slice(0,-1)
-        points += ';'
-        }
-
-        points = points.slice(0,-1)
-
-        var newAnnot = {
-            x:x,
-            y:y,
-            w:w,
-            h:h,
-            type: 'pencil',
-            points: points,
-            color: this.color,
-            loc: new Array()
-        }
-
-        var globalNumbers = JSON.parse(this.convertFromNative(newAnnot, endRelativeMousePosition))
-        newAnnot.x = globalNumbers.nativeX
-        newAnnot.y = globalNumbers.nativeY
-        newAnnot.w = globalNumbers.nativeW
-        newAnnot.h = globalNumbers.nativeH
-        newAnnot.points = globalNumbers.points
-        var loc = new Array()
-        loc[0] = parseFloat(newAnnot.x)
-        loc[1] = parseFloat(newAnnot.y)
-        newAnnot.loc = loc
-            this.promptForAnnotation(newAnnot, "new", this, ctx)
-    }.bind(this))
-}
-
-*/

@@ -128,17 +128,14 @@ annotools.prototype.getMultiAnnot = function (viewer) {
   var val2 = ''
   var val3 = ''
 
-  var algorithms = []
 
-  if (jQuery('#tree').attr('algotree')) {
-    var selalgos = jQuery('#tree').fancytree('getTree').getSelectedNodes()
-    // console.log(selalgos)
-    for (i = 0; i < selalgos.length; i++) {
-      //console.log(selalgos[i])
-      algorithms.push(selalgos[i].refKey)
-    // opa["Val" + (i + 1).toString()] = selalgos[i].refKey
-    }
-  }
+
+  var algorithms = []
+  console.log(ALGORITHM_LIST);
+  console.log(SELECTED_ALGORITHM_LIST);
+  SELECTED_ALGORITHM_LIST = SELECTED_ALGORITHM_LIST.sort();
+  console.log("....");
+  algorithms = SELECTED_ALGORITHM_LIST;
 
   //console.log(algorithms);
   var self = this
@@ -158,8 +155,10 @@ annotools.prototype.getMultiAnnot = function (viewer) {
   var origin = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(0), this.imagingHelper.physicalToDataY(0))
   var area = (max.x - origin.x) * (max.y - origin.y)
   //algorithms.push('test')
-
+	
   var t1 = 0
+
+
   if (algorithms.length) {
     this.toolBar.titleButton.hide()
     this.toolBar.ajaxBusy.show()

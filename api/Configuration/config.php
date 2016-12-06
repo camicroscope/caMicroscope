@@ -6,6 +6,7 @@ $cancerType = $_SESSION["cancerType"];
 //echo $cancerType;
 
 ///new
+
 $baseUrl = "http://localhost:9099";
 $serviceUrl = "$baseUrl/services/" . $cancerType;
 $templateUrl = "$baseUrl/services/caMicroscope_Templates";
@@ -27,6 +28,7 @@ return array(
     /*
      * temp
      */
+
     'algorithmsForImage' => "$analysisMetaDataUrl/query/AlgorithmsForIID?",
     'deleteAnnotation' => "$markupUrl/delete/DeleteByOID",
     'postAlgorithmForImage' => "$analysisMetaDataUrl/submit/json?",
@@ -40,10 +42,12 @@ return array(
     'getAnnotationsSpatial' => "$serviceUrl/GeoJSONImageMetaData/query/getMarkups?",
     'getAnnotationSpatialFilter' => "$tempMarkupUrl/Annotations/query/allByFilter?iid=",
     'postAnnotation' => "$serviceUrl/Annotations/submit/json",
+
     'retrieveAnnotation' => "$tempMarkupUrl/Annotations/query/byAnnotId?annotId=",
     'postJobParameters' => "$tempMarkupUrl/AnalysisJobs/submit/singleJob",
     //'deleteAnnotation' => "$tempMarkupUrl/Annotations/delete/singleAnnotation?annotId=",
     'getDimensions' => "$imageUrl/query/getDimensionsByIID?api_key=",
+
 
     'fastcgi_server' => "/fcgi-bin/iipsrv.fcgi"
 );

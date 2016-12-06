@@ -4,6 +4,8 @@ Ameen Kazerouni <ameen.kazerouni@emory.edu>
 
 Ashish Sharma <ashish.sharma@emory.edu>
 
+[Ganesh Iyer](http://ganeshiyer.net) <ganesh.iyer@emory.edu>
+
 Sanjay Agravat <sagrava@emory.edu>
 
 Shaohuan Li <shaohuan.li@gmail.com> 

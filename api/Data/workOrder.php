@@ -32,14 +32,37 @@
             $postRequest->execute();
             echo(json_encode($newestAnnot));
             */
-            $workOrder = $_POST;
-            $workOrder["username"] = $_SESSION["username"];
-            $url = $postUrl . "?api_key=". $api_key;
-            $postRequest = new RestRequest($url, 'POST', json_encode($workOrder));
+
+            //$url = $postUrl . "?api_key=". $api_key;
+
+            $kueUrl = "http://localhost:5001" . "/job";
+            $postRequest = new RestRequest($kueUrl, 'POST', json_encode($workOrder));
             $postRequest->execute();
-            print_r($_POST);
-            echo $url;
+            //print_r($_POST);
+            print_r(json_encode($workOrder));
+            print_r($postRequest);
+            //echo $url;
             echo "done";
+
+
+            $workOrder = $_POST;
+            $kueUrl = "http://localhost:5001" . "/job";
+            $postData = json_encode($workOrder);
+            $ch = curl_init($kueUrl);
+
+            
+            //Tell cURL that we want to send a POST request.
+            curl_setopt($ch, CURLOPT_POST, 1);
+             
+            //Attach our encoded JSON string to the POST fields.
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
+             
+            //Set the content type to application/json
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json')); 
+             
+            //Execute the request
+            $result = curl_exec($ch);          
+            echo $result; 
             break;
     }
 ?>

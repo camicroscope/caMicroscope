@@ -306,10 +306,12 @@ annotools.prototype.generateSVG = function (annotations) {
         svgHtml += polyPixelX + ',' + polyPixelY + ' '
       }
 
+
       //svgHtml += '" style="fill: transparent; stroke: lime; stroke-width:2.5"/>'
       if(color === undefined)
         color = 'lime'
       svgHtml += '" style="fill:transparent; stroke:'+color+ '; stroke-width:2.5"/>'
+
     }
     this.svg = new Element('div', {
       styles: {

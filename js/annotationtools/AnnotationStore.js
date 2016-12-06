@@ -88,7 +88,7 @@ AnnotationStore.prototype.fetchAnnotations = function(x1,y1,x2,y2, footprint, al
     //var url1 = "http://dragon.cci.emory.edu:9099/services/TCGA/GeoJSONImageMetaData/query/getMultipleMarkups?api_key=4fbb38a3-1821-436c-a44d-8d3bc5efd33e&CaseId=" + self.iid +"&x1=" + x1+ "&y1=" + y1 + "&x2=" + midX + "&y2=" + midY + "&footprint="+ footprint + "&algorithms=" + algorithms_urlparam + "&";
    // console.log(url1);
     
-
+	console.log(url1);
 
     jQuery.get(url1, function(data){
 
