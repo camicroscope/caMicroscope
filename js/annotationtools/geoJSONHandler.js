@@ -6,6 +6,8 @@ annotools.prototype.generateGeoTemplate = function () {
     subject_id = "";
   }
 
+  var execution_id = annotool.execution_id ;
+  
   var geoJSONTemplate = {
     'type': 'Feature',
     'parent_id': 'self',
@@ -23,7 +25,7 @@ annotools.prototype.generateGeoTemplate = function () {
     'footprint': 10000,
     'provenance': {
       'analysis': {
-        'execution_id': 'humantest',
+        'execution_id': execution_id,
         'study_id': "",
         'source': "human",
         'computation': 'segmentation'
@@ -38,15 +40,10 @@ annotools.prototype.generateGeoTemplate = function () {
   return geoJSONTemplate
 }
 
-annotools.prototype.convertRectToGeo = function (annotation) {
- 
+annotools.prototype.convertRectToGeo = function (annotation) { 
 
   var origin = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(annotation.x), this.imagingHelper.physicalToDataY(annotation.y))
   var max = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(annotation.x + annotation.w), this.imagingHelper.physicalToDataY(annotation.y + annotation.h))
-
-
-
-
 
   /* Compute footprint(area)*/
   var physicalX1 = this.imagingHelper.logicalToPhysicalX(annotation.x);
@@ -60,9 +57,7 @@ annotools.prototype.convertRectToGeo = function (annotation) {
   var dataX2 = helper.physicalToDataX(physicalX2);
   var dataY2 = helper.physicalToDataY(physicalY2);
 
-
   var area = (dataX2 - dataX1)*(dataY2-dataY1);
-
 
   var coordinates = []
   var x = annotation.x
@@ -76,6 +71,8 @@ annotools.prototype.convertRectToGeo = function (annotation) {
   coordinates[0].push([x + w, y])
   coordinates[0].push([x + w, y + h])
   coordinates[0].push([x, y + h])
+  //create a closed loop polygon
+  coordinates[0].push([x, y])
   geoAnnot.x = x
   geoAnnot.y = y;
   geoAnnot.footprint = area;
@@ -100,12 +97,8 @@ annotools.prototype.convertPencilToGeo = function (annotation) {
   var dataX2 = helper.physicalToDataX(physicalX2);
   var dataY2 = helper.physicalToDataY(physicalY2);
 
-
   var area = Math.abs((dataX2 - dataX1))*Math.abs((dataY2-dataY1));
   console.log(area)
-
-  
-
   
   var points = annotation.points
   var p = points.split(' ')
@@ -253,6 +246,9 @@ var clickSVG = function(evt, annotation){
 annotools.prototype.generateSVG = function (annotations) {
   // console.log(annotation)
   // var annotation = annotations[ii]
+  var case_id = this.iid;
+  var cancerType = this.cancerType ;
+  
   var self =this;
   var annotations = this.annotations
   if (annotations) {
@@ -279,7 +275,7 @@ annotools.prototype.generateSVG = function (annotations) {
     svgHtml += '<g id="viewport" transform="translate(0,0)">'
 
     for (var i = 0; i < annotations.length; i++) {
-      var annotation = annotations[i]
+      var annotation = annotations[i] 
 
       var id = '';
       
@@ -296,14 +292,13 @@ annotools.prototype.generateSVG = function (annotations) {
 	  //use the same color as algorithm does
 	  if(annotation.color)
 		   color =annotation.color; 
-
+	   
       // var svg = 
       svgHtml += '<polygon  class="annotationsvg" id="' + id + '" points="'
 
       // svgHtml += '<polygon onclick="clickSVG(event)" class="annotationsvg" id="'+"poly"+i+'" points="'
       var polySVG = ''
       for (var k = 0; k < nativepoints.length; k++) {
-
         var polyPixelX = this.imagingHelper.logicalToPhysicalX(nativepoints[k][0])
         var polyPixelY = this.imagingHelper.logicalToPhysicalY(nativepoints[k][1])
         // svgHtml += nativepoints[k][0] + ',' + nativepoints[k][1] + ' '
@@ -328,20 +323,21 @@ annotools.prototype.generateSVG = function (annotations) {
       html: svgHtml
     }).inject(container)
   }
-
-
-
+  
   var ctrl = false;
+  var alt = false;
   jQuery(document).keydown(function(event){
     //console.log("control");
     //console.log(event);
-    if(event.which == 17 || event.which == 91)
+    if(event.which == 17 || event.which == 91)//Ctrl key and left window key
       ctrl = true;
-
+   else if (event.which == 18 || event.which == 92)//Alt key and right window key
+	  alt = true;	 
   });
 
   jQuery(document).keyup(function(){
         ctrl = false;
+		alt = false;
   });
 
   jQuery('.annotationsvg').mousedown(function (event) {
@@ -352,47 +348,62 @@ annotools.prototype.generateSVG = function (annotations) {
           event.stopPropagation();
           event.stopImmediatePropagation();
           //return false;
-        } else {
+        } else if (alt){
+          //console.log("double clicked");
+          event.preventDefault();
+          event.stopPropagation();
+          event.stopImmediatePropagation();
+          //return false;
+        }		
+		else {
           return;
         }
+		
         var panel = jQuery('#panel').show('slide')
         panel.html('');
         jQuery(".annotationsvg").css("opacity", 0.5);
         jQuery("#"+event.target.id).css("opacity", 1);
         var id = event.target.id
-        var url = "api/Data/getProperties.php?id="+id;
+        var url = "api/Data/getPropertiesClone.php?id="+id;
         console.log("id:"+url);
         console.log("id:"+id);
         var content = "<div id = 'panelHeader'> <h4>Annotation Details </h4></div>"
         + "<div id='panelBody'>";
 
         jQuery.get(url, function(d){
-          var data = {}
-          
+          var data = {}          
           try{
             data = JSON.parse(d)[0];
           } catch(e){
             console.log(e);
           }
-          //console.log(data);
+          
+//		  console.log(data);
+		  
           var features = [];
           var properties = {};
+		  var algorithm="";
+		  var coordinates=[];
+		  
           try {
             if(data.properties.scalar_features)
               features=  data.properties.scalar_features[0].nv;
+		  
             properties = data.properties.annotations;
+			algorithm = data.algorithm;
+			coordinates= data.geometry.coordinates[0];
+			
           } catch(e){
             console.log(e);
           }
-          for(var i in properties){
-            
+		  
+          for(var i in properties){            
             if(i == "secret"){
 
             } else {
               var line = "<div class='markupProperty'><strong>"+i+"</strong>: " + properties[i]+"</div>";
               content+=line;
-            }
-          
+            }          
           }
 
           for(var i =0; i< features.length; i++){
@@ -400,23 +411,25 @@ annotools.prototype.generateSVG = function (annotations) {
             var line = "<div class='markupFeature'><div class='markupFeatureName'>"+feature.name +"</div> <div class='markupFeatureValue'>"+feature.value+"</div></div>";
             content+=line;
           }
-
-          content += "<button class='btn-danger btn' id='deleteAnnot'><a href='#confirmDelete' rel='modal:open'>Delete</a></button>";
+         
+		  if(ctrl)
+             content += "<button class='btn-danger btn' id='deleteAnnot'><a href='#confirmDelete' rel='modal:open'>Delete</a></button>";
+		  else if (alt)
+			 content += "<button class='btn-danger btn' id='featureScape'>FeatureScape</button>"; 
+		  
           content += "<button class='btn' id='cancelPanel'>Cancel</button>";
           content +="</div>";
-          var cancel = function () {
-           
+		  
+          var cancel = function () {           
             jQuery('#panel').hide('slide')
-
           }
 
           panel.html(content);
 
-
           jQuery("#cancelPanel").click(function(){cancel();});
-
-          jQuery("#deleteAnnot").click(function(e) {
-            
+		  
+        if(ctrl){ // Ctrl key for deletion of human generated annotation
+          jQuery("#deleteAnnot").click(function(e) {            
             //$("#confirmDelete").css(
             //console.log(data.provenance.analysis.source);
             if(data.provenance.analysis.source == "human"){
@@ -441,7 +454,44 @@ annotools.prototype.generateSVG = function (annotations) {
             } else {
               alert("Can't delete computer generated segments");
             }
-          });
+          })
+		 };
+		 
+		if (alt){  //new code go here to handle Alt key for featureScape view
+		   if(data.provenance.analysis.source == "human"){
+              jQuery("#featureScape").click(function(){ 
+			  
+              var execution_id= algorithm;
+			  var this_case_id = case_id;
+              var this_cancerType = cancerType ;
+			  var x_min= coordinates[0][0];
+			  var y_min= coordinates[0][1];			  
+			  var x_max= coordinates[2][0];
+			  var y_max= coordinates[2][1];
+			  var randval = Math.random();
+			  
+			  var featureScape_url="";			  
+			  var github_url="http://sbu-bmi.github.io/FeatureScapeApps/featurescape/?";
+			  var osprey_url="http://osprey.bmi.stonybrook.edu:3000?";
+			  var mongodb_query="limit=1000&find={";
+			      mongodb_query+="\"randval\":{\"$gte\":"+randval+"},";
+				  mongodb_query+="\"provenance.analysis.execution_id\":\""+execution_id+"\",";
+			      mongodb_query+="\"provenance.image.case_id\":\""+this_case_id+"\",";
+			      mongodb_query+="\"x\":{\"$gte\":"+x_min+",\"$lte\":"+x_max+"},";
+			      mongodb_query+="\"y\":{\"$gte\":"+y_min+",\"$lte\":"+y_max+"}";
+			      mongodb_query+="}&db=u24_"+this_cancerType+"&c="+this_cancerType;
+			  
+			  featureScape_url=github_url+osprey_url+mongodb_query;
+			  console.log(featureScape_url);		   
+			  window.open(featureScape_url,'_blank');			 
+              jQuery("#panel").hide("slide");
+              self.getMultiAnnot();			  			
+              });
+            } else {
+              alert("Can't view the featureScape of computer generated segments");
+            }    
+		 } ;//end of new code	
+		  
 
         });
     

@@ -10,7 +10,8 @@ var ToolBar = function (element, options) {
   this.width = options.width || '270px'
   this.zindex = options.zindex || '100' // To Make Sure The Tool Appears in the Front
 
-  this.iid = options.iid || null
+  this.iid = options.iid || null;
+  this.cancerType = options.cancerType;
   this.annotationActive = isAnnotationActive()
 }
 ToolBar.prototype.showMessage = function (msg) {
@@ -23,7 +24,8 @@ ToolBar.prototype.algorithmSelector = function () {
   xxx = []
 }
 
-var available_colors = ['lime', 'red', 'blue', 'orange']
+//var available_colors = ['lime', 'red', 'blue', 'orange']
+var available_colors = ['lime', 'red', 'blue', 'orange','silver','maroon','aqua','fuchsia','green','black']
 var algorithm_color = {}
 
 function goodalgo (data, status) {
@@ -147,14 +149,44 @@ ToolBar.prototype.createButtons = function () {
 
   // Fetch algorithms for Image
   jQuery(document).ready(function () {
-    // console.log(options)
-    // var self= this
-
+    // console.log(options)    
+	
+    var osprey_api_url="http://osprey.bmi.stonybrook.edu:3000";
+    var tahsin191_api_url="http://tahsin191.informatics.stonybrook.edu:4500";
+    //var restful_api=tahsin191_api_url+"/?";
+    var restful_api=osprey_api_url+"/?"; 
+	restful_api+="limit=10&find={\"image.case_id\":";
+	restful_api+="\""+self.iid+"\"";
+	restful_api+=",\"$or\":[{\"provenance.type\":\"computer\"},{\"provenance.type\":\"human\",\"provenance.analysis_execution_id\":{\"$regex\":'_composite_'}}]}";
+	restful_api+="&db=";
+	restful_api+=self.cancerType;	   
+	restful_api+="&collection=metadata&project={\"_id\":0}";	 
+	console.log(restful_api);	 
+	 
+	/*
     jQuery.get('api/Data/getAlgorithmsForImage.php?iid=' + self.iid, function (data) {
-      d = JSON.parse(data)
-
+      d = JSON.parse(data);	  
+	   console.log(data);
+       console.log(d);	   
       goodalgo(d, null)
     })
+	*/	
+	
+	
+	jQuery.get(restful_api, function (data) {
+	  console.log(data);
+      //d = JSON.parse(data);	      
+      //console.log(d);	  
+	  goodalgo(data, null)
+    })
+	
+	/*
+	$.getJSON(restful_api).then(function (data) {
+          console.log(data);       
+	      goodalgo(data, null);
+        })		
+	*/
+	
     // console.log("here")
     jQuery('#submitbtn').click(function () {
       var selKeys = jQuery('#tree').fancytree('getTree').getSelectedNodes()
@@ -179,27 +211,41 @@ ToolBar.prototype.createButtons = function () {
 
 
   if (this.annotationActive) {
-
     /*
      * Ganesh
      * Mootools to Jquery for creation of toolbar buttons
      */
+	 
+	this.homebutton = jQuery('<img>', {
+      title: 'Default Home',
+      class: 'toolButton firstToolButtonSpace inactive',
+      src: 'images/home.png',
+      id: 'gotohomebutton'
+    })
+    tool.append(this.homebutton) 
+	 
+	this.spacer1 = jQuery('<img>', {
+      'class': 'spacerButton inactive',
+      'src': 'images/spacer.svg'
+    })
+    tool.append(this.spacer1)
+	
     this.rectbutton = jQuery('<img>', {
       title: 'Draw Rectangle',
-      class: 'toolButton firstToolButtonSpace inactive',
+      class: 'toolButton inactive',
       src: 'images/rect.svg',
       id: 'drawRectangleButton'
     })
     tool.append(this.rectbutton)
-
+    /*
     this.ellipsebutton = jQuery('<img>', {
       'title': 'Draw Ellipse',
       'class': 'toolButton inactive',
       'src': 'images/ellipse.svg'
     })
     tool.append(this.ellipsebutton)
-
-    this.pencilbutton = jQuery('<img>', {
+*/
+	this.pencilbutton = jQuery('<img>', {
       'title': 'Draw Freeline',
       'class': 'toolButton inactive',
       'src': 'images/pencil.svg',
@@ -207,21 +253,23 @@ ToolBar.prototype.createButtons = function () {
     })
     tool.append(this.pencilbutton) // Pencil Tool
 	
+	/*
    this.spacer2 = jQuery('<img>', {
       'class': 'spacerButton inactive',
       'src': 'images/spacer.svg'
     })
     tool.append(this.spacer2)
+	*/
 	
 	this.mergebutton1 = jQuery('<img>', {
-      'title': 'Merge Step 1',
+      'title': 'Save ViewPort',
       'class': 'toolButton inactive',
       'src': 'images/merge1.png'
     })
     tool.append(this.mergebutton1) // Merge step 1
 	
 	this.mergebutton2 = jQuery('<img>', {
-      'title': 'Merge Step 2',
+      'title': 'Save Rectangle And Delete Annotation(s) Within This Area',
       'class': 'toolButton inactive',
       'src': 'images/merge2.png',
 	  'id': 'mergeStep2Button'
@@ -235,11 +283,11 @@ ToolBar.prototype.createButtons = function () {
     })
     // tool.append(this.measurebutton)
 
-    this.spacer2 = jQuery('<img>', {
+    this.spacer3 = jQuery('<img>', {
       'class': 'spacerButton inactive',
       'src': 'images/spacer.svg'
     })
-    tool.append(this.spacer2)
+    tool.append(this.spacer3)
 
     this.filterbutton = jQuery('<img>', {
       'title': 'Filter Markups',
@@ -253,7 +301,7 @@ ToolBar.prototype.createButtons = function () {
       'class': 'toolButton inactive',
       'src': 'images/hide.svg'
     })
-    tool.append(this.hidebutton)
+   // tool.append(this.hidebutton)
 
 
     /*
@@ -264,6 +312,7 @@ ToolBar.prototype.createButtons = function () {
     })
     tool.append(this.fullDownloadButton)
     */
+	
     this.spacer1 = jQuery('<img>', {
       'class': 'spacerButton inactive',
       'src': 'images/spacer.svg'
@@ -291,13 +340,13 @@ ToolBar.prototype.createButtons = function () {
       'class': 'toolButton inactive',
       'src': 'images/partDownload.svg'
     })
-     tool.append(this.partialDownloadButton)  //Partial Download
+     //tool.append(this.partialDownloadButton)  //Partial Download
      
-    this.spacer1 = jQuery('<img>', {
+    this.spacer5 = jQuery('<img>', {
       'class': 'spacerButton inactive',
       'src': 'images/spacer.svg'
     });
-    tool.append(this.spacer1);
+   // tool.append(this.spacer5);
     
     this.dotToolButton = jQuery('<img>', {
         'title': 'Dot Tool',
@@ -305,12 +354,25 @@ ToolBar.prototype.createButtons = function () {
         'src': 'images/analyze.png',
         'id': 'drawDotButton'
     });
-    tool.append(this.dotToolButton); // Dot Tool
+   // tool.append(this.dotToolButton); // Dot Tool
 	
    
     /*
      * Event handlers on click for the buttons
      */
+	 
+	this.homebutton.on('click', function () {
+      this.mode = 'home';
+	  //var tissueId=this.annotool.iid;
+	 // console.log(tissueId)
+	  var tissueId=annotool.iid;
+	  console.log(tissueId)
+	  var cancerType=annotool.cancerType;	
+      console.log(cancerType)	  
+      location.href = "/camicroscope/osdCamicroscope.php?tissueId="+tissueId+"&cancerType="+cancerType;
+    }.bind(this))
+	 
+	 
     this.rectbutton.on('click', function () {
       //console.log(this.mode);
       if(this.annotools.mode == 'rect'){
@@ -372,14 +434,15 @@ ToolBar.prototype.createButtons = function () {
        }   
     }.bind(this)); 
     // Dot Tool end
-	  
+	
+/*	
     this.ellipsebutton.on('click', function () {
       // this.mode = 'ellipse'
       // this.annotools.mode = 'ellipse'
       // this.annotools.drawMarkups()
       alert('Creation of markups is disabled on QuIP')
     }.bind(this))
-
+*/
     this.pencilbutton.on('click', function () {
 
       if(this.annotools.mode == 'pencil'){
@@ -403,7 +466,7 @@ ToolBar.prototype.createButtons = function () {
     this.measurebutton.on('click', function () {
       this.mode = 'measure'
       this.drawMarkups()
-    }.bind(this))
+    }.bind(this))	
 
     this.hidebutton.on('click', function () {
       this.annotools.toggleMarkups()

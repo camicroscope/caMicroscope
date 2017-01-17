@@ -56,13 +56,18 @@ switch ($_SERVER['REQUEST_METHOD'])
     $url = $postUrl . "?api_key=".$api_key; 
     //print_r($url);
     //echo "\n";
-    $newAnnotation = $_POST;
+	
+	//hard coding secret input
+	$_POST['properties']['annotations']['secret']= "human1"; 
+    $newAnnotation = $_POST;	
+	
     //print_r($_POST);
     $POSTsecret =  $_POST['properties']['annotations']['secret'];
+	$POSTexecution_id =  $_POST['provenance']['analysis']['execution_id'];
 
     $secrets = array(
-      "human1" => "humantest", // secret => username
-      "prod1" => "humanProd"
+      "human1" => $POSTexecution_id, // secret => username
+     "prod1" => "humanProd"
     );
 
     $authorized = false;
@@ -70,8 +75,8 @@ switch ($_SERVER['REQUEST_METHOD'])
     foreach($secrets as $secret => $username){
       if($POSTsecret === $secret){
         //set execution_id as $username
-        $newAnnotation['provenance']['analysis']['execution_id'] = $username;
-        $newExecutionId = $username;
+        $newAnnotation['provenance']['analysis']['execution_id'] = $POSTexecution_id;
+        $newExecutionId = $POSTexecution_id;
         $authorized = true;
         $jsonAnnotation = json_encode($newAnnotation, JSON_NUMERIC_CHECK);
         //print_r(json_encode($newAnnotation)); 
@@ -79,24 +84,20 @@ switch ($_SERVER['REQUEST_METHOD'])
         $postRequest->execute();
         //echo "success";
       } 
-    }
+   }
      $executionExists = False;
     if($authorized == false){
       echo "unauthorized";
     } else {
-
       //check if executionID exists
       $url = $algorithmsForImage . "api_key=".$api_key;
       $iid = $newAnnotation['provenance']['image']['case_id'];
-
-      $url = $url . "&TCGAId=" . $iid;
-    
+      $url = $url . "&TCGAId=" . $iid;    
       $getExecutionIDs = new RestRequest($url, 'GET');
       $getExecutionIDs->execute();
       //echo $url;
       $executionIDs = json_decode($getExecutionIDs->responseBody);
-      //print_r($executionIDs);
-    
+      //print_r($executionIDs);    
 
       for($i=0; $i< count($executionIDs); $i++){
         //echo $i;
@@ -110,7 +111,6 @@ switch ($_SERVER['REQUEST_METHOD'])
           $executionExists = True;
         }
       }
-
 
       if($executionExists == True){
         //echo "execution id exists";

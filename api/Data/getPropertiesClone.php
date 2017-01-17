@@ -4,7 +4,7 @@
 include_once("RestRequest.php");
 require_once 'HTTP/Request2.php';
 $config = require '../Configuration/config.php';
-$getUrl =  $config['getPropertiesForMarkup'];
+$getUrl =  $config['getPropertiesForMarkupClone'];
 $deleteUrl = $config['deleteAnnotation'];
 //$postUrl = $config['postAnnotation'];
 

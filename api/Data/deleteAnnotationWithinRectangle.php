@@ -17,6 +17,7 @@ switch ($_SERVER['REQUEST_METHOD'])
 {   case 'DELETE':
     echo "PHP Deleteing";
 	echo PHP_EOL;
+
   
 	$case_id=$_GET["case_id"];
 	$subject_id=$_GET["subject_id"];
@@ -31,17 +32,17 @@ switch ($_SERVER['REQUEST_METHOD'])
     echo $delUrl;
     $curl = curl_init($delUrl);
     //Delete request
-    curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "DELETE");
-    curl_setopt($curl, CURLOPT_HEADER, false);
-    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type: application/json',"OAuth-Token: $token"));
-    // Make the REST call, returning the result
-    $response = curl_exec($curl);
-    print_r($response);
-    echo PHP_EOL;
-    echo "Deleted!";
-    //Delete ID
-   break;    
+   curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "DELETE");
+   curl_setopt($curl, CURLOPT_HEADER, false);
+   curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+   curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type: application/json',"OAuth-Token: $token"));
+   // Make the REST call, returning the result
+   $response = curl_exec($curl);
+   print_r($response);
+   echo PHP_EOL;
+   echo "Deleted!";
+   //Delete ID
+  break;    
 }
 
 ?>

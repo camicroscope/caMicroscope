@@ -1,15 +1,15 @@
     <?php 
 	session_start();
 	require '../authenticate.php';
-
     $config = require 'api/Configuration/config.php';
     //Set cancer type
       if(isset($_GET["cancerType"])){
           $cancerType = $_GET["cancerType"];
           $_SESSION["cancerType"] = "u24_" . $cancerType;
       }
-      $config = require 'api/Configuration/config.php';
-    ?>
+      //$config = require 'api/Configuration/config.php';
+    ?>	
+		
     <!DOCTYPE html>
     <html>
     <head>
@@ -23,27 +23,22 @@
         <link rel="stylesheet" type="text/css" media="all" href="css/simplemodal.css" />
         <link rel="stylesheet" type="text/css" media="all" href="css/ui.fancytree.min.css" />
         <link rel="stylesheet" type="text/css" media="all" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.7.0/jquery.modal.css" />
-        <script src="js/dependencies/jquery.js"></script>
-  
+        <script src="js/dependencies/jquery.js"></script>  
   
         <!--JSON Form dependencies-->
-
         <script type="text/javascript" src="js/dependencies/underscore.js">
             console.log(_);
         </script>
         <script>console.log("here"); console.log(_);
+		console.log("<?php echo $_SESSION["cancerType"]; ?>");
         </script>
         <script type="text/javascript" src="js/dependencies/jsonform.js"></script>
         <script type="text/javascript" src="js/dependencies/jsv.js"></script>
-        <!--End JSON Form dependencies -->
-  
-  
-  
+        <!--End JSON Form dependencies --> 
         
         <script src="js/openseadragon/openseadragon-bin-1.0.0/openseadragon.js"></script>
         <script src="js/openseadragon/openseadragon-imaginghelper.min.js"></script>
         <script src="js/openseadragon/openseadragon-scalebar.js"></script>
-
         <script type="text/javascript" src="js/mootools/mootools-core-1.4.5-full-nocompat-yc.js"></script>
         <script type="text/javascript" src="js/mootools/mootools-more-1.4.0.1-compressed.js"></script>
         <script src="js/annotationtools/annotools-openseajax-handler.js"></script>
@@ -51,7 +46,6 @@
         <script src="js/annotationtools/ToolBar.js"></script>
         <script src="js/annotationtools/AnnotationStore.js"></script>
         <script src="js/annotationtools/osdAnnotationTools.js"></script>
-		<script src="js/annotationtools/osdAnnotationDotTools.js"></script>
         <script src="js/annotationtools/geoJSONHandler.js"></script>
         <script src="js/dependencies/MD5.js"></script>
         <script src="http://code.jquery.com/ui/1.11.2/jquery-ui.min.js" type="text/javascript"></script> 
@@ -62,6 +56,8 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.7.0/jquery.modal.js"> </script>
         <script src="js/dependencies/simplemodal.js"></script>
         <script src="js/dependencies/d3.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+		
         <style type="text/css">
             .openseadragon
             {
@@ -88,45 +84,47 @@
                 bottom: 0;
                 border: 1px solid yellow;
         }
-.modal a.close-modal{
-  top: 0;
-  right: 0;
-}
-        </style>
+       .modal a.close-modal{
+            top: 0;
+            right: 0;
+       }
+     </style>
          <link rel="stylesheet" type="text/css" media="all" href="css/annotools.css" />   
     </head>
 
     <body>
 
         <div id="container">
-                    
             <div id="tool"></div>
             <div id="panel"></div>
-        <div id="algosel"><div id="tree"></div></div>
-
+            <div id="algosel">
+                <div id="tree"></div>
+            </div>
             <div class="demoarea">
                 <div id="viewer" class="openseadragon"></div>
             </div>
-        <div id"navigator"></div>
-
+            <div id"navigator"></div>
         </div>
+
         <div id="confirmDelete" style="display:none">
           <p> Please enter the secret: <input id="deleteSecret" type="password" /> <a href="#confirmDelete" rel="modal:close"><button id="confirmDeleteButton">Delete</button></a></p>
         </div>
+
         <script type="text/javascript">
           $.noConflict();
           var annotool = null;
-          var tissueId = <?php echo json_encode($_GET['tissueId']); ?>;
-		
-		var cancerType = "<?php echo $_SESSION["cancerType"] ?>";
-		console.log(cancerType);
+          var tissueId = <?php echo json_encode($_GET['tissueId']); ?>;		
+		  var cancerType = "<?php echo $_SESSION["cancerType"] ?>";
+		  var cancerType2 = "<?php echo $_GET["cancerType"] ?>";
+		  console.log(cancerType);
+		  console.log(tissueId);
           var imagedata = new OSDImageMetaData({imageId:tissueId});
           //console.log(tissueId);
           //console.log(imagedata);
           //console.log(tissueId);
           
           var MPP = imagedata.metaData[0];
-		console.log(MPP);
+		  console.log(MPP);
             //console.log(imagedata);
           var fileLocation = imagedata.metaData[1];//.replace("tcga_data","tcga_images");
           //console.log(fileLocation);
@@ -135,6 +133,7 @@
                 id: "viewer", 
                 prefixUrl: "images/",
                 showNavigator:  true,
+                //navigatorPosition:   "BOTTOM_LEFT",
                 navigatorPosition:   "BOTTOM_RIGHT",
                 //navigatorId: "navigator",
                 zoomPerClick: 2,
@@ -166,21 +165,22 @@
               backgroundColor: "rgba(255,255,255,0.5)",
               barThickness: 2
             });
-    //console.log(viewer);
-function isAnnotationActive(){
-    this.isOpera = !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
-    this.isFirefox = typeof InstallTrigger !== 'undefined';
-    this.isSafari = Object.prototype.toString.call(window.HTMLElement).indexOf('Constructor') > 0;
-    this.isChrome = !!window.chrome;
-    this.annotationActive = !(this.isIE || this.isOpera);
-    return this.annotationActive;
-}
+        //console.log(viewer);
+    function isAnnotationActive(){
+        this.isOpera = !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
+        this.isFirefox = typeof InstallTrigger !== 'undefined';
+        this.isSafari = Object.prototype.toString.call(window.HTMLElement).indexOf('Constructor') > 0;
+		this.isChrome = !!window.chrome;
+		this.annotationActive = !(this.isIE || this.isOpera);
+		return this.annotationActive;
+	}
 
     function addOverlays() {
         var annotationHandler = new AnnotoolsOpenSeadragonHandler(viewer, {});
         annotool= new annotools({
                 canvas:'openseadragon-canvas',
                 iid: tissueId, 
+				cancerType: cancerType2,
                 viewer: viewer,
                 annotationHandler: annotationHandler,
                 mpp:MPP
@@ -192,12 +192,21 @@ function isAnnotationActive(){
                 height: '48px',
                 width: '100%',
                 iid: tissueId,
+				cancerType: cancerType,
                 annotool: annotool
            
         });
         annotool.toolBar = toolBar;
         toolBar.createButtons();
-        
+		
+		var user_email = "<?php echo $_SESSION["email"]; ?>";       
+		var index = user_email.indexOf("@");
+		var user= user_email.substring(0,index);		
+        var execution_id =user+"_composite_input" ;
+		annotool.execution_id = execution_id;
+		annotool.user = user;
+		console.log("execution_id :" + annotool.execution_id);
+		
         /*Pan and zoom to point*/
         var bound_x = <?php echo json_encode($_GET['x']); ?>;
         var bound_y = <?php echo json_encode($_GET['y']); ?>;
@@ -212,7 +221,7 @@ function isAnnotationActive(){
         } else {
             console.log("bounds not specified");
         }
-    }
+    }//end of addOverlays()
 
       if (!String.prototype.format) {
         String.prototype.format = function() {

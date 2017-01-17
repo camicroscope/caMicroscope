@@ -23,6 +23,7 @@ var annotools = function (options) {
   this.iidDecoded = decodeURI(options.iid)
   this.canvas = options.canvas; // The canvas Element that The Use will be drawing annotatoins on.
   this.iid = options.iid || null // The Image ID
+  this.cancerType=options.cancerType;
   this.annotVisible = true // The Annotations are Set to be visible at the First Loading
   this.mode = 'default' // The Mode is Set to Default
 
@@ -1143,7 +1144,18 @@ annotools.prototype.saveAnnot = function (annotation) // Save Annotations
   this.save_success="no";
   console.log('Save annotation function')
   console.log(annotation)
-
+  //add first vertice to the end of loop to ensure the polygon is closed
+  var total_points= annotation.geometry.coordinates[0].length;
+  var fpoint_x=annotation.geometry.coordinates[0][0][0];
+  var fpoint_y=annotation.geometry.coordinates[0][0][1];
+  var lpoint_x=annotation.geometry.coordinates[0][total_points-1][0];
+  var lpoint_y=annotation.geometry.coordinates[0][total_points-1][1];
+  
+  if(fpoint_x!=lpoint_x || fpoint_y!=lpoint_y){
+	 annotation.geometry.coordinates[0].push([]);
+     annotation.geometry.coordinates[0][total_points].push(fpoint_x);
+     annotation.geometry.coordinates[0][total_points].push(fpoint_y);   
+  }  
   //get algorithm and color info from menu tree
   var selKeys = jQuery('#tree').fancytree('getTree').getSelectedNodes();
   console.log(selKeys);		 
@@ -1152,11 +1164,17 @@ annotools.prototype.saveAnnot = function (annotation) // Save Annotations
   var algorithm_colors =[];
   var selected_algorithm="";
   var selected_color="";
-	 
+  	 
   for (i = 0;i < selKeys.length;i++) {
-        if(selKeys[i].refKey !="humantest" && selKeys[i].refKey !="merge_seq_1")
-			algorithms.push(selKeys[i].refKey);
-		    algorithm_colors.push(selKeys[i].data.color);
+	  var algorithm_title = selKeys[i].refKey;
+	  var index1=algorithm_title.indexOf("human");
+	  var index2=algorithm_title.indexOf("composite");
+	  var index3=algorithm_title.indexOf("dotnuclei");
+      var index4=algorithm_title.indexOf("Heatmap");		  
+		 
+      if(index1==-1 && index2 ==-1 && index3 ==-1&& index4 ==-1)
+		 {algorithms.push(selKeys[i].refKey);
+		  algorithm_colors.push(selKeys[i].data.color);}
   }
   var num_algorithm = algorithms.length;	  
 	 
@@ -1169,8 +1187,17 @@ annotools.prototype.saveAnnot = function (annotation) // Save Annotations
     console.log(selected_algorithm);	 
   }
   
+   var user=annotool.user;
+   var d = new Date();
+   var current_time=d.toLocaleString(); 
+   
    annotation.color=selected_color;
    annotation.algorithm=selected_algorithm;  
+   annotation.created_by=user;	
+   annotation.created_on=current_time;
+   annotation.updated_by='';
+   annotation.updated_on='';
+   
   
   jQuery.ajax({
     'type': 'POST',
@@ -1426,6 +1453,9 @@ annotools.prototype.drawEllipse = function (ctx) {
 
 annotools.prototype.drawRectangle = function (ctx) {
   console.log('drawing rectangle')
+  
+  var selectedAlgorithmColor = this.getAlgorithmColorFromMenuTree();
+  console.log("selectedAlgorithmColor is: "+selectedAlgorithmColor); 
 
   /*Highlight drawRectangle button and change cursor*/
 
@@ -1451,7 +1481,8 @@ annotools.prototype.drawRectangle = function (ctx) {
       max_y = Math.max(currentMousePosition.y, startPosition.y)
       w = Math.abs(max_x - min_x)
       h = Math.abs(max_y - min_y)
-      ctx.strokeStyle = this.color
+      //ctx.strokeStyle = this.color
+	  ctx.strokeStyle = selectedAlgorithmColor
       ctx.fillStyle = 'rgba(255, 255, 255, 0.2)'
       ctx.fillRect(min_x, min_y, w, h)
       ctx.strokeRect(min_x, min_y, w, h)
@@ -1475,7 +1506,8 @@ annotools.prototype.drawRectangle = function (ctx) {
       w: w,
       h: h,
       type: 'rect',
-      color: this.color,
+      //color: this.color,
+	  color:  selectedAlgorithmColor, 
       loc: []
     }
 
@@ -1514,7 +1546,10 @@ annotools.prototype.drawPencil = function (ctx) {
   jQuery("canvas").css("cursor", "crosshair");
   //jQuery("#drawFreelineButton").css("opacity", 1);
   /**/
-
+  var selectedAlgorithmColor = this.getAlgorithmColorFromMenuTree();
+  console.log("selectedAlgorithmColor is: "+selectedAlgorithmColor);
+  
+  
   this.drawCanvas.addEvent('mousedown', function (e) {
     started = true
     var startPoint = OpenSeadragon.getMousePosition(e.event)
@@ -1525,7 +1560,8 @@ annotools.prototype.drawPencil = function (ctx) {
     })
     ctx.beginPath()
     ctx.moveTo(relativeStartPoint.x, relativeStartPoint.y)
-    ctx.strokeStyle = this.color
+    //ctx.strokeStyle = this.color
+	ctx.strokeStyle = selectedAlgorithmColor;
     ctx.stroke()
   }.bind(this))
 
@@ -1579,7 +1615,8 @@ annotools.prototype.drawPencil = function (ctx) {
       h: h,
       type: 'pencil',
       points: points,
-      color: this.color,
+      //color: this.color,
+	  color: selectedAlgorithmColor,
       loc: []
     }
 
@@ -2291,7 +2328,7 @@ annotools.prototype.promptForAnnotation = function (newAnnot, mode, annotools, c
       // Add form data to annotation
       newAnnot.properties.annotations = val
       console.log("inside formSchema.onSubmit of newAnnot object");
-	    console.log(newAnnot);
+	  console.log(newAnnot);
       // Post annotation
       annotools.addnewAnnot(newAnnot)
 
@@ -2925,54 +2962,12 @@ annotools.prototype.promptForDownload = function(newAnnot, mode, annotools, ctx)
 }
 
 
-annotools.prototype.mergeStep1 = function() {
-    /*
-     var x1= viewer.viewport.getBounds().x; 
-     var y1= viewer.viewport.getBounds().y; 
-     var width = viewer.viewport.getBounds().width;
-     var height = viewer.viewport.getBounds().height;
-     var x2= x1+ width; 
-     var y2= y1+ height;
-	 
-     console.log("inside mergebutton click function, x1 is :" + x1);  
-     console.log("inside mergebutton click function, x1 is :" + y1); 
-     console.log("inside mergebutton click function, width is :" + width); 
-     console.log("inside mergebutton click function, height is :" + height); 
-    // console.log("inside mergebutton click function, x2 is :" + x2);  
-     //console.log("inside mergebutton click function, y2 is :" + y2); 
-	 
-	 // Compute footprint(area)
-    var physicalX1 = this.imagingHelper.logicalToPhysicalX(x1);
-    var physicalY1 = this.imagingHelper.logicalToPhysicalY(y1);
-    var physicalX2 = this.imagingHelper.logicalToPhysicalX(x2);
-    var physicalY2 = this.imagingHelper.logicalToPhysicalY(y2);
-
-    var helper = this.imagingHelper;
-    var dataX1 = helper.physicalToDataX(physicalX1);
-    var dataY1 = helper.physicalToDataY(physicalY1);
-    var dataX2 = helper.physicalToDataX(physicalX2);
-    var dataY2 = helper.physicalToDataY(physicalY2);
-
-    var area = (dataX2 - dataX1)*(dataY2-dataY1);
-	console.log(area); 
-     */
-	 
-   var x1 = this.imagingHelper._viewportOrigin['x'];
-   var y1 = this.imagingHelper._viewportOrigin['y'];
-   var x2 = x1 + this.imagingHelper._viewportWidth;
-   var y2 = y1 + this.imagingHelper._viewportHeight;
+annotools.prototype.mergeStep1 = function() {    
    
-   console.log("inside mergebutton click function, x1 is :" + x1);  
-   console.log("inside mergebutton click function, x1 is :" + y1);     
-   console.log("inside mergebutton click function, x2 is :" + x2);  
-   console.log("inside mergebutton click function, y2 is :" + y2); 
-  
-   /*
-   var max    = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(9), this.imagingHelper.physicalToDataY(9));
-   var origin = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(0), this.imagingHelper.physicalToDataY(0));
-   var area = (max.x - origin.x) * (max.y - origin.y);	
-   console.log(area);	
-	*/
+    var x1 = this.imagingHelper._viewportOrigin['x'];
+    var y1 = this.imagingHelper._viewportOrigin['y'];
+    var x2 = x1 + this.imagingHelper._viewportWidth;
+    var y2 = y1 + this.imagingHelper._viewportHeight;   
 
     var physicalX1 = this.imagingHelper.logicalToPhysicalX(x1);
     var physicalY1 = this.imagingHelper.logicalToPhysicalY(y1);
@@ -2998,11 +2993,18 @@ annotools.prototype.mergeStep1 = function() {
 	 var selected_color="";
 	 
 	 for (i = 0;i < selKeys.length;i++) {
-        if(selKeys[i].refKey !="humantest" && selKeys[i].refKey !="merge_seq_1")
-			algorithms.push(selKeys[i].refKey);
-		    algorithm_colors.push(selKeys[i].data.color);
+		 var algorithm_title = selKeys[i].refKey;
+		 var index1=algorithm_title.indexOf("human");
+		 var index2=algorithm_title.indexOf("composite");
+		 var index3=algorithm_title.indexOf("dotnuclei");	
+         var index4=algorithm_title.indexOf("Heatmap");		 
+		 
+        if(index1==-1 && index2 ==-1 && index3 ==-1 && index4 ==-1) 
+		  {algorithms.push(selKeys[i].refKey);
+		   algorithm_colors.push(selKeys[i].data.color);}
      }
 	 var num_algorithm = algorithms.length;	  
+	 console.log(algorithms);
 	 
      if(num_algorithm>1 || num_algorithm<1 )	{
 		alert("Please select one and only one algorithm!");  
@@ -3018,7 +3020,13 @@ annotools.prototype.mergeStep1 = function() {
     if(subject_id.substr(0,4) != "TCGA"){
       subject_id = "";
     }
-
+	
+  var execution_id = annotool.execution_id ;
+  var user=annotool.user;
+  var d = new Date();
+  var current_time=d.toLocaleString();       
+  
+   // add first vertice of rectangle to the end to ensure the loop is closed  
    var geoJSONTemplate = {
     'type': 'Feature',
     'parent_id': 'self',
@@ -3042,7 +3050,11 @@ annotools.prototype.mergeStep1 = function() {
                 [
                     x1, 
                     y2
-                ]
+                ],
+				[
+                    x1, 
+                    y1
+                ], 
             ]	  
 	  ]
     },
@@ -3059,7 +3071,7 @@ annotools.prototype.mergeStep1 = function() {
     'footprint': area,
     'provenance': {
       'analysis': {
-        'execution_id': 'humantest',
+        'execution_id': execution_id,
         'study_id': '',
         'source': 'human',
         'computation': 'segmentation'
@@ -3073,7 +3085,11 @@ annotools.prototype.mergeStep1 = function() {
 	x:x1,
 	y:y1,
 	'algorithm':selected_algorithm,
-	'color':selected_color
+	'color':selected_color,
+	'created_by':user,	
+	'created_on':current_time,
+	'updated_by':'',
+	'updated_on':''
   }
   
   var self = this;
@@ -3121,6 +3137,43 @@ annotools.prototype.deleteAnnotationWithinRectangle = function(newAnnot){
                   }
                 });
 
+}
+
+
+annotools.prototype.getAlgorithmColorFromMenuTree = function() {
+	
+  var selKeys = jQuery('#tree').fancytree('getTree').getSelectedNodes();
+  console.log(selKeys);		 
+
+  var algorithms =[];
+  var algorithm_colors =[];
+  var selected_algorithm="";
+  var selected_color="";
+  	 
+  for (i = 0;i < selKeys.length;i++) {
+	  var algorithm_title = selKeys[i].refKey;
+	  var index1=algorithm_title.indexOf("human");
+	  var index2=algorithm_title.indexOf("composite");
+	  var index3=algorithm_title.indexOf("dotnuclei");	
+      var index4=algorithm_title.indexOf("Heatmap");		  
+     
+	  if(index1==-1 && index2 ==-1 && index3 ==-1 && index4 ==-1)
+		 {algorithms.push(selKeys[i].refKey);
+		  algorithm_colors.push(selKeys[i].data.color);}
+  }
+  var num_algorithm = algorithms.length;	  
+	 
+  if(num_algorithm>1 || num_algorithm<1 )	{
+	alert("Please select one and only one algorithm!");  
+	return false; 
+  }else {
+    selected_algorithm = algorithms[0];
+    selected_color = algorithm_colors[0];
+    console.log(selected_algorithm);	 
+  }
+  
+   return selected_color;
+  // return selected_algorithm;    	
 }
 
 
