@@ -34,6 +34,7 @@ return array(
     'postAlgorithmForImage' => "$analysisMetaDataUrl/submit/json?",
     'getMultipleAnnotations' => "$markupUrl/query/getMultipleMarkups?",
     'getPropertiesForMarkup' => "$markupUrl/query/getPropertiesForMarkup?",
+    'getPropertiesForMarkupClone' => "$markupUrl/query/getPropertiesForMarkupClone?",
     'getFileLocation' => "$imageUrl/query/getFileLocationForIID?api_key=",
     'getMPP' => "$imageUrl/query/getMPPForIID?api_key=",
     'retrieveTemplate' => "$templateUrl/AnnotationTemplate/query/retrieveTemplate",

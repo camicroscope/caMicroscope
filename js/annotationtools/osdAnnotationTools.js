@@ -23,6 +23,7 @@ var annotools = function (options) {
   this.iidDecoded = decodeURI(options.iid)
   this.canvas = options.canvas; // The canvas Element that The Use will be drawing annotatoins on.
   this.iid = options.iid || null // The Image ID
+  this.cancerType=options.cancerType;
   this.annotVisible = true // The Annotations are Set to be visible at the First Loading
   this.mode = 'default' // The Mode is Set to Default
 

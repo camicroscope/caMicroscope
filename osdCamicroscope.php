@@ -58,7 +58,11 @@
 
         <script src="js/dependencies/jquery.fancytree-all.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.7.0/jquery.modal.js"> </script>
-        <script src="js/dependencies/simplemodal.js"></script>
+        <script src="js/dependencies/simplemodal.js" ></script>
+		
+		<!--get findAPI host and port from featureScape application-->
+        <script src="/featurescapeapps/js/findapi_config.js" type="text/javascript"></script>
+
         <style type="text/css">
             .openseadragon
             {
@@ -113,10 +117,11 @@
         <script type="text/javascript">
           $.noConflict();
           var annotool = null;
-          var tissueId = <?php echo json_encode($_GET['tissueId']); ?>;
-		
-		var cancerType = "<?php echo $_SESSION["cancerType"] ?>";
-		console.log(cancerType);
+          var tissueId = <?php echo json_encode($_GET['tissueId']); ?>;		
+		  var cancerType = "<?php echo $_SESSION["cancerType"] ?>";
+		  var cancerType2 = "<?php echo $_GET["cancerType"] ?>";
+		  console.log(cancerType);
+		  console.log(tissueId);
           var imagedata = new OSDImageMetaData({imageId:tissueId});
           //console.log(tissueId);
           //console.log(imagedata);
@@ -178,6 +183,7 @@ function isAnnotationActive(){
         annotool= new annotools({
                 canvas:'openseadragon-canvas',
                 iid: tissueId, 
+		cancerType: cancerType2,
                 viewer: viewer,
                 annotationHandler: annotationHandler,
                 mpp:MPP
@@ -189,6 +195,7 @@ function isAnnotationActive(){
                 height: '48px',
                 width: '100%',
                 iid: tissueId,
+        	cancerType: cancerType,
                 annotool: annotool
            
         });
@@ -209,7 +216,7 @@ function isAnnotationActive(){
         } else {
             console.log("bounds not specified");
         }
-    }
+    }//end of addOverlays()
 
       if (!String.prototype.format) {
         String.prototype.format = function() {
