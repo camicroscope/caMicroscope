@@ -10,7 +10,8 @@ var ToolBar = function (element, options) {
   this.width = options.width || '270px'
   this.zindex = options.zindex || '100' // To Make Sure The Tool Appears in the Front
 
-  this.iid = options.iid || null
+  this.iid = options.iid || null;
+  this.cancerType = options.cancerType;
   this.annotationActive = isAnnotationActive()
 }
 ToolBar.prototype.showMessage = function (msg) {
