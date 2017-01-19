@@ -6,11 +6,10 @@
       if(isset($_GET["cancerType"])){
           $cancerType = $_GET["cancerType"];
           $_SESSION["cancerType"] = "u24_" . $cancerType;
-      }
-      //$config = require 'api/Configuration/config.php';
-    ?>	
-		
-    <!DOCTYPE html>
+      }      
+    ?>
+	
+	<!DOCTYPE html>
     <html>
     <head>
         <meta charset='utf-8'>
@@ -54,10 +53,11 @@
 
         <script src="js/dependencies/jquery.fancytree-all.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.7.0/jquery.modal.js"> </script>
-        <script src="js/dependencies/simplemodal.js"></script>
-        <script src="js/dependencies/d3.js"></script>
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+        <script src="js/dependencies/simplemodal.js" ></script>
 		
+		<!--get findAPI host and port from featureScape application-->
+        <script src="/featurescapeapps/js/findapi_config.js" type="text/javascript"></script>
+
         <style type="text/css">
             .openseadragon
             {
@@ -114,7 +114,7 @@
           $.noConflict();
           var annotool = null;
           var tissueId = <?php echo json_encode($_GET['tissueId']); ?>;		
-		  var cancerType = "<?php echo $_SESSION["cancerType"] ?>";
+		  var cancerType  = "<?php echo $_SESSION["cancerType"] ?>";
 		  var cancerType2 = "<?php echo $_GET["cancerType"] ?>";
 		  console.log(cancerType);
 		  console.log(tissueId);
