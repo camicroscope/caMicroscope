@@ -470,9 +470,19 @@ annotools.prototype.generateSVG = function (annotations) {
 			  var y_max= coordinates[2][1];
 			  var randval = Math.random();
 			  
-			  var featureScape_url="";			  
-			  var github_url="http://sbu-bmi.github.io/FeatureScapeApps/featurescape/?";
-			  var osprey_url="http://osprey.bmi.stonybrook.edu:3000?";
+			  var featureScape_url="";	
+			  
+			  //var github_url="http://sbu-bmi.github.io/FeatureScapeApps/featurescape/?";
+			  //var osprey_url="http://osprey.bmi.stonybrook.edu:3000?";
+			  
+			  var webhost_url="/featurescapeapps/featurescape/?";
+			  
+			  var findAPI_host="http://129.49.249.191";
+			  var findAPI_port="4500";			  
+			 // var findAPI_url=findAPI_host+":"+findAPI_port+"?";
+			  
+			  var findAPI_url=findAPIConfig.findAPI+":"+findAPIConfig.port+"?";
+			  
 			  var mongodb_query="limit=1000&find={";
 			      mongodb_query+="\"randval\":{\"$gte\":"+randval+"},";
 				  mongodb_query+="\"provenance.analysis.execution_id\":\""+execution_id+"\",";
@@ -481,11 +491,13 @@ annotools.prototype.generateSVG = function (annotations) {
 			      mongodb_query+="\"y\":{\"$gte\":"+y_min+",\"$lte\":"+y_max+"}";
 			      mongodb_query+="}&db=u24_"+this_cancerType+"&c="+this_cancerType;
 			  
-			  featureScape_url=github_url+osprey_url+mongodb_query;
+			  //featureScape_url=github_url+osprey_url+mongodb_query;
+			  featureScape_url=webhost_url+findAPI_url+mongodb_query;
+			  
 			  console.log(featureScape_url);		   
 			  window.open(featureScape_url,'_blank');			 
               jQuery("#panel").hide("slide");
-              self.getMultiAnnot();			  			
+              self.getMultiAnnot();	              		  
               });
             } else {
               alert("Can't view the featureScape of computer generated segments");

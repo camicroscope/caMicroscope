@@ -163,28 +163,22 @@ ToolBar.prototype.createButtons = function () {
 	restful_api+="&collection=metadata&project={\"_id\":0}";	 
 	console.log(restful_api);	 
 	 
-	/*
+	
     jQuery.get('api/Data/getAlgorithmsForImage.php?iid=' + self.iid, function (data) {
       d = JSON.parse(data);	  
-	   console.log(data);
-       console.log(d);	   
+	   //console.log(data);
+       //console.log(d);	   
       goodalgo(d, null)
     })
-	*/	
+		
 	
-	
+	/*
 	jQuery.get(restful_api, function (data) {
 	  console.log(data);
       //d = JSON.parse(data);	      
       //console.log(d);	  
 	  goodalgo(data, null)
     })
-	
-	/*
-	$.getJSON(restful_api).then(function (data) {
-          console.log(data);       
-	      goodalgo(data, null);
-        })		
 	*/
 	
     // console.log("here")
