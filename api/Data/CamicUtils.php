@@ -34,6 +34,7 @@ class CamicUtils
 		return $location;
 	}
 
+
 	function retrieveMpp($tissueId)
 	{
 	    $mppUrl = $this->CONFIG['getMPP'] . $this->api_key . "&TCGAId=" . $tissueId;
@@ -78,5 +79,16 @@ class CamicUtils
 		}
 		
 		return $link;
+	}
+	
+	function setUpSVSImage($fileLocation)
+	{
+	    foreach($fileLocation[0] as $key => $value)
+	    {
+		$link = str_replace("tiff","svs",$value);
+		$link = $link . ".dzi";
+	    }
+	    
+	    return $link;
 	}
 }

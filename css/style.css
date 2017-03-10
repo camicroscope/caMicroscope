@@ -213,3 +213,10 @@ hr {
     z-index: 999999;
 }
 
+#panel {
+    width: 200px;
+    height: 300px;
+    position: fixed;
+    z-index: 9999;
+}
+

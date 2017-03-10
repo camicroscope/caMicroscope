@@ -14,5 +14,5 @@ $url = $deleteUrl . $annotId . "&api_key=$api_key";
 echo ($url);
 $deleteRequest = new RestRequest($url,'DELETE');
 $deleteRequest->execute();
-echo "success"
+echo json_encode($deleteRequest->getDecodedResponse());
 ?>

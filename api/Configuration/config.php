@@ -1,29 +1,47 @@
 <?php 
 
-$url = "imaging.cci.emory.edu:9099";
-$url2 = "http://imaging.cci.emory.edu:9099/services/TCGABRCA_Dev";
+///new
+$baseUrl = "http://127.0.0.1:9099";
+$serviceUrl = "$baseUrl/services/Camicroscope3-QA";
+
+$imageUrl = "$serviceUrl/ImageMetaData";
+
+$templateUrl = "$serviceUrl/AnnotationTemplate";
+$markupUrl = "$serviceUrl/Annotations";
+
+$dynamicServices = $serviceUrl;
+$firebase = "https://test-8f679.firebaseio.com/camicroscopeStates";
+
+
+$tempMarkupUrl = "http://localhost:9099/services/TCGABRCA_Dev";
 
 return array(
-    'auth_realm' => "$url/securityTokenService",
-	
-    'getAllAnnotations' => "$url2/Annotations/query/byUserAndImageID?iid=",
-	
-    'getAnnotationsSpatial' => "$url2/Annotations/query/byUserImageAndSpatialScope?iid=",
+    'auth_realm' => "$baseUrl/securityTokenService",
+    /*
+     * temp
+     */
+    'algorithmsForImage' => "$serviceUrl/Provenance/query/getAlgorithmsForImage?",
+    'getMultipleAnnotations' => "$serviceUrl/Markups/query/getMultipleMarkups?",
+    //'getMultipleAnnotations' => "http://172.17.0.2:9099/services/Camicroscope_Annotations/MarkupLoader/query/getMultipleMarkups?",
 
-    'postAnnotation' => "$url2/Annotations/submit/singleAnnotation",
-	
-    'postJobParameters' => "$url2/AnalysisJobs/submit/singleJob",
 
-    'deleteAnnotation' => "$url2/Annotations/delete/singleAnnotation?annotId=",
+    'firebase' => $firebase,
+    'firebase_key' => $firebase_key,
+    'retrieveTemplate' => "$serviceUrl/AnnotationTemplate/query/retrieveTemplate",
+    'getAllAnnotations' => "$tempMarkupUrl/Annotations/query/byUserAndImageID?iid=",
+    'getAnnotationsSpatial' => "$serviceUrl/GeoJSONImageMetaData/query/getMarkups?",
+    'getAnnotationSpatialFilter' => "$tempMarkupUrl/Annotations/query/allByFilter?iid=",
+    'postAnnotation' => "$serviceUrl/Markups/submit/json",
+    'retrieveAnnotation' => "$tempMarkupUrl/Annotations/query/byAnnotId?annotId=",
+    'postJobParameters' => "$tempMarkupUrl/AnalysisJobs/submit/singleJob",
+    'deleteAnnotation' => "$tempMarkupUrl/Annotations/delete/singleAnnotation?annotId=",
+    'getDimensions' => "$imageUrl/query/getDimensionsByIID?api_key=",
+    'getFileLocation' => "$imageUrl/query/getFileLocationByIID?api_key=",
+    'getMPP' => "$imageUrl/query/getMPPByIID?api_key=",
+    'fastcgi_server' => "/fastcgi-bin/iipsrv.fcgi",
+    'postWorkOrder' => "$dynamicServices/WorkOrders/submit/json"
 
-    'getDimensions' => "$url2/ImageMetaData/query/maxWidthAndHeightByIID?api_key=",
-
-    'getFileLocation' => "$url2/ImageMetaData/query/fileLocationByIID?api_key=",
-
-    'getMPP' => "$url2/ImageMetaData/query/MPPbyIID?api_key=",
-
-    'fastcgi_server' => "/camicdev/fastcgi-bin/iipsrv.fcgi"
-	
-    
 );
+
+
 ?>
