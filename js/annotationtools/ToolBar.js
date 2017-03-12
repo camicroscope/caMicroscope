@@ -23,7 +23,10 @@ ToolBar.prototype.algorithmSelector = function () {
   xxx = []
 }
 
-var available_colors = ['lime', 'red', 'blue', 'orange']
+
+//var available_colors = ['lime', 'red', 'blue', 'orange','lime', 'red', 'blue', 'orange','lime', 'red', 'blue', 'orange']
+var available_colors = ['#a6cee3','#1f78b4','#b2df8a','#33a02c','#fb9a99','#e31a1c','#fdbf6f','#ff7f00','#cab2d6','#6a3d9a','#ffff99','#b15928'];
+
 var algorithm_color = {}
 
 function goodalgo (data, status) {
@@ -32,12 +35,15 @@ function goodalgo (data, status) {
   var blob = []
   for (i = 0;i < data.length;i++) {
     var n = {}
-    // console.log(data[i])
-    n.title = "<div class='colorBox' style='background:" + available_colors[i] + "'></div>" + data[i].title
+     
+     data[i].title=data[i].provenance.analysis_execution_id;
+    
+    n.title = "<div class='colorBox' style='background:" + available_colors[i] + "'></div>" + data[i].title;
     n.key = i.toString()
     n.refKey = data[i].provenance.analysis_execution_id
-    n.color = available_colors[i]
-    algorithm_color[data[i].provenance.analysis_execution_id] = available_colors[i]
+    n.color = available_colors[i%7];
+    //algorithm_color[data[i].provenance.analysis_execution_id] = available_colors[i%7]
+    algorithm_color[data[i].provenance.analysis_execution_id] = available_colors[i%available_colors.length];
     blob.push(n)
   }
   ftree = jQuery('#tree').fancytree({
@@ -89,6 +95,7 @@ var SELECTED_ALGORITHM_KEYS = [];
 var AlgorithmSelectorHidden = true;
 ToolBar.prototype.toggleAlgorithmSelector = function () {
   var self  = this;
+  console.log("toggleAlgorithmSelector");
 	//jQuery("#panel").show("slide");
   var url = 'api/Data/getAlgorithmsForImage.php?iid=' + self.iid;
 
@@ -99,8 +106,12 @@ ToolBar.prototype.toggleAlgorithmSelector = function () {
 
     ALGORITHM_LIST = d;
     for(var i=0; i < d.length; i++){
-
-      htmlStr += "<li><input type='checkbox' class='algorithmCheckbox' value="+i+" /> "+d[i].title + "</li>";
+      //n.color = available_colors[i%7];
+      //algorithm_color[d[i].provenance.analysis_execution_id] = available_colors[i%7]
+      algorithm_color[d[i].provenance.analysis_execution_id] = available_colors[i%available_colors.length];
+      
+      htmlStr += "<li><input type='checkbox' class='algorithmCheckbox' value="+i+" /><span class='algoColorBox' style='background:"+ algorithm_color[d[i].provenance.analysis_execution_id] +"'></span> "+d[i].provenance.analysis_execution_id
+       + "</li>";
     }
 
     htmlStr +="</ul> <br /> <button class='btn' id='cancelAlgorithms'>Hide</button> </div>";
@@ -168,7 +179,7 @@ ToolBar.prototype.toggleAlgorithmSelector = function () {
 
     AlgorithmSelectorHidden = true;
   } 
-    
+  
 }
 
 ToolBar.prototype.createButtons = function () {
@@ -183,7 +194,7 @@ ToolBar.prototype.createButtons = function () {
     var url = 'api/Data/getAlgorithmsForImage.php?iid=' + self.iid;
     console.log(url);
     jQuery.get(url, function (data) {
-      console.log(data);
+      //console.log(data);
       d = JSON.parse(data)
 
       goodalgo(d, null)
@@ -216,27 +227,33 @@ ToolBar.prototype.createButtons = function () {
      * Ganesh
      * Mootools to Jquery for creation of toolbar buttons
      */
+    this.homebutton = jQuery('<img>', {
+			src: 'images/ic_home_white_24px.svg',
+			class: 'toolButton firstToolButtonSpace',
+			title: 'Home'
+		});
+		tool.append(this.homebutton);
     this.rectbutton = jQuery('<img>', {
       title: 'Draw Rectangle',
       id: 'drawRectangle',
       class: 'toolButton firstToolButtonSpace',
       src: 'images/rect.svg'
     })
-    tool.append(this.rectbutton)
+    //tool.append(this.rectbutton)
 
     this.ellipsebutton = jQuery('<img>', {
       'title': 'Draw Ellipse',
       'class': 'toolButton',
       'src': 'images/ellipse.svg'
     })
-    tool.append(this.ellipsebutton)
+    //tool.append(this.ellipsebutton)
 
     this.pencilbutton = jQuery('<img>', {
       'title': 'Draw Freeline',
       'class': 'toolButton',
       'src': 'images/pencil.svg'
     })
-    tool.append(this.pencilbutton) // Pencil Tool
+    //tool.append(this.pencilbutton) // Pencil Tool
 
     this.measurebutton = jQuery('<img>', {
       'title': 'Measurement Tool',
@@ -258,19 +275,21 @@ ToolBar.prototype.createButtons = function () {
     })
     tool.append(this.filterbutton) // Filter Button
 
+
+
     this.hidebutton = jQuery('<img>', {
       'title': 'Show/Hide Markups',
       'class': 'toolButton',
       'src': 'images/hide.svg'
     })
-    tool.append(this.hidebutton)
+    //tool.append(this.hidebutton)
 
     this.fullDownloadButton = jQuery('<img>', {
       'title': 'Download All Markups (Coming Soon)',
       'class': 'toolButton',
       'src': 'images/fullDownload.svg'
     })
-    tool.append(this.fullDownloadButton)
+    //tool.append(this.fullDownloadButton)
     this.spacer1 = jQuery('<img>', {
       'class': 'spacerButton',
       'src': 'images/spacer.svg'
@@ -278,7 +297,7 @@ ToolBar.prototype.createButtons = function () {
     tool.append(this.spacer1)
 
     this.analyticsbutton = jQuery('<img>', {
-      'title': 'Analytics Serviecs',
+      'title': 'Image Analysis',
       'class': 'toolButton',
       'src': 'images/analyze.png'
 
@@ -286,7 +305,7 @@ ToolBar.prototype.createButtons = function () {
     tool.append(this.analyticsbutton)
 
     this.filterImgButton = jQuery('<img>', {
-      'title': 'Image Filtering',
+      'title': 'View Results',
       'class': 'toolButton',
       'src': 'images/insta.png'
     })
@@ -309,6 +328,9 @@ ToolBar.prototype.createButtons = function () {
     /*
      * Event handlers on click for the buttons
      */
+		this.homebutton.on('click', function(){
+			window.location.href = "/";
+		});
     this.rectbutton.on('click', function () {
       this.mode = 'rect'
       this.annotools.mode = 'rect'
@@ -458,7 +480,7 @@ ToolBar.prototype.createButtons = function () {
     'title': 'ColorMap',
     'src': 'images/colors.svg'
   })
-  tool.append(this.colorMapButton)
+  //tool.append(this.colorMapButton)
   this.ajaxBusy = jQuery('<img>', {
     'class': 'colorMapButton',
     'id': 'ajaxBusy',
@@ -477,7 +499,7 @@ ToolBar.prototype.createButtons = function () {
 
   this.iidbutton = jQuery('<p>', {
     'class': 'iidButton',
-    'text': 'SubjectID :' + this.iid
+    'text': 'case_id: ' + this.iid
   })
   tool.append(this.iidbutton)
 

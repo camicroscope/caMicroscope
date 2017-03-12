@@ -310,6 +310,10 @@
 #panelBody input{
     color: #000;
 }
+#panael .btn2{
+	//background: #244B71;
+	
+}
 #panel .btn{
     background: #244B71;
     color: #fff;
@@ -325,10 +329,10 @@
 }
 
 #panel {
-    width: 220px;
+    width: 300px;
     font-family: Arial, Roboto; 
     font-size: 12px;
-    height: 400px;
+    height: 485px;
     top: 60px;
     left: 0;
     position: fixed;
@@ -348,7 +352,16 @@
 #panelBody{
     padding: 25px;
     overflow-y: scroll;    
-    height: 340px;
+    height: 445px;
+}
+#workOrderTitle{
+	display: inline-block;
+	width: 100px;
+}
+#cancelWorkOrder{
+	display: inline-block;
+	width: 20px;
+	float:right;
 }
 
 #panel input{
@@ -424,4 +437,35 @@
     -moz-box-shadow: 0px 0px 5px 2px #000000;
     box-shadow: 0px 0px 5px 2px #000000;
 
+}
+
+.checkbox input[type=checkbox], .checkbox-inline input[type=checkbox], .radio input[type=radio], .radio-inline input[type=radio]{
+	margin: 0;
+}
+.algoColorBox{
+
+    width: 10px;
+    height: 10px;
+//    background: red;
+    position: relative;
+    display: inline-block;
+    top: 2px;
+    margin: 2px;
+
+}
+#panelBody label{
+  margin-top: 10px;
+  font-weight:100;
+}
+#panelBody input[type="range"]{
+  width: 200px;
+  float: left;
+}
+#panelBody input[type="text"]{
+  width: 30px;
+}
+#panelBody input[type="checkbox"] {
+  float: left;
+  display:inline-block;
+  //margin-top: -15px;
 }

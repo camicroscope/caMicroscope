@@ -214,7 +214,7 @@ hr {
 }
 
 #panel {
-    width: 200px;
+    width: 300px;
     height: 300px;
     position: fixed;
     z-index: 9999;

@@ -121,6 +121,49 @@ annotools.prototype.destroyMarkups = function (viewer) {
   }
 }
 
+annotools.prototype.renderByExecutionId = function(algorithms){
+  console.log("rendering by execution ids");
+  console.log(algorithms);
+  var self = this
+  this.x1 = this.imagingHelper._viewportOrigin['x']
+  this.y1 = this.imagingHelper._viewportOrigin['y']
+  this.x2 = this.x1 + this.imagingHelper._viewportWidth
+  this.y2 = this.y1 + this.imagingHelper._viewportHeight
+
+  boundX1 = this.imagingHelper.physicalToLogicalX(200)
+  boundY1 = this.imagingHelper.physicalToLogicalY(20)
+  boundX2 = this.imagingHelper.physicalToLogicalX(20)
+  boundY2 = this.imagingHelper.physicalToLogicalY(20)
+  var boundX = boundX1 - this.x1
+  var boundY = boundX
+
+  var max = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(3), this.imagingHelper.physicalToDataY(3))
+  var origin = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(0), this.imagingHelper.physicalToDataY(0))
+  var area = (max.x - origin.x) * (max.y - origin.y)
+  self.destroyMarkups();
+
+  var t1 = 0
+  if (algorithms.length) {
+    this.toolBar.titleButton.hide()
+    this.toolBar.ajaxBusy.show();
+    //console.log(this.x1, this.y1, this.x2, this.y2);
+    this.annotations = this.AnnotationStore.fetchAnnotations(this.x1 , this.y1 , this.x2, this.y2, area, algorithms, function (data){
+      // console.log(data)
+      self.annotations = data
+      self.displayGeoAnnots()
+      self.setupHandlers()
+      var t2 = 10
+
+      self.toolBar.titleButton.show()
+      self.toolBar.ajaxBusy.hide()
+    })
+  } else {
+    self.setupHandlers()
+    self.destroyMarkups()
+  // destroy canvas
+  } 
+}
+
 annotools.prototype.getMultiAnnot = function (viewer) {
   var opa = []
 
@@ -167,7 +210,7 @@ annotools.prototype.getMultiAnnot = function (viewer) {
   if (algorithms.length) {
     this.toolBar.titleButton.hide()
     this.toolBar.ajaxBusy.show()
-    this.annotations = this.AnnotationStore.fetchAnnotations(this.x1, this.y1, this.x2, this.y2, area, algorithms, function (data) {
+    this.annotations = this.AnnotationStore.fetchAnnotations(this.x1 - 0.1, this.y1 - 0.1, this.x2, this.y2, area, algorithms, function (data) {
       // console.log(data)
       self.annotations = data
       self.displayGeoAnnots()
@@ -374,6 +417,9 @@ annotools.prototype.drawMarkups = function () // Draw Markups
 }
 
 annotools.prototype.createWorkOrder = function () {
+
+  jQuery('html,body').css('cursor', 'crosshair')
+  var self = this;
   this.showMessage() // Show Message
   this.drawCanvas.removeEvents('mouseup')
   this.drawCanvas.removeEvents('mousedown')
@@ -388,10 +434,10 @@ annotools.prototype.createWorkOrder = function () {
   // this.container = document.getElementById('container') //Get The Canvas Container
   if (this.container) {
     // var left = parseInt(this.container.offsetLeft), //Get The Container Location
-    var left = parseInt(this.container.getLeft()), // Get The Container Location
-      top = parseInt(this.container.offsetTop),
-      width = parseInt(this.container.offsetWidth),
-      height = parseInt(this.container.offsetHeight),
+    var left = (this.container.getLeft()), // Get The Container Location
+      top = (this.container.offsetTop),
+      width = (this.container.offsetWidth),
+      height = (this.container.offsetHeight),
       oleft = left,
       otop = top,
       owidth = width,
@@ -422,7 +468,7 @@ annotools.prototype.createWorkOrder = function () {
     // The canvas context
     var ctx = this.drawCanvas.getContext('2d')
 
-    console.log('drawing rectangle')
+    //console.log('drawing rectangle')
     this.removeMouseEvents()
     var started = false
     var min_x,min_y,max_x,max_y,w,h
@@ -432,37 +478,28 @@ annotools.prototype.createWorkOrder = function () {
       startPosition = OpenSeadragon.getMousePosition(e.event)
       x = startPosition.x
       y = startPosition.y
+			//console.log("started");
     })
-
+		var isLimitROI = false;
+		var limitroi = {};
     this.drawCanvas.addEvent('mousemove', function (e) {
+      //console.log("..");
       if (started) {
+				//console.log("moving");
         ctx.clearRect(0, 0, this.drawCanvas.width, this.drawCanvas.height)
         var currentMousePosition = OpenSeadragon.getMousePosition(e.event)
-
+				
         min_x = Math.min(currentMousePosition.x, startPosition.x)
         min_y = Math.min(currentMousePosition.y, startPosition.y)
         max_x = Math.max(currentMousePosition.x, startPosition.x)
         max_y = Math.max(currentMousePosition.y, startPosition.y)
         w = Math.abs(max_x - min_x)
         h = Math.abs(max_y - min_y)
-        ctx.strokeStyle = this.color
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.2)'
-        ctx.fillRect(min_x, min_y, w, h)
-        ctx.strokeRect(min_x, min_y, w, h)
-      }
-    }.bind(this))
 
-    this.drawCanvas.addEvent('mouseup', function (e) {
-      started = false
-      var finalMousePosition = new OpenSeadragon.getMousePosition(e.event)
-
-      min_x = Math.min(finalMousePosition.x, startPosition.x)
-      min_y = Math.min(finalMousePosition.y, startPosition.y)
-      max_x = Math.max(finalMousePosition.x, startPosition.x)
-      max_y = Math.max(finalMousePosition.y, startPosition.y)
 
       var startRelativeMousePosition = new OpenSeadragon.Point(min_x, min_y).minus(OpenSeadragon.getElementOffset(viewer.canvas))
       var endRelativeMousePosition = new OpenSeadragon.Point(max_x, max_y).minus(OpenSeadragon.getElementOffset(viewer.canvas))
+
       var newAnnot = {
         x: startRelativeMousePosition.x,
         y: startRelativeMousePosition.y,
@@ -479,109 +516,105 @@ annotools.prototype.createWorkOrder = function () {
       newAnnot.y = globalNumbers.nativeY
       newAnnot.w = globalNumbers.nativeW
       newAnnot.h = globalNumbers.nativeH
+
+      var roi_x = self.imagingHelper.physicalToDataX(self.imagingHelper.logicalToPhysicalX(newAnnot.x))
+      var roi_y = self.imagingHelper.physicalToDataY(self.imagingHelper.logicalToPhysicalY(newAnnot.y))
+      var roi_w = (self.imagingHelper.physicalToDataX(self.imagingHelper.logicalToPhysicalX((newAnnot.x+newAnnot.w)))) - roi_x;
+      var roi_h = (self.imagingHelper.physicalToDataY(self.imagingHelper.logicalToPhysicalY(newAnnot.y+newAnnot.h))) - roi_y;
+				//console.log(roi_w*roi_h);
+				if(roi_w*roi_h >= 100000){
+					if(isLimitROI == false){
+						isLimitROI = true;
+						limitroi.x = currentMousePosition.x;
+						limitroi.y = currentMousePosition.y;
+						limitroi.w = w;
+						limitroi.h = h;
+
+
+					}
+
+				}
+				//console.log(min_x, min_y, w, h);
+
+        ctx.strokeStyle = this.color
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.4)'
+        ctx.fillRect(min_x, min_y, w, h)
+        ctx.strokeRect(min_x, min_y, w, h)
+      }
+    }.bind(this))
+
+    this.drawCanvas.addEvent('mouseup', function (e) {
+      started = false
+      var finalMousePosition = new OpenSeadragon.getMousePosition(e.event)
+
+			min_x = Math.min(finalMousePosition.x, startPosition.x)
+			min_y = Math.min(finalMousePosition.y, startPosition.y)
+			max_x = Math.max(finalMousePosition.x, startPosition.x)
+			max_y = Math.max(finalMousePosition.y, startPosition.y)
+
+			if(isLimitROI){
+				min_x = Math.min(limitroi.x, startPosition.x);
+				min_y = Math.min(limitroi.y, startPosition.y);
+				max_x = Math.max(limitroi.x, startPosition.x);
+				max_y = Math.max(limitroi.y, startPosition.y);
+				w = limitroi.w;
+				h = limitroi.h;
+			}
+      var startRelativeMousePosition = new OpenSeadragon.Point(min_x, min_y).minus(OpenSeadragon.getElementOffset(viewer.canvas))
+      var endRelativeMousePosition = new OpenSeadragon.Point(max_x, max_y).minus(OpenSeadragon.getElementOffset(viewer.canvas))
+			//console.log(startPosition);
+
+      var newAnnot = {
+        x: startRelativeMousePosition.x,
+        y: startRelativeMousePosition.y,
+        w: w,
+        h: h,
+        type: 'rect',
+        color: this.color,
+        loc: []
+      }
+
+		
+
+      var globalNumbers = JSON.parse(this.convertFromNative(newAnnot, endRelativeMousePosition))
+
+      newAnnot.x = globalNumbers.nativeX
+      newAnnot.y = globalNumbers.nativeY
+      newAnnot.w = globalNumbers.nativeW
+      newAnnot.h = globalNumbers.nativeH
       var loc = []
       loc[0] = parseFloat(newAnnot.x)
       loc[1] = parseFloat(newAnnot.y)
       newAnnot.loc = loc
+      if(isLimitROI){
+          var isConfirm = confirm("Region is too large. Click OK to snap it to closest fit");
+          if (!isConfirm) {
+              this.drawLayer.hide();
+              this.addMouseEvents();
+              jQuery('html,body').css('cursor', 'default');
+              return;
+          } else {
+	          //alert("Region is too large. Click OK to snap it to closest fit");
+              ctx.clearRect(0, 0, this.drawCanvas.width, this.drawCanvas.height)
+              ctx.strokeStyle = this.color
+              ctx.fillStyle = 'rgba(255, 255, 255, 0.4)'
+	          //console.log(min_x, min_y, limitroi.w, limitroi.h);
+              ctx.fillRect(min_x, min_y, limitroi.w, limitroi.h);
+              ctx.strokeRect(min_x, min_y, limitroi.w, limitroi.h);
+	          isLimitROI=false;
+          }
+      }
+      //console.log(newAnnot);	
 
       // convert to geojson 
       // var geoNewAnnot = this.convertRectToGeo(newAnnot)
       geoNewAnnot = newAnnot
-      this.promptForWorkOrder(geoNewAnnot, 'new', this, ctx)
+      this.promptForWorkOrder(geoNewAnnot, 'new', this, ctx, this.convertRectToGeo(newAnnot))
     }.bind(this))
   }
 }
 
-/*
-annotools.prototype.drawMarkups= function () //Draw Markups
-{
-    this.showMessage() //Show Message
-    //this.drawCanvas.off()
-    this.removeMouseEvents()
-    //this.drawCanvas.removeEvents('mouseup')
-    //this.drawCanvas.removeEvents('mousedown')
-    //this.drawCanvas.removeEvents('mousemove')
-    this.drawLayer.show() //Show The Drawing Layer
-/* ASHISH Disable quit
-    this.quitbutton.show() //Show The Quit Button
 
-    this.magnifyGlass.hide() //Hide The Magnifying Tool
-    //this.container = document.id(this.canvas) //Get The Canvas Container
-    this.container = document.getElementsByClassName(this.canvas)[0] //Get The Canvas Container
-    //this.container = document.getElementById('container') //Get The Canvas Container
-    if (this.container) {
-        //var left = parseInt(this.container.offsetLeft), //Get The Container Location
-        var left = parseInt(this.container.getLeft()), //Get The Container Location
-            top = parseInt(this.container.offsetTop),
-            width = parseInt(this.container.offsetWidth),
-            height = parseInt(this.container.offsetHeight),
-            oleft = left,
-            otop = top,
-            owidth = width,
-            oheight = height
-        //console.log("left: " + left + " top: " + top + " width: " + width + " height: " + height)
-        if (left < 0) {
-            left = 0
-            width = window.innerWidth
-        } //See Whether The Container is outside The Current ViewPort
-        if (top < 0) {
-            top = 0
-            height = window.innerHeight
-        }
-        //Recreate The CreateAnnotation Layer Because of The ViewPort Change Issue.
-        //console.log(this.drawLayer)
-        this.drawLayer.css({
-                left: left,
-                top: top,
-                width: width,
-                height: height
-        })
-        /*
-        this.drawLayer.set({
-            'styles': {
-                left: left,
-                top: top,
-                width: width,
-                height: height
-            }
-        })
-
-        this.drawCanvas.css({
-            width: width, 
-            height: height
-        })
-        //Create Canvas on the CreateAnnotation Layer
-        /*
-        this.drawCanvas.set({
-            width: width,
-            height: height
-        })
-
-        //The canvas context
-        var ctx = this.drawCanvas[0].getContext("2d")
-        //console.log(this.mode)
-        //Draw Markups on Canvas
-        switch (this.mode) {
-            case "rect":
-                this.drawRectangle(ctx)
-        break
-            case "ellipse":
-                this.drawEllipse(ctx)
-        break
-            case "pencil":
-        this.drawPencil(ctx)
-        break
-            case "polyline":
-                this.drawPolyline(ctx)
-        break
-            case "measure":
-                this.drawMeasure(ctx)
-        break
-        }
-    } else this.showMessage("Container Not SET Correctly Or Not Fully Loaded Yet")
-    
-}
-*/
 annotools.prototype.magnify = function () // Magnify Tool
 {
   /* ASHISH Disable quit
@@ -767,16 +800,8 @@ annotools.prototype.selectColor = function () // Pick A Color
 
 annotools.prototype.addnewAnnot = function (newAnnot) // Add New Annotations
 {
-  // console.log(this)
-  // newAnnot.iid = this.iid
-  // newAnnot.annotIdi = MD5(new Date().toString())
-  // console.log(newAnnot)
-  // this.annotations.push(newAnnot)
-  // console.log(this.annotations)
-  console.log(newAnnot)
-  this.saveAnnot(newAnnot)
-  // console.log("saved annotation")
 
+  this.saveAnnot(newAnnot)
   this.displayGeoAnnots()
 }
 /*ASHISH DIsable quit
@@ -1138,8 +1163,8 @@ annotools.prototype.updateAnnot = function (annot) // Save Annotations
 }
 annotools.prototype.saveAnnot = function (annotation) // Save Annotations
 {
-  console.log('Save annotation function')
-  console.log(annotation)
+  //console.log('Save annotation function')
+  //console.log(annotation)
   jQuery.ajax({
     'type': 'POST',
     url: 'api/Data/getAnnotSpatial.php',
@@ -1153,26 +1178,6 @@ annotools.prototype.saveAnnot = function (annotation) // Save Annotations
     }
   })
 
-/*
-var jsonRequest = new Request.JSON({
-    //url: IP + '/api/annotation_relative.php',
-    url:  'api/Data/getAnnotSpatial.php',
-    async:false,
-    onSuccess: function (e) {
-        console.log(e)
-        console.log("success")
-        this.showMessage("saved to the server")
-    }.bind(this),
-    onFailure: function (e) {
-        console.log(e)
-        console.log("fail")
-        this.showMessage("Error Saving the Annotations,please check you saveAnnot funciton")
-    }.bind(this)
-}).post({
-    'iid': this.iid,
-    'annot': this.annotations
-})
-*/
 }
 
 annotools.prototype.convertToNative = function (annot) {
@@ -1427,7 +1432,6 @@ annotools.prototype.drawRectangle = function (ctx) {
     min_y = Math.min(finalMousePosition.y, startPosition.y)
     max_x = Math.max(finalMousePosition.x, startPosition.x)
     max_y = Math.max(finalMousePosition.y, startPosition.y)
-
     var startRelativeMousePosition = new OpenSeadragon.Point(min_x, min_y).minus(OpenSeadragon.getElementOffset(viewer.canvas))
     var endRelativeMousePosition = new OpenSeadragon.Point(max_x, max_y).minus(OpenSeadragon.getElementOffset(viewer.canvas))
     var newAnnot = {
@@ -1541,7 +1545,7 @@ annotools.prototype.drawPencil = function (ctx) {
     loc[0] = parseFloat(newAnnot.x)
     loc[1] = parseFloat(newAnnot.y)
     newAnnot.loc = loc
-    console.log(newAnnot)
+    //console.log(newAnnot)
     var geojsonAnnot = this.convertPencilToGeo(newAnnot)
 
     this.promptForAnnotation(geojsonAnnot, 'new', this, ctx)
@@ -1766,7 +1770,7 @@ annotools.prototype.retrieveTemplate = function () {
     async: false,
     onSuccess: function (e) {
       jsonReturn = JSON.parse(e)[0]
-      console.log(jsonReturn)
+      //console.log(jsonReturn)
     }.bind(this),
     onFailure: function (e) {
       this.showMessage('Error retrieving AnnotationTemplate, please check your retrieveTemplate.php')
@@ -1801,43 +1805,6 @@ annotools.prototype.retrieveSingleAnnot = function (annotId) {
 
   return jsonReturn
 }
-annotools.prototype.populateForm = function (annotationTemplateJson, annotationTextJson, mode) {
-  var form = ''
-  for (var key in annotationTemplateJson) {
-    if (annotationTemplateJson.hasOwnProperty(key) && key != '_id') {
-      form += "<p class='labelText'>" + key + ': </p>'
-      var val = annotationTemplateJson[key]
-      if (val == 'text') {
-        form += "<input type='text' size='45' name='" + key + "' id='" + key + "'"
-        if (mode == 'edit') {
-          form += " value='" + annotationTextJson[key] + "'"
-        }
-        form += '\><br \>'
-      } else {
-        var options = val['enumerable'].replace(/ /g, '').split(',')
-        if (val['multi'] == 'true' && mode != 'filter') {
-          for (var i = 0; i < options.length; i++) {
-            form += "<input type='checkbox' name='" + key + "' id='" + options[i] + "' value='" + options[i] + "'"
-            if (mode == 'edit' && annotationTextJson[key].indexOf(options[i])) {
-              form += " checked='true'"
-            }
-            form += '>' + options[i] + '</input>'
-          }
-        } else {
-          for (var i = 0; i < options.length; i++) {
-            form += "<input type='radio' name='" + key + "' id='" + options[i] + "' value='" + options[i] + "'"
-            if (mode == 'edit' && annotationTextJson[key] == options[i]) {
-              form += " checked='true'"
-            }
-            form += '>' + options[i] + '</input>'
-          }
-        }
-      }
-    }
-  }
-  return form
-}
-
 function handleWorkOrder (annot) {
   console.log(annot)
 }
@@ -1916,6 +1883,7 @@ annotools.prototype.showFilterControls = function(newAnnot, mode, annotools, ctx
 }
 */
 
+/*
 annotools.prototype.promptForWorkOrder = function (newAnnot, mode, annotools, ctx) {
   console.log(newAnnot)
   console.log(mode)
@@ -1953,13 +1921,6 @@ annotools.prototype.promptForWorkOrder = function (newAnnot, mode, annotools, ct
     + "<li>Execution Id:<input id='order-execution_id'></input></li>" + "<li>Notes: <textarea id='order-notes'></textarea>" + "</ul> <br /> <button id='submitWorkOrder' class='btn btn-primary' >Submit</button> <button class='btn' id='cancelWorkOrder'>Cancel</button></div>"
   })
 
-  /*
-  console.log(annotools.imagingHelper.physicalToDataX(annotools.imagingHelper.logicalToPhysicalX(newAnnot.x)))
-  console.log(annotools.imagingHelper.physicalToDataY(annotools.imagingHelper.logicalToPhysicalY(newAnnot.y)))
-  console.log(annotools.imagingHelper.physicalToDataX(annotools.imagingHelper.logicalToPhysicalX((newAnnot.x+newAnnot.w))))
-  console.log(annotools.imagingHelper.physicalToDataY(annotools.imagingHelper.logicalToPhysicalY(newAnnot.y+newAnnot.h)))
-  */
-
   jQuery('#cancelWorkOrder').click(function () {
     console.log('here')
     jQuery('#panel').hide()
@@ -2028,16 +1989,6 @@ annotools.prototype.promptForWorkOrder = function (newAnnot, mode, annotools, ct
       }
     }
 
-    /*
-    var order = {
-        "type": "order",
-
-        "data":{ 
-            "created_on": Date.now(),
-            "created_by": "lastlegion"
-        }
-    }
-    */
     jQuery.post('api/Data/workOrder.php', order)
       .done(function (res) {
         console.log(res)
@@ -2052,32 +2003,65 @@ annotools.prototype.promptForWorkOrder = function (newAnnot, mode, annotools, ct
     console.log(order)
   }.bind(newAnnot))
 }
+*/
 
-annotools.prototype.promptForWorkOrder = function (newAnnot, mode, annotools, ctx) {
-  console.log(newAnnot)
-  console.log(mode)
-  console.log(annotools)
-  console.log(ctx)
 
+annotools.prototype.deleteAnnotations = function(execution_id, x1, y1, x2, y2){
+  var body = {};
+  var self = this;
+  body["execution_id"] = execution_id;
+  body["case_id"] = this.iid;
+  body["x1"] = x1;
+  body["x2"] = x2;
+  body["y1"] = y1;
+  body["y2"] = y2;
+  jQuery.ajax({
+    url:'api/Data/deleteMarkups.php',
+    type: 'DELETE',
+    data: body,
+    success: function(data){
+      console.log(data);
+      self.getMultiAnnot();
+    }
+  });
+};
+
+var execution_id; 
+var r = 1.0, w = 0.8, l=3.0, u = 10.0, k=20.0, j="N";  
+annotools.prototype.promptForWorkOrder = function (newAnnot, mode, annotools, ctx, roiGeoJSON) {
+  jQuery('html,body').css('cursor', 'default')
+
+  this.removeMouseEvents();
+  console.log("removed mouse events");
+	
   var panel = jQuery('#panel').show()
+	panel.html(function(){return ""});
   var iid = this.iid
-  var x = annotools.imagingHelper.physicalToDataX(annotools.imagingHelper.logicalToPhysicalX(newAnnot.x))
-  var y = annotools.imagingHelper.physicalToDataY(annotools.imagingHelper.logicalToPhysicalY(newAnnot.y))
-  var w = (annotools.imagingHelper.physicalToDataX(annotools.imagingHelper.logicalToPhysicalX((newAnnot.x + newAnnot.w)))) - x
-  var h = (annotools.imagingHelper.physicalToDataY(annotools.imagingHelper.logicalToPhysicalY(newAnnot.y + newAnnot.h))) - y
-  x = parseInt(x)
-  y = parseInt(y)
-  w = parseInt(w)
-  h = parseInt(h)
-  if (w * h > 1000000) {
+  var roi_x = annotools.imagingHelper.physicalToDataX(annotools.imagingHelper.logicalToPhysicalX(newAnnot.x))
+  var roi_y = annotools.imagingHelper.physicalToDataY(annotools.imagingHelper.logicalToPhysicalY(newAnnot.y))
+  var roi_w = (annotools.imagingHelper.physicalToDataX(annotools.imagingHelper.logicalToPhysicalX((newAnnot.x + newAnnot.w)))) - roi_x;
+  var roi_h = (annotools.imagingHelper.physicalToDataY(annotools.imagingHelper.logicalToPhysicalY(newAnnot.y + newAnnot.h))) - roi_y;
+   
+  //roi_x = parseFloat(roi_x);
+  //roi_y = parseFloat(roi_y);
+  //roi_w = parseFloat(roi_w);
+  //roi_h = parseFloat(roi_h); 
+
+	roi_x = parseInt(parseFloat(roi_x)+0.5);
+	roi_y = parseInt(parseFloat(roi_y)+0.5);
+	roi_w = parseInt(parseFloat(roi_w)+0.5);
+	roi_h = parseInt(parseFloat(roi_h)+0.5);
+
+  if (roi_w * roi_h > 1000000) {
     newAnnot.w = annotools.imagingHelper.dataToLogicalX(1000)
     newAnnot.h = annotools.imagingHelper.dataToLogicalY(1000)
-    w = 1000
-    h = 1000
+    roi_w = 1000
+    roi_h = 1000
     panel.html(function () {
-      return "<div id='panelHeader'><h4> Work Order(Error) </h4></div><div id='panelBody'> Error: Very large ROI. <br />" + 'Width: ' + w + '<br />' + 'Height: ' + h + "<br />Please try creating a smaller ROI. Zooming into the ROI would help.<br /> We currently support 1000X1000 tiles <br />  <button id='cancelWorkOrder' class='btn' >Cancel</button></div>"
+      return "<div id='panelHeader'><h4> Work Order(Error) </h4></div><div id='panelBody'> Error: Very large ROI. <br />" + 'Width: ' + roi_w + '<br />' + 'Height: ' + roi_h + "<br />Please try creating a smaller ROI. Zooming into the ROI would help.<br /> We currently support 1000X1000 tiles <br />  <button id='cancelWorkOrder' class='btn' >Cancel</button></div>"
     })
-    jQuery('#cancelWorkOrder').click(function () {
+    jQuery('#cancelWorkOrder').click(function (e) {
+	e.preventDefault();
       console.log('here')
       jQuery('#panel').hide()
       annotools.drawLayer.hide()
@@ -2086,109 +2070,363 @@ annotools.prototype.promptForWorkOrder = function (newAnnot, mode, annotools, ct
     return
   }
   panel.html(function () {
-    return "<div id='panelHeader'><h4> Work Order </h4></div><div id='panelBody'> <ul><li> x1: " + x + '</li> <li> y1: ' + y + '</li> <li> w: ' + w + '</li> <li>h: ' + h + '</li> <li>Algorithm: SuperSegmenter</li> '
-    + "<li>Execution Id:<input id='order-execution_id'></input></li>" + "<li>Notes: <textarea id='order-notes'></textarea>" + "</ul> <br /> <button id='submitWorkOrder' class='btn'>Submit</button> <button class='btn' id='cancelWorkOrder'>Cancel</button></div>"
+    return "<div id='panelHeader'><h4 id='workOrderTitle'> Work Order </h4><a href='#' id='cancelOrderTitle'><div id='cancelWorkOrder'> <img src='images/ic_close_white_24px.svg' /> </div></a></div><div id='panelBody'><form id='workOrderForm' action='#'></form></div>";
   })
 
-  /*
-  console.log(annotools.imagingHelper.physicalToDataX(annotools.imagingHelper.logicalToPhysicalX(newAnnot.x)))
-  console.log(annotools.imagingHelper.physicalToDataY(annotools.imagingHelper.logicalToPhysicalY(newAnnot.y)))
-  console.log(annotools.imagingHelper.physicalToDataX(annotools.imagingHelper.logicalToPhysicalX((newAnnot.x+newAnnot.w))))
-  console.log(annotools.imagingHelper.physicalToDataY(annotools.imagingHelper.logicalToPhysicalY(newAnnot.y+newAnnot.h)))
-  */
 
-  jQuery('#cancelWorkOrder').click(function () {
-    console.log('here')
-    jQuery('#panel').hide()
-    annotools.drawLayer.hide()
-    annotools.addMouseEvents()
-  })
 
-  jQuery('#submitWorkOrder').click(function () {
-    console.log('events...')
+var schema = {    
+    "range1": {
+      "type": "number",
+      "title": "Threshold Gain",
+      //"description": "Threshold gain for calling something in the image as nucleus.  Run as default value 1.0", 
+      "default": r,
+      "minimum": 0.5,
+      "exclusiveMinimum": false,
+      "maximum": 1.5
+     },
+     "result1": {
+      "type": "number",
+      "maxLength": 3,
+      "notitle": true,
+      "required": true,
+      "placeholder": r,
+      "readonly": true
+    },
+    "range2": {
+          "type": "number",
+          "title": "Expected Roundness/Smoothness",
+          //"description": "Threshold gain for calling something in the image as nucleus.  Run as default value 1.0", 
+          "default": w,
+          "minimum": 0.0,
+          "exclusiveMinimum": false,
+          "maximum": 10.0
+         },
+    "result2": {
+      "type": "number",
+      "maxLength": 3,
+      "notitle": true,
+      "required": true,
+      "placeholder": w,
+      "readonly": true
+    },
+    "range3": {
+      "type": "number",
+      "title": "Size Lower Threshold",
+      //"description": "Threshold gain for calling something in the image as nucleus.  Run as default value 1.0", 
+      "default": l,
+      "minimum": 1.0,
+      "exclusiveMinimum": false,
+      "maximum": 30.0
+      },
+    "result3": {
+      "type": "number",
+      "maxLength": 3,
+      "notitle": true,
+      "required": true,
+      "placeholder": l,
+      "readonly": true
+    }, 
+      "range4": {
+        "type": "number",
+        "title": "Size Upper Threshold",
+        "default": u,
+        "minimum": 1.0,
+        "maximum": 500.0 
+      },
+      "result4": {
+        "type": "number",
+        "maxLength": 3,
+        "notitle": true,
+        "required": true,
+        "placeholder": u,
+        "readonly": true
+      },
+       "range5": {
+        "type": "number",
+        "title": "Kernel Size",
+        "default": k,
+        "minimum": 1.0,
+        "maximum": 30.0 
+      },
+      "result5": {
+        "type": "number",
+        "maxLength": 3,
+        "notitle": true,
+        "required": true,
+        "placeholder": k,
+        "readonly": true
+      }, 
+	"check6": {
+	    "type": "boolean",
+	    "title": "Declumping"
+      } 
+  }
+  
+  //console.log('Schema: ' + JSON.stringify(schema, null, 4));
 
-    // annotools.drawCanvas.removeEvents('mouseup')
-    // annotools.drawCanvas.removeEvents('mousedown')
-    // annotools.drawCanvas.removeEvents('mousemove')
-    annotools.drawLayer.hide()
-    annotools.addMouseEvents()
-    // annotools.removeMouseEvents()
-    // annotools.getMultiAnnot();            
 
-    var username = 'lastlegion'
-    var execution_id = jQuery('#order-execution_id').val()
-    var notes = jQuery('#order-notes').val()
-    var width = 48002
-    var height = 35558
-    if (iid == 'TCGA-06-0148-01Z-00-DX1') {
-      width = 26001
-      height = 27968
-    }
-    var order = {
-      'type': 'order',
-
-      'data': {
-        'title': username + ' :: ' + execution_id,
-        'algorithm': 'SuperSegmenter',
-        'execution_id': execution_id,
-        'created_by': username,
-        'notes': notes,
-        'order': {
-          'metadata': {
-            'created_on': Date.now(),
-            'created_by': 'lastlegion'
-          },
-          'image': {
-            'width': width,
-            'height': height,
-            'case_id': iid
-          },
-          'roi': {
-            'x': x,
-            'y': y,
-            'w': w,
-            'h': h
-          },
-          'execution': {
-            'execution_id': execution_id,
-            'algorithm': 'SuperSegmenter',
-            'parameters': [
-              {
-                'blur': 0.4
+  var formSchema = {
+        'schema': schema,
+        'form': [{
+          'type': 'fieldset',
+          //'legend': 'Parameters',
+          'expendable': true,
+          'items': [
+            {
+              "key": "range1",
+              "type": "range",
+              "step": 0.1,
+              "onChange": function (evt) {
+                  var valueRange1 = jQuery(evt.target).val();
+                  r = valueRange1;
+                  jQuery('[id*="-result1"]').val(r);
+                  /*
+                  if(valueRange1) {
+                    document.getElementById("jsonform-0-elt-result1").value = valueRange1;
+                  } 
+                  document.getElementById("jsonform-0-elt-result1").value = valueRange1;
+                  */
               },
-              {
-                'format': 'jpg'
+              "otherField": {"key": "result1", "inline":true}
+            },
+          "result1",
+            {
+              "key": "range2",
+              "type": "range",
+              "step": 0.1,
+              "onChange": function (evt) {
+                var valueRange2 = jQuery(evt.target).val();
+                w = valueRange2;
+                jQuery('[id*="-result2"]').val(w);
+                /*
+                if(valueRange2) {
+                  document.getElementById("jsonform-0-elt-result2").value = valueRange2;
+                } 
+                */
+               }
+             },
+           "result2",
+            {
+              "key": "range3",
+              "type": "range",
+              "step": 0.1,
+              "onChange": function (evt) {
+                var valueRange3 = jQuery(evt.target).val();
+                l = valueRange3;
+                jQuery('[id*="-result3"]').val(l);
+                /*
+                if(valueRange3) {
+                  document.getElementById("jsonform-0-elt-result3").value = valueRange3;
+                } */
               }
+              },
+            "result3",
+             {
+              "key": "range4",
+              "type": "range",
+              "step": 0.1,
+              "onChange": function (evt) {
+                var valueRange4 = jQuery(evt.target).val();
+                u = valueRange4;
+                jQuery('[id*="-result4"]').val(u);
+                /*
+                if(valueRange4) {
+                  document.getElementById("jsonform-0-elt-result4").value = valueRange4;
+                } */
+              }
+              },
+              "result4",
+             {
+              "key": "range5",
+              "type": "range",
+              "step": 0.1,
+              "onChange": function (evt) {
+                var valueRange5 = jQuery(evt.target).val();
+                k = valueRange5;
+                console.log(k);
+                 jQuery('[id*="-result5"]').val(k);
+                /*
+                if(valueRange5) {
+                  document.getElementById("jsonform-0-elt-result5").value = valueRange5;
+                } 
+                */
+                }
+              },
+              "result5",
+
+		  {
+		    "key": "check6",
+		    "onChange":function(e){
+		      console.log(e);
+			if(j == "Y")
+			  j = "N"
+			else
+			  j = "Y"
+		    } 
+		  }
+                           
             ]
+          }],
+          "params": {
+            "fieldHtmlClass": "input-small"
           }
-        }
+  }
+
+    var self = this;
+
+   setTimeout(function(){
+    //console.log("here");  
+    //console.log(formSchema);
+    jQuery('#workOrderForm').jsonForm(formSchema);
+    jQuery("#workOrderForm").append("<div id='workOrderCtrl'><br /><button class='btn btn-primary' id='submitWorkOrder'>Analyze Region</button><br /><button class='btn' id='saveWorkOrder'>Save Results</button> <button class='btn' id='discardWorkOrder'>Discard Results</button></div>");
+    jQuery('#cancelWorkOrder').click(function (e) {
+      e.preventDefault();
+      //console.log('here')
+      jQuery('#panel').hide()
+      annotools.drawLayer.hide()
+      annotools.addMouseEvents()
+    });
+    jQuery('[id*="-result1"]').val(r);
+    jQuery('[id*="-result2"]').val(w);
+    jQuery('[id*="-result3"]').val(l);
+    jQuery('[id*="-result4"]').val(u);
+    jQuery('[id*="-result5"]').val(k);
+      var width = 48002
+      var height = 35558
+    jQuery("#discardWorkOrder").click(function(e){
+      e.preventDefault();
+      self.deleteAnnotations(execution_id,newAnnot.x - 0.00001, newAnnot.y - 0.00001, newAnnot.x + newAnnot.w+0.00001, newAnnot.y + newAnnot.h+0.000001);
+		alert("Discarded results");
+	annotools.destroyMarkups();
+    });
+	jQuery("#saveWorkOrder").click(function(e){
+		e.preventDefault();
+		alert("Saved results as: "+execution_id);
+	})
+    jQuery('#submitWorkOrder').click(function (e) {
+      annotools.destroyMarkups();
+      console.log("Destroyed markups!");
+      console.log("submitting work order!");
+      e.preventDefault();
+
+      //annotools.drawLayer.hide()
+      //annotools.addMouseEvents()
+      var username = 'lastlegion'
+      //var execution_id = jQuery('#order-execution_id').val()
+      var notes = jQuery('#order-notes').val()
+
+      if (iid == 'TCGA-06-0148-01Z-00-DX1') {
+        width = 26001
+        height = 27968
       }
-    }
+      execution_id = "seg:r" + r + ":" + "w" + w + ":l" + l + ":u" + u + ":k"+ k +":j"+j;
 
-    /*
-    var order = {
-        "type": "order",
+      roiGeoJSON.provenance.analysis.execution_id = execution_id;
+      var order  = {
+          "data": {
+              "algorithm": "SuperSegmenter",
+              "created_by": "user1",
+              "execution_id": execution_id,
+              "notes": "",
+              "order": {
+                  "execution": {
+                      "algorithm": "SuperSegmenter",
+                      "execution_id": execution_id,
+                      "parameters": [
+                          {
+                              "r": r*1
+                          },
+                          {
+                              "w": w*1
+                          },
+                          { "l": l*1}, {"u": u*1}, {"k": k*1}, {"j": j}
+                      ]
+                  },
+		  "pr": r, "pw": w, "pl": l, "pu": u, "pk": k, "pj": j,
+                  "image": {
+                      "case_id": iid,
+                      "subject_id": iid,
+                      "height": height,
+                      "width": width,
+                      "source": "image_server"
+                  },
+                  "metadata": {
+                      "created_by": "user1",
+                      "created_on": "1465592027497"
+                  },
+                  "roi": {
+                      "full":"false",
+                      "square":"false",
+                      "pct":"false",
+                      "h": roi_h,
+                      "w": roi_w,
+                      "x": roi_x,
+                      "y": roi_y
+                  }
+              },
+              "title": "title1 :: "
+          },
+          "type": "order"
+      };
 
-        "data":{ 
-            "created_on": Date.now(),
-            "created_by": "lastlegion"
-        }
-    }
-    */
-    jQuery.post('api/Data/workOrder.php', order)
-      .done(function (res) {
-        console.log(res)
-        panel.html(function () {
-          annotools.addMouseEvents()
-          return 'Order Submitted!'
+      jQuery.post('api/Data/workOrder.php', order)
+        .done(function (res) {
+          var r = JSON.parse(res);
+          var id = r.id;
+          console.log("Order submitted!, Job ID: "+id);
+          jQuery('#workOrderCtrl').html(function(){ return "<br /><br />Processing..."; });
+            self.toolBar.titleButton.hide()
+            self.toolBar.ajaxBusy.show();
+            
+	    self.saveAnnot(roiGeoJSON);
+          //start polling
+          pollOrder(id, function(err, data){
+        
+            if(err){
+              jQuery("#workOrderCtrl").html(function(){return "<br /><br />Order failed! Couldn't process your order"});
+            } else{
+              //jQuery('#workOrderCtrl').html(function(){return "<button class='btn' id='submitWorkOrder'>Save</button> <button class='btn id='discard'>Discard</button>";});
+              setTimeout(function(){
+                //self.drawLayer.hide();
+                //annotools.drawLayer.hide()
+                //annotools.addMouseEvents()
+                self.renderByExecutionId([execution_id]);
+                self.toolBar.ajaxBusy.hide();
+                self.toolBar.titleButton.show();
+                self.promptForWorkOrder(newAnnot, mode, annotools, ctx, roiGeoJSON);
+	
+              },2000)
+            }
+          });
         })
-        panel.hide('slide')
-      })
-    console.log('submit')
-    console.log(newAnnot)
-    console.log(order)
-  }.bind(newAnnot))
+    }.bind(newAnnot));
+
+
+
+
+
+  },100); 
+
 }
+
+function pollOrder(id, cb){
+  jQuery.get("api/Data/workOrder.php?id="+id, function(data){ 
+    console.log(data.state);
+    if(data.state.contains("fail")){
+      cb({"error": "failed", data});
+      return;
+    }
+    if(data.state.contains("comp")){ // is completed?
+     cb(null, data);
+     return;
+    } else {
+      //console.log(data.state);
+      setTimeout(pollOrder(id, cb), 300);
+    }
+  });
+}
+
 
 annotools.prototype.promptForAnnotation = function (newAnnot, mode, annotools, ctx) {
   jQuery('#panel').show('slide')
@@ -2254,91 +2492,14 @@ annotools.prototype.promptForAnnotation = function (newAnnot, mode, annotools, c
   })
 }
 
-annotools.prototype.promptForAnalysis = function (annotools, analysisBox) {
-  var title = 'Analysis Tool'
-  var form = "<select id='algorithm'>"
-  form += "<option value='canny_edge'>Canny Edge</option>"
-  form += "<option value='marching_cubes'>Marching Cubes</option>"
-  form += '</select>'
-  var SM = new SimpleModal()
-  SM.addButton('Confirm', 'btn primary', function () {
-    var algorithm = $('algorithm').value
-    this.hide()
-    annotools.promptForParameters(annotools, analysisBox, algorithm)
-  })
-  SM.addButton('Cancel', 'btn secondary', function () {
-    annotools.addMouseEvents()
-    this.hide()
-    return false
-  })
-  SM.show({
-    'model': 'modal',
-    'title': title,
-    'contents': form
-  })
-}
-annotools.prototype.promptForParameters = function (annotools, analysisBox, algorithm) {
-  var title = 'Enter the parameters'
-  var form = '<form>'
-  var field = []
-  var parameters = '{ '
-  /*====================test samples, will need to be retrived from API calls===============*/
-  var sample = '{ "param_1" : "text" , "param_2" : "text" }'
-  var sampleJson = JSON.parse(sample)
-  /*===================================*/
-  switch (algorithm) {
-    case 'canny_edge':
-      for (var key in sampleJson) {
-        field.push(key)
-        form += "<p class='labelText'>" + key + "</p><input type='text' size='45' name='" + key + "' id='" + key + "'/><br />"
-        parameters += '"' + key + '" : '
-        parameters += '__' + key + '__, '
-      }
-      break
-    case 'marching_cubes':
-      for (var key in sampleJson) {
-        field.push(key)
-        form += "<p class='labelText'>" + key + "</p><input type='text' size='45' name='" + key + "' id='" + key + "'/><br />"
-        parameters += '"' + key + '" : '
-        parameters += '__' + key + '__, '
-      }
-      break
-  }
-  form += '</form>'
-  parameters = parameters.substring(0, parameters.length - 2) + ' }'
-  var SM = new SimpleModal()
-  SM.addButton('Confirm', 'btn primary', function () {
-    for (var i = 0; i < field.length; i++) {
-      var fieldElem = $$(document.getElementsByName(field[i]))
-      var replacement = '"' + $(field[i]).value + '"'
-      parameters = parameters.replace('__' + field[i] + '__', replacement)
-    }
-    var submission = '{ "Algorithm" : "' + algorithm + '", "x" : "' + analysisBox.x + '", "y" : "' + analysisBox.y + '", "w" : "' + analysisBox.w + '", "h" : "' + analysisBox.h + '", "Parameters" : ' + parameters + ' }'
-    console.log(submission)
-    submission = JSON.parse(submission)
-    /*============after this point, submission is ready to be handed over to bindaas=========*/
-    annotools.addMouseEvents()
-    this.hide()
-    return false
-  })
-  SM.addButton('Cancel', 'btn secondary', function () {
-    annotools.addMouseEvents()
-    this.hide()
-    return false
-  })
-  SM.show({
-    'model': 'modal',
-    'title': title,
-    'contents': form
-  })
-}
+
 annotools.prototype.addMouseEvents = function () {
   console.log('adding mouse events')
-  // console.log(this.annotationHandler)
+
   window.addEventListener('mousemove', this.annotationHandler.handleMouseMove, false)
   window.addEventListener('mousedown', this.annotationHandler.handleMouseDown, false)
   window.addEventListener('mouseup', this.annotationHandler.handleMouseUp, false)
-// window.addEventListener('mouseup',      this.getAnnot(), false)
+
 }
 annotools.prototype.removeMouseEvents = function () {
   console.log('removing events')
@@ -2346,6 +2507,7 @@ annotools.prototype.removeMouseEvents = function () {
   window.removeEventListener('mousemove', this.annotationHandler.handleMouseMove, false)
   window.removeEventListener('mousedown', this.annotationHandler.handleMouseDown, false)
   window.removeEventListener('mouseup', this.annotationHandler.handleMouseUp, false)
+  
 // window.removeEventListener('mouseup',      this.getAnnot(), false)
 }
 
