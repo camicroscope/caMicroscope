@@ -20,6 +20,12 @@ return array(
     /*
      * temp
      */
+	 
+	'getMultipleAnnotationsClone' => "$markupUrl/query/getMultipleMarkupsClone?",
+	'retrieveTemplateClone' => "$templateUrl/AnnotationTemplate/query/retrieveTemplateClone",	
+	'getPropertiesForMarkupClone' => "$markupUrl/query/getPropertiesForMarkupClone?",  
+    'deleteAnnotationWithinRectangle' => "$markupUrl/delete/deleteAnnotationWithinRectangle",
+	
     'algorithmsForImage' => "$serviceUrl/Provenance/query/getAlgorithmsForImage?",
     'getMultipleAnnotations' => "$serviceUrl/Markups/query/getMultipleMarkups?",
     //'getMultipleAnnotations' => "http://172.17.0.2:9099/services/Camicroscope_Annotations/MarkupLoader/query/getMultipleMarkups?",
