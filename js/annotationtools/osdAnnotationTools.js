@@ -2325,13 +2325,13 @@ var schema = {
       roiGeoJSON.provenance.analysis.execution_id = execution_id;
       var order  = {
           "data": {
-              "algorithm": "SuperSegmenter",
+              "algorithm": execution_id,
               "created_by": "user1",
               "execution_id": execution_id,
               "notes": "",
               "order": {
                   "execution": {
-                      "algorithm": "SuperSegmenter",
+                      "algorithm": execution_id,
                       "execution_id": execution_id,
                       "parameters": [
                           {
@@ -2367,7 +2367,7 @@ var schema = {
               },
               "title": "title1 :: "
           },
-          "type": "order"
+          "type": "analysisJob"
       };
 
       jQuery.post('api/Data/workOrder.php', order)
