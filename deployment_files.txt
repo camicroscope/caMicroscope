@@ -1,0 +1,47 @@
+
+
+repository:
+1) https://github.com/camicroscope/DataDockerContainer/tree/develop
+   ask granting to access this repo and be able to create branch
+local files: //merge those projects file with base file
+             D:\BMI\U24_Project\May_2017_release\177server_backup\u242\bindaas\bin\projects\caMicroscope_Templates.project
+             D:\BMI\U24_Project\May_2017_release\177server_backup\u242\bindaas\bin\projects\Camicroscope_DataLoader.project
+             D:\BMI\U24_Project\May_2017_release\177server_backup\u242\bindaas\bin\projects\caMicroscope_Templates.project
+			 
+			 
+2) https://github.com/camicroscope/caMicroscope/tree/bwang_dev  
+   branch:bwang_dev
+    files: // add  new files
+       camicroscope/osdCamicroscope_sc.php, 
+       camicroscope/js/annotationtools/AnnotationStore_sc.js,
+	   camicroscope/js/annotationtools/ToolBar_sc.js 
+       camicroscope/js/annotationtools/geoJSONHandler_sc.js
+       camicroscope/js/annotationtools/osdAnnotationTools_sc.js	 
+       camicroscope/js/dependencies/d3.js
+       camicroscope/api/Data/getAnnotSpatial_sc.php
+       camicroscope/api/Data/deleteAnnotationWithinRectangle.php	
+       camicroscope/api/Data/getPropertiesClone.php  
+       camicroscope/api/Data/retrieveTemplateClone.php 
+       camicroscope/api/Data/getMultipleAnnotsClone.php
+	   camicroscope/images/home.png
+	   camicroscope/images/merge1.png 
+	   camicroscope/images/merge2.png
+	   //merge this filecamicroscope/api/Configuration/config.php
+	   
+3) https://github.com/SBU-BMI/quip_cwl 
+   branch : quip-composite  
+   
+4) https://github.com/SBU-BMI/quip-composite
+
+5) https://github.com/SBU-BMI/camicSignup
+
+6) https://github.com/camicroscope/Security/tree/master/camicSignup folder
+
+quip-viewer container update
+ 1) install java
+ # Install JDK
+RUN apt-get -y install openjdk-7-jdk
+RUN apt-get -y install ant 
+ENV JAVA_HOME /usr/lib/jvm/java-7-openjdk-amd64/
+ENV PATH $JAVA_HOME/bin:$PATH
+ 
