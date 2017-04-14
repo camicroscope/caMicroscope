@@ -2027,7 +2027,7 @@ annotools.prototype.deleteAnnotations = function(execution_id, x1, y1, x2, y2){
 };
 
 var execution_id; 
-var r = 1.0, w = 0.8, l=3.0, u = 10.0, k=20.0, j="N";  
+var r = 1.0, w = 0.8, l=3.0, u = 10.0, k=20.0, pj="N";  
 annotools.prototype.promptForWorkOrder = function (newAnnot, mode, annotools, ctx, roiGeoJSON) {
   jQuery('html,body').css('cursor', 'default')
 
@@ -2259,10 +2259,11 @@ var schema = {
 		    "key": "check6",
 		    "onChange":function(e){
 		      console.log(e);
-			if(j == "Y")
-			  j = "N"
+			if(pj == "Y")
+			  pj = "N"
 			else
-			  j = "Y"
+			  pj = "Y"
+			 console.log(pj);
 		    } 
 		  }
                            
@@ -2276,6 +2277,7 @@ var schema = {
     var self = this;
 
    setTimeout(function(){
+    pj = "N";
     //console.log("here");  
     //console.log(formSchema);
     jQuery('#workOrderForm').jsonForm(formSchema);
@@ -2292,6 +2294,7 @@ var schema = {
     jQuery('[id*="-result3"]').val(l);
     jQuery('[id*="-result4"]').val(u);
     jQuery('[id*="-result5"]').val(k);
+
       var width = 48002
       var height = 35558
     jQuery("#discardWorkOrder").click(function(e){
@@ -2320,7 +2323,7 @@ var schema = {
         width = 26001
         height = 27968
       }
-      execution_id = "seg:r" + r + ":" + "w" + w + ":l" + l + ":u" + u + ":k"+ k +":j"+j;
+      execution_id = "seg:r" + r + ":" + "w" + w + ":l" + l + ":u" + u + ":k"+ k +":j"+pj;
 
       roiGeoJSON.provenance.analysis.execution_id = execution_id;
       var order  = {
@@ -2340,10 +2343,10 @@ var schema = {
                           {
                               "w": w*1
                           },
-                          { "l": l*1}, {"u": u*1}, {"k": k*1}, {"j": j}
+                          { "l": l*1}, {"u": u*1}, {"k": k*1}, {"j": pj}
                       ]
                   },
-		  "pr": r, "pw": w, "pl": l, "pu": u, "pk": k, "pj": j,
+		  "pr": r, "pw": w, "pl": l, "pu": u, "pk": k, "pj": pj,
                   "image": {
                       "case_id": iid,
                       "subject_id": iid,
