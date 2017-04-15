@@ -1,0 +1,105 @@
+.bar{
+	width:200px;
+	height:50px;
+	border-radius: 7px;
+	border:3px solid rgba(255, 255, 255, 0.5);
+	position:relative;
+	top:7px;
+	left:7px;
+}
+
+.slide{
+	width:50%;
+	height:100%;
+	border-radius: 7px;
+	background-color:red;
+	top:0px;
+	left:0px;
+	position:absolute;
+	cursor:pointer;
+}
+
+
+#weightpanel {
+    width: 235px;
+    font-family: Arial, Roboto;                                                               
+    font-size: 12px;                                                                          
+    height: 400px;                                                                            
+    top: 60px;                                                                                
+    left: 0;
+    position: fixed;                                                                          
+    z-index: 900999;
+    background: #1976D2;
+    box-shadow:1px 1px 1px 1px  #555;                                                         
+    padding: 10px;
+    border-radius: 10px;                                                                       
+    color: #fff;
+    opacity: 0.9;                                                                             
+
+}
+
+#markuppanel {
+    width: 220px;
+    font-family: Arial, Roboto;
+    font-size: 12px;
+    height: 270px;
+    top: 60px;
+    left: 0;
+    position: fixed;
+    z-index: 900999;
+    background: #1976D2;
+    box-shadow:1px 1px 1px 1px  #555;
+    padding: 10px;
+    border-radius: 10px;
+    color: #fff;
+    opacity: 0.9;
+
+}
+
+#switchuserpanel {
+    width: 200px;
+    font-family: Arial, Roboto;
+    font-size: 12px;
+    height: 240px;
+    top: 60px;
+    left: 0;
+    position: fixed;
+    z-index: 900999;
+    background: #1976D2;
+    box-shadow:1px 1px 1px 1px  #555;
+    padding: 10px;
+    border-radius: 10px;
+    color: #fff;
+    opacity: 0.9;
+}
+
+.lb_heatmap {
+	position:relative;
+	top:5px;
+	left:60px;
+	text-align:right
+}
+
+.btn_heatmap {
+	position:relative;
+        top:10px;
+        left:120px;
+        text-align:right;
+	background-color: #008CBA;
+	border: none;
+}
+
+.btn_mark {
+        position:relative;
+        top:10px;
+	left:50px;
+	text-align:right;
+        background-color: #008CBA;
+        border: none;
+}
+
+.radio_markup {
+	position:relative;
+	top:0px;
+        left:0px;
+}
