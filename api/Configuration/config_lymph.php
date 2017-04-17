@@ -40,12 +40,6 @@ return array(
     'retrieveAnnotation' => "$tempMarkupUrl/Annotations/query/byAnnotId?annotId=",
     'postJobParameters' => "$tempMarkupUrl/AnalysisJobs/submit/singleJob",
     'deleteAnnotation' => "$tempMarkupUrl/Annotations/delete/singleAnnotation?annotId=",
-    
-    /* Lymphocyte */
-    'postAlgorithmForImage' => "$annotationsUrl/MarkupsForImages/submit/json?",
-    'getAnnotationsSpatialLymph' => "$serviceUrl/GeoJSONImageMetaData/query/getMarkups?",
-    
-    
      /* Image */	
     'getDimensions' => "$imageUrl/query/getDimensionsByIID?api_key=",
     'getFileLocation' => "$imageUrl/query/getFileLocationByIID?api_key=",

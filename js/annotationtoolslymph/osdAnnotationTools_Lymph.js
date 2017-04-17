@@ -1334,7 +1334,7 @@ annotools.prototype.saveAnnot = function (annotation) // Save Annotations
   //console.log(annotation)
   jQuery.ajax({
     'type': 'POST',
-    url: 'api/Data/getAnnotSpatial.php',
+    url: 'api/Data/getAnnotSpatialLymph.php',
     data: annotation,
     success: function (res, err) {
       //console.log("response: ")
@@ -1379,7 +1379,7 @@ annotools.prototype.saveAnnot_noRefresh = function (annotation) // Save Annotati
   //console.log(annotation)
   jQuery.ajax({
     'type': 'POST',
-    url: 'api/Data/getAnnotSpatial.php',
+    url: 'api/Data/getAnnotSpatialLymph.php',
     data: annotation,
     success: function (res, err) {
       console.log("response: ")
