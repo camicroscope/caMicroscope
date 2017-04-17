@@ -26,8 +26,7 @@ return array(
      * temp
      */
     'algorithmsForImage' => "$annotationsUrl/MarkupsForImages/query/MarkupsAvilableForImage?",
-    //'getMultipleAnnotations' => "$annotationsUrl/MarkupLoader/query/getMultipleMarkups?",
-    'getMultipleAnnotations' => "$annotationsUrl/MarkupLoader/query/getMultipleMarkupsWithAttr?",
+    'getMultipleAnnotations' => "$annotationsUrl/MarkupLoader/query/getMultipleMarkups?",
     'getROI' => "$annotationsUrl/MarkupLoader/query/getROI", //Featurescape URL.
     'deleteMarkups' => "$annotationsUrl/MarkupLoader/delete/deleteMultipleMarkups",
     'firebase' => $firebase,
@@ -44,6 +43,7 @@ return array(
     /* Lymphocyte */
     'postAlgorithmForImage' => "$annotationsUrl/MarkupsForImages/submit/json?",
     'getAnnotationsSpatialLymph' => "$serviceUrl/GeoJSONImageMetaData/query/getMarkups?",
+    'getMultipleAnnotationsWithAttr' => "$annotationsUrl/MarkupLoader/query/getMultipleMarkupsWithAttr?",
     
     
      /* Image */	
