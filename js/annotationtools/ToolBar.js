@@ -233,6 +233,14 @@ ToolBar.prototype.createButtons = function () {
 			title: 'Home'
 		});
 		tool.append(this.homebutton);
+      
+    this.lymphbutton = jQuery('<img>', {
+      'title': 'Lymphocyte & Plasma Cell Annotation',
+      'class': 'toolButton',
+      'src': 'images/Heatmap.svg'
+    })
+    tool.append(this.lymphbutton) // Lymphocyte Button  
+      
     this.rectbutton = jQuery('<img>', {
       title: 'Draw Rectangle',
       id: 'drawRectangle',
@@ -329,8 +337,12 @@ ToolBar.prototype.createButtons = function () {
      * Event handlers on click for the buttons
      */
 		this.homebutton.on('click', function(){
-			window.location.href = "/";
+			window.location.href = "/select.php";
 		});
+      
+     this.lymphbutton.on('click', function () {
+    }.bind(this))
+      
     this.rectbutton.on('click', function () {
       this.mode = 'rect'
       this.annotools.mode = 'rect'
