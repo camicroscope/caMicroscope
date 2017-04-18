@@ -12,7 +12,10 @@ var ToolBar = function (element, options) {
 
   this.iid = options.iid || null
   this.annotationActive = isAnnotationActive()
+
+  this.superuser = false;
 }
+
 ToolBar.prototype.showMessage = function (msg) {
   console.log(msg)
 }
@@ -23,26 +26,52 @@ ToolBar.prototype.algorithmSelector = function () {
   xxx = []
 }
 
-
-//var available_colors = ['lime', 'red', 'blue', 'orange','lime', 'red', 'blue', 'orange','lime', 'red', 'blue', 'orange']
+//var available_colors = ['lime', 'red', 'blue', 'orange']
 var available_colors = ['#a6cee3','#1f78b4','#b2df8a','#33a02c','#fb9a99','#e31a1c','#fdbf6f','#ff7f00','#cab2d6','#6a3d9a','#ffff99','#b15928'];
-
 var algorithm_color = {}
 
 function goodalgo (data, status) {
   // console.log(data)
+  
+  /*
+  data.push({
 
+    "title": "Human Test",
+    "provenance": {
+      "analysis_execution_id": "humantest"
+    }
+  });
+  */
+    
+  max_ver = 0
+  for (i = 0;i < data.length;i++) {
+    var n = {}
+    data[i].title=data[i].provenance.analysis_execution_id;
+    n.title = "<div class='colorBox' style='background:" + available_colors[i] + "'></div>" + data[i].title
+    n.key = i.toString()
+    n.refKey = data[i].provenance.analysis_execution_id
+    if (n.refKey.includes('lym_v')) {
+        ver = parseInt(n.refKey.split('lym_v')[1].split('-')[0]);
+        if (ver > max_ver) {
+            max_ver = ver
+        }
+    }
+  }
+    
   var blob = []
   for (i = 0;i < data.length;i++) {
     var n = {}
-     
-     data[i].title=data[i].provenance.analysis_execution_id;
-    
-    n.title = "<div class='colorBox' style='background:" + available_colors[i] + "'></div>" + data[i].title;
+    //console.log(data[i])
+    data[i].title=data[i].provenance.analysis_execution_id;
+    n.title = "<div class='colorBox' style='background:" + available_colors[i] + "'></div>" + data[i].title
     n.key = i.toString()
     n.refKey = data[i].provenance.analysis_execution_id
-    n.color = available_colors[i%7];
-    //algorithm_color[data[i].provenance.analysis_execution_id] = available_colors[i%7]
+    if (n.refKey == 'lym_v'+max_ver+'-high_res' || n.refKey == 'lym_v'+max_ver+'-low_res' || n.refKey == 'humanmark') {
+      n.selected = true
+    }
+
+    //n.color = available_colors[i]
+    //algorithm_color[data[i].provenance.analysis_execution_id] = available_colors[i]
     algorithm_color[data[i].provenance.analysis_execution_id] = available_colors[i%available_colors.length];
     blob.push(n)
   }
@@ -85,10 +114,59 @@ function goodalgo (data, status) {
 
       console.log('!SELECTED NODE : ' + node.title)
       targetType = data.targetType
+      console.log(node);
       annotool.getMultiAnnot()
     }
   })
+  jQuery('#tree').attr('algotree', true)
+
+  // Load weight
+  if (annotool.loadedWeight == false) {
+      annotool.loadHeatmapWeight();
+      annotool.loadedWeight = true;
+  }
+
+
+  annotool.getMultiAnnot()
 }
+
+/*
+ToolBar.prototype.toggleAlgorithmSelector = function () {
+  if (!jQuery('#algosel').attr('eb')) {
+    jQuery('#algosel').attr('eb', true)
+    // console.log("initializing...")
+    jQuery('#algosel').css({
+      'width': '300px',
+      'zIndex': 199,
+      'visibility': 'hidden'
+    })
+    jQuery('#algosel').on('mousedown', function (e) {
+      jQuery(this).addClass('draggable').parents().on('mousemove', function (e) {
+        jQuery('.draggable').offset({
+          top: e.pageY - jQuery('.draggable').outerHeight() / 2,
+          left: e.pageX - jQuery('.draggable').outerWidth() / 2
+        }).on('mouseup', function () {
+          jQuery(this).removeClass('draggable')
+        })
+      })
+      e.preventDefault()
+    }).on('mouseup', function () {
+      jQuery('.draggable').removeClass('draggable')
+    })
+  }
+  if (jQuery('#algosel').css('visibility') == 'visible') {
+    jQuery('#algosel').css({
+      'visibility': 'hidden'
+    })
+  } else {
+    jQuery('#algosel').css({
+      'visibility': 'visible'
+    })
+  }
+  this.showMessage('Algorithm Selection Toggled')
+}
+*/
+
 var ALGORITHM_LIST = {};
 var SELECTED_ALGORITHM_LIST = [];
 var SELECTED_ALGORITHM_KEYS = [];
@@ -182,19 +260,31 @@ ToolBar.prototype.toggleAlgorithmSelector = function () {
   
 }
 
+ToolBar.prototype.setNormalMode = function() {
+  this.annotools.mode = 'normal';
+  jQuery("canvas").css("cursor", "default");
+  jQuery("#drawRectangleButton").removeClass('active');
+  jQuery("#drawFreelineButton").removeClass('active');
+  jQuery("#drawDotButton").removeClass("active");   // Dot Tool
+  jQuery("#freeLineMarkupButton").removeClass("active");
+  jQuery("#markuppanel").hide();
+  jQuery("#switchuserpanel").hide();
+  this.annotools.drawLayer.hide()
+  this.annotools.addMouseEvents()       
+}
+
 ToolBar.prototype.createButtons = function () {
   // this.tool = jQ(this.source)
   var tool = jQuery('#' + 'tool') // Temporary dom element while we clean up mootools
   var self = this
 
+
   // Fetch algorithms for Image
   jQuery(document).ready(function () {
     // console.log(options)
     // var self= this
-    var url = 'api/Data/getAlgorithmsForImage.php?iid=' + self.iid;
-    console.log(url);
-    jQuery.get(url, function (data) {
-      //console.log(data);
+
+    jQuery.get('api/Data/getAlgorithmsForImage.php?iid=' + self.iid, function (data) {
       d = JSON.parse(data)
 
       goodalgo(d, null)
@@ -221,220 +311,120 @@ ToolBar.prototype.createButtons = function () {
   tool.addClass('annotools') // Update Styles
   // this.tool.makeDraggable(); //Make it Draggable.
 
+
   if (this.annotationActive) {
 
     /*
      * Ganesh
      * Mootools to Jquery for creation of toolbar buttons
      */
-    this.homebutton = jQuery('<img>', {
-			src: 'images/ic_home_white_24px.svg',
-			class: 'toolButton firstToolButtonSpace',
-			title: 'Home'
-		});
-		tool.append(this.homebutton);
+    // docker intergration start
+     this.homebutton = jQuery('<img>', {
+        src: 'images/ic_home_white_24px.svg',
+        class: 'toolButton firstToolButtonSpace inactive',
+        title: 'Home'
+    });
+    tool.append(this.homebutton);
       
-    this.lymphbutton = jQuery('<img>', {
-      'title': 'Lymphocyte & Plasma Cell Annotation',
-      'class': 'toolButton',
-      'src': 'images/Heatmap.svg'
-    })
-    tool.append(this.lymphbutton) // Lymphocyte Button  
+    this.micbutton = jQuery('<img>', {
+        src: 'images/home_rest.png',
+        class: 'toolButton inactive',
+        title: 'caMicroscope'
+    });
+    tool.append(this.micbutton);
       
-    this.rectbutton = jQuery('<img>', {
-      title: 'Draw Rectangle',
-      id: 'drawRectangle',
-      class: 'toolButton firstToolButtonSpace',
-      src: 'images/rect.svg'
+    this.spacer1 = jQuery('<img>', {
+      'class': 'spacerButton inactive',
+      'src': 'images/spacer_empty.svg'
     })
-    //tool.append(this.rectbutton)
-
-    this.ellipsebutton = jQuery('<img>', {
-      'title': 'Draw Ellipse',
-      'class': 'toolButton',
-      'src': 'images/ellipse.svg'
-    })
-    //tool.append(this.ellipsebutton)
-
-    this.pencilbutton = jQuery('<img>', {
-      'title': 'Draw Freeline',
-      'class': 'toolButton',
-      'src': 'images/pencil.svg'
-    })
-    //tool.append(this.pencilbutton) // Pencil Tool
-
-    this.measurebutton = jQuery('<img>', {
-      'title': 'Measurement Tool',
-      'class': 'toolButton',
-      'src': 'images/measure.svg'
-    })
-    // tool.append(this.measurebutton)
-
-    this.spacer2 = jQuery('<img>', {
-      'class': 'spacerButton',
-      'src': 'images/spacer.svg'
-    })
-    tool.append(this.spacer2)
+    tool.append(this.spacer1)
+    // docker integration end
 
     this.filterbutton = jQuery('<img>', {
       'title': 'Filter Markups',
-      'class': 'toolButton',
+      'class': 'toolButton inactive',
       'src': 'images/filter.svg'
     })
     tool.append(this.filterbutton) // Filter Button
-
-
-
+    
     this.hidebutton = jQuery('<img>', {
       'title': 'Show/Hide Markups',
-      'class': 'toolButton',
+      'class': 'toolButton inactive',
       'src': 'images/hide.svg'
     })
-    //tool.append(this.hidebutton)
+    tool.append(this.hidebutton)
+    
+    this.heatDownButton = jQuery('<img>', {
+        'title': 'Decrease opacity',
+        'class': 'toolButton inactive',
+        'src': 'images/Opacity_down.svg',
+        'id': 'heatDownButton',
+    });
+    tool.append(this.heatDownButton);     // Button for decreasing opacity
 
-    this.fullDownloadButton = jQuery('<img>', {
-      'title': 'Download All Markups (Coming Soon)',
-      'class': 'toolButton',
-      'src': 'images/fullDownload.svg'
+    this.heatUpButton = jQuery('<img>', {
+        'title': 'Increase opacity',
+        'class': 'toolButton inactive',
+        'src': 'images/Opacity_up.svg',
+        'id': 'heatUpButton',
+    });
+    tool.append(this.heatUpButton);	// Button for increasing opacity
+      
+    this.colorMapButton = jQuery('<img>', {
+      'class': 'colorMapButton',
+      'title': 'ColorMap',
+      'src': 'images/colors.svg'
     })
-    //tool.append(this.fullDownloadButton)
-    this.spacer1 = jQuery('<img>', {
-      'class': 'spacerButton',
-      'src': 'images/spacer.svg'
+    //tool.append(this.colorMapButton)
+
+    //this.spacer = jQuery('<img>', {
+    //  'class': 'spacerButton inactive',
+    //  'src': 'images/divider.svg'
+    //})
+    //tool.append(this.spacer)
+
+    this.showWeightPanel = jQuery('<img>', {
+        'title': 'Show weight panel',
+        'class': 'toolButton inactive',
+        'src': 'images/Heatmap.svg',
+        'id': 'showWeightPanel',
+    });
+    tool.append(this.showWeightPanel);    // Button for showing the weight panel
+      
+    this.freeMarkupButton = jQuery('<img>', {
+      'title': 'Free line Markup',
+      'class': 'toolButton inactive',
+      'src': 'images/pencil.svg',
+      'id': 'freeLineMarkupButton'
     })
-    tool.append(this.spacer1)
+    tool.append(this.freeMarkupButton) 	  // Markup Pencil Tool
 
-    this.analyticsbutton = jQuery('<img>', {
-      'title': 'Image Analysis',
-      'class': 'toolButton',
-      'src': 'images/analyze.png'
-
+    this.spacer2 = jQuery('<img>', {
+      'class': 'spacerButton inactive',
+      'src': 'images/spacer_empty.svg'
     })
-    tool.append(this.analyticsbutton)
-
-    this.filterImgButton = jQuery('<img>', {
-      'title': 'View Results',
-      'class': 'toolButton',
-      'src': 'images/insta.png'
-    })
-    //tool.append(this.filterImgButton)
-
-    this.bookmarkButton = jQuery('<img>', {
-      'title': 'Bookmark/Share current state',
-      'class': 'toolButton',
-      'src': 'images/ic_insert_link_white_24dp_1x.png'
-    })
-    //tool.append(this.bookmarkButton)
-
-    this.partialDownloadButton = jQuery('<img>', {
-      'title': 'Download Partial Markups (Coming Soon)',
-      'class': 'toolButton',
-      'src': 'images/partDownload.svg'
-    })
-    // tool.append(this.partialDownloadButton)  //Partial Download
-
+    tool.append(this.spacer2)
+    
+    this.switchUserButton = jQuery('<img>', {
+        'title': 'Switch user',
+        'class': 'toolButton inactive',
+        'src': 'images/switch_user.svg',
+        'id': 'switchUserButton',
+    });
+    tool.append(this.switchUserButton);     // Button for decreasing opacity
+      
+      
     /*
      * Event handlers on click for the buttons
      */
-		this.homebutton.on('click', function(){
-			window.location.href = "/select.php";
-		});
-      
-     this.lymphbutton.on('click', function () {
-      window.location.href = "/camicroscope/osdCamicroscope_Lymph.php?tissueId="+this.iid;
+    this.homebutton.on('click', function(){
+        window.location.href = "/select.php";
     }.bind(this))
-      
-    this.rectbutton.on('click', function () {
-      this.mode = 'rect'
-      this.annotools.mode = 'rect'
-      this.annotools.drawMarkups()
-    // alert("Creation of markups is disabled on QuIP")
+    
+    this.micbutton.on('click', function(){
+        window.location.href = "/camicroscope/osdCamicroscope.php?tissueId=" + this.iid;
     }.bind(this))
-
-    this.bookmarkButton.on('click', function () {
-      console.log('bookmark')
-
-      /* Get ViewPort */
-      var bounds = viewer.viewport.getBounds()
-      console.log(bounds)
-
-      /* Get Filters */
-      var filters = []
-      jQuery('#selected li').each(function () {
-        var id = this.id
-        var filter = hashTable[id]
-        // filters.push(filter.generatedFilter.getFilter())
-        // console.log(filter)
-        var f = {}
-        var filterName = filter.name
-        var filterVal = filter.generatedFilter.getParams()
-        f.name = filterName
-        f.value = filterVal
-        filters.push(f)
-      // sync &= filter.generatedFilter.sync
-      })
-      console.log(filters)
-
-      var state = {
-        'state': {
-          'filters': filters,
-          'viewport': bounds,
-          'pan': viewer.viewport.getCenter(),
-          'zoom': viewer.viewport.getZoom(),
-          'tissueId': this.annotools.iid
-        }
-      }
-      console.log(state)
-      // var bookmarkURLDiv = jQuery.create('<div>').addClass('bookmarkURLDiv')
-      var bookmarkURLDiv = jQuery('#bookmarkURLDiv')
-      bookmarkURLDiv.html('')
-      var input = jQuery('<input>')
-      var submit = jQuery('<button>')
-      submit.html("Close");
-      bookmarkURLDiv.append(input)
-      bookmarkURLDiv.append(submit)
-      bookmarkURLDiv.show()
-      jQuery.ajax({
-        'type': 'POST',
-        //'url': 'https://test-8f679.firebaseio.com/camicroscopeStates.json?auth=kweMPSAo4guxUXUodU0udYFhC27yp59XdTEkTSJ4',
-        'url': 'api/Data/loadState.php',
-        'data': JSON.stringify(state),
-        contentType: 'application/json; charset=utf-8',
-        dataType: 'json',
-        success: function (data) {
-          console.log('posted!')
-          console.log(data)
-          var url = 'http://dragon.cci.emory.edu/camicroscope3/osdCamicroscope.php?tissueId=TCGA-02-0001&stateID=' + data.name
-          console.log(url)
-          input.val(url)
-          input.select()
-        }
-      });
-
-      submit.on("click", function() {
-        bookmarkURLDiv.hide();
-      });
-
-    }.bind(this))
-
-    this.ellipsebutton.on('click', function () {
-      // this.mode = 'ellipse'
-      // this.annotools.mode = 'ellipse'
-      // this.annotools.drawMarkups()
-      alert('Creation of markups is disabled on QuIP')
-    }.bind(this))
-
-    this.pencilbutton.on('click', function () {
-      this.annotools.mode = 'pencil'
-      this.annotools.drawMarkups()
-    // alert("Creation of markups is disabled on QuIP")
-    }.bind(this))
-
-    this.measurebutton.on('click', function () {
-      this.mode = 'measure'
-      this.drawMarkups()
-    }.bind(this))
-
+    
     this.hidebutton.on('click', function () {
       this.annotools.toggleMarkups()
     }.bind(this))
@@ -445,13 +435,65 @@ ToolBar.prototype.createButtons = function () {
     // this.promptForAnnotation(null, "filter", this, null)
     }.bind(this))
 
-    this.analyticsbutton.on('click', function () {
-      this.annotools.createWorkOrder()
+    this.heatUpButton.on('click', function () {
+        this.annotools.heatmap_opacity = Math.min(1, this.annotools.heatmap_opacity + 0.1);
+        this.annotools.getMultiAnnot();
     }.bind(this))
 
-    this.filterImgButton.on('click', function () {
-      this.FilterTools.showFilterControls()
+    this.heatDownButton.on('click', function () {
+        this.annotools.heatmap_opacity = Math.max(0, this.annotools.heatmap_opacity - 0.1);
+        this.annotools.getMultiAnnot();
     }.bind(this))
+
+    this.switchUserButton.on('click', function () {
+        if (this.superuser) {
+            if (jQuery('#switchuserpanel').is(":visible"))
+                jQuery('#switchuserpanel').hide();
+            else
+                jQuery('#switchuserpanel').show();
+        } else {
+            alert("You are not a super user. A super user can review and change other people's annotations. To apply for the super user privilege. please contact Le Hou (le.hou@stonybrook.edu).");
+        }
+    }.bind(this))
+
+    this.showWeightPanel.on('click', function () {
+        console.log('click on showing weight panel');
+        if (jQuery('#weightpanel').is(":visible"))
+        {
+            jQuery('#weightpanel').hide();
+        }
+        else
+        {
+            console.log(this.annotools.heat_weight);
+            jQuery('#weightpanel').show();
+        }
+    }.bind(this))
+
+    this.freeMarkupButton.on('click', function () {
+        if(this.annotools.mode == 'free_markup'){
+            this.setNormalMode();
+        } else {
+            //set pencil mode
+            this.annotools.mode = 'free_markup'
+            this.annotools.drawMarkups()
+
+            jQuery("canvas").css("cursor", "crosshair");
+            //jQuery("drawFreelineButton").css("opacity", 1);
+            jQuery("#drawRectangleButton").removeClass("active");
+            jQuery("#drawDotButton").removeClass("active");     // Dot Tool
+            jQuery("#drawFreelineButton").removeClass("active");
+            jQuery("#freeLineMarkupButton").addClass("active");
+            jQuery("#markuppanel").show();
+ 
+            // Check if being on moving mode --> switch to drawing mode
+            if (document.getElementById("rb_Moving").checked) {
+                console.log('do switching');
+                document.getElementById('rb_Moving').checked = false;
+                document.getElementById('LymPos').checked = true;
+            }
+        }
+    }.bind(this))
+
 
     var toolButtons = jQuery('.toolButton')
     toolButtons.each(function () {
@@ -488,12 +530,6 @@ ToolBar.prototype.createButtons = function () {
     */
 
   }
-  this.colorMapButton = jQuery('<img>', {
-    'class': 'colorMapButton',
-    'title': 'ColorMap',
-    'src': 'images/colors.svg'
-  })
-  //tool.append(this.colorMapButton)
   this.ajaxBusy = jQuery('<img>', {
     'class': 'colorMapButton',
     'id': 'ajaxBusy',
@@ -505,14 +541,13 @@ ToolBar.prototype.createButtons = function () {
 
   this.titleButton = jQuery('<p>', {
     'class': 'titleButton',
-    'id': 'titleButton',
-    'text': 'caMicroscope'
+    'text': 'caMic Lymphocyte'
   })
   tool.append(this.titleButton)
 
   this.iidbutton = jQuery('<p>', {
     'class': 'iidButton',
-    'text': 'case_id: ' + this.iid
+    'text': 'Image Id: ' + this.iid
   })
   tool.append(this.iidbutton)
 
@@ -526,5 +561,4 @@ ToolBar.prototype.createButtons = function () {
   if (this.annotationActive) {
   }
 }
-
 
