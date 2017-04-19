@@ -2,7 +2,7 @@
 	
   session_start();
  
-	require '../authenticate.php';  
+  require '../authenticate.php';  
   $config = require 'api/Configuration/config.php';  
       
   $cancerType = "quip";
@@ -47,14 +47,13 @@
         <script src="js/annotationtools/annotools-openseajax-handler.js"></script>
         <script src="js/imagemetadatatools/osdImageMetadata.js"></script>
 		
-        <script src="js/annotationtools/ToolBar_sc.js"></script>
-        <script src="js/annotationtools/AnnotationStore_sc.js"></script>
-        <script src="js/annotationtools/osdAnnotationTools_sc.js"></script>
-        <script src="js/annotationtools/geoJSONHandler_sc.js"></script>
+        <script src="js/annotationtools_sc/ToolBar_sc.js"></script>
+        <script src="js/annotationtools_sc/AnnotationStore_sc.js"></script>
+        <script src="js/annotationtools_sc/osdAnnotationTools_sc.js"></script>
+        <script src="js/annotationtools_sc/geoJSONHandler_sc.js"></script>
 		
         <script src="js/dependencies/MD5.js"></script>
-        <script src="https://code.jquery.com/ui/1.11.2/jquery-ui.min.js" type="text/javascript"></script>        
-
+        <script src="https://code.jquery.com/ui/1.11.2/jquery-ui.min.js" type="text/javascript"></script>  
         
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.7.0/jquery.modal.js"> </script>
         <script src="js/dependencies/simplemodal.js"></script>
@@ -107,7 +106,7 @@
             <div class="demoarea">
                 <div id="viewer" class="openseadragon"></div>
             </div>
-            <div id"navigator"></div>
+            <div id="navigator"></div>
         </div>
 
         <div id="confirmDelete" style="display:none">
@@ -119,19 +118,17 @@
           var annotool = null;
           var tissueId = <?php echo json_encode($_GET['tissueId']); ?>;	
           	
-		      var cancerType = "<?php echo $_SESSION["cancerType"] ?>";		    
-		  
-          //var cancerType ="quip";
-          
-		      console.log("cancerType is: "+cancerType);
-		      console.log("tissueId is: "+tissueId);
+	  var cancerType = "<?php echo $_SESSION["cancerType"] ?>";		    
+		           
+	  console.log("cancerType is: "+cancerType);
+	  console.log("tissueId is: "+tissueId);
 		  
           var imagedata = new OSDImageMetaData({imageId:tissueId});          
           //console.log(imagedata);         
           
           var MPP = imagedata.metaData[0];
-		       console.log(MPP);
-            //console.log(imagedata);
+	  console.log(MPP);
+          //console.log(imagedata);
           var fileLocation = imagedata.metaData[1];//.replace("tcga_data","tcga_images");
           //console.log(fileLocation);
          
@@ -210,17 +207,17 @@
 		   
            toolBar.createButtons();
 		
-		 var user_email = "<?php echo $_SESSION["email"]; ?>";  
+	 var user_email = "<?php echo $_SESSION["email"]; ?>";  
          console.log("user_email :" + user_email);  
       
-      //var user_email ="tigerfan7495@gmail.com";   
-   		var index = user_email.indexOf("@");
-		var user= user_email.substring(0,index);		
+        //var user_email ="tigerfan7495@gmail.com";   
+        var index = user_email.indexOf("@");
+        var user= user_email.substring(0,index);		
         var execution_id =user+"_composite_input" ;
 		
-	  	annotool.execution_id = execution_id;
-		annotool.user = user;
-		console.log("execution_id :" + annotool.execution_id);
+   	annotool.execution_id = execution_id;
+	annotool.user = user;
+	console.log("execution_id :" + annotool.execution_id);
 		
         /*Pan and zoom to point*/
         var bound_x = <?php echo json_encode($_GET['x']); ?>;
