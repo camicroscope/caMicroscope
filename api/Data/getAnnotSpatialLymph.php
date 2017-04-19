@@ -8,7 +8,7 @@ $getUrl =  $config['getAnnotationsSpatialLymph'];
 $postUrl = $config['postAnnotation'];
 
 $algorithmsForImage = $config['algorithmsForImage'];
-$postAlgorithmForImage = $config['postAlgorithmForImage'];
+$postAlgorithmForImage = $config['postAlgorithmForImageLymph'];
 $api_key = '';
 
 if (!empty($_SESSION['api_key'])) {
