@@ -39,7 +39,7 @@ return array(
     'deleteAnnotation' => "$tempMarkupUrl/Annotations/delete/singleAnnotation?annotId=",
     
     /* Lymphocyte */
-    'postAlgorithmForImage' => "$annotationsUrl/MarkupsForImages/submit/json?",
+    'postAlgorithmForImageLymph' => "$annotationsUrl/MarkupsForImages/submit/json?",
     'getAnnotationsSpatialLymph' => "$serviceUrl/GeoJSONImageMetaData/query/getMarkups?",
     'getMultipleAnnotationsWithAttr' => "$annotationsUrl/MarkupLoader/query/getMultipleMarkupsWithAttr?",
     
