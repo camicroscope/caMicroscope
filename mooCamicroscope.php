@@ -41,8 +41,6 @@ else {
 	  <script type="text/javascript" src="js/dependencies/MD5.js"></script>
 	  <script type="text/javascript" src="js/imagemetadatatools/mooImageMetadata.js"></script>
 	  <script type="text/javascript" src="js/annotationtools/mooAnnotationTools.js"></script>
-          <!-- Google Analytics JS -->
-          <script src="../analyticstracking.js"></script>
 
 	  <script>
 	    var server='/camicroscope/fastcgi-bin/iipsrv.fcgi';

@@ -6,14 +6,11 @@ $kueUrl  = "http://quip-jobs:3000";
 
 $serviceUrl     = "$baseUrl/services/Camicroscope_DataLoader";
 $annotationsUrl = "$baseUrl/services/Camicroscope_Annotations";
-
-$lysdgdsfgsdgUrl= "$baseUrl/services/Lysfdgsdfgdsg";
-
-$templateUrl    = "$baseUrl/services/caMicroscope_Templates";
-
 $imageUrl = "$serviceUrl/DataLoader";
 
 $dynamicServices = $serviceUrl;
+
+$templateUrl    = "$baseUrl/services/caMicroscope_Templates";
 
 
 //Optional Firebase
@@ -29,24 +26,29 @@ return array(
     'getMultipleAnnotations' => "$annotationsUrl/MarkupLoader/query/getMultipleMarkups?",
     'deleteMarkups'          => "$annotationsUrl/MarkupLoader/delete/deleteMultipleMarkups",
     'postAnnotation'         => "$annotationsUrl/MarkupLoader/submit/json",
-    'getROI'                 => "$annotationsUrl/MarkupLoader/query/getROI",
-    
-    /*Bindaas API for back compatible */
-     'postAlgorithmForImage'           => "$annotationsUrl/MarkupsForImages/submit/json",      
-     'getMultipleAnnotationsClone'     => "$annotationsUrl/MarkupLoader/query/getMultipleMarkupsClone?",     
-     'deleteAnnotation'                => "$annotationsUrl/MarkupLoader/delete/DeleteByOID",
-     'deleteAnnotationWithinRectangle' => "$annotationsUrl/MarkupLoader/delete/deleteAnnotationWithinRectangle", 
-	 
-	 /* Template */
-    'retrieveTemplate'      => "$templateUrl/AnnotationTemplate/query/retrieveTemplate",
-    'retrieveTemplateClone' => "$templateUrl/AnnotationTemplate/query/retrieveTemplateClone",    
-     
+    'getROI'                 => "$annotationsUrl/MarkupLoader/query/getROI",  
 
+   
+    /*Bindaas API for back compatible */
+     'postAlgorithmForImage'           => "$annotationsUrl/MarkupsForImages/submit/json",  
+     'getMultipleAnnotationsClone'     => "$annotationsUrl/MarkupLoader/query/getMultipleMarkupsClone?",     
+     'deleteAnnotation'                => "$annotationsUrl/MarkupLoader/delete/DeleteByOID", 
+     'deleteAnnotationWithinRectangle' => "$annotationsUrl/MarkupLoader/delete/deleteAnnotationWithinRectangle",
+     'deleteAnnotationWithinRectangleClone' => "$annotationsUrl/MarkupLoader/delete/deleteAnnotationWithinRectangleClone",     
+     'getPropertiesForMarkupClone'          => "$annotationsUrl/MarkupLoader/query/getPropertiesForMarkupClone?",
+     
+    
+     /* Template */
+    'retrieveTemplate'      => "$templateUrl/AnnotationTemplate/query/retrieveTemplate",
+    'retrieveTemplateClone' => "$templateUrl/AnnotationTemplate/query/retrieveTemplateClone",
+ 
+ 
     /* Image */
     'getDimensions'   => "$imageUrl/query/getDimensionsByIID?api_key=",
     'getFileLocation' => "$imageUrl/query/getFileLocationByIID?api_key=",
     'getMPP'          => "$imageUrl/query/getMPPByIID?api_key=",
     'fastcgi_server'  => "/fcgi-bin/iipsrv.fcgi",
+    
     
     
      /* Dynamic Services */

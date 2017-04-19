@@ -9,7 +9,7 @@ require_once 'HTTP/Request2.php';
 
 $config = require '../Configuration/config.php';
 
-$getUrl =  $config['::'];
+$getUrl =  $config['getMultipleAnnotationsClone'];
 
 //$api_key = '';
 
@@ -40,13 +40,13 @@ if (!empty($_SESSION['api_key'])) {
             echo $url;
 		      	$getRequest = new RestRequest($url,'GET');
             $getRequest->execute();
+            //print_r($url);            
+            //print_r($getRequest);
 
-            print_r($url);
-            
-            print_r($getRequest);
-
-			//Figure out how to parse reponse
-			$annotationList = ($getRequest->responseBody);
+	    //Figure out how to parse reponse
+	     $annotationList = ($getRequest->responseBody);
+      
+            // print_r($annotationList);
 
             if($annota:tionList)
                 echo ($annotationList);

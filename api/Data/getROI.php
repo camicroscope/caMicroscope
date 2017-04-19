@@ -1,42 +1,39 @@
 <?php require '../../../authenticate.php';
 //ini_set('display_errors', 'On');
 //error_reporting(E_ALL | E_STRICT);
-
 include_once("RestRequest.php");
 require_once 'HTTP/Request2.php';
-
 $config = require '../Configuration/config.php';
-
-$getUrl    =  $config['getPropertiesForMarkupClone'];
-$deleteUrl =  $config['deleteAnnotation'];
-
+$getUrl =  $config['getROI'];
+$deleteUrl = $config['deleteAnnotation'];
 //$postUrl = $config['postAnnotation'];
 
-$api_key = '';
+//$api_key = '';
 
 if (!empty($_SESSION['api_key'])) {
     $api_key = $_SESSION['api_key'];
 }
 //$api_key = 'c0327219-68b2-4a40-9801-fc99e8e1e76f';
 //$api_key = '4fbb38a3-1821-436c-a44d-8d3bc5efd33e';
-
+//echo $getUrl;
 switch ($_SERVER['REQUEST_METHOD'])
 {
-	case 'GET':
+    case 'GET':
 
-		if(isset($_GET["id"]))
-		{
-			$id=$_GET["id"];
+        if(isset($_GET["id"]))
+        {
+            $id=$_GET["id"];
 
-      $getUrl  = $getUrl . "api_key=" . $api_key;
+      $getUrl  = $getUrl . "?api_key=" . $api_key;
       $url = $getUrl . "&id=" . $id;
+	//echo $url;
             //echo $url;
-			$getRequest = new RestRequest($url,'GET');
+            $getRequest = new RestRequest($url,'GET');
       $getRequest->execute();
 
 
-			//Figure out how to parse reponse
-			$annotationList = json_decode($getRequest->responseBody);
+            //Figure out how to parse reponse
+            $annotationList = json_decode($getRequest->responseBody);
       //print_r($annotationList[0]['properties']);
 
       $annotationList[0]->properties->annotations->secret = "xxxx";
@@ -52,9 +49,8 @@ switch ($_SERVER['REQUEST_METHOD'])
   case 'DELETE':
     echo "PHP Deleteing";
     $d = file_get_contents("php://input");
-    //print_r($d);
+    print_r($d);
     $data = [];
-	
     parse_str($d, $data); 
     //$data = json_decode($data);
     //print_r($data);
@@ -77,7 +73,7 @@ switch ($_SERVER['REQUEST_METHOD'])
         echo "Source: ".$source;
 
         $delUrl = $deleteUrl . "?api_key=".$api_key . "&id=".$id;
-        echo $delUrl;
+        //echo $delUrl;
         $curl = curl_init($delUrl);
 
         //Delete request
@@ -88,8 +84,7 @@ switch ($_SERVER['REQUEST_METHOD'])
 
         // Make the REST call, returning the result
         $response = curl_exec($curl);
-		
-        //print_r($response);
+        print_r($response);
 
       echo "Deleted!";
       } else {

@@ -5,7 +5,7 @@
 include_once("RestRequest.php");
 require_once 'HTTP/Request2.php';
 $config = require '../Configuration/config.php';
-$deleteUrl = $config['deleteAnnotationWithinRectangle'];
+$deleteUrl = $config['deleteAnnotationWithinRectangleClone'];
 //$api_key = '';
 
 if (!empty($_SESSION['api_key'])) {
@@ -26,9 +26,9 @@ switch ($_SERVER['REQUEST_METHOD'])
 	$x1 = $_GET["x1"];
 	$y1 = $_GET["y1"];		
 	$x2 = $_GET["x2"];
-    $y2 = $_GET["y2"];
+        $y2 = $_GET["y2"];
 	
-    $delUrl = $deleteUrl . "?api_key=".$api_key . "&id=".$id. "&case_id=".$case_id. "&subject_id=".$subject_id. "&execution_id=".$execution_id."&x1=".$x1. "&y1=".$y1. "&x2=".$x2. "&y2=".$y2;
+    $delUrl = $deleteUrl . "?api_key=".$api_key . "&case_id=".$case_id. "&subject_id=".$subject_id. "&execution_id=".$execution_id."&x1=".$x1. "&y1=".$y1. "&x2=".$x2. "&y2=".$y2;
     echo $delUrl;
     $curl = curl_init($delUrl);
     //Delete request

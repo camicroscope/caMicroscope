@@ -1,0 +1,9 @@
+{
+    "path1": {
+        "TCGABreast": {
+            "dataUrl" : "http://imaging.cci.emory.edu:9099/services/TCGABreast/TCGABreastClinical/query/getDataFromForm?",
+	    "metadataUrl": "http://imaging.cci.emory.edu:9099/services/TCGABreast/TCGABreastClinical/query/getDataFromForm/metadata?",
+            "hasLink": "false"
+	}
+    }
+}
