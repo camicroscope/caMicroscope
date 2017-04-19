@@ -31,6 +31,7 @@ switch ($_SERVER['REQUEST_METHOD'])
 
     $delUrl = $deleteUrl . "?api_key=".$api_key . "&CaseId=".$case_id . "&execution_id=".$execution_id . "&x1=".$x1 . "&y1=".$y1 . "&x2=".$x2 . "&y2=".$y2;
     //echo $delUrl;
+
     $curl = curl_init($delUrl);
     //Delete request
     curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "DELETE");
@@ -70,7 +71,7 @@ switch ($_SERVER['REQUEST_METHOD'])
 			print_r($response);
 
 	}
-    echo "Deleted!";
+   echo "Deleted!";
 
     //Delete ID
   break;    

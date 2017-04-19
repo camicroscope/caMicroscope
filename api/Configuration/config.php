@@ -1,24 +1,22 @@
 <?php 
 
 $baseUrl = "http://quip-data:9099";
-
-$serviceUrl = "$baseUrl/services/Camicroscope_DataLoader";
-
-$annotationsUrl = "$baseUrl/services/Camicroscope_Annotations";
-
-
-$imageUrl = "$serviceUrl/DataLoader";
-
-$templateUrl = "$serviceUrl/AnnotationTemplate";
-$markupUrl = "$serviceUrl/Annotations";
-
-$dynamicServices = $serviceUrl;
-$firebase = "https://test-8f679.firebaseio.com/camicroscopeStates";
-$firebase_key = "kweMPSAo4guxUXUodU0udYFhC27yp59XdTEkTSJ4";
-
 $kueUrl = "http://quip-jobs:3000";
 
-$tempMarkupUrl = "http://localhost:9099/services/TCGABRCA_Dev";
+$serviceUrl     = "$baseUrl/services/Camicroscope_DataLoader";
+$annotationsUrl = "$baseUrl/services/Camicroscope_Annotations";
+$imageUrl       = "$serviceUrl/DataLoader";
+
+$dynamicServices = $serviceUrl;
+
+$templateUrl    = "$baseUrl/services/caMicroscope_Templates";
+
+//$firebase = "https://test-8f679.firebaseio.com/camicroscopeStates";
+//$firebase_key = "kweMPSAo4guxUXUodU0udYFhC27yp59XdTEkTSJ4";
+
+//Optional Firebase
+$firebase = "";
+$firebase_key = "";
 
 return array(
     'auth_realm' => "$baseUrl/securityTokenService",
@@ -45,12 +43,24 @@ return array(
     'getAnnotationsSpatialLymph' => "$serviceUrl/GeoJSONImageMetaData/query/getMarkups?",
     'getMultipleAnnotationsWithAttr' => "$annotationsUrl/MarkupLoader/query/getMultipleMarkupsWithAttr?",
     
+   /*Bindaas API for back compatible */
+     'postAlgorithmForImage'           => "$annotationsUrl/MarkupsForImages/submit/json",  
+     'getMultipleAnnotationsClone'     => "$annotationsUrl/MarkupLoader/query/getMultipleMarkupsClone?",     
+     'deleteAnnotation'                => "$annotationsUrl/MarkupLoader/delete/DeleteByOID", 
+     'deleteAnnotationWithinRectangle' => "$annotationsUrl/MarkupLoader/delete/deleteAnnotationWithinRectangle",
+     'deleteAnnotationWithinRectangleClone' => "$annotationsUrl/MarkupLoader/delete/deleteAnnotationWithinRectangleClone",     
+     'getPropertiesForMarkupClone'          => "$annotationsUrl/MarkupLoader/query/getPropertiesForMarkupClone?",     
     
-     /* Image */	
+    /* Template */
+    'retrieveTemplate'      => "$templateUrl/AnnotationTemplate/query/retrieveTemplate",
+    'retrieveTemplateClone' => "$templateUrl/AnnotationTemplate/query/retrieveTemplateClone",
+    
+    /* Image */	
     'getDimensions' => "$imageUrl/query/getDimensionsByIID?api_key=",
     'getFileLocation' => "$imageUrl/query/getFileLocationByIID?api_key=",
     'getMPP' => "$imageUrl/query/getMPPByIID?api_key=",
     'fastcgi_server' => "/fcgi-bin/iipsrv.fcgi",
+  
 	 /* Dynamic Services */														 
     'postWorkOrder' => "$dynamicServices/WorkOrders/submit/json",
     'kueUrl' => $kueUrl

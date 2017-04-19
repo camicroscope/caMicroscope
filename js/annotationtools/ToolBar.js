@@ -239,8 +239,25 @@ ToolBar.prototype.createButtons = function () {
       'class': 'toolButton',
       'src': 'images/Heatmap.svg'
     })
-    tool.append(this.lymphbutton) // Lymphocyte Button  
-      
+
+    tool.append(this.lymphbutton) // Lymphocyte Button   
+  
+    this.spacer1 = jQuery('<img>', {
+      'class': 'spacerButton',
+      'src': 'images/spacer.svg'
+    })
+    tool.append(this.spacer1)   
+   
+  /*a link to segment curation application with this composite button */
+   this.compositebutton = jQuery('<img>', {
+      title: 'Composite',
+      class: 'toolButton',
+      src: 'images/composite.png',
+      id: 'gotocompositebutton'
+    })
+    tool.append(this.compositebutton)   
+    
+
     this.rectbutton = jQuery('<img>', {
       title: 'Draw Rectangle',
       id: 'drawRectangle',
@@ -337,13 +354,22 @@ ToolBar.prototype.createButtons = function () {
      * Event handlers on click for the buttons
      */
 		this.homebutton.on('click', function(){
-			window.location.href = "/select.php";
+		 window.location.href = "/select.php";
 		});
-      
-     this.lymphbutton.on('click', function () {
-      window.location.href = "/camicroscope/osdCamicroscope_Lymph.php?tissueId="+this.iid;
+    
+    this.lymphbutton.on('click', function () {
+      window.location.href = "camicroscope/osdCamicroscope_Lymph.php?tissueId="+this.iid;
     }.bind(this))
-      
+   
+    this.compositebutton.on('click', function () {
+    this.mode = 'composite';
+	  var tissueId=annotool.iid;
+	  console.log(tissueId)	    
+      location.href = "/camicroscope/osdCamicroscope_sc.php?tissueId="+tissueId+"&cancerType=quip";
+    }.bind(this))
+    
+    
+
     this.rectbutton.on('click', function () {
       this.mode = 'rect'
       this.annotools.mode = 'rect'
