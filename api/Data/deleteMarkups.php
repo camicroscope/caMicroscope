@@ -30,7 +30,8 @@ switch ($_SERVER['REQUEST_METHOD'])
     $y2 = $data['y2']; 
 
     $delUrl = $deleteUrl . "?api_key=".$api_key . "&CaseId=".$case_id . "&execution_id=".$execution_id . "&x1=".$x1 . "&y1=".$y1 . "&x2=".$x2 . "&y2=".$y2;
-    echo $delUrl;
+    //echo $delUrl;
+
     $curl = curl_init($delUrl);
     //Delete request
     curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "DELETE");
@@ -39,8 +40,38 @@ switch ($_SERVER['REQUEST_METHOD'])
     curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type: application/json',"OAuth-Token: $token"));
     // Make the REST call, returning the result
     $response = curl_exec($curl);
-    print_r($response);
-    echo "Deleted!";
+
+	//check if there are any annotations with this execution_id
+	$getMarkups = $config["getMultipleAnnotations"] ."api_key=".$api_key ."&CaseId=".$case_id . "&algorithms=['". $execution_id . "']&x1=0" . "&y1=0". "&x2=1". "&y2=1". "&footprint=0";
+    $curl = curl_init($getMarkups);
+
+    curl_setopt($curl, CURLOPT_HEADER, false);
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type: application/json',"OAuth-Token: $token"));
+    // Make the REST call, returning the result
+    $response = json_decode(curl_exec($curl), true);
+	echo "\n";
+	//echo $response;
+	echo count($response);
+	$no_annotations = count($response);
+	echo "\n";
+	echo "number of annotations". $no_annotations;
+	if($no_annotations == 0){
+		//delete execution id
+		echo "deleting";
+		$deleteUrl= "http://quip-data:9099/services/Camicroscope_Annotations/MarkupsForImages/delete/deleteExecutionId"."?api_key=".$api_key . "&execution_id=".$execution_id;
+			echo $deleteUrl;
+			$curl = curl_init($deleteUrl);
+			curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "DELETE");
+			curl_setopt($curl, CURLOPT_HEADER, false);
+			curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+			curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type: application/json',"OAuth-Token: $token"));
+			// Make the REST call, returning the result
+			$response = curl_exec($curl);
+			print_r($response);
+
+	}
+   echo "Deleted!";
 
     //Delete ID
   break;    
