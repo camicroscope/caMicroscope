@@ -2372,8 +2372,12 @@ var schema = {
           },
           "type": "analysisJob"
       };
-
+      console.log(order);
       jQuery.post('api/Data/workOrder.php', order)
+	.fail(function(err){
+		alert("couldn't post order");
+		console.log(err);
+	})
         .done(function (res) {
           var r = JSON.parse(res);
           var id = r.id;
