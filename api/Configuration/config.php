@@ -18,6 +18,8 @@ $templateUrl    = "$baseUrl/services/caMicroscope_Templates";
 $firebase = "";
 $firebase_key = "";
 
+$tempMarkupUrl = "http://localhost:9099/services/TCGABRCA_Dev";
+
 return array(
     'auth_realm' => "$baseUrl/securityTokenService",
     /*
