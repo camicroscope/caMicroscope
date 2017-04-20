@@ -358,7 +358,7 @@ ToolBar.prototype.createButtons = function () {
 		});
     
     this.lymphbutton.on('click', function () {
-      window.location.href = "camicroscope/osdCamicroscope_Lymph.php?tissueId="+this.iid;
+      window.location.href = "/camicroscope/osdCamicroscope_Lymph.php?tissueId="+this.iid;
     }.bind(this))
    
     this.compositebutton.on('click', function () {
