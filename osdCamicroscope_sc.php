@@ -43,10 +43,10 @@
         <script src="js/openseadragon/openseadragon-imaginghelper.min.js"></script>
         <script src="js/openseadragon/openseadragon-scalebar.js"></script>
         <script src="js/mootools/mootools-core-1.4.5-full-nocompat-yc.js"></script>
-        <script src="js/mootools/mootools-more-1.4.0.1-compressed.js"></script>
-        <script src="js/annotationtools/annotools-openseajax-handler.js"></script>
+        <script src="js/mootools/mootools-more-1.4.0.1-compressed.js"></script>        
         <script src="js/imagemetadatatools/osdImageMetadata.js"></script>
-		
+	    
+	<script src="js/annotationtools_sc/annotools-openseajax-handler.js"></script>	
         <script src="js/annotationtools_sc/ToolBar_sc.js"></script>
         <script src="js/annotationtools_sc/AnnotationStore_sc.js"></script>
         <script src="js/annotationtools_sc/osdAnnotationTools_sc.js"></script>
