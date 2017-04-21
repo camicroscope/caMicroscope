@@ -48,7 +48,7 @@ if (!empty($_SESSION['api_key'])) {
       
             // print_r($annotationList);
 
-            if($annota:tionList)
+            if($annotationList)
                 echo ($annotationList);
             else
                 echo "No annotations";
