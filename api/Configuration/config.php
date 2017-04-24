@@ -45,6 +45,10 @@ return array(
     'getAnnotationsSpatialLymph' => "$serviceUrl/GeoJSONImageMetaData/query/getMarkups?",
     'getMultipleAnnotationsWithAttr' => "$annotationsUrl/MarkupLoader/query/getMultipleMarkupsWithAttr?",
     
+    'postDataForLymphocytes' => "$annotationsUrl/Lymphocytes/submit/json?",
+    'getLymphocyteData' => "$annotationsUrl/Lymphocytes/query/getLymphocytes?",
+    
+    
    /*Bindaas API for back compatible */
      'postAlgorithmForImage'           => "$annotationsUrl/MarkupsForImages/submit/json",  
      'getMultipleAnnotationsClone'     => "$annotationsUrl/MarkupLoader/query/getMultipleMarkupsClone?",     

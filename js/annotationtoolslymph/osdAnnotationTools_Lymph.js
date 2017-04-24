@@ -3239,6 +3239,7 @@ annotools.prototype.lymnecWeightChange = function(event)
         self.getMultiAnnot();
 }
 
+/*
 annotools.prototype.saveHeatmapWeight = function(event)
 {
     var self = this;
@@ -3260,6 +3261,83 @@ annotools.prototype.saveHeatmapWeight = function(event)
         }
     });
 }
+*/
+
+//start
+annotools.prototype.saveHeatmapWeight = function(event)
+{
+    var self = this;
+    console.log('enter save heatmap');
+    
+    var weightData = {
+        'case_id': self.iid,
+        'lymweight': this.heat_weight[0],
+        'necweight': this.heat_weight[1],
+        'smoothness': this.heat_weight[2],
+        'username': this.username
+        
+    };
+    
+    console.log('')
+    
+     jQuery.ajax({
+    'type': 'POST',
+     url: 'api/Data/lymphocyteData.php',
+     data: weightData,
+     success: function (res, err) {
+        // console.log("response: ")
+        console.log(res)
+        console.log(err)
+
+        console.log('succesfully posted')
+        alert('Saved heatmap weights');
+    }
+    })
+    
+    
+    
+    /*
+    $.ajax({
+        type: "POST",
+        url: "php/save_weight.php",
+        data: {iid: self.iid, lymweight: this.heat_weight[0], necweight: this.heat_weight[1], smoothness: this.heat_weight[2], user: this.username},
+        dataType: "text",
+        success: function(data) {
+            console.log(data);
+            if (data.startsWith('Locked')) {
+                console.log('being locked');
+                alert ('This heatmap has been locked');
+            } else {
+                document.getElementById('div_weight_locked').innerHTML = 'Locked';
+                alert('Saved heatmap weights');
+            }
+        }
+    });
+    */
+}
+
+/*
+annotools.prototype.saveAnnot = function (annotation) // Save Annotations
+{
+  //console.log('Save annotation function')
+  //console.log(annotation)
+  jQuery.ajax({
+    'type': 'POST',
+    url: 'api/Data/getAnnotSpatial.php',
+    data: annotation,
+    success: function (res, err) {
+      // console.log("response: ")
+      console.log(res)
+      console.log(err)
+
+      console.log('succesfully posted')
+    }
+  })
+
+}
+*/
+
+//end
 
 annotools.prototype.loadHeatmapWeight = function()
 {
