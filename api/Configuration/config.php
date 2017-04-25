@@ -5,6 +5,7 @@ $kueUrl = "http://quip-jobs:3000";
 
 $serviceUrl     = "$baseUrl/services/Camicroscope_DataLoader";
 $annotationsUrl = "$baseUrl/services/Camicroscope_Annotations";
+$u24_userUrl    = "$baseUrl/services/u24_user";
 $imageUrl       = "$serviceUrl/DataLoader";
 
 $dynamicServices = $serviceUrl;
@@ -56,6 +57,14 @@ return array(
     /* Template */
     'retrieveTemplate'      => "$templateUrl/AnnotationTemplate/query/retrieveTemplate",
     'retrieveTemplateClone' => "$templateUrl/AnnotationTemplate/query/retrieveTemplateClone",
+	
+    /* u24_user */
+    'findUserByName'   => "$u24_userUrl/user_data/query/findUserByName?",
+    'findUserByEmail'  => "$u24_userUrl/user_data/query/findUserByEmail?",
+    'deleteUserByName' => "$u24_userUrl/user_data/delete/deleteUserByName?",
+    'deleteUserByEmail'=> "$u24_userUrl/user_data/delete/deleteUserByEmail?",
+    'postUser'         => "$u24_userUrl/user_data/submit/json",
+    
     
     /* Image */	
     'getDimensions' => "$imageUrl/query/getDimensionsByIID?api_key=",
