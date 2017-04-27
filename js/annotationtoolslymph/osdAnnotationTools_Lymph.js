@@ -3263,11 +3263,13 @@ annotools.prototype.saveHeatmapWeight = function(event)
 }
 */
 
-//start
+
 annotools.prototype.saveHeatmapWeight = function(event)
 {
     var self = this;
     console.log('enter save heatmap');
+    
+    var isRecordExist = false;
     
     var weightData = {
         'case_id': self.iid,
@@ -3280,41 +3282,49 @@ annotools.prototype.saveHeatmapWeight = function(event)
     
     console.log('')
     
-     jQuery.ajax({
-    'type': 'POST',
-     url: 'api/Data/lymphocyteData.php',
-     data: weightData,
-     success: function (res, err) {
-        // console.log("response: ")
-        console.log(res)
-        console.log(err)
+    //check if data for this user and case id already exists
+    //start api
+     var url1 = "api/Data/lymphocyteData.php?case_id="+  self.iid +"&username=" + this.username;
+    
+    // Debug
+    console.log(url1);
 
-        console.log('succesfully posted')
-        alert('Saved heatmap weights');
-    }
-    })
-    
-    
-    
-    /*
-    $.ajax({
-        type: "POST",
-        url: "php/save_weight.php",
-        data: {iid: self.iid, lymweight: this.heat_weight[0], necweight: this.heat_weight[1], smoothness: this.heat_weight[2], user: this.username},
-        dataType: "text",
-        success: function(data) {
-            console.log(data);
-            if (data.startsWith('Locked')) {
-                console.log('being locked');
+    jQuery.get(url1, function(d){
+
+        try{
+            var data = JSON.parse(d);
+            console.log('retrived heat weights: ' + JSON.stringify(data[0]));
+            
+            console.log("fetched data");
+            console.log(data.length);
+            if (data.length > 0){
+                console.log('Record exists');
+                isRecordExist = true;
                 alert ('This heatmap has been locked');
-            } else {
-                document.getElementById('div_weight_locked').innerHTML = 'Locked';
-                alert('Saved heatmap weights');
             }
+            else{
+                  jQuery.ajax({
+                'type': 'POST',
+                 url: 'api/Data/lymphocyteData.php',
+                 data: weightData,
+                 success: function (res, err) {
+                    // console.log("response: ")
+                    console.log(res)
+                    console.log(err)
+
+                    console.log('succesfully posted')
+                    document.getElementById('div_weight_locked').innerHTML = 'Locked';
+                    alert('Saved heatmap weights');
+                    }
+                })   
+            }
+        } catch (e){
+            console.log('ERROR');
         }
+        
     });
-    */
 }
+
 
 /*
 annotools.prototype.saveAnnot = function (annotation) // Save Annotations
@@ -3337,8 +3347,101 @@ annotools.prototype.saveAnnot = function (annotation) // Save Annotations
 }
 */
 
-//end
 
+//loadHeatmapWeight starts
+annotools.prototype.loadHeatmapWeight = function()
+{
+    var self = this;
+    console.log('Load heatmap weights');
+    
+    console.log(self.iid);
+    console.log(this.username);
+    
+    //start api
+     var url1 = "api/Data/lymphocyteData.php?case_id="+  self.iid +"&username=" + this.username;
+    
+    // Debug
+    console.log(url1);
+
+    jQuery.get(url1, function(d){
+
+        try{
+            var data = JSON.parse(d);
+            console.log('retrived heat weights: ' + JSON.stringify(data[0]));
+            
+            console.log("fetched data");
+            console.log(data.length);
+            
+            //start weights
+            var sl1 = document.getElementById('slide1');
+            var sl2 = document.getElementById('slide2');
+            var sl3 = document.getElementById('slide3');
+            var div_lock = document.getElementById('div_weight_locked');
+            console.log(data);
+            
+            if ( data.length > 0) {
+    
+                console.log("case_id" + data[0].case_id);
+                console.log("lymweight" + data[0].lymweight);
+                console.log("necweight" + data[0].necweight);
+                console.log("smoothness" + data[0].smoothness);
+                console.log("username" + data[0].username);
+                
+                var lym = data[0].lymweight;
+                var nec = data[0].necweight;
+                var smh = data[0].smoothness;
+
+                if (lym){
+                   lym = (parseFloat(lym) * 100).toString() + '%';
+                }else{
+                   lym = '50%';
+                }
+
+                if (nec){
+                    nec = (parseFloat(nec) * 100).toString() + '%';
+                }else{
+                    nec = '50%';
+                }
+
+                if (smh){
+                    smh = (parseFloat(smh) * 100).toString() + '%';   
+                }else{
+                    smh = '0%';
+                }
+
+                sl1.style.width = lym;
+                sl2.style.width = nec;
+                sl3.style.width = smh;
+                this.prev_heat_weight = [lym, nec, smh];
+                div_lock.innerHTML = "Locked";
+                self.updateHeatVarFromSlideBar();
+            }else {
+                console.log('go else');
+                sl1.style.width = '77%';
+                sl2.style.width = '100%';
+                sl3.style.width = '0%';
+                this.prev_heat_weight = [0.77, 1.00, 0];
+                div_lock.innerHTML = "Free";
+             }
+ 
+        } catch (e){
+            console.log('ERROR');
+        }
+        
+        });
+        
+        // Wait for the load weight transfering data
+        var start = new Date().getTime();
+        var delay = 200;
+        while (new Date().getTime() < start + delay);
+        console.log(document.getElementById('slide1').style.width);
+        console.log(document.getElementById('div_weight_locked').innerHTML);
+        self.getMultiAnnot();
+}
+//loadHeatmapWeight ends
+
+
+/*
 annotools.prototype.loadHeatmapWeight = function()
 {
     var self = this;
@@ -3403,6 +3506,7 @@ annotools.prototype.loadHeatmapWeight = function()
     console.log(document.getElementById('div_weight_locked').innerHTML);
     self.getMultiAnnot();
 }
+*/
 
 annotools.prototype.updateHeatVarFromSlideBar = function()
 {
