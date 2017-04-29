@@ -14,10 +14,9 @@ if (!empty($_SESSION['api_key'])) {
 }
 //$api_key = 'c0327219-68b2-4a40-9801-fc99e8e1e76f';
 $api_key = '4fbb38a3-1821-436c-a44d-8d3bc5efd33e';
+
 switch ($_SERVER['REQUEST_METHOD'])
 {
-//curl -v -H "Content-Type: application/json" -X GET "http://quip-data:9099/services/Camicroscope_Annotations/Lymphocytes/query/getLymphocytes?username=alina&case_id=xyz"
-
 
 	case 'GET':
 		if(isset($_GET["case_id"]))
@@ -31,12 +30,12 @@ switch ($_SERVER['REQUEST_METHOD'])
             $getRequest->execute();
            
 			//Parse reponse
-			$annotationList = ($getRequest->responseBody);
+			$lymphocyteHeatmapInfo = ($getRequest->responseBody);
 
-            if($annotationList)
-                echo ($annotationList);
+            if($lymphocyteHeatmapInfo)
+                echo ($lymphocyteHeatmapInfo);
             else
-                echo "No annotations";
+                echo "No lymphocyte heatmaps data";
 
             break;
             
@@ -45,15 +44,11 @@ switch ($_SERVER['REQUEST_METHOD'])
         
     case 'POST':
         //echo "Posting!!!";
-		$annotationList =$_POST;
+		$lymphocyteHeatmapInfo =$_POST;
 		$url = $postUrl . "?api_key=".$api_key;
-		//$count = count($annotationList);
-		//$newestAnnot = $annotationList[$count-1];
-		//$newestAnnot["username"] = $_SESSION['username'];
-		//$newestAnnot["loc"][0] = (float)$newestAnnot["loc"][0];
-		//$newestAnnot["loc"][1] = (float)$newestAnnot["loc"][1];
-        //print_r($annotationList);
-        //print_r(json_encode($annotationList), JSON_NUMERIC_CHECK);
+		
+        //print_r($lymphocyteHeatmapInfo);
+        //print_r(json_encode($lymphocyteHeatmapInfo), JSON_NUMERIC_CHECK);
         echo "posting data\n";
         echo $url;
         $ch = curl_init();
@@ -63,7 +58,7 @@ switch ($_SERVER['REQUEST_METHOD'])
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
 
-        curl_setopt($ch, CURLOPT_POSTFIELDS,json_encode($annotationList, JSON_NUMERIC_CHECK));
+        curl_setopt($ch, CURLOPT_POSTFIELDS,json_encode($lymphocyteHeatmapInfo, JSON_NUMERIC_CHECK));
         $result = curl_exec($ch);
         if($result === false){
             $result =  curl_error($ch);
@@ -72,10 +67,6 @@ switch ($_SERVER['REQUEST_METHOD'])
 
         echo $result;
 
-		//$postRequest = new RestRequest($url,'POST',json_encode($annotationList), JSON_NUMERIC_CHECK);
-		//$postRequest->execute();
-        //print_r($postRequest);
-		//echo(json_encode($newestAnnot));
         echo "done";
 		break;
 }

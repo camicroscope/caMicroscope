@@ -3426,6 +3426,7 @@ annotools.prototype.loadHeatmapWeight = function()
  
         } catch (e){
             console.log('ERROR');
+            console.log(e);
         }
         
         });
