@@ -3263,56 +3263,46 @@ annotools.prototype.saveHeatmapWeight = function(event)
 }
 */
 
-
 annotools.prototype.saveHeatmapWeight = function(event)
 {
+    console.log('Start saveHeatmapWeight');
+    
     var self = this;
-    console.log('enter save heatmap');
-    
-    var isRecordExist = false;
-    
     var weightData = {
         'case_id': self.iid,
         'lymweight': this.heat_weight[0],
         'necweight': this.heat_weight[1],
         'smoothness': this.heat_weight[2],
-        'username': this.username
-        
+        'username': this.username   
     };
     
-    console.log('')
-    
-    //check if data for this user and case id already exists
-    //start api
-     var url1 = "api/Data/lymphocyteData.php?case_id="+  self.iid +"&username=" + this.username;
+    //Check if record for this case_id and this username already exists in mongodb
+    var url1 = "api/Data/lymphocyteData.php?case_id="+  self.iid + "&username=" + this.username;
     
     // Debug
     console.log(url1);
 
     jQuery.get(url1, function(d){
-
         try{
             var data = JSON.parse(d);
-            console.log('retrived heat weights: ' + JSON.stringify(data[0]));
-            
-            console.log("fetched data");
-            console.log(data.length);
+            console.log('Retrived heat weights: ' + JSON.stringify(data[0]));
+            console.log("Fetched data length: " + data.length);
+      
             if (data.length > 0){
                 console.log('Record exists');
-                isRecordExist = true;
                 alert ('This heatmap has been locked');
             }
-            else{
-                  jQuery.ajax({
+			else {
+                 jQuery.ajax({
                 'type': 'POST',
                  url: 'api/Data/lymphocyteData.php',
                  data: weightData,
                  success: function (res, err) {
-                    // console.log("response: ")
+                    //console.log("response: ")
                     console.log(res)
                     console.log(err)
 
-                    console.log('succesfully posted')
+                    console.log('successfully posted')
                     document.getElementById('div_weight_locked').innerHTML = 'Locked';
                     alert('Saved heatmap weights');
                     }
@@ -3320,44 +3310,20 @@ annotools.prototype.saveHeatmapWeight = function(event)
             }
         } catch (e){
             console.log('ERROR');
+            console.log(e);
         }
         
     });
 }
 
-
-/*
-annotools.prototype.saveAnnot = function (annotation) // Save Annotations
-{
-  //console.log('Save annotation function')
-  //console.log(annotation)
-  jQuery.ajax({
-    'type': 'POST',
-    url: 'api/Data/getAnnotSpatial.php',
-    data: annotation,
-    success: function (res, err) {
-      // console.log("response: ")
-      console.log(res)
-      console.log(err)
-
-      console.log('succesfully posted')
-    }
-  })
-
-}
-*/
-
-
-//loadHeatmapWeight starts
 annotools.prototype.loadHeatmapWeight = function()
 {
     var self = this;
     console.log('Load heatmap weights');
-    
     console.log(self.iid);
     console.log(this.username);
     
-    //start api
+    // Start API
      var url1 = "api/Data/lymphocyteData.php?case_id="+  self.iid +"&username=" + this.username;
     
     // Debug
@@ -3367,12 +3333,10 @@ annotools.prototype.loadHeatmapWeight = function()
 
         try{
             var data = JSON.parse(d);
-            console.log('retrived heat weights: ' + JSON.stringify(data[0]));
+            console.log('Retrived heat weights: ' + JSON.stringify(data[0]));
+            console.log("Fetched data length: " + data.length);
             
-            console.log("fetched data");
-            console.log(data.length);
-            
-            //start weights
+            // Start weights
             var sl1 = document.getElementById('slide1');
             var sl2 = document.getElementById('slide2');
             var sl3 = document.getElementById('slide3');
@@ -3393,19 +3357,19 @@ annotools.prototype.loadHeatmapWeight = function()
 
                 if (lym){
                    lym = (parseFloat(lym) * 100).toString() + '%';
-                }else{
+                }else {
                    lym = '50%';
                 }
 
                 if (nec){
                     nec = (parseFloat(nec) * 100).toString() + '%';
-                }else{
+                }else {
                     nec = '50%';
                 }
 
                 if (smh){
                     smh = (parseFloat(smh) * 100).toString() + '%';   
-                }else{
+                }else {
                     smh = '0%';
                 }
 
@@ -3422,25 +3386,21 @@ annotools.prototype.loadHeatmapWeight = function()
                 sl3.style.width = '0%';
                 this.prev_heat_weight = [0.77, 1.00, 0];
                 div_lock.innerHTML = "Free";
-             }
- 
+            }
         } catch (e){
             console.log('ERROR');
             console.log(e);
         }
+    });
         
-        });
-        
-        // Wait for the load weight transfering data
-        var start = new Date().getTime();
-        var delay = 200;
-        while (new Date().getTime() < start + delay);
-        console.log(document.getElementById('slide1').style.width);
-        console.log(document.getElementById('div_weight_locked').innerHTML);
-        self.getMultiAnnot();
+    // Wait for the load weight transfering data
+    var start = new Date().getTime();
+    var delay = 200;
+    while (new Date().getTime() < start + delay);
+    console.log(document.getElementById('slide1').style.width);
+    console.log(document.getElementById('div_weight_locked').innerHTML);
+    self.getMultiAnnot();
 }
-//loadHeatmapWeight ends
-
 
 /*
 annotools.prototype.loadHeatmapWeight = function()
