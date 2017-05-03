@@ -3,7 +3,7 @@ annotools.prototype.generateGeoTemplate = function () {
   var case_id = this.iid
   var subject_id = case_id.substr(0,12);
   if(subject_id.substr(0,4) != "TCGA"){
-    subject_id = "";
+    //subject_id = "";
   }
 
   var execution_id = annotool.execution_id ;
