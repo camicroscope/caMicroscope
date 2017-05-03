@@ -289,27 +289,25 @@ ToolBar.prototype.createButtons = function () {
         d = JSON.parse(data)
 
         //check version here start
-        max_ver = 0
-        for (var i = 0;i < d.length;i++) {
+        var max_ver = 0
+        for (var i = 0; i < d.length; i++) {
             var n = {}
 
             n.refKey = d[i].provenance.analysis_execution_id;
             console.log("n.refKey: " + n.refKey);
             if (n.refKey.includes('lym_v')) {
-                ver = parseInt(n.refKey.split('lym_v')[1].split('-')[0]);
+                var ver = parseInt(n.refKey.split('lym_v')[1].split('-')[0]);
                 if (ver > max_ver) {
                     max_ver = ver;
                 }
              }
         }
-        
         console.log("version: " + max_ver);
         
-        for (var i = 0;i < d.length;i++) {
+        for (var i = 0; i < d.length; i++) {
             var n = {};
             
             n.refKey = d[i].provenance.analysis_execution_id;
-        
             console.log("n.refKey: " + n.refKey);
         
             if (n.refKey == 'lym_v'+max_ver+'-high_res' || n.refKey == 'lym_v'+max_ver+'-low_res' || n.refKey == 'humanmark') {
@@ -477,6 +475,7 @@ ToolBar.prototype.createButtons = function () {
         this.annotools.getMultiAnnot();
     }.bind(this))
 
+    /*
     this.switchUserButton.on('click', function () {
         if (this.superuser) {
             if (jQuery('#switchuserpanel').is(":visible"))
@@ -485,6 +484,18 @@ ToolBar.prototype.createButtons = function () {
                 jQuery('#switchuserpanel').show();
         } else {
             alert("You are not a super user. A super user can review and change other people's annotations. To apply for the super user privilege. please contact Le Hou (le.hou@stonybrook.edu).");
+        }
+    }.bind(this))
+    */
+    
+    this.switchUserButton.on('click', function () {
+        if (this.superuser) {
+            if (jQuery('#switchuserpanel').is(":visible"))
+                jQuery('#switchuserpanel').hide();
+            else
+                jQuery('#switchuserpanel').show();
+        } else {
+            alert("You are not a super user. A super user can review and change other people's annotations. To apply for the super user privilege. please contact your QuIP app administrator.");
         }
     }.bind(this))
 
