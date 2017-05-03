@@ -329,8 +329,12 @@ annotools.prototype.getMultiAnnot = function (viewer) {
 
   var t1 = 0
   if (algorithms.length) {
-    this.toolBar.titleButton.hide()
-    this.toolBar.ajaxBusy.show()
+    if (this.toolBar !== undefined && this.toolBar !== null) {
+      this.toolBar.titleButton.hide();
+      this.toolBar.ajaxBusy.show();
+    }
+    //this.toolBar.titleButton.hide()
+    //this.toolBar.ajaxBusy.show()
     this.annotations = this.AnnotationStore.fetchAnnotations(this.x1, this.y1, this.x2, this.y2, area, algorithms, function (data) {
       // console.log(data)
       self.annotations = data
