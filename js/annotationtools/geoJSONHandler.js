@@ -556,7 +556,8 @@ annotools.prototype.generateSVG = function (annotations) {
 		  //var findAPI_port="4500";			  
 		 // var findAPI_url=findAPI_host+":"+findAPI_port+"?";
 		  
-		  var findAPI_url=findAPIConfig.findAPI+":"+findAPIConfig.port+"?";
+		  //var findAPI_url=findAPIConfig.findAPI+":"+findAPIConfig.port+"?";
+          var findAPI_url = findAPIConfig.findAPI + "?";
 		  
 		  var mongodb_query="limit=1000&find={";
 		      mongodb_query +="\"provenance.analysis.source\":\"computer\","; 
