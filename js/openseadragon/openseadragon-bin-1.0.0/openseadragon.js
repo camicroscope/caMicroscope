@@ -4874,7 +4874,7 @@ $.extend( $.Viewer.prototype, $.EventSource.prototype, $.ControlDock.prototype, 
                 tileSource = $.parseXml( tileSource );
             }else if( tileSource.match(/\s*[\{\[].*/) ){
                 /*jshint evil:true*/
-                tileSource = eval( '('+tileSource+')' );
+                //tileSource = eval( '('+tileSource+')' );
             }
         }
 
