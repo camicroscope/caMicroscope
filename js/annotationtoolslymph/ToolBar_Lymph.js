@@ -171,6 +171,7 @@ var ALGORITHM_LIST = {};
 var SELECTED_ALGORITHM_LIST = [];
 var SELECTED_ALGORITHM_KEYS = [];
 var AlgorithmSelectorHidden = true;
+
 ToolBar.prototype.toggleAlgorithmSelector = function () {
   var self  = this;
   console.log("toggleAlgorithmSelector");
@@ -285,10 +286,39 @@ ToolBar.prototype.createButtons = function () {
     // var self= this
 
     jQuery.get('api/Data/getAlgorithmsForImage.php?iid=' + self.iid, function (data) {
-      d = JSON.parse(data)
+        d = JSON.parse(data)
 
-      goodalgo(d, null)
+        //check version here start
+        var max_ver = 0
+        for (var i = 0; i < d.length; i++) {
+            var n = {}
+
+            n.refKey = d[i].provenance.analysis_execution_id;
+            console.log("n.refKey: " + n.refKey);
+            if (n.refKey.includes('lym_v')) {
+                var ver = parseInt(n.refKey.split('lym_v')[1].split('-')[0]);
+                if (ver > max_ver) {
+                    max_ver = ver;
+                }
+             }
+        }
+        console.log("version: " + max_ver);
+        
+        for (var i = 0; i < d.length; i++) {
+            var n = {};
+            
+            n.refKey = d[i].provenance.analysis_execution_id;
+            console.log("n.refKey: " + n.refKey);
+        
+            if (n.refKey == 'lym_v'+max_ver+'-high_res' || n.refKey == 'lym_v'+max_ver+'-low_res' || n.refKey == 'humanmark') {
+                SELECTED_ALGORITHM_LIST.push(n.refKey);
+                SELECTED_ALGORITHM_KEYS.push(i);  
+            }
+        }
+      
+        goodalgo(d, null)
     })
+    
     // console.log("here")
     jQuery('#submitbtn').click(function () {
       var selKeys = jQuery('#tree').fancytree('getTree').getSelectedNodes()
@@ -445,6 +475,7 @@ ToolBar.prototype.createButtons = function () {
         this.annotools.getMultiAnnot();
     }.bind(this))
 
+    /*
     this.switchUserButton.on('click', function () {
         if (this.superuser) {
             if (jQuery('#switchuserpanel').is(":visible"))
@@ -453,6 +484,18 @@ ToolBar.prototype.createButtons = function () {
                 jQuery('#switchuserpanel').show();
         } else {
             alert("You are not a super user. A super user can review and change other people's annotations. To apply for the super user privilege. please contact Le Hou (le.hou@stonybrook.edu).");
+        }
+    }.bind(this))
+    */
+    
+    this.switchUserButton.on('click', function () {
+        if (this.superuser) {
+            if (jQuery('#switchuserpanel').is(":visible"))
+                jQuery('#switchuserpanel').hide();
+            else
+                jQuery('#switchuserpanel').show();
+        } else {
+            alert("You are not a super user. A super user can review and change other people's annotations. To apply for the super user privilege. please contact your QuIP app administrator.");
         }
     }.bind(this))
 
