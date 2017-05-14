@@ -31,7 +31,8 @@
         <script type="text/javascript" src="js/dependencies/jsonform.js"></script>
         <script type="text/javascript" src="js/dependencies/jsv.js"></script>
         <!--End JSON Form dependencies -->
-	<script src="/featurescapeapps/js/findapi_config.js" type="text/javascript"></script>"
+	    <!--<script src="/featurescapeapps/js/findapi_config.js" type="text/javascript"></script>-->
+        <script src="/js/config.js"></script>
 
         <script src="js/openseadragon/openseadragon-bin-1.0.0/openseadragon.js"></script>
         <script src="js/openseadragon/openseadragon-imaginghelper.min.js"></script>
