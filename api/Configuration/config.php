@@ -19,6 +19,8 @@ $templateUrl    = "$baseUrl/services/caMicroscope_Templates";
 $firebase = "";
 $firebase_key = "";
 
+$tempMarkupUrl = "http://localhost:9099/services/TCGABRCA_Dev";
+
 return array(
     'auth_realm' => "$baseUrl/securityTokenService",
     /*
@@ -40,9 +42,13 @@ return array(
     'deleteAnnotation' => "$tempMarkupUrl/Annotations/delete/singleAnnotation?annotId=",
     
     /* Lymphocyte */
-    'postAlgorithmForImage' => "$annotationsUrl/MarkupsForImages/submit/json?",
+    'postAlgorithmForImageLymph' => "$annotationsUrl/MarkupsForImages/submit/json?",
     'getAnnotationsSpatialLymph' => "$serviceUrl/GeoJSONImageMetaData/query/getMarkups?",
     'getMultipleAnnotationsWithAttr' => "$annotationsUrl/MarkupLoader/query/getMultipleMarkupsWithAttr?",
+    
+    'postDataForLymphocytes' => "$annotationsUrl/Lymphocytes/submit/json?",
+    'getLymphocyteData' => "$annotationsUrl/Lymphocytes/query/getLymphocytes?",
+    
     
    /*Bindaas API for back compatible */
      'postAlgorithmForImage'           => "$annotationsUrl/MarkupsForImages/submit/json",  

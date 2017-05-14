@@ -2027,7 +2027,8 @@ annotools.prototype.deleteAnnotations = function(execution_id, x1, y1, x2, y2){
 };
 
 var execution_id; 
-var r = 1.0, w = 0.8, l=3.0, u = 10.0, k=20.0, pj="N";  
+var r = 1.0, w = 0.8, l=3.0, u = 10.0, k=20.0, pj=0;  
+
 annotools.prototype.promptForWorkOrder = function (newAnnot, mode, annotools, ctx, roiGeoJSON) {
   jQuery('html,body').css('cursor', 'default')
 
@@ -2157,9 +2158,11 @@ var schema = {
         "placeholder": k,
         "readonly": true
       }, 
-	"check6": {
-	    "type": "boolean",
-	    "title": "Declumping"
+   	"radios6": {
+	    "type": "integer",
+      "title": "Choose segmentation type",      
+      "enum": [0,1,2],
+      default: pj
       } 
   }
   
@@ -2256,14 +2259,19 @@ var schema = {
               "result5",
 
 		  {
-		    "key": "check6",
+		    "key": "radios6",
+        "type": "radios", 
+        "titleMap": {
+             0:"--- No Declumping",
+             1:"--- Mean Shift declumping",
+             2:"--- Watershed declumpinG"},                  
 		    "onChange":function(e){
-		      console.log(e);
-			if(pj == "Y")
-			  pj = "N"
-			else
-			  pj = "Y"
-			 console.log(pj);
+		      //console.log(e);
+          var radio_value=jQuery(e.target).val();      
+			    //console.log("radio_value is : "+radio_value);
+          //pj=parseInt(radio_value); 
+            pj=radio_value;                        
+			    //console.log("pj is : "+pj);
 		    } 
 		  }
                            
@@ -2277,7 +2285,10 @@ var schema = {
     var self = this;
 
    setTimeout(function(){
-    pj = "N";
+    //pj = 0;
+    //pj="n";    
+    console.log("inside setTimeout, pj is :"+pj);
+    
     //console.log("here");  
     //console.log(formSchema);
     jQuery('#workOrderForm').jsonForm(formSchema);
@@ -2372,8 +2383,12 @@ var schema = {
           },
           "type": "analysisJob"
       };
-
+      console.log(order);
       jQuery.post('api/Data/workOrder.php', order)
+	.fail(function(err){
+		alert("couldn't post order");
+		console.log(err);
+	})
         .done(function (res) {
           var r = JSON.parse(res);
           var id = r.id;
