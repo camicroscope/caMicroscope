@@ -66,7 +66,7 @@ return array(
     'findUserByName'   => "$u24_userUrl/user_data/query/findUserByName?",
     'findUserByEmail'  => "$u24_userUrl/user_data/query/findUserByEmail?",
     'findAdmin'        => "$u24_userUrl/user_data/query/findAdmin?",
-    'findAllBindaasUsers'=>"$u24_userUrl/user_data/query/findAllBindaasUsers?"	
+    'findAllBindaasUsers'=>"$u24_userUrl/user_data/query/findAllBindaasUsers?",	
     'deleteUserByName' => "$u24_userUrl/user_data/delete/deleteUserByName?",
     'deleteUserByEmail'=> "$u24_userUrl/user_data/delete/deleteUserByEmail?",
     'postUser'         => "$u24_userUrl/user_data/submit/json",
