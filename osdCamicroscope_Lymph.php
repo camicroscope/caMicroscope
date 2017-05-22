@@ -272,6 +272,7 @@
            
         });
 
+        /*
         $.ajax({
             type: "POST",
             url: "php/check_super_user.php",
@@ -285,6 +286,7 @@
                     toolBar.superuser = false;
             }
         });
+        */
         
         annotool.toolBar = toolBar;
         annotationHandler.annotool = annotool;
