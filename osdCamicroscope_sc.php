@@ -142,7 +142,7 @@
                 zoomPerClick: 2,
                 zoomPerScroll: 1,
                 animationTime: 0.75,
-                maxZoomPixelRatio: 1,
+                maxZoomPixelRatio: 2,
                 visibilityRatio: 1,
                 constrainDuringPan: true
           });
