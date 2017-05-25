@@ -346,7 +346,7 @@ ToolBar.prototype.createButtons = function () {
 
     this.filterImgButton = jQuery('<img>', {
       'title': 'View Results',
-      'class': 'toolButton',
+      'class': 'toolButton firstToolButtonSpace',
       'src': 'images/insta.png'
     })
     //tool.append(this.filterImgButton)
