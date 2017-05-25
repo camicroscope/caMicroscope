@@ -310,7 +310,7 @@ ToolBar.prototype.createButtons = function () {
 
     this.filterbutton = jQuery('<img>', {
       'title': 'Filter Markups',
-      'class': 'toolButton',
+      'class': 'toolButton firstToolButtonSpace',
       'src': 'images/filter.svg'
     })
     tool.append(this.filterbutton) // Filter Button
@@ -346,7 +346,7 @@ ToolBar.prototype.createButtons = function () {
 
     this.filterImgButton = jQuery('<img>', {
       'title': 'View Results',
-      'class': 'toolButton firstToolButtonSpace',
+      'class': 'toolButton',
       'src': 'images/insta.png'
     })
     //tool.append(this.filterImgButton)
