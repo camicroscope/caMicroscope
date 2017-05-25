@@ -332,7 +332,7 @@
     width: 300px;
     font-family: Arial, Roboto; 
     font-size: 12px;
-    height: 485px;
+    height: 585px;
     top: 60px;
     left: 0;
     position: fixed;
@@ -352,7 +352,7 @@
 #panelBody{
     padding: 25px;
     overflow-y: scroll;    
-    height: 445px;
+    height: 545px;
 }
 #workOrderTitle{
 	display: inline-block;
