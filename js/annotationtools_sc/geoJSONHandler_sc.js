@@ -425,7 +425,8 @@ annotools.prototype.generateSVG = function (annotations) {
 			  var y_min= coordinates[0][1];			  
 			  var x_max= coordinates[2][0];
 			  var y_max= coordinates[2][1];
-			  var randval = Math.random();
+			 // var randval = Math.random();
+		          var randval = 0.0001;
 			  
 			  var featureScape_url="";	
 			  
