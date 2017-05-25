@@ -104,6 +104,14 @@ ToolBar.prototype.toggleAlgorithmSelector = function () {
 
     d = JSON.parse(data)
 
+// sorting the algorithms
+   var tmp_algorithm_list=[];	
+  for(var i=0; i < d.length; i++){
+    tmp_algorithm_list[i]=d[i].provenance.analysis_execution_id;		 
+   }	
+  tmp_algorithm_list = tmp_algorithm_list.sort();
+	  
+    /*
     ALGORITHM_LIST = d;
     for(var i=0; i < d.length; i++){
       //n.color = available_colors[i%7];
@@ -112,7 +120,14 @@ ToolBar.prototype.toggleAlgorithmSelector = function () {
       
       htmlStr += "<li><input type='checkbox' class='algorithmCheckbox' value="+i+" /><span class='algoColorBox' style='background:"+ algorithm_color[d[i].provenance.analysis_execution_id] +"'></span> "+d[i].provenance.analysis_execution_id
        + "</li>";
-    }
+    }*/
+	  
+    ALGORITHM_LIST = d;
+    for(var i=0; i < tmp_algorithm_list.length; i++){
+       algorithm_color[tmp_algorithm_list[i]] = available_colors[i%available_colors.length];      
+      htmlStr += "<li><input type='checkbox' class='algorithmCheckbox' value="+i+" /><span class='algoColorBox' style='background:"+ algorithm_color[tmp_algorithm_list[i]] +"'></span> "+tmp_algorithm_list[i]
+       + "</li>";
+     }  
 
     htmlStr +="</ul> <br /> <button class='btn' id='cancelAlgorithms'>Hide</button> </div>";
 
