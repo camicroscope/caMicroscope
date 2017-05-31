@@ -165,7 +165,7 @@ annotools.prototype.getMultiAnnot = function (viewer) {
   var boundX = boundX1 - this.x1
   var boundY = boundX
 
-  var max    = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(3), this.imagingHelper.physicalToDataY(3))
+  var max    = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(9), this.imagingHelper.physicalToDataY(9))
   var origin = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(0), this.imagingHelper.physicalToDataY(0))
   var area = (max.x - origin.x) * (max.y - origin.y)
   //algorithms.push('test')
