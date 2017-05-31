@@ -206,7 +206,7 @@ annotools.prototype.getAnnot = function (viewer) // Get Annotation from the API
   var boundX = boundX1 - this.x1
   var boundY = boundX
 
-  var max = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(9), this.imagingHelper.physicalToDataY(4))
+  var max = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(9), this.imagingHelper.physicalToDataY(9))
   var origin = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(0), this.imagingHelper.physicalToDataY(0))
   var area = (max.x - origin.x) * (max.y - origin.y)
 
