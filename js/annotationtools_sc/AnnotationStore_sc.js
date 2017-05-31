@@ -71,7 +71,7 @@ AnnotationStore.prototype.fetchAnnotations = function(x1,y1,x2,y2, footprint, al
     algorithms_urlparam = algorithms_urlparam.replace(/"/g, "%22");
     //console.log(algorithms_urlparam);
     
-    //footprint = 1;
+  
     var url1 = "api/Data/getMultipleAnnotsClone.php?iid="+  self.iid +"&x=" + x1+ "&y=" + y1 + "&x1=" + midX + "&y1=" + midY + "&footprint="+ footprint + "&algorithms=" + algorithms_urlparam;
   	//console.log(url1);   
 
