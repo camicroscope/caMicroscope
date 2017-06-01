@@ -8,7 +8,6 @@
           $cancerType = $_GET["cancerType"];
           $_SESSION["cancerType"] = "u24_" . $cancerType;
       }
-      $config = require 'api/Configuration/config.php';
     ?>
     <!DOCTYPE html>
     <html>
@@ -153,6 +152,7 @@
         <div id="switchuserpanel">
         Change username to: <br><p><p>
         <?php
+	    /*
             $iid = $_GET['tissueId'];
             $orig_email = $_GET['email'];
             $files = scandir('data/');
@@ -173,6 +173,7 @@
                     $ele_id ++;
                 }
             }
+	    */
         ?>
         </div>
 
