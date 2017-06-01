@@ -385,7 +385,7 @@ ToolBar.prototype.createButtons = function () {
     tool.append(this.hidebutton)
     
     this.heatDownButton = jQuery('<img>', {
-        'title': 'Decrease opacity',
+        'title': 'Decrease Opacity',
         'class': 'toolButton inactive',
         'src': 'images/Opacity_down.svg',
         'id': 'heatDownButton',
@@ -393,7 +393,7 @@ ToolBar.prototype.createButtons = function () {
     tool.append(this.heatDownButton);     // Button for decreasing opacity
 
     this.heatUpButton = jQuery('<img>', {
-        'title': 'Increase opacity',
+        'title': 'Increase Opacity',
         'class': 'toolButton inactive',
         'src': 'images/Opacity_up.svg',
         'id': 'heatUpButton',
@@ -414,7 +414,7 @@ ToolBar.prototype.createButtons = function () {
     //tool.append(this.spacer)
 
     this.showWeightPanel = jQuery('<img>', {
-        'title': 'Show weight panel',
+        'title': 'Show Weight Panel',
         'class': 'toolButton inactive',
         'src': 'images/Heatmap.svg',
         'id': 'showWeightPanel',
@@ -436,10 +436,10 @@ ToolBar.prototype.createButtons = function () {
     tool.append(this.spacer2)
     
     this.switchUserButton = jQuery('<img>', {
-        'title': 'Switch user',
+        'title': 'Switch User',
         'class': 'toolButton inactive',
         'src': 'images/switch_user.svg',
-        'id': 'switchUserButton',
+        'id': 'switchUserButton'
     });
     //tool.append(this.switchUserButton);     // Button for switch user
       
