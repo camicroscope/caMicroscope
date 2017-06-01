@@ -140,8 +140,8 @@ To save/cancel your work, use the buttons described below:\n\
   this.heatmapColor = ['#feedde','#fecc5c','#fd8d3c','#bd0026', '#33b5ff'];
   this.multipleHeatmapColor = [];
   this.cb_checked = [false, false, false];
-  this.heat_weight = [0.77, 1.00, 0.0];
-  this.prev_heat_weight = [0.77, 1.00, 0.0];
+  this.heat_weight = [0.77, 1.00, 0.15];
+  this.prev_heat_weight = [0.77, 1.00, 0.15];
   this.loadedWeight = false;
   //this.loadHeatmapWeight();
   bar_var1 = document.getElementById('bar1');
@@ -367,7 +367,7 @@ annotools.prototype.getAnnot = function (viewer) // Get Annotation from the API
   var boundX = boundX1 - this.x1
   var boundY = boundX
 
-  var max = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(9), this.imagingHelper.physicalToDataY(4))
+  var max = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(9), this.imagingHelper.physicalToDataY(9))
   var origin = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(0), this.imagingHelper.physicalToDataY(0))
   var area = (max.x - origin.x) * (max.y - origin.y)
 
@@ -3387,8 +3387,8 @@ annotools.prototype.loadHeatmapWeight = function()
                 console.log('go else');
                 sl1.style.width = '77%';
                 sl2.style.width = '100%';
-                sl3.style.width = '0%';
-                this.prev_heat_weight = [0.77, 1.00, 0];
+                sl3.style.width = '15%';
+                this.prev_heat_weight = [0.77, 1.00, 0.15];
                 div_lock.innerHTML = "Free";
             }
         } catch (e){
