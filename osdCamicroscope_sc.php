@@ -159,7 +159,7 @@
             //console.log(this.MPP);
             viewer.scalebar({
               type: OpenSeadragon.ScalebarType.MAP,
-              pixelsPerMeter: (1/(parseFloat(this.MPP["mpp_x"])*0.000001)),
+              pixelsPerMeter: (1/(parseFloat(this.MPP["mpp-x"])*0.000001)),
               xOffset: 5,
               yOffset: 10,
               stayInsideImage: true,
