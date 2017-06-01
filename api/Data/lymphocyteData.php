@@ -43,7 +43,7 @@ switch ($_SERVER['REQUEST_METHOD'])
     case 'POST':
         //echo "Posting!!!";
 	$lymphocyteHeatmapInfo =$_POST;
-	$url = $postUrl . "?api_key=".$api_key;
+	$url = $postUrl . "api_key=".$api_key;
 		
         //print_r($lymphocyteHeatmapInfo);
         //print_r(json_encode($lymphocyteHeatmapInfo), JSON_NUMERIC_CHECK);
