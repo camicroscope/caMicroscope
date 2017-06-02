@@ -283,12 +283,12 @@ ToolBar.prototype.createButtons = function () {
 
 
   if (this.annotationActive) {
-    /*
+     /*
      * Ganesh
      * Mootools to Jquery for creation of toolbar buttons
      */
 	 
-	this.homebutton = jQuery('<img>', {
+    this.homebutton = jQuery('<img>', {
       title: 'Default Home',
       class: 'toolButton firstToolButtonSpace inactive',
       src: 'images/home.png',
@@ -296,7 +296,7 @@ ToolBar.prototype.createButtons = function () {
     })
     tool.append(this.homebutton) 
 	 
-	this.spacer1 = jQuery('<img>', {
+    this.spacer1 = jQuery('<img>', {
       'class': 'spacerButton inactive',
       'src': 'images/spacer.svg'
     })
@@ -311,7 +311,7 @@ ToolBar.prototype.createButtons = function () {
     //tool.append(this.rectbutton)	
    
    
-	this.pencilbutton = jQuery('<img>', {
+    this.pencilbutton = jQuery('<img>', {
       'title': 'Draw Freeline',
       'class': 'toolButton inactive',
       'src': 'images/pencil.svg',
@@ -320,14 +320,14 @@ ToolBar.prototype.createButtons = function () {
     //tool.append(this.pencilbutton) // Pencil Tool	
 	
 	
-	this.mergebutton1 = jQuery('<img>', {
+    this.mergebutton1 = jQuery('<img>', {
       'title': 'Save ViewPort',
       'class': 'toolButton inactive',
       'src': 'images/merge1.png'
     })
     tool.append(this.mergebutton1) // Merge step 1
 	
-	this.mergebutton2 = jQuery('<img>', {
+    this.mergebutton2 = jQuery('<img>', {
       'title': 'Save Rectangle And Delete Annotation(s) Within This Area',
       'class': 'toolButton inactive',
       'src': 'images/rect.svg',
@@ -335,17 +335,21 @@ ToolBar.prototype.createButtons = function () {
     })
     tool.append(this.mergebutton2) // Merge step 2
 	
-	
-	this.mergebutton3 = jQuery('<img>', {
-      'title': 'Generate Composite Dataset',
-      'class': 'toolButton inactive',
-      'src': 'images/merge2.png',
-	  'id': 'mergeStep3Button'
+   this.spacer2 = jQuery('<img>', {
+      'class': 'spacerButton inactive',
+      'src': 'images/spacer.svg'
     })
-    tool.append(this.mergebutton3) // Merge step 3
+    tool.append(this.spacer2)
+	  
+   this.filterbutton = jQuery('<img>', {
+      'title': 'Filter Markups',
+      'class': 'toolButton inactive',
+      'src': 'images/filter.svg'
+    })
+    tool.append(this.filterbutton) // Filter Button
 	
 	
-	this.measurebutton = jQuery('<img>', {
+   this.measurebutton = jQuery('<img>', {
       'title': 'Measurement Tool',
       'class': 'toolButton inactive',
       'src': 'images/measure.svg'
@@ -358,13 +362,15 @@ ToolBar.prototype.createButtons = function () {
     })
     tool.append(this.spacer3)
 
-    this.filterbutton = jQuery('<img>', {
-      'title': 'Filter Markups',
+	  
+   this.mergebutton3 = jQuery('<img>', {
+      'title': 'Generate Composite Dataset',
       'class': 'toolButton inactive',
-      'src': 'images/filter.svg'
+      'src': 'images/merge2.png',
+	  'id': 'mergeStep3Button'
     })
-    tool.append(this.filterbutton) // Filter Button
-
+    tool.append(this.mergebutton3) // Merge step 3
+   
     this.hidebutton = jQuery('<img>', {
       'title': 'Show/Hide Markups',
       'class': 'toolButton inactive',
@@ -373,11 +379,11 @@ ToolBar.prototype.createButtons = function () {
    // tool.append(this.hidebutton)
     
 	
-    this.spacer1 = jQuery('<img>', {
+    this.spacer4 = jQuery('<img>', {
       'class': 'spacerButton inactive',
       'src': 'images/spacer.svg'
     })
-    tool.append(this.spacer1)
+    tool.append(this.spacer4)
     
     this.partialDownloadButton = jQuery('<img>', {
       'title': 'Download Partial Markups (Coming Soon)',
@@ -405,7 +411,7 @@ ToolBar.prototype.createButtons = function () {
      * Event handlers on click for the buttons
      */
 	 
-	this.homebutton.on('click', function () {
+    this.homebutton.on('click', function () {
       this.mode = 'home';
 	  //var tissueId=this.annotool.iid;
 	 // console.log(tissueId)
