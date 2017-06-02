@@ -300,12 +300,12 @@ annotools.prototype.generateSVG = function (annotations) {
 
       // var svg = 
      // svgHtml += '<polygon class="annotationsvg" id="' + id + '" points="'
-      console.log(annotation.provenance.analysis);
+
       if(annotation.provenance.analysis.source && annotation.provenance.analysis.source=="computer"){
         svgHtml += '<polygon  class="nucleussvg" id="' + id + '" points="' 
      }else  {  
 	ROIs.push(annotation);
-	console.log("here");
+
         svgHtml += '<polygon  class="" id="' + id + '" points="' }; 
 
 

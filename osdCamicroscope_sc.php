@@ -36,8 +36,8 @@
         <script src="js/dependencies/jsonform.js"></script>
         <script src="js/dependencies/jsv.js"></script>
         <!--End JSON Form dependencies --> 
-        
-        <script src="/featurescapeapps/js/findapi_config.js" type="text/javascript"></script>"
+        <!-- <script src="/featurescapeapps/js/findapi_config.js" type="text/javascript"></script>" -->
+	<script src="/js/config.js"></script>
                 
         <script src="js/openseadragon/openseadragon-bin-1.0.0/openseadragon.js"></script>
         <script src="js/openseadragon/openseadragon-imaginghelper.min.js"></script>
@@ -142,7 +142,7 @@
                 zoomPerClick: 2,
                 zoomPerScroll: 1,
                 animationTime: 0.75,
-                maxZoomPixelRatio: 1,
+                maxZoomPixelRatio: 2,
                 visibilityRatio: 1,
                 constrainDuringPan: true
           });

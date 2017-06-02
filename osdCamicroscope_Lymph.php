@@ -213,7 +213,7 @@
                 zoomPerClick: 2,
                 zoomPerScroll: 1,
                 animationTime: 0.75,
-                maxZoomPixelRatio: 1,
+                maxZoomPixelRatio: 2,
                 visibilityRatio: 1,
                 constrainDuringPan: true
           });
@@ -272,6 +272,7 @@
            
         });
 
+        /*
         $.ajax({
             type: "POST",
             url: "php/check_super_user.php",
@@ -285,6 +286,7 @@
                     toolBar.superuser = false;
             }
         });
+        */
         
         annotool.toolBar = toolBar;
         annotationHandler.annotool = annotool;

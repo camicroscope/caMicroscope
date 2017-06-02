@@ -137,7 +137,7 @@ annotools.prototype.renderByExecutionId = function(algorithms){
   var boundX = boundX1 - this.x1
   var boundY = boundX
 
-  var max = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(3), this.imagingHelper.physicalToDataY(3))
+  var max = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(9), this.imagingHelper.physicalToDataY(9))
   var origin = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(0), this.imagingHelper.physicalToDataY(0))
   var area = (max.x - origin.x) * (max.y - origin.y)
   self.destroyMarkups();
@@ -201,7 +201,7 @@ annotools.prototype.getMultiAnnot = function (viewer) {
   var boundX = boundX1 - this.x1
   var boundY = boundX
 
-  var max = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(3), this.imagingHelper.physicalToDataY(3))
+  var max = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(9), this.imagingHelper.physicalToDataY(9))
   var origin = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(0), this.imagingHelper.physicalToDataY(0))
   var area = (max.x - origin.x) * (max.y - origin.y)
 
@@ -210,7 +210,7 @@ annotools.prototype.getMultiAnnot = function (viewer) {
   if (algorithms.length) {
     this.toolBar.titleButton.hide()
     this.toolBar.ajaxBusy.show()
-    this.annotations = this.AnnotationStore.fetchAnnotations(this.x1 - 0.1, this.y1 - 0.1, this.x2, this.y2, area, algorithms, function (data) {
+    this.annotations = this.AnnotationStore.fetchAnnotations(this.x1, this.y1, this.x2, this.y2, area, algorithms, function (data) {
       // console.log(data)
       self.annotations = data
       self.displayGeoAnnots()
@@ -242,7 +242,7 @@ annotools.prototype.getAnnot = function (viewer) // Get Annotation from the API
   var boundX = boundX1 - this.x1
   var boundY = boundX
 
-  var max = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(4), this.imagingHelper.physicalToDataY(4))
+  var max = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(9), this.imagingHelper.physicalToDataY(9))
   var origin = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(0), this.imagingHelper.physicalToDataY(0))
   var area = (max.x - origin.x) * (max.y - origin.y)
 

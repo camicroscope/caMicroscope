@@ -425,7 +425,8 @@ annotools.prototype.generateSVG = function (annotations) {
 			  var y_min= coordinates[0][1];			  
 			  var x_max= coordinates[2][0];
 			  var y_max= coordinates[2][1];
-			  var randval = Math.random();
+			 // var randval = Math.random();
+		          var randval = 0.0001;
 			  
 			  var featureScape_url="";	
 			  
@@ -436,7 +437,7 @@ annotools.prototype.generateSVG = function (annotations) {
 			 // var findAPI_host="http://129.49.249.191";
 			  //var findAPI_port="4500";
 			  //var findAPI_url=findAPI_host+":"+findAPI_port+"?";
-			   var findAPI_url=findAPIConfig.findAPI+":"+findAPIConfig.port+"?";
+			   var findAPI_url=findAPIConfig.findAPI+"?";
 			   
 			  var mongodb_query="limit=1000&find={";
 			      mongodb_query+="\"provenance.analysis.source\":\"computer\",";
