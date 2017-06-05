@@ -5,7 +5,7 @@ var ToolBar = function (element, options) {
   this.FilterTools = options.FilterTools
   this.source = element // The Tool Source Element
   this.top = options.top || '0px'
-  this.left = options.left || '150px' // The Tool Location   
+  this.left = options.left || '150px' // The Tool Location
   this.height = options.height || '30px'
   this.width = options.width || '270px'
   this.zindex = options.zindex || '100' // To Make Sure The Tool Appears in the Front
@@ -35,9 +35,9 @@ function goodalgo (data, status) {
   var blob = []
   for (i = 0;i < data.length;i++) {
     var n = {}
-     
+
      data[i].title=data[i].provenance.analysis_execution_id;
-    
+
     n.title = "<div class='colorBox' style='background:" + available_colors[i] + "'></div>" + data[i].title;
     n.key = i.toString()
     n.refKey = data[i].provenance.analysis_execution_id
@@ -105,29 +105,29 @@ ToolBar.prototype.toggleAlgorithmSelector = function () {
     d = JSON.parse(data)
 
 // sorting the algorithms
-   var tmp_algorithm_list=[];	
+   var tmp_algorithm_list=[];
   for(var i=0; i < d.length; i++){
-    tmp_algorithm_list[i]=d[i].provenance.analysis_execution_id;		 
-   }	
+    tmp_algorithm_list[i]=d[i].provenance.analysis_execution_id;
+   }
   tmp_algorithm_list = tmp_algorithm_list.sort();
-	  
+
     /*
     ALGORITHM_LIST = d;
     for(var i=0; i < d.length; i++){
       //n.color = available_colors[i%7];
       //algorithm_color[d[i].provenance.analysis_execution_id] = available_colors[i%7]
       algorithm_color[d[i].provenance.analysis_execution_id] = available_colors[i%available_colors.length];
-      
+
       htmlStr += "<li><input type='checkbox' class='algorithmCheckbox' value="+i+" /><span class='algoColorBox' style='background:"+ algorithm_color[d[i].provenance.analysis_execution_id] +"'></span> "+d[i].provenance.analysis_execution_id
        + "</li>";
     }*/
-	  
+
     ALGORITHM_LIST = d;
     for(var i=0; i < tmp_algorithm_list.length; i++){
-       algorithm_color[tmp_algorithm_list[i]] = available_colors[i%available_colors.length];      
+       algorithm_color[tmp_algorithm_list[i]] = available_colors[i%available_colors.length];
       htmlStr += "<li><input type='checkbox' class='algorithmCheckbox' value="+i+" /><span class='algoColorBox' style='background:"+ algorithm_color[tmp_algorithm_list[i]] +"'></span> "+tmp_algorithm_list[i]
        + "</li>";
-     }  
+     }
 
     htmlStr +="</ul> <br /> <button class='btn' id='cancelAlgorithms'>Hide</button> </div>";
 
@@ -142,11 +142,11 @@ ToolBar.prototype.toggleAlgorithmSelector = function () {
       for(var i=0; i < SELECTED_ALGORITHM_KEYS.length; i++){
         if(SELECTED_ALGORITHM_KEYS[i] == (id)){
 
-          elem.prop('checked', true); 
+          elem.prop('checked', true);
         }
       }
-      
-      
+
+
     });
 
     self.annotools.getMultiAnnot();
@@ -165,7 +165,7 @@ ToolBar.prototype.toggleAlgorithmSelector = function () {
 
 
     })
-    
+
     /*
     jQuery("#submitAlgorithms").click(function(){
       var selected= [];
@@ -186,15 +186,15 @@ ToolBar.prototype.toggleAlgorithmSelector = function () {
     });
   });
    if(AlgorithmSelectorHidden == true){
-   	jQuery("#panel").show("slide");   
+   	jQuery("#panel").show("slide");
     AlgorithmSelectorHidden = false;
   } else {
     jQuery("#panel").html("");
     jQuery("#panel").hide("slide");
 
     AlgorithmSelectorHidden = true;
-  } 
-  
+  }
+
 }
 
 ToolBar.prototype.createButtons = function () {
@@ -243,7 +243,7 @@ ToolBar.prototype.createButtons = function () {
      * Mootools to Jquery for creation of toolbar buttons
      */
     this.homebutton = jQuery('<img>', {
-			src: 'images/ic_home_white_24px.svg',
+			src: 'images/camic_white_24px.svg',
 			class: 'toolButton firstToolButtonSpace',
 			title: 'Home'
 		});
@@ -255,14 +255,14 @@ ToolBar.prototype.createButtons = function () {
       'src': 'images/Heatmap.svg'
     })
 
-    tool.append(this.lymphbutton) // Lymphocyte Button   
-  
+    tool.append(this.lymphbutton) // Lymphocyte Button
+
     this.spacer1 = jQuery('<img>', {
       'class': 'spacerButton',
       'src': 'images/spacer.svg'
     })
-    tool.append(this.spacer1)   
-   
+    tool.append(this.spacer1)
+
   /*a link to segment curation application with this composite button */
    this.compositebutton = jQuery('<img>', {
       title: 'Composite',
@@ -270,8 +270,8 @@ ToolBar.prototype.createButtons = function () {
       src: 'images/composite.png',
       id: 'gotocompositebutton'
     })
-    tool.append(this.compositebutton)   
-    
+    tool.append(this.compositebutton)
+
 
     this.rectbutton = jQuery('<img>', {
       title: 'Draw Rectangle',
@@ -371,19 +371,19 @@ ToolBar.prototype.createButtons = function () {
 		this.homebutton.on('click', function(){
 		 window.location.href = "/select.php";
 		});
-    
+
     this.lymphbutton.on('click', function () {
       window.location.href = "/camicroscope/osdCamicroscope_Lymph.php?tissueId="+this.iid;
     }.bind(this))
-   
+
     this.compositebutton.on('click', function () {
     this.mode = 'composite';
 	  var tissueId=annotool.iid;
-	  console.log(tissueId)	    
+	  console.log(tissueId)
       location.href = "/camicroscope/osdCamicroscope_sc.php?tissueId="+tissueId+"&cancerType=quip";
     }.bind(this))
-    
-    
+
+
 
     this.rectbutton.on('click', function () {
       this.mode = 'rect'
@@ -520,7 +520,7 @@ ToolBar.prototype.createButtons = function () {
     */
 
     /*
-     * Ganesh: Using the Mootools version as the jquery version breaks things 
+     * Ganesh: Using the Mootools version as the jquery version breaks things
      *
     this.messageBox = jQuery('<div>', {
         'id': 'messageBox'
@@ -567,5 +567,3 @@ ToolBar.prototype.createButtons = function () {
   if (this.annotationActive) {
   }
 }
-
-
