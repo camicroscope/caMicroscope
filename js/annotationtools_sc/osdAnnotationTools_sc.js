@@ -2499,8 +2499,8 @@ annotools.prototype.mergeStep1 = function() {
         alert("Error saving markup! Wrong secret");
       } else {   
         alert("Successfully saved markup!");
-	self.deleteAnnotationWithinRectangle(geoJSONTemplate); 
-        console.log("deleteAnnotationWithinRectangle");
+	//self.deleteAnnotationWithinRectangle(geoJSONTemplate); 
+        //console.log("deleteAnnotationWithinRectangle");
       }
       
       console.log("err is:"+err)
