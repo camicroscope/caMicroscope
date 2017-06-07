@@ -26,13 +26,18 @@ switch ($_SERVER['REQUEST_METHOD'])
     $y1 = $_GET["y1"];		
     $x2 = $_GET["x2"];
     $y2 = $_GET["y2"];
+ 
+   //format the number with the same precision of number in Mongodb
+    $x1 = number_format($x1,14);
+    $y1 = number_format($y1,14);
+    $x2 = number_format($x2,14);
+    $y2 = number_format($y2,14);
   
-    $delta=0.000001;
-  
-    $x1 =$x1 + $delta;
-    $x2 =$x2 - $delta;
-    $y1 =$y1 + $delta;
-    $y2 =$y2 - $delta;
+    //$delta=0.000001;  
+    //$x1 =$x1 + $delta;
+    //$x2 =$x2 - $delta;
+    //$y1 =$y1 + $delta;
+    //$y2 =$y2 - $delta;
 	
     //find deleted annotation number
     $url = $getUrl . "api_key=".$api_key . "&case_id=".$case_id. "&subject_id=".$subject_id. "&execution_id=".$execution_id."&x1=".$x1. "&y1=".$y1. "&x2=".$x2. "&y2=".$y2;  
