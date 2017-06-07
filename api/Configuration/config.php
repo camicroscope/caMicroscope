@@ -56,7 +56,10 @@ return array(
      'deleteAnnotation'                => "$annotationsUrl/MarkupLoader/delete/DeleteByOID", 
      'deleteAnnotationWithinRectangle' => "$annotationsUrl/MarkupLoader/delete/deleteAnnotationWithinRectangle",
      'deleteAnnotationWithinRectangleClone' => "$annotationsUrl/MarkupLoader/delete/deleteAnnotationWithinRectangleClone",     
-     'getPropertiesForMarkupClone'          => "$annotationsUrl/MarkupLoader/query/getPropertiesForMarkupClone?",     
+     'getPropertiesForMarkupClone'          => "$annotationsUrl/MarkupLoader/query/getPropertiesForMarkupClone?",    
+     'getAnnotationCountWithinRectangle'    => "$annotationsUrl/MarkupLoader/query/getAnnotationCountWithinRectangle?",    
+     'getAnnotationWithinRectangle'         => "$annotationsUrl/MarkupLoader/query/getAnnotationWithinRectangle?",
+     
     
     /* Template */
     'retrieveTemplate'      => "$templateUrl/AnnotationTemplate/query/retrieveTemplate",
