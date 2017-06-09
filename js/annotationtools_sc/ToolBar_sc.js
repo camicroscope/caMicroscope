@@ -321,7 +321,7 @@ ToolBar.prototype.createButtons = function () {
 	
 	
     this.mergebutton1 = jQuery('<img>', {
-      'title': 'Save ViewPort',
+      'title': 'Save ViewPort And Delete Annotation(s) Within This ViewPort',
       'class': 'toolButton inactive',
       'src': 'images/merge1.png'
     })
