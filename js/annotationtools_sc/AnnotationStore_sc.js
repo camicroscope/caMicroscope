@@ -72,8 +72,7 @@ AnnotationStore.prototype.fetchAnnotations = function(x1,y1,x2,y2, footprint, al
     //console.log(algorithms_urlparam);
     
     //display all composite_input annotations while in low scale viewport
-    var algorithm_number = algorithms.length;
-    //console.log(algorithm_number);	
+    var algorithm_number = algorithms.length;   	
     var index=algorithms_urlparam.indexOf("composite_input");	 
     if(algorithm_number ==1 && index > -1) footprint = 1 ;  //find composite_input annotation only 	
 	
