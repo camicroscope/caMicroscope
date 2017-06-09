@@ -297,7 +297,7 @@ annotools.prototype.generateSVG = function (annotations) {
       var color = algorithm_color[algorithm_id]
       
       //use the same color as algorithm does
-      if(annotation.color) color =annotation.color; 
+     // if(annotation.color) color =annotation.color; 
 	    
       var countNativepoints = 0;
       var countRectNativepoints = 4;
