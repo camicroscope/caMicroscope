@@ -2263,8 +2263,8 @@ var schema = {
         "type": "radios", 
         "titleMap": {
              0:"--- No Declumping",
-             1:"--- Mean Shift declumping",
-             2:"--- Watershed declumpinG"},                  
+             1:"--- Mean Shift Declumping",
+             2:"--- Watershed Declumping"},                  
 		    "onChange":function(e){
 		      //console.log(e);
           var radio_value=jQuery(e.target).val();      
