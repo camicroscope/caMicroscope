@@ -2160,7 +2160,7 @@ var schema = {
       }, 
    	"radios6": {
 	    "type": "integer",
-      "title": "Choose segmentation type",      
+      "title": "Choose declumping method",      
       "enum": [0,1,2],
       default: pj
       } 
