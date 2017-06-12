@@ -92,7 +92,9 @@ function goodalgo (data, status) {
 var ALGORITHM_LIST = {};
 var SELECTED_ALGORITHM_LIST = [];
 var SELECTED_ALGORITHM_KEYS = [];
+var SELECTED_ALGORITHM_COLOR = {};
 var AlgorithmSelectorHidden = true;
+
 ToolBar.prototype.toggleAlgorithmSelector = function () {
   var self  = this;
   console.log("toggleAlgorithmSelector");
@@ -109,22 +111,12 @@ ToolBar.prototype.toggleAlgorithmSelector = function () {
   for(var i=0; i < d.length; i++){
     tmp_algorithm_list[i]=d[i].provenance.analysis_execution_id;		 
    }	
-  tmp_algorithm_list = tmp_algorithm_list.sort();
-	  
-    /*
-    ALGORITHM_LIST = d;
-    for(var i=0; i < d.length; i++){
-      //n.color = available_colors[i%7];
-      //algorithm_color[d[i].provenance.analysis_execution_id] = available_colors[i%7]
-      algorithm_color[d[i].provenance.analysis_execution_id] = available_colors[i%available_colors.length];
-      
-      htmlStr += "<li><input type='checkbox' class='algorithmCheckbox' value="+i+" /><span class='algoColorBox' style='background:"+ algorithm_color[d[i].provenance.analysis_execution_id] +"'></span> "+d[i].provenance.analysis_execution_id
-       + "</li>";
-    }*/
+  tmp_algorithm_list = tmp_algorithm_list.sort();    
 	  
     ALGORITHM_LIST = d;
     for(var i=0; i < tmp_algorithm_list.length; i++){
-       algorithm_color[tmp_algorithm_list[i]] = available_colors[i%available_colors.length];      
+       algorithm_color[tmp_algorithm_list[i]] = available_colors[i%available_colors.length];  
+       SELECTED_ALGORITHM_COLOR[tmp_algorithm_list[i]]= available_colors[i%available_colors.length];
       htmlStr += "<li><input type='checkbox' class='algorithmCheckbox' value="+i+" /><span class='algoColorBox' style='background:"+ algorithm_color[tmp_algorithm_list[i]] +"'></span> "+tmp_algorithm_list[i]
        + "</li>";
      }  
@@ -157,7 +149,7 @@ ToolBar.prototype.toggleAlgorithmSelector = function () {
       SELECTED_ALGORITHM_KEYS = [];
       jQuery("#algorithmList input:checked").each(function() {
 	console.log(ALGORITHM_LIST);
-        SELECTED_ALGORITHM_LIST.push(ALGORITHM_LIST[(this).value * 1].provenance.analysis_execution_id);
+        SELECTED_ALGORITHM_LIST.push(tmp_algorithm_list[(this).value * 1]);
         SELECTED_ALGORITHM_KEYS.push((this).value*1);
       });
 

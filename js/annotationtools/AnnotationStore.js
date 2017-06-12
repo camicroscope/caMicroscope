@@ -77,7 +77,20 @@ AnnotationStore.prototype.fetchAnnotations = function (x1, y1, x2, y2, footprint
   algorithms_urlparam = algorithms_urlparam.replace(']', '%5D')
   algorithms_urlparam = algorithms_urlparam.replace(/"/g, '%22')
 
-
+  //dispaly composite_input annotation while in low scale viewport
+   var isCompositeAnnotationOnly= true;
+   var algorithm_number = algorithms.length;
+   if (algorithm_number >0) {
+ 	for (i=0; i< algorithm_number; i++){
+		var index=algorithms[i].indexOf("composite_input");	
+		 //not find composite annotation
+		if(index == -1){
+	  	 isCompositeAnnotationOnly= false;}
+	}
+   }	
+   if(algorithm_number >0 && isCompositeAnnotationOnly)
+	footprint = 1 ;  //find composite_input annotation only
+	
   var url1 = 'api/Data/getMultipleAnnots.php?iid=' + self.iid + '&x=' + x1 + '&y=' + y1 + '&x1=' + midX + '&y1=' + midY + '&footprint=' + footprint + '&algorithms=' + algorithms_urlparam
   console.log(url1)
 
