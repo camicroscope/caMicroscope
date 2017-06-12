@@ -357,7 +357,7 @@ ToolBar.prototype.createButtons = function () {
     tool.append(this.homebutton);
       
     this.micbutton = jQuery('<img>', {
-        src: 'images/microscope.png',
+        src: 'images/camic_vector.svg',
         class: 'toolButton inactive',
         title: 'caMicroscope'
     });
