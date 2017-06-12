@@ -422,7 +422,7 @@ ToolBar.prototype.createButtons = function () {
     tool.append(this.showWeightPanel);    // Button for showing the weight panel
       
     this.freeMarkupButton = jQuery('<img>', {
-      'title': 'Free line Markup',
+      'title': 'Free Line Markup',
       'class': 'toolButton inactive',
       'src': 'images/pencil.svg',
       'id': 'freeLineMarkupButton'
