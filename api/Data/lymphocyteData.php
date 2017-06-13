@@ -18,7 +18,7 @@ switch ($_SERVER['REQUEST_METHOD'])
 
     case 'GET':
         if(isset($_GET["case_id"]))
-	{
+	    {
             $case_id=$_GET["case_id"];
             $username = $_GET["username"];
 			
@@ -34,8 +34,6 @@ switch ($_SERVER['REQUEST_METHOD'])
                 echo ($lymphocyteHeatmapInfo);
             else
                 echo "No lymphocyte heatmaps data";
-
-            break;
             
         }
         break;
