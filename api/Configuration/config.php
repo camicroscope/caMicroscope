@@ -79,6 +79,7 @@ return array(
     'getDimensions' => "$imageUrl/query/getDimensionsByIID?api_key=",
     'getFileLocation' => "$imageUrl/query/getFileLocationByIID?api_key=",
     'getMPP' => "$imageUrl/query/getMPPByIID?api_key=",
+    'getImageInfoByCaseID'=> "$imageUrl/query/getImageInfoByCaseID?api_key=",
     'fastcgi_server' => "/fcgi-bin/iipsrv.fcgi",
   
 	 /* Dynamic Services */														 
