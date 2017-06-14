@@ -584,7 +584,7 @@ ToolBar.prototype.createButtons = function () {
 
   this.titleButton = jQuery('<p>', {
     'class': 'titleButton',
-    'text': 'caMic Lymphocyte'
+    'text': 'caMic Lymphocyte App'
   })
   tool.append(this.titleButton)
 
