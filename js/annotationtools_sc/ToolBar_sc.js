@@ -413,17 +413,17 @@ ToolBar.prototype.createButtons = function () {
 	 
     this.homebutton.on('click', function () {
       this.mode = 'home';	 
-     var tissueId=annotool.iid;
-     //console.log(tissueId)
-     var cancerType=annotool.cancerType;	
-     //console.log(cancerType)	  
-      //location.href = "/camicroscope/osdCamicroscope.php?tissueId="+tissueId+"&cancerType="+cancerType;
-	    
+      var tissueId=annotool.iid;     
+      var cancerType=annotool.cancerType;    	  
+      window.location.href = "/camicroscope/osdCamicroscope.php?tissueId="+tissueId+"&cancerType="+cancerType;
+     /*	    
       var x1 = annotool.imagingHelper._viewportOrigin['x'];
       var y1 = annotool.imagingHelper._viewportOrigin['y'];
       var x2 = x1 + annotool.imagingHelper._viewportWidth;
       var y2 = y1 + annotool.imagingHelper._viewportHeight;  
-      var zoom = viewer.viewport.getZoom();	  
+      var zoom = parseInt(viewer.viewport.getZoom());	
+      if (zoom<1) zoom=1;
+	    
       var width,height;	  
       //get image width and height	
       var url = 'api/Data/getImageInfoByCaseID.php?case_id=' + tissueId;
@@ -439,7 +439,8 @@ ToolBar.prototype.createButtons = function () {
 	  } catch (error){
 		  window.location.href = "/camicroscope/osdCamicroscope.php?tissueId="+tissueId+"&cancerType="+cancerType;
 	  }	   
-      })			    
+      })
+     */	    
     }.bind(this))
 	 
 	 
