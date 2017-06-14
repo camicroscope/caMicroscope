@@ -237,12 +237,12 @@ ToolBar.prototype.createButtons = function () {
     this.homebutton = jQuery('<img>', {
 			src: 'images/ic_home_white_24px.svg',
 			class: 'toolButton firstToolButtonSpace',
-			title: 'Home'
+			title: 'Quip Home'
 		});
 		tool.append(this.homebutton);
       
     this.lymphbutton = jQuery('<img>', {
-      'title': 'Lymphocyte & Plasma Cell Annotation',
+      'title': 'Lymphocyte & Plasma Cell Annotation App',
       'class': 'toolButton',
       'src': 'images/Heatmap.svg'
     })
@@ -257,7 +257,7 @@ ToolBar.prototype.createButtons = function () {
    
   /*a link to segment curation application with this composite button */
    this.compositebutton = jQuery('<img>', {
-      title: 'Composite',
+      title: 'Segment Curation App',
       class: 'toolButton',
       src: 'images/composite.png',
       id: 'gotocompositebutton'
@@ -365,32 +365,55 @@ ToolBar.prototype.createButtons = function () {
 		});
     
     this.lymphbutton.on('click', function () {
-      window.location.href = "/camicroscope/osdCamicroscope_Lymph.php?tissueId="+this.iid;
+        var tissueId=this.iid;
+	var x1 = annotool.imagingHelper._viewportOrigin['x'];
+        var y1 = annotool.imagingHelper._viewportOrigin['y'];
+        var x2 = x1 + annotool.imagingHelper._viewportWidth;
+        var y2 = y1 + annotool.imagingHelper._viewportHeight;  
+	var zoom = viewer.viewport.getZoom();	  
+	var width,height;	  
+	//get image width and height	
+	var url = 'api/Data/getImageInfoByCaseID.php?case_id=' + tissueId;     
+       jQuery.get(url, function (data) {
+        //console.log(data);
+	     try {
+           this_image = JSON.parse(data); 
+           width  = this_image[0].width;
+	       height = this_image[0].height;	
+	       var x= parseInt(((x1+x2)/2.0)*width);
+	       var y= parseInt(((y1+y2)/2.0)*height);       
+	       window.location.href = "/camicroscope/osdCamicroscope_Lymph.php?tissueId="+tissueId+"&x="+x+"&y="+y+"&zoom="+zoom;	
+	   } catch (error){
+		   window.location.href = "/camicroscope/osdCamicroscope_Lymph.php?tissueId="+tissueId;
+	   }		
+     })
     }.bind(this))
    
     this.compositebutton.on('click', function () {
        this.mode = 'composite';
-       var tissueId=annotool.iid;
-       //console.log(tissueId)	    
-       //location.href = "/camicroscope/osdCamicroscope_sc.php?tissueId="+tissueId+"&cancerType=quip";
+       var tissueId=this.iid;
+       //console.log(tissueId)     
        var x1 = annotool.imagingHelper._viewportOrigin['x'];
        var y1 = annotool.imagingHelper._viewportOrigin['y'];
        var x2 = x1 + annotool.imagingHelper._viewportWidth;
        var y2 = y1 + annotool.imagingHelper._viewportHeight;  
        var zoom = viewer.viewport.getZoom();	  
-       var width  =10000;
-       var height =5000;	  
+       var width,height;	  
 	//get image width and height	
        var url = 'api/Data/getImageInfoByCaseID.php?case_id=' + tissueId;
         //console.log(url);
        jQuery.get(url, function (data) {
            //console.log(data);
-           this_image = JSON.parse(data); 
-           width  = this_image[0].width;
-	   height = this_image[0].height;	
-	   var x= parseInt(((x1+x2)/2.0)*width);
-	   var y= parseInt(((y1+y2)/2.0)*height);       
-	   location.href = "/camicroscope/osdCamicroscope_sc.php?tissueId="+tissueId+"&cancerType=quip&x="+x+"&y="+y+"&zoom="+zoom;	   
+	   try{
+           	this_image = JSON.parse(data); 
+           	width  = this_image[0].width;
+	  	height = this_image[0].height;	
+	  	var x= parseInt(((x1+x2)/2.0)*width);
+	   	var y= parseInt(((y1+y2)/2.0)*height);       
+	  	window.location.href = "/camicroscope/osdCamicroscope_sc.php?tissueId="+tissueId+"&cancerType=quip&x="+x+"&y="+y+"&zoom="+zoom;
+	   } catch (error) {
+		window.location.href = "/camicroscope/osdCamicroscope_Lymph.php?tissueId="+tissueId;
+	   }
       })
     }.bind(this))
     
