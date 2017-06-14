@@ -577,7 +577,7 @@ ToolBar.prototype.createButtons = function () {
 
   this.titleButton = jQuery('<p>', {
     'class': 'titleButton',
-    'text': 'caMicroscope'
+    'text': 'caMic Segment Curation App'
   })
   tool.append(this.titleButton)
 
