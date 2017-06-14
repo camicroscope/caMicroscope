@@ -289,7 +289,7 @@ ToolBar.prototype.createButtons = function () {
      */
 	 
     this.homebutton = jQuery('<img>', {
-      title: 'Default Home',
+      title: 'caMicroscope Home',
       class: 'toolButton firstToolButtonSpace inactive',
       src: 'images/home.png',
       id: 'gotohomebutton'
