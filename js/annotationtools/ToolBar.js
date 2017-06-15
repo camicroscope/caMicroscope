@@ -393,7 +393,7 @@ ToolBar.prototype.createButtons = function () {
 	   	var y= parseInt(((y1+y2)/2.0)*height);       
 	  	window.location.href = "/camicroscope/osdCamicroscope_sc.php?tissueId="+tissueId+"&cancerType=quip&x="+x+"&y="+y+"&zoom="+zoom;
 	   } catch (error) {
-		window.location.href = "/camicroscope/osdCamicroscope_Lymph.php?tissueId="+tissueId;
+		window.location.href = "/camicroscope/osdCamicroscope_sc.php?tissueId="+tissueId;
 	   }
       })
     }.bind(this))
