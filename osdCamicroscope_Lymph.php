@@ -193,7 +193,7 @@
           var tissueId = <?php echo json_encode($_GET['tissueId']); ?>;
 
           var cancerType = "<?php echo $_SESSION["cancerType"] ?>";
-          console.log(cancerType);
+          //console.log(cancerType);
           var imagedata = new OSDImageMetaData({imageId:tissueId});
           //console.log(tissueId);
           //console.log(imagedata);
@@ -212,7 +212,7 @@
                 navigatorPosition:   "BOTTOM_RIGHT",
                 //navigatorId: "navigator",
                 zoomPerClick: 2,
-                zoomPerScroll: 1,
+                //zoomPerScroll: 1,
                 animationTime: 0.75,
                 maxZoomPixelRatio: 2,
                 visibilityRatio: 1,
@@ -230,7 +230,7 @@
             imagingHelper.setMaxZoom(2);
             //console.log(this.MPP);
             viewer.scalebar({
-              type: OpenSeadragon.ScalebarType.MICROSCOPY,
+              type: OpenSeadragon.ScalebarType.MAP,
               pixelsPerMeter: (1/(parseFloat(this.MPP["mpp-x"])*0.000001)),
               xOffset: 5,
               yOffset: 10,
@@ -240,6 +240,7 @@
               backgroundColor: "rgba(255,255,255,0.5)",
               barThickness: 2
             });
+            
     //console.log(viewer);
     function isAnnotationActive(){
         this.isOpera = !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
@@ -272,22 +273,6 @@
                 annotool: annotool
            
         });
-
-        /*
-        $.ajax({
-            type: "POST",
-            url: "php/check_super_user.php",
-            data: {user: sessionUsername},
-            dataType: "text",
-            success: function(data) {
-                console.log(data);
-                if (data == 1)
-                    toolBar.superuser = true;
-                else
-                    toolBar.superuser = false;
-            }
-        });
-        */
         
         annotool.toolBar = toolBar;
         annotationHandler.annotool = annotool;
