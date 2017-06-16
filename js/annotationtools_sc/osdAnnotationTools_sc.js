@@ -211,7 +211,7 @@ annotools.prototype.getAnnot = function (viewer) // Get Annotation from the API
   var area = (max.x - origin.x) * (max.y - origin.y)
 
   // var t1 = performance.now()
-  this.annotations = this.AnnotationStore.getAnnotations(this.x1- 0.1, this.y1- 0.1, this.x2, this.y2, area, boundX, boundY, boundX, boundY, function (data) {
+  this.annotations = this.AnnotationStore.getAnnotations(this.x1, this.y1, this.x2, this.y2, area, boundX, boundY, boundX, boundY, function (data) {
     self.annotations = data
     self.displayGeoAnnots()
     self.setupHandlers()
