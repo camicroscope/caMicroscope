@@ -222,8 +222,8 @@
         /*Pan and zoom to point*/
         var bound_x = <?php echo json_encode($_GET['x']); ?>;
         var bound_y = <?php echo json_encode($_GET['y']); ?>;
-        var zoom = <?php echo $_GET['zoom']; ?> || viewer.viewport.getMaxZoom();
-
+        var zoom = <?php echo json_encode($_GET['zoom']); ?> || viewer.viewport.getMaxZoom();
+        zoom =Number(zoom); //convert zoom to number if it is string
         jQuery("#panel").hide();
         if(bound_x && bound_y){
             var ipt = new OpenSeadragon.Point(+bound_x, +bound_y);
