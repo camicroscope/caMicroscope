@@ -201,7 +201,9 @@ function isAnnotationActive(){
         /*Pan and zoom to point*/
         var bound_x = <?php echo json_encode($_GET['x']); ?>;
         var bound_y = <?php echo json_encode($_GET['y']); ?>;
-        var zoom = <?php echo json_encode($_GET['zoom']); ?> || viewer.viewport.getMaxZoom();;
+        var zoom = <?php echo json_encode($_GET['zoom']); ?> || viewer.viewport.getMaxZoom();
+	zoom=Number(zoom);// convert string to number if zoom is string  
+	    
         /*
         var savedFilters = [
           {'name': 'Brightness', 'value': 100},
