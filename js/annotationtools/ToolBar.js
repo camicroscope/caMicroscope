@@ -372,7 +372,8 @@ ToolBar.prototype.createButtons = function () {
     this.compositebutton.on('click', function () {
        this.mode = 'composite';
        var tissueId=this.iid;
-       //console.log(tissueId)     
+       //window.location.href = "/camicroscope/osdCamicroscope_sc.php?tissueId="+tissueId;
+      	    
        var x1 = annotool.imagingHelper._viewportOrigin['x'];
        var y1 = annotool.imagingHelper._viewportOrigin['y'];
        var x2 = x1 + annotool.imagingHelper._viewportWidth;
@@ -396,6 +397,7 @@ ToolBar.prototype.createButtons = function () {
 		window.location.href = "/camicroscope/osdCamicroscope_sc.php?tissueId="+tissueId;
 	   }
       })
+	    
     }.bind(this))
     
     
