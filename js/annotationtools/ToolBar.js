@@ -380,7 +380,7 @@ ToolBar.prototype.createButtons = function () {
        var y2 = y1 + annotool.imagingHelper._viewportHeight;  
        var zoom = viewer.viewport.getZoom();	
        //zoom = parseInt(zoom);    
-       if (zoom<1) zoom=1;  
+       if (zoom<1.0) zoom=1.0;  
        var width,height;	  
 	//get image width and height	
        var url = 'api/Data/getImageInfoByCaseID.php?case_id=' + tissueId;
