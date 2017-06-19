@@ -581,7 +581,7 @@ ToolBar.prototype.createButtons = function () {
 
   this.iidbutton = jQuery('<p>', {
     'class': 'iidButton',
-    'text': 'SubjectID :' + this.iid
+    'text': 'Subject ID: ' + this.iid
   })
   tool.append(this.iidbutton)
 
