@@ -303,7 +303,7 @@ function isAnnotationActive(){
     /*Zoom to location*/
     /*
         x: 19483.04157968738
-        y:nnnn22274.643967801494
+        y: 22274.643967801494
     */
     /*
         x: 13083.041579687379

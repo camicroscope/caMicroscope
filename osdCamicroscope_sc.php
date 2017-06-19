@@ -210,7 +210,6 @@
 	 var user_email = "<?php echo $_SESSION["email"]; ?>";  
          console.log("user_email :" + user_email);  
       
-        //var user_email ="tigerfan7495@gmail.com";   
         var index = user_email.indexOf("@");
         var user= user_email.substring(0,index);		
         var execution_id =user+"_composite_input" ;
