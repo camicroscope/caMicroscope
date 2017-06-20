@@ -150,31 +150,7 @@
         <div id="div_weight_locked" style="display: none;">Free</div>
 
         <div id="switchuserpanel">
-        Change username to: <br><p><p>
-        <?php
-	    /*
-            $iid = $_GET['tissueId'];
-            $orig_email = $_GET['email'];
-            $files = scandir('data/');
-            $ele_id = 0;
-            for ($i = 0; $i < count($files); ++$i) {
-                $fname = $files[$i];
-                if (strpos($fname, $iid) !== false) {
-                    $email = explode('_', $fname)[1];
-                    $email = substr($email, 0, strlen($email) - 4);
-                    if (strcmp($email, $orig_email) != 0) {
-                        printf("<input type=\"radio\" name=\"usergroup\" value=\"%s\" \
-                            id=\"switch_user_%d\" class=\"radio_user\">\n", $email, $ele_id);
-                    } else {
-                        printf("<input type=\"radio\" name=\"usergroup\" value=\"%s\" checked=\"checked\" \
-                            id=\"switch_user_%d\" class=\"radio_user\">\n", $email, $ele_id);
-                    }
-                    printf("<label for=\"%s\" class=radio_user> %s </label><br>\n", $email, $email);
-                    $ele_id ++;
-                }
-            }
-	    */
-        ?>
+            <h6><img src="images/switch_user.svg" height="30" width="30"> Change username to:</h6><br />
         </div>
 
         <div id="algosel"><div id="tree"></div></div>
