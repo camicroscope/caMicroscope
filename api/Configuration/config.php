@@ -64,6 +64,7 @@ return array(
      'getPropertiesForMarkupClone'          => "$annotationsUrl/MarkupLoader/query/getPropertiesForMarkupClone?",    
      'getAnnotationCountWithinRectangle'    => "$annotationsUrl/MarkupLoader/query/getAnnotationCountWithinRectangle?",    
      'getAnnotationWithinRectangle'         => "$annotationsUrl/MarkupLoader/query/getAnnotationWithinRectangle?",
+     'getMultipleMarkupsNew'=> "$annotationsUrl/MarkupLoader/query/getMultipleMarkupsNew?",
      
     
     /* Template */
