@@ -3534,6 +3534,11 @@ annotools.prototype.loadChangeUsername = function()
     jQuery.get(url1, function(d) {
         
         var container =  jQuery('#switchuserpanel');
+        
+        jQuery('#closeSwitchUser').click(function (e) {
+	        e.preventDefault();
+            jQuery('#switchuserpanel').hide()
+        })
 
         try {
             var data = JSON.parse(d);
