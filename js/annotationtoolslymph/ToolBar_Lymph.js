@@ -294,7 +294,7 @@ ToolBar.prototype.createButtons = function () {
             var n = {}
 
             n.refKey = d[i].provenance.analysis_execution_id;
-            console.log("n.refKey: " + n.refKey);
+            //console.log("n.refKey: " + n.refKey);
             if (n.refKey.includes('lym_v')) {
                 var ver = parseInt(n.refKey.split('lym_v')[1].split('-')[0]);
                 if (ver > max_ver) {
@@ -302,13 +302,13 @@ ToolBar.prototype.createButtons = function () {
                 }
              }
         }
-        console.log("version: " + max_ver);
+        //console.log("version: " + max_ver);
         
         for (var i = 0; i < d.length; i++) {
             var n = {};
             
             n.refKey = d[i].provenance.analysis_execution_id;
-            console.log("n.refKey: " + n.refKey);
+            //console.log("n.refKey: " + n.refKey);
         
             if (n.refKey == 'lym_v'+max_ver+'-high_res' || n.refKey == 'lym_v'+max_ver+'-low_res' || n.refKey == 'humanmark') {
                 SELECTED_ALGORITHM_LIST.push(n.refKey);
@@ -489,7 +489,7 @@ ToolBar.prototype.createButtons = function () {
     */
     
     this.switchUserButton.on('click', function () {
-        if (this.superuser) {
+        if (this.annotools.isSuperuser()) {
             if (jQuery('#switchuserpanel').is(":visible"))
                 jQuery('#switchuserpanel').hide();
             else
