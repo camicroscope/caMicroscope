@@ -71,6 +71,7 @@
     border-radius: 10px;
     color: #fff;
     opacity: 0.9;
+    overflow: auto;
 }
 
 .lb_heatmap {
@@ -103,3 +104,14 @@
 	top:0px;
         left:0px;
 }
+
+#closeSwitchUser {
+	display: inline-block;
+	width: 24px;
+	float:right;
+}
+
+#closeSwitchUser:hover {
+    background-color: crimson;
+}
+    
