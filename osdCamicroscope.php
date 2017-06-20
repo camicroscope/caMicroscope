@@ -101,7 +101,7 @@
             <div class="demoarea">
                 <div id="viewer" class="openseadragon"></div>
             </div>
-        <div id"navigator"></div>
+        <div id="navigator"></div>
 
         </div>
 
