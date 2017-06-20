@@ -1,7 +1,7 @@
 <?php 
 
-$baseUrl = "http://quip-data:9099";
-$kueUrl = "http://quip-jobs:3000";
+$baseUrl = "http://camicroscope-bindaas:9099";
+$kueUrl = "http://camicroscope-jobs:3000";
 
 $serviceUrl     = "$baseUrl/services/Camicroscope_DataLoader";
 $annotationsUrl = "$baseUrl/services/Camicroscope_Annotations";
