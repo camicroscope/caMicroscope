@@ -237,7 +237,7 @@ ToolBar.prototype.createButtons = function () {
     this.homebutton = jQuery('<img>', {
 			src: 'images/ic_home_white_24px.svg',
 			class: 'toolButton firstToolButtonSpace',
-			title: 'Quip Home'
+			title: 'QuIP Home'
 		});
 		tool.append(this.homebutton);
       
