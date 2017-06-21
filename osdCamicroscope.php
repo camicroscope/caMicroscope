@@ -316,7 +316,7 @@ function isAnnotationActive(){
 
           </script>
 
-        <!-- TJD: This is for the bootstrap tooltip -->
+        <!-- For the bootstrap tooltip -->
         <!--
         <script>
             jQuery(document).ready(function ($) {
