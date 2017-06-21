@@ -149,8 +149,8 @@
         <button type="button" class="btn_mark" id="btn_mark_help">&#x2753</button> </div>
         <div id="div_weight_locked" style="display: none;">Free</div>
 
-        <div id="switchuserpanel"><a href='#'><div id='closeSwitchUser'><img src='images/ic_close_white_24px.svg' title='Close' /></div></a>
-            <h6><img src="images/switch_user.svg" height="30" width="30"> Change username to:</h6><br />
+        <div id="switchuserpanel"><a href='#'><div id='closeSwitchUser'><img src='images/ic_close_white_24px.svg' title='Close' alt="Close X" height="16" width="16"></div></a>
+            <h6><img src="images/switch_user.svg" alt="Switch user" height="30" width="30"> Change username to:</h6><br />
         </div>
 
         <div id="algosel"><div id="tree"></div></div>
