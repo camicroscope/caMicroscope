@@ -248,7 +248,37 @@ ToolBar.prototype.createButtons = function () {
 			title: 'Home'
 		});
 		tool.append(this.homebutton);
-      
+
+    tool.append(this.spacer1)
+    this.rectbutton = jQuery('<img>', {
+      title: 'Draw Rectangle',
+      id: 'drawRectangle',
+      class: 'toolButton firstToolButtonSpace',
+      src: 'images/rect.svg'
+    })
+    tool.append(this.rectbutton)
+
+    this.ellipsebutton = jQuery('<img>', {
+      'title': 'Draw Ellipse',
+      'class': 'toolButton',
+      'src': 'images/ellipse.svg'
+    })
+    tool.append(this.ellipsebutton)
+
+    this.pencilbutton = jQuery('<img>', {
+      'title': 'Draw Freeline',
+      'class': 'toolButton',
+      'src': 'images/pencil.svg'
+    })
+    tool.append(this.pencilbutton) // Pencil Tool
+
+    this.measurebutton = jQuery('<img>', {
+      'title': 'Measurement Tool',
+      'class': 'toolButton',
+      'src': 'images/measure.svg'
+    })
+ 
+    tool.append(this.spacer1)     
     this.lymphbutton = jQuery('<img>', {
       'title': 'Lymphocyte & Plasma Cell Annotation',
       'class': 'toolButton',
@@ -261,7 +291,6 @@ ToolBar.prototype.createButtons = function () {
       'class': 'spacerButton',
       'src': 'images/spacer.svg'
     })
-    tool.append(this.spacer1)
 
   /*a link to segment curation application with this composite button */
    this.compositebutton = jQuery('<img>', {
@@ -273,33 +302,6 @@ ToolBar.prototype.createButtons = function () {
     tool.append(this.compositebutton)
 
 
-    this.rectbutton = jQuery('<img>', {
-      title: 'Draw Rectangle',
-      id: 'drawRectangle',
-      class: 'toolButton firstToolButtonSpace',
-      src: 'images/rect.svg'
-    })
-    //tool.append(this.rectbutton)
-
-    this.ellipsebutton = jQuery('<img>', {
-      'title': 'Draw Ellipse',
-      'class': 'toolButton',
-      'src': 'images/ellipse.svg'
-    })
-    //tool.append(this.ellipsebutton)
-
-    this.pencilbutton = jQuery('<img>', {
-      'title': 'Draw Freeline',
-      'class': 'toolButton',
-      'src': 'images/pencil.svg'
-    })
-    //tool.append(this.pencilbutton) // Pencil Tool
-
-    this.measurebutton = jQuery('<img>', {
-      'title': 'Measurement Tool',
-      'class': 'toolButton',
-      'src': 'images/measure.svg'
-    })
     // tool.append(this.measurebutton)
 
     this.spacer2 = jQuery('<img>', {
