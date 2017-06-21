@@ -3537,7 +3537,7 @@ annotools.prototype.loadChangeUsername = function()
         
         jQuery('#closeSwitchUser').click(function (e) {
 	        e.preventDefault();
-            jQuery('#switchuserpanel').hide()
+            jQuery('#switchuserpanel').hide('slide');
         })
 
         try {
