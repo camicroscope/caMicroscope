@@ -32,7 +32,7 @@ return array(
     'deleteMarkups' => "$annotationsUrl/MarkupLoader/delete/deleteMultipleMarkups",
     'firebase' => $firebase,
     'firebase_key' => $firebase_key,
-    'retrieveTemplate' => "$serviceUrl/AnnotationTemplate/query/retrieveTemplate",
+    'retrieveTemplate' => "$templateUrl/AnnotationTemplate/query/getAll",
     'getAllAnnotations' => "$tempMarkupUrl/Annotations/query/byUserAndImageID?iid=",
     'getAnnotationsSpatial' => "$serviceUrl/GeoJSONImageMetaData/query/getMarkups?",
     'getAnnotationSpatialFilter' => "$tempMarkupUrl/Annotations/query/allByFilter?iid=",
