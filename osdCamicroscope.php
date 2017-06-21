@@ -301,7 +301,6 @@ function isAnnotationActive(){
       }
 
           jQuery(document).ready(function ($) {
-              echo "TAMMY ROCKS!"
               $('[data-toggle="tooltip"]').tooltip();
           });
 
