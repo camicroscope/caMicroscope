@@ -300,6 +300,10 @@ function isAnnotationActive(){
         };
       }
 
+          jQuery(document).ready(function ($) {
+              $('[data-toggle="tooltip"]').tooltip();
+          });
+
     /*Zoom to location*/
     /*
         x: 19483.04157968738
@@ -311,6 +315,16 @@ function isAnnotationActive(){
     */
 
           </script>
+
+        <!-- TJD: This is for the bootstrap tooltip -->
+        <!--
+        <script>
+            jQuery(document).ready(function ($) {
+                $('[data-toggle="tooltip"]').tooltip();
+            });
+        </script>
+        -->
+
 <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
