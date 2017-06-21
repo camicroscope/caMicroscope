@@ -230,135 +230,165 @@ ToolBar.prototype.createButtons = function () {
 
   if (this.annotationActive) {
 
-    /*
-     * Ganesh
-     * Mootools to Jquery for creation of toolbar buttons
-     */
-    this.homebutton = jQuery('<img>', {
-			src: 'images/ic_home_white_24px.svg',
-			class: 'toolButton firstToolButtonSpace',
-			title: 'QuIP Home'
-		});
-		tool.append(this.homebutton);
-      
-    this.lymphbutton = jQuery('<img>', {
-      'title': 'Lymphocyte & Plasma Cell Annotation App',
-      'class': 'toolButton',
-      'src': 'images/Heatmap.svg'
-    })
+      /*
+       * Ganesh
+       * Mootools to Jquery for creation of toolbar buttons
+       */
 
-    tool.append(this.lymphbutton) // Lymphocyte Button   
-  
-    this.spacer1 = jQuery('<img>', {
-      'class': 'spacerButton',
-      'src': 'images/spacer.svg'
-    })
-    tool.append(this.spacer1)   
-   
-  /*a link to segment curation application with this composite button */
-   this.compositebutton = jQuery('<img>', {
-      title: 'Segment Curation App',
-      class: 'toolButton',
-      src: 'images/composite.png',
-      id: 'gotocompositebutton'
-    })
-    tool.append(this.compositebutton)   
-    
+      /**
+       * Toolbar buttons
+       */
+      this.homebutton = jQuery('<img>', {
+          'data-toggle': 'tooltip', 'data-placement': 'bottom',
+          src: 'images/ic_home_white_24px.svg',
+          class: 'toolButton firstToolButtonSpace',
+          title: 'QuIP Home'
+      });
+      tool.append(this.homebutton);
 
-    this.rectbutton = jQuery('<img>', {
-      title: 'Draw Rectangle',
-      id: 'drawRectangle',
-      class: 'toolButton firstToolButtonSpace',
-      src: 'images/rect.svg'
-    })
-    //tool.append(this.rectbutton)
+      this.lymphbutton = jQuery('<img>', {
+          'data-toggle': 'tooltip',
+          'data-placement': 'bottom',
+          'title': 'Lymphocyte & Plasma Cell Annotation App',
+          'class': 'toolButton',
+          'src': 'images/Heatmap.svg'
+      });
 
-    this.ellipsebutton = jQuery('<img>', {
-      'title': 'Draw Ellipse',
-      'class': 'toolButton',
-      'src': 'images/ellipse.svg'
-    })
-    //tool.append(this.ellipsebutton)
+      tool.append(this.lymphbutton); // Lymphocyte Button
 
-    this.pencilbutton = jQuery('<img>', {
-      'title': 'Draw Freeline',
-      'class': 'toolButton',
-      'src': 'images/pencil.svg'
-    })
-    //tool.append(this.pencilbutton) // Pencil Tool
+      this.spacer1 = jQuery('<img>', {
+          'class': 'spacerButton',
+          'src': 'images/spacer.svg'
+      });
+      tool.append(this.spacer1);
 
-    this.measurebutton = jQuery('<img>', {
-      'title': 'Measurement Tool',
-      'class': 'toolButton',
-      'src': 'images/measure.svg'
-    })
-    // tool.append(this.measurebutton)
-
-    this.spacer2 = jQuery('<img>', {
-      'class': 'spacerButton',
-      'src': 'images/spacer.svg'
-    })
-    tool.append(this.spacer2)
-
-    this.filterbutton = jQuery('<img>', {
-      'title': 'Filter Markups',
-      'class': 'toolButton firstToolButtonSpace',
-      'src': 'images/filter.svg'
-    })
-    tool.append(this.filterbutton) // Filter Button
+      /*a link to segment curation application with this composite button */
+      this.compositebutton = jQuery('<img>', {
+          'data-toggle': 'tooltip',
+          'data-placement': 'bottom',
+          title: 'Segment Curation App',
+          class: 'toolButton',
+          src: 'images/composite.png',
+          id: 'gotocompositebutton'
+      });
+      tool.append(this.compositebutton);
 
 
+      this.rectbutton = jQuery('<img>', {
+          'data-toggle': 'tooltip',
+          'data-placement': 'bottom',
+          title: 'Draw Rectangle',
+          id: 'drawRectangle',
+          class: 'toolButton firstToolButtonSpace',
+          src: 'images/rect.svg'
+      });
+      //tool.append(this.rectbutton)
 
-    this.hidebutton = jQuery('<img>', {
-      'title': 'Show/Hide Markups',
-      'class': 'toolButton',
-      'src': 'images/hide.svg'
-    })
-    //tool.append(this.hidebutton)
+      this.ellipsebutton = jQuery('<img>', {
+          'data-toggle': 'tooltip',
+          'data-placement': 'bottom',
+          'title': 'Draw Ellipse',
+          'class': 'toolButton',
+          'src': 'images/ellipse.svg'
+      });
+      //tool.append(this.ellipsebutton)
 
-    this.fullDownloadButton = jQuery('<img>', {
-      'title': 'Download All Markups (Coming Soon)',
-      'class': 'toolButton',
-      'src': 'images/fullDownload.svg'
-    })
-    //tool.append(this.fullDownloadButton)
-    this.spacer1 = jQuery('<img>', {
-      'class': 'spacerButton',
-      'src': 'images/spacer.svg'
-    })
-    tool.append(this.spacer1)
+      this.pencilbutton = jQuery('<img>', {
+          'data-toggle': 'tooltip',
+          'data-placement': 'bottom',
+          'title': 'Draw Freeline',
+          'class': 'toolButton',
+          'src': 'images/pencil.svg'
+      });
+      //tool.append(this.pencilbutton) // Pencil Tool
 
-    this.analyticsbutton = jQuery('<img>', {
-      'title': 'Image Analysis',
-      'class': 'toolButton',
-      'src': 'images/analyze.png'
+      this.measurebutton = jQuery('<img>', {
+          'data-toggle': 'tooltip',
+          'data-placement': 'bottom',
+          'title': 'Measurement Tool',
+          'class': 'toolButton',
+          'src': 'images/measure.svg'
+      });
+      // tool.append(this.measurebutton)
 
-    })
-    tool.append(this.analyticsbutton)
+      this.spacer2 = jQuery('<img>', {
+          'class': 'spacerButton',
+          'src': 'images/spacer.svg'
+      });
+      tool.append(this.spacer2);
 
-    this.filterImgButton = jQuery('<img>', {
-      'title': 'View Results',
-      'class': 'toolButton',
-      'src': 'images/insta.png'
-    })
-    //tool.append(this.filterImgButton)
+      this.filterbutton = jQuery('<img>', {
+          'data-toggle': 'tooltip',
+          'data-placement': 'bottom',
+          'title': 'Filter Markups',
+          'class': 'toolButton firstToolButtonSpace',
+          'src': 'images/filter.svg'
+      });
+      tool.append(this.filterbutton); // Filter Button
 
-    this.bookmarkButton = jQuery('<img>', {
-      'title': 'Bookmark/Share current state',
-      'class': 'toolButton',
-      'src': 'images/ic_insert_link_white_24dp_1x.png'
-    })
-    //tool.append(this.bookmarkButton)
 
-    this.partialDownloadButton = jQuery('<img>', {
-      'title': 'Download Partial Markups (Coming Soon)',
-      'class': 'toolButton',
-      'src': 'images/partDownload.svg'
-    })
+      this.hidebutton = jQuery('<img>', {
+          'data-toggle': 'tooltip',
+          'data-placement': 'bottom',
+          'title': 'Show/Hide Markups',
+          'class': 'toolButton',
+          'src': 'images/hide.svg'
+      });
+      //tool.append(this.hidebutton)
+
+      this.fullDownloadButton = jQuery('<img>', {
+          'data-toggle': 'tooltip',
+          'data-placement': 'bottom',
+          'title': 'Download All Markups (Coming Soon)',
+          'class': 'toolButton',
+          'src': 'images/fullDownload.svg'
+      });
+      //tool.append(this.fullDownloadButton)
+      this.spacer1 = jQuery('<img>', {
+          'class': 'spacerButton',
+          'src': 'images/spacer.svg'
+      });
+      tool.append(this.spacer1);
+
+      this.analyticsbutton = jQuery('<img>', {
+          'data-toggle': 'tooltip',
+          'data-placement': 'bottom',
+          'title': 'Image Analysis',
+          'class': 'toolButton',
+          'src': 'images/analyze.png'
+
+      });
+      tool.append(this.analyticsbutton);
+
+      this.filterImgButton = jQuery('<img>', {
+          'data-toggle': 'tooltip',
+          'data-placement': 'bottom',
+          'title': 'View Results',
+          'class': 'toolButton',
+          'src': 'images/insta.png'
+      });
+      //tool.append(this.filterImgButton)
+
+      this.bookmarkButton = jQuery('<img>', {
+          'data-toggle': 'tooltip',
+          'data-placement': 'bottom',
+          'title': 'Bookmark/Share current state',
+          'class': 'toolButton',
+          'src': 'images/ic_insert_link_white_24dp_1x.png'
+      });
+      //tool.append(this.bookmarkButton)
+
+      this.partialDownloadButton = jQuery('<img>', {
+          'data-toggle': 'tooltip',
+          'data-placement': 'bottom',
+          'title': 'Download Partial Markups (Coming Soon)',
+          'class': 'toolButton',
+          'src': 'images/partDownload.svg'
+      });
     // tool.append(this.partialDownloadButton)  //Partial Download
 
     /*
-     * Event handlers on click for the buttons
+     * Event handlers for toolbar buttons
      */
 		this.homebutton.on('click', function(){
 		 window.location.href = "/select.php";
