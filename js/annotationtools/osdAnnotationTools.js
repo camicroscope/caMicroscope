@@ -2346,6 +2346,13 @@ var schema = {
 		alert("Saved results as: "+execution_id);
 	})
     jQuery('#submitWorkOrder').click(function (e) {
+      //Trigger blurs incase user submits immediately after textbox change. J.B.
+      jQuery('[id*="-result1"]').blur();
+      jQuery('[id*="-result2"]').blur();
+      jQuery('[id*="-result3"]').blur();
+      jQuery('[id*="-result4"]').blur();
+      jQuery('[id*="-result5"]').blur();
+
       annotools.destroyMarkups();
       console.log("Destroyed markups!");
       console.log("submitting work order!");
