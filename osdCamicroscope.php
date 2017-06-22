@@ -7,19 +7,35 @@
     <!DOCTYPE html>
     <html>
     <head>
-        <meta charset='utf-8'>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <title>[caMicroscope OSD][Subject: <?php echo json_encode($_GET['tissueId']); ?>][User: <?php echo $_SESSION["name"]; ?>]</title>
 
+        <!-- Tooltip dependency -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+        <!-- Optional theme -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+        <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+        <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous"> -->
+        
+        <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous"> -->
+
         <link rel="stylesheet" type="text/css" media="all" href="css/annotools.css" />
-        <!--<link rel="stylesheet" type="text/css" media="all" href="css/jquery-ui.min.css" />-->
+        <!-- <link rel="stylesheet" type="text/css" media="all" href="css/jquery-ui.min.css" /> -->
         <link rel="stylesheet" type="text/css" media="all" href="css/simplemodal.css" />
         <link rel="stylesheet" type="text/css" media="all" href="css/ui.fancytree.min.css" />
-    
-	<!--        <script src="js/dependencies/jquery.js"></script> -->
-	<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+
+        <!-- <script src="js/dependencies/jquery.js"></script> -->
+        <!-- <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script> -->
 
         <!--JSON Form dependencies-->
 
@@ -107,6 +123,11 @@
 
         <script type="text/javascript">
           $.noConflict();
+
+          // For the bootstrap tooltip
+          jQuery(document).ready(function () { jQuery('[data-toggle="tooltip"]').tooltip(); });
+          // jQuery(document).ready(function () { console.log("we are here"); });
+
           var annotool = null;
           var tissueId = <?php echo json_encode($_GET['tissueId']); ?>;
 
@@ -300,10 +321,6 @@ function isAnnotationActive(){
         };
       }
 
-          jQuery(document).ready(function ($) {
-              $('[data-toggle="tooltip"]').tooltip();
-          });
-
     /*Zoom to location*/
     /*
         x: 19483.04157968738
@@ -315,15 +332,6 @@ function isAnnotationActive(){
     */
 
           </script>
-
-        <!-- For the bootstrap tooltip -->
-        <!--
-        <script>
-            jQuery(document).ready(function ($) {
-                $('[data-toggle="tooltip"]').tooltip();
-            });
-        </script>
-        -->
 
 <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
