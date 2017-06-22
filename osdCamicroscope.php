@@ -125,8 +125,8 @@
           $.noConflict();
 
           // For the bootstrap tooltip
-          jQuery(document).ready(function () { jQuery('[data-toggle="tooltip"]').tooltip(); });
-          // jQuery(document).ready(function () { console.log("we are here"); });
+          // jQuery(document).ready(function () { jQuery('[data-toggle="tooltip"]').tooltip(); });
+          // commented out, working on style
 
           var annotool = null;
           var tissueId = <?php echo json_encode($_GET['tissueId']); ?>;
