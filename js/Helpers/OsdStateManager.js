@@ -46,6 +46,7 @@ var OsdStateManager = new Class({
       if ("x" in ll && "y" in ll) {
         var pt = new Point(ll.x, ll.y);
         this.viewer.viewport.zoomTo(pt, ll.z);
+        }
+      }
     }
-  }
-}
+  });
