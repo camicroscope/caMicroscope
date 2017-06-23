@@ -34,7 +34,7 @@
 	    <!--<script src="/featurescapeapps/js/findapi_config.js" type="text/javascript"></script>-->
         <script src="/js/config.js"></script>
 
-        <script src="js/openseadragon/openseadragon-bin-1.0.0/openseadragon.js"></script>
+        <script src="js/openseadragon/openseadragon-bin-2.0.0/openseadragon.js"></script>
         <script src="js/openseadragon/openseadragon-imaginghelper.min.js"></script>
         <script src="js/openseadragon/openseadragon-scalebar.js"></script>
         <script src="js/openseadragon/openseadragonzoomlevels.js"></script>
