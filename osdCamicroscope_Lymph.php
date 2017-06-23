@@ -246,6 +246,7 @@
 
             var StateMan = new OsdStateManager(viewer, {});
             document.addEventListener("zoom", StatMan.getState());
+            document.addEventListener("pan", StatMan.getState());
             StateMan.setState();
     //console.log(viewer);
     function isAnnotationActive(){
