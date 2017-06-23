@@ -13,9 +13,8 @@ var OsdStateManager = new Class({
     this.zoomBase = viewer.viewport.getZoom()
     this.zooming = false
     this.panning = false
-    this.animateWaitTime = options.animateWaitTime || 300
 
-    this._setupOpenSeadragonButtonHandlers()
+    this.animateWaitTime = options.animateWaitTime || 300
 
     // global object reference used when the "this" object is referring to the window
     window.annotationHandler = this
@@ -44,7 +43,7 @@ var OsdStateManager = new Class({
       var l = atob(decodeURIComponent(xi));
       var ll = JSON.parse(l);
       if ("x" in ll && "y" in ll) {
-        var pt = new Point(ll.x, ll.y);
+        var pt = new OpenSeadragon.Point(ll.x, ll.y);
         this.viewer.viewport.zoomTo(pt, ll.z);
         }
       }
