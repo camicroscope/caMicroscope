@@ -7,6 +7,8 @@ $serviceUrl     = "$baseUrl/services/Camicroscope_DataLoader";
 $annotationsUrl = "$baseUrl/services/Camicroscope_Annotations";
 $u24_userUrl    = "$baseUrl/services/u24_user";
 $imageUrl       = "$serviceUrl/DataLoader";
+$lymphocyteUrl = "$baseUrl/services/Camicroscope_Lymphocyte";
+
 
 $dynamicServices = $serviceUrl;
 
@@ -46,8 +48,11 @@ return array(
     'getAnnotationsSpatialLymph' => "$serviceUrl/GeoJSONImageMetaData/query/getMarkups?",
     'getMultipleAnnotationsWithAttr' => "$annotationsUrl/MarkupLoader/query/getMultipleMarkupsWithAttr?",
     
-    'postDataForLymphocytes' => "$annotationsUrl/Lymphocytes/submit/json?",
-    'getLymphocyteData' => "$annotationsUrl/Lymphocytes/query/getLymphocytes?",
+    //'postDataForLymphocytes' => "$annotationsUrl/Lymphocytes/submit/json?",
+    //'getLymphocyteData' => "$annotationsUrl/Lymphocytes/query/getLymphocytes?",
+    'postDataForLymphocytes' => "$lymphocyteUrl/DataForLymphocytes/submit/json?",
+    'getLymphocyteData' => "$lymphocyteUrl/DataForLymphocytes/query/getLymphocytes?",
+    'getLymphocyteDataByCaseId' => "$lymphocyteUrl/DataForLymphocytes/query/getLymphocytesByCaseId?",
     
     
    /*Bindaas API for back compatible */
@@ -56,7 +61,11 @@ return array(
      'deleteAnnotation'                => "$annotationsUrl/MarkupLoader/delete/DeleteByOID", 
      'deleteAnnotationWithinRectangle' => "$annotationsUrl/MarkupLoader/delete/deleteAnnotationWithinRectangle",
      'deleteAnnotationWithinRectangleClone' => "$annotationsUrl/MarkupLoader/delete/deleteAnnotationWithinRectangleClone",     
-     'getPropertiesForMarkupClone'          => "$annotationsUrl/MarkupLoader/query/getPropertiesForMarkupClone?",     
+     'getPropertiesForMarkupClone'          => "$annotationsUrl/MarkupLoader/query/getPropertiesForMarkupClone?",    
+     'getAnnotationCountWithinRectangle'    => "$annotationsUrl/MarkupLoader/query/getAnnotationCountWithinRectangle?",    
+     'getAnnotationWithinRectangle'         => "$annotationsUrl/MarkupLoader/query/getAnnotationWithinRectangle?",
+     'getMultipleMarkupsNew'=> "$annotationsUrl/MarkupLoader/query/getMultipleMarkupsNew?",
+     
     
     /* Template */
     'retrieveTemplate'      => "$templateUrl/AnnotationTemplate/query/retrieveTemplate",
@@ -78,6 +87,7 @@ return array(
     'getDimensions' => "$imageUrl/query/getDimensionsByIID?api_key=",
     'getFileLocation' => "$imageUrl/query/getFileLocationByIID?api_key=",
     'getMPP' => "$imageUrl/query/getMPPByIID?api_key=",
+    'getImageInfoByCaseID'=> "$imageUrl/query/getImageInfoByCaseID?api_key=",
     'fastcgi_server' => "/fcgi-bin/iipsrv.fcgi",
   
 	 /* Dynamic Services */														 

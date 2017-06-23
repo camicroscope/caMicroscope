@@ -295,6 +295,10 @@ annotools.prototype.generateSVG = function (annotations) {
       // var offset = OpenSeadragon.getElementOffset(viewer.canvas)
       var algorithm_id = annotation.provenance.analysis.execution_id
       var color = algorithm_color[algorithm_id]
+      
+      //use the same color as algorithm does
+     // if(annotation.color) color =annotation.color; 
+	    
       var countNativepoints = 0;
       var countRectNativepoints = 4;
 
@@ -327,7 +331,7 @@ annotools.prototype.generateSVG = function (annotations) {
       }
         
       if (countNativepoints === countRectNativepoints) {
-          svgHtml += '" style="stroke:'+ color + '; stroke-width:1.0; fill-opacity:0.2"/>';
+          svgHtml += '" style="stroke:'+ color + '; stroke-width:1.0; fill-opacity:0.1"/>';
       }
       else {
           svgHtml += '" style="fill:transparent; stroke:'+color+ '; stroke-width:2.5"/>'
@@ -374,7 +378,7 @@ annotools.prototype.generateSVG = function (annotations) {
       }
         
       if (countNativepoints === countRectNativepoints) {
-          svgHtml += '" style="stroke:'+ color + '; stroke-width:1.0; fill-opacity:0.2"/>';
+          svgHtml += '" style="stroke:'+ color + '; stroke-width:1.0; fill-opacity:0.1"/>';
       }
       else {
           svgHtml += '" style="fill:transparent; stroke:'+color+ '; stroke-width:2.5"/>'

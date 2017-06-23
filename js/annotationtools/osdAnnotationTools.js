@@ -2092,7 +2092,7 @@ var schema = {
       "notitle": true,
       "required": true,
       "placeholder": r,
-      "readonly": true
+      "readonly": false
     },
     "range2": {
           "type": "number",
@@ -2109,7 +2109,7 @@ var schema = {
       "notitle": true,
       "required": true,
       "placeholder": w,
-      "readonly": true
+      "readonly": false
     },
     "range3": {
       "type": "number",
@@ -2126,7 +2126,7 @@ var schema = {
       "notitle": true,
       "required": true,
       "placeholder": l,
-      "readonly": true
+      "readonly": false
     }, 
       "range4": {
         "type": "number",
@@ -2141,7 +2141,7 @@ var schema = {
         "notitle": true,
         "required": true,
         "placeholder": u,
-        "readonly": true
+        "readonly": false
       },
        "range5": {
         "type": "number",
@@ -2156,11 +2156,11 @@ var schema = {
         "notitle": true,
         "required": true,
         "placeholder": k,
-        "readonly": true
+        "readonly": false
       }, 
    	"radios6": {
 	    "type": "integer",
-      "title": "Choose segmentation type",      
+      "title": "Choose declumping method",      
       "enum": [0,1,2],
       default: pj
       } 
@@ -2263,8 +2263,8 @@ var schema = {
         "type": "radios", 
         "titleMap": {
              0:"--- No Declumping",
-             1:"--- Mean Shift declumping",
-             2:"--- Watershed declumpinG"},                  
+             1:"--- Mean Shift Declumping",
+             2:"--- Watershed Declumping"},                  
 		    "onChange":function(e){
 		      //console.log(e);
           var radio_value=jQuery(e.target).val();      
@@ -2305,6 +2305,33 @@ var schema = {
     jQuery('[id*="-result3"]').val(l);
     jQuery('[id*="-result4"]').val(u);
     jQuery('[id*="-result5"]').val(k);
+	   
+    //
+    //  Added by Joe Balsamo to accomodate use of text box for input
+    //
+    jQuery('[id*="-result1"]').on("blur",function(evt){
+        r = this.value;
+        document.getElementById(this.id.replace('result','range')).value=this.value;
+    });
+    jQuery('[id*="-result2"]').on("blur",function(evt){
+        w =  this.value;
+        document.getElementById(this.id.replace('result','range')).value=this.value;
+    });
+    jQuery('[id*="-result3"]').on("blur",function(evt){
+        l =  this.value;
+        document.getElementById(this.id.replace('result','range')).value=this.value;
+    });
+    jQuery('[id*="-result4"]').on("blur",function(evt){
+        u =  this.value;
+        document.getElementById(this.id.replace('result','range')).value=this.value;
+    });
+    jQuery('[id*="-result5"]').on("blur",function(evt){
+        k =  this.value;
+        document.getElementById(this.id.replace('result','range')).value=this.value;
+    });
+    //
+    //   End of Text input code
+    //
 
       var width = 48002
       var height = 35558
@@ -2319,6 +2346,13 @@ var schema = {
 		alert("Saved results as: "+execution_id);
 	})
     jQuery('#submitWorkOrder').click(function (e) {
+      //Trigger blurs incase user submits immediately after textbox change. J.B.
+      jQuery('[id*="-result1"]').blur();
+      jQuery('[id*="-result2"]').blur();
+      jQuery('[id*="-result3"]').blur();
+      jQuery('[id*="-result4"]').blur();
+      jQuery('[id*="-result5"]').blur();
+
       annotools.destroyMarkups();
       console.log("Destroyed markups!");
       console.log("submitting work order!");

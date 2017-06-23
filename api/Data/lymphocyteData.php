@@ -7,20 +7,18 @@ $config = require '../Configuration/config.php';
 $getUrl =  $config['getLymphocyteData'];
 $postUrl = $config['postDataForLymphocytes'];
 
-$api_key = '';
 
 if (!empty($_SESSION['api_key'])) {
     $api_key = $_SESSION['api_key'];
 }
-//$api_key = 'c0327219-68b2-4a40-9801-fc99e8e1e76f';
-$api_key = '4fbb38a3-1821-436c-a44d-8d3bc5efd33e';
+
 
 switch ($_SERVER['REQUEST_METHOD'])
 {
 
     case 'GET':
         if(isset($_GET["case_id"]))
-	{
+	    {
             $case_id=$_GET["case_id"];
             $username = $_GET["username"];
 			
@@ -36,8 +34,6 @@ switch ($_SERVER['REQUEST_METHOD'])
                 echo ($lymphocyteHeatmapInfo);
             else
                 echo "No lymphocyte heatmaps data";
-
-            break;
             
         }
         break;
@@ -45,7 +41,7 @@ switch ($_SERVER['REQUEST_METHOD'])
     case 'POST':
         //echo "Posting!!!";
 	$lymphocyteHeatmapInfo =$_POST;
-	$url = $postUrl . "?api_key=".$api_key;
+	$url = $postUrl . "api_key=".$api_key;
 		
         //print_r($lymphocyteHeatmapInfo);
         //print_r(json_encode($lymphocyteHeatmapInfo), JSON_NUMERIC_CHECK);
