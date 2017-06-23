@@ -48,7 +48,7 @@ var OsdStateManager = new Class({
       var ll = JSON.parse(l);
       if ("x" in ll && "y" in ll) {
         var pt = new OpenSeadragon.Point(ll.x, ll.y);
-        this.viewer.viewport.zoomTo(pt, ll.z);
+        this.viewer.viewport.zoomTo(ll.z, pt);
         }
       }
     }
