@@ -2596,15 +2596,16 @@ annotools.prototype.getAlgorithmColorFromMenuTree = function() {
 
 annotools.prototype.generateCompositeDataset = function() { 
 
-  //alert("hello from mergebutton3."); 
+  //alert("This function is temporally disabled."); 
+  //return;
   
   var self = this;
  
-//image variables
+ //image variables
   var case_id=this.iid;
   console.log('case_id is: '+ case_id);
 
-// user 
+  // user 
    var user = this.user;   
    console.log('user is: '+ user); 
   
@@ -2621,8 +2622,8 @@ annotools.prototype.generateCompositeDataset = function() {
           var id = r.id;
           console.log("Composite Order submitted!, Job ID: "+id);		  
          
-		  //jQuery('#algorithmList').html(function(){ return "<br /><br />Processing..."; });
-		  alert("Composite Order Processing...."); 
+	  //jQuery('#algorithmList').html(function(){ return "<br /><br />Processing..."; });
+	  alert("Composite Order Processing...."); 
 		  
          //self.toolBar.titleButton.hide()
           //self.toolBar.ajaxBusy.show();
