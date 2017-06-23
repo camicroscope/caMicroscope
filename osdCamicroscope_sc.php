@@ -173,8 +173,8 @@
             });
 
             var StateMan = new OsdStateManager(viewer, {});
-            document.addEventListener("zoom", StatMan.getState());
-            document.addEventListener("pan", StatMan.getState());
+            document.addEventListener("zoom", StateMan.getState());
+            document.addEventListener("pan", StateMan.getState());
             StateMan.setState();
 
            //console.log(viewer);
