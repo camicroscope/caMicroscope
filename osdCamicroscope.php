@@ -124,10 +124,6 @@
         <script type="text/javascript">
           $.noConflict();
 
-          // For the bootstrap tooltip
-          // jQuery(document).ready(function () { jQuery('[data-toggle="tooltip"]').tooltip(); });
-          // commented out, working on style
-
           var annotool = null;
           var tissueId = <?php echo json_encode($_GET['tissueId']); ?>;
 
@@ -218,6 +214,10 @@ function isAnnotationActive(){
         });
         annotool.toolBar = toolBar;
         toolBar.createButtons();
+
+        // For the bootstrap tooltip
+        // jQuery('[data-toggle="tooltip"]').tooltip();
+        // commented out, working on style
         
         //var panel = new panel();
         jQuery("#panel").hide();
