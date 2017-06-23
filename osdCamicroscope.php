@@ -176,11 +176,13 @@
               barThickness: 2
             });
 
-            viewer.setFilterOptions({
-                filters: {
-                    processors: OpenSeadragon.Filters.BRIGHTNESS(0)
-                }
-});
+          /*
+           viewer.setFilterOptions({
+               filters: {
+                   processors: OpenSeadragon.Filters.BRIGHTNESS(0)
+               }
+           });
+           */
 
     //console.log(viewer);
 function isAnnotationActive(){
