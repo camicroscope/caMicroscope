@@ -245,6 +245,7 @@
             });
 
             var StateMan = new OsdStateManager(viewer, {});
+            document.addEventListener("zoom", StatMan.getState());
             StateMan.setState();
     //console.log(viewer);
     function isAnnotationActive(){
