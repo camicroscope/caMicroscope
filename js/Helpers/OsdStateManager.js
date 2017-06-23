@@ -31,8 +31,8 @@ var OsdStateManager = new Class({
       "z": zi
     })));
     var tid = /tissueId=([^&#=]*)/.exec(window.location.search);
-    if (tid.length){
-      window.history.pushState("hi", "Encoded", "?tissueId="+tid[0]+"&state=" + l);
+    if (tid.length >== 2){
+      window.history.pushState("hi", "Encoded", "?tissueId="+tid[1]+"&state=" + l);
     }
 
   },
