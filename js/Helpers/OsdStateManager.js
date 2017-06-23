@@ -31,7 +31,7 @@ var OsdStateManager = new Class({
       "z": zi
     })));
     var tid = /tissueId=([^&#=]*)/.exec(window.location.search);
-    if (tid.length >== 2){
+    if (tid.length >= 2){
       window.history.pushState("hi", "Encoded", "?tissueId="+tid[1]+"&state=" + l);
     }
 
@@ -42,7 +42,7 @@ var OsdStateManager = new Class({
     // handle improper encoding gracefully
     // handle missing field in json gracefully
     var matches = /state=([^&#=]*)/.exec(window.location.search);
-    if (matches.length) {
+    if (matches.length >= 2) {
       var xi = matches[1];
       var l = atob(decodeURIComponent(xi));
       var ll = JSON.parse(l);
