@@ -38,6 +38,7 @@ var OsdStateManager = new Class({
   },
 
   setState: function(){
+    var self = this;
     //TODO some error handling
     // handle improper encoding gracefully
     // handle missing field in json gracefully
@@ -48,7 +49,7 @@ var OsdStateManager = new Class({
       var ll = JSON.parse(l);
       if ("x" in ll && "y" in ll) {
         var pt = new OpenSeadragon.Point(ll.x, ll.y);
-        this.viewer.viewport.zoomTo(ll.z, pt);
+        self.viewer.viewport.zoomTo(ll.z, pt);
         }
       }
     }
