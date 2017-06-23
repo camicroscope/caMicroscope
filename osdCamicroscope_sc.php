@@ -140,11 +140,7 @@
                 navigatorPosition:   "BOTTOM_RIGHT",
                 //navigatorId: "navigator",
                 zoomPerClick: 2,
-<<<<<<< HEAD
-               // zoomPerScroll: 1,
-=======
                 //zoomPerScroll: 1,
->>>>>>> f045e2634249c7c19e651dc4ca248053f594ca0d
                 animationTime: 0.75,
                 maxZoomPixelRatio: 2,
                 visibilityRatio: 1,
