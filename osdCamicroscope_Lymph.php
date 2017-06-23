@@ -245,9 +245,9 @@
             });
 
             var StateMan = new OsdStateManager(viewer, {});
-            document.addEventListener("zoom", StateMan.getState());
-            document.addEventListener("pan", StateMan.getState());
             StateMan.setState();
+            viewer.addHandler("zoom", StateMan.getState);
+            viewer.addHandler("pan", StateMan.getState);
     //console.log(viewer);
     function isAnnotationActive(){
         this.isOpera = !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;

@@ -228,10 +228,10 @@ function isAnnotationActive(){
         }*/
 
         var StateMan = new OsdStateManager(viewer, {});
-        document.addEventListener("zoom", StateMan.getState);
-        document.addEventListener("pan", StateMan.getState);
-        // StateMan.getState();
         StateMan.setState();
+        viewer.addHandler("zoom", StateMan.getState);
+        viewer.addHandler("pan", StateMan.getState);
+
 
         if(bound_x && bound_y){
             var ipt = new OpenSeadragon.Point(+bound_x, +bound_y);
