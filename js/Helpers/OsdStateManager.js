@@ -1,4 +1,4 @@
-var AnnotoolsOpenSeadragonHandler = new Class({
+var OsdStateManager = new Class({
   initialize: function (viewer, options) {
     this.viewer = viewer
     this.state = 'none'
@@ -22,15 +22,15 @@ var AnnotoolsOpenSeadragonHandler = new Class({
   },
 
   getState: function(){
-    var xi = document.getElementById("x").value;
-    var yi = document.getElementById("y").value;
-    var zi = document.getElementById("z").value;
+    var pt = this.viewer.viewport.getCenter(true);
+    var xi = pt.x;
+    var yi = pt.y;
+    var zi = this.viewer.viewport.getZoom(true);
     var l = encodeURIComponent(btoa(JSON.stringify({
       "x": xi,
       "y": yi,
       "z": zi
     })));
-    document.getElementById("url").innerHTML = l;
     window.history.pushState("hi", "Encoded", "?state=" + l);
   },
 
@@ -43,14 +43,9 @@ var AnnotoolsOpenSeadragonHandler = new Class({
       var xi = matches[1];
       var l = atob(decodeURIComponent(xi));
       var ll = JSON.parse(l);
-      if ("x" in ll && "y" in ll && "z" in ll) {
-        document.getElementById("x").value = ll.x;
-        document.getElementById("y").value = ll.y;
-        document.getElementById("z").value = ll.z;
-        document.getElementById("url").innerHTML = xi;
-      } else {
-        document.getElementById("url").innerHTML = "properties missing";
-      }
+      if ("x" in ll && "y" in ll) {
+        var pt = new Point(ll.x, ll.y);
+        this.viewer.viewport.zoomTo(pt, ll.z);
     }
   }
 }
