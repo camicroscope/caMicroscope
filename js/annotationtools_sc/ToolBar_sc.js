@@ -159,7 +159,7 @@ ToolBar.prototype.toggleAlgorithmSelector = function () {
 	   tmp_algorithm_list[i]=d[i].provenance.analysis_execution_id;		 
 	}
 	
-	tmp_algorithm_list = tmp_algorithm_list.sort();
+	//tmp_algorithm_list = tmp_algorithm_list.sort();
 	
     for(var i=0; i < tmp_algorithm_list.length; i++){
       //n.color = available_colors[i%7];
