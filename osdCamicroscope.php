@@ -1,5 +1,5 @@
     <?php 
-	require '../authenticate.php';
+    require '../authenticate.php';
 
     $config = require 'api/Configuration/config.php';
 
@@ -13,21 +13,14 @@
 
         <title>[caMicroscope OSD][Subject: <?php echo json_encode($_GET['tissueId']); ?>][User: <?php echo $_SESSION["name"]; ?>]</title>
 
-        <!-- Tooltip dependency -->
+        <!-- Tooltip dependencies -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-
+        <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous"> -->
         <!-- Optional theme -->
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
-
+        <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous"> -->
         <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-
-        <!-- Latest compiled and minified JavaScript -->
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-
-        <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous"> -->
-        
-        <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous"> -->
+        <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>-->
+        <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>-->
 
         <link rel="stylesheet" type="text/css" media="all" href="css/annotools.css" />
         <!-- <link rel="stylesheet" type="text/css" media="all" href="css/jquery-ui.min.css" /> -->
@@ -35,7 +28,7 @@
         <link rel="stylesheet" type="text/css" media="all" href="css/ui.fancytree.min.css" />
 
         <!-- <script src="js/dependencies/jquery.js"></script> -->
-        <!-- <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script> -->
+        <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 
         <!--JSON Form dependencies-->
 
@@ -47,7 +40,7 @@
         <script type="text/javascript" src="js/dependencies/jsonform.js"></script>
         <script type="text/javascript" src="js/dependencies/jsv.js"></script>
         <!--End JSON Form dependencies -->
-	    <!--<script src="/featurescapeapps/js/findapi_config.js" type="text/javascript"></script>-->
+        <!--<script src="/featurescapeapps/js/findapi_config.js" type="text/javascript"></script>-->
         <script src="/js/config.js"></script>
 
         <script src="js/openseadragon/openseadragon-bin-1.0.0/openseadragon.js"></script>
@@ -173,6 +166,7 @@
             });
 
           /*
+          // This plugin requires OpenSeadragon 2.1+
            viewer.setFilterOptions({
                filters: {
                    processors: OpenSeadragon.Filters.BRIGHTNESS(0)
@@ -225,8 +219,8 @@ function isAnnotationActive(){
         var bound_x = <?php echo json_encode($_GET['x']); ?>;
         var bound_y = <?php echo json_encode($_GET['y']); ?>;
         var zoom = <?php echo json_encode($_GET['zoom']); ?> || viewer.viewport.getMaxZoom();
-	zoom=Number(zoom);// convert string to number if zoom is string  
-	    
+        zoom=Number(zoom); // convert string to number if zoom is string
+        
         /*
         var savedFilters = [
           {'name': 'Brightness', 'value': 100},
