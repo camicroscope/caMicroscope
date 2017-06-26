@@ -111,7 +111,7 @@ ToolBar.prototype.toggleAlgorithmSelector = function () {
   for(var i=0; i < d.length; i++){
     tmp_algorithm_list[i]=d[i].provenance.analysis_execution_id;		 
    }	
-  tmp_algorithm_list = tmp_algorithm_list.sort();    
+  //tmp_algorithm_list = tmp_algorithm_list.sort();    
 	  
     ALGORITHM_LIST = d;
     for(var i=0; i < tmp_algorithm_list.length; i++){
