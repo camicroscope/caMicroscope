@@ -21,16 +21,17 @@ var OsdStateManager = new Class({
   },
 
   getState: function(){
-    var pt = this.viewer.viewport.getCenter(true);
+    var pt = viewer.viewport.getCenter(true);
     var xi = pt.x;
     var yi = pt.y;
-    var zi = this.viewer.viewport.getZoom(true);
+    var zi = sviewer.viewport.getZoom(true);
     var l = encodeURIComponent(btoa(JSON.stringify({
       "x": xi,
       "y": yi,
       "z": zi
     })));
     var tid = /tissueId=([^&#=]*)/.exec(window.location.search);
+    tid = tid || [];
     if (tid.length >= 2){
       window.history.pushState("hi", "Encoded", "?tissueId="+tid[1]+"&state=" + l);
     }
@@ -43,6 +44,7 @@ var OsdStateManager = new Class({
     // handle improper encoding gracefully
     // handle missing field in json gracefully
     var matches = /state=([^&#=]*)/.exec(window.location.search);
+    matches = matches || [];
     if (matches.length >= 2) {
       var xi = matches[1];
       var l = atob(decodeURIComponent(xi));
