@@ -83,6 +83,17 @@ switch ($_SERVER['REQUEST_METHOD'])
         $authorized = true;
         $jsonAnnotation = json_encode($newAnnotation, JSON_NUMERIC_CHECK);
         //print_r(json_encode($newAnnotation)); 
+	      
+	//save case_id and subject_id as string all the time      
+	$anotherjson=json_decode ($jsonAnnotation);
+        $case_id=$anotherjson->provenance->image->case_id;
+        settype($case_id, "string");
+        $anotherjson->provenance->image->case_id = $case_id;
+        $subject_id=$anotherjson->provenance->image->subject_id;
+        settype($subject_id, "string");
+        $anotherjson->provenance->image->subject_id = $subject_id;
+        $jsonAnnotation = json_encode($anotherjson);   
+	      
         $postRequest = new RestRequest($url, 'POST', $jsonAnnotation);
         $postRequest->execute();
         //echo "success";
