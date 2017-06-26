@@ -5,7 +5,7 @@ var ToolBar = function (element, options) {
   this.FilterTools = options.FilterTools
   this.source = element // The Tool Source Element
   this.top = options.top || '0px'
-  this.left = options.left || '150px' // The Tool Location   
+  this.left = options.left || '150px' // The Tool Location
   this.height = options.height || '30px'
   this.width = options.width || '270px'
   this.zindex = options.zindex || '100' // To Make Sure The Tool Appears in the Front
@@ -35,9 +35,9 @@ function goodalgo (data, status) {
   var blob = []
   for (i = 0;i < data.length;i++) {
     var n = {}
-     
+
      data[i].title=data[i].provenance.analysis_execution_id;
-    
+
     n.title = "<div class='colorBox' style='background:" + available_colors[i] + "'></div>" + data[i].title;
     n.key = i.toString()
     n.refKey = data[i].provenance.analysis_execution_id
@@ -107,7 +107,7 @@ ToolBar.prototype.toggleAlgorithmSelector = function () {
     d = JSON.parse(data)
 
 // sorting the algorithms
-   var tmp_algorithm_list=[];	
+   var tmp_algorithm_list=[];
   for(var i=0; i < d.length; i++){
     tmp_algorithm_list[i]=d[i].provenance.analysis_execution_id;		 
    }	
@@ -119,7 +119,7 @@ ToolBar.prototype.toggleAlgorithmSelector = function () {
        SELECTED_ALGORITHM_COLOR[tmp_algorithm_list[i]]= available_colors[i%available_colors.length];
       htmlStr += "<li><input type='checkbox' class='algorithmCheckbox' value="+i+" /><span class='algoColorBox' style='background:"+ algorithm_color[tmp_algorithm_list[i]] +"'></span> "+tmp_algorithm_list[i]
        + "</li>";
-     }  
+     }
 
     htmlStr +="</ul> <br /> <button class='btn' id='cancelAlgorithms'>Hide</button> </div>";
 
@@ -134,11 +134,11 @@ ToolBar.prototype.toggleAlgorithmSelector = function () {
       for(var i=0; i < SELECTED_ALGORITHM_KEYS.length; i++){
         if(SELECTED_ALGORITHM_KEYS[i] == (id)){
 
-          elem.prop('checked', true); 
+          elem.prop('checked', true);
         }
       }
-      
-      
+
+
     });
 
     self.annotools.getMultiAnnot();
@@ -157,7 +157,7 @@ ToolBar.prototype.toggleAlgorithmSelector = function () {
 
 
     })
-    
+
     /*
     jQuery("#submitAlgorithms").click(function(){
       var selected= [];
@@ -178,15 +178,15 @@ ToolBar.prototype.toggleAlgorithmSelector = function () {
     });
   });
    if(AlgorithmSelectorHidden == true){
-   	jQuery("#panel").show("slide");   
+   	jQuery("#panel").show("slide");
     AlgorithmSelectorHidden = false;
   } else {
     jQuery("#panel").html("");
     jQuery("#panel").hide("slide");
 
     AlgorithmSelectorHidden = true;
-  } 
-  
+  }
+
 }
 
 ToolBar.prototype.createButtons = function () {
@@ -229,7 +229,6 @@ ToolBar.prototype.createButtons = function () {
   // this.tool.makeDraggable(); //Make it Draggable.
 
   if (this.annotationActive) {
-
       /*
        * Ganesh
        * Mootools to Jquery for creation of toolbar buttons
@@ -240,7 +239,7 @@ ToolBar.prototype.createButtons = function () {
        */
       this.homebutton = jQuery('<img>', {
           'data-toggle': 'tooltip', 'data-placement': 'bottom',
-          src: 'images/ic_home_white_24px.svg',
+          src: 'images/camic_white_24px.svg,
           class: 'toolButton firstToolButtonSpace',
           title: 'QuIP Home'
       });
@@ -393,12 +392,12 @@ ToolBar.prototype.createButtons = function () {
 		this.homebutton.on('click', function(){
 		 window.location.href = "/select.php";
 		});
-    
+
     this.lymphbutton.on('click', function () {
         var tissueId=this.iid;	
 	window.location.href = "/camicroscope/osdCamicroscope_Lymph.php?tissueId="+tissueId;	
     }.bind(this))
-   
+
     this.compositebutton.on('click', function () {
        this.mode = 'composite';
        var tissueId=this.iid;
@@ -428,10 +427,9 @@ ToolBar.prototype.createButtons = function () {
 		window.location.href = "/camicroscope/osdCamicroscope_sc.php?tissueId="+tissueId;
 	   }
       })
-	    
     }.bind(this))
-    
-    
+
+
 
     this.rectbutton.on('click', function () {
       this.mode = 'rect'
@@ -568,7 +566,7 @@ ToolBar.prototype.createButtons = function () {
     */
 
     /*
-     * Ganesh: Using the Mootools version as the jquery version breaks things 
+     * Ganesh: Using the Mootools version as the jquery version breaks things
      *
     this.messageBox = jQuery('<div>', {
         'id': 'messageBox'
@@ -615,5 +613,3 @@ ToolBar.prototype.createButtons = function () {
   if (this.annotationActive) {
   }
 }
-
-

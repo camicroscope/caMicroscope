@@ -36,7 +36,7 @@ else {
 	  <script type="text/javascript" src="js/mootools/mootools-core-1.4.5-full-nocompat-yc.js"></script>
 	  <script type="text/javascript" src="js/mootools/mootools-more-1.4.0.1-compressed.js"></script>
           <script src="js/dependencies/jquery.js"></script>
-    
+
 	  <script type="text/javascript" src="js/dependencies/iipmooviewer-2.0.js"></script>
 	  <script type="text/javascript" src="js/dependencies/MD5.js"></script>
 	  <script type="text/javascript" src="js/imagemetadatatools/mooImageMetadata.js"></script>
@@ -49,7 +49,7 @@ else {
 	    // the "c:" prefix
 	      function getURLParameter(name) {
 		 return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search)||[,""])[1].replace(/\+/g, '%20'))||null;
-	    } 
+	    }
 
 	    function gup( name )
 		{
@@ -62,13 +62,13 @@ else {
 		  else
 		      return results[1];
 		}
-	    
+
 
 	    var tissueId = gup("tissueId");
-	    
+
 	    //var iid = "<?php print_r($_REQUEST['iid']); ?>";
 	    console.log(tissueId);
-	    
+
 	    var imagedata=new ImageMetadata({imageId:tissueId});
 	    var MaxDimension = imagedata.metaData[0];
 	    var temp = imagedata.metaData[1];
@@ -102,7 +102,7 @@ else {
 	left: 0;
 	margin: 0;
 	padding: 0;
-    }	
+    }
   </style>
 
  </head>
