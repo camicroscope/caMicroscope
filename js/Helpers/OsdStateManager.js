@@ -24,7 +24,7 @@ var OsdStateManager = new Class({
     var pt = viewer.viewport.getCenter(true);
     var xi = pt.x;
     var yi = pt.y;
-    var zi = sviewer.viewport.getZoom(true);
+    var zi = viewer.viewport.getZoom(true);
     var l = encodeURIComponent(btoa(JSON.stringify({
       "x": xi,
       "y": yi,
