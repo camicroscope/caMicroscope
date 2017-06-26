@@ -1,4 +1,4 @@
-    <?php 
+    <?php
 	require '../authenticate.php';
 
     $config = require 'api/Configuration/config.php';
@@ -17,7 +17,7 @@
         <!--<link rel="stylesheet" type="text/css" media="all" href="css/jquery-ui.min.css" />-->
         <link rel="stylesheet" type="text/css" media="all" href="css/simplemodal.css" />
         <link rel="stylesheet" type="text/css" media="all" href="css/ui.fancytree.min.css" />
-    
+
 	<!--        <script src="js/dependencies/jquery.js"></script> -->
 	<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 
@@ -34,7 +34,7 @@
 	    <!--<script src="/featurescapeapps/js/findapi_config.js" type="text/javascript"></script>-->
         <script src="/js/config.js"></script>
 
-        <script src="js/openseadragon/openseadragon-bin-1.0.0/openseadragon.js"></script>
+        <script src="js/openseadragon/openseadragon-bin-2.0.0/openseadragon.js"></script>
         <script src="js/openseadragon/openseadragon-imaginghelper.min.js"></script>
         <script src="js/openseadragon/openseadragon-scalebar.js"></script>
         <script src="js/openseadragon/openseadragonzoomlevels.js"></script>
@@ -47,8 +47,8 @@
         <script src="js/annotationtools/osdAnnotationTools.js"></script>
         <script src="js/annotationtools/geoJSONHandler.js"></script>
         <script src="js/dependencies/MD5.js"></script>
-        <script src="https://code.jquery.com/ui/1.11.2/jquery-ui.min.js" type="text/javascript"></script> 
-    
+        <script src="https://code.jquery.com/ui/1.11.2/jquery-ui.min.js" type="text/javascript"></script>
+
 
         <!--Filtering Tools-->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/camanjs/4.1.2/caman.full.js"></script>
@@ -56,8 +56,10 @@
         <script src="js/filteringtools/spinner-slider.js"></script>
         <script src="js/filteringtools/spinner.js"></script>
         <script src="js/filteringtools/FilterTools.js"></script>
-        <!--End Filtering Tools-->    
+        <!--End Filtering Tools-->
         <!--<script src="js/dependencies/jquery-ui.min.js"></script>-->
+
+        <script src="js/Helpers/OsdStateManager.js"></script>
 
         <script src="js/dependencies/jquery.fancytree-all.min.js"></script>
         <script src="js/dependencies/simplemodal.js"></script>
@@ -92,7 +94,7 @@
     <body>
 
         <div id="container">
-                    
+
             <div id="tool"></div>
             <div id="panel"></div>
             <div id="bookmarkURLDiv"></div>
@@ -112,15 +114,15 @@
 
 
           var imagedata = new OSDImageMetaData({imageId:tissueId});
-         
+
           var MPP = imagedata.metaData[0];
 
 
           var fileLocation = imagedata.metaData[1];
          jQuery("#bookmarkURLDiv").hide();
-         
-          var viewer = new OpenSeadragon.Viewer({ 
-                id: "viewer", 
+
+          var viewer = new OpenSeadragon.Viewer({
+                id: "viewer",
                 prefixUrl: "images/",
                 showNavigator:  true,
                 navigatorPosition:   "BOTTOM_RIGHT",
@@ -136,7 +138,7 @@
     //      var zoomLevels = viewer.zoomLevels({
     //        levels:[0.001, 0.01, 0.2, 0.1,  1]
     //      });
-            
+
             viewer.addHandler("open", addOverlays);
             viewer.clearControls();
             viewer.open("<?php print_r($config['fastcgi_server']); ?>?DeepZoom=" + fileLocation);
@@ -174,10 +176,10 @@ function isAnnotationActive(){
 
     function addOverlays() {
         var annotationHandler = new AnnotoolsOpenSeadragonHandler(viewer, {});
-        
+
         annotool= new annotools({
                 canvas:'openseadragon-canvas',
-                iid: tissueId, 
+                iid: tissueId,
                 viewer: viewer,
                 annotationHandler: annotationHandler,
                 mpp:MPP
@@ -195,7 +197,7 @@ function isAnnotationActive(){
         });
         annotool.toolBar = toolBar;
         toolBar.createButtons();
-        
+
         //var panel = new panel();
         jQuery("#panel").hide();
         /*Pan and zoom to point*/
@@ -214,7 +216,7 @@ function isAnnotationActive(){
           console.log(filteringtools)
           filteringtools.showFilterControls();
           for(var i=0; i<savedFilters.length; i++){
-                
+
                 console.log(i);
                 var f = savedFilters[i];
                 var filterName = f.name;
@@ -225,56 +227,11 @@ function isAnnotationActive(){
             }
         }*/
 
-        var stateID = <?php echo json_encode($_GET['stateID']); ?>;
+        var StateMan = new OsdStateManager(viewer, {});
+        StateMan.setState();
+        viewer.addHandler("zoom", StateMan.getState);
+        viewer.addHandler("pan", StateMan.getState);
 
-        //Check if loading from saved state
-        if(stateID){
-            //fetch state from firebase
-            jQuery.get("https://test-8f679.firebaseio.com/camicroscopeStates/"+stateID+".json?auth=kweMPSAo4guxUXUodU0udYFhC27yp59XdTEkTSJ4", function(data){
-
-            var savedFilters = data.state.filters;
-            var viewport = data.state.viewport;
-            var pan = data.state.pan;
-            var zoom = data.state.zoom || viewer.viewport.getMaxZoom();
-
-
-            //pan and zoom have preference over viewport
-            if (pan && zoom) {
-
-                viewer.viewport.panTo(pan);
-                viewer.viewport.zoomTo(zoom);
-            
-            } else {
-                if(viewport) {
-                    console.log("here");
-                    var bounds = new OpenSeadragon.Rect(viewport.x, viewport.y, viewport.width, viewport.height);
-                    viewer.viewport.fitBounds(bounds, true);
-                }
-            }
-            // check if there are savedFilters
-            if (savedFilters) {
-              filteringtools.showFilterControls();
-
-              for(var i=0; i<savedFilters.length; i++){
-                    
-
-                    var f = savedFilters[i];
-                    var filterName = f.name;
-
-                    jQuery("#"+filterName+"_add").click();
-                    if(filterName == "SobelEdge"){
-                         console.log("sobel");
-                    }else {
-                        jQuery("#control"+filterName).val(1*f.value);
-                        jQuery("#control"+filterName+"Num").val(1*f.value);
-                
-                    }
-                }
-            }
-            filteringtools.updateFilters();
-        
-        });
-        }
 
         if(bound_x && bound_y){
             var ipt = new OpenSeadragon.Point(+bound_x, +bound_y);
@@ -289,7 +246,7 @@ function isAnnotationActive(){
       if (!String.prototype.format) {
         String.prototype.format = function() {
             var args = arguments;
-            return this.replace(/{(\d+)}/g, function(match, number) { 
+            return this.replace(/{(\d+)}/g, function(match, number) {
             return typeof args[number] != 'undefined'
                 ? args[number]
                 : match
@@ -322,4 +279,3 @@ function isAnnotationActive(){
 
 </body>
 </html>
-
