@@ -241,8 +241,8 @@ annotools.prototype.generateSVG = function (annotations) {
       var algorithm_id = annotation.provenance.analysis.execution_id
       var color = algorithm_color[algorithm_id];
 	  //use the same color as algorithm does
-	  if(annotation.color)
-		   color =annotation.color; 
+	 // if(annotation.color)
+		   //color =annotation.color; 
 	 
 	 // var svg = 
      if(annotation.provenance.analysis.source=="computer"){

@@ -46,6 +46,7 @@ var annotools = function (options) {
   this.marking_choice = 'LymPos';
   //this.isLoadedWeight = false;
   this.loadHeatmapWeight();
+  this.loadChangeUsername();
   this.btn_revertWeight = document.getElementById('btn_revertWeight');
   this.btn_saveWeight = document.getElementById('btn_saveHeatmapWeight');
   this.btn_saveweight_help = document.getElementById('btn_heatmapweight_help');
@@ -77,6 +78,7 @@ Necrosis Prediction box:\n       Show necrosis prediction.\n\n\
 Lym Prediction with Nec Filtering box:\n       Show lymphocyte prediction with necrosis filtering (recommended).\n\n\
 ');}, false);
 
+  /*
   for (var su_i = 0; su_i <= 64; ++su_i) {
       switch_user_eles = document.getElementById('switch_user_' + su_i.toString());
       if (switch_user_eles != null) {
@@ -85,6 +87,7 @@ Lym Prediction with Nec Filtering box:\n       Show lymphocyte prediction with n
           break;
       }
   }
+  */
 
   this.btn_savemark_var = document.getElementById('btn_savemark');
   this.btn_savemark_var.addEventListener('click', this.markSaveClick.bind(this), false);
@@ -3323,9 +3326,9 @@ annotools.prototype.saveHeatmapWeight = function(event)
 annotools.prototype.loadHeatmapWeight = function()
 {
     var self = this;
-    console.log('Load heatmap weights');
-    console.log(self.iid);
-    console.log(this.username);
+    //console.log('Load heatmap weights');
+    //console.log(self.iid);
+    //console.log(this.username);
     
     // Start API
      var url1 = "api/Data/lymphocyteData.php?case_id="+  self.iid +"&username=" + this.username;
@@ -3337,8 +3340,8 @@ annotools.prototype.loadHeatmapWeight = function()
 
         try{
             var data = JSON.parse(d);
-            console.log('Retrived heat weights: ' + JSON.stringify(data[0]));
-            console.log("Fetched data length: " + data.length);
+            //console.log('Retrived heat weights: ' + JSON.stringify(data[0]));
+            //console.log("Fetched data length: " + data.length);
             
             // Start weights
             var sl1 = document.getElementById('slide1');
@@ -3349,11 +3352,11 @@ annotools.prototype.loadHeatmapWeight = function()
             
             if ( data.length > 0) {
     
-                console.log("case_id" + data[0].case_id);
-                console.log("lymweight" + data[0].lymweight);
-                console.log("necweight" + data[0].necweight);
-                console.log("smoothness" + data[0].smoothness);
-                console.log("username" + data[0].username);
+                //console.log("case_id" + data[0].case_id);
+                //console.log("lymweight" + data[0].lymweight);
+                //console.log("necweight" + data[0].necweight);
+                //console.log("smoothness" + data[0].smoothness);
+                //console.log("username" + data[0].username);
                 
                 var lym = data[0].lymweight;
                 var nec = data[0].necweight;
@@ -3506,5 +3509,68 @@ annotools.prototype.revertWeight = function(event)
 
     self.getMultiAnnot();
 
+}
+
+annotools.prototype.isSuperuser = function()
+{
+    //to do:  implement code to manage the lymphocyte superusers
+    var isSuperuser = true;
+    
+    return isSuperuser;
+}
+
+
+annotools.prototype.loadChangeUsername = function()
+{
+    var self = this;
+    
+    console.log('loadChangeUsername ' + self.username);
+    
+    var url1 = "api/Data/getLymphocyteDataByCaseId.php?case_id=" +  self.iid;
+    
+    // Debug
+    console.log(url1);
+
+    jQuery.get(url1, function(d) {
+        
+        var container =  jQuery('#switchuserpanel');
+        
+        jQuery('#closeSwitchUser').click(function (e) {
+	        e.preventDefault();
+            jQuery('#switchuserpanel').hide('slide');
+        })
+
+        try {
+            var data = JSON.parse(d);
+            //console.log("Fetched data users length: " + data.length);
+            
+            // Start users
+            console.log(data);
+            
+            if ( data.length > 0) {
+                for ( var j = 0; j < data.length; j++ ) {
+                    //console.log("username: " + data[j].username);
+                    if (data[j].username != null) {
+                        if (data[j].username.trim() === self.username) {
+                            container.append('<label><input type="radio" name="usergroup" value="' + data[j].username + '" id="switch_user_'+ j +'" class="radio_user" checked="checked" /> ' + data[j].username + '</label><br />');
+                        }else {
+                            container.append('<label><input type="radio" name="usergroup" value="' + data[j].username + '" id="switch_user_'+ j +'" class="radio_user" /> ' + data[j].username + '</label><br />');      
+                        }
+                    
+                        //switch
+                        var switch_user_eles = document.getElementById('switch_user_' + j.toString());
+                        if (switch_user_eles != null) {
+                            switch_user_eles.addEventListener('click', self.switchUserRadiobuttonChange.bind(self), false);
+                        } else {
+                            break;
+                        }
+                    }
+                } 
+            }
+        } catch (e){
+            console.log('ERROR');
+            console.log(e);
+        }
+    });
 }
 

@@ -294,7 +294,7 @@ ToolBar.prototype.createButtons = function () {
             var n = {}
 
             n.refKey = d[i].provenance.analysis_execution_id;
-            console.log("n.refKey: " + n.refKey);
+            //console.log("n.refKey: " + n.refKey);
             if (n.refKey.includes('lym_v')) {
                 var ver = parseInt(n.refKey.split('lym_v')[1].split('-')[0]);
                 if (ver > max_ver) {
@@ -302,13 +302,13 @@ ToolBar.prototype.createButtons = function () {
                 }
              }
         }
-        console.log("version: " + max_ver);
+        //console.log("version: " + max_ver);
         
         for (var i = 0; i < d.length; i++) {
             var n = {};
             
             n.refKey = d[i].provenance.analysis_execution_id;
-            console.log("n.refKey: " + n.refKey);
+            //console.log("n.refKey: " + n.refKey);
         
             if (n.refKey == 'lym_v'+max_ver+'-high_res' || n.refKey == 'lym_v'+max_ver+'-low_res' || n.refKey == 'humanmark') {
                 SELECTED_ALGORITHM_LIST.push(n.refKey);
@@ -357,7 +357,7 @@ ToolBar.prototype.createButtons = function () {
     tool.append(this.homebutton);
       
     this.micbutton = jQuery('<img>', {
-        src: 'images/home_rest.png',
+        src: 'images/camic_vector.svg',
         class: 'toolButton inactive',
         title: 'caMicroscope'
     });
@@ -422,7 +422,7 @@ ToolBar.prototype.createButtons = function () {
     tool.append(this.showWeightPanel);    // Button for showing the weight panel
       
     this.freeMarkupButton = jQuery('<img>', {
-      'title': 'Free line Markup',
+      'title': 'Free Line Markup',
       'class': 'toolButton inactive',
       'src': 'images/pencil.svg',
       'id': 'freeLineMarkupButton'
@@ -489,7 +489,7 @@ ToolBar.prototype.createButtons = function () {
     */
     
     this.switchUserButton.on('click', function () {
-        if (this.superuser) {
+        if (this.annotools.isSuperuser()) {
             if (jQuery('#switchuserpanel').is(":visible"))
                 jQuery('#switchuserpanel').hide();
             else
@@ -584,13 +584,13 @@ ToolBar.prototype.createButtons = function () {
 
   this.titleButton = jQuery('<p>', {
     'class': 'titleButton',
-    'text': 'caMic Lymphocyte'
+    'text': 'caMic Lymphocyte App'
   })
   tool.append(this.titleButton)
 
   this.iidbutton = jQuery('<p>', {
     'class': 'iidButton',
-    'text': 'Case Id: ' + this.iid
+    'text': 'Case ID: ' + this.iid
   })
   tool.append(this.iidbutton)
 

@@ -57,10 +57,10 @@
 }
 
 #switchuserpanel {
-    width: 200px;
+    width: 235px;
     font-family: Arial, Roboto;
     font-size: 12px;
-    height: 240px;
+    height: 270px;
     top: 60px;
     left: 0;
     position: fixed;
@@ -71,6 +71,7 @@
     border-radius: 10px;
     color: #fff;
     opacity: 0.9;
+    overflow: auto;
 }
 
 .lb_heatmap {
@@ -103,3 +104,14 @@
 	top:0px;
         left:0px;
 }
+
+#closeSwitchUser {
+	display: inline-block;
+	width: 16px;
+	float:right;
+}
+
+#closeSwitchUser:hover {
+    background-color: crimson;
+}
+    

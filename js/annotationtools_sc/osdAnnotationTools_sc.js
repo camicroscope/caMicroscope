@@ -211,7 +211,7 @@ annotools.prototype.getAnnot = function (viewer) // Get Annotation from the API
   var area = (max.x - origin.x) * (max.y - origin.y)
 
   // var t1 = performance.now()
-  this.annotations = this.AnnotationStore.getAnnotations(this.x1- 0.1, this.y1- 0.1, this.x2, this.y2, area, boundX, boundY, boundX, boundY, function (data) {
+  this.annotations = this.AnnotationStore.getAnnotations(this.x1, this.y1, this.x2, this.y2, area, boundX, boundY, boundX, boundY, function (data) {
     self.annotations = data
     self.displayGeoAnnots()
     self.setupHandlers()
@@ -2499,6 +2499,8 @@ annotools.prototype.mergeStep1 = function() {
         alert("Error saving markup! Wrong secret");
       } else {   
         alert("Successfully saved markup!");
+	//self.deleteAnnotationWithinRectangle(geoJSONTemplate); 
+        //console.log("deleteAnnotationWithinRectangle");
       }
       
       console.log("err is:"+err)
@@ -2594,15 +2596,16 @@ annotools.prototype.getAlgorithmColorFromMenuTree = function() {
 
 annotools.prototype.generateCompositeDataset = function() { 
 
-  //alert("hello from mergebutton3."); 
+  //alert("This function is temporally disabled."); 
+  //return;
   
   var self = this;
  
-//image variables
+ //image variables
   var case_id=this.iid;
   console.log('case_id is: '+ case_id);
 
-// user 
+  // user 
    var user = this.user;   
    console.log('user is: '+ user); 
   
@@ -2619,8 +2622,8 @@ annotools.prototype.generateCompositeDataset = function() {
           var id = r.id;
           console.log("Composite Order submitted!, Job ID: "+id);		  
          
-		  //jQuery('#algorithmList').html(function(){ return "<br /><br />Processing..."; });
-		  alert("Composite Order Processing...."); 
+	  //jQuery('#algorithmList').html(function(){ return "<br /><br />Processing..."; });
+	  alert("Composite Order Processing...."); 
 		  
          //self.toolBar.titleButton.hide()
           //self.toolBar.ajaxBusy.show();

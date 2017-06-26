@@ -92,7 +92,9 @@ function goodalgo (data, status) {
 var ALGORITHM_LIST = {};
 var SELECTED_ALGORITHM_LIST = [];
 var SELECTED_ALGORITHM_KEYS = [];
+var SELECTED_ALGORITHM_COLOR = {};
 var AlgorithmSelectorHidden = true;
+
 ToolBar.prototype.toggleAlgorithmSelector = function () {
   var self  = this;
   console.log("toggleAlgorithmSelector");
@@ -107,24 +109,14 @@ ToolBar.prototype.toggleAlgorithmSelector = function () {
 // sorting the algorithms
    var tmp_algorithm_list=[];
   for(var i=0; i < d.length; i++){
-    tmp_algorithm_list[i]=d[i].provenance.analysis_execution_id;
-   }
-  tmp_algorithm_list = tmp_algorithm_list.sort();
-
-    /*
-    ALGORITHM_LIST = d;
-    for(var i=0; i < d.length; i++){
-      //n.color = available_colors[i%7];
-      //algorithm_color[d[i].provenance.analysis_execution_id] = available_colors[i%7]
-      algorithm_color[d[i].provenance.analysis_execution_id] = available_colors[i%available_colors.length];
-
-      htmlStr += "<li><input type='checkbox' class='algorithmCheckbox' value="+i+" /><span class='algoColorBox' style='background:"+ algorithm_color[d[i].provenance.analysis_execution_id] +"'></span> "+d[i].provenance.analysis_execution_id
-       + "</li>";
-    }*/
-
+    tmp_algorithm_list[i]=d[i].provenance.analysis_execution_id;		 
+   }	
+  tmp_algorithm_list = tmp_algorithm_list.sort();    
+	  
     ALGORITHM_LIST = d;
     for(var i=0; i < tmp_algorithm_list.length; i++){
-       algorithm_color[tmp_algorithm_list[i]] = available_colors[i%available_colors.length];
+       algorithm_color[tmp_algorithm_list[i]] = available_colors[i%available_colors.length];  
+       SELECTED_ALGORITHM_COLOR[tmp_algorithm_list[i]]= available_colors[i%available_colors.length];
       htmlStr += "<li><input type='checkbox' class='algorithmCheckbox' value="+i+" /><span class='algoColorBox' style='background:"+ algorithm_color[tmp_algorithm_list[i]] +"'></span> "+tmp_algorithm_list[i]
        + "</li>";
      }
@@ -157,7 +149,7 @@ ToolBar.prototype.toggleAlgorithmSelector = function () {
       SELECTED_ALGORITHM_KEYS = [];
       jQuery("#algorithmList input:checked").each(function() {
 	console.log(ALGORITHM_LIST);
-        SELECTED_ALGORITHM_LIST.push(ALGORITHM_LIST[(this).value * 1].provenance.analysis_execution_id);
+        SELECTED_ALGORITHM_LIST.push(tmp_algorithm_list[(this).value * 1]);
         SELECTED_ALGORITHM_KEYS.push((this).value*1);
       });
 
@@ -237,150 +229,204 @@ ToolBar.prototype.createButtons = function () {
   // this.tool.makeDraggable(); //Make it Draggable.
 
   if (this.annotationActive) {
+      /*
+       * Ganesh
+       * Mootools to Jquery for creation of toolbar buttons
+       */
 
-    /*
-     * Ganesh
-     * Mootools to Jquery for creation of toolbar buttons
-     */
-    this.homebutton = jQuery('<img>', {
-			src: 'images/camic_white_24px.svg',
-			class: 'toolButton firstToolButtonSpace',
-			title: 'Home'
-		});
-		tool.append(this.homebutton);
-      
-    this.lymphbutton = jQuery('<img>', {
-      'title': 'Lymphocyte & Plasma Cell Annotation',
-      'class': 'toolButton',
-      'src': 'images/Heatmap.svg'
-    })
+      /**
+       * Toolbar buttons
+       */
+      this.homebutton = jQuery('<img>', {
+          'data-toggle': 'tooltip', 'data-placement': 'bottom',
+          src: 'images/camic_white_24px.svg,
+          class: 'toolButton firstToolButtonSpace',
+          title: 'QuIP Home'
+      });
+      tool.append(this.homebutton);
 
-    tool.append(this.lymphbutton) // Lymphocyte Button
+      this.lymphbutton = jQuery('<img>', {
+          'data-toggle': 'tooltip',
+          'data-placement': 'bottom',
+          'title': 'Lymphocyte & Plasma Cell Annotation App',
+          'class': 'toolButton',
+          'src': 'images/Heatmap.svg'
+      });
 
-    this.spacer1 = jQuery('<img>', {
-      'class': 'spacerButton',
-      'src': 'images/spacer.svg'
-    })
-    tool.append(this.spacer1)
+      tool.append(this.lymphbutton); // Lymphocyte Button
 
-  /*a link to segment curation application with this composite button */
-   this.compositebutton = jQuery('<img>', {
-      title: 'Composite',
-      class: 'toolButton',
-      src: 'images/composite.png',
-      id: 'gotocompositebutton'
-    })
-    tool.append(this.compositebutton)
+      this.spacer1 = jQuery('<img>', {
+          'class': 'spacerButton',
+          'src': 'images/spacer.svg'
+      });
+      tool.append(this.spacer1);
 
-
-    this.rectbutton = jQuery('<img>', {
-      title: 'Draw Rectangle',
-      id: 'drawRectangle',
-      class: 'toolButton firstToolButtonSpace',
-      src: 'images/rect.svg'
-    })
-    //tool.append(this.rectbutton)
-
-    this.ellipsebutton = jQuery('<img>', {
-      'title': 'Draw Ellipse',
-      'class': 'toolButton',
-      'src': 'images/ellipse.svg'
-    })
-    //tool.append(this.ellipsebutton)
-
-    this.pencilbutton = jQuery('<img>', {
-      'title': 'Draw Freeline',
-      'class': 'toolButton',
-      'src': 'images/pencil.svg'
-    })
-    //tool.append(this.pencilbutton) // Pencil Tool
-
-    this.measurebutton = jQuery('<img>', {
-      'title': 'Measurement Tool',
-      'class': 'toolButton',
-      'src': 'images/measure.svg'
-    })
-    // tool.append(this.measurebutton)
-
-    this.spacer2 = jQuery('<img>', {
-      'class': 'spacerButton',
-      'src': 'images/spacer.svg'
-    })
-    tool.append(this.spacer2)
-
-    this.filterbutton = jQuery('<img>', {
-      'title': 'Filter Markups',
-      'class': 'toolButton firstToolButtonSpace',
-      'src': 'images/filter.svg'
-    })
-    tool.append(this.filterbutton) // Filter Button
+      /*a link to segment curation application with this composite button */
+      this.compositebutton = jQuery('<img>', {
+          'data-toggle': 'tooltip',
+          'data-placement': 'bottom',
+          title: 'Segment Curation App',
+          class: 'toolButton',
+          src: 'images/composite.png',
+          id: 'gotocompositebutton'
+      });
+      tool.append(this.compositebutton);
 
 
+      this.rectbutton = jQuery('<img>', {
+          'data-toggle': 'tooltip',
+          'data-placement': 'bottom',
+          title: 'Draw Rectangle',
+          id: 'drawRectangle',
+          class: 'toolButton firstToolButtonSpace',
+          src: 'images/rect.svg'
+      });
+      //tool.append(this.rectbutton)
 
-    this.hidebutton = jQuery('<img>', {
-      'title': 'Show/Hide Markups',
-      'class': 'toolButton',
-      'src': 'images/hide.svg'
-    })
-    //tool.append(this.hidebutton)
+      this.ellipsebutton = jQuery('<img>', {
+          'data-toggle': 'tooltip',
+          'data-placement': 'bottom',
+          'title': 'Draw Ellipse',
+          'class': 'toolButton',
+          'src': 'images/ellipse.svg'
+      });
+      //tool.append(this.ellipsebutton)
 
-    this.fullDownloadButton = jQuery('<img>', {
-      'title': 'Download All Markups (Coming Soon)',
-      'class': 'toolButton',
-      'src': 'images/fullDownload.svg'
-    })
-    //tool.append(this.fullDownloadButton)
-    this.spacer1 = jQuery('<img>', {
-      'class': 'spacerButton',
-      'src': 'images/spacer.svg'
-    })
-    tool.append(this.spacer1)
+      this.pencilbutton = jQuery('<img>', {
+          'data-toggle': 'tooltip',
+          'data-placement': 'bottom',
+          'title': 'Draw Freeline',
+          'class': 'toolButton',
+          'src': 'images/pencil.svg'
+      });
+      //tool.append(this.pencilbutton) // Pencil Tool
 
-    this.analyticsbutton = jQuery('<img>', {
-      'title': 'Image Analysis',
-      'class': 'toolButton',
-      'src': 'images/analyze.png'
+      this.measurebutton = jQuery('<img>', {
+          'data-toggle': 'tooltip',
+          'data-placement': 'bottom',
+          'title': 'Measurement Tool',
+          'class': 'toolButton',
+          'src': 'images/measure.svg'
+      });
+      // tool.append(this.measurebutton)
 
-    })
-    tool.append(this.analyticsbutton)
+      this.spacer2 = jQuery('<img>', {
+          'class': 'spacerButton',
+          'src': 'images/spacer.svg'
+      });
+      tool.append(this.spacer2);
 
-    this.filterImgButton = jQuery('<img>', {
-      'title': 'View Results',
-      'class': 'toolButton',
-      'src': 'images/insta.png'
-    })
-    //tool.append(this.filterImgButton)
+      this.filterbutton = jQuery('<img>', {
+          'data-toggle': 'tooltip',
+          'data-placement': 'bottom',
+          'title': 'Filter Markups',
+          'class': 'toolButton firstToolButtonSpace',
+          'src': 'images/filter.svg'
+      });
+      tool.append(this.filterbutton); // Filter Button
 
-    this.bookmarkButton = jQuery('<img>', {
-      'title': 'Bookmark/Share current state',
-      'class': 'toolButton',
-      'src': 'images/ic_insert_link_white_24dp_1x.png'
-    })
-    //tool.append(this.bookmarkButton)
 
-    this.partialDownloadButton = jQuery('<img>', {
-      'title': 'Download Partial Markups (Coming Soon)',
-      'class': 'toolButton',
-      'src': 'images/partDownload.svg'
-    })
+      this.hidebutton = jQuery('<img>', {
+          'data-toggle': 'tooltip',
+          'data-placement': 'bottom',
+          'title': 'Show/Hide Markups',
+          'class': 'toolButton',
+          'src': 'images/hide.svg'
+      });
+      //tool.append(this.hidebutton)
+
+      this.fullDownloadButton = jQuery('<img>', {
+          'data-toggle': 'tooltip',
+          'data-placement': 'bottom',
+          'title': 'Download All Markups (Coming Soon)',
+          'class': 'toolButton',
+          'src': 'images/fullDownload.svg'
+      });
+      //tool.append(this.fullDownloadButton)
+      this.spacer1 = jQuery('<img>', {
+          'class': 'spacerButton',
+          'src': 'images/spacer.svg'
+      });
+      tool.append(this.spacer1);
+
+      this.analyticsbutton = jQuery('<img>', {
+          'data-toggle': 'tooltip',
+          'data-placement': 'bottom',
+          'title': 'Image Analysis',
+          'class': 'toolButton',
+          'src': 'images/analyze.png'
+
+      });
+      tool.append(this.analyticsbutton);
+
+      this.filterImgButton = jQuery('<img>', {
+          'data-toggle': 'tooltip',
+          'data-placement': 'bottom',
+          'title': 'View Results',
+          'class': 'toolButton',
+          'src': 'images/insta.png'
+      });
+      //tool.append(this.filterImgButton)
+
+      this.bookmarkButton = jQuery('<img>', {
+          'data-toggle': 'tooltip',
+          'data-placement': 'bottom',
+          'title': 'Bookmark/Share current state',
+          'class': 'toolButton',
+          'src': 'images/ic_insert_link_white_24dp_1x.png'
+      });
+      //tool.append(this.bookmarkButton)
+
+      this.partialDownloadButton = jQuery('<img>', {
+          'data-toggle': 'tooltip',
+          'data-placement': 'bottom',
+          'title': 'Download Partial Markups (Coming Soon)',
+          'class': 'toolButton',
+          'src': 'images/partDownload.svg'
+      });
     // tool.append(this.partialDownloadButton)  //Partial Download
 
     /*
-     * Event handlers on click for the buttons
+     * Event handlers for toolbar buttons
      */
 		this.homebutton.on('click', function(){
 		 window.location.href = "/select.php";
 		});
 
     this.lymphbutton.on('click', function () {
-      window.location.href = "/camicroscope/osdCamicroscope_Lymph.php?tissueId="+this.iid;
+        var tissueId=this.iid;	
+	window.location.href = "/camicroscope/osdCamicroscope_Lymph.php?tissueId="+tissueId;	
     }.bind(this))
 
     this.compositebutton.on('click', function () {
-    this.mode = 'composite';
-	  var tissueId=annotool.iid;
-	  console.log(tissueId)
-      location.href = "/camicroscope/osdCamicroscope_sc.php?tissueId="+tissueId+"&cancerType=quip";
+       this.mode = 'composite';
+       var tissueId=this.iid;
+       //window.location.href = "/camicroscope/osdCamicroscope_sc.php?tissueId="+tissueId;
+      	    
+       var x1 = annotool.imagingHelper._viewportOrigin['x'];
+       var y1 = annotool.imagingHelper._viewportOrigin['y'];
+       var x2 = x1 + annotool.imagingHelper._viewportWidth;
+       var y2 = y1 + annotool.imagingHelper._viewportHeight;  
+       var zoom = viewer.viewport.getZoom();	
+       //zoom = parseInt(zoom);    
+       if (zoom<1.0) zoom=1.0;  
+       var width,height;	  
+	//get image width and height	
+       var url = 'api/Data/getImageInfoByCaseID.php?case_id=' + tissueId;
+        //console.log(url);
+       jQuery.get(url, function (data) {
+           //console.log(data);
+	   try{
+           	this_image = JSON.parse(data); 
+           	width  = this_image[0].width;
+	  	height = this_image[0].height;	
+	  	var x= parseInt(((x1+x2)/2.0)*width);
+	   	var y= parseInt(((y1+y2)/2.0)*height);       
+	  	window.location.href = "/camicroscope/osdCamicroscope_sc.php?tissueId="+tissueId+"&cancerType=quip&x="+x+"&y="+y+"&zoom="+zoom;
+	   } catch (error) {
+		window.location.href = "/camicroscope/osdCamicroscope_sc.php?tissueId="+tissueId;
+	   }
+      })
     }.bind(this))
 
 
@@ -553,7 +599,7 @@ ToolBar.prototype.createButtons = function () {
 
   this.iidbutton = jQuery('<p>', {
     'class': 'iidButton',
-    'text': 'case_id: ' + this.iid
+    'text': 'Case ID: ' + this.iid
   })
   tool.append(this.iidbutton)
 
