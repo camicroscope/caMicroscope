@@ -1,4 +1,4 @@
-    <?php
+  <?php
 	require '../authenticate.php';
 
     $config = require 'api/Configuration/config.php';
@@ -7,19 +7,27 @@
     <!DOCTYPE html>
     <html>
     <head>
-        <meta charset='utf-8'>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <title>[caMicroscope OSD][Subject: <?php echo json_encode($_GET['tissueId']); ?>][User: <?php echo $_SESSION["name"]; ?>]</title>
 
+        <!-- Tooltip dependencies -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous"> -->
+        <!-- Optional theme -->
+        <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous"> -->
+        <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+        <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>-->
+        <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>-->
 
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
         <link rel="stylesheet" type="text/css" media="all" href="css/annotools.css" />
-        <!--<link rel="stylesheet" type="text/css" media="all" href="css/jquery-ui.min.css" />-->
+        <!-- <link rel="stylesheet" type="text/css" media="all" href="css/jquery-ui.min.css" /> -->
         <link rel="stylesheet" type="text/css" media="all" href="css/simplemodal.css" />
         <link rel="stylesheet" type="text/css" media="all" href="css/ui.fancytree.min.css" />
-
-	<!--        <script src="js/dependencies/jquery.js"></script> -->
-	<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+        <!-- <script src="js/dependencies/jquery.js"></script> -->
+        <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 
         <!--JSON Form dependencies-->
 
@@ -31,7 +39,7 @@
         <script type="text/javascript" src="js/dependencies/jsonform.js"></script>
         <script type="text/javascript" src="js/dependencies/jsv.js"></script>
         <!--End JSON Form dependencies -->
-	    <!--<script src="/featurescapeapps/js/findapi_config.js" type="text/javascript"></script>-->
+        <!--<script src="/featurescapeapps/js/findapi_config.js" type="text/javascript"></script>-->
         <script src="/js/config.js"></script>
 
         <script src="js/openseadragon/openseadragon-bin-2.0.0/openseadragon.js"></script>
@@ -103,18 +111,19 @@
             <div class="demoarea">
                 <div id="viewer" class="openseadragon"></div>
             </div>
-        <div id"navigator"></div>
+        <div id="navigator"></div>
 
         </div>
 
         <script type="text/javascript">
           $.noConflict();
+
           var annotool = null;
           var tissueId = <?php echo json_encode($_GET['tissueId']); ?>;
 
 
           var imagedata = new OSDImageMetaData({imageId:tissueId});
-
+          imagedata.retrieveImageSize();
           var MPP = imagedata.metaData[0];
 
 
@@ -157,11 +166,14 @@
               barThickness: 2
             });
 
-            viewer.setFilterOptions({
-                filters: {
-                    processors: OpenSeadragon.Filters.BRIGHTNESS(0)
-                }
-});
+          /*
+          // This plugin requires OpenSeadragon 2.1+
+           viewer.setFilterOptions({
+               filters: {
+                   processors: OpenSeadragon.Filters.BRIGHTNESS(0)
+               }
+           });
+           */
 
     //console.log(viewer);
 function isAnnotationActive(){
@@ -198,12 +210,18 @@ function isAnnotationActive(){
         annotool.toolBar = toolBar;
         toolBar.createButtons();
 
+        // For the bootstrap tooltip
+        // jQuery('[data-toggle="tooltip"]').tooltip();
+        // commented out, working on style
+
         //var panel = new panel();
         jQuery("#panel").hide();
         /*Pan and zoom to point*/
         var bound_x = <?php echo json_encode($_GET['x']); ?>;
         var bound_y = <?php echo json_encode($_GET['y']); ?>;
-        var zoom = <?php echo json_encode($_GET['zoom']); ?> || viewer.viewport.getMaxZoom();;
+        var zoom = <?php echo json_encode($_GET['zoom']); ?> || viewer.viewport.getMaxZoom();
+        zoom=Number(zoom); // convert string to number if zoom is string
+
         /*
         var savedFilters = [
           {'name': 'Brightness', 'value': 100},
@@ -258,7 +276,7 @@ function isAnnotationActive(){
     /*Zoom to location*/
     /*
         x: 19483.04157968738
-        y:nnnn22274.643967801494
+        y: 22274.643967801494
     */
     /*
         x: 13083.041579687379
@@ -266,11 +284,12 @@ function isAnnotationActive(){
     */
 
           </script>
+
 <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
 
   ga('create', 'UA-46271588-1', 'auto');
   ga('send', 'pageview');

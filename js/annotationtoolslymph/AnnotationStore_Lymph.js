@@ -83,6 +83,12 @@ AnnotationStore.prototype.fetchAnnotations = function(x1,y1,x2,y2, footprint, al
     algorithms_urlparam = algorithms_urlparam.replace("]", "%5D");
     algorithms_urlparam = algorithms_urlparam.replace(/"/g, "%22");
     //console.log(algorithms_urlparam);
+	
+    //display all composite_input annotations while in low scale viewport
+    var algorithm_number = algorithms.length;   	
+    var index=algorithms_urlparam.indexOf("composite_input");	 
+    if(algorithm_number ==1 && index > -1) footprint = 1 ;  //find composite_input annotation only 
+	
     var url1 = "api/Data/getMultipleAnnotsWithAttr.php?iid="+  self.iid +"&x=" + x1+ "&y=" + y1 + "&x1=" + midX + "&y1=" + midY + "&footprint="+ footprint + "&algorithms=" + algorithms_urlparam;
 	  //nnnconsole.log(url1);
     //var url1 = "http://dragon.cci.emory.edu:9099/services/TCGA/GeoJSONImageMetaData/query/getMultipleMarkups?api_key=4fbb38a3-1821-436c-a44d-8d3bc5efd33e&CaseId=" + self.iid +"&x1=" + x1+ "&y1=" + y1 + "&x2=" + midX + "&y2=" + midY + "&footprint="+ footprint + "&algorithms=" + algorithms_urlparam + "&";

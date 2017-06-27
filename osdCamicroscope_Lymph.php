@@ -152,39 +152,15 @@
         <button type="button" class="btn_mark" id="btn_mark_help">&#x2753</button> </div>
         <div id="div_weight_locked" style="display: none;">Free</div>
 
-        <div id="switchuserpanel">
-        Change username to: <br><p><p>
-        <?php
-	    /*
-            $iid = $_GET['tissueId'];
-            $orig_email = $_GET['email'];
-            $files = scandir('data/');
-            $ele_id = 0;
-            for ($i = 0; $i < count($files); ++$i) {
-                $fname = $files[$i];
-                if (strpos($fname, $iid) !== false) {
-                    $email = explode('_', $fname)[1];
-                    $email = substr($email, 0, strlen($email) - 4);
-                    if (strcmp($email, $orig_email) != 0) {
-                        printf("<input type=\"radio\" name=\"usergroup\" value=\"%s\" \
-                            id=\"switch_user_%d\" class=\"radio_user\">\n", $email, $ele_id);
-                    } else {
-                        printf("<input type=\"radio\" name=\"usergroup\" value=\"%s\" checked=\"checked\" \
-                            id=\"switch_user_%d\" class=\"radio_user\">\n", $email, $ele_id);
-                    }
-                    printf("<label for=\"%s\" class=radio_user> %s </label><br>\n", $email, $email);
-                    $ele_id ++;
-                }
-            }
-	    */
-        ?>
+        <div id="switchuserpanel"><a href='#'><div id='closeSwitchUser'><img src='images/ic_close_white_24px.svg' title='Close' alt="Close X" height="16" width="16"></div></a>
+            <h6><img src="images/switch_user.svg" alt="Switch user" height="30" width="30"> Change username to:</h6><br />
         </div>
 
         <div id="algosel"><div id="tree"></div></div>
             <div class="demoarea">
                 <div id="viewer" class="openseadragon"></div>
             </div>
-        <div id"navigator"></div>
+        <div id="navigator"></div>
 
         </div>
         <div id="confirmDelete" style="display:none">
@@ -196,7 +172,7 @@
           var tissueId = <?php echo json_encode($_GET['tissueId']); ?>;
 
           var cancerType = "<?php echo $_SESSION["cancerType"] ?>";
-          console.log(cancerType);
+          //console.log(cancerType);
           var imagedata = new OSDImageMetaData({imageId:tissueId});
           //console.log(tissueId);
           //console.log(imagedata);
@@ -215,7 +191,7 @@
                 navigatorPosition:   "BOTTOM_RIGHT",
                 //navigatorId: "navigator",
                 zoomPerClick: 2,
-                zoomPerScroll: 1,
+                //zoomPerScroll: 1,
                 animationTime: 0.75,
                 maxZoomPixelRatio: 2,
                 visibilityRatio: 1,
@@ -233,7 +209,7 @@
             imagingHelper.setMaxZoom(2);
             //console.log(this.MPP);
             viewer.scalebar({
-              type: OpenSeadragon.ScalebarType.MICROSCOPY,
+              type: OpenSeadragon.ScalebarType.MAP,
               pixelsPerMeter: (1/(parseFloat(this.MPP["mpp-x"])*0.000001)),
               xOffset: 5,
               yOffset: 10,
@@ -280,23 +256,6 @@
                 annotool: annotool
 
         });
-
-        /*
-        $.ajax({
-            type: "POST",
-            url: "php/check_super_user.php",
-            data: {user: sessionUsername},
-            dataType: "text",
-            success: function(data) {
-                console.log(data);
-                if (data == 1)
-                    toolBar.superuser = true;
-                else
-                    toolBar.superuser = false;
-            }
-        });
-        */
-
         annotool.toolBar = toolBar;
         annotationHandler.annotool = annotool;
         annotationHandler.toolbar = toolBar;
@@ -348,7 +307,7 @@
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
 
   ga('create', 'UA-46271588-1', 'auto');
   ga('send', 'pageview');
