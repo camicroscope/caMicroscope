@@ -404,7 +404,7 @@ ToolBar.prototype.createButtons = function () {
 		});
 
     this.sharebutton.on('click', function () {
-	      alert(window.location.href);
+      window.prompt("Share this link", window.location.href);
     }.bind(this));
 
     this.lymphbutton.on('click', function () {
