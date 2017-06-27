@@ -148,6 +148,11 @@
     //        levels:[0.001, 0.01, 0.2, 0.1,  1]
     //      });
 
+            // add small watermark
+            viewer.addHandler('update-viewport', function() {
+                 viewer.drawer.context.fillText('caMicroscope', document.documentElement.clientWidth-100, document.documentElement.clientHeight-20)
+            });
+
             viewer.addHandler("open", addOverlays);
             viewer.clearControls();
             viewer.open("<?php print_r($config['fastcgi_server']); ?>?DeepZoom=" + fileLocation);
