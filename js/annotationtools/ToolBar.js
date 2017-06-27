@@ -109,13 +109,13 @@ ToolBar.prototype.toggleAlgorithmSelector = function () {
 // sorting the algorithms
    var tmp_algorithm_list=[];
   for(var i=0; i < d.length; i++){
-    tmp_algorithm_list[i]=d[i].provenance.analysis_execution_id;		 
-   }	
-  //tmp_algorithm_list = tmp_algorithm_list.sort();    
-	  
+    tmp_algorithm_list[i]=d[i].provenance.analysis_execution_id;
+   }
+  //tmp_algorithm_list = tmp_algorithm_list.sort();
+
     ALGORITHM_LIST = d;
     for(var i=0; i < tmp_algorithm_list.length; i++){
-       algorithm_color[tmp_algorithm_list[i]] = available_colors[i%available_colors.length];  
+       algorithm_color[tmp_algorithm_list[i]] = available_colors[i%available_colors.length];
        SELECTED_ALGORITHM_COLOR[tmp_algorithm_list[i]]= available_colors[i%available_colors.length];
       htmlStr += "<li><input type='checkbox' class='algorithmCheckbox' value="+i+" /><span class='algoColorBox' style='background:"+ algorithm_color[tmp_algorithm_list[i]] +"'></span> "+tmp_algorithm_list[i]
        + "</li>";
@@ -239,7 +239,7 @@ ToolBar.prototype.createButtons = function () {
        */
       this.homebutton = jQuery('<img>', {
           'data-toggle': 'tooltip', 'data-placement': 'bottom',
-          src: 'images/camic_white_24px.svg,
+          src: 'images/camic_white_24px.svg',
           class: 'toolButton firstToolButtonSpace',
           title: 'QuIP Home'
       });
@@ -359,6 +359,16 @@ ToolBar.prototype.createButtons = function () {
       });
       tool.append(this.analyticsbutton);
 
+      this.sharebutton = jQuery('<img>', {
+          'data-toggle': 'tooltip',
+          'data-placement': 'bottom',
+          'title': 'Share Current View',
+          'class': 'toolButton',
+          'src': 'images/share.svg'
+      });
+
+      tool.append(this.sharebutton);
+
       this.filterImgButton = jQuery('<img>', {
           'data-toggle': 'tooltip',
           'data-placement': 'bottom',
@@ -393,35 +403,39 @@ ToolBar.prototype.createButtons = function () {
 		 window.location.href = "/select.php";
 		});
 
+    this.sharebutton.on('click', function () {
+	      alert(window.location.href);
+    }.bind(this));
+
     this.lymphbutton.on('click', function () {
-        var tissueId=this.iid;	
-	window.location.href = "/camicroscope/osdCamicroscope_Lymph.php?tissueId="+tissueId;	
-    }.bind(this))
+        var tissueId=this.iid;
+        window.location.href = "/camicroscope/osdCamicroscope_Lymph.php?tissueId="+tissueId;
+    }.bind(this));
 
     this.compositebutton.on('click', function () {
        this.mode = 'composite';
        var tissueId=this.iid;
        //window.location.href = "/camicroscope/osdCamicroscope_sc.php?tissueId="+tissueId;
-      	    
+
        var x1 = annotool.imagingHelper._viewportOrigin['x'];
        var y1 = annotool.imagingHelper._viewportOrigin['y'];
        var x2 = x1 + annotool.imagingHelper._viewportWidth;
-       var y2 = y1 + annotool.imagingHelper._viewportHeight;  
-       var zoom = viewer.viewport.getZoom();	
-       //zoom = parseInt(zoom);    
-       if (zoom<1.0) zoom=1.0;  
-       var width,height;	  
-	//get image width and height	
+       var y2 = y1 + annotool.imagingHelper._viewportHeight;
+       var zoom = viewer.viewport.getZoom();
+       //zoom = parseInt(zoom);
+       if (zoom<1.0) zoom=1.0;
+       var width,height;
+	//get image width and height
        var url = 'api/Data/getImageInfoByCaseID.php?case_id=' + tissueId;
         //console.log(url);
        jQuery.get(url, function (data) {
            //console.log(data);
 	   try{
-           	this_image = JSON.parse(data); 
+           	this_image = JSON.parse(data);
            	width  = this_image[0].width;
-	  	height = this_image[0].height;	
+	  	height = this_image[0].height;
 	  	var x= parseInt(((x1+x2)/2.0)*width);
-	   	var y= parseInt(((y1+y2)/2.0)*height);       
+	   	var y= parseInt(((y1+y2)/2.0)*height);
 	  	window.location.href = "/camicroscope/osdCamicroscope_sc.php?tissueId="+tissueId+"&cancerType=quip&x="+x+"&y="+y+"&zoom="+zoom;
 	   } catch (error) {
 		window.location.href = "/camicroscope/osdCamicroscope_sc.php?tissueId="+tissueId;
