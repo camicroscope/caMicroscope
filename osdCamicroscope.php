@@ -123,7 +123,7 @@
 
 
           var imagedata = new OSDImageMetaData({imageId:tissueId});
-
+          imagedata.retrieveImageSize();
           var MPP = imagedata.metaData[0];
 
 
@@ -221,7 +221,7 @@ function isAnnotationActive(){
         var bound_y = <?php echo json_encode($_GET['y']); ?>;
         var zoom = <?php echo json_encode($_GET['zoom']); ?> || viewer.viewport.getMaxZoom();
         zoom=Number(zoom); // convert string to number if zoom is string
-        
+
         /*
         var savedFilters = [
           {'name': 'Brightness', 'value': 100},
