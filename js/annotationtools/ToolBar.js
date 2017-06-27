@@ -238,10 +238,11 @@ ToolBar.prototype.createButtons = function () {
        * Toolbar buttons
        */
       this.homebutton = jQuery('<img>', {
-          'data-toggle': 'tooltip', 'data-placement': 'bottom',
-          src: 'images/camic_white_24px.svg',
-          class: 'toolButton firstToolButtonSpace',
-          title: 'QuIP Home'
+          'data-toggle': 'tooltip',
+          'data-placement': 'bottom',
+          'src': 'images/camic_white_24px.svg',
+          'class': 'toolButton firstToolButtonSpace',
+          'title': 'QuIP Home'
       });
       tool.append(this.homebutton);
 
@@ -265,10 +266,10 @@ ToolBar.prototype.createButtons = function () {
       this.compositebutton = jQuery('<img>', {
           'data-toggle': 'tooltip',
           'data-placement': 'bottom',
-          title: 'Segment Curation App',
-          class: 'toolButton',
-          src: 'images/composite.png',
-          id: 'gotocompositebutton'
+          'title': 'Segment Curation App',
+          'class': 'toolButton',
+          'src': 'images/composite.png',
+          'id': 'gotocompositebutton'
       });
       tool.append(this.compositebutton);
 
@@ -276,10 +277,10 @@ ToolBar.prototype.createButtons = function () {
       this.rectbutton = jQuery('<img>', {
           'data-toggle': 'tooltip',
           'data-placement': 'bottom',
-          title: 'Draw Rectangle',
-          id: 'drawRectangle',
-          class: 'toolButton firstToolButtonSpace',
-          src: 'images/rect.svg'
+          'title': 'Draw Rectangle',
+          'id': 'drawRectangle',
+          'class': 'toolButton firstToolButtonSpace',
+          'src': 'images/rect.svg'
       });
       //tool.append(this.rectbutton)
 
