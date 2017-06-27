@@ -54,6 +54,12 @@ return array(
     'getLymphocyteData' => "$lymphocyteUrl/DataForLymphocytes/query/getLymphocytes?",
     'getLymphocyteDataByCaseId' => "$lymphocyteUrl/DataForLymphocytes/query/getLymphocytesByCaseId?",
     
+    /* Lymphocyte Superusers */
+    'postSuperuserForLymphocytes' => "$lymphocyteUrl/LymphocyteUsers/submit/json?",
+    'getLymphocyteSuperusers' => "$lymphocyteUrl/LymphocyteUsers/query/getLymphSuperusers?",
+    'getLymphocyteSuperuserByEmail' => "$lymphocyteUrl/LymphocyteUsers/query/getUserByEmail?",
+    'deleteLymphocyteUserByEmail' => "$lymphocyteUrl/LymphocyteUsers/delete/deleteUserByEmail?",
+    
     
    /*Bindaas API for back compatible */
      'postAlgorithmForImage'           => "$annotationsUrl/MarkupsForImages/submit/json",  
