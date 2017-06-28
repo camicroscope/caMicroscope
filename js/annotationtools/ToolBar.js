@@ -112,6 +112,35 @@ ToolBar.prototype.toggleAlgorithmSelector = function () {
     tmp_algorithm_list[i]=d[i].provenance.analysis_execution_id;		 
    }	
   //tmp_algorithm_list = tmp_algorithm_list.sort();    
+   var algorithms_computer= [];
+   var algorithms_composite_input = [];
+   var algorithms_composite_dataset = [];
+   var algorithms_under = [];
+   var algorithms_over = [];
+	
+	var algorithm_number = tmp_algorithm_list.length;	
+	if (algorithm_number >0) {
+		
+		for (i=0; i< algorithm_number; i++){
+			var index_composite_input    =tmp_algorithm_list[i].indexOf("composite_input");	
+			var index_composite_dataset  =tmp_algorithm_list[i].indexOf("composite_dataset");
+			var index_under              =tmp_algorithm_list[i].indexOf("under_");	
+			var index_over               =tmp_algorithm_list[i].indexOf("over_");			
+			
+			if(index_composite_input != -1){		  	 
+			    algorithms_composite_input.push(tmp_algorithm_list[i]);  
+			 } else if (index_composite_dataset != -1){		  	 
+			   algorithms_composite_dataset.push(tmp_algorithm_list[i]);  
+			 } else if (index_under != -1){		  	 
+			   algorithms_under.push(tmp_algorithm_list[i]);  
+			 } else if (index_over != -1){		  	 
+			   algorithms_over.push(tmp_algorithm_list[i]);  
+			 } else {		  	 
+			   algorithms_computer.push(tmp_algorithm_list[i]);  
+			 }				
+		}		
+		tmp_algorithm_list=algorithms_computer.concat(algorithms_under,algorithms_over,algorithms_composite_input,algorithms_composite_dataset);		
+	}
 	  
     ALGORITHM_LIST = d;
     for(var i=0; i < tmp_algorithm_list.length; i++){
