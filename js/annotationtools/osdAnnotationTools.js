@@ -2308,7 +2308,9 @@ var schema = {
 	   
     //
     //  Added by Joe Balsamo to accomodate use of text box for input
-    //
+    // 
+    //console.log('loading blur events');
+	   
     jQuery('[id*="-result1"]').on("blur",function(evt){
         r = this.value;
         document.getElementById(this.id.replace('result','range')).value=this.value;
