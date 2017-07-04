@@ -47,6 +47,8 @@ var annotools = function (options) {
   //this.isLoadedWeight = false;
   this.loadHeatmapWeight();
   this.loadChangeUsername();
+  this.isLymphSuperuser();
+  this.lymphSuperuser = false;
   this.btn_revertWeight = document.getElementById('btn_revertWeight');
   this.btn_saveWeight = document.getElementById('btn_saveHeatmapWeight');
   this.btn_saveweight_help = document.getElementById('btn_heatmapweight_help');
@@ -3511,14 +3513,44 @@ annotools.prototype.revertWeight = function(event)
 
 }
 
-annotools.prototype.isSuperuser = function()
+annotools.prototype.isLymphSuperuser = function()
 {
-    //to do:  implement code to manage the lymphocyte superusers
-    var isSuperuser = true;
+    var self = this;
+    //console.log("lymphUser.superuserRole: " + lymphUser.superuserRole);
+    var url = "api/Data/lymphocyteSuperusers.php?email=" + self.username;
     
-    return isSuperuser;
-}
+    // Debug
+    console.log(url);
 
+    jQuery.get(url, function(d) {
+        try {
+            var data = JSON.parse(d);
+            console.log("Fetched data users length: " + data.length);
+            
+            // Start users
+            console.log(data);
+            //console.log("email: " + data[0].email);
+            //console.log("role: " + data[0].role);
+            
+            if ( data.length > 0) {
+                for ( var j = 0; j < data.length; j++ ) {
+                    if (data[j].email === self.username && data[j].role === lymphUser.superuserRole) {
+                        self.lymphSuperuser = true;
+                        break;
+                    }
+                    else{
+                        self.lymphSuperuser = false;
+                    }
+                }
+            }
+            console.log('self.lymphSuperuser: ' + self.lymphSuperuser);
+            
+        } catch (e){
+            console.log('ERROR');
+            console.log(e);
+        }
+    }); 
+}
 
 annotools.prototype.loadChangeUsername = function()
 {

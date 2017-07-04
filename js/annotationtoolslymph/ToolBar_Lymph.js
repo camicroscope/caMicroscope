@@ -13,7 +13,7 @@ var ToolBar = function (element, options) {
   this.iid = options.iid || null
   this.annotationActive = isAnnotationActive()
 
-  this.superuser = false;
+  //this.superuser = false;
 }
 
 ToolBar.prototype.showMessage = function (msg) {
@@ -489,7 +489,7 @@ ToolBar.prototype.createButtons = function () {
     */
     
     this.switchUserButton.on('click', function () {
-        if (this.annotools.isSuperuser()) {
+        if (this.annotools.lymphSuperuser) {
             if (jQuery('#switchuserpanel').is(":visible"))
                 jQuery('#switchuserpanel').hide();
             else
