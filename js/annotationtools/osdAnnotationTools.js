@@ -15,7 +15,7 @@
  * @param options
  */
 var annotools = function (options) {
-    console.log("Setting up annotools");
+    // console.log("Setting up annotools");
 
     this.AnnotationStore = new AnnotationStore(options.iid);
 
@@ -129,7 +129,7 @@ var annotools = function (options) {
  * @param viewer
  */
 annotools.prototype.destroyMarkups = function (viewer) {
-    console.log("Destroy markups");
+    // console.log("Destroy markups");
 
     var markup_svg = document.getElementById('markups');
     if (markup_svg) {
@@ -145,11 +145,8 @@ annotools.prototype.destroyMarkups = function (viewer) {
  * @param algorithms
  */
 annotools.prototype.renderByExecutionId = function (algorithms) {
-    console.log("Rendering by execution ids");
-    console.log("algorithms", algorithms);
-
-    console.log("ALGORITHM_LISTXXX", ALGORITHM_LIST);
-    console.log("SELECTED_ALGORITHM_LISTXXX", SELECTED_ALGORITHM_LIST);
+    // console.log("Rendering by execution ids");
+    // console.log("algorithms", algorithms);
 
     var self = this;
     this.x1 = this.imagingHelper._viewportOrigin['x'];
@@ -190,12 +187,13 @@ annotools.prototype.renderByExecutionId = function (algorithms) {
 /**
  * Get multiple annotations
  * Called upon zoom
+ * Same as renderByExecutionId??
  * @param viewer
  */
 annotools.prototype.getMultiAnnot = function (viewer) {
 
-    console.log("Get multiple annotations");
-    console.log("viewer", viewer);
+    // console.log("Get multiple annotations");
+    // console.log("viewer", viewer);
 
     console.log("ALGORITHM_LIST", ALGORITHM_LIST);
     console.log("SELECTED_ALGORITHM_LIST", SELECTED_ALGORITHM_LIST);
@@ -256,7 +254,7 @@ annotools.prototype.getMultiAnnot = function (viewer) {
  */
 annotools.prototype.getAnnot = function (viewer)
 {
-    console.log("Get Annotation from the API");
+    // console.log("Get Annotation from the API");
 
     var self = this;
     this.x1 = this.imagingHelper._viewportOrigin['x'];
@@ -294,7 +292,7 @@ annotools.prototype.getAnnot = function (viewer)
  */
 annotools.prototype.getAnnotFilter = function (author, grade, multi)
 {
-    console.log("Get Annotation Filter");
+    // console.log("Get Annotation Filter");
 
     if (this.initialized) {
         this.x1 = this.imagingHelper._viewportOrigin['x'];
@@ -340,7 +338,7 @@ annotools.prototype.getAnnotFilter = function (author, grade, multi)
  */
 annotools.prototype.keyPress = function (code) //
 {
-    console.log("Key Down Events Handler");
+    // console.log("Key Down Events Handler");
 
     switch (code) {
         case 84:
@@ -396,7 +394,7 @@ annotools.prototype.keyPress = function (code) //
  */
 annotools.prototype.drawMarkups = function ()
 {
-    console.log("Draw Markups");
+    // console.log("Draw Markups");
 
     this.showMessage(); // Show Message
     this.drawCanvas.removeEvents('mouseup');
@@ -478,7 +476,7 @@ annotools.prototype.drawMarkups = function ()
  * Create WorkOrder
  */
 annotools.prototype.createWorkOrder = function () {
-    console.log("Create WorkOrder");
+    // console.log("Create WorkOrder");
 
     jQuery('html,body').css('cursor', 'crosshair');
     var self = this;
@@ -691,7 +689,7 @@ annotools.prototype.createWorkOrder = function () {
  */
 annotools.prototype.magnify = function ()
 {
-    console.log("Magnify Tool");
+    // console.log("Magnify Tool");
 
     /* ASHISH Disable quit
      this.quitbutton.show()
@@ -768,7 +766,7 @@ annotools.prototype.magnify = function ()
  */
 annotools.prototype.selectColor = function ()
 {
-    console.log("Pick A Color");
+    // console.log("Pick A Color");
 
     this.colorContainer = new Element('div').inject(this.tool);
     var blackColor = new Element('img', {
@@ -903,7 +901,7 @@ annotools.prototype.selectColor = function ()
  */
 annotools.prototype.addnewAnnot = function (newAnnot)
 {
-    console.log("Add New Annotations");
+    // console.log("Add New Annotations");
 
     this.saveAnnot(newAnnot);
     this.displayGeoAnnots()
@@ -924,7 +922,7 @@ annotools.prototype.addnewAnnot = function (newAnnot)
  */
 annotools.prototype.toggleMarkups = function ()
 {
-    console.log("Toggle markups");
+    // console.log("Toggle markups");
 
     if (this.svg) {
         if (this.annotVisible) {
@@ -1052,7 +1050,7 @@ annotools.prototype.toggleMarkups = function ()
  */
 annotools.prototype.showMessage = function (msg)
 {
-    console.log("Show message");
+    // console.log("Show message");
 
     /*ASHISH Disable quit
      if (!(msg)) msg = this.mode + " mode,press q to quit"
@@ -1075,7 +1073,7 @@ annotools.prototype.showMessage = function (msg)
  * Relative to global
  */
 annotools.prototype.relativeToGlobal = function () {
-    console.log("Relative to global");
+    // console.log("Relative to global");
 
     for (var i = 0; i < $('viewport').getChildren().length; i++) {
         var object = $('viewport').getChildren()[i];
@@ -1165,7 +1163,7 @@ annotools.prototype.relativeToGlobal = function () {
  * Set up event handlers.
  */
 annotools.prototype.setupHandlers = function () {
-    console.log("Setting up event handlers");
+    // console.log("Setting up event handlers");
 
     var root = document.getElementsByTagName('svg')[0];
     // console.log("root", root);
@@ -1204,7 +1202,7 @@ annotools.prototype.setupHandlers = function () {
  */
 annotools.prototype.displayTip = function (id)
 {
-    console.log("Display tip", id);
+    // console.log("Display tip", id);
 
     // var container = document.id(this.canvas)
     var container = document.getElementsByClassName(this.canvas)[0]; // Get The Canvas Container
@@ -1228,7 +1226,7 @@ annotools.prototype.displayTip = function (id)
  */
 annotools.prototype.destroyTip = function ()
 {
-    console.log("Destroying tips");
+    // console.log("Destroying tips");
 
     // var container = document.id(this.canvas)
     var container = document.getElementsByClassName(this.canvas)[0]; // Get The Canvas Container
@@ -1242,7 +1240,7 @@ annotools.prototype.destroyTip = function ()
  */
 annotools.prototype.editTip = function (id)
 {
-    console.log("Editing tip", id);
+    // console.log("Editing tip", id);
 
     this.removeMouseEvents();
     var annotools = this;
@@ -1302,7 +1300,7 @@ annotools.prototype.editTip = function (id)
  */
 annotools.prototype.deleteAnnot = function (id)
 {
-    console.log("Deleting annotation", id);
+    // console.log("Deleting annotation", id);
 
     var testAnnotId = this.annotations[id].annotId;
     this.annotations.splice(id, 1);
@@ -1331,7 +1329,7 @@ annotools.prototype.deleteAnnot = function (id)
  */
 annotools.prototype.updateAnnot = function (annot)
 {
-    console.log("Updating annotation");
+    // console.log("Updating annotation");
 
     var jsonRequest = new Request.JSON({
         url: 'api/Data/updateAnnot.php',
@@ -1355,7 +1353,7 @@ annotools.prototype.updateAnnot = function (annot)
  */
 annotools.prototype.saveAnnot = function (annotation)
 {
-    console.log("Saving annotation");
+    // console.log("Saving annotation");
     // console.log("annotation", annotation)
 
     jQuery.ajax({
@@ -1380,7 +1378,7 @@ annotools.prototype.saveAnnot = function (annotation)
  * @returns {*}
  */
 annotools.prototype.convertToNative = function (annot) {
-    console.log("Converting to native");
+    // console.log("Converting to native");
 
     if (annot.type == 'rect' || annot.type == 'ellipse') {
         var x = annot.x;
@@ -1446,7 +1444,7 @@ annotools.prototype.convertToNative = function (annot) {
  * @returns {*}
  */
 annotools.prototype.convertFromNative = function (annot, end) {
-    console.log("Converting from native");
+    // console.log("Converting from native");
 
     if (annot.type == 'rect' || annot.type == 'ellipse') {
         var x = annot.x;
@@ -1519,7 +1517,7 @@ annotools.prototype.convertFromNative = function (annot, end) {
  * Convert all to native
  */
 annotools.prototype.convertAllToNative = function () {
-    console.log("Converting all to native");
+    // console.log("Converting all to native");
 
     for (index = 0; index < this.annotations.length; index++) {
         // unparsed = this.convertToNative(this.annotations[index])
@@ -1537,7 +1535,7 @@ annotools.prototype.convertAllToNative = function () {
  * @param ctx
  */
 annotools.prototype.drawEllipse = function (ctx) {
-    console.log("Drawing ellipse");
+    // console.log("Drawing ellipse");
 
     this.removeMouseEvents();
     var started = false;
@@ -1633,7 +1631,7 @@ annotools.prototype.drawEllipse = function (ctx) {
  * @param ctx
  */
 annotools.prototype.drawRectangle = function (ctx) {
-    console.log("Drawing rectangle");
+    // console.log("Drawing rectangle");
     jQuery('html,body').css('cursor', 'crosshair');
 
     this.removeMouseEvents();
@@ -1697,7 +1695,7 @@ annotools.prototype.drawRectangle = function (ctx) {
         loc[1] = parseFloat(newAnnot.y);
         newAnnot.loc = loc;
 
-        // convert to geojson
+        // Convert to GeoJSON
         var geoNewAnnot = this.convertRectToGeo(newAnnot);
         // geoNewAnnot = newAnnot
         this.promptForAnnotation(geoNewAnnot, 'new', this, ctx)
@@ -1710,7 +1708,7 @@ annotools.prototype.drawRectangle = function (ctx) {
  * @param ctx
  */
 annotools.prototype.drawPencil = function (ctx) {
-    console.log("Draw Pencil");
+    // console.log("Draw Pencil");
 
     this.removeMouseEvents();
     var started = false;
@@ -1810,7 +1808,7 @@ annotools.prototype.drawPencil = function (ctx) {
  * @param ctx
  */
 annotools.prototype.drawMeasure = function (ctx) {
-    console.log("Draw measure");
+    // console.log("Draw measure");
 
     this.removeMouseEvents();
     var started = false;
@@ -1917,7 +1915,7 @@ annotools.prototype.drawMeasure = function (ctx) {
  * @param ctx
  */
 annotools.prototype.drawPolyline = function (ctx) {
-    console.log("Draw Polyline");
+    // console.log("Draw Polyline");
 
     this.removeMouseEvents();
     var started = true;
@@ -2013,7 +2011,7 @@ annotools.prototype.drawPolyline = function (ctx) {
  * Save State
  */
 annotools.prototype.saveState = function () {
-    console.log("Save State");
+    // console.log("Save State");
 
     if (this.iid) {
         var jsonRequest = new Request.JSON({
@@ -2040,7 +2038,7 @@ annotools.prototype.saveState = function () {
  * @returns {string}
  */
 annotools.prototype.retrieveTemplate = function () {
-    console.log("Retrieve Template");
+    // console.log("Retrieve Template");
 
     var jsonReturn = '';
 
@@ -2082,7 +2080,8 @@ annotools.prototype.retrieveTemplate = function () {
  * @returns {*}
  */
 annotools.prototype.retrieveSingleAnnot = function (annotId) {
-    console.log("Retrieve Single Annotations");
+    // console.log("Retrieve Single Annotations");
+
     var jsonReturn;
     var jsonRequest = new Request.JSON({
         url: 'api/Data/retreiveSingleAnnot.php', // Ameen, fix your spelling! Again!
@@ -2104,7 +2103,8 @@ annotools.prototype.retrieveSingleAnnot = function (annotId) {
  * @param annot
  */
 function handleWorkOrder(annot) {
-    console.log("Handle Work Order");
+    // console.log("Handle Work Order");
+
     console.log("annot", annot);
 }
 
@@ -2304,8 +2304,17 @@ function handleWorkOrder(annot) {
  }
  */
 
+/**
+ * Delete Annotations
+ *
+ * @param execution_id
+ * @param x1
+ * @param y1
+ * @param x2
+ * @param y2
+ */
 annotools.prototype.deleteAnnotations = function (execution_id, x1, y1, x2, y2) {
-    console.log("Delete Annotations");
+    // console.log("Delete Annotations");
 
     var body = {};
     var self = this;
@@ -2330,7 +2339,7 @@ var execution_id;
 var r = 1.0, w = 0.8, l = 3.0, u = 10.0, k = 20.0, pj = 0;
 
 /**
- * Prompt for work-order
+ * Set up WorkOrder panel; prompt for WorkOrder.
  *
  * @param newAnnot
  * @param mode
@@ -2339,12 +2348,12 @@ var r = 1.0, w = 0.8, l = 3.0, u = 10.0, k = 20.0, pj = 0;
  * @param roiGeoJSON
  */
 annotools.prototype.promptForWorkOrder = function (newAnnot, mode, annotools, ctx, roiGeoJSON) {
-    console.log("Prompt For WorkOrder");
+    // console.log("Prompt For WorkOrder");
 
     jQuery('html,body').css('cursor', 'default');
 
     this.removeMouseEvents();
-    console.log("removed mouse events");
+    console.log("Removed mouse events");
 
     var panel = jQuery('#panel').show();
     panel.html(function () {
@@ -2611,7 +2620,7 @@ annotools.prototype.promptForWorkOrder = function (newAnnot, mode, annotools, ct
             console.log("cancelWorkOrder (in setTimeout)");
             jQuery('#panel').hide();
             annotools.drawLayer.hide();
-            annotools.addMouseEvents()
+            annotools.addMouseEvents();
         });
 
         jQuery('[id*="-result1"]').val(r);
@@ -2651,8 +2660,10 @@ annotools.prototype.promptForWorkOrder = function (newAnnot, mode, annotools, ct
         //   End of Text input code
         //
 
+        // TODO: remove hardcoded vars.
         var width = 48002;
         var height = 35558;
+
         jQuery("#discardWorkOrder").click(function (e) {
             e.preventDefault();
             self.deleteAnnotations(execution_id, newAnnot.x - 0.00001, newAnnot.y - 0.00001, newAnnot.x + newAnnot.w + 0.00001, newAnnot.y + newAnnot.h + 0.000001);
@@ -2666,7 +2677,7 @@ annotools.prototype.promptForWorkOrder = function (newAnnot, mode, annotools, ct
         });
 
         jQuery('#submitWorkOrder').click(function (e) {
-            //Trigger blurs incase user submits immediately after textbox change. J.B.
+            // Trigger blurs in case user submits immediately after text-box change. J.B.
             jQuery('[id*="-result1"]').blur();
             jQuery('[id*="-result2"]').blur();
             jQuery('[id*="-result3"]').blur();
@@ -2684,10 +2695,12 @@ annotools.prototype.promptForWorkOrder = function (newAnnot, mode, annotools, ct
             //var execution_id = jQuery('#order-execution_id').val()
             var notes = jQuery('#order-notes').val();
 
+            // TODO: remove if statement
             if (iid == 'TCGA-06-0148-01Z-00-DX1') {
                 width = 26001;
                 height = 27968
             }
+            
             execution_id = "seg:r" + r + ":" + "w" + w + ":l" + l + ":u" + u + ":k" + k + ":j" + pj;
 
             roiGeoJSON.provenance.analysis.execution_id = execution_id;
@@ -2791,7 +2804,7 @@ annotools.prototype.promptForWorkOrder = function (newAnnot, mode, annotools, ct
  * @param cb
  */
 function pollOrder(id, cb) {
-    console.log("Poll Order");
+    // console.log("Poll Order");
 
     jQuery.get("api/Data/workOrder.php?id=" + id, function (data) {
 
@@ -2820,7 +2833,7 @@ function pollOrder(id, cb) {
  * @param ctx
  */
 annotools.prototype.promptForAnnotation = function (newAnnot, mode, annotools, ctx) {
-    console.log('Prompt for annotation');
+    // console.log('Prompt for annotation');
 
     jQuery('#panel').show('slide');
     jQuery('html,body').css('cursor', 'default');
@@ -2890,7 +2903,7 @@ annotools.prototype.promptForAnnotation = function (newAnnot, mode, annotools, c
  * Add mouse events.
  */
 annotools.prototype.addMouseEvents = function () {
-    console.log('Adding mouse events');
+    // console.log('Adding mouse events');
 
     window.addEventListener('mousemove', this.annotationHandler.handleMouseMove, false);
     window.addEventListener('mousedown', this.annotationHandler.handleMouseDown, false);
@@ -2902,7 +2915,7 @@ annotools.prototype.addMouseEvents = function () {
  * Remove mouse events.
  */
 annotools.prototype.removeMouseEvents = function () {
-    console.log("Removing events");
+    // console.log("Removing events");
 
     // console.log(this.annotationHandler)
     window.removeEventListener('mousemove', this.annotationHandler.handleMouseMove, false);
