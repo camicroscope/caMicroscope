@@ -3517,6 +3517,8 @@ annotools.prototype.isLymphSuperuser = function()
 {
     var self = this;
     //console.log("lymphUser.superuserRole: " + lymphUser.superuserRole);
+    
+    self.username = self.username.toLowerCase();  
     var url = "api/Data/lymphocyteSuperusers.php?email=" + self.username;
     
     // Debug
@@ -3534,7 +3536,8 @@ annotools.prototype.isLymphSuperuser = function()
             
             if ( data.length > 0) {
                 for ( var j = 0; j < data.length; j++ ) {
-                    if (data[j].email === self.username && data[j].role === lymphUser.superuserRole) {
+                    
+                    if (data[j].email.toLowerCase() === self.username.toLowerCase() && data[j].role.toLowerCase() === lymphUser.superuserRole.toLowerCase()) {
                         self.lymphSuperuser = true;
                         break;
                     }
