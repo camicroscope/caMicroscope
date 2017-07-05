@@ -59,6 +59,7 @@ return array(
     'getLymphocyteSuperusers' => "$lymphocyteUrl/LymphocyteUsers/query/getLymphSuperusers?",
     'getLymphocyteSuperuserByEmail' => "$lymphocyteUrl/LymphocyteUsers/query/getUserByEmail?",
     'deleteLymphocyteUserByEmail' => "$lymphocyteUrl/LymphocyteUsers/delete/deleteUserByEmail?",
+    'deleteLymphocyteSuperuser' => "$lymphocyteUrl/LymphocyteUsers/delete/deleteLymphSuperuser?",
     
     
    /*Bindaas API for back compatible */
