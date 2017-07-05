@@ -191,18 +191,27 @@ var AnnotoolsOpenSeadragonHandler = new Class({
         }
         if (this.state == 'pan') {
             // $('svg')[0].hide();
-            $$('svg')[0].setStyle('opacity', 0);
-            var pixel = OpenSeadragon.getMousePosition(evt).minus
-            ;(OpenSeadragon.getElementPosition(viewer.element));
-            var point = viewer.viewport.pointFromPixel(pixel)
+            if ($$('svg')[0])
+            {
+                $$('svg')[0].setStyle('opacity', 0);
+            }
+
+            var pixel = OpenSeadragon.getMousePosition(evt).minus(OpenSeadragon.getElementPosition(viewer.element));
+            // console.log("pixel", pixel);
+            var point = viewer.viewport.pointFromPixel(pixel);
+            // console.log("point", point);
         }
     },
 
+    /**
+     * handleMouseUp
+     *
+     * @param evt
+     */
     handleMouseUp: function (evt) {
         // console.log("mouse up")
         // if (evt.target.tagName.toLowerCase() == "button" || evt.target.tagName.toLowerCase() == "div") {
         if (evt.target.tagName.toLowerCase() == 'button' || evt.target.tagName.toLowerCase() == 'input') {
-            // console.log("here");
             // console.log("handleMouseUp: " + evt.target.tagName)
             return
         }
@@ -212,11 +221,15 @@ var AnnotoolsOpenSeadragonHandler = new Class({
 
         if (this.state == 'pan') {
             this.state = 'up';
-            var pixel =
-                OpenSeadragon.getMousePosition(evt).minus
-            ;(OpenSeadragon.getElementPosition(viewer.element));
 
-            var diff = pixel.minus(this.stateOrigin);
+            var pos = OpenSeadragon.getElementPosition(viewer.element);
+            // console.log("pos", pos);
+
+            var pixel = OpenSeadragon.getMousePosition(evt).minus(pos);
+            // console.log("pixel", pixel);
+
+            // TODO:
+            var diff = pixel.minus(this.stateOrigin); // ???
 
             // handles a mouse click (zoom and pan to)
             // otherwise we will handle the pan event
@@ -224,7 +237,10 @@ var AnnotoolsOpenSeadragonHandler = new Class({
 
                 // setTimeout(function() {
                 // annotationHandler.handleZoomIn()
-                $$('svg')[0].setStyle('opacity', 1)
+                if ($$('svg')[0])
+                {
+                    $$('svg')[0].setStyle('opacity', 1)
+                }
                 // }, annotationHandler.animateWaitTime)
 
             } else {
@@ -234,7 +250,11 @@ var AnnotoolsOpenSeadragonHandler = new Class({
                     viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(.5, .5)).y);
 
                 // $('svg')[0].show();
-                $$('svg')[0].setStyle('opacity', 1);
+                if ($$('svg')[0])
+                {
+                    $$('svg')[0].setStyle('opacity', 1);
+                }
+
                 for (var i = 0; i < $$('viewport').getChildren().length; i++) {
                     var object = $('viewport').getChildren()[i];
                     // object.setAttribute("style", style="fill:none;stroke:lime;stroke-width:2")
@@ -275,14 +295,25 @@ var AnnotoolsOpenSeadragonHandler = new Class({
         if (evt.target.tagName.toLowerCase() == 'button' || evt.target.tagName.toLowerCase() == 'input' || evt.target.tagName.toLowerCase() == 'select') {
             return
         }
-        if (evt.preventDefault)
-            evt.preventDefault();
-        this.state = 'pan';
-        var pixel = OpenSeadragon.getMousePosition(evt).minus
-        ;(OpenSeadragon.getElementPosition(viewer.element));
 
-        $$('svg')[0].setStyle('opacity', 0);
-        this.stateOrigin = pixel
+        if (evt.preventDefault)
+        {
+            evt.preventDefault();
+        }
+
+        this.state = 'pan';
+        var pos = OpenSeadragon.getElementPosition(viewer.element);
+        // console.log("pos", pos);
+        var pixel = OpenSeadragon.getMousePosition(evt).minus(pos);
+        // console.log("pixel", pixel);
+
+        if ($$('svg')[0])
+        {
+            console.log("$$('svg')[0]", $$('svg')[0]);
+            $$('svg')[0].setStyle('opacity', 0);
+        }
+
+        this.stateOrigin = pixel;
     },
 
     handleMouseWheel: function (evt) {
