@@ -1072,15 +1072,18 @@ annotools.prototype.relativeToGlobal = function () {
     }
 };
 
+/**
+ * Set up event handlers.
+ */
 annotools.prototype.setupHandlers = function () {
     console.log('setting up handlers');
 
     var root = document.getElementsByTagName('svg')[0];
-    // console.log(root);
-    if (root != undefined) {
+    //console.log("root", root);
+    if (root !== undefined) {
         if (navigator.userAgent.toLowerCase().indexOf('webkit') >= 0) {
             window.addEventListener('mousewheel', this.annotationHandler.handleMouseWheel, false) // Chrome/Safari
-            // window.addEventListener('mousewheel',   this.getAnnot(), false) // Chrome/Safari
+            // window.addEventListener('mousewheel', this.getAnnot(), false) // Chrome/Safari
         } else {
             window.addEventListener('DOMMouseScroll', this.annotationHandler.handleMouseWheel, false) // Others
             // window.addEventListener('DOMMouseScroll', this.getAnnot(), false) // Others
@@ -1089,11 +1092,11 @@ annotools.prototype.setupHandlers = function () {
         this.addMouseEvents()
     }
 
-    // console.log("...")
     for (var i = 0; i < this.viewer.buttons.buttons.length; i++) {
         var button = this.viewer.buttons.buttons[i];
 
-        if (button.tooltip.toLowerCase() == 'go home') {
+        //console.log("tooltip", button.tooltip.toLowerCase());
+        if (button.tooltip.toLowerCase() === 'go home') {
             var onHomeRelease = button.onRelease;
             var annot = this;
             button.onRelease = function (args) {
