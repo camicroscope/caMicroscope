@@ -57,7 +57,7 @@ var annotools = function (options) {
         var markup_svg = document.getElementById('markups');
         if (markup_svg) {
             // console.log("destroying")
-            markup_svg.destroy();
+            markup_svg.destroy()
             // console.log("destroyed")
         }
     });
@@ -65,7 +65,7 @@ var annotools = function (options) {
     window.addEvent('domready', function () {
         /*temp*/
         var self = this;
-        self.setupHandlers();
+        self.setupHandlers()
 
         // this.getAnnot()
         // ToolBar.createButtons()
@@ -134,7 +134,7 @@ annotools.prototype.destroyMarkups = function (viewer) {
     var markup_svg = document.getElementById('markups');
     if (markup_svg) {
         // console.log("destroying")
-        markup_svg.destroy();
+        markup_svg.destroy()
         // console.log("destroyed")
     }
 };
@@ -420,18 +420,17 @@ annotools.prototype.drawMarkups = function ()
             otop = top,
             owidth = width,
             oheight = height;
-
         // console.log("left: " + left + " top: " + top + " width: " + width + " height: " + height)
 
         if (left < 0) {
             left = 0;
-            width = window.innerWidth;
+            width = window.innerWidth
         }
 
         // See Whether The Container is outside The Current ViewPort
         if (top < 0) {
             top = 0;
-            height = window.innerHeight;
+            height = window.innerHeight
         }
 
         // Recreate The CreateAnnotation Layer Because of The ViewPort Change Issue.
@@ -2336,7 +2335,8 @@ annotools.prototype.deleteAnnotations = function (execution_id, x1, y1, x2, y2) 
     });
 };
 
-var execution_id;
+var execution_id = "";
+var previous_execution = {};
 var r = 1.0, w = 0.8, l = 3.0, u = 10.0, k = 20.0, pj = 0;
 
 /**
@@ -2388,6 +2388,10 @@ annotools.prototype.promptForWorkOrder = function (newAnnot, mode, annotools, ct
 
         jQuery('#cancelWorkOrder').click(function (e) {
             e.preventDefault();
+            if (!jQuery.isEmptyObject(previous_execution)) {
+                self.deleteAnnotations(previous_execution.execution_id, previous_execution.x - 0.00001, previous_execution.y - 0.00001, previous_execution.x + previous_execution.w + 0.00001, previous_execution.y + previous_execution.h + 0.000001);
+                previous_execution = {};
+            }
             console.log("cancelWorkOrder");
             jQuery('#panel').hide();
             annotools.drawLayer.hide();
@@ -2613,16 +2617,16 @@ annotools.prototype.promptForWorkOrder = function (newAnnot, mode, annotools, ct
         // pj = "n";
         console.log("Inside setTimeout, pj is :" + pj);
         // console.log("formSchema", formSchema);
-        if ((roi_x * roi_y * roi_w * roi_h) === 0)
-        {
-            jQuery('#panel').hide();
-            alert("Please select a region. Try again!");
-        }
 
         jQuery('#workOrderForm').jsonForm(formSchema);
         jQuery("#workOrderForm").append("<div id='workOrderCtrl'><br /><button class='btn btn-primary' id='submitWorkOrder'>Analyze Region</button><br /><button class='btn' id='saveWorkOrder'>Save Results</button> <button class='btn' id='discardWorkOrder'>Discard Results</button></div>");
         jQuery('#cancelWorkOrder').click(function (e) {
             e.preventDefault();
+            console.log(previous_execution);
+            if (!jQuery.isEmptyObject(previous_execution)) {
+                self.deleteAnnotations(previous_execution.execution_id, previous_execution.x - 0.00001, previous_execution.y - 0.00001, previous_execution.x + previous_execution.w + 0.00001, previous_execution.y + previous_execution.h + 0.000001);
+                previous_execution = {};
+            };
             console.log("cancelWorkOrder (in setTimeout)");
             jQuery('#panel').hide();
             annotools.drawLayer.hide();
@@ -2673,12 +2677,19 @@ annotools.prototype.promptForWorkOrder = function (newAnnot, mode, annotools, ct
         jQuery("#discardWorkOrder").click(function (e) {
             e.preventDefault();
             self.deleteAnnotations(execution_id, newAnnot.x - 0.00001, newAnnot.y - 0.00001, newAnnot.x + newAnnot.w + 0.00001, newAnnot.y + newAnnot.h + 0.000001);
+	    console.log(previous_execution);
+            if (!jQuery.isEmptyObject(previous_execution)) {
+		console.log(previous_execution);
+                self.deleteAnnotations(previous_execution.execution_id, previous_execution.x - 0.00001, previous_execution.y - 0.00001, previous_execution.x + previous_execution.w + 0.00001, previous_execution.y + previous_execution.h + 0.000001);
+            }
+            previous_execution = {};
             alert("Discarded results");
             annotools.destroyMarkups();
         });
 
         jQuery("#saveWorkOrder").click(function (e) {
             e.preventDefault();
+            previous_execution = {};
             alert("Saved results as: " + execution_id);
         });
 
@@ -2690,6 +2701,11 @@ annotools.prototype.promptForWorkOrder = function (newAnnot, mode, annotools, ct
             jQuery('[id*="-result4"]').blur();
             jQuery('[id*="-result5"]').blur();
 
+            if (!jQuery.isEmptyObject(previous_execution)) {
+		console.log(previous_execution);
+                self.deleteAnnotations(previous_execution.execution_id, previous_execution.x - 0.00001, previous_execution.y - 0.00001, previous_execution.x + previous_execution.w + 0.00001, previous_execution.y + previous_execution.h + 0.000001);
+                previous_execution = {};
+            }
             annotools.destroyMarkups();
             console.log("Destroyed markups!");
             console.log("submitting work order!");
@@ -2758,6 +2774,13 @@ annotools.prototype.promptForWorkOrder = function (newAnnot, mode, annotools, ct
             };
 
             console.log("order:", order);
+	    previous_execution = {
+               "execution_id": execution_id,
+                "y": newAnnot.y,
+                "h": newAnnot.h,
+                "w": newAnnot.w,
+                "x": newAnnot.x
+            };
 
             jQuery.post('api/Data/workOrder.php', order)
                 .fail(function (err) {
@@ -2814,7 +2837,7 @@ function pollOrder(id, cb) {
 
     jQuery.get("api/Data/workOrder.php?id=" + id, function (data) {
 
-        // console.log("data.state", data.state);
+        console.log("data.state", data.state);
 
         if (data.state.contains("fail")) {
             cb({"error": "failed", data});
@@ -2824,7 +2847,7 @@ function pollOrder(id, cb) {
             cb(null, data);
 
         } else {
-            // console.log("data.state 1", data.state);
+            console.log("data.state 1", data.state);
             setTimeout(pollOrder(id, cb), 300);
         }
     });
@@ -2843,7 +2866,7 @@ annotools.prototype.promptForAnnotation = function (newAnnot, mode, annotools, c
 
     jQuery('#panel').show('slide');
     jQuery('html,body').css('cursor', 'default');
-    // console.log("newAnnot", newAnnot);
+    console.log("newAnnot", newAnnot);
     jQuery('#panel').html('' +
         "<div id = 'panelHeader'> <h4>Enter a new annotation </h4></div>"
         + "<div id='panelBody'>"
@@ -2856,7 +2879,7 @@ annotools.prototype.promptForAnnotation = function (newAnnot, mode, annotools, c
     jQuery.get('api/Data/retrieveTemplate.php', function (data) {
         var schema = JSON.parse(data);
         schema = JSON.parse(schema)[0];
-        // console.log("schema", schema);
+        console.log("schema", schema);
         // console.log("retrieved template")
         var formSchema = {
             'schema': schema,
@@ -2871,7 +2894,7 @@ annotools.prototype.promptForAnnotation = function (newAnnot, mode, annotools, c
                     'type': 'button',
                     'title': 'Cancel',
                     'onClick': function (e) {
-                        // console.log("e:", e);
+                        console.log("e:", e);
                         e.preventDefault();
                         // console.log("cancel")
                         cancelAnnotation()
@@ -2883,7 +2906,7 @@ annotools.prototype.promptForAnnotation = function (newAnnot, mode, annotools, c
         formSchema.onSubmit = function (err, val) {
             // Add form data to annotation
             newAnnot.properties.annotations = val;
-            // console.log("newAnnot", newAnnot);
+            console.log("newAnnot", newAnnot);
             // Post annotation
             annotools.addnewAnnot(newAnnot);
 
