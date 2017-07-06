@@ -320,6 +320,10 @@ var AnnotoolsOpenSeadragonHandler = new Class({
         if (evt.preventDefault)
             evt.preventDefault();
 
-        $$('svg')[0].setStyle('opacity', 0)
+        if ($$('svg')[0])
+        {
+            $$('svg')[0].setStyle('opacity', 0)
+        }
+        
     }
 });
