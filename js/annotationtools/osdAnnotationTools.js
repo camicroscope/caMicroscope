@@ -2612,6 +2612,11 @@ annotools.prototype.promptForWorkOrder = function (newAnnot, mode, annotools, ct
         // pj = "n";
         console.log("Inside setTimeout, pj is :" + pj);
         // console.log("formSchema", formSchema);
+        if ((roi_x * roi_y * roi_w * roi_h) === 0)
+        {
+            alert("Please select a region. Try again!");
+            annotools.destroyMarkups();
+        }
 
         jQuery('#workOrderForm').jsonForm(formSchema);
         jQuery("#workOrderForm").append("<div id='workOrderCtrl'><br /><button class='btn btn-primary' id='submitWorkOrder'>Analyze Region</button><br /><button class='btn' id='saveWorkOrder'>Save Results</button> <button class='btn' id='discardWorkOrder'>Discard Results</button></div>");
