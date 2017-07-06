@@ -57,7 +57,7 @@ var annotools = function (options) {
         var markup_svg = document.getElementById('markups');
         if (markup_svg) {
             // console.log("destroying")
-            markup_svg.destroy()
+            markup_svg.destroy();
             // console.log("destroyed")
         }
     });
@@ -65,7 +65,7 @@ var annotools = function (options) {
     window.addEvent('domready', function () {
         /*temp*/
         var self = this;
-        self.setupHandlers()
+        self.setupHandlers();
 
         // this.getAnnot()
         // ToolBar.createButtons()
@@ -134,7 +134,7 @@ annotools.prototype.destroyMarkups = function (viewer) {
     var markup_svg = document.getElementById('markups');
     if (markup_svg) {
         // console.log("destroying")
-        markup_svg.destroy()
+        markup_svg.destroy();
         // console.log("destroyed")
     }
 };
@@ -420,17 +420,18 @@ annotools.prototype.drawMarkups = function ()
             otop = top,
             owidth = width,
             oheight = height;
+
         // console.log("left: " + left + " top: " + top + " width: " + width + " height: " + height)
 
         if (left < 0) {
             left = 0;
-            width = window.innerWidth
+            width = window.innerWidth;
         }
 
         // See Whether The Container is outside The Current ViewPort
         if (top < 0) {
             top = 0;
-            height = window.innerHeight
+            height = window.innerHeight;
         }
 
         // Recreate The CreateAnnotation Layer Because of The ViewPort Change Issue.
@@ -2614,8 +2615,8 @@ annotools.prototype.promptForWorkOrder = function (newAnnot, mode, annotools, ct
         // console.log("formSchema", formSchema);
         if ((roi_x * roi_y * roi_w * roi_h) === 0)
         {
+            jQuery('#panel').hide();
             alert("Please select a region. Try again!");
-            annotools.destroyMarkups();
         }
 
         jQuery('#workOrderForm').jsonForm(formSchema);
@@ -2813,7 +2814,7 @@ function pollOrder(id, cb) {
 
     jQuery.get("api/Data/workOrder.php?id=" + id, function (data) {
 
-        console.log("data.state", data.state);
+        // console.log("data.state", data.state);
 
         if (data.state.contains("fail")) {
             cb({"error": "failed", data});
@@ -2823,7 +2824,7 @@ function pollOrder(id, cb) {
             cb(null, data);
 
         } else {
-            console.log("data.state 1", data.state);
+            // console.log("data.state 1", data.state);
             setTimeout(pollOrder(id, cb), 300);
         }
     });
@@ -2842,7 +2843,7 @@ annotools.prototype.promptForAnnotation = function (newAnnot, mode, annotools, c
 
     jQuery('#panel').show('slide');
     jQuery('html,body').css('cursor', 'default');
-    console.log("newAnnot", newAnnot);
+    // console.log("newAnnot", newAnnot);
     jQuery('#panel').html('' +
         "<div id = 'panelHeader'> <h4>Enter a new annotation </h4></div>"
         + "<div id='panelBody'>"
@@ -2855,7 +2856,7 @@ annotools.prototype.promptForAnnotation = function (newAnnot, mode, annotools, c
     jQuery.get('api/Data/retrieveTemplate.php', function (data) {
         var schema = JSON.parse(data);
         schema = JSON.parse(schema)[0];
-        console.log("schema", schema);
+        // console.log("schema", schema);
         // console.log("retrieved template")
         var formSchema = {
             'schema': schema,
@@ -2870,7 +2871,7 @@ annotools.prototype.promptForAnnotation = function (newAnnot, mode, annotools, c
                     'type': 'button',
                     'title': 'Cancel',
                     'onClick': function (e) {
-                        console.log("e:", e);
+                        // console.log("e:", e);
                         e.preventDefault();
                         // console.log("cancel")
                         cancelAnnotation()
@@ -2882,7 +2883,7 @@ annotools.prototype.promptForAnnotation = function (newAnnot, mode, annotools, c
         formSchema.onSubmit = function (err, val) {
             // Add form data to annotation
             newAnnot.properties.annotations = val;
-            console.log("newAnnot", newAnnot);
+            // console.log("newAnnot", newAnnot);
             // Post annotation
             annotools.addnewAnnot(newAnnot);
 
