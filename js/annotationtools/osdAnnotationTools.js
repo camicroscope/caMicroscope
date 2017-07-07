@@ -9,6 +9,16 @@
  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
 
+
+/**
+ * User-selected ROI.
+ * @type {string}
+ */
+// Make lighter per tkurc 6/6/2017
+var fill_style="rgba(255, 255, 255, 0.2)";
+// fill_style="rgba(255, 255, 255, 0.4)";
+
+
 /**
  * Set up annotation options
  *
@@ -610,7 +620,11 @@ annotools.prototype.createWorkOrder = function () {
                 // console.log(min_x, min_y, w, h);
 
                 ctx.strokeStyle = this.color;
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+
+                // fillStyle for user-selected ROI
+                // ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+                ctx.fillStyle = fill_style;
+
                 ctx.fillRect(min_x, min_y, w, h);
                 ctx.strokeRect(min_x, min_y, w, h);
             }
@@ -670,7 +684,8 @@ annotools.prototype.createWorkOrder = function () {
                     // alert("Region is too large. Click OK to snap it to closest fit");
                     ctx.clearRect(0, 0, this.drawCanvas.width, this.drawCanvas.height);
                     ctx.strokeStyle = this.color;
-                    ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+                    // ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+                    ctx.fillStyle = fill_style;
                     // console.log(min_x, min_y, limitroi.w, limitroi.h);
                     ctx.fillRect(min_x, min_y, limitroi.w, limitroi.h);
                     ctx.strokeRect(min_x, min_y, limitroi.w, limitroi.h);
@@ -1651,7 +1666,8 @@ annotools.prototype.drawRectangle = function (ctx) {
             w = Math.abs(max_x - min_x);
             h = Math.abs(max_y - min_y);
             ctx.strokeStyle = this.color;
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
+            // ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
+            ctx.fillStyle = fill_style;
             ctx.fillRect(min_x, min_y, w, h);
             ctx.strokeRect(min_x, min_y, w, h)
         }
