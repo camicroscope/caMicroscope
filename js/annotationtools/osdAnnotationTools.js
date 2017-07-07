@@ -2614,9 +2614,12 @@ annotools.prototype.promptForWorkOrder = function (newAnnot, mode, annotools, ct
 
         // Check for zero value
         if ((roi_x * roi_y * roi_w * roi_h) === 0) {
+
             jQuery('#panel').hide();
             annotools.drawLayer.hide();
+            annotools.destroyMarkups();
             annotools.addMouseEvents();
+
             alert("Please select a region. Try again!");
             //this.showMessage("Please select a region. Try again!"); // not accessible here.
         }
@@ -2629,7 +2632,8 @@ annotools.prototype.promptForWorkOrder = function (newAnnot, mode, annotools, ct
             if (!jQuery.isEmptyObject(previous_execution)) {
                 self.deleteAnnotations(previous_execution.execution_id, previous_execution.x - 0.00001, previous_execution.y - 0.00001, previous_execution.x + previous_execution.w + 0.00001, previous_execution.y + previous_execution.h + 0.000001);
                 previous_execution = {};
-            };
+            }
+
             console.log("cancelWorkOrder (in setTimeout)");
             jQuery('#panel').hide();
             annotools.drawLayer.hide();
@@ -2680,9 +2684,9 @@ annotools.prototype.promptForWorkOrder = function (newAnnot, mode, annotools, ct
         jQuery("#discardWorkOrder").click(function (e) {
             e.preventDefault();
             self.deleteAnnotations(execution_id, newAnnot.x - 0.00001, newAnnot.y - 0.00001, newAnnot.x + newAnnot.w + 0.00001, newAnnot.y + newAnnot.h + 0.000001);
-	    console.log(previous_execution);
+            console.log(previous_execution);
             if (!jQuery.isEmptyObject(previous_execution)) {
-		console.log(previous_execution);
+                console.log(previous_execution);
                 self.deleteAnnotations(previous_execution.execution_id, previous_execution.x - 0.00001, previous_execution.y - 0.00001, previous_execution.x + previous_execution.w + 0.00001, previous_execution.y + previous_execution.h + 0.000001);
             }
             previous_execution = {};
@@ -2705,7 +2709,7 @@ annotools.prototype.promptForWorkOrder = function (newAnnot, mode, annotools, ct
             jQuery('[id*="-result5"]').blur();
 
             if (!jQuery.isEmptyObject(previous_execution)) {
-		console.log(previous_execution);
+                console.log(previous_execution);
                 self.deleteAnnotations(previous_execution.execution_id, previous_execution.x - 0.00001, previous_execution.y - 0.00001, previous_execution.x + previous_execution.w + 0.00001, previous_execution.y + previous_execution.h + 0.000001);
                 previous_execution = {};
             }
@@ -2777,8 +2781,8 @@ annotools.prototype.promptForWorkOrder = function (newAnnot, mode, annotools, ct
             };
 
             console.log("order:", order);
-	    previous_execution = {
-               "execution_id": execution_id,
+            previous_execution = {
+                "execution_id": execution_id,
                 "y": newAnnot.y,
                 "h": newAnnot.h,
                 "w": newAnnot.w,
