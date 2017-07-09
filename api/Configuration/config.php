@@ -58,6 +58,7 @@ return array(
     'postSuperuserForLymphocytes' => "$lymphocyteUrl/LymphocyteUsers/submit/json?",
     'getLymphocyteSuperusers' => "$lymphocyteUrl/LymphocyteUsers/query/getLymphSuperusers?",
     'getLymphocyteSuperuserByEmail' => "$lymphocyteUrl/LymphocyteUsers/query/getUserByEmail?",
+    'getLymphocyteUserByEmailAndRole' => "$lymphocyteUrl/LymphocyteUsers/query/getUserByEmailAndRole?",
     'deleteLymphocyteUserByEmail' => "$lymphocyteUrl/LymphocyteUsers/delete/deleteUserByEmail?",
     'deleteLymphocyteSuperuser' => "$lymphocyteUrl/LymphocyteUsers/delete/deleteLymphSuperuser?",
     

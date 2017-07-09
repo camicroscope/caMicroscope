@@ -5,26 +5,23 @@ include_once("RestRequest.php");
 require_once 'HTTP/Request2.php';
 $config = require '../Configuration/config.php';
 
-$getUrl =  $config['getLymphocyteSuperuserByEmail'];
-$deleteUrl = $config['deleteLymphocyteUserByEmail'];
+$getUrl =  $config['getLymphocyteUserByEmailAndRole'];
+$deleteUrl = $config['deleteLymphocyteSuperuser'];
 $postUrl = $config['postSuperuserForLymphocytes'];
-
 
 if (!empty($_SESSION['api_key'])) {
     $api_key = $_SESSION['api_key'];
 }
 
-
 switch ($_SERVER['REQUEST_METHOD'])
 {
-
     case 'GET':
         if(isset($_GET["email"]))
 	    {
-            $email=$_GET["email"];
+            $email = $_GET["email"];
+            $role = $_GET["role"];
             
-			
-            $url  = $getUrl . "api_key=" . urlencode($api_key) . "&email=". urlencode($email);
+            $url  = $getUrl . "api_key=" . urlencode($api_key) . "&email=". urlencode($email) . "&role=". urlencode($role);
 
 	        $getRequest = new RestRequest($url,'GET');
             $getRequest->execute();
@@ -32,29 +29,23 @@ switch ($_SERVER['REQUEST_METHOD'])
 	        //Parse reponse
 	        $lymphocyteSuperuserInfo = ($getRequest->responseBody);
 
-            if($lymphocyteSuperuserInfo)
+            if($lymphocyteSuperuserInfo) {
                 echo ($lymphocyteSuperuserInfo);
-            else
-                echo "No lymphocyte superuser data";
-            
+            }else {
+                echo "No data";
+            }
         }
+        
         break;
         
     case 'DELETE':
-        echo "PHP Deleteing";
-        $d = file_get_contents("php://input");
-        //print_r($d);
+        echo "PHP Deleting\n";
     
-	    $data = [];
-        parse_str($d, $data); 
-   
-        //$data = json_decode($data);
-        //print_r($data);
-    
-        $email = $data['email'];
-    
-        $delUrl = $deleteUrl . "api_key=".$api_key . "&email=".$email;
-        //echo $delUrl;
+        $email=$_GET["email"];
+        $role=$_GET["role"];
+        
+        $delUrl = $deleteUrl . "api_key=".$api_key . "&email=".$email . "&role=".$role;
+        echo $delUrl;
         $curl = curl_init($delUrl);
 
         //Delete request
@@ -95,6 +86,7 @@ switch ($_SERVER['REQUEST_METHOD'])
         echo $result;
 
         echo "done";
-	break;
+        
+	    break;
 }
 ?>

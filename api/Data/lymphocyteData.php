@@ -24,11 +24,11 @@ switch ($_SERVER['REQUEST_METHOD'])
 			
             $url  = $getUrl . "api_key=" . urlencode($api_key) . "&case_id=". urlencode($case_id) ."&username=" .urlencode($username);
 
-	    $getRequest = new RestRequest($url,'GET');
+	        $getRequest = new RestRequest($url,'GET');
             $getRequest->execute();
            
-	    //Parse reponse
-	    $lymphocyteHeatmapInfo = ($getRequest->responseBody);
+	        //Parse reponse
+	        $lymphocyteHeatmapInfo = ($getRequest->responseBody);
 
             if($lymphocyteHeatmapInfo)
                 echo ($lymphocyteHeatmapInfo);
@@ -40,8 +40,8 @@ switch ($_SERVER['REQUEST_METHOD'])
         
     case 'POST':
         //echo "Posting!!!";
-	$lymphocyteHeatmapInfo =$_POST;
-	$url = $postUrl . "api_key=".$api_key;
+	    $lymphocyteHeatmapInfo =$_POST;
+	    $url = $postUrl . "api_key=".$api_key;
 		
         //print_r($lymphocyteHeatmapInfo);
         //print_r(json_encode($lymphocyteHeatmapInfo), JSON_NUMERIC_CHECK);
@@ -64,6 +64,6 @@ switch ($_SERVER['REQUEST_METHOD'])
         echo $result;
 
         echo "done";
-	break;
+	    break;
 }
 ?>

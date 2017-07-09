@@ -3518,8 +3518,9 @@ annotools.prototype.isLymphSuperuser = function()
     var self = this;
     //console.log("lymphUser.superuserRole: " + lymphUser.superuserRole);
     
-    self.username = self.username.toLowerCase();  
-    var url = "api/Data/lymphocyteSuperusers.php?email=" + self.username;
+    self.username = self.username.toLowerCase();
+    var role = lymphUser.superuserRole;
+    var url = "api/Data/lymphocyteSuperusers.php?email=" + self.username + "&role=" + role;
     
     // Debug
     console.log(url);
@@ -3535,16 +3536,7 @@ annotools.prototype.isLymphSuperuser = function()
             //console.log("role: " + data[0].role);
             
             if ( data.length > 0) {
-                for ( var j = 0; j < data.length; j++ ) {
-                    
-                    if (data[j].email.toLowerCase() === self.username.toLowerCase() && data[j].role.toLowerCase() === lymphUser.superuserRole.toLowerCase()) {
-                        self.lymphSuperuser = true;
-                        break;
-                    }
-                    else{
-                        self.lymphSuperuser = false;
-                    }
-                }
+                self.lymphSuperuser = true;   
             }
             console.log('self.lymphSuperuser: ' + self.lymphSuperuser);
             

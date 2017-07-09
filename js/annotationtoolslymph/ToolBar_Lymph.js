@@ -441,7 +441,7 @@ ToolBar.prototype.createButtons = function () {
         'src': 'images/switch_user.svg',
         'id': 'switchUserButton'
     });
-    //tool.append(this.switchUserButton);     // Button for switch user
+    tool.append(this.switchUserButton);     // Button for switch user
       
       
     /*
