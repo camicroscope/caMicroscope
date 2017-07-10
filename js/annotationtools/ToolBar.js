@@ -219,11 +219,14 @@ ToolBar.prototype.toggleAlgorithmSelector = function () {
          jQuery("#panel").hide("slide");
          });
          */
+
         jQuery("#cancelAlgorithms").click(function () {
             jQuery("#panel").html("");
             jQuery("#panel").hide("slide");
+            AlgorithmSelectorHidden = true;
         });
     });
+    
     if (AlgorithmSelectorHidden == true) {
         jQuery("#panel").show("slide");
         AlgorithmSelectorHidden = false;
