@@ -197,7 +197,6 @@ annotools.prototype.renderByExecutionId = function (algorithms) {
 
 /**
  * Get multiple annotations
- * Called upon zoom
  * Same as renderByExecutionId??
  * @param viewer
  */
