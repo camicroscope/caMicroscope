@@ -21,7 +21,7 @@
 
 
 #weightpanel {
-    width: 235px;
+    width: 250px;
     font-family: Arial, Roboto;                                                               
     font-size: 12px;                                                                          
     height: 400px;                                                                            
@@ -103,6 +103,26 @@
 	position:relative;
 	top:0px;
         left:0px;
+}
+
+#closeWeightPanel {
+	display: inline-block;
+	width: 16px;
+	float:right;
+}
+
+#closeWeightPanel:hover {
+    background-color: crimson;
+}
+
+#closeMarkupPanel {
+	display: inline-block;
+	width: 16px;
+	float:right;
+}
+
+#closeMarkupPanel:hover {
+    background-color: crimson;
 }
 
 #closeSwitchUser {

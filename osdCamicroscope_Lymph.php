@@ -112,15 +112,14 @@
          <div id="panel"></div>
 
         <div id="weightpanel">
+            <a href='#'><div id='closeWeightPanel'><img src='images/ic_close_white_24px.svg' title='Close' alt="Close X" height="16" width="16"></div></a>
             <div id="bar1" class="bar" align="right"><div id="slide1" class="slide"></div></div>
             <label class="lb_heatmap"><input type="checkbox" id="cb1" checked> Lymphocyte Sensitivity</label>
             <div id="bar2" class="bar" align="right"><div id="slide2" class="slide"></div></div>
             <label class="lb_heatmap"><input type="checkbox" id="cb2" checked> Necrosis Specificity</label>
             <div id="bar3" class="bar" align="right"><div id="slide3" class="slide"></div></div>
             <label class="lb_heatmap"><input type="checkbox" id="cb3" checked> Smoothness</label><br><p>
-	    
-	    <button type="button" class="btn_heatmap" id="btn_revertWeight">Revert Weights</button>
-
+	        <button type="button" class="btn_heatmap" id="btn_revertWeight">Revert Weights</button>
             <br><p>
             <input type="radio" name="weighttype" value="LymSe" id="LymSe"> <label for="LymSe" class=radio_markup>Lymphocyte Prediction</label> <br>
             <input type="radio" name="weighttype" value="NecSe" id="NecSe"> <label for="NecSe" class=radio_markup>Necrosis Prediction</label> <br>
@@ -130,23 +129,25 @@
         </div>
 
         <div id="markuppanel">
-        <input type="radio" name="marktype" value="LymPos" checked="checked" id="LymPos" class="radio_markup">
+            <a href='#'><div id='closeMarkupPanel'><img src='images/ic_close_white_24px.svg' title='Close' alt="Close X" height="16" width="16"></div></a>
+            <input type="radio" name="marktype" value="LymPos" checked="checked" id="LymPos" class="radio_markup">
             <label for="LymPos" class=radio_markup> (1) LymPos (draw thin line)</label><br>
-        <input type="radio" name="marktype" value="LymNeg" id="LymNeg" class="radio_markup">
+            <input type="radio" name="marktype" value="LymNeg" id="LymNeg" class="radio_markup">
             <label for="LymNeg" class=radio_markup> (2) LymNeg (draw thin line)</label><br><p><p>
-        <input type="radio" name="marktype" value="LymPosBig" id="LymPosBig" class="radio_markup">
+            <input type="radio" name="marktype" value="LymPosBig" id="LymPosBig" class="radio_markup">
             <label for="LymPosBig" class=radio_markup> (3) LymPos (draw thick line)</label><br>
-        <input type="radio" name="marktype" value="LymNegBig" id="LymNegBig" class="radio_markup">
+            <input type="radio" name="marktype" value="LymNegBig" id="LymNegBig" class="radio_markup">
             <label for="LymNegBig" class=radio_markup> (4) LymNeg (draw thick line)</label><br><p><p>
-        <input type="radio" name="marktype" value="TumorPos" id="TumorPos" class="radio_markup">
+            <input type="radio" name="marktype" value="TumorPos" id="TumorPos" class="radio_markup">
             <label for="TumorPos" class=radio_markup> (5) TumorPos (draw polygon)</label><br>
-        <input type="radio" name="marktype" value="TumorNeg" id="TumorNeg" class="radio_markup">
+            <input type="radio" name="marktype" value="TumorNeg" id="TumorNeg" class="radio_markup">
             <label for="TumorNeg" class=radio_markup> (6) TumorNeg (draw polygon)</label><br><p><p>
-        <input type="radio" name="marktype" value="Moving" id="rb_Moving" class="radio_markup">
+            <input type="radio" name="marktype" value="Moving" id="rb_Moving" class="radio_markup">
             <label for="rb_Moving" class=radio_markup> (7) Save then Navigate</label><br>
-        <button type="button" class="btn_mark" id="btn_savemark">Save</button>
-        <button type="button" class="btn_mark" id="btn_undomark" >Cancel</button>
-        <button type="button" class="btn_mark" id="btn_mark_help">&#x2753</button> </div>
+            <button type="button" class="btn_mark" id="btn_savemark">Save</button>
+            <button type="button" class="btn_mark" id="btn_undomark" >Cancel</button>
+            <button type="button" class="btn_mark" id="btn_mark_help">&#x2753</button>
+        </div>
         <div id="div_weight_locked" style="display: none;">Free</div>
 
         <div id="switchuserpanel"><a href='#'><div id='closeSwitchUser'><img src='images/ic_close_white_24px.svg' title='Close' alt="Close X" height="16" width="16"></div></a>
@@ -264,6 +265,24 @@
         jQuery("#weightpanel").hide();
         jQuery("#markuppanel").hide();
         jQuery("#switchuserpanel").hide();
+        
+        /* Close weight panel */
+        jQuery('#closeWeightPanel').click(function (e) {
+	        e.preventDefault();
+            jQuery("#weightpanel").hide('slide');
+        });
+        
+        /* Close markup panel */
+        jQuery('#closeMarkupPanel').click(function (e) {
+	        e.preventDefault();
+            annotool.mode = 'normal';
+            jQuery("canvas").css("cursor", "default");
+            jQuery("#freeLineMarkupButton").removeClass("active");
+            jQuery("#markuppanel").hide('slide');
+            annotool.drawLayer.hide();
+            annotool.addMouseEvents();
+        });
+        
         if(bound_x && bound_y){
             var ipt = new OpenSeadragon.Point(+bound_x, +bound_y);
             var vpt = viewer.viewport.imageToViewportCoordinates(ipt);
