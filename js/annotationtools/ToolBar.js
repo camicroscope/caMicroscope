@@ -595,9 +595,11 @@ ToolBar.prototype.createButtons = function () {
         toolButtons.each(function () {
             jQuery(this).on({
                 'mouseenter': function () {
+                    // highlight button
                     this.addClass('selected')
                 },
                 'mouseleave': function () {
+                    // un-highlight button
                     this.removeClass('selected')
                 }
             })
