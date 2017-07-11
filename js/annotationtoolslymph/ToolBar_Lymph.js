@@ -247,11 +247,12 @@ ToolBar.prototype.toggleAlgorithmSelector = function () {
     jQuery("#cancelAlgorithms").click(function(){
       jQuery("#panel").html("");
       jQuery("#panel").hide("slide");
+      AlgorithmSelectorHidden = true;
     });
   });
    if(AlgorithmSelectorHidden == true){
    	jQuery("#panel").show("slide");   
-    AlgorithmSelectorHidden = false;
+        AlgorithmSelectorHidden = false;
   } else {
     jQuery("#panel").html("");
     jQuery("#panel").hide("slide");
