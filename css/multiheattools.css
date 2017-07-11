@@ -134,4 +134,14 @@
 #closeSwitchUser:hover {
     background-color: crimson;
 }
+
+#closeFilterPanel {
+	display: inline-block;
+	width: 20px;
+	float:right;
+}
+
+#closeFilterPanel:hover {
+    background-color: crimson;
+}
     

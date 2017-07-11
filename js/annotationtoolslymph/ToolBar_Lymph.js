@@ -178,7 +178,8 @@ ToolBar.prototype.toggleAlgorithmSelector = function () {
 	//jQuery("#panel").show("slide");
   var url = 'api/Data/getAlgorithmsForImage.php?iid=' + self.iid;
 
-  var htmlStr = "<div id='panelHeader'> <h4>Select Algorithm </h4> </div> <div id='panelBody'> <ul id='algorithmList'>";
+  var htmlStr = "<div id='panelHeader'><a href='#'><div id='closeFilterPanel'><img src='images/ic_close_white_24px.svg' title='Close' alt='Close' width='20' height='20'></div></a><h4>Select Algorithm </h4></div><div id='panelBody'><ul id='algorithmList'>";
+    
   jQuery.get(url, function (data) {
 
     d = JSON.parse(data)
@@ -245,6 +246,12 @@ ToolBar.prototype.toggleAlgorithmSelector = function () {
     });
     */
     jQuery("#cancelAlgorithms").click(function(){
+      jQuery("#panel").html("");
+      jQuery("#panel").hide("slide");
+      AlgorithmSelectorHidden = true;
+    });
+      
+    jQuery("#closeFilterPanel").click(function(){
       jQuery("#panel").html("");
       jQuery("#panel").hide("slide");
       AlgorithmSelectorHidden = true;
