@@ -1537,7 +1537,7 @@ annotools.prototype.convertFromNative = function (annot, end) {
 
     points += this.imagingHelper.physicalToLogicalX(lastPolyPoint.x) + ',' + this.imagingHelper.physicalToLogicalY(lastPolyPoint.y)
       
-    if ( typeof(end) != 'undefined') {
+    if ( typeof(end) !== 'undefined') {
         var x_end = end.x;
         var y_end = end.y;
     }
