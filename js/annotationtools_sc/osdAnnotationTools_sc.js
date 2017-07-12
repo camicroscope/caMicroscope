@@ -115,6 +115,63 @@ var annotools = function (options) {
   this.magnifyGlass.hide()
 }
 
+/**
+ * Get algorithm and color info
+ *
+ * @param SELECTED_ALGORITHM_LIST
+ * @returns {*}
+ */
+annotools.prototype.getAlgoAndColor = function (SELECTED_ALGORITHM_LIST) {
+    var algorithms = [];
+    var algorithm_colors = [];
+    var algo_color = {};
+
+    /*
+     for (i = 0;i < selKeys.length;i++) {
+     var algorithm_title = selKeys[i].refKey;
+     var index1=algorithm_title.indexOf("human");
+     var index2=algorithm_title.indexOf("composite");
+     var index3=algorithm_title.indexOf("dotnuclei");
+     var index4=algorithm_title.indexOf("Heatmap");
+
+     if(index1==-1 && index2 ==-1 && index3 ==-1 && index4 ==-1)
+     {algorithms.push(selKeys[i].refKey);
+     algorithm_colors.push(selKeys[i].data.color);}
+     }
+     */
+
+    for (i = 0; i < SELECTED_ALGORITHM_LIST.length; i++) {
+        var algorithm_title = SELECTED_ALGORITHM_LIST[i];
+        var index1 = algorithm_title.indexOf("human");
+        var index2 = algorithm_title.indexOf("composite");
+        var index3 = algorithm_title.indexOf("dotnuclei");
+        var index4 = algorithm_title.indexOf("Heatmap");
+
+        if (index1 === -1 && index2 === -1 && index3 === -1 && index4 === -1) {
+            algorithms.push(SELECTED_ALGORITHM_LIST[i]);
+            algorithm_colors.push(SELECTED_ALGORITHM_COLOR[SELECTED_ALGORITHM_LIST[i]]);
+        }
+    }
+
+    var num_algorithm = algorithms.length;
+    console.log("algorithms", algorithms);
+
+    if (num_algorithm === 0) {
+        alert("No algorithms have been selected.");
+        algo_color = null;
+    }
+    else if (num_algorithm > 1 || num_algorithm < 1) {
+        alert("Please select one and only one algorithm!");
+        algo_color = null;
+    } else {
+        algo_color.color = algorithm_colors[0];
+        algo_color.algorithm = algorithms[0];
+        console.log("algo_color", algo_color);
+    }
+
+    return algo_color;
+};
+
 annotools.prototype.destroyMarkups = function (viewer) {
   var markup_svg = document.getElementById('markups')
   if (markup_svg) {
@@ -125,6 +182,8 @@ annotools.prototype.destroyMarkups = function (viewer) {
 }
 
 annotools.prototype.getMultiAnnot = function (viewer) {
+  console.log("getMultiAnnot");
+
   var opa = []
 
   var val1 = ''
@@ -145,8 +204,8 @@ annotools.prototype.getMultiAnnot = function (viewer) {
     }
   }*/
   
-  console.log(ALGORITHM_LIST);
-  console.log(SELECTED_ALGORITHM_LIST);
+  console.log("algorithm_list", ALGORITHM_LIST);
+  console.log("selected_algorithm_list", SELECTED_ALGORITHM_LIST);
   SELECTED_ALGORITHM_LIST = SELECTED_ALGORITHM_LIST.sort();
   console.log("....");
   algorithms = SELECTED_ALGORITHM_LIST;
@@ -958,6 +1017,7 @@ annotools.prototype.updateAnnot = function (annot) // Save Annotations
 }
 annotools.prototype.saveAnnot = function (annotation) // Save Annotations
 {
+  console.log("Save Annotations");
   var self = this;
   this.save_success="no";
   console.log('Save annotation function')
@@ -970,57 +1030,19 @@ annotools.prototype.saveAnnot = function (annotation) // Save Annotations
   var lpoint_y=annotation.geometry.coordinates[0][total_points-1][1];
   
   if(fpoint_x!=lpoint_x || fpoint_y!=lpoint_y){
-	 annotation.geometry.coordinates[0].push([]);
+     annotation.geometry.coordinates[0].push([]);
      annotation.geometry.coordinates[0][total_points].push(fpoint_x);
      annotation.geometry.coordinates[0][total_points].push(fpoint_y);   
   }  
-  //get algorithm and color info from menu tree
- // var selKeys = jQuery('#tree').fancytree('getTree').getSelectedNodes();
-  //console.log(selKeys);		 
 
-  var algorithms =[];
-  var algorithm_colors =[];
-  var selected_algorithm="";
-  var selected_color="";
-  	
-/*	
-  for (i = 0;i < selKeys.length;i++) {
-	  var algorithm_title = selKeys[i].refKey;
-	  var index1=algorithm_title.indexOf("human");
-	  var index2=algorithm_title.indexOf("composite");
-	  var index3=algorithm_title.indexOf("dotnuclei");
-      var index4=algorithm_title.indexOf("Heatmap");		  
-		 
-      if(index1==-1 && index2 ==-1 && index3 ==-1&& index4 ==-1)
-		 {algorithms.push(selKeys[i].refKey);
-		  algorithm_colors.push(selKeys[i].data.color);}
+  //get algorithm and color info
+  var algo_color = this.getAlgoAndColor(SELECTED_ALGORITHM_LIST);
+  if (algo_color === null) {
+      return false;
   }
-  */
-  
-
-  for (i = 0;i < SELECTED_ALGORITHM_LIST.length;i++) {
-		 var algorithm_title = SELECTED_ALGORITHM_LIST[i];
-		 var index1=algorithm_title.indexOf("human");
-		 var index2=algorithm_title.indexOf("composite");
-		 var index3=algorithm_title.indexOf("dotnuclei");	
-         var index4=algorithm_title.indexOf("Heatmap");		 
-		 
-        if(index1==-1 && index2 ==-1 && index3 ==-1 && index4 ==-1) 
-		  {algorithms.push(SELECTED_ALGORITHM_LIST[i]);
-		   algorithm_colors.push(SELECTED_ALGORITHM_COLOR[SELECTED_ALGORITHM_LIST[i]]);
-		  }
-     }  
-	
-   var num_algorithm = algorithms.length;
-   console.log(algorithms);
-  
-  if(num_algorithm>1 || num_algorithm<1 )	{
-	alert("Please select one and only one algorithm!");  
-	return false; 
-  }else {
-    selected_algorithm = algorithms[0];
-    selected_color = algorithm_colors[0];
-    console.log(selected_algorithm);	 
+  else {
+      var selected_algorithm = algo_color.algorithm;
+      var selected_color = algo_color.color;
   }
   
    var user=annotool.user;
@@ -1261,7 +1283,8 @@ annotools.prototype.drawEllipse = function (ctx) {
 
 annotools.prototype.drawRectangle = function (ctx) {
   console.log('drawing rectangle')
-  
+
+    // TODO: need to check for null
   var selectedAlgorithmColor = this.getAlgorithmColorFromMenuTree();
   console.log("selectedAlgorithmColor is: "+selectedAlgorithmColor); 
 
@@ -1354,6 +1377,7 @@ annotools.prototype.drawPencil = function (ctx) {
   jQuery("canvas").css("cursor", "crosshair");
   //jQuery("#drawFreelineButton").css("opacity", 1);
   /**/
+    // TODO: need to check for null
   var selectedAlgorithmColor = this.getAlgorithmColorFromMenuTree();
   console.log("selectedAlgorithmColor is: "+selectedAlgorithmColor);
   
@@ -2333,8 +2357,10 @@ annotools.prototype.promptForDownload = function(newAnnot, mode, annotools, ctx)
 }
 
 
-annotools.prototype.mergeStep1 = function() {    
-   
+annotools.prototype.mergeStep1 = function() {
+
+    console.log("mergeStep1");
+
     var x1 = this.imagingHelper._viewportOrigin['x'];
     var y1 = this.imagingHelper._viewportOrigin['y'];
     var x2 = x1 + this.imagingHelper._viewportWidth;
@@ -2352,70 +2378,29 @@ annotools.prototype.mergeStep1 = function() {
     var dataY2 = helper.physicalToDataY(physicalY2);
 
     var area = (dataX2 - dataX1)*(dataY2-dataY1);
-	console.log(area); 	
-	 
-	 //get algorithm and color info from menu tree
-	 //var selKeys = jQuery('#tree').fancytree('getTree').getSelectedNodes();	 
-	 //console.log(selKeys);	
+    console.log("area", area); 	
 
-     console.log("SELECTED_ALGORITHM_LIST is: "+SELECTED_ALGORITHM_LIST);
-	 console.log("SELECTED_ALGORITHM_COLOR is: "+SELECTED_ALGORITHM_COLOR);	 	 
-
-	 var algorithms =[];
-	 var algorithm_colors =[];
-	 var selected_algorithm="";
-	 var selected_color="";
-	 
-	 /*
-	 for (i = 0;i < selKeys.length;i++) {
-		 var algorithm_title = selKeys[i].refKey;
-		 var index1=algorithm_title.indexOf("human");
-		 var index2=algorithm_title.indexOf("composite");
-		 var index3=algorithm_title.indexOf("dotnuclei");	
-         var index4=algorithm_title.indexOf("Heatmap");		 
-		 
-        if(index1==-1 && index2 ==-1 && index3 ==-1 && index4 ==-1) 
-		  {algorithms.push(selKeys[i].refKey);
-		   algorithm_colors.push(selKeys[i].data.color);}
-     }*/
-	 
-	 
-	 for (i = 0;i < SELECTED_ALGORITHM_LIST.length;i++) {
-		 var algorithm_title = SELECTED_ALGORITHM_LIST[i];
-		 var index1=algorithm_title.indexOf("human");
-		 var index2=algorithm_title.indexOf("composite");
-		 var index3=algorithm_title.indexOf("dotnuclei");	
-         var index4=algorithm_title.indexOf("Heatmap");		 
-		 
-        if(index1==-1 && index2 ==-1 && index3 ==-1 && index4 ==-1) 
-		  {algorithms.push(SELECTED_ALGORITHM_LIST[i]);
-		   algorithm_colors.push(SELECTED_ALGORITHM_COLOR[SELECTED_ALGORITHM_LIST[i]]);
-		  }
-     }
-	 
-	 var num_algorithm = algorithms.length;	  
-	 console.log(algorithms);
-	 
-     if(num_algorithm>1 || num_algorithm<1 )	{
-		alert("Please select one and only one algorithm!");  
-		return false; 
-	 }else {
-		 selected_algorithm = algorithms[0];
-		 selected_color = algorithm_colors[0];
-	     console.log(selected_algorithm);	 
-	 } 	 
-	 
-	var case_id = this.iid
+    var case_id = this.iid
     var subject_id = case_id.substr(0,12);
     if(subject_id.substr(0,4) != "TCGA"){
       //subject_id = "";     
     }
 	
-  var execution_id = annotool.execution_id ;
-  var user=annotool.user;
-  var d = new Date();
-  var current_time=d.toLocaleString();       
-  
+    var execution_id = annotool.execution_id ;
+    var user=annotool.user;
+    var d = new Date();
+    var current_time=d.toLocaleString();       
+
+    //get algorithm and color info
+    var algo_color = this.getAlgoAndColor(SELECTED_ALGORITHM_LIST);
+    if (algo_color === null) {
+        return false;
+    }
+    else {
+        var selected_algorithm = algo_color.algorithm;
+        var selected_color = algo_color.color;
+    }
+
    // add first vertice of rectangle to the end to ensure the loop is closed  
    var geoJSONTemplate = {
     'type': 'Feature',
@@ -2537,58 +2522,23 @@ annotools.prototype.deleteAnnotationWithinRectangle = function(newAnnot){
 
 
 annotools.prototype.getAlgorithmColorFromMenuTree = function() {
-	
-  //var selKeys = jQuery('#tree').fancytree('getTree').getSelectedNodes();
-  //console.log(selKeys);		
 
-  console.log("SELECTED_ALGORITHM_LIST is: "+SELECTED_ALGORITHM_LIST);
-  console.log("SELECTED_ALGORITHM_COLOR is: "+SELECTED_ALGORITHM_COLOR);	  
+  console.log("getAlgorithmColorFromMenuTree");
 
-  var algorithms =[];
-  var algorithm_colors =[];
-  var selected_algorithm="";
-  var selected_color="";
-  
-/*  
-  for (i = 0;i < selKeys.length;i++) {
-	  var algorithm_title = selKeys[i].refKey;
-	  var index1=algorithm_title.indexOf("human");
-	  var index2=algorithm_title.indexOf("composite");
-	  var index3=algorithm_title.indexOf("dotnuclei");	
-      var index4=algorithm_title.indexOf("Heatmap");		  
-     
-	  if(index1==-1 && index2 ==-1 && index3 ==-1 && index4 ==-1)
-		 {algorithms.push(selKeys[i].refKey);
-		  algorithm_colors.push(selKeys[i].data.color);}
+  // get algorithm and color info from menu tree
+  // var selKeys = jQuery('#tree').fancytree('getTree').getSelectedNodes();
+  // console.log(selKeys);
+
+  var algo_color = this.getAlgoAndColor(SELECTED_ALGORITHM_LIST);
+  if (algo_color === null) {
+      return false;
   }
-  */
-  
-  for (i = 0;i < SELECTED_ALGORITHM_LIST.length;i++) {
-		 var algorithm_title = SELECTED_ALGORITHM_LIST[i];
-		 var index1=algorithm_title.indexOf("human");
-		 var index2=algorithm_title.indexOf("composite");
-		 var index3=algorithm_title.indexOf("dotnuclei");	
-         var index4=algorithm_title.indexOf("Heatmap");		 
-		 
-        if(index1==-1 && index2 ==-1 && index3 ==-1 && index4 ==-1) 
-		  {algorithms.push(SELECTED_ALGORITHM_LIST[i]);
-		   algorithm_colors.push(SELECTED_ALGORITHM_COLOR[SELECTED_ALGORITHM_LIST[i]]);
-		  }
-     }
-	 
-  var num_algorithm = algorithms.length;	
-  console.log("algorithms is: "+algorithms);  
-	 
-  if(num_algorithm>1 || num_algorithm<1 )	{
-	alert("Please select one and only one algorithm!");  
-	return false; 
-  }else {
-    selected_algorithm = algorithms[0];
-    selected_color = algorithm_colors[0];
-    console.log(selected_algorithm);	 
+  else {
+      var selected_algorithm = algo_color.algorithm;
+      var selected_color = algo_color.color;
   }
-  
-   return selected_color;
+    
+  return selected_color;
   // return selected_algorithm;    	
 }
 
@@ -2671,11 +2621,3 @@ function pollOrder(id, cb){
     }
   });
 }
-
-
-
-
-
-
-
-
