@@ -1536,9 +1536,12 @@ annotools.prototype.convertFromNative = function (annot, end) {
     var lastPolyPoint = new OpenSeadragon.Point(parseFloat(last_poly_split[0]), parseFloat(last_poly_split[1]))
 
     points += this.imagingHelper.physicalToLogicalX(lastPolyPoint.x) + ',' + this.imagingHelper.physicalToLogicalY(lastPolyPoint.y)
-    var x_end = end.x
-    var y_end = end.y
-
+      
+    if ( typeof(end) != 'undefined') {
+        var x_end = end.x;
+        var y_end = end.y;
+    }
+    
     var nativeX_end = this.imagingHelper.physicalToLogicalX(x_end)
     var nativeY_end = this.imagingHelper.physicalToLogicalY(y_end)
     var nativeX = this.imagingHelper.physicalToLogicalX(x)
