@@ -26,7 +26,7 @@ if(isset($_GET["lymph_superuser"])) {
     if($lymphocyteSuperuserInfo)
         echo ($lymphocyteSuperuserInfo);
     else
-        echo "No lymphocyte superuser data";
+        echo "No data";
   
 }
         
