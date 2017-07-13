@@ -281,11 +281,9 @@ ToolBar.prototype.createButtons = function () {
     console.log("self.iid is: "+self.iid);	 
 	
     jQuery.get('api/Data/getAlgorithmsForImage.php?iid=' + self.iid, function (data) {
-      d = JSON.parse(data);	  
-      
-	    console.log("data before goodalgo is:"+data);
-      console.log("d before goodalgo is:"+d);	
-          
+      d = JSON.parse(data);	      
+     // console.log("data before goodalgo is:"+data);
+     // console.log("d before goodalgo is:"+d);	          
       goodalgo(d, null)
     })	
 	
