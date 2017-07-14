@@ -1391,7 +1391,7 @@ annotools.prototype.saveAnnot_noRefresh = function (annotation) // Save Annotati
     url: 'api/Data/getAnnotSpatialLymph.php',
     data: annotation,
     success: function (res, err) {
-      console.log("response: ")
+      //console.log("response: ")
       console.log(res)
       if(res == "unauthorized"){
         alert("Error saving markup! Wrong secret");
