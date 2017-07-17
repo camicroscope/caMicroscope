@@ -115,63 +115,6 @@ var annotools = function (options) {
   this.magnifyGlass.hide()
 }
 
-/**
- * Get algorithm and color info
- *
- * @param SELECTED_ALGORITHM_LIST
- * @returns {*}
- */
-annotools.prototype.getAlgoAndColor = function (SELECTED_ALGORITHM_LIST) {
-    var algorithms = [];
-    var algorithm_colors = [];
-    var algo_color = {};
-
-    /*
-     for (i = 0;i < selKeys.length;i++) {
-     var algorithm_title = selKeys[i].refKey;
-     var index1=algorithm_title.indexOf("human");
-     var index2=algorithm_title.indexOf("composite");
-     var index3=algorithm_title.indexOf("dotnuclei");
-     var index4=algorithm_title.indexOf("Heatmap");
-
-     if(index1==-1 && index2 ==-1 && index3 ==-1 && index4 ==-1)
-     {algorithms.push(selKeys[i].refKey);
-     algorithm_colors.push(selKeys[i].data.color);}
-     }
-     */
-
-    for (i = 0; i < SELECTED_ALGORITHM_LIST.length; i++) {
-        var algorithm_title = SELECTED_ALGORITHM_LIST[i];
-        var index1 = algorithm_title.indexOf("human");
-        var index2 = algorithm_title.indexOf("composite");
-        var index3 = algorithm_title.indexOf("dotnuclei");
-        var index4 = algorithm_title.indexOf("Heatmap");
-
-        if (index1 === -1 && index2 === -1 && index3 === -1 && index4 === -1) {
-            algorithms.push(SELECTED_ALGORITHM_LIST[i]);
-            algorithm_colors.push(SELECTED_ALGORITHM_COLOR[SELECTED_ALGORITHM_LIST[i]]);
-        }
-    }
-
-    var num_algorithm = algorithms.length;
-    console.log("algorithms", algorithms);
-
-    if (num_algorithm === 0) {
-        alert("No algorithms have been selected.");
-        algo_color = null;
-    }
-    else if (num_algorithm > 1 || num_algorithm < 1) {
-        alert("Please select one and only one algorithm!");
-        algo_color = null;
-    } else {
-        algo_color.color = algorithm_colors[0];
-        algo_color.algorithm = algorithms[0];
-        console.log("algo_color", algo_color);
-    }
-
-    return algo_color;
-};
-
 annotools.prototype.destroyMarkups = function (viewer) {
   var markup_svg = document.getElementById('markups')
   if (markup_svg) {
@@ -1015,6 +958,7 @@ annotools.prototype.updateAnnot = function (annot) // Save Annotations
   })
   this.displayAnnot()
 }
+
 annotools.prototype.saveAnnot = function (annotation) // Save Annotations
 {
   console.log("Save Annotations");
@@ -1035,14 +979,14 @@ annotools.prototype.saveAnnot = function (annotation) // Save Annotations
      annotation.geometry.coordinates[0][total_points].push(fpoint_y);   
   }  
 
-  //get algorithm and color info
-  var algo_color = this.getAlgoAndColor(SELECTED_ALGORITHM_LIST);
-  if (algo_color === null) {
+  // get algorithm and color info
+  var algo_and_color = this.getAlgorithmColorFromMenuTree();
+  if (algo_and_color === null) {
       return false;
   }
   else {
-      var selected_algorithm = algo_color.algorithm;
-      var selected_color = algo_color.color;
+      var selected_algorithm = algo_and_color.algorithm;
+      var selected_color = algo_and_color.color;
   }
   
    var user=annotool.user;
@@ -1282,197 +1226,213 @@ annotools.prototype.drawEllipse = function (ctx) {
 }
 
 annotools.prototype.drawRectangle = function (ctx) {
-  console.log('drawing rectangle')
+    console.log('drawing rectangle');
 
-    // TODO: need to check for null
-  var selectedAlgorithmColor = this.getAlgorithmColorFromMenuTree();
-  console.log("selectedAlgorithmColor is: "+selectedAlgorithmColor); 
-
-  /*Highlight drawRectangle button and change cursor*/
-
-  this.removeMouseEvents()
-  var started = false
-  var min_x,min_y,max_x,max_y,w,h
-  var startPosition
-  this.drawCanvas.addEvent('mousedown', function (e) {
-    started = true
-    startPosition = OpenSeadragon.getMousePosition(e.event)
-    x = startPosition.x
-    y = startPosition.y
-  })
-
-  this.drawCanvas.addEvent('mousemove', function (e) {
-    if (started) {
-      ctx.clearRect(0, 0, this.drawCanvas.width, this.drawCanvas.height)
-      var currentMousePosition = OpenSeadragon.getMousePosition(e.event)
-
-      min_x = Math.min(currentMousePosition.x, startPosition.x)
-      min_y = Math.min(currentMousePosition.y, startPosition.y)
-      max_x = Math.max(currentMousePosition.x, startPosition.x)
-      max_y = Math.max(currentMousePosition.y, startPosition.y)
-      w = Math.abs(max_x - min_x)
-      h = Math.abs(max_y - min_y)
-      //ctx.strokeStyle = this.color
-	  ctx.strokeStyle = selectedAlgorithmColor
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.2)'
-      ctx.fillRect(min_x, min_y, w, h)
-      ctx.strokeRect(min_x, min_y, w, h)
+    // get algorithm and color info
+    var algo_and_color = this.getAlgorithmColorFromMenuTree();
+    if (algo_and_color === null) {
+        return false;
     }
-  }.bind(this))
-
-  this.drawCanvas.addEvent('mouseup', function (e) {
-    started = false
-    var finalMousePosition = new OpenSeadragon.getMousePosition(e.event)
-
-    min_x = Math.min(finalMousePosition.x, startPosition.x)
-    min_y = Math.min(finalMousePosition.y, startPosition.y)
-    max_x = Math.max(finalMousePosition.x, startPosition.x)
-    max_y = Math.max(finalMousePosition.y, startPosition.y)
-
-    var startRelativeMousePosition = new OpenSeadragon.Point(min_x, min_y).minus(OpenSeadragon.getElementOffset(viewer.canvas))
-    var endRelativeMousePosition = new OpenSeadragon.Point(max_x, max_y).minus(OpenSeadragon.getElementOffset(viewer.canvas))
-    var newAnnot = {
-      x: startRelativeMousePosition.x,
-      y: startRelativeMousePosition.y,
-      w: w,
-      h: h,
-      type: 'rect',
-      //color: this.color,
-	  color:  selectedAlgorithmColor, 
-      loc: []
+    else {
+        // var selected_algorithm = algo_and_color.algorithm;
+        var selectedAlgorithmColor = algo_and_color.color;
+        console.log("selectedAlgorithmColor is: " + selectedAlgorithmColor);
     }
 
-    var globalNumbers = JSON.parse(this.convertFromNative(newAnnot, endRelativeMousePosition))
 
-    newAnnot.x = globalNumbers.nativeX
-    newAnnot.y = globalNumbers.nativeY
-    newAnnot.w = globalNumbers.nativeW
-    newAnnot.h = globalNumbers.nativeH
-    var loc = []
-    loc[0] = parseFloat(newAnnot.x)
-    loc[1] = parseFloat(newAnnot.y)
-    newAnnot.loc = loc;
-    console.log("newAnnot object inside of drawRectangle func:");
-    console.log(newAnnot);
-    // convert to geojson 
-    var geoNewAnnot = this.convertRectToGeo(newAnnot)
-    console.log("geoNewAnnot object inside of drawRectangle func:");
-    console.log(geoNewAnnot);
-    // geoNewAnnot = newAnnot
-    this.promptForAnnotation(geoNewAnnot, 'new', this, ctx);
-    jQuery("canvas").css("cursor", "default");
-    jQuery("#drawRectangleButton").removeClass("active");
+    /* Highlight drawRectangle button and change cursor */
+    this.removeMouseEvents()
+    var started = false
+    var min_x, min_y, max_x, max_y, w, h
+    var startPosition
+    this.drawCanvas.addEvent('mousedown', function (e) {
+        started = true
+        startPosition = OpenSeadragon.getMousePosition(e.event)
+        x = startPosition.x
+        y = startPosition.y
+    })
+
+    this.drawCanvas.addEvent('mousemove', function (e) {
+        if (started) {
+            ctx.clearRect(0, 0, this.drawCanvas.width, this.drawCanvas.height)
+            var currentMousePosition = OpenSeadragon.getMousePosition(e.event)
+
+            min_x = Math.min(currentMousePosition.x, startPosition.x)
+            min_y = Math.min(currentMousePosition.y, startPosition.y)
+            max_x = Math.max(currentMousePosition.x, startPosition.x)
+            max_y = Math.max(currentMousePosition.y, startPosition.y)
+            w = Math.abs(max_x - min_x)
+            h = Math.abs(max_y - min_y)
+            //ctx.strokeStyle = this.color
+            ctx.strokeStyle = selectedAlgorithmColor
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.2)'
+            ctx.fillRect(min_x, min_y, w, h)
+            ctx.strokeRect(min_x, min_y, w, h)
+        }
+    }.bind(this))
+
+    this.drawCanvas.addEvent('mouseup', function (e) {
+        started = false
+        var finalMousePosition = new OpenSeadragon.getMousePosition(e.event)
+
+        min_x = Math.min(finalMousePosition.x, startPosition.x)
+        min_y = Math.min(finalMousePosition.y, startPosition.y)
+        max_x = Math.max(finalMousePosition.x, startPosition.x)
+        max_y = Math.max(finalMousePosition.y, startPosition.y)
+
+        var startRelativeMousePosition = new OpenSeadragon.Point(min_x, min_y).minus(OpenSeadragon.getElementOffset(viewer.canvas))
+        var endRelativeMousePosition = new OpenSeadragon.Point(max_x, max_y).minus(OpenSeadragon.getElementOffset(viewer.canvas))
+        var newAnnot = {
+            x: startRelativeMousePosition.x,
+            y: startRelativeMousePosition.y,
+            w: w,
+            h: h,
+            type: 'rect',
+            //color: this.color,
+            color: selectedAlgorithmColor,
+            loc: []
+        }
+
+        var globalNumbers = JSON.parse(this.convertFromNative(newAnnot, endRelativeMousePosition))
+
+        newAnnot.x = globalNumbers.nativeX
+        newAnnot.y = globalNumbers.nativeY
+        newAnnot.w = globalNumbers.nativeW
+        newAnnot.h = globalNumbers.nativeH
+        var loc = []
+        loc[0] = parseFloat(newAnnot.x)
+        loc[1] = parseFloat(newAnnot.y)
+        newAnnot.loc = loc;
+        console.log("newAnnot object inside of drawRectangle func:");
+        console.log(newAnnot);
+        // convert to geojson
+        var geoNewAnnot = this.convertRectToGeo(newAnnot)
+        console.log("geoNewAnnot object inside of drawRectangle func:");
+        console.log(geoNewAnnot);
+        // geoNewAnnot = newAnnot
+        this.promptForAnnotation(geoNewAnnot, 'new', this, ctx);
+        jQuery("canvas").css("cursor", "default");
+        jQuery("#drawRectangleButton").removeClass("active");
 
 
-  }.bind(this))
-}
+    }.bind(this));
+};
 
 annotools.prototype.drawPencil = function (ctx) {
-  this.removeMouseEvents()
-  var started = false
-  var pencil = []
-  var newpoly = []
+    this.removeMouseEvents()
+    var started = false
+    var pencil = []
+    var newpoly = []
 
-  /*Change button and cursor*/
-  jQuery("canvas").css("cursor", "crosshair");
-  //jQuery("#drawFreelineButton").css("opacity", 1);
-  /**/
-    // TODO: need to check for null
-  var selectedAlgorithmColor = this.getAlgorithmColorFromMenuTree();
-  console.log("selectedAlgorithmColor is: "+selectedAlgorithmColor);
-  
-  
-  this.drawCanvas.addEvent('mousedown', function (e) {
-    started = true
-    var startPoint = OpenSeadragon.getMousePosition(e.event)
-    var relativeStartPoint = startPoint.minus(OpenSeadragon.getElementOffset(viewer.canvas))
-    newpoly.push({
-      'x': relativeStartPoint.x,
-      'y': relativeStartPoint.y
-    })
-    ctx.beginPath()
-    ctx.moveTo(relativeStartPoint.x, relativeStartPoint.y)
-    //ctx.strokeStyle = this.color
-	ctx.strokeStyle = selectedAlgorithmColor;
-    ctx.stroke()
-  }.bind(this))
+    /* Change button and cursor */
+    jQuery("canvas").css("cursor", "crosshair");
+    //jQuery("#drawFreelineButton").css("opacity", 1);
 
-  this.drawCanvas.addEvent('mousemove', function (e) {
-    var newPoint = OpenSeadragon.getMousePosition(e.event)
-    var newRelativePoint = newPoint.minus(OpenSeadragon.getElementOffset(viewer.canvas))
-    if (started) {
-      newpoly.push({
-        'x': newRelativePoint.x,
-        'y': newRelativePoint.y
-      })
+    // var selectedAlgorithmColor = this.getAlgorithmColorFromMenuTree();
+    // console.log("selectedAlgorithmColor is: " + selectedAlgorithmColor);
 
-      ctx.lineTo(newRelativePoint.x, newRelativePoint.y)
-      ctx.stroke()
+    // get algorithm and color info
+    var algo_and_color = this.getAlgorithmColorFromMenuTree();
+    if (algo_and_color === null) {
+        return false;
     }
-  })
+    else {
+        // var selected_algorithm = algo_and_color.algorithm;
+        var selectedAlgorithmColor = algo_and_color.color;
+        console.log("selectedAlgorithmColor is: " + selectedAlgorithmColor);
+    }
 
-  this.drawCanvas.addEvent('mouseup', function (e) {
-    started = false
-    pencil.push(newpoly)
-    newpoly = []
-    numpoint = 0
-    var x,y,w,h
-    x = pencil[0][0].x
-    y = pencil[0][0].y
+    this.drawCanvas.addEvent('mousedown', function (e) {
+        started = true
+        var startPoint = OpenSeadragon.getMousePosition(e.event)
+        var relativeStartPoint = startPoint.minus(OpenSeadragon.getElementOffset(viewer.canvas))
+        newpoly.push({
+            'x': relativeStartPoint.x,
+            'y': relativeStartPoint.y
+        })
+        ctx.beginPath()
+        ctx.moveTo(relativeStartPoint.x, relativeStartPoint.y)
+        //ctx.strokeStyle = this.color
+        ctx.strokeStyle = selectedAlgorithmColor;
+        ctx.stroke()
+    }.bind(this))
 
-    var maxdistance = 0
-    var points = ''
-    var endRelativeMousePosition
-    for (var i = 0; i < pencil.length; i++) {
-      newpoly = pencil[i]
-      for (j = 0; j < newpoly.length - 1; j++) {
-        points += newpoly[j].x + ',' + newpoly[j].y + ' '
-        if (((newpoly[j].x - x) * (newpoly[j].x - x) + (newpoly[j].y - y) * (newpoly[j].y - y)) > maxdistance) {
-          maxdistance = ((newpoly[j].x - x) * (newpoly[j].x - x) + (newpoly[j].y - y) * (newpoly[j].y - y))
-          var endMousePosition = new OpenSeadragon.Point(newpoly[j].x, newpoly[j].y)
-          endRelativeMousePosition = endMousePosition.minus(OpenSeadragon.getElementOffset(viewer.canvas))
+    this.drawCanvas.addEvent('mousemove', function (e) {
+        var newPoint = OpenSeadragon.getMousePosition(e.event)
+        var newRelativePoint = newPoint.minus(OpenSeadragon.getElementOffset(viewer.canvas))
+        if (started) {
+            newpoly.push({
+                'x': newRelativePoint.x,
+                'y': newRelativePoint.y
+            })
+
+            ctx.lineTo(newRelativePoint.x, newRelativePoint.y)
+            ctx.stroke()
         }
-      }
+    })
 
-      points = points.slice(0, -1)
-      points += ';'
-    }
+    this.drawCanvas.addEvent('mouseup', function (e) {
+        started = false
+        pencil.push(newpoly)
+        newpoly = []
+        numpoint = 0
+        var x, y, w, h
+        x = pencil[0][0].x
+        y = pencil[0][0].y
 
-    points = points.slice(0, -1)
+        var maxdistance = 0
+        var points = ''
+        var endRelativeMousePosition
+        for (var i = 0; i < pencil.length; i++) {
+            newpoly = pencil[i]
+            for (j = 0; j < newpoly.length - 1; j++) {
+                points += newpoly[j].x + ',' + newpoly[j].y + ' '
+                if (((newpoly[j].x - x) * (newpoly[j].x - x) + (newpoly[j].y - y) * (newpoly[j].y - y)) > maxdistance) {
+                    maxdistance = ((newpoly[j].x - x) * (newpoly[j].x - x) + (newpoly[j].y - y) * (newpoly[j].y - y))
+                    var endMousePosition = new OpenSeadragon.Point(newpoly[j].x, newpoly[j].y)
+                    endRelativeMousePosition = endMousePosition.minus(OpenSeadragon.getElementOffset(viewer.canvas))
+                }
+            }
 
-    var newAnnot = {
-      x: x,
-      y: y,
-      w: w,
-      h: h,
-      type: 'pencil',
-      points: points,
-      //color: this.color,
-	  color: selectedAlgorithmColor,
-      loc: []
-    }
+            points = points.slice(0, -1)
+            points += ';'
+        }
 
-    var globalNumbers = JSON.parse(this.convertFromNative(newAnnot, endRelativeMousePosition))
-    newAnnot.x = globalNumbers.nativeX
-    newAnnot.y = globalNumbers.nativeY
-    newAnnot.w = globalNumbers.nativeW
-    newAnnot.h = globalNumbers.nativeH
-    newAnnot.points = globalNumbers.points
-    var loc = []
-    loc[0] = parseFloat(newAnnot.x)
-    loc[1] = parseFloat(newAnnot.y)
-    newAnnot.loc = loc
-    console.log(newAnnot)
-    var geojsonAnnot = this.convertPencilToGeo(newAnnot)
-    this.promptForAnnotation(geojsonAnnot, 'new', this, ctx)
+        points = points.slice(0, -1)
 
-    /* Change button back to inactive*/
-    jQuery("canvas").css("cursor", "default");
-    jQuery("#drawFreelineButton").removeClass("active");
+        var newAnnot = {
+            x: x,
+            y: y,
+            w: w,
+            h: h,
+            type: 'pencil',
+            points: points,
+            //color: this.color,
+            color: selectedAlgorithmColor,
+            loc: []
+        }
+
+        var globalNumbers = JSON.parse(this.convertFromNative(newAnnot, endRelativeMousePosition))
+        newAnnot.x = globalNumbers.nativeX
+        newAnnot.y = globalNumbers.nativeY
+        newAnnot.w = globalNumbers.nativeW
+        newAnnot.h = globalNumbers.nativeH
+        newAnnot.points = globalNumbers.points
+        var loc = []
+        loc[0] = parseFloat(newAnnot.x)
+        loc[1] = parseFloat(newAnnot.y)
+        newAnnot.loc = loc
+        console.log(newAnnot)
+        var geojsonAnnot = this.convertPencilToGeo(newAnnot)
+        this.promptForAnnotation(geojsonAnnot, 'new', this, ctx)
+
+        /* Change button back to inactive*/
+        jQuery("canvas").css("cursor", "default");
+        jQuery("#drawFreelineButton").removeClass("active");
 
 
-  }.bind(this))
-}
+    }.bind(this))
+};
 
 annotools.prototype.drawMeasure = function (ctx) {
   this.removeMouseEvents()
@@ -2386,19 +2346,19 @@ annotools.prototype.mergeStep1 = function() {
       //subject_id = "";     
     }
 	
-    var execution_id = annotool.execution_id ;
+    var execution_id = annotool.execution_id;
     var user=annotool.user;
     var d = new Date();
     var current_time=d.toLocaleString();       
 
-    //get algorithm and color info
-    var algo_color = this.getAlgoAndColor(SELECTED_ALGORITHM_LIST);
-    if (algo_color === null) {
+    // get algorithm and color info
+    var algo_and_color = this.getAlgorithmColorFromMenuTree();
+    if (algo_and_color === null) {
         return false;
     }
     else {
-        var selected_algorithm = algo_color.algorithm;
-        var selected_color = algo_color.color;
+        var selected_algorithm = algo_and_color.algorithm;
+        var selected_color = algo_and_color.color;
     }
 
    // add first vertice of rectangle to the end to ensure the loop is closed  
@@ -2522,7 +2482,7 @@ annotools.prototype.deleteAnnotationWithinRectangle = function(newAnnot){
 
 /**
  * Get Algorithm Color From Menu Tree
- * @returns selected_color
+ * @returns {{}}
  */
 annotools.prototype.getAlgorithmColorFromMenuTree = function () {
 
@@ -2531,8 +2491,7 @@ annotools.prototype.getAlgorithmColorFromMenuTree = function () {
 
     var algorithms = [];
     var algorithm_colors = [];
-    var selected_algorithm = "";
-    var selected_color = "";
+    var algo_and_color = {};
 
     /*
     // Original
@@ -2561,31 +2520,34 @@ annotools.prototype.getAlgorithmColorFromMenuTree = function () {
         var index3 = algorithm_title.indexOf("dotnuclei");
         var index4 = algorithm_title.indexOf("Heatmap");
 
-        if (index1 == -1 && index2 == -1 && index3 == -1 && index4 == -1) {
+        if (index1 === -1 && index2 === -1 && index3 === -1 && index4 === -1) {
             algorithms.push(SELECTED_ALGORITHM_LIST[i]);
             algorithm_colors.push(SELECTED_ALGORITHM_COLOR[SELECTED_ALGORITHM_LIST[i]]);
         }
     }
 
     var num_algorithm = algorithms.length;
-    console.log("Algorithms is: " + algorithms);
+    console.log("Algorithms: " + algorithms);
 
-    if (num_algorithm > 1 || num_algorithm < 1) {
+    if (num_algorithm === 0) {
+        alert("No algorithms have been selected.");
+        algo_and_color = null;
+    }
+    else if (num_algorithm > 1 || num_algorithm < 1) {
         alert("Please select one and only one algorithm!");
-        return false;
+        algo_and_color = null;
     } else {
-        selected_algorithm = algorithms[0];
-        selected_color = algorithm_colors[0];
-        console.log(selected_algorithm);
+        algo_and_color.color = algorithm_colors[0];
+        algo_and_color.algorithm = algorithms[0];
+        console.log("algo_and_color", algo_and_color);
     }
 
-    return selected_color;
-    // return selected_algorithm;
+    return algo_and_color;
 };
 
 annotools.prototype.generateCompositeDataset = function() { 
 
-  //alert("This function is temporally disabled."); 
+  //alert("This function is temporarily disabled.");
   //return;
   
   var self = this;
@@ -2660,3 +2622,4 @@ function pollOrder(id, cb){
     }
   });
 }
+
