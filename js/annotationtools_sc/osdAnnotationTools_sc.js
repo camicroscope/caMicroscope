@@ -2520,29 +2520,68 @@ annotools.prototype.deleteAnnotationWithinRectangle = function(newAnnot){
 
 }//end of deleteAnnotationWithinRectangle
 
+/**
+ * Get Algorithm Color From Menu Tree
+ * @returns selected_color
+ */
+annotools.prototype.getAlgorithmColorFromMenuTree = function () {
 
-annotools.prototype.getAlgorithmColorFromMenuTree = function() {
+    console.log("Selected Algorithm List is: " + SELECTED_ALGORITHM_LIST);
+    console.log("Selected Algorithm Color is: " + SELECTED_ALGORITHM_COLOR);
 
-  console.log("getAlgorithmColorFromMenuTree");
+    var algorithms = [];
+    var algorithm_colors = [];
+    var selected_algorithm = "";
+    var selected_color = "";
 
-  // get algorithm and color info from menu tree
-  // var selKeys = jQuery('#tree').fancytree('getTree').getSelectedNodes();
-  // console.log(selKeys);
+    /*
+    // Original
+    var selKeys = jQuery('#tree').fancytree('getTree').getSelectedNodes();
+    console.log(selKeys);
 
-  var algo_color = this.getAlgoAndColor(SELECTED_ALGORITHM_LIST);
-  if (algo_color === null) {
-      return false;
-  }
-  else {
-      var selected_algorithm = algo_color.algorithm;
-      var selected_color = algo_color.color;
-  }
-    
-  return selected_color;
-  // return selected_algorithm;    	
-}
+    for (i = 0; i < selKeys.length; i++) {
+        var algorithm_title = selKeys[i].refKey;
+        var index1 = algorithm_title.indexOf("human");
+        var index2 = algorithm_title.indexOf("composite");
+        var index3 = algorithm_title.indexOf("dotnuclei");
+        var index4 = algorithm_title.indexOf("Heatmap");
 
+        if (index1 == -1 && index2 == -1 && index3 == -1 && index4 == -1) {
+            algorithms.push(selKeys[i].refKey);
+            algorithm_colors.push(selKeys[i].data.color);
+        }
+    }
+    */
 
+    // Updated
+    for (i = 0; i < SELECTED_ALGORITHM_LIST.length; i++) {
+        var algorithm_title = SELECTED_ALGORITHM_LIST[i];
+        var index1 = algorithm_title.indexOf("human");
+        var index2 = algorithm_title.indexOf("composite");
+        var index3 = algorithm_title.indexOf("dotnuclei");
+        var index4 = algorithm_title.indexOf("Heatmap");
+
+        if (index1 == -1 && index2 == -1 && index3 == -1 && index4 == -1) {
+            algorithms.push(SELECTED_ALGORITHM_LIST[i]);
+            algorithm_colors.push(SELECTED_ALGORITHM_COLOR[SELECTED_ALGORITHM_LIST[i]]);
+        }
+    }
+
+    var num_algorithm = algorithms.length;
+    console.log("Algorithms is: " + algorithms);
+
+    if (num_algorithm > 1 || num_algorithm < 1) {
+        alert("Please select one and only one algorithm!");
+        return false;
+    } else {
+        selected_algorithm = algorithms[0];
+        selected_color = algorithm_colors[0];
+        console.log(selected_algorithm);
+    }
+
+    return selected_color;
+    // return selected_algorithm;
+};
 
 annotools.prototype.generateCompositeDataset = function() { 
 
