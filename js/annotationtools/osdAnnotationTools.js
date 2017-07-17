@@ -14,10 +14,7 @@
  * User-selected ROI.
  * @type {string}
  */
-// Make lighter per tkurc 6/6/2017
-var fill_style="rgba(255, 255, 255, 0.2)";
-// fill_style="rgba(255, 255, 255, 0.4)";
-
+var fill_style = "rgba(255, 255, 255, 0.0)";
 
 /**
  * Set up annotation options
@@ -566,8 +563,10 @@ annotools.prototype.createWorkOrder = function () {
         var isLimitROI = false;
         var limitroi = {};
         this.drawCanvas.addEvent('mousemove', function (e) {
+            // Following the cursor...
             // console.log("..");
             if (started) {
+                // Drawing the box...
                 // console.log("moving");
                 ctx.clearRect(0, 0, this.drawCanvas.width, this.drawCanvas.height);
                 var currentMousePosition = OpenSeadragon.getMousePosition(e.event);

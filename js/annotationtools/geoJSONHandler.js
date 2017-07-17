@@ -331,7 +331,7 @@ annotools.prototype.generateSVG = function (annotations) {
       }
         
       if (countNativepoints === countRectNativepoints) {
-          svgHtml += '" style="stroke:'+ color + '; stroke-width:1.0; fill-opacity:0.1"/>';
+          svgHtml += '" style="stroke:'+ color + '; stroke-width:1.0; fill-opacity:0.0"/>';
       }
       else {
           svgHtml += '" style="fill:transparent; stroke:'+color+ '; stroke-width:2.5"/>'
@@ -384,7 +384,7 @@ annotools.prototype.generateSVG = function (annotations) {
       }
         
       if (countNativepoints === countRectNativepoints) {
-          svgHtml += '" style="stroke:'+ color + '; stroke-width:1.0; fill-opacity:0.1"/>';
+          svgHtml += '" style="stroke:'+ color + '; stroke-width:1.0; fill-opacity:0.0"/>';
       }
       else {
           svgHtml += '" style="fill:transparent; stroke:'+color+ '; stroke-width:2.5"/>'
