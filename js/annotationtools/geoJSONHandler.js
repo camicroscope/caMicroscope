@@ -348,7 +348,13 @@ annotools.prototype.generateSVG = function (annotations) {
 
       // var offset = OpenSeadragon.getElementOffset(viewer.canvas)
       var algorithm_id = annotation.provenance.analysis.execution_id
-      var color = algorithm_color[algorithm_id]
+      var color = algorithm_color[algorithm_id];
+      //use the same color as algorithm does
+      if(annotation.color){
+	  var algorithm_saved=annotation.algorithm;
+	  color = algorithm_color[algorithm_saved];
+	  //color =annotation.color; 
+       }		    
       var countNativepoints = 0;
       var countRectNativepoints = 4;
 
