@@ -33,8 +33,8 @@ var available_colors = ['#a6cee3','#1f78b4','#b2df8a','#33a02c','#fb9a99','#e31a
 var algorithm_color = {}
 
 function goodalgo (data, status) {
-   console.log("goodalgo data is: "+data);
-   console.log("data.length is: "+data.length)  
+   //console.log("goodalgo data is: "+data);
+  // console.log("data.length is: "+data.length)  
   
   var blob = []
   for (i = 0;i < data.length;i++) {
