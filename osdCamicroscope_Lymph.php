@@ -195,10 +195,10 @@
                 visibilityRatio: 1,
                 constrainDuringPan: true
           });
-            console.log(viewer.navigator);
-    //      var zoomLevels = viewer.zoomLevels({
-    //        levels:[0.001, 0.01, 0.2, 0.1,  1]
-    //      });
+            //console.log(viewer.navigator);
+            //var zoomLevels = viewer.zoomLevels({
+            //  levels:[0.001, 0.01, 0.2, 0.1,  1]
+            //});
             
             viewer.addHandler("open", addOverlays);
             viewer.clearControls();
