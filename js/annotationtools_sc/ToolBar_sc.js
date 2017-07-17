@@ -186,7 +186,12 @@ ToolBar.prototype.toggleAlgorithmSelector = function () {
 			 } else {		  	 
 			   algorithms_computer.push(tmp_algorithm_list[i]);  
 			 }				
-		}		
+		}
+		algorithms_computer = algorithms_computer.sort();
+		algorithms_under = algorithms_under.sort();
+		algorithms_over =algorithms_over.sort();
+		algorithms_composite_input=algorithms_composite_input.sort();
+		algorithms_composite_dataset = algorithms_composite_dataset.sort();
 		tmp_algorithm_list=algorithms_computer.concat(algorithms_under,algorithms_over,algorithms_composite_input,algorithms_composite_dataset);		
 	}	  
 	
