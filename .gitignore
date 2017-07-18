@@ -3,7 +3,10 @@
 *.swo
 
 # IntelliJ Idea
-.idea/
+.idea
+.idea/*
 
 # General
 .DS_Store
+.DS_Store/*
+
