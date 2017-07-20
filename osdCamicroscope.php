@@ -179,7 +179,7 @@ function isAnnotationActive(){
     this.isOpera = window.isOpera || navigator.userAgent.indexOf(' OPR/') >= 0;
     this.isFirefox = typeof InstallTrigger !== 'undefined';
     this.isSafari = Object.prototype.toString.call(window.HTMLElement).indexOf('Constructor') > 0;
-    this.isChrome = !!window.chrome;
+    this.isChrome = window.isChrome;
     //console.log(this.isFirefox);
     this.annotationActive = !( this.isIE || this.isOpera);
     return this.annotationActive;
