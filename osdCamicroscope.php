@@ -139,7 +139,7 @@
                 animationTime: 0.75,
                 maxZoomPixelRatio: 2,
                 visibilityRatio: 1,
-                constrainDuringPan: true,
+                constrainDuringPan: true
                 //zoomPerScroll: 1
           });
             //console.log(viewer.navigator);
