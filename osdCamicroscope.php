@@ -183,7 +183,7 @@
         // console.log("isFirefox", this.isFirefox);
         this.isSafari = ((navigator.userAgent.toLowerCase().indexOf('safari') > -1) && !(navigator.userAgent.toLowerCase().indexOf('chrome') > -1) && (navigator.appName == "Netscape"));
         // console.log("isSafari", this.isSafari);
-        this.isChrome = navigator.userAgent.toLowerCase().indexOf('chrome') > -1;
+        this.isChrome = !!window.chrome && !!window.chrome.webstore;
         // console.log("isChrome", this.isChrome);
         this.annotationActive = !( this.isIE || this.isOpera);
         // console.log("annotationActive", this.annotationActive);
