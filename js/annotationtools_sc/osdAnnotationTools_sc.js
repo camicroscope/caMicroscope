@@ -2547,8 +2547,8 @@ annotools.prototype.getAlgorithmColorFromMenuTree = function () {
 
 annotools.prototype.generateCompositeDataset = function() { 
 
-  //alert("This function is temporarily disabled.");
-  //return;
+ alert("This function is temporarily disabled.");
+ return;
   
   var self = this;
  
