@@ -496,28 +496,28 @@ ToolBar.prototype.createButtons = function () {
 	
 	
 	this.mergebutton1.on('click', function () {
+		this.mode = 'normal';
 		this.annotools.mergeStep1();     
      }.bind(this))	 
 	
 	
-	this.mergebutton2.on('click', function () {
+    this.mergebutton2.on('click', function () {
       //console.log(this.mode);
-      if(this.mode == 'merge_step2'){
-		 this.mode = 'normal';
-        this.setNormalMode();       
-      } else {
+      //if(this.mode == 'merge_step2'){
+	//	 this.mode = 'normal';
+        //this.setNormalMode();       
+     // } else {
         this.mode = 'merge_step2'
         this.annotools.mode = 'rect'
         this.annotools.drawMarkups();		
         jQuery("canvas").css("cursor", "crosshair");
-		jQuery("#mergeStep2Button").addClass("active"); // merge step 2 button		
-                  
-      }    
+	jQuery("#mergeStep2Button").addClass("active");                   
+      //}    
     }.bind(this))    
     
 
     this.mergebutton3.on('click', function () {
-		this.annotools.generateCompositeDataset();     
+	this.annotools.generateCompositeDataset();     
     }.bind(this))	
 	 
       
@@ -540,22 +540,20 @@ ToolBar.prototype.createButtons = function () {
 	
 
     this.pencilbutton.on('click', function () {
-
-      if(this.annotools.mode == 'pencil'){
-        this.setNormalMode();
-      } else {
+     // if(this.annotools.mode == 'pencil'){
+        //this.setNormalMode();
+     // } else {
         //set pencil mode
+	this.mode = 'pencil'
         this.annotools.mode = 'pencil'
-        this.annotools.drawMarkups()
-        
+        this.annotools.drawMarkups()        
         jQuery("canvas").css("cursor", "crosshair");
         //jQuery("drawFreelineButton").css("opacity", 1);
-        jQuery("#drawRectangleButton").removeClass("active");
-        jQuery("#drawDotButton").removeClass("active");     // Dot Tool
-		jQuery("#mergeStep2Button").removeClass("active"); // merge step 2 button	
+        //jQuery("#drawRectangleButton").removeClass("active");
+        //jQuery("#drawDotButton").removeClass("active");     // Dot Tool
+	//jQuery("#mergeStep2Button").removeClass("active"); // merge step 2 button	
         jQuery("#drawFreelineButton").addClass("active");
-
-      }
+      //}
 
     }.bind(this))
 
