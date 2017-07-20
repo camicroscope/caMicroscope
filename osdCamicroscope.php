@@ -177,7 +177,7 @@
     //console.log(viewer);
 
     function isAnnotationActive() {
-        this.isOpera = window.isOpera || navigator.userAgent.indexOf(' OPR/') >= 0;
+        this.isOpera = (!!window.opr && !!opr.addons) || navigator.userAgent.indexOf(' OPR/') >= 0;
         // console.log("isOpera", this.isOpera);
         this.isFirefox = typeof InstallTrigger !== 'undefined';
         // console.log("isFirefox", this.isFirefox);
