@@ -169,17 +169,24 @@
               backgroundColor: "rgba(255,255,255,0.5)",
               barThickness: 2
             });
-			
-           //console.log(viewer);
-		
-          function isAnnotationActive(){
-              this.isOpera = !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
+
+          //console.log(viewer);
+
+          function isAnnotationActive() {
+              this.isOpera = (!!window.opr && !!opr.addons) || navigator.userAgent.indexOf(' OPR/') >= 0;
+              // console.log("isOpera", this.isOpera);
               this.isFirefox = typeof InstallTrigger !== 'undefined';
-              this.isSafari = Object.prototype.toString.call(window.HTMLElement).indexOf('Constructor') > 0;
-		      this.isChrome = !!window.chrome;
-		      this.annotationActive = !(this.isIE || this.isOpera);
-		    return this.annotationActive;
-	      }
+              // console.log("isFirefox", this.isFirefox);
+              this.isSafari = ((navigator.userAgent.toLowerCase().indexOf('safari') > -1) && !(navigator.userAgent.toLowerCase().indexOf('chrome') > -1) && (navigator.appName == "Netscape"));
+              // console.log("isSafari", this.isSafari);
+              this.isChrome = !!window.chrome && !!window.chrome.webstore;
+              // console.log("isChrome", this.isChrome);
+              this.isIE = /*@cc_on!@*/false || !!document.documentMode;
+              // console.log("isIE", this.isIE);
+              this.annotationActive = !( this.isIE || this.isOpera);
+              // console.log("annotationActive", this.annotationActive);
+              return this.annotationActive;
+          }
 
          function addOverlays() {
             var annotationHandler = new AnnotoolsOpenSeadragonHandler(viewer, {});
