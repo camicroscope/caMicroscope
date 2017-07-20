@@ -350,7 +350,7 @@ ToolBar.prototype.createButtons = function () {
       'src': 'images/pencil.svg',
       'id': 'drawFreelineButton'
     })
-    //tool.append(this.pencilbutton) // Pencil Tool	
+    tool.append(this.pencilbutton) // Pencil Tool	
 	
 	
     this.mergebutton1 = jQuery('<img>', {
