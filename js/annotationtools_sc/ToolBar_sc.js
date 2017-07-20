@@ -341,7 +341,7 @@ ToolBar.prototype.createButtons = function () {
       src: 'images/rect.svg',
       id: 'drawRectangleButton'
     })
-  tool.append(this.rectbutton)	
+  //tool.append(this.rectbutton)	
    
    
     this.pencilbutton = jQuery('<img>', {
