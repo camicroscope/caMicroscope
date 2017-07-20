@@ -185,6 +185,8 @@
         // console.log("isSafari", this.isSafari);
         this.isChrome = !!window.chrome && !!window.chrome.webstore;
         // console.log("isChrome", this.isChrome);
+        this.isIE = /*@cc_on!@*/false || !!document.documentMode;
+        // console.log("isIE", this.isIE);
         this.annotationActive = !( this.isIE || this.isOpera);
         // console.log("annotationActive", this.annotationActive);
         return this.annotationActive;
