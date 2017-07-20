@@ -178,9 +178,9 @@
 function isAnnotationActive(){
     this.isOpera = window.isOpera || navigator.userAgent.indexOf(' OPR/') >= 0;
     this.isFirefox = typeof InstallTrigger !== 'undefined';
-    this.isSafari = Object.prototype.toString.call(window.HTMLElement).indexOf('Constructor') > 0;
-    this.isChrome = window.isChrome;
     //console.log(this.isFirefox);
+    this.isSafari = ((navigator.userAgent.toLowerCase().indexOf('safari') > -1) && !(navigator.userAgent.toLowerCase().indexOf('chrome') > -1) && (navigator.appName == "Netscape"));
+    this.isChrome = window.isChrome;
     this.annotationActive = !( this.isIE || this.isOpera);
     return this.annotationActive;
 }
