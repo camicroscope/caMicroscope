@@ -30,13 +30,13 @@
         <!-- <script src="js/dependencies/jquery.js"></script> -->
         <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 
-        <!--JSON Form dependencies-->
-
-        <script type="text/javascript" src="js/dependencies/underscore.js">
-            console.log(_);
-        </script>
-        <script>console.log("here"); console.log(_);
-        </script>
+    <!--JSON Form dependencies-->
+    <script type="application/javascript" src="js/dependencies/underscore.js"></script>
+    <script>
+        console.log("u");
+        console.log(_);
+    </script>
+        
         <script type="text/javascript" src="js/dependencies/jsonform.js"></script>
         <script type="text/javascript" src="js/dependencies/jsv.js"></script>
         <!--End JSON Form dependencies -->
