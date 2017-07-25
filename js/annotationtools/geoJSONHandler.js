@@ -184,26 +184,33 @@ function endProfile (startTime) {
 }
 
 annotools.prototype.generateCanvas = function (annotations) {
-  // console.log(annotation)
-  // var annotation = annotations[ii]
-  var annotations = this.annotations
+
+  var annotations = this.annotations; // Overwriting function arg?
+  
   if (annotations) {
+    // console.log(annotation)
+    // var annotation = annotations[ii]
+
     var markup_svg = document.getElementById('markups')
     if (markup_svg) {
       // console.log("destroying")
       markup_svg.destroy()
     }
+
     // console.log(annotations.length)
     // console.log(this.canvas)
+
     var container = document.getElementsByClassName(this.canvas)[0].childNodes[0] // Get The Canvas Container
     // console.log(container)
     var context = container.getContext('2d')
     context.fillStyle = '#f00'
-    // console.log(nativepoints)
-    // var container = document.getElementsByClassName(this.cavas)[0]
+    
+    // var container = document.getElementsByClassName(this.canvas)[0]
     // console.log(container)
+    
     var width = parseInt(container.offsetWidth)
     var height = parseInt(container.offsetHeight)
+    
     /* Why is there an ellipse in the center? */
     /*
     var svgHtml = '<svg xmlns="http://www.w3.org/2000/svg" width="' + width + 'px" height="' + height + 'px" version="1.1" id="markups">'
@@ -214,9 +221,11 @@ annotools.prototype.generateCanvas = function (annotations) {
         svgHtml += '</g>'
         svgHtml += '<g id="viewport" transform="translate(0,0)">'
     */
+
     for (var i = 0; i < annotations.length; i++) {
       var annotation = annotations[i]
       var nativepoints = annotation.geometry.coordinates[0]
+      // console.log(nativepoints)
 
       var offset = OpenSeadragon.getElementOffset(viewer.canvas)
       // svgHtml += '<polygon id="'+Math.random()+'" points="'
@@ -228,12 +237,14 @@ annotools.prototype.generateCanvas = function (annotations) {
         var x1 = this.imagingHelper.logicalToPhysicalY(nativepoints[0][1])
         context.moveTo(x0, x1)
       }
+
       for (var k = 1; k < nativepoints.length; k++) {
         var px = this.imagingHelper.logicalToPhysicalX(nativepoints[k][0])
         var py = this.imagingHelper.logicalToPhysicalY(nativepoints[k][1])
 
         context.lineTo(px, py)
       }
+
       context.strokeStyle = 'blue'
       context.stokeWidth = 6
       context.closePath()
@@ -241,6 +252,7 @@ annotools.prototype.generateCanvas = function (annotations) {
     }
   }
 }
+
 /*
 var clickSVG = function(evt, annotation){
     //var a = annotation
@@ -251,14 +263,17 @@ var clickSVG = function(evt, annotation){
 */
 
 annotools.prototype.generateSVG = function (annotations) {
-  // console.log(annotation)
-  // var annotation = annotations[ii]
+
   var case_id = this.iid;
   var cancerType = "none";
   
-  var self =this;
+  var self = this;
   var annotations = this.annotations
+  
   if (annotations) {
+    // var annotation = annotations[ii]
+    // console.log(annotation)
+
     var markup_svg = document.getElementById('markups')
     if (markup_svg) {
       // console.log("destroying")
@@ -267,21 +282,24 @@ annotools.prototype.generateSVG = function (annotations) {
 
     // console.log(annotations.length)
     var container = document.getElementsByClassName(this.canvas)[0] // Get The Canvas Container
-    // console.log(nativepoints)
-    // var container = document.getElementsByClassName(this.cavas)[0]
+    
+    // var container = document.getElementsByClassName(this.canvas)[0]
     // console.log(container)
+
     var width = parseInt(container.offsetWidth)
     var height = parseInt(container.offsetHeight)
+    
     /* Why is there an ellipse in the center? */
     var svgHtml = '<svg xmlns="http://www.w3.org/2000/svg" width="' + width + 'px" height="' + height + 'px" version="1.1" id="markups">'
     svgHtml += '<g id="groupcenter"/>'
     svgHtml += '<g id="origin">'
+
     var origin = viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(.5, .5))
     svgHtml += '<ellipse id="originpt" cx="' + origin.x + '" cy="' + origin.y + '" rx="' + 4 + '" ry="' + 4 + '" style="display: none"/>'
     svgHtml += '</g>'
     svgHtml += '<g id="viewport" transform="translate(0,0)">'
 
-		var ROIs = [];
+    var ROIs = [];
 
     for (var i = 0; i < annotations.length; i++) {
       var annotation = annotations[i]
@@ -290,14 +308,15 @@ annotools.prototype.generateSVG = function (annotations) {
       
       if (annotation['_id'])
         id = annotation['_id']['$oid']
-      var nativepoints = annotation.geometry.coordinates[0]
+      var nativepoints = annotation.geometry.coordinates[0];
+      // console.log(nativepoints)
 
       // var offset = OpenSeadragon.getElementOffset(viewer.canvas)
       var algorithm_id = annotation.provenance.analysis.execution_id
       var color = algorithm_color[algorithm_id]
       
       //use the same color as algorithm does
-     // if(annotation.color) color =annotation.color; 
+     // if(annotation.color) color = annotation.color; 
 	    
       var countNativepoints = 0;
       var countRectNativepoints = 4;
