@@ -33,8 +33,7 @@
     <!--JSON Form dependencies-->
     <script type="application/javascript" src="js/dependencies/underscore.js"></script>
     <script>
-        console.log("u");
-        console.log(_);
+        console.log("underscore", _);
     </script>
         
         <script type="text/javascript" src="js/dependencies/jsonform.js"></script>
