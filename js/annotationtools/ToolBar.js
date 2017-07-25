@@ -245,31 +245,32 @@ ToolBar.prototype.toggleAlgorithmSelector = function () {
 }
 
 ToolBar.prototype.createButtons = function () {
+    console.log("createButtons");
+
     // this.tool = jQ(this.source)
     var tool = jQuery('#' + 'tool') // Temporary dom element while we clean up mootools
     var self = this
 
     // Fetch algorithms for Image
     jQuery(document).ready(function () {
-        // console.log(options)
         // var self= this
         var url = 'api/Data/getAlgorithmsForImage.php?iid=' + self.iid;
-        console.log(url);
+        console.log("data url:", url);
         jQuery.get(url, function (data) {
             //console.log(data);
-            d = JSON.parse(data)
+            d = JSON.parse(data);
 
-            goodalgo(d, null)
-        })
-        // console.log("here")
+            goodalgo(d, null);
+        });
+
         jQuery('#submitbtn').click(function () {
-            var selKeys = jQuery('#tree').fancytree('getTree').getSelectedNodes()
-            var param = ''
+            var selKeys = jQuery('#tree').fancytree('getTree').getSelectedNodes();
+            var param = '';
             for (i = 0; i < selKeys.length; i++) {
-                param = param + '&Val' + (i + 1).toString() + '=' + selKeys[i].title
+                param = param + '&Val' + (i + 1).toString() + '=' + selKeys[i].title;
             }
-        })
-    })
+        });
+    });
 
     tool.css({
         'position': 'absolute',
