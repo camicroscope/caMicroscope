@@ -356,7 +356,8 @@ annotools.prototype.generateSVG = function (annotations) {
           svgHtml += '" style="fill:transparent; stroke:'+color+ '; stroke-width:2.5"/>'
       }
     }
-    console.log(ROIs);
+
+    console.log("ROIs:", ROIs);
     for(var i=0; i<ROIs.length; i++){
 			var annotation = ROIs[i];	
       var id = '';
