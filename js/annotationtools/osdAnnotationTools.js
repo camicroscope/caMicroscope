@@ -2360,7 +2360,7 @@ var r = 1.0, w = 0.8, l = 3.0, u = 10.0, k = 20.0, pj = 0;
  * @param roiGeoJSON
  */
 annotools.prototype.promptForWorkOrder = function (newAnnot, mode, annotools, ctx, roiGeoJSON) {
-    // console.log("Prompt For WorkOrder");
+    console.log("\nPrompt For WorkOrder");
 
     jQuery('html,body').css('cursor', 'default');
 
@@ -2626,7 +2626,7 @@ annotools.prototype.promptForWorkOrder = function (newAnnot, mode, annotools, ct
     setTimeout(function () {
         // pj = 0;
         // pj = "n";
-        console.log("Inside setTimeout, pj is :" + pj);
+        console.log("\nInside setTimeout, pj is :" + pj);
 
         // console.log("formSchema", formSchema);
 
@@ -2719,6 +2719,8 @@ annotools.prototype.promptForWorkOrder = function (newAnnot, mode, annotools, ct
         });
 
         jQuery('#submitWorkOrder').click(function (e) {
+            console.log("Submitting work order");
+
             // Trigger blurs in case user submits immediately after text-box change. J.B.
             jQuery('[id*="-result1"]').blur();
             jQuery('[id*="-result2"]').blur();
@@ -2731,9 +2733,10 @@ annotools.prototype.promptForWorkOrder = function (newAnnot, mode, annotools, ct
                 self.deleteAnnotations(previous_execution.execution_id, previous_execution.x - 0.00001, previous_execution.y - 0.00001, previous_execution.x + previous_execution.w + 0.00001, previous_execution.y + previous_execution.h + 0.000001);
                 previous_execution = {};
             }
+
             annotools.destroyMarkups();
             console.log("Destroyed markups!");
-            console.log("submitting work order!");
+
             e.preventDefault();
 
             //annotools.drawLayer.hide()
@@ -2743,7 +2746,7 @@ annotools.prototype.promptForWorkOrder = function (newAnnot, mode, annotools, ct
             var notes = jQuery('#order-notes').val();
 
             // TODO: remove if statement
-            if (iid == 'TCGA-06-0148-01Z-00-DX1') {
+            if (iid === 'TCGA-06-0148-01Z-00-DX1') {
                 width = 26001;
                 height = 27968
             }
