@@ -956,105 +956,109 @@ annotools.prototype.toggleMarkups = function () {
 };
 
 
-/*analyze: function(ctx)
- {
- this.removeMouseEvents()
- this.showMessage() //Show Message
- this.drawLayer.show() //Show The Drawing Layer
- this.magnifyGlass.hide() //Hide The Magnifying Tool
- this.container = document.getElementsByClassName(this.canvas)[0] //Get The Canvas Container
- var left = parseInt(this.container.getLeft()), //Get The Container Location
- top = parseInt(this.container.offsetTop),
- width = parseInt(this.container.offsetWidth),
- height = parseInt(this.container.offsetHeight),
- oleft = left,
- otop = top,
- owidth = width,
- oheight = height
- if (left < 0) {
- left = 0
- width = window.innerWidth
- } //See Whether The Container is outside The Current ViewPort
- if (top < 0) {
- top = 0
- height = window.innerHeight
- }
- //Recreate The CreateAnnotation Layer Because of The ViewPort Change Issue.
- this.drawLayer.set({
- 'styles': {
- left: left,
- top: top,
- width: width,
- height: height
- }
- })
- //Create Canvas on the CreateAnnotation Layer
- this.drawCanvas.set({
- width: width,
- height: height
- })
- //The canvas context
- var ctx = this.drawCanvas.getContext("2d")
- var started = false
- var min_x,min_y,max_x,max_y,w,h
- var startPosition
- this.drawCanvas.addEvent('mousedown',function(e)
- {
- started = true
- startPosition = OpenSeadragon.getMousePosition(e.event)
- x = startPosition.x
- y = startPosition.y
- })
+/*
+analyze: function(ctx) {
+    this.removeMouseEvents();
+    this.showMessage(); //Show Message
+    this.drawLayer.show(); //Show The Drawing Layer
+    this.magnifyGlass.hide(); //Hide The Magnifying Tool
+    this.container = document.getElementsByClassName(this.canvas)[0]; //Get The Canvas Container
+    
+    var left = parseInt(this.container.getLeft()), //Get The Container Location
+        top = parseInt(this.container.offsetTop),
+        width = parseInt(this.container.offsetWidth),
+        height = parseInt(this.container.offsetHeight),
+        oleft = left,
+        otop = top,
+        owidth = width,
+        oheight = height;
+        
+    if (left < 0) {
+        left = 0;
+        width = window.innerWidth
+    } 
+    
+    //See Whether The Container is outside The Current ViewPort
+    if (top < 0) {
+        top = 0;
+        height = window.innerHeight
+    }
+    
+    //Recreate The CreateAnnotation Layer Because of The ViewPort Change Issue.
+    this.drawLayer.set({
+        'styles': {
+            left: left,
+            top: top,
+            width: width,
+            height: height
+        }
+    });
+    
+    //Create Canvas on the CreateAnnotation Layer
+    this.drawCanvas.set({
+        width: width,
+        height: height
+    });
+    
+    //The canvas context
+    var ctx = this.drawCanvas.getContext("2d");
+    var started = false;
+    var min_x, min_y, max_x, max_y, w, h;
+    var startPosition;
+    
+    this.drawCanvas.addEvent('mousedown', function (e) {
+        started = true;
+        startPosition = OpenSeadragon.getMousePosition(e.event);
+        x = startPosition.x;
+        y = startPosition.y
+    });
 
- this.drawCanvas.addEvent('mousemove',function(e)
- {
- if(started)
- {
- ctx.clearRect(0,0,this.drawCanvas.width, this.drawCanvas.height)
- var currentMousePosition = OpenSeadragon.getMousePosition(e.event)
+    this.drawCanvas.addEvent('mousemove', function (e) {
+        if (started) {
+            ctx.clearRect(0, 0, this.drawCanvas.width, this.drawCanvas.height);
+            var currentMousePosition = OpenSeadragon.getMousePosition(e.event);
 
- min_x = Math.min(currentMousePosition.x,startPosition.x)
- min_y = Math.min(currentMousePosition.y,startPosition.y)
- max_x = Math.max(currentMousePosition.x,startPosition.x)
- max_y = Math.max(currentMousePosition.y,startPosition.y)
- w = Math.abs(max_x - min_x)
- h = Math.abs(max_y - min_y)
- ctx.strokeStyle = "red"
- ctx.strokeRect(min_x,min_y,w,h)
- }
- }.bind(this))
+            min_x = Math.min(currentMousePosition.x, startPosition.x);
+            min_y = Math.min(currentMousePosition.y, startPosition.y);
+            max_x = Math.max(currentMousePosition.x, startPosition.x);
+            max_y = Math.max(currentMousePosition.y, startPosition.y);
+            w = Math.abs(max_x - min_x);
+            h = Math.abs(max_y - min_y);
+            ctx.strokeStyle = "red";
+            ctx.strokeRect(min_x, min_y, w, h)
+        }
+    }.bind(this));
 
- this.drawCanvas.addEvent('mouseup',function(e)
- {
- started = false
- var finalMousePosition = new OpenSeadragon.getMousePosition(e.event)
+    this.drawCanvas.addEvent('mouseup', function (e) {
+        started = false;
+        var finalMousePosition = new OpenSeadragon.getMousePosition(e.event);
 
- min_x = Math.min(finalMousePosition.x,startPosition.x)
- min_y = Math.min(finalMousePosition.y,startPosition.y)
- max_x = Math.max(finalMousePosition.x,startPosition.x)
- max_y = Math.max(finalMousePosition.y,startPosition.y)
+        min_x = Math.min(finalMousePosition.x, startPosition.x);
+        min_y = Math.min(finalMousePosition.y, startPosition.y);
+        max_x = Math.max(finalMousePosition.x, startPosition.x);
+        max_y = Math.max(finalMousePosition.y, startPosition.y);
 
- var startRelativeMousePosition = new OpenSeadragon.Point(min_x,min_y).minus(OpenSeadragon.getElementOffset(viewer.canvas))
- var endRelativeMousePosition = new OpenSeadragon.Point(max_x,max_y).minus(OpenSeadragon.getElementOffset(viewer.canvas))
- var analysisBox = {
- x: startRelativeMousePosition.x,
- y: startRelativeMousePosition.y,
- w: w,
- h: h,
- type: "rect"
- }
+        var startRelativeMousePosition = new OpenSeadragon.Point(min_x, min_y).minus(OpenSeadragon.getElementOffset(viewer.canvas));
+        var endRelativeMousePosition = new OpenSeadragon.Point(max_x, max_y).minus(OpenSeadragon.getElementOffset(viewer.canvas));
+        var analysisBox = {
+            x: startRelativeMousePosition.x,
+            y: startRelativeMousePosition.y,
+            w: w,
+            h: h,
+            type: "rect"
+        };
 
- var globalNumbers = JSON.parse(this.convertFromNative(analysisBox, endRelativeMousePosition))
+        var globalNumbers = JSON.parse(this.convertFromNative(analysisBox, endRelativeMousePosition));
 
- analysisBox.x = globalNumbers.nativeX
- analysisBox.y = globalNumbers.nativeY
- analysisBox.w = globalNumbers.nativeW
- analysisBox.h = globalNumbers.nativeH
- this.promptForAnalysis(this, analysisBox)
- this.drawLayer.hide()
- }.bind(this))
- },*/
-
+        analysisBox.x = globalNumbers.nativeX;
+        analysisBox.y = globalNumbers.nativeY;
+        analysisBox.w = globalNumbers.nativeW;
+        analysisBox.h = globalNumbers.nativeH;
+        this.promptForAnalysis(this, analysisBox);
+        this.drawLayer.hide()
+    }.bind(this))
+},
+*/
 
 /**
  * Show messages
