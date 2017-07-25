@@ -200,7 +200,7 @@ ToolBar.prototype.toggleAlgorithmSelector = function () {
             SELECTED_ALGORITHM_LIST = [];
             SELECTED_ALGORITHM_KEYS = [];
             jQuery("#algorithmList input:checked").each(function () {
-                console.log(ALGORITHM_LIST);
+                console.log("algorithm list:", ALGORITHM_LIST);
                 SELECTED_ALGORITHM_LIST.push(tmp_algorithm_list[(this).value * 1]);
                 SELECTED_ALGORITHM_KEYS.push((this).value * 1);
             });
