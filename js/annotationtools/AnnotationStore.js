@@ -57,9 +57,6 @@ AnnotationStore.prototype.setCacheBounds = function (x1, y1, x2, y2) {
   this.cacheBounds.y1 = y1
   this.cacheBounds.y2 = y2
 }
-if ('asdf') {
-  console.log('dsf')
-}
 
 AnnotationStore.prototype.getCacheBounds = function () {
   return this.cacheBounds
