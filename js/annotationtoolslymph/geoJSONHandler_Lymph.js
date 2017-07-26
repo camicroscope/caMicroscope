@@ -254,7 +254,7 @@ annotools.prototype.generateSVG = function (annotations) {
   // console.log(annotation)
   // var annotation = annotations[ii]
   //var intersect_label = this.calculateIntersect();
-  console.log(this.heat_weight);
+  //console.log(this.heat_weight);
   var self =this;
   var annotations = this.annotations
   if (annotations) {

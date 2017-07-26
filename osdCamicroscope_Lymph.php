@@ -24,20 +24,16 @@
         <link rel="stylesheet" type="text/css" media="all" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.7.0/jquery.modal.css" />
         <script src="js/dependencies/jquery.js"></script>
   
-  
         <!--JSON Form dependencies-->
-
-        <script type="text/javascript" src="js/dependencies/underscore.js">
-            console.log(_);
-        </script>
-        <script>console.log("here"); console.log(_);
+        <script src="js/dependencies/underscore.js"></script>
+        <script>
+            console.log("underscore.js: _");
         </script>
         <script type="text/javascript" src="js/dependencies/jsonform.js"></script>
         <script type="text/javascript" src="js/dependencies/jsv.js"></script>
         <!--End JSON Form dependencies -->
+        
         <script src="/js/config.js"></script>
-  
-  
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script> 
         <script src="js/openseadragon/openseadragon-bin-1.0.0/openseadragon.js"></script>
         <script src="js/openseadragon/openseadragon-imaginghelper.min.js"></script>
@@ -61,7 +57,6 @@
 		<script src="js/annotationtoolslymph/osdAnnotationTools_Marking.js"></script>
         <script src="js/annotationtoolslymph/geoJSONHandler_Lymph.js"></script>
         
-        
         <script src="js/dependencies/MD5.js"></script>
         <script src="http://code.jquery.com/ui/1.11.2/jquery-ui.min.js" type="text/javascript"></script> 
         
@@ -72,44 +67,43 @@
         <script src="js/dependencies/simplemodal.js"></script>
         <script src="js/dependencies/d3.js"></script>
         <style type="text/css">
-        .openseadragon
-        {
-            height: 100%;
-            min-height: 100%;
-            width: 100%;
-            position: absolute;
-            top: 0;
-            left: 0;
-            margin: 0;
-            padding: 0;
-            background-color: #E8E8E8;
-            border: 1px solid black;
-            color: white;
-        }
-        .controls textarea{
-          height: 50px;
-        }
-        .navWindow
-        {
-            position: absolute;
-            z-index: 10001;
-            right: 0;
-            bottom: 0;
-            border: 1px solid yellow;
-        }
-.modal a.close-modal{
-  top: 0;
-  right: 0;
-}
+            .openseadragon
+            {
+                height: 100%;
+                min-height: 100%;
+                width: 100%;
+                position: absolute;
+                top: 0;
+                left: 0;
+                margin: 0;
+                padding: 0;
+                background-color: #E8E8E8;
+                border: 1px solid black;
+                color: white;
+            }
+            .controls textarea{
+              height: 50px;
+            }
+            .navWindow
+            {
+                position: absolute;
+                z-index: 10001;
+                right: 0;
+                bottom: 0;
+                border: 1px solid yellow;
+            }
+            .modal a.close-modal{
+              top: 0;
+              right: 0;
+            }
         </style>
-         <link rel="stylesheet" type="text/css" media="all" href="css/annotools.css" /> 
-	 <link rel="stylesheet" type="text/css" media="all" href="css/multiheattools.css" />
+        <link rel="stylesheet" type="text/css" media="all" href="css/annotools.css" /> 
+	    <link rel="stylesheet" type="text/css" media="all" href="css/multiheattools.css" />
     </head>
 
     <body>
-
         <div id="tool"></div>
-         <div id="panel"></div>
+        <div id="panel"></div>
 
         <div id="weightpanel">
             <a href='#'><div id='closeWeightPanel'><img src='images/ic_close_white_24px.svg' title='Close' alt="Close X" height="16" width="16"></div></a>
@@ -323,7 +317,7 @@
         y: 19609.643967801494
     */
 
-          </script>
+</script>
 <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
