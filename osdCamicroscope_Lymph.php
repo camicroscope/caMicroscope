@@ -262,6 +262,7 @@
         var bound_x = <?php echo json_encode($_GET['x']); ?>;
         var bound_y = <?php echo json_encode($_GET['y']); ?>;
         var zoom = <?php echo json_encode($_GET['zoom']); ?> || viewer.viewport.getMaxZoom();
+        zoom =Number(zoom); //convert zoom to number if it is string
 
         jQuery("#panel").hide();
         jQuery("#weightpanel").hide();
