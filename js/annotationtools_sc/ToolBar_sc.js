@@ -28,14 +28,13 @@ ToolBar.prototype.algorithmSelector = function () {
 }
 
 //var available_colors = ['lime', 'red', 'blue', 'orange','silver','maroon','aqua','fuchsia','green','black']
-//var available_colors = ['#a6cee3','#1f78b4','#b2df8a','#33a02c','#fb9a99','#e31a1c','#fdbf6f','#ff7f00','#cab2d6','#6a3d9a','#ffff99','#b15928'];
-var available_colors = ['#a6cee3','#b2df8a','#33a02c','#fb9a99','#e31a1c','#fdbf6f','#ff7f00','#cab2d6','#6a3d9a','#ffff99','#b15928'];
+var available_colors = ['#a6cee3','#1f78b4','#b2df8a','#33a02c','#fb9a99','#e31a1c','#fdbf6f','#ff7f00','#cab2d6','#6a3d9a','#ffff99','#b15928'];
 
 var algorithm_color = {}
 
 function goodalgo (data, status) {
-   console.log("goodalgo data is: "+data);
-   console.log("data.length is: "+data.length)  
+   //console.log("goodalgo data is: "+data);
+  // console.log("data.length is: "+data.length)  
   
   var blob = []
   for (i = 0;i < data.length;i++) {
@@ -160,7 +159,41 @@ ToolBar.prototype.toggleAlgorithmSelector = function () {
 	   tmp_algorithm_list[i]=d[i].provenance.analysis_execution_id;		 
 	}
 	
-	tmp_algorithm_list = tmp_algorithm_list.sort();
+	//tmp_algorithm_list = tmp_algorithm_list.sort();
+        var algorithms_computer= [];
+	var algorithms_composite_input = [];
+	var algorithms_composite_dataset = [];
+	var algorithms_under = [];
+	var algorithms_over = [];
+	
+	var algorithm_number = tmp_algorithm_list.length;	
+	if (algorithm_number >0) {
+		
+		for (i=0; i< algorithm_number; i++){
+			var index_composite_input    =tmp_algorithm_list[i].indexOf("composite_input");	
+			var index_composite_dataset  =tmp_algorithm_list[i].indexOf("composite_dataset");
+			var index_under              =tmp_algorithm_list[i].indexOf("under_");	
+			var index_over               =tmp_algorithm_list[i].indexOf("over_");			
+			
+			if(index_composite_input != -1){		  	 
+			    algorithms_composite_input.push(tmp_algorithm_list[i]);  
+			 } else if (index_composite_dataset != -1){		  	 
+			   algorithms_composite_dataset.push(tmp_algorithm_list[i]);  
+			 } else if (index_under != -1){		  	 
+			   algorithms_under.push(tmp_algorithm_list[i]);  
+			 } else if (index_over != -1){		  	 
+			   algorithms_over.push(tmp_algorithm_list[i]);  
+			 } else {		  	 
+			   algorithms_computer.push(tmp_algorithm_list[i]);  
+			 }				
+		}
+		algorithms_computer = algorithms_computer.sort();
+		algorithms_under = algorithms_under.sort();
+		algorithms_over =algorithms_over.sort();
+		algorithms_composite_input=algorithms_composite_input.sort();
+		algorithms_composite_dataset = algorithms_composite_dataset.sort();
+		tmp_algorithm_list=algorithms_computer.concat(algorithms_under,algorithms_over,algorithms_composite_input,algorithms_composite_dataset);		
+	}	  
 	
     for(var i=0; i < tmp_algorithm_list.length; i++){
       //n.color = available_colors[i%7];
@@ -213,6 +246,7 @@ ToolBar.prototype.toggleAlgorithmSelector = function () {
     jQuery("#cancelAlgorithms").click(function(){
       jQuery("#panel").html("");
       jQuery("#panel").hide("slide");
+      AlgorithmSelectorHidden = true;
     });
   });
   
@@ -252,11 +286,9 @@ ToolBar.prototype.createButtons = function () {
     console.log("self.iid is: "+self.iid);	 
 	
     jQuery.get('api/Data/getAlgorithmsForImage.php?iid=' + self.iid, function (data) {
-      d = JSON.parse(data);	  
-      
-	    console.log("data before goodalgo is:"+data);
-      console.log("d before goodalgo is:"+d);	
-          
+      d = JSON.parse(data);	      
+     // console.log("data before goodalgo is:"+data);
+     // console.log("d before goodalgo is:"+d);	          
       goodalgo(d, null)
     })	
 	
@@ -284,20 +316,20 @@ ToolBar.prototype.createButtons = function () {
 
 
   if (this.annotationActive) {
-    /*
+     /*
      * Ganesh
      * Mootools to Jquery for creation of toolbar buttons
      */
 	 
-	this.homebutton = jQuery('<img>', {
-      title: 'Default Home',
+    this.homebutton = jQuery('<img>', {
+      title: 'caMicroscope Home',
       class: 'toolButton firstToolButtonSpace inactive',
       src: 'images/home.png',
       id: 'gotohomebutton'
     })
     tool.append(this.homebutton) 
 	 
-	this.spacer1 = jQuery('<img>', {
+    this.spacer1 = jQuery('<img>', {
       'class': 'spacerButton inactive',
       'src': 'images/spacer.svg'
     })
@@ -309,26 +341,26 @@ ToolBar.prototype.createButtons = function () {
       src: 'images/rect.svg',
       id: 'drawRectangleButton'
     })
-    //tool.append(this.rectbutton)	
+  //tool.append(this.rectbutton)	
    
    
-	this.pencilbutton = jQuery('<img>', {
+    this.pencilbutton = jQuery('<img>', {
       'title': 'Draw Freeline',
       'class': 'toolButton inactive',
       'src': 'images/pencil.svg',
       'id': 'drawFreelineButton'
     })
-    //tool.append(this.pencilbutton) // Pencil Tool	
+    tool.append(this.pencilbutton) // Pencil Tool	
 	
 	
-	this.mergebutton1 = jQuery('<img>', {
+    this.mergebutton1 = jQuery('<img>', {
       'title': 'Save ViewPort',
       'class': 'toolButton inactive',
       'src': 'images/merge1.png'
     })
     tool.append(this.mergebutton1) // Merge step 1
 	
-	this.mergebutton2 = jQuery('<img>', {
+    this.mergebutton2 = jQuery('<img>', {
       'title': 'Save Rectangle And Delete Annotation(s) Within This Area',
       'class': 'toolButton inactive',
       'src': 'images/rect.svg',
@@ -336,17 +368,21 @@ ToolBar.prototype.createButtons = function () {
     })
     tool.append(this.mergebutton2) // Merge step 2
 	
-	
-	this.mergebutton3 = jQuery('<img>', {
-      'title': 'Generate Composite Dataset',
-      'class': 'toolButton inactive',
-      'src': 'images/merge2.png',
-	  'id': 'mergeStep3Button'
+   this.spacer2 = jQuery('<img>', {
+      'class': 'spacerButton inactive',
+      'src': 'images/spacer.svg'
     })
-    tool.append(this.mergebutton3) // Merge step 3
+    tool.append(this.spacer2)
+	  
+   this.filterbutton = jQuery('<img>', {
+      'title': 'Filter Markups',
+      'class': 'toolButton inactive',
+      'src': 'images/filter.svg'
+    })
+    tool.append(this.filterbutton) // Filter Button
 	
 	
-	this.measurebutton = jQuery('<img>', {
+   this.measurebutton = jQuery('<img>', {
       'title': 'Measurement Tool',
       'class': 'toolButton inactive',
       'src': 'images/measure.svg'
@@ -359,13 +395,15 @@ ToolBar.prototype.createButtons = function () {
     })
     tool.append(this.spacer3)
 
-    this.filterbutton = jQuery('<img>', {
-      'title': 'Filter Markups',
+	  
+   this.mergebutton3 = jQuery('<img>', {
+      'title': 'Generate Composite Dataset',
       'class': 'toolButton inactive',
-      'src': 'images/filter.svg'
+      'src': 'images/merge2.png',
+	  'id': 'mergeStep3Button'
     })
-    tool.append(this.filterbutton) // Filter Button
-
+    tool.append(this.mergebutton3) // Merge step 3
+   
     this.hidebutton = jQuery('<img>', {
       'title': 'Show/Hide Markups',
       'class': 'toolButton inactive',
@@ -374,11 +412,11 @@ ToolBar.prototype.createButtons = function () {
    // tool.append(this.hidebutton)
     
 	
-    this.spacer1 = jQuery('<img>', {
+    this.spacer4 = jQuery('<img>', {
       'class': 'spacerButton inactive',
       'src': 'images/spacer.svg'
     })
-    tool.append(this.spacer1)
+    tool.append(this.spacer4)
     
     this.partialDownloadButton = jQuery('<img>', {
       'title': 'Download Partial Markups (Coming Soon)',
@@ -406,15 +444,33 @@ ToolBar.prototype.createButtons = function () {
      * Event handlers on click for the buttons
      */
 	 
-	this.homebutton.on('click', function () {
-      this.mode = 'home';
-	  //var tissueId=this.annotool.iid;
-	 // console.log(tissueId)
-	  var tissueId=annotool.iid;
-	  console.log(tissueId)
-	  var cancerType=annotool.cancerType;	
-      console.log(cancerType)	  
-      location.href = "/camicroscope/osdCamicroscope.php?tissueId="+tissueId+"&cancerType="+cancerType;
+    this.homebutton.on('click', function () {
+      this.mode = 'home';	 
+      var tissueId=annotool.iid;     
+      var cancerType=annotool.cancerType;    	  
+      //window.location.href = "/camicroscope/osdCamicroscope.php?tissueId="+tissueId+"&cancerType="+cancerType;     	    
+      var x1 = annotool.imagingHelper._viewportOrigin['x'];
+      var y1 = annotool.imagingHelper._viewportOrigin['y'];
+      var x2 = x1 + annotool.imagingHelper._viewportWidth;
+      var y2 = y1 + annotool.imagingHelper._viewportHeight;  
+      var zoom = viewer.viewport.getZoom();	
+      if (zoom<1.0) zoom=1.0;	    
+      var width,height;	  
+      //get image width and height	
+      var url = 'api/Data/getImageInfoByCaseID.php?case_id=' + tissueId;
+      jQuery.get(url, function (data) {
+      //console.log(data);
+      try {
+          this_image = JSON.parse(data); 
+          width  = this_image[0].width;
+	  height = this_image[0].height;	
+	  var x= parseInt(((x1+x2)/2.0)*width);
+	  var y= parseInt(((y1+y2)/2.0)*height);       
+	  window.location.href = "/camicroscope/osdCamicroscope.php?tissueId="+tissueId+"&x="+x+"&y="+y+"&zoom="+zoom;	  
+	  } catch (error){
+	  window.location.href = "/camicroscope/osdCamicroscope.php?tissueId="+tissueId;
+	  }	   
+      })        
     }.bind(this))
 	 
 	 
@@ -440,28 +496,28 @@ ToolBar.prototype.createButtons = function () {
 	
 	
 	this.mergebutton1.on('click', function () {
+		this.mode = 'normal';
 		this.annotools.mergeStep1();     
      }.bind(this))	 
 	
 	
-	this.mergebutton2.on('click', function () {
+    this.mergebutton2.on('click', function () {
       //console.log(this.mode);
-      if(this.mode == 'merge_step2'){
-		 this.mode = 'normal';
-        this.setNormalMode();       
-      } else {
+      //if(this.mode == 'merge_step2'){
+	//	 this.mode = 'normal';
+        //this.setNormalMode();       
+     // } else {
         this.mode = 'merge_step2'
         this.annotools.mode = 'rect'
         this.annotools.drawMarkups();		
         jQuery("canvas").css("cursor", "crosshair");
-		jQuery("#mergeStep2Button").addClass("active"); // merge step 2 button		
-                  
-      }    
+	jQuery("#mergeStep2Button").addClass("active");                   
+      //}    
     }.bind(this))    
     
 
     this.mergebutton3.on('click', function () {
-		this.annotools.generateCompositeDataset();     
+	this.annotools.generateCompositeDataset();     
     }.bind(this))	
 	 
       
@@ -484,22 +540,20 @@ ToolBar.prototype.createButtons = function () {
 	
 
     this.pencilbutton.on('click', function () {
-
-      if(this.annotools.mode == 'pencil'){
-        this.setNormalMode();
-      } else {
+     // if(this.annotools.mode == 'pencil'){
+        //this.setNormalMode();
+     // } else {
         //set pencil mode
+	this.mode = 'pencil'
         this.annotools.mode = 'pencil'
-        this.annotools.drawMarkups()
-        
+        this.annotools.drawMarkups()        
         jQuery("canvas").css("cursor", "crosshair");
         //jQuery("drawFreelineButton").css("opacity", 1);
-        jQuery("#drawRectangleButton").removeClass("active");
-        jQuery("#drawDotButton").removeClass("active");     // Dot Tool
-		jQuery("#mergeStep2Button").removeClass("active"); // merge step 2 button	
+        //jQuery("#drawRectangleButton").removeClass("active");
+        //jQuery("#drawDotButton").removeClass("active");     // Dot Tool
+	//jQuery("#mergeStep2Button").removeClass("active"); // merge step 2 button	
         jQuery("#drawFreelineButton").addClass("active");
-
-      }
+      //}
 
     }.bind(this))
 
@@ -552,13 +606,13 @@ ToolBar.prototype.createButtons = function () {
 
   this.titleButton = jQuery('<p>', {
     'class': 'titleButton',
-    'text': 'caMicroscope'
+    'text': 'caMic Segment Curation App'
   })
   tool.append(this.titleButton)
 
   this.iidbutton = jQuery('<p>', {
     'class': 'iidButton',
-    'text': 'SubjectID :' + this.iid
+    'text': 'Case ID: ' + this.iid
   })
   tool.append(this.iidbutton)
 

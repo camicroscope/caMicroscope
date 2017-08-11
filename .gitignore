@@ -1,3 +1,12 @@
 *.bak
 *.swp
 *.swo
+
+# IntelliJ Idea
+.idea
+.idea/*
+
+# General
+.DS_Store
+.DS_Store/*
+

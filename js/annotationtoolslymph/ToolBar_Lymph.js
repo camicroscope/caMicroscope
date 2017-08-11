@@ -13,7 +13,7 @@ var ToolBar = function (element, options) {
   this.iid = options.iid || null
   this.annotationActive = isAnnotationActive()
 
-  this.superuser = false;
+  //this.superuser = false;
 }
 
 ToolBar.prototype.showMessage = function (msg) {
@@ -178,7 +178,8 @@ ToolBar.prototype.toggleAlgorithmSelector = function () {
 	//jQuery("#panel").show("slide");
   var url = 'api/Data/getAlgorithmsForImage.php?iid=' + self.iid;
 
-  var htmlStr = "<div id='panelHeader'> <h4>Select Algorithm </h4> </div> <div id='panelBody'> <ul id='algorithmList'>";
+  var htmlStr = "<div id='panelHeader'><a href='#'><div id='closeFilterPanel'><img src='images/ic_close_white_24px.svg' title='Close' alt='Close' width='20' height='20'></div></a><h4>Select Algorithm </h4></div><div id='panelBody'><ul id='algorithmList'>";
+    
   jQuery.get(url, function (data) {
 
     d = JSON.parse(data)
@@ -247,11 +248,18 @@ ToolBar.prototype.toggleAlgorithmSelector = function () {
     jQuery("#cancelAlgorithms").click(function(){
       jQuery("#panel").html("");
       jQuery("#panel").hide("slide");
+      AlgorithmSelectorHidden = true;
+    });
+      
+    jQuery("#closeFilterPanel").click(function(){
+      jQuery("#panel").html("");
+      jQuery("#panel").hide("slide");
+      AlgorithmSelectorHidden = true;
     });
   });
    if(AlgorithmSelectorHidden == true){
    	jQuery("#panel").show("slide");   
-    AlgorithmSelectorHidden = false;
+        AlgorithmSelectorHidden = false;
   } else {
     jQuery("#panel").html("");
     jQuery("#panel").hide("slide");
@@ -294,7 +302,7 @@ ToolBar.prototype.createButtons = function () {
             var n = {}
 
             n.refKey = d[i].provenance.analysis_execution_id;
-            console.log("n.refKey: " + n.refKey);
+            //console.log("n.refKey: " + n.refKey);
             if (n.refKey.includes('lym_v')) {
                 var ver = parseInt(n.refKey.split('lym_v')[1].split('-')[0]);
                 if (ver > max_ver) {
@@ -302,13 +310,13 @@ ToolBar.prototype.createButtons = function () {
                 }
              }
         }
-        console.log("version: " + max_ver);
+        //console.log("version: " + max_ver);
         
         for (var i = 0; i < d.length; i++) {
             var n = {};
             
             n.refKey = d[i].provenance.analysis_execution_id;
-            console.log("n.refKey: " + n.refKey);
+            //console.log("n.refKey: " + n.refKey);
         
             if (n.refKey == 'lym_v'+max_ver+'-high_res' || n.refKey == 'lym_v'+max_ver+'-low_res' || n.refKey == 'humanmark') {
                 SELECTED_ALGORITHM_LIST.push(n.refKey);
@@ -357,7 +365,7 @@ ToolBar.prototype.createButtons = function () {
     tool.append(this.homebutton);
       
     this.micbutton = jQuery('<img>', {
-        src: 'images/home_rest.png',
+        src: 'images/camic_vector.svg',
         class: 'toolButton inactive',
         title: 'caMicroscope'
     });
@@ -385,7 +393,7 @@ ToolBar.prototype.createButtons = function () {
     tool.append(this.hidebutton)
     
     this.heatDownButton = jQuery('<img>', {
-        'title': 'Decrease opacity',
+        'title': 'Decrease Opacity',
         'class': 'toolButton inactive',
         'src': 'images/Opacity_down.svg',
         'id': 'heatDownButton',
@@ -393,7 +401,7 @@ ToolBar.prototype.createButtons = function () {
     tool.append(this.heatDownButton);     // Button for decreasing opacity
 
     this.heatUpButton = jQuery('<img>', {
-        'title': 'Increase opacity',
+        'title': 'Increase Opacity',
         'class': 'toolButton inactive',
         'src': 'images/Opacity_up.svg',
         'id': 'heatUpButton',
@@ -414,7 +422,7 @@ ToolBar.prototype.createButtons = function () {
     //tool.append(this.spacer)
 
     this.showWeightPanel = jQuery('<img>', {
-        'title': 'Show weight panel',
+        'title': 'Show Weight Panel',
         'class': 'toolButton inactive',
         'src': 'images/Heatmap.svg',
         'id': 'showWeightPanel',
@@ -422,7 +430,7 @@ ToolBar.prototype.createButtons = function () {
     tool.append(this.showWeightPanel);    // Button for showing the weight panel
       
     this.freeMarkupButton = jQuery('<img>', {
-      'title': 'Free line Markup',
+      'title': 'Free Line Markup',
       'class': 'toolButton inactive',
       'src': 'images/pencil.svg',
       'id': 'freeLineMarkupButton'
@@ -436,12 +444,12 @@ ToolBar.prototype.createButtons = function () {
     tool.append(this.spacer2)
     
     this.switchUserButton = jQuery('<img>', {
-        'title': 'Switch user',
+        'title': 'Switch User',
         'class': 'toolButton inactive',
         'src': 'images/switch_user.svg',
-        'id': 'switchUserButton',
+        'id': 'switchUserButton'
     });
-    //tool.append(this.switchUserButton);     // Button for switch user
+    tool.append(this.switchUserButton);     // Button for switch user
       
       
     /*
@@ -451,10 +459,39 @@ ToolBar.prototype.createButtons = function () {
         window.location.href = "/select.php";
     }.bind(this))
     
+    /*
     this.micbutton.on('click', function(){
         window.location.href = "/camicroscope/osdCamicroscope.php?tissueId=" + this.iid;
     }.bind(this))
-    
+    */
+      
+      
+    this.micbutton.on('click', function () {
+      var tissueId = this.iid;
+      var x1 = annotool.imagingHelper._viewportOrigin['x'];
+      var y1 = annotool.imagingHelper._viewportOrigin['y'];
+      var x2 = x1 + annotool.imagingHelper._viewportWidth;
+      var y2 = y1 + annotool.imagingHelper._viewportHeight;  
+      var zoom = viewer.viewport.getZoom();	   
+      var width,height;
+        
+      //get image width and height	
+      var url = 'api/Data/getImageInfoByCaseID.php?case_id=' + tissueId;
+      jQuery.get(url, function (data) {
+          //console.log(data);
+          try {
+              this_image = JSON.parse(data); 
+              width  = this_image[0].width;
+              height = this_image[0].height;	
+              var x= parseInt(((x1+x2)/2.0)*width);
+              var y= parseInt(((y1+y2)/2.0)*height);       
+              window.location.href = "/camicroscope/osdCamicroscope.php?tissueId=" + tissueId + "&x=" + x + "&y=" + y + "&zoom=" + zoom;	  
+          } catch (error){
+              window.location.href = "/camicroscope/osdCamicroscope.php?tissueId=" + tissueId;
+          }	   
+      })        
+    }.bind(this))
+      
     this.hidebutton.on('click', function () {
       this.annotools.toggleMarkups()
     }.bind(this))
@@ -489,7 +526,7 @@ ToolBar.prototype.createButtons = function () {
     */
     
     this.switchUserButton.on('click', function () {
-        if (this.superuser) {
+        if (this.annotools.lymphSuperuser) {
             if (jQuery('#switchuserpanel').is(":visible"))
                 jQuery('#switchuserpanel').hide();
             else
@@ -584,13 +621,13 @@ ToolBar.prototype.createButtons = function () {
 
   this.titleButton = jQuery('<p>', {
     'class': 'titleButton',
-    'text': 'caMic Lymphocyte'
+    'text': 'caMic Lymphocyte App'
   })
   tool.append(this.titleButton)
 
   this.iidbutton = jQuery('<p>', {
     'class': 'iidButton',
-    'text': 'Image Id: ' + this.iid
+    'text': 'Case ID: ' + this.iid
   })
   tool.append(this.iidbutton)
 

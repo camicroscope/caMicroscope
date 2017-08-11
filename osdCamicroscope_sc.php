@@ -1,5 +1,6 @@
  <?php 
 	
+	
   session_start();
  
   require '../authenticate.php';  
@@ -140,7 +141,7 @@
                 navigatorPosition:   "BOTTOM_RIGHT",
                 //navigatorId: "navigator",
                 zoomPerClick: 2,
-                zoomPerScroll: 1,
+                //zoomPerScroll: 1,
                 animationTime: 0.75,
                 maxZoomPixelRatio: 2,
                 visibilityRatio: 1,
@@ -159,7 +160,7 @@
             //console.log(this.MPP);
             viewer.scalebar({
               type: OpenSeadragon.ScalebarType.MAP,
-              pixelsPerMeter: (1/(parseFloat(this.MPP["mpp_x"])*0.000001)),
+              pixelsPerMeter: (1/(parseFloat(this.MPP["mpp-x"])*0.000001)),
               xOffset: 5,
               yOffset: 10,
               stayInsideImage: true,
@@ -168,17 +169,24 @@
               backgroundColor: "rgba(255,255,255,0.5)",
               barThickness: 2
             });
-			
-           //console.log(viewer);
-		
-          function isAnnotationActive(){
-              this.isOpera = !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
+
+          //console.log(viewer);
+
+          function isAnnotationActive() {
+              this.isOpera = (!!window.opr && !!opr.addons) || navigator.userAgent.indexOf(' OPR/') >= 0;
+              // console.log("isOpera", this.isOpera);
               this.isFirefox = typeof InstallTrigger !== 'undefined';
-              this.isSafari = Object.prototype.toString.call(window.HTMLElement).indexOf('Constructor') > 0;
-		      this.isChrome = !!window.chrome;
-		      this.annotationActive = !(this.isIE || this.isOpera);
-		    return this.annotationActive;
-	      }
+              // console.log("isFirefox", this.isFirefox);
+              this.isSafari = ((navigator.userAgent.toLowerCase().indexOf('safari') > -1) && !(navigator.userAgent.toLowerCase().indexOf('chrome') > -1) && (navigator.appName == "Netscape"));
+              // console.log("isSafari", this.isSafari);
+              this.isChrome = !!window.chrome && !!window.chrome.webstore;
+              // console.log("isChrome", this.isChrome);
+              this.isIE = /*@cc_on!@*/false || !!document.documentMode;
+              // console.log("isIE", this.isIE);
+              this.annotationActive = !( this.isIE || this.isOpera);
+              // console.log("annotationActive", this.annotationActive);
+              return this.annotationActive;
+          }
 
          function addOverlays() {
             var annotationHandler = new AnnotoolsOpenSeadragonHandler(viewer, {});
@@ -210,7 +218,6 @@
 	 var user_email = "<?php echo $_SESSION["email"]; ?>";  
          console.log("user_email :" + user_email);  
       
-        //var user_email ="tigerfan7495@gmail.com";   
         var index = user_email.indexOf("@");
         var user= user_email.substring(0,index);		
         var execution_id =user+"_composite_input" ;
@@ -223,7 +230,7 @@
         var bound_x = <?php echo json_encode($_GET['x']); ?>;
         var bound_y = <?php echo json_encode($_GET['y']); ?>;
         var zoom = <?php echo json_encode($_GET['zoom']); ?> || viewer.viewport.getMaxZoom();
-
+        zoom =Number(zoom); //convert zoom to number if it is string
         jQuery("#panel").hide();
         if(bound_x && bound_y){
             var ipt = new OpenSeadragon.Point(+bound_x, +bound_y);
@@ -253,7 +260,7 @@
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
 
   ga('create', 'UA-46271588-1', 'auto');
   ga('send', 'pageview');
