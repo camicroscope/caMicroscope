@@ -30,7 +30,7 @@ var ClientPrefManager = new Class({
       var trans = idb.transaction(this.schema, IDBTransaction.READ_WRITE);
       var store = trans.objectStore(this.schema);
 
-      var requestAdd = store.add({pref: pref, value: val});
+      var requestAdd = store.put({pref: pref, value: val});
       requestAdd.onsuccess = function(e) {
         console.log(`Stored {pref: ${pref}, value: ${val}}`)
       };
@@ -60,6 +60,7 @@ var ClientPrefManager = new Class({
         else
         {
           console.log('No Entry Found.');
+          cb(null);
         }
       };
     };
