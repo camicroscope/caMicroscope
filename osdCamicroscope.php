@@ -68,6 +68,7 @@
         <!--<script src="js/dependencies/jquery-ui.min.js"></script>-->
 
         <script src="js/Helpers/OsdStateManager.js"></script>
+        <script src="js/Helpers/ClientPrefManager.js"></script>
 
         <script src="js/dependencies/jquery.fancytree-all.min.js"></script>
         <script src="js/dependencies/simplemodal.js"></script>
@@ -250,10 +251,21 @@ function isAnnotationActive(){
             }
         }*/
 
+        // Deal with viewer state for url
         var StateMan = new OsdStateManager(viewer, {});
         StateMan.setState();
         viewer.addHandler("zoom", StateMan.getState);
         viewer.addHandler("pan", StateMan.getState);
+
+        // Deal with client variables
+        var a = new ClientPrefManager("viewer");
+        var disable_if_true = function(e){
+          if(e){
+            viewer.zoomPerScroll = 1;
+            // setting to one makes scroll not change zoom level
+          }
+        };
+        a.get_pref("scroll_zoom", disable_if_true);
 
 
         if(bound_x && bound_y){
