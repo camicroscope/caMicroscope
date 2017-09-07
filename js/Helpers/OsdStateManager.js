@@ -20,6 +20,7 @@ class OsdStateManager {
         if (tid.length >= 2){
           window.history.pushState("hi", "Encoded", "?tissueId="+tid[1]+"&state=" + l);
       }
+    }
 
     setState() {
         //TODO some error handling
