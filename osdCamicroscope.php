@@ -246,9 +246,7 @@ function isAnnotationActive(){
         }*/
 
         var StateMan = new OsdStateManager(viewer, {});
-        StateMan.setState();
-        viewer.addHandler("zoom", StateMan.getState);
-        viewer.addHandler("pan", StateMan.getState);
+        StateMan.register();
 
 
         if(bound_x && bound_y){
