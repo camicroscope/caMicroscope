@@ -447,7 +447,29 @@ annotools.prototype.generateSVG = function (annotations) {
         svgHtml += '" style="fill:' + heatcolor.toString() + ';fill-opacity: ' + this.heatmap_opacity + ';stroke-width:0"/>';
 		*/
                 break;
-	
+	case 'heatmap_quality':
+		var quality_heatmap_colors = ["#feedde","#bd0026", "#feec00", "#00ff33"]
+		var quality_value = annotation.properties.metric_value;
+		var lower_threshold = 0.3;
+		var upper_threshold = 0.7;
+		selected_heatmap = quality_heatmap_colors[2];
+		selected_opacity = this.heatmap_opacity;
+		
+		if (quality_value <= lower_threshold) {
+			selected_heatmap = quality_heatmap_colors[1];
+		}
+
+		if (quality_value >= upper_threshold) {
+			selected_heatmap = quality_heatmap_colors[3];
+		}
+
+		if (quality_value < 0) {
+			selected_heatmap = quality_heatmap_colors[0];
+			selected_opacity = 0.2
+		}
+
+		svgHtml += '" style="fill:' + selected_heatmap + ';fill-opacity: ' + selected_opacity + ';stroke-width:0"/>';
+		break;
 	case 'marking':
 		var line_color = '';
 		var stroke_width = 2.5;
