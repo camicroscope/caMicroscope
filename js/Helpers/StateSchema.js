@@ -20,7 +20,7 @@ setTimeout(function(){
   // before touching the url, get what we already have
   camic_state.initialize(camic_state.decode(camic_state.get_url_state()));
   // remove state url when done
-  setTimeout({camic_state.clear_url, 500});
+  setTimeout(camic_state.clear_url, 500);
 }, 500);
 
 
