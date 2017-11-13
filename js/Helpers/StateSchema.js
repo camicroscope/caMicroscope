@@ -40,5 +40,5 @@ moveHandler = function() {
 function LinkRequest(){
   moveHandler();
   algHandler();
-  alert(camic_state.encode(camic_state.vals));
+  console.log("{state : " + camic_state.encode(camic_state.vals)+ "}");
 }
