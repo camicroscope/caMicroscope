@@ -25,14 +25,14 @@ setTimeout(function(){
 
 algHandler = function() {
   camic_state.vals['alg']=SELECTED_ALGORITHM_LIST;
-  camic_state.set_url();
+  //camic_state.set_url();
 };
 
 moveHandler = function() {
   var pos = viewer.viewport.getCenter(true);
   var zoom = viewer.viewport.getZoom(true);
   camic_state.vals['position']={'x':pos.x, 'y':pos.y, 'z':zoom};
-  camic_state.set_url();
+  //camic_state.set_url();
 };
 
 // TODO make this actually trigger usefully
