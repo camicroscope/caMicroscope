@@ -19,7 +19,8 @@ setTimeout(function(){
   camic_state.add_key('alg', setAlgs);
   // before touching the url, get what we already have
   camic_state.initialize(camic_state.decode(camic_state.get_url_state()));
-  //camic_state.clear_url();
+  // remove state url when done
+  setTimeout(function(){camic_state.clear_url, 500};
 }, 500);
 
 
