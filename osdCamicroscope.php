@@ -67,7 +67,8 @@
         <!--End Filtering Tools-->
         <!--<script src="js/dependencies/jquery-ui.min.js"></script>-->
 
-        <script src="js/Helpers/OsdStateManager.js"></script>
+        <script src="js/Helpers/StateManager.js"></script>
+        <script src="js/Helpers/StateSchema.js"></script>
         <script src="js/Helpers/ClientPrefManager.js"></script>
 
         <script src="js/dependencies/jquery.fancytree-all.min.js"></script>
@@ -245,10 +246,6 @@ function isAnnotationActive(){
                 jQuery("#control"+filterName+"Num").val(f.value);
             }
         }*/
-
-        // Deal with viewer state for url
-        var StateMan = new OsdStateManager(viewer, {});
-        StateMan.register();
 
         var PrefMan = new ClientPrefManager("viewer");
         // on a new press, do the following...
