@@ -405,7 +405,9 @@ ToolBar.prototype.createButtons = function () {
 		});
 
     this.sharebutton.on('click', function () {
-      window.prompt("Share this link", window.location.href);
+      // update the url
+      LinkRequest();
+      window.prompt("Share this link", window.location.href + "&" + camic_state.prefix + "=" + camic_state.encode(camic_state.vals));
     }.bind(this));
 
     this.lymphbutton.on('click', function () {
