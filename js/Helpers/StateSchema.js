@@ -37,7 +37,7 @@ moveHandler = function() {
 
 // TODO make this actually trigger usefully
 // update url when requested only (this should be share)
-function onRequest(){
+function LinkRequest(){
   moveHandler();
   algHandler();
   alert(camic_state.encode(camic_state.vals));

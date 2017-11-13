@@ -405,6 +405,8 @@ ToolBar.prototype.createButtons = function () {
 		});
 
     this.sharebutton.on('click', function () {
+      // update the url
+      LinkRequest();
       window.prompt("Share this link", window.location.href);
     }.bind(this));
 
