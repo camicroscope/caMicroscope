@@ -67,7 +67,9 @@
         <!--End Filtering Tools-->
         <!--<script src="js/dependencies/jquery-ui.min.js"></script>-->
 
-        <script src="js/Helpers/OsdStateManager.js"></script>
+        <script src="js/Helpers/StateManager.js"></script>
+        <script src="js/Helpers/StateSchema.js"></script>
+        <script src="js/Helpers/ClientPrefManager.js"></script>
 
         <script src="js/dependencies/jquery.fancytree-all.min.js"></script>
         <script src="js/dependencies/simplemodal.js"></script>
@@ -245,8 +247,36 @@ function isAnnotationActive(){
             }
         }*/
 
-        var StateMan = new OsdStateManager(viewer, {});
-        StateMan.register();
+        var PrefMan = new ClientPrefManager("viewer");
+        // on a new press, do the following...
+        window.onkeypress = function(event) {
+           if (event.keyCode == 122) {
+              var toggle = function(e){
+                if(e){
+                  // if it's on, set it off
+                  PrefMan.set_pref("scroll_zoom", false);
+                  viewer.zoomPerScroll = 1.2;
+                  console.log("Scroll Wheel Enabled")
+                } else {
+                  // if it's off, set it on
+                  PrefMan.set_pref("scroll_zoom", true);
+                  viewer.zoomPerScroll = 1;
+                  console.log("Scroll Wheel Disabled")
+                }
+              }
+              PrefMan.get_pref("scroll_zoom", disable_if_true);
+           }
+        }
+
+        // Deal previously set
+        var disable_if_true = function(e){
+          if(e){
+            viewer.zoomPerScroll = 1;
+            // setting to one makes scroll not change zoom level
+            console.log("Scroll Wheel Disabled")
+          }
+        };
+        PrefMan.get_pref("scroll_zoom", disable_if_true);
 
 
         if(bound_x && bound_y){
