@@ -9,6 +9,8 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
+console.log("osdAnnotationTools_sc.js");
+
 var annotools = function (options) {
   this.AnnotationStore = new AnnotationStore(options.iid)
 
@@ -45,7 +47,7 @@ var annotools = function (options) {
     var self = this
     self.getMultiAnnot()
   }.bind(this))
-  
+
   this.viewer.addHandler('animation-start', function (event) {
     var markup_svg = document.getElementById('markups')
     if (markup_svg) {
@@ -67,7 +69,7 @@ var annotools = function (options) {
   if (this.annotationActive) {
     // this.getAnnot()
   }
-  
+
   this.imagingHelper.addHandler('image-view-changed', function (event) {
     // this.getAnnot()
   }.bind(this))
@@ -81,7 +83,7 @@ var annotools = function (options) {
   this.drawLayer = jQuery('<div>', {
       html: "",
       styles: {
-          position: 'absolute', 
+          position: 'absolute',
           'z-index': 1
       }
   })
@@ -146,13 +148,13 @@ annotools.prototype.getMultiAnnot = function (viewer) {
     // opa["Val" + (i + 1).toString()] = selalgos[i].refKey
     }
   }*/
-  
+
   console.log("algorithm_list", ALGORITHM_LIST);
   console.log("selected_algorithm_list", SELECTED_ALGORITHM_LIST);
   SELECTED_ALGORITHM_LIST = SELECTED_ALGORITHM_LIST.sort();
   console.log("....");
   algorithms = SELECTED_ALGORITHM_LIST;
-  
+
   //console.log(algorithms);
   var self = this
   this.x1 = this.imagingHelper._viewportOrigin['x']
@@ -430,7 +432,7 @@ annotools.prototype.createWorkOrder = function () {
     // The canvas context
     var ctx = this.drawCanvas.getContext('2d')
 
-   
+
     this.removeMouseEvents()
     var started = false
     var min_x,min_y,max_x,max_y,w,h
@@ -492,7 +494,7 @@ annotools.prototype.createWorkOrder = function () {
       loc[1] = parseFloat(newAnnot.y)
       newAnnot.loc = loc
 
-      // convert to geojson 
+      // convert to geojson
       // var geoNewAnnot = this.convertRectToGeo(newAnnot)
       geoNewAnnot = newAnnot
       this.promptForWorkOrder(geoNewAnnot, 'new', this, ctx)
@@ -697,10 +699,10 @@ annotools.prototype.addnewAnnot = function (newAnnot) // Add New Annotations
   console.log("saved annotation")
   if(this.toolBar.mode == 'merge_step2'){
 	 //if(this.save_success == "yes"){
-        this.deleteAnnotationWithinRectangle(newAnnot); 
+        this.deleteAnnotationWithinRectangle(newAnnot);
        console.log("deleteAnnotationWithinRectangle")
-    //}	  
-  } 
+    //}
+  }
   this.displayGeoAnnots()
 }
 
@@ -823,7 +825,7 @@ annotools.prototype.setupHandlers = function () {
   //console.log('setting up handlers')
 
   var root = document.getElementsByTagName('svg')[0]
-  // console.log(root); 
+  // console.log(root);
   if (root != undefined) {
     if (navigator.userAgent.toLowerCase().indexOf('webkit') >= 0) {
       window.addEventListener('mousewheel', this.annotationHandler.handleMouseWheel, false) // Chrome/Safari
@@ -972,12 +974,12 @@ annotools.prototype.saveAnnot = function (annotation) // Save Annotations
   var fpoint_y=annotation.geometry.coordinates[0][0][1];
   var lpoint_x=annotation.geometry.coordinates[0][total_points-1][0];
   var lpoint_y=annotation.geometry.coordinates[0][total_points-1][1];
-  
+
   if(fpoint_x!=lpoint_x || fpoint_y!=lpoint_y){
      annotation.geometry.coordinates[0].push([]);
      annotation.geometry.coordinates[0][total_points].push(fpoint_x);
-     annotation.geometry.coordinates[0][total_points].push(fpoint_y);   
-  }  
+     annotation.geometry.coordinates[0][total_points].push(fpoint_y);
+  }
 
   // get algorithm and color info
   var algo_and_color = this.getAlgorithmColorFromMenuTree();
@@ -988,19 +990,19 @@ annotools.prototype.saveAnnot = function (annotation) // Save Annotations
       var selected_algorithm = algo_and_color.algorithm;
       var selected_color = algo_and_color.color;
   }
-  
+
    var user=annotool.user;
    var d = new Date();
-   var current_time=d.toLocaleString(); 
-   
+   var current_time=d.toLocaleString();
+
    annotation.color=selected_color;
-   annotation.algorithm=selected_algorithm;  
-   annotation.created_by=user;	
+   annotation.algorithm=selected_algorithm;
+   annotation.created_by=user;
    annotation.created_on=current_time;
    annotation.updated_by='';
    annotation.updated_on='';
-   
-  
+
+
   jQuery.ajax({
     'type': 'POST',
     url: 'api/Data/getAnnotSpatial_sc.php',
@@ -1010,13 +1012,13 @@ annotools.prototype.saveAnnot = function (annotation) // Save Annotations
       console.log(res)
       if(res == "unauthorized"){
         alert("Error saving markup! Wrong secret");
-      } else {   
+      } else {
         alert("Successfully saved markup!");
       }
-      console.log(err)	  
+      console.log(err)
       self.getMultiAnnot();
       console.log('succesfully posted');
-      this.save_success="yes";	  
+      this.save_success="yes";
     }
   })
 }
@@ -1158,7 +1160,7 @@ annotools.prototype.drawEllipse = function (ctx) {
     x = startPosition.x
     y = startPosition.y
   })
-  
+
   this.drawCanvas.bind('mousemove', function (e) {
     if (started) {
       ctx.clearRect(0, 0, this.drawCanvas.width, this.drawCanvas.height)
@@ -1658,7 +1660,7 @@ annotools.prototype.retrieveTemplate = function () {
       this.showMessage('Error retrieving AnnotationTemplate, please check your retrieveTemplate.php')
     }.bind(this)
   }).get()
-  
+
   return jsonReturn
 }
 
@@ -1760,7 +1762,7 @@ annotools.prototype.promptForWorkOrder = function (newAnnot, mode, annotools, ct
     + "<li>Execution Id:<input id='order-execution_id'></input></li>" + "<li>Notes: <textarea id='order-notes'></textarea>" + "</ul> <br /> <button id='submitWorkOrder'>Submit</button> <button id='cancelWorkOrder'>Cancel</button></div>"
   })
 
-  
+
 
   jQuery('#cancelWorkOrder').click(function () {
     console.log('here')
@@ -1771,10 +1773,10 @@ annotools.prototype.promptForWorkOrder = function (newAnnot, mode, annotools, ct
 
   jQuery('#submitWorkOrder').click(function () {
     console.log('events...')
-    
+
     annotools.drawLayer.hide()
     annotools.addMouseEvents()
-            
+
 
     var username = 'lastlegion'
     var execution_id = jQuery('#order-execution_id').val()
@@ -1826,7 +1828,7 @@ annotools.prototype.promptForWorkOrder = function (newAnnot, mode, annotools, ct
       }
     }
 
-    
+
     jQuery.post('api/Data/workOrder.php', order)
       .done(function (res) {
         console.log(res)
@@ -1878,7 +1880,7 @@ annotools.prototype.promptForWorkOrder = function (newAnnot, mode, annotools, ct
     return "<div id='panelHeader'><h4> Work Order </h4></div><div id='panelBody'> <ul><li> x1: " + x + '</li> <li> y1: ' + y + '</li> <li> w: ' + w + '</li> <li>h: ' + h + '</li> <li>Algorithm: SuperSegmenter</li> '
     + "<li>Execution Id:<input id='order-execution_id'></input></li>" + "<li>Notes: <textarea id='order-notes'></textarea>" + "</ul> <br /> <button id='submitWorkOrder'>Submit</button> <button id='cancelWorkOrder'>Cancel</button></div>"
   })
-  
+
 
   jQuery('#cancelWorkOrder').click(function () {
     console.log('here')
@@ -1896,7 +1898,7 @@ annotools.prototype.promptForWorkOrder = function (newAnnot, mode, annotools, ct
     annotools.drawLayer.hide()
     annotools.addMouseEvents()
     // annotools.removeMouseEvents()
-    // annotools.getMultiAnnot();            
+    // annotools.getMultiAnnot();
 
     var username = 'lastlegion'
     var execution_id = jQuery('#order-execution_id').val()
@@ -1948,7 +1950,7 @@ annotools.prototype.promptForWorkOrder = function (newAnnot, mode, annotools, ct
       }
     }
 
-    
+
     jQuery.post('api/Data/workOrder.php', order)
       .done(function (res) {
         console.log(res)
@@ -2177,7 +2179,7 @@ annotools.prototype.downloadROI = function(){
     // The canvas context
     var ctx = this.drawCanvas.getContext('2d')
 
-    
+
     this.removeMouseEvents()
     var started = false
     var min_x,min_y,max_x,max_y,w,h
@@ -2239,7 +2241,7 @@ annotools.prototype.downloadROI = function(){
       loc[1] = parseFloat(newAnnot.y)
       newAnnot.loc = loc
 
-      // convert to geojson 
+      // convert to geojson
       // var geoNewAnnot = this.convertRectToGeo(newAnnot)
       geoNewAnnot = newAnnot
       this.promptForDownload(geoNewAnnot, 'new', this, ctx)
@@ -2272,7 +2274,7 @@ annotools.prototype.promptForDownload = function(newAnnot, mode, annotools, ctx)
       url = iipSrv + fileLocationReal + "/"+x+ ","+y+","+w+","+h +"/full/0/default.jpg";
 
       panel.html(function () {
-      return "<div id='panelHeader'><h4> Download ROI </h4></div><div id='panelBody'> <ul><li> x: " 
+      return "<div id='panelHeader'><h4> Download ROI </h4></div><div id='panelBody'> <ul><li> x: "
         + x + "</li> <li> y: "
          + y + "</li> <li> w: " + w + "</li> <li>h: " + h + "</li> </ul> <br /> Error! The ROI was too large. We've resized it to 2000 x 2000 tile<br /> <a href='"+url+ "' target='_blank'> <button class='btn' id='downloadROI'>Download</button></a> <button class='btn' id='cancelWorkOrder'>Cancel</button></div>";
     });
@@ -2282,13 +2284,13 @@ annotools.prototype.promptForDownload = function(newAnnot, mode, annotools, ctx)
 
 
       panel.html(function () {
-      return "<div id='panelHeader'><h4> Download ROI </h4></div><div id='panelBody'> <ul><li> x: " 
+      return "<div id='panelHeader'><h4> Download ROI </h4></div><div id='panelBody'> <ul><li> x: "
         + x + "</li> <li> y: "
          + y + "</li> <li> w: " + w + "</li> <li>h: " + h + "</li> </ul> <br /> <a href='"+url+ "' target='_blank'> <button class='btn' id='downloadROI'>Download</button></a> <button class='btn' id='cancelWorkOrder'>Cancel</button></div>";
       });
     }
   jQuery('#cancelWorkOrder').click(function () {
-   
+
     jQuery('#panel').hide()
     annotools.drawLayer.hide()
     annotools.addMouseEvents()
@@ -2297,14 +2299,14 @@ annotools.prototype.promptForDownload = function(newAnnot, mode, annotools, ctx)
     console.log(fileLocation);
     console.log(url);
   jQuery('#submitWorkOrder').click(function () {
-    
+
     // annotools.drawCanvas.removeEvents('mouseup')
     // annotools.drawCanvas.removeEvents('mousedown')
     // annotools.drawCanvas.removeEvents('mousemove')
     annotools.drawLayer.hide()
     annotools.addMouseEvents()
     // annotools.removeMouseEvents()
-    // annotools.getMultiAnnot();            
+    // annotools.getMultiAnnot();
 
     var username = 'lastlegion'
     var execution_id = jQuery('#order-execution_id').val()
@@ -2324,7 +2326,7 @@ annotools.prototype.mergeStep1 = function() {
     var x1 = this.imagingHelper._viewportOrigin['x'];
     var y1 = this.imagingHelper._viewportOrigin['y'];
     var x2 = x1 + this.imagingHelper._viewportWidth;
-    var y2 = y1 + this.imagingHelper._viewportHeight;   
+    var y2 = y1 + this.imagingHelper._viewportHeight;
 
     var physicalX1 = this.imagingHelper.logicalToPhysicalX(x1);
     var physicalY1 = this.imagingHelper.logicalToPhysicalY(y1);
@@ -2338,18 +2340,18 @@ annotools.prototype.mergeStep1 = function() {
     var dataY2 = helper.physicalToDataY(physicalY2);
 
     var area = (dataX2 - dataX1)*(dataY2-dataY1);
-    console.log("area", area); 	
+    console.log("area", area);
 
     var case_id = this.iid
     var subject_id = case_id.substr(0,12);
     if(subject_id.substr(0,4) != "TCGA"){
-      //subject_id = "";     
+      //subject_id = "";
     }
-	
+
     var execution_id = annotool.execution_id;
     var user=annotool.user;
     var d = new Date();
-    var current_time=d.toLocaleString();       
+    var current_time=d.toLocaleString();
 
     // get algorithm and color info
     var algo_and_color = this.getAlgorithmColorFromMenuTree();
@@ -2361,7 +2363,7 @@ annotools.prototype.mergeStep1 = function() {
         var selected_color = algo_and_color.color;
     }
 
-   // add first vertice of rectangle to the end to ensure the loop is closed  
+   // add first vertice of rectangle to the end to ensure the loop is closed
    var geoJSONTemplate = {
     'type': 'Feature',
     'parent_id': 'self',
@@ -2371,35 +2373,35 @@ annotools.prototype.mergeStep1 = function() {
       'coordinates': [
 	        [
                 [
-                    x1, 
+                    x1,
                     y1
-                ], 
+                ],
                 [
-                    x2, 
+                    x2,
                     y1
-                ], 
+                ],
                 [
-                    x2, 
+                    x2,
                     y2
-                ], 
+                ],
                 [
-                    x1, 
+                    x1,
                     y2
                 ],
 				[
-                    x1, 
+                    x1,
                     y1
-                ], 
-            ]	  
+                ],
+            ]
 	  ]
     },
     'normalized': true,
     'object_type': 'annotation',
     'properties': {
         'annotations': {
-            'region' : '', 
-            'additional_annotation' : 'test', 
-            'additional_notes' : 'test', 
+            'region' : '',
+            'additional_annotation' : 'test',
+            'additional_notes' : 'test',
             'secret' : 'human1'
         }
     },
@@ -2421,39 +2423,39 @@ annotools.prototype.mergeStep1 = function() {
 	y:y1,
 	'algorithm':selected_algorithm,
 	'color':selected_color,
-	'created_by':user,	
+	'created_by':user,
 	'created_on':current_time,
 	'updated_by':'',
 	'updated_on':''
   }
-  
+
   var self = this;
   console.log('Save geoJSONTemplate function')
   console.log(geoJSONTemplate)
-  
+
   jQuery.ajax({
     'type': 'POST',
     url: 'api/Data/getAnnotSpatial_sc.php',
     data: geoJSONTemplate,
-    
+
     success: function (res, err) {
       console.log("response: ")
       console.log(res)
-      
+
       if(res == "unauthorized"){
         alert("Error saving markup! Wrong secret");
-      } else {   
+      } else {
         alert("Successfully saved markup!");
-	//self.deleteAnnotationWithinRectangle(geoJSONTemplate); 
+	//self.deleteAnnotationWithinRectangle(geoJSONTemplate);
         //console.log("deleteAnnotationWithinRectangle");
       }
-      
+
       console.log("err is:"+err)
       self.getMultiAnnot();
       console.log('succesfully posted')
     }
-  })  
-	     
+  })
+
 }//end of mergeStep1 func
 
 
@@ -2462,19 +2464,19 @@ annotools.prototype.deleteAnnotationWithinRectangle = function(newAnnot){
   var subject_id= newAnnot.provenance.image.subject_id;
   var execution_id = newAnnot.provenance.analysis.execution_id;
   console.log(execution_id);
-  
+
   var x1=newAnnot.geometry.coordinates[0][0][0];
   var y1=newAnnot.geometry.coordinates[0][0][1];
   var x2=newAnnot.geometry.coordinates[0][2][0];
   var y2=newAnnot.geometry.coordinates[0][2][1];
-  
+
   var url1 = "api/Data/deleteAnnotationWithinRectangle.php?case_id="+  case_id + "&subject_id=" + subject_id + "&execution_id=" + execution_id +"&x1=" + x1+ "&y1=" + y1 + "&x2=" + x2 + "&y2=" + y2;
-  console.log(url1);	
+  console.log(url1);
   jQuery.ajax({ url: url1,
                type: 'DELETE',
                data:null,
                success: function(data){
-                   console.log(data);                   
+                   console.log(data);
                   }
                 });
 
@@ -2545,64 +2547,66 @@ annotools.prototype.getAlgorithmColorFromMenuTree = function () {
     return algo_and_color;
 };
 
-annotools.prototype.generateCompositeDataset = function() { 
+annotools.prototype.generateCompositeDataset = function() {
 
  alert("This function is temporarily disabled.");
  return;
-  
+
   var self = this;
- 
+
  //image variables
   var case_id=this.iid;
   console.log('case_id is: '+ case_id);
 
-  // user 
-   var user = this.user;   
-   console.log('user is: '+ user); 
-  
-  
-      
+  // user
+   var user = this.user;
+   console.log('user is: '+ user);
+
+
+
    var composite_order={
-     "type" : "quip_composite_cwl", 
+     "type" : "quip_composite_cwl",
      "data" : { "name" : "segment_curation", "workflow" : {"user" : user, "case_id" : case_id}}
-     }   
-	
+     }
+
    jQuery.post('api/Data/compositeOrder.php', composite_order)
         .done(function (res) {
           var r = JSON.parse(res);
           var id = r.id;
-          console.log("Composite Order submitted!, Job ID: "+id);		  
-         
+          console.log("Composite Order submitted!, Job ID: "+id);
+
 	  //jQuery('#algorithmList').html(function(){ return "<br /><br />Processing..."; });
-	  alert("Composite Order Processing...."); 
-		  
+	  alert("Composite Order Processing....");
+
          //self.toolBar.titleButton.hide()
           //self.toolBar.ajaxBusy.show();
-            
+
 	     //start polling
         /*
-		pollOrder(id, function(err, data){        
-            if(err){             
-			  alert("Order failed! Couldn't process your order"); 
+		pollOrder(id, function(err, data){
+            if(err){
+			  alert("Order failed! Couldn't process your order");
 			  self.toolBar.ajaxBusy.hide();
               self.toolBar.titleButton.show();
             } else{
                setTimeout(function(){
 				   self.toolBar.ajaxBusy.hide();
-                   self.toolBar.titleButton.show(); 
-                   self.getMultiAnnot();	
+                   self.toolBar.titleButton.show();
+                   self.getMultiAnnot();
               },2000)
             }
           });
-		*/ 
-		
+		*/
+
         })
-  
+
 }//end of generateCompositeDataset
 
 
 function pollOrder(id, cb){
-  jQuery.get("api/Data/compositeOrder.php?id="+id, function(data){ 
+    console.log("pollOrder_sc");
+
+  jQuery.get("api/Data/compositeOrder.php?id="+id, function(data){
     //console.log(data.state);
     if(data.state.contains("fail")){
       cb({"error": "failed", data});
@@ -2614,7 +2618,6 @@ function pollOrder(id, cb){
      cb(null, data);
 	 console.log("kue job id is: "+ id);
      console.log("kue job state is: "+ data.state);
-     return;
     } else {
       console.log("kue job id is: "+ id);
       console.log("kue job state is: "+ data.state);
