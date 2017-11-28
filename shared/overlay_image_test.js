@@ -10,22 +10,24 @@ console.log("minlevel: ", m_minlevel);
 
 /**
  * Testing segmentation tile overlay.
- * @param tissueId
+ * @param imgData
  * @param viewer
  * @returns {boolean}
  */
-overlayRoutine = function (tissueId, viewer) {
+overlayRoutine = function (imgData, viewer) {
 
     console.log("here in overlayRoutine()");
 
     var odata = {
         tilesize: m_tilesize,
         minlevel: m_minlevel,
-        maxlevel: m_overlaymaxlevel
+        maxlevel: m_overlaymaxlevel,
+        width: imgData.w,
+        height: imgData.h
     };
 
     try {
-        odata = fetchOverlayData(tissueId, odata);
+        odata = fetchOverlayData(imgData.id, odata);
 
         if (jQuery.isEmptyObject(odata)) {
             console.log("Carry on...");
@@ -72,25 +74,16 @@ function fetchOverlayData(tissueId, odata) {
         else {
             if (tissueId === "PC_052_0_1") {
 
-                odata.width = 163199;
-                odata.height = 88262;
-                //odata.maxlevel = getMaxLevel(odata.width, odata.height);
                 odata.filepath = path + "/Hawaii/PC_052_0_1.svs_files/"; // TODO: replace RESTfully
                 odata.tileprefix = "saved";
             }
             else if (tissueId === "17039889") {
 
-                odata.width = 103583;
-                odata.height = 91570;
-                //odata.maxlevel = getMaxLevel(odata.width, odata.height);
                 odata.filepath = path + "/VTR-Connecticut/17039889.svs_files/";
                 odata.tileprefix = tissueId;
             }
             else if (tissueId === "BC_201_1_1") {
 
-                odata.width = 107519;
-                odata.height = 67341;
-                //odata.maxlevel = getMaxLevel(odata.width, odata.height);
                 odata.filepath = path + "/Hawaii/batch2/BC_201_1_1.svs_files/";
                 odata.tileprefix = tissueId;
             }
@@ -117,6 +110,7 @@ function fetchOverlayData(tissueId, odata) {
  * @param width
  * @param height
  */
+/*
 function getMaxLevel(width, height) {
     // do natural logarithm (base e)
     if (width > height) {
@@ -127,4 +121,4 @@ function getMaxLevel(width, height) {
     }
 
 }
-
+*/

@@ -34,7 +34,7 @@ include 'shared/osdHeader.php';
 
     var annotool, tissueId = null;
     tissueId = <?php echo json_encode($_GET['tissueId']); ?>;
-    var imagedata = new OSDImageMetaData({imageId: tissueId});
+    var imagedata = new OSDImageMetaData({imageId: tissueId}); // osdImageMetadata.js
     var MPP = imagedata.metaData[0];
     var fileLocation = imagedata.metaData[1];
     console.log("imagedata: ", imagedata);
@@ -70,7 +70,10 @@ include 'shared/osdHeader.php';
     var imagingHelper = new OpenSeadragonImaging.ImagingHelper({viewer: viewer});
     imagingHelper.setMaxZoom(1);
 
-    overlayRoutine(tissueId, viewer);
+    setTimeout(function() {
+        var d = {"id": tissueId, "w": imagingHelper.imgWidth, "h": imagingHelper.imgHeight};
+        overlayRoutine(d, viewer);
+    }, 1000);
 
     //console.log(this.MPP);
 
@@ -90,7 +93,7 @@ include 'shared/osdHeader.php';
     catch (ex) {
         console.log("scalebar err: ", ex.message);
     }
-    
+
 
     /*
     // No longer using Filters/BRIGHTNESS
@@ -151,7 +154,8 @@ include 'shared/osdHeader.php';
         /*Pan and zoom to point*/
         var bound_x = <?php echo json_encode($_GET['x']); ?>;
         var bound_y = <?php echo json_encode($_GET['y']); ?>;
-        var zoom = <?php echo json_encode($_GET['zoom']); ?> || viewer.viewport.getMaxZoom();
+        var zoom = <?php echo json_encode($_GET['zoom']); ?> ||
+        viewer.viewport.getMaxZoom();
         zoom = Number(zoom); // convert string to number if zoom is string
 
         /*
@@ -194,7 +198,6 @@ include 'shared/osdHeader.php';
 
         //Check if loading from saved state
         if (stateID) {
-            console.log("so far so good");
 
             //fetch state from firebase
             jQuery.get("https://test-8f679.firebaseio.com/camicroscopeStates/" + stateID + ".json?auth=kweMPSAo4guxUXUodU0udYFhC27yp59XdTEkTSJ4", function (data) {
@@ -242,8 +245,7 @@ include 'shared/osdHeader.php';
 
             });
         }
-        else
-        {
+        else {
             console.log("no state id");
         }
     }
@@ -252,7 +254,7 @@ include 'shared/osdHeader.php';
         String.prototype.format = function () {
             var args = arguments;
             return this.replace(/{(\d+)}/g, function (match, number) {
-                return typeof args[number] != 'undefined'
+                return typeof args[number] !== 'undefined'
                     ? args[number]
                     : match
                     ;
