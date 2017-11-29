@@ -15,7 +15,7 @@ if (!empty($_SESSION['api_key'])) {
 
 switch ($_SERVER['REQUEST_METHOD'])
 {   case 'DELETE':
-    echo "PHP Deleteing";
+    echo "PHP Deleting";
     echo PHP_EOL;
   
     $case_id=$_GET["case_id"];
