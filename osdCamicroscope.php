@@ -70,10 +70,13 @@ include 'shared/osdHeader.php';
     var imagingHelper = new OpenSeadragonImaging.ImagingHelper({viewer: viewer});
     imagingHelper.setMaxZoom(1);
 
+    /* OVERLAY CURRENTLY IN BETA */
+    /*
     setTimeout(function() {
         var d = {"id": tissueId, "w": imagingHelper.imgWidth, "h": imagingHelper.imgHeight};
         overlayRoutine(d, viewer);
     }, 1000);
+    */
 
     //console.log(this.MPP);
 
