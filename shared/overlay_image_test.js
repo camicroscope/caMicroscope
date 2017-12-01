@@ -5,9 +5,6 @@ const path = "/overlay_img_test",
     m_minlevel = 0, //m_minlevel = ln(m_tilesize)/ln(2)
     m_overlaymaxlevel = 6;
 
-console.log("minlevel: ", m_minlevel);
-
-
 /**
  * Testing segmentation tile overlay.
  * @param imgData
@@ -16,14 +13,15 @@ console.log("minlevel: ", m_minlevel);
  */
 overlayRoutine = function (imgData, viewer) {
 
-    console.log("here in overlayRoutine()");
+    console.log("Here in overlayRoutine()");
 
     var odata = {
         tilesize: m_tilesize,
         minlevel: m_minlevel,
         maxlevel: m_overlaymaxlevel,
         width: imgData.w,
-        height: imgData.h
+        height: imgData.h,
+        tileprefix: tissueId
     };
 
     try {
@@ -33,7 +31,6 @@ overlayRoutine = function (imgData, viewer) {
             console.log("Carry on...");
         } else {
             console.log("Rendering segmentation overlays...");
-            //var maxlevel = odata.overlaymaxlevel;
             viewer.addTiledImage({
                 tileSource: {
                     height: odata.height,
@@ -69,29 +66,23 @@ function fetchOverlayData(tissueId, odata) {
     try {
 
         if (!imagesWithTiles.includes(tissueId)) {
+            // If no tiles, return empty object
             odata = {};
         }
         else {
             if (tissueId === "PC_052_0_1") {
-
-                odata.filepath = path + "/Hawaii/PC_052_0_1.svs_files/"; // TODO: replace RESTfully
-                odata.tileprefix = "saved";
+                odata.filepath = path + "/Hawaii/PC_052_0_1.svs_files/";
             }
             else if (tissueId === "17039889") {
-
                 odata.filepath = path + "/VTR-Connecticut/17039889.svs_files/";
-                odata.tileprefix = tissueId;
             }
             else if (tissueId === "BC_201_1_1") {
-
                 odata.filepath = path + "/Hawaii/batch2/BC_201_1_1.svs_files/";
-                odata.tileprefix = tissueId;
             }
             else {
-                // In case we goofed somewhere
+                // If none of the above, return empty obj
                 odata = {};
             }
-
         }
     }
     catch (ex) {
