@@ -180,7 +180,8 @@
             var spyglass_viewer = new OpenSeadragon.Viewer({
                   id: "spyglass",
                   prefixUrl: "images/",
-                  showNavigator:  false
+                  showNavigator:  false,
+                  toolbar: null
                 });
             spyglass_viewer.open(_viewer_source);
             // make m key toggle invisible (see onkeypress later)
