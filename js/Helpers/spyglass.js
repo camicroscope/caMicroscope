@@ -1,5 +1,5 @@
 /**  **/
-function spyglass(viewer, modal_viewer) {
+function Spyglass(viewer, modal_viewer) {
     /**
      * Creates a callback which starts single window magnifitation code
      * Include this file and start with something like:
