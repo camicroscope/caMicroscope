@@ -8,8 +8,11 @@ function Spyglass(viewer, modal_viewer) {
     // return a callback
     return function() {
         // set default to max zoom
-        document.getElementById(modal_viewer.id)['zoomlevel'] = document.getElementById(modal_viewer.id)['zoomlevel'] || modal_viewer.viewport.getMaxZoom();
+        // TODO add this back to handle custom zoom level
+        //document.getElementById(modal_viewer.id)['zoomlevel'] = document.getElementById(modal_viewer.id)['zoomlevel'] || modal_viewer.viewport.getMaxZoom();
         document.getElementById(modal_viewer.id).style.position = "absolute";
+        // TODO remove this and handle custom zoom level
+        document.getElementById(modal_viewer.id)['zoomlevel'] = viewer.viewport.getMaxZoom();
         var tracker = new OpenSeadragon.MouseTracker({
             element: viewer.container,
             moveHandler: function(e) {
