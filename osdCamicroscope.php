@@ -181,7 +181,7 @@
                   id: "spyglass",
                   prefixUrl: "images/",
                   showNavigator:  false,
-                  toolbar: null
+                  toolbar: "no_toolbar_please"
                 });
             spyglass_viewer.open(_viewer_source);
             // make m key toggle invisible (see onkeypress later)
