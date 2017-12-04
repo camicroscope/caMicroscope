@@ -181,13 +181,7 @@
                   showNavigator:  true,
                   tileSouces: _viewer_source
                 });
-            // make m key toggle invisible
-            window.onkeypress = function(event) {
-                // hide/show modal
-                if (event.keyCode == 77 || event.key == "m") {
-                    document.getElementById('spyglass').classList.toggle('invisible');
-                }
-            }
+            // make m key toggle invisible (see onkeypress later)
 
             // start magnifier
             window.setTimeout(Spyglass(viewer, spyglass_viewer), 200);
@@ -274,6 +268,9 @@ function isAnnotationActive(){
         var PrefMan = new ClientPrefManager("viewer");
         // on a new press, do the following...
         window.onkeypress = function(event) {
+            if (event.keyCode == 77 || event.key == "m") {
+                document.getElementById('spyglass').classList.toggle('invisible');
+            }
            if (event.keyCode == 122) {
               var toggle = function(e){
                 if(e){
