@@ -26,6 +26,7 @@
         <!-- <link rel="stylesheet" type="text/css" media="all" href="css/jquery-ui.min.css" /> -->
         <link rel="stylesheet" type="text/css" media="all" href="css/simplemodal.css" />
         <link rel="stylesheet" type="text/css" media="all" href="css/ui.fancytree.min.css" />
+        <link rel="stylesheet" type="text/css" media="all" href="css/viewer.css" />
         <!-- <script src="js/dependencies/jquery.js"></script> -->
         <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 
@@ -115,6 +116,8 @@
             </div>
         <div id="navigator"></div>
 
+        <div id="spyglass" class="spyglass invisible"></div>
+
         </div>
 
         <script type="text/javascript">
@@ -151,8 +154,9 @@
     //      });
 
             viewer.addHandler("open", addOverlays);
-            viewer.clearControls();
-            viewer.open("<?php print_r($config['fastcgi_server']); ?>?DeepZoom=" + fileLocation);
+            viewer.clearControls()
+            _viewer_source = "<?php print_r($config['fastcgi_server']); ?>?DeepZoom=" + fileLocation;
+            viewer.open(_viewer_source);
             var imagingHelper = new OpenSeadragonImaging.ImagingHelper({viewer: viewer});
             imagingHelper.setMaxZoom(1);
             //console.log(this.MPP);
@@ -167,6 +171,26 @@
               backgroundColor: "rgba(255,255,255,0.5)",
               barThickness: 2
             });
+
+            // initialize second openseadragon based on first
+            // TODO update so it can be more flexible with til maps etc
+
+            var viewer = new OpenSeadragon.Viewer({
+                  id: "viewer",
+                  prefixUrl: "images/",
+                  showNavigator:  true,
+                  tileSouces: _viewer_source
+                });
+            // make m key toggle invisible
+            window.onkeypress = function(event) {
+                // hide/show modal
+                if (event.keyCode == 77 || event.key == "m") {
+                    document.getElementById('spyglass').classList.toggle('invisible');
+                }
+            }
+
+            // start magnifier
+            window.setTimeout(spyglass(viewer1, viewer2), 200);
 
           /*
           // This plugin requires OpenSeadragon 2.1+

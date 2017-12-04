@@ -1,0 +1,11 @@
+.invisible {
+    display: none;
+}
+
+.spyglass{
+  width: 20%;
+  height: 200px;
+  border:5px solid black;
+  border-radius: 5px;
+  z-index: 1;
+}
