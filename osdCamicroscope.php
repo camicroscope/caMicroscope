@@ -102,6 +102,8 @@
         </style>
     </head>
 
+    <div id="spyglass" class="spyglass invisible"></div>
+
     <body>
 
         <div id="container">
@@ -115,8 +117,6 @@
                 <div id="viewer" class="openseadragon"></div>
             </div>
         <div id="navigator"></div>
-
-        <div id="spyglass" class="spyglass invisible"></div>
 
         </div>
 
