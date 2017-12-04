@@ -187,7 +187,10 @@
 
             // start magnifier
             window.setTimeout(Spyglass(viewer, spyglass_viewer), 200);
-
+              window.setTimeout(function(){
+              // TODO remove this and handle custom zoom level
+              document.getElementById('spyglass')['zoomlevel'] = viewer.viewport.getMaxZoom();
+            }, 500);
 
           /*
           // This plugin requires OpenSeadragon 2.1+
