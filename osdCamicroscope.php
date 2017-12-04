@@ -175,7 +175,7 @@
             // initialize second openseadragon based on first
             // TODO update so it can be more flexible with til maps etc
 
-            var viewer = new OpenSeadragon.Viewer({
+            var spyglass = new OpenSeadragon.Viewer({
                   id: "viewer",
                   prefixUrl: "images/",
                   showNavigator:  true,
