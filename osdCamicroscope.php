@@ -172,15 +172,18 @@
               barThickness: 2
             });
 
+            // set zoom to max
+            document.getElementById('spyglass')['zoomlevel'] = viewer.viewport.getMaxZoom();
+
             // initialize second openseadragon based on first
             // TODO update so it can be more flexible with til maps etc
 
             var spyglass_viewer = new OpenSeadragon.Viewer({
                   id: "spyglass",
                   prefixUrl: "images/",
-                  showNavigator:  true,
-                  tileSouces: _viewer_source
+                  showNavigator:  false
                 });
+            spyglass_viewer.open(_viewer_source);
             // make m key toggle invisible (see onkeypress later)
 
             // start magnifier
