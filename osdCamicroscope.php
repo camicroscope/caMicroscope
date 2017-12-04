@@ -176,7 +176,7 @@
             // TODO update so it can be more flexible with til maps etc
 
             var spyglass_viewer = new OpenSeadragon.Viewer({
-                  id: "viewer",
+                  id: "spyglass",
                   prefixUrl: "images/",
                   showNavigator:  true,
                   tileSouces: _viewer_source
