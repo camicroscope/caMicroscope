@@ -172,8 +172,7 @@
               barThickness: 2
             });
 
-            // set zoom to max
-            document.getElementById('spyglass')['zoomlevel'] = viewer.viewport.getMaxZoom();
+
 
             // initialize second openseadragon based on first
             // TODO update so it can be more flexible with til maps etc
@@ -188,6 +187,10 @@
 
             // start magnifier
             window.setTimeout(Spyglass(viewer, spyglass_viewer), 200);
+
+            // set zoom to max
+            // TODO handle custom
+            document.getElementById('spyglass')['zoomlevel'] = viewer.viewport.getMaxZoom();
 
           /*
           // This plugin requires OpenSeadragon 2.1+
