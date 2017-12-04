@@ -190,7 +190,7 @@
             }
 
             // start magnifier
-            window.setTimeout(spyglass(viewer1, viewer2), 200);
+            window.setTimeout(spyglass(viewer, spyglass), 200);
 
           /*
           // This plugin requires OpenSeadragon 2.1+
