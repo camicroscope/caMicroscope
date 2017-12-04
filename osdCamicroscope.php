@@ -175,7 +175,7 @@
             // initialize second openseadragon based on first
             // TODO update so it can be more flexible with til maps etc
 
-            var spyglass = new OpenSeadragon.Viewer({
+            var spyglass_viewer = new OpenSeadragon.Viewer({
                   id: "viewer",
                   prefixUrl: "images/",
                   showNavigator:  true,
@@ -190,7 +190,7 @@
             }
 
             // start magnifier
-            window.setTimeout(spyglass(viewer, spyglass), 200);
+            window.setTimeout(spyglass(viewer, spyglass_viewer), 200);
 
           /*
           // This plugin requires OpenSeadragon 2.1+
