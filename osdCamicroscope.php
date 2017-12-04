@@ -71,7 +71,7 @@
         <script src="js/Helpers/StateManager.js"></script>
         <script src="js/Helpers/StateSchema.js"></script>
         <script src="js/Helpers/ClientPrefManager.js"></script>
-
+        <script src="js/Helpers/Spyglass.js"></script>
         <script src="js/dependencies/jquery.fancytree-all.min.js"></script>
         <script src="js/dependencies/simplemodal.js"></script>
         <style type="text/css">
