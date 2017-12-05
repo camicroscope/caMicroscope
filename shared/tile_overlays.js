@@ -1,4 +1,4 @@
-console.log("overlay_image_test.js");
+console.log("tile_overlays.js");
 
 const path = "/overlay_img_test",
     m_tilesize = 256,
