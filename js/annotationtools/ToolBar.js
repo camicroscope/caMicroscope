@@ -375,7 +375,7 @@ ToolBar.prototype.createButtons = function () {
           'data-placement': 'bottom',
           'title': 'Toggle Spyglass',
           'class': 'toolButton',
-          'src': 'images/spyglass_temp.png'
+          'src': 'images/SpyGlass.svg'
       });
 
       tool.append(this.magnifierButton);
