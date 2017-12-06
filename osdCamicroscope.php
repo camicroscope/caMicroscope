@@ -26,6 +26,7 @@
         <!-- <link rel="stylesheet" type="text/css" media="all" href="css/jquery-ui.min.css" /> -->
         <link rel="stylesheet" type="text/css" media="all" href="css/simplemodal.css" />
         <link rel="stylesheet" type="text/css" media="all" href="css/ui.fancytree.min.css" />
+        <link rel="stylesheet" type="text/css" media="all" href="css/viewer.css" />
         <!-- <script src="js/dependencies/jquery.js"></script> -->
         <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 
@@ -70,7 +71,7 @@
         <script src="js/Helpers/StateManager.js"></script>
         <script src="js/Helpers/StateSchema.js"></script>
         <script src="js/Helpers/ClientPrefManager.js"></script>
-
+        <script src="js/Helpers/Spyglass.js"></script>
         <script src="js/dependencies/jquery.fancytree-all.min.js"></script>
         <script src="js/dependencies/simplemodal.js"></script>
         <style type="text/css">
@@ -100,6 +101,8 @@
         }
         </style>
     </head>
+
+    <div id="spyglass" class="spyglass invisible"></div>
 
     <body>
 
@@ -151,8 +154,9 @@
     //      });
 
             viewer.addHandler("open", addOverlays);
-            viewer.clearControls();
-            viewer.open("<?php print_r($config['fastcgi_server']); ?>?DeepZoom=" + fileLocation);
+            viewer.clearControls()
+            _viewer_source = "<?php print_r($config['fastcgi_server']); ?>?DeepZoom=" + fileLocation;
+            viewer.open(_viewer_source);
             var imagingHelper = new OpenSeadragonImaging.ImagingHelper({viewer: viewer});
             imagingHelper.setMaxZoom(1);
             //console.log(this.MPP);
@@ -167,6 +171,26 @@
               backgroundColor: "rgba(255,255,255,0.5)",
               barThickness: 2
             });
+
+
+
+            // initialize second openseadragon based on first
+            // TODO update so it can be more flexible with til maps etc
+
+            var spyglass_viewer = new OpenSeadragon.Viewer({
+                  id: "spyglass",
+                  prefixUrl: "images/",
+                  showNavigationControl : false
+                });
+            spyglass_viewer.open(_viewer_source);
+            // make m key toggle invisible (see onkeypress later)
+
+            // start magnifier
+            window.setTimeout(Spyglass(viewer, spyglass_viewer), 200);
+              window.setTimeout(function(){
+              // TODO remove this and handle custom zoom level
+              document.getElementById('spyglass')['zoomlevel'] = viewer.viewport.getMaxZoom();
+            }, 500);
 
           /*
           // This plugin requires OpenSeadragon 2.1+
@@ -250,6 +274,9 @@ function isAnnotationActive(){
         var PrefMan = new ClientPrefManager("viewer");
         // on a new press, do the following...
         window.onkeypress = function(event) {
+            if (event.keyCode == 77 || event.key == "m") {
+                document.getElementById('spyglass').classList.toggle('invisible');
+            }
            if (event.keyCode == 122) {
               var toggle = function(e){
                 if(e){
