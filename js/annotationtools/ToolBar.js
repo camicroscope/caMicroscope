@@ -373,7 +373,7 @@ ToolBar.prototype.createButtons = function () {
       this.magnifierButton = jQuery('<img>', {
           'data-toggle': 'tooltip',
           'data-placement': 'bottom',
-          'title': 'Share Current View',
+          'title': 'Toggle Spyglass',
           'class': 'toolButton',
           'src': 'images/spyglass_temp.png'
       });
