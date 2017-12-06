@@ -2,10 +2,11 @@
     display: none;
 }
 
+
+
 .spyglass{
   width: 20%;
-  height: 200px;
+  height: 20%;
   border:5px solid black;
   border-radius: 5px;
   z-index: 1;
-}
