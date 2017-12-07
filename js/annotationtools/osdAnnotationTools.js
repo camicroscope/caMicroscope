@@ -2862,7 +2862,7 @@ annotools.prototype.promptForWorkOrder = function (newAnnot, mode, annotools, ct
  * @param cb
  */
 function pollOrder(id, cb) {
-    console.log("pollOrder");
+    //console.log("pollOrder");
 
     jQuery.get("api/Data/workOrder.php?id=" + id, function (data) {
 
