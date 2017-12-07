@@ -42,10 +42,12 @@ function spyglass_init(imgsrc){
   magnifierButton['src'] = 'images/SpyGlass.svg';
   magnifierButton.onClick = toggle_spyglass_visible;
   // make the button not hidden
+
   document.getElementById('spyglass_toolbar_button').style = "display: block;";
   document.getElementById('spyglass_toolbar_button').onClick = toggle_spyglass_visible;
-  // TODO remove this and handle custom zoom
   window.setTimeout(function(){
+
+    // TODO remove this and handle custom zoom
     document.getElementById('spyglass')['zoomlevel'] = viewer.viewport.getMaxZoom();
   }, 500);
 }

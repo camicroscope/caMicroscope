@@ -170,10 +170,6 @@
               barThickness: 2
             });
 
-            // Start the spyglass
-            spyglass_init(_viewer_source);
-
-
           /*
           // This plugin requires OpenSeadragon 2.1+
            viewer.setFilterOptions({
@@ -316,6 +312,9 @@ function isAnnotationActive(){
         x: 13083.041579687379
         y: 19609.643967801494
     */
+
+    // Start the spyglass
+    spyglass_init(_viewer_source);
 
           </script>
 
