@@ -41,8 +41,9 @@ function spyglass_init(imgsrc){
   magnifierButton['class'] = 'toolButton';
   magnifierButton['src'] = 'images/SpyGlass.svg';
   magnifierButton.onClick = toggle_spyglass_visible;
-  document.getElementById('tool').appendChild(magnifierButton);
-
+  // make the button not hidden
+  document.getElementById('spyglass_toolbar_button').style = "display: block;";
+  document.getElementById('spyglass_toolbar_button').onClick = toggle_spyglass_visible;
   // TODO remove this and handle custom zoom
   window.setTimeout(function(){
     document.getElementById('spyglass')['zoomlevel'] = viewer.viewport.getMaxZoom();

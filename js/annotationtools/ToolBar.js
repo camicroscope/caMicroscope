@@ -370,6 +370,18 @@ ToolBar.prototype.createButtons = function () {
 
       tool.append(this.sharebutton);
 
+      this.magnifierButton = jQuery('<img>', {
+          'data-toggle': 'tooltip',
+          'data-placement': 'bottom',
+          'title': 'Toggle Spyglass',
+          'class': 'toolButton',
+          'src': 'images/SpyGlass.svg',
+          'id': 'spyglass_toolbar_button'
+          'style' : 'display: none;'
+      });
+
+      tool.append(this.magnifierButton);
+
       this.filterImgButton = jQuery('<img>', {
           'data-toggle': 'tooltip',
           'data-placement': 'bottom',
