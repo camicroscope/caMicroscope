@@ -4,7 +4,7 @@
 
 function toggle_spyglass_visible(){
   is_invisible = document.getElementById('spyglass').offsetParent === null
-  is_invisible ? document.getElementById('spyglass').style.display = "" ?  document.getElementById('spyglass').style.display = "none";
+  is_invisible ? document.getElementById('spyglass').style.display = "" :  document.getElementById('spyglass').style.display = "none";
 }
 
 function spyglass_init(imgsrc){
