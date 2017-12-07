@@ -7,15 +7,17 @@ Ashish Sharma <ashish.sharma@emory.edu>
 
 [Ganesh Iyer](http://ganeshiyer.net) <ganesh.iyer@emory.edu>
 
+[Ryan Birmingham](http://rbirm.us) <rbirmin@emory.edu>
+
 Sanjay Agravat <sagrava@emory.edu>
 
-Shaohuan Li <shaohuan.li@gmail.com> 
+Shaohuan Li <shaohuan.li@gmail.com>
 
 ============
 
 About
 -------
-GSOC Bio-medical Image Viewer Project is a HTML5 image viewer optimized for large bio-medical image data viewing. 
+GSOC Bio-medical Image Viewer Project is a HTML5 image viewer optimized for large bio-medical image data viewing.
 
 The Image Viewer server is based on the IIPImage server(http://iipimage.sourceforge.net/) which is an Fast CGI modeule written in C++ and IIPMooviewer-2.0(https://github.com/ruven/iipmooviewer) which is a HTML5 Ajax-based javascript image streaming client developed by Ruven.
 
@@ -23,7 +25,7 @@ This project forcuses on SVG annotation development, HTML5 canvas implementation
 
 Prerequisite
 --------
-The IIPImage server(http://iipimage.sourceforge.net/) will have to be installed in the server. 
+The IIPImage server(http://iipimage.sourceforge.net/) will have to be installed in the server.
 
 Apache or lighttpd web server will need to be installed as well.
 
@@ -41,8 +43,8 @@ Features
 Specifications
 --------------
 
-js/annotools.js is the main outcome of this project. It is an independent annotation module which allows users to draw markups/annotations on the image viewer.The annotation annotools object will need to be associated with a div tag id and a container id to run the tools smoothly. 
-An example would be like http://170.140.138.125/view.html. The annotools only work for HTML5 enabled browsers. 
+js/annotools.js is the main outcome of this project. It is an independent annotation module which allows users to draw markups/annotations on the image viewer.The annotation annotools object will need to be associated with a div tag id and a container id to run the tools smoothly.
+An example would be like http://170.140.138.125/view.html. The annotools only work for HTML5 enabled browsers.
 
 css/annotools.css and the svg imges in the images folder are associated with the annotools.js.
 
@@ -79,4 +81,3 @@ The metadata is displayed as unsorted list on the bottom of the image viewer. Th
 Image Uploading Module
 -----------------------------
 This is handled by uploader.html and uploader.php. The images will by default be saved to the /usr/share/iip folder.
-
