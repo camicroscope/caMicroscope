@@ -34,19 +34,12 @@ function spyglass_init(imgsrc){
   // call the spyglass
   window.setTimeout(Spyglass(viewer, spyglass_viewer),250);
 
-  var magnifierButton = document.createElement("img");
-  magnifierButton['data-toggle'] = 'tooltip';
-  magnifierButton['data-placement'] = 'bottom';
-  magnifierButton['title'] = 'Toggle Spyglass';
-  magnifierButton['class'] = 'toolButton';
-  magnifierButton['src'] = 'images/SpyGlass.svg';
-  magnifierButton.onClick = toggle_spyglass_visible;
   // make the button not hidden
 
   // things we need to wait on to resolve
   window.setTimeout(function(){
-    document.getElementById('spyglass_toolbar_button').style = "display: block;";
-    document.getElementById('spyglass_toolbar_button').onClick = toggle_spyglass_visible;
+    document.getElementById('spyglass_toolbar_button').style = "";
+    document.getElementById('spyglass_toolbar_button').onclick = toggle_spyglass_visible;
     // TODO remove this and handle custom zoom
     document.getElementById('spyglass')['zoomlevel'] = viewer.viewport.getMaxZoom();
   }, 500);
