@@ -964,7 +964,7 @@ analyze: function(ctx) {
     this.drawLayer.show(); //Show The Drawing Layer
     this.magnifyGlass.hide(); //Hide The Magnifying Tool
     this.container = document.getElementsByClassName(this.canvas)[0]; //Get The Canvas Container
-    
+
     var left = parseInt(this.container.getLeft()), //Get The Container Location
         top = parseInt(this.container.offsetTop),
         width = parseInt(this.container.offsetWidth),
@@ -973,18 +973,18 @@ analyze: function(ctx) {
         otop = top,
         owidth = width,
         oheight = height;
-        
+
     if (left < 0) {
         left = 0;
         width = window.innerWidth
-    } 
-    
+    }
+
     //See Whether The Container is outside The Current ViewPort
     if (top < 0) {
         top = 0;
         height = window.innerHeight
     }
-    
+
     //Recreate The CreateAnnotation Layer Because of The ViewPort Change Issue.
     this.drawLayer.set({
         'styles': {
@@ -994,19 +994,19 @@ analyze: function(ctx) {
             height: height
         }
     });
-    
+
     //Create Canvas on the CreateAnnotation Layer
     this.drawCanvas.set({
         width: width,
         height: height
     });
-    
+
     //The canvas context
     var ctx = this.drawCanvas.getContext("2d");
     var started = false;
     var min_x, min_y, max_x, max_y, w, h;
     var startPosition;
-    
+
     this.drawCanvas.addEvent('mousedown', function (e) {
         started = true;
         startPosition = OpenSeadragon.getMousePosition(e.event);
@@ -2862,7 +2862,7 @@ annotools.prototype.promptForWorkOrder = function (newAnnot, mode, annotools, ct
  * @param cb
  */
 function pollOrder(id, cb) {
-    console.log("pollOrder_x");
+    console.log("pollOrder");
 
     jQuery.get("api/Data/workOrder.php?id=" + id, function (data) {
 
