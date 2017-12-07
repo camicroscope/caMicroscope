@@ -370,16 +370,6 @@ ToolBar.prototype.createButtons = function () {
 
       tool.append(this.sharebutton);
 
-      this.magnifierButton = jQuery('<img>', {
-          'data-toggle': 'tooltip',
-          'data-placement': 'bottom',
-          'title': 'Toggle Spyglass',
-          'class': 'toolButton',
-          'src': 'images/SpyGlass.svg'
-      });
-
-      tool.append(this.magnifierButton);
-
       this.filterImgButton = jQuery('<img>', {
           'data-toggle': 'tooltip',
           'data-placement': 'bottom',
@@ -420,9 +410,6 @@ ToolBar.prototype.createButtons = function () {
       window.prompt("Share this link", window.location.href + "&" + camic_state.prefix + "=" + camic_state.encode(camic_state.vals));
     }.bind(this));
 
-    this.magnifierButton.on('click', function () {
-      document.getElementById('spyglass').classList.toggle('invisible');
-    }.bind(this));
 
     this.lymphbutton.on('click', function () {
         var tissueId=this.iid;
