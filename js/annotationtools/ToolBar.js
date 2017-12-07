@@ -377,8 +377,9 @@ ToolBar.prototype.createButtons = function () {
           'class': 'toolButton',
           'src': 'images/SpyGlass.svg',
           'id': 'spyglass_toolbar_button'
-          'style' : 'display: none;'
       });
+      // default invisible
+      this.magnifierButton.css("display", "none");
 
       tool.append(this.magnifierButton);
 
