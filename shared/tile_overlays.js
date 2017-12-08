@@ -1,6 +1,6 @@
 console.log("tile_overlays.js");
 
-const path = "/overlay_img_test",
+const path = "/overlays",
     m_tilesize = 256,
     m_minlevel = 0, //m_minlevel = ln(m_tilesize)/ln(2)
     m_overlaymaxlevel = 6;
@@ -71,13 +71,13 @@ function fetchOverlayData(tissueId, odata) {
         }
         else {
             if (tissueId === "PC_052_0_1") {
-                odata.filepath = path + "/Hawaii/PC_052_0_1.svs_files/";
+                odata.filepath = path + "/PC_052_0_1.svs_files/";
             }
             else if (tissueId === "17039889") {
-                odata.filepath = path + "/VTR-Connecticut/17039889.svs_files/";
+                odata.filepath = path + "/17039889.svs_files/";
             }
             else if (tissueId === "BC_201_1_1") {
-                odata.filepath = path + "/Hawaii/batch2/BC_201_1_1.svs_files/";
+                odata.filepath = path + "/BC_201_1_1.svs_files/";
             }
             else {
                 // If none of the above, return empty obj
