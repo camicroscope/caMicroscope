@@ -18,7 +18,7 @@ class CamicUtils
         $getDimensionRequest = new RestRequest($dimensionsUrl, 'GET');
         $getDimensionRequest->execute();
         $dimensionList = json_decode($getDimensionRequest->responseBody);
-        $finalDimensions = new stdClass(); // initialize empty obj, set to default PHP object
+        $finalDimensions;
 
         foreach ($dimensionList as $singleDimension) {
             $finalDimensions = $singleDimension;
@@ -44,7 +44,7 @@ class CamicUtils
         $getMPPRequest = new RestRequest($mppUrl, 'GET');
         $getMPPRequest->execute();
         $mpplist = json_decode($getMPPRequest->responseBody);
-        $finalMPP = 0.25; // initialize
+        $finalMPP;
 
         foreach ($mpplist as $singleMPP) {
             $finalMPP = $singleMPP;
@@ -56,8 +56,6 @@ class CamicUtils
 
     function setUpSymLinks($fileLocation)
     {
-        $link = ""; // initialize
-
         foreach ($fileLocation[0] as $key => $value) {
             $path = "/tmp/symlinks/" . session_id();
             if (!is_dir($path)) {
@@ -83,8 +81,6 @@ class CamicUtils
 
     function setUpSVSImage($fileLocation)
     {
-        $link = ""; // initialize
-
         foreach ($fileLocation[0] as $key => $value) {
             $link = str_replace("tiff", "svs", $value);
             $link = $link . ".dzi";
