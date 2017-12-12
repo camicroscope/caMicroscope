@@ -2,6 +2,7 @@
 // this initalizes spyglass for caMicroscope
 // OSD and Spyglass.js need to be included before this.
 
+// due to some problems with toolbar, this expects an invisible icon in the toolbar with id "spyglass_toolbar_button"
 function toggle_spyglass_visible(){
   is_invisible = document.getElementById('spyglass').offsetParent === null
   is_invisible ? document.getElementById('spyglass').style.display = "" :  document.getElementById('spyglass').style.display = "none";
