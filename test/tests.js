@@ -1,4 +1,4 @@
-var url = "";
+var url = "localhost:osdCamicroscope.php?tissueId=PC_052_0_1";
 casper.test.begin('Camic Frontend', 10, function suite(test) {
     casper.start(url, function() {
       // Image display
@@ -29,7 +29,7 @@ casper.test.begin('Camic Frontend', 10, function suite(test) {
       test.assert((document.getElementById('panel').offsetParent === null));
       // Check case ID
       // TODO
-        
+
       // magnifier is invisible initially
       test.assert((document.getElementById('spyglass').offsetParent === null));
       // magnifier toggles on button press

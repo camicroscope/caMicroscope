@@ -15,7 +15,7 @@ app.get('/camicroscope/api/Data/osdMetadataRetriever.php', (req, res) => {
 
 // TODO make work better for OSD
 app.get('/fcgi-bin/iipsrv.fcgi', (req, res) => {
-    res.send('Hello world\n');
+    res.sendFile("card.png");
 });
 
 app.get('/api/Data/getAlgorithmsForImage.php', (req, res) => {
