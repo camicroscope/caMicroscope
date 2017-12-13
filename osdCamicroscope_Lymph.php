@@ -22,6 +22,7 @@
         <link rel="stylesheet" type="text/css" media="all" href="css/simplemodal.css" />
         <link rel="stylesheet" type="text/css" media="all" href="css/ui.fancytree.min.css" />
         <link rel="stylesheet" type="text/css" media="all" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.7.0/jquery.modal.css" />
+        <link rel="stylesheet" type="text/css" href="./css/nouislider.min.css">
         <script src="js/dependencies/jquery.js"></script>
   
         <!--JSON Form dependencies-->
@@ -61,7 +62,8 @@
         <script src="http://code.jquery.com/ui/1.11.2/jquery-ui.min.js" type="text/javascript"></script> 
         
         <!--<script src="js/dependencies/jquery-ui.min.js"></script>-->
-
+	<script src="js/nouislider.min.js"></script>
+  	<script src="js/wNumb.js"></script>
         <script src="js/dependencies/jquery.fancytree-all.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.7.0/jquery.modal.js"> </script>
         <script src="js/dependencies/simplemodal.js"></script>
@@ -122,6 +124,15 @@
             <button type="button" class="btn_heatmap" id="btn_heatmapweight_help">&#x2753</button>
         </div>
 
+        <div id="qualitypanel">
+            <a href='#'><div id='closeQualityPanel'><img src='images/ic_close_white_24px.svg' title='Close' alt="Close X" height="16" width="16"></div></a>
+	    <div id="qslider"></div>
+	    <p>
+	    <button type="button" class="btn_heatmap" id="myReset">Reset</button> 
+            <button type="button" class="btn_heatmap" id="btn_saveHeatmapQuality">Finalize</button>
+            <button type="button" class="btn_heatmap" id="btn_heatmapquality_help">&#x2753</button>
+        </div>
+
         <div id="markuppanel">
             <a href='#'><div id='closeMarkupPanel'><img src='images/ic_close_white_24px.svg' title='Close' alt="Close X" height="16" width="16"></div></a>
             <input type="radio" name="marktype" value="LymPos" checked="checked" id="LymPos" class="radio_markup">
@@ -143,6 +154,7 @@
             <button type="button" class="btn_mark" id="btn_mark_help">&#x2753</button>
         </div>
         <div id="div_weight_locked" style="display: none;">Free</div>
+        <div id="div_quality_locked" style="display: none;">Free</div>
 
         <div id="switchuserpanel"><a href='#'><div id='closeSwitchUser'><img src='images/ic_close_white_24px.svg' title='Close' alt="Close X" height="16" width="16"></div></a>
             <h6><img src="images/switch_user.svg" alt="Switch user" height="30" width="30"> Change username to:</h6><br />
@@ -161,15 +173,47 @@
         <script type="text/javascript">
           $.noConflict();
           var annotool = null;
+	  var appid = <?php echo json_encode($_GET['appid']); ?>;
           var tissueId = <?php echo json_encode($_GET['tissueId']); ?>;
+  	var slider = document.getElementById('qslider');
+  	var myRange = {
+  	    'min': [0],
+  	    'max': [100]
+  	};  
+  	var qualthresholds = {
+		'low': 30,
+		'median': 50,
+		'high': 70
+	};
 
+  	var filter5 = function (value,type) {
+  	    var mvalue = value/10;
+  	    var eoval = mvalue % 2;
+  	    if (eoval != 0) {
+  	        return 2;
+  	    } else {
+  	        return 1;
+  	    }
+  	}
+  	
+  	noUiSlider.create(slider, {
+  	  start: [qualthresholds.low,qualthresholds.high],
+  	  step: 1,
+  	  connect: true,
+  	  tooltips: true,
+  	  format: wNumb({
+  	  decimals: 0
+  	  }),
+  	  range: myRange,
+        });
+                 
           var cancerType = "<?php echo $_SESSION["cancerType"] ?>";
           //console.log(cancerType);
           var imagedata = new OSDImageMetaData({imageId:tissueId});
           //console.log(tissueId);
           //console.log(imagedata);
           //console.log(tissueId);
-          
+
           var MPP = imagedata.metaData[0];
           console.log(MPP);
             //console.log(imagedata);
@@ -266,13 +310,38 @@
 
         jQuery("#panel").hide();
         jQuery("#weightpanel").hide();
+        jQuery("#qualitypanel").hide();
         jQuery("#markuppanel").hide();
         jQuery("#switchuserpanel").hide();
         
+        var mySlider = jQuery("#qslider")[0];
+        mySlider.noUiSlider.on("update", function (values,handle) {    
+            a = mySlider.noUiSlider.get();
+	    if(handle == 0) {
+		qualthresholds.low = parseInt(a[0]);
+	    } else {
+		qualthresholds.high = parseInt(a[1]);
+	    }
+	    qualthresholds.median = qualthresholds.low + (( qualthresholds.high - qualthresholds.low )/2);
+        });
+
+        var myReset = jQuery("#myReset");
+
+        myReset.on("click", function () {
+            mySlider.noUiSlider.reset();
+        });
+
         /* Close weight panel */
         jQuery('#closeWeightPanel').click(function (e) {
 	        e.preventDefault();
             jQuery("#weightpanel").hide('slide');
+        });
+        
+        /* Close quality panel */
+        jQuery('#closeQualityPanel').click(function (e) {
+	    e.preventDefault();
+            console.log("Closing quality panel");
+            jQuery("#qualitypanel").hide('slide');
         });
         
         /* Close markup panel */
@@ -285,7 +354,12 @@
             annotool.drawLayer.hide();
             annotool.addMouseEvents();
         });
-        
+                 
+        var getArgs = location.search.substr(1).split("&").reduce((o,i)=>(u=decodeURIComponent,[k,v]=i.split("="),o[u(k)]=v&&u(v),o),{});
+        if (getArgs.appid == "qualheat") {
+           jQuery("p.titleButton")[0].innerHTML = "caMic Segmentation Quality App";
+        }
+
         if(bound_x && bound_y){
             var ipt = new OpenSeadragon.Point(+bound_x, +bound_y);
             var vpt = viewer.viewport.imageToViewportCoordinates(ipt);

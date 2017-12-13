@@ -53,6 +53,8 @@ return array(
     'postDataForLymphocytes' => "$lymphocyteUrl/DataForLymphocytes/submit/json?",
     'getLymphocyteData' => "$lymphocyteUrl/DataForLymphocytes/query/getLymphocytes?",
     'getLymphocyteDataByCaseId' => "$lymphocyteUrl/DataForLymphocytes/query/getLymphocytesByCaseId?",
+    'postDataForHeatmap' => "$lymphocyteUrl/HeatmapData/submit/json?",
+    'getHeatmapData' => "$lymphocyteUrl/HeatmapData/query/getQualHeatmapByCaseidExecid?",
     
     /* Lymphocyte Superusers */
     'postSuperuserForLymphocytes' => "$lymphocyteUrl/LymphocyteUsers/submit/json?",

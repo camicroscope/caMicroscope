@@ -8,6 +8,7 @@ http://www.apache.org/licenses/LICENSE-2.0
  
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
+console.log("in osdAnnoTools.js");
 
 var annotools = function (options) {
   this.AnnotationStore = new AnnotationStore(options.iid)
@@ -51,6 +52,7 @@ var annotools = function (options) {
   this.lymphSuperuser = false;
   this.btn_revertWeight = document.getElementById('btn_revertWeight');
   this.btn_saveWeight = document.getElementById('btn_saveHeatmapWeight');
+  this.btn_saveQuality = document.getElementById('btn_saveHeatmapQuality');
   this.btn_saveweight_help = document.getElementById('btn_heatmapweight_help');
   this.rb_lymposbig = document.getElementById('LymPosBig');
   this.rb_lymnegbig = document.getElementById('LymNegBig');
@@ -69,6 +71,7 @@ var annotools = function (options) {
 
   this.btn_revertWeight.addEventListener('click', this.revertWeight.bind(this), false);
   this.btn_saveWeight.addEventListener('click', this.saveHeatmapWeight.bind(this), false);
+  this.btn_saveQuality.addEventListener('click', this.saveHeatmapQuality.bind(this), false);
   this.btn_saveweight_help.addEventListener('click', function(){alert('\
 This panel allows you to adjust the automatic lymphocyte prediction results for this slide, with the options described below.\n\n\
 Lymphocyte Sensitivity bar:\n       Ddjust the sensitivity of lymphocyte prediction.\n\
@@ -143,6 +146,7 @@ To save/cancel your work, use the buttons described below:\n\
 
   this.heatmap_opacity = 0.4;
   this.heatmapColor = ['#feedde','#fecc5c','#fd8d3c','#bd0026', '#33b5ff'];
+  this.heatmapColorQuality = ['#d7191c','#fdae61','#ffffbf','#abd9e9','#2c7bb6'];
   this.multipleHeatmapColor = [];
   this.cb_checked = [false, false, false];
   this.heat_weight = [0.77, 1.00, 0.15];
@@ -282,16 +286,17 @@ annotools.prototype.destroyMarkups = function (viewer) {
 }
 
 annotools.prototype.getMultiAnnot = function (viewer) {
-  var opa = []
+  var opa = [];
 
-  var val1 = ''
-  var val2 = ''
-  var val3 = ''
+  var val1 = '';
+  var val2 = '';
+  var val3 = '';
 
   
     
-  var algorithms = []
-
+  var algorithms = [];
+  var filtered = [];
+  var qcount = 0;
   /*
   if (jQuery('#tree').attr('algotree')) {
     var selalgos = jQuery('#tree').fancytree('getTree').getSelectedNodes()
@@ -304,13 +309,24 @@ annotools.prototype.getMultiAnnot = function (viewer) {
     }
   }*/
   
-  console.log(ALGORITHM_LIST);
   console.log(SELECTED_ALGORITHM_LIST);
   SELECTED_ALGORITHM_LIST = SELECTED_ALGORITHM_LIST.sort();
-  console.log("....");
+  //console.log("....");
   algorithms = SELECTED_ALGORITHM_LIST;
-    
-    
+  
+  //console.log(algorithms);
+
+  filtered = algorithms.filter(function (alg) {
+             return alg.startsWith("quality_");
+           });
+  qcount = filtered.length;
+  //console.log(filtered);
+
+  if (qcount == 1) {
+    this.loadHeatmapQuality(filtered[0]);
+  } else if (qcount != 0) {
+    alert("Select only one 'quality' algorithm.");
+  }
   //console.log(algorithms);
   //console.log(this.imagingHelper._viewportWidth);
   //console.log(this.imagingHelper._viewportHeight);
@@ -970,8 +986,8 @@ annotools.prototype.relativeToGlobal = function () {
       originalCoord.y = object.getAttribute('y')
       originalCoord.width = object.getAttribute('width')
       originalCoord.height = object.getAttribute('height')
-      originalCoord.zoom = viewer.viewport.getZoom()
-      this.annotationHandler.originalCoords[object.id] = originalCoord
+	      originalCoord.zoom = viewer.viewport.getZoom()
+	      this.annotationHandler.originalCoords[object.id] = originalCoord
       var bbox = object.getBBox()
       var objectCenterPt = new OpenSeadragon.Point(bbox.x + bbox.width / 2, bbox.y + bbox.height / 2)
       var objectCenterRelPt = this.viewer.viewport.pointFromPixel(objectCenterPt)
@@ -1922,6 +1938,7 @@ annotools.prototype.populateForm = function (annotationTemplateJson, annotationT
       } else {
         var options = val['enumerable'].replace(/ /g, '').split(',')
         if (val['multi'] == 'true' && mode != 'filter') {
+	  console.log("adding Checkbox");
           for (var i = 0; i < options.length; i++) {
             form += "<input type='checkbox' name='" + key + "' id='" + options[i] + "' value='" + options[i] + "'"
             if (mode == 'edit' && annotationTextJson[key].indexOf(options[i])) {
@@ -2905,6 +2922,139 @@ annotools.prototype.loadHeatmapWeight = function()
     //console.log(document.getElementById('slide1').style.width);
     //console.log(document.getElementById('div_weight_locked').innerHTML);
     self.getMultiAnnot();
+}
+
+annotools.prototype.saveHeatmapQuality = function(event)
+{
+  var eid = "";
+  console.log('Start saveHeatmapQuality');
+    
+  algorithms = SELECTED_ALGORITHM_LIST;
+  
+  //console.log(algorithms);
+
+  filtered = algorithms.filter(function (alg) {
+             return alg.startsWith("quality_");
+           });
+  qcount = filtered.length;
+  //console.log(filtered);
+
+  if (qcount == 1) {
+    eid = filtered[0];
+  } else if (qcount != 0) {
+    alert("Select only one 'quality' algorithm.");
+    return 0;
+  }
+    var self = this;
+    var qualityData = {
+        'case_id': self.iid,
+        'exec_id': eid,
+        'low': qualthresholds.low,
+        'high': qualthresholds.high,
+        'username': this.username   
+    };
+    
+    console.log(qualityData);
+
+    //Check if record for this case_id and this username already exists in mongodb
+    var url1 = "api/Data/heatmapData.php?case_id="+  self.iid + "&exec_id=" + eid;
+    
+    // Debug
+    console.log(url1);
+
+    jQuery.get(url1, function(d){
+        try{
+            var data = JSON.parse(d);
+            console.log('Retrived qual weights: ' + JSON.stringify(data[0]));
+            console.log("Fetched data length: " + data.length);
+      
+            if (data.length > 0){
+                console.log('Record exists');
+                alert ('This heatmap has been locked');
+            }
+			else {
+                 jQuery.ajax({
+                'type': 'POST',
+                 url: 'api/Data/heatmapData.php',
+                 data: qualityData,
+                 success: function (res, err) {
+                    //console.log("response: ")
+                    console.log(res)
+                    console.log(err)
+
+                    console.log('successfully posted')
+                    document.getElementById('div_quality_locked').innerHTML = 'Locked';
+                    alert('Saved heatmap quality thresholds');
+                    }
+                })   
+            }
+        } catch (e){
+            console.log('ERROR');
+            console.log(e);
+        }
+        
+    });
+}
+
+annotools.prototype.loadHeatmapQuality = function(eid)
+{
+    var self = this;
+    console.log('Load heatmap quality');
+    //console.log(self.iid);
+    
+    // Start API
+     var url1 = "api/Data/heatmapData.php?case_id="+  self.iid +"&exec_id=" + eid;
+    
+    // Debug
+    console.log(url1);
+
+    jQuery.get(url1, function(d){
+
+        try{
+            var data = JSON.parse(d);
+            var mySlider = jQuery("#qslider")[0];
+            //console.log('Retrived heat weights: ' + JSON.stringify(data[0]));
+            //console.log("Fetched data length: " + data.length);
+            
+            var div_qlock = document.getElementById('div_quality_locked');
+            // Start weights
+            console.log(data);
+            
+            if ( data.length > 0) {
+                var low = data[0].low;
+                var high = data[0].high;
+ 
+                if (low){
+                   mySlider.noUiSlider.set([parseInt(low)]);
+                }else {
+                   mySlider.noUiSlider.set([parseInt(30)]);
+                }
+
+                if (high){
+                   mySlider.noUiSlider.set([null,parseInt(high)]);
+                }else {
+                   mySlider.noUiSlider.set([null,parseInt(70)]);
+                }
+
+                div_qlock.innerHTML = "Locked";
+            }else {
+                console.log('go else');
+                mySlider.noUiSlider.set([30,70]);
+                div_qlock.innerHTML = "Free";
+            }
+        } catch (e){
+            console.log('ERROR');
+            console.log(e);
+        }
+    });
+        
+    // Wait for the load weight transfering data
+    var start = new Date().getTime();
+    var delay = 200;
+    while (new Date().getTime() < start + delay);
+    //console.log(document.getElementById('slide1').style.width);
+    //console.log(document.getElementById('div_weight_locked').innerHTML);
+    //self.getMultiAnnot();
 }
 
 /*

@@ -448,23 +448,31 @@ annotools.prototype.generateSVG = function (annotations) {
 		*/
                 break;
 	case 'heatmap_quality':
-		var quality_heatmap_colors = ["#feedde","#bd0026", "#feec00", "#00ff33"]
 		var quality_value = annotation.properties.metric_value;
-		var lower_threshold = 0.3;
-		var upper_threshold = 0.7;
-		selected_heatmap = quality_heatmap_colors[2];
+		var lower_threshold = window.qualthresholds.low / 100;
+		var upper_threshold = window.qualthresholds.high / 100;
+		var median = window.qualthresholds.median / 100;
+		selected_heatmap = this.heatmapColorQuality[2];
 		selected_opacity = this.heatmap_opacity;
 		
 		if (quality_value <= lower_threshold) {
-			selected_heatmap = quality_heatmap_colors[1];
+			selected_heatmap = this.heatmapColorQuality[0];
+		}
+
+		if (quality_value > lower_threshold && quality_value <= (median - 0.05)) {
+			selected_heatmap = this.heatmapColorQuality[1];
 		}
 
 		if (quality_value >= upper_threshold) {
-			selected_heatmap = quality_heatmap_colors[3];
+			selected_heatmap = this.heatmapColorQuality[4];
+		}
+
+		if (quality_value < upper_threshold && quality_value >= (median + 0.05)) {
+			selected_heatmap = this.heatmapColorQuality[3];
 		}
 
 		if (quality_value < 0) {
-			selected_heatmap = quality_heatmap_colors[0];
+			selected_heatmap = this.heatmapColorQuality[2];
 			selected_opacity = 0.2
 		}
 

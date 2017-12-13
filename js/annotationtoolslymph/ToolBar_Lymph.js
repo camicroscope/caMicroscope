@@ -538,14 +538,19 @@ ToolBar.prototype.createButtons = function () {
 
     this.showWeightPanel.on('click', function () {
         console.log('click on showing weight panel');
-        if (jQuery('#weightpanel').is(":visible"))
+	console.log(appid);
+	var panelToShow = "#weightpanel";
+	if (appid == "qualheat") {
+	    panelToShow = "#qualitypanel";
+	}
+        if (jQuery(panelToShow).is(":visible"))
         {
-            jQuery('#weightpanel').hide();
+            jQuery(panelToShow).hide();
         }
         else
         {
             console.log(this.annotools.heat_weight);
-            jQuery('#weightpanel').show();
+            jQuery(panelToShow).show();
         }
     }.bind(this))
 
