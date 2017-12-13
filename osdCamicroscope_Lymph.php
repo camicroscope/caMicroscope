@@ -153,6 +153,28 @@
             <button type="button" class="btn_mark" id="btn_undomark" >Cancel</button>
             <button type="button" class="btn_mark" id="btn_mark_help">&#x2753</button>
         </div>
+
+        <div id="qualitymarkuppanel">
+            <a href='#'><div id='closeQualityMarkupPanel'><img src='images/ic_close_white_24px.svg' title='Close' alt="Close X" height="16" width="16"></div></a>
+            <input type="radio" name="marktype" value="AlgA" checked="checked" id="AlgA" class="radio_markup">
+            <label for="AlgA" class=radio_markup> (1) AlgA (draw thin line)</label><br>
+            <input type="radio" name="marktype" value="AlgB" id="AlgB" class="radio_markup">
+            <label for="AlgB" class=radio_markup> (2) AlgB (draw thin line)</label><br><p><p>
+            <input type="radio" name="marktype" value="AlgABig" id="AlgABig" class="radio_markup">
+            <label for="AlgABig" class=radio_markup> (3) AlgA (draw thick line)</label><br>
+            <input type="radio" name="marktype" value="AlgBBig" id="AlgBBig" class="radio_markup">
+            <label for="AlgBBig" class=radio_markup> (4) AlgB (draw thick line)</label><br><p><p>
+            <input type="radio" name="marktype" value="TumorPos" id="TumorPos" class="radio_markup">
+            <label for="TumorPos" class=radio_markup> (5) TumorPos (draw polygon)</label><br>
+            <input type="radio" name="marktype" value="TumorNeg" id="TumorNeg" class="radio_markup">
+            <label for="TumorNeg" class=radio_markup> (6) TumorNeg (draw polygon)</label><br><p><p>
+            <input type="radio" name="marktype" value="Moving" id="rb_Moving" class="radio_markup">
+            <label for="rb_Moving" class=radio_markup> (7) Save then Navigate</label><br>
+            <button type="button" class="btn_mark" id="btn_savemark">Save</button>
+            <button type="button" class="btn_mark" id="btn_undomark" >Cancel</button>
+            <button type="button" class="btn_mark" id="btn_mark_help">&#x2753</button>
+        </div>
+
         <div id="div_weight_locked" style="display: none;">Free</div>
         <div id="div_quality_locked" style="display: none;">Free</div>
 
@@ -312,6 +334,7 @@
         jQuery("#weightpanel").hide();
         jQuery("#qualitypanel").hide();
         jQuery("#markuppanel").hide();
+        jQuery("#qualitymarkuppanel").hide();
         jQuery("#switchuserpanel").hide();
         
         var mySlider = jQuery("#qslider")[0];
