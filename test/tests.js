@@ -1,5 +1,5 @@
-var url = "localhost:osdCamicroscope.php?tissueId=PC_052_0_1";
-casper.test.begin('Camic Frontend', 10, function suite(test) {
+var url = "localhost/osdCamicroscope.php?tissueId=PC_052_0_1";
+casper.test.begin('Camic Frontend', 8, function suite(test) {
     casper.start(url, function() {
       // Image display
       test.assert(canvas.getImageData(10, 10, 10, 10).data.reduce(function(a,b) {return a+b}));
@@ -41,7 +41,7 @@ casper.test.begin('Camic Frontend', 10, function suite(test) {
       var pos1 = document.getElementById('spyglass').getBoundingClientRect();
       this.mouse.move(100, 100);
       var pos2 = document.getElementById('spyglass').getBoundingClientRect();
-      test.assert(pos1.bottom !=== pos2.bottom);
+      test.assert(pos1.bottom !== pos2.bottom);
 
       test.done();
     });
