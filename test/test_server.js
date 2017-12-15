@@ -5,7 +5,7 @@ var path = require("path");
 var app = express();
 
 // camicroscope
-app.use("/osdCamicroscope.php", php.cgi("osdCamicroscope.php"));
+app.use("/osdCamicroscope.php", php.cgi("../osdCamicroscope.php"));
 
 // apis
 app.get('/camicroscope/api/Data/osdMetadataRetriever.php', (req, res) => {
