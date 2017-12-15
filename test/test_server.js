@@ -13,13 +13,15 @@ app.engine('php', phpExpress.engine);
 app.set('view engine', 'php');
 
 // routing all .php file to php-express
-app.all(/.+\.php$/, phpExpress.router);
+//app.all(/.+\.php$/, phpExpress.router);
+app.all(/osdCamicroscope\.php/, phpExpress.router);
 
-app.use(express.static('../'));
+app.use('/js',express.static('../js'));
+app.use('/css',express.static('../css'));
 
 
 // apis
-app.get('/camicroscope/api/Data/osdMetadataRetriever.php', (req, res) => {
+app.get('/api/Data/osdMetadataRetriever.php', (req, res) => {
     var metadata = '[{"mpp-x":0.5015,"mpp-y":0.5015},"\/data\/images\/TCGA-02-0338-01Z-00-DX1-yZgoO.svs.dzi"]'
     res.send(metadata);
 });
