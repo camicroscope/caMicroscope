@@ -18,6 +18,7 @@ app.all(/osdCamicroscope\.php/, phpExpress.router);
 
 app.use('/js',express.static('../js'));
 app.use('/css',express.static('../css'));
+app.use('/images',express.static('../images'));
 
 
 // apis
@@ -28,7 +29,16 @@ app.get('/api/Data/osdMetadataRetriever.php', (req, res) => {
 
 // TODO make work better for OSD
 app.get('/fcgi-bin/iipsrv.fcgi', (req, res) => {
-    res.sendFile("card.png");
+    // are we looking for the dzi or image?
+    if(req.originalUrl.substr(-4,4).toLowerCase() !== ".dzi"){
+      res.sendFile("card.png", { root: __dirname });
+    }
+    else
+    {
+      var dzi_txt = '<?xml version="1.0" encoding="UTF-8"?><Image xmlns="http://schemas.microsoft.com/deepzoom/2008" TileSize="256" Overlap="0" Format="jpg"><Size Width="38001" Height="22715"/></Image>'
+      res.send(dzi_txt);
+    }
+
 });
 
 app.get('/api/Data/getAlgorithmsForImage.php', (req, res) => {
