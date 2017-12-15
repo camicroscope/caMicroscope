@@ -1,4 +1,4 @@
-var url = "localhost/osdCamicroscope.php?tissueId=PC_052_0_1";
+var url = "http://localhost:3000/osdCamicroscope.php?tissueId=PC_052_0_1";
 casper.test.begin('Camic Frontend', 8, function suite(test) {
     casper.start(url, function() {
       // Image display
