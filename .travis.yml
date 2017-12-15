@@ -5,8 +5,8 @@ services:
 before_install:
     - cd test
     - npm install -g casperjs
-    - npm install php
-    - npm install express
+    - touch ../../authenticate.php
+    - npm install
 before_script:
     - node test_server.php &
 script:
