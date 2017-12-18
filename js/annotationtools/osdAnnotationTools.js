@@ -150,7 +150,8 @@ annotools.prototype.destroyMarkups = function (viewer) {
 
 /**
  * Rendering by execution ids
- * Same as getMultiAnnot??
+ * TODO: Cleanup. Same as getMultiAnnot.
+ *
  * @param algorithms
  */
 annotools.prototype.renderByExecutionId = function (algorithms) {
@@ -195,7 +196,7 @@ annotools.prototype.renderByExecutionId = function (algorithms) {
 
 /**
  * Get multiple annotations
- * Same as renderByExecutionId??
+ *
  * @param viewer
  */
 annotools.prototype.getMultiAnnot = function (viewer) {
@@ -210,15 +211,15 @@ annotools.prototype.getMultiAnnot = function (viewer) {
     var algorithms = SELECTED_ALGORITHM_LIST;
 
     /*
-     if (jQuery('#tree').attr('algotree')) {
-     var selalgos = jQuery('#tree').fancytree('getTree').getSelectedNodes()
-     // console.log(selalgos)
-     for (i = 0; i < selalgos.length; i++) {
-     algorithms.push(selalgos[i].refKey)
-     // opa["Val" + (i + 1).toString()] = selalgos[i].refKey
-     }
-     }
-     */
+    if (jQuery('#tree').attr('algotree')) {
+        var selalgos = jQuery('#tree').fancytree('getTree').getSelectedNodes()
+        // console.log(selalgos)
+        for (i = 0; i < selalgos.length; i++) {
+            algorithms.push(selalgos[i].refKey)
+            // opa["Val" + (i + 1).toString()] = selalgos[i].refKey
+        }
+    }
+    */
 
     var self = this;
     this.x1 = this.imagingHelper._viewportOrigin['x'];
