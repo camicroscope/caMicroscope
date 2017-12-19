@@ -127,20 +127,25 @@ include 'shared/osdHeader.php';
           //console.log(viewer);
 
           function isAnnotationActive() {
-              this.isOpera = (!!window.opr && !!opr.addons) || navigator.userAgent.indexOf(' OPR/') >= 0;
-              // console.log("isOpera", this.isOpera);
+              // isAnnotationActive called from osdAnnotationTools.js
+              this.isOpera = !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
+
               this.isFirefox = typeof InstallTrigger !== 'undefined';
-              // console.log("isFirefox", this.isFirefox);
-              this.isSafari = ((navigator.userAgent.toLowerCase().indexOf('safari') > -1) && !(navigator.userAgent.toLowerCase().indexOf('chrome') > -1) && (navigator.appName == "Netscape"));
-              // console.log("isSafari", this.isSafari);
-              this.isChrome = !!window.chrome && !!window.chrome.webstore;
-              // console.log("isChrome", this.isChrome);
+
+              //this.isSafari = Object.prototype.toString.call(window.HTMLElement).indexOf('Constructor') > 0; // Fix Safari check.
+              var browser = navigator.userAgent;
+              this.isSafari = (browser.search("Safari") >= 0 && browser.search("Chrome") < 0);
+
+              this.isEdge = (browser.search("Edge") >= 0);
+
+              this.isChrome = !!window.chrome && !this.isOpera && !this.isEdge;
+
               this.isIE = /*@cc_on!@*/false || !!document.documentMode;
-              // console.log("isIE", this.isIE);
+
               this.annotationActive = !( this.isIE || this.isOpera);
-              // console.log("annotationActive", this.annotationActive);
               return this.annotationActive;
           }
+
 
     function addOverlays() {
         var annotationHandler = new AnnotoolsOpenSeadragonHandler(viewer, {});

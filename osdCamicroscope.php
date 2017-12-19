@@ -114,12 +114,21 @@ include 'shared/osdHeader.php';
     //console.log(viewer);
 
     function isAnnotationActive() {
-        // called from osdAnnotationTools.js
-        this.isOpera = (!!window.opr && !!opr.addons) || navigator.userAgent.indexOf(' OPR/') >= 0;
+        // isAnnotationActive called from osdAnnotationTools.js
+        this.isOpera = !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
+
         this.isFirefox = typeof InstallTrigger !== 'undefined';
-        this.isSafari = ((navigator.userAgent.toLowerCase().indexOf('safari') > -1) && !(navigator.userAgent.toLowerCase().indexOf('chrome') > -1) && (navigator.appName == "Netscape"));
-        this.isChrome = !!window.chrome && !!window.chrome.webstore;
+
+        //this.isSafari = Object.prototype.toString.call(window.HTMLElement).indexOf('Constructor') > 0; // Fix Safari check.
+        var browser = navigator.userAgent;
+        this.isSafari = (browser.search("Safari") >= 0 && browser.search("Chrome") < 0);
+
+        this.isEdge = (browser.search("Edge") >= 0);
+
+        this.isChrome = !!window.chrome && !this.isOpera && !this.isEdge;
+
         this.isIE = /*@cc_on!@*/false || !!document.documentMode;
+
         this.annotationActive = !( this.isIE || this.isOpera);
         return this.annotationActive;
     }
