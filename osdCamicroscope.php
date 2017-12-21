@@ -129,7 +129,7 @@ include 'shared/osdHeader.php';
 
         this.isIE = /*@cc_on!@*/false || !!document.documentMode;
 
-        this.annotationActive = !( this.isIE || this.isOpera);
+        this.annotationActive = !(this.isIE || this.isOpera);
         return this.annotationActive;
     }
 

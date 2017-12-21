@@ -201,22 +201,24 @@ annotools.prototype.renderByExecutionId = function (algorithms) {
  */
 annotools.prototype.getMultiAnnot = function (viewer) {
 
-    // console.log("Get multiple annotations");
+    // console.log("getMultiAnnot");
     // console.log("viewer", viewer);
 
+    var algorithms = [];
     // console.log("ALGORITHM_LIST", ALGORITHM_LIST);
     // console.log("SELECTED_ALGORITHM_LIST", SELECTED_ALGORITHM_LIST);
 
     SELECTED_ALGORITHM_LIST = SELECTED_ALGORITHM_LIST.sort();
-    var algorithms = SELECTED_ALGORITHM_LIST;
+    algorithms = SELECTED_ALGORITHM_LIST;
 
     /*
+    var opa = [];
     if (jQuery('#tree').attr('algotree')) {
-        var selalgos = jQuery('#tree').fancytree('getTree').getSelectedNodes()
-        // console.log(selalgos)
+        var selalgos = jQuery('#tree').fancytree('getTree').getSelectedNodes();
+        // console.log(selalgos);
         for (i = 0; i < selalgos.length; i++) {
-            algorithms.push(selalgos[i].refKey)
-            // opa["Val" + (i + 1).toString()] = selalgos[i].refKey
+            algorithms.push(selalgos[i].refKey);
+            // opa["Val" + (i + 1).toString()] = selalgos[i].refKey;
         }
     }
     */

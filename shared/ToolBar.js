@@ -226,7 +226,6 @@ ToolBar.prototype.toggleAlgorithmSelector = function () {
                 }
             }
 
-
         });
 
         self.annotools.getMultiAnnot();
@@ -235,7 +234,7 @@ ToolBar.prototype.toggleAlgorithmSelector = function () {
          * Select algorithm from menu.
          */
         jQuery('#algorithmList input[type=checkbox]').change(function () {
-            console.log("change");
+            console.log("algorithm checkbox clicked");
             SELECTED_ALGORITHM_LIST = [];
             SELECTED_ALGORITHM_KEYS = [];
             jQuery("#algorithmList input:checked").each(function () {
@@ -245,7 +244,6 @@ ToolBar.prototype.toggleAlgorithmSelector = function () {
             });
 
             self.annotools.getMultiAnnot();
-
 
         });
 
