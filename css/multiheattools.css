@@ -181,6 +181,16 @@
     background-color: crimson;
 }
 
+#closeQualityMarkupPanel {
+	display: inline-block;
+	width: 16px;
+	float:right;
+}
+
+#closeQualityMarkupPanel:hover {
+    background-color: crimson;
+}
+
 #closeSwitchUser {
 	display: inline-block;
 	width: 16px;
