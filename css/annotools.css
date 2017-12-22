@@ -311,7 +311,7 @@
     color: #000;
 }
 #panael .btn2{
-	//background: #244B71;
+	/* background: #244B71; */
 	
 }
 #panel .btn{
@@ -339,7 +339,7 @@
     z-index: 900999;
     background: #1976D2;
     box-shadow:1px 1px 1px 1px  #555;
-    //padding: 15px;
+    /* padding: 15px; */
     border-radius: 4px;
     color: #fff;
     opacity: 0.9;
@@ -388,19 +388,19 @@
     display: inline-block;
 }
 .wdzt-cell-layout input{
-    //margin-left: 20px;
+    /* margin-left: 20px; */
     width: 110px;
     margin-top: 5px;
     display: inline-block;
 }
 .wdzt-cell-layout input[type=number]{
-    //margin-left: 20px;
+    /* margin-left: 20px; */
     width: 38px;
     margin: 0;
 
 }
 .wdzt-cell-layout input[type=range]::-webkit-slider-runnable-track {
-    //margin-left: 20px;
+    /* margin-left: 20px; */
     width:50px;
     width: 14px;
 }
@@ -446,7 +446,7 @@
 
     width: 10px;
     height: 10px;
-//    background: red;
+    /* background: red; */
     position: relative;
     display: inline-block;
     top: 2px;
@@ -467,5 +467,5 @@
 #panelBody input[type="checkbox"] {
   float: left;
   display:inline-block;
-  //margin-top: -15px;
+  /* margin-top: -15px; */
 }
