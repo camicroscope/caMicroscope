@@ -48,6 +48,12 @@ include 'shared/osdHeader.php';
             <label for="TumorPos" class=radio_markup> (5) TumorPos (draw polygon)</label><br>
             <input type="radio" name="marktype" value="TumorNeg" id="TumorNeg" class="radio_markup">
             <label for="TumorNeg" class=radio_markup> (6) TumorNeg (draw polygon)</label><br><p><p>
+            
+            <input type="radio" name="marktype" value="TypeAPos" id="TypeAPos" class="radio_markup">
+            <label for="TypeAPos" class=radio_markup> (5) TypeAPos (draw polygon)</label><br>
+            <input type="radio" name="marktype" value="TypeANeg" id="TypeANeg" class="radio_markup">
+            <label for="TypeANeg" class=radio_markup> (6) TypeANeg (draw polygon)</label><br><p><p>
+            
             <input type="radio" name="marktype" value="Moving" id="rb_Moving" class="radio_markup">
             <label for="rb_Moving" class=radio_markup> (7) Save then Navigate</label><br>
             <button type="button" class="btn_mark" id="btn_savemark">Save</button>
