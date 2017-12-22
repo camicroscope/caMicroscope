@@ -310,10 +310,13 @@
 #panelBody input{
     color: #000;
 }
-#panael .btn2{
-	/* background: #244B71; */
-	
+
+/*
+#panel .btn2 {
+	background: #244B71;
 }
+*/
+
 #panel .btn{
     background: #244B71;
     color: #fff;
