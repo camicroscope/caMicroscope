@@ -17,7 +17,7 @@ include 'shared/osdHeader.php';
 
     <div id="tool"></div>
     <div id="panel"></div>
-    <div id="bookmarkURLDiv"></div>
+    <!-- div id="bookmarkURLDiv"></div -->
     <div id="algosel">
         <div id="tree"></div>
     </div>
@@ -43,7 +43,7 @@ include 'shared/osdHeader.php';
         alert("tissueId is undefined. Exiting.");
     }
 
-    jQuery("#bookmarkURLDiv").hide();
+    //jQuery("#bookmarkURLDiv").hide();
 
     var viewer = new OpenSeadragon.Viewer({
         id: "viewer",

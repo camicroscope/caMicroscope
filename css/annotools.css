@@ -310,7 +310,6 @@
 #panelBody input{
     color: #000;
 }
-
 /*
 #panel .btn2 {
 	background: #244B71;
@@ -422,6 +421,7 @@
     left: 120px; 
     background: #244B71;
 }
+/*
 #bookmarkURLDiv input{
     color: #333;
     width: 100%;
@@ -439,8 +439,9 @@
     -webkit-box-shadow: 0px 0px 5px 2px #000000;
     -moz-box-shadow: 0px 0px 5px 2px #000000;
     box-shadow: 0px 0px 5px 2px #000000;
-
+    
 }
+*/
 
 .checkbox input[type=checkbox], .checkbox-inline input[type=checkbox], .radio input[type=radio], .radio-inline input[type=radio]{
 	margin: 0;
