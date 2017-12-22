@@ -76,6 +76,48 @@ annotools.prototype.drawMarking = function (ctx) {
         ctx.strokeStyle = 'lime';
         this.mark_type = 'TumorNeg';
     }
+
+    if (jQuery("#AlgoABig").is(':checked'))
+    {
+        ctx.strokeStyle = 'red';
+        this.mark_type = 'AlgoA';
+        this.markupline_width = 2;
+        drawn_linewidth = 6;
+    }
+
+    if (jQuery("#AlgoBBig").is(':checked'))
+    {
+        ctx.strokeStyle = 'blue';
+        this.mark_type = 'AlgoB';
+        this.markupline_width = 2;
+        drawn_linewidth = 6;
+    }
+
+    if (jQuery("#AlgoA").is(':checked'))
+    {
+        ctx.strokeStyle = 'red';
+        this.mark_type = 'AlgoA';
+        this.markupline_width = 1;
+    }
+
+    if (jQuery("#AlgoB").is(':checked'))
+    {
+        ctx.strokeStyle = 'blue';
+        this.mark_type = 'AlgoB';
+        this.markupline_width = 1;
+    }
+
+    if (jQuery("#AlgoAPoly").is(':checked'))
+    {
+        ctx.strokeStyle = 'orange';
+        this.mark_type = 'AlgoAP';
+    }
+
+    if (jQuery("#AlgoBPoly").is(':checked'))
+    {
+        ctx.strokeStyle = 'lime';
+        this.mark_type = 'AlgoBP';
+    }
     console.log(this.mark_type);
 
     this.color_arr.push(ctx.strokeStyle);
@@ -311,7 +353,6 @@ annotools.prototype.switchUserRadiobuttonChange = function(event) {
 
 annotools.prototype.radiobuttonChange = function(event) {
     console.log('rb changed');
-    console.log(this.marking_choice);
     var self = this;
     if (event.target.id == 'rb_Moving')
     {
@@ -343,6 +384,7 @@ annotools.prototype.radiobuttonChange = function(event) {
         }
     }
     this.marking_choice = event.target.id;
+    console.log(this.marking_choice);
 }
 
 
@@ -521,7 +563,7 @@ annotools.prototype.calculateIntersect = function(high_res) {
         var annotation = annotations[i];
         labels.push(0);
         label_dates.push(0);
-        if (annotation.object_type == 'heatmap_multiple') {
+        if ((annotation.object_type == 'heatmap_multiple')||(annotation.object_type == 'heatmap_quality'))  {
             var nativepoints = annotation.geometry.coordinates[0];
             id.push(i);
             cx.push((nativepoints[0][0] + nativepoints[2][0])/2.0);
@@ -573,6 +615,10 @@ annotools.prototype.calculateIntersect = function(high_res) {
             label = 1;
         } else if (annotation.properties.annotations.mark_type == 'LymNeg') {
             label = -1;
+        } else if (annotation.properties.annotations.mark_type == 'AlgoA') {
+            label = 0;
+        } else if (annotation.properties.annotations.mark_type == 'AlgoB') {
+            label = 1;
         } else {
             continue;
         }

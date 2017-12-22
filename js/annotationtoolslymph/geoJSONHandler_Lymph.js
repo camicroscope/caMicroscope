@@ -309,7 +309,8 @@ annotools.prototype.generateSVG = function (annotations) {
 
       if (annotation.object_type == 'marking')
       {
-        if (annotation.properties.annotations.mark_type == 'LymPos' || annotation.properties.annotations.mark_type == 'LymNeg')
+        if (annotation.properties.annotations.mark_type == 'LymPos' || annotation.properties.annotations.mark_type == 'LymNeg' || 
+            annotation.properties.annotations.mark_type == 'AlgoA' || annotation.properties.annotations.mark_type == 'AlgoB' )
         {
             //continue;
         }
@@ -320,7 +321,8 @@ annotools.prototype.generateSVG = function (annotations) {
  
       if (this.lymheat == false)
       {
-	    if ((annotation.object_type == 'marking') && (annotation.properties.annotations.mark_type == 'LymPos' || annotation.properties.annotations.mark_type == 'LymNeg'))
+	    if ((annotation.object_type == 'marking') && (annotation.properties.annotations.mark_type == 'LymPos' || annotation.properties.annotations.mark_type == 'LymNeg' || 
+                  annotation.properties.annotations.mark_type == 'AlgoA' || annotation.properties.annotations.mark_type == 'AlgoB'))
 	    {
 		  continue;
 	    }
@@ -455,25 +457,36 @@ annotools.prototype.generateSVG = function (annotations) {
 		selected_heatmap = this.heatmapColorQuality[2];
 		selected_opacity = this.heatmap_opacity;
 		
-		if (quality_value <= lower_threshold) {
-			selected_heatmap = this.heatmapColorQuality[0];
+		if (intersect_label[i] != 0)
+		{
+			switch (intersect_label[i])
+			{
+			case 0: selected_heatmap = this.heatmapColorQuality[0]; break;
+			case 1: selected_heatmap = this.heatmapColorQuality[4]; break;
+			}
 		}
-
-		if (quality_value > lower_threshold && quality_value <= (median - 0.05)) {
-			selected_heatmap = this.heatmapColorQuality[1];
-		}
-
-		if (quality_value >= upper_threshold) {
-			selected_heatmap = this.heatmapColorQuality[4];
-		}
-
-		if (quality_value < upper_threshold && quality_value >= (median + 0.05)) {
-			selected_heatmap = this.heatmapColorQuality[3];
-		}
-
-		if (quality_value < 0) {
-			selected_heatmap = this.heatmapColorQuality[2];
-			selected_opacity = 0.2
+		else
+		{
+   		   if (quality_value <= lower_threshold) {
+   		   	selected_heatmap = this.heatmapColorQuality[0];
+   		   }
+   
+   		   if (quality_value > lower_threshold && quality_value <= (median - 0.05)) {
+   		   	selected_heatmap = this.heatmapColorQuality[1];
+   		   }
+   
+    		   if (quality_value >= upper_threshold) {
+   			selected_heatmap = this.heatmapColorQuality[4];
+   		   }
+   
+   		   if (quality_value < upper_threshold && quality_value >= (median + 0.05)) {
+   			selected_heatmap = this.heatmapColorQuality[3];
+   		   }
+   
+   		   if (quality_value < 0) {
+   			selected_heatmap = this.heatmapColorQuality[2];
+   			selected_opacity = 0.2
+   		   }
 		}
 
 		svgHtml += '" style="fill:' + selected_heatmap + ';fill-opacity: ' + selected_opacity + ';stroke-width:0"/>';

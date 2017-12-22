@@ -277,6 +277,7 @@ ToolBar.prototype.setNormalMode = function() {
   jQuery("#drawDotButton").removeClass("active");   // Dot Tool
   jQuery("#freeLineMarkupButton").removeClass("active");
   jQuery("#markuppanel").hide();
+  jQuery("#qualitymarkuppanel").hide();
   jQuery("#switchuserpanel").hide();
   this.annotools.drawLayer.hide()
   this.annotools.addMouseEvents()       
@@ -568,10 +569,17 @@ ToolBar.prototype.createButtons = function () {
             jQuery("#drawDotButton").removeClass("active");     // Dot Tool
             jQuery("#drawFreelineButton").removeClass("active");
             jQuery("#freeLineMarkupButton").addClass("active");
-            jQuery("#markuppanel").show();
- 
+            if (appid == "qualheat") {
+                jQuery("#qualitymarkuppanel").show();
+                jQuery("#AlgoA").checked = true;
+
+	    } else {
+                jQuery("#markuppanel").show();
+                document.getElementById('LymPos').checked = true;
+            }
+
             // Check if being on moving mode --> switch to drawing mode
-            if (document.getElementById("rb_Moving").checked) {
+            if (document.getElementById("rb_Moving").checked||appid!="qualheat") {
                 console.log('do switching');
                 document.getElementById('rb_Moving').checked = false;
                 document.getElementById('LymPos').checked = true;

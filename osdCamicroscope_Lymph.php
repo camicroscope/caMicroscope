@@ -156,23 +156,21 @@
 
         <div id="qualitymarkuppanel">
             <a href='#'><div id='closeQualityMarkupPanel'><img src='images/ic_close_white_24px.svg' title='Close' alt="Close X" height="16" width="16"></div></a>
-            <input type="radio" name="marktype" value="AlgA" checked="checked" id="AlgA" class="radio_markup">
-            <label for="AlgA" class=radio_markup> (1) AlgA (draw thin line)</label><br>
-            <input type="radio" name="marktype" value="AlgB" id="AlgB" class="radio_markup">
-            <label for="AlgB" class=radio_markup> (2) AlgB (draw thin line)</label><br><p><p>
-            <input type="radio" name="marktype" value="AlgABig" id="AlgABig" class="radio_markup">
-            <label for="AlgABig" class=radio_markup> (3) AlgA (draw thick line)</label><br>
-            <input type="radio" name="marktype" value="AlgBBig" id="AlgBBig" class="radio_markup">
-            <label for="AlgBBig" class=radio_markup> (4) AlgB (draw thick line)</label><br><p><p>
-            <input type="radio" name="marktype" value="TumorPos" id="TumorPos" class="radio_markup">
-            <label for="TumorPos" class=radio_markup> (5) TumorPos (draw polygon)</label><br>
-            <input type="radio" name="marktype" value="TumorNeg" id="TumorNeg" class="radio_markup">
-            <label for="TumorNeg" class=radio_markup> (6) TumorNeg (draw polygon)</label><br><p><p>
-            <input type="radio" name="marktype" value="Moving" id="rb_Moving" class="radio_markup">
-            <label for="rb_Moving" class=radio_markup> (7) Save then Navigate</label><br>
-            <button type="button" class="btn_mark" id="btn_savemark">Save</button>
-            <button type="button" class="btn_mark" id="btn_undomark" >Cancel</button>
-            <button type="button" class="btn_mark" id="btn_mark_help">&#x2753</button>
+            <input type="radio" name="marktype" value="AlgoA" checked="checked" id="AlgoA" class="radio_markup">
+            <label for="AlgoA" class=radio_markup> (1) AlgoA (draw thin line)</label><br>
+            <input type="radio" name="marktype" value="AlgoB" id="AlgoB" class="radio_markup">
+            <label for="AlgoB" class=radio_markup> (2) AlgoB (draw thin line)</label><br><p><p>
+            <input type="radio" name="marktype" value="AlgoABig" id="AlgoABig" class="radio_markup">
+            <label for="AlgoABig" class=radio_markup> (3) AlgoA (draw thick line)</label><br>
+            <input type="radio" name="marktype" value="AlgoBBig" id="AlgoBBig" class="radio_markup">
+            <label for="AlgoBBig" class=radio_markup> (4) AlgoB (draw thick line)</label><br><p><p>
+            <input type="radio" name="marktype" value="AlgoAPoly" id="AlgoAPoly" class="radio_markup">
+            <label for="AlgoAPoly" class=radio_markup> (5) AlgoA (draw polygon)</label><br>
+            <input type="radio" name="marktype" value="AlgoBPoly" id="AlgoBPoly" class="radio_markup">
+            <label for="AgloBPoly" class=radio_markup> (6) AlgoB (draw polygon)</label><br><p><p>
+            <button type="button" class="btn_mark" id="btn_savequalmark">Save</button>
+            <button type="button" class="btn_mark" id="btn_undoqualmark" >Cancel</button>
+            <button type="button" class="btn_mark" id="btn_qualmark_help">&#x2753</button>
         </div>
 
         <div id="div_weight_locked" style="display: none;">Free</div>
@@ -367,13 +365,24 @@
             jQuery("#qualitypanel").hide('slide');
         });
         
-        /* Close markup panel */
+        /* Close TumorPosmarkup panel */
         jQuery('#closeMarkupPanel').click(function (e) {
 	        e.preventDefault();
             annotool.mode = 'normal';
             jQuery("canvas").css("cursor", "default");
             jQuery("#freeLineMarkupButton").removeClass("active");
             jQuery("#markuppanel").hide('slide');
+            annotool.drawLayer.hide();
+            annotool.addMouseEvents();
+        });
+                 
+        /* Close Quality`markup panel */
+        jQuery('#closeQualityMarkupPanel').click(function (e) {
+	        e.preventDefault();
+            annotool.mode = 'normal';
+            jQuery("canvas").css("cursor", "default");
+            jQuery("#freeLineMarkupButton").removeClass("active");
+            jQuery("#qualitymarkuppanel").hide('slide');
             annotool.drawLayer.hide();
             annotool.addMouseEvents();
         });

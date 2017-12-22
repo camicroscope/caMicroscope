@@ -82,6 +82,25 @@
 
 }
 
+
+#qualitymarkuppanel {
+    width: 220px;
+    font-family: Arial, Roboto;
+    font-size: 12px;
+    height: 270px;
+    top: 60px;
+    left: 0;
+    position: fixed;
+    z-index: 900999;
+    background: #1976D2;
+    box-shadow:1px 1px 1px 1px  #555;
+    padding: 10px;
+    border-radius: 10px;
+    color: #fff;
+    opacity: 0.9;
+
+}
+
 #switchuserpanel {
     width: 235px;
     font-family: Arial, Roboto;

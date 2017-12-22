@@ -61,6 +61,18 @@ var annotools = function (options) {
   this.rb_tumpos = document.getElementById('TumorPos');
   this.rb_tumneg = document.getElementById('TumorNeg');
   this.rb_move = document.getElementById('rb_Moving');
+  this.rb_algoabig = document.getElementById('AlgoABig');
+  this.rb_algobbig = document.getElementById('AlgoBBig');
+  this.rb_algoa = document.getElementById('AlgoA');
+  this.rb_algob = document.getElementById('AlgoB');
+  this.rb_algoapoly = document.getElementById('AlgoAPoly');
+  this.rb_algobpoly = document.getElementById('AlgoBPoly');
+  this.rb_algoabig.addEventListener('click', this.radiobuttonChange.bind(this), false);
+  this.rb_algobbig.addEventListener('click', this.radiobuttonChange.bind(this), false);
+  this.rb_algoa.addEventListener('click', this.radiobuttonChange.bind(this), false);
+  this.rb_algob.addEventListener('click', this.radiobuttonChange.bind(this), false);
+  this.rb_algoapoly.addEventListener('click', this.radiobuttonChange.bind(this), false);
+  this.rb_algobpoly.addEventListener('click', this.radiobuttonChange.bind(this), false);
   this.rb_lymposbig.addEventListener('click', this.radiobuttonChange.bind(this), false);
   this.rb_lymnegbig.addEventListener('click', this.radiobuttonChange.bind(this), false);
   this.rb_lympos.addEventListener('click', this.radiobuttonChange.bind(this), false);
@@ -136,6 +148,46 @@ To save/cancel your work, use the buttons described below:\n\
    Save then Move Around:\n\
        Save all markings and switch to the navigation\n\
        mode (Zoom in/out, move the slide around).\n\
+   Save:\n\
+       Save all markings, and continue to mark.\n\
+   Cancel:\n\
+       Cancel the most recent, unsaved marking.\n\
+       To change saved markings, you can simply\n\
+       overwrite them by drawing new markings.\
+');}, false);
+
+  this.btn_savequalmark_var = document.getElementById('btn_savequalmark');
+  this.btn_savequalmark_var.addEventListener('click', this.markSaveClick.bind(this), false);
+  this.btn_undoqualmark_var = document.getElementById('btn_undoqualmark');
+  this.btn_qualmark_help_var = document.getElementById('btn_qualmark_help');
+  this.btn_undoqualmark_var.addEventListener('click', this.undoStroke.bind(this), false);
+  this.btn_qualmark_help_var.addEventListener('click', function(){alert('\
+This panel provides tools to manually mark segmentation quality heatmaps as Algorithm A or B.\n\n\
+If you are unsatisfied with the segmentation quality prediction result, please polish it using options described below:\n\
+   AlgoA (draw thin line):\n\
+       Draw lines across quality squares.\n\
+       After saved, squares crossed by the line\n\
+       will be marked as Algorithm A squares.\n\
+   AlgoB (draw thin line):\n\
+       Draw lines across quality squares.\n\
+       After saved, squares crossed by the line\n\
+       will be marked as Algorithm B squares.\n\
+   AlgoA (draw thick line):\n\
+       Draw lines across quality squares.\n\
+       After saved, squares close to the line\n\
+       will be marked as Algorithm A squares.\n\
+   AlgoB (draw thick line):\n\
+       Draw lines across quality squares.\n\
+       After saved, squares close to the line\n\
+       will be marked as Algorithm B squares.\n\
+Please indicate quality regions using options described below:\n\
+   AlgoA (draw polygon):\n\
+       Draw curves around Algorithm A regions of this slide.\n\
+       Regions not included will not be changed\n\
+   AlgoB (draw polygon):\n\
+       Draw curves around Algorithm B regions of this slide.\n\
+       Regions not included will not be changed\n\n\
+To save/cancel your work, use the buttons described below:\n\
    Save:\n\
        Save all markings, and continue to mark.\n\
    Cancel:\n\
