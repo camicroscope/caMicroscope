@@ -52,7 +52,19 @@ include 'shared/osdHeader.php';
             <input type="radio" name="marktype" value="TypeAPos" id="TypeAPos" class="radio_markup">
             <label for="TypeAPos" class=radio_markup> (5) TypeAPos (draw polygon)</label><br>
             <input type="radio" name="marktype" value="TypeANeg" id="TypeANeg" class="radio_markup">
-            <label for="TypeANeg" class=radio_markup> (6) TypeANeg (draw polygon)</label><br><p><p>
+			<label for="TypeANeg" class=radio_markup> (6) TypeANeg (draw polygon)</label><br><p><p>
+
+			<?php
+				$string = file_get_contents("customized/lymph/markup_types.json");
+				$json_data = json_decode($string, true);
+				$a = 'NA';
+				foreach ($json_data as $key1 => $value1) {
+					$a = $json_data[$key1]["name"];
+					echo '<input type="radio" name="marktype" value="abc" id="abc" class="radio_markup">';
+					$temp = '<label for="abc" class=radio_markup> ' . $a . '</label><br>';
+					echo $temp;
+				}
+			?>
             
             <input type="radio" name="marktype" value="Moving" id="rb_Moving" class="radio_markup">
             <label for="rb_Moving" class=radio_markup> (7) Save then Navigate</label><br>
