@@ -479,6 +479,7 @@ annotools.prototype.generateSVG = function (annotations) {
 			case 'LymNeg': line_color = 'blue'; stroke_width = 2.5*annotation.properties.annotations.mark_width; break;
 			case 'TumorPos': line_color = 'orange'; break;
 			case 'TumorNeg': line_color = 'lime'; break;
+			default: line_color = jQuery("#" + annotation.properties.annotations.mark_type).attr("color"); break;
 		}
 		//svgHtml += '" style="fill:transparent; stroke:'+line_color+ '; stroke-width:2.5"/>'
 		svgHtml += '" style="fill:transparent; stroke:'+line_color+ '; stroke-width:' + stroke_width + '"/>';

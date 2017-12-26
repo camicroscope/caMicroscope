@@ -6,6 +6,8 @@ include 'shared/osdHeader.php';
 ?>
 
 <!-- ANNOTATION -->
+	<link rel="stylesheet" type="text/css" media="all" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.7.0/jquery.modal.css" />
+	<script src="js/dependencies/jquery.js"></script>
     <script src="js/annotationtoolslymph/annotools-openseajax-handler-lymph.js"></script>
     <script src="js/annotationtoolslymph/ToolBar_Lymph.js"></script>
     <script src="js/annotationtoolslymph/AnnotationStore_Lymph.js"></script>
@@ -36,32 +38,33 @@ include 'shared/osdHeader.php';
 
         <div id="markuppanel">
             <a href='#'><div id='closeMarkupPanel'><img src='images/ic_close_white_24px.svg' title='Close' alt="Close X" height="16" width="16"></div></a>
-            <input type="radio" name="marktype" value="LymPos" checked="checked" id="LymPos" class="radio_markup">
+            <input type="radio" name="marktype" value="LymPos" checked="checked" id="LymPos" class="radio_markup" color="red" linewidth=1 lineaffect=1>
             <label for="LymPos" class=radio_markup> (1) LymPos (draw thin line)</label><br>
-            <input type="radio" name="marktype" value="LymNeg" id="LymNeg" class="radio_markup">
+            <input type="radio" name="marktype" value="LymNeg" id="LymNeg" class="radio_markup" color="blue" linewidth=1 lineaffect=1>
             <label for="LymNeg" class=radio_markup> (2) LymNeg (draw thin line)</label><br><p><p>
-            <input type="radio" name="marktype" value="LymPosBig" id="LymPosBig" class="radio_markup">
+            <input type="radio" name="marktype" value="LymPosBig" id="LymPosBig" class="radio_markup" color="red" linewidth=6 lineaffect=2>
             <label for="LymPosBig" class=radio_markup> (3) LymPos (draw thick line)</label><br>
-            <input type="radio" name="marktype" value="LymNegBig" id="LymNegBig" class="radio_markup">
+            <input type="radio" name="marktype" value="LymNegBig" id="LymNegBig" class="radio_markup" color="blue" linewidth=6 lineaffect=2>
             <label for="LymNegBig" class=radio_markup> (4) LymNeg (draw thick line)</label><br><p><p>
-            <input type="radio" name="marktype" value="TumorPos" id="TumorPos" class="radio_markup">
+            <input type="radio" name="marktype" value="TumorPos" id="TumorPos" class="radio_markup" color="orange" linewidth=1 lineaffect=1>
             <label for="TumorPos" class=radio_markup> (5) TumorPos (draw polygon)</label><br>
-            <input type="radio" name="marktype" value="TumorNeg" id="TumorNeg" class="radio_markup">
+            <input type="radio" name="marktype" value="TumorNeg" id="TumorNeg" class="radio_markup" color="lime" linewidth=1 lineaffect=1>
             <label for="TumorNeg" class=radio_markup> (6) TumorNeg (draw polygon)</label><br><p><p>
             
-            <input type="radio" name="marktype" value="TypeAPos" id="TypeAPos" class="radio_markup">
-            <label for="TypeAPos" class=radio_markup> (5) TypeAPos (draw polygon)</label><br>
-            <input type="radio" name="marktype" value="TypeANeg" id="TypeANeg" class="radio_markup">
-			<label for="TypeANeg" class=radio_markup> (6) TypeANeg (draw polygon)</label><br><p><p>
 
 			<?php
 				$string = file_get_contents("customized/lymph/markup_types.json");
 				$json_data = json_decode($string, true);
 				$a = 'NA';
 				foreach ($json_data as $key1 => $value1) {
-					$a = $json_data[$key1]["name"];
-					echo '<input type="radio" name="marktype" value="abc" id="abc" class="radio_markup">';
-					$temp = '<label for="abc" class=radio_markup> ' . $a . '</label><br>';
+					$load_caption = $json_data[$key1]["caption"];
+					$load_dbname = $json_data[$key1]["DBName"];
+					$load_color = $json_data[$key1]["color"];
+					$load_linewidth = $json_data[$key1]["linewidth"];
+					$load_lineaffect = $json_data[$key1]["lineaffect"];
+
+					echo '<input type="radio" name="marktype" value="' . $load_dbname . '" id="' . $load_dbname . '" class="radio_markup" ' . 'color="' . $load_color . '" linewidth=' . $load_linewidth . ' lineaffect=' . $load_lineaffect . '>';
+					$temp = '<label for="abc" class=radio_markup> ' . $load_caption . '</label><br>';
 					echo $temp;
 				}
 			?>

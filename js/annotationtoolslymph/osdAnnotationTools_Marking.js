@@ -33,8 +33,22 @@ annotools.prototype.drawMarking = function (ctx) {
     ctx.beginPath();
     ctx.moveTo(relativeStartPoint.x, relativeStartPoint.y);
 
+	// Added for debug
+	//console.log($('input[name="marktype"]:checked').val());
+	console.log(jQuery('input[name="marktype"]:checked').val());
+	console.log(jQuery("#LymPos").attr("wed"));
+
     var drawn_linewidth = 3;
+	// Replacement code for below if statements
+	selectedRadio = "#" + jQuery('input[name="marktype"]:checked').val();
+	console.log(selectedRadio);
+	ctx.strokeStyle = jQuery(selectedRadio).attr("color");
+	this.mark_type = jQuery(selectedRadio).attr("value");
+	this.markupline_width = jQuery(selectedRadio).attr("lineaffect");
+	drawn_linewidth = jQuery(selectedRadio).attr("linewidth");
+	
     // Check what radio box is checked
+	/*
     if (jQuery("#LymPosBig").is(':checked'))
     {
         ctx.strokeStyle = 'red';
@@ -76,6 +90,7 @@ annotools.prototype.drawMarking = function (ctx) {
         ctx.strokeStyle = 'lime';
         this.mark_type = 'TumorNeg';
     }
+	*/
     console.log(this.mark_type);
 
     this.color_arr.push(ctx.strokeStyle);
