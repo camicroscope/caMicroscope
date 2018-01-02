@@ -282,14 +282,14 @@ annotools.prototype.generateSVG = function (annotations) {
 
     highres = false;
     for (var i = 0; i < annotations.length; i++) {
-        if (annotations[i].footprint < 100000)
+        if (annotations[i].footprint < 100000 || appid == "qualheat")
         {
             highres = true;
             break;
         }
     }
 
-    if (this.imagingHelper._viewportWidth * this.imagingHelper._viewportHeight > 0.06)
+    if (this.imagingHelper._viewportWidth * this.imagingHelper._viewportHeight > 0.06 && appid != "qualheat")
         highres = false;
 
     smth_or_not = highres;
@@ -461,7 +461,8 @@ annotools.prototype.generateSVG = function (annotations) {
 		{
 			switch (intersect_label[i])
 			{
-			case 0: selected_heatmap = this.heatmapColorQuality[0]; break;
+			case -1: 	selected_heatmap = this.heatmapColorQuality[0];
+	 				break;
 			case 1: selected_heatmap = this.heatmapColorQuality[4]; break;
 			}
 		}
@@ -489,6 +490,7 @@ annotools.prototype.generateSVG = function (annotations) {
    		   }
 		}
 
+
 		svgHtml += '" style="fill:' + selected_heatmap + ';fill-opacity: ' + selected_opacity + ';stroke-width:0"/>';
 		break;
 	case 'marking':
@@ -500,6 +502,10 @@ annotools.prototype.generateSVG = function (annotations) {
 			case 'LymNeg': line_color = 'blue'; stroke_width = 2.5*annotation.properties.annotations.mark_width; break;
 			case 'TumorPos': line_color = 'orange'; break;
 			case 'TumorNeg': line_color = 'lime'; break;
+			case 'AlgoA': line_color = 'red'; stroke_width = 2.5*annotation.properties.annotations.mark_width; break;
+			case 'AlgoB': line_color = 'blue'; stroke_width = 2.5*annotation.properties.annotations.mark_width; break;
+			case 'AlgoAPoly': line_color = 'orange'; break;
+			case 'AlgoBPoly': line_color = 'lime'; break;
 		}
 		//svgHtml += '" style="fill:transparent; stroke:'+line_color+ '; stroke-width:2.5"/>'
 		svgHtml += '" style="fill:transparent; stroke:'+line_color+ '; stroke-width:' + stroke_width + '"/>';

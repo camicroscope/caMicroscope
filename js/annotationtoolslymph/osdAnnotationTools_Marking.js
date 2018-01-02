@@ -616,7 +616,7 @@ annotools.prototype.calculateIntersect = function(high_res) {
         } else if (annotation.properties.annotations.mark_type == 'LymNeg') {
             label = -1;
         } else if (annotation.properties.annotations.mark_type == 'AlgoA') {
-            label = 0;
+            label = -1;
         } else if (annotation.properties.annotations.mark_type == 'AlgoB') {
             label = 1;
         } else {
