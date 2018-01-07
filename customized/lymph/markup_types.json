@@ -1,17 +1,49 @@
 [
 	{
-		"caption":"Type A Positive",
-		"JSName":"TypeAPos",
-		"DBName":"TypeAPos",
-		"color":"yellow",
+		"caption":"Vessel - Normal",
+		"JSName":"VesselNormal",
+		"DBName":"VesselNormal",
+		"color":"green",
 		"linewidth":"3",
 		"lineaffect":"1"
 	},
 	{
-		"caption":"Type A Negative",
-		"JSName":"TypeANeg",
-		"DBName":"TypeANeg",
+		"caption":"Vessel - Hyperplastic",
+		"JSName":"VesselHyperplastic",
+		"DBName":"VesselHyperplastic",
+		"color":"orange",
+		"linewidth":"3",
+		"lineaffect":"1"
+	},
+	{
+		"caption":"Vessel - Proliferative",
+		"JSName":"VesselProliferative",
+		"DBName":"VesselProliferative",
+		"color":"red",
+		"linewidth":"3",
+		"lineaffect":"1"
+	},
+	{
+		"caption":"Tumor - Low",
+		"JSName":"TumorLow",
+		"DBName":"TumorLow",
 		"color":"green",
+		"linewidth":"3",
+		"lineaffect":"1"
+	},
+	{
+		"caption":"Tumor - Med",
+		"JSName":"TumorMed",
+		"DBName":"TumorMed",
+		"color":"orange",
+		"linewidth":"3",
+		"lineaffect":"1"
+	},
+	{
+		"caption":"Tumor - High",
+		"JSName":"TumorHigh",
+		"DBName":"TumorHigh",
+		"color":"red",
 		"linewidth":"3",
 		"lineaffect":"1"
 	}

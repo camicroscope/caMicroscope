@@ -37,7 +37,8 @@ include 'shared/osdHeader.php';
         </div>
 
         <div id="markuppanel">
-            <a href='#'><div id='closeMarkupPanel'><img src='images/ic_close_white_24px.svg' title='Close' alt="Close X" height="16" width="16"></div></a>
+			<a href='#'><div id='closeMarkupPanel'><img src='images/ic_close_white_24px.svg' title='Close' alt="Close X" height="16" width="16"></div></a>
+			<!-- 
             <input type="radio" name="marktype" value="LymPos" checked="checked" id="LymPos" class="radio_markup" color="red" linewidth=1 lineaffect=1>
             <label for="LymPos" class=radio_markup> (1) LymPos (draw thin line)</label><br>
             <input type="radio" name="marktype" value="LymNeg" id="LymNeg" class="radio_markup" color="blue" linewidth=1 lineaffect=1>
@@ -50,7 +51,7 @@ include 'shared/osdHeader.php';
             <label for="TumorPos" class=radio_markup> (5) TumorPos (draw polygon)</label><br>
             <input type="radio" name="marktype" value="TumorNeg" id="TumorNeg" class="radio_markup" color="lime" linewidth=1 lineaffect=1>
             <label for="TumorNeg" class=radio_markup> (6) TumorNeg (draw polygon)</label><br><p><p>
-            
+            -->
 
 			<?php
 				$string = file_get_contents("customized/lymph/markup_types.json");
