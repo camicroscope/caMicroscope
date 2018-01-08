@@ -57,6 +57,7 @@ include 'shared/osdHeader.php';
 				$string = file_get_contents("customized/lymph/markup_types.json");
 				$json_data = json_decode($string, true);
 				$a = 'NA';
+				$selected_idx = 1;
 				foreach ($json_data as $key1 => $value1) {
 					$load_caption = $json_data[$key1]["caption"];
 					$load_dbname = $json_data[$key1]["DBName"];
@@ -65,9 +66,15 @@ include 'shared/osdHeader.php';
 					$load_lineaffect = $json_data[$key1]["lineaffect"];
 
 
-					echo '<input type="radio" name="marktype" value="' . $load_dbname . '" id="' . $load_dbname . '" class="radio_markup" ' . 'color="' . $load_color . '" linewidth=' . $load_linewidth . ' lineaffect=' . $load_lineaffect . '>';
 					echo '<input type="checkbox" name="markvisualized" id="' . $load_dbname . '_visualized' . '" checked>';
-					$temp = '<label for="abc" class=radio_markup> ' . $load_caption . '</label><br>';
+					if ($selected_idx == 1) {
+						echo '<input type="radio" name="marktype" value="' . $load_dbname . '" id="' . $load_dbname . '" class="radio_markup" ' . 'color="' . $load_color . '" linewidth=' . $load_linewidth . ' lineaffect=' . $load_lineaffect . ' checked>';
+					} else {
+						echo '<input type="radio" name="marktype" value="' . $load_dbname . '" id="' . $load_dbname . '" class="radio_markup" ' . 'color="' . $load_color . '" linewidth=' . $load_linewidth . ' lineaffect=' . $load_lineaffect . '>';
+					}
+					$selected_idx = $selected_idx + 1;
+					//$temp = '<label for="abc" class=radio_markup> ' . $load_caption . '</label><br>';
+					$temp = '<label class=radio_markup> ' . $load_caption . '</label><br>';
 					echo $temp;
 				}
 			?>
