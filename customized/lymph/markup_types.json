@@ -24,6 +24,14 @@
 		"lineaffect":"1"
 	},
 	{
+		"caption":"NULL",
+		"JSName":"NULL",
+		"DBName":"NULL",
+		"color":"NULL",
+		"linewidth":"NULL",
+		"lineaffect":"NULL"
+	},
+	{
 		"caption":"Tumor - Low",
 		"JSName":"TumorLow",
 		"DBName":"TumorLow",

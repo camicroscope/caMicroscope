@@ -65,20 +65,26 @@ include 'shared/osdHeader.php';
 					$load_linewidth = $json_data[$key1]["linewidth"];
 					$load_lineaffect = $json_data[$key1]["lineaffect"];
 
-
-					echo '<input type="checkbox" name="markvisualized" id="' . $load_dbname . '_visualized' . '" checked>';
-					if ($selected_idx == 1) {
-						echo '<input type="radio" name="marktype" value="' . $load_dbname . '" id="' . $load_dbname . '" class="radio_markup" ' . 'color="' . $load_color . '" linewidth=' . $load_linewidth . ' lineaffect=' . $load_lineaffect . ' checked>';
-					} else {
-						echo '<input type="radio" name="marktype" value="' . $load_dbname . '" id="' . $load_dbname . '" class="radio_markup" ' . 'color="' . $load_color . '" linewidth=' . $load_linewidth . ' lineaffect=' . $load_lineaffect . '>';
+					if (strcmp($load_caption, 'NULL') == 0)
+					{
+						echo '<p><p>';
 					}
-					$selected_idx = $selected_idx + 1;
-					//$temp = '<label for="abc" class=radio_markup> ' . $load_caption . '</label><br>';
-					$temp = '<label class=radio_markup> ' . $load_caption . '</label><br>';
-					echo $temp;
+					else
+					{
+						echo '<input type="checkbox" name="markvisualized" id="' . $load_dbname . '_visualized' . '" checked>';
+						if ($selected_idx == 1) {
+							echo '<input type="radio" name="marktype" value="' . $load_dbname . '" id="' . $load_dbname . '" class="radio_markup" ' . 'color="' . $load_color . '" linewidth=' . $load_linewidth . ' lineaffect=' . $load_lineaffect . ' checked>';
+						} else {
+							echo '<input type="radio" name="marktype" value="' . $load_dbname . '" id="' . $load_dbname . '" class="radio_markup" ' . 'color="' . $load_color . '" linewidth=' . $load_linewidth . ' lineaffect=' . $load_lineaffect . '>';
+						}
+						$selected_idx = $selected_idx + 1;
+						//$temp = '<label for="abc" class=radio_markup> ' . $load_caption . '</label><br>';
+						$temp = '<label class=radio_markup> ' . $load_caption . '</label><br>';
+						echo $temp;
+					}
 				}
 			?>
-            
+            <p><p>
             <input type="radio" name="marktype" value="Moving" id="rb_Moving" class="radio_markup">
             <label for="rb_Moving" class=radio_markup> (7) Save then Navigate</label><br>
             <button type="button" class="btn_mark" id="btn_savemark">Save</button>
