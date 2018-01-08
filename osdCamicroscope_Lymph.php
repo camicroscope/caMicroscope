@@ -64,7 +64,9 @@ include 'shared/osdHeader.php';
 					$load_linewidth = $json_data[$key1]["linewidth"];
 					$load_lineaffect = $json_data[$key1]["lineaffect"];
 
+
 					echo '<input type="radio" name="marktype" value="' . $load_dbname . '" id="' . $load_dbname . '" class="radio_markup" ' . 'color="' . $load_color . '" linewidth=' . $load_linewidth . ' lineaffect=' . $load_lineaffect . '>';
+					echo '<input type="checkbox" name="markvisualized" id="' . $load_dbname . '_visualized' . '" checked>';
 					$temp = '<label for="abc" class=radio_markup> ' . $load_caption . '</label><br>';
 					echo $temp;
 				}
