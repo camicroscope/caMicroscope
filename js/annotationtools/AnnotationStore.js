@@ -74,7 +74,7 @@ AnnotationStore.prototype.fetchAnnotations = function (x1, y1, x2, y2, footprint
     algorithms_urlparam = algorithms_urlparam.replace(']', '%5D')
     algorithms_urlparam = algorithms_urlparam.replace(/"/g, '%22')
 
-    //dispaly composite_input annotation while in low scale viewport
+    //display composite_input annotation while in low scale viewport
      var isCompositeAnnotationOnly= true;
      var algorithm_number = algorithms.length;
      if (algorithm_number >0) {
@@ -92,7 +92,7 @@ AnnotationStore.prototype.fetchAnnotations = function (x1, y1, x2, y2, footprint
     console.log(url1)
     */
 
-    //dispaly composite_input annotation while in low scale viewport
+    //display composite_input annotation while in low scale viewport
     var isCompositeAnnotationOnly = true;
     var isNonCompositeAnnotationOnly = true;
     var algorithms_computer = [];
