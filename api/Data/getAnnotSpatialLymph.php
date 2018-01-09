@@ -37,7 +37,7 @@ switch ($_SERVER['REQUEST_METHOD'])
             $getRequest->execute();
 
 
-			//Figure out how to parse reponse
+			//Figure out how to parse response
 			$annotationList = ($getRequest->responseBody);
 
             if($annotationList)

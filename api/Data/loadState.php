@@ -25,7 +25,7 @@ switch ($_SERVER['REQUEST_METHOD'])
             echo $url;
 			$getRequest = new RestRequest($url,'GET');
 			$getRequest->execute();
-			//Figure out how to parse reponse
+			//Figure out how to parse response
 			$state = json_decode($getRequest->responseBody);
 			
 			if(json_encode($state) == null)

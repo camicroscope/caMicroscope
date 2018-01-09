@@ -28,7 +28,7 @@ switch ($_SERVER['REQUEST_METHOD'])
 			$url = $getUrl . $iid ."&X1=" . $x . "&Y1=" . $y . "&X2=" . $x1 . "&Y2=" . $y1 . "&text.Author=" . $_GET["author"] . "&text.Grade=" . $_GET["grade"] . "&text.Multi=" . $_GET["multi"] .  "&api_key=".$api_key;	
 			$getRequest = new RestRequest($url,'GET');
 			$getRequest->execute();
-			//Figure out how to parse reponse
+			//Figure out how to parse response
 			$annotationList = json_decode($getRequest->responseBody);
 	    
 			if(json_encode($annotationList) == null)

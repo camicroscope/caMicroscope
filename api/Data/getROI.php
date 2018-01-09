@@ -28,7 +28,7 @@ switch ($_SERVER['REQUEST_METHOD'])
       $getRequest->execute();
 
 
-            //Figure out how to parse reponse
+            //Figure out how to parse response
             $annotationList = json_decode($getRequest->responseBody);
       //print_r($annotationList[0]['properties']);
 

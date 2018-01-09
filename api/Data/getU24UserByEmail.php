@@ -35,7 +35,7 @@ switch ($_SERVER['REQUEST_METHOD'])
           $getRequest = new RestRequest($url,'GET');
           $getRequest->execute();
 
-          //Figure out how to parse reponse
+          //Figure out how to parse response
          $u24_user = json_decode($getRequest->responseBody);
          
          if($u24_user)
