@@ -472,7 +472,7 @@ annotools.prototype.generateSVG = function (annotations) {
 		break;
 	case 'marking':
 		var line_color = '';
-		var stroke_width = 2.5;
+		var stroke_width = 4;
 		var stroke_opacity = 0;
 		switch (annotation.properties.annotations.mark_type)
 		{
