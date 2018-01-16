@@ -134,8 +134,9 @@ include 'shared/osdHeader.php';
     }
 
     function addOverlays() {
-        var annotationHandler = new AnnotoolsOpenSeadragonHandler(viewer, {});
+        var annotationHandler = new AnnotoolsOpenSeadragonHandler(viewer, {}); //annotools-openseajax-handler.js
 
+        //osdAnnotationTools.js
         annotool = new annotools({
             canvas: 'openseadragon-canvas',
             iid: tissueId,
@@ -143,8 +144,10 @@ include 'shared/osdHeader.php';
             annotationHandler: annotationHandler,
             mpp: MPP
         });
+
         filteringtools = new FilterTools();
         //console.log(tissueId);
+
         var toolBar = new ToolBar('tool', {
             left: '0px',
             top: '0px',
