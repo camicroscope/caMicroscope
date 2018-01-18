@@ -472,16 +472,22 @@ annotools.prototype.generateSVG = function (annotations) {
 		break;
 	case 'marking':
 		var line_color = '';
-		var stroke_width = 2.5;
+		var stroke_width = 4;
+		var stroke_opacity = 0;
 		switch (annotation.properties.annotations.mark_type)
 		{
 			case 'LymPos': line_color = 'red'; stroke_width = 2.5*annotation.properties.annotations.mark_width; break;
 			case 'LymNeg': line_color = 'blue'; stroke_width = 2.5*annotation.properties.annotations.mark_width; break;
 			case 'TumorPos': line_color = 'orange'; break;
 			case 'TumorNeg': line_color = 'lime'; break;
+			default: line_color = jQuery("#" + annotation.properties.annotations.mark_type).attr("color");
+					 if (jQuery("#" + annotation.properties.annotations.mark_type + '_visualized').is(":checked")) {
+						 stroke_opacity = 1;
+					 }
+				break;
 		}
 		//svgHtml += '" style="fill:transparent; stroke:'+line_color+ '; stroke-width:2.5"/>'
-		svgHtml += '" style="fill:transparent; stroke:'+line_color+ '; stroke-width:' + stroke_width + '"/>';
+		svgHtml += '" style="fill:transparent; stroke:'+line_color+ '; stroke-width:' + stroke_width + '; stroke-opacity:' + stroke_opacity + '"/>';
 		break;
 	default:
 		svgHtml += '" style="fill:transparent; stroke:'+color+ '; stroke-width:2.5"/>'

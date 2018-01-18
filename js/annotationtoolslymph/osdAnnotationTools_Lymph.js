@@ -54,19 +54,26 @@ var annotools = function (options) {
   this.btn_revertWeight = document.getElementById('btn_revertWeight');
   this.btn_saveWeight = document.getElementById('btn_saveHeatmapWeight');
   this.btn_saveweight_help = document.getElementById('btn_heatmapweight_help');
+
+  /*
   this.rb_lymposbig = document.getElementById('LymPosBig');
   this.rb_lymnegbig = document.getElementById('LymNegBig');
   this.rb_lympos = document.getElementById('LymPos');
   this.rb_lymneg = document.getElementById('LymNeg');
   this.rb_tumpos = document.getElementById('TumorPos');
   this.rb_tumneg = document.getElementById('TumorNeg');
-  this.rb_move = document.getElementById('rb_Moving');
   this.rb_lymposbig.addEventListener('click', this.radiobuttonChange.bind(this), false);
   this.rb_lymnegbig.addEventListener('click', this.radiobuttonChange.bind(this), false);
   this.rb_lympos.addEventListener('click', this.radiobuttonChange.bind(this), false);
   this.rb_lymneg.addEventListener('click', this.radiobuttonChange.bind(this), false);
   this.rb_tumpos.addEventListener('click', this.radiobuttonChange.bind(this), false);
   this.rb_tumneg.addEventListener('click', this.radiobuttonChange.bind(this), false);
+  */
+  var radios = document.getElementsByName("marktype");
+  for( i = 0; i < radios.length; i++ ) {
+	  radios[i].addEventListener('click', this.radiobuttonChange.bind(this), false);
+  }
+  this.rb_move = document.getElementById('rb_Moving');
   this.rb_move.addEventListener('click', this.radiobuttonChange.bind(this), false);
 
   this.btn_revertWeight.addEventListener('click', this.revertWeight.bind(this), false);
