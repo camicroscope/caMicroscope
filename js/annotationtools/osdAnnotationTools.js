@@ -204,12 +204,11 @@ annotools.prototype.getMultiAnnot = function (viewer) {
     // console.log("getMultiAnnot");
     // console.log("viewer", viewer);
 
-    var algorithms = [];
     // console.log("ALGORITHM_LIST", ALGORITHM_LIST);
     // console.log("SELECTED_ALGORITHM_LIST", SELECTED_ALGORITHM_LIST);
 
     SELECTED_ALGORITHM_LIST = SELECTED_ALGORITHM_LIST.sort();
-    algorithms = SELECTED_ALGORITHM_LIST;
+    var algorithms = SELECTED_ALGORITHM_LIST.slice();
 
     /*
     var opa = [];
