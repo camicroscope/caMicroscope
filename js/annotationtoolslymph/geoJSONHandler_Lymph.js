@@ -1,5 +1,5 @@
 annotools.prototype.generateGeoTemplate = function () {
-  
+
   var case_id = this.iid
   var subject_id = case_id.substr(0,12);
   if(subject_id.substr(0,4) != "TCGA"){
@@ -39,7 +39,7 @@ annotools.prototype.generateGeoTemplate = function () {
 }
 
 annotools.prototype.convertRectToGeo = function (annotation) {
- 
+
 
   var origin = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(annotation.x), this.imagingHelper.physicalToDataY(annotation.y))
   var max = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(annotation.x + annotation.w), this.imagingHelper.physicalToDataY(annotation.y + annotation.h))
@@ -103,9 +103,9 @@ annotools.prototype.convertPencilToGeo = function (annotation) {
 
   var area = Math.abs((dataX2 - dataX1))*Math.abs((dataY2-dataY1));
 
-  
 
-  
+
+
   var points = annotation.points
   var p = points.split(' ')
   var geocoords = []
@@ -116,7 +116,7 @@ annotools.prototype.convertPencilToGeo = function (annotation) {
     var pty = +pt[1]
     geocoords.push([ptx, pty])
   }
- 
+
   var geojson = this.generateGeoTemplate()
   var coordinates = []
   coordinates.push([])
@@ -155,9 +155,9 @@ annotools.prototype.convertAnnotationsToGeoJSON = function() {
     geoJSONs = []
     var annotations = this.annotations
 
-    
+
     for(var i in annotations) {
-        
+
         var annotation = annotations[i]
         //console.log(annotation)
 
@@ -165,8 +165,8 @@ annotools.prototype.convertAnnotationsToGeoJSON = function() {
         if(points) { //is a polygon
             //console.log(points)
             geo = convertGeo(points)
-            geoJSONs.push(geo);        
-        
+            geoJSONs.push(geo);
+
         }
     }
     //console.log(geoJSONs)
@@ -317,7 +317,7 @@ annotools.prototype.generateSVG = function (annotations) {
         if (annotation.properties.annotations.username != this.username)
             continue;
       }
- 
+
       if (this.lymheat == false)
       {
 	    if ((annotation.object_type == 'marking') && (annotation.properties.annotations.mark_type == 'LymPos' || annotation.properties.annotations.mark_type == 'LymNeg'))
@@ -331,7 +331,7 @@ annotools.prototype.generateSVG = function (annotations) {
       }
 
       var id = '';
-      
+
       if (annotation['_id'])
         id = annotation['_id']['$oid']
       // console.log(annotation)
@@ -341,7 +341,7 @@ annotools.prototype.generateSVG = function (annotations) {
       var algorithm_id = annotation.provenance.analysis.execution_id
       var color = algorithm_color[algorithm_id]
 
-      // var svg = 
+      // var svg =
       //svgHtml += '<polygon  class="annotationsvg" id="' + id + '" points="'
       svgHtml += '<polyline  class="annotationsvg" id="' + id + '" points="'
 
@@ -429,7 +429,7 @@ annotools.prototype.generateSVG = function (annotations) {
 				//svgHtml += '" style="fill:' + this.heatmapColor[0] + ';fill-opacity: ' + this.heatmap_opacity + ';stroke-width:0"/>';
 			}
 		}
-		
+
 		if (selected_heatmap == this.heatmapColor[0])
 		{
 			selected_opacity = 0.2;
@@ -454,7 +454,7 @@ annotools.prototype.generateSVG = function (annotations) {
 		var upper_threshold = 0.7;
 		selected_heatmap = quality_heatmap_colors[2];
 		selected_opacity = this.heatmap_opacity;
-		
+
 		if (quality_value <= lower_threshold) {
 			selected_heatmap = quality_heatmap_colors[1];
 		}
@@ -472,19 +472,29 @@ annotools.prototype.generateSVG = function (annotations) {
 		break;
 	case 'marking':
 		var line_color = '';
-		var stroke_width = 4;
+		var stroke_width = 4.0; //2.5;
 		var stroke_opacity = 0;
-		switch (annotation.properties.annotations.mark_type)
-		{
-			case 'LymPos': line_color = 'red'; stroke_width = 2.5*annotation.properties.annotations.mark_width; break;
-			case 'LymNeg': line_color = 'blue'; stroke_width = 2.5*annotation.properties.annotations.mark_width; break;
-			case 'TumorPos': line_color = 'orange'; break;
-			case 'TumorNeg': line_color = 'lime'; break;
-			default: line_color = jQuery("#" + annotation.properties.annotations.mark_type).attr("color");
-					 if (jQuery("#" + annotation.properties.annotations.mark_type + '_visualized').is(":checked")) {
-						 stroke_opacity = 1;
-					 }
-				break;
+    switch (annotation.properties.annotations.mark_type) {
+		    case 'LymPos':
+		        line_color = 'red';
+		        stroke_width = 2.5 * annotation.properties.annotations.mark_width;
+		        break;
+		    case 'LymNeg':
+		        line_color = 'blue';
+		        stroke_width = 2.5 * annotation.properties.annotations.mark_width;
+		        break;
+		    case 'TumorPos':
+		        line_color = 'orange';
+		        break;
+		    case 'TumorNeg':
+		        line_color = 'lime';
+		        break;
+		    default:
+		        line_color = jQuery("#" + annotation.properties.annotations.mark_type).attr("color");
+		        if (jQuery("#" + annotation.properties.annotations.mark_type + '_visualized').is(":checked")) {
+		            stroke_opacity = 1;
+		        }
+		        break;
 		}
 		//svgHtml += '" style="fill:transparent; stroke:'+line_color+ '; stroke-width:2.5"/>'
 		svgHtml += '" style="fill:transparent; stroke:'+line_color+ '; stroke-width:' + stroke_width + '; stroke-opacity:' + stroke_opacity + '"/>';
@@ -556,7 +566,7 @@ annotools.prototype.generateSVG = function (annotations) {
 
         jQuery.get(url, function(d){
           var data = {}
-          
+
           try{
             data = JSON.parse(d)[0];
           } catch(e){
@@ -573,14 +583,14 @@ annotools.prototype.generateSVG = function (annotations) {
             console.log(e);
           }
           for(var i in properties){
-            
+
             if(i == "secret"){
 
             } else {
               var line = "<div class='markupProperty'><strong>"+i+"</strong>: " + properties[i]+"</div>";
               content+=line;
             }
-          
+
           }
 
           for(var i =0; i< features.length; i++){
@@ -593,7 +603,7 @@ annotools.prototype.generateSVG = function (annotations) {
           content += "<button class='btn' id='cancelPanel'>Cancel</button>";
           content +="</div>";
           var cancel = function () {
-           
+
             jQuery('#panel').hide('slide')
 
           }
@@ -604,7 +614,7 @@ annotools.prototype.generateSVG = function (annotations) {
           jQuery("#cancelPanel").click(function(){cancel();});
 
           jQuery("#deleteAnnot").click(function(e) {
-            
+
             //$("#confirmDelete").css(
             //console.log(data.provenance.analysis.source);
             if(data.provenance.analysis.source == "human"){
@@ -614,7 +624,7 @@ annotools.prototype.generateSVG = function (annotations) {
                   "id": id,
                   "secret": secret
                 }
-              
+
                 jQuery.ajax({
                   url: 'api/Data/getProperties.php?id='+id,
                   type: 'DELETE',
@@ -632,14 +642,14 @@ annotools.prototype.generateSVG = function (annotations) {
           });
 
         });
-    
+
   })
 
 
 
   /*
   jQuery('.annotationsvg').mousedown(function (event) {
-   
+
     switch (event.which) {
       case 3:
 
@@ -653,23 +663,23 @@ annotools.prototype.generateSVG = function (annotations) {
     + "<div id='panelBody'>";
 
         jQuery.get(url, function(data){
-          
+
           var data = JSON.parse(data)[0];
           var properties = data.properties.annotations;
           for(var i in properties){
-            
+
             if(i == "secret"){
 
             } else {
               var line = "<div class='markupProperty'><strong>"+i+"</strong>: " + properties[i]+"</div>";
               content+=line;
             }
-          
+
           }
           content += "<button class='btn' id='cancelPanel'>Cancel</button>";
           content +="</div>";
           var cancel = function () {
-           
+
             jQuery('#panel').hide('slide')
 
           }

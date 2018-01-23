@@ -10,7 +10,12 @@ $fileLocation = $utils->retrieveImageLocation($tissueId);
 $dzi = $utils->setUpSVSImage($fileLocation);
 $finalMpp = $utils->retrieveMpp($tissueId);
 
+//$tileLocation = $utils->retrieveTileLocation($tissueId);
+
 $returnArray = array();
+
+//array_push($returnArray, $finalMpp, $dzi, $tileLocation);
+
 array_push($returnArray, $finalMpp, $dzi);
 
 echo json_encode($returnArray);

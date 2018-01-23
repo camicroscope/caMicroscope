@@ -70,14 +70,6 @@ include 'shared/osdHeader.php';
     var imagingHelper = new OpenSeadragonImaging.ImagingHelper({viewer: viewer});
     imagingHelper.setMaxZoom(1);
 
-    /* OVERLAY CURRENTLY IN BETA */
-    /*
-    setTimeout(function() {
-        var d = {"id": tissueId, "w": imagingHelper.imgWidth, "h": imagingHelper.imgHeight};
-        overlayRoutine(d, viewer);
-    }, 1000);
-    */
-
     //console.log(this.MPP);
 
     try {
@@ -96,7 +88,6 @@ include 'shared/osdHeader.php';
     catch (ex) {
         console.log("scalebar err: ", ex.message);
     }
-
 
     /*
     // No longer using Filters/BRIGHTNESS
@@ -155,7 +146,8 @@ include 'shared/osdHeader.php';
             width: '100%',
             iid: tissueId,
             annotool: annotool,
-            FilterTools: filteringtools
+            FilterTools: filteringtools,
+            viewer: viewer
         });
         annotool.toolBar = toolBar;
         toolBar.createButtons();

@@ -1,11 +1,11 @@
 /*
 Copyright (C) 2012 Shaohuan Li <shaohuan.li@gmail.com>, Ashish Sharma <ashish.sharma@emory.edu>
 This file is part of Biomedical Image Viewer developed under the Google of Summer of Code 2012 program.
- 
+
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
- 
+
 http://www.apache.org/licenses/LICENSE-2.0
- 
+
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
 
@@ -201,7 +201,7 @@ To save/cancel your work, use the buttons described below:\n\
   cb1.style.visibility = "hidden";
   cb2.style.visibility = "hidden";
   cb3.style.visibility = "hidden";
-    
+
   // Turn on-off lymphocyte heat
   this.lymheat = true;
 
@@ -246,7 +246,7 @@ To save/cancel your work, use the buttons described below:\n\
   this.drawLayer = jQuery('<div>', {
       html: "",
       styles: {
-          position: 'absolute', 
+          position: 'absolute',
           'z-index': 1
       }
   })
@@ -291,34 +291,7 @@ annotools.prototype.destroyMarkups = function (viewer) {
 }
 
 annotools.prototype.getMultiAnnot = function (viewer) {
-  var opa = []
 
-  var val1 = ''
-  var val2 = ''
-  var val3 = ''
-
-  /*
-  if (jQuery('#tree').attr('algotree')) {
-    var selalgos = jQuery('#tree').fancytree('getTree').getSelectedNodes()
-    console.log("selalgos is: "+selalgos);
-    for (i = 0; i < selalgos.length; i++) {
-      //console.log(selalgos[i])
-      algorithms.push(selalgos[i].refKey)
-      console.log("selalgos refKey is: "+selalgos[i].refKey);
-    // opa["Val" + (i + 1).toString()] = selalgos[i].refKey
-    }
-  }*/
-  
-  console.log(ALGORITHM_LIST);
-  console.log(SELECTED_ALGORITHM_LIST);
-  SELECTED_ALGORITHM_LIST = SELECTED_ALGORITHM_LIST.sort();
-  console.log("....");
-    var algorithms = SELECTED_ALGORITHM_LIST.slice();
-    
-    
-  //console.log(algorithms);
-  //console.log(this.imagingHelper._viewportWidth);
-  //console.log(this.imagingHelper._viewportHeight);
   var self = this
   this.x1 = this.imagingHelper._viewportOrigin['x']
   this.y1 = this.imagingHelper._viewportOrigin['y']
@@ -338,6 +311,27 @@ annotools.prototype.getMultiAnnot = function (viewer) {
   //algorithms.push('test')
 
   var t1 = 0
+
+    SELECTED_ALGORITHM_LIST = SELECTED_ALGORITHM_LIST.sort();
+    var algorithms = SELECTED_ALGORITHM_LIST.slice();
+
+    var empty = !OVERLAY_LIST.length;
+    if (!empty)
+    {
+        OVERLAY_LIST.forEach(function (elem) {
+            var idx = algorithms.indexOf(elem.execid);
+
+            if (idx >= 0) {
+                if (elem.state === 1)
+                {
+                    algorithms.pop();
+                }
+            }
+
+        });
+
+    }
+
   if (algorithms.length) {
     if (this.toolBar !== undefined && this.toolBar !== null) {
       this.toolBar.titleButton.hide();
@@ -607,7 +601,7 @@ annotools.prototype.createWorkOrder = function () {
     // The canvas context
     var ctx = this.drawCanvas.getContext('2d')
 
-   
+
     this.removeMouseEvents()
     var started = false
     var min_x,min_y,max_x,max_y,w,h
@@ -669,7 +663,7 @@ annotools.prototype.createWorkOrder = function () {
       loc[1] = parseFloat(newAnnot.y)
       newAnnot.loc = loc
 
-      // convert to geojson 
+      // convert to geojson
       // var geoNewAnnot = this.convertRectToGeo(newAnnot)
       geoNewAnnot = newAnnot
       this.promptForWorkOrder(geoNewAnnot, 'new', this, ctx)
@@ -1022,7 +1016,7 @@ annotools.prototype.setupHandlers = function () {
   //console.log('setting up handlers')
 
   var root = document.getElementsByTagName('svg')[0]
-  // console.log(root); 
+  // console.log(root);
   if (root != undefined) {
     if (navigator.userAgent.toLowerCase().indexOf('webkit') >= 0) {
       window.addEventListener('mousewheel', this.annotationHandler.handleMouseWheel, false) // Chrome/Safari
@@ -1174,7 +1168,7 @@ annotools.prototype.saveAnnot = function (annotation) // Save Annotations
       //console.log(res)
       if(res == "unauthorized"){
         alert("Error saving markup! Wrong secret");
-      } else {   
+      } else {
         //alert("Successfully saved markup!");
       }
       //console.log(err)
@@ -1360,12 +1354,12 @@ annotools.prototype.convertFromNative = function (annot, end) {
     var lastPolyPoint = new OpenSeadragon.Point(parseFloat(last_poly_split[0]), parseFloat(last_poly_split[1]))
 
     points += this.imagingHelper.physicalToLogicalX(lastPolyPoint.x) + ',' + this.imagingHelper.physicalToLogicalY(lastPolyPoint.y)
-      
+
     if ( typeof(end) !== 'undefined') {
         var x_end = end.x;
         var y_end = end.y;
     }
-    
+
     var nativeX_end = this.imagingHelper.physicalToLogicalX(x_end)
     var nativeY_end = this.imagingHelper.physicalToLogicalY(y_end)
     var nativeX = this.imagingHelper.physicalToLogicalX(x)
@@ -1548,7 +1542,7 @@ annotools.prototype.drawRectangle = function (ctx) {
 
     console.log(newAnnot);
 
-    // convert to geojson 
+    // convert to geojson
     var geoNewAnnot = this.convertRectToGeo(newAnnot)
     // geoNewAnnot = newAnnot
     this.promptForAnnotation(geoNewAnnot, 'new', this, ctx);
@@ -1963,16 +1957,16 @@ annotools.prototype.showFilterControls = function(newAnnot, mode, annotools, ctx
             +" Threshold: <input type='range' min=0 max=255 step=1 id='controlThreshhold' /><br />"
             + "<button class='btn' id='controlSobel'>Sobel Edge Detection</button> <button class='btn' id='controlInvert'>Invert Colors</button>" +
     "</div>")
-   
-    
+
+
     jQuery("#controlInvert").on("click", function(){
         viewer.setFilterOptions({
             filters: {
                 processors: OpenSeadragon.Filters.INVERT()
             }
         })
-    });    
- 
+    });
+
     jQuery("#controlSobel").on("click", function(){
         viewer.setFilterOptions({
             filters: {
@@ -1990,7 +1984,7 @@ annotools.prototype.showFilterControls = function(newAnnot, mode, annotools, ctx
                 ]
             }
         })
-    });    
+    });
     jQuery("#controlThreshhold").on("change", function(){
         var threshhold = 1*jQuery(this).val()
         console.log(threshhold)
@@ -1999,7 +1993,7 @@ annotools.prototype.showFilterControls = function(newAnnot, mode, annotools, ctx
                 processors: OpenSeadragon.Filters.THRESHOLDING(threshhold)
             }
         })
-        console.log(viewer);   
+        console.log(viewer);
     })
 
     jQuery("#controlContrast").on("change", function(){
@@ -2010,7 +2004,7 @@ annotools.prototype.showFilterControls = function(newAnnot, mode, annotools, ctx
                 processors: OpenSeadragon.Filters.CONTRAST(contrast)
             }
         })
-        console.log(viewer);   
+        console.log(viewer);
     })
     jQuery("#controlBright").on("change", function(){
         //console.log(viewer)
@@ -2087,7 +2081,7 @@ annotools.prototype.promptForWorkOrder = function (newAnnot, mode, annotools, ct
     annotools.drawLayer.hide()
     annotools.addMouseEvents()
     // annotools.removeMouseEvents()
-    // annotools.getMultiAnnot();            
+    // annotools.getMultiAnnot();
 
     var username = 'lastlegion'
     var execution_id = jQuery('#order-execution_id').val()
@@ -2143,7 +2137,7 @@ annotools.prototype.promptForWorkOrder = function (newAnnot, mode, annotools, ct
     var order = {
         "type": "order",
 
-        "data":{ 
+        "data":{
             "created_on": Date.now(),
             "created_by": "lastlegion"
         }
@@ -2224,7 +2218,7 @@ annotools.prototype.promptForWorkOrder = function (newAnnot, mode, annotools, ct
     annotools.drawLayer.hide()
     annotools.addMouseEvents()
     // annotools.removeMouseEvents()
-    // annotools.getMultiAnnot();            
+    // annotools.getMultiAnnot();
 
     var username = 'lastlegion'
     var execution_id = jQuery('#order-execution_id').val()
@@ -2280,7 +2274,7 @@ annotools.prototype.promptForWorkOrder = function (newAnnot, mode, annotools, ct
     var order = {
         "type": "order",
 
-        "data":{ 
+        "data":{
             "created_on": Date.now(),
             "created_by": "lastlegion"
         }
@@ -2510,7 +2504,7 @@ annotools.prototype.downloadROI = function(){
     // The canvas context
     var ctx = this.drawCanvas.getContext('2d')
 
-    
+
     this.removeMouseEvents()
     var started = false
     var min_x,min_y,max_x,max_y,w,h
@@ -2572,7 +2566,7 @@ annotools.prototype.downloadROI = function(){
       loc[1] = parseFloat(newAnnot.y)
       newAnnot.loc = loc
 
-      // convert to geojson 
+      // convert to geojson
       // var geoNewAnnot = this.convertRectToGeo(newAnnot)
       geoNewAnnot = newAnnot
       this.promptForDownload(geoNewAnnot, 'new', this, ctx)
@@ -2604,7 +2598,7 @@ annotools.prototype.promptForDownload = function(newAnnot, mode, annotools, ctx)
       url = iipSrv + fileLocationReal + "/"+x+ ","+y+","+w+","+h +"/full/0/default.jpg";
 
       panel.html(function () {
-      return "<div id='panelHeader'><h4> Download ROI </h4></div><div id='panelBody'> <ul><li> x: " 
+      return "<div id='panelHeader'><h4> Download ROI </h4></div><div id='panelBody'> <ul><li> x: "
         + x + "</li> <li> y: "
          + y + "</li> <li> w: " + w + "</li> <li>h: " + h + "</li> </ul> <br /> Error! The ROI was too large. We've resized it to 2000 x 2000 tile<br /> <a href='"+url+ "' target='_blank'> <button class='btn' id='downloadROI'>Download</button></a> <button class='btn' id='cancelWorkOrder'>Cancel</button></div>";
     });
@@ -2614,13 +2608,13 @@ annotools.prototype.promptForDownload = function(newAnnot, mode, annotools, ctx)
 
 
       panel.html(function () {
-      return "<div id='panelHeader'><h4> Download ROI </h4></div><div id='panelBody'> <ul><li> x: " 
+      return "<div id='panelHeader'><h4> Download ROI </h4></div><div id='panelBody'> <ul><li> x: "
         + x + "</li> <li> y: "
          + y + "</li> <li> w: " + w + "</li> <li>h: " + h + "</li> </ul> <br /> <a href='"+url+ "' target='_blank'> <button class='btn' id='downloadROI'>Download</button></a> <button class='btn' id='cancelWorkOrder'>Cancel</button></div>";
       });
     }
   jQuery('#cancelWorkOrder').click(function () {
-   
+
     jQuery('#panel').hide()
     annotools.drawLayer.hide()
     annotools.addMouseEvents()
@@ -2629,14 +2623,14 @@ annotools.prototype.promptForDownload = function(newAnnot, mode, annotools, ctx)
     console.log(fileLocation);
     console.log(url);
   jQuery('#submitWorkOrder').click(function () {
-    
+
     // annotools.drawCanvas.removeEvents('mouseup')
     // annotools.drawCanvas.removeEvents('mousedown')
     // annotools.drawCanvas.removeEvents('mousemove')
     annotools.drawLayer.hide()
     annotools.addMouseEvents()
     // annotools.removeMouseEvents()
-    // annotools.getMultiAnnot();            
+    // annotools.getMultiAnnot();
 
     var username = 'lastlegion'
     var execution_id = jQuery('#order-execution_id').val()
@@ -2776,19 +2770,19 @@ annotools.prototype.saveHeatmapWeight = function(event)
 annotools.prototype.saveHeatmapWeight = function(event)
 {
     console.log('Start saveHeatmapWeight');
-    
+
     var self = this;
     var weightData = {
         'case_id': self.iid,
         'lymweight': this.heat_weight[0],
         'necweight': this.heat_weight[1],
         'smoothness': this.heat_weight[2],
-        'username': this.username   
+        'username': this.username
     };
-    
+
     //Check if record for this case_id and this username already exists in mongodb
     var url1 = "api/Data/lymphocyteData.php?case_id="+  self.iid + "&username=" + this.username;
-    
+
     // Debug
     console.log(url1);
 
@@ -2797,7 +2791,7 @@ annotools.prototype.saveHeatmapWeight = function(event)
             var data = JSON.parse(d);
             console.log('Retrived heat weights: ' + JSON.stringify(data[0]));
             console.log("Fetched data length: " + data.length);
-      
+
             if (data.length > 0){
                 console.log('Record exists');
                 alert ('This heatmap has been locked');
@@ -2816,13 +2810,13 @@ annotools.prototype.saveHeatmapWeight = function(event)
                     document.getElementById('div_weight_locked').innerHTML = 'Locked';
                     alert('Saved heatmap weights');
                     }
-                })   
+                })
             }
         } catch (e){
             console.log('ERROR');
             console.log(e);
         }
-        
+
     });
 }
 
@@ -2832,10 +2826,10 @@ annotools.prototype.loadHeatmapWeight = function()
     //console.log('Load heatmap weights');
     //console.log(self.iid);
     //console.log(this.username);
-    
+
     // Start API
      var url1 = "api/Data/lymphocyteData.php?case_id="+  self.iid +"&username=" + this.username;
-    
+
     // Debug
     console.log(url1);
 
@@ -2845,22 +2839,22 @@ annotools.prototype.loadHeatmapWeight = function()
             var data = JSON.parse(d);
             //console.log('Retrived heat weights: ' + JSON.stringify(data[0]));
             //console.log("Fetched data length: " + data.length);
-            
+
             // Start weights
             var sl1 = document.getElementById('slide1');
             var sl2 = document.getElementById('slide2');
             var sl3 = document.getElementById('slide3');
             var div_lock = document.getElementById('div_weight_locked');
             console.log(data);
-            
+
             if ( data.length > 0) {
-    
+
                 //console.log("case_id" + data[0].case_id);
                 //console.log("lymweight" + data[0].lymweight);
                 //console.log("necweight" + data[0].necweight);
                 //console.log("smoothness" + data[0].smoothness);
                 //console.log("username" + data[0].username);
-                
+
                 var lym = data[0].lymweight;
                 var nec = data[0].necweight;
                 var smh = data[0].smoothness;
@@ -2878,7 +2872,7 @@ annotools.prototype.loadHeatmapWeight = function()
                 }
 
                 if (smh){
-                    smh = (parseFloat(smh) * 100).toString() + '%';   
+                    smh = (parseFloat(smh) * 100).toString() + '%';
                 }else {
                     smh = '0%';
                 }
@@ -2902,7 +2896,7 @@ annotools.prototype.loadHeatmapWeight = function()
             console.log(e);
         }
     });
-        
+
     // Wait for the load weight transfering data
     var start = new Date().getTime();
     var delay = 200;
@@ -2929,7 +2923,7 @@ annotools.prototype.loadHeatmapWeight = function()
             var sl3 = document.getElementById('slide3');
             var div_lock = document.getElementById('div_weight_locked');
             console.log(data);
-            if (!data.startsWith('NaN')) { 
+            if (!data.startsWith('NaN')) {
                 parts = data.split('\n');
                 //arr = [parseFloat(parts[0]), parseFloat(parts[1])];
                 //var sl1 = document.getElementById('slide1');
@@ -3018,11 +3012,11 @@ annotools.prototype.isLymphSuperuser = function()
 {
     var self = this;
     //console.log("lymphUser.superuserRole: " + lymphUser.superuserRole);
-    
+
     self.username = self.username.toLowerCase();
     var role = lymphUser.superuserRole;
     var url = "api/Data/lymphocyteSuperusers.php?email=" + self.username + "&role=" + role;
-    
+
     // Debug
     console.log(url);
 
@@ -3030,39 +3024,39 @@ annotools.prototype.isLymphSuperuser = function()
         try {
             var data = JSON.parse(d);
             console.log("Fetched data users length: " + data.length);
-            
+
             // Start users
             console.log(data);
             //console.log("email: " + data[0].email);
             //console.log("role: " + data[0].role);
-            
+
             if ( data.length > 0) {
-                self.lymphSuperuser = true;   
+                self.lymphSuperuser = true;
             }
             console.log('self.lymphSuperuser: ' + self.lymphSuperuser);
-            
+
         } catch (e){
             console.log('ERROR');
             console.log(e);
         }
-    }); 
+    });
 }
 
 annotools.prototype.loadChangeUsername = function()
 {
     var self = this;
-    
+
     console.log('loadChangeUsername ' + self.username);
-    
+
     var url1 = "api/Data/getLymphocyteDataByCaseId.php?case_id=" +  self.iid;
-    
+
     // Debug
     console.log(url1);
 
     jQuery.get(url1, function(d) {
-        
+
         var container =  jQuery('#switchuserpanel');
-        
+
         jQuery('#closeSwitchUser').click(function (e) {
 	        e.preventDefault();
             jQuery('#switchuserpanel').hide('slide');
@@ -3071,10 +3065,10 @@ annotools.prototype.loadChangeUsername = function()
         try {
             var data = JSON.parse(d);
             //console.log("Fetched data users length: " + data.length);
-            
+
             // Start users
             console.log(data);
-            
+
             if ( data.length > 0) {
                 for ( var j = 0; j < data.length; j++ ) {
                     //console.log("username: " + data[j].username);
@@ -3082,9 +3076,9 @@ annotools.prototype.loadChangeUsername = function()
                         if (data[j].username.trim() === self.username) {
                             container.append('<label><input type="radio" name="usergroup" value="' + data[j].username + '" id="switch_user_'+ j +'" class="radio_user" checked="checked" /> ' + data[j].username + '</label><br />');
                         }else {
-                            container.append('<label><input type="radio" name="usergroup" value="' + data[j].username + '" id="switch_user_'+ j +'" class="radio_user" /> ' + data[j].username + '</label><br />');      
+                            container.append('<label><input type="radio" name="usergroup" value="' + data[j].username + '" id="switch_user_'+ j +'" class="radio_user" /> ' + data[j].username + '</label><br />');
                         }
-                    
+
                         //switch
                         var switch_user_eles = document.getElementById('switch_user_' + j.toString());
                         if (switch_user_eles != null) {
@@ -3093,7 +3087,7 @@ annotools.prototype.loadChangeUsername = function()
                             break;
                         }
                     }
-                } 
+                }
             }
         } catch (e){
             console.log('ERROR');
@@ -3101,4 +3095,3 @@ annotools.prototype.loadChangeUsername = function()
         }
     });
 }
-

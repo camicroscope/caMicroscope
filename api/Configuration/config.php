@@ -28,6 +28,7 @@ return array(
     /*
      * temp
      */
+    'getOverlayTiles' => "$baseUrl/services/TileOverlay/Tiles/query/getTileLocation?",
     'algorithmsForImage' => "$annotationsUrl/MarkupsForImages/query/MarkupsAvilableForImage?",
     'getMultipleAnnotations' => "$annotationsUrl/MarkupLoader/query/getMultipleMarkups?",
     'getROI' => "$annotationsUrl/MarkupLoader/query/getROI", //Featurescape URL.
@@ -94,6 +95,7 @@ return array(
     /* Image */	
     'getDimensions' => "$imageUrl/query/getDimensionsByIID?api_key=",
     'getFileLocation' => "$imageUrl/query/getFileLocationByIID?api_key=",
+    //'getTileLocation' => "$imageUrl/query/getTileLocationByIID?api_key=",
     'getMPP' => "$imageUrl/query/getMPPByIID?api_key=",
     'getImageInfoByCaseID'=> "$imageUrl/query/getImageInfoByCaseID?api_key=",
     'fastcgi_server' => "/fcgi-bin/iipsrv.fcgi",

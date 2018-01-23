@@ -38,6 +38,24 @@ class CamicUtils
     }
 
 
+    /**
+     * Tile Overlay
+     * @param $tissueId
+     * @return mixed
+     * @throws Exception
+     */
+    /*
+    function retrieveTileLocation($tissueId)
+    {
+        $fileUrl = $this->CONFIG['getTileLocation'] . $this->api_key . "&TCGAId=" . $tissueId;
+        $fileUrl = str_replace(" ", "%20", $fileUrl);
+        $getTileLocationRequest = new RestRequest($fileUrl, 'GET');
+        $getTileLocationRequest->execute();
+        $location = json_decode($getTileLocationRequest->responseBody);
+        return $location;
+    }*/
+
+
     function retrieveMpp($tissueId)
     {
         $mppUrl = $this->CONFIG['getMPP'] . $this->api_key . "&TCGAId=" . $tissueId;

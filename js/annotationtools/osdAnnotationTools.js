@@ -201,27 +201,6 @@ annotools.prototype.renderByExecutionId = function (algorithms) {
  */
 annotools.prototype.getMultiAnnot = function (viewer) {
 
-    // console.log("getMultiAnnot");
-    // console.log("viewer", viewer);
-
-    // console.log("ALGORITHM_LIST", ALGORITHM_LIST);
-    // console.log("SELECTED_ALGORITHM_LIST", SELECTED_ALGORITHM_LIST);
-
-    SELECTED_ALGORITHM_LIST = SELECTED_ALGORITHM_LIST.sort();
-    var algorithms = SELECTED_ALGORITHM_LIST.slice();
-
-    /*
-    var opa = [];
-    if (jQuery('#tree').attr('algotree')) {
-        var selalgos = jQuery('#tree').fancytree('getTree').getSelectedNodes();
-        // console.log(selalgos);
-        for (i = 0; i < selalgos.length; i++) {
-            algorithms.push(selalgos[i].refKey);
-            // opa["Val" + (i + 1).toString()] = selalgos[i].refKey;
-        }
-    }
-    */
-
     var self = this;
     this.x1 = this.imagingHelper._viewportOrigin['x'];
     this.y1 = this.imagingHelper._viewportOrigin['y'];
@@ -237,12 +216,31 @@ annotools.prototype.getMultiAnnot = function (viewer) {
     var origin = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(0), this.imagingHelper.physicalToDataY(0));
     var area = (max.x - origin.x) * (max.y - origin.y);
 
+    SELECTED_ALGORITHM_LIST = SELECTED_ALGORITHM_LIST.sort();
+    var algorithms = SELECTED_ALGORITHM_LIST.slice();
+
+    var empty = !OVERLAY_LIST.length;
+    if (!empty)
+    {
+        OVERLAY_LIST.forEach(function (elem) {
+            var idx = algorithms.indexOf(elem.execid);
+
+            if (idx >= 0) {
+                if (elem.state === 1)
+                {
+                    algorithms.pop();
+                }
+            }
+
+        });
+
+    }
 
     if (algorithms.length) {
         this.toolBar.titleButton.hide();
         this.toolBar.ajaxBusy.show();
+
         this.annotations = this.AnnotationStore.fetchAnnotations(this.x1, this.y1, this.x2, this.y2, area, algorithms, function (data) {
-            // console.log(data);
             self.annotations = data;
             self.displayGeoAnnots();
             self.setupHandlers();
@@ -250,6 +248,7 @@ annotools.prototype.getMultiAnnot = function (viewer) {
             self.toolBar.titleButton.show();
             self.toolBar.ajaxBusy.hide();
         });
+
     } else {
         self.setupHandlers();
         self.destroyMarkups();

@@ -33,22 +33,22 @@ annotools.prototype.drawMarking = function (ctx) {
     ctx.beginPath();
     ctx.moveTo(relativeStartPoint.x, relativeStartPoint.y);
 
-	// Added for debug
-	//console.log($('input[name="marktype"]:checked').val());
-	console.log(jQuery('input[name="marktype"]:checked').val());
-	console.log(jQuery("#LymPos").attr("wed"));
+    // Added for debug
+    //console.log($('input[name="marktype"]:checked').val());
+    console.log(jQuery('input[name="marktype"]:checked').val());
+    console.log(jQuery("#LymPos").attr("wed"));
 
     var drawn_linewidth = 3;
-	// Replacement code for below if statements
-	selectedRadio = "#" + jQuery('input[name="marktype"]:checked').val();
-	console.log(selectedRadio);
-	ctx.strokeStyle = jQuery(selectedRadio).attr("color");
-	this.mark_type = jQuery(selectedRadio).attr("value");
-	this.markupline_width = jQuery(selectedRadio).attr("lineaffect");
-	drawn_linewidth = jQuery(selectedRadio).attr("linewidth");
-	
+    // Replacement code for below if statements
+    selectedRadio = "#" + jQuery('input[name="marktype"]:checked').val();
+    console.log(selectedRadio);
+    ctx.strokeStyle = jQuery(selectedRadio).attr("color");
+    this.mark_type = jQuery(selectedRadio).attr("value");
+    this.markupline_width = jQuery(selectedRadio).attr("lineaffect");
+    drawn_linewidth = jQuery(selectedRadio).attr("linewidth");
+
     // Check what radio box is checked
-	/*
+    /*
     if (jQuery("#LymPosBig").is(':checked'))
     {
         ctx.strokeStyle = 'red';
@@ -90,7 +90,7 @@ annotools.prototype.drawMarking = function (ctx) {
         ctx.strokeStyle = 'lime';
         this.mark_type = 'TumorNeg';
     }
-	*/
+    */
     console.log(this.mark_type);
 
     this.color_arr.push(ctx.strokeStyle);
@@ -406,7 +406,7 @@ annotools.prototype.break_drawings = function(nativepoints) {
 		coor_str += ' ' + added_X.toFixed(6) + ',' + added_Y.toFixed(6);
 		n_point ++;
 	}
-	
+
 	coor_str += ' ' + x.toFixed(6) + ',' + y.toFixed(6);
 	n_point ++;
 
@@ -593,7 +593,7 @@ annotools.prototype.calculateIntersect = function(high_res) {
         }
 
 	var date = this.getDate(annotation);
-	
+
     	if (high_res) {
 		var mark_width = Math.pow(annotation.properties.annotations.mark_width, 2);
 	} else {

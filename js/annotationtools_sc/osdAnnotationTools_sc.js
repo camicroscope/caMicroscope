@@ -127,33 +127,7 @@ annotools.prototype.destroyMarkups = function (viewer) {
 };
 
 annotools.prototype.getMultiAnnot = function (viewer) {
-    console.log("getMultiAnnot");
 
-    var opa = [];
-
-    var val1 = '';
-    var val2 = '';
-    var val3 = '';
-
-    /*
-    if (jQuery('#tree').attr('algotree')) {
-      var selalgos = jQuery('#tree').fancytree('getTree').getSelectedNodes()
-      console.log("selalgos is: "+selalgos);
-      for (i = 0; i < selalgos.length; i++) {
-        //console.log(selalgos[i])
-        algorithms.push(selalgos[i].refKey)
-        console.log("selalgos refKey is: "+selalgos[i].refKey);
-      // opa["Val" + (i + 1).toString()] = selalgos[i].refKey
-      }
-    }*/
-
-    console.log("algorithm_list", ALGORITHM_LIST);
-    console.log("selected_algorithm_list", SELECTED_ALGORITHM_LIST);
-    SELECTED_ALGORITHM_LIST = SELECTED_ALGORITHM_LIST.sort();
-    console.log("....");
-    var algorithms = SELECTED_ALGORITHM_LIST.slice();
-
-    //console.log(algorithms);
     var self = this;
     this.x1 = this.imagingHelper._viewportOrigin['x'];
     this.y1 = this.imagingHelper._viewportOrigin['y'];
@@ -173,6 +147,27 @@ annotools.prototype.getMultiAnnot = function (viewer) {
     //algorithms.push('test')
 
     var t1 = 0;
+
+    SELECTED_ALGORITHM_LIST = SELECTED_ALGORITHM_LIST.sort();
+    var algorithms = SELECTED_ALGORITHM_LIST.slice();
+
+    var empty = !OVERLAY_LIST.length;
+    if (!empty)
+    {
+        OVERLAY_LIST.forEach(function (elem) {
+            var idx = algorithms.indexOf(elem.execid);
+
+            if (idx >= 0) {
+                if (elem.state === 1)
+                {
+                    algorithms.pop();
+                }
+            }
+
+        });
+
+    }
+    
     if (algorithms.length) {
         this.toolBar.titleButton.hide();
         this.toolBar.ajaxBusy.show();
