@@ -6,8 +6,7 @@ include 'shared/osdHeader.php';
 ?>
 
 <!-- ANNOTATION -->
-	<link rel="stylesheet" type="text/css" media="all" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.7.0/jquery.modal.css" />
-	<script src="js/dependencies/jquery.js"></script>
+    <script src="js/dependencies/jquery.js"></script> <!-- // need for this particular file // -->
     <script src="js/annotationtoolslymph/annotools-openseajax-handler-lymph.js"></script>
     <script src="js/annotationtoolslymph/ToolBar_Lymph.js"></script>
     <script src="js/annotationtoolslymph/AnnotationStore_Lymph.js"></script>
@@ -38,7 +37,7 @@ include 'shared/osdHeader.php';
 
         <div id="markuppanel">
 			<a href='#'><div id='closeMarkupPanel'><img src='images/ic_close_white_24px.svg' title='Close' alt="Close X" height="16" width="16"></div></a>
-			<!-- 
+			<!--
             <input type="radio" name="marktype" value="LymPos" checked="checked" id="LymPos" class="radio_markup" color="red" linewidth=1 lineaffect=1>
             <label for="LymPos" class=radio_markup> (1) LymPos (draw thin line)</label><br>
             <input type="radio" name="marktype" value="LymNeg" id="LymNeg" class="radio_markup" color="blue" linewidth=1 lineaffect=1>
