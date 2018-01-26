@@ -292,7 +292,7 @@ ToolBar.prototype.toggleAlgorithmSelector = function () {
                         "id": self.iid,
                         "w": imagingHelper.imgWidth,
                         "h": imagingHelper.imgHeight,
-                        "loc": "/data/images/overlays/BC_201_1_1"
+                        "loc": "/data/images/overlays"
                     };
                     new overlays(self.iid).overlayRoutine(info, self.viewer);
 
