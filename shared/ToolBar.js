@@ -292,7 +292,7 @@ ToolBar.prototype.toggleAlgorithmSelector = function () {
                         "id": self.iid,
                         "w": imagingHelper.imgWidth,
                         "h": imagingHelper.imgHeight,
-                        "loc": "/data/images/overlays"
+                        "loc": elem.loc
                     };
                     new overlays(self.iid).overlayRoutine(info, self.viewer);
 
