@@ -34,7 +34,28 @@ class CamicUtils
 		return $location;
 	}
 
-
+        function retrieveImageStatus($tissueId)
+	{
+		$statusUrl = $this->CONFIG['getImageStatus'] . $this->api_key . "&TCGAId=" . $tissueId;
+		$statusUrl = str_replace(" ","%20",$statusUrl);
+		$getImageStatusRequest = new RestRequest($statusUrl,'GET');
+		$getImageStatusRequest->execute();
+		$status = json_decode($getImageStatusRequest->responseBody);
+		return $status;
+	}
+        
+        function retrieveImageAssignTo($tissueId)
+	{
+		$statusUrl = $this->CONFIG['getImageAssignTo'] . $this->api_key . "&TCGAId=" . $tissueId;
+		//print_r($statusUrl);
+                $statusUrl = str_replace(" ","%20",$statusUrl);
+		$getImageAssignToRequest = new RestRequest($statusUrl,'GET');
+		$getImageAssignToRequest->execute();
+		$AssignTo = json_decode($getImageAssignToRequest->responseBody);
+		//print_r($AssignTo);
+                return $AssignTo;
+	}
+	
 	function retrieveMpp($tissueId)
 	{
 	    $mppUrl = $this->CONFIG['getMPP'] . $this->api_key . "&TCGAId=" . $tissueId;
