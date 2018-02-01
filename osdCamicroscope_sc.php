@@ -1,15 +1,14 @@
- <?php 
-	
-	
+<?php
+
   session_start();
  
   require '../authenticate.php';  
   $config = require 'api/Configuration/config.php';  
       
   $cancerType = "quip";
+  $_SESSION["cancerType"] = $cancerType;
   
-  $_SESSION["cancerType"] = $cancerType;      
- ?>	
+?>	
 		
     <!DOCTYPE html>
     <html>
@@ -55,7 +54,6 @@
 		
         <script src="js/dependencies/MD5.js"></script>
         <script src="https://code.jquery.com/ui/1.11.2/jquery-ui.min.js" type="text/javascript"></script>  
-        
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.7.0/jquery.modal.js"> </script>
         <script src="js/dependencies/simplemodal.js"></script>
         <script src="js/dependencies/jquery.fancytree-all.min.js"></script>
@@ -124,6 +122,11 @@
 	  console.log("cancerType is: "+cancerType);
 	  console.log("tissueId is: "+tissueId);
 		  
+          var user_email = "<?php echo $_SESSION["email"]; ?>";  
+          console.log("user_email :" + user_email);  
+          var userType = "<?php echo $_SESSION["userType"]; ?>";  
+          console.log("userType :" + userType); 
+
           var imagedata = new OSDImageMetaData({imageId:tissueId});          
           //console.log(imagedata);         
           
@@ -132,7 +135,9 @@
           //console.log(imagedata);
           var fileLocation = imagedata.metaData[1];//.replace("tcga_data","tcga_images");
           //console.log(fileLocation);
-         
+          var imageStatus = imagedata.metaData[2][0]['status'];
+          var assignTo    = imagedata.metaData[3][0]['assign_to'];
+
           var viewer = new OpenSeadragon.Viewer({ 
                 id: "viewer", 
                 prefixUrl: "images/",
@@ -193,7 +198,11 @@
              annotool= new annotools({
                     canvas:'openseadragon-canvas',
                     iid: tissueId, 
-				            cancerType: cancerType,
+	            cancerType: cancerType,
+                    imageStatus: imageStatus,
+                    assignTo:  assignTo,
+                    userType: userType,
+                    user_email: user_email,
                     viewer: viewer,
                     annotationHandler: annotationHandler,
                     mpp:MPP
@@ -206,7 +215,11 @@
                 height: '48px',
                 width: '100%',
                 iid: tissueId,
-				        cancerType: cancerType,
+	        cancerType: cancerType,
+                imageStatus: imageStatus,
+                assignTo:  assignTo,
+                userType: userType,
+                user_email: user_email,
                 annotool: annotool
            
              });
@@ -215,9 +228,7 @@
 		   
            toolBar.createButtons();
 		
-	 var user_email = "<?php echo $_SESSION["email"]; ?>";  
-         console.log("user_email :" + user_email);  
-      
+	    
         var index = user_email.indexOf("@");
         var user= user_email.substring(0,index);		
         var execution_id =user+"_composite_input" ;
@@ -269,4 +280,4 @@
 
 </body>
 </html>
-
+ 
