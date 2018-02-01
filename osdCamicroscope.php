@@ -1,4 +1,4 @@
-    <?php 
+ <?php 
     require '../authenticate.php';
 
     $config = require 'api/Configuration/config.php';
@@ -29,7 +29,7 @@
 
         <!-- <script src="js/dependencies/jquery.js"></script> -->
         <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.11.0/d3.min.js"></script>
     <!--JSON Form dependencies-->
     <script type="application/javascript" src="js/dependencies/underscore.js"></script>
     <script>
@@ -115,11 +115,26 @@
         </div>
 
         <script type="text/javascript">
+
+          var tissueId = <?php echo json_encode($_GET['tissueId']); ?>;
+	  var displayId = tissueId;
+	d3.csv("../table/data.csv", function(data){
+		console.log(data);
+		for(var i in data){
+			var d = data[i];
+			var id = (d['DxSlide1_FileName']);
+			if(tissueId == id){
+				console.log("here");
+				console.log(d);
+				displayId = d['Reformatted_DxSlide1_BarcodeID'];
+		
+			}
+		}
+	})
+
           $.noConflict();
 
           var annotool = null;
-          var tissueId = <?php echo json_encode($_GET['tissueId']); ?>;
-
 
           var imagedata = new OSDImageMetaData({imageId:tissueId});
          
@@ -198,6 +213,7 @@
         annotool= new annotools({
                 canvas:'openseadragon-canvas',
                 iid: tissueId, 
+		displayId: tissueId,
                 viewer: viewer,
                 annotationHandler: annotationHandler,
                 mpp:MPP
@@ -350,3 +366,4 @@
 </body>
 </html>
 
+    
