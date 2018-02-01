@@ -10,9 +10,12 @@ var ToolBar = function (element, options) {
   this.height = options.height || '30px'
   this.width = options.width || '270px'
   this.zindex = options.zindex || '100' // To Make Sure The Tool Appears in the Front
-
-  this.iid = options.iid || null;
-  this.cancerType = options.cancerType;
+  this.iid = options.iid || null
+  this.cancerType = options.cancerType
+  this.imageStatus = options.imageStatus
+  this.assignTo = options.assignTo
+  this.userType = options.userType 
+  this.user_email = options.user_email
   this.annotationActive = isAnnotationActive()
 }
 
@@ -200,8 +203,23 @@ ToolBar.prototype.toggleAlgorithmSelector = function () {
       //algorithm_color[d[i].provenance.analysis_execution_id] = available_colors[i%7]
       algorithm_color[tmp_algorithm_list[i]] = available_colors[i%available_colors.length];
       SELECTED_ALGORITHM_COLOR[tmp_algorithm_list[i]]= available_colors[i%available_colors.length];
-      htmlStr += "<li><input type='checkbox' class='algorithmCheckbox' value="+i+" /><span class='algoColorBox' style='background:"+ algorithm_color[tmp_algorithm_list[i]] +"'></span> "+tmp_algorithm_list[i]
-       + "</li>";
+      //user view composite dataset only
+      if(window.location.port == "8080"){
+        var index_composite_input    =tmp_algorithm_list[i].indexOf("composite_input");
+        var index_composite_dataset  =tmp_algorithm_list[i].indexOf("composite_dataset");
+        var this_entry="";
+        if(index_composite_input != -1){
+          this_entry="human_markup_composite_input";
+        } else if (index_composite_dataset != -1){
+          this_entry="human_markup_composite_dataset";
+        } else 
+          this_entry="";
+        if (this_entry !=""){
+           htmlStr += "<li><input type='checkbox' class='algorithmCheckbox' value="+i+" /><span class='algoColorBox' style='background:"+ algorithm_color[tmp_algorithm_list[i]] +"'></span> "+this_entry + "</li>";
+        } 
+      } else {
+      htmlStr += "<li><input type='checkbox' class='algorithmCheckbox' value="+i+" /><span class='algoColorBox' style='background:"+ algorithm_color[tmp_algorithm_list[i]] +"'></span> "+tmp_algorithm_list[i]+ "</li>";
+      }
     }
 
     htmlStr +="</ul> <br /> <button class='btn' id='cancelAlgorithms'>Hide</button> </div>";
@@ -417,6 +435,17 @@ ToolBar.prototype.createButtons = function () {
       'src': 'images/spacer.svg'
     })
     tool.append(this.spacer4)
+
+    var image_source='images/unlock_icon.png'
+    if(this.imageStatus=='lock'||this.imageStatus=='Lock')
+       image_source='images/lock_icon.png'
+    this.lockUnlockButton = jQuery('<img>', {
+      'title': 'Lock or Unlock This Image by Super User',
+      'class': 'toolButton inactive',
+      'src': image_source      
+    })    
+    tool.append(this.lockUnlockButton) 
+
     
     this.partialDownloadButton = jQuery('<img>', {
       'title': 'Download Partial Markups (Coming Soon)',
@@ -494,33 +523,72 @@ ToolBar.prototype.createButtons = function () {
       this.annotools.downloadROI();
     }.bind(this));
 	
+    this.pencilbutton.on('click', function () {   
+      if(this.imageStatus=="unlock"||this.imageStatus=="Unlock"||this.imageStatus==""){  
+	 this.mode = 'pencil'
+         this.annotools.mode = 'pencil'
+         this.annotools.drawMarkups()        
+         jQuery("canvas").css("cursor", "crosshair");        	
+         jQuery("#drawFreelineButton").addClass("active");
+      } else
+          alert("This image has been locked. Only super user can unlock this image!");    
+    }.bind(this))
 	
-	this.mergebutton1.on('click', function () {
-		this.mode = 'normal';
-		this.annotools.mergeStep1();     
+    this.mergebutton1.on('click', function () {
+       if(this.imageStatus=="unlock"||this.imageStatus=="Unlock"||this.imageStatus==""){
+	  this.mode = 'normal';
+	  this.annotools.mergeStep1();     
+       } else
+          alert("This image has been locked. Only super user can unlock this image!");
      }.bind(this))	 
 	
 	
     this.mergebutton2.on('click', function () {
-      //console.log(this.mode);
-      //if(this.mode == 'merge_step2'){
-	//	 this.mode = 'normal';
-        //this.setNormalMode();       
-     // } else {
+      if(this.imageStatus=="unlock"||this.imageStatus=="Unlock"||this.imageStatus==""){
         this.mode = 'merge_step2'
         this.annotools.mode = 'rect'
         this.annotools.drawMarkups();		
         jQuery("canvas").css("cursor", "crosshair");
 	jQuery("#mergeStep2Button").addClass("active");                   
-      //}    
-    }.bind(this))    
+       } else
+          alert("This image has been locked. Only super user can unlock this image!"); 
+     }.bind(this))    
     
 
     this.mergebutton3.on('click', function () {
 	this.annotools.generateCompositeDataset();     
     }.bind(this))	
-	 
-      
+
+    this.lockUnlockButton.on('click', function () {
+        if(this.userType=="superuser"){
+          var src = this.lockUnlockButton.attr('src');
+          var newsrc = (src=='images/lock_icon.png') ? 'images/unlock_icon.png' : 'images/lock_icon.png';
+	        this.lockUnlockButton.attr('src', newsrc );
+          var status="";
+          if(newsrc=='images/unlock_icon.png'){
+            this.statusbutton.text('Status: Unlock');
+            status="Unlock";}
+          if (newsrc=='images/lock_icon.png'){
+            this.statusbutton.text('Status: Lock');  
+            status="Lock";}    
+          this.annotools.imageStatusUpdate(status);      
+          window.location.href = "/camicroscope/osdCamicroscope_sc.php?tissueId="+this.iid;
+       } else if(this.userType=="user"){
+            if(this.user_email == this.assignTo){ //this user is assigned to this image
+                var src = this.lockUnlockButton.attr('src');
+                if(src=='images/unlock_icon.png'){//image status is unlock
+                   this.lockUnlockButton.attr('src', 'images/lock_icon.png');
+                   this.statusbutton.text('Status: Lock');  
+                   this.annotools.imageStatusUpdate("Lock");      
+                   window.location.href = "/camicroscope/osdCamicroscope_sc.php?tissueId="+this.iid;
+                } else        
+                     alert("Only super user can activate this button!");              
+            } else        
+                alert("Only super user can activate this button!");           
+       } else        
+            alert("Only super user can activate this button!");
+    }.bind(this))	
+ 
     // Dot Tool start
     this.dotToolButton.on('click', function(){
         if (this.annotools.mode == 'dot') {
@@ -538,24 +606,6 @@ ToolBar.prototype.createButtons = function () {
     }.bind(this)); 
     // Dot Tool end
 	
-
-    this.pencilbutton.on('click', function () {
-     // if(this.annotools.mode == 'pencil'){
-        //this.setNormalMode();
-     // } else {
-        //set pencil mode
-	this.mode = 'pencil'
-        this.annotools.mode = 'pencil'
-        this.annotools.drawMarkups()        
-        jQuery("canvas").css("cursor", "crosshair");
-        //jQuery("drawFreelineButton").css("opacity", 1);
-        //jQuery("#drawRectangleButton").removeClass("active");
-        //jQuery("#drawDotButton").removeClass("active");     // Dot Tool
-	//jQuery("#mergeStep2Button").removeClass("active"); // merge step 2 button	
-        jQuery("#drawFreelineButton").addClass("active");
-      //}
-
-    }.bind(this))
 
     this.measurebutton.on('click', function () {
       this.mode = 'measure'
@@ -616,7 +666,18 @@ ToolBar.prototype.createButtons = function () {
   })
   tool.append(this.iidbutton)
 
-  
+  this.statusbutton = jQuery('<p>', {
+    'class': 'statusButton',
+    //if(this.imageStatus =='Lock')
+     // 'text': 'Status: ' + 'Lock'
+    //else if(this.imageStatus =='Unlock')  
+    'text': 'Status: ' + this.imageStatus
+    //else
+      //'text': 'Status: ' + ' '
+  })
+  tool.append(this.statusbutton)
+
+ 
   if (this.annotationActive) {
   }
 }
