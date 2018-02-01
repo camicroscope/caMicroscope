@@ -19,14 +19,16 @@ var annotools = function (options) {
   this.maxHeight = options.maxHeight || 800 // //MaxHeight of the Image
   this.initialized = false
   this.color = options.color || 'lime' // Default Annotation Color
-
   this.iidDecoded = decodeURI(options.iid)
   this.canvas = options.canvas; // The canvas Element that The Use will be drawing annotatoins on.
   this.iid = options.iid || null // The Image ID
-  this.cancerType=options.cancerType;
+  this.cancerType=options.cancerType
+  this.imageStatus=options.imageStatus
+  this.assignTo = options.assignTo
+  this.userType = options.userType
+  this.user_email = options.user_email
   this.annotVisible = true // The Annotations are Set to be visible at the First Loading
   this.mode = 'default' // The Mode is Set to Default
-
   this.viewer = options.viewer
   this.imagingHelper = this.viewer.imagingHelper
   this.mpp = options.mpp
@@ -2622,4 +2624,18 @@ function pollOrder(id, cb){
     }
   });
 }
+
+annotools.prototype.imageStatusUpdate = function(status){  
+  console.log(status);
+  var case_id=this.iid; 
+  var url1 = "api/Data/imageStatusUpdate.php?case_id="+  case_id + "&status=" + status;
+  console.log(url1);	
+  jQuery.ajax({ url: url1,
+               type: 'get',
+               data:null,
+               success: function(data){
+                   console.log(data);                   
+                  }
+                });
+}//end of imageStatusUpdate(status)
 
