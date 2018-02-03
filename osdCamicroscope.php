@@ -72,6 +72,7 @@
         <script src="js/Helpers/StateSchema.js"></script>
         <script src="js/Helpers/ClientPrefManager.js"></script>
         <script src="js/Helpers/Spyglass.js"></script>
+        <script src="js/Helpers/session_notify.js"></script>
         <script src="js/Helpers/spyglass_init_camic.js"></script>
         <script src="js/dependencies/jquery.fancytree-all.min.js"></script>
         <script src="js/dependencies/simplemodal.js"></script>
