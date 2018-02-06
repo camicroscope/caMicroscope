@@ -1,15 +1,9 @@
  <?php 
 	
-
 	
   session_start();
  
   require '../authenticate.php';  
-
-
- 
-
-
   $config = require 'api/Configuration/config.php';  
       
   $cancerType = "quip";
@@ -43,19 +37,13 @@
         <script src="js/dependencies/jsonform.js"></script>
         <script src="js/dependencies/jsv.js"></script>
         <!--End JSON Form dependencies --> 
-
         <!-- <script src="/featurescapeapps/js/findapi_config.js" type="text/javascript"></script>" -->
 	<script src="/js/config.js"></script>
-
-        
-
-
                 
         <script src="js/openseadragon/openseadragon-bin-1.0.0/openseadragon.js"></script>
         <script src="js/openseadragon/openseadragon-imaginghelper.min.js"></script>
         <script src="js/openseadragon/openseadragon-scalebar.js"></script>
         <script src="js/mootools/mootools-core-1.4.5-full-nocompat-yc.js"></script>
-
         <script src="js/mootools/mootools-more-1.4.0.1-compressed.js"></script>        
         <script src="js/imagemetadatatools/osdImageMetadata.js"></script>
 	    
@@ -67,20 +55,6 @@
 		
         <script src="js/dependencies/MD5.js"></script>
         <script src="https://code.jquery.com/ui/1.11.2/jquery-ui.min.js" type="text/javascript"></script>  
-
-
-
-
-		
-
-
-
-
-		
-
-
-
-
         
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.7.0/jquery.modal.js"> </script>
         <script src="js/dependencies/simplemodal.js"></script>
@@ -133,11 +107,7 @@
             <div class="demoarea">
                 <div id="viewer" class="openseadragon"></div>
             </div>
-
             <div id="navigator"></div>
-
-
-
         </div>
 
         <div id="confirmDelete" style="display:none">
@@ -149,31 +119,17 @@
           var annotool = null;
           var tissueId = <?php echo json_encode($_GET['tissueId']); ?>;	
           	
-
 	  var cancerType = "<?php echo $_SESSION["cancerType"] ?>";		    
 		           
 	  console.log("cancerType is: "+cancerType);
 	  console.log("tissueId is: "+tissueId);
-
-
-		  
-
-          
-
-
-
 		  
           var imagedata = new OSDImageMetaData({imageId:tissueId});          
           //console.log(imagedata);         
           
           var MPP = imagedata.metaData[0];
-
 	  console.log(MPP);
           //console.log(imagedata);
-
-
-
-
           var fileLocation = imagedata.metaData[1];//.replace("tcga_data","tcga_images");
           //console.log(fileLocation);
          
@@ -185,15 +141,9 @@
                 navigatorPosition:   "BOTTOM_RIGHT",
                 //navigatorId: "navigator",
                 zoomPerClick: 2,
-
                 //zoomPerScroll: 1,
                 animationTime: 0.75,
                 maxZoomPixelRatio: 2,
-
-
-
-
-
                 visibilityRatio: 1,
                 constrainDuringPan: true
           });
@@ -210,11 +160,7 @@
             //console.log(this.MPP);
             viewer.scalebar({
               type: OpenSeadragon.ScalebarType.MAP,
-
               pixelsPerMeter: (1/(parseFloat(this.MPP["mpp-x"])*0.000001)),
-
-
-
               xOffset: 5,
               yOffset: 10,
               stayInsideImage: true,
@@ -223,7 +169,6 @@
               backgroundColor: "rgba(255,255,255,0.5)",
               barThickness: 2
             });
-
 
           //console.log(viewer);
 
@@ -242,19 +187,6 @@
               // console.log("annotationActive", this.annotationActive);
               return this.annotationActive;
           }
-
-			
-
-		
-
-
-
-
-
-
-
-
-
 
          function addOverlays() {
             var annotationHandler = new AnnotoolsOpenSeadragonHandler(viewer, {});
@@ -283,7 +215,6 @@
 		   
            toolBar.createButtons();
 		
-
 	 var user_email = "<?php echo $_SESSION["email"]; ?>";  
          console.log("user_email :" + user_email);  
       
@@ -294,29 +225,12 @@
    	annotool.execution_id = execution_id;
 	annotool.user = user;
 	console.log("execution_id :" + annotool.execution_id);
-
-
-
-      
-
-
-
-
-		
-
-
-
-
 		
         /*Pan and zoom to point*/
         var bound_x = <?php echo json_encode($_GET['x']); ?>;
         var bound_y = <?php echo json_encode($_GET['y']); ?>;
         var zoom = <?php echo json_encode($_GET['zoom']); ?> || viewer.viewport.getMaxZoom();
-
         zoom =Number(zoom); //convert zoom to number if it is string
-
-
-
         jQuery("#panel").hide();
         if(bound_x && bound_y){
             var ipt = new OpenSeadragon.Point(+bound_x, +bound_y);
@@ -346,11 +260,7 @@
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-
   })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-
-
-
 
   ga('create', 'UA-46271588-1', 'auto');
   ga('send', 'pageview');
