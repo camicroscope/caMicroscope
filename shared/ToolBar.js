@@ -21,8 +21,6 @@ var ToolBar = function (element, options) {
     this.cancerType = options.cancerType;
     this.annotationActive = isAnnotationActive();
     this.viewer = options.viewer;
-    //this.m_overlays = new overlays(this.iid);
-    //console.log("m_overlays", this.m_overlays);
 };
 
 /**
@@ -219,29 +217,13 @@ ToolBar.prototype.toggleAlgorithmSelector = function () {
         jQuery("#panel").html(htmlStr);
 
 
-        //var m_overlays = new overlays(this.iid);
-        //m_overlays.setOverlayList(tmp_algorithm_list);
         var algorithms_urlparam = JSON.stringify(tmp_algorithm_list);
         algorithms_urlparam = algorithms_urlparam.replace("[", "%5B");
         algorithms_urlparam = algorithms_urlparam.replace("]", "%5D");
         algorithms_urlparam = algorithms_urlparam.replace(/"/g, "%22");
 
-        jQuery.get("api/Data/getOverlayTiles.php?iid=" + self.iid + "&algorithms=" + algorithms_urlparam, function (data) {
-
-            var d = JSON.parse(data);
-            for (var i = 0; i < d.length; i++) {
-                //OVERLAY_MAP.set(d[i].provenance.analysis.execution_id, d[i]['tile-location']);
-                var myObj = new Object();
-                myObj.execid = d[i].provenance.analysis.execution_id;
-                myObj.loc = d[i]['tile-location'];
-                myObj.state = 0; //checkbox off
-                OVERLAY_LIST.push(myObj);
-            }
-            console.log("OVERLAY_LIST", OVERLAY_LIST);
-            //console.log("OVERLAY_MAP", OVERLAY_MAP);
-
-        });
-
+        var tileOverlays = new overlays(self.iid, self.viewer);
+        OVERLAY_LIST = tileOverlays.getList(algorithms_urlparam);
 
         /**
          * Populate keys array
@@ -258,7 +240,6 @@ ToolBar.prototype.toggleAlgorithmSelector = function () {
             }
 
         });
-
         self.annotools.getMultiAnnot();
 
         /**
@@ -266,7 +247,7 @@ ToolBar.prototype.toggleAlgorithmSelector = function () {
          */
         jQuery('#algorithmList input[type=checkbox]').change(function () {
 
-            // Re-populate keys and list arrays
+            // Re-populate 'keys' and 'list' arrays
             SELECTED_ALGORITHM_LIST = [];
             SELECTED_ALGORITHM_KEYS = [];
             jQuery("#algorithmList input:checked").each(function () {
@@ -279,37 +260,10 @@ ToolBar.prototype.toggleAlgorithmSelector = function () {
 
             });
 
-
-            // Update overlay list flags
-            OVERLAY_LIST.forEach(function (elem) {
-                var idx = SELECTED_ALGORITHM_LIST.indexOf(elem.execid);
-
-                // element is selected
-                if (idx >= 0) {
-                    // turn flag on, display tiles
-                    elem.state = 1;
-                    var info = {
-                        "id": self.iid,
-                        "w": imagingHelper.imgWidth,
-                        "h": imagingHelper.imgHeight,
-                        "loc": elem.loc
-                    };
-                    new overlays(self.iid).overlayRoutine(info, self.viewer);
-
-                }
-                else {
-                    // element is not selected
-                    // was the flag turned on?
-                    if (elem.state === 1) {
-                        // shut flag off, erase tiles
-                        elem.state = 0;
-                        new overlays(self.iid).toggle(self.viewer, 0);
-                    }
-
-                }
-            });
-            //var obj = _.find(OVERLAY_LIST, function (obj) { return obj.execid === value; });
-
+            // Show segmentation
+            // Display Tiles
+            tileOverlays.toggle(OVERLAY_LIST, SELECTED_ALGORITHM_LIST);
+            // Draw segmentation
             self.annotools.getMultiAnnot();
 
         });
