@@ -10,6 +10,7 @@ annotools.prototype.drawMarking = function (ctx) {
   this.markwidth_arr = [];
   this.current_canvasContext = ctx;
   this.mark_type = 'LymPos';
+  this.algorithm = [];
 
   // Variables for broken markups
   this.rawAnnotArray = [];
@@ -185,6 +186,10 @@ annotools.prototype.drawMarking = function (ctx) {
       loc: []
     }
 
+    if (appid == "qualheat") {
+       newAnnot.algorithm = "test";
+    }
+    
     var globalNumbers = JSON.parse(this.convertFromNative(newAnnot, endRelativeMousePosition))
     newAnnot.x = globalNumbers.nativeX
     newAnnot.y = globalNumbers.nativeY

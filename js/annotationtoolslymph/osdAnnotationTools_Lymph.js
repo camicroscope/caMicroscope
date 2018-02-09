@@ -337,6 +337,20 @@ annotools.prototype.destroyMarkups = function (viewer) {
   }
 }
 
+annotools.prototype.oneExecIDChosenFiltered = function (algorithms,prefix,message,callback) {
+  filtered = algorithms.filter(function (alg) {
+             return alg.startsWith(prefix);
+           });
+  qcount = filtered.length;
+  //console.log(filtered);
+
+  if (qcount == 1) {
+    callback(filtered[0]);
+  } else if (qcount != 0) {
+    alert(message);
+  }
+}
+
 annotools.prototype.getMultiAnnot = function (viewer) {
   var opa = [];
 
@@ -346,9 +360,9 @@ annotools.prototype.getMultiAnnot = function (viewer) {
 
   
     
-  var algorithms = [];
-  var filtered = [];
-  var qcount = 0;
+//  var algorithms = [];
+//  var filtered = [];
+//  var qcount = 0;
   /*
   if (jQuery('#tree').attr('algotree')) {
     var selalgos = jQuery('#tree').fancytree('getTree').getSelectedNodes()
@@ -363,22 +377,26 @@ annotools.prototype.getMultiAnnot = function (viewer) {
   
   console.log(SELECTED_ALGORITHM_LIST);
   SELECTED_ALGORITHM_LIST = SELECTED_ALGORITHM_LIST.sort();
-  //console.log("....");
+
   algorithms = SELECTED_ALGORITHM_LIST;
-  
-  //console.log(algorithms);
 
-  filtered = algorithms.filter(function (alg) {
-             return alg.startsWith("quality_");
-           });
-  qcount = filtered.length;
-  //console.log(filtered);
-
-  if (qcount == 1) {
-    this.loadHeatmapQuality(filtered[0]);
-  } else if (qcount != 0) {
-    alert("Select only one 'quality' algorithm.");
+  if(appid == "qualheat") {
+    this.oneExecIDChosenFiltered(algorithms,"quality_","Select only one 'quality' algorithm.",this.loadHeatmapQuality);
   }
+//  
+//  //console.log(algorithms);
+//
+//  filtered = algorithms.filter(function (alg) {
+//             return alg.startsWith("quality_");
+//           });
+//  qcount = filtered.length;
+//  //console.log(filtered);
+//
+//  if (qcount == 1) {
+//    this.loadHeatmapQuality(filtered[0]);
+//  } else if (qcount != 0) {
+//    alert("Select only one 'quality' algorithm.");
+//  }
   //console.log(algorithms);
   //console.log(this.imagingHelper._viewportWidth);
   //console.log(this.imagingHelper._viewportHeight);

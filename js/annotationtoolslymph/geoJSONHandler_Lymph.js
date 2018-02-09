@@ -504,8 +504,8 @@ annotools.prototype.generateSVG = function (annotations) {
 			case 'TumorNeg': line_color = 'lime'; break;
 			case 'AlgoA': line_color = 'red'; stroke_width = 2.5*annotation.properties.annotations.mark_width; break;
 			case 'AlgoB': line_color = 'blue'; stroke_width = 2.5*annotation.properties.annotations.mark_width; break;
-			case 'AlgoAPoly': line_color = 'orange'; break;
-			case 'AlgoBPoly': line_color = 'lime'; break;
+			case 'AlgoAP': line_color = 'orange'; break;
+			case 'AlgoBP': line_color = 'lime'; break;
 		}
 		//svgHtml += '" style="fill:transparent; stroke:'+line_color+ '; stroke-width:2.5"/>'
 		svgHtml += '" style="fill:transparent; stroke:'+line_color+ '; stroke-width:' + stroke_width + '"/>';
