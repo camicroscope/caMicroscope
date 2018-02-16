@@ -1,4 +1,4 @@
-    <?php 
+    <?php
 	session_start();
 	require '../authenticate.php';
 
@@ -23,7 +23,7 @@
         <link rel="stylesheet" type="text/css" media="all" href="css/ui.fancytree.min.css" />
         <link rel="stylesheet" type="text/css" media="all" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.7.0/jquery.modal.css" />
         <script src="js/dependencies/jquery.js"></script>
-  
+
         <!--JSON Form dependencies-->
         <script src="js/dependencies/underscore.js"></script>
         <script>
@@ -32,9 +32,9 @@
         <script type="text/javascript" src="js/dependencies/jsonform.js"></script>
         <script type="text/javascript" src="js/dependencies/jsv.js"></script>
         <!--End JSON Form dependencies -->
-        
-        <script src="/js/config.js"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script> 
+
+        <script src="../js/config.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
         <script src="js/openseadragon/openseadragon-bin-1.0.0/openseadragon.js"></script>
         <script src="js/openseadragon/openseadragon-imaginghelper.min.js"></script>
         <script src="js/openseadragon/openseadragon-scalebar.js"></script>
@@ -50,16 +50,16 @@
 		<!--<script src="js/annotationtools/osdAnnotationDotTools.js"></script>-->
 		<!--<script src="js/annotationtools/osdAnnotationTools_Marking.js"></script>-->
         <!--<script src="js/annotationtools/geoJSONHandler.js"></script>-->
-        
+
         <script src="js/annotationtoolslymph/ToolBar_Lymph.js"></script>
         <script src="js/annotationtoolslymph/AnnotationStore_Lymph.js"></script>
         <script src="js/annotationtoolslymph/osdAnnotationTools_Lymph.js"></script>
 		<script src="js/annotationtoolslymph/osdAnnotationTools_Marking.js"></script>
         <script src="js/annotationtoolslymph/geoJSONHandler_Lymph.js"></script>
-        
+
         <script src="js/dependencies/MD5.js"></script>
-        <script src="http://code.jquery.com/ui/1.11.2/jquery-ui.min.js" type="text/javascript"></script> 
-        
+        <script src="http://code.jquery.com/ui/1.11.2/jquery-ui.min.js" type="text/javascript"></script>
+
         <!--<script src="js/dependencies/jquery-ui.min.js"></script>-->
 
         <script src="js/dependencies/jquery.fancytree-all.min.js"></script>
@@ -97,7 +97,7 @@
               right: 0;
             }
         </style>
-        <link rel="stylesheet" type="text/css" media="all" href="css/annotools.css" /> 
+        <link rel="stylesheet" type="text/css" media="all" href="css/annotools.css" />
 	    <link rel="stylesheet" type="text/css" media="all" href="css/multiheattools.css" />
     </head>
 
@@ -169,15 +169,15 @@
           //console.log(tissueId);
           //console.log(imagedata);
           //console.log(tissueId);
-          
+
           var MPP = imagedata.metaData[0];
           console.log(MPP);
             //console.log(imagedata);
           var fileLocation = imagedata.metaData[1];//.replace("tcga_data","tcga_images");
           //console.log(fileLocation);
-         
-          var viewer = new OpenSeadragon.Viewer({ 
-                id: "viewer", 
+
+          var viewer = new OpenSeadragon.Viewer({
+                id: "viewer",
                 prefixUrl: "images/",
                 showNavigator:  true,
                 navigatorPosition:   "BOTTOM_RIGHT",
@@ -193,7 +193,7 @@
             //var zoomLevels = viewer.zoomLevels({
             //  levels:[0.001, 0.01, 0.2, 0.1,  1]
             //});
-            
+
             viewer.addHandler("open", addOverlays);
             viewer.clearControls();
             viewer.open("<?php print_r($config['fastcgi_server']); ?>?DeepZoom=" + fileLocation);
@@ -236,7 +236,7 @@
         //var sessionUsername = 'test@gmail.com';
         annotool= new annotools({
                 canvas:'openseadragon-canvas',
-                iid: tissueId, 
+                iid: tissueId,
                 viewer: viewer,
                 annotationHandler: annotationHandler,
                 mpp:MPP,
@@ -250,9 +250,9 @@
                 width: '100%',
                 iid: tissueId,
                 annotool: annotool
-           
+
         });
-        
+
         annotool.toolBar = toolBar;
         annotationHandler.annotool = annotool;
         annotationHandler.toolbar = toolBar;
@@ -268,13 +268,13 @@
         jQuery("#weightpanel").hide();
         jQuery("#markuppanel").hide();
         jQuery("#switchuserpanel").hide();
-        
+
         /* Close weight panel */
         jQuery('#closeWeightPanel').click(function (e) {
 	        e.preventDefault();
             jQuery("#weightpanel").hide('slide');
         });
-        
+
         /* Close markup panel */
         jQuery('#closeMarkupPanel').click(function (e) {
 	        e.preventDefault();
@@ -285,7 +285,7 @@
             annotool.drawLayer.hide();
             annotool.addMouseEvents();
         });
-        
+
         if(bound_x && bound_y){
             var ipt = new OpenSeadragon.Point(+bound_x, +bound_y);
             var vpt = viewer.viewport.imageToViewportCoordinates(ipt);
@@ -299,7 +299,7 @@
     if (!String.prototype.format) {
         String.prototype.format = function() {
             var args = arguments;
-            return this.replace(/{(\d+)}/g, function(match, number) { 
+            return this.replace(/{(\d+)}/g, function(match, number) {
             return typeof args[number] != 'undefined'
                 ? args[number]
                 : match
@@ -332,4 +332,3 @@
 
 </body>
 </html>
-

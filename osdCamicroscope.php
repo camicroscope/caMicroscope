@@ -1,4 +1,4 @@
-    <?php 
+    <?php
     require '../authenticate.php';
 
     $config = require 'api/Configuration/config.php';
@@ -36,12 +36,12 @@
         console.log("underscore:");
         console.log(_);
     </script>
-        
+
         <script type="text/javascript" src="js/dependencies/jsonform.js"></script>
         <script type="text/javascript" src="js/dependencies/jsv.js"></script>
         <!--End JSON Form dependencies -->
-        <!--<script src="/featurescapeapps/js/findapi_config.js" type="text/javascript"></script>-->
-        <script src="/js/config.js"></script>
+        <!--<script src="featurescapeapps/js/findapi_config.js" type="text/javascript"></script>-->
+        <script src="../js/config.js"></script>
 
         <script src="js/openseadragon/openseadragon-bin-1.0.0/openseadragon.js"></script>
         <script src="js/openseadragon/openseadragon-imaginghelper.min.js"></script>
@@ -56,8 +56,8 @@
         <script src="js/annotationtools/osdAnnotationTools.js"></script>
         <script src="js/annotationtools/geoJSONHandler.js"></script>
         <script src="js/dependencies/MD5.js"></script>
-        <script src="https://code.jquery.com/ui/1.11.2/jquery-ui.min.js" type="text/javascript"></script> 
-    
+        <script src="https://code.jquery.com/ui/1.11.2/jquery-ui.min.js" type="text/javascript"></script>
+
 
         <!--Filtering Tools-->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/camanjs/4.1.2/caman.full.js"></script>
@@ -65,7 +65,7 @@
         <script src="js/filteringtools/spinner-slider.js"></script>
         <script src="js/filteringtools/spinner.js"></script>
         <script src="js/filteringtools/FilterTools.js"></script>
-        <!--End Filtering Tools-->    
+        <!--End Filtering Tools-->
         <!--<script src="js/dependencies/jquery-ui.min.js"></script>-->
 
         <script src="js/dependencies/jquery.fancytree-all.min.js"></script>
@@ -101,7 +101,7 @@
     <body>
 
         <div id="container">
-                    
+
             <div id="tool"></div>
             <div id="panel"></div>
             <div id="bookmarkURLDiv"></div>
@@ -122,15 +122,15 @@
 
 
           var imagedata = new OSDImageMetaData({imageId:tissueId});
-         
+
           var MPP = imagedata.metaData[0];
 
 
           var fileLocation = imagedata.metaData[1];
          jQuery("#bookmarkURLDiv").hide();
-         
-          var viewer = new OpenSeadragon.Viewer({ 
-                id: "viewer", 
+
+          var viewer = new OpenSeadragon.Viewer({
+                id: "viewer",
                 prefixUrl: "images/",
                 showNavigator:  true,
                 navigatorPosition:   "BOTTOM_RIGHT",
@@ -146,7 +146,7 @@
     //      var zoomLevels = viewer.zoomLevels({
     //        levels:[0.001, 0.01, 0.2, 0.1,  1]
     //      });
-            
+
             viewer.addHandler("open", addOverlays);
             viewer.clearControls();
             viewer.open("<?php print_r($config['fastcgi_server']); ?>?DeepZoom=" + fileLocation);
@@ -194,10 +194,10 @@
 
     function addOverlays() {
         var annotationHandler = new AnnotoolsOpenSeadragonHandler(viewer, {});
-        
+
         annotool= new annotools({
                 canvas:'openseadragon-canvas',
-                iid: tissueId, 
+                iid: tissueId,
                 viewer: viewer,
                 annotationHandler: annotationHandler,
                 mpp:MPP
@@ -219,7 +219,7 @@
         // For the bootstrap tooltip
         // jQuery('[data-toggle="tooltip"]').tooltip();
         // commented out, working on style
-        
+
         //var panel = new panel();
         jQuery("#panel").hide();
         /*Pan and zoom to point*/
@@ -227,7 +227,7 @@
         var bound_y = <?php echo json_encode($_GET['y']); ?>;
         var zoom = <?php echo json_encode($_GET['zoom']); ?> || viewer.viewport.getMaxZoom();
         zoom=Number(zoom); // convert string to number if zoom is string
-        
+
         /*
         var savedFilters = [
           {'name': 'Brightness', 'value': 100},
@@ -240,7 +240,7 @@
           console.log(filteringtools)
           filteringtools.showFilterControls();
           for(var i=0; i<savedFilters.length; i++){
-                
+
                 console.log(i);
                 var f = savedFilters[i];
                 var filterName = f.name;
@@ -269,7 +269,7 @@
 
                 viewer.viewport.panTo(pan);
                 viewer.viewport.zoomTo(zoom);
-            
+
             } else {
                 if(viewport) {
                     console.log("here");
@@ -282,7 +282,7 @@
               filteringtools.showFilterControls();
 
               for(var i=0; i<savedFilters.length; i++){
-                    
+
 
                     var f = savedFilters[i];
                     var filterName = f.name;
@@ -293,12 +293,12 @@
                     }else {
                         jQuery("#control"+filterName).val(1*f.value);
                         jQuery("#control"+filterName+"Num").val(1*f.value);
-                
+
                     }
                 }
             }
             filteringtools.updateFilters();
-        
+
         });
         }
 
@@ -315,7 +315,7 @@
       if (!String.prototype.format) {
         String.prototype.format = function() {
             var args = arguments;
-            return this.replace(/{(\d+)}/g, function(match, number) { 
+            return this.replace(/{(\d+)}/g, function(match, number) {
             return typeof args[number] != 'undefined'
                 ? args[number]
                 : match
@@ -349,4 +349,3 @@
 
 </body>
 </html>
-

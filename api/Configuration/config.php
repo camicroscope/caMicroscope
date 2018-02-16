@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 $baseUrl = "http://quip-data:9099";
 $kueUrl = "http://quip-jobs:3000";
@@ -42,18 +42,18 @@ return array(
     'retrieveAnnotation' => "$tempMarkupUrl/Annotations/query/byAnnotId?annotId=",
     'postJobParameters' => "$tempMarkupUrl/AnalysisJobs/submit/singleJob",
     'deleteAnnotation' => "$tempMarkupUrl/Annotations/delete/singleAnnotation?annotId=",
-    
+
     /* Lymphocyte */
     'postAlgorithmForImageLymph' => "$annotationsUrl/MarkupsForImages/submit/json?",
     'getAnnotationsSpatialLymph' => "$serviceUrl/GeoJSONImageMetaData/query/getMarkups?",
     'getMultipleAnnotationsWithAttr' => "$annotationsUrl/MarkupLoader/query/getMultipleMarkupsWithAttr?",
-    
+
     //'postDataForLymphocytes' => "$annotationsUrl/Lymphocytes/submit/json?",
     //'getLymphocyteData' => "$annotationsUrl/Lymphocytes/query/getLymphocytes?",
     'postDataForLymphocytes' => "$lymphocyteUrl/DataForLymphocytes/submit/json?",
     'getLymphocyteData' => "$lymphocyteUrl/DataForLymphocytes/query/getLymphocytes?",
     'getLymphocyteDataByCaseId' => "$lymphocyteUrl/DataForLymphocytes/query/getLymphocytesByCaseId?",
-    
+
     /* Lymphocyte Superusers */
     'postSuperuserForLymphocytes' => "$lymphocyteUrl/LymphocyteUsers/submit/json?",
     'getLymphocyteSuperusers' => "$lymphocyteUrl/LymphocyteUsers/query/getLymphSuperusers?",
@@ -61,24 +61,24 @@ return array(
     'getLymphocyteUserByEmailAndRole' => "$lymphocyteUrl/LymphocyteUsers/query/getUserByEmailAndRole?",
     'deleteLymphocyteUserByEmail' => "$lymphocyteUrl/LymphocyteUsers/delete/deleteUserByEmail?",
     'deleteLymphocyteSuperuser' => "$lymphocyteUrl/LymphocyteUsers/delete/deleteLymphSuperuser?",
-    
-    
+
+
    /*Bindaas API for back compatible */
-     'postAlgorithmForImage'           => "$annotationsUrl/MarkupsForImages/submit/json",  
-     'getMultipleAnnotationsClone'     => "$annotationsUrl/MarkupLoader/query/getMultipleMarkupsClone?",     
-     'deleteAnnotation'                => "$annotationsUrl/MarkupLoader/delete/DeleteByOID", 
+     'postAlgorithmForImage'           => "$annotationsUrl/MarkupsForImages/submit/json",
+     'getMultipleAnnotationsClone'     => "$annotationsUrl/MarkupLoader/query/getMultipleMarkupsClone?",
+     'deleteAnnotation'                => "$annotationsUrl/MarkupLoader/delete/DeleteByOID",
      'deleteAnnotationWithinRectangle' => "$annotationsUrl/MarkupLoader/delete/deleteAnnotationWithinRectangle",
-     'deleteAnnotationWithinRectangleClone' => "$annotationsUrl/MarkupLoader/delete/deleteAnnotationWithinRectangleClone",     
-     'getPropertiesForMarkupClone'          => "$annotationsUrl/MarkupLoader/query/getPropertiesForMarkupClone?",    
-     'getAnnotationCountWithinRectangle'    => "$annotationsUrl/MarkupLoader/query/getAnnotationCountWithinRectangle?",    
+     'deleteAnnotationWithinRectangleClone' => "$annotationsUrl/MarkupLoader/delete/deleteAnnotationWithinRectangleClone",
+     'getPropertiesForMarkupClone'          => "$annotationsUrl/MarkupLoader/query/getPropertiesForMarkupClone?",
+     'getAnnotationCountWithinRectangle'    => "$annotationsUrl/MarkupLoader/query/getAnnotationCountWithinRectangle?",
      'getAnnotationWithinRectangle'         => "$annotationsUrl/MarkupLoader/query/getAnnotationWithinRectangle?",
      'getMultipleMarkupsNew'=> "$annotationsUrl/MarkupLoader/query/getMultipleMarkupsNew?",
-     
-    
+
+
     /* Template */
     'retrieveTemplate'      => "$templateUrl/AnnotationTemplate/query/retrieveTemplate",
     'retrieveTemplateClone' => "$templateUrl/AnnotationTemplate/query/retrieveTemplateClone",
-	
+
     /* u24_user */
     'findUserByName'   => "$u24_userUrl/user_data/query/findUserByName?",
     'findUserByEmail'  => "$u24_userUrl/user_data/query/findUserByEmail?",
@@ -87,16 +87,16 @@ return array(
     'deleteUserByName' => "$u24_userUrl/user_data/delete/deleteUserByName?",
     'deleteUserByEmail'=> "$u24_userUrl/user_data/delete/deleteUserByEmail?",
     'postUser'         => "$u24_userUrl/user_data/submit/json",
-    
-    
-    /* Image */	
+
+
+    /* Image */
     'getDimensions' => "$imageUrl/query/getDimensionsByIID?api_key=",
     'getFileLocation' => "$imageUrl/query/getFileLocationByIID?api_key=",
     'getMPP' => "$imageUrl/query/getMPPByIID?api_key=",
     'getImageInfoByCaseID'=> "$imageUrl/query/getImageInfoByCaseID?api_key=",
-    'fastcgi_server' => "/fcgi-bin/iipsrv.fcgi",
-  
-	 /* Dynamic Services */														 
+    'fastcgi_server' => "../fcgi-bin/iipsrv.fcgi",
+
+	 /* Dynamic Services */
     'postWorkOrder' => "$dynamicServices/WorkOrders/submit/json",
     'kueUrl' => $kueUrl
 );
