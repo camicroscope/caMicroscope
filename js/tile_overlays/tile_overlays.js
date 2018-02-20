@@ -111,8 +111,7 @@ overlays.prototype.toggle = function (OVERLAY_LIST, SELECTED_ALGORITHM_LIST) {
  *
  * @param algorithms_urlparam
  */
-overlays.prototype.getList = function(algorithms_urlparam)
-{
+overlays.prototype.getList = function (algorithms_urlparam) {
     /**
      * Populate available-overlays array.
      */
@@ -120,10 +119,15 @@ overlays.prototype.getList = function(algorithms_urlparam)
 
         var d = JSON.parse(data);
         for (var i = 0; i < d.length; i++) {
-            var myObj = {};
-            myObj.execid = d[i].provenance.analysis.execution_id;
-            myObj.loc = d[i]['tile-location'];
-            OVERLAY_LIST.push(myObj);
+            if (d[i]['tile-location'] != null) {
+                var myObj = {};
+                myObj.execid = d[i].provenance.analysis_execution_id;
+                myObj.loc = d[i]['tile-location'];
+                OVERLAY_LIST.push(myObj);
+            }
+            else {
+                console.log(d[i], "has no tile location")
+            }
         }
         console.log("OVERLAY_LIST", OVERLAY_LIST);
 

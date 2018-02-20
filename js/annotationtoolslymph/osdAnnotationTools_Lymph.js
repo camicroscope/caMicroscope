@@ -322,10 +322,7 @@ annotools.prototype.getMultiAnnot = function (viewer) {
             var idx = algorithms.indexOf(elem.execid);
 
             if (idx >= 0) {
-                if (elem.state === 1)
-                {
-                    algorithms.pop();
-                }
+              algorithms.pop();
             }
 
         });
