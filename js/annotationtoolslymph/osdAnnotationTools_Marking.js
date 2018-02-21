@@ -7,9 +7,11 @@ annotools.prototype.drawMarking = function (ctx) {
   this.color_arr = [];
   this.anno_arr = [];
   this.marktype_arr = [];
+  this.markeid_arr = [];
   this.markwidth_arr = [];
   this.current_canvasContext = ctx;
   this.mark_type = 'LymPos';
+  this.mark_eid = '';
   this.algorithm = [];
 
   // Variables for broken markups
@@ -121,6 +123,18 @@ annotools.prototype.drawMarking = function (ctx) {
     }
     console.log(this.mark_type);
 
+    SELECTED_ALGORITHM_LIST = SELECTED_ALGORITHM_LIST.sort();
+
+    algorithms = SELECTED_ALGORITHM_LIST;
+
+    if(appid == "qualheat") {
+        var that = this;
+        this.oneExecIDChosenFiltered(algorithms,"quality_","Select only one 'quality' algorithm.", function (qalgo) {
+            that.mark_eid = qalgo;
+            console.log("This works. "+qalgo); 
+        });
+    }
+
     this.color_arr.push(ctx.strokeStyle);
     console.log(this.color);
     ctx.lineWidth = drawn_linewidth;
@@ -185,10 +199,6 @@ annotools.prototype.drawMarking = function (ctx) {
       color: this.color,
       loc: []
     }
-
-    if (appid == "qualheat") {
-       newAnnot.algorithm = "test";
-    }
     
     var globalNumbers = JSON.parse(this.convertFromNative(newAnnot, endRelativeMousePosition))
     newAnnot.x = globalNumbers.nativeX
@@ -204,12 +214,15 @@ annotools.prototype.drawMarking = function (ctx) {
     this.rawAnnotArray.push(newAnnot);
     var geojsonAnnot = this.convertPencilToGeo(newAnnot)
     geojsonAnnot.object_type = 'marking';
+
     //console.log(geojsonAnnot);
     //this.promptForAnnotation(geojsonAnnot, 'new', this, ctx)
     this.anno_arr.push(geojsonAnnot);
     this.marktype_arr.push(this.mark_type);
+    this.markeid_arr.push(this.mark_eid);
     this.markwidth_arr.push(this.markupline_width);
     //this.saveMarking(geojsonAnnot, this.mark_type);
+    console.log("Algorithm: "+ this.mark_algo);
 
     /* Change button back to inactive*/
     jQuery("canvas").css("cursor", "default");
@@ -224,6 +237,7 @@ annotools.prototype.breakAndConvertToGeo = function ()
     // Refresh this.anno_arr
     this.anno_arr = [];
     this.marktype_broken_arr = [];
+    this.markeid_broken_arr = [];
     this.markwidth_broken_arr = [];
     for (i = 0; i< this.rawAnnotArray.length; i++)
     {
@@ -257,6 +271,7 @@ annotools.prototype.breakAndConvertToGeo = function ()
             this.anno_arr.push(geojsonAnnot);
             this.marktype_broken_arr.push(this.marktype_arr[i]);
             this.markwidth_broken_arr.push(this.markwidth_arr[i]);
+            this.markeid_broken_arr.push(this.markeid_arr[i]);
         }
     }
 }
@@ -273,12 +288,13 @@ annotools.prototype.saveMarking = function (newAnnot, mark_type) {
     this.addnewAnnot(newAnnot);
 }
 
-annotools.prototype.saveMarking_arr = function (newAnnot_arr, mark_type_arr, mark_width_arr) {
+annotools.prototype.saveMarking_arr = function (newAnnot_arr, mark_type_arr, mark_width_arr, mark_eid_arr) {
     for (iAnn = 0; iAnn < newAnnot_arr.length; iAnn++) {
         var val = {
             'secret': 'mark1',
             'mark_type': mark_type_arr[iAnn],
             'mark_width': mark_width_arr[iAnn],
+            'mark_eid': mark_eid_arr[iAnn],
             'username': this.username
         }
         newAnnot_arr[iAnn].properties.annotations = val;
@@ -292,7 +308,7 @@ annotools.prototype.markSave = function (notification, isSetNormalMode) {
         return;
 
     this.breakAndConvertToGeo();
-    this.saveMarking_arr(this.anno_arr, this.marktype_broken_arr, this.markwidth_broken_arr);
+    this.saveMarking_arr(this.anno_arr, this.marktype_broken_arr, this.markwidth_broken_arr, this.markeid_broken_arr);
     if (notification == true) {
         alert("Saved markup");
     }
@@ -325,6 +341,7 @@ annotools.prototype.undoStroke = function () {
     this.anno_arr.pop();
     this.rawAnnotArray.pop();
     this.marktype_arr.pop();
+    this.markeid_arr.pop();
     this.markwidth_arr.pop();
     console.log(this.color_arr);
     this.reDrawCanvas();
