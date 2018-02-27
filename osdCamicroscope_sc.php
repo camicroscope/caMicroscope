@@ -152,6 +152,7 @@
            //levels:[0.001, 0.01, 0.2, 0.1,  1]
            // });
 
+
             viewer.addHandler("open", addOverlays);
             viewer.clearControls();
             viewer.open("<?php print_r($config['fastcgi_server']); ?>?DeepZoom=" + fileLocation);
@@ -214,10 +215,8 @@
            annotool.toolBar = toolBar;
 
            toolBar.createButtons();
-
 	 var user_email = "<?php echo $_SESSION["email"]; ?>";
          console.log("user_email :" + user_email);
-
         var index = user_email.indexOf("@");
         var user= user_email.substring(0,index);
         var execution_id =user+"_composite_input" ;

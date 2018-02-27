@@ -43,7 +43,7 @@
         <!--<script src="featurescapeapps/js/findapi_config.js" type="text/javascript"></script>-->
         <script src="../js/config.js"></script>
 
-        <script src="js/openseadragon/openseadragon-bin-1.0.0/openseadragon.js"></script>
+        <script src="js/openseadragon/openseadragon-bin-2.3.1/openseadragon.js"></script>
         <script src="js/openseadragon/openseadragon-imaginghelper.min.js"></script>
         <script src="js/openseadragon/openseadragon-scalebar.js"></script>
         <script src="js/openseadragon/openseadragonzoomlevels.js"></script>
@@ -68,6 +68,11 @@
         <!--End Filtering Tools-->
         <!--<script src="js/dependencies/jquery-ui.min.js"></script>-->
 
+        <script src="js/Helpers/StateManager.js"></script>
+        <script src="js/Helpers/StateSchema.js"></script>
+        <script src="js/Helpers/ClientPrefManager.js"></script>
+        <script src="js/Helpers/Spyglass.js"></script>
+        <script src="js/Helpers/spyglass_init_camic.js"></script>
         <script src="js/dependencies/jquery.fancytree-all.min.js"></script>
         <script src="js/dependencies/simplemodal.js"></script>
         <style type="text/css">
@@ -122,7 +127,7 @@
 
 
           var imagedata = new OSDImageMetaData({imageId:tissueId});
-
+          imagedata.retrieveImageSize();
           var MPP = imagedata.metaData[0];
 
 
@@ -148,8 +153,9 @@
     //      });
 
             viewer.addHandler("open", addOverlays);
-            viewer.clearControls();
-            viewer.open("<?php print_r($config['fastcgi_server']); ?>?DeepZoom=" + fileLocation);
+            viewer.clearControls()
+            _viewer_source = "<?php print_r($config['fastcgi_server']); ?>?DeepZoom=" + fileLocation;
+            viewer.open(_viewer_source);
             var imagingHelper = new OpenSeadragonImaging.ImagingHelper({viewer: viewer});
             imagingHelper.setMaxZoom(1);
             //console.log(this.MPP);
@@ -251,24 +257,36 @@
             }
         }*/
 
-        var stateID = <?php echo json_encode($_GET['stateID']); ?>;
+        var PrefMan = new ClientPrefManager("viewer");
+        // on a new press, do the following...
+        window.onkeypress = function(event) {
+           if (event.keyCode == 122) {
+              var toggle = function(e){
+                if(e){
+                  // if it's on, set it off
+                  PrefMan.set_pref("scroll_zoom", false);
+                  viewer.zoomPerScroll = 1.2;
+                  console.log("Scroll Wheel Enabled")
+                } else {
+                  // if it's off, set it on
+                  PrefMan.set_pref("scroll_zoom", true);
+                  viewer.zoomPerScroll = 1;
+                  console.log("Scroll Wheel Disabled")
+                }
+              }
+              PrefMan.get_pref("scroll_zoom", disable_if_true);
+           }
+        }
 
-        //Check if loading from saved state
-        if(stateID){
-            //fetch state from firebase
-            jQuery.get("https://test-8f679.firebaseio.com/camicroscopeStates/"+stateID+".json?auth=kweMPSAo4guxUXUodU0udYFhC27yp59XdTEkTSJ4", function(data){
-
-            var savedFilters = data.state.filters;
-            var viewport = data.state.viewport;
-            var pan = data.state.pan;
-            var zoom = data.state.zoom || viewer.viewport.getMaxZoom();
-
-
-            //pan and zoom have preference over viewport
-            if (pan && zoom) {
-
-                viewer.viewport.panTo(pan);
-                viewer.viewport.zoomTo(zoom);
+        // Deal previously set
+        var disable_if_true = function(e){
+          if(e){
+            viewer.zoomPerScroll = 1;
+            // setting to one makes scroll not change zoom level
+            console.log("Scroll Wheel Disabled")
+          }
+        };
+        PrefMan.get_pref("scroll_zoom", disable_if_true);
 
             } else {
                 if(viewport) {
@@ -333,6 +351,9 @@
         x: 13083.041579687379
         y: 19609.643967801494
     */
+
+    // Start the spyglass
+    spyglass_init(_viewer_source);
 
           </script>
 
