@@ -397,9 +397,9 @@ annotools.prototype.generateSVG = function (annotations) {
 		selected_heatmap = this.heatmapColor[0];
 		selected_opacity = this.heatmap_opacity;
 
-		if (intersect_label[i] != 0)
+		if (intersect_label[i].label != 0)
 		{
-			switch (intersect_label[i])
+			switch (intersect_label[i].label)
 			{
 			case -1: svgHtml += '" style="fill:' + this.heatmapColor[4] + ';fill-opacity: ' + this.heatmap_opacity + ';stroke-width:0"/>'; break;
 			case 1: svgHtml += '" style="fill:' + this.heatmapColor[3] + ';fill-opacity: ' + this.heatmap_opacity + ';stroke-width:0"/>'; break;
@@ -454,17 +454,52 @@ annotools.prototype.generateSVG = function (annotations) {
 		var lower_threshold = window.qualthresholds.low / 100;
 		var upper_threshold = window.qualthresholds.high / 100;
 		var median = window.qualthresholds.median / 100;
+		var self = this;
 		selected_heatmap = this.heatmapColorQuality[2];
 		selected_opacity = this.heatmap_opacity;
-		
-		if (intersect_label[i] != 0)
+		SELECTED_ALGORITHM_LIST = SELECTED_ALGORITHM_LIST.sort();
+
+  		algorithms = SELECTED_ALGORITHM_LIST;
+		console.log(intersect_label[i].label);
+
+		if (intersect_label[i].label != 0 && !(typeof intersect_label[i].label === "undefined"))
 		{
-			switch (intersect_label[i])
-			{
-			case -1: 	selected_heatmap = this.heatmapColorQuality[0];
-	 				break;
-			case 1: selected_heatmap = this.heatmapColorQuality[4]; break;
-			}
+	  		if(appid == "qualheat") {
+		    		this.oneExecIDChosenFiltered(algorithms,"quality_","Select only one 'quality' algorithm.", function (qeid) {
+					if(qeid == intersect_label[i].eid) {
+						switch (intersect_label[i].label)
+						{
+							case -1: 	selected_heatmap = self.heatmapColorQuality[0];
+			 						break;
+							case 1: 	selected_heatmap = self.heatmapColorQuality[4]; 
+									break;
+						}
+                          		}
+					else
+					{
+				                   if (quality_value <= lower_threshold) {
+				                        selected_heatmap = self.heatmapColorQuality[0];
+				                   }
+				
+				                   if (quality_value > lower_threshold && quality_value <= (median - 0.05)) {
+				                        selected_heatmap = self.heatmapColorQuality[1];
+				                   }
+				
+				                   if (quality_value >= upper_threshold) {
+				                        selected_heatmap = self.heatmapColorQuality[4];
+				                   }
+				
+				                   if (quality_value < upper_threshold && quality_value >= (median + 0.05)) {
+				                        selected_heatmap = self.heatmapColorQuality[3];
+				                   }
+				
+				                   if (quality_value < 0) {
+				                        selected_heatmap = self.heatmapColorQuality[2];
+				                        selected_opacity = 0.2
+				                   }
+                			}
+		        	});
+	  		}
 		}
 		else
 		{
@@ -489,13 +524,12 @@ annotools.prototype.generateSVG = function (annotations) {
    			selected_opacity = 0.2
    		   }
 		}
-
-
 		svgHtml += '" style="fill:' + selected_heatmap + ';fill-opacity: ' + selected_opacity + ';stroke-width:0"/>';
 		break;
 	case 'marking':
 		var line_color = '';
 		var stroke_width = 2.5;
+		console.log(annotation);
 		switch (annotation.properties.annotations.mark_type)
 		{
 			case 'LymPos': line_color = 'red'; stroke_width = 2.5*annotation.properties.annotations.mark_width; break;
@@ -508,7 +542,15 @@ annotools.prototype.generateSVG = function (annotations) {
 			case 'AlgoBP': line_color = 'lime'; break;
 		}
 		//svgHtml += '" style="fill:transparent; stroke:'+line_color+ '; stroke-width:2.5"/>'
-		svgHtml += '" style="fill:transparent; stroke:'+line_color+ '; stroke-width:' + stroke_width + '"/>';
+ 		if(appid == "qualheat") {
+                	this.oneExecIDChosenFiltered(algorithms,"quality_","Select only one 'quality' algorithm.", function (qeid) {
+                                        if(qeid == annotation.properties.annotations.mark_eid) {
+						svgHtml += '" style="fill:transparent; stroke:'+line_color+ '; stroke-width:' + stroke_width + '"/>';
+                                        }
+                        });
+		} else {
+			svgHtml += '" style="fill:transparent; stroke:'+line_color+ '; stroke-width:' + stroke_width + '"/>';
+		}
 		break;
 	default:
 		svgHtml += '" style="fill:transparent; stroke:'+color+ '; stroke-width:2.5"/>'
@@ -526,6 +568,7 @@ annotools.prototype.generateSVG = function (annotations) {
       }
       */
     }
+
 
     //Debug
     //console.log(svgHtml);
@@ -590,6 +633,7 @@ annotools.prototype.generateSVG = function (annotations) {
             if(data.properties.scalar_features)
               features=  data.properties.scalar_features[0].nv;
             properties = data.properties.annotations;
+            console.log(properties);
           } catch(e){
             console.log(e);
           }

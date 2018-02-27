@@ -567,6 +567,7 @@ annotools.prototype.calculateIntersect = function(high_res) {
     var annotations = this.annotations;
 
     var labels = [];
+    var label = 0;
     var label_dates = [];
     var id = [];
     var cx = [];
@@ -645,6 +646,7 @@ annotools.prototype.calculateIntersect = function(high_res) {
             continue;
         }
 
+
 	var date = this.getDate(annotation);
 	
     	if (high_res) {
@@ -660,7 +662,7 @@ annotools.prototype.calculateIntersect = function(high_res) {
                 if ((Math.abs(cx[xy_i] - x) <= disx*mark_width) && (Math.abs(cy[xy_i] - y) <= disy*mark_width)) {
                     if (date > label_dates[id[xy_i]]) {
                         label_dates[id[xy_i]] = date;
-                        labels[id[xy_i]] = label;
+                        labels[id[xy_i]] = { 'label': label, 'eid': annotation.properties.annotations.mark_eid };
                     }
                 }
             }
