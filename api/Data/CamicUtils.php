@@ -23,11 +23,11 @@ class CamicUtils
 			break;
 		}
 		return $finalDimensions;
-	}	
+	}
 	function retrieveImageLocation($tissueId)
 	{
 		$fileUrl = $this->CONFIG['getFileLocation'] . $this->api_key . "&TCGAId=" . $tissueId;
-		$fielUrl = str_replace(" ","%20",$fileUrl);
+		$fileUrl = str_replace(" ","%20",$fileUrl);
 		$getFileLocationRequest = new RestRequest($fileUrl,'GET');
 		$getFileLocationRequest->execute();
 		$location = json_decode($getFileLocationRequest->responseBody);
@@ -77,10 +77,10 @@ class CamicUtils
 				$link = $file . ".dzi";
 			}
 		}
-		
+
 		return $link;
 	}
-	
+
 	function setUpSVSImage($fileLocation)
 	{
 	    foreach($fileLocation[0] as $key => $value)
@@ -88,7 +88,7 @@ class CamicUtils
 		$link = str_replace("tiff","svs",$value);
 		$link = $link . ".dzi";
 	    }
-	    
+
 	    return $link;
 	}
 }

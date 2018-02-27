@@ -1,5 +1,6 @@
-
  <?php
+
+
   session_start();
 
   require '../authenticate.php';
@@ -36,8 +37,8 @@
         <script src="js/dependencies/jsonform.js"></script>
         <script src="js/dependencies/jsv.js"></script>
         <!--End JSON Form dependencies -->
-        <!-- <script src="/featurescapeapps/js/findapi_config.js" type="text/javascript"></script>" -->
-	<script src="/js/config.js"></script>
+        <!-- <script src="featurescapeapps/js/findapi_config.js" type="text/javascript"></script>" -->
+	      <script src="../js/config.js"></script>
 
         <script src="js/openseadragon/openseadragon-bin-1.0.0/openseadragon.js"></script>
         <script src="js/openseadragon/openseadragon-imaginghelper.min.js"></script>
@@ -60,7 +61,6 @@
         <script src="js/dependencies/jquery.fancytree-all.min.js"></script>
         <script src="js/dependencies/d3.js"></script>
 
-        <script src="js/Helpers/OsdStateManager.js"></script>
 
         <style type="text/css">
             .openseadragon
@@ -124,8 +124,6 @@
 	  console.log("cancerType is: "+cancerType);
 	  console.log("tissueId is: "+tissueId);
 
-
-
           var imagedata = new OSDImageMetaData({imageId:tissueId});
           //console.log(imagedata);
 
@@ -173,21 +171,23 @@
               barThickness: 2
             });
 
-            var StateMan = new OsdStateManager(viewer, {});
-            StateMan.setState();
-            viewer.addHandler("zoom", StateMan.getState);
-            viewer.addHandler("pan", StateMan.getState);
+          //console.log(viewer);
 
-           //console.log(viewer);
-
-          function isAnnotationActive(){
-              this.isOpera = !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
+          function isAnnotationActive() {
+              this.isOpera = (!!window.opr && !!opr.addons) || navigator.userAgent.indexOf(' OPR/') >= 0;
+              // console.log("isOpera", this.isOpera);
               this.isFirefox = typeof InstallTrigger !== 'undefined';
-              this.isSafari = Object.prototype.toString.call(window.HTMLElement).indexOf('Constructor') > 0;
-		      this.isChrome = !!window.chrome;
-		      this.annotationActive = !(this.isIE || this.isOpera);
-		    return this.annotationActive;
-	      }
+              // console.log("isFirefox", this.isFirefox);
+              this.isSafari = ((navigator.userAgent.toLowerCase().indexOf('safari') > -1) && !(navigator.userAgent.toLowerCase().indexOf('chrome') > -1) && (navigator.appName == "Netscape"));
+              // console.log("isSafari", this.isSafari);
+              this.isChrome = !!window.chrome && !!window.chrome.webstore;
+              // console.log("isChrome", this.isChrome);
+              this.isIE = /*@cc_on!@*/false || !!document.documentMode;
+              // console.log("isIE", this.isIE);
+              this.annotationActive = !( this.isIE || this.isOpera);
+              // console.log("annotationActive", this.annotationActive);
+              return this.annotationActive;
+          }
 
          function addOverlays() {
             var annotationHandler = new AnnotoolsOpenSeadragonHandler(viewer, {});

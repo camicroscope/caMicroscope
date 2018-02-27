@@ -33,8 +33,8 @@ var available_colors = ['#a6cee3','#1f78b4','#b2df8a','#33a02c','#fb9a99','#e31a
 var algorithm_color = {}
 
 function goodalgo (data, status) {
-   console.log("goodalgo data is: "+data);
-   console.log("data.length is: "+data.length)  
+   //console.log("goodalgo data is: "+data);
+  // console.log("data.length is: "+data.length)  
   
   var blob = []
   for (i = 0;i < data.length;i++) {
@@ -160,6 +160,40 @@ ToolBar.prototype.toggleAlgorithmSelector = function () {
 	}
 	
 	//tmp_algorithm_list = tmp_algorithm_list.sort();
+        var algorithms_computer= [];
+	var algorithms_composite_input = [];
+	var algorithms_composite_dataset = [];
+	var algorithms_under = [];
+	var algorithms_over = [];
+	
+	var algorithm_number = tmp_algorithm_list.length;	
+	if (algorithm_number >0) {
+		
+		for (i=0; i< algorithm_number; i++){
+			var index_composite_input    =tmp_algorithm_list[i].indexOf("composite_input");	
+			var index_composite_dataset  =tmp_algorithm_list[i].indexOf("composite_dataset");
+			var index_under              =tmp_algorithm_list[i].indexOf("under_");	
+			var index_over               =tmp_algorithm_list[i].indexOf("over_");			
+			
+			if(index_composite_input != -1){		  	 
+			    algorithms_composite_input.push(tmp_algorithm_list[i]);  
+			 } else if (index_composite_dataset != -1){		  	 
+			   algorithms_composite_dataset.push(tmp_algorithm_list[i]);  
+			 } else if (index_under != -1){		  	 
+			   algorithms_under.push(tmp_algorithm_list[i]);  
+			 } else if (index_over != -1){		  	 
+			   algorithms_over.push(tmp_algorithm_list[i]);  
+			 } else {		  	 
+			   algorithms_computer.push(tmp_algorithm_list[i]);  
+			 }				
+		}
+		algorithms_computer = algorithms_computer.sort();
+		algorithms_under = algorithms_under.sort();
+		algorithms_over =algorithms_over.sort();
+		algorithms_composite_input=algorithms_composite_input.sort();
+		algorithms_composite_dataset = algorithms_composite_dataset.sort();
+		tmp_algorithm_list=algorithms_computer.concat(algorithms_under,algorithms_over,algorithms_composite_input,algorithms_composite_dataset);		
+	}	  
 	
     for(var i=0; i < tmp_algorithm_list.length; i++){
       //n.color = available_colors[i%7];
@@ -212,6 +246,7 @@ ToolBar.prototype.toggleAlgorithmSelector = function () {
     jQuery("#cancelAlgorithms").click(function(){
       jQuery("#panel").html("");
       jQuery("#panel").hide("slide");
+      AlgorithmSelectorHidden = true;
     });
   });
   
@@ -251,11 +286,9 @@ ToolBar.prototype.createButtons = function () {
     console.log("self.iid is: "+self.iid);	 
 	
     jQuery.get('api/Data/getAlgorithmsForImage.php?iid=' + self.iid, function (data) {
-      d = JSON.parse(data);	  
-      
-	    console.log("data before goodalgo is:"+data);
-      console.log("d before goodalgo is:"+d);	
-          
+      d = JSON.parse(data);	      
+     // console.log("data before goodalgo is:"+data);
+     // console.log("d before goodalgo is:"+d);	          
       goodalgo(d, null)
     })	
 	
@@ -308,7 +341,7 @@ ToolBar.prototype.createButtons = function () {
       src: 'images/rect.svg',
       id: 'drawRectangleButton'
     })
-    //tool.append(this.rectbutton)	
+  //tool.append(this.rectbutton)	
    
    
     this.pencilbutton = jQuery('<img>', {
@@ -317,7 +350,7 @@ ToolBar.prototype.createButtons = function () {
       'src': 'images/pencil.svg',
       'id': 'drawFreelineButton'
     })
-    //tool.append(this.pencilbutton) // Pencil Tool	
+    tool.append(this.pencilbutton) // Pencil Tool	
 	
 	
     this.mergebutton1 = jQuery('<img>', {
@@ -463,28 +496,28 @@ ToolBar.prototype.createButtons = function () {
 	
 	
 	this.mergebutton1.on('click', function () {
+		this.mode = 'normal';
 		this.annotools.mergeStep1();     
      }.bind(this))	 
 	
 	
-	this.mergebutton2.on('click', function () {
+    this.mergebutton2.on('click', function () {
       //console.log(this.mode);
-      if(this.mode == 'merge_step2'){
-		 this.mode = 'normal';
-        this.setNormalMode();       
-      } else {
+      //if(this.mode == 'merge_step2'){
+	//	 this.mode = 'normal';
+        //this.setNormalMode();       
+     // } else {
         this.mode = 'merge_step2'
         this.annotools.mode = 'rect'
         this.annotools.drawMarkups();		
         jQuery("canvas").css("cursor", "crosshair");
-		jQuery("#mergeStep2Button").addClass("active"); // merge step 2 button		
-                  
-      }    
+	jQuery("#mergeStep2Button").addClass("active");                   
+      //}    
     }.bind(this))    
     
 
     this.mergebutton3.on('click', function () {
-		this.annotools.generateCompositeDataset();     
+	this.annotools.generateCompositeDataset();     
     }.bind(this))	
 	 
       
@@ -507,22 +540,20 @@ ToolBar.prototype.createButtons = function () {
 	
 
     this.pencilbutton.on('click', function () {
-
-      if(this.annotools.mode == 'pencil'){
-        this.setNormalMode();
-      } else {
+     // if(this.annotools.mode == 'pencil'){
+        //this.setNormalMode();
+     // } else {
         //set pencil mode
+	this.mode = 'pencil'
         this.annotools.mode = 'pencil'
-        this.annotools.drawMarkups()
-        
+        this.annotools.drawMarkups()        
         jQuery("canvas").css("cursor", "crosshair");
         //jQuery("drawFreelineButton").css("opacity", 1);
-        jQuery("#drawRectangleButton").removeClass("active");
-        jQuery("#drawDotButton").removeClass("active");     // Dot Tool
-		jQuery("#mergeStep2Button").removeClass("active"); // merge step 2 button	
+        //jQuery("#drawRectangleButton").removeClass("active");
+        //jQuery("#drawDotButton").removeClass("active");     // Dot Tool
+	//jQuery("#mergeStep2Button").removeClass("active"); // merge step 2 button	
         jQuery("#drawFreelineButton").addClass("active");
-
-      }
+      //}
 
     }.bind(this))
 

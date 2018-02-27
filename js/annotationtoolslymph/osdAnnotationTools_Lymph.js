@@ -47,6 +47,8 @@ var annotools = function (options) {
   //this.isLoadedWeight = false;
   this.loadHeatmapWeight();
   this.loadChangeUsername();
+  this.isLymphSuperuser();
+  this.lymphSuperuser = false;
   this.btn_revertWeight = document.getElementById('btn_revertWeight');
   this.btn_saveWeight = document.getElementById('btn_saveHeatmapWeight');
   this.btn_saveweight_help = document.getElementById('btn_heatmapweight_help');
@@ -670,96 +672,6 @@ annotools.prototype.createWorkOrder = function () {
   }
 }
 
-/*
-annotools.prototype.drawMarkups= function () //Draw Markups
-{
-    this.showMessage() //Show Message
-    //this.drawCanvas.off()
-    this.removeMouseEvents()
-    //this.drawCanvas.removeEvents('mouseup')
-    //this.drawCanvas.removeEvents('mousedown')
-    //this.drawCanvas.removeEvents('mousemove')
-    this.drawLayer.show() //Show The Drawing Layer
-/* ASHISH Disable quit
-    this.quitbutton.show() //Show The Quit Button
-
-    this.magnifyGlass.hide() //Hide The Magnifying Tool
-    //this.container = document.id(this.canvas) //Get The Canvas Container
-    this.container = document.getElementsByClassName(this.canvas)[0] //Get The Canvas Container
-    //this.container = document.getElementById('container') //Get The Canvas Container
-    if (this.container) {
-        //var left = parseInt(this.container.offsetLeft), //Get The Container Location
-        var left = parseInt(this.container.getLeft()), //Get The Container Location
-            top = parseInt(this.container.offsetTop),
-            width = parseInt(this.container.offsetWidth),
-            height = parseInt(this.container.offsetHeight),
-            oleft = left,
-            otop = top,
-            owidth = width,
-            oheight = height
-        //console.log("left: " + left + " top: " + top + " width: " + width + " height: " + height)
-        if (left < 0) {
-            left = 0
-            width = window.innerWidth
-        } //See Whether The Container is outside The Current ViewPort
-        if (top < 0) {
-            top = 0
-            height = window.innerHeight
-        }
-        //Recreate The CreateAnnotation Layer Because of The ViewPort Change Issue.
-        //console.log(this.drawLayer)
-        this.drawLayer.css({
-                left: left,
-                top: top,
-                width: width,
-                height: height
-        })
-        /*
-        this.drawLayer.set({
-            'styles': {
-                left: left,
-                top: top,
-                width: width,
-                height: height
-            }
-        })
-
-        this.drawCanvas.css({
-            width: width, 
-            height: height
-        })
-        //Create Canvas on the CreateAnnotation Layer
-        /*
-        this.drawCanvas.set({
-            width: width,
-            height: height
-        })
-
-        //The canvas context
-        var ctx = this.drawCanvas[0].getContext("2d")
-        //console.log(this.mode)
-        //Draw Markups on Canvas
-        switch (this.mode) {
-            case "rect":
-                this.drawRectangle(ctx)
-        break
-            case "ellipse":
-                this.drawEllipse(ctx)
-        break
-            case "pencil":
-        this.drawPencil(ctx)
-        break
-            case "polyline":
-                this.drawPolyline(ctx)
-        break
-            case "measure":
-                this.drawMeasure(ctx)
-        break
-        }
-    } else this.showMessage("Container Not SET Correctly Or Not Fully Loaded Yet")
-    
-}
-*/
 annotools.prototype.magnify = function () // Magnify Tool
 {
   /* ASHISH Disable quit
@@ -1005,104 +917,7 @@ annotools.prototype.toggleMarkups = function () // Toggle Markups
   }
   this.showMessage('annotation toggled')
 }
-/*analyze: function(ctx)
-{
-    this.removeMouseEvents()
-    this.showMessage() //Show Message
-    this.drawLayer.show() //Show The Drawing Layer
-    this.magnifyGlass.hide() //Hide The Magnifying Tool
-    this.container = document.getElementsByClassName(this.canvas)[0] //Get The Canvas Container
-        var left = parseInt(this.container.getLeft()), //Get The Container Location
-            top = parseInt(this.container.offsetTop),
-            width = parseInt(this.container.offsetWidth),
-            height = parseInt(this.container.offsetHeight),
-            oleft = left,
-            otop = top,
-            owidth = width,
-            oheight = height
-        if (left < 0) {
-            left = 0
-            width = window.innerWidth
-        } //See Whether The Container is outside The Current ViewPort
-        if (top < 0) {
-            top = 0
-            height = window.innerHeight
-        }
-        //Recreate The CreateAnnotation Layer Because of The ViewPort Change Issue.
-        this.drawLayer.set({
-            'styles': {
-                left: left,
-                top: top,
-                width: width,
-                height: height
-            }
-        })
-        //Create Canvas on the CreateAnnotation Layer
-        this.drawCanvas.set({
-            width: width,
-            height: height
-        })
-        //The canvas context
-        var ctx = this.drawCanvas.getContext("2d")
-var started = false
-var min_x,min_y,max_x,max_y,w,h
-var startPosition
-this.drawCanvas.addEvent('mousedown',function(e)
-{
-    started = true
-    startPosition = OpenSeadragon.getMousePosition(e.event)
-    x = startPosition.x
-    y = startPosition.y
-})
 
-this.drawCanvas.addEvent('mousemove',function(e)
-{
-    if(started)
-    {
-    ctx.clearRect(0,0,this.drawCanvas.width, this.drawCanvas.height)
-    var currentMousePosition = OpenSeadragon.getMousePosition(e.event)
-
-    min_x = Math.min(currentMousePosition.x,startPosition.x)
-    min_y = Math.min(currentMousePosition.y,startPosition.y)
-    max_x = Math.max(currentMousePosition.x,startPosition.x)
-    max_y = Math.max(currentMousePosition.y,startPosition.y)
-    w = Math.abs(max_x - min_x)
-    h = Math.abs(max_y - min_y)
-    ctx.strokeStyle = "red"
-    ctx.strokeRect(min_x,min_y,w,h)
-    }
-}.bind(this))
-
-this.drawCanvas.addEvent('mouseup',function(e)
-{
-    started = false
-    var finalMousePosition = new OpenSeadragon.getMousePosition(e.event)
-
-        min_x = Math.min(finalMousePosition.x,startPosition.x)
-        min_y = Math.min(finalMousePosition.y,startPosition.y)
-        max_x = Math.max(finalMousePosition.x,startPosition.x)
-        max_y = Math.max(finalMousePosition.y,startPosition.y)
-
-    var startRelativeMousePosition = new OpenSeadragon.Point(min_x,min_y).minus(OpenSeadragon.getElementOffset(viewer.canvas))
-    var endRelativeMousePosition = new OpenSeadragon.Point(max_x,max_y).minus(OpenSeadragon.getElementOffset(viewer.canvas))
-    var analysisBox = {
-        x: startRelativeMousePosition.x,
-        y: startRelativeMousePosition.y,
-        w: w,
-        h: h,
-            type: "rect"
-    }
-
-    var globalNumbers = JSON.parse(this.convertFromNative(analysisBox, endRelativeMousePosition))
-
-    analysisBox.x = globalNumbers.nativeX
-    analysisBox.y = globalNumbers.nativeY
-    analysisBox.w = globalNumbers.nativeW
-    analysisBox.h = globalNumbers.nativeH
-        this.promptForAnalysis(this, analysisBox)
-        this.drawLayer.hide()
-}.bind(this))
-},*/
 annotools.prototype.showMessage = function (msg) // Show Messages
 {
   /*ASHISH DIsable quit
@@ -1120,6 +935,7 @@ annotools.prototype.showMessage = function (msg) // Show Messages
     this.start(0.5, 0)
   })
 }
+
 annotools.prototype.relativeToGlobal = function () {
   for (var i = 0; i < $('viewport').getChildren().length; i++) {
     var object = $('viewport').getChildren()[i]
@@ -1246,12 +1062,14 @@ annotools.prototype.displayTip = function (id) // Display Tips
   }).inject(container)
   this.showMessage('Double Click to Edit')
 }
+
 annotools.prototype.destroyTip = function () // Destroy Tips
 {
   // var container = document.id(this.canvas)
   var container = document.getElementsByClassName(this.canvas)[0] // Get The Canvas Container
   container.getElements('.annotip').destroy()
 }
+
 annotools.prototype.editTip = function (id) // Edit Tips
 {
   this.removeMouseEvents()
@@ -1298,6 +1116,7 @@ annotools.prototype.editTip = function (id) // Edit Tips
     'contents': content
   })
 }
+
 annotools.prototype.deleteAnnot = function (id) // Delete Annotations
 {
   var testAnnotId = this.annotations[id].annotId
@@ -1318,6 +1137,7 @@ annotools.prototype.deleteAnnot = function (id) // Delete Annotations
   }
   this.displayAnnot()
 }
+
 annotools.prototype.updateAnnot = function (annot) // Save Annotations
 {
   var jsonRequest = new Request.JSON({
@@ -1334,6 +1154,7 @@ annotools.prototype.updateAnnot = function (annot) // Save Annotations
   })
   this.displayAnnot()
 }
+
 annotools.prototype.saveAnnot = function (annotation) // Save Annotations
 {
   var self = this;
@@ -1389,7 +1210,7 @@ annotools.prototype.saveAnnot_noRefresh = function (annotation) // Save Annotati
     url: 'api/Data/getAnnotSpatialLymph.php',
     data: annotation,
     success: function (res, err) {
-      console.log("response: ")
+      //console.log("response: ")
       console.log(res)
       if(res == "unauthorized"){
         alert("Error saving markup! Wrong secret");
@@ -1534,9 +1355,12 @@ annotools.prototype.convertFromNative = function (annot, end) {
     var lastPolyPoint = new OpenSeadragon.Point(parseFloat(last_poly_split[0]), parseFloat(last_poly_split[1]))
 
     points += this.imagingHelper.physicalToLogicalX(lastPolyPoint.x) + ',' + this.imagingHelper.physicalToLogicalY(lastPolyPoint.y)
-    var x_end = end.x
-    var y_end = end.y
-
+      
+    if ( typeof(end) !== 'undefined') {
+        var x_end = end.x;
+        var y_end = end.y;
+    }
+    
     var nativeX_end = this.imagingHelper.physicalToLogicalX(x_end)
     var nativeY_end = this.imagingHelper.physicalToLogicalY(y_end)
     var nativeX = this.imagingHelper.physicalToLogicalX(x)
@@ -2616,11 +2440,13 @@ annotools.prototype.promptForParameters = function (annotools, analysisBox, algo
     'contents': form
   })
 }
+
 annotools.prototype.addMouseEvents = function () {
   //console.log('adding mouse events')
   // console.log(this.annotationHandler)
   window.addEventListener('mousemove', this.annotationHandler.handleMouseMove, false)
 }
+
 annotools.prototype.removeMouseEvents = function () {
   //console.log('removing events')
   // console.log(this.annotationHandler)
@@ -2629,331 +2455,6 @@ annotools.prototype.removeMouseEvents = function () {
   //window.removeEventListener('mouseup', this.annotationHandler.handleMouseUp, false)
 // window.removeEventListener('mouseup',      this.getAnnot(), false)
 }
-
-// Backup
-//
-/*
- *
-annotools.prototype.displayAnnot= function () //Display SVG Annotations
-{
-    var annotools = this
-    var a = [],
-        b, index
-    //var container = document.id(this.canvas)
-    var pointsArr = []
-    var lines = []
-    var container = document.getElementsByClassName(this.canvas)[0] //Get The Canvas Container
-    if (container) {
-        var left = parseInt(container.offsetLeft),
-            top = parseInt(container.offsetTop),
-            width = parseInt(container.offsetWidth),
-            height = parseInt(container.offsetHeight)
-        this.drawLayer.hide()
-        this.magnifyGlass.hide()
-        //for (index in this.annotations) this.annotations[index].id = index, a.push(this.annotations[index])
-        for (index = 0; index < this.annotations.length; index++) {
-            this.annotations[index].id = index; 
-            a.push(this.annotations[index])
-        }
-        container.getElements(".annotcontainer").destroy()
-        if (this.svg) {
-            this.svg.html = ''
-            this.svg.destroy()
-        }
-        //This part is for displaying SVG annotations
-        if (this.annotVisible) {
-            index--
-            var svgHtml = '<svg xmlns="http://www.w3.org/2000/svg" width="' + width + 'px" height="' + height + 'px" version="1.1">'
-                svgHtml += '<g id="groupcenter"/>'
-                svgHtml += '<g id="origin">'
-                var origin = viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(.5,.5))
-                svgHtml += '<ellipse id="originpt" cx="' + origin.x + '" cy="' + origin.y + '" rx="' + 4 + '" ry="' + 4  + '" style="display: none"/>'
-                svgHtml += '</g>'
-                svgHtml += '<g id="viewport" transform="translate(0,0)">'
-            for (index = 0; index < a.length; index++) {
-//                if (((width * a[index].x + left) > 0) && ((width * a[index].x + left + width * a[index].w) < window.innerWidth) && ((height * a[index].y + top) > 0) && ((height * a[index].y + top + height * a[index].h) < window.innerHeight)) {
-                    switch (a[index].type) {
-                        case "rect":
-                            var x = parseFloat(a[index].x)
-                            var y = parseFloat(a[index].y)
-                            var w = parseFloat(a[index].w)
-                            var h = parseFloat(a[index].h)
-                            // handle displaying the drawing when they are already zoomed in
-
-                            w = this.imagingHelper.physicalToLogicalDistance(w)
-                            h = this.imagingHelper.physicalToLogicalDistance(h)
-                            w = w * viewer.viewport.getZoom()
-                            h = h * viewer.viewport.getZoom()
-                            h = h/this.imagingHelper.imgAspectRatio
-
-                            var offset = OpenSeadragon.getElementOffset(viewer.canvas)
-
-                            x = x + offset.x
-                            y = y + offset.y
-                            svgHtml += '<rect id="' + index + '" x="' + x + '" y="' + y + '" width="' + w*width + '" height="' + width*h + '" stroke="' + a[index].color + '" stroke-width="2" fill="none"/>'
-                            break
-                        case "ellipse":
-                            var offset = OpenSeadragon.getElementOffset(viewer.canvas)
-
-                            var x = parseFloat(a[index].x) + offset.x
-                            var y = parseFloat(a[index].y) + offset.y
-                            var w = parseFloat(a[index].w)
-                            var h = parseFloat(a[index].h)
-                            h = h/this.imagingHelper.imgAspectRatio
-                            var cx = x + w / 2
-                            var cy = y + h / 2
-                            w = this.imagingHelper.physicalToLogicalDistance(w)
-                            h = this.imagingHelper.physicalToLogicalDistance(h)
-                            var rx = w / 2
-                            var ry = h / 2
-                            // handle displaying the drawing when they are already zoomed in
-                            rx = rx * viewer.viewport.getZoom()
-                            ry = ry * viewer.viewport.getZoom()
-
-                            svgHtml += '<ellipse id="' + index + '" cx="' + cx + '" cy="' + cy + '" rx="' + width* rx + '" ry="' + width * ry + '" style="fill:none;stroke:' + a[index].color + ';stroke-width:2"/>'
-                            break
-                        case "pencil":
-                            var points = a[index].points
-                            var pencilSVG = ""
-                            var poly = String.split(points, ';')
-                            for (var k = 0; k < poly.length; k++) {
-                                var p = String.split(poly[k], ' ')
-                                svgHtml += '<polyline id="'+index+'" points="'
-                                for (var j = 0; j < p.length; j++) {
-                                    point = String.split(p[j], ',')
-                                    var penPixelX = this.imagingHelper.logicalToPhysicalX(point[0])
-                                    var penPixelY = this.imagingHelper.logicalToPhysicalY(point[1])
-                                    svgHtml += penPixelX + ',' + penPixelY + ' '
-                                    pencilSVG  += penPixelX + ',' + penPixelY + ' '
-
-                                }
-                                
-                                console.log("pencillll")
-                                console.log(pencilSVG)
-                                svgHtml += '" style="fill:none;stroke:' + a[index].color + ';stroke-width:2"/>'
-                            }
-                            break
-                        case "polyline":
-                            console.log("polyLineeee")
-                            var polySVG = ""
-                            var points = a[index].points
-                            var poly = String.split(points, ';')
-                            var offset = OpenSeadragon.getElementOffset(viewer.canvas)
-                            for (var k = 0; k < poly.length; k++) {
-                                var p = String.split(poly[k], ' ')
-                                svgHtml += '<polygon id="'+index+ '" points="'
-                               
-                                for (var j = 0; j < p.length; j++) {
-                                    point = String.split(p[j], ',')
-                                    var polyPixelX = this.imagingHelper.logicalToPhysicalX(point[0])
-                                    var polyPixelY = this.imagingHelper.logicalToPhysicalY(point[1])
-                                    svgHtml += polyPixelX + ',' + polyPixelY + ' '
-                                    polySVG += polyPixelX + ',' + polyPixelY + ' '
-
-                                }
-                                svgHtml += '" style="fill:none;stroke:' + a[index].color + ';stroke-width:2"/>'
-                            }
-                            console.log(polySVG)
-                            break
-                        case "line":
-                            var points = String.split(a[index].points, ',')
-                            x2 = this.imagingHelper.logicalToPhysicalX(points[0])
-                            y2 = this.imagingHelper.logicalToPhysicalY(points[1])
-                            svgHtml += '<polygon id="'+index+'" points="'+ a[index].x +','+ a[index].y + ' ' + x2 + ',' + y2 + ' ' + a[index].x + ',' + a[index].y + ' " style="fill:none;stroke:' + a[index].color + ';stroke-width:2"/>'
-                            break
-                    }
-
-                }
-            }
-            
-            svgHtml += '</g></svg>'
-            //console.log(svgHtml)
-            //console.log(svgHtml)
-            //if (this.annotations.length > 0) {
-                //inject the SVG Annotations to this.Canvas
-                this.svg = new Element("div", {
-                    styles: {
-                        position: "absolute",
-                        left: 0,
-                        top: 0,
-                        width: '100%',
-                        height: '100%'
-                    },
-                    html: svgHtml
-                }).inject(container)
-                console.log("added svg")
-                var annots = $$('svg')[0].getChildren()[2]
-                for (var k = 0; k < annots.getChildren().length; k++) {
-                    var bbox = annots.getChildren()[k].getBBox()
-                    var d = new Element("div", {
-                        id: k,
-                        "class": 'annotcontainer',
-                        styles: {
-                            position: 'absolute',
-                            left: bbox.x,
-                            top: bbox.y,
-                            width: bbox.width,
-                            height: bbox.height
-                            //border: '1px solid'
-                        }
-                    }).inject(container)
-
-                    var c = this
-                    d.addEvents({
-                        'mouseenter': function (e) {
-                            e.stop
-                            c.displayTip(this.id)
-                        },
-                        'mouseleave': function (e) {
-                            e.stop
-                            c.destroyTip()
-                        },
-                        'dblclick': function (e) {
-                            e.stop()
-                            c.editTip(this.id)
-                        }
-                    })
-                    this.annotationHandler.originalDivCoords.push(bbox)
-                }
-                for (var j = 0; j < pointsArr.length; j++) {
-                    $('groupcenter')[0].appendChild(pointsArr[j])
-                }
-                for (j = 0; j < lines.length; j++) {
-                    $('groupcenter')[0].appendChild(lines[j])
-                }
-            //} else {
-            //    this.showMessage("Please Press white space to toggle the Annotations")
-            //}
-        }
-    else {
-        this.showMessage("Canvas Container Not Ready")
-    }
-}
-
-    promptForAnnotation: function(newAnnot, mode, annotools, ctx){
-        var annotationTemplateJson = annotools.retrieveTemplate()
-        if (mode == "edit") {
-            var id = newAnnot.id
-            newAnnot = annotools.retrieveSingleAnnot(newAnnot.annotId)
-            newAnnot.id = id
-        }
-        var annotationTextJson = (mode == "edit")?newAnnot.text:null
-        var form = "<form id='annotationForm'>"
-        if (mode == "new" && newAnnot.type == "line") {
-            form += "<p class='annotationLabel'>Length: "+newAnnot.length+"um</p>"
-        } else {
-            form += annotools.populateForm(annotationTemplateJson, annotationTextJson, mode)
-        }
-        form += "</form>"
-        var field = []
-        var submission = ""
-        if (mode == "new" || mode == "edit") {
-           submission = "{ "
-        }
-        for (var key in annotationTemplateJson) {
-            if (annotationTemplateJson.hasOwnProperty(key) && key != "_id") {
-                field.push(key)
-                if (mode == "new" || mode == "edit") {
-                    submission += "\""+key+"\" : "
-                    submission += "__"+key+"__, "
-                } else {
-                    submission += key+"="+"__"+key+"__"+"&"
-                }
-            }
-        }
-        if (mode == "new" || mode == "edit") {
-            submission = submission.substring(0, submission.length-2)+" }"
-        } else {
-            submission = submission.substring(0, submission.length-1)
-        }
-        var title
-        switch(mode) {
-            case "new":
-                title = "Enter a new annotation:"
-                break
-            case "edit":
-                title = "Edit annotation"
-                break
-            case "filter":
-                title = "Filter annotations by:"
-                break
-        }
-        var SM = new SimpleModal()
-        SM.addButton("Confirm", "btn primary", function() {
-        var text = '{"text" : ['
-            if (mode == "edit") {
-                annotools.deleteAnnot(newAnnot.id)
-                delete newAnnot.id
-            }
-            if (mode == "new" && newAnnot.type == "line") {
-                submission = "{ \"Length\" : \""+newAnnot.length+"nm\" }"
-            } else {
-                for (var i = 0; i < field.length; i ++) {
-                    var fieldElem = $$(document.getElementsByName(field[i]))
-                    var replacement = "\""
-                    var value = ""
-                    if (fieldElem[0].type == "text") {
-                        replacement += $(field[i]).value + "\""
-                        value = $(field[i]).value
-                    } else if (fieldElem[0].type = "checkbox") {
-                        replacement = "[ "
-                        for (var j = 0; j < fieldElem.length; j++) {
-                            if(fieldElem[j].checked) {
-                                replacement += "\""+fieldElem[j].value+"\" , "
-                                value = fieldElem[j].value
-                            }
-                        }
-                        replacement = replacement.substring(0,replacement.length-2)+"]"
-                    } else if (fieldElem[0].type == "radio") {
-                        for (var j = 0; j < fieldElem.length; j ++) {
-                            if (fieldElem[j].checked) {
-                                replacement += fieldElem[j].value+"\""
-                                value = fieldElem[j].value
-                                break
-                            }
-                        }
-                    }
-                    text += '{"' + field[i] + '":"' + value + '"},'
-                    submission = submission.replace("__"+field[i]+"__", replacement)
-                }
-                text = text.substring(0,text.length - 1)
-                text += ']}'
-            }
-            console.log(submission)
-            if (mode == "new" || mode == "edit") {
-                newAnnot.text = JSON.parse(submission)
-                annotools.addnewAnnot(newAnnot)
-                annotools.getAnnot()
-            } else {
-//====================================================================
-//substitute with the new getAnnotByFilter() function when appropriate using submission as the filter statement
-                var text_obj = JSON.parse(text)
-                annotools.getAnnotFilter(text_obj.text[0].Author,text_obj.text[1].Grade,text_obj.text[2].Multi)
-            }
-            annotools.addMouseEvents()
-            this.hide()
-            return true
-        })
-        SM.addButton("Cancel", "btn secondary", function() {
-            if (mode == "new") {
-                ctx.clearRect(0, 0, annotools.drawCanvas.width, annotools.drawCanvas.height)
-                annotools.drawLayer.hide()
-            }
-            annotools.addMouseEvents()
-            this.hide()
-            return false
-        })
-        SM.show({
-            "model":"modal",
-            "title":title,
-            "contents":form,
-        })
-    },
-
-*
-*
-*
-*/
 
 annotools.prototype.downloadROI = function(){
   this.showMessage() // Show Message
@@ -3073,9 +2574,6 @@ annotools.prototype.downloadROI = function(){
     }.bind(this))
   }
 }
-
-
-
 
 annotools.prototype.promptForDownload = function(newAnnot, mode, annotools, ctx) {
   var panel = jQuery('#panel').show()
@@ -3404,8 +2902,8 @@ annotools.prototype.loadHeatmapWeight = function()
     var start = new Date().getTime();
     var delay = 200;
     while (new Date().getTime() < start + delay);
-    console.log(document.getElementById('slide1').style.width);
-    console.log(document.getElementById('div_weight_locked').innerHTML);
+    //console.log(document.getElementById('slide1').style.width);
+    //console.log(document.getElementById('div_weight_locked').innerHTML);
     self.getMultiAnnot();
 }
 
@@ -3511,14 +3009,39 @@ annotools.prototype.revertWeight = function(event)
 
 }
 
-annotools.prototype.isSuperuser = function()
+annotools.prototype.isLymphSuperuser = function()
 {
-    //to do:  implement code to manage the lymphocyte superusers
-    var isSuperuser = true;
+    var self = this;
+    //console.log("lymphUser.superuserRole: " + lymphUser.superuserRole);
     
-    return isSuperuser;
-}
+    self.username = self.username.toLowerCase();
+    var role = lymphUser.superuserRole;
+    var url = "api/Data/lymphocyteSuperusers.php?email=" + self.username + "&role=" + role;
+    
+    // Debug
+    console.log(url);
 
+    jQuery.get(url, function(d) {
+        try {
+            var data = JSON.parse(d);
+            console.log("Fetched data users length: " + data.length);
+            
+            // Start users
+            console.log(data);
+            //console.log("email: " + data[0].email);
+            //console.log("role: " + data[0].role);
+            
+            if ( data.length > 0) {
+                self.lymphSuperuser = true;   
+            }
+            console.log('self.lymphSuperuser: ' + self.lymphSuperuser);
+            
+        } catch (e){
+            console.log('ERROR');
+            console.log(e);
+        }
+    }); 
+}
 
 annotools.prototype.loadChangeUsername = function()
 {

@@ -1,5 +1,5 @@
-  <?php
-	require '../authenticate.php';
+    <?php
+    require '../authenticate.php';
 
     $config = require 'api/Configuration/config.php';
 
@@ -26,21 +26,22 @@
         <!-- <link rel="stylesheet" type="text/css" media="all" href="css/jquery-ui.min.css" /> -->
         <link rel="stylesheet" type="text/css" media="all" href="css/simplemodal.css" />
         <link rel="stylesheet" type="text/css" media="all" href="css/ui.fancytree.min.css" />
+
         <!-- <script src="js/dependencies/jquery.js"></script> -->
         <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 
-        <!--JSON Form dependencies-->
+    <!--JSON Form dependencies-->
+    <script type="application/javascript" src="js/dependencies/underscore.js"></script>
+    <script>
+        console.log("underscore:");
+        console.log(_);
+    </script>
 
-        <script type="text/javascript" src="js/dependencies/underscore.js">
-            console.log(_);
-        </script>
-        <script>console.log("here"); console.log(_);
-        </script>
         <script type="text/javascript" src="js/dependencies/jsonform.js"></script>
         <script type="text/javascript" src="js/dependencies/jsv.js"></script>
         <!--End JSON Form dependencies -->
-        <!--<script src="/featurescapeapps/js/findapi_config.js" type="text/javascript"></script>-->
-        <script src="/js/config.js"></script>
+        <!--<script src="featurescapeapps/js/findapi_config.js" type="text/javascript"></script>-->
+        <script src="../js/config.js"></script>
 
         <script src="js/openseadragon/openseadragon-bin-2.3.1/openseadragon.js"></script>
         <script src="js/openseadragon/openseadragon-imaginghelper.min.js"></script>
@@ -143,7 +144,7 @@
                 animationTime: 0.75,
                 maxZoomPixelRatio: 2,
                 visibilityRatio: 1,
-                constrainDuringPan: true,
+                constrainDuringPan: true
                 //zoomPerScroll: 1
           });
             //console.log(viewer.navigator);
@@ -180,15 +181,22 @@
            */
 
     //console.log(viewer);
-function isAnnotationActive(){
-    this.isOpera = !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
-    this.isFirefox = typeof InstallTrigger !== 'undefined';
-    this.isSafari = Object.prototype.toString.call(window.HTMLElement).indexOf('Constructor') > 0;
-    this.isChrome = !!window.chrome;
-    //console.log(this.isFirefox);
-    this.annotationActive = !( this.isIE || this.isOpera);
-    return this.annotationActive;
-}
+
+    function isAnnotationActive() {
+        this.isOpera = (!!window.opr && !!opr.addons) || navigator.userAgent.indexOf(' OPR/') >= 0;
+        // console.log("isOpera", this.isOpera);
+        this.isFirefox = typeof InstallTrigger !== 'undefined';
+        // console.log("isFirefox", this.isFirefox);
+        this.isSafari = ((navigator.userAgent.toLowerCase().indexOf('safari') > -1) && !(navigator.userAgent.toLowerCase().indexOf('chrome') > -1) && (navigator.appName == "Netscape"));
+        // console.log("isSafari", this.isSafari);
+        this.isChrome = !!window.chrome && !!window.chrome.webstore;
+        // console.log("isChrome", this.isChrome);
+        this.isIE = /*@cc_on!@*/false || !!document.documentMode;
+        // console.log("isIE", this.isIE);
+        this.annotationActive = !( this.isIE || this.isOpera);
+        // console.log("annotationActive", this.annotationActive);
+        return this.annotationActive;
+    }
 
     function addOverlays() {
         var annotationHandler = new AnnotoolsOpenSeadragonHandler(viewer, {});
@@ -280,6 +288,37 @@ function isAnnotationActive(){
         };
         PrefMan.get_pref("scroll_zoom", disable_if_true);
 
+            } else {
+                if(viewport) {
+                    console.log("here");
+                    var bounds = new OpenSeadragon.Rect(viewport.x, viewport.y, viewport.width, viewport.height);
+                    viewer.viewport.fitBounds(bounds, true);
+                }
+            }
+            // check if there are savedFilters
+            if (savedFilters) {
+              filteringtools.showFilterControls();
+
+              for(var i=0; i<savedFilters.length; i++){
+
+
+                    var f = savedFilters[i];
+                    var filterName = f.name;
+
+                    jQuery("#"+filterName+"_add").click();
+                    if(filterName == "SobelEdge"){
+                         console.log("sobel");
+                    }else {
+                        jQuery("#control"+filterName).val(1*f.value);
+                        jQuery("#control"+filterName+"Num").val(1*f.value);
+
+                    }
+                }
+            }
+            filteringtools.updateFilters();
+
+        });
+        }
 
         if(bound_x && bound_y){
             var ipt = new OpenSeadragon.Point(+bound_x, +bound_y);

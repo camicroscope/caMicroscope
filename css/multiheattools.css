@@ -21,7 +21,7 @@
 
 
 #weightpanel {
-    width: 235px;
+    width: 250px;
     font-family: Arial, Roboto;                                                               
     font-size: 12px;                                                                          
     height: 400px;                                                                            
@@ -105,6 +105,26 @@
         left:0px;
 }
 
+#closeWeightPanel {
+	display: inline-block;
+	width: 16px;
+	float:right;
+}
+
+#closeWeightPanel:hover {
+    background-color: crimson;
+}
+
+#closeMarkupPanel {
+	display: inline-block;
+	width: 16px;
+	float:right;
+}
+
+#closeMarkupPanel:hover {
+    background-color: crimson;
+}
+
 #closeSwitchUser {
 	display: inline-block;
 	width: 16px;
@@ -112,6 +132,16 @@
 }
 
 #closeSwitchUser:hover {
+    background-color: crimson;
+}
+
+#closeFilterPanel {
+	display: inline-block;
+	width: 20px;
+	float:right;
+}
+
+#closeFilterPanel:hover {
     background-color: crimson;
 }
     
