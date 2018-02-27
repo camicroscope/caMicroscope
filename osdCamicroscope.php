@@ -69,9 +69,11 @@
         <!--<script src="js/dependencies/jquery-ui.min.js"></script>-->
 
         <script src="js/Helpers/StateManager.js"></script>
+        <script src="js/Helpers/SessionTracker.js"></script>
         <script src="js/Helpers/StateSchema.js"></script>
         <script src="js/Helpers/ClientPrefManager.js"></script>
         <script src="js/Helpers/Spyglass.js"></script>
+        <script src="js/Helpers/session_notify.js"></script>
         <script src="js/Helpers/spyglass_init_camic.js"></script>
         <script src="js/dependencies/jquery.fancytree-all.min.js"></script>
         <script src="js/dependencies/simplemodal.js"></script>
@@ -288,37 +290,24 @@
         };
         PrefMan.get_pref("scroll_zoom", disable_if_true);
 
-            } else {
-                if(viewport) {
-                    console.log("here");
-                    var bounds = new OpenSeadragon.Rect(viewport.x, viewport.y, viewport.width, viewport.height);
-                    viewer.viewport.fitBounds(bounds, true);
-                }
+        // handle session expiration/renew
+        var st = new SessionTracker("camic");
+        function renew_session(){
+          var xhr = new XMLHttpRequest();
+          xhr.open("POST", "../security/server.php?logIn", true);
+          xhr.onload = function (e) {
+            if (xhr.readyState === 4) {
+              if (xhr.status === 200) {
+                console.log(xhr.responseText);
+              } else {
+                console.error(xhr.statusText);
+              }
             }
-            // check if there are savedFilters
-            if (savedFilters) {
-              filteringtools.showFilterControls();
-
-              for(var i=0; i<savedFilters.length; i++){
-
-
-                    var f = savedFilters[i];
-                    var filterName = f.name;
-
-                    jQuery("#"+filterName+"_add").click();
-                    if(filterName == "SobelEdge"){
-                         console.log("sobel");
-                    }else {
-                        jQuery("#control"+filterName).val(1*f.value);
-                        jQuery("#control"+filterName+"Num").val(1*f.value);
-
-                    }
-                }
-            }
-            filteringtools.updateFilters();
-
-        });
+          };
+          xhr.send(null);
         }
+        st.start(600000, 3e6, renew_session);
+
 
         if(bound_x && bound_y){
             var ipt = new OpenSeadragon.Point(+bound_x, +bound_y);
