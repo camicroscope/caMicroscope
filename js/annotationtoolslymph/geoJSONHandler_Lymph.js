@@ -102,7 +102,6 @@ annotools.prototype.convertPencilToGeo = function (annotation) {
 
 
   var area = Math.abs((dataX2 - dataX1))*Math.abs((dataY2-dataY1));
-  console.log(area)
 
   
 
@@ -184,33 +183,27 @@ function endProfile (startTime) {
 }
 
 annotools.prototype.generateCanvas = function (annotations) {
-
-  var annotations = this.annotations; // Overwriting function arg?
-  
+  // console.log(annotation)
+  // var annotation = annotations[ii]
+  //var intersect_label = this.calculateIntersect();
+  var annotations = this.annotations
   if (annotations) {
-    // console.log(annotation)
-    // var annotation = annotations[ii]
-
     var markup_svg = document.getElementById('markups')
     if (markup_svg) {
       // console.log("destroying")
       markup_svg.destroy()
     }
-
     // console.log(annotations.length)
     // console.log(this.canvas)
-
     var container = document.getElementsByClassName(this.canvas)[0].childNodes[0] // Get The Canvas Container
     // console.log(container)
     var context = container.getContext('2d')
     context.fillStyle = '#f00'
-    
-    // var container = document.getElementsByClassName(this.canvas)[0]
+    // console.log(nativepoints)
+    // var container = document.getElementsByClassName(this.cavas)[0]
     // console.log(container)
-    
     var width = parseInt(container.offsetWidth)
     var height = parseInt(container.offsetHeight)
-    
     /* Why is there an ellipse in the center? */
     /*
     var svgHtml = '<svg xmlns="http://www.w3.org/2000/svg" width="' + width + 'px" height="' + height + 'px" version="1.1" id="markups">'
@@ -221,11 +214,9 @@ annotools.prototype.generateCanvas = function (annotations) {
         svgHtml += '</g>'
         svgHtml += '<g id="viewport" transform="translate(0,0)">'
     */
-
     for (var i = 0; i < annotations.length; i++) {
       var annotation = annotations[i]
       var nativepoints = annotation.geometry.coordinates[0]
-      // console.log(nativepoints)
 
       var offset = OpenSeadragon.getElementOffset(viewer.canvas)
       // svgHtml += '<polygon id="'+Math.random()+'" points="'
@@ -237,14 +228,12 @@ annotools.prototype.generateCanvas = function (annotations) {
         var x1 = this.imagingHelper.logicalToPhysicalY(nativepoints[0][1])
         context.moveTo(x0, x1)
       }
-
       for (var k = 1; k < nativepoints.length; k++) {
         var px = this.imagingHelper.logicalToPhysicalX(nativepoints[k][0])
         var py = this.imagingHelper.logicalToPhysicalY(nativepoints[k][1])
 
         context.lineTo(px, py)
       }
-
       context.strokeStyle = 'blue'
       context.stokeWidth = 6
       context.closePath()
@@ -252,7 +241,6 @@ annotools.prototype.generateCanvas = function (annotations) {
     }
   }
 }
-
 /*
 var clickSVG = function(evt, annotation){
     //var a = annotation
@@ -263,17 +251,13 @@ var clickSVG = function(evt, annotation){
 */
 
 annotools.prototype.generateSVG = function (annotations) {
-
-  var case_id = this.iid;
-  var cancerType = "none";
-  
-  var self = this;
+  // console.log(annotation)
+  // var annotation = annotations[ii]
+  //var intersect_label = this.calculateIntersect();
+  //console.log(this.heat_weight);
+  var self =this;
   var annotations = this.annotations
-  
   if (annotations) {
-    // var annotation = annotations[ii]
-    // console.log(annotation)
-
     var markup_svg = document.getElementById('markups')
     if (markup_svg) {
       // console.log("destroying")
@@ -282,109 +266,84 @@ annotools.prototype.generateSVG = function (annotations) {
 
     // console.log(annotations.length)
     var container = document.getElementsByClassName(this.canvas)[0] // Get The Canvas Container
-    
-    // var container = document.getElementsByClassName(this.canvas)[0]
+    // console.log(nativepoints)
+    // var container = document.getElementsByClassName(this.cavas)[0]
     // console.log(container)
-
     var width = parseInt(container.offsetWidth)
     var height = parseInt(container.offsetHeight)
-    
     /* Why is there an ellipse in the center? */
     var svgHtml = '<svg xmlns="http://www.w3.org/2000/svg" width="' + width + 'px" height="' + height + 'px" version="1.1" id="markups">'
     svgHtml += '<g id="groupcenter"/>'
     svgHtml += '<g id="origin">'
-
     var origin = viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(.5, .5))
     svgHtml += '<ellipse id="originpt" cx="' + origin.x + '" cy="' + origin.y + '" rx="' + 4 + '" ry="' + 4 + '" style="display: none"/>'
     svgHtml += '</g>'
     svgHtml += '<g id="viewport" transform="translate(0,0)">'
 
-    var ROIs = [];
-
+    highres = false;
     for (var i = 0; i < annotations.length; i++) {
-      var annotation = annotations[i]
-
-      var id = '';
-      
-      if (annotation['_id'])
-        id = annotation['_id']['$oid']
-      var nativepoints = annotation.geometry.coordinates[0];
-      // console.log(nativepoints)
-
-      // var offset = OpenSeadragon.getElementOffset(viewer.canvas)
-      var algorithm_id = annotation.provenance.analysis.execution_id
-      var color = algorithm_color[algorithm_id]
-      
-      //use the same color as algorithm does
-     // if(annotation.color) color = annotation.color; 
-	    
-      var countNativepoints = 0;
-      var countRectNativepoints = 4;
-
-      // var svg = 
-     // svgHtml += '<polygon class="annotationsvg" id="' + id + '" points="'
-
-      if(annotation.provenance.analysis.source && annotation.provenance.analysis.source=="computer"){
-        svgHtml += '<polygon  class="nucleussvg" id="' + id + '" points="' 
-     }else  {  
-	ROIs.push(annotation);
-
-        svgHtml += '<polygon  class="" id="' + id + '" points="' }; 
-
-
-      // svgHtml += '<polygon onclick="clickSVG(event)" class="annotationsvg" id="'+"poly"+i+'" points="'
-      var polySVG = ''
-      for (var k = 0; k < nativepoints.length; k++) {
-
-        var polyPixelX = this.imagingHelper.logicalToPhysicalX(nativepoints[k][0])
-        var polyPixelY = this.imagingHelper.logicalToPhysicalY(nativepoints[k][1])
-        // svgHtml += nativepoints[k][0] + ',' + nativepoints[k][1] + ' '
-        // polySVG += nativepoints[k][0] + ',' + nativepoints[k][1] + ' '
-        svgHtml += polyPixelX + ',' + polyPixelY + ' '
-        countNativepoints++;
-      }
-           
-      //svgHtml += '" style="fill: transparent; stroke: lime; stroke-width:2.5"/>'
-      if(color === undefined){
-        color = 'lime';
-      }
-        
-      if (countNativepoints === countRectNativepoints) {
-          svgHtml += '" style="stroke:'+ color + '; stroke-width:1.0; fill-opacity:0.0"/>';
-      }
-      else {
-          svgHtml += '" style="fill:transparent; stroke:'+color+ '; stroke-width:2.5"/>'
-      }
+        if (annotations[i].footprint < 100000)
+        {
+            highres = true;
+            break;
+        }
     }
 
-    console.log("ROIs:", ROIs);
-    for(var i=0; i<ROIs.length; i++){
-			var annotation = ROIs[i];	
+    if (this.imagingHelper._viewportWidth * this.imagingHelper._viewportHeight > 0.06)
+        highres = false;
+
+    smth_or_not = highres;
+    if (smth_or_not) {
+        smoothed_anno = this.heatmap_smoothing(1, 0.01 + 2 * Math.pow(this.heat_weight[2], 2));
+    }
+
+    var intersect_label = this.calculateIntersect(highres);
+
+    for (var i = 0; i < annotations.length; i++) {
+      if (smth_or_not)
+        var smoothed = smoothed_anno[i]
+      var annotation = annotations[i]
+      if (((highres == false) && (annotation.footprint <= 100000)) || ((highres == true) && (annotation.footprint > 100000)))
+        if (annotation.object_type == 'heatmap_multiple')
+            continue;
+
+      if (annotation.object_type == 'marking')
+      {
+        if (annotation.properties.annotations.mark_type == 'LymPos' || annotation.properties.annotations.mark_type == 'LymNeg')
+        {
+            //continue;
+        }
+
+        if (annotation.properties.annotations.username != this.username)
+            continue;
+      }
+ 
+      if (this.lymheat == false)
+      {
+	    if ((annotation.object_type == 'marking') && (annotation.properties.annotations.mark_type == 'LymPos' || annotation.properties.annotations.mark_type == 'LymNeg'))
+	    {
+		  continue;
+	    }
+	    if (annotation.object_type == 'heatmap' || annotation.object_type == 'heatmap_multiple')
+	    {
+		  continue;
+	    }
+      }
+
       var id = '';
       
       if (annotation['_id'])
         id = annotation['_id']['$oid']
+      // console.log(annotation)
       var nativepoints = annotation.geometry.coordinates[0]
 
       // var offset = OpenSeadragon.getElementOffset(viewer.canvas)
       var algorithm_id = annotation.provenance.analysis.execution_id
-      var color = algorithm_color[algorithm_id];
-      //use the same color as algorithm does
-      if(annotation.color){
-	  var algorithm_saved=annotation.algorithm;
-	  color = algorithm_color[algorithm_saved];
-	  //color =annotation.color; 
-       }		    
-      var countNativepoints = 0;
-      var countRectNativepoints = 4;
+      var color = algorithm_color[algorithm_id]
 
       // var svg = 
-     // svgHtml += '<polygon class="annotationsvg" id="' + id + '" points="'
-      if(annotation.provenance.analysis.source && annotation.provenance.analysis.source=="computer"){
-        //svgHtml += '<polygon  class="nucleussvg" id="' + id + '" points="' 
-     }else  {  
-        svgHtml += '<polygon  class="annotationsvg" id="' + id + '" points="' }; 
-				console.log("rendering ROI");
+      //svgHtml += '<polygon  class="annotationsvg" id="' + id + '" points="'
+      svgHtml += '<polyline  class="annotationsvg" id="' + id + '" points="'
 
       // svgHtml += '<polygon onclick="clickSVG(event)" class="annotationsvg" id="'+"poly"+i+'" points="'
       var polySVG = ''
@@ -395,21 +354,132 @@ annotools.prototype.generateSVG = function (annotations) {
         // svgHtml += nativepoints[k][0] + ',' + nativepoints[k][1] + ' '
         // polySVG += nativepoints[k][0] + ',' + nativepoints[k][1] + ' '
         svgHtml += polyPixelX + ',' + polyPixelY + ' '
-        countNativepoints++;
       }
-           
+
       //svgHtml += '" style="fill: transparent; stroke: lime; stroke-width:2.5"/>'
-      if(color === undefined){
-        color = 'lime';
-      }
-        
-      if (countNativepoints === countRectNativepoints) {
-          svgHtml += '" style="stroke:'+ color + '; stroke-width:1.0; fill-opacity:0.0"/>';
-      }
-      else {
-          svgHtml += '" style="fill:transparent; stroke:'+color+ '; stroke-width:2.5"/>'
-      }	
+      if(color === undefined)
+        color = 'lime'
+      //svgHtml += '" style="fill:transparent; stroke:'+color+ '; stroke-width:2.5"/>'
+      //svgHtml += '" style="fill:' + '#feedde' + ';fill-opacity: 0.6;stroke-width:0"/>';
+      //console.log(this.heatmap_opacity);
+      //console.log(this.imagingHelper._viewportWidth);
+      switch (annotation.object_type)
+      {
+	case 'heatmap':
+		//console.log('case heatmap');
+		//var heatmapIndex = parseInt(parseInt((annotation.properties.metric_value * 10))/2.5);
+		var heatmapIndex = parseInt(parseInt(((1-annotation.properties.metric_value) * 10))/2.5);
+		var heatcolor = this.heatmapColor[heatmapIndex];
+		svgHtml += '" style="fill:' + heatcolor.toString() + ';fill-opacity: ' + this.heatmap_opacity + ';stroke-width:0"/>';
+		break;
+	case 'heatmap_multiple':
+        if (smth_or_not) {
+		  var lym_score = smoothed;
+        } else {
+		  var lym_score = annotation.properties.multiheat_param.metric_array[0];
+        }
+		var nec_score = annotation.properties.multiheat_param.metric_array[1];
+		var nec_weight = this.heat_weight[1];
+		var lym_weight = 1-this.heat_weight[0];
+
+		var lym_color_index = lym_score >= lym_weight ? 2 : 0;
+		var nec_color_index = nec_score >= nec_weight ? 1 : 0;
+		var lym_checked = document.getElementById('cb1').checked;
+		var nec_checked = document.getElementById('cb2').checked;
+
+		// Added for temp weight boxes
+		lym_checked = (document.getElementById('LymSe').checked || document.getElementById('BothSe').checked);
+		nec_checked = (document.getElementById('NecSe').checked || document.getElementById('BothSe').checked);
+
+
+		selected_heatmap = this.heatmapColor[0];
+		selected_opacity = this.heatmap_opacity;
+
+		if (intersect_label[i] != 0)
+		{
+			switch (intersect_label[i])
+			{
+			case -1: svgHtml += '" style="fill:' + this.heatmapColor[4] + ';fill-opacity: ' + this.heatmap_opacity + ';stroke-width:0"/>'; break;
+			case 1: svgHtml += '" style="fill:' + this.heatmapColor[3] + ';fill-opacity: ' + this.heatmap_opacity + ';stroke-width:0"/>'; break;
+			}
 		}
+		else
+		{
+			if (lym_checked == true && nec_checked == false)
+			{
+				selected_heatmap = this.heatmapColor[lym_color_index];
+				//svgHtml += '" style="fill:' + this.heatmapColor[lym_color_index] + ';fill-opacity: ' + this.heatmap_opacity + ';stroke-width:0"/>';
+			}
+
+			if (lym_checked == false && nec_checked == true)
+			{
+				selected_heatmap = this.heatmapColor[nec_color_index];
+				//svgHtml += '" style="fill:' + this.heatmapColor[nec_color_index] + ';fill-opacity: ' + this.heatmap_opacity + ';stroke-width:0"/>';
+			}
+
+			if (lym_checked == true && nec_checked == true)
+			{
+				selected_heatmap = this.heatmapColor[lym_color_index*(1-nec_color_index)];
+				//svgHtml += '" style="fill:' + this.heatmapColor[lym_color_index*(1-nec_color_index)] + ';fill-opacity: ' + this.heatmap_opacity + ';stroke-width:0"/>';
+			}
+
+			if (lym_checked == false && nec_checked == false)
+			{
+				selected_heatmap = this.heatmapColor[0];
+				//svgHtml += '" style="fill:' + this.heatmapColor[0] + ';fill-opacity: ' + this.heatmap_opacity + ';stroke-width:0"/>';
+			}
+		}
+		
+		if (selected_heatmap == this.heatmapColor[0])
+		{
+			selected_opacity = 0.2;
+		}
+
+		svgHtml += '" style="fill:' + selected_heatmap + ';fill-opacity: ' + selected_opacity + ';stroke-width:0"/>';
+		/*
+		var combo = lym_score;
+		if (nec_score >= (1-this.heat_weight1))
+		{
+			combo = 0;
+		}
+		var heatmapIndex = parseInt(parseInt((combo * 10))/2.5);
+        var heatcolor = this.heatmapColor[heatmapIndex];
+        svgHtml += '" style="fill:' + heatcolor.toString() + ';fill-opacity: ' + this.heatmap_opacity + ';stroke-width:0"/>';
+		*/
+                break;
+	
+	case 'marking':
+		var line_color = '';
+		var stroke_width = 2.5;
+		switch (annotation.properties.annotations.mark_type)
+		{
+			case 'LymPos': line_color = 'red'; stroke_width = 2.5*annotation.properties.annotations.mark_width; break;
+			case 'LymNeg': line_color = 'blue'; stroke_width = 2.5*annotation.properties.annotations.mark_width; break;
+			case 'TumorPos': line_color = 'orange'; break;
+			case 'TumorNeg': line_color = 'lime'; break;
+		}
+		//svgHtml += '" style="fill:transparent; stroke:'+line_color+ '; stroke-width:2.5"/>'
+		svgHtml += '" style="fill:transparent; stroke:'+line_color+ '; stroke-width:' + stroke_width + '"/>';
+		break;
+	default:
+		svgHtml += '" style="fill:transparent; stroke:'+color+ '; stroke-width:2.5"/>'
+      }
+      /*
+      if (annotation.object_type === 'heatmap')
+      {
+      	var heatmapIndex = parseInt(parseInt((annotation.properties.metric_value * 10))/2.5);
+      	var heatcolor = this.heatmapColor[heatmapIndex];
+      	svgHtml += '" style="fill:' + heatcolor.toString() + ';fill-opacity: ' + this.heatmap_opacity + ';stroke-width:0"/>';
+      }
+      else
+      {
+	svgHtml += '" style="fill:transparent; stroke:'+color+ '; stroke-width:2.5"/>'
+      }
+      */
+    }
+
+    //Debug
+    //console.log(svgHtml);
 
     this.svg = new Element('div', {
       styles: {
@@ -426,89 +496,63 @@ annotools.prototype.generateSVG = function (annotations) {
 
 
   var ctrl = false;
-  var alt = false;
   jQuery(document).keydown(function(event){
     //console.log("control");
-    console.log(event.which);
-    if(event.which == 17 || event.which == 91){//Ctrl key and left window key
+    //console.log(event);
+    if(event.which == 17 || event.which == 91)
       ctrl = true;
-	}
-   else if (event.which == 18 || event.which == 92){//Alt key and right window key
-	  alt = true;	 
-	}
+
   });
   jQuery(document).keyup(function(){
         ctrl = false;
-		alt = false;
   });
-  jQuery("#58891912e4b076b78cf2f81f").mousedown(function(e){
-	console.log(e);
-  });	
-  jQuery(".annotationsvg").mousedown(function (event) {
+  jQuery('.annotationsvg').mousedown(function (event) {
         //console.log(event.which);
-       
         if(ctrl){
           //console.log("double clicked");
           event.preventDefault();
           event.stopPropagation();
           event.stopImmediatePropagation();
           //return false;
-        } else if (alt){
-          //console.log("double clicked");
-          event.preventDefault();
-          event.stopPropagation();
-          event.stopImmediatePropagation();
-          //return false;
-        }		
-		else {
+        } else {
           return;
         }
-		
         var panel = jQuery('#panel').show('slide')
         panel.html('');
         jQuery(".annotationsvg").css("opacity", 0.5);
         jQuery("#"+event.target.id).css("opacity", 1);
         var id = event.target.id
-        var url = "api/Data/getROI.php?id="+id;
-        console.log("id:"+url);
-        console.log("id:"+id);
+        var url = "api/Data/getProperties.php?id="+id;
         var content = "<div id = 'panelHeader'> <h4>Annotation Details </h4></div>"
         + "<div id='panelBody'>";
 
         jQuery.get(url, function(d){
-          var data = {}          
+          var data = {}
+          
           try{
             data = JSON.parse(d)[0];
           } catch(e){
             console.log(e);
           }
-          
-		  console.log(data);
-		  
+          //console.log(data);
           var features = [];
           var properties = {};
-		  var algorithm="";
-		  var coordinates=[];
-		  
           try {
             if(data.properties.scalar_features)
               features=  data.properties.scalar_features[0].nv;
-		  
             properties = data.properties.annotations;
-			algorithm = data.algorithm;
-			coordinates= data.geometry.coordinates[0];
-			
           } catch(e){
             console.log(e);
           }
-		  
-          for(var i in properties){            
+          for(var i in properties){
+            
             if(i == "secret"){
 
             } else {
               var line = "<div class='markupProperty'><strong>"+i+"</strong>: " + properties[i]+"</div>";
               content+=line;
-            }          
+            }
+          
           }
 
           for(var i =0; i< features.length; i++){
@@ -516,25 +560,23 @@ annotools.prototype.generateSVG = function (annotations) {
             var line = "<div class='markupFeature'><div class='markupFeatureName'>"+feature.name +"</div> <div class='markupFeatureValue'>"+feature.value+"</div></div>";
             content+=line;
           }
-         
-		  if(ctrl)
-             content += "<button class='btn-danger btn' id='deleteAnnot'><a href='#confirmDelete' rel='modal:open'>Delete</a></button>";
-		  else if (alt)
-			 content += "<button class='btn-danger btn' id='featureScape'>FeatureScape</button>"; 
-		  
+
+          content += "<button class='btn-danger btn' id='deleteAnnot'><a href='#confirmDelete' rel='modal:open'>Delete</a></button>";
           content += "<button class='btn' id='cancelPanel'>Cancel</button>";
           content +="</div>";
-		  
-          var cancel = function () {           
+          var cancel = function () {
+           
             jQuery('#panel').hide('slide')
+
           }
 
           panel.html(content);
 
+
           jQuery("#cancelPanel").click(function(){cancel();});
-		  
-        if(ctrl){ // Ctrl key for deletion of human generated annotation
-          jQuery("#deleteAnnot").click(function(e) {            
+
+          jQuery("#deleteAnnot").click(function(e) {
+            
             //$("#confirmDelete").css(
             //console.log(data.provenance.analysis.source);
             if(data.provenance.analysis.source == "human"){
@@ -559,58 +601,7 @@ annotools.prototype.generateSVG = function (annotations) {
             } else {
               alert("Can't delete computer generated segments");
             }
-          })
-		 };
-		 
-		if (alt){  //new code go here to handle Alt key for featureScape view
-		   if(data.provenance.analysis.source == "human" || 1){
-              jQuery("#featureScape").click(function(){ 
-			  
-              var execution_id= algorithm_id;
-			  var this_case_id = case_id;
-              var this_cancerType = cancerType ;
-		  var x_min= coordinates[0][0];
-		  var y_min= coordinates[0][1];			  
-		  var x_max= coordinates[2][0];
-		  var y_max= coordinates[2][1];
-		  //var randval = Math.random();
-		  var randval = 0.0001;
-		  var featureScape_url="";	
-		  
-		  //var github_url="http://sbu-bmi.github.io/FeatureScapeApps/featurescape/?";
-		  //var osprey_url="http://osprey.bmi.stonybrook.edu:3000?";
-		  
-		  var webhost_url="/featurescapeapps/featurescape/?";
-		  
-		  //var findAPI_host="http://129.49.249.191";
-		  //var findAPI_port="4500";			  
-		 // var findAPI_url=findAPI_host+":"+findAPI_port+"?";
-		  
-		  //var findAPI_url=findAPIConfig.findAPI+":"+findAPIConfig.port+"?";
-          var findAPI_url = findAPIConfig.findAPI + "?";
-		  
-		  var mongodb_query="limit=1000&find={";
-		      mongodb_query +="\"provenance.analysis.source\":\"computer\","; 
-		      mongodb_query+="\"randval\":{\"$gte\":"+randval+"},";
-			  mongodb_query+="\"provenance.analysis.execution_id\":\""+execution_id+"\",";
-		      mongodb_query+="\"provenance.image.case_id\":\""+this_case_id+"\",";
-		      mongodb_query+="\"x\":{\"$gte\":"+x_min+",\"$lte\":"+x_max+"},";
-		      mongodb_query+="\"y\":{\"$gte\":"+y_min+",\"$lte\":"+y_max+"}";
-		      mongodb_query+="}&db=quip"+"&c="+this_cancerType;
-		  
-		  //featureScape_url=github_url+osprey_url+mongodb_query;
-		  featureScape_url=webhost_url+findAPI_url+mongodb_query;
-		  
-		  console.log(featureScape_url);		   
-		  window.open(featureScape_url,'_blank');			 
-              jQuery("#panel").hide("slide");
-              self.getMultiAnnot();	              		  
-              });
-            } else {
-              alert("Can't view the featureScape of computer generated segments");
-            }    
-		 } ;//end of new code	
-		  
+          });
 
         });
     

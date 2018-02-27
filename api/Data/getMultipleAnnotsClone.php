@@ -1,16 +1,23 @@
-<?php require '../../../authenticate.php';
-ini_set('display_errors', 'On');
-error_reporting(E_ALL | E_STRICT);
+<?php 
+  require '../../../authenticate.php';
+  
+//ini_set('display_errors', 'On');
+//error_reporting(E_ALL | E_STRICT);
+
 include_once("RestRequest.php");
 require_once 'HTTP/Request2.php';
+
 $config = require '../Configuration/config.php';
-$getUrl =  $config['getMultipleAnnotations'];
-$postUrl = $config['postAnnotation'];
+
+$getUrl =  $config['getMultipleAnnotationsClone'];
+
 
 
 if (!empty($_SESSION['api_key'])) {
     $api_key = $_SESSION['api_key'];
 }
+
+
 		if(isset($_GET["iid"]))
 		{
 			$iid=$_GET["iid"];
@@ -26,21 +33,18 @@ if (!empty($_SESSION['api_key'])) {
             $algorithms = urlencode($_GET["algorithms"]);
             $getUrl  = $getUrl . "api_key=" . $api_key;
             
-		
+
             $url = $getUrl . "&CaseId=" . $iid ."&x1=" . $x . "&y1=" . $y . "&x2=" . $x1 . "&y2=" . $y1 . "&footprint=" . $area . "&algorithms=" . $algorithms;
-			//echo $url;
-			//$getRequest = new RestRequest($url,'GET');
-//	            $getRequest->execute();
-			
-			$ch = curl_init();
-			curl_setopt($ch, CURLOPT_URL, $url);
-			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-			$output = curl_exec($ch);
-			
-			//echo $output;
-			$annotationList = $output;
-			//Figure out how to parse reponse
-			//$annotationList = ($getRequest->responseBody);
+            //echo $url;
+	    $getRequest = new RestRequest($url,'GET');
+            $getRequest->execute();
+            //print_r($url);            
+            //print_r($getRequest);
+
+	    //Figure out how to parse reponse
+	     $annotationList = ($getRequest->responseBody);
+      
+            // print_r($annotationList);
 
             if($annotationList)
                 echo ($annotationList);

@@ -4,13 +4,18 @@ error_reporting(E_ALL | E_STRICT);
 include_once("RestRequest.php");
 require_once 'HTTP/Request2.php';
 $config = require '../Configuration/config.php';
-$getUrl =  $config['getMultipleAnnotations'];
+$getUrl =  $config['getMultipleAnnotationsWithAttr'];
 $postUrl = $config['postAnnotation'];
+
+
+//echo $_SESSION['api_key'];
 
 
 if (!empty($_SESSION['api_key'])) {
     $api_key = $_SESSION['api_key'];
 }
+
+
 		if(isset($_GET["iid"]))
 		{
 			$iid=$_GET["iid"];
