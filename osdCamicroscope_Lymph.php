@@ -6,7 +6,6 @@ include 'shared/osdHeader.php';
 ?>
 
 <!-- ANNOTATION -->
-    <script src="js/dependencies/jquery.js"></script> <!-- // need for this particular file // -->
     <script src="js/annotationtoolslymph/annotools-openseajax-handler-lymph.js"></script>
     <script src="js/annotationtoolslymph/ToolBar_Lymph.js"></script>
     <script src="js/annotationtoolslymph/AnnotationStore_Lymph.js"></script>

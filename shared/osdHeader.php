@@ -32,12 +32,9 @@ if (isset($_GET["cancerType"])) {
     <link rel="stylesheet" type="text/css" media="all" href="css/multiheattools.css"/>
 
     <!-- JAVASCRIPT -->
-    <script
-            src="https://code.jquery.com/jquery-3.2.1.min.js"
-            integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
-            crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <!-- script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script -->
-    <!-- script src="js/dependencies/jquery.js"></script -->
+    <script src="js/dependencies/jquery.js"></script>
 
     <!--JSON Form dependencies-->
     <script src="js/dependencies/underscore.js"></script>
