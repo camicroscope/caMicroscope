@@ -126,8 +126,9 @@ include 'shared/osdHeader.php';
                 height: '48px',
                 width: '100%',
                 iid: tissueId,
-				        cancerType: cancerType,
-                annotool: annotool
+                cancerType: cancerType,
+                annotool: annotool,
+                viewer: viewer
 
              });
 

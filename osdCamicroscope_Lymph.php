@@ -196,12 +196,13 @@ include 'shared/osdHeader.php';
             });
         //console.log(tissueId);
         var toolBar = new ToolBar('tool', {
-                left:'0px',
-                top:'0px',
-                height: '48px',
-                width: '100%',
-                iid: tissueId,
-                annotool: annotool
+            left:'0px',
+            top:'0px',
+            height: '48px',
+            width: '100%',
+            iid: tissueId,
+            annotool: annotool,
+            viewer: viewer
 
         });
 
