@@ -310,7 +310,7 @@ annotools.prototype.getMultiAnnot = function (viewer) {
   var area = (max.x - origin.x) * (max.y - origin.y)
   //algorithms.push('test')
 
-  var t1 = 0
+  var t1 = 0;
 
   // async
   (function () {
