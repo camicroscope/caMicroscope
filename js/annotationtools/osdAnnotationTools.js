@@ -216,23 +216,29 @@ annotools.prototype.getMultiAnnot = function (viewer) {
     var origin = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(0), this.imagingHelper.physicalToDataY(0));
     var area = (max.x - origin.x) * (max.y - origin.y);
 
-    SELECTED_ALGORITHM_LIST = SELECTED_ALGORITHM_LIST.sort();
-    var algorithms = SELECTED_ALGORITHM_LIST.slice();
+    // async
+    (function () {
+        SELECTED_ALGORITHM_LIST = SELECTED_ALGORITHM_LIST.sort();
+        var algorithms = SELECTED_ALGORITHM_LIST.slice();
 
-    var empty = !OVERLAY_LIST.length;
-    if (!empty)
-    {
-        OVERLAY_LIST.forEach(function (elem) {
-            var idx = algorithms.indexOf(elem.execid);
-
-            if (idx >= 0) {
-              algorithms.pop();
+        (function () {
+            var empty = !OVERLAY_LIST.length;
+            if (!empty) {
+                OVERLAY_LIST.forEach(function (elem) {
+                    var idx = algorithms.indexOf(elem.execid);
+                    if (idx >= 0) {
+                        algorithms.pop();
+                    }
+                });
             }
 
-        });
+            fetch()
+        })
+    })
 
-    }
+};
 
+function fetch() {
     if (algorithms.length) {
         this.toolBar.titleButton.hide();
         this.toolBar.ajaxBusy.show();
@@ -251,7 +257,7 @@ annotools.prototype.getMultiAnnot = function (viewer) {
         self.destroyMarkups();
         // destroy canvas
     }
-};
+}
 
 /**
  * Get Annotation from the API
