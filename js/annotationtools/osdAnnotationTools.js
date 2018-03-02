@@ -1423,6 +1423,18 @@ annotools.prototype.saveAnnot = function (annotation) {
             console.log('successfully posted')
         }
     })
+    jQuery.ajax({
+        'type': 'POST',
+        url: 'api/Data/getAnnotSpatial_sc.php',
+        data: annotation,
+        success: function (res, err) {
+            // console.log("response: ")
+            console.log(res);
+            console.log(err);
+
+            console.log('successfully posted')
+        }
+    })
 
 };
 

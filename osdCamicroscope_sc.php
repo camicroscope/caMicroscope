@@ -4,7 +4,9 @@
  */
 include 'shared/osdHeader.php';
 ?>
-
+<script>
+var _USERNAME = "<?php echo filter_var($_SESSION["email"], FILTER_SANITIZE_EMAIL); ?>";
+</script>
 <!-- ANNOTATION -->
     <script src="js/annotationtools_sc/annotools-openseajax-handler.js"></script>
     <script src="js/annotationtools_sc/ToolBar_sc.js"></script>
