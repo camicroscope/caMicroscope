@@ -312,6 +312,7 @@ annotools.prototype.getMultiAnnot = function (viewer) {
 
   var t1 = 0;
 
+  /*
   // async
   (function () {
       SELECTED_ALGORITHM_LIST = SELECTED_ALGORITHM_LIST.sort();
@@ -331,9 +332,51 @@ annotools.prototype.getMultiAnnot = function (viewer) {
           fetch()
       })
   })
+  */
+
+    SELECTED_ALGORITHM_LIST = SELECTED_ALGORITHM_LIST.sort();
+    var algorithms = SELECTED_ALGORITHM_LIST.slice();
+
+    var empty = !OVERLAY_LIST.length;
+    if (!empty)
+    {
+        OVERLAY_LIST.forEach(function (elem) {
+            var idx = algorithms.indexOf(elem.execid);
+
+            if (idx >= 0) {
+                algorithms.pop();
+            }
+
+        });
+
+    }
+
+    if (algorithms.length) {
+        if (this.toolBar !== undefined && this.toolBar !== null) {
+            this.toolBar.titleButton.hide();
+            this.toolBar.ajaxBusy.show();
+        }
+        //this.toolBar.titleButton.hide()
+        //this.toolBar.ajaxBusy.show()
+        this.annotations = this.AnnotationStore.fetchAnnotations(this.x1, this.y1, this.x2, this.y2, area, algorithms, function (data) {
+            // console.log(data)
+            self.annotations = data
+            self.displayGeoAnnots()
+            self.setupHandlers()
+            var t2 = 10
+
+            self.toolBar.titleButton.show()
+            self.toolBar.ajaxBusy.hide()
+        })
+    } else {
+        self.setupHandlers()
+        self.destroyMarkups()
+        // destroy canvas
+    }
 
 };
 
+/*
 function fetch() {
   if (algorithms.length) {
       this.toolBar.titleButton.hide();
@@ -354,6 +397,8 @@ function fetch() {
       // destroy canvas
   }
 }
+*/
+
 
 annotools.prototype.getAnnot = function (viewer) // Get Annotation from the API
 {
