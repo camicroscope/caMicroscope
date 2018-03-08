@@ -15,13 +15,19 @@ overlays.prototype.overlayRoutine = function (imgData) {
     var self = this;
     var viewer = self.viewer;
 
+    var tilename = tissueId;
+    if (imgData.name)
+    {
+        tilename = imgData.name;
+    }
+
     var odata = {
         tilesize: self.m_tilesize,
         minlevel: self.m_minlevel,
         maxlevel: self.m_overlaymaxlevel,
         width: imgData.w,
         height: imgData.h,
-        name: tissueId,
+        name: tilename,
         loc: imgData.loc
     };
 
@@ -97,7 +103,8 @@ overlays.prototype.toggle = function (OVERLAY_LIST, SELECTED_ALGORITHM_LIST) {
                 "id": self.iid,
                 "w": imagingHelper.imgWidth,
                 "h": imagingHelper.imgHeight,
-                "loc": elem.loc
+                "loc": elem.loc,
+                "name": elem.name
             };
             self.overlayRoutine(imgData);
 
@@ -123,6 +130,7 @@ overlays.prototype.getList = function (algorithms_urlparam) {
                 var myObj = {};
                 myObj.execid = d[i].provenance.analysis_execution_id;
                 myObj.loc = d[i]['tile-location'];
+                myObj.name = d[i]['tile_name'];
                 OVERLAY_LIST.push(myObj);
             }
             else {
