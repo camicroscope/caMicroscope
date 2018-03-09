@@ -2559,10 +2559,12 @@ annotools.prototype.getAlgorithmColorFromMenuTree = function () {
     if (num_algorithm === 0) {
         alert("No algorithms have been selected.");
         algo_and_color = null;
+        return false;
     }
     else if (num_algorithm > 1 || num_algorithm < 1) {
         alert("Please select one and only one algorithm!");
         algo_and_color = null;
+        return false;
     } else {
         algo_and_color.color = algorithm_colors[0];
         algo_and_color.algorithm = algorithms[0];
