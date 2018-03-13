@@ -1,7 +1,7 @@
 <?php
 
-$baseUrl = "http://camicroscope-bindaas:9099";
-$kueUrl = "http://camicroscope-jobs:3000";
+$baseUrl = "http://quip-data:9099";
+$kueUrl = "http://quip-jobs:3000";
 
 $serviceUrl     = "$baseUrl/services/Camicroscope_DataLoader";
 $annotationsUrl = "$baseUrl/services/Camicroscope_Annotations";
@@ -34,7 +34,7 @@ return array(
     'deleteMarkups' => "$annotationsUrl/MarkupLoader/delete/deleteMultipleMarkups",
     'firebase' => $firebase,
     'firebase_key' => $firebase_key,
-    'retrieveTemplate' => "$templateUrl/AnnotationTemplate/query/getAll",
+    'retrieveTemplate' => "$serviceUrl/AnnotationTemplate/query/getAll",
     'getAllAnnotations' => "$tempMarkupUrl/Annotations/query/byUserAndImageID?iid=",
     'getAnnotationsSpatial' => "$serviceUrl/GeoJSONImageMetaData/query/getMarkups?",
     'getAnnotationSpatialFilter' => "$tempMarkupUrl/Annotations/query/allByFilter?iid=",
