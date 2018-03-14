@@ -527,9 +527,15 @@ ToolBar.prototype.createButtons = function () {
       if(this.imageStatus=="unlock"||this.imageStatus=="Unlock"||this.imageStatus==""){  
 	 this.mode = 'pencil'
          this.annotools.mode = 'pencil'
-         this.annotools.drawMarkups()        
-         jQuery("canvas").css("cursor", "crosshair");        	
-         jQuery("#drawFreelineButton").addClass("active");
+         this.annotools.drawMarkups() ;
+	 if(this.annotools.filter_algorithm){     
+           jQuery("canvas").css("cursor", "crosshair");        	
+           jQuery("#drawFreelineButton").addClass("active");
+	 }
+	 else {
+	   this.setNormalMode();
+	   this.annotools.filter_algorithm = true;
+	 } 	 
       } else
           alert("This image has been locked. Only super user can unlock this image!");    
     }.bind(this))
@@ -547,9 +553,14 @@ ToolBar.prototype.createButtons = function () {
       if(this.imageStatus=="unlock"||this.imageStatus=="Unlock"||this.imageStatus==""){
         this.mode = 'merge_step2'
         this.annotools.mode = 'rect'
-        this.annotools.drawMarkups();		
-        jQuery("canvas").css("cursor", "crosshair");
-	jQuery("#mergeStep2Button").addClass("active");                   
+        this.annotools.drawMarkups();	
+	if(this.annotools.filter_algorithm){      
+          jQuery("canvas").css("cursor", "crosshair");
+	  jQuery("#mergeStep2Button").addClass("active"); 
+	}else {
+	 this.setNormalMode();
+	 this.annotools.filter_algorithm = true;
+	}	
        } else
           alert("This image has been locked. Only super user can unlock this image!"); 
      }.bind(this))    
