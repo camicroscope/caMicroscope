@@ -38,6 +38,7 @@ var annotools = function (options) {
   this.x2 = 1.0
   this.y1 = 0.0
   this.y2 = 1.0
+  this.filter_algorithm = true
 
   this.annotationHandler = options.annotationHandler || new AnnotoolsOpenSeadragonHandler()
   /*
@@ -2534,10 +2535,12 @@ annotools.prototype.getAlgorithmColorFromMenuTree = function () {
     if (num_algorithm === 0) {
         alert("No algorithms have been selected.");
         algo_and_color = null;
+	this.filter_algorithm = false;
     }
     else if (num_algorithm > 1 || num_algorithm < 1) {
         alert("Please select one and only one algorithm!");
         algo_and_color = null;
+	this.filter_algorithm = false;
     } else {
         algo_and_color.color = algorithm_colors[0];
         algo_and_color.algorithm = algorithms[0];
