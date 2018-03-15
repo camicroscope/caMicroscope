@@ -65,7 +65,8 @@ include 'shared/osdHeader.php';
 
     viewer.addHandler("open", addOverlays);
     viewer.clearControls();
-    viewer.open("<?php print_r($config['fastcgi_server']); ?>?DeepZoom=" + fileLocation);
+    _viewer_source = "<?php print_r($config['fastcgi_server']); ?>?DeepZoom=" + fileLocation;
+    viewer.open(_viewer_source);
 
     var imagingHelper = new OpenSeadragonImaging.ImagingHelper({viewer: viewer});
     imagingHelper.setMaxZoom(1);
@@ -164,28 +165,7 @@ include 'shared/osdHeader.php';
         var zoom = <?php echo json_encode($_GET['zoom']); ?> || viewer.viewport.getMaxZoom();
         zoom = Number(zoom); // convert string to number if zoom is string
 
-        /*
-        var savedFilters = [
-          {'name': 'Brightness', 'value': 100},
-          {'name': 'Erosion', 'value': 3},
-          {'name': 'Invert'}
-        ]
 
-        if (savedFilters) {
-          console.log('some filters are saved')
-          console.log(filteringtools)
-          filteringtools.showFilterControls();
-          for(var i=0; i<savedFilters.length; i++){
-
-                console.log(i);
-                var f = savedFilters[i];
-                var filterName = f.name;
-                console.log(filterName);
-                jQuery("#"+filterName+"_add").click();
-                jQuery("#control"+filterName).val(f.value);
-                jQuery("#control"+filterName+"Num").val(f.value);
-            }
-        }*/
 
         checkState(<?php echo json_encode($_GET['stateID']); ?>);
 
@@ -199,60 +179,65 @@ include 'shared/osdHeader.php';
         }
     }
 
-    function checkState(stateID) {
-        console.log("stateID: ", stateID);
-
-        //Check if loading from saved state
-        if (stateID) {
-
-            //fetch state from firebase
-            jQuery.get("https://test-8f679.firebaseio.com/camicroscopeStates/" + stateID + ".json?auth=kweMPSAo4guxUXUodU0udYFhC27yp59XdTEkTSJ4", function (data) {
-
-                var savedFilters = data.state.filters;
-                var viewport = data.state.viewport;
-                var pan = data.state.pan;
-                var zoom = data.state.zoom || viewer.viewport.getMaxZoom();
-
-                //pan and zoom have preference over viewport
-                if (pan && zoom) {
-                    console.log("pan && zoom");
-                    viewer.viewport.panTo(pan);
-                    viewer.viewport.zoomTo(zoom);
-
+    var PrefMan = new ClientPrefManager("viewer");
+        // on a new press, do the following...
+        window.onkeypress = function(event) {
+           if (event.keyCode == 122) {
+              var toggle = function(e){
+                if(e){
+                  // if it's on, set it off
+                  PrefMan.set_pref("scroll_zoom", false);
+                  viewer.zoomPerScroll = 1.2;
+                  console.log("Scroll Wheel Enabled")
                 } else {
-                    if (viewport) {
-                        console.log("viewport");
-                        var bounds = new OpenSeadragon.Rect(viewport.x, viewport.y, viewport.width, viewport.height);
-                        viewer.viewport.fitBounds(bounds, true);
-                    }
+                  // if it's off, set it on
+                  PrefMan.set_pref("scroll_zoom", true);
+                  viewer.zoomPerScroll = 1;
+                  console.log("Scroll Wheel Disabled")
                 }
-                // check if there are savedFilters
-                if (savedFilters) {
-                    console.log("savedFilters");
-
-                    filteringtools.showFilterControls();
-
-                    for (var i = 0; i < savedFilters.length; i++) {
-
-                        var f = savedFilters[i];
-                        var filterName = f.name;
-
-                        jQuery("#" + filterName + "_add").click();
-                        if (filterName === "SobelEdge") {
-                            console.log("sobel");
-                        } else {
-                            jQuery("#control" + filterName).val(1 * f.value);
-                            jQuery("#control" + filterName + "Num").val(1 * f.value);
-
-                        }
-                    }
-                }
-                filteringtools.updateFilters();
-
-            });
+              }
+              PrefMan.get_pref("scroll_zoom", disable_if_true);
+           }
         }
-        else {
-            console.log("no state id");
+
+        // Deal previously set
+        var disable_if_true = function(e){
+          if(e){
+            viewer.zoomPerScroll = 1;
+            // setting to one makes scroll not change zoom level
+            console.log("Scroll Wheel Disabled")
+          }
+        };
+        PrefMan.get_pref("scroll_zoom", disable_if_true);
+
+        // handle session expiration/renew
+        var st = new SessionTracker("camic");
+        function renew_session(){
+          var xhr = new XMLHttpRequest();
+          xhr.open("POST", "../security/server.php?logIn", true);
+          xhr.onload = function (e) {
+            if (xhr.readyState === 4) {
+              if (xhr.status === 200) {
+                console.log(xhr.responseText);
+              } else {
+                console.error(xhr.statusText);
+              }
+            }
+          };
+          xhr.send(null);
+        }
+        st.start(600000, 3e6, renew_session);
+        // start the spyglass
+        spyglass_init(_viewer_source);
+
+
+        if(bound_x && bound_y){
+            var ipt = new OpenSeadragon.Point(+bound_x, +bound_y);
+            var vpt = viewer.viewport.imageToViewportCoordinates(ipt);
+            viewer.viewport.panTo(vpt);
+            viewer.viewport.zoomTo(zoom);
+        } else {
+            //console.log("bounds not specified");
         }
     }
 
