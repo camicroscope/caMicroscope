@@ -102,6 +102,26 @@ $.getScript('shared/ToolBar.js', function() {
             });
             tool.append(this.analyticsbutton);
 
+            this.sharebutton = jQuery('<img>', {
+                'data-toggle': 'tooltip',
+                'data-placement': 'bottom',
+                'title': 'Share Current View',
+                'class': 'toolButton',
+                'src': 'images/share.svg'
+            });
+
+            tool.append(this.sharebutton);
+            this.magnifierButton = jQuery('<img>', {
+                'data-toggle': 'tooltip',
+                'data-placement': 'bottom',
+                'title': 'Toggle Spyglass',
+                'class': 'toolButton',
+                'src': 'images/SpyGlass.svg',
+                'id': 'spyglass_toolbar_button'
+            });
+            // default invisible
+            this.magnifierButton.css("display", "none");
+            tool.append(this.magnifierButton);
 
             /*
              * Event handlers for toolbar buttons
@@ -135,6 +155,11 @@ $.getScript('shared/ToolBar.js', function() {
                 })
             }.bind(this));
 
+            this.sharebutton.on('click', function() {
+                // update the url
+                LinkRequest();
+                window.prompt("Share this link", window.location.href + "&" + camic_state.prefix + "=" + camic_state.encode(camic_state.vals));
+            }.bind(this));
 
             this.filterbutton.on('click', function() {
                 this.toggleAlgorithmSelector()

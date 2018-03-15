@@ -38,7 +38,7 @@ include 'shared/osdHeader.php';
             imageId: tissueId
         }); // osdImageMetadata.js
         var MPP = imagedata.metaData[0];
-        var fileLocation = imagedata.metaData[1];
+        //var fileLocation = imagedata.metaData[1];
         console.log("imagedata: ", imagedata);
 
         if (typeof tissueId === 'undefined' || tissueId === null || tissueId === '') {
