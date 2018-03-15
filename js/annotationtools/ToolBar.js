@@ -277,7 +277,7 @@ ToolBar.prototype.createButtons = function () {
         'top': this.top,
         'width': this.width,
         'height': this.height,
-    -        'z-index': this.zindex
+        'z-index': this.zindex
       goodalgo(d, null)
     })
     // console.log("here")

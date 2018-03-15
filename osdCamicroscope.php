@@ -175,7 +175,7 @@ include 'shared/osdHeader.php';
             viewer.viewport.panTo(vpt);
             viewer.viewport.zoomTo(zoom);
         } else {
-            //console.log("bounds not specified");
+            console.log("bounds not specified");
         }
     }
 
