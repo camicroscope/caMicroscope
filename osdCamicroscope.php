@@ -38,7 +38,7 @@ include 'shared/osdHeader.php';
             imageId: tissueId
         }); // osdImageMetadata.js
         var MPP = imagedata.metaData[0];
-        //var fileLocation = imagedata.metaData[1];
+        var fileLocation = imagedata.metaData[1];
         console.log("imagedata: ", imagedata);
 
         if (typeof tissueId === 'undefined' || tissueId === null || tissueId === '') {
@@ -67,7 +67,7 @@ include 'shared/osdHeader.php';
 
         viewer.addHandler("open", addOverlays);
         viewer.clearControls();
-        _viewer_source = "<?php print_r($config['fastcgi_server']); ?>?DeepZoom=" + fileLocation;
+        var _viewer_source = "<?php print_r($config['fastcgi_server']); ?>?DeepZoom=" + fileLocation;
         viewer.open(_viewer_source);
 
         var imagingHelper = new OpenSeadragonImaging.ImagingHelper({
