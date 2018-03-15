@@ -278,7 +278,6 @@ ToolBar.prototype.createButtons = function () {
         'width': this.width,
         'height': this.height,
         'z-index': this.zindex
-      goodalgo(d, null)
     })
     // console.log("here")
     jQuery('#submitbtn').click(function () {
