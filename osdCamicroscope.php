@@ -191,68 +191,18 @@ include 'shared/osdHeader.php';
                 }
             }*/
 
-            var PrefMan = new ClientPrefManager("viewer");
-            // on a new press, do the following...
-            window.onkeypress = function(event) {
-                if (event.keyCode == 122) {
-                    var toggle = function(e) {
-                        if (e) {
-                            // if it's on, set it off
-                            PrefMan.set_pref("scroll_zoom", false);
-                            viewer.zoomPerScroll = 1.2;
-                            console.log("Scroll Wheel Enabled")
-                        } else {
-                            // if it's off, set it on
-                            PrefMan.set_pref("scroll_zoom", true);
-                            viewer.zoomPerScroll = 1;
-                            console.log("Scroll Wheel Disabled")
-                        }
-                    }
-                    PrefMan.get_pref("scroll_zoom", disable_if_true);
-                }
+
+            checkState(<?php echo json_encode($_GET['stateID']); ?>);
+
+            if (bound_x && bound_y) {
+                var ipt = new OpenSeadragon.Point(+bound_x, +bound_y);
+                var vpt = viewer.viewport.imageToViewportCoordinates(ipt);
+                viewer.viewport.panTo(vpt);
+                viewer.viewport.zoomTo(zoom);
+            } else {
+                //console.log("bounds not specified");
             }
-
-            // Deal previously set
-            var disable_if_true = function(e) {
-                if (e) {
-                    viewer.zoomPerScroll = 1;
-                    // setting to one makes scroll not change zoom level
-                    console.log("Scroll Wheel Disabled")
-                }
-            };
-            PrefMan.get_pref("scroll_zoom", disable_if_true);
-
-            // handle session expiration/renew
-            var st = new SessionTracker("camic");
-
-            function renew_session() {
-                var xhr = new XMLHttpRequest();
-                xhr.open("POST", "../security/server.php?logIn", true);
-                xhr.onload = function(e) {
-                    if (xhr.readyState === 4) {
-                        if (xhr.status === 200) {
-                            console.log(xhr.responseText);
-                        } else {
-                            console.error(xhr.statusText);
-                        }
-                    }
-                };
-                xhr.send(null);
-            }
-            st.start(600000, 3e6, renew_session);
-            spyglass_init(_viewer_source);
-
-        //     checkState(<?php echo json_encode($_GET['stateID']); ?>);
-        //
-        //     if (bound_x && bound_y) {
-        //         var ipt = new OpenSeadragon.Point(+bound_x, +bound_y);
-        //         var vpt = viewer.viewport.imageToViewportCoordinates(ipt);
-        //         viewer.viewport.panTo(vpt);
-        //         viewer.viewport.zoomTo(zoom);
-        //     } else {
-        //         //console.log("bounds not specified");
-        //     }
-        // }
+        }
 
         function checkState(stateID) {
             console.log("stateID: ", stateID);
@@ -320,5 +270,57 @@ include 'shared/osdHeader.php';
                 });
             };
         }
+    </script>
+    <script>
+    var PrefMan = new ClientPrefManager("viewer");
+    // on a new press, do the following...
+    window.onkeypress = function(event) {
+        if (event.keyCode == 122) {
+            var toggle = function(e) {
+                if (e) {
+                    // if it's on, set it off
+                    PrefMan.set_pref("scroll_zoom", false);
+                    viewer.zoomPerScroll = 1.2;
+                    console.log("Scroll Wheel Enabled")
+                } else {
+                    // if it's off, set it on
+                    PrefMan.set_pref("scroll_zoom", true);
+                    viewer.zoomPerScroll = 1;
+                    console.log("Scroll Wheel Disabled")
+                }
+            }
+            PrefMan.get_pref("scroll_zoom", disable_if_true);
+        }
+    }
+
+    // Deal previously set
+    var disable_if_true = function(e) {
+        if (e) {
+            viewer.zoomPerScroll = 1;
+            // setting to one makes scroll not change zoom level
+            console.log("Scroll Wheel Disabled")
+        }
+    };
+    PrefMan.get_pref("scroll_zoom", disable_if_true);
+
+    // handle session expiration/renew
+    var st = new SessionTracker("camic");
+
+    function renew_session() {
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "../security/server.php?logIn", true);
+        xhr.onload = function(e) {
+            if (xhr.readyState === 4) {
+                if (xhr.status === 200) {
+                    console.log(xhr.responseText);
+                } else {
+                    console.error(xhr.statusText);
+                }
+            }
+        };
+        xhr.send(null);
+    }
+    st.start(600000, 3e6, renew_session);
+    spyglass_init(_viewer_source);
     </script>
     <?php include 'shared/osdFooter.php'; ?>
