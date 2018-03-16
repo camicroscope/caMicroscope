@@ -102,6 +102,7 @@ $.getScript('shared/ToolBar.js', function() {
             });
             tool.append(this.analyticsbutton);
 
+            /*
             this.sharebutton = jQuery('<img>', {
                 'data-toggle': 'tooltip',
                 'data-placement': 'bottom',
@@ -122,6 +123,7 @@ $.getScript('shared/ToolBar.js', function() {
             // default invisible
             this.magnifierButton.css("display", "none");
             tool.append(this.magnifierButton);
+            */
 
             /*
              * Event handlers for toolbar buttons
@@ -155,11 +157,13 @@ $.getScript('shared/ToolBar.js', function() {
                 })
             }.bind(this));
 
+            /*
             this.sharebutton.on('click', function() {
                 // update the url
                 LinkRequest();
                 window.prompt("Share this link", window.location.href + "&" + camic_state.prefix + "=" + camic_state.encode(camic_state.vals));
             }.bind(this));
+            */
 
             this.filterbutton.on('click', function() {
                 this.toggleAlgorithmSelector()

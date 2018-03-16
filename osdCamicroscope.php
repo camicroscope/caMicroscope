@@ -271,6 +271,7 @@ include 'shared/osdHeader.php';
             };
         }
     </script>
+<!--
     <script>
     var PrefMan = new ClientPrefManager("viewer");
     // on a new press, do the following...
@@ -323,4 +324,5 @@ include 'shared/osdHeader.php';
     st.start(600000, 3e6, renew_session);
     spyglass_init(_viewer_source);
     </script>
+    -->
     <?php include 'shared/osdFooter.php'; ?>
