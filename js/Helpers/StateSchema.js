@@ -14,7 +14,7 @@ function setAlgs(algList){
 }
 
 // initalize after 500 seconds
-setTimeout(function(){
+document.addEventListener("DOMContentLoaded",function(){
   camic_state.add_key('position', setPosition);
   camic_state.add_key('alg', setAlgs);
   // before touching the url, get what we already have
@@ -25,10 +25,10 @@ setTimeout(function(){
     console.log(e);
   }
   // remove state url when done
-  setTimeout(function(){
-    camic_state.clear_url();
-  }, 500);
-}, 500);
+  // setTimeout(function(){
+  //   camic_state.clear_url();
+  // }, 500);
+});
 
 
 algHandler = function() {

@@ -32,15 +32,15 @@ function spyglass_init(imgsrc){
   //add to toolbar
 
   // call the spyglass
-  window.setTimeout(Spyglass(viewer, spyglass_viewer),250);
+  document.addEventListener("DOMContentLoaded",Spyglass(viewer, spyglass_viewer));
 
   // make the button not hidden
 
   // things we need to wait on to resolve
-  window.setTimeout(function(){
+document.addEventListener("DOMContentLoaded",(function(){
     document.getElementById('spyglass_toolbar_button').style = "";
     document.getElementById('spyglass_toolbar_button').onclick = toggle_spyglass_visible;
     // TODO remove this and handle custom zoom
     document.getElementById('spyglass')['zoomlevel'] = viewer.viewport.getMaxZoom();
-  }, 500);
+  });
 }
