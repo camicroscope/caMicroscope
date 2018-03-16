@@ -37,7 +37,7 @@ function spyglass_init(imgsrc){
   // make the button not hidden
 
   // things we need to wait on to resolve
-document.addEventListener("DOMContentLoaded",(function(){
+document.addEventListener("DOMContentLoaded",function(){
     document.getElementById('spyglass_toolbar_button').style = "";
     document.getElementById('spyglass_toolbar_button').onclick = toggle_spyglass_visible;
     // TODO remove this and handle custom zoom
