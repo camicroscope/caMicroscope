@@ -163,7 +163,7 @@ $.getScript('shared/ToolBar.js', function() {
                 LinkRequest();
                 window.prompt("Share this link", window.location.href + "&" + camic_state.prefix + "=" + camic_state.encode(camic_state.vals));
             }.bind(this));
-            
+
 
             this.filterbutton.on('click', function() {
                 this.toggleAlgorithmSelector()
@@ -246,3 +246,5 @@ $.getScript('shared/ToolBar.js', function() {
     };
 
 });
+var event = new Event("toolbar-loaded");
+document.dispatchEvent(event);

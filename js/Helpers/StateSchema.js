@@ -13,8 +13,8 @@ function setAlgs(algList){
   SELECTED_ALGORITHM_LIST = algList;
 }
 
-// initalize after 500 seconds
-document.addEventListener("DOMContentLoaded",function(){
+// initalize after 500 mseconds
+document.addEventListener("ready-for-state",function(){
   camic_state.add_key('position', setPosition);
   camic_state.add_key('alg', setAlgs);
   // before touching the url, get what we already have

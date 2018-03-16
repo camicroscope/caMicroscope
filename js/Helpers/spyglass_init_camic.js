@@ -32,12 +32,12 @@ function spyglass_init(imgsrc){
   //add to toolbar
 
   // call the spyglass
-  document.addEventListener("DOMContentLoaded",Spyglass(viewer, spyglass_viewer));
+Spyglass(viewer, spyglass_viewer)();
 
   // make the button not hidden
 
   // things we need to wait on to resolve
-document.addEventListener("DOMContentLoaded",function(){
+document.addEventListener("toolbar-loaded",function(){
     document.getElementById('spyglass_toolbar_button').style = "";
     document.getElementById('spyglass_toolbar_button').onclick = toggle_spyglass_visible;
     // TODO remove this and handle custom zoom
