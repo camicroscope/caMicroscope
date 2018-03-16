@@ -75,6 +75,7 @@ if (isset($_GET["cancerType"])) {
     <!--End Filtering Tools-->
 
 
+    <!--
     <script src="js/Helpers/StateManager.js"></script>
     <script src="js/Helpers/SessionTracker.js"></script>
     <script src="js/Helpers/StateSchema.js"></script>
@@ -82,6 +83,7 @@ if (isset($_GET["cancerType"])) {
     <script src="js/Helpers/Spyglass.js"></script>
     <script src="js/Helpers/session_notify.js"></script>
     <script src="js/Helpers/spyglass_init_camic.js"></script>
+    -->
 
     <script src="js/dependencies/jquery.fancytree-all.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.7.0/jquery.modal.js"></script>
