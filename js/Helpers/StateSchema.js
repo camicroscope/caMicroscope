@@ -14,7 +14,7 @@ function setAlgs(algList){
 }
 
 // initalize after 500 mseconds
-viewer.addHandler('open',function(){
+document.addEventListener("ready-for-state",function(){
   camic_state.add_key('position', setPosition);
   camic_state.add_key('alg', setAlgs);
   // before touching the url, get what we already have
