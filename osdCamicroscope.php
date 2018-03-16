@@ -276,7 +276,7 @@ include 'shared/osdHeader.php';
     var PrefMan = new ClientPrefManager("viewer");
     // on a new press, do the following...
     window.onkeypress = function(event) {
-        if (event.keyCode == 122) {
+        if (event.key == "z") {
             var toggle = function(e) {
                 if (e) {
                     // if it's on, set it off
