@@ -290,7 +290,7 @@ include 'shared/osdHeader.php';
                     console.log("Scroll Wheel Disabled")
                 }
             }
-            PrefMan.get_pref("scroll_zoom", disable_if_true);
+            PrefMan.get_pref("scroll_zoom", toggle);
         }
     }
 
