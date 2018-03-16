@@ -38,7 +38,6 @@ Spyglass(viewer, spyglass_viewer)();
 
   // things we need to wait on to resolve
 document.addEventListener("magnifier-button-loaded",function(){
-    console.log("magnifier-button-loaded evt")
     document.getElementById('spyglass_toolbar_button').style = "";
     document.getElementById('spyglass_toolbar_button').onclick = toggle_spyglass_visible;
     // TODO remove this and handle custom zoom
