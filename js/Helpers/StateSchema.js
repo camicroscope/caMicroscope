@@ -13,18 +13,16 @@ function setAlgs(algList){
   SELECTED_ALGORITHM_LIST = algList;
 }
 
-// initalize after 500 mseconds
-document.addEventListener("ready-for-state",function(){
-  camic_state.add_key('position', setPosition);
-  camic_state.add_key('alg', setAlgs);
-  // before touching the url, get what we already have
-  try{
-    camic_state.initialize(camic_state.decode(camic_state.get_url_state()));
-  }
-  catch(e){
-    console.log(e);
-  }
-});
+// run changes
+camic_state.add_key('position', setPosition);
+camic_state.add_key('alg', setAlgs);
+// before touching the url, get what we already have
+try{
+  camic_state.initialize(camic_state.decode(camic_state.get_url_state()));
+}
+catch(e){
+  console.log(e);
+}
 
 
 algHandler = function() {
