@@ -123,6 +123,9 @@ $.getScript('shared/ToolBar.js', function() {
             // default invisible
             this.magnifierButton.css("display", "none");
             tool.append(this.magnifierButton);
+            // it's ready
+            var event = new Event("magnifier-button-loaded");
+            document.dispatchEvent(event);
 
 
             /*
@@ -246,5 +249,3 @@ $.getScript('shared/ToolBar.js', function() {
     };
 
 });
-var event = new Event("toolbar-loaded");
-document.dispatchEvent(event);

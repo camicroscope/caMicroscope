@@ -324,7 +324,3 @@ ToolBar.prototype.setNormalMode = function () {
     this.annotools.drawLayer.hide();
     this.annotools.addMouseEvents()
 };
-
-
-var event = new Event("toolbar-loaded");
-document.dispatchEvent(event);
