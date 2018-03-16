@@ -69,6 +69,8 @@ include 'shared/osdHeader.php';
         viewer.clearControls();
         var _viewer_source = "<?php print_r($config['fastcgi_server']); ?>?DeepZoom=" + fileLocation;
         viewer.open(_viewer_source);
+        var state_evt = new Event("ready-for-state");
+        document.dispatchEvent(state_evt);
 
         var imagingHelper = new OpenSeadragonImaging.ImagingHelper({
             viewer: viewer
