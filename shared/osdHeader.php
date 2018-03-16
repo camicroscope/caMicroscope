@@ -78,7 +78,6 @@ if (isset($_GET["cancerType"])) {
 
     <script src="js/Helpers/StateManager.js"></script>
     <script src="js/Helpers/SessionTracker.js"></script>
-    <script src="js/Helpers/StateSchema.js"></script>
     <script src="js/Helpers/ClientPrefManager.js"></script>
     <script src="js/Helpers/Spyglass.js"></script>
     <script src="js/Helpers/session_notify.js"></script>
