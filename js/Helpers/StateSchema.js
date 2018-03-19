@@ -19,7 +19,13 @@ viewer.addHandler('open',function(){
   camic_state.add_key('alg', setAlgs);
   // before touching the url, get what we already have
   try{
-    camic_state.initialize(camic_state.decode(camic_state.get_url_state()));
+    var x = camic_state.get_url_state();
+    console.log("camic_state.get_url_state()", x);
+    if (x)
+    {
+      camic_state.initialize(camic_state.decode(x));
+    }
+    //camic_state.initialize(camic_state.decode(camic_state.get_url_state()));
   }
   catch(e){
     console.log(e);
