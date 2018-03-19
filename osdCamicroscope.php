@@ -271,12 +271,12 @@ include 'shared/osdHeader.php';
             };
         }
     </script>
-<!--
+
     <script>
     var PrefMan = new ClientPrefManager("viewer");
     // on a new press, do the following...
     window.onkeypress = function(event) {
-        if (event.keyCode == 122) {
+        if (event.key == "z") {
             var toggle = function(e) {
                 if (e) {
                     // if it's on, set it off
@@ -290,7 +290,7 @@ include 'shared/osdHeader.php';
                     console.log("Scroll Wheel Disabled")
                 }
             }
-            PrefMan.get_pref("scroll_zoom", disable_if_true);
+            PrefMan.get_pref("scroll_zoom", toggle);
         }
     }
 
@@ -324,5 +324,4 @@ include 'shared/osdHeader.php';
     st.start(600000, 3e6, renew_session);
     spyglass_init(_viewer_source);
     </script>
-    -->
     <?php include 'shared/osdFooter.php'; ?>
