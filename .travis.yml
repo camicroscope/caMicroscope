@@ -5,6 +5,8 @@ services:
 before_install:
     - cd test
     - npm install -g casperjs
+    - mkdir ../../js
+    - cp __config.js ../../js/config.js
     - touch ../../authenticate.php
     - npm install
 before_script:
