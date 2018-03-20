@@ -17,6 +17,7 @@ app.set('view engine', 'php');
 app.all(/osdCamicroscope\.php/, phpExpress.router);
 
 app.use('/js',express.static('../js'));
+app.use('/shared',express.static('../shared'));
 app.use('/css',express.static('../css'));
 app.use('/images',express.static('../images'));
 
