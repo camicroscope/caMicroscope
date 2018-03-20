@@ -1,0 +1,13 @@
+sudo: required
+services:
+    - nodejs
+    - phantomjs
+before_install:
+    - cd test
+    - npm install -g casperjs
+    - touch ../../authenticate.php
+    - npm install
+before_script:
+    - node test_server.php &
+script:
+- casperjs test casper_test.js
