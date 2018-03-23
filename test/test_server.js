@@ -1,8 +1,7 @@
 var express = require('express');
 var phpExpress = require('php-express')({
-
   // assumes php is in your PATH
-  binPath: 'php'
+  binPath: '/usr/bin/php'
 });
 var path = require("path");
 
