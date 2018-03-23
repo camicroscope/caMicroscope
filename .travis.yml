@@ -10,6 +10,7 @@ before_install:
     - cp __config.js ../../js/config.js
     - touch ../../authenticate.php
     - npm install
+    - echo $PATH
 before_script:
     - node test_server.js &
 script:
