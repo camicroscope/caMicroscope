@@ -10,6 +10,6 @@ before_install:
     - touch ../../authenticate.php
     - npm install
 before_script:
-    - node test_server.php &
+    - node test_server.js &
 script:
 - casperjs test casper_test.js
