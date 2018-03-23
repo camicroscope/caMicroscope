@@ -1,7 +1,7 @@
 var express = require('express');
 var phpExpress = require('php-express')({
   // assumes php is in your PATH
-  binPath: '/usr/bin/php'
+  binPath: '/home/travis/.phpenv/shims/php'
 });
 var path = require("path");
 
