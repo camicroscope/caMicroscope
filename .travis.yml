@@ -5,12 +5,14 @@ services:
     - phantomjs
 before_install:
     - cd test
-    - npm install
-    - npm install -g casperjs
     - mkdir ../../js
     - cp __config.js ../../js/config.js
     - touch ../../authenticate.php
+    - which php
+install:
+    - npm install
+    - npm install -g casperjs
 before_script:
     - node test_server.js &
 script:
-- casperjs test casper_test.js
+    - casperjs test casper_test.js
