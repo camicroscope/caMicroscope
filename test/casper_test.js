@@ -1,4 +1,4 @@
-casper.test.begin('CAMICROSOPE repo test', 1, function suite(test) {
+casper.test.begin('CAMICROSCOPE repo test', 1, function suite(test) {
     casper.start("http://localhost:3000/osdCamicroscope.php?tissueId=TESTING", function() {
         test.assertExists('#tool', "toolbar present");
       });
