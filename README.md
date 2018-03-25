@@ -1,5 +1,7 @@
+## caMicroscope - A Web Based Annotation and Visualization Platform for Digitized Whole Slide Images
 
-caMicroscope - A Web Based Annotation and Visualization Platform for Digitized Whole Slide Images
+#### Develop branch build status:
+[![Build Status](https://travis-ci.org/camicroscope/caMicroscope.svg?branch=develop)](https://travis-ci.org/camicroscope/caMicroscope)
 
 Ameen Kazerouni <ameen.kazerouni@emory.edu>
 
