@@ -1981,9 +1981,10 @@ annotools.prototype.promptForAnnotation = function (newAnnot, mode, annotools, c
   )
   jQuery.get('api/Data/retrieveTemplateClone.php', function (data) {
     console.log("after retrieveTemplate.php:"+data);
-    var schema = JSON.parse(data)
-    schema = JSON.parse(schema)[0]
-    console.log(schema)
+    var schema = JSON.parse(data);
+    schema = JSON.parse(schema)[0];
+    //console.log(schema);
+    schema.region.enum=["Good Segmentation","Clump"];
     // console.log("retrieved template")
     var formSchema = {
       'schema': schema,
