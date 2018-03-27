@@ -2920,9 +2920,11 @@ annotools.prototype.promptForAnnotation = function (newAnnot, mode, annotools, c
         + '</div>'
     );
 
-    jQuery.get('api/Data/retrieveTemplate.php', function (data) {
+    jQuery.get('api/Data/retrieveTemplateClone.php', function (data) {
         var schema = JSON.parse(data);
         schema = JSON.parse(schema)[0];
+       //region_list=schema.region.enum;
+        schema.region.enum=["Tumor","Non_Tumor"];
         // console.log("schema", schema);
         // console.log("retrieved template")
         var formSchema = {
