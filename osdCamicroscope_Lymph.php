@@ -34,6 +34,15 @@ include 'shared/osdHeader.php';
             <button type="button" class="btn_heatmap" id="btn_heatmapweight_help">&#x2753</button>
         </div>
 
+        <div id="qualitypanel">
+            <a href='#'><div id='closeQualityPanel'><img src='images/ic_close_white_24px.svg' title='Close' alt="Close X" height="16" width="16"></div></a>
+	    <div id="qslider"></div>
+	    <p>
+	    <button type="button" class="btn_heatmap" id="myReset">Reset</button> 
+            <button type="button" class="btn_heatmap" id="btn_saveHeatmapQuality">Finalize</button>
+            <button type="button" class="btn_heatmap" id="btn_heatmapquality_help">&#x2753</button>
+        </div>
+
         <div id="markuppanel">
 			<a href='#'><div id='closeMarkupPanel'><img src='images/ic_close_white_24px.svg' title='Close' alt="Close X" height="16" width="16"></div></a>
 			<!--
@@ -89,7 +98,28 @@ include 'shared/osdHeader.php';
             <button type="button" class="btn_mark" id="btn_undomark" >Cancel</button>
             <button type="button" class="btn_mark" id="btn_mark_help">&#x2753</button>
         </div>
+
+        <div id="qualitymarkuppanel">
+            <a href='#'><div id='closeQualityMarkupPanel'><img src='images/ic_close_white_24px.svg' title='Close' alt="Close X" height="16" width="16"></div></a>
+            <input type="radio" name="marktype" value="AlgoA" checked="checked" id="AlgoA" class="radio_markup">
+            <label for="AlgoA" class=radio_markup> (1) AlgoA (draw thin line)</label><br>
+            <input type="radio" name="marktype" value="AlgoB" id="AlgoB" class="radio_markup">
+            <label for="AlgoB" class=radio_markup> (2) AlgoB (draw thin line)</label><br><p><p>
+            <input type="radio" name="marktype" value="AlgoABig" id="AlgoABig" class="radio_markup">
+            <label for="AlgoABig" class=radio_markup> (3) AlgoA (draw thick line)</label><br>
+            <input type="radio" name="marktype" value="AlgoBBig" id="AlgoBBig" class="radio_markup">
+            <label for="AlgoBBig" class=radio_markup> (4) AlgoB (draw thick line)</label><br><p><p>
+            <input type="radio" name="marktype" value="AlgoAPoly" id="AlgoAPoly" class="radio_markup">
+            <label for="AlgoAPoly" class=radio_markup> (5) AlgoA (draw polygon)</label><br>
+            <input type="radio" name="marktype" value="AlgoBPoly" id="AlgoBPoly" class="radio_markup">
+            <label for="AgloBPoly" class=radio_markup> (6) AlgoB (draw polygon)</label><br><p><p>
+            <button type="button" class="btn_mark" id="btn_savequalmark">Save</button>
+            <button type="button" class="btn_mark" id="btn_undoqualmark" >Cancel</button>
+            <button type="button" class="btn_mark" id="btn_qualmark_help">&#x2753</button>
+        </div>
+
         <div id="div_weight_locked" style="display: none;">Free</div>
+        <div id="div_quality_locked" style="display: none;">Free</div>
 
         <div id="switchuserpanel"><a href='#'><div id='closeSwitchUser'><img src='images/ic_close_white_24px.svg' title='Close' alt="Close X" height="16" width="16"></div></a>
             <h6><img src="images/switch_user.svg" alt="Switch user" height="30" width="30"> Change username to:</h6><br />
@@ -108,8 +138,43 @@ include 'shared/osdHeader.php';
         <script type="text/javascript">
           $.noConflict();
           var annotool = null;
+	  var appid = <?php echo json_encode($_GET['appid']); ?>;
           var tissueId = <?php echo json_encode($_GET['tissueId']); ?>;
-
+  	var slider = document.getElementById('qslider');
+  	var myRange = {
+  	    'min': [0],
+  	    'max': [100]
+  	};  
+        var qualthresholds;
+        if (typeof qualthreshols == 'undefined') {
+                console.log("Reset Weights");
+	  	qualthresholds = {
+			'low': 30,
+			'median': 50,
+			'high': 70
+		};
+        }
+  	var filter5 = function (value,type) {
+  	    var mvalue = value/10;
+  	    var eoval = mvalue % 2;
+  	    if (eoval != 0) {
+  	        return 2;
+  	    } else {
+  	        return 1;
+  	    }
+  	}
+  	
+  	noUiSlider.create(slider, {
+  	  start: [qualthresholds.low,qualthresholds.high],
+  	  step: 1,
+  	  connect: true,
+  	  tooltips: true,
+  	  format: wNumb({
+  	  decimals: 0
+  	  }),
+  	  range: myRange,
+        });
+                 
           var cancerType = "<?php echo $_SESSION["cancerType"] ?>";
           //console.log(cancerType);
           var imagedata = new OSDImageMetaData({imageId:tissueId});
@@ -219,16 +284,43 @@ include 'shared/osdHeader.php';
 
         jQuery("#panel").hide();
         jQuery("#weightpanel").hide();
+        jQuery("#qualitypanel").hide();
         jQuery("#markuppanel").hide();
+        jQuery("#qualitymarkuppanel").hide();
         jQuery("#switchuserpanel").hide();
+        
+        var mySlider = jQuery("#qslider")[0];
+        mySlider.noUiSlider.on("set", function (values,handle) {    
+            a = mySlider.noUiSlider.get();
+            console.log(a);
+	    if(handle == 0) {
+		qualthresholds.low = parseInt(a[0]);
+	    } else {
+		qualthresholds.high = parseInt(a[1]);
+	    }
+	    qualthresholds.median = qualthresholds.low + (( qualthresholds.high - qualthresholds.low )/2);
+        });
+
+        var myReset = jQuery("#myReset");
+
+        myReset.on("click", function () {
+            mySlider.noUiSlider.reset();
+        });
 
         /* Close weight panel */
         jQuery('#closeWeightPanel').click(function (e) {
 	        e.preventDefault();
             jQuery("#weightpanel").hide('slide');
         });
-
-        /* Close markup panel */
+        
+        /* Close quality panel */
+        jQuery('#closeQualityPanel').click(function (e) {
+	    e.preventDefault();
+            console.log("Closing quality panel");
+            jQuery("#qualitypanel").hide('slide');
+        });
+        
+        /* Close TumorPosmarkup panel */
         jQuery('#closeMarkupPanel').click(function (e) {
 	        e.preventDefault();
             annotool.mode = 'normal';
@@ -238,6 +330,22 @@ include 'shared/osdHeader.php';
             annotool.drawLayer.hide();
             annotool.addMouseEvents();
         });
+                 
+        /* Close Quality`markup panel */
+        jQuery('#closeQualityMarkupPanel').click(function (e) {
+	        e.preventDefault();
+            annotool.mode = 'normal';
+            jQuery("canvas").css("cursor", "default");
+            jQuery("#freeLineMarkupButton").removeClass("active");
+            jQuery("#qualitymarkuppanel").hide('slide');
+            annotool.drawLayer.hide();
+            annotool.addMouseEvents();
+        });
+                 
+        var getArgs = location.search.substr(1).split("&").reduce((o,i)=>(u=decodeURIComponent,[k,v]=i.split("="),o[u(k)]=v&&u(v),o),{});
+        if (getArgs.appid == "qualheat") {
+           jQuery("p.titleButton")[0].innerHTML = "caMic Segmentation Quality App";
+        }
 
         if(bound_x && bound_y){
             var ipt = new OpenSeadragon.Point(+bound_x, +bound_y);

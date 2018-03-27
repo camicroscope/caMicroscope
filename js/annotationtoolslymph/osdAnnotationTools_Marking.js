@@ -7,9 +7,12 @@ annotools.prototype.drawMarking = function (ctx) {
   this.color_arr = [];
   this.anno_arr = [];
   this.marktype_arr = [];
+  this.markeid_arr = [];
   this.markwidth_arr = [];
   this.current_canvasContext = ctx;
   this.mark_type = 'LymPos';
+  this.mark_eid = '';
+  this.algorithm = [];
 
   // Variables for broken markups
   this.rawAnnotArray = [];
@@ -90,8 +93,61 @@ annotools.prototype.drawMarking = function (ctx) {
         ctx.strokeStyle = 'lime';
         this.mark_type = 'TumorNeg';
     }
-    */
+
+    if (jQuery("#AlgoABig").is(':checked'))
+    {
+        ctx.strokeStyle = 'red';
+        this.mark_type = 'AlgoA';
+        this.markupline_width = 2;
+        drawn_linewidth = 6;
+    }
+
+    if (jQuery("#AlgoBBig").is(':checked'))
+    {
+        ctx.strokeStyle = 'blue';
+        this.mark_type = 'AlgoB';
+        this.markupline_width = 2;
+        drawn_linewidth = 6;
+    }
+
+    if (jQuery("#AlgoA").is(':checked'))
+    {
+        ctx.strokeStyle = 'red';
+        this.mark_type = 'AlgoA';
+        this.markupline_width = 1;
+    }
+
+    if (jQuery("#AlgoB").is(':checked'))
+    {
+        ctx.strokeStyle = 'blue';
+        this.mark_type = 'AlgoB';
+        this.markupline_width = 1;
+    }
+
+    if (jQuery("#AlgoAPoly").is(':checked'))
+    {
+        ctx.strokeStyle = 'orange';
+        this.mark_type = 'AlgoAP';
+    }
+
+    if (jQuery("#AlgoBPoly").is(':checked'))
+    {
+        ctx.strokeStyle = 'lime';
+        this.mark_type = 'AlgoBP';
+    }
     console.log(this.mark_type);
+
+    SELECTED_ALGORITHM_LIST = SELECTED_ALGORITHM_LIST.sort();
+
+    algorithms = SELECTED_ALGORITHM_LIST;
+
+    if(appid == "qualheat") {
+        var that = this;
+        this.oneExecIDChosenFiltered(algorithms,"quality_","Select only one 'quality' algorithm.", function (qalgo) {
+            that.mark_eid = qalgo;
+            console.log("This works. "+qalgo); 
+        });
+    }
 
     this.color_arr.push(ctx.strokeStyle);
     console.log(this.color);
@@ -157,7 +213,7 @@ annotools.prototype.drawMarking = function (ctx) {
       color: this.color,
       loc: []
     }
-
+    
     var globalNumbers = JSON.parse(this.convertFromNative(newAnnot, endRelativeMousePosition))
     newAnnot.x = globalNumbers.nativeX
     newAnnot.y = globalNumbers.nativeY
@@ -172,12 +228,15 @@ annotools.prototype.drawMarking = function (ctx) {
     this.rawAnnotArray.push(newAnnot);
     var geojsonAnnot = this.convertPencilToGeo(newAnnot)
     geojsonAnnot.object_type = 'marking';
+
     //console.log(geojsonAnnot);
     //this.promptForAnnotation(geojsonAnnot, 'new', this, ctx)
     this.anno_arr.push(geojsonAnnot);
     this.marktype_arr.push(this.mark_type);
+    this.markeid_arr.push(this.mark_eid);
     this.markwidth_arr.push(this.markupline_width);
     //this.saveMarking(geojsonAnnot, this.mark_type);
+    console.log("Algorithm: "+ this.mark_algo);
 
     /* Change button back to inactive*/
     jQuery("canvas").css("cursor", "default");
@@ -192,6 +251,7 @@ annotools.prototype.breakAndConvertToGeo = function ()
     // Refresh this.anno_arr
     this.anno_arr = [];
     this.marktype_broken_arr = [];
+    this.markeid_broken_arr = [];
     this.markwidth_broken_arr = [];
     for (i = 0; i< this.rawAnnotArray.length; i++)
     {
@@ -225,6 +285,7 @@ annotools.prototype.breakAndConvertToGeo = function ()
             this.anno_arr.push(geojsonAnnot);
             this.marktype_broken_arr.push(this.marktype_arr[i]);
             this.markwidth_broken_arr.push(this.markwidth_arr[i]);
+            this.markeid_broken_arr.push(this.markeid_arr[i]);
         }
     }
 }
@@ -241,12 +302,13 @@ annotools.prototype.saveMarking = function (newAnnot, mark_type) {
     this.addnewAnnot(newAnnot);
 }
 
-annotools.prototype.saveMarking_arr = function (newAnnot_arr, mark_type_arr, mark_width_arr) {
+annotools.prototype.saveMarking_arr = function (newAnnot_arr, mark_type_arr, mark_width_arr, mark_eid_arr) {
     for (iAnn = 0; iAnn < newAnnot_arr.length; iAnn++) {
         var val = {
             'secret': 'mark1',
             'mark_type': mark_type_arr[iAnn],
             'mark_width': mark_width_arr[iAnn],
+            'mark_eid': mark_eid_arr[iAnn],
             'username': this.username
         }
         newAnnot_arr[iAnn].properties.annotations = val;
@@ -260,7 +322,7 @@ annotools.prototype.markSave = function (notification, isSetNormalMode) {
         return;
 
     this.breakAndConvertToGeo();
-    this.saveMarking_arr(this.anno_arr, this.marktype_broken_arr, this.markwidth_broken_arr);
+    this.saveMarking_arr(this.anno_arr, this.marktype_broken_arr, this.markwidth_broken_arr, this.markeid_broken_arr);
     if (notification == true) {
         alert("Saved markup");
     }
@@ -293,6 +355,7 @@ annotools.prototype.undoStroke = function () {
     this.anno_arr.pop();
     this.rawAnnotArray.pop();
     this.marktype_arr.pop();
+    this.markeid_arr.pop();
     this.markwidth_arr.pop();
     console.log(this.color_arr);
     this.reDrawCanvas();
@@ -326,7 +389,6 @@ annotools.prototype.switchUserRadiobuttonChange = function(event) {
 
 annotools.prototype.radiobuttonChange = function(event) {
     console.log('rb changed');
-    console.log(this.marking_choice);
     var self = this;
     if (event.target.id == 'rb_Moving')
     {
@@ -358,6 +420,7 @@ annotools.prototype.radiobuttonChange = function(event) {
         }
     }
     this.marking_choice = event.target.id;
+    console.log(this.marking_choice);
 }
 
 
@@ -518,6 +581,7 @@ annotools.prototype.calculateIntersect = function(high_res) {
     var annotations = this.annotations;
 
     var labels = [];
+    var label = 0;
     var label_dates = [];
     var id = [];
     var cx = [];
@@ -536,7 +600,7 @@ annotools.prototype.calculateIntersect = function(high_res) {
         var annotation = annotations[i];
         labels.push(0);
         label_dates.push(0);
-        if (annotation.object_type == 'heatmap_multiple') {
+        if ((annotation.object_type == 'heatmap_multiple')||(annotation.object_type == 'heatmap_quality'))  {
             var nativepoints = annotation.geometry.coordinates[0];
             id.push(i);
             cx.push((nativepoints[0][0] + nativepoints[2][0])/2.0);
@@ -588,9 +652,14 @@ annotools.prototype.calculateIntersect = function(high_res) {
             label = 1;
         } else if (annotation.properties.annotations.mark_type == 'LymNeg') {
             label = -1;
+        } else if (annotation.properties.annotations.mark_type == 'AlgoA') {
+            label = -1;
+        } else if (annotation.properties.annotations.mark_type == 'AlgoB') {
+            label = 1;
         } else {
             continue;
         }
+
 
 	var date = this.getDate(annotation);
 
@@ -607,7 +676,7 @@ annotools.prototype.calculateIntersect = function(high_res) {
                 if ((Math.abs(cx[xy_i] - x) <= disx*mark_width) && (Math.abs(cy[xy_i] - y) <= disy*mark_width)) {
                     if (date > label_dates[id[xy_i]]) {
                         label_dates[id[xy_i]] = date;
-                        labels[id[xy_i]] = label;
+                        labels[id[xy_i]] = { 'label': label, 'eid': annotation.properties.annotations.mark_eid };
                     }
                 }
             }

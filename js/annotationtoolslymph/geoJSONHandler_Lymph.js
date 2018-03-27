@@ -282,14 +282,14 @@ annotools.prototype.generateSVG = function (annotations) {
 
     highres = false;
     for (var i = 0; i < annotations.length; i++) {
-        if (annotations[i].footprint < 100000)
+        if (annotations[i].footprint < 100000 || appid == "qualheat")
         {
             highres = true;
             break;
         }
     }
 
-    if (this.imagingHelper._viewportWidth * this.imagingHelper._viewportHeight > 0.06)
+    if (this.imagingHelper._viewportWidth * this.imagingHelper._viewportHeight > 0.06 && appid != "qualheat")
         highres = false;
 
     smth_or_not = highres;
@@ -309,7 +309,8 @@ annotools.prototype.generateSVG = function (annotations) {
 
       if (annotation.object_type == 'marking')
       {
-        if (annotation.properties.annotations.mark_type == 'LymPos' || annotation.properties.annotations.mark_type == 'LymNeg')
+        if (annotation.properties.annotations.mark_type == 'LymPos' || annotation.properties.annotations.mark_type == 'LymNeg' || 
+            annotation.properties.annotations.mark_type == 'AlgoA' || annotation.properties.annotations.mark_type == 'AlgoB' )
         {
             //continue;
         }
@@ -320,7 +321,8 @@ annotools.prototype.generateSVG = function (annotations) {
 
       if (this.lymheat == false)
       {
-	    if ((annotation.object_type == 'marking') && (annotation.properties.annotations.mark_type == 'LymPos' || annotation.properties.annotations.mark_type == 'LymNeg'))
+	    if ((annotation.object_type == 'marking') && (annotation.properties.annotations.mark_type == 'LymPos' || annotation.properties.annotations.mark_type == 'LymNeg' || 
+                  annotation.properties.annotations.mark_type == 'AlgoA' || annotation.properties.annotations.mark_type == 'AlgoB'))
 	    {
 		  continue;
 	    }
@@ -395,9 +397,9 @@ annotools.prototype.generateSVG = function (annotations) {
 		selected_heatmap = this.heatmapColor[0];
 		selected_opacity = this.heatmap_opacity;
 
-		if (intersect_label[i] != 0)
+		if (intersect_label[i].label != 0)
 		{
-			switch (intersect_label[i])
+			switch (intersect_label[i].label)
 			{
 			case -1: svgHtml += '" style="fill:' + this.heatmapColor[4] + ';fill-opacity: ' + this.heatmap_opacity + ';stroke-width:0"/>'; break;
 			case 1: svgHtml += '" style="fill:' + this.heatmapColor[3] + ';fill-opacity: ' + this.heatmap_opacity + ';stroke-width:0"/>'; break;
@@ -448,32 +450,87 @@ annotools.prototype.generateSVG = function (annotations) {
 		*/
                 break;
 	case 'heatmap_quality':
-		var quality_heatmap_colors = ["#feedde","#bd0026", "#feec00", "#00ff33"]
 		var quality_value = annotation.properties.metric_value;
-		var lower_threshold = 0.3;
-		var upper_threshold = 0.7;
-		selected_heatmap = quality_heatmap_colors[2];
+		var lower_threshold = window.qualthresholds.low / 100;
+		var upper_threshold = window.qualthresholds.high / 100;
+		var median = window.qualthresholds.median / 100;
+		var self = this;
+		selected_heatmap = this.heatmapColorQuality[2];
 		selected_opacity = this.heatmap_opacity;
+		SELECTED_ALGORITHM_LIST = SELECTED_ALGORITHM_LIST.sort();
 
-		if (quality_value <= lower_threshold) {
-			selected_heatmap = quality_heatmap_colors[1];
+  		algorithms = SELECTED_ALGORITHM_LIST;
+		console.log(intersect_label[i].label);
+
+		if (intersect_label[i].label != 0 && !(typeof intersect_label[i].label === "undefined"))
+		{
+	  		if(appid == "qualheat") {
+		    		this.oneExecIDChosenFiltered(algorithms,"quality_","Select only one 'quality' algorithm.", function (qeid) {
+					if(qeid == intersect_label[i].eid) {
+						switch (intersect_label[i].label)
+						{
+							case -1: 	selected_heatmap = self.heatmapColorQuality[0];
+			 						break;
+							case 1: 	selected_heatmap = self.heatmapColorQuality[4]; 
+									break;
+						}
+                          		}
+					else
+					{
+				                   if (quality_value <= lower_threshold) {
+				                        selected_heatmap = self.heatmapColorQuality[0];
+				                   }
+				
+				                   if (quality_value > lower_threshold && quality_value <= (median - 0.05)) {
+				                        selected_heatmap = self.heatmapColorQuality[1];
+				                   }
+				
+				                   if (quality_value >= upper_threshold) {
+				                        selected_heatmap = self.heatmapColorQuality[4];
+				                   }
+				
+				                   if (quality_value < upper_threshold && quality_value >= (median + 0.05)) {
+				                        selected_heatmap = self.heatmapColorQuality[3];
+				                   }
+				
+				                   if (quality_value < 0) {
+				                        selected_heatmap = self.heatmapColorQuality[2];
+				                        selected_opacity = 0.2
+				                   }
+                			}
+		        	});
+	  		}
 		}
-
-		if (quality_value >= upper_threshold) {
-			selected_heatmap = quality_heatmap_colors[3];
+		else
+		{
+   		   if (quality_value <= lower_threshold) {
+   		   	selected_heatmap = this.heatmapColorQuality[0];
+   		   }
+   
+   		   if (quality_value > lower_threshold && quality_value <= (median - 0.05)) {
+   		   	selected_heatmap = this.heatmapColorQuality[1];
+   		   }
+   
+    		   if (quality_value >= upper_threshold) {
+   			selected_heatmap = this.heatmapColorQuality[4];
+   		   }
+   
+   		   if (quality_value < upper_threshold && quality_value >= (median + 0.05)) {
+   			selected_heatmap = this.heatmapColorQuality[3];
+   		   }
+   
+   		   if (quality_value < 0) {
+   			selected_heatmap = this.heatmapColorQuality[2];
+   			selected_opacity = 0.2
+   		   }
 		}
-
-		if (quality_value < 0) {
-			selected_heatmap = quality_heatmap_colors[0];
-			selected_opacity = 0.2
-		}
-
 		svgHtml += '" style="fill:' + selected_heatmap + ';fill-opacity: ' + selected_opacity + ';stroke-width:0"/>';
 		break;
 	case 'marking':
 		var line_color = '';
-		var stroke_width = 4.0; //2.5;
+		var stroke_width = 2.5;
 		var stroke_opacity = 0;
+		console.log(annotation);
     switch (annotation.properties.annotations.mark_type) {
 		    case 'LymPos':
 		        line_color = 'red';
@@ -489,6 +546,10 @@ annotools.prototype.generateSVG = function (annotations) {
 		    case 'TumorNeg':
 		        line_color = 'lime';
 		        break;
+			case 'AlgoA': line_color = 'red'; stroke_width = 2.5*annotation.properties.annotations.mark_width; break;
+			case 'AlgoB': line_color = 'blue'; stroke_width = 2.5*annotation.properties.annotations.mark_width; break;
+			case 'AlgoAP': line_color = 'orange'; break;
+			case 'AlgoBP': line_color = 'lime'; break;
 		    default:
 		        line_color = jQuery("#" + annotation.properties.annotations.mark_type).attr("color");
 		        if (jQuery("#" + annotation.properties.annotations.mark_type + '_visualized').is(":checked")) {
@@ -497,6 +558,15 @@ annotools.prototype.generateSVG = function (annotations) {
 		        break;
 		}
 		//svgHtml += '" style="fill:transparent; stroke:'+line_color+ '; stroke-width:2.5"/>'
+ 		if(appid == "qualheat") {
+                	this.oneExecIDChosenFiltered(algorithms,"quality_","Select only one 'quality' algorithm.", function (qeid) {
+                                        if(qeid == annotation.properties.annotations.mark_eid) {
+						svgHtml += '" style="fill:transparent; stroke:'+line_color+ '; stroke-width:' + stroke_width + '"/>';
+                                        }
+                        });
+		} else {
+			svgHtml += '" style="fill:transparent; stroke:'+line_color+ '; stroke-width:' + stroke_width + '"/>';
+		}
 		svgHtml += '" style="fill:transparent; stroke:'+line_color+ '; stroke-width:' + stroke_width + '; stroke-opacity:' + stroke_opacity + '"/>';
 		break;
 	default:
@@ -515,6 +585,7 @@ annotools.prototype.generateSVG = function (annotations) {
       }
       */
     }
+
 
     //Debug
     //console.log(svgHtml);
@@ -581,6 +652,7 @@ annotools.prototype.generateSVG = function (annotations) {
             if(data.properties.scalar_features)
               features=  data.properties.scalar_features[0].nv;
             properties = data.properties.annotations;
+            console.log(properties);
           } catch(e){
             console.log(e);
           }

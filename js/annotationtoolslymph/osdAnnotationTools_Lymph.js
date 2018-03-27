@@ -8,6 +8,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
+console.log("in osdAnnoTools.js");
 
 console.log("osdAnnotationTools_Lymph.js");
 
@@ -24,7 +25,8 @@ var annotools = function (options) {
 
   this.iidDecoded = decodeURI(options.iid)
   this.canvas = options.canvas; // The canvas Element that The Use will be drawing annotatoins on.
-  this.iid = options.iid || null // The Image ID
+  this.iid = window.tissueId || null // The Image ID
+//  this.iid = options.iid || null // The Image ID
   this.annotVisible = true // The Annotations are Set to be visible at the First Loading
   this.mode = 'default' // The Mode is Set to Default
 
@@ -53,6 +55,7 @@ var annotools = function (options) {
   this.lymphSuperuser = false;
   this.btn_revertWeight = document.getElementById('btn_revertWeight');
   this.btn_saveWeight = document.getElementById('btn_saveHeatmapWeight');
+  this.btn_saveQuality = document.getElementById('btn_saveHeatmapQuality');
   this.btn_saveweight_help = document.getElementById('btn_heatmapweight_help');
 
   /*
@@ -62,6 +65,21 @@ var annotools = function (options) {
   this.rb_lymneg = document.getElementById('LymNeg');
   this.rb_tumpos = document.getElementById('TumorPos');
   this.rb_tumneg = document.getElementById('TumorNeg');
+  this.rb_move = document.getElementById('rb_Moving');
+  */
+  this.rb_algoabig = document.getElementById('AlgoABig');
+  this.rb_algobbig = document.getElementById('AlgoBBig');
+  this.rb_algoa = document.getElementById('AlgoA');
+  this.rb_algob = document.getElementById('AlgoB');
+  this.rb_algoapoly = document.getElementById('AlgoAPoly');
+  this.rb_algobpoly = document.getElementById('AlgoBPoly');
+  this.rb_algoabig.addEventListener('click', this.radiobuttonChange.bind(this), false);
+  this.rb_algobbig.addEventListener('click', this.radiobuttonChange.bind(this), false);
+  this.rb_algoa.addEventListener('click', this.radiobuttonChange.bind(this), false);
+  this.rb_algob.addEventListener('click', this.radiobuttonChange.bind(this), false);
+  this.rb_algoapoly.addEventListener('click', this.radiobuttonChange.bind(this), false);
+  this.rb_algobpoly.addEventListener('click', this.radiobuttonChange.bind(this), false);
+  /*
   this.rb_lymposbig.addEventListener('click', this.radiobuttonChange.bind(this), false);
   this.rb_lymnegbig.addEventListener('click', this.radiobuttonChange.bind(this), false);
   this.rb_lympos.addEventListener('click', this.radiobuttonChange.bind(this), false);
@@ -78,6 +96,7 @@ var annotools = function (options) {
 
   this.btn_revertWeight.addEventListener('click', this.revertWeight.bind(this), false);
   this.btn_saveWeight.addEventListener('click', this.saveHeatmapWeight.bind(this), false);
+  this.btn_saveQuality.addEventListener('click', this.saveHeatmapQuality.bind(this), false);
   this.btn_saveweight_help.addEventListener('click', function(){alert('\
 This panel allows you to adjust the automatic lymphocyte prediction results for this slide, with the options described below.\n\n\
 Lymphocyte Sensitivity bar:\n       Ddjust the sensitivity of lymphocyte prediction.\n\
@@ -150,8 +169,49 @@ To save/cancel your work, use the buttons described below:\n\
        overwrite them by drawing new markings.\
 ');}, false);
 
+  this.btn_savequalmark_var = document.getElementById('btn_savequalmark');
+  this.btn_savequalmark_var.addEventListener('click', this.markSaveClick.bind(this), false);
+  this.btn_undoqualmark_var = document.getElementById('btn_undoqualmark');
+  this.btn_qualmark_help_var = document.getElementById('btn_qualmark_help');
+  this.btn_undoqualmark_var.addEventListener('click', this.undoStroke.bind(this), false);
+  this.btn_qualmark_help_var.addEventListener('click', function(){alert('\
+This panel provides tools to manually mark segmentation quality heatmaps as Algorithm A or B.\n\n\
+If you are unsatisfied with the segmentation quality prediction result, please polish it using options described below:\n\
+   AlgoA (draw thin line):\n\
+       Draw lines across quality squares.\n\
+       After saved, squares crossed by the line\n\
+       will be marked as Algorithm A squares.\n\
+   AlgoB (draw thin line):\n\
+       Draw lines across quality squares.\n\
+       After saved, squares crossed by the line\n\
+       will be marked as Algorithm B squares.\n\
+   AlgoA (draw thick line):\n\
+       Draw lines across quality squares.\n\
+       After saved, squares close to the line\n\
+       will be marked as Algorithm A squares.\n\
+   AlgoB (draw thick line):\n\
+       Draw lines across quality squares.\n\
+       After saved, squares close to the line\n\
+       will be marked as Algorithm B squares.\n\
+Please indicate quality regions using options described below:\n\
+   AlgoA (draw polygon):\n\
+       Draw curves around Algorithm A regions of this slide.\n\
+       Regions not included will not be changed\n\
+   AlgoB (draw polygon):\n\
+       Draw curves around Algorithm B regions of this slide.\n\
+       Regions not included will not be changed\n\n\
+To save/cancel your work, use the buttons described below:\n\
+   Save:\n\
+       Save all markings, and continue to mark.\n\
+   Cancel:\n\
+       Cancel the most recent, unsaved marking.\n\
+       To change saved markings, you can simply\n\
+       overwrite them by drawing new markings.\
+');}, false);
+
   this.heatmap_opacity = 0.4;
   this.heatmapColor = ['#feedde','#fecc5c','#fd8d3c','#bd0026', '#33b5ff'];
+  this.heatmapColorQuality = ['#d7191c','#fdae61','#ffffbf','#abd9e9','#2c7bb6'];
   this.multipleHeatmapColor = [];
   this.cb_checked = [false, false, false];
   this.heat_weight = [0.77, 1.00, 0.15];
@@ -290,8 +350,42 @@ annotools.prototype.destroyMarkups = function (viewer) {
   }
 }
 
+annotools.prototype.oneExecIDChosenFiltered = function (algorithms,prefix,message,callback) {
+  filtered = algorithms.filter(function (alg) {
+             return alg.startsWith(prefix);
+           });
+  qcount = filtered.length;
+  //console.log(filtered);
+
+  if (qcount == 1) {
+    callback(filtered[0]);
+  } else if (qcount != 0) {
+    alert(message);
+  }
+}
+
 annotools.prototype.getMultiAnnot = function (viewer) {
 
+  if(appid == "qualheat") {
+    this.oneExecIDChosenFiltered(algorithms,"quality_","Select only one 'quality' algorithm.",this.loadHeatmapQuality);
+  }
+//  
+//  //console.log(algorithms);
+//
+//  filtered = algorithms.filter(function (alg) {
+//             return alg.startsWith("quality_");
+//           });
+//  qcount = filtered.length;
+//  //console.log(filtered);
+//
+//  if (qcount == 1) {
+//    this.loadHeatmapQuality(filtered[0]);
+//  } else if (qcount != 0) {
+//    alert("Select only one 'quality' algorithm.");
+//  }
+  //console.log(algorithms);
+  //console.log(this.imagingHelper._viewportWidth);
+  //console.log(this.imagingHelper._viewportHeight);
   var self = this
   this.x1 = this.imagingHelper._viewportOrigin['x']
   this.y1 = this.imagingHelper._viewportOrigin['y']
@@ -350,8 +444,10 @@ annotools.prototype.fetchAnnots = function (area, SELECTED_ALGORITHM_LIST, OVERL
 
     if (algorithms.length) {
 
-        this.toolBar.titleButton.hide();
-        this.toolBar.ajaxBusy.show();
+    if (this.toolBar !== undefined && this.toolBar !== null) {
+      this.toolBar.titleButton.hide();
+      this.toolBar.ajaxBusy.show();
+    }
 
         this.annotations = this.AnnotationStore.fetchAnnotations(self.x1, self.y1, self.x2, self.y2, area, algorithms, function (data) {
             self.annotations = data;
@@ -982,8 +1078,8 @@ annotools.prototype.relativeToGlobal = function () {
       originalCoord.y = object.getAttribute('y')
       originalCoord.width = object.getAttribute('width')
       originalCoord.height = object.getAttribute('height')
-      originalCoord.zoom = viewer.viewport.getZoom()
-      this.annotationHandler.originalCoords[object.id] = originalCoord
+	      originalCoord.zoom = viewer.viewport.getZoom()
+	      this.annotationHandler.originalCoords[object.id] = originalCoord
       var bbox = object.getBBox()
       var objectCenterPt = new OpenSeadragon.Point(bbox.x + bbox.width / 2, bbox.y + bbox.height / 2)
       var objectCenterRelPt = this.viewer.viewport.pointFromPixel(objectCenterPt)
@@ -1934,6 +2030,7 @@ annotools.prototype.populateForm = function (annotationTemplateJson, annotationT
       } else {
         var options = val['enumerable'].replace(/ /g, '').split(',')
         if (val['multi'] == 'true' && mode != 'filter') {
+	  console.log("adding Checkbox");
           for (var i = 0; i < options.length; i++) {
             form += "<input type='checkbox' name='" + key + "' id='" + options[i] + "' value='" + options[i] + "'"
             if (mode == 'edit' && annotationTextJson[key].indexOf(options[i])) {
@@ -2917,6 +3014,139 @@ annotools.prototype.loadHeatmapWeight = function()
     //console.log(document.getElementById('slide1').style.width);
     //console.log(document.getElementById('div_weight_locked').innerHTML);
     self.getMultiAnnot();
+}
+
+annotools.prototype.saveHeatmapQuality = function(event)
+{
+  var eid = "";
+  console.log('Start saveHeatmapQuality');
+    
+  algorithms = SELECTED_ALGORITHM_LIST;
+  
+  //console.log(algorithms);
+
+  filtered = algorithms.filter(function (alg) {
+             return alg.startsWith("quality_");
+           });
+  qcount = filtered.length;
+  //console.log(filtered);
+
+  if (qcount == 1) {
+    eid = filtered[0];
+  } else if (qcount != 0) {
+    alert("Select only one 'quality' algorithm.");
+    return 0;
+  }
+    var self = this;
+    var qualityData = {
+        'case_id': self.iid,
+        'exec_id': eid,
+        'low': qualthresholds.low,
+        'high': qualthresholds.high,
+        'username': this.username   
+    };
+    
+    console.log(qualityData);
+
+    //Check if record for this case_id and this username already exists in mongodb
+    var url1 = "api/Data/heatmapData.php?case_id="+  self.iid + "&exec_id=" + eid;
+    
+    // Debug
+    console.log(url1);
+
+    jQuery.get(url1, function(d){
+        try{
+            var data = JSON.parse(d);
+            console.log('Retrived qual weights: ' + JSON.stringify(data[0]));
+            console.log("Fetched data length: " + data.length);
+      
+            if (data.length > 0){
+                console.log('Record exists');
+                alert ('This heatmap has been locked');
+            }
+			else {
+                 jQuery.ajax({
+                'type': 'POST',
+                 url: 'api/Data/heatmapData.php',
+                 data: qualityData,
+                 success: function (res, err) {
+                    //console.log("response: ")
+                    console.log(res)
+                    console.log(err)
+
+                    console.log('successfully posted')
+                    document.getElementById('div_quality_locked').innerHTML = 'Locked';
+                    alert('Saved heatmap quality thresholds');
+                    }
+                })   
+            }
+        } catch (e){
+            console.log('ERROR');
+            console.log(e);
+        }
+        
+    });
+}
+
+annotools.prototype.loadHeatmapQuality = function(eid)
+{
+    var self = this;
+    console.log('Load heatmap quality');
+    console.log(self.iid);
+    
+    // Start API
+     var url1 = "api/Data/heatmapData.php?case_id="+  self.iid +"&exec_id=" + eid;
+    
+    // Debug
+    console.log(url1);
+
+    jQuery.get(url1, function(d){
+
+        try{
+            var data = JSON.parse(d);
+            var mySlider = jQuery("#qslider")[0];
+            //console.log('Retrived heat weights: ' + JSON.stringify(data[0]));
+            //console.log("Fetched data length: " + data.length);
+            
+            var div_qlock = document.getElementById('div_quality_locked');
+            // Start weights
+            console.log(data);
+            
+            if ( data.length > 0) {
+                var low = data[0].low;
+                var high = data[0].high;
+ 
+                if (low){
+                   mySlider.noUiSlider.set([parseInt(low)]);
+                }else {
+                   mySlider.noUiSlider.set([parseInt(30)]);
+                }
+
+                if (high){
+                   mySlider.noUiSlider.set([null,parseInt(high)]);
+                }else {
+                   mySlider.noUiSlider.set([null,parseInt(70)]);
+                }
+
+                div_qlock.innerHTML = "Locked";
+            }else {
+                console.log('go else');
+                mySlider.noUiSlider.set([30,70]);
+                div_qlock.innerHTML = "Free";
+            }
+        } catch (e){
+            console.log('ERROR');
+            console.log(e);
+        }
+    });
+        
+    // Wait for the load weight transfering data
+    var start = new Date().getTime();
+    var delay = 200;
+    while (new Date().getTime() < start + delay);
+    //console.log(document.getElementById('slide1').style.width);
+    //console.log(document.getElementById('div_weight_locked').innerHTML);
+    //self.getMultiAnnot();
 }
 
 /*

@@ -29,6 +29,7 @@ if (isset($_GET["cancerType"])) {
     <link rel="stylesheet" type="text/css" media="all" href="css/ui.fancytree.min.css"/>
     <link rel="stylesheet" type="text/css" media="all"
           href="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.7.0/jquery.modal.css"/>
+    <link rel="stylesheet" type="text/css" href="css/nouislider.min.css">
     <link rel="stylesheet" type="text/css" media="all" href="css/multiheattools.css"/>
 
     <!-- JAVASCRIPT -->
@@ -65,6 +66,9 @@ if (isset($_GET["cancerType"])) {
     <script src="js/dependencies/MD5.js"></script>
 
     <script src="http://code.jquery.com/ui/1.11.2/jquery-ui.min.js"></script>
+
+    <script src="js/nouislider.min.js"></script>
+    <script src="js/wNumb.js"></script>
 
     <!--Filtering Tools-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/camanjs/4.1.2/caman.full.js"></script>

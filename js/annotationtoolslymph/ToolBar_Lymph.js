@@ -216,16 +216,27 @@ $.getScript('shared/ToolBar.js', function () {
                 }
             }.bind(this));
 
-            this.showWeightPanel.on('click', function () {
-                console.log('click on showing weight panel');
-                if (jQuery('#weightpanel').is(":visible")) {
-                    jQuery('#weightpanel').hide();
-                }
-                else {
-                    console.log(this.annotools.heat_weight);
-                    jQuery('#weightpanel').show();
-                }
-            }.bind(this));
+    this.showWeightPanel.on('click', function () {
+        console.log('click on showing weight panel');
+	console.log(appid);
+	var panelToShow = "#weightpanel";
+	if (appid == "qualheat") {
+	    panelToShow = "#qualitypanel";
+	}
+        if(appid != "qualheat") {
+	        if (jQuery(panelToShow).is(":visible"))
+	        {
+	            jQuery(panelToShow).hide();
+	        }
+	        else
+	        {
+	            console.log(this.annotools.heat_weight);
+	            jQuery(panelToShow).show();
+	        }
+        } else {
+		alert("This feature temporarily disabled in this app.")
+	}
+    }.bind(this))
 
             this.freeMarkupButton.on('click', function () {
                 if (this.annotools.mode == 'free_markup') {
@@ -235,22 +246,29 @@ $.getScript('shared/ToolBar.js', function () {
                     this.annotools.mode = 'free_markup';
                     this.annotools.drawMarkups();
 
-                    jQuery("canvas").css("cursor", "crosshair");
-                    //jQuery("drawFreelineButton").css("opacity", 1);
-                    jQuery("#drawRectangleButton").removeClass("active");
-                    jQuery("#drawDotButton").removeClass("active");     // Dot Tool
-                    jQuery("#drawFreelineButton").removeClass("active");
-                    jQuery("#freeLineMarkupButton").addClass("active");
-                    jQuery("#markuppanel").show();
+            jQuery("canvas").css("cursor", "crosshair");
+            //jQuery("drawFreelineButton").css("opacity", 1);
+            jQuery("#drawRectangleButton").removeClass("active");
+            jQuery("#drawDotButton").removeClass("active");     // Dot Tool
+            jQuery("#drawFreelineButton").removeClass("active");
+            jQuery("#freeLineMarkupButton").addClass("active");
+            if (appid == "qualheat") {
+                jQuery("#qualitymarkuppanel").show();
+                jQuery("#AlgoA").checked = true;
 
-                    // Check if being on moving mode --> switch to drawing mode
-                    if (document.getElementById("rb_Moving").checked) {
-                        console.log('do switching');
-                        document.getElementById('rb_Moving').checked = false;
-                        document.getElementById('LymPos').checked = true;
-                    }
-                }
-            }.bind(this));
+	    } else {
+                jQuery("#markuppanel").show();
+                document.getElementById('LymPos').checked = true;
+            }
+
+            // Check if being on moving mode --> switch to drawing mode
+            if (document.getElementById("rb_Moving").checked||appid!="qualheat") {
+                console.log('do switching');
+                document.getElementById('rb_Moving').checked = false;
+                document.getElementById('LymPos').checked = true;
+            }
+        }
+    }.bind(this))
 
 
             var toolButtons = jQuery('.toolButton');
