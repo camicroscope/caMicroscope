@@ -113,7 +113,7 @@ $.getScript('shared/ToolBar.js', function() {
                 class: 'toolButton firstToolButtonSpace',
                 src: 'images/rect.svg'
             });
-            //tool.append(this.rectbutton)
+            tool.append(this.rectbutton)
             this.pencilbutton = jQuery('<img>', {
                 'data-toggle': 'tooltip',
                 'data-placement': 'bottom',
@@ -121,7 +121,7 @@ $.getScript('shared/ToolBar.js', function() {
                 'class': 'toolButton',
                 'src': 'images/pencil.svg'
             });
-            //tool.append(this.pencilbutton) // Pencil Tool
+            tool.append(this.pencilbutton) // Pencil Tool
 
             this.rectbutton.on('click', function() {
                 this.mode = 'rect'
