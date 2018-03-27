@@ -544,15 +544,19 @@ ToolBar.prototype.createButtons = function () {
 	if (appid == "qualheat") {
 	    panelToShow = "#qualitypanel";
 	}
-        if (jQuery(panelToShow).is(":visible"))
-        {
-            jQuery(panelToShow).hide();
-        }
-        else
-        {
-            console.log(this.annotools.heat_weight);
-            jQuery(panelToShow).show();
-        }
+        if(appid != "qualheat") {
+	        if (jQuery(panelToShow).is(":visible"))
+	        {
+	            jQuery(panelToShow).hide();
+	        }
+	        else
+	        {
+	            console.log(this.annotools.heat_weight);
+	            jQuery(panelToShow).show();
+	        }
+        } else {
+		alert("This feature temporarily disabled in this app.")
+	}
     }.bind(this))
 
     this.freeMarkupButton.on('click', function () {

@@ -200,12 +200,15 @@
   	    'min': [0],
   	    'max': [100]
   	};  
-  	var qualthresholds = {
-		'low': 30,
-		'median': 50,
-		'high': 70
-	};
-
+        var qualthresholds;
+        if (typeof qualthreshols == 'undefined') {
+                console.log("Reset Weights");
+	  	qualthresholds = {
+			'low': 30,
+			'median': 50,
+			'high': 70
+		};
+        }
   	var filter5 = function (value,type) {
   	    var mvalue = value/10;
   	    var eoval = mvalue % 2;
@@ -336,8 +339,9 @@
         jQuery("#switchuserpanel").hide();
         
         var mySlider = jQuery("#qslider")[0];
-        mySlider.noUiSlider.on("update", function (values,handle) {    
+        mySlider.noUiSlider.on("set", function (values,handle) {    
             a = mySlider.noUiSlider.get();
+            console.log(a);
 	    if(handle == 0) {
 		qualthresholds.low = parseInt(a[0]);
 	    } else {

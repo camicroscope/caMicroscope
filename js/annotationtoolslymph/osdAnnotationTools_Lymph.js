@@ -23,7 +23,8 @@ var annotools = function (options) {
 
   this.iidDecoded = decodeURI(options.iid)
   this.canvas = options.canvas; // The canvas Element that The Use will be drawing annotatoins on.
-  this.iid = options.iid || null // The Image ID
+  this.iid = window.tissueId || null // The Image ID
+//  this.iid = options.iid || null // The Image ID
   this.annotVisible = true // The Annotations are Set to be visible at the First Loading
   this.mode = 'default' // The Mode is Set to Default
 
@@ -3070,7 +3071,7 @@ annotools.prototype.loadHeatmapQuality = function(eid)
 {
     var self = this;
     console.log('Load heatmap quality');
-    //console.log(self.iid);
+    console.log(self.iid);
     
     // Start API
      var url1 = "api/Data/heatmapData.php?case_id="+  self.iid +"&exec_id=" + eid;
