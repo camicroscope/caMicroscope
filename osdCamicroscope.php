@@ -118,6 +118,9 @@
 
           var tissueId = <?php echo json_encode($_GET['tissueId']); ?>;
 	  var displayId = tissueId;
+	  var user_email = "<?php echo $_SESSION["email"]; ?>";  
+          console.log("user_email :" + user_email);
+		
 	d3.csv("../table/data.csv", function(data){
 		console.log(data);
 		for(var i in data){
@@ -214,6 +217,7 @@
                 canvas:'openseadragon-canvas',
                 iid: tissueId, 
 		displayId: tissueId,
+		user_email: user_email,
                 viewer: viewer,
                 annotationHandler: annotationHandler,
                 mpp:MPP
@@ -226,12 +230,17 @@
                 height: '48px',
                 width: '100%',
                 iid: tissueId,
+		user_email: user_email,
                 annotool: annotool,
                 FilterTools: filteringtools
         });
         annotool.toolBar = toolBar;
         toolBar.createButtons();
 
+	var index = user_email.indexOf("@");
+        var user= user_email.substring(0,index);		
+        annotool.user = user;
+	    
         // For the bootstrap tooltip
         // jQuery('[data-toggle="tooltip"]').tooltip();
         // commented out, working on style
