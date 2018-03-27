@@ -21,6 +21,8 @@ var ToolBar = function (element, options) {
     this.cancerType = options.cancerType;
     this.annotationActive = isAnnotationActive();
     this.viewer = options.viewer;
+
+    //this.superuser = false;
 };
 
 /**
@@ -59,6 +61,43 @@ function goodalgo(data, status) {
         algorithm_color[data[i].provenance.analysis_execution_id] = available_colors[i % available_colors.length];
         blob.push(n)
     }
+
+    /*
+    // TODO:
+    max_ver = 0;
+    for (i = 0; i < data.length; i++) {
+        var n = {};
+        data[i].title = data[i].provenance.analysis_execution_id;
+        n.title = "<div class='colorBox' style='background:" + available_colors[i] + "'></div>" + data[i].title;
+        n.key = i.toString();
+        n.refKey = data[i].provenance.analysis_execution_id;
+        if (n.refKey.includes('lym_v')) {
+            ver = parseInt(n.refKey.split('lym_v')[1].split('-')[0]);
+            if (ver > max_ver) {
+                max_ver = ver
+            }
+        }
+    }
+
+    var blob = [];
+    for (i = 0; i < data.length; i++) {
+        var n = {};
+        //console.log(data[i])
+        data[i].title = data[i].provenance.analysis_execution_id;
+        n.title = "<div class='colorBox' style='background:" + available_colors[i] + "'></div>" + data[i].title;
+        n.key = i.toString();
+        n.refKey = data[i].provenance.analysis_execution_id;
+        if (n.refKey == 'lym_v' + max_ver + '-high_res' || n.refKey == 'lym_v' + max_ver + '-low_res' || n.refKey == 'humanmark') {
+            n.selected = true
+        }
+
+        //n.color = available_colors[i]
+        //algorithm_color[data[i].provenance.analysis_execution_id] = available_colors[i]
+        algorithm_color[data[i].provenance.analysis_execution_id] = available_colors[i % available_colors.length];
+        blob.push(n)
+    }
+    */
+
     ftree = jQuery('#tree').fancytree({
         source: [{
             title: 'Algorithms', key: '1', folder: true,
@@ -99,7 +138,20 @@ function goodalgo(data, status) {
             targetType = data.targetType;
             annotool.getMultiAnnot()
         }
-    })
+    });
+
+    /*
+    // TODO:
+    jQuery('#tree').attr('algotree', true);
+
+    // Load weight
+    if (annotool.loadedWeight == false) {
+        annotool.loadHeatmapWeight();
+        annotool.loadedWeight = true;
+    }
+
+    annotool.getMultiAnnot();
+    */
 }
 
 /*
@@ -311,14 +363,15 @@ ToolBar.prototype.toggleAlgorithmSelector = function () {
 
 ToolBar.prototype.setNormalMode = function () {
     this.annotools.mode = 'normal';
+
     jQuery("canvas").css("cursor", "default");
     jQuery("#drawRectangleButton").removeClass('active');
     jQuery("#drawFreelineButton").removeClass('active');
-
     jQuery("#drawDotButton").removeClass("active");   // Dot Tool
     jQuery("#mergeStep2Button").removeClass("active");   // merge Step2 Button
     jQuery("#freeLineMarkupButton").removeClass("active");
     jQuery("#markuppanel").hide();
+    jQuery("#qualitymarkuppanel").hide();
     jQuery("#switchuserpanel").hide();
 
     this.annotools.drawLayer.hide();
