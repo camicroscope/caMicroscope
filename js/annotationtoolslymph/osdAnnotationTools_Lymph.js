@@ -351,16 +351,20 @@ annotools.prototype.destroyMarkups = function (viewer) {
 }
 
 annotools.prototype.oneExecIDChosenFiltered = function (algorithms,prefix,message,callback) {
-  filtered = algorithms.filter(function (alg) {
-             return alg.startsWith(prefix);
-           });
-  qcount = filtered.length;
-  //console.log(filtered);
+  if (algorithms)
+  {
+    filtered = algorithms.filter(function (alg) {
+               return alg.startsWith(prefix);
+             });
+    qcount = filtered.length;
+    //console.log(filtered);
 
-  if (qcount == 1) {
-    callback(filtered[0]);
-  } else if (qcount != 0) {
-    alert(message);
+    if (qcount == 1) {
+      callback(filtered[0]);
+    } else if (qcount != 0) {
+      alert(message);
+    }
+    
   }
 }
 
@@ -369,7 +373,7 @@ annotools.prototype.getMultiAnnot = function (viewer) {
   if(appid == "qualheat") {
     this.oneExecIDChosenFiltered(algorithms,"quality_","Select only one 'quality' algorithm.",this.loadHeatmapQuality);
   }
-//  
+//
 //  //console.log(algorithms);
 //
 //  filtered = algorithms.filter(function (alg) {
@@ -3020,9 +3024,9 @@ annotools.prototype.saveHeatmapQuality = function(event)
 {
   var eid = "";
   console.log('Start saveHeatmapQuality');
-    
+
   algorithms = SELECTED_ALGORITHM_LIST;
-  
+
   //console.log(algorithms);
 
   filtered = algorithms.filter(function (alg) {
@@ -3043,14 +3047,14 @@ annotools.prototype.saveHeatmapQuality = function(event)
         'exec_id': eid,
         'low': qualthresholds.low,
         'high': qualthresholds.high,
-        'username': this.username   
+        'username': this.username
     };
-    
+
     console.log(qualityData);
 
     //Check if record for this case_id and this username already exists in mongodb
     var url1 = "api/Data/heatmapData.php?case_id="+  self.iid + "&exec_id=" + eid;
-    
+
     // Debug
     console.log(url1);
 
@@ -3059,7 +3063,7 @@ annotools.prototype.saveHeatmapQuality = function(event)
             var data = JSON.parse(d);
             console.log('Retrived qual weights: ' + JSON.stringify(data[0]));
             console.log("Fetched data length: " + data.length);
-      
+
             if (data.length > 0){
                 console.log('Record exists');
                 alert ('This heatmap has been locked');
@@ -3078,13 +3082,13 @@ annotools.prototype.saveHeatmapQuality = function(event)
                     document.getElementById('div_quality_locked').innerHTML = 'Locked';
                     alert('Saved heatmap quality thresholds');
                     }
-                })   
+                })
             }
         } catch (e){
             console.log('ERROR');
             console.log(e);
         }
-        
+
     });
 }
 
@@ -3093,10 +3097,10 @@ annotools.prototype.loadHeatmapQuality = function(eid)
     var self = this;
     console.log('Load heatmap quality');
     console.log(self.iid);
-    
+
     // Start API
      var url1 = "api/Data/heatmapData.php?case_id="+  self.iid +"&exec_id=" + eid;
-    
+
     // Debug
     console.log(url1);
 
@@ -3107,15 +3111,15 @@ annotools.prototype.loadHeatmapQuality = function(eid)
             var mySlider = jQuery("#qslider")[0];
             //console.log('Retrived heat weights: ' + JSON.stringify(data[0]));
             //console.log("Fetched data length: " + data.length);
-            
+
             var div_qlock = document.getElementById('div_quality_locked');
             // Start weights
             console.log(data);
-            
+
             if ( data.length > 0) {
                 var low = data[0].low;
                 var high = data[0].high;
- 
+
                 if (low){
                    mySlider.noUiSlider.set([parseInt(low)]);
                 }else {
@@ -3139,7 +3143,7 @@ annotools.prototype.loadHeatmapQuality = function(eid)
             console.log(e);
         }
     });
-        
+
     // Wait for the load weight transfering data
     var start = new Date().getTime();
     var delay = 200;
