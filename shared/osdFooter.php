@@ -8,6 +8,7 @@
     ga('send', 'pageview');
 
 </script>
+<script src="js/Helpers/StateSchema.js"></script>
 
 </body>
 </html>

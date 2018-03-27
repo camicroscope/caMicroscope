@@ -148,73 +148,49 @@ annotools.prototype.getMultiAnnot = function (viewer) {
 
     var t1 = 0;
 
-    /*
-    // async
-    (function () {
+    if (SELECTED_ALGORITHM_LIST.length) {
         SELECTED_ALGORITHM_LIST = SELECTED_ALGORITHM_LIST.sort();
-        var algorithms = SELECTED_ALGORITHM_LIST.slice();
+        var algorithms = SELECTED_ALGORITHM_LIST;
+        var myList = OVERLAY_LIST;
 
-        (function () {
-            var empty = !OVERLAY_LIST.length;
-            if (!empty) {
-                OVERLAY_LIST.forEach(function (elem) {
-                    var idx = algorithms.indexOf(elem.execid);
-                    if (idx >= 0) {
-                        algorithms.pop();
-                    }
-                });
-            }
-
-            fetch()
-        })
-    })
-    */
-
-    SELECTED_ALGORITHM_LIST = SELECTED_ALGORITHM_LIST.sort();
-    var algorithms = SELECTED_ALGORITHM_LIST.slice();
-
-    var empty = !OVERLAY_LIST.length;
-    if (!empty)
-    {
-        OVERLAY_LIST.forEach(function (elem) {
-            var idx = algorithms.indexOf(elem.execid);
-
-            if (idx >= 0) {
-                algorithms.pop();
-            }
-
-        });
-
-    }
-
-    if (algorithms.length) {
-        this.toolBar.titleButton.hide();
-        this.toolBar.ajaxBusy.show();
-        this.annotations = this.AnnotationStore.fetchAnnotations(this.x1, this.y1, this.x2, this.y2, area, algorithms, function (data) {
-            //console.log(" fetchAnnotations data  is: "+data)
-            self.annotations = data;
-            self.displayGeoAnnots();
-            self.setupHandlers();
-            var t2 = 10;
-
-            self.toolBar.titleButton.show();
-            self.toolBar.ajaxBusy.hide()
-        })
-    } else {
-        self.setupHandlers();
-        self.destroyMarkups()
-        // destroy canvas
+        self.fetchAnnots(area, algorithms, myList);
     }
 
 };
 
-/*
-function fetch() {
+annotools.prototype.filterit = function (a, b) {
+
+    var aa = [];
+    var bb = [];
+    for (var i = 0; i < b.length; i++) {
+        bb.push(b[i].execid);
+
+    }
+
+    // If we've already displayed the tiles
+    // remove it from the "todo" list.
+    for (var i = 0; i < a.length; i++) {
+        var idx = bb.indexOf(a[i]);
+        if (idx < 0) {
+            aa.push(a[i]);
+
+        }
+    }
+
+    return aa;
+};
+
+annotools.prototype.fetchAnnots = function (area, SELECTED_ALGORITHM_LIST, OVERLAY_LIST) {
+    var self = this;
+    var algorithms = self.filterit(SELECTED_ALGORITHM_LIST, OVERLAY_LIST);
+    console.log("**** algorithms ****", algorithms);
+
     if (algorithms.length) {
+
         this.toolBar.titleButton.hide();
         this.toolBar.ajaxBusy.show();
 
-        this.annotations = this.AnnotationStore.fetchAnnotations(this.x1, this.y1, this.x2, this.y2, area, algorithms, function (data) {
+        this.annotations = this.AnnotationStore.fetchAnnotations(self.x1, self.y1, self.x2, self.y2, area, algorithms, function (data) {
             self.annotations = data;
             self.displayGeoAnnots();
             self.setupHandlers();
@@ -228,8 +204,7 @@ function fetch() {
         self.destroyMarkups();
         // destroy canvas
     }
-}
-*/
+};
 
 annotools.prototype.getAnnot = function (viewer) // Get Annotation from the API
 {
@@ -2584,10 +2559,12 @@ annotools.prototype.getAlgorithmColorFromMenuTree = function () {
     if (num_algorithm === 0) {
         alert("No algorithms have been selected.");
         algo_and_color = null;
+        return false;
     }
     else if (num_algorithm > 1 || num_algorithm < 1) {
         alert("Please select one and only one algorithm!");
         algo_and_color = null;
+        return false;
     } else {
         algo_and_color.color = algorithm_colors[0];
         algo_and_color.algorithm = algorithms[0];

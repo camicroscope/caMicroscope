@@ -2,28 +2,28 @@
  * TOOLBAR
  * CAMICROSCOPE
  */
-$.getScript('shared/ToolBar.js', function () {
+$.getScript('shared/ToolBar.js', function() {
 
     /**
      * Create Buttons
      */
-    ToolBar.prototype.createButtons = function () {
+    ToolBar.prototype.createButtons = function() {
 
         // this.tool = jQ(this.source)
         var tool = jQuery('#' + 'tool'); // Temporary dom element while we clean up mootools
         var self = this;
 
         // Fetch algorithms for Image
-        jQuery(document).ready(function () {
+        jQuery(document).ready(function() {
             // var self= this
 
-            jQuery.get('api/Data/getAlgorithmsForImage.php?iid=' + self.iid, function (data) {
+            jQuery.get('api/Data/getAlgorithmsForImage.php?iid=' + self.iid, function(data) {
                 d = JSON.parse(data);
 
                 goodalgo(d, null);
             });
 
-            jQuery('#submitbtn').click(function () {
+            jQuery('#submitbtn').click(function() {
                 var selKeys = jQuery('#tree').fancytree('getTree').getSelectedNodes();
                 var param = '';
                 for (i = 0; i < selKeys.length; i++) {
@@ -102,6 +102,7 @@ $.getScript('shared/ToolBar.js', function () {
             });
             tool.append(this.analyticsbutton);
 
+
             /* Annotation tools (re-add, comment) */
 
             this.rectbutton = jQuery('<img>', {
@@ -134,15 +135,40 @@ $.getScript('shared/ToolBar.js', function () {
                 this.annotools.drawMarkups()
                 // alert("Creation of markups is disabled on QuIP")
             }.bind(this))
+
+            this.sharebutton = jQuery('<img>', {
+                'data-toggle': 'tooltip',
+                'data-placement': 'bottom',
+                'title': 'Share Current View',
+                'class': 'toolButton',
+                'src': 'images/share.svg'
+            });
+
+            tool.append(this.sharebutton);
+            this.magnifierButton = jQuery('<img>', {
+                'data-toggle': 'tooltip',
+                'data-placement': 'bottom',
+                'title': 'Toggle Spyglass',
+                'class': 'toolButton',
+                'src': 'images/SpyGlass.svg',
+                'id': 'spyglass_toolbar_button'
+            });
+            // default invisible
+            this.magnifierButton.css("display", "none");
+            tool.append(this.magnifierButton);
+            // it's ready
+            var event = new Event("magnifier-button-loaded");
+            document.dispatchEvent(event);
+
             /*
              * Event handlers for toolbar buttons
              */
-            this.homebutton.on('click', function () {
+            this.homebutton.on('click', function() {
                 window.location.href = "/select.php";
             }.bind(this));
 
 
-            this.lymphbutton.on('click', function () {
+            this.lymphbutton.on('click', function() {
                 var tissueId = this.iid;
                 var x1 = annotool.imagingHelper._viewportOrigin['x'];
                 var y1 = annotool.imagingHelper._viewportOrigin['y'];
@@ -152,7 +178,7 @@ $.getScript('shared/ToolBar.js', function () {
                 var width, height;
                 //get image width and height
                 var url = 'api/Data/getImageInfoByCaseID.php?case_id=' + tissueId;
-                jQuery.get(url, function (data) {
+                jQuery.get(url, function(data) {
                     try {
                         this_image = JSON.parse(data);
                         width = this_image[0].width;
@@ -167,13 +193,20 @@ $.getScript('shared/ToolBar.js', function () {
             }.bind(this));
 
 
-            this.filterbutton.on('click', function () {
+            this.sharebutton.on('click', function() {
+                // update the url
+                LinkRequest();
+                window.prompt("Share this link", window.location.href + "&" + camic_state.prefix + "=" + camic_state.encode(camic_state.vals));
+            }.bind(this));
+
+
+            this.filterbutton.on('click', function() {
                 this.toggleAlgorithmSelector()
                 // this.removeMouseEvents()
                 // this.promptForAnnotation(null, "filter", this, null)
             }.bind(this));
 
-            this.compositebutton.on('click', function () {
+            this.compositebutton.on('click', function() {
                 this.mode = 'composite';
                 var tissueId = this.iid;
                 var x1 = annotool.imagingHelper._viewportOrigin['x'];
@@ -184,7 +217,7 @@ $.getScript('shared/ToolBar.js', function () {
                 var width, height;
                 //get image width and height
                 var url = 'api/Data/getImageInfoByCaseID.php?case_id=' + tissueId;
-                jQuery.get(url, function (data) {
+                jQuery.get(url, function(data) {
                     try {
                         this_image = JSON.parse(data);
                         width = this_image[0].width;
@@ -199,18 +232,18 @@ $.getScript('shared/ToolBar.js', function () {
 
             }.bind(this));
 
-            this.analyticsbutton.on('click', function () {
+            this.analyticsbutton.on('click', function() {
                 this.annotools.createWorkOrder()
             }.bind(this));
 
             var toolButtons = jQuery('.toolButton');
-            toolButtons.each(function () {
+            toolButtons.each(function() {
                 jQuery(this).on({
-                    'mouseenter': function () {
+                    'mouseenter': function() {
                         // highlight button
                         this.addClass('selected')
                     },
-                    'mouseleave': function () {
+                    'mouseleave': function() {
                         // un-highlight button
                         this.removeClass('selected')
                     }

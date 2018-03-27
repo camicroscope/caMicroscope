@@ -1,4 +1,4 @@
-/* 
+/*
  * This software was developed at the National Institute of Standards and
  * Technology by employees of the Federal Government in the course of
  * their official duties. Pursuant to title 17 Section 105 of the United
@@ -46,7 +46,7 @@
     };
 
     /**
-     * 
+     *
      * @class Scalebar
      * @param {Object} options
      * @param {OpenSeadragon.Viewer} options.viewer The viewer to attach this
@@ -67,7 +67,7 @@
      * default: 5
      * @param {Integer} options.yOffset Offset location of the scale bar along y.
      * default: 5
-     * @param {Boolean} options.stayInsideImage When set to true, keep the 
+     * @param {Boolean} options.stayInsideImage When set to true, keep the
      * scale bar inside the image when zooming out. default: true
      * @param {String} options.color The color of the scale bar using a color
      * name or the hexadecimal format (ex: black or #000000) default: black
@@ -214,7 +214,7 @@
          * default: 5
          * @param {Integer} options.yOffset Offset location of the scale bar along y.
          * default: 5
-         * @param {Boolean} options.stayInsideImage When set to true, keep the 
+         * @param {Boolean} options.stayInsideImage When set to true, keep the
          * scale bar inside the image when zooming out. default: true
          * @param {String} options.color The color of the scale bar using a color
          * name or the hexadecimal format (ex: black or #000000) default: black
