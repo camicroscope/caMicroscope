@@ -126,7 +126,7 @@ AnnotationStore.prototype.fetchAnnotations = function (x1, y1, x2, y2, footprint
 
     var url1;
 
-    url1 = "api/Data/getMultipleAnnots.php?iid=" + self.iid + "&x=" + x1 + "&y=" + y1 + "&x1=" + midX + "&y1=" + midY + "&footprint=" + footprint + "&algorithms" + algorithms_urlparam;
+    url1 = "api/Data/getMultipleAnnots.php?iid=" + self.iid + "&x=" + x1 + "&y=" + y1 + "&x1=" + midX + "&y1=" + midY + "&footprint=" + footprint + "&algorithms=" + algorithms_urlparam;
 
 
     jQuery.get(url1, function (data) {
