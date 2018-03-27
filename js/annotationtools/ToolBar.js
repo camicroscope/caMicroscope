@@ -16,8 +16,10 @@ var ToolBar = function (element, options) {
     this.height = options.height || '30px'
     this.width = options.width || '270px'
     this.zindex = options.zindex || '100' // To Make Sure The Tool Appears in the Front
-
+    this.user_email = options.user_email
     this.iid = options.iid || null
+    this.displayId = displayId;
+    //console.log(this.displayId);
     this.annotationActive = isAnnotationActive()
 }
 
@@ -317,7 +319,7 @@ ToolBar.prototype.createButtons = function () {
             'src': 'images/spacer.svg'
         });
         tool.append(this.spacer1);
-
+	    
         /*a link to segment curation application with this composite button */
         this.compositebutton = jQuery('<img>', {
             'data-toggle': 'tooltip',
@@ -329,7 +331,12 @@ ToolBar.prototype.createButtons = function () {
         });
         tool.append(this.compositebutton);
 
-
+       this.spacer2 = jQuery('<img>', {
+            'class': 'spacerButton',
+            'src': 'images/spacer.svg'
+        });
+        tool.append(this.spacer2);
+	    
         this.rectbutton = jQuery('<img>', {
             'data-toggle': 'tooltip',
             'data-placement': 'bottom',
@@ -356,7 +363,13 @@ ToolBar.prototype.createButtons = function () {
             'class': 'toolButton',
             'src': 'images/pencil.svg'
         });
-        //tool.append(this.pencilbutton) // Pencil Tool
+        tool.append(this.pencilbutton) // Pencil Tool
+	    
+        this.spacer3 = jQuery('<img>', {
+            'class': 'spacerButton',
+            'src': 'images/spacer.svg'
+        });
+        tool.append(this.spacer3);    
 
         this.measurebutton = jQuery('<img>', {
             'data-toggle': 'tooltip',
@@ -365,13 +378,7 @@ ToolBar.prototype.createButtons = function () {
             'class': 'toolButton',
             'src': 'images/measure.svg'
         });
-        // tool.append(this.measurebutton)
-
-        this.spacer2 = jQuery('<img>', {
-            'class': 'spacerButton',
-            'src': 'images/spacer.svg'
-        });
-        tool.append(this.spacer2);
+        // tool.append(this.measurebutton)        
 
         this.filterbutton = jQuery('<img>', {
             'data-toggle': 'tooltip',
@@ -400,11 +407,12 @@ ToolBar.prototype.createButtons = function () {
             'src': 'images/fullDownload.svg'
         });
         //tool.append(this.fullDownloadButton)
-        this.spacer1 = jQuery('<img>', {
+	    
+        this.spacer4 = jQuery('<img>', {
             'class': 'spacerButton',
             'src': 'images/spacer.svg'
         });
-        tool.append(this.spacer1);
+        tool.append(this.spacer4);
 
         this.analyticsbutton = jQuery('<img>', {
             'data-toggle': 'tooltip',
@@ -601,9 +609,9 @@ ToolBar.prototype.createButtons = function () {
         }.bind(this))
 
         this.pencilbutton.on('click', function () {
-            this.annotools.mode = 'pencil'
-            this.annotools.drawMarkups()
-            // alert("Creation of markups is disabled on QuIP")
+            this.annotools.mode = 'pencil';
+	    jQuery('html,body').css('cursor', 'crosshair');
+            this.annotools.drawMarkups();           
         }.bind(this))
 
         this.measurebutton.on('click', function () {
@@ -690,7 +698,7 @@ ToolBar.prototype.createButtons = function () {
 
     this.iidbutton = jQuery('<p>', {
         'class': 'iidButton',
-        'text': 'Case ID: ' + this.iid
+        'text': 'Display ID: ' + this.DisplayId
     })
     tool.append(this.iidbutton)
 
