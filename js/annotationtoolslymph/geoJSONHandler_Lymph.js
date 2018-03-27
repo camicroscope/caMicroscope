@@ -531,19 +531,21 @@ annotools.prototype.generateSVG = function (annotations) {
     }).inject(container)
   }
 
+    var ctrl = false;
+    var alt = false;
+    jQuery(document).keydown(function (event) {
+        console.log(event.which);
+        if (event.which == 17 || event.which == 91)//Ctrl key and left window key
+            ctrl = true;
+        else if (event.which == 18 || event.which == 92)//Alt key and right window key
+            alt = true;
+    });
 
-
-  var ctrl = false;
-  jQuery(document).keydown(function(event){
-    //console.log("control");
-    //console.log(event);
-    if(event.which == 17 || event.which == 91)
-      ctrl = true;
-
-  });
-  jQuery(document).keyup(function(){
+    jQuery(document).keyup(function () {
         ctrl = false;
-  });
+        alt = false;
+    });
+
   jQuery('.annotationsvg').mousedown(function (event) {
         //console.log(event.which);
         if(ctrl){
