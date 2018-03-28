@@ -4,9 +4,10 @@ ini_set('display_errors', 'On');
 
 error_reporting(E_ALL | E_STRICT);
 
-include_once("RestRequest.php");
+include_once("../utils/RestRequest.php");
 
-$config = require '../Configuration/config.php';
+//$config = require '../Configuration/config.php';
+$services = require 'config.php';
 
 $templateUrl = $config['retrieveTemplate'];
 

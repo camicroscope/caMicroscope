@@ -1,7 +1,7 @@
 <?php require '../../../authenticate.php';
 // metadata handles all interactions needed for fcgi and osd, GET only
 
-include_once("CamicUtils.php");
+include_once("../utils/CamicUtils.php");
 
 $utils = new CamicUtils($_SESSION);
 $tissueId = $_GET['imageId'];
