@@ -47,6 +47,7 @@ var algorithm_color = {};
 function goodalgo(data, status) {
     // console.log(data)
 
+    /*    
     var blob = [];
     for (i = 0; i < data.length; i++) {
         var n = {};
@@ -61,9 +62,9 @@ function goodalgo(data, status) {
         algorithm_color[data[i].provenance.analysis_execution_id] = available_colors[i % available_colors.length];
         blob.push(n)
     }
+    */
 
-    /*
-    // TODO:
+    // TODO: test
     max_ver = 0;
     for (i = 0; i < data.length; i++) {
         var n = {};
@@ -78,7 +79,6 @@ function goodalgo(data, status) {
             }
         }
     }
-
     var blob = [];
     for (i = 0; i < data.length; i++) {
         var n = {};
@@ -96,7 +96,6 @@ function goodalgo(data, status) {
         algorithm_color[data[i].provenance.analysis_execution_id] = available_colors[i % available_colors.length];
         blob.push(n)
     }
-    */
 
     ftree = jQuery('#tree').fancytree({
         source: [{
@@ -140,18 +139,14 @@ function goodalgo(data, status) {
         }
     });
 
-    /*
-    // TODO:
+    //TODO: test
     jQuery('#tree').attr('algotree', true);
-
     // Load weight
     if (annotool.loadedWeight == false) {
         annotool.loadHeatmapWeight();
         annotool.loadedWeight = true;
     }
-
-    annotool.getMultiAnnot();
-    */
+    //annotool.getMultiAnnot();
 }
 
 /*
