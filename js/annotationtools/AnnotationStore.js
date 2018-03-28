@@ -124,26 +124,10 @@ AnnotationStore.prototype.fetchAnnotations = function (x1, y1, x2, y2, footprint
     algorithms_urlparam = algorithms_urlparam.replace("]", "%5D");
     algorithms_urlparam = algorithms_urlparam.replace(/"/g, "%22");
 
-    var algorithms_urlparam_computer = JSON.stringify(algorithms_computer);
-    algorithms_urlparam_computer = algorithms_urlparam_computer.replace("[", "%5B");
-    algorithms_urlparam_computer = algorithms_urlparam_computer.replace("]", "%5D");
-    algorithms_urlparam_computer = algorithms_urlparam_computer.replace(/"/g, "%22");
-
-    var algorithms_urlparam_human = JSON.stringify(algorithms_human);
-    algorithms_urlparam_human = algorithms_urlparam_human.replace("[", "%5B");
-    algorithms_urlparam_human = algorithms_urlparam_human.replace("]", "%5D");
-    algorithms_urlparam_human = algorithms_urlparam_human.replace(/"/g, "%22");
-
-    //console.log(algorithms_urlparam);
     var url1;
 
-    //if(isCompositeAnnotationOnly || isNonCompositeAnnotationOnly) {
-    //url1 = "api/Data/getMultipleAnnotsClone.php?iid="+  self.iid +"&x=" + x1+ "&y=" + y1 + "&x1=" + midX + "&y1=" + midY + "&footprint="+ footprint + "&algorithms=" + algorithms_urlparam;
-    //}else {
-    url1 = "api/Data/getMultipleAnnotationsNew.php?iid=" + self.iid + "&x=" + x1 + "&y=" + y1 + "&x1=" + midX + "&y1=" + midY + "&footprint=" + footprint + "&algorithms_computer=" + algorithms_urlparam_computer + "&algorithms_human=" + algorithms_urlparam_human;
-    //}
+    url1 = "api/Data/getMultipleAnnots.php?iid=" + self.iid + "&x=" + x1 + "&y=" + y1 + "&x1=" + midX + "&y1=" + midY + "&footprint=" + footprint + "&algorithms=" + algorithms_urlparam;
 
-    //console.log("url1", url1);
 
     jQuery.get(url1, function (data) {
         //console.log(data);

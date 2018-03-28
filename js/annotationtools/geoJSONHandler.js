@@ -6,6 +6,13 @@ annotools.prototype.generateGeoTemplate = function () {
         //subject_id = "";
     }
 
+    var username;
+    if ('undefined' !== typeof _USERNAME) {
+      username = _USERNAME;
+    } else {
+      username = "humantest"
+    }
+
     var geoJSONTemplate = {
         'type': 'Feature',
         'parent_id': 'self',
@@ -23,7 +30,7 @@ annotools.prototype.generateGeoTemplate = function () {
         'footprint': 10000,
         'provenance': {
             'analysis': {
-                'execution_id': 'humantest',
+                'execution_id': username,
                 'study_id': "",
                 'source': "human",
                 'computation': 'segmentation'
@@ -151,9 +158,9 @@ annotools.prototype.convertAnnotationsToGeoJSON = function() {
     geoJSONs = []
     var annotations = this.annotations
 
-    
+
     for(var i in annotations) {
-        
+
         var annotation = annotations[i]
         //console.log(annotation)
 
@@ -161,8 +168,8 @@ annotools.prototype.convertAnnotationsToGeoJSON = function() {
         if(points) { //is a polygon
             //console.log(points)
             geo = convertGeo(points)
-            geoJSONs.push(geo);        
-        
+            geoJSONs.push(geo);
+
         }
     }
     //console.log(geoJSONs)

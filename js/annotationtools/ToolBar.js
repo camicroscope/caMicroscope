@@ -122,6 +122,39 @@ $.getScript('shared/ToolBar.js', function() {
             tool.append(this.analyticsbutton);
 
 
+            /* Annotation tools (re-add, comment) */
+
+            this.rectbutton = jQuery('<img>', {
+                'data-toggle': 'tooltip',
+                'data-placement': 'bottom',
+                title: 'Draw Rectangle',
+                id: 'drawRectangle',
+                class: 'toolButton firstToolButtonSpace',
+                src: 'images/rect.svg'
+            });
+            tool.append(this.rectbutton)
+            this.pencilbutton = jQuery('<img>', {
+                'data-toggle': 'tooltip',
+                'data-placement': 'bottom',
+                'title': 'Draw Freeline',
+                'class': 'toolButton',
+                'src': 'images/pencil.svg'
+            });
+            tool.append(this.pencilbutton) // Pencil Tool
+
+            this.rectbutton.on('click', function() {
+                this.mode = 'rect'
+                this.annotools.mode = 'rect'
+                this.annotools.drawMarkups()
+                // alert("Creation of markups is disabled on QuIP")
+            }.bind(this))
+
+            this.pencilbutton.on('click', function() {
+                this.annotools.mode = 'pencil'
+                this.annotools.drawMarkups()
+                // alert("Creation of markups is disabled on QuIP")
+            }.bind(this))
+
             this.sharebutton = jQuery('<img>', {
                 'data-toggle': 'tooltip',
                 'data-placement': 'bottom',
@@ -145,7 +178,6 @@ $.getScript('shared/ToolBar.js', function() {
             // it's ready
             var event = new Event("magnifier-button-loaded");
             document.dispatchEvent(event);
-
 
             /*
              * Event handlers for toolbar buttons
