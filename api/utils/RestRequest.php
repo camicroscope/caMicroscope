@@ -73,26 +73,26 @@ class RestRequest
 
 	public function buildPostBody ($data = null)
 	{
-		$data = ($data != null) ? $data : $this->requestBody;	
+		$data = ($data != null) ? $data : $this->requestBody;
 		$this->requestBody = $data;
 	}
 
 	protected function executeGet ($ch)
-	{		
-		$this->doExecute($ch); 
+	{
+		$this->doExecute($ch);
 	}
 
 	protected function executePost ($ch)
 	{
-		if (!is_string($this->requestBody))  
-    		{  
-        		$this->buildPostBody();  
-    		}  
-  
-    		curl_setopt($ch, CURLOPT_POSTFIELDS, $this->requestBody);  
-    		curl_setopt($ch, CURLOPT_POST, 1);  
-  
-    		$this->doExecute($ch);  
+		if (!is_string($this->requestBody))
+    		{
+        		$this->buildPostBody();
+    		}
+
+    		curl_setopt($ch, CURLOPT_POSTFIELDS, $this->requestBody);
+    		curl_setopt($ch, CURLOPT_POST, 1);
+
+    		$this->doExecute($ch);
 	}
 
 	protected function doExecute (&$curlHandle)

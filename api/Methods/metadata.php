@@ -1,6 +1,8 @@
 <?php require '../../../authenticate.php';
 // metadata handles all interactions needed for fcgi and osd, GET only
 
+// CamicUtils bindaas requirments:
+// * Camicroscope_DataLoader or analgous - DataLoader endpoint
 include_once("../utils/CamicUtils.php");
 
 $utils = new CamicUtils($_SESSION);
