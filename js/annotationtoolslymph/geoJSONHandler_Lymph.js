@@ -565,9 +565,9 @@ annotools.prototype.generateSVG = function (annotations) {
                                         }
                         });
 		} else {
-			svgHtml += '" style="fill:transparent; stroke:'+line_color+ '; stroke-width:' + stroke_width + '"/>';
+			//svgHtml += '" style="fill:transparent; stroke:'+line_color+ '; stroke-width:' + stroke_width + '"/>';
+			svgHtml += '" style="fill:transparent; stroke:'+line_color+ '; stroke-width:' + stroke_width + '; stroke-opacity:' + stroke_opacity + '"/>';
 		}
-		svgHtml += '" style="fill:transparent; stroke:'+line_color+ '; stroke-width:' + stroke_width + '; stroke-opacity:' + stroke_opacity + '"/>';
 		break;
 	default:
 		svgHtml += '" style="fill:transparent; stroke:'+color+ '; stroke-width:2.5"/>'
