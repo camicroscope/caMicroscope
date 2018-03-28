@@ -2,19 +2,19 @@
 
 class CamicUtils
 {
-    public $CONFIG;
+    public $SERVICES;
     public $api_key;
 
     function __construct($Session)
     {
         include_once("RestRequest.php");
-        $this->CONFIG = require '../Configuration/config.php';
+        $this->SERVICES = require 'config.php';
         $this->api_key = $Session['api_key'];
     }
 
     function getImageDimensions($tissueId)
     {
-        $dimensionsUrl = $this->CONFIG['getDimensions'] . $this->api_key . "&TCGAId=" . $tissueId;
+        $dimensionsUrl = $this->SERVICES['dataloader'] . "/DataLoader/query/getDimensionsByIID?api_key=" . $this->api_key . "&TCGAId=" . $tissueId;
         $getDimensionRequest = new RestRequest($dimensionsUrl, 'GET');
         $getDimensionRequest->execute();
         $dimensionList = json_decode($getDimensionRequest->responseBody);
@@ -29,7 +29,7 @@ class CamicUtils
 
     function retrieveImageLocation($tissueId)
     {
-        $fileUrl = $this->CONFIG['getFileLocation'] . $this->api_key . "&TCGAId=" . $tissueId;
+        $fileUrl = $this->SERVICES['dataloader'] . "/DataLoader/query/getFileLocationByIID?api_key=" . $this->api_key . "&TCGAId=" . $tissueId;
         $fileUrl = str_replace(" ", "%20", $fileUrl);
         $getFileLocationRequest = new RestRequest($fileUrl, 'GET');
         $getFileLocationRequest->execute();
@@ -37,28 +37,9 @@ class CamicUtils
         return $location;
     }
 
-
-    /**
-     * Tile Overlay
-     * @param $tissueId
-     * @return mixed
-     * @throws Exception
-     */
-    /*
-    function retrieveTileLocation($tissueId)
-    {
-        $fileUrl = $this->CONFIG['getTileLocation'] . $this->api_key . "&TCGAId=" . $tissueId;
-        $fileUrl = str_replace(" ", "%20", $fileUrl);
-        $getTileLocationRequest = new RestRequest($fileUrl, 'GET');
-        $getTileLocationRequest->execute();
-        $location = json_decode($getTileLocationRequest->responseBody);
-        return $location;
-    }*/
-
-
     function retrieveMpp($tissueId)
     {
-        $mppUrl = $this->CONFIG['getMPP'] . $this->api_key . "&TCGAId=" . $tissueId;
+        $mppUrl = $this->SERVICES['dataloader'] . "/DataLoader/query/getMPPByIID?api_key=" . $this->api_key . "&TCGAId=" . $tissueId;
         $getMPPRequest = new RestRequest($mppUrl, 'GET');
         $getMPPRequest->execute();
         $mpplist = json_decode($getMPPRequest->responseBody);

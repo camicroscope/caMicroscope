@@ -1,15 +1,21 @@
 <?php
     // workOrder handles submitting and getting status of jobs
+
+    // bindaas requirements:
+    // * Camicroscope_DataLoader or analagous, WorkOrders endpoint
+
+    // requires kue
+
     header('Content-Type: application/json');
     require '../../../authenticate.php';
     ini_set('display_errors', 'On');
     error_reporting(E_ALL | E_STRICT);
-    include_once("RestRequest.php");
+    include_once("../utils/RestRequest.php");
     require_once 'HTTP/Request2.php';
-    $config = require '../Configuration/config.php';
+    $services = require 'config.php';
 
-    $orderingService = $config['kueUrl'];
-    $postUrl = $config['postWorkOrder'];
+    $orderingService = $services['kue'];
+    $postUrl = $services['dataloader'] . "/WorkOrders/submit/json";
     if (!empty($_SESSION['api_key'])) {
         $api_key = $_SESSION['api_key'];
     }
