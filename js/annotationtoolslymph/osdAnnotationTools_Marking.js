@@ -93,6 +93,7 @@ annotools.prototype.drawMarking = function (ctx) {
         ctx.strokeStyle = 'lime';
         this.mark_type = 'TumorNeg';
     }
+    */
 
     if (jQuery("#AlgoABig").is(':checked'))
     {
