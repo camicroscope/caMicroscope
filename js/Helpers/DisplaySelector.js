@@ -19,12 +19,12 @@ function show_images(img_api_url, lst){
   fetch(img_api_url)
     .then(function(rsp){
       // clear the list first
-      lst.innerHtml = "";
+      lst.innerHTML = "";
       // parse api response
       let d = rsp.json();
       d.forEach(function(item){
         let elem = document.createElement("li");
-        elem.innerHtml = item.name;
+        elem.innerHTML = item.name;
         elem.onclick = () => (document.dispatchEvent(new CustomEvent("SecImageLoad", {detail: {url: item.url, id: item.name}})));
         lst.appendChild(elem);
       })
@@ -32,9 +32,10 @@ function show_images(img_api_url, lst){
 }
 
 function show_images_lst(d, lst){
+  lst.innerHTML = "";
   d.forEach(function(item){
     let elem = document.createElement("li");
-    elem.innerHtml = item.name;
+    elem.innerHTML = item.name;
     elem.onclick = () => (document.dispatchEvent(new CustomEvent("SecImageLoad", {detail:{url: item.url, id: item.name}})));
     lst.appendChild(elem);
   })
@@ -44,12 +45,12 @@ function show_overlays(ovr_api_url, lst){
   fetch(ovr_api_url)
     .then(function(rsp){
       // clear the list first
-      lst.innerHtml = "";
+      lst.innerHTML = "";
       // parse api response
       let d = rsp.json();
       d.forEach(function(item){
         let elem = document.createElement("li");
-        elem.innerHtml = item.name;
+        elem.innerHTML = item.name;
         elem.onclick = () => (document.dispatchEvent(new CustomEvent("SecOverlay", {detail: {algs: [item.name]}})));
         lst.appendChild(elem);
       })
