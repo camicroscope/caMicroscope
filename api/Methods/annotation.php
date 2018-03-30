@@ -1,4 +1,5 @@
 <?php require '../../../authenticate.php';
+include_once("../utils/RestRequest.php");
 // annotation handles all interactions with annotations, GET, POST, or DELETE
 // bindaas requirements:
 // * MarkupsForImages
