@@ -4,6 +4,19 @@
 // * MarkupsForImages
 // * MarkupLoader
 
+// null coalesce replacement function
+function param_get(&$value, $default = null)
+{
+    return isset($value) ? $value : $default;
+}
+
+// require api key
+if (!empty($_SESSION['api_key'])) {
+    $api_key = $_SESSION['api_key'];
+} else {
+  die();
+}
+
 $services = require 'config.php';
 $annotationsUrl = $services['annotations'];
 
@@ -21,18 +34,50 @@ if(isset($_GET["type"])) {
   die();
 }
 
+// all of these methods require id
+if(isset($_GET["id"])) {
+    $caseid = $_GET["id"];
+} else {
+  die();
+}
+
+// build url fields
+$fields = array()
+
 if ($_SERVER['REQUEST_METHOD'] == "GET"){
   // input - image id
   if ($type == "algorithms"){
-    "$annotationsUrl/MarkupsForImages/query/MarkupsAvilableForImage?"
+
+    $fields['TCGAId'] = $caseid;
+    $fields['api_key'] = $api_key;
+    $url = "$annotationsUrl/MarkupsForImages/query/MarkupsAvilableForImage" . http_build_query($fields, '', "&");
+    $getRequest = new RestRequest($url, 'GET');
+    $getRequest->execute();
+    echo $getRequest->responseBody;
   }
   // input - image id
   elseif ($type == "rois"){
-    "$annotationsUrl/MarkupLoader/query/getROI"
+    $fields['id'] = $caseid;
+    $fields['api_key'] = $api_key;
+    $url = "$annotationsUrl/MarkupLoader/query/getROI" . http_build_query($fields, '', "&");
+    $getRequest = new RestRequest($url, 'GET');
+    $getRequest->execute();
+    echo $getRequest->responseBody;
   }
   // input - view bounds, algorithm, footprint
   elseif ($type == "markups"){
-    "$annotationsUrl/MarkupLoader/query/getMultipleMarkups?"
+    CaseId = $caseid
+    $fields['x1'] = param_get($_GET["x1"], 0);
+    $fields['x2'] = param_get($_GET["x2"], 0);
+    $fields['y1'] = param_get($_GET["y1"], 0);
+    $fields['y2'] = param_get($_GET["y2"], 0);
+    $fields['footprint'] = param_get($_GET["footprint"], 0);
+    $fields['algorithms'] = param_get($_GET["algorithms"], "[]");
+    $fields['api_key'] = $api_key;
+    $url = "$annotationsUrl/MarkupLoader/query/getMultipleMarkups?" . http_build_query($fields, '', "&");
+    $getRequest = new RestRequest($url, 'GET');
+    $getRequest->execute();
+    echo $getRequest->responseBody;
   }
 }
 
@@ -40,21 +85,48 @@ if ($_SERVER['REQUEST_METHOD'] == "GET"){
 elseif ($_SERVER['REQUEST_METHOD'] == "POST"){
   // input - annotation list
   if ($type == "algorithms"){
-    "$annotationsUrl/MarkupsForImages/submit/json"
+    $fields['api_key'] = $api_key;
+    http_build_query($fields, '', "&");
+    $url = "$annotationsUrl/MarkupsForImages/submit/json" . http_build_query($fields, '', "&");
+    // TODO validate content, permissions
+    // may not work, but just encode post data
+    $data = json_encode($_POST);
+    $postRequest = new RestRequest($url, 'POST', $data);
+    $postRequest->execute();
+    echo $postRequest->responseBody;
   }
   // input - annotation authorship
   elseif ($type == "markups"){
-    "$annotationsUrl/MarkupLoader/submit/json"
+
+    $fields['api_key'] = $api_key;
+    $url = "$annotationsUrl/MarkupLoader/submit/json". http_build_query($fields, '', "&");
+    // TODO validate content, permissions
+    // may not work, but just encode post data
+    $data = json_encode($_POST);
+    $postRequest = new RestRequest($url, 'POST', $data);
+    $postRequest->execute();
+    echo $postRequest->responseBody;
   }
 }
 
 elseif ($_SERVER['REQUEST_METHOD'] == "DELETE"){
-  elseif ($type == "markups"){
-    "$annotationsUrl/MarkupLoader/delete/deleteMultipleMarkups"
+  if ($type == "markups"){
+    $fields['CaseId'] = $caseid;
+    $fields['x1'] = param_get($_GET["x1"], 0);
+    $fields['x2'] = param_get($_GET["x2"], 0);
+    $fields['y1'] = param_get($_GET["y1"], 0);
+    $fields['y2'] = param_get($_GET["y2"], 0);
+    $fields['execution_id'] = param_get($_GET["execution_id"], "");
+    $fields['api_key'] = $api_key;
+    $url = "$annotationsUrl/MarkupLoader/delete/deleteMultipleMarkups" = http_build_query($fields, '', "&");
+    $deleteRequest = new RestRequest($url, 'DELETE');
+    $deleteRequest->execute();
+    echo $deleteRequest->responseBody;
   }
 }
 
 else {
+  // unrecognized verb
   die();
 }
 ?>
