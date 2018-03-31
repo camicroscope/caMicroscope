@@ -1,6 +1,8 @@
 //This file creates an overlay which aims to provide information to any second viewer
 // such as side split or spyglass
 
+// requires viewer2 for second viewer
+// requires annotools2 for that viewer's annotools
 
 function overlay_url(id){
   return "api/Data/getAlgorithmsForImage.php?" + id;
@@ -25,7 +27,7 @@ function show_images(img_api_url, lst){
       d.forEach(function(item){
         let elem = document.createElement("li");
         elem.innerHTML = item.name;
-        elem.onclick = () => (document.dispatchEvent(new CustomEvent("SecImageLoad", {detail: {url: item.url, id: item.name}})));
+        elem.onclick = () => (window.dispatchEvent(new CustomEvent("SecImageLoad", {detail: {url: item.url, id: item.name}})));
         lst.appendChild(elem);
       })
     });
@@ -36,7 +38,7 @@ function show_images_lst(d, lst){
   d.forEach(function(item){
     let elem = document.createElement("li");
     elem.innerHTML = item.name;
-    elem.onclick = () => (document.dispatchEvent(new CustomEvent("SecImageLoad", {detail:{url: item.url, id: item.name}})));
+    elem.onclick = ()=>(window.dispatchEvent(new CustomEvent("SecImageLoad", {detail:{url: item.url, id: item.name}})));
     lst.appendChild(elem);
   })
 }
@@ -51,7 +53,7 @@ function show_overlays(ovr_api_url, lst){
       d.forEach(function(item){
         let elem = document.createElement("li");
         elem.innerHTML = item.name;
-        elem.onclick = () => (document.dispatchEvent(new CustomEvent("SecOverlay", {detail: {algs: [item.name]}})));
+        elem.onclick = () => (window.dispatchEvent(new CustomEvent("SecOverlay", {detail: {algs: [item.name]}})));
         lst.appendChild(elem);
       })
     });
@@ -76,6 +78,7 @@ window.addEventListener('display_select', function(detail){
 
 // event listner for img load
 window.addEventListener("SecImageLoad", function(detail){
+  console.log("hi")
   viewer2.open(detail.detail.url);
   show_overlays(overlay_url(detail.detail.id), document.getElementById("second_display_list"))
 });
