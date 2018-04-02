@@ -16,14 +16,13 @@ var ToolBar = function (element, options) {
     this.height = options.height || '30px';
     this.width = options.width || '270px';
     this.zindex = options.zindex || '100'; // To Make Sure The Tool Appears in the Front
-
     this.iid = options.iid || null;
     this.cancerType = options.cancerType;
     this.imageStatus = options.imageStatus;
     this.assignTo = options.assignTo;
     this.userType = options.userType;
     this.user_email = options.user_email;
-
+    this.displayId = displayId;
     this.annotationActive = isAnnotationActive();
     this.viewer = options.viewer;
 
