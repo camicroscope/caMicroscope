@@ -19,6 +19,11 @@ var ToolBar = function (element, options) {
 
     this.iid = options.iid || null;
     this.cancerType = options.cancerType;
+    this.imageStatus = options.imageStatus;
+    this.assignTo = options.assignTo;
+    this.userType = options.userType;
+    this.user_email = options.user_email;
+
     this.annotationActive = isAnnotationActive();
     this.viewer = options.viewer;
 
@@ -255,8 +260,27 @@ ToolBar.prototype.toggleAlgorithmSelector = function () {
         for (var i = 0; i < tmp_algorithm_list.length; i++) {
             algorithm_color[tmp_algorithm_list[i]] = available_colors[i % available_colors.length];
             SELECTED_ALGORITHM_COLOR[tmp_algorithm_list[i]] = available_colors[i % available_colors.length];
-            htmlStr += "<li><input type='checkbox' class='algorithmCheckbox' value=" + i + " /><span class='algoColorBox' style='background:" + algorithm_color[tmp_algorithm_list[i]] + "'></span> " + tmp_algorithm_list[i]
-                + "</li>";
+
+            // TODO: HARD-CODED PORT
+            //user view composite dataset only
+            if (window.location.port == "8080") {
+                var index_composite_input1 = tmp_algorithm_list[i].indexOf("composite_input");
+                var index_composite_dataset1 = tmp_algorithm_list[i].indexOf("composite_dataset");
+                var this_entry = "";
+                if (index_composite_input1 != -1) {
+                    this_entry = "human_markup_composite_input";
+                } else if (index_composite_dataset1 != -1) {
+                    this_entry = "human_markup_composite_dataset";
+                } else
+                    this_entry = "";
+                if (this_entry != "") {
+                    htmlStr += "<li><input type='checkbox' class='algorithmCheckbox' value=" + i + " /><span class='algoColorBox' style='background:" + algorithm_color[tmp_algorithm_list[i]] + "'></span> " + this_entry + "</li>";
+                }
+            } else {
+                htmlStr += "<li><input type='checkbox' class='algorithmCheckbox' value=" + i + " /><span class='algoColorBox' style='background:" + algorithm_color[tmp_algorithm_list[i]] + "'></span> " + tmp_algorithm_list[i]
+                    + "</li>";
+            }
+
         }
 
         htmlStr += "</ul> <br /> <button class='btn' id='cancelAlgorithms'>Hide</button> </div>";

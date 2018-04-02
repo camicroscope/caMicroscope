@@ -2,7 +2,7 @@
  * TOOLBAR
  * CAMICROSCOPE
  */
-<<<<<<< HEAD
+<<<<<<< ours
 $.getScript('shared/ToolBar.js', function() {
 =======
 var ToolBar = function (element, options) {
@@ -22,7 +22,7 @@ var ToolBar = function (element, options) {
     //console.log(this.displayId);
     this.annotationActive = isAnnotationActive()
 }
->>>>>>> seer_dev
+>>>>>>> theirs
 
     /**
      * Create Buttons
@@ -119,7 +119,7 @@ var ToolBar = function (element, options) {
         });
         tool.append(this.compositebutton);
 
-<<<<<<< HEAD
+<<<<<<< ours
             /* space */
             tool.append(jQuery('<img>', {
                 'class': 'spacerButton inactive',
@@ -228,7 +228,7 @@ var ToolBar = function (element, options) {
             'title': 'Image Analysis',
             'class': 'toolButton',
             'src': 'images/analyze.png'
->>>>>>> seer_dev
+>>>>>>> theirs
 
             });
             tool.append(this.analyticsbutton);
@@ -423,7 +423,7 @@ var ToolBar = function (element, options) {
                     }
                 })
             })
-<<<<<<< HEAD
+<<<<<<< ours
 =======
             console.log(filters)
 
@@ -481,7 +481,7 @@ var ToolBar = function (element, options) {
 	    jQuery('html,body').css('cursor', 'crosshair');
             this.annotools.drawMarkups();           
         }.bind(this))
->>>>>>> seer_dev
+>>>>>>> theirs
 
         }
 
@@ -513,7 +513,7 @@ var ToolBar = function (element, options) {
         }
     };
 
-<<<<<<< HEAD
+<<<<<<< ours
 });
 =======
     }
@@ -556,4 +556,4 @@ var ToolBar = function (element, options) {
         // empty block
     }
 }
->>>>>>> seer_dev
+>>>>>>> theirs
