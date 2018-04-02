@@ -40,18 +40,25 @@ var _USERNAME = "<?php echo filter_var($_SESSION["email"], FILTER_SANITIZE_EMAIL
 
 	  console.log("cancerType is: "+cancerType);
 	  console.log("tissueId is: "+tissueId);
+		  
+          var user_email = "<?php echo $_SESSION["email"]; ?>";  
+          console.log("user_email :" + user_email);  
+          var userType = "<?php echo $_SESSION["userType"]; ?>";  
+          console.log("userType :" + userType); 
 
-          var imagedata = new OSDImageMetaData({imageId:tissueId});
-          //console.log(imagedata);
-
+          var imagedata = new OSDImageMetaData({imageId:tissueId});          
+          //console.log(imagedata);         
+          
           var MPP = imagedata.metaData[0];
 	  console.log(MPP);
           //console.log(imagedata);
           var fileLocation = imagedata.metaData[1];//.replace("tcga_data","tcga_images");
           //console.log(fileLocation);
+          var imageStatus = imagedata.metaData[2][0]['status'];
+          var assignTo    = imagedata.metaData[3][0]['assign_to'];
 
-          var viewer = new OpenSeadragon.Viewer({
-                id: "viewer",
+          var viewer = new OpenSeadragon.Viewer({ 
+                id: "viewer", 
                 prefixUrl: "images/",
                 showNavigator:  true,
                 //navigatorPosition:   "BOTTOM_LEFT",
@@ -114,8 +121,12 @@ var _USERNAME = "<?php echo filter_var($_SESSION["email"], FILTER_SANITIZE_EMAIL
             var annotationHandler = new AnnotoolsOpenSeadragonHandler(viewer, {});
              annotool= new annotools({
                     canvas:'openseadragon-canvas',
-                    iid: tissueId,
-				            cancerType: cancerType,
+                    iid: tissueId, 
+	            cancerType: cancerType,
+                    imageStatus: imageStatus,
+                    assignTo:  assignTo,
+                    userType: userType,
+                    user_email: user_email,
                     viewer: viewer,
                     annotationHandler: annotationHandler,
                     mpp:MPP
@@ -128,19 +139,21 @@ var _USERNAME = "<?php echo filter_var($_SESSION["email"], FILTER_SANITIZE_EMAIL
                 height: '48px',
                 width: '100%',
                 iid: tissueId,
-                cancerType: cancerType,
+	        cancerType: cancerType,
+                imageStatus: imageStatus,
+                assignTo:  assignTo,
+                userType: userType,
+                user_email: user_email,
                 annotool: annotool,
                 viewer: viewer
-
+           
              });
 
            annotool.toolBar = toolBar;
 
            toolBar.createButtons();
-
-	 var user_email = "<?php echo $_SESSION["email"]; ?>";
-         console.log("user_email :" + user_email);
-
+		
+	    
         var index = user_email.indexOf("@");
         var user= user_email.substring(0,index);
         var execution_id =user+"_composite_input" ;

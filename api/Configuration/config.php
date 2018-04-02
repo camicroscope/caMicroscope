@@ -85,6 +85,7 @@ return array(
     /* u24_user */
     'findUserByName'   => "$u24_userUrl/user_data/query/findUserByName?",
     'findUserByEmail'  => "$u24_userUrl/user_data/query/findUserByEmail?",
+    'findUser'         => "$u24_userUrl/user_data/query/findUser?",
     'findAdmin'        => "$u24_userUrl/user_data/query/findAdmin?",
 
     'findAllBindaasUsers'=>"$u24_userUrl/user_data/query/findAllBindaasUsers?",
@@ -92,17 +93,22 @@ return array(
     'deleteUserByName' => "$u24_userUrl/user_data/delete/deleteUserByName?",
     'deleteUserByEmail'=> "$u24_userUrl/user_data/delete/deleteUserByEmail?",
     'postUser'         => "$u24_userUrl/user_data/submit/json",
-
-
-    /* Image */
+    'setUserType'      => "$u24_userUrl/user_data/delete/setUserType?",
+    
+    
+    /* Image */	
     'getDimensions' => "$imageUrl/query/getDimensionsByIID?api_key=",
     'getFileLocation' => "$imageUrl/query/getFileLocationByIID?api_key=",
     //'getTileLocation' => "$imageUrl/query/getTileLocationByIID?api_key=",
     'getMPP' => "$imageUrl/query/getMPPByIID?api_key=",
     'getImageInfoByCaseID'=> "$imageUrl/query/getImageInfoByCaseID?api_key=",
-    'fastcgi_server' => "../fcgi-bin/iipsrv.fcgi",
-
-	 /* Dynamic Services */
+    'fastcgi_server' => "/fcgi-bin/iipsrv.fcgi",
+    'imageStatusUpdate'=> "$imageUrl/delete/imageStatusUpdate?",      
+    'getImageStatus'=> "$imageUrl/query/getImageStatusByCaseID?api_key=",
+    'getImageAssignTo'=> "$imageUrl/query/getImageAssignToByCaseID?api_key=",
+    'imageAssignTo'=> "$imageUrl/delete/imageAssignTo?",
+  
+    /* Dynamic Services */														 
     'postWorkOrder' => "$dynamicServices/WorkOrders/submit/json",
     'kueUrl' => $kueUrl
 );

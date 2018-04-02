@@ -2,7 +2,27 @@
  * TOOLBAR
  * CAMICROSCOPE
  */
+<<<<<<< HEAD
 $.getScript('shared/ToolBar.js', function() {
+=======
+var ToolBar = function (element, options) {
+    // console.log(options)
+    this.annotools = options.annotool
+    // console.log(this.annotools)
+    this.FilterTools = options.FilterTools
+    this.source = element // The Tool Source Element
+    this.top = options.top || '0px'
+    this.left = options.left || '150px' // The Tool Location
+    this.height = options.height || '30px'
+    this.width = options.width || '270px'
+    this.zindex = options.zindex || '100' // To Make Sure The Tool Appears in the Front
+    this.user_email = options.user_email
+    this.iid = options.iid || null
+    this.displayId = displayId;
+    //console.log(this.displayId);
+    this.annotationActive = isAnnotationActive()
+}
+>>>>>>> seer_dev
 
     /**
      * Create Buttons
@@ -87,7 +107,7 @@ $.getScript('shared/ToolBar.js', function() {
             'src': 'images/spacer.svg'
         });
         tool.append(this.spacer1);
-
+	    
         /*a link to segment curation application with this composite button */
         this.compositebutton = jQuery('<img>', {
             'data-toggle': 'tooltip',
@@ -99,6 +119,7 @@ $.getScript('shared/ToolBar.js', function() {
         });
         tool.append(this.compositebutton);
 
+<<<<<<< HEAD
             /* space */
             tool.append(jQuery('<img>', {
                 'class': 'spacerButton inactive',
@@ -117,6 +138,97 @@ $.getScript('shared/ToolBar.js', function() {
                 'title': 'Image Analysis',
                 'class': 'toolButton',
                 'src': 'images/analyze.png'
+=======
+       this.spacer2 = jQuery('<img>', {
+            'class': 'spacerButton',
+            'src': 'images/spacer.svg'
+        });
+        tool.append(this.spacer2);
+	    
+        this.rectbutton = jQuery('<img>', {
+            'data-toggle': 'tooltip',
+            'data-placement': 'bottom',
+            title: 'Draw Rectangle',
+            id: 'drawRectangle',
+            class: 'toolButton firstToolButtonSpace',
+            src: 'images/rect.svg'
+        });
+        //tool.append(this.rectbutton)
+
+        this.ellipsebutton = jQuery('<img>', {
+            'data-toggle': 'tooltip',
+            'data-placement': 'bottom',
+            'title': 'Draw Ellipse',
+            'class': 'toolButton',
+            'src': 'images/ellipse.svg'
+        });
+        //tool.append(this.ellipsebutton)
+
+        this.pencilbutton = jQuery('<img>', {
+            'data-toggle': 'tooltip',
+            'data-placement': 'bottom',
+            'title': 'Draw Freeline',
+            'class': 'toolButton',
+            'src': 'images/pencil.svg'
+        });
+        tool.append(this.pencilbutton) // Pencil Tool
+	    
+        this.spacer3 = jQuery('<img>', {
+            'class': 'spacerButton',
+            'src': 'images/spacer.svg'
+        });
+        tool.append(this.spacer3);    
+
+        this.measurebutton = jQuery('<img>', {
+            'data-toggle': 'tooltip',
+            'data-placement': 'bottom',
+            'title': 'Measurement Tool',
+            'class': 'toolButton',
+            'src': 'images/measure.svg'
+        });
+        // tool.append(this.measurebutton)        
+
+        this.filterbutton = jQuery('<img>', {
+            'data-toggle': 'tooltip',
+            'data-placement': 'bottom',
+            'title': 'Filter Markups',
+            'class': 'toolButton firstToolButtonSpace',
+            'src': 'images/filter.svg'
+        });
+        tool.append(this.filterbutton); // Filter Button
+
+
+        this.hidebutton = jQuery('<img>', {
+            'data-toggle': 'tooltip',
+            'data-placement': 'bottom',
+            'title': 'Show/Hide Markups',
+            'class': 'toolButton',
+            'src': 'images/hide.svg'
+        });
+        //tool.append(this.hidebutton)
+
+        this.fullDownloadButton = jQuery('<img>', {
+            'data-toggle': 'tooltip',
+            'data-placement': 'bottom',
+            'title': 'Download All Markups (Coming Soon)',
+            'class': 'toolButton',
+            'src': 'images/fullDownload.svg'
+        });
+        //tool.append(this.fullDownloadButton)
+	    
+        this.spacer4 = jQuery('<img>', {
+            'class': 'spacerButton',
+            'src': 'images/spacer.svg'
+        });
+        tool.append(this.spacer4);
+
+        this.analyticsbutton = jQuery('<img>', {
+            'data-toggle': 'tooltip',
+            'data-placement': 'bottom',
+            'title': 'Image Analysis',
+            'class': 'toolButton',
+            'src': 'images/analyze.png'
+>>>>>>> seer_dev
 
             });
             tool.append(this.analyticsbutton);
@@ -311,6 +423,65 @@ $.getScript('shared/ToolBar.js', function() {
                     }
                 })
             })
+<<<<<<< HEAD
+=======
+            console.log(filters)
+
+            var state = {
+                'state': {
+                    'filters': filters,
+                    'viewport': bounds,
+                    'pan': viewer.viewport.getCenter(),
+                    'zoom': viewer.viewport.getZoom(),
+                    'tissueId': this.annotools.iid
+                }
+            }
+            console.log(state)
+            // var bookmarkURLDiv = jQuery.create('<div>').addClass('bookmarkURLDiv')
+            var bookmarkURLDiv = jQuery('#bookmarkURLDiv')
+            bookmarkURLDiv.html('')
+            var input = jQuery('<input>')
+            var submit = jQuery('<button>')
+            submit.html("Close");
+            bookmarkURLDiv.append(input)
+            bookmarkURLDiv.append(submit)
+            bookmarkURLDiv.show()
+            jQuery.ajax({
+                'type': 'POST',
+                //'url': 'https://test-8f679.firebaseio.com/camicroscopeStates.json?auth=kweMPSAo4guxUXUodU0udYFhC27yp59XdTEkTSJ4',
+                'url': 'api/Data/loadState.php',
+                'data': JSON.stringify(state),
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',
+                success: function (data) {
+                    console.log('posted!')
+                    console.log(data)
+                    var url = 'http://dragon.cci.emory.edu/camicroscope3/osdCamicroscope.php?tissueId=TCGA-02-0001&stateID=' + data.name
+                    console.log(url)
+                    input.val(url)
+                    input.select()
+                }
+            });
+
+            submit.on("click", function () {
+                bookmarkURLDiv.hide();
+            });
+
+        }.bind(this))
+
+        this.ellipsebutton.on('click', function () {
+            // this.mode = 'ellipse'
+            // this.annotools.mode = 'ellipse'
+            // this.annotools.drawMarkups()
+            alert('Creation of markups is disabled on QuIP')
+        }.bind(this))
+
+        this.pencilbutton.on('click', function () {
+            this.annotools.mode = 'pencil';
+	    jQuery('html,body').css('cursor', 'crosshair');
+            this.annotools.drawMarkups();           
+        }.bind(this))
+>>>>>>> seer_dev
 
         }
 
@@ -342,4 +513,47 @@ $.getScript('shared/ToolBar.js', function() {
         }
     };
 
+<<<<<<< HEAD
 });
+=======
+    }
+    this.colorMapButton = jQuery('<img>', {
+        'class': 'colorMapButton',
+        'title': 'ColorMap',
+        'src': 'images/colors.svg'
+    })
+    //tool.append(this.colorMapButton)
+    this.ajaxBusy = jQuery('<img>', {
+        'class': 'colorMapButton',
+        'id': 'ajaxBusy',
+        'style': 'scale(0.5, 1)',
+        'src': 'images/progress_bar.gif'
+    })
+    tool.append(this.ajaxBusy)
+    this.ajaxBusy.hide()
+
+    this.titleButton = jQuery('<p>', {
+        'class': 'titleButton',
+        'id': 'titleButton',
+        'text': 'caMicroscope'
+    })
+    tool.append(this.titleButton)
+
+    this.iidbutton = jQuery('<p>', {
+        'class': 'iidButton',
+        'text': 'Display ID: ' + this.DisplayId
+    })
+    tool.append(this.iidbutton)
+
+    /* ASHISH - disable quit button
+     this.quitbutton = new Element('img', {
+     'title': 'quit',
+     'class': 'toolButton',
+     'src': 'images/quit.svg'
+     }).inject(this.tool) //Quit Button
+     */
+    if (this.annotationActive) {
+        // empty block
+    }
+}
+>>>>>>> seer_dev
