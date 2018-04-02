@@ -12,7 +12,6 @@ $templateUrl = $config['retrieveTemplateByName'];
 
 $api_key = $_SESSION['api_key'];
 $app_name=$_GET["app_name"];
-
 $url = $templateUrl . "?api_key=$api_key" . "&app_name=$app_name";
 //echo $url;
 $templateRequest = new RestRequest($url,'GET');
