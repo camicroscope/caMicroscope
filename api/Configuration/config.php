@@ -77,7 +77,7 @@ return array(
     
     /* Template */
     'retrieveTemplate'      => "$templateUrl/AnnotationTemplate/query/retrieveTemplate",
-    'retrieveTemplateClone' => "$templateUrl/AnnotationTemplate/query/retrieveTemplateClone",
+    'retrieveTemplateByName' => "$templateUrl/AnnotationTemplate/query/retrieveTemplateByName",
 	
     /* u24_user */
     'findUserByName'   => "$u24_userUrl/user_data/query/findUserByName?",
