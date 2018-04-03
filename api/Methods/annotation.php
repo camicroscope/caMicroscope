@@ -11,12 +11,6 @@ function param_get(&$value, $default = null)
     return isset($value) ? $value : $default;
 }
 
-// require api key
-if (!empty($_SESSION['api_key'])) {
-    $api_key = $_SESSION['api_key'];
-} else {
-  die();
-}
 
 $services = require 'config.php';
 $annotationsUrl = $services['annotations'];
@@ -32,14 +26,14 @@ if (!empty($_SESSION['api_key'])) {
 if(isset($_GET["type"])) {
     $type = $_GET["type"];
 } else {
-  die();
+  echo "type required\n";
 }
 
 // all of these methods require id
 if(isset($_GET["id"])) {
     $caseid = $_GET["id"];
 } else {
-  die();
+  echo "id required\n";
 }
 
 // build url fields
@@ -79,6 +73,8 @@ if ($_SERVER['REQUEST_METHOD'] == "GET"){
     $getRequest = new RestRequest($url, 'GET');
     $getRequest->execute();
     echo $getRequest->responseBody;
+  } else {
+    echo "unrecognized type\n";
   }
 }
 
@@ -107,6 +103,8 @@ elseif ($_SERVER['REQUEST_METHOD'] == "POST"){
     $postRequest = new RestRequest($url, 'POST', $data);
     $postRequest->execute();
     echo $postRequest->responseBody;
+  } else {
+    echo "unrecognized type\n";
   }
 }
 
@@ -123,11 +121,13 @@ elseif ($_SERVER['REQUEST_METHOD'] == "DELETE"){
     $deleteRequest = new RestRequest($url, 'DELETE');
     $deleteRequest->execute();
     echo $deleteRequest->responseBody;
+  } else {
+    echo "unrecognized type\n";
   }
 }
 
 else {
   // unrecognized verb
-  die();
+  echo "unrecognized verb";
 }
 ?>
