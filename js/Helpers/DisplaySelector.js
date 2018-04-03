@@ -4,7 +4,7 @@ function getAlgs(caseid, cb){
   .then((x)=>(cb(x.json())))
 }
 
-var DisplaySelector(viewer1, viewer2, imgs, getAlgs, annotools1, annotools2){
+function DisplaySelector(viewer1, viewer2, imgs, getAlgs, annotools1, annotools2){
   // viewer 1 is l or base, viewer2 is r or spyglass; annotools follows same
   // imgs is either a dict structued as name:open obj or just a name
   // get alg should return a list of algorithms; args (caseid, callback)
