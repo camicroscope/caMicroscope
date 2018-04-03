@@ -13,7 +13,7 @@ function DisplaySelector(viewer1, viewer2, imgs, getAlgs, annotools1, annotools2
   var menu = document.getElementById("DisplaySelector");
   // does the menu exist, if not...
 
-  if (!menu){
+  if (menu !== null){
     // create the base mneu selector, hidden by detault
     menu = document.createElement("div");
     menu.style.zIndex = 3;
