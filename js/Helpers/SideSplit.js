@@ -91,12 +91,13 @@ function hide_sbs() {
     viewer.viewport.zoomTo(0.5 * viewer.viewport.getZoom());
 }
 
+
+init_sbs();
+
 document.getElementById("right_sidebyside").style.height = window.innerHeight + "px"
 window.onresize = function() {
     document.getElementById("right_sidebyside").style.height = window.innerHeight + "px"
 }
-
-init_sbs();
 
 document.addEventListener("sidesplit", function(e){
   if (document.getElementById("right_sidebyside").style.display == "block"){
