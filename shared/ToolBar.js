@@ -22,7 +22,7 @@ var ToolBar = function (element, options) {
     this.assignTo = options.assignTo;
     this.userType = options.userType;
     this.user_email = options.user_email;
-    this.displayId = displayId;
+    this.displayId = options.displayId;
     this.annotationActive = isAnnotationActive();
     this.viewer = options.viewer;
 
