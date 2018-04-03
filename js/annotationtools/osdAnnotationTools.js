@@ -216,9 +216,9 @@ annotools.prototype.getMultiAnnot = function (viewer) {
     var origin = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(0), this.imagingHelper.physicalToDataY(0));
     var area = (max.x - origin.x) * (max.y - origin.y);
 
-    if (SELECTED_ALGORITHM_LIST.length) {
-        SELECTED_ALGORITHM_LIST = SELECTED_ALGORITHM_LIST.sort();
-        var algorithms = SELECTED_ALGORITHM_LIST;
+    if (this.SELECTED_ALGORITHM_LIST.length) {
+        this.SELECTED_ALGORITHM_LIST = this.SELECTED_ALGORITHM_LIST.sort();
+        var algorithms = this.SELECTED_ALGORITHM_LIST;
         var myList = OVERLAY_LIST;
 
         self.fetchAnnots(area, algorithms, myList);
@@ -1385,7 +1385,7 @@ annotools.prototype.updateAnnot = function (annot) {
 annotools.prototype.saveAnnot = function (annotation) {
     // console.log("Saving annotation");
     // console.log("annotation", annotation)
- 
+
     region_type=annotation.properties.annotations.region;
     //execution_id=annotation.provenance.analysis.execution_id;
     var user=annotool.user;
@@ -1398,8 +1398,8 @@ annotools.prototype.saveAnnot = function (annotation) {
      }
 
      var d = new Date();
-     var current_time=d.toLocaleString(); 
-     annotation.created_by=user;	
+     var current_time=d.toLocaleString();
+     annotation.created_by=user;
      annotation.created_on=current_time;
      annotation.updated_by='';
      annotation.updated_on='';

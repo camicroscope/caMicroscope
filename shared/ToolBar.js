@@ -51,7 +51,7 @@ var algorithm_color = {};
 function goodalgo(data, status) {
     // console.log(data)
 
-    /*    
+    /*
     var blob = [];
     for (i = 0; i < data.length; i++) {
         var n = {};
@@ -302,8 +302,8 @@ ToolBar.prototype.toggleAlgorithmSelector = function () {
 
             var elem = jQuery(this);
             var id = (this).value * 1;
-            for (var i = 0; i < SELECTED_ALGORITHM_KEYS.length; i++) {
-                if (SELECTED_ALGORITHM_KEYS[i] == (id)) {
+            for (var i = 0; i < self.annotools.SELECTED_ALGORITHM_KEYS.length; i++) {
+                if (self.annotools.SELECTED_ALGORITHM_KEYS[i] == (id)) {
 
                     elem.prop('checked', true);
                 }
@@ -318,15 +318,15 @@ ToolBar.prototype.toggleAlgorithmSelector = function () {
         jQuery('#algorithmList input[type=checkbox]').change(function () {
 
             // Re-populate 'keys' and 'list' arrays
-            SELECTED_ALGORITHM_LIST = [];
-            SELECTED_ALGORITHM_KEYS = [];
+            self.annotools.SELECTED_ALGORITHM_LIST = [];
+            self.annotools.SELECTED_ALGORITHM_KEYS = [];
             jQuery("#algorithmList input:checked").each(function () {
 
                 var key = (this).value * 1; // string to number
                 var value = tmp_algorithm_list[key];
 
-                SELECTED_ALGORITHM_KEYS.push(key);
-                SELECTED_ALGORITHM_LIST.push(value);
+                self.annotools.SELECTED_ALGORITHM_KEYS.push(key);
+                self.annotools.SELECTED_ALGORITHM_LIST.push(value);
 
             });
 
