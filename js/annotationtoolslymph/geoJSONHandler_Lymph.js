@@ -608,7 +608,7 @@ annotools.prototype.generateSVG = function (annotations) {
             //Alt key and right window key
             alt = true;
         }
-        console.log("ctrl: " + ctrl + " alt: " + alt);
+        console.log("ctrl: " + ctrl + ", alt: " + alt);
 
     });
 
@@ -616,7 +616,7 @@ annotools.prototype.generateSVG = function (annotations) {
         ctrl = false;
         alt = false;
     });
-    console.log("ctrl: " + ctrl + " alt: " + alt);
+
     jQuery('.annotationsvg').mousedown(function (event) {
         //console.log(event.which);
         if (ctrl) {
