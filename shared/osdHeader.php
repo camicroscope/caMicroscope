@@ -36,6 +36,7 @@ if (isset($_GET["cancerType"])) {
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <!-- script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script -->
     <script src="js/dependencies/jquery.js"></script>
+    
 
     <!--JSON Form dependencies-->
     <script src="js/dependencies/underscore.js"></script>
@@ -79,7 +80,6 @@ if (isset($_GET["cancerType"])) {
     <!--End Filtering Tools-->
 
 
-
     <script src="js/Helpers/StateManager.js"></script>
     <script src="js/Helpers/SessionTracker.js"></script>
     <script src="js/Helpers/ClientPrefManager.js"></script>
@@ -91,7 +91,8 @@ if (isset($_GET["cancerType"])) {
     <script src="js/dependencies/jquery.fancytree-all.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.7.0/jquery.modal.js"></script>
     <script src="js/dependencies/simplemodal.js"></script>
-    <script src="js/dependencies/d3.js"></script>
+    <!--script src="js/dependencies/d3.js"></script-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.11.0/d3.min.js"></script>
     <script src="js/tile_overlays/tile_overlays.js"></script>
 
     <style type="text/css">

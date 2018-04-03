@@ -2,28 +2,28 @@
  * TOOLBAR
  * CAMICROSCOPE
  */
-$.getScript('shared/ToolBar.js', function() {
+$.getScript('shared/ToolBar.js', function () {
 
     /**
      * Create Buttons
      */
-    ToolBar.prototype.createButtons = function() {
+    ToolBar.prototype.createButtons = function () {
 
         // this.tool = jQ(this.source)
         var tool = jQuery('#' + 'tool'); // Temporary dom element while we clean up mootools
         var self = this;
 
         // Fetch algorithms for Image
-        jQuery(document).ready(function() {
+        jQuery(document).ready(function () {
             // var self= this
 
-            jQuery.get('api/Data/getAlgorithmsForImage.php?iid=' + self.iid, function(data) {
+            jQuery.get('api/Data/getAlgorithmsForImage.php?iid=' + self.iid, function (data) {
                 d = JSON.parse(data);
 
                 goodalgo(d, null);
             });
 
-            jQuery('#submitbtn').click(function() {
+            jQuery('#submitbtn').click(function () {
                 var selKeys = jQuery('#tree').fancytree('getTree').getSelectedNodes();
                 var param = '';
                 for (i = 0; i < selKeys.length; i++) {
@@ -72,32 +72,32 @@ $.getScript('shared/ToolBar.js', function() {
             });
             tool.append(this.lymphbutton); // Lymphocyte Button
 
-        this.qualitybutton = jQuery('<img>', {
-            'data-toggle': 'tooltip',
-            'data-placement': 'bottom',
-            'title': 'Segmentation Quality Heatmaps',
-            'class': 'toolButton',
-            'src': 'images/cellseg.svg'
-        });
+            this.qualitybutton = jQuery('<img>', {
+                'data-toggle': 'tooltip',
+                'data-placement': 'bottom',
+                'title': 'Segmentation Quality Heatmaps',
+                'class': 'toolButton',
+                'src': 'images/cellseg.svg'
+            });
 
-        tool.append(this.qualitybutton); // Lymphocyte Button
+            tool.append(this.qualitybutton); // Lymphocyte Button
 
-        this.spacer1 = jQuery('<img>', {
-            'class': 'spacerButton',
-            'src': 'images/spacer.svg'
-        });
-        tool.append(this.spacer1);
+            this.spacer1 = jQuery('<img>', {
+                'class': 'spacerButton',
+                'src': 'images/spacer.svg'
+            });
+            tool.append(this.spacer1);
 
-        /*a link to segment curation application with this composite button */
-        this.compositebutton = jQuery('<img>', {
-            'data-toggle': 'tooltip',
-            'data-placement': 'bottom',
-            title: 'Segment Curation App',
-            class: 'toolButton',
-            src: 'images/composite.png',
-            id: 'gotocompositebutton'
-        });
-        tool.append(this.compositebutton);
+            /*a link to segment curation application with this composite button */
+            this.compositebutton = jQuery('<img>', {
+                'data-toggle': 'tooltip',
+                'data-placement': 'bottom',
+                title: 'Segment Curation App',
+                class: 'toolButton',
+                src: 'images/composite.png',
+                id: 'gotocompositebutton'
+            });
+            tool.append(this.compositebutton);
 
             /* space */
             tool.append(jQuery('<img>', {
@@ -132,7 +132,7 @@ $.getScript('shared/ToolBar.js', function() {
                 class: 'toolButton firstToolButtonSpace',
                 src: 'images/rect.svg'
             });
-            tool.append(this.rectbutton)
+            tool.append(this.rectbutton);
             this.pencilbutton = jQuery('<img>', {
                 'data-toggle': 'tooltip',
                 'data-placement': 'bottom',
@@ -140,20 +140,20 @@ $.getScript('shared/ToolBar.js', function() {
                 'class': 'toolButton',
                 'src': 'images/pencil.svg'
             });
-            tool.append(this.pencilbutton) // Pencil Tool
+            tool.append(this.pencilbutton); // Pencil Tool
 
-            this.rectbutton.on('click', function() {
-                this.mode = 'rect'
-                this.annotools.mode = 'rect'
+            this.rectbutton.on('click', function () {
+                this.mode = 'rect';
+                this.annotools.mode = 'rect';
                 this.annotools.drawMarkups()
                 // alert("Creation of markups is disabled on QuIP")
-            }.bind(this))
+            }.bind(this));
 
-            this.pencilbutton.on('click', function() {
-                this.annotools.mode = 'pencil'
-                this.annotools.drawMarkups()
-                // alert("Creation of markups is disabled on QuIP")
-            }.bind(this))
+            this.pencilbutton.on('click', function () {
+                this.annotools.mode = 'pencil';
+                jQuery('html,body').css('cursor', 'crosshair');
+                this.annotools.drawMarkups();
+            }.bind(this));
 
             this.sharebutton = jQuery('<img>', {
                 'data-toggle': 'tooltip',
@@ -182,130 +182,129 @@ $.getScript('shared/ToolBar.js', function() {
             /*
              * Event handlers for toolbar buttons
              */
-            this.homebutton.on('click', function() {
+            this.homebutton.on('click', function () {
                 window.location.href = "/select.php";
             }.bind(this));
 
-        /*
-        this.lymphbutton.on('click', function () {
-            var tissueId = this.iid;
-            window.location.href = "/camicroscope/osdCamicroscope_Lymph.php?tissueId=" + tissueId;
-        }.bind(this))
-        */
-        
-        this.lymphbutton.on('click', function () {
-            var tissueId = this.iid;
-            var x1 = annotool.imagingHelper._viewportOrigin['x'];
-            var y1 = annotool.imagingHelper._viewportOrigin['y'];
-            var x2 = x1 + annotool.imagingHelper._viewportWidth;
-            var y2 = y1 + annotool.imagingHelper._viewportHeight;
-            var zoom = viewer.viewport.getZoom();
-            
-            var width, height;
-            //get image width and height
-            var url = 'api/Data/getImageInfoByCaseID.php?case_id=' + tissueId;
-            //console.log(url);
-            jQuery.get(url, function (data) {
-                //console.log(data);
-                try {
-                    this_image = JSON.parse(data);
-                    width = this_image[0].width;
-                    height = this_image[0].height;
-                    var x = parseInt(((x1 + x2) / 2.0) * width);
-                    var y = parseInt(((y1 + y2) / 2.0) * height);
-		    window.location.href = "/camicroscope/osdCamicroscope_Lymph.php?appid=lymph&tissueId=" + tissueId + "&x=" + x + "&y=" + y + "&zoom=" + zoom;
-                } catch (error) {
-                    window.location.href = "/camicroscope/osdCamicroscope_Lymph.php?appid=lymph&tissueId=" + tissueId;
-                }
-            }) 
-        }.bind(this))
+            /*
+            this.lymphbutton.on('click', function () {
+                var tissueId = this.iid;
+                window.location.href = "/camicroscope/osdCamicroscope_Lymph.php?tissueId=" + tissueId;
+            }.bind(this))
+            */
 
-	this.qualitybutton.on('click', function () {
-            var tissueId = this.iid;
-            var x1 = annotool.imagingHelper._viewportOrigin['x'];
-            var y1 = annotool.imagingHelper._viewportOrigin['y'];
-            var x2 = x1 + annotool.imagingHelper._viewportWidth;
-            var y2 = y1 + annotool.imagingHelper._viewportHeight;
-            var zoom = viewer.viewport.getZoom();
-            
-            var width, height;
-            //get image width and height
-            var url = 'api/Data/getImageInfoByCaseID.php?case_id=' + tissueId;
-            //console.log(url);
-            jQuery.get(url, function (data) {
-                //console.log(data);
-                try {
-                    this_image = JSON.parse(data);
-                    width = this_image[0].width;
-                    height = this_image[0].height;
-                    var x = parseInt(((x1 + x2) / 2.0) * width);
-                    var y = parseInt(((y1 + y2) / 2.0) * height);
-                    window.location.href = "/camicroscope/osdCamicroscope_Lymph.php?appid=qualheat&tissueId=" + tissueId + "&x=" + x + "&y=" + y + "&zoom=" + zoom;
-                } catch (error) {
-                    window.location.href = "/camicroscope/osdCamicroscope_Lymph.php?appid=qualheat&tissueId=" + tissueId;
-                }
-            }) 
-	}.bind(this))
+            this.lymphbutton.on('click', function () {
+                var tissueId = this.iid;
+                var x1 = annotool.imagingHelper._viewportOrigin['x'];
+                var y1 = annotool.imagingHelper._viewportOrigin['y'];
+                var x2 = x1 + annotool.imagingHelper._viewportWidth;
+                var y2 = y1 + annotool.imagingHelper._viewportHeight;
+                var zoom = viewer.viewport.getZoom();
 
-            this.sharebutton.on('click', function() {
+                var width, height;
+                //get image width and height
+                var url = 'api/Data/getImageInfoByCaseID.php?case_id=' + tissueId;
+                //console.log(url);
+                jQuery.get(url, function (data) {
+                    //console.log(data);
+                    try {
+                        this_image = JSON.parse(data);
+                        width = this_image[0].width;
+                        height = this_image[0].height;
+                        var x = parseInt(((x1 + x2) / 2.0) * width);
+                        var y = parseInt(((y1 + y2) / 2.0) * height);
+                        window.location.href = "/camicroscope/osdCamicroscope_Lymph.php?appid=lymph&tissueId=" + tissueId + "&x=" + x + "&y=" + y + "&zoom=" + zoom;
+                    } catch (error) {
+                        window.location.href = "/camicroscope/osdCamicroscope_Lymph.php?appid=lymph&tissueId=" + tissueId;
+                    }
+                })
+            }.bind(this));
+
+            this.qualitybutton.on('click', function () {
+                var tissueId = this.iid;
+                var x1 = annotool.imagingHelper._viewportOrigin['x'];
+                var y1 = annotool.imagingHelper._viewportOrigin['y'];
+                var x2 = x1 + annotool.imagingHelper._viewportWidth;
+                var y2 = y1 + annotool.imagingHelper._viewportHeight;
+                var zoom = viewer.viewport.getZoom();
+
+                var width, height;
+                //get image width and height
+                var url = 'api/Data/getImageInfoByCaseID.php?case_id=' + tissueId;
+                //console.log(url);
+                jQuery.get(url, function (data) {
+                    //console.log(data);
+                    try {
+                        this_image = JSON.parse(data);
+                        width = this_image[0].width;
+                        height = this_image[0].height;
+                        var x = parseInt(((x1 + x2) / 2.0) * width);
+                        var y = parseInt(((y1 + y2) / 2.0) * height);
+                        window.location.href = "/camicroscope/osdCamicroscope_Lymph.php?appid=qualheat&tissueId=" + tissueId + "&x=" + x + "&y=" + y + "&zoom=" + zoom;
+                    } catch (error) {
+                        window.location.href = "/camicroscope/osdCamicroscope_Lymph.php?appid=qualheat&tissueId=" + tissueId;
+                    }
+                })
+            }.bind(this));
+
+            this.sharebutton.on('click', function () {
                 // update the url
                 LinkRequest();
                 window.prompt("Share this link", window.location.href + "&" + camic_state.prefix + "=" + camic_state.encode(camic_state.vals));
             }.bind(this));
 
 
-            this.filterbutton.on('click', function() {
+            this.filterbutton.on('click', function () {
                 this.toggleAlgorithmSelector()
                 // this.removeMouseEvents()
                 // this.promptForAnnotation(null, "filter", this, null)
             }.bind(this));
-        this.compositebutton.on('click', function () {
-            this.mode = 'composite';
-            var tissueId = this.iid;
-            //window.location.href = "/camicroscope/osdCamicroscope_sc.php?tissueId="+tissueId;
+            this.compositebutton.on('click', function () {
+                this.mode = 'composite';
+                var tissueId = this.iid;
+                //window.location.href = "/camicroscope/osdCamicroscope_sc.php?tissueId="+tissueId;
 
-            var x1 = annotool.imagingHelper._viewportOrigin['x'];
-            var y1 = annotool.imagingHelper._viewportOrigin['y'];
-            var x2 = x1 + annotool.imagingHelper._viewportWidth;
-            var y2 = y1 + annotool.imagingHelper._viewportHeight;
-            var zoom = viewer.viewport.getZoom();
-            //zoom = parseInt(zoom);
-            if (zoom < 1.0)
-            {
-                zoom = 1.0;
-            }
-            var width, height;
-            //get image width and height
-            var url = 'api/Data/getImageInfoByCaseID.php?case_id=' + tissueId;
-            //console.log(url);
-            jQuery.get(url, function (data) {
-                //console.log(data);
-                try {
-                    this_image = JSON.parse(data);
-                    width = this_image[0].width;
-                    height = this_image[0].height;
-                    var x = parseInt(((x1 + x2) / 2.0) * width);
-                    var y = parseInt(((y1 + y2) / 2.0) * height);
-                    window.location.href = "/camicroscope/osdCamicroscope_sc.php?tissueId=" + tissueId + "&cancerType=quip&x=" + x + "&y=" + y + "&zoom=" + zoom;
-                } catch (error) {
-                    window.location.href = "/camicroscope/osdCamicroscope_sc.php?tissueId=" + tissueId;
+                var x1 = annotool.imagingHelper._viewportOrigin['x'];
+                var y1 = annotool.imagingHelper._viewportOrigin['y'];
+                var x2 = x1 + annotool.imagingHelper._viewportWidth;
+                var y2 = y1 + annotool.imagingHelper._viewportHeight;
+                var zoom = viewer.viewport.getZoom();
+                //zoom = parseInt(zoom);
+                if (zoom < 1.0) {
+                    zoom = 1.0;
                 }
-            })
+                var width, height;
+                //get image width and height
+                var url = 'api/Data/getImageInfoByCaseID.php?case_id=' + tissueId;
+                //console.log(url);
+                jQuery.get(url, function (data) {
+                    //console.log(data);
+                    try {
+                        this_image = JSON.parse(data);
+                        width = this_image[0].width;
+                        height = this_image[0].height;
+                        var x = parseInt(((x1 + x2) / 2.0) * width);
+                        var y = parseInt(((y1 + y2) / 2.0) * height);
+                        window.location.href = "/camicroscope/osdCamicroscope_sc.php?tissueId=" + tissueId + "&cancerType=quip&x=" + x + "&y=" + y + "&zoom=" + zoom;
+                    } catch (error) {
+                        window.location.href = "/camicroscope/osdCamicroscope_sc.php?tissueId=" + tissueId;
+                    }
+                })
 
             }.bind(this));
 
-            this.analyticsbutton.on('click', function() {
+            this.analyticsbutton.on('click', function () {
                 this.annotools.createWorkOrder()
             }.bind(this));
 
             var toolButtons = jQuery('.toolButton');
-            toolButtons.each(function() {
+            toolButtons.each(function () {
                 jQuery(this).on({
-                    'mouseenter': function() {
+                    'mouseenter': function () {
                         // highlight button
                         this.addClass('selected')
                     },
-                    'mouseleave': function() {
+                    'mouseleave': function () {
                         // un-highlight button
                         this.removeClass('selected')
                     }
@@ -332,7 +331,7 @@ $.getScript('shared/ToolBar.js', function() {
 
         this.iidbutton = jQuery('<p>', {
             'class': 'iidButton',
-            'text': 'Case ID: ' + this.iid
+            'text': 'Display ID: ' + this.DisplayId
         });
         tool.append(this.iidbutton);
 

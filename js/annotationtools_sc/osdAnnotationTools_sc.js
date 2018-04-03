@@ -16,28 +16,31 @@ var annotools = function (options) {
 
     this.annotationActive = isAnnotationActive();
 
-    this.ratio = options.ratio || 0.005; // One pixel equals to the length in real situation. Will be used in the measurement tool
-    this.maxWidth = options.maxWidth || 4000; // MaxWidth of the Image
-    this.maxHeight = options.maxHeight || 800; // //MaxHeight of the Image
-    this.initialized = false;
-    this.color = options.color || 'lime'; // Default Annotation Color
-
-    this.iidDecoded = decodeURI(options.iid);
-    this.canvas = options.canvas; // The canvas Element that The Use will be drawing annotatoins on.
-    this.iid = options.iid || null; // The Image ID
-    this.cancerType = options.cancerType;
-    this.annotVisible = true; // The Annotations are Set to be visible at the First Loading
-    this.mode = 'default'; // The Mode is Set to Default
-
-    this.viewer = options.viewer;
-    this.imagingHelper = this.viewer.imagingHelper;
-    this.mpp = options.mpp;
-    this.mppx = parseFloat(this.mpp['mpp-x']);
-    this.mppy = parseFloat(this.mpp['mpp-y']);
-    this.x1 = 0.0;
-    this.x2 = 1.0;
-    this.y1 = 0.0;
-    this.y2 = 1.0;
+  this.ratio = options.ratio || 0.005; // One pixel equals to the length in real situation. Will be used in the measurement tool
+  this.maxWidth = options.maxWidth || 4000 // MaxWidth of the Image
+  this.maxHeight = options.maxHeight || 800 // //MaxHeight of the Image
+  this.initialized = false
+  this.color = options.color || 'lime' // Default Annotation Color
+  this.iidDecoded = decodeURI(options.iid)
+  this.canvas = options.canvas; // The canvas Element that The Use will be drawing annotatoins on.
+  this.iid = options.iid || null // The Image ID
+  this.cancerType=options.cancerType
+  this.imageStatus=options.imageStatus
+  this.assignTo = options.assignTo
+  this.userType = options.userType
+  this.user_email = options.user_email
+  this.annotVisible = true // The Annotations are Set to be visible at the First Loading
+  this.mode = 'default' // The Mode is Set to Default
+  this.viewer = options.viewer
+  this.imagingHelper = this.viewer.imagingHelper
+  this.mpp = options.mpp
+  this.mppx = parseFloat(this.mpp['mpp-x'])
+  this.mppy = parseFloat(this.mpp['mpp-y'])
+  this.x1 = 0.0
+  this.x2 = 1.0
+  this.y1 = 0.0
+  this.y2 = 1.0
+  this.filter_algorithm = true
 
     this.annotationHandler = options.annotationHandler || new AnnotoolsOpenSeadragonHandler();
     /*
@@ -2001,21 +2004,22 @@ annotools.prototype.promptForAnnotation = function (newAnnot, mode, annotools, c
         + "<form id ='annotationsForm' action='#'>"
         + '</form>'
 
-        + '</div>'
-    );
-    jQuery.get('api/Data/retrieveTemplateClone.php', function (data) {
-        console.log("after retrieveTemplate.php:" + data);
-        var schema = JSON.parse(data);
-        schema = JSON.parse(schema)[0];
-        console.log(schema);
-        // console.log("retrieved template")
-        var formSchema = {
-            'schema': schema,
-            'form': [
-                '*',
-                {
-                    'type': 'submit',
-                    'title': 'Submit'
+    + '</div>'
+  )
+  jQuery.get('api/Data/retrieveTemplateByName.php?app_name=segment_curation', function (data) {
+    console.log("after retrieveTemplateByName.php:"+data);
+    var schema = JSON.parse(data);
+    schema = JSON.parse(schema)[0];
+    //console.log(schema);
+    //schema.region.enum=["Good Segmentation","Clump"];
+    // console.log("retrieved template")
+    var formSchema = {
+      'schema': schema,
+      'form': [
+        '*',
+        {
+          'type': 'submit',
+          'title': 'Submit'
 
                 },
                 {
@@ -2559,11 +2563,13 @@ annotools.prototype.getAlgorithmColorFromMenuTree = function () {
     if (num_algorithm === 0) {
         alert("No algorithms have been selected.");
         algo_and_color = null;
+	this.filter_algorithm = false;
         return false;
     }
     else if (num_algorithm > 1 || num_algorithm < 1) {
         alert("Please select one and only one algorithm!");
         algo_and_color = null;
+	this.filter_algorithm = false;
         return false;
     } else {
         algo_and_color.color = algorithm_colors[0];
@@ -2608,5 +2614,43 @@ annotools.prototype.generateCompositeDataset = function () {
             //self.toolBar.ajaxBusy.show();
 
         })
+  
+}//end of generateCompositeDataset
 
-};//end of generateCompositeDataset
+
+function pollOrder(id, cb){
+  jQuery.get("api/Data/compositeOrder.php?id="+id, function(data){ 
+    //console.log(data.state);
+    if(data.state.contains("fail")){
+      cb({"error": "failed", data});
+	  console.log("kue job id is: "+ id);
+      console.log("kue job state is: "+ data.state);
+      return;
+    }
+    if(data.state.contains("comp")){ // is completed?
+     cb(null, data);
+	 console.log("kue job id is: "+ id);
+     console.log("kue job state is: "+ data.state);
+     return;
+    } else {
+      console.log("kue job id is: "+ id);
+      console.log("kue job state is: "+ data.state);
+      setTimeout(pollOrder(id, cb), 300);
+    }
+  });
+}
+
+annotools.prototype.imageStatusUpdate = function(status){  
+  console.log(status);
+  var case_id=this.iid; 
+  var url1 = "api/Data/imageStatusUpdate.php?case_id="+  case_id + "&status=" + status;
+  console.log(url1);	
+  jQuery.ajax({ url: url1,
+               type: 'get',
+               data:null,
+               success: function(data){
+                   console.log(data);                   
+                  }
+                });
+}//end of imageStatusUpdate(status)
+
