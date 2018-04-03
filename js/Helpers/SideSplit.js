@@ -97,11 +97,12 @@ window.onresize = function() {
 }
 
 init_sbs();
+
 document.addEventListener("sidesplit", function(e){
   if (document.getElementById("right_sidebyside").style.display == "block"){
     hide_sbs();
   } else {
-  DisplaySelector(viewer, rhs_viewer, [], getAlgs, annotool, rhs_annotool);
-  show_sbs();
+    DisplaySelector(viewer, rhs_viewer, [], getAlgs, annotool, rhs_annotool);
+    show_sbs();
   }
 });
