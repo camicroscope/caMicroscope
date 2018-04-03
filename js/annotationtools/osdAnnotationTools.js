@@ -50,6 +50,9 @@ var annotools = function (options) {
     this.x2 = 1.0;
     this.y1 = 0.0;
     this.y2 = 1.0;
+    this.SELECTED_ALGORITHM_LIST =[];
+    this.SELECTED_ALGORITHM_KEYS = [];
+    this.SELECTED_ALGORITHM_COLOR = [];
 
     this.annotationHandler = options.annotationHandler || new AnnotoolsOpenSeadragonHandler();
 
