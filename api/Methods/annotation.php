@@ -62,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] == "GET"){
   }
   // input - view bounds, algorithm, footprint
   elseif ($type == "markups"){
-    CaseId = $caseid
+    $fields['CaseId'] = $caseid;
     $fields['x1'] = param_get($_GET["x1"], 0);
     $fields['x2'] = param_get($_GET["x2"], 0);
     $fields['y1'] = param_get($_GET["y1"], 0);
