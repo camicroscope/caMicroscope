@@ -14,6 +14,7 @@ include 'shared/osdHeader.php';
 <script src="js/annotationtools/AnnotationStore.js"></script>
 <script src="js/annotationtools/osdAnnotationTools.js"></script>
 <script src="js/annotationtools/geoJSONHandler.js"></script>
+<script src="js/Helpers/coordinatedView.js"></script>
 <script src="js/Helpers/DisplaySelector.js"></script>
 <script src="js/Helpers/SideSplit.js"></script>
 <!-- /ANNOTATION -->
