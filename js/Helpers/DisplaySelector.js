@@ -1,96 +1,85 @@
-//This file creates an overlay which aims to provide information to any second viewer
-// such as side split or spyglass
-
-// requires viewer2 for second viewer
-// requires annotools2 for that viewer's annotools
-
-function overlay_url(id){
-  return "api/Data/getAlgorithmsForImage.php?" + id;
+// default getalgs
+function getAlgs(caseid, cb){
+  fetch("api/Data/getAlgorithmsForImage.php?" + caseid)
+  .then((x)=>(cb(x.json())))
 }
 
-var menu = document.createElement("div");
-menu.style.zIndex = 3;
-menu.style.display = "none";
-menu.id = "second_display_menu"
-var lst = document.createElement("ul");
-lst.id = "second_display_list";
-menu.appendChild(lst);
-document.body.appendChild(menu);
+var DisplaySelector(viewer1, viewer2, imgs, getAlgs, annotools1, annotools2){
+  // viewer 1 is l or base, viewer2 is r or spyglass; annotools follows same
+  // imgs is either a dict structued as name:open obj or just a name
+  // get alg should return a list of algorithms; args (caseid, callback)
+  // if returns null, ok
 
-function show_images(img_api_url, lst){
-  fetch(img_api_url)
-    .then(function(rsp){
-      // clear the list first
-      lst.innerHTML = "";
-      // parse api response
-      let d = rsp.json();
-      d.forEach(function(item){
-        let elem = document.createElement("li");
-        elem.innerHTML = item.name;
-        elem.onclick = () => (window.dispatchEvent(new CustomEvent("SecImageLoad", {detail: {url: item.url, id: item.name}})));
-        lst.appendChild(elem);
-      })
-    });
-}
+  // create the base mneu selector, hidden by detault
+  var menu = document.createElement("div");
+  menu.style.zIndex = 3;
+  menu.style.display = "none";
+  menu.id = "DisplaySelector";
+  menu.style.width = "80%";
+  menu.style.left = "10%";
+  document.body.appendChild(menu);
+  // left img box
+  var dsli = document.createElement("select");
+  dsli.id = "DS-LI";
+  menu.appendChild(dsli);
+  // left alg box
+  var dsla = document.createElement("select");
+  dsla.id = "DS-LA";
+  menu.appendChild(dsla);
+  // right img box
+  var dsri = document.createElement("select");
+  dsri.id = "DS-RI";
+  menu.appendChild(dsri);
+  // right alg box
+  var dsra = document.createElement("select");
+  dsra.id = "DS-RA";
+  menu.appendChild(dsra);
 
-function show_images_lst(d, lst){
-  lst.innerHTML = "";
-  d.forEach(function(item){
-    let elem = document.createElement("li");
-    elem.innerHTML = item.name;
-    elem.onclick = ()=>(window.dispatchEvent(new CustomEvent("SecImageLoad", {detail:{url: item.url, id: item.name}})));
-    lst.appendChild(elem);
-  })
-}
-
-function show_overlays(ovr_api_url, lst){
-  fetch(ovr_api_url)
-    .then(function(rsp){
-      // clear the list first
-      lst.innerHTML = "";
-      // parse api response
-      let d = rsp.json();
-      d.forEach(function(item){
-        let elem = document.createElement("li");
-        elem.innerHTML = item.name;
-        elem.onclick = () => (window.dispatchEvent(new CustomEvent("SecOverlay", {detail: {algs: [item.name]}})));
-        lst.appendChild(elem);
-      })
-    });
-}
-
-// register this event to pusing a button which requiees it
-window.addEventListener('display_select', function(detail){
-  var menu = document.getElementById("second_display_menu");
-  var lst = document.getElementById("second_display_list");
-  menu.style.display = "block";
-  if (detail.detail.type == "lst_img"){
-    show_images_lst(detail.detail.list, lst);
+  function addOption(sid, name, val){
+    let a = document.createElement("option");
+    a.value = val;
+    a.innerHTML = name;
+    document.getElementById(sid).appendChild(a);
   }
-  else if (detail.detail.type == "img"){
-    show_images(detail.detail.api_url, lst);
-  } else if (detail.detail.ype == "mkp"){
-    show_mkp(detail.detail.api_url, lst);
+  // if imgs is str, hide img selectors
+  if (typeof(imgs) == "string"){
+    document.getElementById("DS-LI").style.display = "none";
+    document.getElementById("DS-RI").style.display = "none";
   } else {
-    console.warn("unkown display selector requested");
+    for (var k in imgs){
+      addOption("DS-LI", k, imgs[k]);
+      addOption("DS-RI", k, imgs[k]);
+    }
   }
-})
+  dsli.onchange = function(e){
+    // open image
+    viewer1.open(e.target.value)
+    dsra.innerHTML = "";
+    getAlgs(e.target.value, function(algs){
+      for (var k in algs){
+        addOption("DS-LA", k, algs[k]);
+      }
+    });
+  };
+  dsri.onchange = function(e){
+    // open image
+    viewer2.open(e.target.value);
+    dsra.innerHTML = "";
+    getAlgs(e.target.value, function(algs){
+      for (var k in algs){
+        addOption("DS-RA", k, algs[k]);
+      }
+    });
+  };
+  dsla.onchange = function(e){
+    // open algs
+    annotools1.SELECTED_ALGORITHM_LIST = [e.target.value];
+    annotools1.getMultiAnnot(viewer1);
 
-// event listner for img load
-window.addEventListener("SecImageLoad", function(detail){
-  console.log("hi")
-  viewer2.open(detail.detail.url);
-  show_overlays(overlay_url(detail.detail.id), document.getElementById("second_display_list"))
-});
-
-// event listner for mkp load
-window.addEventListener("SecOverlay", function(detail){
-  annotools2.algorithmList = detail.detail.algs;
-  // close menu
-  document.getElementById("second_display_menu").style.display = "none";
-});
-
-function start(){
-  e = new CustomEvent("display_select", {detail: {type: "lst_img", list: [{name: "first", url:"first"}, {name: "first", url:"first"}]}})
-  window.dispatchEvent(e);
+  };
+  dsra.onchange = function(e){
+    // open algs
+    annotools2.SELECTED_ALGORITHM_LIST = [e.target.value];
+    annotools2.getMultiAnnot(viewer2);
+  };
 }
