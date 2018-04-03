@@ -118,7 +118,7 @@ elseif ($_SERVER['REQUEST_METHOD'] == "DELETE"){
     $fields['y2'] = param_get($_GET["y2"], 0);
     $fields['execution_id'] = param_get($_GET["execution_id"], "");
     $fields['api_key'] = $api_key;
-    $url = "$annotationsUrl/MarkupLoader/delete/deleteMultipleMarkups" = http_build_query($fields, '', "&");
+    $url = "$annotationsUrl/MarkupLoader/delete/deleteMultipleMarkups" . http_build_query($fields, '', "&");
     $deleteRequest = new RestRequest($url, 'DELETE');
     $deleteRequest->execute();
     echo $deleteRequest->responseBody;
