@@ -97,7 +97,7 @@ window.onresize = function() {
 }
 
 init_sbs();
-window.addEventListener("sidesplit", function(e){
+document.addEventListener("sidesplit", function(e){
   if (document.getElementById("right_sidebyside").style.display == "block"){
     hide_sbs();
   } else {
