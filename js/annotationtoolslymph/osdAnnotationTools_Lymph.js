@@ -444,7 +444,7 @@ annotools.prototype.filterit = function (a, b) {
 annotools.prototype.fetchAnnots = function (area, SELECTED_ALGORITHM_LIST, OVERLAY_LIST) {
     var self = this;
     var algorithms = self.filterit(SELECTED_ALGORITHM_LIST, OVERLAY_LIST);
-    console.log("**** algorithms ****", algorithms);
+    //console.log("**** algorithms ****", algorithms);
 
     if (algorithms.length) {
 
