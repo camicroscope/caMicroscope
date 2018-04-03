@@ -286,18 +286,20 @@ annotools.prototype.generateSVG = function (annotations) {
     var ctrl = false;
     var alt = false;
     jQuery(document).keydown(function (event) {
-        console.log(event.which);
+
         if (event.which === 17 || event.which === 91)
         {
             //Ctrl key and left window key
+            console.log(event.which);
             ctrl = true;
         }
         else if (event.which === 18 || event.which === 92)
         {
             //Alt key and right window key
+            console.log(event.which);
             alt = true;
         }
-        console.log("ctrl: " + ctrl + ", alt: " + alt);
+        //console.log("ctrl: " + ctrl + ", alt: " + alt);
 
     });
 
