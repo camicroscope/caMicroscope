@@ -32,6 +32,10 @@ include 'shared/osdHeader.php';
 
 </div>
 
+<div id="confirmDelete" style="display:none">
+    <p> Please enter the secret: <input id="deleteSecret" type="password" /> <a href="#confirmDelete" rel="modal:close"><button id="confirmDeleteButton">Delete</button></a></p>
+</div>
+
 <script type="text/javascript">
     $.noConflict();
 
