@@ -14,9 +14,6 @@ include 'shared/osdHeader.php';
 <script src="js/annotationtools/AnnotationStore.js"></script>
 <script src="js/annotationtools/osdAnnotationTools.js"></script>
 <script src="js/annotationtools/geoJSONHandler.js"></script>
-<script src="js/Helpers/coordinatedView.js"></script>
-<script src="js/Helpers/DisplaySelector.js"></script>
-<script src="js/Helpers/SideSplit.js"></script>
 <!-- /ANNOTATION -->
 
 <div id="container">
@@ -355,4 +352,9 @@ include 'shared/osdHeader.php';
     st.start(600000, 3e6, renew_session);
     spyglass_init(_viewer_source);
 </script>
+<!-- Sidesplit -->
+<script src="js/Helpers/coordinatedView.js"></script>
+<script src="js/Helpers/DisplaySelector.js"></script>
+<script src="js/Helpers/SideSplit.js"></script>
+<!-- Sidesplit -->
 <?php include 'shared/osdFooter.php'; ?>
