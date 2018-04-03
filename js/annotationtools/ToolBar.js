@@ -189,7 +189,7 @@ $.getScript('shared/ToolBar.js', function () {
                 'id': 'sidesplit_toolbar_button'
             });
             tool.append(this.sidesplitButton);
-            sidesplitButton.on('click', function(){
+            this.sidesplitButton.on('click', function(){
               var event = new Event("sidesplit");
               document.dispatchEvent(event);
             });
