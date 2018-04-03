@@ -1,6 +1,11 @@
 var rhs_viewer;
 var rhs_annotool;
 
+function getAlgs(caseid, cb){
+  fetch("api/Data/getAlgorithmsForImage.php?" + caseid)
+  .then((x)=>(cb(x.json())))
+}
+
 // init
 function init_sbs() {
 
@@ -58,7 +63,6 @@ function show_sbs() {
     lhs.style.width = "50%";
     lhs.style.left = "0px";
     viewer.viewport.zoomTo(2 * viewer.viewport.getZoom());
-    // TODO launch DisplaySelector
 }
 
 function unlock() {
@@ -91,3 +95,13 @@ document.getElementById("right_sidebyside").style.height = window.innerHeight + 
 window.onresize = function() {
     document.getElementById("right_sidebyside").style.height = window.innerHeight + "px"
 }
+
+init_sbs();
+window.addEventListener("sidesplit", function(e){
+  if (document.getElementById("right_sidebyside").style.display == "block"){
+    hide_sbs();
+  } else {
+  DisplaySelector(viewer, rhs_viewer, [], getAlgs, annotool, rhs_annotool);
+  show_sbs();
+  }
+});
