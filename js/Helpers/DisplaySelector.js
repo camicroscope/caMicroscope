@@ -10,30 +10,40 @@ var DisplaySelector(viewer1, viewer2, imgs, getAlgs, annotools1, annotools2){
   // get alg should return a list of algorithms; args (caseid, callback)
   // if returns null, ok
 
-  // create the base mneu selector, hidden by detault
-  var menu = document.createElement("div");
-  menu.style.zIndex = 3;
-  menu.style.display = "none";
-  menu.id = "DisplaySelector";
-  menu.style.width = "80%";
-  menu.style.left = "10%";
-  document.body.appendChild(menu);
-  // left img box
-  var dsli = document.createElement("select");
-  dsli.id = "DS-LI";
-  menu.appendChild(dsli);
-  // left alg box
-  var dsla = document.createElement("select");
-  dsla.id = "DS-LA";
-  menu.appendChild(dsla);
-  // right img box
-  var dsri = document.createElement("select");
-  dsri.id = "DS-RI";
-  menu.appendChild(dsri);
-  // right alg box
-  var dsra = document.createElement("select");
-  dsra.id = "DS-RA";
-  menu.appendChild(dsra);
+  var menu = document.getElementById("DisplaySelector");
+  // does the menu exist, if not...
+
+  if (!menu){
+    // create the base mneu selector, hidden by detault
+    menu = document.createElement("div");
+    menu.style.zIndex = 3;
+    menu.style.display = "block";
+    menu.id = "DisplaySelector";
+    menu.style.width = "80%";
+    menu.style.left = "10%";
+    document.body.appendChild(menu);
+    // left img box
+    var dsli = document.createElement("select");
+    dsli.id = "DS-LI";
+    menu.appendChild(dsli);
+    // left alg box
+    var dsla = document.createElement("select");
+    dsla.id = "DS-LA";
+    menu.appendChild(dsla);
+    // right img box
+    var dsri = document.createElement("select");
+    dsri.id = "DS-RI";
+    menu.appendChild(dsri);
+    // right alg box
+    var dsra = document.createElement("select");
+    dsra.id = "DS-RA";
+    menu.appendChild(dsra);
+    // done button
+    var dsdone = document.createElement("input");
+    dsdone.type = "button";
+    dsdone.onclick = ()=>(menu.style.display="none");
+    menu.appendChild(dsdone);
+  }
 
   function addOption(sid, name, val){
     let a = document.createElement("option");
@@ -53,7 +63,8 @@ var DisplaySelector(viewer1, viewer2, imgs, getAlgs, annotools1, annotools2){
   }
   dsli.onchange = function(e){
     // open image
-    viewer1.open(e.target.value)
+    viewer1.open(e.target.value);
+    annotools1.iid = e.target.value;
     dsra.innerHTML = "";
     getAlgs(e.target.value, function(algs){
       for (var k in algs){
@@ -64,6 +75,7 @@ var DisplaySelector(viewer1, viewer2, imgs, getAlgs, annotools1, annotools2){
   dsri.onchange = function(e){
     // open image
     viewer2.open(e.target.value);
+    annotools2.iid = e.target.value;
     dsra.innerHTML = "";
     getAlgs(e.target.value, function(algs){
       for (var k in algs){
