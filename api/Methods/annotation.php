@@ -37,7 +37,7 @@ if(isset($_GET["id"])) {
 }
 
 // build url fields
-$fields = array()
+$fields = array();
 
 if ($_SERVER['REQUEST_METHOD'] == "GET"){
   // input - image id
