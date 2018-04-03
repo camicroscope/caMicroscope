@@ -49,6 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] == "GET"){
     $getRequest = new RestRequest($url, 'GET');
     $getRequest->execute();
     echo $getRequest->responseBody;
+    echo $url;
   }
   // input - image id
   elseif ($type == "rois"){
