@@ -45,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] == "GET"){
 
     $fields['TCGAId'] = $caseid;
     $fields['api_key'] = $api_key;
-    $url = "$annotationsUrl/MarkupsForImages/query/MarkupsAvilableForImage" . http_build_query($fields, '', "&");
+    $url = "$annotationsUrl/MarkupsForImages/query/MarkupsAvilableForImage?" . http_build_query($fields, '', "&");
     $getRequest = new RestRequest($url, 'GET');
     $getRequest->execute();
     echo $getRequest->responseBody;
@@ -55,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] == "GET"){
   elseif ($type == "rois"){
     $fields['id'] = $caseid;
     $fields['api_key'] = $api_key;
-    $url = "$annotationsUrl/MarkupLoader/query/getROI" . http_build_query($fields, '', "&");
+    $url = "$annotationsUrl/MarkupLoader/query/getROI?" . http_build_query($fields, '', "&");
     $getRequest = new RestRequest($url, 'GET');
     $getRequest->execute();
     echo $getRequest->responseBody;
@@ -85,7 +85,7 @@ elseif ($_SERVER['REQUEST_METHOD'] == "POST"){
   if ($type == "algorithms"){
     $fields['api_key'] = $api_key;
     http_build_query($fields, '', "&");
-    $url = "$annotationsUrl/MarkupsForImages/submit/json" . http_build_query($fields, '', "&");
+    $url = "$annotationsUrl/MarkupsForImages/submit/json?" . http_build_query($fields, '', "&");
     // TODO validate content, permissions
     // may not work, but just encode post data
     $data = json_encode($_POST);
@@ -97,7 +97,7 @@ elseif ($_SERVER['REQUEST_METHOD'] == "POST"){
   elseif ($type == "markups"){
 
     $fields['api_key'] = $api_key;
-    $url = "$annotationsUrl/MarkupLoader/submit/json". http_build_query($fields, '', "&");
+    $url = "$annotationsUrl/MarkupLoader/submit/json?". http_build_query($fields, '', "&");
     // TODO validate content, permissions
     // may not work, but just encode post data
     $data = json_encode($_POST);
@@ -118,7 +118,7 @@ elseif ($_SERVER['REQUEST_METHOD'] == "DELETE"){
     $fields['y2'] = param_get($_GET["y2"], 0);
     $fields['execution_id'] = param_get($_GET["execution_id"], "");
     $fields['api_key'] = $api_key;
-    $url = "$annotationsUrl/MarkupLoader/delete/deleteMultipleMarkups" . http_build_query($fields, '', "&");
+    $url = "$annotationsUrl/MarkupLoader/delete/deleteMultipleMarkups?" . http_build_query($fields, '', "&");
     $deleteRequest = new RestRequest($url, 'DELETE');
     $deleteRequest->execute();
     echo $deleteRequest->responseBody;
