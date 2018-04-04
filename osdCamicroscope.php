@@ -300,36 +300,6 @@ include 'shared/osdHeader.php';
 </script>
 
 <script>
-    var PrefMan = new ClientPrefManager("viewer");
-    // on a new press, do the following...
-    window.onkeypress = function (event) {
-        if (event.key == "z") {
-            var toggle = function (e) {
-                if (e) {
-                    // if it's on, set it off
-                    PrefMan.set_pref("scroll_zoom", false);
-                    viewer.zoomPerScroll = 1.2;
-                    console.log("Scroll Wheel Enabled")
-                } else {
-                    // if it's off, set it on
-                    PrefMan.set_pref("scroll_zoom", true);
-                    viewer.zoomPerScroll = 1;
-                    console.log("Scroll Wheel Disabled")
-                }
-            }
-            PrefMan.get_pref("scroll_zoom", toggle);
-        }
-    }
-
-    // Deal previously set
-    var disable_if_true = function (e) {
-        if (e) {
-            viewer.zoomPerScroll = 1;
-            // setting to one makes scroll not change zoom level
-            console.log("Scroll Wheel Disabled")
-        }
-    };
-    PrefMan.get_pref("scroll_zoom", disable_if_true);
 
     // handle session expiration/renew
     var st = new SessionTracker("camic");
