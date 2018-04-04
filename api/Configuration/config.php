@@ -1,7 +1,9 @@
 <?php
 
-$baseUrl = "http://quip-data:9099";
-$kueUrl = "http://quip-jobs:3000";
+$config = require '../config.php';
+
+$baseUrl = "http://" . $config['dataHost'];
+$kueUrl = "http://" . $config['kueHost'];
 
 $serviceUrl     = "$baseUrl/services/Camicroscope_DataLoader";
 $annotationsUrl = "$baseUrl/services/Camicroscope_Annotations";
@@ -56,7 +58,7 @@ return array(
     'getLymphocyteDataByCaseId' => "$lymphocyteUrl/DataForLymphocytes/query/getLymphocytesByCaseId?",
     'postDataForHeatmap' => "$lymphocyteUrl/HeatmapData/submit/json?",
     'getHeatmapData' => "$lymphocyteUrl/HeatmapData/query/getQualHeatmapByCaseidExecid?",
-    
+
     /* Lymphocyte Superusers */
     'postSuperuserForLymphocytes' => "$lymphocyteUrl/LymphocyteUsers/submit/json?",
     'getLymphocyteSuperusers' => "$lymphocyteUrl/LymphocyteUsers/query/getLymphSuperusers?",
@@ -81,7 +83,7 @@ return array(
     /* Template */
     'retrieveTemplate'      => "$templateUrl/AnnotationTemplate/query/retrieveTemplate",
     'retrieveTemplateByName' => "$templateUrl/AnnotationTemplate/query/retrieveTemplateByName",
-	
+
     /* u24_user */
     'findUserByName'   => "$u24_userUrl/user_data/query/findUserByName?",
     'findUserByEmail'  => "$u24_userUrl/user_data/query/findUserByEmail?",
@@ -94,21 +96,21 @@ return array(
     'deleteUserByEmail'=> "$u24_userUrl/user_data/delete/deleteUserByEmail?",
     'postUser'         => "$u24_userUrl/user_data/submit/json",
     'setUserType'      => "$u24_userUrl/user_data/delete/setUserType?",
-    
-    
-    /* Image */	
+
+
+    /* Image */
     'getDimensions' => "$imageUrl/query/getDimensionsByIID?api_key=",
     'getFileLocation' => "$imageUrl/query/getFileLocationByIID?api_key=",
     //'getTileLocation' => "$imageUrl/query/getTileLocationByIID?api_key=",
     'getMPP' => "$imageUrl/query/getMPPByIID?api_key=",
     'getImageInfoByCaseID'=> "$imageUrl/query/getImageInfoByCaseID?api_key=",
     'fastcgi_server' => "/fcgi-bin/iipsrv.fcgi",
-    'imageStatusUpdate'=> "$imageUrl/delete/imageStatusUpdate?",      
+    'imageStatusUpdate'=> "$imageUrl/delete/imageStatusUpdate?",
     'getImageStatus'=> "$imageUrl/query/getImageStatusByCaseID?api_key=",
     'getImageAssignTo'=> "$imageUrl/query/getImageAssignToByCaseID?api_key=",
     'imageAssignTo'=> "$imageUrl/delete/imageAssignTo?",
-  
-    /* Dynamic Services */														 
+
+    /* Dynamic Services */
     'postWorkOrder' => "$dynamicServices/WorkOrders/submit/json",
     'kueUrl' => $kueUrl
 );
