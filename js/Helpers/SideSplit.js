@@ -110,7 +110,7 @@ document.addEventListener("sidesplit", function(e){
     hide_sbs();
   } else {
     var demoimg = {"CMU1jp2k": "http://localhost:8081/fcgi-bin/iipsrv.fcgi?DeepZoom=/data/images/CMU-1-JP2K-33005-274ju.svs"};
-    DisplaySelector(viewer, rhs_viewer, window.location.search.replace("?","").split("=")[1], getAlgs, annotool, rhs_annotool);
+    DisplaySelector(viewer, rhs_viewer, demoimg, getAlgs, annotool, rhs_annotool);
     show_sbs();
   }
 });
