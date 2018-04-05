@@ -6,7 +6,7 @@ function getAlgs(caseid, cb){
 
 function DisplaySelector(viewer1, viewer2, imgs, getAlgs, annotools1, annotools2){
   // viewer 1 is l or base, viewer2 is r or spyglass; annotools follows same
-  // imgs is either a dict structued as name:open obj or just a name
+  // imgs is a dict structued as name:open obj
   // get alg should return a list of algorithms; args (caseid, callback)
   // if returns null, ok
 
@@ -51,25 +51,9 @@ function DisplaySelector(viewer1, viewer2, imgs, getAlgs, annotools1, annotools2
     document.getElementById(sid).appendChild(a);
   }
   // if imgs is str, hide img selectors
-  if (typeof(imgs) == "string"){
-    document.getElementById("DS-LI").style.display = "none";
-    document.getElementById("DS-RI").style.display = "none";
-    viewer2.open(imgs);
-    getAlgs(imgs, function(algs){
-      for (var k in algs){
-        addOption("DS-LA", k, algs[k]);
-      }
-    });
-    getAlgs(imgs, function(algs){
-      for (var k in algs){
-        addOption("DS-RA", k, algs[k]);
-      }
-    });
-  } else {
-    for (var k in imgs){
-      addOption("DS-LI", k, imgs[k]);
-      addOption("DS-RI", k, imgs[k]);
-    }
+  for (var k in imgs){
+    addOption("DS-LI", k, imgs[k]);
+    addOption("DS-RI", k, imgs[k]);
   }
   dsli.onchange = function(e){
     // open image
