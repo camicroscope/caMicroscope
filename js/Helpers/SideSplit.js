@@ -109,7 +109,7 @@ document.addEventListener("sidesplit", function(e){
   if (document.getElementById("right_sidebyside").style.display == "block"){
     hide_sbs();
   } else {
-    var demoimg = {"CMU1jp2k": "http://localhost:8081/fcgi-bin/iipsrv.fcgi?DeepZoom=/data/images/CMU-1-JP2K-33005-274ju.svs"};
+    var demoimg = {"CMU1jp2k": "http://localhost:8081/fcgi-bin/iipsrv.fcgi?DeepZoom=/data/images/CMU-1-JP2K-33005-274ju.svs", "CMU1jp2k": "http://localhost:8081/fcgi-bin/iipsrv.fcgi?DeepZoom=/data/images/CMU-1-JP2K-33005-274ju.svs.dzi"};
     DisplaySelector(viewer, rhs_viewer, demoimg, getAlgs, annotool, rhs_annotool);
     show_sbs();
   }
