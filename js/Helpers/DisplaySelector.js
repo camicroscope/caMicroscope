@@ -54,6 +54,7 @@ function DisplaySelector(viewer1, viewer2, imgs, getAlgs, annotools1, annotools2
   if (typeof(imgs) == "string"){
     document.getElementById("DS-LI").style.display = "none";
     document.getElementById("DS-RI").style.display = "none";
+    viewer2.open(imgs);
     getAlgs(imgs, function(algs){
       for (var k in algs){
         addOption("DS-LA", k, algs[k]);
