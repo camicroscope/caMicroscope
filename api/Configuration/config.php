@@ -1,6 +1,6 @@
 <?php
 
-$config = require '../config.php';
+$config = require '../../../config.php';
 
 $baseUrl = "http://" . $config['dataHost'];
 $kueUrl = "http://" . $config['kueHost'];
