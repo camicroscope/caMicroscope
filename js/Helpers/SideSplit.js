@@ -46,6 +46,10 @@ function init_sbs() {
 
     // silly button fix attempt
     rhs_viewer.buttons = viewer.buttons;
+    // imaging helper
+    var rhs_imagingHelper = new OpenSeadragonImaging.ImagingHelper({
+      viewer: rhs_viewer
+    });
     // set up annotools
     rhs_annotool = new annotools({
         canvas: 'openseadragon-canvas',
