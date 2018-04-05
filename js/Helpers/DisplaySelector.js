@@ -51,7 +51,7 @@ function DisplaySelector(viewer1, viewer2, imgs, getAlgs, annotools1, annotools2
     document.getElementById(sid).appendChild(a);
   }
   // if imgs is str, hide img selectors
-  for (var k in imgs){
+  for (var k in Object.keys(imgs)){
     addOption("DS-LI", k, imgs[k]);
     addOption("DS-RI", k, imgs[k]);
   }
@@ -61,7 +61,7 @@ function DisplaySelector(viewer1, viewer2, imgs, getAlgs, annotools1, annotools2
     annotools1.iid = e.target.value;
     dsra.innerHTML = "";
     getAlgs(e.target.value, function(algs){
-      for (var k in algs){
+      for (var k in Object.keys(algs)){
         addOption("DS-LA", k, algs[k]);
       }
     });
@@ -72,7 +72,7 @@ function DisplaySelector(viewer1, viewer2, imgs, getAlgs, annotools1, annotools2
     annotools2.iid = e.target.value;
     dsra.innerHTML = "";
     getAlgs(e.target.value, function(algs){
-      for (var k in algs){
+      for (var k in Object.keys(algs)){
         addOption("DS-RA", k, algs[k]);
       }
     });
