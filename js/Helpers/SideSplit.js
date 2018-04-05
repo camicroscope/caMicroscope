@@ -104,7 +104,7 @@ document.getElementById("right_sidebyside").style.height = window.innerHeight + 
 window.onresize = function() {
     document.getElementById("right_sidebyside").style.height = window.innerHeight + "px"
 }
-zz
+
 document.addEventListener("sidesplit", function(e){
   if (document.getElementById("right_sidebyside").style.display == "block"){
     hide_sbs();
