@@ -50,10 +50,10 @@ function DisplaySelector(viewer1, viewer2, imgs, getAlgs, annotools1, annotools2
     a.innerHTML = name;
     document.getElementById(sid).appendChild(a);
   }
-  // if imgs is str, hide img selectors
-  for (var k in Object.keys(imgs)){
-    addOption("DS-LI", k, imgs[k]);
-    addOption("DS-RI", k, imgs[k]);
+  // populate images
+  Object.keys(imgs).forEach(function(k){
+      addOption("DS-LI", k, imgs[k]);
+      addOption("DS-RI", k, imgs[k]);
   }
   dsli.onchange = function(e){
     // open image
@@ -61,9 +61,7 @@ function DisplaySelector(viewer1, viewer2, imgs, getAlgs, annotools1, annotools2
     annotools1.iid = e.target.value;
     dsra.innerHTML = "";
     getAlgs(e.target.value, function(algs){
-      for (var k in Object.keys(algs)){
-        addOption("DS-LA", k, algs[k]);
-      }
+      algs.forEach((k)=>addOption("DS-LA", k, algs[k]));
     });
   };
   dsri.onchange = function(e){
@@ -72,9 +70,7 @@ function DisplaySelector(viewer1, viewer2, imgs, getAlgs, annotools1, annotools2
     annotools2.iid = e.target.value;
     dsra.innerHTML = "";
     getAlgs(e.target.value, function(algs){
-      for (var k in Object.keys(algs)){
-        addOption("DS-RA", k, algs[k]);
-      }
+      algs.forEach((k)=>addOption("DS-RA", k, algs[k]));
     });
   };
   dsla.onchange = function(e){
