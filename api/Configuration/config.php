@@ -1,6 +1,12 @@
 <?php
 
-$config = require '../../../config.php';
+try{
+  $config = require '../../../config.php';
+} catch (Exception $e) {
+  $config = ['dataHost' => 'quip-data:9099',
+             'kueHost' => 'quip-jobs:3000'];
+}
+
 
 $baseUrl = "http://" . $config['dataHost'];
 $kueUrl = "http://" . $config['kueHost'];

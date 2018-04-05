@@ -8,8 +8,6 @@ before_install:
     - mkdir ../../js
     - cp __config.js ../../js/config.js
     - touch ../../authenticate.php
-    - mv _config.php /home/travis/build/config.php
-    - mv _config.ini /home/travis/build/config.ini 
     - which php
 install:
     - npm install
