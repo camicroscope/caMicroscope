@@ -11,9 +11,10 @@ function init_sbs() {
 
     // div for right viewer
     var rhs = document.createElement('div');
-    rhs.style.position = "absolute"
+    rhs.style.position = "absolute";
     rhs.style.zIndex = "5";
     rhs.style.right = "0px";
+    rhs.style.top = "50px";
     rhs.style.width = "50%";
     rhs.style.height = "700px"
     rhs.style.display = "none";
@@ -109,7 +110,7 @@ document.addEventListener("sidesplit", function(e){
   if (document.getElementById("right_sidebyside").style.display == "block"){
     hide_sbs();
   } else {
-    DisplaySelector(viewer, rhs_viewer, [], getAlgs, annotool, rhs_annotool);
+    DisplaySelector(viewer, rhs_viewer, 'dup', getAlgs, annotool, rhs_annotool);
     show_sbs();
   }
 });
