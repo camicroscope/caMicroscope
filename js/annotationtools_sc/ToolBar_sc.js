@@ -113,28 +113,6 @@ $.getScript('shared/ToolBar.js', function () {
             });
             tool.append(this.mergebutton2); // Merge step 2
 
-            /* space - next function unavailable atm */
-            /*
-            tool.append(jQuery('<img>', {
-                'class': 'spacerButton inactive',
-                'src': 'images/spacer_empty.svg'
-            }));
-            */
-
-            this.spacer2 = jQuery('<img>', {
-                'class': 'spacerButton inactive',
-                'src': 'images/spacer.svg'
-            });
-            tool.append(this.spacer2);
-
-            this.filterbutton = jQuery('<img>', {
-                'title': 'Filter Markups',
-                'class': 'toolButton inactive',
-                'src': 'images/filter.svg'
-            });
-            tool.append(this.filterbutton); // Filter Button
-
-
             this.measurebutton = jQuery('<img>', {
                 'title': 'Measurement Tool',
                 'class': 'toolButton inactive',
