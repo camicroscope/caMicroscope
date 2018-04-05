@@ -11,39 +11,36 @@ function DisplaySelector(viewer1, viewer2, imgs, getAlgs, annotools1, annotools2
   // if returns null, ok
 
   var menu = document.getElementById("DisplaySelector");
-  // does the menu exist, if not...
-
-  if (menu !== null){
-    // create the base mneu selector, hidden by detault
-    menu = document.createElement("div");
-    menu.style.zIndex = 3;
-    menu.style.display = "block";
-    menu.id = "DisplaySelector";
-    menu.style.width = "80%";
-    menu.style.left = "10%";
-    document.body.appendChild(menu);
-    // left img box
-    var dsli = document.createElement("select");
-    dsli.id = "DS-LI";
-    menu.appendChild(dsli);
-    // left alg box
-    var dsla = document.createElement("select");
-    dsla.id = "DS-LA";
-    menu.appendChild(dsla);
-    // right img box
-    var dsri = document.createElement("select");
-    dsri.id = "DS-RI";
-    menu.appendChild(dsri);
-    // right alg box
-    var dsra = document.createElement("select");
-    dsra.id = "DS-RA";
-    menu.appendChild(dsra);
-    // done button
-    var dsdone = document.createElement("input");
-    dsdone.type = "button";
-    dsdone.onclick = ()=>(menu.style.display="none");
-    menu.appendChild(dsdone);
-  }
+  // create the base mneu selector, hidden by detault
+  menu = document.createElement("div");
+  menu.style.zIndex = 3;
+  menu.style.display = "block";
+  menu.id = "DisplaySelector";
+  menu.style.width = "80%";
+  menu.style.left = "10%";
+  document.body.appendChild(menu);
+  // left img box
+  var dsli = document.createElement("select");
+  dsli.id = "DS-LI";
+  menu.appendChild(dsli);
+  // left alg box
+  var dsla = document.createElement("select");
+  dsla.id = "DS-LA";
+  menu.appendChild(dsla);
+  // right img box
+  var dsri = document.createElement("select");
+  dsri.id = "DS-RI";
+  menu.appendChild(dsri);
+  // right alg box
+  var dsra = document.createElement("select");
+  dsra.id = "DS-RA";
+  menu.appendChild(dsra);
+  // done button
+  var dsdone = document.createElement("input");
+  dsdone.type = "button";
+  dsdone.onclick = ()=>(menu.style.display="none");
+  menu.appendChild(dsdone);
+  
 
   function addOption(sid, name, val){
     let a = document.createElement("option");
