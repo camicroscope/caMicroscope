@@ -44,6 +44,8 @@ function init_sbs() {
     });
     window.setTimeout(coordinatedView(viewer, rhs_viewer), 500);
 
+    // silly button fix attempt
+    rhs_viewer.buttons = viewer.buttons;
     // set up annotools
     rhs_annotool = new annotools({
         canvas: 'openseadragon-canvas',
@@ -98,7 +100,7 @@ document.getElementById("right_sidebyside").style.height = window.innerHeight + 
 window.onresize = function() {
     document.getElementById("right_sidebyside").style.height = window.innerHeight + "px"
 }
-
+zz
 document.addEventListener("sidesplit", function(e){
   if (document.getElementById("right_sidebyside").style.display == "block"){
     hide_sbs();
