@@ -14,7 +14,9 @@ function DisplaySelector(viewer1, viewer2, imgs, getAlgs, annotools1, annotools2
   // create the base mneu selector, hidden by detault
   menu = document.createElement("div");
   menu.style.zIndex = 3;
-  menu.style.display = "block";
+  menu.style.position = "absolute";
+  menu.style.top = "50px";
+  menu.height = "100px";
   menu.id = "DisplaySelector";
   menu.style.width = "80%";
   menu.style.left = "10%";
@@ -40,7 +42,7 @@ function DisplaySelector(viewer1, viewer2, imgs, getAlgs, annotools1, annotools2
   dsdone.type = "button";
   dsdone.onclick = ()=>(menu.style.display="none");
   menu.appendChild(dsdone);
-  
+
 
   function addOption(sid, name, val){
     let a = document.createElement("option");

@@ -14,7 +14,6 @@ function init_sbs() {
     rhs.style.position = "absolute";
     rhs.style.zIndex = "5";
     rhs.style.right = "0px";
-    rhs.style.top = "50px";
     rhs.style.width = "50%";
     rhs.style.height = "700px"
     rhs.style.display = "none";
