@@ -2,7 +2,7 @@ var rhs_viewer;
 var rhs_annotool;
 
 function getAlgs(caseid, cb){
-  fetch("api/Data/getAlgorithmsForImage.php?" + caseid)
+  fetch("api/Data/getAlgorithmsForImage.php?iid=" + caseid)
   .then((x)=>(cb(x.json())))
 }
 
