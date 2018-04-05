@@ -54,7 +54,7 @@ function DisplaySelector(viewer1, viewer2, imgs, getAlgs, annotools1, annotools2
   Object.keys(imgs).forEach(function(k){
       addOption("DS-LI", k, imgs[k]);
       addOption("DS-RI", k, imgs[k]);
-  }
+  });
   dsli.onchange = function(e){
     // open image
     viewer1.open(e.target.value);
