@@ -1,10 +1,11 @@
 <?php
 
-try{
-  $config = require '../../../config.php';
-} catch (Exception $e) {
-  $config = ['dataHost' => 'quip-data:9099',
-             'kueHost' => 'quip-jobs:3000'];
+if (file_exists('../../../config.php')) {
+    $config = require '../../../config.php';
+}
+else {
+    $config = ['dataHost' => 'quip-data:9099',
+               'kueHost' => 'quip-jobs:3000'];
 }
 
 
