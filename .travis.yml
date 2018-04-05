@@ -8,8 +8,8 @@ before_install:
     - mkdir ../../js
     - cp __config.js ../../js/config.js
     - touch ../../authenticate.php
-    - cp test/_config.php ../../config.php
-    - cp test/_config.ini ../../config.ini
+    - cp _config.php ../../config.php
+    - cp _config.ini ../../config.ini
     - which php
 install:
     - npm install
