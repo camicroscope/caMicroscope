@@ -9,7 +9,7 @@ class CamicUtils
     {
         include_once("RestRequest.php");
         $this->CONFIG = require '../Configuration/config.php';
-        $this->api_key = $Session['api_key'];
+        $this->api_key = trim($Session['api_key']);
     }
 
     function getImageDimensions($tissueId)
@@ -46,7 +46,7 @@ class CamicUtils
 		$status = json_decode($getImageStatusRequest->responseBody);
 		return $status;
 	}
-        
+
         function retrieveImageAssignTo($tissueId)
 	{
 		$statusUrl = $this->CONFIG['getImageAssignTo'] . $this->api_key . "&TCGAId=" . $tissueId;
@@ -58,7 +58,7 @@ class CamicUtils
 		//print_r($AssignTo);
                 return $AssignTo;
 	}
-	
+
 	function retrieveMpp($tissueId)
 	{
 	    $mppUrl = $this->CONFIG['getMPP'] . $this->api_key . "&TCGAId=" . $tissueId;
