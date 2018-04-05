@@ -109,7 +109,7 @@ document.addEventListener("sidesplit", function(e){
   if (document.getElementById("right_sidebyside").style.display == "block"){
     hide_sbs();
   } else {
-    DisplaySelector(viewer, rhs_viewer, 'dup', getAlgs, annotool, rhs_annotool);
+    DisplaySelector(viewer, rhs_viewer, window.location.search.replace("?","").split("=")[1], getAlgs, annotool, rhs_annotool);
     show_sbs();
   }
 });
