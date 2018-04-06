@@ -51,7 +51,7 @@ function DisplaySelector(viewer1, viewer2, imgs, getAlgs, annotools1, annotools2
     document.getElementById(sid).appendChild(a);
   }
 
-  if (typeof(imgs) == "string"){
+  if (!imgs){
     document.getElementById("DS-LI").style.display = "none";
     document.getElementById("DS-RI").style.display = "none";
     viewer2.open(_viewer_source);
