@@ -64,11 +64,11 @@ function DisplaySelector(viewer1, viewer2, imgs, getAlgs, annotools1, annotools2
     viewer2.open(_viewer_source);
     addOption('DS-LA', "", "None");
     getAlgs(current_case_id, function(algs){
-      algs.forEach((k)=>addOption("DS-LA", algs[k], algs[k]));
+      algs.forEach((k)=>addOption("DS-LA", algs[k].title, algs[k].title));
     });
     addOption('DS-RA', "", "None");
     getAlgs(current_case_id, function(algs){
-      algs.forEach((k)=>addOption("DS-RA", algs[k], algs[k]));
+      algs.forEach((k)=>addOption("DS-RA", algs[k].title, algs[k].title));
     });
   } else {
     // populate images
@@ -87,7 +87,7 @@ function DisplaySelector(viewer1, viewer2, imgs, getAlgs, annotools1, annotools2
     dsla.innerHTML = "";
     addOption('DS-LA', "", "None");
     getAlgs(e.target.value, function(algs){
-      algs.forEach((k)=>addOption("DS-LA", algs[k].title, algs[k]));
+      algs.forEach((k)=>addOption("DS-LA", algs[k].title, algs[k].title));
     });
   };
   dsri.onchange = function(e){
@@ -97,7 +97,7 @@ function DisplaySelector(viewer1, viewer2, imgs, getAlgs, annotools1, annotools2
     dsra.innerHTML = "";
     addOption('DS-RA', "", "None");
     getAlgs(e.target.value, function(algs){
-      algs.forEach((k)=>addOption("DS-RA", algs[k].title, algs[k]));
+      algs.forEach((k)=>addOption("DS-RA", algs[k].title, algs[k].title));
     });
   };
   dsla.onchange = function(e){
