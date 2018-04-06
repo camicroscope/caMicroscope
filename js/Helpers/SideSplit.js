@@ -61,7 +61,8 @@ function init_sbs() {
         user_email: user_email,
         viewer: rhs_viewer,
         annotationHandler: new AnnotoolsOpenSeadragonHandler(rhs_viewer, {}),
-        mpp: MPP
+        mpp: MPP,
+        markupid: 'rhs_markups'
     });
 }
 
