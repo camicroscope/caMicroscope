@@ -1,7 +1,10 @@
 // default getalgs
 function getAlgs(caseid, cb){
-  fetch("api/Data/getAlgorithmsForImage.php?" + caseid)
-  .then((x)=>(cb(x.json())))
+  fetch("api/Data/getAlgorithmsForImage.php?iid=" + caseid, {
+    credentials: "same-origin"
+  })
+  .then((x)=>(x.json()))
+  .then((y)=>(cb(y)))
 }
 
 function DisplaySelector(viewer1, viewer2, imgs, getAlgs, annotools1, annotools2){
@@ -81,7 +84,7 @@ function DisplaySelector(viewer1, viewer2, imgs, getAlgs, annotools1, annotools2
     dsla.innerHTML = "";
     addOption('DS-LA', "", "None");
     getAlgs(e.target.value, function(algs){
-      algs.forEach((k)=>addOption("DS-LA", algs[k], algs[k]));
+      algs.forEach((k)=>addOption("DS-LA", algs[k].title, algs[k]));
     });
   };
   dsri.onchange = function(e){
@@ -91,7 +94,7 @@ function DisplaySelector(viewer1, viewer2, imgs, getAlgs, annotools1, annotools2
     dsra.innerHTML = "";
     addOption('DS-RA', "", "None");
     getAlgs(e.target.value, function(algs){
-      algs.forEach((k)=>addOption("DS-RA", algs[k], algs[k]));
+      algs.forEach((k)=>addOption("DS-RA", algs[k].title, algs[k]));
     });
   };
   dsla.onchange = function(e){
