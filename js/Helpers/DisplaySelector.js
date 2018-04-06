@@ -50,20 +50,36 @@ function DisplaySelector(viewer1, viewer2, imgs, getAlgs, annotools1, annotools2
     a.innerHTML = name;
     document.getElementById(sid).appendChild(a);
   }
-  // populate images
-  Object.keys(imgs).forEach(function(k){
-      addOption("DS-LI", k, imgs[k]);
-      addOption("DS-RI", k, imgs[k]);
-  });
+
+  if (typeof(imgs) == "string"){
+    document.getElementById("DS-LI").style.display = "none";
+    document.getElementById("DS-RI").style.display = "none";
+    viewer2.open(_viewer_source);
+    addOption('DS-LA', "", "None");
+    getAlgs(imgs, function(algs){
+      algs.forEach((k)=>addOption("DS-LA", algs[k], algs[k]));
+    });
+    addOption('DS-RA', "", "None");
+    getAlgs(imgs, function(algs){
+      algs.forEach((k)=>addOption("DS-RA", algs[k], algs[k]));
+    });
+  } else {
+    // populate images
+    Object.keys(imgs).forEach(function(k){
+        addOption("DS-LI", k, imgs[k]);
+        addOption("DS-RI", k, imgs[k]);
+    });
+  }
   // load first img in second viewer
   viewer2.open(imgs[Object.keys(imgs)[0]]);
   dsli.onchange = function(e){
     // open image
     viewer1.open(e.target.value);
     annotools1.iid = e.target.value;
-    dsra.innerHTML = "";
+    dsla.innerHTML = "";
+    addOption('DS-LA', "", "None");
     getAlgs(e.target.value, function(algs){
-      algs.forEach((k)=>addOption("DS-LA", k, algs[k]));
+      algs.forEach((k)=>addOption("DS-LA", algs[k], algs[k]));
     });
   };
   dsri.onchange = function(e){
@@ -71,8 +87,9 @@ function DisplaySelector(viewer1, viewer2, imgs, getAlgs, annotools1, annotools2
     viewer2.open(e.target.value);
     annotools2.iid = e.target.value;
     dsra.innerHTML = "";
+    addOption('DS-RA', "", "None");
     getAlgs(e.target.value, function(algs){
-      algs.forEach((k)=>addOption("DS-RA", k, algs[k]));
+      algs.forEach((k)=>addOption("DS-RA", algs[k], algs[k]));
     });
   };
   dsla.onchange = function(e){
