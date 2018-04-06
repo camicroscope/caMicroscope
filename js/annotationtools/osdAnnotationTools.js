@@ -46,6 +46,7 @@ var annotools = function (options) {
     this.mpp = options.mpp;
     this.mppx = parseFloat(this.mpp['mpp-x']);
     this.mppy = parseFloat(this.mpp['mpp-y']);
+    this.markupid = options.markupid || "markups";
     this.x1 = 0.0;
     this.x2 = 1.0;
     this.y1 = 0.0;

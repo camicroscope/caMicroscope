@@ -193,7 +193,7 @@ annotools.prototype.generateCanvas = function (annotations) {
         // console.log(annotation)
         // var annotation = annotations[ii]
 
-        var markup_svg = document.getElementById('markups');
+        var markup_svg = document.getElementById(this.markupid);
         if (markup_svg) {
             // console.log("destroying")
             markup_svg.destroy();
@@ -276,7 +276,7 @@ annotools.prototype.generateSVG = function (annotations) {
         // var annotation = annotations[ii]
         // console.log(annotation)
 
-        var markup_svg = document.getElementById('markups');
+        var markup_svg = document.getElementById(this.markupid);
         if (markup_svg) {
             // console.log("destroying")
             markup_svg.destroy();
@@ -292,7 +292,7 @@ annotools.prototype.generateSVG = function (annotations) {
         var height = parseInt(container.offsetHeight);
 
         /* Why is there an ellipse in the center? */
-        var svgHtml = '<svg xmlns="http://www.w3.org/2000/svg" width="' + width + 'px" height="' + height + 'px" version="1.1" id="markups">';
+        var svgHtml = '<svg xmlns="http://www.w3.org/2000/svg" width="' + width + 'px" height="' + height + 'px" version="1.1" id="' + self.markupid +'">';
         svgHtml += '<g id="groupcenter"/>';
         svgHtml += '<g id="origin">';
 
