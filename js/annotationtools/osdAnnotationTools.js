@@ -54,6 +54,7 @@ var annotools = function (options) {
     this.SELECTED_ALGORITHM_LIST =[];
     this.SELECTED_ALGORITHM_KEYS = [];
     this.SELECTED_ALGORITHM_COLOR = [];
+    this.container = document.getElementsByClassName(this.canvas)[0];
 
     this.annotationHandler = options.annotationHandler || new AnnotoolsOpenSeadragonHandler();
 
