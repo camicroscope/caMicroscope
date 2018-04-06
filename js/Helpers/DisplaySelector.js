@@ -6,7 +6,7 @@ function getAlgs(caseid, cb){
 
 function DisplaySelector(viewer1, viewer2, imgs, getAlgs, annotools1, annotools2){
   // viewer 1 is l or base, viewer2 is r or spyglass; annotools follows same
-  // imgs is a dict structued as name:open obj
+  // imgs is a dict structued as name:open obj, or null to use only loaded img
   // get alg should return a list of algorithms; args (caseid, callback)
   // if returns null, ok
 
@@ -52,15 +52,16 @@ function DisplaySelector(viewer1, viewer2, imgs, getAlgs, annotools1, annotools2
   }
 
   if (!imgs){
+    var current_case_id = window.location.search.replace("?","").split("=")[1];
     document.getElementById("DS-LI").style.display = "none";
     document.getElementById("DS-RI").style.display = "none";
     viewer2.open(_viewer_source);
     addOption('DS-LA', "", "None");
-    getAlgs(imgs, function(algs){
+    getAlgs(current_case_id, function(algs){
       algs.forEach((k)=>addOption("DS-LA", algs[k], algs[k]));
     });
     addOption('DS-RA', "", "None");
-    getAlgs(imgs, function(algs){
+    getAlgs(current_case_id, function(algs){
       algs.forEach((k)=>addOption("DS-RA", algs[k], algs[k]));
     });
   } else {
