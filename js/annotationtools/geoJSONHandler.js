@@ -202,7 +202,7 @@ annotools.prototype.generateCanvas = function (annotations) {
         // console.log(annotations.length)
         // console.log(this.canvas)
 
-        var container = document.getElementsByClassName(this.canvas)[0].childNodes[0]; // Get The Canvas Container
+        var container = this.container.childNodes[0]; // Get The Canvas Container
         // console.log(container)
         var context = container.getContext('2d');
         context.fillStyle = '#f00';
@@ -283,7 +283,7 @@ annotools.prototype.generateSVG = function (annotations) {
         }
 
         // console.log(annotations.length)
-        var container = document.getElementsByClassName(this.canvas)[0]; // Get The Canvas Container
+        var container = this.container; // Get The Canvas Container
 
         // var container = document.getElementsByClassName(this.canvas)[0]
         // console.log(container)
