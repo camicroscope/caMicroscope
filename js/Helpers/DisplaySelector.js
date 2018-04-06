@@ -47,7 +47,7 @@ function DisplaySelector(viewer1, viewer2, imgs, getAlgs, annotools1, annotools2
   menu.appendChild(dsdone);
 
   //annotools1 has toolbar, annotools2 doesn't
-  annotools2.toolbar = annotools1.toolbar;
+  annotools2.toolBar = annotools1.toolBar;
 
 
   function addOption(sid, name, val){
