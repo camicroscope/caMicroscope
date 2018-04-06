@@ -46,6 +46,9 @@ function DisplaySelector(viewer1, viewer2, imgs, getAlgs, annotools1, annotools2
   dsdone.onclick = ()=>(menu.style.display="none");
   menu.appendChild(dsdone);
 
+  //annotools1 has toolbar, annotools2 doesn't
+  annotools2.toolbar = annotools1.toolbar;
+
 
   function addOption(sid, name, val){
     let a = document.createElement("option");

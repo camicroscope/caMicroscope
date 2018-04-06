@@ -63,7 +63,6 @@ function init_sbs() {
         annotationHandler: new AnnotoolsOpenSeadragonHandler(rhs_viewer, {}),
         mpp: MPP
     });
-    rhs_annotool.toolbar = annotool.toolbar;
 }
 
 function show_sbs() {
