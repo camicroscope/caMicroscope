@@ -70,9 +70,10 @@ function DisplaySelector(viewer1, viewer2, imgs, getAlgs, annotools1, annotools2
         addOption("DS-LI", k, imgs[k]);
         addOption("DS-RI", k, imgs[k]);
     });
+    viewer2.open(imgs[Object.keys(imgs)[0]]);
   }
   // load first img in second viewer
-  viewer2.open(imgs[Object.keys(imgs)[0]]);
+
   dsli.onchange = function(e){
     // open image
     viewer1.open(e.target.value);
