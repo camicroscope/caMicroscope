@@ -9,7 +9,7 @@
 
 caMicroscope is a HTML5 image viewer optimized for large bio-medical image data viewing, with a strong emphasis on cancer pathology.
 
-The Image Viewer server is based on the IIPImage server(http://iipimage.sourceforge.net/) which is an Fast CGI module and OpenSeaDragon(https://openseadragon.github.io/) which is a deep zoom image viewer.
+The Image Viewer server is based on [IIPImage server](http://iipimage.sourceforge.net/) which is a Fast CGI module and [OpenSeaDragon](https://openseadragon.github.io/) which is a deep zoom image viewer.
 
 
 ## Usage
