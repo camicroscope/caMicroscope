@@ -53,10 +53,9 @@ var _USERNAME = "<?php echo filter_var($_SESSION["email"], FILTER_SANITIZE_EMAIL
 	  console.log(MPP);
           //console.log(imagedata);
           var fileLocation = imagedata.metaData[1];//.replace("tcga_data","tcga_images");
-          //console.log(fileLocation);
+          console.log(fileLocation);
           var imageStatus = imagedata.metaData[2][0]['status'];
           var assignTo    = imagedata.metaData[3][0]['assign_to'];
-
           var viewer = new OpenSeadragon.Viewer({ 
                 id: "viewer", 
                 prefixUrl: "images/",
@@ -121,6 +120,7 @@ var _USERNAME = "<?php echo filter_var($_SESSION["email"], FILTER_SANITIZE_EMAIL
             var annotationHandler = new AnnotoolsOpenSeadragonHandler(viewer, {});
              annotool= new annotools({
                     canvas:'openseadragon-canvas',
+            	    displayId: tissueId,
                     iid: tissueId, 
 	            cancerType: cancerType,
                     imageStatus: imageStatus,
@@ -138,6 +138,7 @@ var _USERNAME = "<?php echo filter_var($_SESSION["email"], FILTER_SANITIZE_EMAIL
                 top:'0px',
                 height: '48px',
                 width: '100%',
+            	displayId: tissueId,
                 iid: tissueId,
 	        cancerType: cancerType,
                 imageStatus: imageStatus,
