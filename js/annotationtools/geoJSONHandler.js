@@ -6,11 +6,13 @@ annotools.prototype.generateGeoTemplate = function () {
         //subject_id = "";
     }
 
+    var execution_id = annotool.execution_id;
+    console.log("execution_id", execution_id);
     var username;
     if ('undefined' !== typeof _USERNAME) {
-      username = _USERNAME;
+        username = _USERNAME;
     } else {
-      username = "humantest"
+        username = "humantest"
     }
 
     var geoJSONTemplate = {
@@ -30,7 +32,7 @@ annotools.prototype.generateGeoTemplate = function () {
         'footprint': 10000,
         'provenance': {
             'analysis': {
-                'execution_id': username,
+                'execution_id': username, //TODO: execution_id in sc, username here. Why?
                 'study_id': "",
                 'source': "human",
                 'computation': 'segmentation'
@@ -80,6 +82,8 @@ annotools.prototype.convertRectToGeo = function (annotation) {
     coordinates[0].push([x + w, y]);
     coordinates[0].push([x + w, y + h]);
     coordinates[0].push([x, y + h]);
+    //create a closed loop polygon
+    coordinates[0].push([x, y]);
     geoAnnot.x = x;
     geoAnnot.y = y;
     geoAnnot.footprint = area;
@@ -193,7 +197,12 @@ annotools.prototype.generateCanvas = function (annotations) {
         // console.log(annotation)
         // var annotation = annotations[ii]
 
+        // TODO: Null.
         var markup_svg = document.getElementById(this.markupid);
+        console.log("markup_svg", markup_svg);
+        markup_svg = document.getElementById('markups');
+        console.log("markup_svg", markup_svg);
+
         if (markup_svg) {
             // console.log("destroying")
             markup_svg.destroy();
@@ -202,13 +211,14 @@ annotools.prototype.generateCanvas = function (annotations) {
         // console.log(annotations.length)
         // console.log(this.canvas)
 
+        // TODO: this.container.childNodes[0] is Null.
         var container = this.container.childNodes[0]; // Get The Canvas Container
-        // console.log(container)
+        console.log("container", container);
+        container = document.getElementsByClassName(this.canvas)[0].childNodes[0]; // Get The Canvas Container
+        console.log("container", container);
+
         var context = container.getContext('2d');
         context.fillStyle = '#f00';
-
-        // var container = document.getElementsByClassName(this.canvas)[0]
-        // console.log(container)
 
         var width = parseInt(container.offsetWidth);
         var height = parseInt(container.offsetHeight);
@@ -268,6 +278,7 @@ annotools.prototype.generateSVG = function (annotations) {
 
     var case_id = this.iid;
     var cancerType = "none";
+    //var cancerType = this.cancerType; // undefined.
 
     var self = this;
     var annotations = this.annotations;
@@ -276,23 +287,35 @@ annotools.prototype.generateSVG = function (annotations) {
         // var annotation = annotations[ii]
         // console.log(annotation)
 
+        // TODO: Null.
+        console.log("this.markupid", this.markupid);
         var markup_svg = document.getElementById(this.markupid);
+        if (markup_svg === null)
+        {
+            markup_svg = document.getElementById('markups');
+        }
+        console.log("markup_svg", markup_svg);
+
         if (markup_svg) {
             // console.log("destroying")
             markup_svg.destroy();
         }
 
         // console.log(annotations.length)
-        var container = this.container; // Get The Canvas Container
 
-        // var container = document.getElementsByClassName(this.canvas)[0]
-        // console.log(container)
+        // Get The Canvas Container
+        var container = this.container; // TODO: Null.
+        console.log("container", container);
+        container = document.getElementsByClassName(this.canvas)[0];
+        console.log("container", container); // this works.
 
         var width = parseInt(container.offsetWidth);
         var height = parseInt(container.offsetHeight);
 
         /* Why is there an ellipse in the center? */
-        var svgHtml = '<svg xmlns="http://www.w3.org/2000/svg" width="' + width + 'px" height="' + height + 'px" version="1.1" id="' + self.markupid +'">';
+        //var svgHtml = '<svg xmlns="http://www.w3.org/2000/svg" width="' + width + 'px" height="' + height + 'px" version="1.1" id="' + self.markupid + '">';
+        var svgHtml = '<svg xmlns="http://www.w3.org/2000/svg" width="' + width + 'px" height="' + height + 'px" version="1.1" id="markups">';
+
         svgHtml += '<g id="groupcenter"/>';
         svgHtml += '<g id="origin">';
 
@@ -334,7 +357,10 @@ annotools.prototype.generateSVG = function (annotations) {
             } else {
                 ROIs.push(annotation);
 
-                svgHtml += '<polygon  class="" id="' + id + '" points="'
+                // Class = blank??
+                //svgHtml += '<polygon  class="" id="' + id + '" points="'
+                svgHtml += '<polygon  class="annotationsvg" id="' + id + '" points="'
+
             }
             // svgHtml += '<polygon onclick="clickSVG(event)" class="annotationsvg" id="'+"poly"+i+'" points="'
             var polySVG = '';
@@ -361,6 +387,9 @@ annotools.prototype.generateSVG = function (annotations) {
             }
         }
 
+
+        // TODO: This is essentially doing the same thing as above. Why?
+        /*
         console.log("ROIs:", ROIs);
         for (var i = 0; i < ROIs.length; i++) {
             var annotation = ROIs[i];
@@ -415,6 +444,7 @@ annotools.prototype.generateSVG = function (annotations) {
                 svgHtml += '" style="fill:transparent; stroke:' + color + '; stroke-width:2.5"/>'
             }
         }
+        */
 
         this.svg = new Element('div', {
             styles: {
@@ -431,24 +461,31 @@ annotools.prototype.generateSVG = function (annotations) {
     var ctrl = false;
     var alt = false;
     jQuery(document).keydown(function (event) {
+        var keyResult = event.which;
 
-        if (event.which === 17 || event.which === 91)
-        {
-            //Ctrl key and left window key
-            console.log(event.which);
-            ctrl = true;
+        switch (keyResult) {
+            case 17:
+                ctrl = true;
+                break;
+            case 18:
+                alt = true;
+                break;
+            case 91:
+                ctrl = true;
+                break;
+            case 92:
+                alt = true;
+                break;
+            default: {
+                ctrl = false;
+                alt = false;
+            }
         }
-        else if (event.which === 18 || event.which === 92)
-        {
-            //Alt key and right window key
-            console.log(event.which);
-            alt = true;
-        }
-        //console.log("ctrl: " + ctrl + ", alt: " + alt);
 
     });
 
     jQuery(document).keyup(function () {
+        //console.log("here");
         ctrl = false;
         alt = false;
     });
@@ -456,24 +493,25 @@ annotools.prototype.generateSVG = function (annotations) {
     jQuery("#58891912e4b076b78cf2f81f").mousedown(function (e) {
         console.log(e);
     });
+
     jQuery(".annotationsvg").mousedown(function (event) {
         //console.log(event.which);
 
-        if (ctrl) {
-            //console.log("double clicked");
-            event.preventDefault();
-            event.stopPropagation();
-            event.stopImmediatePropagation();
-            //return false;
-        } else if (alt) {
-            //console.log("double clicked");
-            event.preventDefault();
-            event.stopPropagation();
-            event.stopImmediatePropagation();
-            //return false;
-        }
-        else {
-            return;
+        var clickResult = event.which;
+        console.log("clickResult:", clickResult);
+
+        if (clickResult === 1) {
+            console.log("clickResult", clickResult);
+            if (ctrl || alt) {
+                console.log("process...");
+                event.preventDefault();
+                event.stopPropagation();
+                event.stopImmediatePropagation();
+            }
+            else {
+                console.log("nada");
+                return;
+            }
         }
 
         var panel = jQuery('#panel').show('slide');
