@@ -287,14 +287,13 @@ annotools.prototype.generateSVG = function (annotations) {
         // var annotation = annotations[ii]
         // console.log(annotation)
 
-        // TODO: Null.
-        console.log("this.markupid", this.markupid);
+        //console.log("this.markupid", this.markupid); // TODO: undefined.
         var markup_svg = document.getElementById(this.markupid);
         if (markup_svg === null)
         {
             markup_svg = document.getElementById('markups');
         }
-        console.log("markup_svg", markup_svg);
+        console.log("markup_svg", markup_svg); // TODO: Null, no matter what.
 
         if (markup_svg) {
             // console.log("destroying")
@@ -304,10 +303,10 @@ annotools.prototype.generateSVG = function (annotations) {
         // console.log(annotations.length)
 
         // Get The Canvas Container
-        var container = this.container; // TODO: Null.
-        console.log("container", container);
-        container = document.getElementsByClassName(this.canvas)[0];
-        console.log("container", container); // this works.
+        var container = this.container; // TODO: undefined.
+        //console.log("container", container);
+        container = document.getElementsByClassName(this.canvas)[0]; // ****** getElementsByClassName works.
+        //console.log("container", container);
 
         var width = parseInt(container.offsetWidth);
         var height = parseInt(container.offsetHeight);
