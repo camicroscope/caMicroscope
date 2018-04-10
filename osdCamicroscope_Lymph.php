@@ -257,18 +257,19 @@ var _USERNAME = "<?php echo filter_var($_SESSION["email"], FILTER_SANITIZE_EMAIL
         annotool= new annotools({
                 canvas:'openseadragon-canvas',
                 iid: tissueId,
+            	displayId: tissueId,
                 viewer: viewer,
                 annotationHandler: annotationHandler,
                 mpp:MPP,
                 username: sessionUsername
             });
-        //console.log(tissueId);
         var toolBar = new ToolBar('tool', {
             left:'0px',
             top:'0px',
             height: '48px',
             width: '100%',
             iid: tissueId,
+            displayId: tissueId,
             annotool: annotool,
             viewer: viewer
 

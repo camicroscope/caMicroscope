@@ -305,7 +305,7 @@ $.getScript('shared/ToolBar.js', function () {
 
         this.iidbutton = jQuery('<p>', {
             'class': 'iidButton',
-            'text': 'Display ID: ' + this.DisplayId
+            'text': 'Display ID: ' + this.displayId
         });
         tool.append(this.iidbutton);
 
