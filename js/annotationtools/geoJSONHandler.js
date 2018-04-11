@@ -209,15 +209,16 @@ annotools.prototype.generateCanvas = function (annotations) {
         // console.log(annotations.length)
 
         var container;
-        if (document.getElementsByClassName(this.canvas)[0]) {
+        if (this.container) {
+            container = this.container.childNodes[0];
+        }
+        else if (document.getElementsByClassName(this.canvas)[0]) {
             container = document.getElementsByClassName(this.canvas)[0];
         }
         else if (document.getElementsByClassName(this.canvas)[0].childNodes[0]) {
             container = document.getElementsByClassName(this.canvas)[0].childNodes[0];
         }
-        else if (this.container) {
-            container = this.container.childNodes[0];
-        }
+        else
         //console.log("container", container);
 
         var context = container.getContext('2d');
@@ -307,14 +308,14 @@ annotools.prototype.generateSVG = function (annotations) {
         // console.log(annotations.length)
 
         var container;
-        if (document.getElementsByClassName(this.canvas)[0]) {
+        if (this.container) {
+            container = this.container.childNodes[0];
+        }
+        else if (document.getElementsByClassName(this.canvas)[0]) {
             container = document.getElementsByClassName(this.canvas)[0];
         }
         else if (document.getElementsByClassName(this.canvas)[0].childNodes[0]) {
             container = document.getElementsByClassName(this.canvas)[0].childNodes[0];
-        }
-        else if (this.container) {
-            container = this.container.childNodes[0];
         }
         //console.log("container", container);
 
