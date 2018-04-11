@@ -67,7 +67,7 @@ var annotools = function (options) {
     }.bind(this));
 
     this.viewer.addHandler('animation-start', function (event) {
-        var markup_svg = document.getElementById('markups');
+        var markup_svg = document.getElementById(this.markupid);
         if (markup_svg) {
             // console.log("destroying")
             markup_svg.destroy();
@@ -145,7 +145,7 @@ var annotools = function (options) {
 annotools.prototype.destroyMarkups = function (viewer) {
     // console.log("Destroy markups");
 
-    var markup_svg = document.getElementById('markups');
+    var markup_svg = document.getElementById(this.markupid);
     if (markup_svg) {
         // console.log("destroying")
         markup_svg.destroy();
