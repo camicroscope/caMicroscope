@@ -596,6 +596,7 @@ annotools.prototype.generateSVG = function (annotations) {
 
     var ctrl = false;
     var alt = false;
+    // Use CTRL & Windows key (command key on Mac)
     jQuery(document).keydown(function (event) {
 
         if (event.which === 17 || event.which === 91)
@@ -619,7 +620,8 @@ annotools.prototype.generateSVG = function (annotations) {
         alt = false;
     });
 
-    jQuery('.annotationsvg').mousedown(function (event) {
+    //jQuery(".annotationsvg").mousedown(function (event) {
+    jQuery(".annotationsvg").click(function (event) {
         //console.log(event.which);
         if (ctrl) {
             //console.log("double clicked");

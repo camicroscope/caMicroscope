@@ -2,9 +2,11 @@ annotools.prototype.generateGeoTemplate = function () {
 
     var case_id = this.iid;
     var subject_id = case_id.substr(0, 12);
+    /*
     if (subject_id.substr(0, 4) != "TCGA") {
-        //subject_id = "";
+        subject_id = "";
     }
+    */
 
     var execution_id = annotool.execution_id;
     console.log("execution_id", execution_id);
@@ -32,7 +34,7 @@ annotools.prototype.generateGeoTemplate = function () {
         'footprint': 10000,
         'provenance': {
             'analysis': {
-                'execution_id': username, //TODO: execution_id in sc, username here. Why?
+                'execution_id': username, //TODO: execution_id in sc, username here.
                 'study_id': "",
                 'source': "human",
                 'computation': 'segmentation'
@@ -49,10 +51,8 @@ annotools.prototype.generateGeoTemplate = function () {
 
 annotools.prototype.convertRectToGeo = function (annotation) {
 
-
     var origin = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(annotation.x), this.imagingHelper.physicalToDataY(annotation.y));
     var max = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(annotation.x + annotation.w), this.imagingHelper.physicalToDataY(annotation.y + annotation.h));
-
 
     /* Compute footprint(area)*/
     var physicalX1 = this.imagingHelper.logicalToPhysicalX(annotation.x);
@@ -66,9 +66,7 @@ annotools.prototype.convertRectToGeo = function (annotation) {
     var dataX2 = helper.physicalToDataX(physicalX2);
     var dataY2 = helper.physicalToDataY(physicalY2);
 
-
     var area = (dataX2 - dataX1) * (dataY2 - dataY1);
-
 
     var coordinates = [];
     var x = annotation.x;
@@ -108,10 +106,8 @@ annotools.prototype.convertPencilToGeo = function (annotation) {
     var dataX2 = helper.physicalToDataX(physicalX2);
     var dataY2 = helper.physicalToDataY(physicalY2);
 
-
     var area = Math.abs((dataX2 - dataX1)) * Math.abs((dataY2 - dataY1));
     console.log(area);
-
 
     var points = annotation.points;
     var p = points.split(' ');
@@ -162,7 +158,6 @@ annotools.prototype.convertAnnotationsToGeoJSON = function() {
     geoJSONs = []
     var annotations = this.annotations
 
-
     for(var i in annotations) {
 
         var annotation = annotations[i]
@@ -191,31 +186,39 @@ function endProfile(startTime) {
 
 annotools.prototype.generateCanvas = function (annotations) {
 
-    var annotations = this.annotations; // Overwriting function arg?
+    //console.log("generateCanvas");
+
+    var annotations = this.annotations;
 
     if (annotations) {
         // console.log(annotation)
         // var annotation = annotations[ii]
 
-        // TODO: Null.
-        var markup_svg = document.getElementById(this.markupid);
-        console.log("markup_svg", markup_svg);
-        markup_svg = document.getElementById('markups');
-        console.log("markup_svg", markup_svg);
-
+        var markup_svg;
+        if (document.getElementById(this.markupid)) {
+            markup_svg = document.getElementById(this.markupid);
+        }
+        else if (document.getElementById('markups')) {
+            markup_svg = document.getElementById('markups');
+        }
         if (markup_svg) {
             // console.log("destroying")
             markup_svg.destroy();
         }
 
         // console.log(annotations.length)
-        // console.log(this.canvas)
 
-        // TODO: this.container.childNodes[0] is Null.
-        var container = this.container.childNodes[0]; // Get The Canvas Container
-        console.log("container", container);
-        container = document.getElementsByClassName(this.canvas)[0].childNodes[0]; // Get The Canvas Container
-        console.log("container", container);
+        var container;
+        if (document.getElementsByClassName(this.canvas)[0]) {
+            container = document.getElementsByClassName(this.canvas)[0];
+        }
+        else if (document.getElementsByClassName(this.canvas)[0].childNodes[0]) {
+            container = document.getElementsByClassName(this.canvas)[0].childNodes[0];
+        }
+        else if (this.container) {
+            container = this.container.childNodes[0];
+        }
+        //console.log("container", container);
 
         var context = container.getContext('2d');
         context.fillStyle = '#f00';
@@ -223,8 +226,8 @@ annotools.prototype.generateCanvas = function (annotations) {
         var width = parseInt(container.offsetWidth);
         var height = parseInt(container.offsetHeight);
 
-        /* Why is there an ellipse in the center? */
         /*
+        //Why is there an ellipse in the center?
         var svgHtml = '<svg xmlns="http://www.w3.org/2000/svg" width="' + width + 'px" height="' + height + 'px" version="1.1" id="markups">'
             svgHtml += '<g id="groupcenter"/>'
             svgHtml += '<g id="origin">'
@@ -276,6 +279,8 @@ var clickSVG = function(evt, annotation){
 
 annotools.prototype.generateSVG = function (annotations) {
 
+    //console.log("generateSVG");
+
     var case_id = this.iid;
     var cancerType = "none";
     //var cancerType = this.cancerType; // undefined.
@@ -287,14 +292,13 @@ annotools.prototype.generateSVG = function (annotations) {
         // var annotation = annotations[ii]
         // console.log(annotation)
 
-        //console.log("this.markupid", this.markupid); // TODO: undefined.
-        var markup_svg = document.getElementById(this.markupid);
-        if (markup_svg === null)
-        {
+        var markup_svg;
+        if (document.getElementById(this.markupid)) {
+            markup_svg = document.getElementById(this.markupid);
+        }
+        else if (document.getElementById('markups')) {
             markup_svg = document.getElementById('markups');
         }
-        console.log("markup_svg", markup_svg); // TODO: Null, no matter what.
-
         if (markup_svg) {
             // console.log("destroying")
             markup_svg.destroy();
@@ -302,16 +306,21 @@ annotools.prototype.generateSVG = function (annotations) {
 
         // console.log(annotations.length)
 
-        // Get The Canvas Container
-        var container = this.container; // TODO: undefined.
-        //console.log("container", container);
-        container = document.getElementsByClassName(this.canvas)[0]; // ****** getElementsByClassName works.
+        var container;
+        if (document.getElementsByClassName(this.canvas)[0]) {
+            container = document.getElementsByClassName(this.canvas)[0];
+        }
+        else if (document.getElementsByClassName(this.canvas)[0].childNodes[0]) {
+            container = document.getElementsByClassName(this.canvas)[0].childNodes[0];
+        }
+        else if (this.container) {
+            container = this.container.childNodes[0];
+        }
         //console.log("container", container);
 
         var width = parseInt(container.offsetWidth);
         var height = parseInt(container.offsetHeight);
 
-        /* Why is there an ellipse in the center? */
         //var svgHtml = '<svg xmlns="http://www.w3.org/2000/svg" width="' + width + 'px" height="' + height + 'px" version="1.1" id="' + self.markupid + '">';
         var svgHtml = '<svg xmlns="http://www.w3.org/2000/svg" width="' + width + 'px" height="' + height + 'px" version="1.1" id="markups">';
 
@@ -459,6 +468,7 @@ annotools.prototype.generateSVG = function (annotations) {
 
     var ctrl = false;
     var alt = false;
+    // Use CTRL & Windows key (command key on Mac)
     jQuery(document).keydown(function (event) {
         var keyResult = event.which;
 
@@ -492,8 +502,9 @@ annotools.prototype.generateSVG = function (annotations) {
     jQuery("#58891912e4b076b78cf2f81f").mousedown(function (e) {
         console.log(e);
     });
-
-    jQuery(".annotationsvg").mousedown(function (event) {
+    
+    //jQuery(".annotationsvg").mousedown(function (event) {
+    jQuery(".annotationsvg").click(function (event) {
         //console.log(event.which);
 
         var clickResult = event.which;
