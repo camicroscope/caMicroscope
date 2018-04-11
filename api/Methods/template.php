@@ -1,22 +1,14 @@
-<?php require '../../../authenticate.php';
-// template handles templates, GET only
-// bindaas requirements:
-// * Camicroscope_Annotations or analgous - retrieveTemplate endpoint
-ini_set('display_errors', 'On');
+<?php
+// to be used with base.php, $app defined
 
-error_reporting(E_ALL | E_STRICT);
+$templateUrl = $services['annotations'];
 
-include_once("../utils/RestRequest.php");
+function getTemplate(){
+  $fields['id'] = $app->request->params("id");
+  $path = $templateUrl . "/query/retrieveTemplate";
+  return bindaas("GET", $path, $fields);
+}
 
-$services = require 'config.php';
-
-$templateUrl = $services['annotations'] . "/query/retrieveTemplate";
-
-$api_key = $_SESSION['api_key'];
-
-$url = $templateUrl . "?api_key=$api_key";
-//echo $url;
-$templateRequest = new RestRequest($url,'GET');
-$templateRequest->execute();
-echo json_encode($templateRequest->responseBody);
+// define routes
+$app->get("/template/template", getTemplate);
 ?>

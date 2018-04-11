@@ -1,26 +1,58 @@
-<?php require '../../../authenticate.php';
-// metadata handles all interactions needed for fcgi and osd, GET only
+<?php
+// to be used with base.php, $app defined
 
-// CamicUtils bindaas requirments:
-// * Camicroscope_DataLoader or analgous - DataLoader endpoint
-include_once("../utils/CamicUtils.php");
+$loaderUrl = $services['dataloader'];
 
-$utils = new CamicUtils($_SESSION);
-$tissueId = $_GET['imageId'];
+function getImageDimensions(){
+  $fields = array();
+  $fields['TCGAId'] = $app->request->params("id");
+  $path = "$loaderUrl/DataLoader/query/getDimensionsByIID";
+  return bindaas("GET", $path, $fields);
+}
 
-$fileLocation = $utils->retrieveImageLocation($tissueId);
-#$dzi = $utils->setUpSymLinks($fileLocation);
-$dzi = $utils->setUpSVSImage($fileLocation);
-$finalMpp = $utils->retrieveMpp($tissueId);
+function retrieveImageLocation(){
+  $fields = array();
+  $fields['TCGAId'] = $app->request->params("id");
+  $path = "$loaderUrl/DataLoader/query/getFileLocationByIID";
+  $res =  bindaas("GET", $path, $fields);
+  // TODO this is messy, test a cleanup
+  foreach ($res[0] as $key => $value) {
+      $link = str_replace("tiff", "svs", $value);
+      $link = $link . ".dzi";
+  }
+  return $link;
+}
 
-//$tileLocation = $utils->retrieveTileLocation($tissueId);
+function retrieveMpp(){
+  $fields = array();
+  $fields['TCGAId'] = $app->request->params("id");
+  $path = "$loaderUrl/DataLoader/query/getMPPByIID";
+  return bindaas("GET", $path, $fields);
+}
 
-$returnArray = array();
+function allMetadata(){
+  $fields = array();
+  $fields['TCGAId'] = $app->request->params("id");
+  $result = array();
+  $path = "$loaderUrl/DataLoader/query/getDimensionsByIID";
+  $result['dimensions'] = bindaas("GET", $path, $fields);
+  $path = "$loaderUrl/DataLoader/query/getFileLocationByIID";
+  $res =  bindaas("GET", $path, $fields);
+  // TODO this is messy, test a cleanup
+  foreach ($res[0] as $key => $value) {
+      $link = str_replace("tiff", "svs", $value);
+      $link = $link . ".dzi";
+  }
+  $result['location'] = $link;
+  $path = "$loaderUrl/DataLoader/query/getMPPByIID";
+  $result['mpp'] = bindaas("GET", $path, $fields);
+  return json_encode($result);
+}
 
-//array_push($returnArray, $finalMpp, $dzi, $tileLocation);
-
-array_push($returnArray, $finalMpp, $dzi);
-
-echo json_encode($returnArray);
+// define routes
+$app->get("/metadata/dimensions", getImageDimensions);
+$app->get("/metadata/location", retrieveImageLocation);
+$app->get("/metadata/mpp", retrieveMpp);
+$app->get("/metadata/metadata", allMetadata);
 
 ?>

@@ -1,6 +1,11 @@
 <?php
-$baseUrl = "http://quip-data:9099";
-$kueUrl = "http://quip-jobs:3000";
+if (file_exists('../../../config.php')) {
+    $config = require '../../../config.php';
+}
+else {
+    $config = ['dataHost' => 'quip-data:9099',
+               'kueHost' => 'quip-jobs:3000'];
+}
 
 // list of services
 return array(
