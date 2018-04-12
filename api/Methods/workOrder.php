@@ -32,7 +32,7 @@ $postOrder = function () use ($app, $basekueUrl){
   echo json_encode($result);
 }
 
-$app->get("/", function() use($app){ echo "{'message':'Select a function.'}";});
+$app->get("/", function() use($app){ echo '{"message":"Select a function."}';});
 $app->get("/workOrder/workOrder", $getOrder);
 $app->post("/workOrder/workOrder", $postOrder);
 

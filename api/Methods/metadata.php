@@ -50,7 +50,7 @@ $allMetadata = function () use ($app, $loaderUrl){
 }
 
 // define routes
-$app->get("/", function() use($app){ echo "{'message':'Select a function.'}";});
+$app->get("/", function() use($app){ echo '{"message":"Select a function."}';});
 $app->get("/dimensions", $getImageDimensions);
 $app->get("/location", $retrieveImageLocation);
 $app->get("/mpp", $retrieveMpp);

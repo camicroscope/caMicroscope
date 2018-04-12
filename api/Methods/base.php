@@ -17,16 +17,14 @@ $app->response->headers->set("Access-Control-Allow-Origin", "*");
 
 $services = require 'config.php';
 
-if (!empty($_SESSION['api_key'])) {
-    $api_key = $_SESSION['api_key'];
-} else {
+if (empty($_SESSION['api_key'])) {
   die();
   // TODO need more graceful than die
 }
 
 // function to redirect to bindaas
 function bindaas($verb, $path, $fields, $body = ""){
-  $fields['api_key'] = $api_key ;
+  $fields['api_key'] = $_SESSION['api_key'];
   $url = $path . "?" . http_build_query($fields, '', "&");
   $getRequest = new RestRequest($url, $verb, $body);
   $getRequest->execute();
