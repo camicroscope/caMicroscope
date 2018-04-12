@@ -8,7 +8,7 @@ $getAlgs = function () use ($app){
   $fields = array();
   $fields['TCGAId'] = $app->request->params("id");
   $path = "$annotationsUrl/MarkupsForImages/query/MarkupsAvilableForImage";
-  return bindaas("GET", $path, $fields);
+  echo bindaas("GET", $path, $fields);
 };
 
 // TODO this doesn't belong here in annots, move it
@@ -16,7 +16,7 @@ $getRois = function () use ($app){
   $fields = array();
   $fields['id'] = $app->request->params("id");
   $path = "$annotationsUrl/MarkupLoader/query/getROI";
-  return bindaas("GET", $path, $fields);
+  echo bindaas("GET", $path, $fields);
 };
 
 $getMarkups = function () use ($app){
@@ -29,7 +29,7 @@ $getMarkups = function () use ($app){
   $fields['footprint'] = param_get($app->request->params("footprint"), 0);
   $fields['algorithms'] = param_get($app->request->params("algorithms"), "[]");
   $path = "$annotationsUrl/MarkupLoader/query/getMultipleMarkups";
-  return bindaas("GET", $path, $fields);
+  echo bindaas("GET", $path, $fields);
 };
 
 $postMarkups = function () use ($app){
@@ -39,7 +39,7 @@ $postMarkups = function () use ($app){
   $body = $request->getBody();
   // TODO validate body?
   $path = "$annotationsUrl/MarkupLoader/submit/json";
-  return bindaas("POST", $path, $fields, $body);
+  echo bindaas("POST", $path, $fields, $body);
 };
 
 $postAlgs = function () use ($app){
@@ -49,7 +49,7 @@ $postAlgs = function () use ($app){
   $body = $request->getBody();
   // TODO validate body?
   $path = "$annotationsUrl/MarkupsForImages/submit/json";
-  return bindaas("POST", $path, $fields, $body);
+  echo bindaas("POST", $path, $fields, $body);
 };
 
 $deleteMarkups = function () use ($app){
@@ -62,7 +62,7 @@ $deleteMarkups = function () use ($app){
   $fields['footprint'] = param_get($app->request->params("footprint"), 0);
   $fields['algorithms'] = param_get($app->request->params("algorithms"), "[]");
   $path = "$annotationsUrl/MarkupsForImages/submit/json";
-  return bindaas("POST", $path, $fields);
+  echo bindaas("POST", $path, $fields);
 };
 
 // define routes
