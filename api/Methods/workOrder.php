@@ -12,7 +12,7 @@ $getOrder = function () use ($app, $basekueUrl){
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
   //Execute the request
   $result = curl_exec($ch);
-  return $result;
+  echo $result;
 }
 
 $postOrder = function () use ($app, $basekueUrl){
@@ -29,9 +29,10 @@ $postOrder = function () use ($app, $basekueUrl){
   curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
   $result = curl_exec($ch);
-  return json_encode($result);
+  echo json_encode($result);
 }
 
+$app->get("/", function() use($app){ echo "{'message':'Select a function.'}";});
 $app->get("/workOrder/workOrder", $getOrder);
 $app->post("/workOrder/workOrder", $postOrder);
 

@@ -7,7 +7,7 @@ $getImageDimensions = function () use ($app, $loaderUrl){
   $fields = array();
   $fields['TCGAId'] = $app->request->params("id");
   $path = "$loaderUrl/DataLoader/query/getDimensionsByIID";
-  return bindaas("GET", $path, $fields);
+  echo bindaas("GET", $path, $fields);
 }
 
 $retrieveImageLocation = function () use ($app, $loaderUrl){
@@ -20,14 +20,14 @@ $retrieveImageLocation = function () use ($app, $loaderUrl){
       $link = str_replace("tiff", "svs", $value);
       $link = $link . ".dzi";
   }
-  return $link;
+  echo $link;
 }
 
 $retrieveMpp = function () use ($app, $loaderUrl){
   $fields = array();
   $fields['TCGAId'] = $app->request->params("id");
   $path = "$loaderUrl/DataLoader/query/getMPPByIID";
-  return bindaas("GET", $path, $fields);
+  echo bindaas("GET", $path, $fields);
 }
 
 $allMetadata = function () use ($app, $loaderUrl){
@@ -46,10 +46,11 @@ $allMetadata = function () use ($app, $loaderUrl){
   $result['location'] = $link;
   $path = "$loaderUrl/DataLoader/query/getMPPByIID";
   $result['mpp'] = bindaas("GET", $path, $fields);
-  return json_encode($result);
+  echo json_encode($result);
 }
 
 // define routes
+$app->get("/", function() use($app){ echo "{'message':'Select a function.'}";});
 $app->get("/dimensions", $getImageDimensions);
 $app->get("/location", $retrieveImageLocation);
 $app->get("/mpp", $retrieveMpp);
