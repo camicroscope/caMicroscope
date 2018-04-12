@@ -67,7 +67,12 @@ function deleteMarkups(){
 }
 
 // define routes
-$app->get("/algorithms", getAlg);
+$app->get("/algorithms", function(){
+  $fields = array();
+  $fields['TCGAId'] = $app->request->params("id");
+  $path = "$annotationsUrl/MarkupsForImages/query/MarkupsAvilableForImage";
+  return bindaas("GET", $path, $fields);
+});
 $app->get("/rois", getRois);
 $app->get("/markups", getMarkups);
 $app->post("/algorithms", postAlgs);
