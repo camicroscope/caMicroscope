@@ -1,5 +1,5 @@
 <?php
-require(base.php);
+require("./base.php");
 // to be used with base.php, $app defined
 
 $annotationsUrl = $services['annotations'];
