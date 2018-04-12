@@ -7,7 +7,7 @@ $annotationsUrl = $services['annotations'];
 $getAlgs = function () use ($app){
   $fields = array();
   $fields['TCGAId'] = $app->request->params("id");
-  $path = "$annotationsUrl/MarkupsForImages/query/MarkupsAvilableForImage";
+  $path =  $annotationsUrl. "/MarkupsForImages/query/MarkupsAvilableForImage";
   echo bindaas("GET", $path, $fields);
 };
 
@@ -15,7 +15,7 @@ $getAlgs = function () use ($app){
 $getRois = function () use ($app){
   $fields = array();
   $fields['id'] = $app->request->params("id");
-  $path = "$annotationsUrl/MarkupLoader/query/getROI";
+  $path =  $annotationsUrl. "/MarkupLoader/query/getROI";
   echo bindaas("GET", $path, $fields);
 };
 
@@ -28,7 +28,7 @@ $getMarkups = function () use ($app){
   $fields['y2'] = param_get($app->request->params("y2"), 0);
   $fields['footprint'] = param_get($app->request->params("footprint"), 0);
   $fields['algorithms'] = param_get($app->request->params("algorithms"), "[]");
-  $path = "$annotationsUrl/MarkupLoader/query/getMultipleMarkups";
+  $path = $annotationsUrl. "/MarkupLoader/query/getMultipleMarkups";
   echo bindaas("GET", $path, $fields);
 };
 
@@ -38,7 +38,7 @@ $postMarkups = function () use ($app){
   $fields['id'] = $app->request->params("id");
   $body = $request->getBody();
   // TODO validate body?
-  $path = "$annotationsUrl/MarkupLoader/submit/json";
+  $path =  $annotationsUrl. "/MarkupLoader/submit/json";
   echo bindaas("POST", $path, $fields, $body);
 };
 
@@ -48,7 +48,7 @@ $postAlgs = function () use ($app){
   $fields['id'] = $app->request->params("id");
   $body = $request->getBody();
   // TODO validate body?
-  $path = "$annotationsUrl/MarkupsForImages/submit/json";
+  $path =  $annotationsUrl. "/MarkupsForImages/submit/json";
   echo bindaas("POST", $path, $fields, $body);
 };
 
@@ -61,7 +61,7 @@ $deleteMarkups = function () use ($app){
   $fields['y2'] = param_get($app->request->params("y2"), 0);
   $fields['footprint'] = param_get($app->request->params("footprint"), 0);
   $fields['algorithms'] = param_get($app->request->params("algorithms"), "[]");
-  $path = "$annotationsUrl/MarkupsForImages/submit/json";
+  $path = $annotationsUrl. "/MarkupsForImages/submit/json";
   echo bindaas("POST", $path, $fields);
 };
 
