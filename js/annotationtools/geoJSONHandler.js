@@ -197,9 +197,11 @@ annotools.prototype.generateCanvas = function (annotations) {
         var markup_svg;
         if (document.getElementById(this.markupid)) {
             markup_svg = document.getElementById(this.markupid);
+            console.log("getElementById(this.markupid)", markup_svg);
         }
         else if (document.getElementById('markups')) {
             markup_svg = document.getElementById('markups');
+            console.log("getElementById('markups')", markup_svg);
         }
         if (markup_svg) {
             // console.log("destroying")
@@ -211,14 +213,16 @@ annotools.prototype.generateCanvas = function (annotations) {
         var container;
         if (this.container) {
             container = this.container.childNodes[0];
+            console.log("container.childNodes[0]", container);
         }
         else if (document.getElementsByClassName(this.canvas)[0]) {
             container = document.getElementsByClassName(this.canvas)[0];
+            console.log("getElementsByClassName(this.canvas)[0]", container);
         }
         else if (document.getElementsByClassName(this.canvas)[0].childNodes[0]) {
             container = document.getElementsByClassName(this.canvas)[0].childNodes[0];
+            console.log("getElementsByClassName(this.canvas)[0].childNodes[0]", container);
         }
-        else
         //console.log("container", container);
 
         var context = container.getContext('2d');
@@ -310,12 +314,15 @@ annotools.prototype.generateSVG = function (annotations) {
         var container;
         if (this.container) {
             container = this.container.childNodes[0];
+            console.log("container.childNodes[0]", container);
         }
         else if (document.getElementsByClassName(this.canvas)[0]) {
             container = document.getElementsByClassName(this.canvas)[0];
+            console.log("getElementsByClassName(this.canvas)[0]", container);
         }
         else if (document.getElementsByClassName(this.canvas)[0].childNodes[0]) {
             container = document.getElementsByClassName(this.canvas)[0].childNodes[0];
+            console.log("getElementsByClassName(this.canvas)[0].childNodes[0]", container);
         }
         //console.log("container", container);
 
