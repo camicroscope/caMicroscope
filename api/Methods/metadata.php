@@ -3,14 +3,14 @@ require("./base.php");
 
 $loaderUrl = $services['dataloader'];
 
-$getImageDimensions = function () use ($app){
+$getImageDimensions = function () use ($app, $loaderUrl){
   $fields = array();
   $fields['TCGAId'] = $app->request->params("id");
   $path = "$loaderUrl/DataLoader/query/getDimensionsByIID";
   return bindaas("GET", $path, $fields);
 }
 
-$retrieveImageLocation = function () use ($app){
+$retrieveImageLocation = function () use ($app, $loaderUrl){
   $fields = array();
   $fields['TCGAId'] = $app->request->params("id");
   $path = "$loaderUrl/DataLoader/query/getFileLocationByIID";
@@ -23,14 +23,14 @@ $retrieveImageLocation = function () use ($app){
   return $link;
 }
 
-$retrieveMpp = function () use ($app){
+$retrieveMpp = function () use ($app, $loaderUrl){
   $fields = array();
   $fields['TCGAId'] = $app->request->params("id");
   $path = "$loaderUrl/DataLoader/query/getMPPByIID";
   return bindaas("GET", $path, $fields);
 }
 
-$allMetadata = function () use ($app){
+$allMetadata = function () use ($app, $loaderUrl){
   $fields = array();
   $fields['TCGAId'] = $app->request->params("id");
   $result = array();

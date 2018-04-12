@@ -3,7 +3,7 @@ require("./base.php");
 
 $templateUrl = $services['annotations'];
 
-$getTemplate = function () use ($app){
+$getTemplate = function () use ($app, $templateUrl){
   $fields['id'] = $app->request->params("id");
   $path = $templateUrl . "/query/retrieveTemplate";
   return bindaas("GET", $path, $fields);

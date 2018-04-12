@@ -4,7 +4,7 @@ require("./base.php");
 $annotationsUrl = $services['annotations'];
 // get with $app->request->params("pathState")
 
-$getAlgs = function () use ($app){
+$getAlgs = function () use ($app, $annotationsUrl){
   $fields = array();
   $fields['TCGAId'] = $app->request->params("id");
   $path =  $annotationsUrl. "/MarkupsForImages/query/MarkupsAvilableForImage";
@@ -12,14 +12,14 @@ $getAlgs = function () use ($app){
 };
 
 // TODO this doesn't belong here in annots, move it
-$getRois = function () use ($app){
+$getRois = function () use ($app, $annotationsUrl){
   $fields = array();
   $fields['id'] = $app->request->params("id");
   $path =  $annotationsUrl. "/MarkupLoader/query/getROI";
   echo bindaas("GET", $path, $fields);
 };
 
-$getMarkups = function () use ($app){
+$getMarkups = function () use ($app, $annotationsUrl)){
   $fields = array();
   $fields['CaseId'] = $app->request->params("id");
   $fields['x1'] = param_get($app->request->params("x1"), 0);
@@ -32,7 +32,7 @@ $getMarkups = function () use ($app){
   echo bindaas("GET", $path, $fields);
 };
 
-$postMarkups = function () use ($app){
+$postMarkups = function () use ($app, $annotationsUrl){
   $fields = array();
   // TODO this isn't how id is done for bindaas post I think
   $fields['id'] = $app->request->params("id");
@@ -42,7 +42,7 @@ $postMarkups = function () use ($app){
   echo bindaas("POST", $path, $fields, $body);
 };
 
-$postAlgs = function () use ($app){
+$postAlgs = function () use ($app, $annotationsUrl){
   $fields = array();
   // TODO this isn't how id is done for bindaas post I think
   $fields['id'] = $app->request->params("id");
@@ -52,7 +52,7 @@ $postAlgs = function () use ($app){
   echo bindaas("POST", $path, $fields, $body);
 };
 
-$deleteMarkups = function () use ($app){
+$deleteMarkups = function () use ($app, $annotationsUrl){
   $fields = array();
   $fields['CaseId'] = $app->request->params("id");
   $fields['x1'] = param_get($app->request->params("x1"), 0);

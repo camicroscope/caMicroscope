@@ -4,7 +4,7 @@ require("./base.php");
 $loaderUrl = $services['dataloader'];
 $basekueUrl = $services['kue'];
 
-$getOrder = function () use ($app){
+$getOrder = function () use ($app, $basekueUrl){
   $id =  $app->request->params("id");
   $kueUrl = $basekueUrl . '/job/'. $id;
   $ch = curl_init($kueUrl);
@@ -15,7 +15,7 @@ $getOrder = function () use ($app){
   return $result;
 }
 
-$postOrder = function () use ($app){
+$postOrder = function () use ($app, $basekueUrl){
   $kueUrl = $basekueUrl . "/job";
   // TODO does this work using raw body?
   $postData = $request->getBody();
