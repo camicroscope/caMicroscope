@@ -66,11 +66,11 @@ function deleteMarkups(){
 }
 
 // define routes
-$app->get("/annotation/algorithms", getAlgs use ($app));
-$app->get("/annotation/rois", getRois use ($app));
-$app->get("/annotation/markups", getMarkups use ($app));
-$app->post("/annotation/algorithms", postAlgs use ($app));
-$app->post("/annotation/markups", postMarkups use ($app));
-$app->delete("/annotation/markups", deleteMarkups use ($app));
+$app->get("/annotation/algorithms", getAlg);
+$app->get("/annotation/rois", getRois);
+$app->get("/annotation/markups", getMarkups);
+$app->post("/annotation/algorithms", postAlgs);
+$app->post("/annotation/markups", postMarkups);
+$app->delete("/annotation/markups", deleteMarkups);
 
 ?>

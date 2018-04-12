@@ -41,5 +41,13 @@ include_once("./metatada.php");
 include_once("./template.php");
 include_once("./workorder.php");
 
+// define routes
+$app->get("/annotation/algorithms", getAlg);
+$app->get("/annotation/rois", getRois);
+$app->get("/annotation/markups", getMarkups);
+$app->post("/annotation/algorithms", postAlgs);
+$app->post("/annotation/markups", postMarkups);
+$app->delete("/annotation/markups", deleteMarkups);
+
 $app->run();
  ?>
