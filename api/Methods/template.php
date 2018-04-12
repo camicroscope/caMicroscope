@@ -1,9 +1,9 @@
 <?php
-// to be used with base.php, $app defined
+require("./base.php");
 
 $templateUrl = $services['annotations'];
 
-function getTemplate(){
+$getTemplate = function () use ($app){
   $fields['id'] = $app->request->params("id");
   $path = $templateUrl . "/query/retrieveTemplate";
   return bindaas("GET", $path, $fields);
@@ -11,4 +11,6 @@ function getTemplate(){
 
 // define routes
 $app->get("/template/template", getTemplate);
+
+$app->run();
 ?>

@@ -1,6 +1,5 @@
 <?php
 require("./base.php");
-// to be used with base.php, $app defined
 
 $annotationsUrl = $services['annotations'];
 // get with $app->request->params("pathState")

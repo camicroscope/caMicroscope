@@ -1,9 +1,10 @@
 <?php
+require("./base.php");
 
 $loaderUrl = $services['dataloader'];
 $basekueUrl = $services['kue'];
 
-function getOrder(){
+$getOrder = function () use ($app){
   $id =  $app->request->params("id");
   $kueUrl = $basekueUrl . '/job/'. $id;
   $ch = curl_init($kueUrl);
@@ -14,7 +15,7 @@ function getOrder(){
   return $result;
 }
 
-function postOrder(){
+$postOrder = function () use ($app){
   $kueUrl = $basekueUrl . "/job";
   // TODO does this work using raw body?
   $postData = $request->getBody();
@@ -31,7 +32,9 @@ function postOrder(){
   return json_encode($result);
 }
 
-$app->get("/workOrder/workOrder", getOrder);
-$app->post("/workOrder/workOrder", postOrder);
+$app->get("/workOrder/workOrder", $getOrder);
+$app->post("/workOrder/workOrder", $postOrder);
 
+
+$app->run();
 ?>

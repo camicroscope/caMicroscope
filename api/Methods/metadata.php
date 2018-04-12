@@ -1,16 +1,16 @@
 <?php
-// to be used with base.php, $app defined
+require("./base.php");
 
 $loaderUrl = $services['dataloader'];
 
-function getImageDimensions(){
+$getImageDimensions = function () use ($app){
   $fields = array();
   $fields['TCGAId'] = $app->request->params("id");
   $path = "$loaderUrl/DataLoader/query/getDimensionsByIID";
   return bindaas("GET", $path, $fields);
 }
 
-function retrieveImageLocation(){
+$retrieveImageLocation = function () use ($app){
   $fields = array();
   $fields['TCGAId'] = $app->request->params("id");
   $path = "$loaderUrl/DataLoader/query/getFileLocationByIID";
@@ -23,14 +23,14 @@ function retrieveImageLocation(){
   return $link;
 }
 
-function retrieveMpp(){
+$retrieveMpp = function () use ($app){
   $fields = array();
   $fields['TCGAId'] = $app->request->params("id");
   $path = "$loaderUrl/DataLoader/query/getMPPByIID";
   return bindaas("GET", $path, $fields);
 }
 
-function allMetadata(){
+$allMetadata = function () use ($app){
   $fields = array();
   $fields['TCGAId'] = $app->request->params("id");
   $result = array();
@@ -50,9 +50,11 @@ function allMetadata(){
 }
 
 // define routes
-$app->get("/metadata/dimensions", getImageDimensions);
-$app->get("/metadata/location", retrieveImageLocation);
-$app->get("/metadata/mpp", retrieveMpp);
-$app->get("/metadata/metadata", allMetadata);
+$app->get("/dimensions", $getImageDimensions);
+$app->get("/location", $retrieveImageLocation);
+$app->get("/mpp", $retrieveMpp);
+$app->get("/metadata", $allMetadata);
 
+
+$app->run();
 ?>
