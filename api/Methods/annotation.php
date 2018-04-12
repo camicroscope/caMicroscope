@@ -67,12 +67,12 @@ $deleteMarkups = function () use ($app){
 };
 
 // define routes
-$app->get("/algorithms", getAlgs);
-$app->get("/rois", getRois);
-$app->get("/markups", getMarkups);
-$app->post("/algorithms", postAlgs);
-$app->post("/markups", postMarkups);
-$app->delete("/markups", deleteMarkups);
+$app->get("/algorithms", $getAlgs);
+$app->get("/rois", $getRois);
+$app->get("/markups", $getMarkups);
+$app->post("/algorithms", $postAlgs);
+$app->post("/markups", $postMarkups);
+$app->delete("/markups", $deleteMarkups);
 
 $app->run();
 
