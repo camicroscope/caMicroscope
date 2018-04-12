@@ -1,6 +1,5 @@
 /*
- Copyright (C) 2012 Shaohuan Li <shaohuan.li@gmail.com>, Ashish Sharma <ashish.sharma@emory.edu>
- This file is part of Biomedical Image Viewer developed under the Google of Summer of Code 2012 program.
+ This file is part of caMicroscope
 
  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 
