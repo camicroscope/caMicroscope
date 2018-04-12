@@ -11,6 +11,9 @@ require 'classes/apc.caching.php';
 $app = new \Slim\Slim();
 $oCache = new CacheAPC();
 
+$app->response->headers->set('Content-Type', 'application/json');
+$app->response->headers->set("Access-Control-Allow-Origin", "*");
+
 $services = require 'config.php';
 
 if (!empty($_SESSION['api_key'])) {
