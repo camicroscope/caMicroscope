@@ -1,7 +1,7 @@
 <?php
 require("./base.php");
 
-$templateUrl = $services['annotations'];
+$templateUrl = $services['template'];
 
 $getTemplate = function () use ($app, $templateUrl){
   $fields['id'] = $app->request->params("id");
@@ -11,7 +11,7 @@ $getTemplate = function () use ($app, $templateUrl){
 
 // define routes
 $app->get("/", function() use($app){ echo '{"message":"Select a function."}';});
-$app->get("/template/template", $getTemplate);
+$app->get("/template", $getTemplate);
 
 $app->run();
 ?>
