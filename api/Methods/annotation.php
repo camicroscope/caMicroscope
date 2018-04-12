@@ -10,7 +10,7 @@ $getAlgs = function () use ($app){
   $fields['TCGAId'] = $app->request->params("id");
   $path = "$annotationsUrl/MarkupsForImages/query/MarkupsAvilableForImage";
   return bindaas("GET", $path, $fields);
-}
+};
 
 // TODO this doesn't belong here in annots, move it
 $getRois = function () use ($app){
@@ -18,7 +18,7 @@ $getRois = function () use ($app){
   $fields['id'] = $app->request->params("id");
   $path = "$annotationsUrl/MarkupLoader/query/getROI";
   return bindaas("GET", $path, $fields);
-}
+};
 
 $getMarkups = function () use ($app){
   $fields = array();
@@ -31,7 +31,7 @@ $getMarkups = function () use ($app){
   $fields['algorithms'] = param_get($app->request->params("algorithms"), "[]");
   $path = "$annotationsUrl/MarkupLoader/query/getMultipleMarkups";
   return bindaas("GET", $path, $fields);
-}
+};
 
 $postMarkups = function () use ($app){
   $fields = array();
@@ -41,7 +41,7 @@ $postMarkups = function () use ($app){
   // TODO validate body?
   $path = "$annotationsUrl/MarkupLoader/submit/json";
   return bindaas("POST", $path, $fields, $body);
-}
+};
 
 $postAlgs = function () use ($app){
   $fields = array();
@@ -51,7 +51,7 @@ $postAlgs = function () use ($app){
   // TODO validate body?
   $path = "$annotationsUrl/MarkupsForImages/submit/json";
   return bindaas("POST", $path, $fields, $body);
-}
+};
 
 $deleteMarkups = function () use ($app){
   $fields = array();
@@ -64,7 +64,7 @@ $deleteMarkups = function () use ($app){
   $fields['algorithms'] = param_get($app->request->params("algorithms"), "[]");
   $path = "$annotationsUrl/MarkupsForImages/submit/json";
   return bindaas("POST", $path, $fields);
-}
+};
 
 // define routes
 $app->get("/algorithms", getAlgs);
