@@ -8,6 +8,7 @@ else {
 }
 
 $baseUrl = "http://" . $config['dataHost'];
+$kueUrl = "http://" . $config['kueHost'];
 
 // list of services
 return array(
