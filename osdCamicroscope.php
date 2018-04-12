@@ -170,6 +170,7 @@ include 'shared/osdHeader.php';
             height: '48px',
             width: '100%',
             iid: tissueId,
+            displayId: tissueId,
             user_email: user_email,
             annotool: annotool,
             FilterTools: filteringtools,
@@ -300,26 +301,6 @@ include 'shared/osdHeader.php';
 </script>
 
 <script>
-
-    // handle session expiration/renew
-    var st = new SessionTracker("camic");
-
-    function renew_session() {
-        var xhr = new XMLHttpRequest();
-        xhr.open("POST", "../security/server.php?logIn", true);
-        xhr.onload = function (e) {
-            if (xhr.readyState === 4) {
-                if (xhr.status === 200) {
-                    console.log(xhr.responseText);
-                } else {
-                    console.error(xhr.statusText);
-                }
-            }
-        };
-        xhr.send(null);
-    }
-
-    st.start(600000, 3e6, renew_session);
     spyglass_init(_viewer_source);
 </script>
 <!-- Sidesplit -->

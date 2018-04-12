@@ -1,6 +1,5 @@
 /*
- Copyright (C) 2012 Shaohuan Li <shaohuan.li@gmail.com>, Ashish Sharma <ashish.sharma@emory.edu>
- This file is part of Biomedical Image Viewer developed under the Google of Summer of Code 2012 program.
+ This file is part of caMicroscope
 
  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 
@@ -36,7 +35,7 @@ var annotools = function (options) {
     this.color = options.color || 'lime'; // Default Annotation Color
 
     this.iidDecoded = decodeURI(options.iid);
-    this.canvas = options.canvas; // The canvas Element that The Use will be drawing annotations on.
+    this.canvas = options.canvas; // The node id of the canvas Element to draw annotations on
     this.iid = options.iid || null; // The Image ID
     this.annotVisible = true; // The Annotations are Set to be visible at the First Loading
     this.mode = 'default'; // The Mode is Set to Default
@@ -67,7 +66,7 @@ var annotools = function (options) {
     }.bind(this));
 
     this.viewer.addHandler('animation-start', function (event) {
-        var markup_svg = document.getElementById('markups');
+        var markup_svg = document.getElementById(this.markupid);
         if (markup_svg) {
             // console.log("destroying")
             markup_svg.destroy();
@@ -145,7 +144,7 @@ var annotools = function (options) {
 annotools.prototype.destroyMarkups = function (viewer) {
     // console.log("Destroy markups");
 
-    var markup_svg = document.getElementById('markups');
+    var markup_svg = document.getElementById(this.markupid);
     if (markup_svg) {
         // console.log("destroying")
         markup_svg.destroy();
@@ -439,7 +438,7 @@ annotools.prototype.drawMarkups = function () {
     this.magnifyGlass.hide(); // Hide The Magnifying Tool
 
     // this.container = document.id(this.canvas) //Get The Canvas Container
-    this.container = document.getElementsByClassName(this.canvas)[0]; // Get The Canvas Container
+    //this.container = document.getElementsByClassName(this.canvas)[0]; // Get The Canvas Container
     // this.container = document.getElementById('container') //Get The Canvas Container
 
     if (this.container) {
@@ -526,7 +525,7 @@ annotools.prototype.createWorkOrder = function () {
 
     this.magnifyGlass.hide(); // Hide The Magnifying Tool
     // this.container = document.id(this.canvas) //Get The Canvas Container
-    this.container = document.getElementsByClassName(this.canvas)[0]; // Get The Canvas Container
+    // this.container = document.getElementsByClassName(this.canvas)[0]; // Get The Canvas Container
     // this.container = document.getElementById('container') //Get The Canvas Container
 
     if (this.container) {
