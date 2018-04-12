@@ -19,7 +19,7 @@ $getRois = function () use ($app, $annotationsUrl){
   echo bindaas("GET", $path, $fields);
 };
 
-$getMarkups = function () use ($app, $annotationsUrl)){
+$getMarkups = function () use ($app, $annotationsUrl){
   $fields = array();
   $fields['CaseId'] = $app->request->params("id");
   $fields['x1'] = param_get($app->request->params("x1"), 0);
