@@ -13,7 +13,7 @@ $getOrder = function () use ($app, $basekueUrl){
   //Execute the request
   $result = curl_exec($ch);
   echo $result;
-}
+};
 
 $postOrder = function () use ($app, $basekueUrl){
   $kueUrl = $basekueUrl . "/job";
@@ -30,7 +30,7 @@ $postOrder = function () use ($app, $basekueUrl){
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
   $result = curl_exec($ch);
   echo json_encode($result);
-}
+};
 
 $app->get("/", function() use($app){ echo '{"message":"Select a function."}';});
 $app->get("/workOrder/workOrder", $getOrder);
