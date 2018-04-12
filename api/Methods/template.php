@@ -11,7 +11,7 @@ $getTemplate = function () use ($app, $templateUrl){
 
 // define routes
 $app->get("/", function() use($app){ echo '{"message":"Select a function."}';});
-$app->get("/template/template", getTemplate);
+$app->get("/template/template", $getTemplate);
 
 $app->run();
 ?>

@@ -14,13 +14,7 @@ $retrieveImageLocation = function () use ($app, $loaderUrl){
   $fields = array();
   $fields['TCGAId'] = $app->request->params("id");
   $path = "$loaderUrl/DataLoader/query/getFileLocationByIID";
-  $res =  bindaas("GET", $path, $fields);
-  // TODO this is messy, test a cleanup
-  foreach ($res[0] as $key => $value) {
-      $link = str_replace("tiff", "svs", $value);
-      $link = $link . ".dzi";
-  }
-  echo $link;
+  echo bindaas("GET", $path, $fields);
 };
 
 $retrieveMpp = function () use ($app, $loaderUrl){
@@ -38,12 +32,7 @@ $allMetadata = function () use ($app, $loaderUrl){
   $result['dimensions'] = bindaas("GET", $path, $fields);
   $path = "$loaderUrl/DataLoader/query/getFileLocationByIID";
   $res =  bindaas("GET", $path, $fields);
-  // TODO this is messy, test a cleanup
-  foreach ($res[0] as $key => $value) {
-      $link = str_replace("tiff", "svs", $value);
-      $link = $link . ".dzi";
-  }
-  $result['location'] = $link;
+  $result['location'] = $res;
   $path = "$loaderUrl/DataLoader/query/getMPPByIID";
   $result['mpp'] = bindaas("GET", $path, $fields);
   echo json_encode($result);
