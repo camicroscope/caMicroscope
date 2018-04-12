@@ -2957,7 +2957,7 @@ annotools.prototype.promptForAnnotation = function (newAnnot, mode, annotools, c
         + '</div>'
     );
 
-    jQuery.get('api/Data/retrieveTemplateByName.php?app_name=tumor_markup', function (data) {
+    jQuery.get('api/Data/retrieveTemplate.php?app_name=tumor_markup', function (data) {
         console.log("data", data);
         var schema = JSON.parse(data);
         schema = JSON.parse(schema)[0];
