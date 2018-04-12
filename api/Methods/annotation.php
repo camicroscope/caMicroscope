@@ -66,7 +66,7 @@ $deleteMarkups = function () use ($app){
 };
 
 // define routes
-$app->get("/", function() use($app){ echo "{message:'Select a function.'}";});
+$app->get("/", function() use($app){ echo "{'message':'Select a function.'}";});
 $app->get("/algorithms", $getAlgs);
 $app->get("/rois", $getRois);
 $app->get("/markups", $getMarkups);

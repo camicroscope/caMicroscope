@@ -7,6 +7,8 @@ else {
                'kueHost' => 'quip-jobs:3000'];
 }
 
+$baseUrl = "http://" . $config['dataHost'];
+
 // list of services
 return array(
   'dataloader' => "$baseUrl/services/Camicroscope_DataLoader" ,
