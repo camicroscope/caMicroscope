@@ -2,6 +2,7 @@
 // this is the (simple-api) api server base
 // all specalizations should be included
 require '../../../authenticate.php';
+// this also includes param_get
 include_once("../utils/RestRequest.php");
 
 // set up route and cache
@@ -32,12 +33,6 @@ function bindaas($verb, $path, $fields, $body){
   // TODO handle non 200s
   // TODO do we want to json_encode our return?
   return $getRequest->responseBody;
-}
-
-// null coalesce replacement function
-function param_get(&$value, $default = null)
-{
-    return isset($value) ? $value : $default;
 }
 
 // --- 'include' EACH DOCUMENT TYPE'S ROUTES --//
