@@ -6,7 +6,7 @@ $basekueUrl = $services['kue'];
 
 $getOrder = function () use ($app, $basekueUrl){
   $id =  $app->request->params("id");
-  $kueUrl = $basekueUrl . '/job/'. $id;
+  $kueUrl = $basekueUrl . "/job" . "/". $id;
   $ch = curl_init($kueUrl);
   curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -33,8 +33,8 @@ $postOrder = function () use ($app, $basekueUrl){
 };
 
 $app->get("/", function() use($app){ echo '{"message":"Select a function."}';});
-$app->get("/workOrder/workOrder", $getOrder);
-$app->post("/workOrder/workOrder", $postOrder);
+$app->get("/workOrder", $getOrder);
+$app->post("/workOrder", $postOrder);
 
 
 $app->run();
