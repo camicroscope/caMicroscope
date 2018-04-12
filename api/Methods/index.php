@@ -24,7 +24,7 @@ if (!empty($_SESSION['api_key'])) {
 }
 
 // function to redirect to bindaas
-function bindaas(verb, path, fields, body){
+function bindaas($verb, $path, $fields, $body){
   $fields['api_key'] = $api_key ;
   $url = $path . "?" . http_build_query($fields, '', "&");
   $getRequest = new RestRequest($url, $verb, $body);
