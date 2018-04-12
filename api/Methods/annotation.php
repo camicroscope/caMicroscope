@@ -1,4 +1,5 @@
 <?php
+require(base.php);
 // to be used with base.php, $app defined
 
 $annotationsUrl = $services['annotations'];
@@ -66,11 +67,13 @@ function deleteMarkups(){
 }
 
 // define routes
-$app->get("/annotation/algorithms", getAlg);
-$app->get("/annotation/rois", getRois);
-$app->get("/annotation/markups", getMarkups);
-$app->post("/annotation/algorithms", postAlgs);
-$app->post("/annotation/markups", postMarkups);
-$app->delete("/annotation/markups", deleteMarkups);
+$app->get("/algorithms", getAlg);
+$app->get("/rois", getRois);
+$app->get("/markups", getMarkups);
+$app->post("/algorithms", postAlgs);
+$app->post("/markups", postMarkups);
+$app->delete("/markups", deleteMarkups);
+
+$app->run();
 
 ?>
