@@ -317,6 +317,7 @@
     spyglass_init(_viewer_source);
 </script>
 <!-- Sidesplit  -->
+<script src="js/Helpers/SideSplit/openseadragon-canvas-overlay.js"></script>
 <script src="js/Helpers/SideSplit/coordinatedView.js"></script>
 <script src="js/Helpers/SideSplit/SideSplit.js"></script>
 <script src="js/Helpers/SideSplit/ProxyTools.js"></script>
