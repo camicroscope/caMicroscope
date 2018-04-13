@@ -1,5 +1,4 @@
 var rhs_viewer;
-var rhs_imagingHelper;
 
 function getAlgs(caseid, cb){
   fetch("api/Data/getAlgorithmsForImage.php?iid=" + caseid, {
@@ -43,16 +42,12 @@ function init_sbs() {
         id: "right_sidebyside",
         prefixUrl: prefixurl,
         showNavigationControl: false
-    });   
+    });
 
     window.setTimeout(coordinatedView(viewer, rhs_viewer), 500);
 
     // silly button fix attempt
     rhs_viewer.buttons = viewer.buttons;
-    // imaging helper
-    rhs_imagingHelper = new OpenSeadragonImaging.ImagingHelper({
-      viewer: rhs_viewer
-    });
 }
 
 function show_sbs() {

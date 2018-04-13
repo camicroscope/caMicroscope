@@ -2,7 +2,9 @@ function show_minidraw(){
   // calibrate our canvas
   var c1 = delayer({});
   var c1_c = ViewportCalibratedCanvas(c1, rhs_viewer);
-
+  var rhs_imagingHelper = new OpenSeadragonImaging.ImagingHelper({
+        viewer: rhs_viewer
+      });
   // handle algorithm selection
   var annots = new annotations(tissueId, rhs_viewer, c1_c, rhs_imagingHelper, {});
 
