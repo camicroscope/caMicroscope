@@ -52,7 +52,7 @@ class annotStore{
  */
  getAlgList(callback){
    var params = {"iid" : this.id}
-   apiCall(callback, url, params);
+   apiCall(callback, this.algListUrl, params);
  }
 
  /**
@@ -67,7 +67,7 @@ class annotStore{
    y2 = y2 < 0 ? 0 : y2;
    // set params object
    var params = {"iid": this.id, "x": x1, "x1": x2, "y" :y1, "y1": y2, "footprint": footprint, "algoritms": algs};
-   apiCall(callback, url, params);
+   apiCall(callback, this.algDataUrl, params);
  }
 }
 // see https://github.com/birm/OSDragonDemos/blob/master/coordinated_draw_annotool.html
