@@ -2,7 +2,20 @@
 /**
  * caMicroscope
  */
-include 'shared/osdHeader.php';
+ include 'shared/osdHeader.php';
+
+ $default_db_name="quip";
+
+ if (!isset($_GET["db_name"]) || empty($_GET["db_name"]))
+ {
+    $db_name=$default_db_name;
+ }
+ else { 
+   $db_name=$_GET["db_name"];
+ }
+
+ $_SESSION["db_name"] = $db_name;
+
 ?>
 
 <script>
