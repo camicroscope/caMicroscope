@@ -38,7 +38,12 @@ function init_sbs() {
     document.body.appendChild(activ);
 
 
-    // set
+    var prefixurl = "https://cdn.jsdelivr.net/npm/openseadragon@2.3/build/openseadragon/images/";
+    rhs_viewer = OpenSeadragon({
+        id: "right_sidebyside",
+        prefixUrl: prefixurl,
+        showNavigationControl: false
+    });   
 
     window.setTimeout(coordinatedView(viewer, rhs_viewer), 500);
 
