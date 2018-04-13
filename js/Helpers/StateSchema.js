@@ -11,7 +11,7 @@ function setPosition(position){
 // TODO test if this method always works
 function setAlgs(algList){
   // requires annotool to contain SELECTED_ALGORITHM_LIST
-  annotool.SELECTED_ALGORITHM_LIST = algList;
+  SELECTED_ALGORITHM_LIST = algList;
 }
 
 // initalize after 500 mseconds
@@ -35,7 +35,7 @@ viewer.addHandler('open',function(){
 
 
 algHandler = function() {
-  camic_state.vals['alg']=annotool.SELECTED_ALGORITHM_LIST;
+  camic_state.vals['alg'] = SELECTED_ALGORITHM_LIST;
   //camic_state.set_url();
 };
 
