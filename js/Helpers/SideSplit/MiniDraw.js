@@ -120,9 +120,7 @@ class annotations{
     var origin = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(0), this.imagingHelper.physicalToDataY(0));
     var footprint = (max.x - origin.x) * (max.y - origin.y);
 
-    this.store.getAlgData(x1, y1, x2, y2, footprint, this.selection, function(data){
-      drawFromList(data, this.context);
-    });
+    this.store.getAlgData(x1, y1, x2, y2, footprint, this.selection, (data) => drawFromList(data, this.context));
   }
 
   select(alg){
