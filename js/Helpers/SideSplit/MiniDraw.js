@@ -86,7 +86,6 @@ function drawFromList(data, context){
         let x = coord[0];
         let y = coord[1];
         context.lineTo(x,y);
-        console.log(x + ", " + y)
       });
       context.stroke();
       // stop

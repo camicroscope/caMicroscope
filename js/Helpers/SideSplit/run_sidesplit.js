@@ -30,7 +30,7 @@ function show_minidraw(){
 
   // redraw all active annotations each redraw
   // clearing and re-fetching is inefficient, c1 can be used as a cache
-  var overlay = viewer.canvasOverlay({
+  var overlay = rhs_viewer.canvasOverlay({
       clearBeforeRedraw:true,
       onRedraw:function() {
         var lw = 50 / (viewer.viewport.getZoom(true));
