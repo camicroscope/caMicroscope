@@ -105,6 +105,7 @@ class annotations{
     this.options = options;
     this.selection = [];
     this.context = context;
+    this.imagingHelper = imagingHelper;
     // TODO imagingHelper needed?
   }
 
