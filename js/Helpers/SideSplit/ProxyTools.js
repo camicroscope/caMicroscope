@@ -21,6 +21,9 @@ function delayer(base){
       if (prop === "__queue"){
         return obj.__queue;
       }
+      if (prop === "__clear_queue"){
+        return () => (obj.__queue = []);
+      }
       else if (prop === "__apply_all"){
         return obj.__apply_all;
       } else {

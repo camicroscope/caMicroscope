@@ -12,12 +12,12 @@ function show_minidraw(){
 
   // get new data each pass
   rhs_viewer.addHandler("zoom", function(){
-    c1.__queue = [];
+    c1.__clear_queue();
     annots.draw();
   })
 
   rhs_viewer.addHandler("pan", function(){
-    c1.__queue = [];
+    c1.__clear_queue();
     annots.draw();
   });
 
