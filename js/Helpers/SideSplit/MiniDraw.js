@@ -77,7 +77,7 @@ function drawFromList(data, context){
     let color = "red";
     let type = annotation.geometry.type;
     let coords = annotation.geometry.coordinates[0];
-    if (type == "Polygon"){
+    if (!type || type == "Polygon"){
       // start
       context.beginPath();
       let first = coords.splice(1,1);
