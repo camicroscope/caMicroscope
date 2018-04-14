@@ -1,3 +1,5 @@
+var annots;
+
 function show_minidraw(){
   // calibrate our canvas
   var c1 = delayer({});
@@ -6,7 +8,7 @@ function show_minidraw(){
         viewer: rhs_viewer
       });
   // handle algorithm selection
-  var annots = new annotations(tissueId, rhs_viewer, c1_c, rhs_imagingHelper, {});
+  annots = new annotations(tissueId, rhs_viewer, c1_c, rhs_imagingHelper, {});
 
   // get new data each pass
   rhs_viewer.addHandler("zoom", function(){
@@ -21,7 +23,7 @@ function show_minidraw(){
 
   // by default, for demo, select all algorithms
   annots.store.getAlgList(function(data){
-    data.forEach((x)=>annots.select(x));
+    data.forEach((x)=>annots.select(x.title));
   });
 
   console.log(annots.selection);

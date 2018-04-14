@@ -66,7 +66,7 @@ class annotStore{
    x2 = x2 < 0 ? 0 : x2;
    y2 = y2 < 0 ? 0 : y2;
    // set params object
-   var params = {"iid": this.id, "x": x1, "x1": x2, "y" :y1, "y1": y2, "footprint": footprint, "algoritms": algs};
+   var params = {"iid": this.id, "x": x1, "x1": x2, "y" :y1, "y1": y2, "footprint": footprint, "algorithms": algs};
    apiCall(callback, this.algDataUrl, params);
  }
 }
