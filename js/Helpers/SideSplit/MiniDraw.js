@@ -111,16 +111,16 @@ class annotations{
 
   // draw using current viewer state
   draw(){
-    this.x1 = this.imagingHelper._viewportOrigin['x'];
-    this.y1 = this.imagingHelper._viewportOrigin['y'];
-    this.x2 = this.x1 + this.imagingHelper._viewportWidth;
-    this.y2 = this.y1 + this.imagingHelper._viewportHeight;
+    let x1 = this.imagingHelper._viewportOrigin['x'];
+    let y1 = this.imagingHelper._viewportOrigin['y'];
+    let x2 = x1 + this.imagingHelper._viewportWidth;
+    let y2 = y1 + this.imagingHelper._viewportHeight;
 
     var max = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(9), this.imagingHelper.physicalToDataY(9));
     var origin = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(0), this.imagingHelper.physicalToDataY(0));
     var footprint = (max.x - origin.x) * (max.y - origin.y);
 
-    this.store.getAlgData(x, y, x1, y1, footprint, this.selection, function(data){
+    this.store.getAlgData(x1, y1, x2, y2, footprint, this.selection, function(data){
       drawFromList(data, this.context);
     });
   }
