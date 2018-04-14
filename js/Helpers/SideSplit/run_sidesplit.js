@@ -53,5 +53,6 @@ document.addEventListener("sidesplit", function(e){
     show_sbs();
     // need viewers to be up to draw
     show_minidraw();
+    rhs_viewer.open(_viewer_source); // for now
   }
 });
