@@ -2006,7 +2006,7 @@ annotools.prototype.promptForAnnotation = function (newAnnot, mode, annotools, c
 
     + '</div>'
   )
-  jQuery.get('api/Data/retrieveTemplateByName.php?app_name=segment_curation', function (data) {
+  jQuery.get('api/Data/retrieveTemplate.php?app_name=segment_curation', function (data) {
     console.log("after retrieveTemplateByName.php:"+data);
     var schema = JSON.parse(data);
     schema = JSON.parse(schema)[0];
