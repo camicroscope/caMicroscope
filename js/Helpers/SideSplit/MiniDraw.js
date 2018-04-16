@@ -135,11 +135,11 @@ class annotations{
     let zoomUpdate = (this.lastZoom / viewer.viewport.getZoom()) >= 2 || (this.lastZoom / viewer.viewport.getZoom()) <= 0.5;
     if (panUpdate || zoomUpdate){
       // debug info to tune redraw params
-      console.info(this.lastBounds + ", " + this.lastZoom);
+      console.info("NEW: " + x + ", " + x+w + ", " + y + ", "+ y+h, + ", " + viewer.viewport.getZoom() )
+      console.info("OLD: "this.lastBounds + ", " + this.lastZoom);
       this.context.__clear_queue();
       this.lastZoom = viewer.viewport.getZoom();
       this.lastBounds = [x1, x2, y1, y2];
-      console.info(this.lastBounds + ", " + this.lastZoom);
       this.store.getAlgData(x1, y1, x2, y2, footprint, this.selection, (data) => drawFromList(data, this.context));
 
     }
