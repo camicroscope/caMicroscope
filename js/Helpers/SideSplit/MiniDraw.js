@@ -182,6 +182,8 @@ class annotations {
       var origin = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(0), this.imagingHelper.physicalToDataY(0));
       var footprint = (max.x - origin.x) * (max.y - origin.y);
       this.store.getAlgData(this.lastBounds[0], this.lastBounds[2], this.lastBounds[1], this.lastBounds[3], footprint, this.selection, (data) => drawFromList(data, this.context));
+      // not triggered by pan or zoom, so trigger osd to redraw too
+      this.viewer.viewport.panBy(new OpenSeadragon.Point(0.00001, 0.00001));
     }
 
     select(alg) {
