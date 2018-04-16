@@ -50,7 +50,7 @@ function show_minidraw(){
     title.innerHTML = "Select algorithms: <br/>"
     algsel.appendChild(title);
     // add title
-    data.forEach((function(x){
+    data.forEach(function(x){
       let select_item = document.createElement("div");
       select_item.innerHTML = ax.title;
       select_item.onclick = function(x){
