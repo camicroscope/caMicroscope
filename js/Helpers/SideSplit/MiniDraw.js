@@ -136,7 +136,7 @@ class annotations{
     if (panUpdate || zoomUpdate){
       // debug info to tune redraw params
       console.info("NEW: " + x + ", " + x+w + ", " + y + ", "+ y+h, + ", " + viewer.viewport.getZoom() )
-      console.info("OLD: "this.lastBounds + ", " + this.lastZoom);
+      console.info("OLD: " + this.lastBounds + ", " + this.lastZoom);
       this.context.__clear_queue();
       this.lastZoom = viewer.viewport.getZoom();
       this.lastBounds = [x1, x2, y1, y2];
