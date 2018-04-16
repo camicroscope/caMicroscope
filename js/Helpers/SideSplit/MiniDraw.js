@@ -106,6 +106,7 @@ class annotations{
     this.context = context;
     this.imagingHelper = imagingHelper;
     this.lastBounds = [0,0,0,0];
+    this.lastZoom = 0;
   }
 
   // draw using current viewer state
@@ -130,8 +131,9 @@ class annotations{
     // is any part of current view out of last rectangle?
     let panUpdate = x < this.lastBounds[0] || y < this.lastBounds[2] || x+w > this.lastBounds[1] || y+h > this.lastBounds[3];
 
-    // TODO has zoom changed enough?
-    if (panUpdate){
+    // has zoom changed enough?
+    let zoomUopdate = (this.lastZoom / viewer.viewport.getZoom()) >= 2 || (this.lastZoom / viewer.viewport.getZoom()) <= 0.5;
+    if (panUpdate || zoomUpdate){
       this.context.__clear_queue();
       this.lastBounds = [x1, x2, y1, y2];
       this.store.getAlgData(x1, y1, x2, y2, footprint, this.selection, (data) => drawFromList(data, this.context));
