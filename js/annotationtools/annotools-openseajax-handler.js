@@ -227,8 +227,7 @@ var AnnotoolsOpenSeadragonHandler = new Class({
             var pixel = OpenSeadragon.getMousePosition(evt).minus(pos);
             // console.log("pixel", pixel);
 
-            // TODO:
-            var diff = pixel.minus(this.stateOrigin); // ???
+            var diff = pixel.minus(this.stateOrigin);
 
             // handles a mouse click (zoom and pan to)
             // otherwise we will handle the pan event

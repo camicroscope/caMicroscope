@@ -68,7 +68,6 @@ function goodalgo(data, status) {
     }
     */
 
-    // TODO: test
     max_ver = 0;
     for (i = 0; i < data.length; i++) {
         var n = {};
@@ -143,7 +142,6 @@ function goodalgo(data, status) {
         }
     });
 
-    //TODO: test
     jQuery('#tree').attr('algotree', true);
     // Load weight
     if (annotool.loadedWeight == false) {
@@ -260,7 +258,6 @@ ToolBar.prototype.toggleAlgorithmSelector = function () {
             algorithm_color[tmp_algorithm_list[i]] = available_colors[i % available_colors.length];
             SELECTED_ALGORITHM_COLOR[tmp_algorithm_list[i]] = available_colors[i % available_colors.length];
 
-            // TODO: HARD-CODED PORT
             //user view composite dataset only
             if (window.location.port == "8080") {
                 var index_composite_input1 = tmp_algorithm_list[i].indexOf("composite_input");

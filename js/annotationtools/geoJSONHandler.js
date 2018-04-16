@@ -34,7 +34,7 @@ annotools.prototype.generateGeoTemplate = function () {
         'footprint': 10000,
         'provenance': {
             'analysis': {
-                'execution_id': username, //TODO: execution_id in sc, username here.
+                'execution_id': username,
                 'study_id': "",
                 'source': "human",
                 'computation': 'segmentation'
@@ -403,8 +403,6 @@ annotools.prototype.generateSVG = function (annotations) {
         }
 
 
-        // TODO: This is essentially doing the same thing as above. Why?
-        
         console.log("ROIs:", ROIs);
         for (var i = 0; i < ROIs.length; i++) {
             var annotation = ROIs[i];

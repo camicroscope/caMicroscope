@@ -151,7 +151,6 @@ annotools.prototype.destroyMarkups = function (viewer) {
 
 /**
  * Rendering by execution ids
- * TODO: Cleanup. Same as getMultiAnnot.
  *
  * @param algorithms
  */
@@ -2744,7 +2743,6 @@ annotools.prototype.promptForWorkOrder = function (newAnnot, mode, annotools, ct
         //   End of Text input code
         //
 
-        // TODO: remove hardcoded vars.
         var width = 48002;
         var height = 35558;
 
@@ -2794,7 +2792,6 @@ annotools.prototype.promptForWorkOrder = function (newAnnot, mode, annotools, ct
             //var execution_id = jQuery('#order-execution_id').val()
             var notes = jQuery('#order-notes').val();
 
-            // TODO: remove if statement
             if (iid === 'TCGA-06-0148-01Z-00-DX1') {
                 width = 26001;
                 height = 27968
