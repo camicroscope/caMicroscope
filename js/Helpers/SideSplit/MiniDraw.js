@@ -70,16 +70,31 @@ class annotStore{
    apiCall(callback, this.algDataUrl, params);
  }
 }
+
+var stringToColour = function(str) {
+  var hash = 0;
+  for (var i = 0; i < str.length; i++) {
+    hash = str.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  var colour = '#';
+  for (var i = 0; i < 3; i++) {
+    var value = (hash >> (i * 8)) & 0xFF;
+    colour += ('00' + value.toString(16)).substr(-2);
+  }
+  return colour;
+}
+
 // see https://github.com/birm/OSDragonDemos/blob/master/coordinated_draw_annotool.html
 function drawFromList(data, context){
   data.forEach(function(annotation){
     let id = annotation.provenance.analysis.execution_id;
-    let color = "red";
+    let color = stringToColour(id);
     let type = annotation.geometry.type;
     let coords = annotation.geometry.coordinates[0];
     if (!type || type == "Polygon"){
       // start
       context.beginPath();
+      context.strokeStyle = color;
       let first = coords.splice(1,1);
       context.moveTo(first[0], first[1])
       coords.forEach(function(coord){
