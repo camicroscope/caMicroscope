@@ -50,14 +50,13 @@ function show_minidraw(){
     title.innerHTML = "Select algorithms: <br/>"
     algsel.appendChild(title);
     // add title
-    data.forEach(function(xt){
-      let x = xt.target;
+    data.forEach(function(x){
       let select_item = document.createElement("div");
       select_item.innerHTML = x.title;
       select_item.onclick = function(y){
-        let x = y.target;
-        x.style.display="none";
-        annots.select(x.innerHTML);
+        y = y.target;
+        y.style.display="none";
+        annots.select(y.innerHTML);
       }.bind(this);
       // TODO add a little color indicator
       algsel.appendChild(select_item);
