@@ -134,6 +134,7 @@ class annotations{
     // has zoom changed enough?
     let zoomUopdate = (this.lastZoom / viewer.viewport.getZoom()) >= 2 || (this.lastZoom / viewer.viewport.getZoom()) <= 0.5;
     if (panUpdate || zoomUpdate){
+      this.lastZoom = viewer.viewport.getZoom();
       this.context.__clear_queue();
       this.lastBounds = [x1, x2, y1, y2];
       this.store.getAlgData(x1, y1, x2, y2, footprint, this.selection, (data) => drawFromList(data, this.context));
