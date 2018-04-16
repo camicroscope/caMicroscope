@@ -32,6 +32,15 @@ function apiCall(callback, url, params){
   .catch((x)=>console.warn(x));
 }
 
+var stringToColor = function(str) {
+  var hash = 0;
+  for (var i = 0; i < str.length; i++) {
+    hash = str.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  var colorlist = ['#1b9e77','#d95f02','#e7298a','#66a61e','#e6ab02','#a6761d','#666666'];
+  return colorlist[hash%colorlist.length];
+}
+
 class annotStore{
   /**
   * Annotation API Interactions
@@ -71,16 +80,7 @@ class annotStore{
  }
 }
 
-var stringToColor = function(str) {
-  var hash = 0;
-  for (var i = 0; i < str.length; i++) {
-    hash = str.charCodeAt(i) + ((hash << 5) - hash);
-  }
-  var colorlist = ['#1b9e77','#d95f02','#e7298a','#66a61e','#e6ab02','#a6761d','#666666'];
-  return colorlist[hash%colorlist.length];
-}
 
-// see https://github.com/birm/OSDragonDemos/blob/master/coordinated_draw_annotool.html
 function drawFromList(data, context){
   data.forEach(function(annotation){
     let id = annotation.provenance.analysis.execution_id;
@@ -128,6 +128,8 @@ class annotations{
     let w = this.imagingHelper._viewportWidth;
     let h = this.imagingHelper._viewportHeight;
 
+    let z = this.viewer.viewport.getZoom();
+
     // bounds for drawing
     let x1 = x - w;
     let y1 = y - h;
@@ -143,13 +145,19 @@ class annotations{
     let panUpdate = x < this.lastBounds[0] || y < this.lastBounds[2] || x+w > this.lastBounds[1] || y+h > this.lastBounds[3];
 
     // has zoom changed enough?
-    let zoomUpdate = (this.lastZoom / this.viewer.viewport.getZoom()) >= 2 || (this.lastZoom / this.viewer.viewport.getZoom()) <= 0.5;
+    let zoomUpdate = (this.lastZoom /z) >= 2 || (this.lastZoom /z) <= 0.5;
     if (panUpdate || zoomUpdate){
       // debug info to tune redraw params
-      console.info("NEW: " + x + ", " + x+w + ", " + y + ", "+ y+h, + ", " + this.viewer.viewport.getZoom() )
+      if(panUpdate){
+        console.info("panUpdate");
+      }
+      if(zoomUpdate){
+        console.info("zoomUpdate");
+      }
+      console.info("NEW: " + x + ", " + x+w + ", " + y + ", "+ y+h, + ", " + z )
       console.info("OLD: " + this.lastBounds + ", " + this.lastZoom);
       this.context.__clear_queue();
-      this.lastZoom = this.viewer.viewport.getZoom();
+      this.lastZoom = z;
       this.lastBounds = [x1, x2, y1, y2];
       this.store.getAlgData(x1, y1, x2, y2, footprint, this.selection, (data) => drawFromList(data, this.context));
 
