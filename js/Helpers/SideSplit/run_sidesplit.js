@@ -12,13 +12,17 @@ function change_image(id, url){
 // create a div for the algorithm selector
 var algsel = document.createElement("div");
 algsel.style.zIndex = "99";
+algsel.style.padding = "10px;"
 algsel.style.position = "absolute";
-algsel.style.height = "10%";
-algsel.style.width = "10%";
+algsel.style.height = "auto";
+algsel.style.maxHeight = "80%";
+algsel.style.maxWidth = "30%";
+algsel.style.overflow = "scroll";
+algsel.style.width = "auto";
 algsel.style.top = "10%";
 algsel.style.left = "60%";
 algsel.style.display = "none";
-algsel.style.borderRadius= "25px";
+algsel.style.borderRadius= "5px";
 algsel.style.background= "#73AD21";
 
 
@@ -65,11 +69,10 @@ function show_minidraw(){
   annots.store.getAlgList(function(data){
     let algsel = document.getElementById("algsel_sbs");
     algsel.innerHTML = "";
-    algsel.style.display = "";
+    algsel.style.display = "inline-block";
     let title = document.createElement("div");
-    title.innerHTML = "Select algorithms: <br/>"
+    title.innerHTML = "<b>Select algorithms:</b> <br/>"
     algsel.appendChild(title);
-    // add title
     data.forEach(function(x){
       let select_item = document.createElement("div");
       select_item.innerHTML = x.title;
@@ -84,7 +87,7 @@ function show_minidraw(){
       algsel.appendChild(select_item);
     });
     let done = document.createElement("div");
-    done.innerHTML = "DONE"
+    done.innerHTML = "<b>DONE</b>"
     done.onclick = function(){
       document.getElementById("algsel_sbs").style.display="none";
     }
