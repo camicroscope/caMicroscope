@@ -97,12 +97,10 @@ function drawFromList(data, context) {
         let type = annotation.geometry.type;
         let coords = annotation.geometry.coordinates[0];
         if (!type || type == "Polygon") {
-            // start
-            context.beginPath();
             context.strokeStyle = color;
             let first = coords.splice(0, 1);
-            console.log("first " + first)
-            context.moveTo(first[0], first[1])
+            context.moveTo(first[0], first[1]);
+            context.beginPath();
             coords.forEach(function(coord) {
                 let x = coord[0];
                 let y = coord[1];
