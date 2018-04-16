@@ -105,21 +105,40 @@ class annotations{
     this.selection = [];
     this.context = context;
     this.imagingHelper = imagingHelper;
-    // TODO imagingHelper needed?
+    this.lastBounds = [0,0,0,0];
   }
 
   // draw using current viewer state
   draw(){
-    let x1 = this.imagingHelper._viewportOrigin['x'];
-    let y1 = this.imagingHelper._viewportOrigin['y'];
-    let x2 = x1 + this.imagingHelper._viewportWidth;
-    let y2 = y1 + this.imagingHelper._viewportHeight;
+    // bounds for collision
+    let x = this.imagingHelper._viewportOrigin['x'];
+    let y = this.imagingHelper._viewportOrigin['y'];
+    let w = this.imagingHelper._viewportWidth;
+    let h = this.imagingHelper._viewportHeight;
 
+    // bounds for drawing
+    let x1 = x - w;
+    let y1 = y - h;
+    let x2 = x1 + 2*(w);
+    let y2 = y1 + 2*(h);
+
+    // calculate footprint for api
     var max = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(9), this.imagingHelper.physicalToDataY(9));
     var origin = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(0), this.imagingHelper.physicalToDataY(0));
     var footprint = (max.x - origin.x) * (max.y - origin.y);
 
-    this.store.getAlgData(x1, y1, x2, y2, footprint, this.selection, (data) => drawFromList(data, this.context));
+    // is any part of current view out of last rectangle?
+    let panUpdate = x < this.lastBounds[0] || y < this.lastBounds[2] || x+w > this.lastBounds[1] || y+h > this.lastBounds[3];
+
+    // TODO has zoom changed enough?
+    if (panUpdate){
+      this.context.__clear_queue();
+      this.lastBounds = [x1, x2, y1, y2];
+      this.store.getAlgData(x1, y1, x2, y2, footprint, this.selection, (data) => drawFromList(data, this.context));
+
+    }
+
+
   }
 
   select(alg){
