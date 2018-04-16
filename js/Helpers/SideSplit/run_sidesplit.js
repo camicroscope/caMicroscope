@@ -66,7 +66,7 @@ function show_minidraw(){
     done.onclick = function(){
       document.getElementById("algsel_sbs").style.display="none";
     }
-    algsel.appendChild("done")
+    algsel.appendChild(done);
   });
 
   console.log(annots.selection);
