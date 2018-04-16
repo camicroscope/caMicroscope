@@ -22,7 +22,8 @@ algsel.style.top = "10%";
 algsel.style.left = "60%";
 algsel.style.display = "none";
 algsel.style.borderRadius= "5px";
-algsel.style.background= "#73AD21";
+algsel.style.background= "#1764d8";
+algsel.style.color = "white";
 
 
 algsel.id = "algsel_sbs";
