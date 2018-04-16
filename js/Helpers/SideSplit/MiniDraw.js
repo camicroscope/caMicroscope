@@ -100,7 +100,8 @@ function drawFromList(data, context) {
             // start
             context.beginPath();
             context.strokeStyle = color;
-            let first = coords.splice(1, 1);
+            let first = coords.splice(0, 1);
+            console.log("first " + first)
             context.moveTo(first[0], first[1])
             coords.forEach(function(coord) {
                 let x = coord[0];
