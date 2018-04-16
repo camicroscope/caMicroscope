@@ -52,7 +52,7 @@ function show_minidraw(){
     // add title
     data.forEach(function(x){
       let select_item = document.createElement("div");
-      select_item.innerHTML = ax.title;
+      select_item.innerHTML = x.title;
       select_item.onclick = function(x){
         x.style.display="none";
         annots.select(x.innerHTML);
