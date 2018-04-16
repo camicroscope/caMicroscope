@@ -37,7 +37,7 @@ var stringToColor = function(str) {
         hash = str.charCodeAt(i) + ((hash << 5) - hash);
     }
     var colorlist = ['#1b9e77', '#d95f02', '#e7298a', '#66a61e', '#e6ab02', '#a6761d', '#666666'];
-    return colorlist[hash % colorlist.length];
+    return colorlist[Math.abs(hash) % colorlist.length];
 }
 
 class annotStore {
