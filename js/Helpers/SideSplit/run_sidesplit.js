@@ -54,7 +54,8 @@ function show_minidraw(){
       let x = xt.target;
       let select_item = document.createElement("div");
       select_item.innerHTML = x.title;
-      select_item.onclick = function(x){
+      select_item.onclick = function(y){
+        let x = y.target;
         x.style.display="none";
         annots.select(x.innerHTML);
       }.bind(this);
