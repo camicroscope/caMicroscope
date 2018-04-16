@@ -9,6 +9,20 @@ function change_image(id, url){
   _sbs_id = id;
 }
 
+// create a div for the algorithm selector
+var algsel = document.createElement("div");
+algsel.style.zIndex = "99";
+algsel.style.position = "absolute";
+algsel.style.height = "10%";
+algsel.style.width = "10%";
+algsel.style.top = "10%";
+algsel.style.left = "10%";
+algsel.style.display = "none";
+
+
+algsel.id = "algsel_sbs";
+document.body.appendChild(algsel)
+
 function show_minidraw(){
   // calibrate our canvas
   var c1 = delayer({});
@@ -28,9 +42,30 @@ function show_minidraw(){
     annots.draw();
   });
 
-  // by default, for demo, select all algorithms
+  // algorithm selector
   annots.store.getAlgList(function(data){
-    data.forEach((x)=>annots.select(x.title));
+    let algsel = document.getElementById("algsel_sbs")
+    algsel.style.display = "";
+    let title = document.createElement("div");
+    title.innerHTML = "Select algorithms: <br/>"
+    algsel.appendChild(title);
+    // add title
+    data.forEach((function(x){
+      let select_item = document.createElement("div");
+      select_item.innerHTML = ax.title;
+      select_item.onclick = function(x){
+        x.style.display="none";
+        annots.select(x.innerHTML);
+      }.bind(this);
+      // TODO add a little color indicator
+      algsel.appendChild(select_item);
+    });
+    let done = document.createElement("div");
+    done.innerHTML = "DONE"
+    done.onclick = function(){
+      document.getElementById("algsel_sbs").style.display="none";
+    }
+    algsel.appendChild("done")
   });
 
   console.log(annots.selection);
