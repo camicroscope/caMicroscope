@@ -404,7 +404,7 @@ annotools.prototype.generateSVG = function (annotations) {
 
 
         // TODO: This is essentially doing the same thing as above. Why?
-        /*
+        
         console.log("ROIs:", ROIs);
         for (var i = 0; i < ROIs.length; i++) {
             var annotation = ROIs[i];
@@ -459,7 +459,7 @@ annotools.prototype.generateSVG = function (annotations) {
                 svgHtml += '" style="fill:transparent; stroke:' + color + '; stroke-width:2.5"/>'
             }
         }
-        */
+        
 
         this.svg = new Element('div', {
             styles: {
