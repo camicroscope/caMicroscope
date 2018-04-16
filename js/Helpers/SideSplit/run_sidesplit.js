@@ -1,5 +1,14 @@
 var annots;
 
+var _sbs_source = _viewer_source;
+var _sbs_id = tissueId;
+
+// call this function before minidraw to open a different image
+function change_image(id, url){
+  _sbs_source = url;
+  _sbs_id = id;
+}
+
 function show_minidraw(){
   // calibrate our canvas
   var c1 = delayer({});
@@ -8,7 +17,7 @@ function show_minidraw(){
         viewer: rhs_viewer
       });
   // handle algorithm selection
-  annots = new annotations(tissueId, rhs_viewer, c1_c, rhs_imagingHelper, {});
+  annots = new annotations(_sbs_id, rhs_viewer, c1_c, rhs_imagingHelper, {});
 
   // get new data each pass
   rhs_viewer.addHandler("zoom", function(){
@@ -43,6 +52,9 @@ function show_minidraw(){
 }
 
 
+
+// functions to change
+
 document.addEventListener("sidesplit", function(e){
   if (document.getElementById("right_sidebyside").style.display == "block"){
     hide_sbs();
@@ -51,6 +63,6 @@ document.addEventListener("sidesplit", function(e){
     show_sbs();
     // need viewers to be up to draw
     show_minidraw();
-    rhs_viewer.open(_viewer_source); // for now
+    rhs_viewer.open(_sbs_source); // for now
   }
 });
