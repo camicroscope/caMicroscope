@@ -132,13 +132,13 @@ class annotations{
     let panUpdate = x < this.lastBounds[0] || y < this.lastBounds[2] || x+w > this.lastBounds[1] || y+h > this.lastBounds[3];
 
     // has zoom changed enough?
-    let zoomUpdate = (this.lastZoom / viewer.viewport.getZoom()) >= 2 || (this.lastZoom / viewer.viewport.getZoom()) <= 0.5;
+    let zoomUpdate = (this.lastZoom / this.viewer.viewport.getZoom()) >= 2 || (this.lastZoom / this.viewer.viewport.getZoom()) <= 0.5;
     if (panUpdate || zoomUpdate){
       // debug info to tune redraw params
-      console.info("NEW: " + x + ", " + x+w + ", " + y + ", "+ y+h, + ", " + viewer.viewport.getZoom() )
+      console.info("NEW: " + x + ", " + x+w + ", " + y + ", "+ y+h, + ", " + this.viewer.viewport.getZoom() )
       console.info("OLD: " + this.lastBounds + ", " + this.lastZoom);
       this.context.__clear_queue();
-      this.lastZoom = viewer.viewport.getZoom();
+      this.lastZoom = this.viewer.viewport.getZoom();
       this.lastBounds = [x1, x2, y1, y2];
       this.store.getAlgData(x1, y1, x2, y2, footprint, this.selection, (data) => drawFromList(data, this.context));
 
