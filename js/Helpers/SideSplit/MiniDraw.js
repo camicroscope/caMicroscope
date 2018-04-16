@@ -154,15 +154,8 @@ class annotations {
         // has zoom changed enough?
         let zoomUpdate = (this.lastZoom / z) >= 2 || (this.lastZoom / z) <= 0.5;
         if (panUpdate || zoomUpdate) {
-            // debug info to tune redraw params
-            if (panUpdate) {
-                console.info("panUpdate");
-            }
-            if (zoomUpdate) {
-                console.info("zoomUpdate");
-            }
-            console.info("NEW: " + x + ", " + x + w + ", " + y + ", " + y + h, +", " + z)
-            console.info("OLD: " + this.lastBounds + ", " + this.lastZoom);
+            // console.info("NEW: " + x + ", " + x + w + ", " + y + ", " + y + h, +", " + z)
+            // console.info("OLD: " + this.lastBounds + ", " + this.lastZoom);
             this.context.__clear_queue();
             this.lastZoom = z;
             this.lastBounds = [x1, x2, y1, y2];
