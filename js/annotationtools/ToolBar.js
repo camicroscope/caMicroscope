@@ -179,20 +179,21 @@ $.getScript('shared/ToolBar.js', function () {
             var event = new Event("magnifier-button-loaded");
             document.dispatchEvent(event);
 
-            // side split button
-            this.sidesplitButton = jQuery('<img>', {
-                'data-toggle': 'tooltip',
-                'data-placement': 'bottom',
-                'title': 'Toggle SideSplit',
-                'class': 'toolButton',
-                'src': 'images/SpyGlass.svg',
-                'id': 'sidesplit_toolbar_button'
-            });
-            tool.append(this.sidesplitButton);
-            this.sidesplitButton.on('click', function(){
-              var event = new Event("sidesplit");
-              document.dispatchEvent(event);
-            });
+            // // side split button
+            // this.sidesplitButton = jQuery('<img>', {
+            //     'data-toggle': 'tooltip',
+            //     'data-placement': 'bottom',
+            //     'title': 'Toggle SideSplit',
+            //     'class': 'toolButton',
+            //     'src': 'images/SpyGlass.svg',
+            //     'id': 'sidesplit_toolbar_button'
+            // });
+            // tool.append(this.sidesplitButton);
+            // this.sidesplitButton.on('click', function(){
+            //   var event = new Event("sidesplit");
+            //   document.dispatchEvent(event);
+            // });
+            
             /*
              * Event handlers for toolbar buttons
              */

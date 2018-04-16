@@ -10,7 +10,7 @@
  {
     $db_name=$default_db_name;
  }
- else { 
+ else {
    $db_name=$_GET["db_name"];
  }
 
@@ -316,9 +316,7 @@
 <script>
     spyglass_init(_viewer_source);
 </script>
-<!-- Sidesplit -->
-<script src="js/Helpers/coordinatedView.js"></script>
+<!-- Sidesplit  <script src="js/Helpers/coordinatedView.js"></script>
 <script src="js/Helpers/DisplaySelector.js"></script>
-<script src="js/Helpers/SideSplit.js"></script>
-<!-- Sidesplit -->
+<script src="js/Helpers/SideSplit.js"></script> -->
 <?php include 'shared/osdFooter.php'; ?>

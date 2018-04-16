@@ -50,9 +50,6 @@ var annotools = function (options) {
     this.x2 = 1.0;
     this.y1 = 0.0;
     this.y2 = 1.0;
-    this.SELECTED_ALGORITHM_LIST =[];
-    this.SELECTED_ALGORITHM_KEYS = [];
-    this.SELECTED_ALGORITHM_COLOR = [];
     this.container = document.getElementById(this.viewer.id).childNodes[0];
 
     this.annotationHandler = options.annotationHandler || new AnnotoolsOpenSeadragonHandler();
@@ -220,9 +217,9 @@ annotools.prototype.getMultiAnnot = function (viewer) {
     var origin = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(0), this.imagingHelper.physicalToDataY(0));
     var area = (max.x - origin.x) * (max.y - origin.y);
 
-    if (this.SELECTED_ALGORITHM_LIST.length) {
-        this.SELECTED_ALGORITHM_LIST = this.SELECTED_ALGORITHM_LIST.sort();
-        var algorithms = this.SELECTED_ALGORITHM_LIST;
+    if (SELECTED_ALGORITHM_LIST.length) {
+        SELECTED_ALGORITHM_LIST = SELECTED_ALGORITHM_LIST.sort();
+        var algorithms = SELECTED_ALGORITHM_LIST;
         var myList = OVERLAY_LIST;
 
         self.fetchAnnots(area, algorithms, myList);
