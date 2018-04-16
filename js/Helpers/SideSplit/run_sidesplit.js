@@ -59,7 +59,8 @@ function show_minidraw(){
         }
     });
   }
-
+  // reset each time
+  annots.selection = [];
   // algorithm selector
   annots.store.getAlgList(function(data){
     let algsel = document.getElementById("algsel_sbs");
@@ -98,6 +99,7 @@ document.addEventListener("sidesplit", function(e){
     hide_sbs();
   } else {
     // need viewers to be up to draw
+    show_sbs();
     show_minidraw();
     rhs_viewer.open(_sbs_source);
   }
