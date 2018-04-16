@@ -174,6 +174,16 @@ class annotations {
 
     }
 
+    // forcr a redraw from memory
+    forceDraw(){
+      this.context.__clear_queue();
+      // calculate footprint for api
+      var max = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(9), this.imagingHelper.physicalToDataY(9));
+      var origin = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(0), this.imagingHelper.physicalToDataY(0));
+      var footprint = (max.x - origin.x) * (max.y - origin.y);
+      this.store.getAlgData(this.lastBounds[0], this.lastBounds[2], this.lastBounds[1], this.lastBounds[3], footprint, this.selection, (data) => drawFromList(data, this.context));
+    }
+
     select(alg) {
         if (this.selection.indexOf(alg) == -1) {
             this.selection.push(alg);

@@ -77,6 +77,8 @@ function show_minidraw(){
         y = y.target;
         y.style.display="none";
         annots.select(y.innerHTML);
+        // force a redraw
+        annots.forceDraw();
       }.bind(this);
       // TODO add a little color indicator
       algsel.appendChild(select_item);
