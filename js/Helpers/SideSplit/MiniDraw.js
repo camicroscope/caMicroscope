@@ -71,24 +71,20 @@ class annotStore{
  }
 }
 
-var stringToColour = function(str) {
+var stringToColor = function(str) {
   var hash = 0;
   for (var i = 0; i < str.length; i++) {
     hash = str.charCodeAt(i) + ((hash << 5) - hash);
   }
-  var colour = '#';
-  for (var i = 0; i < 3; i++) {
-    var value = (hash >> (i * 8)) & 0xFF;
-    colour += ('00' + value.toString(16)).substr(-2);
-  }
-  return colour;
+  var colorlist = ['#1b9e77','#d95f02','#e7298a','#66a61e','#e6ab02','#a6761d','#666666'];
+  return colorlist[hash%colorlist.length];
 }
 
 // see https://github.com/birm/OSDragonDemos/blob/master/coordinated_draw_annotool.html
 function drawFromList(data, context){
   data.forEach(function(annotation){
     let id = annotation.provenance.analysis.execution_id;
-    let color = stringToColour(id);
+    let color = stringToColor(id);
     let type = annotation.geometry.type;
     let coords = annotation.geometry.coordinates[0];
     if (!type || type == "Polygon"){
