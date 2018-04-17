@@ -314,15 +314,15 @@ annotools.prototype.generateSVG = function (annotations) {
         var container;
         if (this.container) {
             container = this.container.childNodes[0];
-            console.log("container.childNodes[0]", container);
+            //console.log("container.childNodes[0]", container);
         }
         else if (document.getElementsByClassName(this.canvas)[0]) {
             container = document.getElementsByClassName(this.canvas)[0];
-            console.log("getElementsByClassName(this.canvas)[0]", container);
+            //console.log("getElementsByClassName(this.canvas)[0]", container);
         }
         else if (document.getElementsByClassName(this.canvas)[0].childNodes[0]) {
             container = document.getElementsByClassName(this.canvas)[0].childNodes[0];
-            console.log("getElementsByClassName(this.canvas)[0].childNodes[0]", container);
+            //console.log("getElementsByClassName(this.canvas)[0].childNodes[0]", container);
         }
         //console.log("container", container);
 
