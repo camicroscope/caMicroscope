@@ -20,7 +20,7 @@ switch ($_SERVER['REQUEST_METHOD'])
 			$url = $getUrl . $iid . "&username=" . $_SESSION['username'] . "&api_key=".$api_key;	
 			$getRequest = new RestRequest($url,'GET');
 			$getRequest->execute();
-			//Figure out how to parse reponse
+			//Figure out how to parse response
 			$annotationList = json_decode($getRequest->responseBody);
 			
 			if(json_encode($annotationList) == null)

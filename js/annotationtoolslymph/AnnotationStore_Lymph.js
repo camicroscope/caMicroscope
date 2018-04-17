@@ -104,7 +104,7 @@ AnnotationStore.prototype.fetchAnnotations = function(x1,y1,x2,y2, footprint, al
 
 	try{
         var d = JSON.parse(data);
-        //console.log('retrived annots: ' + JSON.stringify(d[0]));
+        //console.log('retrieved annots: ' + JSON.stringify(d[0]));
 	} catch (e){
 		callback({"error": "Error"});
 	}

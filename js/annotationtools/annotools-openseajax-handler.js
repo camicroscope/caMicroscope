@@ -191,8 +191,7 @@ var AnnotoolsOpenSeadragonHandler = new Class({
         }
         if (this.state == 'pan') {
             // $('svg')[0].hide();
-            if ($$('svg')[0])
-            {
+            if ($$('svg')[0]) {
                 $$('svg')[0].setStyle('opacity', 0);
             }
 
@@ -228,8 +227,7 @@ var AnnotoolsOpenSeadragonHandler = new Class({
             var pixel = OpenSeadragon.getMousePosition(evt).minus(pos);
             // console.log("pixel", pixel);
 
-            // TODO:
-            var diff = pixel.minus(this.stateOrigin); // ???
+            var diff = pixel.minus(this.stateOrigin);
 
             // handles a mouse click (zoom and pan to)
             // otherwise we will handle the pan event
@@ -237,8 +235,7 @@ var AnnotoolsOpenSeadragonHandler = new Class({
 
                 // setTimeout(function() {
                 // annotationHandler.handleZoomIn()
-                if ($$('svg')[0])
-                {
+                if ($$('svg')[0]) {
                     $$('svg')[0].setStyle('opacity', 1)
                 }
                 // }, annotationHandler.animateWaitTime)
@@ -250,8 +247,7 @@ var AnnotoolsOpenSeadragonHandler = new Class({
                     viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(.5, .5)).y);
 
                 // $('svg')[0].show();
-                if ($$('svg')[0])
-                {
+                if ($$('svg')[0]) {
                     $$('svg')[0].setStyle('opacity', 1);
                 }
 
@@ -296,8 +292,7 @@ var AnnotoolsOpenSeadragonHandler = new Class({
             return
         }
 
-        if (evt.preventDefault)
-        {
+        if (evt.preventDefault) {
             evt.preventDefault();
         }
 
@@ -307,8 +302,7 @@ var AnnotoolsOpenSeadragonHandler = new Class({
         var pixel = OpenSeadragon.getMousePosition(evt).minus(pos);
         // console.log("pixel", pixel);
 
-        if ($$('svg')[0])
-        {
+        if ($$('svg')[0]) {
             //console.log("$$('svg')[0]", $$('svg')[0]);
             $$('svg')[0].setStyle('opacity', 0);
         }
@@ -320,10 +314,9 @@ var AnnotoolsOpenSeadragonHandler = new Class({
         if (evt.preventDefault)
             evt.preventDefault();
 
-        if ($$('svg')[0])
-        {
+        if ($$('svg')[0]) {
             $$('svg')[0].setStyle('opacity', 0)
         }
-        
+
     }
 });

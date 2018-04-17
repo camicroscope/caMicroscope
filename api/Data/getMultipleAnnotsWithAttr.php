@@ -44,7 +44,7 @@ if (!empty($_SESSION['api_key'])) {
 			
 			//echo $output;
 			$annotationList = $output;
-			//Figure out how to parse reponse
+			//Figure out how to parse response
 			//$annotationList = ($getRequest->responseBody);
 
             if($annotationList)

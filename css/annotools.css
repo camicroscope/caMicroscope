@@ -152,6 +152,15 @@
 	vertical-align: middle;
         font-family: Roboto-Light;
 }
+.statusButton
+{
+    position: absolute;
+    left: 75%;
+    top: 12px;
+    font-size: 16px;
+    vertical-align: middle;
+    font-family: Roboto;
+}
 .iidButton
 {
 	position: absolute;
@@ -310,10 +319,12 @@
 #panelBody input{
     color: #000;
 }
-#panael .btn2{
-	//background: #244B71;
-	
+/*
+#panel .btn2 {
+	background: #244B71;
 }
+*/
+
 #panel .btn{
     background: #244B71;
     color: #fff;
@@ -339,7 +350,7 @@
     z-index: 900999;
     background: #1976D2;
     box-shadow:1px 1px 1px 1px  #555;
-    //padding: 15px;
+    /* padding: 15px; */
     border-radius: 4px;
     color: #fff;
     opacity: 0.9;
@@ -388,19 +399,19 @@
     display: inline-block;
 }
 .wdzt-cell-layout input{
-    //margin-left: 20px;
+    /* margin-left: 20px; */
     width: 110px;
     margin-top: 5px;
     display: inline-block;
 }
 .wdzt-cell-layout input[type=number]{
-    //margin-left: 20px;
+    /* margin-left: 20px; */
     width: 38px;
     margin: 0;
 
 }
 .wdzt-cell-layout input[type=range]::-webkit-slider-runnable-track {
-    //margin-left: 20px;
+    /* margin-left: 20px; */
     width:50px;
     width: 14px;
 }
@@ -419,6 +430,7 @@
     left: 120px; 
     background: #244B71;
 }
+/*
 #bookmarkURLDiv input{
     color: #333;
     width: 100%;
@@ -436,8 +448,9 @@
     -webkit-box-shadow: 0px 0px 5px 2px #000000;
     -moz-box-shadow: 0px 0px 5px 2px #000000;
     box-shadow: 0px 0px 5px 2px #000000;
-
+    
 }
+*/
 
 .checkbox input[type=checkbox], .checkbox-inline input[type=checkbox], .radio input[type=radio], .radio-inline input[type=radio]{
 	margin: 0;
@@ -446,7 +459,7 @@
 
     width: 10px;
     height: 10px;
-//    background: red;
+    /* background: red; */
     position: relative;
     display: inline-block;
     top: 2px;
@@ -467,5 +480,5 @@
 #panelBody input[type="checkbox"] {
   float: left;
   display:inline-block;
-  //margin-top: -15px;
+  /* margin-top: -15px; */
 }

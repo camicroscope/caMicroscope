@@ -21,7 +21,7 @@ if(isset($_GET["iid"]))
     $getRequest->execute();
 
    
-    //Figure out how to parse reponse
+    //Figure out how to parse response
     $annotationList = ($getRequest->responseBody);
 
     if($annotationList)

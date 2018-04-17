@@ -37,7 +37,7 @@ if (!empty($_SESSION['api_key'])) {
            $getRequest->execute();
            //print_r($url);            
            //print_r($getRequest);
-	       //Figure out how to parse reponse
+	       //Figure out how to parse response
 	       $annotationList = ($getRequest->responseBody);
       
             // print_r($annotationList);

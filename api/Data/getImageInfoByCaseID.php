@@ -26,7 +26,7 @@ if(isset($_GET["case_id"]))
     $getRequest->execute();
 
    
-    //Figure out how to parse reponse
+    //Figure out how to parse response
     $imageInfo = ($getRequest->responseBody);
 
     if($imageInfo)

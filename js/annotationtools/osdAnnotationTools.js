@@ -1,6 +1,5 @@
 /*
- Copyright (C) 2012 Shaohuan Li <shaohuan.li@gmail.com>, Ashish Sharma <ashish.sharma@emory.edu>
- This file is part of Biomedical Image Viewer developed under the Google of Summer of Code 2012 program.
+ This file is part of caMicroscope
 
  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 
@@ -9,6 +8,7 @@
  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
 
+console.log("osdAnnotationTools.js");
 
 /**
  * User-selected ROI.
@@ -35,20 +35,22 @@ var annotools = function (options) {
     this.color = options.color || 'lime'; // Default Annotation Color
 
     this.iidDecoded = decodeURI(options.iid);
-    this.canvas = options.canvas; // The canvas Element that The Use will be drawing annotations on.
+    this.canvas = options.canvas; // The node id of the canvas Element to draw annotations on
     this.iid = options.iid || null; // The Image ID
     this.annotVisible = true; // The Annotations are Set to be visible at the First Loading
     this.mode = 'default'; // The Mode is Set to Default
-
+    this.user_email = options.user_email;
     this.viewer = options.viewer;
     this.imagingHelper = this.viewer.imagingHelper;
     this.mpp = options.mpp;
     this.mppx = parseFloat(this.mpp['mpp-x']);
     this.mppy = parseFloat(this.mpp['mpp-y']);
+    this.markupid = options.markupid || "markups";
     this.x1 = 0.0;
     this.x2 = 1.0;
     this.y1 = 0.0;
     this.y2 = 1.0;
+    this.container = document.getElementById(this.viewer.id).childNodes[0];
 
     this.annotationHandler = options.annotationHandler || new AnnotoolsOpenSeadragonHandler();
 
@@ -61,7 +63,7 @@ var annotools = function (options) {
     }.bind(this));
 
     this.viewer.addHandler('animation-start', function (event) {
-        var markup_svg = document.getElementById('markups');
+        var markup_svg = document.getElementById(this.markupid);
         if (markup_svg) {
             // console.log("destroying")
             markup_svg.destroy();
@@ -139,7 +141,7 @@ var annotools = function (options) {
 annotools.prototype.destroyMarkups = function (viewer) {
     // console.log("Destroy markups");
 
-    var markup_svg = document.getElementById('markups');
+    var markup_svg = document.getElementById(this.markupid);
     if (markup_svg) {
         // console.log("destroying")
         markup_svg.destroy();
@@ -149,7 +151,7 @@ annotools.prototype.destroyMarkups = function (viewer) {
 
 /**
  * Rendering by execution ids
- * Same as getMultiAnnot??
+ *
  * @param algorithms
  */
 annotools.prototype.renderByExecutionId = function (algorithms) {
@@ -194,30 +196,10 @@ annotools.prototype.renderByExecutionId = function (algorithms) {
 
 /**
  * Get multiple annotations
- * Same as renderByExecutionId??
+ *
  * @param viewer
  */
 annotools.prototype.getMultiAnnot = function (viewer) {
-
-    // console.log("Get multiple annotations");
-    // console.log("viewer", viewer);
-
-    // console.log("ALGORITHM_LIST", ALGORITHM_LIST);
-    // console.log("SELECTED_ALGORITHM_LIST", SELECTED_ALGORITHM_LIST);
-
-    SELECTED_ALGORITHM_LIST = SELECTED_ALGORITHM_LIST.sort();
-    var algorithms = SELECTED_ALGORITHM_LIST;
-
-    /*
-     if (jQuery('#tree').attr('algotree')) {
-     var selalgos = jQuery('#tree').fancytree('getTree').getSelectedNodes()
-     // console.log(selalgos)
-     for (i = 0; i < selalgos.length; i++) {
-     algorithms.push(selalgos[i].refKey)
-     // opa["Val" + (i + 1).toString()] = selalgos[i].refKey
-     }
-     }
-     */
 
     var self = this;
     this.x1 = this.imagingHelper._viewportOrigin['x'];
@@ -234,12 +216,49 @@ annotools.prototype.getMultiAnnot = function (viewer) {
     var origin = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(0), this.imagingHelper.physicalToDataY(0));
     var area = (max.x - origin.x) * (max.y - origin.y);
 
+    if (SELECTED_ALGORITHM_LIST.length) {
+        SELECTED_ALGORITHM_LIST = SELECTED_ALGORITHM_LIST.sort();
+        var algorithms = SELECTED_ALGORITHM_LIST;
+        var myList = OVERLAY_LIST;
+
+        self.fetchAnnots(area, algorithms, myList);
+    }
+
+};
+
+annotools.prototype.filterit = function (a, b) {
+
+    var aa = [];
+    var bb = [];
+    for (var i = 0; i < b.length; i++) {
+        bb.push(b[i].execid);
+
+    }
+
+    // If we've already displayed the tiles
+    // remove it from the "todo" list.
+    for (var i = 0; i < a.length; i++) {
+        var idx = bb.indexOf(a[i]);
+        if (idx < 0) {
+            aa.push(a[i]);
+
+        }
+    }
+
+    return aa;
+};
+
+annotools.prototype.fetchAnnots = function (area, SELECTED_ALGORITHM_LIST, OVERLAY_LIST) {
+    var self = this;
+    var algorithms = self.filterit(SELECTED_ALGORITHM_LIST, OVERLAY_LIST);
+    //console.log("**** algorithms ****", algorithms);
 
     if (algorithms.length) {
+
         this.toolBar.titleButton.hide();
         this.toolBar.ajaxBusy.show();
-        this.annotations = this.AnnotationStore.fetchAnnotations(this.x1, this.y1, this.x2, this.y2, area, algorithms, function (data) {
-            // console.log(data);
+
+        this.annotations = this.AnnotationStore.fetchAnnotations(self.x1, self.y1, self.x2, self.y2, area, algorithms, function (data) {
             self.annotations = data;
             self.displayGeoAnnots();
             self.setupHandlers();
@@ -247,6 +266,7 @@ annotools.prototype.getMultiAnnot = function (viewer) {
             self.toolBar.titleButton.show();
             self.toolBar.ajaxBusy.hide();
         });
+
     } else {
         self.setupHandlers();
         self.destroyMarkups();
@@ -414,7 +434,7 @@ annotools.prototype.drawMarkups = function () {
     this.magnifyGlass.hide(); // Hide The Magnifying Tool
 
     // this.container = document.id(this.canvas) //Get The Canvas Container
-    this.container = document.getElementsByClassName(this.canvas)[0]; // Get The Canvas Container
+    //this.container = document.getElementsByClassName(this.canvas)[0]; // Get The Canvas Container
     // this.container = document.getElementById('container') //Get The Canvas Container
 
     if (this.container) {
@@ -501,7 +521,7 @@ annotools.prototype.createWorkOrder = function () {
 
     this.magnifyGlass.hide(); // Hide The Magnifying Tool
     // this.container = document.id(this.canvas) //Get The Canvas Container
-    this.container = document.getElementsByClassName(this.canvas)[0]; // Get The Canvas Container
+    // this.container = document.getElementsByClassName(this.canvas)[0]; // Get The Canvas Container
     // this.container = document.getElementById('container') //Get The Canvas Container
 
     if (this.container) {
@@ -963,7 +983,7 @@ analyze: function(ctx) {
     this.drawLayer.show(); //Show The Drawing Layer
     this.magnifyGlass.hide(); //Hide The Magnifying Tool
     this.container = document.getElementsByClassName(this.canvas)[0]; //Get The Canvas Container
-    
+
     var left = parseInt(this.container.getLeft()), //Get The Container Location
         top = parseInt(this.container.offsetTop),
         width = parseInt(this.container.offsetWidth),
@@ -972,18 +992,18 @@ analyze: function(ctx) {
         otop = top,
         owidth = width,
         oheight = height;
-        
+
     if (left < 0) {
         left = 0;
         width = window.innerWidth
-    } 
-    
+    }
+
     //See Whether The Container is outside The Current ViewPort
     if (top < 0) {
         top = 0;
         height = window.innerHeight
     }
-    
+
     //Recreate The CreateAnnotation Layer Because of The ViewPort Change Issue.
     this.drawLayer.set({
         'styles': {
@@ -993,19 +1013,19 @@ analyze: function(ctx) {
             height: height
         }
     });
-    
+
     //Create Canvas on the CreateAnnotation Layer
     this.drawCanvas.set({
         width: width,
         height: height
     });
-    
+
     //The canvas context
     var ctx = this.drawCanvas.getContext("2d");
     var started = false;
     var min_x, min_y, max_x, max_y, w, h;
     var startPosition;
-    
+
     this.drawCanvas.addEvent('mousedown', function (e) {
         started = true;
         startPosition = OpenSeadragon.getMousePosition(e.event);
@@ -1366,9 +1386,37 @@ annotools.prototype.saveAnnot = function (annotation) {
     // console.log("Saving annotation");
     // console.log("annotation", annotation)
 
+    region_type=annotation.properties.annotations.region;
+    //execution_id=annotation.provenance.analysis.execution_id;
+    var user=annotool.user;
+    if(region_type=="Tumor"){
+       var execution_id =user+"_Tumor_Region" ;
+       annotation.provenance.analysis.execution_id = execution_id;
+     }
+    if(region_type=="Non_Tumor"){
+       annotation.provenance.analysis.execution_id =user+"_Non_Tumor_Region";
+     }
+
+     var d = new Date();
+     var current_time=d.toLocaleString();
+     annotation.created_by=user;
+     annotation.created_on=current_time;
+     annotation.updated_by='';
+     annotation.updated_on='';
     jQuery.ajax({
         'type': 'POST',
-        url: 'api/Data/getAnnotSpatial.php',
+        url: 'api/Data/getAnnotSpatial_sc.php',
+        data: annotation,
+        success: function (res, err) {
+            // console.log("response: ")
+            console.log(res);
+            console.log(err);
+            console.log('successfully posted')
+        }
+    })
+    jQuery.ajax({
+        'type': 'POST',
+        url: 'api/Data/getAnnotSpatial_sc.php',
         data: annotation,
         success: function (res, err) {
             // console.log("response: ")
@@ -2695,7 +2743,6 @@ annotools.prototype.promptForWorkOrder = function (newAnnot, mode, annotools, ct
         //   End of Text input code
         //
 
-        // TODO: remove hardcoded vars.
         var width = 48002;
         var height = 35558;
 
@@ -2745,7 +2792,6 @@ annotools.prototype.promptForWorkOrder = function (newAnnot, mode, annotools, ct
             //var execution_id = jQuery('#order-execution_id').val()
             var notes = jQuery('#order-notes').val();
 
-            // TODO: remove if statement
             if (iid === 'TCGA-06-0148-01Z-00-DX1') {
                 width = 26001;
                 height = 27968
@@ -2861,7 +2907,7 @@ annotools.prototype.promptForWorkOrder = function (newAnnot, mode, annotools, ct
  * @param cb
  */
 function pollOrder(id, cb) {
-    // console.log("Poll Order");
+    //console.log("pollOrder");
 
     jQuery.get("api/Data/workOrder.php?id=" + id, function (data) {
 
@@ -2904,9 +2950,12 @@ annotools.prototype.promptForAnnotation = function (newAnnot, mode, annotools, c
         + '</div>'
     );
 
-    jQuery.get('api/Data/retrieveTemplate.php', function (data) {
+    jQuery.get('api/Data/retrieveTemplate.php?app_name=tumor_markup', function (data) {
+        console.log("data", data);
         var schema = JSON.parse(data);
         schema = JSON.parse(schema)[0];
+        //region_list=schema.region.enum;
+        //schema.region.enum=["Tumor","Non_Tumor"];
         // console.log("schema", schema);
         // console.log("retrieved template")
         var formSchema = {

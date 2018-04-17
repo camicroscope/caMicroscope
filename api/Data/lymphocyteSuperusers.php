@@ -26,7 +26,7 @@ switch ($_SERVER['REQUEST_METHOD'])
 	        $getRequest = new RestRequest($url,'GET');
             $getRequest->execute();
            
-	        //Parse reponse
+	        //Parse response
 	        $lymphocyteSuperuserInfo = ($getRequest->responseBody);
 
             if($lymphocyteSuperuserInfo) {

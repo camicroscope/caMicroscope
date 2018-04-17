@@ -1,10 +1,25 @@
 <?php
 
-$baseUrl = "http://quip-data:9099";
-$kueUrl = "http://quip-jobs:3000";
+if (file_exists('../../../config.php')) {
+    $config = require '../../../config.php';
+}
+else {
+    $config = ['dataHost' => 'quip-data:9099',
+               'kueHost' => 'quip-jobs:3000'];
+}
+
+
+$baseUrl = "http://" . $config['dataHost'];
+$kueUrl = "http://" . $config['kueHost'];
 
 $serviceUrl     = "$baseUrl/services/Camicroscope_DataLoader";
 $annotationsUrl = "$baseUrl/services/Camicroscope_Annotations";
+
+if ($_SESSION["db_name"] == "quip_comp"){
+   $serviceUrl     = "$baseUrl/services/Camicroscope_DataLoader_comp";
+   $annotationsUrl = "$baseUrl/services/Camicroscope_Annotations_comp";
+}
+
 $u24_userUrl    = "$baseUrl/services/u24_user";
 $imageUrl       = "$serviceUrl/DataLoader";
 $lymphocyteUrl = "$baseUrl/services/Camicroscope_Lymphocyte";
@@ -28,6 +43,7 @@ return array(
     /*
      * temp
      */
+    'getOverlayTiles' => "$baseUrl/services/TileOverlay/Tiles/query/getTileLocation?",
     'algorithmsForImage' => "$annotationsUrl/MarkupsForImages/query/MarkupsAvilableForImage?",
     'getMultipleAnnotations' => "$annotationsUrl/MarkupLoader/query/getMultipleMarkups?",
     'getROI' => "$annotationsUrl/MarkupLoader/query/getROI", //Featurescape URL.
@@ -53,6 +69,8 @@ return array(
     'postDataForLymphocytes' => "$lymphocyteUrl/DataForLymphocytes/submit/json?",
     'getLymphocyteData' => "$lymphocyteUrl/DataForLymphocytes/query/getLymphocytes?",
     'getLymphocyteDataByCaseId' => "$lymphocyteUrl/DataForLymphocytes/query/getLymphocytesByCaseId?",
+    'postDataForHeatmap' => "$lymphocyteUrl/HeatmapData/submit/json?",
+    'getHeatmapData' => "$lymphocyteUrl/HeatmapData/query/getQualHeatmapByCaseidExecid?",
 
     /* Lymphocyte Superusers */
     'postSuperuserForLymphocytes' => "$lymphocyteUrl/LymphocyteUsers/submit/json?",
@@ -77,26 +95,35 @@ return array(
 
     /* Template */
     'retrieveTemplate'      => "$templateUrl/AnnotationTemplate/query/retrieveTemplate",
-    'retrieveTemplateClone' => "$templateUrl/AnnotationTemplate/query/retrieveTemplateClone",
+    'retrieveTemplateByName' => "$templateUrl/AnnotationTemplate/query/retrieveTemplateByName",
 
     /* u24_user */
     'findUserByName'   => "$u24_userUrl/user_data/query/findUserByName?",
     'findUserByEmail'  => "$u24_userUrl/user_data/query/findUserByEmail?",
+    'findUser'         => "$u24_userUrl/user_data/query/findUser?",
     'findAdmin'        => "$u24_userUrl/user_data/query/findAdmin?",
+
     'findAllBindaasUsers'=>"$u24_userUrl/user_data/query/findAllBindaasUsers?",
+
     'deleteUserByName' => "$u24_userUrl/user_data/delete/deleteUserByName?",
     'deleteUserByEmail'=> "$u24_userUrl/user_data/delete/deleteUserByEmail?",
     'postUser'         => "$u24_userUrl/user_data/submit/json",
+    'setUserType'      => "$u24_userUrl/user_data/delete/setUserType?",
 
 
     /* Image */
     'getDimensions' => "$imageUrl/query/getDimensionsByIID?api_key=",
     'getFileLocation' => "$imageUrl/query/getFileLocationByIID?api_key=",
+    //'getTileLocation' => "$imageUrl/query/getTileLocationByIID?api_key=",
     'getMPP' => "$imageUrl/query/getMPPByIID?api_key=",
     'getImageInfoByCaseID'=> "$imageUrl/query/getImageInfoByCaseID?api_key=",
-    'fastcgi_server' => "../fcgi-bin/iipsrv.fcgi",
+    'fastcgi_server' => "/fcgi-bin/iipsrv.fcgi",
+    'imageStatusUpdate'=> "$imageUrl/delete/imageStatusUpdate?",
+    'getImageStatus'=> "$imageUrl/query/getImageStatusByCaseID?api_key=",
+    'getImageAssignTo'=> "$imageUrl/query/getImageAssignToByCaseID?api_key=",
+    'imageAssignTo'=> "$imageUrl/delete/imageAssignTo?",
 
-	 /* Dynamic Services */
+    /* Dynamic Services */
     'postWorkOrder' => "$dynamicServices/WorkOrders/submit/json",
     'kueUrl' => $kueUrl
 );
