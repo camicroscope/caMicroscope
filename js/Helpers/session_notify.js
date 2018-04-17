@@ -1,5 +1,5 @@
 window.setInterval(function(){
-  fetch("../security/server.php?checkStatus", {method: 'post'})
+  fetch("../security/checkStatus.php", {method: 'post'})
   .then(function(x){
     return x.json()
   })

@@ -645,7 +645,6 @@ annotools.prototype.generateSVG = function (annotations) {
         jQuery(".annotationsvg").css("opacity", 0.5);
         jQuery("#" + event.target.id).css("opacity", 1);
         var id = event.target.id;
-        // TODO: WHY NOT var url = "api/Data/getROI.php?id="+id;
         var url = "api/Data/getProperties.php?id=" + id;
         var content = "<div id = 'panelHeader'> <h4>Annotation Details </h4></div>"
             + "<div id='panelBody'>";

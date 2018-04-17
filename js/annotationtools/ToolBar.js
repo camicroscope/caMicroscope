@@ -71,7 +71,7 @@ $.getScript('shared/ToolBar.js', function () {
                 'src': 'images/Heatmap.svg'
             });
             tool.append(this.lymphbutton); // Lymphocyte Button
-
+/*
             this.qualitybutton = jQuery('<img>', {
                 'data-toggle': 'tooltip',
                 'data-placement': 'bottom',
@@ -81,7 +81,7 @@ $.getScript('shared/ToolBar.js', function () {
             });
 
             tool.append(this.qualitybutton); // Lymphocyte Button
-
+*/
             this.spacer1 = jQuery('<img>', {
                 'class': 'spacerButton',
                 'src': 'images/spacer.svg'
@@ -234,7 +234,7 @@ $.getScript('shared/ToolBar.js', function () {
                     }
                 })
             }.bind(this));
-
+/*
             this.qualitybutton.on('click', function () {
                 var tissueId = this.iid;
                 var x1 = annotool.imagingHelper._viewportOrigin['x'];
@@ -261,7 +261,7 @@ $.getScript('shared/ToolBar.js', function () {
                     }
                 })
             }.bind(this));
-
+*/
             this.sharebutton.on('click', function () {
                 // update the url
                 LinkRequest();
