@@ -316,7 +316,12 @@
 <script>
     spyglass_init(_viewer_source);
 </script>
-<!-- Sidesplit  <script src="js/Helpers/coordinatedView.js"></script>
-<script src="js/Helpers/DisplaySelector.js"></script>
-<script src="js/Helpers/SideSplit.js"></script> -->
+<!-- Sidesplit  -->
+<script src="js/Helpers/SideSplit/openseadragon-canvas-overlay.js"></script>
+<script src="js/Helpers/SideSplit/coordinatedView.js"></script>
+<script src="js/Helpers/SideSplit/SideSplit.js"></script>
+<script src="js/Helpers/SideSplit/ProxyTools.js"></script>
+<script src="js/Helpers/SideSplit/ViewportCalibratedCanvas.js"></script>
+<script src="js/Helpers/SideSplit/MiniDraw.js"></script>
+<script src="js/Helpers/SideSplit/run_sidesplit.js"></script>
 <?php include 'shared/osdFooter.php'; ?>
