@@ -311,7 +311,7 @@ $.getScript('shared/ToolBar.js', function () {
                         } else
                             alert("Only super user can activate this button!");
                     } else
-                        alert("Only super user can activate this button!");
+                        alert("Only super user/assigned user can activate this button!");
                 } else
                     alert("Only super user can activate this button!");
             }.bind(this));
