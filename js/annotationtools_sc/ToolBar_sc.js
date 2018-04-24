@@ -238,7 +238,7 @@ $.getScript('shared/ToolBar.js', function () {
             }.bind(this));
 
             this.pencilbutton.on('click', function () {
-                if (this.imageStatus == "unlock" || this.imageStatus == "Unlock" || this.imageStatus == "") {
+                if (typeof this.imageStatus == "undefined" || this.imageStatus == "unlock" || this.imageStatus == "Unlock" || this.imageStatus == "") {
                     this.mode = 'pencil';
                     this.annotools.mode = 'pencil';
                     this.annotools.drawMarkups();
@@ -255,7 +255,7 @@ $.getScript('shared/ToolBar.js', function () {
             }.bind(this));
 
             this.mergebutton1.on('click', function () {
-                if (this.imageStatus == "unlock" || this.imageStatus == "Unlock" || this.imageStatus == "") {
+                if (typeof this.imageStatus == "undefined" || this.imageStatus == "unlock" || this.imageStatus == "Unlock" || this.imageStatus == "") {
                     this.mode = 'normal';
                     this.annotools.mergeStep1();
                 } else
@@ -264,7 +264,7 @@ $.getScript('shared/ToolBar.js', function () {
 
 
             this.mergebutton2.on('click', function () {
-                if (this.imageStatus == "unlock" || this.imageStatus == "Unlock" || this.imageStatus == "") {
+                if (typeof this.imageStatus == "undefined" || this.imageStatus == "unlock" || this.imageStatus == "Unlock" || this.imageStatus == "") {
                     this.mode = 'merge_step2';
                     this.annotools.mode = 'rect';
                     this.annotools.drawMarkups();
@@ -285,7 +285,7 @@ $.getScript('shared/ToolBar.js', function () {
             }.bind(this));
 
             this.lockUnlockButton.on('click', function () {
-                if (this.userType == "superuser") {
+                if (this.userType == "superUser") {
                     var src = this.lockUnlockButton.attr('src');
                     var newsrc = (src == 'images/lock_icon.png') ? 'images/unlock_icon.png' : 'images/lock_icon.png';
                     this.lockUnlockButton.attr('src', newsrc);
