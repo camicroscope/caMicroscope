@@ -102,8 +102,8 @@ return array(
     'findUserByEmail'  => "$u24_userUrl/user_data/query/findUserByEmail?",
     'findUser'         => "$u24_userUrl/user_data/query/findUser?",
     'findAdmin'        => "$u24_userUrl/user_data/query/findAdmin?",
-
     'findAllBindaasUsers'=>"$u24_userUrl/user_data/query/findAllBindaasUsers?",
+    'findSuperUserCount'=>"$u24_userUrl/user_data/query/findSuperUserCount?",
 
     'deleteUserByName' => "$u24_userUrl/user_data/delete/deleteUserByName?",
     'deleteUserByEmail'=> "$u24_userUrl/user_data/delete/deleteUserByEmail?",
