@@ -2550,8 +2550,9 @@ annotools.prototype.getAlgorithmColorFromMenuTree = function () {
         var index2 = algorithm_title.indexOf("composite");
         var index3 = algorithm_title.indexOf("dotnuclei");
         var index4 = algorithm_title.indexOf("Heatmap");
+	var index5 = algorithm_title.indexOf("Tumor");
 
-        if (index1 === -1 && index2 === -1 && index3 === -1 && index4 === -1) {
+        if (index1 === -1 && index2 === -1 && index3 === -1 && index4 === -1 && index5 === -1) {
             algorithms.push(SELECTED_ALGORITHM_LIST[i]);
             algorithm_colors.push(SELECTED_ALGORITHM_COLOR[SELECTED_ALGORITHM_LIST[i]]);
         }
