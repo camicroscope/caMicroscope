@@ -8,21 +8,18 @@ include_once("RestRequest.php");
 
 $config = require '../Configuration/config.php';
 
-$templateUrl = $config['retrieveTemplateByName'];
+$templateUrl = $config['retrieveTemplate'];
 
 $api_key = $_SESSION['api_key'];
 
-$default_name='segment_curation';
-
 if (!isset($_GET) || empty($_GET["app_name"]))
 {
-    $app_name=$default_name;
+    $url = $templateUrl . "?api_key=$api_key";
 }
 else { 
    $app_name=$_GET["app_name"];
+   $url = $templateUrl . "?api_key=$api_key" . "&app_name=$app_name";
 }
-
-$url = $templateUrl . "?api_key=$api_key" . "&app_name=$app_name";
 
 //echo $url;
 $templateRequest = new RestRequest($url,'GET');
