@@ -2383,7 +2383,8 @@ annotools.prototype.mergeStep1 = function () {
 
     // get algorithm and color info
     var algo_and_color = this.getAlgorithmColorFromMenuTree();
-    if (algo_and_color === null) {
+   //if no algorithm is selected, algo_and_color is false,otherwise algo_and_color has value;	
+    if (!algo_and_color) {
         return false;
     }
     else {
