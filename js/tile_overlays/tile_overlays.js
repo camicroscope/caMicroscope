@@ -100,7 +100,7 @@ overlays.prototype.toggle = function (OVERLAY_LIST, SELECTED_ALGORITHM_LIST) {
         if (idx >= 0) {
 
             var imgData = {
-                "id": self.iid,
+                "id": self.tissueId,
                 "w": imagingHelper.imgWidth,
                 "h": imagingHelper.imgHeight,
                 "loc": elem.loc,
