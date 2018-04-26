@@ -30,11 +30,7 @@ describe('camicrosope Viewer', function () {
     await page.close();
   })
 
-  it('should have the correct page title', async function () {
-    expect(await page.title()).to.eql('Puppeteer Mocha');
-  });
-
   it('should have the toolbar', async function () {
-    expect(await paige.$("#tool")).to.exist;
+    expect(await page.$("#tool")).to.exist;
   });
 });
