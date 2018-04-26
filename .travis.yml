@@ -1,7 +1,9 @@
 sudo: required
-language: php
 services:
     - nodejs
+language: php
+node_js:
+   - "7"
 before_install:
     - mkdir ../js
     - cp test/__config.js ../js/config.js
