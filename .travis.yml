@@ -3,10 +3,9 @@ language: php
 services:
     - nodejs
 before_install:
-    - cd test
-    - mkdir ../../js
-    - cp __config.js ../../js/config.js
-    - touch ../../authenticate.php
+    - mkdir ../js
+    - cp __config.js ../js/config.js
+    - touch ../authenticate.php
     - which php
 install:
     - npm install
@@ -14,4 +13,5 @@ install:
 before_script:
     - node test_server.js &
 script:
-    - mocha mocha_test.js
+    - mocha js --recursive
+    - mocha test/functional_tests.js
