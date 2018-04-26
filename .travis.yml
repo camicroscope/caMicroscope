@@ -10,11 +10,10 @@ before_install:
     - touch ../authenticate.php
     - which php
 install:
-    - cd test
     - npm install
     - npm install -g mocha
 before_script:
-    - node test_server.js &
+    - node test/test_server.js &
 script:
-    - mocha ../js/Helpers/test --recursive
-    - mocha functional_tests.js
+    - mocha js/Helpers/test --recursive
+    - mocha test/functional_tests.js
