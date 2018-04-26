@@ -2,7 +2,6 @@ sudo: required
 language: php
 services:
     - nodejs
-    - phantomjs
 before_install:
     - cd test
     - mkdir ../../js
