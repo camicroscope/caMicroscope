@@ -13,7 +13,9 @@ install:
     - npm install
     - npm install -g mocha
 before_script:
-    - node test/test_server.js &
+    - cd test
+    - node test_server.js &
+    - cd ..
 script:
     - mocha js/Helpers/test --recursive
     - mocha test/functional_tests.js
