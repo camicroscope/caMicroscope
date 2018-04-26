@@ -3,14 +3,14 @@ services:
     - nodejs
 language: php
 node_js:
-   - "7"
+   - "8"
 before_install:
     - mkdir ../js
     - cp test/__config.js ../js/config.js
     - touch ../authenticate.php
     - which php
 install:
-    - npm install
+    - npm install test/
     - npm install -g mocha
 before_script:
     - node test_server.js &
