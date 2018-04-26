@@ -1,6 +1,6 @@
 const { expect } = require('chai');
 
-StateManager = require "../StateManager.js"
+import { StateManager } from "../StateManager.js"; 
 
 describe('State Manager', function () {
   var camic_state;

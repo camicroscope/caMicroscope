@@ -112,6 +112,4 @@ class StateManager {
 
 }
 
-if (typeof module !== 'undefined' && module.exports != null) {
-    exports.StateManager = StateManager;
-}
+export {StateManager};
