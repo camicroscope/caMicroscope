@@ -1,4 +1,5 @@
 const { expect } = require('chai');
+const { btoa, atob } = require('abab');
 
 StateManager = require("../StateManager.js").StateManager;
 
