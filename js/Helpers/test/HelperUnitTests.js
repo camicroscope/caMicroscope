@@ -18,6 +18,6 @@ describe('State Manager', function () {
   });
   it('should decode to the same as the input', async function () {
     var res_str = camic_state.decode(state_str)
-    expect(camic_state).to.deep.equal(state_test_obj);
+    expect(camic_state).to.deep.include(state_test_obj);
   });
 });
