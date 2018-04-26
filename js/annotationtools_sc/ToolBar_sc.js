@@ -418,13 +418,18 @@ $.getScript('shared/ToolBar.js', function () {
             'text': 'Display ID: ' + this.displayId
         });
         tool.append(this.iidbutton);
-
+        
+        if(typeof this.imageStatus == "undefined"){
+         var image_status="";
+        } else {
+         var image_status=this.imageStatus;
+        }
         this.statusbutton = jQuery('<p>', {
             'class': 'statusButton',
             //if(this.imageStatus =='Lock')
             // 'text': 'Status: ' + 'Lock'
             //else if(this.imageStatus =='Unlock')
-            'text': 'Status: ' + this.imageStatus
+            'text': 'Status: ' + image_status
             //else
             //'text': 'Status: ' + ' '
         });
