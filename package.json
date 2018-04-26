@@ -9,7 +9,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "abab": "^2.0.0",
+    "atob": "^2.1.0",
+    "btoa": "^1.2.1",
     "chai": "^4.1.2",
     "express": "^4.16.2",
     "lodash": "^4.17.10",
