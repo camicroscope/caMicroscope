@@ -4,7 +4,7 @@ services:
     - nodejs
 before_install:
     - mkdir ../js
-    - cp __config.js ../js/config.js
+    - cp test/__config.js ../js/config.js
     - touch ../authenticate.php
     - which php
 install:
