@@ -10,7 +10,7 @@ before_install:
     - which php
 install:
     - npm install
-    - npm install -g casperjs
+    - npm install -g mocha
 before_script:
     - node test_server.js &
 script:
