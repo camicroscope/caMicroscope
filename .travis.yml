@@ -12,10 +12,9 @@ before_install:
 install:
     - cd test
     - npm install
-    - cd ..
     - npm install -g mocha
 before_script:
-    - node test/test_server.js &
+    - node test_server.js &
 script:
-    - mocha js --recursive
-    - mocha test/functional_tests.js
+    - mocha ../js/Helpers/test --recursive
+    - mocha functional_tests.js
