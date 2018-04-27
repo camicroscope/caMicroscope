@@ -2,9 +2,9 @@
   "name": "camic_test",
   "version": "1.0.0",
   "description": "",
-  "main": "test_server.js",
+  "main": "test/test_server.js",
   "scripts": {
-    "test": "casperjs test tests.js"
+    "test": "mocha test/functional_tests.js"
   },
   "author": "",
   "license": "ISC",
