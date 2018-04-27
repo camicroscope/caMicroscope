@@ -157,8 +157,11 @@ annotools.prototype.getMultiAnnot = function (viewer) {
         var myList = OVERLAY_LIST;
 
         self.fetchAnnots(area, algorithms, myList);
+    } else {
+        self.setupHandlers();
+        self.destroyMarkups();
+        // destroy canvas
     }
-
 };
 
 annotools.prototype.filterit = function (a, b) {
