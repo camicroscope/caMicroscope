@@ -409,13 +409,17 @@ annotools.prototype.getMultiAnnot = function (viewer) {
   //algorithms.push('test')
 
   var t1 = 0;
-    if (SELECTED_ALGORITHM_LIST.length) {
+  if (SELECTED_ALGORITHM_LIST.length) {
         SELECTED_ALGORITHM_LIST = SELECTED_ALGORITHM_LIST.sort();
         var algorithms = SELECTED_ALGORITHM_LIST;
         var myList = OVERLAY_LIST;
 
         self.fetchAnnots(area, algorithms, myList);
-    }
+  } else {
+        self.setupHandlers();
+        self.destroyMarkups();
+        // destroy canvas
+  }
 
 };
 
