@@ -517,7 +517,7 @@ annotools.prototype.generateSVG = function (annotations) {
                     var line_color = '';
                     var stroke_width = 2.5;
                     var stroke_opacity = 0;
-                    console.log(annotation);
+//                    console.log(annotation);
                     switch (annotation.properties.annotations.mark_type) {
                         case 'LymPos':
                             line_color = 'red';
