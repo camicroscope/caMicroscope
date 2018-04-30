@@ -258,6 +258,8 @@ ToolBar.prototype.toggleAlgorithmSelector = function () {
             algorithm_color[tmp_algorithm_list[i]] = available_colors[i % available_colors.length];
             SELECTED_ALGORITHM_COLOR[tmp_algorithm_list[i]] = available_colors[i % available_colors.length];
 
+            /*
+            NOTE: 8080 and folder html2 were removed
             //user view composite dataset only
             if (window.location.port == "8080") {
                 var index_composite_input1 = tmp_algorithm_list[i].indexOf("composite_input");
@@ -272,17 +274,16 @@ ToolBar.prototype.toggleAlgorithmSelector = function () {
                 if (this_entry != "") {
                     htmlStr += "<li><input type='checkbox' class='algorithmCheckbox' value=" + i + " /><span class='algoColorBox' style='background:" + algorithm_color[tmp_algorithm_list[i]] + "'></span> " + this_entry + "</li>";
                 }
-            } else {
+            } else {*/
                 htmlStr += "<li><input type='checkbox' class='algorithmCheckbox' value=" + i + " /><span class='algoColorBox' style='background:" + algorithm_color[tmp_algorithm_list[i]] + "'></span> " + tmp_algorithm_list[i]
                     + "</li>";
-            }
+            //}
 
         }
 
         htmlStr += "</ul> <br /> <button class='btn' id='cancelAlgorithms'>Hide</button> </div>";
 
         jQuery("#panel").html(htmlStr);
-
 
         var algorithms_urlparam = JSON.stringify(tmp_algorithm_list);
         algorithms_urlparam = algorithms_urlparam.replace("[", "%5B");
