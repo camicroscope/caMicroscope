@@ -1372,7 +1372,7 @@ annotools.prototype.updateAnnot = function (annot) {
             this.showMessage('saved to the server')
         }.bind(this),
         onFailure: function (e) {
-            this.showMessage('Error Saving the Annotations,please check you saveAnnot funciton')
+            this.showMessage('Error Saving the Annotations,please check your saveAnnot function')
         }.bind(this)
     }).post({
         'iid': this.iid,
@@ -2084,7 +2084,7 @@ annotools.prototype.saveState = function () {
                 this.showMessage('saved to the server')
             }.bind(this),
             onFailure: function (e) {
-                this.showMessage('Error Saving the state,please check you saveState funciton')
+                this.showMessage('Error Saving the state,please check your saveState function')
             }.bind(this)
         }).post({
             'iid': this.iid,
