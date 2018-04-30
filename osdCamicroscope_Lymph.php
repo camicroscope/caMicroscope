@@ -18,9 +18,9 @@ include 'shared/osdHeader.php';
 <!-- /ANNOTATION -->
 
 <div id="tool"></div>
-<div id="panel"></div>
+<div id="panel" hidden></div>
 
-<div id="weightpanel">
+<div id="weightpanel" hidden>
     <a href='#'>
         <div id='closeWeightPanel'><img src='images/ic_close_white_24px.svg' title='Close' alt="Close X" height="16"
                                         width="16"></div>
@@ -52,7 +52,7 @@ include 'shared/osdHeader.php';
         <button type="button" class="btn_heatmap" id="btn_heatmapweight_help">&#x2753</button>
 </div>
 
-<div id="qualitypanel">
+<div id="qualitypanel" hidden>
     <a href='#'>
         <div id='closeQualityPanel'><img src='images/ic_close_white_24px.svg' title='Close' alt="Close X" height="16"
                                          width="16"></div>
@@ -64,12 +64,11 @@ include 'shared/osdHeader.php';
         <button type="button" class="btn_heatmap" id="btn_heatmapquality_help">&#x2753</button>
 </div>
 
-<div id="markuppanel">
+<div id="markuppanel" hidden>
     <a href='#'>
         <div id='closeMarkupPanel'><img src='images/ic_close_white_24px.svg' title='Close' alt="Close X" height="16"
                                         width="16"></div>
     </a>
-    <!--
     <input type="radio" name="marktype" value="LymPos" checked="checked" id="LymPos" class="radio_markup" color="red" linewidth=1 lineaffect=1>
     <label for="LymPos" class=radio_markup> (1) LymPos (draw thin line)</label><br>
     <input type="radio" name="marktype" value="LymNeg" id="LymNeg" class="radio_markup" color="blue" linewidth=1 lineaffect=1>
@@ -82,8 +81,8 @@ include 'shared/osdHeader.php';
     <label for="TumorPos" class=radio_markup> (5) TumorPos (draw polygon)</label><br>
     <input type="radio" name="marktype" value="TumorNeg" id="TumorNeg" class="radio_markup" color="lime" linewidth=1 lineaffect=1>
     <label for="TumorNeg" class=radio_markup> (6) TumorNeg (draw polygon)</label><br><p><p>
-    -->
 
+    <!--
     <?php
     $string = file_get_contents("customized/lymph/markup_types.json");
     $json_data = json_decode($string, true);
@@ -113,6 +112,7 @@ include 'shared/osdHeader.php';
     }
     ?>
     <p>
+    -->
     <p>
         &nbsp &nbsp &nbsp <input type="radio" name="marktype" value="Moving" id="rb_Moving" class="radio_markup">
         <label for="rb_Moving" class=radio_markup> Save then Navigate</label><br>
@@ -121,7 +121,7 @@ include 'shared/osdHeader.php';
         <button type="button" class="btn_mark" id="btn_mark_help">&#x2753</button>
 </div>
 
-<div id="qualitymarkuppanel">
+<div id="qualitymarkuppanel" hidden>
     <a href='#'>
         <div id='closeQualityMarkupPanel'><img src='images/ic_close_white_24px.svg' title='Close' alt="Close X"
                                                height="16" width="16"></div>
@@ -152,14 +152,14 @@ include 'shared/osdHeader.php';
 <div id="div_weight_locked" style="display: none;">Free</div>
 <div id="div_quality_locked" style="display: none;">Free</div>
 
-<div id="switchuserpanel"><a href='#'>
+<div id="switchuserpanel hidden"><a href='#'>
         <div id='closeSwitchUser'><img src='images/ic_close_white_24px.svg' title='Close' alt="Close X" height="16"
                                        width="16"></div>
     </a>
     <h6><img src="images/switch_user.svg" alt="Switch user" height="30" width="30"> Change username to:</h6><br/>
 </div>
 
-<div id="algosel">
+<div id="algosel" hidden>
     <div id="tree"></div>
 </div>
 <div class="demoarea">

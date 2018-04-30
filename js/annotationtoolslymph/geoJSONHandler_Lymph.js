@@ -363,6 +363,7 @@ annotools.prototype.generateSVG = function (annotations) {
                     svgHtml += '" style="fill:' + heatcolor.toString() + ';fill-opacity: ' + this.heatmap_opacity + ';stroke-width:0"/>';
                     break;
                 case 'heatmap_multiple':
+                    //console.log(annotation.properties.metric_value);
                     if (smth_or_not) {
                         var lym_score = smoothed;
                     } else {
@@ -384,8 +385,9 @@ annotools.prototype.generateSVG = function (annotations) {
 
                     selected_heatmap = this.heatmapColor[0];
                     selected_opacity = this.heatmap_opacity;
-
-                    if (intersect_label[i].label != 0) {
+                    //console.log(intersect_label);
+                    if (intersect_label[i] != 0) {
+                        //console.log("In inteersection");
                         switch (intersect_label[i].label) {
                             case -1:
                                 svgHtml += '" style="fill:' + this.heatmapColor[4] + ';fill-opacity: ' + this.heatmap_opacity + ';stroke-width:0"/>';
@@ -396,6 +398,7 @@ annotools.prototype.generateSVG = function (annotations) {
                         }
                     }
                     else {
+                        //console.log("In heatmap loop");
                         if (lym_checked == true && nec_checked == false) {
                             selected_heatmap = this.heatmapColor[lym_color_index];
                             //svgHtml += '" style="fill:' + this.heatmapColor[lym_color_index] + ';fill-opacity: ' + this.heatmap_opacity + ';stroke-width:0"/>';
@@ -422,7 +425,9 @@ annotools.prototype.generateSVG = function (annotations) {
                     }
 
                     svgHtml += '" style="fill:' + selected_heatmap + ';fill-opacity: ' + selected_opacity + ';stroke-width:0"/>';
-                    /*
+                    //console.log(selected_heatmap);
+                    //console.log(lym_checked == true && nec_checked == true);
+/*
                     var combo = lym_score;
                     if (nec_score >= (1-this.heat_weight1))
                     {
@@ -512,7 +517,7 @@ annotools.prototype.generateSVG = function (annotations) {
                     var line_color = '';
                     var stroke_width = 2.5;
                     var stroke_opacity = 0;
-                    console.log(annotation);
+//                    console.log(annotation);
                     switch (annotation.properties.annotations.mark_type) {
                         case 'LymPos':
                             line_color = 'red';
