@@ -1390,23 +1390,23 @@ annotools.prototype.saveAnnot = function (annotation) {
     // console.log("Saving annotation");
     // console.log("annotation", annotation)
 
-    region_type=annotation.properties.annotations.region;
+    region_type = annotation.properties.annotations.region;
     //execution_id=annotation.provenance.analysis.execution_id;
-    var user=annotool.user;
-    if(region_type=="Tumor"){
-       var execution_id =user+"_Tumor_Region" ;
-       annotation.provenance.analysis.execution_id = execution_id;
-     }
-    if(region_type=="Non_Tumor"){
-       annotation.provenance.analysis.execution_id =user+"_Non_Tumor_Region";
-     }
+    var user = annotool.user;
+    if (region_type == "Tumor") {
+        var execution_id = user + "_Tumor_Region";
+        annotation.provenance.analysis.execution_id = execution_id;
+    }
+    if (region_type == "Non_Tumor") {
+        annotation.provenance.analysis.execution_id = user + "_Non_Tumor_Region";
+    }
 
-     var d = new Date();
-     var current_time=d.toLocaleString();
-     annotation.created_by=user;
-     annotation.created_on=current_time;
-     annotation.updated_by='';
-     annotation.updated_on='';
+    var d = new Date();
+    var current_time = d.toLocaleString();
+    annotation.created_by = user;
+    annotation.created_on = current_time;
+    annotation.updated_by = '';
+    annotation.updated_on = '';
     jQuery.ajax({
         'type': 'POST',
         url: 'api/Data/getAnnotSpatial_sc.php',
@@ -1417,19 +1417,7 @@ annotools.prototype.saveAnnot = function (annotation) {
             console.log(err);
             console.log('successfully posted')
         }
-    })
-    jQuery.ajax({
-        'type': 'POST',
-        url: 'api/Data/getAnnotSpatial_sc.php',
-        data: annotation,
-        success: function (res, err) {
-            // console.log("response: ")
-            console.log(res);
-            console.log(err);
-
-            console.log('successfully posted')
-        }
-    })
+    });
 
 };
 
