@@ -147,14 +147,14 @@ $.getScript('shared/ToolBar.js', function () {
                 'src': 'images/spacer_empty.svg'
             }));
 
-            this.switchUserButton = jQuery('<img>', {
+/*            this.switchUserButton = jQuery('<img>', {
                 'title': 'Switch User',
                 'class': 'toolButton inactive',
                 'src': 'images/switch_user.svg',
                 'id': 'switchUserButton'
             });
             tool.append(this.switchUserButton);     // Button for switch user
-
+*/
 
             /*
              * Event handlers for toolbar buttons
@@ -205,7 +205,7 @@ $.getScript('shared/ToolBar.js', function () {
                 this.annotools.getMultiAnnot();
             }.bind(this));
 
-            this.switchUserButton.on('click', function () {
+/*            this.switchUserButton.on('click', function () {
                 if (this.annotools.lymphSuperuser) {
                     if (jQuery('#switchuserpanel').is(":visible"))
                         jQuery('#switchuserpanel').hide();
@@ -215,7 +215,7 @@ $.getScript('shared/ToolBar.js', function () {
                     alert("You are not a super user. A super user can review and change other people's annotations. To apply for the super user privilege. please contact your QuIP app administrator.");
                 }
             }.bind(this));
-
+*/
     this.showWeightPanel.on('click', function () {
         console.log('click on showing weight panel');
 	console.log(appid);
