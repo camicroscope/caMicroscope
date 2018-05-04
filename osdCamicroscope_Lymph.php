@@ -152,7 +152,7 @@ include 'shared/osdHeader.php';
 <div id="div_weight_locked" style="display: none;">Free</div>
 <div id="div_quality_locked" style="display: none;">Free</div>
 
-<div id="switchuserpanel hidden"><a href='#'>
+<div id="switchuserpanel" hidden><a href='#'>
         <div id='closeSwitchUser'><img src='images/ic_close_white_24px.svg' title='Close' alt="Close X" height="16"
                                        width="16"></div>
     </a>
@@ -358,6 +358,13 @@ include 'shared/osdHeader.php';
             e.preventDefault();
             console.log("Closing quality panel");
             jQuery("#qualitypanel").hide('slide');
+        });
+
+        /* Close SwitchUser panel */
+        jQuery('#closeSwitchUserPanel').click(function (e) {
+            e.preventDefault();
+            console.log("Closing SwitchUser panel");
+            jQuery("#switchuser").hide('slide');
         });
 
         /* Close TumorPosmarkup panel */
