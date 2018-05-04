@@ -156,7 +156,6 @@ annotools.prototype.generateCanvas = function (annotations) {
     // console.log(container)
     var width = parseInt(container.offsetWidth)
     var height = parseInt(container.offsetHeight)
-    /* Why is there an ellipse in the center? */
     /*
     var svgHtml = '<svg xmlns="http://www.w3.org/2000/svg" width="' + width + 'px" height="' + height + 'px" version="1.1" id="markups">'
         svgHtml += '<g id="groupcenter"/>'
@@ -217,7 +216,6 @@ annotools.prototype.generateSVG = function (annotations) {
     // console.log(container)
     var width = parseInt(container.offsetWidth)
     var height = parseInt(container.offsetHeight)
-    /* Why is there an ellipse in the center? */
     var svgHtml = '<svg xmlns="http://www.w3.org/2000/svg" width="' + width + 'px" height="' + height + 'px" version="1.1" id="markups">'
     svgHtml += '<g id="groupcenter"/>'
     svgHtml += '<g id="origin">'
