@@ -611,7 +611,7 @@ annotools.prototype.generateSVG = function (annotations) {
                             };
 
                             jQuery.ajax({
-                                url: 'api/Data/getProperties.php?id=' + id,
+                                url: 'api/Data/getPropertiesClone.php?id=' + id,
                                 type: 'DELETE',
                                 data: (payload),
                                 success: function (data) {
