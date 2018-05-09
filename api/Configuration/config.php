@@ -15,9 +15,12 @@ $kueUrl = "http://" . $config['kueHost'];
 $serviceUrl     = "$baseUrl/services/Camicroscope_DataLoader";
 $annotationsUrl = "$baseUrl/services/Camicroscope_Annotations";
 
-if ($_SESSION["db_name"] == "quip_comp"){
-   $serviceUrl     = "$baseUrl/services/Camicroscope_DataLoader_comp";
-   $annotationsUrl = "$baseUrl/services/Camicroscope_Annotations_comp";
+if (isset($_SESSION['db_name']) && !empty($_SESSION['db_name'])) {
+
+    if ($_SESSION["db_name"] == "quip_comp"){
+        $serviceUrl     = "$baseUrl/services/Camicroscope_DataLoader_comp";
+        $annotationsUrl = "$baseUrl/services/Camicroscope_Annotations_comp";
+    }
 }
 
 $u24_userUrl    = "$baseUrl/services/u24_user";
