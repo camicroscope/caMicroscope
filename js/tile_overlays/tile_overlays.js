@@ -67,12 +67,11 @@ overlays.prototype.getPath = function (overlayFolder) {
  */
 overlays.prototype.toggleAllOFF = function () {
 
-    var i, tiledImage;
-    var count = viewer.world.getItemCount();
-    // Important: start from index 1.
-    for (i = 1; i < count; i++) {
-        tiledImage = viewer.world.getItemAt(i);
+    var tiledImage;
+    while (viewer.world.getItemCount() > 1) {
+        tiledImage = viewer.world.getItemAt(1);
         tiledImage.setOpacity(0);
+        viewer.world.removeItem(tiledImage);
     }
 
 };
@@ -100,7 +99,7 @@ overlays.prototype.toggle = function (OVERLAY_LIST, SELECTED_ALGORITHM_LIST) {
         if (idx >= 0) {
 
             var imgData = {
-                "id": self.iid,
+                "id": self.tissueId,
                 "w": imagingHelper.imgWidth,
                 "h": imagingHelper.imgHeight,
                 "loc": elem.loc,

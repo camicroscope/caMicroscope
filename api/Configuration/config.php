@@ -14,6 +14,15 @@ $kueUrl = "http://" . $config['kueHost'];
 
 $serviceUrl     = "$baseUrl/services/Camicroscope_DataLoader";
 $annotationsUrl = "$baseUrl/services/Camicroscope_Annotations";
+
+if (isset($_SESSION['db_name']) && !empty($_SESSION['db_name'])) {
+
+    if ($_SESSION["db_name"] == "quip_comp"){
+        $serviceUrl     = "$baseUrl/services/Camicroscope_DataLoader_comp";
+        $annotationsUrl = "$baseUrl/services/Camicroscope_Annotations_comp";
+    }
+}
+
 $u24_userUrl    = "$baseUrl/services/u24_user";
 $imageUrl       = "$serviceUrl/DataLoader";
 $lymphocyteUrl = "$baseUrl/services/Camicroscope_Lymphocyte";
@@ -96,8 +105,8 @@ return array(
     'findUserByEmail'  => "$u24_userUrl/user_data/query/findUserByEmail?",
     'findUser'         => "$u24_userUrl/user_data/query/findUser?",
     'findAdmin'        => "$u24_userUrl/user_data/query/findAdmin?",
-
     'findAllBindaasUsers'=>"$u24_userUrl/user_data/query/findAllBindaasUsers?",
+    'findSuperUserCount'=>"$u24_userUrl/user_data/query/findSuperUserCount?",
 
     'deleteUserByName' => "$u24_userUrl/user_data/delete/deleteUserByName?",
     'deleteUserByEmail'=> "$u24_userUrl/user_data/delete/deleteUserByEmail?",

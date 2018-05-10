@@ -11,6 +11,8 @@
 .DS_Store/*
 
 # Test node modules
+node_modules
+node_modules/*
 test/node_modules
 test/node_modules/*
 test/package-lock.json

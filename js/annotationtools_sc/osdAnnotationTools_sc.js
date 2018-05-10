@@ -157,8 +157,11 @@ annotools.prototype.getMultiAnnot = function (viewer) {
         var myList = OVERLAY_LIST;
 
         self.fetchAnnots(area, algorithms, myList);
+    } else {
+        self.setupHandlers();
+        self.destroyMarkups();
+        // destroy canvas
     }
-
 };
 
 annotools.prototype.filterit = function (a, b) {
@@ -2006,7 +2009,7 @@ annotools.prototype.promptForAnnotation = function (newAnnot, mode, annotools, c
 
     + '</div>'
   )
-  jQuery.get('api/Data/retrieveTemplateByName.php?app_name=segment_curation', function (data) {
+  jQuery.get('api/Data/retrieveTemplate.php?app_name=segment_curation', function (data) {
     console.log("after retrieveTemplateByName.php:"+data);
     var schema = JSON.parse(data);
     schema = JSON.parse(schema)[0];
@@ -2383,7 +2386,8 @@ annotools.prototype.mergeStep1 = function () {
 
     // get algorithm and color info
     var algo_and_color = this.getAlgorithmColorFromMenuTree();
-    if (algo_and_color === null) {
+   //if no algorithm is selected, algo_and_color is false,otherwise algo_and_color has value;	
+    if (!algo_and_color) {
         return false;
     }
     else {
@@ -2550,8 +2554,9 @@ annotools.prototype.getAlgorithmColorFromMenuTree = function () {
         var index2 = algorithm_title.indexOf("composite");
         var index3 = algorithm_title.indexOf("dotnuclei");
         var index4 = algorithm_title.indexOf("Heatmap");
+	var index5 = algorithm_title.indexOf("Tumor");
 
-        if (index1 === -1 && index2 === -1 && index3 === -1 && index4 === -1) {
+        if (index1 === -1 && index2 === -1 && index3 === -1 && index4 === -1 && index5 === -1) {
             algorithms.push(SELECTED_ALGORITHM_LIST[i]);
             algorithm_colors.push(SELECTED_ALGORITHM_COLOR[SELECTED_ALGORITHM_LIST[i]]);
         }

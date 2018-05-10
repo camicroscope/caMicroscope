@@ -36,7 +36,7 @@ if (isset($_GET["cancerType"])) {
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <!-- script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script -->
     <script src="js/dependencies/jquery.js"></script>
-    
+
 
     <!--JSON Form dependencies-->
     <script src="js/dependencies/underscore.js"></script>
@@ -81,7 +81,6 @@ if (isset($_GET["cancerType"])) {
 
 
     <script src="js/Helpers/StateManager.js"></script>
-    <script src="js/Helpers/SessionTracker.js"></script>
     <script src="js/Helpers/ClientPrefManager.js"></script>
     <script src="js/Helpers/Spyglass.js"></script>
     <script src="js/Helpers/session_notify.js"></script>

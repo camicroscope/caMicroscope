@@ -1,0 +1,21 @@
+{
+  "name": "camic_test",
+  "version": "1.0.0",
+  "description": "",
+  "main": "test/test_server.js",
+  "scripts": {
+    "test": "mocha test/functional_tests.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "atob": "^2.1.0",
+    "btoa": "^1.2.1",
+    "chai": "^4.1.2",
+    "express": "^4.16.2",
+    "lodash": "^4.17.10",
+    "mocha": "^5.1.1",
+    "php-express": "0.0.3",
+    "puppeteer": "^0.9.0"
+  }
+}

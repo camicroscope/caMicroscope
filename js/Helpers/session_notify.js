@@ -1,13 +1,12 @@
 window.setInterval(function(){
-  function reqListener () {
-    var rsp = JSON.parse(this.responseText)
-    console.log(rsp);
+  fetch("../security/checkStatus.php", {method: 'post'})
+  .then(function(x){
+    return x.json()
+  })
+  .then(function(rsp){
     if (rsp.issued && (rsp.now - rsp.issued > 60*50)){
       window.alert("Your session has expired.")
     }
-  }
-  var oReq = new XMLHttpRequest();
-  oReq.addEventListener("load", reqListener);
-  oReq.open("POST", "../security/server.php?checkStatus");
-  oReq.send();
+  })
+  .catch((x)=>console.warn(x));
 }, (1000*60*5));

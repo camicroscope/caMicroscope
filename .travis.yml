@@ -1,18 +1,21 @@
 sudo: required
-language: php
 services:
     - nodejs
-    - phantomjs
+language: php
+node_js:
+   - "8"
 before_install:
-    - cd test
-    - mkdir ../../js
-    - cp __config.js ../../js/config.js
-    - touch ../../authenticate.php
+    - mkdir ../js
+    - cp test/__config.js ../js/config.js
+    - touch ../authenticate.php
     - which php
 install:
     - npm install
-    - npm install -g casperjs
+    - npm install -g mocha
 before_script:
+    - cd test
     - node test_server.js &
+    - cd ..
 script:
-    - casperjs test casper_test.js
+    - mocha js/Helpers/test --recursive
+    - mocha test/functional_tests.js

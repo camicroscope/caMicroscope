@@ -1,6 +1,5 @@
 /*
- Copyright (C) 2012 Shaohuan Li <shaohuan.li@gmail.com>, Ashish Sharma <ashish.sharma@emory.edu>
- This file is part of Biomedical Image Viewer developed under the Google of Summer of Code 2012 program.
+ This file is part of caMicroscope
 
  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 
@@ -51,9 +50,6 @@ var annotools = function (options) {
     this.x2 = 1.0;
     this.y1 = 0.0;
     this.y2 = 1.0;
-    this.SELECTED_ALGORITHM_LIST =[];
-    this.SELECTED_ALGORITHM_KEYS = [];
-    this.SELECTED_ALGORITHM_COLOR = [];
     this.container = document.getElementById(this.viewer.id).childNodes[0];
 
     this.annotationHandler = options.annotationHandler || new AnnotoolsOpenSeadragonHandler();
@@ -155,7 +151,6 @@ annotools.prototype.destroyMarkups = function (viewer) {
 
 /**
  * Rendering by execution ids
- * TODO: Cleanup. Same as getMultiAnnot.
  *
  * @param algorithms
  */
@@ -221,12 +216,16 @@ annotools.prototype.getMultiAnnot = function (viewer) {
     var origin = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(0), this.imagingHelper.physicalToDataY(0));
     var area = (max.x - origin.x) * (max.y - origin.y);
 
-    if (this.SELECTED_ALGORITHM_LIST.length) {
-        this.SELECTED_ALGORITHM_LIST = this.SELECTED_ALGORITHM_LIST.sort();
-        var algorithms = this.SELECTED_ALGORITHM_LIST;
+    if (SELECTED_ALGORITHM_LIST.length) {
+        SELECTED_ALGORITHM_LIST = SELECTED_ALGORITHM_LIST.sort();
+        var algorithms = SELECTED_ALGORITHM_LIST;
         var myList = OVERLAY_LIST;
 
         self.fetchAnnots(area, algorithms, myList);
+    } else {
+        self.setupHandlers();
+        self.destroyMarkups();
+        // destroy canvas
     }
 
 };
@@ -1373,7 +1372,7 @@ annotools.prototype.updateAnnot = function (annot) {
             this.showMessage('saved to the server')
         }.bind(this),
         onFailure: function (e) {
-            this.showMessage('Error Saving the Annotations,please check you saveAnnot funciton')
+            this.showMessage('Error Saving the Annotations,please check your saveAnnot function')
         }.bind(this)
     }).post({
         'iid': this.iid,
@@ -1391,23 +1390,23 @@ annotools.prototype.saveAnnot = function (annotation) {
     // console.log("Saving annotation");
     // console.log("annotation", annotation)
 
-    region_type=annotation.properties.annotations.region;
+    region_type = annotation.properties.annotations.region;
     //execution_id=annotation.provenance.analysis.execution_id;
-    var user=annotool.user;
-    if(region_type=="Tumor"){
-       var execution_id =user+"_Tumor_Region" ;
-       annotation.provenance.analysis.execution_id = execution_id;
-     }
-    if(region_type=="Non_Tumor"){
-       annotation.provenance.analysis.execution_id =user+"_Non_Tumor_Region";
-     }
+    var user = annotool.user;
+    if (region_type == "Tumor") {
+        var execution_id = user + "_Tumor_Region";
+        annotation.provenance.analysis.execution_id = execution_id;
+    }
+    if (region_type == "Non_Tumor") {
+        annotation.provenance.analysis.execution_id = user + "_Non_Tumor_Region";
+    }
 
-     var d = new Date();
-     var current_time=d.toLocaleString();
-     annotation.created_by=user;
-     annotation.created_on=current_time;
-     annotation.updated_by='';
-     annotation.updated_on='';
+    var d = new Date();
+    var current_time = d.toLocaleString();
+    annotation.created_by = user;
+    annotation.created_on = current_time;
+    annotation.updated_by = '';
+    annotation.updated_on = '';
     jQuery.ajax({
         'type': 'POST',
         url: 'api/Data/getAnnotSpatial_sc.php',
@@ -1418,19 +1417,7 @@ annotools.prototype.saveAnnot = function (annotation) {
             console.log(err);
             console.log('successfully posted')
         }
-    })
-    jQuery.ajax({
-        'type': 'POST',
-        url: 'api/Data/getAnnotSpatial_sc.php',
-        data: annotation,
-        success: function (res, err) {
-            // console.log("response: ")
-            console.log(res);
-            console.log(err);
-
-            console.log('successfully posted')
-        }
-    })
+    });
 
 };
 
@@ -2085,7 +2072,7 @@ annotools.prototype.saveState = function () {
                 this.showMessage('saved to the server')
             }.bind(this),
             onFailure: function (e) {
-                this.showMessage('Error Saving the state,please check you saveState funciton')
+                this.showMessage('Error Saving the state,please check your saveState function')
             }.bind(this)
         }).post({
             'iid': this.iid,
@@ -2748,7 +2735,6 @@ annotools.prototype.promptForWorkOrder = function (newAnnot, mode, annotools, ct
         //   End of Text input code
         //
 
-        // TODO: remove hardcoded vars.
         var width = 48002;
         var height = 35558;
 
@@ -2798,7 +2784,6 @@ annotools.prototype.promptForWorkOrder = function (newAnnot, mode, annotools, ct
             //var execution_id = jQuery('#order-execution_id').val()
             var notes = jQuery('#order-notes').val();
 
-            // TODO: remove if statement
             if (iid === 'TCGA-06-0148-01Z-00-DX1') {
                 width = 26001;
                 height = 27968
@@ -2957,7 +2942,7 @@ annotools.prototype.promptForAnnotation = function (newAnnot, mode, annotools, c
         + '</div>'
     );
 
-    jQuery.get('api/Data/retrieveTemplateByName.php?app_name=tumor_markup', function (data) {
+    jQuery.get('api/Data/retrieveTemplate.php?app_name=tumor_markup', function (data) {
         console.log("data", data);
         var schema = JSON.parse(data);
         schema = JSON.parse(schema)[0];

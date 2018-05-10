@@ -51,7 +51,7 @@ annotools.prototype.drawMarking = function (ctx) {
     drawn_linewidth = jQuery(selectedRadio).attr("linewidth");
 
     // Check what radio box is checked
-    /*
+
     if (jQuery("#LymPosBig").is(':checked'))
     {
         ctx.strokeStyle = 'red';
@@ -93,7 +93,8 @@ annotools.prototype.drawMarking = function (ctx) {
         ctx.strokeStyle = 'lime';
         this.mark_type = 'TumorNeg';
     }
-    */
+    
+/*  For Quality Heatmaps
 
     if (jQuery("#AlgoABig").is(':checked'))
     {
@@ -136,7 +137,7 @@ annotools.prototype.drawMarking = function (ctx) {
         ctx.strokeStyle = 'lime';
         this.mark_type = 'AlgoBP';
     }
-    console.log(this.mark_type);
+*/    console.log(this.mark_type);
 
     SELECTED_ALGORITHM_LIST = SELECTED_ALGORITHM_LIST.sort();
 

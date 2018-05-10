@@ -2,7 +2,20 @@
 /**
  * caMicroscope
  */
-include 'shared/osdHeader.php';
+ include 'shared/osdHeader.php';
+
+ $default_db_name="quip";
+
+ if (!isset($_GET["db_name"]) || empty($_GET["db_name"]))
+ {
+    $db_name=$default_db_name;
+ }
+ else {
+   $db_name=$_GET["db_name"];
+ }
+
+ $_SESSION["db_name"] = $db_name;
+
 ?>
 
 <script>
@@ -301,31 +314,14 @@ include 'shared/osdHeader.php';
 </script>
 
 <script>
-
-    // handle session expiration/renew
-    var st = new SessionTracker("camic");
-
-    function renew_session() {
-        var xhr = new XMLHttpRequest();
-        xhr.open("POST", "../security/server.php?logIn", true);
-        xhr.onload = function (e) {
-            if (xhr.readyState === 4) {
-                if (xhr.status === 200) {
-                    console.log(xhr.responseText);
-                } else {
-                    console.error(xhr.statusText);
-                }
-            }
-        };
-        xhr.send(null);
-    }
-
-    st.start(600000, 3e6, renew_session);
     spyglass_init(_viewer_source);
 </script>
-<!-- Sidesplit -->
-<script src="js/Helpers/coordinatedView.js"></script>
-<script src="js/Helpers/DisplaySelector.js"></script>
-<script src="js/Helpers/SideSplit.js"></script>
-<!-- Sidesplit -->
+<!-- Sidesplit  -->
+<script src="js/Helpers/SideSplit/openseadragon-canvas-overlay.js"></script>
+<script src="js/Helpers/SideSplit/coordinatedView.js"></script>
+<script src="js/Helpers/SideSplit/SideSplit.js"></script>
+<script src="js/Helpers/SideSplit/ProxyTools.js"></script>
+<script src="js/Helpers/SideSplit/ViewportCalibratedCanvas.js"></script>
+<script src="js/Helpers/SideSplit/MiniDraw.js"></script>
+<script src="js/Helpers/SideSplit/run_sidesplit.js"></script>
 <?php include 'shared/osdFooter.php'; ?>

@@ -34,7 +34,7 @@ annotools.prototype.generateGeoTemplate = function () {
         'footprint': 10000,
         'provenance': {
             'analysis': {
-                'execution_id': username, //TODO: execution_id in sc, username here.
+                'execution_id': username,
                 'study_id': "",
                 'source': "human",
                 'computation': 'segmentation'
@@ -197,9 +197,11 @@ annotools.prototype.generateCanvas = function (annotations) {
         var markup_svg;
         if (document.getElementById(this.markupid)) {
             markup_svg = document.getElementById(this.markupid);
+            console.log("getElementById(this.markupid)", markup_svg);
         }
         else if (document.getElementById('markups')) {
             markup_svg = document.getElementById('markups');
+            console.log("getElementById('markups')", markup_svg);
         }
         if (markup_svg) {
             // console.log("destroying")
@@ -211,14 +213,16 @@ annotools.prototype.generateCanvas = function (annotations) {
         var container;
         if (this.container) {
             container = this.container.childNodes[0];
+            //console.log("container.childNodes[0]", container);
         }
         else if (document.getElementsByClassName(this.canvas)[0]) {
             container = document.getElementsByClassName(this.canvas)[0];
+            //console.log("getElementsByClassName(this.canvas)[0]", container);
         }
         else if (document.getElementsByClassName(this.canvas)[0].childNodes[0]) {
             container = document.getElementsByClassName(this.canvas)[0].childNodes[0];
+            //console.log("getElementsByClassName(this.canvas)[0].childNodes[0]", container);
         }
-        else
         //console.log("container", container);
 
         var context = container.getContext('2d');
@@ -228,7 +232,6 @@ annotools.prototype.generateCanvas = function (annotations) {
         var height = parseInt(container.offsetHeight);
 
         /*
-        //Why is there an ellipse in the center?
         var svgHtml = '<svg xmlns="http://www.w3.org/2000/svg" width="' + width + 'px" height="' + height + 'px" version="1.1" id="markups">'
             svgHtml += '<g id="groupcenter"/>'
             svgHtml += '<g id="origin">'
@@ -310,20 +313,22 @@ annotools.prototype.generateSVG = function (annotations) {
         var container;
         if (this.container) {
             container = this.container.childNodes[0];
+            //console.log("container.childNodes[0]", container);
         }
         else if (document.getElementsByClassName(this.canvas)[0]) {
             container = document.getElementsByClassName(this.canvas)[0];
+            //console.log("getElementsByClassName(this.canvas)[0]", container);
         }
         else if (document.getElementsByClassName(this.canvas)[0].childNodes[0]) {
             container = document.getElementsByClassName(this.canvas)[0].childNodes[0];
+            //console.log("getElementsByClassName(this.canvas)[0].childNodes[0]", container);
         }
         //console.log("container", container);
 
         var width = parseInt(container.offsetWidth);
         var height = parseInt(container.offsetHeight);
 
-        /* Why is there an ellipse in the center? */
-        var svgHtml = '<svg xmlns="http://www.w3.org/2000/svg" width="' + width + 'px" height="' + height + 'px" version="1.1" id="' + self.markupid +'" style="pointer-events: none;">';
+        var svgHtml = '<svg xmlns="http://www.w3.org/2000/svg" width="' + width + 'px" height="' + height + 'px" version="1.1" id="' + self.markupid + '">';
         svgHtml += '<g id="groupcenter"/>';
         svgHtml += '<g id="origin">';
 
@@ -396,8 +401,6 @@ annotools.prototype.generateSVG = function (annotations) {
         }
 
 
-        // TODO: This is essentially doing the same thing as above. Why?
-        /*
         console.log("ROIs:", ROIs);
         for (var i = 0; i < ROIs.length; i++) {
             var annotation = ROIs[i];
@@ -452,7 +455,7 @@ annotools.prototype.generateSVG = function (annotations) {
                 svgHtml += '" style="fill:transparent; stroke:' + color + '; stroke-width:2.5"/>'
             }
         }
-        */
+
 
         this.svg = new Element('div', {
             styles: {
@@ -608,7 +611,7 @@ annotools.prototype.generateSVG = function (annotations) {
                             };
 
                             jQuery.ajax({
-                                url: 'api/Data/getProperties.php?id=' + id,
+                                url: 'api/Data/getPropertiesClone.php?id=' + id,
                                 type: 'DELETE',
                                 data: (payload),
                                 success: function (data) {
