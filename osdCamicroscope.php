@@ -32,7 +32,7 @@
 <div id="container">
 
     <div id="tool"></div>
-    <div id="panel"></div>
+    <div id="panel" hidden></div>
     <!-- div id="bookmarkURLDiv"></div -->
     <div id="algosel">
         <div id="tree"></div>
