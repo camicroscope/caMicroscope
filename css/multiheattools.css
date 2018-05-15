@@ -38,7 +38,52 @@
 
 }
 
+
+#qualitypanel {
+    width: 350px;
+    font-family: Arial, Roboto;                                                               
+    font-size: 12px;                                                                          
+    height: 200px;                                                                            
+    top: 60px;                                                                                
+    left: 0;
+    position: fixed;                                                                          
+    z-index: 900999;
+    background: #1976D2;
+    box-shadow:1px 1px 1px 1px  #555;                                                         
+    padding: 10px;
+    border-radius: 10px;                                                                       
+    color: #fff;
+    opacity: 0.9;                                                                             
+}
+
+#qualitypanel, input.tb {
+    color: #000;
+}
+#qslider {
+    margin: 50px;
+    width:70%;
+}
+
 #markuppanel {
+    width: 220px;
+    font-family: Arial, Roboto;
+    font-size: 12px;
+    height: 270px;
+    top: 60px;
+    left: 0;
+    position: fixed;
+    z-index: 900999;
+    background: #1976D2;
+    box-shadow:1px 1px 1px 1px  #555;
+    padding: 10px;
+    border-radius: 10px;
+    color: #fff;
+    opacity: 0.9;
+
+}
+
+
+#qualitymarkuppanel {
     width: 220px;
     font-family: Arial, Roboto;
     font-size: 12px;
@@ -85,6 +130,7 @@
 	position:relative;
         top:10px;
         left:120px;
+    	color: #fff;
         text-align:right;
 	background-color: #008CBA;
 	border: none;
@@ -115,6 +161,16 @@
     background-color: crimson;
 }
 
+#closeQualityPanel {
+	display: inline-block;
+	width: 16px;
+	float:right;
+}
+
+#closeQualityPanel:hover {
+    background-color: crimson;
+}
+
 #closeMarkupPanel {
 	display: inline-block;
 	width: 16px;
@@ -122,6 +178,16 @@
 }
 
 #closeMarkupPanel:hover {
+    background-color: crimson;
+}
+
+#closeQualityMarkupPanel {
+	display: inline-block;
+	width: 16px;
+	float:right;
+}
+
+#closeQualityMarkupPanel:hover {
     background-color: crimson;
 }
 

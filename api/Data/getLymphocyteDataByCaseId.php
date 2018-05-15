@@ -20,7 +20,7 @@ if(isset($_GET["case_id"])) {
     $getRequest = new RestRequest($url,'GET');
     $getRequest->execute();
            
-    //Parse reponse
+    //Parse response
     $lymphocyteInfo = ($getRequest->responseBody);
 
     if($lymphocyteInfo)

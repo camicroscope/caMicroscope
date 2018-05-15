@@ -156,7 +156,6 @@ annotools.prototype.generateCanvas = function (annotations) {
     // console.log(container)
     var width = parseInt(container.offsetWidth)
     var height = parseInt(container.offsetHeight)
-    /* Why is there an ellipse in the center? */
     /*
     var svgHtml = '<svg xmlns="http://www.w3.org/2000/svg" width="' + width + 'px" height="' + height + 'px" version="1.1" id="markups">'
         svgHtml += '<g id="groupcenter"/>'
@@ -217,7 +216,6 @@ annotools.prototype.generateSVG = function (annotations) {
     // console.log(container)
     var width = parseInt(container.offsetWidth)
     var height = parseInt(container.offsetHeight)
-    /* Why is there an ellipse in the center? */
     var svgHtml = '<svg xmlns="http://www.w3.org/2000/svg" width="' + width + 'px" height="' + height + 'px" version="1.1" id="markups">'
     svgHtml += '<g id="groupcenter"/>'
     svgHtml += '<g id="origin">'
@@ -282,24 +280,35 @@ annotools.prototype.generateSVG = function (annotations) {
       html: svgHtml
     }).inject(container)
   }
-  
-  var ctrl = false;
-  var alt = false;
-  jQuery(document).keydown(function(event){
-    //console.log("control");
-    //console.log(event);
-    if(event.which == 17 || event.which == 91)//Ctrl key and left window key
-      ctrl = true;
-   else if (event.which == 18 || event.which == 92)//Alt key and right window key
-	  alt = true;	 
-  });
 
-  jQuery(document).keyup(function(){
+    var ctrl = false;
+    var alt = false;
+    // Use CTRL & Windows key (command key on Mac)
+    jQuery(document).keydown(function (event) {
+
+        if (event.which === 17 || event.which === 91)
+        {
+            //Ctrl key and left window key
+            console.log(event.which);
+            ctrl = true;
+        }
+        else if (event.which === 18 || event.which === 92)
+        {
+            //Alt key and right window key
+            console.log(event.which);
+            alt = true;
+        }
+        //console.log("ctrl: " + ctrl + ", alt: " + alt);
+
+    });
+
+    jQuery(document).keyup(function () {
         ctrl = false;
-		alt = false;
-  });
+        alt = false;
+    });
 
-  jQuery('.annotationsvg').mousedown(function (event) {
+    //jQuery(".annotationsvg").mousedown(function (event) {
+    jQuery(".annotationsvg").click(function (event) {
         //console.log(event.which);
         if(ctrl){
           //console.log("double clicked");
@@ -324,7 +333,7 @@ annotools.prototype.generateSVG = function (annotations) {
         jQuery("#"+event.target.id).css("opacity", 1);
         var id = event.target.id
         var url = "api/Data/getROI.php?id="+id;
-        console.log("id:"+url);
+        console.log("url:"+url);
         console.log("id:"+id);
         var content = "<div id = 'panelHeader'> <h4>Annotation Details </h4></div>"
         + "<div id='panelBody'>";

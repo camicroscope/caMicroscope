@@ -20,7 +20,7 @@ if(isset($_GET["lymph_superuser"])) {
     $getRequest = new RestRequest($url,'GET');
     $getRequest->execute();
            
-    //Parse reponse
+    //Parse response
     $lymphocyteSuperuserInfo = ($getRequest->responseBody);
 
     if($lymphocyteSuperuserInfo)

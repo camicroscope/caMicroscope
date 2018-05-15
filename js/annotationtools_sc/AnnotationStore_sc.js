@@ -65,7 +65,7 @@ AnnotationStore.prototype.fetchAnnotations = function(x1,y1,x2,y2, footprint, al
     var midX = x2;
     var midY = y2;
     
-	//dispaly composite_input annotation while in low scale viewport
+	//display composite_input annotation while in low scale viewport
 	var isCompositeAnnotationOnly= true;
 	var isNonCompositeAnnotationOnly=true;
 	var algorithms_computer= [];

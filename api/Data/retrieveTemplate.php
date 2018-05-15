@@ -12,10 +12,19 @@ $templateUrl = $config['retrieveTemplate'];
 
 $api_key = $_SESSION['api_key'];
 
-$url = $templateUrl . "?api_key=$api_key";
+if (!isset($_GET) || empty($_GET["app_name"]))
+{
+    $url = $templateUrl . "?api_key=$api_key";
+}
+else { 
+   $app_name=$_GET["app_name"];
+   $url = $templateUrl . "?api_key=$api_key" . "&app_name=$app_name";
+}
+
 //echo $url;
 $templateRequest = new RestRequest($url,'GET');
 $templateRequest->execute();
 echo json_encode($templateRequest->responseBody);
+
 ?>
 

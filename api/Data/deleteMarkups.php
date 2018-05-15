@@ -14,7 +14,7 @@ if (!empty($_SESSION['api_key'])) {
 switch ($_SERVER['REQUEST_METHOD'])
 {
   case 'DELETE':
-    echo "PHP Deleteing";
+    echo "PHP Deleting";
     $d = file_get_contents("php://input");
     print_r($d);
     $data = [];
