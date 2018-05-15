@@ -3339,7 +3339,9 @@ annotools.prototype.loadChangeUsername = function()
                         }
                     }
                 }
-            }
+            } else {
+		container.append('<blockquote><h5><span class="glyphicon glyphicon-alert red"> There are no users with finalized data to view!  Instruct the users to set weight thresholds and click finalize to make them available.</h5></blockquote>');
+	    }
         } catch (e){
             console.log('ERROR');
             console.log(e);

@@ -690,13 +690,18 @@ annotools.prototype.generateSVG = function (annotations) {
                 content += line;
             }
 
-            if (ctrl)
-                content += "<button class='btn-danger btn' id='deleteAnnot'><a href='#confirmDelete' rel='modal:open'>Delete</a></button>";
-            else if (alt)
+ //  Section commented to disable Annotation deletion as per 
+//      bug SBU-BMI/quip_distro#268 by Joe Balsamo
+//           if (ctrl)
+//                content += "<button class='btn-danger btn' id='deleteAnnot'><a href='#confirmDelete' rel='modal:open'>Delete</a></button>";
+//            else  **When working join next line to this one again.
+	    if (alt)
                 content += "<button class='btn-danger btn' id='featureScape'>FeatureScape</button>";
 
 
-            content += "<button class='btn-danger btn' id='deleteAnnot'><a href='#confirmDelete' rel='modal:open'>Delete</a></button>";
+ //  Section commented to disable Annotation deletion as per 
+//      bug SBU-BMI/quip_distro#268 by Joe Balsamo
+//           content += "<button class='btn-danger btn' id='deleteAnnot'><a href='#confirmDelete' rel='modal:open'>Delete</a></button>";
             content += "<button class='btn' id='cancelPanel'>Cancel</button>";
             content += "</div>";
             var cancel = function () {
@@ -711,38 +716,39 @@ annotools.prototype.generateSVG = function (annotations) {
             jQuery("#cancelPanel").click(function () {
                 cancel();
             });
-
-            if (ctrl) { // Ctrl key for deletion of human generated annotation
-
-                jQuery("#deleteAnnot").click(function (e) {
-
-                    //$("#confirmDelete").css(
-                    //console.log(data.provenance.analysis.source);
-                    if (data.provenance.analysis.source == "human") {
-                        jQuery("#confirmDeleteButton").click(function () {
-                            var secret = jQuery("#deleteSecret").val();
-                            var payload = {
-                                "id": id,
-                                "secret": secret
-                            };
-
-                            jQuery.ajax({
-                                //url: 'api/Data/getProperties.php?id=' + id,
-                                url: 'api/Data/getPropertiesClone.php?id=' + id,
-                                type: 'DELETE',
-                                data: (payload),
-                                success: function (data) {
-                                    console.log(data);
-                                    jQuery("#panel").hide("slide");
-                                    self.getMultiAnnot();
-                                }
-                            });
-                        });
-                    } else {
-                        alert("Can't delete computer generated segments");
-                    }
-                });
-            }
+//  Section commented to disable Annotation deletion as per 
+//      bug SBU-BMI/quip_distro#268 by Joe Balsamo
+//            if (ctrl) { // Ctrl key for deletion of human generated annotation
+//
+//                jQuery("#deleteAnnot").click(function (e) {
+//
+//                    //$("#confirmDelete").css(
+//                    //console.log(data.provenance.analysis.source);
+//                    if (data.provenance.analysis.source == "human") {
+//                        jQuery("#confirmDeleteButton").click(function () {
+//                            var secret = jQuery("#deleteSecret").val();
+//                            var payload = {
+//                                "id": id,
+//                                "secret": secret
+//                            };
+//
+//                            jQuery.ajax({
+//                                //url: 'api/Data/getProperties.php?id=' + id,
+//                                url: 'api/Data/getPropertiesClone.php?id=' + id,
+//                                type: 'DELETE',
+//                                data: (payload),
+//                                success: function (data) {
+//                                    console.log(data);
+//                                    jQuery("#panel").hide("slide");
+//                                    self.getMultiAnnot();
+//                                }
+//                            });
+//                        });
+//                    } else {
+//                        alert("Can't delete computer generated segments");
+//                    }
+//                });
+//            }
 
         });
 
