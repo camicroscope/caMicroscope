@@ -185,7 +185,7 @@ $.getScript('shared/ToolBar.js', function () {
                 'data-placement': 'bottom',
                 'title': 'Toggle SideSplit',
                 'class': 'toolButton',
-                'src': 'images/SpyGlass.svg',
+                'src': 'images/sidesplit.svg',
                 'id': 'sidesplit_toolbar_button'
             });
             tool.append(this.sidesplitButton);
