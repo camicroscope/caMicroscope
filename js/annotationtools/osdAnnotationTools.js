@@ -1409,7 +1409,7 @@ annotools.prototype.saveAnnot = function (annotation) {
     annotation.updated_on = '';
     jQuery.ajax({
         'type': 'POST',
-        url: 'api/Data/getAnnotSpatial_sc.php',
+        url: 'api/Data/getAnnotSpatial.php',
         data: annotation,
         success: function (res, err) {
             // console.log("response: ")
