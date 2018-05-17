@@ -1416,8 +1416,8 @@ annotools.prototype.saveAnnot = function (annotation) {
             url: 'api/Data/getAnnotSpatial_sc.php',
             data: annotation,
             success: function (res, err) {
-                console.log("res:", res);
-                console.log("err:", err);
+                console.log(res);
+                console.log(err);
                 console.log('successfully posted')
             }
         });
@@ -1426,14 +1426,13 @@ annotools.prototype.saveAnnot = function (annotation) {
     else
     {
         // ROI, segmentation & feature extraction
-        console.log("annotation.provenance.analysis.execution_id:", annotation.provenance.analysis.execution_id);
         jQuery.ajax({
             'type': 'POST',
             url: 'api/Data/getAnnotSpatial.php',
             data: annotation,
             success: function (res, err) {
-                console.log("res:", res);
-                console.log("err:", err);
+                console.log(res);
+                console.log(err);
                 console.log('successfully posted')
             }
         });
