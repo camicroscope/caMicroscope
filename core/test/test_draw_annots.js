@@ -1,6 +1,6 @@
 const { expect } = require('chai');
 var Draw = require("../DrawAnnots.js");
-var ProxyTools = require("../../resource/ProxyTool.js")
+var ProxyTools = require("../reqs/ProxyTool.js")
 
 describe('Draw annotations Component', function () {
   var context = ProxyTools.delayer({})
