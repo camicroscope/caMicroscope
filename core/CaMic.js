@@ -1,5 +1,14 @@
-// camicroscope object
+/** Class representing camicroscope core instance **/
 class CaMic{
+  /**
+  * create a camic core instance
+  * @param divId - the div id to inject openseadragon into
+  * @param slideId - the id of the slide to load
+  * @property slideId - the slide id
+  * @property viewer - the OSD viewer object
+  * @property draw - the drawing layer controls
+  * @property layers - the layer controller
+  */
   constructor(divId,slideId){
     // initalize viewer
     this.viewer = new OpenSeadragon.Viewer({
@@ -34,13 +43,17 @@ class CaMic{
         }.bind(this)
     });
   }
+  /**
+  * Change which image is staged, used loadImg to load it.
+  */
   setImg(slideId){
-    // when changing image, clear all stuff
     this.layers.resetAll();
     this.slideId = slideId;
     this.store.setId(slideId)
   }
-
+  /**
+  * Loads the staged image
+  */
   loadImg(){
     // loads current image
     this.store.getSlide()
@@ -50,8 +63,11 @@ class CaMic{
       })
       .catch(console.log)
   }
+  /**
+  * Set up a scalebar on the image
+  * @param {number} mpp - microns per pixel of image
+  */
   scalebar(mpp){
-    // set up for scalebar
     try {
       this.viewer.scalebar({
               type: OpenSeadragon.ScalebarType.MAP,

@@ -6,7 +6,11 @@ try{
 }catch(e){
   var b;
 }
-
+/**
+* converts an object into a string of url components
+* @param {object} obj - keys and values
+* @returns the url encoded string
+**/
 function objToParamStr(obj) {
     var parts = [];
     for (var i in obj) {
@@ -21,7 +25,10 @@ function objToParamStr(obj) {
     }
     return parts.join("&");
 }
-
+/**
+* Storage interpreter for camicroscope
+* @param config - configuration options
+**/
 class Store{
   constructor(config){
     // config
@@ -30,10 +37,17 @@ class Store{
     this.markUrl = config.markUrl || "http://localhost:3001/marking"
     this.heatmapUrl = config.heatmapUrl || "http://localhost:3001/heatmap"
   }
+  /**
+  * sets which slide is active
+  * @param id - slide id
+  **/
   setId(id){
     this.slideId = id;
   }
-
+  /**
+  * get slide data
+  * @returns {promise} - promise of slide data
+  **/
   getSlide(){
     var url = this.slideUrl + "/one";
     var params = {id: this.slideId};

@@ -1,3 +1,8 @@
+/**
+* deterministically converts a string to a color via hash
+* @param str - the string to convert
+* @returns color - the color associated with it
+**/
 var stringToColor = function(str) {
     var hash = 0;
     for (var i = 0; i < str.length; i++) {
@@ -7,6 +12,11 @@ var stringToColor = function(str) {
     return colorlist[Math.abs(hash) % colorlist.length];
 }
 
+/**
+* renders a polygon onto a layer or canvas
+* @param context - the canvas context or layer
+* @param points - a list of coordinates, each in form [x,y]
+**/
 function renderPoly(context, points){
   context.moveTo(points[0][0], points[0][1]);
   context.lineTo(points[0][0], points[0][1]);
@@ -21,11 +31,22 @@ function renderPoly(context, points){
   context.closePath();
   context.stroke();
 }
-
+/**
+* renders a geojson featurecollection
+* @pram id - the id of the item to render
+* @param data - geojson featurecollection
+* @param context -the canvas context or layer
+**/
 function renderFeatureCollection(id, data, context){
   data.features.forEach((x)=>renderFeature(id, x, context))
 }
 
+/**
+* renders a geojson featurecollection
+* @pram id - the id of the item to render
+* @param feature - geojson feature
+* @param context -the canvas context or layer
+**/
 function renderFeature(id, feature, context) {
     context.__clear_queue();
     let color = stringToColor(id);
