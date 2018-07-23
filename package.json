@@ -12,6 +12,7 @@
     "express": "^4.16.2",
     "lodash": "^4.17.10",
     "mocha": "^5.1.1",
+    "node-fetch": "^2.2.0",
     "puppeteer": "^0.9.0"
   }
 }
