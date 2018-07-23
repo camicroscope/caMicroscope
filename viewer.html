@@ -7,7 +7,7 @@
     <meta name='viewport' content='width=device-width, initial-scale=1'>
 	<head>
 
-		<title>This open seadragon</title>
+		<title>caMicroscope</title>
 		<!-- google material icons css sheet -->
 		<link href='https://fonts.googleapis.com/icon?family=Material+Icons' rel='stylesheet'/>
 		<!-- customize material icons css -->
@@ -45,11 +45,20 @@
 		<script src='/lib/sidemenu/sidemenu.js'></script>
 		<!-- layers controller js -->
 		<script src='/lib/layersviewer/layersviewer.js'></script>
-		<!-- ods js -->
-		<script src='/js/osd_viewer.js'></script>
 
-		<!-- ods js -->
-		<script src='/simulate_data.js'></script>
+
+    <!-- reqs for core -->
+    <script src='/core/reqs/ProxyTool.js'></script>
+    <script src='/core/reqs/openseadragon-canvas-overlay.js'></script>
+    <script src='/core/reqs/ViewportCalibratedCanvas.js'></script>
+    <!-- core (package/ext) libs -->
+		<script src='/core/DemoStore.js'></script>
+    <script src='/core/Drawannots.js'></script>
+    <script src='/core/Layer.js'></script>
+    <script src='/core/RenderAnnots.js'></script>
+    <script src='/core/simpleheat.js'></script>
+    <script src='/core/CaMic.js'></script>
+
 
 	</head>
 	<body>
@@ -114,7 +123,7 @@
 
 		<!-- zoom control -->
 		<div id ='zctrl'></div>
-    
+
 		<!-- side menu for apps-->
 		<div id='side_apps' class='side_menu flex-container'>
 			<div class='close'>
@@ -125,8 +134,8 @@
 				<div class='item_body collapse'>
 					<div class='item_content'>
 						<div class='annotation'>
-							Annotation<br> 
-							Operation<br> 
+							Annotation<br>
+							Operation<br>
 							Area
 							<br><br><br><br><br><br>
 							<br><br><br><br><br><br>
@@ -147,8 +156,8 @@
 							<option>Algo-x6-x2-y1</option>
 						</select>
 						<div class='annotation'>
-							Analytics<br> 
-							Operation<br> 
+							Analytics<br>
+							Operation<br>
 							Algo-x1-x1-y1
 							<br><br><br><br><br>
 						</div>
@@ -173,7 +182,7 @@
 						</div>
 					</div>
 				</div>
-			
+
 		</div>
 		<!-- side menu for layers-->
 		<div id='side_layers' class='side_menu'>
@@ -183,10 +192,13 @@
 			</div>
 			<div class='item_head'><span>Layers Manager</span></div>
 			<div class='item_body'>
-				<div class='item_content'>	
-					<div id='overlayers'></div>	
+				<div class='item_content'>
+					<div id='overlayers'></div>
 				</div>
 			</div>
 		</div>
 	</body>
+  <script src='/js/init.js'></script>
+  <!-- ods js -->
+  <script src='/js/osd_viewer.js'></script>
 </html>

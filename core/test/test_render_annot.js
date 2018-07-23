@@ -1,6 +1,6 @@
 const { expect } = require('chai');
 var Render = require("../RenderAnnots.js")
-var ProxyTools = require("../../resource/ProxyTool.js")
+var ProxyTools = require("../reqs/ProxyTool.js")
 
 describe('Render annotations Component', function () {
 

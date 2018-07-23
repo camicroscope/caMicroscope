@@ -31,6 +31,7 @@ function renderFeature(id, feature, context) {
     let color = stringToColor(id);
     context.strokeStyle = color;
     let type = feature.geometry.type;
+    console.log(type)
     if (!type || type == "Polygon") {
         let polys = feature.geometry.coordinates;
         polys.forEach((points)=>renderPoly(context, points))

@@ -9,6 +9,7 @@ function simpleheat(context, w, h, sw, sh) {
 
     // external canvas
     this._externalctx = context;
+    console.log(context)
     // internal canvas
     this._canvas = this._createCanvas()
     this._canvas.height=h;
@@ -29,9 +30,6 @@ simpleheat.prototype = {
 
     defaultGradient: {
         0.2: 'blue',
-        0.3: 'cyan',
-        0.35: 'lime',
-        0.4: 'yellow',
         0.5: 'red'
     },
 

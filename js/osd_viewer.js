@@ -8,7 +8,7 @@ let camessage;
 let zctrl;
 let side_apps;
 let side_layers;
-let layer_manager;
+
 function initialize(){
 	console.log('start...');
 	// create a viewer and set up
@@ -40,23 +40,6 @@ function initialize(){
 	// clear control dock
 	//viewer.clearControls();
 
-	// set up for scalebar
-	try {
-        viewer.scalebar({
-            type: OpenSeadragon.ScalebarType.MAP,
-            pixelsPerMeter: (1 / (parseFloat(MPP["mpp-x"]) * 0.000001)),
-            xOffset: 5,
-            yOffset: 10,
-            stayInsideImage: true,
-            color: "rgb(150,150,150)",
-            fontColor: "rgb(100,100,100)",
-            backgroundColor: "rgba(255,255,255,0.5)",
-            barThickness: 2
-        });
-    } catch (ex) {
-        console.log("scalebar err: ", ex.message);
-    }
-
     // const zmax = Math.ceil(viewer.viewport.getMaxZoom());
     // const zmin = Math.ceil(viewer.viewport.getMinZoom());
     // const cur =  Math.ceil((zmax-zmin)/2);
@@ -70,7 +53,7 @@ function initialize(){
 			'max':4,
 			'min':0.4,
 			'cur':1,
-			'step':0.01
+			'step':1.5
 		}
 	});
 
@@ -90,7 +73,6 @@ function initialize(){
     }
 
     // overlayer manager
-    layer_manager = new LayersViewer({id:'overlayers',data:layersData,callback:callback });
 
 	console.log('end');
 

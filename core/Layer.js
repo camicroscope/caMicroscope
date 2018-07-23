@@ -28,7 +28,10 @@ class Layer{
   // draw all visible layers
   drawVisible(onto){
     for (let name of this.visibleLayers.entries()){
-      this.delayers[name].__apply_all(onto);
+      let dl = this.delayers[name[0]]
+      if (dl){
+        dl.__apply_all(onto);
+      }
     }
   }
 
