@@ -1,21 +1,8 @@
 sudo: required
-services:
-    - nodejs
-language: php
 node_js:
    - "8"
-before_install:
-    - mkdir ../js
-    - cp test/__config.js ../js/config.js
-    - touch ../authenticate.php
-    - which php
 install:
     - npm install
     - npm install -g mocha
-before_script:
-    - cd test
-    - node test_server.js &
-    - cd ..
 script:
-    - mocha js/Helpers/test --recursive
-    - mocha test/functional_tests.js
+    - mocha core/test/ --recursive
