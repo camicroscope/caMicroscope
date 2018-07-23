@@ -26,70 +26,85 @@ function objToParamStr(obj) {
     return parts.join("&");
 }
 /**
-* Storage interpreter for camicroscope
+* Storage interpreter for camicroscope, uses same auth as origin
 * @param config - configuration options
+* @param config.getUrls - collectop/type as key, url for get as value
+* @param config.updateUrls- collectop/type as key, url for update as value
+* @param config.postUrls- collectop/type as key, url for post as value
+* @param config.deleteUrls- collectop/type as key, url for delete as value
 **/
 class Store{
-  constructor(config){
+  constructor(onfig){
     // config
-    this.slideUrl = config.slideUrl || "http://localhost:3001/slide"
-    this.marktypeUrl = config.marktypeUrl || "http://localhost:3001/marktype"
-    this.markUrl = config.markUrl || "http://localhost:3001/marking"
-    this.heatmapUrl = config.heatmapUrl || "http://localhost:3001/heatmap"
+    this.key = key || "";
+    this.getUrls = config.getUrls;
+    this.updateUrls = config.updateUrls;
+    this.postUrls = config.postUrls;
+    this.deleteUrls = config.deleteUrls;
+    this.testmode = config.testmode || false;
   }
   /**
-  * sets which slide is active
-  * @param id - slide id
+  * get data
+  * @param {string} type - the datatype to get
+  * @param {object} query - the query of url parameters
+  * @returns {promise} - promise which resolves with data
   **/
-  setId(id){
-    this.slideId = id;
+  get(type, query){
+    var url = this.getUrls[type];
+    // api key for bindaas?
+    return fetch(url + "?" + objToParamStr(query), {
+            credentials: "same-origin",
+            mode: "cors"
+        }).then((x)=>x.json())
   }
   /**
-  * get slide data
-  * @returns {promise} - promise of slide data
+  * post data
+  * @param {string} type - the datatype to get
+  * @param {object} query - the query of url parameters
+  * @param {object} data - the data to post
+  * @returns {promise} - promise which resolves with data
   **/
-  getSlide(){
-    var url = this.slideUrl + "/one";
-    var params = {id: this.slideId};
-    return fetch(url + "?" + objToParamStr(params), {
+  post(type, query, data){
+    var url = this.postUrls[type];
+    // api key for bindaas?
+    return fetch(url + "?" + objToParamStr(query), {
+            method: "POST",
+            mode: "cors",
+            body: JSON.stringify(data),
             credentials: "same-origin"
         }).then((x)=>x.json())
   }
 
-  getMarktypes(){
-    var url = this.marktypeUrl;
-    var params = {slide: this.slideId};
-    return fetch(url + "?" + objToParamStr(params), {
+  /**
+  * update data
+  * @param {string} type - the datatype to get
+  * @param {object} query - the query of url parameters
+  * @param {object} data - the data to update
+  * @returns {promise} - promise which resolves with data
+  **/
+  update(type, query, data){
+    var url = this.updateUrls[type];
+    // api key for bindaas?
+    return fetch(url + "?" + objToParamStr(query), {
+            method: "UPDATE",
+            mode: "cors",
+            body: JSON.stringify(data),
             credentials: "same-origin"
         }).then((x)=>x.json())
   }
 
-  getHeatmaps(){
-    var url = this.heatmapUrl;
-    var params = {slide: this.slideId};
-    return fetch(url + "?" + objToParamStr(params), {
-            credentials: "same-origin"
-        }).then((x)=>x.json())
-  }
-
-  getMarks(marktypes){
-    var markPromiseList = [];
-    var url = this.markUrl;
-    for (var i in marktypes){
-      var params = {"properties.marktype": marktypes[i]}
-      markPromiseList.push(
-        fetch(url + "?" + objToParamStr(params), {
-              credentials: "same-origin"
-      }).then((x)=>x.json())
-    )
-    }
-    return Promise.all(markPromiseList)
-  }
-  getMarkById(markId){
-    var url = this.markUrl + "/one";
-    var params = {id: markId};
-    return fetch(url + "?" + objToParamStr(params), {
-            credentials: "same-origin"
+  /**
+  * delete data
+  * @param {string} type - the datatype to get
+  * @param {object} query - the query of url parameters
+  * @returns {promise} - promise which resolves with data
+  **/
+  delete(type, query){
+    var url = this.deleteUrls[type];
+    // api key for bindaas?
+    return fetch(url + "?" + objToParamStr(query), {
+            credentials: "same-origin",
+            mode: "cors"
         }).then((x)=>x.json())
   }
 }

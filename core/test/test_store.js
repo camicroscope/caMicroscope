@@ -6,9 +6,12 @@ describe('Store Component', function () {
   var req;
 
   it('should initalize', function () {
-    store = new Store("testid");
+    let config = {
+      testmode: true
+    }
+    store = new Store(config);
   });
   it('should make a request', function () {
-    req = store.getSlide();
+    req = store.get("test", {});
   });
 });
