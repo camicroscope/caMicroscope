@@ -1,0 +1,192 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+	<head>
+
+		<title>This open seadragon</title>
+		<!-- google material icons css sheet -->
+		<link href='https://fonts.googleapis.com/icon?family=Material+Icons' rel='stylesheet'/>
+		<!-- customize material icons css -->
+		<link href='/css/icons.css' rel='stylesheet'/>
+		<!-- css sheet -->
+		<link rel='stylesheet' type='text/css' media='all' href='/css/style.css'/>
+
+		<!-- message display bar css -->
+		<link rel='stylesheet' type='text/css' media='all' href='/lib/camessage/camessage.css'/>
+		<!-- toolbar css -->
+		<link rel='stylesheet' type='text/css' media='all' href='/lib/toolbar/toolbar.css'/>
+		<!-- zoom control css -->
+		<link rel='stylesheet' type='text/css' media='all' href='/lib/zoomcontrol/zoomcontrol.css'/>
+
+		<!-- side menu css -->
+		<link rel='stylesheet' type='text/css' media='all' href='/lib/sidemenu/sidemenu.css'/>
+		<!-- layers controller css -->
+		<link rel='stylesheet' type='text/css' media='all' href='/lib/layersviewer/layersviewer.css'/>
+
+		<!-- open seadragon lib-->
+		<script src='/lib/openseadragon/openseadragon.min.js' ></script>
+		<script src='/lib/openseadragon-imaginghelper.min.js'></script>
+		<script src='/lib/openseadragon-scalebar.js'></script>
+		<script src='/lib/openseadragonzoomlevels.js'></script>
+
+		<!-- util.js -->
+		<script src = '/js/util.js' type='text/javascript'></script>
+		<!-- messsage display js -->
+		<script src='/lib/camessage/camessage.js'></script>
+		<!-- toolbar js -->
+		<script src='/lib/toolbar/toolbar.js'></script>
+		<!-- zoom ctrl js -->
+		<script src='/lib/zoomcontrol/zoomcontrol.js'></script>
+		<!-- sidemenu js -->
+		<script src='/lib/sidemenu/sidemenu.js'></script>
+		<!-- layers controller js -->
+		<script src='/lib/layersviewer/layersviewer.js'></script>
+		<!-- ods js -->
+		<script src='/js/osd_viewer.js'></script>
+
+		<!-- ods js -->
+		<script src='/simulate_data.js'></script>
+
+	</head>
+	<body>
+		<!-- message-->
+		<div id = 'cames' class='camessage' style='z-index:3'>This is a Message</div>
+		<!-- toolbar -->
+		<div id = 'ca_tools'>
+			<!-- tools -->
+			<ul class='tools' style='z-index:3'>
+			  <li>
+			    <input id='apps' type='checkbox' name='app_ctrls' data-target='side_apps' >
+			    <label for='apps' title='Apps' class='material-icons md-24'>apps</label>
+			  </li>
+			  <li>
+			    <input id='layers' type='checkbox' name='app_ctrls' data-target='side_layers'>
+			    <label for='layers' title='Overlayers' class='material-icons md-24'>view_list</label>
+			  </li>
+
+			  <li class='separator'></li>
+
+			  <li>
+			    <input id='home' type='checkbox' name='tool_btn'>
+			    <label for='home' title='Go Home' class='material-icons md-24'>home</label>
+			  </li>
+			  <li>
+			    <input id='pen' type='checkbox' name='tool_btn'>
+			    <label for='pen' title='Draw' class='material-icons md-24'>create</label>
+			    <ul class='drop_down'>
+			      <li>
+			      	<input id='pen_free' type='radio' name='pen_style' value='free' checked>
+			      	<label for='pen_free' class='material-icons md-24'>gesture</label>
+				  </li>
+			      <li>
+			      	<input id='pen_rect' type='radio' name='pen_style' value='rect'>
+			      	<label for='pen_rect' class='material-icons md-24'>crop_square</label>
+			      </li>
+			    </ul>
+			  </li>
+			  <li>
+			    <input id='magn' type='checkbox' name='tool_btn'>
+			    <label for='magn' title='Magnifier' class='material-icons md-24'>image_search</label>
+			  </li>
+			  <li>
+			    <input id='download' type='checkbox' name='tool_btn'>
+			    <label for='download' title='Download' class='material-icons md-24'>file_download</label>
+			  </li>
+			  <li>
+			    <input id='share' type='checkbox' name='tool_btn'>
+			    <label for='share' title='Share' class='material-icons md-24'>share</label>
+			  </li>
+			  <li class='handler'>
+			    <input id='tool_handler' type='checkbox'>
+			    <label for='tool_handler' class='material-icons'>arrow_left</label>
+			    <!-- change the innerHTML=='name'-->
+			  </li>
+			</ul>
+			<!-- tools END -->
+
+		</div>
+		<!-- main viewer -->
+		<div id ='main_viewer'></div>
+
+		<!-- zoom control -->
+		<div id ='zctrl'></div>
+    
+		<!-- side menu for apps-->
+		<div id='side_apps' class='side_menu flex-container'>
+			<div class='close'>
+				<i class='material-icons md-24'>chevron_left</i>
+				<i class='material-icons md-24 sec'>chevron_left</i>
+			</div>
+				<div class='item_head'><i class='material-icons md-24'>add</i>&nbsp;&nbsp;<i class='material-icons md-24'>border_color</i><span>&nbsp;&nbsp;Annotation</span></div>
+				<div class='item_body collapse'>
+					<div class='item_content'>
+						<div class='annotation'>
+							Annotation<br> 
+							Operation<br> 
+							Area
+							<br><br><br><br><br><br>
+							<br><br><br><br><br><br>
+						</div>
+						<div><button id='ann_save' style='float:left;'>Save</button><button style='float:right;'>Clear</button></div>
+					</div>
+				</div>
+				<div class='item_head'><i class='material-icons md-24'>add</i>&nbsp;&nbsp;<i class='material-icons md-24'>find_replace</i><span>&nbsp;&nbsp;Analytics</span></div>
+				<div class='item_body collapse'>
+					<div class='item_content'>
+						<div style='display:inline-block;'><label for='algoName'>Algorthms</label></div>
+						<select id='algoName'>
+							<option>Algo-x1-x1-y1</option>
+							<option>Algo-x1-x2-y1</option>
+							<option>Algo-x2-x1-y1</option>
+							<option>Algo-x2-x3-y1</option>
+							<option>Algo-x5-x3-y1</option>
+							<option>Algo-x6-x2-y1</option>
+						</select>
+						<div class='annotation'>
+							Analytics<br> 
+							Operation<br> 
+							Algo-x1-x1-y1
+							<br><br><br><br><br>
+						</div>
+						<div><button id='alg_run' style='float:left;'>Run</button><button style='float:right;'>Reset</button></div>
+						<div class='separator'></div>
+						<div ><input class='search' type='search'/><button class='search'><i class='material-icons md-24'>find_in_page</i></button></div>
+						<div class='table_wrap'>
+						<table class='data_table'>
+							<tr><th>Job ID</th><th>Type</th><th>Status</th></tr>
+							<tr><td>11-08-00001</td><td>Algo-x1-x2-y1</td><td>Done</td></tr>
+							<tr><td>11-08-00002</td><td>Algo-x5-x3-y1</td><td>Done</td></tr>
+							<tr><td>11-08-00003</td><td>Algo-x2-x1-y1</td><td>Done</td></tr>
+							<tr><td>11-08-00004</td><td>Algo-x1-x1-y1</td><td>Done</td></tr>
+							<tr><td>11-08-00005</td><td>Algo-x6-x2-y1</td><td>Done</td></tr>
+							<tr><td>11-08-00006</td><td>Algo-x1-x1-y1</td><td>Done</td></tr>
+							<tr><td>11-08-00007</td><td>Algo-61-x2-y1</td><td>Done</td></tr>
+							<tr><td>11-08-00001</td><td>Algo-x1-x2-y1</td><td>Done</td></tr>
+							<tr><td>11-08-00002</td><td>Algo-x5-x3-y1</td><td>Done</td></tr>
+							<tr><td>11-08-00003</td><td>Algo-x2-x1-y1</td><td>Done</td></tr>
+							<tr><td>11-08-00004</td><td>Algo-x1-x1-y1</td><td>Done</td></tr>
+						</table>
+						</div>
+					</div>
+				</div>
+			
+		</div>
+		<!-- side menu for layers-->
+		<div id='side_layers' class='side_menu'>
+			<div class='close'>
+				<i class='material-icons md-24'>chevron_left</i>
+				<i class='material-icons md-24 sec'>chevron_left</i>
+			</div>
+			<div class='item_head'><span>Layers Manager</span></div>
+			<div class='item_body'>
+				<div class='item_content'>	
+					<div id='overlayers'></div>	
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

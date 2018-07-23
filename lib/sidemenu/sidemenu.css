@@ -1,0 +1,87 @@
+
+.side_menu {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: rgba(0,0,0,0.8);
+    overflow-x: hidden;
+    transition: 0.5s;
+}
+
+
+@media screen and (max-height: 4.5rem) {
+  .side_menu {padding-top: 1.5rem;}
+  .side_menu a {font-size: 1.8rem;}
+}
+.side_menu > div.close {
+    flex:0;
+    padding:0;
+    margin:0;
+    width:100%;
+    height:3.2rem;
+}
+.side_menu > div.close > i {
+    margin-top:.4rem;
+    cursor:pointer;
+    float: right;
+    color:rgba(255,255,255,0.5);
+}
+.side_menu > div.close:hover > i {
+    color:rgba(255,255,255,1);
+}
+.side_menu > div.close > i.sec {
+    margin-right:-1.9rem;
+}
+
+
+/* collapsible menu css */
+.flex-container{
+  display:flex;
+  flex-direction:column;
+  /*border:1px black solid;*/
+  /*background-color:lightblue;*/
+}
+
+.item_head {
+    margin:.2rem;
+    background-color: rgba(0,0,0,1);
+    color: rgba(255,255,255,.7);
+    cursor: pointer;
+    padding: .5rem;
+    width: 100%;
+    border: none;
+    text-align: left;
+    outline: none;
+    font-size: 1.5rem;
+}
+.item_head span {
+    font-size:1.5rem;
+    line-height:2.4rem;
+}
+
+.active, .item_head:hover {
+    color: rgba(255,255,255,1);
+    background-color: #555;
+}
+
+.item_body {
+  overflow:hidden;
+  transition:flex .5s;
+  margin:0 .5rem;
+}
+.collapse{
+  flex:0;
+}
+.expand{
+  overflow-y:auto;
+  flex:1;
+}
+
+
+
+
+
+
