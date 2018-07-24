@@ -9,7 +9,7 @@ describe('Store Component', function () {
     let config = {
       testmode: true
     }
-    store = new Store(config);
+    store = new Store("", config);
   });
   it('should make a request', function () {
     req = store.get("test", {});
