@@ -34,7 +34,7 @@ function objToParamStr(obj) {
 * @param config.deleteUrls- collectop/type as key, url for delete as value
 **/
 class Store{
-  constructor(onfig){
+  constructor(key, config){
     // config
     this.key = key || "";
     this.getUrls = config.getUrls;

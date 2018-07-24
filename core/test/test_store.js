@@ -7,9 +7,10 @@ describe('Store Component', function () {
 
   it('should initalize', function () {
     let config = {
-      testmode: true
+      testmode: true,
+      getUrls: {test: "localhost"}
     }
-    store = new Store(config);
+    store = new Store("", config);
   });
   it('should make a request', function () {
     req = store.get("test", {});
