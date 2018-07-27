@@ -27,7 +27,7 @@ class CaMic{
     });
     // initialize layers
     this.layers = new Layer(this.viewer);
-    this.draw = new Draw(this.layers.getLayer("drawing"))
+    this.draw = new Draw(this.viewer,this.layers.getLayer("drawing"))
     this.slideId = slideId;
     // initalize store
     this.store = new Store({});
