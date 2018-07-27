@@ -59,3 +59,10 @@ class Layer{
   }
 
 }
+
+try{
+  module.exports = Layer;
+}
+catch(e){
+  var a
+}

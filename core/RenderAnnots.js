@@ -27,6 +27,7 @@ function renderPoly(context, points){
       let y = coord[1];
       context.lineTo(x, y);
   });
+  // in case we end up with a non-closed poly
   context.lineTo(points[0][0], points[0][1]);
   context.closePath();
   context.stroke();

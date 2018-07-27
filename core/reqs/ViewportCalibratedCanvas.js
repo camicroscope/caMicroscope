@@ -136,3 +136,10 @@ function ViewportCalibratedCanvas(base, viewer) {
     }
     return new Proxy(base, handler);
 }
+
+try{
+  module.exports = ViewportCalibratedCanvas;
+}
+catch(e){
+  var a;
+}

@@ -28,6 +28,9 @@ class Draw{
   stopDrawing(){
     // this is the geometry data, in points; conv to geojson
     this.active = false;
+    // need closed polygons for mongo, re add first point
+    let pt=this.data.geometry.coordinates[this.data.geometry.coordinates.length-1][0][0]
+    this.data.geometry.coordinates[this.data.geometry.coordinates.length-1][0].push(pt)
     return this.data;
   }
   /*

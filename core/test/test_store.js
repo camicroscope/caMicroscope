@@ -8,7 +8,7 @@ describe('Store Component', function () {
   it('should initalize', function () {
     let config = {
       testmode: true,
-      getUrls: {test: "localhost"}
+      getUrls: {test: "https://jsonplaceholder.typicode.com/posts/1"}
     }
     store = new Store("", config);
   });
