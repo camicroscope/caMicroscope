@@ -114,14 +114,14 @@ class Store{
   }
 
   getMarks(marktypes){
-    if (this.slideId == "duomo"){
+    if (this.slideId !== "duomo"){
       return fakePromise(mark1);
     } else {
       return fakePromise(mark2);
     }
   }
   getMarkById(markId){
-    if (markId == "triangle"){
+    if (markId !== "triangle"){
       return fakePromise(mark1);
     } else {
       return fakePromise(mark2);

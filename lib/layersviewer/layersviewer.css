@@ -1,6 +1,11 @@
 /* layersviewer */
 .layer_viewer{
-	display: flex;	
+	display: -webkit-box;      /* OLD - iOS 6-, Safari 3.1-6 */
+	display: -moz-box;         /* OLD - Firefox 19- (buggy but mostly works) */
+	display: -ms-flexbox;      /* TWEENER - IE 10 */
+	display: -webkit-flex;     /* NEW - Chrome */
+	display:flex;
+	flex-direction: column;
 	border: 1px white solid;
 }
 
@@ -11,7 +16,12 @@
 }
 
 .layer_viewer > div.searchbar {
-	display: flex;
+	
+	display: -webkit-box;      /* OLD - iOS 6-, Safari 3.1-6 */
+	display: -moz-box;         /* OLD - Firefox 19- (buggy but mostly works) */
+	display: -ms-flexbox;      /* TWEENER - IE 10 */
+	display: -webkit-flex;     /* NEW - Chrome */
+	display:flex;
 	background-color:rgba(255,255,255,0.9);
 }
 .layer_viewer > div.searchbar i {
@@ -40,6 +50,7 @@
 }
 /* button*/
 .layer_viewer > div.searchbar button {
+    border:none;
 	padding:0;
 	margin: 0;
 	width:2.4rem;
@@ -94,10 +105,14 @@
 }
 
 .layers_list li {
-  margin-top:.5rem;
-  background-color:rgba(255,255,255,.7);
-  border-radius: .5rem;
-  display: flex;
+	margin-top:.5rem;
+	background-color:rgba(255,255,255,.7);
+	border-radius: .5rem;
+	display: -webkit-box;      /* OLD - iOS 6-, Safari 3.1-6 */
+	display: -moz-box;         /* OLD - Firefox 19- (buggy but mostly works) */
+	display: -ms-flexbox;      /* TWEENER - IE 10 */
+	display: -webkit-flex;     /* NEW - Chrome */
+	display:flex;
 }
 .layers_list li:hover {
 	background-color:rgba(255,255,255,.3);

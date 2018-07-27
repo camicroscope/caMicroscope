@@ -9,22 +9,31 @@ class CaMic{
   * @property draw - the drawing layer controls
   * @property layers - the layer controller
   */
-  constructor(divId,slideId){
+  constructor(divId,slideId, options){
     // initalize viewer
-    this.viewer = new OpenSeadragon.Viewer({
+    this.__default_opt = {
       id: divId,
       prefixUrl: "images/",
+
+      // -- navigator setting
+      showNavigationControl:false,
       showNavigator: true,
+      navigatorAutoFade: false,
       navigatorPosition: "BOTTOM_RIGHT",
-      //navigatorId: "navigator",
-      zoomPerClick: 2,
+
+
+      zoomPerClick: 1,
       animationTime: 0.75,
-      maxZoomPixelRatio: 2,
+      maxZoomPixelRatio: 1,
       visibilityRatio: 1,
+      maxZoomLevel:4,
+      minZoomLevel:.4,
       constrainDuringPan: true,
-      navigatorAutoFade: false
-      //zoomPerScroll: 1
-    });
+    }
+
+    extend(this.__default_opt, options);
+
+    this.viewer = new OpenSeadragon.Viewer(this.__default_opt);
     // initialize layers
     this.layers = new Layer(this.viewer);
     this.draw = new Draw(this.viewer,this.layers.getLayer("drawing"))
