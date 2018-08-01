@@ -28,7 +28,7 @@ class CaMic{
       visibilityRatio: 1,
       maxZoomLevel:4,
       minZoomLevel:.4,
-      //constrainDuringPan: true,
+      constrainDuringPan: true
     }
 
     extend(this.__default_opt, options);

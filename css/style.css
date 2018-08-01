@@ -132,3 +132,20 @@ table.data_table td{
 table.data_table tr:hover td{
 	background-color:#D3D3D3;
 }
+
+
+/* --- temp style control --- */
+#drawCtrl {
+	box-sizing:border-box;
+	border:black 2px solid;
+	position:absolute;
+	bottom:0;
+	left:0;
+	z-index:600;
+	color:black;
+	background-color: white;
+	font-size:1.5rem;
+	padding: 10px;
+}
+
+

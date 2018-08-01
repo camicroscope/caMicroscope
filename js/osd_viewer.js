@@ -103,7 +103,7 @@ function loadData(){
 }
 
 
-// initalize all UI components
+// initialize all UI components
 function initUIcomponents(){
 	/* create UI components */
 	
@@ -141,24 +141,25 @@ function initUIcomponents(){
 			{
 				icon:'create',// material icons' name
 				title:'Draw',
-				type:'dropdown',// btn/check/dropdown
-				value:'draw',
-				//checked:true,
-				dropdownList:[
-					// free draw
-					{
-						icon:'gesture',
-						value:'free',
-						title:'Free Draw',
-						checked:true
-					},
-					// rectangle fraw
-					{
-						icon:'crop_square',
-						value:'rect',
-						title:'Rectangle'
-					}
-				],
+				type:'check',
+				// type:'dropdown',// btn/check/dropdown
+				// value:'draw',
+				// //checked:true,
+				// dropdownList:[
+				// 	// free draw
+				// 	{
+				// 		icon:'gesture',
+				// 		value:'free',
+				// 		title:'Free Draw',
+				// 		checked:true
+				// 	},
+				// 	// rectangle fraw
+				// 	{
+				// 		icon:'crop_square',
+				// 		value:'rect',
+				// 		title:'Rectangle'
+				// 	}
+				// ],
 				callback:penDraw
 			},
 			// magnifier
@@ -275,7 +276,21 @@ function goHome(data){
 // pen draw callback
 function penDraw(data){
 	camessage.sendMessage(`Pen: ${data.checked?'ON':'OFF'} | Mode: ${data.status} `, {size:'15px',color:'white', bgColor:'MediumPurple'}, 3);
-	console.log(data);
+	if(!camic.draw){
+		alert('draw doesn\'t initialize');
+		return;
+	}
+	 
+	const ctrl = document.getElementById('drawCtrl');
+	setStyle();
+	if(data.checked){ // draw on
+		camic.draw.drawOn();
+		ctrl.style.display = '';
+	}else{ // draw off
+		camic.draw.drawOff();
+		ctrl.style.display = 'none';
+	}
+
 }
 
 // toggle magnifier callback
@@ -342,7 +357,21 @@ function algoRun(){
 
 }
 
+
+let color;
+let weight;
+function setStyle(){
+	camic.draw.style =  {
+		color:color.value,
+		lineJoin:document.querySelector('input[name=lineJoin]:checked').value,
+		lineCap:document.querySelector('input[name=lineCap]:checked').value,
+		lineWidth:weight.value
+	};
+	camic.draw.drawMode = document.querySelector('input[name=style]:checked').value;
+}
+
 /* call back list END */
+
 
 // initialize viewer page
 function initialize(){
@@ -353,11 +382,37 @@ function initialize(){
 	// loading the data
 	camic.viewer.addHandler('open', loadData);
 	
-	// initalize
+	// initialize
 	//initUIcomponents();
 	
+	// -- tem-- //
+	weight = document.getElementById('weight');
+	const weightLabel = document.getElementById('weightLabel');
+	color = document.getElementById('color');
+	const colorLabel = document.getElementById('colorLabel');
+	
+	// color
+	color.addEventListener('change', e=>{
+		colorLabel.textContent = color.value;
+		colorLabel.style.color = color.value;
+		setStyle();
+	})
 
+	// weight
+	weight.addEventListener('change', e=>{
+		weightLabel.textContent = weight.value;
+		setStyle();
+	})
 
+	//
+	//document.querySelector('input[name=style]:checked')
+	// lineCap
+	const styleRadio = document.querySelectorAll('input[name=style]');
+	styleRadio.forEach(radio => radio.addEventListener('click',setStyle));
+	const capRadio = document.querySelectorAll('input[name=lineCap]');
+	capRadio.forEach(radio => radio.addEventListener('click',setStyle));
+	const joinRadio = document.querySelectorAll('input[name=lineJoin]');
+	capRadio.forEach(radio => radio.addEventListener('click',setStyle));
 
 
 }

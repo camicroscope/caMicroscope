@@ -77,24 +77,58 @@
 		<div id = 'cames' style='z-index:2'></div>
 		
 		<!-- toolbar -->
-		<div id = 'ca_tools'></div>
+		<div id = 'ca_tools' style='z-index:600'></div>
 		
 		<!-- main viewer -->
 		<div id ='main_viewer'></div>
 
 		<!-- zoom control -->
-		<div id ='zctrl'></div>
+		<div id ='zctrl' style='z-index:600'></div>
 
 		<!-- side menu for apps-->
-		<div id='side_apps'></div>
+		<div id='side_apps' style='z-index:600'></div>
 		
 		<!-- side menu for layers-->
-		<div id='side_layers'></div>
+		<div id='side_layers' style='z-index:600'></div>
     	
     	<!-- collapsible list -- annotation and analytics -->
-    	<div id='collapsiblelist'></div>
+    	<div id='collapsiblelist' style='z-index:600'></div>
     	
     	<!-- overlayer manager -->
-    	<div id='overlayers'></div>
+    	<div id='overlayers' style='z-index:600'></div>
+
+    	<!-- temporary style control -->
+		<div id='drawCtrl'  style='display:none'>
+			<label >Weight:</label><input id='weight' type='range'  value =10 min=1 max=100 /><label id='weightLabel'>10</label>
+			<br>
+			<label>Color:</label><input type="color" id="color" value="#03fd3e" /><label id='colorLabel' for="color" style="color:#03fd3e">#03fd3e</label>
+			<br>
+			<label>style</label>
+			<input type='radio' value='free' name='style' checked/>
+			<label>free</label>
+			<input type='radio' value='rect' name='style'/>
+			<label>rect</label>
+			<input type='radio' value='square' name='style'/>
+			<label>square</label>
+			
+			<br>
+			<label>lineCap:</label>
+			<input type='radio' value='butt' name='lineCap'/>
+			<label>butt</label>
+			<input type='radio' value='round' name='lineCap' checked/>
+			<label>round</label>
+			<input type='radio' value='square' name='lineCap'/>
+			<label>square</label>
+			<br>
+			<label>lineJoin:</label>
+			<input type='radio' value='bevel' name='lineJoin'/>
+			<label>bevel</label>
+			<input type='radio' value='round' name='lineJoin' checked/>
+			<label>round</label>
+			<input type='radio' value='miter' name='lineJoin'/>
+			<label>miter</label>
+			<!--<label for='text'>Note:</label><input id='text' type='text'/>-->
+   		</div>
+			<!-- style control end-->
 	</body>
 </html>
