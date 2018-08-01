@@ -28,29 +28,35 @@ class CaMic{
       visibilityRatio: 1,
       maxZoomLevel:4,
       minZoomLevel:.4,
-      constrainDuringPan: true,
+      //constrainDuringPan: true,
     }
 
     extend(this.__default_opt, options);
 
     this.viewer = new OpenSeadragon.Viewer(this.__default_opt);
     // initialize layers
+    this.__draw;
+    this.__hover;
+
+
     this.layers = new Layer(this.viewer);
-    this.draw = new Draw(this.viewer,this.layers.getLayer("drawing"))
+    this.draw;// = new Draw(this.viewer);
     this.slideId = slideId;
     // initalize store
     this.store = new Store({});
     this.store.setId(slideId)
     // load image
     // set overlay thing
-    this.overlay = this.viewer.canvasOverlay({
-        clearBeforeRedraw:true,
-        onRedraw:function() {
-          var lw = 50 / (this.viewer.viewport.getZoom(true));
-          this.overlay.context2d().lineWidth = lw
-          this.layers.drawVisible(this.overlay.context2d());
-        }.bind(this)
-    });
+
+    
+
+    this.viewer.addHandler('open',this.init.bind(this));
+
+  }
+
+  init(){
+    this.draw = new Draw(this.viewer);
+    this.viewer.removeHandler('open', this.init.bind(this));
   }
   /**
   * Change which image is staged, used loadImg to load it.
