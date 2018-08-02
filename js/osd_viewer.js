@@ -12,7 +12,8 @@ let side_layers;
 let layer_manager;
 let collapsible_list;
 
-
+let annotation_control;
+let algorithm_control;
 
 // dummy zoom setting
 let zoomSetting = {
@@ -102,6 +103,8 @@ function loadData(){
 	});
 }
 
+/*  */
+/*  */
 
 // initialize all UI components
 function initUIcomponents(){
@@ -110,12 +113,13 @@ function initUIcomponents(){
 	// create two side menus for tools
 	side_apps = new SideMenu({
 		id:'side_apps',
-
+		width: 300,
 		//, isOpen:true
 		callback:toggleSideMenu
 	});
 	side_layers = new SideMenu({
 		id:'side_layers',
+		width: 300,
 		contentPadding:5,
 		//, isOpen:true
 		callback:toggleSideMenu
@@ -126,7 +130,7 @@ function initUIcomponents(){
 	tools = new CaToolbar({
 	/* opts that need to think of*/
 		id:'ca_tools',
-
+		zIndex:601,
 		mainToolsCallback:mainMenuChange,
 		subTools:[	
 			// home
@@ -224,6 +228,33 @@ function initUIcomponents(){
     side_layers.addContent(title);
     side_layers.addContent(layer_manager.elt);
 
+
+
+	
+    
+    /* annotation control */
+    annotation_control = new OperationPanel({
+    	//id:
+    	//element:
+    	formSchemas:[annotation_schema],
+    	action:{
+    		title:'Save',
+    		callback:anno_callback
+    	}
+    });
+        /* algorthm control */
+    algorithm_control = new OperationPanel({
+    	//id:
+    	//element:
+    	title:'Algorithm:',
+    	formSchemas:[algorithm_1_schema, algorithm_2_schema],
+    	action:{
+    		title:'Run',
+    		callback:algo_callback
+    	}
+    });
+	
+	
     // collapsible list	
 	collapsible_list = new CollapsibleList({
 		id:'collapsiblelist',
@@ -232,14 +263,14 @@ function initUIcomponents(){
 				id:'annotation',
 				title:'Annotation',
 				icon:'border_color',
-				content: AnnotationsPanelContent
+				content: annotation_control.elt
 				// isExpand:true
 
 			},{
 				id:'analytics',
 				icon:'find_replace',
 				title:'Analytics',
-				content:AnalyticsPanelContent,
+				content:algorithm_control.elt,
 			}
 			// ,{
 			// 	id:'testpanel',
@@ -251,6 +282,8 @@ function initUIcomponents(){
 		],
 		changeCallBack:getCurrentItem
 	});
+
+	collapsible_list.addContent('analytics', AnalyticsPanelContent);
 
 	// detach collapsible_list 
 	collapsible_list.elt.parentNode.removeChild(collapsible_list.elt);
@@ -325,6 +358,16 @@ function mainMenuChange(data){
 	}else{
 		side_layers.close();
 	}
+}
+
+function anno_callback(data){
+	console.log(data);
+
+}
+
+function algo_callback(data){
+	console.log(data);
+
 }
 
 // overlayer manager callback function
