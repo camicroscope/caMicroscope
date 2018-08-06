@@ -588,6 +588,7 @@ function openStyleMenu(e){
 	
 	//ctrl.style.top = e.clientY+'px';
 	ctrl.style.display = '';
+	ctrl.querySelector('button').focus();
 	e.preventDefault();
 	//e.stopPropagation();
 }
