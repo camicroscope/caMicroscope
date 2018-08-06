@@ -6,7 +6,7 @@
 * @property data - the geojson assotiated with the drawing
 **/
 
-
+// TODO event handler
 // TODO may need to use simplify,js to simplify the points 
 // how to collect data?
 class Draw{
@@ -26,6 +26,10 @@ class Draw{
     this.coordinationMode = 'image';//
 
     //
+    this.__handlers = {
+      'draw-stop':[],
+      'draw-start':[]
+    }
     this._event = {
       start:this.startDrawing.bind(this), 
       stop:this.stopDrawing.bind(this),
@@ -71,12 +75,27 @@ class Draw{
 
   }
 
+  addHandler(name, func){
+    if(!this.__handlers[name]) return;
+    this.__handlers[name].push(func);
+  }
+  removeHandler(name, func){
+    if(!this.__handlers[name]) return;
+    const f = this.__handlers[name].find(f => f === func);
+    //const layer = this.overlayers.find(layer => layer.id == id);
+    const index = this.__handlers.indexOf(f);
+    if (index > -1) {
+      this.__handlers.splice(index, 1);
+      return true;
+    }
+    return false;
+  }
 
   drawOn(){
     // stop turning on draw mode if already turn on
     if(this.isOn === true) return;
     // clock viewer
-    this.viewer.controls.bottomright.style.display = 'none';
+    //this.viewer.controls.bottomright.style.display = 'none';
     this.viewer.setMouseNavEnabled(false);
     this._draw_.style.cursor = 'pointer';
 
@@ -96,7 +115,7 @@ class Draw{
     // stop turning off draw mode if already turn off
     if(this.isOn === false) return;
     // unclock viewer
-    this.viewer.controls.bottomright.style.display = '';
+    //this.viewer.controls.bottomright.style.display = '';
     this.viewer.setMouseNavEnabled(true);
     this._draw_.style.cursor = 'default';
     // remove Events
@@ -114,7 +133,19 @@ class Draw{
   * Start drawing in a new geojson feature
   */
   startDrawing(e){
+    // for context menu
+    let isRight;
+    e = e || window.event;
+
+    if ("which" in e)  // Gecko (Firefox), WebKit (Safari/Chrome) & Opera
+        isRight = e.which == 3; 
+    else if ("button" in e)  // IE, Opera 
+        isRight = e.button == 2; 
+    if(e.ctrlKey || isRight) return;
+    //if(document.getElementById('drawCtrl').style.display !== 'none') return;
+
     console.log('start');
+    console.log(e);
     this.isDrawing = true;
     this._draw_.style.cursor = 'crosshair'
     let point = new OpenSeadragon.Point(e.clientX, e.clientY);
@@ -134,11 +165,11 @@ class Draw{
     let img_point = viewer.viewport.windowToImageCoordinates(point);
 
     //set style for ctx
-    this.__setStyle(this._draw_ctx,this.style);
+    DrawHelper.setStyle(this._draw_ctx,this.style);
     switch (this.drawMode) {
       case 'free':
         // draw line
-        this.__drawLine(this._draw_ctx, this._last, img_point);  
+        DrawHelper.drawLine(this._draw_ctx, this._last, img_point);  
         [this._last.x, this._last.y] = [img_point.x,img_point.y]
         
         // store current point
@@ -147,14 +178,14 @@ class Draw{
 
       case 'square':
         // draw square
-        this.__clearCanvas(this._draw_);
-        this._current_path_.path = this.__drawRectangle(this._draw_ctx,this._last,img_point,true);
+        DrawHelper.clearCanvas(this._draw_);
+        this._current_path_.path = DrawHelper.drawRectangle(this._draw_ctx,this._last,img_point,true);
         //this._current_path_.path=[s,e];
         break;
       case 'rect':
         // draw rectangle
-        this.__clearCanvas(this._draw_);
-        this._current_path_.path = this.__drawRectangle(this._draw_ctx,this._last,img_point);
+        DrawHelper.clearCanvas(this._draw_);
+        this._current_path_.path = DrawHelper.drawRectangle(this._draw_ctx,this._last,img_point);
         break;
       default:
         // statements_def
@@ -170,11 +201,7 @@ class Draw{
     if(this.isDrawing) {
       // add style and data to data collection
       this.__endNewFeature();
-      //
-      this.__draw(this._display_ctx, [this._current_path_])
-      this._current_path_ = null;
-      // clear _draw_
-      this.__clearCanvas(this._draw_); 
+
     };
 
 
@@ -188,35 +215,7 @@ class Draw{
     //return this.data;
   }
   /* private method */
-  __draw(ctx, image_data){
-    for (let i = 0; i < image_data.length; i++) {
-      const polygon = image_data[i];
-      this.__setStyle(ctx, polygon.style);
-      //this.__setStyle(ctx,polygon.style);
-      switch (polygon.drawMode) {
-        case 'free':
-          // statements_1
-          const paths = polygon.path;
-          for (let i = 0; i < paths.length-1; i++) {
-            this.__drawLine(this._display_ctx, paths[i],paths[i+1]);
-          }
-          break;
-        case 'square':
-          // statements_1
-          this.__drawRectangle(this._display_ctx, polygon.path[0],polygon.path[1],true);
-          break;
-        case 'rect':
-          // statements_1
-          this.__drawRectangle(this._display_ctx, polygon.path[0],polygon.path[1]);
-          break;
-        default:
-          // statements_def
-          break;
-      }
-
-    }
-
-  }
+  
   __resetSize(){
     let {x:width, y:height} = this.viewer.world.getItemAt(0).getContentSize();
     this._draw_.width = width;
@@ -245,58 +244,62 @@ class Draw{
 
   }
 
-  __clearCanvas(canvas){
-    let ctx = canvas.getContext('2d');
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  
+  getPaths(){
+    return Object.assign({}, this._draws_data_)//this._draws_data_
   }
-  __setStyle(ctx,style){
-    ctx.strokeStyle = style.color;
-    ctx.lineJoin = style.lineJoin;
-    ctx.lineCap = style.lineCap;
-    ctx.lineWidth = style.lineWidth;
+  // trun off draw
+  clear(){
+    // trun off draw
+    this.drawOff();
+    // clear canvas
+    DrawHelper.clearCanvas(this._draw_);
+    DrawHelper.clearCanvas(this._display_);
+    // clear path data
+    this._current_path_ = {};
+    this._draws_data_ = [];
   }
+  // __getRect(start,end){
+  //   if(start < end){
+  //     return [start, end-start]
+  //   }else{
+  //     return [end, start-end]
 
-  __getRect(start,end){
-    if(start < end){
-      return [start, end-start]
-    }else{
-      return [end, start-end]
+  //   }
+  // }
 
-    }
-  }
+  // __forRect(start,end){
+  //   let [x,width] = this.__getRect(start.x,end.x);
+  //   let [y,height] = this.__getRect(start.y,end.y);
+  //   return [x,y,width,height];
+  // }
 
-  __forRect(start,end){
-    let [x,width] = this.__getRect(start.x,end.x);
-    let [y,height] = this.__getRect(start.y,end.y);
-    return [x,y,width,height];
-  }
+  // __forSquare(start,end){
+  //   let dx = Math.abs(start.x - end.x);
+  //   let dy = Math.abs(start.y - end.y);
+  //   let length = Math.max(dx,dy); // Math.max(dx,dy);
+  //   let x = start.x < end.x ? start.x:start.x - length;
+  //   let y = start.y < end.y ? start.y:start.y - length;
+  //   return [x,y,length,length];
+  // }
 
-  __forSquare(start,end){
-    let dx = Math.abs(start.x - end.x);
-    let dy = Math.abs(start.y - end.y);
-    let length = Math.max(dx,dy); // Math.max(dx,dy);
-    let x = start.x < end.x ? start.x:start.x - length;
-    let y = start.y < end.y ? start.y:start.y - length;
-    return [x,y,length,length];
-  }
+  // __drawRectangle(ctx, start, end, isSquare = false){
+  //   // draw rect
+  //   ctx.beginPath();
+  //   let [x, y, width, height] = isSquare?this.__forSquare(start,end):this.__forRect(start,end);
+  //   ctx.rect(x, y, width, height);
+  //   ctx.stroke();
+  //   return [{x:x,y:y},{x:x+width,y:y+height}];
 
-  __drawRectangle(ctx, start, end, isSquare = false){
-    // draw rect
-    ctx.beginPath();
-    let [x, y, width, height] = isSquare?this.__forSquare(start,end):this.__forRect(start,end);
-    ctx.rect(x, y, width, height);
-    ctx.stroke();
-    return [{x:x,y:y},{x:x+width,y:y+height}];
+  // }
 
-  }
-
-  __drawLine(ctx, start, end){
-    // draw line
-    ctx.beginPath();
-    ctx.moveTo(start.x, start.y);
-    ctx.lineTo(end.x,end.y);
-    ctx.stroke();
-  }
+  // __drawLine(ctx, start, end){
+  //   // draw line
+  //   ctx.beginPath();
+  //   ctx.moveTo(start.x, start.y);
+  //   ctx.lineTo(end.x,end.y);
+  //   ctx.stroke();
+  // }
 
   /*
   * adds the point to the current feature
@@ -318,12 +321,19 @@ class Draw{
   }
 
   __endNewFeature(){
+    if(this._current_path_.path.length < 2) return; // click on canvas
     this._current_path_.style.color = this.style.color;
     this._current_path_.style.lineJoin = this.style.lineJoin;
     this._current_path_.style.lineCap = this.style.lineCap;
     this._current_path_.style.lineWidth = this.style.lineWidth;
     this._current_path_.drawMode = this.drawMode;
     this._draws_data_.push(Object.assign({},this._current_path_));
+
+    //
+    DrawHelper.draw(this._display_ctx, [this._current_path_])
+    this._current_path_ = null;
+    // clear _draw_
+    DrawHelper.clearCanvas(this._draw_); 
   }
 }
 

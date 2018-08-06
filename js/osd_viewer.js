@@ -15,6 +15,8 @@ let collapsible_list;
 let annotation_control;
 let algorithm_control;
 
+
+let annotations = [];
 // dummy zoom setting
 let zoomSetting = {
 	maxZoomLevel:4,
@@ -22,7 +24,7 @@ let zoomSetting = {
 }
 // layers data
 let isLoad = false;
-let layersData;
+let layersData = [];
 
 
 // get layers data
@@ -217,7 +219,7 @@ function initUIcomponents(){
 
 
     // overlayer manager
-    layer_manager = new LayersViewer({id:'overlayers',data:layersData,callback:callback });
+    layer_manager = new LayersViewer({id:'overlayers',data:annotations,callback:callback });
 
     // detach overlayer manager
     layer_manager.elt.parentNode.removeChild(layer_manager.elt);
@@ -308,21 +310,30 @@ function goHome(data){
 
 // pen draw callback
 function penDraw(data){
-	camessage.sendMessage(`Pen: ${data.checked?'ON':'OFF'} | Mode: ${data.status} `, {size:'15px',color:'white', bgColor:'MediumPurple'}, 3);
+	camessage.sendMessage(`Pen: ${data.checked?'ON':'OFF'} | Mode: ${camic.draw.drawMode} `, {size:'15px',color:'white', bgColor:'MediumPurple'}, 3);
 	if(!camic.draw){
 		alert('draw doesn\'t initialize');
 		return;
 	}
 	 
-	const ctrl = document.getElementById('drawCtrl');
+	
 	setStyle();
+	const chked = document.getElementById('drawChked');
+	chked.checked = data.checked;
 	if(data.checked){ // draw on
 		camic.draw.drawOn();
-		ctrl.style.display = '';
+		
+		
+		//contextMenuOn();
+		//ctrl.style.display = '';
+
 	}else{ // draw off
 		camic.draw.drawOff();
-		ctrl.style.display = 'none';
+		
+		//contextMenuOff();
+		//ctrl.style.display = 'none';
 	}
+	
 
 }
 
@@ -361,7 +372,72 @@ function mainMenuChange(data){
 }
 
 function anno_callback(data){
-	console.log(data);
+	// is form ok?
+	const noteData = annotation_control._form_.value;
+	if(annotation_control._action_.disabled || noteData.name == ''){
+		
+		// close layer silde
+		tools._main_tools[1].querySelector('[type=checkbox]').checked = false;
+		side_layers.close();
+		
+		// open app silde
+		tools._main_tools[0].querySelector('[type=checkbox]').checked = true;
+		side_apps.open();
+		// open annotaion list
+		collapsible_list.triggerContent('annotation','open');
+		return;
+		
+	}
+	// has Path?
+	const pathData = camic.draw.getPaths();
+	if(!camic.draw._draws_data_ || camic.draw._draws_data_.length ==0){
+		alert('No Markup on Annotation.');
+		return;
+	}
+
+	console.log('save...');
+
+	// save
+	
+	const id = randomId();
+	// create overlayer
+	overlayer = camic.layersManager.addOverlayer(id,pathData,anno_render,false);
+	// save layer data
+	// "typeId":1, "typeName": "Human Annotation"
+	annotations.push({
+		id:id,
+		name:noteData.name,
+		typeId:1,
+		typeName:'Human Annotation',
+		note:noteData,
+		path:pathData,
+		layer:overlayer
+	});
+	console.log(annotations);
+	layer_manager.update();
+
+
+	/* reset as default */
+	// clear draw data and UI
+	camic.draw.clear();
+	// uncheck pen draw icon and checkbox
+	document.getElementById('drawChked').checked = false;
+	tools._sub_tools[1].querySelector('[type=checkbox]').checked = false;
+	//document.getElementById('drawChked').checked = false;
+	// clear form
+	annotation_control.clear();
+
+		
+	// close app side
+	tools._main_tools[0].querySelector('[type=checkbox]').checked = false;
+	side_apps.close();
+	collapsible_list.triggerContent('annotation','close');
+
+	// open layer side
+	tools._main_tools[1].querySelector('[type=checkbox]').checked = true;
+	side_layers.open();
+
+	
 
 }
 
@@ -373,12 +449,12 @@ function algo_callback(data){
 // overlayer manager callback function
 function callback(data,isDisplay){
 	if (isDisplay){
-		data.forEach((x)=>camic.layers.visibleLayers.add(x.name))
+		data.forEach((x)=>x.layer.show())
 	} else {
-		data.forEach((x)=>camic.layers.visibleLayers.delete(x.name))
+		data.forEach((x)=>x.layer.hide())
 	}
 	// refresh viewer
-	camic.viewer.forceRedraw();
+	//camic.viewer.forceRedraw();
 }
 /* 
 	collapsible list
@@ -423,10 +499,10 @@ function initialize(){
 	settingCore();
 
 	// loading the data
-	camic.viewer.addHandler('open', loadData);
+	//camic.viewer.addHandler('open', loadData);
 	
 	// initialize
-	//initUIcomponents();
+	initUIcomponents();
 	
 	// -- tem-- //
 	weight = document.getElementById('weight');
@@ -457,10 +533,110 @@ function initialize(){
 	const joinRadio = document.querySelectorAll('input[name=lineJoin]');
 	capRadio.forEach(radio => radio.addEventListener('click',setStyle));
 
+	//multiple_layer();
+	// test for multiple
+	//viewer
+	//
+	const context_btn = document.getElementById('save_anno');
+	context_btn.addEventListener('click', saveAnnotation);
+
+	contextMenuOn();
+	//context_btn.addEventListener('click', saveAnnotation);
+	const chked = document.getElementById('drawChked');
+	chked.addEventListener('change', drawChecked);
+}
+function drawChecked(e){
+	const chked = document.getElementById('drawChked');
+	tools._sub_tools[1].querySelector('[type=checkbox]').checked = chked.checked;
+	penDraw({checked:chked.checked});
 
 }
+/* -- context menu start -- */
+function closeStyleMenu(e){
 
+	var clickeElIsLink = clickInsideElement( e, 'draw_context' );
+    if ( clickeElIsLink ) {
+      //e.preventDefault();
 
+      return;
+    //   menuItemListener( clickeElIsLink );
+    // } else {
+    //   var button = e.which || e.button;
+    //   if ( button === 1 ) {
+    //     toggleMenuOff();
+    //   }
+    }
+	console.log('close ...... style');
+	const ctrl = document.getElementById('drawCtrl');
+	ctrl.style.display = 'none';
+}
+function openStyleMenu(e){
+	console.log('open ...... style');
+	const ctrl = document.getElementById('drawCtrl');
+	
+	if( window.innerWidth > e.clientX + 250){
+		ctrl.style.left = e.clientX+'px';
+	}else{
+		ctrl.style.left = (e.clientX- 250)+'px';
+	}
+
+	if(window.innerHeight > e.clientY + 150){
+		ctrl.style.top = e.clientY+'px';
+	}else{
+		ctrl.style.top = (e.clientY - 150)+'px';
+	}	
+	
+	//ctrl.style.top = e.clientY+'px';
+	ctrl.style.display = '';
+	e.preventDefault();
+	//e.stopPropagation();
+}
+
+function contextMenuOn(){
+	console.log('contextMenuOn');
+	window.addEventListener('contextmenu', openStyleMenu);
+	window.addEventListener('mousedown', closeStyleMenu);
+	camic.viewer.addHandler('canvas-click',closeStyleMenu);
+}
+
+function contextMenuOff(){
+	console.log('contextMenuOff');
+	const ctrl = document.getElementById('drawCtrl');
+	ctrl.style.display = 'none';
+	window.removeEventListener('contextmenu', openStyleMenu);
+	window.removeEventListener('mousedown', closeStyleMenu);	
+}
+
+function clickInsideElement( e, className ) {
+  var el = e.srcElement || e.target || e.eventSource.canvas;
+
+  if ( el.classList.contains(className) ) {
+    return el;
+  } else {
+    while ( el = el.parentNode ) {
+      if ( el.classList && el.classList.contains(className) ) {
+        return el;
+      }
+    }
+  }
+
+  return false;
+}
+
+/* -- context menu end -- */
+/* --  -- */
+function saveAnnotation(){
+	console.log('saveAnnotation');
+	
+	anno_callback.call(null,{id:annotation_control.setting.formSchemas[annotation_control._select_.value].id, data:annotation_control._form_.value});
+}
+/* --  -- */
+/* --  -- */
+function anno_render(){
+	const data = camic.draw._draws_data_;
+	DrawHelper.draw(this._canvas_ctx, data);
+}
+/* --  -- */
 document.addEventListener('DOMContentLoaded', initialize);
 
 

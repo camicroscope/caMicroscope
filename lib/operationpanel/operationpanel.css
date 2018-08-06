@@ -64,3 +64,8 @@ div.operations >  div.foot button.action:hover {
     background-color: #0069d9;
     border-color: #0062cc;
 }
+
+
+div.operations >  div.foot button.action:disabled {
+    background-color: #dddddd;
+}

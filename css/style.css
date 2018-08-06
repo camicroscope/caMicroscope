@@ -140,7 +140,7 @@ table.data_table tr:hover td{
 	border:black 2px solid;
 	position:absolute;
 	bottom:0;
-	left:0;
+	right:0;
 	z-index:600;
 	color:black;
 	background-color: white;

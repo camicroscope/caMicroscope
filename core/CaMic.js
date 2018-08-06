@@ -35,12 +35,13 @@ class CaMic{
 
     this.viewer = new OpenSeadragon.Viewer(this.__default_opt);
     // initialize layers
-    this.__draw;
-    this.__hover;
+    //this.__draw;
+    //this.__hover;
 
 
-    this.layers = new Layer(this.viewer);
+    this.layersManager; // = new Layer(this.viewer);
     this.draw;// = new Draw(this.viewer);
+    
     this.slideId = slideId;
     // initalize store
     this.store = new Store({});
@@ -56,7 +57,9 @@ class CaMic{
 
   init(){
     this.draw = new Draw(this.viewer);
+    this.layersManager = new OverlayersManager(this.viewer);
     this.viewer.removeHandler('open', this.init.bind(this));
+    this.viewer.controls.bottomright.style.zIndex = 600;
   }
   /**
   * Change which image is staged, used loadImg to load it.
