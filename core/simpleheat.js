@@ -1,24 +1,15 @@
-// see https://github.com/mourner/simpleheat
-// this code has been modified to take advantage of the layer architecture
 'use strict';
 
 if (typeof module !== 'undefined') module.exports = simpleheat;
 
-function simpleheat(context, w, h, sw, sh) {
-    if (!(this instanceof simpleheat)) return new simpleheat(context, w, h, sw, sh);
+function simpleheat(canvas) {
+    if (!(this instanceof simpleheat)) return new simpleheat(canvas);
 
-    // external canvas
-    this._externalctx = context;
-    console.log(context)
-    // internal canvas
-    this._canvas = this._createCanvas()
-    this._canvas.height=h;
-    this._canvas.width=w;
-    this._stretch_width = sw;
-    this._stretch_height = sh;
-    this._ctx = this._canvas.getContext('2d');
-    this._width = w;
-    this._height = h;
+    this._canvas = canvas = typeof canvas === 'string' ? document.getElementById(canvas) : canvas;
+
+    this._ctx = canvas.getContext('2d');
+    this._width = canvas.width;
+    this._height = canvas.height;
 
     this._max = 1;
     this._data = [];
@@ -29,8 +20,11 @@ simpleheat.prototype = {
     defaultRadius: 25,
 
     defaultGradient: {
-        0.2: 'blue',
-        0.5: 'red'
+        0.4: 'blue',
+        0.6: 'cyan',
+        0.7: 'lime',
+        0.8: 'yellow',
+        1.0: 'red'
     },
 
     data: function (data) {
@@ -106,14 +100,13 @@ simpleheat.prototype = {
         if (!this._grad) this.gradient(this.defaultGradient);
 
         var ctx = this._ctx;
-        console.log(ctx)
 
         ctx.clearRect(0, 0, this._width, this._height);
 
         // draw a grayscale heatmap by putting a blurred circle at each data point
         for (var i = 0, len = this._data.length, p; i < len; i++) {
             p = this._data[i];
-            ctx.globalAlpha = Math.min(Math.max(p[2] / this._max, minOpacity === undefined ? 0.05 : minOpacity), 1)*.5;
+            ctx.globalAlpha = Math.min(Math.max(p[2] / this._max, minOpacity === undefined ? 0.05 : minOpacity), 1);
             ctx.drawImage(this._circle, p[0] - this._r, p[1] - this._r);
         }
 
@@ -121,12 +114,6 @@ simpleheat.prototype = {
         var colored = ctx.getImageData(0, 0, this._width, this._height);
         this._colorize(colored.data, this._grad);
         ctx.putImageData(colored, 0, 0);
-        try{
-          this._externalctx.__clear_queue();
-        } catch(e){
-          console.info(e)
-        }
-        this._externalctx.drawImage(this._canvas, 0, 0, this._stretch_width, this._stretch_height)
 
         return this;
     },
