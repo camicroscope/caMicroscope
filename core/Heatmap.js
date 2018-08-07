@@ -2,14 +2,16 @@
 // this tool is meant for simpleheat
 class Heatmap{
   constructor(options){
+    options = options || {}
     this.point_radius = options.point_radius || options.radius || 10
     this.blur_radius =  options.blur_radius || options.radius || 20
     this.scale_x = options.scale_x || options.scale || 1
     this.scale_y = options.scale_y || options.scale || 1
     this.scale_data = options.scale_data || 1
     // make the canvas
-    this._canvas = document.createElement('canvas').getContext('2d')
-    this._heat = simplehat(this._canvas)
+    this._canvas = document.createElement('canvas')
+    this._context = this._canvas.getContext('2d')
+    this._heat = simpleheat(this._context)
   }
   // load heatmap, in format [[x,y,value...]]
   load(data){
@@ -35,6 +37,6 @@ class Heatmap{
 
   // render to a canvas or layer
   renderTo(layer, width, height){
-    layer.drawImage(this._canvas, 0,0, width, height)
+    layer.drawImage(this._context, 0,0, width, height)
   }
 }
