@@ -1,31 +1,41 @@
 /** Class representing osd overlayer instance **/
-class CanvasOverlayer{
+class AnnotationCanvasOverlayer{
   /**
   * create a camic overlayer instance
   */
-  constructor(id, viewer, data, render, isShow = true){
+  constructor(options, isShow = true){
     // initalize viewer
     
-    this.viewer = viewer;
-    this.id = id; 
+    this.viewer = options.viewer;
+    this.id = options.id; 
     //this.type = options.type; 
-    this.data = data; 
-    this.render = render;
+    this.data = options.data; 
+    this.render = options.render;
     // only if osd is one image
-    //
+    
+    this.clickable = options.clickable || false;
+    this.isHighlight = options.isHighlight || false;
+
+
     //let {width, height} = viewer.world.getItemAt(0).getContentSize();
     this._canvas = document.createElement('canvas');
     this._canvas_ctx = this._canvas.getContext('2d');
-    this._canvas.id = id;
+    this._canvas.id = options.id;
 
     this._canvas_hover = document.createElement('canvas');
-    this._canvas_hover_ctx = this._canvas.getContext('2d');
-    this._canvas_hover.id = `${id}_hover`;
+    this._canvas_hover_ctx = this._canvas_hover.getContext('2d');
+    this._canvas_hover.id = `${options.id}_hover`;
     if(isShow){
       this.show();
     }else{
       this.hide();
     }
+
+    this._event = {
+      highlight:Debounce(this.highlight.bind(this)), 
+      pop:this.pop.bind(this),
+      //drawing:this.drawing.bind(this)
+    };
     //this._canvas.width = width;
     //this._canvas.height = height; 
 
@@ -47,8 +57,63 @@ class CanvasOverlayer{
     });
     this._canvas_hover.addEventListener('click',e=>{
       console.log('click:_hover');
+              console.log('test');
+          ;
     });
+    //if()
+    if(this.clickable) this.clickableOn();
+    if(this.isHighlight) this.higlightOn();
   }
+
+  clickableOff(){
+    this._canvas_hover.removeEventListener('click',this._event.pop);
+ 
+  }
+
+  clickableOn(){
+    this._canvas_hover.addEventListener('click',this._event.pop);
+  
+  }
+
+  pop(e){
+    const point = new OpenSeadragon.Point(e.clientX, e.clientY);
+    const img_point = viewer.viewport.windowToImageCoordinates(point);
+    this.data.canvasData.forEach(item => {
+      const path = item.data.path;
+      if(path.contains(img_point.x,img_point.y)){
+        console.log('pop');
+        console.log(this.data);
+        return;
+      }
+    }); 
+    
+  }
+
+  higlightOff(){
+    this._canvas_hover.removeEventListener('mousemove',this._event.highlight);
+  }
+  
+  higlightOn(){
+    this._canvas_hover.addEventListener('mousemove',this._event.highlight);
+  }
+  
+  highlight(e){
+    console.log('highlight');
+    this._canvas_hover.style.cursor = 'default';
+    DrawHelper.clearCanvas(this._canvas_hover);
+    const point = new OpenSeadragon.Point(e.clientX, e.clientY);
+    const img_point = viewer.viewport.windowToImageCoordinates(point);
+    this.data.canvasData.forEach(item =>{
+      const path = item.data.path;
+      if(path.contains(img_point.x,img_point.y)){
+        this._canvas_hover.style.cursor = 'point';
+        this._canvas_hover_ctx.strokeStyle = item.style.color;
+        this._canvas_hover_ctx.lineWidth = item.style.lineWidth+5;
+        path.stroke(this._canvas_hover_ctx);
+      }
+    }); 
+  }
+
 
   // add to Viewer
   addToViewer(){
@@ -65,9 +130,6 @@ class CanvasOverlayer{
       element: this._canvas_hover,
       location: this.viewer.viewport.imageToViewportRectangle(0,0,width,height)
     });
-    console.log(width, height);
-
-
   }
 
   // remove form viewer
@@ -75,12 +137,13 @@ class CanvasOverlayer{
     this.viewer.removeOverlay(this._canvas);
     this.viewer.removeOverlay(this._canvas_hover);
   }
+
   hide(){
     this._canvas.style.display = 'none';
     this._canvas_hover.style.display = 'none';
   }
-  show(){
 
+  show(){
     this._canvas.style.display = '';
     this._canvas_hover.style.display = '';
   }
@@ -89,12 +152,13 @@ class CanvasOverlayer{
     if(data) this.data = data;
     this.render(this);
   }
-  // clear canvas -> fabric
+  // clear canvas 
   clear(){
-    this._fabricCanvas.clear();
+    //this._fabricCanvas.clear();
   }
 
   // TODO click and show
   //  
 
 }
+

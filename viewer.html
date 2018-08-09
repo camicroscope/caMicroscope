@@ -31,7 +31,10 @@
 
 		<!-- operation panel css -->
 		<link rel='stylesheet' type='text/css' media='all' href='/lib/operationpanel/operationpanel.css'/>
-
+		<!-- stylecontextmenu css -->
+		<link href="/lib/stylecontextmenu/stylecontextmenu.css" rel="stylesheet" />
+		<!-- color picker css -->
+		<link href="/lib/colorpicker/color-picker.css" rel="stylesheet" />
 		<!-- add pure-form css -->
 		<link href="/lib/pureform/pure-form.css" rel="stylesheet" />
 
@@ -64,7 +67,13 @@
 		
 		<!-- operation panel js -->
 		<script src='/lib/operationpanel/operationpanel.js'></script>
+		
 
+		<!-- color picker js -->
+		<script src='/lib/colorpicker/color-picker.js'></script>
+
+		<!-- stylecontextmenu js -->
+		<script src='/lib/stylecontextmenu/stylecontextmenu.js'></script>
 
 		<!-- reqs for core -->
 		<script src='/core/reqs/ProxyTool.js'></script>
@@ -75,11 +84,12 @@
 		<!-- core (package/ext) libs -->
 		<script src='/core/DemoStore.js'></script>
 		<script src='/core/DrawAnnots.js'></script>
-		<script src='/core/Layer.js'></script>
+		<script src='/core/OverlayersManager.js'></script>
 		<script src='/core/RenderAnnots.js'></script>
 		<script src='/core/simpleheat.js'></script>
 		<script src='/core/CaMic.js'></script>
-		<script src="/core/CanvasOverlayer.js"></script>
+		<script src="/core/AnnotationCanvasOverlayer.js"></script>
+		<script src="/core/paths.js"></script>
 		
 		<!-- init data -->
 		<!-- <script src='/js/init.js'></script> -->
@@ -115,7 +125,7 @@
     	<div id='overlayers' style='z-index:600'></div>
 
     	<!-- temporary style control -->
-		<div id='drawCtrl' class='draw_context' style='width:250px;height:150px;display:none'>
+	<!-- 	<div id='drawCtrl' class='draw_context' style='width:250px;height:150px;display:none'>
 			<label for='drawChked' >DrawOn:</label><input id = 'drawChked' type='checkbox'/>
 			<br>
 			<label >Weight:</label><input id='weight' type='range'  value =3 min=1 max=25 /><label id='weightLabel'>3</label>
@@ -130,7 +140,6 @@
 			<input type='radio' value='square' name='style'/>
 			<label>square</label>
 			<button id='save_anno'>Save as Annotation</button>
-			<!-- <button>Run as Analytics</button> -->
 
 			<div style='display:none'>
 			<br>
@@ -150,9 +159,6 @@
 			<input type='radio' value='miter' name='lineJoin'/>
 			<label>miter</label>
 			<div>
-			<!-- <button>Save as Annotation</button> -->
-			<!--<label for='text'>Note:</label><input id='text' type='text'/>-->
-   		</div>
-			<!-- style control end-->
+   		</div> -->
 	</body>
 </html>

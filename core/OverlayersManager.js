@@ -26,18 +26,20 @@ class OverlayersManager{
   }
 
   // add a new overlayer
-  addOverlayer(id, data, render, isShow = true, isDraw = true){
-    if(this.overlayers.find(layer => layer.id == id)){
+  addOverlayer(options, isShow = true, isDraw = true){
+    if(this.overlayers.find(layer => layer.id == options.id)){
       console.warn('duplicate overlayer ID');
       return;
     }
+
+    options.viewer = this.viewer;
     // create a new overlayer and add to the array that stores overlayers
-    const overlayer = new CanvasOverlayer(id, this.viewer, data, render, isShow)
+    const overlayer = new AnnotationCanvasOverlayer(options, isShow)
     this.overlayers.push(overlayer);
 
     // add it to the viewer if isShow == true
     //if(isShow){
-      overlayer.addToViewer();
+    overlayer.addToViewer();
     //}
 
     //add draw the data on canvas if isDraw == true

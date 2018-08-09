@@ -52,11 +52,14 @@ class CaMic{
     
 
     this.viewer.addHandler('open',this.init.bind(this));
-
+  
+  
   }
 
   init(){
-    this.draw = new Draw(this.viewer);
+    this.draw = new Draw(this.viewer,{
+      btns:this.__default_opt.draw.btns
+    });
     this.layersManager = new OverlayersManager(this.viewer);
     this.viewer.removeHandler('open', this.init.bind(this));
     this.viewer.controls.bottomright.style.zIndex = 600;
