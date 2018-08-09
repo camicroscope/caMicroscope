@@ -27,11 +27,24 @@ caDrawHelper.prototype.forSquare = function(start,end){
 
 caDrawHelper.prototype.drawRectangle = function(ctx, start, end, isSquare = false){
 	// draw rect
-	ctx.beginPath();
+	
+	// create a new path
+	const path = new Path();
+
+	// starting draw rectangle
 	let [x, y, width, height] = isSquare?this.forSquare(start,end):this.forRect(start,end);
-	ctx.rect(x, y, width, height);
-	ctx.stroke();
-	return [{x:x,y:y},{x:x+width,y:y+height}];
+	path.rect(x, y, width, height);
+	
+	// close path and set style
+	path.closePath()
+	path.stroke(ctx);
+	path.fill(ctx);
+	
+	// return points and path 
+	return {
+		points:[{x:x,y:y},{x:x+width,y:y+height}],
+		path:path
+	};
 }
 
 caDrawHelper.prototype.drawLine = function(ctx, start, end){
@@ -39,36 +52,66 @@ caDrawHelper.prototype.drawLine = function(ctx, start, end){
 	ctx.beginPath();
 	ctx.moveTo(start.x, start.y);
 	ctx.lineTo(end.x,end.y);
+	ctx.closePath()
 	ctx.stroke();
 }
 
+caDrawHelper.prototype.drawPolygon = function(ctx, paths){
+	// draw drawPolygon
+	// create a new path
+	const path = new Path();
+
+	// starting draw drawPolygon
+	path.moveTo(paths[0].x, paths[0].y);
+	for (var i = 1; i < paths.length-1; i++) {
+		path.lineTo(paths[i].x,paths[i].y);
+	}
+
+	// close path and set style
+	path.closePath()
+	path.stroke(ctx);
+	path.fill(ctx);
+	// return points and path
+	return {
+		points:paths,
+		path:path
+	};
+}
 caDrawHelper.prototype.draw = function(ctx, image_data){
 	for (let i = 0; i < image_data.length; i++) {
 		const polygon = image_data[i];
+
+		// other styles
 		this.setStyle(ctx, polygon.style);
-		//this.__setStyle(ctx,polygon.style);
+		// fill color
+		ctx.fillStyle = hexToRgbA(polygon.style.color,0.1);
+		// if there is path using path to draw
+		if(polygon.data.path){
+			polygon.data.path.strokeAndFill(ctx);
+			continue;
+		}
+
+		// if no data 
+		const points = polygon.data.points;
 		switch (polygon.drawMode) {
 			case 'free':
-			// free
-			const paths = polygon.path;
-			for (let i = 0; i < paths.length-1; i++) {
-				this.drawLine(ctx, paths[i],paths[i+1]);
-			}
-			break;
-			
+				// free
+				polygon.data = this.drawPolygon(ctx, points);
+				break;
+
 			case 'square':
-			// square
-			this.drawRectangle(ctx, polygon.path[0],polygon.path[1],true);
-			break;
+				// square
+				polygon.data = this.drawRectangle(ctx, points[0],points[1],true);
+				break;
 			
 			case 'rect':
-			// rect
-			this.drawRectangle(ctx, polygon.path[0],polygon.path[1]);
-			break;
+				// rect
+				polygon.data = this.drawRectangle(ctx, points[0],points[1]);
+				break;
 			
 			default:
-			// statements_def
-			break;
+				// statements_def
+				break;
 		}
 
 	}

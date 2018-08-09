@@ -7,183 +7,159 @@
     <meta name='viewport' content='width=device-width, initial-scale=1'>
 
     <title>caMicroscope</title>
-    <!-- google material icons css sheet -->
-    <link href='https://fonts.googleapis.com/icon?family=Material+Icons' rel='stylesheet' />
-    <!-- customize material icons css -->
-    <link href='/css/icons.css' rel='stylesheet' />
-    <!-- css sheet -->
-    <link rel='stylesheet' type='text/css' media='all' href='/css/style.css' />
+		<!-- google material icons css sheet -->
+		<link href='https://fonts.googleapis.com/icon?family=Material+Icons' rel='stylesheet'/>
+		<!-- customize material icons css -->
+		<link href='/css/icons.css' rel='stylesheet'/>
+		<!-- css sheet -->
+		<link rel='stylesheet' type='text/css' media='all' href='/css/style.css'/>
 
-    <!-- message display bar css -->
-    <link rel='stylesheet' type='text/css' media='all' href='/lib/camessage/camessage.css' />
-    <!-- toolbar css -->
-    <link rel='stylesheet' type='text/css' media='all' href='/lib/toolbar/toolbar.css' />
-    <!-- zoom control css -->
-    <link rel='stylesheet' type='text/css' media='all' href='/lib/zoomcontrol/zoomcontrol.css' />
+		<!-- message display bar css -->
+		<link rel='stylesheet' type='text/css' media='all' href='/lib/camessage/camessage.css'/>
+		<!-- toolbar css -->
+		<link rel='stylesheet' type='text/css' media='all' href='/lib/toolbar/toolbar.css'/>
+		<!-- zoom control css -->
+		<link rel='stylesheet' type='text/css' media='all' href='/lib/zoomcontrol/zoomcontrol.css'/>
 
-    <!-- side menu css -->
-    <link rel='stylesheet' type='text/css' media='all' href='/lib/sidemenu/sidemenu.css' />
-    <!-- layers controller css -->
-    <link rel='stylesheet' type='text/css' media='all' href='/lib/layersviewer/layersviewer.css' />
+		<!-- side menu css -->
+		<link rel='stylesheet' type='text/css' media='all' href='/lib/sidemenu/sidemenu.css'/>
+		<!-- layers controller css -->
+		<link rel='stylesheet' type='text/css' media='all' href='/lib/layersviewer/layersviewer.css'/>
 
-    <!-- collapsible list css -->
-    <link rel='stylesheet' type='text/css' media='all' href='/lib/collapsiblelist/collapsiblelist.css' />
+	    <!-- collapsible list css -->
+	    <link rel='stylesheet' type='text/css' media='all' href='/lib/collapsiblelist/collapsiblelist.css'/>
 
-    <!-- operation panel css -->
-    <link rel='stylesheet' type='text/css' media='all' href='/lib/operationpanel/operationpanel.css' />
+		<!-- operation panel css -->
+		<link rel='stylesheet' type='text/css' media='all' href='/lib/operationpanel/operationpanel.css'/>
+		<!-- stylecontextmenu css -->
+		<link href="/lib/stylecontextmenu/stylecontextmenu.css" rel="stylesheet" />
+		<!-- color picker css -->
+		<link href="/lib/colorpicker/color-picker.css" rel="stylesheet" />
+		<!-- add pure-form css -->
+		<link href="/lib/pureform/pure-form.css" rel="stylesheet" />
 
-    <!-- add pure-form css -->
-    <link href="/lib/pureform/pure-form.css" rel="stylesheet" />
-
-    <!-- add pure-form script -->
-    <script src="/lib/pureform/document-register-element.js">
-    </script>
-    <script src="/lib/pureform/pure-form.js">
-    </script>
-
-
-
-    <!-- open seadragon lib-->
-    <script src='/lib/openseadragon/openseadragon.min.js'>
-    </script>
-    <script src='/lib/openseadragon-imaginghelper.min.js'>
-    </script>
-    <script src='/lib/openseadragon-scalebar.js'>
-    </script>
-    <script src='/lib/openseadragonzoomlevels.js'>
-    </script>
-
-    <!-- util.js -->
-    <script src='/js/util.js' type='text/javascript'>
-    </script>
-    <!-- messsage display js -->
-    <script src='/lib/camessage/camessage.js'>
-    </script>
-    <!-- toolbar js -->
-    <script src='/lib/toolbar/toolbar.js'>
-    </script>
-    <!-- zoom ctrl js -->
-    <script src='/lib/zoomcontrol/zoomcontrol.js'>
-    </script>
-    <!-- sidemenu js -->
-    <script src='/lib/sidemenu/sidemenu.js'>
-    </script>
-    <!-- collapsible list js -->
-    <script src='/lib/collapsiblelist/collapsiblelist.js'>
-    </script>
-    <!-- layers controller js -->
-    <script src='/lib/layersviewer/layersviewer.js'>
-    </script>
-
-    <!-- operation panel js -->
-    <script src='/lib/operationpanel/operationpanel.js'>
-    </script>
+		<!-- add pure-form script -->
+		<script src="/lib/pureform/document-register-element.js"></script>
+		<script src="/lib/pureform/pure-form.js"></script>
 
 
-    <!-- reqs for core -->
-    <script src='/core/reqs/ProxyTool.js'>
-    </script>
-    <script src='/core/reqs/openseadragon-canvas-overlay.js'>
-    </script>
-    <script src='/core/reqs/ViewportCalibratedCanvas.js'>
-    </script>
-    <script src='/core/DrawHelper.js'>
-    </script>
 
-    <!-- core (package/ext) libs -->
-    <script src='/core/DemoStore.js'>
-    </script>
-    <script src='/core/DrawAnnots.js'>
-    </script>
-    <script src='/core/Layer.js'>
-    </script>
-    <script src='/core/RenderAnnots.js'>
-    </script>
-    <script src='/core/reqs/simpleheat.js'>
-    </script>
-    <script src='core/ColorMap.js'>
-    </script>
-    <script src='/core/CaMic.js'>
-    </script>
-    <script src="/core/CanvasOverlayer.js">
-    </script>
+		<!-- open seadragon lib-->
+		<script src='/lib/openseadragon/openseadragon.min.js' ></script>
+		<script src='/lib/openseadragon-imaginghelper.min.js'></script>
+		<script src='/lib/openseadragon-scalebar.js'></script>
+		<script src='/lib/openseadragonzoomlevels.js'></script>
 
-    <!-- init data -->
-    <!-- <script src='/js/init.js'></script> -->
-    <!-- ods js -->
-    <script src='/js/osd_viewer.js'>
-    </script>
-    <!-- ods js -->
-    <script src='/simulate_data.js'>
-    </script>
+		<!-- util.js -->
+		<script src = '/js/util.js' type='text/javascript'></script>
+		<!-- messsage display js -->
+		<script src='/lib/camessage/camessage.js'></script>
+		<!-- toolbar js -->
+		<script src='/lib/toolbar/toolbar.js'></script>
+		<!-- zoom ctrl js -->
+		<script src='/lib/zoomcontrol/zoomcontrol.js'></script>
+		<!-- sidemenu js -->
+		<script src='/lib/sidemenu/sidemenu.js'></script>
+	    <!-- collapsible list js -->
+	    <script src='/lib/collapsiblelist/collapsiblelist.js'></script>
+		<!-- layers controller js -->
+		<script src='/lib/layersviewer/layersviewer.js'></script>
 
-</head>
+		<!-- operation panel js -->
+		<script src='/lib/operationpanel/operationpanel.js'></script>
 
-<body>
-    <!-- message-->
-    <div id='cames' style='z-index:2'></div>
 
-    <!-- toolbar -->
-    <div id='ca_tools'></div>
+		<!-- color picker js -->
+		<script src='/lib/colorpicker/color-picker.js'></script>
 
-    <!-- main viewer -->
-    <div id='main_viewer'></div>
+		<!-- stylecontextmenu js -->
+		<script src='/lib/stylecontextmenu/stylecontextmenu.js'></script>
 
-    <!-- zoom control -->
-    <div id='zctrl'></div>
+		<!-- reqs for core -->
+		<script src='/core/reqs/ProxyTool.js'></script>
+		<script src='/core/reqs/openseadragon-canvas-overlay.js'></script>
+		<script src='/core/reqs/ViewportCalibratedCanvas.js'></script>
+		<script src='/core/DrawHelper.js'></script>
 
-    <!-- side menu for apps-->
-    <div id='side_apps' style='z-index:600'></div>
+		<!-- core (package/ext) libs -->
+		<script src='/core/DemoStore.js'></script>
+		<script src='/core/DrawAnnots.js'></script>
+		<script src='/core/OverlayersManager.js'></script>
+		<script src='/core/RenderAnnots.js'></script>
+		<script src='/core/reqs/simpleheat.js'></script>
+    <script src='/core/ColorMap.js'></script>
+		<script src='/core/CaMic.js'></script>
+		<script src="/core/AnnotationCanvasOverlayer.js"></script>
+		<script src="/core/paths.js"></script>
 
-    <!-- side menu for layers-->
-    <div id='side_layers' style='z-index:600'></div>
+		<!-- init data -->
+		<!-- <script src='/js/init.js'></script> -->
+		<!-- ods js -->
+		<script src='/js/osd_viewer.js'></script>
+		<!-- ods js -->
+		<script src='/simulate_data.js'></script>
 
-    <!-- collapsible list -- annotation and analytics -->
-    <div id='collapsiblelist' style='z-index:600'></div>
+	</head>
+	<body>
+		<!-- message-->
+		<div id = 'cames' style='z-index:2'></div>
 
-    <!-- overlayer manager -->
-    <div id='overlayers' style='z-index:600'></div>
+		<!-- toolbar -->
+		<div id = 'ca_tools'></div>
 
-    <!-- temporary style control -->
-    <div id='drawCtrl' class='draw_context' style='width:250px;height:150px;display:none'>
-        <label for='drawChked'>DrawOn:</label><input id='drawChked' type='checkbox' />
-        <br>
-        <label>Weight:</label><input id='weight' type='range' value=3 min=1 max=25 /><label id='weightLabel'>3</label>
-        <br>
-        <label>Color:</label><input type="color" id="color" value="#03fd3e" /><label id='colorLabel' for="color" style="color:#03fd3e">#03fd3e</label>
-        <br>
-        <label>style</label>
-        <input type='radio' value='free' name='style' checked/>
-        <label>free</label>
-        <input type='radio' value='rect' name='style' />
-        <label>rect</label>
-        <input type='radio' value='square' name='style' />
-        <label>square</label>
-        <button id='save_anno'>Save as Annotation</button>
-        <!-- <button>Run as Analytics</button> -->
+		<!-- main viewer -->
+		<div id ='main_viewer'></div>
 
-        <div style='display:none'>
-            <br>
-            <label>lineCap:</label>
-            <input type='radio' value='butt' name='lineCap' />
-            <label>butt</label>
-            <input type='radio' value='round' name='lineCap' checked/>
-            <label>round</label>
-            <input type='radio' value='square' name='lineCap' />
-            <label>square</label>
-            <br>
-            <label>lineJoin:</label>
-            <input type='radio' value='bevel' name='lineJoin' />
-            <label>bevel</label>
-            <input type='radio' value='round' name='lineJoin' checked/>
-            <label>round</label>
-            <input type='radio' value='miter' name='lineJoin' />
-            <label>miter</label>
-            <div>
-                <!-- <button>Save as Annotation</button> -->
-                <!--<label for='text'>Note:</label><input id='text' type='text'/>-->
-            </div>
-            <!-- style control end-->
-</body>
+		<!-- zoom control -->
+		<div id ='zctrl'></div>
 
+		<!-- side menu for apps-->
+		<div id='side_apps' style='z-index:600'></div>
+
+		<!-- side menu for layers-->
+		<div id='side_layers' style='z-index:600'></div>
+
+    	<!-- collapsible list -- annotation and analytics -->
+    	<div id='collapsiblelist' style='z-index:600'></div>
+
+    	<!-- overlayer manager -->
+    	<div id='overlayers' style='z-index:600'></div>
+
+    	<!-- temporary style control -->
+	<!-- 	<div id='drawCtrl' class='draw_context' style='width:250px;height:150px;display:none'>
+			<label for='drawChked' >DrawOn:</label><input id = 'drawChked' type='checkbox'/>
+			<br>
+			<label >Weight:</label><input id='weight' type='range'  value =3 min=1 max=25 /><label id='weightLabel'>3</label>
+			<br>
+			<label>Color:</label><input type="color" id="color" value="#03fd3e" /><label id='colorLabel' for="color" style="color:#03fd3e">#03fd3e</label>
+			<br>
+			<label>style</label>
+			<input type='radio' value='free' name='style' checked/>
+			<label>free</label>
+			<input type='radio' value='rect' name='style'/>
+			<label>rect</label>
+			<input type='radio' value='square' name='style'/>
+			<label>square</label>
+			<button id='save_anno'>Save as Annotation</button>
+
+			<div style='display:none'>
+			<br>
+			<label>lineCap:</label>
+			<input type='radio' value='butt' name='lineCap'/>
+			<label>butt</label>
+			<input type='radio' value='round' name='lineCap' checked/>
+			<label>round</label>
+			<input type='radio' value='square' name='lineCap'/>
+			<label>square</label>
+			<br>
+			<label>lineJoin:</label>
+			<input type='radio' value='bevel' name='lineJoin'/>
+			<label>bevel</label>
+			<input type='radio' value='round' name='lineJoin' checked/>
+			<label>round</label>
+			<input type='radio' value='miter' name='lineJoin'/>
+			<label>miter</label>
+			<div>
+   		</div> -->
+	</body>
 </html>

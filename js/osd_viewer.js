@@ -28,43 +28,43 @@ let layersData = [];
 
 
 // get layers data
-async function getLayers(){
-  // give 
-  var mts = await camic.store.getMarktypes()
-  var hms = await camic.store.getHeatmaps()
-  var retData = []
-  mts.forEach(async function(mt){
-    // create a layer
-    let layer = camic.layers.getLayer(mt.name)
-    // get marks
-    let marks = await camic.store.getMarks(mt.name)
-    let ld = {"id": mt.name, "name": mt.name, "typeId":1, "typeName": "Human Annotation"}
-    retData.push(ld);
-    // put marks on layer
-    marks.forEach(mark => {
-      renderFeature(mt.name, mark, layer);
-    })
-    // add to layersData
-    console.log('init.getLayers mts');
-    isLoad = true;
+// async function getLayers(){
+//   // give 
+//   var mts = await camic.store.getMarktypes()
+//   var hms = await camic.store.getHeatmaps()
+//   var retData = []
+//   mts.forEach(async function(mt){
+//     // // create a layer
+//     // let layer = camic.layers.getLayer(mt.name)
+//     // // get marks
+//     // let marks = await camic.store.getMarks(mt.name)
+//     // let ld = {"id": mt.name, "name": mt.name, "typeId":1, "typeName": "Human Annotation"}
+//     // retData.push(ld);
+//     // // put marks on layer
+//     // marks.forEach(mark => {
+//     //   renderFeature(mt.name, mark, layer);
+//     // })
+//     // add to layersData
+//     console.log('init.getLayers mts');
+//     isLoad = true;
 
-  })
-  hms.forEach(function(hm){
-    // create layer
-    let layer = camic.layers.getLayer(hm.name)
-    // render the heatmap
-    let dl = camic.layers.delayers[hm.name]
-    var size = viewer.world.getItemAt(0).getContentSize();
-    let heat = simpleheat(dl, hm.height, hm.width, size.x, size.y)
-    heat.data(hm.values).radius(10).max(500000).draw()
-    let ld = {id: hm.name, name: hm.name, typeId:2, typeName: "Heatmap"}
-    retData.push(ld)
+//   })
+//   hms.forEach(function(hm){
+//     // create layer
+//     let layer = camic.layers.getLayer(hm.name)
+//     // render the heatmap
+//     let dl = camic.layers.delayers[hm.name]
+//     var size = viewer.world.getItemAt(0).getContentSize();
+//     let heat = simpleheat(dl, hm.height, hm.width, size.x, size.y)
+//     heat.data(hm.values).radius(10).max(500000).draw()
+//     let ld = {id: hm.name, name: hm.name, typeId:2, typeName: "Heatmap"}
+//     retData.push(ld)
 
-  }.bind(this))
-  // ensure all disabled
-  camic.layers.visibleLayers = new Set([]);
-  return retData;
-}
+//   }.bind(this))
+//   // ensure all disabled
+//   camic.layers.visibleLayers = new Set([]);
+//   return retData;
+// }
 
 
 // setting core functionalities
@@ -79,31 +79,50 @@ function settingCore(){
 	}
 	camic = new CaMic("main_viewer",getUrlVars().slide, {
 		maxZoomLevel:zoomSetting.maxZoomLevel,
-		minZoomLevel:zoomSetting.minZoomLevel
+		minZoomLevel:zoomSetting.minZoomLevel,
+		draw:{
+			// extend context menu btn group
+			btns:[
+				{ // annotation   
+					type:'btn',
+					title:'Annotation',
+					class:'material-icons',
+					text:'description',
+					callback:saveAnnotation
+				},
+				{ // analytics
+					type:'btn',
+					title:'Analytics',
+					class:'material-icons',
+					text:'settings_backup_restore',
+					callback:saveAnalytics
+				}
+			]
+		}
 	});
 	camic.loadImg();
 	viewer = camic.viewer;
 }
 
 // loading data from server
-function loadData(){
-	getLayers().then(x=>{
-		function isDataLoaded(){
-			console.log('getLayers.....'+ isLoad);
-			if(isLoad) {
-				layersData=x;
-				console.log(layersData)
-				clearInterval(checkData);
+// function loadData(){
+// 	getLayers().then(x=>{
+// 		function isDataLoaded(){
+// 			console.log('getLayers.....'+ isLoad);
+// 			if(isLoad) {
+// 				layersData=x;
+// 				console.log(layersData)
+// 				clearInterval(checkData);
 				
-				//layer_manager = new LayersViewer({id:'overlayers',data:layersData,callback:callback });
+// 				//layer_manager = new LayersViewer({id:'overlayers',data:layersData,callback:callback });
 
 
-				initUIcomponents();
-			}
-		}
-		let checkData = setInterval(isDataLoaded, 30);
-	});
-}
+// 				initUIcomponents();
+// 			}
+// 		}
+// 		let checkData = setInterval(isDataLoaded, 30);
+// 	});
+// }
 
 /*  */
 /*  */
@@ -315,26 +334,11 @@ function penDraw(data){
 		alert('draw doesn\'t initialize');
 		return;
 	}
-	 
-	
-	setStyle();
-	const chked = document.getElementById('drawChked');
-	chked.checked = data.checked;
 	if(data.checked){ // draw on
 		camic.draw.drawOn();
-		
-		
-		//contextMenuOn();
-		//ctrl.style.display = '';
-
 	}else{ // draw off
 		camic.draw.drawOff();
-		
-		//contextMenuOff();
-		//ctrl.style.display = 'none';
 	}
-	
-
 }
 
 // toggle magnifier callback
@@ -389,41 +393,47 @@ function anno_callback(data){
 		
 	}
 	// has Path?
-	const pathData = camic.draw.getPaths();
+	
 	if(!camic.draw._draws_data_ || camic.draw._draws_data_.length ==0){
 		alert('No Markup on Annotation.');
 		return;
 	}
-
+	const canvasData = camic.draw.getPaths();
 	console.log('save...');
 
 	// save
-	
 	const id = randomId();
-	// create overlayer
-	overlayer = camic.layersManager.addOverlayer(id,pathData,anno_render,false);
-	// save layer data
-	// "typeId":1, "typeName": "Human Annotation"
-	annotations.push({
+	const anno = {
 		id:id,
 		name:noteData.name,
 		typeId:1,
 		typeName:'Human Annotation',
 		note:noteData,
-		path:pathData,
-		layer:overlayer
-	});
+		canvasData:canvasData
+	};
+	
+	// create overlayer
+	anno.layer = camic.layersManager.addOverlayer(
+		{
+			id:id,
+			data:anno,
+			render:anno_render,
+			clickable:true,
+			isHighlight:true
+		},false);
+	// save layer data
+	// "typeId":1, "typeName": "Human Annotation"
+	annotations.push(anno);
 	console.log(annotations);
 	layer_manager.update();
 
 
 	/* reset as default */
 	// clear draw data and UI
+	camic.draw.drawOff();
 	camic.draw.clear();
 	// uncheck pen draw icon and checkbox
-	document.getElementById('drawChked').checked = false;
 	tools._sub_tools[1].querySelector('[type=checkbox]').checked = false;
-	//document.getElementById('drawChked').checked = false;
 	// clear form
 	annotation_control.clear();
 
@@ -476,19 +486,6 @@ function algoRun(){
 
 }
 
-
-let color;
-let weight;
-function setStyle(){
-	camic.draw.style =  {
-		color:color.value,
-		lineJoin:document.querySelector('input[name=lineJoin]:checked').value,
-		lineCap:document.querySelector('input[name=lineCap]:checked').value,
-		lineWidth:weight.value
-	};
-	camic.draw.drawMode = document.querySelector('input[name=style]:checked').value;
-}
-
 /* call back list END */
 
 
@@ -504,138 +501,21 @@ function initialize(){
 	// initialize
 	initUIcomponents();
 	
-	// -- tem-- //
-	weight = document.getElementById('weight');
-	const weightLabel = document.getElementById('weightLabel');
-	color = document.getElementById('color');
-	const colorLabel = document.getElementById('colorLabel');
-	
-	// color
-	color.addEventListener('change', e=>{
-		colorLabel.textContent = color.value;
-		colorLabel.style.color = color.value;
-		setStyle();
-	})
-
-	// weight
-	weight.addEventListener('change', e=>{
-		weightLabel.textContent = weight.value;
-		setStyle();
-	})
-
-	//
-	//document.querySelector('input[name=style]:checked')
-	// lineCap
-	const styleRadio = document.querySelectorAll('input[name=style]');
-	styleRadio.forEach(radio => radio.addEventListener('click',setStyle));
-	const capRadio = document.querySelectorAll('input[name=lineCap]');
-	capRadio.forEach(radio => radio.addEventListener('click',setStyle));
-	const joinRadio = document.querySelectorAll('input[name=lineJoin]');
-	capRadio.forEach(radio => radio.addEventListener('click',setStyle));
-
-	//multiple_layer();
-	// test for multiple
-	//viewer
-	//
-	const context_btn = document.getElementById('save_anno');
-	context_btn.addEventListener('click', saveAnnotation);
-
-	contextMenuOn();
-	//context_btn.addEventListener('click', saveAnnotation);
-	const chked = document.getElementById('drawChked');
-	chked.addEventListener('change', drawChecked);
 }
-function drawChecked(e){
-	const chked = document.getElementById('drawChked');
-	tools._sub_tools[1].querySelector('[type=checkbox]').checked = chked.checked;
-	penDraw({checked:chked.checked});
-
-}
-/* -- context menu start -- */
-function closeStyleMenu(e){
-
-	var clickeElIsLink = clickInsideElement( e, 'draw_context' );
-    if ( clickeElIsLink ) {
-      //e.preventDefault();
-
-      return;
-    //   menuItemListener( clickeElIsLink );
-    // } else {
-    //   var button = e.which || e.button;
-    //   if ( button === 1 ) {
-    //     toggleMenuOff();
-    //   }
-    }
-	console.log('close ...... style');
-	const ctrl = document.getElementById('drawCtrl');
-	ctrl.style.display = 'none';
-}
-function openStyleMenu(e){
-	console.log('open ...... style');
-	const ctrl = document.getElementById('drawCtrl');
-	
-	if( window.innerWidth > e.clientX + 250){
-		ctrl.style.left = e.clientX+'px';
-	}else{
-		ctrl.style.left = (e.clientX- 250)+'px';
-	}
-
-	if(window.innerHeight > e.clientY + 150){
-		ctrl.style.top = e.clientY+'px';
-	}else{
-		ctrl.style.top = (e.clientY - 150)+'px';
-	}	
-	
-	//ctrl.style.top = e.clientY+'px';
-	ctrl.style.display = '';
-	ctrl.querySelector('button').focus();
-	e.preventDefault();
-	//e.stopPropagation();
-}
-
-function contextMenuOn(){
-	console.log('contextMenuOn');
-	window.addEventListener('contextmenu', openStyleMenu);
-	window.addEventListener('mousedown', closeStyleMenu);
-	camic.viewer.addHandler('canvas-click',closeStyleMenu);
-}
-
-function contextMenuOff(){
-	console.log('contextMenuOff');
-	const ctrl = document.getElementById('drawCtrl');
-	ctrl.style.display = 'none';
-	window.removeEventListener('contextmenu', openStyleMenu);
-	window.removeEventListener('mousedown', closeStyleMenu);	
-}
-
-function clickInsideElement( e, className ) {
-  var el = e.srcElement || e.target || e.eventSource.canvas;
-
-  if ( el.classList.contains(className) ) {
-    return el;
-  } else {
-    while ( el = el.parentNode ) {
-      if ( el.classList && el.classList.contains(className) ) {
-        return el;
-      }
-    }
-  }
-
-  return false;
-}
-
-/* -- context menu end -- */
 /* --  -- */
 function saveAnnotation(){
 	console.log('saveAnnotation');
 	
 	anno_callback.call(null,{id:annotation_control.setting.formSchemas[annotation_control._select_.value].id, data:annotation_control._form_.value});
 }
+function saveAnalytics(){
+	console.log('saveAnalytics');
+}
 /* --  -- */
-/* --  -- */
+/* -- for render anno_data to canavs -- */
 function anno_render(){
-	const data = camic.draw._draws_data_;
-	DrawHelper.draw(this._canvas_ctx, data);
+	console.log('anno_render');
+	DrawHelper.draw(this._canvas_ctx, this.data.canvasData);
 }
 /* --  -- */
 document.addEventListener('DOMContentLoaded', initialize);
