@@ -33,6 +33,8 @@
 		<link rel='stylesheet' type='text/css' media='all' href='/lib/operationpanel/operationpanel.css'/>
 		<!-- stylecontextmenu css -->
 		<link href="/lib/stylecontextmenu/stylecontextmenu.css" rel="stylesheet" />
+		<!-- popup panel css -->
+		<link href="/lib/popuppanel/popuppanel.css" rel="stylesheet" />
 		<!-- color picker css -->
 		<link href="/lib/colorpicker/color-picker.css" rel="stylesheet" />
 		<!-- add pure-form css -->
@@ -74,6 +76,8 @@
 
 		<!-- stylecontextmenu js -->
 		<script src='/lib/stylecontextmenu/stylecontextmenu.js'></script>
+		<!-- popup panel js -->
+		<script src='/lib/popuppanel/popuppanel.js'></script>
 
 		<!-- reqs for core -->
 		<script src='/core/reqs/ProxyTool.js'></script>
@@ -87,7 +91,7 @@
 		<script src='/core/OverlayersManager.js'></script>
 		<script src='/core/RenderAnnots.js'></script>
 		<script src='/core/reqs/simpleheat.js'></script>
-    <script src='/core/ColorMap.js'></script>
+    	<script src='/core/ColorMap.js'></script>
 		<script src='/core/CaMic.js'></script>
 		<script src="/core/AnnotationCanvasOverlayer.js"></script>
 		<script src="/core/paths.js"></script>
@@ -125,41 +129,5 @@
     	<!-- overlayer manager -->
     	<div id='overlayers' style='z-index:600'></div>
 
-    	<!-- temporary style control -->
-	<!-- 	<div id='drawCtrl' class='draw_context' style='width:250px;height:150px;display:none'>
-			<label for='drawChked' >DrawOn:</label><input id = 'drawChked' type='checkbox'/>
-			<br>
-			<label >Weight:</label><input id='weight' type='range'  value =3 min=1 max=25 /><label id='weightLabel'>3</label>
-			<br>
-			<label>Color:</label><input type="color" id="color" value="#03fd3e" /><label id='colorLabel' for="color" style="color:#03fd3e">#03fd3e</label>
-			<br>
-			<label>style</label>
-			<input type='radio' value='free' name='style' checked/>
-			<label>free</label>
-			<input type='radio' value='rect' name='style'/>
-			<label>rect</label>
-			<input type='radio' value='square' name='style'/>
-			<label>square</label>
-			<button id='save_anno'>Save as Annotation</button>
-
-			<div style='display:none'>
-			<br>
-			<label>lineCap:</label>
-			<input type='radio' value='butt' name='lineCap'/>
-			<label>butt</label>
-			<input type='radio' value='round' name='lineCap' checked/>
-			<label>round</label>
-			<input type='radio' value='square' name='lineCap'/>
-			<label>square</label>
-			<br>
-			<label>lineJoin:</label>
-			<input type='radio' value='bevel' name='lineJoin'/>
-			<label>bevel</label>
-			<input type='radio' value='round' name='lineJoin' checked/>
-			<label>round</label>
-			<input type='radio' value='miter' name='lineJoin'/>
-			<label>miter</label>
-			<div>
-   		</div> -->
 	</body>
 </html>

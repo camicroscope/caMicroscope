@@ -15,7 +15,10 @@ class AnnotationCanvasOverlayer{
     
     this.clickable = options.clickable || false;
     this.isHighlight = options.isHighlight || false;
+    this.clickCallback = options.clickCallback|| null;
 
+    // this.delete = options.deleteCallBack;
+    // this.edit = options.editCallBack;
 
     //let {width, height} = viewer.world.getItemAt(0).getContentSize();
     this._canvas = document.createElement('canvas');
@@ -33,7 +36,7 @@ class AnnotationCanvasOverlayer{
 
     this._event = {
       highlight:Debounce(this.highlight.bind(this)), 
-      pop:this.pop.bind(this),
+      click:this.click.bind(this),
       //drawing:this.drawing.bind(this)
     };
     //this._canvas.width = width;
@@ -52,41 +55,40 @@ class AnnotationCanvasOverlayer{
     //     }
     // });
     //this.render(this._fabricCanvas,this.data);
-    this._canvas.addEventListener('click',e=>{
-      console.log('click:_canvas');
-    });
-    this._canvas_hover.addEventListener('click',e=>{
-      console.log('click:_hover');
-              console.log('test');
-          ;
-    });
+    // this._canvas.addEventListener('click',e=>{
+    //   console.log('click:_canvas');
+    // });
+    // this._canvas_hover.addEventListener('click',e=>{
+    //   console.log('click:_hover');
+    //           console.log('test');
+    //       ;
+    // });
     //if()
     if(this.clickable) this.clickableOn();
     if(this.isHighlight) this.higlightOn();
   }
 
   clickableOff(){
-    this._canvas_hover.removeEventListener('click',this._event.pop);
+    this._canvas_hover.removeEventListener('click',this._event.click);
  
   }
 
   clickableOn(){
-    this._canvas_hover.addEventListener('click',this._event.pop);
+    this._canvas_hover.addEventListener('click',this._event.click);
   
   }
 
-  pop(e){
+  click(e){
+    if(!this.clickCallback) return;
     const point = new OpenSeadragon.Point(e.clientX, e.clientY);
     const img_point = viewer.viewport.windowToImageCoordinates(point);
     this.data.canvasData.forEach(item => {
       const path = item.data.path;
       if(path.contains(img_point.x,img_point.y)){
-        console.log('pop');
-        console.log(this.data);
+        this.clickCallback({x:e.clientX, y:e.clientY}, this.data);
         return;
       }
-    }); 
-    
+    });
   }
 
   higlightOff(){
@@ -98,7 +100,6 @@ class AnnotationCanvasOverlayer{
   }
   
   highlight(e){
-    console.log('highlight');
     this._canvas_hover.style.cursor = 'default';
     DrawHelper.clearCanvas(this._canvas_hover);
     const point = new OpenSeadragon.Point(e.clientX, e.clientY);
@@ -161,4 +162,3 @@ class AnnotationCanvasOverlayer{
   //  
 
 }
-

@@ -15,6 +15,7 @@ let collapsible_list;
 let annotation_control;
 let algorithm_control;
 
+let anno_popup;
 
 let annotations = [];
 // dummy zoom setting
@@ -167,24 +168,6 @@ function initUIcomponents(){
 				icon:'create',// material icons' name
 				title:'Draw',
 				type:'check',
-				// type:'dropdown',// btn/check/dropdown
-				// value:'draw',
-				// //checked:true,
-				// dropdownList:[
-				// 	// free draw
-				// 	{
-				// 		icon:'gesture',
-				// 		value:'free',
-				// 		title:'Free Draw',
-				// 		checked:true
-				// 	},
-				// 	// rectangle fraw
-				// 	{
-				// 		icon:'crop_square',
-				// 		value:'rect',
-				// 		title:'Rectangle'
-				// 	}
-				// ],
 				callback:penDraw
 			},
 			// magnifier
@@ -309,6 +292,26 @@ function initUIcomponents(){
 	// detach collapsible_list 
 	collapsible_list.elt.parentNode.removeChild(collapsible_list.elt);
 	side_apps.addContent(collapsible_list.elt);
+
+
+
+	/* annotation popup */
+	anno_popup = new PopupPanel({
+		footer:[			
+			{ // edit   
+				title:'Edit',
+				class:'material-icons',
+				text:'notes',
+				callback:anno_edit
+			},
+			{ // delete
+				title:'Delete',
+				class:'material-icons',
+				text:'delete_forever',
+				callback:anno_delete
+			}
+		]
+	});
 }
 
 
@@ -375,6 +378,38 @@ function mainMenuChange(data){
 	}
 }
 
+function convertToPopupBody(notes){
+	const rs = {type:'map',data:[]};
+	for(let field in notes){
+		const val = notes[field];
+		field = field.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+		rs.data.push({key:field,value:val});
+	}
+	return rs;
+
+}
+function anno_click(point, data){
+	
+	// data
+	console.log('anno_click');
+
+	const body = convertToPopupBody(data.note);
+	console.log(data.note);
+	console.log(body);
+	anno_popup.setTitle(`id:${data.id}`);
+	anno_popup.setBody(body);
+	anno_popup.open(point);
+}
+function anno_delete(data){
+	console.log('anno_delete');
+	console.log(arguments);
+}
+
+function anno_edit(data){
+	console.log('anno_edit');
+	console.log(arguments);
+}
+
 function anno_callback(data){
 	// is form ok?
 	const noteData = annotation_control._form_.value;
@@ -419,7 +454,8 @@ function anno_callback(data){
 			data:anno,
 			render:anno_render,
 			clickable:true,
-			isHighlight:true
+			isHighlight:true,
+			clickCallback:anno_click
 		},false);
 	// save layer data
 	// "typeId":1, "typeName": "Human Annotation"
@@ -500,7 +536,7 @@ function initialize(){
 	
 	// initialize
 	initUIcomponents();
-	
+
 }
 /* --  -- */
 function saveAnnotation(){
@@ -519,5 +555,4 @@ function anno_render(){
 }
 /* --  -- */
 document.addEventListener('DOMContentLoaded', initialize);
-
 
