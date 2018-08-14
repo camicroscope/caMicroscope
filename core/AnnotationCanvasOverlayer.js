@@ -108,8 +108,10 @@ class AnnotationCanvasOverlayer{
       const path = item.data.path;
       if(path.contains(img_point.x,img_point.y)){
         this._canvas_hover.style.cursor = 'point';
+        this._canvas_hover_ctx.lineJoin = 'round';
+        this._canvas_hover_ctx.lineCap = 'round';
         this._canvas_hover_ctx.strokeStyle = item.style.color;
-        this._canvas_hover_ctx.lineWidth = item.style.lineWidth+5;
+        this._canvas_hover_ctx.lineWidth = item.style.lineWidth*1.5;
         path.stroke(this._canvas_hover_ctx);
       }
     }); 

@@ -125,7 +125,7 @@ class Draw{
     this.contextMenu.ctrl[0].checked = true;
   }
 
-  drawOff(){
+  drawOff(isCloseMenu = false){
     // stop turning off draw mode if already turn off
     //if(this.contextMenu) this.contextMenu.
     if(this.isOn === false) return;
@@ -146,7 +146,7 @@ class Draw{
     // context menu draw mode unchecked
     this.contextMenu.ctrl[0].checked = false;
     // close contextmenu
-    this.contextMenu.close();
+    if(isCloseMenu) this.contextMenu.close();
   }
 
   /*

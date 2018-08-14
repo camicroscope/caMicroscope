@@ -221,8 +221,17 @@ function initUIcomponents(){
 
 
     // overlayer manager
+    const testdata = [
+	{id:'type_1_1',name:'Person_1', typeId:'1',typeName:'Human Annotations',isShow:true },
+	{id:'type_2_1',name:'Algo-x1-y1-a1', typeId:'2',typeName:'Pathomic Features' },
+	{id:'type_1_2',name:'Person_2', typeId:'1',typeName:'Human Annotations' },
+	{id:'type_2_2',name:'Algo-x1-y1-b2', typeId:'2',typeName:'Pathomic Features' },
+	{id:'type_1_3',name:'Person_3', typeId:'1',typeName:'Human Annotations' },
+	{id:'type_2_3',name:'Algo-x1-y1-c3', typeId:'2',typeName:'Pathomic Features',isShow:true  },
+	{id:'type_1_4',name:'Person_4', typeId:'1',typeName:'Human Annotations' },
+];
     layer_manager = new LayersViewer({id:'overlayers',data:annotations,callback:callback });
-
+    //layer_manager = new LayersViewer({id:'overlayers',data:testdata,callback:callback });
     // detach overlayer manager
     layer_manager.elt.parentNode.removeChild(layer_manager.elt);
 	
@@ -443,6 +452,7 @@ function anno_callback(data){
 		name:noteData.name,
 		typeId:1,
 		typeName:'Human Annotation',
+		isShow:true,
 		note:noteData,
 		canvasData:canvasData
 	};
@@ -456,7 +466,7 @@ function anno_callback(data){
 			clickable:true,
 			isHighlight:true,
 			clickCallback:anno_click
-		},false);
+		},true);
 	// save layer data
 	// "typeId":1, "typeName": "Human Annotation"
 	annotations.push(anno);
@@ -466,7 +476,7 @@ function anno_callback(data){
 
 	/* reset as default */
 	// clear draw data and UI
-	camic.draw.drawOff();
+	camic.draw.drawOff(true);
 	camic.draw.clear();
 	// uncheck pen draw icon and checkbox
 	tools._sub_tools[1].querySelector('[type=checkbox]').checked = false;
@@ -483,8 +493,6 @@ function anno_callback(data){
 	tools._main_tools[1].querySelector('[type=checkbox]').checked = true;
 	side_layers.open();
 
-	
-
 }
 
 function algo_callback(data){
@@ -493,14 +501,10 @@ function algo_callback(data){
 }
 
 // overlayer manager callback function
-function callback(data,isDisplay){
-	if (isDisplay){
-		data.forEach((x)=>x.layer.show())
-	} else {
-		data.forEach((x)=>x.layer.hide())
-	}
-	// refresh viewer
-	//camic.viewer.forceRedraw();
+function callback(data){
+	data.forEach(item => {
+		item.isShow?item.layer.show():item.layer.hide();
+	});
 }
 /* 
 	collapsible list
