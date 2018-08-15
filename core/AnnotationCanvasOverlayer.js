@@ -159,8 +159,9 @@ class AnnotationCanvasOverlayer{
   clear(){
     //this._fabricCanvas.clear();
   }
-
-  // TODO click and show
-  //  
+  setZIndex(index){
+    this._canvas.style.zIndex = index;
+    this._canvas_hover.style.zIndex = index;
+  } 
 
 }

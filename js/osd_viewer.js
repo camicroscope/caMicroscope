@@ -230,7 +230,7 @@ function initUIcomponents(){
 	{id:'type_2_3',name:'Algo-x1-y1-c3', typeId:'2',typeName:'Pathomic Features',isShow:true  },
 	{id:'type_1_4',name:'Person_4', typeId:'1',typeName:'Human Annotations' },
 ];
-    layer_manager = new LayersViewer({id:'overlayers',data:annotations,callback:callback });
+    layer_manager = new LayersViewer({id:'overlayers',data:annotations,sortChange:sort_change,callback:callback });
     //layer_manager = new LayersViewer({id:'overlayers',data:testdata,callback:callback });
     // detach overlayer manager
     layer_manager.elt.parentNode.removeChild(layer_manager.elt);
@@ -418,7 +418,11 @@ function anno_edit(data){
 	console.log('anno_edit');
 	console.log(arguments);
 }
+function sort_change(sort){
+	console.log('sort_change');
+	camic.layersManager.sort(sort);
 
+}
 function anno_callback(data){
 	// is form ok?
 	const noteData = annotation_control._form_.value;
@@ -469,7 +473,7 @@ function anno_callback(data){
 		},true);
 	// save layer data
 	// "typeId":1, "typeName": "Human Annotation"
-	annotations.push(anno);
+	annotations.unshift(anno);
 	console.log(annotations);
 	layer_manager.update();
 
@@ -500,7 +504,7 @@ function algo_callback(data){
 
 }
 
-// overlayer manager callback function
+// overlayer manager callback function for show or hide
 function callback(data){
 	data.forEach(item => {
 		item.isShow?item.layer.show():item.layer.hide();

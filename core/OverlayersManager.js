@@ -8,13 +8,14 @@
 class OverlayersManager{
   constructor(viewer){
     this.startIndex = 10;
+
     this.viewer = viewer;
     this.overlayers=[];
     //this.delayers={};
     //this.visibleLayers=new Set([]);
   }
 
-  // get overlayer by id
+  // get overlayer by id/ new add alway on top
   getOverlayer(id){
     return this.overlayers.find(layer => layer.id == id);
   }
@@ -28,7 +29,7 @@ class OverlayersManager{
   // add a new overlayer
   addOverlayer(options, isShow = true, isDraw = true){
     if(this.overlayers.find(layer => layer.id == options.id)){
-      console.warn('duplicate overlayer ID');
+      console.error('duplicate overlayer ID');
       return;
     }
 
@@ -37,9 +38,15 @@ class OverlayersManager{
     const overlayer = new AnnotationCanvasOverlayer(options, isShow)
     this.overlayers.push(overlayer);
 
+    
+    const zIndex = this.startIndex + this.overlayers.length;
+    console.log(`id:${overlayer.id}, zIndex:${zIndex}`);
+    overlayer.setZIndex(zIndex);
     // add it to the viewer if isShow == true
     //if(isShow){
+    
     overlayer.addToViewer();
+
     //}
 
     //add draw the data on canvas if isDraw == true
@@ -57,8 +64,12 @@ class OverlayersManager{
     const index = this.overlayers.indexOf(layer);
     if (index > -1) {
       this.overlayers.splice(index, 1);
+      //
+      const sort = this.overlayers.map(layer=>layer.id);
+      this.setSort(sort.reverse());
       return true;
     }
+
     return false;
 
   }
@@ -66,8 +77,14 @@ class OverlayersManager{
 
   //
   
-  sort([]){
-    console.log('layerManager:sort');
+  sort(data){
+    for (var i = data.length - 1; i >= 0; i--) {
+      const id = data[i];
+      const layer = this.getOverlayer(id);
+      console.log(`${id}:`);
+      const zIndex = this.startIndex + data.length - i
+      if(layer && layer.setZIndex) layer.setZIndex(zIndex);
+    }
   }
   /**
   * gets a layer, creating it if it does not exist, and sets it visible
@@ -120,18 +137,6 @@ class OverlayersManager{
 
   }
 
-  /**
-  * draws all visible layers
-  * @param onto - the canvas object to draw layers onto
-  **/
-  drawVisible(onto){
-    for (let name of this.visibleLayers.entries()){
-      let dl = this.delayers[name[0]]
-      if (dl){
-        dl.__apply_all(onto);
-      }
-    }
-  }
 
 }
 

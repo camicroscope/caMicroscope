@@ -8,16 +8,16 @@
 // 'function' in modern browsers, 'object' in safari < 10
 if (typeof Path2D == 'function' || typeof Path2D == 'object') {
 	var Path = Path2D
-	Path.prototype.contains = function(x, y, fillRule='evenodd') {
+	Path.prototype.contains = function(x, y, fillRule='nonzero') {
 		return this.__ghostContext.isPointInPath(this, x, y, fillRule)
 	}
 	Path.prototype.stroke = function(context) {
 		context.stroke(this)
 	}
-	Path.prototype.fill = function(context, fillRule = 'evenodd') {
+	Path.prototype.fill = function(context, fillRule = 'nonzero') {
 		context.fill(this, fillRule)
 	}
-	Path.prototype.strokeAndFill = function(context, fillRule = 'evenodd') {
+	Path.prototype.strokeAndFill = function(context, fillRule = 'nonzero') {
 		context.stroke(this)
 		context.fill(this, fillRule)
 	}
