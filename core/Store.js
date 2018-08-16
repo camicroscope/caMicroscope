@@ -32,7 +32,7 @@ function objToParamStr(obj) {
 **/
 class Store{
   constructor(base, config){
-    this.base = base || "ca-data:9099/services/caMicroscope/";
+    this.base = base || "/data/services/caMicroscope/";
     this.config = config;
   }
   /**
@@ -148,7 +148,7 @@ class Store{
   * @returns {promise} - promise which resolves with data
   **/
   findMarkTypes(name, slide){
-    var suffix = "mark/query/findPoint"
+    var suffix = "mark/query/findTypes"
     var url = this.base + suffix;
     var query = {}
     if (name){
@@ -178,7 +178,7 @@ class Store{
     if (name){
       query.name = name
     }
-    if (type){
+    if (slide){
       query.slide = slide
     }
     // api key for bindaas?
@@ -217,8 +217,8 @@ class Store{
     if (name){
       query.name = name
     }
-    if (type){
-      query.slide = slide
+    if (location){
+      query.location = location
     }
     // api key for bindaas?
     return fetch(url + "?" + objToParamStr(query), {
@@ -249,7 +249,7 @@ class Store{
   * @param {string} [type] - the tmplate type, supporting regex match
   * @returns {promise} - promise which resolves with data
   **/
-  findTemplate(name, location){
+  findTemplate(name, type){
     var suffix = "Template/query/find"
     var url = this.base + suffix;
     var query = {}
