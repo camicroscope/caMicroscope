@@ -70,6 +70,12 @@
 .context-item button:active {
 	background-color:#d0d0d0;
 }
+.context-item button:disabled {
+	cursor:not-allowed;
+	color:#6c8bb6;
+	background-color:#efefef;
+
+}
 .context-item button:focus{
 	outline:none;
 }

@@ -39,31 +39,7 @@ class AnnotationCanvasOverlayer{
       click:this.click.bind(this),
       //drawing:this.drawing.bind(this)
     };
-    //this._canvas.width = width;
-    //this._canvas.height = height; 
 
-    //this._fabricCanvas; //= new fabric.Canvas(this._canvas);
-    // disable fabric selection because default click is tracked by OSD
-    //this._fabricCanvas.selection = false;
-    // prevent OSD click elements on fabric objects
-    // this._fabricCanvas.on('mouse:down', function (options) {
-    //     console.log('_fabricCanvas');
-    //     if (options.target) {
-    //         options.e.preventDefaultAction = true;
-    //         options.e.preventDefault();
-    //         options.e.stopPropagation();
-    //     }
-    // });
-    //this.render(this._fabricCanvas,this.data);
-    // this._canvas.addEventListener('click',e=>{
-    //   console.log('click:_canvas');
-    // });
-    // this._canvas_hover.addEventListener('click',e=>{
-    //   console.log('click:_hover');
-    //           console.log('test');
-    //       ;
-    // });
-    //if()
     if(this.clickable) this.clickableOn();
     if(this.isHighlight) this.higlightOn();
   }
@@ -110,9 +86,10 @@ class AnnotationCanvasOverlayer{
         this._canvas_hover.style.cursor = 'point';
         this._canvas_hover_ctx.lineJoin = 'round';
         this._canvas_hover_ctx.lineCap = 'round';
+        this._canvas_hover_ctx.fillStyle = hexToRgbA(item.style.color,0.3);
         this._canvas_hover_ctx.strokeStyle = item.style.color;
-        this._canvas_hover_ctx.lineWidth = item.style.lineWidth*1.5;
-        path.stroke(this._canvas_hover_ctx);
+        this._canvas_hover_ctx.lineWidth = item.style.lineWidth < 10? item.style.lineWidth + 5 : item.style.lineWidth*1.5;
+        path.strokeAndFill(this._canvas_hover_ctx);
       }
     }); 
   }

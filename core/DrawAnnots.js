@@ -81,6 +81,12 @@ class Draw{
     // ]
     this._current_path_ = {};
     this._draws_data_ = [];
+    this._path_index = 0;
+    
+    // disable undo and redo
+    this.contextMenu.ctrl[1].disabled = true;
+    this.contextMenu.ctrl[2].disabled = true;
+    
     // add to viewer
     //this.__initOverLayer();
 
@@ -228,7 +234,6 @@ class Draw{
     // this is the geometry data, in points; conv to geojson
     this.isDrawing = false;
     this._draw_.style.cursor = 'pointer';
-    console.log(this._draws_data_);
     
   }
   /* private method */
@@ -262,7 +267,7 @@ class Draw{
   }
 
   getPaths() {
-      return this._draws_data_.slice();//this._draws_data_
+    return this._draws_data_.slice(0,this._path_index);
   }
 
   clear(){
@@ -271,6 +276,9 @@ class Draw{
     // clear path data
     this._current_path_ = {};
     this._draws_data_ = [];
+    this._path_index = 0;
+    this.contextMenu.ctrl[1].disabled = true;
+    this.contextMenu.ctrl[2].disabled = true;
   }
 
   /*
@@ -303,19 +311,55 @@ class Draw{
   __endNewFeature(){
     if(this._current_path_.data.points.length < 2 || this.__isOnlyTwoSamePoints(this._current_path_.data.points)  ) return; // click on canvas
 
+    // set style and drawing model
     this._current_path_.style.color = this.style.color;
     this._current_path_.style.lineJoin = this.style.lineJoin;
     this._current_path_.style.lineCap = this.style.lineCap;
     this._current_path_.style.lineWidth = this.style.lineWidth;
     this._current_path_.drawMode = this.drawMode;
+    
+    // 
     DrawHelper.draw(this._display_ctx, [this._current_path_])
     
+
+    // 
+    if(this._path_index < this._draws_data_.length){
+      this._draws_data_ = this._draws_data_.slice(0,this._path_index);
+    }
+    
     this._draws_data_.push(Object.assign({},this._current_path_));
-    //
-    //
+    this._path_index++;
+    this.contextMenu.ctrl[2].disabled = true;
+
+    // enable undo btns
+    if(this.contextMenu &&this._path_index > 0){
+      this.contextMenu.ctrl[1].disabled = false;
+    }
+
     this._current_path_ = null;
-    // clear _draw_
     DrawHelper.clearCanvas(this._draw_); 
+  }
+
+  __undo(){
+    this._path_index--;
+    // clear canvas
+    DrawHelper.clearCanvas(this._display_); 
+    // redraw path
+    if(this._path_index > 0) DrawHelper.draw(this._display_ctx,this._draws_data_.slice(0,this._path_index));
+     
+    if(this.contextMenu && this._path_index <= 0) this.contextMenu.ctrl[1].disabled = true;
+    this.contextMenu.ctrl[2].disabled = false;
+
+  }
+  __redo(){
+    // clear canvas
+    // DrawHelper.clearCanvas(this._display_); 
+    // redraw path
+    DrawHelper.draw(this._display_ctx,[this._draws_data_[this._path_index]]);
+    this._path_index++;
+    // 
+    if(this.contextMenu && this._path_index == this._draws_data_.length) this.contextMenu.ctrl[2].disabled = true;
+    this.contextMenu.ctrl[1].disabled = false;
   }
 }
 
