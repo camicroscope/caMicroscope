@@ -41,19 +41,18 @@ class CaMic{
 
     this.layersManager; // = new Layer(this.viewer);
     this.draw;// = new Draw(this.viewer);
-    
+
     this.slideId = slideId;
     // initalize store
-    this.store = new Store({});
-    this.store.setId(slideId)
+    this.store = new Store();
     // load image
     // set overlay thing
 
-    
+
 
     this.viewer.addHandler('open',this.init.bind(this));
-  
-  
+
+
   }
 
   init(){
@@ -70,14 +69,13 @@ class CaMic{
   setImg(slideId){
     this.layers.resetAll();
     this.slideId = slideId;
-    this.store.setId(slideId)
   }
   /**
   * Loads the staged image
   */
   loadImg(){
     // loads current image
-    this.store.getSlide()
+    this.store.findSlide(this.slideId)
       .then((x)=>{
         this.viewer.open(x[0].location);
         this.scalebar(x[0].mpp)
