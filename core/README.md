@@ -132,7 +132,6 @@ Layer manager for camicroscope
     * [.hideOverlayer(name)](#OverlayersManager+hideOverlayer)
     * [.showOverlayer()](#OverlayersManager+showOverlayer)
     * [.resetAll()](#OverlayersManager+resetAll)
-    * [.drawVisible(onto)](#OverlayersManager+drawVisible)
 
 <a name="new_OverlayersManager_new"></a>
 
@@ -165,17 +164,6 @@ clears all layer and delayer data, associated with changing image
 clears all layer and delayer data, associated with changing image
 
 **Kind**: instance method of [<code>OverlayersManager</code>](#OverlayersManager)  
-<a name="OverlayersManager+drawVisible"></a>
-
-### overlayersManager.drawVisible(onto)
-draws all visible layers
-
-**Kind**: instance method of [<code>OverlayersManager</code>](#OverlayersManager)  
-
-| Param | Description |
-| --- | --- |
-| onto | the canvas object to draw layers onto |
-
 <a name="Store"></a>
 
 ## Store
@@ -184,40 +172,188 @@ Storage interpreter for camicroscope, uses same auth as origin
 **Kind**: global class  
 
 * [Store](#Store)
-    * [new Store(config)](#new_Store_new)
-    * [.get(type, query)](#Store+get) ⇒ <code>promise</code>
-    * [.post(type, query, data)](#Store+post) ⇒ <code>promise</code>
+    * [new Store(base, [config])](#new_Store_new)
+    * [.findCollection([name], [type])](#Store+findCollection) ⇒ <code>promise</code>
+    * [.getCollection(id)](#Store+getCollection) ⇒ <code>promise</code>
+    * [.findMark([name], [slide])](#Store+findMark) ⇒ <code>promise</code>
+    * [.findMarkSpatial(x, y, [name], [slide])](#Store+findMarkSpatial) ⇒ <code>promise</code>
+    * [.getMark(id)](#Store+getMark) ⇒ <code>promise</code>
+    * [.findMarkTypes([name], [slide])](#Store+findMarkTypes) ⇒ <code>promise</code>
+    * [.findOverlay([name], [slide])](#Store+findOverlay) ⇒ <code>promise</code>
+    * [.getOverlay(id)](#Store+getOverlay) ⇒ <code>promise</code>
+    * [.findSlide([name], [location])](#Store+findSlide) ⇒ <code>promise</code>
+    * [.getSlide(id)](#Store+getSlide) ⇒ <code>promise</code>
+    * [.findTemplate([name], [type])](#Store+findTemplate) ⇒ <code>promise</code>
+    * [.getTemplate(id)](#Store+getTemplate) ⇒ <code>promise</code>
+    * [.post(type, data, [query])](#Store+post) ⇒ <code>promise</code>
     * [.update(type, query, data)](#Store+update) ⇒ <code>promise</code>
     * [.delete(type, query)](#Store+delete) ⇒ <code>promise</code>
 
 <a name="new_Store_new"></a>
 
-### new Store(config)
+### new Store(base, [config])
 
 | Param | Description |
 | --- | --- |
-| config | configuration options |
-| config.getUrls | collectop/type as key, url for get as value |
-| config.updateUrls- | collectop/type as key, url for update as value |
-| config.postUrls- | collectop/type as key, url for post as value |
-| config.deleteUrls- | collectop/type as key, url for delete as value |
+| base | base url for data |
+| [config] | configuration options, unused so far |
 
-<a name="Store+get"></a>
+<a name="Store+findCollection"></a>
 
-### store.get(type, query) ⇒ <code>promise</code>
-get data
+### store.findCollection([name], [type]) ⇒ <code>promise</code>
+find collections matching name and/or type
 
 **Kind**: instance method of [<code>Store</code>](#Store)  
 **Returns**: <code>promise</code> - - promise which resolves with data  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| type | <code>string</code> | the datatype to get |
-| query | <code>object</code> | the query of url parameters |
+| [name] | <code>string</code> | the collection name, supporting regex match |
+| [type] | <code>string</code> | the collection type, supporting regex match |
+
+<a name="Store+getCollection"></a>
+
+### store.getCollection(id) ⇒ <code>promise</code>
+get collection by id
+
+**Kind**: instance method of [<code>Store</code>](#Store)  
+**Returns**: <code>promise</code> - - promise which resolves with data  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| id | <code>string</code> | the collection id |
+
+<a name="Store+findMark"></a>
+
+### store.findMark([name], [slide]) ⇒ <code>promise</code>
+find marks matching slide and/or marktype
+
+**Kind**: instance method of [<code>Store</code>](#Store)  
+**Returns**: <code>promise</code> - - promise which resolves with data  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| [name] | <code>string</code> | the associated slide name, supporting regex match |
+| [slide] | <code>string</code> | the associated marktype name, supporting regex match |
+
+<a name="Store+findMarkSpatial"></a>
+
+### store.findMarkSpatial(x, y, [name], [slide]) ⇒ <code>promise</code>
+find marks which contain a given point
+
+**Kind**: instance method of [<code>Store</code>](#Store)  
+**Returns**: <code>promise</code> - - promise which resolves with data  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| x | <code>number</code> | x position to search for |
+| y | <code>number</code> | y position to search for |
+| [name] | <code>string</code> | the associated slide name, supporting regex match |
+| [slide] | <code>string</code> | the associated marktype name, supporting regex match |
+
+<a name="Store+getMark"></a>
+
+### store.getMark(id) ⇒ <code>promise</code>
+get mark by id
+
+**Kind**: instance method of [<code>Store</code>](#Store)  
+**Returns**: <code>promise</code> - - promise which resolves with data  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| id | <code>string</code> | the collection id |
+
+<a name="Store+findMarkTypes"></a>
+
+### store.findMarkTypes([name], [slide]) ⇒ <code>promise</code>
+find marktypes given slide and name
+
+**Kind**: instance method of [<code>Store</code>](#Store)  
+**Returns**: <code>promise</code> - - promise which resolves with data  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| [name] | <code>string</code> | the associated slide name, supporting regex match |
+| [slide] | <code>string</code> | the marktype name, supporting regex match |
+
+<a name="Store+findOverlay"></a>
+
+### store.findOverlay([name], [slide]) ⇒ <code>promise</code>
+find overlays matching name and/or type
+
+**Kind**: instance method of [<code>Store</code>](#Store)  
+**Returns**: <code>promise</code> - - promise which resolves with data  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| [name] | <code>string</code> | the overlay, supporting regex match |
+| [slide] | <code>string</code> | the collection type, supporting regex match |
+
+<a name="Store+getOverlay"></a>
+
+### store.getOverlay(id) ⇒ <code>promise</code>
+get overlay by id
+
+**Kind**: instance method of [<code>Store</code>](#Store)  
+**Returns**: <code>promise</code> - - promise which resolves with data  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| id | <code>string</code> | the overlay id |
+
+<a name="Store+findSlide"></a>
+
+### store.findSlide([name], [location]) ⇒ <code>promise</code>
+find overlays matching name and/or type
+
+**Kind**: instance method of [<code>Store</code>](#Store)  
+**Returns**: <code>promise</code> - - promise which resolves with data  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| [name] | <code>string</code> | the slide name, supporting regex match |
+| [location] | <code>string</code> | the slide location, supporting regex match |
+
+<a name="Store+getSlide"></a>
+
+### store.getSlide(id) ⇒ <code>promise</code>
+get slide by id
+
+**Kind**: instance method of [<code>Store</code>](#Store)  
+**Returns**: <code>promise</code> - - promise which resolves with data  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| id | <code>string</code> | the slide id |
+
+<a name="Store+findTemplate"></a>
+
+### store.findTemplate([name], [type]) ⇒ <code>promise</code>
+find templates matching name and/or type
+
+**Kind**: instance method of [<code>Store</code>](#Store)  
+**Returns**: <code>promise</code> - - promise which resolves with data  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| [name] | <code>string</code> | the template name, supporting regex match |
+| [type] | <code>string</code> | the tmplate type, supporting regex match |
+
+<a name="Store+getTemplate"></a>
+
+### store.getTemplate(id) ⇒ <code>promise</code>
+get template by id
+
+**Kind**: instance method of [<code>Store</code>](#Store)  
+**Returns**: <code>promise</code> - - promise which resolves with data  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| id | <code>string</code> | the template id |
 
 <a name="Store+post"></a>
 
-### store.post(type, query, data) ⇒ <code>promise</code>
+### store.post(type, data, [query]) ⇒ <code>promise</code>
 post data
 
 **Kind**: instance method of [<code>Store</code>](#Store)  
@@ -225,9 +361,9 @@ post data
 
 | Param | Type | Description |
 | --- | --- | --- |
-| type | <code>string</code> | the datatype to get |
-| query | <code>object</code> | the query of url parameters |
+| type | <code>string</code> | the datatype to post |
 | data | <code>object</code> | the data to post |
+| [query] | <code>object</code> | the query of url parameters |
 
 <a name="Store+update"></a>
 
@@ -317,4 +453,3 @@ converts an object into a string of url components
 | Param | Type | Description |
 | --- | --- | --- |
 | obj | <code>object</code> | keys and values |
-
