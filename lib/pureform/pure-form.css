@@ -11,6 +11,7 @@ pure-form {
     display: block;
     position: relative;
     padding: .5rem;
+    color:#365f9c;
     /*min-width: 320px;*/
 }
 
@@ -158,18 +159,18 @@ pure-form [type="checkbox"]:before {
     left: 0;
     text-indent: 22px;
     border-radius: 10px;
-    background: rgba(19, 191, 17, 0);
+    /*background: rgba(19, 191, 17, 0);*/
     transition: left .25s ease-in-out;
-    color: #fff;
+    color: #365f9c;
     content: "OFF";
     font-size: 8px;
     line-height: 19px;
 }
 
 pure-form [type="checkbox"]:checked {
-    background-color: #13bf11;
-    border-color: #13bf11;
-    box-shadow: inset 0 0 0px 1px #0eb50c;
+    background-color: #365f9c;
+    border-color: #365f9c;
+    box-shadow: inset 0 0 0px 1px #365f9c;
 }
 
 pure-form [type="checkbox"]:checked:before {
@@ -181,7 +182,7 @@ pure-form [type="checkbox"]:checked:before {
     left: 0;
     text-indent: 6px;
     border-radius: 10px;
-    background: rgba(19, 191, 17, 0);
+    /*background: rgba(19, 191, 17, 0);*/
     transition: left .25s ease-in-out;
     color: #333;
     content: "ON";

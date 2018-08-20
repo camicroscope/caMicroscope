@@ -55,7 +55,7 @@ body{
 .item_content button:hover{
 	cursor:pointer;
 	background-color: rgba(255,255,255,0.7);
-	box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+	/*box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);*/
 }
 .item_content button:focus {outline:0;}
 /* for select */

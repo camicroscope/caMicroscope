@@ -4,9 +4,9 @@ div.camessage {
   top:0;
   right:0;
   margin:0;
-  border-radius:0 0 0 10px;
-  padding:3px 20px;
-  background-color:#000;
-  color:#fff;
-  font-size:12px;
+  border-radius:0 0 0 1rem;
+  padding:.3rem 1rem;
+  background-color:#365f9c;
+  color:#f6f6f6;
+  font-size:1.2rem;
 }

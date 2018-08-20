@@ -1,0 +1,32 @@
+/* messagequeue.css */
+.bullet-container {
+	position:absolute;
+	display:inline-block;
+	z-index:999;
+}
+
+.bullet {
+	display:table;
+	text-align: center;
+	background-color:#2684FF;
+	color:#f6f6f6;
+	font-size:1rem;
+	font-family:Sans-serif;
+	padding:.3rem 1rem;
+	margin:.3rem;
+	border-radius:.5rem;
+	-webkit-transition: opacity 1.5s ease-in-out;
+	-moz-transition: opacity 1.5s ease-in-out;
+	-ms-transition: opacity 1.5s ease-in-out;
+	-o-transition: opacity 1.5s ease-in-out;
+	opacity: 1;
+}
+
+.bullet.hide{
+    opacity: 0;
+}
+
+.bullet.right{
+	margin-left:auto;
+	margin-right:0;
+}

@@ -12,7 +12,7 @@
 
 .item_head {
     margin:.2rem;
-    background-color: rgba(0,0,0,1);
+    background-color: #365f9c;
     color: rgba(255,255,255,.7);
     cursor: pointer;
     padding: .5rem;
@@ -29,7 +29,6 @@
 
 .active, .item_head:hover {
     color: rgba(255,255,255,1);
-    background-color: #555;
 }
 
 .item_body {

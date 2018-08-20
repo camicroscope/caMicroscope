@@ -6,7 +6,10 @@
     z-index: 1;
     top: 0;
     left: 0;
-    background-color: rgba(0,0,0,0.8);
+    border:#cbcbcb 1px solid;
+    box-shadow: 1px 2px 3px #aaa;
+    background-color: rgba(245,245,245,1);
+    border-right:;
     overflow-x: hidden;
     transition: 0.5s;
 }
@@ -23,15 +26,16 @@
     margin:0;
     width:100%;
     height:3.2rem;
+    cursor:pointer;
+}
+.side_menu > div.close:hover {
+  background-color:#ededed;
 }
 .side_menu > div.close > i {
     margin-top:.4rem;
-    cursor:pointer;
+    
     float: right;
-    color:rgba(255,255,255,0.5);
-}
-.side_menu > div.close:hover > i {
-    color:rgba(255,255,255,1);
+    color:#365f9c;
 }
 .side_menu > div.close > i.sec {
     margin-right:-1.9rem;

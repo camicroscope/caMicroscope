@@ -18,8 +18,8 @@ ul.tools {
   margin: 0;
   height: 2.4rem;
   border-radius: 0 .5rem .5rem 0;
-  border: solid black .2rem;
-  background-color: rgba(0, 0, 0, 1);
+  border: solid #365f9c .2rem;
+  background-color: #365f9c;
 }
 
 ul.tools li {
@@ -29,7 +29,7 @@ ul.tools li {
   float: left;
   margin-left: .2rem;
   list-style: none;
-  color: #000;
+  color: #365f9c;
   background-color: #fff;
   opacity: 0.5;
 }
@@ -40,7 +40,7 @@ ul.tools>li:hover {
 
 ul.tools>li.handler {
   color: #fff;
-  background-color: #000;
+  background-color: #365f9c;
 }
 
 ul.tools li.separator {
@@ -57,7 +57,7 @@ ul.tools>li>input {
 }
 
 ul.tools>li:not(.handler)>input[type=checkbox]:checked+label {
-  background-color: #000;
+  background-color: #365f9c;
   color: #fff;
   /*box-shadow: inset 1px 1px 1px rgba(0, 0, 0, 0.3);*/
 }
@@ -88,7 +88,7 @@ ul.drop_down li{
   box-shadow: 0 .4rem .8rem 0 rgba(0, 0, 0, 0.2), 0 .6rem .2rem 0 rgba(0, 0, 0, 0.19);
   padding:0;
   margin:.3rem 0 0 0;
-  color:#000;
+  color:#365f9c;
   background-color:#fff;
   opacity:1;
 }
@@ -103,8 +103,8 @@ ul.drop_down > li > input[type=radio]+label{
 }
 ul.drop_down > li > input[type=radio]:checked+label{
   cursor:pointer;
-  color:#fff;
-  background-color:#000;
+  color:#365f9c;
+  background-color:#365f9c;
   border-radius:.5rem .5rem .5rem .5rem;
   box-shadow: 0 .4rem .8rem 0 rgba(0, 0, 0, 0.2), 0 .6rem .2rem 0 rgba(0, 0, 0, 0.19);
 }

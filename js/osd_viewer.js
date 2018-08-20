@@ -5,6 +5,7 @@ const MPP = {'mpp-x': 0.499, 'mpp-y': 0.499};
 let camic;
 let viewer;
 let tools;
+let message;
 let camessage;
 let zctrl;
 let side_apps;
@@ -205,6 +206,10 @@ function initUIcomponents(){
 		id:'cames',
 		defaultText:'ID: 110-asdda-4345-na'
 	});
+
+	// create the message queue
+	message = new MessageQueue();
+
 	
 	// zoom control
 	zctrl = new CaZoomControl({
@@ -236,7 +241,8 @@ function initUIcomponents(){
     layer_manager.elt.parentNode.removeChild(layer_manager.elt);
 	
     // add to layers side menu
-    const title = document.createElement('h2');
+    const title = document.createElement('div');
+    title.classList.add('item_head');
     title.textContent = 'Layers Manager';
     side_layers.addContent(title);
     side_layers.addContent(layer_manager.elt);
@@ -341,7 +347,8 @@ function goHome(data){
 
 // pen draw callback
 function penDraw(data){
-	camessage.sendMessage(`Pen: ${data.checked?'ON':'OFF'} | Mode: ${camic.draw.drawMode} `, {size:'15px',color:'white', bgColor:'MediumPurple'}, 3);
+	//camessage.sendMessage(`Pen: ${data.checked?'ON':'OFF'} | Mode: ${camic.draw.drawMode} `, {size:'15px',color:'white', bgColor:'MediumPurple'}, 3);
+	message.add(`Pen: ${data.checked?'ON':'OFF'} | Mode: ${camic.draw.drawMode} `);
 	if(!camic.draw){
 		alert('draw doesn\'t initialize');
 		return;
@@ -355,7 +362,8 @@ function penDraw(data){
 
 // toggle magnifier callback
 function toggleMagnifier(data){
-	camessage.sendMessage(`Magnifier ${data.checked?'ON':'OFF'}`, {size:'15px',color:'white', bgColor:'blue'}, 3);
+	//camessage.sendMessage(`Magnifier ${data.checked?'ON':'OFF'}`, {size:'15px',color:'white', bgColor:'blue'}, 3);
+	message.add(`Magnifier ${data.checked?'ON':'OFF'}`);
 	console.log(data);
 }
 
