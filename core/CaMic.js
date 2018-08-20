@@ -59,9 +59,14 @@ class CaMic{
     this.draw = new Draw(this.viewer,{
       btns:this.__default_opt.draw.btns
     });
+
     this.layersManager = new OverlayersManager(this.viewer);
     this.viewer.removeHandler('open', this.init.bind(this));
     this.viewer.controls.bottomright.style.zIndex = 600;
+    // change navigator style
+    const nav = this.viewer.element.querySelector('.navigator');
+    nav.style.backgroundColor = '#365f9c';
+    nav.style.opacity = 1;
   }
   /**
   * Change which image is staged, used loadImg to load it.
