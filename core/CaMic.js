@@ -20,14 +20,12 @@ class CaMic{
       showNavigator: true,
       navigatorAutoFade: false,
       navigatorPosition: "BOTTOM_RIGHT",
-
-
       zoomPerClick: 1,
       animationTime: 0.75,
-      maxZoomPixelRatio: 1,
-      visibilityRatio: 1,
-      maxZoomLevel:4,
-      minZoomLevel:.4,
+      // maxZoomPixelRatio: 1,
+      // visibilityRatio: 1,
+      // maxZoomLevel:4,
+      // minZoomLevel:.4,
       constrainDuringPan: true
     }
 
@@ -54,7 +52,7 @@ class CaMic{
 
 
   }
-
+  
   init(){
     this.draw = new Draw(this.viewer,{
       btns:this.__default_opt.draw.btns
@@ -67,6 +65,23 @@ class CaMic{
     const nav = this.viewer.element.querySelector('.navigator');
     nav.style.backgroundColor = '#365f9c';
     nav.style.opacity = 1;
+
+    // zoom control
+    const zmax = this.viewer.viewport.getMaxZoom();
+    const zmin = this.viewer.viewport.getMinZoom();
+    const step = (zmax - zmin)/100;
+
+    this.zctrl = new CaZoomControl({
+      'id':'zctrl',
+      'viewer':this.viewer,
+      'zoom':{
+        'max':zmax,
+        'min':zmin,
+        'cur':zmax,
+        'step':step
+      }
+    });
+
   }
   /**
   * Change which image is staged, used loadImg to load it.
@@ -78,14 +93,26 @@ class CaMic{
   /**
   * Loads the staged image
   */
-  loadImg(){
+  loadImg(func){
     // loads current image
     this.store.findSlide(this.slideId)
       .then((x)=>{
-        this.viewer.open(x[0].location);
+        this.viewer.open('/data_dzi/CMU-1-Small-Region/CMU-1-Small-Region.dzi');
+        //this.viewer.open(x[0].location);
+        // set scalebar
         this.scalebar(x[0].mpp)
+        var imagingHelper = new OpenSeadragonImaging.ImagingHelper({
+        viewer: this.viewer
+        });
+        imagingHelper.setMaxZoom(1);
+        if(func && typeof func === 'function') func.call(null,null);
+        
       })
-      .catch(console.log)
+      .catch(e=>{
+        console.log('error');
+        console.log(e);
+        if(func && typeof func === 'function') func.call(null,e);
+      })
   }
   /**
   * Set up a scalebar on the image

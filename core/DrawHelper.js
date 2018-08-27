@@ -11,17 +11,17 @@ caDrawHelper.prototype.getRect = function(start,end){
 }
 
 caDrawHelper.prototype.forRect = function(start,end){
-	let [x,width] = this.getRect(start.x,end.x);
-	let [y,height] = this.getRect(start.y,end.y);
+	let [x,width] = this.getRect(start[0],end[0]);
+	let [y,height] = this.getRect(start[1],end[1]);
 	return [x,y,width,height];
 }
 
 caDrawHelper.prototype.forSquare = function(start,end){
-	let dx = Math.abs(start.x - end.x);
-	let dy = Math.abs(start.y - end.y);
+	let dx = Math.abs(start[0] - end[0]);
+	let dy = Math.abs(start[1] - end[1]);
 	let length = Math.max(dx,dy); // Math.max(dx,dy);
-	let x = start.x < end.x ? start.x:start.x - length;
-	let y = start.y < end.y ? start.y:start.y - length;
+	let x = start[0] < end[0] ? start[0]:start[0] - length;
+	let y = start[1] < end[1] ? start[1]:start[1] - length;
 	return [x,y,length,length];
 }
 
@@ -42,7 +42,12 @@ caDrawHelper.prototype.drawRectangle = function(ctx, start, end, isSquare = fals
 	
 	// return points and path 
 	return {
-		points:[{x:x,y:y},{x:x+width,y:y+height}],
+		points:[
+			[x,y],
+			[x+width,y],
+			[x+width,y+height],
+			[x,y+height]
+		],
 		path:path
 	};
 }
@@ -50,8 +55,8 @@ caDrawHelper.prototype.drawRectangle = function(ctx, start, end, isSquare = fals
 caDrawHelper.prototype.drawLine = function(ctx, start, end){
 	// draw line
 	ctx.beginPath();
-	ctx.moveTo(start.x, start.y);
-	ctx.lineTo(end.x,end.y);
+	ctx.moveTo(start[0], start[1]);
+	ctx.lineTo(end[0],end[1]);
 	ctx.closePath()
 	ctx.stroke();
 }
@@ -62,9 +67,9 @@ caDrawHelper.prototype.drawPolygon = function(ctx, paths){
 	const path = new Path();
 
 	// starting draw drawPolygon
-	path.moveTo(paths[0].x, paths[0].y);
+	path.moveTo(paths[0][0], paths[0][1]);
 	for (var i = 1; i < paths.length-1; i++) {
-		path.lineTo(paths[i].x,paths[i].y);
+		path.lineTo(paths[i][0],paths[i][1]);
 	}
 
 	// close path and set style

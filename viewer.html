@@ -2,6 +2,7 @@
 <html>
 
 <head>
+	<meta name="keywords" content="camicroscope, quip" />
     <meta charset='utf-8'>
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
@@ -36,6 +37,9 @@
 		<!-- message queue css -->
 		<link href="/lib/messagequeue/messagequeue.css" rel="stylesheet" />
 
+		<!-- loading cover css -->
+		<link href="/lib/loading/loading.css" rel="stylesheet" />
+
 		<!-- popup panel css -->
 		<link href="/lib/popuppanel/popuppanel.css" rel="stylesheet" />
 		<!-- color picker css -->
@@ -46,8 +50,6 @@
 		<!-- add pure-form script -->
 		<script src="/lib/pureform/document-register-element.js"></script>
 		<script src="/lib/pureform/pure-form.js"></script>
-
-
 
 		<!-- open seadragon lib-->
 		<script src='/lib/openseadragon/openseadragon.min.js' ></script>
@@ -73,6 +75,8 @@
 		<!-- operation panel js -->
 		<script src='/lib/operationpanel/operationpanel.js'></script>
 
+		<!-- loading cover js -->
+		<script src='/lib/loading/loading.js'></script>
 
 		<!-- color picker js -->
 		<script src='/lib/colorpicker/color-picker.js'></script>
@@ -92,12 +96,13 @@
 		<script src='/core/DrawHelper.js'></script>
 
 		<!-- core (package/ext) libs -->
-		<script src='/core/DemoStore.js'></script>
+		<script src="/core/simplify.js"></script>
+		<script src='/core/Store.js'></script>
 		<script src='/core/DrawAnnots.js'></script>
 		<script src='/core/OverlayersManager.js'></script>
 		<script src='/core/RenderAnnots.js'></script>
 		<script src='/core/reqs/simpleheat.js'></script>
-    <script src='/core/ColorMap.js'></script>
+    	<script src='/core/ColorMap.js'></script>
 		<script src='/core/CaMic.js'></script>
 		<script src="/core/AnnotationCanvasOverlayer.js"></script>
 		<script src="/core/paths.js"></script>
@@ -105,9 +110,11 @@
 		<!-- init data -->
 		<!-- <script src='/js/init.js'></script> -->
 		<!-- ods js -->
-		<script src='/js/osd_viewer.js'></script>
+		<script src='/js/uicallbacks.js'></script>
+		<script src='/js/dataloaders.js'></script>
 		<!-- ods js -->
 		<script src='/simulate_data.js'></script>
+		<script src='/js/init.js'></script>
 
 	</head>
 	<body>
@@ -136,4 +143,19 @@
     	<div id='overlayers' style='z-index:600'></div>
 
 	</body>
+	<script type="text/javascript">
+		Loading.open(document.body, 'CaMicroscope is initializing...');
+		// get slide id from url
+		const url = new URL(window.location.href);
+		$D.params = getUrlVars();
+		// no slide Id error 
+		if($D.params && $D.params.slideId){
+
+			// normal initialization starts
+			document.addEventListener('DOMContentLoaded', initialize);
+			
+		}else{
+			redirect('/table.html','Slide Id is undefined. Redirecting to Flex Table.');
+		}
+	</script>
 </html>

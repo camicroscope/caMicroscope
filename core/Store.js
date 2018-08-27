@@ -80,7 +80,7 @@ class Store{
   * @param {string} [slide] - the associated marktype name, supporting regex match
   * @returns {promise} - promise which resolves with data
   **/
-  findMark(name, slide){
+  findMark(slide, name){
     var suffix = "mark/query/find"
     var url = this.base + suffix;
     var query = {}

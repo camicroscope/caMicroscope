@@ -67,7 +67,7 @@ class Draw{
     this.__resetSize();
     
     // record coord for drawing and collecting data
-    this._last = { x:0, y:0};
+    this._last = [0,0];
     
     this.data = {type:"Feature", geometry:{coordinates:[], type:"MultiPolygon"}};
 
@@ -175,20 +175,17 @@ class Draw{
     this.isDrawing = true;
     this._draw_.style.cursor = 'crosshair'
     let point = new OpenSeadragon.Point(e.clientX, e.clientY);
-    let img_point = viewer.viewport.windowToImageCoordinates(point);
-    [this._last.x, this._last.y] = [img_point.x,img_point.y]
+    let img_point = this.viewer.viewport.windowToImageCoordinates(point);
+    this._last = [img_point.x,img_point.y]
     // first feature within
-    this.__newFeature({
-      x:this._last.x,
-      y:this._last.y
-    });
+    this.__newFeature(this._last.slice());
   }
   
   drawing(e){
     if(!this.isDrawing || !this.isOn) return;
     // drawing
     let point = new OpenSeadragon.Point(e.clientX, e.clientY);
-    let img_point = viewer.viewport.windowToImageCoordinates(point);
+    let img_point = this.viewer.viewport.windowToImageCoordinates(point);
 
     //set style for ctx
     DrawHelper.setStyle(this._draw_ctx,this.style);
@@ -196,23 +193,23 @@ class Draw{
     switch (this.drawMode) {
       case 'free':
         // draw line
-        DrawHelper.drawLine(this._draw_ctx, this._last, img_point);  
-        [this._last.x, this._last.y] = [img_point.x,img_point.y]
+        DrawHelper.drawLine(this._draw_ctx, this._last, [img_point.x,img_point.y]);  
+        this._last = [img_point.x,img_point.y];
         
         // store current point
-        this._current_path_.data.points.push({x:this._last.x,y:this._last.y});
+        this._current_path_.data.points.push(this._last.slice());
         break;
 
       case 'square':
         // draw square
         DrawHelper.clearCanvas(this._draw_);
-        this._current_path_.data = DrawHelper.drawRectangle(this._draw_ctx,this._last,img_point,true);
+        this._current_path_.data = DrawHelper.drawRectangle(this._draw_ctx,this._last,[img_point.x,img_point.y],true);
         //this._current_path_.path=[s,e];
         break;
       case 'rect':
         // draw rectangle
         DrawHelper.clearCanvas(this._draw_);
-        this._current_path_.data = DrawHelper.drawRectangle(this._draw_ctx,this._last,img_point);
+        this._current_path_.data = DrawHelper.drawRectangle(this._draw_ctx,this._last,[img_point.x,img_point.y]);
         break;
       default:
         // statements_def
@@ -266,7 +263,8 @@ class Draw{
 
   }
 
-  getPaths() {
+  getPaths() { //Image [for draw on image] // Viewport
+    
     return this._draws_data_.slice(0,this._path_index);
   }
 
@@ -298,8 +296,7 @@ class Draw{
         points:[point],
         path:null,
       },
-      style:{},
-      drawMode:null
+      style:{}
     };
   }
   __isOnlyTwoSamePoints(points){
@@ -310,17 +307,24 @@ class Draw{
   }
   __endNewFeature(){
     if(this._current_path_.data.points.length < 2 || this.__isOnlyTwoSamePoints(this._current_path_.data.points)  ) return; // click on canvas
-
+    console.log(this._current_path_);
     // set style and drawing model
     this._current_path_.style.color = this.style.color;
     this._current_path_.style.lineJoin = this.style.lineJoin;
     this._current_path_.style.lineCap = this.style.lineCap;
     this._current_path_.style.lineWidth = this.style.lineWidth;
-    this._current_path_.drawMode = this.drawMode;
+    let points = this._current_path_.data.points;
+    points.push(points[0]);
     
-    // 
-    DrawHelper.draw(this._display_ctx, [this._current_path_])
-    
+    if(this.drawMode === 'free') {
+      // simplify
+      this._current_path_.data.points = simplify(points);
+    };
+    // other styles
+    DrawHelper.setStyle(this._display_ctx, this._current_path_.style);
+    // fill color
+    this._display_ctx.fillStyle = hexToRgbA(this._current_path_.style.color,0.1);
+    DrawHelper.drawPolygon(this._display_ctx, this._current_path_.data.points);
 
     // 
     if(this._path_index < this._draws_data_.length){
@@ -352,8 +356,6 @@ class Draw{
 
   }
   __redo(){
-    // clear canvas
-    // DrawHelper.clearCanvas(this._display_); 
     // redraw path
     DrawHelper.draw(this._display_ctx,[this._draws_data_[this._path_index]]);
     this._path_index++;

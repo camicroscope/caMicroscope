@@ -35,6 +35,7 @@
   overflow:hidden;
   transition:flex .5s;
   margin:0 .5rem;
+  color:#000;
 }
 .collapse{
   flex:0;

@@ -57,7 +57,7 @@ class AnnotationCanvasOverlayer{
   click(e){
     if(!this.clickCallback) return;
     const point = new OpenSeadragon.Point(e.clientX, e.clientY);
-    const img_point = viewer.viewport.windowToImageCoordinates(point);
+    const img_point = this.viewer.viewport.windowToImageCoordinates(point);
     this.data.canvasData.forEach(item => {
       const path = item.data.path;
       if(path.contains(img_point.x,img_point.y)){
@@ -79,7 +79,7 @@ class AnnotationCanvasOverlayer{
     this._canvas_hover.style.cursor = 'default';
     DrawHelper.clearCanvas(this._canvas_hover);
     const point = new OpenSeadragon.Point(e.clientX, e.clientY);
-    const img_point = viewer.viewport.windowToImageCoordinates(point);
+    const img_point = this.viewer.viewport.windowToImageCoordinates(point);
     this.data.canvasData.forEach(item =>{
       const path = item.data.path;
       if(path.contains(img_point.x,img_point.y)){
