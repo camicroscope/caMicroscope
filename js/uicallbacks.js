@@ -17,18 +17,22 @@ function goHome(data){
 }
 
 // pen draw callback
-function penDraw(data){
-	//camessage.sendMessage(`Pen: ${data.checked?'ON':'OFF'} | Mode: ${camic.draw.drawMode} `, {size:'15px',color:'white', bgColor:'MediumPurple'}, 3);
-	$UI.message.add(`Pen: ${data.checked?'ON':'OFF'}  Mode: ${$CAMIC.draw.drawMode}`);
-	if(!$CAMIC.draw){
+function draw(e){
+	let draw = e.draw || e.checked;
+	if(!$CAMIC.viewer.canvasDrawInstance){
 		alert('draw doesn\'t initialize');
 		return;
 	}
-	if(data.checked){ // draw on
-		$CAMIC.draw.drawOn();
-	}else{ // draw off
-		$CAMIC.draw.drawOff();
+	const canvasDraw = $CAMIC.viewer.canvasDrawInstance;
+	$UI.message.add(`Pen: ${draw?'ON':'OFF'}  Mode: ${canvasDraw.drawMode}`);
+	
+	if(draw){
+		canvasDraw.drawOn();
+	}else{
+		canvasDraw.drawOff();
 	}
+	$CAMIC.drawContextmenu.ctrl[0].checked = draw;
+	$UI.toolbar._sub_tools[1].querySelector('input[type=checkbox]').checked = draw;
 }
 
 // toggle magnifier callback
@@ -77,27 +81,45 @@ function convertToPopupBody(notes){
 	return rs;
 
 }
-function anno_click(point, data){
-	
-	// data
-	console.log('anno_click');
 
-	const body = convertToPopupBody(data.note);
-	console.log(data.note);
-	console.log(body);
-	$UI.annotPopup.setTitle(`id:${data.id}`);
-	$UI.annotPopup.setBody(body);
-	$UI.annotPopup.open(point);
-}
 function anno_delete(data){
-	console.log('anno_delete');
-	console.log(arguments);
+	if(!data.id) return;
+	if(!confirm(`Are you sure you want to delete this markup {ID:${data.id}}?`)) return;
+	console.log('delete');
+	$CAMIC.store.deleteMark(data.oid,$D.params.slideId)
+	.then(text=>{
+		const json = JSON.parse(text.replace(/'/g, '"'));
+		console.log(json);
+		deleteCallback(data);
+	})
+	.catch(e=>{
+		console.error(e);
+	})
+	.finally(()=>{
+		console.log('delete end');
+	});
+
+}
+function deleteCallback(data){
+	console.log(data);
+	// remove overlay
+	const index = $D.overlayers.findIndex(layer => layer.id == data.id);
+    if(index==-1) return;
+    $D.overlayers.splice(index, 1);
+    
+    // update layers Viewer
+    $UI.layersViewer.update();
+    // update layer manager
+    $CAMIC.viewer.omanager.removeOverlay(data.id);
+	// close popup panel 
+    $UI.annotPopup.close();
+   	
 }
 
-function anno_edit(data){
-	console.log('anno_edit');
-	console.log(arguments);
-}
+// function anno_edit(data){
+// 	console.log('anno_edit');
+// 	console.log(arguments);
+// }
 function sort_change(sort){
 	console.log('sort_change');
 	$CAMIC.layersManager.sort(sort);
@@ -122,25 +144,47 @@ function anno_callback(data){
 	}
 	// has Path?
 	
-	if(!$CAMIC.draw._draws_data_ || $CAMIC.draw._draws_data_.length ==0){
+	if($CAMIC.viewer.canvasDrawInstance._path_index===0){
 		alert('No Markup on Annotation.');
 		return;
 	}
-	const canvasData = $CAMIC.draw.getPaths();
-	console.log('save...');
-
 	// save
-	const id = randomId();
-	const anno = {
-		id:id,
-		name:noteData.name,
-		typeId:1,
-		typeName:'Human Annotation',
-		isShow:true,
-		note:noteData,
-		canvasData:canvasData
-	};
+	// provenance
+	Loading.open($UI.annotOptPanel.elt,'Saving Annotation...');
+	const exec_id = randomId();
+
+	const annotJson = {
+		provenance:{
+			image:{
+				slide:$D.params.slideId
+			},
+			analysis:{
+				source:'human',
+				execution_id:exec_id
+			}
+		},
+		properties:{
+			annotations:noteData
+		},
+		geometries:ImageFeaturesToVieweportFeatures($CAMIC.viewer, $CAMIC.viewer.canvasDrawInstance.getImageFeatureCollection())
+	}
 	
+	$CAMIC.store.addMark(annotJson)
+	.then(data=>{
+		console.log(data);
+		loadAnnotationById(null,exec_id);
+	})
+	.catch(e=>{
+		console.log('save failed');
+		console.log(e)
+	})
+	.finally(()=>{
+		
+	});
+	
+
+	
+	return;
 	// create overlayer
 	anno.layer = $CAMIC.layersManager.addOverlayer(
 		{
@@ -156,17 +200,18 @@ function anno_callback(data){
 	annotations.unshift(anno);
 	console.log(annotations);
 	$UI.layersViewer.update();
-
-
+}
+function saveAnnotCallback(){
 	/* reset as default */
 	// clear draw data and UI
-	$CAMIC.draw.drawOff(true);
-	$CAMIC.draw.clear();
+	$CAMIC.viewer.canvasDrawInstance.drawOff();
+	draw({checked:false});
+	$CAMIC.drawContextmenu.close();
+	$CAMIC.viewer.canvasDrawInstance.clear();
 	// uncheck pen draw icon and checkbox
 	$UI.toolbar._sub_tools[1].querySelector('[type=checkbox]').checked = false;
 	// clear form
 	$UI.annotOptPanel.clear();
-
 		
 	// close app side
 	$UI.toolbar._main_tools[0].querySelector('[type=checkbox]').checked = false;
@@ -176,9 +221,9 @@ function anno_callback(data){
 	// open layer side
 	$UI.toolbar._main_tools[1].querySelector('[type=checkbox]').checked = true;
 	$UI.layersSideMenu.open();
+	$UI.layersViewer.update();
 
 }
-
 function algo_callback(data){
 	console.log(data);
 
@@ -186,9 +231,54 @@ function algo_callback(data){
 
 // overlayer manager callback function for show or hide
 function callback(data){
+
 	data.forEach(item => {
-		item.isShow?item.layer.show():item.layer.hide();
+		if(!item.layer){
+			// load layer data
+			loadAnnotationById(item,item.id);
+			
+		}else{
+			item.layer.isShow = item.isShow;
+			$CAMIC.viewer.omanager.updateView();
+		}
+
+		
 	});
+}
+function loadAnnotationById(item,id){
+			Loading.open(document.body,'loading layers...');
+			$CAMIC.store.getMark(id)
+			.then(data =>{
+				if(!data[0]){
+					console.log(`Annotation:${id} doesn't exist.`);
+				}
+				data[0].geometries = VieweportFeaturesToImageFeatures($CAMIC.viewer, data[0].geometries);
+				if(!item){
+					item = covertToLayViewer(data[0]);
+					item.isShow = true;
+					// update lay viewer UI
+					console.log(item);
+					
+					$D.overlayers.push(item);
+					$UI.layersViewer.update();
+					saveAnnotCallback();
+				}
+				item.data = data[0];
+				item.render = anno_render;
+				// create lay and update view
+				item.layer = $CAMIC.viewer.omanager.addOverlay(item);
+				$CAMIC.viewer.omanager.updateView();
+
+				
+				
+			})
+			.catch(e=>{
+				console.error(e);
+			})
+			.finally(()=>{
+				console.log('clear');
+				Loading.close();
+			});
 }
 /* 
 	collapsible list
@@ -224,8 +314,8 @@ function saveAnalytics(){
 /* call back list END */
 /* --  -- */
 /* -- for render anno_data to canavs -- */
-function anno_render(){
-	console.log('anno_render');
-	DrawHelper.draw(this._canvas_ctx, this.data.canvasData);
+function anno_render(ctx,data){
+	DrawHelper.draw(ctx, data.geometries.features);
+	//DrawHelper.draw(this._canvas_ctx, this.data.canvasData);
 }
 /* --  -- */

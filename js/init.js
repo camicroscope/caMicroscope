@@ -27,6 +27,7 @@ function initialize(){
   // loading the overlayers data
   OverlayersLoader();
   
+
 }
 
 function loadData(){
@@ -38,7 +39,7 @@ function initCore(){
   // start inital
   // TODO zoom info and mmp
   try{
-    $CAMIC = new CaMic("main_viewer",$D.slideId, {
+    $CAMIC = new CaMic("main_viewer",$D.params.slideId, {
       draw:{
         // extend context menu btn group
         btns:[
@@ -60,15 +61,34 @@ function initCore(){
       }
     });
   }catch(error){
-    console.log(`Core Initialization Failed`);
+    Loading.close();
+    $UI.message.addError('Core Initialization Failed');
+    console.error(error);
     return;
   }
 
   $CAMIC.loadImg(function(error){
     //  image loaded 
-    error?
-    $UI.message.addError('loading image is failed')
-    :$UI.message.add('Core is loaded');
+    if(error){
+      $UI.message.addError(error)
+    }else{
+      $UI.message.add('Core is loaded');
+      $CAMIC.viewer.addHandler('canvas-lay-click',function(e){
+        if(!e.data) {
+          $UI.annotPopup.close();
+          return;
+        } 
+        const body = convertToPopupBody(e.data.properties.annotations);
+        $UI.annotPopup.data = {
+          id:e.data.provenance.analysis.execution_id,
+          oid:e.data._id.$oid,
+          annotation:e.data.properties.annotations
+        };
+        $UI.annotPopup.setTitle(`id:${e.data.provenance.analysis.execution_id}`);
+        $UI.annotPopup.setBody(body);
+        $UI.annotPopup.open(e.position);
+      });
+    }
   });
 }
 
@@ -104,7 +124,7 @@ function initUIcomponents(){
         icon:'create',// material icons' name
         title:'Draw',
         type:'check',
-        callback:penDraw
+        callback:draw
       },
       // magnifier
       {
@@ -160,12 +180,12 @@ function initUIcomponents(){
   /* annotation popup */
   $UI.annotPopup = new PopupPanel({
     footer:[      
-      { // edit   
-        title:'Edit',
-        class:'material-icons',
-        text:'notes',
-        callback:anno_edit
-      },
+      // { // edit   
+      //   title:'Edit',
+      //   class:'material-icons',
+      //   text:'notes',
+      //   callback:anno_edit
+      // },
       { // delete
         title:'Delete',
         class:'material-icons',
@@ -283,21 +303,22 @@ function initUIcomponents(){
   $UI.appsList.elt.parentNode.removeChild($UI.appsList.elt);
   $UI.appsSideMenu.addContent($UI.appsList.elt);
   $UI.message.add('Apps Panel loaded');
-
-  Loading.close();
 }
 
 function redirect(url ,text = '', sec = 5){
   let timer = sec;
   setInterval(function(){
-    console.log(`time: ${timer}`);
     if(!timer) {
       window.location.href = url;
-    };
+    }
+    
+    if(Loading.instance.parentNode){
+      Loading.text.textContent = `${text} ${timer}s.`;
+    }else{
+      Loading.open(document.body,`${text} ${timer}s.`);
+    }
     // Hint Message for clients that page is going to redirect to Flex table in 5s
-    Loading.text.textContent = `${text} ${timer}s.`;
     timer--;
-    // go to flex table
     
   }, 1000);
 }

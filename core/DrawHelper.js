@@ -51,7 +51,11 @@ caDrawHelper.prototype.drawRectangle = function(ctx, start, end, isSquare = fals
 		path:path
 	};
 }
-
+caDrawHelper.prototype.drawMultiline = function(ctx,list){
+	for (var i = 1; i < list.length; i++) {
+		this.drawLine(ctx,list[i-1],list[i]);
+	}
+}
 caDrawHelper.prototype.drawLine = function(ctx, start, end){
 	// draw line
 	ctx.beginPath();
@@ -77,48 +81,25 @@ caDrawHelper.prototype.drawPolygon = function(ctx, paths){
 	path.stroke(ctx);
 	path.fill(ctx);
 	// return points and path
-	return {
-		points:paths,
-		path:path
-	};
+	return path
 }
 caDrawHelper.prototype.draw = function(ctx, image_data){
 	for (let i = 0; i < image_data.length; i++) {
 		const polygon = image_data[i];
-
+		const style = polygon.properties.style;
 		// other styles
-		this.setStyle(ctx, polygon.style);
+		this.setStyle(ctx, style);
 		// fill color
-		ctx.fillStyle = hexToRgbA(polygon.style.color,0.1);
+		ctx.fillStyle = hexToRgbA(style.color,0.3);
 		// if there is path using path to draw
-		if(polygon.data.path){
-			polygon.data.path.strokeAndFill(ctx);
+		if(polygon.geometry.path){
+			polygon.geometry.path.strokeAndFill(ctx);
 			continue;
 		}
 
 		// if no data 
-		const points = polygon.data.points;
-		switch (polygon.drawMode) {
-			case 'free':
-				// free
-				polygon.data = this.drawPolygon(ctx, points);
-				break;
-
-			case 'square':
-				// square
-				polygon.data = this.drawRectangle(ctx, points[0],points[1],true);
-				break;
-			
-			case 'rect':
-				// rect
-				polygon.data = this.drawRectangle(ctx, points[0],points[1]);
-				break;
-			
-			default:
-				// statements_def
-				break;
-		}
-
+		const points = polygon.geometry.coordinates[0];
+		polygon.geometry.path = this.drawPolygon(ctx, points);
 	}
 
 }
@@ -134,3 +115,4 @@ caDrawHelper.prototype.clearCanvas = function(canvas){
 }
 
 var DrawHelper = new caDrawHelper();
+OpenSeadragon.DrawHelper = DrawHelper;

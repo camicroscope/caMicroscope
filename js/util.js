@@ -1,4 +1,39 @@
-
+const AnalyticsPanelContent = //'test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>'
+          "<div style='display:inline-block;'><label for='algoName'>Algorthms</label></div>"
++         "<select id='algoName'>"
++           "<option>Algo-x1-x1-y1</option>"
++           "<option>Algo-x1-x2-y1</option>"
++           "<option>Algo-x2-x1-y1</option>"
++           "<option>Algo-x2-x3-y1</option>"
++           "<option>Algo-x5-x3-y1</option>"
++           "<option>Algo-x6-x2-y1</option>"
++         "</select>"
++         "<div class='annotation'>"
++         " Analytics<br> "
++         " Operation<br> "
++         " Algo-x1-x1-y1"
++         " <br><br><br><br><br>"
++         "</div>"  
++          "<div><button id='alg_run' style='float:left;'>Run</button><button style='float:right;'>Reset</button></div>"
++         "<div class='separator'></div>"   
++          "<div ><input class='search' type='search'/><button class='search'><i class='material-icons md-24'>find_in_page</i></button></div>"      
++         "<div class='table_wrap'>"
++         "<table class='data_table'>"
++           "<tr><th>Job ID</th><th>Type</th><th>Status</th></tr>"
++           "<tr><td>11-08-00001</td><td>Algo-x1-x2-y1</td><td>Done</td></tr>"
++           "<tr><td>11-08-00002</td><td>Algo-x5-x3-y1</td><td>Done</td></tr>"
++           "<tr><td>11-08-00003</td><td>Algo-x2-x1-y1</td><td>Done</td></tr>"
++           "<tr><td>11-08-00004</td><td>Algo-x1-x1-y1</td><td>Done</td></tr>"
++           "<tr><td>11-08-00005</td><td>Algo-x6-x2-y1</td><td>Done</td></tr>"
++           "<tr><td>11-08-00006</td><td>Algo-x1-x1-y1</td><td>Done</td></tr>"
++           "<tr><td>11-08-00007</td><td>Algo-61-x2-y1</td><td>Done</td></tr>"
++           "<tr><td>11-08-00001</td><td>Algo-x1-x2-y1</td><td>Done</td></tr>"
++           "<tr><td>11-08-00002</td><td>Algo-x5-x3-y1</td><td>Done</td></tr>"
++           "<tr><td>11-08-00003</td><td>Algo-x2-x1-y1</td><td>Done</td></tr>"
++           "<tr><td>11-08-00004</td><td>Algo-x1-x1-y1</td><td>Done</td></tr>"
++         "</table>"
++         "</div>"
+;
 
 
 // the robust solution that mimics jQuery's functionality
@@ -77,5 +112,61 @@ function getUrlVars() {
     vars[key] = value;
   });
   return vars;
+}
+
+function ImageFeaturesToVieweportFeatures(viewer, geometries){
+  const rs = {
+    type:'FeatureCollection',
+    features:[]
+  }
+  for(let i = 0;i < geometries.features.length;i++){
+    const feature = geometries.features[i];
+    rs.features.push((covertToViewportFeature(viewer,feature)))
+  }
+  return rs;
+}
+
+function VieweportFeaturesToImageFeatures(viewer, geometries){
+  geometries.features = geometries.features.map(feature =>{
+    feature.geometry.coordinates[0] = feature.geometry.coordinates[0].map(point => {
+      v_point = viewer.viewport.viewportToImageCoordinates(point[0],point[1]);
+      return [v_point.x,v_point.y];
+    })
+    return feature;
+  });
+  return geometries;
+}
+
+function covertToViewportFeature(viewer, og){
+  feature = {
+    type:'Feature',
+    properties:{
+      style:{}
+    },
+    geometry:{
+      type:"Polygon",
+      coordinates:[[]]
+    }
+  
+  };
+  const points = og.geometry.coordinates[0];
+  const path = og.geometry.path;
+  for(let i = 0; i < points.length; i++){
+    //feature.geometry.coordinates[0].push(points[i].slice());
+    feature.geometry.coordinates[0] = og.geometry.coordinates[0].map(point => {
+      v_point = viewer.viewport.imageToViewportCoordinates(point[0],point[1]);
+      return [v_point.x,v_point.y];
+    });
+  }
+  extend(feature.properties.style,og.properties.style); 
+  return feature;
+}
+
+function covertToLayViewer(item){
+  const typeName = item.provenance.analysis.source;
+  const id = item.provenance.analysis.execution_id;
+  const name = item.properties.annotations.name;
+  if(!typeIds[typeName]) typeIds[typeName] = randomId(); 
+  return {id:id,name:name,typeId:typeIds[typeName],typeName:typeName};
 }
 

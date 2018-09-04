@@ -9,7 +9,7 @@ class CaMic{
   * @property draw - the drawing layer controls
   * @property layers - the layer controller
   */
-  constructor(divId,slideId, options){
+  constructor(divId, slideId, options){
     // initalize viewer
     this.__default_opt = {
       id: divId,
@@ -28,7 +28,6 @@ class CaMic{
       // minZoomLevel:.4,
       constrainDuringPan: true
     }
-
     extend(this.__default_opt, options);
 
     this.viewer = new OpenSeadragon.Viewer(this.__default_opt);
@@ -36,31 +35,57 @@ class CaMic{
     //this.__draw;
     //this.__hover;
 
-
-    this.layersManager; // = new Layer(this.viewer);
-    this.draw;// = new Draw(this.viewer);
-
     this.slideId = slideId;
     // initalize store
     this.store = new Store();
     // load image
     // set overlay thing
-
-
-
-    this.viewer.addHandler('open',this.init.bind(this));
-
-
+    this.viewer.addOnceHandler('open',this.init.bind(this));
   }
-  
   init(){
-    this.draw = new Draw(this.viewer,{
-      btns:this.__default_opt.draw.btns
-    });
-
-    this.layersManager = new OverlayersManager(this.viewer);
-    this.viewer.removeHandler('open', this.init.bind(this));
     this.viewer.controls.bottomright.style.zIndex = 600;
+    
+    this.viewer.addOnceHandler('tile-loaded', function(){
+      $UI.message.add('Tile loaded')
+      Loading.close();
+    });
+    
+    // create draw pulgin
+    this.canvasDraw();
+    this.overlayers({});
+    // create style context menu for draw
+    this.drawContextmenu = new StyleContextMenu(
+      this.viewer.container, 
+      {
+        btns:this.__default_opt.draw.btns
+      }
+    );
+
+    // add event to hook up 
+    this.drawContextmenu.addHandler('style-changed',function(e){
+      this.viewer.canvasDrawInstance.style = e.style;
+    }.bind(this));
+
+    this.drawContextmenu.addHandler('undo',function(e){
+      this.viewer.canvasDrawInstance.undo();
+    }.bind(this));
+
+    this.drawContextmenu.addHandler('redo',function(e){
+      this.viewer.canvasDrawInstance.redo();
+    }.bind(this));
+
+    this.drawContextmenu.addHandler('clear',function(e){
+      if(this.viewer.canvasDrawInstance._draws_data_.length == 0) return;
+      if(confirm("Do you want to clear all markups?")) this.viewer.canvasDrawInstance.clear();
+    }.bind(this));
+
+    this.drawContextmenu.addHandler('draw-mode-changed',function(e){
+      this.viewer.canvasDrawInstance.drawMode = e.mode;
+    }.bind(this));
+
+    this.drawContextmenu.addHandler('draw',draw);
+
+
     // change navigator style
     const nav = this.viewer.element.querySelector('.navigator');
     nav.style.backgroundColor = '#365f9c';
@@ -81,6 +106,52 @@ class CaMic{
         'step':step
       }
     });
+  // var overlay2 = this.viewer.canvasOverlay({
+  //       onRedraw:function() {  
+  //           //   console.log('onRedraw');
+  //             let x = 500;
+  //             let y = 0;
+              
+  //           const width = 100;
+  //           //const ctx = overlay._ctx;
+  //           //console.log(ctx === this._ctx);
+  //           for(let i =0;i<1000;i++){
+  //             this._ctx.beginPath();
+  //             this._ctx.strokeStyle = "blue";
+  //             this._ctx.lineWidth = 10;
+  //             //console.log(x,y,width,width);
+  //             this._ctx.rect(x,y,width,width);
+  //             this._ctx.stroke();
+  //             this._ctx.closePath();
+  //             x+=width;
+  //             y+=width;
+
+  //           }
+
+  //       }
+  //   });
+  // var overlay = this.viewer.canvasOverlay({
+  //       onRedraw:function() {  
+  //           //   console.log('onRedraw');
+  //             let x = 0;
+  //             let y = 0;
+              
+  //           const width = 100;
+  //           //const ctx = overlay._ctx;
+  //           //console.log(ctx === this._ctx);
+  //           for(let i =0;i<1000;i++){
+  //             this._ctx.beginPath();
+  //             this._ctx.strokeStyle = "red";
+  //             this._ctx.lineWidth = 10;
+  //             //console.log(x,y,width,width);
+  //             this._ctx.rect(x,y,width,width);
+  //             this._ctx.stroke();
+  //             this._ctx.closePath();
+  //             x+=width;
+  //             y+=width;
+  //           }
+  //       }
+  //   });
 
   }
   /**
@@ -97,22 +168,35 @@ class CaMic{
     // loads current image
     this.store.findSlide(this.slideId)
       .then((x)=>{
-        this.viewer.open('/data_dzi/CMU-1-Small-Region/CMU-1-Small-Region.dzi');
-        //this.viewer.open(x[0].location);
+        if(!x || !OpenSeadragon.isArray(x) || !x.length || !x[0].location){
+          redirect('/table.html',`Can't find the slide information`);
+          return;
+        }
+        this.viewer.open(x[0].location);
         // set scalebar
         this.scalebar(x[0].mpp)
         var imagingHelper = new OpenSeadragonImaging.ImagingHelper({
-        viewer: this.viewer
+          viewer: this.viewer
         });
         imagingHelper.setMaxZoom(1);
         if(func && typeof func === 'function') func.call(null,null);
-        
+        Loading.text.textContent = `loading slide's tiles...`;
       })
       .catch(e=>{
+        Loading.close();
+        $UI.message.addError('loadImg Error');
+
         console.log('error');
         console.log(e);
-        if(func && typeof func === 'function') func.call(null,e);
+        if(func && typeof func === 'function') func.call(null,e.message);
       })
+  }
+  canvasDraw(){
+    this.viewer.canvasDraw();
+  }
+
+  overlayers(){
+    this.viewer.overlaysManager();
   }
   /**
   * Set up a scalebar on the image

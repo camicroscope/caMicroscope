@@ -140,7 +140,36 @@ class Store{
             mode: "cors"
         }).then((x)=>x.json())
   }
-
+  addMark(json){
+    var suffix = "mark/submit/json"
+    var url = this.base + suffix;
+    // api key for bindaas?
+    return fetch(url, {
+            method:"POST",
+            credentials: "same-origin",
+            mode: "cors",
+            headers: {
+            "Content-Type": "application/json; charset=utf-8",
+            // "Content-Type": "application/x-www-form-urlencoded",
+            },
+            body:JSON.stringify(json)
+        }).then(
+        (x)=>x.json()
+        )
+  }
+  deleteMark(id,slide){
+    var suffix = "mark/delete/deleteMark"
+    var url = this.base + suffix;
+    var query = {
+      id:id,
+      slide:slide
+    }
+    return fetch(url + "?" + objToParamStr(query), {
+            method:"DELETE",
+            credentials: "same-origin",
+            mode: "cors"
+        }).then(x=>x.text())
+  }
   /**
   * find marktypes given slide and name
   * @param {string} [name] - the associated slide name, supporting regex match
@@ -210,12 +239,12 @@ class Store{
   * @param {string} [location] - the slide location, supporting regex match
   * @returns {promise} - promise which resolves with data
   **/
-  findSlide(name, location){
+  findSlide(slide, location){
     var suffix = "Slide/query/find"
     var url = this.base + suffix;
     var query = {}
-    if (name){
-      query.name = name
+    if (slide){
+      query.slide = slide
     }
     if (location){
       query.location = location
