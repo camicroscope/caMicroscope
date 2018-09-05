@@ -41,7 +41,7 @@
         this._div.style.width = '100%';
         this._div.style.height = '100%';
         this._div.style.display = 'none';
-        this._div.style.zIndex =  options.zIndex || 400;
+        this._div.style.zIndex =  options.zIndex || 100;
         this._viewer.canvas.appendChild(this._div);
         // create display_cancavs
         this._display_ = document.createElement('canvas');

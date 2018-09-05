@@ -5,6 +5,10 @@ let $CAMIC = null;
 const $UI = new Map();
 
 const $D = {
+  pages:{
+    home:'/table.html',
+    table:'/table.html'
+  },
   params:null, // parameter from url - slide Id and status in it (object).
   overlayers:null, // array for each layers
   templates:null // json schema for prue-form
@@ -67,11 +71,13 @@ function initCore(){
     return;
   }
 
-  $CAMIC.loadImg(function(error){
+  $CAMIC.loadImg(function(e){
     //  image loaded 
-    if(error){
-      $UI.message.addError(error)
+    if(e.hasError){
+      $UI.message.addError(e.message)
     }else{
+      $D.params.data = e;
+      // popup panel
       $UI.message.add('Core is loaded');
       $CAMIC.viewer.addHandler('canvas-lay-click',function(e){
         if(!e.data) {
@@ -88,6 +94,14 @@ function initCore(){
         $UI.annotPopup.setBody(body);
         $UI.annotPopup.open(e.position);
       });
+
+      // spyglass
+      $UI.spyglass = new Spyglass({
+        targetViewer:$CAMIC.viewer,
+        imgsrc:$D.params.data.location
+      });
+      
+      
     }
   });
 }

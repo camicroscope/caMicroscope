@@ -91,7 +91,7 @@
         this._div.style.width = '100%';
         this._div.style.height = '100%';
         this._div.style.display = 'none';
-        this._div.style.zIndex =  options.zIndex || 500;
+        this._div.style.zIndex =  options.zIndex || 200;
         this._viewer.canvas.appendChild(this._div);
         // draw canvas
         this._draw_ = document.createElement('canvas');

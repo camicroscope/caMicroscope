@@ -46,6 +46,8 @@
 		<link href="/lib/colorpicker/color-picker.css" rel="stylesheet" />
 		<!-- add pure-form css -->
 		<link href="/lib/pureform/pure-form.css" rel="stylesheet" />
+		<!-- add spyglass css -->
+		<link href="/lib/spyglass/spyglass.css" rel="stylesheet" />
 
 		<!-- add pure-form script -->
 		<script src="/lib/pureform/document-register-element.js"></script>
@@ -91,6 +93,8 @@
 		<script src="/lib/sortable/Sortable.js"></script>
 		
 
+		<!-- spyglass -->
+		<script src="/lib/spyglass/spyglass.js"></script>
 		<!-- core (package/ext) libs -->
 		<script src='/core/DrawHelper.js'></script>
 		<script src="/core/simplify.js"></script>
@@ -147,7 +151,7 @@
 			document.addEventListener('DOMContentLoaded', initialize);
 			
 		}else{
-			redirect('/table.html','Slide Id is undefined. Redirecting to Flex Table.');
+			redirect($D.pages.table,'Slide Id is undefined. Redirecting to Flex Table.');
 		}
 	</script>
 </html>

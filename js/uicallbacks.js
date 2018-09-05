@@ -12,8 +12,7 @@ function toggleSideMenu(opt){
 
 // go home callback
 function goHome(data){
-	alert('Go Home....');
-	console.log(data);
+	redirect($D.pages.home,`GO Home Page`, 3);
 }
 
 // pen draw callback
@@ -25,12 +24,19 @@ function draw(e){
 	}
 	const canvasDraw = $CAMIC.viewer.canvasDrawInstance;
 	$UI.message.add(`Pen: ${draw?'ON':'OFF'}  Mode: ${canvasDraw.drawMode}`);
-	
 	if(draw){
 		canvasDraw.drawOn();
 	}else{
 		canvasDraw.drawOff();
 	}
+	//
+	if(draw && this.clientX && this.clientY){
+		$CAMIC.drawContextmenu.open({x:this.clientX,y:this.clientY});
+	}else{
+		$CAMIC.drawContextmenu.close();
+	}
+	//
+
 	$CAMIC.drawContextmenu.ctrl[0].checked = draw;
 	$UI.toolbar._sub_tools[1].querySelector('input[type=checkbox]').checked = draw;
 }
@@ -39,7 +45,11 @@ function draw(e){
 function toggleMagnifier(data){
 	//camessage.sendMessage(`Magnifier ${data.checked?'ON':'OFF'}`, {size:'15px',color:'white', bgColor:'blue'}, 3);
 	$UI.message.add(`Magnifier ${data.checked?'ON':'OFF'}`);
-	console.log(data);
+	if(data.checked){
+		$UI.spyglass.open(this.clientX,this.clientY);
+	}else{
+		$UI.spyglass.close();
+	}
 }
 
 

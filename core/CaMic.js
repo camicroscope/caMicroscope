@@ -106,53 +106,6 @@ class CaMic{
         'step':step
       }
     });
-  // var overlay2 = this.viewer.canvasOverlay({
-  //       onRedraw:function() {  
-  //           //   console.log('onRedraw');
-  //             let x = 500;
-  //             let y = 0;
-              
-  //           const width = 100;
-  //           //const ctx = overlay._ctx;
-  //           //console.log(ctx === this._ctx);
-  //           for(let i =0;i<1000;i++){
-  //             this._ctx.beginPath();
-  //             this._ctx.strokeStyle = "blue";
-  //             this._ctx.lineWidth = 10;
-  //             //console.log(x,y,width,width);
-  //             this._ctx.rect(x,y,width,width);
-  //             this._ctx.stroke();
-  //             this._ctx.closePath();
-  //             x+=width;
-  //             y+=width;
-
-  //           }
-
-  //       }
-  //   });
-  // var overlay = this.viewer.canvasOverlay({
-  //       onRedraw:function() {  
-  //           //   console.log('onRedraw');
-  //             let x = 0;
-  //             let y = 0;
-              
-  //           const width = 100;
-  //           //const ctx = overlay._ctx;
-  //           //console.log(ctx === this._ctx);
-  //           for(let i =0;i<1000;i++){
-  //             this._ctx.beginPath();
-  //             this._ctx.strokeStyle = "red";
-  //             this._ctx.lineWidth = 10;
-  //             //console.log(x,y,width,width);
-  //             this._ctx.rect(x,y,width,width);
-  //             this._ctx.stroke();
-  //             this._ctx.closePath();
-  //             x+=width;
-  //             y+=width;
-  //           }
-  //       }
-  //   });
-
   }
   /**
   * Change which image is staged, used loadImg to load it.
@@ -169,9 +122,10 @@ class CaMic{
     this.store.findSlide(this.slideId)
       .then((x)=>{
         if(!x || !OpenSeadragon.isArray(x) || !x.length || !x[0].location){
-          redirect('/table.html',`Can't find the slide information`);
+          redirect($D.pages.table,`Can't find the slide information`);
           return;
         }
+
         this.viewer.open(x[0].location);
         // set scalebar
         this.scalebar(x[0].mpp)
@@ -179,16 +133,16 @@ class CaMic{
           viewer: this.viewer
         });
         imagingHelper.setMaxZoom(1);
-        if(func && typeof func === 'function') func.call(null,null);
+        if(func && typeof func === 'function') func.call(null,x[0]);
         Loading.text.textContent = `loading slide's tiles...`;
+        //func.call(null,x[0]);
       })
       .catch(e=>{
         Loading.close();
         $UI.message.addError('loadImg Error');
+        console.error(e);
 
-        console.log('error');
-        console.log(e);
-        if(func && typeof func === 'function') func.call(null,e.message);
+        if(func && typeof func === 'function') func.call(null,{hasError:true,message:e});
       })
   }
   canvasDraw(){
