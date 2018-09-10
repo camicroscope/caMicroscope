@@ -1,0 +1,37 @@
+.cazoomctrl .zoom {
+  color: rgba(255,255,255,0.7);
+  background:#38609A; 
+}
+
+.cazoomctrl .zoom:hover {
+  background:#6397D5;
+  color: rgba(255,255,255,1);
+  cursor:pointer;
+}
+
+.cazoomctrl input[type=range] {
+    -webkit-flex: 1;
+    /* Safari 6.1+ */
+    -ms-flex: 1;
+    /* IE 10 */
+    flex: 1;
+    width:1.5rem;
+    height: 2.4rem;
+}
+.cazoomctrl input[type=range]:hover {
+  cursor:pointer;
+  opacity: 1;
+}
+.cazoomctrl div.idx {
+  color: rgba(255,255,255,1);
+  min-width: 4.8rem;
+  height: 2.4rem;
+}
+.cazoomctrl div.idx div.txt{
+  position: relative;
+  float: left;
+  top: 50%;
+  left: 50%;
+  font-size:1rem;
+  transform: translate(-50%, -50%);
+}

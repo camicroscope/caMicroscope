@@ -61,7 +61,7 @@ function imageDownload(data){
 
 // share url
 function shareURL(data){
-	const URL =StatesHelper.getCurrentStatesURL();
+	const URL = StatesHelper.getCurrentStatesURL();
 	window.prompt('Share this link', URL);
 	console.log(URL);
 }
@@ -219,7 +219,6 @@ function algo_callback(data){
 
 // overlayer manager callback function for show or hide
 function callback(data){
-	console.log(data);
 	data.forEach(item => {
 		if(!item.layer){
 			// load layer data

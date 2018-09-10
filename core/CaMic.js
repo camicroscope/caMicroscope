@@ -22,9 +22,10 @@ class CaMic{
       navigatorAutoFade: false,
       navigatorPosition: "BOTTOM_RIGHT",
       zoomPerClick: 1,
-      animationTime: 0.2,
+      animationTime: 0.1,
       maxZoomPixelRatio: 1,
       visibilityRatio: 1,
+      springStiffness:0.0001,
       // maxZoomLevel:4,
       // minZoomLevel:.4,
       
@@ -102,19 +103,24 @@ class CaMic{
     nav.style.opacity = 1;
 
     // zoom control
-    const zmax = this.viewer.viewport.getMaxZoom();
-    const zmin = this.viewer.viewport.getMinZoom();
-    const step = (zmax - zmin)/100;
+    // const zmax = this.viewer.viewport.getMaxZoom();
+    // const zmin = this.viewer.viewport.getMinZoom();
+    // const step = (zmax - zmin)/100;
 
-    this.zctrl = new CaZoomControl({
-      'id':'zctrl',
-      'viewer':this.viewer,
-      'zoom':{
-        'max':zmax,
-        'min':zmin,
-        'cur':zmax,
-        'step':step
-      }
+    // this.zctrl = new CaZoomControl({
+    //   'id':'zctrl',
+    //   'viewer':this.viewer,
+    //   'zoom':{
+    //     'max':zmax,
+    //     'min':zmin,
+    //     'cur':zmax,
+    //     'step':step
+    //   }
+    // });
+    
+    this.viewer.cazoomctrl({
+      position:"BOTTOM_RIGHT",
+      autoFade: false
     });
   }
   /**
