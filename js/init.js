@@ -42,28 +42,34 @@ function loadData(){
 function initCore(){
   // start inital
   // TODO zoom info and mmp
+  const opt = {
+    draw:{
+      // extend context menu btn group
+      btns:[
+        { // annotation   
+          type:'btn',
+          title:'Annotation',
+          class:'material-icons',
+          text:'description',
+          callback:saveAnnotation
+        },
+        { // analytics
+          type:'btn',
+          title:'Analytics',
+          class:'material-icons',
+          text:'settings_backup_restore',
+          callback:saveAnalytics
+        }
+      ]
+    }
+  }
+  // set states if exist
+  if($D.params.states){
+    opt.states = $D.params.states;
+  }
+  
   try{
-    $CAMIC = new CaMic("main_viewer",$D.params.slideId, {
-      draw:{
-        // extend context menu btn group
-        btns:[
-          { // annotation   
-            type:'btn',
-            title:'Annotation',
-            class:'material-icons',
-            text:'description',
-            callback:saveAnnotation
-          },
-          { // analytics
-            type:'btn',
-            title:'Analytics',
-            class:'material-icons',
-            text:'settings_backup_restore',
-            callback:saveAnalytics
-          }
-        ]
-      }
-    });
+    $CAMIC = new CaMic("main_viewer",$D.params.slideId, opt);
   }catch(error){
     Loading.close();
     $UI.message.addError('Core Initialization Failed');
@@ -99,9 +105,7 @@ function initCore(){
       $UI.spyglass = new Spyglass({
         targetViewer:$CAMIC.viewer,
         imgsrc:$D.params.data.location
-      });
-      
-      
+      });      
     }
   });
 }
@@ -142,21 +146,21 @@ function initUIcomponents(){
       },
       // magnifier
       {
-        icon:'image_search',
+        icon:'search',
         title:'Magnifier',
         type:'check',
         value:'magn',
         checked:true,
         callback:toggleMagnifier
       },
-      // download
-      {
-        icon:'file_download',
-        title:'Download Image',
-        type:'btn',
-        value:'download',
-        callback:imageDownload
-      },
+      // download TODO
+      // {
+      //   icon:'file_download',
+      //   title:'Download Image',
+      //   type:'btn',
+      //   value:'download',
+      //   callback:imageDownload
+      // },
       // share
       {
         icon:'share',
@@ -228,6 +232,8 @@ function initUIcomponents(){
 
       // create UI and set data
       $UI.layersViewer = new LayersViewer({id:'overlayers',data:$D.overlayers,sortChange:sort_change,callback:callback });
+
+      callback($D.overlayers.filter(lay => lay.isShow));
 
       $UI.layersViewer.elt.parentNode.removeChild($UI.layersViewer.elt);
 

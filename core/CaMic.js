@@ -14,18 +14,20 @@ class CaMic{
     this.__default_opt = {
       id: divId,
       prefixUrl: "images/",
-
+      //defaultZoomLevel:2.8793774319066148,
+      constrainDuringPan:true,
       // -- navigator setting
       showNavigationControl:false,
       showNavigator: true,
       navigatorAutoFade: false,
       navigatorPosition: "BOTTOM_RIGHT",
       zoomPerClick: 1,
-      animationTime: 0.75,
-      // maxZoomPixelRatio: 1,
-      // visibilityRatio: 1,
+      animationTime: 0.2,
+      maxZoomPixelRatio: 1,
+      visibilityRatio: 1,
       // maxZoomLevel:4,
       // minZoomLevel:.4,
+      
       constrainDuringPan: true
     }
     extend(this.__default_opt, options);
@@ -46,9 +48,17 @@ class CaMic{
     this.viewer.controls.bottomright.style.zIndex = 600;
     
     this.viewer.addOnceHandler('tile-loaded', function(){
-      $UI.message.add('Tile loaded')
+      $UI.message.add('Tile loaded');
       Loading.close();
-    });
+      // set zoom and pan
+      if(this.__default_opt.states){
+        const states = this.__default_opt.states;
+        var pt = new OpenSeadragon.Point(states.x, states.y);
+        $CAMIC.viewer.viewport.zoomTo(states.z, pt);
+        $CAMIC.viewer.viewport.panTo(pt, true);
+        // TODO update zoom ctrl
+      }
+    }.bind(this));
     
     // create draw pulgin
     this.canvasDraw();

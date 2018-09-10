@@ -1,21 +1,6 @@
 const AnalyticsPanelContent = //'test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>'
-          "<div style='display:inline-block;'><label for='algoName'>Algorthms</label></div>"
-+         "<select id='algoName'>"
-+           "<option>Algo-x1-x1-y1</option>"
-+           "<option>Algo-x1-x2-y1</option>"
-+           "<option>Algo-x2-x1-y1</option>"
-+           "<option>Algo-x2-x3-y1</option>"
-+           "<option>Algo-x5-x3-y1</option>"
-+           "<option>Algo-x6-x2-y1</option>"
-+         "</select>"
-+         "<div class='annotation'>"
-+         " Analytics<br> "
-+         " Operation<br> "
-+         " Algo-x1-x1-y1"
-+         " <br><br><br><br><br>"
-+         "</div>"  
-+          "<div><button id='alg_run' style='float:left;'>Run</button><button style='float:right;'>Reset</button></div>"
-+         "<div class='separator'></div>"   
+
+         "<div class='separator'></div>"   
 +          "<div ><input class='search' type='search'/><button class='search'><i class='material-icons md-24'>find_in_page</i></button></div>"      
 +         "<div class='table_wrap'>"
 +         "<table class='data_table'>"
@@ -152,7 +137,6 @@ function covertToViewportFeature(viewer, og){
   const points = og.geometry.coordinates[0];
   const path = og.geometry.path;
   for(let i = 0; i < points.length; i++){
-    //feature.geometry.coordinates[0].push(points[i].slice());
     feature.geometry.coordinates[0] = og.geometry.coordinates[0].map(point => {
       v_point = viewer.viewport.imageToViewportCoordinates(point[0],point[1]);
       return [v_point.x,v_point.y];
@@ -162,11 +146,12 @@ function covertToViewportFeature(viewer, og){
   return feature;
 }
 
-function covertToLayViewer(item){
+function covertToLayViewer(item,l){
   const typeName = item.provenance.analysis.source;
   const id = item.provenance.analysis.execution_id;
   const name = item.properties.annotations.name;
-  if(!typeIds[typeName]) typeIds[typeName] = randomId(); 
-  return {id:id,name:name,typeId:typeIds[typeName],typeName:typeName};
+  const isShow = l&&l.includes(id)?true:false;
+  if(!typeIds[typeName]) typeIds[typeName] = randomId();
+  return {id:id,name:name,typeId:typeIds[typeName],typeName:typeName,isShow:isShow};
 }
 

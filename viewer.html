@@ -9,9 +9,7 @@
 
     <title>caMicroscope</title>
 		<!-- google material icons css sheet -->
-		<link href='https://fonts.googleapis.com/icon?family=Material+Icons' rel='stylesheet'/>
-		<!-- customize material icons css -->
-		<link href='/css/icons.css' rel='stylesheet'/>
+		<link href='/iconfont/material-icons.css' rel='stylesheet'/>
 		<!-- css sheet -->
 		<link rel='stylesheet' type='text/css' media='all' href='/css/style.css'/>
 
@@ -91,10 +89,12 @@
 		<script src='/lib/messagequeue/messagequeue.js'></script>
 
 		<script src="/lib/sortable/Sortable.js"></script>
-		
-
+	
 		<!-- spyglass -->
 		<script src="/lib/spyglass/spyglass.js"></script>
+
+		<!-- State Helper -->
+		<script src="/lib/StatesHelper.js"></script>
 		<!-- core (package/ext) libs -->
 		<script src='/core/DrawHelper.js'></script>
 		<script src="/core/simplify.js"></script>
@@ -104,7 +104,6 @@
 		<script src="/core/openseadragon-canvas-draw-overlay.js"></script>
 		<script src="/core/openseadragon-overlays-manage.js"></script>
 		
-
 		<!-- init data -->
 		<!-- <script src='/js/init.js'></script> -->
 		<!-- ods js -->
@@ -115,7 +114,7 @@
 	</head>
 	<body>
 		<!-- message-->
-		<div id = 'cames' style='z-index:2'></div>
+		<div id = 'cames' style='z-index:600'></div>
 
 		<!-- toolbar -->
 		<div id = 'ca_tools'></div>
@@ -144,7 +143,8 @@
 		// get slide id from url
 		const url = new URL(window.location.href);
 		$D.params = getUrlVars();
-		// no slide Id error 
+		
+		// no slide Id error
 		if($D.params && $D.params.slideId){
 
 			// normal initialization starts
@@ -152,6 +152,11 @@
 			
 		}else{
 			redirect($D.pages.table,'Slide Id is undefined. Redirecting to Flex Table.');
+		}
+
+		// get states parameters
+		if($D.params.states){
+			$D.params.states = StatesHelper.decodeStates($D.params.states);
 		}
 	</script>
 </html>

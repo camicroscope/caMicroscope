@@ -61,8 +61,9 @@ function imageDownload(data){
 
 // share url
 function shareURL(data){
-	window.prompt('Share this link', 'http://localhost/camicroscope/osdCamicroscope.php?tissueId=TEST&state=eyJwb3NpdGlvbiI6eyJ4IjowLjUsInkiOjAuNTk2OTIxNzMzMTEwMDQyNywieiI6MC41NzcxMDk2MjYwOTczNDM0fSwiYWxnIjpbImh1bWFubWFyayJdfQ%3D%3D');
-	console.log(data);
+	const URL =StatesHelper.getCurrentStatesURL();
+	window.prompt('Share this link', URL);
+	console.log(URL);
 }
 // main menu changed
 function mainMenuChange(data){
@@ -126,10 +127,6 @@ function deleteCallback(data){
    	
 }
 
-// function anno_edit(data){
-// 	console.log('anno_edit');
-// 	console.log(arguments);
-// }
 function sort_change(sort){
 	console.log('sort_change');
 	$CAMIC.layersManager.sort(sort);
@@ -191,25 +188,6 @@ function anno_callback(data){
 	.finally(()=>{
 		
 	});
-	
-
-	
-	return;
-	// create overlayer
-	anno.layer = $CAMIC.layersManager.addOverlayer(
-		{
-			id:id,
-			data:anno,
-			render:anno_render,
-			clickable:true,
-			isHighlight:true,
-			clickCallback:anno_click
-		},true);
-	// save layer data
-	// "typeId":1, "typeName": "Human Annotation"
-	annotations.unshift(anno);
-	console.log(annotations);
-	$UI.layersViewer.update();
 }
 function saveAnnotCallback(){
 	/* reset as default */
@@ -241,7 +219,7 @@ function algo_callback(data){
 
 // overlayer manager callback function for show or hide
 function callback(data){
-
+	console.log(data);
 	data.forEach(item => {
 		if(!item.layer){
 			// load layer data
@@ -264,8 +242,9 @@ function loadAnnotationById(item,id){
 				}
 				data[0].geometries = VieweportFeaturesToImageFeatures($CAMIC.viewer, data[0].geometries);
 				if(!item){
+					data[0].isShow = item.isShow;
 					item = covertToLayViewer(data[0]);
-					item.isShow = true;
+					//item.isShow = true;
 					// update lay viewer UI
 					console.log(item);
 					
