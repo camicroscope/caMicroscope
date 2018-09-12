@@ -34,16 +34,16 @@
 		message1.add('info message', 5000);
 		
 		// case 2: 
-		const message2 = new MessageQueue({});
+		const message2 = new MessageQueue({position:'top-right'});
 		message2.addWarning('warning message', 5000);
 
 		// case 3: 
-		const message3 = new MessageQueue({});
+		const message3 = new MessageQueue({position:'bottom-left'});
 		message3.addError('error message', 5000);
 
 		// case 4: 
-		const message4 = new MessageQueue({});
-		message4.add('info message', 5000);
+		const message4 = new MessageQueue({position:'bottom-right'});
+		message4.add('message', 5000);
 
 
 		// Never remove this code, this is a flag to told us jsdom loads the anysubresources sucha as scripts, stylesheets or images.

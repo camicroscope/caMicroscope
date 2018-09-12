@@ -4,7 +4,7 @@ const { JSDOM } = jsdom;
 
 // jsdom instance
 let dom;
-
+let mList;
 // read test page
  JSDOM.fromURL(
     'http://127.0.0.1:8080/test/ui/messagequeue-test-cases.html', 
@@ -19,12 +19,7 @@ let dom;
 		if(jsdom.window.document.getElementById('isLoad').checked){
 
 			clearInterval(checkLoaded);
-			const list = jsdom.window.document.querySelectorAll('.bullet-container');
-			console.log(list);
-			list.forEach(div=> console.log(div));
-			//console.count('start running test cases');
-			// run test cases if page is ready.
-			//console.log(); 
+			mList = jsdom.window.document.querySelectorAll('.bullet-container');
 			run();
 		}
 	},100);
@@ -35,41 +30,31 @@ let dom;
 // 
 describe('Message Queue Component', function () {
 	describe('Initialize', function () {
+
 		// case1: initialize top-left top-right bottom-left bottom-right
-		it('position:top-left(default)', function () { 
-			//const case1 = dom.window.document.getElementById('case1');
-			//assert.equal(case1.textContent,'Hello World');
-
+		it('position:top-left(default)', function () {
+			assert.equal(mList[0].style.top,'0px');
+			assert.equal(mList[0].style.left,'0px');
+			assert.equal(mList[0].querySelector('.bullet').textContent,'info message');
+			
 		});
-		it('position:top-right', function () { 
-			//const case1 = dom.window.document.getElementById('case1');
-			//assert.equal(case1.textContent,'Hello World');
 
+		it('position:top-right', function () {
+			assert.equal(mList[1].style.top,'0px');
+			assert.equal(mList[1].style.right,'0px');
+			assert.equal(mList[1].querySelector('.bullet').textContent,'warning message');
 		});
-		it('position:bottom-left', function () { 
-			//const case1 = dom.window.document.getElementById('case1');
-			//assert.equal(case1.textContent,'Hello World');
 
+		it('position:bottom-left', function () {
+			assert.equal(mList[2].style.bottom, '0px');
+			assert.equal(mList[2].style.left, '0px');
+			assert.equal(mList[2].querySelector('.bullet').textContent,'error message');
 		});
-		it('position:bottom-right', function () { 
-			//const case1 = dom.window.document.getElementById('case1');
-			//assert.equal(case1.textContent,'Hello World');
 
+		it('position:bottom-right', function () {
+			assert.equal(mList[3].style.bottom, '0px');
+			assert.equal(mList[3].style.right, '0px');
+			assert.equal(mList[3].querySelector('.bullet').textContent,'message');
 		});
-	});
-
-	// case 2: change text
-	it('Change Text', function () { 
-		const case2 = dom.window.document.getElementById('case2');
-		assert.equal(case2.innerHTML,'Change Text');
-	});
-
-	// case 3: change style
-	it('Change Style', function () {
-		const case3 = dom.window.document.getElementById('case3');
-		assert.equal(case3.innerHTML,'case3');
-		assert.equal(case3.style.color,'rgb(9, 2, 35)');
-		assert.equal(case3.style.fontSize,'2rem');
-		assert.equal(case3.style.backgroundColor,'rgb(193, 13, 13)');
 	});
 });

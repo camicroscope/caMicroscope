@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta name="keywords" content="camicroscope, quip" />
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+
+    <title>caMicroscope</title>
+
+		<!-- message display bar css -->
+		<link rel='stylesheet' type='text/css' media='all' href='/lib/camessage/camessage.css'/>
+		<!-- util.js -->
+		<script src = '/js/util.js' type='text/javascript'></script>
+		<!-- messsage display js -->
+		<script src='/lib/camessage/camessage.js'></script>
+	
+
+	</head>
+	<body>
+		<input id='isLoad' type='checkbox'>
+		<!-- message-->
+		<div id = 'cames'></div>
+
+
+	</body>
+	<script>
+		const message = new CaMessage({id:'cames', defaultText:'Hello World'});
+
+		document.getElementById('isLoad').checked = true;
+	// requirejs(["entry-module"], () => {
+	//   window.onModulesLoaded();
+	// });
+	</script>
+</html>
