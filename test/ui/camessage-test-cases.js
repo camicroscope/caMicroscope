@@ -20,8 +20,6 @@ let dom;
 		//console.log(jsdom.window.document.getElementById('isLoad').checked);
 		if(jsdom.window.document.getElementById('isLoad').checked){
 			clearInterval(checkLoaded);
-
-			console.log(jsdom.window);
 			// run test cases if page is ready. 
 			run();
 		}
@@ -48,8 +46,9 @@ describe('Ca Message Component', function () {
 
 	// case 3: change style
 	it('Change Style', function () {
-		console.log();
 		const case3 = dom.window.document.getElementById('case3');
+		console.log(case3.outerHTML);
+		console.log(case3.style.fontStyle);
 		assert.equal(case3.innerHTML,'case3');
 		assert.equal(case3.style.color,'rgb(9, 2, 35)');
 		assert.equal(case3.style.fontStyle,'2rem');
