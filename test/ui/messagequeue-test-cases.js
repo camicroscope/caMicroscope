@@ -20,6 +20,7 @@ let mList;
 
 			clearInterval(checkLoaded);
 			mList = jsdom.window.document.querySelectorAll('.bullet-container');
+			console.log(mList);
 			run();
 		}
 	},100);
@@ -29,10 +30,12 @@ let mList;
 
 // 
 describe('Message Queue Component', function () {
+	console.log('test1...')
 	describe('Initialize', function () {
-
+		console.log('Initialize...')
 		// case1: initialize top-left top-right bottom-left bottom-right
 		it('position:top-left(default)', function () {
+			console.log('test1...')
 			assert.equal(mList[0].style.top,'0px');
 			assert.equal(mList[0].style.left,'0px');
 			assert.equal(mList[0].querySelector('.bullet').textContent,'info message');
