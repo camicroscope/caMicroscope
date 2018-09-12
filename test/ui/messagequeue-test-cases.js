@@ -56,7 +56,7 @@ describe('Message Queue Component', function () {
 			//assert.equal(case1.textContent,'Hello World');
 
 		});
-	}
+	});
 
 	// case 2: change text
 	it('Change Text', function () { 
