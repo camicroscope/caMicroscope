@@ -7,7 +7,7 @@ let dom;
 
 // read test page
  JSDOM.fromURL(
-    'http://127.0.0.1:8080/test/ui/camessage-test-case.html', 
+    'http://127.0.0.1:8080/test/ui/camessage-test-cases.html', 
     {
       runScripts: "dangerously",
       resources: "usable"
