@@ -31,19 +31,19 @@
 		
 		// case 1: test options to initialize component
 		const message1 = new MessageQueue({});
-		message1.add('info message', 5000);
+		message1.add('info message', 10000);
 		
 		// case 2: 
 		const message2 = new MessageQueue({position:'top-right'});
-		message2.addWarning('warning message', 5000);
+		message2.addWarning('warning message', 10000);
 
 		// case 3: 
 		const message3 = new MessageQueue({position:'bottom-left'});
-		message3.addError('error message', 5000);
+		message3.addError('error message', 10000);
 
 		// case 4: 
 		const message4 = new MessageQueue({position:'bottom-right'});
-		message4.add('message', 5000);
+		message4.add('message', 10000);
 
 
 		// Never remove this code, this is a flag to told us jsdom loads the anysubresources sucha as scripts, stylesheets or images.
