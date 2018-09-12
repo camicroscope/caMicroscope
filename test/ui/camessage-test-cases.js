@@ -47,11 +47,9 @@ describe('Ca Message Component', function () {
 	// case 3: change style
 	it('Change Style', function () {
 		const case3 = dom.window.document.getElementById('case3');
-		console.log(case3.outerHTML);
-		console.log(case3.style.fontStyle);
 		assert.equal(case3.innerHTML,'case3');
 		assert.equal(case3.style.color,'rgb(9, 2, 35)');
-		assert.equal(case3.style.fontStyle,'2rem');
+		assert.equal(case3.style.fontSize,'2rem');
 		assert.equal(case3.style.backgroundColor,'rgb(193, 13, 13)');
 	});
 });
