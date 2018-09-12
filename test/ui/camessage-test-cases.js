@@ -16,10 +16,10 @@ let dom;
   	dom = jsdom;
   	// check the loading flag
 	let checkLoaded = setInterval(function(){
-		console.count('check');
-		//console.log(jsdom.window.document.getElementById('isLoad').checked);
 		if(jsdom.window.document.getElementById('isLoad').checked){
+
 			clearInterval(checkLoaded);
+			//console.count('start running test cases');
 			// run test cases if page is ready. 
 			run();
 		}
@@ -28,7 +28,7 @@ let dom;
     console.log(error);
   })
 
-//
+// 
 describe('Ca Message Component', function () {
 
 	// case1: initialize 
