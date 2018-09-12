@@ -214,7 +214,7 @@
             
             this.clearCanvas();
             this._display_.getContext('2d').translate(x,y);
-            this._display_.getContext('2d').scale(zoom,zoom);     
+            this._display_.getContext('2d').scale(zoom,zoom);
             DrawHelper.draw(this._display_ctx_,this._draws_data_.slice(0,this._path_index));
             this._display_.getContext('2d').setTransform(1, 0, 0, 1, 0, 0);
         },

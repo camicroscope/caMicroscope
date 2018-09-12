@@ -19,7 +19,7 @@ body{
   background-color: rgba(220, 220, 220, 1);
 }
 
-/*  */
+/* osd main viewer */
 #main_viewer {
 	width:100%;
 	height:100%;
@@ -28,7 +28,7 @@ body{
 
 
 /* panel style - only for mockup */
-.item_content .annotation{
+/*.item_content .annotation{
 	font-size:2.5rem;
 	color:#000;
 	background-image: white;
@@ -40,7 +40,7 @@ body{
 	margin:.5rem;
 	display:block;
 	overflow:auto;
-}
+}*/
 /* label */
 .item_content label{
 	font-size: 1.5rem;

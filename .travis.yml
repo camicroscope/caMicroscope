@@ -1,8 +1,15 @@
 sudo: required
+language: node_js
 node_js:
    - "8"
 install:
     - npm install
+    - npm install -g http-server
     - npm install -g mocha
+
+before_script:
+  - http-server & # start a Web server
+  - sleep 3 # give Web server some time to bind to sockets, etc
+
 script:
-    - mocha core/test/ --recursive
+    - mocha test --recursive --delay
