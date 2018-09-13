@@ -109,8 +109,30 @@ describe('Side Menu Component',function(){
 			assert.equal(status.checked, false);
 			assert.equal(name.textContent, 'menu2');
 		});
+
+		it(`simulate a click event on the close button`,function(){
+			const closeBtn = dom.window.document.querySelector('#menu1 .close');
+			eventFire(closeBtn,'click');
+
+			const menu = dom.window.document.getElementById('menu1');
+			const status = dom.window.document.getElementById('status');
+			const name = dom.window.document.getElementById('name');
+
+			assert.equal(menu.style.width, '0px');
+			assert.equal(status.checked, false);
+			assert.equal(name.textContent, 'menu1');
+		});
 	});
 
+	function eventFire(el, etype){
+		if (el.fireEvent) {
+			el.fireEvent('on' + etype);
+		} else {
+			var evObj = dom.window.document.createEvent('Events');
+			evObj.initEvent(etype, true, false);
+			el.dispatchEvent(evObj);
+		}
+	}
 
 
 

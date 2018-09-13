@@ -14,7 +14,6 @@ describe('Message Queue Component',function(){
 	/* --  prepare test START -- */
 	// loading the test page and wait til the scripts on the test pages are executed.
 	before(function(done){
-		console.log(`${global.origin}${global.testFolder}/ui/messagequeue-test-cases.html`);
 	 JSDOM.fromURL(
 	    `${global.origin}${global.testFolder}/ui/messagequeue-test-cases.html`, 
 	    {
