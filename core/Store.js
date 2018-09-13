@@ -36,47 +36,8 @@ class Store{
     this.config = config;
   }
   /**
-  * find collections matching name and/or type
-  * @param {string} [name] - the collection name, supporting regex match
-  * @param {string} [type] - the collection type, supporting regex match
-  * @returns {promise} - promise which resolves with data
-  **/
-  findCollection(name, type){
-    var suffix = "Collection/query/find"
-    var url = this.base + suffix;
-    var query = {}
-    if (name){
-      query.name = name
-    }
-    if (type){
-      query.type = type
-    }
-    // api key for bindaas?
-    return fetch(url + "?" + objToParamStr(query), {
-            credentials: "same-origin",
-            mode: "cors"
-        }).then((x)=>x.json())
-  }
-
-  /**
-  * get collection by id
-  * @param {string} id - the collection id
-  * @returns {promise} - promise which resolves with data
-  **/
-  getCollection(id){
-    var suffix = "Collection/query/get"
-    var url = this.base + suffix;
-    var query = {'id':id}
-    // api key for bindaas?
-    return fetch(url + "?" + objToParamStr(query), {
-            credentials: "same-origin",
-            mode: "cors"
-        }).then((x)=>x.json())
-  }
-
-  /**
   * find marks matching slide and/or marktype
-  * @param {string} [name] - the associated slide name, supporting regex match
+  * @param {string} [name] - the associated slide name
   * @param {string} [slide] - the associated marktype name, supporting regex match
   * @returns {promise} - promise which resolves with data
   **/
@@ -102,7 +63,7 @@ class Store{
   * find marks which contain a given point
   * @param {number} x - x position to search for
   * @param {number} y - y position to search for
-  * @param {string} [name] - the associated slide name, supporting regex match
+  * @param {string} [name] - the associated slide name
   * @param {string} [slide] - the associated marktype name, supporting regex match
   * @returns {promise} - promise which resolves with data
   **/
@@ -127,7 +88,7 @@ class Store{
 
   /**
   * get mark by id
-  * @param {string} id - the collection id
+  * @param {string} id - the mark id
   * @returns {promise} - promise which resolves with data
   **/
   getMark(id){
@@ -172,7 +133,7 @@ class Store{
   }
   /**
   * find marktypes given slide and name
-  * @param {string} [name] - the associated slide name, supporting regex match
+  * @param {string} [name] - the associated slide name
   * @param {string} [slide] - the marktype name, supporting regex match
   * @returns {promise} - promise which resolves with data
   **/
@@ -197,7 +158,7 @@ class Store{
   /**
   * find overlays matching name and/or type
   * @param {string} [name] - the overlay, supporting regex match
-  * @param {string} [slide] - the collection type, supporting regex match
+  * @param {string} [slide] - the associated slide id
   * @returns {promise} - promise which resolves with data
   **/
   findOverlay(name, slide){
@@ -235,7 +196,7 @@ class Store{
 
   /**
   * find overlays matching name and/or type
-  * @param {string} [name] - the slide name, supporting regex match
+  * @param {string} [name] - the slide name
   * @param {string} [location] - the slide location, supporting regex match
   * @returns {promise} - promise which resolves with data
   **/
@@ -275,7 +236,7 @@ class Store{
   /**
   * find templates matching name and/or type
   * @param {string} [name] - the template name, supporting regex match
-  * @param {string} [type] - the tmplate type, supporting regex match
+  * @param {string} [type] - the template type, supporting regex match
   * @returns {promise} - promise which resolves with data
   **/
   findTemplate(name, type){
