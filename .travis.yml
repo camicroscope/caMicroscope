@@ -8,7 +8,7 @@ install:
     - npm install -g mocha
 
 before_script:
-  - http-server & # start a Web server
+  - http-server -s & # start a Web server
   - sleep 3 # give Web server some time to bind to sockets, etc
 
 script:
