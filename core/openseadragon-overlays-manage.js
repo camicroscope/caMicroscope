@@ -1,4 +1,20 @@
 // openseadragon-overlays-manager.js
+// Draw
+// proposal:
+// test:
+//
+
+/**
+ * @constructor
+ * OpenSeadragon Overlays Manage Plugin 0.0.1 based on canvas overlay plugin.
+ * A OpenSeadragon pulgin that provides a way to mange multiple overlays. 
+ * @param {Object} [options]
+ *        Allows configurable properties to be entirely specified by passing an options object to the constructor.
+ * @param {Object} options.viewer
+ *        A instance of viewer in Openseadragon.
+ * @param {Object} [zIndex=100]
+ *        specifies the z-order of a positioned element
+ */
 (function($){
     if (!$) {
         $ = require('openseadragon');
@@ -24,7 +40,7 @@
 
     $.OverlaysManager = function(options) {
         this._viewer = options.viewer;
-    	this.overlays = [];
+        this.overlays = [];
         this.events = {
             highlight:this.highlight.bind(this),
             click:this.pathClick.bind(this)
@@ -32,7 +48,7 @@
         // -- create container div, and hover, display canvas -- // 
         this._containerWidth = 0;
         this._containerHeight = 0;
-    	
+        
         // create container div
         this._div = document.createElement( 'div');
         this._div.style.position = 'absolute';
@@ -67,10 +83,16 @@
         this._div.addEventListener('mousemove', this.events.highlight);
         //this._div.addEventListener('dbl ', this.events.pathClick);
         this._div.addEventListener('click', this.events.click);
-    	
+        
     }
 
+
     $.OverlaysManager.prototype = {
+        /**
+         * @private
+         * highlight the path if cursor on the path
+         * @param  {Event} e the event
+         */
         highlight:function(e){
             this._div.style.cursor = 'default';
             DrawHelper.clearCanvas(this._hover_);
@@ -99,17 +121,31 @@
             }
 
         },
-
+        /**
+         * @private
+         * pathClick 
+         * @param  {Event} e the event
+         */
         pathClick:function(e){
-            //if(this.highlightLayer) 
             this._viewer.raiseEvent('canvas-lay-click',{position:{x:e.clientX, y:e.clientY},data:this.highlightLayer?this.highlightLayer.data:null});
         },
+
+        /**
+         * setOverlays
+         * add a collection of overlays by geting the data collection
+         * @param {Array} overlays the collection of data of the overlays
+         */
         setOverlays:function(overlays){
             if(!$.isArray(overlays)) return;
             for(let i = 0;i<overlays.length;i++){
                 this.addOverlay(overlays[i]);
             }
         },
+
+        /**
+         * @private
+         * resize the canvas and redraw marks on the proper place
+         */
         resize: function() {
             if (this._containerWidth !== this._viewer.container.clientWidth) {
                 this._containerWidth = this._viewer.container.clientWidth;
@@ -136,6 +172,14 @@
             this.imgHeight = image1.source.dimensions.y;
             this.imgAspectRatio = this.imgWidth / this.imgHeight;
         },
+
+        /**
+         * @private
+         * drawOnCanvas draw marks on canvas
+         * @param  {Canvas} ctx  a canvas' 2d context that the marks draw on
+         * @param  {Function} drawFuc [description]
+         * @return {[type]}         [description]
+         */
         drawOnCanvas:function(drawFuc,args){
             var viewportZoom = this._viewer.viewport.getZoom(true);
             var image1 = this._viewer.world.getItemAt(0);
@@ -151,15 +195,34 @@
             //this.drawOnDisplay(this._display_ctx_);
             args[0].setTransform(1, 0, 0, 1, 0, 0);
         },
-        isShowDiv:function(){
+
+        /**
+         * hasShowOverlay determine that there is a overlay to show or not
+         * @return {Boolean} return true if has overlay to show. Otherwise, return false.
+         */
+        hasShowOverlay:function(){
             return this.overlays.some(lay => lay.isShow == true);
         },
+
+        /**
+         * @private
+         * drawOnDisplay draw marks on display canvas
+         * @param  {Canvas} ctx  a canvas' 2d context that the marks draw on
+         */
         drawOnDisplay:function(ctx){
             for (var i = 0; i < this.overlays.length; i++) {
                 const layer = this.overlays[i];
                 if(layer.isShow) layer.onDraw(ctx);
             }
         },
+
+        /**
+         * @private
+         * drawOnHover draw marks on hover canvas
+         * @param  {Canvas} ctx  a canvas' 2d context that the marks draw on
+         * @param  {Path/Path2D} path  the data of a path/marks
+         * @param  {Object} style  the style of drawing
+         */
         drawOnHover:function(ctx,div,path,style){
             div.style.cursor = 'point';
             ctx.lineJoin = 'round';
@@ -169,9 +232,13 @@
             ctx.lineWidth = style.lineWidth;
             path.strokeAndFill(this._hover_ctx_);
         },
+
+        /**
+         * updateView update all canvas according to the current states of the osd'viewer
+         */
         updateView:function(){
             this.resize();
-            if(this.isShowDiv()) {
+            if(this.hasShowOverlay()) {
                 this._div.style.display = 'block';
             }else{
                 this._div.style.display = 'none';
@@ -181,7 +248,21 @@
             if(this.highlightPath)this.drawOnCanvas(this.drawOnHover,[this._hover_ctx_,this._div,this.highlightPath,this.highlightStyle]);
 
         },
-    	addOverlay:function(options){ // id, data, render
+
+        /**
+         * 
+         * addOverlay add a new over lay
+         * @param {Object} options
+         *        allows configurable properties to be entirely specified by passing an options object to the constructor.
+         * @param {String} options.id
+         *        the overlay's id
+         * @param {Object} options.data
+         *        the data that is used to describe the overlay
+         * @param {object} options.renderer
+         *        the renderer to render the overlay
+         * 
+         */
+        addOverlay:function(options){ // id, data, render
             if(this.overlays.find(layer => layer.id == options.id)){
               console.warn('duplicate overlay ID');
               return;
@@ -193,9 +274,14 @@
 
             return lay;
             
-    	},
+        },
 
-    	removeOverlay:function(id){
+        /**
+         * remove a overlay from the manager
+         * @param  {String} id overlay's id
+         * @return {Boolean} true - remove success. false - remove fail
+         */
+        removeOverlay:function(id){
             const index = this.overlays.findIndex(layer => layer.id == id);
             if (index > -1) {
               this.overlays.splice(index, 1);
@@ -205,12 +291,19 @@
               return true;
             }
             
-            return false;    		
-    	},
+            return false;            
+        },
+        /**
+         * get Overlay by id
+         * @param  {String} id the overlay's id
+         * @return {Object}   
+         */
         getOverlay:function(id){
             return this.overlays.find(layer => layer.id == id);
  
         },
+
+
         sort:function(){
             // for (var i = data.length - 1; i >= 0; i--) {
             //     const id = data[i];
@@ -219,24 +312,36 @@
             //     layer.index = index;
             // }
         },
+
         clearOverlays:function(){
             this.overlays = [];
         },
+
         clearCanvas:function(){
             DrawHelper.clearCanvas(this._display_);
             DrawHelper.clearCanvas(this._hover_);
         },
+
         clear:function(){
             this.clearCanvas();
             this.clearOverlays();
         },
-
-
     }
 
 
 
-    // overlay for manager
+    /**
+     * @constructor
+     * Overlay a instance of overlay.
+     * @param {Object} options
+     *        allows configurable properties to be entirely specified by passing an options object to the constructor.
+     * @param {Object} options.id
+     *        the overlay's id
+     * @param {Object} options.data
+     *        the data that is used to describe the overlay
+     * @param {Object} options.render
+     *        the render that is used to render the overlay
+     */
     var Overlay = function(options){
         this.className = 'Overlay'
         if(!options){
@@ -255,11 +360,11 @@
             console.error(`${this.className}: No Render or Illegal.`);
             return;
         }
-		this.id = options.id;
-		this.data = options.data; 
-		this.render = options.render;
-		this.clickable = options.clickable || false;
-		this.hoverable = options.hoverable || false;
+        this.id = options.id;
+        this.data = options.data; 
+        this.render = options.render;
+        this.clickable = options.clickable || false;
+        this.hoverable = options.hoverable || false;
         if(options.isShow!==null || options.isShow!== undefined ){
             this.isShow = options.isShow
         }else{
@@ -269,10 +374,17 @@
     }
 
     Overlay.prototype = {
-    	onDraw:function( ctx, data){
-    		if(data) this.data = data;
-    		this.render( ctx, this.data);
-    	}
+        /**
+         * onDraw draw overlay
+         * @param  {2DContext} ctx
+         *         the context that is used to draw shapes
+         * @param  {[type]} data 
+         *         the data that is used to describe the overlay
+         */
+        onDraw:function( ctx, data){
+            if(data) this.data = data;
+            this.render( ctx, this.data);
+        }
     }
 
 

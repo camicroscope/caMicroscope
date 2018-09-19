@@ -26,6 +26,7 @@ function objToParamStr(obj) {
     return parts.join("&");
 }
 /**
+ * @constructor
 * Storage interpreter for camicroscope, uses same auth as origin
 * @param base - base url for data
 * @param [config] - configuration options, unused so far
