@@ -1,4 +1,9 @@
 /** Class representing camicroscope core instance **/
+// proposal:
+// test:
+// constructor
+// load on each component
+
 class CaMic{
   /**
   * create a camic core instance
@@ -14,7 +19,6 @@ class CaMic{
     this.__default_opt = {
       id: divId,
       prefixUrl: "images/",
-      //defaultZoomLevel:2.8793774319066148,
       constrainDuringPan:true,
       // -- navigator setting
       showNavigationControl:false,
@@ -26,17 +30,12 @@ class CaMic{
       maxZoomPixelRatio: 1,
       visibilityRatio: 1,
       springStiffness:0.0001,
-      // maxZoomLevel:4,
-      // minZoomLevel:.4,
       
       constrainDuringPan: true
     }
     extend(this.__default_opt, options);
 
     this.viewer = new OpenSeadragon.Viewer(this.__default_opt);
-    // initialize layers
-    //this.__draw;
-    //this.__hover;
 
     this.slideId = slideId;
     // initalize store
@@ -45,6 +44,10 @@ class CaMic{
     // set overlay thing
     this.viewer.addOnceHandler('open',this.init.bind(this));
   }
+
+  /**
+   * initialize the CAMIC and the dependenced components
+   */
   init(){
     this.viewer.controls.bottomright.style.zIndex = 600;
     
@@ -93,7 +96,7 @@ class CaMic{
     this.drawContextmenu.addHandler('draw-mode-changed',function(e){
       this.viewer.canvasDrawInstance.drawMode = e.mode;
     }.bind(this));
-
+    
     this.drawContextmenu.addHandler('draw',draw);
 
 
@@ -101,22 +104,6 @@ class CaMic{
     const nav = this.viewer.element.querySelector('.navigator');
     nav.style.backgroundColor = '#365f9c';
     nav.style.opacity = 1;
-
-    // zoom control
-    // const zmax = this.viewer.viewport.getMaxZoom();
-    // const zmin = this.viewer.viewport.getMinZoom();
-    // const step = (zmax - zmin)/100;
-
-    // this.zctrl = new CaZoomControl({
-    //   'id':'zctrl',
-    //   'viewer':this.viewer,
-    //   'zoom':{
-    //     'max':zmax,
-    //     'min':zmin,
-    //     'cur':zmax,
-    //     'step':step
-    //   }
-    // });
     
     this.viewer.cazoomctrl({
       position:"BOTTOM_RIGHT",
@@ -161,10 +148,16 @@ class CaMic{
         if(func && typeof func === 'function') func.call(null,{hasError:true,message:e});
       })
   }
+
+  /**
+   * set up a  canvas Draw functionality on the image
+   */
   canvasDraw(){
     this.viewer.canvasDraw();
   }
-
+  /**
+   * set up a overlay manage on the image
+   */
   overlayers(){
     this.viewer.overlaysManager();
   }
