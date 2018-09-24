@@ -6,20 +6,105 @@
     <meta charset='utf-8'>
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link href="/lib/datatables/vanilla-dataTables.css" rel="stylesheet" />
+    <link href="/lib/loading/loading.css" rel="stylesheet" />
 
-    <title>redirect</title>
+    <script src='/lib/datatables/vanilla-dataTables.js'></script>
+    <script src='/lib/loading/loading.js'></script>
+    <script src='/core/Store.js'></script>
+    <title>Camic Data Table</title>
+      <style type="text/css">
+         html, body {
+            margin:0;
+            padding:0;
+            font-family: "Lato";
+            height:100%;
+            width:100%;
+         }
+         .container {
+         	padding : 25px;
+
+         	box-sizing: border-box;
+            width: 100%;
+            height:100%;
+
+         }
+         .container > div {
+         	padding : 25px;
+         	border-radius: 10px;
+         	border:1px solid rgba(0,0,0,.125);
+         }
+         #datatables > tbody tr:hover {
+         	background: rgba(0,0,0,.125);
+         }
+      </style>
 </head>
-<body>
-	<table>
-		<tr>
-			<td>ID</td><td>name</td>
-		</tr>
-		<tr>
-			<td>5b7b294ca4d9f66c96e4dc24</td><td><a href='viewer.html?slideId=CMU1'>CMU1</a></td>
-		</tr>
-		<tr>
-			<td>5b7d8cd199c27c87319c3f5f</td><td><a href='viewer.html?slideId=sample'>sample</a></td>
-		</tr>
-	</table>
-</body>
+	<body>
+		<div class='container'>
+			<div>
+				<table id = 'datatables'></table>
+			</div>
+		</div>
+
+	</body>
+
+	<script type="text/javascript">
+		var dataTableInstance = new DataTable("#datatables",{
+			columns:[
+				{select: 1, render: function(data){
+					return `<a href='viewer.html?slideId=${data}'>${data}</a>`;
+				}}
+			]
+		});
+
+		var div = document.querySelector('.container');
+		Loading.open(div,'Data is loading');
+		const store = new Store();
+		store.findSlide()
+
+		.then(function(data){
+			data.map(d=> delete d.location);
+			init(data);
+		}).catch(function(error){
+			document.querySelector('.container').textContent = JSON.stringify(error);
+			console.log(error);
+		}).finally(function(){
+			Loading.close();
+		});
+
+		function init(data){
+			var obj = {
+
+				// Quickly get the headings
+				headings: Object.keys(data[0]),
+
+				// data array
+				data: []
+			};
+
+			// Loop over the objects to get the values
+			for ( var i = 0; i < data.length; i++ ) {
+
+				obj.data[i] = [];
+
+				for (var p in data[i]) {
+					if( data[i].hasOwnProperty(p) ) {
+						 if(p=='_id'){
+						 	obj.data[i].push(data[i][p].$oid);
+						 }else{
+							obj.data[i].push(data[i][p]);
+						}
+						
+					}
+				}
+			}
+			dataTableInstance.insert(obj);
+			// for(var i = 0;i < 100; i++){
+			// 	obj.data.push([`id_${i}`,`slideName${i}`,0.499]);
+			// }
+
+
+		}
+		
+	</script>
 </html>
