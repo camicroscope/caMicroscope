@@ -49,13 +49,7 @@
 	</body>
 
 	<script type="text/javascript">
-		var dataTableInstance = new DataTable("#datatables",{
-			columns:[
-				{select: 1, render: function(data){
-					return `<a href='viewer.html?slideId=${data}'>${data}</a>`;
-				}}
-			]
-		});
+
 
 		var div = document.querySelector('.container');
 		Loading.open(div,'Data is loading');
@@ -98,10 +92,15 @@
 					}
 				}
 			}
-			dataTableInstance.insert(obj);
-			// for(var i = 0;i < 100; i++){
-			// 	obj.data.push([`id_${i}`,`slideName${i}`,0.499]);
-			// }
+			//dataTableInstance.insert(obj);
+			dataTableInstance = new DataTable("#datatables",{
+			columns:[
+				{select: 1, render: function(data){
+					return `<a href='viewer.html?slideId=${data}'>${data}</a>`;
+				}},
+			],
+			data:obj
+		});
 
 
 		}
