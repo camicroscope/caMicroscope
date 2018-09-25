@@ -52,7 +52,6 @@ function toggleMagnifier(data){
 	}
 }
 
-
 // image download
 function imageDownload(data){
 	alert('Download Image');
@@ -96,11 +95,9 @@ function convertToPopupBody(notes){
 function anno_delete(data){
 	if(!data.id) return;
 	if(!confirm(`Are you sure you want to delete this markup {ID:${data.id}}?`)) return;
-	console.log('delete');
 	$CAMIC.store.deleteMark(data.oid,$D.params.slideId)
 	.then(text=>{
 		const json = JSON.parse(text.replace(/'/g, '"'));
-		console.log(json);
 		deleteCallback(data);
 	})
 	.catch(e=>{
@@ -112,16 +109,14 @@ function anno_delete(data){
 
 }
 function deleteCallback(data){
-	console.log(data);
 	// remove overlay
 	const index = $D.overlayers.findIndex(layer => layer.id == data.id);
     if(index==-1) return;
     $D.overlayers.splice(index, 1);
-    
-    // update layers Viewer
-    $UI.layersViewer.update();
     // update layer manager
     $CAMIC.viewer.omanager.removeOverlay(data.id);
+    // update layers Viewer
+    $UI.layersViewer.update();
 	// close popup panel 
     $UI.annotPopup.close();
    	
@@ -236,29 +231,36 @@ function loadAnnotationById(item,id){
 			Loading.open(document.body,'loading layers...');
 			$CAMIC.store.getMark(id)
 			.then(data =>{
+
+				if(data.error){
+					$UI.message.addError(`${data.message}`,5000);
+					return;
+				}
+
 				if(!data[0]){
 					console.log(`Annotation:${id} doesn't exist.`);
+					$UI.message.addError(`Annotation:${id} doesn't exist.`,5000);
+					return;
 				}
+
 				data[0].geometries = VieweportFeaturesToImageFeatures($CAMIC.viewer, data[0].geometries);
+				
 				if(!item){
-					data[0].isShow = item.isShow;
 					item = covertToLayViewer(data[0]);
-					//item.isShow = true;
+					item.isShow = true;
 					// update lay viewer UI
-					console.log(item);
-					
 					$D.overlayers.push(item);
 					$UI.layersViewer.update();
 					saveAnnotCallback();
+				}else{
+					data[0].isShow = item.isShow;
 				}
+				
 				item.data = data[0];
 				item.render = anno_render;
 				// create lay and update view
 				item.layer = $CAMIC.viewer.omanager.addOverlay(item);
 				$CAMIC.viewer.omanager.updateView();
-
-				
-				
 			})
 			.catch(e=>{
 				console.error(e);
