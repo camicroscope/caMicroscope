@@ -150,7 +150,6 @@ function initUIcomponents(){
         title:'Magnifier',
         type:'check',
         value:'magn',
-        checked:true,
         callback:toggleMagnifier
       },
       // download TODO
@@ -168,6 +167,13 @@ function initUIcomponents(){
         type:'btn',
         value:'share',
         callback:shareURL
+      },
+      {
+        icon:'view_carousel',
+        title:'Side By Side Viewer',
+        value:'dbviewers',
+        type:'check',
+        callback:toggleViewerMode
       }
 
     ]
@@ -323,6 +329,10 @@ function initUIcomponents(){
   $UI.appsList.elt.parentNode.removeChild($UI.appsList.elt);
   $UI.appsSideMenu.addContent($UI.appsList.elt);
   $UI.message.add('Apps Panel loaded');
+
+  $UI.multSelector = new MultSelector({id:'mult_selector'});
+  $UI.multSelector.addHandler('cancel',multSelector_cancel);
+  $UI.multSelector.addHandler('action',multSelector_action);
 }
 
 function redirect(url ,text = '', sec = 5){

@@ -326,6 +326,24 @@
             this.clearCanvas();
             this.clearOverlays();
         },
+        /**
+         * Function to destroy the instance of OverlayManager and clean up everything created by OverlayManager.
+         *
+         * Example:
+         * var omanger = OverlayManager({
+         *   [...]
+         * });
+         *
+         * //when you are done with the omanger:
+         * omanger.destroy();
+         * omanger = null; //important
+         *
+         */
+        destroy:function(){
+            for(const key in this){
+                this[key] = null;
+            }
+        }
     }
 
 

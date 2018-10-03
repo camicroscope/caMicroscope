@@ -1,6 +1,6 @@
 .cover {
 	cursor:not-allowed;
-	z-index:9999;
+	z-index:999;
 	position:absolute;
 	top:0;
 	left:0;

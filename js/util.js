@@ -145,7 +145,9 @@ function covertToViewportFeature(viewer, og){
   extend(feature.properties.style,og.properties.style); 
   return feature;
 }
-
+function isFunction(obj){
+  return typeof obj === "function" && typeof obj.nodeType !== "number";
+}
 function covertToLayViewer(item,l){
   const typeName = item.provenance.analysis.source;
   const id = item.provenance.analysis.execution_id;
@@ -155,3 +157,151 @@ function covertToLayViewer(item,l){
   return {id:id,name:name,typeId:typeIds[typeName],typeName:typeName,isShow:isShow};
 }
 
+
+
+/**
+ * Taken from OpenSeadragon
+ * @memberof OpenSeadragon
+ * @see {@link http://openseadragon.github.io/}
+ * 
+ * @class EventHandle
+ * @classdesc For use by classes which want to support custom, non-browser events.
+ *
+ * @memberof OpenSeadragon
+ */
+function EventHandle() {
+//  this.events = {};
+};
+
+/** @lends OpenSeadragon.EventSource.prototype */
+EventHandle.prototype = {
+    events:{},
+    /**
+     * Add an event handler to be triggered only once (or a given number of times)
+     * for a given event.
+     * @function
+     * @param {String} eventName - Name of event to register.
+     * @param {OpenSeadragon.EventHandler} handler - Function to call when event
+     * is triggered.
+     * @param {Object} [userData=null] - Arbitrary object to be passed unchanged
+     * to the handler.
+     * @param {Number} [times=1] - The number of times to handle the event
+     * before removing it.
+     */
+    addOnceHandler: function(eventName, handler, userData, times) {
+        var self = this;
+        times = times || 1;
+        var count = 0;
+        var onceHandler = function(event) {
+            count++;
+            if (count === times) {
+                self.removeHandler(eventName, onceHandler);
+            }
+            handler(event);
+        };
+        this.addHandler(eventName, onceHandler, userData);
+    },
+
+    /**
+     * Add an event handler for a given event.
+     * @function
+     * @param {String} eventName - Name of event to register.
+     * @param {OpenSeadragon.EventHandler} handler - Function to call when event is triggered.
+     * @param {Object} [userData=null] - Arbitrary object to be passed unchanged to the handler.
+     */
+    addHandler: function ( eventName, handler, userData ) {
+        var events = this.events[ eventName ];
+        if ( !events ) {
+            this.events[ eventName ] = events = [];
+        }
+        if ( handler && isFunction( handler ) ) {
+            events[ events.length ] = { handler: handler, userData: userData || null };
+        }
+    },
+
+    /**
+     * Remove a specific event handler for a given event.
+     * @function
+     * @param {String} eventName - Name of event for which the handler is to be removed.
+     * @param {OpenSeadragon.EventHandler} handler - Function to be removed.
+     */
+    removeHandler: function ( eventName, handler ) {
+        var events = this.events[ eventName ],
+            handlers = [],
+            i;
+        if ( !events ) {
+            return;
+        }
+        if ( $.isArray( events ) ) {
+            for ( i = 0; i < events.length; i++ ) {
+                if ( events[i].handler !== handler ) {
+                    handlers.push( events[ i ] );
+                }
+            }
+            this.events[ eventName ] = handlers;
+        }
+    },
+
+
+    /**
+     * Remove all event handlers for a given event type. If no type is given all
+     * event handlers for every event type are removed.
+     * @function
+     * @param {String} eventName - Name of event for which all handlers are to be removed.
+     */
+    removeAllHandlers: function( eventName ) {
+        if ( eventName ){
+            this.events[ eventName ] = [];
+        } else{
+            for ( var eventType in this.events ) {
+                this.events[ eventType ] = [];
+            }
+        }
+    },
+
+    /**
+     * Get a function which iterates the list of all handlers registered for a given event, calling the handler for each.
+     * @function
+     * @param {String} eventName - Name of event to get handlers for.
+     */
+    getHandler: function ( eventName ) {
+        var events = this.events[ eventName ];
+        if ( !events || !events.length ) {
+            return null;
+        }
+        events = events.length === 1 ?
+            [ events[ 0 ] ] :
+            Array.apply( null, events );
+        return function ( source, args ) {
+            var i,
+                length = events.length;
+            for ( i = 0; i < length; i++ ) {
+                if ( events[ i ] ) {
+                    args.eventSource = source;
+                    args.userData = events[ i ].userData;
+                    events[ i ].handler( args );
+                }
+            }
+        };
+    },
+
+    /**
+     * Trigger an event, optionally passing additional information.
+     * @function
+     * @param {String} eventName - Name of event to register.
+     * @param {Object} eventArgs - Event-specific data.
+     */
+    raiseEvent: function( eventName, eventArgs ) {
+        //uncomment if you want to get a log of all events
+        //$.console.log( eventName );
+        var handler = this.getHandler( eventName );
+
+        if ( handler ) {
+            if ( !eventArgs ) {
+                eventArgs = {};
+            }
+
+            handler( this, eventArgs );
+        }
+    }
+};

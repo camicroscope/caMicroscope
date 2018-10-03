@@ -30,6 +30,8 @@
 
 		<!-- operation panel css -->
 		<link rel='stylesheet' type='text/css' media='all' href='/lib/operationpanel/operationpanel.css'/>
+		<!-- mult selector css -->
+		<link rel='stylesheet' type='text/css' media='all' href='/lib/multselector/multselector.css'/>
 		<!-- stylecontextmenu css -->
 		<link href="/lib/stylecontextmenu/stylecontextmenu.css" rel="stylesheet" />
 		<!-- message queue css -->
@@ -88,6 +90,8 @@
 		<script src='/lib/popuppanel/popuppanel.js'></script>
 		<!-- message queue js -->
 		<script src='/lib/messagequeue/messagequeue.js'></script>
+		<!-- mult selector js -->
+		<script src='/lib/multselector/multselector.js'></script>
 
 		<script src="/lib/sortable/Sortable.js"></script>
 	
@@ -122,8 +126,11 @@
 		<div id = 'ca_tools'></div>
 
 		<!-- main viewer -->
-		<div id ='main_viewer'></div>
-
+		<div id ='main_viewer' class='main'></div>
+		<div id ='secondary' class='none'>
+			<div id='mult_selector' class='none'></div>
+			<div id='minor_viewer' class='none'></div>
+		</div>
 		<!-- zoom control -->
 		<div id ='zctrl'></div>
 

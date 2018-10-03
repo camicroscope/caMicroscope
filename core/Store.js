@@ -87,6 +87,24 @@ class Store{
         }).then((x)=>x.json())
   }
 
+  getMarkByIds(ids, slide){
+    
+    if(!Array.isArray(ids) || !slide){
+      return {hasError:true,message:'args are illegal'}
+    }
+    var suffix = "mark/query/multFind"
+    var url = this.base + suffix;
+    var query = {}
+    var stringifiedIds = ids.map(id=>`"${id}"`).join(',');
+    query.name = `[${stringifiedIds}]`;
+    console.log(query.name);
+    query.slide = slide;
+    // api key for bindaas?
+    return fetch(url + "?" + objToParamStr(query), {
+            credentials: "same-origin",
+            mode: "cors"
+    }).then((x)=>x.json()).catch(e=>console.error(e.message))
+  }
   /**
   * get mark by id
   * @param {string} id - the mark id
@@ -100,7 +118,7 @@ class Store{
     return fetch(url + "?" + objToParamStr(query), {
             credentials: "same-origin",
             mode: "cors"
-        }).then((x)=>x.json())
+        }).then((x)=>x.json()).catch(e=>console.error(e.message))
   }
   addMark(json){
     var suffix = "mark/submit/json"

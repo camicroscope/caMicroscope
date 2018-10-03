@@ -537,6 +537,24 @@
         clear:function(){
             this.clearStatus();
             this.clearCanvas();
+        },
+        /**
+         * Function to destroy the instance of CanvasDraw and clean up everything created by CanvasDraw.
+         *
+         * Example:
+         * var draw = CanvasDraw({
+         *   [...]
+         * });
+         *
+         * //when you are done with the draw:
+         * draw.destroy();
+         * draw = null; //important
+         *
+         */
+        destory:function(){
+            for(const key in this){
+                this[key] = null;
+            }
         }
     };
 

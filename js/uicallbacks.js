@@ -2,6 +2,201 @@
 // all functions help the UI and Core part together that makes workflows.
 
 /* UI callback functions list */
+function toggleViewerMode(opt){
+	const main = document.getElementById('main_viewer');
+	const secondary = document.getElementById('secondary');
+	if(opt.checked){
+		openSecondaryViewer();
+	}else{
+		closeSecondaryViewer();
+	}
+}
+
+//mainfest
+function multSelector_action(data){
+	
+	if(data.selected.length == 0){
+		alert('No Layer selected');
+		return;
+	}
+
+	// hide the window
+	$UI.multSelector.elt.classList.add('none');
+
+	// show the minor part
+	const minor = document.getElementById('minor_viewer');
+	minor.classList.remove('none');
+	minor.classList.add('display');	
+	
+	// open new instance camic
+	try{
+
+		$minorCAMIC = new CaMic("minor_viewer",$D.params.slideId, {
+			// osd options
+			mouseNavEnabled:false,
+			panVertical:false,
+			panHorizontal:false,
+			showNavigator:false,
+			// customized options
+			hasZoomControl:false,
+			hasDrawLayer:false,
+			//hasLayerManager:false,
+			//hasScalebar:false,
+			// states options
+			states:{
+				x:$CAMIC.viewer.viewport.getCenter().x,
+				y:$CAMIC.viewer.viewport.getCenter().y,
+				z:$CAMIC.viewer.viewport.getZoom(),
+			}
+		});
+
+		// synchornic zoom and move
+		// coordinated Viewer - zoom
+		$CAMIC.viewer.addHandler('zoom',coordinatedViewZoom);
+		
+		// coordinated Viewer - pan
+		$CAMIC.viewer.addHandler('pan',coordinatedViewPan);
+
+		// loading image
+		$minorCAMIC.loadImg(function(e){
+			// image loaded 
+			if(e.hasError){
+				$UI.message.addError(e.message);
+			}
+		});
+		// $minorCAMIC.viewer.addOnceHandler('tile-loaded',function(){
+		// 	loading layers TODO
+		// 	$CAMIC.store.getMarkByIds(,,);
+		// });	
+	}catch(error){
+		Loading.close();
+		$UI.message.addError('Core Initialization Failed');
+		console.error(error);
+		return;
+	}
+
+	// find unloaded data
+	data.selected = data.selected.map(lay=>lay[0]);
+	const unloaded = data.selected.filter(id =>{
+		const layer = $D.overlayers.find(layer=> layer.id == id);
+		return layer && !layer.data
+	});
+	// if all data loaded then add selected layer to minor viewer
+	if(unloaded.length == 0){
+		// add overlays to 
+		// wait util omanager create
+		var checkOmanager = setInterval(function () {
+			if($minorCAMIC.viewer.omanager) {
+				clearInterval(checkOmanager);
+				// add overlays to 
+				data.selected.forEach(id =>{
+					// find data
+					const layer = $D.overlayers.find(layer=> layer.id == id);
+					// add to the minor viewer
+					$minorCAMIC.viewer.omanager.addOverlay({id:id,data:layer.data,render:anno_render,isShow:true});
+				});
+				$minorCAMIC.viewer.omanager.updateView();
+			}
+		}, 500);
+		return;
+	}
+
+	// load data from service side
+	$CAMIC.store.getMarkByIds(unloaded,$D.params.slideId)
+	.then(function(datas){
+		console.log(datas);
+		// add overlays
+
+		datas = datas.map(d=>{
+			d.geometries = VieweportFeaturesToImageFeatures($CAMIC.viewer, d.geometries);
+			const id = d.provenance.analysis.execution_id;
+			const item = $D.overlayers.find(l=>l.id==id);
+			item.data = d;
+			item.render = anno_render;
+			item.layer = $CAMIC.viewer.omanager.addOverlay(item);
+		});
+		
+		// wait util omanager create
+		var checkOmanager = setInterval(function () {
+			if($minorCAMIC.viewer.omanager) {
+				clearInterval(checkOmanager);
+				// add overlays to 
+				data.selected.forEach(id =>{
+					// find data
+					const layer = $D.overlayers.find(layer=> layer.id == id);
+					// add to the minor viewer
+					$minorCAMIC.viewer.omanager.addOverlay({id:id,data:layer.data,render:anno_render,isShow:true});
+				});
+				$minorCAMIC.viewer.omanager.updateView();
+			}
+		}, 500);
+
+	})
+	.catch(function(e){
+		console.error(e.message);
+	}).finally(function(){
+		//TODO
+	});
+	
+
+
+	
+}
+
+
+function coordinatedViewZoom(data){
+	$minorCAMIC.viewer.viewport.zoomTo($CAMIC.viewer.viewport.getZoom(),$CAMIC.viewer.viewport.getCenter());
+	$minorCAMIC.viewer.viewport.panTo($CAMIC.viewer.viewport.getCenter());
+}
+
+function coordinatedViewPan(data){
+	$minorCAMIC.viewer.viewport.panTo($CAMIC.viewer.viewport.getCenter());
+}
+
+function multSelector_cancel(){
+	closeSecondaryViewer();
+}
+
+function openSecondaryViewer(){
+	// ui changed
+	const main = document.getElementById('main_viewer');
+	const secondary = document.getElementById('secondary');
+	main.classList.remove('main');
+	main.classList.add('left');
+	secondary.classList.remove('none');
+	secondary.classList.add('right');
+	Loading.open(main,'Waiting for Operation.',600);
+	$UI.multSelector.elt.classList.remove('none');
+	$UI.multSelector.setData($D.overlayers.map(l=>[l.id,l.name]));
+}
+function closeSecondaryViewer(){
+	// ui changed
+	const main = document.getElementById('main_viewer');
+	const secondary = document.getElementById('secondary');
+	main.classList.add('main');
+	main.classList.remove('left');
+	secondary.classList.add('none');
+	secondary.classList.remove('right');
+	$UI.multSelector.elt.classList.add('none');
+	$UI.toolbar._sub_tools[4].querySelector('input[type="checkbox"]').checked = false;
+	Loading.close();
+
+	//destory 
+	if($minorCAMIC) {
+		// remove handler
+		$CAMIC.viewer.removeHandler('zoom',coordinatedViewZoom);
+		$CAMIC.viewer.removeHandler('pan',coordinatedViewPan);
+		
+		// destroy object
+		$minorCAMIC.destroy();
+		$minorCAMIC = null;
+	}
+	const minor = document.getElementById('minor_viewer');
+	minor.classList.remove('display');
+	minor.classList.add('none');
+	
+}
+
 // side menu close callback
 function toggleSideMenu(opt){
 	if(!opt.isOpen){
@@ -289,7 +484,6 @@ function algoRun(){
 	$UI.message.add('Algo is running...');
 
 }
-
 
 function saveAnnotation(){
 	console.log('saveAnnotation');
