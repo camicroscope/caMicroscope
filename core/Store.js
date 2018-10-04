@@ -121,7 +121,7 @@ class Store{
         }).then((x)=>x.json()).catch(e=>console.error(e.message))
   }
   addMark(json){
-    var suffix = "mark/submit/json"
+    var suffix = "Mark/post"
     var url = this.base + suffix;
     // api key for bindaas?
     return fetch(url, {
@@ -138,7 +138,7 @@ class Store{
         )
   }
   deleteMark(id,slide){
-    var suffix = "Mark/deleteMark"
+    var suffix = "Mark/delete"
     var url = this.base + suffix;
     var query = {
       id:id,
