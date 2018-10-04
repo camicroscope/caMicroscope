@@ -66,7 +66,7 @@ switch ($_SERVER['REQUEST_METHOD'])
 	    $url = $postUrl . "api_key=".$api_key;
 		
         //print_r($superuserLymphInfo);
-        //print_r(json_encode($superuserLymphInfo), JSON_NUMERIC_CHECK);
+        //print_r(json_encode($superuserLymphInfo));
         echo "posting data\n";
         echo $url;
         $ch = curl_init();
