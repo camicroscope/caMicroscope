@@ -156,7 +156,14 @@ function covertToLayViewer(item,l){
   if(!typeIds[typeName]) typeIds[typeName] = randomId();
   return {id:id,name:name,typeId:typeIds[typeName],typeName:typeName,isShow:isShow};
 }
-
+function removeElement(array, id){
+  const index = array.findIndex(item => item.id == id);
+  if (index > -1) {
+    array.splice(index, 1);
+    return true;
+  }
+  return false;
+}
 
 
 /**

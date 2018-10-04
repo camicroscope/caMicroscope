@@ -424,19 +424,29 @@ function callback(data){
 }
 function loadAnnotationById(item,id){
 			Loading.open(document.body,'loading layers...');
-			$CAMIC.store.findMark(id)
+			$CAMIC.store.getMarkByIds([id],$D.params.slideId)
 			.then(data =>{
-
+				// response error
 				if(data.error){
-					$UI.message.addError(`${data.message}`,5000);
+					const errorMessage = `${data.text}: ${data.url}`;
+					$UI.message.addError(errorMessage, 5000);
+					const layer = $D.overlayers.find(layer => layer.id==id);
+					layer.isShow = false;
+					$UI.layersViewer.update();
 					return;
 				}
 
+				// no data found
 				if(!data[0]){
 					console.log(`Annotation:${id} doesn't exist.`);
 					$UI.message.addError(`Annotation:${id} doesn't exist.`,5000);
+					// delete item form layview
+					if(item)
+					removeElement($D.overlayers,id);
+					$UI.layersViewer.update();
 					return;
 				}
+
 
 				data[0].geometries = VieweportFeaturesToImageFeatures($CAMIC.viewer, data[0].geometries);
 
@@ -461,7 +471,6 @@ function loadAnnotationById(item,id){
 				console.error(e);
 			})
 			.finally(()=>{
-				console.log('clear');
 				Loading.close();
 			});
 }

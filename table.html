@@ -6,12 +6,12 @@
     <meta charset='utf-8'>
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
-    <link href="/lib/datatables/vanilla-dataTables.css" rel="stylesheet" />
-    <link href="/lib/loading/loading.css" rel="stylesheet" />
+    <link href="./lib/datatables/vanilla-dataTables.css" rel="stylesheet" />
+    <link href="./lib/loading/loading.css" rel="stylesheet" />
 
-    <script src='/lib/datatables/vanilla-dataTables.js'></script>
-    <script src='/lib/loading/loading.js'></script>
-    <script src='/core/Store.js'></script>
+    <script src='./lib/datatables/vanilla-dataTables.js'></script>
+    <script src='./lib/loading/loading.js'></script>
+    <script src='./core/Store.js'></script>
     <title>Camic Data Table</title>
       <style type="text/css">
          html, body {
@@ -39,14 +39,13 @@
          }
       </style>
 </head>
-	<body>
-		<div class='container'>
-			<div>
-				<table id = 'datatables'></table>
-			</div>
+<body>
+	<div class='container'>
+		<div>
+			<table id = 'datatables'></table>
 		</div>
-
-	</body>
+	</div>
+</body>
 
 	<script type="text/javascript">
 
@@ -57,30 +56,38 @@
 		store.findSlide()
 
 		.then(function(data){
+			// response error
+			if(data.error){
+				Loading.text.textContent = `${data.text}: ${data.url}`;
+				return;
+			}
+
+			// no data
+			if(!data.length){
+				div.textContent = "No Data Found";
+				return;
+			}
+
 			data.map(d=> delete d.location);
 			init(data);
 		}).catch(function(error){
-			document.querySelector('.container').textContent = JSON.stringify(error);
-			console.log(error);
+			div.textContent = `${error.text}: ${error.url}`;
+			console.error(error);
 		}).finally(function(){
 			Loading.close();
 		});
 
 		function init(data){
 			var obj = {
-
 				// Quickly get the headings
 				headings: Object.keys(data[0]),
-
 				// data array
 				data: []
 			};
-
+			
 			// Loop over the objects to get the values
 			for ( var i = 0; i < data.length; i++ ) {
-
 				obj.data[i] = [];
-
 				for (var p in data[i]) {
 					if( data[i].hasOwnProperty(p) ) {
 						 if(p=='_id'){
@@ -92,17 +99,16 @@
 					}
 				}
 			}
+
 			//dataTableInstance.insert(obj);
 			dataTableInstance = new DataTable("#datatables",{
-			columns:[
-				{select: 1, render: function(data){
-					return `<a href='viewer.html?slideId=${data}'>${data}</a>`;
-				}},
-			],
-			data:obj
-		});
-
-
+				columns:[
+					{select: 1, render: function(data){
+						return `<a href='viewer.html?slideId=${data}'>${data}</a>`;
+					}},
+				],
+				data:obj
+			});
 		}
 		
 	</script>

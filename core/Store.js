@@ -37,6 +37,19 @@ class Store{
     this.config = config;
   }
   /**
+   * errorHandler: handle the error response
+   * @param  {Response} response
+   * @return {object}
+   */
+  errorHandler(response){
+    if (!response.ok) return {
+      error:!response.ok,
+      text:response.statusText,
+      url:response.url
+    };
+    return response.json();
+  }
+  /**
   * find marks matching slide and/or marktype
   * @param {string} [name] - the associated slide name
   * @param {string} [slide] - the associated marktype name, supporting regex match
@@ -57,7 +70,7 @@ class Store{
     return fetch(url + "?" + objToParamStr(query), {
             credentials: "same-origin",
             mode: "cors"
-        }).then((x)=>x.json())
+        }).then(this.errorHandler)
   }
 
   /**
@@ -84,15 +97,14 @@ class Store{
     return fetch(url + "?" + objToParamStr(query), {
             credentials: "same-origin",
             mode: "cors"
-        }).then((x)=>x.json())
+        }).then(this.errorHandler)
   }
 
   getMarkByIds(ids, slide){
-
     if(!Array.isArray(ids) || !slide){
       return {hasError:true,message:'args are illegal'}
     }
-    var suffix = "Mark/multFind"
+    var suffix = "Mark/multi"
     var url = this.base + suffix;
     var query = {}
     var stringifiedIds = ids.map(id=>`"${id}"`).join(',');
@@ -103,8 +115,10 @@ class Store{
     return fetch(url + "?" + objToParamStr(query), {
             credentials: "same-origin",
             mode: "cors"
-    }).then((x)=>x.json()).catch(e=>console.error(e.message))
+    }).then(this.errorHandler)
   }
+
+
   /**
   * get mark by id
   * @param {string} id - the mark id
@@ -118,7 +132,7 @@ class Store{
     return fetch(url + "?" + objToParamStr(query), {
             credentials: "same-origin",
             mode: "cors"
-        }).then((x)=>x.json()).catch(e=>console.error(e.message))
+        }).then(this.errorHandler)
   }
   addMark(json){
     var suffix = "Mark/post"
@@ -132,10 +146,8 @@ class Store{
             "Content-Type": "application/json; charset=utf-8",
             // "Content-Type": "application/x-www-form-urlencoded",
             },
-            body:JSON.stringify(json)
-        }).then(
-        (x)=>x.json()
-        )
+            //body:JSON.stringify(json)
+        }).then(this.errorHandler)
   }
   deleteMark(id,slide){
     var suffix = "Mark/delete"
@@ -148,7 +160,7 @@ class Store{
             method:"DELETE",
             credentials: "same-origin",
             mode: "cors"
-        }).then(x=>x.text())
+        }).then(this.errorHandler)
   }
   /**
   * find marktypes given slide and name
@@ -170,7 +182,7 @@ class Store{
     return fetch(url + "?" + objToParamStr(query), {
             credentials: "same-origin",
             mode: "cors"
-        }).then((x)=>x.json())
+        }).then(this.errorHandler)
   }
   // NOTE there is no getMarktype method since markypes are not stored separately from marks
 
@@ -194,7 +206,7 @@ class Store{
     return fetch(url + "?" + objToParamStr(query), {
             credentials: "same-origin",
             mode: "cors"
-        }).then((x)=>x.json())
+        }).then(this.errorHandler)
   }
 
   /**
@@ -210,7 +222,7 @@ class Store{
     return fetch(url + "?" + objToParamStr(query), {
             credentials: "same-origin",
             mode: "cors"
-        }).then((x)=>x.json())
+        }).then(this.errorHandler)
   }
 
   /**
@@ -233,7 +245,7 @@ class Store{
     return fetch(url + "?" + objToParamStr(query), {
             credentials: "same-origin",
             mode: "cors"
-        }).then((x)=>x.json())
+        }).then(this.errorHandler)
   }
 
   /**
@@ -249,7 +261,7 @@ class Store{
     return fetch(url + "?" + objToParamStr(query), {
             credentials: "same-origin",
             mode: "cors"
-        }).then((x)=>x.json())
+        }).then(this.errorHandler)
   }
 
   /**
@@ -272,7 +284,7 @@ class Store{
     return fetch(url + "?" + objToParamStr(query), {
             credentials: "same-origin",
             mode: "cors"
-        }).then((x)=>x.json())
+        }).then(this.errorHandler)
   }
 
   /**
@@ -288,7 +300,7 @@ class Store{
     return fetch(url + "?" + objToParamStr(query), {
             credentials: "same-origin",
             mode: "cors"
-        }).then((x)=>x.json())
+        }).then(this.errorHandler)
   }
 
   /**
@@ -306,7 +318,7 @@ class Store{
             mode: "cors",
             body: JSON.stringify(data),
             credentials: "same-origin"
-        }).then((x)=>x.json())
+        }).then(this.errorHandler)
   }
 
   /**
@@ -324,7 +336,7 @@ class Store{
             mode: "cors",
             body: JSON.stringify(data),
             credentials: "same-origin"
-        }).then((x)=>x.json())
+        }).then(this.errorHandler)
   }
 
   /**
@@ -339,7 +351,7 @@ class Store{
     return fetch(url + "?" + objToParamStr(query), {
             credentials: "same-origin",
             mode: "cors"
-        }).then((x)=>x.json())
+        }).then(this.errorHandler)
   }
 }
 
