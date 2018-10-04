@@ -33,7 +33,7 @@ function objToParamStr(obj) {
 **/
 class Store{
   constructor(base, config){
-    this.base = base || "/data/services/caMicroscope/";
+    this.base = base || "/data/";
     this.config = config;
   }
   /**
@@ -43,7 +43,7 @@ class Store{
   * @returns {promise} - promise which resolves with data
   **/
   findMark(slide, name){
-    var suffix = "mark/query/find"
+    var suffix = "Mark/find"
     var url = this.base + suffix;
     var query = {}
     if (name){
@@ -69,7 +69,7 @@ class Store{
   * @returns {promise} - promise which resolves with data
   **/
   findMarkSpatial(x, y, name, slide){
-    var suffix = "mark/query/findPoint"
+    var suffix = "Mark/findPoint"
     var url = this.base + suffix;
     var query = {}
     query.x = x
@@ -88,11 +88,11 @@ class Store{
   }
 
   getMarkByIds(ids, slide){
-    
+
     if(!Array.isArray(ids) || !slide){
       return {hasError:true,message:'args are illegal'}
     }
-    var suffix = "mark/query/multFind"
+    var suffix = "Mark/multFind"
     var url = this.base + suffix;
     var query = {}
     var stringifiedIds = ids.map(id=>`"${id}"`).join(',');
@@ -111,7 +111,7 @@ class Store{
   * @returns {promise} - promise which resolves with data
   **/
   getMark(id){
-    var suffix = "mark/query/get"
+    var suffix = "Mark/get"
     var url = this.base + suffix;
     var query = {'id':id}
     // api key for bindaas?
@@ -138,7 +138,7 @@ class Store{
         )
   }
   deleteMark(id,slide){
-    var suffix = "mark/delete/deleteMark"
+    var suffix = "Mark/deleteMark"
     var url = this.base + suffix;
     var query = {
       id:id,
@@ -157,7 +157,7 @@ class Store{
   * @returns {promise} - promise which resolves with data
   **/
   findMarkTypes(name, slide){
-    var suffix = "mark/query/findTypes"
+    var suffix = "Mark/findTypes"
     var url = this.base + suffix;
     var query = {}
     if (name){
@@ -181,7 +181,7 @@ class Store{
   * @returns {promise} - promise which resolves with data
   **/
   findOverlay(name, slide){
-    var suffix = "Overlay/query/find"
+    var suffix = "Overlay/find"
     var url = this.base + suffix;
     var query = {}
     if (name){
@@ -203,7 +203,7 @@ class Store{
   * @returns {promise} - promise which resolves with data
   **/
   getOverlay(id){
-    var suffix = "Overlay/query/get"
+    var suffix = "Overlay/get"
     var url = this.base + suffix;
     var query = {'id':id}
     // api key for bindaas?
@@ -220,7 +220,7 @@ class Store{
   * @returns {promise} - promise which resolves with data
   **/
   findSlide(slide, location){
-    var suffix = "Slide/query/find"
+    var suffix = "Slide/find"
     var url = this.base + suffix;
     var query = {}
     if (slide){
@@ -242,7 +242,7 @@ class Store{
   * @returns {promise} - promise which resolves with data
   **/
   getSlide(id){
-    var suffix = "Slide/query/get"
+    var suffix = "Slide/get"
     var url = this.base + suffix;
     var query = {'id':id}
     // api key for bindaas?
@@ -259,7 +259,7 @@ class Store{
   * @returns {promise} - promise which resolves with data
   **/
   findTemplate(name, type){
-    var suffix = "Template/query/find"
+    var suffix = "Template/find"
     var url = this.base + suffix;
     var query = {}
     if (name){
@@ -281,7 +281,7 @@ class Store{
   * @returns {promise} - promise which resolves with data
   **/
   getTemplate(id){
-    var suffix = "Template/query/get"
+    var suffix = "Template/get"
     var url = this.base + suffix;
     var query = {'id':id}
     // api key for bindaas?
@@ -299,7 +299,7 @@ class Store{
   * @returns {promise} - promise which resolves with data
   **/
   post(type, query, data){
-    var url = this.base + type + "/submit/json";
+    var url = this.base + type + "/post";
     // api key for bindaas?
     return fetch(url + "?" + objToParamStr(query), {
             method: "POST",
@@ -317,7 +317,7 @@ class Store{
   * @returns {promise} - promise which resolves with data
   **/
   update(type, query, data){
-    var url = this.updateUrls[type];
+    var url = this.base + type + "/update";
     // api key for bindaas?
     return fetch(url + "?" + objToParamStr(query), {
             method: "UPDATE",
@@ -334,7 +334,7 @@ class Store{
   * @returns {promise} - promise which resolves with data
   **/
   delete(type, query){
-    var url = this.deleteUrls[type];
+    var url = this.base + type + "/delete";
     // api key for bindaas?
     return fetch(url + "?" + objToParamStr(query), {
             credentials: "same-origin",
