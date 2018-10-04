@@ -81,7 +81,7 @@ switch ($_SERVER['REQUEST_METHOD'])
         $newAnnotation['provenance']['analysis']['execution_id'] = $POSTexecution_id;
         $newExecutionId = $POSTexecution_id;
         $authorized = true;
-        $jsonAnnotation = json_encode($newAnnotation, JSON_NUMERIC_CHECK);
+        $jsonAnnotation = json_encode($newAnnotation);
         //print_r(json_encode($newAnnotation)); 
 	      
 	//save case_id and subject_id as string all the time      
