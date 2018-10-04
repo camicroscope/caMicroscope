@@ -54,7 +54,7 @@ switch ($_SERVER['REQUEST_METHOD'])
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
 
-        curl_setopt($ch, CURLOPT_POSTFIELDS,json_encode($lymphocyteHeatmapInfo, JSON_NUMERIC_CHECK));
+        curl_setopt($ch, CURLOPT_POSTFIELDS,json_encode($lymphocyteHeatmapInfo));
         $result = curl_exec($ch);
         if($result === false){
             $result =  curl_error($ch);
