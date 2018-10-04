@@ -55,7 +55,7 @@ switch ($_SERVER['REQUEST_METHOD'])
 		//$newestAnnot["loc"][0] = (float)$newestAnnot["loc"][0];
 		//$newestAnnot["loc"][1] = (float)$newestAnnot["loc"][1];
         //print_r($annotationList);
-        //print_r(json_encode($annotationList), JSON_NUMERIC_CHECK);
+        //print_r(json_encode($annotationList));
         echo "posting data\n";
         echo $url;
         $ch = curl_init();
@@ -65,7 +65,7 @@ switch ($_SERVER['REQUEST_METHOD'])
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
 
-        curl_setopt($ch, CURLOPT_POSTFIELDS,json_encode($annotationList, JSON_NUMERIC_CHECK));
+        curl_setopt($ch, CURLOPT_POSTFIELDS,json_encode($annotationList));
         $result = curl_exec($ch);
         if($result === false){
             $result =  curl_error($ch);
@@ -74,7 +74,7 @@ switch ($_SERVER['REQUEST_METHOD'])
 
         echo $result;
 
-		//$postRequest = new RestRequest($url,'POST',json_encode($annotationList), JSON_NUMERIC_CHECK);
+		//$postRequest = new RestRequest($url,'POST',json_encode($annotationList));
 		//$postRequest->execute();
         //print_r($postRequest);
 		//echo(json_encode($newestAnnot));
