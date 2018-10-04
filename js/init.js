@@ -1,4 +1,4 @@
-// CAMIC is an instance of camicroscope core 
+// CAMIC is an instance of camicroscope core
 // $CAMIC in there
 let $CAMIC = null;
 // for all instances of UI components
@@ -18,7 +18,7 @@ const $D = {
 // initialize viewer page
 function initialize(){
 
-  // init UI -- some of them need to wait data loader to load data 
+  // init UI -- some of them need to wait data loader to load data
   // because UI components need data to initialize
   initUIcomponents();
 
@@ -30,7 +30,7 @@ function initialize(){
 
   // loading the overlayers data
   OverlayersLoader();
-  
+
 
 }
 
@@ -46,7 +46,7 @@ function initCore(){
     draw:{
       // extend context menu btn group
       btns:[
-        { // annotation   
+        { // annotation
           type:'btn',
           title:'Annotation',
           class:'material-icons',
@@ -67,7 +67,7 @@ function initCore(){
   if($D.params.states){
     opt.states = $D.params.states;
   }
-  
+
   try{
     $CAMIC = new CaMic("main_viewer",$D.params.slideId, opt);
   }catch(error){
@@ -78,7 +78,7 @@ function initCore(){
   }
 
   $CAMIC.loadImg(function(e){
-    //  image loaded 
+    //  image loaded
     if(e.hasError){
       $UI.message.addError(e.message)
     }else{
@@ -89,7 +89,7 @@ function initCore(){
         if(!e.data) {
           $UI.annotPopup.close();
           return;
-        } 
+        }
         const body = convertToPopupBody(e.data.properties.annotations);
         $UI.annotPopup.data = {
           id:e.data.provenance.analysis.execution_id,
@@ -104,8 +104,8 @@ function initCore(){
       // spyglass
       $UI.spyglass = new Spyglass({
         targetViewer:$CAMIC.viewer,
-        imgsrc:$D.params.data.location
-      });      
+        imgsrc:"/img/Slide/"+$D.params.data['_id']['$oid']+".dzi"
+      });
     }
   });
 }
@@ -114,7 +114,7 @@ function initCore(){
 // initialize all UI components
 function initUIcomponents(){
   /* create UI components */
-  
+
 
   // create the message queue
   $UI.message = new MessageQueue();
@@ -128,7 +128,7 @@ function initUIcomponents(){
     id:'ca_tools',
     zIndex:601,
     mainToolsCallback:mainMenuChange,
-    subTools:[  
+    subTools:[
       // home
       {
         icon:'home',// material icons' name
@@ -189,7 +189,7 @@ function initUIcomponents(){
     callback:toggleSideMenu
   });
   $UI.message.add('Apps Side Menu loaded');
-    
+
   $UI.layersSideMenu = new SideMenu({
     id:'side_layers',
     width: 300,
@@ -203,8 +203,8 @@ function initUIcomponents(){
 
   /* annotation popup */
   $UI.annotPopup = new PopupPanel({
-    footer:[      
-      // { // edit   
+    footer:[
+      // { // edit
       //   title:'Edit',
       //   class:'material-icons',
       //   text:'notes',
@@ -228,7 +228,7 @@ function initUIcomponents(){
     defaultText:`Slide Id: ${$D.params.slideId}`
   });
   $UI.message.add('Slide Info loaded');
-  
+
 
 
 
@@ -258,11 +258,11 @@ function initUIcomponents(){
 
 
 
-  
+
   var checkTemplateSchemasDataReady = setInterval(function () {
     if($D.templates) {
       clearInterval(checkTemplateSchemasDataReady);
-      const annotRegex = new RegExp('annotation', 'gi'); 
+      const annotRegex = new RegExp('annotation', 'gi');
       const annotSchemas = $D.templates.filter(item=> item.id.match(annotRegex));
       /* annotation control */
       $UI.annotOptPanel = new OperationPanel({
@@ -276,11 +276,11 @@ function initUIcomponents(){
       });
       $UI.appsList.clearContent('annotation');
       $UI.appsList.addContent('annotation',$UI.annotOptPanel.elt);
-      
+
       $UI.message.add('Annotation Operation Panel loaded');
-      
+
       /* algorithm control */
-      const algoRegex = new RegExp('algo', 'gi'); 
+      const algoRegex = new RegExp('algo', 'gi');
       const algoSchemas = $D.templates.filter(item => item.id.match(algoRegex));
       $UI.algOptPanel = new OperationPanel({
         //id:
@@ -295,7 +295,7 @@ function initUIcomponents(){
       $UI.appsList.clearContent('analytics');
       $UI.appsList.addContent('analytics',$UI.algOptPanel.elt);
       $UI.appsList.addContent('analytics', AnalyticsPanelContent);
-      
+
       $UI.message.add('Analytics Operation Panel loaded');
 
     }
@@ -303,7 +303,7 @@ function initUIcomponents(){
 
 
 
-    // collapsible list 
+    // collapsible list
   $UI.appsList = new CollapsibleList({
     id:'collapsiblelist',
     list:[
@@ -323,9 +323,9 @@ function initUIcomponents(){
     ],
     changeCallBack:getCurrentItem
   });
-    
 
-  // detach collapsible_list 
+
+  // detach collapsible_list
   $UI.appsList.elt.parentNode.removeChild($UI.appsList.elt);
   $UI.appsSideMenu.addContent($UI.appsList.elt);
   $UI.message.add('Apps Panel loaded');
@@ -341,7 +341,7 @@ function redirect(url ,text = '', sec = 5){
     if(!timer) {
       window.location.href = url;
     }
-    
+
     if(Loading.instance.parentNode){
       Loading.text.textContent = `${text} ${timer}s.`;
     }else{
@@ -349,12 +349,6 @@ function redirect(url ,text = '', sec = 5){
     }
     // Hint Message for clients that page is going to redirect to Flex table in 5s
     timer--;
-    
+
   }, 1000);
 }
-
-
-
-
-
-

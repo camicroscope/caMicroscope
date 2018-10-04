@@ -14,7 +14,7 @@ function toggleViewerMode(opt){
 
 //mainfest
 function multSelector_action(data){
-	
+
 	if(data.selected.length == 0){
 		alert('No Layer selected');
 		return;
@@ -26,8 +26,8 @@ function multSelector_action(data){
 	// show the minor part
 	const minor = document.getElementById('minor_viewer');
 	minor.classList.remove('none');
-	minor.classList.add('display');	
-	
+	minor.classList.add('display');
+
 	// open new instance camic
 	try{
 
@@ -53,13 +53,13 @@ function multSelector_action(data){
 		// synchornic zoom and move
 		// coordinated Viewer - zoom
 		$CAMIC.viewer.addHandler('zoom',coordinatedViewZoom);
-		
+
 		// coordinated Viewer - pan
 		$CAMIC.viewer.addHandler('pan',coordinatedViewPan);
 
 		// loading image
 		$minorCAMIC.loadImg(function(e){
-			// image loaded 
+			// image loaded
 			if(e.hasError){
 				$UI.message.addError(e.message);
 			}
@@ -67,7 +67,7 @@ function multSelector_action(data){
 		// $minorCAMIC.viewer.addOnceHandler('tile-loaded',function(){
 		// 	loading layers TODO
 		// 	$CAMIC.store.getMarkByIds(,,);
-		// });	
+		// });
 	}catch(error){
 		Loading.close();
 		$UI.message.addError('Core Initialization Failed');
@@ -83,12 +83,12 @@ function multSelector_action(data){
 	});
 	// if all data loaded then add selected layer to minor viewer
 	if(unloaded.length == 0){
-		// add overlays to 
+		// add overlays to
 		// wait util omanager create
 		var checkOmanager = setInterval(function () {
 			if($minorCAMIC.viewer.omanager) {
 				clearInterval(checkOmanager);
-				// add overlays to 
+				// add overlays to
 				data.selected.forEach(id =>{
 					// find data
 					const layer = $D.overlayers.find(layer=> layer.id == id);
@@ -115,12 +115,12 @@ function multSelector_action(data){
 			item.render = anno_render;
 			item.layer = $CAMIC.viewer.omanager.addOverlay(item);
 		});
-		
+
 		// wait util omanager create
 		var checkOmanager = setInterval(function () {
 			if($minorCAMIC.viewer.omanager) {
 				clearInterval(checkOmanager);
-				// add overlays to 
+				// add overlays to
 				data.selected.forEach(id =>{
 					// find data
 					const layer = $D.overlayers.find(layer=> layer.id == id);
@@ -137,10 +137,10 @@ function multSelector_action(data){
 	}).finally(function(){
 		//TODO
 	});
-	
 
 
-	
+
+
 }
 
 
@@ -181,12 +181,12 @@ function closeSecondaryViewer(){
 	$UI.toolbar._sub_tools[4].querySelector('input[type="checkbox"]').checked = false;
 	Loading.close();
 
-	//destory 
+	//destory
 	if($minorCAMIC) {
 		// remove handler
 		$CAMIC.viewer.removeHandler('zoom',coordinatedViewZoom);
 		$CAMIC.viewer.removeHandler('pan',coordinatedViewPan);
-		
+
 		// destroy object
 		$minorCAMIC.destroy();
 		$minorCAMIC = null;
@@ -194,7 +194,7 @@ function closeSecondaryViewer(){
 	const minor = document.getElementById('minor_viewer');
 	minor.classList.remove('display');
 	minor.classList.add('none');
-	
+
 }
 
 // side menu close callback
@@ -312,9 +312,9 @@ function deleteCallback(data){
     $CAMIC.viewer.omanager.removeOverlay(data.id);
     // update layers Viewer
     $UI.layersViewer.update();
-	// close popup panel 
+	// close popup panel
     $UI.annotPopup.close();
-   	
+
 }
 
 function sort_change(sort){
@@ -326,21 +326,21 @@ function anno_callback(data){
 	// is form ok?
 	const noteData = $UI.annotOptPanel._form_.value;
 	if($UI.annotOptPanel._action_.disabled || noteData.name == ''){
-		
+
 		// close layer silde
 		$UI.toolbar._main_tools[1].querySelector('[type=checkbox]').checked = false;
 		$UI.layersSideMenu.close();
-		
+
 		// open app silde
 		$UI.toolbar._main_tools[0].querySelector('[type=checkbox]').checked = true;
 		$UI.appsSideMenu.open();
 		// open annotaion list
 		$UI.appsList.triggerContent('annotation','open');
 		return;
-		
+
 	}
 	// has Path?
-	
+
 	if($CAMIC.viewer.canvasDrawInstance._path_index===0){
 		alert('No Markup on Annotation.');
 		return;
@@ -365,7 +365,7 @@ function anno_callback(data){
 		},
 		geometries:ImageFeaturesToVieweportFeatures($CAMIC.viewer, $CAMIC.viewer.canvasDrawInstance.getImageFeatureCollection())
 	}
-	
+
 	$CAMIC.store.addMark(annotJson)
 	.then(data=>{
 		console.log(data);
@@ -376,7 +376,7 @@ function anno_callback(data){
 		console.log(e)
 	})
 	.finally(()=>{
-		
+
 	});
 }
 function saveAnnotCallback(){
@@ -390,7 +390,7 @@ function saveAnnotCallback(){
 	$UI.toolbar._sub_tools[1].querySelector('[type=checkbox]').checked = false;
 	// clear form
 	$UI.annotOptPanel.clear();
-		
+
 	// close app side
 	$UI.toolbar._main_tools[0].querySelector('[type=checkbox]').checked = false;
 	$UI.appsSideMenu.close();
@@ -413,18 +413,18 @@ function callback(data){
 		if(!item.layer){
 			// load layer data
 			loadAnnotationById(item,item.id);
-			
+
 		}else{
 			item.layer.isShow = item.isShow;
 			$CAMIC.viewer.omanager.updateView();
 		}
 
-		
+
 	});
 }
 function loadAnnotationById(item,id){
 			Loading.open(document.body,'loading layers...');
-			$CAMIC.store.getMark(id)
+			$CAMIC.store.findMark(id)
 			.then(data =>{
 
 				if(data.error){
@@ -439,7 +439,7 @@ function loadAnnotationById(item,id){
 				}
 
 				data[0].geometries = VieweportFeaturesToImageFeatures($CAMIC.viewer, data[0].geometries);
-				
+
 				if(!item){
 					item = covertToLayViewer(data[0]);
 					item.isShow = true;
@@ -450,7 +450,7 @@ function loadAnnotationById(item,id){
 				}else{
 					data[0].isShow = item.isShow;
 				}
-				
+
 				item.data = data[0];
 				item.render = anno_render;
 				// create lay and update view
@@ -465,7 +465,7 @@ function loadAnnotationById(item,id){
 				Loading.close();
 			});
 }
-/* 
+/*
 	collapsible list
 	1. Annotation
 	2. Analytics
@@ -487,7 +487,7 @@ function algoRun(){
 
 function saveAnnotation(){
 	console.log('saveAnnotation');
-	
+
 	anno_callback.call(null,{id:$UI.annotOptPanel.setting.formSchemas[$UI.annotOptPanel._select_.value].id, data:$UI.annotOptPanel._form_.value});
 }
 
