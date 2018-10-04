@@ -54,7 +54,7 @@ class CaMic{
    */
   init(){
     this.viewer.controls.bottomright.style.zIndex = 600;
-    
+
     this.viewer.addOnceHandler('tile-loaded', function(){
       $UI.message.add('Tile loaded');
       Loading.close();
@@ -66,7 +66,7 @@ class CaMic{
         this.viewer.viewport.panTo(pt, true);
       }
     }.bind(this));
-    
+
     // create draw pulgin
     this.createCanvasDraw();
     this.createOverlayers();
@@ -80,7 +80,7 @@ class CaMic{
       nav.style.backgroundColor = '#365f9c';
       nav.style.opacity = 1;
     }
-    
+
     this.createZoomControl();
 
   }
@@ -103,7 +103,7 @@ class CaMic{
           return;
         }
 
-        this.viewer.open(x[0].location);
+        this.viewer.open("/img/Slide/"+ x[0]["_id"]["$oid"] + ".dzi");
         // set scalebar
         this.createScalebar(x[0].mpp)
         var imagingHelper = new OpenSeadragonImaging.ImagingHelper({
@@ -140,13 +140,13 @@ class CaMic{
     this.viewer.canvasDraw();
     // create style context menu for draw
     this.drawContextmenu = new StyleContextMenu(
-      this.viewer.container, 
+      this.viewer.container,
       {
         btns:this.setting.draw.btns
       }
     );
 
-    // add event to hook up 
+    // add event to hook up
     this.drawContextmenu.addHandler('style-changed',function(e){
       this.viewer.canvasDrawInstance.style = e.style;
     }.bind(this));
@@ -167,10 +167,10 @@ class CaMic{
     this.drawContextmenu.addHandler('draw-mode-changed',function(e){
       this.viewer.canvasDrawInstance.drawMode = e.mode;
     }.bind(this));
-    
+
     this.drawContextmenu.addHandler('draw',draw);
   }
-  
+
   /**
    * set up a overlay manage on the image
    */
@@ -221,13 +221,13 @@ class CaMic{
       this.viewer.canvasDrawInstance.destroy();
       this.viewer.canvasDrawInstance = null;
     }
-    
+
     // destroy CaZoomControl's instance if exists
     if(this.viewer.cazoomctrlInstance){
       this.viewer.cazoomctrlInstance.destroy();
       this.viewer.cazoomctrlInstance = null;
     }
-    
+
     // destroy OverlayManager's instance if exists
     if(this.viewer.omanager){
       this.viewer.omanager.destroy();
