@@ -33,7 +33,7 @@ function objToParamStr(obj) {
 **/
 class Store{
   constructor(base, config){
-    this.base = base || "/data/";
+    this.base = base || "./data/";
     this.config = config;
   }
   /**
