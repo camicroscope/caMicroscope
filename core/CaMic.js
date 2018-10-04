@@ -103,7 +103,7 @@ class CaMic{
           return;
         }
 
-        this.viewer.open("/img/Slide/"+ x[0]["_id"]["$oid"] + ".dzi");
+        this.viewer.open("./img/Slide/"+ x[0]["_id"]["$oid"] + ".dzi");
         // set scalebar
         this.createScalebar(x[0].mpp)
         var imagingHelper = new OpenSeadragonImaging.ImagingHelper({
