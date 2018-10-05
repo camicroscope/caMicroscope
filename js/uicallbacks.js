@@ -64,10 +64,6 @@ function multSelector_action(data){
 				$UI.message.addError(e.message);
 			}
 		});
-		// $minorCAMIC.viewer.addOnceHandler('tile-loaded',function(){
-		// 	loading layers TODO
-		// 	$CAMIC.store.getMarkByIds(,,);
-		// });
 	}catch(error){
 		Loading.close();
 		$UI.message.addError('Core Initialization Failed');
@@ -104,10 +100,22 @@ function multSelector_action(data){
 	// load data from service side
 	$CAMIC.store.getMarkByIds(unloaded,$D.params.slideId)
 	.then(function(datas){
-		console.log(datas);
-		// add overlays
+		// response error
+		if(datas.error){
+			const errorMessage = `${datas.text}: ${datas.url}`;
+			$UI.message.addError(errorMessage, 5000);
+			// close
+			return;
+		}
 
-		datas = datas.map(d=>{
+		// no data found
+		if(datas.length == 0){
+			$UI.message.addError(`Selected annotations do not exist.`,5000);
+			return;
+		}
+
+		// add overlays
+		if(Array.isArray(datas)) datas = datas.map(d=>{
 			d.geometries = VieweportFeaturesToImageFeatures($CAMIC.viewer, d.geometries);
 			const id = d.provenance.analysis.execution_id;
 			const item = $D.overlayers.find(l=>l.id==id);
@@ -133,13 +141,10 @@ function multSelector_action(data){
 
 	})
 	.catch(function(e){
-		console.error(e.message);
+		console.error(e);
 	}).finally(function(){
-		//TODO
+
 	});
-
-
-
 
 }
 
@@ -369,9 +374,24 @@ function anno_callback(data){
 	$CAMIC.store.addMark(annotJson)
 	.then(data=>{
 		console.log(data);
+
+		// server error
+		if(data.error){
+			$UI.message.addWarning(`${data.text}:${data.url}`);
+			Loading.close();
+			return;
+		}
+
+		// no data added
+		if(data.count < 1){
+			Loading.close();
+			$UI.message.addWarning(`Annotation Save Failed`);
+			return;
+		}
 		loadAnnotationById(null,exec_id);
 	})
 	.catch(e=>{
+
 		console.log('save failed');
 		console.log(e)
 	})
@@ -431,8 +451,10 @@ function loadAnnotationById(item,id){
 					const errorMessage = `${data.text}: ${data.url}`;
 					$UI.message.addError(errorMessage, 5000);
 					const layer = $D.overlayers.find(layer => layer.id==id);
-					layer.isShow = false;
-					$UI.layersViewer.update();
+					if(layer){
+						layer.isShow = false;
+						$UI.layersViewer.update();
+					}
 					return;
 				}
 
@@ -441,8 +463,7 @@ function loadAnnotationById(item,id){
 					console.log(`Annotation:${id} doesn't exist.`);
 					$UI.message.addError(`Annotation:${id} doesn't exist.`,5000);
 					// delete item form layview
-					if(item)
-					removeElement($D.overlayers,id);
+					if(item) removeElement($D.overlayers,id);
 					$UI.layersViewer.update();
 					return;
 				}

@@ -6,8 +6,8 @@ const $UI = new Map();
 
 const $D = {
   pages:{
-    home:'/table.html',
-    table:'/table.html'
+    home:'./table.html',
+    table:'./table.html'
   },
   params:null, // parameter from url - slide Id and status in it (object).
   overlayers:null, // array for each layers

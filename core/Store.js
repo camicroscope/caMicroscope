@@ -146,7 +146,7 @@ class Store{
             "Content-Type": "application/json; charset=utf-8",
             // "Content-Type": "application/x-www-form-urlencoded",
             },
-            //body:JSON.stringify(json)
+            body:JSON.stringify(json)
         }).then(this.errorHandler)
   }
   deleteMark(id,slide){
