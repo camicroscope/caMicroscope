@@ -104,7 +104,7 @@ function initCore(){
       // spyglass
       $UI.spyglass = new Spyglass({
         targetViewer:$CAMIC.viewer,
-        imgsrc:"/img/Slide/"+$D.params.data['_id']['$oid']+".dzi"
+        imgsrc:"./img/Slide/"+$D.params.data['_id']['$oid']+".dzi"
       });
     }
   });

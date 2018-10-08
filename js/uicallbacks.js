@@ -296,15 +296,30 @@ function anno_delete(data){
 	if(!data.id) return;
 	if(!confirm(`Are you sure you want to delete this markup {ID:${data.id}}?`)) return;
 	$CAMIC.store.deleteMark(data.oid,$D.params.slideId)
-	.then(text=>{
-		const json = JSON.parse(text.replace(/'/g, '"'));
+	.then(datas =>{
+		// server error
+		if(datas.error){
+			const errorMessage = `${datas.text}: ${datas.url}`;
+			$UI.message.addError(errorMessage, 5000);
+			// close
+			return;
+		}
+
+		// no data found
+		if(!datas.rowsAffected || datas.rowsAffected < 1){
+			$UI.message.addWarning(`Delete Annotations Failed.`,5000);
+			return;
+		}
+		
+		// update UI
 		deleteCallback(data);
 	})
 	.catch(e=>{
+		$UI.message.addError(e);
 		console.error(e);
 	})
 	.finally(()=>{
-		console.log('delete end');
+		//console.log('delete end');
 	});
 
 }
