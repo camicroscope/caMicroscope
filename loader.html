@@ -1,0 +1,28 @@
+<html>
+<head>
+  <script src="core/Store.js"></script>
+  <script src="js/loader.js"></script>
+</head>
+<body>
+<div id="upload_form">
+<h1>Slide Loader</h1>
+<p>
+First, UPLOAD a file to the server. Skip this step if the file is already loaded.
+Second, CHECK the file for metadata to check if it uploaded correctly.
+Finally, POST it to the camicroscope instance.
+</p>
+    <form>
+      File: <input type=file name=file id="fileinput"><br/>
+      Filename: <input type=text name=filename id="filename"><br/>
+      Slidename: <input type=text name=slidename id="slidename"><br/>
+      <button type="button" id="upload_btn" value="Upload" onclick="UploadBtn()">Upload</button><br/>
+      <button type="button" id="check_btn" value="Check" onclick="CheckBtn()">Check</button><br/>
+      <button type="button" id="post_btn" value="Post" onclick="PostBtn()">Post</button><br/>
+    </form>
+</div>
+<div id="load_status">
+Keep track of status here...
+</div>
+</body>
+<
+</html>
