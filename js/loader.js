@@ -1,5 +1,5 @@
-var upload_url = "http://127.0.0.1:5000/upload"
-var check_url = "http://127.0.0.1:5000/data/one/"
+var upload_url = "load/Slide/upload"
+var check_url = "load/Slide/info/"
 
 var store = new Store()
 
@@ -45,7 +45,7 @@ function handlePost(filename, slidename){
       data['upload_date'] = new Date(Date.now()).toLocaleString();
       data.name = slidename
       data.location = "/images/" + filename
-      data.mpp = data['MPP-X'] || data['MPP-Y'] || 0
+      data.mpp = data['mpp-'] || data['mpp-y'] || 0
       store.post("slide", {}, data).then(
         success => changeStatus("POST", success) // Handle the success response object
       ).catch(
