@@ -42,6 +42,7 @@ function handlePost(filename, slidename){
     response => response.json() // if the response is a JSON object
   ).then(
     data => {
+      data['upload_date'] = new Date(Date.now()).toLocaleString();
       data.name = slidename
       data.location = "/images/" + filename
       data.mpp = data['MPP-X'] || data['MPP-Y'] || 0
