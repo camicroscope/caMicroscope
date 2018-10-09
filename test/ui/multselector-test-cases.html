@@ -61,34 +61,37 @@
 	<script type = "text/javascript">
 		window.eventName = '';
 		window.eventData = {};
-		// TODO initialize UI component
+
+		//initialize UI component
 		function cancel(d){
 			window.eventName = 'cancel';
-			//window.eventData = d.data;
 		}
 		
 		function action(d){
+			console.log(d);
 			window.eventName = 'action';
-			//window.eventData = d.data;
+			window.eventData = d.data;
 		}
 		
 		function select(d){
+			console.log(d);
 			window.eventName = 'select';
-			//window.eventData = d.data;
+			window.eventData = d.data;
 		}
 
 		function selectAll(d){
+			console.log(d);
 			window.eventName = 'select-all';
-			//window.eventData = d.data;
 		}
 
 		function remove(d){
+			console.log(d);
 			window.eventName = 'remove';
-			//window.eventData = d.data;
+			window.eventData = d.data;
 		}
 		function removeAll(d){
+			console.log(d);
 			window.eventName = 'remove-all';
-			//window.eventData = d.data;
 		}
 
 		// create mult selectors
@@ -98,24 +101,18 @@
 		}
 
 		// case 1: test options to initialize component
-		window.mSel1 = new MultSelector({id:'selector1'});
+		window.mSel1 = new MultSelector({id:'selector1',hasControl:false});
+
 		window.mSel2 = new MultSelector({element:document.getElementById('selector2'),data:options});
 		
 		// add Event for all selectors
+		window.mSel1.addHandler('cancel',cancel);
+		window.mSel1.addHandler('action',action);
+		window.mSel1.addHandler('select',select);
+		window.mSel1.addHandler('select-all',selectAll);
+		window.mSel1.addHandler('remove',remove);
+		window.mSel1.addHandler('remove-all',removeAll);
 		
-		// window.menu1 = new SideMenu({id:'menu1',callback:change});
-		// window.menu1.addContent('<div>1</div><div>2</div>');
-		// const div = document.createElement('div');
-		// div.textContent = '3';
-		// window.menu1.addContent(div);
-		// const div2 = document.createElement('div');
-		// div2.textContent = '4';
-		// window.menu1.addContent(div2);
-
-		// window.menu2 = new SideMenu({id:'menu2',isOpen:true,width:500,callback:change});
-		// window.menu2.addContent('<div>11111<div>');
-		// window.menu2.clearContent();
-		// Never remove this code, this is a flag to told us jsdom loads the anysubresources sucha as scripts, stylesheets or images.
 		document.getElementById('isLoad').checked = true;
 
 	</script>
