@@ -310,7 +310,7 @@ function anno_delete(data){
 			$UI.message.addWarning(`Delete Annotations Failed.`,5000);
 			return;
 		}
-		
+
 		// update UI
 		deleteCallback(data);
 	})
@@ -388,7 +388,6 @@ function anno_callback(data){
 
 	$CAMIC.store.addMark(annotJson)
 	.then(data=>{
-		console.log(data);
 
 		// server error
 		if(data.error){
@@ -406,7 +405,7 @@ function anno_callback(data){
 		loadAnnotationById(null,exec_id);
 	})
 	.catch(e=>{
-
+		Loading.close();
 		console.log('save failed');
 		console.log(e)
 	})
