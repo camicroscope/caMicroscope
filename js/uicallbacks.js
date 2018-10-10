@@ -13,9 +13,9 @@ function toggleViewerMode(opt){
 }
 
 //mainfest
-function multSelector_action(data){
+function multSelector_action(event){
 
-	if(data.selected.length == 0){
+	if(event.data.length == 0){
 		alert('No Layer selected');
 		return;
 	}
@@ -72,8 +72,8 @@ function multSelector_action(data){
 	}
 
 	// find unloaded data
-	data.selected = data.selected.map(lay=>lay[0]);
-	const unloaded = data.selected.filter(id =>{
+	event.data = event.data.map(lay=>lay[0]);
+	const unloaded = event.data.filter(id =>{
 		const layer = $D.overlayers.find(layer=> layer.id == id);
 		return layer && !layer.data
 	});
@@ -85,7 +85,7 @@ function multSelector_action(data){
 			if($minorCAMIC.viewer.omanager) {
 				clearInterval(checkOmanager);
 				// add overlays to
-				data.selected.forEach(id =>{
+				event.data.forEach(id =>{
 					// find data
 					const layer = $D.overlayers.find(layer=> layer.id == id);
 					// add to the minor viewer
@@ -129,7 +129,7 @@ function multSelector_action(data){
 			if($minorCAMIC.viewer.omanager) {
 				clearInterval(checkOmanager);
 				// add overlays to
-				data.selected.forEach(id =>{
+				event.data.forEach(id =>{
 					// find data
 					const layer = $D.overlayers.find(layer=> layer.id == id);
 					// add to the minor viewer
