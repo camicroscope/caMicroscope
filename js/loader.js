@@ -46,7 +46,7 @@ function handlePost(filename, slidename){
       data.name = slidename
       data.location = "/images/" + filename
       data.mpp = data['mpp-'] || data['mpp-y'] || 0
-      store.post("slide", {}, data).then(
+      store.post("Slide", {}, data).then(
         success => changeStatus("POST", success) // Handle the success response object
       ).catch(
         error => changeStatus("POST", error) // Handle the error response object
