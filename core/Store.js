@@ -317,7 +317,10 @@ class Store{
             method: "POST",
             mode: "cors",
             body: JSON.stringify(data),
-            credentials: "same-origin"
+            credentials: "same-origin",
+            headers: {
+              "Content-Type": "application/json; charset=utf-8"
+            }
         }).then(this.errorHandler)
   }
 
@@ -335,7 +338,10 @@ class Store{
             method: "UPDATE",
             mode: "cors",
             body: JSON.stringify(data),
-            credentials: "same-origin"
+            credentials: "same-origin",
+            headers: {
+              "Content-Type": "application/json; charset=utf-8"
+            }
         }).then(this.errorHandler)
   }
 
