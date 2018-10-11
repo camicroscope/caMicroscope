@@ -35,7 +35,8 @@ class CaMic{
       hasZoomControl:true,
       hasDrawLayer:true,
       hasLayerManager:true,
-      hasScalebar:true
+      hasScalebar:true,
+      hasMeasurementTool:true
     }
     extend(this.setting, options);
 
@@ -56,7 +57,7 @@ class CaMic{
     this.viewer.controls.bottomright.style.zIndex = 600;
 
     this.viewer.addOnceHandler('tile-loaded', function(){
-      $UI.message.add('Tile loaded');
+      // the first tile loaded
       Loading.close();
       // set zoom and pan
       if(this.setting.states){
@@ -82,7 +83,7 @@ class CaMic{
     }
 
     this.createZoomControl();
-
+    this.createMeasurementTool(this.mpp);
   }
   /**
   * Change which image is staged, used loadImg to load it.
@@ -109,10 +110,13 @@ class CaMic{
         var imagingHelper = new OpenSeadragonImaging.ImagingHelper({
           viewer: this.viewer
         });
+
         imagingHelper.setMaxZoom(1);
         if(func && typeof func === 'function') func.call(null,x[0]);
         Loading.text.textContent = `loading slide's tiles...`;
-        //func.call(null,x[0]);
+        this.mpp = x[0].mpp;
+
+        
       })
       .catch(e=>{
         Loading.close();
@@ -200,6 +204,16 @@ class CaMic{
       } catch (ex) {
           console.log("scalebar err: ", ex.message);
       }
+  }
+
+  createMeasurementTool(mpp){
+    if(!this.setting.hasMeasurementTool) return;
+    this.viewer.measurementTool({
+      mpp:{
+        x:mpp,
+        y:mpp,
+      }
+    });
   }
 
   /**

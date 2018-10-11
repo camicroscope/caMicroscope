@@ -34,7 +34,7 @@
             options.viewer = this;
             this.omanager = new $.OverlaysManager(options);
         } else {
-            this.omanager.updateOptions(options);
+            //this.omanager.updateOptions(options);
         }
     };
 

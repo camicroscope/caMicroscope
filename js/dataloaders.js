@@ -18,7 +18,6 @@ function FormTempaltesLoader(){
 
 	function loadingFormTemplates(){
 		
-		$UI.message.add('Start loading Templates');
 		$CAMIC.store.findTemplate()
 		//
 		.then(function(temps){
@@ -34,8 +33,6 @@ function FormTempaltesLoader(){
 		//
 		.finally(function(){
 			if($D.templates){
-				// set successful message
-				$UI.message.add('Templates loaded');
 				// load UI
 			}else{
 				// set message
@@ -57,7 +54,6 @@ function FormTempaltesLoader(){
 function OverlayersLoader(){
 	function loadingOverlayers(){
 
-		$UI.message.add('Start loading Overlayers');
 		$CAMIC.store.findMark($D.params.slideId)
 		//
 		.then(function(layers){
@@ -67,7 +63,6 @@ function OverlayersLoader(){
 			for(let i = 0 ;i < layers.length;i++){
 				$D.overlayers.push(covertToLayViewer(layers[i],($D.params.states)?$D.params.states.l:null));
 			}
-			//$D.overlayers = layers.map(covertToLayViewer)
 		})
 		//
 		.catch(function(error){
@@ -78,9 +73,6 @@ function OverlayersLoader(){
 		//
 		.finally(function(){
 			if($D.overlayers){
-				// set successful message
-				$UI.message.add('Overlayers loaded');
-				// load UI
 			}else{
 				// set message
 				$UI.message.addError('Loading Overlayers is Error');

@@ -2,6 +2,7 @@
 // all functions help the UI and Core part together that makes workflows.
 
 /* UI callback functions list */
+$minorCAMIC = null;
 function toggleViewerMode(opt){
 	const main = document.getElementById('main_viewer');
 	const secondary = document.getElementById('secondary');
@@ -174,6 +175,7 @@ function openSecondaryViewer(){
 	$UI.multSelector.elt.classList.remove('none');
 	$UI.multSelector.setData($D.overlayers.map(l=>[l.id,l.name]));
 }
+
 function closeSecondaryViewer(){
 	// ui changed
 	const main = document.getElementById('main_viewer');
@@ -226,6 +228,12 @@ function draw(e){
 	$UI.message.add(`Pen: ${draw?'ON':'OFF'}  Mode: ${canvasDraw.drawMode}`);
 	if(draw){
 		canvasDraw.drawOn();
+		// turn off magnifier
+		$UI.toolbar._sub_tools[2].querySelector('input[type=checkbox]').checked = false;
+		$UI.spyglass.close();
+		// turn off measurement
+		$UI.toolbar._sub_tools[3].querySelector('input[type=checkbox]').checked = false;
+		$CAMIC.viewer.measureInstance.off();
 	}else{
 		canvasDraw.drawOff();
 	}
@@ -241,12 +249,35 @@ function draw(e){
 	$UI.toolbar._sub_tools[1].querySelector('input[type=checkbox]').checked = draw;
 }
 
+function toggleMeasurement(data){
+	$UI.message.add(`Measument Tool ${data.checked?'ON':'OFF'}`);
+	if(data.checked){
+		$CAMIC.viewer.measureInstance.on();
+		// turn off draw
+		$UI.toolbar._sub_tools[1].querySelector('input[type=checkbox]').checked = false;
+		$CAMIC.viewer.canvasDrawInstance.drawOff();
+		$CAMIC.drawContextmenu.close();
+		// turn off magnifier
+		$UI.toolbar._sub_tools[2].querySelector('input[type=checkbox]').checked = false;
+		$UI.spyglass.close();
+	}else{
+		$CAMIC.viewer.measureInstance.off();
+	}
+}
+
 // toggle magnifier callback
 function toggleMagnifier(data){
 	//camessage.sendMessage(`Magnifier ${data.checked?'ON':'OFF'}`, {size:'15px',color:'white', bgColor:'blue'}, 3);
 	$UI.message.add(`Magnifier ${data.checked?'ON':'OFF'}`);
 	if(data.checked){
 		$UI.spyglass.open(this.clientX,this.clientY);
+		// turn off draw
+		$UI.toolbar._sub_tools[1].querySelector('input[type=checkbox]').checked = false;
+		$CAMIC.viewer.canvasDrawInstance.drawOff();
+		$CAMIC.drawContextmenu.close();
+		// turn off measurement
+		$UI.toolbar._sub_tools[3].querySelector('input[type=checkbox]').checked = false;
+		$CAMIC.viewer.measureInstance.off();
 	}else{
 		$UI.spyglass.close();
 	}
@@ -254,6 +285,7 @@ function toggleMagnifier(data){
 
 // image download
 function imageDownload(data){
+	// TODO functionality
 	alert('Download Image');
 	console.log(data);
 }

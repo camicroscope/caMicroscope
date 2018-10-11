@@ -84,7 +84,6 @@ function initCore(){
     }else{
       $D.params.data = e;
       // popup panel
-      $UI.message.add('Core is loaded');
       $CAMIC.viewer.addHandler('canvas-lay-click',function(e){
         if(!e.data) {
           $UI.annotPopup.close();
@@ -119,9 +118,6 @@ function initUIcomponents(){
   // create the message queue
   $UI.message = new MessageQueue();
 
-  $UI.message.add('start loading UI components');
-
-
   // create the tool bar
   $UI.toolbar = new CaToolbar({
   /* opts that need to think of*/
@@ -152,6 +148,14 @@ function initUIcomponents(){
         value:'magn',
         callback:toggleMagnifier
       },
+      // measurment tool
+      {
+        icon:'space_bar',
+        title:'Measurement',
+        type:'check',
+        value:'measure',
+        callback:toggleMeasurement
+      },
       // download TODO
       // {
       //   icon:'file_download',
@@ -179,8 +183,6 @@ function initUIcomponents(){
     ]
   });
 
-  $UI.message.add('Toolbar loaded');
-
   // create two side menus for tools
   $UI.appsSideMenu = new SideMenu({
     id:'side_apps',
@@ -188,7 +190,6 @@ function initUIcomponents(){
     //, isOpen:true
     callback:toggleSideMenu
   });
-  $UI.message.add('Apps Side Menu loaded');
 
   $UI.layersSideMenu = new SideMenu({
     id:'side_layers',
@@ -197,9 +198,6 @@ function initUIcomponents(){
     //, isOpen:true
     callback:toggleSideMenu
   });
-  $UI.message.add('Layers Side Menu loaded');
-
-
 
   /* annotation popup */
   $UI.annotPopup = new PopupPanel({
@@ -218,7 +216,6 @@ function initUIcomponents(){
       }
     ]
   });
-  $UI.message.add('Annotation Popup Panel loaded');
 
 
   // create the message bar TODO for reading slide Info TODO
@@ -227,7 +224,6 @@ function initUIcomponents(){
     id:'cames',
     defaultText:`Slide Id: ${$D.params.slideId}`
   });
-  $UI.message.add('Slide Info loaded');
 
 
 
@@ -249,8 +245,6 @@ function initUIcomponents(){
       title.textContent = 'Layers Manager';
       $UI.layersSideMenu.addContent(title);
       $UI.layersSideMenu.addContent($UI.layersViewer.elt);
-
-      $UI.message.add('Overlayers Viewer loaded');
     }
   }, 500);
 
@@ -277,8 +271,6 @@ function initUIcomponents(){
       $UI.appsList.clearContent('annotation');
       $UI.appsList.addContent('annotation',$UI.annotOptPanel.elt);
 
-      $UI.message.add('Annotation Operation Panel loaded');
-
       /* algorithm control */
       const algoRegex = new RegExp('algo', 'gi');
       const algoSchemas = $D.templates.filter(item => item.id.match(algoRegex));
@@ -295,8 +287,6 @@ function initUIcomponents(){
       $UI.appsList.clearContent('analytics');
       $UI.appsList.addContent('analytics',$UI.algOptPanel.elt);
       $UI.appsList.addContent('analytics', AnalyticsPanelContent);
-
-      $UI.message.add('Analytics Operation Panel loaded');
 
     }
   }, 500);
@@ -328,7 +318,6 @@ function initUIcomponents(){
   // detach collapsible_list
   $UI.appsList.elt.parentNode.removeChild($UI.appsList.elt);
   $UI.appsSideMenu.addContent($UI.appsList.elt);
-  $UI.message.add('Apps Panel loaded');
 
   $UI.multSelector = new MultSelector({id:'mult_selector'});
   $UI.multSelector.addHandler('cancel',multSelector_cancel);

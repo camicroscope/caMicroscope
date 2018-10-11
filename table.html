@@ -80,27 +80,25 @@
 		function init(data){
 			var obj = {
 				// Quickly get the headings
-				headings: Object.keys(data[0]),
+				headings: ['_id','name','mpp'],
 				// data array
 				data: []
 			};
-			
+			var columnNames = ['_id','name','mpp'];
 			// Loop over the objects to get the values
 			for ( var i = 0; i < data.length; i++ ) {
-				obj.data[i] = [];
-				for (var p in data[i]) {
-					if( data[i].hasOwnProperty(p) ) {
-						 if(p=='_id'){
-						 	obj.data[i].push(data[i][p].$oid);
-						 }else{
-							obj.data[i].push(data[i][p]);
-						}
-						
+				obj.data.push([]);
+				for (var j = 0; j < columnNames.length; j++) {
+					const col = columnNames[j];
+					if( col == '_id' ) {
+						obj.data[i].push(data[i][col].$oid);
+					}else{
+						obj.data[i].push(data[i][col]);
 					}
+						
 				}
 			}
 
-			//dataTableInstance.insert(obj);
 			dataTableInstance = new DataTable("#datatables",{
 				columns:[
 					{select: 1, render: function(data){

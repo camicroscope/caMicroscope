@@ -364,7 +364,7 @@
          * each drawing and collects the path data as point.
          * @param  {Event} e the event
          */
-        drawing(e){
+        drawing:function(e){
             if(!this.isDrawing || !this.isOn) return;
             // drawing
             let point = new OpenSeadragon.Point(e.clientX, e.clientY);
