@@ -45,8 +45,7 @@ function handlePost(filename, slidename){
       data['upload_date'] = new Date(Date.now()).toLocaleString();
       data.name = slidename
       data.location = "/images/" + filename
-      data.mpp = data['mpp-x'] || data['mpp-y'] || 0
-      data.mpp = parseFloat(a.mpp)
+      data.mpp = parseFloat(data['mpp-x']) || parseFloat(data['mpp-y']) || 0
       store.post("Slide", {}, data).then(
         success => changeStatus("POST", success) // Handle the success response object
       ).catch(
