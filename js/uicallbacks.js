@@ -185,7 +185,7 @@ function closeSecondaryViewer(){
 	secondary.classList.add('none');
 	secondary.classList.remove('right');
 	$UI.multSelector.elt.classList.add('none');
-	$UI.toolbar._sub_tools[4].querySelector('input[type="checkbox"]').checked = false;
+	$UI.toolbar._sub_tools[5].querySelector('input[type="checkbox"]').checked = false;
 	Loading.close();
 
 	//destory
