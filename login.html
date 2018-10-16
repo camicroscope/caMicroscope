@@ -17,6 +17,17 @@ auth_url += "&response_type=" + response_type
 auth_url += "&client_id=" + client_id
 auth_url += "&redirect_uri=" + redirect_uri
 
+function randomString(length) {
+    var bytes = new Uint8Array(length);
+    var random = window.crypto.getRandomValues(bytes);
+    var result = [];
+    var charset = '0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._~'
+    random.forEach(function (c) {
+        result.push(charset[c % charset.length]);
+    });
+    return result.join('');
+}
+
 function getUrlParam(name, url) {
     if (!url) url = window.location.href;
     name = name.replace(/[\[\]]/g, '\\$&');
@@ -35,7 +46,9 @@ if (id_token){
   document.cookie = cookie_name +"=" + id_token;
   window.location = state
 } else {
+  window.localStorage.setItem('nonce', randomString(16));
   auth_url += "&state=" + state
+  auth_url += "&nonce=" + window.localStorage.getItem('nonce')
   window.location = auth_url
 }
 </script>
