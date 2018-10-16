@@ -3,6 +3,7 @@
 <script>
 // config vars, TODO move to something more configurable
 var redirect_uri = "https://wolf.cci.emory.edu/camic_uat/login.html"
+var default_redirect = "https://wolf.cci.emory.edu/camic_uat/viewer.html"
 var audience = "wolf.cci.emory.edu/camic_uat"
 var scope = "openid%20email"
 var client_id = "YLRDUmEs5Jivi6FX3XtNNAt97X3a0epD"
@@ -41,6 +42,9 @@ function getUrlParam(name, url) {
 // get variables
 let id_token = getUrlParam("id_token")
 let state = getUrlParam("state")
+if (!state){
+  state = default_redirect
+}
 // is this a login pre or post?
 if (id_token){
   document.cookie = cookie_name +"=" + id_token;
