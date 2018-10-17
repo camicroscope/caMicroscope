@@ -135,7 +135,7 @@
     		close.style.border = '1px solid black';
     		close.style.display = 'none';
     		this._ruler.appendChild(close);
-
+            this._ruler.style.zIndex = 101;
     		// h
     		const h_scale = document.createElement('div');
 	  		h_scale.style.position = 'absolute';
