@@ -7,7 +7,7 @@ var continue_url = 'http://localhost:4000/upload/continue/'
 var finish_url = 'http://localhost:4000/upload/finish/'
 function parseFile(file, callback, offset) {
     var fileSize   = file.size;
-    var chunkSize  = 64 * 1024; // bytes
+    var chunkSize  = 1 * 1024; // bytes
     var offset     = offset || 0;
     var self       = this; // we need a reference to the current object
     var chunkReaderBlock = null;
@@ -15,7 +15,9 @@ function parseFile(file, callback, offset) {
     var readEventHandler = function(evt) {
         if (evt.target.error == null) {
             offset += evt.target.result.length;
-            callback({chunkSize:chunkSize, offset:offset, data:btoa(evt.target.result)}); // callback for handling read chunk
+            let x = evt.target.result.slice(16)
+            console.log(x)
+            callback({chunkSize:chunkSize, offset:x}); // callback for handling read chunk
         } else {
             console.log("Read error: " + evt.target.error);
             return;
@@ -33,7 +35,7 @@ function parseFile(file, callback, offset) {
         var r = new FileReader();
         var blob = _file.slice(_offset, length + _offset);
         r.onload = readEventHandler;
-        r.readAsBinaryString(blob);
+        r.readAsDataURL(blob);
     }
 
     // now let's start the read with the first block
