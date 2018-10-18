@@ -2,10 +2,13 @@
 Filename : <input type="text" id="filename"><br/>
 <input type="file" id="input" onchange="handle_upload(this.files)">
 <script>
-function parseFile(file, callback) {
+var start_url = 'http://localhost:4000/upload/start'
+var continue_url = 'http://localhost:4000/upload/continue/'
+var finish_url = 'http://localhost:4000/upload/finish/'
+function parseFile(file, callback, offset) {
     var fileSize   = file.size;
     var chunkSize  = 64 * 1024; // bytes
-    var offset     = 0;
+    var offset     = offset || 0;
     var self       = this; // we need a reference to the current object
     var chunkReaderBlock = null;
 
@@ -37,10 +40,38 @@ function parseFile(file, callback) {
     chunkReaderBlock(offset, chunkSize, file);
 }
 
-function handle_upload(selectedFiles){
+async function handle_upload(selectedFiles){
   selectedFile = selectedFiles[0]
   console.log(document.getElementById("filename").value)
-  parseFile(selectedFile, console.log)
+  let token = await start_upload(document.getElementById("filename").value)
+  // uncurry the upload function
+  let callback = continue_uplpad(token)
+  parseFile(selectedFile, callback, 0)
+}
+
+async function start_upload(filename){
+  let body = {filename: filename}
+  let token = fetch(start_url,{method:'POST', body: JSON.stringify(body),headers: {
+            "Content-Type": "application/json; charset=utf-8"
+        }}).then(x=>x.json())
+  let a = await token
+  console.log(a['upload_token'])
+  return a['upload_token']
+}
+
+function continue_uplpad(token){
+  return (body)=>{
+    let reg_req = fetch(continue_url + token,{method:'POST', body: JSON.stringify(body),headers: {
+              "Content-Type": "application/json; charset=utf-8"
+          }})
+    reg_req.then(console.log).catch(console.log)
+  }
+}
+function finish_upload(token, filename){
+  let body = {filename: filename}
+  fetch(finish_url + token ,{method:'POST', body: JSON.stringify(body),headers: {
+            "Content-Type": "application/json; charset=utf-8"
+        }}).then(console.log).catch(console.log)
 }
 </script>
 </html>
