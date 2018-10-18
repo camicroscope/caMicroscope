@@ -2,6 +2,7 @@
 <head>
   <script src="core/Store.js"></script>
   <script src="js/loader.js"></script>
+  <script src="js/chunked_upload.js"></script>
 </head>
 <body>
 <div id="upload_form">
@@ -12,10 +13,9 @@ Second, CHECK the file for metadata to check if it uploaded correctly.
 Finally, POST it to the camicroscope instance.
 </p>
     <form>
-      <!--File: <input type=file name=file id="fileinput"><br/>-->
       Filename: <input type=text name=filename id="filename"><br/>
+      File: <input type="file" id="input" onchange="handle_upload(this.files)"><br/>
       Slidename: <input type=text name=slidename id="slidename"><br/>
-      <!--<button type="button" id="upload_btn" value="Upload" onclick="UploadBtn()">Upload</button><br/>-->
       <button type="button" id="check_btn" value="Check" onclick="CheckBtn()">Check</button><br/>
       <button type="button" id="post_btn" value="Post" onclick="PostBtn()">Post</button><br/>
     </form>

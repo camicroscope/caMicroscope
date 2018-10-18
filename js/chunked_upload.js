@@ -1,10 +1,9 @@
-<html>
-Filename : <input type="text" id="filename"><br/>
-<input type="file" id="input" onchange="handle_upload(this.files)">
-<script>
-var start_url = 'http://localhost:4000/upload/start'
-var continue_url = 'http://localhost:4000/upload/continue/'
-var finish_url = 'http://localhost:4000/upload/finish/'
+// expects changeStatus to be defined from loader.js
+
+var start_url = 'load/Upload/start'
+var continue_url = 'load/Upload/continue/'
+var finish_url = 'load/Upload/finish/'
+
 function parseFile(file, callback, offset, doneCB) {
     var fileSize   = file.size;
     var chunkSize  = 64 * 1024; // bytes
@@ -15,10 +14,8 @@ function parseFile(file, callback, offset, doneCB) {
     var readEventHandler = function(evt) {
         if (evt.target.error == null) {
             offset += chunkSize
-            console.log(evt.target.result)
-            // remove the "data url" garbage
+            // remove the "data url" items
             let x = evt.target.result.split(',')[1];
-            console.log(x)
             callback({chunkSize:chunkSize, offset:offset-chunkSize, data:x}); // callback for handling read chunk
         } else {
             console.log("Read error: " + evt.target.error);
@@ -60,27 +57,32 @@ async function start_upload(filename){
   let token = fetch(start_url,{method:'POST', body: JSON.stringify(body),headers: {
             "Content-Type": "application/json; charset=utf-8"
         }}).then(x=>x.json())
-  let a = await token
-  console.log(a['upload_token'])
-  return a['upload_token']
+  try{
+    let a = await token
+    changeStatus("UPLOAD", "Begun upload - Token:" + a['upload_token'])
+    return a['upload_token']
+  }
+  catch(e){
+    changeStatus("UPLOAD", "ERROR; " + JSON.stringify(e))
+  }
 }
 
 function continue_uplpad(token){
   return (body)=>{
+    changeStatus("UPLOAD", "Uploading chunk at: "+ body.offset +" of size "+ body.chunkSize)
     let reg_req = fetch(continue_url + token,{method:'POST', body: JSON.stringify(body),headers: {
               "Content-Type": "application/json; charset=utf-8"
           }})
-    reg_req.then(console.log).catch(console.log)
   }
 }
 function finish_upload(token, filename){
   return ()=>{
     let body = {filename: filename}
+    changeStatus("UPLOAD", "Finished, avaliable at " + filename)
     let reg_req = fetch(finish_url + token,{method:'POST', body: JSON.stringify(body),headers: {
               "Content-Type": "application/json; charset=utf-8"
           }})
-    reg_req.then(console.log).catch(console.log)
+    reg_req.then(x=>x.json()).then(a=>changeStatus("UPLOAD", "Finished -" + JSON.stringify(a)))
+    reg_req.then(e=>changeStatus("UPLOAD", "ERROR; " + JSON.stringify(e)))
   }
 }
-</script>
-</html>
