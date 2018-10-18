@@ -6,7 +6,7 @@ var finish_url = 'load/Upload/finish/'
 
 function parseFile(file, callback, offset, doneCB) {
     var fileSize   = file.size;
-    var chunkSize  = 1024 * 1024; // bytes
+    var chunkSize  = 64 * 1024; // bytes
     var offset     = offset || 0;
     var self       = this; // we need a reference to the current object
     var chunkReaderBlock = null;
