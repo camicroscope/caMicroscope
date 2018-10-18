@@ -5,25 +5,28 @@ Filename : <input type="text" id="filename"><br/>
 var start_url = 'http://localhost:4000/upload/start'
 var continue_url = 'http://localhost:4000/upload/continue/'
 var finish_url = 'http://localhost:4000/upload/finish/'
-function parseFile(file, callback, offset) {
+function parseFile(file, callback, offset, doneCB) {
     var fileSize   = file.size;
-    var chunkSize  = 1 * 1024; // bytes
+    var chunkSize  = 64 * 1024; // bytes
     var offset     = offset || 0;
     var self       = this; // we need a reference to the current object
     var chunkReaderBlock = null;
 
     var readEventHandler = function(evt) {
         if (evt.target.error == null) {
-            offset += evt.target.result.length;
-            let x = evt.target.result.slice(16)
+            offset += chunkSize
+            console.log(evt.target.result)
+            // remove the "data url" garbage
+            let x = evt.target.result.split(',')[1];
             console.log(x)
-            callback({chunkSize:chunkSize, offset:x}); // callback for handling read chunk
+            callback({chunkSize:chunkSize, offset:offset-chunkSize, data:x}); // callback for handling read chunk
         } else {
             console.log("Read error: " + evt.target.error);
             return;
         }
         if (offset >= fileSize) {
             console.log("Done reading file");
+            doneCB()
             return;
         }
 
@@ -44,11 +47,12 @@ function parseFile(file, callback, offset) {
 
 async function handle_upload(selectedFiles){
   selectedFile = selectedFiles[0]
-  console.log(document.getElementById("filename").value)
+  let filename = document.getElementById("filename").value
   let token = await start_upload(document.getElementById("filename").value)
   // uncurry the upload function
   let callback = continue_uplpad(token)
-  parseFile(selectedFile, callback, 0)
+  let doneDB = finish_upload(token, filename)
+  parseFile(selectedFile, callback, 0, doneDB)
 }
 
 async function start_upload(filename){
@@ -70,10 +74,13 @@ function continue_uplpad(token){
   }
 }
 function finish_upload(token, filename){
-  let body = {filename: filename}
-  fetch(finish_url + token ,{method:'POST', body: JSON.stringify(body),headers: {
-            "Content-Type": "application/json; charset=utf-8"
-        }}).then(console.log).catch(console.log)
+  return ()=>{
+    let body = {filename: filename}
+    let reg_req = fetch(finish_url + token,{method:'POST', body: JSON.stringify(body),headers: {
+              "Content-Type": "application/json; charset=utf-8"
+          }})
+    reg_req.then(console.log).catch(console.log)
+  }
 }
 </script>
 </html>
