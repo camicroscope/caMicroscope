@@ -48,8 +48,8 @@ async function handle_upload(selectedFiles){
   let token = await start_upload(document.getElementById("filename").value)
   // uncurry the upload function
   let callback = continue_uplpad(token)
-  let doneDB = finish_upload(token, filename)
-  parseFile(selectedFile, callback, 0, doneDB)
+  document.getElementById("token").value = token
+  parseFile(selectedFile, callback, 0, x=>(changeStatus("UPLOAD", "Finished Reading File")))
 }
 
 async function start_upload(filename){
@@ -75,8 +75,9 @@ function continue_uplpad(token){
           }})
   }
 }
-function finish_upload(token, filename){
-  return ()=>{
+function finish_upload(){
+    let token = document.getElementById("token").value
+    let filename = document.getElementById("filename").value
     let body = {filename: filename}
     changeStatus("UPLOAD", "Finished Reading File, Posting")
     let reg_req = fetch(finish_url + token,{method:'POST', body: JSON.stringify(body),headers: {
@@ -84,5 +85,4 @@ function finish_upload(token, filename){
           }})
     reg_req.then(x=>x.json()).then(a=>changeStatus("UPLOAD", "Finished -" + JSON.stringify(a)))
     reg_req.then(e=>changeStatus("UPLOAD", "ERROR; " + JSON.stringify(e)))
-  }
 }
