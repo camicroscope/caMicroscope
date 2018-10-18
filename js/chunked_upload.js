@@ -6,7 +6,7 @@ var finish_url = 'load/Upload/finish/'
 
 function parseFile(file, callback, offset, doneCB) {
     var fileSize   = file.size;
-    var chunkSize  = 64 * 1024; // bytes
+    var chunkSize  = 1024 * 1024; // bytes
     var offset     = offset || 0;
     var self       = this; // we need a reference to the current object
     var chunkReaderBlock = null;
@@ -78,7 +78,7 @@ function continue_uplpad(token){
 function finish_upload(token, filename){
   return ()=>{
     let body = {filename: filename}
-    changeStatus("UPLOAD", "Finished, avaliable at " + filename)
+    changeStatus("UPLOAD", "Finished Reading File, Posting")
     let reg_req = fetch(finish_url + token,{method:'POST', body: JSON.stringify(body),headers: {
               "Content-Type": "application/json; charset=utf-8"
           }})
