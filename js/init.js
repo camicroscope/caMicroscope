@@ -128,7 +128,7 @@ function initUIcomponents(){
       // home
       {
         icon:'home',// material icons' name
-        title:'Go Home Page',
+        title:'Home',
         type:'btn',// btn/check/dropdown
         value:'home',
         callback:goHome
@@ -167,7 +167,7 @@ function initUIcomponents(){
       // share
       {
         icon:'share',
-        title:'Share URL',
+        title:'Share View',
         type:'btn',
         value:'share',
         callback:shareURL
