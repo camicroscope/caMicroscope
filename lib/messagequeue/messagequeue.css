@@ -15,10 +15,10 @@
 	padding:.3rem 1rem;
 	margin:.3rem;
 	border-radius:.5rem;
-	-webkit-transition: opacity 1.5s ease-in-out;
-	-moz-transition: opacity 1.5s ease-in-out;
-	-ms-transition: opacity 1.5s ease-in-out;
-	-o-transition: opacity 1.5s ease-in-out;
+	-webkit-transition: opacity 0.7s ease-in-out;
+	-moz-transition: opacity 0.7s ease-in-out;
+	-ms-transition: opacity 0.7s ease-in-out;
+	-o-transition: opacity 0.7s ease-in-out;
 	opacity: 1;
 }
 .warning {

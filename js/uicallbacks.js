@@ -225,7 +225,7 @@ function draw(e){
 		return;
 	}
 	const canvasDraw = $CAMIC.viewer.canvasDrawInstance;
-	$UI.message.add(`Pen: ${draw?'ON':'OFF'}  Mode: ${canvasDraw.drawMode}`);
+	$UI.message.add(`Draw: ${draw?'ON':'OFF'}`);
 	if(draw){
 		canvasDraw.drawOn();
 		// turn off magnifier
