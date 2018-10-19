@@ -3,7 +3,7 @@
 var start_url = 'load/Upload/start'
 var continue_url = 'load/Upload/continue/'
 var finish_url = 'load/Upload/finish/'
-var chunkSize = 64*1024;
+var chunkSize = 5*1024*1024;
 
 // read a chunk of the file
 function promiseChunkFileReader(file, part){
