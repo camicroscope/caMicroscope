@@ -15,7 +15,7 @@ function promiseChunkFileReader(file, part){
         if(d){
           resolve(d)
         } else {
-          reject("Done")
+          reject("Done Reading")
         }
       } else {
         reject(evt.target.error)
@@ -38,6 +38,7 @@ async function readFileChunks(file, token){
       console.log(part)
     } catch(e) {
       console.log(e)
+      changeStatus("UPLOAD", e)
       complete = true
     }
   }
