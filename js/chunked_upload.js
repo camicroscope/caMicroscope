@@ -3,44 +3,46 @@
 var start_url = 'load/Upload/start'
 var continue_url = 'load/Upload/continue/'
 var finish_url = 'load/Upload/finish/'
+var chunkSize = 64*1024;
 
-function parseFile(file, callback, offset, doneCB) {
-    var fileSize   = file.size;
-    var chunkSize  = 64 * 1024; // bytes
-    var offset     = offset || 0;
-    var self       = this; // we need a reference to the current object
-    var chunkReaderBlock = null;
-
-    var readEventHandler = function(evt) {
-        if (evt.target.error == null) {
-            offset += chunkSize
-            // remove the "data url" items
-            let x = evt.target.result.split(',')[1];
-            callback({chunkSize:chunkSize, offset:offset-chunkSize, data:x}); // callback for handling read chunk
+// read a chunk of the file
+function promiseChunkFileReader(file, part){
+  return new Promise((resolve, reject)=>{
+    var fr = new FileReader();
+    fr.onload = (evt)=>{
+      if (evt.target.error == null) {
+        let d = evt.target.result.split(',')[1]
+        if(d){
+          resolve(d)
         } else {
-            console.log("Read error: " + evt.target.error);
-            return;
+          reject("Done")
         }
-        if (offset >= fileSize) {
-            console.log("Done reading file");
-            doneCB()
-            return;
-        }
-
-        // of to the next chunk
-        chunkReaderBlock(offset, chunkSize, file);
-    }
-
-    chunkReaderBlock = function(_offset, length, _file) {
-        var r = new FileReader();
-        var blob = _file.slice(_offset, length + _offset);
-        r.onload = readEventHandler;
-        r.readAsDataURL(blob);
-    }
-
-    // now let's start the read with the first block
-    chunkReaderBlock(offset, chunkSize, file);
+      } else {
+        reject(evt.target.error)
+      }
+    };
+    var blob = file.slice(part*chunkSize, (part+1)*chunkSize);
+    fr.readAsDataURL(blob);
+  })
 }
+
+async function readFileChunks(file, token){
+  var part = 0;
+  var complete = false;
+  while (!complete){
+    try{
+      let data = await promiseChunkFileReader(file, part)
+      let body = {chunkSize:chunkSize, offset:part*chunkSize, data:data}
+      let res = await continue_uplpad(token)(body)
+      part++
+      console.log(part)
+    } catch(e) {
+      console.log(e)
+      complete = true
+    }
+  }
+}
+
 
 async function handle_upload(selectedFiles){
   selectedFile = selectedFiles[0]
@@ -49,7 +51,8 @@ async function handle_upload(selectedFiles){
   // uncurry the upload function
   let callback = continue_uplpad(token)
   document.getElementById("token").value = token
-  parseFile(selectedFile, callback, 0, x=>(changeStatus("UPLOAD", "Finished Reading File")))
+  readFileChunks(selectedFile, token)
+  //parseFile(selectedFile, callback, 0, x=>(changeStatus("UPLOAD", "Finished Reading File")))
 }
 
 async function start_upload(filename){
@@ -68,11 +71,12 @@ async function start_upload(filename){
 }
 
 function continue_uplpad(token){
-  return (body)=>{
+  return async function(body){
     changeStatus("UPLOAD", "Uploading chunk at: "+ body.offset +" of size "+ body.chunkSize)
-    let reg_req = fetch(continue_url + token,{method:'POST', body: JSON.stringify(body),headers: {
+    return await fetch(continue_url + token,{method:'POST', body: JSON.stringify(body),headers: {
               "Content-Type": "application/json; charset=utf-8"
           }})
+
   }
 }
 function finish_upload(){
