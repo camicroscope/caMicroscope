@@ -99,7 +99,7 @@ ul.drop_down > li > input[type=radio]+label{
 }
 ul.drop_down > li > input[type=radio]:checked+label{
   cursor:pointer;
-  color:#365f9c;
+  color:#fff;
   background-color:#365f9c;
   border-radius:.5rem .5rem .5rem .5rem;
   box-shadow: 0 .4rem .8rem 0 rgba(0, 0, 0, 0.2), 0 .6rem .2rem 0 rgba(0, 0, 0, 0.19);

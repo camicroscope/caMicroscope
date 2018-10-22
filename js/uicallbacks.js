@@ -252,6 +252,7 @@ function draw(e){
 function toggleMeasurement(data){
 	$UI.message.add(`Measument Tool ${data.checked?'ON':'OFF'}`);
 	if(data.checked){
+		$CAMIC.viewer.measureInstance.setMode(data.status);
 		$CAMIC.viewer.measureInstance.on();
 		// turn off draw
 		$UI.toolbar._sub_tools[1].querySelector('input[type=checkbox]').checked = false;
@@ -261,6 +262,7 @@ function toggleMeasurement(data){
 		$UI.toolbar._sub_tools[2].querySelector('input[type=checkbox]').checked = false;
 		$UI.spyglass.close();
 	}else{
+		$CAMIC.viewer.measureInstance.setMode(data.status);
 		$CAMIC.viewer.measureInstance.off();
 	}
 }

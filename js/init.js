@@ -152,8 +152,23 @@ function initUIcomponents(){
       {
         icon:'space_bar',
         title:'Measurement',
-        type:'check',
+        type:'dropdown',
         value:'measure',
+        dropdownList:[
+          // free draw
+          {
+            icon:'linear_scale',
+            value:'straight',
+            title:'Line',
+            checked:true
+          },
+          // rectangle fraw
+          {
+            icon:'timeline',
+            value:'coordinate',
+            title:'Coordinate'
+          }
+        ],
         callback:toggleMeasurement
       },
       // download TODO
