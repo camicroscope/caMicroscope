@@ -250,9 +250,8 @@ function draw(e){
 }
 
 function toggleMeasurement(data){
-	$UI.message.add(`Measument Tool ${data.checked?'ON':'OFF'}`);
+	//$UI.message.add(`Measument Tool ${data.checked?'ON':'OFF'}`);
 	if(data.checked){
-		$CAMIC.viewer.measureInstance.setMode(data.status);
 		$CAMIC.viewer.measureInstance.on();
 		// turn off draw
 		$UI.toolbar._sub_tools[1].querySelector('input[type=checkbox]').checked = false;
@@ -262,7 +261,6 @@ function toggleMeasurement(data){
 		$UI.toolbar._sub_tools[2].querySelector('input[type=checkbox]').checked = false;
 		$UI.spyglass.close();
 	}else{
-		$CAMIC.viewer.measureInstance.setMode(data.status);
 		$CAMIC.viewer.measureInstance.off();
 	}
 }
@@ -272,6 +270,7 @@ function toggleMagnifier(data){
 	//camessage.sendMessage(`Magnifier ${data.checked?'ON':'OFF'}`, {size:'15px',color:'white', bgColor:'blue'}, 3);
 	$UI.message.add(`Magnifier ${data.checked?'ON':'OFF'}`);
 	if(data.checked){
+		$UI.spyglass.factor = +data.status;
 		$UI.spyglass.open(this.clientX,this.clientY);
 		// turn off draw
 		$UI.toolbar._sub_tools[1].querySelector('input[type=checkbox]').checked = false;
