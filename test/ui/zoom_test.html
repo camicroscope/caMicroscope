@@ -62,39 +62,11 @@
         states.y = parseFloat(frm.y.value);
         states.z = parseFloat(frm.z.value);
 
-        // Make sure we're not running off the screen
-        inBounds(states.x, states.y, states.z);
-
         // Encode to Base64
         var encodedData = encodeURIComponent(btoa(JSON.stringify(states)));
 
         // Set frame src to desired location
         ifrm.src = `http://nexi-bmi.uhmc.sunysb.edu:4010/viewer.html?slideId=CMU1&states=${encodedData}`;
-    }
-
-    function inBounds(x, y, z)
-    {
-        // TODO: Here, we would determine the width and height programmatically
-        // Width and Height is for slide CMU-1
-        var img_width = 2220;
-        var img_height = 2967;
-
-        // Divide by width, because that's the formula
-        var bound_width = img_width / img_width;
-        var bound_height = img_height / img_width;
-
-        // Check to make sure positioning is correct
-        if (x > bound_width || y > bound_height)
-            msg.innerHTML = 'Upper limits are ' + bound_width + ', ' + bound_height;
-
-        /*
-        // Complain about zoom if you want to
-        var zoom_lower = 0.38;
-        var zoom_upper = 1.98;
-        if (z < zoom_lower || z > zoom_upper)
-            msg.innerHTML += '<br>Best if viewed between ' + zoom_lower + ' and ' + zoom_upper;
-        */
-
     }
 
 </script>
