@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Zoom Test</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+</head>
+<body>
+<div id="message" style="color: red">&nbsp;</div>
+<table width="100%">
+    <tr>
+        <td>
+            <fieldset>
+                <legend>Zoom parameters</legend>
+                <form id="frm">
+                    <!--
+                    slideId:
+                    <input type="text" name="slide" value="CMU1" readonly>
+                    <br>
+                    -->
+                    x:
+                    <input type="text" name="x" value="1">
+                    <br>
+                    y:
+                    <input type="text" name="y" value="1">
+                    <br>
+                    z:
+                    <input type="text" name="z" value="1">
+                    <br><br>
+                    <input class="btn btn-outline-primary" type="button" value="Zoom" onclick="show()">
+                </form>
+            </fieldset>
+        </td>
+        <td>
+            <!-- Don't use 'sandboxed' -->
+            <iframe src="http://nexi-bmi.uhmc.sunysb.edu:4010/viewer.html?slideId=CMU1"
+                    id="ifrm"></iframe>
+        </td>
+    </tr>
+</table>
+
+<script>
+
+    var frm = document.getElementById("frm");
+    var ifrm = document.getElementById('ifrm');
+    var msg = document.getElementById("message");
+
+    // Set size of viewer
+    // We don't want it to be the entire size of window
+    // Let's make it half
+    var w = window.outerWidth / 2;
+    var h = window.outerHeight / 2;
+
+    ifrm.setAttribute('width', w);
+    ifrm.setAttribute('height', h);
+
+    function show() {
+        msg.innerHTML = '';
+
+        // Parse the inputs
+        var states = {};
+        states.x = parseFloat(frm.x.value);
+        states.y = parseFloat(frm.y.value);
+        states.z = parseFloat(frm.z.value);
+
+        // Make sure we're not running off the screen
+        inBounds(states.x, states.y, states.z);
+
+        // Encode to Base64
+        var encodedData = encodeURIComponent(btoa(JSON.stringify(states)));
+
+        // Set frame src to desired location
+        ifrm.src = `http://nexi-bmi.uhmc.sunysb.edu:4010/viewer.html?slideId=CMU1&states=${encodedData}`;
+    }
+
+    function inBounds(x, y, z)
+    {
+        // TODO: Here, we would determine the width and height programmatically
+        // Width and Height is for slide CMU-1
+        var img_width = 2220;
+        var img_height = 2967;
+
+        // Divide by width, because that's the formula
+        var bound_width = img_width / img_width;
+        var bound_height = img_height / img_width;
+
+        // Check to make sure positioning is correct
+        if (x > bound_width || y > bound_height)
+            msg.innerHTML = 'Upper limits are ' + bound_width + ', ' + bound_height;
+
+        /*
+        // Complain about zoom if you want to
+        var zoom_lower = 0.38;
+        var zoom_upper = 1.98;
+        if (z < zoom_lower || z > zoom_upper)
+            msg.innerHTML += '<br>Best if viewed between ' + zoom_lower + ' and ' + zoom_upper;
+        */
+
+    }
+
+</script>
+
+</body>
+</html>
