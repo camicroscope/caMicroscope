@@ -1,5 +1,6 @@
 var upload_url = "load/Slide/upload"
 var check_url = "load/Slide/info/"
+var thumb_url = "load/slide/thumb/"
 
 var store = new Store()
 
@@ -27,11 +28,26 @@ function handleUpload(file, filename){
   );
 }
 
+function getThumbnail(filename, size){
+  fetch(thumb_url + filename), {credentials: "same-origin"}).then(
+    response => response.json() // if the response is a JSON object
+  ).then(x=>{
+    let img = new Image()
+    img.src = x.slide
+    document.getElementById("thumbnail").appendChild(img)
+  }).catch(
+    error => changeStatus("CHECK, Thumbnail", error) // Handle the error response object
+  );
+}
+
 function handleCheck(filename){
   fetch(check_url + filename, {credentials: "same-origin"}).then(
     response => response.json() // if the response is a JSON object
   ).then(
-    success => changeStatus("CHECK", success) // Handle the success response object
+    success => {
+      changeStatus("CHECK", success)
+      getThumbnail(filename, 100)
+    } // Handle the success response object
   ).catch(
     error => changeStatus("CHECK", error) // Handle the error response object
   );
