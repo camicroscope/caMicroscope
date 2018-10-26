@@ -29,7 +29,7 @@ function handleUpload(file, filename){
 }
 
 function getThumbnail(filename, size){
-  fetch(thumb_url + filename), {credentials: "same-origin"}).then(
+  fetch(thumb_url + filename, {credentials: "same-origin"}).then(
     response => response.json() // if the response is a JSON object
   ).then(x=>{
     let img = new Image()
