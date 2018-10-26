@@ -24,9 +24,9 @@ align-items:center;
     left : 0;
     width : 100%;
     height : 10px;
-    border-left : 2px solid rgb(39, 29, 223);
-    border-right : 2px solid rgb(39, 29, 223);
-    border-top : 2px solid rgb(39, 29, 223);
+    border-left : 2px solid rgb(172, 252, 3);
+    border-right : 2px solid rgb(172, 252, 3);
+    border-top : 2px solid rgb(172, 252, 3);
     text-align : center;
 }
 .ruler .h_text {
@@ -43,9 +43,9 @@ align-items:center;
     left : -8px;
     width : 10px;
     height : 100%;
-    border-right : 2px solid rgb(39, 29, 223);
-    border-top : 2px solid rgb(39, 29, 223);
-    border-bottom : 2px solid rgb(39, 29, 223);
+    border-right : 2px solid rgb(172, 252, 3);
+    border-top : 2px solid rgb(172, 252, 3);
+    border-bottom : 2px solid rgb(172, 252, 3);
     align-items : center;
     display : flex;
 }
@@ -82,7 +82,7 @@ align-items:center;
   /*transform-origin:0 100%;*/
   position:absolute;
   top:0;
-  background:rgb(39, 29, 223);
+  background:rgb(172, 252, 3);
   height:2px;
 }
 
@@ -93,7 +93,7 @@ align-items:center;
     width:2px;
     height:10px;
     box-sizing:border-box;
-    background:rgb(39, 29, 223);
+    background:rgb(172, 252, 3);
 }
 .ruler .scale.h .r {
     position:absolute;
@@ -102,7 +102,7 @@ align-items:center;
     width:2px;
     height:10px;
     box-sizing:border-box;
-    background:rgb(39, 29, 223);
+    background:rgb(172, 252, 3);
 }
 /*vertical*/
 .ruler .scale.v {
@@ -116,7 +116,7 @@ align-items:center;
     left:-4px;
     height:2px;
     width:10px;
-    background:rgb(39, 29, 223);
+    background:rgb(172, 252, 3);
 }
 /*tick*/
 .ruler .scale.v .r{
@@ -125,14 +125,14 @@ align-items:center;
     left:-4px;
     height:2px;
     width:10px;
-    background:rgb(39, 29, 223);
+    background:rgb(172, 252, 3);
 }
 
 .ruler .circle {
   box-sizing:border-box;
   position:absolute;
   border-radius:50%;
-  border:2px rgb(39, 29, 223) dotted;
+  border:2px rgb(172, 252, 3) dotted;
 }
 
 /**-- straight ruler END --**/
