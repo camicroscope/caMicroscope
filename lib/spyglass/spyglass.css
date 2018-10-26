@@ -1,7 +1,15 @@
 /*spyglass.css*/
 
 div.spyglass {
-	border:5px solid black;
+	box-sizing: border-box;
+	border:5px solid rgb(0,0,0);
+	border-radius: 5px;
+	position: absolute;
+	background: rgba(0,0,0,.8);
+}
+div.indicator {
+	box-sizing: border-box;
+	border:2px solid rgb(255,0,0);
 	border-radius: 5px;
 	position: absolute;
 }

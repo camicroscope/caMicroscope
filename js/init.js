@@ -144,8 +144,28 @@ function initUIcomponents(){
       {
         icon:'search',
         title:'Magnifier',
-        type:'check',
+        type:'dropdown',
         value:'magn',
+        dropdownList:[
+          // free draw
+          {
+            //icon:'linear_scale',
+            value:10,
+            title:'10x',
+            checked:true
+          },
+          // rectangle fraw
+          {
+            //icon:'timeline',
+            value:20,
+            title:'20x'
+          },
+          {
+            //icon:'timeline',
+            value:40,
+            title:'40x'
+          }
+        ],
         callback:toggleMagnifier
       },
       // measurment tool
@@ -154,6 +174,21 @@ function initUIcomponents(){
         title:'Measurement',
         type:'check',
         value:'measure',
+        // dropdownList:[
+        //   // free draw
+        //   {
+        //     icon:'linear_scale',
+        //     value:'straight',
+        //     title:'Line',
+        //     checked:true
+        //   },
+        //   // rectangle fraw
+        //   {
+        //     icon:'timeline',
+        //     value:'coordinate',
+        //     title:'Coordinate'
+        //   }
+        // ],
         callback:toggleMeasurement
       },
       // download TODO

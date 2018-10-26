@@ -63,9 +63,14 @@
         this.isOn = false;
         // is measuring things
         this.isMeasuring = false;
+        this.mode = 'straight'; // straight : coordinate
+
+        this._ruler = document.createElement('div');
+        this._ruler.classList.add('ruler');
         // this._ruler: the ruler element
         // this._h_text: the horizontal scale text
         // this._v_text: the vertical scale text
+        
     
         // global events list for easily remove and add
         this._event = {
@@ -74,10 +79,12 @@
           measuring:this.measuring.bind(this)
         };
 
-        // start and stop points
+        // start and stop points in image
         this._start = null;
         this._end = null;
-
+        // start and stop points in client
+        this._start_client = null;
+        this._end_client = null;
         // receive the event for measurement tool - div
         this._div = document.createElement( 'div');
         this._div.style.position = 'absolute';
@@ -93,10 +100,23 @@
         this.imgWidth = image1.source.dimensions.x;
         this.imgHeight = image1.source.dimensions.y;
 
-        this.__createRuler();
+        
     }
 
     $.MeasurementTool.prototype = {
+        __clearPoints:function(){
+            this._start = null;
+            this._end = null;
+            // start and stop points in client
+            this._start_client = null;
+            this._end_client = null;
+        },
+        setMode:function(mode){
+            if(mode == 'straight' || mode == 'coordinate') {
+                this.mode = mode;
+            }
+
+        },
     	/**
     	 * setMPP 'micron per pixel' for measurement tool
 		 * @param {Object} options.mpp
@@ -119,84 +139,180 @@
     	 * create a ruler for measurement tool and it will show on the screen
     	 * 
     	 */
-    	__createRuler:function(){
-    		this._ruler = document.createElement('div');
-    		
-    		// close btn
-    		const close = document.createElement('div');
-    		close.classList.add('material-icons');
-    		close.classList.add('md-12');
-    		close.textContent = 'close';
-    		close.style.position = 'absolute';
-    		close.style.top = '0px';
-    		close.style.left = '4px';
-    		close.style.color = 'black';
-    		close.style.background ='white';
-    		close.style.border = '1px solid black';
-    		close.style.display = 'none';
-    		this._ruler.appendChild(close);
+    	__createRuler:function(mode){
+            if(mode == 'coordinate'){
+                this.__createCoordinateRuler();
+            }else if(mode == 'straight'){
+                this.__createStraightRuler();
+            }
+            // close btn
+            const close = document.createElement('div');
+            close.classList.add('material-icons');
+            close.classList.add('md-12');
+            close.classList.add('close');
+            close.textContent = 'close';
+            close.style.display = 'none';
+            this._ruler.appendChild(close);
             this._ruler.style.zIndex = 101;
-    		// h
-    		const h_scale = document.createElement('div');
-	  		h_scale.style.position = 'absolute';
-	  		h_scale.style.boxSizing = 'border-box';
-			h_scale.style.bottom = '-8px';
-			h_scale.style.left = 0;
-			h_scale.style.width = '100%';
-			h_scale.style.height = '10px';
-			h_scale.style.borderLeft = '2px solid rgb(39, 29, 223)';
-			h_scale.style.borderRight = '2px solid rgb(39, 29, 223)';
-			h_scale.style.borderTop = '2px solid rgb(39, 29, 223)';
-			h_scale.style.textAlign = 'center';
-			
-			// scale text
-			const h_text = document.createElement('div');
-			h_text.style.display ='table';
-  			h_text.style.margin = '0 auto';
-			h_text.style.whiteSpace='nowrap';
-			h_text.style.color = 'rgb(0, 0, 0)';
-			h_text.textContent = 'H_test';
-			h_text.style.backgroundColor = 'rgba(255, 255, 255, 0.7)';
-			
-			h_scale.appendChild(h_text);
-
-			this._h_text = h_text;
-
-    		const v_scale = document.createElement('div'); 
-	  		v_scale.style.position = 'absolute';
-	  		v_scale.style.boxSizing = 'border-box';
-			v_scale.style.top = 0;
-			v_scale.style.left = '-8px';
-			v_scale.style.width = '10px';
-			v_scale.style.height = '100%';
-			v_scale.style.borderRight = '2px solid rgb(39, 29, 223)';
-			v_scale.style.borderTop = '2px solid rgb(39, 29, 223)';
-			v_scale.style.borderBottom = '2px solid rgb(39, 29, 223)';
-			v_scale.style.alignItems = 'center';
-			v_scale.style.display = 'flex';
-
-			// scale text
-			const v_text = document.createElement('div');
-
-			v_text.style.display='in-block';
-			v_text.style.whiteSpace='nowrap';
-			v_text.textContent = 'V_test';
-			v_text.style.backgroundColor = 'rgba(255, 255, 255, 0.7)';
-			v_text.style.color = 'rgb(0, 0, 0)';
-
-			v_scale.appendChild(v_text);
-			this._v_text = v_text;
-
-			this._ruler.appendChild(h_scale);
-			this._ruler.appendChild(v_scale);
-
+            // close
 			this._ruler.addEventListener('mouseover', e=>{close.style.display = ''});
 			this._ruler.addEventListener('mouseout', e=>{close.style.display = 'none'});
 			close.addEventListener('click',e=>{
             	this._viewer.removeOverlay(this._ruler);
             	close.style.display = 'none';
+                this.__clearPoints();
             },this);
     	},
+
+
+        __createCoordinateRuler:function(){
+            empty(this._ruler);
+            // h
+            const h_scale = document.createElement('div');
+            h_scale.classList.add('h_scale');
+            
+            // scale text
+            const h_text = document.createElement('div');
+            h_text.classList.add('h_text');
+            h_scale.appendChild(h_text);
+
+            this._h_text = h_text;
+
+            const v_scale = document.createElement('div');
+            v_scale.classList.add('v_scale');
+
+            // scale text
+            const v_text = document.createElement('div');
+            v_text.classList.add('v_text');
+
+            v_scale.appendChild(v_text);
+            this._v_text = v_text;
+
+            this._ruler.appendChild(h_scale);
+            this._ruler.appendChild(v_scale);
+        },
+
+        __createStraightRuler:function(){
+            empty(this._ruler);
+            // create text
+            const box = document.createElement('div');
+            box.classList.add('box');
+            const text = document.createElement('div');
+            text.classList.add('text');
+            box.appendChild(text);
+            this._ruler.appendChild(box);
+
+            // create circle
+            const circle = document.createElement('div');
+            circle.classList.add('circle');
+            this._ruler.appendChild(circle);
+
+            // create scale
+            const scale = document.createElement('div');
+            scale.classList.add('scale');
+            this._scale = scale;
+            
+            const l = document.createElement('div');
+            l.classList.add('l');
+            scale.appendChild(l);
+
+            const r = document.createElement('div');
+            r.classList.add('r');
+            scale.appendChild(r);
+
+            this._ruler.appendChild(scale);
+        },
+        calcAngle:function(opposite, adjacent) {
+            return Math.atan(opposite / adjacent);
+        },
+
+        __adjustStraightRuler:function(){
+
+            const w = Math.abs(this._start_client.x-this._end_client.x);
+            const h = Math.abs(this._start_client.y-this._end_client.y);
+            const z = Math.sqrt(w*w+h*h);
+
+            const scale = this._ruler.querySelector('.scale');
+            const circle = this._ruler.querySelector('.circle');
+            circle.style.display = '';
+            const text = this._ruler.querySelector('.text');
+            text.textContent = this.__getScaleUnit(1,Math.sqrt(w*w*this.mpp.x*this.mpp.x + h*h*this.mpp.y*this.mpp.y));
+
+            if(this._start.x == this._end.x && this._start.y != this._end.y){
+                // change the both sides of ticks
+                scale.classList.add('v');
+                scale.classList.remove('h');
+                scale.style.width = '2px';
+                scale.style.transform = '';
+                scale.style.left = 0;
+                circle.style.width = this._ruler.offsetHeight+'px';
+                circle.style.left = `-${this._ruler.offsetHeight/2}px`;
+
+            }else if(this._start.y == this._end.y && this._start.x != this._end.x){
+                // change the both sides of ticks
+                
+                scale.classList.add('h');
+                scale.classList.remove('v');
+                scale.style.width = '100%';
+                scale.style.transform = '';
+                scale.style.left = 0;
+                circle.style.height = this._ruler.offsetWidth+'px';
+                circle.style.top = `-${this._ruler.offsetWidth/2}px`;
+            }else if((this._start.x < this._end.x && this._start.y < this._end.y) ||
+                    (this._start.x > this._end.x && this._start.y > this._end.y)){
+                // change the both sides of ticks
+                scale.classList.add('h');
+                scale.classList.remove('v');
+
+                // calculate position
+                const w_percent = (z/w)*100;
+                const h_percent = (z/h)*100;
+
+                //const left = -(((z-w)/2)/w)*100;
+                const left = -(50*z-50*w)/w;
+                //const top = -(((z-h)/2)/h)*100;
+                const top = -(50*z-50*h)/h;
+
+                // circle
+                circle.style.width = `${w_percent}%`;
+                circle.style.height = `${h_percent}%`;
+                circle.style.top = `${top}%`;
+                circle.style.left = `${left}%`;
+                // scale
+                scale.style.width = `${w_percent}%`
+                scale.style.transformOrigin = `0 0`;
+                scale.style.left = 0;
+                scale.style.transform= `rotate(${this.calcAngle(h,w)}rad)`;
+
+            }else if((this._start.x < this._end.x && this._start.y > this._end.y) ||
+                    (this._start.x > this._end.x && this._start.y < this._end.y)){
+                scale.classList.add('h');
+                scale.classList.remove('v');
+
+                // calculate position
+                const w_percent = (z/w)*100;
+                const h_percent = (z/h)*100;
+
+                //const left = -(((z-w)/2)/w)*100;
+                const left = -(50*z-50*w)/w;
+                //const top = -(((z-h)/2)/h)*100;
+                const top = -(50*z-50*h)/h;
+
+                // circle
+                circle.style.width = `${w_percent}%`;
+                circle.style.height = `${h_percent}%`;
+                circle.style.top = `${top}%`;
+                circle.style.left = `${left}%`;
+                // scale
+                scale.style.width = `${w_percent}%`
+                scale.style.transformOrigin = `0 0`;
+                scale.style.left = `100%`;
+                scale.style.transform= `rotate(${3.14159 - this.calcAngle(h,w)}rad)`;
+            }else {
+                console.log('end');
+            }
+            
+        },
         /**
          * turn on measurement functionality.
          */
@@ -247,13 +363,17 @@
             const imagePoint = this._viewer.viewport.windowToImageCoordinates(point);
 
             if(0 > imagePoint.x || this.imgWidth < imagePoint.x || 0 > imagePoint.y || this.imgHeight < imagePoint.y )return;
+            
             // start drawing
             this.isMeasuring = true;
             this._viewer.canvas.style.cursor = 'crosshair'
-			
-            //
-			this._start = imagePoint;
             
+            //
+            
+            this._start = imagePoint;
+            this._start_client = new $.Point(e.clientX, e.clientY);
+            
+            this.__createRuler(this.mode);
         },
 
         /**
@@ -270,28 +390,39 @@
             if(0 > imagePoint.x || this.imgWidth < imagePoint.x || 0 > imagePoint.y || this.imgHeight < imagePoint.y )return;
      			
             	this._end = imagePoint;
+                this._end_client = new $.Point(e.clientX, e.clientY);
 				if(this._start && this._end){
 					// remove scale
 					this._viewer.removeOverlay(this._ruler);
 
 					// get the width and height in the image's piexl
 					const [x,y,width, height] = this.__forRect(this._start,this._end);
-					// calculate 
-					const widthInUnit = this.__getScaleUnit(this.mpp.x, width);
-					const heightInUnit = this.__getScaleUnit(this.mpp.y, height);
+                    const widthInUnit = this.__getScaleUnit(this.mpp.x, width);
+                    const heightInUnit = this.__getScaleUnit(this.mpp.y, height);
 
-					// set values for scale
-					this._h_text.textContent = widthInUnit;
-					this._v_text.textContent = heightInUnit;
-					// 
-					var rect = this._viewer.viewport.imageToViewportRectangle(new $.Rect(
-						x,y,width,height
-					));
+                    // 
+                    var rect = this._viewer.viewport.imageToViewportRectangle(new $.Rect(
+                        x,y,width,height
+                    ));
 
-					this._viewer.addOverlay({
-						element: this._ruler,
-						location: rect
-					});
+                    this._viewer.addOverlay({
+                        element: this._ruler,
+                        location: rect
+                    });
+
+                    if(this.mode == 'coordinate'){
+                        // calculate 
+    					// set values for scale
+    					this._h_text.textContent = widthInUnit;
+    					this._v_text.textContent = heightInUnit;
+                    }else if(this.mode == 'straight'){
+                        this.__adjustStraightRuler();
+                        this._ruler.querySelector('.text').textContent = this.__getScaleUnit(1,Math.sqrt(this.mpp.x*this.mpp.x*width*width+ this.mpp.y*this.mpp.y*height*height));
+
+                    }
+
+
+                    this._ruler.style.display = 'flex';
 				}
 
         },
@@ -306,6 +437,7 @@
             // }
             this.isMeasuring = false;
             this._viewer.canvas.style.cursor = 'pointer';
+            if(this.mode =='straight') this._ruler.querySelector('.circle').style.display='none';
         },
 
 		__getRect:function(start,end){
