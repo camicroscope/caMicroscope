@@ -103,7 +103,7 @@
         var encodedData = encodeURIComponent(btoa(JSON.stringify(states)));
 
         // Set frame src to desired location
-        ifrm.src = `http://nexi-bmi.uhmc.sunysb.edu:4010/viewer.html?slideId=CMU1&states=${encodedData}`;
+        ifrm.src = `/viewer.html?slideId=CMU1&states=${encodedData}`;
     }
 
 </script>
