@@ -16,7 +16,7 @@
 		<link rel='stylesheet' type='text/css' media='all' href='/css/style.css'/>
 
 		<link rel='stylesheet' type='text/css' media='all' href='/lib/messagequeue/messagequeue.css'/>
-		<!-- messsage display js -->
+		<!-- message display js -->
 		<script src='/lib/messagequeue/messagequeue.js'></script>
 
 	</head>
@@ -27,20 +27,20 @@
 	</body>
 	<!-- test script for each case -->
 	<script type = "text/javascript">
-		
+
 		// case 1: test options to initialize component
 		const message1 = new MessageQueue({});
 		message1.add('info message', 1000);
-		
+
 		// case 2:
 		const message2 = new MessageQueue({position:'top-right'});
 		message2.addWarning('warning message', 1000);
 
-		// case 3: 
+		// case 3:
 		const message3 = new MessageQueue({position:'bottom-left'});
 		message3.addError('error message', 1000);
 
-		// case 4: 
+		// case 4:
 		const message4 = new MessageQueue({position:'bottom-right'});
 		message4.add('message1', 1000);
 		message4.addError('message2', 1000);
