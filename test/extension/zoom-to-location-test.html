@@ -1,9 +1,46 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
+
 <head>
-    <meta charset="UTF-8">
-    <title>Zoom Test</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <meta name="keywords" content="camicroscope, quip"/>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+
+    <title>Zoom to Location Unit Test Page</title>
+
+    <!-- google material icons css sheet -->
+    <link href='/iconfont/material-icons.css' rel='stylesheet'/>
+    <!-- css sheet -->
+    <link rel='stylesheet' type='text/css' media='all' href='/css/style.css'/>
+    <link rel='stylesheet' type='text/css' media='all' href='/lib/multselector/multselector.css'/>
+    <!-- util.js -->
+    <script src='/js/util.js' type='text/javascript'></script>
+    <!--script src='/lib/extension/some_new_extension.js'></script-->
+    <style type="text/css">
+        body {
+            color: black;
+        }
+
+        .container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+        }
+
+        .col {
+            flex: 1;
+            border: 1px black solid;
+        }
+
+        .row {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            border: black 1px solid;
+            box-sizing: border-box;
+        }
+    </style>
 </head>
 <body>
 <div id="message" style="color: red">&nbsp;</div>
@@ -33,7 +70,7 @@
         </td>
         <td>
             <!-- Don't use 'sandboxed' -->
-            <iframe src="../../viewer.html?slideId=CMU1" id="ifrm"></iframe>
+            <iframe src="/viewer.html?slideId=CMU1" id="ifrm"></iframe>
         </td>
     </tr>
 </table>
@@ -70,6 +107,5 @@
     }
 
 </script>
-
 </body>
 </html>
