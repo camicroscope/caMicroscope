@@ -16,6 +16,8 @@
     <link rel='stylesheet' type='text/css' media='all' href='/lib/multselector/multselector.css'/>
     <!-- util.js -->
     <script src='/js/util.js' type='text/javascript'></script>
+    <!-- State Helper -->
+    <script src="/lib/StatesHelper.js"></script>
     <!--script src='/lib/extension/some_new_extension.js'></script-->
     <style type="text/css">
         body {
@@ -100,10 +102,10 @@
         states.z = parseFloat(frm.z.value);
 
         // Encode to Base64
-        var encodedData = encodeURIComponent(btoa(JSON.stringify(states)));
-
+        //var encodedData = encodeURIComponent(btoa(JSON.stringify(states)));
         // Set frame src to desired location
-        ifrm.src = `/viewer.html?slideId=CMU1&states=${encodedData}`;
+        //ifrm.src = `/viewer.html?slideId=CMU1&states=${encodedData}`;
+        ifrm.src = `/viewer.html?slideId=CMU1&states=${StatesHelper.encodeStates(states)}`
     }
 
 </script>
