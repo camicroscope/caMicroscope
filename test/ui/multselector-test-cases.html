@@ -47,7 +47,7 @@
 		<input id='isLoad' type='checkbox' style='display:none;'>
 		<!-- ca message test cases -->
 
-		<!-- constructer -->
+		<!-- constructor -->
 		<div class='container'>
 			<div class='row'>
 				<div id='selector1'></div>
@@ -66,12 +66,12 @@
 		function cancel(d){
 			window.eventName = 'cancel';
 		}
-		
+
 		function action(d){
 			window.eventName = 'action';
 			window.eventData = d.data;
 		}
-		
+
 		function select(d){
 			window.eventName = 'select';
 			window.eventData = d.data;
@@ -99,7 +99,7 @@
 		window.mSel1 = new MultSelector({id:'selector1',hasControl:false});
 
 		window.mSel2 = new MultSelector({element:document.getElementById('selector2'),data:options});
-		
+
 		// add Event for all selectors
 		window.mSel1.addHandler('cancel',cancel);
 		window.mSel1.addHandler('action',action);
@@ -107,7 +107,7 @@
 		window.mSel1.addHandler('select-all',selectAll);
 		window.mSel1.addHandler('remove',remove);
 		window.mSel1.addHandler('remove-all',removeAll);
-		
+
 		document.getElementById('isLoad').checked = true;
 
 	</script>
