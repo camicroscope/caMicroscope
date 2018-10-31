@@ -66,14 +66,14 @@ ul.tools>li:not(.handler)>input[type=checkbox]+label:hover {
 
 ul.drop_down {
   width:2.4rem;
-  height:5rem;
   padding:0;
   margin:0;
   display: none;
 }
 
 ul.tools>li:hover ul.drop_down {
-  display: block;
+  flex-direction: column;
+  display: flex;
 }
 
 ul.drop_down li{

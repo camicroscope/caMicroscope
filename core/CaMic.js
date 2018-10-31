@@ -6,13 +6,13 @@
 
 class CaMic{
   /**
+  * 
   * create a camic core instance
   * @param divId - the div id to inject openseadragon into
   * @param slideId - the id of the slide to load
   * @property slideId - the slide id
-  * @property viewer - the OSD viewer object
-  * @property draw - the drawing layer controls
-  * @property layers - the layer controller
+  * @property options - the options extend from OpenSeadragon
+  * 
   */
   constructor(divId, slideId, options){
     // initalize viewer
@@ -36,7 +36,8 @@ class CaMic{
       hasDrawLayer:true,
       hasLayerManager:true,
       hasScalebar:true,
-      hasMeasurementTool:true
+      hasMeasurementTool:true,
+      hasPatchManager:true
     }
     extend(this.setting, options);
 
@@ -84,6 +85,7 @@ class CaMic{
 
     this.createZoomControl();
     this.createMeasurementTool(this.mpp);
+    this.createPatchManager();
   }
   /**
   * Change which image is staged, used loadImg to load it.
@@ -130,7 +132,7 @@ class CaMic{
    * set up a zoom control functionality on the image
    */
   createZoomControl(){
-    if(!this.setting.hasZoomControl) return;
+    if(!this.setting.hasZoomControl || !this.viewer.cazoomctrl) return;
     this.viewer.cazoomctrl({
       position:"BOTTOM_RIGHT",
       autoFade: false
@@ -140,7 +142,7 @@ class CaMic{
    * set up a canvas Draw functionality on the image
    */
   createCanvasDraw(){
-    if(!this.setting.hasDrawLayer) return;
+    if(!this.setting.hasDrawLayer || !this.viewer.canvasDraw) return;
     this.viewer.canvasDraw();
     // create style context menu for draw
     this.drawContextmenu = new StyleContextMenu(
@@ -179,7 +181,7 @@ class CaMic{
    * set up a overlay manage on the image
    */
   createOverlayers(){
-    if(!this.setting.hasLayerManager) return;
+    if(!this.setting.hasLayerManager || !this.viewer.overlaysManager) return;
     this.viewer.overlaysManager();
   }
 
@@ -188,7 +190,7 @@ class CaMic{
   * @param {number} mpp - microns per pixel of image
   */
   createScalebar(mpp){
-    if(!this.setting.hasScalebar) return;
+    if(!this.setting.hasScalebar || !this.viewer.scalebar) return;
     try {
       this.viewer.scalebar({
               type: OpenSeadragon.ScalebarType.MAP,
@@ -207,7 +209,7 @@ class CaMic{
   }
 
   createMeasurementTool(mpp){
-    if(!this.setting.hasMeasurementTool) return;
+    if(!this.setting.hasMeasurementTool || !this.viewer.measurementTool) return;
     this.viewer.measurementTool({
       mpp:{
         x:mpp,
@@ -215,7 +217,11 @@ class CaMic{
       }
     });
   }
-
+  
+  createPatchManager(){
+    if(!this.setting.hasPatchManager || !this.viewer.createPatchManager) return;
+    this.viewer.createPatchManager({});
+  }
   /**
    * Function to destroy the instance of CaMic and clean up everything created by CaMic.
    *

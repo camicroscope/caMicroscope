@@ -79,7 +79,6 @@
         this._viewer.addHandler('update-viewport',this.updateView.bind(this));
         this._viewer.addHandler('open',this.updateView.bind(this));
 
-        //this._viewer.addHandler('canvas-click',function(){console.log('click')});
         this._div.addEventListener('mousemove', this.events.highlight);
         //this._div.addEventListener('dbl ', this.events.pathClick);
         this._div.addEventListener('click', this.events.click);
@@ -101,6 +100,7 @@
             for(let i = 0;i<this.overlays.length;i++){
                 const layer = this.overlays[i];
                 if(!layer.isShow) continue;
+                if(!layer.data.geometries) continue;
                 const features = layer.data.geometries.features;
                 for(let j = 0;j < features.length;j++){
                     const path = features[j].geometry.path;
