@@ -67,7 +67,7 @@
 		<!-- toolbar js -->
 		<script src='./lib/toolbar/toolbar.js'></script>
 		<!-- zoom ctrl js -->
-		<!-- 
+		<!--
 		<script src='/lib/zoomcontrol/zoomcontrol.js'></script> -->
 		<!-- sidemenu js -->
 		<script src='./lib/sidemenu/sidemenu.js'></script>
@@ -95,7 +95,7 @@
 		<script src='./lib/multselector/multselector.js'></script>
 
 		<script src="./lib/sortable/Sortable.js"></script>
-	
+
 		<!-- spyglass -->
 		<script src="./lib/spyglass/spyglass.js"></script>
 
@@ -111,7 +111,7 @@
 		<script src="./core/openseadragon-overlays-manage.js"></script>
 		<script src="./core/openseadragon-measurement-tool/openseadragon-measurement-tool.js"></script>
 		<script src="./lib/zoomcontrol/openseadragon-zoom-control.js"></script>
-		
+
 		<!-- init data -->
 		<!-- <script src='/js/init.js'></script> -->
 		<!-- ods js -->
@@ -121,46 +121,45 @@
 
 	</head>
 	<body>
-		<!-- message-->
-		<div id = 'cames' style='z-index:600'></div>
+        <!-- message-->
+        <div id='cames' style='z-index:600'></div>
 
-		<!-- toolbar -->
-		<div id = 'ca_tools'></div>
+        <!-- toolbar -->
+        <div id='ca_tools'></div>
 
-		<!-- main viewer -->
-		<div id ='main_viewer' class='main'></div>
-		<div id ='secondary' class='none'>
-			<div id='mult_selector' class='none'></div>
-			<div id='minor_viewer' class='none'></div>
-		</div>
-		<!-- zoom control -->
-		<div id ='zctrl'></div>
+        <!-- main viewer -->
+        <div id='main_viewer' class='main'></div>
+        <div id='secondary' class='none'>
+            <div id='mult_selector' class='none'></div>
+            <div id='minor_viewer' class='none'></div>
+        </div>
+        <!-- zoom control -->
+        <div id='zctrl'></div>
 
-		<!-- side menu for apps-->
-		<div id='side_apps' style='z-index:600'></div>
+        <!-- side menu for apps-->
+        <div id='side_apps' style='z-index:600'></div>
 
-		<!-- side menu for layers-->
-		<div id='side_layers' style='z-index:600'></div>
+        <!-- side menu for layers-->
+        <div id='side_layers' style='z-index:600'></div>
 
-    	<!-- collapsible list -- annotation and analytics -->
-    	<div id='collapsiblelist' style='z-index:600'></div>
+        <!-- collapsible list -- annotation and analytics -->
+        <div id='collapsiblelist' style='z-index:600'></div>
 
-    	<!-- overlayer manager -->
-    	<div id='overlayers' style='z-index:600'></div>
+        <!-- overlayer manager -->
+        <div id='overlayers' style='z-index:600'></div>
 
 	</body>
 	<script type="text/javascript">
 		Loading.open(document.body, 'CaMicroscope is initializing...');
 		// get slide id from url
-		const url = new URL(window.location.href);
 		$D.params = getUrlVars();
-		
+
 		// no slide Id error
 		if($D.params && $D.params.slideId){
 
 			// normal initialization starts
 			document.addEventListener('DOMContentLoaded', initialize);
-			
+
 		}else{
 			redirect($D.pages.table,'Slide Id is undefined. Redirecting to Flex Table.');
 		}
