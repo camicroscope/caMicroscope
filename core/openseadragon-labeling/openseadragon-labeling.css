@@ -13,7 +13,7 @@
   width:250px;
   border-width:2px;
   border-style:solid;
-  opacity:.6;
+  opacity:.7;
   background: rgba(255,255,255,.25);
 }
 
@@ -21,14 +21,16 @@
 .patch:hover .corner,
 .patch:hover .note,
 .patch:hover .remove,
-.patch.active .color,
+.patch.active .remove
+/*.patch.active .color,
 .patch.active .corner,
 .patch.active .note,
-.patch.active .remove {
+.patch.active .remove*/
+{
   display:block;
 }
 
-.patch.active .info_block,
+/*.patch.active .info_block,*/
 .patch:hover .info_block {
   display:inline-block;
 }
@@ -50,8 +52,8 @@
 .patch .info_block {
     border:1px black solid;
     display:none;
-    bottom:-21px;
-    left:-21px;
+    bottom:-10px;
+    left:-10px;
     padding:0 3px;
     height: 18px;
     font-size:12px;
@@ -62,12 +64,13 @@
 }
 
 .patch .remove {
+  z-index: 1;
   font-size:18px;
   border:1px solid black;
   background-color:white;
   color:black;
-  top:-21px;
-  left:-21px;
+  top:-10px;
+  left:-10px;
   display:none;
 }
 .patch .remove:hover {
@@ -154,19 +157,30 @@
 }
 
 .patch.dot .note{
+  display: none;
   top:8px;
-  left:40px;
+  left:30px;
   right:initial;
 }
 
-.patch.dot .remove{
-  top:8px;
+
+.patch.dot:hover .note{
+  display: block;
 }
 
+.patch.dot .remove{
+  display:none;
+  top:8px;
+}
+.patch.dot.active .remove,
+.patch.dot:hover .remove{
+  display: block;
+}
 .patch.dot .note_panel {
   top:8px;
-  left:64px;
+  left:54px;
 }
+
 .patch.dot .color{
   display:initial;
   border:0;
@@ -179,13 +193,17 @@
 }
 
 .patch.dot .controls{
-  border-color:red;
-  border-width:1px;
+  border-width:0px;
   border-style:dotted;
   transform: translateX(-50%) translateY(-50%);
   width: 40px;
   height: 40px;
   border-radius: 50%;
+}
+
+.patch.dot.active .controls,
+.patch.dot:hover .controls {
+  border-width:1px;
 }
 
 

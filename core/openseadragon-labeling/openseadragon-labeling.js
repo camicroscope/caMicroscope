@@ -96,6 +96,7 @@
         this.initPathStates();
     }
     function _drag_end(e){
+        console.log('drag')
         this.isCreatePatch = false;
         //if(this.activePatch) this.activePatch.deactive();
     }
@@ -131,11 +132,12 @@
 	    	options = this.activePatch.templateOptions(options);
 			options.center = view_point;
             if(!this.isPoint && this.activePatch.isPoint){
+                const viewer_bounds = $CAMIC.viewer.viewport.getBounds();
                 const width = viewer_bounds.width * 0.1;
                 const height = viewer_bounds.height * 0.1;
                 options.size = new $.Point(width,height);
             }
-	    }else{
+	    }else {
 	    	const viewer_bounds = $CAMIC.viewer.viewport.getBounds();
 	    	const width = viewer_bounds.width * 0.1;
 	    	const height = viewer_bounds.height * 0.1;
@@ -143,15 +145,11 @@
 	    }
         options.isPoint = this.isPoint;
 
-        console.log(options);
+        //console.log(options);
 
 	    this.patches.push(new $.Patch(options));
     }
-    			// data:'',
-    			// size: new $.Point(250,300),
-    			// center:img_point,
-    			// viewer:this.viewer,
-    			// color:'#ff0000'
+
     function getRect(center, size, viewer, isPoint=false){
         const max = viewer.viewport.imageToViewportCoordinates(viewer.world.getItemAt(0).source.dimensions);
         const width = size.x;
@@ -184,24 +182,6 @@
             return max;
         return a;
     }
-
-    // function (){
-
-    // }
-    // $.PatchManager.prototype = {
-
-    //     /**
-    //      * [add description]
-    //      */
-    //     add:function(centerPoint, nodeType){
-    //         // calculate boundaries
-            
-    //         //  
-    //     },
-    //     remove:function(element){
-
-    //     }
-    // };
     
 
     /**
@@ -218,20 +198,7 @@
         // }
         if(!validatePatchOptions(options)) return;
         this.viewer = options.viewer;
-
-        this.events = {
-        	//
-        	//resizeStart:this.resize_start.bind(this),
-        	resizing:this.resizing.bind(this),
-        	moving:this.moving.bind(this),
-        	//resizeEnd:this.resize_end.bind(this),
-        	//
-            clickOnPatch:this._click_on_patch.bind(this),
-            clickOnColor:this._click_on_color.bind(this),
-            clickOnNote:this._click_on_note.bind(this),
-            clickOnRemove:this._click_on_remove.bind(this),
-        }
-
+        this.isPoint = options.isPoint;
         // create random id
         this.id = randomId();
         // element
@@ -252,7 +219,7 @@
         this.viewer.addOverlay({
             element: this.element,
             location: rect,
-            checkResize: false//this.viewer.viewport.imageToViewportRectangle(rect)
+            checkResize: false
         });
 
 
@@ -283,28 +250,45 @@
         this.patchTrackers = {};
 
         // add events
-        this.element.addEventListener('click',this.events.clickOnPatch);
-        this.element.querySelector('.remove').addEventListener('click',this.events.clickOnRemove);
-        this.element.querySelector('.note').addEventListener('click',this.events.clickOnNote);
-        this.element.querySelector('.color').addEventListener('click',this.events.clickOnColor);
-        
-        // moving patch
-        this.patchTrackers['moving'] = new $.MouseTracker({
-            element:     this.element,
-            dragHandler: this.events.moving,
-            pressHandler: this.events.press
+        const removeIcon = this.element.querySelector('.remove');
+        const noteIcon = this.element.querySelector('.note');
+        const colorIcon = this.element.querySelector('.color');
+
+        this.patchTrackers['element'] = new $.MouseTracker({
+            element: this.element,
+            pressHandler: press.bind(this),
+            dragHandler: moving.bind(this)
+
         });
 
+
+        this.patchTrackers['remove'] = new $.MouseTracker({
+            element:     removeIcon,
+            pressHandler: press.bind(this),
+            releaseHandler: clickOnRemove.bind(this)
+        });
+
+        this.patchTrackers['color'] = new $.MouseTracker({
+            element:     colorIcon,
+            pressHandler: press.bind(this),
+            releaseHandler: clickOnColor.bind(this)
+        });
+        this.patchTrackers['note'] = new $.MouseTracker({
+            element:     noteIcon,
+            pressHandler: press.bind(this),
+            releaseHandler: clickOnNote.bind(this)
+        });
 
         // adjust the size of patch
         if(!options.isPoint){
             const resizeIcon = this.element.querySelector('.corner');
     		this.patchTrackers['resizing'] = new $.MouseTracker({
     			element:     resizeIcon,
-    			dragHandler: this.events.resizing
+                pressHandler: press.bind(this),
+    			dragHandler: resizing.bind(this)
     		});
         }
-        // 
+
         this.active();
 
     }
@@ -313,14 +297,12 @@
     	const info = this.element.querySelector('.info_block');
     	const rect = this.viewer.viewport.viewportToImageRectangle(this.overlay.getBounds(this.viewer.viewport));
     	this.element.querySelector('.info_block').textContent = `${Math.round(rect.width)}x${Math.round(rect.height)}px`; 
-    } 
-    $.Patch.prototype.press = function(e){
-        this.closeNotePanel();
-        this.closeColorPicker();
-        this.active();
     }
 
-    $.Patch.prototype.moving = function(e){
+
+
+
+    function moving(e){
         console.log('moving');
     	const delta = this.viewer.viewport.deltaPointsFromPixels(e.delta, true);
 		const top_left = this.viewer.viewport.viewportToImageCoordinates(new $.Point(
@@ -343,7 +325,7 @@
     	this.viewer.pmanager.isCreatePatch = false;
     }
  	
- 	$.Patch.prototype.resizing = function(e){
+ 	function resizing(e){
 	    const img_point = this.viewer.viewport.windowToImageCoordinates(new $.Point(e.originalEvent.clientX,e.originalEvent.clientY));
 	    const view_point = this.viewer.viewport.windowToViewportCoordinates(new $.Point(e.originalEvent.clientX,e.originalEvent.clientY));
 		const image1 = this.viewer.world.getItemAt(0);
@@ -370,38 +352,29 @@
  		
     }  
     /* resize end */
-    $.Patch.prototype._click_on_patch = function(e){
-        // close color
-        this.closeColorPicker();
-        // close note panel
+    function press(e){
         this.closeNotePanel();
-        // active current patch
+        this.closeColorPicker();
         this.active();
-
-        e.stopPropagation();
-        e.preventDefault();
-
-    };
-    $.Patch.prototype._click_on_note = function(e){
-        this.closeColorPicker();
+    }
+    function clickOnNote(e){
         this.openNotePanel();
-        e.stopPropagation();
-        e.preventDefault();
+        // e.stopPropagation();
+        // e.preventDefault();
     };
-    $.Patch.prototype._click_on_color = function(e){
-        this.closeNotePanel();
+    function clickOnColor(e){
         this.openColorPicker();
-        e.stopPropagation();
-        e.preventDefault();
+        // e.stopPropagation();
+        // e.preventDefault();
 
     };
-    $.Patch.prototype._click_on_remove = function(e){
-        this.closeNotePanel();
-        this.closeColorPicker();
+    function clickOnRemove(e){
         this.remove();
-        e.stopPropagation();
-        e.preventDefault();
+        // e.stopPropagation();
+        // e.preventDefault();
     };
+
+
 
     $.Patch.prototype.active = function(){
         if(this.viewer.pmanager.activePatch) this.viewer.pmanager.activePatch.deactive();
@@ -427,16 +400,21 @@
     }
 
     $.Patch.prototype.openColorPicker = function(e){
-        //this.viewer.pmanager.initPathStates();
         this.picker.enter();
     }
     
     $.Patch.prototype.closeColorPicker = function(e){
         this.picker.exit();
-    }    
+    }
+
     $.Patch.prototype.remove = function(){
-        this.viewer.removeOverlay(this.overlay.element); 
+        
         this.deactive();
+        // for(var trackerName in this.patchTrackers){
+        //     console.log(trackerName);
+        //     this.patchTrackers[trackerName].destroy();
+        // }
+        this.viewer.removeOverlay(this.overlay.element); 
         this.overlay.destroy();
         this.destroy();
     }
@@ -446,9 +424,6 @@
         const index = this.viewer.pmanager.patches.indexOf(this);
         if(index != -1)
         this.viewer.pmanager.patches.splice(index,1);
-        console.log(index);
-        console.log(`${this.id}:destroy`);
-
     }
     $.Patch.prototype.templateOptions = function(){
     	return {
