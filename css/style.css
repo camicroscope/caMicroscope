@@ -13,7 +13,7 @@ html, body {
 
 body{
   color: hsl(0, 0%, 100%);
-  background-image: white;
+  background-color: white;
   background-size: 2rem 2rem;
   background-position: 0 0, 5rem 0, 5rem -5rem, 0px 5rem;
   background-color: rgba(220, 220, 220, 1);
