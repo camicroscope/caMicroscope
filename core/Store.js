@@ -75,23 +75,30 @@ class Store{
 
   /**
   * find marks which contain a given point
-  * @param {number} x - x position to search for
-  * @param {number} y - y position to search for
+  * @param {number} x0 - x min position of rect to search
+  * @param {number} y0 - y min position of rect to search
+  * @param {number} x1 - x max position of rect to search
+  * @param {number} y1 - y max position of rect to search
   * @param {string} [name] - the associated slide name
   * @param {string} [slide] - the associated marktype name, supporting regex match
   * @returns {promise} - promise which resolves with data
   **/
-  findMarkSpatial(x, y, name, slide){
-    var suffix = "Mark/findPoint"
+  findMarkSpatial(x0, y0, x1, y1, name, slide, key){
+    var suffix = "Mark/findBound"
     var url = this.base + suffix;
     var query = {}
-    query.x = x
-    query.y = y
+    query.x0 = x0
+    query.y0 = y0
+    query.x1 = x1
+    query.y1 = y1
     if (name){
       query.name = name
     }
     if (slide){
       query.slide = slide
+    }
+    if (key){
+      query.key = key
     }
     // api key for bindaas?
     return fetch(url + "?" + objToParamStr(query), {
