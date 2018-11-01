@@ -28,16 +28,21 @@
     $.PatchManager = function(options) {
         
         this.events ={
-            press:this._press.bind(this),
-            click:this._click.bind(this)//,
+            press:_press.bind(this),
+            click:_click.bind(this),
+            dragEnd:_drag_end.bind(this)//,
             //zoom:zoom.bind(this)
         }
+        this.isOn = false;
         this.isPoint = false;
         this.isCreatePatch = true;
         this.viewer = options.viewer;
         
+
+
         //this.status
         this.patches = [];
+
         this.activePatch = null;
 
         // save key handler
@@ -47,30 +52,63 @@
         this.imgWidth = image1.source.dimensions.x;
         this.imgHeight = image1.source.dimensions.y;
 
-        this.viewer.canvas.addEventListener('click', this.events.click);
+        this.viewer.addHandler('zoom', this.events.zoom);
+        this.viewer.addHandler('canvas-click', this.events.click);
         this.viewer.addHandler('canvas-press', this.events.press);
+        this.viewer.addHandler('canvas-drag-end', this.events.dragEnd);
         //this.viewer.addHandler('zoom', this.events.zoom);
     
     }
 
-    // function zoom(e){
-    // 	if(this.activePatch) this.activePatch.deactive();
-    // }
+    $.PatchManager.prototype.on = function(){
+        // stop turning on labeling mode if already turn on
+        if(this.isOn === true) return;
+        this.isOn = true;        
+
+        console.log('on');
+        // add mouse events
+        
+    };
+
+    $.PatchManager.prototype.off = function(){
+        // stop turning off labeling mode if already turn off
+        if(this.isOn === false) return;
+        this.isOn = false;
+        console.log('off');
+        // remove mouse events
+        
+    };
+
+    $.PatchManager.prototype.initPathStates = function(){
+        this.patches.forEach(patch => {
+            patch.closeNotePanel();
+            patch.closeColorPicker();
+        });
+    }
 
     $.PatchManager.prototype.addPatch = function(center, noteType){
         const _patch = document.createElement('div');
 
         const rect = getRect(img_point,noteType.model.width,noteType.height,this.imgWidth,this.imgHeight,this.viewer);
     }
-
-    $.PatchManager.prototype._press = function(e){
+    function _press(e){
         this.isCreatePatch = true;
+        this.initPathStates();
     }
-   
-    $.PatchManager.prototype._click = function(e){
-	    //const img_point = this.viewer.viewport.windowToImageCoordinates(new $.Point(e.originalEvent.clientX,e.originalEvent.clientY));
-	    const img_point = this.viewer.viewport.windowToImageCoordinates(new $.Point(e.clientX,e.clientY));
-	    const view_point = this.viewer.viewport.windowToViewportCoordinates(new $.Point(e.clientX,e.clientY));
+    function _drag_end(e){
+        this.isCreatePatch = false;
+        //if(this.activePatch) this.activePatch.deactive();
+    }
+    function zoom(e){
+        //this.isCreatePatch = false;
+        //if(this.activePatch) this.activePatch.deactive();
+    }
+
+    function _click(e){
+	    const img_point = this.viewer.viewport.windowToImageCoordinates(new $.Point(e.originalEvent.clientX,e.originalEvent.clientY));
+	    const view_point = this.viewer.viewport.windowToViewportCoordinates(new $.Point(e.originalEvent.clientX,e.originalEvent.clientY));
+        //const img_point = this.viewer.viewport.windowToImageCoordinates(new $.Point(e.clientX,e.clientY));
+	    //const view_point = this.viewer.viewport.windowToViewportCoordinates(new $.Point(e.clientX,e.clientY));
 
 
 	    if(0 > img_point.x || this.imgWidth < img_point.x || 0 > img_point.y || this.imgHeight < img_point.y || !this.isCreatePatch) return;
@@ -92,6 +130,11 @@
 	    if(this.activePatch){
 	    	options = this.activePatch.templateOptions(options);
 			options.center = view_point;
+            if(!this.isPoint && this.activePatch.isPoint){
+                const width = viewer_bounds.width * 0.1;
+                const height = viewer_bounds.height * 0.1;
+                options.size = new $.Point(width,height);
+            }
 	    }else{
 	    	const viewer_bounds = $CAMIC.viewer.viewport.getBounds();
 	    	const width = viewer_bounds.width * 0.1;
@@ -210,7 +253,6 @@
             element: this.element,
             location: rect,
             checkResize: false//this.viewer.viewport.imageToViewportRectangle(rect)
-
         });
 
 
@@ -233,7 +275,12 @@
             box.style.background = color;
             input.value = color;
             element.style.borderColor = color;
+            const ctrl = element.querySelector('.controls');
+            if(ctrl) ctrl.style.borderColor = color;
         }) 
+
+        // trackers
+        this.patchTrackers = {};
 
         // add events
         this.element.addEventListener('click',this.events.clickOnPatch);
@@ -242,16 +289,17 @@
         this.element.querySelector('.color').addEventListener('click',this.events.clickOnColor);
         
         // moving patch
-        this.innerTracker = new $.MouseTracker({
+        this.patchTrackers['moving'] = new $.MouseTracker({
             element:     this.element,
-            dragHandler: this.events.moving
+            dragHandler: this.events.moving,
+            pressHandler: this.events.press
         });
 
 
         // adjust the size of patch
         if(!options.isPoint){
             const resizeIcon = this.element.querySelector('.corner');
-    		this.innerTracker = new $.MouseTracker({
+    		this.patchTrackers['resizing'] = new $.MouseTracker({
     			element:     resizeIcon,
     			dragHandler: this.events.resizing
     		});
@@ -261,13 +309,19 @@
 
     }
 
-    $.Patch.prototype.setSizeText = function(){
+    $.Patch.prototype.setSizeText = function(e){
     	const info = this.element.querySelector('.info_block');
     	const rect = this.viewer.viewport.viewportToImageRectangle(this.overlay.getBounds(this.viewer.viewport));
     	this.element.querySelector('.info_block').textContent = `${Math.round(rect.width)}x${Math.round(rect.height)}px`; 
     } 
+    $.Patch.prototype.press = function(e){
+        this.closeNotePanel();
+        this.closeColorPicker();
+        this.active();
+    }
 
     $.Patch.prototype.moving = function(e){
+        console.log('moving');
     	const delta = this.viewer.viewport.deltaPointsFromPixels(e.delta, true);
 		const top_left = this.viewer.viewport.viewportToImageCoordinates(new $.Point(
 				this.overlay.location.x + delta.x, 
@@ -373,6 +427,7 @@
     }
 
     $.Patch.prototype.openColorPicker = function(e){
+        //this.viewer.pmanager.initPathStates();
         this.picker.enter();
     }
     
@@ -478,6 +533,7 @@
         
         const controls = document.createElement('div');
         controls.classList.add('controls');
+        controls.style.borderColor = options.color;
         elt.appendChild(controls);
 
         // const info = document.createElement('div');
@@ -508,12 +564,6 @@
         controls.appendChild(note_panel);
 
     }
-
-
-    $.Patch.prototype.updateColor = function(){}
-    $.Patch.prototype.updatePositionAndSize = function(){}
-    $.Patch.prototype.updatePosition = function(){}
-    $.Patch.prototype.updateInfo = function(){}
     
     function validatePatchOptions(options){
         if(!options.color){

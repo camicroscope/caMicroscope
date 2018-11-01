@@ -163,6 +163,10 @@
   top:8px;
 }
 
+.patch.dot .note_panel {
+  top:8px;
+  left:64px;
+}
 .patch.dot .color{
   display:initial;
   border:0;

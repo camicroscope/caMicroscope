@@ -492,6 +492,10 @@
               this._current_path_.geometry.coordinates[0] = simplify(points);
             };
 
+
+            // create bounds
+            
+              this._current_path_.bound = getBounds(this._current_path_.geometry.coordinates[0]);
             // 
             if(this._path_index < this._draws_data_.length){
               this._draws_data_ = this._draws_data_.slice(0,this._path_index);
@@ -557,5 +561,26 @@
             }
         }
     };
+    function getBounds(points){
+        let max,min;
+        points.forEach(point => {
+            if (!min && !max) {
+                min = [point[0], point[1]];
+                max = [point[0], point[1]];
+            } else {
+                min[0] = Math.min(point[0], min[0]);
+                max[0] = Math.max(point[0], max[0]);
+                min[1] = Math.min(point[1], min[1]);
+                max[1] = Math.max(point[1], max[1]);
+            }
+        });
+        return [
+            [min[0],min[1]],// top-left
+            [max[0],min[1]], //top-right
+            [max[0],max[1]], // bottom-right
+            [min[0],max[1]],
+            [min[0],min[1]]
+        ];
+    }
 
 })(OpenSeadragon);

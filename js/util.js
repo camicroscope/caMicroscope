@@ -117,6 +117,10 @@ function VieweportFeaturesToImageFeatures(viewer, geometries){
       v_point = viewer.viewport.viewportToImageCoordinates(point[0],point[1]);
       return [v_point.x,v_point.y];
     })
+    feature.bound.coordinates[0] = feature.bound.coordinates[0].map(point => {
+      v_point = viewer.viewport.viewportToImageCoordinates(point[0],point[1]);
+      return [v_point.x,v_point.y];
+    })
     return feature;
   });
   return geometries;
@@ -131,13 +135,23 @@ function covertToViewportFeature(viewer, og){
     geometry:{
       type:"Polygon",
       coordinates:[[]]
+    },
+    bound:{
+      type:"Polygon",
+      coordinates:[[]]
     }
-  
   };
-  const points = og.geometry.coordinates[0];
+  let points = og.geometry.coordinates[0];
   const path = og.geometry.path;
   for(let i = 0; i < points.length; i++){
     feature.geometry.coordinates[0] = og.geometry.coordinates[0].map(point => {
+      v_point = viewer.viewport.imageToViewportCoordinates(point[0],point[1]);
+      return [v_point.x,v_point.y];
+    });
+  }
+  points = og.bound;
+  for(let i = 0; i < points.length; i++){
+    feature.bound.coordinates[0] = og.bound.map(point => {
       v_point = viewer.viewport.imageToViewportCoordinates(point[0],point[1]);
       return [v_point.x,v_point.y];
     });

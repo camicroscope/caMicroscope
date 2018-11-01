@@ -1,12 +1,3 @@
-const data1 = {
-  center:{x:200,y:200},
-  size:200,
-  color:'pink',
-  lineWeight:20
-
-}; // image coodinate
-const data2 = [[0.4,0.4],[0.4,0.5],[0.5,0.5],[0.5,0.4], [0.4,0.4]]; // viewport coodinate
-
 // CAMIC is an instance of camicroscope core
 // $CAMIC in there
 let $CAMIC = null;
@@ -63,12 +54,6 @@ function initCore(){
     }
   });
 
-  // draw something
-  $CAMIC.viewer.addOnceHandler('open',function(e){
-    // ready to draw
-    $CAMIC.vewer.omanage.addOverlay
-
-  });
   // ui init
   $UI.toolbar = new CaToolbar({
   /* opts that need to think of*/
@@ -77,21 +62,34 @@ function initCore(){
     hasMainTools:false,
     //mainToolsCallback:mainMenuChange,
     subTools:[
-      // home
+
+      // rectangle
       {
-        icon:'home',// material icons' name
-        title:'Home',
-        type:'btn',// btn/check/dropdown
-        value:'home',
-        callback:goHome
+        id:'labeling_mode',
+        icon:'crop_landscape',// material icons' name
+        title:'Rectangle',
+        type:'radio',// btn/check/dropdown
+        checked:true,
+        value:'rect',
+        callback:toggleMode
+      },
+      // point
+      {
+        id:'labeling_mode',
+        icon:'fiber_manual_record',// material icons' name
+        title:'Point',
+        type:'radio',// btn/check/dropdown
+        value:'point',
+        callback:toggleMode
       },
       // measurment tool
       {
+        id:'labeling_mode',
         icon:'space_bar',
         title:'Measurement',
-        type:'check',
+        type:'radio',
         value:'measure',
-        callback:toggleMeasurement
+        callback:toggleMode
       }
       // ,
       // {
@@ -116,37 +114,32 @@ function initCore(){
 
 
 }
-function shareURL(data){
 
-}
-// go home callback
-function goHome(data){
-  redirect($D.pages.home,`GO Home Page`, 0);
-}
+function toggleMode(data){
+  const mode = data.value;
+  switch (mode) {
+    case 'point':
+      $CAMIC.viewer.measureInstance.off();
+      $CAMIC.viewer.pmanager.isPoint = true;
+      $CAMIC.viewer.pmanager.on();
+      break;
+      // statements_1
+    case 'rect':
+      $CAMIC.viewer.measureInstance.off();
+      $CAMIC.viewer.pmanager.isPoint = false;
+      $CAMIC.viewer.pmanager.on();
 
-function toggleMeasurement(data){
-  //$UI.message.add(`Measument Tool ${data.checked?'ON':'OFF'}`);
-  if(data.checked){
-    $CAMIC.viewer.measureInstance.on();
-    // turn off draw
-    $UI.toolbar._sub_tools[1].querySelector('input[type=checkbox]').checked = false;
-    $CAMIC.viewer.canvasDrawInstance.drawOff();
-    $CAMIC.drawContextmenu.close();
-    // turn off magnifier
-    $UI.toolbar._sub_tools[2].querySelector('input[type=checkbox]').checked = false;
-    $UI.spyglass.close();
-  }else{
-    $CAMIC.viewer.measureInstance.off();
+      console.log('rect');
+      break;
+    default:
+      $CAMIC.viewer.pmanager.off();
+      $CAMIC.viewer.measureInstance.on();
+      // statements_def
+      console.log('de');
+      break;
   }
 }
-function renderOne(ctx,data){
-  console.log('renderOne');
-  console.log(ctx,data);
-}
-function renderTwo(ctx,data){
-  console.log('renderTwo');
-  console.log(ctx,data);
-}
+
 function redirect(url ,text = '', sec = 5){
   let timer = sec;
   setInterval(function(){
