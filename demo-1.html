@@ -51,14 +51,9 @@
     <script src="./core/openseadragon-overlays-manage.js"></script>
     <script src="./core/openseadragon-measurement-tool/openseadragon-measurement-tool.js"></script>
     <script src="./lib/zoomcontrol/openseadragon-zoom-control.js"></script>
-    <!-- <script src="./core/openseadragon-labeling/openseadragon-labeling.js"></script> -->
-
-    <!-- ods js -->
-    <!-- <script src='./js/uicallbacks.js'></script> -->
-    <!-- <script src='./js/dataloaders.js'></script> -->
 
     <!-- init data -->
-    <script src='./js/demo.js'></script>
+    <script src='./js/demo-1.js'></script>
 
 </head>
 <body>
@@ -68,23 +63,21 @@
 <div id='main_viewer' class='main'></div>
 </body>
 <script type="text/javascript">
+
     Loading.open(document.body, 'CaMicroscope is initializing...');
     // get slide id from url
     $D.params = getUrlVars();
 
     // no slide Id error
-    if ($D.params && $D.params.slideId) {
+    if (!$D.params || !$D.params.slideId) {
 
-        // normal initialization starts
-        document.addEventListener('DOMContentLoaded', initialize);
-
-    } else {
-        redirect($D.pages.table, 'Slide Id is undefined. Redirecting to Flex Table.');
+        // create a default (demo purposes, only)
+        $D.params = {slideId: "CMU1"};
+        $D.params.slideId = "CMU1";
     }
 
-    // get states parameters
-    if ($D.params.states) {
-        $D.params.states = StatesHelper.decodeStates($D.params.states);
-    }
+    // normal initialization starts
+    document.addEventListener('DOMContentLoaded', initialize);
+
 </script>
 </html>

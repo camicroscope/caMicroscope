@@ -1,5 +1,5 @@
 // image coordinates
-const data2 = [[400, 400], [500, 400], [600, 500], [500, 600], [400, 600], [300, 500], [400, 400]];
+const data1 = [[400, 400], [500, 400], [600, 500], [500, 600], [400, 600], [300, 500], [400, 400]];
 
 // CAMIC is an instance of caMicroscope core
 let $CAMIC = null;
@@ -15,13 +15,8 @@ const $D = {
 };
 
 // initialize viewer page
-function initialize() {
-    // create a viewer and set up
-    initCore();
-}
-
 // setting core functionalities
-function initCore() {
+function initialize() {
     // start initial
     const opt = {
         hasZoomControl: true,
@@ -54,23 +49,11 @@ function initCore() {
 
     // draw something
     $CAMIC.viewer.addOnceHandler('open', function (e) {
-        console.log("here 1");
         // ready to draw
         console.log($CAMIC.viewer.omanager);
-        $CAMIC.viewer.omanager.addOverlay({id: 'id01', data: data2, render: renderPoly, isShow: true});
+        $CAMIC.viewer.omanager.addOverlay({id: 'id01', data: data1, render: renderPoly, isShow: true});
     });
 
-}
-
-/**
- * Add overlay
- * @param data
- */
-function addOverlay(data) {
-    console.log("here 2");
-    $CAMIC.viewer.omanager.overlays[0].isShow = true;
-    $CAMIC.viewer.omanager.addOverlay({id: 'id01', data: data2, render: renderPoly, isShow: true});
-    $CAMIC.viewer.omanager.updateView();
 }
 
 /**
@@ -85,7 +68,7 @@ function renderPoly(context, points) {
     context.moveTo(points[0][0], points[0][1]);
     context.lineTo(points[0][0], points[0][1]);
     context.beginPath();
-    console.log(points);
+    //console.log(points);
     points.slice(1).forEach(function (coord) {
         let x = coord[0];
         let y = coord[1];
