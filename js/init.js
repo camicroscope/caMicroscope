@@ -40,7 +40,7 @@ function loadData(){
 
 // setting core functionalities
 function initCore(){
-  // start inital
+  // start initial
   // TODO zoom info and mmp
   const opt = {
     draw:{
@@ -78,7 +78,7 @@ function initCore(){
   }
 
   $CAMIC.loadImg(function(e){
-    //  image loaded
+    // image loaded
     if(e.hasError){
       $UI.message.addError(e.message)
     }else{
@@ -168,7 +168,7 @@ function initUIcomponents(){
         ],
         callback:toggleMagnifier
       },
-      // measurment tool
+      // measurement tool
       {
         icon:'space_bar',
         title:'Measurement',
@@ -182,7 +182,7 @@ function initUIcomponents(){
         //     title:'Line',
         //     checked:true
         //   },
-        //   // rectangle fraw
+        //   // rectangle draw
         //   {
         //     icon:'timeline',
         //     value:'coordinate',

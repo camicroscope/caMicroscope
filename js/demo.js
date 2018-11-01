@@ -4,8 +4,8 @@ const data1 = {
   color:'red',
   lineWidth:20
 
-}; // image coodinate
-const data2 = [[400,400],[500,400],[600,500],[500,600],[400,600], [300,500],[400,400]]; 
+}; // image coordinate
+const data2 = [[400,400],[500,400],[600,500],[500,600],[400,600], [300,500],[400,400]];
 
 // CAMIC is an instance of camicroscope core
 // $CAMIC in there
@@ -33,7 +33,7 @@ function initialize(){
 
 // setting core functionalities
 function initCore(){
-  // start inital
+  // start initial
   // TODO zoom info and mmp
   const opt = {
       hasZoomControl:true,
@@ -57,7 +57,7 @@ function initCore(){
   }
 
   $CAMIC.loadImg(function(e){
-    //  image loaded
+    // image loaded
     if(e.hasError){
       $UI.message.addError(e.message)
     }
@@ -67,7 +67,7 @@ function initCore(){
   $CAMIC.viewer.addOnceHandler('open',function(e){
     // ready to draw
     console.log($CAMIC.viewer.omanager);
-    
+
 
     //$CAMIC.viewer.omanage.addOverlay();
     $CAMIC.viewer.omanager.addOverlay({id:'id01',data:data1,render:renderOne,isShow:false});
@@ -89,7 +89,7 @@ function initCore(){
         value:'add',
         callback:addOverlay
       },
-      // measurment tool
+      // measurement tool
       {
         icon:'clear',
         title:'Clear',
