@@ -98,11 +98,16 @@ function renderPoly(context, points) {
 
 function queryPoly(item, item1) {
 
-    // This works
-    let data2 = item1[0].geometries.features[0].geometry.coordinates[0];
-    console.log('data2', data2);
+    let array1 = item1[0].geometries.features[0].geometry.coordinates[0];
+    //console.log('array1', array1);
 
-    $CAMIC.viewer.omanager.addOverlay({id: 'id02', data: data2, render: renderPoly, isShow: true});
+    const map1 = array1.map(x => {
+        const img_point = $CAMIC.viewer.viewport.viewportToImageCoordinates(x[0], x[1]);
+        return [img_point.x, img_point.y];
+    });
+    //console.log('map1', map1);
+
+    $CAMIC.viewer.omanager.addOverlay({id: 'id02', data: map1, render: renderPoly, isShow: true});
     $CAMIC.viewer.omanager.updateView();
 
 }
