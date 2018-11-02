@@ -117,10 +117,13 @@ function VieweportFeaturesToImageFeatures(viewer, geometries){
       v_point = viewer.viewport.viewportToImageCoordinates(point[0],point[1]);
       return [v_point.x,v_point.y];
     })
-    feature.bound.coordinates[0] = feature.bound.coordinates[0].map(point => {
-      v_point = viewer.viewport.viewportToImageCoordinates(point[0],point[1]);
-      return [v_point.x,v_point.y];
-    })
+
+    if(feature.bound&&feature.bound.coordinates && feature.bound.coordinates[0]){
+      feature.bound.coordinates[0] = feature.bound.coordinates[0].map(point => {
+        v_point = viewer.viewport.viewportToImageCoordinates(point[0],point[1]);
+        return [v_point.x,v_point.y];
+      })
+    }
     return feature;
   });
   return geometries;
