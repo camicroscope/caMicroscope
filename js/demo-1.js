@@ -1,15 +1,3 @@
-// image coordinates
-const data1 = [
-    [1000, 1000],
-    [1100, 1000],
-    [1200, 1100],
-    [1100, 1200],
-    [1000, 1200],
-    [900, 1100],
-    [1000, 1000],
-];
-
-
 // CAMIC is an instance of caMicroscope core
 let $CAMIC = null;
 // for all instances of UI components
@@ -61,10 +49,12 @@ function initialize() {
         // ready to draw
 
         // Display by fetching data
+        // _1n7w6ahx2
         fetchJSON('/data/Mark/multi?name=["_1n7w6ahx2"]&slide=CMU1', queryPoly);
 
-        // Display with hardcoded coordinates
+        // Display with 'data1' coordinates
         $CAMIC.viewer.omanager.addOverlay({id: 'id01', data: data1, render: renderPoly, isShow: true});
+
     });
 
 }
@@ -98,6 +88,8 @@ function renderPoly(context, points) {
 
 function queryPoly(item, item1) {
 
+    //console.log('item1', JSON.stringify(item1));
+
     let array1 = item1[0].geometries.features[0].geometry.coordinates[0];
     //console.log('array1', array1);
 
@@ -128,3 +120,14 @@ function fetchJSON(url, options, callback) {
         .then(response => response.json())
         .then(json => callback(null, json), callback)
 }
+
+// image coordinates
+const data1 = [
+    [1000, 1000],
+    [1100, 1000],
+    [1200, 1100],
+    [1100, 1200],
+    [1000, 1200],
+    [900, 1100],
+    [1000, 1000],
+];
