@@ -103,6 +103,7 @@ function queryPoly(item, item1) {
     console.log('data2', data2);
 
     $CAMIC.viewer.omanager.addOverlay({id: 'id02', data: data2, render: renderPoly, isShow: true});
+    $CAMIC.viewer.omanager.updateView();
 
 }
 
