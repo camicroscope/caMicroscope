@@ -55,8 +55,8 @@ function initialize() {
         let url='/data/Mark/multi?name=["_1n7w6ahx2"]&slide=CMU1';
         fetchJSON(url, queryPoly);
 
-        // Display with 'data1' coordinates
-        $CAMIC.viewer.omanager.addOverlay({id: 'id01', data: this.data1, render: renderPoly, isShow: true});
+        // Display with coordinates
+        $CAMIC.viewer.omanager.addOverlay({id: getLayerId(), data: this.coords, render: renderPoly, isShow: true});
 
         // Display using spatial query
         // _rh5xco7oc
@@ -130,7 +130,7 @@ function fetchJSON(url, options, callback) {
 }
 
 // image coordinates
-const data1 = [
+coords = [
     [1000, 1000],
     [1100, 1000],
     [1200, 1100],
@@ -140,7 +140,7 @@ const data1 = [
     [1000, 1000],
 ];
 
-layerId = 'id1';
+layerId = 'id0';
 
 function getLayerId()
 {
