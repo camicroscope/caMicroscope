@@ -432,9 +432,7 @@
         * stop to measure the image
         */
         stop:function(e){
-            // if(this.isMeasuring) {
-            //	do something
-            // }
+            if(this.isMeasuring===false) return;
             this.isMeasuring = false;
             this._viewer.canvas.style.cursor = 'pointer';
             if(this.mode =='straight') this._ruler.querySelector('.circle').style.display='none';

@@ -54,6 +54,10 @@ function initCore(){
     }
   });
 
+  $CAMIC.viewer.addHandler('open',function(){
+    if($CAMIC.viewer.pmanager)$CAMIC.viewer.pmanager.on();
+  });
+  
   // ui init
   $UI.toolbar = new CaToolbar({
   /* opts that need to think of*/

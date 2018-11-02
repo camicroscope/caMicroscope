@@ -33,7 +33,7 @@
             dragEnd:_drag_end.bind(this)//,
             //zoom:zoom.bind(this)
         }
-        this.isOn = false;
+        this.isOn = options.isOn || false;
         this.isPoint = false;
         this.isCreatePatch = true;
         this.viewer = options.viewer;
@@ -52,10 +52,11 @@
         this.imgWidth = image1.source.dimensions.x;
         this.imgHeight = image1.source.dimensions.y;
 
-        this.viewer.addHandler('zoom', this.events.zoom);
-        this.viewer.addHandler('canvas-click', this.events.click);
-        this.viewer.addHandler('canvas-press', this.events.press);
-        this.viewer.addHandler('canvas-drag-end', this.events.dragEnd);
+        if(this.isOn) this.on();
+        // this.viewer.addHandler('zoom', this.events.zoom);
+        // this.viewer.addHandler('canvas-click', this.events.click);
+        // this.viewer.addHandler('canvas-press', this.events.press);
+        // this.viewer.addHandler('canvas-drag-end', this.events.dragEnd);
         //this.viewer.addHandler('zoom', this.events.zoom);
     
     }
@@ -67,6 +68,10 @@
 
         console.log('on');
         // add mouse events
+        this.viewer.addHandler('zoom', this.events.zoom);
+        this.viewer.addHandler('canvas-click', this.events.click);
+        this.viewer.addHandler('canvas-press', this.events.press);
+        this.viewer.addHandler('canvas-drag-end', this.events.dragEnd);
         
     };
 
@@ -76,6 +81,10 @@
         this.isOn = false;
         console.log('off');
         // remove mouse events
+        this.viewer.removeHandler('zoom', this.events.zoom);
+        this.viewer.removeHandler('canvas-click', this.events.click);
+        this.viewer.removeHandler('canvas-press', this.events.press);
+        this.viewer.removeHandler('canvas-drag-end', this.events.dragEnd);
         
     };
 
