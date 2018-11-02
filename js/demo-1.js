@@ -59,7 +59,11 @@ function initialize() {
     // draw something
     $CAMIC.viewer.addOnceHandler('open', function (e) {
         // ready to draw
-        console.log($CAMIC.viewer.omanager);
+
+        // Display by fetching data
+        fetchJSON('/data/Mark/multi?name=["_1n7w6ahx2"]&slide=CMU1', queryPoly);
+
+        // Display with hardcoded coordinates
         $CAMIC.viewer.omanager.addOverlay({id: 'id01', data: data1, render: renderPoly, isShow: true});
     });
 
@@ -71,37 +75,50 @@ function initialize() {
  * @param points - a list of coordinates, each in form [x,y]
  **/
 function renderPoly(context, points) {
+
+    // console.log('length', points.length, 'points', points);
+
     context.lineWidth = 10;
     context.strokeStyle = 'yellow';
     context.fillStyle = 'rgba(125,125,125,.4)';
     context.moveTo(points[0][0], points[0][1]);
     context.lineTo(points[0][0], points[0][1]);
     context.beginPath();
-    //console.log(points);
+
     points.slice(1).forEach(function (coord) {
         let x = coord[0];
         let y = coord[1];
         context.lineTo(x, y);
     });
+
     context.lineTo(points[0][0], points[0][1]);
     context.closePath();
     context.stroke();
 }
 
-function redirect(url, text = '', sec = 5) {
-    let timer = sec;
-    setInterval(function () {
-        if (!timer) {
-            window.location.href = url;
-        }
+function queryPoly(item, item1) {
 
-        if (Loading.instance.parentNode) {
-            Loading.text.textContent = `${text} ${timer}s.`;
-        } else {
-            Loading.open(document.body, `${text} ${timer}s.`);
-        }
-        // Hint Message for clients that page is going to redirect to Flex table in 5s
-        timer--;
+    // This works
+    let data2 = item1[0].geometries.features[0].geometry.coordinates[0];
+    console.log('data2', data2);
 
-    }, 1000);
+    $CAMIC.viewer.omanager.addOverlay({id: 'id02', data: data2, render: renderPoly, isShow: true});
+
+}
+
+function fetchJSON(url, options, callback) {
+
+    if (typeof options === 'function') {
+        callback = options;
+        options = {}
+    }
+
+    options = options || {};
+
+    const headers = (options.headers || (options.headers = {}));
+    headers.Accept = 'application/json';
+
+    fetch(url, options)
+        .then(response => response.json())
+        .then(json => callback(null, json), callback)
 }
