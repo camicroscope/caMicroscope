@@ -77,7 +77,7 @@ function renderPoly(context, points) {
     // console.log('length', points.length, 'points', points);
 
     context.lineWidth = 10;
-    context.strokeStyle = getColor();
+    context.strokeStyle = 'yellow';
     context.fillStyle = 'rgba(125,125,125,.4)';
     context.moveTo(points[0][0], points[0][1]);
     context.lineTo(points[0][0], points[0][1]);
@@ -152,11 +152,4 @@ function getLayerId()
     this.layerId = (pre + integer);
 
     return this.layerId;
-}
-
-myColors = ['yellow', 'green', 'blue'];
-
-function getColor()
-{
-    return myColors[Math.floor(Math.random() * myColors.length)];
 }
