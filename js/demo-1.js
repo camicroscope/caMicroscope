@@ -48,12 +48,20 @@ function initialize() {
     $CAMIC.viewer.addOnceHandler('open', function (e) {
         // ready to draw
 
+        getLayerId();
+
         // Display by fetching data
         // _1n7w6ahx2
-        fetchJSON('/data/Mark/multi?name=["_1n7w6ahx2"]&slide=CMU1', queryPoly);
+        let url='/data/Mark/multi?name=["_1n7w6ahx2"]&slide=CMU1';
+        fetchJSON(url, queryPoly);
 
         // Display with 'data1' coordinates
-        $CAMIC.viewer.omanager.addOverlay({id: 'id01', data: data1, render: renderPoly, isShow: true});
+        $CAMIC.viewer.omanager.addOverlay({id: 'id01', data: this.data1, render: renderPoly, isShow: true});
+
+        // Display using spatial query
+        // _rh5xco7oc
+        url='http://nexi-bmi.uhmc.sunysb.edu:4010/data/Mark/findBound?x0=0.45&y0=0.62&x1=0.53&y1=0.68';
+        fetchJSON(url, queryPoly);
 
     });
 
@@ -99,7 +107,7 @@ function queryPoly(item, item1) {
     });
     //console.log('map1', map1);
 
-    $CAMIC.viewer.omanager.addOverlay({id: 'id02', data: map1, render: renderPoly, isShow: true});
+    $CAMIC.viewer.omanager.addOverlay({id: getLayerId(), data: map1, render: renderPoly, isShow: true});
     $CAMIC.viewer.omanager.updateView();
 
 }
@@ -131,3 +139,17 @@ const data1 = [
     [900, 1100],
     [1000, 1000],
 ];
+
+layerId = 'id1';
+
+function getLayerId()
+{
+    let tmp = this.layerId;
+    let pre = tmp.slice(0, -1);
+    let num = tmp.substr(-1);
+    let integer = parseInt(num);
+    integer = integer + 1;
+    this.layerId = (pre + integer);
+
+    return this.layerId;
+}
