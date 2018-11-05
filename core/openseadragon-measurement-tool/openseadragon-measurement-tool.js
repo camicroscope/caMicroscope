@@ -461,16 +461,16 @@
         __getScaleUnit:function(mpp, valueInImagePiexl){
         	const value = mpp*valueInImagePiexl;
 			if (value < 0.000001) {
-			    return (value * 1000000000).toFixed(3) + " pm";
+			    return (value * 1000000000).toFixed(3) + " fm";
 			}
 			if (value < 0.001) {
-			    return (value * 1000000).toFixed(3) + " nm";
+			    return (value * 1000000).toFixed(3) + " pm";
 			}
 			if (value < 1) {
-			    return (value * 1000).toFixed(3) + " mm";
+			    return (value * 1000).toFixed(3) + " nm";
 			}
 			if (value >= 1000) {
-			    return (value / 1000).toFixed(3) + " cm";
+			    return (value / 1000).toFixed(3) + " mm";
 			}
 			return (value).toFixed(3) + " μm";
         },
