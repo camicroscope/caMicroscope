@@ -4,6 +4,5 @@ COPY ./ /var/www/html/
 WORKDIR /var/www/html/
 RUN npm install -g http-server
 RUN npm install -g parcel-bundler
-RUN parcel build package/packages.js
 EXPOSE 80
-CMD http-server -p 80
+CMD parcel build package/packages.js; http-server -p 80
