@@ -214,7 +214,7 @@ function toggleSideMenu(opt){
 
 // go home callback
 function goHome(data){
-	redirect($D.pages.home,`GO Home Page`, 3);
+	redirect($D.pages.home,`GO Home Page`, 0);
 }
 
 // pen draw callback
