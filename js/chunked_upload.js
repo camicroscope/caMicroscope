@@ -33,7 +33,7 @@ async function readFileChunks(file, token){
     try{
       let data = await promiseChunkFileReader(file, part)
       let body = {chunkSize:chunkSize, offset:part*chunkSize, data:data}
-      let res = await continue_uplpad(token)(body)
+      let res = await continue_upload(token)(body)
       part++
       console.log(part)
     } catch(e) {
@@ -50,7 +50,7 @@ async function handle_upload(selectedFiles){
   let filename = document.getElementById("filename").value
   let token = await start_upload(filename)
   // uncurry the upload function
-  let callback = continue_uplpad(token)
+  let callback = continue_upload(token)
   document.getElementById("token").value = token
   readFileChunks(selectedFile, token)
   //parseFile(selectedFile, callback, 0, x=>(changeStatus("UPLOAD", "Finished Reading File")))
@@ -71,7 +71,7 @@ async function start_upload(filename){
   }
 }
 
-function continue_uplpad(token){
+function continue_upload(token){
   return async function(body){
     changeStatus("UPLOAD", "Uploading chunk at: "+ body.offset +" of size "+ body.chunkSize)
     return await fetch(continue_url + token,{method:'POST', body: JSON.stringify(body),headers: {
