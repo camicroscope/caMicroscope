@@ -48,7 +48,7 @@ async function readFileChunks(file, token){
 async function handle_upload(selectedFiles){
   selectedFile = selectedFiles[0]
   let filename = document.getElementById("filename").value
-  let token = await start_upload(document.getElementById("filename").value)
+  let token = await start_upload(filename)
   // uncurry the upload function
   let callback = continue_uplpad(token)
   document.getElementById("token").value = token
