@@ -60,7 +60,7 @@ function initialize() {
 
         // Display using spatial query
         // _rh5xco7oc
-        url='http://nexi-bmi.uhmc.sunysb.edu:4010/data/Mark/findBound?x0=0.45&y0=0.62&x1=0.53&y1=0.68';
+        url='/data/Mark/findBound?x0=0.45&y0=0.62&x1=0.53&y1=0.68';
         fetchJSON(url, queryPoly);
 
     });
