@@ -6,13 +6,13 @@
 
 class CaMic{
   /**
-  * 
+  *
   * create a camic core instance
   * @param divId - the div id to inject openseadragon into
   * @param slideId - the id of the slide to load
   * @property slideId - the slide id
   * @property options - the options extend from OpenSeadragon
-  * 
+  *
   */
   constructor(divId, slideId, options){
     // initalize viewer
@@ -106,7 +106,7 @@ class CaMic{
           return;
         }
 
-        this.viewer.open("./img/Slide/"+ x[0]["_id"]["$oid"] + ".dzi");
+        this.viewer.open("/img/Slide/"+ x[0]["_id"]["$oid"] + ".dzi");
         // set scalebar
         this.createScalebar(x[0].mpp)
         var imagingHelper = new OpenSeadragonImaging.ImagingHelper({
@@ -118,7 +118,7 @@ class CaMic{
         Loading.text.textContent = `loading slide's tiles...`;
         this.mpp = x[0].mpp;
 
-        
+
       })
       .catch(e=>{
         Loading.close();
@@ -217,7 +217,7 @@ class CaMic{
       }
     });
   }
-  
+
   createPatchManager(){
     if(!this.setting.hasPatchManager || !this.viewer.createPatchManager) return;
     this.viewer.createPatchManager({});
