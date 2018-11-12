@@ -74,7 +74,7 @@ class Store{
     if (!slide){
       return bySlide
     } else {
-        bySlideId = this.findSlide(name).then(x=>{
+        bySlideId = this.findSlide(slide).then(x=>{
         if (x.length == 0){
           return []
         } else {
@@ -146,7 +146,7 @@ class Store{
     if (!slide){
       return bySlide
     } else {
-        bySlideId = this.findSlide(name).then(x=>{
+        bySlideId = this.findSlide(slide).then(x=>{
         if (x.length == 0){
           return []
         } else {
@@ -232,7 +232,7 @@ class Store{
     if (!slide){
       return bySlide
     } else {
-        bySlideId = this.findSlide(name).then(x=>{
+        bySlideId = this.findSlide(slide).then(x=>{
         if (x.length == 0){
           return []
         } else {
