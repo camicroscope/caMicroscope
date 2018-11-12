@@ -1,5 +1,4 @@
 
-
 ul.tools>li.handler {
   width: 1.2rem;
   height: 100%;
@@ -93,6 +92,18 @@ ul.drop_down>li>input[type=radio] {
   /*   position: absolute;
   font-size: 0;
   left: -100%; */
+}
+ul.tools>li>label.s0 {
+  background-color: #fff;
+  color: #365f9c;
+}
+ul.tools>li>label.s1 {
+  background-color: #91A8C9;
+  color: #365f9c
+}
+ul.tools>li>label.s2 {
+  background-color: #365f9c;
+  color: #fff;
 }
 li > input[type=radio]+label div,
 li > input[type=radio]+label{

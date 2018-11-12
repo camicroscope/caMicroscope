@@ -219,34 +219,59 @@ function goHome(data){
 
 // pen draw callback
 function draw(e){
-	let draw = e.draw || e.checked;
 	if(!$CAMIC.viewer.canvasDrawInstance){
 		alert('draw doesn\'t initialize');
 		return;
 	}
+	const state = +e.state;
 	const canvasDraw = $CAMIC.viewer.canvasDrawInstance;
-	$UI.message.add(`Draw: ${draw?'ON':'OFF'}`);
-	if(draw){
-		canvasDraw.drawOn();
-		// turn off magnifier
-		$UI.toolbar._sub_tools[2].querySelector('input[type=checkbox]').checked = false;
-		$UI.spyglass.close();
-		// turn off measurement
-		$UI.toolbar._sub_tools[3].querySelector('input[type=checkbox]').checked = false;
-		$CAMIC.viewer.measureInstance.off();
-	}else{
-		canvasDraw.drawOff();
-	}
-	//
-	if(draw && this.clientX && this.clientY){
-		$CAMIC.drawContextmenu.open({x:this.clientX,y:this.clientY});
-	}else{
-		$CAMIC.drawContextmenu.close();
-	}
-	//
+	//$UI.message.add(`Draw: ${state?'ON':'OFF'}`);
+	
+	const target = this.srcElement || this.target || this.eventSource.canvas;
+	switch (state) {
+		case 0: // off
+			canvasDraw.clear();
+			canvasDraw.drawOff();
+			$CAMIC.drawContextmenu.off();
+			$UI.appsSideMenu.close();
+			break;
+		case 1: // once
+			// statements_1
+		case 2: // stick
+			canvasDraw.drawOn();
+			$CAMIC.drawContextmenu.on();
+			$CAMIC.drawContextmenu.open({x:this.clientX,y:this.clientY,target:target});
+			// turn off magnifier
+			$UI.toolbar._sub_tools[2].querySelector('input[type=checkbox]').checked = false;
+			$UI.spyglass.close();
+			// turn off measurement
+			$UI.toolbar._sub_tools[3].querySelector('input[type=checkbox]').checked = false;
+			$CAMIC.viewer.measureInstance.off();
+			
+			//close layers menu
+			$UI.layersSideMenu.close();
 
-	$CAMIC.drawContextmenu.ctrl[0].checked = draw;
-	$UI.toolbar._sub_tools[1].querySelector('input[type=checkbox]').checked = draw;
+			// open annotation menu
+			$UI.appsSideMenu.open();
+			$UI.appsList.triggerContent('annotation','open');
+			const input = $UI.annotOptPanel._form_.querySelector('#name');
+			input.focus();
+			input.select(); 
+			break;
+		default:
+			// statements_def
+			break;
+	}
+}
+
+function toggleOffDrawBtns(){
+	const label = $UI.toolbar._sub_tools[1].querySelector('label');
+	const state = +label.dataset.state;
+	label.classList.remove(`s${state}`);
+
+	label.dataset.state = 0;
+	label.classList.add(`s0`);
+
 }
 
 function toggleMeasurement(data){
@@ -254,9 +279,9 @@ function toggleMeasurement(data){
 	if(data.checked){
 		$CAMIC.viewer.measureInstance.on();
 		// turn off draw
-		$UI.toolbar._sub_tools[1].querySelector('input[type=checkbox]').checked = false;
 		$CAMIC.viewer.canvasDrawInstance.drawOff();
-		$CAMIC.drawContextmenu.close();
+		$CAMIC.drawContextmenu.off();
+		toggleOffDrawBtns();
 		// turn off magnifier
 		$UI.toolbar._sub_tools[2].querySelector('input[type=checkbox]').checked = false;
 		$UI.spyglass.close();
@@ -273,9 +298,10 @@ function toggleMagnifier(data){
 		$UI.spyglass.factor = +data.status;
 		$UI.spyglass.open(this.clientX,this.clientY);
 		// turn off draw
-		$UI.toolbar._sub_tools[1].querySelector('input[type=checkbox]').checked = false;
+		//$UI.toolbar._sub_tools[1].querySelector('input[type=checkbox]').checked = false;
 		$CAMIC.viewer.canvasDrawInstance.drawOff();
-		$CAMIC.drawContextmenu.close();
+		$CAMIC.drawContextmenu.off();
+		toggleOffDrawBtns();
 		// turn off measurement
 		$UI.toolbar._sub_tools[3].querySelector('input[type=checkbox]').checked = false;
 		$CAMIC.viewer.measureInstance.off();
@@ -450,11 +476,11 @@ function saveAnnotCallback(){
 	/* reset as default */
 	// clear draw data and UI
 	$CAMIC.viewer.canvasDrawInstance.drawOff();
-	draw({checked:false});
-	$CAMIC.drawContextmenu.close();
+	$CAMIC.drawContextmenu.off();
+	toggleOffDrawBtns();
 	$CAMIC.viewer.canvasDrawInstance.clear();
 	// uncheck pen draw icon and checkbox
-	$UI.toolbar._sub_tools[1].querySelector('[type=checkbox]').checked = false;
+	//$UI.toolbar._sub_tools[1].querySelector('[type=checkbox]').checked = false;
 	// clear form
 	$UI.annotOptPanel.clear();
 
@@ -571,7 +597,17 @@ function saveAnnotation(){
 function saveAnalytics(){
 	console.log('saveAnalytics');
 }
-
+function startDrawing(e){
+	$CAMIC.viewer.canvasDrawInstance.stop = !$UI.annotOptPanel._form_.isValid();
+	console.log($CAMIC.viewer.canvasDrawInstance.stop);
+	return;
+}
+function stopDrawing(e){
+	let state = +$UI.toolbar._sub_tools[1].querySelector('label').dataset.state;
+	if(state===1){
+		saveAnnotation();
+	}
+}
 /* call back list END */
 /* --  -- */
 /* -- for render anno_data to canavs -- */

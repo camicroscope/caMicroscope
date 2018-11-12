@@ -145,36 +145,35 @@ class CaMic{
     if(!this.setting.hasDrawLayer || !this.viewer.canvasDraw) return;
     this.viewer.canvasDraw();
     // create style context menu for draw
-    this.drawContextmenu = new StyleContextMenu(
+    this.drawContextmenu = new __.SimpleContextMenu(
       this.viewer.container,
-      {
-        btns:this.setting.draw.btns
-      }
+      {}
     );
 
     // add event to hook up
     this.drawContextmenu.addHandler('style-changed',function(e){
       this.viewer.canvasDrawInstance.style = e.style;
+      this.viewer.canvasDrawInstance.drawMode = e.model;
     }.bind(this));
 
-    this.drawContextmenu.addHandler('undo',function(e){
-      this.viewer.canvasDrawInstance.undo();
-    }.bind(this));
+    // this.drawContextmenu.addHandler('undo',function(e){
+    //   this.viewer.canvasDrawInstance.undo();
+    // }.bind(this));
 
-    this.drawContextmenu.addHandler('redo',function(e){
-      this.viewer.canvasDrawInstance.redo();
-    }.bind(this));
+    // this.drawContextmenu.addHandler('redo',function(e){
+    //   this.viewer.canvasDrawInstance.redo();
+    // }.bind(this));
 
     this.drawContextmenu.addHandler('clear',function(e){
       if(this.viewer.canvasDrawInstance._draws_data_.length == 0) return;
       if(confirm("Do you want to clear all markups?")) this.viewer.canvasDrawInstance.clear();
     }.bind(this));
 
-    this.drawContextmenu.addHandler('draw-mode-changed',function(e){
-      this.viewer.canvasDrawInstance.drawMode = e.mode;
-    }.bind(this));
+    // this.drawContextmenu.addHandler('draw-mode-changed',function(e){
+    //   this.viewer.canvasDrawInstance.drawMode = e.mode;
+    // }.bind(this));
 
-    this.drawContextmenu.addHandler('draw',draw);
+    //this.drawContextmenu.addHandler('draw',draw);
   }
 
   /**

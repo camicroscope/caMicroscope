@@ -28,8 +28,6 @@
  *        The style of the draw on a image
  * @param {String} [options.style.color='#7CFC00']
  *        The color of lines
- * @param {Number} [options.style.lineWidth=3]
- *        sets the thickness of lines in space units.
  * @param {Object} [options.style.lineJoin='round']
  *        how two connecting segments in a shape are joined together. There are 3 possible values: 'bevel', 'round', 'miter'
  * @param {Object} [options.style.lineCap='round']
@@ -79,16 +77,17 @@
         // ctx styles opt
         this.style = {
             color:'#7CFC00',
-            lineWidth:3,
+            //lineWidth:3,
             lineJoin:'round', // "bevel" || "round" || "miter"
             lineCap:'round' // "butt" || "round" || "square"
         };
 
         if(options.style && options.style.color) this.style.color = options.style.color;
-        if(options.style && options.style.lineWidth) this.style.lineWidth = options.style.lineWidth;
+        //if(options.style && options.style.lineWidth) this.style.lineWidth = options.style.lineWidth;
         if(options.style && options.style.lineJoin) this.style.lineJoin = options.style.lineJoin;
         if(options.style && options.style.lineCap) this.style.lineCap = options.style.lineCap;
         
+        this.events = {};
         // global events list for easily remove and add
         this._event = {
           start:this.startDrawing.bind(this), 
@@ -165,13 +164,13 @@
             // ctx styles opt
             this.style = {
                 color:'#7CFC00',
-                lineWidth:3,
+                //lineWidth:0,
                 lineJoin:'round', // "bevel" || "round" || "miter"
                 lineCap:'round' // "butt" || "round" || "square"
             };
 
             if(options.style && options.style.color) this.style.color = options.style.color;
-            if(options.style && options.style.lineWidth) this.style.lineWidth = options.style.lineWidth;
+            //if(options.style && options.style.lineWidth) this.style.lineWidth = options.style.lineWidth;
             if(options.style && options.style.lineJoin) this.style.lineJoin = options.style.lineJoin;
             if(options.style && options.style.lineCap) this.style.lineCap = options.style.lineCap;
 
@@ -253,6 +252,10 @@
             this.imgWidth = image1.source.dimensions.x;
             this.imgHeight = image1.source.dimensions.y;
             this.imgAspectRatio = this.imgWidth / this.imgHeight;
+
+            var iamgeBounds = this._viewer.viewport.viewportToImageRectangle(boundsRect);
+
+            this.style.lineWidth = 2*Math.round(Math.max(iamgeBounds.width/this._containerWidth,iamgeBounds.height/this._containerHeight ));
         },
 
         /**
@@ -334,6 +337,8 @@
         * start drawing on the drawing canvas and creata the collection that store the marks in geojson form
         */
         startDrawing:function(e){
+
+
             //prevent to open context menu when click on drawing mode
             let isRight;
             e = e || window.event;
@@ -343,6 +348,11 @@
                 isRight = e.button == 2; 
             if(e.ctrlKey || isRight) return;
 
+            this.raiseEvent('start-drawing',{originalEvent:e});
+            if(this.stop){
+                this.stop = false;
+                return;
+            }
             // close style context menu if it open
             if(this.contextMenu)this.contextMenu.close(e);
             let point = new OpenSeadragon.Point(e.clientX, e.clientY);
@@ -417,11 +427,13 @@
             if(this.isDrawing) {
               // add style and data to data collection
               this.__endNewFeature();
+              this.raiseEvent('stop-drawing',{originalEvent:e});
             }
             // this is the geometry data, in points; conv to geojson
             this.isDrawing = false;
+            this.stop = false;
             this._draw_.style.cursor = 'pointer';
-
+            
         },
 
         /**
@@ -483,7 +495,7 @@
             this._current_path_.properties.style.color = this.style.color;
             this._current_path_.properties.style.lineJoin = this.style.lineJoin;
             this._current_path_.properties.style.lineCap = this.style.lineCap;
-            this._current_path_.properties.style.lineWidth = this.style.lineWidth;
+            //this._current_path_.properties.style.lineWidth = this.style.lineWidth;
             let points = this._current_path_.geometry.coordinates[0];
             points.push([points[0][0],points[0][1]]);
 
@@ -561,6 +573,10 @@
             }
         }
     };
+
+
+    $.extend($.CanvasDraw.prototype,$.EventSource.prototype);
+    
     function getBounds(points){
         let max,min;
         points.forEach(point => {

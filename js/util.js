@@ -19,8 +19,7 @@ const AnalyticsPanelContent = //'test<br>test<br>test<br>test<br>test<br>test<br
 +         "</table>"
 +         "</div>"
 ;
-
-
+const __ = { };
 // the robust solution that mimics jQuery's functionality
 function extend(){
     for(var i=1; i<arguments.length; i++)
@@ -308,7 +307,6 @@ EventHandle.prototype = {
             }
         };
     },
-
     /**
      * Trigger an event, optionally passing additional information.
      * @function

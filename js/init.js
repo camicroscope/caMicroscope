@@ -107,6 +107,11 @@ function initCore(){
       });
     }
   });
+
+  $CAMIC.viewer.addHandler('open',function(){
+    $CAMIC.viewer.canvasDrawInstance.addHandler('start-drawing',startDrawing);
+    $CAMIC.viewer.canvasDrawInstance.addHandler('stop-drawing',stopDrawing);
+  });
 }
 
 
@@ -137,7 +142,7 @@ function initUIcomponents(){
       {
         icon:'create',// material icons' name
         title:'Draw',
-        type:'check',
+        type:'multistates',
         callback:draw
       },
       // magnifier

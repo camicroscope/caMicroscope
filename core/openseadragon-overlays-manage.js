@@ -230,7 +230,7 @@
             ctx.fillStyle = hexToRgbA(style.color,0.5);
             ctx.strokeStyle = style.color;
             ctx.lineWidth = style.lineWidth;
-            path.strokeAndFill(this._hover_ctx_);
+            path.fill(this._hover_ctx_);
         },
 
         /**

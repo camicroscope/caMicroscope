@@ -50,7 +50,7 @@ caDrawHelper.prototype.drawRectangle = function(ctx, start, end, isSquare = fals
     
     // close path and set style
     path.closePath()
-    path.stroke(ctx);
+    //path.stroke(ctx);
     path.fill(ctx);
     
     // return points and path 
@@ -116,7 +116,7 @@ caDrawHelper.prototype.drawPolygon = function(ctx, paths){
 
     // close path and set style
     path.closePath()
-    path.stroke(ctx);
+    //path.stroke(ctx);
     path.fill(ctx);
     // return points and path
     return path
@@ -139,7 +139,7 @@ caDrawHelper.prototype.draw = function(ctx, image_data){
         ctx.fillStyle = hexToRgbA(style.color,0.3);
         // if there is path using path to draw
         if(polygon.geometry.path){
-            polygon.geometry.path.strokeAndFill(ctx);
+            polygon.geometry.path.fill(ctx);
             continue;
         }
 

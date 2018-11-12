@@ -116,7 +116,6 @@ class Store{
     var query = {}
     var stringifiedIds = ids.map(id=>`"${id}"`).join(',');
     query.name = `[${stringifiedIds}]`;
-    console.log(query.name);
     query.slide = slide;
     // api key for bindaas?
     return fetch(url + "?" + objToParamStr(query), {
