@@ -73,12 +73,17 @@ class Store{
     if (!slide){
       return bySlide
     } else {
-      let bySlideId = this.findSlide(name).then(x=>x.json()).then(x=>{
-        query.slide = x[0]['_id']['$oid']
-        fetch(url + "?" + objToParamStr(query), {
-                credentials: "same-origin",
-                mode: "cors"
-            }).then(this.errorHandler)
+      let bySlideId = this.findSlide(name).then(x=>{
+        if (x.length == 0){
+          return []
+        } else {
+          query.slide = x[0]['_id']['$oid']
+          return fetch(url + "?" + objToParamStr(query), {
+                  credentials: "same-origin",
+                  mode: "cors"
+              }).then(this.errorHandler)
+        }
+
       })
       // return as if we did one query by flattening these promises
       return Promise.all([bySlide, bySlideId]).then(x=>[].concat.apply([],x))
@@ -207,12 +212,16 @@ class Store{
     if (!slide){
       return bySlide
     } else {
-      let bySlideId = this.findSlide(name).then(x=>x.json()).then(x=>{
-        query.slide = x[0]['_id']['$oid']
-        fetch(url + "?" + objToParamStr(query), {
-                credentials: "same-origin",
-                mode: "cors"
-            }).then(this.errorHandler)
+      let bySlideId = this.findSlide(name).then(x=>{
+        if (x.length == 0){
+          return []
+        } else {
+          query.slide = x[0]['_id']['$oid']
+          return fetch(url + "?" + objToParamStr(query), {
+                  credentials: "same-origin",
+                  mode: "cors"
+              }).then(this.errorHandler)
+        }
       })
       // return as if we did one query by flattening these promises
       return Promise.all([bySlide, bySlideId]).then(x=>[].concat.apply([],x))
