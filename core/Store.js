@@ -51,6 +51,7 @@ class Store{
   }
   /**
   * find marks matching slide and/or marktype
+  * will search by slide field as exactly given and by the oid slide of that name
   * @param {string} [name] - the associated slide name
   * @param {string} [slide] - the associated marktype name, supporting regex match
   * @returns {promise} - promise which resolves with data
@@ -65,16 +66,29 @@ class Store{
     if (slide){
       query.slide = slide
     }
-
-    // api key for bindaas?
-    return fetch(url + "?" + objToParamStr(query), {
+    let bySlide = fetch(url + "?" + objToParamStr(query), {
             credentials: "same-origin",
             mode: "cors"
         }).then(this.errorHandler)
+    if (!slide){
+      return bySlide
+    } else {
+      let bySlideId = this.findSlide(name).then(x=>x.json()).then(x=>{
+        query.slide = x[0]['_id']['$oid']
+        fetch(url + "?" + objToParamStr(query), {
+                credentials: "same-origin",
+                mode: "cors"
+            }).then(this.errorHandler)
+      })
+      // return as if we did one query by flattening these promises
+      return Promise.all([bySlide, bySlideId]).then(x=>[].concat.apply([],x))
+    }
+
   }
 
   /**
   * find marks which contain a given point
+  * NOTE: this works only by exact match
   * @param {number} x0 - x min position of rect to search
   * @param {number} y0 - y min position of rect to search
   * @param {number} x1 - x max position of rect to search
@@ -100,7 +114,7 @@ class Store{
     if (key){
       query.key = key
     }
-    // api key for bindaas?
+
     return fetch(url + "?" + objToParamStr(query), {
             credentials: "same-origin",
             mode: "cors"
@@ -117,7 +131,7 @@ class Store{
     var stringifiedIds = ids.map(id=>`"${id}"`).join(',');
     query.name = `[${stringifiedIds}]`;
     query.slide = slide;
-    // api key for bindaas?
+
     return fetch(url + "?" + objToParamStr(query), {
             credentials: "same-origin",
             mode: "cors"
@@ -134,7 +148,7 @@ class Store{
     var suffix = "Mark/get"
     var url = this.base + suffix;
     var query = {'id':id}
-    // api key for bindaas?
+
     return fetch(url + "?" + objToParamStr(query), {
             credentials: "same-origin",
             mode: "cors"
@@ -143,7 +157,7 @@ class Store{
   addMark(json){
     var suffix = "Mark/post"
     var url = this.base + suffix;
-    // api key for bindaas?
+
     return fetch(url, {
             method:"POST",
             credentials: "same-origin",
@@ -184,11 +198,25 @@ class Store{
     if (slide){
       query.slide = slide
     }
-    // api key for bindaas?
-    return fetch(url + "?" + objToParamStr(query), {
+
+    let bySlide = fetch(url + "?" + objToParamStr(query), {
             credentials: "same-origin",
             mode: "cors"
         }).then(this.errorHandler)
+
+    if (!slide){
+      return bySlide
+    } else {
+      let bySlideId = this.findSlide(name).then(x=>x.json()).then(x=>{
+        query.slide = x[0]['_id']['$oid']
+        fetch(url + "?" + objToParamStr(query), {
+                credentials: "same-origin",
+                mode: "cors"
+            }).then(this.errorHandler)
+      })
+      // return as if we did one query by flattening these promises
+      return Promise.all([bySlide, bySlideId]).then(x=>[].concat.apply([],x))
+    }
   }
   // NOTE there is no getMarktype method since markypes are not stored separately from marks
 
@@ -208,7 +236,7 @@ class Store{
     if (slide){
       query.slide = slide
     }
-    // api key for bindaas?
+
     return fetch(url + "?" + objToParamStr(query), {
             credentials: "same-origin",
             mode: "cors"
@@ -224,7 +252,7 @@ class Store{
     var suffix = "Overlay/get"
     var url = this.base + suffix;
     var query = {'id':id}
-    // api key for bindaas?
+
     return fetch(url + "?" + objToParamStr(query), {
             credentials: "same-origin",
             mode: "cors"
@@ -247,7 +275,7 @@ class Store{
     if (location){
       query.location = location
     }
-    // api key for bindaas?
+
     return fetch(url + "?" + objToParamStr(query), {
             credentials: "same-origin",
             mode: "cors"
@@ -263,7 +291,7 @@ class Store{
     var suffix = "Slide/get"
     var url = this.base + suffix;
     var query = {'id':id}
-    // api key for bindaas?
+
     return fetch(url + "?" + objToParamStr(query), {
             credentials: "same-origin",
             mode: "cors"
@@ -286,7 +314,7 @@ class Store{
     if (type){
       query.slide = slide
     }
-    // api key for bindaas?
+
     return fetch(url + "?" + objToParamStr(query), {
             credentials: "same-origin",
             mode: "cors"
@@ -302,7 +330,7 @@ class Store{
     var suffix = "Template/get"
     var url = this.base + suffix;
     var query = {'id':id}
-    // api key for bindaas?
+
     return fetch(url + "?" + objToParamStr(query), {
             credentials: "same-origin",
             mode: "cors"
@@ -318,7 +346,7 @@ class Store{
   **/
   post(type, query, data){
     var url = this.base + type + "/post";
-    // api key for bindaas?
+
     return fetch(url + "?" + objToParamStr(query), {
             method: "POST",
             mode: "cors",
@@ -339,7 +367,7 @@ class Store{
   **/
   update(type, query, data){
     var url = this.base + type + "/update";
-    // api key for bindaas?
+
     return fetch(url + "?" + objToParamStr(query), {
             method: "UPDATE",
             mode: "cors",
@@ -359,7 +387,7 @@ class Store{
   **/
   delete(type, query){
     var url = this.base + type + "/delete";
-    // api key for bindaas?
+
     return fetch(url + "?" + objToParamStr(query), {
             credentials: "same-origin",
             mode: "cors"
