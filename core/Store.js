@@ -60,6 +60,7 @@ class Store{
     var suffix = "Mark/find"
     var url = this.base + suffix;
     var query = {}
+    var bySlideId
     if (name){
       query.name = name
     }
@@ -73,7 +74,7 @@ class Store{
     if (!slide){
       return bySlide
     } else {
-      let bySlideId = this.findSlide(name).then(x=>{
+        bySlideId = this.findSlide(name).then(x=>{
         if (x.length == 0){
           return []
         } else {
@@ -130,6 +131,7 @@ class Store{
     if(!Array.isArray(ids) || !slide){
       return {hasError:true,message:'args are illegal'}
     }
+    var bySlideId
     var suffix = "Mark/multi"
     var url = this.base + suffix;
     var query = {}
@@ -144,7 +146,7 @@ class Store{
     if (!slide){
       return bySlide
     } else {
-      let bySlideId = this.findSlide(name).then(x=>{
+        bySlideId = this.findSlide(name).then(x=>{
         if (x.length == 0){
           return []
         } else {
@@ -215,13 +217,13 @@ class Store{
     var suffix = "Mark/findTypes"
     var url = this.base + suffix;
     var query = {}
+    var bySlideId
     if (name){
       query.name = name
     }
     if (slide){
       query.slide = slide
     }
-
     let bySlide = fetch(url + "?" + objToParamStr(query), {
             credentials: "same-origin",
             mode: "cors"
@@ -230,7 +232,7 @@ class Store{
     if (!slide){
       return bySlide
     } else {
-      let bySlideId = this.findSlide(name).then(x=>{
+        bySlideId = this.findSlide(name).then(x=>{
         if (x.length == 0){
           return []
         } else {
