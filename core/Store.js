@@ -142,7 +142,7 @@ class Store{
             mode: "cors"
     }).then(this.errorHandler)
     if (!slide){
-      return byslide
+      return bySlide
     } else {
       let bySlideId = this.findSlide(name).then(x=>{
         if (x.length == 0){
