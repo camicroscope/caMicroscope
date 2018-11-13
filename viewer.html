@@ -155,12 +155,13 @@
 		$D.params = getUrlVars();
 
 		// load if we have at least one slide query element
-		if($D.params && $D.params.slideId )){
+		if($D.params && $D.params.slideId){
 			// normal initialization starts
 			document.addEventListener('DOMContentLoaded', initialize);
 		}
 		else if ($D.params && ($D.params.slide || $D.params.location)){
-			$CAMIC.store.findSlide($D.params.slide, $D.params.location).then(x=>{
+			let STORE = new Store()
+			STORE.findSlide($D.params.slide, $D.params.location).then(x=>{
 				if(x.length == 0){
 					redirect($D.pages.table,'No Slide Found. Redirecting to Table.');
 				} else {
