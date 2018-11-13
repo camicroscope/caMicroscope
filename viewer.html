@@ -155,14 +155,32 @@
 		$D.params = getUrlVars();
 
 		// load if we have at least one slide query element
-		if($D.params && ($D.params.slideId || $D.params.slide || $D.params.location)){
-
+		if($D.params && $D.params.slideId )){
 			// normal initialization starts
 			document.addEventListener('DOMContentLoaded', initialize);
-
-		// if there are no query elements, return user to table
-		}else{
-			redirect($D.pages.table,'Slide Id is undefined. Redirecting to Flex Table.');
+		}
+		else if ($D.params && ($D.params.slide || $D.params.location)){
+			$CAMIC.store.findSlide($D.params.slide, $D.params.location).then(x=>{
+				if(x.length == 0){
+					redirect($D.pages.table,'No Slide Found. Redirecting to Table.');
+				} else {
+					newParams = $D.params
+					delete newParams.data
+					delete newParams.slide
+					delete newParams.location
+					newParams.slideId = x[0]['_id']['$oid']
+					newUrl = window.location.href.split("?")[0] + "?" + objToParamStr(newParams)
+					window.location.href = newUrl
+				}
+			}).catch(e=>{
+				console.warn(e)
+				redirect($D.pages.table,'Redirecting to Table.');
+			})
+			// find the associated slideID
+			// open viewer with that slideID
+		}
+		else {
+			redirect($D.pages.table,'Slide is undefined. Redirecting to Table.');
 		}
 
 		// get states parameters

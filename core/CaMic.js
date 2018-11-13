@@ -47,6 +47,7 @@ class CaMic{
     this.viewer = new OpenSeadragon.Viewer(this.setting);
 
     this.slideQuery = slideQuery;
+    this.slideId = slideQuery.id
     // initalize store
     this.store = new Store();
     // load image
