@@ -154,12 +154,13 @@
 		// get slide id from url
 		$D.params = getUrlVars();
 
-		// no slide Id error
-		if($D.params && $D.params.slideId){
+		// load if we have at least one slide query element
+		if($D.params && ($D.params.slideId || $D.params.slide || $D.params.location)){
 
 			// normal initialization starts
 			document.addEventListener('DOMContentLoaded', initialize);
 
+		// if there are no query elements, return user to table
 		}else{
 			redirect($D.pages.table,'Slide Id is undefined. Redirecting to Flex Table.');
 		}
