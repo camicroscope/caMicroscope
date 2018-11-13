@@ -444,7 +444,7 @@ function anno_callback(data){
 		},
 		geometries:ImageFeaturesToVieweportFeatures($CAMIC.viewer, $CAMIC.viewer.canvasDrawInstance.getImageFeatureCollection())
 	}
-
+	//return;
 	$CAMIC.store.addMark(annotJson)
 	.then(data=>{
 
@@ -466,12 +466,13 @@ function anno_callback(data){
 	.catch(e=>{
 		Loading.close();
 		console.log('save failed');
-		console.log(e)
+		console.log(e);
 	})
 	.finally(()=>{
 
 	});
 }
+
 function saveAnnotCallback(){
 	/* reset as default */
 	// clear draw data and UI
@@ -511,10 +512,9 @@ function callback(data){
 			item.layer.isShow = item.isShow;
 			$CAMIC.viewer.omanager.updateView();
 		}
-
-
 	});
 }
+
 function loadAnnotationById(item,id){
 			Loading.open(document.body,'loading layers...');
 			$CAMIC.store.getMarkByIds([id],$D.params.slideId)
@@ -599,7 +599,6 @@ function saveAnalytics(){
 }
 function startDrawing(e){
 	$CAMIC.viewer.canvasDrawInstance.stop = !$UI.annotOptPanel._form_.isValid();
-	console.log($CAMIC.viewer.canvasDrawInstance.stop);
 	return;
 }
 function stopDrawing(e){

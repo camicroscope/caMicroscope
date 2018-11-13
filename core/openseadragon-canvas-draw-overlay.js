@@ -364,7 +364,7 @@
             this._draw_.style.cursor = 'crosshair'
             
             
-            this._last = [img_point.x,img_point.y]
+            this._last = [Math.round(img_point.x),Math.round(img_point.y)]
             // first feature within
             this.__newFeature(this._last.slice());
         },
@@ -380,7 +380,8 @@
             let point = new OpenSeadragon.Point(e.clientX, e.clientY);
             let img_point = this._viewer.viewport.windowToImageCoordinates(point);
             if(0 > img_point.x || this.imgWidth < img_point.x || 0 > img_point.y || this.imgHeight < img_point.y )return;
-            
+            img_point.x = Math.round(img_point.x);
+            img_point.y = Math.round(img_point.y);
             //set style for ctx
             DrawHelper.setStyle(this._draw_ctx_,this.style);
             this._draw_ctx_.fillStyle = hexToRgbA(this.style.color,0.3);
@@ -506,9 +507,8 @@
 
 
             // create bounds
+            this._current_path_.bound = getBounds(this._current_path_.geometry.coordinates[0]);
             
-              this._current_path_.bound = getBounds(this._current_path_.geometry.coordinates[0]);
-            // 
             if(this._path_index < this._draws_data_.length){
               this._draws_data_ = this._draws_data_.slice(0,this._path_index);
             }

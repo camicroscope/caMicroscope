@@ -103,24 +103,31 @@ function ImageFeaturesToVieweportFeatures(viewer, geometries){
     type:'FeatureCollection',
     features:[]
   }
+  var image = viewer.world.getItemAt(0);
+  this.imgWidth = image.source.dimensions.x;
+  this.imgHeight = image.source.dimensions.y;
   for(let i = 0;i < geometries.features.length;i++){
     const feature = geometries.features[i];
-    rs.features.push((covertToViewportFeature(viewer,feature)))
+    rs.features.push((covertToViewportFeature(imgWidth,imgHeight,feature)))
   }
   return rs;
 }
 
 function VieweportFeaturesToImageFeatures(viewer, geometries){
+  var image = viewer.world.getItemAt(0);
+  this.imgWidth = image.source.dimensions.x;
+  this.imgHeight = image.source.dimensions.y;
+
   geometries.features = geometries.features.map(feature =>{
     feature.geometry.coordinates[0] = feature.geometry.coordinates[0].map(point => {
-      v_point = viewer.viewport.viewportToImageCoordinates(point[0],point[1]);
-      return [v_point.x,v_point.y];
+      //v_point = viewer.viewport.viewportToImageCoordinates(point[0],point[1]);
+      return [Math.round(point[0]*imgWidth),Math.round(point[1]*imgHeight)];
     })
 
     if(feature.bound&&feature.bound.coordinates && feature.bound.coordinates[0]){
       feature.bound.coordinates[0] = feature.bound.coordinates[0].map(point => {
-        v_point = viewer.viewport.viewportToImageCoordinates(point[0],point[1]);
-        return [v_point.x,v_point.y];
+        //v_point = viewer.viewport.viewportToImageCoordinates(point[0],point[1]);
+        return [Math.round(point[0]*imgWidth),Math.round(point[1]*imgHeight)];
       })
     }
     return feature;
@@ -128,7 +135,7 @@ function VieweportFeaturesToImageFeatures(viewer, geometries){
   return geometries;
 }
 
-function covertToViewportFeature(viewer, og){
+function covertToViewportFeature(width, height, og){
   feature = {
     type:'Feature',
     properties:{
@@ -145,17 +152,18 @@ function covertToViewportFeature(viewer, og){
   };
   let points = og.geometry.coordinates[0];
   const path = og.geometry.path;
+
   for(let i = 0; i < points.length; i++){
     feature.geometry.coordinates[0] = og.geometry.coordinates[0].map(point => {
-      v_point = viewer.viewport.imageToViewportCoordinates(point[0],point[1]);
-      return [v_point.x,v_point.y];
+      //v_point = viewer.viewport.imageToViewportCoordinates(point[0],point[1]);
+      return [point[0]/width,point[1]/height];
     });
   }
   points = og.bound;
   for(let i = 0; i < points.length; i++){
     feature.bound.coordinates[0] = og.bound.map(point => {
-      v_point = viewer.viewport.imageToViewportCoordinates(point[0],point[1]);
-      return [v_point.x,v_point.y];
+      //v_point = viewer.viewport.imageToViewportCoordinates(point[0],point[1]);
+      return [point[0]/width,point[1]/height];
     });
   }
   extend(feature.properties.style,og.properties.style); 
@@ -167,7 +175,9 @@ function isFunction(obj){
 function covertToLayViewer(item,l){
   const typeName = item.provenance.analysis.source;
   const id = item.provenance.analysis.execution_id;
-  const name = item.properties.annotations.name;
+  // support 2.0 style annotation data in refactor
+  const name = item.properties.annotations.name||item.provenance.analysis.execution_id;
+  
   const isShow = l&&l.includes(id)?true:false;
   if(!typeIds[typeName]) typeIds[typeName] = randomId();
   return {id:id,name:name,typeId:typeIds[typeName],typeName:typeName,isShow:isShow};
