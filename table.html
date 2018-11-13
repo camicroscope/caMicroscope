@@ -95,19 +95,19 @@
 					}else{
 						obj.data[i].push(data[i][col]);
 					}
-						
+
 				}
 			}
 
 			dataTableInstance = new DataTable("#datatables",{
 				columns:[
-					{select: 1, render: function(data){
+					{select: 0, render: function(data){
 						return `<a href='viewer.html?slideId=${data}'>${data}</a>`;
 					}},
 				],
 				data:obj
 			});
 		}
-		
+
 	</script>
 </html>

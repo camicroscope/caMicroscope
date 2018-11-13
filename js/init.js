@@ -69,7 +69,11 @@ function initCore(){
   }
 
   try{
-    $CAMIC = new CaMic("main_viewer",$D.params.slideId, opt);
+    let slideQuery = {}
+    slideQuery.id = $D.params.slideId
+    slideQuery.name = $D.params.slide
+    slideQuery.location = $D.params.location
+    $CAMIC = new CaMic("main_viewer", slideQuery, opt);
   }catch(error){
     Loading.close();
     $UI.message.addError('Core Initialization Failed');

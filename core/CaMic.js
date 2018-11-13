@@ -6,15 +6,18 @@
 
 class CaMic{
   /**
-  * 
+  *
   * create a camic core instance
   * @param divId - the div id to inject openseadragon into
-  * @param slideId - the id of the slide to load
-  * @property slideId - the slide id
+  * @param slideQuery - query parameters for the slide to load; first result taken
+  * @param [slideQuery.id] - the object id for the slide; takes precedence
+  * @param [slideQuery.slide] - the given name for the slide, regex supported
+  * @param [slideQuery.location] - the slide source location/filename
+  * @property slideQuery - the slide id
   * @property options - the options extend from OpenSeadragon
-  * 
+  *
   */
-  constructor(divId, slideId, options){
+  constructor(divId, slideQuery, options){
     // initalize viewer
     this.setting = {
       id: divId,
@@ -43,7 +46,7 @@ class CaMic{
 
     this.viewer = new OpenSeadragon.Viewer(this.setting);
 
-    this.slideId = slideId;
+    this.slideQuery = slideQuery;
     // initalize store
     this.store = new Store();
     // load image
@@ -99,7 +102,15 @@ class CaMic{
   */
   loadImg(func){
     // loads current image
-    this.store.findSlide(this.slideId)
+    // if id is set, use id
+    var slidePromise;
+    if(this.slideQuery.hasOwnProperty('id') && this.slideQuery.id){
+      slidePromise = this.store.getSlide(this.slideQuery.id)
+    }
+    else {
+      slidePromise = this.store.findSlide(this.slideQuery.name, this.slideQuery.location)
+    }
+    slidePromise
       .then((x)=>{
         if(!x || !OpenSeadragon.isArray(x) || !x.length || !x[0].location){
           redirect($D.pages.table,`Can't find the slide information`);
@@ -118,7 +129,7 @@ class CaMic{
         Loading.text.textContent = `loading slide's tiles...`;
         this.mpp = x[0].mpp;
 
-        
+
       })
       .catch(e=>{
         Loading.close();
@@ -216,7 +227,7 @@ class CaMic{
       }
     });
   }
-  
+
   createPatchManager(){
     if(!this.setting.hasPatchManager || !this.viewer.createPatchManager) return;
     this.viewer.createPatchManager({});
