@@ -1,5 +1,5 @@
 // dataloaders.js
-// 
+//
 
 // function SlideDataLoader(){
 // 	function loadingSlideInfo(){
@@ -17,7 +17,7 @@
 function FormTempaltesLoader(){
 
 	function loadingFormTemplates(){
-		
+
 		$CAMIC.store.findTemplate()
 		//
 		.then(function(temps){
@@ -27,7 +27,7 @@ function FormTempaltesLoader(){
 		//
 		.catch(function(error){
 			// templates schema
-			
+
 			console.error(error);
 		})
 		//
@@ -37,7 +37,7 @@ function FormTempaltesLoader(){
 			}else{
 				// set message
 				$UI.message.addError('Loading Templates is Error');
-				
+
 			}
 		});
 	}
@@ -53,8 +53,8 @@ function FormTempaltesLoader(){
 
 function OverlayersLoader(){
 	function loadingOverlayers(){
-
-		$CAMIC.store.findMark($D.params.slideId)
+		console.log("has camic slide id loaded? ", $CAMIC.slideId)
+		$CAMIC.store.findMark($CAMIC.slideId)
 		//
 		.then(function(layers){
 			typeIds = {};
@@ -67,7 +67,7 @@ function OverlayersLoader(){
 		//
 		.catch(function(error){
 			// overlayers schema
-			
+
 			console.error(error);
 		})
 		//
@@ -76,7 +76,7 @@ function OverlayersLoader(){
 			}else{
 				// set message
 				$UI.message.addError('Loading Overlayers is Error');
-				
+
 			}
 		});
 	}

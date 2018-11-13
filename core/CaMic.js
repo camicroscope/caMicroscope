@@ -117,7 +117,8 @@ class CaMic{
           redirect($D.pages.table,`Can't find the slide information`);
           return;
         }
-
+        this.slideId = x[0]["_id"]["$oid"]
+        this.slideName = x[0]['name']
         this.viewer.open("./img/Slide/"+ x[0]["_id"]["$oid"] + ".dzi");
         // set scalebar
         this.createScalebar(x[0].mpp)
