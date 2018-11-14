@@ -1,38 +1,38 @@
 // requires: Api_Utils
 // METHODS HERE RETURN PROMISES
 // for test server
-try{
+try {
   var fetch = require('node-fetch');
-}catch(e){
+} catch (e) {
   var b;
 }
 /**
-* converts an object into a string of url components
-* @param {object} obj - keys and values
-* @returns the url encoded string
-**/
+ * converts an object into a string of url components
+ * @param {object} obj - keys and values
+ * @returns the url encoded string
+ **/
 function objToParamStr(obj) {
-    var parts = [];
-    for (var i in obj) {
-        if (obj.hasOwnProperty(i)) {
-            if (Array.isArray(obj[i])) {
-                // arrays are a list of strings with escaped quotes, surrounded by []
-                parts.push(encodeURIComponent(i) + "=" + encodeURIComponent("[" + obj[i].map((x) => '\"' + x + '\"').toString() + "]"));
-            } else {
-                parts.push(encodeURIComponent(i) + "=" + encodeURIComponent(obj[i]));
-            }
-        }
+  var parts = [];
+  for (var i in obj) {
+    if (obj.hasOwnProperty(i)) {
+      if (Array.isArray(obj[i])) {
+        // arrays are a list of strings with escaped quotes, surrounded by []
+        parts.push(encodeURIComponent(i) + "=" + encodeURIComponent("[" + obj[i].map((x) => '\"' + x + '\"').toString() + "]"));
+      } else {
+        parts.push(encodeURIComponent(i) + "=" + encodeURIComponent(obj[i]));
+      }
     }
-    return parts.join("&");
+  }
+  return parts.join("&");
 }
 /**
  * @constructor
-* Storage interpreter for camicroscope, uses same auth as origin
-* @param base - base url for data
-* @param [config] - configuration options, unused so far
-**/
-class Store{
-  constructor(base, config){
+ * Storage interpreter for camicroscope, uses same auth as origin
+ * @param base - base url for data
+ * @param [config] - configuration options, unused so far
+ **/
+class Store {
+  constructor(base, config) {
     this.base = base || "./data/";
     this.config = config;
   }
@@ -41,69 +41,69 @@ class Store{
    * @param  {Response} response
    * @return {object}
    */
-  errorHandler(response){
+  errorHandler(response) {
     if (!response.ok) return {
-      error:!response.ok,
-      text:response.statusText,
-      url:response.url
+      error: !response.ok,
+      text: response.statusText,
+      url: response.url
     };
     return response.json();
   }
   /**
-  * find marks matching slide and/or marktype
-  * will search by slide field as exactly given and by the oid slide of that name
-  * @param {string} [name] - the associated slide name
-  * @param {string} [slide] - the associated marktype name, supporting regex match
-  * @returns {promise} - promise which resolves with data
-  **/
-  findMark(slide, name){
+   * find marks matching slide and/or marktype
+   * will search by slide field as exactly given and by the oid slide of that name
+   * @param {string} [name] - the associated slide name
+   * @param {string} [slide] - the associated marktype name, supporting regex match
+   * @returns {promise} - promise which resolves with data
+   **/
+  findMark(slide, name) {
     var suffix = "Mark/find"
     var url = this.base + suffix;
     var query = {}
     var bySlideId
-    if (name){
+    if (name) {
       query.name = name
     }
-    if (slide){
+    if (slide) {
       query.slide = slide
     }
     let bySlide = fetch(url + "?" + objToParamStr(query), {
-            credentials: "same-origin",
-            mode: "cors"
-        }).then(this.errorHandler)
-    if (!slide){
+      credentials: "same-origin",
+      mode: "cors"
+    }).then(this.errorHandler)
+    if (!slide) {
       return bySlide
     } else {
-        bySlideId = this.findSlide(slide).then(x=>{
-        if (x.length == 0){
+      bySlideId = this.findSlide(slide).then(x => {
+        if (x.length == 0) {
           return []
         } else {
           query.slide = x[0]['_id']['$oid']
           return fetch(url + "?" + objToParamStr(query), {
-                  credentials: "same-origin",
-                  mode: "cors"
-              }).then(this.errorHandler)
+            credentials: "same-origin",
+            mode: "cors"
+          }).then(this.errorHandler)
         }
 
       })
       // return as if we did one query by flattening these promises
-      return Promise.all([bySlide, bySlideId]).then(x=>[].concat.apply([],x))
+      return Promise.all([bySlide, bySlideId]).then(x => [].concat.apply([], x))
     }
 
   }
 
   /**
-  * find marks which contain a given point
-  * NOTE: this works only by exact match
-  * @param {number} x0 - x min position of rect to search
-  * @param {number} y0 - y min position of rect to search
-  * @param {number} x1 - x max position of rect to search
-  * @param {number} y1 - y max position of rect to search
-  * @param {string} [name] - the associated slide name
-  * @param {string} [slide] - the associated marktype name, supporting regex match
-  * @returns {promise} - promise which resolves with data
-  **/
-  findMarkSpatial(x0, y0, x1, y1, name, slide, key){
+   * find marks which contain a given point
+   * NOTE: this works only by exact match
+   * @param {number} x0 - x min position of rect to search
+   * @param {number} y0 - y min position of rect to search
+   * @param {number} x1 - x max position of rect to search
+   * @param {number} y1 - y max position of rect to search
+   * @param {string} [name] - the associated slide name
+   * @param {string} [slide] - the associated marktype name, supporting regex match
+   * @returns {promise} - promise which resolves with data
+   **/
+  findMarkSpatial(x0, y0, x1, y1, name, slide, key) {
     var suffix = "Mark/findBound"
     var url = this.base + suffix;
     var query = {}
@@ -111,322 +111,415 @@ class Store{
     query.y0 = y0
     query.x1 = x1
     query.y1 = y1
-    if (name){
+    if (name) {
       query.name = name
     }
-    if (slide){
+    if (slide) {
       query.slide = slide
     }
-    if (key){
+    if (key) {
       query.key = key
     }
 
     return fetch(url + "?" + objToParamStr(query), {
-            credentials: "same-origin",
-            mode: "cors"
-        }).then(this.errorHandler)
+      credentials: "same-origin",
+      mode: "cors"
+    }).then(this.errorHandler)
   }
 
-  getMarkByIds(ids, slide){
-    if(!Array.isArray(ids) || !slide){
-      return {hasError:true,message:'args are illegal'}
+  getMarkByIds(ids, slide) {
+    if (!Array.isArray(ids) || !slide) {
+      return {
+        hasError: true,
+        message: 'args are illegal'
+      }
     }
     var bySlideId
     var suffix = "Mark/multi"
     var url = this.base + suffix;
     var query = {}
-    var stringifiedIds = ids.map(id=>`"${id}"`).join(',');
+    var stringifiedIds = ids.map(id => `"${id}"`).join(',');
     query.name = `[${stringifiedIds}]`;
     query.slide = slide;
 
     let bySlide = fetch(url + "?" + objToParamStr(query), {
-            credentials: "same-origin",
-            mode: "cors"
+      credentials: "same-origin",
+      mode: "cors"
     }).then(this.errorHandler)
-    if (!slide){
+    if (!slide) {
       return bySlide
     } else {
-        bySlideId = this.findSlide(slide).then(x=>{
-        if (x.length == 0){
+      bySlideId = this.findSlide(slide).then(x => {
+        if (x.length == 0) {
           return []
         } else {
           query.slide = x[0]['_id']['$oid']
           return fetch(url + "?" + objToParamStr(query), {
-                  credentials: "same-origin",
-                  mode: "cors"
-              }).then(this.errorHandler)
+            credentials: "same-origin",
+            mode: "cors"
+          }).then(this.errorHandler)
         }
 
       })
       // return as if we did one query by flattening these promises
-      return Promise.all([bySlide, bySlideId]).then(x=>[].concat.apply([],x))
+      return Promise.all([bySlide, bySlideId]).then(x => [].concat.apply([], x))
     }
   }
 
 
   /**
-  * get mark by id
-  * @param {string} id - the mark id
-  * @returns {promise} - promise which resolves with data
-  **/
-  getMark(id){
+   * get mark by id
+   * @param {string} id - the mark id
+   * @returns {promise} - promise which resolves with data
+   **/
+  getMark(id) {
     var suffix = "Mark/get"
     var url = this.base + suffix;
-    var query = {'id':id}
+    var query = {
+      'id': id
+    }
 
     return fetch(url + "?" + objToParamStr(query), {
-            credentials: "same-origin",
-            mode: "cors"
-        }).then(this.errorHandler)
+      credentials: "same-origin",
+      mode: "cors"
+    }).then(this.errorHandler)
   }
-  addMark(json){
+  /**
+   * post mark
+   * @param {object} json - the mark data
+   * @returns {promise} - promise which resolves with response
+   **/
+  addMark(json) {
     var suffix = "Mark/post"
     var url = this.base + suffix;
 
     return fetch(url, {
-            method:"POST",
-            credentials: "same-origin",
-            mode: "cors",
-            headers: {
-            "Content-Type": "application/json; charset=utf-8",
-            // "Content-Type": "application/x-www-form-urlencoded",
-            },
-            body:JSON.stringify(json)
-        }).then(this.errorHandler)
+      method: "POST",
+      credentials: "same-origin",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json; charset=utf-8",
+        // "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: JSON.stringify(json)
+    }).then(this.errorHandler)
   }
-  deleteMark(id,slide){
+  /**
+   * delete mark
+   * @param {object} id - the mark object id
+   * @param {object} slide - the associated slide
+   * @returns {promise} - promise which resolves with response
+   **/
+  deleteMark(id, slide) {
     var suffix = "Mark/delete"
     var url = this.base + suffix;
     var query = {
-      id:id,
-      slide:slide
+      id: id,
+      slide: slide
     }
     return fetch(url + "?" + objToParamStr(query), {
-            method:"DELETE",
-            credentials: "same-origin",
-            mode: "cors"
-        }).then(this.errorHandler)
+      method: "DELETE",
+      credentials: "same-origin",
+      mode: "cors"
+    }).then(this.errorHandler)
   }
   /**
-  * find marktypes given slide and name
-  * @param {string} [name] - the associated slide name
-  * @param {string} [slide] - the marktype name, supporting regex match
-  * @returns {promise} - promise which resolves with data
-  **/
-  findMarkTypes(name, slide){
+   * find marktypes given slide and name
+   * @param {string} [name] - the associated slide name
+   * @param {string} [slide] - the marktype name, supporting regex match
+   * @returns {promise} - promise which resolves with data
+   **/
+  findMarkTypes(name, slide) {
     var suffix = "Mark/findTypes"
     var url = this.base + suffix;
     var query = {}
     var bySlideId
-    if (name){
+    if (name) {
       query.name = name
     }
-    if (slide){
+    if (slide) {
       query.slide = slide
     }
     let bySlide = fetch(url + "?" + objToParamStr(query), {
-            credentials: "same-origin",
-            mode: "cors"
-        }).then(this.errorHandler)
+      credentials: "same-origin",
+      mode: "cors"
+    }).then(this.errorHandler)
 
-    if (!slide){
+    if (!slide) {
       return bySlide
     } else {
-        bySlideId = this.findSlide(slide).then(x=>{
-        if (x.length == 0){
+      bySlideId = this.findSlide(slide).then(x => {
+        if (x.length == 0) {
           return []
         } else {
           query.slide = x[0]['_id']['$oid']
           return fetch(url + "?" + objToParamStr(query), {
-                  credentials: "same-origin",
-                  mode: "cors"
-              }).then(this.errorHandler)
+            credentials: "same-origin",
+            mode: "cors"
+          }).then(this.errorHandler)
         }
       })
       // return as if we did one query by flattening these promises
-      return Promise.all([bySlide, bySlideId]).then(x=>[].concat.apply([],x))
+      return Promise.all([bySlide, bySlideId]).then(x => [].concat.apply([], x))
     }
   }
-  // NOTE there is no getMarktype method since markypes are not stored separately from marks
+
+  findHeatmap(slide, name) {
+    var suffix = "Heatmap/find"
+    var url = this.base + suffix;
+    var query = {}
+    var bySlideId
+    if (name) {
+      query.name = name
+    }
+    if (slide) {
+      query.slide = slide
+    }
+    return fetch(url + "?" + objToParamStr(query), {
+      credentials: "same-origin",
+      mode: "cors"
+    }).then(this.errorHandler)
+  }
+  /**
+   * get heatmap by id
+   * @param {string} id - the heatmap id
+   * @returns {promise} - promise which resolves with data
+   **/
+  getHeatmap(id) {
+    var suffix = "Heatmap/get"
+    var url = this.base + suffix;
+    var query = {
+      'id': id
+    }
+
+    return fetch(url + "?" + objToParamStr(query), {
+      credentials: "same-origin",
+      mode: "cors"
+    }).then(this.errorHandler)
+  }
+  /**
+   * post heatmap
+   * @param {object} json - the mark data
+   * @returns {promise} - promise which resolves with response
+   **/
+  addHeatmap(json) {
+    var suffix = "Heatmap/post"
+    var url = this.base + suffix;
+
+    return fetch(url, {
+      method: "POST",
+      credentials: "same-origin",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json; charset=utf-8",
+        // "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: JSON.stringify(json)
+    }).then(this.errorHandler)
+  }
+  /**
+   * delete heatmap
+   * @param {object} id - the heatmap object id
+   * @param {object} slide - the associated slide
+   * @returns {promise} - promise which resolves with response
+   **/
+  deleteHeatmap(id, slide) {
+    var suffix = "Heatmap/delete"
+    var url = this.base + suffix;
+    var query = {
+      id: id,
+      slide: slide
+    }
+    return fetch(url + "?" + objToParamStr(query), {
+      method: "DELETE",
+      credentials: "same-origin",
+      mode: "cors"
+    }).then(this.errorHandler)
+  }
 
   /**
-  * find overlays matching name and/or type
-  * @param {string} [name] - the overlay, supporting regex match
-  * @param {string} [slide] - the associated slide id
-  * @returns {promise} - promise which resolves with data
-  **/
-  findOverlay(name, slide){
+   * find overlays matching name and/or type
+   * @param {string} [name] - the overlay, supporting regex match
+   * @param {string} [slide] - the associated slide id
+   * @returns {promise} - promise which resolves with data
+   **/
+  findOverlay(name, slide) {
     var suffix = "Overlay/find"
     var url = this.base + suffix;
     var query = {}
-    if (name){
+    if (name) {
       query.name = name
     }
-    if (slide){
+    if (slide) {
       query.slide = slide
     }
 
     return fetch(url + "?" + objToParamStr(query), {
-            credentials: "same-origin",
-            mode: "cors"
-        }).then(this.errorHandler)
+      credentials: "same-origin",
+      mode: "cors"
+    }).then(this.errorHandler)
   }
 
   /**
-  * get overlay by id
-  * @param {string} id - the overlay id
-  * @returns {promise} - promise which resolves with data
-  **/
-  getOverlay(id){
+   * get overlay by id
+   * @param {string} id - the overlay id
+   * @returns {promise} - promise which resolves with data
+   **/
+  getOverlay(id) {
     var suffix = "Overlay/get"
     var url = this.base + suffix;
-    var query = {'id':id}
+    var query = {
+      'id': id
+    }
 
     return fetch(url + "?" + objToParamStr(query), {
-            credentials: "same-origin",
-            mode: "cors"
-        }).then(this.errorHandler)
+      credentials: "same-origin",
+      mode: "cors"
+    }).then(this.errorHandler)
   }
 
   /**
-  * find overlays matching name and/or type
-  * @param {string} [name] - the slide name
-  * @param {string} [location] - the slide location, supporting regex match
-  * @returns {promise} - promise which resolves with data
-  **/
-  findSlide(slide, location){
+   * find overlays matching name and/or type
+   * @param {string} [name] - the slide name
+   * @param {string} [location] - the slide location, supporting regex match
+   * @returns {promise} - promise which resolves with data
+   **/
+  findSlide(slide, location) {
     var suffix = "Slide/find"
     var url = this.base + suffix;
     var query = {}
-    if (slide){
+    if (slide) {
       query.slide = slide
     }
-    if (location){
+    if (location) {
       query.location = location
     }
 
     return fetch(url + "?" + objToParamStr(query), {
-            credentials: "same-origin",
-            mode: "cors"
-        }).then(this.errorHandler)
+      credentials: "same-origin",
+      mode: "cors"
+    }).then(this.errorHandler)
   }
 
   /**
-  * get slide by id
-  * @param {string} id - the slide id
-  * @returns {promise} - promise which resolves with data
-  **/
-  getSlide(id){
+   * get slide by id
+   * @param {string} id - the slide id
+   * @returns {promise} - promise which resolves with data
+   **/
+  getSlide(id) {
     var suffix = "Slide/get"
     var url = this.base + suffix;
-    var query = {'id':id}
+    var query = {
+      'id': id
+    }
 
     return fetch(url + "?" + objToParamStr(query), {
-            credentials: "same-origin",
-            mode: "cors"
-        }).then(this.errorHandler)
+      credentials: "same-origin",
+      mode: "cors"
+    }).then(this.errorHandler)
   }
 
   /**
-  * find templates matching name and/or type
-  * @param {string} [name] - the template name, supporting regex match
-  * @param {string} [type] - the template type, supporting regex match
-  * @returns {promise} - promise which resolves with data
-  **/
-  findTemplate(name, type){
+   * find templates matching name and/or type
+   * @param {string} [name] - the template name, supporting regex match
+   * @param {string} [type] - the template type, supporting regex match
+   * @returns {promise} - promise which resolves with data
+   **/
+  findTemplate(name, type) {
     var suffix = "Template/find"
     var url = this.base + suffix;
     var query = {}
-    if (name){
+    if (name) {
       query.name = name
     }
-    if (type){
+    if (type) {
       query.slide = slide
     }
 
     return fetch(url + "?" + objToParamStr(query), {
-            credentials: "same-origin",
-            mode: "cors"
-        }).then(this.errorHandler)
+      credentials: "same-origin",
+      mode: "cors"
+    }).then(this.errorHandler)
   }
 
   /**
-  * get template by id
-  * @param {string} id - the template id
-  * @returns {promise} - promise which resolves with data
-  **/
-  getTemplate(id){
+   * get template by id
+   * @param {string} id - the template id
+   * @returns {promise} - promise which resolves with data
+   **/
+  getTemplate(id) {
     var suffix = "Template/get"
     var url = this.base + suffix;
-    var query = {'id':id}
+    var query = {
+      'id': id
+    }
 
     return fetch(url + "?" + objToParamStr(query), {
-            credentials: "same-origin",
-            mode: "cors"
-        }).then(this.errorHandler)
+      credentials: "same-origin",
+      mode: "cors"
+    }).then(this.errorHandler)
   }
 
   /**
-  * post data
-  * @param {string} type - the datatype to post
-  * @param {object} data - the data to post
-  * @param {object} [query] - the query of url parameters
-  * @returns {promise} - promise which resolves with data
-  **/
-  post(type, query, data){
+   * post data
+   * @param {string} type - the datatype to post
+   * @param {object} data - the data to post
+   * @param {object} [query] - the query of url parameters
+   * @returns {promise} - promise which resolves with data
+   **/
+  post(type, query, data) {
     var url = this.base + type + "/post";
 
     return fetch(url + "?" + objToParamStr(query), {
-            method: "POST",
-            mode: "cors",
-            body: JSON.stringify(data),
-            credentials: "same-origin",
-            headers: {
-              "Content-Type": "application/json; charset=utf-8"
-            }
-        }).then(this.errorHandler)
+      method: "POST",
+      mode: "cors",
+      body: JSON.stringify(data),
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json; charset=utf-8"
+      }
+    }).then(this.errorHandler)
   }
 
   /**
-  * update data
-  * @param {string} type - the datatype to get
-  * @param {object} query - the query of url parameters
-  * @param {object} data - the data to update
-  * @returns {promise} - promise which resolves with data
-  **/
-  update(type, query, data){
+   * update data
+   * @param {string} type - the datatype to get
+   * @param {object} query - the query of url parameters
+   * @param {object} data - the data to update
+   * @returns {promise} - promise which resolves with data
+   **/
+  update(type, query, data) {
     var url = this.base + type + "/update";
 
     return fetch(url + "?" + objToParamStr(query), {
-            method: "UPDATE",
-            mode: "cors",
-            body: JSON.stringify(data),
-            credentials: "same-origin",
-            headers: {
-              "Content-Type": "application/json; charset=utf-8"
-            }
-        }).then(this.errorHandler)
+      method: "UPDATE",
+      mode: "cors",
+      body: JSON.stringify(data),
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json; charset=utf-8"
+      }
+    }).then(this.errorHandler)
   }
 
   /**
-  * delete data
-  * @param {string} type - the datatype to get
-  * @param {object} query - the query of url parameters
-  * @returns {promise} - promise which resolves with data
-  **/
-  delete(type, query){
+   * delete data
+   * @param {string} type - the datatype to get
+   * @param {object} query - the query of url parameters
+   * @returns {promise} - promise which resolves with data
+   **/
+  delete(type, query) {
     var url = this.base + type + "/delete";
 
     return fetch(url + "?" + objToParamStr(query), {
-            credentials: "same-origin",
-            mode: "cors"
-        }).then(this.errorHandler)
+      credentials: "same-origin",
+      mode: "cors"
+    }).then(this.errorHandler)
   }
 }
 
-try{
+try {
   module.exports = Store;
-}
-catch(e){
+} catch (e) {
   var a
 }
