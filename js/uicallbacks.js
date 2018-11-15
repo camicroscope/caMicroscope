@@ -99,7 +99,7 @@ function multSelector_action(event){
 	}
 
 	// load data from service side
-	$CAMIC.store.getMarkByIds(unloaded,$D.params.slideId)
+	$CAMIC.store.getMarkByIds(unloaded,$D.params.data.name)
 	.then(function(datas){
 		// response error
 		if(datas.error){
@@ -319,9 +319,8 @@ function imageDownload(data){
 
 // share url
 function shareURL(data){
-	const URL = StatesHelper.getCurrentStatesURL();
+	const URL = StatesHelper.getCurrentStatesURL(true);
 	window.prompt('Share this link', URL);
-	console.log(URL);
 }
 // main menu changed
 function mainMenuChange(data){
@@ -354,7 +353,7 @@ function convertToPopupBody(notes){
 function anno_delete(data){
 	if(!data.id) return;
 	if(!confirm(`Are you sure you want to delete this markup {ID:${data.id}}?`)) return;
-	$CAMIC.store.deleteMark(data.oid,$D.params.slideId)
+	$CAMIC.store.deleteMark(data.oid,$D.params.data.name)
 	.then(datas =>{
 		// server error
 		if(datas.error){
@@ -458,7 +457,7 @@ function anno_callback(data){
 	const annotJson = {
 		provenance:{
 			image:{
-				slide:$D.params.slideId
+				slide:$D.params.data.name
 			},
 			analysis:{
 				source:'human',
@@ -544,7 +543,7 @@ function callback(data){
 
 function loadAnnotationById(item,id){
 			Loading.open(document.body,'loading layers...');
-			$CAMIC.store.getMarkByIds([id],$D.params.slideId)
+			$CAMIC.store.getMarkByIds([id],$D.params.data.name)
 			.then(data =>{
 				// response error
 				if(data.error){

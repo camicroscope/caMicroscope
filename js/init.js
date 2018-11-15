@@ -93,15 +93,25 @@ function initCore(){
           $UI.annotPopup.close();
           return;
         }
-        const body = convertToPopupBody(e.data.properties.annotations);
+        // for support QUIP 2.0
+        const data = Array.isArray(e.data)? e.data[e.data.selected]: e.data;
+        const annotations = Array.isArray(e.data) ? data.annotations: data.properties.annotations;
+        const body = convertToPopupBody(annotations);
         $UI.annotPopup.data = {
-          id:e.data.provenance.analysis.execution_id,
-          oid:e.data._id.$oid,
-          annotation:e.data.properties.annotations
+          id:data.provenance.analysis.execution_id,
+          oid:data._id.$oid,
+          annotation:annotations
         };
-        $UI.annotPopup.setTitle(`id:${e.data.provenance.analysis.execution_id}`);
+        $UI.annotPopup.setTitle(`id:${data.provenance.analysis.execution_id}`);
         $UI.annotPopup.setBody(body);
         $UI.annotPopup.open(e.position);
+      });
+
+      // create the message bar TODO for reading slide Info TODO
+      $UI.slideInfos = new CaMessage({
+      /* opts that need to think of*/
+        id:'cames',
+        defaultText:`Slide: ${$D.params.data.name}`
       });
 
       // spyglass
@@ -260,17 +270,6 @@ function initUIcomponents(){
       }
     ]
   });
-
-
-  // create the message bar TODO for reading slide Info TODO
-  $UI.slideInfos = new CaMessage({
-  /* opts that need to think of*/
-    id:'cames',
-    defaultText:`Slide Id: ${$D.params.slideId}`
-  });
-
-
-
 
   var checkOverlaysDataReady = setInterval(function () {
     if($D.overlayers) {
