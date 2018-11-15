@@ -230,7 +230,7 @@ class Store {
    * @returns {promise} - promise which resolves with data
    **/
   findMarkTypes(slide, name) {
-    var suffix = "Mark/findTypes"
+    var suffix = "Mark/types"
     var url = this.base + suffix;
     var query = {}
     var bySlideId
