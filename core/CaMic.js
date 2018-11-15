@@ -67,9 +67,20 @@ class CaMic{
       // set zoom and pan
       if(this.setting.states){
         const states = this.setting.states;
-        var pt = new OpenSeadragon.Point(states.x, states.y);
+        let x = states.x;
+        let y = states.y;
+        
+        if((!states.coordinate)&& states.coordinate!=='image' ){
+         const size = this.viewer.world.getItemAt(0).source.dimensions;
+         x = Math.round(x*size.x);
+         y = Math.round(y*size.y);
+        }
+
+        var pt = new OpenSeadragon.Point(x, y); // x, y should in the image coordinate system
+        pt = this.viewer.viewport.imageToViewportCoordinates(pt);
         this.viewer.viewport.zoomTo(states.z, pt);
         this.viewer.viewport.panTo(pt, true);
+      
       }
     }.bind(this));
 
