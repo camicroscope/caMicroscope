@@ -370,8 +370,15 @@ function anno_delete(data){
 			return;
 		}
 
+		const index = $D.overlayers.findIndex(layer => layer.id == data.id);
+
+    	if(index==-1) return;
+    	
+    	data.index = index;
+		const layer = $D.overlayers[data.index];
 		// update UI
-		deleteCallback(data);
+		if(Array.isArray(layer.data)) deleteCallback_old(data)
+		else deleteCallback(data)
 	})
 	.catch(e=>{
 		$UI.message.addError(e);
@@ -384,9 +391,7 @@ function anno_delete(data){
 }
 function deleteCallback(data){
 	// remove overlay
-	const index = $D.overlayers.findIndex(layer => layer.id == data.id);
-    if(index==-1) return;
-    $D.overlayers.splice(index, 1);
+    $D.overlayers.splice(data.index, 1);
     // update layer manager
     $CAMIC.viewer.omanager.removeOverlay(data.id);
     // update layers Viewer
@@ -396,6 +401,27 @@ function deleteCallback(data){
 
 }
 
+// for support QUIP2.0 Data model - delete callback
+function deleteCallback_old(data){
+    const layer = $D.overlayers[data.index];
+	// for support QUIP2.0
+	const idx = layer.data.findIndex(d=> d._id.$oid === data.oid );
+	if(idx ==-1) return;
+	layer.data.splice(idx, 1);
+	
+	// delete entire layer if there is no data.
+	if(layer.data.length == 0){
+			$D.overlayers.splice(data.index, 1);
+			$CAMIC.viewer.omanager.removeOverlay(data.id);
+	}
+
+
+	$CAMIC.viewer.omanager.updateView();
+    // update layers Viewer
+    $UI.layersViewer.update();
+	// close popup panel
+    $UI.annotPopup.close();
+}
 function sort_change(sort){
 	console.log('sort_change');
 	$CAMIC.layersManager.sort(sort);
@@ -436,7 +462,8 @@ function anno_callback(data){
 			},
 			analysis:{
 				source:'human',
-				execution_id:exec_id
+				execution_id:exec_id,
+				name:noteData.name
 			}
 		},
 		properties:{
@@ -542,10 +569,11 @@ function loadAnnotationById(item,id){
 				}
 
 
-				data[0].geometries = VieweportFeaturesToImageFeatures($CAMIC.viewer, data[0].geometries);
+
 
 				if(!item){
-					item = covertToLayViewer(data[0]);
+					console.log(data[0]);
+					item = covertToLayViewer(data[0].provenance);
 					item.isShow = true;
 					// update lay viewer UI
 					$D.overlayers.push(item);
@@ -555,8 +583,38 @@ function loadAnnotationById(item,id){
 					data[0].isShow = item.isShow;
 				}
 
-				item.data = data[0];
-				item.render = anno_render;
+				// for support quip 2.0 data model 
+				if(data[0].geometry){
+					// twist them
+					var image = $CAMIC.viewer.world.getItemAt(0);
+					this.imgWidth = image.source.dimensions.x;
+					this.imgHeight = image.source.dimensions.y;
+					item.data = data.map(d => {
+						d.geometry.coordinates[0] = d.geometry.coordinates[0].map(point => {
+							return [Math.round(point[0]*imgWidth),Math.round(point[1]*imgHeight)];
+						});
+						return {
+							_id:d._id,
+							provenance:d.provenance,
+							annotations:d.properties.annotations,
+							geometry:d.geometry,
+							properties:{
+								style: {
+									color: "#7CFC00",
+									lineCap: "round",
+									lineJoin: "round"
+								}
+							}
+						}
+					});
+					if(item) data[0].isShow = item.isShow;
+					item.render = old_anno_render;
+				}else{
+					data[0].geometries = VieweportFeaturesToImageFeatures($CAMIC.viewer, data[0].geometries);
+					item.data = data[0];
+					item.render = anno_render;
+				}
+
 				// create lay and update view
 				item.layer = $CAMIC.viewer.omanager.addOverlay(item);
 				$CAMIC.viewer.omanager.updateView();
@@ -613,5 +671,9 @@ function stopDrawing(e){
 function anno_render(ctx,data){
 	DrawHelper.draw(ctx, data.geometries.features);
 	//DrawHelper.draw(this._canvas_ctx, this.data.canvasData);
+}
+function old_anno_render(ctx,data){
+	DrawHelper.draw(ctx, data);
+	
 }
 /* --  -- */

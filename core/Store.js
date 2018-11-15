@@ -229,7 +229,7 @@ class Store {
    * @param {string} [slide] - the marktype name, supporting regex match
    * @returns {promise} - promise which resolves with data
    **/
-  findMarkTypes(name, slide) {
+  findMarkTypes(slide, name) {
     var suffix = "Mark/findTypes"
     var url = this.base + suffix;
     var query = {}

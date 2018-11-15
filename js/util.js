@@ -173,10 +173,10 @@ function isFunction(obj){
   return typeof obj === "function" && typeof obj.nodeType !== "number";
 }
 function covertToLayViewer(item,l){
-  const typeName = item.provenance.analysis.source;
-  const id = item.provenance.analysis.execution_id;
+  const typeName = item.analysis.source;
+  const id = item.analysis.execution_id;
   // support 2.0 style annotation data in refactor
-  const name = item.properties.annotations.name||item.provenance.analysis.execution_id;
+  const name = item.analysis.name||item.analysis.execution_id;
   
   const isShow = l&&l.includes(id)?true:false;
   if(!typeIds[typeName]) typeIds[typeName] = randomId();

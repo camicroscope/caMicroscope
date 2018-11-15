@@ -69,11 +69,7 @@ function initCore(){
   }
 
   try{
-    let slideQuery = {}
-    slideQuery.id = $D.params.slideId
-    slideQuery.name = $D.params.slide
-    slideQuery.location = $D.params.location
-    $CAMIC = new CaMic("main_viewer", slideQuery, opt);
+    $CAMIC = new CaMic("main_viewer",$D.params.slideId, opt);
   }catch(error){
     Loading.close();
     $UI.message.addError('Core Initialization Failed');
@@ -93,13 +89,19 @@ function initCore(){
           $UI.annotPopup.close();
           return;
         }
-        const body = convertToPopupBody(e.data.properties.annotations);
+
+        // for support QUIP 2.0
+        
+        const data = Array.isArray(e.data)? e.data[e.data.selected]: e.data;
+        const annotations = Array.isArray(e.data) ? data.annotations: data.properties.annotations;
+        const body = convertToPopupBody(annotations);
+        
         $UI.annotPopup.data = {
-          id:e.data.provenance.analysis.execution_id,
-          oid:e.data._id.$oid,
-          annotation:e.data.properties.annotations
+          id:data.provenance.analysis.execution_id,
+          oid:data._id.$oid,
+          annotation:annotations
         };
-        $UI.annotPopup.setTitle(`id:${e.data.provenance.analysis.execution_id}`);
+        $UI.annotPopup.setTitle(`id:${data.provenance.analysis.execution_id}`);
         $UI.annotPopup.setBody(body);
         $UI.annotPopup.open(e.position);
       });

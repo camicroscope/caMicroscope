@@ -100,11 +100,35 @@
             for(let i = 0;i<this.overlays.length;i++){
                 const layer = this.overlays[i];
                 if(!layer.isShow) continue;
+
+                if($.isArray(layer.data)){
+                    for(let j = 0;j < layer.data.length;j++){
+                        const path = layer.data[j].geometry.path;
+                        const style = layer.data[j].properties.style;
+                        if(path.contains(img_point.x,img_point.y)){
+                            this.resize();
+                            this.highlightPath = path;
+                            this.highlightStyle = style;
+                            this.highlightLayer = layer;
+                            this.highlightLayer.data.selected = j;
+                            this.drawOnCanvas(this.drawOnHover,[this._hover_ctx_,this._div,path,style]);
+                            return;
+                        }else{
+                            this.highlightPath = null;
+                            this.highlightStyle = null;
+                            if(this.highlightLayer) {
+                                this.highlightLayer.data.selected = null;
+                                this.highlightLayer = null;
+                            }
+                        }
+                    }
+                }
                 if(!layer.data.geometries) continue;
                 const features = layer.data.geometries.features;
                 for(let j = 0;j < features.length;j++){
                     const path = features[j].geometry.path;
                     const style = features[j].properties.style;
+                    this.subIndex = null;
                     if(path.contains(img_point.x,img_point.y)){
                         this.resize();
                         this.highlightPath = path;

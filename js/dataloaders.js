@@ -53,7 +53,7 @@ function FormTempaltesLoader(){
 
 function OverlayersLoader(){
 	function loadingOverlayers(){
-		$CAMIC.store.findMark($CAMIC.slideId)
+		$CAMIC.store.findMarkTypes($D.params.slideId)
 		//
 		.then(function(layers){
 			typeIds = {};
