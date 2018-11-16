@@ -136,7 +136,7 @@ caDrawHelper.prototype.draw = function(ctx, image_data){
         // other styles
         this.setStyle(ctx, style);
         // fill color
-        ctx.fillStyle = hexToRgbA(style.color,0.3);
+        ctx.fillStyle = hexToRgbA(style.color,0.5);
         // if there is path using path to draw
         if(polygon.geometry.path){
             polygon.geometry.path.fill(ctx);

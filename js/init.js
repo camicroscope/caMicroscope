@@ -95,12 +95,32 @@ function initCore(){
         }
         // for support QUIP 2.0
         const data = Array.isArray(e.data)? e.data[e.data.selected]: e.data;
-        const annotations = Array.isArray(e.data) ? data.annotations: data.properties.annotations;
-        const body = convertToPopupBody(annotations);
+
+        const type = data.provenance.analysis.source;
+        let body;
+        let attributes;
+        switch (type) {
+          case "human":
+            // human
+            attributes = data.properties.annotations;
+            body = convertHumanAnnotationToPopupBody(attributes);
+            $UI.annotPopup.showFooter();
+            break;
+          case "computer":
+            // handle data.provenance.analysis.computation = `segmentation`
+            attributes = data.properties.scalar_features[0].nv;
+            body = {type:'map',data:attributes};
+            $UI.annotPopup.hideFooter();
+            break;
+          default:
+            return;
+            // statements_def
+            break;
+        }
         $UI.annotPopup.data = {
           id:data.provenance.analysis.execution_id,
           oid:data._id.$oid,
-          annotation:annotations
+          annotation:attributes
         };
         $UI.annotPopup.setTitle(`id:${data.provenance.analysis.execution_id}`);
         $UI.annotPopup.setBody(body);

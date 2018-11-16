@@ -338,7 +338,7 @@ function mainMenuChange(data){
 	}
 }
 
-function convertToPopupBody(notes){
+function convertHumanAnnotationToPopupBody(notes){
 
 	const rs = {type:'map',data:[]};
 	for(let field in notes){
@@ -584,6 +584,7 @@ function loadAnnotationById(item,id){
 
 				// for support quip 2.0 data model 
 				if(data[0].geometry){
+
 					// twist them
 					var image = $CAMIC.viewer.world.getItemAt(0);
 					this.imgWidth = image.source.dimensions.x;
@@ -592,19 +593,19 @@ function loadAnnotationById(item,id){
 						d.geometry.coordinates[0] = d.geometry.coordinates[0].map(point => {
 							return [Math.round(point[0]*imgWidth),Math.round(point[1]*imgHeight)];
 						});
-						return {
-							_id:d._id,
-							provenance:d.provenance,
-							annotations:d.properties.annotations,
-							geometry:d.geometry,
-							properties:{
-								style: {
+						d.properties.style = {
 									color: "#7CFC00",
 									lineCap: "round",
 									lineJoin: "round"
-								}
-							}
+						};
+						return {
+							_id:d._id,
+							provenance:d.provenance,
+							properties:d.properties,
+							geometry:d.geometry
 						}
+
+
 					});
 					if(item) data[0].isShow = item.isShow;
 					item.render = old_anno_render;
