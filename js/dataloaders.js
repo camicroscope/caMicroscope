@@ -81,7 +81,7 @@ function OverlayersLoader(){
 	}
 
 	var checkCoreIsReady = setInterval(function () {
-		if($CAMIC) {
+		if($CAMIC && $D.params.data) {
 			clearInterval(checkCoreIsReady);
 			//load data
 			loadingOverlayers();
