@@ -63,15 +63,15 @@ describe('Operation Panel Component',function(){
 		// check title
 		it(`Options:check action's text and states`,function(){
 			const btn1 = singleElt.querySelector('.action');
-			assert.equal(btn1.textContent,'Save');
-			assert.equal(btn1.disabled,true);
+			const btn2 = multipleElt.querySelector('.action');
 			console.log(btn1.textContent)
 			console.log(btn1.disabled)
-			const btn2 = multipleElt.querySelector('.action');
-			assert.equal(btn2.textContent,'Submit');
-			assert.equal(btn2.disabled,true);
 			console.log(btn2.textContent)
 			console.log(btn2.disabled)
+			assert.equal(btn1.textContent,'Save');
+			assert.equal(btn1.disabled,true);
+			assert.equal(btn2.textContent,'Submit');
+			assert.equal(btn2.disabled,true);
 		});
 
 		// check callback
