@@ -44,11 +44,15 @@ function ParamPoly(urlvar){
   }
 
   Store.prototype.getMarkbyIds = function(ids, slide){
+    var showit = false;
+    if ("URLPARAM" in ids){
+      var showit = true;
+    }
     return this.getMarkbyIds_raw(ids, slide).then(x=>{
       if (false && !urlvar in getUrlVars()){
         return x
       } else {
-        if ("URLPARAM" in ids){
+        if (showit){
           console.log("Showing it")
           console.log(ids)
           // expecting feature collection so far
