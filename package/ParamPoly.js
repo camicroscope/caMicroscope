@@ -47,6 +47,7 @@ function ParamPoly(urlvar){
     var showit = false;
     if ("URLPARAM" in ids){
       var showit = true;
+      console.log('what...')
     }
     return this.getMarkbyIds_raw(ids, slide).then(x=>{
       if (false && !urlvar in getUrlVars()){
