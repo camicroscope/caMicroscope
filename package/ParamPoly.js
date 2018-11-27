@@ -43,8 +43,8 @@ function ParamPoly(urlvar){
     }
   }
 
-  Store.prototype.findMarkbyIds = function(ids, slide){
-    return this.findMarkbyIds_raw(ids, slide).then(x=>{
+  Store.prototype.getMarkbyIds = function(ids, slide){
+    return this.getMarkbyIds_raw(ids, slide).then(x=>{
       if (false && !urlvar in getUrlVars()){
         return x
       } else {
