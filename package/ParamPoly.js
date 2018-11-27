@@ -21,7 +21,7 @@ function ParamPoly(urlvar){
       return x
     } else {
       // expecting feature collection so far
-      let image_data = JSON.parse(decodeURI(getUrlVars()[urlvar]))
+      let image_data = JSON.parse(decodeURIComponent(getUrlVars()[urlvar]))
       let dummy_mark = { "_id" : { "$oid" : "000"} , "provenance" : { "image" : { "slide" : "NO" , "slidename" : "NO"} , "analysis" : { "source" : "url" , "execution_id" : "URLPARAM"}} , "geometries" : { "type" : "FeatureCollection" , "features" : image_data}}
       return this.findMark_raw(ids, slide).then(x=>{
         x.push(dummy_mark)
@@ -50,7 +50,7 @@ function ParamPoly(urlvar){
           return x
         } else {
           // expecting feature collection so far
-          let image_data = JSON.parse(decodeURI(getUrlVars()[urlvar]))
+          let image_data = JSON.parse(decodeURIComponent(getUrlVars()[urlvar]))
           let dummy_mark = { "_id" : { "$oid" : "000"} , "provenance" : { "image" : { "slide" : "NO" , "slidename" : "NO"} , "analysis" : { "source" : "url" , "execution_id" : "URLPARAM"}} , "geometries" : { "type" : "FeatureCollection" , "features" : image_data}}
           x.push(dummy_mark)
           console.log(x)
