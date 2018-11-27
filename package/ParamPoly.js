@@ -14,7 +14,7 @@ function ParamPoly(urlvar){
   //image_data.provenance.analysis.execution_id = "url"
   Store.prototype.findMark_raw = Store.prototype.findMark
   Store.prototype.findMarkTypes_raw = Store.prototype.findMarkTypes
-  Store.prototype.findMarkbyIds_raw = Store.prototype.findMarkbyIds
+  Store.prototype.getMarkbyIds_raw = Store.prototype.getMarkbyIds
   Store.prototype.findMark = function (ids, slide){
     if (false && !urlvar in getUrlVars()){
       return x
