@@ -44,7 +44,7 @@ function ParamPoly(urlvar){
   }
 
   Store.prototype.getMarkByIds = function(ids, slide){
-    console.log(ids)
+    console.log(ids, slide)
     if ("URLPARAM" in ids){
       return this.getMarkByIds_raw(ids, slide).then(x=>{
         if (false && !urlvar in getUrlVars()){
@@ -63,9 +63,8 @@ function ParamPoly(urlvar){
     } else {
       return this.getMarkByIds_raw(ids, slide)
     }
-
-
   }
+
 }
 
 export default ParamPoly
