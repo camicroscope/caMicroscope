@@ -58,6 +58,7 @@ function ParamPoly(urlvar){
           let dummy_mark = { "_id" : { "$oid" : "000"} , "provenance" : { "image" : { "slide" : "NO" , "slidename" : "NO"} , "analysis" : { "source" : "url" , "execution_id" : "URLPARAM"}} , "geometries" : { "type" : "FeatureCollection" , "features" : image_data}}
           x.push(dummy_mark)
         }
+        console.log(x)
         return x
       }
     })
