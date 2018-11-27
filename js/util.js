@@ -135,6 +135,18 @@ function VieweportFeaturesToImageFeatures(viewer, geometries){
   return geometries;
 }
 
+function VieweportFeaturesToImageFeaturesOLDMODEL(viewer, geometry){
+  var image = viewer.world.getItemAt(0);
+  this.imgWidth = image.source.dimensions.x;
+  this.imgHeight = image.source.dimensions.y;
+
+  geometry.coordinates[0] = geometry.coordinates[0].map(point => {
+    return [Math.round(point[0]*imgWidth),Math.round(point[1]*imgHeight)];
+  });
+  return geometry;
+}
+
+
 function covertToViewportFeature(width, height, og){
   feature = {
     type:'Feature',
