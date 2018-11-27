@@ -46,14 +46,10 @@ function ParamPoly(urlvar){
   Store.prototype.getMarkbyIds = function(ids, slide){
     var showit = false;
     if ("URLPARAM" in ids){
-      var showit = true;
-      console.log('what...')
-    }
-    return this.getMarkbyIds_raw(ids, slide).then(x=>{
-      if (false && !urlvar in getUrlVars()){
-        return x
-      } else {
-        if (showit){
+      return this.getMarkbyIds_raw(ids, slide).then(x=>{
+        if (false && !urlvar in getUrlVars()){
+          return x
+        } else {
           console.log("Showing it")
           console.log(ids)
           // expecting feature collection so far
@@ -62,11 +58,14 @@ function ParamPoly(urlvar){
           let image_data = JSON.parse(decodeURIComponent(test_data))
           let dummy_mark = { "_id" : { "$oid" : "000"} , "provenance" : { "image" : { "slide" : "NO" , "slidename" : "NO"} , "analysis" : { "source" : "url" , "execution_id" : "URLPARAM"}} , "geometries" : { "type" : "FeatureCollection" , "features" : image_data}}
           x.push(dummy_mark)
+          console.log(x)
+          return x
         }
-        console.log(x)
-        return x
-      }
-    })
+      })
+    } else {
+      return this.getMarkbyIds_raw(ids, slide)
+    }
+
 
   }
 }
