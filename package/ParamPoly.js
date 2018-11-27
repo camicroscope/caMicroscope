@@ -1,4 +1,5 @@
 function ParamPoly(urlvar){
+  console.warn("{ParamPoly} Loaded")
   function getUrlVars() {
     var vars = {};
     var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
