@@ -6,7 +6,7 @@ function ParamPoly(urlvar){
     });
     return vars;
   }
-  let urlvar = "passed"
+  urlvar = urlvar || "passed"
   // when document ready
   // get url variable
 
@@ -15,7 +15,7 @@ function ParamPoly(urlvar){
   Store.prototype.findMarkTypes_raw = Store.prototype.findMarkTypes
   Store.prototype.findMarkbyIds_raw = Store.prototype.findMarkbyIds
   Store.prototype.findMark = function (ids, slide){
-    if (!urlvar in getUrlVars()){
+    if (false && !urlvar in getUrlVars()){
       return x
     } else {
       // expecting feature collection so far
@@ -31,7 +31,7 @@ function ParamPoly(urlvar){
   }
 
   Store.prototype.findMarkTypes = function(slide, name){
-    if (!urlvar in getUrlVars()){
+    if (false && !urlvar in getUrlVars()){
       return x
     } else {
       return this.findMarkTypes_raw(slide, name).then(x=>{
@@ -44,7 +44,7 @@ function ParamPoly(urlvar){
 
   Store.prototype.findMarkbyIds = function(ids, slide){
     return this.findMarkbyIds_raw(ids, slide).then(x=>{
-      if (!urlvar in getUrlVars()){
+      if (false && !urlvar in getUrlVars()){
         return x
       } else {
         if ("URLPARAM" in ids){
