@@ -14,7 +14,7 @@ function ParamPoly(urlvar){
   //image_data.provenance.analysis.execution_id = "url"
   Store.prototype.findMark_raw = Store.prototype.findMark
   Store.prototype.findMarkTypes_raw = Store.prototype.findMarkTypes
-  Store.prototype.getMarkbyIds_raw = Store.prototype.getMarkbyIds
+  Store.prototype.getMarkByIds_raw = Store.prototype.getMarkByIds
   Store.prototype.findMark = function (ids, slide){
     if (false && !urlvar in getUrlVars()){
       return x
@@ -43,15 +43,13 @@ function ParamPoly(urlvar){
     }
   }
 
-  Store.prototype.getMarkbyIds = function(ids, slide){
+  Store.prototype.getMarkByIds = function(ids, slide){
     var showit = false;
     if ("URLPARAM" in ids){
-      return this.getMarkbyIds_raw(ids, slide).then(x=>{
+      return this.getMarkByIds_raw(ids, slide).then(x=>{
         if (false && !urlvar in getUrlVars()){
           return x
         } else {
-          console.log("Showing it")
-          console.log(ids)
           // expecting feature collection so far
           let test_data = "%5B%7B%22type%22%3A%22Feature%22%2C%22properties%22%3A%7B%22style%22%3A%7B%22color%22%3A%22%237cfc00%22%2C%22lineCap%22%3A%22round%22%2C%22lineJoin%22%3A%22round%22%2C%22lineWidth%22%3A3%7D%7D%2C%22geometry%22%3A%7B%22type%22%3A%22Polygon%22%2C%22coordinates%22%3A%5B%5B%5B0%2C1.333075238564%5D%2C%5B0.9211833251318%2C1.333075238564%5D%2C%5B0.9211833251318%2C1.4056976389659%5D%2C%5B0.84856092473%2C1.4056976389659%5D%2C%5B0%2C1.333075238564%5D%5D%5D%7D%7D%2C%7B%22type%22%3A%22Feature%22%2C%22properties%22%3A%7B%22style%22%3A%7B%22color%22%3A%22%237cfc00%22%2C%22lineCap%22%3A%22round%22%2C%22lineJoin%22%3A%22round%22%2C%22lineWidth%22%3A3%7D%7D%2C%22geometry%22%3A%7B%22type%22%3A%22Polygon%22%2C%22coordinates%22%3A%5B%5B%5B0.0819138121014%2C1.2558071323124%5D%2C%5B0.987611451067%2C1.2558071323124%5D%2C%5B0.987611451067%2C1.9173119035902%5D%2C%5B0.0819138121014%2C1.9173119035902%5D%2C%5B0.0819138121014%2C1.2558071323124%5D%5D%5D%7D%7D%5D"
           //let image_data = JSON.parse(decodeURI(getUrlVars(urlvar)))
@@ -63,7 +61,7 @@ function ParamPoly(urlvar){
         }
       })
     } else {
-      return this.getMarkbyIds_raw(ids, slide)
+      return this.getMarkByIds_raw(ids, slide)
     }
 
 
