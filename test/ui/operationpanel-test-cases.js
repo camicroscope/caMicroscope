@@ -11,13 +11,13 @@ describe('Operation Panel Component',function(){
 		let singleElt;
 		let multipleElt;
 		before(function(){
-			
+
 		});
 	/* --  prepare test START -- */
 	// loading the test page and wait til the scripts on the test pages are executed.
 	before(function(done){
 	 JSDOM.fromURL(
-	    `${global.origin}${global.testFolder}/ui/operationpanel-test-cases.html`, 
+	    `${global.origin}${global.testFolder}/ui/operationpanel-test-cases.html`,
 	    {
 	      runScripts: "dangerously",
 	      resources: "usable"
@@ -37,10 +37,10 @@ describe('Operation Panel Component',function(){
 	  	// error
 		done(error);
 	  });
-	
+
 	});
 
-	// 
+	//
 	describe('constructor:options', function () {
 		// let singleElt;
 		// let multipleElt;
@@ -65,9 +65,13 @@ describe('Operation Panel Component',function(){
 			const btn1 = singleElt.querySelector('.action');
 			assert.equal(btn1.textContent,'Save');
 			assert.equal(btn1.disabled,true);
+			console.log(btn1.textContent)
+			console.log(btn1.disabled)
 			const btn2 = multipleElt.querySelector('.action');
 			assert.equal(btn2.textContent,'Submit');
 			assert.equal(btn2.disabled,true);
+			console.log(btn2.textContent)
+			console.log(btn2.disabled)
 		});
 
 		// check callback
@@ -159,4 +163,3 @@ describe('Operation Panel Component',function(){
 	});
 
 });
-
