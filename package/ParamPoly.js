@@ -18,7 +18,7 @@ function ParamPoly(urlvar){
   Store.prototype.getMarkByIds_raw = Store.prototype.getMarkByIds
   Store.prototype.findMark = function (ids, slide){
     if (!(urlvar in getUrlVars())){
-      return x
+      return this.findMark_raw(ids, slide)
     } else {
       // expecting feature collection so far
       let image_data = JSON.parse(decodeURIComponent(getUrlVars()[urlvar]))
@@ -32,7 +32,7 @@ function ParamPoly(urlvar){
 
   Store.prototype.findMarkTypes = function(slide, name){
     if (!(urlvar in getUrlVars())){
-      return x
+      return this.findMarkTypes_raw(ids, slide)
     } else {
       return this.findMarkTypes_raw(slide, name).then(x=>{
         let urltype = { "image" : { "slide" : "NO" , "slidename" : "NO"} , "analysis" : { "source" : "url" , "execution_id" : "URLPARAM"}}
