@@ -160,9 +160,9 @@
 			// normal initialization starts
 			document.addEventListener('DOMContentLoaded', initialize);
 		}
-		else if ($D.params && ($D.params.slide || $D.params.location)){
+		else if ($D.params && ($D.params.slide || $D.params.specimen ||$D.params.study || $D.params.location)){
 			let STORE = new Store()
-			STORE.findSlide($D.params.slide, $D.params.location).then(x=>{
+			STORE.findSlide($D.params.slide, $D.params.study, $D.params.specimen, $D.params.location).then(x=>{
 				if(x.length == 0){
 					redirect($D.pages.table,'No Slide Found. Redirecting to Table.');
 				} else {
