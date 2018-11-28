@@ -16,14 +16,14 @@ function ParamPoly(urlvar){
   Store.prototype.findMark_raw = Store.prototype.findMark
   Store.prototype.findMarkTypes_raw = Store.prototype.findMarkTypes
   Store.prototype.getMarkByIds_raw = Store.prototype.getMarkByIds
-  Store.prototype.findMark = function (ids, slide){
+  Store.prototype.findMark = function (slide, name, specimen, study, footprint, source){
     if (!(urlvar in getUrlVars())){
-      return this.findMark_raw(ids, slide)
+      return this.findMark_raw(slide, name, specimen, study, footprint, source)
     } else {
       // expecting feature collection so far
       let image_data = JSON.parse(decodeURIComponent(getUrlVars()[urlvar]))
       let dummy_mark = { "_id" : { "$oid" : "000"} , "provenance" : { "image" : { "slide" : "NO" , "slidename" : "NO"} , "analysis" : { "source" : "url" , "execution_id" : "URLPARAM"}} , "geometries" : { "type" : "FeatureCollection" , "features" : image_data}}
-      return this.findMark_raw(ids, slide).then(x=>{
+      return this.findMark_raw(slide, name, specimen, study, footprint, source).then(x=>{
         x.push(dummy_mark)
         return x
       })
@@ -58,7 +58,7 @@ function ParamPoly(urlvar){
         }
       })
     } else {
-      return this.getMarkByIds_raw(ids, slide, , study, specimen, source, footprint)
+      return this.getMarkByIds_raw(ids, slide, study, specimen, source, footprint)
     }
   }
 
