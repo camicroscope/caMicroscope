@@ -32,7 +32,7 @@ function ParamPoly(urlvar){
 
   Store.prototype.findMarkTypes = function(slide, name){
     if (!(urlvar in getUrlVars())){
-      return this.findMarkTypes_raw(ids, slide)
+      return this.findMarkTypes_raw(slide, name)
     } else {
       return this.findMarkTypes_raw(slide, name).then(x=>{
         let urltype = { "image" : { "slide" : "NO" , "slidename" : "NO"} , "analysis" : { "source" : "url" , "execution_id" : "URLPARAM"}}
