@@ -150,10 +150,18 @@ class Store {
     var stringifiedIds = ids.map(id => `"${id}"`).join(',');
     query.name = `[${stringifiedIds}]`;
     query.slide = slide;
-    query.study = study;
-    query.specimen = specimen;
-    query.source = source;
-    query.footprint = footprint;
+    if (study){
+      query.study = study;
+    }
+    if (specimen){
+      query.specimen = specimen;
+    }
+    if (source){
+      query.source = source;
+    }
+    if (footprint){
+      query.footprint = footprint;
+    }
 
     let bySlide = fetch(url + "?" + objToParamStr(query), {
       credentials: "same-origin",
