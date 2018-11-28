@@ -61,7 +61,7 @@ function init_LocalStore(){
       // TODO!!!
     })
   }
-  Store.prototype.findMark = function(slide, name){
+  Store.prototype.findMark = function(slide, name, specimen, study, footprint, source){
     return new Promise(function(res, rej){
       let query = {}
       if (name){
@@ -69,6 +69,15 @@ function init_LocalStore(){
       }
       if(slide){
         query['provenance.analysis.execution_id']= name
+      }
+      if(source){
+        query['provenance.analysis.source']= source
+      }
+      if(specimen){
+        query['provenance.image.specimen'] = specimen
+      }
+      if(study){
+        query['provenance.image.study'] = study
       }
       res(findInLocalStorage('mark', query))
     })
