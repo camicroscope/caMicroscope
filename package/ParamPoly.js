@@ -42,7 +42,7 @@ function ParamPoly(urlvar){
     }
   }
 
-  Store.prototype.getMarkByIds = function(ids, slide){
+  Store.prototype.getMarkByIds = function(ids, slide, study, specimen, source, footprint){
     console.log(ids, slide, study, specimen, source, footprint)
     if (ids.includes('URLPARAM')){
       return this.getMarkByIds_raw(ids, slide, study, specimen, source, footprint).then(x=>{
