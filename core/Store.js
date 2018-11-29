@@ -56,7 +56,7 @@ class Store {
    * @param {string} [slide] - the associated marktype name, supporting regex match
    * @returns {promise} - promise which resolves with data
    **/
-  findMark(slide, name, specimen, study, footprint, source) {
+  findMark(slide, name, specimen, study, footprint, source, x0, x1, y0, y1) {
     var suffix = "Mark/find"
     var url = this.base + suffix;
     var query = {}
@@ -75,6 +75,18 @@ class Store {
     }
     if (source) {
       query.source = source
+    }
+    if (x0){
+      query.x0 = x0;
+    }
+    if (x1){
+      query.x1 = x1;
+    }
+    if (y0){
+      query.y0 = y0;
+    }
+    if (y1){
+      query.y1 = y1;
     }
     let bySlide = fetch(url + "?" + objToParamStr(query), {
       credentials: "same-origin",
@@ -136,7 +148,7 @@ class Store {
     }).then(this.errorHandler)
   }
 
-  getMarkByIds(ids, slide, study, specimen, source, footprint) {
+  getMarkByIds(ids, slide, study, specimen, source, footprint, x0, x1, y0, y1) {
     if (!Array.isArray(ids) || !slide) {
       return {
         hasError: true,
@@ -161,6 +173,18 @@ class Store {
     }
     if (footprint){
       query.footprint = footprint;
+    }
+    if (x0){
+      query.x0 = x0;
+    }
+    if (x1){
+      query.x1 = x1;
+    }
+    if (y0){
+      query.y0 = y0;
+    }
+    if (y1){
+      query.y1 = y1;
     }
 
     let bySlide = fetch(url + "?" + objToParamStr(query), {
