@@ -9,6 +9,9 @@
 
     <title>Zoom to Location Unit Test Page</title>
 
+    <!-- Fetch -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fetch/3.0.0/fetch.min.js"></script>
+    <script src="slideId.js"></script>
     <!-- google material icons css sheet -->
     <link href='/iconfont/material-icons.css' rel='stylesheet'/>
     <!-- css sheet -->
@@ -16,6 +19,7 @@
     <link rel='stylesheet' type='text/css' media='all' href='/lib/multselector/multselector.css'/>
     <!-- util.js -->
     <script src='/js/util.js' type='text/javascript'></script>
+    <!--script src="/core/Store.js"></script-->
     <!-- State Helper -->
     <script src="/lib/StatesHelper.js"></script>
     <!--script src='/lib/extension/some_new_extension.js'></script-->
@@ -52,11 +56,6 @@
             <fieldset>
                 <legend>Zoom parameters</legend>
                 <form id="frm">
-                    <!--
-                    slideId:
-                    <input type="text" name="slide" value="CMU1" readonly>
-                    <br>
-                    -->
                     x:
                     <input type="text" name="x" value="0.5">
                     <br>
@@ -72,31 +71,45 @@
         </td>
         <td>
             <!-- Don't use 'sandboxed' -->
-            <iframe src="/viewer.html?slideId=CMU1" id="ifrm"></iframe>
+            <iframe src="" id="ifrm"></iframe>
         </td>
     </tr>
 </table>
 
 <script>
+    // Get ID for URL
+    /*
+    let store = new Store();
+    let fun = store.findSlide('CMU1');
+    fun.then(function (result) {
+        console.log('result', result);
+    });
+    */
 
-    var frm = document.getElementById("frm");
-    var ifrm = document.getElementById('ifrm');
-    var msg = document.getElementById("message");
+    id = '';
+    fun = getSlideId('CMU1');
+    fun.then(function (result) {
+        console.log('result', result);
+        this.id = result;
 
-    // Set size of viewer
-    // We don't want it to be the entire size of window
-    // Let's make it half
-    var w = window.outerWidth / 2;
-    var h = window.outerHeight / 2;
+        // Set iframe attributes
+        let ifrm = document.getElementById('ifrm');
+        let w = window.outerWidth / 2;
+        let h = window.outerHeight / 2;
+        ifrm.setAttribute('width', w);
+        ifrm.setAttribute('height', h);
+        ifrm.src = '/viewer.html?slideId=' + id;
+    });
 
-    ifrm.setAttribute('width', w);
-    ifrm.setAttribute('height', h);
-
+    // Zoom function
     function show() {
+        let frm = document.getElementById("frm");
+        let ifrm = document.getElementById('ifrm');
+        let msg = document.getElementById("message");
         msg.innerHTML = '';
 
         // Parse the inputs
-        var states = {};
+        let states = {};
         states.x = parseFloat(frm.x.value);
         states.y = parseFloat(frm.y.value);
         states.z = parseFloat(frm.z.value);
@@ -105,7 +118,7 @@
         //var encodedData = encodeURIComponent(btoa(JSON.stringify(states)));
         // Set frame src to desired location
         //ifrm.src = `/viewer.html?slideId=CMU1&states=${encodedData}`;
-        ifrm.src = `/viewer.html?slideId=CMU1&states=${StatesHelper.encodeStates(states)}`
+        ifrm.src = `/viewer.html?slideId=${id}&states=${StatesHelper.encodeStates(states)}`
     }
 
 </script>
