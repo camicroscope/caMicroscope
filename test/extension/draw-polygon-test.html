@@ -68,14 +68,22 @@
 
 <script type="text/javascript">
 
-    Loading.open(document.body, 'CaMicroscope is initializing...');
+    if ($CAMIC)
+    {
+        Loading.open(document.body, 'CaMicroscope is initializing...');
 
-    // create a default (demo purposes, only)
-    $D.params = {slideId: "CMU1"};
-    $D.params.slideId = "CMU1";
+        // create a default (demo purposes, only)
+        $D.params = {slideId: "CMU1"};
+        $D.params.slideId = "CMU1";
 
-    // normal initialization starts
-    document.addEventListener('DOMContentLoaded', initialize);
+        // normal initialization starts
+        document.addEventListener('DOMContentLoaded', initialize);
+
+    }
+    else
+    {
+        document.write("This code should be moved to top-level directory, in order to run.")
+    }
 
 </script>
 </body>
