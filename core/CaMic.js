@@ -69,7 +69,7 @@ class CaMic{
         const states = this.setting.states;
         let x = states.x;
         let y = states.y;
-        
+
         if((!states.coordinate)&& states.coordinate!=='image' ){
          const size = this.viewer.world.getItemAt(0).source.dimensions;
          x = Math.round(x*size.x);
@@ -80,7 +80,7 @@ class CaMic{
         pt = this.viewer.viewport.imageToViewportCoordinates(pt);
         this.viewer.viewport.zoomTo(states.z, pt);
         this.viewer.viewport.panTo(pt, true);
-      
+
       }
     }.bind(this));
 
@@ -130,6 +130,8 @@ class CaMic{
         }
         this.slideId = x[0]["_id"]["$oid"]
         this.slideName = x[0]['name']
+        this.study = x[0]['study']
+        this.specimen = x[0]['study']
         this.viewer.open("./img/Slide/"+ x[0]["_id"]["$oid"] + ".dzi");
         // set scalebar
         this.createScalebar(x[0].mpp)

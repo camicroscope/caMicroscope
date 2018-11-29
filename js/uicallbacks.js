@@ -226,7 +226,7 @@ function draw(e){
 	const state = +e.state;
 	const canvasDraw = $CAMIC.viewer.canvasDrawInstance;
 	//$UI.message.add(`Draw: ${state?'ON':'OFF'}`);
-	
+
 	const target = this.srcElement || this.target || this.eventSource.canvas;
 	switch (state) {
 		case 0: // off
@@ -247,7 +247,7 @@ function draw(e){
 			// turn off measurement
 			$UI.toolbar._sub_tools[3].querySelector('input[type=checkbox]').checked = false;
 			$CAMIC.viewer.measureInstance.off();
-			
+
 			//close layers menu
 			$UI.layersSideMenu.close();
 
@@ -256,7 +256,7 @@ function draw(e){
 			$UI.appsList.triggerContent('annotation','open');
 			const input = $UI.annotOptPanel._form_.querySelector('#name');
 			input.focus();
-			input.select(); 
+			input.select();
 			break;
 		default:
 			// statements_def
@@ -372,7 +372,7 @@ function anno_delete(data){
 		const index = $D.overlayers.findIndex(layer => layer.id == data.id);
 
     	if(index==-1) return;
-    	
+
     	data.index = index;
 		const layer = $D.overlayers[data.index];
 		// update UI
@@ -407,7 +407,7 @@ function deleteCallback_old(data){
 	const idx = layer.data.findIndex(d=> d._id.$oid === data.oid );
 	if(idx ==-1) return;
 	layer.data.splice(idx, 1);
-	
+
 	// delete entire layer if there is no data.
 	if(layer.data.length == 0){
 			$D.overlayers.splice(data.index, 1);
@@ -457,7 +457,9 @@ function anno_callback(data){
 	const annotJson = {
 		provenance:{
 			image:{
-				slide:$D.params.data.name
+				slide:$D.params.data.name,
+				specimen:$D.params.data.specimen,
+				study:$D.params.data.study
 			},
 			analysis:{
 				source:'human',
@@ -582,7 +584,7 @@ function loadAnnotationById(item,id){
 					data[0].isShow = item.isShow;
 				}
 
-				// for support quip 2.0 data model 
+				// for support quip 2.0 data model
 				if(data[0].geometry){
 
 					// twist them
@@ -674,6 +676,6 @@ function anno_render(ctx,data){
 }
 function old_anno_render(ctx,data){
 	DrawHelper.draw(ctx, data);
-	
+
 }
 /* --  -- */
