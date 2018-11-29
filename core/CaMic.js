@@ -29,7 +29,7 @@ class CaMic{
       navigatorAutoFade: false,
       navigatorPosition: "BOTTOM_RIGHT",
       zoomPerClick: 1,
-      animationTime: 0.1,
+      animationTime: 0.01,
       maxZoomPixelRatio: 1,
       visibilityRatio: 1,
       springStiffness:0.0001,
