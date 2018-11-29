@@ -172,7 +172,7 @@
 					delete newParams.slide
 					delete newParams.location
 					delete newParams.offset
-					newParams.slideId = x[0]['_id']['$oid']
+					newParams.slideId = x[offset]['_id']['$oid']
 					newUrl = window.location.href.split("?")[0] + "?" + objToParamStr(newParams)
 					window.location.href = newUrl
 				}
