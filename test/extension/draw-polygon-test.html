@@ -8,6 +8,11 @@
     <meta name='viewport' content='width=device-width, initial-scale=1'>
 
     <title>Draw Polygon Unit Test Page</title>
+
+    <!-- Fetch -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fetch/3.0.0/fetch.min.js"></script>
+    <script src="slideId.js"></script>
+
     <!-- google material icons css sheet -->
     <link href='/iconfont/material-icons.css' rel='stylesheet'/>
     <!-- css sheet -->
@@ -64,25 +69,17 @@
 <!-- toolbar -->
 <div id='ca_tools'></div>
 
+<!-- viewer -->
 <div id='main_viewer' class='main'></div>
 
-<script type="text/javascript">
+<script>
 
-    if ($CAMIC)
-    {
+    if ($CAMIC) {
         Loading.open(document.body, 'CaMicroscope is initializing...');
-
-        // create a default (demo purposes, only)
-        $D.params = {slideId: "CMU1"};
-        $D.params.slideId = "CMU1";
-
         // normal initialization starts
         document.addEventListener('DOMContentLoaded', initialize);
-
-    }
-    else
-    {
-        document.write("This code should be moved to top-level directory, in order to run.")
+    } else {
+        document.write("Store.js uses relative paths (to routes). Cannot run from this subdirectory.")
     }
 
 </script>
