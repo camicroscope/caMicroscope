@@ -74,13 +74,12 @@
 
 <script>
 
-    if ($CAMIC) {
-        Loading.open(document.body, 'CaMicroscope is initializing...');
-        // normal initialization starts
-        document.addEventListener('DOMContentLoaded', initialize);
-    } else {
-        document.write("Store.js uses relative paths (to routes). Cannot run from this subdirectory.")
-    }
+    Loading.open(document.body, 'CaMicroscope is initializing...');
+    // create a default (demo purposes, only)
+    $D.params = {slideId: "CMU1"};
+    $D.params.slideId = "CMU1";
+    // normal initialization starts
+    document.addEventListener('DOMContentLoaded', initialize);
 
 </script>
 </body>

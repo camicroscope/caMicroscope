@@ -1,5 +1,5 @@
 // CAMIC is an instance of caMicroscope core
-let $CAMIC = null;
+let $CAMIC;
 
 const $D = {
     pages: {
@@ -22,14 +22,22 @@ function initialize() {
     };
 
     // create a default (demo purposes)
-    fun = getSlideId('CMU1');
+    //fun = getSlideId($D.params.slideId);
+    //fun.then(function (result) {
+    $CAMIC = new CaMic();
+    $CAMIC.store.base = '../../data/';
+    //let store = new Store();
+    let fun = $CAMIC.store.findSlide($D.params.slideId);
     fun.then(function (result) {
         console.log('result', result);
         $D.params = {slideId: result};
         $D.params.slideId = result;
 
         try {
+            //$CAMIC = new CaMic("main_viewer", $D.params.slideId, opt);
             $CAMIC = new CaMic("main_viewer", $D.params.slideId, opt);
+
+
         } catch (error) {
             Loading.close();
             console.error(error);
@@ -48,14 +56,14 @@ function initialize() {
 
             getLayerId();
 
-            // Display by fetching data by execId
+            // DISPLAY BY FETCHING DATA BY EXEC_ID
             //let url='/data/Mark/multi?name=["_1n7w6ahx2"]&slide=CMU1';
             //fetchJSON(url, queryPoly);
 
-            // Display with coordinates
+            // DISPLAY WITH COORDINATES PROVIDED
             $CAMIC.viewer.omanager.addOverlay({id: getLayerId(), data: this.coords, render: renderPoly, isShow: true});
 
-            // Display using spatial query
+            // DISPLAY USING SPATIAL QUERY
             //url='/data/Mark/findBound?x0=0.45&y0=0.62&x1=0.53&y1=0.68';
             //fetchJSON(url, queryPoly);
 
