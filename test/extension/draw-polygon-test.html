@@ -72,15 +72,55 @@
 <!-- viewer -->
 <div id='main_viewer' class='main'></div>
 
-<script>
+<script type="text/javascript">
+
+    const $D = {
+        pages: {
+            home: '/table.html',
+            table: '/table.html'
+        },
+        params: null // parameter from url - slide Id and status in it (object).
+    };
 
     Loading.open(document.body, 'CaMicroscope is initializing...');
-    // create a default (demo purposes, only)
-    $D.params = {slideId: "CMU1"};
-    $D.params.slideId = "CMU1";
-    // normal initialization starts
-    document.addEventListener('DOMContentLoaded', initialize);
+    // get slide id from url
+    // $D.params = getUrlVars();
+    $D.params = {slideId: 'CMU1'};
+    $D.params.slideId = 'CMU1';
+    // load if we have at least one slide query element
+    if ($D.params && $D.params.slideId) {
+        // normal initialization starts
+        document.addEventListener('DOMContentLoaded', initialize);
+    } else {
+        let STORE = new Store('../../data/', {});
+        STORE.findSlide('CMU1').then(x => {
+            let offset = parseInt($D.params.offset, 10) || 0;
+            if (x.length === 0 || offset >= x.length) {
+                redirect($D.pages.table, 'No Slide Found. Redirecting to Table.');
+            } else {
+                newParams = $D.params;
+                // delete newParams.data
+                // delete newParams.slide
+                // delete newParams.location
+                // delete newParams.offset
+                newParams.slideId = x[offset]['_id']['$oid'];
+                newUrl = window.location.href.split("?")[0] + "?" + objToParamStr(newParams);
+                window.location.href = newUrl
+            }
+        }).catch(e => {
+            console.warn(e);
+            redirect($D.pages.table, 'Redirecting to Table.');
+        })
+        // find the associated slideID
+        // open viewer with that slideID
+    }
 
+    // get states parameters
+    if ($D.params.states) {
+        $D.params.states = StatesHelper.decodeStates($D.params.states);
+    }
 </script>
+
 </body>
 </html>
+
