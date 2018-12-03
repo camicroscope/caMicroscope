@@ -96,6 +96,14 @@ function initCore() {
         type: 'btn',
         value: 'clear',
         callback: removeOverlay
+      },
+      // free-line
+      {
+        icon:'border_color',// material icons' name
+        //icon:'linear_scale',
+        title:'Line',
+        type:'multistates',
+        callback: freeLine
       }
       // ,
       // {
@@ -132,6 +140,11 @@ function removeOverlay(data) {
   $CAMIC.viewer.omanager.overlays[0].isShow = false;
   $CAMIC.viewer.omanager.removeOverlay('id02');
   $CAMIC.viewer.omanager.updateView();
+}
+
+
+function freeLine(params) {
+  
 }
 
 
