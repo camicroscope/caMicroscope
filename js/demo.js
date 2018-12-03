@@ -103,6 +103,7 @@ function initCore() {
         //icon:'linear_scale',
         title:'Line',
         type:'multistates',
+        value: 'line',
         callback: freeLine
       }
       // ,
