@@ -144,7 +144,7 @@ function removeOverlay(data) {
 
 
 function freeLine(params) {
-  
+  console.log('freeLine');
 }
 
 
