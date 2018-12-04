@@ -189,31 +189,12 @@ function freeLine(e){
     alert('draw doesn\'t initialize');
     return;
   }
-  const state = +e.state;
   const canvasDraw = $CAMIC.viewer.canvasDrawInstance;
-
-  const target = this.srcElement || this.target || this.eventSource.canvas;
-  switch (state) {
-    case 0: // off
-      canvasDraw.clear();
-      canvasDraw.drawOff();
-      break;
-    case 1: // once
-      // statements_1
-      // No break; we want to go to case 2.
-    case 2: // stick
-      canvasDraw.drawOn();
-
-      // open lymph menu
-      //$UI.appsSideMenu.open();
-      //$UI.appsList.triggerContent('annotation','open');
-      // const input = $UI.annotOptPanel._form_.querySelector('#name');
-      // input.focus();
-      // input.select();
-      break;
-    default:
-      // statements_def
-      break;
+  canvasDraw.drawMode = 'line';
+  if(e.checked) {
+    canvasDraw.drawOn();
+  }else{
+    canvasDraw.drawOff();
   }
 }
 

@@ -396,17 +396,15 @@
                     DrawHelper.drawMultiline(this._draw_ctx_,this._current_path_.geometry.coordinates[0]);
                 }.bind(this));
                 break;
-
-              case 'line':
+             case 'line':
                 // draw line
                 this._last = [img_point.x,img_point.y];
                 // store current point
                 this._current_path_.geometry.coordinates[0].push(this._last.slice());
                 this.drawOnCanvas(this._draw_ctx_,function(){
-                  DrawHelper.drawMultiline(this._draw_ctx_,this._current_path_.geometry.coordinates[0]);
+                    DrawHelper.drawMultiline(this._draw_ctx_,this._current_path_.geometry.coordinates[0]);
                 }.bind(this));
                 break;
-
               case 'square':
                 // draw square
                 DrawHelper.clearCanvas(this._draw_);
@@ -476,7 +474,7 @@
                     style:{}
                 },
                 geometry:{
-                    type:"Polygon",
+                    type:this.drawMode==='line'?"LineString":"Polygon",
                     coordinates:[[point]],
                     path:null
                 }
@@ -509,21 +507,17 @@
             this._current_path_.properties.style.lineCap = this.style.lineCap;
             //this._current_path_.properties.style.lineWidth = this.style.lineWidth;
             let points = this._current_path_.geometry.coordinates[0];
-            points.push([points[0][0],points[0][1]]);
+            if(this.drawMode !== 'line') points.push([points[0][0],points[0][1]]);
 
-            if(this.drawMode === 'free') {
+            if(this.drawMode === 'free' || this.drawMode === 'line') {
               // simplify
               this._current_path_.geometry.coordinates[0] = simplify(points);
-            }
+            };
 
-            if(this.drawMode === 'line') {
-                // simplify
-                this._current_path_.geometry.coordinates[0] = simplify(points);
-            }
 
             // create bounds
             this._current_path_.bound = getBounds(this._current_path_.geometry.coordinates[0]);
-
+            
             if(this._path_index < this._draws_data_.length){
               this._draws_data_ = this._draws_data_.slice(0,this._path_index);
             }
@@ -532,10 +526,9 @@
             this._path_index++;
             this._current_path_ = null;
             DrawHelper.clearCanvas(this._draw_);
-
-
-            this.drawOnCanvas(this._display_ctx_,function(){
-                DrawHelper.draw(this._display_ctx_,this._draws_data_.slice(0,this._path_index));
+            this._display_ctx_.lineWidth = this.style.lineWidth;
+            this.drawOnCanvas(this._display_ctx_, function(){
+                DrawHelper.draw(this._display_ctx_, this._draws_data_.slice(0,this._path_index));
             }.bind(this));
         },
 
