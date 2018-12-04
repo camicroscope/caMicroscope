@@ -20,6 +20,7 @@ const $D = {
   },
   params: null // parameter from url - slide Id and status in it (object).
 };
+
 // initialize viewer page
 function initialize() {
   // init UI -- some of them need to wait data loader to load data
@@ -30,18 +31,18 @@ function initialize() {
   initCore();
 }
 
-
 // setting core functionalities
 function initCore() {
   // start initial
   // TODO zoom info and mmp
   const opt = {
     hasZoomControl: true,
-    hasDrawLayer: false,
+    hasDrawLayer: true,
     hasLayerManager: true,
     hasScalebar: true,
     hasMeasurementTool: true
-  }
+  };
+
   // set states if exist
   if ($D.params.states) {
     opt.states = $D.params.states;
@@ -68,11 +69,11 @@ function initCore() {
     // ready to draw
     console.log($CAMIC.viewer.omanager);
 
-
     //$CAMIC.viewer.omanage.addOverlay();
     $CAMIC.viewer.omanager.addOverlay({ id: 'id01', data: data1, render: renderOne, isShow: false });
     $CAMIC.viewer.omanager.addOverlay({ id: 'id02', data: data2, render: renderTwo, isShow: true });
   });
+
   // ui init
   $UI.toolbar = new CaToolbar({
     /* opts that need to think of */
@@ -125,9 +126,6 @@ function initCore() {
     ]
   });
 
-
-
-
 }
 
 function addOverlay(data) {
@@ -136,18 +134,15 @@ function addOverlay(data) {
   $CAMIC.viewer.omanager.updateView();
 }
 
-
 function removeOverlay(data) {
   $CAMIC.viewer.omanager.overlays[0].isShow = false;
   $CAMIC.viewer.omanager.removeOverlay('id02');
   $CAMIC.viewer.omanager.updateView();
 }
 
-
 function freeLine(params) {
   console.log('freeLine');
 }
-
 
 function renderOne(ctx, data) {
   ctx.beginPath();
@@ -172,8 +167,8 @@ function renderTwo(ctx, data) {
   ctx.fill();
   ctx.closePath();
 
-
 }
+
 function redirect(url, text = '', sec = 5) {
   let timer = sec;
   setInterval(function () {
