@@ -76,7 +76,7 @@ function initCore() {
     //$CAMIC.viewer.omanage.addOverlay();
     $CAMIC.viewer.omanager.addOverlay({id: 'id01', data: data1, render: renderOne, isShow: false});
     $CAMIC.viewer.omanager.addOverlay({id: 'id02', data: data2, render: renderTwo, isShow: true});
-    $CAMIC.viewer.omanager.addOverlay({id: 'id03', data: data3, render: renderThree, isShow: true});
+    //$CAMIC.viewer.omanager.addOverlay({id: 'id03', data: data3, render: renderThree, isShow: true});
   });
 }
 
@@ -110,7 +110,7 @@ function initUIcomponents() {
         icon: 'border_color',// material icons' name
         //icon:'linear_scale',
         title: 'Line',
-        type: 'multistates',
+        type: 'check',
         value: 'line',
         callback: freeLine
       }
@@ -189,6 +189,7 @@ function freeLine(e){
     alert('draw doesn\'t initialize');
     return;
   }
+  console.log(e);
   const canvasDraw = $CAMIC.viewer.canvasDrawInstance;
   canvasDraw.drawMode = 'line';
   if(e.checked) {
