@@ -1,11 +1,15 @@
 const data1 = {
-  center: { x: 800, y: 200 },
+  center: {x: 800, y: 200},
   size: 200,
   color: 'red',
   lineWidth: 20
 
-}; // image coordinate
+};
+
+// image coordinate
 const data2 = [[400, 400], [500, 400], [600, 500], [500, 600], [400, 600], [300, 500], [400, 400]];
+
+let data3 = {};
 
 // CAMIC is an instance of camicroscope core
 // $CAMIC in there
@@ -25,7 +29,7 @@ const $D = {
 function initialize() {
   // init UI -- some of them need to wait data loader to load data
   // because UI components need data to initialize
-  //initUIcomponents();
+  initUIcomponents();
 
   // create a viewer and set up
   initCore();
@@ -70,10 +74,13 @@ function initCore() {
     console.log($CAMIC.viewer.omanager);
 
     //$CAMIC.viewer.omanage.addOverlay();
-    $CAMIC.viewer.omanager.addOverlay({ id: 'id01', data: data1, render: renderOne, isShow: false });
-    $CAMIC.viewer.omanager.addOverlay({ id: 'id02', data: data2, render: renderTwo, isShow: true });
+    $CAMIC.viewer.omanager.addOverlay({id: 'id01', data: data1, render: renderOne, isShow: false});
+    $CAMIC.viewer.omanager.addOverlay({id: 'id02', data: data2, render: renderTwo, isShow: true});
+    $CAMIC.viewer.omanager.addOverlay({id: 'id03', data: data3, render: renderThree, isShow: true});
   });
+}
 
+function initUIcomponents() {
   // ui init
   $UI.toolbar = new CaToolbar({
     /* opts that need to think of */
@@ -100,10 +107,10 @@ function initCore() {
       },
       // free-line
       {
-        icon:'border_color',// material icons' name
+        icon: 'border_color',// material icons' name
         //icon:'linear_scale',
-        title:'Line',
-        type:'multistates',
+        title: 'Line',
+        type: 'multistates',
         value: 'line',
         callback: freeLine
       }
@@ -130,7 +137,7 @@ function initCore() {
 
 function addOverlay(data) {
   $CAMIC.viewer.omanager.overlays[0].isShow = true;
-  $CAMIC.viewer.omanager.addOverlay({ id: 'id02', data: data2, render: renderTwo, isShow: true });
+  $CAMIC.viewer.omanager.addOverlay({id: 'id02', data: data2, render: renderTwo, isShow: true});
   $CAMIC.viewer.omanager.updateView();
 }
 
@@ -138,10 +145,6 @@ function removeOverlay(data) {
   $CAMIC.viewer.omanager.overlays[0].isShow = false;
   $CAMIC.viewer.omanager.removeOverlay('id02');
   $CAMIC.viewer.omanager.updateView();
-}
-
-function freeLine(params) {
-  console.log('freeLine');
 }
 
 function renderOne(ctx, data) {
@@ -167,6 +170,51 @@ function renderTwo(ctx, data) {
   ctx.fill();
   ctx.closePath();
 
+}
+
+function renderThree(ctx, data) {
+  console.log('data', data);
+  ctx.beginPath();
+  //ctx.moveTo(prevX, prevY);
+  //ctx.lineTo(currX, currY);
+  ctx.strokeStyle = 'black';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+  ctx.closePath();
+}
+
+// pen draw callback
+function freeLine(e){
+  if(!$CAMIC.viewer.canvasDrawInstance){
+    alert('draw doesn\'t initialize');
+    return;
+  }
+  const state = +e.state;
+  const canvasDraw = $CAMIC.viewer.canvasDrawInstance;
+
+  const target = this.srcElement || this.target || this.eventSource.canvas;
+  switch (state) {
+    case 0: // off
+      canvasDraw.clear();
+      canvasDraw.drawOff();
+      break;
+    case 1: // once
+      // statements_1
+      // No break; we want to go to case 2.
+    case 2: // stick
+      canvasDraw.drawOn();
+
+      // open lymph menu
+      //$UI.appsSideMenu.open();
+      //$UI.appsList.triggerContent('annotation','open');
+      // const input = $UI.annotOptPanel._form_.querySelector('#name');
+      // input.focus();
+      // input.select();
+      break;
+    default:
+      // statements_def
+      break;
+  }
 }
 
 function redirect(url, text = '', sec = 5) {
