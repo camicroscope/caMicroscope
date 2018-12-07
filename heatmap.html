@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="keywords" content="camicroscope, quip"/>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+
+    <title>caMicroscope</title>
+    <!-- google material icons css sheet -->
+    <link href='./iconfont/material-icons.css' rel='stylesheet'/>
+    <!-- css sheet -->
+    <link rel='stylesheet' type='text/css' media='all' href='./css/style.css'/>
+
+    <!-- zoom control css -->
+    <link rel='stylesheet' type='text/css' media='all' href='./lib/zoomcontrol/openseadragon-zoom-control.css'/>
+
+    <!-- loading cover css -->
+    <link href="./lib/loading/loading.css" rel="stylesheet"/>
+    <!-- toolbar css -->
+    <link href="./lib/toolbar/toolbar.css" rel="stylesheet"/>
+    <!-- color picker css -->
+    <link href="./lib/colorpicker/color-picker.css" rel="stylesheet"/>
+
+    <link href="./core/openseadragon-measurement-tool/openseadragon-measurement-tool.css" rel="stylesheet"/>
+
+    <link href="./core/openseadragon-labeling/openseadragon-labeling.css" rel="stylesheet"/>
+
+    <!-- loading cover js -->
+    <script src='./lib/loading/loading.js'></script>
+    <!-- toolbar js -->
+    <script src='./lib/toolbar/toolbar.js'></script>
+    <!-- color picker js -->
+    <script src='./lib/colorpicker/color-picker.js'></script>
+    <!-- open seadragon lib-->
+    <script src='./lib/openseadragon/openseadragon.js'></script>
+    <script src='./lib/openseadragon-imaginghelper.min.js'></script>
+    <script src='./lib/openseadragon-scalebar.js'></script>
+    <script src='./lib/openseadragonzoomlevels.js'></script>
+
+    <!-- util.js -->
+    <script src='./js/util.js' type='text/javascript'></script>
+    <!-- core (package/ext) libs -->
+    <script src='./core/DrawHelper.js'></script>
+    <script src="./core/simplify.js"></script>
+    <script src="./core/paths.js"></script>
+    <script src='./core/Store.js'></script>
+    <script src='./core/CaMic.js'></script>
+    <script src="./core/openseadragon-canvas-draw-overlay.js"></script>
+    <script src="./core/openseadragon-overlays-manage.js"></script>
+    <script src="./core/osd-heatmap-overlay.js"></script>
+    <script src="./core/openseadragon-measurement-tool/openseadragon-measurement-tool.js"></script>
+    <script src="./lib/zoomcontrol/openseadragon-zoom-control.js"></script>
+    <!-- <script src="./core/openseadragon-labeling/openseadragon-labeling.js"></script> -->
+
+    <!-- ods js -->
+    <!-- <script src='./js/uicallbacks.js'></script> -->
+    <!-- <script src='./js/dataloaders.js'></script> -->
+
+    <!-- init data -->
+    <script src='./js/heatmap.js'></script>
+    <style>
+        .ctrl {
+            z-index: 500;
+            position: absolute;
+            top:0;
+            left:0;
+            width:150px;
+            height:150px;
+            background: white;
+            border:black 1px solid;
+            color:black;
+            padding: 10px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+<!-- toolbar -->
+<div id='ca_tools'></div>
+
+<div id='main_viewer' class='main'></div>
+</body>
+<script type="text/javascript">
+		Loading.open(document.body, 'CaMicroscope is initializing...');
+		// get slide id from url
+		$D.params = getUrlVars();
+
+		// load if we have at least one slide query element
+		if($D.params && $D.params.slideId){
+			// normal initialization starts
+			document.addEventListener('DOMContentLoaded', initialize);
+		}
+		else if ($D.params && ($D.params.slide || $D.params.location)){
+			let STORE = new Store()
+			STORE.findSlide($D.params.slide, $D.params.location).then(x=>{
+				if(x.length == 0){
+					redirect($D.pages.table,'No Slide Found. Redirecting to Table.');
+				} else {
+					newParams = $D.params
+					delete newParams.data
+					delete newParams.slide
+					delete newParams.location
+					newParams.slideId = x[0]['_id']['$oid']
+					newUrl = window.location.href.split("?")[0] + "?" + objToParamStr(newParams)
+					window.location.href = newUrl
+				}
+			}).catch(e=>{
+				console.warn(e)
+				redirect($D.pages.table,'Redirecting to Table.');
+			})
+			// find the associated slideID
+			// open viewer with that slideID
+		}
+		else {
+			redirect($D.pages.table,'Slide is undefined. Redirecting to Table.');
+		}
+
+		// get states parameters
+		if($D.params.states){
+			$D.params.states = StatesHelper.decodeStates($D.params.states);
+		}
+</script>
+</html>
