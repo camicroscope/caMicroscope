@@ -6,7 +6,7 @@ const { JSDOM } = jsdom;
 // jsdom instance
 let dom;
 
-describe('bar Component', function () {
+describe('Toolbar Component', function () {
 
 	/* --  prepare test START -- */
 	// loading the test page and wait til the scripts on the test pages are executed.
