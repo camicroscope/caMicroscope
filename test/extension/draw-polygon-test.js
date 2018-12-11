@@ -10,7 +10,7 @@ const $D = {
 };
 
 // initialize viewer page
-// setting core functionalities
+// setting core functionality
 function initialize() {
     // start initial
     const opt = {
