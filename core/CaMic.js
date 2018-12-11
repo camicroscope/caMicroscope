@@ -81,6 +81,34 @@ class CaMic{
         this.viewer.viewport.zoomTo(states.z, pt);
         this.viewer.viewport.panTo(pt, true);
 
+        //set a position mark
+        if(states.hasMark){
+          // create a mark
+          const div = document.createElement('div');
+          const mark = document.createElement('div');
+          mark.style.transform = 'translate3d(-50%, -50%, 0)';
+          mark.style.display = 'flex';
+          mark.style.width = '20px';
+          mark.style.height = '20px';
+          mark.style.border = '2px red solid';
+          mark.style.alignItems = 'center';
+          mark.style.borderRadius='50%';
+          mark.style.textAlign = 'center';
+          const center = document.createElement('div');
+          center.style.borderRadius = '50%';
+          center.style.margin = '0 auto';
+          center.style.width = '4px';
+          center.style.height = '4px';
+          center.style.backgroundColor = 'red';
+          mark.appendChild(center);
+          div.appendChild(mark);
+          this.viewer.addOverlay({
+          element: div,
+          location: pt,
+          checkResize: false
+          });
+        }
+
       }
     }.bind(this));
 
@@ -101,6 +129,7 @@ class CaMic{
     this.createZoomControl();
     this.createMeasurementTool(this.mpp);
     this.createPatchManager();
+    this.createHeatmap();
   }
   /**
   * Change which image is staged, used loadImg to load it.
@@ -247,6 +276,12 @@ class CaMic{
     if(!this.setting.hasPatchManager || !this.viewer.createPatchManager) return;
     this.viewer.createPatchManager({});
   }
+
+  createHeatmap(){
+    if(!this.setting.hasHeatmap || !this.viewer.createHeatmap) return;
+    this.viewer.createHeatmap({});
+  }
+
   /**
    * Function to destroy the instance of CaMic and clean up everything created by CaMic.
    *
