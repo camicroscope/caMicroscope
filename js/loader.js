@@ -14,8 +14,6 @@ function handleUpload(file, filename){
   var data = new FormData()
   data.append('file', file)
   data.append('filename', filename)
-  data.append('study', "")
-  data.append('specimen', "")
   changeStatus("UPLOAD", "Begun upload")
   fetch(upload_url, {
     credentials: "same-origin",
@@ -63,6 +61,8 @@ function handlePost(filename, slidename){
       data['upload_date'] = new Date(Date.now()).toLocaleString();
       data.name = slidename
       data.location = "/images/" + filename
+      data.study = ""
+      data.specimen = ""
       data.mpp = parseFloat(data['mpp-x']) || parseFloat(data['mpp-y']) || 0
       store.post("Slide", {}, data).then(
         success => changeStatus("POST", success) // Handle the success response object
