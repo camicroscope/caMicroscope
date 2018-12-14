@@ -61,7 +61,7 @@ function init_LocalStore(){
       // TODO!!!
     })
   }
-  Store.prototype.findMark = function(slide, name, specimen, study, footprint, source){
+  Store.prototype.findMark = function(slide, name, specimen, study, footprint, source, x0, x1, y0, y1){
     return new Promise(function(res, rej){
       let query = {}
       if (name){
@@ -82,7 +82,7 @@ function init_LocalStore(){
       res(findInLocalStorage('mark', query))
     })
   }
-  Store.prototype.getMarkByIds = function(ids, slide){
+  Store.prototype.getMarkByIds = function(ids, slide, study, specimen, source, footprint, x0, x1, y0, y1){
     return new Promise(function(res, rej){
       data = []
       for (i in ids){
