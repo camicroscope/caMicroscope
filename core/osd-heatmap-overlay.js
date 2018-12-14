@@ -119,16 +119,66 @@
         // get the position of the current center points
         this._center = this._viewer.viewport.getCenter(true);
 
-
-
-
     }
 
 
 
     $.Heatmap.prototype = {
-        updateOptions:function(options, ){
+        updateOptions:function(options){
+            // validate data model
+            if(!_validate(options)){
+                return;
+            }
 
+            // heatmap data model
+            // necessary Options 
+            this._data = options.data || [];
+            this._fields = createFields(options.fields);
+            this._size = options.size;
+            this._t_data = null;
+
+            // filter the data
+            this.__thresholdingData();
+
+            // set default options' values if no corresponding values.
+            this._color = options.color || "#1034A6";
+            this._offset = [null, null];
+            this._interval = null;
+            this._intervalTime = options.intervalTime || 300;
+
+            this.events = {
+                updateView:this.updateView.bind(this),
+                zooming:this._zooming.bind(this),
+                panning:this._panning.bind(this)
+            };
+
+            // -- create container div and display canvas -- //
+
+            // create a container div and set the default attributes
+            //this._div = document.createElement( 'div');
+            this._div.style.position = 'absolute';
+            this._div.style.width = '150%';
+            this._div.style.height = '150%';
+            this._div.style.transformOrigin = '0 0';
+            this._div.style.transform = 'scale(1,1)';
+            this._div.style.zIndex =  options.zIndex || 100;
+            this._div.style.opacity = options.opacity || 0.8;
+            this._viewer.canvas.appendChild(this._div);
+
+            // create display_cancavs
+            //this._display_ = document.createElement('canvas');
+            this._display_.style.position = 'absolute';
+            this._display_.style.top = 0;
+            this._display_.style.left = 0;
+            this._display_ctx_ = this._display_.getContext('2d');
+            //this._div.appendChild(this._display_);
+            this._isOn = false;
+
+            // turn on the heatmap
+            this.on();
+
+            // get the position of the current center points
+            this._center = this._viewer.viewport.getCenter(true);
         },
         /**
          * turn on the heatmap
@@ -224,6 +274,10 @@
     		this._div.style.opacity = num;
     	},
 
+        /**
+         * set the color of heatmap
+         * @param {String} the color of the heatmap
+         */
     	setColor:function(color){
     		this._color = color;
     		this.drawOnCanvas();
