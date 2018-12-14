@@ -1,4 +1,4 @@
-//sidemenu-test-cases.js
+//toolbar-test-cases.js
 const jsdom = require('jsdom');
 const assert = require('assert');
 const { JSDOM } = jsdom;
@@ -6,14 +6,14 @@ const { JSDOM } = jsdom;
 // jsdom instance
 let dom;
 
-describe('bar Component',function(){
-	
+describe('Toolbar Component', function () {
+
 	/* --  prepare test START -- */
 	// loading the test page and wait til the scripts on the test pages are executed.
-	before(function(done){
+	before(function (done) {
 
 		JSDOM.fromURL(
-			`${global.origin}${global.testFolder}/ui/sidemenu-test-cases.html`, 
+			`${global.origin}${global.testFolder}/ui/toolbar-test-cases.html`,
 			{
 				runScripts: "dangerously",
 				resources: "usable"
@@ -21,20 +21,20 @@ describe('bar Component',function(){
 		).then(jsdom => {
 			dom = jsdom;
 			// check the loading flag
-			let checkLoaded = setInterval(function(){
-				if(jsdom.window.document.getElementById('isLoad').checked){
+			let checkLoaded = setInterval(function () {
+				if (jsdom.window.document.getElementById('isLoad').checked) {
 					clearInterval(checkLoaded);
 					done();
 				}
-			},100);
-		}).catch(function(error) {
+			}, 100);
+		}).catch(function (error) {
 			// error
 			done(error);
 		});
 
 	});
 	/* --  prepare test END -- */
-	
+
 
 	/* -- test cases START -- */
 	describe('constructor:options[default]', function () {
@@ -59,35 +59,35 @@ describe('bar Component',function(){
 
 	describe('addContext(String/Element)', function () {
 		let contents;
-		before(function(){
+		before(function () {
 			contents = dom.window.document.querySelector('#menu1 .side_content').children;
 		});
-		
+
 		it(`the number of content's children matching`, function () {
 			assert.equal(contents.length, 4);
 		});
 
 		it(`children's textContent are correct`, function () {
-			[...contents].forEach( function(element, index) {
+			[...contents].forEach(function (element, index) {
 				//console.log(element);
-				assert.equal(element.textContent, index+1);
+				assert.equal(element.textContent, index + 1);
 			});
-			
+
 		});
 
 	});
 
-	describe('clearContext()', function(){
+	describe('clearContext()', function () {
 		// clear context
 		it('all contents was clear', function () {
 			const contents = dom.window.document.querySelector('#menu2 .side_content')
 			assert.equal(contents.children.length, 0);
-			assert.equal(contents.textContent,'');
+			assert.equal(contents.textContent, '');
 		});
 
 	});
 
-	describe('callback function', function(){
+	describe('callback function', function () {
 		it(`open menu1`, function () {
 			dom.window.menu1.open();
 			const menu = dom.window.document.getElementById('menu1');
@@ -110,9 +110,9 @@ describe('bar Component',function(){
 			assert.equal(name.textContent, 'menu2');
 		});
 
-		it(`simulate a click event on the close button`,function(){
+		it(`simulate a click event on the close button`, function () {
 			const closeBtn = dom.window.document.querySelector('#menu1 .close');
-			eventFire(closeBtn,'click');
+			eventFire(closeBtn, 'click');
 
 			const menu = dom.window.document.getElementById('menu1');
 			const status = dom.window.document.getElementById('status');
@@ -124,7 +124,7 @@ describe('bar Component',function(){
 		});
 	});
 
-	function eventFire(el, etype){
+	function eventFire(el, etype) {
 		if (el.fireEvent) {
 			el.fireEvent('on' + etype);
 		} else {
@@ -133,7 +133,5 @@ describe('bar Component',function(){
 			el.dispatchEvent(evObj);
 		}
 	}
-	
-
 
 });

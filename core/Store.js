@@ -61,11 +61,14 @@ class Store {
     var url = this.base + suffix;
     var query = {}
     var bySlideId
+    if (slide) {
+      query.slide = slide
+    }
     if (name) {
       query.name = name
     }
-    if (slide) {
-      query.slide = slide
+    if (specimen) {
+      query.specimen = specimen
     }
     if (study) {
       query.study = study

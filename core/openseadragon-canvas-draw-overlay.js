@@ -3,8 +3,8 @@
 // test:
 // 1. create canvasDraw twins, only one instance that keeps in the viewer
 // 2. reset options style = opt.style drawOn/Off -> drawOff
-// 3. getImagePaths -> image coordinates 
-// 4. getViewportPaths -> viewport coordinates 
+// 3. getImagePaths -> image coordinates
+// 4. getViewportPaths -> viewport coordinates
 // 5. redo
 // 6. undo
 // 7. clear status
@@ -17,13 +17,14 @@
 /**
  * @constructor
  * OpenSeadragon Draw plugin 0.0.1 based on canvas overlay plugin.
- * A OpenSeadragon pulgin that provides a way to make/draw multiple marks on the images and transforms the marks to the collection in geojson form. 
+ * A OpenSeadragon pulgin that provides a way to make/draw multiple marks on the images and transforms the marks to the collection in geojson form.
  * @param {Object} [options]
  *        Allows configurable properties to be entirely specified by passing an options object to the constructor.
  * @param {Object} options.viewer
  *        A instance of viewer in Openseadragon.
  * @param {String} [options.drawMode='free']
- *        Drawing mode, there are 3 modes on drawing. 'free' - free draw. 'square' - draw as a square. 'rectangle' - draw as a rectangle.
+ *        Drawing mode, there are 4 modes on drawing. 'free' - free draw. 'square' - draw as a square.
+ *        'rectangle' - draw as a rectangle. 'line' - draw a line.
  * @param {Object} [options.style]
  *        The style of the draw on a image
  * @param {String} [options.style.color='#7CFC00']
@@ -36,7 +37,7 @@
  *        specifies the z-order of a positioned element
  */
 (function($) {
-    
+
     if (!$) {
         $ = require('openseadragon');
         if (!$) {
@@ -72,8 +73,8 @@
         // is drawing things
         this.isDrawing = false;
 
-        // creat supplies free, square, rectangle
-        this.drawMode = options.drawMode || 'free'; // 'free', 'square', 'rect'
+        // create supplies free, square, rectangle, line
+        this.drawMode = options.drawMode || 'free'; // 'free', 'square', 'rect', 'line'
         // ctx styles opt
         this.style = {
             color:'#7CFC00',
@@ -86,11 +87,11 @@
         //if(options.style && options.style.lineWidth) this.style.lineWidth = options.style.lineWidth;
         if(options.style && options.style.lineJoin) this.style.lineJoin = options.style.lineJoin;
         if(options.style && options.style.lineCap) this.style.lineCap = options.style.lineCap;
-        
+
         this.events = {};
         // global events list for easily remove and add
         this._event = {
-          start:this.startDrawing.bind(this), 
+          start:this.startDrawing.bind(this),
           stop:this.stopDrawing.bind(this),
           drawing:this.drawing.bind(this),
           updateView:this.updateView.bind(this)
@@ -103,7 +104,7 @@
         this._path_index = 0;
 
 
-        // -- create container div, and draw, display canvas -- // 
+        // -- create container div, and draw, display canvas -- //
         this._containerWidth = 0;
         this._containerHeight = 0;
 
@@ -124,7 +125,7 @@
         this._draw_.style.left = 0;
         this._draw_ctx_ = this._draw_.getContext('2d');
         this._div.appendChild(this._draw_);
-        
+
         // display vanvas
         this._display_ = document.createElement('canvas');
         this._display_.style.position = 'absolute';
@@ -134,11 +135,11 @@
         this._div.appendChild(this._display_);
 
         this.updateView();
-       
+
     }
     // ----------
     $.CanvasDraw.prototype = {
-        
+
         /**
          * updateView update all canvas according to the current states of the osd'viewer
          */
@@ -149,9 +150,9 @@
 
         /**
          * update the draw according to the options
-         * @param  {Ojbect} options
-         *         see the options in construtor.
-         * 
+         * @param  {Object} options
+         *         see the options in constructor.
+         *
          */
         updateOptions:function(options){
             // draw mode on/off
@@ -159,8 +160,8 @@
             // is drawing things
             this.isDrawing = false;
 
-            // creat supplies free, square, rectangle
-            this.drawMode = options.drawMode || 'rect'; // 'free', 'square', 'rect'
+            // creat supplies free, square, rectangle, line
+            this.drawMode = options.drawMode || 'rect'; // 'free', 'square', 'rect', 'line'
             // ctx styles opt
             this.style = {
                 color:'#7CFC00',
@@ -208,7 +209,7 @@
 
             DrawHelper.clearCanvas(ctx.canvas);
             ctx.translate(x,y);
-            ctx.scale(zoom,zoom);     
+            ctx.scale(zoom,zoom);
             //
             drawFuc();
             //
@@ -245,7 +246,7 @@
             var boundsRect = this._viewer.viewport.getBounds(true);
             this._viewportOrigin.x = boundsRect.x;
             this._viewportOrigin.y = boundsRect.y * this.imgAspectRatio;
-            
+
             this._viewportWidth = boundsRect.width;
             this._viewportHeight = boundsRect.height * this.imgAspectRatio;
             var image1 = this._viewer.world.getItemAt(0);
@@ -260,16 +261,16 @@
 
         /**
          * @private
-         * _updateCanvas transform and scale the cavans bases on the movement of the view 
+         * _updateCanvas transform and scale the cavans bases on the movement of the view
          */
         _updateCanvas: function() {
             var viewportZoom = this._viewer.viewport.getZoom(true);
             var image1 = this._viewer.world.getItemAt(0);
             var zoom = image1.viewportToImageZoom(viewportZoom);
-            
+
             var x=((this._viewportOrigin.x/this.imgWidth-this._viewportOrigin.x )/this._viewportWidth)*this._containerWidth;
             var y=((this._viewportOrigin.y/this.imgHeight-this._viewportOrigin.y )/this._viewportHeight)*this._containerHeight;
-            
+
             this.clearCanvas();
             this._display_.getContext('2d').translate(x,y);
             this._display_.getContext('2d').scale(zoom,zoom);
@@ -300,7 +301,7 @@
             this._viewer.addHandler('open',this._event.updateView);
             //
             this.isOn = true;
-            
+
             this._viewer.raiseEvent('canvas-draw-on',{draw:true});
 
         },
@@ -328,7 +329,7 @@
             this._viewer.removeHandler('open',this._event.updateView);
 
             this.isOn = false;
-            
+
             this._viewer.raiseEvent('canvas-draw-off',{draw:false});
         },
 
@@ -343,9 +344,9 @@
             let isRight;
             e = e || window.event;
             if ("which" in e)  // Gecko (Firefox), WebKit (Safari/Chrome) & Opera
-                isRight = e.which == 3; 
-            else if ("button" in e)  // IE, Opera 
-                isRight = e.button == 2; 
+                isRight = e.which == 3;
+            else if ("button" in e)  // IE, Opera
+                isRight = e.button == 2;
             if(e.ctrlKey || isRight) return;
 
             this.raiseEvent('start-drawing',{originalEvent:e});
@@ -362,8 +363,8 @@
             // start drawing
             this.isDrawing = true;
             this._draw_.style.cursor = 'crosshair'
-            
-            
+
+
             this._last = [Math.round(img_point.x),Math.round(img_point.y)]
             // first feature within
             this.__newFeature(this._last.slice());
@@ -395,7 +396,15 @@
                     DrawHelper.drawMultiline(this._draw_ctx_,this._current_path_.geometry.coordinates[0]);
                 }.bind(this));
                 break;
-
+             case 'line':
+                // draw line
+                this._last = [img_point.x,img_point.y];
+                // store current point
+                this._current_path_.geometry.coordinates[0].push(this._last.slice());
+                this.drawOnCanvas(this._draw_ctx_,function(){
+                    DrawHelper.drawMultiline(this._draw_ctx_,this._current_path_.geometry.coordinates[0]);
+                }.bind(this));
+                break;
               case 'square':
                 // draw square
                 DrawHelper.clearCanvas(this._draw_);
@@ -434,7 +443,7 @@
             this.isDrawing = false;
             this.stop = false;
             this._draw_.style.cursor = 'pointer';
-            
+
         },
 
         /**
@@ -465,7 +474,7 @@
                     style:{}
                 },
                 geometry:{
-                    type:"Polygon",
+                    type:this.drawMode==='line'?"LineString":"Polygon",
                     coordinates:[[point]],
                     path:null
                 }
@@ -475,9 +484,9 @@
         /**
          * @private
          * __isOnlyTwoSamePoints return true if and only if there are two same points in collection.
-         * 
+         *
          * @param  {Array} points the collection of points
-         * @return {Boolean} true if and only if there are two same points in collection. Otherwise, return false.  
+         * @return {Boolean} true if and only if there are two same points in collection. Otherwise, return false.
          */
         __isOnlyTwoSamePoints:function(points){
             if(points.length == 2 && points[0].x == points[1].x && points[0].y == points[1].y){
@@ -498,9 +507,9 @@
             this._current_path_.properties.style.lineCap = this.style.lineCap;
             //this._current_path_.properties.style.lineWidth = this.style.lineWidth;
             let points = this._current_path_.geometry.coordinates[0];
-            points.push([points[0][0],points[0][1]]);
+            if(this.drawMode !== 'line') points.push([points[0][0],points[0][1]]);
 
-            if(this.drawMode === 'free') {
+            if(this.drawMode === 'free' || this.drawMode === 'line') {
               // simplify
               this._current_path_.geometry.coordinates[0] = simplify(points);
             };
@@ -517,10 +526,9 @@
             this._path_index++;
             this._current_path_ = null;
             DrawHelper.clearCanvas(this._draw_);
-
-
-            this.drawOnCanvas(this._display_ctx_,function(){
-                DrawHelper.draw(this._display_ctx_,this._draws_data_.slice(0,this._path_index));
+            this._display_ctx_.lineWidth = this.style.lineWidth;
+            this.drawOnCanvas(this._display_ctx_, function(){
+                DrawHelper.draw(this._display_ctx_, this._draws_data_.slice(0,this._path_index));
             }.bind(this));
         },
 
@@ -576,7 +584,7 @@
 
 
     $.extend($.CanvasDraw.prototype,$.EventSource.prototype);
-    
+
     function getBounds(points){
         let max,min;
         points.forEach(point => {
@@ -600,3 +608,4 @@
     }
 
 })(OpenSeadragon);
+

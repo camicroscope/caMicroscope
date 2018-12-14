@@ -1,7 +1,5 @@
 // CAMIC is an instance of caMicroscope core
-let $CAMIC = null;
-// for all instances of UI components
-const $UI = {};
+let $CAMIC;
 
 const $D = {
     pages: {
@@ -12,7 +10,7 @@ const $D = {
 };
 
 // initialize viewer page
-// setting core functionalities
+// setting core functionality
 function initialize() {
     // start initial
     const opt = {
@@ -23,45 +21,53 @@ function initialize() {
         hasMeasurementTool: true
     };
 
-    // set states if exist
-    if ($D.params.states) {
-        opt.states = $D.params.states;
-    }
+    // create a default (demo purposes)
+    //fun = getSlideId($D.params.slideId);
+    //fun.then(function (result) {
+    $CAMIC = new CaMic();
+    $CAMIC.store.base = '../../data/';
+    //let store = new Store();
+    let fun = $CAMIC.store.findSlide($D.params.slideId);
+    fun.then(function (result) {
+        console.log('result', result);
+        $D.params = {slideId: result};
+        $D.params.slideId = result;
 
-    try {
-        $CAMIC = new CaMic("main_viewer", $D.params.slideId, opt);
-    } catch (error) {
-        Loading.close();
-        $UI.message.addError('Core Initialization Failed');
-        console.error(error);
-        return;
-    }
+        try {
+            //$CAMIC = new CaMic("main_viewer", $D.params.slideId, opt);
+            $CAMIC = new CaMic("main_viewer", $D.params.slideId, opt);
 
-    $CAMIC.loadImg(function (e) {
-        // image loaded
-        if (e.hasError) {
-            $UI.message.addError(e.message)
+
+        } catch (error) {
+            Loading.close();
+            console.error(error);
         }
-    });
 
-    // draw something
-    $CAMIC.viewer.addOnceHandler('open', function (e) {
-        // ready to draw
+        $CAMIC.loadImg(function (e) {
+            // image loaded
+            if (e.hasError) {
+                $UI.message.addError(e.message)
+            }
+        });
 
-        getLayerId();
+        // draw something
+        $CAMIC.viewer.addOnceHandler('open', function (e) {
+            // ready to draw
 
-        // Display by fetching data
-        // _1n7w6ahx2
-        let url='/data/Mark/multi?name=["_1n7w6ahx2"]&slide=CMU1';
-        fetchJSON(url, queryPoly);
+            getLayerId();
 
-        // Display with coordinates
-        $CAMIC.viewer.omanager.addOverlay({id: getLayerId(), data: this.coords, render: renderPoly, isShow: true});
+            // DISPLAY BY FETCHING DATA BY EXEC_ID
+            //let url='/data/Mark/multi?name=["_1n7w6ahx2"]&slide=CMU1';
+            //fetchJSON(url, queryPoly);
 
-        // Display using spatial query
-        // _rh5xco7oc
-        url='/data/Mark/findBound?x0=0.45&y0=0.62&x1=0.53&y1=0.68';
-        fetchJSON(url, queryPoly);
+            // DISPLAY WITH COORDINATES PROVIDED
+            $CAMIC.viewer.omanager.addOverlay({id: getLayerId(), data: this.coords, render: renderPoly, isShow: true});
+
+            // DISPLAY USING SPATIAL QUERY
+            //url='/data/Mark/findBound?x0=0.45&y0=0.62&x1=0.53&y1=0.68';
+            //fetchJSON(url, queryPoly);
+
+        });
 
     });
 
@@ -142,8 +148,7 @@ coords = [
 
 layerId = 'id0';
 
-function getLayerId()
-{
+function getLayerId() {
     let tmp = this.layerId;
     let pre = tmp.slice(0, -1);
     let num = tmp.substr(-1);

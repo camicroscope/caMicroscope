@@ -143,7 +143,7 @@
         <!-- side menu for layers-->
         <div id='side_layers' style='z-index:600'></div>
 
-        <!-- collapsible list -- annotation and analytics -->
+        <!-- collapsible list - annotation and analytics -->
         <div id='collapsiblelist' style='z-index:600'></div>
 
         <!-- overlayer manager -->
@@ -163,14 +163,16 @@
 		else if ($D.params && ($D.params.slide || $D.params.specimen ||$D.params.study || $D.params.location)){
 			let STORE = new Store()
 			STORE.findSlide($D.params.slide, $D.params.study, $D.params.specimen, $D.params.location).then(x=>{
-				if(x.length == 0){
+				let offset = parseInt($D.params.offset,10) || 0;
+				if(x.length == 0 || offset >= x.length){
 					redirect($D.pages.table,'No Slide Found. Redirecting to Table.');
 				} else {
 					newParams = $D.params
 					delete newParams.data
 					delete newParams.slide
 					delete newParams.location
-					newParams.slideId = x[0]['_id']['$oid']
+					delete newParams.offset
+					newParams.slideId = x[offset]['_id']['$oid']
 					newUrl = window.location.href.split("?")[0] + "?" + objToParamStr(newParams)
 					window.location.href = newUrl
 				}

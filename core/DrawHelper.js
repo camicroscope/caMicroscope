@@ -133,19 +133,26 @@ caDrawHelper.prototype.draw = function(ctx, image_data){
     for (let i = 0; i < image_data.length; i++) {
         const polygon = image_data[i];
         const style = polygon.properties.style;
-        // other styles
-        this.setStyle(ctx, style);
-        // fill color
-        ctx.fillStyle = hexToRgbA(style.color,0.5);
+
         // if there is path using path to draw
         if(polygon.geometry.path){
             polygon.geometry.path.fill(ctx);
             continue;
         }
-
+        // other styles
+        this.setStyle(ctx, style);
+        // fill color
+        
         // if no data 
         const points = polygon.geometry.coordinates[0];
-        polygon.geometry.path = this.drawPolygon(ctx, points);
+        if(polygon.geometry.type=='LineString'){
+            ctx.fillStyle = style.color;
+            polygon.geometry.path = this.drawMultiline(ctx, points);
+        }else{
+            ctx.fillStyle = hexToRgbA(style.color,0.5);
+            polygon.geometry.path = this.drawPolygon(ctx, points);
+        }
+        
     }
 
 }
