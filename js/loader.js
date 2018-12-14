@@ -14,6 +14,8 @@ function handleUpload(file, filename){
   var data = new FormData()
   data.append('file', file)
   data.append('filename', filename)
+  data.append('study', "")
+  data.append('specimen', "")
   changeStatus("UPLOAD", "Begun upload")
   fetch(upload_url, {
     credentials: "same-origin",
