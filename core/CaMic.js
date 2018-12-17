@@ -18,6 +18,7 @@ class CaMic{
   *
   */
   constructor(divId, slideQuery, options){
+    Loading.open(document.body, 'CaMicroscope is initializing...');
     // initalize viewer
     this.setting = {
       id: divId,
@@ -178,7 +179,7 @@ class CaMic{
       })
       .catch(e=>{
         Loading.close();
-        $UI.message.addError('loadImg Error');
+        //$UI.message.addError('loadImg Error');
         console.error(e);
 
         if(func && typeof func === 'function') func.call(null,{hasError:true,message:e});
