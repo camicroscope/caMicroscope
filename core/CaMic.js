@@ -162,7 +162,7 @@ class CaMic{
         this.slideId = x[0]["_id"]["$oid"]
         this.slideName = x[0]['name']
         this.study = x[0]['study']
-        this.specimen = x[0]['study']
+        this.specimen = x[0]['specimen']
         this.viewer.open("./img/Slide/"+ x[0]["_id"]["$oid"] + ".dzi");
         // set scalebar
         this.createScalebar(x[0].mpp)
