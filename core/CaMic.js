@@ -171,6 +171,7 @@ class CaMic{
         });
 
         imagingHelper.setMaxZoom(1);
+        x[0].url = "./img/Slide/"+ x[0]['_id']['$oid']+".dzi"
         if(func && typeof func === 'function') func.call(null,x[0]);
         Loading.text.textContent = `loading slide's tiles...`;
         this.mpp = x[0].mpp;

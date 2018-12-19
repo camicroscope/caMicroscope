@@ -25,7 +25,8 @@ function ImgBoxMods(){
     x.specimen = this.specimen
     x.mpp = 0;
     x.location = ibmox_url;
-    if(func && typeof func === 'function') func.call(null,x);
+    x.url = ibmox_url
+    if(func && typeof func === 'function') func.call(null,[x]);
     Loading.text.textContent = `loading slide's tiles...`;
     this.mpp = 0;
     // WARN; note that spyglass isn't working due to semi-hardcoded value at init.js line 140
