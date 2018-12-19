@@ -1,6 +1,7 @@
 // overwrite store with equivalent local functions
 function init_LocalStore(){
   // requirements
+  console.warn("{localstore mods enabled}")
   Object.byString = function(o, s) {
       s = s.replace(/\[(\w+)\]/g, '.$1'); // convert indexes to properties
       s = s.replace(/^\./, '');           // strip a leading dot
