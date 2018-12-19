@@ -41,20 +41,19 @@ function drawRectangle(e) {
 function copy(bound, event, canvasDraw) {
 
   var canvas = $CAMIC.viewer.drawer.canvas;
-  var ctx = canvas.getContext('2d');
+  var ctx = $CAMIC.viewer.drawer.context;
 
-  /*
-  var imgData = ctx.getImageData(canvasDraw.imgWidth/2, canvasDraw.imgHeight/2, 200, 200);
-  var myCanvas = document.getElementById('myCanvas');
-  var myCtx = myCanvas.getContext('2d');
-  myCtx.putImageData(imageData, 0, 0);
-  */
+  const xCoord = bound[0][0];
+  const yCoord = bound[0][1];
+  const canvasWidth = event.eventSource._display_.width;
+  const canvasHeight = event.eventSource._display_.height;
 
+  var imgData = ctx.getImageData(xCoord, yCoord, canvasWidth, canvasHeight);
 
-  logger(ctx, event);
-
-  //ctx.putImageData(imgData, 0, 0); //ctx.getImageData
-
+  let data = imgData.data;
+  console.log('array', Array.isArray(data));
+  console.log('type', typeof data);
+  console.log('imgData', data);
 
 }
 
@@ -98,43 +97,6 @@ function initDrawTemp(e) {
     canvasDraw.drawOff();
   }
   $CAMIC.viewer.canvasDrawInstance.addHandler('stop-drawing', stopDrawTemp);
-}
-
-function logger(ctx, event) {
-
-  const xCoord = 0;
-  const yCoord = 0;
-  const canvasWidth = event.eventSource._display_.width;
-  const canvasHeight = event.eventSource._display_.height;
-
-  // var imgData = ctx.getImageData(bound[0][0], bound[0][1], canvasWidth, canvasHeight);
-  // red = imgData.data[0];
-  // green = imgData.data[1];
-  // blue = imgData.data[2];
-  // alpha = imgData.data[3];
-  // console.log(red + " " + green + " " + blue + " " + alpha);
-
-  const getColorIndicesForCoord = (x, y, width) => {
-    const red = y * (width * 4) + x * 4;
-    return [red, red + 1, red + 2, red + 3];
-  };
-
-  const colorIndices = getColorIndicesForCoord(xCoord, yCoord, canvasWidth);
-
-  const [redIndex, greenIndex, blueIndex, alphaIndex] = colorIndices;
-
-  var imageData = ctx.getImageData(xCoord, yCoord, canvasWidth, canvasHeight);
-
-  var redForCoord = imageData.data[redIndex];
-  var greenForCoord = imageData.data[greenIndex];
-  var blueForCoord = imageData.data[blueIndex];
-  var alphaForCoord = imageData.data[alphaIndex];
-
-  console.log('redForCoord', redForCoord);
-  console.log('greenForCoord', greenForCoord);
-  console.log('blueForCoord', blueForCoord);
-  console.log('alphaForCoord', alphaForCoord);
-
 }
 
 /**
