@@ -8,30 +8,148 @@ const $D = {
   params: null // parameter from url - slide Id and status in it (object).
 };
 
-function drawRectangle(note) {
-  console.log(note);
+/**
+ * drawRectangle
+ * @param e
+ */
+function drawRectangle(e) {
+  console.log('drawRectangle');
 
   let canvas = $CAMIC.viewer.drawer.canvas;
   //$CAMIC.viewer.canvas.querySelector('canvas')
 
-  canvas.style.cursor = note.checked ? 'crosshair' : 'default';
+  canvas.style.cursor = e.checked ? 'crosshair' : 'default';
 
-  if (note.checked)
+  if (e.checked)
   {
-    initDraw(canvas);
+    //initDraw(canvas);
+    initDrawTemp(e);
   }
   else
   {
-    stopDraw(canvas);
+    //stopDraw(canvas);
   }
 
 }
 
+/**
+ * copy canvas selection as image
+ * @param bound
+ * @param event
+ * @param canvasDraw
+ */
+function copy(bound, event, canvasDraw) {
+
+  var canvas = $CAMIC.viewer.drawer.canvas;
+  var ctx = canvas.getContext('2d');
+
+  /*
+  var imgData = ctx.getImageData(canvasDraw.imgWidth/2, canvasDraw.imgHeight/2, 200, 200);
+  var myCanvas = document.getElementById('myCanvas');
+  var myCtx = myCanvas.getContext('2d');
+  myCtx.putImageData(imageData, 0, 0);
+  */
+
+
+  logger(ctx, event);
+
+  //ctx.putImageData(imgData, 0, 0); //ctx.getImageData
+
+
+}
+
+/**
+ * stop draw temp
+ * @param e
+ */
+var TD;
+function stopDrawTemp(event)
+{
+  TD = event;
+
+  const viewer = $CAMIC.viewer;
+  const canvasDraw = viewer.canvasDrawInstance;
+
+  let imgColl = canvasDraw.getImageFeatureCollection();
+
+  let bound;
+  if (imgColl.features.length > 0) {
+    bound = imgColl.features[0].bound;
+  }
+
+  copy(bound, event, canvasDraw);
+  // var canvas = event.eventSource._draw_; // document.getElementById("mycanvas");
+  // var img    = canvas.toDataURL("image/png");
+  // console.log(img);
+}
+
+/**
+ * init draw temp
+ * @param e
+ */
+function initDrawTemp(e) {
+  const canvasDraw = $CAMIC.viewer.canvasDrawInstance;
+  canvasDraw.drawMode = 'rect';
+  console.log(canvasDraw);
+
+  if (e.checked) {
+    canvasDraw.drawOn();
+  } else {
+    canvasDraw.drawOff();
+  }
+  $CAMIC.viewer.canvasDrawInstance.addHandler('stop-drawing', stopDrawTemp);
+}
+
+function logger(ctx, event) {
+
+  const xCoord = 0;
+  const yCoord = 0;
+  const canvasWidth = event.eventSource._display_.width;
+  const canvasHeight = event.eventSource._display_.height;
+
+  // var imgData = ctx.getImageData(bound[0][0], bound[0][1], canvasWidth, canvasHeight);
+  // red = imgData.data[0];
+  // green = imgData.data[1];
+  // blue = imgData.data[2];
+  // alpha = imgData.data[3];
+  // console.log(red + " " + green + " " + blue + " " + alpha);
+
+  const getColorIndicesForCoord = (x, y, width) => {
+    const red = y * (width * 4) + x * 4;
+    return [red, red + 1, red + 2, red + 3];
+  };
+
+  const colorIndices = getColorIndicesForCoord(xCoord, yCoord, canvasWidth);
+
+  const [redIndex, greenIndex, blueIndex, alphaIndex] = colorIndices;
+
+  var imageData = ctx.getImageData(xCoord, yCoord, canvasWidth, canvasHeight);
+
+  var redForCoord = imageData.data[redIndex];
+  var greenForCoord = imageData.data[greenIndex];
+  var blueForCoord = imageData.data[blueIndex];
+  var alphaForCoord = imageData.data[alphaIndex];
+
+  console.log('redForCoord', redForCoord);
+  console.log('greenForCoord', greenForCoord);
+  console.log('blueForCoord', blueForCoord);
+  console.log('alphaForCoord', alphaForCoord);
+
+}
+
+/**
+ * stop draw
+ * @param canvas
+ */
 function stopDraw(canvas)
 {
   // idk yet.
 }
 
+/**
+ * init draw
+ * @param canvas
+ */
 function initDraw(canvas) {
   var mouse = {
     x: 0,
@@ -62,8 +180,6 @@ function initDraw(canvas) {
   };
 
   canvas.onclick = function (e) {
-    console.log('click', e);
-
     if (element !== null) {
       element = null;
       canvas.style.cursor = "default";
