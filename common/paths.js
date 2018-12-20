@@ -111,4 +111,4 @@ if (typeof Path2D == 'function' || typeof Path2D == 'object') {
         __ghostContext: document.createElement('canvas').getContext('2d')
     }
 }
-OpenSeadragon.Path = Path;
+//OpenSeadragon.Path = Path;

@@ -6,12 +6,13 @@
     <meta charset='utf-8'>
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
-    <link href="./lib/datatables/vanilla-dataTables.css" rel="stylesheet" />
-    <link href="./lib/loading/loading.css" rel="stylesheet" />
+    <!-- common -->
+    <link href="../common/datatables/vanilla-dataTables.css" rel="stylesheet" />
+    <link href="../components/loading/loading.css" rel="stylesheet" />
 
-    <script src='./lib/datatables/vanilla-dataTables.js'></script>
-    <script src='./lib/loading/loading.js'></script>
-    <script src='./core/Store.js'></script>
+    <script src='../common/datatables/vanilla-dataTables.js'></script>
+    <script src='../components/loading/loading.js'></script>
+    <script src='../core/Store.js'></script>
     <title>Camic Data Table</title>
       <style type="text/css">
          html, body {
@@ -52,7 +53,7 @@
 
 		var div = document.querySelector('.container');
 		Loading.open(div,'Data is loading');
-		const store = new Store();
+		const store = new Store('../data/');
 		store.findSlide()
 
 		.then(function(data){
@@ -102,7 +103,7 @@
 			dataTableInstance = new DataTable("#datatables",{
 				columns:[
 					{select: 0, render: function(data){
-						return `<a href='viewer.html?slideId=${data}'>${data}</a>`;
+						return `<a href='./viewer/viewer.html?slideId=${data}'>${data}</a>`;
 					}},
 				],
 				data:obj

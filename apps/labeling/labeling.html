@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta name="keywords" content="camicroscope, quip" />
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+
+    <title>caMicroscope</title>
+		<!-- google material icons css sheet -->
+		<link rel='stylesheet' type='text/css' media='all' href='../../iconfont/material-icons.css'/>
+		<!-- css sheet -->
+		<link rel='stylesheet' type='text/css' media='all' href='../../css/style.css'/>
+
+		<!-- zoom control css -->
+ 		<link rel='stylesheet' type='text/css' media='all' href='../../core/extension/openseadragon-zoom-control/openseadragon-zoom-control.css'/>
+
+ 		<link rel='stylesheet' type='text/css' media='all' href='../../components/loading/loading.css'/>
+ 		<link rel='stylesheet' type='text/css' media='all' href='../../components/toolbar/toolbar.css'/>
+		<!-- color picker css -->
+		<link rel='stylesheet' type='text/css' media='all' href='../../common/colorpicker/color-picker.css'/>
+
+		<link rel='stylesheet' type='text/css' media='all' href='../../core/extension/openseadragon-measurement-tool/openseadragon-measurement-tool.css'/>
+
+		<link rel='stylesheet' type='text/css' media='all' href='../../core/extension/openseadragon-labeling/openseadragon-labeling.css'/>
+
+		<script type='text/javascript' src='../../components/loading/loading.js' ></script>
+		<script type='text/javascript' src='../../components/toolbar/toolbar.js' ></script>
+		<script type='text/javascript' src='../../common/colorpicker/color-picker.js' ></script>
+		<!-- open seadragon lib-->
+		<script type='text/javascript' src='../../core/openseadragon/openseadragon.js' ></script>
+		<script type='text/javascript' src='../../core/openseadragon-imaginghelper.min.js'></script>
+		<script type='text/javascript' src='../../core/openseadragon-scalebar.js'></script>
+		<script type='text/javascript' src='../../core/openseadragonzoomlevels.js'></script>
+
+		<!-- util.js -->
+		<script type='text/javascript' src='../../common/util.js'></script>
+		<!-- core (package/ext) libs -->
+		<script type='text/javascript' src='../../common/DrawHelper.js'></script>
+		<script type='text/javascript' src='../../common/simplify.js'></script>
+		<script type='text/javascript' src='../../common/paths.js'></script>
+		<script type='text/javascript' src='../../core/Store.js'></script>
+		<script type='text/javascript' src='../../core/CaMic.js'></script>
+		<script type='text/javascript' src='../../core/extension/openseadragon-canvas-draw-overlay.js'></script>
+		<script type='text/javascript' src='../../core/extension/openseadragon-overlays-manage.js'></script>
+		<script type='text/javascript' src='../../core/extension/openseadragon-measurement-tool/openseadragon-measurement-tool.js'></script>
+		<script type='text/javascript' src='../../core/extension/openseadragon-zoom-control/openseadragon-zoom-control.js'></script>
+		<script type='text/javascript' src='../../core/extension/openseadragon-labeling/openseadragon-labeling.js'></script>
+		<!-- init data -->
+
+		<!-- ods js -->
+		<!-- <script src='./js/uicallbacks.js'></script> -->
+		<!-- <script src='./js/dataloaders.js'></script> -->
+		<script src='./labeling.js'></script>
+
+	</head>
+	<body>
+		<!-- toolbar -->
+		<div id = 'ca_tools'></div>
+
+		<div id ='main_viewer' class='main'></div>
+	</body>
+	<script type="text/javascript">
+		Loading.open(document.body, 'CaMicroscope is initializing...');
+		// get slide id from url
+		const url = new URL(window.location.href);
+		$D.params = getUrlVars();
+		
+		// no slide Id error
+		if($D.params && $D.params.slideId){
+
+			// normal initialization starts
+			document.addEventListener('DOMContentLoaded', initialize);
+			
+		}else{
+			redirect($D.pages.table,'Slide Id is undefined. Redirecting to Flex Table.');
+		}
+
+		// get states parameters
+		if($D.params.states){
+			$D.params.states = StatesHelper.decodeStates($D.params.states);
+		}
+	</script>
+</html>

@@ -6,8 +6,8 @@ const $UI = new Map();
 
 const $D = {
   pages:{
-    home:'./table.html',
-    table:'./table.html'
+    home:'../table.html',
+    table:'../table.html'
   },
   params:null, // parameter from url - slide Id and status in it (object).
   overlayers:null, // array for each layers
@@ -394,7 +394,7 @@ function redirect(url ,text = '', sec = 5){
       window.location.href = url;
     }
 
-    if(Loading.instance.parentNode){
+    if(Loading.instance&&Loading.instance.parentNode){
       Loading.text.textContent = `${text} ${timer}s.`;
     }else{
       Loading.open(document.body,`${text} ${timer}s.`);

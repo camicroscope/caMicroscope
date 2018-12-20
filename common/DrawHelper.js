@@ -190,4 +190,4 @@ caDrawHelper.prototype.clearCanvas = function(canvas){
 }
 
 var DrawHelper = new caDrawHelper();
-OpenSeadragon.DrawHelper = DrawHelper;
+//OpenSeadragon.DrawHelper = DrawHelper;

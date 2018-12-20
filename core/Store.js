@@ -333,12 +333,12 @@ class Store {
    * @param {string} id - the heatmap id
    * @returns {promise} - promise which resolves with data
    **/
-  getHeatmap(id) {
-    var suffix = "Heatmap/get"
+  getHeatmap(caseId, execId) {
+    var suffix = "Heatmap/getHeatmap"
     var url = this.base + suffix;
-    var query = {
-      'id': id
-    }
+    var query = {};
+    query.caseId = caseId;
+    query.execId = execId;
 
     return fetch(url + "?" + objToParamStr(query), {
       credentials: "same-origin",

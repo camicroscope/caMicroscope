@@ -6,8 +6,8 @@ const $UI = {};
 
 const $D = {
   pages:{
-    home:'./table.html',
-    table:'./table.html'
+    home:'../table.html',
+    table:'../table.html'
   },
   params:null // parameter from url - slide Id and status in it (object).
 };
@@ -39,7 +39,7 @@ function initCore(){
   }
 
   try{
-    $CAMIC = new CaMic("main_viewer",$D.params.slideId, opt);
+    $CAMIC = new CaMic("main_viewer",{id:$D.params.slideId}, opt);
   }catch(error){
     Loading.close();
     $UI.message.addError('Core Initialization Failed');

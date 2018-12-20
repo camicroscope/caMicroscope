@@ -51,7 +51,7 @@ class CaMic{
     this.slideQuery = slideQuery;
     this.slideId = slideQuery.id
     // initalize store
-    this.store = new Store();
+    this.store = new Store("../../data/");
     // load image
     // set overlay thing
     this.viewer.addOnceHandler('open',this.init.bind(this));
@@ -163,7 +163,8 @@ class CaMic{
         this.slideName = x[0]['name']
         this.study = x[0]['study']
         this.specimen = x[0]['specimen']
-        this.viewer.open("./img/Slide/"+ x[0]["_id"]["$oid"] + ".dzi");
+
+        this.viewer.open("../../img/Slide/"+ x[0]["_id"]["$oid"] + ".dzi");
         // set scalebar
         this.createScalebar(x[0].mpp)
         var imagingHelper = new OpenSeadragonImaging.ImagingHelper({
@@ -171,7 +172,7 @@ class CaMic{
         });
 
         imagingHelper.setMaxZoom(1);
-        x[0].url = "./img/Slide/"+ x[0]['_id']['$oid']+".dzi"
+        x[0].url = "../../img/Slide/"+ x[0]['_id']['$oid']+".dzi";
         if(func && typeof func === 'function') func.call(null,x[0]);
         Loading.text.textContent = `loading slide's tiles...`;
         this.mpp = x[0].mpp;
