@@ -15,15 +15,28 @@ const $D = {
 function drawRectangle(e) {
   console.log('drawRectangle');
 
-  let canvas = $CAMIC.viewer.drawer.canvas;
-  //$CAMIC.viewer.canvas.querySelector('canvas')
+  let canvas = $CAMIC.viewer.drawer.canvas; //finds Original Canvas
 
   canvas.style.cursor = e.checked ? 'crosshair' : 'default';
 
   if (e.checked)
   {
-    //initDraw(canvas);
-    initDrawTemp(e);
+    // TESTING
+    let canv = document.createElement('canvas'); // creates new canvas element
+    canv.id = 'canvasdummy'; // gives canvas id
+    canv.height = canvas.height; //get original canvas height
+    canv.width = canvas.width; // get original canvas width
+    canv.style.left = "100px";
+    canv.style.top = "100px";
+    canv.style.position = "absolute";
+    canv.style.border = "1px solid blue";
+    document.body.appendChild(canv); // adds the canvas to the body element
+
+    let canvas1 = document.getElementById('canvasdummy'); //find new canvas we created
+    let context = canvas1.getContext('2d');
+
+    initDraw(canvas1, context);
+    //initDrawTemp(e);
   }
   else
   {
