@@ -26,10 +26,9 @@ function drawRectangle(e) {
     canv.id = 'canvasdummy'; // gives canvas id
     canv.height = canvas.height; //get original canvas height
     canv.width = canvas.width; // get original canvas width
-    canv.style.left = "100px";
-    canv.style.top = "100px";
+    canv.style.left = "0px";
+    canv.style.top = "0px";
     canv.style.position = "absolute";
-    canv.style.border = "1px solid blue";
     document.body.appendChild(canv); // adds the canvas to the body element
 
     let canvas1 = document.getElementById('canvasdummy'); //find new canvas we created
