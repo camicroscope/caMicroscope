@@ -9,50 +9,49 @@ const $D = {
 };
 
 /**
- * drawRectangle
+ * Toolbar button callback
  * @param e
  */
 function drawRectangle(e) {
-  console.log('drawRectangle');
-
-  // We don't want the rectangle to be filled in.
-  $CAMIC.viewer.drawer.context.fillStyle = 'none';
 
   let canvas = $CAMIC.viewer.drawer.canvas; //Original Canvas
   canvas.style.cursor = e.checked ? 'crosshair' : 'default';
+  console.log('canvas.style', canvas.style);
 
   if (e.checked)
   {
-    // TESTING CUSTOM RECTANGLE SELECT
-    let canvas1 = document.createElement('canvas'); // creates new canvas element
-    canvas1.id = 'canvasdummy'; // gives canvas id
-    canvas1.height = canvas.height; //get original canvas height
-    canvas1.width = canvas.width; // get original canvas width
-    canvas1.style.left = "0px";
-    canvas1.style.top = "0px";
-    canvas1.style.position = "absolute";
-    document.body.appendChild(canvas1); // adds the canvas to the body element
+    // User initiates rectangle-draw
+    
 
-    let context = canvas1.getContext('2d');
 
-    //initDraw(canvas1, context);
+    //initDraw(canvas1, context); // <-- custom rectangle select
     initDrawTemp(e); // <-- uses default rectangle tool
   }
   else
   {
+    // User is done with the tool
     //stopDraw(canvas); // <-- custom rectangle select
   }
 
 }
 
 /**
- * copy canvas selection as image
- * @param bound
- * @param event
- * @param canvasDraw
+ * Get the bbox of the rectangle and copy the pixels.
+ * Copy canvas selection as image.
+ * @param e
  */
-function copy(bound, event, canvasDraw) {
+function stopDrawTemp(event)
+{
+  const viewer = $CAMIC.viewer;
+  const canvasDraw = viewer.canvasDrawInstance;
 
+  let imgColl = canvasDraw.getImageFeatureCollection();
+
+  let bound;
+  if (imgColl.features.length > 0) {
+    bound = imgColl.features[0].bound;
+  }
+  
   //let canvas = $CAMIC.viewer.drawer.canvas;
   let ctx = $CAMIC.viewer.drawer.context;
 
@@ -68,35 +67,14 @@ function copy(bound, event, canvasDraw) {
   console.log('type', typeof data);
   console.log('imgData', data);
 
-}
-
-/**
- * stop draw temp
- * @param e
- */
-var TD;
-function stopDrawTemp(event)
-{
-  TD = event;
-
-  const viewer = $CAMIC.viewer;
-  const canvasDraw = viewer.canvasDrawInstance;
-
-  let imgColl = canvasDraw.getImageFeatureCollection();
-
-  let bound;
-  if (imgColl.features.length > 0) {
-    bound = imgColl.features[0].bound;
-  }
-
-  copy(bound, event, canvasDraw);
+  // copy(bound, event, canvasDraw);
   // var canvas = event.eventSource._draw_; // document.getElementById("mycanvas");
   // var img    = canvas.toDataURL("image/png");
   // console.log(img);
 }
 
 /**
- * init draw temp
+ * Uses draw instance to draw the rectangle
  * @param e
  */
 function initDrawTemp(e) {
@@ -119,14 +97,30 @@ function initDrawTemp(e) {
  */
 function stopDraw(canvas)
 {
-  // idk yet.
+  // Copy canvas selection as image.
 }
 
 /**
  * init draw
  * @param canvas
  */
-function initDraw(canvas) {
+function initDraw() {
+  
+  let canvas = $CAMIC.viewer.drawer.canvas; //Original Canvas
+  
+  /*
+    let canvas1 = document.createElement('canvas'); // creates new canvas element
+    canvas1.id = 'canvasdummy'; // gives canvas id
+    canvas1.height = canvas.height; //get original canvas height
+    canvas1.width = canvas.width; // get original canvas width
+    canvas1.style.left = "0px";
+    canvas1.style.top = "0px";
+    canvas1.style.position = "absolute";
+    document.body.appendChild(canvas1); // adds the canvas to the body element
+
+    let context = canvas1.getContext('2d');
+    */
+  
   var mouse = {
     x: 0,
     y: 0,
