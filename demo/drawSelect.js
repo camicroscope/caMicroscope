@@ -21,7 +21,7 @@ function drawRectangle(e) {
   if (e.checked) {
 
     // User initiates rectangle-draw
-    initDraw(canvas); // <-- custom rectangle select
+    initDraw(document.getElementById('main_viewer')); // <-- custom rectangle select
     //initDrawTemp(e); // <-- uses default rectangle tool
 
     // ctx.fillStyle = "pink";
@@ -106,13 +106,6 @@ function stopDraw(canvas) {
  */
 function initDraw(canvas) {
 
-  var mouse = {
-    x: 0,
-    y: 0,
-    startX: 0,
-    startY: 0
-  };
-
   function setMousePosition(e) {
     var ev = e || window.event; //Moz || IE
     if (ev.pageX) { //Moz
@@ -123,8 +116,14 @@ function initDraw(canvas) {
       mouse.y = ev.clientY + document.body.scrollTop;
     }
   }
-
+  var mouse = {
+    x: 0,
+    y: 0,
+    startX: 0,
+    startY: 0
+  };
   var element = null;
+
   canvas.onmousemove = function (e) {
     setMousePosition(e);
     if (element !== null) {
@@ -139,9 +138,9 @@ function initDraw(canvas) {
     if (element !== null) {
       element = null;
       canvas.style.cursor = "default";
-      console.log("finished.");
+      //console.log("finished.");
     } else {
-      console.log("begun.");
+      //console.log("begun.");
       mouse.startX = mouse.x;
       mouse.startY = mouse.y;
       element = document.createElement('div');
