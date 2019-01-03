@@ -107,7 +107,9 @@ function stopDraw() {
   }
   console.log('box', box);
 
-  // Note: jQuery required here:
+  // TODO: convert coordinates, make a canvas, and get the pixels.
+
+  /*
   var doc = document,
       docElem = doc.documentElement,
       body = document.body,
@@ -121,6 +123,7 @@ function stopDraw() {
 
   console.log('x', left);
   console.log('y', top);
+  */
 }
 
 /**
