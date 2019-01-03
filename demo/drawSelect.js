@@ -16,21 +16,15 @@ function drawRectangle(e) {
 
   let canvas = $CAMIC.viewer.drawer.canvas; //Original Canvas
   canvas.style.cursor = e.checked ? 'crosshair' : 'default';
-  console.log('canvas.style', canvas.style);
 
-  if (e.checked)
-  {
+  if (e.checked) {
     // User initiates rectangle-draw
-    
 
-
-    //initDraw(canvas1, context); // <-- custom rectangle select
-    initDrawTemp(e); // <-- uses default rectangle tool
-  }
-  else
-  {
+    initDraw(); // <-- custom rectangle select
+    //initDrawTemp(e); // <-- uses default rectangle tool
+  } else {
     // User is done with the tool
-    //stopDraw(canvas); // <-- custom rectangle select
+    stopDraw(canvas); // <-- custom rectangle select
   }
 
 }
@@ -40,8 +34,7 @@ function drawRectangle(e) {
  * Copy canvas selection as image.
  * @param e
  */
-function stopDrawTemp(event)
-{
+function stopDrawTemp(event) {
   const viewer = $CAMIC.viewer;
   const canvasDraw = viewer.canvasDrawInstance;
 
@@ -51,7 +44,7 @@ function stopDrawTemp(event)
   if (imgColl.features.length > 0) {
     bound = imgColl.features[0].bound;
   }
-  
+
   //let canvas = $CAMIC.viewer.drawer.canvas;
   let ctx = $CAMIC.viewer.drawer.context;
 
@@ -95,8 +88,7 @@ function initDrawTemp(e) {
  * stop draw
  * @param canvas
  */
-function stopDraw(canvas)
-{
+function stopDraw(canvas) {
   // Copy canvas selection as image.
 }
 
@@ -105,9 +97,9 @@ function stopDraw(canvas)
  * @param canvas
  */
 function initDraw() {
-  
-  let canvas = $CAMIC.viewer.drawer.canvas; //Original Canvas
-  
+
+  let canvas = $CAMIC.viewer.drawer.canvas;
+
   /*
     let canvas1 = document.createElement('canvas'); // creates new canvas element
     canvas1.id = 'canvasdummy'; // gives canvas id
@@ -117,10 +109,9 @@ function initDraw() {
     canvas1.style.top = "0px";
     canvas1.style.position = "absolute";
     document.body.appendChild(canvas1); // adds the canvas to the body element
-
     let context = canvas1.getContext('2d');
     */
-  
+
   var mouse = {
     x: 0,
     y: 0,
@@ -138,6 +129,7 @@ function initDraw() {
       mouse.y = ev.clientY + document.body.scrollTop;
     }
   }
+
   var element = null;
   canvas.onmousemove = function (e) {
     setMousePosition(e);
@@ -221,17 +213,17 @@ function initCore() {
   });
 }
 
-function redirect(url ,text = '', sec = 5){
+function redirect(url, text = '', sec = 5) {
   let timer = sec;
-  setInterval(function(){
-    if(!timer) {
+  setInterval(function () {
+    if (!timer) {
       window.location.href = url;
     }
 
-    if(Loading.instance.parentNode){
+    if (Loading.instance.parentNode) {
       Loading.text.textContent = `${text} ${timer}s.`;
-    }else{
-      Loading.open(document.body,`${text} ${timer}s.`);
+    } else {
+      Loading.open(document.body, `${text} ${timer}s.`);
     }
     // Hint Message for clients that page is going to redirect to Flex table in 5s
     timer--;
