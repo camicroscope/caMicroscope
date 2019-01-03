@@ -29,7 +29,7 @@ body {
 #main_viewer.left {
     float: left;
     box-sizing: border-box;
-    border-right: 2px solid rgb(54, 95, 156);;
+    border-right: 2px solid rgb(54, 95, 156);
     width: 50%;
     height: 100%;
 }
@@ -43,7 +43,7 @@ body {
 #secondary.right {
     float: right;
     box-sizing: border-box;
-    border-left: 2px solid rgb(54, 95, 156);;
+    border-left: 2px solid rgb(54, 95, 156);
     width: 50%;
     height: 100%;
 }
