@@ -93,11 +93,34 @@ function initDrawTemp(e) {
 }
 
 /**
- * stop draw
- * @param canvas
+ * Copy canvas selection as image.
  */
-function stopDraw(canvas) {
-  // Copy canvas selection as image.
+function stopDraw() {
+  let my_div = document.getElementById('yabbadabbadoo');
+  console.log(my_div.offsetWidth);
+  console.log(my_div.offsetHeight);
+  // What about upper x,y
+  var box = {left: 0, top: 0};
+  try {
+    box = my_div.getBoundingClientRect();
+  } catch (e) {
+  }
+  console.log('box', box);
+
+  // Note: jQuery required here:
+  var doc = document,
+      docElem = doc.documentElement,
+      body = document.body,
+      win = window,
+      clientTop = docElem.clientTop || body.clientTop || 0,
+      clientLeft = docElem.clientLeft || body.clientLeft || 0,
+      scrollTop = win.pageYOffset || jQuery.support.boxModel && docElem.scrollTop || body.scrollTop,
+      scrollLeft = win.pageXOffset || jQuery.support.boxModel && docElem.scrollLeft || body.scrollLeft,
+      top = box.top + scrollTop - clientTop,
+      left = box.left + scrollLeft - clientLeft;
+
+  console.log('x', left);
+  console.log('y', top);
 }
 
 /**
@@ -116,6 +139,7 @@ function initDraw(canvas) {
       mouse.y = ev.clientY + document.body.scrollTop;
     }
   }
+
   var mouse = {
     x: 0,
     y: 0,
@@ -139,11 +163,13 @@ function initDraw(canvas) {
       element = null;
       canvas.style.cursor = "default";
       //console.log("finished.");
+      stopDraw();
     } else {
       //console.log("begun.");
       mouse.startX = mouse.x;
       mouse.startY = mouse.y;
       element = document.createElement('div');
+      element.id = 'yabbadabbadoo';
       element.className = 'rectangle';
       element.style.left = mouse.x + 'px';
       element.style.top = mouse.y + 'px';
