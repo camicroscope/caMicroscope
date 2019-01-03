@@ -17,14 +17,22 @@ function drawRectangle(e) {
   let canvas = $CAMIC.viewer.drawer.canvas; //Original Canvas
   canvas.style.cursor = e.checked ? 'crosshair' : 'default';
 
+  let ctx = $CAMIC.viewer.drawer.context;
   if (e.checked) {
-    // User initiates rectangle-draw
 
-    initDraw(); // <-- custom rectangle select
+    // User initiates rectangle-draw
+    initDraw(canvas); // <-- custom rectangle select
     //initDrawTemp(e); // <-- uses default rectangle tool
+
+    // ctx.fillStyle = "pink";
+    // ctx.fillRect(0, 0, 300, 150);
+
   } else {
+
     // User is done with the tool
     stopDraw(canvas); // <-- custom rectangle select
+
+    // ctx.clearRect(0, 0, 300, 150);
   }
 
 }
@@ -32,7 +40,7 @@ function drawRectangle(e) {
 /**
  * Get the bbox of the rectangle and copy the pixels.
  * Copy canvas selection as image.
- * @param e
+ * @param event
  */
 function stopDrawTemp(event) {
   const viewer = $CAMIC.viewer;
@@ -96,21 +104,7 @@ function stopDraw(canvas) {
  * init draw
  * @param canvas
  */
-function initDraw() {
-
-  let canvas = $CAMIC.viewer.drawer.canvas;
-
-  /*
-    let canvas1 = document.createElement('canvas'); // creates new canvas element
-    canvas1.id = 'canvasdummy'; // gives canvas id
-    canvas1.height = canvas.height; //get original canvas height
-    canvas1.width = canvas.width; // get original canvas width
-    canvas1.style.left = "0px";
-    canvas1.style.top = "0px";
-    canvas1.style.position = "absolute";
-    document.body.appendChild(canvas1); // adds the canvas to the body element
-    let context = canvas1.getContext('2d');
-    */
+function initDraw(canvas) {
 
   var mouse = {
     x: 0,
