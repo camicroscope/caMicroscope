@@ -15,31 +15,32 @@ const $D = {
 function drawRectangle(e) {
   console.log('drawRectangle');
 
-  let canvas = $CAMIC.viewer.drawer.canvas; //finds Original Canvas
+  // We don't want the rectangle to be filled in.
+  $CAMIC.viewer.drawer.context.fillStyle = 'none';
 
+  let canvas = $CAMIC.viewer.drawer.canvas; //Original Canvas
   canvas.style.cursor = e.checked ? 'crosshair' : 'default';
 
   if (e.checked)
   {
-    // TESTING
-    let canv = document.createElement('canvas'); // creates new canvas element
-    canv.id = 'canvasdummy'; // gives canvas id
-    canv.height = canvas.height; //get original canvas height
-    canv.width = canvas.width; // get original canvas width
-    canv.style.left = "0px";
-    canv.style.top = "0px";
-    canv.style.position = "absolute";
-    document.body.appendChild(canv); // adds the canvas to the body element
+    // TESTING CUSTOM RECTANGLE SELECT
+    let canvas1 = document.createElement('canvas'); // creates new canvas element
+    canvas1.id = 'canvasdummy'; // gives canvas id
+    canvas1.height = canvas.height; //get original canvas height
+    canvas1.width = canvas.width; // get original canvas width
+    canvas1.style.left = "0px";
+    canvas1.style.top = "0px";
+    canvas1.style.position = "absolute";
+    document.body.appendChild(canvas1); // adds the canvas to the body element
 
-    let canvas1 = document.getElementById('canvasdummy'); //find new canvas we created
     let context = canvas1.getContext('2d');
 
-    initDraw(canvas1, context);
-    //initDrawTemp(e);
+    //initDraw(canvas1, context);
+    initDrawTemp(e); // <-- uses default rectangle tool
   }
   else
   {
-    //stopDraw(canvas);
+    //stopDraw(canvas); // <-- custom rectangle select
   }
 
 }
@@ -52,15 +53,15 @@ function drawRectangle(e) {
  */
 function copy(bound, event, canvasDraw) {
 
-  var canvas = $CAMIC.viewer.drawer.canvas;
-  var ctx = $CAMIC.viewer.drawer.context;
+  //let canvas = $CAMIC.viewer.drawer.canvas;
+  let ctx = $CAMIC.viewer.drawer.context;
 
   const xCoord = bound[0][0];
   const yCoord = bound[0][1];
   const canvasWidth = event.eventSource._display_.width;
   const canvasHeight = event.eventSource._display_.height;
 
-  var imgData = ctx.getImageData(xCoord, yCoord, canvasWidth, canvasHeight);
+  let imgData = ctx.getImageData(xCoord, yCoord, canvasWidth, canvasHeight);
 
   let data = imgData.data;
   console.log('array', Array.isArray(data));
@@ -99,6 +100,7 @@ function stopDrawTemp(event)
  * @param e
  */
 function initDrawTemp(e) {
+
   const canvasDraw = $CAMIC.viewer.canvasDrawInstance;
   canvasDraw.drawMode = 'rect';
   console.log(canvasDraw);
@@ -108,7 +110,7 @@ function initDrawTemp(e) {
   } else {
     canvasDraw.drawOff();
   }
-  $CAMIC.viewer.canvasDrawInstance.addHandler('stop-drawing', stopDrawTemp);
+  canvasDraw.addHandler('stop-drawing', stopDrawTemp);
 }
 
 /**
