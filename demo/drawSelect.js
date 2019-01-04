@@ -22,8 +22,8 @@ function drawRectangle(e) {
   if (e.checked) {
 
     // User initiates rectangle-draw
-    //initDraw(document.getElementById('main_viewer')); // <-- custom rectangle select
-    initDrawTemp(e); // <-- uses default rectangle tool
+    //customDraw(document.getElementById('main_viewer')); // <-- custom rectangle select
+    camicDraw(e); // <-- uses default rectangle tool
 
     // ctx.fillStyle = "pink";
     // ctx.fillRect(0, 0, 300, 150);
@@ -31,7 +31,7 @@ function drawRectangle(e) {
   } else {
 
     // User is done with the tool
-    //stopDraw(canvas); // <-- custom rectangle select
+    //customStopDraw(canvas); // <-- custom rectangle select
 
     // ctx.clearRect(0, 0, 300, 150);
   }
@@ -39,85 +39,9 @@ function drawRectangle(e) {
 }
 
 /**
- * Get pixels to create image (pass to ImageJs)
- * @param event
- */
-function stopDrawTemp(event) {
-
-  const viewer = $CAMIC.viewer;
-  const canvas = viewer.drawer.canvas;
-  const ctx = viewer.drawer.context;
-  const canvasDraw = viewer.canvasDrawInstance;
-
-  let imgColl = canvasDraw.getImageFeatureCollection();
-  let bound;
-  if (imgColl.features.length > 0) {
-
-    // 5x2 array
-    bound = imgColl.features[0].bound;
-
-    const xCoord = bound[0][0];
-    const yCoord = bound[0][1];
-
-    // ImageData - Uint8ClampedArray, width, height
-    let imgData = ctx.getImageData(xCoord, yCoord, canvas.width, canvas.height);
-
-    // Copy the pixel data
-    let data = imgData.data;
-
-    // Data URI containing representation of image
-    let img    = canvas.toDataURL("image/png");
-
-  }
-  else
-  {
-    console.error('Could not get feature collection.')
-  }
-
-}
-
-/**
- * Uses camic draw instance to draw the rectangle
- * @param e
- */
-function initDrawTemp(e) {
-
-  // TODO: Implement ability to set stroke and fill
-  // canvasDraw currently uses one color, only. Transparency when drawing then opaque upon finish.
-
-  const canvasDraw = $CAMIC.viewer.canvasDrawInstance;
-  canvasDraw.drawMode = 'rect';
-  //canvasDraw.style.color = '#FF0000';
-  canvasDraw.style.color = '#FFFF00';
-  // Hack.
-  canvasDraw._display_ctx_.fillStyle = 'rgba(255, 255, 0, 0.5)';
-
-  /*
-  // Original "#000000"
-  const ctx = canvasDraw._display_ctx_;
-  ctx.fillStyle = 'rgba(255, 255, 255, 0)';
-  ctx.strokeStyle = '#FF0000';
-  ctx.shadowColor = 'rgba(255, 255, 255, 0)';
-
-  // Original "#7cfc00"
-  const draw = canvasDraw._draw_ctx_;
-  draw.fillStyle = 'rgba(255, 255, 255, 0)';
-  draw.strokeStyle = '#FF0000';
-  draw.shadowColor = 'rgba(255, 255, 255, 0)';
-  */
-
-  if (e.checked) {
-    canvasDraw.drawOn();
-  } else {
-    canvasDraw.drawOff();
-  }
-  canvasDraw.addHandler('stop-drawing', stopDrawTemp);
-}
-
-/**
  * Copy canvas selection as image.
  */
-function stopDraw(e) {
+function customStopDraw(e) {
 
   let my_div = document.getElementById('yabbadabbadoo');
 
@@ -187,7 +111,7 @@ function stopDraw(e) {
  * init draw
  * @param canvas
  */
-function initDraw(canvas) {
+function customDraw(canvas) {
 
   function setMousePosition(e) {
     var ev = e || window.event; //Moz || IE
@@ -224,7 +148,7 @@ function initDraw(canvas) {
       element = null;
       canvas.style.cursor = "default";
       // console.log("finished.");
-      stopDraw(e);
+      customStopDraw(e);
     } else {
       // console.log("begun.");
       mouse.startX = mouse.x;
@@ -310,3 +234,111 @@ function redirect(url, text = '', sec = 5) {
 
   }, 1000);
 }
+
+/**
+ * Get pixels to create image (pass to ImageJs)
+ * @param event
+ */
+function customStopDraw(event) {
+
+  const viewer = $CAMIC.viewer;
+  const canvas = viewer.drawer.canvas;
+  const ctx = viewer.drawer.context;
+  const canvasDraw = viewer.canvasDrawInstance;
+
+  console.log('canvas:\n', canvas);
+  console.log('ctx:\n', ctx);
+  console.log('canvasDraw:\n', canvasDraw);
+
+  let imgColl = canvasDraw.getImageFeatureCollection();
+  let bound;
+  if (imgColl.features.length > 0) {
+
+    // 5x2 array
+    bound = imgColl.features[0].bound;
+    console.log('bound:\n', bound);
+
+    const xCoord = bound[0][0];
+    const yCoord = bound[0][1];
+    console.log('x, y:\n', xCoord, yCoord);
+
+    // TODO: convert to web coordinates
+
+    let width = canvas.width;
+    let height = canvas.height;
+    console.log('w, h canv:\n', width, height);
+
+    width = (bound[2][0] - xCoord);
+    height = (bound[2][1] - yCoord);
+    console.log('w, h calc:\n', width, height);
+
+    // Clear rect
+    ctx.clearRect(xCoord, yCoord, width, height);
+
+    // ImageData - Uint8ClampedArray, width, height
+    let imgData = ctx.getImageData(xCoord, yCoord, width, height);
+
+    // Copy the pixel data
+    let data = imgData.data;
+    console.log('Pixel data:\n', data);
+
+    // Data URI containing representation of image
+    let omg    = canvas.toDataURL("image/png");
+    //console.log('Data URI containing representation of image:\n', omg);
+    let img = document.createElement('img');
+    img.id = 'testing';
+    img.src = omg;
+
+    // TODO: Do something with data (right now testing):
+    document.body.appendChild(img);
+
+  }
+  else
+  {
+    console.error('Could not get feature collection.')
+  }
+
+}
+
+/**
+ * Uses camic draw instance to draw the rectangle
+ * @param e
+ */
+function camicDraw(e) {
+
+  // TODO: Implement ability to set stroke and fill
+  // canvasDraw currently uses one color, only. Transparency when drawing then opaque upon finish.
+
+  const canvasDraw = $CAMIC.viewer.canvasDrawInstance;
+  canvasDraw.drawMode = 'rect';
+  //canvasDraw.style.color = '#FF0000';
+  canvasDraw.style.color = '#FFFF00';
+  // Hack.
+  canvasDraw._display_ctx_.fillStyle = 'rgba(255, 255, 0, 0.5)';
+  //canvasDraw._display_ctx_.clearRect
+
+  /*
+  // Original "#000000"
+  const ctx = canvasDraw._display_ctx_;
+  ctx.fillStyle = 'rgba(255, 255, 255, 0)';
+  ctx.strokeStyle = '#FF0000';
+  ctx.shadowColor = 'rgba(255, 255, 255, 0)';
+
+  // Original "#7cfc00"
+  const draw = canvasDraw._draw_ctx_;
+  draw.fillStyle = 'rgba(255, 255, 255, 0)';
+  draw.strokeStyle = '#FF0000';
+  draw.shadowColor = 'rgba(255, 255, 255, 0)';
+  */
+
+  if (e.checked) {
+    // Button clicked
+    canvasDraw.drawOn();
+  } else {
+    // Button un-clicked
+    canvasDraw.drawOff();
+  }
+  canvasDraw.addHandler('stop-drawing', customStopDraw);
+}
+
+
