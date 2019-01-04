@@ -82,28 +82,29 @@ function stopDrawTemp(event) {
  */
 function initDrawTemp(e) {
 
-  // TODO: Implement ability to change color, particularly mouseup - changes to black :(
-  // TODO: None of the following 4 methods are working :(
-  let ctx = $CAMIC.viewer.drawer.context;
-  ctx.fillStyle = 'transparent';
-  ctx.strokeStyle = '#FF0000';
-  console.log('ctx', ctx);
+  // TODO: Implement ability to set stroke and fill
+  // canvasDraw currently uses one color, only. Transparency when drawing then opaque upon finish.
 
   const canvasDraw = $CAMIC.viewer.canvasDrawInstance;
   canvasDraw.drawMode = 'rect';
-  canvasDraw.style.color = 'transparent';
+  //canvasDraw.style.color = '#FF0000';
+  canvasDraw.style.color = '#FFFF00';
+  // Hack.
+  canvasDraw._display_ctx_.fillStyle = 'rgba(255, 255, 0, 0.5)';
 
-  // mouseup obj
-  const display = canvasDraw._display_ctx_;
-  display.fillStyle = 'transparent';
-  display.strokeStyle = '#FF0000';
+  /*
+  // Original "#000000"
+  const ctx = canvasDraw._display_ctx_;
+  ctx.fillStyle = 'rgba(255, 255, 255, 0)';
+  ctx.strokeStyle = '#FF0000';
+  ctx.shadowColor = 'rgba(255, 255, 255, 0)';
 
-  // mousedown obj
-  const drawn = canvasDraw._draw_ctx_;
-  drawn.fillStyle = 'transparent';
-  drawn.strokeStyle = '#FF0000';
-
-  console.log('canvasDraw', canvasDraw);
+  // Original "#7cfc00"
+  const draw = canvasDraw._draw_ctx_;
+  draw.fillStyle = 'rgba(255, 255, 255, 0)';
+  draw.strokeStyle = '#FF0000';
+  draw.shadowColor = 'rgba(255, 255, 255, 0)';
+  */
 
   if (e.checked) {
     canvasDraw.drawOn();
