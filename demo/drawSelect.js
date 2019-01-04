@@ -17,12 +17,13 @@ function drawRectangle(e) {
   let canvas = $CAMIC.viewer.drawer.canvas; //Original Canvas
   canvas.style.cursor = e.checked ? 'crosshair' : 'default';
 
-  let ctx = $CAMIC.viewer.drawer.context;
+  //let ctx = $CAMIC.viewer.drawer.context;
+
   if (e.checked) {
 
     // User initiates rectangle-draw
-    initDraw(document.getElementById('main_viewer')); // <-- custom rectangle select
-    //initDrawTemp(e); // <-- uses default rectangle tool
+    //initDraw(document.getElementById('main_viewer')); // <-- custom rectangle select
+    initDrawTemp(e); // <-- uses default rectangle tool
 
     // ctx.fillStyle = "pink";
     // ctx.fillRect(0, 0, 300, 150);
@@ -30,7 +31,7 @@ function drawRectangle(e) {
   } else {
 
     // User is done with the tool
-    stopDraw(canvas); // <-- custom rectangle select
+    //stopDraw(canvas); // <-- custom rectangle select
 
     // ctx.clearRect(0, 0, 300, 150);
   }
@@ -38,51 +39,71 @@ function drawRectangle(e) {
 }
 
 /**
- * Get the bbox of the rectangle and copy the pixels.
- * Copy canvas selection as image.
+ * Get pixels to create image (pass to ImageJs)
  * @param event
  */
 function stopDrawTemp(event) {
+
   const viewer = $CAMIC.viewer;
+  const canvas = viewer.drawer.canvas;
+  const ctx = viewer.drawer.context;
   const canvasDraw = viewer.canvasDrawInstance;
 
   let imgColl = canvasDraw.getImageFeatureCollection();
-
   let bound;
   if (imgColl.features.length > 0) {
+
+    // 5x2 array
     bound = imgColl.features[0].bound;
+
+    const xCoord = bound[0][0];
+    const yCoord = bound[0][1];
+
+    // ImageData - Uint8ClampedArray, width, height
+    let imgData = ctx.getImageData(xCoord, yCoord, canvas.width, canvas.height);
+
+    // Copy the pixel data
+    let data = imgData.data;
+
+    // Data URI containing representation of image
+    let img    = canvas.toDataURL("image/png");
+
+  }
+  else
+  {
+    console.error('Could not get feature collection.')
   }
 
-  //let canvas = $CAMIC.viewer.drawer.canvas;
-  let ctx = $CAMIC.viewer.drawer.context;
-
-  const xCoord = bound[0][0];
-  const yCoord = bound[0][1];
-  const canvasWidth = event.eventSource._display_.width;
-  const canvasHeight = event.eventSource._display_.height;
-
-  let imgData = ctx.getImageData(xCoord, yCoord, canvasWidth, canvasHeight);
-
-  let data = imgData.data;
-  console.log('array', Array.isArray(data));
-  console.log('type', typeof data);
-  console.log('imgData', data);
-
-  // copy(bound, event, canvasDraw);
-  // var canvas = event.eventSource._draw_; // document.getElementById("mycanvas");
-  // var img    = canvas.toDataURL("image/png");
-  // console.log(img);
 }
 
 /**
- * Uses draw instance to draw the rectangle
+ * Uses camic draw instance to draw the rectangle
  * @param e
  */
 function initDrawTemp(e) {
 
+  // TODO: Implement ability to change color, particularly mouseup - changes to black :(
+  // TODO: None of the following 4 methods are working :(
+  let ctx = $CAMIC.viewer.drawer.context;
+  ctx.fillStyle = 'transparent';
+  ctx.strokeStyle = '#FF0000';
+  console.log('ctx', ctx);
+
   const canvasDraw = $CAMIC.viewer.canvasDrawInstance;
   canvasDraw.drawMode = 'rect';
-  console.log(canvasDraw);
+  canvasDraw.style.color = 'transparent';
+
+  // mouseup obj
+  const display = canvasDraw._display_ctx_;
+  display.fillStyle = 'transparent';
+  display.strokeStyle = '#FF0000';
+
+  // mousedown obj
+  const drawn = canvasDraw._draw_ctx_;
+  drawn.fillStyle = 'transparent';
+  drawn.strokeStyle = '#FF0000';
+
+  console.log('canvasDraw', canvasDraw);
 
   if (e.checked) {
     canvasDraw.drawOn();
@@ -95,19 +116,54 @@ function initDrawTemp(e) {
 /**
  * Copy canvas selection as image.
  */
-function stopDraw() {
+function stopDraw(e) {
+
   let my_div = document.getElementById('yabbadabbadoo');
-  console.log(my_div.offsetWidth);
-  console.log(my_div.offsetHeight);
-  // What about upper x,y
-  var box = {left: 0, top: 0};
+
+  // layout width in pixels as integer
+  // let intElemOffsetWidth = my_div.offsetWidth;
+  // let intElemOffsetHeight = my_div.offsetHeight;
+
+  // Get bounding rectangle
+  let box = {left: 0, top: 0};
   try {
     box = my_div.getBoundingClientRect();
   } catch (e) {
   }
   console.log('box', box);
 
-  // TODO: convert coordinates, make a canvas, and get the pixels.
+  // TODO: convert coordinates, and get pixels from canvas.
+
+  // Offset 2px for draw?
+  let x = Math.round(box.x);
+  let y = Math.round(box.y);
+  let w = Math.round(box.width);
+  let h = Math.round(box.height);
+
+  console.log(x, y, w, h);
+
+  //convert somehow
+
+  //let canvas = $CAMIC.viewer.drawer.canvas;
+  // let ctx = $CAMIC.viewer.drawer.context;
+  //
+  // const xCoord = bound[0][0];
+  // const yCoord = bound[0][1];
+  // const canvasWidth = event.eventSource._display_.width;
+  // const canvasHeight = event.eventSource._display_.height;
+  //
+  // let imgData = ctx.getImageData(xCoord, yCoord, canvasWidth, canvasHeight);
+  //
+  // let data = imgData.data;
+  // console.log('array', Array.isArray(data));
+  // console.log('type', typeof data);
+  // console.log('imgData', data);
+
+  // copy(bound, event, canvasDraw);
+  // var canvas = event.eventSource._draw_;
+  // var img    = canvas.toDataURL("image/png");
+  // console.log(img);
+
 
   /*
   var doc = document,
@@ -162,13 +218,14 @@ function initDraw(canvas) {
   };
 
   canvas.onclick = function (e) {
+    // console.log(e);
     if (element !== null) {
       element = null;
       canvas.style.cursor = "default";
-      //console.log("finished.");
-      stopDraw();
+      // console.log("finished.");
+      stopDraw(e);
     } else {
-      //console.log("begun.");
+      // console.log("begun.");
       mouse.startX = mouse.x;
       mouse.startY = mouse.y;
       element = document.createElement('div');
