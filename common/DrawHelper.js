@@ -50,9 +50,12 @@ caDrawHelper.prototype.drawRectangle = function(ctx, start, end, isSquare = fals
     
     // close path and set style
     path.closePath()
-    //path.stroke(ctx);
-    path.fill(ctx);
-    
+    if(ctx.isFill ==undefined || ctx.isFill){
+        path.fill(ctx);
+    }else{
+        path.stroke(ctx);
+    }
+
     // return points and path 
     return {
         points:[
@@ -116,8 +119,11 @@ caDrawHelper.prototype.drawPolygon = function(ctx, paths){
 
     // close path and set style
     path.closePath()
-    //path.stroke(ctx);
-    path.fill(ctx);
+    if(ctx.isFill ==undefined || ctx.isFill){
+        path.fill(ctx);
+    }else{
+        path.stroke(ctx);
+    }
     // return points and path
     return path
 }
@@ -135,10 +141,11 @@ caDrawHelper.prototype.draw = function(ctx, image_data){
         const style = polygon.properties.style;
 
         // if there is path using path to draw
-        if(polygon.geometry.path){
-            polygon.geometry.path.fill(ctx);
-            continue;
-        }
+        // if(polygon.geometry.path){
+        //     ctx.fillStyle = hexToRgbA(style.color,0.5);
+        //     polygon.geometry.path.fill(ctx);
+        //     continue;
+        // }
         // other styles
         this.setStyle(ctx, style);
         // fill color
@@ -149,7 +156,8 @@ caDrawHelper.prototype.draw = function(ctx, image_data){
             ctx.fillStyle = style.color;
             polygon.geometry.path = this.drawMultiline(ctx, points);
         }else{
-            ctx.fillStyle = hexToRgbA(style.color,0.5);
+           
+            ctx.fillStyle = (ctx.isFill ==undefined || ctx.isFill)?hexToRgbA(style.color,0.5):style.color;
             polygon.geometry.path = this.drawPolygon(ctx, points);
         }
         
@@ -177,6 +185,7 @@ caDrawHelper.prototype.setStyle = function(ctx,style){
     ctx.lineJoin = style.lineJoin;
     ctx.lineCap = style.lineCap;
     ctx.lineWidth = style.lineWidth;
+    ctx.isFill = style.isFill;
 }
 
 /**

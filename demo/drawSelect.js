@@ -2,8 +2,8 @@ let $CAMIC = null;
 const $UI = {};
 const $D = {
   pages: {
-    home: './table.html',
-    table: './table.html'
+    home: '../apps/table.html',
+    table: '../apps/table.html'
   },
   params: null // parameter from url - slide Id and status in it (object).
 };
@@ -13,25 +13,32 @@ const $D = {
  * @param e
  */
 function drawRectangle(e) {
-
+  console.log(e);
   let canvas = $CAMIC.viewer.drawer.canvas; //Original Canvas
   canvas.style.cursor = e.checked ? 'crosshair' : 'default';
 
   //let ctx = $CAMIC.viewer.drawer.context;
-
+  const canvasDraw = $CAMIC.viewer.canvasDrawInstance;
+  canvasDraw.drawMode = 'rect';
+  canvasDraw.style.color = '#FFFF00';
+  canvasDraw.style.isFill = false;
+  // TODO: This is a hack b/c of a bug. Fix bug where rectangle turns black.
+  canvasDraw._display_ctx_.fillStyle = 'rgba(255, 255, 0, 0.5)';
   if (e.checked) {
-
+    canvasDraw.drawOn();
+    
+  
     // User initiates rectangle-draw
-    customDraw(document.getElementById('main_viewer')); // <-- custom rectangle select
-    // camicDraw(e); // <-- uses default rectangle tool
+    //customDraw(document.getElementById('main_viewer')); // <-- custom rectangle select
+    //camicDraw(e); // <-- uses default rectangle tool
 
     // ctx.fillStyle = "pink";
     // ctx.fillRect(0, 0, 300, 150);
 
   } else {
-
+    canvasDraw.drawOff();
     // User is done with the tool
-    customStopDraw(canvas); // <-- custom rectangle select
+    //customStopDraw(canvas); // <-- custom rectangle select
 
     // ctx.clearRect(0, 0, 300, 150);
   }
@@ -237,7 +244,7 @@ function camicDraw(e) {
     // Button un-clicked
     canvasDraw.drawOff();
   }
-  canvasDraw.addHandler('stop-drawing', camicStopDraw);
+  //canvasDraw.addHandler('stop-drawing', camicStopDraw);
 }
 
 /**
@@ -245,7 +252,6 @@ function camicDraw(e) {
  * @param event
  */
 function camicStopDraw(event) {
-
   const viewer = $CAMIC.viewer;
   const canvas = viewer.drawer.canvas;
   const ctx = viewer.drawer.context;
@@ -275,8 +281,8 @@ function camicStopDraw(event) {
     console.log('width, height:\n', width, height);
 
     // Clear rect
-    // ctx.clearRect(xCoord, yCoord, width, height);
-    // console.log(ctx);
+    ctx.clearRect(xCoord, yCoord, width, height);
+    console.log(ctx);
 
 
     // TODO: NOTE! When we do document.body.append, the rectangle turns black again. :(
@@ -290,16 +296,16 @@ function camicStopDraw(event) {
     ct.putImageData(imgData, 0, 0);
     document.body.appendChild(c);
 
-    // let data = imgData.data;
-    // console.log('Pixel data:\n', data);
+    let data = imgData.data;
+    console.log('Pixel data:\n', data);
 
     // Data URI containing representation of image
     let omg = c.toDataURL("image/png");
-    // console.log('Data URI containing representation of image:\n', omg);
+    console.log('Data URI containing representation of image:\n', omg);
     let img = document.createElement('img');
     img.id = 'testing';
     img.src = omg;
-    document.body.appendChild(img);
+    //document.body.appendChild(img);
 
 
   } else {
@@ -380,6 +386,12 @@ function initCore() {
     if (e.hasError) {
       $UI.message.addError(e.message)
     }
+  });
+
+  // 
+  $CAMIC.viewer.addOnceHandler('open',function(e){
+    // add stop draw function 
+    $CAMIC.viewer.canvasDrawInstance.addHandler('stop-drawing', camicStopDraw);
   });
 }
 

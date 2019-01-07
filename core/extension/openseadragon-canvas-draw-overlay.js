@@ -80,14 +80,15 @@
             color:'#7CFC00',
             //lineWidth:3,
             lineJoin:'round', // "bevel" || "round" || "miter"
-            lineCap:'round' // "butt" || "round" || "square"
+            lineCap:'round', // "butt" || "round" || "square"
+            isFill:true,
         };
 
         if(options.style && options.style.color) this.style.color = options.style.color;
         //if(options.style && options.style.lineWidth) this.style.lineWidth = options.style.lineWidth;
         if(options.style && options.style.lineJoin) this.style.lineJoin = options.style.lineJoin;
         if(options.style && options.style.lineCap) this.style.lineCap = options.style.lineCap;
-
+        if(options.style && options.style.isFill!= undefined && options.style.isFill == false) this.style.isFill = false;
         this.events = {};
         // global events list for easily remove and add
         this._event = {
@@ -167,13 +168,15 @@
                 color:'#7CFC00',
                 //lineWidth:0,
                 lineJoin:'round', // "bevel" || "round" || "miter"
-                lineCap:'round' // "butt" || "round" || "square"
+                lineCap:'round', // "butt" || "round" || "square"
+                isFill:true
             };
 
             if(options.style && options.style.color) this.style.color = options.style.color;
             //if(options.style && options.style.lineWidth) this.style.lineWidth = options.style.lineWidth;
             if(options.style && options.style.lineJoin) this.style.lineJoin = options.style.lineJoin;
             if(options.style && options.style.lineCap) this.style.lineCap = options.style.lineCap;
+            if(options.style && options.style.isFill!= undefined && options.style.isFill == false) this.style.isFill = false;
 
             this._div.style.display = 'none';
             this._div.style.zIndex =  options.zIndex || 500;
@@ -274,6 +277,7 @@
             this.clearCanvas();
             this._display_.getContext('2d').translate(x,y);
             this._display_.getContext('2d').scale(zoom,zoom);
+            this._display_ctx_.lineWidth = this.style.lineWidth;
             DrawHelper.draw(this._display_ctx_,this._draws_data_.slice(0,this._path_index));
             this._display_.getContext('2d').setTransform(1, 0, 0, 1, 0, 0);
         },
@@ -437,7 +441,14 @@
             if(this.isDrawing) {
               // add style and data to data collection
               this.__endNewFeature();
-              this.raiseEvent('stop-drawing',{originalEvent:e});
+              try {
+                  this.raiseEvent('stop-drawing',{originalEvent:e});
+              } catch(e) {
+                  // statements
+                  console.error('draw-overlay:stop-drawing error:');
+                  console.error(e);
+              }
+              
             }
             // this is the geometry data, in points; conv to geojson
             this.isDrawing = false;
@@ -500,12 +511,12 @@
          * __endNewFeature create a new feature data.
          */
         __endNewFeature:function(){
-            if(this._current_path_.geometry.coordinates[0].length < 2 || this.__isOnlyTwoSamePoints(this._current_path_.geometry.coordinates[0])  ) return; // click on canvas
+            if(!this._current_path_ || this._current_path_.geometry.coordinates[0].length < 2 || this.__isOnlyTwoSamePoints(this._current_path_.geometry.coordinates[0])  ) return; // click on canvas
             // set style and drawing model
             this._current_path_.properties.style.color = this.style.color;
             this._current_path_.properties.style.lineJoin = this.style.lineJoin;
             this._current_path_.properties.style.lineCap = this.style.lineCap;
-            //this._current_path_.properties.style.lineWidth = this.style.lineWidth;
+            this._current_path_.properties.style.isFill = this.style.isFill;
             let points = this._current_path_.geometry.coordinates[0];
             if(this.drawMode !== 'line') points.push([points[0][0],points[0][1]]);
 
