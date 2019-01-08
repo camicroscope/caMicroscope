@@ -22,8 +22,7 @@ function drawRectangle(e) {
   canvasDraw.drawMode = 'rect';
   canvasDraw.style.color = '#FFFF00';
   canvasDraw.style.isFill = false;
-  // TODO: This is a hack b/c of a bug. Fix bug where rectangle turns black.
-  canvasDraw._display_ctx_.fillStyle = 'rgba(255, 255, 0, 0.5)';
+
   if (e.checked) {
     canvasDraw.drawOn();
     
