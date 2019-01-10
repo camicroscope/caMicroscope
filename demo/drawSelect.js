@@ -13,10 +13,10 @@ const $D = {
  * @param e
  */
 function drawRectangle(e) {
+
   let canvas = $CAMIC.viewer.drawer.canvas; //Original Canvas
   canvas.style.cursor = e.checked ? 'crosshair' : 'default';
 
-  //let ctx = $CAMIC.viewer.drawer.context;
   const canvasDraw = $CAMIC.viewer.canvasDrawInstance;
   canvasDraw.drawMode = 'rect';
   canvasDraw.style.color = '#FFFF00';
@@ -124,8 +124,6 @@ function customStopDraw(e) {
   canvas.style.top = dim.y + 'px';
   document.body.appendChild(canvas);
 
-  // TODO: fix (getting transparent image)
-
   let image = new Image();
   image.src = canvas.toDataURL("image/png");
 
@@ -205,8 +203,10 @@ function camicDraw(e) {
  * @param event
  */
 function camicStopDraw(event) {
+
+  console.log(event);
+
   const viewer = $CAMIC.viewer;
-  const canvas = viewer.drawer.canvas;
   const ctx = viewer.drawer.context;
   const canvasDraw = viewer.canvasDrawInstance;
 
@@ -214,53 +214,8 @@ function camicStopDraw(event) {
 
   if (imgColl.features.length > 0) {
 
-    // 5x2 array
-    let bound = imgColl.features[0].bound;
-    console.log('bound:\n', bound);
-
-    // Convert to screen coordinates
-    let foo = convertCoordinates(viewer.imagingHelper, bound, 1);
-    console.log('Convert to screen:\n', foo);
-
-    // let bar = convertCoordinates(viewer.imagingHelper, bound, 0);
-    // console.log('Convert to normalized:\n', bar);
-
-    const xCoord = foo[0][0];
-    const yCoord = foo[0][1];
-
-    let width = (foo[2][0] - xCoord);
-    let height = (foo[2][1] - yCoord);
-    console.log('width, height:\n', width, height);
-
-    // ImageData - Uint8ClampedArray, width, height
-    let imgData = ctx.getImageData(xCoord, yCoord, width, height);
-
-    /*
-    // Draw as canvas
-    let c = document.createElement('canvas');
-    c.id = 'myCanvas';
-    c.style.border = "thick solid #0000FF";
-    c.width = imgData.width;
-    c.height = imgData.height;
-    let ct = c.getContext("2d");
-    ct.putImageData(imgData, 0, 0);
-    document.body.appendChild(c);
-    */
-
-    let data = imgData.data;
-    console.log('Pixel data:\n', data);
-
-    // Draw as image
-    let omg = c.toDataURL("image/png");
-    // console.log('Data URI containing representation of image:\n', omg);
-    let img = document.createElement('img');
-    img.id = 'testing';
-    img.src = omg;
-    img.width = imgData.width;
-    img.height = imgData.height;
-    img.style.border = "thick solid #FFFF00";
-    document.body.appendChild(img);
-
+    // Do something with it
+    testDraw(imgColl, viewer.imagingHelper);
 
   } else {
     console.error('Could not get feature collection.')
@@ -268,13 +223,73 @@ function camicStopDraw(event) {
 
 }
 
+function testDraw(imgColl, imagingHelper)
+{
+  let camicanv = $CAMIC.viewer.drawer.canvas; //Original Canvas
+
+  // 5x2 array
+  let bound = imgColl.features[0].bound;
+  console.log('bound:\n', bound);
+
+  // Convert to screen coordinates
+  let foo = convertCoordinates(imagingHelper, bound, 1);
+  console.log('Convert to screen:\n', foo);
+
+  // let bar = convertCoordinates(viewer.imagingHelper, bound, 0);
+  // console.log('Convert to normalized:\n', bar);
+
+  //retina screen
+  let newArray = foo.map(function (a) {
+    let x = a.slice();
+    x[0] *= 2;
+    x[1] *= 2; // the y is 'off'... need to adjust
+    return x;
+  });
+
+  const xCoord = newArray[0][0];
+  const yCoord = newArray[0][1];
+
+  let width = (newArray[2][0] - xCoord);
+  let height = (newArray[2][1] - yCoord);
+  console.log('width, height:\n', width, height);
+
+  let imgData = (camicanv.getContext('2d')).getImageData(xCoord, yCoord, width, height);
+  // Draw as canvas
+  let canvas = document.createElement('canvas');
+  canvas.id = 'myCanvas';
+  canvas.style.border = "thick solid #0000FF";
+  canvas.width = imgData.width;
+  canvas.height = imgData.height;
+
+  let context = canvas.getContext("2d");
+  context.putImageData(imgData, 0, 0);
+  document.body.appendChild(canvas);
+
+  /*
+  let data = imgData.data;
+  console.log('Pixel data:\n', data);
+
+  // Draw as image
+  let omg = canvas.toDataURL("image/png");
+  // console.log('Data URI containing representation of image:\n', omg);
+  let img = document.createElement('img');
+  img.id = 'testing';
+  img.src = omg;
+  img.width = imgData.width;
+  img.height = imgData.height;
+  img.style.border = "thick solid #FFFF00";
+  document.body.appendChild(img);
+  */
+}
+
+
 /**
  * Image coordinate to screen coordinate
  */
 function convertCoordinates(imagingHelper, bound, type) {
 
   let newArray = bound.map(function (arr) {
-    return arr.slice();
+    return arr.slice(); // copy
   });
 
   if (type === 0) {
