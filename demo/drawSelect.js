@@ -24,7 +24,6 @@ function drawRectangle(e) {
 
   if (e.checked) {
     canvasDraw.drawOn();
-    canvasDraw.addHandler('stop-drawing', camicStopDraw);
 
     // User initiates rectangle-draw
     //customDraw(document.getElementById('main_viewer')); // <-- custom rectangle select
@@ -132,30 +131,6 @@ function customStopDraw(e) {
 
   document.body.appendChild(image); // TESTING.
   console.log(image.src);
-
-
-  // let ctx = $CAMIC.viewer.drawer.context;
-  // let imgData = ctx.getImageData(x, y, w, h);
-  // var c = document.createElement('canvas');
-  // c.id = 'myCanvas';
-  // var ct = c.getContext("2d");
-  // ct.putImageData(imgData, 10, 70);
-
-  /*
-  var doc = document,
-      docElem = doc.documentElement,
-      body = document.body,
-      win = window,
-      clientTop = docElem.clientTop || body.clientTop || 0,
-      clientLeft = docElem.clientLeft || body.clientLeft || 0,
-      scrollTop = win.pageYOffset || jQuery.support.boxModel && docElem.scrollTop || body.scrollTop,
-      scrollLeft = win.pageXOffset || jQuery.support.boxModel && docElem.scrollLeft || body.scrollLeft,
-      top = box.top + scrollTop - clientTop,
-      left = box.left + scrollLeft - clientLeft;
-
-  console.log('x', left);
-  console.log('y', top);
-  */
 }
 
 /**
@@ -214,21 +189,6 @@ function camicDraw(e) {
   const canvasDraw = $CAMIC.viewer.canvasDrawInstance;
   canvasDraw.drawMode = 'rect';
   canvasDraw.style.color = '#FFFF00';
-  //canvasDraw._display_ctx_.fillStyle = 'rgba(255, 255, 0, 0.5)';
-
-  /*
-  // Original "#000000"
-  const ctx = canvasDraw._display_ctx_;
-  ctx.fillStyle = 'rgba(255, 255, 255, 0)';
-  ctx.strokeStyle = '#FF0000';
-  ctx.shadowColor = 'rgba(255, 255, 255, 0)';
-
-  // Original "#7cfc00"
-  const draw = canvasDraw._draw_ctx_;
-  draw.fillStyle = 'rgba(255, 255, 255, 0)';
-  draw.strokeStyle = '#FF0000';
-  draw.shadowColor = 'rgba(255, 255, 255, 0)';
-  */
 
   if (e.checked) {
     // Button clicked
@@ -396,7 +356,6 @@ function initCore() {
     }
   });
 
-  //
   $CAMIC.viewer.addOnceHandler('open', function (e) {
     // add stop draw function
     $CAMIC.viewer.canvasDrawInstance.addHandler('stop-drawing', camicStopDraw);
