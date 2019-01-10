@@ -13,7 +13,6 @@ const $D = {
  * @param e
  */
 function drawRectangle(e) {
-  console.log(e);
   let canvas = $CAMIC.viewer.drawer.canvas; //Original Canvas
   canvas.style.cursor = e.checked ? 'crosshair' : 'default';
 
@@ -252,39 +251,32 @@ function camicStopDraw(event) {
   const ctx = viewer.drawer.context;
   const canvasDraw = viewer.canvasDrawInstance;
 
-  console.log('canvas:\n', canvas);
-  console.log('ctx:\n', ctx);
-  console.log('canvasDraw:\n', canvasDraw);
-
   let imgColl = canvasDraw.getImageFeatureCollection();
-  let bound;
+
   if (imgColl.features.length > 0) {
 
     // 5x2 array
-    bound = imgColl.features[0].bound;
-
-    // Convert to screen coordinates
-    convertCoordinates(viewer.imagingHelper, bound);
-
+    let bound = imgColl.features[0].bound;
     console.log('bound:\n', bound);
 
-    const xCoord = bound[0][0];
-    const yCoord = bound[0][1];
+    // Convert to screen coordinates
+    let foo = convertCoordinates(viewer.imagingHelper, bound, 1);
 
-    width = (bound[2][0] - xCoord);
-    height = (bound[2][1] - yCoord);
+    //let bar = convertCoordinates(viewer.imagingHelper, bound, 0);
+
+    console.log('Convert to screen:\n', foo);
+
+    const xCoord = foo[0][0];
+    const yCoord = foo[0][1];
+
+    let width = (foo[2][0] - xCoord);
+    let height = (foo[2][1] - yCoord);
     console.log('width, height:\n', width, height);
-
-    // Clear rect
-    ctx.clearRect(xCoord, yCoord, width, height);
-    console.log(ctx);
-
 
     // ImageData - Uint8ClampedArray, width, height
     let imgData = ctx.getImageData(xCoord, yCoord, width, height);
 
-    // TODO: fix (getting transparent image)
-
+    /*
     // Draw as canvas
     let c = document.createElement('canvas');
     c.id = 'myCanvas';
@@ -294,15 +286,14 @@ function camicStopDraw(event) {
     let ct = c.getContext("2d");
     ct.putImageData(imgData, 0, 0);
     document.body.appendChild(c);
-
-    console.log(imgData.width, imgData.height);
+    */
 
     let data = imgData.data;
     console.log('Pixel data:\n', data);
 
     // Draw as image
     let omg = c.toDataURL("image/png");
-    console.log('Data URI containing representation of image:\n', omg);
+    // console.log('Data URI containing representation of image:\n', omg);
     let img = document.createElement('img');
     img.id = 'testing';
     img.src = omg;
@@ -320,22 +311,31 @@ function camicStopDraw(event) {
 
 /**
  * Image coordinate to screen coordinate
- *
- * @param imagingHelper
- * @param bound
  */
-function convertCoordinates(imagingHelper, bound) {
+function convertCoordinates(imagingHelper, bound, type) {
 
-  // 'image coordinate' to 'normalized'
-  // console.log('normalized:\n', imagingHelper.dataToLogicalX(bound[0][0]), imagingHelper.dataToLogicalY(bound[0][1]));
+  var newArray = bound.map(function(arr) {
+    return arr.slice();
+  });
 
-  // 'image coordinate' to 'screen coordinate'
-  for (let i = 0; i < bound.length; i++) {
-    let boundElement = bound[i];
-    for (let j = 0; j < boundElement.length; j++) {
-      bound[i][j] = j === 0 ? Math.round(imagingHelper.dataToPhysicalX(boundElement[j])) : Math.round(imagingHelper.dataToPhysicalY(boundElement[j]));
+  if (type === 0)
+  {
+    // 'image coordinate' to 'normalized'
+    // console.log('normalized:\n', imagingHelper.dataToLogicalX(bound[0][0]), imagingHelper.dataToLogicalY(bound[0][1]));
+
+  }
+  else
+  {
+    // 'image coordinate' to 'screen coordinate'
+    for (let i = 0; i < newArray.length; i++) {
+      let boundElement = newArray[i];
+      for (let j = 0; j < boundElement.length; j++) {
+
+        newArray[i][j] = j === 0 ? Math.round(imagingHelper.dataToPhysicalX(boundElement[j])) : Math.round(imagingHelper.dataToPhysicalY(boundElement[j]));
+      }
     }
   }
+  return newArray;
 
 }
 
