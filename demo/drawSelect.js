@@ -242,7 +242,7 @@ function testDraw(imgColl, imagingHelper)
   let newArray = foo.map(function (a) {
     let x = a.slice();
     x[0] *= 2;
-    x[1] *= 2; // the y is 'off'... need to adjust
+    x[1] *= 2; // need to adjust, try layer
     return x;
   });
 
