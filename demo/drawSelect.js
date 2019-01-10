@@ -293,7 +293,7 @@ function camicStopDraw(event) {
     // Draw as canvas
     let c = document.createElement('canvas');
     c.id = 'myCanvas';
-    c.style = 'border:1px solid #OOOOFF;';
+    c.style.border = "thick solid #0000FF";
     c.width = imgData.width;
     c.height = imgData.height;
     let ct = c.getContext("2d");
