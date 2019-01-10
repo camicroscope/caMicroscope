@@ -189,8 +189,7 @@ function getDim(obj) {
  * @param style
  * @returns {{w: string, x: string, h: string, y: string}}
  */
-function getDimFromStyle(style)
-{
+function getDimFromStyle(style) {
   let w = style.width;
   let h = style.height;
   let x = style.left;
@@ -261,10 +260,10 @@ function camicStopDraw(event) {
 
     // Convert to screen coordinates
     let foo = convertCoordinates(viewer.imagingHelper, bound, 1);
-
-    //let bar = convertCoordinates(viewer.imagingHelper, bound, 0);
-
     console.log('Convert to screen:\n', foo);
+
+    // let bar = convertCoordinates(viewer.imagingHelper, bound, 0);
+    // console.log('Convert to normalized:\n', bar);
 
     const xCoord = foo[0][0];
     const yCoord = foo[0][1];
@@ -299,7 +298,7 @@ function camicStopDraw(event) {
     img.src = omg;
     img.width = imgData.width;
     img.height = imgData.height;
-    img.style = 'max-width:95%;border:3px solid yellow;';
+    img.style.border = "thick solid #FFFF00";
     document.body.appendChild(img);
 
 
@@ -314,24 +313,29 @@ function camicStopDraw(event) {
  */
 function convertCoordinates(imagingHelper, bound, type) {
 
-  var newArray = bound.map(function(arr) {
+  let newArray = bound.map(function (arr) {
     return arr.slice();
   });
 
-  if (type === 0)
-  {
+  if (type === 0) {
     // 'image coordinate' to 'normalized'
-    // console.log('normalized:\n', imagingHelper.dataToLogicalX(bound[0][0]), imagingHelper.dataToLogicalY(bound[0][1]));
+    for (let i = 0; i < newArray.length; i++) {
+      let boundElement = newArray[i];
+      for (let j = 0; j < boundElement.length; j++) {
 
-  }
-  else
-  {
+        newArray[i][j] = j === 0 ? Math.round(imagingHelper.dataToLogicalX(boundElement[j]))
+            : Math.round(imagingHelper.dataToLogicalY(boundElement[j]));
+      }
+    }
+
+  } else {
     // 'image coordinate' to 'screen coordinate'
     for (let i = 0; i < newArray.length; i++) {
       let boundElement = newArray[i];
       for (let j = 0; j < boundElement.length; j++) {
 
-        newArray[i][j] = j === 0 ? Math.round(imagingHelper.dataToPhysicalX(boundElement[j])) : Math.round(imagingHelper.dataToPhysicalY(boundElement[j]));
+        newArray[i][j] = j === 0 ? Math.round(imagingHelper.dataToPhysicalX(boundElement[j]))
+            : Math.round(imagingHelper.dataToPhysicalY(boundElement[j]));
       }
     }
   }
@@ -393,7 +397,7 @@ function initCore() {
   });
 
   //
-  $CAMIC.viewer.addOnceHandler('open',function(e){
+  $CAMIC.viewer.addOnceHandler('open', function (e) {
     // add stop draw function
     $CAMIC.viewer.canvasDrawInstance.addHandler('stop-drawing', camicStopDraw);
   });
