@@ -25,8 +25,8 @@ function drawRectangle(e) {
 
   if (e.checked) {
     canvasDraw.drawOn();
-    
-  
+    canvasDraw.addHandler('stop-drawing', camicStopDraw);
+
     // User initiates rectangle-draw
     //customDraw(document.getElementById('main_viewer')); // <-- custom rectangle select
     //camicDraw(e); // <-- uses default rectangle tool
@@ -289,22 +289,32 @@ function camicStopDraw(event) {
     let imgData = ctx.getImageData(xCoord, yCoord, width, height);
 
     // TODO: fix (getting transparent image)
+
+    // Draw as canvas
     let c = document.createElement('canvas');
     c.id = 'myCanvas';
+    c.style = 'border:1px solid #OOOOFF;';
+    c.width = imgData.width;
+    c.height = imgData.height;
     let ct = c.getContext("2d");
     ct.putImageData(imgData, 0, 0);
     document.body.appendChild(c);
 
+    console.log(imgData.width, imgData.height);
+
     let data = imgData.data;
     console.log('Pixel data:\n', data);
 
-    // Data URI containing representation of image
+    // Draw as image
     let omg = c.toDataURL("image/png");
     console.log('Data URI containing representation of image:\n', omg);
     let img = document.createElement('img');
     img.id = 'testing';
     img.src = omg;
-    //document.body.appendChild(img);
+    img.width = imgData.width;
+    img.height = imgData.height;
+    img.style = 'max-width:95%;border:3px solid yellow;';
+    document.body.appendChild(img);
 
 
   } else {
@@ -387,9 +397,9 @@ function initCore() {
     }
   });
 
-  // 
+  //
   $CAMIC.viewer.addOnceHandler('open',function(e){
-    // add stop draw function 
+    // add stop draw function
     $CAMIC.viewer.canvasDrawInstance.addHandler('stop-drawing', camicStopDraw);
   });
 }
