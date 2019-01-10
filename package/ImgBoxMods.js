@@ -1,6 +1,6 @@
 function ImgBoxMods() {
   console.warn("{imgbox mods enabled}")
-  CaMic.prototype.default_loadImg = Camic.prototype.loadImg
+  CaMic.prototype.default_loadImg = CaMic.prototype.loadImg
   CaMic.prototype.loadImg = function(func) {
     var urlParams = new URLSearchParams(window.location.search);
     var p = urlParams.get('id');

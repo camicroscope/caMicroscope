@@ -151,6 +151,28 @@ function init_LocalStore(){
       res(window.localStorage.setItem(type, data))
     })
   }
+  Store.prototype.findSlide = function(slide, specimen, study, location){
+    return new Promise(function(res, rej){
+      let local_dummy = {
+        'id': "local",
+        'mpp': 0,
+        'study':"",
+        'specimen':""
+      }
+      res([local_dummy])
+    })
+  }
+  Store.prototype.getSlide = function(id){
+    return new Promise(function(res, rej){
+      let local_dummy = {
+        'id': "local",
+        'mpp': 0,
+        'study':"",
+        'specimen':""
+      }
+      res(local_dummy)
+    })
+  }
 }
 
 export default init_LocalStore
