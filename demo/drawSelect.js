@@ -213,14 +213,10 @@ function getDimFromStyle(style)
  */
 function camicDraw(e) {
 
-  // TODO: Implement ability to set stroke and fill
-  // canvasDraw currently uses one color, only. Transparency when drawing then opaque upon finish.
-
   const canvasDraw = $CAMIC.viewer.canvasDrawInstance;
   canvasDraw.drawMode = 'rect';
   canvasDraw.style.color = '#FFFF00';
-  // TODO: This is a hack b/c of a bug. Fix bug where rectangle turns black.
-  canvasDraw._display_ctx_.fillStyle = 'rgba(255, 255, 0, 0.5)';
+  //canvasDraw._display_ctx_.fillStyle = 'rgba(255, 255, 0, 0.5)';
 
   /*
   // Original "#000000"
@@ -284,7 +280,6 @@ function camicStopDraw(event) {
     console.log(ctx);
 
 
-    // TODO: NOTE! When we do document.body.append, the rectangle turns black again. :(
     // ImageData - Uint8ClampedArray, width, height
     let imgData = ctx.getImageData(xCoord, yCoord, width, height);
 
