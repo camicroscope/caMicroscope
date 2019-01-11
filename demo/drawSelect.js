@@ -8,6 +8,9 @@ const $D = {
   params: null // parameter from url - slide Id and status in it (object).
 };
 
+let PDR = OpenSeadragon.pixelDensityRatio;
+console.log('pixelDensityRatio:', PDR);
+
 /**
  * Toolbar button callback
  * @param e
@@ -30,30 +33,6 @@ function drawRectangle(e) {
 
   }
 
-}
-
-/**
- * Demo: Circular reference.
- * In Node.js, you can use util.inspect(object).
- */
-function circular(graphDiv)
-{
-  //var o = {};
-  var o = graphDiv;
-  o.o = o;
-  var cache = [];
-  console.log(JSON.stringify(o, function (key, value) {
-    if (typeof value === 'object' && value !== null) {
-      if (cache.indexOf(value) !== -1) {
-        // Circular reference found, discard key
-        return;
-      }
-      // Store value in our collection
-      cache.push(value);
-    }
-    return value;
-  }));
-  cache = null; // Enable garbage collection
 }
 
 /**
@@ -87,13 +66,11 @@ function camicStopDraw(e) {
 function getClickPosition(e, htmlElement) {
   let event = e.originalEvent;
 
-  if (typeof event !== 'undefined')
-  {
+  if (typeof event !== 'undefined') {
     console.log(event.type);
-  }
-  else
-  {
+  } else {
     event = e;
+    console.log(event.type);
   }
 
 
@@ -101,8 +78,8 @@ function getClickPosition(e, htmlElement) {
   clickPos.x = event.offsetX ? (event.offsetX) : event.pageX - htmlElement.offsetLeft;
   clickPos.y = event.offsetY ? (event.offsetY) : event.pageY - htmlElement.offsetTop;
 
-  clickPos.x *= 2.2;
-  clickPos.y *= 2.2;
+  clickPos.x *= PDR;
+  clickPos.y *= PDR;
 
   console.log('clickPos', clickPos);
   return clickPos;
@@ -124,8 +101,8 @@ function testDraw(imgColl, imagingHelper) {
   //retina screen
   let newArray = foo.map(function (a) {
     let x = a.slice();
-    x[0] *= 2.2;
-    x[1] *= 2.2; // need to adjust, try layer
+    x[0] *= PDR;
+    x[1] *= PDR; // need to adjust, try layer
     return x;
   });
   console.log('bounds', newArray);
@@ -184,8 +161,8 @@ function drawAllTheThings(imgColl, imagingHelper) {
     //retina screen
     let newArray = foo.map(function (a) {
       let x = a.slice();
-      x[0] *= 2;
-      x[1] *= 2; // need to adjust, try layer
+      x[0] *= PDR;
+      x[1] *= PDR;
       return x;
     });
 
@@ -230,8 +207,8 @@ function convertCoordinates(imagingHelper, bound, type) {
       let boundElement = newArray[i];
       for (let j = 0; j < boundElement.length; j++) {
 
-        newArray[i][j] = j === 0 ? Math.round(imagingHelper.dataToLogicalX(boundElement[j]))
-            : Math.round(imagingHelper.dataToLogicalY(boundElement[j]));
+        newArray[i][j] = j === 0 ? imagingHelper.dataToLogicalX(boundElement[j])
+            : imagingHelper.dataToLogicalY(boundElement[j]);
       }
     }
 
@@ -240,8 +217,8 @@ function convertCoordinates(imagingHelper, bound, type) {
     for (let i = 0; i < newArray.length; i++) {
       let boundElement = newArray[i];
       for (let j = 0; j < boundElement.length; j++) {
-        newArray[i][j] = j === 0 ? Math.round(imagingHelper.dataToPhysicalX(boundElement[j]))
-            : Math.round(imagingHelper.dataToPhysicalY(boundElement[j]));
+        newArray[i][j] = j === 0 ? imagingHelper.dataToPhysicalX(boundElement[j])
+            : imagingHelper.dataToPhysicalY(boundElement[j]);
       }
     }
   }
