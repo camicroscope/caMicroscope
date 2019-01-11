@@ -25,189 +25,47 @@ function drawRectangle(e) {
   if (e.checked) {
     canvasDraw.drawOn();
 
-    // User initiates rectangle-draw
-    //customDraw(document.getElementById('main_viewer')); // <-- custom rectangle select
-    //camicDraw(e); // <-- uses default rectangle tool
-
-    // ctx.fillStyle = "pink";
-    // ctx.fillRect(0, 0, 300, 150);
-
   } else {
     canvasDraw.drawOff();
-    // User is done with the tool
-    //customStopDraw(canvas); // <-- custom rectangle select
 
-    // ctx.clearRect(0, 0, 300, 150);
   }
 
 }
 
-
 /**
- * Custom rectangle draw
- *
- * @param canvas
+ * Demo: Circular reference.
+ * In Node.js, you can use util.inspect(object).
  */
-function customDraw(canvas) {
-
-  function setMousePosition(e) {
-    let ev = e || window.event; //Moz || IE
-    if (ev.pageX) { //Moz
-      mouse.x = ev.pageX + window.pageXOffset;
-      mouse.y = ev.pageY + window.pageYOffset;
-    } else if (ev.clientX) { //IE
-      mouse.x = ev.clientX + document.body.scrollLeft;
-      mouse.y = ev.clientY + document.body.scrollTop;
+function circular(graphDiv)
+{
+  //var o = {};
+  var o = graphDiv;
+  o.o = o;
+  var cache = [];
+  console.log(JSON.stringify(o, function (key, value) {
+    if (typeof value === 'object' && value !== null) {
+      if (cache.indexOf(value) !== -1) {
+        // Circular reference found, discard key
+        return;
+      }
+      // Store value in our collection
+      cache.push(value);
     }
-  }
-
-  let mouse = {
-    x: 0,
-    y: 0,
-    startX: 0,
-    startY: 0
-  };
-  let element = null;
-
-  canvas.onmousemove = function (e) {
-    setMousePosition(e);
-    if (element !== null) {
-      element.style.width = Math.abs(mouse.x - mouse.startX) + 'px';
-      element.style.height = Math.abs(mouse.y - mouse.startY) + 'px';
-      element.style.left = (mouse.x - mouse.startX < 0) ? mouse.x + 'px' : mouse.startX + 'px';
-      element.style.top = (mouse.y - mouse.startY < 0) ? mouse.y + 'px' : mouse.startY + 'px';
-    }
-  };
-
-  canvas.onclick = function (e) {
-    // console.log(e);
-    if (element !== null) {
-      element = null;
-      canvas.style.cursor = "default";
-      // console.log("finished.");
-      customStopDraw(e);
-    } else {
-      // console.log("begun.");
-      mouse.startX = mouse.x;
-      mouse.startY = mouse.y;
-      element = document.createElement('div');
-      element.id = 'myDiv';
-      element.className = 'rectangle';
-      element.style.left = mouse.x + 'px';
-      element.style.top = mouse.y + 'px';
-      canvas.appendChild(element);
-      canvas.style.cursor = "crosshair";
-    }
-  }
-}
-
-/**
- * Copy canvas selection as image.
- *
- * @param e
- */
-function customStopDraw(e) {
-
-  let myDiv = document.getElementById('myDiv');
-
-  let dim = getDim(myDiv);
-
-  // Original canvas
-  // let canvas = document.querySelector('canvas');
-
-  // Create equivalent canvas in same location as myDiv
-  let canvas = document.createElement('canvas');
-  canvas.id = 'myCanvas';
-  canvas.width = parseInt(dim.w);
-  canvas.height = parseInt(dim.h);
-  canvas.style.left = dim.x + 'px';
-  canvas.style.top = dim.y + 'px';
-  document.body.appendChild(canvas);
-
-  let image = new Image();
-  image.src = canvas.toDataURL("image/png");
-
-  document.body.appendChild(image); // TESTING.
-  console.log(image.src);
-}
-
-/**
- * getDim
- *
- * @param obj
- * @returns {{w: string, x: string, h: string, y: string}}
- */
-function getDim(obj) {
-
-  // Get bounding rectangle
-  let box = {left: 0, top: 0};
-  try {
-    box = obj.getBoundingClientRect();
-  } catch (e) {
-  }
-
-  // Round:
-  return {
-    x: Math.round(box.x),
-    y: Math.round(box.y),
-    w: Math.round(box.width),
-    h: Math.round(box.height)
-  }
-
-}
-
-/**
- * getDimFromStyle
- *
- * @param style
- * @returns {{w: string, x: string, h: string, y: string}}
- */
-function getDimFromStyle(style) {
-  let w = style.width;
-  let h = style.height;
-  let x = style.left;
-  let y = style.top;
-
-  // Strip off the 'px':
-  return {
-    x: x.substring(0, x.length - 2),
-    y: y.substring(0, y.length - 2),
-    w: w.substring(0, w.length - 2),
-    h: h.substring(0, h.length - 2)
-  }
-}
-
-
-/**
- * Uses camic draw instance to draw the rectangle
- * @param e
- */
-function camicDraw(e) {
-
-  const canvasDraw = $CAMIC.viewer.canvasDrawInstance;
-  canvasDraw.drawMode = 'rect';
-  canvasDraw.style.color = '#FFFF00';
-
-  if (e.checked) {
-    // Button clicked
-    canvasDraw.drawOn();
-  } else {
-    // Button un-clicked
-    canvasDraw.drawOff();
-  }
-  //canvasDraw.addHandler('stop-drawing', camicStopDraw);
+    return value;
+  }));
+  cache = null; // Enable garbage collection
 }
 
 /**
  * Get pixels to create image (pass to ImageJs)
  * @param event
  */
-function camicStopDraw(event) {
+function camicStopDraw(e) {
 
-  console.log(event);
+  //let main_viewer = document.getElementById('main_viewer');
+  //let clickPos = getClickPosition(e, main_viewer);
 
   const viewer = $CAMIC.viewer;
-  const ctx = viewer.drawer.context;
   const canvasDraw = viewer.canvasDrawInstance;
 
   let imgColl = canvasDraw.getImageFeatureCollection();
@@ -215,7 +73,10 @@ function camicStopDraw(event) {
   if (imgColl.features.length > 0) {
 
     // Do something with it
+
     testDraw(imgColl, viewer.imagingHelper);
+
+    //drawAllTheThings(imgColl, viewer.imagingHelper);
 
   } else {
     console.error('Could not get feature collection.')
@@ -223,17 +84,39 @@ function camicStopDraw(event) {
 
 }
 
-function testDraw(imgColl, imagingHelper)
-{
+function getClickPosition(e, htmlElement) {
+  let event = e.originalEvent;
+
+  if (typeof event !== 'undefined')
+  {
+    console.log(event.type);
+  }
+  else
+  {
+    event = e;
+  }
+
+
+  let clickPos = {};
+  clickPos.x = event.offsetX ? (event.offsetX) : event.pageX - htmlElement.offsetLeft;
+  clickPos.y = event.offsetY ? (event.offsetY) : event.pageY - htmlElement.offsetTop;
+
+  clickPos.x *= 2.2;
+  clickPos.y *= 2.2;
+
+  console.log('clickPos', clickPos);
+  return clickPos;
+
+}
+
+function testDraw(imgColl, imagingHelper) {
   let camicanv = $CAMIC.viewer.drawer.canvas; //Original Canvas
 
   // 5x2 array
   let bound = imgColl.features[0].bound;
-  console.log('bound:\n', bound);
 
   // Convert to screen coordinates
   let foo = convertCoordinates(imagingHelper, bound, 1);
-  console.log('Convert to screen:\n', foo);
 
   // let bar = convertCoordinates(viewer.imagingHelper, bound, 0);
   // console.log('Convert to normalized:\n', bar);
@@ -241,19 +124,22 @@ function testDraw(imgColl, imagingHelper)
   //retina screen
   let newArray = foo.map(function (a) {
     let x = a.slice();
-    x[0] *= 2;
-    x[1] *= 2; // need to adjust, try layer
+    x[0] *= 2.2;
+    x[1] *= 2.2; // need to adjust, try layer
     return x;
   });
+  console.log('bounds', newArray);
 
   const xCoord = newArray[0][0];
   const yCoord = newArray[0][1];
 
   let width = (newArray[2][0] - xCoord);
   let height = (newArray[2][1] - yCoord);
+
   console.log('width, height:\n', width, height);
 
   let imgData = (camicanv.getContext('2d')).getImageData(xCoord, yCoord, width, height);
+
   // Draw as canvas
   let canvas = document.createElement('canvas');
   canvas.id = 'myCanvas';
@@ -283,8 +169,54 @@ function testDraw(imgColl, imagingHelper)
 }
 
 
+function drawAllTheThings(imgColl, imagingHelper) {
+
+  const collection = document.querySelectorAll('canvas');
+  collection.forEach((currentCanvas, index) => {
+    console.log(`Current index: ${index}`);
+
+    // 5x2 array
+    let bound = imgColl.features[0].bound;
+
+    // Convert to screen coordinates
+    let foo = convertCoordinates(imagingHelper, bound, 1);
+
+    //retina screen
+    let newArray = foo.map(function (a) {
+      let x = a.slice();
+      x[0] *= 2;
+      x[1] *= 2; // need to adjust, try layer
+      return x;
+    });
+
+    const xCoord = newArray[0][0];
+    const yCoord = newArray[0][1];
+
+    let width = (newArray[2][0] - xCoord);
+    let height = (newArray[2][1] - yCoord);
+    console.log('width, height:\n', width, height);
+    console.log('current canvas width, height:\n', currentCanvas.width, currentCanvas.height);
+
+    let imgData = (currentCanvas.getContext('2d')).getImageData(xCoord, yCoord, width, height);
+
+    // Draw as canvas
+    let canvas = document.createElement('canvas');
+    canvas.id = `myCanvas${index}`;
+    canvas.style.border = "thick solid #0000FF";
+    canvas.width = imgData.width;
+    canvas.height = imgData.height;
+
+    let context = canvas.getContext("2d");
+    context.putImageData(imgData, 0, 0);
+    document.body.appendChild(canvas);
+
+  });
+
+}
+
+
 /**
- * Image coordinate to screen coordinate
+ * Convert image coordinates
  */
 function convertCoordinates(imagingHelper, bound, type) {
 
@@ -308,7 +240,6 @@ function convertCoordinates(imagingHelper, bound, type) {
     for (let i = 0; i < newArray.length; i++) {
       let boundElement = newArray[i];
       for (let j = 0; j < boundElement.length; j++) {
-
         newArray[i][j] = j === 0 ? Math.round(imagingHelper.dataToPhysicalX(boundElement[j]))
             : Math.round(imagingHelper.dataToPhysicalY(boundElement[j]));
       }
@@ -374,6 +305,12 @@ function initCore() {
   $CAMIC.viewer.addOnceHandler('open', function (e) {
     // add stop draw function
     $CAMIC.viewer.canvasDrawInstance.addHandler('stop-drawing', camicStopDraw);
+
+    // let m = document.getElementById('main_viewer');
+    // m.addEventListener('mousedown', function (e) {
+    //   getClickPosition(e, m);
+    // });
+
   });
 }
 
