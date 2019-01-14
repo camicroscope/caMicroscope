@@ -173,7 +173,7 @@ function init_LocalStore(){
       res(local_dummy)
     })
   }
-  Store.prototype.findTemplate(name,type){
+  Store.prototype.findTemplate = function(name,type){
     query = {}
     if (name){
       query.name = name
@@ -183,9 +183,9 @@ function init_LocalStore(){
     }
     return new Promise(function(res, rej){
       res(findInLocalStorage("template", query))
-    }
+    })
   }
-  Store.prototype.getTemplate(id){
+  Store.prototype.getTemplate = function(id){
     return new Promise(function(res, rej){
       res(getInLocalStorage("template", id))
     })
@@ -194,7 +194,7 @@ function init_LocalStore(){
 
 // default template
 let defaultTemplate = {
-    "_id": "0"
+    "_id": "0",
     "type": "object",
     "id": "annotation-form",
     "name": "AnnotSchema",
