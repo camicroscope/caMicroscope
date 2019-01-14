@@ -174,7 +174,7 @@ function init_LocalStore(){
     })
   }
   Store.prototype.findTemplate = function(name,type){
-    query = {}
+    let query = {}
     if (name){
       query.name = name
     }
