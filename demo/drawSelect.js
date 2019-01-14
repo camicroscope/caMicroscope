@@ -51,11 +51,16 @@ function camicStopDraw(e) {
 
   if (imgColl.features.length > 0) {
 
-    // Do something with it
+    // Check size first
+    let box = checkSize(imgColl, viewer.imagingHelper);
 
-    testDraw(imgColl, viewer.imagingHelper);
+    if (Object.keys(box).length === 0 && box.constructor === Object) {
 
-    //drawAllTheThings(imgColl, viewer.imagingHelper);
+    }
+    else
+    {
+      testDraw(box); // Draw then create file
+    }
 
   } else {
     console.error('Could not get feature collection.')
@@ -63,40 +68,13 @@ function camicStopDraw(e) {
 
 }
 
-function getClickPosition(e, htmlElement) {
-  let event = e.originalEvent;
-
-  if (typeof event !== 'undefined') {
-    console.log(event.type);
-  } else {
-    event = e;
-    console.log(event.type);
-  }
-
-
-  let clickPos = {};
-  clickPos.x = event.offsetX ? (event.offsetX) : event.pageX - htmlElement.offsetLeft;
-  clickPos.y = event.offsetY ? (event.offsetY) : event.pageY - htmlElement.offsetTop;
-
-  clickPos.x *= PDR;
-  clickPos.y *= PDR;
-
-  console.log('clickPos', clickPos);
-  return clickPos;
-
-}
-
-function testDraw(imgColl, imagingHelper) {
-  let camicanv = $CAMIC.viewer.drawer.canvas; //Original Canvas
+function checkSize(imgColl, imagingHelper) {
 
   // 5x2 array
   let bound = imgColl.features[0].bound;
 
   // Convert to screen coordinates
-  let foo = convertCoordinates(imagingHelper, bound, 1);
-
-  // let bar = convertCoordinates(viewer.imagingHelper, bound, 0);
-  // console.log('Convert to normalized:\n', bar);
+  let foo = convertCoordinates(imagingHelper, bound);
 
   //retina screen
   let newArray = foo.map(function (a) {
@@ -115,7 +93,22 @@ function testDraw(imgColl, imagingHelper) {
 
   console.log('width, height:\n', width, height);
 
-  let imgData = (camicanv.getContext('2d')).getImageData(xCoord, yCoord, width, height);
+  // check that image size is ok
+  if (width * height > 4000000) {
+    alert("Selected ROI too large, current version is limited to 4 megapixels");
+    // Clear the rectangle  canvas-draw-overlay.clear()
+    $CAMIC.viewer.canvasDrawInstance.clear();
+    return {}; //throw('image too large')
+  } else {
+    return {'xCoord': xCoord, 'yCoord': yCoord, 'width': width, 'height': height};
+  }
+}
+
+
+function testDraw(box) {
+  let camicanv = $CAMIC.viewer.drawer.canvas; //Original Canvas
+
+  let imgData = (camicanv.getContext('2d')).getImageData(box.xCoord, box.yCoord, box.width, box.height);
 
   // Draw as canvas
   let canvas = document.createElement('canvas');
@@ -128,100 +121,85 @@ function testDraw(imgColl, imagingHelper) {
   context.putImageData(imgData, 0, 0);
   document.body.appendChild(canvas);
 
-  /*
-  let data = imgData.data;
-  console.log('Pixel data:\n', data);
+  let dataURL = canvas.toDataURL("image/png");
 
-  // Draw as image
-  let omg = canvas.toDataURL("image/png");
-  // console.log('Data URI containing representation of image:\n', omg);
-  let img = document.createElement('img');
-  img.id = 'testing';
-  img.src = omg;
-  img.width = imgData.width;
-  img.height = imgData.height;
-  img.style.border = "thick solid #FFFF00";
-  document.body.appendChild(img);
-  */
+  let blob = dataURItoBlob(dataURL);
+
+  let filename = 'testing';
+
+  let f = new File([blob], filename, {type: blob.type});
+  console.log(f);
+
+  // Start file download.
+  download(filename, dataURL);
+
+}
+
+/**
+ * Check file creation
+ *
+ * @param filename
+ * @param dataURL
+ */
+function download(filename, dataURL) {
+  var element = document.createElement('a');
+  element.setAttribute('href', dataURL);
+  element.setAttribute('download', filename);
+
+  element.style.display = 'none';
+  document.body.appendChild(element);
+
+  element.click();
+
+  document.body.removeChild(element);
 }
 
 
-function drawAllTheThings(imgColl, imagingHelper) {
+/**
+ * Convert a dataURI to a Blob
+ *
+ * @param dataURI
+ * @returns {Blob}
+ */
+function dataURItoBlob(dataURI) {
+  // convert base64/URLEncoded data component to raw binary data held in a string
+  let byteString;
+  if (dataURI.split(',')[0].indexOf('base64') >= 0)
+    byteString = atob(dataURI.split(',')[1]);
+  else
+    byteString = unescape(dataURI.split(',')[1]);
 
-  const collection = document.querySelectorAll('canvas');
-  collection.forEach((currentCanvas, index) => {
-    console.log(`Current index: ${index}`);
+  // separate out the mime component
+  let mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
 
-    // 5x2 array
-    let bound = imgColl.features[0].bound;
+  // write the bytes of the string to a typed array
+  let ia = new Uint8Array(byteString.length);
+  for (let i = 0; i < byteString.length; i++) {
+    ia[i] = byteString.charCodeAt(i);
+  }
 
-    // Convert to screen coordinates
-    let foo = convertCoordinates(imagingHelper, bound, 1);
-
-    //retina screen
-    let newArray = foo.map(function (a) {
-      let x = a.slice();
-      x[0] *= PDR;
-      x[1] *= PDR;
-      return x;
-    });
-
-    const xCoord = newArray[0][0];
-    const yCoord = newArray[0][1];
-
-    let width = (newArray[2][0] - xCoord);
-    let height = (newArray[2][1] - yCoord);
-    console.log('width, height:\n', width, height);
-    console.log('current canvas width, height:\n', currentCanvas.width, currentCanvas.height);
-
-    let imgData = (currentCanvas.getContext('2d')).getImageData(xCoord, yCoord, width, height);
-
-    // Draw as canvas
-    let canvas = document.createElement('canvas');
-    canvas.id = `myCanvas${index}`;
-    canvas.style.border = "thick solid #0000FF";
-    canvas.width = imgData.width;
-    canvas.height = imgData.height;
-
-    let context = canvas.getContext("2d");
-    context.putImageData(imgData, 0, 0);
-    document.body.appendChild(canvas);
-
-  });
-
+  return new Blob([ia], {type: mimeString});
 }
 
 
 /**
  * Convert image coordinates
  */
-function convertCoordinates(imagingHelper, bound, type) {
+function convertCoordinates(imagingHelper, bound) {
 
   let newArray = bound.map(function (arr) {
     return arr.slice(); // copy
   });
 
-  if (type === 0) {
-    // 'image coordinate' to 'normalized'
-    for (let i = 0; i < newArray.length; i++) {
-      let boundElement = newArray[i];
-      for (let j = 0; j < boundElement.length; j++) {
-
-        newArray[i][j] = j === 0 ? imagingHelper.dataToLogicalX(boundElement[j])
-            : imagingHelper.dataToLogicalY(boundElement[j]);
-      }
-    }
-
-  } else {
-    // 'image coordinate' to 'screen coordinate'
-    for (let i = 0; i < newArray.length; i++) {
-      let boundElement = newArray[i];
-      for (let j = 0; j < boundElement.length; j++) {
-        newArray[i][j] = j === 0 ? imagingHelper.dataToPhysicalX(boundElement[j])
-            : imagingHelper.dataToPhysicalY(boundElement[j]);
-      }
+  // 'image coordinate' to 'screen coordinate'
+  for (let i = 0; i < newArray.length; i++) {
+    let boundElement = newArray[i];
+    for (let j = 0; j < boundElement.length; j++) {
+      newArray[i][j] = j === 0 ? imagingHelper.dataToPhysicalX(boundElement[j])
+          : imagingHelper.dataToPhysicalY(boundElement[j]);
     }
   }
+
   return newArray;
 
 }
