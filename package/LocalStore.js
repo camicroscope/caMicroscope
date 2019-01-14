@@ -19,22 +19,33 @@ function init_LocalStore(){
 
   function findInLocalStorage(type, query){
     let data = JSON.parse(window.localStorage.getItem(type))
-    return data.filter(x=>{
-      let matching = true;
-      for (i in query){
-        matching = matching && Object.byString(x, i) == query[i]
-      }
-      return matching
-    })
+    if (data){
+      return data.filter(x=>{
+        let matching = true;
+        for (var i in query){
+          matching = matching && Object.byString(x, i) == query[i]
+        }
+        return matching
+      })
+    } else {
+      return []
+    }
+
   }
 
   function getInLocalStorage(type, id){
     let data = JSON.parse(window.localStorage.getItem(type))
-    return data.filter(x=>x['_id'] == id)[0]
+    if (data){
+      return data.filter(x=>x['_id'] == id)[0]
+    } else {
+      return {}
+    }
+
   }
 
   function putInLocalStorage(type, newData){
     let data = JSON.parse(window.localStorage.getItem(type))
+    data = data || []
     data.push(newData)
     window.localStorage.setItem(type, JSON.stringify(data))
     return newData
@@ -50,15 +61,17 @@ function init_LocalStore(){
   Store.prototype.findMarkTypes = function(slide, name){
     return new Promise(function(res, rej){
       let query={}
-      if (name){
-        query['provenance.image.slide'] = slide
-      }
-      if(slide){
+      if(name){
         query['provenance.analysis.execution_id']= name
       }
       let data = findInLocalStorage("mark", query)
-      const unique = [...new Set(data.map(x => Object.byString(x,'provenance.analysis.execution_id')))];
-      res(unique)
+      if (data){
+        const unique = [...new Set(data.map(x => Object.byString(x,'provenance')))];
+        res(unique)
+      } else {
+        res([])
+      }
+
       // TODO!!!
     })
   }
@@ -85,8 +98,8 @@ function init_LocalStore(){
   }
   Store.prototype.getMarkByIds = function(ids, slide, study, specimen, source, footprint, x0, x1, y0, y1){
     return new Promise(function(res, rej){
-      data = []
-      for (i in ids){
+      let data = []
+      for (var i in ids){
         data.push(...findInLocalStorage('mark', {'provenance.analysis.execution_id': ids[i]}))
       }
       res(data)
@@ -155,7 +168,7 @@ function init_LocalStore(){
     return new Promise(function(res, rej){
       let local_dummy = {
         'id': "local",
-        'mpp': 0,
+        'mpp': '0.001',
         'study':"",
         'specimen':""
       }
@@ -166,7 +179,7 @@ function init_LocalStore(){
     return new Promise(function(res, rej){
       let local_dummy = {
         'id': "local",
-        'mpp': 0,
+        'mpp': '0.001',
         'study':"",
         'specimen':""
       }

@@ -27,25 +27,28 @@ function ImgBoxMods() {
         }]
       }
       this.viewer.open(ibmox_source);
-      // set scalebar
-      //his.createScalebar(x[0].mpp)
+      //set scalebar
+      this.mpp = 1
+      this.createScalebar('1')
       var imagingHelper = new OpenSeadragonImaging.ImagingHelper({
         viewer: this.viewer
       });
-
       imagingHelper.setMaxZoom(1);
       // create item to pass to the callback function, previously x[0] (slide data)
       let x = {}
-      x['_id']
+      x['_id'] = "0"
       x.name = this.slideName
       x.study = this.study
       x.specimen = this.specimen
-      x.mpp = 0;
-      x.location = ibmox_url;
-      x.url = ibmox_url
-      if (func && typeof func === 'function') func.call(null, [x]);
+      x.mpp = 1;
+      x.location = p;
+      x.url = p
+      console.log(func)
+      console.log(x)
+      if (func && typeof func === 'function'){
+        func.call(null, x);
+      }
       Loading.text.textContent = `loading slide's tiles...`;
-      this.mpp = 0;
       // WARN; note that spyglass isn't working due to semi-hardcoded value at init.js line 140
       // we may want another init.js or our own callback
     });
