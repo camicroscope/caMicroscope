@@ -8,16 +8,18 @@ const $D = {
   params: null // parameter from url - slide Id and status in it (object).
 };
 
+let PDR = OpenSeadragon.pixelDensityRatio;
+console.log('pixelDensityRatio:', PDR);
+
 /**
  * Toolbar button callback
  * @param e
  */
 function drawRectangle(e) {
-  console.log(e);
+
   let canvas = $CAMIC.viewer.drawer.canvas; //Original Canvas
   canvas.style.cursor = e.checked ? 'crosshair' : 'default';
 
-  //let ctx = $CAMIC.viewer.drawer.context;
   const canvasDraw = $CAMIC.viewer.canvasDrawInstance;
   canvasDraw.drawMode = 'rect';
   canvasDraw.style.color = '#FFFF00';
@@ -25,287 +27,40 @@ function drawRectangle(e) {
 
   if (e.checked) {
     canvasDraw.drawOn();
-    
-  
-    // User initiates rectangle-draw
-    //customDraw(document.getElementById('main_viewer')); // <-- custom rectangle select
-    //camicDraw(e); // <-- uses default rectangle tool
-
-    // ctx.fillStyle = "pink";
-    // ctx.fillRect(0, 0, 300, 150);
 
   } else {
     canvasDraw.drawOff();
-    // User is done with the tool
-    //customStopDraw(canvas); // <-- custom rectangle select
 
-    // ctx.clearRect(0, 0, 300, 150);
   }
 
-}
-
-
-/**
- * Custom rectangle draw
- *
- * @param canvas
- */
-function customDraw(canvas) {
-
-  function setMousePosition(e) {
-    let ev = e || window.event; //Moz || IE
-    if (ev.pageX) { //Moz
-      mouse.x = ev.pageX + window.pageXOffset;
-      mouse.y = ev.pageY + window.pageYOffset;
-    } else if (ev.clientX) { //IE
-      mouse.x = ev.clientX + document.body.scrollLeft;
-      mouse.y = ev.clientY + document.body.scrollTop;
-    }
-  }
-
-  let mouse = {
-    x: 0,
-    y: 0,
-    startX: 0,
-    startY: 0
-  };
-  let element = null;
-
-  canvas.onmousemove = function (e) {
-    setMousePosition(e);
-    if (element !== null) {
-      element.style.width = Math.abs(mouse.x - mouse.startX) + 'px';
-      element.style.height = Math.abs(mouse.y - mouse.startY) + 'px';
-      element.style.left = (mouse.x - mouse.startX < 0) ? mouse.x + 'px' : mouse.startX + 'px';
-      element.style.top = (mouse.y - mouse.startY < 0) ? mouse.y + 'px' : mouse.startY + 'px';
-    }
-  };
-
-  canvas.onclick = function (e) {
-    // console.log(e);
-    if (element !== null) {
-      element = null;
-      canvas.style.cursor = "default";
-      // console.log("finished.");
-      customStopDraw(e);
-    } else {
-      // console.log("begun.");
-      mouse.startX = mouse.x;
-      mouse.startY = mouse.y;
-      element = document.createElement('div');
-      element.id = 'myDiv';
-      element.className = 'rectangle';
-      element.style.left = mouse.x + 'px';
-      element.style.top = mouse.y + 'px';
-      canvas.appendChild(element);
-      canvas.style.cursor = "crosshair";
-    }
-  }
-}
-
-/**
- * Copy canvas selection as image.
- *
- * @param e
- */
-function customStopDraw(e) {
-
-  let myDiv = document.getElementById('myDiv');
-
-  let dim = getDim(myDiv);
-
-  // Original canvas
-  // let canvas = document.querySelector('canvas');
-
-  // Create equivalent canvas in same location as myDiv
-  let canvas = document.createElement('canvas');
-  canvas.id = 'myCanvas';
-  canvas.width = parseInt(dim.w);
-  canvas.height = parseInt(dim.h);
-  canvas.style.left = dim.x + 'px';
-  canvas.style.top = dim.y + 'px';
-  document.body.appendChild(canvas);
-
-  // TODO: fix (getting transparent image)
-
-  let image = new Image();
-  image.src = canvas.toDataURL("image/png");
-
-  document.body.appendChild(image); // TESTING.
-  console.log(image.src);
-
-
-  // let ctx = $CAMIC.viewer.drawer.context;
-  // let imgData = ctx.getImageData(x, y, w, h);
-  // var c = document.createElement('canvas');
-  // c.id = 'myCanvas';
-  // var ct = c.getContext("2d");
-  // ct.putImageData(imgData, 10, 70);
-
-  /*
-  var doc = document,
-      docElem = doc.documentElement,
-      body = document.body,
-      win = window,
-      clientTop = docElem.clientTop || body.clientTop || 0,
-      clientLeft = docElem.clientLeft || body.clientLeft || 0,
-      scrollTop = win.pageYOffset || jQuery.support.boxModel && docElem.scrollTop || body.scrollTop,
-      scrollLeft = win.pageXOffset || jQuery.support.boxModel && docElem.scrollLeft || body.scrollLeft,
-      top = box.top + scrollTop - clientTop,
-      left = box.left + scrollLeft - clientLeft;
-
-  console.log('x', left);
-  console.log('y', top);
-  */
-}
-
-/**
- * getDim
- *
- * @param obj
- * @returns {{w: string, x: string, h: string, y: string}}
- */
-function getDim(obj) {
-
-  // Get bounding rectangle
-  let box = {left: 0, top: 0};
-  try {
-    box = obj.getBoundingClientRect();
-  } catch (e) {
-  }
-
-  // Round:
-  return {
-    x: Math.round(box.x),
-    y: Math.round(box.y),
-    w: Math.round(box.width),
-    h: Math.round(box.height)
-  }
-
-}
-
-/**
- * getDimFromStyle
- *
- * @param style
- * @returns {{w: string, x: string, h: string, y: string}}
- */
-function getDimFromStyle(style)
-{
-  let w = style.width;
-  let h = style.height;
-  let x = style.left;
-  let y = style.top;
-
-  // Strip off the 'px':
-  return {
-    x: x.substring(0, x.length - 2),
-    y: y.substring(0, y.length - 2),
-    w: w.substring(0, w.length - 2),
-    h: h.substring(0, h.length - 2)
-  }
-}
-
-
-/**
- * Uses camic draw instance to draw the rectangle
- * @param e
- */
-function camicDraw(e) {
-
-  // TODO: Implement ability to set stroke and fill
-  // canvasDraw currently uses one color, only. Transparency when drawing then opaque upon finish.
-
-  const canvasDraw = $CAMIC.viewer.canvasDrawInstance;
-  canvasDraw.drawMode = 'rect';
-  canvasDraw.style.color = '#FFFF00';
-  // TODO: This is a hack b/c of a bug. Fix bug where rectangle turns black.
-  canvasDraw._display_ctx_.fillStyle = 'rgba(255, 255, 0, 0.5)';
-
-  /*
-  // Original "#000000"
-  const ctx = canvasDraw._display_ctx_;
-  ctx.fillStyle = 'rgba(255, 255, 255, 0)';
-  ctx.strokeStyle = '#FF0000';
-  ctx.shadowColor = 'rgba(255, 255, 255, 0)';
-
-  // Original "#7cfc00"
-  const draw = canvasDraw._draw_ctx_;
-  draw.fillStyle = 'rgba(255, 255, 255, 0)';
-  draw.strokeStyle = '#FF0000';
-  draw.shadowColor = 'rgba(255, 255, 255, 0)';
-  */
-
-  if (e.checked) {
-    // Button clicked
-    canvasDraw.drawOn();
-  } else {
-    // Button un-clicked
-    canvasDraw.drawOff();
-  }
-  //canvasDraw.addHandler('stop-drawing', camicStopDraw);
 }
 
 /**
  * Get pixels to create image (pass to ImageJs)
  * @param event
  */
-function camicStopDraw(event) {
+function camicStopDraw(e) {
+
+  //let main_viewer = document.getElementById('main_viewer');
+  //let clickPos = getClickPosition(e, main_viewer);
+
   const viewer = $CAMIC.viewer;
-  const canvas = viewer.drawer.canvas;
-  const ctx = viewer.drawer.context;
   const canvasDraw = viewer.canvasDrawInstance;
 
-  console.log('canvas:\n', canvas);
-  console.log('ctx:\n', ctx);
-  console.log('canvasDraw:\n', canvasDraw);
-
   let imgColl = canvasDraw.getImageFeatureCollection();
-  let bound;
+
   if (imgColl.features.length > 0) {
 
-    // 5x2 array
-    bound = imgColl.features[0].bound;
+    // Check size first
+    let box = checkSize(imgColl, viewer.imagingHelper);
 
-    // Convert to screen coordinates
-    convertCoordinates(viewer.imagingHelper, bound);
+    if (Object.keys(box).length === 0 && box.constructor === Object) {
 
-    console.log('bound:\n', bound);
-
-    const xCoord = bound[0][0];
-    const yCoord = bound[0][1];
-
-    width = (bound[2][0] - xCoord);
-    height = (bound[2][1] - yCoord);
-    console.log('width, height:\n', width, height);
-
-    // Clear rect
-    ctx.clearRect(xCoord, yCoord, width, height);
-    console.log(ctx);
-
-
-    // TODO: NOTE! When we do document.body.append, the rectangle turns black again. :(
-    // ImageData - Uint8ClampedArray, width, height
-    let imgData = ctx.getImageData(xCoord, yCoord, width, height);
-
-    // TODO: fix (getting transparent image)
-    let c = document.createElement('canvas');
-    c.id = 'myCanvas';
-    let ct = c.getContext("2d");
-    ct.putImageData(imgData, 0, 0);
-    document.body.appendChild(c);
-
-    let data = imgData.data;
-    console.log('Pixel data:\n', data);
-
-    // Data URI containing representation of image
-    let omg = c.toDataURL("image/png");
-    console.log('Data URI containing representation of image:\n', omg);
-    let img = document.createElement('img');
-    img.id = 'testing';
-    img.src = omg;
-    //document.body.appendChild(img);
-
+    }
+    else
+    {
+      testDraw(box); // Draw then create file
+    }
 
   } else {
     console.error('Could not get feature collection.')
@@ -313,24 +68,139 @@ function camicStopDraw(event) {
 
 }
 
+function checkSize(imgColl, imagingHelper) {
+
+  // 5x2 array
+  let bound = imgColl.features[0].bound;
+
+  // Convert to screen coordinates
+  let foo = convertCoordinates(imagingHelper, bound);
+
+  //retina screen
+  let newArray = foo.map(function (a) {
+    let x = a.slice();
+    x[0] *= PDR;
+    x[1] *= PDR; // need to adjust, try layer
+    return x;
+  });
+  console.log('bounds', newArray);
+
+  const xCoord = newArray[0][0];
+  const yCoord = newArray[0][1];
+
+  let width = (newArray[2][0] - xCoord);
+  let height = (newArray[2][1] - yCoord);
+
+  console.log('width, height:\n', width, height);
+
+  // check that image size is ok
+  if (width * height > 4000000) {
+    alert("Selected ROI too large, current version is limited to 4 megapixels");
+    // Clear the rectangle  canvas-draw-overlay.clear()
+    $CAMIC.viewer.canvasDrawInstance.clear();
+    return {}; //throw('image too large')
+  } else {
+    return {'xCoord': xCoord, 'yCoord': yCoord, 'width': width, 'height': height};
+  }
+}
+
+
+function testDraw(box) {
+  let camicanv = $CAMIC.viewer.drawer.canvas; //Original Canvas
+
+  let imgData = (camicanv.getContext('2d')).getImageData(box.xCoord, box.yCoord, box.width, box.height);
+
+  // Draw as canvas
+  let canvas = document.createElement('canvas');
+  canvas.id = 'myCanvas';
+  canvas.style.border = "thick solid #0000FF";
+  canvas.width = imgData.width;
+  canvas.height = imgData.height;
+
+  let context = canvas.getContext("2d");
+  context.putImageData(imgData, 0, 0);
+  document.body.appendChild(canvas);
+
+  let dataURL = canvas.toDataURL("image/png");
+
+  let blob = dataURItoBlob(dataURL);
+
+  let filename = 'testing';
+
+  let f = new File([blob], filename, {type: blob.type});
+  console.log(f);
+
+  // Start file download.
+  download(filename, dataURL);
+
+}
+
 /**
- * Image coordinate to screen coordinate
+ * Check file creation
  *
- * @param imagingHelper
- * @param bound
+ * @param filename
+ * @param dataURL
+ */
+function download(filename, dataURL) {
+  var element = document.createElement('a');
+  element.setAttribute('href', dataURL);
+  element.setAttribute('download', filename);
+
+  element.style.display = 'none';
+  document.body.appendChild(element);
+
+  element.click();
+
+  document.body.removeChild(element);
+}
+
+
+/**
+ * Convert a dataURI to a Blob
+ *
+ * @param dataURI
+ * @returns {Blob}
+ */
+function dataURItoBlob(dataURI) {
+  // convert base64/URLEncoded data component to raw binary data held in a string
+  let byteString;
+  if (dataURI.split(',')[0].indexOf('base64') >= 0)
+    byteString = atob(dataURI.split(',')[1]);
+  else
+    byteString = unescape(dataURI.split(',')[1]);
+
+  // separate out the mime component
+  let mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+
+  // write the bytes of the string to a typed array
+  let ia = new Uint8Array(byteString.length);
+  for (let i = 0; i < byteString.length; i++) {
+    ia[i] = byteString.charCodeAt(i);
+  }
+
+  return new Blob([ia], {type: mimeString});
+}
+
+
+/**
+ * Convert image coordinates
  */
 function convertCoordinates(imagingHelper, bound) {
 
-  // 'image coordinate' to 'normalized'
-  // console.log('normalized:\n', imagingHelper.dataToLogicalX(bound[0][0]), imagingHelper.dataToLogicalY(bound[0][1]));
+  let newArray = bound.map(function (arr) {
+    return arr.slice(); // copy
+  });
 
   // 'image coordinate' to 'screen coordinate'
-  for (let i = 0; i < bound.length; i++) {
-    let boundElement = bound[i];
+  for (let i = 0; i < newArray.length; i++) {
+    let boundElement = newArray[i];
     for (let j = 0; j < boundElement.length; j++) {
-      bound[i][j] = j === 0 ? Math.round(imagingHelper.dataToPhysicalX(boundElement[j])) : Math.round(imagingHelper.dataToPhysicalY(boundElement[j]));
+      newArray[i][j] = j === 0 ? imagingHelper.dataToPhysicalX(boundElement[j])
+          : imagingHelper.dataToPhysicalY(boundElement[j]);
     }
   }
+
+  return newArray;
 
 }
 
@@ -387,10 +257,15 @@ function initCore() {
     }
   });
 
-  // 
-  $CAMIC.viewer.addOnceHandler('open',function(e){
-    // add stop draw function 
+  $CAMIC.viewer.addOnceHandler('open', function (e) {
+    // add stop draw function
     $CAMIC.viewer.canvasDrawInstance.addHandler('stop-drawing', camicStopDraw);
+
+    // let m = document.getElementById('main_viewer');
+    // m.addEventListener('mousedown', function (e) {
+    //   getClickPosition(e, m);
+    // });
+
   });
 }
 
