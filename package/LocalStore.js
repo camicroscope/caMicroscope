@@ -173,6 +173,56 @@ function init_LocalStore(){
       res(local_dummy)
     })
   }
+  Store.prototype.findTemplate(name,type){
+    query = {}
+    if (name){
+      query.name = name
+    }
+    if (type){
+      query.type = type
+    }
+    return new Promise(function(res, rej){
+      res(findInLocalStorage("template", query))
+    }
+  }
+  Store.prototype.getTemplate(id){
+    return new Promise(function(res, rej){
+      res(getInLocalStorage("template", id))
+    })
+  }
 }
+
+// default template
+let defaultTemplate = {
+    "_id": "0"
+    "type": "object",
+    "id": "annotation-form",
+    "name": "AnnotSchema",
+    "description": "",
+    "links": [],
+    "additionalProperties": false,
+    "properties": {
+        "name": {
+            "id": "a0",
+            "title": "Identity Name",
+            "type": "string",
+            "required": true,
+            "description": "note name"
+            },"notes": {
+            "id": "a1",
+            "title": "Notes: ",
+            "type": "textarea",
+            "maxLength": 128
+        }
+    }
+}
+// if no template, add our default
+let template_data = JSON.parse(window.localStorage.getItem("template"))
+if (!template_data){
+  template_data=[];
+  template_data.push(defaultTemplate)
+  window.localStorage.setItem("template", JSON.stringify(template_data))
+}
+
 
 export default init_LocalStore
