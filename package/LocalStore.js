@@ -211,6 +211,65 @@ function init_LocalStore(){
       res(getInLocalStorage("template", id))
     })
   }
+  Store.prototype.DownloadMarksToFile = function(){
+      // downloads marks for the current slide only
+      // make the browser download it
+      let slide = $D.params.id // portable?
+      let query = {}
+      query['provenance.image.slide'] = slide
+      let data = JSON.parse(window.localStorage.getItem("mark"))
+      let text = ""
+      if (data) {
+        text = JSON.stringify(data.filter(x => {
+          let matching = true;
+          for (var i in query) {
+            matching = matching && Object.byString(x, i) == query[i]
+          }
+          return matching
+        }))
+      }
+      var element = document.createElement('a');
+      element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+      element.setAttribute('download', "markups.json");
+      element.style.display = 'none';
+      document.body.appendChild(element);
+      element.click();
+      document.body.removeChild(element);
+  }
+  Store.prototype.LoadMarksFromFile = function(){
+    // loads marks for the current slide only, without replacement
+    // open a file selector
+    let slide = $D.params.id
+    var element = document.createElement('input');
+    element.setAttribute('type', "file")
+    element.style.display = 'position: fixed; top: -100em';
+    element.onchange = function(event) {
+      var input = event.target;
+      var reader = new FileReader();
+      reader.onload = function() {
+        var text = reader.result;
+        try {
+          let data = JSON.parse(text)
+          console.log(data)
+          data.forEach(x => {
+            x.provenance.image.slide = slide
+          })
+          let data2 = JSON.parse(window.localStorage.getItem("mark"))
+          data2 = data2 || []
+          data2 = data2.concat(data)
+          console.log(data2)
+          window.localStorage.setItem("mark", JSON.stringify(data2))
+          window.location.reload()
+        } catch (e) {
+          console.error(e)
+        }
+        console.log(text.substring(0, 200));
+      };
+      reader.readAsText(input.files[0]);
+    };
+    element.click();
+    document.body.removeChild(element);
+  }
 }
 
 // default template
