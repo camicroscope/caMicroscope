@@ -7,7 +7,7 @@ function ImgBoxMods() {
     console.log("image ID : " + p);
     let slideId = p
     this.slideId = slideId
-    this.slideName = "local"
+    this.slideName = slideId
     this.study = ""
     this.specimen = ""
     fetch(p + "/info.json").then(response => {

@@ -64,6 +64,9 @@ function init_LocalStore(){
       if(name){
         query['provenance.analysis.execution_id']= name
       }
+      if(slide){
+        query['provenance.image.slide'] = slide
+      }
       let data = findInLocalStorage("mark", query)
       if (data){
         const unique = [...new Set(data.map(x => Object.byString(x,'provenance')))];
@@ -100,7 +103,7 @@ function init_LocalStore(){
     return new Promise(function(res, rej){
       let data = []
       for (var i in ids){
-        data.push(...findInLocalStorage('mark', {'provenance.analysis.execution_id': ids[i]}))
+        data.push(...findInLocalStorage('mark', {'provenance.analysis.execution_id': ids[i], 'provenance.image.slide': slide}))
       }
       res(data)
     })
@@ -166,8 +169,10 @@ function init_LocalStore(){
   }
   Store.prototype.findSlide = function(slide, specimen, study, location){
     return new Promise(function(res, rej){
+      let params = new URLSearchParams(document.location.search.substring(1));
+      let slideId = params.get("id") || "local";
       let local_dummy = {
-        'id': "local",
+        'id': slideId,
         'mpp': '0.001',
         'study':"",
         'specimen':""
@@ -177,8 +182,11 @@ function init_LocalStore(){
   }
   Store.prototype.getSlide = function(id){
     return new Promise(function(res, rej){
+      let params = new URLSearchParams(document.location.search.substring(1));
+      let slideId = params.get("id") || "local";
+      console.log(params)
       let local_dummy = {
-        'id': "local",
+        'id': slideId,
         'mpp': '0.001',
         'study':"",
         'specimen':""
