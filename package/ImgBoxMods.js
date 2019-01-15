@@ -42,7 +42,7 @@ function ImgBoxMods() {
       x.specimen = this.specimen
       x.mpp = 1;
       x.location = p;
-      x.url = p
+      x.url = ibmox_source
       console.log(func)
       console.log(x)
       if (func && typeof func === 'function'){
