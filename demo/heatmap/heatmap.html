@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="keywords" content="camicroscope, quip"/>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+
+    <title>Heatmap</title>
+    <!-- google material icons css sheet -->
+    <link rel='stylesheet' type='text/css' media='all' href='../../iconfont/material-icons.css'/>
+    <!-- css sheet -->
+    <link rel='stylesheet' type='text/css' media='all' href='../../css/style.css'/>
+
+    <!-- zoom control css -->
+    <link rel='stylesheet' type='text/css' media='all' href='../../core/extension/openseadragon-zoom-control/openseadragon-zoom-control.css'/>
+
+    <!-- loading cover css -->
+    <link rel='stylesheet' type='text/css' media='all' href='../../components/loading/loading.css'/>
+    <!-- toolbar css -->
+    <link rel='stylesheet' type='text/css' media='all' href='../../components/toolbar/toolbar.css'/>
+    <!-- color picker css -->
+    <link rel='stylesheet' type='text/css' media='all' href='../../common/colorpicker/color-picker.css'/>
+
+    <link rel='stylesheet' type='text/css' media='all' href='../../core/extension/openseadragon-measurement-tool/openseadragon-measurement-tool.css'/>
+
+    <link rel='stylesheet' type='text/css' media='all' href='../../core/extension/openseadragon-labeling/openseadragon-labeling.css'/>
+
+    <!-- loading cover js -->
+    <script src='../../components/loading/loading.js'></script>
+    <!-- toolbar js -->
+    <script src='../../components/toolbar/toolbar.js'></script>
+    <!-- color picker js -->
+    <script src='../../common/colorpicker/color-picker.js'></script>
+    <!-- open seadragon lib-->
+    <script src='../../core/openseadragon/openseadragon.js'></script>
+    <script src='../../core/openseadragon-imaginghelper.min.js'></script>
+    <script src='../../core/openseadragon-scalebar.js'></script>
+    <script src='../../core/openseadragonzoomlevels.js'></script>
+
+    <!-- util.js -->
+    <script type='text/javascript' src='../../common/util.js'></script>
+    <!-- core (package/ext) libs -->
+    <script type='text/javascript' src='../../common/DrawHelper.js'></script>
+    <script type='text/javascript' src='../../common/simplify.js'></script>
+    <script type='text/javascript' src='../../common/paths.js'></script>
+    <script type='text/javascript' src='../../core/Store.js'></script>
+    <script type='text/javascript' src='../../core/CaMic.js'></script>
+    <script type='text/javascript' src='../../core/extension/openseadragon-canvas-draw-overlay.js'></script>
+    <script type='text/javascript' src='../../core/extension/openseadragon-overlays-manage.js'></script>
+    <script type='text/javascript' src='../../core/extension/osd-heatmap-overlay.js'></script>
+    <script type='text/javascript' src='../../core/extension/openseadragon-measurement-tool/openseadragon-measurement-tool.js'></script>
+    <script type='text/javascript' src='../../core/extension/openseadragon-zoom-control/openseadragon-zoom-control.js'></script>
+    <!-- <script src="./core/openseadragon-labeling/openseadragon-labeling.js"></script> -->
+
+    <!-- ods js -->
+    <!-- <script src='./js/uicallbacks.js'></script> -->
+    <!-- <script src='./js/dataloaders.js'></script> -->
+
+    <!-- init data -->
+    <script src='./heatmap.js'></script>
+    <style>
+        .ctrl {
+            z-index: 500;
+            position: absolute;
+            top:0;
+            left:0;
+            width:150px;
+            height:180px;
+            background: white;
+            border:black 1px solid;
+            color:black;
+            padding: 10px;
+            font-size: 14px;
+        }
+
+/*        #main_viewer {
+            position: absolute;
+            top:100px;
+            left:100px;
+            width:300px;
+            height:300px;
+            border:5px black solid;
+        }*/
+    </style>
+</head>
+<body>
+<!-- toolbar -->
+<div id='ca_tools'></div>
+
+<div id='main_viewer' class='main'></div>
+</body>
+<script type="text/javascript">
+		Loading.open(document.body, 'CaMicroscope is initializing...');
+		// get slide id from url
+		$D.params = getUrlVars();
+
+		// load if we have at least one slide query element
+		if($D.params && $D.params.slideId){
+			// normal initialization starts
+			document.addEventListener('DOMContentLoaded', initialize);
+		}
+		else if ($D.params && ($D.params.slide || $D.params.location)){
+			let STORE = new Store()
+			STORE.findSlide($D.params.slide, $D.params.location).then(x=>{
+				if(x.length == 0){
+					redirect($D.pages.table,'No Slide Found. Redirecting to Table.');
+				} else {
+					newParams = $D.params
+					delete newParams.data
+					delete newParams.slide
+					delete newParams.location
+					newParams.slideId = x[0]['_id']['$oid']
+					newUrl = window.location.href.split("?")[0] + "?" + objToParamStr(newParams)
+					window.location.href = newUrl
+				}
+			}).catch(e=>{
+				console.warn(e)
+				redirect($D.pages.table,'Redirecting to Table.');
+			})
+			// find the associated slideID
+			// open viewer with that slideID
+		}
+		else {
+			redirect($D.pages.table,'Slide is undefined. Redirecting to Table.');
+		}
+
+		// get states parameters
+		if($D.params.states){
+			$D.params.states = StatesHelper.decodeStates($D.params.states);
+		}
+</script>
+</html>

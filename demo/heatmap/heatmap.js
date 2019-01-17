@@ -162,9 +162,9 @@ function createDemoControl(){
 <br>
 <input type='range' value=0.8 min=0 max=1 step=0.1 />
 <br>
-<label>color:</label><span>#A50F15</span>
+<label>color:</label><span>#1034A6</span>
 <br>
-<input type="color" id="head"value="#A50F15">
+<input type="color" id="head"value="#1034A6">
   `;
   
 

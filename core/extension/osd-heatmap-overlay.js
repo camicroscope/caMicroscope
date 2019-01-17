@@ -21,7 +21,7 @@
  *        the name of a field
  * @param {Array} options.fields.range
  *        the range of a field - [min, max] in the field
- * @param {Array} [options.fields.threshold]
+ * @param {Array} [options.fields.thresholds]
  *        the treshold of a field.
  * @param {Array} options.size
  *        the size of patchs - size:[width,height]
@@ -66,17 +66,26 @@
         }
 
         // heatmap data model
-        // necessary Options 
+        // necessary Options
+        // 
         this._data = options.data || [];
+        this.mode = options.mode || 'binal';
         this._fields = createFields(options.fields);
         this._size = options.size;
+        this._steps = options.steps || 3;
         this._t_data = null;
-        
+        this._operator = 'AND';
+        this._currentField = options.currentField || this._fields[0];
+        this._color = options.color || "#006d2c"; // heatmap color
+        this._colors = options.colors || ["#FFFFFF","#1034A6"]; // heatmap color
+        this.intervals = _getIntervals(this._currentField, this._colors, this._steps);
         // filter the data
-        this.__thresholdingData();
+        //this.__thresholdingData();
 
         // set default options' values if no corresponding values.
-        this._color = options.color || "#1034A6";
+        
+        
+
         this._offset = [null, null];
         this._interval = null;
         this._intervalTime = options.intervalTime || 300;
@@ -87,8 +96,16 @@
             panning:this._panning.bind(this)
         };
 
-        // -- create container div and display canvas -- //
-        
+        // -- create cover div -- //
+        this._cover_div = document.createElement( 'div');
+        this._cover_div.style.position = 'absolute';
+        this._cover_div.style.width = '150%';
+        this._cover_div.style.height = '150%';
+        this._cover_div.style.background = options.coverColor || "#000000";
+        this._cover_div.style.zIndex =  options.zIndex - 1 || 99;
+        this._cover_div.style.opacity = options.coverOpacity || 0.6;
+        this._viewer.canvas.appendChild(this._cover_div);
+
         // create a container div and set the default attributes
         this._div = document.createElement( 'div');
         this._div.style.position = 'absolute';
@@ -132,18 +149,22 @@
 
             // heatmap data model
             // necessary Options 
-            this._data = options.data || [];
-            this._fields = createFields(options.fields);
-            this._size = options.size;
-            this._t_data = null;
-
-            // filter the data
-            this.__thresholdingData();
+            this._data = options.data || this._data;
+            this.mode = options.mode || this.mode; // two modes - 'binal' : 'gradient'
+            this._fields = options.fields?createFields(options.fields):this._fields;
+            this._size = options.size || this._size;
+            this._steps = options.steps || this._steps;
 
             // set default options' values if no corresponding values.
-            this._color = options.color || "#1034A6";
+            this._currentField = options.currentField || this._currentField;
+            this._color = options.color || this._color || "#006d2c";
+            this._colors = options.colors || ["#FFFFFF","#1034A6"];
+            this.intervals = _getIntervals(this._currentField, this._colors, this._steps);
+
             this._offset = [null, null];
             this._interval = null;
+
+
             this._intervalTime = options.intervalTime || 300;
 
             this.events = {
@@ -153,6 +174,9 @@
             };
 
             // -- create container div and display canvas -- //
+            if(options.coverColor) this._cover_div.style.background = options.coverColor;
+            this._cover_div.style.zIndex =  options.zIndex - 1 || 99;
+            if(options.coverOpacity) this._cover_div.style.opacity = options.coverOpacity;
 
             // create a container div and set the default attributes
             //this._div = document.createElement( 'div');
@@ -163,7 +187,7 @@
             this._div.style.transform = 'scale(1,1)';
             this._div.style.zIndex =  options.zIndex || 100;
             this._div.style.opacity = options.opacity || 0.8;
-            this._viewer.canvas.appendChild(this._div);
+            //this._viewer.canvas.appendChild(this._div);
 
             // create display_cancavs
             //this._display_ = document.createElement('canvas');
@@ -180,6 +204,41 @@
             // get the position of the current center points
             this._center = this._viewer.viewport.getCenter(true);
         },
+        
+        /**
+         * display the cover of heatmap
+         */
+        coverOn:function(){
+            this._cover_div.style.display = '';
+        },
+        
+        /**
+         * hide the cover of heatmap
+         */
+        coverOff:function(){
+            this._cover_div.style.display = 'none';
+        },
+
+        /**
+         * set the opacity of heatmap's cover
+         * @param {Number} opacity the value of opacity
+         */
+        setCoverOpacity:function(opacity){
+            if(opacity < 0 || opacity > 1){
+                console.warn('Heatmap.setsetCoverOpacity: Invalid Opacity');
+                return;
+            }
+            this._cover_div.style.opacity = opacity;
+        },
+        
+        /**
+         * set the coloer of heatmap's cover
+         * @param {String} color color in Hex form
+         */
+        setCoverColor:function(color){
+            this._cover_div.style.background = color;
+        },
+        
         /**
          * turn on the heatmap
          */
@@ -219,7 +278,13 @@
             // set on/off flag to false
             this._isOn = false;
     	},
-    	
+    	setCurrentField:function(name){
+            const field = this._fields.find(f => f.name === name);
+            if(field){
+                this._currentField = field;
+                this.drawOnCanvas();
+            }
+        },
         /**
          *  set Threshold by field's name
          * @param {String} name
@@ -227,14 +292,14 @@
          * @param {Number} value 
          *        field's threshold
          */
-    	setThresholdByName:function(name,value){
-    		const field = this._fields.find(f=> f.name === name);
+    	setThresholdsByName:function(name,min,max){
+    		const field = this._fields.find(f => f.name === name);
     		if(field){
-    			field.setThreshold(value);
-    			this.__thresholdingData();
+    			field.setThresholds(min, max);
     			this.drawOnCanvas();
     		}
     	},
+        
         /**
          *  set Threshold by field's index
          * @param {Integer} index
@@ -242,46 +307,82 @@
          * @param {Number} value 
          *        field's threshold
          */
-        setThresholdByIndex:function(index,value){
+        setThresholdsByIndex:function(index, min, max){
             const field = this._fields[index];
             if(field){
-                field.setThreshold(value);
-                this.__thresholdingData();
+                field.setThresholds(min, max);
+                //this.__thresholdingData();
                 this.drawOnCanvas();
             }
         },   	
+        
         /**
          * filter the data according to the threstholds.
          */
     	__thresholdingData:function(){
-    		const thresholds = this._fields.map(f=>f._threshold);
-    		this._t_data = this._data.filter(d=>{
+    		const thresholds = this._fields.map(f=>f._thresholds);
+            let t = TESTER[this._operator];
+    		return this._data.filter(d=>{
     			const p = d.slice(2);
-    			return t(p,thresholds,$.gte);
+    			return t.call(this, p, thresholds, $.inTheRange);
     		},this);
     	},
+
     	/**
     	 * setOpacity
     	 * set the opacity for the canvas div.
     	 * @param {Number} num the value of the opacity
     	 */
     	setOpacity:function(num){
-    		// TODO valid num [0 , 1]
+    		// valid num [0 , 1]
             if(1 < num || 0 > num ){
-                console.warn(`Set Invalid Opacity`);
+                console.warn(`Heatmap.setOpacity: Invalid Opacity`);
                 return;
             }
     		this._div.style.opacity = num;
     	},
+        
+        /**
+         * change the mode of heatmap
+         * @param  {String} mode 'binal' or 'gradient'
+         */
+        changeMode:function(mode){
+            if(this.mode == mode) return;
+            this.mode = mode;
+            this.drawOnCanvas();
+        },
 
+        /**
+         * set the steps of heatmap for gradient mode
+         * @param {Integer} steps how many intervals for color gradients
+         */
+        setSteps:function(steps){
+            //if(!Number.isInteger(steps) || steps > 10 || steps < 3) return;
+            this._steps = steps;
+            // refresh view/heatmap/ui if the heatmap is in 'gradient' mode
+            if(this.mode == 'gradient') this.drawOnCanvas();
+        },
+        
         /**
          * set the color of heatmap
          * @param {String} the color of the heatmap
          */
     	setColor:function(color){
     		this._color = color;
-    		this.drawOnCanvas();
+            // refresh view/heatmap/ui if the heatmap is in 'binal' mode
+    		if(this.mode == 'binal') this.drawOnCanvas();
     	},
+
+        /**
+         * set the colors of heatmap
+         * @param {Array} the list of colors for the color gradient heatmap
+         */
+        setColors:function(colors){
+            if(!Array.isArray(colors)||colors.length < 2) return;
+            this._colors = colors;
+            // refresh view/heatmap/ui if the heatmap is in 'gradient' mode
+            if(this.mode == 'gradient') this.drawOnCanvas();
+        },
 
         /**
          * it will be called when viewport zooming.
@@ -372,7 +473,7 @@
          * @return {Boolean}
          *         true if 
          */
-    	filter:function(d){
+    	viewBoundFilter:function(d){
     		const x = d[0]; // left
     		const y = d[1]; // top
 
@@ -384,7 +485,23 @@
     			height:this._size[1]
     		});
     	},
+        /**
+         * [filter description]
+         * @param  {[type]} d [description]
+         * @return {[type]}   [description]
+         */
+        gradient:function(d){
+            const x = d[0]; // left
+            const y = d[1]; // top
 
+            // current view's bounding box against a patch
+            return $.isIntersectBbox(this._getCanvasBoundBox, {
+                x:x,
+                y:y,
+                width:this._size[0],
+                height:this._size[1]
+            });
+        },
         /**
          * update view/heatmap
          * @param  {Number} the debounce time (in milliseconds) to draw
@@ -413,7 +530,8 @@
             // set the current position for the canvas div
 			this._div.style.left = `${-this._offset[0]}px`;
         	this._div.style.top = `${-this._offset[1]}px`;
-            
+            this._cover_div.style.left = `${-this._offset[0]}px`;
+            this._cover_div.style.top = `${-this._offset[1]}px`;            
             // reset the origin point and scale
             this._div.style.transformOrigin = '0 0';
             this._div.style.transform = 'scale(1,1)';
@@ -424,40 +542,100 @@
 
             // get the current canvas bounding box under the normalized coordiante
     		this._getCanvasBoundBox = this.getCanvasBoundBox();
+            // TODO filter with view boundaries
+            //this._t_data = this.data.filter(this.viewBoundFilter,this);
     	},
 
         /**
          * According to the data, thresholds and the size of current screen, draw the heatmap
          */
     	drawOnCanvas:function(){
-    		// filter data by using threshold values
-            const finalData = this._t_data.filter(this.filter,this);
+            // filter data by using threshold values
+            let finalData = this._data.filter(this.viewBoundFilter,this);
             
             // clear canvas before draw
-    		DrawHelper.clearCanvas(this._display_);
-			
-            // set patch color
-            this._display_ctx_.fillStyle = this._color;
-  			// get the patch's size on the screen 
-            const w = logicalToPhysicalDistanceX(this._size[0],this._viewer.imagingHelper);
-  			const h = logicalToPhysicalDistanceY(this._size[1],this._viewer.imagingHelper);
-  			
-            // start to draw each patch
-            this._display_ctx_.beginPath();
-			for (let i = 0; i < finalData.length; i++) {
-				let d = finalData[i];
-                // get the top-left point of a patch on the sreen
-				const x = this._viewer.imagingHelper.logicalToPhysicalX(d[0]);
-				const y = this._viewer.imagingHelper.logicalToPhysicalY(d[1]);
-				// draw patch
-                this._display_ctx_.rect(x+this._offset[0],y+this._offset[1],w,h) 
-			}
-			this._display_ctx_.fill();
-    	}
+            DrawHelper.clearCanvas(this._display_);
+    		if(this.mode === 'binal'){
+                // TODO filter by thresholds
+                finalData = this.__thresholdingData();
+                // set patch color
+                this._display_ctx_.fillStyle = this._color;
+      			// get the patch's size on the screen 
+                const w = logicalToPhysicalDistanceX(this._size[0],this._viewer.imagingHelper);
+      			const h = logicalToPhysicalDistanceY(this._size[1],this._viewer.imagingHelper);
+      			
+                // start to draw each patch
+                this._display_ctx_.beginPath();
+    			for (let i = 0; i < finalData.length; i++) {
+    				let d = finalData[i];
+                    // get the top-left point of a patch on the sreen
+    				const x = this._viewer.imagingHelper.logicalToPhysicalX(d[0]);
+    				const y = this._viewer.imagingHelper.logicalToPhysicalY(d[1]);
+    				// draw patch
+                    this._display_ctx_.rect(x+this._offset[0],y+this._offset[1],w,h) 
+    			}
+    			this._display_ctx_.fill();
+            }else if(this.mode === 'gradient'){
 
+                this.intervals = _getIntervals(this._currentField, this._colors, this._steps);
+                
+                const index = this._fields.findIndex(f => f.name === this._currentField.name, this)+2;
+                let finalDatas = finalData.reduce((rs, d)=>{
+                    for (var i = 0; i < rs.length; i++) {
+                        if(rs[i].range[0] <= d[index] && d[index] < rs[i].range[1]){
+                            rs[i].data.push(d);
+                            //break;
+                            return rs;
+                        }
+                    }
+                    return rs;
+                },this.intervals);
+                
+                const w = logicalToPhysicalDistanceX(this._size[0],this._viewer.imagingHelper);
+                const h = logicalToPhysicalDistanceY(this._size[1],this._viewer.imagingHelper);
+                
+                console.time('draw');
+                finalDatas.forEach(cluster => {
+                    this._display_ctx_.fillStyle = cluster.color;
+                    this._display_ctx_.beginPath();
+                    cluster.data.forEach(d =>{
+                        const x = this._viewer.imagingHelper.logicalToPhysicalX(d[0]);
+                        const y = this._viewer.imagingHelper.logicalToPhysicalY(d[1]);
+                        // draw patch
+                        this._display_ctx_.rect(x+this._offset[0],y+this._offset[1],w,h) 
+                    }, this);
+                    this._display_ctx_.fill();
+
+                }, this);
+                console.timeEnd('draw');
+            }
+    	}
 
     }
 
+    function _getIntervals(field, colors=['#FFFFFF','#000000'], steps=3){
+        // get list of colors
+        // const colorList = interpolateColors(hexToRgb(colors[0]),hexToRgb(colors[1]),steps);
+        //const colorList = ['#f2f0f7','#cbc9e2','#9e9ac8','#756bb1','#54278f'];
+        //const colorList = ['#eff3ff','#bdd7e7','#6baed6','#3182bd','#08519c'];
+        const colorList = ['#fee5d9','#fcae91','#fb6a4a','#de2d26','#a50f15'];
+        // const colorList = ['#feedde','#fdbe85','#fd8d3c','#e6550d','#a63603'];
+        //const colorList = ['#edf8e9','#bae4b3','#74c476','#31a354','#006d2c'];
+        steps = 5;
+        // get a boundary list of intervals
+        const threstholds = field._thresholds; 
+        const boundaries = interpolateNums(threstholds[0], threstholds[1], steps + 1);
+        const rs = [];
+        for(let i = 0 ;i < colorList.length; i++){
+            // create a new interval
+            rs.push({
+                color:colorList[i],
+                range:[boundaries[i],boundaries[i+1]],
+                data:[]
+            })
+        }
+        return rs;
+    }
     /**
      * validate heatmap's options
      * @param  {Obejct} options
@@ -484,7 +662,21 @@
         }
         return true;
     }
-
+    var TESTER = {
+        AND:function(p, t, func){
+            return p.reduce((acc,v,i)=>{
+                return acc&&func.call(this, v, t[i]);
+            },true);
+        },
+        OR:function(p, t, func){
+            return p.reduce((acc,v,i)=>{
+                return acc||func.call(this, v, t[i]);
+            },true);
+        },
+        FIELD:function(p, t, func){
+            return func.call(this, p[this._currentField.index], t[this._currentField.index]);
+        }
+    }
     /**
      * @private
      * compare p and t if all elements in p and the corresponding t pass the comparison function 
@@ -494,10 +686,17 @@
      * 
      * @return true if all p and t pass the comparison function. Otherwise, false.
      */
-    function t(p, t, func){
+    
+    function and(p, t, func){
     	return p.reduce((acc,v,i)=>{
     		return acc&&func.call(this, v, t[i]);
     	},true);
+    }
+
+    function or(p,t, func){
+        return p.reduce((acc,v,i)=>{
+            return acc||func.call(this, v, t[i]);
+        },true);
     }
 
     /**
@@ -515,8 +714,8 @@
      * 
      */
 	function createFields(fields){
-		return fields.map(d=>{
-			return new $.Heatmap.Field(d)
+		return fields.map((d,index)=>{
+			return new $.Heatmap.Field(d,index)
 		});
 		
 	}
@@ -614,6 +813,10 @@
     $.gte = function(v1,v2){
     	return v1 >= v2;
     }
+
+    $.inTheRange = function(value,range){
+        return range[0] <= value && value <= range[1]
+    }
     /**
      * @private 
      * is value1 greater than value2.
@@ -637,17 +840,16 @@
      * @param {Number} [options.threshold=0]
      *        the treshold value for filtering current field
      */
-    $.Heatmap.Field = function({name, range, threshold=0}){
-
+    $.Heatmap.Field = function({name, range, thresholds = range.slice()}, index){
     	// validate 
-    	_validate(name, range, threshold)
+    	_validate(name, range, thresholds)
     	
     	this.name = name; // string
     	this.range = range; // [start,end] Number
-    	this._threshold = threshold; // Number [default value = 0]
+    	this._thresholds = thresholds; // Number [default value same as range]
+        this.index = index;
 
-
-    	function _validate(name,range,threshold){
+    	function _validate(name,range,thresholds){
     		// check on name
     		if(!name){
     			throw 'invalid Field.name';
@@ -663,9 +865,23 @@
     			throw 'invalid Field.range';
     			return;
     		}
-    		//check on threshold
-    		if(range[0] > threshold || range[1] < threshold){
-    			throw 'invalid Field.range';
+            // check on thresholds
+            if(!thresholds ||
+                !Array.isArray(thresholds) ||
+                thresholds.length !==2 ||
+                isNaN(thresholds[0]) ||
+                isNaN(thresholds[1])
+            ){
+                throw 'invalid Field.thresholds';
+                return;
+            }
+    		//check on thresholds' values
+    		if(range[0] > thresholds[0] ||
+                range[1] < thresholds[0] ||
+                range[0] > thresholds[1] ||
+                range[1] < thresholds[1]
+            ){
+    			throw 'invalid the values of Field.thresholds';
     			return;
     		}
     	}
@@ -679,19 +895,22 @@
          * get the threshold for the current field
          * @return {Number} the threshold value
          */
-    	getThreshold:function(){
-    		return this._threshold;
+    	getThresholds:function(){
+    		return this._thresholds;
     	},
         /**
          * set the threshold for the currnet field
          * @param {Number} num the threshold value
          */
-    	setThreshold:function(num){
-    		if(isNaN(num) || this.range[0] > num || this.range[1] < num){
+    	setThresholds:function(min,max){
+    		if(isNaN(min) || this.range[0] > min || this.range[1] < min ||
+               isNaN(max) || this.range[0] > max || this.range[1] < max ||
+               min > max){
     			console.warn('threshold set fail:invalid value');
     			return;
     		}
-    		this._threshold = num;
+    		this._thresholds[0] = min;
+            this._thresholds[1] = max;
     	}
     }
 
