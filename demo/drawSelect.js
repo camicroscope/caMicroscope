@@ -112,7 +112,7 @@ function testDraw(box) {
 
   // Draw as canvas
   let canvas = document.createElement('canvas');
-  canvas.id = 'myCanvas';
+  canvas.id = 'canvasInput';
   canvas.style.border = "thick solid #0000FF";
   canvas.width = imgData.width;
   canvas.height = imgData.height;
@@ -131,7 +131,75 @@ function testDraw(box) {
   console.log(f);
 
   // Start file download.
-  download(filename, dataURL);
+  ////download(filename, dataURL);
+
+  // START OPENCV STUFF
+  let utils = new Utils('errorMessage');
+
+let tryIt = document.getElementById('tryIt');
+tryIt.addEventListener('click', () => {
+  let src = cv.imread('canvasInput');
+  let dst = new cv.Mat();
+  let gray = new cv.Mat();
+  let opening = new cv.Mat();
+  let coinsBg = new cv.Mat();
+  let coinsFg = new cv.Mat();
+  let distTrans = new cv.Mat();
+  let unknown = new cv.Mat();
+  let markers = new cv.Mat();
+  // gray and threshold image
+  cv.cvtColor(src, gray, cv.COLOR_RGBA2GRAY, 0);
+  cv.threshold(gray, gray, 0, 255, cv.THRESH_BINARY_INV + cv.THRESH_OTSU);
+  // get background
+  let M = cv.Mat.ones(3, 3, cv.CV_8U);
+  cv.erode(gray, gray, M);
+  cv.dilate(gray, opening, M);
+  cv.dilate(opening, coinsBg, M, new cv.Point(-1, -1), 3);
+  // distance transform
+  cv.distanceTransform(opening, distTrans, cv.DIST_L2, 5);
+  cv.normalize(distTrans, distTrans, 1, 0, cv.NORM_INF);
+  // get foreground
+  cv.threshold(distTrans, coinsFg, 0.1 * 1, 255, cv.THRESH_BINARY);
+  coinsFg.convertTo(coinsFg, cv.CV_8U, 1, 0);
+  cv.subtract(coinsBg, coinsFg, unknown);
+  // get connected components markers
+  cv.connectedComponents(coinsFg, markers);
+  for (let i = 0; i < markers.rows; i++) {
+    for (let j = 0; j < markers.cols; j++) {
+      markers.intPtr(i, j)[0] = markers.ucharPtr(i, j)[0] + 1;
+      if (unknown.ucharPtr(i, j)[0] == 255) {
+        markers.intPtr(i, j)[0] = 0;
+      }
+    }
+  }
+  cv.cvtColor(src, src, cv.COLOR_RGBA2RGB, 0);
+  cv.watershed(src, markers);
+  // draw barriers
+  for (let i = 0; i < markers.rows; i++) {
+    for (let j = 0; j < markers.cols; j++) {
+      if (markers.intPtr(i, j)[0] == -1) {
+        src.ucharPtr(i, j)[0] = 255; // R
+        src.ucharPtr(i, j)[1] = 255; // G
+        src.ucharPtr(i, j)[2] = 0; // B
+      }
+    }
+  }
+  cv.imshow('canvasInput', src);
+  src.delete();
+  dst.delete();
+  gray.delete();
+  opening.delete();
+  coinsBg.delete();
+  coinsFg.delete();
+  distTrans.delete();
+  unknown.delete();
+  markers.delete();
+  M.delete();
+});
+
+utils.loadOpenCv(() => {
+  tryIt.click();
+});
 
 }
 
@@ -285,4 +353,53 @@ function redirect(url, text = '', sec = 5) {
     timer--;
 
   }, 1000);
+}
+
+function Utils(errorOutputId) { // eslint-disable-line no-unused-vars
+  let self = this;
+  this.errorOutput = document.getElementById(errorOutputId);
+
+  const OPENCV_URL = 'opencv.js';
+  this.loadOpenCv = function (onloadCallback) {
+    let script = document.createElement('script');
+    script.setAttribute('async', '');
+    script.setAttribute('type', 'text/javascript');
+    script.addEventListener('load', () => {
+      console.log(cv.getBuildInformation());
+      onloadCallback();
+    });
+    script.addEventListener('error', () => {
+      self.printError('Failed to load ' + OPENCV_URL);
+    });
+    script.src = OPENCV_URL;
+    let node = document.getElementsByTagName('script')[0];
+    node.parentNode.insertBefore(script, node);
+  };
+
+  this.clearError = function () {
+    this.errorOutput.innerHTML = '';
+  };
+
+  this.printError = function (err) {
+    if (typeof err === 'undefined') {
+      err = '';
+    } else if (typeof err === 'number') {
+      if (!isNaN(err)) {
+        if (typeof cv !== 'undefined') {
+          err = 'Exception: ' + cv.exceptionFromPtr(err).msg;
+        }
+      }
+    } else if (typeof err === 'string') {
+      let ptr = Number(err.split(' ')[0]);
+      if (!isNaN(ptr)) {
+        if (typeof cv !== 'undefined') {
+          err = 'Exception: ' + cv.exceptionFromPtr(ptr).msg;
+        }
+      }
+    } else if (err instanceof Error) {
+      err = err.stack.replace(/\n/g, '<br>');
+    }
+    this.errorOutput.innerHTML = err;
+  };
+
 }
