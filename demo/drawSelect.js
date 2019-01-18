@@ -294,6 +294,24 @@ function initUIcomponents() {
       }
     ]
   });
+
+  let element = document.getElementById('errorMessage');
+  if (!element)
+  {
+    element = document.createElement('p');
+    element.classList.add('err');
+    element.id = 'errorMessage';
+    document.body.appendChild(element);
+  }
+
+  let button = document.getElementById('tryIt');
+  if (!button)
+  {
+    button = document.createElement('button');
+    button.id = 'tryIt';
+    button.style.display = "none";
+    document.body.appendChild(button);
+  }
 }
 
 // setting core functionality
