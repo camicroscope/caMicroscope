@@ -73,6 +73,83 @@ function hexToRgbA(hex, opacity = 1){
     }
     throw new Error('Bad Hex');
 }
+function hexToRgb(hex){
+    var c;
+    if(/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)){
+        c= hex.substring(1).split('');
+        if(c.length== 3){
+            c= [c[0], c[0], c[1], c[1], c[2], c[2]];
+        }
+        c= '0x'+c.join('');
+        return `rgb(${[(c>>16)&255, (c>>8)&255, c&255].join(',')})`;
+    }
+    throw new Error('Bad Hex');
+}
+function rgbToHex(rgb){
+ rgb = rgb.match(/^rgba?[\s+]?\([\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?/i);
+ return (rgb && rgb.length === 4) ? "#" +
+  ("0" + parseInt(rgb[1],10).toString(16)).slice(-2) +
+  ("0" + parseInt(rgb[2],10).toString(16)).slice(-2) +
+  ("0" + parseInt(rgb[3],10).toString(16)).slice(-2) : '';
+}
+
+/**
+ * interpolateColor generates the gradient colors from the color1 and color2
+ * @param  {String} color1
+ * @param  {String} color2
+ * @param  {Number} factor
+ * @return {Array}        the gradient color that bases on factor
+ */
+function interpolateColor(color1, color2, factor) {
+   if (arguments.length < 3) { 
+        factor = 0.5; 
+    }
+    var result = color1.slice();
+    for (var i = 0; i < 3; i++) {
+        result[i] = Math.round(result[i] + factor * (color2[i] - color1[i]));
+    }
+    return result;
+};
+
+/**
+ * interpolateColors to interpolate between two colors completely
+ * @param  {String} color1 the color should be in RGB format. e.g. rgb(255,255,255).
+ * @param  {String} color2 
+ * @param  {Number} steps how much colors in the result
+ * @return {Array}        the gradient colors
+ */
+function interpolateColors(color1, color2, steps) {
+    var stepFactor = 1 / (steps - 1),
+        interpolatedColorArray = [];
+
+    color1 = color1.match(/\d+/g).map(Number);
+    color2 = color2.match(/\d+/g).map(Number);
+    
+    for(var i = 0; i < steps; i++) {
+        const rgbArray = interpolateColor(color1, color2, stepFactor * i);
+        interpolatedColorArray.push(`rgb(${rgbArray[0]},${rgbArray[1]},${rgbArray[2]})`);
+    }
+
+    return interpolatedColorArray;
+}
+
+/**
+ * interpolateNums to interpolate between two colors completely
+ * @param  {String} color1 the color should be in RGB format. e.g. rgb(255,255,255).
+ * @param  {String} color2 
+ * @param  {Number} steps how much colors in the result
+ * @return {Array}        the gradient colors
+ */
+function interpolateNums(num1, num2, steps=3){
+    const stepFactor = 1 / (steps - 1),
+    rs = [];
+    
+    for(let i = 0; i < steps; i++) {
+        rs.push(num1 + stepFactor * i * (num2 - num1));
+    }
+
+    return rs;
+}
 
 function clickInsideElement( e, className ) {
   var el = e.srcElement || e.target || e.eventSource.canvas;
@@ -203,6 +280,23 @@ function removeElement(array, id){
   return false;
 }
 
+function redirect(url ,text = '', sec = 5){
+  let timer = sec;
+  setInterval(function(){
+    if(!timer) {
+      window.location.href = url;
+    }
+
+    if(Loading.instance&&Loading.instance.parentNode){
+      Loading.text.textContent = `${text} ${timer}s.`;
+    }else{
+      Loading.open(document.body,`${text} ${timer}s.`);
+    }
+    // Hint Message for clients that page is going to redirect to Flex table in 5s
+    timer--;
+
+  }, 1000);
+}
 
 /**
  * Taken from OpenSeadragon

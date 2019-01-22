@@ -14,8 +14,8 @@ const $UI = {};
 
 const $D = {
   pages:{
-    home:'./table.html',
-    table:'./table.html'
+    home:'../table.html',
+    table:'../table.html'
   },
 
   //case_id:'TCGA-28-1751-01Z-00-DX1',
@@ -105,11 +105,11 @@ function initCore(){
         $D.heatData[exec_id].provenance.analysis.fields[1].threshold = inputs[1].value/100;
         console.log(exec_id);
         $CAMIC.viewer.createHeatmap({
-          opacity:inputs[2].value,
+          opacity:.8, //inputs[2].value,
           data:$D.heatData[exec_id].data,
           size:$D.heatData[exec_id].provenance.analysis.size,
           fields:$D.heatData[exec_id].provenance.analysis.fields,
-          color:inputs[3].value
+          color:"#a50f15"//inputs[3].value
         });
         Loading.close();
         // $CAMIC.store.getHeatmap($D.case_id,$D.exec_id).then(d=>{
@@ -128,8 +128,11 @@ function initCore(){
         // });
       }
     }, 500);
-    
-  	console.log('create Heatmap');
+    // colors.forEach(color => {
+      
+    //   rgbToHex(color)
+    // });
+
   });
 
 
@@ -137,7 +140,7 @@ function initCore(){
   
 }
 
-
+// ui control START 
 function createDemoControl(){
   // create a control panel
   const panel_template = `
@@ -159,9 +162,9 @@ function createDemoControl(){
 <br>
 <input type='range' value=0.8 min=0 max=1 step=0.1 />
 <br>
-<label>color:</label><span>#1034A6</span>
+<label>color:</label><span>#A50F15</span>
 <br>
-<input type="color" id="head"value="#1034A6">
+<input type="color" id="head"value="#A50F15">
   `;
   
 
@@ -221,6 +224,6 @@ function colorChange(e){
   }.bind(this),300);  
   
 }
-
+// ui control END
 
 
