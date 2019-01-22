@@ -1,0 +1,11 @@
+<html>
+<body>
+<div id="where"></div>
+Redirecting...
+<script>
+//document.getElementById('where').innerHTML = window.location.href
+let prefix = "http://localhost:8888/files/caMicroscope/apps/lite/viewer.html?slideId=local&id="
+window.location.href = prefix + window.location.href.split('?id=')[1]
+</script>
+</body>
+</html>
