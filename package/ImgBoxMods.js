@@ -28,8 +28,8 @@ function ImgBoxMods() {
       }
       this.viewer.open(ibmox_source);
       //set scalebar
-      this.mpp = 1
-      this.createScalebar('1')
+      this.mpp = data['mpp-x'] || data['mpp-y'] || 1
+      this.createScalebar(this.mpp)
       var imagingHelper = new OpenSeadragonImaging.ImagingHelper({
         viewer: this.viewer
       });
