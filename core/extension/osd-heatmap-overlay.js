@@ -76,8 +76,8 @@
         this._t_data = null;
         this._operator = 'AND';
         this._currentField = options.currentField || this._fields[0];
-        this._color = options.color || "#006d2c"; // heatmap color
-        this._colors = options.colors || ["#FFFFFF","#1034A6"]; // heatmap color
+        this._color = options.color || "#045a8d"; // heatmap color
+        this._colors = options.colors || ["#edf8e9","#006d2c"]; // heatmap color
         this.intervals = _getIntervals(this._currentField, this._colors, this._steps);
         // filter the data
         //this.__thresholdingData();
@@ -278,11 +278,11 @@
             // set on/off flag to false
             this._isOn = false;
     	},
-    	setCurrentField:function(name){
+    	setCurrentField:function(name,draw=true){
             const field = this._fields.find(f => f.name === name);
             if(field){
                 this._currentField = field;
-                this.drawOnCanvas();
+                if(draw)this.drawOnCanvas();
             }
         },
         /**
@@ -292,11 +292,11 @@
          * @param {Number} value 
          *        field's threshold
          */
-    	setThresholdsByName:function(name,min,max){
+    	setThresholdsByName:function(name,min,max,draw = true){
     		const field = this._fields.find(f => f.name === name);
     		if(field){
     			field.setThresholds(min, max);
-    			this.drawOnCanvas();
+    			if(draw) this.drawOnCanvas();
     		}
     	},
         
@@ -556,7 +556,7 @@
             // clear canvas before draw
             DrawHelper.clearCanvas(this._display_);
     		if(this.mode === 'binal'){
-                // TODO filter by thresholds
+                // filter by thresholds
                 finalData = this.__thresholdingData();
                 // set patch color
                 this._display_ctx_.fillStyle = this._color;
@@ -594,7 +594,6 @@
                 const w = logicalToPhysicalDistanceX(this._size[0],this._viewer.imagingHelper);
                 const h = logicalToPhysicalDistanceY(this._size[1],this._viewer.imagingHelper);
                 
-                console.time('draw');
                 finalDatas.forEach(cluster => {
                     this._display_ctx_.fillStyle = cluster.color;
                     this._display_ctx_.beginPath();
@@ -607,7 +606,6 @@
                     this._display_ctx_.fill();
 
                 }, this);
-                console.timeEnd('draw');
             }
     	}
 
@@ -615,10 +613,16 @@
 
     function _getIntervals(field, colors=['#FFFFFF','#000000'], steps=3){
         // get list of colors
+        // 
         // const colorList = interpolateColors(hexToRgb(colors[0]),hexToRgb(colors[1]),steps);
+        
+
+
+
+        const colorList = ['#2b83ba','#abdda4','#ffffbf','#fdae61','#d7191c'];
         //const colorList = ['#f2f0f7','#cbc9e2','#9e9ac8','#756bb1','#54278f'];
         //const colorList = ['#eff3ff','#bdd7e7','#6baed6','#3182bd','#08519c'];
-        const colorList = ['#fee5d9','#fcae91','#fb6a4a','#de2d26','#a50f15'];
+        //const colorList = ['#fee5d9','#fcae91','#fb6a4a','#de2d26','#a50f15'];
         // const colorList = ['#feedde','#fdbe85','#fd8d3c','#e6550d','#a63603'];
         //const colorList = ['#edf8e9','#bae4b3','#74c476','#31a354','#006d2c'];
         steps = 5;

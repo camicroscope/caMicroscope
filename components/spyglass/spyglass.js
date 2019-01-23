@@ -55,6 +55,7 @@ function Spyglass(options){
     this.indicator = document.createElement('div');
     this.indicator.classList.add('indicator');
     this.indicator.style.display = 'none';
+    this.indicator.style.zIndex = options.zIndex || 300;
     this.factor = 10;
 
     // set default setting

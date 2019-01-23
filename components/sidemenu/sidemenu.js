@@ -84,6 +84,7 @@ SideMenu.prototype.__refresh = function(){
 	empty(this.elt);
 
 	this.elt.style.width = 0;
+	this.elt.style.left = `-10px`;
 	this.elt.classList.add('side_menu');
 	this.elt.classList.add('flex-container');
 
@@ -115,7 +116,9 @@ SideMenu.prototype.__refresh = function(){
  * open the side menu
  */
 SideMenu.prototype.open = function() {
-	this.elt.style.width =this.setting.width+'px';
+	this.elt.style.left = 0; 
+	this.elt.style.width = this.setting.width+'px';
+
 	if(this.setting.callback) this.setting.callback.call(this,{
 		target:this.elt,
 		isOpen:true
@@ -125,6 +128,7 @@ SideMenu.prototype.open = function() {
  * close the side menu
  */
 SideMenu.prototype.close = function() {
+	this.elt.style.left = `-10px`; 
 	this.elt.style.width = 0;
 	if(this.setting.callback) this.setting.callback.call(this,{
 		target:this.elt,

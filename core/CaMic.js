@@ -65,7 +65,6 @@ class CaMic{
 
     this.viewer.addOnceHandler('tile-loaded', function(){
       // the first tile loaded
-      Loading.close();
       // set zoom and pan
       if(this.setting.states){
         const states = this.setting.states;
@@ -132,6 +131,7 @@ class CaMic{
     this.createMeasurementTool(this.mpp);
     this.createPatchManager();
     this.createHeatmap();
+    Loading.close();
   }
   /**
   * Change which image is staged, used loadImg to load it.
@@ -144,6 +144,7 @@ class CaMic{
   * Loads the staged image
   */
   loadImg(func){
+    Loading.open(document.body, 'CaMicroscope is loading images ...');
     // loads current image
     // if id is set, use id
     var slidePromise;

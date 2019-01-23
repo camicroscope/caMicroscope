@@ -1,0 +1,24 @@
+/*heatmapcontrol.css*/
+.hmc-container {
+    border: 1px solid #ccc;
+    display: block;
+    position: relative;
+    padding: .5rem;
+    margin: .5rem;
+    color: #365f9c;
+}
+
+.hmc-container > label,.hmc-container .mode-panel > label{
+	font-size: 14px;
+}
+.mode-panel {
+	margin-top:.5rem;
+	margin-bottom:.5rem;
+}
+
+.fields-panel, .opacity-panel {
+	padding:10px;
+}
+.sel-field-panel > label, .fields-panel label, .opacity-panel label {
+	font-size:12px;
+}
