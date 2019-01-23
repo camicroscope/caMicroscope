@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="keywords" content="camicroscope, quip"/>
+  <meta charset='utf-8'>
+  <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+
+  <title>caMicroscope</title>
+  <!--
+  <script
+      src="https://code.jquery.com/jquery-3.3.1.min.js"
+      integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+      crossorigin="anonymous"></script>
+  -->
+  <!-- google material icons css sheet -->
+  <link href='../../iconfont/material-icons.css' rel='stylesheet'/>
+  <!-- css sheet -->
+  <link rel='stylesheet' type='text/css' media='all' href='../../css/style.css'/>
+
+  <!-- zoom control css -->
+  <link rel='stylesheet' type='text/css' media='all' href='../../core/extension/openseadragon-zoom-control/openseadragon-zoom-control.css'/>
+  <!-- stylecontextmenu css -->
+  <link href="../../components/simplecontextmenu/simplecontextmenu.css" rel="stylesheet"/>
+  <!-- loading cover css -->
+  <link href="../../components/loading/loading.css" rel="stylesheet"/>
+  <!-- toolbar css -->
+  <link href="../../components/toolbar/toolbar.css" rel="stylesheet"/>
+  <!-- color picker css -->
+  <link href="../../common/colorpicker/color-picker.css" rel="stylesheet"/>
+
+  <link href="../../core/extension/openseadragon-measurement-tool/openseadragon-measurement-tool.css" rel="stylesheet"/>
+
+  <link href="../../core/extension/openseadragon-labeling/openseadragon-labeling.css" rel="stylesheet"/>
+
+  <!-- loading cover js -->
+  <script src='../../components/loading/loading.js'></script>
+  <!-- toolbar js -->
+  <script src='../../components/toolbar/toolbar.js'></script>
+  <!-- color picker js -->
+  <script src='../../common/colorpicker/color-picker.js'></script>
+  <!-- open seadragon lib-->
+  <script src='../../core/openseadragon/openseadragon.js'></script>
+  <script src='../../core/openseadragon-imaginghelper.min.js'></script>
+  <script src='../../core/openseadragon-scalebar.js'></script>
+  <script src='../../core/openseadragonzoomlevels.js'></script>
+
+  <!-- util.js -->
+  <script src='../../common/util.js' type='text/javascript'></script>
+
+  <!-- stylecontextmenu js -->
+  <script src='../../components/simplecontextmenu/simplecontextmenu.js'></script>
+  <!-- core (package/ext) libs -->
+  <script src='../../common/DrawHelper.js'></script>
+  <script src="../../common/simplify.js"></script>
+  <script src="../../common/paths.js"></script>
+  <script src='../../core/Store.js'></script>
+  <script src='../../core/CaMic.js'></script>
+  <script src="../../core/extension/openseadragon-canvas-draw-overlay.js"></script>
+  <script src="../../core/extension/openseadragon-overlays-manage.js"></script>
+  <script src="../../core/extension/openseadragon-measurement-tool/openseadragon-measurement-tool.js"></script>
+  <script src="../../core/extension/openseadragon-zoom-control/openseadragon-zoom-control.js"></script>
+  <!-- <script src="./core/openseadragon-labeling/openseadragon-labeling.js"></script> -->
+
+  <!-- ods js -->
+  <!-- <script src='./js/uicallbacks.js'></script> -->
+  <!-- <script src='./js/dataloaders.js'></script> -->
+
+  <!-- init data -->
+  <script src='segment.js'></script>
+
+</head>
+<body>
+<!-- toolbar -->
+<div id='ca_tools'></div>
+<div id='main_viewer' class='main'></div>
+</body>
+<script type="text/javascript">
+  Loading.open(document.body, 'CaMicroscope is initializing...');
+  // get slide id from url
+  $D.params = getUrlVars();
+
+  // no slide Id error
+  if ($D.params && $D.params.slideId) {
+
+    // normal initialization starts
+    document.addEventListener('DOMContentLoaded', initialize);
+
+  } else {
+    redirect($D.pages.table, 'Slide Id is undefined. Redirecting to Flex Table.');
+  }
+
+  // get states parameters
+  if ($D.params.states) {
+    $D.params.states = StatesHelper.decodeStates($D.params.states);
+  }
+</script>
+</html>
