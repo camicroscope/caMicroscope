@@ -8,66 +8,124 @@
   <meta name='viewport' content='width=device-width, initial-scale=1'>
 
   <title>caMicroscope</title>
-  <!--
-  <script
-      src="https://code.jquery.com/jquery-3.3.1.min.js"
-      integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-      crossorigin="anonymous"></script>
-  -->
   <!-- google material icons css sheet -->
   <link href='../../iconfont/material-icons.css' rel='stylesheet'/>
-  <!-- css sheet -->
+  <!-- common css START -->
   <link rel='stylesheet' type='text/css' media='all' href='../../css/style.css'/>
-
-  <!-- zoom control css -->
-  <link rel='stylesheet' type='text/css' media='all' href='../../core/extension/openseadragon-zoom-control/openseadragon-zoom-control.css'/>
-  <!-- stylecontextmenu css -->
-  <link href="../../components/simplecontextmenu/simplecontextmenu.css" rel="stylesheet"/>
-  <!-- loading cover css -->
-  <link href="../../components/loading/loading.css" rel="stylesheet"/>
-  <!-- toolbar css -->
-  <link href="../../components/toolbar/toolbar.css" rel="stylesheet"/>
   <!-- color picker css -->
-  <link href="../../common/colorpicker/color-picker.css" rel="stylesheet"/>
+  <link rel='stylesheet' type='text/css' media='all' href='../../common/colorpicker/color-picker.css'/>
+  <!-- add pure-form css -->
+  <link rel='stylesheet' type='text/css' media='all' href='../../common/pureform/pure-form.css'/>		
+  <!-- common css END -->
 
-  <link href="../../core/extension/openseadragon-measurement-tool/openseadragon-measurement-tool.css" rel="stylesheet"/>
+  <!-- UI components css START -->
+  <!-- message display bar css -->
+  <link rel='stylesheet' type='text/css' media='all' href='../../components/camessage/camessage.css'/>
+  <!-- toolbar css -->
+  <link rel='stylesheet' type='text/css' media='all' href='../../components/toolbar/toolbar.css'/>
+  <!-- side menu css -->
+  <link rel='stylesheet' type='text/css' media='all' href='../../components/sidemenu/sidemenu.css'/>
+  <!-- layers controller css -->
+  <link rel='stylesheet' type='text/css' media='all' href='../../components/layersviewer/layersviewer.css'/>
+    <!-- collapsible list css -->
+    <link rel='stylesheet' type='text/css' media='all' href='../../components/collapsiblelist/collapsiblelist.css'/>
+  <!-- operation panel css -->
+  <link rel='stylesheet' type='text/css' media='all' href='../../components/operationpanel/operationpanel.css'/>
+  <!-- mult selector css -->
+  <link rel='stylesheet' type='text/css' media='all' href='../../components/multselector/multselector.css'/>
+  <!-- stylecontextmenu css -->
+  <link rel='stylesheet' type='text/css' media='all' href='../../components/simplecontextmenu/simplecontextmenu.css'/>
+  <!-- message queue css -->
+  <link rel='stylesheet' type='text/css' media='all' href='../../components/messagequeue/messagequeue.css'/>
+  <!-- loading cover css -->
+  <link rel='stylesheet' type='text/css' media='all' href='../../components/loading/loading.css'/>
+  <!-- popup panel css -->
+  <link rel='stylesheet' type='text/css' media='all' href='../../components/popuppanel/popuppanel.css'/>
+  <!-- add spyglass css -->
+  <link rel='stylesheet' type='text/css' media='all' href='../../components/spyglass/spyglass.css'/>
+  <!-- UI components css END -->
 
-  <link href="../../core/extension/openseadragon-labeling/openseadragon-labeling.css" rel="stylesheet"/>
+  <!-- osd & core css START -->
+  <!-- zoom control css -->
+   <link rel='stylesheet' type='text/css' media='all' href='../../core/extension/openseadragon-zoom-control/openseadragon-zoom-control.css'/>
+   <!-- mesurement tool css -->
+   <link rel='stylesheet' type='text/css' media='all' href='../../core/extension/openseadragon-measurement-tool/openseadragon-measurement-tool.css'/>
+   <!-- osd & core css END -->
 
-  <!-- loading cover js -->
-  <script src='../../components/loading/loading.js'></script>
-  <!-- toolbar js -->
-  <script src='../../components/toolbar/toolbar.js'></script>
+
+
+   <!--  common js START -->
+   <!-- util.js -->
+  <script type='text/javascript' src='../../common/util.js'></script>
+  <script type='text/javascript' src='../../common/DrawHelper.js'></script>
+  <script type='text/javascript' src='../../common/simplify.js'></script>
+  <script type='text/javascript' src='../../common/paths.js'></script>
+  <!-- add pure-form script -->
+  <script type='text/javascript' src='../../common/pureform/document-register-element.js'></script>
+  <script type='text/javascript' src='../../common/pureform/pure-form.js'></script>
   <!-- color picker js -->
-  <script src='../../common/colorpicker/color-picker.js'></script>
-  <!-- open seadragon lib-->
-  <script src='../../core/openseadragon/openseadragon.js'></script>
-  <script src='../../core/openseadragon-imaginghelper.min.js'></script>
-  <script src='../../core/openseadragon-scalebar.js'></script>
-  <script src='../../core/openseadragonzoomlevels.js'></script>
+  <script type='text/javascript' src='../../common/colorpicker/color-picker.js'></script>
+  <!-- sortable js -->
+  <script type='text/javascript' src='../../common/sortable/Sortable.js'></script>
+  
+  <!--  common js END -->
 
-  <!-- util.js -->
-  <script src='../../common/util.js' type='text/javascript'></script>
-
+  <!--  components js START -->
+  <!-- message display js -->
+  <script type='text/javascript' src='../../components/camessage/camessage.js'></script>
+  <!-- toolbar js -->
+  <script type='text/javascript' src='../../components/toolbar/toolbar.js'></script>
+  <!-- sidemenu js -->
+  <script type='text/javascript' src='../../components/sidemenu/sidemenu.js'></script>
+    <!-- collapsible list js -->
+    <script type='text/javascript' src='../../components/collapsiblelist/collapsiblelist.js'></script>
+  <!-- layers controller js -->
+  <script type='text/javascript' src='../../components/layersviewer/layersviewer.js'></script>
+  <!-- operation panel js -->
+  <script type='text/javascript' src='../../components/operationpanel/operationpanel.js'></script>
+  <!-- loading cover js -->
+  <script type='text/javascript' src='../../components/loading/loading.js'></script>
   <!-- stylecontextmenu js -->
-  <script src='../../components/simplecontextmenu/simplecontextmenu.js'></script>
+  <script type='text/javascript' src='../../components/simplecontextmenu/simplecontextmenu.js'></script>
+  <!-- popup panel js -->
+  <script type='text/javascript' src='../../components/popuppanel/popuppanel.js'></script>
+  <!-- message queue js -->
+  <script type='text/javascript' src='../../components/messagequeue/messagequeue.js'></script>
+  <!-- mult selector js -->
+  <script type='text/javascript' src='../../components/multselector/multselector.js'></script>
+  <!-- spyglass -->
+  <script type='text/javascript' src='../../components/spyglass/spyglass.js'></script>
+
+  <!--  components js END -->
+  
+
+  <!-- osd & core js START -->
+  <script type='text/javascript' src='../../core/openseadragon/openseadragon.js' ></script>
+  <script type='text/javascript' src='../../core/openseadragon-imaginghelper.min.js'></script>
+  <script type='text/javascript' src='../../core/openseadragon-scalebar.js'></script>
+  <script type='text/javascript' src='../../core/openseadragonzoomlevels.js'></script>
+
   <!-- core (package/ext) libs -->
-  <script src='../../common/DrawHelper.js'></script>
-  <script src="../../common/simplify.js"></script>
-  <script src="../../common/paths.js"></script>
-  <script src='../../core/Store.js'></script>
-  <script src='../../core/CaMic.js'></script>
-  <script src="../../core/extension/openseadragon-canvas-draw-overlay.js"></script>
-  <script src="../../core/extension/openseadragon-overlays-manage.js"></script>
-  <script src="../../core/extension/openseadragon-measurement-tool/openseadragon-measurement-tool.js"></script>
-  <script src="../../core/extension/openseadragon-zoom-control/openseadragon-zoom-control.js"></script>
-  <!-- <script src="./core/openseadragon-labeling/openseadragon-labeling.js"></script> -->
+  <script type='text/javascript' src='../../core/StatesHelper.js'></script>
 
-  <!-- ods js -->
-  <!-- <script src='./js/uicallbacks.js'></script> -->
-  <!-- <script src='./js/dataloaders.js'></script> -->
+  <script type='text/javascript' src='../../core/Store.js'></script>
+  <script type='text/javascript' src='../../core/CaMic.js'></script>
 
-  <!-- init data -->
+  <script type='text/javascript' src='../../core/extension/openseadragon-canvas-draw-overlay.js'></script>
+  <script type='text/javascript' src='../../core/extension/openseadragon-overlays-manage.js'></script>
+  <script type='text/javascript' src='../../core/extension/openseadragon-measurement-tool/openseadragon-measurement-tool.js'></script>
+  <script type='text/javascript' src='../../core/extension/openseadragon-zoom-control/openseadragon-zoom-control.js'></script>
+
+
+  <!-- business js -->
+  <script src="../../dist/packages.js"></script>
+  <!-- <script src="../../dist/imgbox_package.js"></script> -->
+  
+  <!--
+  <script src='../viewer/uicallbacks.js'></script>
+  <script src='../viewer/dataloaders.js'></script>
+  <script src='../viewer/init.js'></script>
+  -->
   <script src='segment.js'></script>
 
 </head>
