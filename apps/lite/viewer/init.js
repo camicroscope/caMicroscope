@@ -258,7 +258,7 @@ function initUIcomponents(){
         title: 'Bug Report',
         value: 'bugs',
         type: 'btn',
-        callback: ()=>{window.location.href='https://goo.gl/forms/mgyhx4ADH0UuEQJ53'}
+        callback: ()=>{window.open('https://goo.gl/forms/mgyhx4ADH0UuEQJ53','_blank').focus()}
       },
       {
         icon: 'timeline',
