@@ -61,48 +61,86 @@
 
 		window.changedData = data;
 	}
+
 	// TODO: Create CaToolbar
-	/*
-	const error1 = new OperationPanel({
-		id: 'error1',
-		//element:
-		//formSchemas:demoSchemas.slice(0,1),
-		action: {
-			title: 'Save',
-			callback: callback
-		}
-	});
-	const error2 = new OperationPanel({
-		id: 'error2',
-		title: 'Algorithm:',
-		//element:
-		formSchemas: demoSchemas.slice(1),
-		action: {
-			//title:'Submit',
-			//callback:callback
-		}
-	});
+	// var clickOn = {
+	// 	main:function(d){
+	// 		console.log(d);
+	// 	},
+	// 	btn:function(d){
+	// 		console.log(d);
+	// 	},
+	// 	check:function(d){
+	// 		console.log(d);
+	// 	},
+	// 	multistates:function(d){
+	// 		console.log(d);
+	// 	},
+	// 	dropdown:function(d){
+	// 		console.log(d);
+	// 	},
+	// }
+
+
 	// initialize
-	window.tools = new OperationPanel({
-		id: 'single',
-		//element:
-		formSchemas: demoSchemas.slice(0, 1),
-		action: {
-			title: 'Save',
-			callback: callback
-		}
-	});
-	window.two = new OperationPanel({
-		id: 'multiple',
-		title: 'Algorithm:',
-		//element:
-		formSchemas: demoSchemas.slice(1),
-		action: {
-			//title:'Submit',
-			callback: callback
-		}
-	});
-	*/
+	window.tools = new CaToolbar({
+    id:'tools',
+    mainToolsCallback:callback,
+    subTools:[
+      // btn
+      {
+        icon:'aspect_ratio',// material icons' name
+        title:'btn',
+        type:'btn',// btn/check/dropdown
+        value:'btn',
+        callback:callback
+      }, //
+      // check
+      {
+        icon:'create',// material icons' name
+        title:'check',
+        type:'check',
+        callback:callback
+      },
+      // measurement tool
+      {
+        icon:'space_bar',
+        title:'multistates',
+        type:'multistates',
+        value:'multistates',
+        callback:callback
+      },
+      // dropdown
+      {
+        icon:'search',
+        title:'dropdown',
+        type:'dropdown',
+        value:'dropdown',
+        dropdownList:[
+          // free draw
+          {
+            icon:'linear_scale',
+            value:'a',
+            title:'10x',
+            checked:true
+          },
+          // rectangle fraw
+          {
+            icon:'timeline',
+            value:'b',
+            title:'20x'
+          },
+          {
+            icon:'timeline',
+            value:'c',
+            title:'40x'
+          }
+        ],
+        callback:callback
+      }
+
+    ]
+  });
 
 	// var select =  document.querySelector('#single #arg2');
 	// select.value = 'arg_02';
