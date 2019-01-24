@@ -257,6 +257,7 @@ function initUIcomponents(){
         icon: 'bug_report',
         title: 'Bug Report',
         value: 'bugs',
+        type: 'btn',
         callback: ()=>{window.location.href='https://goo.gl/forms/mgyhx4ADH0UuEQJ53'}
       },
       {
