@@ -254,6 +254,12 @@ function initUIcomponents(){
         callback:toggleViewerMode
       },
       {
+        icon: 'bug_report',
+        title: 'Bug Report',
+        value: 'bugs',
+        callback: ()=>{window.location.href='https://goo.gl/forms/mgyhx4ADH0UuEQJ53'}
+      },
+      {
         icon: 'timeline',
         type: 'check',
         value: 'rect',
