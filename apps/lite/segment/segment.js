@@ -2,8 +2,8 @@ let $CAMIC = null;
 const $UI = {};
 const $D = {
   pages: {
-    home: '../../apps/table.html',
-    table: '../../apps/table.html'
+    home: '',
+    table: ''
   },
   params: null // parameter from url - slide Id and status in it (object).
 };
