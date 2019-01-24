@@ -252,6 +252,15 @@ function initUIcomponents(){
         value:'dbviewers',
         type:'check',
         callback:toggleViewerMode
+      },
+      {
+        icon: 'timeline',
+        type: 'check',
+        value: 'rect',
+        title: 'Rectangle',
+        callback: function () {
+          window.location.href = '../segment/segment.html';
+        }
       }
 
     ]
