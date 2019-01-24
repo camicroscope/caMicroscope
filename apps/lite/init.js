@@ -257,7 +257,7 @@ function initUIcomponents(){
         icon: 'timeline',
         type: 'check',
         value: 'rect',
-        title: 'Rectangle',
+        title: 'Segment',
         callback: function () {
           window.location.href = '../segment/segment.html';
         }
