@@ -259,7 +259,13 @@ function initUIcomponents(){
         value: 'rect',
         title: 'Segment',
         callback: function () {
-          window.location.href = '../segment/segment.html';
+          if (window.location.search.length > 0) {
+            window.location.href = '../segment/segment.html' + window.location.search;
+          }
+          else {
+            window.location.href = '../segment/segment.html';
+          }
+
         }
       }
 
