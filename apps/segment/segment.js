@@ -159,7 +159,7 @@ tryIt.addEventListener('click', () => {
   cv.distanceTransform(opening, distTrans, cv.DIST_L2, 5);
   cv.normalize(distTrans, distTrans, 1, 0, cv.NORM_INF);
   // get foreground
-  cv.threshold(distTrans, coinsFg, 0.1 * 1, 255, cv.THRESH_BINARY);
+  cv.threshold(distTrans, coinsFg, 0.3 * 1, 255, cv.THRESH_BINARY);
   coinsFg.convertTo(coinsFg, cv.CV_8U, 1, 0);
   cv.subtract(coinsBg, coinsFg, unknown);
   // get connected components markers
@@ -289,7 +289,7 @@ function initUIcomponents() {
         icon: 'timeline',
         type: 'check',
         value: 'rect',
-        title: 'Rectangle',
+        title: 'Segment',
         callback: drawRectangle
       }
     ]
