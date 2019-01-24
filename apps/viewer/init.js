@@ -247,6 +247,13 @@ function initUIcomponents(){
         callback:shareURL
       },
       {
+        icon: 'bug_report',
+        title: 'Bug Report',
+        value: 'bugs',
+        type: 'btn',
+        callback: ()=>{window.open('https://goo.gl/forms/mgyhx4ADH0UuEQJ53','_blank').focus()}
+      },
+      {
         icon:'view_carousel',
         title:'Side By Side Viewer',
         value:'dbviewers',
