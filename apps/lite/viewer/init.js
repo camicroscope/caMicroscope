@@ -348,6 +348,7 @@ function initUIcomponents(){
         //id:
         //element:
         formSchemas:annotSchemas,
+        resetCallback:reset_callback,
         action:{
           title:'Save',
           callback:anno_callback

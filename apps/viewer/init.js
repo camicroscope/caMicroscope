@@ -333,9 +333,10 @@ function initUIcomponents(){
         //id:
         //element:
         formSchemas:annotSchemas,
+        resetCallback:reset_callback,
         action:{
           title:'Save',
-          callback:anno_callback
+          callback:anno_callback,
         }
       });
       $UI.appsList.clearContent('annotation');
