@@ -13,7 +13,7 @@ function ImgBoxMods() {
     fetch(p + "/info.json").then(response => {
       return response.json();
     }).then(data => {
-      let ibmox_source = {
+      let imbox_source = {
         "@context": "http://iiif.io/api/image/2/context.json",
         //"@id": "/iiif?iri=https://s3.amazonaws.com/ebremeribox/TCGA-02-0001-01C-01-BS1.0cc8ca55-d024-440c-a4f0-01cf5b3af861.svs",
         "@id": p,
@@ -26,7 +26,7 @@ function ImgBoxMods() {
           "width": 256
         }]
       }
-      this.viewer.open(ibmox_source);
+      this.viewer.open(imbox_source);
       //set scalebar
       this.mpp = data['mpp-x'] || data['mpp-y'] || 1
       this.createScalebar(this.mpp)
@@ -42,7 +42,7 @@ function ImgBoxMods() {
       x.specimen = this.specimen
       x.mpp = 1;
       x.location = p;
-      x.url = ibmox_source
+      x.url = imbox_source
       console.log(func)
       console.log(x)
       if (func && typeof func === 'function'){
