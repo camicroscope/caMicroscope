@@ -291,7 +291,8 @@ let defaultTemplate = {
             },"notes": {
             "id": "a1",
             "title": "Notes: ",
-            "type": "textarea",
+            "type": "string",
+            "format","textarea",
             "maxLength": 128
         }
     }
