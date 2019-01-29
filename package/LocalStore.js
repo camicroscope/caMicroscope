@@ -52,8 +52,11 @@ function init_LocalStore(){
   }
 
   function removeFromLocalStorage(type, id){
-    console.error('Delete operation currently unsupported')
-    window.alert('Delete operation currently unsupported')
+    let data = JSON.parse(window.localStorage.getItem(type))
+    data = data || []
+    newData = data.filter(x=>x['_id'] !== id)
+    window.localStorage.setItem(type, JSON.stringify(data))
+    return newData
   }
 
 
@@ -292,7 +295,7 @@ let defaultTemplate = {
             "id": "a1",
             "title": "Notes: ",
             "type": "string",
-            "format","textarea",
+            "format":"textarea",
             "maxLength": 128
         }
     }
