@@ -218,6 +218,7 @@ function init_LocalStore(){
       // downloads marks for the current slide only
       // make the browser download it
       let slide = $D.params.id // portable?
+      slide = decodeURIComponent(slide) // fix for url fix
       let query = {}
       query['provenance.image.slide'] = slide
       let data = JSON.parse(window.localStorage.getItem("mark"))
