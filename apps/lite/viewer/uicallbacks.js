@@ -245,7 +245,7 @@ function draw(e){
 			$CAMIC.drawContextmenu.on();
 			$CAMIC.drawContextmenu.open({x:this.clientX,y:this.clientY,target:target});
 			// turn off magnifier
-			$UI.toolbar._sub_tools[3].querySelector('input[type=checkbox]').checked = false;
+			$UI.toolbar._sub_tools[4].querySelector('input[type=checkbox]').checked = false;
 			$UI.spyglass.close();
 			// turn off measurement
 
@@ -266,7 +266,7 @@ function draw(e){
 }
 
 function toggleOffDrawBtns(){
-	const label = $UI.toolbar._sub_tools[1].querySelector('label');
+	const label = $UI.toolbar._sub_tools[2].querySelector('label');
 	const state = +label.dataset.state;
 	label.classList.remove(`s${state}`);
 
@@ -284,7 +284,7 @@ function toggleMeasurement(data){
 		$CAMIC.drawContextmenu.off();
 		toggleOffDrawBtns();
 		// turn off magnifier
-		$UI.toolbar._sub_tools[2].querySelector('input[type=checkbox]').checked = false;
+		$UI.toolbar._sub_tools[3].querySelector('input[type=checkbox]').checked = false;
 		$UI.spyglass.close();
 	}else{
 		$CAMIC.viewer.measureInstance.off();
@@ -299,12 +299,12 @@ function toggleMagnifier(data){
 		$UI.spyglass.factor = +data.status;
 		$UI.spyglass.open(this.clientX,this.clientY);
 		// turn off draw
-		//$UI.toolbar._sub_tools[1].querySelector('input[type=checkbox]').checked = false;
+		//$UI.toolbar._sub_tools[2].querySelector('input[type=checkbox]').checked = false;
 		$CAMIC.viewer.canvasDrawInstance.drawOff();
 		$CAMIC.drawContextmenu.off();
 		toggleOffDrawBtns();
 		// turn off measurement
-		$UI.toolbar._sub_tools[3].querySelector('input[type=checkbox]').checked = false;
+		$UI.toolbar._sub_tools[4].querySelector('input[type=checkbox]').checked = false;
 		$CAMIC.viewer.measureInstance.off();
 	}else{
 		$UI.spyglass.close();
@@ -515,7 +515,7 @@ function saveAnnotCallback(){
 	toggleOffDrawBtns();
 	$CAMIC.viewer.canvasDrawInstance.clear();
 	// uncheck pen draw icon and checkbox
-	//$UI.toolbar._sub_tools[1].querySelector('[type=checkbox]').checked = false;
+	//$UI.toolbar._sub_tools[2].querySelector('[type=checkbox]').checked = false;
 	// clear form
 	$UI.annotOptPanel.clear();
 
@@ -668,7 +668,7 @@ function startDrawing(e){
 	return;
 }
 function stopDrawing(e){
-	let state = +$UI.toolbar._sub_tools[1].querySelector('label').dataset.state;
+	let state = +$UI.toolbar._sub_tools[2].querySelector('label').dataset.state;
 	if(state===1){
 		saveAnnotation();
 	}
