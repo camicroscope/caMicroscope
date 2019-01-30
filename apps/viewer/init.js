@@ -247,18 +247,18 @@ function initUIcomponents(){
         callback:shareURL
       },
       {
-        icon: 'bug_report',
-        title: 'Bug Report',
-        value: 'bugs',
-        type: 'btn',
-        callback: ()=>{window.open('https://goo.gl/forms/mgyhx4ADH0UuEQJ53','_blank').focus()}
-      },
-      {
         icon:'view_carousel',
         title:'Side By Side Viewer',
         value:'dbviewers',
         type:'check',
         callback:toggleViewerMode
+      },
+      {
+        icon: 'bug_report',
+        title: 'Bug Report',
+        value: 'bugs',
+        type: 'btn',
+        callback: ()=>{window.open('https://goo.gl/forms/mgyhx4ADH0UuEQJ53','_blank').focus()}
       }
 
     ]
@@ -333,9 +333,10 @@ function initUIcomponents(){
         //id:
         //element:
         formSchemas:annotSchemas,
+        resetCallback:reset_callback,
         action:{
           title:'Save',
-          callback:anno_callback
+          callback:anno_callback,
         }
       });
       $UI.appsList.clearContent('annotation');

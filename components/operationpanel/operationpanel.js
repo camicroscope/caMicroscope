@@ -189,6 +189,8 @@ OperationPanel.prototype.__refresh = function(){
 
 	this._reset_.addEventListener('click', ()=>{
 		this.clear();
+		if(this.setting.resetCallback&&typeof this.setting.resetCallback == 'function') this.setting.resetCallback.call(null,{});
+
 	});
 	// event action
 	this._action_.addEventListener('click', function(){

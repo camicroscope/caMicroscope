@@ -219,7 +219,9 @@ pure-form[auto-resize="true"] iframe.pure-form-item {
     transition: height 0.3s ease-in-out;
     overflow: hidden;
 }
-
+textarea.pure-form-item {
+    width:100%;
+}
 pure-form .pure-form-item[data-valid="true"] {
     border-color: #3c763d;
     /*background-image: url('img/pure-form-icon-valid.svg');*/

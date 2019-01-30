@@ -16,10 +16,10 @@ function toggleViewerMode(opt){
 //mainfest
 function multSelector_action(event){
 
-	if(event.data.length == 0){
-		alert('No Layer selected');
-		return;
-	}
+	// if(event.data.length == 0){
+	// 	alert('No Layer selected');
+	// 	return;
+	// }
 
 	// hide the window
 	$UI.multSelector.elt.classList.add('none');
@@ -31,8 +31,11 @@ function multSelector_action(event){
 
 	// open new instance camic
 	try{
-
-		$minorCAMIC = new CaMic("minor_viewer",$D.params.slideId, {
+		let slideQuery = {}
+		slideQuery.id = $D.params.slideId
+		slideQuery.name = $D.params.slide
+		slideQuery.location = $D.params.location
+		$minorCAMIC = new CaMic("minor_viewer", slideQuery, {
 			// osd options
 			mouseNavEnabled:false,
 			panVertical:false,
@@ -242,7 +245,7 @@ function draw(e){
 			$CAMIC.drawContextmenu.on();
 			$CAMIC.drawContextmenu.open({x:this.clientX,y:this.clientY,target:target});
 			// turn off magnifier
-			$UI.toolbar._sub_tools[3].querySelector('input[type=checkbox]').checked = false;
+			$UI.toolbar._sub_tools[4].querySelector('input[type=checkbox]').checked = false;
 			$UI.spyglass.close();
 			// turn off measurement
 
@@ -263,7 +266,7 @@ function draw(e){
 }
 
 function toggleOffDrawBtns(){
-	const label = $UI.toolbar._sub_tools[1].querySelector('label');
+	const label = $UI.toolbar._sub_tools[2].querySelector('label');
 	const state = +label.dataset.state;
 	label.classList.remove(`s${state}`);
 
@@ -281,7 +284,7 @@ function toggleMeasurement(data){
 		$CAMIC.drawContextmenu.off();
 		toggleOffDrawBtns();
 		// turn off magnifier
-		$UI.toolbar._sub_tools[2].querySelector('input[type=checkbox]').checked = false;
+		$UI.toolbar._sub_tools[3].querySelector('input[type=checkbox]').checked = false;
 		$UI.spyglass.close();
 	}else{
 		$CAMIC.viewer.measureInstance.off();
@@ -296,12 +299,12 @@ function toggleMagnifier(data){
 		$UI.spyglass.factor = +data.status;
 		$UI.spyglass.open(this.clientX,this.clientY);
 		// turn off draw
-		//$UI.toolbar._sub_tools[1].querySelector('input[type=checkbox]').checked = false;
+		//$UI.toolbar._sub_tools[2].querySelector('input[type=checkbox]').checked = false;
 		$CAMIC.viewer.canvasDrawInstance.drawOff();
 		$CAMIC.drawContextmenu.off();
 		toggleOffDrawBtns();
 		// turn off measurement
-		$UI.toolbar._sub_tools[3].querySelector('input[type=checkbox]').checked = false;
+		$UI.toolbar._sub_tools[4].querySelector('input[type=checkbox]').checked = false;
 		$CAMIC.viewer.measureInstance.off();
 	}else{
 		$UI.spyglass.close();
@@ -424,6 +427,11 @@ function sort_change(sort){
 	$CAMIC.layersManager.sort(sort);
 
 }
+
+function reset_callback(data){
+	$CAMIC.viewer.canvasDrawInstance.clear();
+}
+
 function anno_callback(data){
 	// is form ok?
 	const noteData = $UI.annotOptPanel._form_.value;
@@ -507,7 +515,7 @@ function saveAnnotCallback(){
 	toggleOffDrawBtns();
 	$CAMIC.viewer.canvasDrawInstance.clear();
 	// uncheck pen draw icon and checkbox
-	//$UI.toolbar._sub_tools[1].querySelector('[type=checkbox]').checked = false;
+	//$UI.toolbar._sub_tools[2].querySelector('[type=checkbox]').checked = false;
 	// clear form
 	$UI.annotOptPanel.clear();
 
@@ -660,7 +668,7 @@ function startDrawing(e){
 	return;
 }
 function stopDrawing(e){
-	let state = +$UI.toolbar._sub_tools[1].querySelector('label').dataset.state;
+	let state = +$UI.toolbar._sub_tools[2].querySelector('label').dataset.state;
 	if(state===1){
 		saveAnnotation();
 	}

@@ -16,10 +16,10 @@ function toggleViewerMode(opt){
 //mainfest
 function multSelector_action(event){
 
-	if(event.data.length == 0){
-		alert('No Layer selected');
-		return;
-	}
+	// if(event.data.length == 0){
+	// 	alert('No Layer selected');
+	// 	return;
+	// }
 
 	// hide the window
 	$UI.multSelector.elt.classList.add('none');
@@ -31,8 +31,11 @@ function multSelector_action(event){
 
 	// open new instance camic
 	try{
-
-		$minorCAMIC = new CaMic("minor_viewer",$D.params.slideId, {
+		let slideQuery = {}
+		slideQuery.id = $D.params.slideId
+		slideQuery.name = $D.params.slide
+		slideQuery.location = $D.params.location
+		$minorCAMIC = new CaMic("minor_viewer",slideQuery, {
 			// osd options
 			mouseNavEnabled:false,
 			panVertical:false,
@@ -426,6 +429,11 @@ function sort_change(sort){
 	$CAMIC.layersManager.sort(sort);
 
 }
+
+function reset_callback(data){
+	$CAMIC.viewer.canvasDrawInstance.clear();
+}
+
 function anno_callback(data){
 	// is form ok?
 	const noteData = $UI.annotOptPanel._form_.value;

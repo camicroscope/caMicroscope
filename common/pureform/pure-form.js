@@ -1518,7 +1518,7 @@
                         } break;
 
                         case 'textarea': {
-                            el = createEl(null, 'textarea', { name: id, id: id, value: '', rows: 3 });
+                            el = createEl(null, 'textarea', { name: id, id: id, value: '', rows: 5 });
                         } break;
 
                         case 'html': {

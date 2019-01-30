@@ -52,8 +52,11 @@ function init_LocalStore(){
   }
 
   function removeFromLocalStorage(type, id){
-    console.error('Delete operation currently unsupported')
-    window.alert('Delete operation currently unsupported')
+    let data = JSON.parse(window.localStorage.getItem(type))
+    data = data || []
+    newData = data.filter(x=>x['_id'] !== id)
+    window.localStorage.setItem(type, JSON.stringify(data))
+    return newData
   }
 
 
@@ -215,6 +218,7 @@ function init_LocalStore(){
       // downloads marks for the current slide only
       // make the browser download it
       let slide = $D.params.id // portable?
+      slide = decodeURIComponent(slide) // fix for url fix
       let query = {}
       query['provenance.image.slide'] = slide
       let data = JSON.parse(window.localStorage.getItem("mark"))
@@ -240,6 +244,7 @@ function init_LocalStore(){
     // loads marks for the current slide only, without replacement
     // open a file selector
     let slide = $D.params.id
+    slide = decodeURIComponent(slide)
     var element = document.createElement('input');
     element.setAttribute('type', "file")
     element.style.display = 'position: fixed; top: -100em';
@@ -291,7 +296,8 @@ let defaultTemplate = {
             },"notes": {
             "id": "a1",
             "title": "Notes: ",
-            "type": "textarea",
+            "type": "string",
+            "format":"textarea",
             "maxLength": 128
         }
     }
