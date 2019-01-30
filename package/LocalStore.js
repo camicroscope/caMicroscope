@@ -244,6 +244,7 @@ function init_LocalStore(){
     // loads marks for the current slide only, without replacement
     // open a file selector
     let slide = $D.params.id
+    slide = decodeURIComponent(slide)
     var element = document.createElement('input');
     element.setAttribute('type', "file")
     element.style.display = 'position: fixed; top: -100em';
