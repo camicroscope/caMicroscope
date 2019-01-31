@@ -291,6 +291,24 @@ function initUIcomponents() {
         value: 'rect',
         title: 'Segment',
         callback: drawRectangle
+      },{
+        icon: 'insert_photo',
+        type: 'btn',
+        value: 'viewer',
+        title: 'Viewer',
+        callback: function () {
+          if (window.location.search.length > 0) {
+            window.location.href = '../viewer/viewer.html' + window.location.search;
+          } else {
+            window.location.href = '../viewer/viewer.html';
+          }
+        }
+      },{
+        icon: 'bug_report',
+        title: 'Bug Report',
+        value: 'bugs',
+        type: 'btn',
+        callback: ()=>{window.open('https://goo.gl/forms/mgyhx4ADH0UuEQJ53','_blank').focus()}
       }
     ]
   });
