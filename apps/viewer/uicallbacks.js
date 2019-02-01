@@ -671,7 +671,7 @@ function startDrawing(e){
 }
 function stopDrawing(e){
 	let state = +$UI.toolbar._sub_tools[1].querySelector('label').dataset.state;
-	if(state===1){
+	if(state===1&&$CAMIC.viewer.canvasDrawInstance._draws_data_.length > 0){
 		saveAnnotation();
 	}
 }

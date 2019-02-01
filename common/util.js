@@ -73,6 +73,64 @@ function hexToRgbA(hex, opacity = 1){
     }
     throw new Error('Bad Hex');
 }
+
+/**
+ * polygonArea
+ * @param  {Array} points describe a self-closed simple polygon (start and end points are same).
+ * @return the area of polygon
+ */
+function polygonArea(points){
+  let area = 0;
+  let j = points.length - 2;
+  for(let i = 0; i < points.length - 1; i++){
+    area += (points[j][0] + points[i][0]) * (points[j][1] - points[i][1]);
+    // j is previous vertex to i         
+    j = i;
+  }
+  return Math.abs(area / 2); 
+}
+
+/**
+ * isTwoLinesIntersect
+ * @param  {Array}  l1 - [[a,b],[c,d]] start[x,y] and end[x,y] points
+ * @param  {[type]}  l2 [[p,q],[r,s]]
+ * @return {Boolean} 
+ */
+// a = l1[0][0];
+// b = l1[0][1];
+// c = l1[1][0];
+// d = l1[1][1];
+
+// p = l2[0][0];
+// q = l2[0][1];
+// r = l2[1][0];
+// s = l2[1][1];
+function isTwoLinesIntersect(l1, l2) {
+  var det, gamma, lambda;
+  det = (l1[1][0] - l1[0][0]) * (l2[1][1] - l2[0][1]) - (l2[1][0] - l2[0][0]) * (l1[1][1] - l1[0][1]);
+  if (det === 0) {
+    return false;
+  } else {
+    lambda = ((l2[1][1] - l2[0][1]) * (l2[1][0] - l1[0][0]) + (l2[0][0] - l2[1][0]) * (l2[1][1] - l1[0][1])) / det;
+    gamma = ((l1[0][1] - l1[1][1]) * (l2[1][0] - l1[0][0]) + (l1[1][0] - l1[0][0]) * (l2[1][1] - l1[0][1])) / det;
+    return (0 < lambda && lambda < 1) && (0 < gamma && gamma < 1);
+  }
+}
+/**
+ * isSelfIntersect
+ * @param  {Array} points describe a self-closed simple polygon (start and end points are same).
+ * @return {Boolean} is self-intersecting?
+ */
+function isSelfIntersect(points){
+  for(let i = 0;i < points.length - 2;i++){
+    for(let j = i + 1; j < points.length - 1;j++){
+      if(isTwoLinesIntersect([points[i],points[i+1]],[points[j],points[j+1]]))
+        return true;
+    }
+  }
+  return false;
+}
+
 function hexToRgb(hex){
     var c;
     if(/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)){

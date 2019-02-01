@@ -524,8 +524,17 @@
               // simplify
               this._current_path_.geometry.coordinates[0] = simplify(points);
             };
+            if(this.drawMode !== 'line'){
 
-
+                if(isSelfIntersect(this._current_path_.geometry.coordinates[0])){
+                    alert('No Self-Intersecting Polygon.');
+                    this._current_path_ = null;
+                    DrawHelper.clearCanvas(this._draw_);
+                    return;
+                }
+                // calculate the are of polygon
+                let area = polygonArea(this._current_path_.geometry.coordinates[0]);
+            }
             // create bounds
             this._current_path_.bound = getBounds(this._current_path_.geometry.coordinates[0]);
             
