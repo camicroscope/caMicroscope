@@ -84,7 +84,7 @@ pure-form .pure-form-label[data-error]:after,
 pure-form .pure-form-label[data-characters-remaining]:after {
     content: attr(data-error);
     font-size: 12px;
-    position: absolute;
+    /*position: absolute;*/
     right:20px; /* modified by Nan Li*/
     top: 37px;
 /*    padding: 2px 8px;
