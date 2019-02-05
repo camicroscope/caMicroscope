@@ -64,6 +64,8 @@ function handlePost(filename, slidename){
       data.study = ""
       data.specimen = ""
       data.mpp = parseFloat(data['mpp-x']) || parseFloat(data['mpp-y']) || 0
+      data.mpp_x = parseFloat(data['mpp-x'])
+      data.mpp_y = parseFloat(data['mpp-y'])
       store.post("Slide", {}, data).then(
         success => changeStatus("POST", success) // Handle the success response object
       ).catch(
