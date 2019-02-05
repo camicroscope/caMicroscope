@@ -6,7 +6,24 @@ $minorCAMIC = null;
 function toggleViewerMode(opt){
 	const main = document.getElementById('main_viewer');
 	const secondary = document.getElementById('secondary');
+	const canvasDraw = $CAMIC.viewer.canvasDrawInstance;
 	if(opt.checked){
+		// turn off drawing
+		canvasDraw.clear();
+		canvasDraw.drawOff();
+		$CAMIC.drawContextmenu.off();
+		toggleOffDrawBtns();
+		// turn off magnifier
+		$UI.toolbar._sub_tools[3].querySelector('input[type=checkbox]').checked = false;
+		$UI.spyglass.close();
+		// turn off measurement
+		$UI.toolbar._sub_tools[4].querySelector('input[type=checkbox]').checked = false;
+		$CAMIC.viewer.measureInstance.off();
+		//close layers menu
+		$UI.layersSideMenu.close();
+		//close apps menu
+		$UI.appsSideMenu.close();
+
 		openSecondaryViewer();
 	}else{
 		closeSecondaryViewer();
@@ -228,7 +245,6 @@ function draw(e){
 	}
 	const state = +e.state;
 	const canvasDraw = $CAMIC.viewer.canvasDrawInstance;
-	//$UI.message.add(`Draw: ${state?'ON':'OFF'}`);
 
 	const target = this.srcElement || this.target || this.eventSource.canvas;
 	switch (state) {
@@ -245,9 +261,11 @@ function draw(e){
 			$CAMIC.drawContextmenu.on();
 			$CAMIC.drawContextmenu.open({x:this.clientX,y:this.clientY,target:target});
 			// turn off magnifier
-			$UI.toolbar._sub_tools[4].querySelector('input[type=checkbox]').checked = false;
+			$UI.toolbar._sub_tools[3].querySelector('input[type=checkbox]').checked = false;
 			$UI.spyglass.close();
 			// turn off measurement
+			$UI.toolbar._sub_tools[4].querySelector('input[type=checkbox]').checked = false;
+			$CAMIC.viewer.measureInstance.off();
 
 			//close layers menu
 			$UI.layersSideMenu.close();
@@ -279,6 +297,9 @@ function toggleMeasurement(data){
 	//$UI.message.add(`Measument Tool ${data.checked?'ON':'OFF'}`);
 	if(data.checked){
 		$CAMIC.viewer.measureInstance.on();
+		// trun off the main menu
+		$UI.layersSideMenu.close();
+		$UI.appsSideMenu.close();
 		// turn off draw
 		$CAMIC.viewer.canvasDrawInstance.drawOff();
 		$CAMIC.drawContextmenu.off();
@@ -293,12 +314,12 @@ function toggleMeasurement(data){
 
 // toggle magnifier callback
 function toggleMagnifier(data){
-	//camessage.sendMessage(`Magnifier ${data.checked?'ON':'OFF'}`, {size:'15px',color:'white', bgColor:'blue'}, 3);
-	$UI.message.add(`Magnifier ${data.checked?'ON':'OFF'}`);
 	if(data.checked){
 		$UI.spyglass.factor = +data.status;
 		$UI.spyglass.open(this.clientX,this.clientY);
-		// turn off draw
+		// trun off the main menu
+		$UI.layersSideMenu.close();
+		$UI.appsSideMenu.close();
 		//$UI.toolbar._sub_tools[2].querySelector('input[type=checkbox]').checked = false;
 		$CAMIC.viewer.canvasDrawInstance.drawOff();
 		$CAMIC.drawContextmenu.off();
