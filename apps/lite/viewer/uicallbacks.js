@@ -49,7 +49,7 @@ function multSelector_action(event){
 			// states options
 			states:{
 				x:$CAMIC.viewer.viewport.getCenter().x,
-				y:$CAMIC.viewer.viewport.getCenter().y,
+				y:$CAMIC.viewer.viewport.getCenter().y*$CAMIC.viewer.imagingHelper.imgAspectRatio,
 				z:$CAMIC.viewer.viewport.getZoom(),
 			}
 		});
