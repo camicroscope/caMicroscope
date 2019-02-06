@@ -177,8 +177,8 @@ class CaMic{
         if(func && typeof func === 'function') func.call(null,x[0]);
         Loading.text.textContent = `loading slide's tiles...`;
         this.mpp = x[0].mpp;
-        this.mpp_x = x[0]['mpp_x'] || this.mpp 
-        this.mpp_y = x[0]['mpp_y'] || this.mpp 
+        this.mpp_x = x[0]['mpp-x'] || this.mpp 
+        this.mpp_y = x[0]['mpp-y'] || this.mpp 
 
 
       })
