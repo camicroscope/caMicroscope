@@ -211,8 +211,9 @@ describe('Collapsible List Component',function(){
 					}
 			];
 			dom.window.list.setList(list);
-			heads = dom.window.document.querySelectorAll('#list .item_head');
-			bodies = dom.window.document.querySelectorAll('#list .item_body');			
+
+			heads = dom.window.list.elt.querySelectorAll('.item_head');
+			bodies = dom.window.list.elt.querySelectorAll('.item_body');
 		});
 		// has two heads and contents
 		it(`has three heads and contents`,function(){
@@ -262,7 +263,7 @@ describe('Collapsible List Component',function(){
 			list.triggerContent('item2','open');
 
 			// item2 is expand
-			const bodies = dom.window.document.querySelectorAll('#list .item_body');
+			const bodies = list.elt.querySelectorAll('.item_body');
 			assert(bodies[1].classList.contains('expand'));
 			// item1 is collapsed
 			assert(bodies[0].classList.contains('collapse'));
@@ -273,7 +274,7 @@ describe('Collapsible List Component',function(){
 			const list = dom.window.list;
 			// close item2
 			list.triggerContent('item2');
-			const bodies = dom.window.document.querySelectorAll('#list .item_body');
+			const bodies = list.elt.querySelectorAll('.item_body');
 			assert(bodies[0].classList.contains('collapse'));
 			assert(bodies[1].classList.contains('collapse'));
 			assert(bodies[2].classList.contains('collapse'));
@@ -284,7 +285,7 @@ describe('Collapsible List Component',function(){
 	describe('After setList: addContent(itemId, elt)', function () {
 		let contents;
 		before(function(){
-			contents = dom.window.document.querySelectorAll('#list .item_content');
+			contents = dom.window.list.elt.querySelectorAll('.item_content');
 		});
 		
 
@@ -311,7 +312,7 @@ describe('Collapsible List Component',function(){
 	describe('After setList: clearContext(itemId)', function(){
 		let contents;
 		before(function(){
-			contents = dom.window.document.querySelectorAll('#list .item_content');
+			contents = dom.window.list.elt.querySelectorAll('.item_content');
 		});
 		// clear context
 		it(`clear item1's content`, function () {
