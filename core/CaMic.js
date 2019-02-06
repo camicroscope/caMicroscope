@@ -168,11 +168,11 @@ class CaMic{
         this.viewer.open("../../img/Slide/"+ x[0]["_id"]["$oid"] + ".dzi");
         // set mpp
 
-        this.mpp_x = x[0]['mpp_x']
-        this.mpp_y = x[0]['mpp_y']
+        this.mpp_x = x[0]['mpp-x']
+        this.mpp_y = x[0]['mpp-y']
         this.mpp = x[0].mpp || this.mpp_x || this.mpp_y;
-        this.mpp_x = x[0]['mpp_x'] || this.mpp
-        this.mpp_y = x[0]['mpp_y'] || this.mpp
+        this.mpp_x = x[0]['mpp-x'] || this.mpp
+        this.mpp_y = x[0]['mpp-y'] || this.mpp
         // set scalebar
         this.createScalebar(this.mpp)
         var imagingHelper = new OpenSeadragonImaging.ImagingHelper({
