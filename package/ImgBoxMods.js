@@ -51,7 +51,11 @@ function ImgBoxMods() {
       Loading.text.textContent = `loading slide's tiles...`;
       // WARN; note that spyglass isn't working due to semi-hardcoded value at init.js line 140
       // we may want another init.js or our own callback
-    });
+    }).catch(e=>{
+      console.error(e)
+      Loading.text.textContent = "ERROR - Slide May be Broken or Unsupported"
+      //if(func && typeof func === 'function') func.call(null,{hasError:true,message:e});
+    })
 
   }
 }
