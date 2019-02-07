@@ -85,6 +85,8 @@ function initCore(){
     // image loaded
     if(e.hasError){
       $UI.message.addError(e.message)
+      // can't reach Slide and return to home page
+      if(e.isServiceError) redirect($D.pages.table,e.message, 0);
     }else{
       $D.params.data = e;
       // popup panel
@@ -145,6 +147,7 @@ function initCore(){
   $CAMIC.viewer.addHandler('open',function(){
     $CAMIC.viewer.canvasDrawInstance.addHandler('start-drawing',startDrawing);
     $CAMIC.viewer.canvasDrawInstance.addHandler('stop-drawing',stopDrawing);
+    if(!$CAMIC.viewer.measureInstance) $UI.toolbar._sub_tools[3].style.display = 'none';
   });
 }
 
