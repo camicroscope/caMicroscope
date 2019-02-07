@@ -149,7 +149,7 @@ function init_LocalStore(){
   }
   Store.prototype.addHeatmap = function(json){
     // give it an that's probably semi-unique
-    json['_id'] = json['_id'] || Date.now()
+    json['_id'] = json['_id'] || {'$oid': Date.now()}
     return new Promise(function(res, rej){
       res(putInLocalStorage('heatmap', json))
     })
