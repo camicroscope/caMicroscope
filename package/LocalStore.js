@@ -274,6 +274,7 @@ function init_LocalStore(){
       };
       reader.readAsText(input.files[0]);
     };
+    document.body.appendChild(element);
     element.click();
     document.body.removeChild(element);
   }
