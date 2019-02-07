@@ -294,6 +294,10 @@ function toggleOffDrawBtns(){
 }
 
 function toggleMeasurement(data){
+	if(!$CAMIC.viewer.measureInstance) {
+		console.warn('No Measurement Tool');
+		return;
+	}
 	//$UI.message.add(`Measument Tool ${data.checked?'ON':'OFF'}`);
 	if(data.checked){
 		$CAMIC.viewer.measureInstance.on();
