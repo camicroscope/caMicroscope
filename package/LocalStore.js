@@ -233,7 +233,9 @@ function init_LocalStore(){
         }))
       }
       var element = document.createElement('a');
-      element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+      var blob = new Blob([text], {type: "application/json"});
+      var uri = URL.createObjectURL(blob);
+      element.setAttribute('href', uri);
       element.setAttribute('download', "markups.json");
       element.style.display = 'none';
       document.body.appendChild(element);
