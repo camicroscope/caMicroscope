@@ -52,11 +52,13 @@ function init_LocalStore(){
   }
 
   function removeFromLocalStorage(type, id){
+    console.log(id)
     let data = JSON.parse(window.localStorage.getItem(type))
     data = data || []
-    newData = data.filter(x=>x['_id'] !== id)
-    window.localStorage.setItem(type, JSON.stringify(data))
-    return newData
+    let newData = data.filter(x=>x['_id']['$oid'] !== id)
+    window.localStorage.setItem(type, JSON.stringify(newData))
+    console.log(data.length - newData.length)
+    return {'rowsAffected': data.length - newData.length}
   }
 
 
@@ -119,12 +121,12 @@ function init_LocalStore(){
   Store.prototype.addMark = function(json){
     return new Promise(function(res, rej){
       // give it an that's probably semi-unique
-      json['_id'] = json['_id'] || Date.now()
+      json['_id'] = json['_id'] || {'$oid': Date.now()}
       res(putInLocalStorage('mark', json))
     })
   }
-  Store.prototype.deleteMark = function(id,slide){
-    return new Promise(function(res, rej){
+  Store.prototype.deleteMark = function(id, slide){
+    return new Promise((res, rej)=>{
       res(removeFromLocalStorage('mark', id))
     })
   }
@@ -248,6 +250,7 @@ function init_LocalStore(){
     let slide = $D.params.id
     slide = decodeURIComponent(slide)
     var element = document.createElement('input');
+    document.body.appendChild(element);
     element.setAttribute('type', "file")
     element.style.display = 'position: fixed; top: -100em';
     element.onchange = function(event) {
@@ -274,7 +277,7 @@ function init_LocalStore(){
       };
       reader.readAsText(input.files[0]);
     };
-    document.body.appendChild(element);
+
     element.click();
     document.body.removeChild(element);
   }
