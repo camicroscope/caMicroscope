@@ -170,7 +170,7 @@ class CaMic{
 
         this.mpp_x = x[0]['mpp-x']
         this.mpp_y = x[0]['mpp-y']
-        this.mpp = x[0].mpp || this.mpp_x || this.mpp_y;
+        this.mpp = x[0].mpp || this.mpp_x || this.mpp_y || 1e9;
         this.mpp_x = x[0]['mpp-x'] || this.mpp
         this.mpp_y = x[0]['mpp-y'] || this.mpp
         // set scalebar

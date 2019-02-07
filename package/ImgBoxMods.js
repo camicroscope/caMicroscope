@@ -11,7 +11,11 @@ function ImgBoxMods() {
     this.study = ""
     this.specimen = ""
     fetch(p + "/info.json").then(response => {
-      return response.json();
+      if (response.status >=400){
+        throw response;
+      } else {
+        return response.json();
+      }
     }).then(data => {
       let imbox_source = {
         "@context": "http://iiif.io/api/image/2/context.json",
