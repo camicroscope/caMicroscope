@@ -4,7 +4,7 @@ var ajv = new Ajv();
 var $VALIDATION = {}
 $VALIDATION.slide = ajv.compile({
   type: "object",
-  required: ["name", "location", "mpp"],
+  required: ["name", "location", "study", "specimen"],
   properties: {
     name: {
       type: "string",
@@ -21,11 +21,6 @@ $VALIDATION.slide = ajv.compile({
     location: {
       type: "string",
       description: "Slide location, used for opening"
-    },
-    mpp: {
-      type: "number",
-      minimum: 0,
-      description: "Microns per pixel for scalebar"
     }
   }
 });
