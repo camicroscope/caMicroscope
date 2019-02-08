@@ -16,6 +16,7 @@ function loadOpenCv(onloadCallback) {
   let script = document.createElement('script');
   script.setAttribute('async', '');
   script.setAttribute('type', 'text/javascript');
+
   script.addEventListener('load', () => {
     //console.log(cv.getBuildInformation());
     console.log('OPENCV IS LOADED! :)');
@@ -91,10 +92,12 @@ function initCore() {
     hasScalebar: true,
     hasMeasurementTool: true
   };
+
   // set states if exist
   if ($D.params.states) {
     opt.states = $D.params.states;
   }
+
   try {
     $CAMIC = new CaMic("main_viewer", $D.params.slideId, opt);
   } catch (error) {
@@ -103,6 +106,7 @@ function initCore() {
     console.error(error);
     return;
   }
+
   $CAMIC.loadImg(function (e) {
     // image loaded
     if (e.hasError) {
@@ -140,13 +144,9 @@ function drawRectangle(e) {
 
 /**
  * This is basically onmouseup after drawing rectangle.
- * Get pixels to create image (pass to ImageJs)
  * @param e
  */
 function camicStopDraw(e) {
-
-  //let main_viewer = document.getElementById('main_viewer');
-  //let clickPos = getClickPosition(e, main_viewer);
 
   const viewer = $CAMIC.viewer;
   const canvasDraw = viewer.canvasDrawInstance;
@@ -161,7 +161,7 @@ function camicStopDraw(e) {
     if (Object.keys(box).length === 0 && box.constructor === Object) {
       console.error('SOMETHING WICKED THIS WAY COMES.');
     } else {
-      segmentROI(box); // Draw then create file
+      segmentROI(box);
     }
 
   } else {
@@ -202,7 +202,7 @@ function checkSize(imgColl, imagingHelper) {
     $CAMIC.viewer.canvasDrawInstance.clear();
     return {}; //throw('image too large')
   } else {
-    return { 'xCoord': xCoord, 'yCoord': yCoord, 'width': width, 'height': height };
+    return {'xCoord': xCoord, 'yCoord': yCoord, 'width': width, 'height': height};
   }
 }
 
@@ -217,19 +217,19 @@ function drawCanvas(canvasId, hidden, imgData) {
 
   let canvas = document.createElement('canvas');
   canvas.id = canvasId;
-  canvas.style.border = "thick solid #0000FF";
+  //canvas.style.border = "thick solid #0000FF";
   canvas.width = imgData.width;
   canvas.height = imgData.height;
-
-  if (hidden) {
-    canvas.style.display = 'none';
-  }
 
   let context = canvas.getContext("2d");
   context.putImageData(imgData, 0, 0);
   document.body.appendChild(canvas);
 
-  return canvas.toDataURL("image/png");
+  if (hidden) {
+    canvas.style.display = 'none';
+  }
+
+  //return canvas.toDataURL("image/png");
 
 }
 
@@ -242,21 +242,27 @@ function segmentROI(box) {
   let camicanv = $CAMIC.viewer.drawer.canvas; //Original Canvas
   let imgData = (camicanv.getContext('2d')).getImageData(box.xCoord, box.yCoord, box.width, box.height);
 
-  //drawCanvas('canvasOutput', true, imgData);
-  let dataURL = drawCanvas('canvasInput', false, imgData);
+  drawCanvas('canvasOutput', false, imgData);
+  drawCanvas('canvasInput', true, imgData);
 
+  /*
+  let dataURL = drawCanvas('canvasInput', false, imgData);
+  var img = document.createElement("img");
+  img.src = dataURL;
+  document.body.appendChild(img);
+  */
+
+  /*
   let blob = dataURItoBlob(dataURL);
   let filename = 'testing';
-  let f = new File([blob], filename, { type: blob.type });
+  let f = new File([blob], filename, {type: blob.type});
   console.log(f);
-
-  // Start file download.
-  ////download(filename, dataURL);
+  */
 
   let trigger = document.getElementById('trigger');
   trigger.addEventListener("click", function () {
-    //watershed('canvasInput', 'canvasOutput', .03);
-    watershed('canvasInput', 'canvasInput', .03);
+    watershed('canvasInput', 'canvasOutput', .03);
+    //watershed('canvasInput', 'canvasInput', .03);
   }, false);
 
   trigger.click();
@@ -271,14 +277,10 @@ function segmentROI(box) {
  * @param thresh
  */
 function watershed(inn, out, thresh) {
-  console.log('WATERSHED!');
-  console.log(inn, out, thresh);
 
   // Read image
   let src = cv.imread(inn);
   console.log('src', src);
-
-  console.log('aaa', document.getElementById(inn));
 
   // Matrices
   let dst = new cv.Mat();
@@ -400,7 +402,7 @@ function dataURItoBlob(dataURI) {
     ia[i] = byteString.charCodeAt(i);
   }
 
-  return new Blob([ia], { type: mimeString });
+  return new Blob([ia], {type: mimeString});
 }
 
 /**
