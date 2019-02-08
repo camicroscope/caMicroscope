@@ -1,4 +1,4 @@
-// validation rules for docments
+// validation rules for docments.
 // needs <script src="https://cdnjs.cloudflare.com/ajax/libs/ajv/6.8.1/ajv.bundle.js"></script>
 var ajv = new Ajv();
 var $VALIDATION = {}
