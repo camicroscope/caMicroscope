@@ -1,3 +1,6 @@
+let PDR = OpenSeadragon.pixelDensityRatio;
+console.log('pixelDensityRatio:', PDR);
+
 let $CAMIC = null;
 const $UI = {};
 const $D = {
@@ -5,11 +8,114 @@ const $D = {
     home: '',
     table: ''
   },
-  params: null // parameter from url - slide Id and status in it (object).
+  params: null
 };
 
-let PDR = OpenSeadragon.pixelDensityRatio;
-console.log('pixelDensityRatio:', PDR);
+function loadOpenCv(onloadCallback) {
+  const OPENCV_URL = 'opencv.js';
+  let script = document.createElement('script');
+  script.setAttribute('async', '');
+  script.setAttribute('type', 'text/javascript');
+  script.addEventListener('load', () => {
+    //console.log(cv.getBuildInformation());
+    console.log('OPENCV IS LOADED! :)');
+    onloadCallback();
+  });
+
+  script.src = OPENCV_URL;
+  let node = document.getElementsByTagName('script')[0];
+  console.log('node.parentNode', node.parentNode);
+  node.parentNode.insertBefore(script, node);
+
+}
+
+function initialize() {
+  loadOpenCv(() => {
+    initUIcomponents();
+  });
+  initCore();
+}
+
+function initUIcomponents() {
+
+  $UI.toolbar = new CaToolbar({
+    id: 'ca_tools',
+    zIndex: 601,
+    hasMainTools: false,
+    subTools: [
+      // rectangle draw
+      {
+        icon: 'timeline',
+        type: 'check',
+        value: 'rect',
+        title: 'Segment',
+        callback: drawRectangle
+      }, {
+        icon: 'insert_photo',
+        type: 'btn',
+        value: 'viewer',
+        title: 'Viewer',
+        callback: function () {
+          if (window.location.search.length > 0) {
+            window.location.href = '../viewer/viewer.html' + window.location.search;
+          } else {
+            window.location.href = '../viewer/viewer.html';
+          }
+        }
+      }, {
+        icon: 'bug_report',
+        title: 'Bug Report',
+        value: 'bugs',
+        type: 'btn',
+        callback: () => {
+          window.open('https://goo.gl/forms/mgyhx4ADH0UuEQJ53', '_blank').focus()
+        }
+      }
+    ]
+  });
+
+  let button = document.createElement('button');
+  button.id = 'trigger';
+  button.style.display = "none";
+  document.body.appendChild(button);
+
+}
+
+// setting core functionality
+function initCore() {
+  // start initial
+  const opt = {
+    hasZoomControl: true,
+    hasDrawLayer: true,
+    hasLayerManager: true,
+    hasScalebar: true,
+    hasMeasurementTool: true
+  };
+  // set states if exist
+  if ($D.params.states) {
+    opt.states = $D.params.states;
+  }
+  try {
+    $CAMIC = new CaMic("main_viewer", $D.params.slideId, opt);
+  } catch (error) {
+    Loading.close();
+    $UI.message.addError('Core Initialization Failed');
+    console.error(error);
+    return;
+  }
+  $CAMIC.loadImg(function (e) {
+    // image loaded
+    if (e.hasError) {
+      $UI.message.addError(e.message)
+    }
+  });
+
+  $CAMIC.viewer.addOnceHandler('open', function (e) {
+    // add stop draw function
+    $CAMIC.viewer.canvasDrawInstance.addHandler('stop-drawing', camicStopDraw);
+
+  });
+}
 
 /**
  * Toolbar button callback
@@ -27,17 +133,15 @@ function drawRectangle(e) {
 
   if (e.checked) {
     canvasDraw.drawOn();
-
   } else {
     canvasDraw.drawOff();
-
   }
-
 }
 
 /**
+ * This is basically onmouseup after drawing rectangle.
  * Get pixels to create image (pass to ImageJs)
- * @param event
+ * @param e
  */
 function camicStopDraw(e) {
 
@@ -55,9 +159,9 @@ function camicStopDraw(e) {
     let box = checkSize(imgColl, viewer.imagingHelper);
 
     if (Object.keys(box).length === 0 && box.constructor === Object) {
-
+      console.error('SOMETHING WICKED THIS WAY COMES.');
     } else {
-      testDraw(box); // Draw then create file
+      segmentROI(box); // Draw then create file
     }
 
   } else {
@@ -78,7 +182,7 @@ function checkSize(imgColl, imagingHelper) {
   let newArray = foo.map(function (a) {
     let x = a.slice();
     x[0] *= PDR;
-    x[1] *= PDR; // need to adjust, try layer
+    x[1] *= PDR;
     return x;
   });
   console.log('bounds', newArray);
@@ -98,7 +202,7 @@ function checkSize(imgColl, imagingHelper) {
     $CAMIC.viewer.canvasDrawInstance.clear();
     return {}; //throw('image too large')
   } else {
-    return {'xCoord': xCoord, 'yCoord': yCoord, 'width': width, 'height': height};
+    return { 'xCoord': xCoord, 'yCoord': yCoord, 'width': width, 'height': height };
   }
 }
 
@@ -124,27 +228,38 @@ function drawCanvas(canvasId, hidden, imgData) {
   let context = canvas.getContext("2d");
   context.putImageData(imgData, 0, 0);
   document.body.appendChild(canvas);
+
+  return canvas.toDataURL("image/png");
+
 }
 
+/**
+ * Segment! :)
+ * @param box
+ */
+function segmentROI(box) {
 
-function testDraw(box) {
   let camicanv = $CAMIC.viewer.drawer.canvas; //Original Canvas
   let imgData = (camicanv.getContext('2d')).getImageData(box.xCoord, box.yCoord, box.width, box.height);
 
-  //drawCanvas('canvasOutput', false, imgData);
-  drawCanvas('canvasInput', true, imgData);
+  //drawCanvas('canvasOutput', true, imgData);
+  let dataURL = drawCanvas('canvasInput', false, imgData);
 
-  let dataURL = canvas.toDataURL("image/png");
   let blob = dataURItoBlob(dataURL);
   let filename = 'testing';
-  let f = new File([blob], filename, {type: blob.type});
+  let f = new File([blob], filename, { type: blob.type });
   console.log(f);
 
   // Start file download.
   ////download(filename, dataURL);
 
-  //watershed('canvasInput', 'canvasOutput', .03);
-  watershed('canvasInput', 'canvasInput', .03);
+  let trigger = document.getElementById('trigger');
+  trigger.addEventListener("click", function () {
+    //watershed('canvasInput', 'canvasOutput', .03);
+    watershed('canvasInput', 'canvasInput', .03);
+  }, false);
+
+  trigger.click();
 
 }
 
@@ -156,8 +271,14 @@ function testDraw(box) {
  * @param thresh
  */
 function watershed(inn, out, thresh) {
+  console.log('WATERSHED!');
+  console.log(inn, out, thresh);
+
   // Read image
   let src = cv.imread(inn);
+  console.log('src', src);
+
+  console.log('aaa', document.getElementById(inn));
 
   // Matrices
   let dst = new cv.Mat();
@@ -222,7 +343,7 @@ function watershed(inn, out, thresh) {
   }
 
   // Display it
-  cv.imshow(out, dst); // TODO:
+  cv.imshow(out, dst);
 
   // Free up memory
   src.delete();
@@ -256,7 +377,6 @@ function download(filename, dataURL) {
   document.body.removeChild(element);
 }
 
-
 /**
  * Convert a dataURI to a Blob
  *
@@ -280,9 +400,8 @@ function dataURItoBlob(dataURI) {
     ia[i] = byteString.charCodeAt(i);
   }
 
-  return new Blob([ia], {type: mimeString});
+  return new Blob([ia], { type: mimeString });
 }
-
 
 /**
  * Convert image coordinates
@@ -306,107 +425,6 @@ function convertCoordinates(imagingHelper, bound) {
 
 }
 
-
-function initialize() {
-  initUIcomponents();
-  initCore();
-}
-
-function initUIcomponents() {
-  $UI.toolbar = new CaToolbar({
-    id: 'ca_tools',
-    zIndex: 601,
-    hasMainTools: false,
-    subTools: [
-      // rectangle draw
-      {
-        icon: 'timeline',
-        type: 'check',
-        value: 'rect',
-        title: 'Segment',
-        callback: drawRectangle
-      }, {
-        icon: 'insert_photo',
-        type: 'btn',
-        value: 'viewer',
-        title: 'Viewer',
-        callback: function () {
-          if (window.location.search.length > 0) {
-            window.location.href = '../viewer/viewer.html' + window.location.search;
-          } else {
-            window.location.href = '../viewer/viewer.html';
-          }
-        }
-      }, {
-        icon: 'bug_report',
-        title: 'Bug Report',
-        value: 'bugs',
-        type: 'btn',
-        callback: () => {
-          window.open('https://goo.gl/forms/mgyhx4ADH0UuEQJ53', '_blank').focus()
-        }
-      }
-    ]
-  });
-
-  let element = document.getElementById('errorMessage');
-  if (!element) {
-    element = document.createElement('p');
-    element.classList.add('err');
-    element.id = 'errorMessage';
-    document.body.appendChild(element);
-  }
-
-  let button = document.getElementById('tryIt');
-  if (!button) {
-    button = document.createElement('button');
-    button.id = 'tryIt';
-    button.style.display = "none";
-    document.body.appendChild(button);
-  }
-}
-
-// setting core functionality
-function initCore() {
-  // start initial
-  const opt = {
-    hasZoomControl: true,
-    hasDrawLayer: true,
-    hasLayerManager: true,
-    hasScalebar: true,
-    hasMeasurementTool: true
-  };
-  // set states if exist
-  if ($D.params.states) {
-    opt.states = $D.params.states;
-  }
-  try {
-    $CAMIC = new CaMic("main_viewer", $D.params.slideId, opt);
-  } catch (error) {
-    Loading.close();
-    $UI.message.addError('Core Initialization Failed');
-    console.error(error);
-    return;
-  }
-  $CAMIC.loadImg(function (e) {
-    // image loaded
-    if (e.hasError) {
-      $UI.message.addError(e.message)
-    }
-  });
-
-  $CAMIC.viewer.addOnceHandler('open', function (e) {
-    // add stop draw function
-    $CAMIC.viewer.canvasDrawInstance.addHandler('stop-drawing', camicStopDraw);
-
-    // let m = document.getElementById('main_viewer');
-    // m.addEventListener('mousedown', function (e) {
-    //   getClickPosition(e, m);
-    // });
-
-  });
-}
-
 function redirect(url, text = '', sec = 5) {
   let timer = sec;
   setInterval(function () {
@@ -423,53 +441,4 @@ function redirect(url, text = '', sec = 5) {
     timer--;
 
   }, 1000);
-}
-
-function Utils(errorOutputId) { // eslint-disable-line no-unused-vars
-  let self = this;
-  this.errorOutput = document.getElementById(errorOutputId);
-
-  const OPENCV_URL = 'opencv.js';
-  this.loadOpenCv = function (onloadCallback) {
-    let script = document.createElement('script');
-    script.setAttribute('async', '');
-    script.setAttribute('type', 'text/javascript');
-    script.addEventListener('load', () => {
-      console.log(cv.getBuildInformation());
-      onloadCallback();
-    });
-    script.addEventListener('error', () => {
-      self.printError('Failed to load ' + OPENCV_URL);
-    });
-    script.src = OPENCV_URL;
-    let node = document.getElementsByTagName('script')[0];
-    node.parentNode.insertBefore(script, node);
-  };
-
-  this.clearError = function () {
-    this.errorOutput.innerHTML = '';
-  };
-
-  this.printError = function (err) {
-    if (typeof err === 'undefined') {
-      err = '';
-    } else if (typeof err === 'number') {
-      if (!isNaN(err)) {
-        if (typeof cv !== 'undefined') {
-          err = 'Exception: ' + cv.exceptionFromPtr(err).msg;
-        }
-      }
-    } else if (typeof err === 'string') {
-      let ptr = Number(err.split(' ')[0]);
-      if (!isNaN(ptr)) {
-        if (typeof cv !== 'undefined') {
-          err = 'Exception: ' + cv.exceptionFromPtr(ptr).msg;
-        }
-      }
-    } else if (err instanceof Error) {
-      err = err.stack.replace(/\n/g, '<br>');
-    }
-    this.errorOutput.innerHTML = err;
-  };
-
 }
