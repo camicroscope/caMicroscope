@@ -56,9 +56,7 @@ function camicStopDraw(e) {
 
     if (Object.keys(box).length === 0 && box.constructor === Object) {
 
-    }
-    else
-    {
+    } else {
       testDraw(box); // Draw then create file
     }
 
@@ -104,103 +102,139 @@ function checkSize(imgColl, imagingHelper) {
   }
 }
 
+/**
+ * Make a canvas element & draw the ROI.
+ *
+ * @param canvasId
+ * @param hidden
+ * @param imgData
+ */
+function drawCanvas(canvasId, hidden, imgData) {
 
-function testDraw(box) {
-  let camicanv = $CAMIC.viewer.drawer.canvas; //Original Canvas
-
-  let imgData = (camicanv.getContext('2d')).getImageData(box.xCoord, box.yCoord, box.width, box.height);
-
-  // Draw as canvas
   let canvas = document.createElement('canvas');
-  canvas.id = 'canvasInput';
+  canvas.id = canvasId;
   canvas.style.border = "thick solid #0000FF";
   canvas.width = imgData.width;
   canvas.height = imgData.height;
 
+  if (hidden) {
+    canvas.style.display = 'none';
+  }
+
   let context = canvas.getContext("2d");
   context.putImageData(imgData, 0, 0);
   document.body.appendChild(canvas);
+}
+
+
+function testDraw(box) {
+  let camicanv = $CAMIC.viewer.drawer.canvas; //Original Canvas
+  let imgData = (camicanv.getContext('2d')).getImageData(box.xCoord, box.yCoord, box.width, box.height);
+
+  //drawCanvas('canvasOutput', false, imgData);
+  drawCanvas('canvasInput', true, imgData);
 
   let dataURL = canvas.toDataURL("image/png");
-
   let blob = dataURItoBlob(dataURL);
-
   let filename = 'testing';
-
   let f = new File([blob], filename, {type: blob.type});
   console.log(f);
 
   // Start file download.
   ////download(filename, dataURL);
 
-  // START OPENCV STUFF
-  let utils = new Utils('errorMessage');
+  //watershed('canvasInput', 'canvasOutput', .03);
+  watershed('canvasInput', 'canvasInput', .03);
 
-let tryIt = document.getElementById('tryIt');
-tryIt.addEventListener('click', () => {
-  let src = cv.imread('canvasInput');
+}
+
+/**
+ * WATERSHED SEGMENTATION
+ *
+ * @param inn
+ * @param out
+ * @param thresh
+ */
+function watershed(inn, out, thresh) {
+  // Read image
+  let src = cv.imread(inn);
+
+  // Matrices
   let dst = new cv.Mat();
   let gray = new cv.Mat();
   let opening = new cv.Mat();
-  let coinsBg = new cv.Mat();
-  let coinsFg = new cv.Mat();
+  let imageBg = new cv.Mat();
+  let imageFg = new cv.Mat();
   let distTrans = new cv.Mat();
   let unknown = new cv.Mat();
   let markers = new cv.Mat();
-  // gray and threshold image
+
+  // Gray and threshold image
   cv.cvtColor(src, gray, cv.COLOR_RGBA2GRAY, 0);
+
+  // Find an approximate estimate of the objects
   cv.threshold(gray, gray, 0, 255, cv.THRESH_BINARY_INV + cv.THRESH_OTSU);
-  // get background
+
+  // Get background
   let M = cv.Mat.ones(3, 3, cv.CV_8U);
+
+  // Remove the stuff that's not an object
   cv.erode(gray, gray, M);
-  cv.dilate(gray, opening, M);
-  cv.dilate(opening, coinsBg, M, new cv.Point(-1, -1), 3);
-  // distance transform
+
+  // Find the stuff that IS an object
+  cv.dilate(gray, opening, M); //remove any small white noises in the image
+  cv.dilate(opening, imageBg, M, new cv.Point(-1, -1), 3); //remove any small holes in the object
+
+  // Distance transform - for the stuff we're not sure about
   cv.distanceTransform(opening, distTrans, cv.DIST_L2, 5);
   cv.normalize(distTrans, distTrans, 1, 0, cv.NORM_INF);
-  // get foreground
-  cv.threshold(distTrans, coinsFg, 0.3 * 1, 255, cv.THRESH_BINARY);
-  coinsFg.convertTo(coinsFg, cv.CV_8U, 1, 0);
-  cv.subtract(coinsBg, coinsFg, unknown);
-  // get connected components markers
-  cv.connectedComponents(coinsFg, markers);
+
+  // Get foreground - make the objects stand out
+  // cv.threshold (src, dst, thresh, maxval, type)
+  cv.threshold(distTrans, imageFg, thresh, 255, cv.THRESH_BINARY);
+
+  // Mark (label) the regions starting with 1 (color output)
+  imageFg.convertTo(imageFg, cv.CV_8U, 1, 0);
+  cv.subtract(imageBg, imageFg, unknown);
+
+  // Get connected components markers
+  cv.connectedComponents(imageFg, markers);
   for (let i = 0; i < markers.rows; i++) {
     for (let j = 0; j < markers.cols; j++) {
       markers.intPtr(i, j)[0] = markers.ucharPtr(i, j)[0] + 1;
-      if (unknown.ucharPtr(i, j)[0] == 255) {
+      if (unknown.ucharPtr(i, j)[0] === 255) {
         markers.intPtr(i, j)[0] = 0;
       }
     }
   }
-  cv.cvtColor(src, src, cv.COLOR_RGBA2RGB, 0);
-  cv.watershed(src, markers);
-  // draw barriers
+  cv.cvtColor(src, dst, cv.COLOR_RGBA2RGB, 0);
+  cv.watershed(dst, markers);
+
+  // Draw barriers
   for (let i = 0; i < markers.rows; i++) {
     for (let j = 0; j < markers.cols; j++) {
-      if (markers.intPtr(i, j)[0] == -1) {
-        src.ucharPtr(i, j)[0] = 255; // R
-        src.ucharPtr(i, j)[1] = 255; // G
-        src.ucharPtr(i, j)[2] = 0; // B
+      if (markers.intPtr(i, j)[0] === -1) {
+        dst.ucharPtr(i, j)[0] = 255; // R
+        dst.ucharPtr(i, j)[1] = 255; // G
+        dst.ucharPtr(i, j)[2] = 0; // B
       }
     }
   }
-  cv.imshow('canvasInput', src);
+
+  // Display it
+  cv.imshow(out, dst); // TODO:
+
+  // Free up memory
   src.delete();
   dst.delete();
   gray.delete();
   opening.delete();
-  coinsBg.delete();
-  coinsFg.delete();
+  imageBg.delete();
+  imageFg.delete();
   distTrans.delete();
   unknown.delete();
   markers.delete();
   M.delete();
-});
-
-utils.loadOpenCv(() => {
-  tryIt.click();
-});
-
 }
 
 /**
@@ -264,7 +298,7 @@ function convertCoordinates(imagingHelper, bound) {
     let boundElement = newArray[i];
     for (let j = 0; j < boundElement.length; j++) {
       newArray[i][j] = j === 0 ? imagingHelper.dataToPhysicalX(boundElement[j])
-          : imagingHelper.dataToPhysicalY(boundElement[j]);
+        : imagingHelper.dataToPhysicalY(boundElement[j]);
     }
   }
 
@@ -291,7 +325,7 @@ function initUIcomponents() {
         value: 'rect',
         title: 'Segment',
         callback: drawRectangle
-      },{
+      }, {
         icon: 'insert_photo',
         type: 'btn',
         value: 'viewer',
@@ -303,19 +337,20 @@ function initUIcomponents() {
             window.location.href = '../viewer/viewer.html';
           }
         }
-      },{
+      }, {
         icon: 'bug_report',
         title: 'Bug Report',
         value: 'bugs',
         type: 'btn',
-        callback: ()=>{window.open('https://goo.gl/forms/mgyhx4ADH0UuEQJ53','_blank').focus()}
+        callback: () => {
+          window.open('https://goo.gl/forms/mgyhx4ADH0UuEQJ53', '_blank').focus()
+        }
       }
     ]
   });
 
   let element = document.getElementById('errorMessage');
-  if (!element)
-  {
+  if (!element) {
     element = document.createElement('p');
     element.classList.add('err');
     element.id = 'errorMessage';
@@ -323,8 +358,7 @@ function initUIcomponents() {
   }
 
   let button = document.getElementById('tryIt');
-  if (!button)
-  {
+  if (!button) {
     button = document.createElement('button');
     button.id = 'tryIt';
     button.style.display = "none";
