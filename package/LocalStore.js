@@ -119,6 +119,9 @@ function init_LocalStore(){
     })
   }
   Store.prototype.addMark = function(json){
+    if (!$VALIDATION.mark(json)){
+      console.warn($VALIDATION.mark.errors)
+    }
     return new Promise(function(res, rej){
       // give it an that's probably semi-unique
       json['_id'] = json['_id'] || {'$oid': Date.now()}
@@ -149,6 +152,9 @@ function init_LocalStore(){
   }
   Store.prototype.addHeatmap = function(json){
     // give it an that's probably semi-unique
+    if (!$VALIDATION.heatmap(json)){
+      console.warn($VALIDATION.heatmap.errors)
+    }
     json['_id'] = json['_id'] || {'$oid': Date.now()}
     return new Promise(function(res, rej){
       res(putInLocalStorage('heatmap', json))

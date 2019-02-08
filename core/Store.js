@@ -240,7 +240,9 @@ class Store {
   addMark(json) {
     var suffix = "Mark/post"
     var url = this.base + suffix;
-
+    if (!$VALIDATION.mark(json)){
+      console.warn($VALIDATION.mark.errors)
+    }
     return fetch(url, {
       method: "POST",
       credentials: "same-origin",
@@ -353,7 +355,9 @@ class Store {
   addHeatmap(json) {
     var suffix = "Heatmap/post"
     var url = this.base + suffix;
-
+    if (!$VALIDATION.heatmap(json)){
+      console.warn($VALIDATION.heatmap.errors)
+    }
     return fetch(url, {
       method: "POST",
       credentials: "same-origin",
