@@ -208,12 +208,11 @@ function checkSize(imgColl, imagingHelper) {
 
 /**
  * Make a canvas element & draw the ROI.
- *
+ * @param imgData
  * @param canvasId
  * @param hidden
- * @param imgData
  */
-function drawCanvas(canvasId, hidden, imgData) {
+function loadImageToCanvas(imgData, canvasId, hidden, div) {
 
   let canvas = document.createElement('canvas');
   canvas.id = canvasId;
@@ -223,7 +222,7 @@ function drawCanvas(canvasId, hidden, imgData) {
 
   let context = canvas.getContext("2d");
   context.putImageData(imgData, 0, 0);
-  document.body.appendChild(canvas);
+  div.appendChild(canvas);
 
   if (hidden) {
     canvas.style.display = 'none';
@@ -239,14 +238,59 @@ function drawCanvas(canvasId, hidden, imgData) {
  */
 function segmentROI(box) {
 
+  // But first, some setup...
+
+
+  let div = document.createElement('div');
+  document.body.appendChild(div);
+
+  var mybr = document.createElement('br');
+
+  // TRACKBAR WEIGHT VALUE
+  let weightValue = document.createElement("label");
+  weightValue.id = 'weightValue';
+  div.appendChild(weightValue);
+  div.appendChild(mybr);
+
+  // TRACKBAR
+  let trackbar = document.createElement('input');
+  trackbar.setAttribute('type', 'range');
+  trackbar.id = 'trackbar';
+  trackbar.setAttribute('value', '.7');
+  trackbar.setAttribute('min', '0');
+  trackbar.setAttribute('max', '1');
+  trackbar.setAttribute('step', '.1');
+  div.appendChild(trackbar);
+  div.appendChild(mybr);
+
+  weightValue.innerText = trackbar.value;
+  weightValue.addEventListener('input', () => {
+    weightValue.innerText = trackbar.value;
+  });
+
+  trackbar.addEventListener('input', () => {
+    let alpha = trackbar.value / trackbar.max;
+    watershed('canvasInput', 'canvasOutput', alpha);
+  });
+
+  // TRIGGER
+  let trigger = document.getElementById('trigger');
+  trigger.addEventListener("click", function () {
+    watershed('canvasInput', 'canvasOutput', .07);
+  }, false);
+
+  // SEGMENTATION CANVAS
   let camicanv = $CAMIC.viewer.drawer.canvas; //Original Canvas
   let imgData = (camicanv.getContext('2d')).getImageData(box.xCoord, box.yCoord, box.width, box.height);
 
-  drawCanvas('canvasOutput', false, imgData);
-  drawCanvas('canvasInput', true, imgData);
+  loadImageToCanvas(imgData, 'canvasOutput', false, div);
+  loadImageToCanvas(imgData, 'canvasInput', true, div);
+
+  // TRIGGER SEGMENTATION
+  trigger.click();
 
   /*
-  let dataURL = drawCanvas('canvasInput', false, imgData);
+  let dataURL = loadImageToCanvas(imgData, 'canvasInput', false);
   var img = document.createElement("img");
   img.src = dataURL;
   document.body.appendChild(img);
@@ -258,14 +302,6 @@ function segmentROI(box) {
   let f = new File([blob], filename, {type: blob.type});
   console.log(f);
   */
-
-  let trigger = document.getElementById('trigger');
-  trigger.addEventListener("click", function () {
-    watershed('canvasInput', 'canvasOutput', .03);
-    //watershed('canvasInput', 'canvasInput', .03);
-  }, false);
-
-  trigger.click();
 
 }
 
@@ -280,7 +316,6 @@ function watershed(inn, out, thresh) {
 
   // Read image
   let src = cv.imread(inn);
-  console.log('src', src);
 
   // Matrices
   let dst = new cv.Mat();
