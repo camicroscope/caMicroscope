@@ -62,6 +62,10 @@ function init_LocalStore(){
   }
 
 
+
+  // stange fixes for potential mismatches in validation version
+  Store.prototype.validation = Store.prototype.validation || {}
+  Store.prototype.filterBroken = Store.prototype.filterBroken || function(a,b){return a}
   // replace impacted store functionality.
   Store.prototype.findMarkTypes = function(slide, name){
     return new Promise(function(res, rej){
@@ -102,7 +106,7 @@ function init_LocalStore(){
         query['provenance.image.study'] = study
       }
       res(findInLocalStorage('mark', query))
-    })
+    }).then(x=>this.filterBroken(x,"mark"))
   }
   Store.prototype.getMarkByIds = function(ids, slide, study, specimen, source, footprint, x0, x1, y0, y1){
     return new Promise(function(res, rej){
@@ -111,16 +115,16 @@ function init_LocalStore(){
         data.push(...findInLocalStorage('mark', {'provenance.analysis.execution_id': ids[i], 'provenance.image.slide': slide}))
       }
       res(data)
-    })
+    }).then(x=>this.filterBroken(x,"mark"))
   }
   Store.prototype.getMark = function(id){
     return new Promise(function(res, rej){
       res(getInLocalStorage("mark", id))
-    })
+    }).then(x=>this.filterBroken(x,"mark"))
   }
   Store.prototype.addMark = function(json){
-    if (!$VALIDATION.mark(json)){
-      console.warn($VALIDATION.mark.errors)
+    if (!this.validation.mark(json)){
+      console.warn(this.validation.mark.errors)
     }
     return new Promise(function(res, rej){
       // give it an that's probably semi-unique
@@ -143,17 +147,17 @@ function init_LocalStore(){
         query['provenance.analysis.execution_id']= name
       }
       res(findInLocalStorage('heatmap', query))
-    })
+    }).then(x=>this.filterBroken(x,"heatmap"))
   }
   Store.prototype.getHeatmap = function(id){
     return new Promise(function(res, rej){
       res(getInLocalStorage("heatmap", id))
-    })
+    }).then(x=>this.filterBroken(x,"heatmap"))
   }
   Store.prototype.addHeatmap = function(json){
     // give it an that's probably semi-unique
-    if (!$VALIDATION.heatmap(json)){
-      console.warn($VALIDATION.heatmap.errors)
+    if (!this.validation.heatmap(json)){
+      console.warn(this.validation.heatmap.errors)
     }
     json['_id'] = json['_id'] || {'$oid': Date.now()}
     return new Promise(function(res, rej){
@@ -215,12 +219,12 @@ function init_LocalStore(){
     }
     return new Promise(function(res, rej){
       res(findInLocalStorage("template", query))
-    })
+    }).then(x=>this.filterBroken(x,"template"))
   }
   Store.prototype.getTemplate = function(id){
     return new Promise(function(res, rej){
       res(getInLocalStorage("template", id))
-    })
+    }).then(x=>this.filterBroken(x,"template"))
   }
   Store.prototype.DownloadMarksToFile = function(){
       // downloads marks for the current slide only
@@ -270,12 +274,20 @@ function init_LocalStore(){
           data.forEach(x => {
             x.provenance.image.slide = slide
           })
+          console.log($VALIDATION.mark)
           let data2 = JSON.parse(window.localStorage.getItem("mark"))
           data2 = data2 || []
+          console.log(data2)
           data2 = data2.concat(data)
+          data2 = data2.filter($VALIDATION.mark)
           console.log(data2)
           window.localStorage.setItem("mark", JSON.stringify(data2))
-          window.location.reload()
+          if ($VALIDATION.mark.errors){
+            console.error($VALIDATION.mark.errors)
+          } else {
+            window.location.reload()
+          }
+
         } catch (e) {
           console.error(e)
         }

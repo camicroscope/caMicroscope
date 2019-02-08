@@ -29,15 +29,17 @@ function objToParamStr(obj) {
  * @constructor
  * Storage interpreter for camicroscope, uses same auth as origin
  * @param base - base url for data
+ * @param [validation] - validation dict where keys are lowercase of types
  * @param [config] - configuration options, unused so far
  **/
 class Store {
-  constructor(base, config) {
+  constructor(base, validation, config) {
     this.base = base || "./data/";
+    this.validation = validation || {};
     this.config = config;
   }
   /**
-   * errorHandler: handle the error response
+   * errorHandler: handle the error response, and clean
    * @param  {Response} response
    * @return {object}
    */
@@ -48,6 +50,24 @@ class Store {
       url: response.url
     };
     return response.json();
+  }
+  filterBroken(data, type){
+    if (Array.isArray(data)){
+      if (this.validation[type.toLowerCase()]){
+        return data.filter(this.validation[type])
+      } else {
+        return data
+      }
+    } else { // unlikely case?
+      if (this.validation[type.toLowerCase()]){
+        if (this.validation[type](data)){
+          return data
+        }else{
+          return undefined
+        }
+      }
+    }
+
   }
   /**
    * find marks matching slide and/or marktype
@@ -94,7 +114,7 @@ class Store {
     let bySlide = fetch(url + "?" + objToParamStr(query), {
       credentials: "same-origin",
       mode: "cors"
-    }).then(this.errorHandler)
+    }).then(this.errorHandler).then(x=>this.filterBroken(x, "mark"))
     if (!slide) {
       return bySlide
     } else {
@@ -106,7 +126,7 @@ class Store {
           return fetch(url + "?" + objToParamStr(query), {
             credentials: "same-origin",
             mode: "cors"
-          }).then(this.errorHandler)
+          }).then(this.errorHandler).then(x=>this.filterBroken(x, "mark"))
         }
 
       })
@@ -148,7 +168,7 @@ class Store {
     return fetch(url + "?" + objToParamStr(query), {
       credentials: "same-origin",
       mode: "cors"
-    }).then(this.errorHandler)
+    }).then(this.errorHandler).then(x=>this.filterBroken(x, "mark"))
   }
 
   getMarkByIds(ids, slide, study, specimen, source, footprint, x0, x1, y0, y1) {
@@ -193,7 +213,7 @@ class Store {
     let bySlide = fetch(url + "?" + objToParamStr(query), {
       credentials: "same-origin",
       mode: "cors"
-    }).then(this.errorHandler)
+    }).then(this.errorHandler).then(x=>this.filterBroken(x, "mark"))
     if (!slide) {
       return bySlide
     } else {
@@ -205,7 +225,7 @@ class Store {
           return fetch(url + "?" + objToParamStr(query), {
             credentials: "same-origin",
             mode: "cors"
-          }).then(this.errorHandler)
+          }).then(this.errorHandler).then(x=>this.filterBroken(x, "mark"))
         }
 
       })
@@ -230,7 +250,7 @@ class Store {
     return fetch(url + "?" + objToParamStr(query), {
       credentials: "same-origin",
       mode: "cors"
-    }).then(this.errorHandler)
+    }).then(this.errorHandler).then(x=>this.filterBroken(x, "mark"))
   }
   /**
    * post mark
@@ -240,8 +260,8 @@ class Store {
   addMark(json) {
     var suffix = "Mark/post"
     var url = this.base + suffix;
-    if (!$VALIDATION.mark(json)){
-      console.warn($VALIDATION.mark.errors)
+    if (this.validation.mark && !this.validation.mark(json)){
+      console.warn(this.validation.mark.errors)
     }
     return fetch(url, {
       method: "POST",
@@ -328,7 +348,7 @@ class Store {
     return fetch(url + "?" + objToParamStr(query), {
       credentials: "same-origin",
       mode: "cors"
-    }).then(this.errorHandler)
+    }).then(this.errorHandler).then(x=>this.filterBroken(x, "heatmap"))
   }
   /**
    * get heatmap by id
@@ -345,7 +365,7 @@ class Store {
     return fetch(url + "?" + objToParamStr(query), {
       credentials: "same-origin",
       mode: "cors"
-    }).then(this.errorHandler)
+    }).then(this.errorHandler).then(x=>this.filterBroken(x, "heatmap"))
   }
   /**
    * post heatmap
@@ -355,8 +375,8 @@ class Store {
   addHeatmap(json) {
     var suffix = "Heatmap/post"
     var url = this.base + suffix;
-    if (!$VALIDATION.heatmap(json)){
-      console.warn($VALIDATION.heatmap.errors)
+    if (this.validation.heatmap && !this.validation.heatmap(json)){
+      console.warn(this.validation.heatmap.errors)
     }
     return fetch(url, {
       method: "POST",
@@ -474,7 +494,7 @@ class Store {
     return fetch(url + "?" + objToParamStr(query), {
       credentials: "same-origin",
       mode: "cors"
-    }).then(this.errorHandler)
+    }).then(this.errorHandler).then(x=>this.filterBroken(x, "slide"))
   }
 
   /**
@@ -497,7 +517,7 @@ class Store {
     return fetch(url + "?" + objToParamStr(query), {
       credentials: "same-origin",
       mode: "cors"
-    }).then(this.errorHandler)
+    }).then(this.errorHandler).then(x=>this.filterBroken(x, "template"))
   }
 
   /**
@@ -515,7 +535,7 @@ class Store {
     return fetch(url + "?" + objToParamStr(query), {
       credentials: "same-origin",
       mode: "cors"
-    }).then(this.errorHandler)
+    }).then(this.errorHandler).then(x=>this.filterBroken(x, "template"))
   }
 
   /**

@@ -51,7 +51,7 @@ class CaMic{
     this.slideQuery = slideQuery;
     this.slideId = slideQuery.id
     // initalize store
-    this.store = new Store("../../data/");
+    this.store = new Store("../../data/", $VALIDATION);
     // load image
     // set overlay thing
     this.viewer.addOnceHandler('open',this.init.bind(this));
@@ -128,7 +128,7 @@ class CaMic{
     }
 
     this.createZoomControl();
-    
+
     if(this.mpp_x&&this.mpp_y&&this.mpp_x!=1e9&&this.mpp_y!=1e9)
       this.createMeasurementTool(this.mpp_x,this.mpp_y);
     this.createPatchManager();
@@ -175,10 +175,10 @@ class CaMic{
                   if(func && typeof func === 'function') func.call(null,{hasError:true,isServiceError:true,message:'Something wrong with this Slide... X_X'});
                 }.bind(this),
               });
-        
+
       })
       .catch(e=>{
-        
+
         //$UI.message.addError('loadImg Error');
         console.error(e);
         //if()
@@ -204,7 +204,7 @@ class CaMic{
     // set scalebar
     let mpp = this.mpp_x || this.mpp;
     if(mpp&&mpp!=1e9) this.createScalebar(this.mpp)
-    
+
     var imagingHelper = new OpenSeadragonImaging.ImagingHelper({
       viewer: this.viewer
     });

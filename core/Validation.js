@@ -28,7 +28,7 @@ $VALIDATION.mark = ajv.compile({
   type: "object",
   required: ["provenance"],
   properties: {
-    marktype: {
+    provenance: {
       type: "object",
       required: ["image", "analysis"],
       properties: {
