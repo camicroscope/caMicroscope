@@ -356,6 +356,7 @@ function watershed(inn, out, thresh) {
   cv.subtract(imageBg, imageFg, unknown);
 
   // Get connected components markers
+
   cv.connectedComponents(imageFg, markers);
   for (let i = 0; i < markers.rows; i++) {
     for (let j = 0; j < markers.cols; j++) {
@@ -379,10 +380,10 @@ function watershed(inn, out, thresh) {
     }
   }
 
+
   // Display it
   cv.imshow(out, dst);
 
-  // Free up memory
   src.delete();
   dst.delete();
   gray.delete();
