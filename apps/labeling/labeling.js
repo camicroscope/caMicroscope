@@ -16,7 +16,7 @@ function initialize(){
   // init UI -- some of them need to wait data loader to load data
   // because UI components need data to initialize
   //initUIcomponents();
-
+  $UI.message = new MessageQueue();
   // create a viewer and set up
   initCore();
 }
