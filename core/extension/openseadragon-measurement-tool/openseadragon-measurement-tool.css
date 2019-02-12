@@ -30,11 +30,13 @@ align-items:center;
     text-align : center;
 }
 .ruler .h_text {
+    font-size:1.2rem;
+    font-weight:bold;
     display:table;
     margin: 0 auto;
     white-space:nowrap;
     color: rgb(0, 0, 0);   
-    background-color:rgba(255, 255, 255, 0.7);
+    background-color:rgba(172, 252, 3, 0.7);
 }
 .ruler .v_scale {
     position : absolute;
@@ -50,9 +52,11 @@ align-items:center;
     display : flex;
 }
 .ruler .v_text {
+    font-size:1.2rem;
+    font-weight:bold;
     display:inline-block;
     white-space:nowrap;
-    background-color : rgba(255, 255, 255, 0.7);
+    background-color : rgba(172, 252, 3, 0.7);
     color : rgb(0, 0, 0);
 }
 /**-- coordinate ruler END --**/
@@ -70,11 +74,13 @@ align-items:center;
     align-items:center;
 }
 .ruler .box .text {
+    font-size:1.2rem;
+    font-weight:bold;
     z-index:1;
     display:inline-block;
     margin:0 auto;
     white-space:nowrap;
-    background-color : rgba(255, 255, 255, 0.9);
+    background-color : rgba(172, 252, 3, 0.9);
     color : rgb(0, 0, 0);
 }
 /*horizontal*/
