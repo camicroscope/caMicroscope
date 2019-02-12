@@ -259,22 +259,23 @@ function initUIcomponents(){
         value: 'bugs',
         type: 'btn',
         callback: ()=>{window.open('https://goo.gl/forms/mgyhx4ADH0UuEQJ53','_blank').focus()}
-      },
-      {
-        icon: 'timeline',
-        type: 'check',
-        value: 'rect',
-        title: 'Segment',
-        callback: function () {
-          if (window.location.search.length > 0) {
-            window.location.href = '../segment/segment.html' + window.location.search;
-          }
-          else {
-            window.location.href = '../segment/segment.html';
-          }
-
-        }
       }
+      //,
+      // {
+      //   icon: 'timeline',
+      //   type: 'check',
+      //   value: 'rect',
+      //   title: 'Segment',
+      //   callback: function () {
+      //     if (window.location.search.length > 0) {
+      //       window.location.href = '../segment/segment.html' + window.location.search;
+      //     }
+      //     else {
+      //       window.location.href = '../segment/segment.html';
+      //     }
+
+      //   }
+      // }
 
     ]
   });
