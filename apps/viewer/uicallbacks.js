@@ -54,9 +54,9 @@ function multSelector_action(event){
 		slideQuery.location = $D.params.location
 		$minorCAMIC = new CaMic("minor_viewer",slideQuery, {
 			// osd options
-			mouseNavEnabled:false,
-			panVertical:false,
-			panHorizontal:false,
+			// mouseNavEnabled:false,
+			// panVertical:false,
+			// panHorizontal:false,
 			showNavigator:false,
 			// customized options
 			hasZoomControl:false,
@@ -73,10 +73,10 @@ function multSelector_action(event){
 
 		// synchornic zoom and move
 		// coordinated Viewer - zoom
-		$CAMIC.viewer.addHandler('zoom',coordinatedViewZoom);
+		$CAMIC.viewer.addHandler('zoom',synchornicView1);
 
 		// coordinated Viewer - pan
-		$CAMIC.viewer.addHandler('pan',coordinatedViewPan);
+		$CAMIC.viewer.addHandler('pan',synchornicView1);
 
 		// loading image
 		$minorCAMIC.loadImg(function(e){
@@ -85,6 +85,11 @@ function multSelector_action(event){
 				$UI.message.addError(e.message);
 			}
 		});
+		$minorCAMIC.viewer.addOnceHandler('tile-drawing',function(){
+			$minorCAMIC.viewer.addHandler('zoom',synchornicView2);
+			$minorCAMIC.viewer.addHandler('pan',synchornicView2);
+		});
+
 	}catch(error){
 		Loading.close();
 		$UI.message.addError('Core Initialization Failed');
@@ -169,14 +174,27 @@ function multSelector_action(event){
 
 }
 
+var active1 = false;
+var active2 = false;
+function synchornicView1(data){
+	if (active2) {
+	return;
+	}
 
-function coordinatedViewZoom(data){
-	$minorCAMIC.viewer.viewport.zoomTo($CAMIC.viewer.viewport.getZoom(),$CAMIC.viewer.viewport.getCenter());
+	active1 = true;
+	$minorCAMIC.viewer.viewport.zoomTo($CAMIC.viewer.viewport.getZoom());
 	$minorCAMIC.viewer.viewport.panTo($CAMIC.viewer.viewport.getCenter());
+	active1 = false;
 }
 
-function coordinatedViewPan(data){
-	$minorCAMIC.viewer.viewport.panTo($CAMIC.viewer.viewport.getCenter());
+function synchornicView2(data){
+  if (active1) {
+    return;
+  }
+  active2 = true;
+  $CAMIC.viewer.viewport.zoomTo($minorCAMIC.viewer.viewport.getZoom());
+  $CAMIC.viewer.viewport.panTo($minorCAMIC.viewer.viewport.getCenter());
+  active2 = false;
 }
 
 function multSelector_cancel(){
@@ -211,8 +229,8 @@ function closeSecondaryViewer(){
 	//destory
 	if($minorCAMIC) {
 		// remove handler
-		$CAMIC.viewer.removeHandler('zoom',coordinatedViewZoom);
-		$CAMIC.viewer.removeHandler('pan',coordinatedViewPan);
+		$CAMIC.viewer.removeHandler('zoom',synchornicView1);
+		$CAMIC.viewer.removeHandler('pan',synchornicView1);
 
 		// destroy object
 		$minorCAMIC.destroy();

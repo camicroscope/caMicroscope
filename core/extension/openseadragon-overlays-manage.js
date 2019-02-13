@@ -88,6 +88,7 @@
         //this._viewer.addHandler('update-viewport',this.updateView.bind(this));
         this._viewer.addHandler('open',this.updateView.bind(this));
         
+        this._viewer.addHandler('resize',this.updateView.bind(this));
         this._viewer.addHandler('pan',this.events.panning);
         this._viewer.addHandler('zoom',this.events.zooming);
         this._viewer.addHandler('animation-finish', this.events.drawing);
