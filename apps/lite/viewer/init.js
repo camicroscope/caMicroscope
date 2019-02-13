@@ -145,6 +145,7 @@ function initCore(){
   $CAMIC.viewer.addHandler('open',function(){
     $CAMIC.viewer.canvasDrawInstance.addHandler('start-drawing',startDrawing);
     $CAMIC.viewer.canvasDrawInstance.addHandler('stop-drawing',stopDrawing);
+    if(!$CAMIC.viewer.measureInstance) $UI.toolbar._sub_tools[4].style.display = 'none';
   });
 }
 

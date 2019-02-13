@@ -31,9 +31,15 @@ function ImgBoxMods() {
         }]
       }
       this.viewer.open(imbox_source);
+      // set mpp
+      this.mpp_x = +data['mpp-x']
+      this.mpp_y = +data['mpp-y']
+      this.mpp = data.mpp || this.mpp_x || this.mpp_y || 1e9;
+      this.mpp_x = +data['mpp-x'] || this.mpp
+      this.mpp_y = +data['mpp-y'] || this.mpp
       //set scalebar
-      this.mpp = data['mpp-x'] || data['mpp-y'] || 1
-      this.createScalebar(this.mpp)
+      let mpp = this.mpp_x || this.mpp;
+      if(mpp&&mpp!=1e9) this.createScalebar(this.mpp)
       var imagingHelper = new OpenSeadragonImaging.ImagingHelper({
         viewer: this.viewer
       });
@@ -44,7 +50,9 @@ function ImgBoxMods() {
       x.name = this.slideName
       x.study = this.study
       x.specimen = this.specimen
-      x.mpp = 1;
+      x.mpp = this.mpp;
+      x.mpp_x = this.mpp_x;
+      x.mpp_y = this.mpp_y;
       x.location = p;
       x.url = imbox_source
       console.log(func)
