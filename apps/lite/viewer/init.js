@@ -197,20 +197,20 @@ function initUIcomponents(){
           // free draw
           {
             //icon:'linear_scale',
-            value:10,
-            title:'10x',
+            value:0.5,
+            title:'0.5',
             checked:true
           },
           // rectangle fraw
           {
             //icon:'timeline',
-            value:20,
-            title:'20x'
+            value:1,
+            title:'1.0'
           },
           {
             //icon:'timeline',
-            value:40,
-            title:'40x'
+            value:2,
+            title:'2.0'
           }
         ],
         callback:toggleMagnifier
