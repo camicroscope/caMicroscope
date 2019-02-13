@@ -127,7 +127,7 @@
     text-indent: 21px;
     border-radius: 10px;
     transition: left .25s ease-in-out;
-    content: "HIDE";
+    content: "SHOW";
     font-size: 8px;
     line-height: 19px;
 }
@@ -149,7 +149,7 @@
     background: #365f9c;
     transition: left .25s ease-in-out;
     color: #F5F5F5;
-    content: "SHOW";
+    content: "HIDE";
     font-size: 8px;
     line-height: 19px;
 }
