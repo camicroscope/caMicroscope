@@ -238,6 +238,11 @@ function goHome(data){
 }
 
 // pen draw callback
+const label = document.createElement('div');
+label.style.transformOrigin = 'center';
+label.style.height = 0;
+label.style.width = 0;
+
 function draw(e){
 	if(!$CAMIC.viewer.canvasDrawInstance){
 		alert('draw doesn\'t initialize');
@@ -245,21 +250,36 @@ function draw(e){
 	}
 	const state = +e.state;
 	const canvasDraw = $CAMIC.viewer.canvasDrawInstance;
+	const li = $UI.toolbar._sub_tools[2];
 
 	const target = this.srcElement || this.target || this.eventSource.canvas;
 	switch (state) {
 		case 0: // off
+			li.removeChild(label);
 			canvasDraw.clear();
 			canvasDraw.drawOff();
 			$CAMIC.drawContextmenu.off();
 			$UI.appsSideMenu.close();
+			
 			break;
 		case 1: // once
 			// statements_1
 		case 2: // stick
+			li.appendChild(label);
+			if(state==1){
+				$UI.annotOptPanel._action_.style.display = 'none';
+				label.style.transform = 'translateY(-12px) translateX(18px)';
+				label.textContent = '1';
+				label.style.color = '';
+			}else if(state==2){
+				$UI.annotOptPanel._action_.style.display = '';
+				label.style.transform = ' rotate(-90deg) translateX(2px) translateY(13px)';
+				label.textContent = '8';
+				label.style.color = 'white';
+			}
 			canvasDraw.drawOn();
-			$CAMIC.drawContextmenu.on();
-			$CAMIC.drawContextmenu.open({x:this.clientX,y:this.clientY,target:target});
+			// $CAMIC.drawContextmenu.on();
+			// $CAMIC.drawContextmenu.open({x:this.clientX,y:this.clientY,target:target});
 			// turn off magnifier
 			$UI.toolbar._sub_tools[3].querySelector('input[type=checkbox]').checked = false;
 			$UI.spyglass.close();
