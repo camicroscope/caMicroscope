@@ -497,6 +497,7 @@ LayersViewer.createControlBar = function(){
 
 	/* create check all START */
 	const chk_all = document.createElement('input');
+	chk_all.style.display = 'none';
 	chk_all.type = 'checkbox';
 	chk_all.id = 'all';
 	chk_all.dataset.type = 'all';

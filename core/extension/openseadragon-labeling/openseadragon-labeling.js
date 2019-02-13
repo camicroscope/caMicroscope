@@ -64,9 +64,8 @@
     $.PatchManager.prototype.on = function(){
         // stop turning on labeling mode if already turn on
         if(this.isOn === true) return;
-        this.isOn = true;        
-
-        console.log('on');
+        this.isOn = true; 
+        
         // add mouse events
         this.viewer.addHandler('zoom', this.events.zoom);
         this.viewer.addHandler('canvas-click', this.events.click);
@@ -79,7 +78,7 @@
         // stop turning off labeling mode if already turn off
         if(this.isOn === false) return;
         this.isOn = false;
-        console.log('off');
+
         // remove mouse events
         this.viewer.removeHandler('zoom', this.events.zoom);
         this.viewer.removeHandler('canvas-click', this.events.click);
@@ -100,12 +99,16 @@
 
         const rect = getRect(img_point,noteType.model.width,noteType.height,this.imgWidth,this.imgHeight,this.viewer);
     }
+
+    $.PatchManager.prototype.exportPatchesAsJSON = function(coordinates='normalize'){
+        return this.patches.map(p=>p.toJSON(coordinates))
+    }
+
     function _press(e){
         this.isCreatePatch = true;
         this.initPathStates();
     }
     function _drag_end(e){
-        console.log('drag')
         this.isCreatePatch = false;
         //if(this.activePatch) this.activePatch.deactive();
     }
@@ -134,7 +137,7 @@
 			//size:new $.Point(width,height),
 			center:view_point,
 			viewer:this.viewer,
-			color:'#ff0000'
+			color:'#7cfc00'
 		};
 
 	    if(this.activePatch){
@@ -153,8 +156,6 @@
 	    	options.size = new $.Point(width,height);
 	    }
         options.isPoint = this.isPoint;
-
-        //console.log(options);
 
 	    this.patches.push(new $.Patch(options));
     }
@@ -312,7 +313,6 @@
 
 
     function moving(e){
-        console.log('moving');
     	const delta = this.viewer.viewport.deltaPointsFromPixels(e.delta, true);
 		const top_left = this.viewer.viewport.viewportToImageCoordinates(new $.Point(
 				this.overlay.location.x + delta.x, 
@@ -348,7 +348,7 @@
 	    const height = this.overlay.height + delta.y;
 
 	    const sizeInScreen = this.viewer.viewport.deltaPixelsFromPoints(new $.Point(width,height)); // 24 X 24 pixel
-	    //console.log(e.delta, delta, width, height, sizeInScreen);
+	    
 	    if(sizeInScreen.x > 42){
 	    	this.overlay.width = width;
 	    }
@@ -382,8 +382,6 @@
         // e.stopPropagation();
         // e.preventDefault();
     };
-
-
 
     $.Patch.prototype.active = function(){
         if(this.viewer.pmanager.activePatch) this.viewer.pmanager.activePatch.deactive();
@@ -419,10 +417,7 @@
     $.Patch.prototype.remove = function(){
         
         this.deactive();
-        // for(var trackerName in this.patchTrackers){
-        //     console.log(trackerName);
-        //     this.patchTrackers[trackerName].destroy();
-        // }
+
         this.viewer.removeOverlay(this.overlay.element); 
         this.overlay.destroy();
         this.destroy();
@@ -434,6 +429,7 @@
         if(index != -1)
         this.viewer.pmanager.patches.splice(index,1);
     }
+    
     $.Patch.prototype.templateOptions = function(){
     	return {
     		data:this.element.querySelector('.note_panel textarea').value,
@@ -441,6 +437,53 @@
 			viewer:this.viewer,
 			color:this.element.querySelector('.color input').value
     	}
+    }
+
+    $.Patch.prototype.toJSON = function(coordinates = 'normalize'){ // l/image
+        return {
+            data:this.element.querySelector('.note_panel textarea').value,
+            color:this.element.querySelector('.color input').value,
+            isPoint:this.isPoint,
+            bounds:this.getBounds(coordinates)
+        }
+    }
+    
+    $.Patch.prototype.getBounds = function(coordinates = 'normalize'){ // normalize or image
+        const imagingHelper = this.viewer.imagingHelper;
+        const bounds = this.overlay.getBounds(this.viewer);
+
+        const x = bounds.x; // x in logical/normalize
+        const y = bounds.y * imagingHelper.imgAspectRatio; // y in logical/normalize
+        const width = bounds.width; // width in logical/normalize
+        const height = bounds.height * imagingHelper.imgAspectRatio; // height in logical/normalize
+
+        if(this.isPoint){
+            return coordinates == 'normalize'?[x,y]:[Math.round($CAMIC.viewer.imagingHelper.logicalToDataX(x)),Math.round($CAMIC.viewer.imagingHelper.logicalToDataY(y))];
+        }else{
+            const x1 = x + width;
+            const y1 = y + height;
+            return coordinates == 'normalize'?
+            [[x,y],[x1,y],[x1,y1],[x,y1]]:
+            [
+                [
+                    Math.round($CAMIC.viewer.imagingHelper.logicalToDataX(x)),
+                    Math.round($CAMIC.viewer.imagingHelper.logicalToDataY(y))
+                ],
+                [
+                    Math.round($CAMIC.viewer.imagingHelper.logicalToDataX(x1)),
+                    Math.round($CAMIC.viewer.imagingHelper.logicalToDataY(y))
+                ],
+                [
+                    Math.round($CAMIC.viewer.imagingHelper.logicalToDataX(x1)),
+                    Math.round($CAMIC.viewer.imagingHelper.logicalToDataY(y1))
+                ],
+                [
+                    Math.round($CAMIC.viewer.imagingHelper.logicalToDataX(x)),
+                    Math.round($CAMIC.viewer.imagingHelper.logicalToDataY(y1))
+                ]
+            ];
+
+        }
     }
 
     function createPatchElement(elt, rect, options){

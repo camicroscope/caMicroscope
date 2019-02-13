@@ -291,7 +291,7 @@ CaToolbar.prototype.__createMultiStateBtns = function(options){
 	icon.textContent = options.icon;
 	if(options.title) icon.title = options.title;
 	li.appendChild(icon);
-	icon.addEventListener('click', function(e){
+	li.addEventListener('click', function(e){
 		icon.classList.remove(`s${icon.dataset.state}`);
 		icon.dataset.state++;
 		if(icon.dataset.state == 3) icon.dataset.state = 0;

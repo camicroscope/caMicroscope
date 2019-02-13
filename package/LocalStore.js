@@ -52,14 +52,20 @@ function init_LocalStore(){
   }
 
   function removeFromLocalStorage(type, id){
+    console.log(id)
     let data = JSON.parse(window.localStorage.getItem(type))
     data = data || []
-    newData = data.filter(x=>x['_id'] !== id)
-    window.localStorage.setItem(type, JSON.stringify(data))
-    return newData
+    let newData = data.filter(x=>x['_id']['$oid'] !== id)
+    window.localStorage.setItem(type, JSON.stringify(newData))
+    console.log(data.length - newData.length)
+    return {'rowsAffected': data.length - newData.length}
   }
 
 
+
+  // stange fixes for potential mismatches in validation version
+  Store.prototype.validation = Store.prototype.validation || {}
+  Store.prototype.filterBroken = Store.prototype.filterBroken || function(a,b){return a}
   // replace impacted store functionality.
   Store.prototype.findMarkTypes = function(slide, name){
     return new Promise(function(res, rej){
@@ -100,7 +106,7 @@ function init_LocalStore(){
         query['provenance.image.study'] = study
       }
       res(findInLocalStorage('mark', query))
-    })
+    }).then(x=>this.filterBroken(x,"mark"))
   }
   Store.prototype.getMarkByIds = function(ids, slide, study, specimen, source, footprint, x0, x1, y0, y1){
     return new Promise(function(res, rej){
@@ -109,22 +115,25 @@ function init_LocalStore(){
         data.push(...findInLocalStorage('mark', {'provenance.analysis.execution_id': ids[i], 'provenance.image.slide': slide}))
       }
       res(data)
-    })
+    }).then(x=>this.filterBroken(x,"mark"))
   }
   Store.prototype.getMark = function(id){
     return new Promise(function(res, rej){
       res(getInLocalStorage("mark", id))
-    })
+    }).then(x=>this.filterBroken(x,"mark"))
   }
   Store.prototype.addMark = function(json){
+    if (!this.validation.mark(json)){
+      console.warn(this.validation.mark.errors)
+    }
     return new Promise(function(res, rej){
       // give it an that's probably semi-unique
-      json['_id'] = json['_id'] || Date.now()
+      json['_id'] = json['_id'] || {'$oid': Date.now()}
       res(putInLocalStorage('mark', json))
     })
   }
-  Store.prototype.deleteMark = function(id,slide){
-    return new Promise(function(res, rej){
+  Store.prototype.deleteMark = function(id, slide){
+    return new Promise((res, rej)=>{
       res(removeFromLocalStorage('mark', id))
     })
   }
@@ -138,16 +147,19 @@ function init_LocalStore(){
         query['provenance.analysis.execution_id']= name
       }
       res(findInLocalStorage('heatmap', query))
-    })
+    }).then(x=>this.filterBroken(x,"heatmap"))
   }
   Store.prototype.getHeatmap = function(id){
     return new Promise(function(res, rej){
       res(getInLocalStorage("heatmap", id))
-    })
+    }).then(x=>this.filterBroken(x,"heatmap"))
   }
   Store.prototype.addHeatmap = function(json){
     // give it an that's probably semi-unique
-    json['_id'] = json['_id'] || Date.now()
+    if (!this.validation.heatmap(json)){
+      console.warn(this.validation.heatmap.errors)
+    }
+    json['_id'] = json['_id'] || {'$oid': Date.now()}
     return new Promise(function(res, rej){
       res(putInLocalStorage('heatmap', json))
     })
@@ -207,12 +219,12 @@ function init_LocalStore(){
     }
     return new Promise(function(res, rej){
       res(findInLocalStorage("template", query))
-    })
+    }).then(x=>this.filterBroken(x,"template"))
   }
   Store.prototype.getTemplate = function(id){
     return new Promise(function(res, rej){
       res(getInLocalStorage("template", id))
-    })
+    }).then(x=>this.filterBroken(x,"template"))
   }
   Store.prototype.DownloadMarksToFile = function(){
       // downloads marks for the current slide only
@@ -248,6 +260,7 @@ function init_LocalStore(){
     let slide = $D.params.id
     slide = decodeURIComponent(slide)
     var element = document.createElement('input');
+    document.body.appendChild(element);
     element.setAttribute('type', "file")
     element.style.display = 'position: fixed; top: -100em';
     element.onchange = function(event) {
@@ -261,12 +274,20 @@ function init_LocalStore(){
           data.forEach(x => {
             x.provenance.image.slide = slide
           })
+          console.log($VALIDATION.mark)
           let data2 = JSON.parse(window.localStorage.getItem("mark"))
           data2 = data2 || []
+          console.log(data2)
           data2 = data2.concat(data)
+          data2 = data2.filter($VALIDATION.mark)
           console.log(data2)
           window.localStorage.setItem("mark", JSON.stringify(data2))
-          window.location.reload()
+          if ($VALIDATION.mark.errors){
+            console.error($VALIDATION.mark.errors)
+          } else {
+            window.location.reload()
+          }
+
         } catch (e) {
           console.error(e)
         }
@@ -274,6 +295,7 @@ function init_LocalStore(){
       };
       reader.readAsText(input.files[0]);
     };
+
     element.click();
     document.body.removeChild(element);
   }

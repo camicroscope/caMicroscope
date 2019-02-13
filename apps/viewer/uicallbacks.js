@@ -238,6 +238,11 @@ function goHome(data){
 }
 
 // pen draw callback
+const label = document.createElement('div');
+label.style.transformOrigin = 'center';
+label.style.height = 0;
+label.style.width = 0;
+
 function draw(e){
 	if(!$CAMIC.viewer.canvasDrawInstance){
 		alert('draw doesn\'t initialize');
@@ -245,21 +250,36 @@ function draw(e){
 	}
 	const state = +e.state;
 	const canvasDraw = $CAMIC.viewer.canvasDrawInstance;
+	const li = $UI.toolbar._sub_tools[1];
 
 	const target = this.srcElement || this.target || this.eventSource.canvas;
 	switch (state) {
 		case 0: // off
+			li.removeChild(label);
 			canvasDraw.clear();
 			canvasDraw.drawOff();
 			$CAMIC.drawContextmenu.off();
 			$UI.appsSideMenu.close();
+			
 			break;
 		case 1: // once
 			// statements_1
 		case 2: // stick
+			li.appendChild(label);
+			if(state==1){
+				$UI.annotOptPanel._action_.style.display = 'none';
+				label.style.transform = 'translateY(-12px) translateX(18px)';
+				label.textContent = '1';
+				label.style.color = '';
+			}else if(state==2){
+				$UI.annotOptPanel._action_.style.display = '';
+				label.style.transform = ' rotate(-90deg) translateX(2px) translateY(13px)';
+				label.textContent = '8';
+				label.style.color = 'white';
+			}
 			canvasDraw.drawOn();
-			$CAMIC.drawContextmenu.on();
-			$CAMIC.drawContextmenu.open({x:this.clientX,y:this.clientY,target:target});
+			//$CAMIC.drawContextmenu.on();
+			//$CAMIC.drawContextmenu.open({x:this.clientX,y:this.clientY,target:target});
 			// turn off magnifier
 			$UI.toolbar._sub_tools[2].querySelector('input[type=checkbox]').checked = false;
 			$UI.spyglass.close();
@@ -272,7 +292,9 @@ function draw(e){
 
 			// open annotation menu
 			$UI.appsSideMenu.open();
-			$UI.appsList.triggerContent('annotation','open');
+			// -- START QUIP550 -- //
+			//$UI.appsList.triggerContent('annotation','open');
+			// -- END QUIP550 -- //
 			const input = $UI.annotOptPanel._form_.querySelector('#name');
 			input.focus();
 			input.select();
@@ -294,6 +316,10 @@ function toggleOffDrawBtns(){
 }
 
 function toggleMeasurement(data){
+	if(!$CAMIC.viewer.measureInstance) {
+		console.warn('No Measurement Tool');
+		return;
+	}
 	//$UI.message.add(`Measument Tool ${data.checked?'ON':'OFF'}`);
 	if(data.checked){
 		$CAMIC.viewer.measureInstance.on();
@@ -465,8 +491,11 @@ function anno_callback(data){
 		// open app silde
 		$UI.toolbar._main_tools[0].querySelector('[type=checkbox]').checked = true;
 		$UI.appsSideMenu.open();
+
 		// open annotaion list
-		$UI.appsList.triggerContent('annotation','open');
+		// -- START QUIP550 -- //
+		// $UI.appsList.triggerContent('annotation','open');
+		// -- END QUIP550 -- //
 		return;
 
 	}
@@ -543,8 +572,9 @@ function saveAnnotCallback(){
 	// close app side
 	$UI.toolbar._main_tools[0].querySelector('[type=checkbox]').checked = false;
 	$UI.appsSideMenu.close();
-	$UI.appsList.triggerContent('annotation','close');
-
+	// -- START QUIP550 -- //
+	//$UI.appsList.triggerContent('annotation','close');
+	// -- END QUIP550 -- //
 	// open layer side
 	$UI.toolbar._main_tools[1].querySelector('[type=checkbox]').checked = true;
 	$UI.layersSideMenu.open();

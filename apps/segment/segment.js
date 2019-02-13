@@ -1,3 +1,6 @@
+let PDR = OpenSeadragon.pixelDensityRatio;
+console.log('pixelDensityRatio:', PDR);
+
 let $CAMIC = null;
 const $UI = {};
 const $D = {
@@ -5,11 +8,118 @@ const $D = {
     home: '',
     table: ''
   },
-  params: null // parameter from url - slide Id and status in it (object).
+  params: null
 };
 
-let PDR = OpenSeadragon.pixelDensityRatio;
-console.log('pixelDensityRatio:', PDR);
+function loadOpenCv(onloadCallback) {
+  const OPENCV_URL = 'opencv.js';
+  let script = document.createElement('script');
+  script.setAttribute('async', '');
+  script.setAttribute('type', 'text/javascript');
+
+  script.addEventListener('load', () => {
+    //console.log(cv.getBuildInformation());
+    console.log('OPENCV IS LOADED! :)');
+    onloadCallback();
+  });
+
+  script.src = OPENCV_URL;
+  let node = document.getElementsByTagName('script')[0];
+  console.log('node.parentNode', node.parentNode);
+  node.parentNode.insertBefore(script, node);
+
+}
+
+function initialize() {
+  loadOpenCv(() => {
+    initUIcomponents();
+  });
+  initCore();
+}
+
+function initUIcomponents() {
+
+  $UI.toolbar = new CaToolbar({
+    id: 'ca_tools',
+    zIndex: 601,
+    hasMainTools: false,
+    subTools: [
+      // rectangle draw
+      {
+        icon: 'timeline',
+        type: 'check',
+        value: 'rect',
+        title: 'Segment',
+        callback: drawRectangle
+      }, {
+        icon: 'insert_photo',
+        type: 'btn',
+        value: 'viewer',
+        title: 'Viewer',
+        callback: function () {
+          if (window.location.search.length > 0) {
+            window.location.href = '../viewer/viewer.html' + window.location.search;
+          } else {
+            window.location.href = '../viewer/viewer.html';
+          }
+        }
+      }, {
+        icon: 'bug_report',
+        title: 'Bug Report',
+        value: 'bugs',
+        type: 'btn',
+        callback: () => {
+          window.open('https://goo.gl/forms/mgyhx4ADH0UuEQJ53', '_blank').focus()
+        }
+      }
+    ]
+  });
+
+  let button = document.createElement('button');
+  button.id = 'trigger';
+  button.style.display = "none";
+  document.body.appendChild(button);
+
+}
+
+// setting core functionality
+function initCore() {
+  // start initial
+  const opt = {
+    hasZoomControl: true,
+    hasDrawLayer: true,
+    hasLayerManager: true,
+    hasScalebar: true,
+    hasMeasurementTool: true
+  };
+
+  // set states if exist
+  if ($D.params.states) {
+    opt.states = $D.params.states;
+  }
+
+  try {
+    $CAMIC = new CaMic("main_viewer", $D.params.slideId, opt);
+  } catch (error) {
+    Loading.close();
+    $UI.message.addError('Core Initialization Failed');
+    console.error(error);
+    return;
+  }
+
+  $CAMIC.loadImg(function (e) {
+    // image loaded
+    if (e.hasError) {
+      $UI.message.addError(e.message)
+    }
+  });
+
+  $CAMIC.viewer.addOnceHandler('open', function (e) {
+    // add stop draw function
+    $CAMIC.viewer.canvasDrawInstance.addHandler('stop-drawing', camicStopDraw);
+
+  });
+}
 
 /**
  * Toolbar button callback
@@ -27,22 +137,16 @@ function drawRectangle(e) {
 
   if (e.checked) {
     canvasDraw.drawOn();
-
   } else {
     canvasDraw.drawOff();
-
   }
-
 }
 
 /**
- * Get pixels to create image (pass to ImageJs)
- * @param event
+ * This is basically onmouseup after drawing rectangle.
+ * @param e
  */
 function camicStopDraw(e) {
-
-  //let main_viewer = document.getElementById('main_viewer');
-  //let clickPos = getClickPosition(e, main_viewer);
 
   const viewer = $CAMIC.viewer;
   const canvasDraw = viewer.canvasDrawInstance;
@@ -55,11 +159,9 @@ function camicStopDraw(e) {
     let box = checkSize(imgColl, viewer.imagingHelper);
 
     if (Object.keys(box).length === 0 && box.constructor === Object) {
-
-    }
-    else
-    {
-      testDraw(box); // Draw then create file
+      console.error('SOMETHING WICKED THIS WAY COMES.');
+    } else {
+      segmentROI(box);
     }
 
   } else {
@@ -80,7 +182,7 @@ function checkSize(imgColl, imagingHelper) {
   let newArray = foo.map(function (a) {
     let x = a.slice();
     x[0] *= PDR;
-    x[1] *= PDR; // need to adjust, try layer
+    x[1] *= PDR;
     return x;
   });
   console.log('bounds', newArray);
@@ -104,41 +206,118 @@ function checkSize(imgColl, imagingHelper) {
   }
 }
 
+/**
+ * Make a canvas element & draw the ROI.
+ * @param imgData
+ * @param canvasId
+ * @param hidden
+ */
+function loadImageToCanvas(imgData, canvasId, hidden, div) {
 
-function testDraw(box) {
-  let camicanv = $CAMIC.viewer.drawer.canvas; //Original Canvas
-
-  let imgData = (camicanv.getContext('2d')).getImageData(box.xCoord, box.yCoord, box.width, box.height);
-
-  // Draw as canvas
   let canvas = document.createElement('canvas');
-  canvas.id = 'canvasInput';
-  canvas.style.border = "thick solid #0000FF";
+  canvas.id = canvasId;
+  //canvas.style.border = "thick solid #0000FF";
   canvas.width = imgData.width;
   canvas.height = imgData.height;
 
   let context = canvas.getContext("2d");
   context.putImageData(imgData, 0, 0);
-  document.body.appendChild(canvas);
+  div.appendChild(canvas);
 
-  let dataURL = canvas.toDataURL("image/png");
+  if (hidden) {
+    canvas.style.display = 'none';
+  }
 
+  //return canvas.toDataURL("image/png");
+
+}
+
+/**
+ * Segment! :)
+ * @param box
+ */
+function segmentROI(box) {
+
+  // But first, some setup...
+
+
+  let div = document.createElement('div');
+  document.body.appendChild(div);
+
+  var mybr = document.createElement('br');
+
+  // TRACKBAR WEIGHT VALUE
+  let weightValue = document.createElement("label");
+  weightValue.id = 'weightValue';
+  div.appendChild(weightValue);
+  div.appendChild(mybr);
+
+  // TRACKBAR
+  let trackbar = document.createElement('input');
+  trackbar.setAttribute('type', 'range');
+  trackbar.id = 'trackbar';
+  trackbar.setAttribute('value', '.7');
+  trackbar.setAttribute('min', '0');
+  trackbar.setAttribute('max', '1');
+  trackbar.setAttribute('step', '.1');
+  div.appendChild(trackbar);
+  div.appendChild(mybr);
+
+  weightValue.innerText = trackbar.value;
+  weightValue.addEventListener('input', () => {
+    weightValue.innerText = trackbar.value;
+  });
+
+  trackbar.addEventListener('input', () => {
+    let alpha = trackbar.value / trackbar.max;
+    watershed('canvasInput', 'canvasOutput', alpha);
+  });
+
+  // TRIGGER
+  let trigger = document.getElementById('trigger');
+  trigger.addEventListener("click", function () {
+    watershed('canvasInput', 'canvasOutput', .07);
+  }, false);
+
+  // SEGMENTATION CANVAS
+  let camicanv = $CAMIC.viewer.drawer.canvas; //Original Canvas
+  let imgData = (camicanv.getContext('2d')).getImageData(box.xCoord, box.yCoord, box.width, box.height);
+
+  loadImageToCanvas(imgData, 'canvasOutput', false, div);
+  loadImageToCanvas(imgData, 'canvasInput', true, div);
+
+  // TRIGGER SEGMENTATION
+  trigger.click();
+
+  /*
+  let dataURL = loadImageToCanvas(imgData, 'canvasInput', false);
+  var img = document.createElement("img");
+  img.src = dataURL;
+  document.body.appendChild(img);
+  */
+
+  /*
   let blob = dataURItoBlob(dataURL);
-
   let filename = 'testing';
-
   let f = new File([blob], filename, {type: blob.type});
   console.log(f);
+  */
 
-  // Start file download.
-  ////download(filename, dataURL);
+}
 
-  // START OPENCV STUFF
-  let utils = new Utils('errorMessage');
+/**
+ * WATERSHED SEGMENTATION
+ *
+ * @param inn
+ * @param out
+ * @param thresh
+ */
+function watershed(inn, out, thresh) {
 
-let tryIt = document.getElementById('tryIt');
-tryIt.addEventListener('click', () => {
-  let src = cv.imread('canvasInput');
+  // Read image
+  let src = cv.imread(inn);
+
+  // Matrices
   let dst = new cv.Mat();
   let gray = new cv.Mat();
   let opening = new cv.Mat();
@@ -147,44 +326,66 @@ tryIt.addEventListener('click', () => {
   let distTrans = new cv.Mat();
   let unknown = new cv.Mat();
   let markers = new cv.Mat();
-  // gray and threshold image
+
+  // Gray and threshold image
   cv.cvtColor(src, gray, cv.COLOR_RGBA2GRAY, 0);
+
+  // Find an approximate estimate of the objects
   cv.threshold(gray, gray, 0, 255, cv.THRESH_BINARY_INV + cv.THRESH_OTSU);
-  // get background
+
+  // Get background
   let M = cv.Mat.ones(3, 3, cv.CV_8U);
+
+  // Remove the stuff that's not an object
   cv.erode(gray, gray, M);
-  cv.dilate(gray, opening, M);
-  cv.dilate(opening, imageBg, M, new cv.Point(-1, -1), 3);
-  // distance transform
+
+  // Find the stuff that IS an object
+  cv.dilate(gray, opening, M); //remove any small white noises in the image
+  cv.dilate(opening, imageBg, M, new cv.Point(-1, -1), 3); //remove any small holes in the object
+
+  // Distance transform - for the stuff we're not sure about
   cv.distanceTransform(opening, distTrans, cv.DIST_L2, 5);
   cv.normalize(distTrans, distTrans, 1, 0, cv.NORM_INF);
-  // get foreground
-  cv.threshold(distTrans, imageFg, 0.3 * 1, 255, cv.THRESH_BINARY);
+
+  // Get foreground - make the objects stand out
+  // cv.threshold (src, dst, thresh, maxval, type)
+  cv.threshold(distTrans, imageFg, thresh, 255, cv.THRESH_BINARY);
+
+  // Mark (label) the regions starting with 1 (color output)
   imageFg.convertTo(imageFg, cv.CV_8U, 1, 0);
   cv.subtract(imageBg, imageFg, unknown);
-  // get connected components markers
+
+  // Get connected components markers
+
   cv.connectedComponents(imageFg, markers);
   for (let i = 0; i < markers.rows; i++) {
     for (let j = 0; j < markers.cols; j++) {
       markers.intPtr(i, j)[0] = markers.ucharPtr(i, j)[0] + 1;
-      if (unknown.ucharPtr(i, j)[0] == 255) {
+      if (unknown.ucharPtr(i, j)[0] === 255) {
         markers.intPtr(i, j)[0] = 0;
       }
     }
   }
   cv.cvtColor(src, dst, cv.COLOR_RGBA2RGB, 0);
   cv.watershed(dst, markers);
-  // draw barriers
+
+  // Draw barriers
   for (let i = 0; i < markers.rows; i++) {
     for (let j = 0; j < markers.cols; j++) {
-      if (markers.intPtr(i, j)[0] == -1) {
+      if (markers.intPtr(i, j)[0] === -1) {
+
         dst.ucharPtr(i, j)[0] = 255; // R
         dst.ucharPtr(i, j)[1] = 255; // G
         dst.ucharPtr(i, j)[2] = 0; // B
       }
     }
   }
-  cv.imshow('canvasInput', dst);
+
+  // Display it
+  cv.imshow(out, dst);
+
+  // Free up memory
+
   src.delete();
   dst.delete();
   gray.delete();
@@ -195,12 +396,6 @@ tryIt.addEventListener('click', () => {
   unknown.delete();
   markers.delete();
   M.delete();
-});
-
-utils.loadOpenCv(() => {
-  tryIt.click();
-});
-
 }
 
 /**
@@ -221,7 +416,6 @@ function download(filename, dataURL) {
 
   document.body.removeChild(element);
 }
-
 
 /**
  * Convert a dataURI to a Blob
@@ -249,7 +443,6 @@ function dataURItoBlob(dataURI) {
   return new Blob([ia], {type: mimeString});
 }
 
-
 /**
  * Convert image coordinates
  */
@@ -264,95 +457,12 @@ function convertCoordinates(imagingHelper, bound) {
     let boundElement = newArray[i];
     for (let j = 0; j < boundElement.length; j++) {
       newArray[i][j] = j === 0 ? imagingHelper.dataToPhysicalX(boundElement[j])
-          : imagingHelper.dataToPhysicalY(boundElement[j]);
+        : imagingHelper.dataToPhysicalY(boundElement[j]);
     }
   }
 
   return newArray;
 
-}
-
-
-function initialize() {
-  initUIcomponents();
-  initCore();
-}
-
-function initUIcomponents() {
-  $UI.toolbar = new CaToolbar({
-    id: 'ca_tools',
-    zIndex: 601,
-    hasMainTools: false,
-    subTools: [
-      // rectangle draw
-      {
-        icon: 'timeline',
-        type: 'check',
-        value: 'rect',
-        title: 'Segment',
-        callback: drawRectangle
-      }
-    ]
-  });
-
-  let element = document.getElementById('errorMessage');
-  if (!element)
-  {
-    element = document.createElement('p');
-    element.classList.add('err');
-    element.id = 'errorMessage';
-    document.body.appendChild(element);
-  }
-
-  let button = document.getElementById('tryIt');
-  if (!button)
-  {
-    button = document.createElement('button');
-    button.id = 'tryIt';
-    button.style.display = "none";
-    document.body.appendChild(button);
-  }
-}
-
-// setting core functionality
-function initCore() {
-  // start initial
-  const opt = {
-    hasZoomControl: true,
-    hasDrawLayer: true,
-    hasLayerManager: true,
-    hasScalebar: true,
-    hasMeasurementTool: true
-  };
-  // set states if exist
-  if ($D.params.states) {
-    opt.states = $D.params.states;
-  }
-  try {
-    $CAMIC = new CaMic("main_viewer", $D.params.slideId, opt);
-  } catch (error) {
-    Loading.close();
-    $UI.message.addError('Core Initialization Failed');
-    console.error(error);
-    return;
-  }
-  $CAMIC.loadImg(function (e) {
-    // image loaded
-    if (e.hasError) {
-      $UI.message.addError(e.message)
-    }
-  });
-
-  $CAMIC.viewer.addOnceHandler('open', function (e) {
-    // add stop draw function
-    $CAMIC.viewer.canvasDrawInstance.addHandler('stop-drawing', camicStopDraw);
-
-    // let m = document.getElementById('main_viewer');
-    // m.addEventListener('mousedown', function (e) {
-    //   getClickPosition(e, m);
-    // });
-
-  });
 }
 
 function redirect(url, text = '', sec = 5) {
@@ -371,53 +481,4 @@ function redirect(url, text = '', sec = 5) {
     timer--;
 
   }, 1000);
-}
-
-function Utils(errorOutputId) { // eslint-disable-line no-unused-vars
-  let self = this;
-  this.errorOutput = document.getElementById(errorOutputId);
-
-  const OPENCV_URL = 'opencv.js';
-  this.loadOpenCv = function (onloadCallback) {
-    let script = document.createElement('script');
-    script.setAttribute('async', '');
-    script.setAttribute('type', 'text/javascript');
-    script.addEventListener('load', () => {
-      console.log(cv.getBuildInformation());
-      onloadCallback();
-    });
-    script.addEventListener('error', () => {
-      self.printError('Failed to load ' + OPENCV_URL);
-    });
-    script.src = OPENCV_URL;
-    let node = document.getElementsByTagName('script')[0];
-    node.parentNode.insertBefore(script, node);
-  };
-
-  this.clearError = function () {
-    this.errorOutput.innerHTML = '';
-  };
-
-  this.printError = function (err) {
-    if (typeof err === 'undefined') {
-      err = '';
-    } else if (typeof err === 'number') {
-      if (!isNaN(err)) {
-        if (typeof cv !== 'undefined') {
-          err = 'Exception: ' + cv.exceptionFromPtr(err).msg;
-        }
-      }
-    } else if (typeof err === 'string') {
-      let ptr = Number(err.split(' ')[0]);
-      if (!isNaN(ptr)) {
-        if (typeof cv !== 'undefined') {
-          err = 'Exception: ' + cv.exceptionFromPtr(ptr).msg;
-        }
-      }
-    } else if (err instanceof Error) {
-      err = err.stack.replace(/\n/g, '<br>');
-    }
-    this.errorOutput.innerHTML = err;
-  };
-
 }

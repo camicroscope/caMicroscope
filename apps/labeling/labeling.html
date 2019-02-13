@@ -15,7 +15,9 @@
 
 		<!-- zoom control css -->
  		<link rel='stylesheet' type='text/css' media='all' href='../../core/extension/openseadragon-zoom-control/openseadragon-zoom-control.css'/>
-
+ 				<!-- message queue css -->
+		<link rel='stylesheet' type='text/css' media='all' href='../../components/messagequeue/messagequeue.css'/>
+		<link rel='stylesheet' type='text/css' media='all' href='../../components/camessage/camessage.css'/>
  		<link rel='stylesheet' type='text/css' media='all' href='../../components/loading/loading.css'/>
  		<link rel='stylesheet' type='text/css' media='all' href='../../components/toolbar/toolbar.css'/>
 		<!-- color picker css -->
@@ -25,6 +27,9 @@
 
 		<link rel='stylesheet' type='text/css' media='all' href='../../core/extension/openseadragon-labeling/openseadragon-labeling.css'/>
 
+		<!-- message queue js -->
+		<script type='text/javascript' src='../../components/messagequeue/messagequeue.js'></script>
+		<script type='text/javascript' src='../../../components/camessage/camessage.js'></script>
 		<script type='text/javascript' src='../../components/loading/loading.js' ></script>
 		<script type='text/javascript' src='../../components/toolbar/toolbar.js' ></script>
 		<script type='text/javascript' src='../../common/colorpicker/color-picker.js' ></script>
@@ -40,6 +45,9 @@
 		<script type='text/javascript' src='../../common/DrawHelper.js'></script>
 		<script type='text/javascript' src='../../common/simplify.js'></script>
 		<script type='text/javascript' src='../../common/paths.js'></script>
+		<script type='text/javascript' src='../../common/ajv.js'></script>
+		
+		<script type='text/javascript' src='../../core/Validation.js'></script>
 		<script type='text/javascript' src='../../core/Store.js'></script>
 		<script type='text/javascript' src='../../core/CaMic.js'></script>
 		<script type='text/javascript' src='../../core/extension/openseadragon-canvas-draw-overlay.js'></script>
@@ -56,6 +64,8 @@
 
 	</head>
 	<body>
+		<!-- message-->
+        <div id='cames' style='z-index:600'></div>
 		<!-- toolbar -->
 		<div id = 'ca_tools'></div>
 
@@ -69,10 +79,30 @@
 		
 		// no slide Id error
 		if($D.params && $D.params.slideId){
-
 			// normal initialization starts
 			document.addEventListener('DOMContentLoaded', initialize);
-			
+		}else if ($D.params && ($D.params.slide || $D.params.specimen ||$D.params.study || $D.params.location)){
+			let STORE = new Store()
+			STORE.findSlide($D.params.slide, $D.params.study, $D.params.specimen, $D.params.location).then(x=>{
+				let offset = parseInt($D.params.offset,10) || 0;
+				if(x.length == 0 || offset >= x.length){
+					redirect($D.pages.table,'No Slide Found. Redirecting to Table.');
+				} else {
+					newParams = $D.params
+					delete newParams.data
+					delete newParams.slide
+					delete newParams.location
+					delete newParams.offset
+					newParams.slideId = x[offset]['_id']['$oid']
+					newUrl = window.location.href.split("?")[0] + "?" + objToParamStr(newParams)
+					window.location.href = newUrl
+				}
+			}).catch(e=>{
+				console.warn(e)
+				redirect($D.pages.table,'Redirecting to Table.');
+			})
+			// find the associated slideID
+			// open viewer with that slideID
 		}else{
 			redirect($D.pages.table,'Slide Id is undefined. Redirecting to Flex Table.');
 		}
