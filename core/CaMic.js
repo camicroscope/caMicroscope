@@ -31,8 +31,9 @@ class CaMic{
       navigatorPosition: "BOTTOM_RIGHT",
       zoomPerClick: 1,
       animationTime: 0.01,
-      maxZoomPixelRatio: 1,
-      visibilityRatio: 1,
+      minZoomImageRatio:1,
+      //maxZoomPixelRatio: 4,
+      visibilityRatio: 0,
       springStiffness:0.0001,
 
       /* extension */
@@ -126,7 +127,7 @@ class CaMic{
       nav.style.backgroundColor = '#365f9c';
       nav.style.opacity = 1;
     }
-
+    if(this.viewer.viewport.getMaxZoom() < 40) this.viewer.viewport.maxZoomLevel = 40
     this.createZoomControl();
 
     if(this.mpp_x&&this.mpp_y&&this.mpp_x!=1e9&&this.mpp_y!=1e9)

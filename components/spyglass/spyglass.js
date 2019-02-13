@@ -119,7 +119,8 @@ Spyglass.prototype.setOptions = function(opt){
 Spyglass.prototype.__zoom = function(e){
     //console.log('zoom')
     //const maxZoom = this._viewer.viewport.getMaxZoom();
-    let currentZoom  = e.zoom * this.factor;
+    //let currentZoom  = e.zoom * this.factor;
+    let currentZoom  = this.factor;
     //currentZoom = Math.min(currentZoom,maxZoom);
     this._viewer.viewport.zoomTo(currentZoom);
     
