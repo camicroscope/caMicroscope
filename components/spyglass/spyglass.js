@@ -121,8 +121,12 @@ Spyglass.prototype.__zoom = function(e){
     //const maxZoom = this._viewer.viewport.getMaxZoom();
     //let currentZoom  = e.zoom * this.factor;
     let currentZoom  = this.factor;
+    this._viewer.viewport.maxZoomPixelRatio = this.factor;
+    let max = this._viewer.viewport.getMaxZoom();
+    //console.log(max);
+    this._viewer.viewport.zoomTo(max);
     //currentZoom = Math.min(currentZoom,maxZoom);
-    this._viewer.viewport.zoomTo(currentZoom);
+    //this._viewer.viewport.zoomTo(currentZoom);
     
     this.adjust();
 }
