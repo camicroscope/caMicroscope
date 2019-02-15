@@ -4,7 +4,7 @@ function ImgBoxMods() {
   CaMic.prototype.loadImg = function(func) {
     var urlParams = new URLSearchParams(window.location.search);
     var img_id = urlParams.get('id');
-    console.log("image ID : " + p);
+    console.log("image ID : " + img_id);
     let slideId = img_id
     this.slideId = slideId
     this.slideName = slideId
