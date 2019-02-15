@@ -3,30 +3,34 @@ function ImgBoxMods() {
   CaMic.prototype.default_loadImg = CaMic.prototype.loadImg
   CaMic.prototype.loadImg = function(func) {
     var urlParams = new URLSearchParams(window.location.search);
-    var p = urlParams.get('id');
+    var img_id = urlParams.get('id');
     console.log("image ID : " + p);
-    let slideId = p
+    let slideId = img_id
     this.slideId = slideId
     this.slideName = slideId
     this.study = ""
     this.specimen = ""
-    fetch(p + "/info.json").then(response => {
+    fetch(img_id + "/info.json").then(response => {
       if (response.status >=400){
         throw response;
       } else {
         return response.json();
       }
     }).then(data => {
+      let tile_count = Math.ceil(Math.log2(Math.max(data.height,data.width)))
+      let scaleFactors = []
+      for(let i=0; i <= tile_count; i++){
+        scaleFactors.push(2**i)
+      }
       let imbox_source = {
         "@context": "http://iiif.io/api/image/2/context.json",
-        //"@id": "/iiif?iri=https://s3.amazonaws.com/ebremeribox/TCGA-02-0001-01C-01-BS1.0cc8ca55-d024-440c-a4f0-01cf5b3af861.svs",
-        "@id": p,
+        "@id": img_id,
         "height": data.height,
         "width": data.width,
         "profile": ["http://iiif.io/api/image/2/level2.json"],
         "protocol": "http://iiif.io/api/image",
         "tiles": [{
-          "scaleFactors": [1, 2, 4, 8, 16, 32],
+          "scaleFactors": scaleFactors,
           "width": 256
         }]
       }
