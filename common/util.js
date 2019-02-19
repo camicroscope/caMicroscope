@@ -19,6 +19,7 @@ const AnalyticsPanelContent = //'test<br>test<br>test<br>test<br>test<br>test<br
 +         "</table>"
 +         "</div>"
 ;
+
 const __ = { };
 // the robust solution that mimics jQuery's functionality
 function extend(){
@@ -329,6 +330,8 @@ function covertToLayViewer(item,l){
   if(!typeIds[typeName]) typeIds[typeName] = randomId();
   return {id:id,name:name,typeId:typeIds[typeName],typeName:typeName,isShow:isShow};
 }
+
+
 function removeElement(array, id){
   const index = array.findIndex(item => item.id == id);
   if (index > -1) {
@@ -354,6 +357,58 @@ function redirect(url ,text = '', sec = 5){
     timer--;
 
   }, 1000);
+}
+/**
+ * detect IE/Edge
+ * 
+ * @return {Boolean} true if the browser is IE/Edge
+ */
+function detectIE() {
+  var ua = window.navigator.userAgent;
+  // Test values; Uncomment to check result …
+
+  // IE 10
+  // ua = 'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; Trident/6.0)';
+  
+  // IE 11
+  // ua = 'Mozilla/5.0 (Windows NT 6.3; Trident/7.0; rv:11.0) like Gecko';
+  
+  // Edge 12 (Spartan)
+  // ua = 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.71 Safari/537.36 Edge/12.0';
+  
+  // Edge 13
+  // ua = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2486.0 Safari/537.36 Edge/13.10586';
+
+  var msie = ua.indexOf('MSIE ');
+  if (msie > 0) {
+    // IE 10 or older => return version number
+    return parseInt(ua.substring(msie + 5, ua.indexOf('.', msie)), 10);
+  }
+
+  var trident = ua.indexOf('Trident/');
+  if (trident > 0) {
+    // IE 11 => return version number
+    var rv = ua.indexOf('rv:');
+    return parseInt(ua.substring(rv + 3, ua.indexOf('.', rv)), 10);
+  }
+
+  var edge = ua.indexOf('Edge/');
+  if (edge > 0) {
+    // Edge (IE 12+) => return version number
+    return parseInt(ua.substring(edge + 5, ua.indexOf('.', edge)), 10);
+  }
+
+  // other browser
+  return false;
+}
+function createWarningText(text){
+ const temp = `
+ <div style='box-sizing:border-box;z-index:999;width:100%;position:absolute;bottom:0;color:#856404;background-color:#fff3cd;border-color:#ffeeba;padding:5px;display:flex;'>
+ <div style='font-size:14px;flex:1;text-align:center;vertical-align:middle;align-items:center;display:flex;'><div style='margin:0 auto;'>${text}</div></div>
+ <div class='material-icons' style='width:24px;height:24px;' onclick='document.body.removeChild(this.parentNode);'>close</div>
+ </div>
+ `;
+ document.body.innerHTML += temp;
 }
 
 /**

@@ -125,7 +125,6 @@
 		<script src='./uicallbacks.js'></script>
 		<script src='./dataloaders.js'></script>
 		<script src='./init.js'></script>
-
 	</head>
 	<body>
         <!-- message-->
@@ -154,9 +153,11 @@
 
         <!-- overlayer manager -->
         <div id='overlayers' style='z-index:600'></div>
-
 	</body>
 	<script type="text/javascript">
+		if(detectIE()){
+			createWarningText('You are using an <strong>IE/Edge</strong> browser that may be lead to erratic behavior on caMicroscope. Please switch to <a href="https://www.google.com/chrome/">Chrome</a>, <a href="https://www.mozilla.org/en-US/firefox/new/">Firefox</a> or <a href="https://www.apple.com/safari/">Safari</a> browser to improve your experience.');
+		}
 		//Loading.open(document.body, 'CaMicroscope is initializing...');
 		// get slide id from url
 		$D.params = getUrlVars();
