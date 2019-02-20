@@ -57,7 +57,7 @@ function ImgBoxMods() {
       x.mpp = this.mpp;
       x.mpp_x = this.mpp_x;
       x.mpp_y = this.mpp_y;
-      x.location = p;
+      x.location = img_id;
       x.url = imbox_source
       console.log(func)
       console.log(x)
