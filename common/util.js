@@ -21,6 +21,28 @@ const AnalyticsPanelContent = //'test<br>test<br>test<br>test<br>test<br>test<br
 ;
 
 const __ = { };
+function loadScript(src, callback){
+  var script = document.createElement('script');
+  script.src = src;
+  script.type = 'text/javascript';
+  script.async = true;
+  if(callback != null){
+      if (script.readyState) { // IE, incl. IE9
+          script.onreadystatechange = function() {
+              if (script.readyState == "loaded" || script.readyState == "complete") {
+                  script.onreadystatechange = null;
+                  callback();
+              }
+          };
+      } else {
+          script.onload = function() { // Other browsers
+              callback();
+          };
+      }
+  }
+  a=document.getElementsByTagName('script')[0];
+  a.parentNode.insertBefore(script,a);
+}
 // the robust solution that mimics jQuery's functionality
 function extend(){
     for(var i=1; i<arguments.length; i++)

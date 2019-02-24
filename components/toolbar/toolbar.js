@@ -148,7 +148,7 @@ CaToolbar.prototype.__createBtn = function(options){
 	}
 	// create UI
 	const li = document.createElement('li');
-
+	if(options.name) li.name = options.name;
 	const btn = document.createElement('i');
 	btn.classList.add('material-icons');
 	btn.classList.add('md-24');
@@ -182,7 +182,7 @@ CaToolbar.prototype.__createCheck = function(options){
 
 	// create UI
 	const li = document.createElement('li');
-
+	if(options.name) li.name = options.name;
 	// checkbox
 	const id = randomId(); // create a timestamp id
 	const chk = document.createElement('input'); 
@@ -231,7 +231,7 @@ CaToolbar.prototype.__createRadio = function(options){
 
 	// create UI
 	const li = document.createElement('li');
-
+	if(options.name) li.name = options.name;
 	// radio
 	const id = randomId(); // create a timestamp id
 	const radio = document.createElement('input'); 
@@ -281,6 +281,7 @@ CaToolbar.prototype.__createMultiStateBtns = function(options){
 	}
 	// create UI
 	const li = document.createElement('li');
+	if(options.name) li.name = options.name;
 	// btn
 	const icon = document.createElement('label');
 	icon.id = randomId(); // create a timestamp id
@@ -318,6 +319,7 @@ CaToolbar.prototype.__createDropDown = function(options){
 	}
 	// create UI
 	const li = document.createElement('li');
+	if(options.name) li.name = options.name;
 	// checkbox
 	const id = randomId(); // create a timestamp id
 	const chk = document.createElement('input'); 
@@ -513,4 +515,12 @@ CaToolbar.prototype.collapse = function(){
 CaToolbar.prototype.expand = function(){
 	this.handler.querySelector('label').textContent = 'keyboard_arrow_left';
 	this._sub_tools.forEach(btn => btn.style.display = '');
+}
+
+/*
+ * getSubToolByName - expand sub tools.
+ */
+CaToolbar.prototype.getSubTool = function(name){
+	//console.log(this._sub_tools);
+	return this._sub_tools.find(li => li.name==name);
 }

@@ -136,13 +136,7 @@ class CaMic{
     this.createHeatmap();
     Loading.close();
   }
-  /**
-  * Change which image is staged, used loadImg to load it.
-  */
-  setImg(slideId){
-    this.layers.resetAll();
-    this.slideId = slideId;
-  }
+  
   /**
   * Loads the staged image
   */
@@ -180,7 +174,7 @@ class CaMic{
       })
       .catch(e=>{
 
-        //$UI.message.addError('loadImg Error');
+        
         console.error(e);
         //if()
         Loading.close();

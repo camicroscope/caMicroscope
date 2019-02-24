@@ -17,19 +17,25 @@ const $D = {
 
 // initialize viewer page
 function initialize(){
+      var checkPackageIsReady = setInterval(function () {
+        console.log(IsPackageLoading);
+        if(IsPackageLoading) {
+          clearInterval(checkPackageIsReady);
+          // init UI -- some of them need to wait data loader to load data
+          // because UI components need data to initialize
+          initUIcomponents();
 
-  // init UI -- some of them need to wait data loader to load data
-  // because UI components need data to initialize
-  initUIcomponents();
+          // create a viewer and set up
+          initCore();
 
-  // create a viewer and set up
-  initCore();
+          // loading the form template data
+          FormTempaltesLoader();
 
-  // loading the form template data
-  FormTempaltesLoader();
+          // loading the overlayers data
+          OverlayersLoader();
+        }
+      }, 100);
 
-  // loading the overlayers data
-  OverlayersLoader();
 
 
 }
@@ -169,14 +175,16 @@ function initUIcomponents(){
     subTools:[
       // home
       {
+        name:'home',
         icon:'home',// material icons' name
         title:'Home',
         type:'btn',// btn/check/dropdown
         value:'home',
         callback:goHome
-      }, //
+      }, //      
       // pen
       {
+        name:'annotation',
         icon:'create',// material icons' name
         title:'Draw',
         type:'multistates',
@@ -184,6 +192,7 @@ function initUIcomponents(){
       },
       // magnifier
       {
+        name:'magnifier',
         icon:'search',
         title:'Magnifier',
         type:'dropdown',
@@ -212,6 +221,7 @@ function initUIcomponents(){
       },
       // measurement tool
       {
+        name:'measurement',
         icon:'space_bar',
         title:'Measurement',
         type:'check',
@@ -243,6 +253,7 @@ function initUIcomponents(){
       // },
       // share
       {
+        name:'share',
         icon:'share',
         title:'Share View',
         type:'btn',
@@ -250,13 +261,46 @@ function initUIcomponents(){
         callback:shareURL
       },
       {
+        name:'sbsviewer',
         icon:'view_carousel',
         title:'Side By Side Viewer',
         value:'dbviewers',
         type:'check',
         callback:toggleViewerMode
       },
+      // -- For Nano borb Start -- //
       {
+        name:'downloadmarks',
+        icon:'cloud_download',// material icons' name
+        title:'Download Marks',
+        type:'btn',// btn/check/dropdown
+        value:'download',
+        callback:Store.prototype.DownloadMarksToFile
+      },
+      {
+        name:'uploadmarks',
+        icon:'cloud_upload',
+        title:'Load Marks',
+        type:'btn',
+        value:'upload',
+        callback:Store.prototype.LoadMarksFromFile
+      },
+      // {
+      //   icon: 'timeline',
+      //   type: 'check',
+      //   value: 'rect',
+      //   title: 'Segment',
+      //   callback: function () {
+      //     if(window.location.search.length > 0) {
+      //       window.location.href = '../segment/segment.html' + window.location.search;
+      //     }else{
+      //       window.location.href = '../segment/segment.html';
+      //     }
+      //   }
+      // },
+      // -- For Nano borb End -- //
+      {
+        name:'bugs',
         icon: 'bug_report',
         title: 'Bug Report',
         value: 'bugs',
@@ -266,6 +310,28 @@ function initUIcomponents(){
 
     ]
   });
+
+  // display icon based on 'iip' or 'imgbox'
+  switch (ImgloaderMode) {
+    case 'iip':
+      // disable 'upload' and 'download' annotation
+      const upload = $UI.toolbar.getSubTool('uploadmarks');
+      const download = $UI.toolbar.getSubTool('downloadmarks');
+      upload.style.display='none';
+      download.style.display='none';
+      break;
+    case 'imgbox':
+      // disable 'home' and 'share'
+      const share = $UI.toolbar.getSubTool('share');
+      const home = $UI.toolbar.getSubTool('home');
+      share.style.display = 'none';
+      home.style.display = 'none';
+      break;
+    default:
+      // statements_def
+      break;
+  }
+
 
   // create two side menus for tools
   $UI.appsSideMenu = new SideMenu({
