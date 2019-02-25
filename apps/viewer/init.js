@@ -18,7 +18,6 @@ const $D = {
 // initialize viewer page
 function initialize(){
       var checkPackageIsReady = setInterval(function () {
-        console.log(IsPackageLoading);
         if(IsPackageLoading) {
           clearInterval(checkPackageIsReady);
           // init UI -- some of them need to wait data loader to load data
@@ -109,8 +108,16 @@ function initCore(){
         let attributes;
         switch (type) {
           case "human":
+            let area;
+            let circumference;
+            if((data.selected!=null || data.selected!=undefined) && data.geometries.features[data.selected] &&data.geometries.features[data.selected].properties.area)
+              area = `${Math.round(data.geometries.features[data.selected].properties.area)}μm^2`;
+            if((data.selected!=null || data.selected!=undefined) && data.geometries.features[data.selected] &&data.geometries.features[data.selected].properties.circumference)
+              circumference = `${Math.round(data.geometries.features[data.selected].properties.circumference)}μm`;
             // human
             attributes = data.properties.annotations;
+            if(area) attributes.area = area;
+            if(circumference) attributes.circumference = circumference;
             body = convertHumanAnnotationToPopupBody(attributes);
             $UI.annotPopup.showFooter();
             break;
@@ -161,8 +168,6 @@ function initCore(){
 // initialize all UI components
 function initUIcomponents(){
   /* create UI components */
-
-
   // create the message queue
   $UI.message = new MessageQueue();
 

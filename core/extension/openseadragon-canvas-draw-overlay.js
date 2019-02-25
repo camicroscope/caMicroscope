@@ -532,8 +532,22 @@
                     DrawHelper.clearCanvas(this._draw_);
                     return;
                 }
-                // calculate the are of polygon
-                let area = polygonArea(this._current_path_.geometry.coordinates[0]);
+                let sqmpsqp = null; // square microns per square pixels
+                if(this._viewer.mpp_x&&this._viewer.mpp_y&&this._viewer.mpp_x!=1e9&&this._viewer.mpp_y!=1e9){
+                    sqmpsqp = this._viewer.mpp_x * this._viewer.mpp_y;
+                    // calculate the are of polygon
+                    this._current_path_.properties.area = sqmpsqp * polygonArea(this._current_path_.geometry.coordinates[0]);
+                    this._current_path_.properties.circumference = getCircumference(this._current_path_.geometry.coordinates[0], this._viewer.mpp_x, this._viewer.mpp_y);
+                    //this._current_path_.properties.area = area;
+                }else if(this._viewer.mpp&&this._viewer.mpp!=1e9){
+                    sqmpsqp = this._viewer.mpp * this._viewer.mpp;
+                    // calculate the are of polygon
+                    this._current_path_.properties.area = sqmpsqp * polygonArea(this._current_path_.geometry.coordinates[0]);
+                    this._current_path_.properties.circumference = getCircumference(this._current_path_.geometry.coordinates[0], this._viewer.mpp_x, this._viewer.mpp_y);
+                }else{
+                    this._current_path_.properties.area = null;
+                    this._current_path_.properties.circumference = null;
+                }
             }
             // create bounds
             this._current_path_.bound = getBounds(this._current_path_.geometry.coordinates[0]);

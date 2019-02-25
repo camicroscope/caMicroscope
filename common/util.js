@@ -97,6 +97,30 @@ function hexToRgbA(hex, opacity = 1){
     throw new Error('Bad Hex');
 }
 
+
+function getDistance(p1, p2, mppx, mppy){
+  // two points are same
+  if(p1[0]==p2[0] && p1[1]==p2[1]) return 0;
+  else if(p1[0]==p2[0]){ // vertical line
+    return Math.abs(p1[1] - p2[1]) * mppy;
+  }else if(p1[1]==p2[1]){ // horizontal line
+    return Math.abs(p1[0] - p2[0]) * mppx;
+  } else{
+    const lx = Math.abs(p1[0] - p2[0]) * mppx; 
+    const ly = Math.abs(p1[1] - p2[1]) * mppy;
+    return Math.sqrt(lx*lx + ly*ly);
+  }
+}
+
+function getCircumference(points, mmpx, mmpy){
+  let length = 0;
+  for(let i = 0; i < points.length-1; i++){
+    length += getDistance(points[i],points[i+1],mmpx, mmpy);
+  }
+  return length;
+} 
+
+
 /**
  * polygonArea
  * @param  {Array} points describe a self-closed simple polygon (start and end points are same).
@@ -309,7 +333,9 @@ function covertToViewportFeature(width, height, og){
   feature = {
     type:'Feature',
     properties:{
-      style:{}
+      style:{},
+      area:null,
+      circumference:null,
     },
     geometry:{
       type:"Polygon",
@@ -336,12 +362,17 @@ function covertToViewportFeature(width, height, og){
       return [point[0]/width,point[1]/height];
     });
   }
-  extend(feature.properties.style,og.properties.style); 
+  extend(feature.properties.style,og.properties.style);
+  // add area
+  feature.properties.area = og.properties.area;
+  feature.properties.circumference = og.properties.circumference;
   return feature;
 }
+
 function isFunction(obj){
   return typeof obj === "function" && typeof obj.nodeType !== "number";
 }
+
 function covertToLayViewer(item,l){
   const typeName = item.analysis.source;
   const id = item.analysis.execution_id;
@@ -423,6 +454,8 @@ function detectIE() {
   // other browser
   return false;
 }
+
+
 function createWarningText(text){
  const temp = `
  <div style='box-sizing:border-box;z-index:999;width:100%;position:absolute;bottom:0;color:#856404;background-color:#fff3cd;border-color:#ffeeba;padding:5px;display:flex;'>

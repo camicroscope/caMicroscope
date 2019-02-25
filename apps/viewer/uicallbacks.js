@@ -268,11 +268,13 @@ function draw(e){
 	const canvasDraw = $CAMIC.viewer.canvasDrawInstance;
 	const target = this.srcElement || this.target || this.eventSource.canvas;
 	if(state){ // on
-		annotationOn(state);
+		
 		// off magnifier
 		magnifierOff();
 		// off measurement
 		measurementOff();
+
+		annotationOn(state);
 	}else{ // off
 		annotationOff();
 	}
@@ -345,13 +347,15 @@ function toggleMeasurement(data){
 	}
 	//$UI.message.add(`Measument Tool ${data.checked?'ON':'OFF'}`);
 	if(data.checked){
-		measurementOn();
+		
 		// trun off the main menu
 		$UI.layersSideMenu.close();
 		// turn off annotation
 		annotationOff();
 		// turn off magnifier
 		magnifierOff();
+
+		measurementOn();
 	}else{
 		measurementOff();
 	}
@@ -516,7 +520,6 @@ function deleteCallback_old(data){
     $UI.annotPopup.close();
 }
 function sort_change(sort){
-	console.log('sort_change');
 	$CAMIC.layersManager.sort(sort);
 
 }
@@ -574,6 +577,7 @@ function anno_callback(data){
 		},
 		geometries:ImageFeaturesToVieweportFeatures($CAMIC.viewer, $CAMIC.viewer.canvasDrawInstance.getImageFeatureCollection())
 	}
+
 	//return;
 	$CAMIC.store.addMark(annotJson)
 	.then(data=>{
@@ -676,7 +680,6 @@ function loadAnnotationById(item,id){
 
 
 				if(!item){
-					console.log(data[0]);
 					item = covertToLayViewer(data[0].provenance);
 					item.isShow = true;
 					// update lay viewer UI
