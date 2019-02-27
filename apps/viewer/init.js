@@ -14,16 +14,46 @@ const $D = {
   templates:null // json schema for prue-form
 };
 
+window.addEventListener('keydown', (e) => {
+  if(!$CAMIC || !$CAMIC.viewer) return;
+  const keyCode = e.keyCode;
+  // escape key to close all operations
+  if(keyCode==27){
+    magnifierOff();
+    measurementOff();
+    annotationOff();
+  }
+
+  // open annotation (ctrl + a)
+  if(e.ctrlKey && keyCode == 65 && $CAMIC.viewer.canvasDrawInstance){
+    const li = $UI.toolbar.getSubTool('annotation');
+    eventFire(li,'click');
+    return;
+  }
+  // open magnifier (ctrl + m)
+  if(e.ctrlKey && keyCode == 77 && $UI.spyglass){
+    const li = $UI.toolbar.getSubTool('magnifier');
+    const chk = li.querySelector('input[type=checkbox]');
+    chk.checked = !chk.checked;
+    eventFire(chk,'change');
+    return;
+  }
+  // open measurement (ctrl + r)
+  if(e.ctrlKey && keyCode == 82 && $CAMIC.viewer.measureInstance){
+    const li = $UI.toolbar.getSubTool('measurement');
+    const chk = li.querySelector('input[type=checkbox]');
+    chk.checked = !chk.checked;
+    eventFire(chk,'click');
+    return;
+  }
+
+});
 
 // initialize viewer page
 function initialize(){
       var checkPackageIsReady = setInterval(function () {
         if(IsPackageLoading) {
           clearInterval(checkPackageIsReady);
-          // init UI -- some of them need to wait data loader to load data
-          // because UI components need data to initialize
-          initUIcomponents();
-
           // create a viewer and set up
           initCore();
 
@@ -36,10 +66,6 @@ function initialize(){
       }, 100);
 
 
-
-}
-
-function loadData(){
 
 }
 
@@ -106,6 +132,7 @@ function initCore(){
         const type = data.provenance.analysis.source;
         let body;
         let attributes;
+        let warning = null;
         switch (type) {
           case "human":
             let area;
@@ -115,10 +142,18 @@ function initCore(){
             if((data.selected!=null || data.selected!=undefined) && data.geometries.features[data.selected] &&data.geometries.features[data.selected].properties.circumference)
               circumference = `${Math.round(data.geometries.features[data.selected].properties.circumference)}μm`;
             // human
+            
             attributes = data.properties.annotations;
             if(area) attributes.area = area;
             if(circumference) attributes.circumference = circumference;
             body = convertHumanAnnotationToPopupBody(attributes);
+            if(data.geometries.features[data.selected].properties.isIntersect){
+              warning = `<div style='color:red;text-align: center;font-size:12px;'>Inaccurate Area and Circumference</div>`;
+            }
+            if(data.geometries.features[data.selected].properties.nommp){
+              warning = `<div style='color:red;text-align: center;font-size:12px;'>This slide has no mpp</div>`;
+            }
+
             $UI.annotPopup.showFooter();
             break;
           case "computer":
@@ -135,10 +170,13 @@ function initCore(){
         $UI.annotPopup.data = {
           id:data.provenance.analysis.execution_id,
           oid:data._id.$oid,
-          annotation:attributes
+          annotation:attributes,
+          selected:e.data.selected,
         };
         $UI.annotPopup.setTitle(`id:${data.provenance.analysis.execution_id}`);
         $UI.annotPopup.setBody(body);
+        if(warning)$UI.annotPopup.body.innerHTML += warning;
+
         $UI.annotPopup.open(e.position);
       });
 
@@ -160,7 +198,9 @@ function initCore(){
   $CAMIC.viewer.addHandler('open',function(){
     $CAMIC.viewer.canvasDrawInstance.addHandler('start-drawing',startDrawing);
     $CAMIC.viewer.canvasDrawInstance.addHandler('stop-drawing',stopDrawing);
-    if(!$CAMIC.viewer.measureInstance) $UI.toolbar._sub_tools[3].style.display = 'none';
+    // init UI -- some of them need to wait data loader to load data
+    // because UI components need data to initialize
+    initUIcomponents();
   });
 }
 
@@ -171,172 +211,128 @@ function initUIcomponents(){
   // create the message queue
   $UI.message = new MessageQueue();
 
+  const subToolsOpt = [];
+  // home
+  if( ImgloaderMode =='iip') subToolsOpt.push({
+        name:'home',
+        icon:'home', // material icons' name
+        title:'Home',
+        type:'btn', // btn/check/dropdown
+        value:'home',
+        callback:goHome
+      });
+  // pen
+  subToolsOpt.push({
+    name:'annotation',
+    icon:'create',// material icons' name
+    title:'Draw',
+    type:'multistates',
+    callback:draw
+  });
+  // magnifier
+  subToolsOpt.push({
+    name:'magnifier',
+    icon:'search',
+    title:'Magnifier',
+    type:'dropdown',
+    value:'magn',
+    dropdownList:[
+      {
+        value:0.5,
+        title:'0.5',
+        checked:true
+      },
+      {
+        value:1,
+        title:'1.0'
+      },
+      {
+        value:2,
+        title:'2.0'
+      }
+    ],
+    callback:toggleMagnifier
+  });
+  // measurement tool
+  if($CAMIC.viewer.measureInstance) subToolsOpt.push({
+    name:'measurement',
+    icon:'space_bar',
+    title:'Measurement',
+    type:'check',
+    value:'measure',
+    callback:toggleMeasurement
+  });
+  // share
+  if( ImgloaderMode =='iip') subToolsOpt.push({
+    name:'share',
+    icon:'share',
+    title:'Share View',
+    type:'btn',
+    value:'share',
+    callback:shareURL
+  });
+  // side-by-side
+  subToolsOpt.push({
+    name:'sbsviewer',
+    icon:'view_carousel',
+    title:'Side By Side Viewer',
+    value:'dbviewers',
+    type:'check',
+    callback:toggleViewerMode
+  });
+  // -- For Nano borb Start -- //
+  if(ImgloaderMode =='imgbox'){
+    // download
+    subToolsOpt.push({
+      name:'downloadmarks',
+      icon:'cloud_download',
+      title:'Download Marks',
+      type:'btn',
+      value:'download',
+      callback:Store.prototype.DownloadMarksToFile
+    });
+    subToolsOpt.push({
+      name:'uploadmarks',
+      icon:'cloud_upload',
+      title:'Load Marks',
+      type:'btn',
+      value:'upload',
+      callback:Store.prototype.LoadMarksFromFile
+    });
+    // subToolsOpt.push({
+    //   icon: 'timeline',
+    //   type: 'check',
+    //   value: 'rect',
+    //   title: 'Segment',
+    //   callback: function () {
+    //     if(window.location.search.length > 0) {
+    //       window.location.href = '../segment/segment.html' + window.location.search;
+    //     }else{
+    //       window.location.href = '../segment/segment.html';
+    //     }
+    //   }
+    // });
+  }
+  // -- For Nano borb End -- //
+  
+  // bug report
+  subToolsOpt.push({
+    name:'bugs',
+    icon: 'bug_report',
+    title: 'Bug Report',
+    value: 'bugs',
+    type: 'btn',
+    callback: ()=>{window.open('https://goo.gl/forms/mgyhx4ADH0UuEQJ53','_blank').focus()}
+  });
+
   // create the tool bar
   $UI.toolbar = new CaToolbar({
   /* opts that need to think of*/
     id:'ca_tools',
     zIndex:601,
     mainToolsCallback:mainMenuChange,
-    subTools:[
-      // home
-      {
-        name:'home',
-        icon:'home',// material icons' name
-        title:'Home',
-        type:'btn',// btn/check/dropdown
-        value:'home',
-        callback:goHome
-      }, //      
-      // pen
-      {
-        name:'annotation',
-        icon:'create',// material icons' name
-        title:'Draw',
-        type:'multistates',
-        callback:draw
-      },
-      // magnifier
-      {
-        name:'magnifier',
-        icon:'search',
-        title:'Magnifier',
-        type:'dropdown',
-        value:'magn',
-        dropdownList:[
-          // free draw
-          {
-            //icon:'linear_scale',
-            value:0.5,
-            title:'0.5',
-            checked:true
-          },
-          // rectangle fraw
-          {
-            //icon:'timeline',
-            value:1,
-            title:'1.0'
-          },
-          {
-            //icon:'timeline',
-            value:2,
-            title:'2.0'
-          }
-        ],
-        callback:toggleMagnifier
-      },
-      // measurement tool
-      {
-        name:'measurement',
-        icon:'space_bar',
-        title:'Measurement',
-        type:'check',
-        value:'measure',
-        // dropdownList:[
-        //   // free draw
-        //   {
-        //     icon:'linear_scale',
-        //     value:'straight',
-        //     title:'Line',
-        //     checked:true
-        //   },
-        //   // rectangle draw
-        //   {
-        //     icon:'timeline',
-        //     value:'coordinate',
-        //     title:'Coordinate'
-        //   }
-        // ],
-        callback:toggleMeasurement
-      },
-      // download TODO
-      // {
-      //   icon:'file_download',
-      //   title:'Download Image',
-      //   type:'btn',
-      //   value:'download',
-      //   callback:imageDownload
-      // },
-      // share
-      {
-        name:'share',
-        icon:'share',
-        title:'Share View',
-        type:'btn',
-        value:'share',
-        callback:shareURL
-      },
-      {
-        name:'sbsviewer',
-        icon:'view_carousel',
-        title:'Side By Side Viewer',
-        value:'dbviewers',
-        type:'check',
-        callback:toggleViewerMode
-      },
-      // -- For Nano borb Start -- //
-      {
-        name:'downloadmarks',
-        icon:'cloud_download',// material icons' name
-        title:'Download Marks',
-        type:'btn',// btn/check/dropdown
-        value:'download',
-        callback:Store.prototype.DownloadMarksToFile
-      },
-      {
-        name:'uploadmarks',
-        icon:'cloud_upload',
-        title:'Load Marks',
-        type:'btn',
-        value:'upload',
-        callback:Store.prototype.LoadMarksFromFile
-      },
-      // {
-      //   icon: 'timeline',
-      //   type: 'check',
-      //   value: 'rect',
-      //   title: 'Segment',
-      //   callback: function () {
-      //     if(window.location.search.length > 0) {
-      //       window.location.href = '../segment/segment.html' + window.location.search;
-      //     }else{
-      //       window.location.href = '../segment/segment.html';
-      //     }
-      //   }
-      // },
-      // -- For Nano borb End -- //
-      {
-        name:'bugs',
-        icon: 'bug_report',
-        title: 'Bug Report',
-        value: 'bugs',
-        type: 'btn',
-        callback: ()=>{window.open('https://goo.gl/forms/mgyhx4ADH0UuEQJ53','_blank').focus()}
-      }
-
-    ]
+    subTools:subToolsOpt
   });
-
-  // display icon based on 'iip' or 'imgbox'
-  switch (ImgloaderMode) {
-    case 'iip':
-      // disable 'upload' and 'download' annotation
-      const upload = $UI.toolbar.getSubTool('uploadmarks');
-      const download = $UI.toolbar.getSubTool('downloadmarks');
-      upload.style.display='none';
-      download.style.display='none';
-      break;
-    case 'imgbox':
-      // disable 'home' and 'share'
-      const share = $UI.toolbar.getSubTool('share');
-      const home = $UI.toolbar.getSubTool('home');
-      share.style.display = 'none';
-      home.style.display = 'none';
-      break;
-    default:
-      // statements_def
-      break;
-  }
-
 
   // create two side menus for tools
   $UI.appsSideMenu = new SideMenu({

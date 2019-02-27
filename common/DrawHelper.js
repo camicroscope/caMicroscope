@@ -98,7 +98,25 @@ caDrawHelper.prototype.drawLine = function(ctx, start, end){
     ctx.closePath()
     ctx.stroke();
 }
-
+/**
+ * draw a circle
+ * @param  {CanvasRenderingContext2D}  ctx
+ *         is used for drawing rectangles, text, images and other objects onto the canvas element
+ * @param  {Number}  cx
+ *         The x-coordinate of the center of the circle
+ * @param  {Number}  xy
+ *         The x-coordinate of the center of the circle
+ * @param  {Number}  r
+ *         The radius of the circle   
+ */
+caDrawHelper.prototype.drawCircle = function(ctx, cx, cy, r){
+    // draw line
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, 0, 2 * Math.PI);
+    ctx.stroke();
+    ctx.closePath()
+    
+}
 /**
  * draw a polygon on a canvas 
  * @param  {CanvasRenderingContext2D}  ctx

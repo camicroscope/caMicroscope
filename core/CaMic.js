@@ -238,7 +238,7 @@ class CaMic{
 
     // add event to hook up
     this.drawContextmenu.addHandler('style-changed',function(e){
-      this.viewer.canvasDrawInstance.style = e.style;
+      extend(this.viewer.canvasDrawInstance.style, e.style);
       this.viewer.canvasDrawInstance.drawMode = e.model;
     }.bind(this));
 
@@ -294,7 +294,6 @@ class CaMic{
   }
 
   createMeasurementTool(mppx,mppy = mppx){
-    console.log(mppx,mppy);
     if(!this.setting.hasMeasurementTool || !this.viewer.measurementTool) return;
     this.viewer.measurementTool({
       mpp:{

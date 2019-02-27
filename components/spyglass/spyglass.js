@@ -50,7 +50,6 @@ function Spyglass(options){
 
     // create container
     this.elt = document.createElement('div');
-    this.elt = document.createElement('div');
     this.elt.classList.add('spyglass');
     this.indicator = document.createElement('div');
     this.indicator.classList.add('indicator');
@@ -235,4 +234,9 @@ Spyglass.prototype.moving = function(e){
     var pt = this._target_viewer.viewport.pointFromPixel(e.position);
     this._viewer.viewport.panTo(pt);
 
+}
+
+Spyglass.prototype.isOpen = function(){
+    if(this.indicator.style.display == 'none') return false;
+    return true;
 }

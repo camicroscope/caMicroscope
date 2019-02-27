@@ -274,13 +274,18 @@ function draw(e){
 		// off measurement
 		measurementOff();
 
-		annotationOn(state);
+		annotationOn.call(this,state,target);
 	}else{ // off
 		annotationOff();
+
+		
+
+		
 	}
 }
 
-function annotationOn(state){
+
+function annotationOn(state,target){
 	if(!$CAMIC.viewer.canvasDrawInstance) return;
 	const canvasDraw = $CAMIC.viewer.canvasDrawInstance;
 	const li = $UI.toolbar.getSubTool('annotation');
@@ -304,7 +309,7 @@ function annotationOn(state){
 	}
 	canvasDraw.drawOn();
 	$CAMIC.drawContextmenu.on();
-	//$CAMIC.drawContextmenu.open({x:this.clientX,y:this.clientY,target:target});
+	$CAMIC.drawContextmenu.open({x:this.clientX,y:this.clientY,target:target});
 	//close layers menu
 	$UI.layersSideMenu.close();
 	// open annotation menu
@@ -320,11 +325,16 @@ function annotationOn(state){
 function annotationOff(){
 	if(!$CAMIC.viewer.canvasDrawInstance) return;
 	const canvasDraw = $CAMIC.viewer.canvasDrawInstance;
-	canvasDraw.clear();
-	canvasDraw.drawOff();
-	$CAMIC.drawContextmenu.off();
-	$UI.appsSideMenu.close();
-	toggleOffDrawBtns();
+
+	if(canvasDraw._draws_data_.length && confirm(`Do you want to save annotation before you leave?`)){
+		saveAnnotation();
+	}else{
+		canvasDraw.clear();
+		canvasDraw.drawOff();
+		$CAMIC.drawContextmenu.off();
+		$UI.appsSideMenu.close();
+		toggleOffDrawBtns();
+	}
 }
 
 function toggleOffDrawBtns(){
@@ -450,7 +460,15 @@ function convertHumanAnnotationToPopupBody(notes){
 
 function anno_delete(data){
 	if(!data.id) return;
-	if(!confirm(`Are you sure you want to delete this markup {ID:${data.id}}?`)) return;
+	const annotationData = $D.overlayers.find(d=>d.data._id.$oid == data.oid);
+	let message;
+	if(annotationData.data.geometries){
+		message = `Are you sure you want to delete this Annotation {ID:${data.id}} with ${annotationData.data.geometries.features.length} mark(s)?`;
+	}else{
+		message = `Are you sure you want to delete this markup {ID:${data.id}}?`;
+	}
+	$UI.annotPopup.close();
+	if(!confirm(message)) return;
 	$CAMIC.store.deleteMark(data.oid,$D.params.data.name)
 	.then(datas =>{
 		// server error
@@ -755,7 +773,6 @@ function algoRun(){
 }
 
 function saveAnnotation(){
-	console.log('saveAnnotation');
 
 	anno_callback.call(null,{id:$UI.annotOptPanel.setting.formSchemas[$UI.annotOptPanel._select_.value].id, data:$UI.annotOptPanel._form_.value});
 }

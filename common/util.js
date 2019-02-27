@@ -112,6 +112,13 @@ function getDistance(p1, p2, mppx, mppy){
   }
 }
 
+/**
+ * calcuate the circumference of a polygon
+ * @param  {Array} points describe a self-closed simple polygon (start and end points are same).
+ * @param  {Number} mmpx micron per pixel in x-axis
+ * @param  {Number} mmpy micron per pixel in y-axis
+ * @return {Number}  circumference
+ */
 function getCircumference(points, mmpx, mmpy){
   let length = 0;
   for(let i = 0; i < points.length-1; i++){
@@ -122,8 +129,8 @@ function getCircumference(points, mmpx, mmpy){
 
 
 /**
- * polygonArea
- * @param  {Array} points describe a self-closed simple polygon (start and end points are same).
+ * polygon Area
+ * @param  {Array} points describe a self-closed simple polygon (start and end points are same). [using Shoelace Formula]
  * @return the area of polygon
  */
 function polygonArea(points){
@@ -366,6 +373,8 @@ function covertToViewportFeature(width, height, og){
   // add area
   feature.properties.area = og.properties.area;
   feature.properties.circumference = og.properties.circumference;
+  if(og.properties.nommp) feature.properties.nommp = og.properties.nommp;
+  if(og.properties.isIntersect) feature.properties.isIntersect = og.properties.isIntersect; 
   return feature;
 }
 
@@ -384,7 +393,15 @@ function covertToLayViewer(item,l){
   return {id:id,name:name,typeId:typeIds[typeName],typeName:typeName,isShow:isShow};
 }
 
-
+function eventFire(el, etype){
+  if (el.fireEvent) {
+    el.fireEvent('on' + etype);
+  } else {
+    var evObj = document.createEvent('Events');
+    evObj.initEvent(etype, true, false);
+    el.dispatchEvent(evObj);
+  }
+}
 function removeElement(array, id){
   const index = array.findIndex(item => item.id == id);
   if (index > -1) {
