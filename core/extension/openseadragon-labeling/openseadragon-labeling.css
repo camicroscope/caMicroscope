@@ -1,0 +1,213 @@
+/*openseadragon-labeling.css*/
+
+
+/* --- patch css --- */
+
+
+.patch {
+  white-space: nowrap;
+  box-sizing:border-box;
+  cursor:pointer;
+  position:absolute;
+  height:250px;
+  width:250px;
+  border-width:2px;
+  border-style:solid;
+  opacity:.7;
+  background: rgba(255,255,255,.25);
+}
+
+.patch:hover .color,
+.patch:hover .corner,
+.patch:hover .note,
+.patch:hover .remove,
+.patch.active .remove
+/*.patch.active .color,
+.patch.active .corner,
+.patch.active .note,
+.patch.active .remove*/
+{
+  display:block;
+}
+
+/*.patch.active .info_block,*/
+.patch:hover .info_block {
+  display:inline-block;
+}
+
+
+.patch.active:hover,
+.patch.active {
+  z-index: 100;
+  opacity:1;
+}
+
+.patch div{
+  position:absolute;
+  box-sizing:border-box;
+}
+
+
+/* --- info block --- */
+.patch .info_block {
+    border:1px black solid;
+    display:none;
+    bottom:-10px;
+    left:-10px;
+    padding:0 3px;
+    height: 18px;
+    font-size:12px;
+    color:rgb(0,0,0);
+    background-color: rgb(255,255,255);
+    display:none;
+
+}
+
+.patch .remove {
+  z-index: 1;
+  font-size:18px;
+  border:1px solid black;
+  background-color:white;
+  color:black;
+  top:-10px;
+  left:-10px;
+  display:none;
+}
+.patch .remove:hover {
+  display: block;
+}
+
+.patch .note {
+  font-size:18px;
+  border:1px solid black;
+  background-color:white;
+  color:black;
+  top:0;
+  right:0;
+  display:none;
+}
+
+/*.note:hover {
+  color:white;
+  background:black;
+}*/
+
+/** text note **/
+.patch .note_panel {
+  z-index:999;
+  box-sizing:border-box;
+  top:0;
+  left:calc(100% + 5px);
+  /*min-width: 150px;*/
+  width:100%;
+  height:100%;
+  min-height:100px;
+  min-width:100px;
+  background:rgb(0,0,0);
+  padding:3px;
+  display:none;
+}
+
+.patch .note_panel textarea{
+  /*box-sizing:border-box;*/
+
+  padding:0;
+  margin:0;
+  width:100%;
+  height:100%;
+  min-height:100px;
+  min-width:100px;
+  resize: none;
+}
+
+.patch .corner {
+  cursor:se-resize;
+  border:0;
+  font-size:18px;
+  color:black;
+  right:0;
+  bottom:0;
+/*  -webkit-transform: rotate(90deg);
+  -moz-transform: rotate(90deg);
+  -o-transform: rotate(90deg);
+  -ms-transform: rotate(90deg);
+  transform: rotate(90deg);*/
+  display:none;
+}
+
+.patch .color {
+  top:0;
+  left:0;
+  width:18px;
+  height:18px;
+  display:none;
+}
+.patch .color input{
+  display:none;
+}
+.patch .control div:hover{
+  background-color:black;
+  color:white;
+}
+/* dot patch*/
+.patch.dot {
+  border:0;
+  width:0;
+  height:0;
+}
+
+.patch.dot .note{
+  display: none;
+  top:8px;
+  left:30px;
+  right:initial;
+}
+
+
+.patch.dot:hover .note{
+  display: block;
+}
+
+.patch.dot .remove{
+  display:none;
+  top:8px;
+}
+.patch.dot.active .remove,
+.patch.dot:hover .remove{
+  display: block;
+}
+.patch.dot .note_panel {
+  top:8px;
+  left:54px;
+}
+
+.patch.dot .color{
+  display:initial;
+  border:0;
+  z-index: 1;
+  transform: translateX(-50%) translateY(-50%);
+  width: 10px;
+  height:10px;
+  border-radius: 50%;
+  background-color:red; 
+}
+
+.patch.dot .controls{
+  border-width:0px;
+  border-style:dotted;
+  transform: translateX(-50%) translateY(-50%);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.patch.dot.active .controls,
+.patch.dot:hover .controls {
+  border-width:1px;
+}
+
+
+
+
+
+

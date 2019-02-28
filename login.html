@@ -1,0 +1,59 @@
+<html>
+<h1>Redirecting...</h1>
+<script>
+// config vars, TODO move to something more configurable
+var redirect_uri = "https://wolf.cci.emory.edu/camic_uat/login.html"
+var default_redirect = "https://wolf.cci.emory.edu/camic_uat/viewer.html"
+var audience = "wolf.cci.emory.edu/camic_uat"
+var scope = "openid%20email"
+var client_id = "YLRDUmEs5Jivi6FX3XtNNAt97X3a0epD"
+var response_type = "id_token"
+var base_auth_url = "https://birmstuff.auth0.com/authorize?"
+var cookie_name = "token" // "token" is expected by elevate router
+// make the url
+var auth_url = base_auth_url
+auth_url += "&audience=" + audience
+auth_url += "&scope=" + scope
+auth_url += "&response_type=" + response_type
+auth_url += "&client_id=" + client_id
+auth_url += "&redirect_uri=" + redirect_uri
+
+function randomString(length) {
+    var bytes = new Uint8Array(length);
+    var random = window.crypto.getRandomValues(bytes);
+    var result = [];
+    var charset = '0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._~'
+    random.forEach(function (c) {
+        result.push(charset[c % charset.length]);
+    });
+    return result.join('');
+}
+
+function getUrlParam(name, url) {
+    if (!url) url = window.location.href;
+    name = name.replace(/[\[\]]/g, '\\$&');
+    var regex = new RegExp('[?&#]' + name + '(=([^&#]*)|&|#|$)'),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, ' '));
+}
+
+// get variables
+let id_token = getUrlParam("id_token")
+let state = getUrlParam("state")
+if (!state){
+  state = default_redirect
+}
+// is this a login pre or post?
+if (id_token){
+  document.cookie = cookie_name +"=" + id_token;
+  window.location = state
+} else {
+  window.localStorage.setItem('nonce', randomString(16));
+  auth_url += "&state=" + state
+  auth_url += "&nonce=" + window.localStorage.getItem('nonce')
+  window.location = auth_url
+}
+</script>
+<html>

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="keywords" content="camicroscope, quip"/>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+
+    <title>Draw Polygon Unit Test Page</title>
+
+    <!-- Fetch -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fetch/3.0.0/fetch.min.js"></script>
+    <script src="slideId.js"></script>
+
+    <!-- google material icons css sheet -->
+    <link href='/iconfont/material-icons.css' rel='stylesheet'/>
+    <!-- css sheet -->
+    <link rel='stylesheet' type='text/css' media='all' href='/css/style.css'/>
+
+    <!-- zoom control css -->
+    <link rel='stylesheet' type='text/css' media='all' href='/core/extension/openseadragon-zoom-control/openseadragon-zoom-control.css'/>
+
+    <!-- loading cover css -->
+    <link href="/components/loading/loading.css" rel="stylesheet"/>
+    <!-- toolbar css -->
+    <link href="/components/toolbar/toolbar.css" rel="stylesheet"/>
+    <!-- color picker css -->
+    <link href="/components/colorpicker/color-picker.css" rel="stylesheet"/>
+
+    <link href="/core/extension/openseadragon-measurement-tool/openseadragon-measurement-tool.css" rel="stylesheet"/>
+
+    <link href="/core/extension/openseadragon-labeling/openseadragon-labeling.css" rel="stylesheet"/>
+
+    <!-- loading cover js -->
+    <script src='/components/loading/loading.js'></script>
+    <!-- toolbar js -->
+    <script src='/components/toolbar/toolbar.js'></script>
+    <!-- color picker js -->
+    <script src='/common/colorpicker/color-picker.js'></script>
+    <!-- open seadragon lib-->
+    <script src='/core/openseadragon/openseadragon.js'></script>
+    <script src='/core/openseadragon-imaginghelper.min.js'></script>
+    <script src='/core/openseadragon-scalebar.js'></script>
+    <script src='/core/openseadragonzoomlevels.js'></script>
+
+    <!-- util.js -->
+    <script src='/common/util.js' type='text/javascript'></script>
+    <!-- core (package/ext) libs -->
+    <script src='/core/DrawHelper.js'></script>
+    <script src="/core/simplify.js"></script>
+    <script src="/core/paths.js"></script>
+    <script src='/core/Store.js'></script>
+    <script src='/core/CaMic.js'></script>
+    <script src="/core/openseadragon-canvas-draw-overlay.js"></script>
+    <script src="/core/openseadragon-overlays-manage.js"></script>
+    <script src="/core/extension/openseadragon-measurement-tool/openseadragon-measurement-tool.js"></script>
+    <script src="/core/extension/openseadragon-zoom-control/openseadragon-zoom-control.js"></script>
+
+    <!-- ods js -->
+    <script src='/apps/viewer/uicallbacks.js'></script>
+    <script src='/apps/viewer/dataloaders.js'></script>
+
+    <!-- init data -->
+    <script src="draw-polygon-test.js"></script>
+
+</head>
+<body>
+<!-- toolbar -->
+<div id='ca_tools'></div>
+
+<!-- viewer -->
+<div id='main_viewer' class='main'></div>
+
+<script type="text/javascript">
+
+    const $D = {
+        pages: {
+            home: '/table.html',
+            table: '/table.html'
+        },
+        params: null // parameter from url - slide Id and status in it (object).
+    };
+
+    Loading.open(document.body, 'CaMicroscope is initializing...');
+    // get slide id from url
+    // $D.params = getUrlVars();
+    $D.params = {slideId: 'CMU1'};
+    $D.params.slideId = 'CMU1';
+    // load if we have at least one slide query element
+    if ($D.params && $D.params.slideId) {
+        // normal initialization starts
+        document.addEventListener('DOMContentLoaded', initialize);
+    } else {
+        let STORE = new Store('../../data/', {});
+        STORE.findSlide('CMU1').then(x => {
+            let offset = parseInt($D.params.offset, 10) || 0;
+            if (x.length === 0 || offset >= x.length) {
+                redirect($D.pages.table, 'No Slide Found. Redirecting to Table.');
+            } else {
+                newParams = $D.params;
+                // delete newParams.data
+                // delete newParams.slide
+                // delete newParams.location
+                // delete newParams.offset
+                newParams.slideId = x[offset]['_id']['$oid'];
+                newUrl = window.location.href.split("?")[0] + "?" + objToParamStr(newParams);
+                window.location.href = newUrl
+            }
+        }).catch(e => {
+            console.warn(e);
+            redirect($D.pages.table, 'Redirecting to Table.');
+        })
+        // find the associated slideID
+        // open viewer with that slideID
+    }
+
+    // get states parameters
+    if ($D.params.states) {
+        $D.params.states = StatesHelper.decodeStates($D.params.states);
+    }
+</script>
+
+</body>
+</html>
+

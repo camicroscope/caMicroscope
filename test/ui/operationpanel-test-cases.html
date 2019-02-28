@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta name="keywords" content="camicroscope, quip" />
+	    <meta charset='utf-8'>
+	    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+	    <meta name='viewport' content='width=device-width, initial-scale=1'>
+
+	    <title>Operation Panel Unit Test Page</title>
+
+	    <!-- camessage component dependencies -->
+		<!-- google material icons css sheet -->
+		<link href='/iconfont/material-icons.css' rel='stylesheet'/>
+		<!-- css sheet -->
+		<link rel='stylesheet' type='text/css' media='all' href='/css/style.css'/>
+
+		<!-- add pure-form css -->
+		<link rel="stylesheet" href="/components/pureform/pure-form.css"  />
+		<link rel='stylesheet' type='text/css' media='all' href='/components/operationpanel/operationpanel.css'/>
+
+		<script src="/common/util.js"></script>
+		<!-- add pure-form script -->
+		<script src="/common/pureform/document-register-element.js"></script>
+		<script src="/common/pureform/pure-form.js"></script>
+		<!-- message display js -->
+		<script src='/components/operationpanel/operationpanel.js'></script>
+		<style type="text/css">
+			.play-ground {
+				width:100%;
+				height:100%;
+				display:flex;
+				flex-direction:column;
+
+				background: black;
+
+			}
+			.play-ground div.row{
+				box-sizing: border-box;
+				margin:5px;
+				flex:1;
+				//box-shadow: inset 0 0px 1px #ddd;
+				display:flex;
+			}
+
+			div.row > div {
+				margin:5px;
+				flex:1;
+			}
+		</style>
+	</head>
+	<body>
+		<!-- this is a flag element that indicates the resources has been loaded -->
+		<input id='isLoad' type='checkbox' style='display:none;'>
+		<div class='play-ground'>
+				<div id='error1'>Something Wrong</div>
+				<div id='error2'>Something Wrong</div>
+			<div class='row'>
+				<div id='single'>Something Wrong</div>
+				<div id='multiple'>Something Wrong</div>
+			</div>
+		</div>
+	</body>
+	<!-- test script for each case -->
+	<script type = "text/javascript">
+		const demoSchemas = [{
+	"type" : "object",
+	"id" : "algorithm01",
+	"name" : "Alg1Schema",
+	"description" : "",
+	"links" : [ ],
+	"additionalProperties" : false,
+	"properties" : {
+		"arg1" : {
+			"id" : "01",
+			"title" : "Argument 01",
+			"type" : "boolean",
+			"default": true
+		},
+		"arg2" : {
+			"id" : "02",
+			"title" : "Argument 02",
+			"type" : "string",
+			"enum" : [
+				"arg_01",
+				"arg_02",
+				"arg_03",
+				"arg_04"
+			],
+			"default" : "arg_04"
+		},
+		"arg3" : {
+			"id" : "03",
+			"title" : "Argument 03",
+			"type": "string",
+			"format": "textarea",
+			"default":"test test test111"
+		},"arg4" : {
+			"id" : "04",
+			"title":"Argument 04",
+			"type": "string",
+
+			"enum" : [
+				"A",
+				"B",
+				"C",
+				"D"
+			],
+			"default" : "D"
+
+		}
+	}
+},
+{
+	"type" : "object",
+	"id" : "algorithm02",
+	"name" : "Alg1Schema",
+	"description" : "",
+	"links" : [ ],
+	"additionalProperties" : false,
+	"properties" : {
+		"arg1" : {
+			"id" : "01",
+			"title" : "Argument 01",
+			"type" : "boolean",
+
+		},
+		"arg2" : {
+			"id" : "02",
+			"title" : "Argument 02",
+			"type" : "string",
+			"enum" : [
+				"arg_01",
+				"arg_02",
+				"arg_03"
+			],
+			"default" : "arg_03"
+		},
+		"arg3" : {
+			"id" : "03",
+			"title" : "Argument 03",
+			"type" : "boolean"
+		},
+		"arg4" : {
+			"id" : "04",
+			"title" : "Argument 04",
+			"type" : "range"
+		}
+	}
+},
+{
+	"type" : "object",
+	"id" : "algorithm03",
+	"name" : "Alg1Schema",
+	"description" : "",
+	"links" : [ ],
+	"additionalProperties" : false,
+	"properties" : {
+		"arg1" : {
+			"id" : "01",
+			"title" : "arg01",
+			"type" : "boolean"
+		},
+		"arg2" : {
+			"id" : "02",
+			"title" : "Arg02",
+			"type" : "string",
+			"enum" : [
+				"arg_01",
+				"arg_02",
+				"arg_03",
+				"arg_04"
+			],
+			"default" : "arg_04"
+		},
+		"arg3" : {
+			"id" : "03",
+			"title" : "Arg03",
+			"type" : "textarea"
+		}
+	}
+}];
+
+function callback(data){
+
+	window.changedData = data;
+}
+		//
+		const error1 = new OperationPanel({
+			id:'error1',
+			//element:
+			//formSchemas:demoSchemas.slice(0,1),
+			action:{
+				title:'Save',
+				callback:callback
+			}
+		});
+		const error2 = new OperationPanel({
+			id:'error2',
+			title:'Algorithm:',
+			//element:
+			formSchemas:demoSchemas.slice(1),
+			action:{
+				//title:'Submit',
+				//callback:callback
+			}
+		});
+		// initialize
+		window.one = new OperationPanel({
+			id:'single',
+			//element:
+			formSchemas:demoSchemas.slice(0,1),
+			action:{
+				title:'Save',
+				callback:callback
+			}
+		});
+		window.two = new OperationPanel({
+			id:'multiple',
+			title:'Algorithm:',
+			//element:
+			formSchemas:demoSchemas.slice(1),
+			action:{
+				//title:'Submit',
+				callback:callback
+			}
+		});
+
+		// var select =  document.querySelector('#single #arg2');
+		// select.value = 'arg_02';
+		// select.focus();
+		// var text =  document.querySelector('#single #arg3');
+		// text.value = 'test test test'
+		// text.focus();
+		// Never remove this code, this is a flag to told us jsdom loads the anysubresources sucha as scripts, stylesheets or images.
+		document.getElementById('isLoad').checked = true;
+
+	</script>
+</html>

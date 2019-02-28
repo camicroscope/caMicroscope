@@ -1,0 +1,54 @@
+<html>
+<head>
+
+    <script src="../../core/Store.js"></script>
+    <script src="./loader.js"></script>
+    <script src="./chunked_upload.js"></script>
+    <script>
+        function validateForm(callback) {
+            let x = document.forms[0]["slidename"].value;
+            if (x === "") {
+                changeStatus("UPLOAD", "Please enter slide name");
+                return false;
+            }
+            callback();
+        }
+
+    </script>
+
+    <style>
+        body {
+            font-family: Helvetica, Arial, sans-serif;
+        }
+    </style>
+</head>
+<body>
+<div id="upload_form">
+    <h1>Slide Loader</h1>
+    <p>
+        First, use the file input to select a file. It should automatically fill in the token field and start uploading.<br/>
+        When uploading has finished, provide a destination filename with extension, and use "finish upload" to complete the upload.<br/>
+        Finally, POST it to the caMicroscope instance.<br/>
+    </p>
+    <form>
+        <table>
+            <tr><td align="right">File:</td><td><input type="file" id="input" onchange="handle_upload(this.files)"></td></tr>
+            <tr><td align="right">Filename:</td><td><input type=text name=filename id="filename"></td></tr>
+            <tr><td align="right">Token:</td><td><input type=text name=token id="token"></td></tr>
+            <tr><td align="right">Slidename</td><td><input type=text name=slidename id="slidename"></td></tr>
+            <tr><td colspan="2">
+                <button type="button" id="finish_btn" value="Finish Upload" onclick="validateForm(finish_upload)">Finish Upload</button>
+                <button type="button" id="check_btn" value="Check" onclick="CheckBtn()">Check</button>
+                <button type="button" id="post_btn" value="Post" onclick="validateForm(PostBtn)">Post</button>
+            </td></tr>
+        </table>
+
+    </form>
+</div>
+<div id="load_status">
+    Keep track of status here...
+</div>
+<div id="thumbnail"></div>
+</body>
+
+</html>

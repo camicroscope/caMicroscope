@@ -1,0 +1,156 @@
+<!-- toolbar-test-cases.html -->
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta name="keywords" content="camicroscope, quip" />
+	<meta charset='utf-8'>
+	<meta http-equiv='X-UA-Compatible' content='IE=edge'>
+	<meta name='viewport' content='width=device-width, initial-scale=1'>
+
+	<title>Toolbar Unit Test Page</title>
+
+	<!-- camessage component dependencies -->
+	<!-- google material icons css sheet -->
+	<link href='/iconfont/material-icons.css' rel='stylesheet' />
+	<!-- css sheet -->
+	<link rel='stylesheet' type='text/css' media='all' href='/css/style.css' />
+
+	<!-- add pure-form css -->
+	<link rel='stylesheet' type='text/css' media='all' href='/components/toolbar/toolbar.css' />
+
+	<script src="/common/util.js"></script>
+	<!-- message display js -->
+	<script src='/components/toolbar/toolbar.js'></script>
+	<style type="text/css">
+		.play-ground {
+			width: 100%;
+			height: 100%;
+			display: flex;
+			flex-direction: column;
+
+			background: black;
+
+		}
+
+		.play-ground div.row {
+			box-sizing: border-box;
+			margin: 5px;
+			flex: 1;
+			/*box-shadow: inset 0 0px 1px #ddd;*/
+			display: flex;
+		}
+
+		div.row>div {
+			margin: 5px;
+			flex: 1;
+		}
+	</style>
+</head>
+
+<body>
+	<!-- this is a flag element that indicates the resources has been loaded -->
+	<input id='isLoad' type='checkbox' style='display:none;'>
+	<div id='tools'></div>
+</body>
+<!-- test script for each case -->
+<script type="text/javascript">
+
+
+	function callback(data) {
+
+		window.changedData = data;
+	}
+
+	// TODO: Create CaToolbar
+	// var clickOn = {
+	// 	main:function(d){
+	// 		console.log(d);
+	// 	},
+	// 	btn:function(d){
+	// 		console.log(d);
+	// 	},
+	// 	check:function(d){
+	// 		console.log(d);
+	// 	},
+	// 	multistates:function(d){
+	// 		console.log(d);
+	// 	},
+	// 	dropdown:function(d){
+	// 		console.log(d);
+	// 	},
+	// }
+
+
+	// initialize
+	window.tools = new CaToolbar({
+    id:'tools',
+    mainToolsCallback:callback,
+    subTools:[
+      // btn
+      {
+        icon:'aspect_ratio',// material icons' name
+        title:'btn',
+        type:'btn',// btn/check/dropdown
+        value:'btn',
+        callback:callback
+      }, //
+      // check
+      {
+        icon:'create',// material icons' name
+        title:'check',
+        type:'check',
+        callback:callback
+      },
+      // measurement tool
+      {
+        icon:'space_bar',
+        title:'multistates',
+        type:'multistates',
+        value:'multistates',
+        callback:callback
+      },
+      // dropdown
+      {
+        icon:'search',
+        title:'dropdown',
+        type:'dropdown',
+        value:'dropdown',
+        dropdownList:[
+          // free draw
+          {
+            icon:'linear_scale',
+            value:'a',
+            title:'10x',
+            checked:true
+          },
+          // rectangle fraw
+          {
+            icon:'timeline',
+            value:'b',
+            title:'20x'
+          },
+          {
+            icon:'timeline',
+            value:'c',
+            title:'40x'
+          }
+        ],
+        callback:callback
+      }
+
+    ]
+  });
+
+	// var select =  document.querySelector('#single #arg2');
+	// select.value = 'arg_02';
+	// select.focus();
+	// var text =  document.querySelector('#single #arg3');
+	// text.value = 'test test test'
+	// text.focus();
+	// Never remove this code, this is a flag to told us jsdom loads the anysubresources sucha as scripts, stylesheets or images.
+	document.getElementById('isLoad').checked = true;
+
+</script>
+
+</html>

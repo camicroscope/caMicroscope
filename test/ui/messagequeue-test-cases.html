@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta name="keywords" content="camicroscope, quip" />
+	    <meta charset='utf-8'>
+	    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+	    <meta name='viewport' content='width=device-width, initial-scale=1'>
+
+	    <title>CaMessage Unit Test Page</title>
+
+	    <!-- camessage component dependencies -->
+		<!-- google material icons css sheet -->
+		<link href='/iconfont/material-icons.css' rel='stylesheet'/>
+		<!-- css sheet -->
+		<link rel='stylesheet' type='text/css' media='all' href='/css/style.css'/>
+
+		<link rel='stylesheet' type='text/css' media='all' href='/components/messagequeue/messagequeue.css'/>
+		<!-- message display js -->
+		<script src='/components/messagequeue/messagequeue.js'></script>
+
+	</head>
+	<body>
+		<!-- this is a flag element that indicates the resources has been loaded -->
+		<input id='isLoad' type='checkbox' style='display:none;'>
+
+	</body>
+	<!-- test script for each case -->
+	<script type = "text/javascript">
+
+		// case 1: test options to initialize component
+		const message1 = new MessageQueue({});
+		message1.add('info message', 1000);
+
+		// case 2:
+		const message2 = new MessageQueue({position:'top-right'});
+		message2.addWarning('warning message', 1000);
+
+		// case 3:
+		const message3 = new MessageQueue({position:'bottom-left'});
+		message3.addError('error message', 1000);
+
+		// case 4:
+		const message4 = new MessageQueue({position:'bottom-right'});
+		message4.add('message1', 1000);
+		message4.addError('message2', 1000);
+		message4.addWarning('message3', 1000);
+
+		// Never remove this code, this is a flag to told us jsdom loads the anysubresources sucha as scripts, stylesheets or images.
+		document.getElementById('isLoad').checked = true;
+
+	</script>
+</html>

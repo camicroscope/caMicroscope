@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta name="keywords" content="camicroscope, quip" />
+	    <meta charset='utf-8'>
+	    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+	    <meta name='viewport' content='width=device-width, initial-scale=1'>
+
+	    <title>Mult Selector Unit Test Page</title>
+
+	    <!-- Mult Selector Dependencies -->
+		<!-- google material icons css sheet -->
+		<link href='/iconfont/material-icons.css' rel='stylesheet'/>
+		<!-- css sheet -->
+		<link rel='stylesheet' type='text/css' media='all' href='/css/style.css'/>
+
+		<link rel='stylesheet' type='text/css' media='all' href='/components/multselector/multselector.css'/>
+		<!-- util.js -->
+		<script src = '/common/util.js' type='text/javascript'></script>
+		<!-- Mult Selector js -->
+		<script src='/components/multselector/multselector.js'></script>
+		<style type="text/css">
+			body{
+				color:black;
+			}
+			.container {
+				width:100%;
+				height:100%;
+				display: flex;
+			}
+			.col {
+				flex:1;
+				border: 1px black solid;
+			}
+			.row {
+				flex:1;
+				display: flex;
+				flex-direction: column;
+				border:black 1px solid;
+				box-sizing: border-box;
+			}
+		</style>
+	</head>
+	<body>
+		<!-- this is a flag element that indicates the resources has been loaded -->
+		<input id='isLoad' type='checkbox' style='display:none;'>
+		<!-- ca message test cases -->
+
+		<!-- constructor -->
+		<div class='container'>
+			<div class='row'>
+				<div id='selector1'></div>
+			</div>
+			<div class='row'>
+				<div id='selector2'></div>
+			</div>
+		</div>
+	</body>
+	<!-- test script for each case -->
+	<script type = "text/javascript">
+		window.eventName = '';
+		window.eventData = {};
+
+		//initialize UI component
+		function cancel(d){
+			window.eventName = 'cancel';
+		}
+
+		function action(d){
+			window.eventName = 'action';
+			window.eventData = d.data;
+		}
+
+		function select(d){
+			window.eventName = 'select';
+			window.eventData = d.data;
+		}
+
+		function selectAll(d){
+			window.eventName = 'select-all';
+		}
+
+		function remove(d){
+			window.eventName = 'remove';
+			window.eventData = d.data;
+		}
+		function removeAll(d){
+			window.eventName = 'remove-all';
+		}
+
+		// create mult selectors
+		const options = [];
+		for(let i = 0; i < 10; i++){
+			options.push([i,`opt${i}`]);
+		}
+
+		// case 1: test options to initialize component
+		window.mSel1 = new MultSelector({id:'selector1',hasControl:false});
+
+		window.mSel2 = new MultSelector({element:document.getElementById('selector2'),data:options});
+
+		// add Event for all selectors
+		window.mSel1.addHandler('cancel',cancel);
+		window.mSel1.addHandler('action',action);
+		window.mSel1.addHandler('select',select);
+		window.mSel1.addHandler('select-all',selectAll);
+		window.mSel1.addHandler('remove',remove);
+		window.mSel1.addHandler('remove-all',removeAll);
+
+		document.getElementById('isLoad').checked = true;
+
+	</script>
+</html>

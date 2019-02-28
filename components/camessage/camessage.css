@@ -1,0 +1,12 @@
+/* ca_message css */
+div.camessage {
+  position:absolute;
+  top:0;
+  right:0;
+  margin:0;
+  border-radius:0 0 0 1rem;
+  padding:.3rem 1rem;
+  background-color:#365f9c;
+  color:#f6f6f6;
+  font-size:1.2rem;
+}

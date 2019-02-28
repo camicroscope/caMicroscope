@@ -1,0 +1,348 @@
+/*!
+ * pure-form - v@version@
+ * Pure JS drop in replacement for the HTML FORM using JSON Schemas
+ * https://github.com/john-doherty/pure-form
+ * @author John Doherty <www.johndoherty.info>
+ * @license MIT
+ */
+pure-form {
+    border: 1px solid #ccc;
+    /*border-radius: 4px;*/
+    display: block;
+    position: relative;
+    padding: .5rem;
+    color:#365f9c;
+    /*min-width: 320px;*/
+}
+
+pure-form:empty {
+    display: none;
+}
+
+pure-form .pure-form-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin: 0 0 10px 0;
+}
+
+pure-form .pure-form-description {
+    margin: 0 0 10px 0;
+}
+
+pure-form .pure-form-form {
+    padding: 0;
+    display: block;
+    margin: 0;
+    /*overflow: auto;*/
+}
+
+pure-form .pure-form-form:empty {
+    text-align: center;
+}
+
+pure-form .pure-form-form:empty:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: rgba(200,200,200,0.2);
+}
+
+pure-form .pure-form-form:empty:after {
+    content: "Loading, please wait...";
+    color: #666;
+}
+
+pure-form .pure-form-title {
+    font-size: 22px;
+    font-weight: bold;
+}
+
+pure-form .pure-form-label {
+    display:flex;
+    flex-direction: column;
+    margin: 1rem 0;
+    /*position: relative;*/
+/*    clear: both;
+    float: none;*/
+}
+
+pure-form .pure-form-label[data-type="boolean"] {
+    pointer-events: none;
+}
+
+pure-form .pure-form-label[data-required=true] .pure-form-label-text:after {
+    content: " * ";
+    color: #800;
+    font-size: 12px;
+    vertical-align: top;
+}
+
+pure-form .pure-form-label[data-error]:after,
+pure-form .pure-form-label[data-characters-remaining]:after {
+    content: attr(data-error);
+    font-size: 12px;
+    /*position: absolute;*/
+    right:20px; /* modified by Nan Li*/
+    top: 37px;
+/*    padding: 2px 8px;
+    background: #fff;*/
+    text-transform: lowercase;
+    animation: pure-form-error-fadein 0.3s ease-in-out;
+}
+
+
+pure-form .pure-form-label[data-max-length][data-characters-remaining]:after {
+    content: "Max " attr(data-max-length) " characters (" attr(data-characters-remaining) " remaining)";
+    text-transform: none;
+}
+
+pure-form .pure-form-label[data-max-length][data-characters-remaining*="-"]:after {
+    color: #800;
+}
+
+pure-form .pure-form-label[data-error]:after {
+    content: attr(data-error) !important;
+    color: #800;
+}
+
+pure-form .pure-form-label-text {
+    display: inline-block;
+    padding: 0 0 .5rem 0;
+    font-size: 1.3rem;
+    vertical-align: top;
+}
+
+pure-form .pure-form-item {
+    padding:0; /* leave space to the right for the valid/invalid icons */
+    display: inline-block;
+    border: 1px solid #ccc;
+    box-shadow: inset 0 0px 1px #ddd;
+    border-radius: 2px;
+    vertical-align: middle;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: rgba(0,0,0,0);
+    -webkit-appearance: none;
+    font-size: 12px;
+    vertical-align: middle;
+    width: calc(100% - 170px);
+}
+
+/* --- IOS STYLE SLIDER CHECKBOX --- */
+
+pure-form [type="checkbox"] {
+
+    pointer-events: all;
+    -webkit-appearance: none !important;
+    display: inline-block;
+    position: relative;
+    box-shadow: none;
+    height: 20px;
+    width: 44px !important;
+    border-radius: 10px;
+    cursor: pointer;
+    background: rgba(213, 213, 213, 0.1);
+    margin: 0;
+    outline: 0;
+
+    transition: background-color .25s ease-in-out, border-color .25s ease-in-out, box-shadow .25s ease-in-out;
+}
+
+pure-form [type="checkbox"]:before {
+    position: absolute;
+    display: block;
+    height: 19px;
+    width: 44px;
+    top: 0;
+    left: 0;
+    text-indent: 22px;
+    border-radius: 10px;
+    /*background: rgba(19, 191, 17, 0);*/
+    transition: left .25s ease-in-out;
+    color: #365f9c;
+    content: "OFF";
+    font-size: 8px;
+    line-height: 19px;
+}
+
+pure-form [type="checkbox"]:checked {
+    background-color: #365f9c;
+    border-color: #365f9c;
+    box-shadow: inset 0 0 0px 1px #365f9c;
+}
+
+pure-form [type="checkbox"]:checked:before {
+    position: absolute;
+    display: block;
+    height: 19px;
+    width: 44px;
+    top: 0;
+    left: 0;
+    text-indent: 6px;
+    border-radius: 10px;
+    /*background: rgba(19, 191, 17, 0);*/
+    transition: left .25s ease-in-out;
+    color: #333;
+    content: "ON";
+    font-size: 8px;
+    line-height: 19px;
+    color: #fff;
+}
+
+pure-form [type="checkbox"]:after {
+    content: "";
+    position: absolute;
+    display: block;
+    height: 20px;
+    width: 20px;
+    top: -1px;
+    left: -1px;
+    border-radius: 10px;
+    background: white;
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .2), 0 2px 4px rgba(0, 0, 0, .2);
+    transition: left .25s ease-in-out;
+    font-size: 8px;
+    line-height: 20px;
+}
+
+pure-form [type="checkbox"]:checked:after { 
+    left: 24px;
+}
+
+/* ------ */
+
+pure-form[auto-resize="true"] textarea.pure-form-item,
+pure-form[auto-resize="true"] iframe.pure-form-item {
+    height: 70px; /* <- must have a default height in order to not jump on first height adjustment */
+    transition: height 0.3s ease-in-out;
+    overflow: hidden;
+}
+textarea.pure-form-item {
+    width:100%;
+}
+pure-form .pure-form-item[data-valid="true"] {
+    border-color: #3c763d;
+    /*background-image: url('img/pure-form-icon-valid.svg');*/
+    background-repeat: no-repeat;
+    background-position: calc(100% - 4px) center;
+    /*background-size: 34px;*/
+}
+
+pure-form .pure-form-item[data-valid="false"] {
+    border-color: #a94442;
+    /*background-image: url('img/pure-form-icon-invalid.svg');*/
+    background-repeat: no-repeat;
+    background-position: calc(100% - 4px) center;
+    /*background-size: 34px;*/
+}
+
+pure-form .pure-form-item[contenteditable="true"] {
+    min-height: 100px;
+}
+
+pure-form .pure-form-item-description {
+    display: block;
+    font-size: 12px;
+    color: #888;
+    text-align: right;
+    padding: 4px 0 14px 0;
+    width: calc(100% - 169px);
+    float: right;
+    line-height: 18px;
+}
+
+pure-form select.pure-form-item {
+    background-color: #fff;
+    background-image: url('data:image/svg+xml;charset=utf-8;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMnB4IiBoZWlnaHQ9IjMycHgiIHZpZXdCb3g9IjAgMCA5NiAxMDAiPjxwb2x5Z29uIHBvaW50cz0iNDggNzAuNDIgOC41IDMwLjkzIDEyLjA3IDI3LjM2IDQ4IDYzLjI5IDgzLjkzIDI3LjM2IDg3LjUgMzAuOTMgNDggNzAuNDIiLz48L3N2Zz4=');
+    background-repeat: no-repeat;
+    background-position: calc(100% - 8px) center;
+    background-size: 20px;
+    cursor: pointer;
+}
+
+/* --- START: FORMAT=HTML --- */
+/* styles starting with [pure-form .pure-form-html] are injected into IFRAME when format=html */
+
+pure-form .pure-form-html body {
+    padding: 0;
+    margin: 0;
+    font-size: 14px;
+    font-family: tahoma;
+}
+
+pure-form .pure-form-html h1 {
+    margin: 0;
+    font-size: 18px;
+    font-family: tahoma;
+}
+
+/* --- END: FORMAT=HTML --- */
+
+pure-form .pure-form-buttons {
+    display: block;
+    clear: both;
+    text-align: right;
+}
+
+pure-form .pure-form-button {
+    padding: 10px 20px;
+    display: inline-block;
+    background-color: #0078e7;
+    color: #fff;
+    font-size: 14px;
+    vertical-align: middle;
+    border-radius: 2px;
+    border: 1px solid #006acc;
+    cursor: pointer;
+    margin: 0 10px 0 0;
+    -webkit-appearance: none;
+}
+
+pure-form .pure-form-button:first-child {
+    margin-left: 0;
+}
+
+pure-form .pure-form-button:last-child {
+    margin-right: 0;
+}
+
+pure-form ::-webkit-input-placeholder { font-size: 14px; }
+pure-form ::-moz-placeholder  { font-size: 14px; }
+
+/* responsive */
+
+@media (max-width: 550px) {
+
+    pure-form .pure-form-label-text {
+        display: block;
+        width: 100%;
+    }
+
+    pure-form .pure-form-item {
+        width: 100%;
+    }
+
+    pure-form .pure-form-label[data-error]:after{
+        position: static;
+        padding: 2px 0 4px 0;
+        clear: both;
+        float: none;
+        display: block;
+        background-color: transparent;
+    }
+}
+
+/* --- ANIMATIONS --- */
+
+@keyframes pure-form-fadein {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+@keyframes pure-form-error-fadein {
+    0% { opacity: 0; transform: scale(1); }
+    50% { opacity: .5; transform: scale(1.1); }
+    100% { opacity: 1; transform: scale(1); }
+}

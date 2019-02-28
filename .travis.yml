@@ -1,0 +1,15 @@
+sudo: required
+language: node_js
+node_js:
+   - "8"
+install:
+    - npm install
+    - npm install -g http-server
+    - npm install -g mocha
+
+before_script:
+  - http-server -s & # start a Web server
+  - sleep 3 # give Web server some time to bind to sockets, etc
+
+script:
+    - mocha test --recursive --exit

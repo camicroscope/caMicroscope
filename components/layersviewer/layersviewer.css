@@ -1,0 +1,192 @@
+/* layersviewer */
+.layer_viewer{
+	display: -webkit-box;      /* OLD - iOS 6-, Safari 3.1-6 */
+	display: -moz-box;         /* OLD - Firefox 19- (buggy but mostly works) */
+	display: -ms-flexbox;      /* TWEENER - IE 10 */
+	display: -webkit-flex;     /* NEW - Chrome */
+	display:flex;
+	flex-direction: column;
+	margin:0;
+	padding: 5px;
+	border:#cbcbcb 1px solid;
+	background:#F5F5F5;
+}
+
+.layer_viewer *{
+	padding:0;
+	margin:0;
+	color:#365f9c;
+
+}
+.layer_viewer > div.searchbar {
+	
+	display: -webkit-box;      /* OLD - iOS 6-, Safari 3.1-6 */
+	display: -moz-box;         /* OLD - Firefox 19- (buggy but mostly works) */
+	display: -ms-flexbox;      /* TWEENER - IE 10 */
+	display: -webkit-flex;     /* NEW - Chrome */
+	display:flex;
+}
+
+.layer_viewer label+div, .layer_viewer div+label, .layer_viewer div+div, .layer_viewer div+input, .layer_viewer input+div{
+	margin-left: -1px;
+}
+/* input type='input'*/
+.layer_viewer input[type=text] {
+	flex: 1;
+	border:#cbcbcb 1px solid;
+	padding:0 0 0 5px;
+	width:auto;
+
+}
+.layer_viewer input[type=text]:focus {
+	outline:0;
+}
+
+/* for view switch */
+.layer_viewer input[type=radio] {
+	display:none;
+}
+.layer_viewer div.material-icons, .layer_viewer div input[type=radio]+label {
+	border:#cbcbcb 1px solid;
+	background-color:#f6f6f6;
+	cursor:pointer;
+	font-size:18px;
+}
+.layer_viewer div.material-icons:hover, .layer_viewer div input[type=radio]:hover+label {
+	background-color:#ededed;
+}
+ .layer_viewer div input[type=radio]:checked+label {
+	background-color:#d0d0d0;
+}
+
+
+
+
+/* --  -- */
+
+
+.layers_list ul, .sort_list ul {
+  flex:1;
+  padding:0 1rem;
+  list-style-type: none;
+  
+}
+
+.layers_list li, .sort_list li {
+	margin-top:.5rem;
+	border-radius: .5rem;
+	display: -webkit-box;      /* OLD - iOS 6-, Safari 3.1-6 */
+	display: -moz-box;         /* OLD - Firefox 19- (buggy but mostly works) */
+	display: -ms-flexbox;      /* TWEENER - IE 10 */
+	display: -webkit-flex;     /* NEW - Chrome */
+	display:flex;
+}
+
+.layers_list li label, .sort_list li label {
+	cursor: pointer;
+	-webkit-align-items: center;
+	-ms-flex-align: center;
+	align-items: center;
+	display: -webkit-flex;
+	display: flex;
+	flex:1;
+	border:#cbcbcb 1px solid;
+}
+.layers_list li  label div, .sort_list li  label div{
+	margin: 0 auto;
+}
+/*.layers_list li:hover {
+}
+
+.layers_list li.root i {
+}*/
+
+/* checkbox */
+.layer_viewer [type="checkbox"] {
+	margin-left:5px;
+	border:#cbcbcb 1px solid;
+    pointer-events: all;
+    -webkit-appearance: none !important;
+    display: inline-block;
+    position: relative;
+    box-shadow: none;
+    height: 20px;
+    width: 50px !important;
+    border-radius: 10px;
+    cursor: pointer;
+    outline: 0;
+    transition: background-color .25s ease-in-out, border-color .25s ease-in-out, box-shadow .25s ease-in-out;
+}
+.layer_viewer [type="checkbox"]:before {
+    position: absolute;
+    display: block;
+    height: 18px;
+    width: 50px;
+    top: 0;
+    left: 0;
+    text-indent: 21px;
+    border-radius: 10px;
+    transition: left .25s ease-in-out;
+    content: "SHOW";
+    font-size: 8px;
+    line-height: 19px;
+}
+
+.layer_viewer [type="checkbox"]:checked {
+    background-color: #365f9c;
+    /*box-shadow: inset 0 0 0px 1px #365f9c;*/
+}
+
+.layer_viewer [type="checkbox"]:checked:before {
+    position: absolute;
+    display: block;
+    height: 18px;
+    width: 50px;
+    top: 0;
+    left: 0;
+    text-indent: 4px;
+    border-radius: 10px;
+    background: #365f9c;
+    transition: left .25s ease-in-out;
+    color: #F5F5F5;
+    content: "HIDE";
+    font-size: 8px;
+    line-height: 19px;
+}
+
+.layer_viewer [type="checkbox"]:after {
+    content: "";
+    position: absolute;
+    display: block;
+    height: 20px;
+    width: 20px;
+    top: -1px;
+    left: -1px;
+    border-radius: 10px;
+    background: white;
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .2), 0 2px 4px rgba(0, 0, 0, .2);
+    transition: left .25s ease-in-out;
+    font-size: 8px;
+    line-height: 20px;
+}
+
+.layer_viewer [type="checkbox"]:checked:after { 
+    left: 30px;
+}
+
+/* sort list css */
+ {
+  flex:1;
+  padding:0 1rem;
+  list-style-type: none;
+}
+.sort_list li {
+
+}
+
+
+
+
+
+
+

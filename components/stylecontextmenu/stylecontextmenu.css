@@ -1,0 +1,124 @@
+/*stylecontextmenu.css*/
+.context-menu {
+	display:none;
+	padding: 5px;
+	border:#cbcbcb 1px solid;
+	position: absolute;
+	top:250px;
+	left:250px;
+	min-width: 100px;
+	border-radius: 5px 5px 5px 5px;
+	box-shadow: 1px 2px 3px #aaa;
+	background:#F5F5F5;
+}
+.context-menu *{
+	cursor:pointer;
+}
+
+.context-item {
+	display:flex;
+	margin-top:5px;
+}
+
+.context-item *{
+	margin:0;
+	padding:0;
+	flex:1;
+	display: inline-block;
+	font-weight: 400;
+	text-align: center;
+	white-space: nowrap;
+	vertical-align: middle;
+	color:#365f9c;
+}
+.context-item div.item-label {
+	flex:none;
+	width:24px;
+}
+
+.context-item input+label {
+	border:#cbcbcb 1px solid;
+	background-color:#f6f6f6;
+	border-radius:5px;
+}
+.context-item input:hover+label {
+	background-color:#ededed;
+}
+.context-item input:checked+label {
+	background-color:#d0d0d0;
+}
+.context-item input+label:not(:last-child) {
+	border-top-right-radius: 0;
+	border-bottom-right-radius: 0;
+}
+.context-item input+label:not(:nth-child(2)) {
+	border-top-left-radius: 0;
+	border-bottom-left-radius: 0;
+}
+/* btn */
+
+.context-item button {
+	padding:0;
+	margin:0;
+	background-color:#f6f6f6; 
+	border-radius:5px;
+	border:#cbcbcb 1px solid;
+}
+.context-item button:hover {
+	background-color:#ededed; 
+}
+.context-item button:active {
+	background-color:#d0d0d0;
+}
+.context-item button:disabled {
+	cursor:not-allowed;
+	color:#6c8bb6;
+	background-color:#efefef;
+
+}
+.context-item button:focus{
+	outline:none;
+}
+.context-item button:not(:last-child) {
+	border-top-right-radius: 0;
+	border-bottom-right-radius: 0;
+}
+.context-item button:not(:first-child) {
+	border-top-left-radius: 0;
+	border-bottom-left-radius: 0;
+}
+.context-item input[type=range] {
+	min-width:50px;
+}
+.context-item input[type=radio], .context-item input[type=checkbox] {
+	display:none;
+}
+
+.context-item label+input+label,.context-item button+button,.context-item label+button{
+	margin-left: -1px;
+}
+
+.picker .color-picker {
+	font-size:8px
+}
+
+.picker .color-code {
+	display:block;
+	float:left;
+	width:100%;
+	height:1em;
+	margin:1px 0 0;
+	background:#F5F5F5;
+	border:0;
+	/*font:normal normal 13px/2em Helmet,FreeSans,Sans-Serif;*/
+	color:#365f9c;
+	-webkit-box-sizing:border-box;
+	-moz-box-sizing:border-box;
+	box-sizing:border-box;
+	clear:both;
+}
+.picker .color-picker-container {
+	-webkit-box-shadow: none;
+	-moz-box-shadow: none;
+	box-shadow: none;
+}

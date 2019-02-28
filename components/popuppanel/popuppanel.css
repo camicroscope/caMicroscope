@@ -1,0 +1,96 @@
+/* popuppanel.css */
+/* -- pop -- */
+.pop-panel {
+	/*padding: 5px;*/
+	/*border:#cbcbcb 1px solid;*/
+	position: absolute;
+	top:25px;
+	left:25px;
+	max-width: 350px;
+	border-radius: 5px 5px 5px 5px;
+	box-shadow: 1px 2px 3px #aaa;
+	background:#F5F5F5;
+	color:#365f9c;
+}
+.pop-panel > div+div {
+	margin-top: -1px;
+}
+.pop-panel-header {
+	border:#cbcbcb 1px solid;
+	border-radius: 5px 5px 0 0;
+}
+.pop-panel-header div.pop-panel-header-title {
+
+	line-height: 1.5;
+	font-size: 16px;
+	font-weight: bold;
+}
+.pop-panel-header div.material-icons {
+	border-top-right-radius: 5px;
+	cursor: pointer;
+	flex:none;
+	border-left:#cbcbcb 1px solid;
+}
+.pop-panel-header div.material-icons:hover {
+	background-color:#ededed;
+
+}
+.pop-panel-body{
+
+	border:#cbcbcb 1px solid;
+}
+.pop-panel-footer, .pop-panel-header {
+	display:flex;
+}
+.pop-panel-footer *,.pop-panel-header *{
+	flex:1;
+	display: inline-block;
+	font-weight: 400;
+	text-align: center;
+	white-space: nowrap;
+	vertical-align: middle;
+	color:#365f9c;
+	
+}
+.pop-panel-footer button+button{
+	margin-left: -1px;
+}
+.pop-panel-footer button, .pop-panel-head *  {
+	padding:0;
+	background-color:#f6f6f6;
+	border:#cbcbcb 1px solid;
+}
+.pop-panel-footer button:hover {
+	background-color:#ededed; 
+}
+.pop-panel-footer button:active {
+	background-color:#d0d0d0;
+}
+.pop-panel-footer button:focus{
+	outline:none;
+}
+.pop-panel-footer button:last-child {
+	border-bottom-right-radius: 5px;
+}
+.pop-panel-footer button:first-child {
+	border-bottom-left-radius: 5px;
+}
+
+.pop-panel-body .table{
+	display: table;
+	margin: 5px;
+}
+.pop-panel-body .row{
+	display: table-row;
+}
+.pop-panel-body .row > div{
+	display:table-cell;
+	padding:5px 0 0 5px;
+	font-size: 12px;
+}
+.pop-panel-body .field{
+	font-weight:bold;
+}
+.pop-panel-body .value{
+
+}

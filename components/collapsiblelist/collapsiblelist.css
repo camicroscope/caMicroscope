@@ -1,0 +1,48 @@
+/* collapsible menu css */
+.clloapsible_container{
+  display: -webkit-box;      /* OLD - iOS 6-, Safari 3.1-6 */
+  display: -moz-box;         /* OLD - Firefox 19- (buggy but mostly works) */
+  display: -ms-flexbox;      /* TWEENER - IE 10 */
+  display: -webkit-flex;     /* NEW - Chrome */
+  display:flex;
+  flex-direction:column;
+  flex:1;
+  min-height:0;
+  height:100%;
+  width:100%;
+}
+
+.item_head {
+    margin:.2rem;
+    background-color: #365f9c;
+    color: rgba(255,255,255,.7);
+    cursor: pointer;
+    padding: .5rem;
+    width: 100%;
+    border: none;
+    text-align: left;
+    outline: none;
+    font-size: 1.5rem;
+}
+.item_head span {
+    font-size:1.5rem;
+    line-height:2.4rem;
+}
+
+.active, .item_head:hover {
+    color: rgba(255,255,255,1);
+}
+
+.item_body {
+  overflow:hidden;
+  transition:flex .5s;
+  margin:0 .5rem;
+  color:#000;
+}
+.collapse{
+  flex:0;
+}
+.expand{
+  overflow-y:auto;
+  flex:1;
+}

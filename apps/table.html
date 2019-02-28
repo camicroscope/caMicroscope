@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta name="keywords" content="camicroscope, quip" />
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <!-- common -->
+    <link href="../common/datatables/vanilla-dataTables.css" rel="stylesheet" />
+    <link href="../components/loading/loading.css" rel="stylesheet" />
+
+    <script src='../common/datatables/vanilla-dataTables.js'></script>
+    <script src='../components/loading/loading.js'></script>
+    <script src='../core/Store.js'></script>
+    <title>Camic Data Table</title>
+      <style type="text/css">
+         html, body {
+            margin:0;
+            padding:0;
+            font-family: "Lato";
+            height:100%;
+            width:100%;
+         }
+         .container {
+         	padding : 25px;
+
+         	box-sizing: border-box;
+            width: 100%;
+            height:100%;
+
+         }
+         .container > div {
+         	padding : 25px;
+         	border-radius: 10px;
+         	border:1px solid rgba(0,0,0,.125);
+         }
+         #datatables > tbody tr:hover {
+         	background: rgba(0,0,0,.125);
+         }
+      </style>
+</head>
+<body>
+	<div class='container'>
+		<div>
+			<table id = 'datatables'></table>
+		</div>
+	</div>
+</body>
+
+	<script type="text/javascript">
+
+
+		var div = document.querySelector('.container');
+		Loading.open(div,'Data is loading');
+		const store = new Store('../data/');
+		store.findSlide()
+
+		.then(function(data){
+			// response error
+			if(data.error){
+				Loading.text.textContent = `${data.text}: ${data.url}`;
+				return;
+			}
+
+			// no data
+			if(!data.length){
+				div.textContent = "No Data Found";
+				return;
+			}
+
+			data.map(d=> delete d.location);
+			init(data);
+		}).catch(function(error){
+			div.textContent = `${error.text}: ${error.url}`;
+			console.error(error);
+		}).finally(function(){
+			Loading.close();
+		});
+
+		function init(data){
+			var obj = {
+				// Quickly get the headings
+				headings: ['_id','name','specimen','study','mpp'],
+				// data array
+				data: []
+			};
+			var columnNames = ['_id','name','specimen','study', 'mpp'];
+			// Loop over the objects to get the values
+			for ( var i = 0; i < data.length; i++ ) {
+				obj.data.push([]);
+				for (var j = 0; j < columnNames.length; j++) {
+					const col = columnNames[j];
+					if( col == '_id' ) {
+						obj.data[i].push(data[i][col].$oid);
+					}else{
+						obj.data[i].push(data[i][col]);
+					}
+
+				}
+			}
+
+			dataTableInstance = new DataTable("#datatables",{
+				columns:[
+					{select: 0, render: function(data){
+						return `<a href='./viewer/viewer.html?slideId=${data}'>${data}</a>`;
+					}},
+				],
+				data:obj
+			});
+		}
+
+	</script>
+</html>

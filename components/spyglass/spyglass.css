@@ -1,0 +1,17 @@
+/*spyglass.css*/
+
+div.spyglass {
+	box-sizing: border-box;
+	border:5px solid rgb(0,0,0);
+	border-radius: 5px;
+	position: absolute;
+	background: rgba(0,0,0,.8);
+	min-width: 250px;
+	min-height: 150px;
+}
+div.indicator {
+	box-sizing: border-box;
+	border:2px solid rgb(255,0,0);
+	border-radius: 5px;
+	position: absolute;
+}

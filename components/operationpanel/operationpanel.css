@@ -1,0 +1,72 @@
+div.operations {
+    color:#365f9c;
+}
+
+div.operations >  div.head label {
+
+}
+
+div.operations > div.head select {
+    background-color: #fff;
+    background-image: url('data:image/svg+xml;charset=utf-8;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMnB4IiBoZWlnaHQ9IjMycHgiIHZpZXdCb3g9IjAgMCA5NiAxMDAiPjxwb2x5Z29uIHBvaW50cz0iNDggNzAuNDIgOC41IDMwLjkzIDEyLjA3IDI3LjM2IDQ4IDYzLjI5IDgzLjkzIDI3LjM2IDg3LjUgMzAuOTMgNDggNzAuNDIiLz48L3N2Zz4=');
+    background-repeat: no-repeat;
+    background-position: calc(100% - 8px) center;
+    background-size: 20px;
+    cursor: pointer;
+    padding: 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    box-shadow: inset 0 0px 1px #ddd;
+    border-radius: 2px;
+    vertical-align: middle;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: rgba(0,0,0,0);
+    -webkit-appearance: none;
+    font-size: 12px;
+    vertical-align: middle;
+    width: calc(100% - 170px);
+}
+
+div.operations >  div.foot {
+	margin: .5rem 0 .5rem 0;
+}
+
+div.operations > div.head {
+	margin: .5rem 0 .5rem 0;
+}
+
+div.operations >  div.foot button{
+    border-radius: .5rem;
+}
+
+div.operations >  div.foot button.reset{
+	color: #fff;
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+div.operations >  div.foot button.reset:hover {
+color: #fff;
+    background-color: #218838;
+    border-color: #1e7e34;
+}
+
+
+
+div.operations >  div.foot button.action{
+	color: #fff;
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+div.operations >  div.foot button.action:hover {
+    color: #fff;
+    background-color: #0069d9;
+    border-color: #0062cc;
+}
+
+
+div.operations >  div.foot button.action:disabled {
+    background-color: #dddddd;
+    border-color: #dddddd;
+}

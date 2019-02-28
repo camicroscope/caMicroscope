@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta name="keywords" content="camicroscope, quip" />
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+
+    <title>caMicroscope</title>
+		<!-- google material icons css sheet -->
+		<link rel='stylesheet' type='text/css' media='all' href='../../iconfont/material-icons.css'/>
+		<!-- css sheet -->
+		<link rel='stylesheet' type='text/css' media='all' href='../../css/style.css'/>
+
+		<!-- zoom control css -->
+ 		<link rel='stylesheet' type='text/css' media='all' href='../../core/extension/openseadragon-zoom-control/openseadragon-zoom-control.css'/>
+ 				<!-- message queue css -->
+		<link rel='stylesheet' type='text/css' media='all' href='../../components/messagequeue/messagequeue.css'/>
+		<link rel='stylesheet' type='text/css' media='all' href='../../components/camessage/camessage.css'/>
+ 		<link rel='stylesheet' type='text/css' media='all' href='../../components/loading/loading.css'/>
+ 		<link rel='stylesheet' type='text/css' media='all' href='../../components/toolbar/toolbar.css'/>
+		<!-- color picker css -->
+		<link rel='stylesheet' type='text/css' media='all' href='../../common/colorpicker/color-picker.css'/>
+
+		<link rel='stylesheet' type='text/css' media='all' href='../../core/extension/openseadragon-measurement-tool/openseadragon-measurement-tool.css'/>
+
+		<link rel='stylesheet' type='text/css' media='all' href='../../core/extension/openseadragon-labeling/openseadragon-labeling.css'/>
+
+		<!-- message queue js -->
+		<script type='text/javascript' src='../../components/messagequeue/messagequeue.js'></script>
+		<script type='text/javascript' src='../../../components/camessage/camessage.js'></script>
+		<script type='text/javascript' src='../../components/loading/loading.js' ></script>
+		<script type='text/javascript' src='../../components/toolbar/toolbar.js' ></script>
+		<script type='text/javascript' src='../../common/colorpicker/color-picker.js' ></script>
+		<!-- open seadragon lib-->
+		<script type='text/javascript' src='../../core/openseadragon/openseadragon.js' ></script>
+		<script type='text/javascript' src='../../core/openseadragon-imaginghelper.min.js'></script>
+		<script type='text/javascript' src='../../core/openseadragon-scalebar.js'></script>
+		<script type='text/javascript' src='../../core/openseadragonzoomlevels.js'></script>
+
+		<!-- util.js -->
+		<script type='text/javascript' src='../../common/util.js'></script>
+		<!-- core (package/ext) libs -->
+		<script type='text/javascript' src='../../common/DrawHelper.js'></script>
+		<script type='text/javascript' src='../../common/simplify.js'></script>
+		<script type='text/javascript' src='../../common/paths.js'></script>
+		<script type='text/javascript' src='../../common/ajv.js'></script>
+		
+		<script type='text/javascript' src='../../core/Validation.js'></script>
+		<script type='text/javascript' src='../../core/Store.js'></script>
+		<script type='text/javascript' src='../../core/CaMic.js'></script>
+		<script type='text/javascript' src='../../core/extension/openseadragon-canvas-draw-overlay.js'></script>
+		<script type='text/javascript' src='../../core/extension/openseadragon-overlays-manage.js'></script>
+		<script type='text/javascript' src='../../core/extension/openseadragon-measurement-tool/openseadragon-measurement-tool.js'></script>
+		<script type='text/javascript' src='../../core/extension/openseadragon-zoom-control/openseadragon-zoom-control.js'></script>
+		<script type='text/javascript' src='../../core/extension/openseadragon-labeling/openseadragon-labeling.js'></script>
+		<!-- init data -->
+
+		<!-- ods js -->
+		<!-- <script src='./js/uicallbacks.js'></script> -->
+		<!-- <script src='./js/dataloaders.js'></script> -->
+		<script src='./labeling.js'></script>
+
+	</head>
+	<body>
+		<!-- message-->
+        <div id='cames' style='z-index:600'></div>
+		<!-- toolbar -->
+		<div id = 'ca_tools'></div>
+
+		<div id ='main_viewer' class='main'></div>
+	</body>
+	<script type="text/javascript">
+		if(detectIE()){
+			createWarningText('You are using an <strong>IE/Edge</strong> browser that may be lead to erratic behavior on caMicroscope. Please switch to <a href="https://www.google.com/chrome/">Chrome</a>, <a href="https://www.mozilla.org/en-US/firefox/new/">Firefox</a> or <a href="https://www.apple.com/safari/">Safari</a> browser to improve your experience.');
+		}
+		
+		Loading.open(document.body, 'CaMicroscope is initializing...');
+		// get slide id from url
+		const url = new URL(window.location.href);
+		$D.params = getUrlVars();
+		
+		// no slide Id error
+		if($D.params && $D.params.slideId){
+			// normal initialization starts
+			document.addEventListener('DOMContentLoaded', initialize);
+		}else if ($D.params && ($D.params.slide || $D.params.specimen ||$D.params.study || $D.params.location)){
+			let STORE = new Store()
+			STORE.findSlide($D.params.slide, $D.params.study, $D.params.specimen, $D.params.location).then(x=>{
+				let offset = parseInt($D.params.offset,10) || 0;
+				if(x.length == 0 || offset >= x.length){
+					redirect($D.pages.table,'No Slide Found. Redirecting to Table.');
+				} else {
+					newParams = $D.params
+					delete newParams.data
+					delete newParams.slide
+					delete newParams.location
+					delete newParams.offset
+					newParams.slideId = x[offset]['_id']['$oid']
+					newUrl = window.location.href.split("?")[0] + "?" + objToParamStr(newParams)
+					window.location.href = newUrl
+				}
+			}).catch(e=>{
+				console.warn(e)
+				redirect($D.pages.table,'Redirecting to Table.');
+			})
+			// find the associated slideID
+			// open viewer with that slideID
+		}else{
+			redirect($D.pages.table,'Slide Id is undefined. Redirecting to Flex Table.');
+		}
+
+		// get states parameters
+		if($D.params.states){
+			$D.params.states = StatesHelper.decodeStates($D.params.states);
+		}
+	</script>
+</html>
