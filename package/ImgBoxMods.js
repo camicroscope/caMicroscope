@@ -4,7 +4,6 @@ function ImgBoxMods() {
   CaMic.prototype.loadImg = function(func) {
     var urlParams = new URLSearchParams(window.location.search);
     var img_id = urlParams.get('id');
-    console.log("image ID : " + img_id);
     let slideId = img_id
     this.slideId = slideId
     this.slideName = slideId
@@ -41,6 +40,11 @@ function ImgBoxMods() {
       this.mpp = data.mpp || this.mpp_x || this.mpp_y || 1e9;
       this.mpp_x = +data['mpp-x'] || this.mpp
       this.mpp_y = +data['mpp-y'] || this.mpp
+
+      this.viewer.mpp = this.mpp;
+      this.viewer.mpp_x = this.mpp_x;
+      this.viewer.mpp_y = this.mpp_y;
+          
       //set scalebar
       let mpp = this.mpp_x || this.mpp;
       if(mpp&&mpp!=1e9) this.createScalebar(this.mpp)
@@ -58,9 +62,7 @@ function ImgBoxMods() {
       x.mpp_x = this.mpp_x;
       x.mpp_y = this.mpp_y;
       x.location = img_id;
-      x.url = imbox_source
-      console.log(func)
-      console.log(x)
+      x.url = imbox_source;
       if (func && typeof func === 'function'){
         func.call(null, x);
       }

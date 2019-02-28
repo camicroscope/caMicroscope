@@ -397,7 +397,28 @@
                 // store current point
                 this._current_path_.geometry.coordinates[0].push(this._last.slice());
                 this.drawOnCanvas(this._draw_ctx_,function(){
+                    // draw circle
+                    const sx = this._current_path_.geometry.coordinates[0][0][0];
+                    const sy = this._current_path_.geometry.coordinates[0][0][1];
+                    let start = new OpenSeadragon.Point(sx,sy);
+                    start = this._viewer.viewport.imageToWindowCoordinates(start);
+                    const ex = this._current_path_.geometry.coordinates[0][this._current_path_.geometry.coordinates[0].length-1][0];
+                    const ey = this._current_path_.geometry.coordinates[0][this._current_path_.geometry.coordinates[0].length-1][1];
+                    let end = new OpenSeadragon.Point(ex,ey);
+                    end = this._viewer.viewport.imageToWindowCoordinates(end);
+                    const dx = Math.round(Math.abs(start.x - end.x));
+                    const dy = Math.round(Math.abs(start.y - end.y));
+                    const distance = Math.sqrt(dx*dx + dy*dy);
+                    this._draw_ctx_.strokeStyle = distance > 14?'red':'blue';
+                    // start point
+                    DrawHelper.drawCircle(this._draw_ctx_,sx, sy, this.style.lineWidth*3);
+                    // end point
+                    DrawHelper.drawCircle(this._draw_ctx_,ex, ey, this.style.lineWidth*3);
+                    
+                    DrawHelper.setStyle(this._draw_ctx_,this.style);
+                    // draw circle
                     DrawHelper.drawMultiline(this._draw_ctx_,this._current_path_.geometry.coordinates[0]);
+
                 }.bind(this));
                 break;
              case 'line':
@@ -413,6 +434,7 @@
                 // draw square
                 DrawHelper.clearCanvas(this._draw_);
                 this.drawOnCanvas(this._draw_ctx_,function(){
+                    DrawHelper.setStyle(this._draw_ctx_,this.style);
                     const item = DrawHelper.drawRectangle(this._draw_ctx_,this._last,[img_point.x,img_point.y],true);
                     this._current_path_.geometry.path = item.path;
                     this._current_path_.geometry.coordinates[0] = item.points;
@@ -422,6 +444,7 @@
                 // draw rectangle
                 DrawHelper.clearCanvas(this._draw_);
                 this.drawOnCanvas(this._draw_ctx_,function(){
+                    DrawHelper.setStyle(this._draw_ctx_,this.style);
                     const item = DrawHelper.drawRectangle(this._draw_ctx_,this._last,[img_point.x,img_point.y]);
                     this._current_path_.geometry.path = item.path;
                     this._current_path_.geometry.coordinates[0] = item.points;
@@ -431,6 +454,7 @@
                 // statements_def
                 break;
             }
+
         },
 
         /*
@@ -522,18 +546,31 @@
 
             if(this.drawMode === 'free' || this.drawMode === 'line') {
               // simplify
-              this._current_path_.geometry.coordinates[0] = simplify(points);
+              this._current_path_.geometry.coordinates[0] = simplify(points, 3.5);
             };
             if(this.drawMode !== 'line'){
-
+                let isIntersect = false;
                 if(isSelfIntersect(this._current_path_.geometry.coordinates[0])){
-                    alert('No Self-Intersecting Polygon.');
-                    this._current_path_ = null;
-                    DrawHelper.clearCanvas(this._draw_);
-                    return;
+                    alert('A Self-Intersecting Polygon will cause inaccurate Area and circumference.');
+                    isIntersect = true;
                 }
-                // calculate the are of polygon
-                let area = polygonArea(this._current_path_.geometry.coordinates[0]);
+                let sqmpsqp = null; // square microns per square pixels
+                if(this._viewer.mpp_x&&this._viewer.mpp_y&&this._viewer.mpp_x!=1e9&&this._viewer.mpp_y!=1e9){
+                    sqmpsqp = this._viewer.mpp_x * this._viewer.mpp_y;
+                    // calculate the are of polygon
+                    this._current_path_.properties.area = sqmpsqp * polygonArea(this._current_path_.geometry.coordinates[0]);
+                    this._current_path_.properties.circumference = getCircumference(this._current_path_.geometry.coordinates[0], this._viewer.mpp_x, this._viewer.mpp_y);
+                    this._current_path_.properties.isIntersect = isIntersect;
+                }else if(this._viewer.mpp&&this._viewer.mpp!=1e9){
+                    sqmpsqp = this._viewer.mpp * this._viewer.mpp;
+                    // calculate the are of polygon
+                    this._current_path_.properties.area = sqmpsqp * polygonArea(this._current_path_.geometry.coordinates[0]);
+                    this._current_path_.properties.circumference = getCircumference(this._current_path_.geometry.coordinates[0], this._viewer.mpp_x, this._viewer.mpp_y);
+                    this._current_path_.properties.isIntersect = isIntersect;
+                }else{
+                    this._current_path_.properties.nommp = true;
+                }
+
             }
             // create bounds
             this._current_path_.bound = getBounds(this._current_path_.geometry.coordinates[0]);

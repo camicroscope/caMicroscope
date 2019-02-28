@@ -136,13 +136,7 @@ class CaMic{
     this.createHeatmap();
     Loading.close();
   }
-  /**
-  * Change which image is staged, used loadImg to load it.
-  */
-  setImg(slideId){
-    this.layers.resetAll();
-    this.slideId = slideId;
-  }
+  
   /**
   * Loads the staged image
   */
@@ -180,7 +174,7 @@ class CaMic{
       })
       .catch(e=>{
 
-        //$UI.message.addError('loadImg Error');
+        
         console.error(e);
         //if()
         Loading.close();
@@ -201,6 +195,10 @@ class CaMic{
     this.mpp = data.mpp || this.mpp_x || this.mpp_y || 1e9;
     this.mpp_x = +data['mpp-x'] || this.mpp
     this.mpp_y = +data['mpp-y'] || this.mpp
+
+    this.viewer.mpp = this.mpp;
+    this.viewer.mpp_x = this.mpp_x;
+    this.viewer.mpp_y = this.mpp_y;
 
     // set scalebar
     let mpp = this.mpp_x || this.mpp;
@@ -240,7 +238,7 @@ class CaMic{
 
     // add event to hook up
     this.drawContextmenu.addHandler('style-changed',function(e){
-      this.viewer.canvasDrawInstance.style = e.style;
+      extend(this.viewer.canvasDrawInstance.style, e.style);
       this.viewer.canvasDrawInstance.drawMode = e.model;
     }.bind(this));
 
@@ -296,7 +294,6 @@ class CaMic{
   }
 
   createMeasurementTool(mppx,mppy = mppx){
-    console.log(mppx,mppy);
     if(!this.setting.hasMeasurementTool || !this.viewer.measurementTool) return;
     this.viewer.measurementTool({
       mpp:{

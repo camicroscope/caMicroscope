@@ -9,21 +9,16 @@ function toggleViewerMode(opt){
 	const canvasDraw = $CAMIC.viewer.canvasDrawInstance;
 	if(opt.checked){
 		// turn off drawing
-		canvasDraw.clear();
-		canvasDraw.drawOff();
-		$CAMIC.drawContextmenu.off();
-		toggleOffDrawBtns();
+		annotationOff();
 		// turn off magnifier
-		$UI.toolbar._sub_tools[2].querySelector('input[type=checkbox]').checked = false;
-		$UI.spyglass.close();
+		magnifierOff();
 		// turn off measurement
-		$UI.toolbar._sub_tools[3].querySelector('input[type=checkbox]').checked = false;
-		$CAMIC.viewer.measureInstance.off();
+		measurementOff();
 		//close layers menu
 		$UI.layersSideMenu.close();
 		//close apps menu
 		$UI.appsSideMenu.close();
-		
+
 		openSecondaryViewer();
 	}else{
 		closeSecondaryViewer();
@@ -223,7 +218,8 @@ function closeSecondaryViewer(){
 	secondary.classList.add('none');
 	secondary.classList.remove('right');
 	$UI.multSelector.elt.classList.add('none');
-	$UI.toolbar._sub_tools[5].querySelector('input[type="checkbox"]').checked = false;
+	const li = $UI.toolbar.getSubTool('sbsviewer');
+	li.querySelector('input[type="checkbox"]').checked = false;
 	Loading.close();
 
 	//destory
@@ -255,6 +251,8 @@ function goHome(data){
 	redirect($D.pages.home,`GO Home Page`, 0);
 }
 
+
+//--- Annotation Tool ---//
 // pen draw callback
 const label = document.createElement('div');
 label.style.transformOrigin = 'center';
@@ -268,71 +266,90 @@ function draw(e){
 	}
 	const state = +e.state;
 	const canvasDraw = $CAMIC.viewer.canvasDrawInstance;
-	const li = $UI.toolbar._sub_tools[1];
-
 	const target = this.srcElement || this.target || this.eventSource.canvas;
+	if(state){ // on
+		
+		// off magnifier
+		magnifierOff();
+		// off measurement
+		measurementOff();
+
+		annotationOn.call(this,state,target);
+	}else{ // off
+		annotationOff();
+
+		
+
+		
+	}
+}
+
+
+function annotationOn(state,target){
+	if(!$CAMIC.viewer.canvasDrawInstance) return;
+	const canvasDraw = $CAMIC.viewer.canvasDrawInstance;
+	const li = $UI.toolbar.getSubTool('annotation');
+	li.appendChild(label);
 	switch (state) {
-		case 0: // off
-			li.removeChild(label);
-			canvasDraw.clear();
-			canvasDraw.drawOff();
-			$CAMIC.drawContextmenu.off();
-			$UI.appsSideMenu.close();
-			
+		case 1:
+			$UI.annotOptPanel._action_.style.display = 'none';
+			label.style.transform = 'translateY(-12px) translateX(18px)';
+			label.textContent = '1';
+			label.style.color = '';
 			break;
-		case 1: // once
-			// statements_1
-		case 2: // stick
-			li.appendChild(label);
-			if(state==1){
-				$UI.annotOptPanel._action_.style.display = 'none';
-				label.style.transform = 'translateY(-12px) translateX(18px)';
-				label.textContent = '1';
-				label.style.color = '';
-			}else if(state==2){
-				$UI.annotOptPanel._action_.style.display = '';
-				label.style.transform = ' rotate(-90deg) translateX(2px) translateY(13px)';
-				label.textContent = '8';
-				label.style.color = 'white';
-			}
-			canvasDraw.drawOn();
-			//$CAMIC.drawContextmenu.on();
-			//$CAMIC.drawContextmenu.open({x:this.clientX,y:this.clientY,target:target});
-			// turn off magnifier
-			$UI.toolbar._sub_tools[2].querySelector('input[type=checkbox]').checked = false;
-			$UI.spyglass.close();
-			// turn off measurement
-			$UI.toolbar._sub_tools[3].querySelector('input[type=checkbox]').checked = false;
-			$CAMIC.viewer.measureInstance.off();
-
-			//close layers menu
-			$UI.layersSideMenu.close();
-
-			// open annotation menu
-			$UI.appsSideMenu.open();
-			// -- START QUIP550 -- //
-			//$UI.appsList.triggerContent('annotation','open');
-			// -- END QUIP550 -- //
-			const input = $UI.annotOptPanel._form_.querySelector('#name');
-			input.focus();
-			input.select();
+		case 2:
+			$UI.annotOptPanel._action_.style.display = '';
+			label.style.transform = ' rotate(-90deg) translateX(2px) translateY(13px)';
+			label.textContent = '8';
+			label.style.color = 'white';
 			break;
 		default:
 			// statements_def
 			break;
 	}
+	canvasDraw.drawOn();
+	$CAMIC.drawContextmenu.on();
+	$CAMIC.drawContextmenu.open({x:this.clientX,y:this.clientY,target:target});
+	//close layers menu
+	$UI.layersSideMenu.close();
+	// open annotation menu
+	$UI.appsSideMenu.open();
+	// -- START QUIP550 -- //
+	//$UI.appsList.triggerContent('annotation','open');
+	// -- END QUIP550 -- //
+	const input = $UI.annotOptPanel._form_.querySelector('#name');
+	input.focus();
+	input.select();
+}
+
+function annotationOff(){
+	if(!$CAMIC.viewer.canvasDrawInstance) return;
+	const canvasDraw = $CAMIC.viewer.canvasDrawInstance;
+
+	if(canvasDraw._draws_data_.length && confirm(`Do you want to save annotation before you leave?`)){
+		saveAnnotation();
+	}else{
+		canvasDraw.clear();
+		canvasDraw.drawOff();
+		$CAMIC.drawContextmenu.off();
+		$UI.appsSideMenu.close();
+		toggleOffDrawBtns();
+	}
 }
 
 function toggleOffDrawBtns(){
-	const label = $UI.toolbar._sub_tools[1].querySelector('label');
-	const state = +label.dataset.state;
-	label.classList.remove(`s${state}`);
+	const li = $UI.toolbar.getSubTool('annotation');
+	const lab = li.querySelector('label');
+	const state = +lab.dataset.state;
+	lab.classList.remove(`s${state}`);
+	lab.dataset.state = 0;
+	lab.classList.add(`s0`);
+	if(label.parentNode) li.removeChild(label);
 
-	label.dataset.state = 0;
-	label.classList.add(`s0`);
 
 }
 
+//--- Measurement Tool ---//
 function toggleMeasurement(data){
 	if(!$CAMIC.viewer.measureInstance) {
 		console.warn('No Measurement Tool');
@@ -340,40 +357,65 @@ function toggleMeasurement(data){
 	}
 	//$UI.message.add(`Measument Tool ${data.checked?'ON':'OFF'}`);
 	if(data.checked){
-		$CAMIC.viewer.measureInstance.on();
+		
 		// trun off the main menu
 		$UI.layersSideMenu.close();
-		$UI.appsSideMenu.close();
-		// turn off draw
-		$CAMIC.viewer.canvasDrawInstance.drawOff();
-		$CAMIC.drawContextmenu.off();
-		toggleOffDrawBtns();
+		// turn off annotation
+		annotationOff();
 		// turn off magnifier
-		$UI.toolbar._sub_tools[2].querySelector('input[type=checkbox]').checked = false;
-		$UI.spyglass.close();
+		magnifierOff();
+
+		measurementOn();
 	}else{
-		$CAMIC.viewer.measureInstance.off();
+		measurementOff();
 	}
 }
 
-// toggle magnifier callback
+function measurementOn(){
+	if(!$CAMIC.viewer.measureInstance)return;
+	$CAMIC.viewer.measureInstance.on();
+	const li = $UI.toolbar.getSubTool('measurement');
+	li.querySelector('input[type=checkbox]').checked = true;
+}
+
+function measurementOff(){
+	if(!$CAMIC.viewer.measureInstance)return;
+	$CAMIC.viewer.measureInstance.off();
+	const li = $UI.toolbar.getSubTool('measurement');
+	li.querySelector('input[type=checkbox]').checked = false;
+}
+
+
+
+//--- toggle magnifier callback ---//
 function toggleMagnifier(data){
 	if(data.checked){
-		$UI.spyglass.factor = +data.status;
-		$UI.spyglass.open(this.clientX,this.clientY);
+		magnifierOn(+data.status,this.clientX,this.clientY);
 		// trun off the main menu
 		$UI.layersSideMenu.close();
 		$UI.appsSideMenu.close();
-		//$UI.toolbar._sub_tools[1].querySelector('input[type=checkbox]').checked = false;
-		$CAMIC.viewer.canvasDrawInstance.drawOff();
-		$CAMIC.drawContextmenu.off();
-		toggleOffDrawBtns();
-		// turn off measurement
-		$UI.toolbar._sub_tools[3].querySelector('input[type=checkbox]').checked = false;
-		$CAMIC.viewer.measureInstance.off();
+		// annotation off
+		annotationOff();
+		// measurement off 
+		measurementOff();
 	}else{
-		$UI.spyglass.close();
+		magnifierOff();
 	}
+}
+
+function magnifierOn(factor = 1,x=0,y=0){
+	if(!$UI.spyglass)return;
+	$UI.spyglass.factor = factor;
+	$UI.spyglass.open(x,y);
+	const li = $UI.toolbar.getSubTool('magnifier');
+	li.querySelector('input[type=checkbox]').checked = true;
+}
+
+function magnifierOff(){
+	if(!$UI.spyglass)return;
+	$UI.spyglass.close();
+	const li = $UI.toolbar.getSubTool('magnifier');
+	li.querySelector('input[type=checkbox]').checked = false;
 }
 
 // image download
@@ -418,7 +460,15 @@ function convertHumanAnnotationToPopupBody(notes){
 
 function anno_delete(data){
 	if(!data.id) return;
-	if(!confirm(`Are you sure you want to delete this markup {ID:${data.id}}?`)) return;
+	const annotationData = $D.overlayers.find(d=>d.data._id.$oid == data.oid);
+	let message;
+	if(annotationData.data.geometries){
+		message = `Are you sure you want to delete this Annotation {ID:${data.id}} with ${annotationData.data.geometries.features.length} mark(s)?`;
+	}else{
+		message = `Are you sure you want to delete this markup {ID:${data.id}}?`;
+	}
+	$UI.annotPopup.close();
+	if(!confirm(message)) return;
 	$CAMIC.store.deleteMark(data.oid,$D.params.data.name)
 	.then(datas =>{
 		// server error
@@ -488,7 +538,6 @@ function deleteCallback_old(data){
     $UI.annotPopup.close();
 }
 function sort_change(sort){
-	console.log('sort_change');
 	$CAMIC.layersManager.sort(sort);
 
 }
@@ -510,7 +559,7 @@ function anno_callback(data){
 		$UI.toolbar._main_tools[0].querySelector('[type=checkbox]').checked = true;
 		$UI.appsSideMenu.open();
 
-		// open annotaion list
+		// open annotation list
 		// -- START QUIP550 -- //
 		// $UI.appsList.triggerContent('annotation','open');
 		// -- END QUIP550 -- //
@@ -546,6 +595,7 @@ function anno_callback(data){
 		},
 		geometries:ImageFeaturesToVieweportFeatures($CAMIC.viewer, $CAMIC.viewer.canvasDrawInstance.getImageFeatureCollection())
 	}
+
 	//return;
 	$CAMIC.store.addMark(annotJson)
 	.then(data=>{
@@ -648,7 +698,6 @@ function loadAnnotationById(item,id){
 
 
 				if(!item){
-					console.log(data[0]);
 					item = covertToLayViewer(data[0].provenance);
 					item.isShow = true;
 					// update lay viewer UI
@@ -724,7 +773,6 @@ function algoRun(){
 }
 
 function saveAnnotation(){
-	console.log('saveAnnotation');
 
 	anno_callback.call(null,{id:$UI.annotOptPanel.setting.formSchemas[$UI.annotOptPanel._select_.value].id, data:$UI.annotOptPanel._form_.value});
 }
@@ -737,10 +785,74 @@ function startDrawing(e){
 	return;
 }
 function stopDrawing(e){
-	let state = +$UI.toolbar._sub_tools[1].querySelector('label').dataset.state;
+	const li = $UI.toolbar.getSubTool('annotation');
+	const state = +li.querySelector('label').dataset.state;
 	if(state===1&&$CAMIC.viewer.canvasDrawInstance._draws_data_.length > 0){
 		saveAnnotation();
 	}
+}
+
+function openHeatmap(){
+	
+	switch (ImgloaderMode) {
+		case 'iip':
+			// hosted
+			hostedHeatmap();
+			break;
+		case 'imgbox':
+			// nano borb
+			imgboxHeatmap();
+			break;
+		default:
+			// statements_def
+			break;
+	}
+	
+}
+function hostedHeatmap(){
+	const slide = $D.params.data.name;
+	$CAMIC.store.findHeatmapType(slide)
+	//
+	.then(function(list){
+		// get heatmap data
+		if(!list.length){
+			alert(`${slide} has No heatmap data.`);
+			return;
+		}
+		createHeatMapList(list);
+
+	})
+	//
+	.catch(function(error){
+
+		console.error(error);
+	})
+	//
+	.finally(function(){
+		if($D.templates){
+			// load UI
+		}else{
+			// set message
+			$UI.message.addError('HeatmapList');
+
+		}
+	});
+}
+
+function imgboxHeatmap(){
+	alert('coming soon ... :)');
+}
+function createHeatMapList(list){
+	empty($UI.modalbox.body);
+	list.forEach(data=>{
+		const exec_id = data.provenance.analysis.execution_id; 
+		const a = document.createElement('a');
+		a.href = `../heatmap/heatmap.html?slideId=${$D.params.slideId}&execId=${exec_id}`;
+		a.textContent = exec_id;
+		$UI.modalbox.body.appendChild(a);
+		$UI.modalbox.body.appendChild(document.createElement('br'));
+	});
+	$UI.modalbox.open();
 }
 /* call back list END */
 /* --  -- */

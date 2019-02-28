@@ -43,6 +43,8 @@
 		<link rel='stylesheet' type='text/css' media='all' href='../../components/popuppanel/popuppanel.css'/>
 		<!-- add spyglass css -->
 		<link rel='stylesheet' type='text/css' media='all' href='../../components/spyglass/spyglass.css'/>
+		<!-- add modalbox css -->
+		<link rel='stylesheet' type='text/css' media='all' href='../../components/modalbox/modalbox.css'/>
 		<!-- UI components css END -->
 
 		<!-- osd & core css START -->
@@ -97,7 +99,8 @@
 		<script type='text/javascript' src='../../components/multselector/multselector.js'></script>
 		<!-- spyglass -->
 		<script type='text/javascript' src='../../components/spyglass/spyglass.js'></script>
-
+		<!-- modalbox -->
+		<script type='text/javascript' src='../../components/modalbox/modalbox.js'></script>
 		<!--  components js END -->
 
 
@@ -121,7 +124,8 @@
 
 
 		<!-- business js -->
-		<script src="../../dist/packages.js"></script>
+		<!-- <script src="../../dist/packages.js"></script> -->
+		<script type='text/javascript' src='../../common/dynamicLoadScript.js'></script>		
 		<script src='./uicallbacks.js'></script>
 		<script src='./dataloaders.js'></script>
 		<script src='./init.js'></script>
@@ -132,7 +136,7 @@
 
         <!-- toolbar -->
         <div id='ca_tools'></div>
-
+        <div id='modalbox'></div>
         <!-- main viewer -->
         <div id='main_viewer' class='main'></div>
         <div id='secondary' class='none'>

@@ -21,6 +21,28 @@ const AnalyticsPanelContent = //'test<br>test<br>test<br>test<br>test<br>test<br
 ;
 
 const __ = { };
+function loadScript(src, callback){
+  var script = document.createElement('script');
+  script.src = src;
+  script.type = 'text/javascript';
+  script.async = true;
+  if(callback != null){
+      if (script.readyState) { // IE, incl. IE9
+          script.onreadystatechange = function() {
+              if (script.readyState == "loaded" || script.readyState == "complete") {
+                  script.onreadystatechange = null;
+                  callback();
+              }
+          };
+      } else {
+          script.onload = function() { // Other browsers
+              callback();
+          };
+      }
+  }
+  a=document.getElementsByTagName('script')[0];
+  a.parentNode.insertBefore(script,a);
+}
 // the robust solution that mimics jQuery's functionality
 function extend(){
     for(var i=1; i<arguments.length; i++)
@@ -75,9 +97,40 @@ function hexToRgbA(hex, opacity = 1){
     throw new Error('Bad Hex');
 }
 
+
+function getDistance(p1, p2, mppx, mppy){
+  // two points are same
+  if(p1[0]==p2[0] && p1[1]==p2[1]) return 0;
+  else if(p1[0]==p2[0]){ // vertical line
+    return Math.abs(p1[1] - p2[1]) * mppy;
+  }else if(p1[1]==p2[1]){ // horizontal line
+    return Math.abs(p1[0] - p2[0]) * mppx;
+  } else{
+    const lx = Math.abs(p1[0] - p2[0]) * mppx; 
+    const ly = Math.abs(p1[1] - p2[1]) * mppy;
+    return Math.sqrt(lx*lx + ly*ly);
+  }
+}
+
 /**
- * polygonArea
+ * calcuate the circumference of a polygon
  * @param  {Array} points describe a self-closed simple polygon (start and end points are same).
+ * @param  {Number} mmpx micron per pixel in x-axis
+ * @param  {Number} mmpy micron per pixel in y-axis
+ * @return {Number}  circumference
+ */
+function getCircumference(points, mmpx, mmpy){
+  let length = 0;
+  for(let i = 0; i < points.length-1; i++){
+    length += getDistance(points[i],points[i+1],mmpx, mmpy);
+  }
+  return length;
+} 
+
+
+/**
+ * polygon Area
+ * @param  {Array} points describe a self-closed simple polygon (start and end points are same). [using Shoelace Formula]
  * @return the area of polygon
  */
 function polygonArea(points){
@@ -287,7 +340,9 @@ function covertToViewportFeature(width, height, og){
   feature = {
     type:'Feature',
     properties:{
-      style:{}
+      style:{},
+      area:null,
+      circumference:null,
     },
     geometry:{
       type:"Polygon",
@@ -314,12 +369,19 @@ function covertToViewportFeature(width, height, og){
       return [point[0]/width,point[1]/height];
     });
   }
-  extend(feature.properties.style,og.properties.style); 
+  extend(feature.properties.style,og.properties.style);
+  // add area
+  feature.properties.area = og.properties.area;
+  feature.properties.circumference = og.properties.circumference;
+  if(og.properties.nommp) feature.properties.nommp = og.properties.nommp;
+  if(og.properties.isIntersect) feature.properties.isIntersect = og.properties.isIntersect; 
   return feature;
 }
+
 function isFunction(obj){
   return typeof obj === "function" && typeof obj.nodeType !== "number";
 }
+
 function covertToLayViewer(item,l){
   const typeName = item.analysis.source;
   const id = item.analysis.execution_id;
@@ -331,7 +393,15 @@ function covertToLayViewer(item,l){
   return {id:id,name:name,typeId:typeIds[typeName],typeName:typeName,isShow:isShow};
 }
 
-
+function eventFire(el, etype){
+  if (el.fireEvent) {
+    el.fireEvent('on' + etype);
+  } else {
+    var evObj = document.createEvent('Events');
+    evObj.initEvent(etype, true, false);
+    el.dispatchEvent(evObj);
+  }
+}
 function removeElement(array, id){
   const index = array.findIndex(item => item.id == id);
   if (index > -1) {
@@ -401,6 +471,8 @@ function detectIE() {
   // other browser
   return false;
 }
+
+
 function createWarningText(text){
  const temp = `
  <div style='box-sizing:border-box;z-index:999;width:100%;position:absolute;bottom:0;color:#856404;background-color:#fff3cd;border-color:#ffeeba;padding:5px;display:flex;'>

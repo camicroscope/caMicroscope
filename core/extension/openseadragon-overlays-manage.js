@@ -192,6 +192,7 @@
                         this.highlightPath = path;
                         this.highlightStyle = style;
                         this.highlightLayer = layer;
+                        this.highlightLayer.data.selected = j;
                         this.drawOnCanvas(this.drawOnHover,[this._hover_ctx_,this._div,path,style]);
                         return;
                     }else{
