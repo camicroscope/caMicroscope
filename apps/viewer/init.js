@@ -64,9 +64,6 @@ function initialize(){
           OverlayersLoader();
         }
       }, 100);
-
-
-
 }
 
 // setting core functionalities
@@ -211,6 +208,13 @@ function initUIcomponents(){
   // create the message queue
   $UI.message = new MessageQueue();
 
+  $UI.modalbox = new ModalBox({
+    id:'modalbox',
+    hasHeader:true,
+    headerText:'HeatMap List',
+    hasFooter:false
+  });
+
   const subToolsOpt = [];
   // home
   if( ImgloaderMode =='iip') subToolsOpt.push({
@@ -280,6 +284,15 @@ function initUIcomponents(){
     type:'check',
     callback:toggleViewerMode
   });
+  // heatmap
+  subToolsOpt.push({
+    name:'heatmap',
+    icon:'satellite',
+    title:'Heat Map',
+    value:'heatmap',
+    type:'btn',
+    callback:openHeatmap
+  });  
   // -- For Nano borb Start -- //
   if(ImgloaderMode =='imgbox'){
     // download

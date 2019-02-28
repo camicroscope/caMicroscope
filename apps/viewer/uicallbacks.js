@@ -791,6 +791,69 @@ function stopDrawing(e){
 		saveAnnotation();
 	}
 }
+
+function openHeatmap(){
+	
+	switch (ImgloaderMode) {
+		case 'iip':
+			// hosted
+			hostedHeatmap();
+			break;
+		case 'imgbox':
+			// nano borb
+			imgboxHeatmap();
+			break;
+		default:
+			// statements_def
+			break;
+	}
+	
+}
+function hostedHeatmap(){
+	const slide = $D.params.data.name;
+	$CAMIC.store.findHeatmapType(slide)
+	//
+	.then(function(list){
+		// get heatmap data
+		if(!list.length){
+			alert(`${slide} has No heatmap data.`);
+			return;
+		}
+		createHeatMapList(list);
+
+	})
+	//
+	.catch(function(error){
+
+		console.error(error);
+	})
+	//
+	.finally(function(){
+		if($D.templates){
+			// load UI
+		}else{
+			// set message
+			$UI.message.addError('HeatmapList');
+
+		}
+	});
+}
+
+function imgboxHeatmap(){
+	alert('coming soon ... :)');
+}
+function createHeatMapList(list){
+	empty($UI.modalbox.body);
+	list.forEach(data=>{
+		const exec_id = data.provenance.analysis.execution_id; 
+		const a = document.createElement('a');
+		a.href = `../heatmap/heatmap.html?slideId=${$D.params.slideId}&execId=${exec_id}`;
+		a.textContent = exec_id;
+		$UI.modalbox.body.appendChild(a);
+		$UI.modalbox.body.appendChild(document.createElement('br'));
+	});
+	$UI.modalbox.open();
+}
 /* call back list END */
 /* --  -- */
 /* -- for render anno_data to canavs -- */

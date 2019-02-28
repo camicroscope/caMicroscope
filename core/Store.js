@@ -350,13 +350,29 @@ class Store {
       mode: "cors"
     }).then(this.errorHandler).then(x=>this.filterBroken(x, "heatmap"))
   }
+  findHeatmapType(slide, name) {
+    var suffix = "Heatmap/types"
+    var url = this.base + suffix;
+    var query = {}
+    var bySlideId
+    if (name) {
+      query.name = name
+    }
+    if (slide) {
+      query.slide = slide
+    }
+    return fetch(url + "?" + objToParamStr(query), {
+      credentials: "same-origin",
+      mode: "cors"
+    }).then(this.errorHandler).then(x=>this.filterBroken(x, "heatmap"))
+  }  
   /**
    * get heatmap by id
    * @param {string} id - the heatmap id
    * @returns {promise} - promise which resolves with data
    **/
   getHeatmap(caseId, execId) {
-    var suffix = "Heatmap/getHeatmap"
+    var suffix = "Heatmap/get"
     var url = this.base + suffix;
     var query = {};
     query.caseId = caseId;
