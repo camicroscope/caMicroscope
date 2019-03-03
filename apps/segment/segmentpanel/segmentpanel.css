@@ -1,0 +1,44 @@
+/*segmentpanel.css*/
+.segment-panel {
+  box-sizing: border-box;
+  position: absolute;
+  border: 1px yellow solid;
+  color:black;
+  z-index:300;
+  /*border:2px red solid;*/
+}
+
+.segment-panel .settings {
+  font-size:18px;
+  position: absolute;
+  border: 1px solid black;
+  background: white;
+  top:-22px;
+  left:-10px;
+}
+
+.segment-panel .segment-setting {
+  /*display: none;*/
+  top: -22px;
+  left: 10px;
+  position: absolute;
+  height: 18px;
+  background: white;
+  border: 1px black solid;
+}
+
+.segment-panel .segment-setting {
+    display: flex;
+} 
+
+.segment-panel .src, .segment-panel .out {
+  width: 100%;
+  height: 100%;
+}
+
+.segment-panel .src {
+  display: none;
+}
+
+
+

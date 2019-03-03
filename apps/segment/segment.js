@@ -1,5 +1,4 @@
 let PDR = OpenSeadragon.pixelDensityRatio;
-console.log('pixelDensityRatio:', PDR);
 
 let $CAMIC = null;
 const $UI = {};
@@ -11,34 +10,17 @@ const $D = {
   params: null
 };
 
-function loadOpenCv(onloadCallback) {
-  const OPENCV_URL = 'opencv.js';
-  let script = document.createElement('script');
-  script.setAttribute('async', '');
-  script.setAttribute('type', 'text/javascript');
-
-  script.addEventListener('load', () => {
-    //console.log(cv.getBuildInformation());
-    console.log('OPENCV IS LOADED! :)');
-    onloadCallback();
-  });
-
-  script.src = OPENCV_URL;
-  let node = document.getElementsByTagName('script')[0];
-  console.log('node.parentNode', node.parentNode);
-  node.parentNode.insertBefore(script, node);
-
-}
 
 function initialize() {
-  loadOpenCv(() => {
-    initUIcomponents();
-  });
+  initUIcomponents();
   initCore();
 }
 
 function initUIcomponents() {
+  /* create UI components */
 
+  // create the message queue
+  $UI.message = new MessageQueue();
   $UI.toolbar = new CaToolbar({
     id: 'ca_tools',
     zIndex: 601,
@@ -99,7 +81,11 @@ function initCore() {
   }
 
   try {
-    $CAMIC = new CaMic("main_viewer", $D.params.slideId, opt);
+    let slideQuery = {}
+    slideQuery.id = $D.params.slideId
+    slideQuery.name = $D.params.slide
+    slideQuery.location = $D.params.location
+    $CAMIC = new CaMic("main_viewer", slideQuery, opt);
   } catch (error) {
     Loading.close();
     $UI.message.addError('Core Initialization Failed');
@@ -115,8 +101,16 @@ function initCore() {
   });
 
   $CAMIC.viewer.addOnceHandler('open', function (e) {
+    const viewer =  $CAMIC.viewer;
     // add stop draw function
-    $CAMIC.viewer.canvasDrawInstance.addHandler('stop-drawing', camicStopDraw);
+    viewer.canvasDrawInstance.addHandler('stop-drawing', camicStopDraw);
+    $UI.segmentPanel = new SegmentPanel(viewer);
+    //add event for range
+    $UI.segmentPanel.__input.addEventListener('change', function(e){
+      const alpha = +this.__input.value;
+      this.__label.innerHTML = alpha;
+      watershed(this.__src,this.__out,alpha);
+    }.bind($UI.segmentPanel));
 
   });
 }
@@ -152,9 +146,8 @@ function camicStopDraw(e) {
   const canvasDraw = viewer.canvasDrawInstance;
 
   let imgColl = canvasDraw.getImageFeatureCollection();
-
   if (imgColl.features.length > 0) {
-
+    
     // Check size first
     let box = checkSize(imgColl, viewer.imagingHelper);
 
@@ -162,6 +155,11 @@ function camicStopDraw(e) {
       console.error('SOMETHING WICKED THIS WAY COMES.');
     } else {
       segmentROI(box);
+      $UI.segmentPanel.setPosition(box.rect.x,box.rect.y,box.rect.width,box.rect.height);
+      $UI.segmentPanel.open();
+
+      // close
+      canvasDraw.clear();
     }
 
   } else {
@@ -174,6 +172,14 @@ function checkSize(imgColl, imagingHelper) {
 
   // 5x2 array
   let bound = imgColl.features[0].bound;
+  
+  // get position on viewer
+  
+  const top_left = imgColl.features[0].bound[0];
+  const bottom_right = imgColl.features[0].bound[2];
+  const min = imagingHelper._viewer.viewport.imageToViewportCoordinates(top_left[0],top_left[1]);
+  const max = imagingHelper._viewer.viewport.imageToViewportCoordinates(bottom_right[0],bottom_right[1]);
+  const rect = new OpenSeadragon.Rect(min.x,min.y,max.x-min.x,max.y-min.y);
 
   // Convert to screen coordinates
   let foo = convertCoordinates(imagingHelper, bound);
@@ -187,13 +193,11 @@ function checkSize(imgColl, imagingHelper) {
   });
   console.log('bounds', newArray);
 
-  const xCoord = newArray[0][0];
-  const yCoord = newArray[0][1];
+  const xCoord = Math.round(newArray[0][0]);
+  const yCoord = Math.round(newArray[0][1]);
 
-  let width = (newArray[2][0] - xCoord);
-  let height = (newArray[2][1] - yCoord);
-
-  console.log('width, height:\n', width, height);
+  let width = Math.round(newArray[2][0] - xCoord);
+  let height = Math.round(newArray[2][1] - yCoord);
 
   // check that image size is ok
   if (width * height > 4000000) {
@@ -202,7 +206,7 @@ function checkSize(imgColl, imagingHelper) {
     $CAMIC.viewer.canvasDrawInstance.clear();
     return {}; //throw('image too large')
   } else {
-    return {'xCoord': xCoord, 'yCoord': yCoord, 'width': width, 'height': height};
+    return {rect:rect,'xCoord': xCoord, 'yCoord': yCoord, 'width': width, 'height': height};
   }
 }
 
@@ -212,23 +216,11 @@ function checkSize(imgColl, imagingHelper) {
  * @param canvasId
  * @param hidden
  */
-function loadImageToCanvas(imgData, canvasId, hidden, div) {
-
-  let canvas = document.createElement('canvas');
-  canvas.id = canvasId;
-  //canvas.style.border = "thick solid #0000FF";
+function loadImageToCanvas(imgData, canvas) {
   canvas.width = imgData.width;
   canvas.height = imgData.height;
-
   let context = canvas.getContext("2d");
   context.putImageData(imgData, 0, 0);
-  div.appendChild(canvas);
-
-  if (hidden) {
-    canvas.style.display = 'none';
-  }
-
-  //return canvas.toDataURL("image/png");
 
 }
 
@@ -241,53 +233,58 @@ function segmentROI(box) {
   // But first, some setup...
 
 
-  let div = document.createElement('div');
-  document.body.appendChild(div);
+  // let div = document.createElement('div');
+  // document.body.appendChild(div);
 
-  var mybr = document.createElement('br');
+  // var mybr = document.createElement('br');
 
-  // TRACKBAR WEIGHT VALUE
-  let weightValue = document.createElement("label");
-  weightValue.id = 'weightValue';
-  div.appendChild(weightValue);
-  div.appendChild(mybr);
+  // // TRACKBAR WEIGHT VALUE
+  // let weightValue = document.createElement("label");
+  // weightValue.id = 'weightValue';
+  // div.appendChild(weightValue);
+  // div.appendChild(mybr);
 
-  // TRACKBAR
-  let trackbar = document.createElement('input');
-  trackbar.setAttribute('type', 'range');
-  trackbar.id = 'trackbar';
-  trackbar.setAttribute('value', '.7');
-  trackbar.setAttribute('min', '0');
-  trackbar.setAttribute('max', '1');
-  trackbar.setAttribute('step', '.1');
-  div.appendChild(trackbar);
-  div.appendChild(mybr);
+  // // TRACKBAR
+  // let trackbar = document.createElement('input');
+  // trackbar.setAttribute('type', 'range');
+  // trackbar.id = 'trackbar';
+  // trackbar.setAttribute('value', '.7');
+  // trackbar.setAttribute('min', '0');
+  // trackbar.setAttribute('max', '1');
+  // trackbar.setAttribute('step', '.1');
+  // div.appendChild(trackbar);
+  // div.appendChild(mybr);
 
-  weightValue.innerText = trackbar.value;
-  weightValue.addEventListener('input', () => {
-    weightValue.innerText = trackbar.value;
-  });
+  // weightValue.innerText = trackbar.value;
+  // weightValue.addEventListener('input', () => {
+  //   weightValue.innerText = trackbar.value;
+  // });
 
-  trackbar.addEventListener('input', () => {
-    let alpha = trackbar.value / trackbar.max;
-    watershed('canvasInput', 'canvasOutput', alpha);
-  });
+  // trackbar.addEventListener('input', () => {
+  //   let alpha = trackbar.value / trackbar.max;
+  //   watershed('canvasInput', 'canvasOutput', alpha);
+  // });
 
-  // TRIGGER
-  let trigger = document.getElementById('trigger');
-  trigger.addEventListener("click", function () {
-    watershed('canvasInput', 'canvasOutput', .07);
-  }, false);
+  // // TRIGGER
+  // let trigger = document.getElementById('trigger');
+  // trigger.addEventListener("click", function () {
+  //   watershed('canvasInput', 'canvasOutput', .07);
+  // }, false);
 
   // SEGMENTATION CANVAS
   let camicanv = $CAMIC.viewer.drawer.canvas; //Original Canvas
   let imgData = (camicanv.getContext('2d')).getImageData(box.xCoord, box.yCoord, box.width, box.height);
 
-  loadImageToCanvas(imgData, 'canvasOutput', false, div);
-  loadImageToCanvas(imgData, 'canvasInput', true, div);
 
+  // loadImageToCanvas(imgData, $UI.segmentPanel.__out);
+  loadImageToCanvas(imgData, $UI.segmentPanel.__src);
   // TRIGGER SEGMENTATION
-  trigger.click();
+  const alpha = +$UI.segmentPanel.__input.value;
+  $UI.segmentPanel.__label.innerHTML = alpha;
+  watershed($UI.segmentPanel.__src,$a.segmentPanel.__out,alpha);
+
+
+
 
   /*
   let dataURL = loadImageToCanvas(imgData, 'canvasInput', false);
@@ -316,7 +313,6 @@ function watershed(inn, out, thresh) {
 
   // Read image
   let src = cv.imread(inn);
-
   // Matrices
   let dst = new cv.Mat();
   let gray = new cv.Mat();
@@ -368,22 +364,32 @@ function watershed(inn, out, thresh) {
   }
   cv.cvtColor(src, dst, cv.COLOR_RGBA2RGB, 0);
   cv.watershed(dst, markers);
-
+  const cloneSrc = src.clone(); 
   // Draw barriers
+  //console.log(markers.rows,markers.cols);
   for (let i = 0; i < markers.rows; i++) {
     for (let j = 0; j < markers.cols; j++) {
       if (markers.intPtr(i, j)[0] === -1) {
-
         dst.ucharPtr(i, j)[0] = 255; // R
         dst.ucharPtr(i, j)[1] = 255; // G
-        dst.ucharPtr(i, j)[2] = 0; // B
+        dst.ucharPtr(i, j)[2] = 0; // B        
+        cloneSrc.ucharPtr(i, j)[0] = 255; // R
+        cloneSrc.ucharPtr(i, j)[1] = 255; // G
+        cloneSrc.ucharPtr(i, j)[2] = 0; // B
+        
+        //console.log(dst.ucharPtr(i, j));
+      }else{
+        cloneSrc.ucharPtr(i, j)[3] = 0;
       }
     }
   }
 
-  // Display it
-  cv.imshow(out, dst);
 
+  // Display it
+  //cv.imshow(out, dst);
+  //console.log(document.getElementById('test1'));
+  cv.imshow(out, cloneSrc);
+  //cv.imshow($UI.segmentPanel.__out, cloneSrc);
   // Free up memory
 
   src.delete();
@@ -463,22 +469,4 @@ function convertCoordinates(imagingHelper, bound) {
 
   return newArray;
 
-}
-
-function redirect(url, text = '', sec = 5) {
-  let timer = sec;
-  setInterval(function () {
-    if (!timer) {
-      window.location.href = url;
-    }
-
-    if (Loading.instance.parentNode) {
-      Loading.text.textContent = `${text} ${timer}s.`;
-    } else {
-      Loading.open(document.body, `${text} ${timer}s.`);
-    }
-    // Hint Message for clients that page is going to redirect to Flex table in 5s
-    timer--;
-
-  }, 1000);
 }
