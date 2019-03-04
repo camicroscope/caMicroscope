@@ -12,8 +12,13 @@ const $D = {
 
 
 function initialize() {
-  initUIcomponents();
-  initCore();
+      var checkPackageIsReady = setInterval(function () {
+        if(IsPackageLoading) {
+          clearInterval(checkPackageIsReady);
+            initUIcomponents();
+            initCore();
+        }
+      }, 100);
 }
 
 function initUIcomponents() {
@@ -281,7 +286,7 @@ function segmentROI(box) {
   // TRIGGER SEGMENTATION
   const alpha = +$UI.segmentPanel.__input.value;
   $UI.segmentPanel.__label.innerHTML = alpha;
-  watershed($UI.segmentPanel.__src,$a.segmentPanel.__out,alpha);
+  watershed($UI.segmentPanel.__src,$UI.segmentPanel.__out,alpha);
 
 
 
