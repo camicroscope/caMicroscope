@@ -358,7 +358,11 @@ function watershed(inn, out, thresh) {
 
   // Get connected components markers
 
-  cv.connectedComponents(imageFg, markers);
+  let x = cv.connectedComponents(imageFg, markers);
+  let segcount = x-1;
+  let clabel = document.getElementById('segcount');
+  clabel.innerHTML=segcount;
+  console.log("Labels: " + segcount);
   for (let i = 0; i < markers.rows; i++) {
     for (let j = 0; j < markers.cols; j++) {
       markers.intPtr(i, j)[0] = markers.ucharPtr(i, j)[0] + 1;

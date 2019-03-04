@@ -27,6 +27,19 @@
   border: 1px black solid;
 }
 
+.segment-panel .segment-count {
+  /*display: none;*/
+  text-align: center;
+  vertical-align: middle;
+  top: -22px;
+  left: 158px; 
+  position: absolute;
+  height: 18px;
+  width: 100px;
+  background: white;
+  border: 1px black solid;
+}
+
 .segment-panel .segment-setting {
     display: flex;
 } 
