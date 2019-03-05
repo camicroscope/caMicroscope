@@ -293,20 +293,20 @@ function initUIcomponents(){
     type:'btn',
     callback:openHeatmap
   });
-  subToolsOpt.push({
-    name:'segment',
-    icon: 'timeline',
-    type: 'check',
-    value: 'rect',
-    title: 'Segment',
-    callback: function () {
-      if(window.location.search.length > 0) {
-        window.location.href = '../segment/segment.html' + window.location.search;
-      }else{
-        window.location.href = '../segment/segment.html';
-      }
-    }
-  });
+  // subToolsOpt.push({
+  //   name:'segment',
+  //   icon: 'timeline',
+  //   type: 'btn',
+  //   value: 'rect',
+  //   title: 'Segment',
+  //   callback: function () {
+  //     if(window.location.search.length > 0) {
+  //       window.location.href = '../segment/segment.html' + window.location.search;
+  //     }else{
+  //       window.location.href = '../segment/segment.html';
+  //     }
+  //   }
+  // });
      
   // -- For Nano borb Start -- //
   if(ImgloaderMode =='imgbox'){
