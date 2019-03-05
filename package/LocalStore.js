@@ -171,18 +171,25 @@ function init_LocalStore(){
   Store.prototype.findHeatmap = function(slide, name){
     return new Promise(function(res, rej){
       let query = {}
-      if (name){
+      if (slide){
         query['provenance.image.slide'] = slide
       }
-      if(slide){
+      if(name){
         query['provenance.analysis.execution_id']= name
       }
       res(findInIDB('heatmap', query))
     }).then(x=>this.filterBroken(x,"heatmap"))
   }
-  Store.prototype.getHeatmap = function(id){
+  Store.prototype.getHeatmap = function(slide, execution_id){
     return new Promise(function(res, rej){
-      res(getInLocalStorage("heatmap", id))
+      let query = {}
+      if (slide){
+        query['provenance.image.slide'] = slide
+      }
+      if(execution_id){
+        query['provenance.analysis.execution_id']= execution_id
+      }
+      res(findInIDB('heatmap', query))
     }).then(x=>this.filterBroken(x,"heatmap"))
   }
   Store.prototype.addHeatmap = function(json){
