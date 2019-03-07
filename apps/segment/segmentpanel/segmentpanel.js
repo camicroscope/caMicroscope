@@ -4,7 +4,7 @@
 function SegmentPanel(viewer){
 	const temp = `
 		<div class = 'material-icons settings'>close</div>
-		<div class='segment-setting'><input type='range' min=0 max=1 step=0.05 value=0.3 ><label>0.7</label></div>
+		<div class='segment-setting'><input id="segment-slider" type='range' min=0 max=1 step=0.01 value=0.7><label>0.7</label></div>
 		<div class='segment-count'><label>Object Count: </label><label id='segcount'></label></div>
 		<canvas class='out'></canvas>
 		<canvas class='src'></canvas>

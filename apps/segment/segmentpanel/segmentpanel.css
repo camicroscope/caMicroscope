@@ -23,6 +23,7 @@
   left: 10px;
   position: absolute;
   height: 18px;
+  width: 170px;
   background: white;
   border: 1px black solid;
 }
@@ -32,10 +33,11 @@
   text-align: center;
   vertical-align: middle;
   top: -22px;
-  left: 160px; 
+  left: 170px; 
   position: absolute;
+  float: right;
   height: 18px;
-  width: 80px;
+  width: 100px;
   background: white;
   border: 1px black solid;
 }
@@ -51,6 +53,12 @@
 
 .segment-panel .src {
   display: none;
+}
+
+.segment-panel label {
+  vertical-align: middle;
+  padding-left: 5px;
+  padding-right: 5px;
 }
 
 

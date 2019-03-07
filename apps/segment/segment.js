@@ -357,12 +357,21 @@ function watershed(inn, out, thresh) {
   cv.subtract(imageBg, imageFg, unknown);
 
   // Get connected components markers
-
   let x = cv.connectedComponents(imageFg, markers);
   let segcount = x-1;
   let clabel = document.getElementById('segcount');
   clabel.innerHTML=segcount;
   console.log("Labels: " + segcount);
+
+  // Get Polygons
+  let contours = new cv.MatVector();
+  let hierarchy = new cv.Mat();
+  let color = new cv.Scalar(255, 255, 0);
+  cv.findContours(imageFg,contours,hierarchy,cv.RETR_EXTERNAL,cv.CHAIN_APPROX_SIMPLE);
+  console.log("Getting contours.")
+  console.log(contours);
+  console.log(contours.size());
+
   for (let i = 0; i < markers.rows; i++) {
     for (let j = 0; j < markers.cols; j++) {
       markers.intPtr(i, j)[0] = markers.ucharPtr(i, j)[0] + 1;
@@ -392,6 +401,13 @@ function watershed(inn, out, thresh) {
       }
     }
   }
+
+  console.log("Drawing Contours");
+  for (let i = 0; i < contours.size(); ++i) {
+    cv.drawContours(cloneSrc, contours, i, color, 2, cv.LINE_8, hierarchy, 100);
+  }
+  console.log("Done Drawing Contours");
+  
 
 
   // Display it
