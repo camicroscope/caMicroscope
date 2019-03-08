@@ -350,7 +350,7 @@ function watershed(inn, out, thresh) {
 
   // Get foreground - make the objects stand out
   // cv.threshold (src, dst, thresh, maxval, type)
-  cv.threshold(distTrans, imageFg, thresh*100, 255, cv.THRESH_BINARY);
+  cv.threshold(distTrans, imageFg, thresh, 1, cv.THRESH_BINARY_INV);
   console.log(thresh);
 
   // Mark (label) the regions starting with 1 (color output)
