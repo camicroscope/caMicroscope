@@ -211,6 +211,36 @@
 			content: " ";
 			display: table;
 		}
+		.btn{
+			color: #fff;
+			background-color: #365f9c;
+			border-color: #365f9c;
+			display: inline-block;
+			/*font-weight: 400;*/
+			/*line-height: 1.25;*/
+			text-align: center;
+			white-space: nowrap;
+			vertical-align: middle;
+			-webkit-user-select: none;
+			-moz-user-select: none;
+			-ms-user-select: none;
+			user-select: none;
+			border: 1px solid transparent;
+			/*padding: .5rem 1rem;*/
+			font-size: 1rem;
+			text-decoration: none;
+			border-radius: .25rem;
+			-webkit-transition: all .2s ease-in-out;
+			-o-transition: all .2s ease-in-out;
+			transition: all .2s ease-in-out;
+			opacity: 0.8;
+		}
+		.btn:hover {
+			color: #fff;
+			background-color: #365f9c;
+			border-color: #365f9c;
+			opacity: 1;
+
     </style>
 </head>
 <body>
@@ -263,6 +293,8 @@
 					else if(!d[key]) rs.push('')
 					else rs.push(d[key])
 				});
+				const btn = `<button class="btn" data-id='${rs[0]}' onclick='openView(this)'>Open</button>`
+				rs.push(btn);
 				return rs;	
 			});
 		})
@@ -272,18 +304,15 @@
 				div.textContent = `No Data Found ... x _ x`;
 				return;
 			}
+			const head = HeadMapping.map(d=>d.title);
+			head.push("");
 			const obj = {
-				headings: HeadMapping.map(d=>d.title),
+				headings:head ,
 				data:data
 			};
 			dataTableInstance = new DataTable("#datatables",{
 				perPage:50,
 				perPageSelect:[25,50,100],
-				columns:[
-					{select: 0, render: function(data){
-						return `<a href='./viewer/viewer.html?slideId=${data}'>${data}</a>`;
-					}},
-				],
 				data:obj
 			});
 		});	
@@ -306,6 +335,16 @@
 		});
 		return rs;
 	}
+
+	function openView(e){
+		const oid = e.dataset.id;
+		if(oid){
+			window.location.href = `./viewer/viewer.html?slideId=${oid}`;
+		}else{
+			alert('No Data Id');
+		}
+	}
+
 	document.addEventListener('DOMContentLoaded', initialize);
 </script>
 </html>
