@@ -350,7 +350,7 @@ function watershed(inn, out, thresh) {
 
   // Get foreground - make the objects stand out
   // cv.threshold (src, dst, thresh, maxval, type)
-  cv.threshold(distTrans, imageFg, thresh, 255, cv.THRESH_BINARY);
+  cv.threshold(distTrans, imageFg, thresh*100, 255, cv.THRESH_BINARY);
   console.log(thresh);
 
   // Mark (label) the regions starting with 1 (color output)
@@ -369,9 +369,7 @@ function watershed(inn, out, thresh) {
   let hierarchy = new cv.Mat();
   let color = new cv.Scalar(255, 255, 0);
   cv.findContours(imageFg,contours,hierarchy,cv.RETR_CCOMP,cv.CHAIN_APPROX_SIMPLE);
-  console.log("Getting contours.")
-  console.log(contours);
-  console.log(contours.size());
+  console.log("Getting contours.");
 
   for (let i = 0; i < markers.rows; i++) {
     for (let j = 0; j < markers.cols; j++) {
@@ -383,7 +381,7 @@ function watershed(inn, out, thresh) {
   }
   cv.cvtColor(src, dst, cv.COLOR_RGBA2RGB, 0);
   cv.watershed(dst, markers);
-  const cloneSrc = cv.Mat.zeros(src.cols, src.rows, cv.CV_8UC4); 
+  const cloneSrc = cv.Mat.zeros(src.rows, src.cols, cv.CV_8UC4); 
   // Draw barriers
   //console.log(markers.rows,markers.cols);
   // for (let i = 0; i < markers.rows; i++) {
@@ -406,14 +404,14 @@ function watershed(inn, out, thresh) {
   console.log("Drawing Contours");
   for (let i = 0; i < contours.size(); ++i) {
     //console.log(contours[i]);
-    cv.drawContours(cloneSrc, contours, i, color, 2, cv.LINE_8, hierarchy, 100);
+    cv.drawContours(cloneSrc, contours, i, color, 2, cv.LINE_8, hierarchy,100);
   }
   console.log("Done Drawing Contours");
   // Draw barriers
   // console.log(cloneSrc.rows,cloneSrc.cols);
   for (let i = 0; i < cloneSrc.rows; i++) {
     for (let j = 0; j < cloneSrc.cols; j++) {
-      if (cloneSrc.intPtr(i, j)[0] === 0 && cloneSrc.intPtr(i, j)[1] === 0 && cloneSrc.intPtr(i, j)[2] === 0) {
+      if (cloneSrc.ucharPtr(i, j)[0] === 0 && cloneSrc.ucharPtr(i, j)[1] === 0 && cloneSrc.ucharPtr(i, j)[2] === 0) {
         cloneSrc.ucharPtr(i, j)[3] = 0;
       } else {
         cloneSrc.ucharPtr(i, j)[3] = 255;
