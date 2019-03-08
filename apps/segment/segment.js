@@ -367,7 +367,7 @@ function watershed(inn, out, thresh) {
   let contours = new cv.MatVector();
   let hierarchy = new cv.Mat();
   let color = new cv.Scalar(255, 255, 0);
-  cv.findContours(imageFg,contours,hierarchy,cv.RETR_EXTERNAL,cv.CHAIN_APPROX_SIMPLE);
+  cv.findContours(imageFg,contours,hierarchy,cv.RETR_CCOMP,cv.CHAIN_APPROX_SIMPLE);
   console.log("Getting contours.")
   console.log(contours);
   console.log(contours.size());
@@ -382,28 +382,29 @@ function watershed(inn, out, thresh) {
   }
   cv.cvtColor(src, dst, cv.COLOR_RGBA2RGB, 0);
   cv.watershed(dst, markers);
-  const cloneSrc = src.clone(); 
+  const cloneSrc = new cv.Mat(); 
   // Draw barriers
   //console.log(markers.rows,markers.cols);
-  for (let i = 0; i < markers.rows; i++) {
-    for (let j = 0; j < markers.cols; j++) {
-      if (markers.intPtr(i, j)[0] === -1) {
-        dst.ucharPtr(i, j)[0] = 255; // R
-        dst.ucharPtr(i, j)[1] = 255; // G
-        dst.ucharPtr(i, j)[2] = 0; // B        
-        cloneSrc.ucharPtr(i, j)[0] = 255; // R
-        cloneSrc.ucharPtr(i, j)[1] = 255; // G
-        cloneSrc.ucharPtr(i, j)[2] = 0; // B
+  // for (let i = 0; i < markers.rows; i++) {
+  //   for (let j = 0; j < markers.cols; j++) {
+  //     if (markers.intPtr(i, j)[0] === -1) {
+  //       dst.ucharPtr(i, j)[0] = 255; // R
+  //       dst.ucharPtr(i, j)[1] = 255; // G
+  //       dst.ucharPtr(i, j)[2] = 0; // B        
+  //       cloneSrc.ucharPtr(i, j)[0] = 255; // R
+  //       cloneSrc.ucharPtr(i, j)[1] = 255; // G
+  //       cloneSrc.ucharPtr(i, j)[2] = 0; // B
         
-        //console.log(dst.ucharPtr(i, j));
-      }else{
-        cloneSrc.ucharPtr(i, j)[3] = 0;
-      }
-    }
-  }
+  //       //console.log(dst.ucharPtr(i, j));
+  //     }else{
+  //       cloneSrc.ucharPtr(i, j)[3] = 0;
+  //     }
+  //   }
+  // }
 
   console.log("Drawing Contours");
   for (let i = 0; i < contours.size(); ++i) {
+    console.log(contours[i]);
     cv.drawContours(cloneSrc, contours, i, color, 2, cv.LINE_8, hierarchy, 100);
   }
   console.log("Done Drawing Contours");
