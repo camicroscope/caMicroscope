@@ -9,6 +9,9 @@ const $D = {
   },
   params: null
 };
+const objAreaMin = 750;
+const objAreaMax = 2500;
+const lineWidth = 2;
 
 
 function initialize() {
@@ -359,10 +362,6 @@ function watershed(inn, out, thresh) {
 
   // Get connected components markers
   let x = cv.connectedComponents(imageFg, markers);
-  let segcount = x-1;
-  let clabel = document.getElementById('segcount');
-  clabel.innerHTML=segcount;
-  console.log("Labels: " + segcount);
 
   // Get Polygons
   let contours = new cv.MatVector();
@@ -401,12 +400,25 @@ function watershed(inn, out, thresh) {
   //   }
   // }
 
+  let segcount = 0;
+  
   console.log("Drawing Contours");
-  for (let i = 0; i < contours.size(); ++i) {
+  for (let i = 1; i < contours.size(); ++i) {
     //console.log(contours[i]);
-    cv.drawContours(cloneSrc, contours, i, color, 2, cv.LINE_8, hierarchy,100);
+    let cnt = contours.get(i);
+    let area = cv.contourArea(cnt,false);
+    if(area < objAreaMax && area > objAreaMin) {
+      ++segcount;
+      cv.drawContours(cloneSrc, contours, i, color, lineWidth, cv.LINE_8, hierarchy,1);
+    }
   }
   console.log("Done Drawing Contours");
+
+  // Update the count
+  let clabel = document.getElementById('segcount');
+  clabel.innerHTML=segcount;
+  console.log("Labels: " + segcount);
+
   // Draw barriers
   // console.log(cloneSrc.rows,cloneSrc.cols);
   for (let i = 0; i < cloneSrc.rows; i++) {
