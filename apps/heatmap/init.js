@@ -15,17 +15,18 @@ const $D = {
   templates:null // json schema for prue-form
 };
 
-
 // initialize viewer page
 function initialize(){
-
-  // init UI -- some of them need to wait data loader to load data
-  // because UI components need data to initialize
-  initUIcomponents();
-
-  // create a viewer and set up
-  initCore();
-
+  var checkPackageIsReady = setInterval(function () {
+    if(IsPackageLoading) {
+      clearInterval(checkPackageIsReady);
+      // init UI -- some of them need to wait data loader to load data
+      // because UI components need data to initialize
+      initUIcomponents();
+      // create a viewer and set up
+      initCore();
+    }
+  }, 100);
   // loading the form template data
   //FormTempaltesLoader();
 
@@ -203,8 +204,8 @@ function initCore(){
         });
 
         $UI.settingsSideMenu.addContent($UI.heatmapcontrol.elt);
-
         Loading.close();
+
       }
     }, 500);
   });
@@ -261,20 +262,20 @@ function initUIcomponents(){
           // free draw
           {
             //icon:'linear_scale',
-            value:10,
-            title:'10x',
+            value:0.5,
+            title:'0.5',
             checked:true
           },
           // rectangle fraw
           {
             //icon:'timeline',
-            value:20,
-            title:'20x'
+            value:1,
+            title:'1.0'
           },
           {
             //icon:'timeline',
-            value:40,
-            title:'40x'
+            value:2,
+            title:'2.0'
           }
         ],
         callback:toggleMagnifier
@@ -324,6 +325,25 @@ function initUIcomponents(){
         value:'dbviewers',
         type:'check',
         callback:toggleViewerMode
+      },{
+        icon: 'insert_photo',
+        type: 'btn',
+        value: 'viewer',
+        title: 'Viewer',
+        callback: function () {
+          if (window.location.search.length > 0) {
+            window.location.href = '../viewer/viewer.html' + window.location.search;
+          } else {
+            window.location.href = '../viewer/viewer.html';
+          }
+        }
+      },{
+        name:'bugs',
+        icon: 'bug_report',
+        title: 'Bug Report',
+        value: 'bugs',
+        type: 'btn',
+        callback: ()=>{window.open('https://goo.gl/forms/mgyhx4ADH0UuEQJ53','_blank').focus()}
       }
 
     ]

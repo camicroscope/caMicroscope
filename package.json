@@ -1,0 +1,17 @@
+{
+  "name": "camic_test",
+  "version": "3.0.0",
+  "description": "",
+  "scripts": {
+    "test": "mocha test --recursive"
+  },
+  "author": "",
+  "license": "NONE",
+  "dependencies": {
+    "chai": "^4.1.2",
+    "express": "^4.16.2",
+    "lodash": "^4.17.10",
+    "node-fetch": "^2.2.0",
+    "jsdom": "^11.11.0"
+  }
+}
