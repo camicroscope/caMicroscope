@@ -9,8 +9,8 @@ const $D = {
   },
   params: null
 };
-const objAreaMin = 750;
-const objAreaMax = 2500;
+const objAreaMin = 400;
+const objAreaMax = 4500;
 const lineWidth = 2;
 
 
@@ -408,6 +408,7 @@ function watershed(inn, out, thresh) {
     let cnt = contours.get(i);
     let area = cv.contourArea(cnt,false);
     if(area < objAreaMax && area > objAreaMin) {
+      console.log(cnt);
       ++segcount;
       cv.drawContours(cloneSrc, contours, i, color, lineWidth, cv.LINE_8, hierarchy,1);
     }
