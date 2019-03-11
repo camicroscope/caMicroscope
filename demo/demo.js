@@ -82,6 +82,7 @@ function initCore() {
 
 function initUIcomponents() {
   // ui init
+  $UI.message = new MessageQueue();
   $UI.toolbar = new CaToolbar({
     /* opts that need to think of */
     id: 'ca_tools',
