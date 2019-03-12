@@ -12,7 +12,7 @@
 .segment-panel .settings {
   font-size:18px;
   position: absolute;
-  border: px solid black;
+  border: 1px solid black;
   background: white;
 }
 
