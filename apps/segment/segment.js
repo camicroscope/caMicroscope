@@ -119,7 +119,10 @@ function initCore() {
       this.__label.innerHTML = alpha;
       watershed(this.__src,this.__out,alpha);
     }.bind($UI.segmentPanel));
-
+    $UI.segmentPanel.__btn_save.addEventListener('click', function(e) {
+      let fname = $D.params.slideId + '_roi.png';
+      download($UI.segmentPanel.__c2s,fname);
+    }.bind($UI.segmentPanel));
   });
 }
 
@@ -225,6 +228,7 @@ function checkSize(imgColl, imagingHelper) {
  * @param hidden
  */
 function loadImageToCanvas(imgData, canvas) {
+  console.log(typeof(imgData));
   canvas.width = imgData.width;
   canvas.height = imgData.height;
   let context = canvas.getContext("2d");
@@ -321,6 +325,7 @@ function watershed(inn, out, thresh) {
 
   // Read image
   let src = cv.imread(inn);
+  let i2s = cv.imread(inn);
   // Matrices
   let dst = new cv.Mat();
   let gray = new cv.Mat();
@@ -330,6 +335,9 @@ function watershed(inn, out, thresh) {
   let distTrans = new cv.Mat();
   let unknown = new cv.Mat();
   let markers = new cv.Mat();
+
+  // Store canvas to save combined image
+  // $UI.segmentPanel.__c2s = cv.imread(inn);
 
   // Gray and threshold image
   cv.cvtColor(src, gray, cv.COLOR_RGBA2GRAY, 0);
@@ -411,6 +419,7 @@ function watershed(inn, out, thresh) {
       console.log(cnt);
       ++segcount;
       cv.drawContours(cloneSrc, contours, i, color, lineWidth, cv.LINE_8, hierarchy,1);
+      cv.drawContours(i2s , contours, i, color, lineWidth, cv.LINE_8, hierarchy,1);
     }
   }
   console.log("Done Drawing Contours");
@@ -437,6 +446,7 @@ function watershed(inn, out, thresh) {
   //cv.imshow(out, dst);
   //console.log(document.getElementById('test1'));
   cv.imshow(out, cloneSrc);
+  cv.imshow($UI.segmentPanel.__c2s, i2s);
   //cv.imshow($UI.segmentPanel.__out, cloneSrc);
   // Free up memory
 
@@ -517,4 +527,35 @@ function convertCoordinates(imagingHelper, bound) {
 
   return newArray;
 
+}
+
+// Save the canvas to filename.  Uses local save dialog.
+function download(canvas, filename) {
+
+  /// create an "off-screen" anchor tag
+  var lnk = document.createElement('a'),
+      e;
+
+  /// the key here is to set the download attribute of the a tag
+  lnk.download = filename;
+
+  /// convert canvas content to data-uri for link. When download
+  /// attribute is set the content pointed to by link will be
+  /// pushed as "download" in HTML5 capable browsers
+  lnk.href = canvas.toDataURL();
+
+  /// create a "fake" click-event to trigger the download
+  if (document.createEvent) {
+
+      e = document.createEvent("MouseEvents");
+      e.initMouseEvent("click", true, true, window,
+                       0, 0, 0, 0, 0, false, false, false,
+                       false, 0, null);
+
+      lnk.dispatchEvent(e);
+
+  } else if (lnk.fireEvent) {
+
+      lnk.fireEvent("onclick");
+  }
 }
