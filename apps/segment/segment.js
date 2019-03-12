@@ -339,6 +339,8 @@ function watershed(inn, out, thresh) {
   let unknown = new cv.Mat();
   let markers = new cv.Mat();
 
+
+  cv.cvtColor(i2s, i2s, cv.COLOR_RGBA2RGB, 0);
   // Store canvas to save combined image
   // $UI.segmentPanel.__c2s = cv.imread(inn);
 
@@ -421,8 +423,8 @@ function watershed(inn, out, thresh) {
     if(area < objAreaMax && area > objAreaMin) {
       console.log(cnt);
       ++segcount;
-      cv.drawContours(cloneSrc, contours, i, color, lineWidth, cv.LINE_8, hierarchy,1);
-      cv.drawContours(i2s , contours, i, color, lineWidth, cv.LINE_8, hierarchy,1);
+      cv.drawContours(cloneSrc, contours, i, color, lineWidth, cv.FILLED, hierarchy,1);
+      cv.drawContours(i2s , contours, i, color, lineWidth, cv.FILLED, hierarchy,1);
     }
   }
   console.log("Done Drawing Contours");
