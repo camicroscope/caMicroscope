@@ -115,12 +115,23 @@ function initCore() {
 
     $UI.segmentPanel = new SegmentPanel(viewer);
 
-    //add event for range
+    //add event for threshold
     $UI.segmentPanel.__threshold.addEventListener('change', function(e){
       const alpha = +this.__threshold.value;
       this.__tlabel.innerHTML = alpha;
       watershed(this.__src,this.__out,alpha);
     }.bind($UI.segmentPanel));
+
+    //add event for min
+    $UI.segmentPanel.__minarea.addEventListener('change', function (e) {
+      this.__minlabel.innerHTML = +this.__minarea.value;
+    }.bind($UI.segmentPanel));
+
+    //add event for max
+    $UI.segmentPanel.__minarea.addEventListener('change', function (e) {
+      this.__maxlabel.innerHTML = +this.__maxarea.value;
+    }.bind($UI.segmentPanel));
+
     $UI.segmentPanel.__btn_save.addEventListener('click', function(e) {
       let fname = $D.params.slideId + '_roi.png';
       download($UI.segmentPanel.__c2s,fname);
@@ -465,25 +476,6 @@ function watershed(inn, out, thresh) {
   unknown.delete();
   markers.delete();
   M.delete();
-}
-
-/**
- * Check file creation
- *
- * @param filename
- * @param dataURL
- */
-function download(filename, dataURL) {
-  var element = document.createElement('a');
-  element.setAttribute('href', dataURL);
-  element.setAttribute('download', filename);
-
-  element.style.display = 'none';
-  document.body.appendChild(element);
-
-  element.click();
-
-  document.body.removeChild(element);
 }
 
 /**

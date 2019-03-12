@@ -34,9 +34,6 @@ function SegmentPanel(viewer){
 	this.__out = this.elt.querySelector('.out');
 	this.__src = this.elt.querySelector('.src');
 	this.__c2s = this.elt.querySelector('#c2s');
-	this.__input = this.elt.querySelector('.segment-setting input[type=range]#threshold');
-	this.__label = this.elt.querySelector('.segment-setting label#tlabel');
-	this.__twrap = this.elt.querySelector('#twrap');
 	this.__btn_save = this.elt.querySelector('#save');
 
 	//threshold
