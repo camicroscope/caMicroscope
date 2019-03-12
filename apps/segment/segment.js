@@ -117,7 +117,7 @@ function initCore() {
 
     //add event for threshold
     $UI.segmentPanel.__threshold.addEventListener('change', function(e){
-      const alpha = +this.__threshold.value;
+      const alpha = this.__threshold.value;
       this.__tlabel.innerHTML = alpha;
       watershed(this.__src,this.__out,alpha);
     }.bind($UI.segmentPanel));
