@@ -9,11 +9,11 @@ function SegmentPanel(viewer){
 		<div id='amin' class = 'material-icons settings'>arrow_downward</div>
 		<div id='amax' class = 'material-icons settings'>arrow_upward</div>
 
-		<div id='twrap' class='segment-setting' hidden='true'><input id='threshold' id='segment-slider' type='range' min=0 max=1 step=0.01 value=0.7><label id='tlabel'>0.7</label></div>
+		<div id='twrap' class='segment-setting'><input id='threshold' type='range' min='0' max='1' step='0.01' value='0.7'><label id='tlabel'>0.7</label></div>
 		
-		<div id='minwrap' class='segment-setting' hidden='true'><input id='minarea' id='segment-slider1' type='range' min=0 max=1 step=1 value=400><label>400</label></div>
+		<div id='minwrap' class='segment-setting'><input id='minarea' type='range' min='0' max='1' step='1' value='400'><label id='minlabel'>400</label></div>
 		
-		<div id='maxwrap' class='segment-setting' hidden='true'><input id='maxarea' id='segment-slider2' type='range' min=0 max=5000 step=1 value=4500><label>4500</label></div>
+		<div id='maxwrap' class='segment-setting'><input id='maxarea' type='range' min='0' max='5000' step='1' value='4500'><label id='maxlabel'>4500</label></div>
 		
 		<div class='segment-count'><label>Object Count: </label><label id='segcount'></label></div>
 		
