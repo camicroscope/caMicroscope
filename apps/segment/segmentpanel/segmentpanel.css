@@ -18,35 +18,35 @@
 
 #close {
   top: -22px;
-  left: -10px;
+  left: 0;
 }
 
 #save {
   top:-22px;
-  left:10px;
+  left:20px;
 }
 
 #thresh {
   top: -22px;
-  left: 30px;
+  left: 40px;
 }
 
 #amin {
   top: -22px;
-  left: 50px;
+  left: 60px;
 }
 
 #amax {
   top: -22px;
-  left: 70px;
+  left: 80px;
 }
 
 .segment-panel .segment-setting {
   top: -43px;
-  left: 50px;
+  left: 0;
   position: absolute;
-  height: 18px;
-  width: 170px;
+  height: 20px;
+  width: 210px;
   background: white;
   border: 1px black;
 }
@@ -90,10 +90,10 @@
   text-align: center;
   vertical-align: middle;
   top: -22px;
-  left: 90px; 
+  left: 100px;
   position: absolute;
   float: right;
-  height: 18px;
+  height: 20px;
   width: 100px;
   background: white;
   border: 1px black solid;
@@ -101,7 +101,7 @@
 
 .segment-panel .segment-setting {
     display: flex;
-} 
+}
 
 .segment-panel .src, .segment-panel .out {
   width: 100%;

@@ -65,10 +65,10 @@ function initUIcomponents() {
     ]
   });
 
-  let button = document.createElement('button');
-  button.id = 'trigger';
-  button.style.display = "none";
-  document.body.appendChild(button);
+  // let button = document.createElement('button');
+  // button.id = 'trigger';
+  // button.style.display = "none";
+  // document.body.appendChild(button);
 
 }
 
@@ -112,11 +112,13 @@ function initCore() {
     const viewer =  $CAMIC.viewer;
     // add stop draw function
     viewer.canvasDrawInstance.addHandler('stop-drawing', camicStopDraw);
+
     $UI.segmentPanel = new SegmentPanel(viewer);
+
     //add event for range
-    $UI.segmentPanel.__input.addEventListener('change', function(e){
-      const alpha = +this.__input.value;
-      this.__label.innerHTML = alpha;
+    $UI.segmentPanel.__threshold.addEventListener('change', function(e){
+      const alpha = +this.__threshold.value;
+      this.__tlabel.innerHTML = alpha;
       watershed(this.__src,this.__out,alpha);
     }.bind($UI.segmentPanel));
 
@@ -155,7 +157,7 @@ function camicStopDraw(e) {
 
   let imgColl = canvasDraw.getImageFeatureCollection();
   if (imgColl.features.length > 0) {
-    
+
     // Check size first
     let box = checkSize(imgColl, viewer.imagingHelper);
 
@@ -180,9 +182,9 @@ function checkSize(imgColl, imagingHelper) {
 
   // 5x2 array
   let bound = imgColl.features[0].bound;
-  
+
   // get position on viewer
-  
+
   const top_left = imgColl.features[0].bound[0];
   const bottom_right = imgColl.features[0].bound[2];
   const min = imagingHelper._viewer.viewport.imageToViewportCoordinates(top_left[0],top_left[1]);
@@ -286,9 +288,10 @@ function segmentROI(box) {
 
   // loadImageToCanvas(imgData, $UI.segmentPanel.__out);
   loadImageToCanvas(imgData, $UI.segmentPanel.__src);
+
   // TRIGGER SEGMENTATION
-  const alpha = +$UI.segmentPanel.__input.value;
-  $UI.segmentPanel.__label.innerHTML = alpha;
+  const alpha = +$UI.segmentPanel.__threshold.value;
+  $UI.segmentPanel.__tlabel.innerHTML = alpha;
   watershed($UI.segmentPanel.__src,$UI.segmentPanel.__out,alpha);
 
 
@@ -380,7 +383,7 @@ function watershed(inn, out, thresh) {
   }
   cv.cvtColor(src, dst, cv.COLOR_RGBA2RGB, 0);
   cv.watershed(dst, markers);
-  const cloneSrc = cv.Mat.zeros(src.rows, src.cols, cv.CV_8UC4); 
+  const cloneSrc = cv.Mat.zeros(src.rows, src.cols, cv.CV_8UC4);
   // Draw barriers
   //console.log(markers.rows,markers.cols);
   // for (let i = 0; i < markers.rows; i++) {
@@ -388,11 +391,11 @@ function watershed(inn, out, thresh) {
   //     if (markers.intPtr(i, j)[0] === -1) {
   //       dst.ucharPtr(i, j)[0] = 255; // R
   //       dst.ucharPtr(i, j)[1] = 255; // G
-  //       dst.ucharPtr(i, j)[2] = 0; // B        
+  //       dst.ucharPtr(i, j)[2] = 0; // B
   //       cloneSrc.ucharPtr(i, j)[0] = 255; // R
   //       cloneSrc.ucharPtr(i, j)[1] = 255; // G
   //       cloneSrc.ucharPtr(i, j)[2] = 0; // B
-        
+
   //       //console.log(dst.ucharPtr(i, j));
   //     }else{
   //       cloneSrc.ucharPtr(i, j)[3] = 0;
@@ -401,7 +404,7 @@ function watershed(inn, out, thresh) {
   // }
 
   let segcount = 0;
-  
+
   console.log("Drawing Contours");
   for (let i = 1; i < contours.size(); ++i) {
     //console.log(contours[i]);
