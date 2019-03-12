@@ -48,18 +48,9 @@
   height: 18px;
   width: 170px;
   background: white;
-  border: 1px black solid;
+  border: 1px black;
 }
 
-.segment-setting input.segment-slider {
-  top: -43px;
-  left: 50px;
-  position: absolute;
-  height: 18px;
-  width: 170px;
-  background: white;
-  border: 1px black solid;
-}
 
 .tooltiptext {
   visibility: hidden;
