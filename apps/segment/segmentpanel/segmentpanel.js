@@ -3,11 +3,11 @@
 
 function SegmentPanel(viewer){
 	const temp = `
-		<div id='close' class = 'material-icons settings'>close</div>
-		<div id='save' class = 'material-icons settings'>save</div>
-		<div id='thresh' class = 'material-icons settings'>all_out</div>
-		<div id='amin' class = 'material-icons settings'>arrow_downward</div>
-		<div id='amax' class = 'material-icons settings'>arrow_upward</div>
+		<div id='close' class='material-icons settings'>close</div>
+		<div id='save' class='material-icons settings'>save</div>
+		<div id='thresh' class='material-icons settings'>all_out</div>
+		<div id='amin' class='material-icons settings'>arrow_downward</div>
+		<div id='amax' class='material-icons settings'>arrow_upward</div>
 
 		<div id='twrap' class='segment-setting'><input id='threshold' type='range' min='0' max='1' step='0.01' value='0.7'><label id='tlabel'>0.7</label></div>
 		
