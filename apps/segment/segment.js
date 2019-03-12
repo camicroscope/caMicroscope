@@ -477,25 +477,6 @@ function watershed(inn, out, thresh) {
 }
 
 /**
- * Check file creation
- *
- * @param filename
- * @param dataURL
- */
-function download(filename, dataURL) {
-  var element = document.createElement('a');
-  element.setAttribute('href', dataURL);
-  element.setAttribute('download', filename);
-
-  element.style.display = 'none';
-  document.body.appendChild(element);
-
-  element.click();
-
-  document.body.removeChild(element);
-}
-
-/**
  * Convert a dataURI to a Blob
  *
  * @param dataURI
