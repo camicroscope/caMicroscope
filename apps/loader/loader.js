@@ -11,6 +11,7 @@ function changeStatus(step, text){
   
   //Display JSON as table:
   if(typeof text === 'object'){ //If the text arg is a JSON
+
     var col = []; //List of column headers
     for (var key in text) {
       if (col.indexOf(key) === -1) {
@@ -21,6 +22,7 @@ function changeStatus(step, text){
     var table = document.createElement("table")
     table.setAttribute('border', '1')
     table.setAttribute('cellpadding', '10%')
+    table.style.borderCollapse = "collapse"
 
     //Add table headers:
     var tr = table.insertRow(-1)
@@ -37,6 +39,20 @@ function changeStatus(step, text){
       tabCell.innerHTML = text[col[j]]
     }
 
+    if(step == "CHECK"){ //During check, thumbnail needs to be fetched & added to the table
+      // In this case, text[col[col.length - 1]] is the filename
+      fetch(thumb_url + text[col[col.length - 1]], {credentials: "same-origin"}).then(
+        response => response.json() // if the response is a JSON object
+      ).then(x=>{
+        var tabCell = tr.cells[tr.cells.length-1]
+        tabCell.innerHTML = ""
+        let img = new Image()
+        img.src = x.slide
+        tabCell.appendChild(img)
+      });
+    }
+
+
     var divContainer = document.getElementById("json_table")
     divContainer.innerHTML = ""
     divContainer.appendChild(table)
@@ -52,13 +68,6 @@ function changeStatus(step, text){
 }
 
 function handleUpload(file, filename){
-
-  //Remove thumbnail if displayed:
-  var thumbnail = document.getElementById("thumbnail")
-  if (thumbnail.hasChildNodes()) {
-    thumbnail.removeChild(thumbnail.childNodes[0])
-  } 
-
   var data = new FormData()
   data.append('file', file)
   data.append('filename', filename)
@@ -76,39 +85,21 @@ function handleUpload(file, filename){
   );
 }
 
-function getThumbnail(filename, size){
-  fetch(thumb_url + filename, {credentials: "same-origin"}).then(
-    response => response.json() // if the response is a JSON object
-  ).then(x=>{
-    let img = new Image()
-    img.src = x.slide
-    document.getElementById("thumbnail").appendChild(img)
-  }).catch(
-    error => changeStatus("CHECK, Thumbnail", error) // Handle the error response object
-  );
-}
-
 function handleCheck(filename){
   fetch(check_url + filename, {credentials: "same-origin"}).then(
     response => response.json() // if the response is a JSON object
   ).then(
     success => {
+      //Add the filename, to be able to fetch the thumbnail.
+      success["preview"] = filename
       changeStatus("CHECK", success)
-      getThumbnail(filename, 100)
     } // Handle the success response object
   ).catch(
     error => changeStatus("CHECK", error) // Handle the error response object
   );
 }
 
-function handlePost(filename, slidename){
-
-  //Remove thumbnail if displayed:
-  var thumbnail = document.getElementById("thumbnail")
-  if (thumbnail.hasChildNodes()) {
-    thumbnail.removeChild(thumbnail.childNodes[0])
-  } 
-  
+function handlePost(filename, slidename){  
   fetch(check_url + filename, {credentials: "same-origin"}).then(
     response => response.json() // if the response is a JSON object
   ).then(
