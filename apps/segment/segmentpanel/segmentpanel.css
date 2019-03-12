@@ -12,7 +12,7 @@
 .segment-panel .settings {
   font-size:18px;
   position: absolute;
-  border: 1px solid black;
+  border: px solid black;
   background: white;
 }
 
@@ -109,6 +109,10 @@
 }
 
 .segment-panel .src {
+  display: none;
+}
+
+.segment-panel #c2s {
   display: none;
 }
 

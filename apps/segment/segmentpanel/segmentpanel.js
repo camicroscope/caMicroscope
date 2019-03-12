@@ -25,6 +25,7 @@ function SegmentPanel(viewer){
 		
 		<canvas class='out'></canvas>
 		<canvas class='src'></canvas>
+		<canvas id='c2s'></canvas>
 	`;
 	this.viewer = viewer;
 	this.elt = document.createElement('div');
@@ -32,6 +33,11 @@ function SegmentPanel(viewer){
 	this.elt.innerHTML = temp;
 	this.__out = this.elt.querySelector('.out');
 	this.__src = this.elt.querySelector('.src');
+	this.__c2s = this.elt.querySelector('#c2s');
+	this.__input = this.elt.querySelector('.segment-setting input[type=range]#threshold');
+	this.__label = this.elt.querySelector('.segment-setting label#tlabel');
+	this.__twrap = this.elt.querySelector('#twrap');
+	this.__btn_save = this.elt.querySelector('#save');
 
 	//threshold
 	this.__threshold = this.elt.querySelector('.segment-setting input[type=range]#threshold');
@@ -58,9 +64,9 @@ function SegmentPanel(viewer){
     this.elt.querySelector('#close').addEventListener('click',function(e){
     	this.close();
 		}.bind(this));
-		this.elt.querySelector('#save').addEventListener('click',function(e){
-    	this.save();
-		}.bind(this));
+		// this.elt.querySelector('#save').addEventListener('click',function(e){
+    // 	this.save();
+		// }.bind(this));
 		this.elt.querySelector('#thresh').addEventListener('click',function(e){
     	this.showThreshBar();
 		}.bind(this));
