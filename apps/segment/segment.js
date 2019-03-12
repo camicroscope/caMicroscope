@@ -115,11 +115,21 @@ function initCore() {
 
     $UI.segmentPanel = new SegmentPanel(viewer);
 
-    //add event for range
+    //add event for threshold
     $UI.segmentPanel.__threshold.addEventListener('change', function(e){
       const alpha = +this.__threshold.value;
       this.__tlabel.innerHTML = alpha;
       watershed(this.__src,this.__out,alpha);
+    }.bind($UI.segmentPanel));
+
+    //add event for min
+    $UI.segmentPanel.__minarea.addEventListener('change', function (e) {
+      this.__minlabel.innerHTML = this.__minarea.value;
+    }.bind($UI.segmentPanel));
+
+    //add event for max
+    $UI.segmentPanel.__minarea.addEventListener('change', function (e) {
+      this.__maxlabel.innerHTML = this.__maxarea.value;
     }.bind($UI.segmentPanel));
 
   });
