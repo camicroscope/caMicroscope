@@ -5,9 +5,66 @@ var thumb_url = "../../load/Slide/thumb/"
 var store = new Store("../../data/")
 
 function changeStatus(step, text){
-  text = JSON.stringify(text)
-  text = step + " | " + text
-  document.getElementById("load_status").innerHTML=text
+
+  //Reset the status bar
+  document.getElementById("load_status").innerHTML=""
+  
+  //Display JSON as table:
+  if(typeof text === 'object'){ //If the text arg is a JSON
+
+    var col = []; //List of column headers
+    for (var key in text) {
+      if (col.indexOf(key) === -1) {
+        col.push(key);
+      }
+    }
+
+    var table = document.createElement("table")
+    table.setAttribute('border', '1')
+    table.setAttribute('cellpadding', '10%')
+    table.style.borderCollapse = "collapse"
+
+    //Add table headers:
+    var tr = table.insertRow(-1)
+    for (var i = 0; i < col.length; i++) {
+      var th = document.createElement("th")
+      th.innerHTML = col[i]
+      tr.appendChild(th)
+    }
+
+    //Add JSON data to the table as rows:
+    tr = table.insertRow(-1)
+    for (var j = 0; j < col.length; j++) {
+      var tabCell = tr.insertCell(-1)
+      tabCell.innerHTML = text[col[j]]
+    }
+
+    if(step == "CHECK"){ //During check, thumbnail needs to be fetched & added to the table
+      // In this case, text[col[col.length - 1]] is the filename
+      fetch(thumb_url + text[col[col.length - 1]], {credentials: "same-origin"}).then(
+        response => response.json() // if the response is a JSON object
+      ).then(x=>{
+        var tabCell = tr.cells[tr.cells.length-1]
+        tabCell.innerHTML = ""
+        let img = new Image()
+        img.src = x.slide
+        tabCell.appendChild(img)
+      });
+    }
+
+
+    var divContainer = document.getElementById("json_table")
+    divContainer.innerHTML = ""
+    divContainer.appendChild(table)
+
+    document.getElementById("load_status").innerHTML=step
+  }
+
+  else{
+    text = JSON.stringify(text)
+    text = step + " | " + text
+    document.getElementById("load_status").innerHTML=text
+  }
 }
 
 function handleUpload(file, filename){
@@ -28,32 +85,21 @@ function handleUpload(file, filename){
   );
 }
 
-function getThumbnail(filename, size){
-  fetch(thumb_url + filename, {credentials: "same-origin"}).then(
-    response => response.json() // if the response is a JSON object
-  ).then(x=>{
-    let img = new Image()
-    img.src = x.slide
-    document.getElementById("thumbnail").appendChild(img)
-  }).catch(
-    error => changeStatus("CHECK, Thumbnail", error) // Handle the error response object
-  );
-}
-
 function handleCheck(filename){
   fetch(check_url + filename, {credentials: "same-origin"}).then(
     response => response.json() // if the response is a JSON object
   ).then(
     success => {
+      //Add the filename, to be able to fetch the thumbnail.
+      success["preview"] = filename
       changeStatus("CHECK", success)
-      getThumbnail(filename, 100)
     } // Handle the success response object
   ).catch(
     error => changeStatus("CHECK", error) // Handle the error response object
   );
 }
 
-function handlePost(filename, slidename){
+function handlePost(filename, slidename){  
   fetch(check_url + filename, {credentials: "same-origin"}).then(
     response => response.json() // if the response is a JSON object
   ).then(
