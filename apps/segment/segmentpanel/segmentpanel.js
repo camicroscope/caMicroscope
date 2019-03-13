@@ -9,16 +9,16 @@ function SegmentPanel(viewer){
 		<div id='amin' class='material-icons settings'>arrow_downward</div>
 		<div id='amax' class='material-icons settings'>arrow_upward</div>
 
-    <div id='twrap' class='segment-setting'>
+    <div id='twrap' class='segment-setting settings'>
       <label for="threshold">Threshold</label><input type='range' id='threshold' min='0' max='1' step='0.01' value='0.7'><label id='tlabel'>0.7</label>
     </div>
 
-    <div id='minwrap' class='segment-setting' style="display: none;">
-      <label for="minarea">Min</label><input id='minarea' type='range' min='0' max='1' step='1' value='400'><label id='minlabel'>400</label>
+    <div id='minwrap' class='segment-setting settings' style="display: none;">
+      <label for="minarea">Min Area</label><input id='minarea' type='range' min='0' max='5000' step='1' value='400'><label id='minlabel'>400</label>
     </div>
 
-    <div id='maxwrap' class='segment-setting' style="display: none;">
-      <label for="maxarea">Max</label><input id='maxarea' type='range' min='0' max='5000' step='1' value='4500'><label id='maxlabel'>4500</label>
+    <div id='maxwrap' class='segment-setting settings' style="display: none;">
+      <label for="maxarea">Max Area</label><input id='maxarea' type='range' min='0' max='5000' step='1' value='4500'><label id='maxlabel'>4500</label>
     </div>
 		
 		<div class='segment-count'><label>Object Count: </label><label id='segcount'></label></div>
@@ -50,7 +50,6 @@ function SegmentPanel(viewer){
 	this.__maxarea = this.elt.querySelector('.segment-setting input[type=range]#maxarea');
 	this.__maxlabel = this.elt.querySelector('.segment-setting label#maxlabel');
 	this.__maxwrap = this.elt.querySelector('#maxwrap');
-
 
 	this.viewer.addOverlay({
       element: this.elt,
@@ -91,7 +90,7 @@ SegmentPanel.prototype.save = function(){
 
 SegmentPanel.prototype.showThreshBar = function(){
 	if(this.__twrap.style.display === 'none') {
-		this.__twrap.style.display = 'inline';
+		this.__twrap.style.display = 'flex';
 		this.__minwrap.style.display = 'none';
 		this.__maxwrap.style.display = 'none';
 	}
@@ -102,7 +101,7 @@ SegmentPanel.prototype.showThreshBar = function(){
 SegmentPanel.prototype.showMinBar = function(){
 
 	if(this.__minwrap.style.display === 'none') {
-		this.__minwrap.style.display = 'inline';
+		this.__minwrap.style.display = 'flex';
 		this.__twrap.style.display = 'none';
 		this.__maxwrap.style.display = 'none';
 	}
@@ -112,7 +111,7 @@ SegmentPanel.prototype.showMinBar = function(){
 SegmentPanel.prototype.showMaxBar = function(){
 
 	if(this.__maxwrap.style.display === 'none') {
-		this.__maxwrap.style.display = 'inline';
+		this.__maxwrap.style.display = 'flex';
 		this.__minwrap.style.display = 'none';
 		this.__twrap.style.display = 'none';
 	}

@@ -10,7 +10,7 @@
 }
 
 .segment-panel .settings {
-  font-size:18px;
+  font-size: 19px;
   position: absolute;
   border: 1px solid black;
   background: white;
@@ -42,13 +42,14 @@
 }
 
 .segment-panel .segment-setting {
+  font-size: 11px;
   top: -43px;
   left: 0;
   position: absolute;
   height: 20px;
-  width: 210px;
+  width: 230px;
   background: white;
-  border: 1px black;
+  border: 1px solid black;
 }
 
 
@@ -86,17 +87,19 @@
 }
 
 .segment-panel .segment-count {
-  /*display: none;*/
+  font-size: 11px;
   text-align: center;
   vertical-align: middle;
   top: -22px;
   left: 100px;
   position: absolute;
-  float: right;
-  height: 20px;
+  padding-top: 4px;
+  padding-left: 2px;
+  padding-right: 2px;
+  height: 15px;
   width: 100px;
   background: white;
-  border: 1px black solid;
+  border: 1px solid black;
 }
 
 .segment-panel .segment-setting {
@@ -118,6 +121,7 @@
 
 .segment-panel label {
   vertical-align: middle;
+  padding-top: 4px;
   padding-left: 5px;
   padding-right: 5px;
 }

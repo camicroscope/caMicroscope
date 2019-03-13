@@ -116,20 +116,25 @@ function initCore() {
     $UI.segmentPanel = new SegmentPanel(viewer);
 
     //add event for threshold
-    $UI.segmentPanel.__threshold.addEventListener('change', function(e){
+    $UI.segmentPanel.__threshold.addEventListener('input', function(e){
       const alpha = +this.__threshold.value;
       this.__tlabel.innerHTML = alpha;
       watershed(this.__src,this.__out,alpha);
     }.bind($UI.segmentPanel));
 
     //add event for min
-    $UI.segmentPanel.__minarea.addEventListener('change', function (e) {
+    $UI.segmentPanel.__minarea.addEventListener('input', function (e) {
+      const alpha = +this.__threshold.value;
       this.__minlabel.innerHTML = +this.__minarea.value;
+      watershed(this.__src,this.__out,alpha);
     }.bind($UI.segmentPanel));
 
     //add event for max
-    $UI.segmentPanel.__minarea.addEventListener('change', function (e) {
+    $UI.segmentPanel.__maxarea.addEventListener('input', function (e) {
+      const alpha = +this.__threshold.value;
+      console.log(this.__maxarea.value);
       this.__maxlabel.innerHTML = +this.__maxarea.value;
+      watershed(this.__src,this.__out,alpha);
     }.bind($UI.segmentPanel));
 
     $UI.segmentPanel.__btn_save.addEventListener('click', function(e) {
@@ -427,11 +432,13 @@ function watershed(inn, out, thresh) {
   let segcount = 0;
 
   console.log("Drawing Contours");
+  console.log($UI.segmentPanel.__minarea.value);
+  console.log($UI.segmentPanel.__maxarea.value);
   for (let i = 1; i < contours.size(); ++i) {
     //console.log(contours[i]);
     let cnt = contours.get(i);
     let area = cv.contourArea(cnt,false);
-    if(area < objAreaMax && area > objAreaMin) {
+    if(area < $UI.segmentPanel.__maxarea.value && area > $UI.segmentPanel.__minarea.value) {
       console.log(cnt);
       ++segcount;
       cv.drawContours(cloneSrc, contours, i, color, lineWidth, cv.FILLED, hierarchy,1);
