@@ -67,7 +67,7 @@ async function start_upload(filename){
     return a['upload_token']
   }
   catch(e){
-    changeStatus("UPLOAD", "ERROR; " + JSON.stringify(e))
+    changeStatus("UPLOAD | ERROR;", e)
   }
 }
 
@@ -88,6 +88,6 @@ function finish_upload(){
     let reg_req = fetch(finish_url + token,{method:'POST', body: JSON.stringify(body),headers: {
               "Content-Type": "application/json; charset=utf-8"
           }})
-    reg_req.then(x=>x.json()).then(a=>changeStatus("UPLOAD", "Finished -" + JSON.stringify(a)))
-    reg_req.then(e=>changeStatus("UPLOAD", "ERROR; " + JSON.stringify(e)))
+    reg_req.then(x=>x.json()).then(a=>changeStatus("UPLOAD | Finished", a))
+    reg_req.then(e=>changeStatus("UPLOAD | ERROR;", e))
 }
