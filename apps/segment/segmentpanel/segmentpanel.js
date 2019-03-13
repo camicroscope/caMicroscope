@@ -2,6 +2,22 @@
 //
 
 function SegmentPanel(viewer){
+	let divOptions = {
+		id: 'twrap',
+		class: 'segment-setting settings'
+	};
+	let sliderOptions = {
+		labelFor: 'threshold',
+		id: 'threshold',
+		min: '0',
+		max: '1',
+		step: '0.01',
+		value: '0.7',
+		labelInputId: 'tlabel',
+		defaultValue: '0.7'
+	};
+	let slider = new Slider(divOptions, sliderOptions);
+
 	const temp = `
 		<div id='close' class='material-icons settings'>close</div>
 		<div id='save' class='material-icons settings'>save</div>
@@ -9,9 +25,13 @@ function SegmentPanel(viewer){
 		<div id='amin' class='material-icons settings'>arrow_downward</div>
 		<div id='amax' class='material-icons settings'>arrow_upward</div>
 
+    ${slider.getHtml()}
+    
+    <!--
     <div id='twrap' class='segment-setting settings'>
       <label for="threshold">Threshold</label><input type='range' id='threshold' min='0' max='1' step='0.01' value='0.7'><label id='tlabel'>0.7</label>
     </div>
+    -->
 
     <div id='minwrap' class='segment-setting settings' style="display: none;">
       <label for="minarea">Min Area</label><input id='minarea' type='range' min='0' max='5000' step='1' value='400'><label id='minlabel'>400</label>
