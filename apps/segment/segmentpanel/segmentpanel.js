@@ -3,64 +3,6 @@
 
 function SegmentPanel(viewer){
 
-	/*
-	const sliders =
-			`
-    <div id='twrap' class='segment-setting settings'>
-      <label for="threshold">Threshold</label><input type='range' id='threshold' min='0' max='1' step='0.01' value='0.7'><label id='tlabel'>0.7</label>
-    </div>
-
-    <div id='minwrap' class='segment-setting settings'  >
-      <label for="minarea">Min Area</label><input id='minarea' type='range' min='0' max='5000' step='1' value='400'><label id='minlabel'>400</label>
-    </div>
-
-    <div id='maxwrap' class='segment-setting settings' style="display: none;">
-      <label for="maxarea">Max Area</label><input id='maxarea' type='range' min='0' max='5000' step='1' value='4500'><label id='maxlabel'>4500</label>
-    </div>`;
-  */
-
-	let slider = new Slider({
-		id: 'twrap',
-		class: 'segment-setting settings'
-	}, {
-		labelFor: 'threshold',
-		id: 'threshold',
-		min: '0',
-		max: '1',
-		step: '0.01',
-		value: '0.7',
-		labelInputId: 'tlabel',
-		defaultValue: '0.7'
-	});
-	let slider1 = new Slider({
-		id: 'minwrap',
-		class: 'segment-setting settings'
-	}, {
-		labelFor: 'minarea',
-		id: 'minarea',
-		min: '0',
-		max: '5000',
-		step: '1',
-		value: '400',
-		labelInputId: 'minlabel',
-		defaultValue: '400',
-		style: "display: none;"
-	});
-	let slider2 = new Slider({
-		id: 'maxwrap',
-		class: 'segment-setting settings'
-	}, {
-		labelFor: 'maxarea',
-		id: 'maxarea',
-		min: '0',
-		max: '5000',
-		step: '1',
-		value: '4500',
-		labelInputId: 'tlabel',
-		defaultValue: '0.7',
-		style: "display: none;"
-	});
-
 	const temp = `
 		<div id='close' class='material-icons settings'>close</div>
 		<div id='save' class='material-icons settings'>save</div>
@@ -68,11 +10,17 @@ function SegmentPanel(viewer){
 		<div id='amin' class='material-icons settings'>arrow_downward</div>
 		<div id='amax' class='material-icons settings'>arrow_upward</div>
 
-    ${slider.getHtml()}
-    
-    ${slider1.getHtml()}
-    
-    ${slider2.getHtml()}
+    <div id='twrap' class='segment-setting settings'>
+      <label for="threshold">Threshold</label><input type='range' id='threshold' min='0' max='1' step='0.01' value='0.7'><label id='tlabel'>0.7</label>
+    </div>
+
+    <div id='minwrap' class='segment-setting settings' style="display: none;">
+      <label for="minarea">Min Area</label><input id='minarea' type='range' min='0' max='5000' step='1' value='400'><label id='minlabel'>400</label>
+    </div>
+
+    <div id='maxwrap' class='segment-setting settings' style="display: none;">
+      <label for="maxarea">Max Area</label><input id='maxarea' type='range' min='0' max='5000' step='1' value='4500'><label id='maxlabel'>4500</label>
+    </div>
 		
 		<div class='segment-count'><label>Object Count: </label><label id='segcount'></label></div>
 		
@@ -80,6 +28,7 @@ function SegmentPanel(viewer){
 		<canvas class='src'></canvas>
 		<canvas id='c2s'></canvas>
 	`;
+	
 	this.viewer = viewer;
 	this.elt = document.createElement('div');
 	this.elt.classList.add('segment-panel');
