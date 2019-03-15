@@ -11,9 +11,8 @@ function PathDbMods() {
   console.warn("{PathDB mods enabled}")
   Store.prototype.default_findSlide = Store.prototype.findSlide;
   Store.prototype.findSlide = function(slide, specimen, study, location){
-    var url = "https://vinculum.bmi.stonybrookmedicine.edu/node/"+slide+"?_format=json"
+    var url = "../../pathdb/slide/info/"+slide+"?_format=json"
     return fetch(url, {
-      credentials: "same-origin",
       mode: "cors",
       headers: new Headers({
         'Authorization': 'Bearer ' + getCookie("token"),
@@ -29,9 +28,8 @@ function PathDbMods() {
   }
   Store.prototype.default_getSlide = Store.prototype.getSlide
   Store.prototype.getSlide = function(id){
-    var url = "https://vinculum.bmi.stonybrookmedicine.edu/node/"+id+"?_format=json"
+    var url = "../../pathdb/slide/info/"+slide+"?_format=json"
     return fetch(url,{
-      credentials: "include",
       mode: "cors",
       headers: new Headers({
         'Authorization': 'Bearer ' + getCookie("token"),
