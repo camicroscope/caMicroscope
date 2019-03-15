@@ -69,7 +69,7 @@ function PathDbMods() {
         this.location = data.field_iip_path[0].value
         // MAKE URL FOR IIP
         this.url = "../../img/Slide/" + img_id + ".dzi"
-        this.viewer.open(url);
+        this.viewer.open(this.url);
       } else {
         throw "I'm a Little Teapot"
       }
