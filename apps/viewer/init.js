@@ -139,7 +139,7 @@ function initCore(){
             if((data.selected!=null || data.selected!=undefined) && data.geometries.features[data.selected] &&data.geometries.features[data.selected].properties.circumference)
               circumference = `${Math.round(data.geometries.features[data.selected].properties.circumference)}μm`;
             // human
-            
+
             attributes = data.properties.annotations;
             if(area) attributes.area = area;
             if(circumference) attributes.circumference = circumference;
@@ -267,7 +267,7 @@ function initUIcomponents(){
     callback:toggleMeasurement
   });
   // share
-  if( ImgloaderMode =='iip') subToolsOpt.push({
+  if(ImgloaderMode =='iip') subToolsOpt.push({
     name:'share',
     icon:'share',
     title:'Share View',
@@ -307,7 +307,7 @@ function initUIcomponents(){
   //     }
   //   }
   // });
-     
+
   // -- For Nano borb Start -- //
   if(ImgloaderMode =='imgbox'){
     // download
@@ -330,7 +330,7 @@ function initUIcomponents(){
 
   }
   // -- For Nano borb End -- //
-  
+
   // bug report
   subToolsOpt.push({
     name:'bugs',
@@ -433,7 +433,7 @@ function initUIcomponents(){
       $UI.appsSideMenu.addContent(title);
       $UI.annotOptPanel.elt.classList.add('item_body');
       $UI.appsSideMenu.addContent($UI.annotOptPanel.elt);
-      
+
       //$UI.appsList.clearContent('annotation');
       //$UI.appsList.addContent('annotation',$UI.annotOptPanel.elt);
       /* algorithm control */
