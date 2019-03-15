@@ -24,7 +24,7 @@ function PathDbMods() {
           text: response.statusText,
           url: response.url
         };
-        return [response.json()];
+        return response.json().then(x=>[x]);
       })
   }
   Store.prototype.default_getSlide = Store.prototype.getSlide
@@ -42,7 +42,7 @@ function PathDbMods() {
           text: response.statusText,
           url: response.url
         };
-        return [response.json()];
+        return response.json().then(x=>[x]);
       })
   }
   CaMic.prototype.default_loadImg = CaMic.prototype.loadImg
@@ -56,6 +56,7 @@ function PathDbMods() {
     this.specimen = ""
     this.store.getSlide(slideId).then(data => {
       data = data[0]
+      console.log(data)
       // set mpp
       this.mpp = 1e9
       if (data.field_mpp_y && data.field_mpp_y.length>=1){
