@@ -1,11 +1,19 @@
 function PathDbMods() {
+  function getCook(cookiename)
+  {
+    var cookiestring=RegExp(""+cookiename+"[^;]+").exec(document.cookie);
+    return decodeURIComponent(!!cookiestring ? cookiestring.toString().replace(/^[^=]+./,"") : "");
+  }
   console.warn("{PathDB mods enabled}")
   Store.prototype.default_findSlide = Store.prototype.findSlide;
   Store.prototype.findSlide = function(slide, specimen, study, location){
     var url = "https://vinculum.bmi.stonybrookmedicine.edu/node/"+slide+"?_format=json"
     return fetch(url, {
-      credentials: "same-origin",
-      mode: "cors"
+      credentials: "include",
+      mode: "cors",
+      headers: new Headers({
+        'Authorization': 'Basic ' + getCook(token),
+      })
     }).then(function(response) {
         if (!response.ok) return {
           error: !response.ok,
@@ -19,8 +27,11 @@ function PathDbMods() {
   Store.prototype.getSlide = function(id){
     var url = "https://vinculum.bmi.stonybrookmedicine.edu/node/"+id+"?_format=json"
     return fetch(url,{
-      credentials: "same-origin",
-      mode: "cors"
+      credentials: "include",
+      mode: "cors",
+      headers: new Headers({
+        'Authorization': 'Basic ' + getCook(token),
+      })
     }).then(function(response){
         if (!response.ok) return {
           error: !response.ok,
