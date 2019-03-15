@@ -13,10 +13,10 @@ function PathDbMods() {
   Store.prototype.findSlide = function(slide, specimen, study, location){
     var url = "https://vinculum.bmi.stonybrookmedicine.edu/node/"+slide+"?_format=json"
     return fetch(url, {
-      credentials: "include",
+      credentials: "same-origin",
       mode: "cors",
       headers: new Headers({
-        'Authorization': 'Basic ' + getCookie("token"),
+        'Authorization': 'Bearer ' + getCookie("token"),
       })
     }).then(function(response) {
         if (!response.ok) return {
@@ -34,7 +34,7 @@ function PathDbMods() {
       credentials: "include",
       mode: "cors",
       headers: new Headers({
-        'Authorization': 'Basic ' + getCookie("token"),
+        'Authorization': 'Bearer ' + getCookie("token"),
       })
     }).then(function(response){
         if (!response.ok) return {
