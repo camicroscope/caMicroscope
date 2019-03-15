@@ -70,7 +70,7 @@ function PathDbMods() {
       if (data.field_iip_path && data.field_iip_path.length>=1){
         this.location = data.field_iip_path[0].value
         // MAKE URL FOR IIP
-        this.url = "../../img/IIP/raw/DeepZoom=" + this.location + ".dzi"
+        this.url = "../../img/IIP/raw/?DeepZoom=" + this.location + ".dzi"
         this.viewer.open(this.url);
       } else {
         throw "I'm a Little Teapot"
