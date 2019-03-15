@@ -98,7 +98,7 @@ function PathDbMods() {
       x.location = this.location;
       x.url = this.url;
       if (func && typeof func === 'function'){
-        func.call(null, x);
+        func.call(null, [x]);
       }
       Loading.text.textContent = `loading slide's tiles...`;
       // we may want another init.js or our own callback
