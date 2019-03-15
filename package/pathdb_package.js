@@ -65,7 +65,7 @@ function PathDbMods() {
         this.mpp_x = data.field_mpp_x[0].value
         this.mpp = this.mpp_x
       }
-      if (data.field_iip_path && field_iip_path.length>=1){
+      if (data.field_iip_path && data.field_iip_path.length>=1){
         this.location = data.field_iip_path[0].value
         // MAKE URL FOR IIP
         this.url = "../../img/Slide/" + img_id + ".dzi"
