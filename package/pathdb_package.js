@@ -33,7 +33,7 @@ function PathDbMods() {
   CaMic.prototype.default_loadImg = CaMic.prototype.loadImg
   CaMic.prototype.loadImg = function(func) {
     var urlParams = new URLSearchParams(window.location.search);
-    var img_id = urlParams.get('id');
+    var img_id = urlParams.get('slideId');
     let slideId = img_id
     this.slideId = slideId
     this.slideName = slideId
