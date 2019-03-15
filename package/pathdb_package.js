@@ -51,7 +51,7 @@ function PathDbMods() {
     }).then(this.errorHandler).then(x=>this.filterBroken(x, "mark"))
     return bySlide
   }
-  Store.prototype.getMarkByIds = function getMarkByIds(ids, slide, study, specimen, source, footprint, x0, x1, y0, y1){
+  Store.prototype.getMarkByIds = function(ids, slide, study, specimen, source, footprint, x0, x1, y0, y1){
     if (!Array.isArray(ids) || !slide) {
       return {
         hasError: true,
@@ -95,7 +95,7 @@ function PathDbMods() {
     }).then(this.errorHandler).then(x=>this.filterBroken(x, "mark"))
     return bySlide
   }
-  Store.prototype.findMarkTypes = function (slide, name) {
+  Store.prototype.findMarkTypes = function(slide, name) {
     var suffix = "Mark/types"
     var url = this.base + suffix;
     var query = {}
