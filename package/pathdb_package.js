@@ -1,7 +1,11 @@
 function PathDbMods() {
-  function getCook(cookiename)
+  /**
+  Gets a named cookie value
+  * @param {string} key - the key to get from the cookie
+  **/
+  function getCookie(key)
   {
-    var cookiestring=RegExp(""+cookiename+"[^;]+").exec(document.cookie);
+    var cookiestring=RegExp(""+key+"[^;]+").exec(document.cookie);
     return decodeURIComponent(!!cookiestring ? cookiestring.toString().replace(/^[^=]+./,"") : "");
   }
   console.warn("{PathDB mods enabled}")
@@ -12,7 +16,7 @@ function PathDbMods() {
       credentials: "include",
       mode: "cors",
       headers: new Headers({
-        'Authorization': 'Basic ' + getCook(token),
+        'Authorization': 'Basic ' + getCookie(token),
       })
     }).then(function(response) {
         if (!response.ok) return {
@@ -30,7 +34,7 @@ function PathDbMods() {
       credentials: "include",
       mode: "cors",
       headers: new Headers({
-        'Authorization': 'Basic ' + getCook(token),
+        'Authorization': 'Basic ' + getCookie(token),
       })
     }).then(function(response){
         if (!response.ok) return {

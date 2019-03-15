@@ -365,7 +365,7 @@ class Store {
       credentials: "same-origin",
       mode: "cors"
     }).then(this.errorHandler).then(x=>this.filterBroken(x, "heatmap"))
-  }  
+  }
   /**
    * get heatmap by id
    * @param {string} id - the heatmap id
