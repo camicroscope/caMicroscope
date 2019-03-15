@@ -40,7 +40,7 @@ function PathDbMods() {
           text: response.statusText,
           url: response.url
         };
-        return response.json().then(x=>[x]);
+        return response.json().then(x=>x);
       })
   }
   CaMic.prototype.default_loadImg = CaMic.prototype.loadImg
@@ -53,7 +53,6 @@ function PathDbMods() {
     this.study = ""
     this.specimen = ""
     this.store.getSlide(slideId).then(data => {
-      data = data[0]
       console.log(data)
       // set mpp
       this.mpp = 1e9
