@@ -9,6 +9,109 @@ function PathDbMods() {
     return decodeURIComponent(!!cookiestring ? cookiestring.toString().replace(/^[^=]+./,"") : "");
   }
   console.warn("{PathDB mods enabled}")
+  Store.prototype.default_findMark = Store.prototype.findMark
+  Store.prototype.findMark = function(slide, name, specimen, study, footprint, source, x0, x1, y0, y1){
+    var suffix = "Mark/find"
+    var url = this.base + suffix;
+    var query = {}
+    var bySlideId
+    if (slide) {
+      query.slide = slide
+    }
+    if (name) {
+      query.name = name
+    }
+    if (specimen) {
+      query.specimen = specimen
+    }
+    if (study) {
+      query.study = study
+    }
+    if (footprint) {
+      query.footprint = footprint
+    }
+    if (source) {
+      query.source = source
+    }
+    if (x0){
+      query.x0 = x0;
+    }
+    if (x1){
+      query.x1 = x1;
+    }
+    if (y0){
+      query.y0 = y0;
+    }
+    if (y1){
+      query.y1 = y1;
+    }
+    let bySlide = fetch(url + "?" + objToParamStr(query), {
+      credentials: "same-origin",
+      mode: "cors"
+    }).then(this.errorHandler).then(x=>this.filterBroken(x, "mark"))
+    return bySlide
+  }
+  Store.prototype.getMarkByIds = function getMarkByIds(ids, slide, study, specimen, source, footprint, x0, x1, y0, y1){
+    if (!Array.isArray(ids) || !slide) {
+      return {
+        hasError: true,
+        message: 'args are illegal'
+      }
+    }
+    var bySlideId
+    var suffix = "Mark/multi"
+    var url = this.base + suffix;
+    var query = {}
+    var stringifiedIds = ids.map(id => `"${id}"`).join(',');
+    query.name = `[${stringifiedIds}]`;
+    query.slide = slide;
+    if (study){
+      query.study = study;
+    }
+    if (specimen){
+      query.specimen = specimen;
+    }
+    if (source){
+      query.source = source;
+    }
+    if (footprint){
+      query.footprint = footprint;
+    }
+    if (x0){
+      query.x0 = x0;
+    }
+    if (x1){
+      query.x1 = x1;
+    }
+    if (y0){
+      query.y0 = y0;
+    }
+    if (y1){
+      query.y1 = y1;
+    }
+    let bySlide = fetch(url + "?" + objToParamStr(query), {
+      credentials: "same-origin",
+      mode: "cors"
+    }).then(this.errorHandler).then(x=>this.filterBroken(x, "mark"))
+    return bySlide
+  }
+  Store.prorotype.findMarkTypes = function (slide, name) {
+    var suffix = "Mark/types"
+    var url = this.base + suffix;
+    var query = {}
+    var bySlideId
+    if (name) {
+      query.name = name
+    }
+    if (slide) {
+      query.slide = slide
+    }
+    let bySlide = fetch(url + "?" + objToParamStr(query), {
+      credentials: "same-origin",
+      mode: "cors"
+    }).then(this.errorHandler)
+    return bySlide
+  }
   Store.prototype.default_findSlide = Store.prototype.findSlide;
   Store.prototype.findSlide = function(slide, specimen, study, location){
     var url = "../../pathdb/slide/info/"+slide+"?_format=json"
