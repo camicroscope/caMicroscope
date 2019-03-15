@@ -16,7 +16,7 @@ function PathDbMods() {
       credentials: "include",
       mode: "cors",
       headers: new Headers({
-        'Authorization': 'Basic ' + getCookie(token),
+        'Authorization': 'Basic ' + getCookie("token"),
       })
     }).then(function(response) {
         if (!response.ok) return {
@@ -34,7 +34,7 @@ function PathDbMods() {
       credentials: "include",
       mode: "cors",
       headers: new Headers({
-        'Authorization': 'Basic ' + getCookie(token),
+        'Authorization': 'Basic ' + getCookie("token"),
       })
     }).then(function(response){
         if (!response.ok) return {
