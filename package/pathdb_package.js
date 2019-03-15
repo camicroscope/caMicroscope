@@ -174,7 +174,7 @@ function PathDbMods() {
         this.url = "../../img/IIP/raw/?DeepZoom=" + this.location + ".dzi"
         this.viewer.open(this.url);
       } else {
-        throw "I'm a Little Teapot"
+        throw "No image location --could be token"
       }
 
       this.viewer.mpp = this.mpp;
@@ -205,7 +205,7 @@ function PathDbMods() {
       // we may want another init.js or our own callback
     }).catch(e=>{
       console.error(e)
-      Loading.text.textContent = "ERROR - Erich is Hungry, please Feed Birb"
+      Loading.text.textContent = "ERROR - PathDB Image Error (Could be token?)"
       //if(func && typeof func === 'function') func.call(null,{hasError:true,message:e});
     })
 
