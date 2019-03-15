@@ -15,7 +15,7 @@ function PathDbMods() {
         return response.json();
       })
   }
-  Store.prototype.default_getSlide = default_getSlide
+  Store.prototype.default_getSlide = Store.prototype.getSlide
   Store.prototype.getSlide = function(id){
     var url = "https://vinculum.bmi.stonybrookmedicine.edu/node/"+id+"?_format=json"
     return fetch(url,{
