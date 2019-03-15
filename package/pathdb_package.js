@@ -28,7 +28,7 @@ function PathDbMods() {
   }
   Store.prototype.default_getSlide = Store.prototype.getSlide
   Store.prototype.getSlide = function(id){
-    var url = "../../pathdb/slide/info/"+slide+"?_format=json"
+    var url = "../../pathdb/slide/info/"+id+"?_format=json"
     return fetch(url,{
       mode: "cors",
       headers: new Headers({
