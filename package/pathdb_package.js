@@ -95,7 +95,7 @@ function PathDbMods() {
     }).then(this.errorHandler).then(x=>this.filterBroken(x, "mark"))
     return bySlide
   }
-  Store.prorotype.findMarkTypes = function (slide, name) {
+  Store.prototype.findMarkTypes = function (slide, name) {
     var suffix = "Mark/types"
     var url = this.base + suffix;
     var query = {}
