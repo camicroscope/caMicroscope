@@ -643,7 +643,6 @@
      * @return {void}
      */
     Columns.prototype.sort = function (column, direction, init) {
-        console.log("Called!")
         var dt = this.dt;
 
         // Check column is present
