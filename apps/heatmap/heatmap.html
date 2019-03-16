@@ -72,6 +72,8 @@
 		<script type='text/javascript' src='../../common/sortable/Sortable.js'></script>
         <script type='text/javascript' src='../../common/rangeslider/rangeslider.js'></script>
 		<script type='text/javascript' src='../../common/ajv.js'></script>
+		<!-- IDB helper -->
+		<script type='text/javascript' src='../../common/idb.js'></script>
         
 		<!--  common js END -->
 
@@ -125,7 +127,7 @@
 
 
 		<!-- business js -->
-		<script src="../../dist/packages.js"></script>
+		<script type='text/javascript' src='../../common/dynamicLoadScript.js'></script>
 		<script src='./uicallbacks.js'></script>
 		<!-- <script src='./dataloaders.js'></script> -->
 		<script src='./init.js'></script>
@@ -169,9 +171,11 @@
 			// normal initialization starts
 			document.addEventListener('DOMContentLoaded', initialize);
 		}
+		
 		else if(!$D.params.execId){
 			redirect($D.pages.table,'execId is undefined. Redirecting to Table.');
 		}
+
 		else if ($D.params && ($D.params.slide || $D.params.specimen ||$D.params.study || $D.params.location)){
 			let STORE = new Store()
 			STORE.findSlide($D.params.slide, $D.params.study, $D.params.specimen, $D.params.location).then(x=>{

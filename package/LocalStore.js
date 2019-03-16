@@ -1,6 +1,9 @@
 // overwrite store with equivalent local functions
 function init_LocalStore(){
   // requirements
+  Store.prototype.db = idb.openDb("heatmap", 1, x=>{
+    let recordStore = x.createObjectStore("heatmap", {autoIncrement : true});
+  })
   console.warn("{localstore mods enabled}")
   Object.byString = function(o, s) {
       s = s.replace(/\[(\w+)\]/g, '.$1'); // convert indexes to properties
@@ -15,6 +18,33 @@ function init_LocalStore(){
           }
       }
       return o;
+  }
+
+  function findInIDB(type, query){
+    return new Promise((res,rej)=>{
+      Store.prototype.db.then(x=>{
+        var data = x.transaction(type).objectStore(type, 'readonly').getAll()
+        data.then(data=>{
+          res(data.filter(x=>{
+            let matching = true;
+            for (var i in query){
+              matching = matching && Object.byString(x, i) == query[i]
+            }
+            return matching
+          }))
+        })
+      }
+    )
+    })
+  }
+
+  function putInIDB(type, newData){
+    Store.prototype.db.then(x=>{
+          let tx = x.transaction(type, 'readwrite')
+          var store = tx.objectStore(type)
+          store.add(newData)
+    })
+    return newData
   }
 
   function findInLocalStorage(type, query){
@@ -87,6 +117,7 @@ function init_LocalStore(){
       // TODO!!!
     })
   }
+
   Store.prototype.findMark = function(slide, name, specimen, study, footprint, source, x0, x1, y0, y1){
     return new Promise(function(res, rej){
       let query = {}
@@ -140,18 +171,25 @@ function init_LocalStore(){
   Store.prototype.findHeatmap = function(slide, name){
     return new Promise(function(res, rej){
       let query = {}
-      if (name){
+      if (slide){
         query['provenance.image.slide'] = slide
       }
-      if(slide){
+      if(name){
         query['provenance.analysis.execution_id']= name
       }
-      res(findInLocalStorage('heatmap', query))
+      res(findInIDB('heatmap', query))
     }).then(x=>this.filterBroken(x,"heatmap"))
   }
-  Store.prototype.getHeatmap = function(id){
+  Store.prototype.getHeatmap = function(slide, execution_id){
     return new Promise(function(res, rej){
-      res(getInLocalStorage("heatmap", id))
+      let query = {}
+      if (slide){
+        query['provenance.image.slide'] = slide
+      }
+      if(execution_id){
+        query['provenance.analysis.execution_id']= execution_id
+      }
+      res(findInIDB('heatmap', query))
     }).then(x=>this.filterBroken(x,"heatmap"))
   }
   Store.prototype.addHeatmap = function(json){
@@ -161,7 +199,7 @@ function init_LocalStore(){
     }
     json['_id'] = json['_id'] || {'$oid': Date.now()}
     return new Promise(function(res, rej){
-      res(putInLocalStorage('heatmap', json))
+      res(putInIDB('heatmap', json))
     })
   }
   Store.prototype.deleteHeatmap = function(id,slide){

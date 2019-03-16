@@ -792,6 +792,8 @@ function stopDrawing(e){
 	}
 }
 
+
+
 function openHeatmap(){
 	
 	switch (ImgloaderMode) {
@@ -840,8 +842,44 @@ function hostedHeatmap(){
 }
 
 function imgboxHeatmap(){
-	alert('coming soon ... :)');
+    let slide = $D.params.id
+    slide = decodeURIComponent(slide)
+    // create file input
+    var element = document.createElement('input');
+    element.setAttribute('type', "file")
+    element.style.display = 'none';
+    document.body.appendChild(element);
+    
+    
+    element.onchange = function(event) {
+      var input = event.target;
+      var reader = new FileReader();
+      reader.onload = function() {
+        var text = reader.result;
+        try {
+			let data = JSON.parse(text);
+			
+			var valid = $VALIDATION.heatmap(data);
+			if (!valid) {
+				alert($VALIDATION.heatmap.errors)
+				return;
+			};
+
+			data.provenance.image.slide = slide
+			const execId = data.provenance.analysis.execution_id;
+			$CAMIC.store.addHeatmap(data).then(rs=>{
+				window.location.href = `../heatmap/heatmap.html${window.location.search}&execId=${execId}`;
+			});
+        } catch (e) {
+          console.error(e)
+        }
+      };
+      reader.readAsText(input.files[0]);
+    }
+    element.click();
+    document.body.removeChild(element);
 }
+
 function createHeatMapList(list){
 	empty($UI.modalbox.body);
 	list.forEach(data=>{
