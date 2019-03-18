@@ -112,7 +112,7 @@ class Store {
       query.y1 = y1;
     }
     let bySlide = fetch(url + "?" + objToParamStr(query), {
-      credentials: "same-origin",
+      credentials: "include",
       mode: "cors"
     }).then(this.errorHandler).then(x=>this.filterBroken(x, "mark"))
     if (!slide) {
@@ -124,7 +124,7 @@ class Store {
         } else {
           query.slide = x[0]['_id']['$oid']
           return fetch(url + "?" + objToParamStr(query), {
-            credentials: "same-origin",
+            credentials: "include",
             mode: "cors"
           }).then(this.errorHandler).then(x=>this.filterBroken(x, "mark"))
         }
@@ -166,7 +166,7 @@ class Store {
     }
 
     return fetch(url + "?" + objToParamStr(query), {
-      credentials: "same-origin",
+      credentials: "include",
       mode: "cors"
     }).then(this.errorHandler).then(x=>this.filterBroken(x, "mark"))
   }
@@ -211,7 +211,7 @@ class Store {
     }
 
     let bySlide = fetch(url + "?" + objToParamStr(query), {
-      credentials: "same-origin",
+      credentials: "include",
       mode: "cors"
     }).then(this.errorHandler).then(x=>this.filterBroken(x, "mark"))
     if (!slide) {
@@ -223,7 +223,7 @@ class Store {
         } else {
           query.slide = x[0]['_id']['$oid']
           return fetch(url + "?" + objToParamStr(query), {
-            credentials: "same-origin",
+            credentials: "include",
             mode: "cors"
           }).then(this.errorHandler).then(x=>this.filterBroken(x, "mark"))
         }
@@ -248,7 +248,7 @@ class Store {
     }
 
     return fetch(url + "?" + objToParamStr(query), {
-      credentials: "same-origin",
+      credentials: "include",
       mode: "cors"
     }).then(this.errorHandler).then(x=>this.filterBroken(x, "mark"))
   }
@@ -265,7 +265,7 @@ class Store {
     }
     return fetch(url, {
       method: "POST",
-      credentials: "same-origin",
+      credentials: "include",
       mode: "cors",
       headers: {
         "Content-Type": "application/json; charset=utf-8",
@@ -289,7 +289,7 @@ class Store {
     }
     return fetch(url + "?" + objToParamStr(query), {
       method: "DELETE",
-      credentials: "same-origin",
+      credentials: "include",
       mode: "cors"
     }).then(this.errorHandler)
   }
@@ -311,7 +311,7 @@ class Store {
       query.slide = slide
     }
     let bySlide = fetch(url + "?" + objToParamStr(query), {
-      credentials: "same-origin",
+      credentials: "include",
       mode: "cors"
     }).then(this.errorHandler)
 
@@ -324,7 +324,7 @@ class Store {
         } else {
           query.slide = x[0]['_id']['$oid']
           return fetch(url + "?" + objToParamStr(query), {
-            credentials: "same-origin",
+            credentials: "include",
             mode: "cors"
           }).then(this.errorHandler)
         }
@@ -346,7 +346,7 @@ class Store {
       query.slide = slide
     }
     return fetch(url + "?" + objToParamStr(query), {
-      credentials: "same-origin",
+      credentials: "include",
       mode: "cors"
     }).then(this.errorHandler).then(x=>this.filterBroken(x, "heatmap"))
   }
@@ -362,7 +362,7 @@ class Store {
       query.slide = slide
     }
     return fetch(url + "?" + objToParamStr(query), {
-      credentials: "same-origin",
+      credentials: "include",
       mode: "cors"
     }).then(this.errorHandler).then(x=>this.filterBroken(x, "heatmap"))
   }
@@ -379,7 +379,7 @@ class Store {
     query.execId = execId;
 
     return fetch(url + "?" + objToParamStr(query), {
-      credentials: "same-origin",
+      credentials: "include",
       mode: "cors"
     }).then(this.errorHandler).then(x=>this.filterBroken(x, "heatmap"))
   }
@@ -396,7 +396,7 @@ class Store {
     }
     return fetch(url, {
       method: "POST",
-      credentials: "same-origin",
+      credentials: "include",
       mode: "cors",
       headers: {
         "Content-Type": "application/json; charset=utf-8",
@@ -420,7 +420,7 @@ class Store {
     }
     return fetch(url + "?" + objToParamStr(query), {
       method: "DELETE",
-      credentials: "same-origin",
+      credentials: "include",
       mode: "cors"
     }).then(this.errorHandler)
   }
@@ -443,7 +443,7 @@ class Store {
     }
 
     return fetch(url + "?" + objToParamStr(query), {
-      credentials: "same-origin",
+      credentials: "include",
       mode: "cors"
     }).then(this.errorHandler)
   }
@@ -461,7 +461,7 @@ class Store {
     }
 
     return fetch(url + "?" + objToParamStr(query), {
-      credentials: "same-origin",
+      credentials: "include",
       mode: "cors"
     }).then(this.errorHandler)
   }
@@ -490,7 +490,7 @@ class Store {
     }
 
     return fetch(url + "?" + objToParamStr(query), {
-      credentials: "same-origin",
+      credentials: "include",
       mode: "cors"
     }).then(this.errorHandler)
   }
@@ -508,7 +508,7 @@ class Store {
     }
 
     return fetch(url + "?" + objToParamStr(query), {
-      credentials: "same-origin",
+      credentials: "include",
       mode: "cors"
     }).then(this.errorHandler).then(x=>this.filterBroken(x, "slide"))
   }
@@ -531,7 +531,7 @@ class Store {
     }
 
     return fetch(url + "?" + objToParamStr(query), {
-      credentials: "same-origin",
+      credentials: "include",
       mode: "cors"
     }).then(this.errorHandler).then(x=>this.filterBroken(x, "template"))
   }
@@ -549,7 +549,7 @@ class Store {
     }
 
     return fetch(url + "?" + objToParamStr(query), {
-      credentials: "same-origin",
+      credentials: "include",
       mode: "cors"
     }).then(this.errorHandler).then(x=>this.filterBroken(x, "template"))
   }
@@ -568,7 +568,7 @@ class Store {
       method: "POST",
       mode: "cors",
       body: JSON.stringify(data),
-      credentials: "same-origin",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json; charset=utf-8"
       }
@@ -589,7 +589,7 @@ class Store {
       method: "UPDATE",
       mode: "cors",
       body: JSON.stringify(data),
-      credentials: "same-origin",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json; charset=utf-8"
       }
@@ -606,7 +606,7 @@ class Store {
     var url = this.base + type + "/delete";
 
     return fetch(url + "?" + objToParamStr(query), {
-      credentials: "same-origin",
+      credentials: "include",
       mode: "cors"
     }).then(this.errorHandler)
   }
