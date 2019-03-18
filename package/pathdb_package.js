@@ -7,6 +7,8 @@ function PathDbMods() {
     console.log(x)
     if (x.hasOwnProperty('token') && x.token) {
       document.cookie = "token=" + x.token + ";"
+      // refresh to make everyone happy
+      location.reload();
     }
   })
 
