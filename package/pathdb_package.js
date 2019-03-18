@@ -5,7 +5,7 @@ function PathDbMods() {
     credentials: 'include'
   }).then(x => x.json()).then(x => {
     console.log(x)
-    if (!getCookie(token) && x.hasOwnProperty('token') && x.token) {
+    if (x.hasOwnProperty('token') && x.token) {
       document.cookie = "token=" + x.token + ";"
     }
   })
