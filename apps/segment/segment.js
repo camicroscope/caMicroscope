@@ -432,20 +432,24 @@ function watershed(inn, out, thresh) {
   let segcount = 0;
 
   console.log("Drawing Contours");
-  console.log($UI.segmentPanel.__minarea.value);
-  console.log($UI.segmentPanel.__maxarea.value);
+  // console.log($UI.segmentPanel.__minarea.value);
+  // console.log($UI.segmentPanel.__maxarea.value);
   for (let i = 1; i < contours.size(); ++i) {
     //console.log(contours[i]);
     let cnt = contours.get(i);
     let area = cv.contourArea(cnt,false);
     if(area < $UI.segmentPanel.__maxarea.value && area > $UI.segmentPanel.__minarea.value) {
-      console.log(cnt);
+      // console.log(cnt);
       ++segcount;
       cv.drawContours(cloneSrc, contours, i, color, lineWidth, cv.FILLED, hierarchy,1);
       cv.drawContours(i2s , contours, i, color, lineWidth, cv.FILLED, hierarchy,1);
     }
   }
   console.log("Done Drawing Contours");
+
+  let pixelpoints = cv.findNonZero(cloneSrc);
+  console.log('Pixels: ')
+  console.log(pixelpoints);
 
   // Update the count
   let clabel = document.getElementById('segcount');
