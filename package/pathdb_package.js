@@ -214,7 +214,7 @@ function PathDbMods() {
       // we may want another init.js or our own callback
     }).catch(e => {
       console.error(e)
-      Loading.text.textContent = "ERROR - PathDB Image Error (Could be token?)"
+      Loading.text.textContent = "ERROR - PathDB Image Error (Try a refresh)"
       //if(func && typeof func === 'function') func.call(null,{hasError:true,message:e});
     })
 
