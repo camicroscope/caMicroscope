@@ -304,8 +304,9 @@ function segmentROI(box) {
   // SEGMENTATION CANVAS
   let camicanv = $CAMIC.viewer.drawer.canvas; //Original Canvas
   let imgData = (camicanv.getContext('2d')).getImageData(box.xCoord, box.yCoord, box.width, box.height);
-
-
+  console.log('X: ' + box.xCoord);
+  console.log('Y: ' + box.yCoord);
+  
   // loadImageToCanvas(imgData, $UI.segmentPanel.__out);
   loadImageToCanvas(imgData, $UI.segmentPanel.__src);
 
@@ -410,6 +411,8 @@ function watershed(inn, out, thresh) {
   cv.cvtColor(src, dst, cv.COLOR_RGBA2RGB, 0);
   cv.watershed(dst, markers);
   const cloneSrc = cv.Mat.zeros(src.rows, src.cols, cv.CV_8UC4);
+  const listContours = cv.Mat.zeros(src.rows, src.cols, cv.CV_8UC4);
+  
   // Draw barriers
   //console.log(markers.rows,markers.cols);
   // for (let i = 0; i < markers.rows; i++) {
@@ -430,31 +433,32 @@ function watershed(inn, out, thresh) {
   // }
 
   let segcount = 0;
+  let tmp = new cv.Mat();
 
   console.log("Drawing Contours");
   // console.log($UI.segmentPanel.__minarea.value);
   // console.log($UI.segmentPanel.__maxarea.value);
   for (let i = 1; i < contours.size(); ++i) {
-    //console.log(contours[i]);
+    console.log(contours[i]);
     let cnt = contours.get(i);
     let area = cv.contourArea(cnt,false);
     if(area < $UI.segmentPanel.__maxarea.value && area > $UI.segmentPanel.__minarea.value) {
       // console.log(cnt);
       ++segcount;
+      cv.approxPolyDP(cnt, tmp, 1, true);
+      console.log(tmp.data32S);
       cv.drawContours(cloneSrc, contours, i, color, lineWidth, cv.FILLED, hierarchy,1);
       cv.drawContours(i2s , contours, i, color, lineWidth, cv.FILLED, hierarchy,1);
     }
   }
   console.log("Done Drawing Contours");
 
-  let pixelpoints = cv.findNonZero(cloneSrc);
-  console.log('Pixels: ')
-  console.log(pixelpoints);
-
   // Update the count
   let clabel = document.getElementById('segcount');
   clabel.innerHTML=segcount;
   console.log("Labels: " + segcount);
+  console.log(cloneSrc.cols);
+  console.log(cloneSrc.rows);
 
   // Draw barriers
   // console.log(cloneSrc.rows,cloneSrc.cols);
