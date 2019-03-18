@@ -27,13 +27,14 @@
  *        
  */
 function LayersViewer(options){
+
+
 	this.className = 'LayersViewer';
 	this.setting = {
 		// id: doc element
 		// data: layers dataset
-		// categoricalData  
-		//
-		//
+		// categoricalData
+		
 		isSortableView:false,
 	};
 
@@ -52,8 +53,8 @@ function LayersViewer(options){
 	this.searchBar;// input and btn
 
 	this.categoricalView;
-	this.sortableView;
-	this.sortable;
+	//this.sortableView;
+	//this.sortable;
 
 
 
@@ -67,12 +68,33 @@ function LayersViewer(options){
 	this.elt.classList.add('layer_viewer');
 
 	// sort data
-	this.setting.data.sort(LayersViewer.compare);
+	//this.setting.data.sort(LayersViewer.compare);
 	// give index
 	// convert og data to categorical data
 	this.__covertData();
 	this.__refreshUI();
 
+}
+
+LayersViewer.prototype.toggleAllItems = function(isShow = false, fresh = true){
+	this.setting.data.forEach(d => d.isShow = isShow);
+	if(fresh) this.update();
+}
+
+LayersViewer.prototype.addItem = function(item,isShow = true, fresh = true){
+	this.setting.data.push({item:item,isShow:isShow});
+	if(fresh) this.update();
+}
+
+LayersViewer.prototype.removeItemById = function(id ,fresh = true){
+	const index = this.setting.data.findIndex(d=> d.item.id == id);
+	if(index==-1) return;
+	this.setting.data.splice(index, 1);
+	if(fresh) this.update();
+}
+
+LayersViewer.prototype.getDataItemById = function(id){
+	return this.setting.data.find( d=> d.item.id==id);
 }
 
 LayersViewer.prototype.onEnd = function(e){
@@ -150,14 +172,14 @@ LayersViewer.prototype.__refreshUI = function(){
 
 	/* create search bar area START */
 	const ctrlObj = LayersViewer.createControlBar();
-	this.viewRadios = ctrlObj.viewRadios;  // view switch
+	// this.viewRadios = ctrlObj.viewRadios;  // view switch
 	this.searchBar	= ctrlObj.searchBar; // searchbar
 	this.elt.appendChild(ctrlObj.view);
 
 	// add switch view event
-	this.viewRadios.list.forEach(
-		radio => radio.elt.addEventListener('click',this.__radioClick.bind(this))
-	);
+	// this.viewRadios.list.forEach(
+	// 	radio => radio.elt.addEventListener('click',this.__radioClick.bind(this))
+	// );
 
 
 
@@ -183,19 +205,19 @@ LayersViewer.prototype.__refreshUI = function(){
 
 	/* sortable view START */
 	// create sortable view div
-	let sort_view_div = document.createElement('div');
-	sort_view_div.classList.add('sort_list');
-	sort_view_div.style.display = 'none';
+	// let sort_view_div = document.createElement('div');
+	// sort_view_div.classList.add('sort_list');
+	// sort_view_div.style.display = 'none';
 
 	// create sortable view content
-	const objSortable = LayersViewer.createSortableView(this.setting.data);
-	this.sortable = objSortable.sortable;
-	this.sortable.option('onEnd', this.onEnd.bind(this))
+	// const objSortable = LayersViewer.createSortableView(this.setting.data);
+	// this.sortable = objSortable.sortable;
+	// this.sortable.option('onEnd', this.onEnd.bind(this))
 
 	// add the content into the div
-	sort_view_div.appendChild(objSortable.view);
-	this.elt.appendChild(sort_view_div);
-	this.sortableView = sort_view_div;
+	// sort_view_div.appendChild(objSortable.view);
+	// this.elt.appendChild(sort_view_div);
+	// this.sortableView = sort_view_div;
 	/*sortable view END */
 
 
@@ -214,29 +236,29 @@ LayersViewer.prototype.__refreshUI = function(){
 	// expand and collapse control for categorical view
 	const cateItems = this.setting.categoricalData;
 	for(let key in cateItems){
-		cateItems[key].cateItem.firstChild.addEventListener('click', this.__switch.bind(this));
+		cateItems[key].elt.firstChild.addEventListener('click', this.__switch.bind(this));
 	}
 
 	// moveup 
-	const ups = this.sortableView.querySelectorAll('.moveup');
-	ups.forEach( up => up.addEventListener('click',function(e){
-		const _id = e.target.parentNode.dataset.id;
-		this.moveLayer(_id,'up');
-	}.bind(this)));
+	// const ups = this.sortableView.querySelectorAll('.moveup');
+	// ups.forEach( up => up.addEventListener('click',function(e){
+	// 	const _id = e.target.parentNode.dataset.id;
+	// 	this.moveLayer(_id,'up');
+	// }.bind(this)));
 
 	// movedown
-	const downs = this.sortableView.querySelectorAll('.movedown');
-	downs.forEach( downs => downs.addEventListener('click',function(e){
-		const _id = e.target.parentNode.dataset.id;
-		this.moveLayer(_id,'down');
-	}.bind(this)));
+	// const downs = this.sortableView.querySelectorAll('.movedown');
+	// downs.forEach( downs => downs.addEventListener('click',function(e){
+	// 	const _id = e.target.parentNode.dataset.id;
+	// 	this.moveLayer(_id,'down');
+	// }.bind(this)));
 	
 	// initalize checkbox
-	if(this.setting.isSortableView){
-		this.viewModeSwitch('sort');
-	}else{
-		this.viewModeSwitch('category');
-	}
+	// if(this.setting.isSortableView){
+	// 	this.viewModeSwitch('sort');
+	// }else{
+	// 	this.viewModeSwitch('category');
+	// }
 
 }
 
@@ -278,18 +300,18 @@ LayersViewer.prototype.viewModeSwitch = function(mode = 'category' /*category/so
 /* For Categorical View functions START */
 LayersViewer.createCategoricalView = function(data){
 	const ul = document.createElement('ul');
-	for(let cate in data){
+	for(let typeId in data){
 		// create root li
-		const cate_data = data[cate];
-		cate_data.cateItem = LayersViewer.createCategoricalItem(cate_data,'root');
-		ul.appendChild(cate_data.cateItem); // create li root
+		const type_data = data[typeId]; // type_data = {id:typeId,name:typeName,items:[{item:,isShow:}]}
+		type_data.elt = LayersViewer.createCategoricalItem(type_data,'root');
+		ul.appendChild(type_data.elt); // create li root
 		
 
 		const children = document.createElement('ul');
 		// add leaf
-		cate_data.data.forEach(item => {
-			item.cateItem = LayersViewer.createCategoricalItem(item);
-			children.appendChild(item.cateItem); // create li leaf
+		type_data.items.forEach(item => {
+			item.elt = LayersViewer.createCategoricalItem(item);
+			children.appendChild(item.elt); // create li leaf
 		});
 		//
 		ul.appendChild(children);
@@ -297,7 +319,8 @@ LayersViewer.createCategoricalView = function(data){
 	return {view:ul};
 }
 
-LayersViewer.createCategoricalItem = function(item, type){
+LayersViewer.createCategoricalItem = function(data, type){
+	const item = data.item;
 	const id = `cate.${item.id}`;
 	// create li
 	const li = document.createElement('li');
@@ -328,7 +351,7 @@ LayersViewer.createCategoricalItem = function(item, type){
 		li.appendChild(ic);
 	}else{
 		chk.dataset.type = 'leaf';
-		chk.checked = item.isShow;
+		chk.checked = data.isShow;
 		li.title = item.name;
 	}
 
@@ -572,19 +595,18 @@ LayersViewer.prototype.update = function(){
 LayersViewer.prototype.__search = function(e){
 	// show all li with leaf class
 	let list = this.setting.data;
-	list.forEach(item=> {
-		item.cateItem.style.display='flex';
-		item.sortItem.style.display='flex';
+	list.forEach(data=> {
+		data.elt.style.display='flex';
+		// item.sortItem.style.display='flex';
 	});
-	
 	const pattern = e.target.value;
 	const items = this.setting.data;
 	const regex = new RegExp(pattern, 'gi');
 
-	list.forEach(item=>{
-		if(!item.name.match(regex)){
-			item.cateItem.style.display = 'none';
-			item.sortItem.style.display = 'none';
+	list.forEach(data=>{
+		if(!data.item.name.match(regex)){
+			data.elt.style.display = 'none';
+			// item.sortItem.style.display = 'none';
 		}
 	});
 }
@@ -597,13 +619,12 @@ LayersViewer.prototype.__covertData = function(){
 		console.warn(`${this.className}: No Raw Data`);
 		//return; 
 	}
-
-	this.setting.categoricalData =  this.setting.data.reduce(function(model, item){
+	this.setting.categoricalData =  this.setting.data.reduce(function(model, d){
+		const item = d.item;
 		if(!model[item.typeId]){
-			model[item.typeId] = {id:item.typeId,name:item.typeName,data:[]};
+			model[item.typeId] = {item:{id:item.typeId,name:item.typeName},items:[]};
 		}
-		model[item.typeId].data.push(item);
-		if(!item.isShow)item.isShow = false;
+		model[item.typeId].items.push(d);
 		return model; 
 	},{});
 }
@@ -630,32 +651,32 @@ LayersViewer.prototype.__change = function(e){
 	const list = this.setting.data;
 	switch (type) {
 		case 'all':
-			this.setting.data.forEach(item => {
-				item.isShow = checked;
-				item.cateItem.lastChild.checked = checked;
-				item.sortItem.lastChild.checked = checked;
+			this.setting.data.forEach(d => {
+				d.isShow = checked;
+				d.elt.lastChild.checked = checked;
+				// item.sortItem.lastChild.checked = checked;
 			});
 
 			for(let key in this.setting.categoricalData){
-				this.setting.categoricalData[key].cateItem.lastChild.checked = checked;
+				this.setting.categoricalData[key].elt.lastChild.checked = checked;
 			}
 			this.setting.callback.call(null,this.setting.data);
 			break;
 		case 'root':
-			this.setting.categoricalData[id].data.forEach(item => {
-				item.isShow = checked;
-				item.cateItem.lastChild.checked = checked;
-				item.sortItem.lastChild.checked = checked;
+			this.setting.categoricalData[id].items.forEach(d => {
+				d.isShow = checked;
+				d.elt.lastChild.checked = checked;
+				// item.sortItem.lastChild.checked = checked;
 			});
-			this.setting.callback.call(null,this.setting.categoricalData[id].data);
+			this.setting.callback.call(null,this.setting.categoricalData[id].items);
 			break;
 		case 'leaf':
-			const item = this.setting.data.find(item => item.id == id);
-			if(!item) return;
-			item.isShow = checked;
-			item.cateItem.lastChild.checked = checked;
-			item.sortItem.lastChild.checked = checked;
-			this.setting.callback.call(null,[item]);
+			const data = this.setting.data.find( d => d.item.id == id);
+			if(!data) return;
+			data.isShow = checked;
+			data.elt.lastChild.checked = checked;
+			// item.sortItem.lastChild.checked = checked;
+			this.setting.callback.call(null,[data]);
 			break;
 		default:
 		
