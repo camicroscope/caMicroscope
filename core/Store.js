@@ -6,6 +6,11 @@ try {
 } catch (e) {
   var b;
 }
+
+function getCookie(key) {
+  var cookiestring = RegExp("" + key + "[^;]+").exec(document.cookie);
+  return decodeURIComponent(!!cookiestring ? cookiestring.toString().replace(/^[^=]+./, "") : "");
+}
 /**
  * converts an object into a string of url components
  * @param {object} obj - keys and values
@@ -37,6 +42,7 @@ class Store {
     this.base = base || "./data/";
     this.validation = validation || {};
     this.config = config;
+    this.auth = "Bearer " + getCookie('token');
   }
   /**
    * errorHandler: handle the error response, and clean
@@ -113,6 +119,9 @@ class Store {
     }
     let bySlide = fetch(url + "?" + objToParamStr(query), {
       credentials: "include",
+      headers: {
+        'Authorization': this.auth
+      },
       mode: "cors"
     }).then(this.errorHandler).then(x=>this.filterBroken(x, "mark"))
     if (!slide) {
@@ -125,6 +134,9 @@ class Store {
           query.slide = x[0]['_id']['$oid']
           return fetch(url + "?" + objToParamStr(query), {
             credentials: "include",
+            headers: {
+              'Authorization': this.auth
+            },
             mode: "cors"
           }).then(this.errorHandler).then(x=>this.filterBroken(x, "mark"))
         }
@@ -167,6 +179,9 @@ class Store {
 
     return fetch(url + "?" + objToParamStr(query), {
       credentials: "include",
+      headers: {
+        'Authorization': this.auth
+      },
       mode: "cors"
     }).then(this.errorHandler).then(x=>this.filterBroken(x, "mark"))
   }
@@ -212,6 +227,9 @@ class Store {
 
     let bySlide = fetch(url + "?" + objToParamStr(query), {
       credentials: "include",
+      headers: {
+        'Authorization': this.auth
+      },
       mode: "cors"
     }).then(this.errorHandler).then(x=>this.filterBroken(x, "mark"))
     if (!slide) {
@@ -224,6 +242,9 @@ class Store {
           query.slide = x[0]['_id']['$oid']
           return fetch(url + "?" + objToParamStr(query), {
             credentials: "include",
+            headers: {
+              'Authorization': this.auth
+            },
             mode: "cors"
           }).then(this.errorHandler).then(x=>this.filterBroken(x, "mark"))
         }
@@ -249,6 +270,9 @@ class Store {
 
     return fetch(url + "?" + objToParamStr(query), {
       credentials: "include",
+      headers: {
+        'Authorization': this.auth
+      },
       mode: "cors"
     }).then(this.errorHandler).then(x=>this.filterBroken(x, "mark"))
   }
@@ -266,6 +290,9 @@ class Store {
     return fetch(url, {
       method: "POST",
       credentials: "include",
+      headers: {
+        'Authorization': this.auth
+      },
       mode: "cors",
       headers: {
         "Content-Type": "application/json; charset=utf-8",
@@ -290,6 +317,9 @@ class Store {
     return fetch(url + "?" + objToParamStr(query), {
       method: "DELETE",
       credentials: "include",
+      headers: {
+        'Authorization': this.auth
+      },
       mode: "cors"
     }).then(this.errorHandler)
   }
@@ -312,6 +342,9 @@ class Store {
     }
     let bySlide = fetch(url + "?" + objToParamStr(query), {
       credentials: "include",
+      headers: {
+        'Authorization': this.auth
+      },
       mode: "cors"
     }).then(this.errorHandler)
 
@@ -325,6 +358,9 @@ class Store {
           query.slide = x[0]['_id']['$oid']
           return fetch(url + "?" + objToParamStr(query), {
             credentials: "include",
+            headers: {
+              'Authorization': this.auth
+            },
             mode: "cors"
           }).then(this.errorHandler)
         }
@@ -347,6 +383,9 @@ class Store {
     }
     return fetch(url + "?" + objToParamStr(query), {
       credentials: "include",
+      headers: {
+        'Authorization': this.auth
+      },
       mode: "cors"
     }).then(this.errorHandler).then(x=>this.filterBroken(x, "heatmap"))
   }
@@ -363,6 +402,9 @@ class Store {
     }
     return fetch(url + "?" + objToParamStr(query), {
       credentials: "include",
+      headers: {
+        'Authorization': this.auth
+      },
       mode: "cors"
     }).then(this.errorHandler).then(x=>this.filterBroken(x, "heatmap"))
   }
@@ -380,6 +422,9 @@ class Store {
 
     return fetch(url + "?" + objToParamStr(query), {
       credentials: "include",
+      headers: {
+        'Authorization': this.auth
+      },
       mode: "cors"
     }).then(this.errorHandler).then(x=>this.filterBroken(x, "heatmap"))
   }
@@ -399,6 +444,7 @@ class Store {
       credentials: "include",
       mode: "cors",
       headers: {
+        'Authorization': this.auth,
         "Content-Type": "application/json; charset=utf-8",
         // "Content-Type": "application/x-www-form-urlencoded",
       },
@@ -421,6 +467,9 @@ class Store {
     return fetch(url + "?" + objToParamStr(query), {
       method: "DELETE",
       credentials: "include",
+      headers: {
+        'Authorization': this.auth
+      },
       mode: "cors"
     }).then(this.errorHandler)
   }
@@ -444,6 +493,9 @@ class Store {
 
     return fetch(url + "?" + objToParamStr(query), {
       credentials: "include",
+      headers: {
+        'Authorization': this.auth
+      },
       mode: "cors"
     }).then(this.errorHandler)
   }
@@ -462,6 +514,9 @@ class Store {
 
     return fetch(url + "?" + objToParamStr(query), {
       credentials: "include",
+      headers: {
+        'Authorization': this.auth
+      },
       mode: "cors"
     }).then(this.errorHandler)
   }
@@ -491,6 +546,9 @@ class Store {
 
     return fetch(url + "?" + objToParamStr(query), {
       credentials: "include",
+      headers: {
+        'Authorization': this.auth
+      },
       mode: "cors"
     }).then(this.errorHandler)
   }
@@ -509,6 +567,9 @@ class Store {
 
     return fetch(url + "?" + objToParamStr(query), {
       credentials: "include",
+      headers: {
+        'Authorization': this.auth
+      },
       mode: "cors"
     }).then(this.errorHandler).then(x=>this.filterBroken(x, "slide"))
   }
@@ -532,6 +593,9 @@ class Store {
 
     return fetch(url + "?" + objToParamStr(query), {
       credentials: "include",
+      headers: {
+        'Authorization': this.auth
+      },
       mode: "cors"
     }).then(this.errorHandler).then(x=>this.filterBroken(x, "template"))
   }
@@ -550,6 +614,9 @@ class Store {
 
     return fetch(url + "?" + objToParamStr(query), {
       credentials: "include",
+      headers: {
+        'Authorization': this.auth
+      },
       mode: "cors"
     }).then(this.errorHandler).then(x=>this.filterBroken(x, "template"))
   }
@@ -570,6 +637,7 @@ class Store {
       body: JSON.stringify(data),
       credentials: "include",
       headers: {
+        'Authorization': this.auth,
         "Content-Type": "application/json; charset=utf-8"
       }
     }).then(this.errorHandler)
@@ -591,6 +659,7 @@ class Store {
       body: JSON.stringify(data),
       credentials: "include",
       headers: {
+        'Authorization': this.auth,
         "Content-Type": "application/json; charset=utf-8"
       }
     }).then(this.errorHandler)
@@ -607,6 +676,9 @@ class Store {
 
     return fetch(url + "?" + objToParamStr(query), {
       credentials: "include",
+      headers: {
+        'Authorization': this.auth
+      },
       mode: "cors"
     }).then(this.errorHandler)
   }
