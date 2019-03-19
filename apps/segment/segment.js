@@ -209,6 +209,8 @@ function checkSize(imgColl, imagingHelper) {
   const min = imagingHelper._viewer.viewport.imageToViewportCoordinates(top_left[0],top_left[1]);
   const max = imagingHelper._viewer.viewport.imageToViewportCoordinates(bottom_right[0],bottom_right[1]);
   const rect = new OpenSeadragon.Rect(min.x,min.y,max.x-min.x,max.y-min.y);
+  console.log(top_left);
+  console.log(imagingHelper._viewer.viewport.viewportToImageCoordinates(0,0));
 
   // Convert to screen coordinates
   let foo = convertCoordinates(imagingHelper, bound);
@@ -229,7 +231,7 @@ function checkSize(imgColl, imagingHelper) {
   let height = Math.round(newArray[2][1] - yCoord);
 
   // check that image size is ok
-  if (width * height > 4000000) {
+  if (width * height > 8000000) {
     alert("Selected ROI too large, current version is limited to 4 megapixels");
     // Clear the rectangle  canvas-draw-overlay.clear()
     $CAMIC.viewer.canvasDrawInstance.clear();
@@ -439,8 +441,8 @@ function watershed(inn, out, thresh) {
   // console.log($UI.segmentPanel.__minarea.value);
   // console.log($UI.segmentPanel.__maxarea.value);
   for (let i = 1; i < contours.size(); ++i) {
-    console.log(contours[i]);
     let cnt = contours.get(i);
+    // console.log(contours[i]);
     let area = cv.contourArea(cnt,false);
     if(area < $UI.segmentPanel.__maxarea.value && area > $UI.segmentPanel.__minarea.value) {
       // console.log(cnt);
@@ -451,6 +453,7 @@ function watershed(inn, out, thresh) {
       cv.drawContours(i2s , contours, i, color, lineWidth, cv.FILLED, hierarchy,1);
     }
   }
+  console.log(segcount);
   console.log("Done Drawing Contours");
 
   // Update the count

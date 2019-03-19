@@ -30,13 +30,18 @@ function SegmentPanel(viewer){
 	`;
 	
 	this.viewer = viewer;
+
 	this.elt = document.createElement('div');
 	this.elt.classList.add('segment-panel');
 	this.elt.innerHTML = temp;
+	this.__contours = null;
+	this.__top_left = null;
+
 	this.__out = this.elt.querySelector('.out');
 	this.__src = this.elt.querySelector('.src');
 	this.__c2s = this.elt.querySelector('#c2s');
 	this.__btn_save = this.elt.querySelector('#save');
+
 
 	//threshold
 	this.__threshold = this.elt.querySelector('.segment-setting input[type=range]#threshold');
