@@ -230,6 +230,7 @@ function initUIcomponents(){
     subTools:[
       // setting
       {
+        name:'settings',
         icon:'settings',// material icons' name
         title:'Settings',
         type:'check',// btn/check/dropdown
@@ -254,6 +255,7 @@ function initUIcomponents(){
       // },
       // magnifier
       {
+        name:'magnifier',
         icon:'search',
         title:'Magnifier',
         type:'dropdown',
@@ -282,6 +284,7 @@ function initUIcomponents(){
       },
       // measurement tool
       {
+        name:'measurement',
         icon:'space_bar',
         title:'Measurement',
         type:'check',
@@ -320,12 +323,14 @@ function initUIcomponents(){
       //   callback:shareURL
       // },
       {
+        name:'sbsviewer',
         icon:'view_carousel',
         title:'Side By Side Viewer',
         value:'dbviewers',
         type:'check',
         callback:toggleViewerMode
       },{
+        name:'viewer',
         icon: 'insert_photo',
         type: 'btn',
         value: 'viewer',
