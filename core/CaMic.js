@@ -136,7 +136,7 @@ class CaMic{
     this.createHeatmap();
     Loading.close();
   }
-
+  
   /**
   * Loads the staged image
   */
@@ -174,7 +174,7 @@ class CaMic{
       })
       .catch(e=>{
 
-
+        
         console.error(e);
         //if()
         Loading.close();
@@ -190,11 +190,11 @@ class CaMic{
 
     this.viewer.open("../../img/Slide/"+ data["_id"]["$oid"] + ".dzi");
     // set mpp
-    this.mpp_x = data['mpp-x']
-    this.mpp_y = data['mpp-y']
+    this.mpp_x = +data['mpp-x']
+    this.mpp_y = +data['mpp-y']
     this.mpp = data.mpp || this.mpp_x || this.mpp_y || 1e9;
-    this.mpp_x = data['mpp-x'] || this.mpp
-    this.mpp_y = data['mpp-y'] || this.mpp
+    this.mpp_x = +data['mpp-x'] || this.mpp
+    this.mpp_y = +data['mpp-y'] || this.mpp
 
     this.viewer.mpp = this.mpp;
     this.viewer.mpp_x = this.mpp_x;
