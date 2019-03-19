@@ -20,8 +20,9 @@ function toggleViewerMode(opt){
 
 		openMinorControlPanel();
 		openSecondaryViewer();
-		
 	}else{
+		$UI.appsSideMenu.close();
+		$UI.layersSideMenu.close();
 		closeMinorControlPanel();
 		closeSecondaryViewer();
 
@@ -723,28 +724,17 @@ function minor_callback(data){
 }
 
 function openMinorControlPanel(){
-	
-	//  
-	$UI.layCtrlbar.style.display = 'block';
-	//
-	const radios = $UI.layCtrlbar.querySelectorAll('input[type=radio]');
-	radios[0].checked = false;
-	radios[1].checked = true;
-	//
-	$UI.layersViewer.elt.style.display = 'none';
-	$UI.layersViewerMinor.elt.style.display = 'flex';
-
+	$UI.layersList.displayContent('left',true,'head');
+	$UI.layersList.triggerContent('left','close');
+	$UI.layersList.displayContent('right',true);
+	$UI.layersList.triggerContent('right','open');
 }
 
 function closeMinorControlPanel(){
-	//
-	$UI.layCtrlbar.style.display = 'none';
-	const radios = $UI.layCtrlbar.querySelectorAll('input[type=radio]');
-	radios[0].checked = true;
-	radios[1].checked = false;	
-	//
-	$UI.layersViewer.elt.style.display = 'flex';
-	$UI.layersViewerMinor.elt.style.display = 'none';
+	$UI.layersList.displayContent('left',false,'head');
+	$UI.layersList.triggerContent('left','open');
+	$UI.layersList.displayContent('right',false);
+	$UI.layersList.triggerContent('right','close');
 }
 
 function loadAnnotationById(camic, layerData ,callback){

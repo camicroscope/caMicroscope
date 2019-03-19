@@ -47,6 +47,14 @@ window.addEventListener('keydown', (e) => {
     eventFire(chk,'click');
     return;
   }
+  // open side-by-side (ctrl + s)
+  if(e.ctrlKey && keyCode == 83){
+    const li = $UI.toolbar.getSubTool('sbsviewer');
+    const chk = li.querySelector('input[type=checkbox]');
+    chk.checked = !chk.checked;
+    eventFire(chk,'click');
+    return;
+  }  
 
 });
 
@@ -411,28 +419,41 @@ function initUIcomponents(){
         $D.params.states.l.forEach(id=> loadAnnotationById($CAMIC,$UI.layersViewer.getDataItemById(id),null))
       }
 
-       
+      $UI.layersList = new CollapsibleList({
+        id:'layerslist',
+        list:[
+          {
+            id:'left',
+            title:'Left Viewer',
+            // icon:'border_color',
+            content: "No Template Loaded" //$UI.annotOptPanel.elt
+            // isExpand:true
 
+          },{
+            id:'right',
+            // icon:'find_replace',
+            title:'Right Viewer',
+            content:"No Template Loaded" //$UI.algOptPanel.elt,
+          }
+        ],
+        changeCallBack:function(e){console.log(e)}
+      });
       // add to layers side menu
       const title = document.createElement('div');
       title.classList.add('item_head');
       title.textContent = 'Layers Manager';
       $UI.layersSideMenu.addContent(title);
-      createLayPanelControl();
 
-      $UI.layersSideMenu.addContent($UI.layersViewer.elt);
+      $UI.layersList.clearContent('left');
+      $UI.layersList.addContent('left',$UI.layersViewer.elt);
+      $UI.layersList.clearContent('right');
+      $UI.layersList.addContent('right',$UI.layersViewerMinor.elt);
 
-      $UI.layersViewerMinor.elt.style.display = 'none';
-      // add to layers side menu
-      // const title = document.createElement('div');
-      // title.classList.add('item_head');
-      // title.textContent = 'Layers Manager';
-      // $UI.layersSideMenu.addContent(title);
-      $UI.layersSideMenu.addContent($UI.layersViewerMinor.elt);      
-
+      $UI.layersList.elt.parentNode.removeChild($UI.layersList.elt);
+      closeMinorControlPanel();
+      $UI.layersSideMenu.addContent($UI.layersList.elt);
     }
   }, 500);
-
 
 
 
