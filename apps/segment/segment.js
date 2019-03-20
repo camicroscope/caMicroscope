@@ -144,6 +144,7 @@ function initCore() {
 
     $UI.segmentPanel.__btn_savecsv.addEventListener('click', function(e) {
       let fname = $D.params.slideId + '_roi.csv';
+      console.log('Hit save button');
       buildAndDownloadCSV($UI.segmentPanel.__contours,fname);
     }.bind($UI.segmentPanel));
   });
@@ -590,6 +591,7 @@ function buildAndDownloadCSV(contours,fname) {
   const self = $UI.segmentPanel;
   const nl = '\n';
 
+  console.log('In Download and Save CSV');
   data += 'AreaInPixels,PereimeterInPixels,Polygon\n';
 
   for (let i = 1; i < contours.size(); ++i) {
@@ -617,16 +619,15 @@ function buildAndDownloadCSV(contours,fname) {
 }
 
 // Save the polygons to csv with filename.  Uses local save dialog.
-function downloadCSV(args) {
-  var data, filename, link;
-
+function downloadCSV(data,filename) {
   var csv = data;
+  console.log(data);
 
   if (csv == null) return;
 
-  filename = args.filename || 'export.csv';
+  filename = filename || 'export.csv';
 
-  if (!csv.match(/^data:text\/csv/i)) {
+  if (!csv.search(/^data:text\/csv/i)) {
       csv = 'data:text/csv;charset=utf-8,' + csv;
   }
   data = encodeURI(csv);
