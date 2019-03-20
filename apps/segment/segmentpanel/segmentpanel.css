@@ -26,19 +26,24 @@
   left:20px;
 }
 
-#thresh {
+#savecsv {
   top: -22px;
   left: 40px;
 }
 
-#amin {
+#thresh {
   top: -22px;
   left: 60px;
 }
 
-#amax {
+#amin {
   top: -22px;
   left: 80px;
+}
+
+#amax {
+  top: -22px;
+  left: 100px;
 }
 
 .segment-panel .segment-setting {
@@ -91,13 +96,13 @@
   text-align: center;
   vertical-align: middle;
   top: -22px;
-  left: 100px;
+  left: 120px;
   position: absolute;
   padding-top: 4px;
   padding-left: 2px;
   padding-right: 2px;
   height: 15px;
-  width: 130px;
+  width: 150px;
   background: white;
   border: 1px solid black;
 }
@@ -124,6 +129,10 @@
   padding-top: 4px;
   padding-left: 5px;
   padding-right: 5px;
+}
+
+#csvDLB {
+  display: none;
 }
 
 

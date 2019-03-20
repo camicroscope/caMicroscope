@@ -6,6 +6,7 @@ function SegmentPanel(viewer){
 	const temp = `
 		<div id='close' class='material-icons settings'>close</div>
 		<div id='save' class='material-icons settings'>save</div>
+		<div id='savecsv' class='material-icons settings'>list</div>
 		<div id='thresh' class='material-icons settings'>all_out</div>
 		<div id='amin' class='material-icons settings'>arrow_downward</div>
 		<div id='amax' class='material-icons settings'>arrow_upward</div>
@@ -27,6 +28,7 @@ function SegmentPanel(viewer){
 		<canvas class='out'></canvas>
 		<canvas class='src'></canvas>
 		<canvas id='c2s'></canvas>
+		<a id='csvDLB'></a>
 	`;
 	
 	this.viewer = viewer;
@@ -36,12 +38,15 @@ function SegmentPanel(viewer){
 	this.elt.innerHTML = temp;
 	this.__contours = null;
 	this.__top_left = null;
+	this.__width = null;
+	this.__height = null;
 
 	this.__out = this.elt.querySelector('.out');
 	this.__src = this.elt.querySelector('.src');
 	this.__c2s = this.elt.querySelector('#c2s');
 	this.__btn_save = this.elt.querySelector('#save');
-
+	this.__btn_savecsv = this.elt.querySelector('#savecsv');
+	this.__btn_csvDL = this.elt.querySelector('#csvDLB');
 
 	//threshold
 	this.__threshold = this.elt.querySelector('.segment-setting input[type=range]#threshold');

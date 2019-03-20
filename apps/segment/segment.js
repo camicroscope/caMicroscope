@@ -141,6 +141,11 @@ function initCore() {
       let fname = $D.params.slideId + '_roi.png';
       download($UI.segmentPanel.__c2s,fname);
     }.bind($UI.segmentPanel));
+
+    $UI.segmentPanel.__btn_savecsv.addEventListener('click', function(e) {
+      let fname = $D.params.slideId + '_roi.csv';
+      buildAndDownloadCSV($UI.segmentPanel.__contours,fname);
+    }.bind($UI.segmentPanel));
   });
 }
 
@@ -209,8 +214,10 @@ function checkSize(imgColl, imagingHelper) {
   const min = imagingHelper._viewer.viewport.imageToViewportCoordinates(top_left[0],top_left[1]);
   const max = imagingHelper._viewer.viewport.imageToViewportCoordinates(bottom_right[0],bottom_right[1]);
   const rect = new OpenSeadragon.Rect(min.x,min.y,max.x-min.x,max.y-min.y);
+
+  $UI.segmentPanel.__top_left = top_left;
   console.log(top_left);
-  console.log(imagingHelper._viewer.viewport.viewportToImageCoordinates(0,0));
+  // console.log(imagingHelper._viewer.viewport.viewportToImageCoordinates(0,0));
 
   // Convert to screen coordinates
   let foo = convertCoordinates(imagingHelper, bound);
@@ -400,6 +407,7 @@ function watershed(inn, out, thresh) {
   let hierarchy = new cv.Mat();
   let color = new cv.Scalar(255, 255, 0);
   cv.findContours(imageFg,contours,hierarchy,cv.RETR_CCOMP,cv.CHAIN_APPROX_SIMPLE);
+  $UI.segmentPanel.__contours = contours;
   console.log("Getting contours.");
 
   for (let i = 0; i < markers.rows; i++) {
@@ -573,4 +581,58 @@ function download(canvas, filename) {
 
       lnk.fireEvent("onclick");
   }
+}
+
+// Build a csv of the polygons and associated metadata
+function buildAndDownloadCSV(contours,fname) {
+  let data = '';
+  let tmp = new cv.Mat();
+  const self = $UI.segmentPanel;
+  const nl = '\n';
+
+  data += 'AreaInPixels,PereimeterInPixels,Polygon\n';
+
+  for (let i = 1; i < contours.size(); ++i) {
+    let cnt = contours.get(i);
+    // console.log(contours[i]);
+    let area = cv.contourArea(cnt,false);
+    let perimeter = cv.arcLength(cnt,true);
+    if(area < self.__maxarea.value && area > self.__minarea.value) {
+      // console.log(cnt);
+      data += area + ',' + perimeter + ',[';
+      cv.approxPolyDP(cnt, tmp, 1, true);
+      let carray = tmp.data32S;
+      let asize = tmp.data32S.length;
+      carray.forEach((x,i) => {
+        if(i<(asize-1)) {
+          data += x + ':';
+        } else {
+          data += x + ']'
+        }
+      });
+    }
+    data += nl;
+  }
+  downloadCSV({ data: data, filename: fname})
+}
+
+// Save the polygons to csv with filename.  Uses local save dialog.
+function downloadCSV(args) {
+  var data, filename, link;
+
+  var csv = data;
+
+  if (csv == null) return;
+
+  filename = args.filename || 'export.csv';
+
+  if (!csv.match(/^data:text\/csv/i)) {
+      csv = 'data:text/csv;charset=utf-8,' + csv;
+  }
+  data = encodeURI(csv);
+
+  link = document.createElement('a');
+  link.setAttribute('href', data);
+  link.setAttribute('download', filename);
+  link.click();
 }
