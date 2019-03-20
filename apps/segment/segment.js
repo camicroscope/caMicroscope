@@ -215,8 +215,9 @@ function checkSize(imgColl, imagingHelper) {
   const min = imagingHelper._viewer.viewport.imageToViewportCoordinates(top_left[0],top_left[1]);
   const max = imagingHelper._viewer.viewport.imageToViewportCoordinates(bottom_right[0],bottom_right[1]);
   const rect = new OpenSeadragon.Rect(min.x,min.y,max.x-min.x,max.y-min.y);
-
-  $UI.segmentPanel.__top_left = top_left;
+  const self = $UI.segmentPanel;
+  
+  self.__top_left = top_left;
   console.log(top_left);
   // console.log(imagingHelper._viewer.viewport.viewportToImageCoordinates(0,0));
 
@@ -234,9 +235,13 @@ function checkSize(imgColl, imagingHelper) {
 
   const xCoord = Math.round(newArray[0][0]);
   const yCoord = Math.round(newArray[0][1]);
-
   let width = Math.round(newArray[2][0] - xCoord);
   let height = Math.round(newArray[2][1] - yCoord);
+
+  self.__x = xCoord;
+  self.__y = yCoord;
+  self.__width = xCoord;
+  self.__height = yCoord;
 
   // check that image size is ok
   if (width * height > 8000000) {
@@ -590,6 +595,10 @@ function buildAndDownloadCSV(contours,fname) {
   let tmp = new cv.Mat();
   const self = $UI.segmentPanel;
   const nl = '\n';
+  const vpx = self.__top_left[0];
+  const vpy = self.__top_left[1];
+  const spx = self.__x;
+  const spy = self.__y;
 
   console.log('In Download and Save CSV');
   data += 'AreaInPixels,PereimeterInPixels,Polygon\n';
@@ -600,34 +609,36 @@ function buildAndDownloadCSV(contours,fname) {
     let area = cv.contourArea(cnt,false);
     let perimeter = cv.arcLength(cnt,true);
     if(area < self.__maxarea.value && area > self.__minarea.value) {
-      // console.log(cnt);
       data += area + ',' + perimeter + ',[';
       cv.approxPolyDP(cnt, tmp, 1, true);
       let carray = tmp.data32S;
       let asize = tmp.data32S.length;
-      carray.forEach((x,i) => {
-        if(i<(asize-1)) {
-          data += x + ':';
+      for(j = 0;j < asize-1;j+=2) {
+        let imgX = carray[j]+vpx+spx;
+        let imgY = carray[j+1]+vpy+spy;
+        if(j<(asize-2)) {
+          data += imgX + ':' + imgY + ':';
         } else {
-          data += x + ']'
+          data += imgX + ':' + imgY + ']';
         }
-      });
+      }
+      data += nl;
     }
-    data += nl;
   }
-  downloadCSV({ data: data, filename: fname})
+  downloadCSV(data, fname);
 }
 
 // Save the polygons to csv with filename.  Uses local save dialog.
 function downloadCSV(data,filename) {
-  var csv = data;
-  console.log(data);
+  let csv = data;
+  const self = $UI.segmentPanel;
+  // console.log(data);
 
   if (csv == null) return;
 
   filename = filename || 'export.csv';
 
-  if (!csv.search(/^data:text\/csv/i)) {
+  if (csv.search(/^data:text\/csv/i) == -1) {
       csv = 'data:text/csv;charset=utf-8,' + csv;
   }
   data = encodeURI(csv);

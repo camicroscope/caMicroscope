@@ -38,6 +38,8 @@ function SegmentPanel(viewer){
 	this.elt.innerHTML = temp;
 	this.__contours = null;
 	this.__top_left = null;
+	this.__x = null;
+	this.__y = null;
 	this.__width = null;
 	this.__height = null;
 
