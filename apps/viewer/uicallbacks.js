@@ -2,7 +2,6 @@
 // all functions help the UI and Core part together that makes workflows.
 
 /* UI callback functions list */
-$minorCAMIC = null;
 function toggleViewerMode(opt){
 	const main = document.getElementById('main_viewer');
 	const secondary = document.getElementById('secondary');
@@ -14,32 +13,38 @@ function toggleViewerMode(opt){
 		magnifierOff();
 		// turn off measurement
 		measurementOff();
-		//close layers menu
-		$UI.layersSideMenu.close();
+		//open layers menu
+		$UI.layersSideMenu.open();
 		//close apps menu
 		$UI.appsSideMenu.close();
 
+		openMinorControlPanel();
 		openSecondaryViewer();
 	}else{
+		$UI.appsSideMenu.close();
+		$UI.layersSideMenu.close();
+		closeMinorControlPanel();
 		closeSecondaryViewer();
+
 	}
 }
 
 //mainfest
-function multSelector_action(event){
-
+function multSelector_action(size){
+	// hidden main viewer's bottom right control and get navigator
+	$CAMIC.viewer.controls.bottomright.style.display = 'none';
 	// if(event.data.length == 0){
 	// 	alert('No Layer selected');
 	// 	return;
 	// }
 
 	// hide the window
-	$UI.multSelector.elt.classList.add('none');
+	// $UI.multSelector.elt.classList.add('none');
 
 	// show the minor part
-	const minor = document.getElementById('minor_viewer');
-	minor.classList.remove('none');
-	minor.classList.add('display');
+	//const minor = document.getElementById('minor_viewer');
+	//minor.classList.remove('none');
+	//minor.classList.add('display');
 
 	// open new instance camic
 	try{
@@ -52,13 +57,15 @@ function multSelector_action(event){
 			// mouseNavEnabled:false,
 			// panVertical:false,
 			// panHorizontal:false,
-			showNavigator:false,
+			// showNavigator:false,
 			// customized options
-			hasZoomControl:false,
+			// hasZoomControl:false,
 			hasDrawLayer:false,
 			//hasLayerManager:false,
 			//hasScalebar:false,
 			// states options
+			navigatorHeight: size.height,
+			navigatorWidth: size.width,
 			states:{
 				x:$CAMIC.viewer.viewport.getCenter().x,
 				y:$CAMIC.viewer.viewport.getCenter().y*$CAMIC.viewer.imagingHelper.imgAspectRatio,
@@ -85,6 +92,8 @@ function multSelector_action(event){
 			$minorCAMIC.viewer.addHandler('pan',synchornicView2);
 		});
 
+
+
 	}catch(error){
 		Loading.close();
 		$UI.message.addError('Core Initialization Failed');
@@ -93,79 +102,80 @@ function multSelector_action(event){
 	}
 
 	// find unloaded data
-	event.data = event.data.map(lay=>lay[0]);
-	const unloaded = event.data.filter(id =>{
-		const layer = $D.overlayers.find(layer=> layer.id == id);
-		return layer && !layer.data
-	});
+	// event.data = event.data.map(lay=>lay[0]);
+	// const unloaded = event.data.filter(id =>{
+	// 	const layer = $D.overlayers.find(layer=> layer.id == id);
+	// 	return layer && !layer.data
+	// });
 	// if all data loaded then add selected layer to minor viewer
-	if(unloaded.length == 0){
-		// add overlays to
-		// wait util omanager create
-		var checkOmanager = setInterval(function () {
-			if($minorCAMIC.viewer.omanager) {
-				clearInterval(checkOmanager);
-				// add overlays to
-				event.data.forEach(id =>{
-					// find data
-					const layer = $D.overlayers.find(layer=> layer.id == id);
-					// add to the minor viewer
-					$minorCAMIC.viewer.omanager.addOverlay({id:id,data:layer.data,render:anno_render,isShow:true});
-				});
-				$minorCAMIC.viewer.omanager.updateView();
-			}
-		}, 500);
-		return;
-	}
+	
+	// if(unloaded.length == 0){
+	// 	// add overlays to
+	// 	// wait util omanager create
+	// 	var checkOmanager = setInterval(function () {
+	// 		if($minorCAMIC.viewer.omanager) {
+	// 			clearInterval(checkOmanager);
+	// 			// add overlays to
+	// 			event.data.forEach(id =>{
+	// 				// find data
+	// 				const layer = $D.overlayers.find(layer=> layer.id == id);
+	// 				// add to the minor viewer
+	// 				$minorCAMIC.viewer.omanager.addOverlay({id:id,data:layer.data,render:anno_render,isShow:true});
+	// 			});
+	// 			$minorCAMIC.viewer.omanager.updateView();
+	// 		}
+	// 	}, 500);
+	// 	return;
+	// }
 
 	// load data from service side
-	$CAMIC.store.getMarkByIds(unloaded,$D.params.data.name)
-	.then(function(datas){
-		// response error
-		if(datas.error){
-			const errorMessage = `${datas.text}: ${datas.url}`;
-			$UI.message.addError(errorMessage, 5000);
-			// close
-			return;
-		}
+	// $CAMIC.store.getMarkByIds(unloaded,$D.params.data.name)
+	// .then(function(datas){
+	// 	// response error
+	// 	if(datas.error){
+	// 		const errorMessage = `${datas.text}: ${datas.url}`;
+	// 		$UI.message.addError(errorMessage, 5000);
+	// 		// close
+	// 		return;
+	// 	}
 
-		// no data found
-		if(datas.length == 0){
-			$UI.message.addError(`Selected annotations do not exist.`,5000);
-			return;
-		}
+	// 	// no data found
+	// 	if(datas.length == 0){
+	// 		$UI.message.addError(`Selected annotations do not exist.`,5000);
+	// 		return;
+	// 	}
 
-		// add overlays
-		if(Array.isArray(datas)) datas = datas.map(d=>{
-			d.geometries = VieweportFeaturesToImageFeatures($CAMIC.viewer, d.geometries);
-			const id = d.provenance.analysis.execution_id;
-			const item = $D.overlayers.find(l=>l.id==id);
-			item.data = d;
-			item.render = anno_render;
-			item.layer = $CAMIC.viewer.omanager.addOverlay(item);
-		});
+	// 	// add overlays
+	// 	if(Array.isArray(datas)) datas = datas.map(d=>{
+	// 		d.geometries = VieweportFeaturesToImageFeatures($CAMIC.viewer, d.geometries);
+	// 		const id = d.provenance.analysis.execution_id;
+	// 		const item = $D.overlayers.find(l=>l.id==id);
+	// 		item.data = d;
+	// 		item.render = anno_render;
+	// 		item.layer = $CAMIC.viewer.omanager.addOverlay(item);
+	// 	});
 
-		// wait util omanager create
-		var checkOmanager = setInterval(function () {
-			if($minorCAMIC.viewer.omanager) {
-				clearInterval(checkOmanager);
-				// add overlays to
-				event.data.forEach(id =>{
-					// find data
-					const layer = $D.overlayers.find(layer=> layer.id == id);
-					// add to the minor viewer
-					$minorCAMIC.viewer.omanager.addOverlay({id:id,data:layer.data,render:anno_render,isShow:true});
-				});
-				$minorCAMIC.viewer.omanager.updateView();
-			}
-		}, 500);
+	// 	// wait util omanager create
+	// 	var checkOmanager = setInterval(function () {
+	// 		if($minorCAMIC.viewer.omanager) {
+	// 			clearInterval(checkOmanager);
+	// 			// add overlays to
+	// 			event.data.forEach(id =>{
+	// 				// find data
+	// 				const layer = $D.overlayers.find(layer=> layer.id == id);
+	// 				// add to the minor viewer
+	// 				$minorCAMIC.viewer.omanager.addOverlay({id:id,data:layer.data,render:anno_render,isShow:true});
+	// 			});
+	// 			$minorCAMIC.viewer.omanager.updateView();
+	// 		}
+	// 	}, 500);
 
-	})
-	.catch(function(e){
-		console.error(e);
-	}).finally(function(){
+	// })
+	// .catch(function(e){
+	// 	console.error(e);
+	// }).finally(function(){
 
-	});
+	// });
 
 }
 
@@ -199,25 +209,35 @@ function multSelector_cancel(){
 function openSecondaryViewer(){
 	// ui changed
 	const main = document.getElementById('main_viewer');
-	const secondary = document.getElementById('secondary');
+	const minor = document.getElementById('minor_viewer');
 	main.classList.remove('main');
 	main.classList.add('left');
-	secondary.classList.remove('none');
-	secondary.classList.add('right');
-	Loading.open(main,'Waiting for Operation.',600);
-	$UI.multSelector.elt.classList.remove('none');
-	$UI.multSelector.setData($D.overlayers.map(l=>[l.id,l.name]));
+
+	minor.classList.remove('none');
+	// minor.classList.add('display');
+	minor.classList.add('right');
+
+	const nav_size = {
+		'height':$CAMIC.viewer.controls.bottomright.querySelector('.navigator').style.height,
+		'width':$CAMIC.viewer.controls.bottomright.querySelector('.navigator').style.width
+	}
+	setTimeout(function() { multSelector_action(nav_size); }, 100);
+	
+	//Loading.open(main,'Waiting for Operation.',600);
+	//$UI.multSelector.elt.classList.remove('none');
+	// $UI.multSelector.setData($D.overlayers.map(l=>[l.id,l.name]));
 }
 
 function closeSecondaryViewer(){
 	// ui changed
 	const main = document.getElementById('main_viewer');
-	const secondary = document.getElementById('secondary');
+	const minor = document.getElementById('minor_viewer');
 	main.classList.add('main');
 	main.classList.remove('left');
-	secondary.classList.add('none');
-	secondary.classList.remove('right');
-	$UI.multSelector.elt.classList.add('none');
+	minor.classList.add('none');
+	minor.classList.remove('right');
+	$CAMIC.viewer.controls.bottomright.style.display = '';
+	
 	const li = $UI.toolbar.getSubTool('sbsviewer');
 	li.querySelector('input[type="checkbox"]').checked = false;
 	Loading.close();
@@ -232,10 +252,10 @@ function closeSecondaryViewer(){
 		$minorCAMIC.destroy();
 		$minorCAMIC = null;
 	}
-	const minor = document.getElementById('minor_viewer');
-	minor.classList.remove('display');
-	minor.classList.add('none');
 
+	// hide on layersViewer
+	$UI.layersViewerMinor.toggleAllItems();
+	$UI.layersViewerMinor.setting.data.forEach(d =>delete d.layer);
 }
 
 // side menu close callback
@@ -460,7 +480,7 @@ function convertHumanAnnotationToPopupBody(notes){
 
 function anno_delete(data){
 	if(!data.id) return;
-	const annotationData = $D.overlayers.find(d=>d.data._id.$oid == data.oid);
+	const annotationData = $D.overlayers.find(d=>d.data && d.data._id.$oid == data.oid);
 	let message;
 	if(annotationData.data.geometries){
 		message = `Are you sure you want to delete this Annotation {ID:${data.id}} with ${annotationData.data.geometries.features.length} mark(s)?`;
@@ -508,9 +528,13 @@ function deleteCallback(data){
 	// remove overlay
     $D.overlayers.splice(data.index, 1);
     // update layer manager
+    $UI.layersViewer.removeItemById(data.id);
+    $UI.layersViewerMinor.removeItemById(data.id);
+
     $CAMIC.viewer.omanager.removeOverlay(data.id);
+    if($minorCAMIC&&$minorCAMIC.viewer)$minorCAMIC.viewer.omanager.removeOverlay(data.id);
     // update layers Viewer
-    $UI.layersViewer.update();
+    //$UI.layersViewer.update();
 	// close popup panel
     $UI.annotPopup.close();
 
@@ -613,7 +637,17 @@ function anno_callback(data){
 			$UI.message.addWarning(`Annotation Save Failed`);
 			return;
 		}
-		loadAnnotationById(null,exec_id);
+		// create layer data
+		const new_item = {id: exec_id, name: noteData.name, typeId: typeIds['human'], typeName: 'human', data: null};
+		$D.overlayers.push(new_item);
+		$UI.layersViewer.addItem(new_item);
+		$UI.layersViewerMinor.addItem(new_item,($minorCAMIC&&$minorCAMIC.viewer)?true:false);
+
+		//console.log($D.overlayers);
+		// data for UI 
+		//return;
+		loadAnnotationById($CAMIC,$UI.layersViewer.getDataItemById(exec_id),saveAnnotCallback);
+		if($minorCAMIC&&$minorCAMIC.viewer) loadAnnotationById($minorCAMIC, $UI.layersViewerMinor.getDataItemById(exec_id),null);
 	})
 	.catch(e=>{
 		Loading.close();
@@ -656,63 +690,91 @@ function algo_callback(data){
 
 // overlayer manager callback function for show or hide
 function callback(data){
-	data.forEach(item => {
-		if(!item.layer){
+	const viewerName = this.toString();
+	let camic = null;
+	switch (viewerName) {
+		case 'main':
+			camic = $CAMIC
+			break;
+		case 'minor':
+			camic = $minorCAMIC
+			break;
+		default:
+			break;
+	}
+	// const ids = data.filter(d=> d.item.data==null).map(d=>d.item.id);
+	// if(ids&&ids.length > 0){
+	// 	// load annotation data
+	// 	loadAnnotationByIds(this,ids,null);
+	// }
+	data.forEach(d => {
+		const item = d.item;
+		if(!item.data){
 			// load layer data
-			loadAnnotationById(item,item.id);
-
+			loadAnnotationById(camic, d, null);
 		}else{
-			item.layer.isShow = item.isShow;
-			$CAMIC.viewer.omanager.updateView();
+			if(!d.layer) d.layer = camic.viewer.omanager.addOverlay(item);
+			d.layer.isShow = d.isShow;
+			camic.viewer.omanager.updateView();
 		}
 	});
 }
+function minor_callback(data){
+	console.log(data);
+}
 
-function loadAnnotationById(item,id){
+function openMinorControlPanel(){
+	$UI.layersList.displayContent('left',true,'head');
+	$UI.layersList.triggerContent('left','close');
+	$UI.layersList.displayContent('right',true);
+	$UI.layersList.triggerContent('right','open');
+}
+
+function closeMinorControlPanel(){
+	$UI.layersList.displayContent('left',false,'head');
+	$UI.layersList.triggerContent('left','open');
+	$UI.layersList.displayContent('right',false);
+	$UI.layersList.triggerContent('right','close');
+}
+
+function loadAnnotationById(camic, layerData ,callback){
+			
+			layerData.item.loading = true;
+			const item = layerData.item;
+
 			Loading.open(document.body,'loading layers...');
-			$CAMIC.store.getMarkByIds([id],$D.params.data.name)
+
+			$CAMIC.store.getMarkByIds([item.id],$D.params.data.name)
 			.then(data =>{
+				delete item.loading;
+
 				// response error
 				if(data.error){
 					const errorMessage = `${data.text}: ${data.url}`;
+					console.error(errorMessage);
 					$UI.message.addError(errorMessage, 5000);
-					const layer = $D.overlayers.find(layer => layer.id==id);
-					if(layer){
-						layer.isShow = false;
-						$UI.layersViewer.update();
-					}
+					// delete item form layview
+					removeElement($D.overlayers,item.id);
+					$UI.layersViewer.removeItemById(item.id);
+					$UI.layersViewerMinor.removeItemById(item.id);
 					return;
 				}
 
 				// no data found
 				if(!data[0]){
-					console.log(`Annotation:${id} doesn't exist.`);
-					$UI.message.addError(`Annotation:${id} doesn't exist.`,5000);
+					console.warn(`Annotation: ${item.name}(${item.id}) doesn't exist.`);
+					$UI.message.addWarning(`Annotation: ${item.name}(${item.id}) doesn't exist.`,5000);
 					// delete item form layview
-					if(item) removeElement($D.overlayers,id);
-					$UI.layersViewer.update();
+					removeElement($D.overlayers,item.id);
+					$UI.layersViewer.removeItemById(item.id);
+					$UI.layersViewerMinor.removeItemById(item.id);
 					return;
-				}
-
-
-
-
-				if(!item){
-					item = covertToLayViewer(data[0].provenance);
-					item.isShow = true;
-					// update lay viewer UI
-					$D.overlayers.push(item);
-					$UI.layersViewer.update();
-					saveAnnotCallback();
-				}else{
-					data[0].isShow = item.isShow;
 				}
 
 				// for support quip 2.0 data model
 				if(data[0].geometry){
-
 					// twist them
-					var image = $CAMIC.viewer.world.getItemAt(0);
+					var image = camic.viewer.world.getItemAt(0);
 					this.imgWidth = image.source.dimensions.x;
 					this.imgHeight = image.source.dimensions.y;
 					item.data = data.map(d => {
@@ -730,20 +792,21 @@ function loadAnnotationById(item,id){
 							properties:d.properties,
 							geometry:d.geometry
 						}
-
-
 					});
-					if(item) data[0].isShow = item.isShow;
+					// if(item) data[0].isShow = item.isShow;
 					item.render = old_anno_render;
 				}else{
-					data[0].geometries = VieweportFeaturesToImageFeatures($CAMIC.viewer, data[0].geometries);
+					data[0].geometries = VieweportFeaturesToImageFeatures(camic.viewer, data[0].geometries);
 					item.data = data[0];
 					item.render = anno_render;
 				}
 
 				// create lay and update view
-				item.layer = $CAMIC.viewer.omanager.addOverlay(item);
-				$CAMIC.viewer.omanager.updateView();
+				layerData.layer = camic.viewer.omanager.addOverlay(item);
+				camic.viewer.omanager.updateView();
+
+				if(callback) callback.call(layerData);
+
 			})
 			.catch(e=>{
 				console.error(e);
