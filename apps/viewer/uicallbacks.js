@@ -3,8 +3,6 @@
 
 /* UI callback functions list */
 function toggleViewerMode(opt){
-	const main = document.getElementById('main_viewer');
-	const secondary = document.getElementById('secondary');
 	const canvasDraw = $CAMIC.viewer.canvasDrawInstance;
 	if(opt.checked){
 		// turn off drawing
@@ -202,10 +200,6 @@ function synchornicView2(data){
   active2 = false;
 }
 
-function multSelector_cancel(){
-	closeSecondaryViewer();
-}
-
 function openSecondaryViewer(){
 	// ui changed
 	const main = document.getElementById('main_viewer');
@@ -222,10 +216,6 @@ function openSecondaryViewer(){
 		'width':$CAMIC.viewer.controls.bottomright.querySelector('.navigator').style.width
 	}
 	setTimeout(function() { multSelector_action(nav_size); }, 100);
-	
-	//Loading.open(main,'Waiting for Operation.',600);
-	//$UI.multSelector.elt.classList.remove('none');
-	// $UI.multSelector.setData($D.overlayers.map(l=>[l.id,l.name]));
 }
 
 function closeSecondaryViewer(){

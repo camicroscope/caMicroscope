@@ -20,6 +20,8 @@
 		<link rel='stylesheet' type='text/css' media='all' href='../../components/camessage/camessage.css'/>
  		<link rel='stylesheet' type='text/css' media='all' href='../../components/loading/loading.css'/>
  		<link rel='stylesheet' type='text/css' media='all' href='../../components/toolbar/toolbar.css'/>
+ 		<!-- add modalbox css -->
+		<link rel='stylesheet' type='text/css' media='all' href='../../components/modalbox/modalbox.css'/>
 		<!-- color picker css -->
 		<link rel='stylesheet' type='text/css' media='all' href='../../common/colorpicker/color-picker.css'/>
 
@@ -32,7 +34,11 @@
 		<script type='text/javascript' src='../../../components/camessage/camessage.js'></script>
 		<script type='text/javascript' src='../../components/loading/loading.js' ></script>
 		<script type='text/javascript' src='../../components/toolbar/toolbar.js' ></script>
+		<!-- modalbox -->
+		<script type='text/javascript' src='../../components/modalbox/modalbox.js'></script>
 		<script type='text/javascript' src='../../common/colorpicker/color-picker.js' ></script>
+		<script type='text/javascript' src='../../common/FileSaver.min.js' ></script>
+		<script type='text/javascript' src='../../common/jszip.min.js' ></script>
 		<!-- open seadragon lib-->
 		<script type='text/javascript' src='../../core/openseadragon/openseadragon.js' ></script>
 		<script type='text/javascript' src='../../core/openseadragon-imaginghelper.min.js'></script>
@@ -68,7 +74,7 @@
         <div id='cames' style='z-index:600'></div>
 		<!-- toolbar -->
 		<div id = 'ca_tools'></div>
-
+		<div id='modalbox'></div>
 		<div id ='main_viewer' class='main'></div>
 	</body>
 	<script type="text/javascript">

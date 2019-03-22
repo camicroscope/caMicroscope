@@ -17,6 +17,13 @@ function initialize(){
   // because UI components need data to initialize
   //initUIcomponents();
   $UI.message = new MessageQueue();
+  
+  $UI.modalbox = new ModalBox({
+    id:'modalbox',
+    hasHeader:true,
+    headerText:'Patch List',
+    hasFooter:false
+  });
   // create a viewer and set up
   initCore();
 }
@@ -44,6 +51,7 @@ function initCore(){
     slideQuery.name = $D.params.slide
     slideQuery.location = $D.params.location
     $CAMIC = new CaMic("main_viewer",slideQuery, opt);
+
   }catch(error){
     Loading.close();
     $UI.message.addError('Core Initialization Failed');
@@ -128,16 +136,81 @@ function initCore(){
   });
 }
 function downloadLabel(){
-  let text =`{"slideId":${$D.params.data['_id']['$oid']},"name":${$D.params.data['name']},"patches":${JSON.stringify($CAMIC.viewer.pmanager.exportPatchesAsJSON())}}`;
-  var element = document.createElement('a');
-  element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
-  element.setAttribute('download', `${$D.params.data['name']}-Patches-${new Date().toISOString()}.json`);
-  element.style.display = 'none';
-  document.body.appendChild(element);
-  element.click();
-  document.body.removeChild(element);
+  if(!$CAMIC.viewer.pmanager.hasPatches()){
+    alert('There is no patches');
+    return;
+  }
+
+  // create josn object
+  const data = {
+    slideId:$D.params.data['_id']['$oid'],
+    name:$D.params.data['name'],
+    location:$D.params.data['location']
+  };
+
+  data.patches = $CAMIC.viewer.pmanager.exportPatchesAsJSON('image');
+  console.log(data.patches);
+  getPatchsZip(data);
+  // let text =`{"slideId":"${$D.params.data['_id']['$oid']}","name":"${$D.params.data['name']}","patches":${JSON.stringify($CAMIC.viewer.pmanager.exportPatchesAsJSON())}}`;
+  // var element = document.createElement('a');
+  // element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+  // element.setAttribute('download', `${$D.params.data['name']}-Patches-${new Date().toISOString()}.json`);
+  // element.style.display = 'none';
+  // document.body.appendChild(element);
+  // element.click();
+  // document.body.removeChild(element);
 
 }
+// patch.status
+// 0 - loading image
+// 1 - loaded
+// 2 - error
+function getPatchsZip(data){
+  const zip = new JSZip();
+  const imgFolder = zip.folder("images");
+  empty($UI.modalbox.body);
+  createPatchList(data.patches);
+  $UI.modalbox.open();
+  // return;
+  data.patches.forEach((p,index)=>{
+    // create somthing
+    
+    // get image from iip
+    if(!p.isPoint) getImage({
+      zip:zip,
+      images:imgFolder,
+      data:data,
+      patch:p
+    }, getImageCallback);
+  })
+
+  function check(patches){
+    const p = patches.filter(p=>{return !p.isPoint}).find(p=>{return (!p.error)&&(!p.location)});
+    if(p) return false;
+    return true;
+  }
+
+  var checkImageIsReady = setInterval(function () {
+   if(check(data.patches)) {
+    clearInterval(checkImageIsReady);
+    $UI.modalbox.body.innerHTML+=`<div style='color:#365f9c;font-size:20px'> Compressing...</div>`
+    data.patches.forEach(p=> {delete p.label})
+    const text = JSON.stringify(data);
+    zip.file(`data.json`, text);
+    console.log(text);
+    zip.generateAsync({type:"blob"})
+    .then(function(content) {
+        // see FileSaver.js
+        saveAs(content, `${data.name}-Patches-${new Date().toISOString()}.zip`);
+        $UI.modalbox.close();
+    });
+   }
+  }, 500);
+
+}
+
+
+
 function toggleMode(data){
   const mode = data.value;
   switch (mode) {
@@ -176,4 +249,55 @@ function redirect(url ,text = '', sec = 5){
     timer--;
 
   }, 1000);
+}
+
+
+function getImage(result, callback){
+  const data = result.data;
+  const size = result.patch.size;
+  const url = `${window.location.origin}/img/IIP/raw/?IIIF=${data.location}/${size.x},${size.y},${size.width},${size.height}/full/0/default.jpg`;
+  fetch(url).then(function(response) {
+    if(response.ok) {
+      return response.blob();
+    }
+    // error
+    const errorTxt = 'Detch Network response was not ok.';
+    result.patch.label.textContent = errorTxt;
+    result.patch.error = errorTxt;
+    console.error(errorTxt, error.message);    
+
+    throw new Error('Detch Network response was not ok.');
+  }).then(function(blob) {
+    if(callback) callback(result, blob);
+  }).catch(function(error) {
+    const errorTxt = 'There has been a problem with your fetch slide';
+    result.patch.label.textContent = errorTxt;
+    result.patch.error = errorTxt;
+    console.error(errorTxt, error.message);
+  });
+}
+
+function getImageCallback(result, blob){
+  const index = result.data.patches.findIndex(p=>{return p==result.patch});
+  result.images.file(`${index}.jpg`,blob);
+  result.patch.location = `./images/${index}.jpg`;
+  result.patch.label.textContent = 'Finished';
+}
+function createPatchList(patches){
+  const list = document.createElement('div');
+
+  patches.forEach((p,i)=>{
+    const label = p.isPoint?'Finished':'Loading...';
+    const type = p.isPoint?'(Point)':'(Rectangle)';
+    const pdiv = document.createElement('div');
+    pdiv.style.display='flex';
+    pdiv.style.padding='1px';
+    pdiv.innerHTML =`<div style="background-color:${p.color};width:22px;height:22px;border:2px #365f9c solid;"></div>
+    <div style="padding:5px;background-color:#365f9c;font-size:14px;">Patch #${i}${type}</div>
+    <div style="padding:5px;background-color:#365f9c;font-size:14px;">${label}</div>`;
+    p.label = pdiv.querySelectorAll('div')[2];
+    list.appendChild(pdiv);
+  })
+  $UI.modalbox.body.appendChild(list);
+
 }
