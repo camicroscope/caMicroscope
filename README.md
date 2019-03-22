@@ -16,6 +16,8 @@ The Image Viewer server is based on [IIPImage server](http://iipimage.sourceforg
 
 caMicroscope should be deployed as part of a stack; for further information see the [caMicroscope distribution repository](https://github.com/camicroscope/Distro).
 
+To use caMicroscope as a standalone application, see [nanoborb](https://github.com/SBU-BMI/Nanoborb/releases).
+
 ## Core Features
 
 * Variable resolution browser rendering of slide images of multiple formats
