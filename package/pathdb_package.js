@@ -1,6 +1,7 @@
 function PathDbMods() {
+  console.log("PathDbMods()...");
   // put the auth jwt in cookie as token
-  fetch("../../pathdb/slide/unmod/jwt/token", {
+  fetch("/jwt/token", {
     method: 'GET',
     credentials: 'include'
   }).then(x => x.json()).then(x => {
@@ -132,7 +133,7 @@ function PathDbMods() {
   }
   Store.prototype.default_findSlide = Store.prototype.findSlide;
   Store.prototype.findSlide = function(slide, specimen, study, location) {
-    var url = "../../pathdb/slide/info/" + slide + "?_format=json"
+    var url = "/node/" + slide + "?_format=json"
     return fetch(url, {
       mode: "cors",
       headers: new Headers({
@@ -149,7 +150,7 @@ function PathDbMods() {
   }
   Store.prototype.default_getSlide = Store.prototype.getSlide
   Store.prototype.getSlide = function(id) {
-    var url = "../../pathdb/slide/info/" + id + "?_format=json"
+    var url = "/node/" + id + "?_format=json"
     return fetch(url, {
       mode: "cors",
       headers: new Headers({

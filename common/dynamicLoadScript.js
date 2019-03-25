@@ -1,3 +1,4 @@
+console.log("running dynamic load script......");
 IsPackageLoading = false;
 ImgloaderMode = 'iip';
 const params = getUrlVars();
