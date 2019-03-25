@@ -90,9 +90,9 @@ function initCore() {
 
   try {
     let slideQuery = {}
-    slideQuery.id = $D.params.slideId
-    slideQuery.name = $D.params.slide
-    slideQuery.location = $D.params.location
+    slideQuery.id = $D.params.slideId;
+    slideQuery.name = $D.params.slide;
+    slideQuery.location = $D.params.location;
     $CAMIC = new CaMic("main_viewer", slideQuery, opt);
   } catch (error) {
     Loading.close();
@@ -219,6 +219,7 @@ function checkSize(imgColl, imagingHelper) {
   
   self.__top_left = top_left;
   console.log(top_left);
+  console.log(bottom_right);
   // console.log(imagingHelper._viewer.viewport.viewportToImageCoordinates(0,0));
 
   // Convert to screen coordinates
@@ -317,6 +318,7 @@ function segmentROI(box) {
   // }, false);
 
   // SEGMENTATION CANVAS
+  console.log($CAMIC.slideId);
   let camicanv = $CAMIC.viewer.drawer.canvas; //Original Canvas
   let imgData = (camicanv.getContext('2d')).getImageData(box.xCoord, box.yCoord, box.width, box.height);
   console.log('X: ' + box.xCoord);

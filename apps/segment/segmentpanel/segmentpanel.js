@@ -27,7 +27,8 @@ function SegmentPanel(viewer){
 		
 		<canvas class='out'></canvas>
 		<canvas class='src'></canvas>
-		<canvas id='c2s'></canvas>
+		<canvas id ='fullsrc' class='hiddenCanvas'></canvas>
+		<canvas id='c2s' class='hiddenCanvas'></canvas>
 		<a id='csvDLB'></a>
 	`;
 	
@@ -45,6 +46,7 @@ function SegmentPanel(viewer){
 
 	this.__out = this.elt.querySelector('.out');
 	this.__src = this.elt.querySelector('.src');
+	this.__fullsrc = this.elt.querySelector('#fullsrc');
 	this.__c2s = this.elt.querySelector('#c2s');
 	this.__btn_save = this.elt.querySelector('#save');
 	this.__btn_savecsv = this.elt.querySelector('#savecsv');

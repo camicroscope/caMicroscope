@@ -124,6 +124,10 @@
   display: none;
 }
 
+.segment-panel .hiddenCanvas {
+  display: none;
+}
+
 .segment-panel label {
   vertical-align: middle;
   padding-top: 4px;
