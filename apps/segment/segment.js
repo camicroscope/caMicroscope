@@ -218,6 +218,15 @@ function checkSize(imgColl, imagingHelper) {
   const self = $UI.segmentPanel;
   
   self.__top_left = top_left;
+  self.__spImgX = top_left[0];
+  self.__spImgY = top_left[1];
+  self.__spImgWidth = bottom_right[0]-top_left[0];
+  self.__spImgHeight = bottom_right[1]-top_left[1];
+  console.log('iX: '+self.__spImgX);
+  console.log('iY: '+self.__spImgY);
+  console.log('iW: '+self.__spImgWidth);
+  console.log('iH: '+self.__spImgHeight);
+  
   console.log(top_left);
   console.log(bottom_right);
   // console.log(imagingHelper._viewer.viewport.viewportToImageCoordinates(0,0));
@@ -277,7 +286,7 @@ function loadImageToCanvas(imgData, canvas) {
 function segmentROI(box) {
 
   // But first, some setup...
-
+  const self = $UI.segmentPanel;
 
   // let div = document.createElement('div');
   // document.body.appendChild(div);
@@ -318,22 +327,34 @@ function segmentROI(box) {
   // }, false);
 
   // SEGMENTATION CANVAS
-  console.log($CAMIC.slideId);
-  let camicanv = $CAMIC.viewer.drawer.canvas; //Original Canvas
-  let imgData = (camicanv.getContext('2d')).getImageData(box.xCoord, box.yCoord, box.width, box.height);
-  console.log('X: ' + box.xCoord);
-  console.log('Y: ' + box.yCoord);
+  let fullResCvs = self.__fullsrc;
+  self.__img.src = $CAMIC.slideId+'\/'+self.__spImgX+','+self.__spImgY+','+self.__spImgWidth+','+self.__spImgHeight+'\/'+self.__spImgWidth+',/0/default.jpg';
+  self.__img.onload = function() {
+    let image = cv.imread(self.__img);
+    cv.imshow(fullResCvs, image);
+    image.delete();
+    let imgData = fullResCvs.getContext('2d').getImageData(0,0,fullResCvs.width,fullResCvs.height);
+
+    // loadImageToCanvas(imgData, $UI.segmentPanel.__out);
+    loadImageToCanvas(imgData, self.__src);
+
+    const alpha = +self.__threshold.value;
+    self.__tlabel.innerHTML = alpha;
+    watershed(self.__src,self.__out,alpha);
+  };
+
+  // let camicanv = $CAMIC.viewer.drawer.canvas; //Original Canvas
+  // let imgData = (camicanv.getContext('2d')).getImageData(box.xCoord, box.yCoord, box.width, box.height);
+  // console.log('X: ' + box.xCoord);
+  // console.log('Y: ' + box.yCoord);
   
-  // loadImageToCanvas(imgData, $UI.segmentPanel.__out);
-  loadImageToCanvas(imgData, $UI.segmentPanel.__src);
+  // loadImageToCanvas(imgData, self.__out);
+  // loadImageToCanvas(imgData, self.__src);
 
   // TRIGGER SEGMENTATION
-  const alpha = +$UI.segmentPanel.__threshold.value;
-  $UI.segmentPanel.__tlabel.innerHTML = alpha;
-  watershed($UI.segmentPanel.__src,$UI.segmentPanel.__out,alpha);
-
-
-
+  // const alpha = +self.__threshold.value;
+  // self.__tlabel.innerHTML = alpha;
+  // watershed(self.__src,self.__out,alpha);
 
   /*
   let dataURL = loadImageToCanvas(imgData, 'canvasInput', false);
@@ -464,7 +485,7 @@ function watershed(inn, out, thresh) {
       // console.log(cnt);
       ++segcount;
       cv.approxPolyDP(cnt, tmp, 1, true);
-      console.log(tmp.data32S);
+      // console.log(tmp.data32S);
       cv.drawContours(cloneSrc, contours, i, color, lineWidth, cv.FILLED, hierarchy,1);
       cv.drawContours(i2s , contours, i, color, lineWidth, cv.FILLED, hierarchy,1);
     }
@@ -475,9 +496,9 @@ function watershed(inn, out, thresh) {
   // Update the count
   let clabel = document.getElementById('segcount');
   clabel.innerHTML=segcount;
-  console.log("Labels: " + segcount);
-  console.log(cloneSrc.cols);
-  console.log(cloneSrc.rows);
+  // console.log("Labels: " + segcount);
+  // console.log(cloneSrc.cols);
+  // console.log(cloneSrc.rows);
 
   // Draw barriers
   // console.log(cloneSrc.rows,cloneSrc.cols);
