@@ -302,6 +302,16 @@ function initUIcomponents(){
     type:'btn',
     callback:openHeatmap
   });
+  subToolsOpt.push({
+    name:'labeling',
+    icon:'label',
+    title:'Labeling',
+    value:'labeling',
+    type:'btn',
+    callback:function(){
+      window.location.href = `../labeling/labeling.html${window.location.search}`;
+    }
+  });  
   // subToolsOpt.push({
   //   name:'segment',
   //   icon: 'timeline',

@@ -446,7 +446,8 @@
             note:this.element.querySelector('.note_panel textarea').value,
             color:this.element.querySelector('.color input').value,
             isPoint:this.isPoint,
-            size:this.getRect(coordinates)
+            size:this.getRect(coordinates),
+            widthInClient:this.element.offsetWidth
             //,
             //size:this.getRect(coordinates)
         }

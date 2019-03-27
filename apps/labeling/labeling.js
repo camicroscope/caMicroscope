@@ -13,19 +13,25 @@ const $D = {
 };
 // initialize viewer page
 function initialize(){
-  // init UI -- some of them need to wait data loader to load data
-  // because UI components need data to initialize
-  //initUIcomponents();
-  $UI.message = new MessageQueue();
-  
-  $UI.modalbox = new ModalBox({
-    id:'modalbox',
-    hasHeader:true,
-    headerText:'Patch List',
-    hasFooter:false
-  });
-  // create a viewer and set up
-  initCore();
+  var checkPackageIsReady = setInterval(function () {
+    if(IsPackageLoading) {
+      clearInterval(checkPackageIsReady);
+      // init UI -- some of them need to wait data loader to load data
+      // because UI components need data to initialize
+      //initUIcomponents();
+      $UI.message = new MessageQueue();
+      
+      $UI.modalbox = new ModalBox({
+        id:'modalbox',
+        hasHeader:true,
+        headerText:'Patch List',
+        hasFooter:false
+      });
+      // create a viewer and set up
+      initCore();
+    }
+  }, 100);
+
 }
 
 
@@ -87,8 +93,19 @@ function initCore(){
     zIndex:601,
     hasMainTools:false,
     //mainToolsCallback:mainMenuChange,
-    subTools:[
-
+    subTools:[{
+        icon: 'insert_photo',
+        type: 'btn',
+        value: 'viewer',
+        title: 'Viewer',
+        callback: function () {
+          if (window.location.search.length > 0) {
+            window.location.href = '../viewer/viewer.html' + window.location.search;
+          } else {
+            window.location.href = '../viewer/viewer.html';
+          }
+        }
+      },
       // rectangle
       {
         id:'labeling_mode',
@@ -149,7 +166,6 @@ function downloadLabel(){
   };
 
   data.patches = $CAMIC.viewer.pmanager.exportPatchesAsJSON('image');
-  console.log(data.patches);
   getPatchsZip(data);
   // let text =`{"slideId":"${$D.params.data['_id']['$oid']}","name":"${$D.params.data['name']}","patches":${JSON.stringify($CAMIC.viewer.pmanager.exportPatchesAsJSON())}}`;
   // var element = document.createElement('a');
@@ -194,10 +210,21 @@ function getPatchsZip(data){
    if(check(data.patches)) {
     clearInterval(checkImageIsReady);
     $UI.modalbox.body.innerHTML+=`<div style='color:#365f9c;font-size:20px'> Compressing...</div>`
-    data.patches.forEach(p=> {delete p.label})
-    const text = JSON.stringify(data);
-    zip.file(`data.json`, text);
-    console.log(text);
+    data.patches.forEach(p=> {
+      delete p.label;
+      delete p.widthInClient;
+    })
+    const meta_content = [['name','location'],[data.name,data.location]];
+    const patch_cols = ['id','color','note','isPoint','x','y','width','height','loaction'];
+    const patches_content = [patch_cols];
+
+    data.patches.forEach((p,idx)=>{
+      patches_content.push([idx,p['color'],p['note'],p['isPoint'],p['size']['x'],p['size']['y'],p['size']['width'],p['size']['height'],p['location']]);
+    });
+    
+    zip.file(`metadata.csv`, meta_content.map(r=>r.join(",")).join("\n"));
+    zip.file(`patches.csv`, patches_content.map(r=>r.join(",")).join("\n"));
+    
     zip.generateAsync({type:"blob"})
     .then(function(content) {
         // see FileSaver.js
@@ -206,10 +233,7 @@ function getPatchsZip(data){
     });
    }
   }, 500);
-
 }
-
-
 
 function toggleMode(data){
   const mode = data.value;
@@ -255,7 +279,8 @@ function redirect(url ,text = '', sec = 5){
 function getImage(result, callback){
   const data = result.data;
   const size = result.patch.size;
-  const url = `${window.location.origin}/img/IIP/raw/?IIIF=${data.location}/${size.x},${size.y},${size.width},${size.height}/full/0/default.jpg`;
+  const widthInClient = result.patch.widthInClient*OpenSeadragon.pixelDensityRatio;
+  const url = ImgloaderMode == 'iip'?`${window.location.origin}/img/IIP/raw/?IIIF=${data.location}/${size.x},${size.y},${size.width},${size.height}/${widthInClient},/0/default.jpg` : `${data.location}/${size.x},${size.y},${size.width},${size.height}/${widthInClient},/0/default.jpg`;
   fetch(url).then(function(response) {
     if(response.ok) {
       return response.blob();
