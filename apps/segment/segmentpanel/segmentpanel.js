@@ -4,10 +4,10 @@
 function SegmentPanel(viewer){
 
 	const temp = `
-		<div id='close' class='material-icons settings'>close</div>
-		<div id='save' class='material-icons settings'>save</div>
-		<div id='savecsv' class='material-icons settings'>list</div>
-		<div id='thresh' class='material-icons settings'>all_out</div>
+		<div tooltip='Close ROI' tooltip-position='top'><div id='close' class='material-icons settings'>close</div></div>
+		<div id='save' class='settings' tooltip='Save PNG Image' tooltip-position='top'><div class='material-icons'>save</div></div>
+		<div id='savecsv' class='settings' tooltip='Save CSV of segmentation' tooltip-position='top'><div class='material-icons settings'>list</div></div>
+		<div id='thresh' class='settings' tooltip='Adjust settings' tooltip-position='top'><div class='material-icons'>all_out</div></div>
 		<div id='amin' class='material-icons settings'>arrow_downward</div>
 		<div id='amax' class='material-icons settings'>arrow_upward</div>
 
