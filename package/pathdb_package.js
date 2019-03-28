@@ -57,9 +57,6 @@ function PathDbMods() {
     }
     let bySlide = fetch(url + "?" + objToParamStr(query), {
       credentials: "same-origin",
-      headers: {
-        'Authorization': this.auth
-      },
       mode: "cors"
     }).then(this.errorHandler).then(x => this.filterBroken(x, "mark"))
     return bySlide
@@ -104,9 +101,6 @@ function PathDbMods() {
     }
     let bySlide = fetch(url + "?" + objToParamStr(query), {
       credentials: "same-origin",
-      headers: {
-        'Authorization': this.auth
-      },
       mode: "cors"
     }).then(this.errorHandler).then(x => this.filterBroken(x, "mark"))
     return bySlide
@@ -124,9 +118,6 @@ function PathDbMods() {
     }
     let bySlide = fetch(url + "?" + objToParamStr(query), {
       credentials: "same-origin",
-      headers: {
-        'Authorization': this.auth
-      },
       mode: "cors"
     }).then(this.errorHandler)
     return bySlide
