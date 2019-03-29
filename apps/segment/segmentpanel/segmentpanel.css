@@ -53,7 +53,6 @@
 
 .segment-panel .segment-setting {
   font-size: 11px;
-  top: -43px;
   left: 0;
   position: absolute;
   height: 20px;
@@ -62,22 +61,59 @@
   border: 1px solid black;
 }
 
+#twrap {
+  top: -43px;
+}
 
+#minwrap {
+  top: -63px;
+}
+
+#maxwrap {
+  top: -83px;
+}
 
 .segment-panel .segment-count {
   font-size: 11px;
   text-align: center;
   vertical-align: middle;
   top: -22px;
-  left: 120px;
+  left: 80px;
   position: absolute;
-  padding-top: 4px;
+  padding-top: 2px;
   padding-left: 2px;
   padding-right: 2px;
-  height: 15px;
-  width: 150px;
+  height: 17px;
+  width: 146px;
   background: white;
   border: 1px solid black;
+}
+
+.segment-panel .segment-processing {
+  display: none;
+  font-size: 11px;
+  text-align: center;
+  vertical-align: middle;
+  top: -22px;
+  left: 232px;
+  position: absolute;
+  padding-top: 2px;
+  padding-left: 2px;
+  padding-right: 2px;
+  height: 17px;
+  width: 120px;
+  background: white;
+  border: 1px solid black;
+}
+
+.blink_me {
+  animation: blinker 1s linear infinite;
+}
+
+@keyframes blinker {
+  50% {
+    opacity: 0;
+  }
 }
 
 .segment-panel .segment-setting {
@@ -111,87 +147,3 @@
 #csvDLB {
   display: none;
 }
-/* 
-[tooltip]{
-  margin:20px 60px;
-  position:relative;
-  display:inline-block;
-}
-[tooltip]::before {
-    content: "";
-    position: absolute;
-    top:-26px;
-    left:50%;
-    transform: translateX(-50%);
-    border-width: 4px 6px 0 6px;
-    border-style: solid;
-    border-color: rgba(0,0,0,0.7) transparent transparent     transparent;
-    z-index: 99;
-    opacity:0;
-}
-
-[tooltip-position='left']::before{
-  left:0%;
-  top:50%;
-  margin-left:-12px;
-  transform:translateY(-50%) rotate(-90deg) 
-}
-[tooltip-position='top']::before{
-  left:50%;
-}
-[tooltip-position='buttom']::before{
-  top:100%;
-  margin-top:8px;
-  transform: translateX(-50%) translateY(-100%) rotate(-180deg)
-}
-[tooltip-position='right']::before{
-  left:100%;
-  top:50%;
-  margin-left:1px;
-  transform:translateY(-50%) rotate(90deg)
-}
-
-[tooltip]::after {
-    content: attr(tooltip);
-    position: absolute;
-    left:50%;
-    top:-26px;
-    transform: translateX(-50%)   translateY(-100%);
-    background: rgba(7,7,7,0.7);
-    text-align: center;
-    color: #fff;
-    padding:4px 2px;
-    font-size: 12px;
-    min-width: 80px;
-    border-radius: 5px;
-    pointer-events: none;
-    padding: 4px 4px;
-    z-index:99;
-    opacity:0;
-}
-
-[tooltip-position='left']::after{
-  left:0%;
-  top:50%;
-  margin-left:-8px;
-  transform: translateX(-100%)   translateY(-50%);
-}
-[tooltip-position='top']::after{
-  top: -20px;
-  left:50%;
-}
-[tooltip-position='bottom']::after{
-  top:100%;
-  margin-top:8px;
-  transform: translateX(-50%) translateY(0%);
-}
-[tooltip-position='right']::after{
-  left:100%;
-  top:50%;
-  margin-left:8px;
-  transform: translateX(0%)   translateY(-50%);
-}
-
-[tooltip]:hover::after,[tooltip]:hover::before {
-   opacity:1
-} */

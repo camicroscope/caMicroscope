@@ -12,6 +12,7 @@ const $D = {
 const objAreaMin = 400;
 const objAreaMax = 4500;
 const lineWidth = 2;
+const timeOutMs = 10;
 
 
 function initialize() {
@@ -119,22 +120,55 @@ function initCore() {
     $UI.segmentPanel.__threshold.addEventListener('input', function(e){
       const alpha = +this.__threshold.value;
       this.__tlabel.innerHTML = alpha;
-      watershed(this.__src,this.__out,alpha);
+    }.bind($UI.segmentPanel));
+
+    $UI.segmentPanel.__threshold.addEventListener('change', function(e){
+      let src = this.__src;
+      let out = this.__out;
+      const self = this;
+      const alpha = +this.__threshold.value;
+      self.__tlabel.innerHTML = alpha;
+      self.showProgress();
+      setTimeout(function() {
+        watershed(src,out,alpha);
+        self.hideProgress();
+      },timeOutMs);
     }.bind($UI.segmentPanel));
 
     //add event for min
     $UI.segmentPanel.__minarea.addEventListener('input', function (e) {
+      this.__minlabel.innerHTML = +this.__minarea.value;
+    }.bind($UI.segmentPanel));
+
+    $UI.segmentPanel.__minarea.addEventListener('change', function (e) {
+      let src = this.__src;
+      let out = this.__out;
+      const self = this;
       const alpha = +this.__threshold.value;
       this.__minlabel.innerHTML = +this.__minarea.value;
-      watershed(this.__src,this.__out,alpha);
+      self.showProgress();
+      setTimeout(function() {
+        watershed(src,out,alpha);
+        self.hideProgress();
+      },timeOutMs);
     }.bind($UI.segmentPanel));
 
     //add event for max
     $UI.segmentPanel.__maxarea.addEventListener('input', function (e) {
-      const alpha = +this.__threshold.value;
-      console.log(this.__maxarea.value);
       this.__maxlabel.innerHTML = +this.__maxarea.value;
-      watershed(this.__src,this.__out,alpha);
+    }.bind($UI.segmentPanel));
+
+    $UI.segmentPanel.__maxarea.addEventListener('change', function (e) {
+      let src = this.__src;
+      let out = this.__out;
+      const self = this;
+      const alpha = +this.__threshold.value;
+      this.__maxlabel.innerHTML = +this.__maxarea.value;
+      self.showProgress();
+      setTimeout(function() {
+        watershed(src,out,alpha);
+        self.hideProgress();
+      },timeOutMs);
     }.bind($UI.segmentPanel));
 
     $UI.segmentPanel.__btn_save.addEventListener('click', function(e) {
@@ -144,7 +178,6 @@ function initCore() {
 
     $UI.segmentPanel.__btn_savecsv.addEventListener('click', function(e) {
       let fname = $D.params.slideId + '_roi.csv';
-      console.log('Hit save button');
       buildAndDownloadCSV($UI.segmentPanel.__contours,fname);
     }.bind($UI.segmentPanel));
   });
@@ -327,6 +360,8 @@ function segmentROI(box) {
   // }, false);
 
   // SEGMENTATION CANVAS
+  self.showProgress();
+
   let fullResCvs = self.__fullsrc;
   self.__img.src = $CAMIC.slideId+'\/'+self.__spImgX+','+self.__spImgY+','+self.__spImgWidth+','+self.__spImgHeight+'\/'+self.__spImgWidth+',/0/default.jpg';
   self.__img.onload = function() {
@@ -341,6 +376,7 @@ function segmentROI(box) {
     const alpha = +self.__threshold.value;
     self.__tlabel.innerHTML = alpha;
     watershed(self.__src,self.__out,alpha);
+    self.hideProgress();
   };
 
   // let camicanv = $CAMIC.viewer.drawer.canvas; //Original Canvas
@@ -382,6 +418,7 @@ function segmentROI(box) {
 function watershed(inn, out, thresh) {
 
   // Read image
+  const self = $UI.segmentPanel;
   let src = cv.imread(inn);
   let i2s = cv.imread(inn);
   // Matrices
@@ -393,7 +430,6 @@ function watershed(inn, out, thresh) {
   let distTrans = new cv.Mat();
   let unknown = new cv.Mat();
   let markers = new cv.Mat();
-
 
   cv.cvtColor(i2s, i2s, cv.COLOR_RGBA2RGB, 0);
   // Store canvas to save combined image
@@ -519,8 +555,8 @@ function watershed(inn, out, thresh) {
   cv.imshow(out, cloneSrc);
   cv.imshow($UI.segmentPanel.__c2s, i2s);
   //cv.imshow($UI.segmentPanel.__out, cloneSrc);
-  // Free up memory
 
+  // Free up memory
   src.delete();
   dst.delete();
   gray.delete();

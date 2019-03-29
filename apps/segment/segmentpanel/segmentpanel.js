@@ -5,14 +5,12 @@ function SegmentPanel(viewer){
 
 	const temp = `
 		<div id='close' class='material-icons settings'>close</div>
-		<div id='save' class='material-icons settings'>save</div>
-		<div id='savecsv' class='material-icons settings'>list</div>
-		<div id='thresh' class='material-icons settings'>all_out</div>
-		<div id='amin' class='material-icons settings'>arrow_downward</div>
-		<div id='amax' class='material-icons settings'>arrow_upward</div>
+		<div id='save' class='material-icons settings' title='Save ROI Image'>save</div>
+		<div id='savecsv' class='material-icons settings' title='Save ROI CSV File'>list</div>
+		<div id='thresh' class='material-icons settings' title='Open Segmentation Settings'>all_out</div>
 
-    <div id='twrap' class='segment-setting settings'>
-      <label for="threshold">Threshold</label><input type='range' id='threshold' min='0' max='1' step='0.01' value='0.7'><label id='tlabel'>0.7</label>
+    <div id='twrap' class='segment-setting settings' style="display: none;">
+      <label for="threshold">Threshold</label><input type='range' id='threshold' min='0' max='1' step='0.01' value='0.2'><label id='tlabel'>0.7</label>
     </div>
 
     <div id='minwrap' class='segment-setting settings' style="display: none;">
@@ -24,6 +22,7 @@ function SegmentPanel(viewer){
     </div>
 		
 		<div class='segment-count'><label>Object Count: </label><label id='segcount'></label></div>
+		<div id='processing' class='segment-processing'><span class='blink_me'><em>Processing</em></span></div>
 		
 		<canvas class='out'></canvas>
 		<canvas class='src'></canvas>
@@ -32,6 +31,7 @@ function SegmentPanel(viewer){
 		<canvas id='fullSegImg' class='hiddenCanvas'></canvas>
 		<img id='imageEle' class='hiddenCanvas'></img>
 		<a id='csvDLB'></a>
+		<input id='inProgress' type='hidden' />
 	`;
 	
 	this.viewer = viewer;
@@ -58,6 +58,7 @@ function SegmentPanel(viewer){
 	this.__btn_save = this.elt.querySelector('#save');
 	this.__btn_savecsv = this.elt.querySelector('#savecsv');
 	this.__btn_csvDL = this.elt.querySelector('#csvDLB');
+	this.__indicator = this.elt.querySelector('#processing');
 
 	//threshold
 	this.__threshold = this.elt.querySelector('.segment-setting input[type=range]#threshold');
@@ -89,12 +90,12 @@ function SegmentPanel(viewer){
 		this.elt.querySelector('#thresh').addEventListener('click',function(e){
     	this.showThreshBar();
 		}.bind(this));
-		this.elt.querySelector('#amin').addEventListener('click',function(e){
-    	this.showMinBar();
-		}.bind(this));
-		this.elt.querySelector('#amax').addEventListener('click',function(e){
-    	this.showMaxBar();
-		}.bind(this));
+		// this.elt.querySelector('#amin').addEventListener('click',function(e){
+    // 	this.showMinBar();
+		// }.bind(this));
+		// this.elt.querySelector('#amax').addEventListener('click',function(e){
+    // 	this.showMaxBar();
+		// }.bind(this));
 
     this.close()
 }
@@ -113,7 +114,11 @@ SegmentPanel.prototype.save = function(){
 
 SegmentPanel.prototype.showThreshBar = function(){
 	if(this.__twrap.style.display === 'none') {
-		this.__twrap.style.display = 'flex';
+		this.__twrap.style.display = '';
+		this.__minwrap.style.display = '';
+		this.__maxwrap.style.display = '';
+	} else {
+		this.__twrap.style.display = 'none';
 		this.__minwrap.style.display = 'none';
 		this.__maxwrap.style.display = 'none';
 	}
@@ -121,25 +126,35 @@ SegmentPanel.prototype.showThreshBar = function(){
 	// alert('Showing Bar');
 };
 
-SegmentPanel.prototype.showMinBar = function(){
+SegmentPanel.prototype.showProgress = function(){
+	// console.log('In Progress');
+	this.__indicator.style.display = 'flex';
+}
 
-	if(this.__minwrap.style.display === 'none') {
-		this.__minwrap.style.display = 'flex';
-		this.__twrap.style.display = 'none';
-		this.__maxwrap.style.display = 'none';
-	}
+SegmentPanel.prototype.hideProgress = function(){
+	// console.log('Progress Finished');
+	this.__indicator.style.display = 'none';
+}
 
-};
+// SegmentPanel.prototype.showMinBar = function(){
 
-SegmentPanel.prototype.showMaxBar = function(){
+// 	if(this.__minwrap.style.display === 'none') {
+// 		this.__minwrap.style.display = 'flex';
+// 		this.__twrap.style.display = 'none';
+// 		this.__maxwrap.style.display = 'none';
+// 	}
 
-	if(this.__maxwrap.style.display === 'none') {
-		this.__maxwrap.style.display = 'flex';
-		this.__minwrap.style.display = 'none';
-		this.__twrap.style.display = 'none';
-	}
+// };
 
-};
+// SegmentPanel.prototype.showMaxBar = function(){
+
+// 	if(this.__maxwrap.style.display === 'none') {
+// 		this.__maxwrap.style.display = 'flex';
+// 		this.__minwrap.style.display = 'none';
+// 		this.__twrap.style.display = 'none';
+// 	}
+
+// };
 
 
 SegmentPanel.prototype.setPosition = function(x,y,w,h){
