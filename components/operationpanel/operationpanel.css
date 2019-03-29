@@ -1,5 +1,6 @@
 div.operations {
-    color:#365f9c;
+    overflow-y: auto;
+    color: #365f9c;
 }
 
 div.operations >  div.head label {

@@ -40,7 +40,7 @@ body {
     display: none;
 }
 
-#secondary.right {
+#minor_viewer.right {
     float: right;
     box-sizing: border-box;
     border-left: 2px solid rgb(54, 95, 156);
@@ -48,10 +48,10 @@ body {
     height: 100%;
 }
 
-#minor_viewer.display {
+/*#minor_viewer.display {
     height: 100%;
     width: 100%;
-}
+}*/
 
 /* panel style - only for mockup */
 /*
@@ -71,7 +71,7 @@ body {
 */
 /* label */
 .item_content label {
-    font-size: 1.5rem;
+    /*font-size: 1.5rem;*/
     border: none;
 }
 

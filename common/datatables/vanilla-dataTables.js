@@ -239,36 +239,6 @@
     };
 
     /**
-     * Bubble sort algorithm
-     */
-    var sortItems = function (a, b) {
-        var c, d;
-        if (1 === b) {
-            c = 0;
-            d = a.length;
-        } else {
-            if (b === -1) {
-                c = a.length - 1;
-                d = -1;
-            }
-        }
-        for (var e = !0; e;) {
-            e = !1;
-            for (var f = c; f != d; f += b) {
-                if (a[f + b] && a[f].value > a[f + b].value) {
-                    var g = a[f],
-                        h = a[f + b],
-                        i = g;
-                    a[f] = h;
-                    a[f + b] = i;
-                    e = !0;
-                }
-            }
-        }
-        return a;
-    };
-
-    /**
      * Pager truncation algorithm
      */
     var truncate = function (a, b, c, d, ellipsis) {
@@ -673,7 +643,6 @@
      * @return {void}
      */
     Columns.prototype.sort = function (column, direction, init) {
-
         var dt = this.dt;
 
         // Check column is present
@@ -729,14 +698,22 @@
         /* Sort according to direction (ascending or descending) */
         var top, btm;
         if (classList.contains(th, "asc") || direction == "asc") {
-            top = sortItems(alpha, -1);
-            btm = sortItems(numeric, -1);
+            top = alpha.sort(function(v1, v2){
+                return v1.value < v2.value
+            });
+            btm = numeric.sort(function(v1, v2){
+                return v1.value < v2.value
+            });
             dir = "descending";
             classList.remove(th, "asc");
             classList.add(th, "desc");
         } else {
-            top = sortItems(numeric, 1);
-            btm = sortItems(alpha, 1);
+            top = numeric.sort(function(v1, v2){
+                return v1.value > v2.value
+            });
+            btm = alpha.sort(function(v1, v2){
+                return v1.value > v2.value
+            });
             dir = "ascending";
             classList.remove(th, "desc");
             classList.add(th, "asc");

@@ -4,32 +4,121 @@
   position: absolute;
   border: 1px yellow solid;
   color:black;
+  cursor: default;
   z-index:300;
   /*border:2px red solid;*/
 }
 
 .segment-panel .settings {
-  font-size:18px;
+  font-size: 19px;
   position: absolute;
   border: 1px solid black;
   background: white;
+}
+
+#close {
+  position: absolute;
+  top: -22px;
+  left: 0;
+}
+
+#save {
+  position: absolute;
   top:-22px;
-  left:-10px;
+  left:20px;
+}
+
+#savecsv {
+  position: absolute;
+  top: -22px;
+  left: 40px;
+}
+
+#thresh {
+  position: absolute;
+  top: -22px;
+  left: 60px;
+}
+
+#amin {
+  position: absolute;
+  top: -22px;
+  left: 80px;
+}
+
+#amax {
+  top: -22px;
+  left: 100px;
 }
 
 .segment-panel .segment-setting {
-  /*display: none;*/
-  top: -22px;
-  left: 10px;
+  font-size: 11px;
+  left: 0;
   position: absolute;
-  height: 18px;
+  height: 20px;
+  width: 230px;
   background: white;
-  border: 1px black solid;
+  border: 1px solid black;
+}
+
+#twrap {
+  top: -43px;
+}
+
+#minwrap {
+  top: -63px;
+}
+
+#maxwrap {
+  top: -83px;
+}
+
+.segment-panel .segment-count {
+  font-size: 11px;
+  text-align: center;
+  vertical-align: middle;
+  top: -22px;
+  left: 80px;
+  position: absolute;
+  padding-top: 2px;
+  padding-left: 2px;
+  padding-right: 2px;
+  height: 17px;
+  width: 146px;
+  background: white;
+  border: 1px solid black;
+}
+
+.segment-panel .segment-processing {
+  display: none;
+  font-size: 11px;
+  text-align: center;
+  vertical-align: middle;
+  top: -22px;
+  left: 232px;
+  position: absolute;
+  padding-top: 2px;
+  padding-left: 2px;
+  padding-right: 2px;
+  height: 17px;
+  width: 120px;
+  background: white;
+  border: 1px solid black;
+}
+
+.blink_me {
+  animation: blinker 1s linear infinite;
+}
+
+@keyframes blinker {
+  50% {
+    opacity: 0;
+  }
 }
 
 .segment-panel .segment-setting {
     display: flex;
-} 
+}
 
 .segment-panel .src, .segment-panel .out {
   width: 100%;
@@ -40,5 +129,21 @@
   display: none;
 }
 
+.segment-panel #c2s {
+  display: none;
+}
 
+.segment-panel .hiddenCanvas {
+  display: none;
+}
 
+.segment-panel label {
+  vertical-align: middle;
+  padding-top: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#csvDLB {
+  display: none;
+}

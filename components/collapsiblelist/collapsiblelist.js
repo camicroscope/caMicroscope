@@ -294,12 +294,14 @@ CollapsibleList.prototype.triggerContent = function(itemId, action = 'close'){
 			this.collapse();
 			item.elt.body.classList.remove('collapse');
 			item.elt.body.classList.add('expand');
+			item.elt.head.querySelector('i').textContent = 'remove';
 		}
 	}else if(action == 'close'){
 		const item = this.__v_models.find(item => item.id===itemId);
 		if(item) {
 			item.elt.body.classList.remove('expand');
 			item.elt.body.classList.add('collapse');
+			item.elt.head.querySelector('i').textContent = 'add';
 		}
 	}else{
 		console.log(`${this.name}:No actions`);
@@ -316,6 +318,26 @@ CollapsibleList.prototype.triggerContent = function(itemId, action = 'close'){
 		this.setting.changeCallBack.call(this, data);
 	}
 };
+
+CollapsibleList.prototype.displayContent = function(itemId, action = true, part = 'all'){
+	const item = this.__v_models.find(item => item.id === itemId);
+	if(item) {
+		switch (part) {
+			case 'head':
+				item.elt.head.style.display = action?'block':'none';
+				break;
+			case 'body':
+				item.elt.body.style.display = action?'block':'none';
+				// statements_1
+				break;
+			default:
+				item.elt.head.style.display = action?'block':'none';
+				item.elt.body.style.display = action?'block':'none';
+				// statements_def
+				break;
+		}
+	}
+}
 
 /**
  * Add the content of a specific item body by using Id.

@@ -46,12 +46,11 @@ function HeatmapControl(options){
 HeatmapControl.prototype.__refresh = function(){
 	empty(this.elt);
 	this.elt.classList.add('hmc-container');
-	this.radiosName = randomId();
 	this.rangeSliders = {};
 	const template = `
 	<div class='mode-panel'>
-	<label> Binal <input name='${this.radiosName}' type='radio' value='binal' ${this.setting.mode == 'binal'? 'checked':''} /></label>
-	<label> Gradient <input name='${this.radiosName}' type='radio' value='gradient' ${this.setting.mode == 'gradient'? 'checked':''} /></label>
+	
+	<label> Gradient <input type='checkbox' value='gradient' ${this.setting.mode == 'gradient'? 'checked':''} /></label>
 	</div>
 	<div class='sel-field-panel'>
 	<select></select>
@@ -60,15 +59,15 @@ HeatmapControl.prototype.__refresh = function(){
 	<div class='fields-panel'>
 
 	</div>
+	<div style='display:none;'>
 	<label>Opacity:</label>
 	<div class='opacity-panel'>
 	</div>
+	</div>
 	`;
 	this.elt.innerHTML = template;
-	const radios = this.elt.querySelectorAll('.mode-panel input');
-	radios.forEach( radio=> {
-		radio.addEventListener('change', this._modeChanged.bind(this));
-	});
+	const checkbox = this.elt.querySelector('.mode-panel input[type=checkbox]');
+	checkbox.addEventListener('change', this._modeChanged.bind(this));
 	//
 	this.rangeSliders = {};
 	createSelect(this.elt.querySelector('.sel-field-panel select') ,this.setting.fields);
@@ -85,21 +84,20 @@ HeatmapControl.prototype.__refresh = function(){
 	const opacitiesPanel = this.elt.querySelector('.opacity-panel');
 	this.setting.opacities.forEach(f=>{
 		 this.opacitySliders[f.name] = createOpacities(opacitiesPanel,f,this.__opacityChange.bind(this));
-	},this);	
-
+	},this);
 }
 
 HeatmapControl.prototype._modeChanged = function(){
-	const mode = document.querySelector(`.mode-panel input[name=${this.radiosName}]:checked`)
-	if(mode.value=='binal'){
+	const mode = this.elt.querySelector(`.mode-panel input[type=checkbox]`).checked;
+
+	if(!mode){// binal
 		this.elt.querySelector('.sel-field-panel').style.display='none';
 		this.setting.fields.forEach( f=> {
 			// statements
 			this.rangeSliders[f.name].slider.parentNode.style.display='';
 			this.rangeSliders[f.name].disabled(false);
 		},this);
-	}else if(mode.value=='gradient'){
-
+	}else{ // gradient
 		this.elt.querySelector('.sel-field-panel').style.display='';
 		const selectedField = this.elt.querySelector('.sel-field-panel select').value;
 		this.rangeSliders[selectedField].slider.parentNode.style.display='';
@@ -142,18 +140,18 @@ HeatmapControl.prototype.resize = function(){
 }
 HeatmapControl.prototype.__change = function(){
 	if(this.setting.onChange && typeof this.setting.onChange === 'function'){
-		const mode = document.querySelector(`.mode-panel input[name=${this.radiosName}]:checked`).value;
+		const mode = this.elt.querySelector(`.mode-panel input[type=checkbox]`).checked;
 		const fields = [];
 		const field = {};
 		const data = {
-			mode:mode
+			mode:mode?'gradient':'binal'
 		}
-		if(mode=='binal'){
+		if(!mode){
 			this.setting.fields.forEach( f=> {
 				fields.push({name:f.name,range:this.rangeSliders[f.name].getValue()});
 			});
 			data.fields = fields;
-		}else if(mode=='gradient'){
+		}else {
 			const selectedField = this.elt.querySelector('.sel-field-panel select').value;
 			field.name = selectedField;
 			field.range = this.rangeSliders[selectedField].getValue();
