@@ -9,6 +9,10 @@ const $D = {
   },
   params: null
 };
+const objAreaMin = 400;
+const objAreaMax = 4500;
+const lineWidth = 2;
+const timeOutMs = 10;
 
 
 function initialize() {
@@ -62,10 +66,10 @@ function initUIcomponents() {
     ]
   });
 
-  let button = document.createElement('button');
-  button.id = 'trigger';
-  button.style.display = "none";
-  document.body.appendChild(button);
+  // let button = document.createElement('button');
+  // button.id = 'trigger';
+  // button.style.display = "none";
+  // document.body.appendChild(button);
 
 }
 
@@ -87,9 +91,9 @@ function initCore() {
 
   try {
     let slideQuery = {}
-    slideQuery.id = $D.params.slideId
-    slideQuery.name = $D.params.slide
-    slideQuery.location = $D.params.location
+    slideQuery.id = $D.params.slideId;
+    slideQuery.name = $D.params.slide;
+    slideQuery.location = $D.params.location;
     $CAMIC = new CaMic("main_viewer", slideQuery, opt);
   } catch (error) {
     Loading.close();
@@ -109,14 +113,73 @@ function initCore() {
     const viewer =  $CAMIC.viewer;
     // add stop draw function
     viewer.canvasDrawInstance.addHandler('stop-drawing', camicStopDraw);
+
     $UI.segmentPanel = new SegmentPanel(viewer);
-    //add event for range
-    $UI.segmentPanel.__input.addEventListener('change', function(e){
-      const alpha = +this.__input.value;
-      this.__label.innerHTML = alpha;
-      watershed(this.__src,this.__out,alpha);
+
+    //add event for threshold
+    $UI.segmentPanel.__threshold.addEventListener('input', function(e){
+      const alpha = +this.__threshold.value;
+      this.__tlabel.innerHTML = alpha;
     }.bind($UI.segmentPanel));
 
+    $UI.segmentPanel.__threshold.addEventListener('change', function(e){
+      let src = this.__src;
+      let out = this.__out;
+      const self = this;
+      const alpha = +this.__threshold.value;
+      self.__tlabel.innerHTML = alpha;
+      self.showProgress();
+      setTimeout(function() {
+        watershed(src,out,alpha);
+        self.hideProgress();
+      },timeOutMs);
+    }.bind($UI.segmentPanel));
+
+    //add event for min
+    $UI.segmentPanel.__minarea.addEventListener('input', function (e) {
+      this.__minlabel.innerHTML = +this.__minarea.value;
+    }.bind($UI.segmentPanel));
+
+    $UI.segmentPanel.__minarea.addEventListener('change', function (e) {
+      let src = this.__src;
+      let out = this.__out;
+      const self = this;
+      const alpha = +this.__threshold.value;
+      this.__minlabel.innerHTML = +this.__minarea.value;
+      self.showProgress();
+      setTimeout(function() {
+        watershed(src,out,alpha);
+        self.hideProgress();
+      },timeOutMs);
+    }.bind($UI.segmentPanel));
+
+    //add event for max
+    $UI.segmentPanel.__maxarea.addEventListener('input', function (e) {
+      this.__maxlabel.innerHTML = +this.__maxarea.value;
+    }.bind($UI.segmentPanel));
+
+    $UI.segmentPanel.__maxarea.addEventListener('change', function (e) {
+      let src = this.__src;
+      let out = this.__out;
+      const self = this;
+      const alpha = +this.__threshold.value;
+      this.__maxlabel.innerHTML = +this.__maxarea.value;
+      self.showProgress();
+      setTimeout(function() {
+        watershed(src,out,alpha);
+        self.hideProgress();
+      },timeOutMs);
+    }.bind($UI.segmentPanel));
+
+    $UI.segmentPanel.__btn_save.addEventListener('click', function(e) {
+      let fname = $D.params.slideId + '_roi.png';
+      download($UI.segmentPanel.__c2s,fname);
+    }.bind($UI.segmentPanel));
+
+    $UI.segmentPanel.__btn_savecsv.addEventListener('click', function(e) {
+      let fname = $D.params.slideId + '_roi.csv';
+      buildAndDownloadCSV($UI.segmentPanel.__contours,fname);
+    }.bind($UI.segmentPanel));
   });
 }
 
@@ -152,7 +215,7 @@ function camicStopDraw(e) {
 
   let imgColl = canvasDraw.getImageFeatureCollection();
   if (imgColl.features.length > 0) {
-    
+
     // Check size first
     let box = checkSize(imgColl, viewer.imagingHelper);
 
@@ -177,14 +240,29 @@ function checkSize(imgColl, imagingHelper) {
 
   // 5x2 array
   let bound = imgColl.features[0].bound;
-  
+
   // get position on viewer
-  
+
   const top_left = imgColl.features[0].bound[0];
   const bottom_right = imgColl.features[0].bound[2];
   const min = imagingHelper._viewer.viewport.imageToViewportCoordinates(top_left[0],top_left[1]);
   const max = imagingHelper._viewer.viewport.imageToViewportCoordinates(bottom_right[0],bottom_right[1]);
   const rect = new OpenSeadragon.Rect(min.x,min.y,max.x-min.x,max.y-min.y);
+  const self = $UI.segmentPanel;
+  
+  self.__top_left = top_left;
+  self.__spImgX = top_left[0];
+  self.__spImgY = top_left[1];
+  self.__spImgWidth = bottom_right[0]-top_left[0];
+  self.__spImgHeight = bottom_right[1]-top_left[1];
+  console.log('iX: '+self.__spImgX);
+  console.log('iY: '+self.__spImgY);
+  console.log('iW: '+self.__spImgWidth);
+  console.log('iH: '+self.__spImgHeight);
+  
+  console.log(top_left);
+  console.log(bottom_right);
+  // console.log(imagingHelper._viewer.viewport.viewportToImageCoordinates(0,0));
 
   // Convert to screen coordinates
   let foo = convertCoordinates(imagingHelper, bound);
@@ -200,12 +278,16 @@ function checkSize(imgColl, imagingHelper) {
 
   const xCoord = Math.round(newArray[0][0]);
   const yCoord = Math.round(newArray[0][1]);
-
   let width = Math.round(newArray[2][0] - xCoord);
   let height = Math.round(newArray[2][1] - yCoord);
 
+  self.__x = xCoord;
+  self.__y = yCoord;
+  self.__width = xCoord;
+  self.__height = yCoord;
+
   // check that image size is ok
-  if (width * height > 4000000) {
+  if (width * height > 8000000) {
     alert("Selected ROI too large, current version is limited to 4 megapixels");
     // Clear the rectangle  canvas-draw-overlay.clear()
     $CAMIC.viewer.canvasDrawInstance.clear();
@@ -222,6 +304,7 @@ function checkSize(imgColl, imagingHelper) {
  * @param hidden
  */
 function loadImageToCanvas(imgData, canvas) {
+  console.log(typeof(imgData));
   canvas.width = imgData.width;
   canvas.height = imgData.height;
   let context = canvas.getContext("2d");
@@ -236,7 +319,7 @@ function loadImageToCanvas(imgData, canvas) {
 function segmentROI(box) {
 
   // But first, some setup...
-
+  const self = $UI.segmentPanel;
 
   // let div = document.createElement('div');
   // document.body.appendChild(div);
@@ -277,19 +360,37 @@ function segmentROI(box) {
   // }, false);
 
   // SEGMENTATION CANVAS
-  let camicanv = $CAMIC.viewer.drawer.canvas; //Original Canvas
-  let imgData = (camicanv.getContext('2d')).getImageData(box.xCoord, box.yCoord, box.width, box.height);
+  self.showProgress();
 
+  let fullResCvs = self.__fullsrc;
+  self.__img.src = $CAMIC.slideId+'\/'+self.__spImgX+','+self.__spImgY+','+self.__spImgWidth+','+self.__spImgHeight+'\/'+self.__spImgWidth+',/0/default.jpg';
+  self.__img.onload = function() {
+    let image = cv.imread(self.__img);
+    cv.imshow(fullResCvs, image);
+    image.delete();
+    let imgData = fullResCvs.getContext('2d').getImageData(0,0,fullResCvs.width,fullResCvs.height);
 
-  // loadImageToCanvas(imgData, $UI.segmentPanel.__out);
-  loadImageToCanvas(imgData, $UI.segmentPanel.__src);
+    // loadImageToCanvas(imgData, $UI.segmentPanel.__out);
+    loadImageToCanvas(imgData, self.__src);
+
+    const alpha = +self.__threshold.value;
+    self.__tlabel.innerHTML = alpha;
+    watershed(self.__src,self.__out,alpha);
+    self.hideProgress();
+  };
+
+  // let camicanv = $CAMIC.viewer.drawer.canvas; //Original Canvas
+  // let imgData = (camicanv.getContext('2d')).getImageData(box.xCoord, box.yCoord, box.width, box.height);
+  // console.log('X: ' + box.xCoord);
+  // console.log('Y: ' + box.yCoord);
+  
+  // loadImageToCanvas(imgData, self.__out);
+  // loadImageToCanvas(imgData, self.__src);
+
   // TRIGGER SEGMENTATION
-  const alpha = +$UI.segmentPanel.__input.value;
-  $UI.segmentPanel.__label.innerHTML = alpha;
-  watershed($UI.segmentPanel.__src,$UI.segmentPanel.__out,alpha);
-
-
-
+  // const alpha = +self.__threshold.value;
+  // self.__tlabel.innerHTML = alpha;
+  // watershed(self.__src,self.__out,alpha);
 
   /*
   let dataURL = loadImageToCanvas(imgData, 'canvasInput', false);
@@ -317,7 +418,9 @@ function segmentROI(box) {
 function watershed(inn, out, thresh) {
 
   // Read image
+  const self = $UI.segmentPanel;
   let src = cv.imread(inn);
+  let i2s = cv.imread(inn);
   // Matrices
   let dst = new cv.Mat();
   let gray = new cv.Mat();
@@ -327,6 +430,10 @@ function watershed(inn, out, thresh) {
   let distTrans = new cv.Mat();
   let unknown = new cv.Mat();
   let markers = new cv.Mat();
+
+  cv.cvtColor(i2s, i2s, cv.COLOR_RGBA2RGB, 0);
+  // Store canvas to save combined image
+  // $UI.segmentPanel.__c2s = cv.imread(inn);
 
   // Gray and threshold image
   cv.cvtColor(src, gray, cv.COLOR_RGBA2GRAY, 0);
@@ -350,15 +457,24 @@ function watershed(inn, out, thresh) {
 
   // Get foreground - make the objects stand out
   // cv.threshold (src, dst, thresh, maxval, type)
-  cv.threshold(distTrans, imageFg, thresh, 255, cv.THRESH_BINARY);
+  cv.threshold(distTrans, imageFg, thresh, 1, cv.THRESH_BINARY_INV);
+  console.log(thresh);
 
   // Mark (label) the regions starting with 1 (color output)
   imageFg.convertTo(imageFg, cv.CV_8U, 1, 0);
   cv.subtract(imageBg, imageFg, unknown);
 
   // Get connected components markers
+  let x = cv.connectedComponents(imageFg, markers);
 
-  cv.connectedComponents(imageFg, markers);
+  // Get Polygons
+  let contours = new cv.MatVector();
+  let hierarchy = new cv.Mat();
+  let color = new cv.Scalar(255, 255, 0);
+  cv.findContours(imageFg,contours,hierarchy,cv.RETR_CCOMP,cv.CHAIN_APPROX_SIMPLE);
+  $UI.segmentPanel.__contours = contours;
+  console.log("Getting contours.");
+
   for (let i = 0; i < markers.rows; i++) {
     for (let j = 0; j < markers.cols; j++) {
       markers.intPtr(i, j)[0] = markers.ucharPtr(i, j)[0] + 1;
@@ -369,22 +485,65 @@ function watershed(inn, out, thresh) {
   }
   cv.cvtColor(src, dst, cv.COLOR_RGBA2RGB, 0);
   cv.watershed(dst, markers);
-  const cloneSrc = src.clone(); 
+  const cloneSrc = cv.Mat.zeros(src.rows, src.cols, cv.CV_8UC4);
+  const listContours = cv.Mat.zeros(src.rows, src.cols, cv.CV_8UC4);
+  
   // Draw barriers
   //console.log(markers.rows,markers.cols);
-  for (let i = 0; i < markers.rows; i++) {
-    for (let j = 0; j < markers.cols; j++) {
-      if (markers.intPtr(i, j)[0] === -1) {
-        dst.ucharPtr(i, j)[0] = 255; // R
-        dst.ucharPtr(i, j)[1] = 255; // G
-        dst.ucharPtr(i, j)[2] = 0; // B        
-        cloneSrc.ucharPtr(i, j)[0] = 255; // R
-        cloneSrc.ucharPtr(i, j)[1] = 255; // G
-        cloneSrc.ucharPtr(i, j)[2] = 0; // B
-        
-        //console.log(dst.ucharPtr(i, j));
-      }else{
+  // for (let i = 0; i < markers.rows; i++) {
+  //   for (let j = 0; j < markers.cols; j++) {
+  //     if (markers.intPtr(i, j)[0] === -1) {
+  //       dst.ucharPtr(i, j)[0] = 255; // R
+  //       dst.ucharPtr(i, j)[1] = 255; // G
+  //       dst.ucharPtr(i, j)[2] = 0; // B
+  //       cloneSrc.ucharPtr(i, j)[0] = 255; // R
+  //       cloneSrc.ucharPtr(i, j)[1] = 255; // G
+  //       cloneSrc.ucharPtr(i, j)[2] = 0; // B
+
+  //       //console.log(dst.ucharPtr(i, j));
+  //     }else{
+  //       cloneSrc.ucharPtr(i, j)[3] = 0;
+  //     }
+  //   }
+  // }
+
+  let segcount = 0;
+  let tmp = new cv.Mat();
+
+  console.log("Drawing Contours");
+  // console.log($UI.segmentPanel.__minarea.value);
+  // console.log($UI.segmentPanel.__maxarea.value);
+  for (let i = 1; i < contours.size(); ++i) {
+    let cnt = contours.get(i);
+    // console.log(contours[i]);
+    let area = cv.contourArea(cnt,false);
+    if(area < $UI.segmentPanel.__maxarea.value && area > $UI.segmentPanel.__minarea.value) {
+      // console.log(cnt);
+      ++segcount;
+      cv.approxPolyDP(cnt, tmp, 1, true);
+      // console.log(tmp.data32S);
+      cv.drawContours(cloneSrc, contours, i, color, lineWidth, cv.FILLED, hierarchy,1);
+      cv.drawContours(i2s , contours, i, color, lineWidth, cv.FILLED, hierarchy,1);
+    }
+  }
+  console.log(segcount);
+  console.log("Done Drawing Contours");
+
+  // Update the count
+  let clabel = document.getElementById('segcount');
+  clabel.innerHTML=segcount;
+  // console.log("Labels: " + segcount);
+  // console.log(cloneSrc.cols);
+  // console.log(cloneSrc.rows);
+
+  // Draw barriers
+  // console.log(cloneSrc.rows,cloneSrc.cols);
+  for (let i = 0; i < cloneSrc.rows; i++) {
+    for (let j = 0; j < cloneSrc.cols; j++) {
+      if (cloneSrc.ucharPtr(i, j)[0] === 0 && cloneSrc.ucharPtr(i, j)[1] === 0 && cloneSrc.ucharPtr(i, j)[2] === 0) {
         cloneSrc.ucharPtr(i, j)[3] = 0;
+      } else {
+        cloneSrc.ucharPtr(i, j)[3] = 255;
       }
     }
   }
@@ -394,9 +553,10 @@ function watershed(inn, out, thresh) {
   //cv.imshow(out, dst);
   //console.log(document.getElementById('test1'));
   cv.imshow(out, cloneSrc);
+  cv.imshow($UI.segmentPanel.__c2s, i2s);
   //cv.imshow($UI.segmentPanel.__out, cloneSrc);
-  // Free up memory
 
+  // Free up memory
   src.delete();
   dst.delete();
   gray.delete();
@@ -407,25 +567,6 @@ function watershed(inn, out, thresh) {
   unknown.delete();
   markers.delete();
   M.delete();
-}
-
-/**
- * Check file creation
- *
- * @param filename
- * @param dataURL
- */
-function download(filename, dataURL) {
-  var element = document.createElement('a');
-  element.setAttribute('href', dataURL);
-  element.setAttribute('download', filename);
-
-  element.style.display = 'none';
-  document.body.appendChild(element);
-
-  element.click();
-
-  document.body.removeChild(element);
 }
 
 /**
@@ -474,4 +615,95 @@ function convertCoordinates(imagingHelper, bound) {
 
   return newArray;
 
+}
+
+// Save the canvas to filename.  Uses local save dialog.
+function download(canvas, filename) {
+
+  /// create an "off-screen" anchor tag
+  var lnk = document.createElement('a'),
+      e;
+
+  /// the key here is to set the download attribute of the a tag
+  lnk.download = filename;
+
+  /// convert canvas content to data-uri for link. When download
+  /// attribute is set the content pointed to by link will be
+  /// pushed as "download" in HTML5 capable browsers
+  lnk.href = canvas.toDataURL();
+
+  /// create a "fake" click-event to trigger the download
+  if (document.createEvent) {
+
+      e = document.createEvent("MouseEvents");
+      e.initMouseEvent("click", true, true, window,
+                       0, 0, 0, 0, 0, false, false, false,
+                       false, 0, null);
+
+      lnk.dispatchEvent(e);
+
+  } else if (lnk.fireEvent) {
+
+      lnk.fireEvent("onclick");
+  }
+}
+
+// Build a csv of the polygons and associated metadata
+function buildAndDownloadCSV(contours,fname) {
+  let data = '';
+  let tmp = new cv.Mat();
+  const self = $UI.segmentPanel;
+  const nl = '\n';
+  const vpx = self.__top_left[0];
+  const vpy = self.__top_left[1];
+  const spx = self.__x;
+  const spy = self.__y;
+
+  console.log('In Download and Save CSV');
+  data += 'AreaInPixels,PereimeterInPixels,Polygon\n';
+
+  for (let i = 1; i < contours.size(); ++i) {
+    let cnt = contours.get(i);
+    // console.log(contours[i]);
+    let area = cv.contourArea(cnt,false);
+    let perimeter = cv.arcLength(cnt,true);
+    if(area < self.__maxarea.value && area > self.__minarea.value) {
+      data += area + ',' + perimeter + ',[';
+      cv.approxPolyDP(cnt, tmp, 1, true);
+      let carray = tmp.data32S;
+      let asize = tmp.data32S.length;
+      for(j = 0;j < asize-1;j+=2) {
+        let imgX = carray[j]+vpx+spx;
+        let imgY = carray[j+1]+vpy+spy;
+        if(j<(asize-2)) {
+          data += imgX + ':' + imgY + ':';
+        } else {
+          data += imgX + ':' + imgY + ']';
+        }
+      }
+      data += nl;
+    }
+  }
+  downloadCSV(data, fname);
+}
+
+// Save the polygons to csv with filename.  Uses local save dialog.
+function downloadCSV(data,filename) {
+  let csv = data;
+  const self = $UI.segmentPanel;
+  // console.log(data);
+
+  if (csv == null) return;
+
+  filename = filename || 'export.csv';
+
+  if (csv.search(/^data:text\/csv/i) == -1) {
+      csv = 'data:text/csv;charset=utf-8,' + csv;
+  }
+  data = encodeURI(csv);
+
+  link = document.createElement('a');
+  link.setAttribute('href', data);
+  link.setAttribute('download', filename);
+  link.click();
 }
