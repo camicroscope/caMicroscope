@@ -111,7 +111,7 @@
 #csvDLB {
   display: none;
 }
-
+/* 
 [tooltip]{
   margin:20px 60px;
   position:relative;
@@ -120,7 +120,7 @@
 [tooltip]::before {
     content: "";
     position: absolute;
-    top:-6px;
+    top:-26px;
     left:50%;
     transform: translateX(-50%);
     border-width: 4px 6px 0 6px;
@@ -155,7 +155,7 @@
     content: attr(tooltip);
     position: absolute;
     left:50%;
-    top:-6px;
+    top:-26px;
     transform: translateX(-50%)   translateY(-100%);
     background: rgba(7,7,7,0.7);
     text-align: center;
@@ -194,4 +194,4 @@
 
 [tooltip]:hover::after,[tooltip]:hover::before {
    opacity:1
-}
+} */
