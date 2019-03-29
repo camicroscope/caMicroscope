@@ -60,7 +60,7 @@ function OverlayersLoader(){
 			$D.overlayers = [];
 			// convert part not nesscary
 			for(let i = 0 ;i < layers.length;i++){
-				$D.overlayers.push(covertToLayViewer(layers[i],($D.params.states)?$D.params.states.l:null));
+				$D.overlayers.push(covertToLayViewer(layers[i]));
 			}
 		})
 		//

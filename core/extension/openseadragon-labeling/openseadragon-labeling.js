@@ -73,7 +73,9 @@
         this.viewer.addHandler('canvas-drag-end', this.events.dragEnd);
         
     };
-
+    $.PatchManager.prototype.hasPatches = function(){
+        return this.patches.length?true:false;
+    }
     $.PatchManager.prototype.off = function(){
         // stop turning off labeling mode if already turn off
         if(this.isOn === false) return;
@@ -144,13 +146,13 @@
 	    	options = this.activePatch.templateOptions(options);
 			options.center = view_point;
             if(!this.isPoint && this.activePatch.isPoint){
-                const viewer_bounds = $CAMIC.viewer.viewport.getBounds();
+                const viewer_bounds = this.viewer.viewport.getBounds();
                 const width = viewer_bounds.width * 0.1;
                 const height = viewer_bounds.height * 0.1;
                 options.size = new $.Point(width,height);
             }
 	    }else {
-	    	const viewer_bounds = $CAMIC.viewer.viewport.getBounds();
+	    	const viewer_bounds = this.viewer.viewport.getBounds();
 	    	const width = viewer_bounds.width * 0.1;
 	    	const height = viewer_bounds.height * 0.1;
 	    	options.size = new $.Point(width,height);
@@ -441,13 +443,22 @@
 
     $.Patch.prototype.toJSON = function(coordinates = 'normalize'){ // l/image
         return {
-            data:this.element.querySelector('.note_panel textarea').value,
+            note:this.element.querySelector('.note_panel textarea').value,
             color:this.element.querySelector('.color input').value,
             isPoint:this.isPoint,
-            bounds:this.getBounds(coordinates)
+            size:this.getRect(coordinates),
+            widthInClient:this.element.offsetWidth
+            //,
+            //size:this.getRect(coordinates)
         }
     }
-    
+    /**
+     * getBounds 
+     * @param  {String} coordinates coordinates system. Default value is 'normalize'. There are two opinions: 'normalize' and 'image'.
+     * @return {Array}  
+     *         if a patch is point return position point [x,y].
+     *         if a patch is rectangle return polygon description points [top-left, top-right, bottom-right, bottom-left].        
+     */
     $.Patch.prototype.getBounds = function(coordinates = 'normalize'){ // normalize or image
         const imagingHelper = this.viewer.imagingHelper;
         const bounds = this.overlay.getBounds(this.viewer);
@@ -458,7 +469,7 @@
         const height = bounds.height * imagingHelper.imgAspectRatio; // height in logical/normalize
 
         if(this.isPoint){
-            return coordinates == 'normalize'?[x,y]:[Math.round($CAMIC.viewer.imagingHelper.logicalToDataX(x)),Math.round($CAMIC.viewer.imagingHelper.logicalToDataY(y))];
+            return coordinates == 'normalize'?[x,y]:[Math.round(imagingHelper.logicalToDataX(x)),Math.round(imagingHelper.logicalToDataY(y))];
         }else{
             const x1 = x + width;
             const y1 = y + height;
@@ -466,23 +477,38 @@
             [[x,y],[x1,y],[x1,y1],[x,y1]]:
             [
                 [
-                    Math.round($CAMIC.viewer.imagingHelper.logicalToDataX(x)),
-                    Math.round($CAMIC.viewer.imagingHelper.logicalToDataY(y))
+                    Math.round(imagingHelper.logicalToDataX(x)),
+                    Math.round(imagingHelper.logicalToDataY(y))
                 ],
                 [
-                    Math.round($CAMIC.viewer.imagingHelper.logicalToDataX(x1)),
-                    Math.round($CAMIC.viewer.imagingHelper.logicalToDataY(y))
+                    Math.round(imagingHelper.logicalToDataX(x1)),
+                    Math.round(imagingHelper.logicalToDataY(y))
                 ],
                 [
-                    Math.round($CAMIC.viewer.imagingHelper.logicalToDataX(x1)),
-                    Math.round($CAMIC.viewer.imagingHelper.logicalToDataY(y1))
+                    Math.round(imagingHelper.logicalToDataX(x1)),
+                    Math.round(imagingHelper.logicalToDataY(y1))
                 ],
                 [
-                    Math.round($CAMIC.viewer.imagingHelper.logicalToDataX(x)),
-                    Math.round($CAMIC.viewer.imagingHelper.logicalToDataY(y1))
+                    Math.round(imagingHelper.logicalToDataX(x)),
+                    Math.round(imagingHelper.logicalToDataY(y1))
                 ]
             ];
 
+        }
+    }
+
+    $.Patch.prototype.getRect = function(coordinates = 'normalize'){ // normalize or image
+        if(coordinates == 'normalize'){
+            const bounds = this.overlay.getBounds(this.viewer);
+            const imagingHelper = this.viewer.imagingHelper;
+            const x = bounds.x; // x in logical/normalize
+            const y = bounds.y * imagingHelper.imgAspectRatio; // y in logical/normalize
+            const width = bounds.width; // width in logical/normalize
+            const height = bounds.height * imagingHelper.imgAspectRatio; // height in logical/normalize
+            return this.isPoint?{x:x,y:y}:{x:x,y:y,width:width,height:height};
+        }else{
+            const bounds = this.viewer.viewport.viewportToImageRectangle(this.overlay.getBounds(this.viewer.viewport));
+            return this.isPoint?{x:Math.round(bounds.x),y:Math.round(bounds.y)}:{x:Math.round(bounds.x),y:Math.round(bounds.y),width:Math.round(bounds.width),height:Math.round(bounds.height)};
         }
     }
 

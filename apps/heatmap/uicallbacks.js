@@ -4,58 +4,64 @@
 /* UI callback functions list */
 $minorCAMIC = null;
 function toggleViewerMode(opt){
-	const main = document.getElementById('main_viewer');
-	const secondary = document.getElementById('secondary');
 	if(opt.checked){
 		// openSecondaryViewer();
-		multSelector_action();
+		openSecondaryViewer();
 	}else{
 		closeSecondaryViewer();
 	}
 }
 
 //mainfest
-function multSelector_action(event){
-	// ui changed
-	const main = document.getElementById('main_viewer');
-	const secondary = document.getElementById('secondary');
-	main.classList.remove('main');
-	main.classList.add('left');
-	secondary.classList.remove('none');
-	secondary.classList.add('right');
+function multSelector_action(size){
+	// hidden main viewer's bottom right control and get navigator
+	$CAMIC.viewer.controls.bottomright.style.display = 'none';
+	// if(event.data.length == 0){
+	// 	alert('No Layer selected');
+	// 	return;
+	// }
+
+	// hide the window
+	// $UI.multSelector.elt.classList.add('none');
+
 	// show the minor part
-	const minor = document.getElementById('minor_viewer');
-	minor.classList.remove('none');
-	minor.classList.add('display');
+	//const minor = document.getElementById('minor_viewer');
+	//minor.classList.remove('none');
+	//minor.classList.add('display');
 
 	// open new instance camic
-	// TODO  delay for wait
-	
 	try{
 		let slideQuery = {}
 		slideQuery.id = $D.params.slideId
 		slideQuery.name = $D.params.slide
 		slideQuery.location = $D.params.location
-		$minorCAMIC = new CaMic("minor_viewer", slideQuery, {
+		$minorCAMIC = new CaMic("minor_viewer",slideQuery, {
 			// osd options
-			mouseNavEnabled:false,
-			panVertical:false,
-			panHorizontal:false,
-			showNavigator:false,
+			// mouseNavEnabled:false,
+			// panVertical:false,
+			// panHorizontal:false,
+			// showNavigator:false,
 			// customized options
-			hasZoomControl:false,
+			// hasZoomControl:false,
 			hasDrawLayer:false,
 			//hasLayerManager:false,
 			//hasScalebar:false,
 			// states options
-			// states:{
-			// 	x:$CAMIC.viewer.viewport.getCenter().x,
-			// 	y:$CAMIC.viewer.viewport.getCenter().y,
-			// 	z:$CAMIC.viewer.viewport.getZoom(),
-			// }
+			navigatorHeight: size.height,
+			navigatorWidth: size.width,
+			states:{
+				x:$CAMIC.viewer.viewport.getCenter().x,
+				y:$CAMIC.viewer.viewport.getCenter().y*$CAMIC.viewer.imagingHelper.imgAspectRatio,
+				z:$CAMIC.viewer.viewport.getZoom(),
+			}
 		});
 
+		// synchornic zoom and move
+		// coordinated Viewer - zoom
+		$CAMIC.viewer.addHandler('zoom',synchornicView1);
 
+		// coordinated Viewer - pan
+		$CAMIC.viewer.addHandler('pan',synchornicView1);
 
 		// loading image
 		$minorCAMIC.loadImg(function(e){
@@ -64,17 +70,13 @@ function multSelector_action(event){
 				$UI.message.addError(e.message);
 			}
 		});
-		$minorCAMIC.viewer.addOnceHandler('open',function(){
-			setTimeout(coordinatedViewZoom, 2000);
+		$minorCAMIC.viewer.addOnceHandler('tile-drawing',function(){
+			$minorCAMIC.viewer.addHandler('zoom',synchornicView2);
+			$minorCAMIC.viewer.addHandler('pan',synchornicView2);
 		});
 
 
-		// synchornic zoom and move
-		// coordinated Viewer - zoom
-		$CAMIC.viewer.addHandler('zoom',coordinatedViewZoom);
 
-		// coordinated Viewer - pan
-		$CAMIC.viewer.addHandler('pan',coordinatedViewPan);		
 	}catch(error){
 		Loading.close();
 		$UI.message.addError('Core Initialization Failed');
@@ -95,29 +97,61 @@ function coordinatedViewZoom(data){
 function coordinatedViewPan(data){
 	$minorCAMIC.viewer.viewport.panTo($CAMIC.viewer.viewport.getCenter());
 }
+var active1 = false;
+var active2 = false;
+function synchornicView1(data){
+	if(!$minorCAMIC || !$CAMIC) return;
+	if (active2) {
+	return;
+	}
 
-function multSelector_cancel(){
-	closeSecondaryViewer();
+	active1 = true;
+	$minorCAMIC.viewer.viewport.zoomTo($CAMIC.viewer.viewport.getZoom());
+	$minorCAMIC.viewer.viewport.panTo($CAMIC.viewer.viewport.getCenter());
+	active1 = false;
+}
+function synchornicView2(data){
+  if(!$minorCAMIC || !$CAMIC) return;
+  if (active1) {
+    return;
+  }
+  active2 = true;
+  $CAMIC.viewer.viewport.zoomTo($minorCAMIC.viewer.viewport.getZoom());
+  $CAMIC.viewer.viewport.panTo($minorCAMIC.viewer.viewport.getCenter());
+  active2 = false;
 }
 
 function openSecondaryViewer(){
+	// ui changed
+	const main = document.getElementById('main_viewer');
+	const minor = document.getElementById('minor_viewer');
+	main.classList.remove('main');
+	main.classList.add('left');
 
-	//Loading.open(main,'Waiting for Operation.',600);
-	//$UI.multSelector.elt.classList.remove('none');
-	//$UI.multSelector.setData($D.overlayers.map(l=>[l.id,l.name]));
+	minor.classList.remove('none');
+	// minor.classList.add('display');
+	minor.classList.add('right');
+
+	const nav_size = {
+		'height':$CAMIC.viewer.controls.bottomright.querySelector('.navigator').style.height,
+		'width':$CAMIC.viewer.controls.bottomright.querySelector('.navigator').style.width
+	}
+	setTimeout(function() { multSelector_action(nav_size); }, 100);
 }
 
 function closeSecondaryViewer(){
 	// ui changed
 	const main = document.getElementById('main_viewer');
-	const secondary = document.getElementById('secondary');
+	const minor = document.getElementById('minor_viewer');
 	main.classList.add('main');
 	main.classList.remove('left');
-	secondary.classList.add('none');
-	secondary.classList.remove('right');
-	//$UI.multSelector.elt.classList.add('none');
-	//$UI.toolbar._sub_tools[5].querySelector('input[type="checkbox"]').checked = false;
-	//Loading.close();
+	minor.classList.add('none');
+	minor.classList.remove('right');
+	$CAMIC.viewer.controls.bottomright.style.display = '';
+	
+	const li = $UI.toolbar.getSubTool('sbsviewer');
+	li.querySelector('input[type="checkbox"]').checked = false;
+	Loading.close();
 
 	//destory
 	if($minorCAMIC) {
@@ -129,10 +163,6 @@ function closeSecondaryViewer(){
 		$minorCAMIC.destroy();
 		$minorCAMIC = null;
 	}
-	const minor = document.getElementById('minor_viewer');
-	minor.classList.remove('display');
-	minor.classList.add('none');
-
 }
 
 // side menu close callback

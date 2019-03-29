@@ -382,15 +382,15 @@ function isFunction(obj){
   return typeof obj === "function" && typeof obj.nodeType !== "number";
 }
 
-function covertToLayViewer(item,l){
+function covertToLayViewer(item){
   const typeName = item.analysis.source;
   const id = item.analysis.execution_id;
   // support 2.0 style annotation data in refactor
   const name = item.analysis.name||item.analysis.execution_id;
   
-  const isShow = l&&l.includes(id)?true:false;
+  //const isShow = l&&l.includes(id)?true:false;
   if(!typeIds[typeName]) typeIds[typeName] = randomId();
-  return {id:id,name:name,typeId:typeIds[typeName],typeName:typeName,isShow:isShow};
+  return {id:id,name:name,typeId:typeIds[typeName],typeName:typeName,data:null};
 }
 
 function eventFire(el, etype){

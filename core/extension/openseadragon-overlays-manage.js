@@ -474,7 +474,7 @@
         this.render = options.render;
         this.clickable = options.clickable || false;
         this.hoverable = options.hoverable || false;
-        if(options.isShow!==null || options.isShow!== undefined ){
+        if(options.isShow&& options.isShow == false){
             this.isShow = options.isShow
         }else{
             this.isShow = true;

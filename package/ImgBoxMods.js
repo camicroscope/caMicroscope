@@ -35,16 +35,16 @@ function ImgBoxMods() {
       }
       this.viewer.open(imbox_source);
       // set mpp
-      this.mpp_x = +data['mpp-x']
-      this.mpp_y = +data['mpp-y']
+      this.mpp_x = data['mpp-x']
+      this.mpp_y = data['mpp-y']
       this.mpp = data.mpp || this.mpp_x || this.mpp_y || 1e9;
-      this.mpp_x = +data['mpp-x'] || this.mpp
-      this.mpp_y = +data['mpp-y'] || this.mpp
+      this.mpp_x = data['mpp-x'] || this.mpp
+      this.mpp_y = data['mpp-y'] || this.mpp
 
       this.viewer.mpp = this.mpp;
       this.viewer.mpp_x = this.mpp_x;
       this.viewer.mpp_y = this.mpp_y;
-          
+
       //set scalebar
       let mpp = this.mpp_x || this.mpp;
       if(mpp&&mpp!=1e9) this.createScalebar(this.mpp)

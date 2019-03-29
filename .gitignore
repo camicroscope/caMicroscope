@@ -1,6 +1,7 @@
 *.bak
 *.swp
 *.swo
+.cache
 
 # IntelliJ Idea
 .idea
