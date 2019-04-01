@@ -106,6 +106,8 @@ function initCore() {
     // image loaded
     if (e.hasError) {
       $UI.message.addError(e.message)
+    }else{
+      $D.params.data = e;
     }
   });
 
@@ -363,7 +365,8 @@ function segmentROI(box) {
   self.showProgress();
 
   let fullResCvs = self.__fullsrc;
-  self.__img.src = $CAMIC.slideId+'\/'+self.__spImgX+','+self.__spImgY+','+self.__spImgWidth+','+self.__spImgHeight+'\/'+self.__spImgWidth+',/0/default.jpg';
+  const prefix_url = ImgloaderMode == 'iip'?`${window.location.origin}/img/IIP/raw/?IIIF=${$D.params.data.location}`:$CAMIC.slideId;
+  self.__img.src = prefix_url+'\/'+self.__spImgX+','+self.__spImgY+','+self.__spImgWidth+','+self.__spImgHeight+'\/'+self.__spImgWidth+',/0/default.jpg';
   self.__img.onload = function() {
     let image = cv.imread(self.__img);
     cv.imshow(fullResCvs, image);
