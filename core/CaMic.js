@@ -136,7 +136,7 @@ class CaMic{
     this.createHeatmap();
     Loading.close();
   }
-  
+
   /**
   * Loads the staged image
   */
@@ -174,7 +174,7 @@ class CaMic{
       })
       .catch(e=>{
 
-        
+
         console.error(e);
         //if()
         Loading.close();
@@ -188,7 +188,7 @@ class CaMic{
     this.study = data['study']
     this.specimen = data['specimen']
 
-    this.viewer.open("../../img/Slide/"+ data["_id"]["$oid"] + ".dzi");
+    this.viewer.open("../../img/IIP/raw/?DeepZoom="+ data["location"] + ".dzi");
     // set mpp
     this.mpp_x = +data['mpp-x']
     this.mpp_y = +data['mpp-y']
