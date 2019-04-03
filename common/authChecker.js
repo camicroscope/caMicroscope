@@ -1,4 +1,4 @@
-__auth_check = function(levels){
+const __auth_check = function(levels){
   fetch("../".repeat(levels) + "data/Template/find").then(x=>{
     // send them to login
     console.log(x)
