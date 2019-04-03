@@ -6,7 +6,11 @@
     <meta charset='utf-8'>
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
-
+		<!-- Check If we're logged in ok, otherwise, log in for us -->
+		<script src='../common/authChecker.js'></script>
+		<script>
+			__auth_check(2)
+		</script>
     <title>caMicroscope</title>
 		<!-- google material icons css sheet -->
 		<link href='../../iconfont/material-icons.css' rel='stylesheet'/>
@@ -142,7 +146,7 @@
         <!-- main viewer -->
         <div id='main_viewer' class='main'></div>
         <div id='minor_viewer' class='none'></div>
-        
+
         <!-- zoom control -->
         <div id='zctrl'></div>
 

@@ -29,6 +29,12 @@
 
 		<link rel='stylesheet' type='text/css' media='all' href='../../core/extension/openseadragon-labeling/openseadragon-labeling.css'/>
 
+		<!-- Check If we're logged in ok, otherwise, log in for us -->
+    <script src='../common/authChecker.js'></script>
+    <script>
+      __auth_check(2)
+    </script>
+
 		<!-- message queue js -->
 		<script type='text/javascript' src='../../components/messagequeue/messagequeue.js'></script>
 		<script type='text/javascript' src='../../components/camessage/camessage.js'></script>
@@ -53,7 +59,7 @@
 		<script type='text/javascript' src='../../common/paths.js'></script>
 		<script type='text/javascript' src='../../common/ajv.js'></script>
 		<!-- IDB helper -->
-		<script type='text/javascript' src='../../common/idb.js'></script>		
+		<script type='text/javascript' src='../../common/idb.js'></script>
 		<script type='text/javascript' src='../../core/Validation.js'></script>
 		<script type='text/javascript' src='../../core/Store.js'></script>
 		<script type='text/javascript' src='../../core/CaMic.js'></script>
@@ -83,12 +89,12 @@
 		if(detectIE()){
 			createWarningText('You are using an <strong>IE/Edge</strong> browser that may be lead to erratic behavior on caMicroscope. Please switch to <a href="https://www.google.com/chrome/">Chrome</a>, <a href="https://www.mozilla.org/en-US/firefox/new/">Firefox</a> or <a href="https://www.apple.com/safari/">Safari</a> browser to improve your experience.');
 		}
-		
+
 		Loading.open(document.body, 'CaMicroscope is initializing...');
 		// get slide id from url
 		const url = new URL(window.location.href);
 		$D.params = getUrlVars();
-		
+
 		// no slide Id error
 		if($D.params && $D.params.slideId){
 			// normal initialization starts

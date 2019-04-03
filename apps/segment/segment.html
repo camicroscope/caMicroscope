@@ -53,6 +53,11 @@
    <link rel='stylesheet' type='text/css' media='all' href='../../core/extension/openseadragon-measurement-tool/openseadragon-measurement-tool.css'/>
    <!-- osd & core css END -->
 
+   <!-- Check If we're logged in ok, otherwise, log in for us -->
+   <script src='../common/authChecker.js'></script>
+   <script>
+     __auth_check(2)
+   </script>
 
    <!-- opencv.js -->
    <script type='text/javascript' src='./opencv.js'></script>

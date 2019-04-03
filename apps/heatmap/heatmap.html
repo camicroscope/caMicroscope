@@ -16,7 +16,7 @@
 		<link rel='stylesheet' type='text/css' media='all' href='../../common/colorpicker/color-picker.css'/>
 		<!-- add pure-form css -->
 		<link rel='stylesheet' type='text/css' media='all' href='../../common/pureform/pure-form.css'/>
-        <link rel='stylesheet' type='text/css' media='all' href='../../common/rangeslider/rangeslider.css'/>     
+        <link rel='stylesheet' type='text/css' media='all' href='../../common/rangeslider/rangeslider.css'/>
 		<!-- common css END -->
 
 		<!-- UI components css START -->
@@ -55,7 +55,11 @@
  		<link rel='stylesheet' type='text/css' media='all' href='../../core/extension/openseadragon-measurement-tool/openseadragon-measurement-tool.css'/>
  		<!-- osd & core css END -->
 
-
+		<!-- Check If we're logged in ok, otherwise, log in for us -->
+    <script src='../common/authChecker.js'></script>
+    <script>
+      __auth_check(2)
+    </script>
 
  		<!--  common js START -->
  		<!-- util.js -->
@@ -74,7 +78,7 @@
 		<script type='text/javascript' src='../../common/ajv.js'></script>
 		<!-- IDB helper -->
 		<script type='text/javascript' src='../../common/idb.js'></script>
-        
+
 		<!--  common js END -->
 
 		<!--  components js START -->
@@ -105,7 +109,7 @@
         <!-- heatmap control -->
         <script type='text/javascript' src='../../components/heatmapcontrol/heatmapcontrol.js'></script>
 		<!--  components js END -->
-		
+
 
 		<!-- osd & core js START -->
 		<script type='text/javascript' src='../../core/openseadragon/openseadragon.js' ></script>
@@ -161,7 +165,7 @@
 		// get slide id from url
 		if(detectIE()){
 			createWarningText('You are using an <strong>IE/Edge</strong> browser that may be lead to erratic behavior on caMicroscope. Please switch to <a href="https://www.google.com/chrome/">Chrome</a>, <a href="https://www.mozilla.org/en-US/firefox/new/">Firefox</a> or <a href="https://www.apple.com/safari/">Safari</a> browser to improve your experience.');
-		}		
+		}
 		$D.params = getUrlVars();
 
 		// load if we have at least one slide query element
@@ -169,7 +173,7 @@
 			// normal initialization starts
 			document.addEventListener('DOMContentLoaded', initialize);
 		}
-		
+
 		else if(!$D.params.execId){
 			redirect($D.pages.table,'execId is undefined. Redirecting to Table.');
 		}

@@ -9,6 +9,11 @@
     <!-- common -->
 	<!-- <link rel='stylesheet' type='text/css' media='all' href='../css/style.css'/> -->
     <link href="../common/datatables/vanilla-dataTables.css" rel="stylesheet" />
+		<!-- Check If we're logged in ok, otherwise, log in for us -->
+		<script src='../common/authChecker.js'></script>
+		<script>
+			__auth_check(1)
+		</script>
 
     <script src='../core/Store.js'></script>
     <script src='../common/util.js'></script>
@@ -248,7 +253,6 @@
 	</div>
 </body>
 <script>
-
 	const HeadMapping = [{
 		title:'ID',
 		field:'oid'
@@ -292,7 +296,7 @@
 				});
 				const btn = `<button class="btn" data-id='${rs[0]}' onclick='openView(this)'>Open</button>`
 				rs.push(btn);
-				return rs;	
+				return rs;
 			});
 		})
 		.then(function(data){
@@ -312,7 +316,7 @@
 				perPageSelect:[25,50,100],
 				data:obj
 			});
-		});	
+		});
 	}
 
 	function AND(p, t, func){
