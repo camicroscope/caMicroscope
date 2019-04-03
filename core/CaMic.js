@@ -160,7 +160,7 @@ class CaMic{
         let data = x[0];
         // check the slide on service side
         OpenSeadragon.makeAjaxRequest( {
-                url: "../../img/Slide/" + data["_id"]["$oid"] + ".dzi",
+                url: "../../img/IIP/raw/?DeepZoom="+ data["location"] + ".dzi",
                 success: function( xhr ) {
                   this.openSlide(data,func);
                 }.bind(this),
@@ -209,7 +209,7 @@ class CaMic{
     });
 
     imagingHelper.setMaxZoom(1);
-    data.url = "../../img/Slide/"+ data['_id']['$oid']+".dzi";
+    data.url = "../../img/IIP/raw/?DeepZoom="+ data["location"] + ".dzi";
     if(func && typeof func === 'function') func.call(null,data);
     Loading.text.textContent = `loading slide's tiles...`;
   }
