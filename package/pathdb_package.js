@@ -159,17 +159,38 @@ function PathDbMods() {
   CaMic.prototype.default_loadImg = CaMic.prototype.loadImg
   CaMic.prototype.loadImg = function(func) {
     var urlParams = new URLSearchParams(window.location.search);
-    var img_id = urlParams.get('slideId');
-    let slideId = img_id
-    this.slideId = slideId
-    this.slideName = slideId
+    var pathdb_id = urlParams.get('slideId');
+    this.slideId = pathdb_id // default value
+    this.slideName = pathdb_id
     this.study = ""
     this.specimen = ""
-    this.store.getSlide(slideId).then(data => {
+    this.store.getSlide(pathdb_id).then(data => {
       data = data[0]
       console.log(data)
+      // get slide metadata
+      if (data.field_study && data.field_study.length >=1){
+        this.study = data.field_study[0].value
+      }
+      if (data.field_study && data.field_study.length >=1){
+        this.study = data.field_study[0].value
+      }
+      if (data.field_study_id && data.field_study_id.length >=1){
+        this.study = data.field_study_id[0].value
+      }
+      if (data.field_specimen_id && data.field_specimen_id.length >=1){
+        this.specien = data.field_specimen_id[0].value
+      }
+      if (data.title && data.title.length >=1){
+        this.slideName = data.title[0].value
+        this.slideId = data.title[0].value
+      }
+      if (data.field_case_id && data.field_case_id.length >=1){
+        this.slideName = data.field_case_id[0].value
+        this.slideId = data.field_case_id[0].value
+      }
       // set mpp
       this.mpp = 1e9
+
       if (data.field_mpp_y && data.field_mpp_y.length >= 1) {
         this.mpp_y = data.field_mpp_y[0].value
         this.mpp = this.mpp_y
