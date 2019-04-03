@@ -910,6 +910,7 @@ function imgboxHeatmap(){
       reader.onload = function() {
         var text = reader.result;
         try {
+
 			let data = JSON.parse(text);
 			
 			var valid = $VALIDATION.heatmap(data);
@@ -917,14 +918,25 @@ function imgboxHeatmap(){
 				alert($VALIDATION.heatmap.errors)
 				return;
 			};
+			
+			$CAMIC.store.clearHeatmaps();
 
+			
 			data.provenance.image.slide = slide
 			const execId = data.provenance.analysis.execution_id;
+			Loading.open(document.body,'loading Heatmap...');
 			$CAMIC.store.addHeatmap(data).then(rs=>{
 				window.location.href = `../heatmap/heatmap.html${window.location.search}&execId=${execId}`;
+			}).catch(e=>{
+				$UI.message.addError(e);
+				console.error(e);
+			})
+			.finally(()=>{
+				Loading.close();
 			});
         } catch (e) {
           console.error(e)
+          Loading.close();
         }
       };
       reader.readAsText(input.files[0]);
