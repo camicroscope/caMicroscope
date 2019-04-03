@@ -175,6 +175,24 @@ function PathDbMods() {
     }).then(this.errorHandler).then(x => this.filterBroken(x, "heatmap"))
   }
 
+  Store.prototype.default_findHeatmapType = Store.prototype.findHeatmapType
+  Store.prototype.findHeatmapType = function(slide, name) {
+    var suffix = "Heatmap/types"
+    var url = this.base + suffix;
+    var query = {}
+    var bySlideId
+    if (name) {
+      query.name = name
+    }
+    if (slide) {
+      query.slide = slide
+    }
+    return fetch(url + "?" + objToParamStr(query), {
+      credentials: "same-origin",
+      mode: "cors"
+    }).then(this.errorHandler).then(x=>this.filterBroken(x, "heatmap"))
+  }
+
   CaMic.prototype.default_loadImg = CaMic.prototype.loadImg
   CaMic.prototype.loadImg = function(func) {
     var urlParams = new URLSearchParams(window.location.search);
