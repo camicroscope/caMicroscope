@@ -224,9 +224,9 @@ function init_LocalStore(){
       res(removeFromIDB('heatmap', id))
     })
   }
-  Store.prototype.clearHeatmaps = function(id,slide){
+  Store.prototype.clearHeatmaps = function(){
     return new Promise(function(res, rej){
-      res(clearDBFromIDB('heatmap', id))
+      res(clearDBFromIDB('heatmap'))
     })
   }
 
