@@ -55,7 +55,9 @@ class StatesHelper{
         if(!states)return;
         console.log(states);
         states = StatesHelper.encodeStates(states);
-        return `${location.origin}${location.pathname}?slideId=${$D.params.slideId}&states=${states}`
+        // return `${location.origin}${location.pathname}?slideId=${$D.params.slideId}&states=${states}`
+        let queryString = Object.keys(params).map(key => key + '=' + params[key]).join('&');
+        return `${location.origin}${location.pathname}?${queryString}&states=${states}`
     }
     /* encoding for state into url
     * @param state_object - the object to encode
