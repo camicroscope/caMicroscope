@@ -23,7 +23,7 @@ class StatesHelper{
             return null;
         }
         const states = {};
-        // get current center position in the image corrdinates
+        // get current center position in the image coordinates
         const center = $CAMIC.viewer.viewport.viewportToImageCoordinates($CAMIC.viewer.viewport.getCenter(true));  
         center.x = Math.round(center.x);
         center.y = Math.round(center.y);
