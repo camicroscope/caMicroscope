@@ -158,6 +158,18 @@ function PathDbMods() {
   }
 
 
+  /**
+   * TEMPORARY!!
+   * TODO: When PathDB ready for heatmaps.
+   */
+  Store.prototype.default_findHeatmapType = Store.prototype.findHeatmapType;
+  findHeatmapType = function(slide, name) {
+    // uicallbacks gracefully handles case where array empty
+    var a = [];
+    return a;
+  };
+
+
   CaMic.prototype.default_loadImg = CaMic.prototype.loadImg
   CaMic.prototype.loadImg = function(func) {
     var urlParams = new URLSearchParams(window.location.search);
