@@ -165,8 +165,7 @@ function PathDbMods() {
   Store.prototype.default_findHeatmapType = Store.prototype.findHeatmapType;
   findHeatmapType = function(slide, name) {
     // uicallbacks gracefully handles case where array empty
-    var a = [];
-    return a;
+    return new Array(0);
   };
 
 
