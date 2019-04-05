@@ -190,19 +190,6 @@ function PathDbMods() {
     this.store.getSlide(pathdb_id).then(data => {
       data = data[0]
       console.log(data)
-      // get slide metadata
-      if (data.field_study && data.field_study.length >=1){
-        this.study = data.field_study[0].value
-      }
-      if (data.field_study && data.field_study.length >=1){
-        this.study = data.field_study[0].value
-      }
-      if (data.field_study_id && data.field_study_id.length >=1){
-        this.study = data.field_study_id[0].value
-      }
-      if (data.field_specimen_id && data.field_specimen_id.length >=1){
-        this.specien = data.field_specimen_id[0].value
-      }
       // set mpp
       this.mpp = 1e9
 
