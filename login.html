@@ -43,7 +43,7 @@ function getUrlParam(name, url) {
 
 // get variables
 let id_token = getUrlParam("id_token")
-let state = getUrlParam("state")
+let state = decodeURIComponent(getUrlParam("state"))
 if (!state){
   state = default_redirect
 }

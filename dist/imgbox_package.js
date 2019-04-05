@@ -5,4 +5,4 @@ parcelRequire=function(e,r,n,t){var i="function"==typeof parcelRequire&&parcelRe
 },{}],"lM4v":[function(require,module,exports) {
 "use strict";var e=require("./LocalStore.js"),r=t(e),o=require("./ImgBoxMods.js"),s=t(o);function t(e){return e&&e.__esModule?e:{default:e}}(0,r.default)(),(0,s.default)(),console.warn("This setup is intended for imagebox");
 },{"./LocalStore.js":"WDG/","./ImgBoxMods.js":"5g62"}]},{},["lM4v"], null)
-//# sourceMappingURL=/imgbox_package.map
+//# sourceMappingURL=./imgbox_package.map

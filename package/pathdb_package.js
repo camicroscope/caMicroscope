@@ -157,41 +157,27 @@ function PathDbMods() {
     })
   }
 
-  Store.prototype.default_findHeatmap = Store.prototype.findHeatmap
-  Store.prototype.findHeatmap = function(slide, name) {
-    var suffix = "Heatmap/find"
-    var url = this.base + suffix;
-    var query = {}
-    var bySlideId
-    if (name) {
-      query.name = name
-    }
-    if (slide) {
-      query.slide = slide
-    }
-    return fetch(url + "?" + objToParamStr(query), {
-      credentials: "same-origin",
-      mode: "cors"
-    }).then(this.errorHandler).then(x => this.filterBroken(x, "heatmap"))
-  }
 
-  Store.prototype.default_findHeatmapType = Store.prototype.findHeatmapType
-  Store.prototype.findHeatmapType = function(slide, name) {
-    var suffix = "Heatmap/types"
-    var url = this.base + suffix;
-    var query = {}
-    var bySlideId
-    if (name) {
-      query.name = name
-    }
-    if (slide) {
-      query.slide = slide
-    }
-    return fetch(url + "?" + objToParamStr(query), {
-      credentials: "same-origin",
-      mode: "cors"
-    }).then(this.errorHandler).then(x=>this.filterBroken(x, "heatmap"))
-  }
+  /**
+   * TEMPORARY!!
+   * TODO: When PathDB ready for heatmaps.
+   */
+  Store.prototype.default_findHeatmapType = Store.prototype.findHeatmapType;
+  findHeatmapType = function(slide, name) {
+    // uicallbacks gracefully handles case where array empty
+    return new Array(0);
+  };
+
+
+  StatesHelper.prototype.default_getCurrentStatesURL = StatesHelper.prototype.getCurrentStatesURL;
+  getCurrentStatesURL = function(isImageCoordinate=false){
+    let states = StatesHelper.getCurrentStates(isImageCoordinate);
+    if(!states)return;
+    console.log(states);
+    states = StatesHelper.encodeStates(states);
+    return `${location.origin}${location.pathname}?slideId=${$D.params.slideId}&states=${$D.params.states}&mode=${$D.params.mode}`
+  };
+
 
   CaMic.prototype.default_loadImg = CaMic.prototype.loadImg
   CaMic.prototype.loadImg = function(func) {

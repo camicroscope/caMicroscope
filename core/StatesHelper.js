@@ -23,7 +23,7 @@ class StatesHelper{
             return null;
         }
         const states = {};
-        // get current center position in the image corrdinates
+        // get current center position in the image coordinates
         const center = $CAMIC.viewer.viewport.viewportToImageCoordinates($CAMIC.viewer.viewport.getCenter(true));  
         center.x = Math.round(center.x);
         center.y = Math.round(center.y);
@@ -55,7 +55,9 @@ class StatesHelper{
         if(!states)return;
         console.log(states);
         states = StatesHelper.encodeStates(states);
-        return `${location.origin}${location.pathname}?slideId=${$D.params.slideId}&states=${states}`
+        // return `${location.origin}${location.pathname}?slideId=${$D.params.slideId}&states=${states}`
+        let queryString = Object.keys(params).map(key => key + '=' + params[key]).join('&');
+        return `${location.origin}${location.pathname}?${queryString}&states=${states}`
     }
     /* encoding for state into url
     * @param state_object - the object to encode
