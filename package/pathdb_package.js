@@ -217,14 +217,6 @@ function PathDbMods() {
       if (data.field_specimen_id && data.field_specimen_id.length >=1){
         this.specien = data.field_specimen_id[0].value
       }
-      if (data.title && data.title.length >=1){
-        this.slideName = data.title[0].value
-        this.slideId = data.title[0].value
-      }
-      if (data.field_case_id && data.field_case_id.length >=1){
-        this.slideName = data.field_case_id[0].value
-        this.slideId = data.field_case_id[0].value
-      }
       // set mpp
       this.mpp = 1e9
 
