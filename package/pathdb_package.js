@@ -164,7 +164,7 @@ function PathDbMods() {
    */
   Store.prototype.default_findHeatmapType = Store.prototype.findHeatmapType;
   Store.prototype.findHeatmapType = function(slide, name) {
-    this.getSlide(slide).then(data => {
+     return this.getSlide(slide).then(data => {
 
       var suffix = "Heatmap/types"
       var url = this.base + suffix;
@@ -186,11 +186,13 @@ function PathDbMods() {
     }).catch(function(e){
       console.error(e);
     })
+
+
   };
   
   Store.prototype.default_findHeatmap = Store.prototype.findHeatmap;
   Store.prototype.findHeatmap = function(slide, name) {
-    this.getSlide(slide).then(data => {
+    return this.getSlide(slide).then(data => {
 
       var suffix = "Heatmap/find"
       var url = this.base + suffix;
