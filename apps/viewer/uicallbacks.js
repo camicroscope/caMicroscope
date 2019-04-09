@@ -951,7 +951,9 @@ function createHeatMapList(list){
 	list.forEach(data=>{
 		const exec_id = data.provenance.analysis.execution_id;
 		const a = document.createElement('a');
-		a.href = `../heatmap/heatmap.html?slideId=${$D.params.slideId}&execId=${exec_id}`;
+		const params = getUrlVars();
+		a.href = params.mode?`../heatmap/heatmap.html?slideId=${$D.params.slideId}&execId=${exec_id}&mode=pathdb`:
+		`../heatmap/heatmap.html?slideId=${$D.params.slideId}&execId=${exec_id}`;
 		a.textContent = exec_id;
 		$UI.modalbox.body.appendChild(a);
 		$UI.modalbox.body.appendChild(document.createElement('br'));
