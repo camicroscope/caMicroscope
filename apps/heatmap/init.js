@@ -92,7 +92,7 @@ function initCore(){
     }else{
       $D.params.data = e;
       // loading heatmap data
-      $D.heatMapData = await $CAMIC.store.getHeatmap($D.params.data.name,$D.params.execId).then(d=> d[0]);
+      $D.heatMapData = await $CAMIC.store.findHeatmap($D.params.data.name,$D.params.execId).then(d=> d[0]);
       
       if(!$D.heatMapData){
         redirect($D.pages.table,`No Heatmap's data Found. Redirecting to Table.`, 50000);
