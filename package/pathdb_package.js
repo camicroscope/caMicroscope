@@ -206,6 +206,7 @@ function PathDbMods() {
         query.case = data.field_case_id[0].value
         query.slide = data.field_case_id[0].value
       }
+      if(name) query.name = name;
 
       return fetch(url + "?" + objToParamStr(query), {
         credentials: "include",
@@ -215,7 +216,31 @@ function PathDbMods() {
       console.error(e);
     })
   };
+  Store.prototype.default_getHeatmap = Store.prototype.getHeatmap;
+  Store.prototype.getHeatmap = function(slide, exec) {
+    return this.getSlide(slide).then(data => {
 
+      var suffix = "Heatmap/get"
+      var url = this.base + suffix;
+      var query = {}
+      
+      data = data[0]
+      if (data.field_subject_id) {
+        query.subject = data.field_subject_id[0].value
+      }
+      if (data.field_case_id) {
+        query.case = data.field_case_id[0].value
+      }
+      if(exec) query.exec = exec;
+
+      return fetch(url + "?" + objToParamStr(query), {
+        credentials: "include",
+        mode: "cors"
+      }).then(this.errorHandler).then(x=>this.filterBroken(x, "heatmap"))
+    }).catch(function(e){
+      console.error(e);
+    })
+  };
 
   StatesHelper.prototype.default_getCurrentStatesURL = StatesHelper.prototype.getCurrentStatesURL;
   getCurrentStatesURL = function(isImageCoordinate=false){
