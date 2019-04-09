@@ -95,7 +95,7 @@ function initCore(){
       $D.heatMapData = await $CAMIC.store.getHeatmap($D.params.data.name,$D.params.execId).then(d=> d[0]);
       
       if(!$D.heatMapData){
-        redirect($D.pages.table,`No Heatmap's data Found. Redirecting to Table.`);
+        redirect($D.pages.table,`No Heatmap's data Found. Redirecting to Table.`, 50000);
       }
 
       // popup panel
