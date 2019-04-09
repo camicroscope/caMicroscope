@@ -163,9 +163,55 @@ function PathDbMods() {
    * TODO: When PathDB ready for heatmaps.
    */
   Store.prototype.default_findHeatmapType = Store.prototype.findHeatmapType;
-  findHeatmapType = function(slide, name) {
-    // uicallbacks gracefully handles case where array empty
-    return new Array(0);
+  Store.prototype.findHeatmapType = function(slide, name) {
+    this.getSlide(slide).then(data => {
+
+      var suffix = "Heatmap/types"
+      var url = this.base + suffix;
+      var query = {}
+      
+      data = data[0]
+      if (data.field_subject_id) {
+        query.subject = data.field_subject_id[0].value
+      }
+      if (data.field_case_id) {
+        query.case = data.field_case_id[0].value
+        query.slide = data.field_case_id[0].value
+      }
+
+      return fetch(url + "?" + objToParamStr(query), {
+        credentials: "include",
+        mode: "cors"
+      }).then(this.errorHandler).then(x=>this.filterBroken(x, "heatmap"))
+    }).catch(function(e){
+      console.error(e);
+    })
+  };
+  
+  Store.prototype.default_findHeatmap = Store.prototype.findHeatmap;
+  Store.prototype.findHeatmap = function(slide, name) {
+    this.getSlide(slide).then(data => {
+
+      var suffix = "Heatmap/find"
+      var url = this.base + suffix;
+      var query = {}
+      
+      data = data[0]
+      if (data.field_subject_id) {
+        query.subject = data.field_subject_id[0].value
+      }
+      if (data.field_case_id) {
+        query.case = data.field_case_id[0].value
+        query.slide = data.field_case_id[0].value
+      }
+
+      return fetch(url + "?" + objToParamStr(query), {
+        credentials: "include",
+        mode: "cors"
+      }).then(this.errorHandler).then(x=>this.filterBroken(x, "heatmap"))
+    }).catch(function(e){
+      console.error(e);
+    })
   };
 
 
@@ -187,6 +233,10 @@ function PathDbMods() {
     this.slideName = pathdb_id
     this.study = ""
     this.specimen = ""
+    this.subject_id = ""
+    this.case_id = ""
+    this.image_id = ""
+    this.study_id = ""
     this.store.getSlide(pathdb_id).then(data => {
       data = data[0]
       console.log(data)
@@ -201,6 +251,20 @@ function PathDbMods() {
         this.mpp_x = data.field_mpp_x[0].value
         this.mpp = this.mpp_x
       }
+      // identifier fields
+      if(data.field_subject_id){
+        this.subject_id = data.field_subject_id[0].value
+      }
+      if(data.field_case_id){
+        this.case_id = data.field_case_id[0].value
+      }
+      if(data.field_image_id){
+        this.image_id = data.field_image_id[0].value
+      }
+      if(data.field_study_id){
+        this.study_id = data.field_study_id[0].value
+      }
+
       if (data.field_iip_path && data.field_iip_path.length >= 1) {
         this.location = data.field_iip_path[0].value
         // MAKE URL FOR IIP
@@ -224,6 +288,13 @@ function PathDbMods() {
       let x = {}
       x['_id'] = this.slideId
       x.name = this.slideName
+
+      // identifier field
+      x.subject_id = this.subject_id
+      x.case_id = this.case_id
+      x.image_id = this.image_id
+      x.study_id = this.study_id
+
       x.study = this.study
       x.specimen = this.specimen
       x.mpp = this.mpp;
