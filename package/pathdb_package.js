@@ -242,16 +242,14 @@ function PathDbMods() {
     })
   };
 
-  if(StatesHelper){
-    StatesHelper.prototype.default_getCurrentStatesURL = StatesHelper.prototype.getCurrentStatesURL;
-    getCurrentStatesURL = function(isImageCoordinate=false){
-      let states = StatesHelper.getCurrentStates(isImageCoordinate);
-      if(!states)return;
-      console.log(states);
-      states = StatesHelper.encodeStates(states);
-      return `${location.origin}${location.pathname}?slideId=${$D.params.slideId}&states=${$D.params.states}&mode=${$D.params.mode}`
-    };
-  }
+  StatesHelper.prototype.default_getCurrentStatesURL = StatesHelper.prototype.getCurrentStatesURL;
+  getCurrentStatesURL = function(isImageCoordinate=false){
+    let states = StatesHelper.getCurrentStates(isImageCoordinate);
+    if(!states)return;
+    console.log(states);
+    states = StatesHelper.encodeStates(states);
+    return `${location.origin}${location.pathname}?slideId=${$D.params.slideId}&states=${$D.params.states}&mode=${$D.params.mode}`
+  };
 
 
   CaMic.prototype.default_loadImg = CaMic.prototype.loadImg
