@@ -1,6 +1,6 @@
 # caMicroscope
 caMicroscope is a HTML5 image viewer optimized for large bio-medical image data viewing, with a strong emphasis on cancer pathology.
-This guide has sections for different kinds of use of the platform. [User Guide](#user-guide) covers the basics on how to use caMicroscope viewer. nanoBorb](#nanoborb) covers nanoBorb, the version of caMicroscope designed as a standalone application for individual users without a server. [Hosted Setup](#hosted-setup) covers how to set up caMicroscope for multiple users on a server. [Developer Guide](#developer-guide) covers the broad strokes on how to add new functionality to caMicroscope.
+This guide has sections for different kinds of use of the platform. [User Guide](#user-guide) covers the basics on how to use caMicroscope viewer. [nanoBorb](#nanoborb) covers nanoBorb, the version of caMicroscope designed as a standalone application for individual users without a server. [Hosted Setup](#hosted-setup) covers how to set up caMicroscope for multiple users on a server. [Developer Guide](#developer-guide) covers the broad strokes on how to add new functionality to caMicroscope.
 
 # User Guide
 UNDER CONSTRUCTION
