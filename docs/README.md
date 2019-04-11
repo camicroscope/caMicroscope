@@ -9,11 +9,11 @@ UNDER CONSTRUCTION
 To use caMicroscope as a standalone application, see [nanoBorb](https://github.com/SBU-BMI/nanoBorb/releases).
 The [user guide screencast](https://drive.google.com/open?id=1HkkL5FqEIgi7fzqKijtUhWBPlplh_uHF) should explain the basics of nanoBorb.
 
-Installation Instructions
-
-Windows - 1) Download zip file. 2) Unzip. 3) Run "nanoborb.exe" in the unzipped folder
-
-MacOS - 1) Download zip file. 2) Unzip. 3) Move nanoBorb app to Applications folder. 4) Double-click copied nanoBorb file to run.
+1. Download zip file.
+2. Unzip.
+3. 
+    * For Windows, Run "nanoborb.exe" in the unzipped folder
+    * For MacOS, Move nanoBorb app to Applications folder and Double-click copied nanoBorb file to run.
 
 # Hosted Setup
 The full distribution repository for hosted caMicroscope is [here](https://github.com/camicroscope/Distro/).
