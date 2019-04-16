@@ -1,6 +1,6 @@
 # caMicroscope
 caMicroscope is a HTML5 image viewer optimized for large bio-medical image data viewing, with a strong emphasis on cancer pathology.
-This guide has sections for different kinds of use of the platform. [User Guide](#user-guide) covers the basics on how to use caMicroscope viewer. nanoBorb](#nanoborb) covers nanoBorb, the version of caMicroscope designed as a standalone application for individual users without a server. [Hosted Setup](#hosted-setup) covers how to set up caMicroscope for multiple users on a server. [Developer Guide](#developer-guide) covers the broad strokes on how to add new functionality to caMicroscope.
+This guide has sections for different kinds of use of the platform. [User Guide](#user-guide) covers the basics on how to use caMicroscope viewer. [nanoBorb](#nanoborb) covers nanoBorb, the version of caMicroscope designed as a standalone application for individual users without a server. [Hosted Setup](#hosted-setup) covers how to set up caMicroscope for multiple users on a server. [Developer Guide](#developer-guide) covers the broad strokes on how to add new functionality to caMicroscope.
 
 # User Guide
 UNDER CONSTRUCTION
@@ -9,11 +9,11 @@ UNDER CONSTRUCTION
 To use caMicroscope as a standalone application, see [nanoBorb](https://github.com/SBU-BMI/nanoBorb/releases).
 The [user guide screencast](https://drive.google.com/open?id=1HkkL5FqEIgi7fzqKijtUhWBPlplh_uHF) should explain the basics of nanoBorb.
 
-Installation Instructions
-
-Windows - 1) Download zip file. 2) Unzip. 3) Run "nanoborb.exe" in the unzipped folder
-
-MacOS - 1) Download zip file. 2) Unzip. 3) Move nanoBorb app to Applications folder. 4) Double-click copied nanoBorb file to run.
+1. Download zip file.
+2. Unzip.
+3. 
+    * For Windows, Run "nanoborb.exe" in the unzipped folder
+    * For MacOS, Move nanoBorb app to Applications folder and Double-click copied nanoBorb file to run.
 
 # Hosted Setup
 The full distribution repository for hosted caMicroscope is [here](https://github.com/camicroscope/Distro/).
