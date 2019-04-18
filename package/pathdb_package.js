@@ -158,10 +158,6 @@ function PathDbMods() {
   }
 
 
-  /**
-   * TEMPORARY!!
-   * TODO: When PathDB ready for heatmaps.
-   */
   Store.prototype.default_findHeatmapType = Store.prototype.findHeatmapType;
   Store.prototype.findHeatmapType = function(slide, name) {
      return this.getSlide(slide).then(data => {
@@ -186,7 +182,6 @@ function PathDbMods() {
     }).catch(function(e){
       console.error(e);
     })
-
 
   };
   
