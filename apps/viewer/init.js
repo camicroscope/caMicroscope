@@ -78,6 +78,10 @@ function initialize(){
 // setting core functionalities
 function initCore(){
   // start initial
+
+  // create the message queue
+  // $UI.message = new MessageQueue();
+  
   // TODO zoom info and mmp
   const opt = {
     draw:{
@@ -214,8 +218,6 @@ function initCore(){
 // initialize all UI components
 function initUIcomponents(){
   /* create UI components */
-  // create the message queue
-  $UI.message = new MessageQueue();
 
   $UI.modalbox = new ModalBox({
     id:'modalbox',

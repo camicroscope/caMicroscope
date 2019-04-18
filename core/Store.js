@@ -376,8 +376,10 @@ class Store {
     var suffix = "Heatmap/get"
     var url = this.base + suffix;
     var query = {};
-    query.caseId = caseId;
-    query.execId = execId;
+    query.case = caseId;
+    query.subject = caseId;
+    query.test = execId;
+    query.exec = execId;
 
     return fetch(url + "?" + objToParamStr(query), {
       credentials: "include",
