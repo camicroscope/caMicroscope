@@ -180,7 +180,7 @@ function initCore(){
         });
 
         $CAMIC.viewer.createHeatmap({
-          opacity:.9, //inputs[2].value,
+          opacity:.65, //inputs[2].value,
           coverOpacity:.3,
           data:$D.heatMapData.data,
           size:$D.heatMapData.provenance.analysis.size,
@@ -194,7 +194,7 @@ function initCore(){
           fields:$D.heatMapData.provenance.analysis.fields,
           opacities:[{
             name:'heat',
-            value:0.9
+            value:0.65
           },{
             name:'cover',
             value:0.3
@@ -230,6 +230,7 @@ function initUIcomponents(){
     subTools:[
       // setting
       {
+        name:'settings',
         icon:'settings',// material icons' name
         title:'Settings',
         type:'check',// btn/check/dropdown
@@ -254,6 +255,7 @@ function initUIcomponents(){
       // },
       // magnifier
       {
+        name:'magnifier',
         icon:'search',
         title:'Magnifier',
         type:'dropdown',
@@ -282,6 +284,7 @@ function initUIcomponents(){
       },
       // measurement tool
       {
+        name:'measurement',
         icon:'space_bar',
         title:'Measurement',
         type:'check',
@@ -320,12 +323,14 @@ function initUIcomponents(){
       //   callback:shareURL
       // },
       {
+        name:'sbsviewer',
         icon:'view_carousel',
         title:'Side By Side Viewer',
         value:'dbviewers',
         type:'check',
         callback:toggleViewerMode
       },{
+        name:'viewer',
         icon: 'insert_photo',
         type: 'btn',
         value: 'viewer',

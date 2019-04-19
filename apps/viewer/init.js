@@ -1,6 +1,7 @@
 // CAMIC is an instance of camicroscope core
 // $CAMIC in there
 let $CAMIC = null;
+let $minorCAMIC = {};
 // for all instances of UI components
 const $UI = new Map();
 
@@ -46,6 +47,14 @@ window.addEventListener('keydown', (e) => {
     eventFire(chk,'click');
     return;
   }
+  // open side-by-side (ctrl + s)
+  if(e.ctrlKey && keyCode == 83){
+    const li = $UI.toolbar.getSubTool('sbsviewer');
+    const chk = li.querySelector('input[type=checkbox]');
+    chk.checked = !chk.checked;
+    eventFire(chk,'click');
+    return;
+  }  
 
 });
 
@@ -293,20 +302,30 @@ function initUIcomponents(){
     type:'btn',
     callback:openHeatmap
   });
-  // subToolsOpt.push({
-  //   name:'segment',
-  //   icon: 'timeline',
-  //   type: 'btn',
-  //   value: 'rect',
-  //   title: 'Segment',
-  //   callback: function () {
-  //     if(window.location.search.length > 0) {
-  //       window.location.href = '../segment/segment.html' + window.location.search;
-  //     }else{
-  //       window.location.href = '../segment/segment.html';
-  //     }
-  //   }
-  // });
+  subToolsOpt.push({
+    name:'labeling',
+    icon:'label',
+    title:'Labeling',
+    value:'labeling',
+    type:'btn',
+    callback:function(){
+      window.location.href = `../labeling/labeling.html${window.location.search}`;
+    }
+  });  
+   subToolsOpt.push({
+     name:'segment',
+     icon: 'timeline',
+     type: 'btn',
+     value: 'rect',
+     title: 'Segment',
+     callback: function () {
+       if(window.location.search.length > 0) {
+         window.location.href = '../segment/segment.html' + window.location.search;
+       }else{
+         window.location.href = '../segment/segment.html';
+       }
+     }
+   });
      
   // -- For Nano borb Start -- //
   if(ImgloaderMode =='imgbox'){
@@ -387,23 +406,64 @@ function initUIcomponents(){
   var checkOverlaysDataReady = setInterval(function () {
     if($D.overlayers) {
       clearInterval(checkOverlaysDataReady);
+      // create control
+      
+      // create main layer viewer items with states
+      const mainViewerData = $D.overlayers.map(d=>{
+        const isShow = $D.params.states&&$D.params.states.l&&$D.params.states.l.includes(d.id)?true:false;
+        return {item:d,isShow:isShow}
+      })
+      
+      // create monir layer viewer items
+      const minorViewerData = $D.overlayers.map(d=>{
+        return {item:d,isShow:false}
+      })
 
       // create UI and set data
-      $UI.layersViewer = new LayersViewer({id:'overlayers',data:$D.overlayers,sortChange:sort_change,callback:callback });
+      $UI.layersViewer = createLayerViewer('overlayers', mainViewerData, callback.bind('main'));
+      // create UI and set data - minor
+      $UI.layersViewerMinor = createLayerViewer('overlayersMinor', minorViewerData, callback.bind('minor'));
+      
+      //
+      if($D.params.states&& $D.params.states.l){
+        $D.params.states.l.forEach(id=> loadAnnotationById($CAMIC,$UI.layersViewer.getDataItemById(id),null))
+      }
 
-      callback($D.overlayers.filter(lay => lay.isShow));
+      $UI.layersList = new CollapsibleList({
+        id:'layerslist',
+        list:[
+          {
+            id:'left',
+            title:'Left Viewer',
+            // icon:'border_color',
+            content: "No Template Loaded" //$UI.annotOptPanel.elt
+            // isExpand:true
 
-      $UI.layersViewer.elt.parentNode.removeChild($UI.layersViewer.elt);
-
+          },{
+            id:'right',
+            // icon:'find_replace',
+            title:'Right Viewer',
+            content:"No Template Loaded" //$UI.algOptPanel.elt,
+          }
+        ],
+        changeCallBack:function(e){console.log(e)}
+      });
       // add to layers side menu
       const title = document.createElement('div');
       title.classList.add('item_head');
       title.textContent = 'Layers Manager';
       $UI.layersSideMenu.addContent(title);
-      $UI.layersSideMenu.addContent($UI.layersViewer.elt);
+
+      $UI.layersList.clearContent('left');
+      $UI.layersList.addContent('left',$UI.layersViewer.elt);
+      $UI.layersList.clearContent('right');
+      $UI.layersList.addContent('right',$UI.layersViewerMinor.elt);
+
+      $UI.layersList.elt.parentNode.removeChild($UI.layersList.elt);
+      closeMinorControlPanel();
+      $UI.layersSideMenu.addContent($UI.layersList.elt);
     }
   }, 500);
-
 
 
 
@@ -486,9 +546,63 @@ function initUIcomponents(){
   // $UI.appsList.elt.parentNode.removeChild($UI.appsList.elt);
   // $UI.appsSideMenu.addContent($UI.appsList.elt);
   // END QUIP550 //
-  $UI.multSelector = new MultSelector({id:'mult_selector'});
-  $UI.multSelector.addHandler('cancel',multSelector_cancel);
-  $UI.multSelector.addHandler('action',multSelector_action);
+  // $UI.multSelector = new MultSelector({id:'mult_selector'});
+  // $UI.multSelector.addHandler('cancel',multSelector_cancel);
+  // $UI.multSelector.addHandler('action',multSelector_action);
+}
+function createLayerViewer(id, viewerData, callback){
+  const layersViewer = new LayersViewer({id:id, data:viewerData, callback:callback});
+  layersViewer.elt.parentNode.removeChild(layersViewer.elt);
+  return layersViewer;
+}
+// create lay panel for side-by-side control
+function createLayPanelControl(){
+
+  $UI.layCtrlbar = document.createElement('div');
+  $UI.layCtrlbar.style =`
+  display:none;
+  margin: .2rem;
+  background-color: #365f9c;
+  cursor: default;
+  padding: .5rem;
+  width: 100%;
+  border: none;
+  text-align: left;
+  outline: none;
+  font-size: 1.2rem;`;
+
+  createRadios();
+  $UI.layersSideMenu.addContent($UI.layCtrlbar);
+  // control
+  const radios = $UI.layCtrlbar.querySelectorAll('input[name=ctrlPane]');
+  radios.forEach(r=>{
+    r.addEventListener('change', function(e){
+      const val = e.target.value;
+      switch (val) {
+        case 'main':
+          $UI.layersViewer.elt.style.display = 'flex';
+          $UI.layersViewerMinor.elt.style.display = 'none';
+          break;
+        case 'minor':
+          $UI.layersViewer.elt.style.display = 'none';
+          $UI.layersViewerMinor.elt.style.display = 'flex';
+          break;
+        default:
+          // statements_def
+          break;
+      }
+    })
+  });
+}
+
+function createRadios(){
+  const temp = `
+  <input id="_3ojv6szi7" name="ctrlPane" type="radio" value="main" checked>
+  <label for="_3ojv6szi7">Main(left)</label>
+  <input id="_3ojv6szi8" name="ctrlPane" type="radio" value="minor">
+  <label for="_3ojv6szi8">Minor(right)</label>
+  `
+  $UI.layCtrlbar.innerHTML = temp;
 }
 
 function redirect(url ,text = '', sec = 5){
