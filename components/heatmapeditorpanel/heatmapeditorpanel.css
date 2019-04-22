@@ -1,0 +1,39 @@
+.hmep-container {
+    border: 1px solid #ccc;
+    display: block;
+    position: relative;
+    padding: .5rem;
+    margin: .5rem;
+    color: #365f9c;
+}
+
+.hmep-container .btn-panel button.action{
+	color: #fff;
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.hmep-container .btn-panel button.action:hover {
+    color: #fff;
+    background-color: #0069d9;
+    border-color: #0062cc;
+}
+
+.hmep-container .btn-panel button.reset{
+	color: #fff;
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+.hmep-container .btn-panel button.reset:hover {
+color: #fff;
+    background-color: #218838;
+    border-color: #1e7e34;
+}
+
+div.color-square {
+	width:11px;
+	height:11px;
+	margin: 3px;
+	border: 1px #365f9c solid;
+}

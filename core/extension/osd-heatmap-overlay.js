@@ -69,6 +69,7 @@
         // necessary Options
         // 
         this._data = options.data || [];
+        this._editedData = options.editedData || [];
         this.mode = options.mode || 'binal';
         this._fields = createFields(options.fields);
         this._size = options.size;
@@ -150,6 +151,7 @@
             // heatmap data model
             // necessary Options 
             this._data = options.data || this._data;
+            this._editedData = options.editedData || this._editedData;
             this.mode = options.mode || this.mode; // two modes - 'binal' : 'gradient'
             this._fields = options.fields?createFields(options.fields):this._fields;
             this._size = options.size || this._size;
@@ -552,7 +554,9 @@
     	drawOnCanvas:function(){
             // filter data by using threshold values
             let finalData = this._data.filter(this.viewBoundFilter,this);
-            
+            // get the patch's size on the screen 
+            const w = logicalToPhysicalDistanceX(this._size[0],this._viewer.imagingHelper);
+            const h = logicalToPhysicalDistanceY(this._size[1],this._viewer.imagingHelper);            
             // clear canvas before draw
             DrawHelper.clearCanvas(this._display_);
     		if(this.mode === 'binal'){
@@ -561,8 +565,8 @@
                 // set patch color
                 this._display_ctx_.fillStyle = this._color;
       			// get the patch's size on the screen 
-                const w = logicalToPhysicalDistanceX(this._size[0],this._viewer.imagingHelper);
-      			const h = logicalToPhysicalDistanceY(this._size[1],this._viewer.imagingHelper);
+                //const w = logicalToPhysicalDistanceX(this._size[0],this._viewer.imagingHelper);
+      			//const h = logicalToPhysicalDistanceY(this._size[1],this._viewer.imagingHelper);
       			
                 // start to draw each patch
                 this._display_ctx_.beginPath();
@@ -591,8 +595,8 @@
                     return rs;
                 },this.intervals);
                 
-                const w = logicalToPhysicalDistanceX(this._size[0],this._viewer.imagingHelper);
-                const h = logicalToPhysicalDistanceY(this._size[1],this._viewer.imagingHelper);
+                //const w = logicalToPhysicalDistanceX(this._size[0],this._viewer.imagingHelper);
+                //const h = logicalToPhysicalDistanceY(this._size[1],this._viewer.imagingHelper);
                 
                 finalDatas.forEach(cluster => {
                     this._display_ctx_.fillStyle = cluster.color;
@@ -607,8 +611,39 @@
 
                 }, this);
             }
+            
+            // TODO draw edited data
+            this._editedData.clusters.forEach(cluster=>{
+                const points = removeDeplicateAndLogicalToPhysical(cluster.editDataArray.flat(),this._viewer.imagingHelper);
+                // clear
+                points.forEach(p=>{
+                    this._display_ctx_.clearRect(p[0]+this._offset[0],p[1]+this._offset[1],w,h);
+                });
+                // color editedData
+                this._display_ctx_.fillStyle = cluster.color;
+                this._display_ctx_.beginPath();                
+                points.forEach(p=>{
+                    this._display_ctx_.rect(p[0]+this._offset[0],p[1]+this._offset[1],w,h);
+                });
+                this._display_ctx_.fill();
+            })
+            
+            
     	}
 
+    }
+    function removeDeplicateAndLogicalToPhysical(points, imagingHelper){
+        const pointsObj = {}
+        points.forEach(p =>{
+            pointsObj[`${p[0]}|${p[1]}`] = p;
+        })
+        const ps = [];
+        for(let key in pointsObj){
+            const x = imagingHelper.logicalToPhysicalX(pointsObj[key][0]);
+            const y = imagingHelper.logicalToPhysicalY(pointsObj[key][1]);
+            ps.push([x,y]);
+        }
+        return ps;
     }
 
     function _getIntervals(field, colors=['#FFFFFF','#000000'], steps=3){

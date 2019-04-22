@@ -1,3 +1,28 @@
+// polyfill for Array.flat()
+if (!Array.prototype.flat) {
+  Array.prototype.flat = function() {
+    var depth = arguments[0];
+    depth = depth === undefined ? 1 : Math.floor(depth);
+    if (depth < 1) return Array.prototype.slice.call(this);
+    return (function flat(arr, depth) {
+      var len = arr.length >>> 0;
+      var flattened = [];
+      var i = 0;
+      while (i < len) {
+        if (i in arr) {
+          var el = arr[i];
+          if (Array.isArray(el) && depth > 0)
+            flattened = flattened.concat(flat(el, depth - 1));
+          else flattened.push(el);
+        }
+        i++;
+      }
+      return flattened;
+    })(this, depth);
+  };
+}
+
+
 const AnalyticsPanelContent = //'test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>'
 
          "<div class='separator'></div>"   
@@ -428,6 +453,23 @@ function redirect(url ,text = '', sec = 5){
 
   }, 1000);
 }
+function getGrids(points,size){
+    const gridObject = {}
+    points.forEach(p =>{
+        const np = getTopLeft(p,size);
+        gridObject[`${np[0]}|${np[1]}`] = np;
+    })
+    const grids = [];
+    for(let key in gridObject){
+        grids.push(gridObject[key]);
+    }
+    return grids;
+}
+function getTopLeft(point,size){
+    return [Math.floor(point[0]/size[0])*size[0],
+    Math.floor(point[1]/size[1])*size[1]];
+}
+
 /**
  * detect IE/Edge
  * 

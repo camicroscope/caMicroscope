@@ -261,41 +261,60 @@ function heatmapOpacityChanaged(data){
 	$CAMIC.viewer.heatmap.setCoverOpacity(data['cover']);
 }
 function toggleMeasurement(data){
+	if(!$CAMIC.viewer.measureInstance) {
+		console.warn('No Measurement Tool');
+		return;
+	}
 	//$UI.message.add(`Measument Tool ${data.checked?'ON':'OFF'}`);
 	if(data.checked){
-		$CAMIC.viewer.measureInstance.on();
-		// turn off draw
-		//$CAMIC.viewer.canvasDrawInstance.drawOff();
-		//$CAMIC.drawContextmenu.off();
-		//toggleOffDrawBtns();
 		// turn off magnifier
-		$UI.toolbar._sub_tools[1].querySelector('input[type=checkbox]').checked = false;
-		$UI.spyglass.close();
+		magnifierOff();
+		measurementOn();
+		$UI.settingsSideMenu.close();
+		heatmapEditorOff();
 	}else{
-		$CAMIC.viewer.measureInstance.off();
+		measurementOff();
 	}
 }
-
+function measurementOn(){
+	if(!$CAMIC.viewer.measureInstance)return;
+	$CAMIC.viewer.measureInstance.on();
+	const li = $UI.toolbar.getSubTool('measurement');
+	li.querySelector('input[type=checkbox]').checked = true;
+}
+function measurementOff(){
+	if(!$CAMIC.viewer.measureInstance)return;
+	$CAMIC.viewer.measureInstance.off();
+	const li = $UI.toolbar.getSubTool('measurement');
+	li.querySelector('input[type=checkbox]').checked = false;
+}
 // toggle magnifier callback
 function toggleMagnifier(data){
-	//camessage.sendMessage(`Magnifier ${data.checked?'ON':'OFF'}`, {size:'15px',color:'white', bgColor:'blue'}, 3);
-	$UI.message.add(`Magnifier ${data.checked?'ON':'OFF'}`);
 	if(data.checked){
-		$UI.spyglass.factor = +data.status;
-		$UI.spyglass.open(this.clientX,this.clientY);
-		// turn off draw
-		//$UI.toolbar._sub_tools[1].querySelector('input[type=checkbox]').checked = false;
-		//$CAMIC.viewer.canvasDrawInstance.drawOff();
-		//$CAMIC.drawContextmenu.off();
-		//toggleOffDrawBtns();
-		// turn off measurement
-		$UI.toolbar._sub_tools[2].querySelector('input[type=checkbox]').checked = false;
-		$CAMIC.viewer.measureInstance.off();
+		magnifierOn(+data.status,this.clientX,this.clientY);
+		// trun off the main menu
+		$UI.settingsSideMenu.close();
+		heatMapEditorOff();
+		// measurement off
+		measurementOff();
 	}else{
-		$UI.spyglass.close();
+		magnifierOff();
 	}
 }
+function magnifierOn(factor = 1,x=0,y=0){
+	if(!$UI.spyglass)return;
+	$UI.spyglass.factor = factor;
+	$UI.spyglass.open(x,y);
+	const li = $UI.toolbar.getSubTool('magnifier');
+	li.querySelector('input[type=checkbox]').checked = true;
+}
 
+function magnifierOff(){
+	if(!$UI.spyglass)return;
+	$UI.spyglass.close();
+	const li = $UI.toolbar.getSubTool('magnifier');
+	li.querySelector('input[type=checkbox]').checked = false;
+}
 // image download
 function imageDownload(data){
 	// TODO functionality
@@ -308,12 +327,14 @@ function shareURL(data){
 	const URL = StatesHelper.getCurrentStatesURL(true);
 	window.prompt('Share this link', URL);
 }
+
 // main menu changed
 function toggleHeatMapSettings(e){
 
 	switch (e.checked) {
 		case true:
 			$UI.settingsSideMenu.open();
+			heatmapEditorOff();
 			setTimeout(function(){
 				$UI.heatmapcontrol.resize();
 			},500)
@@ -335,6 +356,40 @@ function toggleHeatMapSettings(e){
 			// statements_def
 			break;
 	}
+}
+
+function toggleHeatMapEditor(e){
+	switch (e.checked) {
+		case true:
+			heatMapEditorOn();
+			break;
+		case false:
+			heatmapEditorOff();
+			break;
+		// default:
+		// 	console.warn('Editor error');
+		// break;	
+	}
+}
+function heatMapEditorOn(){
+	$UI.editorSideMenu.open();
+	$UI.settingsSideMenu.close();
+	measurementOff();
+	magnifierOff();
+	if(!$CAMIC.viewer.canvasDrawInstance) return;
+	
+	const data = $UI.heatmapEditorPanel.getCurrentOperation();
+	if(data){
+		$CAMIC.viewer.canvasDrawInstance.style.color = data[3];
+	}
+	$CAMIC.viewer.canvasDrawInstance.drawOn();
+}
+function heatmapEditorOff(){
+	$UI.editorSideMenu.close();
+	const li = $UI.toolbar.getSubTool('editor');
+	li.querySelector('input[type=checkbox]').checked = false;
+	$CAMIC.viewer.canvasDrawInstance.drawOff();
+	
 }
 
 function convertHumanAnnotationToPopupBody(notes){
@@ -387,6 +442,8 @@ function anno_delete(data){
 	});
 
 }
+
+
 function deleteCallback(data){
 	// remove overlay
     $D.overlayers.splice(data.index, 1);
@@ -420,6 +477,8 @@ function deleteCallback_old(data){
 	// close popup panel
     $UI.annotPopup.close();
 }
+
+
 function sort_change(sort){
 	console.log('sort_change');
 	$CAMIC.layersManager.sort(sort);
@@ -677,4 +736,92 @@ function old_anno_render(ctx,data){
 	DrawHelper.draw(ctx, data);
 
 }
+function editorPenChange(data){
+	
+	$CAMIC.viewer.canvasDrawInstance.style.color = data[3];
+}
+function saveEditData(){
+	console.log('saveEditData');
+	if(!$CAMIC.viewer.canvasDrawInstance._draws_data_.length){
+		alert('No data edited!');
+		return;
+	}
+	// get draw lines info
+	const editedData = $CAMIC.viewer.canvasDrawInstance.getImageFeatureCollection()
+	// get category of pens
+	const cates = $UI.heatmapEditorPanel.getAllOperations();
+	// merging draw lines info and category together. The result will be used by heatmap to draw the edited data.
+	//const newEditedData = mergingEditedData(editedData, pensInfo);
+	editedData.features.forEach(feature => {
+		const color =  feature.properties.style.color;
+		const points = getGrids(feature.geometry.coordinates[0],$CAMIC.viewer.canvasDrawInstance.size);
+		points.forEach(p=>{
+			p[0] = $CAMIC.viewer.imagingHelper.dataToLogicalX(p[0]);
+			p[1] = $CAMIC.viewer.imagingHelper.dataToLogicalY(p[1]);
+		});
+		const cate = findPenInfoByColor(color,cates);
+		$D.editedDataClusters.data.addEditDateForCluster(...cate, points);
+	})
+	// update heatmap view
+	$CAMIC.viewer.heatmap.updateView();
+
+	// TODO if success then close
+	$CAMIC.viewer.canvasDrawInstance.clear();
+
+
+	console.log('saved');
+}
+function mergingEditedData(editedData, cates){
+	const clusters = new EditDataCluster();
+	editedData.features.forEach(feature => {
+		const color =  feature.properties.style.color;
+		const points = getGrids(feature.geometry.coordinates[0],$CAMIC.viewer.canvasDrawInstance.size);
+		
+		const cate = findPenInfoByColor(color,cates);
+		clusters.addEditDateForCluster(...cate, points);
+	})
+	return clusters;
+}
+function findPenInfoByColor(color,info){
+	return info.find(i=>i[3]==color);
+}
+
+
 /* --  -- */
+// const fieldsColors = ['#576971','#0A1316','#DFB9C1','#2F1218','#C0A7A3','#271A18','#D07DBE', '#2F0526'];
+// function createEeditorPanel(fields,changeFuc,saveFuc){
+
+// 	const container = document.createElement('div');
+// 	container.classList.add('hmc-container');
+// 	const name = randomId();
+// 	let radiosTemplatec ='';
+// 	fields.forEach((field,idx)=>{
+// 		radiosTemplatec+= `&nbsp;&nbsp;<label><input type="radio" name="${name}" value="${idx}|${field.name}|1|${fieldsColors[idx*2]}">${field.name} - positive</label><br>`;
+// 		radiosTemplatec+= `&nbsp;&nbsp;<label><input type="radio" name="${name}" value="${idx}|${field.name}|0|${fieldsColors[idx*2+1]}">${field.name} - negative</label><br>`;
+// 	})
+
+
+
+// 	container.innerHTML = radiosTemplatec;
+// 	//container.querySelector
+// 	const radios = container.querySelectorAll(`input[type=radio][name=${name}]`);
+// 	radios[0].checked = true;
+// 	radios.forEach(radio=>{
+// 		radio.addEventListener('change',function(e){
+// 			const target = e.srcElement || e.target;
+// 			if(isFunction(changeFuc))
+// 				changeFuc.call(null,target.value.split('|'));
+// 		});
+// 	})
+// 	const saveBtn = document.createElement('button');
+// 	saveBtn.appendChild(document.createTextNode("SAVE"));
+// 	saveBtn.addEventListener('click',function(){
+// 		if(isFunction(saveFuc))saveFuc();
+// 	});
+// 	container.appendChild(saveBtn);
+// 	return container;
+// }
+// function getEditor(){
+// 	const radio = $UI.heatmapEditorPanel.querySelector('input[type=radio]:checked');
+// 	return 	radio?radio.value.split('|'):null;
+// }
