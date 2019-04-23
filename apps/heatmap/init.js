@@ -59,27 +59,7 @@ function initialize(){
 function initCore(){
   // start initial
   // TODO zoom info and mmp
-  const opt = {
-    draw:{
-      // extend context menu btn group
-      btns:[
-        { // annotation
-          type:'btn',
-          title:'Annotation',
-          class:'material-icons',
-          text:'description',
-          callback:saveAnnotation
-        },
-        { // analytics
-          type:'btn',
-          title:'Analytics',
-          class:'material-icons',
-          text:'settings_backup_restore',
-          callback:saveAnalytics
-        }
-      ]
-    }
-  }
+  const opt = {};
   // set states if exist
   if($D.params.states){
     opt.states = $D.params.states;
@@ -257,6 +237,19 @@ function initCore(){
         // Test Data - edited data
         $D.heatMapData.editedClusters = mergingEditedData(features, $UI.heatmapEditorPanel.getAllOperations());
         console.log($D.heatMapData);
+
+
+        // create edited data list 
+        $UI.heatmapEditedDataPanel = new HeatmapEditedDataPanel({
+          // data:$D.heatMapData.editedClusters,
+          data:$D.editedDataClusters.data,
+          // editedDate:$D. 
+          onDBClick: locateEditData,
+          onDelete: onDeleteEditData
+        });
+
+        $UI.editedListSideMenu.addContent($UI.heatmapEditedDataPanel.elt);
+
         Loading.close();
 
       }
@@ -281,6 +274,14 @@ function initUIcomponents(){
     hasMainTools: false,
     //mainToolsCallback:mainMenuChange,
     subTools:[
+      {
+        name:'editeddate',
+        icon:'view_list',// material icons' name
+        title:'Edited Data List',
+        type:'check',// btn/check/dropdown
+        value:'editeddate',
+        callback:toggleHeatMapDataList
+      },
       // setting
       {
         name:'settings',
@@ -430,7 +431,7 @@ function initUIcomponents(){
     var checkIsReady = setInterval(function () {
       if($CAMIC&& $CAMIC.viewer && $CAMIC.viewer.imagingHelper && $CAMIC.viewer.imagingHelper._haveImage && $D.heatMapData) {
         clearInterval(checkIsReady);
-        // create side menu
+        // create editor side menu
         $UI.editorSideMenu = new SideMenu({
           id:'editor_menu',
           width: 300,
@@ -442,12 +443,26 @@ function initUIcomponents(){
         title.textContent = 'Heatmap Editor';
         $UI.editorSideMenu.addContent(title);
 
+        // create edited data list side menu
+        $UI.editedListSideMenu = new SideMenu({
+          id:'edit_list_menu',
+          width: 300,
+          //, isOpen:true
+          callback:toggleHeatMapEditor
+        });
+        const title1 = document.createElement('div');
+        title1.classList.add('item_head');
+        title1.textContent = 'Edited Data List';
+        $UI.editedListSideMenu.addContent(title1);
+
+
         $CAMIC.viewer.canvasDrawInstance.drawMode = 'grid';
         function getGridSizeInImage(size){
+          const correctValue = 0.1;
           let [w,h] = size;
-          w = Math.round(w*$CAMIC.viewer.imagingHelper.imgWidth);
-          h = Math.round(h*$CAMIC.viewer.imagingHelper.imgHeight);
-          return [w,h];
+          w = w*$CAMIC.viewer.imagingHelper.imgWidth;
+          h = h*$CAMIC.viewer.imagingHelper.imgHeight;
+          return [w - correctValue, h - correctValue];
         }
         $CAMIC.viewer.canvasDrawInstance.size = getGridSizeInImage($D.heatMapData.provenance.analysis.size);
       }

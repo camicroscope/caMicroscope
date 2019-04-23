@@ -226,13 +226,3 @@ function createOpacities(container, field, changeFunc){
 	container.appendChild(div);
 	return rs;
 }
-// function createRadios(mode){
-// 	const radios = {
-// 		binal:document.createElement('input'),
-// 		gradient:document.createElement('input')
-// 	};
-// 	 = randomId();
-// 	radios['binal'].value = 'binal';
-// 	radios['binal'].name = 'binal';
-
-// }

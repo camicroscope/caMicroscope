@@ -21,10 +21,15 @@ class EditDataCluster{
 	constructor(clusters=[]){
 		this.clusters = clusters;
 	}
+	isEmpty(){
+		return !(this.clusters&&this.clusters.length > 0);
+	}
 	getCluster(index,name,value,color){
 		return this.clusters.find(cluster => cluster.index==index&&cluster.name==name&&cluster.value==value&&cluster.color==color);
 	}
-
+	getClusterIndex(index,name,value,color){
+		return this.clusters.findIndex(cluster => cluster.index==index&&cluster.name==name&&cluster.value==value&&cluster.color==color);
+	}
 	addEditDateForCluster(index, name, value, color, editData){
 		if(!Array.isArray(editData)) return;
 		let cluster = this.getCluster(index, name, value, color);
@@ -33,6 +38,19 @@ class EditDataCluster{
 			this.clusters.push(cluster);
 		}
 		cluster.addEditData(editData)
+	}
+
+	removeEditDataForCluster(index,name,value,color, idx = null){
+		const clusterIdx  = this.getClusterIndex(index,name,value,color);
+		
+		if(clusterIdx ==-1) return;
+		const cluster = this.clusters[clusterIdx];
+		if(idx==null){ // remove all
+			this.clusters.splice(clusterIdx,1);
+		} else {
+			cluster.removeEditDataByIndex(idx);
+			if(cluster.editDataArray.length==0) this.clusters.splice(clusterIdx,1);
+		}
 	}
 }
 
