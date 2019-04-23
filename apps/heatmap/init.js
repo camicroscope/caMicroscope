@@ -154,10 +154,9 @@ function initCore(){
     //$D. = await $CAMIC.store.getHeatmap($D.case_id,'lym_v1-high_res').then(d=> d[0]);
 
     var checkImagingHelperIsReady = setInterval(function () {
-      if($CAMIC.viewer.imagingHelper._haveImage && $D.heatMapData) {
+      if($CAMIC.viewer.imagingHelper&& $CAMIC.viewer.imagingHelper._haveImage && $D.heatMapData) {
         clearInterval(checkImagingHelperIsReady);
-
-
+        
         $D.editedDataClusters = {}
         $D.editedDataClusters.data = createTestData(features);
         // load data
@@ -462,6 +461,7 @@ function initUIcomponents(){
           let [w,h] = size;
           w = w*$CAMIC.viewer.imagingHelper.imgWidth;
           h = h*$CAMIC.viewer.imagingHelper.imgHeight;
+          if(w > 400) return [w, h];
           return [w - correctValue, h - correctValue];
         }
         $CAMIC.viewer.canvasDrawInstance.size = getGridSizeInImage($D.heatMapData.provenance.analysis.size);

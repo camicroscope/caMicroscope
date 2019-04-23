@@ -407,7 +407,7 @@ function saveEditData(){
 		$D.editedDataClusters.data.addEditDateForCluster(...cate, points);
 	})
 	// update heatmap view
-	$CAMIC.viewer.heatmap.updateView();
+	$CAMIC.viewer.heatmap.updateView(0);
 	$UI.heatmapEditedDataPanel.__refresh();
 	// TODO if success then close
 	$CAMIC.viewer.canvasDrawInstance.clear();
@@ -448,7 +448,7 @@ function onDeleteEditData(data){
 	
 	// refresh UI
 	$UI.heatmapEditedDataPanel.__refresh();
-	$CAMIC.viewer.heatmap.updateView();
+	$CAMIC.viewer.heatmap.updateView(0);
 	if($D.editedDataClusters.data.isEmpty())
 		alert('NO');
 
