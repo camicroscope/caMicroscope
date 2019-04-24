@@ -287,17 +287,30 @@
 
 			// mapping data
 			const keys = HeadMapping.map(d=>d.field);
-			return data.map((d) => {
-				const rs = [];
-				keys.forEach((key,i) => {
-					if(i==0) rs.push(d['_id']['$oid'])
-					else if(!d[key]) rs.push('')
-					else rs.push(d[key])
+			if (data.map){
+				return data.map((d) => {
+					const rs = [];
+					keys.forEach((key,i) => {
+						if(i==0) rs.push(d['_id']['$oid'])
+						else if(!d[key]) rs.push('')
+						else rs.push(d[key])
+					});
+					const btn = `<button class="btn" data-id='${rs[0]}' onclick='openView(this)'>Open</button>`
+					rs.push(btn);
+					return rs;
 				});
-				const btn = `<button class="btn" data-id='${rs[0]}' onclick='openView(this)'>Open</button>`
-				rs.push(btn);
-				return rs;
-			});
+			} else {
+				// we have no data to render! Let's add a default button
+				const default_btn = []
+				const default_btn = [];
+				keys.forEach((key,i) => {
+					if(i==0) default_btn.push("NO DATA")
+					else default_btn.push('')
+				});
+				const btn = `<button class="btn" onclick='alert("no data")'>Open</button>`
+				default_btn.push(btn);
+				return [default_btn];
+			}
 		})
 		.then(function(data){
 			if(data.length==0){
