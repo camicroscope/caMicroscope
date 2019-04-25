@@ -612,7 +612,7 @@
                 }, this);
             }
             
-            // TODO draw edited data
+            // draw edited data
             this._editedData.clusters.forEach(cluster=>{
                 const points = removeDeplicateAndLogicalToPhysical(cluster.editDataArray.flat(),this._viewer.imagingHelper);
                 // clear
