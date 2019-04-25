@@ -436,7 +436,11 @@ function watershed(inn, out, thresh) {
   let unknown = new cv.Mat();
   let markers = new cv.Mat();
 
+
   cv.cvtColor(i2s, i2s, cv.COLOR_RGBA2RGB, 0);
+  console.log(canvas2RGBArray(i2s,i2s.cols,i2s.rows));
+  console.log(i2s.cols,i2s.rows);
+
   // Store canvas to save combined image
   // $UI.segmentPanel.__c2s = cv.imread(inn);
 
@@ -711,4 +715,22 @@ function downloadCSV(data,filename) {
   link.setAttribute('href', data);
   link.setAttribute('download', filename);
   link.click();
+}
+
+//--------------------------------------------------
+// Convert Canvas to Multi Channel RGB Array
+//--------------------------------------------------
+function canvas2RGBArray(image,cols,rows) {
+  let m=[];
+  let x=0;
+  let size = cols*rows;
+  for(i=0;i<=2;i++) {
+    let arr=[];
+    for(j=0;j<size;j++) {
+      arr[j]=image.data[j+x]
+	  }
+    m[i] = arr;
+    x+=size;
+  }
+  return m;
 }
