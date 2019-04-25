@@ -9,11 +9,11 @@
 
 /**
  * A operation panel that reads the single or multiple JSON schema and generates the data form and form control.
- * 
+ *
  * Dependency:
  * 	lib/pureform/pure-form.js
  * 	lib/pureform/pure-form.css
- * 	
+ *
  * @param {Object} options
  *        All required and optional settings for instantiating a new instance of a operation panel.
  * @param {JSON Schemas} options.formSchemas
@@ -29,7 +29,7 @@
  * @param {String} [options.action.text='Submit']
  *        The text of action btn
  * @param {String} [options.action.title='submit form']
- *        The text of hint on the action btn.                                       
+ *        The text of hint on the action btn.
  * @param {Function} [options.action.callback]
  *        The callback function of the action btn.
  */
@@ -48,34 +48,34 @@ function OperationPanel(options){
 		// list pairs
 		// btn -> event
 		// may be it can be extension in future...
-		// formSchemas 
+		// formSchemas
 		action:{
 			text:'Submit',
 			title:'submit form'
 
-		}		
+		}
 	}
-	
+
 	/**
 	 * @property {Element} _form_ The instance of pure-form, the core of Operation Panel, generates the data form on UI
 	 */
 	this._form_;
-	
+
 	/**
 	 * @property {Element} _head_ The Head part of UI, includes head title and options for multiple data form.
 	 */
 	this._head_;
-	
+
 	/**
 	 * @property {Element} _select_ The select controls to switch the multiple data form.
 	 */
 	this._select_;
-	
+
 	/**
 	 * @property {Element} _ctrl_ the UI part that controls the form actions - reset/clean data form or submit data form.
 	 */
 	this._ctrl_;
-	
+
 	/**
 	 * @property {Element} _reset_ The reset btn for data form.
 	 */
@@ -89,7 +89,7 @@ function OperationPanel(options){
 	// setting options
 	extend(this.setting, options);
 
-	
+
 
 
 	this.elt = document.getElementById(this.setting.id);
@@ -145,13 +145,13 @@ OperationPanel.prototype.__refresh = function(){
 	this._select_.classList.add('pure-form-item');
 	schemas.forEach((schema, idx) => {
 		const opt = document.createElement('option');
-		opt.text = schema.id;
+		opt.text = schema.name || schema.id;
 		opt.value = idx;
 		this._select_.add(opt);
 	});
 
 	if(schemas.length < 2) this._select_.style.display = 'none';
-	
+
 	this._head_.appendChild(this._select_);
 	this.elt.appendChild(this._head_);
 	// add event
@@ -209,14 +209,14 @@ OperationPanel.prototype.__refresh = function(){
  //    	console.log('failded') // form value
  //    	console.log(e);
  //    	//this._action_.disabled = true;
-	// }.bind(this));	
-	
+	// }.bind(this));
+
 	// this._form_.addEventListener('pure-form-validation-passed', function(e) {
  //    	console.log('passed');      // pure form element
  //    	console.log(e);
  //    	//this._action_.disabled = false;
 	// }.bind(this));
-	
+
 }
 
 /**
@@ -229,7 +229,7 @@ OperationPanel.prototype.__formChange = function(e){
 		this._form_.autofocusError = this._form_.schema.autofocusError;
 	if(this._form_.schema.autofocusId)
 		this._form_.autofocusId = this._form_.schema.autofocusId;
-	
+
 	//this._action_.disabled = true;
 }
 
@@ -241,7 +241,3 @@ OperationPanel.prototype.clear = function(){
 	this._form_.reset();
 	//this._action_.disabled = true;
 }
-
-
-
-
