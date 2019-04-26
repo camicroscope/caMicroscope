@@ -3,7 +3,8 @@ import GHCHelpers from './GHCHelpers.js'
 CaMic.prototype.loadImg = function(func) {
   // do we have a GHC token?
   // load up!
-  var img_id = urlParams.get('id');
+  var urlParams = new URLSearchParams(window.location.search);
+  var img_id = urlParams.get('slideId');
   this.slideId = img_id
   this.slideName = img_id
   this.study = ""
