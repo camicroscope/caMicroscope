@@ -54,7 +54,7 @@
          const instancesPath = seriesPath + '/' +
              series[0][this.SERIES_INSTANCE_UID_TAG].Value[0] + '/instances';
          $.ajax({
-           url: toDicomWebQIDOUrl(instancesPath),
+           url: this.toDicomWebQIDOUrl(instancesPath),
            error: function(jqXHR) {
              alert(
                  'Error - retrieving instances failed: ' +
