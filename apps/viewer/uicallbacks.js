@@ -94,8 +94,8 @@ function multSelector_action(size){
 
 	}catch(error){
 		Loading.close();
-		$UI.message.addError('Core Initialization Failed');
 		console.error(error);
+		$UI.message.addError('Core Initialization Failed');
 		return;
 	}
 
