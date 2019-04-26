@@ -113,7 +113,7 @@
                  }
                };
                console.log(tileSource)
-               viewer.open(tileSource)
+               this.viewer.open(tileSource)
              } catch (err) {
                console.error(err)
                alert(
