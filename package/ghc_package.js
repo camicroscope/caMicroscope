@@ -33,7 +33,7 @@ CaMic.prototype.loadImg = function(func) {
   x.mpp_x = this.mpp_x;
   x.mpp_y = this.mpp_y;
   x.location = "GHC--" + this.slideId
-  x.url = "WHOOPS"; // oh no, the secondary viewers...
+  x.url = ""; // oh no, the secondary viewers...
   if (func && typeof func === 'function') {
     func.call(null, x);
   }

@@ -112,6 +112,7 @@
                    return sortedLevelWidths[countLevels - 1 - level] / maxWidthPx;
                  }
                };
+               console.log(tileSource)
                viewer.open(tileSource)
              } catch (err) {
                alert(
