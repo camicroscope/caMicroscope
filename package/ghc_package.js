@@ -49,6 +49,9 @@ CaMic.prototype.loadImg = function(func) {
     }
   })
   ghc.loadInstancesInStudy(this.ghc_study) // opens viewer to its own custom source
-
+  var imagingHelper = new OpenSeadragonImaging.ImagingHelper({
+    viewer: this.viewer
+  });
+  imagingHelper.setMaxZoom(1);
 
 }
