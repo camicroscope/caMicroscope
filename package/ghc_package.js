@@ -1,3 +1,4 @@
+import GHCHelpers from './GHCHelpers.js'
 // this is not working yet. WIP until I can look at the data
 CaMic.prototype.loadImg = function(func) {
   // do we have a GHC token?
@@ -7,11 +8,16 @@ CaMic.prototype.loadImg = function(func) {
   this.slideName = slideId
   this.study = ""
   this.specimen = ""
+  // TODO make based on url
+  this.project = "public-datasets-194701"
+  this.locaion = "us-central1"
+  this.data_store = "test1"
+  this.study = "Study1"
 
   this.mpp = 1e9;
   this.mpp_x = this.mpp;
   this.mpp_y = this.mpp;
-  // TODO what to do about this
+  // TODO need pyramidMeta or equivalent
   var ghc_source = {
     height: maxHeightPx,
     width: maxWidthPx,
@@ -24,6 +30,7 @@ CaMic.prototype.loadImg = function(func) {
       const z = countLevels - 1 - level;
       const key = x + '/' + y + '/' + z;
       const params = pyramidMeta[key];
+
       return toDicomWebWADOUrl(
         instancesPath + '/' + params.SOPInstanceUID + '/frames/' +
         params.FrameNumber + '/rendered');
