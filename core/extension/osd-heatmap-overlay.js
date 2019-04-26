@@ -322,7 +322,7 @@
          * filter the data according to the threstholds.
          */
     	__thresholdingData:function(){
-    		const thresholds = this._fields.map(f=>f._thresholds);
+    		const thresholds = this._fields.map(f=>f.value);
             let t = TESTER[this._operator];
     		return this._data.filter(d=>{
     			const p = d.slice(2);
@@ -612,7 +612,7 @@
                 }, this);
             }
             
-            // draw edited data
+            //draw edited data
             this._editedData.clusters.forEach(cluster=>{
                 const points = removeDeplicateAndLogicalToPhysical(cluster.editDataArray.flat(),this._viewer.imagingHelper);
                 // clear
@@ -662,7 +662,7 @@
         //const colorList = ['#edf8e9','#bae4b3','#74c476','#31a354','#006d2c'];
         steps = 5;
         // get a boundary list of intervals
-        const threstholds = field._thresholds; 
+        const threstholds = field.value; 
         const boundaries = interpolateNums(threstholds[0], threstholds[1], steps + 1);
         const rs = [];
         for(let i = 0 ;i < colorList.length; i++){
@@ -879,13 +879,13 @@
      * @param {Number} [options.threshold=0]
      *        the treshold value for filtering current field
      */
-    $.Heatmap.Field = function({name, range, thresholds = range.slice()}, index){
+    $.Heatmap.Field = function({name, range, value = range.slice()}, index){
     	// validate 
-    	_validate(name, range, thresholds)
+    	_validate(name, range, value)
     	
     	this.name = name; // string
     	this.range = range; // [start,end] Number
-    	this._thresholds = thresholds; // Number [default value same as range]
+    	this.value = value; // Number [default value same as range]
         this.index = index;
 
     	function _validate(name,range,thresholds){
@@ -935,7 +935,7 @@
          * @return {Number} the threshold value
          */
     	getThresholds:function(){
-    		return this._thresholds;
+    		return this.value;
     	},
         /**
          * set the threshold for the currnet field
@@ -948,8 +948,8 @@
     			console.warn('threshold set fail:invalid value');
     			return;
     		}
-    		this._thresholds[0] = min;
-            this._thresholds[1] = max;
+    		this.value[0] = min;
+            this.value[1] = max;
     	}
     }
 

@@ -47,7 +47,8 @@ function initCore(){
   if($D.params.states){
     opt.states = $D.params.states;
   }
-
+    // create the message queue
+  $UI.message = new MessageQueue();
   try{
     let slideQuery = {}
     slideQuery.id = $D.params.slideId
@@ -132,9 +133,9 @@ function initCore(){
         // console.log(exec_id);
         // 
         // set thresholds for fields
-        $D.heatMapData.provenance.analysis.fields.forEach(f=>{
-          f.thresholds = [0.05,1];
-        });
+        // $D.heatMapData.provenance.analysis.fields.forEach(f=>{
+        //   f.threshold = [0.05,1];
+        // });
 
         $CAMIC.viewer.createHeatmap({
           opacity:.65, //inputs[2].value,
@@ -162,6 +163,12 @@ function initCore(){
         });
 
         $UI.settingsSideMenu.addContent($UI.heatmapcontrol.elt);
+
+        // create save botton if user is admin
+        if(true){
+          const btnDiv = createThreshold();
+          $UI.settingsSideMenu.addContent(btnDiv);
+        }  
         // create heatmap editor
         
         
@@ -217,8 +224,7 @@ function initUIcomponents(){
   /* create UI components */
 
 
-  // create the message queue
-  $UI.message = new MessageQueue();
+
 
   // create the tool bar
   $UI.toolbar = new CaToolbar({
@@ -504,7 +510,23 @@ function redirect(url ,text = '', sec = 5){
 
   }, 1000);
 }
+function createThreshold(){
+  const div = document.createElement('div');
+  div.classList.add('hmep-container');
+  div.style.border = 'none';
+  const div1 = document.createElement('div');
+  div1.classList.add('btn-panel');
 
+  
+  const btn = document.createElement('button');
+  btn.classList.add('action');
+  btn.style.float = 'right';
+  btn.textContent = 'Save Threshold';
+  div.appendChild(div1);
+  div1.appendChild(btn);
+  btn.addEventListener('click', onUpdateHeatmapFields);
+  return div;
+}
 function getUserId(token){
   const token_data = parseJwt(token);
   return token_data.name;

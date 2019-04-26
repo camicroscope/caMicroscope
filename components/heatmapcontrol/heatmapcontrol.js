@@ -160,6 +160,12 @@ HeatmapControl.prototype.__change = function(){
 		this.setting.onChange(data);
 	}
 }
+
+HeatmapControl.prototype.getThreshold = function(){
+	elt.querySelectorAll('.fields-panel > div').filter(elt=>{});
+}
+
+
 HeatmapControl.prototype.__opacityChange = function(){
 	if(this.setting.onChange && typeof this.setting.onChange === 'function'){
 		const data = {};
@@ -196,7 +202,7 @@ function createField(container, field, changeFunc){
         tooltip: false,
         scale: false,
         labels: false,
-        set: [field.thresholds[0]*100, field.thresholds[1]*100],
+        set: [field.value[0]*100, field.value[1]*100],
         onChange:changeFunc
 	});
 	container.appendChild(div);

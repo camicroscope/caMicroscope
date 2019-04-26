@@ -165,13 +165,7 @@ function closeSecondaryViewer(){
 	}
 }
 
-// side menu close callback
-function toggleSideMenu(opt){
-	if(!opt.isOpen){
-		const id = opt.target.id.split('_')[1];
-		$UI.toolbar.changeMainToolStatus(id,false);
-	}
-}
+
 
 // go home callback
 function goHome(data){
@@ -376,9 +370,17 @@ function heatmapEditorOff(){
 	1. Annotation
 	2. Analytics
 */
-function getCurrentItem(data){
-	console.log(data);
-}
+async function onUpdateHeatmapFields(){
+	if(!confirm('Do you want to update Threshold values?')) return;
+	Loading.open(document.body,'Saving Threshold ... ');
+	const fields = $D.heatMapData.provenance.analysis.fields;
+	const subject = $D.heatMapData.provenance.image.subject_id;
+	const caseid = $D.heatMapData.provenance.image.case_id;
+	const exec = $D.heatMapData.provenance.analysis.execution_id;	
+	const rs = await $CAMIC.store.updateHeatmapFields(subject, caseid, exec, JSON.stringify(fields));
+	Loading.close();
+	console.log(rs);
+};
 
 function editorPenChange(data){
 	$CAMIC.viewer.canvasDrawInstance.style.color = data[3];
@@ -459,8 +461,10 @@ async function saveEditData(){
 	// update heatmap view
 	$CAMIC.viewer.heatmap.updateView(0);
 	$UI.heatmapEditedDataPanel.__refresh();
-	// TODO if success then close
+	// if success then close
 	$CAMIC.viewer.canvasDrawInstance.clear();
+
+	heatMapEditedListOn();
 
 
 	console.log('saved');
@@ -529,6 +533,11 @@ async function onDeleteEditData(data){
 	// refresh UI
 	$UI.heatmapEditedDataPanel.__refresh();
 	$CAMIC.viewer.heatmap.updateView(0);
+
+	// close pen panel
+	
+	// open list panel
+	
 }
 
 function findPenInfoByColor(color,info){

@@ -448,6 +448,34 @@ class Store {
   }
 
 
+  updateHeatmapFields(subject, caseid, execution, fields){
+    var suffix = "Heatmap/threshold"
+    var url = this.base + suffix;
+    var query = {}
+    
+    if (subject) {
+      query.subject = subject
+    }
+    
+    if (caseid) {
+      query.case = caseid
+    }
+
+    if(execution) {
+      query.execution = execution
+    }
+
+    if(fields) {
+      query.fields = fields
+    }
+
+    return fetch(url + "?" + objToParamStr(query), {
+      method: "DELETE",
+      credentials: "include",
+      mode: "cors"
+    }).then(this.errorHandler)
+  }
+
   /**
    * add a Heatmap Edit Data
    * @param {object} json - the heatmap edit data
@@ -501,8 +529,7 @@ class Store {
       method: "DELETE",
       credentials: "include",
       mode: "cors"
-    })
-    .then(this.errorHandler)
+    }).then(this.errorHandler)
   }
 
   findHeatmapEdit(user, subject, caseid, execution) {
