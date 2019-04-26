@@ -1,12 +1,12 @@
  class GHCHelpers {
    // adatped from https://github.com/GoogleCloudPlatform/dicomweb-wsi-viewer/blob/master/viewer.js
-   constructor(project, location, dataset, store, study, viewer){
+   constructor(project, location, dataset, store, viewer){
      this.viewer = viewer
      // required params
+     this.project = project
      this.location = location;
      this.dataset = dataset;
      this.store = store;
-     this.study = study;
      // dicom standar attribute tags
      this.COLUMN_POSITION_TAG = '0048021E';
      this.COLUMNS_TAG = '00280011';  // Number of columns in the image
@@ -38,8 +38,9 @@
    toDicomWebWADOUrl(path) {
      return this.updatedDicomUrl + path + '?access_token=' + this.token;
    }
-   loadInstancesInStudy() {
-     const pathToStudy = this.study;
+   loadInstancesInStudy(study) {
+     var baseUrl = "/" + this.project + "/locations/"+ this.location +"/datasets/" + this.dataset + "/dicomStores/test1/" + this.store + "/studies/"
+     const pathToStudy = baseUrl + study
      const seriesPath = pathToStudy + '/series';
      $.ajax({
        url: this.toDicomWebQIDOUrl(seriesPath),
