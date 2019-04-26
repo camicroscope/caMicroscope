@@ -39,7 +39,7 @@
      return this.updatedDicomUrl + path + '?access_token=' + this.token;
    }
    loadInstancesInStudy(study) {
-     var baseUrl = "/" + this.project + "/locations/"+ this.location +"/datasets/" + this.dataset + "/dicomStores/test1/" + this.store + "/studies/"
+     var baseUrl = "/" + this.project + "/locations/"+ this.location +"/datasets/" + this.dataset + "/dicomStores/" + this.store + "/dicomWeb/studies/"
      const pathToStudy = baseUrl + study
      const seriesPath = pathToStudy + '/series';
      $.ajax({
