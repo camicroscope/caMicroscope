@@ -115,6 +115,7 @@
                console.log(tileSource)
                viewer.open(tileSource)
              } catch (err) {
+               console.error(err)
                alert(
                    `Could not parse DICOM for study, possible reason: DICOM is not
                    pathology or damaged image.`);
