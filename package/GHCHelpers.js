@@ -92,7 +92,7 @@
                // Map of "x,y,z" => {SOPInstanceUID, Frame No.}
                const pyramidMeta =this.calculatePyramidMeta(instances, sortedLevelWidths);
 
-               tileSource = {
+               var tileSource = {
                  height: maxHeightPx,
                  width: maxWidthPx,
                  tileSize: tileWidthPx,
