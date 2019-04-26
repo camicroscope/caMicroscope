@@ -31,6 +31,7 @@ CaMic.prototype.loadImg = function(func) {
   var ghc = new GHCHelpers(this.project, this.location, this.dataset, this.data_store, this.viewer)
   document.addEventListener("ghc_tileSource_ready", e=>{
     console.log("finishing load with event")
+    console.info(e.detail)
     // create item to pass to the callback function, previously x[0] (slide data)
     let x = {}
     x['_id'] = this.slideId
@@ -42,7 +43,7 @@ CaMic.prototype.loadImg = function(func) {
     x.mpp_x = this.mpp_x;
     x.mpp_y = this.mpp_y;
     x.location = "GHC--" + this.slideId
-    x.url = e.tileSource; // oh no, the secondary viewers...
+    x.url = e.detail; // oh no, the secondary viewers...
     if (func && typeof func === 'function') {
       func.call(null, x);
     }
