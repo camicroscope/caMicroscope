@@ -112,6 +112,8 @@
                    return sortedLevelWidths[countLevels - 1 - level] / maxWidthPx;
                  }
                };
+               var ts_event = new CustomEvent('ghc_tileSource_ready', { detail: tileSource });
+               document.dispatchEvent(ts_event);
                console.log(tileSource)
                this.viewer.open(tileSource)
              } catch (err) {
