@@ -76,8 +76,7 @@ function initCore(){
       const caseid = $D.heatMapData.provenance.image.case_id;
       const exec = $D.heatMapData.provenance.analysis.execution_id;
   
-      // TODO for nano borb
-      if(true){
+      if(ImgloaderMode!='imgbox'){
         // query from DB
         const editData = await $CAMIC.store.findHeatmapEdit(getUserId(token), subject, caseid, exec).then(d=>d[0]);
         //const editData = await $CAMIC.store.findHeatmapEdit('test', subject, caseid, exec).then(d=>d[0]);
@@ -115,7 +114,7 @@ function initCore(){
     // load the heatmap data
    
     var checkImagingHelperIsReady = setInterval(function () {
-      if($CAMIC.viewer.imagingHelper&& $CAMIC.viewer.imagingHelper._haveImage && $D.heatMapData && $D.editedDataClusters) {
+      if($CAMIC.viewer.imagingHelper&& $CAMIC.viewer.imagingHelper._haveImage && $D.heatMapData && $D.editedDataClusters && $UI.editedListSideMenu) {
         clearInterval(checkImagingHelperIsReady);
         
         
@@ -164,11 +163,7 @@ function initCore(){
 
         $UI.settingsSideMenu.addContent($UI.heatmapcontrol.elt);
 
-        // create save botton if user is admin
-        if(true){
-          const btnDiv = createThreshold();
-          $UI.settingsSideMenu.addContent(btnDiv);
-        }  
+
         // create heatmap editor
         
         
@@ -210,6 +205,17 @@ function initCore(){
         });
 
         $UI.editedListSideMenu.addContent($UI.heatmapEditedDataPanel.elt);
+      
+        
+        // TODO create save botton if user is admin
+        if(ImgloaderMode!='imgbox'){
+          const btnDiv = createThreshold();
+          $UI.settingsSideMenu.addContent(btnDiv);
+        }  else{
+          const btnDiv = createExportEditData();
+          $UI.editedListSideMenu.addContent(btnDiv);          
+        }
+
 
         Loading.close();
 
@@ -525,6 +531,23 @@ function createThreshold(){
   div.appendChild(div1);
   div1.appendChild(btn);
   btn.addEventListener('click', onUpdateHeatmapFields);
+  return div;
+}
+function createExportEditData(){
+  const div = document.createElement('div');
+  div.classList.add('hmep-container');
+  div.style.border = 'none';
+  const div1 = document.createElement('div');
+  div1.classList.add('btn-panel');
+
+  
+  const btn = document.createElement('button');
+  btn.classList.add('action');
+  btn.style.float = 'right';
+  btn.textContent = 'Export Edit Data';
+  div.appendChild(div1);
+  div1.appendChild(btn);
+  btn.addEventListener('click', onExportEditData);
   return div;
 }
 function getUserId(token){
