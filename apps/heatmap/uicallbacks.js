@@ -427,29 +427,36 @@ async function saveEditData(){
 	})
 
 	// add new one or update old one
-	let rs = null;
 	const now = getDateInString();
 	const editData = $D.editedDataClusters.toJSON()
-	if(data.length == 0){
-		// add new one
-		rs = await $CAMIC.store.addHeatmapEdit({
-			user_id:user,
-			create_date:now,
-			update_date:now,
-			provenance:$D.heatMapData.provenance,
-			data:editData
-		});
-	}else{
-		rs = await $CAMIC.store.updateHeatmapEdit(user, subject, caseid, exec, JSON.stringify(editData));
+	
+
+	// delete old one
+	let create_date = now;
+	if(data.length!==0){
+		create_date = data[0].create_date;
+		const del = await $CAMIC.store.deleteHeatmapEdit(user, subject, caseid, exec);
+		// error
+		if(del.hasError&&del.hasError==true){
+			$UI.message.addError(del.message);
+			Loading.close();
+			return;
+		}
 	}
+	// add new one
+	const add = await $CAMIC.store.addHeatmapEdit({
+		user_id:user,
+		create_date:create_date,
+		update_date:now,
+		provenance:$D.heatMapData.provenance,
+		data:editData
+	});
 
 	// error
-	if(rs.hasError&&rs.hasError==true){
-		$UI.message.addError(rs.message);
+	if(add.hasError&&add.hasError==true){
+		$UI.message.addError(add.message);
 		Loading.close();
 		return;
-	}else{
-
 	}
 	Loading.close();
 
