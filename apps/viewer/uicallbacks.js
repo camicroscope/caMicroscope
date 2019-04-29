@@ -966,7 +966,7 @@ function createHeatMapList(list){
 /* --  -- */
 /* -- for render anno_data to canavs -- */
 function anno_render(ctx,data){
-	DrawHelper.draw(ctx, data.geometries.features);
+	DrawHelper.draw(ctx, data);
 	//DrawHelper.draw(this._canvas_ctx, this.data.canvasData);
 }
 function old_anno_render(ctx,data){
