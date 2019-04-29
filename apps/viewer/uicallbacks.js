@@ -751,7 +751,7 @@ function loadAnnotationById(camic, layerData ,callback){
 				}
 
 				// no data found
-				if(!data[0]){
+				if(data.length < 1){
 					console.warn(`Annotation: ${item.name}(${item.id}) doesn't exist.`);
 					$UI.message.addWarning(`Annotation: ${item.name}(${item.id}) doesn't exist.`,5000);
 					// delete item form layview
@@ -760,7 +760,6 @@ function loadAnnotationById(camic, layerData ,callback){
 					$UI.layersViewerMinor.removeItemById(item.id);
 					return;
 				}
-
 				// for support quip 2.0 data model
 				if(data[0].geometry){
 					// twist them
@@ -786,8 +785,11 @@ function loadAnnotationById(camic, layerData ,callback){
 					// if(item) data[0].isShow = item.isShow;
 					item.render = old_anno_render;
 				}else{
-					data[0].geometries = VieweportFeaturesToImageFeatures(camic.viewer, data[0].geometries);
-					item.data = data[0];
+					//data[0].geometries = VieweportFeaturesToImageFeatures(camic.viewer, data[0].geometries);
+					// try to render across multiple objects, by mapping to all and flattening
+					item.data = data.map(d=>{
+						return VieweportFeaturesToImageFeatures(camic.viewer, d.geometries).features
+					}).flat();
 					item.render = anno_render;
 				}
 
