@@ -382,6 +382,44 @@ async function onUpdateHeatmapFields(){
 	console.log(rs);
 };
 
+async function onExportEditData(){
+	if($D.editedDataClusters.isEmpty()){
+		alert('There are no edit data to export...');
+		return;
+	}
+	const user = getUserId(token);
+	const now = getDateInString();
+	const editData = $D.editedDataClusters.toJSON()
+	const data = {
+		user_id:user,
+		create_date:now,
+		update_date:now,
+		provenance:$D.heatMapData.provenance,
+		data:editData
+	}
+	// let data = JSON.parse(window.localStorage.getItem("mark"))
+	
+	// let text = ""
+	// if (data) {
+	// text = JSON.stringify(data.filter(x => {
+	//   let matching = true;
+	//   for (var i in query) {
+	//     matching = matching && Object.byString(x, i) == query[i]
+	//   }
+	//   return matching
+	// }))
+	// }
+	var element = document.createElement('a');
+	var blob = new Blob([JSON.stringify(data)], {type: "application/json"});
+	var uri = URL.createObjectURL(blob);
+	element.setAttribute('href', uri);
+	element.setAttribute('download', "EditData.json");
+	element.style.display = 'none';
+	document.body.appendChild(element);
+	element.click();
+	document.body.removeChild(element);
+};
+
 function editorPenChange(data){
 	$CAMIC.viewer.canvasDrawInstance.style.color = data[3];
 }
@@ -399,15 +437,6 @@ async function saveEditData(){
 	const subject = $D.heatMapData.provenance.image.subject_id;
 	const caseid = $D.heatMapData.provenance.image.case_id;
 	const exec = $D.heatMapData.provenance.analysis.execution_id;
-
-	const data = await $CAMIC.store.findHeatmapEdit(user, subject, caseid, exec);
-	// error
-	if(!Array.isArray(data)&&data.hasError&&data.hasError==true){
-		$UI.message.addError(data.message);
-		Loading.close();
-		return;
-	}
-
 
 	// get draw lines info
 	const editedData = $CAMIC.viewer.canvasDrawInstance.getImageFeatureCollection();
@@ -433,30 +462,42 @@ async function saveEditData(){
 
 	// delete old one
 	let create_date = now;
-	if(data.length!==0){
-		create_date = data[0].create_date;
-		const del = await $CAMIC.store.deleteHeatmapEdit(user, subject, caseid, exec);
+
+	if(ImgloaderMode!='imgbox'){
+		// find editor data
+		const data = await $CAMIC.store.findHeatmapEdit(user, subject, caseid, exec);
 		// error
-		if(del.hasError&&del.hasError==true){
-			$UI.message.addError(del.message);
+		if(!Array.isArray(data)&&data.hasError&&data.hasError==true){
+			$UI.message.addError(data.message);
 			Loading.close();
 			return;
 		}
-	}
-	// add new one
-	const add = await $CAMIC.store.addHeatmapEdit({
-		user_id:user,
-		create_date:create_date,
-		update_date:now,
-		provenance:$D.heatMapData.provenance,
-		data:editData
-	});
 
-	// error
-	if(add.hasError&&add.hasError==true){
-		$UI.message.addError(add.message);
-		Loading.close();
-		return;
+		if(data.length!==0){
+			create_date = data[0].create_date;
+			const del = await $CAMIC.store.deleteHeatmapEdit(user, subject, caseid, exec);
+			// error
+			if(del.hasError&&del.hasError==true){
+				$UI.message.addError(del.message);
+				Loading.close();
+				return;
+			}
+		}
+		// add new one
+		const add = await $CAMIC.store.addHeatmapEdit({
+			user_id:user,
+			create_date:create_date,
+			update_date:now,
+			provenance:$D.heatMapData.provenance,
+			data:editData
+		});
+
+		// error
+		if(add.hasError&&add.hasError==true){
+			$UI.message.addError(add.message);
+			Loading.close();
+			return;
+		}
 	}
 	Loading.close();
 
@@ -520,18 +561,20 @@ async function onDeleteEditData(data){
 	const exec = $D.heatMapData.provenance.analysis.execution_id; 	
 	
 	let rs = null;
-	if($D.editedDataClusters.isEmpty()){
-		rs = await $CAMIC.store.deleteHeatmapEdit(user, subject, caseid, exec);
-	}else{
-		rs = await $CAMIC.store.updateHeatmapEdit(user, subject, caseid, exec, JSON.stringify($D.editedDataClusters.toJSON()));
-	}
-	// error
-	if(rs.hasError&&rs.hasError==true){
-		$UI.message.addError(rs.message);
-		Loading.close();
-		return;
-	}else{
+	if(ImgloaderMode!='imgbox'){
+		if($D.editedDataClusters.isEmpty()){
+			rs = await $CAMIC.store.deleteHeatmapEdit(user, subject, caseid, exec);
+		}else{
+			rs = await $CAMIC.store.updateHeatmapEdit(user, subject, caseid, exec, JSON.stringify($D.editedDataClusters.toJSON()));
+		}
+		// error
+		if(rs.hasError&&rs.hasError==true){
+			$UI.message.addError(rs.message);
+			Loading.close();
+			return;
+		}else{
 
+		}
 	}
 	Loading.close();
 	

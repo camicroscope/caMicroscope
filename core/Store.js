@@ -555,7 +555,7 @@ class Store {
     return fetch(url + "?" + objToParamStr(query), {
       credentials: "include",
       mode: "cors"
-    }).then(this.errorHandler).then(x=>this.filterBroken(x, "HeatmapEdit"))
+    }).then(this.errorHandler)
   }
   /**
    * delete heatmap
