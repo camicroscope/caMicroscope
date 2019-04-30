@@ -196,13 +196,13 @@ function createField(container, field, changeFunc){
 	div.appendChild(slider);
 	const rs = new rangeSlider({
         target: slider,
-        values: {min:field.range[0]*100,max:field.range[1]*100},
+        values: {min:field.range[0]*100 >> 0,max:field.range[1]*100 >> 0},
         step:1,
         range: true,
         tooltip: false,
         scale: false,
         labels: false,
-        set: [field.value[0]*100, field.value[1]*100],
+        set: [field.value[0]*100 >> 0, field.value[1]*100 >> 0],
         onChange:changeFunc
 	});
 	container.appendChild(div);
