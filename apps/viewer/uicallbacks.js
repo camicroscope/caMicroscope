@@ -94,8 +94,8 @@ function multSelector_action(size){
 
 	}catch(error){
 		Loading.close();
-		$UI.message.addError('Core Initialization Failed');
 		console.error(error);
+		$UI.message.addError('Core Initialization Failed');
 		return;
 	}
 
@@ -106,7 +106,7 @@ function multSelector_action(size){
 	// 	return layer && !layer.data
 	// });
 	// if all data loaded then add selected layer to minor viewer
-	
+
 	// if(unloaded.length == 0){
 	// 	// add overlays to
 	// 	// wait util omanager create
@@ -227,7 +227,7 @@ function closeSecondaryViewer(){
 	minor.classList.add('none');
 	minor.classList.remove('right');
 	$CAMIC.viewer.controls.bottomright.style.display = '';
-	
+
 	const li = $UI.toolbar.getSubTool('sbsviewer');
 	li.querySelector('input[type="checkbox"]').checked = false;
 	Loading.close();
@@ -278,7 +278,7 @@ function draw(e){
 	const canvasDraw = $CAMIC.viewer.canvasDrawInstance;
 	const target = this.srcElement || this.target || this.eventSource.canvas;
 	if(state){ // on
-		
+
 		// off magnifier
 		magnifierOff();
 		// off measurement
@@ -288,9 +288,9 @@ function draw(e){
 	}else{ // off
 		annotationOff();
 
-		
 
-		
+
+
 	}
 }
 
@@ -367,7 +367,7 @@ function toggleMeasurement(data){
 	}
 	//$UI.message.add(`Measument Tool ${data.checked?'ON':'OFF'}`);
 	if(data.checked){
-		
+
 		// trun off the main menu
 		$UI.layersSideMenu.close();
 		// turn off annotation
@@ -406,7 +406,7 @@ function toggleMagnifier(data){
 		$UI.appsSideMenu.close();
 		// annotation off
 		annotationOff();
-		// measurement off 
+		// measurement off
 		measurementOff();
 	}else{
 		magnifierOff();
@@ -634,7 +634,7 @@ function anno_callback(data){
 		$UI.layersViewerMinor.addItem(new_item,($minorCAMIC&&$minorCAMIC.viewer)?true:false);
 
 		//console.log($D.overlayers);
-		// data for UI 
+		// data for UI
 		//return;
 		loadAnnotationById($CAMIC,$UI.layersViewer.getDataItemById(exec_id),saveAnnotCallback);
 		if($minorCAMIC&&$minorCAMIC.viewer) loadAnnotationById($minorCAMIC, $UI.layersViewerMinor.getDataItemById(exec_id),null);
@@ -728,7 +728,7 @@ function closeMinorControlPanel(){
 }
 
 function loadAnnotationById(camic, layerData ,callback){
-			
+
 			layerData.item.loading = true;
 			const item = layerData.item;
 
@@ -751,7 +751,7 @@ function loadAnnotationById(camic, layerData ,callback){
 				}
 
 				// no data found
-				if(!data[0]){
+				if(data.length < 1){
 					console.warn(`Annotation: ${item.name}(${item.id}) doesn't exist.`);
 					$UI.message.addWarning(`Annotation: ${item.name}(${item.id}) doesn't exist.`,5000);
 					// delete item form layview
@@ -760,7 +760,6 @@ function loadAnnotationById(camic, layerData ,callback){
 					$UI.layersViewerMinor.removeItemById(item.id);
 					return;
 				}
-
 				// for support quip 2.0 data model
 				if(data[0].geometry){
 					// twist them
@@ -786,8 +785,11 @@ function loadAnnotationById(camic, layerData ,callback){
 					// if(item) data[0].isShow = item.isShow;
 					item.render = old_anno_render;
 				}else{
-					data[0].geometries = VieweportFeaturesToImageFeatures(camic.viewer, data[0].geometries);
-					item.data = data[0];
+					//data[0].geometries = VieweportFeaturesToImageFeatures(camic.viewer, data[0].geometries);
+					// try to render across multiple objects, by mapping to all and flattening
+					item.data = data.map(d=>{
+						return VieweportFeaturesToImageFeatures(camic.viewer, d.geometries).features
+					}).flat();
 					item.render = anno_render;
 				}
 
@@ -848,7 +850,7 @@ function stopDrawing(e){
 
 
 function openHeatmap(){
-	
+
 	switch (ImgloaderMode) {
 		case 'iip':
 			// hosted
@@ -862,13 +864,14 @@ function openHeatmap(){
 			// statements_def
 			break;
 	}
-	
+
 }
 function hostedHeatmap(){
 	const slide = $D.params.data.name;
 	$CAMIC.store.findHeatmapType(slide)
 	//
 	.then(function(list){
+		if (typeof list === "undefined") { list = [] }
 		// get heatmap data
 		if(!list.length){
 			alert(`${slide} has No heatmap data.`);
@@ -902,29 +905,41 @@ function imgboxHeatmap(){
     element.setAttribute('type', "file")
     element.style.display = 'none';
     document.body.appendChild(element);
-    
-    
+
+
     element.onchange = function(event) {
       var input = event.target;
       var reader = new FileReader();
       reader.onload = function() {
         var text = reader.result;
         try {
+
 			let data = JSON.parse(text);
-			
+
 			var valid = $VALIDATION.heatmap(data);
 			if (!valid) {
 				alert($VALIDATION.heatmap.errors)
 				return;
 			};
 
+			$CAMIC.store.clearHeatmaps();
+
+
 			data.provenance.image.slide = slide
 			const execId = data.provenance.analysis.execution_id;
+			Loading.open(document.body,'loading Heatmap...');
 			$CAMIC.store.addHeatmap(data).then(rs=>{
 				window.location.href = `../heatmap/heatmap.html${window.location.search}&execId=${execId}`;
+			}).catch(e=>{
+				$UI.message.addError(e);
+				console.error(e);
+			})
+			.finally(()=>{
+				Loading.close();
 			});
         } catch (e) {
           console.error(e)
+          Loading.close();
         }
       };
       reader.readAsText(input.files[0]);
@@ -936,9 +951,11 @@ function imgboxHeatmap(){
 function createHeatMapList(list){
 	empty($UI.modalbox.body);
 	list.forEach(data=>{
-		const exec_id = data.provenance.analysis.execution_id; 
+		const exec_id = data.provenance.analysis.execution_id;
 		const a = document.createElement('a');
-		a.href = `../heatmap/heatmap.html?slideId=${$D.params.slideId}&execId=${exec_id}`;
+		const params = getUrlVars();
+		a.href = params.mode?`../heatmap/heatmap.html?slideId=${$D.params.slideId}&execId=${exec_id}&mode=pathdb`:
+		`../heatmap/heatmap.html?slideId=${$D.params.slideId}&execId=${exec_id}`;
 		a.textContent = exec_id;
 		$UI.modalbox.body.appendChild(a);
 		$UI.modalbox.body.appendChild(document.createElement('br'));
@@ -949,7 +966,7 @@ function createHeatMapList(list){
 /* --  -- */
 /* -- for render anno_data to canavs -- */
 function anno_render(ctx,data){
-	DrawHelper.draw(ctx, data.geometries.features);
+	DrawHelper.draw(ctx, data);
 	//DrawHelper.draw(this._canvas_ctx, this.data.canvasData);
 }
 function old_anno_render(ctx,data){

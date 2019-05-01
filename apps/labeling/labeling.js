@@ -280,7 +280,8 @@ function getImage(result, callback){
   const data = result.data;
   const size = result.patch.size;
   const widthInClient = result.patch.widthInClient*OpenSeadragon.pixelDensityRatio;
-  const url = ImgloaderMode == 'iip'?`${window.location.origin}/img/IIP/raw/?IIIF=${data.location}/${size.x},${size.y},${size.width},${size.height}/${widthInClient},/0/default.jpg` : `${data.location}/${size.x},${size.y},${size.width},${size.height}/${widthInClient},/0/default.jpg`;
+  // const url = ImgloaderMode == 'iip'?`${window.location.origin}/img/IIP/raw/?IIIF=${data.location}/${size.x},${size.y},${size.width},${size.height}/${widthInClient},/0/default.jpg` : `${data.location}/${size.x},
+  const url = ImgloaderMode == 'iip'?`../../img/IIP/raw/?IIIF=${data.location}/${size.x},${size.y},${size.width},${size.height}/${widthInClient},/0/default.jpg` : `${data.location}/${size.x},${size.y},${size.width},${size.height}/${widthInClient},/0/default.jpg`;
   fetch(url).then(function(response) {
     if(response.ok) {
       return response.blob();

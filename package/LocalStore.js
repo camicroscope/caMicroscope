@@ -46,6 +46,23 @@ function init_LocalStore(){
     })
     return newData
   }
+  function removeFromIDB(type, id){
+    console.warn("Some issues with Deleting a Single Heatmap in LocalStore")
+    Store.prototype.db.then(x=>{
+          let tx = x.transaction(type, 'readwrite')
+          var store = tx.objectStore(type)
+          store.delete(id)
+    })
+    return ""
+  }
+  function clearDBFromIDB(type){
+    Store.prototype.db.then(x=>{
+          let tx = x.transaction(type, 'readwrite')
+          var store = tx.objectStore(type)
+          store.clear(type)
+    })
+    return ""
+  }
 
   function findInLocalStorage(type, query){
     let data = JSON.parse(window.localStorage.getItem(type))
@@ -204,7 +221,12 @@ function init_LocalStore(){
   }
   Store.prototype.deleteHeatmap = function(id,slide){
     return new Promise(function(res, rej){
-      res(removeFromLocalStorage('heatmap', id))
+      res(removeFromIDB('heatmap', id))
+    })
+  }
+  Store.prototype.clearHeatmaps = function(){
+    return new Promise(function(res, rej){
+      res(clearDBFromIDB('heatmap'))
     })
   }
 

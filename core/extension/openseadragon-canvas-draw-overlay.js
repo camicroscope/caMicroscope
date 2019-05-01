@@ -72,7 +72,7 @@
         this.isOn = false;
         // is drawing things
         this.isDrawing = false;
-
+        this.size = [];
         // create supplies free, square, rectangle, line
         this.drawMode = options.drawMode || 'free'; // 'free', 'square', 'rect', 'line'
         // ctx styles opt
@@ -162,7 +162,7 @@
             this.isDrawing = false;
 
             // creat supplies free, square, rectangle, line
-            this.drawMode = options.drawMode || 'rect'; // 'free', 'square', 'rect', 'line'
+            this.drawMode = options.drawMode || 'rect'; // 'free', 'square', 'rect', 'line', 'grid'            
             // ctx styles opt
             this.style = {
                 color:'#7CFC00',
@@ -278,7 +278,8 @@
             this._display_.getContext('2d').translate(x,y);
             this._display_.getContext('2d').scale(zoom,zoom);
             this._display_ctx_.lineWidth = this.style.lineWidth;
-            DrawHelper.draw(this._display_ctx_,this._draws_data_.slice(0,this._path_index));
+            this.drawMode!=='grid'?DrawHelper.draw(this._display_ctx_,this._draws_data_.slice(0,this._path_index)):
+            DrawHelper.drawGrids(this._display_ctx_, this._draws_data_.slice(0,this._path_index),this.size);
             this._display_.getContext('2d').setTransform(1, 0, 0, 1, 0, 0);
         },
 
@@ -370,7 +371,7 @@
 
 
             this._last = [Math.round(img_point.x),Math.round(img_point.y)]
-            // first feature within
+
             this.__newFeature(this._last.slice());
         },
 
@@ -424,11 +425,27 @@
              case 'line':
                 // draw line
                 this._last = [img_point.x,img_point.y];
+                
                 // store current point
                 this._current_path_.geometry.coordinates[0].push(this._last.slice());
                 this.drawOnCanvas(this._draw_ctx_,function(){
                     DrawHelper.drawMultiline(this._draw_ctx_,this._current_path_.geometry.coordinates[0]);
                 }.bind(this));
+                break;
+             case 'grid':
+                // draw line
+                this._last = [img_point.x,img_point.y];
+                // store current point
+                this._current_path_.geometry.coordinates[0].push(this._last.slice());
+                const grids = getGrids(this._current_path_.geometry.coordinates[0],this.size);
+                this._draw_ctx_.fillStyle = hexToRgbA(this.style.color,0.5);
+                this.drawOnCanvas(this._draw_ctx_,function(){
+                    DrawHelper.drawMultiGrid(this._draw_ctx_, grids, this.size);
+                    //DrawHelper.drawGrid(this._draw_ctx_,this._current_path_.geometry.coordinates[0]);
+                }.bind(this));
+                // this.drawOnCanvas(this._draw_ctx_,function(){
+                //     DrawHelper.drawMultiline(this._draw_ctx_,this._current_path_.geometry.coordinates[0]);
+                // }.bind(this));
                 break;
               case 'square':
                 // draw square
@@ -450,6 +467,16 @@
                     this._current_path_.geometry.coordinates[0] = item.points;
                 }.bind(this));
                 break;
+              // case 'grid':
+              //   // draw rectangle
+              //   DrawHelper.clearCanvas(this._draw_);
+              //   this.drawOnCanvas(this._draw_ctx_,function(){
+              //       DrawHelper.setStyle(this._draw_ctx_,this.style);
+              //       const item = DrawHelper.drawRectangle(this._draw_ctx_,getTopLeft(this._last,this.size),this.size);
+              //       this._current_path_.geometry.path = item.path;
+              //       this._current_path_.geometry.coordinates[0] = item.points;
+              //   }.bind(this));
+              //   break;                
               default:
                 // statements_def
                 break;
@@ -503,13 +530,14 @@
          * @param  {Ojbect} first point
          */
         __newFeature:function(point){
+
             this._current_path_={
                 type:'Feature',
                 properties:{
                     style:{}
                 },
                 geometry:{
-                    type:this.drawMode==='line'?"LineString":"Polygon",
+                    type:this.drawMode==='line'||this.drawMode==='grid'?"LineString":"Polygon",
                     coordinates:[[point]],
                     path:null
                 }
@@ -542,13 +570,13 @@
             this._current_path_.properties.style.lineCap = this.style.lineCap;
             this._current_path_.properties.style.isFill = this.style.isFill;
             let points = this._current_path_.geometry.coordinates[0];
-            if(this.drawMode !== 'line') points.push([points[0][0],points[0][1]]);
+            if(!(this.drawMode === 'line' ||this.drawMode === 'grid')) points.push([points[0][0],points[0][1]]);
 
             if(this.drawMode === 'free' || this.drawMode === 'line') {
               // simplify
               this._current_path_.geometry.coordinates[0] = simplify(points, 3.5);
             };
-            if(this.drawMode !== 'line'){
+            if(!(this.drawMode === 'line' ||this.drawMode == 'grid')){
                 let isIntersect = false;
                 if(isSelfIntersect(this._current_path_.geometry.coordinates[0])){
                     alert('A Self-Intersecting Polygon will cause inaccurate Area and circumference.');
@@ -585,7 +613,9 @@
             DrawHelper.clearCanvas(this._draw_);
             this._display_ctx_.lineWidth = this.style.lineWidth;
             this.drawOnCanvas(this._display_ctx_, function(){
-                DrawHelper.draw(this._display_ctx_, this._draws_data_.slice(0,this._path_index));
+
+                this.drawMode!=='grid'?DrawHelper.draw(this._display_ctx_, this._draws_data_.slice(0,this._path_index)):
+                DrawHelper.drawGrids(this._display_ctx_, this._draws_data_.slice(0,this._path_index),this.size);
             }.bind(this));
         },
 
@@ -596,7 +626,8 @@
             if(this._path_index > 0)
                 // redraw path
                 this.drawOnCanvas(this._display_ctx_,function(){
-                    DrawHelper.draw(this._display_ctx_,this._draws_data_.slice(0,--this._path_index));
+                    this.drawMode!=='grid'?DrawHelper.draw(this._display_ctx_,this._draws_data_.slice(0,--this._path_index)):
+                    DrawHelper.drawGrids(this._display_ctx_, this._draws_data_.slice(0,--this._path_index),this.size);
                 }.bind(this));
 
         },
@@ -608,7 +639,8 @@
             if(this._draws_data_.length > this._path_index)
                 // redraw path
                 this.drawOnCanvas(this._display_ctx_,function(){
-                    DrawHelper.draw(this._display_ctx_,this._draws_data_.slice(0,++this._path_index));
+                    this.drawMode!=='grid'?DrawHelper.draw(this._display_ctx_,this._draws_data_.slice(0,++this._path_index)):
+                    DrawHelper.drawGrids(this._display_ctx_,this._draws_data_.slice(0,++this._path_index),this.size);
                 }.bind(this));
         },
 
@@ -663,6 +695,8 @@
             [min[0],min[1]]
         ];
     }
+
+
 
 })(OpenSeadragon);
 

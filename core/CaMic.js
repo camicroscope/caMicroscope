@@ -136,7 +136,7 @@ class CaMic{
     this.createHeatmap();
     Loading.close();
   }
-  
+
   /**
   * Loads the staged image
   */
@@ -160,7 +160,7 @@ class CaMic{
         let data = x[0];
         // check the slide on service side
         OpenSeadragon.makeAjaxRequest( {
-                url: "../../img/Slide/" + data["_id"]["$oid"] + ".dzi",
+                url: "../../img/IIP/raw/?DeepZoom="+ data["location"] + ".dzi",
                 success: function( xhr ) {
                   this.openSlide(data,func);
                 }.bind(this),
@@ -174,7 +174,7 @@ class CaMic{
       })
       .catch(e=>{
 
-        
+
         console.error(e);
         //if()
         Loading.close();
@@ -188,7 +188,7 @@ class CaMic{
     this.study = data['study']
     this.specimen = data['specimen']
 
-    this.viewer.open("../../img/Slide/"+ data["_id"]["$oid"] + ".dzi");
+    this.viewer.open("../../img/IIP/raw/?DeepZoom="+ data["location"] + ".dzi");
     // set mpp
     this.mpp_x = +data['mpp-x']
     this.mpp_y = +data['mpp-y']
@@ -209,7 +209,7 @@ class CaMic{
     });
 
     imagingHelper.setMaxZoom(1);
-    data.url = "../../img/Slide/"+ data['_id']['$oid']+".dzi";
+    data.url = "../../img/IIP/raw/?DeepZoom="+ data["location"] + ".dzi";
     if(func && typeof func === 'function') func.call(null,data);
     Loading.text.textContent = `loading slide's tiles...`;
   }

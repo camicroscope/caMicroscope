@@ -160,6 +160,12 @@ HeatmapControl.prototype.__change = function(){
 		this.setting.onChange(data);
 	}
 }
+
+HeatmapControl.prototype.getThreshold = function(){
+	elt.querySelectorAll('.fields-panel > div').filter(elt=>{});
+}
+
+
 HeatmapControl.prototype.__opacityChange = function(){
 	if(this.setting.onChange && typeof this.setting.onChange === 'function'){
 		const data = {};
@@ -190,13 +196,13 @@ function createField(container, field, changeFunc){
 	div.appendChild(slider);
 	const rs = new rangeSlider({
         target: slider,
-        values: {min:field.range[0]*100,max:field.range[1]*100},
+        values: {min:field.range[0]*100 >> 0,max:field.range[1]*100 >> 0},
         step:1,
         range: true,
         tooltip: false,
         scale: false,
         labels: false,
-        set: [field.thresholds[0]*100, field.thresholds[1]*100],
+        set: [field.value[0]*100 >> 0, field.value[1]*100 >> 0],
         onChange:changeFunc
 	});
 	container.appendChild(div);
@@ -226,13 +232,3 @@ function createOpacities(container, field, changeFunc){
 	container.appendChild(div);
 	return rs;
 }
-// function createRadios(mode){
-// 	const radios = {
-// 		binal:document.createElement('input'),
-// 		gradient:document.createElement('input')
-// 	};
-// 	 = randomId();
-// 	radios['binal'].value = 'binal';
-// 	radios['binal'].name = 'binal';
-
-// }

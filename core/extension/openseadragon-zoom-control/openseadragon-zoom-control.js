@@ -186,7 +186,7 @@
      * zoomctrl = null; //important
      *
      */
-    $.CaZoomControl.prototype.destory = function(){
+    $.CaZoomControl.prototype.destroy = function(){
         for(const key in this){
             this[key] = null;
         }

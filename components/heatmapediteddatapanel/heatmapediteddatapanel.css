@@ -1,0 +1,65 @@
+/*heatmapediteddatapanel.css*/
+
+.hmed-container {
+    /*border: 1px solid #ccc;*/
+    display: block;
+    position: relative;
+    padding: .5rem;
+    margin: .5rem;
+    color: #365f9c;
+    font-size:1.3rem;
+}
+
+.hmed-container .title {
+	margin-top: .5rem;
+	padding: 0 1.0rem 0 1.5rem;
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+}
+.hmed-container .title .icon,.hmed-container .list .icon {
+    border: #cbcbcb 1px solid;
+    background-color: #f6f6f6;
+    cursor: pointer;
+}
+.hmed-container .title label,.hmed-container .list label {
+    cursor: pointer;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+    display: -webkit-flex;
+    display: flex;
+    flex: 1;
+    margin-left: -1px;
+    border: #cbcbcb 1px solid;
+    font-weight: bold;
+}
+
+.hmed-container .title label div,.hmed-container .list label div{
+	margin: 0 auto;
+}
+.margin-left-1 {
+	margin-left:-1px;
+}
+.color-block {
+	width:4rem;
+	height:2rem;
+}
+
+
+
+
+
+
+.hmed-container .list {
+	display:flex;
+	flex-direction:column;
+}
+.hmed-container .list > div{
+	display:flex;
+	flex:1;
+	margin-top: .5rem;
+	padding: 0 2rem 0 3rem;	
+}

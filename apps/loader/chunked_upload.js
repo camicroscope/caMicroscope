@@ -45,15 +45,41 @@ async function readFileChunks(file, token){
 }
 
 
-async function handle_upload(selectedFiles){
-  selectedFile = selectedFiles[0]
-  let filename = document.getElementById("filename").value
-  let token = await start_upload(filename)
-  // uncurry the upload function
-  let callback = continue_upload(token)
-  document.getElementById("token").value = token
-  readFileChunks(selectedFile, token)
-  //parseFile(selectedFile, callback, 0, x=>(changeStatus("UPLOAD", "Finished Reading File")))
+async function handle_upload(selectedFiles){  
+  var fnametr = document.getElementById("filenameRow")
+  var tokentr = document.getElementById("tokenRow")
+  var slidetr = document.getElementById("slidenameRow")
+  var idtr = document.getElementById("fileIdRow")
+
+  //Clear existing
+  document.getElementById("json_table").innerHTML = ""
+  var n = idtr.cells.length;
+  for(var i=0; i<n-1; i++){
+    fnametr.deleteCell(1)
+    tokentr.deleteCell(1)
+    slidetr.deleteCell(1)
+    idtr.deleteCell(1)    
+  }
+
+  var currID = 0;
+  //Add columns
+  for(var i=0; i<selectedFiles.length; i++, currID++){
+    idtr.insertCell(-1).innerHTML = "<b>"+Number(currID+1)+"<b>"
+    fnametr.insertCell(-1).innerHTML = "<input type=text name=filename id='filename"+currID+"' value='"+selectedFiles[i]["name"]+"'>"
+    tokentr.insertCell(-1).innerHTML = "<input type=text name=token id='token"+currID+"'>"
+    slidetr.insertCell(-1).innerHTML = "<input type=text name=slidename id='slidename"+currID+"'>"
+
+    selectedFile = selectedFiles[i]
+    let filename = document.getElementById("filename"+currID).value
+    let token = await start_upload(filename)
+    let callback = continue_upload(token)
+    document.getElementById("token"+currID).value = token
+    readFileChunks(selectedFile, token)
+    //parseFile(selectedFile, callback, 0, x=>(changeStatus("UPLOAD", "Finished Reading File")))
+  }
+
+  document.getElementById("fileUploadInput").colSpan = selectedFiles.length;
+  document.getElementById("controlButtons").colSpan = selectedFiles.length+1;
 }
 
 async function start_upload(filename){
@@ -81,13 +107,24 @@ function continue_upload(token){
   }
 }
 function finish_upload(){
-    let token = document.getElementById("token").value
-    let filename = document.getElementById("filename").value
-    let body = {filename: filename}
-    changeStatus("UPLOAD", "Finished Reading File, Posting")
-    let reg_req = fetch(finish_url + token,{method:'POST', body: JSON.stringify(body),headers: {
-              "Content-Type": "application/json; charset=utf-8"
-          }})
-    reg_req.then(x=>x.json()).then(a=>changeStatus("UPLOAD | Finished", a))
-    reg_req.then(e=>changeStatus("UPLOAD | ERROR;", e))
+
+  var reset = true
+  for(var i=0; i<document.getElementById("fileIdRow").cells.length-1;i++){
+      let token = document.getElementById("token"+i).value
+      let filename = document.getElementById("filename"+i).value
+      let body = {filename: filename}
+      changeStatus("UPLOAD", "Finished Reading File, Posting")
+      let reg_req = fetch(finish_url + token,{method:'POST', body: JSON.stringify(body),headers: {
+                "Content-Type": "application/json; charset=utf-8"
+            }})
+      console.log(i)
+      reg_req.then(x=>x.json()).then(a=>{changeStatus("UPLOAD | Finished", a, reset); console.log(a); reset = false })
+      reg_req.then(e=> { 
+        if(e["ok"]===false){
+          changeStatus("UPLOAD | ERROR;", e); 
+          reset = true;
+          console.log(e); 
+        }
+      })      
+  }
 }

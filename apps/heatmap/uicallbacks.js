@@ -165,75 +165,13 @@ function closeSecondaryViewer(){
 	}
 }
 
-// side menu close callback
-function toggleSideMenu(opt){
-	if(!opt.isOpen){
-		const id = opt.target.id.split('_')[1];
-		$UI.toolbar.changeMainToolStatus(id,false);
-	}
-}
+
 
 // go home callback
 function goHome(data){
 	redirect($D.pages.home,`GO Home Page`, 0);
 }
 
-// pen draw callback
-function draw(e){
-	if(!$CAMIC.viewer.canvasDrawInstance){
-		alert('draw doesn\'t initialize');
-		return;
-	}
-	const state = +e.state;
-	const canvasDraw = $CAMIC.viewer.canvasDrawInstance;
-	//$UI.message.add(`Draw: ${state?'ON':'OFF'}`);
-
-	const target = this.srcElement || this.target || this.eventSource.canvas;
-	switch (state) {
-		case 0: // off
-			canvasDraw.clear();
-			canvasDraw.drawOff();
-			$CAMIC.drawContextmenu.off();
-			$UI.appsSideMenu.close();
-			break;
-		case 1: // once
-			// statements_1
-		case 2: // stick
-			canvasDraw.drawOn();
-			$CAMIC.drawContextmenu.on();
-			$CAMIC.drawContextmenu.open({x:this.clientX,y:this.clientY,target:target});
-			// turn off magnifier
-			$UI.toolbar._sub_tools[2].querySelector('input[type=checkbox]').checked = false;
-			$UI.spyglass.close();
-			// turn off measurement
-			$UI.toolbar._sub_tools[3].querySelector('input[type=checkbox]').checked = false;
-			$CAMIC.viewer.measureInstance.off();
-
-			//close layers menu
-			$UI.layersSideMenu.close();
-
-			// open annotation menu
-			$UI.appsSideMenu.open();
-			$UI.appsList.triggerContent('annotation','open');
-			const input = $UI.annotOptPanel._form_.querySelector('#name');
-			input.focus();
-			input.select();
-			break;
-		default:
-			// statements_def
-			break;
-	}
-}
-
-function toggleOffDrawBtns(){
-	const label = $UI.toolbar._sub_tools[1].querySelector('label');
-	const state = +label.dataset.state;
-	label.classList.remove(`s${state}`);
-
-	label.dataset.state = 0;
-	label.classList.add(`s0`);
-
-}
 function heatmapSettingChanged(data){
 	switch (data.mode) {
 		case 'binal':
@@ -256,64 +194,80 @@ function heatmapSettingChanged(data){
 	}
 	
 }
+
 function heatmapOpacityChanaged(data){
 	$CAMIC.viewer.heatmap.setOpacity(data['heat']);
 	$CAMIC.viewer.heatmap.setCoverOpacity(data['cover']);
 }
+
 function toggleMeasurement(data){
+	if(!$CAMIC.viewer.measureInstance) {
+		console.warn('No Measurement Tool');
+		return;
+	}
 	//$UI.message.add(`Measument Tool ${data.checked?'ON':'OFF'}`);
 	if(data.checked){
-		$CAMIC.viewer.measureInstance.on();
-		// turn off draw
-		//$CAMIC.viewer.canvasDrawInstance.drawOff();
-		//$CAMIC.drawContextmenu.off();
-		//toggleOffDrawBtns();
 		// turn off magnifier
-		$UI.toolbar._sub_tools[1].querySelector('input[type=checkbox]').checked = false;
-		$UI.spyglass.close();
+		magnifierOff();
+		measurementOn();
+		$UI.settingsSideMenu.close();
+		heatmapEditorOff();
 	}else{
-		$CAMIC.viewer.measureInstance.off();
+		measurementOff();
 	}
+}
+
+function measurementOn(){
+	if(!$CAMIC.viewer.measureInstance)return;
+	$CAMIC.viewer.measureInstance.on();
+	const li = $UI.toolbar.getSubTool('measurement');
+	li.querySelector('input[type=checkbox]').checked = true;
+}
+
+function measurementOff(){
+	if(!$CAMIC.viewer.measureInstance)return;
+	$CAMIC.viewer.measureInstance.off();
+	const li = $UI.toolbar.getSubTool('measurement');
+	li.querySelector('input[type=checkbox]').checked = false;
 }
 
 // toggle magnifier callback
 function toggleMagnifier(data){
-	//camessage.sendMessage(`Magnifier ${data.checked?'ON':'OFF'}`, {size:'15px',color:'white', bgColor:'blue'}, 3);
-	$UI.message.add(`Magnifier ${data.checked?'ON':'OFF'}`);
 	if(data.checked){
-		$UI.spyglass.factor = +data.status;
-		$UI.spyglass.open(this.clientX,this.clientY);
-		// turn off draw
-		//$UI.toolbar._sub_tools[1].querySelector('input[type=checkbox]').checked = false;
-		//$CAMIC.viewer.canvasDrawInstance.drawOff();
-		//$CAMIC.drawContextmenu.off();
-		//toggleOffDrawBtns();
-		// turn off measurement
-		$UI.toolbar._sub_tools[2].querySelector('input[type=checkbox]').checked = false;
-		$CAMIC.viewer.measureInstance.off();
+		magnifierOn(+data.status,this.clientX,this.clientY);
+		// trun off the main menu
+		$UI.settingsSideMenu.close();
+		heatmapEditorOff();
+		// measurement off
+		measurementOff();
 	}else{
-		$UI.spyglass.close();
+		magnifierOff();
 	}
 }
 
-// image download
-function imageDownload(data){
-	// TODO functionality
-	alert('Download Image');
-	console.log(data);
+function magnifierOn(factor = 1,x=0,y=0){
+	if(!$UI.spyglass)return;
+	$UI.spyglass.factor = factor;
+	$UI.spyglass.open(x,y);
+	const li = $UI.toolbar.getSubTool('magnifier');
+	li.querySelector('input[type=checkbox]').checked = true;
 }
 
-// share url
-function shareURL(data){
-	const URL = StatesHelper.getCurrentStatesURL(true);
-	window.prompt('Share this link', URL);
+function magnifierOff(){
+	if(!$UI.spyglass)return;
+	$UI.spyglass.close();
+	const li = $UI.toolbar.getSubTool('magnifier');
+	li.querySelector('input[type=checkbox]').checked = false;
 }
+
 // main menu changed
 function toggleHeatMapSettings(e){
 
 	switch (e.checked) {
 		case true:
 			$UI.settingsSideMenu.open();
+			heatmapEditorOff();
+			heatMapEditedListOff();
 			setTimeout(function(){
 				$UI.heatmapcontrol.resize();
 			},500)
@@ -329,352 +283,346 @@ function toggleHeatMapSettings(e){
 	switch (e.isOpen) {
 		case false:
 			// statements_1
-			$UI.toolbar._sub_tools[0].querySelector('input[type="checkbox"]').checked = false;
+			const li = $UI.toolbar.getSubTool('settings')
+			li.querySelector('input[type=checkbox]').checked = false;
 			break;
+		case true:
+			const li2 = $UI.toolbar.getSubTool('settings')
+			li2.querySelector('input[type=checkbox]').checked = true;
 		default:
 			// statements_def
 			break;
 	}
 }
 
-function convertHumanAnnotationToPopupBody(notes){
-
-	const rs = {type:'map',data:[]};
-	for(let field in notes){
-		const val = notes[field];
-		field = field.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-		rs.data.push({key:field,value:val});
+function toggleHeatMapDataList(e){
+	switch (e.checked) {
+		case true:
+			heatMapEditedListOn();
+			break;
+		case false:
+			heatMapEditedListOff();
+			break;
+		// default:
+		// 	console.warn('Editor error');
+		// break;	
 	}
-	return rs;
+}
+
+function heatMapEditedListOn(){
+	$UI.editedListSideMenu.open();
+	const li = $UI.toolbar.getSubTool('editeddate')
+	li.querySelector('input[type=checkbox]').checked = true;
+	toggleHeatMapSettings({checked:false,isOpen:false});	
+	heatmapEditorOff();
+	measurementOff();
+	magnifierOff();
+}
+
+function heatMapEditedListOff(){
+	$UI.editedListSideMenu.close();
+	const li = $UI.toolbar.getSubTool('editeddate')
+	li.querySelector('input[type=checkbox]').checked = false;	
 
 }
 
-function anno_delete(data){
-	if(!data.id) return;
-	if(!confirm(`Are you sure you want to delete this markup {ID:${data.id}}?`)) return;
-	$CAMIC.store.deleteMark(data.oid,$D.params.data.name)
-	.then(datas =>{
-		// server error
-		if(datas.error){
-			const errorMessage = `${datas.text}: ${datas.url}`;
-			$UI.message.addError(errorMessage, 5000);
-			// close
-			return;
-		}
-
-		// no data found
-		if(!datas.rowsAffected || datas.rowsAffected < 1){
-			$UI.message.addWarning(`Delete Annotations Failed.`,5000);
-			return;
-		}
-
-		const index = $D.overlayers.findIndex(layer => layer.id == data.id);
-
-    	if(index==-1) return;
-
-    	data.index = index;
-		const layer = $D.overlayers[data.index];
-		// update UI
-		if(Array.isArray(layer.data)) deleteCallback_old(data)
-		else deleteCallback(data)
-	})
-	.catch(e=>{
-		$UI.message.addError(e);
-		console.error(e);
-	})
-	.finally(()=>{
-		//console.log('delete end');
-	});
-
-}
-function deleteCallback(data){
-	// remove overlay
-    $D.overlayers.splice(data.index, 1);
-    // update layer manager
-    $CAMIC.viewer.omanager.removeOverlay(data.id);
-    // update layers Viewer
-    $UI.layersViewer.update();
-	// close popup panel
-    $UI.annotPopup.close();
-
-}
-
-// for support QUIP2.0 Data model - delete callback
-function deleteCallback_old(data){
-    const layer = $D.overlayers[data.index];
-	// for support QUIP2.0
-	const idx = layer.data.findIndex(d=> d._id.$oid === data.oid );
-	if(idx ==-1) return;
-	layer.data.splice(idx, 1);
-
-	// delete entire layer if there is no data.
-	if(layer.data.length == 0){
-			$D.overlayers.splice(data.index, 1);
-			$CAMIC.viewer.omanager.removeOverlay(data.id);
+function toggleHeatMapEditor(e){
+	switch (e.checked) {
+		case true:
+			heatMapEditorOn();
+			break;
+		case false:
+			heatmapEditorOff();
+			break;
+		// default:
+		// 	console.warn('Editor error');
+		// break;	
 	}
-
-
-	$CAMIC.viewer.omanager.updateView();
-    // update layers Viewer
-    $UI.layersViewer.update();
-	// close popup panel
-    $UI.annotPopup.close();
-}
-function sort_change(sort){
-	console.log('sort_change');
-	$CAMIC.layersManager.sort(sort);
-
-}
-function anno_callback(data){
-	// is form ok?
-	const noteData = $UI.annotOptPanel._form_.value;
-	if($UI.annotOptPanel._action_.disabled || noteData.name == ''){
-
-		// close layer silde
-		$UI.toolbar._main_tools[1].querySelector('[type=checkbox]').checked = false;
-		$UI.layersSideMenu.close();
-
-		// open app silde
-		$UI.toolbar._main_tools[0].querySelector('[type=checkbox]').checked = true;
-		$UI.appsSideMenu.open();
-		// open annotaion list
-		$UI.appsList.triggerContent('annotation','open');
-		return;
-
-	}
-	// has Path?
-
-	if($CAMIC.viewer.canvasDrawInstance._path_index===0){
-		alert('No Markup on Annotation.');
-		return;
-	}
-	// save
-	// provenance
-	Loading.open($UI.annotOptPanel.elt,'Saving Annotation...');
-	const exec_id = randomId();
-
-	const annotJson = {
-		provenance:{
-			image:{
-				slide:$D.params.data.name,
-				specimen:$D.params.data.specimen,
-				study:$D.params.data.study
-			},
-			analysis:{
-				source:'human',
-				execution_id:exec_id,
-				name:noteData.name
-			}
-		},
-		properties:{
-			annotations:noteData
-		},
-		geometries:ImageFeaturesToVieweportFeatures($CAMIC.viewer, $CAMIC.viewer.canvasDrawInstance.getImageFeatureCollection())
-	}
-	//return;
-	$CAMIC.store.addMark(annotJson)
-	.then(data=>{
-
-		// server error
-		if(data.error){
-			$UI.message.addWarning(`${data.text}:${data.url}`);
-			Loading.close();
-			return;
-		}
-
-		// no data added
-		if(data.count < 1){
-			Loading.close();
-			$UI.message.addWarning(`Annotation Save Failed`);
-			return;
-		}
-		loadAnnotationById(null,exec_id);
-	})
-	.catch(e=>{
-		Loading.close();
-		console.log('save failed');
-		console.log(e);
-	})
-	.finally(()=>{
-
-	});
 }
 
-function saveAnnotCallback(){
-	/* reset as default */
-	// clear draw data and UI
+function heatMapEditorOn(){
+	$UI.editorSideMenu.open();
+	$UI.settingsSideMenu.close();
+
+	//$UI.editedListSideMenu.close();
+	heatMapEditedListOff();
+	measurementOff();
+	magnifierOff();
+	if(!$CAMIC.viewer.canvasDrawInstance) return;
+	
+	const data = $UI.heatmapEditorPanel.getCurrentOperation();
+	if(data){
+		$CAMIC.viewer.canvasDrawInstance.style.color = data[3];
+	}
+	$CAMIC.viewer.canvasDrawInstance.drawOn();
+}
+
+function heatmapEditorOff(){
+	$UI.editorSideMenu.close();
+	const li = $UI.toolbar.getSubTool('editor');
+	li.querySelector('input[type=checkbox]').checked = false;
 	$CAMIC.viewer.canvasDrawInstance.drawOff();
-	$CAMIC.drawContextmenu.off();
-	toggleOffDrawBtns();
-	$CAMIC.viewer.canvasDrawInstance.clear();
-	// uncheck pen draw icon and checkbox
-	//$UI.toolbar._sub_tools[1].querySelector('[type=checkbox]').checked = false;
-	// clear form
-	$UI.annotOptPanel.clear();
-
-	// close app side
-	$UI.toolbar._main_tools[0].querySelector('[type=checkbox]').checked = false;
-	$UI.appsSideMenu.close();
-	$UI.appsList.triggerContent('annotation','close');
-
-	// open layer side
-	$UI.toolbar._main_tools[1].querySelector('[type=checkbox]').checked = true;
-	$UI.layersSideMenu.open();
-	$UI.layersViewer.update();
-
-}
-function algo_callback(data){
-	console.log(data);
-
+	
 }
 
-// overlayer manager callback function for show or hide
-function callback(data){
-	data.forEach(item => {
-		if(!item.layer){
-			// load layer data
-			loadAnnotationById(item,item.id);
-
-		}else{
-			item.layer.isShow = item.isShow;
-			$CAMIC.viewer.omanager.updateView();
-		}
-	});
-}
-
-function loadAnnotationById(item,id){
-			Loading.open(document.body,'loading layers...');
-			$CAMIC.store.getMarkByIds([id],$D.params.data.name)
-			.then(data =>{
-				// response error
-				if(data.error){
-					const errorMessage = `${data.text}: ${data.url}`;
-					$UI.message.addError(errorMessage, 5000);
-					const layer = $D.overlayers.find(layer => layer.id==id);
-					if(layer){
-						layer.isShow = false;
-						$UI.layersViewer.update();
-					}
-					return;
-				}
-
-				// no data found
-				if(!data[0]){
-					console.log(`Annotation:${id} doesn't exist.`);
-					$UI.message.addError(`Annotation:${id} doesn't exist.`,5000);
-					// delete item form layview
-					if(item) removeElement($D.overlayers,id);
-					$UI.layersViewer.update();
-					return;
-				}
-
-
-
-
-				if(!item){
-					console.log(data[0]);
-					item = covertToLayViewer(data[0].provenance);
-					item.isShow = true;
-					// update lay viewer UI
-					$D.overlayers.push(item);
-					$UI.layersViewer.update();
-					saveAnnotCallback();
-				}else{
-					data[0].isShow = item.isShow;
-				}
-
-				// for support quip 2.0 data model
-				if(data[0].geometry){
-
-					// twist them
-					var image = $CAMIC.viewer.world.getItemAt(0);
-					this.imgWidth = image.source.dimensions.x;
-					this.imgHeight = image.source.dimensions.y;
-					item.data = data.map(d => {
-						d.geometry.coordinates[0] = d.geometry.coordinates[0].map(point => {
-							return [Math.round(point[0]*imgWidth),Math.round(point[1]*imgHeight)];
-						});
-						d.properties.style = {
-									color: "#7CFC00",
-									lineCap: "round",
-									lineJoin: "round"
-						};
-						return {
-							_id:d._id,
-							provenance:d.provenance,
-							properties:d.properties,
-							geometry:d.geometry
-						}
-
-
-					});
-					if(item) data[0].isShow = item.isShow;
-					item.render = old_anno_render;
-				}else{
-					data[0].geometries = VieweportFeaturesToImageFeatures($CAMIC.viewer, data[0].geometries);
-					item.data = data[0];
-					item.render = anno_render;
-				}
-
-				// create lay and update view
-				item.layer = $CAMIC.viewer.omanager.addOverlay(item);
-				$CAMIC.viewer.omanager.updateView();
-			})
-			.catch(e=>{
-				console.error(e);
-			})
-			.finally(()=>{
-				Loading.close();
-			});
-}
 /*
 	collapsible list
 	1. Annotation
 	2. Analytics
 */
-function getCurrentItem(data){
-	console.log(data);
-}
-// some fake events callback for demo
-
-
-function annotationSave(){
-	$UI.message.add('Annotation Saved');
-
+async function onUpdateHeatmapFields(){
+	if(!confirm('Do you want to update Threshold values?')) return;
+	Loading.open(document.body,'Saving Threshold ... ');
+	const fields = $D.heatMapData.provenance.analysis.fields;
+	const subject = $D.heatMapData.provenance.image.subject_id;
+	const caseid = $D.heatMapData.provenance.image.case_id;
+	const exec = $D.heatMapData.provenance.analysis.execution_id;	
+	const rs = await $CAMIC.store.updateHeatmapFields(subject, caseid, exec, JSON.stringify(fields));
+	Loading.close();
+	console.log(rs);
 };
-function algoRun(){
-	$UI.message.add('Algo is running...');
 
-}
-
-function saveAnnotation(){
-	console.log('saveAnnotation');
-
-	anno_callback.call(null,{id:$UI.annotOptPanel.setting.formSchemas[$UI.annotOptPanel._select_.value].id, data:$UI.annotOptPanel._form_.value});
-}
-
-function saveAnalytics(){
-	console.log('saveAnalytics');
-}
-function startDrawing(e){
-	$CAMIC.viewer.canvasDrawInstance.stop = !$UI.annotOptPanel._form_.isValid();
-	return;
-}
-function stopDrawing(e){
-	let state = +$UI.toolbar._sub_tools[1].querySelector('label').dataset.state;
-	if(state===1){
-		saveAnnotation();
+async function onExportEditData(){
+	if($D.editedDataClusters.isEmpty()){
+		alert('There are no edit data to export...');
+		return;
 	}
-}
-/* call back list END */
-/* --  -- */
-/* -- for render anno_data to canavs -- */
-function anno_render(ctx,data){
-	DrawHelper.draw(ctx, data.geometries.features);
-	//DrawHelper.draw(this._canvas_ctx, this.data.canvasData);
-}
-function old_anno_render(ctx,data){
-	DrawHelper.draw(ctx, data);
+	const user = getUserId();
+	const now = getDateInString();
+	const editData = $D.editedDataClusters.toJSON()
+	const data = {
+		user_id:user,
+		create_date:now,
+		update_date:now,
+		provenance:$D.heatMapData.provenance,
+		data:editData
+	}
+	// let data = JSON.parse(window.localStorage.getItem("mark"))
+	
+	// let text = ""
+	// if (data) {
+	// text = JSON.stringify(data.filter(x => {
+	//   let matching = true;
+	//   for (var i in query) {
+	//     matching = matching && Object.byString(x, i) == query[i]
+	//   }
+	//   return matching
+	// }))
+	// }
+	var element = document.createElement('a');
+	var blob = new Blob([JSON.stringify(data)], {type: "application/json"});
+	var uri = URL.createObjectURL(blob);
+	element.setAttribute('href', uri);
+	element.setAttribute('download', "EditData.json");
+	element.style.display = 'none';
+	document.body.appendChild(element);
+	element.click();
+	document.body.removeChild(element);
+};
 
+function editorPenChange(data){
+	$CAMIC.viewer.canvasDrawInstance.style.color = data[3];
 }
-/* --  -- */
+
+async function saveEditData(){
+	
+	if(!$CAMIC.viewer.canvasDrawInstance._draws_data_.length){
+		alert('No Data Edited!');
+		return;
+	}
+	Loading.open(document.body,`Saving Edit Data ...`);
+	// does data exist
+	// user, subject, case, execution, data
+	const user = getUserId();
+	const subject = $D.heatMapData.provenance.image.subject_id;
+	const caseid = $D.heatMapData.provenance.image.case_id;
+	const exec = $D.heatMapData.provenance.analysis.execution_id;
+
+	// get draw lines info
+	const editedData = $CAMIC.viewer.canvasDrawInstance.getImageFeatureCollection();
+	// get category of pens
+	const cates = $UI.heatmapEditorPanel.getAllOperations();
+	// merging draw lines info and category together. The result will be used by heatmap to draw the edited data.
+
+	editedData.features.forEach(feature => {
+		const color =  feature.properties.style.color;
+		const points = getGrids(feature.geometry.coordinates[0],$CAMIC.viewer.canvasDrawInstance.size);
+		points.forEach(p=>{
+			p[0] = $CAMIC.viewer.imagingHelper.dataToLogicalX(p[0]);
+			p[1] = $CAMIC.viewer.imagingHelper.dataToLogicalY(p[1]);
+		});
+		const cate = findPenInfoByColor(color,cates);
+		$D.editedDataClusters.addEditDateForCluster(...cate, points);
+	})
+
+	// add new one or update old one
+	const now = getDateInString();
+	const editData = $D.editedDataClusters.toJSON()
+	
+
+	// delete old one
+	let create_date = now;
+
+	if(ImgloaderMode!='imgbox'){
+		// find editor data
+		const data = await $CAMIC.store.findHeatmapEdit(user, subject, caseid, exec);
+		// error
+		if(!Array.isArray(data)&&data.hasError&&data.hasError==true){
+			$UI.message.addError(data.message);
+			Loading.close();
+			return;
+		}
+
+		if(data.length!==0){
+			create_date = data[0].create_date;
+			const del = await $CAMIC.store.deleteHeatmapEdit(user, subject, caseid, exec);
+			// error
+			if(del.hasError&&del.hasError==true){
+				$UI.message.addError(del.message);
+				Loading.close();
+				return;
+			}
+		}
+		// add new one
+		const add = await $CAMIC.store.addHeatmapEdit({
+			user_id:user,
+			create_date:create_date,
+			update_date:now,
+			provenance:$D.heatMapData.provenance,
+			data:editData
+		});
+
+		// error
+		if(add.hasError&&add.hasError==true){
+			$UI.message.addError(add.message);
+			Loading.close();
+			return;
+		}
+	}
+	Loading.close();
+
+
+
+
+
+
+	// update heatmap view
+	$CAMIC.viewer.heatmap.updateView(0);
+	$UI.heatmapEditedDataPanel.__refresh();
+	// if success then close
+	$CAMIC.viewer.canvasDrawInstance.clear();
+
+	heatMapEditedListOn();
+
+
+	console.log('saved');
+}
+function getDateInString(){
+	const today = new Date();
+	const dd = String(today.getDate()).padStart(2, '0');
+	const mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+	const yyyy = today.getFullYear();
+	const hour = String(today.getHours()).padStart(2, '0');	//Get the hour (0-23)
+	const min = String(today.getMinutes()).padStart(2, '0');	//Get the minute (0-59)
+	const sec = String(today.getSeconds()).padStart(2, '0');	//Get the second (0-59)
+	const ms = String(today.getMilliseconds()).padStart(3, '0'); //
+
+	return `${mm}/${dd}/${yyyy} ${hour}:${min}:${sec}:${ms}`;
+}
+
+function locateEditData(data){
+	const cluster = data.cluster;
+	const index = data.index;
+	
+	const rect = getViewRect(
+			data.cluster.editDataArray[index],
+			$D.heatMapData.provenance.analysis.size, 
+			$CAMIC.viewer
+		);
+
+	$CAMIC.viewer.viewport.fitBounds(rect);
+}
+
+async function onDeleteEditData(data){
+
+	const cluster = data.cluster;
+	const idx = data.index;
+
+	if(!confirm(`Do you want to delete { ${cluster.name} - ${cluster.value==0?'Negative':'Positive'} index:${idx} }?`)) return;
+	Loading.open(document.body,`deleting Edit Data ...`);
+
+	// UPDATE EDIT DATA
+	$D.editedDataClusters.removeEditDataForCluster(cluster.index, cluster.name, cluster.value, cluster.color, idx);
+
+	// delete data
+	const user = getUserId();
+	const subject = $D.heatMapData.provenance.image.subject_id;
+	const caseid = $D.heatMapData.provenance.image.case_id;
+	const exec = $D.heatMapData.provenance.analysis.execution_id; 	
+	
+	let rs = null;
+	if(ImgloaderMode!='imgbox'){
+		if($D.editedDataClusters.isEmpty()){
+			rs = await $CAMIC.store.deleteHeatmapEdit(user, subject, caseid, exec);
+		}else{
+			rs = await $CAMIC.store.updateHeatmapEdit(user, subject, caseid, exec, JSON.stringify($D.editedDataClusters.toJSON()));
+		}
+		// error
+		if(rs.hasError&&rs.hasError==true){
+			$UI.message.addError(rs.message);
+			Loading.close();
+			return;
+		}else{
+
+		}
+	}
+	Loading.close();
+	
+
+
+	// refresh UI
+	$UI.heatmapEditedDataPanel.__refresh();
+	$CAMIC.viewer.heatmap.updateView(0);
+
+	// close pen panel
+	
+	// open list panel
+	
+}
+
+function findPenInfoByColor(color,info){
+	return info.find(i=>i[3]==color);
+}
+function getViewRect(points , size, viewer){ // points in normalized, size in normalized, viewer
+	const point = getBounds(points);
+	const viewport = viewer.viewport;
+	const imagingHelper = viewer.imagingHelper;
+	let min = [point.min[0] - size[0], point.min[1] - size[1]];
+	let max = [point.max[0] + size[0]+size[0],point.max[1] +size[1]+size[1]];
+	min  = [imagingHelper.logicalToDataX(min[0]), imagingHelper.logicalToDataY(min[1])];
+	max  = [imagingHelper.logicalToDataX(max[0]), imagingHelper.logicalToDataY(max[1])];
+
+
+	return viewport.imageToViewportRectangle(min[0],min[1],max[0]-min[0], max[1]-min[1]);
+	
+}
+
+function getBounds(points){ // return x,y,w,h
+    let max,min;
+    points.forEach(point => {
+        if (!min && !max) {
+            min = [point[0], point[1]];
+            max = [point[0], point[1]];
+        } else {
+            min[0] = Math.min(point[0], min[0]);
+            max[0] = Math.max(point[0], max[0]);
+            min[1] = Math.min(point[1], min[1]);
+            max[1] = Math.max(point[1], max[1]);
+        }
+    });
+    return {
+    	min:min,
+    	max:max
+    };
+}
+
