@@ -1,5 +1,3 @@
-const token = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoicmFpbnZlbnRpb25zQGdtYWlsLmNvbSIsImF0dHJzIjpbImFkbWluIiwid3JpdGUiXSwiaWF0IjoxNTU2MjEwNTU3LCJleHAiOjE1NTYyMTQxNTd9.ojZA04vh7vhzPlGMP9piem3Z0nKaRpbYb1vae64ERas9dn-eSVdDSHwQAu34QtO6tmcpgTsArI16xRK4JOw982Minzq3Q2gfPH5lyn6-Ld7aO-DzyL6me_e4bURF96bbacWuZL-X2YtI7hx7KrhmlgJfsCuZyk4kjgzQsUdJtzdOS0inAwBB1AVRjBD9TJy3MT8A8KW5q6Ctmwqzw5iFqbuTDdfScBxyiPAemtS_9EdwK-5RNQiOkASLDJcUOGLUbL7KmdBy0EZx91zHmthREWtlsdQjBqF281-E2wev-VenARdrE67OjExeMF1-vz76WGKgKgfiM7kAWmwrX96zVg";
-// ----------------- test ---------- //
 // CAMIC is an instance of camicroscope core
 // $CAMIC in there
 let $CAMIC = null;
@@ -78,7 +76,7 @@ function initCore(){
   
       if(ImgloaderMode!='imgbox'){
         // query from DB
-        const editData = await $CAMIC.store.findHeatmapEdit(getUserId(token), subject, caseid, exec).then(d=>d[0]);
+        const editData = await $CAMIC.store.findHeatmapEdit(getUserId(), subject, caseid, exec).then(d=>d[0]);
         //const editData = await $CAMIC.store.findHeatmapEdit('test', subject, caseid, exec).then(d=>d[0]);
         $D.editedDataClusters = new EditDataCluster();
         if(editData&&Array.isArray(editData.data)&&editData.data.length > 0){
@@ -550,7 +548,8 @@ function createExportEditData(){
   btn.addEventListener('click', onExportEditData);
   return div;
 }
-function getUserId(token){
+function getUserId(){
+  const token = getCookie('token');
   const token_data = parseJwt(token);
   return token_data.name;
 }
