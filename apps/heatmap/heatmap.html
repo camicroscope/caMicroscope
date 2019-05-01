@@ -16,7 +16,7 @@
 		<link rel='stylesheet' type='text/css' media='all' href='../../common/colorpicker/color-picker.css'/>
 		<!-- add pure-form css -->
 		<link rel='stylesheet' type='text/css' media='all' href='../../common/pureform/pure-form.css'/>
-        <link rel='stylesheet' type='text/css' media='all' href='../../common/rangeslider/rangeslider.css'/>     
+        <link rel='stylesheet' type='text/css' media='all' href='../../common/rangeslider/rangeslider.css'/>
 		<!-- common css END -->
 
 		<!-- UI components css START -->
@@ -46,6 +46,10 @@
 		<link rel='stylesheet' type='text/css' media='all' href='../../components/spyglass/spyglass.css'/>
         <!-- add heatmapcontrol css -->
         <link rel='stylesheet' type='text/css' media='all' href='../../components/heatmapcontrol/heatmapcontrol.css'/>
+        <!-- add heatmapeditorpanel css -->
+        <link rel='stylesheet' type='text/css' media='all' href='../../components/heatmapeditorpanel/heatmapeditorpanel.css'/>
+        <!-- add heatmapediteddatapanel css -->
+        <link rel='stylesheet' type='text/css' media='all' href='../../components/heatmapediteddatapanel/heatmapediteddatapanel.css'/>
 		<!-- UI components css END -->
 
 		<!-- osd & core css START -->
@@ -54,8 +58,14 @@
  		<!-- mesurement tool css -->
  		<link rel='stylesheet' type='text/css' media='all' href='../../core/extension/openseadragon-measurement-tool/openseadragon-measurement-tool.css'/>
  		<!-- osd & core css END -->
-
-
+		<!-- REMOVE JQUERY AND AJAX AFTER MODENRIZING DICOM PACKAGE-->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+		<!-- Thank you -->
+		<!-- Check If we're logged in ok, otherwise, log in for us -->
+    <script src='../../common/authChecker.js'></script>
+    <script>
+      __auth_check(2)
+    </script>
 
  		<!--  common js START -->
  		<!-- util.js -->
@@ -74,7 +84,9 @@
 		<script type='text/javascript' src='../../common/ajv.js'></script>
 		<!-- IDB helper -->
 		<script type='text/javascript' src='../../common/idb.js'></script>
-        
+
+		<script type='text/javascript' src='../../common/heatmapeditdatamodels.js'></script>
+
 		<!--  common js END -->
 
 		<!--  components js START -->
@@ -104,8 +116,10 @@
 		<script type='text/javascript' src='../../components/spyglass/spyglass.js'></script>
         <!-- heatmap control -->
         <script type='text/javascript' src='../../components/heatmapcontrol/heatmapcontrol.js'></script>
+        <script type='text/javascript' src='../../components/heatmapeditorpanel/heatmapeditorpanel.js'></script>
+        <script type='text/javascript' src='../../components/heatmapediteddatapanel/heatmapediteddatapanel.js'></script>
 		<!--  components js END -->
-		
+
 
 		<!-- osd & core js START -->
 		<script type='text/javascript' src='../../core/openseadragon/openseadragon.js' ></script>
@@ -145,6 +159,10 @@
         <div id='minor_viewer' class='none'></div>
         <!-- settings menu for apps-->
         <div id='settings_menu' style='z-index:600'></div>
+        <!-- editor menu for apps-->
+        <div id='editor_menu' style='z-index:600'></div>
+        <!-- edit data menu for apps-->
+        <div id='edit_list_menu' style='z-index:600'></div>
 
         <!-- side menu for layers-->
         <!-- <div id='side_layers' style='z-index:600'></div> -->
@@ -161,7 +179,7 @@
 		// get slide id from url
 		if(detectIE()){
 			createWarningText('You are using an <strong>IE/Edge</strong> browser that may be lead to erratic behavior on caMicroscope. Please switch to <a href="https://www.google.com/chrome/">Chrome</a>, <a href="https://www.mozilla.org/en-US/firefox/new/">Firefox</a> or <a href="https://www.apple.com/safari/">Safari</a> browser to improve your experience.');
-		}		
+		}
 		$D.params = getUrlVars();
 
 		// load if we have at least one slide query element
@@ -169,7 +187,7 @@
 			// normal initialization starts
 			document.addEventListener('DOMContentLoaded', initialize);
 		}
-		
+
 		else if(!$D.params.execId){
 			redirect($D.pages.table,'execId is undefined. Redirecting to Table.');
 		}

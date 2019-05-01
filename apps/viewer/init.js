@@ -54,7 +54,7 @@ window.addEventListener('keydown', (e) => {
     chk.checked = !chk.checked;
     eventFire(chk,'click');
     return;
-  }  
+  }
 
 });
 
@@ -78,6 +78,10 @@ function initialize(){
 // setting core functionalities
 function initCore(){
   // start initial
+
+  // create the message queue
+  // $UI.message = new MessageQueue();
+
   // TODO zoom info and mmp
   const opt = {
     draw:{
@@ -143,20 +147,22 @@ function initCore(){
           case "human":
             let area;
             let circumference;
-            if((data.selected!=null || data.selected!=undefined) && data.geometries.features[data.selected] &&data.geometries.features[data.selected].properties.area)
-              area = `${Math.round(data.geometries.features[data.selected].properties.area)}μm^2`;
-            if((data.selected!=null || data.selected!=undefined) && data.geometries.features[data.selected] &&data.geometries.features[data.selected].properties.circumference)
-              circumference = `${Math.round(data.geometries.features[data.selected].properties.circumference)}μm`;
+            if(data.geometries){
+              if((data.selected!=null || data.selected!=undefined) && data.geometries.features[data.selected] &&data.geometries.features[data.selected].properties.area)
+                area = `${Math.round(data.geometries.features[data.selected].properties.area)}μm^2`;
+              if((data.selected!=null || data.selected!=undefined) && data.geometries.features[data.selected] &&data.geometries.features[data.selected].properties.circumference)
+                circumference = `${Math.round(data.geometries.features[data.selected].properties.circumference)}μm`;
+            } // othereise, don't try to calculate area and circumference
             // human
-            
+
             attributes = data.properties.annotations;
             if(area) attributes.area = area;
             if(circumference) attributes.circumference = circumference;
             body = convertHumanAnnotationToPopupBody(attributes);
-            if(data.geometries.features[data.selected].properties.isIntersect){
+            if(data.geometries && data.geometries.features[data.selected].properties.isIntersect){
               warning = `<div style='color:red;text-align: center;font-size:12px;'>Inaccurate Area and Circumference</div>`;
             }
-            if(data.geometries.features[data.selected].properties.nommp){
+            if(data.geometries && data.geometries.features[data.selected].properties.nommp){
               warning = `<div style='color:red;text-align: center;font-size:12px;'>This slide has no mpp</div>`;
             }
 
@@ -214,8 +220,6 @@ function initCore(){
 // initialize all UI components
 function initUIcomponents(){
   /* create UI components */
-  // create the message queue
-  $UI.message = new MessageQueue();
 
   $UI.modalbox = new ModalBox({
     id:'modalbox',
@@ -311,7 +315,7 @@ function initUIcomponents(){
     callback:function(){
       window.location.href = `../labeling/labeling.html${window.location.search}`;
     }
-  });  
+  });
    subToolsOpt.push({
      name:'segment',
      icon: 'timeline',
@@ -326,7 +330,7 @@ function initUIcomponents(){
        }
      }
    });
-     
+
   // -- For Nano borb Start -- //
   if(ImgloaderMode =='imgbox'){
     // download
@@ -349,7 +353,7 @@ function initUIcomponents(){
 
   }
   // -- For Nano borb End -- //
-  
+
   // bug report
   subToolsOpt.push({
     name:'bugs',
@@ -407,13 +411,13 @@ function initUIcomponents(){
     if($D.overlayers) {
       clearInterval(checkOverlaysDataReady);
       // create control
-      
+
       // create main layer viewer items with states
       const mainViewerData = $D.overlayers.map(d=>{
         const isShow = $D.params.states&&$D.params.states.l&&$D.params.states.l.includes(d.id)?true:false;
         return {item:d,isShow:isShow}
       })
-      
+
       // create monir layer viewer items
       const minorViewerData = $D.overlayers.map(d=>{
         return {item:d,isShow:false}
@@ -423,7 +427,7 @@ function initUIcomponents(){
       $UI.layersViewer = createLayerViewer('overlayers', mainViewerData, callback.bind('main'));
       // create UI and set data - minor
       $UI.layersViewerMinor = createLayerViewer('overlayersMinor', minorViewerData, callback.bind('minor'));
-      
+
       //
       if($D.params.states&& $D.params.states.l){
         $D.params.states.l.forEach(id=> loadAnnotationById($CAMIC,$UI.layersViewer.getDataItemById(id),null))
@@ -493,7 +497,7 @@ function initUIcomponents(){
       $UI.appsSideMenu.addContent(title);
       $UI.annotOptPanel.elt.classList.add('item_body');
       $UI.appsSideMenu.addContent($UI.annotOptPanel.elt);
-      
+
       //$UI.appsList.clearContent('annotation');
       //$UI.appsList.addContent('annotation',$UI.annotOptPanel.elt);
       /* algorithm control */

@@ -36,40 +36,17 @@ function initialize(){
 
 }
 
-function loadData(){
-
-}
-
 // setting core functionalities
 function initCore(){
   // start initial
   // TODO zoom info and mmp
-  const opt = {
-    draw:{
-      // extend context menu btn group
-      btns:[
-        { // annotation
-          type:'btn',
-          title:'Annotation',
-          class:'material-icons',
-          text:'description',
-          callback:saveAnnotation
-        },
-        { // analytics
-          type:'btn',
-          title:'Analytics',
-          class:'material-icons',
-          text:'settings_backup_restore',
-          callback:saveAnalytics
-        }
-      ]
-    }
-  }
+  const opt = {};
   // set states if exist
   if($D.params.states){
     opt.states = $D.params.states;
   }
-
+    // create the message queue
+  $UI.message = new MessageQueue();
   try{
     let slideQuery = {}
     slideQuery.id = $D.params.slideId
@@ -93,52 +70,29 @@ function initCore(){
       $D.params.data = e;
       // loading heatmap data
       $D.heatMapData = await $CAMIC.store.getHeatmap($D.params.data.name,$D.params.execId).then(d=> d[0]);
+      const subject = $D.heatMapData.provenance.image.subject_id;
+      const caseid = $D.heatMapData.provenance.image.case_id;
+      const exec = $D.heatMapData.provenance.analysis.execution_id;
+  
+      if(ImgloaderMode!='imgbox'){
+        // query from DB
+        const editData = await $CAMIC.store.findHeatmapEdit(getUserId(), subject, caseid, exec).then(d=>d[0]);
+        //const editData = await $CAMIC.store.findHeatmapEdit('test', subject, caseid, exec).then(d=>d[0]);
+        $D.editedDataClusters = new EditDataCluster();
+        if(editData&&Array.isArray(editData.data)&&editData.data.length > 0){
+          setEditedDataClusters(editData.data);
+        }
+      }else{
+        $D.editedDataClusters = new EditDataCluster();
+      }
       
+
+
       if(!$D.heatMapData){
         redirect($D.pages.table,`No Heatmap's data Found. Redirecting to Table.`);
       }
 
-      // popup panel
-      // $CAMIC.viewer.addHandler('canvas-lay-click',function(e){
-      //   if(!e.data) {
-      //     $UI.annotPopup.close();
-      //     return;
-      //   }
-      //   // for support QUIP 2.0
-      //   const data = Array.isArray(e.data)? e.data[e.data.selected]: e.data;
-
-      //   const type = data.provenance.analysis.source;
-      //   let body;
-      //   let attributes;
-      //   switch (type) {
-      //     case "human":
-      //       // human
-      //       attributes = data.properties.annotations;
-      //       body = convertHumanAnnotationToPopupBody(attributes);
-      //       $UI.annotPopup.showFooter();
-      //       break;
-      //     case "computer":
-      //       // handle data.provenance.analysis.computation = `segmentation`
-      //       attributes = data.properties.scalar_features[0].nv;
-      //       body = {type:'map',data:attributes};
-      //       $UI.annotPopup.hideFooter();
-      //       break;
-      //     default:
-      //       return;
-      //       // statements_def
-      //       break;
-      //   }
-      //   $UI.annotPopup.data = {
-      //     id:data.provenance.analysis.execution_id,
-      //     oid:data._id.$oid,
-      //     annotation:attributes
-      //   };
-      //   $UI.annotPopup.setTitle(`id:${data.provenance.analysis.execution_id}`);
-      //   $UI.annotPopup.setBody(body);
-      //   $UI.annotPopup.open(e.position);
-      // });
-
-      // create the message bar TODO for reading slide Info TODO
+      
       $UI.slideInfos = new CaMessage({
       /* opts that need to think of*/
         id:'cames',
@@ -156,12 +110,13 @@ function initCore(){
   $CAMIC.viewer.addHandler('open',function(){
     Loading.open(document.body, `Loading Data ...`);
     // load the heatmap data
-    //$D. = await $CAMIC.store.getHeatmap($D.case_id,'lym_v1-high_res').then(d=> d[0]);
-
+   
     var checkImagingHelperIsReady = setInterval(function () {
-      if($CAMIC.viewer.imagingHelper._haveImage && $D.heatMapData) {
+      if($CAMIC.viewer.imagingHelper&& $CAMIC.viewer.imagingHelper._haveImage && $D.heatMapData && $D.editedDataClusters && $UI.editedListSideMenu) {
         clearInterval(checkImagingHelperIsReady);
-
+        
+        
+        //$D.editedDataClusters = createTestData(features);
         // load data
         // console.time('fetch');
         // $D.heatData['lym_v1-high_res'] = await $CAMIC.store.getHeatmap($D.case_id,'lym_v1-high_res').then(d=> d[0]);
@@ -175,14 +130,15 @@ function initCore(){
         // console.log(exec_id);
         // 
         // set thresholds for fields
-        $D.heatMapData.provenance.analysis.fields.forEach(f=>{
-          f.thresholds = [0.05,1];
-        });
+        // $D.heatMapData.provenance.analysis.fields.forEach(f=>{
+        //   f.threshold = [0.05,1];
+        // });
 
         $CAMIC.viewer.createHeatmap({
           opacity:.65, //inputs[2].value,
           coverOpacity:.3,
           data:$D.heatMapData.data,
+          editedData:$D.editedDataClusters,
           size:$D.heatMapData.provenance.analysis.size,
           fields:$D.heatMapData.provenance.analysis.fields,
           color:"#253494"//inputs[3].value
@@ -204,6 +160,61 @@ function initCore(){
         });
 
         $UI.settingsSideMenu.addContent($UI.heatmapcontrol.elt);
+
+
+        // create heatmap editor
+        
+        
+        
+        // $UI.heatmapcontrol = new HeatmapControl({
+        //   mode:'binal',
+        //   fields:$D.heatMapData.provenance.analysis.fields,
+        //   opacities:[{
+        //     name:'heat',
+        //     value:0.65
+        //   },{
+        //     name:'cover',
+        //     value:0.3
+        //   }],
+        //   onChange:heatmapSettingChanged,
+        //   onOpacityChange:heatmapOpacityChanaged
+        // });
+        
+        $UI.heatmapEditorPanel = new HeatmapEditorPanel({
+          fields:$D.heatMapData.provenance.analysis.fields,
+          // editedDate:$D. 
+          onFieldChange: editorPenChange, 
+          onReset: function(){
+            if(confirm('Do you want to clear edited data?')){
+              $CAMIC.viewer.canvasDrawInstance.clear();  
+            }
+          }, // clearEditData
+          onSave: saveEditData
+        });
+        $UI.editorSideMenu.addContent($UI.heatmapEditorPanel.elt);
+
+        // create edited data list 
+        $UI.heatmapEditedDataPanel = new HeatmapEditedDataPanel({
+          // data:$D.heatMapData.editedClusters,
+          data:$D.editedDataClusters,
+          // editedDate:$D. 
+          onDBClick: locateEditData,
+          onDelete: onDeleteEditData
+        });
+
+        $UI.editedListSideMenu.addContent($UI.heatmapEditedDataPanel.elt);
+      
+        
+        // TODO create save botton if user is admin
+        if(ImgloaderMode!='imgbox'){
+          const btnDiv = createThreshold();
+          $UI.settingsSideMenu.addContent(btnDiv);
+        }  else{
+          const btnDiv = createExportEditData();
+          $UI.editedListSideMenu.addContent(btnDiv);          
+        }
+
+
         Loading.close();
 
       }
@@ -217,8 +228,7 @@ function initUIcomponents(){
   /* create UI components */
 
 
-  // create the message queue
-  $UI.message = new MessageQueue();
+
 
   // create the tool bar
   $UI.toolbar = new CaToolbar({
@@ -228,6 +238,14 @@ function initUIcomponents(){
     hasMainTools: false,
     //mainToolsCallback:mainMenuChange,
     subTools:[
+      {
+        name:'editeddate',
+        icon:'view_list',// material icons' name
+        title:'Edited Data List',
+        type:'check',// btn/check/dropdown
+        value:'editeddate',
+        callback:toggleHeatMapDataList
+      },
       // setting
       {
         name:'settings',
@@ -236,6 +254,13 @@ function initUIcomponents(){
         type:'check',// btn/check/dropdown
         value:'settings',
         callback:toggleHeatMapSettings
+      },{
+        name:'editor',
+        icon:'create',// material icons' name
+        title:'editor',
+        type:'check',// btn/check/dropdown
+        value:'editor',
+        callback:toggleHeatMapEditor     
       },
       // home
       // {
@@ -367,6 +392,47 @@ function initUIcomponents(){
   $UI.settingsSideMenu.addContent(title);
 
 
+    var checkIsReady = setInterval(function () {
+      if($CAMIC&& $CAMIC.viewer && $CAMIC.viewer.imagingHelper && $CAMIC.viewer.imagingHelper._haveImage && $D.heatMapData && $D.editedDataClusters) {
+        clearInterval(checkIsReady);
+        // create editor side menu
+        $UI.editorSideMenu = new SideMenu({
+          id:'editor_menu',
+          width: 300,
+          //, isOpen:true
+          callback:toggleHeatMapEditor
+        });
+        const title = document.createElement('div');
+        title.classList.add('item_head');
+        title.textContent = 'Heatmap Editor';
+        $UI.editorSideMenu.addContent(title);
+
+        // create edited data list side menu
+        $UI.editedListSideMenu = new SideMenu({
+          id:'edit_list_menu',
+          width: 300,
+          //, isOpen:true
+          callback:toggleHeatMapEditor
+        });
+        const title1 = document.createElement('div');
+        title1.classList.add('item_head');
+        title1.textContent = 'Edited Data List';
+        $UI.editedListSideMenu.addContent(title1);
+
+
+        $CAMIC.viewer.canvasDrawInstance.drawMode = 'grid';
+        function getGridSizeInImage(size){
+          const correctValue = 0.1;
+          let [w,h] = size;
+          w = w*$CAMIC.viewer.imagingHelper.imgWidth;
+          h = h*$CAMIC.viewer.imagingHelper.imgHeight;
+          if(w > 400) return [w, h];
+          return [w - correctValue, h - correctValue];
+        }
+        $CAMIC.viewer.canvasDrawInstance.size = getGridSizeInImage($D.heatMapData.provenance.analysis.size);
+      }
+    });
+
   // $UI.layersSideMenu = new SideMenu({
   //   id:'side_layers',
   //   width: 300,
@@ -424,6 +490,13 @@ function initUIcomponents(){
   // $UI.multSelector.addHandler('action',multSelector_action);
 }
 
+function setEditedDataClusters(editData){
+  editData.forEach(d=>{
+    const cluster = new EditDataCollection(d.index, d.name, d.value, d.color, d.data);
+    $D.editedDataClusters.addCluster(cluster);
+  });
+}
+
 function redirect(url ,text = '', sec = 5){
   let timer = sec;
   setInterval(function(){
@@ -440,4 +513,43 @@ function redirect(url ,text = '', sec = 5){
     timer--;
 
   }, 1000);
+}
+function createThreshold(){
+  const div = document.createElement('div');
+  div.classList.add('hmep-container');
+  div.style.border = 'none';
+  const div1 = document.createElement('div');
+  div1.classList.add('btn-panel');
+
+  
+  const btn = document.createElement('button');
+  btn.classList.add('action');
+  btn.style.float = 'right';
+  btn.textContent = 'Save Threshold';
+  div.appendChild(div1);
+  div1.appendChild(btn);
+  btn.addEventListener('click', onUpdateHeatmapFields);
+  return div;
+}
+function createExportEditData(){
+  const div = document.createElement('div');
+  div.classList.add('hmep-container');
+  div.style.border = 'none';
+  const div1 = document.createElement('div');
+  div1.classList.add('btn-panel');
+
+  
+  const btn = document.createElement('button');
+  btn.classList.add('action');
+  btn.style.float = 'right';
+  btn.textContent = 'Export Edit Data';
+  div.appendChild(div1);
+  div1.appendChild(btn);
+  btn.addEventListener('click', onExportEditData);
+  return div;
+}
+function getUserId(){
+  const token = getCookie('token');
+  const token_data = parseJwt(token);
+  return token_data.name;
 }
