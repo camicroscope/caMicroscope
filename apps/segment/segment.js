@@ -429,23 +429,38 @@ function watershed(inn, out, thresh) {
   // Matrices
   let dst = new cv.Mat();
   let gray = new cv.Mat();
+  let hemo = cv.Mat.zeros(src.rows, src.cols, cv.CV_8UC4);
   let opening = new cv.Mat();
   let imageBg = new cv.Mat();
   let imageFg = new cv.Mat();
   let distTrans = new cv.Mat();
   let unknown = new cv.Mat();
   let markers = new cv.Mat();
+  let hechannels = [];
+
+  console.log([src.rows,src.cols]);
+
+  cv.cvtColor(src, src, cv.COLOR_RGBA2RGB, 0);
+  hechannels = colorDeconvolution(src,hemo,true);
+  console.log(src.data,hemo.data);
+  let test = new cv.Mat(src.rows,src.cols,cv.CV_8UC1);
+
+  // test.rows = src.rows;
+  // test.cols = src.cols;
+  // test.data = hechannels[0].slice(0);
 
 
   cv.cvtColor(i2s, i2s, cv.COLOR_RGBA2RGB, 0);
-  console.log(canvas2RGBArray(i2s,i2s.cols,i2s.rows));
-  console.log(i2s.cols,i2s.rows);
+  console.log(src);
+  console.log(i2s);
 
   // Store canvas to save combined image
   // $UI.segmentPanel.__c2s = cv.imread(inn);
 
   // Gray and threshold image
   cv.cvtColor(src, gray, cv.COLOR_RGBA2GRAY, 0);
+
+  console.log(gray);
 
   // Find an approximate estimate of the objects
   cv.threshold(gray, gray, 0, 255, cv.THRESH_BINARY_INV + cv.THRESH_OTSU);
@@ -566,8 +581,8 @@ function watershed(inn, out, thresh) {
   //cv.imshow($UI.segmentPanel.__out, cloneSrc);
 
   // Free up memory
-  src.delete();
-  dst.delete();
+  //src.delete();
+  //dst.delete();
   gray.delete();
   opening.delete();
   imageBg.delete();
@@ -738,14 +753,18 @@ function canvas2RGBArray(image,cols,rows) {
 //--------------------------------------------------
 // Split image into three channels: H&E
 //--------------------------------------------------
-function colorDeconvolution(image) {
+function colorDeconvolution(image, output, doIshow) {
   //Set stain values
   let MODx = [], MODy = [], MODz = []; // length 3
   let cosx = [], cosy = [], cosz = []; // length 3
   let len = []; // length 3
   let q = []; // length 9
   let Rlog = 0.0, Blog = 0.0, Glog = 0.0; // 
+  let log255=Math.log(255.0);
   let size = image.cols*image.rows;
+  if(doIshow) console.log('size: ',size);
+  
+
   let outputStack = [];
   outputStack[0] = [];
   outputStack[1] = [];
@@ -845,17 +864,23 @@ function colorDeconvolution(image) {
   q[7] = -q[8] * V / A;
   q[6] = -q[7] * cosy[0] / cosx[0] - q[8] * cosz[0] / cosx[0];
 
+  //console.log("DeCon Values:",MODx,MODy,MODz,cosx,cosy,cosz,A,V,C,q);
+
   let pixels = image.data;
 	let newpixels = [];
   newpixels[0] = [];
   newpixels[1] = [];
   newpixels[2] = [];
-
-  for (j=0;j<size;j++){
+  
+  let rows = image.rows;
+  let cols = image.cols;
+  let asize = pixels.length;
+  let jmod = 0;
+  for (j=0;j<asize;j+=3){
     // log transform the RGB data
-    let R = (pixels[j] & 0xff0000)>>16;
-    let G = (pixels[j] & 0x00ff00)>>8 ;
-    let B = (pixels[j] & 0x0000ff);
+    let R = pixels[j];
+    let G = pixels[j+1];
+    let B = pixels[j+2];
     Rlog = -((255.0*Math.log((R+1)/255.0))/log255);
     Glog = -((255.0*Math.log((G+1)/255.0))/log255);
     Blog = -((255.0*Math.log((B+1)/255.0))/log255);
@@ -866,12 +891,20 @@ function colorDeconvolution(image) {
       Bscaled = Blog * q[i*3+2];
       output = Math.exp(-((Rscaled + Gscaled + Bscaled) - 255.0) * log255 / 255.0);
       if(output>255) output=255;
-      newpixels[i][j]=(0xff&(Math.floor(output+.5)));
+      jmod = (j==0 ? 0 : j/3);
+      newpixels[i][jmod]=(0xff & (Math.floor(output+.5)));
     }
   }
+
   outputStack[0] = newpixels[0].slice(0);
   outputStack[1] = newpixels[1].slice(1);
   outputStack[2] = newpixels[2].slice(2);
-  
+
+  for(r=0;r<rows;r++){
+    for(c=0;c<cols;c++){
+      output.ucharPtr(r, c)[0] = outputStack[0][(c*rows)+c];
+    }
+  }
+  //console.log(outputStack);
   return(outputStack);
 }
