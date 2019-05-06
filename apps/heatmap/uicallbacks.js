@@ -387,7 +387,7 @@ async function onExportEditData(){
 		alert('There are no edit data to export...');
 		return;
 	}
-	const user = getUserId(token);
+	const user = getUserId();
 	const now = getDateInString();
 	const editData = $D.editedDataClusters.toJSON()
 	const data = {
@@ -433,7 +433,7 @@ async function saveEditData(){
 	Loading.open(document.body,`Saving Edit Data ...`);
 	// does data exist
 	// user, subject, case, execution, data
-	const user = getUserId(token);
+	const user = getUserId();
 	const subject = $D.heatMapData.provenance.image.subject_id;
 	const caseid = $D.heatMapData.provenance.image.case_id;
 	const exec = $D.heatMapData.provenance.analysis.execution_id;
@@ -555,7 +555,7 @@ async function onDeleteEditData(data){
 	$D.editedDataClusters.removeEditDataForCluster(cluster.index, cluster.name, cluster.value, cluster.color, idx);
 
 	// delete data
-	const user = getUserId(token);
+	const user = getUserId();
 	const subject = $D.heatMapData.provenance.image.subject_id;
 	const caseid = $D.heatMapData.provenance.image.case_id;
 	const exec = $D.heatMapData.provenance.analysis.execution_id; 	
