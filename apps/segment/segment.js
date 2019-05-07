@@ -378,7 +378,7 @@ function segmentROI(box) {
     // loadImageToCanvas(imgData, $UI.segmentPanel.__out);
     loadImageToCanvas(imgData, self.__src);
 
-    const alpha = +self.__threshold.value;
+    const alpha = +self.__threshold.value*255;
     self.__tlabel.innerHTML = alpha;
     watershed(self.__src,self.__out,alpha);
     self.hideProgress();
@@ -426,33 +426,42 @@ function watershed(inn, out, thresh) {
   const self = $UI.segmentPanel;
   let src = cv.imread(inn);
   let i2s = cv.imread(inn);
+  let height = src.rows;
+  let width = src.cols;
   // Matrices
   let dst = new cv.Mat();
   let gray = new cv.Mat();
-  let hemo = cv.Mat.zeros(src.rows, src.cols, cv.CV_8UC4);
+  let hemo = new Uint8ClampedArray(height*width*4);
   let opening = new cv.Mat();
   let imageBg = new cv.Mat();
   let imageFg = new cv.Mat();
   let distTrans = new cv.Mat();
   let unknown = new cv.Mat();
   let markers = new cv.Mat();
-  let hechannels = [];
+  self.__hemo.width = width;
+  self.__hemo.height = height;
 
-  console.log([src.rows,src.cols]);
+  // console.log([src.rows,src.cols]);
+  // console.log([width,height]);
+  // console.log('Src: ',src);
+  // console.log('hemo: ',hemo);
 
   cv.cvtColor(src, src, cv.COLOR_RGBA2RGB, 0);
-  hechannels = colorDeconvolution(src,hemo,true);
-  console.log(src.data,hemo.data);
-  let test = new cv.Mat(src.rows,src.cols,cv.CV_8UC1);
+  hemo = colorDeconvolution(src,true);
+  // console.log(hechannels[0]);
+  // console.log(src.data,hemo);
+  let hctx = self.__hemo.getContext('2d');
+  hctx.clearRect(0, 0, self.__hemo.width, self.__hemo.height);
+  let imageData = new ImageData(hemo,width,height);
 
-  // test.rows = src.rows;
-  // test.cols = src.cols;
-  // test.data = hechannels[0].slice(0);
-
+  // Draw image data to the canvas
+  hctx.putImageData(imageData, 0, 0);
+  src = cv.imread(self.__hemo);
+  console.log(src);
 
   cv.cvtColor(i2s, i2s, cv.COLOR_RGBA2RGB, 0);
-  console.log(src);
-  console.log(i2s);
+  // console.log(src);
+  // console.log(i2s);
 
   // Store canvas to save combined image
   // $UI.segmentPanel.__c2s = cv.imread(inn);
@@ -460,7 +469,7 @@ function watershed(inn, out, thresh) {
   // Gray and threshold image
   cv.cvtColor(src, gray, cv.COLOR_RGBA2GRAY, 0);
 
-  console.log(gray);
+  // console.log(gray);
 
   // Find an approximate estimate of the objects
   cv.threshold(gray, gray, 0, 255, cv.THRESH_BINARY_INV + cv.THRESH_OTSU);
@@ -581,8 +590,8 @@ function watershed(inn, out, thresh) {
   //cv.imshow($UI.segmentPanel.__out, cloneSrc);
 
   // Free up memory
-  //src.delete();
-  //dst.delete();
+  src.delete();
+  dst.delete();
   gray.delete();
   opening.delete();
   imageBg.delete();
@@ -753,7 +762,7 @@ function canvas2RGBArray(image,cols,rows) {
 //--------------------------------------------------
 // Split image into three channels: H&E
 //--------------------------------------------------
-function colorDeconvolution(image, output, doIshow) {
+function colorDeconvolution(image, doIshow) {
   //Set stain values
   let MODx = [], MODy = [], MODz = []; // length 3
   let cosx = [], cosy = [], cosz = []; // length 3
@@ -899,12 +908,17 @@ function colorDeconvolution(image, output, doIshow) {
   outputStack[0] = newpixels[0].slice(0);
   outputStack[1] = newpixels[1].slice(1);
   outputStack[2] = newpixels[2].slice(2);
+  
+  let ilen=outputStack[0].length;
+  let iarr = new Uint8ClampedArray(ilen*4);
 
-  for(r=0;r<rows;r++){
-    for(c=0;c<cols;c++){
-      output.ucharPtr(r, c)[0] = outputStack[0][(c*rows)+c];
-    }
+  for(i=0,j=0;i<ilen;i++,j+=4){
+      iarr[j] = outputStack[0][i];
+      iarr[j+1] = outputStack[0][i];
+      iarr[j+2] = outputStack[0][i];
+      iarr[j+3] = 255;
   }
-  //console.log(outputStack);
-  return(outputStack);
+  // output = iarr;
+  console.log(outputStack,iarr);
+  return(iarr.slice(0));
 }
