@@ -109,6 +109,11 @@ function initCore(){
   if($D.params.states){
     opt.states = $D.params.states;
   }
+  // pathdb home directly
+  if($D.params.mode == "pathdb"){
+      $D.pages.home = "/";
+      $D.pages.table = "/";
+  }
 
   try{
     let slideQuery = {}
