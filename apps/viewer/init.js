@@ -111,8 +111,8 @@ function initCore(){
   }
   // pathdb home directly
   if($D.params.mode == "pathdb"){
-      $D.pages.home = "/";
-      $D.pages.table = "/";
+      $D.pages.home = "../../../";
+      $D.pages.table = "../../../";
   }
 
   try{
