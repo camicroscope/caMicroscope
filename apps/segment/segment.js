@@ -693,7 +693,7 @@ function buildAndDownloadCSV(contours,fname) {
   const spy = self.__y;
 
   console.log('In Download and Save CSV');
-  data += 'AreaInPixels,PereimeterInPixels,Polygon\n';
+  data += 'AreaInPixels,PerimeterInPixels,Polygon\n';
 
   for (let i = 1; i < contours.size(); ++i) {
     let cnt = contours.get(i);
