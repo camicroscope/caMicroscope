@@ -12,7 +12,8 @@ const $D = {
   },
   params:null, // parameter from url - slide Id and status in it (object).
   overlayers:null, // array for each layers
-  templates:null // json schema for prue-form
+  templates:null, // json schema for prue-form
+  segments:[]
 };
 
 window.addEventListener('keydown', (e) => {
@@ -80,7 +81,7 @@ function initCore(){
   // start initial
 
   // create the message queue
-  // $UI.message = new MessageQueue();
+  $UI.message = new MessageQueue();
 
   // TODO zoom info and mmp
   const opt = {
@@ -388,7 +389,8 @@ function initUIcomponents(){
     //, isOpen:true
     callback:toggleSideMenu
   });
-
+  const loading = `<div class="cover" style="z-index: 500;"><div class="block"><span>loading layers...</span><div class="bar"></div></div></div>`
+  $UI.layersSideMenu.addContent(loading);
   /* annotation popup */
   $UI.annotPopup = new PopupPanel({
     footer:[
@@ -408,8 +410,16 @@ function initUIcomponents(){
   });
 
   var checkOverlaysDataReady = setInterval(function () {
-    if($D.overlayers) {
+    if($D.params.data && $D.overlayers && $CAMIC && $CAMIC.viewer && $CAMIC.viewer.omanager) {
       clearInterval(checkOverlaysDataReady);
+      
+      // for segmentation
+      $CAMIC.viewer.createSegment({
+        store:$CAMIC.store,
+        slide:$D.params.data.name,
+        data:[]
+      });
+
       // create control
 
       // create main layer viewer items with states
@@ -452,6 +462,7 @@ function initUIcomponents(){
         ],
         changeCallBack:function(e){console.log(e)}
       });
+      $UI.layersSideMenu.clearContent();
       // add to layers side menu
       const title = document.createElement('div');
       title.classList.add('item_head');
@@ -467,7 +478,7 @@ function initUIcomponents(){
       closeMinorControlPanel();
       $UI.layersSideMenu.addContent($UI.layersList.elt);
     }
-  }, 500);
+  }, 300);
 
 
 
@@ -519,7 +530,7 @@ function initUIcomponents(){
       // END QUIP550 TEMPORARILY REMOVE Algorithm Panel //
 
     }
-  }, 500);
+  }, 300);
 
 
   // START QUIP550 //
