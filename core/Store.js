@@ -265,20 +265,24 @@ class Store {
    * @returns {promise} - promise which resolves with data
    **/
   findMarkTypes(slide, name) {
-    var suffix = "Mark/types"
-    var url = this.base + suffix;
+    let suffix = "Mark/types"
+    
     var query = {}
-    var bySlideId
+    // 
+    if(!slide) {
+      console.error('Store.findMarkTypes needs slide ... ');
+      return null;
+    }
+    query.slide = slide
     if (name) {
       query.name = name
+      suffix = "Mark/typesExec"
     }
-    if (slide) {
-      query.slide = slide
-    }
+    var url = this.base + suffix;
     return fetch(url + "?" + objToParamStr(query), {
       credentials: "include",
       mode: "cors"
-    }).then(this.errorHandler).then(x=>x.map(y=>{return {analysis:y}}))
+    }).then(this.errorHandler)
   }
 
   findHeatmap(slide, name) {
