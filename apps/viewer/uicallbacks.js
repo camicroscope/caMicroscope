@@ -671,7 +671,8 @@ function loadAnnotationById(camic, layerData ,callback){
 				}
 
 				// no data found
-				if(data.length < 1){
+				//if(data.length < 1){
+				if(!data[0]){
 					console.warn(`Annotation: ${item.name}(${item.id}) doesn't exist.`);
 					$UI.message.addWarning(`Annotation: ${item.name}(${item.id}) doesn't exist.`,5000);
 					// delete item form layview
@@ -705,11 +706,12 @@ function loadAnnotationById(camic, layerData ,callback){
 					// if(item) data[0].isShow = item.isShow;
 					item.render = old_anno_render;
 				}else{
-					//data[0].geometries = VieweportFeaturesToImageFeatures(camic.viewer, data[0].geometries);
+					data[0].geometries = VieweportFeaturesToImageFeatures(camic.viewer, data[0].geometries);
+					item.data = data[0];
 					// try to render across multiple objects, by mapping to all and flattening
-					item.data = data.map(d=>{
-						return VieweportFeaturesToImageFeatures(camic.viewer, d.geometries).features
-					}).flat();
+					// item.data = data.map(d=>{
+					// 	return VieweportFeaturesToImageFeatures(camic.viewer, d.geometries).features
+					// }).flat();
 					item.render = anno_render;
 				}
 
@@ -886,7 +888,7 @@ function createHeatMapList(list){
 /* --  -- */
 /* -- for render anno_data to canavs -- */
 function anno_render(ctx,data){
-	DrawHelper.draw(ctx, data);
+	DrawHelper.draw(ctx, data.geometries.features);
 	//DrawHelper.draw(this._canvas_ctx, this.data.canvasData);
 }
 function old_anno_render(ctx,data){
