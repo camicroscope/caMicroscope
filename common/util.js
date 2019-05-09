@@ -408,17 +408,17 @@ function isFunction(obj){
 }
 
 function covertToLayViewer(item){
-  const typeName = item.analysis.source;
-  const id = item.analysis.execution_id;
+  const typeName = item.source;
+  const id = item.execution_id;
   // support 2.0 style annotation data in refactor
-  const name = item.analysis.name||item.analysis.execution_id;
+  const name = item.name||item.execution_id;
   
   //const isShow = l&&l.includes(id)?true:false;
   if(!typeIds[typeName]) typeIds[typeName] = randomId();
   // for segmentation
-  if(item.analysis.source=='computer' && item.analysis.computation=='segmentation'){
+  if(item.source=='computer' && item.computation=='segmentation'){
     
-    return {id:id,name:item.analysis.execution_id,typeId:typeIds[typeName],typeName:item.analysis.computation,data:null};
+    return {id:id,name:item.execution_id,typeId:typeIds[typeName],typeName:item.computation,data:null};
     }
   return {id:id,name:name,typeId:typeIds[typeName],typeName:typeName,data:null};
 }
