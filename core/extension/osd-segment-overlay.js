@@ -60,7 +60,7 @@
         this._div.style.height = '150%';
         this._div.style.transformOrigin = '0 0';
         this._div.style.transform = 'scale(1,1)';
-        this._div.style.zIndex =  options.zIndex || 200;
+        this._div.style.zIndex =  options.zIndex || 99;
         this._div.style.opacity = options.opacity || 1;//0.8;
 
         this._viewer.canvas.appendChild(this._div);
@@ -247,6 +247,7 @@
             if(index!=-1) return;
             this._data.push({id:segmentId,data:null});
             this.on(false);
+            this.resize();
             const {x, y, width, height} = this.getCanvasBoundBox();
             const footprint = getMinFootprint(this._viewer.imagingHelper,this._minFootprint);
             // start
@@ -255,7 +256,6 @@
                 this._data[this._data.length-1].data = [...segments];
                 // redraw
                 this.stopLoading();
-                this.resize();
                 this.drawOnCanvas();
             }.bind(this));
         },
