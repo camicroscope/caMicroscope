@@ -278,7 +278,7 @@ class Store {
     return fetch(url + "?" + objToParamStr(query), {
       credentials: "include",
       mode: "cors"
-    }).then(this.errorHandler).then(x=>{analysis:x})
+    }).then(this.errorHandler).then(x=>{return {analysis:x}})
   }
 
   findHeatmap(slide, name) {
