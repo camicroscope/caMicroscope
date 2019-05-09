@@ -25,8 +25,8 @@ if (!Array.prototype.flat) {
 
 const AnalyticsPanelContent = //'test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>'
 
-         "<div class='separator'></div>"   
-+          "<div ><input class='search' type='search'/><button class='search'><i class='material-icons md-24'>find_in_page</i></button></div>"      
+         "<div class='separator'></div>"
++          "<div ><input class='search' type='search'/><button class='search'><i class='material-icons md-24'>find_in_page</i></button></div>"
 +         "<div class='table_wrap'>"
 +         "<table class='data_table'>"
 +           "<tr><th>Job ID</th><th>Type</th><th>Status</th></tr>"
@@ -131,7 +131,7 @@ function getDistance(p1, p2, mppx, mppy){
   }else if(p1[1]==p2[1]){ // horizontal line
     return Math.abs(p1[0] - p2[0]) * mppx;
   } else{
-    const lx = Math.abs(p1[0] - p2[0]) * mppx; 
+    const lx = Math.abs(p1[0] - p2[0]) * mppx;
     const ly = Math.abs(p1[1] - p2[1]) * mppy;
     return Math.sqrt(lx*lx + ly*ly);
   }
@@ -150,7 +150,7 @@ function getCircumference(points, mmpx, mmpy){
     length += getDistance(points[i],points[i+1],mmpx, mmpy);
   }
   return length;
-} 
+}
 
 
 /**
@@ -163,17 +163,17 @@ function polygonArea(points){
   let j = points.length - 2;
   for(let i = 0; i < points.length - 1; i++){
     area += (points[j][0] + points[i][0]) * (points[j][1] - points[i][1]);
-    // j is previous vertex to i         
+    // j is previous vertex to i
     j = i;
   }
-  return Math.abs(area / 2); 
+  return Math.abs(area / 2);
 }
 
 /**
  * isTwoLinesIntersect
  * @param  {Array}  l1 - [[a,b],[c,d]] start[x,y] and end[x,y] points
  * @param  {[type]}  l2 [[p,q],[r,s]]
- * @return {Boolean} 
+ * @return {Boolean}
  */
 // a = l1[0][0];
 // b = l1[0][1];
@@ -238,8 +238,8 @@ function rgbToHex(rgb){
  * @return {Array}        the gradient color that bases on factor
  */
 function interpolateColor(color1, color2, factor) {
-   if (arguments.length < 3) { 
-        factor = 0.5; 
+   if (arguments.length < 3) {
+        factor = 0.5;
     }
     var result = color1.slice();
     for (var i = 0; i < 3; i++) {
@@ -251,7 +251,7 @@ function interpolateColor(color1, color2, factor) {
 /**
  * interpolateColors to interpolate between two colors completely
  * @param  {String} color1 the color should be in RGB format. e.g. rgb(255,255,255).
- * @param  {String} color2 
+ * @param  {String} color2
  * @param  {Number} steps how much colors in the result
  * @return {Array}        the gradient colors
  */
@@ -261,7 +261,7 @@ function interpolateColors(color1, color2, steps) {
 
     color1 = color1.match(/\d+/g).map(Number);
     color2 = color2.match(/\d+/g).map(Number);
-    
+
     for(var i = 0; i < steps; i++) {
         const rgbArray = interpolateColor(color1, color2, stepFactor * i);
         interpolatedColorArray.push(`rgb(${rgbArray[0]},${rgbArray[1]},${rgbArray[2]})`);
@@ -273,14 +273,14 @@ function interpolateColors(color1, color2, steps) {
 /**
  * interpolateNums to interpolate between two colors completely
  * @param  {String} color1 the color should be in RGB format. e.g. rgb(255,255,255).
- * @param  {String} color2 
+ * @param  {String} color2
  * @param  {Number} steps how much colors in the result
  * @return {Array}        the gradient colors
  */
 function interpolateNums(num1, num2, steps=3){
     const stepFactor = 1 / (steps - 1),
     rs = [];
-    
+
     for(let i = 0; i < steps; i++) {
         rs.push(num1 + stepFactor * i * (num2 - num1));
     }
@@ -399,7 +399,7 @@ function covertToViewportFeature(width, height, og){
   feature.properties.area = og.properties.area;
   feature.properties.circumference = og.properties.circumference;
   if(og.properties.nommp) feature.properties.nommp = og.properties.nommp;
-  if(og.properties.isIntersect) feature.properties.isIntersect = og.properties.isIntersect; 
+  if(og.properties.isIntersect) feature.properties.isIntersect = og.properties.isIntersect;
   return feature;
 }
 
@@ -412,12 +412,12 @@ function covertToLayViewer(item){
   const id = item.execution_id;
   // support 2.0 style annotation data in refactor
   const name = item.name||item.execution_id;
-  
+
   //const isShow = l&&l.includes(id)?true:false;
   if(!typeIds[typeName]) typeIds[typeName] = randomId();
   // for segmentation
   if(item.source=='computer' && item.computation=='segmentation'){
-    
+
     return {id:id,name:item.execution_id,typeId:typeIds[typeName],typeName:item.computation,data:null};
     }
   return {id:id,name:name,typeId:typeIds[typeName],typeName:typeName,data:null};
@@ -476,13 +476,18 @@ function getTopLeft(point,size){
 }
 
 function parseJwt (token) {
-    var base64Url = token.split('.')[1];
-    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    return JSON.parse(window.atob(base64));
+    if (!token){
+      return {name: "None"}
+    } else {
+      var base64Url = token.split('.')[1];
+      var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      return JSON.parse(window.atob(base64));
+    }
+
 };
 /**
  * detect IE/Edge
- * 
+ *
  * @return {Boolean} true if the browser is IE/Edge
  */
 function detectIE() {
@@ -491,13 +496,13 @@ function detectIE() {
 
   // IE 10
   // ua = 'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; Trident/6.0)';
-  
+
   // IE 11
   // ua = 'Mozilla/5.0 (Windows NT 6.3; Trident/7.0; rv:11.0) like Gecko';
-  
+
   // Edge 12 (Spartan)
   // ua = 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.71 Safari/537.36 Edge/12.0';
-  
+
   // Edge 13
   // ua = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2486.0 Safari/537.36 Edge/13.10586';
 
@@ -552,7 +557,7 @@ function getMinFootprint(imagingHelper, min=7){
  * Taken from OpenSeadragon
  * @memberof OpenSeadragon
  * @see {@link http://openseadragon.github.io/}
- * 
+ *
  * @class EventHandle
  * @classdesc For use by classes which want to support custom, non-browser events.
  *
