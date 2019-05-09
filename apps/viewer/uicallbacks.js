@@ -31,18 +31,6 @@ function toggleViewerMode(opt){
 function multSelector_action(size){
 	// hidden main viewer's bottom right control and get navigator
 	$CAMIC.viewer.controls.bottomright.style.display = 'none';
-	// if(event.data.length == 0){
-	// 	alert('No Layer selected');
-	// 	return;
-	// }
-
-	// hide the window
-	// $UI.multSelector.elt.classList.add('none');
-
-	// show the minor part
-	//const minor = document.getElementById('minor_viewer');
-	//minor.classList.remove('none');
-	//minor.classList.add('display');
 
 	// open new instance camic
 	try{
@@ -88,9 +76,13 @@ function multSelector_action(size){
 		$minorCAMIC.viewer.addOnceHandler('tile-drawing',function(){
 			$minorCAMIC.viewer.addHandler('zoom',synchornicView2);
 			$minorCAMIC.viewer.addHandler('pan',synchornicView2);
+			// cerate segment display
+			$minorCAMIC.viewer.createSegment({
+				store:$minorCAMIC.store,
+				slide:$D.params.data.name,
+				data:[]
+			});
 		});
-
-
 
 	}catch(error){
 		Loading.close();
@@ -98,82 +90,6 @@ function multSelector_action(size){
 		$UI.message.addError('Core Initialization Failed');
 		return;
 	}
-
-	// find unloaded data
-	// event.data = event.data.map(lay=>lay[0]);
-	// const unloaded = event.data.filter(id =>{
-	// 	const layer = $D.overlayers.find(layer=> layer.id == id);
-	// 	return layer && !layer.data
-	// });
-	// if all data loaded then add selected layer to minor viewer
-
-	// if(unloaded.length == 0){
-	// 	// add overlays to
-	// 	// wait util omanager create
-	// 	var checkOmanager = setInterval(function () {
-	// 		if($minorCAMIC.viewer.omanager) {
-	// 			clearInterval(checkOmanager);
-	// 			// add overlays to
-	// 			event.data.forEach(id =>{
-	// 				// find data
-	// 				const layer = $D.overlayers.find(layer=> layer.id == id);
-	// 				// add to the minor viewer
-	// 				$minorCAMIC.viewer.omanager.addOverlay({id:id,data:layer.data,render:anno_render,isShow:true});
-	// 			});
-	// 			$minorCAMIC.viewer.omanager.updateView();
-	// 		}
-	// 	}, 500);
-	// 	return;
-	// }
-
-	// load data from service side
-	// $CAMIC.store.getMarkByIds(unloaded,$D.params.data.name)
-	// .then(function(datas){
-	// 	// response error
-	// 	if(datas.error){
-	// 		const errorMessage = `${datas.text}: ${datas.url}`;
-	// 		$UI.message.addError(errorMessage, 5000);
-	// 		// close
-	// 		return;
-	// 	}
-
-	// 	// no data found
-	// 	if(datas.length == 0){
-	// 		$UI.message.addError(`Selected annotations do not exist.`,5000);
-	// 		return;
-	// 	}
-
-	// 	// add overlays
-	// 	if(Array.isArray(datas)) datas = datas.map(d=>{
-	// 		d.geometries = VieweportFeaturesToImageFeatures($CAMIC.viewer, d.geometries);
-	// 		const id = d.provenance.analysis.execution_id;
-	// 		const item = $D.overlayers.find(l=>l.id==id);
-	// 		item.data = d;
-	// 		item.render = anno_render;
-	// 		item.layer = $CAMIC.viewer.omanager.addOverlay(item);
-	// 	});
-
-	// 	// wait util omanager create
-	// 	var checkOmanager = setInterval(function () {
-	// 		if($minorCAMIC.viewer.omanager) {
-	// 			clearInterval(checkOmanager);
-	// 			// add overlays to
-	// 			event.data.forEach(id =>{
-	// 				// find data
-	// 				const layer = $D.overlayers.find(layer=> layer.id == id);
-	// 				// add to the minor viewer
-	// 				$minorCAMIC.viewer.omanager.addOverlay({id:id,data:layer.data,render:anno_render,isShow:true});
-	// 			});
-	// 			$minorCAMIC.viewer.omanager.updateView();
-	// 		}
-	// 	}, 500);
-
-	// })
-	// .catch(function(e){
-	// 	console.error(e);
-	// }).finally(function(){
-
-	// });
 
 }
 
@@ -679,7 +595,7 @@ function algo_callback(data){
 }
 
 // overlayer manager callback function for show or hide
-function callback(data){
+async function callback(data){
 	const viewerName = this.toString();
 	let camic = null;
 	switch (viewerName) {
@@ -692,13 +608,17 @@ function callback(data){
 		default:
 			break;
 	}
-	// const ids = data.filter(d=> d.item.data==null).map(d=>d.item.id);
-	// if(ids&&ids.length > 0){
-	// 	// load annotation data
-	// 	loadAnnotationByIds(this,ids,null);
-	// }
-	data.forEach(d => {
+	
+	data.forEach(function(d){
 		const item = d.item;
+		if(item.typeName=='segmentation'){
+			if(d.isShow){ //add
+				camic.viewer.segment.addSegmentId(item.id);
+			}else{ // remove
+				camic.viewer.segment.removeSegmentId(item.id);
+			}
+			return;
+		}
 		if(!item.data){
 			// load layer data
 			loadAnnotationById(camic, d, null);

@@ -415,6 +415,11 @@ function covertToLayViewer(item){
   
   //const isShow = l&&l.includes(id)?true:false;
   if(!typeIds[typeName]) typeIds[typeName] = randomId();
+  // for segmentation
+  if(item.analysis.source=='computer' && item.analysis.computation=='segmentation'){
+    
+    return {id:id,name:item.analysis.execution_id,typeId:typeIds[typeName],typeName:item.analysis.computation,data:null};
+    }
   return {id:id,name:name,typeId:typeIds[typeName],typeName:typeName,data:null};
 }
 
@@ -534,6 +539,14 @@ function getCookie(name) {
   var value = "; " + document.cookie;
   var parts = value.split("; " + name + "=");
   if (parts.length == 2) return parts.pop().split(";").shift();
+}
+
+
+function getMinFootprint(imagingHelper, min=7){
+    const max = new OpenSeadragon.Point(imagingHelper.physicalToDataX(min-1), imagingHelper.physicalToDataY(min-1));
+    const origin = new OpenSeadragon.Point(imagingHelper.physicalToDataX(0), imagingHelper.physicalToDataY(0));
+    const area = Math.floor((max.x - origin.x) * (max.y - origin.y));
+    return area;
 }
 /**
  * Taken from OpenSeadragon
