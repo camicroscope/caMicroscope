@@ -474,12 +474,12 @@
         this.render = options.render;
         this.clickable = options.clickable || false;
         this.hoverable = options.hoverable || false;
-        if(options.isShow&& options.isShow == false){
+        if(options.isShow!=null && options.isShow == false){
             this.isShow = options.isShow
         }else{
             this.isShow = true;
         }
-        //this.isShow = (options.isShow) || true;
+        //this.isShow = options.isShow || true;
     }
 
     Overlay.prototype = {

@@ -1,5 +1,5 @@
 // heatmapcontrol.js
-// 
+//
 function HeatmapControl(options){
 	this.name = 'HeatmapControl';
 	/*
@@ -10,10 +10,10 @@ function HeatmapControl(options){
 				icon: ,
 				content:string
 				isExpand:,
-				
+
 			}
 		]
-	*/ 
+	*/
 	this.setting = {
 		fields:null,
 		mode:null,
@@ -49,7 +49,7 @@ HeatmapControl.prototype.__refresh = function(){
 	this.rangeSliders = {};
 	const template = `
 	<div class='mode-panel'>
-	
+
 	<label> Gradient <input type='checkbox' value='gradient' ${this.setting.mode == 'gradient'? 'checked':''} /></label>
 	</div>
 	<div class='sel-field-panel'>
@@ -73,7 +73,7 @@ HeatmapControl.prototype.__refresh = function(){
 	createSelect(this.elt.querySelector('.sel-field-panel select') ,this.setting.fields);
 	this.elt.querySelector('.sel-field-panel select').addEventListener('change', this._selChanged.bind(this));
 	if(this.setting.mode=='binal') this.elt.querySelector('.sel-field-panel').style.display='none';
-	
+
 
 
 	const fieldsPanel = this.elt.querySelector('.fields-panel');
@@ -194,6 +194,8 @@ function createField(container, field, changeFunc){
 	//rangeSlider.
 	div.appendChild(label);
 	div.appendChild(slider);
+	// field value catch
+	field.value = field.value || field.range || [0.05,0,1]
 	const rs = new rangeSlider({
         target: slider,
         values: {min:field.range[0]*100 >> 0,max:field.range[1]*100 >> 0},

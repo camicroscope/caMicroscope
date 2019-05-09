@@ -112,28 +112,10 @@ class Store {
     if (y1){
       query.y1 = y1;
     }
-    let bySlide = fetch(url + "?" + objToParamStr(query), {
+    return fetch(url + "?" + objToParamStr(query), {
       credentials: "include",
       mode: "cors"
     }).then(this.errorHandler).then(x=>this.filterBroken(x, "mark"))
-    if (!slide) {
-      return bySlide
-    } else {
-      bySlideId = this.findSlide(slide).then(x => {
-        if (x.length == 0) {
-          return []
-        } else {
-          query.slide = x[0]['_id']['$oid']
-          return fetch(url + "?" + objToParamStr(query), {
-            credentials: "include",
-            mode: "cors"
-          }).then(this.errorHandler).then(x=>this.filterBroken(x, "mark"))
-        }
-
-      })
-      // return as if we did one query by flattening these promises
-      return Promise.all([bySlide, bySlideId]).then(x => [].concat.apply([], x))
-    }
 
   }
 
@@ -211,28 +193,10 @@ class Store {
       query.y1 = y1;
     }
 
-    let bySlide = fetch(url + "?" + objToParamStr(query), {
+    return fetch(url + "?" + objToParamStr(query), {
       credentials: "include",
       mode: "cors"
     }).then(this.errorHandler).then(x=>this.filterBroken(x, "mark"))
-    if (!slide) {
-      return bySlide
-    } else {
-      bySlideId = this.findSlide(slide).then(x => {
-        if (x.length == 0) {
-          return []
-        } else {
-          query.slide = x[0]['_id']['$oid']
-          return fetch(url + "?" + objToParamStr(query), {
-            credentials: "include",
-            mode: "cors"
-          }).then(this.errorHandler).then(x=>this.filterBroken(x, "mark"))
-        }
-
-      })
-      // return as if we did one query by flattening these promises
-      return Promise.all([bySlide, bySlideId]).then(x => [].concat.apply([], x))
-    }
   }
 
 
@@ -301,38 +265,24 @@ class Store {
    * @returns {promise} - promise which resolves with data
    **/
   findMarkTypes(slide, name) {
-    var suffix = "Mark/types"
-    var url = this.base + suffix;
+    let suffix = "Mark/types"
+    
     var query = {}
-    var bySlideId
+    // 
+    if(!slide) {
+      console.error('Store.findMarkTypes needs slide ... ');
+      return null;
+    }
+    query.slide = slide
     if (name) {
       query.name = name
+      suffix = "Mark/typesExec"
     }
-    if (slide) {
-      query.slide = slide
-    }
-    let bySlide = fetch(url + "?" + objToParamStr(query), {
+    var url = this.base + suffix;
+    return fetch(url + "?" + objToParamStr(query), {
       credentials: "include",
       mode: "cors"
     }).then(this.errorHandler)
-
-    if (!slide) {
-      return bySlide
-    } else {
-      bySlideId = this.findSlide(slide).then(x => {
-        if (x.length == 0) {
-          return []
-        } else {
-          query.slide = x[0]['_id']['$oid']
-          return fetch(url + "?" + objToParamStr(query), {
-            credentials: "include",
-            mode: "cors"
-          }).then(this.errorHandler)
-        }
-      })
-      // return as if we did one query by flattening these promises
-      return Promise.all([bySlide, bySlideId]).then(x => [].concat.apply([], x))
-    }
   }
 
   findHeatmap(slide, name) {

@@ -109,14 +109,16 @@ function PathDbMods() {
     var suffix = "Mark/types"
     var url = this.base + suffix;
     var query = {}
-    var bySlideId
+    if(!slide) {
+      console.error('Store.findMarkTypes needs slide ... ');
+      return null;
+    }
+    query.slide = slide
     if (name) {
       query.name = name
+      suffix = "Mark/typesExec"
     }
-    if (slide) {
-      query.slide = slide
-    }
-    let bySlide = fetch(url + "?" + objToParamStr(query), {
+    return fetch(url + "?" + objToParamStr(query), {
       credentials: "same-origin",
       mode: "cors"
     }).then(this.errorHandler)
@@ -165,7 +167,7 @@ function PathDbMods() {
       var suffix = "Heatmap/types"
       var url = this.base + suffix;
       var query = {}
-      
+
       data = data[0]
       if (data.field_subject_id) {
         query.subject = data.field_subject_id[0].value
@@ -184,7 +186,7 @@ function PathDbMods() {
     })
 
   };
-  
+
   Store.prototype.default_findHeatmap = Store.prototype.findHeatmap;
   Store.prototype.findHeatmap = function(slide, name) {
     return this.getSlide(slide).then(data => {
@@ -192,7 +194,7 @@ function PathDbMods() {
       var suffix = "Heatmap/find"
       var url = this.base + suffix;
       var query = {}
-      
+
       data = data[0]
       if (data.field_subject_id) {
         query.subject = data.field_subject_id[0].value
@@ -218,7 +220,7 @@ function PathDbMods() {
       var suffix = "Heatmap/get"
       var url = this.base + suffix;
       var query = {}
-      
+
       data = data[0]
       if (data.field_subject_id) {
         query.subject = data.field_subject_id[0].value

@@ -125,7 +125,7 @@ function init_LocalStore(){
       }
       let data = findInLocalStorage("mark", query)
       if (data){
-        const unique = [...new Set(data.map(x => Object.byString(x,'provenance')))];
+        const unique = [...new Set(data.map(x => Object.byString(x,'provenance.analysis')))];
         res(unique)
       } else {
         res([])
