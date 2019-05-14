@@ -692,9 +692,10 @@ function loadAnnotationById(camic, layerData ,callback){
 							return [Math.round(point[0]*imgWidth),Math.round(point[1]*imgHeight)];
 						});
 						d.properties.style = {
-									color: "#7CFC00",
+									color: "#000080",
 									lineCap: "round",
-									lineJoin: "round"
+									lineJoin: "round",
+									isFill:false
 						};
 						return {
 							_id:d._id,
@@ -705,6 +706,8 @@ function loadAnnotationById(camic, layerData ,callback){
 					});
 					// if(item) data[0].isShow = item.isShow;
 					item.render = old_anno_render;
+					item.clickable = false;
+					item.hoverable = false;
 				}else{
 					data[0].geometries = VieweportFeaturesToImageFeatures(camic.viewer, data[0].geometries);
 					item.data = data[0];
@@ -892,6 +895,9 @@ function anno_render(ctx,data){
 	//DrawHelper.draw(this._canvas_ctx, this.data.canvasData);
 }
 function old_anno_render(ctx,data){
+	const imagingHelper  = this.viewer.imagingHelper;
+	const lineWidth = (imagingHelper.physicalToDataX(1) - imagingHelper.physicalToDataX(0))>> 0;
+	ctx.lineWidth = lineWidth;
 	DrawHelper.draw(ctx, data);
 
 }
