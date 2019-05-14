@@ -163,13 +163,13 @@
                     for(let j = 0;j < layer.data.length;j++){
                         const path = layer.data[j].geometry.path;
                         const style = layer.data[j].properties.style;
-                        if(path.contains(img_point.x,img_point.y)){
+                        if(layer.hoverable&&path.contains(img_point.x,img_point.y)){
                             this.resize();
                             this.highlightPath = path;
                             this.highlightStyle = style;
                             this.highlightLayer = layer;
                             this.highlightLayer.data.selected = j;
-                            if(layer.hoverable) this.drawOnCanvas(this.drawOnHover,[this._hover_ctx_,this._div,path,style]);
+                            this.drawOnCanvas(this.drawOnHover,[this._hover_ctx_,this._div,path,style]);
                             return;
                         }else{
                             this.highlightPath = null;
@@ -187,13 +187,13 @@
                     const path = features[j].geometry.path;
                     const style = features[j].properties.style;
                     this.subIndex = null;
-                    if(path.contains(img_point.x,img_point.y)){
+                    if(layer.hoverable&&path.contains(img_point.x,img_point.y)){
                         this.resize();
                         this.highlightPath = path;
                         this.highlightStyle = style;
                         this.highlightLayer = layer;
                         this.highlightLayer.data.selected = j;
-                        if(layer.hoverable) this.drawOnCanvas(this.drawOnHover,[this._hover_ctx_,this._div,path,style]);
+                        this.drawOnCanvas(this.drawOnHover,[this._hover_ctx_,this._div,path,style]);
                         return;
                     }else{
                         this.highlightPath = null;
