@@ -1,3 +1,30 @@
+const selection = [
+  {
+    text:'Tumor',
+    color:'#FF0000'
+  },
+  {
+    text:'Tumor-Stroma Transition',
+    color:'#000000'
+  },
+  {
+    text:'Distant Stroma',
+    color:'#FFC0CB'
+  },
+  {
+    text:'Tumor Associated Stroma With Mild Hyalinization',
+    color:'#FF1493'
+  },
+  {
+    text:'Intra-tumoral Stroma With TILs',
+    color:'#0000FF'
+  },
+  {
+    text:'Miscellaneous Regions',
+    color:'#00FF00'
+  }
+]
+
 // CAMIC is an instance of camicroscope core
 // $CAMIC in there
 let $CAMIC = null;
@@ -83,6 +110,8 @@ function initCore(){
 
   $CAMIC.viewer.addHandler('open',function(){
     if($CAMIC.viewer.pmanager)$CAMIC.viewer.pmanager.on();
+    $CAMIC.viewer.viewport.zoomBy($CAMIC.viewer.viewport.getMaxZoom(),$CAMIC.viewer.viewport.getCenter(),true)
+    $CAMIC.viewer.pmanager.selection = selection;
     if(!$CAMIC.viewer.measureInstance) $UI.toolbar._sub_tools[2].style.display = 'none';
   });
   
