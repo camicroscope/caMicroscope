@@ -37,13 +37,16 @@
         this.isPoint = false;
         this.isCreatePatch = true;
         this.viewer = options.viewer;
-        
-
+        const {x, y, width, height} = this.viewer.viewport.imageToViewportRectangle(new OpenSeadragon.Rect(0, 0, 1024, 1024));
+        this.width = width;
+        this.height = height;
 
         //this.status
         this.patches = [];
 
         this.activePatch = null;
+
+        this.selection = options.selection || null;
 
         // save key handler
         this.keyHandler = this.viewer.innerTracker.keyHandler;
@@ -120,11 +123,13 @@
     }
 
     function _click(e){
+        // if(this.activePatch){
+        //     this.activePatch.deactive();
+        //     return
+        // }
+
 	    const img_point = this.viewer.viewport.windowToImageCoordinates(new $.Point(e.originalEvent.clientX,e.originalEvent.clientY));
 	    const view_point = this.viewer.viewport.windowToViewportCoordinates(new $.Point(e.originalEvent.clientX,e.originalEvent.clientY));
-        //const img_point = this.viewer.viewport.windowToImageCoordinates(new $.Point(e.clientX,e.clientY));
-	    //const view_point = this.viewer.viewport.windowToViewportCoordinates(new $.Point(e.clientX,e.clientY));
-
 
 	    if(0 > img_point.x || this.imgWidth < img_point.x || 0 > img_point.y || this.imgHeight < img_point.y || !this.isCreatePatch) return;
 	    
@@ -136,7 +141,7 @@
 	    // create new one
 	    let options = {
 	    	data:'',
-			//size:new $.Point(width,height),
+			size:new $.Point(this.width, this.height),
 			center:view_point,
 			viewer:this.viewer,
 			color:'#7cfc00'
@@ -146,19 +151,16 @@
 	    	options = this.activePatch.templateOptions(options);
 			options.center = view_point;
             if(!this.isPoint && this.activePatch.isPoint){
-                const viewer_bounds = this.viewer.viewport.getBounds();
-                const width = viewer_bounds.width * 0.1;
-                const height = viewer_bounds.height * 0.1;
-                options.size = new $.Point(width,height);
+                options.size = new $.Point(this.width, this.height);
             }
-	    }else {
-	    	const viewer_bounds = this.viewer.viewport.getBounds();
-	    	const width = viewer_bounds.width * 0.1;
-	    	const height = viewer_bounds.height * 0.1;
-	    	options.size = new $.Point(width,height);
-	    }
-        options.isPoint = this.isPoint;
+	    }else if(this.patches[this.patches.length-1]){
+            options = this.patches[this.patches.length-1].templateOptions(options);
+            options.center = view_point;
+        }
 
+        options.isPoint = this.isPoint;
+        options.manager = this;
+        console.log('options:',options);
 	    this.patches.push(new $.Patch(options));
     }
 
@@ -216,11 +218,20 @@
         // element
         this.element = document.createElement('div');
         this.element.id = this.id;
+        this.manager = options.manager;
+        
 
         const rect = getRect(options.center, options.size, options.viewer, options.isPoint);
         this.color = options.color;
+
+        // only for note is list (select)
+        this.selIdx = options.selIdx || 0;
+        if(this.manager&&this.manager.selection&&this.manager.selection[0]&&this.manager.selection[0].color){
+            options.color = this.color = this.manager.selection[this.selIdx].color;
+        }
+
         this.data =  options.data || '';
-        // create ui part    
+        // create ui part
         if(options.isPoint){
             createPointElement(this.element, options);
         }else{
@@ -258,6 +269,24 @@
             if(ctrl) ctrl.style.borderColor = color;
         }) 
 
+        // create selector event
+        if(this.manager&&this.manager.selection){
+            const hasColor = this.manager.selection[0].color?true:false;
+            const sel = element.querySelector('.note_panel select');
+            sel.selectedIndex = +this.selIdx;
+            sel.addEventListener('change',function(e){
+                // set color
+                if(!hasColor) return;
+                const color = this.manager.selection[sel.selectedIndex].color;
+                box.style.background = color;
+                input.value = color;
+                element.style.borderColor = color;
+                const ctrl = element.querySelector('.controls');
+                if(ctrl) ctrl.style.borderColor = color;
+            }.bind(this))
+            if(hasColor&&!this.isPoint) this.element.querySelector('.color').style.display = 'none';
+        }
+
         // trackers
         this.patchTrackers = {};
 
@@ -280,15 +309,23 @@
             releaseHandler: clickOnRemove.bind(this)
         });
 
+        
         this.patchTrackers['color'] = new $.MouseTracker({
             element:     colorIcon,
             pressHandler: press.bind(this),
             releaseHandler: clickOnColor.bind(this)
         });
+        if(this.manager&&this.manager.selection&&this.manager&&this.manager.selection[0].color&&this.isPoint) this.patchTrackers['color'].setTracking(false);
+
         this.patchTrackers['note'] = new $.MouseTracker({
             element:     noteIcon,
             pressHandler: press.bind(this),
             releaseHandler: clickOnNote.bind(this)
+        });
+
+        const notePanel = this.element.querySelector('.note_panel');
+        this.patchTrackers['note_panel'] = new $.MouseTracker({
+            element:     notePanel
         });
 
         // adjust the size of patch
@@ -311,6 +348,17 @@
     	this.element.querySelector('.info_block').textContent = `${Math.round(rect.width)}x${Math.round(rect.height)}px`; 
     }
 
+    function createSelector(options){
+        const sel = document.createElement('select');
+        sel.size = options.length;
+        options.forEach((opt,idx) => {
+            const option = document.createElement('option');
+            option.text = opt.text;
+            option.value = opt.value!=undefined?opt.value:idx;
+            sel.appendChild(option);
+        });
+        return sel;
+    }
 
 
 
@@ -401,7 +449,11 @@
     $.Patch.prototype.openNotePanel = function(e){
         this.viewer.innerTracker.keyHandler = null;
         this.element.querySelector('.note_panel').style.display = 'block';
-        this.element.querySelector('.note_panel textarea').focus();
+        if(this.manager.selection){
+            this.element.querySelector('.note_panel select').focus();
+        }else{
+            this.element.querySelector('.note_panel textarea').focus(); 
+        }
     }
     
     $.Patch.prototype.closeNotePanel = function(e){
@@ -433,12 +485,18 @@
     }
     
     $.Patch.prototype.templateOptions = function(){
-    	return {
-    		data:this.element.querySelector('.note_panel textarea').value,
-			size:new $.Point(this.overlay.width,this.overlay.height),
-			viewer:this.viewer,
-			color:this.element.querySelector('.color input').value
-    	}
+        const options = {
+            size:new $.Point(this.overlay.width,this.overlay.height),
+            viewer:this.viewer,
+            color:this.element.querySelector('.color input').value
+        }
+        if(this.manager&&this.manager.selection){
+            options.data = this.element.querySelector('.note_panel select option:checked').text;
+            options.selIdx = +this.element.querySelector('.note_panel select').selectedIndex;
+        }else{
+            options.data = this.element.querySelector('.note_panel textarea').value;
+        }
+    	return options;
     }
 
     $.Patch.prototype.toJSON = function(coordinates = 'normalize'){ // l/image
@@ -538,11 +596,17 @@
         // note panel
         const note_panel = document.createElement('div');
         note_panel.classList.add('note_panel');
-        const textarea = document.createElement('textarea');
-        textarea.textContent = options.data;
-        note_panel.appendChild(textarea);
-        elt.appendChild(note_panel);
 
+        if(options.manager&&options.manager.selection && Array.isArray(options.manager.selection)){    
+            const selector = createSelector(options.manager.selection);
+            note_panel.appendChild(selector);
+        }else{
+            const textarea = document.createElement('textarea');
+            textarea.textContent = options.data;
+            note_panel.appendChild(textarea);
+        }
+
+        elt.appendChild(note_panel);
         // corner
         const corner = document.createElement('div');
         corner.classList.add('material-icons');
@@ -579,20 +643,11 @@
         dot.style.background = options.color;
         dot.appendChild(input);
         elt.appendChild(dot);
-
-        // const dot = document.createElement('div');
-        // dot.classList.add('dot');
-        // elt.appendChild(dot);
         
         const controls = document.createElement('div');
         controls.classList.add('controls');
         controls.style.borderColor = options.color;
         elt.appendChild(controls);
-
-        // const info = document.createElement('div');
-        // info.classList.add('info_block');
-        // controls.appendChild(info);
-        // controls
         
         // remove
         const clear = document.createElement('div');
@@ -611,9 +666,15 @@
         // note panel
         const note_panel = document.createElement('div');
         note_panel.classList.add('note_panel');
-        const textarea = document.createElement('textarea');
-        textarea.textContent = options.data;
-        note_panel.appendChild(textarea);
+        
+        if(options.manager&&options.manager.selection && Array.isArray(options.manager.selection)){    
+            const selector = createSelector(options.manager.selection);
+            note_panel.appendChild(selector);
+        }else{
+            const textarea = document.createElement('textarea');
+            textarea.textContent = options.data;
+            note_panel.appendChild(textarea);
+        }
         controls.appendChild(note_panel);
 
     }
