@@ -15,7 +15,7 @@ Loading.instance = null;
  * @property {Element} the text element of Loading page.
  */
 Loading.text = null;
-Loading.open = function(parentNode ,text = 'loading...',zIndex=999){
+Loading.open = function(parentNode ,text = 'Loading...',zIndex=999){
 	if(!Loading.instance) Loading.instance = Loading.createInstance();
   if(parentNode !== Loading.instance.parentNode) Loading.close();
   Loading.instance.style.zIndex = zIndex;

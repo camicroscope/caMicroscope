@@ -329,11 +329,11 @@ function PathDbMods() {
       if (func && typeof func === 'function') {
         func.call(null, x);
       }
-      Loading.text.textContent = `loading slide's tiles...`;
+      Loading.text.textContent = `Loading Slide's Tiles...`;
       // we may want another init.js or our own callback
     }).catch(e => {
       console.error(e)
-      Loading.text.textContent = "ERROR - PathDB Image Error (Try a refresh)"
+      Loading.text.textContent = "ERROR - PathDB Image Error (Try A Refresh)"
       //if(func && typeof func === 'function') func.call(null,{hasError:true,message:e});
     })
 
@@ -342,4 +342,4 @@ function PathDbMods() {
 
 
 PathDbMods()
-console.warn("This setup is intended for pathdb")
+console.warn("This Setup Is Intended For Pathdb")
