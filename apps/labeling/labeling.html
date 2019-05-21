@@ -91,7 +91,7 @@
 			createWarningText('You are using an <strong>IE/Edge</strong> browser that may be lead to erratic behavior on caMicroscope. Please switch to <a href="https://www.google.com/chrome/">Chrome</a>, <a href="https://www.mozilla.org/en-US/firefox/new/">Firefox</a> or <a href="https://www.apple.com/safari/">Safari</a> browser to improve your experience.');
 		}
 
-		Loading.open(document.body, 'CaMicroscope is initializing...');
+		Loading.open(document.body, 'CaMicroscope Is Initializing...');
 		// get slide id from url
 		const url = new URL(window.location.href);
 		$D.params = getUrlVars();
@@ -105,7 +105,7 @@
 			STORE.findSlide($D.params.slide, $D.params.study, $D.params.specimen, $D.params.location).then(x=>{
 				let offset = parseInt($D.params.offset,10) || 0;
 				if(x.length == 0 || offset >= x.length){
-					redirect($D.pages.table,'No Slide Found. Redirecting to Table.');
+					redirect($D.pages.table,'No Slide Found. Redirecting To Table.');
 				} else {
 					newParams = $D.params
 					delete newParams.data
@@ -118,12 +118,12 @@
 				}
 			}).catch(e=>{
 				console.warn(e)
-				redirect($D.pages.table,'Redirecting to Table.');
+				redirect($D.pages.table,'Redirecting To Table.');
 			})
 			// find the associated slideID
 			// open viewer with that slideID
 		}else{
-			redirect($D.pages.table,'Slide Id is undefined. Redirecting to Flex Table.');
+			redirect($D.pages.table,'Slide Id Is Undefined. Redirecting To Flex Table.');
 		}
 
 		// get states parameters

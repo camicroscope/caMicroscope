@@ -1,22 +1,3 @@
-const features = {"type":"FeatureCollection","features":[{"type":"Feature","properties":{"style":{"color":"#576971","lineJoin":"round","lineCap":"round","isFill":true}},"geometry":{"type":"LineString","coordinates":[[[73308,44257],[73316,44274],[73332,44298],[73357,44331],[73390,44364],[73423,44397],[73447,44413],[73480,44430],[73488,44438],[73554,44454],[73562,44454],[73595,44463],[73644,44463],[73735,44463],[73825,44463],[73899,44463],[73956,44454],[74014,44446],[74071,44438],[74129,44438],[74162,44438],[74211,44438],[74227,44438],[74285,44438],[74351,44463],[74383,44479],[74416,44487],[74441,44495],[74457,44504],[74490,44504],[74498,44504],[74515,44504],[74523,44504],[74523,44504],[74539,44504],[74556,44504],[74572,44504],[74597,44504],[74613,44504],[74630,44504],[74630,44504],[74654,44495],[74671,44495],[74671,44495],[74687,44495],[74695,44495],[74695,44495],[74728,44471],[74761,44454],[74778,44438],[74827,44405],[74843,44389],[74876,44364],[74893,44339],[74901,44323],[74909,44315],[74917,44307],[74925,44298],[74934,44298],[74934,44298],[74934,44290]]],"path":null},"bound":[[73308,44257],[74934,44257],[74934,44504],[73308,44504],[73308,44257]]},{"type":"Feature","properties":{"style":{"color":"#2F1218","lineJoin":"round","lineCap":"round","isFill":true}},"geometry":{"type":"LineString","coordinates":[[[73070,43453],[73078,43453],[73144,43453],[73234,43453],[73341,43453],[73702,43453],[74014,43453],[74178,43453],[74613,43453],[74876,43469],[75147,43494],[75213,43502],[75246,43502],[75287,43510],[75344,43518],[75377,43526],[75393,43526],[75418,43535],[75484,43543],[75549,43559],[75566,43559],[75607,43568],[75656,43576],[75673,43576],[75689,43584],[75714,43592],[75714,43617],[75722,43625],[75722,43658],[75722,43674],[75714,43781],[75705,43806],[75689,43904],[75656,44003],[75648,44036],[75623,44101],[75607,44183],[75582,44265],[75574,44290],[75574,44331],[75566,44364],[75566,44380],[75566,44389],[75566,44405],[75558,44413],[75558,44413],[75558,44504],[75574,44569],[75590,44619],[75599,44660],[75607,44692],[75615,44709],[75615,44717],[75615,44725],[75615,44725],[75615,44733],[75615,44733],[75615,44742],[75615,44742],[75615,44750],[75623,44750],[75623,44750]]],"path":null},"bound":[[73070,43453],[75722,43453],[75722,44750],[73070,44750],[73070,43453]]},{"type":"Feature","properties":{"style":{"color":"#DFB9C1","lineJoin":"round","lineCap":"round","isFill":true}},"geometry":{"type":"LineString","coordinates":[[[72347,43067],[72347,43067],[72347,43091],[72347,43132],[72339,43190],[72331,43264],[72306,43411],[72298,43518],[72290,43617],[72290,43707],[72281,43781],[72281,43863],[72273,43986],[72273,44027],[72265,44077],[72240,44233],[72224,44290],[72216,44348],[72207,44389],[72199,44438],[72199,44479],[72199,44504],[72207,44536],[72224,44561],[72240,44569],[72249,44569],[72273,44577],[72290,44586],[72314,44594],[72347,44610],[72388,44619],[72437,44627],[72495,44643],[72561,44651],[72684,44668],[72725,44668],[72766,44668],[72799,44668],[72815,44668],[72832,44668],[72840,44668],[72848,44660],[72864,44660],[72873,44660],[72881,44660],[72881,44660],[72889,44660]]],"path":null},"bound":[[72199,43067],[72889,43067],[72889,44668],[72199,44668],[72199,43067]]},{"type":"Feature","properties":{"style":{"color":"#576971","lineJoin":"round","lineCap":"round","isFill":true}},"geometry":{"type":"LineString","coordinates":[[[75615,45587],[75615,45587],[75615,45620],[75615,45678],[75615,45760],[75615,45891],[75615,46014],[75607,46138],[75590,46187],[75574,46244],[75566,46277],[75549,46310],[75541,46335],[75533,46368],[75517,46400],[75492,46450],[75459,46482],[75434,46491],[75336,46532],[75262,46565],[75180,46597],[75081,46630],[74983,46671],[74794,46721],[74728,46729],[74663,46729],[74597,46729],[74523,46696],[74441,46663],[74359,46614],[74326,46589],[74203,46515],[74162,46491],[74137,46474],[74088,46425],[74055,46392],[74030,46359],[74022,46326],[74014,46318],[73998,46285],[73989,46277],[73989,46269],[73981,46261],[73973,46244],[73965,46220],[73948,46170],[73940,46138],[73932,46113],[73932,46088],[73932,46047],[73940,46014],[73948,45990],[73956,45949],[73965,45916],[73973,45883],[73973,45858],[73981,45842],[73981,45834],[73981,45834],[73981,45834],[73981,45834],[73981,45826],[73981,45826],[73981,45817],[73981,45809],[73981,45809]]],"path":null},"bound":[[73932,45587],[75615,45587],[75615,46729],[73932,46729],[73932,45587]]},{"type":"Feature","properties":{"style":{"color":"#576971","lineJoin":"round","lineCap":"round","isFill":true}},"geometry":{"type":"LineString","coordinates":[[[76346,45078],[76346,45054],[76346,44996],[76346,44865],[76346,44684],[76346,44454],[76346,44290],[76346,43880],[76346,43814],[76346,43756],[76354,43715],[76362,43682],[76362,43658],[76362,43650],[76362,43633],[76362,43600],[76362,43551],[76362,43518],[76362,43494],[76362,43403],[76371,43354],[76379,43313],[76379,43264],[76387,43231],[76387,43206],[76387,43198],[76387,43182],[76387,43165],[76387,43157],[76387,43141],[76387,43141],[76387,43132],[76387,43132]]],"path":null},"bound":[[76346,43132],[76387,43132],[76387,45078],[76346,45078],[76346,43132]]},{"type":"Feature","properties":{"style":{"color":"#2F1218","lineJoin":"round","lineCap":"round","isFill":true}},"geometry":{"type":"LineString","coordinates":[[[71739,42952],[71739,42968],[71739,43017],[71739,43116],[71739,43255],[71739,43436],[71739,43526],[71731,43789],[71731,43912],[71723,44036],[71723,44159],[71723,44257],[71723,44323],[71715,44421],[71715,44487],[71715,44512],[71707,44627],[71707,44676],[71698,44742],[71690,44791],[71682,44906],[71682,44947],[71690,44972],[71698,44996],[71707,45013],[71707,45013],[71707,45029],[71707,45037],[71707,45037],[71707,45046],[71707,45054],[71707,45054],[71707,45062],[71707,45062],[71707,45062],[71707,45062],[71707,45095],[71707,45169],[71707,45234],[71707,45284],[71723,45423],[71723,45456],[71731,45538],[71731,45604],[71731,45612],[71731,45620],[71731,45620],[71739,45620],[71748,45620],[71764,45620],[71805,45604],[71969,45555],[72084,45530],[72216,45514],[72405,45481],[72511,45464],[72585,45448],[72634,45440],[72708,45431],[72758,45431],[72790,45431],[72840,45431],[72848,45431],[72873,45431],[72889,45431],[72897,45431],[72930,45431],[72938,45431],[72946,45431],[72946,45431],[72955,45431],[72955,45431],[72955,45431],[72955,45431],[72963,45431],[72963,45431]]],"path":null},"bound":[[71682,42952],[72963,42952],[72963,45620],[71682,45620],[71682,42952]]}]};
-
-function createTestData(editedData){
-  const cates = [["0","lym","1","#576971"],["0","lym","0","#0A1316"],["1","necrosis","1","#DFB9C1"],["1","necrosis","0","#2F1218"]]
-  const clusters = new EditDataCluster();
-  editedData.features.forEach(feature => {
-    const color =  feature.properties.style.color;
-    const points = getGrids(feature.geometry.coordinates[0],$CAMIC.viewer.canvasDrawInstance.size);
-          points.forEach(p=>{
-            p[0] = $CAMIC.viewer.imagingHelper.dataToLogicalX(p[0]);
-            p[1] = $CAMIC.viewer.imagingHelper.dataToLogicalY(p[1]);
-          });
-    const cate = findPenInfoByColor(color,cates);
-    clusters.addEditDateForCluster(...cate, points);
-  })
-  return clusters;
-}
-
-// ----------------- test ---------- //
 // CAMIC is an instance of camicroscope core
 // $CAMIC in there
 let $CAMIC = null;
@@ -64,7 +45,8 @@ function initCore(){
   if($D.params.states){
     opt.states = $D.params.states;
   }
-
+    // create the message queue
+  $UI.message = new MessageQueue();
   try{
     let slideQuery = {}
     slideQuery.id = $D.params.slideId
@@ -88,50 +70,27 @@ function initCore(){
       $D.params.data = e;
       // loading heatmap data
       $D.heatMapData = await $CAMIC.store.getHeatmap($D.params.data.name,$D.params.execId).then(d=> d[0]);
-      
-      if(!$D.heatMapData){
-        redirect($D.pages.table,`No Heatmap's data Found. Redirecting to Table.`);
+      const subject = $D.heatMapData.provenance.image.subject_id;
+      const caseid = $D.heatMapData.provenance.image.case_id;
+      const exec = $D.heatMapData.provenance.analysis.execution_id;
+  
+      if(ImgloaderMode!='imgbox'){
+        // query from DB
+        const editData = await $CAMIC.store.findHeatmapEdit(getUserId(), subject, caseid, exec).then(d=>d[0]);
+        //const editData = await $CAMIC.store.findHeatmapEdit('test', subject, caseid, exec).then(d=>d[0]);
+        $D.editedDataClusters = new EditDataCluster();
+        if(editData&&Array.isArray(editData.data)&&editData.data.length > 0){
+          setEditedDataClusters(editData.data);
+        }
+      }else{
+        $D.editedDataClusters = new EditDataCluster();
       }
+      
 
-      // popup panel
-      // $CAMIC.viewer.addHandler('canvas-lay-click',function(e){
-      //   if(!e.data) {
-      //     $UI.annotPopup.close();
-      //     return;
-      //   }
-      //   // for support QUIP 2.0
-      //   const data = Array.isArray(e.data)? e.data[e.data.selected]: e.data;
 
-      //   const type = data.provenance.analysis.source;
-      //   let body;
-      //   let attributes;
-      //   switch (type) {
-      //     case "human":
-      //       // human
-      //       attributes = data.properties.annotations;
-      //       body = convertHumanAnnotationToPopupBody(attributes);
-      //       $UI.annotPopup.showFooter();
-      //       break;
-      //     case "computer":
-      //       // handle data.provenance.analysis.computation = `segmentation`
-      //       attributes = data.properties.scalar_features[0].nv;
-      //       body = {type:'map',data:attributes};
-      //       $UI.annotPopup.hideFooter();
-      //       break;
-      //     default:
-      //       return;
-      //       // statements_def
-      //       break;
-      //   }
-      //   $UI.annotPopup.data = {
-      //     id:data.provenance.analysis.execution_id,
-      //     oid:data._id.$oid,
-      //     annotation:attributes
-      //   };
-      //   $UI.annotPopup.setTitle(`id:${data.provenance.analysis.execution_id}`);
-      //   $UI.annotPopup.setBody(body);
-      //   $UI.annotPopup.open(e.position);
-      // });
+      if(!$D.heatMapData){
+        redirect($D.pages.table,`No Heatmap's Data Found. Redirecting To Table.`);
+      }
 
       
       $UI.slideInfos = new CaMessage({
@@ -151,14 +110,13 @@ function initCore(){
   $CAMIC.viewer.addHandler('open',function(){
     Loading.open(document.body, `Loading Data ...`);
     // load the heatmap data
-    //$D. = await $CAMIC.store.getHeatmap($D.case_id,'lym_v1-high_res').then(d=> d[0]);
-
+   
     var checkImagingHelperIsReady = setInterval(function () {
-      if($CAMIC.viewer.imagingHelper&& $CAMIC.viewer.imagingHelper._haveImage && $D.heatMapData) {
+      if($CAMIC.viewer.imagingHelper&& $CAMIC.viewer.imagingHelper._haveImage && $D.heatMapData && $D.editedDataClusters && $UI.editedListSideMenu) {
         clearInterval(checkImagingHelperIsReady);
         
-        $D.editedDataClusters = {}
-        $D.editedDataClusters.data = createTestData(features);
+        
+        //$D.editedDataClusters = createTestData(features);
         // load data
         // console.time('fetch');
         // $D.heatData['lym_v1-high_res'] = await $CAMIC.store.getHeatmap($D.case_id,'lym_v1-high_res').then(d=> d[0]);
@@ -172,15 +130,15 @@ function initCore(){
         // console.log(exec_id);
         // 
         // set thresholds for fields
-        $D.heatMapData.provenance.analysis.fields.forEach(f=>{
-          f.thresholds = [0.05,1];
-        });
+        // $D.heatMapData.provenance.analysis.fields.forEach(f=>{
+        //   f.threshold = [0.05,1];
+        // });
 
         $CAMIC.viewer.createHeatmap({
           opacity:.65, //inputs[2].value,
           coverOpacity:.3,
           data:$D.heatMapData.data,
-          editedData:$D.editedDataClusters.data,
+          editedData:$D.editedDataClusters,
           size:$D.heatMapData.provenance.analysis.size,
           fields:$D.heatMapData.provenance.analysis.fields,
           color:"#253494"//inputs[3].value
@@ -202,6 +160,8 @@ function initCore(){
         });
 
         $UI.settingsSideMenu.addContent($UI.heatmapcontrol.elt);
+
+
         // create heatmap editor
         
         
@@ -225,7 +185,7 @@ function initCore(){
           // editedDate:$D. 
           onFieldChange: editorPenChange, 
           onReset: function(){
-            if(confirm('Do you want to clear edited data?')){
+            if(confirm('Do You Want To Clear Edited Data?')){
               $CAMIC.viewer.canvasDrawInstance.clear();  
             }
           }, // clearEditData
@@ -233,21 +193,27 @@ function initCore(){
         });
         $UI.editorSideMenu.addContent($UI.heatmapEditorPanel.elt);
 
-        // Test Data - edited data
-        $D.heatMapData.editedClusters = mergingEditedData(features, $UI.heatmapEditorPanel.getAllOperations());
-        console.log($D.heatMapData);
-
-
         // create edited data list 
         $UI.heatmapEditedDataPanel = new HeatmapEditedDataPanel({
           // data:$D.heatMapData.editedClusters,
-          data:$D.editedDataClusters.data,
+          data:$D.editedDataClusters,
           // editedDate:$D. 
           onDBClick: locateEditData,
           onDelete: onDeleteEditData
         });
 
         $UI.editedListSideMenu.addContent($UI.heatmapEditedDataPanel.elt);
+      
+        
+        // TODO create save botton if user is admin
+        if(ImgloaderMode!='imgbox'){
+          const btnDiv = createThreshold();
+          $UI.settingsSideMenu.addContent(btnDiv);
+        }  else{
+          const btnDiv = createExportEditData();
+          $UI.editedListSideMenu.addContent(btnDiv);          
+        }
+
 
         Loading.close();
 
@@ -262,8 +228,7 @@ function initUIcomponents(){
   /* create UI components */
 
 
-  // create the message queue
-  $UI.message = new MessageQueue();
+
 
   // create the tool bar
   $UI.toolbar = new CaToolbar({
@@ -428,7 +393,7 @@ function initUIcomponents(){
 
 
     var checkIsReady = setInterval(function () {
-      if($CAMIC&& $CAMIC.viewer && $CAMIC.viewer.imagingHelper && $CAMIC.viewer.imagingHelper._haveImage && $D.heatMapData) {
+      if($CAMIC&& $CAMIC.viewer && $CAMIC.viewer.imagingHelper && $CAMIC.viewer.imagingHelper._haveImage && $D.heatMapData && $D.editedDataClusters) {
         clearInterval(checkIsReady);
         // create editor side menu
         $UI.editorSideMenu = new SideMenu({
@@ -525,6 +490,13 @@ function initUIcomponents(){
   // $UI.multSelector.addHandler('action',multSelector_action);
 }
 
+function setEditedDataClusters(editData){
+  editData.forEach(d=>{
+    const cluster = new EditDataCollection(d.index, d.name, d.value, d.color, d.data);
+    $D.editedDataClusters.addCluster(cluster);
+  });
+}
+
 function redirect(url ,text = '', sec = 5){
   let timer = sec;
   setInterval(function(){
@@ -541,4 +513,43 @@ function redirect(url ,text = '', sec = 5){
     timer--;
 
   }, 1000);
+}
+function createThreshold(){
+  const div = document.createElement('div');
+  div.classList.add('hmep-container');
+  div.style.border = 'none';
+  const div1 = document.createElement('div');
+  div1.classList.add('btn-panel');
+
+  
+  const btn = document.createElement('button');
+  btn.classList.add('action');
+  btn.style.float = 'right';
+  btn.textContent = 'Save Threshold';
+  div.appendChild(div1);
+  div1.appendChild(btn);
+  btn.addEventListener('click', onUpdateHeatmapFields);
+  return div;
+}
+function createExportEditData(){
+  const div = document.createElement('div');
+  div.classList.add('hmep-container');
+  div.style.border = 'none';
+  const div1 = document.createElement('div');
+  div1.classList.add('btn-panel');
+
+  
+  const btn = document.createElement('button');
+  btn.classList.add('action');
+  btn.style.float = 'right';
+  btn.textContent = 'Export Edit Data';
+  div.appendChild(div1);
+  div1.appendChild(btn);
+  btn.addEventListener('click', onExportEditData);
+  return div;
+}
+function getUserId(){
+  const token = getCookie('token');
+  const token_data = parseJwt(token);
+  return token_data.name;
 }

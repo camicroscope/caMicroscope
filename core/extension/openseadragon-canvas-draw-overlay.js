@@ -579,7 +579,7 @@
             if(!(this.drawMode === 'line' ||this.drawMode == 'grid')){
                 let isIntersect = false;
                 if(isSelfIntersect(this._current_path_.geometry.coordinates[0])){
-                    alert('A Self-Intersecting Polygon will cause inaccurate Area and circumference.');
+                    alert('A Self-Intersecting Polygon Will Cause Inaccurate Area and Circumference.');
                     isIntersect = true;
                 }
                 let sqmpsqp = null; // square microns per square pixels

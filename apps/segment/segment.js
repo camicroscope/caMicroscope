@@ -290,7 +290,7 @@ function checkSize(imgColl, imagingHelper) {
 
   // check that image size is ok
   if (width * height > 8000000) {
-    alert("Selected ROI too large, current version is limited to 4 megapixels");
+    alert("Selected ROI Too Large, Current Version Is Limited To 4 Megapixels");
     // Clear the rectangle  canvas-draw-overlay.clear()
     $CAMIC.viewer.canvasDrawInstance.clear();
     return {}; //throw('image too large')

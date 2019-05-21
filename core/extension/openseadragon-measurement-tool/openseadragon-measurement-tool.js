@@ -93,7 +93,7 @@
         this._div.style.width = '100%';
         this._div.style.height = '100%';
         this._div.style.display = 'none';
-        this._div.style.zIndex =  options.zIndex || 201;
+        this._div.style.zIndex =  options.zIndex || 101;
         this._viewer.canvas.appendChild(this._div);
 
         var image1 = this._viewer.world.getItemAt(0);

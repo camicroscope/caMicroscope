@@ -64,6 +64,26 @@ $VALIDATION.heatmap = ajv.compile({
     }
   }
 });
+$VALIDATION.heatmapedit = ajv.compile({
+  type: "object",
+  required: ["user_id", "provenance"],
+  properties: {
+    provenance: {
+      type: "object",
+      required: ["image", "analysis"],
+      properties: {
+        image: {
+          type: "object",
+          required: ["slide", "study", "specimen", "subject_id", "case_id"],
+        },
+        analysis: {
+          type: "object",
+          required: ["study_id", "fields", "execution_id"],
+        }
+      }
+    }
+  }
+});
 $VALIDATION.template = ajv.compile({
   type: "object",
   required: ["id", "name", "properties"],

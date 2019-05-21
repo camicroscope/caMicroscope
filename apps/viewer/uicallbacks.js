@@ -31,18 +31,6 @@ function toggleViewerMode(opt){
 function multSelector_action(size){
 	// hidden main viewer's bottom right control and get navigator
 	$CAMIC.viewer.controls.bottomright.style.display = 'none';
-	// if(event.data.length == 0){
-	// 	alert('No Layer selected');
-	// 	return;
-	// }
-
-	// hide the window
-	// $UI.multSelector.elt.classList.add('none');
-
-	// show the minor part
-	//const minor = document.getElementById('minor_viewer');
-	//minor.classList.remove('none');
-	//minor.classList.add('display');
 
 	// open new instance camic
 	try{
@@ -88,92 +76,20 @@ function multSelector_action(size){
 		$minorCAMIC.viewer.addOnceHandler('tile-drawing',function(){
 			$minorCAMIC.viewer.addHandler('zoom',synchornicView2);
 			$minorCAMIC.viewer.addHandler('pan',synchornicView2);
+			// cerate segment display
+			$minorCAMIC.viewer.createSegment({
+				store:$minorCAMIC.store,
+				slide:$D.params.data.name,
+				data:[]
+			});
 		});
-
-
 
 	}catch(error){
 		Loading.close();
-		$UI.message.addError('Core Initialization Failed');
 		console.error(error);
+		$UI.message.addError('Core Initialization Failed');
 		return;
 	}
-
-	// find unloaded data
-	// event.data = event.data.map(lay=>lay[0]);
-	// const unloaded = event.data.filter(id =>{
-	// 	const layer = $D.overlayers.find(layer=> layer.id == id);
-	// 	return layer && !layer.data
-	// });
-	// if all data loaded then add selected layer to minor viewer
-
-	// if(unloaded.length == 0){
-	// 	// add overlays to
-	// 	// wait util omanager create
-	// 	var checkOmanager = setInterval(function () {
-	// 		if($minorCAMIC.viewer.omanager) {
-	// 			clearInterval(checkOmanager);
-	// 			// add overlays to
-	// 			event.data.forEach(id =>{
-	// 				// find data
-	// 				const layer = $D.overlayers.find(layer=> layer.id == id);
-	// 				// add to the minor viewer
-	// 				$minorCAMIC.viewer.omanager.addOverlay({id:id,data:layer.data,render:anno_render,isShow:true});
-	// 			});
-	// 			$minorCAMIC.viewer.omanager.updateView();
-	// 		}
-	// 	}, 500);
-	// 	return;
-	// }
-
-	// load data from service side
-	// $CAMIC.store.getMarkByIds(unloaded,$D.params.data.name)
-	// .then(function(datas){
-	// 	// response error
-	// 	if(datas.error){
-	// 		const errorMessage = `${datas.text}: ${datas.url}`;
-	// 		$UI.message.addError(errorMessage, 5000);
-	// 		// close
-	// 		return;
-	// 	}
-
-	// 	// no data found
-	// 	if(datas.length == 0){
-	// 		$UI.message.addError(`Selected annotations do not exist.`,5000);
-	// 		return;
-	// 	}
-
-	// 	// add overlays
-	// 	if(Array.isArray(datas)) datas = datas.map(d=>{
-	// 		d.geometries = VieweportFeaturesToImageFeatures($CAMIC.viewer, d.geometries);
-	// 		const id = d.provenance.analysis.execution_id;
-	// 		const item = $D.overlayers.find(l=>l.id==id);
-	// 		item.data = d;
-	// 		item.render = anno_render;
-	// 		item.layer = $CAMIC.viewer.omanager.addOverlay(item);
-	// 	});
-
-	// 	// wait util omanager create
-	// 	var checkOmanager = setInterval(function () {
-	// 		if($minorCAMIC.viewer.omanager) {
-	// 			clearInterval(checkOmanager);
-	// 			// add overlays to
-	// 			event.data.forEach(id =>{
-	// 				// find data
-	// 				const layer = $D.overlayers.find(layer=> layer.id == id);
-	// 				// add to the minor viewer
-	// 				$minorCAMIC.viewer.omanager.addOverlay({id:id,data:layer.data,render:anno_render,isShow:true});
-	// 			});
-	// 			$minorCAMIC.viewer.omanager.updateView();
-	// 		}
-	// 	}, 500);
-
-	// })
-	// .catch(function(e){
-	// 	console.error(e);
-	// }).finally(function(){
-
-	// });
 
 }
 
@@ -271,7 +187,7 @@ label.style.width = 0;
 
 function draw(e){
 	if(!$CAMIC.viewer.canvasDrawInstance){
-		alert('draw doesn\'t initialize');
+		alert('Draw Doesn\'t Initialize');
 		return;
 	}
 	const state = +e.state;
@@ -336,7 +252,7 @@ function annotationOff(){
 	if(!$CAMIC.viewer.canvasDrawInstance) return;
 	const canvasDraw = $CAMIC.viewer.canvasDrawInstance;
 
-	if(canvasDraw._draws_data_.length && confirm(`Do you want to save annotation before you leave?`)){
+	if(canvasDraw._draws_data_.length && confirm(`Do You Want To Save Annotation Before You Leave?`)){
 		saveAnnotation();
 	}else{
 		canvasDraw.clear();
@@ -473,9 +389,9 @@ function anno_delete(data){
 	const annotationData = $D.overlayers.find(d=>d.data && d.data._id.$oid == data.oid);
 	let message;
 	if(annotationData.data.geometries){
-		message = `Are you sure you want to delete this Annotation {ID:${data.id}} with ${annotationData.data.geometries.features.length} mark(s)?`;
+		message = `Are You Sure You Want To Delete This Annotation {ID:${data.id}} With ${annotationData.data.geometries.features.length} Mark(s)?`;
 	}else{
-		message = `Are you sure you want to delete this markup {ID:${data.id}}?`;
+		message = `Are You Sure You Want To Delete This Markup {ID:${data.id}}?`;
 	}
 	$UI.annotPopup.close();
 	if(!confirm(message)) return;
@@ -583,7 +499,7 @@ function anno_callback(data){
 	// has Path?
 
 	if($CAMIC.viewer.canvasDrawInstance._path_index===0){
-		alert('No Markup on Annotation.');
+		alert('No Markup On Annotation.');
 		return;
 	}
 	// save
@@ -679,7 +595,7 @@ function algo_callback(data){
 }
 
 // overlayer manager callback function for show or hide
-function callback(data){
+async function callback(data){
 	const viewerName = this.toString();
 	let camic = null;
 	switch (viewerName) {
@@ -692,13 +608,17 @@ function callback(data){
 		default:
 			break;
 	}
-	// const ids = data.filter(d=> d.item.data==null).map(d=>d.item.id);
-	// if(ids&&ids.length > 0){
-	// 	// load annotation data
-	// 	loadAnnotationByIds(this,ids,null);
-	// }
-	data.forEach(d => {
+	
+	data.forEach(function(d){
 		const item = d.item;
+		if(item.typeName=='segmentation'){
+			if(d.isShow){ //add
+				camic.viewer.segment.addSegmentId(item.id);
+			}else{ // remove
+				camic.viewer.segment.removeSegmentId(item.id);
+			}
+			return;
+		}
 		if(!item.data){
 			// load layer data
 			loadAnnotationById(camic, d, null);
@@ -732,7 +652,7 @@ function loadAnnotationById(camic, layerData ,callback){
 			layerData.item.loading = true;
 			const item = layerData.item;
 
-			Loading.open(document.body,'loading layers...');
+			Loading.open(document.body,'Loading Layers...');
 
 			$CAMIC.store.getMarkByIds([item.id],$D.params.data.name)
 			.then(data =>{
@@ -751,6 +671,7 @@ function loadAnnotationById(camic, layerData ,callback){
 				}
 
 				// no data found
+				//if(data.length < 1){
 				if(!data[0]){
 					console.warn(`Annotation: ${item.name}(${item.id}) doesn't exist.`);
 					$UI.message.addWarning(`Annotation: ${item.name}(${item.id}) doesn't exist.`,5000);
@@ -760,7 +681,6 @@ function loadAnnotationById(camic, layerData ,callback){
 					$UI.layersViewerMinor.removeItemById(item.id);
 					return;
 				}
-
 				// for support quip 2.0 data model
 				if(data[0].geometry){
 					// twist them
@@ -772,9 +692,10 @@ function loadAnnotationById(camic, layerData ,callback){
 							return [Math.round(point[0]*imgWidth),Math.round(point[1]*imgHeight)];
 						});
 						d.properties.style = {
-									color: "#7CFC00",
+									color: "#000080",
 									lineCap: "round",
-									lineJoin: "round"
+									lineJoin: "round",
+									isFill:false
 						};
 						return {
 							_id:d._id,
@@ -785,9 +706,15 @@ function loadAnnotationById(camic, layerData ,callback){
 					});
 					// if(item) data[0].isShow = item.isShow;
 					item.render = old_anno_render;
+					item.clickable = false;
+					item.hoverable = false;
 				}else{
 					data[0].geometries = VieweportFeaturesToImageFeatures(camic.viewer, data[0].geometries);
 					item.data = data[0];
+					// try to render across multiple objects, by mapping to all and flattening
+					// item.data = data.map(d=>{
+					// 	return VieweportFeaturesToImageFeatures(camic.viewer, d.geometries).features
+					// }).flat();
 					item.render = anno_render;
 				}
 
@@ -872,7 +799,7 @@ function hostedHeatmap(){
 		if (typeof list === "undefined") { list = [] }
 		// get heatmap data
 		if(!list.length){
-			alert(`${slide} has No heatmap data.`);
+			alert(`${slide} Has No Heatmap Data.`);
 			return;
 		}
 		createHeatMapList(list);
@@ -925,7 +852,7 @@ function imgboxHeatmap(){
 
 			data.provenance.image.slide = slide
 			const execId = data.provenance.analysis.execution_id;
-			Loading.open(document.body,'loading Heatmap...');
+			Loading.open(document.body,'Loading Heatmap...');
 			$CAMIC.store.addHeatmap(data).then(rs=>{
 				window.location.href = `../heatmap/heatmap.html${window.location.search}&execId=${execId}`;
 			}).catch(e=>{
@@ -968,6 +895,9 @@ function anno_render(ctx,data){
 	//DrawHelper.draw(this._canvas_ctx, this.data.canvasData);
 }
 function old_anno_render(ctx,data){
+	const imagingHelper  = this.viewer.imagingHelper;
+	const lineWidth = (imagingHelper.physicalToDataX(1) - imagingHelper.physicalToDataX(0))>> 0;
+	ctx.lineWidth = lineWidth;
 	DrawHelper.draw(ctx, data);
 
 }

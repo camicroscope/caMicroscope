@@ -7,7 +7,7 @@ var audience = "wolf.cci.emory.edu/camic_uat"
 var scope = "openid%20email"
 var client_id = "YLRDUmEs5Jivi6FX3XtNNAt97X3a0epD"
 // GHC specific
-var GHC_CLIENT_ID = 'INSERT-YOUR-CLIENT-ID-HERE'
+var GHC_CLIENT_ID = '1064842501836-19n83cvmc5el0l228oqk1a14sj4tjqqp.apps.googleusercontent.com'
 // handle urls automatically
 var base_deployment_url = window.location.toString().split("/").slice(0,-1).join("/")
 var redirect_uri = base_deployment_url + "/login.html"
@@ -50,52 +50,31 @@ let state = decodeURIComponent(getUrlParam("state"))
 if (!state){
   state = default_redirect
 }
-// is this a GHC login?
-if(getUrlParam("mode") == "GHC"){
-    const CLOUD_HEALTHCARE_API_BASE =
-        'https://healthcare.googleapis.com/v1beta1/projects/';
-    const SCOPE = 'https://www.googleapis.com/auth/cloud-healthcare';
-    const STUDIES_PATH = '/studies';
-    const SERIES_PATH = '/series';
-    gapi.auth2.init({'clientId': GHC_CLIENT_ID, 'scope': SCOPE})
-        .then(
-            function() {
-              googleAuth = gapi.auth2.getAuthInstance();
 
-              if (googleAuth == null) {
-                alert(
-                    `GHC Login failed.`);
-                return;
-              }
-              document.cookie = "GhcToken=" googleAuth.currentUser.get().getAuthResponse(true).access_token;
-              window.location = state;
-            });
+// is this a login pre or post?
+if (id_token){
+  document.cookie = cookie_name + "=" + id_token;
+  fetch("./auth/Token/check",
+  {headers: {
+      'Authorization': "Bearer " + id_token
+   }}
+  ).then(x=>x.json()).then(x=>{
+    console.log("{id provider", id_token)
+    console.log("{auth service}", x)
+    if (x.hasOwnProperty('token')){
+      document.cookie = cookie_name + "=" + x.token;
+      window.location = state
+    } else {
+      console.error("please give me a better failure message/response")
+    }
 
+  })
 } else {
-  // is this a login pre or post?
-  if (id_token){
-    document.cookie = cookie_name + "=" + id_token;
-    fetch("./auth/Token/check",
-    {headers: {
-        'Authorization': "Bearer " + id_token
-     }}
-    ).then(x=>x.json()).then(x=>{
-      console.log("{id provider", id_token)
-      console.log("{auth service}", x)
-      if (x.hasOwnProperty('token')){
-        document.cookie = cookie_name + "=" + x.token;
-        window.location = state
-      } else {
-        console.error("please give me a better failure message/response")
-      }
-
-    })
-  } else {
-    window.localStorage.setItem('nonce', randomString(16));
-    auth_url += "&state=" + state
-    auth_url += "&nonce=" + window.localStorage.getItem('nonce')
-    window.location = auth_url
-  }
+  window.localStorage.setItem('nonce', randomString(16));
+  auth_url += "&state=" + state
+  auth_url += "&nonce=" + window.localStorage.getItem('nonce')
+  window.location = auth_url
 }
+
 </script>
 <html>

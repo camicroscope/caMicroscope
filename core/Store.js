@@ -112,28 +112,10 @@ class Store {
     if (y1){
       query.y1 = y1;
     }
-    let bySlide = fetch(url + "?" + objToParamStr(query), {
+    return fetch(url + "?" + objToParamStr(query), {
       credentials: "include",
       mode: "cors"
     }).then(this.errorHandler).then(x=>this.filterBroken(x, "mark"))
-    if (!slide) {
-      return bySlide
-    } else {
-      bySlideId = this.findSlide(slide).then(x => {
-        if (x.length == 0) {
-          return []
-        } else {
-          query.slide = x[0]['_id']['$oid']
-          return fetch(url + "?" + objToParamStr(query), {
-            credentials: "include",
-            mode: "cors"
-          }).then(this.errorHandler).then(x=>this.filterBroken(x, "mark"))
-        }
-
-      })
-      // return as if we did one query by flattening these promises
-      return Promise.all([bySlide, bySlideId]).then(x => [].concat.apply([], x))
-    }
 
   }
 
@@ -211,28 +193,10 @@ class Store {
       query.y1 = y1;
     }
 
-    let bySlide = fetch(url + "?" + objToParamStr(query), {
+    return fetch(url + "?" + objToParamStr(query), {
       credentials: "include",
       mode: "cors"
     }).then(this.errorHandler).then(x=>this.filterBroken(x, "mark"))
-    if (!slide) {
-      return bySlide
-    } else {
-      bySlideId = this.findSlide(slide).then(x => {
-        if (x.length == 0) {
-          return []
-        } else {
-          query.slide = x[0]['_id']['$oid']
-          return fetch(url + "?" + objToParamStr(query), {
-            credentials: "include",
-            mode: "cors"
-          }).then(this.errorHandler).then(x=>this.filterBroken(x, "mark"))
-        }
-
-      })
-      // return as if we did one query by flattening these promises
-      return Promise.all([bySlide, bySlideId]).then(x => [].concat.apply([], x))
-    }
   }
 
 
@@ -301,38 +265,24 @@ class Store {
    * @returns {promise} - promise which resolves with data
    **/
   findMarkTypes(slide, name) {
-    var suffix = "Mark/types"
-    var url = this.base + suffix;
+    let suffix = "Mark/types"
+    
     var query = {}
-    var bySlideId
+    // 
+    if(!slide) {
+      console.error('Store.findMarkTypes needs slide ... ');
+      return null;
+    }
+    query.slide = slide
     if (name) {
       query.name = name
+      suffix = "Mark/typesExec"
     }
-    if (slide) {
-      query.slide = slide
-    }
-    let bySlide = fetch(url + "?" + objToParamStr(query), {
+    var url = this.base + suffix;
+    return fetch(url + "?" + objToParamStr(query), {
       credentials: "include",
       mode: "cors"
     }).then(this.errorHandler)
-
-    if (!slide) {
-      return bySlide
-    } else {
-      bySlideId = this.findSlide(slide).then(x => {
-        if (x.length == 0) {
-          return []
-        } else {
-          query.slide = x[0]['_id']['$oid']
-          return fetch(url + "?" + objToParamStr(query), {
-            credentials: "include",
-            mode: "cors"
-          }).then(this.errorHandler)
-        }
-      })
-      // return as if we did one query by flattening these promises
-      return Promise.all([bySlide, bySlideId]).then(x => [].concat.apply([], x))
-    }
   }
 
   findHeatmap(slide, name) {
@@ -378,7 +328,6 @@ class Store {
     var query = {};
     query.case = caseId;
     query.subject = caseId;
-    query.test = execId;
     query.exec = execId;
 
     return fetch(url + "?" + objToParamStr(query), {
@@ -386,6 +335,26 @@ class Store {
       mode: "cors"
     }).then(this.errorHandler).then(x=>this.filterBroken(x, "heatmap"))
   }
+  /**
+   * update Heatmap fields - threshold
+   * @param {string} id - the heatmap id
+   * @returns {promise} - promise which resolves with data
+   **/
+  // updateHeatmapThreshold(caseId, execId) {
+  //   var suffix = "Heatmap/get"
+  //   var url = this.base + suffix;
+  //   var query = {};
+  //   query.case = caseId;
+  //   query.subject = caseId;
+  //   query.exec = execId;
+
+  //   return fetch(url + "?" + objToParamStr(query), {
+  //     credentials: "include",
+  //     mode: "cors"
+  //   }).then(this.errorHandler).then(x=>this.filterBroken(x, "heatmap"))
+  // }
+
+
   /**
    * post heatmap
    * @param {object} json - the mark data
@@ -427,6 +396,150 @@ class Store {
       mode: "cors"
     }).then(this.errorHandler)
   }
+
+
+  updateHeatmapFields(subject, caseid, execution, fields){
+    var suffix = "Heatmap/threshold"
+    var url = this.base + suffix;
+    var query = {}
+    
+    if (subject) {
+      query.subject = subject
+    }
+    
+    if (caseid) {
+      query.case = caseid
+    }
+
+    if(execution) {
+      query.execution = execution
+    }
+
+    if(fields) {
+      query.fields = fields
+    }
+
+    return fetch(url + "?" + objToParamStr(query), {
+      method: "DELETE",
+      credentials: "include",
+      mode: "cors"
+    }).then(this.errorHandler)
+  }
+
+  /**
+   * add a Heatmap Edit Data
+   * @param {object} json - the heatmap edit data
+   * @returns {promise} - promise which resolves with response
+   * 
+   **/
+  addHeatmapEdit(json) {
+    var suffix = "HeatmapEdit/post"
+    var url = this.base + suffix;
+    // TODO check on valid
+    // if (this.validation.mark && !this.validation.mark(json)){
+    //   console.warn(this.validation.mark.errors)
+    // }
+    return fetch(url, {
+      method: "POST",
+      credentials: "include",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json; charset=utf-8",
+        // "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: JSON.stringify(json)
+    }).then(this.errorHandler)
+  }
+
+  updateHeatmapEdit(user, subject, caseid, execution, data){
+    var suffix = "HeatmapEdit/update"
+    var url = this.base + suffix;
+    var query = {}
+    
+    if (user) {
+      query.user = user
+    }
+    
+    if (subject) {
+      query.subject = subject
+    }
+    
+    if (caseid) {
+      query.case = caseid
+    }
+
+    if(execution) {
+      query.execution = execution
+    }
+    if(data) {
+      query.data = data
+    }
+
+    return fetch(url + "?" + objToParamStr(query), {
+      method: "DELETE",
+      credentials: "include",
+      mode: "cors"
+    }).then(this.errorHandler)
+  }
+
+  findHeatmapEdit(user, subject, caseid, execution) {
+    var suffix = "HeatmapEdit/find"
+    var url = this.base + suffix;
+    var query = {}
+    
+    if (user) {
+      query.user = user
+    }
+    
+    if (subject) {
+      query.subject = subject
+    }
+    
+    if (caseid) {
+      query.case = caseid
+    }
+
+    if(execution) {
+      query.execution = execution
+    }
+    return fetch(url + "?" + objToParamStr(query), {
+      credentials: "include",
+      mode: "cors"
+    }).then(this.errorHandler)
+  }
+  /**
+   * delete heatmap
+   * @param {object} id - the heatmap object id
+   * @param {object} slide - the associated slide
+   * @returns {promise} - promise which resolves with response
+   **/
+  deleteHeatmapEdit(user, subject, caseid, execution) {
+    var suffix = "HeatmapEdit/delete"
+    var url = this.base + suffix;
+    var query = {};
+    if (user) {
+      query.user = user
+    }
+    
+    if (subject) {
+      query.subject = subject
+    }
+    
+    if (caseid) {
+      query.case = caseid
+    }
+
+    if(execution) {
+      query.execution = execution
+    }
+    return fetch(url + "?" + objToParamStr(query), {
+      method: "DELETE",
+      credentials: "include",
+      mode: "cors"
+    }).then(this.errorHandler)
+  }
+
+
 
   /**
    * find overlays matching name and/or type

@@ -7,7 +7,11 @@ let file;
 if (params.mode && params.mode==="pathdb"){
 	ImgloaderMode = 'iip';
 	file = '../../dist/pathdb_package.js';
-}else if(params.slideId&&params.id&&params.slideId==="local"&&params.id.includes('http://localhost:8888')){
+}else if (params.mode && params.mode==="ghc"){
+	ImgloaderMode = 'imgbox'; // WILL probably need to change
+	file = '../../dist/ghc_package.js';
+}
+else if(params.slideId&&params.id&&params.slideId==="local"&&params.id.includes('http://localhost:8888')){
 	ImgloaderMode = 'imgbox';
 	file = '../../dist/imgbox_package.js';
 }else{

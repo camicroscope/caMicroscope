@@ -66,7 +66,7 @@ function ImgBoxMods() {
       if (func && typeof func === 'function'){
         func.call(null, x);
       }
-      Loading.text.textContent = `loading slide's tiles...`;
+      Loading.text.textContent = `Loading Slide's Tiles...`;
       // WARN; note that spyglass isn't working due to semi-hardcoded value at init.js line 140
       // we may want another init.js or our own callback
     }).catch(e=>{

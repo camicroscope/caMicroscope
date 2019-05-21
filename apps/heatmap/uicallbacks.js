@@ -165,13 +165,7 @@ function closeSecondaryViewer(){
 	}
 }
 
-// side menu close callback
-function toggleSideMenu(opt){
-	if(!opt.isOpen){
-		const id = opt.target.id.split('_')[1];
-		$UI.toolbar.changeMainToolStatus(id,false);
-	}
-}
+
 
 // go home callback
 function goHome(data){
@@ -376,26 +370,80 @@ function heatmapEditorOff(){
 	1. Annotation
 	2. Analytics
 */
-function getCurrentItem(data){
-	console.log(data);
-}
+async function onUpdateHeatmapFields(){
+	if(!confirm('Do You Want To Update Threshold?')) return;
+	Loading.open(document.body,'Saving Threshold ... ');
+	const fields = $D.heatMapData.provenance.analysis.fields;
+	const subject = $D.heatMapData.provenance.image.subject_id;
+	const caseid = $D.heatMapData.provenance.image.case_id;
+	const exec = $D.heatMapData.provenance.analysis.execution_id;	
+	const rs = await $CAMIC.store.updateHeatmapFields(subject, caseid, exec, JSON.stringify(fields));
+	Loading.close();
+	console.log(rs);
+};
+
+async function onExportEditData(){
+	if($D.editedDataClusters.isEmpty()){
+		alert('No Edit Data ... ');
+		return;
+	}
+	const user = getUserId();
+	const now = getDateInString();
+	const editData = $D.editedDataClusters.toJSON()
+	const data = {
+		user_id:user,
+		create_date:now,
+		update_date:now,
+		provenance:$D.heatMapData.provenance,
+		data:editData
+	}
+	// let data = JSON.parse(window.localStorage.getItem("mark"))
+	
+	// let text = ""
+	// if (data) {
+	// text = JSON.stringify(data.filter(x => {
+	//   let matching = true;
+	//   for (var i in query) {
+	//     matching = matching && Object.byString(x, i) == query[i]
+	//   }
+	//   return matching
+	// }))
+	// }
+	var element = document.createElement('a');
+	var blob = new Blob([JSON.stringify(data)], {type: "application/json"});
+	var uri = URL.createObjectURL(blob);
+	element.setAttribute('href', uri);
+	element.setAttribute('download', "EditData.json");
+	element.style.display = 'none';
+	document.body.appendChild(element);
+	element.click();
+	document.body.removeChild(element);
+};
 
 function editorPenChange(data){
 	$CAMIC.viewer.canvasDrawInstance.style.color = data[3];
 }
 
-function saveEditData(){
-	console.log('saveEditData');
+async function saveEditData(){
+	
 	if(!$CAMIC.viewer.canvasDrawInstance._draws_data_.length){
-		alert('No data edited!');
+		alert('No Data Edited!');
 		return;
 	}
+	Loading.open(document.body,`Saving Edit Data ...`);
+	// does data exist
+	// user, subject, case, execution, data
+	const user = getUserId();
+	const subject = $D.heatMapData.provenance.image.subject_id;
+	const caseid = $D.heatMapData.provenance.image.case_id;
+	const exec = $D.heatMapData.provenance.analysis.execution_id;
+
 	// get draw lines info
-	const editedData = $CAMIC.viewer.canvasDrawInstance.getImageFeatureCollection()
+	const editedData = $CAMIC.viewer.canvasDrawInstance.getImageFeatureCollection();
 	// get category of pens
 	const cates = $UI.heatmapEditorPanel.getAllOperations();
 	// merging draw lines info and category together. The result will be used by heatmap to draw the edited data.
-	//const newEditedData = mergingEditedData(editedData, pensInfo);
+
 	editedData.features.forEach(feature => {
 		const color =  feature.properties.style.color;
 		const points = getGrids(feature.geometry.coordinates[0],$CAMIC.viewer.canvasDrawInstance.size);
@@ -404,28 +452,82 @@ function saveEditData(){
 			p[1] = $CAMIC.viewer.imagingHelper.dataToLogicalY(p[1]);
 		});
 		const cate = findPenInfoByColor(color,cates);
-		$D.editedDataClusters.data.addEditDateForCluster(...cate, points);
+		$D.editedDataClusters.addEditDateForCluster(...cate, points);
 	})
+
+	// add new one or update old one
+	const now = getDateInString();
+	const editData = $D.editedDataClusters.toJSON()
+	
+
+	// delete old one
+	let create_date = now;
+
+	if(ImgloaderMode!='imgbox'){
+		// find editor data
+		const data = await $CAMIC.store.findHeatmapEdit(user, subject, caseid, exec);
+		// error
+		if(!Array.isArray(data)&&data.hasError&&data.hasError==true){
+			$UI.message.addError(data.message);
+			Loading.close();
+			return;
+		}
+
+		if(data.length!==0){
+			create_date = data[0].create_date;
+			const del = await $CAMIC.store.deleteHeatmapEdit(user, subject, caseid, exec);
+			// error
+			if(del.hasError&&del.hasError==true){
+				$UI.message.addError(del.message);
+				Loading.close();
+				return;
+			}
+		}
+		// add new one
+		const add = await $CAMIC.store.addHeatmapEdit({
+			user_id:user,
+			create_date:create_date,
+			update_date:now,
+			provenance:$D.heatMapData.provenance,
+			data:editData
+		});
+
+		// error
+		if(add.hasError&&add.hasError==true){
+			$UI.message.addError(add.message);
+			Loading.close();
+			return;
+		}
+	}
+	Loading.close();
+
+
+
+
+
+
 	// update heatmap view
 	$CAMIC.viewer.heatmap.updateView(0);
 	$UI.heatmapEditedDataPanel.__refresh();
-	// TODO if success then close
+	// if success then close
 	$CAMIC.viewer.canvasDrawInstance.clear();
+
+	heatMapEditedListOn();
 
 
 	console.log('saved');
 }
+function getDateInString(){
+	const today = new Date();
+	const dd = String(today.getDate()).padStart(2, '0');
+	const mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+	const yyyy = today.getFullYear();
+	const hour = String(today.getHours()).padStart(2, '0');	//Get the hour (0-23)
+	const min = String(today.getMinutes()).padStart(2, '0');	//Get the minute (0-59)
+	const sec = String(today.getSeconds()).padStart(2, '0');	//Get the second (0-59)
+	const ms = String(today.getMilliseconds()).padStart(3, '0'); //
 
-function mergingEditedData(editedData, cates){
-	const clusters = new EditDataCluster();
-	editedData.features.forEach(feature => {
-		const color =  feature.properties.style.color;
-		const points = getGrids(feature.geometry.coordinates[0],$CAMIC.viewer.canvasDrawInstance.size);
-		
-		const cate = findPenInfoByColor(color,cates);
-		clusters.addEditDateForCluster(...cate, points);
-	})
-	return clusters;
+	return `${mm}/${dd}/${yyyy} ${hour}:${min}:${sec}:${ms}`;
 }
 
 function locateEditData(data){
@@ -441,17 +543,51 @@ function locateEditData(data){
 	$CAMIC.viewer.viewport.fitBounds(rect);
 }
 
-function onDeleteEditData(data){
+async function onDeleteEditData(data){
+
 	const cluster = data.cluster;
 	const idx = data.index;
-	$D.editedDataClusters.data.removeEditDataForCluster(cluster.index, cluster.name, cluster.value, cluster.color, idx);
+
+	if(!confirm(`Do You Want To Delete { ${cluster.name} - ${cluster.value==0?'Negative':'Positive'} Index:${idx} }?`)) return;
+	Loading.open(document.body,`Deleting Edit Data ...`);
+
+	// UPDATE EDIT DATA
+	$D.editedDataClusters.removeEditDataForCluster(cluster.index, cluster.name, cluster.value, cluster.color, idx);
+
+	// delete data
+	const user = getUserId();
+	const subject = $D.heatMapData.provenance.image.subject_id;
+	const caseid = $D.heatMapData.provenance.image.case_id;
+	const exec = $D.heatMapData.provenance.analysis.execution_id; 	
 	
+	let rs = null;
+	if(ImgloaderMode!='imgbox'){
+		if($D.editedDataClusters.isEmpty()){
+			rs = await $CAMIC.store.deleteHeatmapEdit(user, subject, caseid, exec);
+		}else{
+			rs = await $CAMIC.store.updateHeatmapEdit(user, subject, caseid, exec, JSON.stringify($D.editedDataClusters.toJSON()));
+		}
+		// error
+		if(rs.hasError&&rs.hasError==true){
+			$UI.message.addError(rs.message);
+			Loading.close();
+			return;
+		}else{
+
+		}
+	}
+	Loading.close();
+	
+
+
 	// refresh UI
 	$UI.heatmapEditedDataPanel.__refresh();
 	$CAMIC.viewer.heatmap.updateView(0);
-	if($D.editedDataClusters.data.isEmpty())
-		alert('NO');
 
+	// close pen panel
+	
+	// open list panel
+	
 }
 
 function findPenInfoByColor(color,info){
