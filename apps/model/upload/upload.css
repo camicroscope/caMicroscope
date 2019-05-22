@@ -1,0 +1,7 @@
+.upload-panel {
+	height: 60px;
+	width: 60px;
+	z-index: 1000;
+	position: fixed;
+	background-color: red;
+}
