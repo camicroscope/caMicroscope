@@ -266,14 +266,19 @@ class Store {
    **/
   findMarkTypes(slide, name) {
     let suffix = "Mark/types"
-    
+
     var query = {}
-    // 
+    //
     if(!slide) {
       console.error('Store.findMarkTypes needs slide ... ');
       return null;
     }
-    query.slide = slide
+    // numeric->str coerce
+    if ((parseInt(slide)==slide)||(parseFloat(slide)==slide)){
+      query.slide = '"' + slide + '"'
+    } else {
+      query.slide = slide
+    }
     if (name) {
       query.name = name
       suffix = "Mark/typesExec"
@@ -402,11 +407,11 @@ class Store {
     var suffix = "Heatmap/threshold"
     var url = this.base + suffix;
     var query = {}
-    
+
     if (subject) {
       query.subject = subject
     }
-    
+
     if (caseid) {
       query.case = caseid
     }
@@ -430,7 +435,7 @@ class Store {
    * add a Heatmap Edit Data
    * @param {object} json - the heatmap edit data
    * @returns {promise} - promise which resolves with response
-   * 
+   *
    **/
   addHeatmapEdit(json) {
     var suffix = "HeatmapEdit/post"
@@ -455,15 +460,15 @@ class Store {
     var suffix = "HeatmapEdit/update"
     var url = this.base + suffix;
     var query = {}
-    
+
     if (user) {
       query.user = user
     }
-    
+
     if (subject) {
       query.subject = subject
     }
-    
+
     if (caseid) {
       query.case = caseid
     }
@@ -486,15 +491,15 @@ class Store {
     var suffix = "HeatmapEdit/find"
     var url = this.base + suffix;
     var query = {}
-    
+
     if (user) {
       query.user = user
     }
-    
+
     if (subject) {
       query.subject = subject
     }
-    
+
     if (caseid) {
       query.case = caseid
     }
@@ -520,11 +525,11 @@ class Store {
     if (user) {
       query.user = user
     }
-    
+
     if (subject) {
       query.subject = subject
     }
-    
+
     if (caseid) {
       query.case = caseid
     }

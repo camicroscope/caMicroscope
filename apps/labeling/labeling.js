@@ -154,7 +154,7 @@ function initCore(){
 }
 function downloadLabel(){
   if(!$CAMIC.viewer.pmanager.hasPatches()){
-    alert('There is no patches');
+    alert('There Is No Patches');
     return;
   }
 

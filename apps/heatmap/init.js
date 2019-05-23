@@ -89,7 +89,7 @@ function initCore(){
 
 
       if(!$D.heatMapData){
-        redirect($D.pages.table,`No Heatmap's data Found. Redirecting to Table.`);
+        redirect($D.pages.table,`No Heatmap's Data Found. Redirecting To Table.`);
       }
 
       
@@ -185,7 +185,7 @@ function initCore(){
           // editedDate:$D. 
           onFieldChange: editorPenChange, 
           onReset: function(){
-            if(confirm('Do you want to clear edited data?')){
+            if(confirm('Do You Want To Clear Edited Data?')){
               $CAMIC.viewer.canvasDrawInstance.clear();  
             }
           }, // clearEditData

@@ -24,7 +24,6 @@ function PathDbMods() {
     var suffix = "Mark/find"
     var url = this.base + suffix;
     var query = {}
-    var bySlideId
     if (slide) {
       query.slide = slide
     }
@@ -55,11 +54,10 @@ function PathDbMods() {
     if (y1) {
       query.y1 = y1;
     }
-    let bySlide = fetch(url + "?" + objToParamStr(query), {
+    return fetch(url + "?" + objToParamStr(query), {
       credentials: "same-origin",
       mode: "cors"
     }).then(this.errorHandler).then(x => this.filterBroken(x, "mark"))
-    return bySlide
   }
   Store.prototype.getMarkByIds = function(ids, slide, study, specimen, source, footprint, x0, x1, y0, y1) {
     if (!Array.isArray(ids) || !slide) {
@@ -68,7 +66,6 @@ function PathDbMods() {
         message: 'args are illegal'
       }
     }
-    var bySlideId
     var suffix = "Mark/multi"
     var url = this.base + suffix;
     var query = {}
@@ -99,11 +96,10 @@ function PathDbMods() {
     if (y1) {
       query.y1 = y1;
     }
-    let bySlide = fetch(url + "?" + objToParamStr(query), {
+    return fetch(url + "?" + objToParamStr(query), {
       credentials: "same-origin",
       mode: "cors"
     }).then(this.errorHandler).then(x => this.filterBroken(x, "mark"))
-    return bySlide
   }
   Store.prototype.findMarkTypes = function(slide, name) {
     var suffix = "Mark/types"
@@ -113,7 +109,13 @@ function PathDbMods() {
       console.error('Store.findMarkTypes needs slide ... ');
       return null;
     }
-    query.slide = slide
+    // pathdb numeric->str coerce
+    if ((parseInt(slide)==slide)||(parseFloat(slide)==slide)){
+      query.slide = '"' + slide + '"'
+    } else {
+      query.slide = slide
+    }
+
     if (name) {
       query.name = name
       suffix = "Mark/typesExec"
@@ -122,7 +124,6 @@ function PathDbMods() {
       credentials: "same-origin",
       mode: "cors"
     }).then(this.errorHandler)
-    return bySlide
   }
   Store.prototype.default_findSlide = Store.prototype.findSlide;
   Store.prototype.findSlide = function(slide, specimen, study, location) {
@@ -329,11 +330,11 @@ function PathDbMods() {
       if (func && typeof func === 'function') {
         func.call(null, x);
       }
-      Loading.text.textContent = `loading slide's tiles...`;
+      Loading.text.textContent = `Loading Slide's Tiles...`;
       // we may want another init.js or our own callback
     }).catch(e => {
       console.error(e)
-      Loading.text.textContent = "ERROR - PathDB Image Error (Try a refresh)"
+      Loading.text.textContent = "ERROR - PathDB Image Error (Try A Refresh)"
       //if(func && typeof func === 'function') func.call(null,{hasError:true,message:e});
     })
 
@@ -342,4 +343,4 @@ function PathDbMods() {
 
 
 PathDbMods()
-console.warn("This setup is intended for pathdb")
+console.warn("This Setup Is Intended For Pathdb")
