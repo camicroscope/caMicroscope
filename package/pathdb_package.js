@@ -110,7 +110,7 @@ function PathDbMods() {
       return null;
     }
     // pathdb numeric->str coerce
-    if (parseInt(slide)==slide){
+    if ((parseInt(slide)==slide)||(parseFloat(slide)==slide)){
       query.slide = '"' + slide + '"'
     } else {
       query.slide = slide
