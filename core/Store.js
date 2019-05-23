@@ -274,7 +274,7 @@ class Store {
       return null;
     }
     // numeric->str coerce
-    if (typeof(slide)=="number"){
+    if (parseInt(slide)==slide){
       query.slide = '"' + slide + '"'
     } else {
       query.slide = slide
