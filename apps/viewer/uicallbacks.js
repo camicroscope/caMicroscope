@@ -311,8 +311,6 @@ function measurementOff(){
 	li.querySelector('input[type=checkbox]').checked = false;
 }
 
-
-
 //--- toggle magnifier callback ---//
 function toggleMagnifier(data){
 	if(data.checked){
@@ -619,6 +617,78 @@ async function callback(data){
 			}
 			return;
 		}
+		if(item.typeName=='heatmap'){
+			console.log('heatmap');
+			console.log(d);
+			if($D.heatMapData&&$D.heatMapData.provenance.analysis.execution_id == item.id&&camic.viewer.heatmap){
+				// show or hide heatmap
+				if(d.isShow){
+					camic.viewer.heatmap.on()
+				}else{
+					camic.viewer.heatmap.off()
+				}
+			}else if($D.heatMapData&&$D.heatMapData.provenance.analysis.execution_id == item.id){
+		        const opt = {
+					opacity:.65, //inputs[2].value,
+					coverOpacity:0.001,
+					data:$D.heatMapData.data,
+					//editedData:$D.editedDataClusters,
+					mode:'binal',
+					size:$D.heatMapData.provenance.analysis.size,
+					fields:$D.heatMapData.provenance.analysis.fields,
+					color:"#253494"//inputs[3].value
+				}
+
+		        if($D.heatMapData.provenance.analysis.setting){
+		          opt.mode = $D.heatMapData.provenance.analysis.setting.mode;
+		          if($D.heatMapData.provenance.analysis.setting.field)
+		            opt.currentFieldName = $D.heatMapData.provenance.analysis.setting.field;
+		        }
+				camic.viewer.createHeatmap(opt);
+			}else{
+				Loading.open(document.body,'Loading Heatmap Data...');
+				// load heatmap 
+				camic.store.getHeatmap($D.params.data.name,item.id)
+				.then(function(data){
+					if(Array.isArray(data)&&data.length>0){
+						$D.heatMapData = data[0];
+				        const opt = {
+							opacity:.65, //inputs[2].value,
+							coverOpacity:0.001,
+							data:$D.heatMapData.data,
+							mode:'binal',
+							//editedData:$D.editedDataClusters,
+							size:$D.heatMapData.provenance.analysis.size,
+							fields:$D.heatMapData.provenance.analysis.fields,
+							color:"#253494"//inputs[3].value
+						}
+
+				        if($D.heatMapData.provenance.analysis.setting){
+				          opt.mode = $D.heatMapData.provenance.analysis.setting.mode;
+				          if($D.heatMapData.provenance.analysis.setting.field)
+				            opt.currentFieldName = $D.heatMapData.provenance.analysis.setting.field;
+				        }
+						camic.viewer.createHeatmap(opt);
+
+				    }			
+				})		
+				.catch(function(error){
+					// heatmap schema
+					console.error(error);
+				})
+				.finally(function(){
+					Loading.close();
+					if($D.overlayers){
+					}else{
+						// set message
+						$UI.message.addError('Loading Heatmap Data Is Error');
+						
+					}
+				}); 
+			}
+			return;
+		}
+
 		if(!item.data){
 			// load layer data
 			loadAnnotationById(camic, d, null);

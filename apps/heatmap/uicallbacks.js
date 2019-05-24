@@ -373,13 +373,21 @@ function heatmapEditorOff(){
 async function onUpdateHeatmapFields(){
 	if(!confirm('Do You Want To Update Threshold?')) return;
 	Loading.open(document.body,'Saving Threshold ... ');
+	
+	const setting = {
+		mode:$CAMIC.viewer.heatmap.mode
+	};
+	
+	if($CAMIC.viewer.heatmap.mode=='gradient') setting.field = $CAMIC.viewer.heatmap._currentField.name
+	
 	const fields = $D.heatMapData.provenance.analysis.fields;
 	const subject = $D.heatMapData.provenance.image.subject_id;
 	const caseid = $D.heatMapData.provenance.image.case_id;
 	const exec = $D.heatMapData.provenance.analysis.execution_id;	
-	const rs = await $CAMIC.store.updateHeatmapFields(subject, caseid, exec, JSON.stringify(fields));
+	const rs = await $CAMIC.store.updateHeatmapFields(subject, caseid, exec, JSON.stringify(fields), JSON.stringify(setting));
+	
+	//const rs = await $CAMIC.store.updateHeatmap
 	Loading.close();
-	console.log(rs);
 };
 
 async function onExportEditData(){

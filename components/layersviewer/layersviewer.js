@@ -333,7 +333,8 @@ LayersViewer.createCategoricalItem = function(data, type){
 	
 	// div
 	const text = document.createElement('div');
-	text.textContent = item.name;
+	text.textContent = type=='root'?titleCase(item.name):item.name;
+	
 	label.appendChild(text);
 	
 	// checkbox
