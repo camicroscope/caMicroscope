@@ -163,7 +163,7 @@
                     for(let j = 0;j < layer.data.length;j++){
                         const path = layer.data[j].geometry.path;
                         const style = layer.data[j].properties.style;
-                        if(path.contains(img_point.x,img_point.y)){
+                        if(layer.hoverable&&path.contains(img_point.x,img_point.y)){
                             this.resize();
                             this.highlightPath = path;
                             this.highlightStyle = style;
@@ -187,7 +187,7 @@
                     const path = features[j].geometry.path;
                     const style = features[j].properties.style;
                     this.subIndex = null;
-                    if(path.contains(img_point.x,img_point.y)){
+                    if(layer.hoverable&&path.contains(img_point.x,img_point.y)){
                         this.resize();
                         this.highlightPath = path;
                         this.highlightStyle = style;
@@ -210,7 +210,8 @@
          * @param  {Event} e the event
          */
         pathClick:function(e){
-            this._viewer.raiseEvent('canvas-lay-click',{position:{x:e.clientX, y:e.clientY},data:this.highlightLayer?this.highlightLayer.data:null});
+            if(this.highlightLayer&&this.highlightLayer.clickable) 
+                this._viewer.raiseEvent('canvas-lay-click',{position:{x:e.clientX, y:e.clientY},data:this.highlightLayer?this.highlightLayer.data:null});
         },
 
         /**
@@ -320,7 +321,17 @@
             ctx.fillStyle = hexToRgbA(style.color,0.5);
             ctx.strokeStyle = style.color;
             ctx.lineWidth = style.lineWidth;
-            path.fill(this._hover_ctx_);
+            
+
+            if(style.isFill ==undefined || style.isFill){
+                path.fill(this._hover_ctx_);
+            }else{
+                const imagingHelper = this._viewer.imagingHelper;
+                const lineWidth = (imagingHelper.physicalToDataX(2) - imagingHelper.physicalToDataX(0))>> 0;
+                ctx.lineWidth = lineWidth;
+                path.stroke(this._hover_ctx_);
+            }
+            
         },
 
         /**
@@ -335,7 +346,7 @@
                 return;
             };
             this.drawOnCanvas(this.drawOnDisplay,[this._display_ctx_]);
-            if(this.highlightPath)this.drawOnCanvas(this.drawOnHover,[this._hover_ctx_,this._div,this.highlightPath,this.highlightStyle]);
+            if(this.highlightPath&& this.highlightLayer&& this.highlightLayer.hoverable)this.drawOnCanvas(this.drawOnHover,[this._hover_ctx_,this._div,this.highlightPath,this.highlightStyle]);
 
         },
 
@@ -357,7 +368,7 @@
               console.warn('duplicate overlay ID');
               return;
             }
-
+            options.viewer = this._viewer
             const lay = new Overlay(options)
             this.overlays.push(lay);
             // TODO redraw
@@ -472,8 +483,19 @@
         this.id = options.id;
         this.data = options.data; 
         this.render = options.render;
-        this.clickable = options.clickable || false;
-        this.hoverable = options.hoverable || false;
+        //this.clickable = options.clickable || true;
+        //this.hoverable = options.hoverable || true;
+        this.viewer = options.viewer;
+        if(options.clickable!=null && options.clickable == false){
+            this.clickable = options.clickable
+        }else{
+            this.clickable = true;
+        }        
+        if(options.hoverable!=null && options.hoverable == false){
+            this.hoverable = options.hoverable
+        }else{
+            this.hoverable = true;
+        }
         if(options.isShow!=null && options.isShow == false){
             this.isShow = options.isShow
         }else{

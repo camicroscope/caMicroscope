@@ -18,7 +18,7 @@ class CaMic{
   *
   */
   constructor(divId, slideQuery, options){
-    Loading.open(document.body, 'CaMicroscope is initializing...');
+    Loading.open(document.body, 'CaMicroscope Is Initializing...');
     // initalize viewer
     this.setting = {
       id: divId,
@@ -141,7 +141,7 @@ class CaMic{
   * Loads the staged image
   */
   loadImg(func){
-    Loading.open(document.body, 'CaMicroscope is loading images ...');
+    Loading.open(document.body, 'CaMicroscope Is Loading Images ...');
     // loads current image
     // if id is set, use id
     var slidePromise;
@@ -154,7 +154,7 @@ class CaMic{
     slidePromise
       .then((x)=>{
         if(!x || !OpenSeadragon.isArray(x) || !x.length || !x[0].location){
-          redirect($D.pages.table,`Can't find the slide information`);
+          redirect($D.pages.table,`Can't Find The Slide Information`);
           return;
         }
         let data = x[0];
@@ -166,8 +166,8 @@ class CaMic{
                 }.bind(this),
                 error: function ( xhr, exc ) {
                   console.log(xhr, exc);
-                  Loading.text.textContent = 'Something wrong with this Slide... X_X';
-                  if(func && typeof func === 'function') func.call(null,{hasError:true,isServiceError:true,message:'Something wrong with this Slide... X_X'});
+                  Loading.text.textContent = 'Something Wrong With This Slide... X_X';
+                  if(func && typeof func === 'function') func.call(null,{hasError:true,isServiceError:true,message:'Something Wrong With This Slide... X_X'});
                 }.bind(this),
               });
 
@@ -211,7 +211,7 @@ class CaMic{
     imagingHelper.setMaxZoom(1);
     data.url = "../../img/IIP/raw/?DeepZoom="+ data["location"] + ".dzi";
     if(func && typeof func === 'function') func.call(null,data);
-    Loading.text.textContent = `loading slide's tiles...`;
+    Loading.text.textContent = `Loading Slide's Tiles...`;
   }
 
   /**
@@ -252,7 +252,7 @@ class CaMic{
 
     this.drawContextmenu.addHandler('clear',function(e){
       if(this.viewer.canvasDrawInstance._draws_data_.length == 0) return;
-      if(confirm("Do you want to clear all markups?")) this.viewer.canvasDrawInstance.clear();
+      if(confirm("Do You Want To Clear All Markups?")) this.viewer.canvasDrawInstance.clear();
     }.bind(this));
 
     // this.drawContextmenu.addHandler('draw-mode-changed',function(e){

@@ -111,7 +111,7 @@ SegmentPanel.prototype.close = function(){
 };
 
 SegmentPanel.prototype.save = function(){
-	alert('Saving Image and Mask!');
+	alert('Saving Image And Mask!');
 };
 
 SegmentPanel.prototype.showThreshBar = function(){
