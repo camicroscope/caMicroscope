@@ -130,6 +130,7 @@
 		<script type='text/javascript' src='../../core/extension/openseadragon-overlays-manage.js'></script>
 		<script type='text/javascript' src='../../core/extension/openseadragon-measurement-tool/openseadragon-measurement-tool.js'></script>
 		<script type='text/javascript' src='../../core/extension/openseadragon-zoom-control/openseadragon-zoom-control.js'></script>
+		<script type='text/javascript' src='../../core/extension/osd-heatmap-overlay.js'></script>
 		<script type='text/javascript' src='../../core/extension/osd-segment-overlay.js'></script>
 
 		<!-- business js -->
@@ -186,7 +187,7 @@
 			STORE.findSlide($D.params.slide, $D.params.study, $D.params.specimen, $D.params.location).then(x=>{
 				let offset = parseInt($D.params.offset,10) || 0;
 				if(x.length == 0 || offset >= x.length){
-					redirect($D.pages.table,'No Slide Found. Redirecting to Table.');
+					redirect($D.pages.table,'No Slide Found. Redirecting To Table.');
 				} else {
 					newParams = $D.params
 					delete newParams.data

@@ -371,20 +371,28 @@ function heatmapEditorOff(){
 	2. Analytics
 */
 async function onUpdateHeatmapFields(){
-	if(!confirm('Do you want to update Threshold values?')) return;
+	if(!confirm('Do You Want To Update Threshold?')) return;
 	Loading.open(document.body,'Saving Threshold ... ');
+	
+	const setting = {
+		mode:$CAMIC.viewer.heatmap.mode
+	};
+	
+	if($CAMIC.viewer.heatmap.mode=='gradient') setting.field = $CAMIC.viewer.heatmap._currentField.name
+	
 	const fields = $D.heatMapData.provenance.analysis.fields;
 	const subject = $D.heatMapData.provenance.image.subject_id;
 	const caseid = $D.heatMapData.provenance.image.case_id;
 	const exec = $D.heatMapData.provenance.analysis.execution_id;	
-	const rs = await $CAMIC.store.updateHeatmapFields(subject, caseid, exec, JSON.stringify(fields));
+	const rs = await $CAMIC.store.updateHeatmapFields(subject, caseid, exec, JSON.stringify(fields), JSON.stringify(setting));
+	
+	//const rs = await $CAMIC.store.updateHeatmap
 	Loading.close();
-	console.log(rs);
 };
 
 async function onExportEditData(){
 	if($D.editedDataClusters.isEmpty()){
-		alert('There are no edit data to export...');
+		alert('No Edit Data ... ');
 		return;
 	}
 	const user = getUserId();
@@ -548,8 +556,8 @@ async function onDeleteEditData(data){
 	const cluster = data.cluster;
 	const idx = data.index;
 
-	if(!confirm(`Do you want to delete { ${cluster.name} - ${cluster.value==0?'Negative':'Positive'} index:${idx} }?`)) return;
-	Loading.open(document.body,`deleting Edit Data ...`);
+	if(!confirm(`Do You Want To Delete { ${cluster.name} - ${cluster.value==0?'Negative':'Positive'} Index:${idx} }?`)) return;
+	Loading.open(document.body,`Deleting Edit Data ...`);
 
 	// UPDATE EDIT DATA
 	$D.editedDataClusters.removeEditDataForCluster(cluster.index, cluster.name, cluster.value, cluster.color, idx);

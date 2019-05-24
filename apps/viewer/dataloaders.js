@@ -50,18 +50,20 @@ function FormTempaltesLoader(){
 		}
 	}, 500);
 }
-
+let _l = false;
 function OverlayersLoader(){
 	function loadingOverlayers(){
 		$CAMIC.store.findMarkTypes($D.params.data.name)
 		//
 		.then(function(layers){
 			typeIds = {};
-			$D.overlayers = [];
+			if(!$D.overlayers) $D.overlayers = [];
 			// convert part not nesscary
 			for(let i = 0 ;i < layers.length;i++){
 				$D.overlayers.push(covertToLayViewer(layers[i]));
 			}
+			_l = true;
+			
 		})
 		//
 		.catch(function(error){
@@ -72,6 +74,7 @@ function OverlayersLoader(){
 		//
 		.finally(function(){
 			if($D.overlayers){
+
 			}else{
 				// set message
 				$UI.message.addError('Loading Overlayers is Error');
@@ -85,6 +88,45 @@ function OverlayersLoader(){
 			clearInterval(checkCoreIsReady);
 			//load data
 			loadingOverlayers();
+		}
+	}, 500);
+}
+let _h = false; // loading heatmap
+function HeatmaplayersLoader(){
+	function loadingHeatmapOverlayers(){
+		$CAMIC.store.findHeatmapType($D.params.data.name)
+		//
+		.then(function(layers){
+			if(!$D.overlayers)$D.overlayers = [];
+			// convert and load heatmap layer
+			const TypeId = randomId();
+			for(let i = 0 ;i < layers.length;i++){
+				const item = layers[i].provenance.analysis;
+				$D.overlayers.push({id:item.execution_id,name:item.execution_id,typeId:TypeId,typeName:item.computation});
+			}
+			_h = true;
+		})
+		.catch(function(error){
+			// overlayers schema
+
+			console.error(error);
+		})
+		//
+		.finally(function(){
+			if($D.overlayers){
+			}else{
+				// set message
+				$UI.message.addError('Loading heatmap Overlayers is Error');
+
+			}
+		});
+	}
+
+	var checkCoreIsReady = setInterval(function () {
+		if($CAMIC && $D.params.data) {
+			clearInterval(checkCoreIsReady);
+			//load data
+			loadingHeatmapOverlayers();
 		}
 	}, 500);
 }

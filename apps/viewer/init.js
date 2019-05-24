@@ -72,6 +72,9 @@ function initialize(){
 
           // loading the overlayers data
           OverlayersLoader();
+
+          // loading the heatmap overlayers data
+          HeatmaplayersLoader();
         }
       }, 100);
 }
@@ -415,9 +418,8 @@ function initUIcomponents(){
   });
 
   var checkOverlaysDataReady = setInterval(function () {
-    if($D.params.data && $D.overlayers && $CAMIC && $CAMIC.viewer && $CAMIC.viewer.omanager) {
+    if($D.params.data && _l && _h && $D.overlayers && $CAMIC && $CAMIC.viewer && $CAMIC.viewer.omanager) {
       clearInterval(checkOverlaysDataReady);
-      
       // for segmentation
       $CAMIC.viewer.createSegment({
         store:$CAMIC.store,

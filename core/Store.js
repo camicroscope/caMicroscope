@@ -273,7 +273,12 @@ class Store {
       console.error('Store.findMarkTypes needs slide ... ');
       return null;
     }
+    // numeric->str coerce
+    if ((parseInt(slide)==slide)||(parseFloat(slide)==slide)){
+      query.slide = '"' + slide + '"'
+    } else {
     query.slide = slide
+    }
     if (name) {
       query.name = name
       suffix = "Mark/typesExec"
@@ -398,7 +403,7 @@ class Store {
   }
 
 
-  updateHeatmapFields(subject, caseid, execution, fields){
+  updateHeatmapFields(subject, caseid, execution, fields, setting){
     var suffix = "Heatmap/threshold"
     var url = this.base + suffix;
     var query = {}
@@ -418,7 +423,9 @@ class Store {
     if(fields) {
       query.fields = fields
     }
-
+    if(setting) {
+      query.setting = setting
+    }
     return fetch(url + "?" + objToParamStr(query), {
       method: "DELETE",
       credentials: "include",

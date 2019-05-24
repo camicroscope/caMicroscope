@@ -187,7 +187,7 @@ label.style.width = 0;
 
 function draw(e){
 	if(!$CAMIC.viewer.canvasDrawInstance){
-		alert('draw doesn\'t initialize');
+		alert('Draw Doesn\'t Initialize');
 		return;
 	}
 	const state = +e.state;
@@ -252,7 +252,7 @@ function annotationOff(){
 	if(!$CAMIC.viewer.canvasDrawInstance) return;
 	const canvasDraw = $CAMIC.viewer.canvasDrawInstance;
 
-	if(canvasDraw._draws_data_.length && confirm(`Do you want to save annotation before you leave?`)){
+	if(canvasDraw._draws_data_.length && confirm(`Do You Want To Save Annotation Before You Leave?`)){
 		saveAnnotation();
 	}else{
 		canvasDraw.clear();
@@ -310,8 +310,6 @@ function measurementOff(){
 	const li = $UI.toolbar.getSubTool('measurement');
 	li.querySelector('input[type=checkbox]').checked = false;
 }
-
-
 
 //--- toggle magnifier callback ---//
 function toggleMagnifier(data){
@@ -389,9 +387,9 @@ function anno_delete(data){
 	const annotationData = $D.overlayers.find(d=>d.data && d.data._id.$oid == data.oid);
 	let message;
 	if(annotationData.data.geometries){
-		message = `Are you sure you want to delete this Annotation {ID:${data.id}} with ${annotationData.data.geometries.features.length} mark(s)?`;
+		message = `Are You Sure You Want To Delete This Annotation {ID:${data.id}} With ${annotationData.data.geometries.features.length} Mark(s)?`;
 	}else{
-		message = `Are you sure you want to delete this markup {ID:${data.id}}?`;
+		message = `Are You Sure You Want To Delete This Markup {ID:${data.id}}?`;
 	}
 	$UI.annotPopup.close();
 	if(!confirm(message)) return;
@@ -499,7 +497,7 @@ function anno_callback(data){
 	// has Path?
 
 	if($CAMIC.viewer.canvasDrawInstance._path_index===0){
-		alert('No Markup on Annotation.');
+		alert('No Markup On Annotation.');
 		return;
 	}
 	// save
@@ -619,6 +617,78 @@ async function callback(data){
 			}
 			return;
 		}
+		if(item.typeName=='heatmap'){
+			console.log('heatmap');
+			console.log(d);
+			if($D.heatMapData&&$D.heatMapData.provenance.analysis.execution_id == item.id&&camic.viewer.heatmap){
+				// show or hide heatmap
+				if(d.isShow){
+					camic.viewer.heatmap.on()
+				}else{
+					camic.viewer.heatmap.off()
+				}
+			}else if($D.heatMapData&&$D.heatMapData.provenance.analysis.execution_id == item.id){
+		        const opt = {
+					opacity:.65, //inputs[2].value,
+					coverOpacity:0.001,
+					data:$D.heatMapData.data,
+					//editedData:$D.editedDataClusters,
+					mode:'binal',
+					size:$D.heatMapData.provenance.analysis.size,
+					fields:$D.heatMapData.provenance.analysis.fields,
+					color:"#253494"//inputs[3].value
+				}
+
+		        if($D.heatMapData.provenance.analysis.setting){
+		          opt.mode = $D.heatMapData.provenance.analysis.setting.mode;
+		          if($D.heatMapData.provenance.analysis.setting.field)
+		            opt.currentFieldName = $D.heatMapData.provenance.analysis.setting.field;
+		        }
+				camic.viewer.createHeatmap(opt);
+			}else{
+				Loading.open(document.body,'Loading Heatmap Data...');
+				// load heatmap 
+				camic.store.getHeatmap($D.params.data.name,item.id)
+				.then(function(data){
+					if(Array.isArray(data)&&data.length>0){
+						$D.heatMapData = data[0];
+				        const opt = {
+							opacity:.65, //inputs[2].value,
+							coverOpacity:0.001,
+							data:$D.heatMapData.data,
+							mode:'binal',
+							//editedData:$D.editedDataClusters,
+							size:$D.heatMapData.provenance.analysis.size,
+							fields:$D.heatMapData.provenance.analysis.fields,
+							color:"#253494"//inputs[3].value
+						}
+
+				        if($D.heatMapData.provenance.analysis.setting){
+				          opt.mode = $D.heatMapData.provenance.analysis.setting.mode;
+				          if($D.heatMapData.provenance.analysis.setting.field)
+				            opt.currentFieldName = $D.heatMapData.provenance.analysis.setting.field;
+				        }
+						camic.viewer.createHeatmap(opt);
+
+				    }			
+				})		
+				.catch(function(error){
+					// heatmap schema
+					console.error(error);
+				})
+				.finally(function(){
+					Loading.close();
+					if($D.overlayers){
+					}else{
+						// set message
+						$UI.message.addError('Loading Heatmap Data Is Error');
+						
+					}
+				}); 
+			}
+			return;
+		}
+
 		if(!item.data){
 			// load layer data
 			loadAnnotationById(camic, d, null);
@@ -652,7 +722,7 @@ function loadAnnotationById(camic, layerData ,callback){
 			layerData.item.loading = true;
 			const item = layerData.item;
 
-			Loading.open(document.body,'loading layers...');
+			Loading.open(document.body,'Loading Layers...');
 
 			$CAMIC.store.getMarkByIds([item.id],$D.params.data.name)
 			.then(data =>{
@@ -799,7 +869,7 @@ function hostedHeatmap(){
 		if (typeof list === "undefined") { list = [] }
 		// get heatmap data
 		if(!list.length){
-			alert(`${slide} has No heatmap data.`);
+			alert(`${slide} Has No Heatmap Data.`);
 			return;
 		}
 		createHeatMapList(list);
@@ -852,7 +922,7 @@ function imgboxHeatmap(){
 
 			data.provenance.image.slide = slide
 			const execId = data.provenance.analysis.execution_id;
-			Loading.open(document.body,'loading Heatmap...');
+			Loading.open(document.body,'Loading Heatmap...');
 			$CAMIC.store.addHeatmap(data).then(rs=>{
 				window.location.href = `../heatmap/heatmap.html${window.location.search}&execId=${execId}`;
 			}).catch(e=>{

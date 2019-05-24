@@ -89,7 +89,7 @@ function initCore(){
 
 
       if(!$D.heatMapData){
-        redirect($D.pages.table,`No Heatmap's data Found. Redirecting to Table.`);
+        redirect($D.pages.table,`No Heatmap's Data Found. Redirecting To Table.`);
       }
 
       
@@ -133,8 +133,8 @@ function initCore(){
         // $D.heatMapData.provenance.analysis.fields.forEach(f=>{
         //   f.threshold = [0.05,1];
         // });
-
-        $CAMIC.viewer.createHeatmap({
+        const opt = {
+          hasCover:true,
           opacity:.65, //inputs[2].value,
           coverOpacity:.3,
           data:$D.heatMapData.data,
@@ -142,7 +142,14 @@ function initCore(){
           size:$D.heatMapData.provenance.analysis.size,
           fields:$D.heatMapData.provenance.analysis.fields,
           color:"#253494"//inputs[3].value
-        });
+        }
+
+        if($D.heatMapData.provenance.analysis.setting){
+          opt.mode = $D.heatMapData.provenance.analysis.setting.mode;
+          if($D.heatMapData.provenance.analysis.setting.field)
+            opt.currentFieldName = $D.heatMapData.provenance.analysis.setting.field;
+        }
+        $CAMIC.viewer.createHeatmap(opt);
 
         // create heatmap control
         $UI.heatmapcontrol = new HeatmapControl({
@@ -185,7 +192,7 @@ function initCore(){
           // editedDate:$D. 
           onFieldChange: editorPenChange, 
           onReset: function(){
-            if(confirm('Do you want to clear edited data?')){
+            if(confirm('Do You Want To Clear Edited Data?')){
               $CAMIC.viewer.canvasDrawInstance.clear();  
             }
           }, // clearEditData
