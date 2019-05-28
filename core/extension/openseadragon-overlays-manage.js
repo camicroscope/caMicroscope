@@ -103,7 +103,7 @@
 
         _zooming:function(e){
             if(!this.hasShowOverlay()) return;
-            if(!e.refPoint) return;
+            if(!e.refPoint || e.zoom > this._viewer.viewport.getMaxZoom()) return;
             if(e.refPoint === true){
                 e.refPoint = this._viewer.viewport.getCenter(true);
             }

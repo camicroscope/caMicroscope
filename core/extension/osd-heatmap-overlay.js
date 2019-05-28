@@ -401,7 +401,7 @@
         _zooming:function(e){
 
             // get the scaling original point on the screen 
-            if(!e.refPoint) return;
+            if(!e.refPoint || e.zoom > this._viewer.viewport.getMaxZoom()) return;
             if(e.refPoint === true){
                 // get the current center to set as an referent point if there is no referent point
                 e.refPoint = this._viewer.viewport.getCenter(true);
