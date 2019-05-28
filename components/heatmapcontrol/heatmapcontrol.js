@@ -70,7 +70,7 @@ HeatmapControl.prototype.__refresh = function(){
 	checkbox.addEventListener('change', this._modeChanged.bind(this));
 	//
 	this.rangeSliders = {};
-	createSelect(this.elt.querySelector('.sel-field-panel select') ,this.setting.fields);
+	createSelect(this.elt.querySelector('.sel-field-panel select') ,this.setting.fields,this.setting.currentField);
 	this.elt.querySelector('.sel-field-panel select').addEventListener('change', this._selChanged.bind(this));
 	if(this.setting.mode=='binal') this.elt.querySelector('.sel-field-panel').style.display='none';
 
@@ -85,9 +85,11 @@ HeatmapControl.prototype.__refresh = function(){
 	this.setting.opacities.forEach(f=>{
 		 this.opacitySliders[f.name] = createOpacities(opacitiesPanel,f,this.__opacityChange.bind(this));
 	},this);
+
+	this._modeChanged(false);
 }
 
-HeatmapControl.prototype._modeChanged = function(){
+HeatmapControl.prototype._modeChanged = function(flag = true){
 	const mode = this.elt.querySelector(`.mode-panel input[type=checkbox]`).checked;
 
 	if(!mode){// binal
@@ -111,7 +113,7 @@ HeatmapControl.prototype._modeChanged = function(){
 
 		},this);
 	}
-	this.__change.call(this);
+	if(flag)this.__change.call(this);
 }
 
 HeatmapControl.prototype._selChanged = function(e){
@@ -176,12 +178,17 @@ HeatmapControl.prototype.__opacityChange = function(){
 	}
 }
 
-function createSelect(sel, fields){
+function createSelect(sel, fields, currentField = null){
+
 	fields.forEach(field => {
 		var option = document.createElement('option');
+		if(field.name == currentField) {
+		}
 		option.text = field.name;
 		option.value = field.name;
+
 		sel.add(option);
+		if(currentField) sel.value = currentField;
 	});
 }
 function createField(container, field, changeFunc){

@@ -618,8 +618,6 @@ async function callback(data){
 			return;
 		}
 		if(item.typeName=='heatmap'){
-			console.log('heatmap');
-			console.log(d);
 			if($D.heatMapData&&$D.heatMapData.provenance.analysis.execution_id == item.id&&camic.viewer.heatmap){
 				// show or hide heatmap
 				if(d.isShow){
@@ -685,6 +683,22 @@ async function callback(data){
 						
 					}
 				}); 
+			}
+
+			// rest other check box
+			const cates = $UI.layersViewer.setting.categoricalData;
+			if(d.isShow){
+				for(let key in cates){
+					cate = cates[key];
+					if(cate.item.name=='heatmap'){
+						cate.items.forEach(i=>{
+							if(d !== i&&i.isShow){
+								i.elt.querySelector('input[type=checkbox]').checked = false;
+								i.isShow = false;
+							}
+						});
+					}
+				}
 			}
 			return;
 		}
@@ -968,6 +982,7 @@ function old_anno_render(ctx,data){
 	const imagingHelper  = this.viewer.imagingHelper;
 	const lineWidth = (imagingHelper.physicalToDataX(1) - imagingHelper.physicalToDataX(0))>> 0;
 	ctx.lineWidth = lineWidth;
+	console.log(data);
 	DrawHelper.draw(ctx, data);
 
 }
