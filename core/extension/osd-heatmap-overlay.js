@@ -399,28 +399,24 @@
          * This method is for optimized UX.
          */
         _zooming:function(e){
-
             // get the scaling original point on the screen 
-            if(!e.refPoint || e.zoom > this._viewer.viewport.getMaxZoom()) return;
+            if(!e.refPoint || e.zoom > this._viewer.viewport.getMaxZoom() || e.zoom < this._viewer.viewport.getMinZoom()) return;
             if(e.refPoint === true){
                 // get the current center to set as an referent point if there is no referent point
                 e.refPoint = this._viewer.viewport.getCenter(true);
             }
             // the referent point on the screen.
-            const windowPoint = this._viewer.viewport.viewportToWindowCoordinates(e.refPoint);
-            
-
-            const image1 = this._viewer.world.getItemAt(0);
+            const viewerElement = this._viewer.viewport.viewportToViewerElementCoordinates(e.refPoint);
             // get current zoom value.
             var viewportZoom = this._viewer.viewport.getZoom();
-            var zoom = image1.viewportToImageZoom(e.zoom);
+            var zoom = this._viewer.viewport.viewportToImageZoom(e.zoom);
             
             // calculate the scaling value
             var scale = viewportZoom/this._zoom;
             // ignore scaling if the value to small
             if(scale == 1 || Math.abs(1 - scale) < 0.01) return; 
             // scaling view
-            this._div.style.transformOrigin = `${this._offset[0] + windowPoint.x}px ${this._offset[1] + windowPoint.y}px`;
+            this._div.style.transformOrigin = `${this._offset[0] + viewerElement.x}px ${this._offset[1] + viewerElement.y}px`;
             this._div.style.transform = `scale(${scale},${scale})`;
         },
 

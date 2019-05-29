@@ -103,17 +103,16 @@
 
         _zooming:function(e){
             if(!this.hasShowOverlay()) return;
-            if(!e.refPoint || e.zoom > this._viewer.viewport.getMaxZoom()) return;
+            if(!e.refPoint || e.zoom > this._viewer.viewport.getMaxZoom() || e.zoom < this._viewer.viewport.getMinZoom()) return;
             if(e.refPoint === true){
                 e.refPoint = this._viewer.viewport.getCenter(true);
             }
-            const windowPoint = this._viewer.viewport.viewportToWindowCoordinates(e.refPoint);
-            const image1 = this._viewer.world.getItemAt(0);
+            const viewportPoint = this._viewer.viewport.viewportToViewerElementCoordinates(e.refPoint);
             var viewportZoom = this._viewer.viewport.getZoom();
-            var zoom = image1.viewportToImageZoom(e.zoom);
+            var zoom = this._viewer.viewport.viewportToImageZoom(e.zoom);
             var scale = viewportZoom/this._zoom;
             if(scale == 1 || Math.abs(1 - scale) < 0.01) return; 
-            this._div.style.transformOrigin = `${windowPoint.x}px ${windowPoint.y}px`;
+            this._div.style.transformOrigin = `${viewportPoint.x}px ${viewportPoint.y}px`;
             this._div.style.transform = `scale(${scale},${scale})`;
 
 
