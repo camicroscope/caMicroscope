@@ -21,8 +21,27 @@
             options.viewer = this;
             this.cazoomctrlInstance = new $.CaZoomControl(options);
     };
+    /*
+        A explanation of the relationship of Image Zoom, MPP and Magnification(... 20X,40X,80X...)
+        mpp           Image Zoom             Magnification
+          .                    .                         .
+          .                    .                         .
+         10                0.025                        1x
+          5                 0.05                        2x
+        2.5                  0.1                        4x 
+       1.25                  0.2                        8x
+          1                 0.25                       10x
+        0.5                  0.5                       20x
+       0.25                    1                       40x
+      0.125                    2                       80x
+          .                    .                         .
 
+        Image Zoom to Viewport Zoom: viewer.viewport.imageToViewportZoom()
+        Viewport Zoom to Image Zoom: $CAMIC.viewer.viewport.viewportToImageZoom()
+    */
+    const ImageZooms = [2, 1, .5, .25, .2, .1, .05, .025, .02, .01, .005, .0025, .002, .001, .0005, .00025];
     $.CaZoomControl = function(options) {
+        this.base = 40;
         this.zoomIndex;
         this._viewer = options.viewer;
         var viewer = this._viewer;
@@ -94,24 +113,20 @@
 
 
         // 
-        const min = viewer.viewport.getMinZoom();
-        const max = viewer.viewport.getMaxZoom();
-        const preScroll = viewer.zoomPerScroll;
         this.createZoomControl();
-        this.getAllZoomLevel(min, max, preScroll);
-        viewer.viewport.zoomTo(min);
-        this.setZoomLevel({zoom:min});
+        // get all possible image zoom level and range
+        this.getAllImageZoomLevelAndRange(this._viewer);
+        //viewer.viewport.zoomTo(min);
+        this.setImageZoomLevel({zoom:this._viewer.viewport.getMinZoom()});
 
         // let the control correspond to the zoom
-        viewer.addHandler('zoom',this.setZoomLevel.bind(this));
+        viewer.addHandler('zoom',this.setImageZoomLevel.bind(this));
         viewer.addHandler('resize', function(e){
-            const min = viewer.viewport.getMinZoom();
-            const max = viewer.viewport.getMaxZoom();
-            const preScroll = viewer.zoomPerScroll;
-            this.getAllZoomLevel(min, max, preScroll);
+            this.getAllImageZoomLevelAndRange(this._viewer);
+            this.setImageZoomLevel({zoom:this._viewer.viewport.getZoom(true)});
         }.bind(this));
-        this.zoomIn.addEventListener('click', this.doZoomIn.bind(viewer));
-        this.zoomOut.addEventListener('click', this.doZoomOut.bind(viewer));
+        this.zoomIn.addEventListener('click', this.doZoomIn.bind(this));
+        this.zoomOut.addEventListener('click', this.doZoomOut.bind(this));
         this.range.addEventListener('change', this.rangeChange.bind(this));
         this.range.addEventListener('mousemove', this.rangeChange.bind(this));
     
@@ -125,12 +140,10 @@
      */
     $.CaZoomControl.prototype.rangeChange =  function(e){
         const index = +this.range.value;
-
-        if(index == this.zoomIndex) return;
-        
-        const zoom = (this.zoomRanges[index]+this.zoomRanges[index+1])/2
-        this._viewer.viewport.zoomTo(zoom);
-        this.setZoomLevel({zoom:zoom});
+        if(index == this.imageZoomIndex) return;
+        this.imageZoomIndex = index;
+        const imageZoom = this.imageZoomLevels[index];
+        this._viewer.viewport.zoomTo(this._viewer.viewport.imageToViewportZoom(imageZoom));
     }
 
     /**
@@ -139,25 +152,26 @@
      * @param {Event} e
      *        Event
      */
-    $.CaZoomControl.prototype.setZoomLevel = function(e){
-            const index = getZoomIndex(this.zoomRanges,e.zoom);
-            if(index!=null) this.zoomIndex = this.range.value = index;
-            this.txt.textContent =  `${Number(e.zoom.toFixed(2))}x`;
+    $.CaZoomControl.prototype.setImageZoomLevel = function(e){
+            const index = getImageZoomIndex(
+                    this.imageZoomRanges,
+                    this._viewer.viewport.viewportToImageZoom(e.zoom)
+                );
+            if(index!=null) this.imageZoomIndex = this.range.value = index;
+            this.txt.textContent =  `${Number((this._viewer.viewport.viewportToImageZoom(e.zoom)*this.base).toFixed(3))}x`;
 
     }
-
     /**
      * doZoomIn - do one scale move in action
      * 
      */
     $.CaZoomControl.prototype.doZoomIn = function() {
-        const zoom = this.viewport.getZoom();
-        const ranges = this.cazoomctrlInstance.zoomRanges;
-        let index = getZoomIndex(ranges,zoom);
-        if(index == 0)  return;
-        index--;
-        const nextZoom = (ranges[index]+ranges[index+1])/2;
-        this.viewport.zoomTo(nextZoom,true);
+        if(this.imageZoomIndex == 0) return;
+        this.imageZoomIndex--;
+        this.range.value = this.imageZoomIndex;
+        this._viewer.viewport.zoomTo(
+            this._viewer.viewport.imageToViewportZoom(this.imageZoomLevels[this.imageZoomIndex])
+            ,true);
     }
 
     /**
@@ -165,13 +179,12 @@
      *  
      */
     $.CaZoomControl.prototype.doZoomOut = function() {
-        const zoom = this.viewport.getZoom();
-        const ranges = this.cazoomctrlInstance.zoomRanges;
-        let index = getZoomIndex(ranges,zoom);
-        if(index == ranges.length-2) return;
-        index++;
-        const nextZoom = (ranges[index]+ranges[index+1])/2;
-        this.viewport.zoomTo(nextZoom,true);
+        if(this.imageZoomIndex == this.imageZoomLevels.length-1) return;
+        this.imageZoomIndex++;
+        this.range.value = this.imageZoomIndex;
+        this._viewer.viewport.zoomTo(
+            this._viewer.viewport.imageToViewportZoom(this.imageZoomLevels[this.imageZoomIndex])
+            ,true);
     }
     /**
      * Function to destroy the instance of CaZoomControl and clean up everything created by CaZoomControl.
@@ -203,14 +216,14 @@
         this.zoomIn.classList.add('material-icons');
         this.zoomIn.classList.add('md-24');
         this.zoomIn.classList.add('zoom');
-        this.zoomIn.textContent = 'remove';
+        this.zoomIn.textContent = 'add';
 
         // zoom out
         this.zoomOut = document.createElement( 'div' );
         this.zoomOut.classList.add('material-icons');
         this.zoomOut.classList.add('md-24');
         this.zoomOut.classList.add('zoom');
-        this.zoomOut.textContent = 'add';
+        this.zoomOut.textContent = 'remove';
 
         // indicator
         this.idx = $.makeNeutralElement( 'div' );
@@ -243,24 +256,19 @@
      *         the ratio of zoom pre scroll
      *
      */
-    $.CaZoomControl.prototype.getAllZoomLevel = function(min,max,preScroll){
+    $.CaZoomControl.prototype.getAllImageZoomLevelAndRange = function(viewer){
+        
+        this.imageZoomLevels = getAllImageZoomLevel(viewer);
 
-        const zoomLevels = [];
-        zoomLevels.push(min * (1/preScroll));
-        while(min <= max){
-            zoomLevels.push(min);
-            min = min * preScroll;
+        this.imageZoomRanges = [];
+        this.imageZoomRanges.push(Number.POSITIVE_INFINITY);
+        for(let i = 0; i < this.imageZoomLevels.length - 1; i++){
+             this.imageZoomRanges.push((this.imageZoomLevels[i] + this.imageZoomLevels[i+1])/2); 
         }
+        this.imageZoomRanges[this.imageZoomRanges.length] = Number.NEGATIVE_INFINITY;
 
-        zoomLevels.push(max);
-        zoomLevels.push(max*preScroll);
-
-        this.zoomRanges = [];
-        for(let i = 0; i < zoomLevels.length - 1; i++){
-             this.zoomRanges.push((zoomLevels[i] + zoomLevels[i+1])/2); 
-        }
         this.range.min = 0;
-        this.range.max = this.zoomRanges.length - 2;
+        this.range.max = this.imageZoomLevels.length - 1;
         this.range.step = 1;
     }
 
@@ -274,10 +282,41 @@
      *         the current zoom level in the viewer
      * @return {Number} index of the zoom level on zoom'range
      */
-    function getZoomIndex(range,zoom){
+    function getImageZoomIndex(range, zoom){
         for(let i = 0; i < range.length - 1; i++){
-            if(range[i] <= zoom && zoom < range[i+1]) return i;
+            if(range[i] >= zoom && zoom > range[i+1]) return i;
         }
         return null;
     }
+    function getAllImageZoomLevel(viewer){
+        const max = getMaxImageZoom(viewer);
+        const min = getMinImageZoom(viewer);
+        const samples = [2, 1, 0.5, 0.25];
+        let divisor = 1;
+        //const zoomNums = 3 - (Math.log2(min) >> 0);
+        let zooms = [];
+        do {
+            zooms = [...zooms,...samples.map(e=>e/divisor)]
+            divisor *= 10;
+        } while(zooms[zooms.length-1] > min);
+
+        while( zooms[zooms.length-1] < min ){
+            zooms.pop();
+        }
+        zooms.push(min);
+        return zooms;
+    }
+
+    function getCurrentImageZoom(viewer){
+        return viewer.viewport.viewportToImageZoom(viewer.viewport.getZoom(true));
+    }
+    
+    function getMaxImageZoom(viewer){
+        return viewer.viewport.viewportToImageZoom(viewer.viewport.getMaxZoom());
+    }
+
+    function getMinImageZoom(viewer){
+        return viewer.viewport.viewportToImageZoom(viewer.viewport.getMinZoom());
+    }
+
 }(OpenSeadragon))
