@@ -170,12 +170,15 @@ function PathDbMods() {
       var query = {}
 
       data = data[0]
-      if (data.field_subject_id) {
+      if (data.field_subject_id && data.field_subject_id.length) {
         query.subject = data.field_subject_id[0].value
       }
-      if (data.field_case_id) {
+      if (data.field_case_id && data.field_case_id.length) {
         query.case = data.field_case_id[0].value
         query.slide = data.field_case_id[0].value
+      } else {
+        query.case = this.slideId
+        query.slide = this.slideId
       }
 
       return fetch(url + "?" + objToParamStr(query), {
