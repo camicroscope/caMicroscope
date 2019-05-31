@@ -282,16 +282,14 @@ function PathDbMods() {
       if(data.field_case_id && data.field_case_id.length >= 1){
         this.case_id = data.field_case_id[0].value
       }
-      if(data.field_case_id && data.field_case_id.length >= 1){
-        this.case_id = data.field_case_id[0].value
-      }
       if(data.field_image_id && data.field_image_id.length >=1){
         this.image_id = data.field_image_id[0].value
       }
       if(data.imageid && data.imageid.length >=1){
-        this.imageid = data.imageid[0].value
+        this.image_id = data.imageid[0].value
+        this.case_id = data.imageid[0].value
       }
-      if(data.field_study_id && data.imageid.length >=1){
+      if(data.field_study_id && data.field_study_id.length >=1){
         this.study_id = data.field_study_id[0].value
       }
       if(data.studyid && data.studyid.length >=1){
