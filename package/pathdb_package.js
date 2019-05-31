@@ -264,6 +264,14 @@ function PathDbMods() {
         this.mpp_x = data.field_mpp_x[0].value
         this.mpp = this.mpp_x
       }
+      if (data.referencepixelphysicalvaluey && data.referencepixelphysicalvaluey.length >=1){
+        this.mpp_y = data.referencepixelphysicalvaluey[0]
+        this.mpp = this.mpp_y
+      }
+      if (data.referencepixelphysicalvaluex && data.referencepixelphysicalvaluex.length >=1){
+        this.mpp_x = data.referencepixelphysicalvaluex[0]
+        this.mpp = this.mpp_x
+      }
       // identifier fields
       if(data.field_subject_id && data.field_subject_id.length >= 1){
         this.subject_id = data.field_subject_id[0].value
