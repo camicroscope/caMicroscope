@@ -499,7 +499,7 @@ function createThreshold(){
   const btn = document.createElement('button');
   btn.classList.add('action');
   btn.style.float = 'right';
-  btn.textContent = 'Save Threshold';
+  btn.textContent = 'Save';
   div.appendChild(div1);
   div1.appendChild(btn);
   btn.addEventListener('click', onUpdateHeatmapFields);
