@@ -1,7 +1,34 @@
 // segmentpanel.js
 //
+// INITIALIZE DB
+window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
+// id(autoinc), name, location(name+id), classes
 
-function SegmentPanel(viewer){
+(async function() {
+  	const model = tf.sequential();
+	await model.save('indexeddb://dummy');
+	await tf.io.removeModel('indexeddb://dummy');
+	console.log('check db boi');
+})()
+
+let request = window.indexedDB.open("tensorflowjs", 1),
+              db, tx, store, index;
+
+request.onupgradeneeded = function (e) {
+	console.log('into upgrade. why?');
+}
+
+request.onerror = function (e){
+  console.log("ERROR", e);
+}
+
+request.onsuccess = function(e) {
+  db = request.result;
+  console.log('tfjs db opened and ready');
+}
+// initialise tfjs db
+
+function ModelPanel(viewer){
 
 	const temp = `
 		<div class='result' id='result'></div>
@@ -54,14 +81,6 @@ function SegmentPanel(viewer){
 
 	//threshold
 	this.__modelselector = this.elt.querySelector('#modelselect');
-	var opt = document.createElement('option');
-    opt.value = 'demo';
-    opt.innerHTML = "Demo model 0";
-    this.__modelselector.appendChild(opt);
-    opt = document.createElement('option');
-    opt.value = 'demo1';
-    opt.innerHTML = "Demo model 1";
-    this.__modelselector.appendChild(opt);
 
 	this.viewer.addOverlay({
       element: this.elt,
@@ -77,37 +96,66 @@ function SegmentPanel(viewer){
     this.close()
 }
 
-SegmentPanel.prototype.open = function(){
+ModelPanel.prototype.open = async function(){
+
+	// models has keys of object, i.e the url
+	let modsel = this.__modelselector;
+	empty(modsel);
+	// let models = 
+	let opt = document.createElement('option');
+	opt.disabled = true;
+	opt.value = "";
+	opt.index = 0;
+	modsel.appendChild(opt);
+	Object.keys(await tf.io.listModels()).forEach(function (element) {
+		let opt = document.createElement('option');
+		opt.value = element.split("/").pop();
+	    opt.innerHTML = element.split("/").pop();
+	    modsel.appendChild(opt);
+	});
+	modsel.selectedIndex = 0;
 	this.elt.style.display = '';
 };
 
-SegmentPanel.prototype.close = function(){
+ModelPanel.prototype.close = function(){
 	empty(this.__result);
 	this.__modelselector.selectedIndex = 0;
 	this.elt.style.display = 'none';
 };
 
-SegmentPanel.prototype.save = function(){
+ModelPanel.prototype.save = function(){
 	alert('Saving Image and Mask!');
 };
 
-SegmentPanel.prototype.showProgress = function(text){
+ModelPanel.prototype.populate = function(models){
+
+	// models has keys of object, i.e the url
+	var modsel = this.__modelselector;
+	var opt = document.createElement('option');
+	models.forEach(function (element) {
+		opt.value = element;
+	    opt.innerHTML = element.split("/").pop();
+	    modsel.appendChild(opt);
+	});
+}
+
+ModelPanel.prototype.showProgress = function(text){
 	// console.log('In Progress');
 	this.__indicator.style.display = 'flex';
 	if (text) this.__indicator.innerHTML = text;
 }
 
-SegmentPanel.prototype.hideProgress = function(){
+ModelPanel.prototype.hideProgress = function(){
 	// console.log('Progress Finished');
 	this.__indicator.style.display = 'none';
 }
 
-SegmentPanel.prototype.showResults = function(text){
+ModelPanel.prototype.showResults = function(text){
 	// console.log('Progress Finished');
 	this.__result.innerHTML = text;
 }
 
-SegmentPanel.prototype.setPosition = function(x,y,w,h){
+ModelPanel.prototype.setPosition = function(x,y,w,h){
 	this.overlay.location.x = x;
 	this.overlay.location.y = y;
 	this.overlay.width = w;

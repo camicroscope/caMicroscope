@@ -8,7 +8,6 @@
   <meta name='viewport' content='width=device-width, initial-scale=1'>
 
   <title>caMicroscope</title>
-  <script src="../../core/Store.js"></script>
   <!-- google material icons css sheet -->
   <link href='../../iconfont/material-icons.css' rel='stylesheet'/>
   <!-- common css START -->
@@ -17,7 +16,7 @@
   <link rel='stylesheet' type='text/css' media='all' href='../../common/colorpicker/color-picker.css'/>
   <!-- add pure-form css -->
   <link rel='stylesheet' type='text/css' media='all' href='../../common/pureform/pure-form.css'/>
-  <link rel='stylesheet' type='text/css' media='all' href='./segmentpanel/segmentpanel.css'/>
+  <link rel='stylesheet' type='text/css' media='all' href='./modelpanel/modelpanel.css'/>
   <link rel="stylesheet" type="text/css" media='all' href="./upload/upload.css">
   <!-- common css END -->
 
@@ -62,8 +61,8 @@
    <script>
      __auth_check(2)
    </script>
-
-   <!-- opencv.js -->
+  <!-- tensorflow.js -->
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.0/dist/tf.min.js"></script>   <!-- opencv.js -->
    <script type='text/javascript' src='./opencv.js'></script>
    <!--  common js START -->
    <!-- util.js -->
@@ -109,8 +108,8 @@
   <script type='text/javascript' src='../../components/multselector/multselector.js'></script>
   <!-- spyglass -->
   <script type='text/javascript' src='../../components/spyglass/spyglass.js'></script>
-  <!-- script type='text/javascript' src='segmentpanel/slider.js'></script -->
-  <script type='text/javascript' src='./segmentpanel/segmentpanel.js'></script>
+  <!-- script type='text/javascript' src='modelpanel/slider.js'></script -->
+  <script type='text/javascript' src='./modelpanel/modelpanel.js'></script>
   <script type="text/javascript" src="./upload/upload.js"></script>
   <!-- modal box -->
   <script type="text/javascript" src="../../components/modalbox/modalbox.js"></script>
@@ -144,8 +143,7 @@
   <script src='../viewer/dataloaders.js'></script>
   <script src='../viewer/init.js'></script>
   -->
-  <!-- tensorflow.js -->
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@0.15.3/dist/tf.min.js"></script>
+
   <script src='model.js'></script>
 
 </head>
