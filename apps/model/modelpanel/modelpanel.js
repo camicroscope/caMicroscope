@@ -1,32 +1,4 @@
 // segmentpanel.js
-//
-// INITIALIZE DB
-window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
-// id(autoinc), name, location(name+id), classes
-
-(async function() {
-  	const model = tf.sequential();
-	await model.save('indexeddb://dummy');
-	await tf.io.removeModel('indexeddb://dummy');
-	console.log('check db boi');
-})()
-
-let request = window.indexedDB.open("tensorflowjs", 1),
-              db, tx, store, index;
-
-request.onupgradeneeded = function (e) {
-	console.log('into upgrade. why?');
-}
-
-request.onerror = function (e){
-  console.log("ERROR", e);
-}
-
-request.onsuccess = function(e) {
-  db = request.result;
-  console.log('tfjs db opened and ready');
-}
-// initialise tfjs db
 
 function ModelPanel(viewer){
 
@@ -37,7 +9,7 @@ function ModelPanel(viewer){
 		<div id='savecsv' class='material-icons settings' title='Save ROI CSV File'>list</div>
 		<select id='modelselect' class='settings' title='Select the model'><option hidden disabled selected value> -- select a model -- </option>	</select>
 		
-		<div id='processing' class='segment-processing'><span class='blink_me'><em>Processing</em></span></div>
+		<div id='processing' class='segment-processing blink_me'></div>
 		
 		<canvas class='out'></canvas>
 		<canvas class='src'></canvas>
@@ -66,8 +38,6 @@ function ModelPanel(viewer){
 	this.__spImgHeight = null;
 
 	// canvases
-	this.__out = this.elt.querySelector('.out');
-	this.__src = this.elt.querySelector('.src');
 	this.__fullsrc = this.elt.querySelector('#fullsrc');
 	this.__img = this.elt.querySelector('#imageEle');
 	this.__c2s = this.elt.querySelector('#c2s');
@@ -106,6 +76,7 @@ ModelPanel.prototype.open = async function(){
 	opt.disabled = true;
 	opt.value = "";
 	opt.index = 0;
+	opt.innerHTML = "-- select a model --";
 	modsel.appendChild(opt);
 	Object.keys(await tf.io.listModels()).forEach(function (element) {
 		let opt = document.createElement('option');
@@ -114,12 +85,11 @@ ModelPanel.prototype.open = async function(){
 	    modsel.appendChild(opt);
 	});
 	modsel.selectedIndex = 0;
+	empty(this.__result);
 	this.elt.style.display = '';
 };
 
 ModelPanel.prototype.close = function(){
-	empty(this.__result);
-	this.__modelselector.selectedIndex = 0;
 	this.elt.style.display = 'none';
 };
 
@@ -142,7 +112,7 @@ ModelPanel.prototype.populate = function(models){
 ModelPanel.prototype.showProgress = function(text){
 	// console.log('In Progress');
 	this.__indicator.style.display = 'flex';
-	if (text) this.__indicator.innerHTML = text;
+	if (text) this.__indicator.innerHTML = '<em>' + text + '</em>';
 }
 
 ModelPanel.prototype.hideProgress = function(){

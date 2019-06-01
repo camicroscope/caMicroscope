@@ -17,7 +17,6 @@
   <!-- add pure-form css -->
   <link rel='stylesheet' type='text/css' media='all' href='../../common/pureform/pure-form.css'/>
   <link rel='stylesheet' type='text/css' media='all' href='./modelpanel/modelpanel.css'/>
-  <link rel="stylesheet" type="text/css" media='all' href="./upload/upload.css">
   <!-- common css END -->
 
   <!-- UI components css START -->
@@ -62,8 +61,7 @@
      __auth_check(2)
    </script>
   <!-- tensorflow.js -->
-<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.0/dist/tf.min.js"></script>   <!-- opencv.js -->
-   <script type='text/javascript' src='./opencv.js'></script>
+  <script src="./tf.min.js"></script> 
    <!--  common js START -->
    <!-- util.js -->
   <script type='text/javascript' src='../../common/util.js'></script>
@@ -110,7 +108,6 @@
   <script type='text/javascript' src='../../components/spyglass/spyglass.js'></script>
   <!-- script type='text/javascript' src='modelpanel/slider.js'></script -->
   <script type='text/javascript' src='./modelpanel/modelpanel.js'></script>
-  <script type="text/javascript" src="./upload/upload.js"></script>
   <!-- modal box -->
   <script type="text/javascript" src="../../components/modalbox/modalbox.js"></script>
   <!--  components js END -->
@@ -145,6 +142,75 @@
   -->
 
   <script src='model.js'></script>
+  <style type="text/css">
+    input {
+    /* required to properly style form 
+       elements on WebKit based browsers */
+      -webkit-appearance: none;
+      
+      border: 1px solid #333;
+      margin: 0;
+      
+      font-family: inherit;
+      font-size: 90%;
+      
+      -moz-box-sizing: border-box;
+      box-sizing: border-box;
+    }
+
+    input:focus:invalid {
+      box-shadow: none;
+    }
+    @-webkit-keyframes blinker {
+      50% {
+        opacity: 0;
+      }
+    }
+    .blink{
+      animation: blinker 1s linear infinite;
+    }
+    .error{
+      color: yellow;
+    }
+    #mtable {
+      table-layout: fixed;
+      width: 100%;
+      border-collapse: collapse;
+    }
+    #mtable thead th:nth-child(1) {
+      width: 15%;
+    }
+
+    #mtable thead th:nth-child(2) {
+      width: 30%;
+    }
+
+    #mtable thead th:nth-child(3) {
+      width: 15%;
+    }
+
+    #mtable thead th:nth-child(4) {
+      width: 15%;
+    }
+
+    #mtable thead th:nth-child(4) {
+      width: 25%;
+    }
+
+    th {
+      padding: 5px;
+    } 
+
+    td {
+      padding: 10px;
+      text-align: center;
+    }
+
+    thead, tfoot {
+      background: #d5dbe5;
+    }
+
+  </style>
 
 </head>
 <body>
@@ -152,6 +218,7 @@
 <div id='ca_tools'></div>
 <div id='main_viewer' class='main'></div>
 <div id="upload_panel"></div>
+<div id="model_info"></div>
 </body>
 <script type="text/javascript">
     if(detectIE()){
