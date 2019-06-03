@@ -114,27 +114,9 @@ function initCore(){
     var checkImagingHelperIsReady = setInterval(function () {
       if($CAMIC.viewer.imagingHelper&& $CAMIC.viewer.imagingHelper._haveImage && $D.heatMapData && $D.editedDataClusters && $UI.editedListSideMenu) {
         clearInterval(checkImagingHelperIsReady);
-        
-        
-        //$D.editedDataClusters = createTestData(features);
-        // load data
-        // console.time('fetch');
-        // $D.heatData['lym_v1-high_res'] = await $CAMIC.store.getHeatmap($D.case_id,'lym_v1-high_res').then(d=> d[0]);
-        // $D.heatData['lym_v1-low_res'] = await $CAMIC.store.getHeatmap($D.case_id,'lym_v1-low_res').then(d=> d[0]);
-        // console.timeEnd('fetch');
-        // console.log($D.heatData);
-        // const exec_id = document.querySelector('.ctrl select').value;
-        // const inputs = document.querySelectorAll('.ctrl input');
-        // $D.heatData[exec_id].provenance.analysis.fields[0].threshold = inputs[0].value/100;
-        // $D.heatData[exec_id].provenance.analysis.fields[1].threshold = inputs[1].value/100;
-        // console.log(exec_id);
-        // 
-        // set thresholds for fields
-        // $D.heatMapData.provenance.analysis.fields.forEach(f=>{
-        //   f.threshold = [0.05,1];
-        // });
 
-        $CAMIC.viewer.createHeatmap({
+        const opt = {
+          hasCover:true,
           opacity:.65, //inputs[2].value,
           coverOpacity:.3,
           data:$D.heatMapData.data,
@@ -142,11 +124,19 @@ function initCore(){
           size:$D.heatMapData.provenance.analysis.size,
           fields:$D.heatMapData.provenance.analysis.fields,
           color:"#253494"//inputs[3].value
-        });
+        }
+
+        if($D.heatMapData.provenance.analysis.setting){
+          opt.mode = $D.heatMapData.provenance.analysis.setting.mode;
+          if($D.heatMapData.provenance.analysis.setting.field)
+            opt.currentFieldName = $D.heatMapData.provenance.analysis.setting.field;
+        }
+        $CAMIC.viewer.createHeatmap(opt);
 
         // create heatmap control
         $UI.heatmapcontrol = new HeatmapControl({
-          mode:'binal',
+          mode:opt.mode,
+          currentField:opt.currentFieldName,
           fields:$D.heatMapData.provenance.analysis.fields,
           opacities:[{
             name:'heat',
@@ -163,22 +153,6 @@ function initCore(){
 
 
         // create heatmap editor
-        
-        
-        
-        // $UI.heatmapcontrol = new HeatmapControl({
-        //   mode:'binal',
-        //   fields:$D.heatMapData.provenance.analysis.fields,
-        //   opacities:[{
-        //     name:'heat',
-        //     value:0.65
-        //   },{
-        //     name:'cover',
-        //     value:0.3
-        //   }],
-        //   onChange:heatmapSettingChanged,
-        //   onOpacityChange:heatmapOpacityChanaged
-        // });
         
         $UI.heatmapEditorPanel = new HeatmapEditorPanel({
           fields:$D.heatMapData.provenance.analysis.fields,
@@ -525,7 +499,7 @@ function createThreshold(){
   const btn = document.createElement('button');
   btn.classList.add('action');
   btn.style.float = 'right';
-  btn.textContent = 'Save Threshold';
+  btn.textContent = 'Save';
   div.appendChild(div1);
   div1.appendChild(btn);
   btn.addEventListener('click', onUpdateHeatmapFields);

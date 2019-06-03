@@ -61,10 +61,10 @@ function multSelector_action(size){
 
 		// synchornic zoom and move
 		// coordinated Viewer - zoom
-		$CAMIC.viewer.addHandler('zoom',synchornicView1);
+		$CAMIC.viewer.addHandler('zoom',synchornicView1,{type:'zoom'});
 
 		// coordinated Viewer - pan
-		$CAMIC.viewer.addHandler('pan',synchornicView1);
+		$CAMIC.viewer.addHandler('pan',synchornicView1,{type:'pan'});
 
 		// loading image
 		$minorCAMIC.loadImg(function(e){
@@ -74,8 +74,8 @@ function multSelector_action(size){
 			}
 		});
 		$minorCAMIC.viewer.addOnceHandler('tile-drawing',function(){
-			$minorCAMIC.viewer.addHandler('zoom',synchornicView2);
-			$minorCAMIC.viewer.addHandler('pan',synchornicView2);
+			$minorCAMIC.viewer.addHandler('zoom',synchornicView2,{type:'zoom'});
+			$minorCAMIC.viewer.addHandler('pan',synchornicView2,{type:'pan'});
 			// cerate segment display
 			$minorCAMIC.viewer.createSegment({
 				store:$minorCAMIC.store,
@@ -96,24 +96,40 @@ function multSelector_action(size){
 var active1 = false;
 var active2 = false;
 function synchornicView1(data){
-	if (active2) {
-	return;
-	}
-
+	if (active2) return;
 	active1 = true;
-	$minorCAMIC.viewer.viewport.zoomTo($CAMIC.viewer.viewport.getZoom());
-	$minorCAMIC.viewer.viewport.panTo($CAMIC.viewer.viewport.getCenter());
+	switch (data.userData.type) {
+		case 'zoom':
+			$minorCAMIC.viewer.viewport.zoomTo(data.zoom,data.refPoint);
+			break;
+		case 'pan':
+			$minorCAMIC.viewer.viewport.panTo(data.center);
+			break;
+		default:
+			$minorCAMIC.viewer.viewport.zoomTo($CAMIC.viewer.viewport.getZoom());
+			$minorCAMIC.viewer.viewport.panTo($CAMIC.viewer.viewport.getCenter());
+			break;
+	}
 	active1 = false;
 }
 
 function synchornicView2(data){
-  if (active1) {
-    return;
-  }
-  active2 = true;
-  $CAMIC.viewer.viewport.zoomTo($minorCAMIC.viewer.viewport.getZoom());
-  $CAMIC.viewer.viewport.panTo($minorCAMIC.viewer.viewport.getCenter());
-  active2 = false;
+	if (active1) return;
+	active2 = true;
+	switch (data.userData.type) {
+		case 'zoom':
+			$CAMIC.viewer.viewport.zoomTo(data.zoom,data.refPoint);
+			break;
+		case 'pan':
+			$CAMIC.viewer.viewport.panTo(data.center);
+			break;
+		default:
+			$CAMIC.viewer.viewport.zoomTo($minorCAMIC.viewer.viewport.getZoom());
+			$CAMIC.viewer.viewport.panTo($minorCAMIC.viewer.viewport.getCenter());
+			break;
+	}
+
+	active2 = false;
 }
 
 function openSecondaryViewer(){
@@ -310,8 +326,6 @@ function measurementOff(){
 	const li = $UI.toolbar.getSubTool('measurement');
 	li.querySelector('input[type=checkbox]').checked = false;
 }
-
-
 
 //--- toggle magnifier callback ---//
 function toggleMagnifier(data){
@@ -619,6 +633,92 @@ async function callback(data){
 			}
 			return;
 		}
+		if(item.typeName=='heatmap'){
+			if($D.heatMapData&&$D.heatMapData.provenance.analysis.execution_id == item.id&&camic.viewer.heatmap){
+				// show or hide heatmap
+				if(d.isShow){
+					camic.viewer.heatmap.on()
+				}else{
+					camic.viewer.heatmap.off()
+				}
+			}else if($D.heatMapData&&$D.heatMapData.provenance.analysis.execution_id == item.id){
+		        const opt = {
+					opacity:.65, //inputs[2].value,
+					coverOpacity:0.001,
+					data:$D.heatMapData.data,
+					//editedData:$D.editedDataClusters,
+					mode:'binal',
+					size:$D.heatMapData.provenance.analysis.size,
+					fields:$D.heatMapData.provenance.analysis.fields,
+					color:"#253494"//inputs[3].value
+				}
+
+		        if($D.heatMapData.provenance.analysis.setting){
+		          opt.mode = $D.heatMapData.provenance.analysis.setting.mode;
+		          if($D.heatMapData.provenance.analysis.setting.field)
+		            opt.currentFieldName = $D.heatMapData.provenance.analysis.setting.field;
+		        }
+				camic.viewer.createHeatmap(opt);
+			}else{
+				Loading.open(document.body,'Loading Heatmap Data...');
+				// load heatmap 
+				camic.store.getHeatmap($D.params.data.name,item.id)
+				.then(function(data){
+					if(Array.isArray(data)&&data.length>0){
+						$D.heatMapData = data[0];
+				        const opt = {
+							opacity:.65, //inputs[2].value,
+							coverOpacity:0.001,
+							data:$D.heatMapData.data,
+							mode:'binal',
+							//editedData:$D.editedDataClusters,
+							size:$D.heatMapData.provenance.analysis.size,
+							fields:$D.heatMapData.provenance.analysis.fields,
+							color:"#253494"//inputs[3].value
+						}
+
+				        if($D.heatMapData.provenance.analysis.setting){
+				          opt.mode = $D.heatMapData.provenance.analysis.setting.mode;
+				          if($D.heatMapData.provenance.analysis.setting.field)
+				            opt.currentFieldName = $D.heatMapData.provenance.analysis.setting.field;
+				        }
+						camic.viewer.createHeatmap(opt);
+
+				    }			
+				})		
+				.catch(function(error){
+					// heatmap schema
+					console.error(error);
+				})
+				.finally(function(){
+					Loading.close();
+					if($D.overlayers){
+					}else{
+						// set message
+						$UI.message.addError('Loading Heatmap Data Is Error');
+						
+					}
+				}); 
+			}
+
+			// rest other check box
+			const cates = viewerName=='main'?$UI.layersViewer.setting.categoricalData:$UI.layersViewerMinor.setting.categoricalData;
+			if(d.isShow){
+				for(let key in cates){
+					cate = cates[key];
+					if(cate.item.name=='heatmap'){
+						cate.items.forEach(i=>{
+							if(d !== i&&i.isShow){
+								i.elt.querySelector('input[type=checkbox]').checked = false;
+								i.isShow = false;
+							}
+						});
+					}
+				}
+			}
+			return;
+		}
+
 		if(!item.data){
 			// load layer data
 			loadAnnotationById(camic, d, null);

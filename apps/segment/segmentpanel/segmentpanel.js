@@ -10,11 +10,11 @@ function SegmentPanel(viewer){
 		<div id='thresh' class='material-icons settings' title='Open Segmentation Settings'>all_out</div>
 
     <div id='twrap' class='segment-setting settings' style="display: none;">
-      <label for="threshold">Threshold</label><input type='range' id='threshold' min='0' max='1' step='0.01' value='0.2'><label id='tlabel'>0.7</label>
+      <label for="threshold">Threshold</label><input type='range' id='threshold' min='0' max='1' step='0.01' value='0.15'><label id='tlabel'>0.15</label>
     </div>
 
     <div id='minwrap' class='segment-setting settings' style="display: none;">
-      <label for="minarea">Min Area</label><input id='minarea' type='range' min='0' max='5000' step='1' value='400'><label id='minlabel'>400</label>
+      <label for="minarea">Min Area</label><input id='minarea' type='range' min='0' max='5000' step='1' value='50'><label id='minlabel'>50</label>
     </div>
 
     <div id='maxwrap' class='segment-setting settings' style="display: none;">
@@ -108,6 +108,8 @@ SegmentPanel.prototype.open = function(){
 
 SegmentPanel.prototype.close = function(){
 	this.elt.style.display = 'none';
+	let context = this.__out.getContext('2d');
+	context.clearRect(0, 0, this.__out.width, this.__out.height);
 };
 
 SegmentPanel.prototype.save = function(){
