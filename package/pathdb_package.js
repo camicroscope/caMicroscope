@@ -166,16 +166,11 @@ function PathDbMods() {
     var suffix = "Heatmap/types"
     var url = this.base + suffix;
     var query = {}
-    if (this.subject_id) {
-      query.subject = this.subject_id
-    }
-    if (this.case_id) {
-      query.case = this.case_id
-      query.slide = this.case_id
-    } else {
-      query.case = this.slideId
-      query.slide = this.slideId
-    }
+    // TODO PLEEEASEE NOOOO! use pathdb id for hm
+    query.subject = Store.prototype.pdb_hm_name
+    query.case = Store.prototype.pdb_hm_name
+    query.slide = Store.prototype.pdb_hm_name
+    if(name) query.name = name;
 
     return fetch(url + "?" + objToParamStr(query), {
       credentials: "include",
@@ -189,17 +184,10 @@ function PathDbMods() {
     var suffix = "Heatmap/find"
     var url = this.base + suffix;
     var query = {}
-
-    if (this.subject_id) {
-      query.subject = this.subject_id
-    }
-    if (this.case_id) {
-      query.case = this.case_id
-      query.slide = this.case_id
-    } else {
-      query.case = this.slideId
-      query.slide = this.slideId
-    }
+    // TODO PLEEEASEE NOOOO! use pathdb id for hm
+    query.subject = Store.prototype.pdb_hm_name
+    query.case = Store.prototype.pdb_hm_name
+    query.slide = Store.prototype.pdb_hm_name
     if(name) query.name = name;
 
     return fetch(url + "?" + objToParamStr(query), {
@@ -212,14 +200,10 @@ function PathDbMods() {
     var suffix = "Heatmap/get"
     var url = this.base + suffix;
     var query = {}
-    if (this.subject_id) {
-      query.subject = this.subject_id
-    }
-    if (this.case_id) {
-      query.case = this.case_id
-    } else {
-      query.case = this.slideId
-    }
+    // TODO PLEEEASEE NOOOO! use pathdb id for hm
+    query.subject = Store.prototype.pdb_hm_name
+    query.case = Store.prototype.pdb_hm_name
+    query.slide = Store.prototype.pdb_hm_name
     if(exec) query.exec = exec;
 
     return fetch(url + "?" + objToParamStr(query), {
@@ -295,6 +279,7 @@ function PathDbMods() {
       if(data.studyid && data.studyid.length >=1){
         this.study_id = data.studyid[0].value
       }
+      Store.prototype.pdb_hm_name = this.case_id
 
       if (data.field_iip_path && data.field_iip_path.length >= 1) {
         this.location = data.field_iip_path[0].value
