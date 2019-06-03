@@ -182,8 +182,7 @@ function createSelect(sel, fields, currentField = null){
 
 	fields.forEach(field => {
 		var option = document.createElement('option');
-		if(field.name == currentField) {
-		}
+
 		option.text = field.name;
 		option.value = field.name;
 
