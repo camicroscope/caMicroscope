@@ -333,13 +333,14 @@ LayersViewer.createCategoricalItem = function(data, type){
 	
 	// div
 	const text = document.createElement('div');
-	text.textContent = item.name;
+	text.textContent = type=='root'?titleCase(item.name):item.name;
+	
 	label.appendChild(text);
 	
 	// checkbox
 	let chk = document.createElement('input');
 	chk.type='checkbox';
-	chk.id = id;
+	
 	chk.dataset.id = item.id;
 
 	if(type==='root'){
@@ -348,8 +349,10 @@ LayersViewer.createCategoricalItem = function(data, type){
 		ic.textContent='keyboard_arrow_down';
 		label.style.fontWeight = 'bold';
 		chk.dataset.type = 'root';
+		chk.style.display = 'none';
 		li.appendChild(ic);
 	}else{
+		chk.id = id;
 		chk.dataset.type = 'leaf';
 		chk.checked = data.isShow;
 		li.title = item.name;

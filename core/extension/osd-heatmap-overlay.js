@@ -77,6 +77,9 @@
         this._t_data = null;
         this._operator = 'AND';
         this._currentField = options.currentField || this._fields[0];
+        if(options.currentFieldName&& this._fields.find(f=> f.name === options.currentFieldName)){
+            this._currentField = this._fields.find(f=> f.name === options.currentFieldName); 
+        }
         this._color = options.color || "#045a8d"; // heatmap color
         this._colors = options.colors || ["#edf8e9","#006d2c"]; // heatmap color
         this.intervals = _getIntervals(this._currentField, this._colors, this._steps);
@@ -99,11 +102,12 @@
 
         // -- create cover div -- //
         this._cover_div = document.createElement( 'div');
+        if(!options.hasCover)this._cover_div.style.display = 'none';
         this._cover_div.style.position = 'absolute';
         this._cover_div.style.width = '150%';
         this._cover_div.style.height = '150%';
         this._cover_div.style.background = options.coverColor || "#000000";
-        this._cover_div.style.zIndex =  options.zIndex - 1 || 99;
+        this._cover_div.style.zIndex =  options.zIndex - 1 || 97;
         this._cover_div.style.opacity = options.coverOpacity || 0.6;
         this._viewer.canvas.appendChild(this._cover_div);
 
@@ -114,7 +118,7 @@
         this._div.style.height = '150%';
         this._div.style.transformOrigin = '0 0';
         this._div.style.transform = 'scale(1,1)';
-        this._div.style.zIndex =  options.zIndex || 100;
+        this._div.style.zIndex =  options.zIndex || 98;
         this._div.style.opacity = options.opacity || 0.8;
         this._viewer.canvas.appendChild(this._div);
         
@@ -159,6 +163,9 @@
 
             // set default options' values if no corresponding values.
             this._currentField = options.currentField || this._currentField;
+            if(options.currentFieldName&& this._fields.find(f=> f.name === options.currentFieldName)){
+                this._currentField = this._fields.find(f=> f.name === options.currentFieldName); 
+            }
             this._color = options.color || this._color || "#006d2c";
             this._colors = options.colors || ["#FFFFFF","#1034A6"];
             this.intervals = _getIntervals(this._currentField, this._colors, this._steps);
@@ -176,8 +183,9 @@
             };
 
             // -- create container div and display canvas -- //
+            if(!options.hasCover)this._cover_div.style.display = 'none';
             if(options.coverColor) this._cover_div.style.background = options.coverColor;
-            this._cover_div.style.zIndex =  options.zIndex - 1 || 99;
+            this._cover_div.style.zIndex =  options.zIndex - 1 || 97;
             if(options.coverOpacity) this._cover_div.style.opacity = options.coverOpacity;
 
             // create a container div and set the default attributes
@@ -187,8 +195,8 @@
             this._div.style.height = '150%';
             this._div.style.transformOrigin = '0 0';
             this._div.style.transform = 'scale(1,1)';
-            this._div.style.zIndex =  options.zIndex || 100;
-            this._div.style.opacity = options.opacity || 0.8;
+            this._div.style.zIndex =  options.zIndex || 98;
+            this._div.style.opacity = options.opacity || 0.6;
             //this._viewer.canvas.appendChild(this._div);
 
             // create display_cancavs
@@ -391,28 +399,24 @@
          * This method is for optimized UX.
          */
         _zooming:function(e){
-
             // get the scaling original point on the screen 
-            if(!e.refPoint) return;
+            if(!e.refPoint || e.zoom > this._viewer.viewport.getMaxZoom() || e.zoom < this._viewer.viewport.getMinZoom()) return;
             if(e.refPoint === true){
                 // get the current center to set as an referent point if there is no referent point
                 e.refPoint = this._viewer.viewport.getCenter(true);
             }
             // the referent point on the screen.
-            const windowPoint = this._viewer.viewport.viewportToWindowCoordinates(e.refPoint);
-            
-
-            const image1 = this._viewer.world.getItemAt(0);
+            const viewerElement = this._viewer.viewport.viewportToViewerElementCoordinates(e.refPoint);
             // get current zoom value.
             var viewportZoom = this._viewer.viewport.getZoom();
-            var zoom = image1.viewportToImageZoom(e.zoom);
+            var zoom = this._viewer.viewport.viewportToImageZoom(e.zoom);
             
             // calculate the scaling value
             var scale = viewportZoom/this._zoom;
             // ignore scaling if the value to small
             if(scale == 1 || Math.abs(1 - scale) < 0.01) return; 
             // scaling view
-            this._div.style.transformOrigin = `${this._offset[0] + windowPoint.x}px ${this._offset[1] + windowPoint.y}px`;
+            this._div.style.transformOrigin = `${this._offset[0] + viewerElement.x}px ${this._offset[1] + viewerElement.y}px`;
             this._div.style.transform = `scale(${scale},${scale})`;
         },
 
@@ -613,7 +617,8 @@
             }
             
             //draw edited data
-            this._editedData.clusters.forEach(cluster=>{
+            
+            if(this._editedData&&Array.isArray(this._editedData.clusters))this._editedData.clusters.forEach(cluster=>{
                 const points = removeDeplicateAndLogicalToPhysical(cluster.editDataArray.flat(),this._viewer.imagingHelper);
                 // clear
                 points.forEach(p=>{
