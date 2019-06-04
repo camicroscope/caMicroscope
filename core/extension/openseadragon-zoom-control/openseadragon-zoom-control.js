@@ -245,34 +245,17 @@
             
             this.ip.focus();
         }.bind(this));
-        this.ip.addEventListener('blur', function(e){
-            const rs = verifyImageZoom(
-                this.ip.value, // current zoom
-                this.imageZoomLevels[this.imageZoomLevels.length-1]*this.base, // min zoom
-                this.imageZoomLevels[0]*this.base // max zoom
-                );
-            if(rs.verified){
-                this._viewer.viewport.zoomTo(this._viewer.viewport.imageToViewportZoom(rs.value/this.base));
-                
-                if(rs.value%1===0){
-                    this.txt.textContent = `${rs.value}x`;
-                }else{
-                    this.txt.textContent = `${rs.value.toFixed(3)}x`;
-                }
-                delete this.idx.dataset.error;
-                this.txt.classList.remove('hide');
-            }else{
-                // give error tip
-                this.idx.dataset.error = rs.value;
-                this.ip.focus();
+        this.idx.addEventListener('keydown', function(e){
+            if(event.key === 'Enter'){
+                this.ip.blur();
+                //setZoom.call(this);
             }
-            
+        }.bind(this))
 
+        this.ip.addEventListener('blur', function(e){
+            setZoom.call(this);
         }.bind(this))
         
-
-
-
         this.idx.appendChild(this.txt);
         this.idx.appendChild(this.ip);
 
@@ -381,6 +364,28 @@
         }
         rs.value = +str;
         return rs;
+    }
+    function setZoom(){
+            const rs = verifyImageZoom(
+                this.ip.value, // current zoom
+                this.imageZoomLevels[this.imageZoomLevels.length-1]*this.base, // min zoom
+                this.imageZoomLevels[0]*this.base // max zoom
+                );
+            if(rs.verified){
+                this._viewer.viewport.zoomTo(this._viewer.viewport.imageToViewportZoom(rs.value/this.base),this._viewer.viewport.getCenter(),true);
+                
+                if(rs.value%1===0){
+                    this.txt.textContent = `${rs.value}x`;
+                }else{
+                    this.txt.textContent = `${rs.value.toFixed(3)}x`;
+                }
+                delete this.idx.dataset.error;
+                this.txt.classList.remove('hide');
+            }else{
+                // give error tip
+                this.idx.dataset.error = rs.value;
+                this.ip.focus();
+            }        
     }
 
 }(OpenSeadragon))
