@@ -204,9 +204,7 @@
          */
         drawOnCanvas:function(ctx,drawFuc){
             var viewportZoom = this._viewer.viewport.getZoom(true);
-            var image1 = this._viewer.world.getItemAt(0);
-            var zoom = image1.viewportToImageZoom(viewportZoom);
-
+            var zoom = this._viewer.viewport.viewportToImageZoom(viewportZoom);
             var x=((this._viewportOrigin.x/this.imgWidth-this._viewportOrigin.x )/this._viewportWidth)*this._containerWidth;
             var y=((this._viewportOrigin.y/this.imgHeight-this._viewportOrigin.y )/this._viewportHeight)*this._containerHeight;
 

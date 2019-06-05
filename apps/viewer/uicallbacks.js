@@ -61,10 +61,10 @@ function multSelector_action(size){
 
 		// synchornic zoom and move
 		// coordinated Viewer - zoom
-		$CAMIC.viewer.addHandler('zoom',synchornicView1);
+		$CAMIC.viewer.addHandler('zoom',synchornicView1,{type:'zoom'});
 
 		// coordinated Viewer - pan
-		$CAMIC.viewer.addHandler('pan',synchornicView1);
+		$CAMIC.viewer.addHandler('pan',synchornicView1,{type:'pan'});
 
 		// loading image
 		$minorCAMIC.loadImg(function(e){
@@ -74,8 +74,8 @@ function multSelector_action(size){
 			}
 		});
 		$minorCAMIC.viewer.addOnceHandler('tile-drawing',function(){
-			$minorCAMIC.viewer.addHandler('zoom',synchornicView2);
-			$minorCAMIC.viewer.addHandler('pan',synchornicView2);
+			$minorCAMIC.viewer.addHandler('zoom',synchornicView2,{type:'zoom'});
+			$minorCAMIC.viewer.addHandler('pan',synchornicView2,{type:'pan'});
 			// cerate segment display
 			$minorCAMIC.viewer.createSegment({
 				store:$minorCAMIC.store,
@@ -96,24 +96,40 @@ function multSelector_action(size){
 var active1 = false;
 var active2 = false;
 function synchornicView1(data){
-	if (active2) {
-	return;
-	}
-
+	if (active2) return;
 	active1 = true;
-	$minorCAMIC.viewer.viewport.zoomTo($CAMIC.viewer.viewport.getZoom());
-	$minorCAMIC.viewer.viewport.panTo($CAMIC.viewer.viewport.getCenter());
+	switch (data.userData.type) {
+		case 'zoom':
+			$minorCAMIC.viewer.viewport.zoomTo(data.zoom,data.refPoint);
+			break;
+		case 'pan':
+			$minorCAMIC.viewer.viewport.panTo(data.center);
+			break;
+		default:
+			$minorCAMIC.viewer.viewport.zoomTo($CAMIC.viewer.viewport.getZoom());
+			$minorCAMIC.viewer.viewport.panTo($CAMIC.viewer.viewport.getCenter());
+			break;
+	}
 	active1 = false;
 }
 
 function synchornicView2(data){
-  if (active1) {
-    return;
-  }
-  active2 = true;
-  $CAMIC.viewer.viewport.zoomTo($minorCAMIC.viewer.viewport.getZoom());
-  $CAMIC.viewer.viewport.panTo($minorCAMIC.viewer.viewport.getCenter());
-  active2 = false;
+	if (active1) return;
+	active2 = true;
+	switch (data.userData.type) {
+		case 'zoom':
+			$CAMIC.viewer.viewport.zoomTo(data.zoom,data.refPoint);
+			break;
+		case 'pan':
+			$CAMIC.viewer.viewport.panTo(data.center);
+			break;
+		default:
+			$CAMIC.viewer.viewport.zoomTo($minorCAMIC.viewer.viewport.getZoom());
+			$CAMIC.viewer.viewport.panTo($minorCAMIC.viewer.viewport.getCenter());
+			break;
+	}
+
+	active2 = false;
 }
 
 function openSecondaryViewer(){
@@ -618,8 +634,6 @@ async function callback(data){
 			return;
 		}
 		if(item.typeName=='heatmap'){
-			console.log('heatmap');
-			console.log(d);
 			if($D.heatMapData&&$D.heatMapData.provenance.analysis.execution_id == item.id&&camic.viewer.heatmap){
 				// show or hide heatmap
 				if(d.isShow){
@@ -685,6 +699,22 @@ async function callback(data){
 						
 					}
 				}); 
+			}
+
+			// rest other check box
+			const cates = viewerName=='main'?$UI.layersViewer.setting.categoricalData:$UI.layersViewerMinor.setting.categoricalData;
+			if(d.isShow){
+				for(let key in cates){
+					cate = cates[key];
+					if(cate.item.name=='heatmap'){
+						cate.items.forEach(i=>{
+							if(d !== i&&i.isShow){
+								i.elt.querySelector('input[type=checkbox]').checked = false;
+								i.isShow = false;
+							}
+						});
+					}
+				}
 			}
 			return;
 		}
