@@ -166,10 +166,9 @@ function PathDbMods() {
     var suffix = "Heatmap/types"
     var url = this.base + suffix;
     var query = {}
-    // TODO PLEEEASEE NOOOO! use pathdb id for hm
-    query.subject = Store.prototype.pdb_hm_name
-    query.case = Store.prototype.pdb_hm_name
-    query.slide = Store.prototype.pdb_hm_name
+    query.slide = slide
+    query.specimen = ""
+    query.study = ""
     if(name) query.name = name;
 
     return fetch(url + "?" + objToParamStr(query), {
@@ -184,10 +183,9 @@ function PathDbMods() {
     var suffix = "Heatmap/find"
     var url = this.base + suffix;
     var query = {}
-    // TODO PLEEEASEE NOOOO! use pathdb id for hm
-    query.subject = Store.prototype.pdb_hm_name
-    query.case = Store.prototype.pdb_hm_name
-    query.slide = Store.prototype.pdb_hm_name
+    query.slide = slide
+    query.specimen = ""
+    query.study = ""
     if(name) query.name = name;
 
     return fetch(url + "?" + objToParamStr(query), {
@@ -200,11 +198,10 @@ function PathDbMods() {
     var suffix = "Heatmap/get"
     var url = this.base + suffix;
     var query = {}
-    // TODO PLEEEASEE NOOOO! use pathdb id for hm
-    query.subject = Store.prototype.pdb_hm_name
-    query.case = Store.prototype.pdb_hm_name
-    query.slide = Store.prototype.pdb_hm_name
-    if(exec) query.exec = exec;
+    query.slide = slide
+    query.specimen = ""
+    query.study = ""
+    if(exec) query.name = exec;
 
     return fetch(url + "?" + objToParamStr(query), {
       credentials: "include",
@@ -231,7 +228,6 @@ function PathDbMods() {
     this.study = ""
     this.specimen = ""
     this.subject_id = ""
-    this.case_id = ""
     this.image_id = ""
     this.study_id = ""
     this.store.getSlide(pathdb_id).then(data => {
@@ -263,15 +259,11 @@ function PathDbMods() {
       if(data.clinicaltrialsubjectid && data.clinicaltrialsubjectid.length >= 1){
         this.subject_id = data.clinicaltrialsubjectid[0].value
       }
-      if(data.field_case_id && data.field_case_id.length >= 1){
-        this.case_id = data.field_case_id[0].value
-      }
       if(data.field_image_id && data.field_image_id.length >=1){
         this.image_id = data.field_image_id[0].value
       }
       if(data.imageid && data.imageid.length >=1){
         this.image_id = data.imageid[0].value
-        this.case_id = data.imageid[0].value
       }
       if(data.field_study_id && data.field_study_id.length >=1){
         this.study_id = data.field_study_id[0].value
@@ -279,7 +271,7 @@ function PathDbMods() {
       if(data.studyid && data.studyid.length >=1){
         this.study_id = data.studyid[0].value
       }
-      Store.prototype.pdb_hm_name = this.case_id
+      Store.prototype.pdb_hm_name = this.image_id
 
       if (data.field_iip_path && data.field_iip_path.length >= 1) {
         this.location = data.field_iip_path[0].value
@@ -307,7 +299,6 @@ function PathDbMods() {
 
       // identifier field
       x.subject_id = this.subject_id
-      x.case_id = this.case_id
       x.image_id = this.image_id
       x.study_id = this.study_id
 

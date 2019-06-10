@@ -74,11 +74,11 @@ $VALIDATION.heatmapedit = ajv.compile({
       properties: {
         image: {
           type: "object",
-          required: ["slide", "study", "specimen", "subject_id", "case_id"],
+          required: ["slide", "study", "specimen"],
         },
         analysis: {
           type: "object",
-          required: ["study_id", "fields", "execution_id"],
+          required: ["fields", "execution_id"],
         }
       }
     }

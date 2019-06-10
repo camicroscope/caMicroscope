@@ -266,9 +266,9 @@ class Store {
    **/
   findMarkTypes(slide, name) {
     let suffix = "Mark/types"
-    
+
     var query = {}
-    // 
+    //
     if(!slide) {
       console.error('Store.findMarkTypes needs slide ... ');
       return null;
@@ -290,7 +290,7 @@ class Store {
     }).then(this.errorHandler)
   }
 
-  findHeatmap(slide, name) {
+  findHeatmap(slide, name, subject, study) {
     var suffix = "Heatmap/find"
     var url = this.base + suffix;
     var query = {}
@@ -301,21 +301,32 @@ class Store {
     if (slide) {
       query.slide = slide
     }
+    if (subject) {
+      query.subject = subject
+    }
+    if (study) {
+      query.study = study
+    }
     return fetch(url + "?" + objToParamStr(query), {
       credentials: "include",
       mode: "cors"
     }).then(this.errorHandler).then(x=>this.filterBroken(x, "heatmap"))
   }
-  findHeatmapType(slide, name) {
+  findHeatmapType(slide, name, study, specimen) {
     var suffix = "Heatmap/types"
     var url = this.base + suffix;
     var query = {}
-    var bySlideId
     if (name) {
       query.name = name
     }
     if (slide) {
       query.slide = slide
+    }
+    if (study) {
+      query.study = study
+    }
+    if (specimen) {
+      query.specimen = specimen
     }
     return fetch(url + "?" + objToParamStr(query), {
       credentials: "include",
@@ -327,13 +338,14 @@ class Store {
    * @param {string} id - the heatmap id
    * @returns {promise} - promise which resolves with data
    **/
-  getHeatmap(caseId, execId) {
+  getHeatmap(slide, name, study, specimen) {
     var suffix = "Heatmap/get"
     var url = this.base + suffix;
     var query = {};
-    query.case = caseId;
-    query.subject = caseId;
-    query.exec = execId;
+    query.slide = slide;
+    query.specimen = specimen || "";
+    query.study = study || "";
+    query.name = name;
 
     return fetch(url + "?" + objToParamStr(query), {
       credentials: "include",
@@ -403,21 +415,21 @@ class Store {
   }
 
 
-  updateHeatmapFields(subject, caseid, execution, fields, setting){
+  updateHeatmapFields(specimen, slide, name, fields, setting){
     var suffix = "Heatmap/threshold"
     var url = this.base + suffix;
     var query = {}
-    
-    if (subject) {
-      query.subject = subject
-    }
-    
-    if (caseid) {
-      query.case = caseid
+
+    if (specimen) {
+      query.specimen = specimen
     }
 
-    if(execution) {
-      query.execution = execution
+    if (slide) {
+      query.slide = slide
+    }
+
+    if(name) {
+      query.name = name
     }
 
     if(fields) {
@@ -437,7 +449,7 @@ class Store {
    * add a Heatmap Edit Data
    * @param {object} json - the heatmap edit data
    * @returns {promise} - promise which resolves with response
-   * 
+   *
    **/
   addHeatmapEdit(json) {
     var suffix = "HeatmapEdit/post"
@@ -458,25 +470,25 @@ class Store {
     }).then(this.errorHandler)
   }
 
-  updateHeatmapEdit(user, subject, caseid, execution, data){
+  updateHeatmapEdit(user, specimen, slide, name, data){
     var suffix = "HeatmapEdit/update"
     var url = this.base + suffix;
     var query = {}
-    
+
     if (user) {
       query.user = user
     }
-    
-    if (subject) {
-      query.subject = subject
-    }
-    
-    if (caseid) {
-      query.case = caseid
+
+    if (specimen) {
+      query.specimen = specimen
     }
 
-    if(execution) {
-      query.execution = execution
+    if (slide) {
+      query.slide = slide
+    }
+
+    if(name) {
+      query.name = name
     }
     if(data) {
       query.data = data
@@ -489,25 +501,25 @@ class Store {
     }).then(this.errorHandler)
   }
 
-  findHeatmapEdit(user, subject, caseid, execution) {
+  findHeatmapEdit(user, specimen, slide, name) {
     var suffix = "HeatmapEdit/find"
     var url = this.base + suffix;
     var query = {}
-    
+
     if (user) {
       query.user = user
     }
-    
-    if (subject) {
-      query.subject = subject
-    }
-    
-    if (caseid) {
-      query.case = caseid
+
+    if (specimen) {
+      query.specimen = specimen
     }
 
-    if(execution) {
-      query.execution = execution
+    if (slide) {
+      query.slide = slide
+    }
+
+    if(name) {
+      query.name = name
     }
     return fetch(url + "?" + objToParamStr(query), {
       credentials: "include",
@@ -527,11 +539,11 @@ class Store {
     if (user) {
       query.user = user
     }
-    
+
     if (subject) {
       query.subject = subject
     }
-    
+
     if (caseid) {
       query.case = caseid
     }
