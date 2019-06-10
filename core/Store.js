@@ -415,7 +415,7 @@ class Store {
   }
 
 
-  updateHeatmapFields(specimen, slide, name, fields, setting){
+  updateHeatmapFields(specimen, slide, study, name, fields, setting){
     var suffix = "Heatmap/threshold"
     var url = this.base + suffix;
     var query = {}
