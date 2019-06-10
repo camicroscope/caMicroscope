@@ -420,9 +420,8 @@ class Store {
     var url = this.base + suffix;
     var query = {}
 
-    if (specimen) {
-      query.specimen = specimen
-    }
+    query.specimen = specimen || ""
+    query.study = study || ""
 
     if (slide) {
       query.slide = slide
