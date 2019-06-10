@@ -542,12 +542,8 @@ class Store {
       query.user = user
     }
 
-    if (specimen) {
-      query.specimen = specimen
-    }
-    if (study) {
-      query.study = study
-    }
+    query.specimen = specimen || ""
+    query.study = study || ""
 
     if (slide) {
       query.slide = slide
