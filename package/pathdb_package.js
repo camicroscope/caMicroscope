@@ -249,11 +249,11 @@ function PathDbMods() {
         this.mpp = this.mpp_x
       }
       if (data.referencepixelphysicalvaluey && data.referencepixelphysicalvaluey.length >=1){
-        this.mpp_y = data.referencepixelphysicalvaluey[0]
+        this.mpp_y = data.referencepixelphysicalvaluey[0].value
         this.mpp = this.mpp_y
       }
       if (data.referencepixelphysicalvaluex && data.referencepixelphysicalvaluex.length >=1){
-        this.mpp_x = data.referencepixelphysicalvaluex[0]
+        this.mpp_x = data.referencepixelphysicalvaluex[0].value
         this.mpp = this.mpp_x
       }
       // identifier fields
