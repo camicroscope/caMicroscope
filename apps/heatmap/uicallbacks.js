@@ -485,7 +485,7 @@ async function saveEditData(){
 
 		if(data.length!==0){
 			create_date = data[0].create_date;
-			const del = await $CAMIC.store.deleteHeatmapEdit(user, specimen, slide, exec);
+			const del = await $CAMIC.store.deleteHeatmapEdit(user, specimen, slide, study, exec);
 			// error
 			if(del.hasError&&del.hasError==true){
 				$UI.message.addError(del.message);
