@@ -39,7 +39,6 @@
         Image Zoom to Viewport Zoom: viewer.viewport.imageToViewportZoom()
         Viewport Zoom to Image Zoom: $CAMIC.viewer.viewport.viewportToImageZoom()
     */
-    const ImageZooms = [2, 1, .5, .25, .2, .1, .05, .025, .02, .01, .005, .0025, .002, .001, .0005, .00025];
     $.CaZoomControl = function(options) {
         this.base = 40;
         this.zoomIndex;
@@ -226,12 +225,41 @@
         this.zoomOut.textContent = 'remove';
 
         // indicator
-        this.idx = $.makeNeutralElement( 'div' );
+        this.idx = document.createElement( 'div' );
         this.idx.classList.add('idx');
-        this.txt = $.makeNeutralElement( 'div' );
+        //this.txt = $.makeNeutralElement( 'div' );
         this.txt = document.createElement('div');
         this.txt.classList.add('txt');
+
+        // input
+        this.ip = document.createElement('input');
+        this.ip.type='text';
+        this.ip.classList.add('ip');
+        this.idx.addEventListener('click', function(e){
+            // set image zoom value to input
+            let value = this.txt.textContent;
+            value = value.slice(0, value.length-1);
+            this.ip.value = +value;
+            // hide txt
+            this.txt.classList.add('hide');
+            
+            this.ip.focus();
+        }.bind(this));
+        this.idx.addEventListener('keydown', function(e){
+            if(event.key === 'Enter'){
+                this.ip.blur();
+                //setZoom.call(this);
+            }
+        }.bind(this))
+
+        this.ip.addEventListener('blur', function(e){
+            setZoom.call(this);
+        }.bind(this))
+        
         this.idx.appendChild(this.txt);
+        this.idx.appendChild(this.ip);
+
+
 
         // range
         this.range = $.makeNeutralElement( 'input' );
@@ -317,6 +345,47 @@
 
     function getMinImageZoom(viewer){
         return viewer.viewport.viewportToImageZoom(viewer.viewport.getMinZoom());
+    }
+
+    function verifyImageZoom(str, min, max){
+        const rs = {
+            verified:true,
+            value:str
+        }
+        //const num = Number.parseFloat(str);
+        if(isNaN(str)){
+            rs.verified = false;
+            rs.value = 'Not a Number'
+            return rs;
+        }else if(min.toFixed(3) > (+str)||max < (+str)){
+            rs.verified = false;
+            rs.value = `Zoom Range:${min.toFixed(3)} ~ ${max}`;
+            return rs;           
+        }
+        rs.value = +str;
+        return rs;
+    }
+    function setZoom(){
+            const rs = verifyImageZoom(
+                this.ip.value, // current zoom
+                this.imageZoomLevels[this.imageZoomLevels.length-1]*this.base, // min zoom
+                this.imageZoomLevels[0]*this.base // max zoom
+                );
+            if(rs.verified){
+                this._viewer.viewport.zoomTo(this._viewer.viewport.imageToViewportZoom(rs.value/this.base),this._viewer.viewport.getCenter(),true);
+                
+                if(rs.value%1===0){
+                    this.txt.textContent = `${rs.value}x`;
+                }else{
+                    this.txt.textContent = `${rs.value.toFixed(3)}x`;
+                }
+                delete this.idx.dataset.error;
+                this.txt.classList.remove('hide');
+            }else{
+                // give error tip
+                this.idx.dataset.error = rs.value;
+                this.ip.focus();
+            }        
     }
 
 }(OpenSeadragon))

@@ -31,7 +31,9 @@ function toggleViewerMode(opt){
 function multSelector_action(size){
 	// hidden main viewer's bottom right control and get navigator
 	$CAMIC.viewer.controls.bottomright.style.display = 'none';
-
+	$UI.lockerPanel.style.display = '';
+	$UI.lockerPanel.querySelector("input[type=checkbox]").checked = true
+	isLock = true;
 	// open new instance camic
 	try{
 		let slideQuery = {}
@@ -95,12 +97,17 @@ function multSelector_action(size){
 
 var active1 = false;
 var active2 = false;
+var isLock = true;
 function synchornicView1(data){
 	if (active2) return;
 	active1 = true;
 	switch (data.userData.type) {
 		case 'zoom':
-			$minorCAMIC.viewer.viewport.zoomTo(data.zoom,data.refPoint);
+			if(isLock){
+				$minorCAMIC.viewer.viewport.zoomTo(data.zoom,data.refPoint);
+			}else{
+				$minorCAMIC.viewer.viewport.panTo($CAMIC.viewer.viewport.getCenter(true));
+			}
 			break;
 		case 'pan':
 			$minorCAMIC.viewer.viewport.panTo(data.center);
@@ -118,7 +125,11 @@ function synchornicView2(data){
 	active2 = true;
 	switch (data.userData.type) {
 		case 'zoom':
-			$CAMIC.viewer.viewport.zoomTo(data.zoom,data.refPoint);
+			if(isLock){
+				$CAMIC.viewer.viewport.zoomTo(data.zoom,data.refPoint);
+			}else{
+				$CAMIC.viewer.viewport.panTo($minorCAMIC.viewer.viewport.getCenter(true));	
+			}
 			break;
 		case 'pan':
 			$CAMIC.viewer.viewport.panTo(data.center);
@@ -159,6 +170,7 @@ function closeSecondaryViewer(){
 	minor.classList.add('none');
 	minor.classList.remove('right');
 	$CAMIC.viewer.controls.bottomright.style.display = '';
+	$UI.lockerPanel.style.display = 'none';
 
 	const li = $UI.toolbar.getSubTool('sbsviewer');
 	li.querySelector('input[type="checkbox"]').checked = false;
