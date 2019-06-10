@@ -69,8 +69,8 @@ function initCore(){
     }else{
       $D.params.data = e;
       // loading heatmap data
-      $D.heatMapData = await $CAMIC.store.getHeatmap($D.params.data.name,$D.params.execId).then(d=> d[0]);
-      const specimen = $D.heatMapData.provenance.image.specimen_id;
+      $D.heatMapData = await $CAMIC.store.getHeatmap($D.params.data.name,$D.params.execId, $D.params.data.study, $D.params.data.specimen).then(d=> d[0]);
+      const specimen = $D.heatMapData.provenance.image.specimen;
       const slide = $D.heatMapData.provenance.image.slide;
       const exec = $D.heatMapData.provenance.analysis.execution_id;
 
