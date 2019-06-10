@@ -568,14 +568,15 @@ async function onDeleteEditData(data){
 	const user = getUserId();
 	const specimen = $D.heatMapData.provenance.image.specimen;
 	const slide = $D.heatMapData.provenance.image.slide;
+	const study = $D.heatMapData.provenance.image.study;
 	const exec = $D.heatMapData.provenance.analysis.execution_id;
 
 	let rs = null;
 	if(ImgloaderMode!='imgbox'){
 		if($D.editedDataClusters.isEmpty()){
-			rs = await $CAMIC.store.deleteHeatmapEdit(user, specimen, slide, exec);
+			rs = await $CAMIC.store.deleteHeatmapEdit(user, specimen, slide, study, exec);
 		}else{
-			rs = await $CAMIC.store.updateHeatmapEdit(user, specimen, slide, exec, JSON.stringify($D.editedDataClusters.toJSON()));
+			rs = await $CAMIC.store.updateHeatmapEdit(user, specimen, slide, study,  exec, JSON.stringify($D.editedDataClusters.toJSON()));
 		}
 		// error
 		if(rs.hasError&&rs.hasError==true){

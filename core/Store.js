@@ -534,7 +534,7 @@ class Store {
    * @param {object} slide - the associated slide
    * @returns {promise} - promise which resolves with response
    **/
-  deleteHeatmapEdit(user, subject, caseid, name) {
+  deleteHeatmapEdit(user, specimen, slide, study, name) {
     var suffix = "HeatmapEdit/delete"
     var url = this.base + suffix;
     var query = {};
@@ -542,12 +542,15 @@ class Store {
       query.user = user
     }
 
-    if (subject) {
-      query.subject = subject
+    if (specimen) {
+      query.specimen = specimen
+    }
+    if (study) {
+      query.study = study
     }
 
-    if (caseid) {
-      query.case = caseid
+    if (slide) {
+      query.slide = slide
     }
 
     if(name) {
