@@ -27,7 +27,7 @@ function dbInit() {
   }
   request.onsuccess = function(e) {
     db = request.result;
-    console.log(db.objectStoreNames);
+    // console.log(db.objectStoreNames);
     console.log('tfjs db opened and ready');
   }
 }
@@ -106,6 +106,14 @@ function initUIcomponents() {
     `
   });
 
+  // Create infoModal to show information about models uploaded.
+  $UI.helpModal = new ModalBox({
+    id: "help",
+    hasHeader: true,
+    headerText: "Help",
+    hasFooter: false
+  });
+
   // create the message queue
   $UI.message = new MessageQueue();
 
@@ -119,7 +127,7 @@ function initUIcomponents() {
         icon: 'aspect_ratio',
         type: 'check',
         value: 'rect',
-        title: 'Run Model',
+        title: 'Predict',
         callback: drawRectangle
       }, {
         icon: 'insert_photo',
@@ -145,6 +153,12 @@ function initUIcomponents() {
         value: 'Model info',
         title: 'Model info',
         callback: showInfo
+      },{
+        icon: 'help',
+        type: 'btn',
+        value: 'Help',
+        title: 'Help',
+        callback: openHelp
       },{
         icon: 'bug_report',
         title: 'Bug Report',
@@ -210,7 +224,6 @@ function initCore() {
       runPredict($UI.modelPanel.__modelselector.value);
     }.bind($UI.modelPanel));
 
-    // TO-DO
     $UI.modelPanel.__btn_save.addEventListener('click', function(e) {
       let fname = $D.params.slideId + '_roi.png';
 
@@ -315,13 +328,13 @@ function checkSize(imgColl, imagingHelper) {
   self.__spImgY = top_left[1];
   self.__spImgWidth = bottom_right[0]-top_left[0];
   self.__spImgHeight = bottom_right[1]-top_left[1];
-  console.log('iX: '+self.__spImgX);
-  console.log('iY: '+self.__spImgY);
-  console.log('iW: '+self.__spImgWidth);
-  console.log('iH: '+self.__spImgHeight);
+  // console.log('iX: '+self.__spImgX);
+  // console.log('iY: '+self.__spImgY);
+  // console.log('iW: '+self.__spImgWidth);
+  // console.log('iH: '+self.__spImgHeight);
   
-  console.log(top_left);
-  console.log(bottom_right);
+  // console.log(top_left);
+  // console.log(bottom_right);
   // console.log(imagingHelper._viewer.viewport.viewportToImageCoordinates(0,0));
 
   // Convert to screen coordinates
@@ -334,7 +347,7 @@ function checkSize(imgColl, imagingHelper) {
     x[1] *= PDR;
     return x;
   });
-  console.log('bounds', newArray);
+  // console.log('bounds', newArray);
 
   const xCoord = Math.round(newArray[0][0]);
   const yCoord = Math.round(newArray[0][1]);
@@ -358,21 +371,6 @@ function checkSize(imgColl, imagingHelper) {
 }
 
 /**
- * Make a canvas element & draw the ROI.
- * @param imgData
- * @param canvasId
- * @param hidden
- */
-function loadImageToCanvas(imgData, canvas) {
-  // console.log(typeof(imgData));
-  canvas.width = imgData.width;
-  canvas.height = imgData.height;
-  let context = canvas.getContext("2d");
-  context.putImageData(imgData, 0, 0);
-
-}
-
-/**
  * Run model
  * @param key
  */
@@ -392,18 +390,19 @@ function runPredict(key) {
   let store = tx.objectStore("models_store");
 
   store.get(key).onsuccess = async function (e) {
-    let classes = e.target.result.classes;
+    // Keras sorts the labels by alphabetical order.
+    let classes = e.target.result.classes.sort();
 
     let input_shape = e.target.result.input_shape
     let image_size = input_shape[1];
 
     model = await tf.loadLayersModel(IDB_URL + key);
 
-    // Warmup the model before using real data.
-    const warmupResult = model.predict(tf.zeros([1, image_size, image_size, 3]));
-    warmupResult.dataSync();
-    warmupResult.dispose();
-    console.log("Model ready");
+    // // Warmup the model before using real data.
+    // const warmupResult = model.predict(tf.zeros([1, image_size, image_size, 3]));
+    // warmupResult.dataSync();
+    // warmupResult.dispose();
+    // console.log("Model ready");
 
     // TODO: Allow the users to decide below params.
     const logits = tf.tidy(() => {
@@ -467,7 +466,7 @@ async function getTopKClasses(logits, classes, topK) {
     return topClassesAndProbs;
 }
 
-
+// TO-DO: Allow uploading hosted models
 function uploadModel() {
 
   var _name = document.querySelector('#name'),
@@ -586,6 +585,25 @@ async function showInfo() {
   })($UI.infoModal.open())
 
 
+}
+
+function openHelp() {
+  let self = $UI.helpModal
+  self.body.innerHTML = `
+    <em>Features</em> <br>
+    This part of caMicroscope allows to predict using a trained model on a selected patch. Some of the sample 
+    models are hosted <a target="_blank" href="https://github.com/Insiyaa/caMicroscope-tfjs-models">here</a>. <br>
+    <i class="material-icons">aspect_ratio</i>: On activation, this button enables drawing on the viewer. After the image is loaded for further processing, a UI will
+    appear for model selection. The Whole-slide images are high resolution images containing the entire sampled tissue so make sure 
+    you zoom in and then select a patch. Selecting a large region while being totally zoomed out may slow down the further processing
+    due to fairly large image size. <br>
+    <i class="material-icons">insert_photo</i>: This will redirect back to main Viewer. <br>
+    <i class="material-icons">add</i>: This will open a dialogue box to upload the model. Make sure to fill in all the fields. The image size field expects a
+    single integer. <br>
+    <i class="material-icons">info</i>: This will display the details of previously uploaded models. <br>
+    <i class="material-icons">bug_report</i>: Bug report.
+  `
+  $UI.helpModal.open()
 }
 
 /**

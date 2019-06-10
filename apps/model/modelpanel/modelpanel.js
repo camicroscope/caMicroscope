@@ -9,7 +9,7 @@ function ModelPanel(viewer){
 		<div id='savecsv' class='material-icons settings' title='Save ROI CSV File'>list</div>
 		<select id='modelselect' class='settings' title='Select the model'><option hidden disabled selected value> -- select a model -- </option>	</select>
 		
-		<div id='processing' class='segment-processing blink_me'></div>
+		<div id='processing' class='segment-processing'></div>
 		
 		<canvas class='out'></canvas>
 		<canvas class='src'></canvas>
@@ -85,7 +85,7 @@ ModelPanel.prototype.open = async function(){
 	    modsel.appendChild(opt);
 	});
 	modsel.selectedIndex = 0;
-	empty(this.__result);
+	this.__result.innerHTML = '-- result --';
 	this.elt.style.display = '';
 };
 
@@ -112,7 +112,7 @@ ModelPanel.prototype.populate = function(models){
 ModelPanel.prototype.showProgress = function(text){
 	// console.log('In Progress');
 	this.__indicator.style.display = 'flex';
-	if (text) this.__indicator.innerHTML = '<em>' + text + '</em>';
+	if (text) this.__indicator.innerHTML = '<em class="blink_me">' + text + '</em>';
 }
 
 ModelPanel.prototype.hideProgress = function(){
@@ -123,6 +123,7 @@ ModelPanel.prototype.hideProgress = function(){
 ModelPanel.prototype.showResults = function(text){
 	// console.log('Progress Finished');
 	this.__result.innerHTML = text;
+	console.log(this.__result)
 }
 
 ModelPanel.prototype.setPosition = function(x,y,w,h){
