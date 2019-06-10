@@ -445,6 +445,7 @@ async function saveEditData(){
 	const user = getUserId();
 	const specimen = $D.heatMapData.provenance.image.specimen;
 	const slide = $D.heatMapData.provenance.image.slide;
+	const study = $D.heatMapData.provenance.image.study;
 	const exec = $D.heatMapData.provenance.analysis.execution_id;
 
 	// get draw lines info
@@ -474,7 +475,7 @@ async function saveEditData(){
 
 	if(ImgloaderMode!='imgbox'){
 		// find editor data
-		const data = await $CAMIC.store.findHeatmapEdit(user, specimen, slide, exec);
+		const data = await $CAMIC.store.findHeatmapEdit(user, specimen, slide, study, exec);
 		// error
 		if(!Array.isArray(data)&&data.hasError&&data.hasError==true){
 			$UI.message.addError(data.message);

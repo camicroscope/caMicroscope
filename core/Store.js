@@ -500,7 +500,7 @@ class Store {
     }).then(this.errorHandler)
   }
 
-  findHeatmapEdit(user, specimen, slide, name) {
+  findHeatmapEdit(user, specimen, slide, study, name) {
     var suffix = "HeatmapEdit/find"
     var url = this.base + suffix;
     var query = {}
@@ -515,6 +515,9 @@ class Store {
 
     if (slide) {
       query.slide = slide
+    }
+    if (study) {
+      query.study = study
     }
 
     if(name) {
@@ -531,7 +534,7 @@ class Store {
    * @param {object} slide - the associated slide
    * @returns {promise} - promise which resolves with response
    **/
-  deleteHeatmapEdit(user, subject, caseid, execution) {
+  deleteHeatmapEdit(user, subject, caseid, name) {
     var suffix = "HeatmapEdit/delete"
     var url = this.base + suffix;
     var query = {};
@@ -547,8 +550,8 @@ class Store {
       query.case = caseid
     }
 
-    if(execution) {
-      query.execution = execution
+    if(name) {
+      query.name = name
     }
     return fetch(url + "?" + objToParamStr(query), {
       method: "DELETE",
