@@ -74,9 +74,12 @@ function initUIcomponents() {
         <div> Enter the classes model classifies into separated by comma. </div>
         <label align="left"> Classes: </label> <input name="classes" id="classes" type="text" required /> <br><hr>
         <label align="left"> Input image size: </label> <input name="image_size" id="image_size" type="number" required /> <br><hr>
-        <div>Select model.json first followed by the weight binaries.</div> <br> 
+        <label class="switch"><input type="checkbox" id="togBtn"><div class="slider"></div></label> <br> <br>
+        <div class="checkfalse"><div>Select model.json first followed by the weight binaries.</div> <br> 
         <input name="filesupload" id="modelupload" type="file" required/>
-        <input name="filesupload" id="weightsupload" type="file" multiple="" required/> <br> <br>
+        <input name="filesupload" id="weightsupload" type="file" multiple="" required/> <br> <br> </div>
+        <div class="checktrue" > URL to the ModelAndWeightsConfig JSON describing the model. <br> <br> 
+        <label align-"left"> Enter the URL: </label> <input type="url" name="url" id="url" required> <br><br></div>
         <button id="submit">Upload</button> <span id="status"></span>
       </form>  
     `
@@ -466,7 +469,7 @@ async function getTopKClasses(logits, classes, topK) {
     return topClassesAndProbs;
 }
 
-// TO-DO: Allow uploading hosted models
+// TO-DO: Allow uploading hosted models & validate the file input
 function uploadModel() {
 
   var _name = document.querySelector('#name'),
@@ -475,17 +478,32 @@ function uploadModel() {
       topology = document.querySelector('#modelupload'),
       weights = document.querySelector('#weightsupload'),
       status = document.querySelector('#status'),
+      toggle = document.querySelector('#togBtn'),
+      url = document.querySelector("#url"),
       submit = document.querySelector("#submit");
 
   // Reset previous input
-  _name.value = _classes.value = topology.value = weights.value = status.innerHTML = _image_size.value = '';
+  _name.value = _classes.value = topology.value = weights.value = status.innerHTML = _image_size.value = url.value = '';
 
   $UI.uploadModal.open();
+
+  toggle.addEventListener('change', function (e) {
+    if (this.checked) {
+      document.querySelector(".checktrue").style.display = "block";
+      document.querySelector(".checkfalse").style.display = "none";
+    } else {
+      document.querySelector(".checktrue").style.display = "none";
+      document.querySelector(".checkfalse").style.display = "block";
+    }
+
+  });
+
 
   submit.addEventListener('click', async function (e) {
     e.preventDefault();
     
-    if (_name.value && _classes.value && _image_size.value) {
+    if ( _name.value && _classes.value && _image_size.value && 
+      ((!toggle.checked && topology.files[0].name.split('.').pop() == 'json') || (toggle.checked && url))) {
 
       status.innerHTML = "Uploading";
       status.classList.remove('error');
@@ -495,14 +513,14 @@ function uploadModel() {
       let name = _name.value + (new Date().getTime().toString()).slice(-4, -1);
       // Create an array from comma separated values of classes
       let classes = _classes.value.split(/\s*,\s*/);
+
+      if (toggle.checked) { var modelInput = url.value; }
+      else { var modelInput = tf.io.browserFiles([topology.files[0], ...weights.files]) }
       
       try {
 
         // This also ensures that valid model is uploaded.
-        const model = await tf.loadLayersModel(tf.io.browserFiles(
-          [topology.files[0],
-          ...weights.files
-          ]))
+        const model = await tf.loadLayersModel(modelInput);
         await model.save(IDB_URL + name);
 
         // Update the model store db entry to have the classes array
@@ -528,21 +546,15 @@ function uploadModel() {
         }
         
       } catch (e) {
-        // It throws syntax error when json not found. Add validation.
-        if (e instanceof SyntaxError) {
-          status.classList.add('error');
-          status.classList.remove('blink');
-          status.innerHTML = "Please upload the model.json in first input.";
-        } else {
-          status.classList.add('error');
-          status.classList.remove('blink');
-          status.innerHTML = "Please enter a valid model. Input model.json in first input and weight binaries in second one.";
-          console.error(e);
-        }
+        status.classList.add('error');
+        status.classList.remove('blink');
+        if (toggle.checked) status.innerHTML = "Please enter a valid URL."
+        else status.innerHTML = "Please enter a valid model. Input model.json in first input and all weight binaries in second one without renaming.";
+        console.error(e);
       } 
 
     } else {
-      status.innerHTML = "Please fill out all the fields."
+      status.innerHTML = "Please fill out all the fields with valid values."
       status.classList.add('error');
     }
     

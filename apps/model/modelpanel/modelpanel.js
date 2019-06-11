@@ -81,7 +81,7 @@ ModelPanel.prototype.open = async function(){
 	Object.keys(await tf.io.listModels()).forEach(function (element) {
 		let opt = document.createElement('option');
 		opt.value = element.split("/").pop();
-	    opt.innerHTML = element.split("/").pop();
+	    opt.innerHTML = element.split("/").pop().slice(0, -3);
 	    modsel.appendChild(opt);
 	});
 	modsel.selectedIndex = 0;
@@ -110,20 +110,16 @@ ModelPanel.prototype.populate = function(models){
 }
 
 ModelPanel.prototype.showProgress = function(text){
-	// console.log('In Progress');
 	this.__indicator.style.display = 'flex';
 	if (text) this.__indicator.innerHTML = '<em class="blink_me">' + text + '</em>';
 }
 
 ModelPanel.prototype.hideProgress = function(){
-	// console.log('Progress Finished');
 	this.__indicator.style.display = 'none';
 }
 
 ModelPanel.prototype.showResults = function(text){
-	// console.log('Progress Finished');
 	this.__result.innerHTML = text;
-	console.log(this.__result)
 }
 
 ModelPanel.prototype.setPosition = function(x,y,w,h){
