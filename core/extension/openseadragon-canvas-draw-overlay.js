@@ -208,6 +208,9 @@
             var x=((this._viewportOrigin.x/this.imgWidth-this._viewportOrigin.x )/this._viewportWidth)*this._containerWidth;
             var y=((this._viewportOrigin.y/this.imgHeight-this._viewportOrigin.y )/this._viewportHeight)*this._containerHeight;
 
+            const imagingHelper = this._viewer.imagingHelper;
+            ctx.lineWidth = this.style.lineWidth = (imagingHelper.physicalToDataX(2) - imagingHelper.physicalToDataX(0))>> 0;
+
             DrawHelper.clearCanvas(ctx.canvas);
             ctx.translate(x,y);
             ctx.scale(zoom,zoom);
@@ -250,14 +253,18 @@
 
             this._viewportWidth = boundsRect.width;
             this._viewportHeight = boundsRect.height * this.imgAspectRatio;
+            
             var image1 = this._viewer.world.getItemAt(0);
+            
             this.imgWidth = image1.source.dimensions.x;
             this.imgHeight = image1.source.dimensions.y;
             this.imgAspectRatio = this.imgWidth / this.imgHeight;
 
-            var iamgeBounds = this._viewer.viewport.viewportToImageRectangle(boundsRect);
-
-            this.style.lineWidth = 2*Math.round(Math.max(iamgeBounds.width/this._containerWidth,iamgeBounds.height/this._containerHeight ));
+            //var iamgeBounds = this._viewer.viewport.viewportToImageRectangle(boundsRect);
+            const imagingHelper = this._viewer.imagingHelper;
+            this.style.lineWidth = (imagingHelper.physicalToDataX(2) - imagingHelper.physicalToDataX(0))>> 0;
+                
+            //this.style.lineWidth = 2*Math.round(Math.max(iamgeBounds.width/this._containerWidth,iamgeBounds.height/this._containerHeight ));
         },
 
         /**
@@ -275,7 +282,9 @@
             this.clearCanvas();
             this._display_.getContext('2d').translate(x,y);
             this._display_.getContext('2d').scale(zoom,zoom);
-            this._display_ctx_.lineWidth = this.style.lineWidth;
+            const imagingHelper = this._viewer.imagingHelper;
+            
+            this._display_ctx_.lineWidth = this.style.lineWidth = (imagingHelper.physicalToDataX(2) - imagingHelper.physicalToDataX(0))>> 0;;
             this.drawMode!=='grid'?DrawHelper.draw(this._display_ctx_,this._draws_data_.slice(0,this._path_index)):
             DrawHelper.drawGrids(this._display_ctx_, this._draws_data_.slice(0,this._path_index),this.size);
             this._display_.getContext('2d').setTransform(1, 0, 0, 1, 0, 0);
@@ -367,6 +376,9 @@
             this.isDrawing = true;
             this._draw_.style.cursor = 'crosshair'
 
+            const imagingHelper = this._viewer.imagingHelper;
+            this.style.lineWidth = (imagingHelper.physicalToDataX(2) - imagingHelper.physicalToDataX(0))>> 0;
+            
 
             this._last = [Math.round(img_point.x),Math.round(img_point.y)]
 

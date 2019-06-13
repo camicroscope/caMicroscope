@@ -230,6 +230,7 @@ class CaMic{
   createCanvasDraw(){
     if(!this.setting.hasDrawLayer || !this.viewer.canvasDraw) return;
     this.viewer.canvasDraw();
+    if(!(__&&__.SimpleContextMenu)) return;
     // create style context menu for draw
     this.drawContextmenu = new __.SimpleContextMenu(
       this.viewer.container,
