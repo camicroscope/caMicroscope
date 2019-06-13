@@ -68,7 +68,7 @@ function initCore(){
   // TODO zoom info and mmp
   const opt = {
       hasZoomControl:true,
-      hasDrawLayer:false,
+      hasDrawLayer:true,
       hasLayerManager:true,
       hasScalebar:true,
       hasMeasurementTool:true
@@ -110,9 +110,10 @@ function initCore(){
 
   $CAMIC.viewer.addHandler('open',function(){
     if($CAMIC.viewer.pmanager)$CAMIC.viewer.pmanager.on();
-    $CAMIC.viewer.viewport.zoomBy($CAMIC.viewer.viewport.getMaxZoom(),$CAMIC.viewer.viewport.getCenter(),true)
+
+    $CAMIC.viewer.viewport.zoomBy($CAMIC.viewer.viewport.imageToViewportZoom(0.5),$CAMIC.viewer.viewport.getCenter(),true)
     $CAMIC.viewer.pmanager.selection = selection;
-    if(!$CAMIC.viewer.measureInstance) $UI.toolbar._sub_tools[2].style.display = 'none';
+    if(!$CAMIC.viewer.measureInstance) $UI.toolbar.getSubTool('measure').style.display = 'none'
   });
   
   // ui init
@@ -135,6 +136,33 @@ function initCore(){
           }
         }
       },
+      {
+        name:'annotation',
+        icon:'create',
+        title:'Annotation',
+        type:'dropdown',
+        value:'annot',
+        dropdownList:[
+          {
+            value:'#FF0000',
+            title:'RED',
+            checked:true
+          },
+          {
+            value:'#0000FF',
+            title:'BLUE'
+          },
+          {
+            value:'#00FF00',
+            title:'GREEN'
+          },
+          { 
+            value:'#FFFF00',
+            title:'YELLOW'
+          }
+        ],
+        callback:toggleAnntation
+      },
       // rectangle
       {
         id:'labeling_mode',
@@ -143,6 +171,7 @@ function initCore(){
         type:'radio',// btn/check/dropdown
         checked:true,
         value:'rect',
+        name:'rect',
         callback:toggleMode
       },
       // point
@@ -152,6 +181,7 @@ function initCore(){
         title:'Point',
         type:'radio',// btn/check/dropdown
         value:'point',
+        name:'point',
         callback:toggleMode
       },
       // measurment tool
@@ -161,6 +191,7 @@ function initCore(){
         title:'Measurement',
         type:'radio',
         value:'measure',
+        name:'measure',
         callback:toggleMode
       },
       {
@@ -266,6 +297,10 @@ function getPatchsZip(data){
 
 function toggleMode(data){
   const mode = data.value;
+  // dis
+  const chk = $UI.toolbar.getSubTool('annotation').querySelector('input[type=checkbox]');
+  chk.checked = false;
+  eventFire(chk,'change');
   switch (mode) {
     case 'point':
       $CAMIC.viewer.measureInstance.off();
@@ -354,5 +389,56 @@ function createPatchList(patches){
     list.appendChild(pdiv);
   })
   $UI.modalbox.body.appendChild(list);
+
+}
+function toggleAnntation(e){
+  if(!$CAMIC.viewer.canvasDrawInstance){
+    alert('Draw Doesn\'t Initialize');
+    return;
+  }
+  //console.log(e);
+  const canvasDraw = $CAMIC.viewer.canvasDrawInstance;
+  const target = this.srcElement || this.target || this.eventSource.canvas;
+  if(e.checked){ // on
+    annotOn(e);
+    
+
+    //annotationOn.call(this,state,target);
+  }else{ // off
+    annotOff(e);
+  }
+}
+
+function annotOn(e){
+  console.log(e)
+  const color = e.status;
+
+  $CAMIC.viewer.measureInstance.off();
+  $CAMIC.viewer.pmanager.off();
+
+  // deselect radio which is one of point/retangle/measure
+  if($UI.toolbar.elt.querySelector(`input[type=radio][name=labeling_mode]:checked`))
+    $UI.toolbar.elt.querySelector(`input[type=radio][name=labeling_mode]:checked`).checked = false
+
+
+  const canvasDraw = $CAMIC.viewer.canvasDrawInstance;
+  canvasDraw.style.color = color;
+  //$UI.toolbar.getSubTool('annotation').querySelector('label').style.backgroundColor = color;
+  $UI.toolbar.getSubTool('annotation').querySelector('label').style.color = color;
+  canvasDraw.style.isFill = false;
+  
+
+  canvasDraw.drawOn();
+  // 
+
+}
+
+function annotOff(){
+  const canvasDraw = $CAMIC.viewer.canvasDrawInstance;
+  canvasDraw.drawOff();
+  canvasDraw.clear();
+
+  //$UI.toolbar.getSubTool('annotation').querySelector('label').style.backgroundColor = '';
+  $UI.toolbar.getSubTool('annotation').querySelector('label').style.color = '';
 
 }
