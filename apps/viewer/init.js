@@ -474,7 +474,23 @@ function initUIcomponents(){
       const title = document.createElement('div');
       title.classList.add('item_head');
       title.textContent = 'Layers Manager';
+
       $UI.layersSideMenu.addContent(title);
+      // zoom locker control
+      $UI.lockerPanel = document.createElement('div');
+      $UI.lockerPanel.classList.add("lock_panel");
+      $UI.lockerPanel.style.display = 'none';
+      $UI.lockerPanel.innerHTML = `<label>Zoom Lock<input type="checkbox" checked></label>`
+      $UI.lockerPanel.querySelector('input[type=checkbox]').addEventListener('change',e=>{
+        isLock = !isLock;
+        if(isLock) {
+          $minorCAMIC.viewer.viewport.zoomTo($CAMIC.viewer.viewport.getZoom(true),$CAMIC.viewer.viewport.getCenter(true),true);
+          $CAMIC.viewer.controls.bottomright.style.display = 'none';
+        }else{
+          $CAMIC.viewer.controls.bottomright.style.display = '';
+        }
+      })
+      $UI.layersSideMenu.addContent($UI.lockerPanel);
 
       $UI.layersList.clearContent('left');
       $UI.layersList.addContent('left',$UI.layersViewer.elt);

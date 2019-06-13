@@ -148,7 +148,7 @@ function closeSecondaryViewer(){
 	minor.classList.add('none');
 	minor.classList.remove('right');
 	$CAMIC.viewer.controls.bottomright.style.display = '';
-	
+
 	const li = $UI.toolbar.getSubTool('sbsviewer');
 	li.querySelector('input[type="checkbox"]').checked = false;
 	Loading.close();
@@ -192,7 +192,7 @@ function heatmapSettingChanged(data){
 	}else{
 		$CAMIC.viewer.heatmap.changeMode(data.mode);
 	}
-	
+
 }
 
 function heatmapOpacityChanaged(data){
@@ -305,7 +305,7 @@ function toggleHeatMapDataList(e){
 			break;
 		// default:
 		// 	console.warn('Editor error');
-		// break;	
+		// break;
 	}
 }
 
@@ -313,7 +313,7 @@ function heatMapEditedListOn(){
 	$UI.editedListSideMenu.open();
 	const li = $UI.toolbar.getSubTool('editeddate')
 	li.querySelector('input[type=checkbox]').checked = true;
-	toggleHeatMapSettings({checked:false,isOpen:false});	
+	toggleHeatMapSettings({checked:false,isOpen:false});
 	heatmapEditorOff();
 	measurementOff();
 	magnifierOff();
@@ -322,7 +322,7 @@ function heatMapEditedListOn(){
 function heatMapEditedListOff(){
 	$UI.editedListSideMenu.close();
 	const li = $UI.toolbar.getSubTool('editeddate')
-	li.querySelector('input[type=checkbox]').checked = false;	
+	li.querySelector('input[type=checkbox]').checked = false;
 
 }
 
@@ -336,7 +336,7 @@ function toggleHeatMapEditor(e){
 			break;
 		// default:
 		// 	console.warn('Editor error');
-		// break;	
+		// break;
 	}
 }
 
@@ -349,7 +349,7 @@ function heatMapEditorOn(){
 	measurementOff();
 	magnifierOff();
 	if(!$CAMIC.viewer.canvasDrawInstance) return;
-	
+
 	const data = $UI.heatmapEditorPanel.getCurrentOperation();
 	if(data){
 		$CAMIC.viewer.canvasDrawInstance.style.color = data[3];
@@ -362,7 +362,7 @@ function heatmapEditorOff(){
 	const li = $UI.toolbar.getSubTool('editor');
 	li.querySelector('input[type=checkbox]').checked = false;
 	$CAMIC.viewer.canvasDrawInstance.drawOff();
-	
+
 }
 
 /*
@@ -373,19 +373,20 @@ function heatmapEditorOff(){
 async function onUpdateHeatmapFields(){
 	if(!confirm('Do You Want To Update Threshold?')) return;
 	Loading.open(document.body,'Saving Threshold ... ');
-	
+
 	const setting = {
 		mode:$CAMIC.viewer.heatmap.mode
 	};
-	
+
 	if($CAMIC.viewer.heatmap.mode=='gradient') setting.field = $CAMIC.viewer.heatmap._currentField.name
-	
+
 	const fields = $D.heatMapData.provenance.analysis.fields;
-	const subject = $D.heatMapData.provenance.image.subject_id;
-	const caseid = $D.heatMapData.provenance.image.case_id;
-	const exec = $D.heatMapData.provenance.analysis.execution_id;	
-	const rs = await $CAMIC.store.updateHeatmapFields(subject, caseid, exec, JSON.stringify(fields), JSON.stringify(setting));
-	
+	const specimen = $D.heatMapData.provenance.image.specimen;
+	const slide = $D.heatMapData.provenance.image.slide;
+	const study = $D.heatMapData.provenance.image.study;
+	const exec = $D.heatMapData.provenance.analysis.execution_id;
+	const rs = await $CAMIC.store.updateHeatmapFields(specimen, slide, study, exec, JSON.stringify(fields), JSON.stringify(setting));
+
 	//const rs = await $CAMIC.store.updateHeatmap
 	Loading.close();
 };
@@ -406,7 +407,7 @@ async function onExportEditData(){
 		data:editData
 	}
 	// let data = JSON.parse(window.localStorage.getItem("mark"))
-	
+
 	// let text = ""
 	// if (data) {
 	// text = JSON.stringify(data.filter(x => {
@@ -433,17 +434,18 @@ function editorPenChange(data){
 }
 
 async function saveEditData(){
-	
+
 	if(!$CAMIC.viewer.canvasDrawInstance._draws_data_.length){
 		alert('No Data Edited!');
 		return;
 	}
 	Loading.open(document.body,`Saving Edit Data ...`);
 	// does data exist
-	// user, subject, case, execution, data
+	// user, specimen, case, execution, data
 	const user = getUserId();
-	const subject = $D.heatMapData.provenance.image.subject_id;
-	const caseid = $D.heatMapData.provenance.image.case_id;
+	const specimen = $D.heatMapData.provenance.image.specimen;
+	const slide = $D.heatMapData.provenance.image.slide;
+	const study = $D.heatMapData.provenance.image.study;
 	const exec = $D.heatMapData.provenance.analysis.execution_id;
 
 	// get draw lines info
@@ -466,14 +468,14 @@ async function saveEditData(){
 	// add new one or update old one
 	const now = getDateInString();
 	const editData = $D.editedDataClusters.toJSON()
-	
+
 
 	// delete old one
 	let create_date = now;
 
 	if(ImgloaderMode!='imgbox'){
 		// find editor data
-		const data = await $CAMIC.store.findHeatmapEdit(user, subject, caseid, exec);
+		const data = await $CAMIC.store.findHeatmapEdit(user, specimen, slide, study, exec);
 		// error
 		if(!Array.isArray(data)&&data.hasError&&data.hasError==true){
 			$UI.message.addError(data.message);
@@ -483,7 +485,7 @@ async function saveEditData(){
 
 		if(data.length!==0){
 			create_date = data[0].create_date;
-			const del = await $CAMIC.store.deleteHeatmapEdit(user, subject, caseid, exec);
+			const del = await $CAMIC.store.deleteHeatmapEdit(user, specimen, slide, study, exec);
 			// error
 			if(del.hasError&&del.hasError==true){
 				$UI.message.addError(del.message);
@@ -541,10 +543,10 @@ function getDateInString(){
 function locateEditData(data){
 	const cluster = data.cluster;
 	const index = data.index;
-	
+
 	const rect = getViewRect(
 			data.cluster.editDataArray[index],
-			$D.heatMapData.provenance.analysis.size, 
+			$D.heatMapData.provenance.analysis.size,
 			$CAMIC.viewer
 		);
 
@@ -564,16 +566,17 @@ async function onDeleteEditData(data){
 
 	// delete data
 	const user = getUserId();
-	const subject = $D.heatMapData.provenance.image.subject_id;
-	const caseid = $D.heatMapData.provenance.image.case_id;
-	const exec = $D.heatMapData.provenance.analysis.execution_id; 	
-	
+	const specimen = $D.heatMapData.provenance.image.specimen;
+	const slide = $D.heatMapData.provenance.image.slide;
+	const study = $D.heatMapData.provenance.image.study;
+	const exec = $D.heatMapData.provenance.analysis.execution_id;
+
 	let rs = null;
 	if(ImgloaderMode!='imgbox'){
 		if($D.editedDataClusters.isEmpty()){
-			rs = await $CAMIC.store.deleteHeatmapEdit(user, subject, caseid, exec);
+			rs = await $CAMIC.store.deleteHeatmapEdit(user, specimen, slide, study, exec);
 		}else{
-			rs = await $CAMIC.store.updateHeatmapEdit(user, subject, caseid, exec, JSON.stringify($D.editedDataClusters.toJSON()));
+			rs = await $CAMIC.store.updateHeatmapEdit(user, specimen, slide, study,  exec, JSON.stringify($D.editedDataClusters.toJSON()));
 		}
 		// error
 		if(rs.hasError&&rs.hasError==true){
@@ -585,7 +588,7 @@ async function onDeleteEditData(data){
 		}
 	}
 	Loading.close();
-	
+
 
 
 	// refresh UI
@@ -593,9 +596,9 @@ async function onDeleteEditData(data){
 	$CAMIC.viewer.heatmap.updateView(0);
 
 	// close pen panel
-	
+
 	// open list panel
-	
+
 }
 
 function findPenInfoByColor(color,info){
@@ -612,7 +615,7 @@ function getViewRect(points , size, viewer){ // points in normalized, size in no
 
 
 	return viewport.imageToViewportRectangle(min[0],min[1],max[0]-min[0], max[1]-min[1]);
-	
+
 }
 
 function getBounds(points){ // return x,y,w,h
@@ -633,4 +636,3 @@ function getBounds(points){ // return x,y,w,h
     	max:max
     };
 }
-
