@@ -1,12 +1,12 @@
 //StatesHelper.js
 
 class StatesHelper{
-    
+
     //
     static getStatesFromURL(url){
 
     }
-    
+
     //
     static getStatesObjectFromURL(){
 
@@ -24,7 +24,7 @@ class StatesHelper{
         }
         const states = {};
         // get current center position in the image coordinates
-        const center = $CAMIC.viewer.viewport.viewportToImageCoordinates($CAMIC.viewer.viewport.getCenter(true));  
+        const center = $CAMIC.viewer.viewport.viewportToImageCoordinates($CAMIC.viewer.viewport.getCenter(true));
         center.x = Math.round(center.x);
         center.y = Math.round(center.y);
         if(isImageCoordinate){ // return image coordinate system
@@ -39,12 +39,12 @@ class StatesHelper{
         // get current zoom
         states.z = $CAMIC.viewer.viewport.getZoom(true);
         if($CAMIC.viewer.omanager){
-            
+
             const lays =  $CAMIC.viewer.omanager.overlays.reduce(function(rs,lay){
                 if(lay.isShow)rs.push(lay.id);
                 return rs;
             },[]);
-            
+
             if(lays.length > 0) states.l = lays;
         }
         return states;

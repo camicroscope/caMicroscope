@@ -149,7 +149,7 @@ class CaMic{
       slidePromise = this.store.getSlide(this.slideQuery.id)
     }
     else {
-      slidePromise = this.store.findSlide(this.slideQuery.name, this.slideQuery.location)
+      slidePromise = this.store.findSlide(this.slideQuery.name, this.slideQuery.study, this.slideQuery.specimen, this.slideQuery.location)
     }
     slidePromise
       .then((x)=>{
@@ -184,9 +184,8 @@ class CaMic{
 
   openSlide(data,func){
     this.slideId = data["_id"]["$oid"]
+
     this.slideName = data['name']
-    this.study = data['study']
-    this.specimen = data['specimen']
 
     this.viewer.open("../../img/IIP/raw/?DeepZoom="+ data["location"] + ".dzi");
     // set mpp
@@ -210,6 +209,7 @@ class CaMic{
 
     imagingHelper.setMaxZoom(1);
     data.url = "../../img/IIP/raw/?DeepZoom="+ data["location"] + ".dzi";
+    data.slide = this.slideId
     if(func && typeof func === 'function') func.call(null,data);
     Loading.text.textContent = `Loading Slide's Tiles...`;
   }

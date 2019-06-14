@@ -423,7 +423,7 @@ function initUIcomponents(){
       // for segmentation
       $CAMIC.viewer.createSegment({
         store:$CAMIC.store,
-        slide:$D.params.data.name,
+        slide:$D.params.data.slide,
         data:[]
       });
 
