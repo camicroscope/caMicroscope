@@ -903,13 +903,14 @@ function openHeatmap(){
 }
 function hostedHeatmap(){
 	const slide = $D.params.slideId;
+	const slideName = $D.params.data.name;
 	$CAMIC.store.findHeatmapType(slide)
 	//
 	.then(function(list){
 		if (typeof list === "undefined") { list = [] }
 		// get heatmap data
 		if(!list.length){
-			alert(`${slide} Has No Heatmap Data.`);
+			alert(`${slideName} Has No Heatmap Data.`);
 			return;
 		}
 		createHeatMapList(list);

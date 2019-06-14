@@ -149,7 +149,7 @@ class CaMic{
       slidePromise = this.store.getSlide(this.slideQuery.id)
     }
     else {
-      slidePromise = this.store.findSlide(this.slideQuery.name, this.slideQuery.location)
+      slidePromise = this.store.findSlide(this.slideQuery.name, this.slideQuery.study, this.slideQuery.specimen, this.slideQuery.location)
     }
     slidePromise
       .then((x)=>{

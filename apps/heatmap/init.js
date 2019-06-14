@@ -69,16 +69,14 @@ function initCore(){
     }else{
       $D.params.data = e;
       // loading heatmap data
-      $D.heatMapData = await $CAMIC.store.getHeatmap($D.params.slideId,$D.params.execId, null, null).then(d=> d[0]);
-      const specimen = $D.heatMapData.provenance.image.specimen;
-      const slide = null
-      const study = null
+      $D.heatMapData = await $CAMIC.store.getHeatmap($D.params.slideId,$D.params.execId).then(d=> d[0]);
+      const slide = $D.params.slideId
       const exec = $D.heatMapData.provenance.analysis.execution_id;
 
       if(ImgloaderMode!='imgbox'){
         // query from DB
-        const editData = await $CAMIC.store.findHeatmapEdit(getUserId(), specimen, slide, study, exec).then(d=>d[0]);
-        //const editData = await $CAMIC.store.findHeatmapEdit('test', specimen, slide, exec).then(d=>d[0]);
+        const editData = await $CAMIC.store.findHeatmapEdit(getUserId(), slide, exec).then(d=>d[0]);
+        //const editData = await $CAMIC.store.findHeatmapEdit('test', slide, exec).then(d=>d[0]);
         $D.editedDataClusters = new EditDataCluster();
         if(editData&&Array.isArray(editData.data)&&editData.data.length > 0){
           setEditedDataClusters(editData.data);

@@ -20,7 +20,7 @@ function PathDbMods() {
   }
   console.warn("{PathDB mods enabled}")
   Store.prototype.default_findMark = Store.prototype.findMark
-  Store.prototype.findMark = function(slide, name, specimen, study, footprint, source, x0, x1, y0, y1) {
+  Store.prototype.findMark = function(slide, name, footprint, source, x0, x1, y0, y1) {
     var suffix = "Mark/find"
     var url = this.base + suffix;
     var query = {}
@@ -53,7 +53,7 @@ function PathDbMods() {
       mode: "cors"
     }).then(this.errorHandler).then(x => this.filterBroken(x, "mark"))
   }
-  Store.prototype.getMarkByIds = function(ids, slide, study, specimen, source, footprint, x0, x1, y0, y1) {
+  Store.prototype.getMarkByIds = function(ids, slide, source, footprint, x0, x1, y0, y1) {
     if (!Array.isArray(ids) || !slide) {
       return {
         hasError: true,

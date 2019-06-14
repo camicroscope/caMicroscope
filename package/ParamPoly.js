@@ -16,14 +16,14 @@ function ParamPoly(urlvar){
   Store.prototype.findMark_raw = Store.prototype.findMark
   Store.prototype.findMarkTypes_raw = Store.prototype.findMarkTypes
   Store.prototype.getMarkByIds_raw = Store.prototype.getMarkByIds
-  Store.prototype.findMark = function (slide, name, specimen, study, footprint, source, x0, x1, y0, y1){
+  Store.prototype.findMark = function (slide, name, footprint, source, x0, x1, y0, y1){
     if (!(urlvar in getUrlVars())){
-      return this.findMark_raw(slide, name, specimen, study, footprint, source, x0, x1, y0, y1)
+      return this.findMark_raw(slide, name, footprint, source, x0, x1, y0, y1)
     } else {
       // expecting feature collection so far
       let image_data = JSON.parse(decodeURIComponent(getUrlVars()[urlvar]))
       let dummy_mark = { "_id" : { "$oid" : "000"} , "provenance" : { "image" : { "slide" : "NO" , "slidename" : "NO"} , "analysis" : { "source" : "url" , "execution_id" : "URLPARAM"}} , "geometries" : { "type" : "FeatureCollection" , "features" : image_data}}
-      return this.findMark_raw(slide, name, specimen, study, footprint, source, x0, x1, y0, y1).then(x=>{
+      return this.findMark_raw(slide, name, footprint, source, x0, x1, y0, y1).then(x=>{
         x.push(dummy_mark)
         return x
       })
@@ -42,10 +42,10 @@ function ParamPoly(urlvar){
     }
   }
 
-  Store.prototype.getMarkByIds = function(ids, slide, study, specimen, source, footprint, x0, x1, y0, y1){
-    console.log(ids, slide, study, specimen, source, footprint, x0, x1, y0, y1)
+  Store.prototype.getMarkByIds = function(ids, slide, source, footprint, x0, x1, y0, y1){
+    console.log(ids, slide, source, footprint, x0, x1, y0, y1)
     if (ids.includes('URLPARAM')){
-      return this.getMarkByIds_raw(ids, slide, study, specimen, source, footprint, x0, x1, y0, y1).then(x=>{
+      return this.getMarkByIds_raw(ids, slide, source, footprint, x0, x1, y0, y1).then(x=>{
         if (!(urlvar in getUrlVars())){
           return x
         } else {
@@ -58,7 +58,7 @@ function ParamPoly(urlvar){
         }
       })
     } else {
-      return this.getMarkByIds_raw(ids, slide, study, specimen, source, footprint, x0, x1, y0, y1)
+      return this.getMarkByIds_raw(ids, slide, source, footprint, x0, x1, y0, y1)
     }
   }
 
