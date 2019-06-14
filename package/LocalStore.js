@@ -147,12 +147,6 @@ function init_LocalStore(){
       if(source){
         query['provenance.analysis.source']= source
       }
-      if(specimen){
-        query['provenance.image.specimen'] = specimen
-      }
-      if(study){
-        query['provenance.image.study'] = study
-      }
       res(findInLocalStorage('mark', query))
     }).then(x=>this.filterBroken(x,"mark"))
   }
@@ -248,9 +242,7 @@ function init_LocalStore(){
       let slideId = params.get("id") || "local";
       let local_dummy = {
         'id': slideId,
-        'mpp': '0.001',
-        'study':"",
-        'specimen':""
+        'mpp': '0.001'
       }
       res([local_dummy])
     })
@@ -262,9 +254,7 @@ function init_LocalStore(){
       console.log(params)
       let local_dummy = {
         'id': slideId,
-        'mpp': '0.001',
-        'study':"",
-        'specimen':""
+        'mpp': '0.001'
       }
       res(local_dummy)
     })

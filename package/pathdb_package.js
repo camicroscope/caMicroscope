@@ -30,12 +30,6 @@ function PathDbMods() {
     if (name) {
       query.name = name
     }
-    if (specimen) {
-      query.specimen = specimen
-    }
-    if (study) {
-      query.study = study
-    }
     if (footprint) {
       query.footprint = footprint
     }
@@ -72,12 +66,6 @@ function PathDbMods() {
     var stringifiedIds = ids.map(id => `"${id}"`).join(',');
     query.name = `[${stringifiedIds}]`;
     query.slide = slide;
-    if (study) {
-      query.study = study;
-    }
-    if (specimen) {
-      query.specimen = specimen;
-    }
     if (source) {
       query.source = source;
     }
@@ -167,8 +155,6 @@ function PathDbMods() {
     var url = this.base + suffix;
     var query = {}
     query.slide = slide
-    query.specimen = ""
-    query.study = ""
     if(name) query.name = name;
 
     return fetch(url + "?" + objToParamStr(query), {
@@ -184,8 +170,6 @@ function PathDbMods() {
     var url = this.base + suffix;
     var query = {}
     query.slide = slide
-    query.specimen = ""
-    query.study = ""
     if(name) query.name = name;
 
     return fetch(url + "?" + objToParamStr(query), {
@@ -199,8 +183,6 @@ function PathDbMods() {
     var url = this.base + suffix;
     var query = {}
     query.slide = slide
-    query.specimen = ""
-    query.study = ""
     if(exec) query.name = exec;
 
     return fetch(url + "?" + objToParamStr(query), {
@@ -225,11 +207,6 @@ function PathDbMods() {
     var pathdb_id = urlParams.get('slideId');
     this.slideId = pathdb_id // default value
     this.slideName = pathdb_id
-    this.study = ""
-    this.specimen = ""
-    this.subject_id = ""
-    this.image_id = ""
-    this.study_id = ""
     this.store.getSlide(pathdb_id).then(data => {
       data = data[0]
       console.log(data)
@@ -301,9 +278,7 @@ function PathDbMods() {
       x.subject_id = this.subject_id
       x.image_id = this.image_id
       x.study_id = this.study_id
-
-      x.study = this.study
-      x.specimen = this.specimen
+      // other slide data
       x.mpp = this.mpp;
       x.mpp_x = this.mpp_x;
       x.mpp_y = this.mpp_y;

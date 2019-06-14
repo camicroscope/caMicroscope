@@ -88,12 +88,6 @@ class Store {
     if (name) {
       query.name = name
     }
-    if (specimen) {
-      query.specimen = specimen
-    }
-    if (study) {
-      query.study = study
-    }
     if (footprint) {
       query.footprint = footprint
     }
@@ -168,12 +162,6 @@ class Store {
     var stringifiedIds = ids.map(id => `"${id}"`).join(',');
     query.name = `[${stringifiedIds}]`;
     query.slide = slide;
-    if (study){
-      query.study = study;
-    }
-    if (specimen){
-      query.specimen = specimen;
-    }
     if (source){
       query.source = source;
     }
@@ -301,12 +289,6 @@ class Store {
     if (slide) {
       query.slide = slide
     }
-    if (subject) {
-      query.subject = subject
-    }
-    if (study) {
-      query.study = study
-    }
     return fetch(url + "?" + objToParamStr(query), {
       credentials: "include",
       mode: "cors"
@@ -321,12 +303,6 @@ class Store {
     }
     if (slide) {
       query.slide = slide
-    }
-    if (study) {
-      query.study = study
-    }
-    if (specimen) {
-      query.specimen = specimen
     }
     return fetch(url + "?" + objToParamStr(query), {
       credentials: "include",
@@ -343,8 +319,6 @@ class Store {
     var url = this.base + suffix;
     var query = {};
     query.slide = slide;
-    query.specimen = specimen || "";
-    query.study = study || "";
     query.name = name;
 
     return fetch(url + "?" + objToParamStr(query), {
@@ -420,8 +394,6 @@ class Store {
     var url = this.base + suffix;
     var query = {}
 
-    query.specimen = specimen || ""
-    query.study = study || ""
 
     if (slide) {
       query.slide = slide
@@ -504,22 +476,12 @@ class Store {
     var suffix = "HeatmapEdit/find"
     var url = this.base + suffix;
     var query = {}
-
     if (user) {
       query.user = user
     }
-
-    if (specimen) {
-      query.specimen = specimen
-    }
-
     if (slide) {
       query.slide = slide
     }
-    if (study) {
-      query.study = study
-    }
-
     if(name) {
       query.name = name
     }
@@ -541,10 +503,6 @@ class Store {
     if (user) {
       query.user = user
     }
-
-    query.specimen = specimen || ""
-    query.study = study || ""
-
     if (slide) {
       query.slide = slide
     }
@@ -617,12 +575,6 @@ class Store {
     }
     if (location) {
       query.location = location
-    }
-    if (specimen) {
-      query.specimen = specimen
-    }
-    if (study) {
-      query.study = study
     }
 
     return fetch(url + "?" + objToParamStr(query), {
