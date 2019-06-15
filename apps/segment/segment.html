@@ -163,7 +163,7 @@
       STORE.findSlide($D.params.slide, $D.params.study, $D.params.specimen, $D.params.location).then(x=>{
         let offset = parseInt($D.params.offset,10) || 0;
         if(x.length == 0 || offset >= x.length){
-          redirect($D.pages.table,'No Slide Found. Redirecting To Table.');
+          redirect($D.pages.table,'No Slide Found. Redirecting to Table.');
         } else {
           newParams = $D.params
           delete newParams.data
@@ -176,13 +176,13 @@
         }
       }).catch(e=>{
         console.warn(e)
-        redirect($D.pages.table,'Redirecting To Table.');
+        redirect($D.pages.table,'Redirecting to Table.');
       })
       // find the associated slideID
       // open viewer with that slideID
     }
     else {
-      redirect($D.pages.table,'Slide Is Undefined. Redirecting To Table.');
+      redirect($D.pages.table,'Slide is undefined. Redirecting to Table.');
     }
 
     // get states parameters

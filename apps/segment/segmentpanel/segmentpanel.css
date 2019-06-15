@@ -74,8 +74,7 @@
 }
 
 .segment-panel .segment-count {
-  font-size: 12px;
-  font-weight: bold;
+  font-size: 11px;
   text-align: center;
   vertical-align: middle;
   top: -22px;
@@ -88,11 +87,6 @@
   width: 146px;
   background: white;
   border: 1px solid black;
-}
-
-.segment-panel .segment-count label {
-  font-size: 12px;
-  font-weight: bold;
 }
 
 .segment-panel .segment-processing {

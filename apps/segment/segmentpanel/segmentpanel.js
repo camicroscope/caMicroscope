@@ -26,7 +26,6 @@ function SegmentPanel(viewer){
 		
 		<canvas class='out'></canvas>
 		<canvas class='src'></canvas>
-		<canvas id='hemo' class='hiddenCanvas'></canvas>
 		<canvas id ='fullsrc' class='hiddenCanvas'></canvas>
 		<canvas id='c2s' class='hiddenCanvas'></canvas>
 		<canvas id='fullSegImg' class='hiddenCanvas'></canvas>
@@ -54,7 +53,6 @@ function SegmentPanel(viewer){
 	this.__out = this.elt.querySelector('.out');
 	this.__src = this.elt.querySelector('.src');
 	this.__fullsrc = this.elt.querySelector('#fullsrc');
-	this.__hemo = this.elt.querySelector('#hemo');
 	this.__img = this.elt.querySelector('#imageEle');
 	this.__c2s = this.elt.querySelector('#c2s');
 	this.__btn_save = this.elt.querySelector('#save');
@@ -111,7 +109,7 @@ SegmentPanel.prototype.close = function(){
 };
 
 SegmentPanel.prototype.save = function(){
-	alert('Saving Image And Mask!');
+	alert('Saving Image and Mask!');
 };
 
 SegmentPanel.prototype.showThreshBar = function(){
