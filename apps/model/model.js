@@ -1,5 +1,6 @@
 let PDR = OpenSeadragon.pixelDensityRatio;
 const IDB_URL = "indexeddb://";
+var csvContent;
 
 // INITIALIZE DB
 window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
@@ -236,12 +237,11 @@ function initCore() {
     // TO-DO -Save class probabilities
     $UI.modelPanel.__btn_savecsv.addEventListener('click', function(e) {
       let fname = $D.params.slideId + '_roi.csv';
-      // buildAndDownloadCSV($UI.modelPanel.__contours,fname);
+      downloadCSV(fname);
     }.bind($UI.modelPanel));
   });
   
 }
-  // ************************************************************************ //
 
 /**
  * Toolbar button callback
@@ -287,6 +287,7 @@ function camicStopDraw(e) {
  
 
       const self = $UI.modelPanel;
+      csvContent = "";
 
       var fullResCvs = self.__fullsrc;
       // const prefix_url = ImgloaderMode == 'iip'?`${window.location.origin}/img/IIP/raw/?IIIF=${$D.params.data.location}`:$CAMIC.slideId;
@@ -441,32 +442,27 @@ function runPredict(key) {
  * @param topK The number of top predictions to show.
  */
 async function getTopKClasses(logits, classes, topK) {
-    const values = await logits.data();
-    console.log(values);
+  const values = await logits.data();
+  console.log(values);
 
-    const valuesAndIndices = [];
-    for (let i = 0; i < values.length; i++) {
-    valuesAndIndices.push({value: values[i], index: i});
-    }
-    valuesAndIndices.sort((a, b) => {
-    return b.value - a.value;
-    });
-    const topkValues = new Float32Array(topK);
-    const topkIndices = new Int32Array(topK);
-    for (let i = 0; i < topK; i++) {
-    topkValues[i] = valuesAndIndices[i].value;
-    topkIndices[i] = valuesAndIndices[i].index;
-    }
+  const indexOfMaxValue = values.reduce((iMax, x, i, arr) => x > arr[iMax] ? i : iMax, 0);
 
-    const topClassesAndProbs = [];
-    for (let i = 0; i < topkIndices.length; i++) {
-    topClassesAndProbs.push({
-        className: classes[parseInt(topkIndices[i])],
-        probability: topkValues[i]
-    })
+  const topClassesAndProbs = [];
+
+  topClassesAndProbs.push({
+      className: classes[indexOfMaxValue],
+      probability: values[indexOfMaxValue]
+  })
+
+  csvContent = "data:text/csv;charset=utf-8,"
+
+  try {
+    for (let i = 0; i < classes.length; i++) {
+      csvContent += classes[i] + "," + values[i] + "\r\n"
     }
-    console.log(topkIndices[0]);
-    return topClassesAndProbs;
+  } catch { console.log("Unequal dimensions of output layer and class input."); }
+
+  return topClassesAndProbs;
 }
 
 // TO-DO: Allow uploading hosted models & validate the file input
@@ -556,6 +552,7 @@ function uploadModel() {
     } else {
       status.innerHTML = "Please fill out all the fields with valid values."
       status.classList.add('error');
+      console.error(e);
     }
     
   });  
@@ -737,22 +734,17 @@ function download(canvas, filename) {
 // }
 
 // Save the polygons to csv with filename.  Uses local save dialog.
-function downloadCSV(data,filename) {
-  let csv = data;
+function downloadCSV(filename) {
   const self = $UI.modelPanel;
-  // console.log(data);
+  if (csvContent) {
+    filename = filename || 'export.csv';
+    let data = encodeURI(csvContent);
 
-  if (csv == null) return;
-
-  filename = filename || 'export.csv';
-
-  if (csv.search(/^data:text\/csv/i) == -1) {
-      csv = 'data:text/csv;charset=utf-8,' + csv;
+    link = document.createElement('a');
+    link.setAttribute('href', data);
+    link.setAttribute('download', filename);
+    link.click();
+  } else {
+    self.showResults("Pleae select a model first");
   }
-  data = encodeURI(csv);
-
-  link = document.createElement('a');
-  link.setAttribute('href', data);
-  link.setAttribute('download', filename);
-  link.click();
 }

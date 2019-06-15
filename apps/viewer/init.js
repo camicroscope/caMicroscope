@@ -335,7 +335,7 @@ function initUIcomponents(){
     icon: 'aspect_ratio',
     type: 'btn',
     value: 'rect',
-    title: 'Run Model',
+    title: 'Predict',
     callback: function () {
       if(window.location.search.length > 0) {
         window.location.href = '../model/model.html' + window.location.search;

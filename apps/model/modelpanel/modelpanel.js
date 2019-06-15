@@ -6,7 +6,7 @@ function ModelPanel(viewer){
 		<div class='result' id='result'></div>
 		<div id='close' class='material-icons settings'>close</div>
 		<div id='save' class='material-icons settings' title='Save ROI Image'>save</div>
-		<div id='savecsv' class='material-icons settings' title='Save ROI CSV File'>list</div>
+		<div id='savecsv' class='material-icons settings' title='Save class probabilities - CSV File'>list</div>
 		<select id='modelselect' class='settings' title='Select the model'><option hidden disabled selected value> -- select a model -- </option>	</select>
 		
 		<div id='processing' class='segment-processing'></div>
