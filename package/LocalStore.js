@@ -241,8 +241,10 @@ function init_LocalStore(){
       let params = new URLSearchParams(document.location.search.substring(1));
       let slideId = params.get("id") || "local";
       let local_dummy = {
-        'id': slideId,
-        'mpp': '0.001'
+        '_id': {"$oid":slideId},
+        'mpp': '0.001',
+        'location': slideId,
+        'name': slideId
       }
       res([local_dummy])
     })
@@ -253,8 +255,10 @@ function init_LocalStore(){
       let slideId = params.get("id") || "local";
       console.log(params)
       let local_dummy = {
-        'id': slideId,
-        'mpp': '0.001'
+        '_id': {"$oid":slideId},
+        'mpp': '0.001',
+        'location': slideId,
+        'name': slideId
       }
       res(local_dummy)
     })
