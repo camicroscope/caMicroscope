@@ -128,7 +128,7 @@ function synchornicView2(data){
 			if(isLock){
 				$CAMIC.viewer.viewport.zoomTo(data.zoom,data.refPoint);
 			}else{
-				$CAMIC.viewer.viewport.panTo($minorCAMIC.viewer.viewport.getCenter(true));	
+				$CAMIC.viewer.viewport.panTo($minorCAMIC.viewer.viewport.getCenter(true));
 			}
 			break;
 		case 'pan':
@@ -536,9 +536,7 @@ function anno_callback(data){
 	const annotJson = {
 		provenance:{
 			image:{
-				slide:$D.params.data.name,
-				specimen:$D.params.data.specimen,
-				study:$D.params.data.study
+				slide:$D.params.slideId
 			},
 			analysis:{
 				source:'human',
@@ -634,7 +632,7 @@ async function callback(data){
 		default:
 			break;
 	}
-	
+
 	data.forEach(function(d){
 		const item = d.item;
 		if(item.typeName=='segmentation'){
@@ -673,8 +671,8 @@ async function callback(data){
 				camic.viewer.createHeatmap(opt);
 			}else{
 				Loading.open(document.body,'Loading Heatmap Data...');
-				// load heatmap 
-				camic.store.getHeatmap($D.params.data.name,item.id)
+				// load heatmap
+				camic.store.getHeatmap($D.params.slideId,item.id)
 				.then(function(data){
 					if(Array.isArray(data)&&data.length>0){
 						$D.heatMapData = data[0];
@@ -696,8 +694,8 @@ async function callback(data){
 				        }
 						camic.viewer.createHeatmap(opt);
 
-				    }			
-				})		
+				    }
+				})
 				.catch(function(error){
 					// heatmap schema
 					console.error(error);
@@ -708,9 +706,9 @@ async function callback(data){
 					}else{
 						// set message
 						$UI.message.addError('Loading Heatmap Data Is Error');
-						
+
 					}
-				}); 
+				});
 			}
 
 			// rest other check box
@@ -766,7 +764,7 @@ function loadAnnotationById(camic, layerData ,callback){
 
 			Loading.open(document.body,'Loading Layers...');
 
-			$CAMIC.store.getMarkByIds([item.id],$D.params.data.name)
+			$CAMIC.store.getMarkByIds([item.id],$D.params.slideId)
 			.then(data =>{
 				delete item.loading;
 
@@ -904,14 +902,15 @@ function openHeatmap(){
 
 }
 function hostedHeatmap(){
-	const slide = $D.params.data.name;
+	const slide = $D.params.slideId;
+	const slideName = $D.params.data.name;
 	$CAMIC.store.findHeatmapType(slide)
 	//
 	.then(function(list){
 		if (typeof list === "undefined") { list = [] }
 		// get heatmap data
 		if(!list.length){
-			alert(`${slide} Has No Heatmap Data.`);
+			alert(`${slideName} Has No Heatmap Data.`);
 			return;
 		}
 		createHeatMapList(list);
