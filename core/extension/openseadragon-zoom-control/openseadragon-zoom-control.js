@@ -126,13 +126,14 @@
         }.bind(this));
         this.zoomIn.addEventListener('click', this.doZoomIn.bind(this));
         this.zoomOut.addEventListener('click', this.doZoomOut.bind(this));
-        viewer.addHandler("canvas-click", e=>{
+        viewer.addHandler("canvas-click", function(e){
           if (e.shift){
             console.info(e)
+            console.log(this)
             //viewer.viewport.zoomBy(0.5)
-            this.doZoomOut.bind(this)
+            this.doZoomOut()
           }
-        })
+        }.bind(this))
         this.range.addEventListener('change', this.rangeChange.bind(this));
         this.range.addEventListener('mousemove', this.rangeChange.bind(this));
 
