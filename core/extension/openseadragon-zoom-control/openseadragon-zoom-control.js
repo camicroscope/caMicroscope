@@ -128,9 +128,6 @@
         this.zoomOut.addEventListener('click', this.doZoomOut.bind(this));
         viewer.addHandler("canvas-click", function(e){
           if (e.shift){
-            console.info(e)
-            console.log(this)
-            //viewer.viewport.zoomBy(0.5)
             this.doZoomOut()
           }
         }.bind(this))
