@@ -127,7 +127,7 @@ class CaMic{
       nav.style.backgroundColor = '#365f9c';
       nav.style.opacity = 1;
     }
-    if(this.viewer.viewport.getMaxZoom() < 40) this.viewer.viewport.maxZoomLevel = 40
+    //if(this.viewer.viewport.getMaxZoom() < 40) this.viewer.viewport.maxZoomLevel = 40
     this.createZoomControl();
 
     if(this.mpp_x&&this.mpp_y&&this.mpp_x!=1e9&&this.mpp_y!=1e9)
