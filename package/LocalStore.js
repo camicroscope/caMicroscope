@@ -182,9 +182,6 @@ function init_LocalStore(){
   Store.prototype.findHeatmap = function(slide, name){
     return new Promise(function(res, rej){
       let query = {}
-      if (slide){
-        query['provenance.image.slide'] = slide
-      }
       if(name){
         query['provenance.analysis.execution_id']= name
       }
@@ -194,9 +191,6 @@ function init_LocalStore(){
   Store.prototype.findHeatmapType = function(slide, name){
     return new Promise(function(res, rej){
       let query = {}
-      if (slide){
-        query['provenance.image.slide'] = slide
-      }
       if(name){
         query['provenance.analysis.execution_id']= name
       }
@@ -206,9 +200,6 @@ function init_LocalStore(){
   Store.prototype.getHeatmap = function(slide, execution_id){
     return new Promise(function(res, rej){
       let query = {}
-      if (slide){
-        query['provenance.image.slide'] = slide
-      }
       if(execution_id){
         query['provenance.analysis.execution_id']= execution_id
       }
@@ -251,7 +242,7 @@ function init_LocalStore(){
   Store.prototype.findSlide = function(slide, specimen, study, location){
     return new Promise(function(res, rej){
       let params = new URLSearchParams(document.location.search.substring(1));
-      let slideId = params.get("id") || "local";
+      let slideId = params.get("slideId") || "local";
       let local_dummy = {
         '_id': {"$oid":slideId},
         'mpp': '0.001',
@@ -264,7 +255,7 @@ function init_LocalStore(){
   Store.prototype.getSlide = function(id){
     return new Promise(function(res, rej){
       let params = new URLSearchParams(document.location.search.substring(1));
-      let slideId = params.get("id") || "local";
+      let slideId = params.get("slideId") || "local";
       console.log(params)
       let local_dummy = {
         '_id': {"$oid":slideId},
@@ -372,9 +363,6 @@ Store.prototype.updateHeatmapFields = function(slide, name, fields, setting){
   if(name){
     query['provenance.analysis.execution_id']= name
   }
-  if(slide){
-    query['provenance.image.slide'] = slide
-  }
   console.log(setting, fields)
   return new Promise(function(res, rej){
     findInIDB('heatmap', query).then(x=>{
@@ -399,9 +387,6 @@ Store.prototype.updateHeatmapEdit = function(user, slide, name, data){
   if(name){
     query['provenance.analysis.execution_id']= name
   }
-  if(slide){
-    query['provenance.image.slide'] = slide
-  }
   return new Promise(function(res, rej){
     findInIDB('heatmapEdit', query).then(x=>{
       var hm = x[0]
@@ -418,9 +403,6 @@ Store.prototype.deleteHeatmapEdit = function(user,slide,name){
   query.user = user
   if(name){
     query['provenance.analysis.execution_id']= name
-  }
-  if(slide){
-    query['provenance.image.slide'] = slide
   }
   return new Promise(function(res, rej){
     findInIDB('heatmapEdit', query).then(x=>{
