@@ -367,6 +367,68 @@ function init_LocalStore(){
   }
 }
 
+Store.prototype.updateHeatmapFields = function(slide, name, fields, setting){
+  var query = {}
+  if(name){
+    query['provenance.analysis.execution_id']= name
+  }
+  if(slide){
+    query['provenance.image.slide'] = slide
+  }
+  console.log(setting, fields)
+  return new Promise(function(res, rej){
+    findInIDB('heatmap', query).then(x=>{
+      var hm = x[0]
+      removeFromIDB('heatmap', hm['_id']).then(y=>{
+        hm.data = data
+        res(putInIDB('heatmap', hm))
+      })
+    })
+  })
+}
+
+Store.prototype.addHeatmapEdit = function(json){
+  json['_id'] = json['_id'] || {'$oid': Date.now()}
+  return new Promise(function(res, rej){
+    res(putInIDB('heatmapEdit', json))
+  })
+}
+
+Store.prototype.updateHeatmapEdit = function(user, slide, name, data){
+  var query = {}
+  if(name){
+    query['provenance.analysis.execution_id']= name
+  }
+  if(slide){
+    query['provenance.image.slide'] = slide
+  }
+  return new Promise(function(res, rej){
+    findInIDB('heatmapEdit', query).then(x=>{
+      var hm = x[0]
+      removeFromIDB('heatmapEdit', hm['id']).then(y=>{
+        hm.data = data
+        res(putInIDB('heatmapEdit', hm))
+      })
+    })
+  })
+}
+
+Store.prototype.deleteHeatmapEdit = function(user,slide,name){
+  var query = {}
+  query.user = user
+  if(name){
+    query['provenance.analysis.execution_id']= name
+  }
+  if(slide){
+    query['provenance.image.slide'] = slide
+  }
+  return new Promise(function(res, rej){
+    findInIDB('heatmapEdit', query).then(x=>{
+      res(removeFromIDB('heatmapEdit', x[0]['_id']))
+    })
+  })
+}
+
 // default template
 let defaultTemplate = {
     "_id": "0",
