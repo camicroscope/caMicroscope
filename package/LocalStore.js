@@ -191,6 +191,18 @@ function init_LocalStore(){
       res(findInIDB('heatmap', query))
     }).then(x=>this.filterBroken(x,"heatmap"))
   }
+  Store.prototype.findHeatmapTypes = function(slide, name){
+    return new Promise(function(res, rej){
+      let query = {}
+      if (slide){
+        query['provenance.image.slide'] = slide
+      }
+      if(name){
+        query['provenance.analysis.execution_id']= name
+      }
+      res(findInIDB('heatmap', query))
+    }).then(x=>this.filterBroken(x,"heatmap"))
+  }
   Store.prototype.getHeatmap = function(slide, execution_id){
     return new Promise(function(res, rej){
       let query = {}
