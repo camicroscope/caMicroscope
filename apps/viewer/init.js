@@ -325,20 +325,34 @@ function initUIcomponents(){
       window.location.href = `../labeling/labeling.html${window.location.search}`;
     }
   });
-   subToolsOpt.push({
-     name:'segment',
-     icon: 'timeline',
-     type: 'btn',
-     value: 'rect',
-     title: 'Segment',
-     callback: function () {
-       if(window.location.search.length > 0) {
-         window.location.href = '../segment/segment.html' + window.location.search;
-       }else{
-         window.location.href = '../segment/segment.html';
-       }
-     }
-   });
+  subToolsOpt.push({
+    name:'segment',
+    icon: 'timeline',
+    type: 'btn',
+    value: 'rect',
+    title: 'Segment',
+    callback: function () {
+      if(window.location.search.length > 0) {
+        window.location.href = '../segment/segment.html' + window.location.search;
+      }else{
+        window.location.href = '../segment/segment.html';
+      }
+    }
+  });
+  subToolsOpt.push({
+    name:'model',
+    icon: 'aspect_ratio',
+    type: 'btn',
+    value: 'rect',
+    title: 'Predict',
+    callback: function () {
+      if(window.location.search.length > 0) {
+        window.location.href = '../model/model.html' + window.location.search;
+      }else{
+        window.location.href = '../model/model.html';
+      }
+    }
+  });
 
   // -- For Nano borb Start -- //
   if(ImgloaderMode =='imgbox'){
@@ -423,7 +437,7 @@ function initUIcomponents(){
       // for segmentation
       $CAMIC.viewer.createSegment({
         store:$CAMIC.store,
-        slide:$D.params.data.name,
+        slide:$D.params.data.slide,
         data:[]
       });
 
@@ -474,7 +488,23 @@ function initUIcomponents(){
       const title = document.createElement('div');
       title.classList.add('item_head');
       title.textContent = 'Layers Manager';
+
       $UI.layersSideMenu.addContent(title);
+      // zoom locker control
+      $UI.lockerPanel = document.createElement('div');
+      $UI.lockerPanel.classList.add("lock_panel");
+      $UI.lockerPanel.style.display = 'none';
+      $UI.lockerPanel.innerHTML = `<label>Zoom Lock<input type="checkbox" checked></label>`
+      $UI.lockerPanel.querySelector('input[type=checkbox]').addEventListener('change',e=>{
+        isLock = !isLock;
+        if(isLock) {
+          $minorCAMIC.viewer.viewport.zoomTo($CAMIC.viewer.viewport.getZoom(true),$CAMIC.viewer.viewport.getCenter(true),true);
+          $CAMIC.viewer.controls.bottomright.style.display = 'none';
+        }else{
+          $CAMIC.viewer.controls.bottomright.style.display = '';
+        }
+      })
+      $UI.layersSideMenu.addContent($UI.lockerPanel);
 
       $UI.layersList.clearContent('left');
       $UI.layersList.addContent('left',$UI.layersViewer.elt);

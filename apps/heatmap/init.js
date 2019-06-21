@@ -69,15 +69,14 @@ function initCore(){
     }else{
       $D.params.data = e;
       // loading heatmap data
-      $D.heatMapData = await $CAMIC.store.getHeatmap($D.params.data.name,$D.params.execId).then(d=> d[0]);
-      const subject = $D.heatMapData.provenance.image.subject_id;
-      const caseid = $D.heatMapData.provenance.image.case_id;
+      $D.heatMapData = await $CAMIC.store.getHeatmap($D.params.slideId,$D.params.execId).then(d=> d[0]);
+      const slide = $D.params.slideId
       const exec = $D.heatMapData.provenance.analysis.execution_id;
-  
+
       if(ImgloaderMode!='imgbox'){
         // query from DB
-        const editData = await $CAMIC.store.findHeatmapEdit(getUserId(), subject, caseid, exec).then(d=>d[0]);
-        //const editData = await $CAMIC.store.findHeatmapEdit('test', subject, caseid, exec).then(d=>d[0]);
+        const editData = await $CAMIC.store.findHeatmapEdit(getUserId(), slide, exec).then(d=>d[0]);
+        //const editData = await $CAMIC.store.findHeatmapEdit('test', slide, exec).then(d=>d[0]);
         $D.editedDataClusters = new EditDataCluster();
         if(editData&&Array.isArray(editData.data)&&editData.data.length > 0){
           setEditedDataClusters(editData.data);
@@ -85,14 +84,14 @@ function initCore(){
       }else{
         $D.editedDataClusters = new EditDataCluster();
       }
-      
+
 
 
       if(!$D.heatMapData){
         redirect($D.pages.table,`No Heatmap's Data Found. Redirecting To Table.`);
       }
 
-      
+
       $UI.slideInfos = new CaMessage({
       /* opts that need to think of*/
         id:'cames',
@@ -110,7 +109,7 @@ function initCore(){
   $CAMIC.viewer.addHandler('open',function(){
     Loading.open(document.body, `Loading Data ...`);
     // load the heatmap data
-   
+
     var checkImagingHelperIsReady = setInterval(function () {
       if($CAMIC.viewer.imagingHelper&& $CAMIC.viewer.imagingHelper._haveImage && $D.heatMapData && $D.editedDataClusters && $UI.editedListSideMenu) {
         clearInterval(checkImagingHelperIsReady);
@@ -153,39 +152,39 @@ function initCore(){
 
 
         // create heatmap editor
-        
+
         $UI.heatmapEditorPanel = new HeatmapEditorPanel({
           fields:$D.heatMapData.provenance.analysis.fields,
-          // editedDate:$D. 
-          onFieldChange: editorPenChange, 
+          // editedDate:$D.
+          onFieldChange: editorPenChange,
           onReset: function(){
             if(confirm('Do You Want To Clear Edited Data?')){
-              $CAMIC.viewer.canvasDrawInstance.clear();  
+              $CAMIC.viewer.canvasDrawInstance.clear();
             }
           }, // clearEditData
           onSave: saveEditData
         });
         $UI.editorSideMenu.addContent($UI.heatmapEditorPanel.elt);
 
-        // create edited data list 
+        // create edited data list
         $UI.heatmapEditedDataPanel = new HeatmapEditedDataPanel({
           // data:$D.heatMapData.editedClusters,
           data:$D.editedDataClusters,
-          // editedDate:$D. 
+          // editedDate:$D.
           onDBClick: locateEditData,
           onDelete: onDeleteEditData
         });
 
         $UI.editedListSideMenu.addContent($UI.heatmapEditedDataPanel.elt);
-      
-        
+
+
         // TODO create save botton if user is admin
         if(ImgloaderMode!='imgbox'){
           const btnDiv = createThreshold();
           $UI.settingsSideMenu.addContent(btnDiv);
         }  else{
           const btnDiv = createExportEditData();
-          $UI.editedListSideMenu.addContent(btnDiv);          
+          $UI.editedListSideMenu.addContent(btnDiv);
         }
 
 
@@ -234,7 +233,7 @@ function initUIcomponents(){
         title:'editor',
         type:'check',// btn/check/dropdown
         value:'editor',
-        callback:toggleHeatMapEditor     
+        callback:toggleHeatMapEditor
       },
       // home
       // {
@@ -495,7 +494,7 @@ function createThreshold(){
   const div1 = document.createElement('div');
   div1.classList.add('btn-panel');
 
-  
+
   const btn = document.createElement('button');
   btn.classList.add('action');
   btn.style.float = 'right';
@@ -512,7 +511,7 @@ function createExportEditData(){
   const div1 = document.createElement('div');
   div1.classList.add('btn-panel');
 
-  
+
   const btn = document.createElement('button');
   btn.classList.add('action');
   btn.style.float = 'right';

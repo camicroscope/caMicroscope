@@ -74,7 +74,7 @@ ModalBox.prototype.__create = function(){
 	if(this.setting.hasHeader) content.appendChild(createHeater(this.setting.headerText));
 	this.body = document.createElement('div');
 	this.body.classList.add('modalbox-body');
-	
+	if (this.setting.provideContent) {this.body.innerHTML = this.setting.content}
 	content.appendChild(this.body);
 	if(this.setting.hasFooter) content.appendChild(createFooter(this.setting.footerText));
 

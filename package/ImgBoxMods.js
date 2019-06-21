@@ -7,8 +7,6 @@ function ImgBoxMods() {
     let slideId = img_id
     this.slideId = slideId
     this.slideName = slideId
-    this.study = ""
-    this.specimen = ""
     fetch(img_id + "/info.json").then(response => {
       if (response.status >=400){
         throw response;
@@ -56,8 +54,6 @@ function ImgBoxMods() {
       let x = {}
       x['_id'] = "0"
       x.name = this.slideName
-      x.study = this.study
-      x.specimen = this.specimen
       x.mpp = this.mpp;
       x.mpp_x = this.mpp_x;
       x.mpp_y = this.mpp_y;
