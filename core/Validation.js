@@ -4,19 +4,11 @@ var ajv = new Ajv();
 var $VALIDATION = {}
 $VALIDATION.slide = ajv.compile({
   type: "object",
-  required: ["name", "location", "study", "specimen"],
+  required: ["name", "location"],
   properties: {
     name: {
       type: "string",
       description: "Slide display name"
-    },
-    study: {
-      type: "string",
-      description: "Slide study identifier"
-    },
-    specimen: {
-      type: "string",
-      description: "Slide specimen identifier"
     },
     location: {
       type: "string",
@@ -34,7 +26,7 @@ $VALIDATION.mark = ajv.compile({
       properties: {
         image: {
           type: "object",
-          required: ["slide", "study", "specimen"],
+          required: ["slide"],
         },
         analysis: {
           type: "object",
@@ -54,7 +46,7 @@ $VALIDATION.heatmap = ajv.compile({
       properties: {
         image: {
           type: "object",
-          required: ["slide", "study", "specimen"],
+          required: ["slide"],
         },
         analysis: {
           type: "object",
@@ -74,11 +66,11 @@ $VALIDATION.heatmapedit = ajv.compile({
       properties: {
         image: {
           type: "object",
-          required: ["slide", "study", "specimen", "subject_id", "case_id"],
+          required: ["slide"],
         },
         analysis: {
           type: "object",
-          required: ["study_id", "fields", "execution_id"],
+          required: ["fields", "execution_id"],
         }
       }
     }

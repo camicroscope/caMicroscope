@@ -34,14 +34,14 @@
 
         // necessary Options
         this._store = options.store;
-        this._slide = options.slide; 
+        this._slide = options.slide;
         this._data = options.data || []; // [{id,data[...]}...]
         //this._editedData = options.editedData || [];
         this.mode = options.mode || 'stroke'; // 'fill' 'broke'
         this._minFootprint = options.minFootprint || 9;
         // set default options' values if no corresponding values.
-        
-        
+
+
 
         this._offset = [null, null];
         this._interval = null;
@@ -64,7 +64,7 @@
         this._div.style.opacity = options.opacity || 1;//0.8;
 
         this._viewer.canvas.appendChild(this._div);
-        
+
         // create display_cancavs
         this._display_ = document.createElement('canvas');
         this._display_.style.position = 'absolute';
@@ -73,7 +73,7 @@
         this._display_ctx_ = this._display_.getContext('2d');
         this._div.appendChild(this._display_);
 
-        
+
         this._isOn = false;
 
 
@@ -91,7 +91,7 @@
     $.Segment.prototype = {
         updateOptions:function(options){
 
-            // necessary Options 
+            // necessary Options
             this._data = options.data || this._data;
             this.mode = options.mode || this.mode; // two modes - 'fill' : 'stroke'
 
@@ -138,11 +138,11 @@
 
             // draw segment immediately
         	if(isDraw)this.updateView(0);
-        	
+
         	// set on/off flag to true
         	this._isOn = true;
     	},
-    	
+
         /**
          * turn off the segment
          */
@@ -154,10 +154,10 @@
         	this._viewer.removeHandler('pan',this.events.panning);
         	this._viewer.removeHandler('zoom',this.events.zooming);
         	this._viewer.removeHandler('animation-finish', this.events.updateView);
-        	
+
             // hidden segment
             this._div.style.display = 'none';
-        	
+
             // set on/off flag to false
             this._isOn = false;
     	},
@@ -175,7 +175,7 @@
             }
     		this._div.style.opacity = num;
     	},
-        
+
         /**
          * change the mode of segment
          * @param  {String} mode 'binal' or 'gradient'
@@ -191,7 +191,7 @@
          * This method is for optimized UX.
          */
         _zooming:function(e){
-            // get the scaling original point on the screen 
+            // get the scaling original point on the screen
             if(!e.refPoint || e.zoom > this._viewer.viewport.getMaxZoom() || e.zoom < this._viewer.viewport.getMinZoom()) return;
             if(e.refPoint === true){
                 // get the current center to set as an referent point if there is no referent point
@@ -202,11 +202,11 @@
             // get current zoom value.
             var viewportZoom = this._viewer.viewport.getZoom();
             var zoom = this._viewer.viewport.viewportToImageZoom(e.zoom);
-            
+
             // calculate the scaling value
             var scale = viewportZoom/this._zoom;
             // ignore scaling if the value to small
-            if(scale == 1 || Math.abs(1 - scale) < 0.01) return; 
+            if(scale == 1 || Math.abs(1 - scale) < 0.01) return;
             // scaling view
             this._div.style.transformOrigin = `${this._offset[0] + viewerElement.x}px ${this._offset[1] + viewerElement.y}px`;
             this._div.style.transform = `scale(${scale},${scale})`;
@@ -224,14 +224,14 @@
 
             // convert distance form normalized/logical to screen/physical
             const distance = this._viewer.viewport.deltaPixelsFromPoints(new $.Point(dx,dy), true);
-            
+
             // ignore if moving distance too small
             if(Math.abs(distance.x) < 0.01 && Math.abs(distance.y) < 0.01) return;
-            
+
             // transform the top and left position of the canvas div
             let top = parseFloat(this._div.style.top);
             let left = parseFloat(this._div.style.left);
-            
+
             // set transform position
             this._div.style.top = `${top + distance.y}px`;
             this._div.style.left = `${left + distance.x}px`;
@@ -248,7 +248,7 @@
             const footprint = getMinFootprint(this._viewer.imagingHelper,this._minFootprint);
             // start
             this.startLoading();
-            this._store.findMark(this._slide, segmentId, null, null, footprint, null, x, x+width, y, y+height).then(function(segments){
+            this._store.findMark(this._slide, segmentId, footprint, null, x, x+width, y, y+height).then(function(segments){
                 this._data[this._data.length-1].data = [...segments];
                 // redraw
                 this.stopLoading();
@@ -260,14 +260,14 @@
             const index = this._data.findIndex(d=>d.id==segmentId);
             if(index==-1) return;
             this._data.splice(index,1);
-            if(this._data.length==0) this.off(); 
+            if(this._data.length==0) this.off();
             // redraw
             this.resize();
             this.drawOnCanvas();
         },
     	/**
     	 * getViewBoundBox
-    	 * get the current bound box of the view in the normalized coordinate system. 
+    	 * get the current bound box of the view in the normalized coordinate system.
     	 * @return {Object} bbox which has x, y, width, height;
     	 */
     	getViewBoundBox:function(){
@@ -279,7 +279,7 @@
 
     	/**
     	 * getCanvasBoundBox
-    	 * get the current bound box of the canvas in the normalized coordinate system. 
+    	 * get the current bound box of the canvas in the normalized coordinate system.
     	 * @return {Object} bbox which has x, y, width, height;
     	 */
     	getCanvasBoundBox:function(){
@@ -287,7 +287,7 @@
 			const y = this._viewer.imagingHelper.physicalToLogicalY(-this._offset[1]);
     		const width = physicalToLogicalDistanceX(this._viewer.canvas.clientWidth + 2*this._offset[0], this._viewer.imagingHelper);
     		const height = physicalToLogicalDistanceY(this._viewer.canvas.clientHeight + 2*this._offset[1], this._viewer.imagingHelper);
-    		
+
     		return {x,y,width,height};
     	},
 
@@ -310,7 +310,7 @@
                 this.startLoading();
                 const ids = this._data[this._data.length-1].id;
                 //this._store.getMarkByIds([ids], this._slide, null, null, null, footprint, x, x+width, y, y+height).then(function(segments){
-                this._store.findMark(this._slide, ids, null, null, footprint, null, x, x+width, y, y+height).then(function(segments){
+                this._store.findMark(this._slide, ids, footprint, null, x, x+width, y, y+height).then(function(segments){
                     this._data[this._data.length-1].data = [...segments];
                     this.stopLoading();
                     // redraw
@@ -333,15 +333,15 @@
             // get the offset[x,y] in piexl
     		this._offset[0] = (this._div.clientWidth - this._viewer.canvas.clientWidth)*0.5;
     		this._offset[1] = (this._div.clientHeight - this._viewer.canvas.clientHeight)*0.5;
-			
+
             // set the current position for the canvas div
 			this._div.style.left = `${-this._offset[0]}px`;
-        	this._div.style.top = `${-this._offset[1]}px`;          
+        	this._div.style.top = `${-this._offset[1]}px`;
             // reset the origin point and scale
             this._div.style.transformOrigin = '0 0';
             this._div.style.transform = 'scale(1,1)';
-            
-            // recording the current center and zoom 
+
+            // recording the current center and zoom
             this._center = this._viewer.viewport.getCenter(true);
             this._zoom = this._viewer.viewport.getZoom(true);
 
@@ -361,7 +361,7 @@
         /**
          * According to the data, thresholds and the size of current screen, draw the segment
          */
-    	drawOnCanvas:function(){           
+    	drawOnCanvas:function(){
             // clear canvas before draw
             DrawHelper.clearCanvas(this._display_);
             if(this._data.length == 0 || this._isOn==false) return;
@@ -375,7 +375,7 @@
                         this._display_ctx_.lineJoin = style.lineJoin;
                         this._display_ctx_.lineCap = style.lineCap;
                         this._display_ctx_.lineWidth = 1;
-                        
+
                         if(this.mode === 'fill'){
                             this._display_ctx_.fillStyle = style.color;
                         }else if(this.mode === 'stroke'){
@@ -384,7 +384,7 @@
                         this._display_ctx_.beginPath()
                         // starting draw drawPolygon
                         this._display_ctx_.moveTo(
-                            this._viewer.imagingHelper.logicalToPhysicalX(points[0][0]) + this._offset[0], 
+                            this._viewer.imagingHelper.logicalToPhysicalX(points[0][0]) + this._offset[0],
                             this._viewer.imagingHelper.logicalToPhysicalY(points[0][1]) + this._offset[1],
                         );
 
@@ -400,9 +400,9 @@
                             this._display_ctx_.fill();
                         }else if(this.mode === 'stroke'){
                             this._display_ctx_.stroke();
-                        }   
+                        }
                     },this)
-                },this)          
+                },this)
     	}
     }
 
@@ -410,9 +410,9 @@
     /**
      * @private
      * covert the distance from screen coordinate(in piexl) to normalized coordinate in x-axis.
-     * @param  {Number} width/the distance in x-axis.  
+     * @param  {Number} width/the distance in x-axis.
      * @param  {OpenSeadragon.ImagingHelper} helper
-     * 
+     *
      * @return {Number}
      *         width/the distance in the normalized/Logical coordinate.
      */
@@ -423,9 +423,9 @@
     /**
      * @private
      * covert the distance from screen coordinate(in piexl) to normalized coordinate in y-axis.
-     * @param  {Number} width/the distance in y-axis.  
+     * @param  {Number} width/the distance in y-axis.
      * @param  {OpenSeadragon.ImagingHelper} helper
-     * 
+     *
      * @return {Number}
      *         width/the distance in the normalized/Logical coordinate.
      */
@@ -436,9 +436,9 @@
     /**
      * @private
      * covert the distance from normalized coordinate to screen coordinate(in piexl) in x-axis.
-     * @param  {Number} width/the distance in x-axis.  
+     * @param  {Number} width/the distance in x-axis.
      * @param  {OpenSeadragon.ImagingHelper} helper
-     * 
+     *
      * @return {Number}
      *         width/the distance in the Screen/Physical coordinate.
      */
@@ -449,9 +449,9 @@
     /**
      * @private
      * covert the distance from normalized coordinate to screen coordinate(in piexl) in y-axis.
-     * @param  {Number} width/the distance in y-axis.  
+     * @param  {Number} width/the distance in y-axis.
      * @param  {OpenSeadragon.ImagingHelper} helper
-     * 
+     *
      * @return {Number}
      *         width/the distance in the Screen/Physical coordinate.
      */

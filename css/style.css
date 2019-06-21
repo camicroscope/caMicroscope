@@ -189,3 +189,15 @@ table.data_table tr:hover td {
     border: 2px solid #FF0000;
     position: absolute;
 }
+
+.lock_panel {
+    color:#365f9c;
+    font-size: 1.5rem;
+    margin: .2rem;
+    display: flex;
+    flex-direction: column;
+    margin: 5px;
+    padding: 5px;
+    border: #cbcbcb 1px solid;
+    background: #F5F5F5;
+}
