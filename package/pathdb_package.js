@@ -142,6 +142,23 @@ function PathDbMods() {
       return response.json().then(x => [x]);
     })
   }
+  Store.prototype.default_getCollection = Store.prototype.getCollection;
+  Store.prototype.getCollection = function(collectionId) {
+    var url = "/taxonomy/term/" + collectionId + "?_format=json"
+    return fetch(url, {
+      mode: "cors",
+      headers: new Headers({
+        'Authorization': 'Bearer ' + getCookie("token"),
+      })
+    }).then(function(response) {
+      if (!response.ok) return {
+        error: !response.ok,
+        text: response.statusText,
+        url: response.url
+      };
+      return response.json().then(x => [x]);
+    })
+  }
   Store.prototype.default_getSlide = Store.prototype.getSlide
   Store.prototype.getSlide = function(id) {
     var url = "/node/" + id + "?_format=json"
@@ -223,16 +240,19 @@ function PathDbMods() {
   CaMic.prototype.loadImg = function(func) {
     var urlParams = new URLSearchParams(window.location.search);
     var pathdb_id = urlParams.get('slideId');
-    this.slideId = pathdb_id // default value
-    this.slideName = pathdb_id
-    this.study = ""
-    this.specimen = ""
-    this.subject_id = ""
-    this.image_id = ""
-    this.study_id = ""
+    this.slideId = pathdb_id; // default value
+    this.slideName = pathdb_id;
+    this.collectionId = "";
+    this.collection = ""; 
+    this.study = "";
+    this.specimen = "";
+    this.subject_id = "";
+    this.image_id = "";
+    this.study_id = "";
+    
     this.store.getSlide(pathdb_id).then(data => {
-      data = data[0]
-      console.log(data)
+      data = data[0];
+      console.log(data);
       // set mpp
       this.mpp = 1e9
 
@@ -271,6 +291,9 @@ function PathDbMods() {
       if(data.studyid && data.studyid.length >=1){
         this.study_id = data.studyid[0].value
       }
+      if(data.field_collection && data.field_collection.length >= 1){
+        this.collectionId = data.field_collection[0].target_id;
+      }
       Store.prototype.pdb_hm_name = this.image_id
 
       if (data.field_iip_path && data.field_iip_path.length >= 1) {
@@ -281,7 +304,6 @@ function PathDbMods() {
       } else {
         throw "No image location --could be token"
       }
-
       this.viewer.mpp = this.mpp;
       this.viewer.mpp_x = this.mpp_x;
       this.viewer.mpp_y = this.mpp_y;
@@ -293,17 +315,23 @@ function PathDbMods() {
       });
       imagingHelper.setMaxZoom(1);
       // create item to pass to the callback function, previously x[0] (slide data)
-      let x = {}
-      x['_id'] = this.slideId
-      x.name = this.slideName
-
+      let x = {};
+      x['_id'] = this.slideId;
+      x.name = this.slideName;
+      this.store.getCollection(this.collectionId).then(cdata => {
+        console.log(cdata[0].name[0].value);
+        x.collection = cdata[0].name[0].value;
+        console.log(x.collection);
+      });
       // identifier field
-      x.subject_id = this.subject_id
-      x.image_id = this.image_id
-      x.study_id = this.study_id
-
-      x.study = this.study
-      x.specimen = this.specimen
+      x.subject_id = this.subject_id;
+      x.image_id = this.image_id;
+      x.study_id = this.study_id;
+      x.collectionId = this.collectionId;
+      console.log(x.collection);
+      x.fullLabel = x.study_id + ' | ' + x.subject_id + ' | ' + x.image_id;
+      x.study = this.study;
+      x.specimen = this.specimen;
       x.mpp = this.mpp;
       x.mpp_x = this.mpp_x;
       x.mpp_y = this.mpp_y;

@@ -205,7 +205,7 @@ function initCore(){
       $UI.slideInfos = new CaMessage({
       /* opts that need to think of*/
         id:'cames',
-        defaultText:`Slide: ${$D.params.data.name}`
+        defaultText:`Slide: ${$D.params.data.fullLabel}`
       });
 
       // spyglass
