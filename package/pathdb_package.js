@@ -17,6 +17,8 @@ function PathDbMods() {
     x.mpp = 1e9
     x.source="pathdb"
     let pathdbid = data.nid[0].value
+    // default dislpay name
+    x.name = pathdbid
     x["_id"] = {"$oid": pathdbid}
     x.location = data.field_iip_path[0].value
     if (data.field_mpp_y && data.field_mpp_y.length >= 1) {
@@ -40,6 +42,32 @@ function PathDbMods() {
       x.url = "../../img/IIP/raw/?DeepZoom=" + x.location + ".dzi"
     } else {
       throw "no iip path in pathdb data"
+    }
+    // identifier fields for display name
+    var subject_id = ""
+    var image_id = ""
+    var study_id = ""
+    if(data.field_subject_id && data.field_subject_id.length >= 1){
+      subject_id = data.field_subject_id[0].value
+    }
+    if(data.clinicaltrialsubjectid && data.clinicaltrialsubjectid.length >= 1){
+      subject_id = data.clinicaltrialsubjectid[0].value
+    }
+    if(data.field_image_id && data.field_image_id.length >=1){
+      image_id = data.field_image_id[0].value
+    }
+    if(data.imageid && data.imageid.length >=1){
+      image_id = data.imageid[0].value
+    }
+    if(data.field_study_id && data.field_study_id.length >=1){
+      study_id = data.field_study_id[0].value
+    }
+    if(data.studyid && data.studyid.length >=1){
+      study_id = data.studyid[0].value
+    }
+    // if we have the triple, add it
+    if (subject_id && image_id && study_id){
+      x.name = study_id + ' | ' + subject_id + ' | ' + image_id;
     }
     return x
   }
@@ -97,55 +125,6 @@ function PathDbMods() {
     return `${location.origin}${location.pathname}?slideId=${$D.params.slideId}&states=${$D.params.states}&mode=${$D.params.mode}`
   };
 
-  /**
-  CaMic.prototype.default_loadImg = CaMic.prototype.loadImg
-  CaMic.prototype.loadImg = function(func) {
-    var urlParams = new URLSearchParams(window.location.search);
-    var pathdb_id = urlParams.get('slideId');
-    this.slideId = pathdb_id // default value
-    this.slideName = pathdb_id
-    this.store.getSlide(pathdb_id).then(data => {
-      data = data[0]
-      console.log(data)
-      this.location = data.location
-      // MAKE URL FOR IIP
-      this.url = data.url
-      this.viewer.open(this.url);
-
-      this.viewer.mpp = this.mpp;
-      this.viewer.mpp_x = this.mpp_x;
-      this.viewer.mpp_y = this.mpp_y;
-
-      //set scalebar
-      if (this.mpp && this.mpp != 1e9) this.createScalebar(this.mpp)
-      var imagingHelper = new OpenSeadragonImaging.ImagingHelper({
-        viewer: this.viewer
-      });
-      imagingHelper.setMaxZoom(1);
-      // create item to pass to the callback function, previously x[0] (slide data)
-      let x = {}
-      x['_id'] = this.slideId
-      x.name = this.slideName
-      // other slide data
-      x.mpp = this.mpp;
-      x.mpp_x = this.mpp_x;
-      x.mpp_y = this.mpp_y;
-      x.location = this.location;
-      x.url = this.url;
-      x.rawData = this.rawData
-      if (func && typeof func === 'function') {
-        func.call(null, x);
-      }
-      Loading.text.textContent = `Loading Slide's Tiles...`;
-      // we may want another init.js or our own callback
-    }).catch(e => {
-      console.error(e)
-      Loading.text.textContent = "ERROR - PathDB Image Error (Try A Refresh)"
-      //if(func && typeof func === 'function') func.call(null,{hasError:true,message:e});
-    })
-
-  }
-  **/
 }
 
 
