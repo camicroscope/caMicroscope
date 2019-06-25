@@ -4,7 +4,7 @@
 /**
  * @constructor
  * OpenSeadragon zoom control 0.0.1.
- * A OpenSeadragon pulgin that provides a scaleable and nice zoom control 
+ * A OpenSeadragon pulgin that provides a scaleable and nice zoom control
  * @param {Object} [options]
  *        Allows configurable properties to be entirely specified by passing an options object to the constructor.
  */
@@ -28,7 +28,7 @@
           .                    .                         .
          10                0.025                        1x
           5                 0.05                        2x
-        2.5                  0.1                        4x 
+        2.5                  0.1                        4x
        1.25                  0.2                        8x
           1                 0.25                       10x
         0.5                  0.5                       20x
@@ -89,7 +89,7 @@
         //this.element.style.background='#fff';
         //this.element.textContent ='test zoom control';
         $.setElementTouchActionNone( this.element );
-        
+
         this.borderWidth = 2;
         //At some browser magnification levels the display regions lines up correctly, but at some there appears to
         //be a one pixel gap.
@@ -111,7 +111,7 @@
         );
 
 
-        // 
+        //
         this.createZoomControl();
         // get all possible image zoom level and range
         this.getAllImageZoomLevelAndRange(this._viewer);
@@ -126,9 +126,14 @@
         }.bind(this));
         this.zoomIn.addEventListener('click', this.doZoomIn.bind(this));
         this.zoomOut.addEventListener('click', this.doZoomOut.bind(this));
+        viewer.addHandler("canvas-click", function(e){
+          if (e.shift){
+            this.doZoomOut()
+          }
+        }.bind(this))
         this.range.addEventListener('change', this.rangeChange.bind(this));
         this.range.addEventListener('mousemove', this.rangeChange.bind(this));
-    
+
     }
 
     /**
@@ -162,7 +167,7 @@
     }
     /**
      * doZoomIn - do one scale move in action
-     * 
+     *
      */
     $.CaZoomControl.prototype.doZoomIn = function() {
         if(this.imageZoomIndex == 0) return;
@@ -175,7 +180,7 @@
 
     /**
      * doZoomOut - do one scale move out action
-     *  
+     *
      */
     $.CaZoomControl.prototype.doZoomOut = function() {
         if(this.imageZoomIndex == this.imageZoomLevels.length-1) return;
@@ -242,7 +247,7 @@
             this.ip.value = +value;
             // hide txt
             this.txt.classList.add('hide');
-            
+
             this.ip.focus();
         }.bind(this));
         this.idx.addEventListener('keydown', function(e){
@@ -255,7 +260,7 @@
         this.ip.addEventListener('blur', function(e){
             setZoom.call(this);
         }.bind(this))
-        
+
         this.idx.appendChild(this.txt);
         this.idx.appendChild(this.ip);
 
@@ -285,13 +290,13 @@
      *
      */
     $.CaZoomControl.prototype.getAllImageZoomLevelAndRange = function(viewer){
-        
+
         this.imageZoomLevels = getAllImageZoomLevel(viewer);
 
         this.imageZoomRanges = [];
         this.imageZoomRanges.push(Number.POSITIVE_INFINITY);
         for(let i = 0; i < this.imageZoomLevels.length - 1; i++){
-             this.imageZoomRanges.push((this.imageZoomLevels[i] + this.imageZoomLevels[i+1])/2); 
+             this.imageZoomRanges.push((this.imageZoomLevels[i] + this.imageZoomLevels[i+1])/2);
         }
         this.imageZoomRanges[this.imageZoomRanges.length] = Number.NEGATIVE_INFINITY;
 
@@ -303,7 +308,7 @@
     /**
      * @private
      * getZoomIndex
-     * 
+     *
      * @param  {Array} range
      *         the collection of each range of zoom levels.
      * @param  {Number} zoom
@@ -338,7 +343,7 @@
     function getCurrentImageZoom(viewer){
         return viewer.viewport.viewportToImageZoom(viewer.viewport.getZoom(true));
     }
-    
+
     function getMaxImageZoom(viewer){
         return viewer.viewport.viewportToImageZoom(viewer.viewport.getMaxZoom());
     }
@@ -360,7 +365,7 @@
         }else if(min.toFixed(3) > (+str)||max < (+str)){
             rs.verified = false;
             rs.value = `Zoom Range:${min.toFixed(3)} ~ ${max}`;
-            return rs;           
+            return rs;
         }
         rs.value = +str;
         return rs;
@@ -373,7 +378,7 @@
                 );
             if(rs.verified){
                 this._viewer.viewport.zoomTo(this._viewer.viewport.imageToViewportZoom(rs.value/this.base),this._viewer.viewport.getCenter(),true);
-                
+
                 if(rs.value%1===0){
                     this.txt.textContent = `${rs.value}x`;
                 }else{
@@ -385,7 +390,7 @@
                 // give error tip
                 this.idx.dataset.error = rs.value;
                 this.ip.focus();
-            }        
+            }
     }
 
 }(OpenSeadragon))

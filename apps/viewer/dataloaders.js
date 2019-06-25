@@ -53,7 +53,7 @@ function FormTempaltesLoader(){
 let _l = false;
 function OverlayersLoader(){
 	function loadingOverlayers(){
-		$CAMIC.store.findMarkTypes($D.params.data.name)
+		$CAMIC.store.findMarkTypes($D.params.slideId)
 		//
 		.then(function(layers){
 			typeIds = {};
@@ -63,7 +63,7 @@ function OverlayersLoader(){
 				$D.overlayers.push(covertToLayViewer(layers[i]));
 			}
 			_l = true;
-			
+
 		})
 		//
 		.catch(function(error){
@@ -94,7 +94,7 @@ function OverlayersLoader(){
 let _h = false; // loading heatmap
 function HeatmaplayersLoader(){
 	function loadingHeatmapOverlayers(){
-		$CAMIC.store.findHeatmapType($D.params.data.name)
+		$CAMIC.store.findHeatmapType($D.params.slideId)
 		//
 		.then(function(layers){
 			if(!$D.overlayers)$D.overlayers = [];

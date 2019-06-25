@@ -325,20 +325,34 @@ function initUIcomponents(){
       window.location.href = `../labeling/labeling.html${window.location.search}`;
     }
   });
-   subToolsOpt.push({
-     name:'segment',
-     icon: 'timeline',
-     type: 'btn',
-     value: 'rect',
-     title: 'Segment',
-     callback: function () {
-       if(window.location.search.length > 0) {
-         window.location.href = '../segment/segment.html' + window.location.search;
-       }else{
-         window.location.href = '../segment/segment.html';
-       }
-     }
-   });
+  subToolsOpt.push({
+    name:'segment',
+    icon: 'timeline',
+    type: 'btn',
+    value: 'rect',
+    title: 'Segment',
+    callback: function () {
+      if(window.location.search.length > 0) {
+        window.location.href = '../segment/segment.html' + window.location.search;
+      }else{
+        window.location.href = '../segment/segment.html';
+      }
+    }
+  });
+  subToolsOpt.push({
+    name:'model',
+    icon: 'aspect_ratio',
+    type: 'btn',
+    value: 'rect',
+    title: 'Predict',
+    callback: function () {
+      if(window.location.search.length > 0) {
+        window.location.href = '../model/model.html' + window.location.search;
+      }else{
+        window.location.href = '../model/model.html';
+      }
+    }
+  });
 
   // -- For Nano borb Start -- //
   if(ImgloaderMode =='imgbox'){
@@ -423,7 +437,7 @@ function initUIcomponents(){
       // for segmentation
       $CAMIC.viewer.createSegment({
         store:$CAMIC.store,
-        slide:$D.params.data.name,
+        slide:$D.params.data.slide,
         data:[]
       });
 

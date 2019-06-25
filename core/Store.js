@@ -77,7 +77,7 @@ class Store {
    * @param {string} [slide] - the associated marktype name, supporting regex match
    * @returns {promise} - promise which resolves with data
    **/
-  findMark(slide, name, specimen, study, footprint, source, x0, x1, y0, y1) {
+  findMark(slide, name, footprint, source, x0, x1, y0, y1) {
     var suffix = "Mark/find"
     var url = this.base + suffix;
     var query = {}
@@ -87,12 +87,6 @@ class Store {
     }
     if (name) {
       query.name = name
-    }
-    if (specimen) {
-      query.specimen = specimen
-    }
-    if (study) {
-      query.study = study
     }
     if (footprint) {
       query.footprint = footprint
@@ -154,7 +148,7 @@ class Store {
     }).then(this.errorHandler).then(x=>this.filterBroken(x, "mark"))
   }
 
-  getMarkByIds(ids, slide, study, specimen, source, footprint, x0, x1, y0, y1) {
+  getMarkByIds(ids, slide, source, footprint, x0, x1, y0, y1) {
     if (!Array.isArray(ids) || !slide) {
       return {
         hasError: true,
@@ -168,12 +162,6 @@ class Store {
     var stringifiedIds = ids.map(id => `"${id}"`).join(',');
     query.name = `[${stringifiedIds}]`;
     query.slide = slide;
-    if (study){
-      query.study = study;
-    }
-    if (specimen){
-      query.specimen = specimen;
-    }
     if (source){
       query.source = source;
     }
@@ -301,18 +289,12 @@ class Store {
     if (slide) {
       query.slide = slide
     }
-    if (subject) {
-      query.subject = subject
-    }
-    if (study) {
-      query.study = study
-    }
     return fetch(url + "?" + objToParamStr(query), {
       credentials: "include",
       mode: "cors"
     }).then(this.errorHandler).then(x=>this.filterBroken(x, "heatmap"))
   }
-  findHeatmapType(slide, name, study, specimen) {
+  findHeatmapType(slide, name) {
     var suffix = "Heatmap/types"
     var url = this.base + suffix;
     var query = {}
@@ -321,12 +303,6 @@ class Store {
     }
     if (slide) {
       query.slide = slide
-    }
-    if (study) {
-      query.study = study
-    }
-    if (specimen) {
-      query.specimen = specimen
     }
     return fetch(url + "?" + objToParamStr(query), {
       credentials: "include",
@@ -338,13 +314,11 @@ class Store {
    * @param {string} id - the heatmap id
    * @returns {promise} - promise which resolves with data
    **/
-  getHeatmap(slide, name, study, specimen) {
+  getHeatmap(slide, name) {
     var suffix = "Heatmap/get"
     var url = this.base + suffix;
     var query = {};
     query.slide = slide;
-    query.specimen = specimen || "";
-    query.study = study || "";
     query.name = name;
 
     return fetch(url + "?" + objToParamStr(query), {
@@ -415,13 +389,11 @@ class Store {
   }
 
 
-  updateHeatmapFields(specimen, slide, study, name, fields, setting){
+  updateHeatmapFields(slide, name, fields, setting){
     var suffix = "Heatmap/threshold"
     var url = this.base + suffix;
     var query = {}
 
-    query.specimen = specimen || ""
-    query.study = study || ""
 
     if (slide) {
       query.slide = slide
@@ -469,17 +441,13 @@ class Store {
     }).then(this.errorHandler)
   }
 
-  updateHeatmapEdit(user, specimen, slide, name, data){
+  updateHeatmapEdit(user, slide, name, data){
     var suffix = "HeatmapEdit/update"
     var url = this.base + suffix;
     var query = {}
 
     if (user) {
       query.user = user
-    }
-
-    if (specimen) {
-      query.specimen = specimen
     }
 
     if (slide) {
@@ -500,26 +468,16 @@ class Store {
     }).then(this.errorHandler)
   }
 
-  findHeatmapEdit(user, specimen, slide, study, name) {
+  findHeatmapEdit(user, slide, name) {
     var suffix = "HeatmapEdit/find"
     var url = this.base + suffix;
     var query = {}
-
     if (user) {
       query.user = user
     }
-
-    if (specimen) {
-      query.specimen = specimen
-    }
-
     if (slide) {
       query.slide = slide
     }
-    if (study) {
-      query.study = study
-    }
-
     if(name) {
       query.name = name
     }
@@ -534,17 +492,13 @@ class Store {
    * @param {object} slide - the associated slide
    * @returns {promise} - promise which resolves with response
    **/
-  deleteHeatmapEdit(user, specimen, slide, study, name) {
+  deleteHeatmapEdit(user, slide, name) {
     var suffix = "HeatmapEdit/delete"
     var url = this.base + suffix;
     var query = {};
     if (user) {
       query.user = user
     }
-
-    query.specimen = specimen || ""
-    query.study = study || ""
-
     if (slide) {
       query.slide = slide
     }
@@ -615,14 +569,14 @@ class Store {
     if (slide) {
       query.slide = slide
     }
-    if (location) {
-      query.location = location
+    if (study) {
+      query.study = study
     }
     if (specimen) {
       query.specimen = specimen
     }
-    if (study) {
-      query.study = study
+    if (location) {
+      query.location = location
     }
 
     return fetch(url + "?" + objToParamStr(query), {

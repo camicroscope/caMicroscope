@@ -385,7 +385,7 @@ async function onUpdateHeatmapFields(){
 	const slide = $D.heatMapData.provenance.image.slide;
 	const study = $D.heatMapData.provenance.image.study;
 	const exec = $D.heatMapData.provenance.analysis.execution_id;
-	const rs = await $CAMIC.store.updateHeatmapFields(specimen, slide, study, exec, JSON.stringify(fields), JSON.stringify(setting));
+	const rs = await $CAMIC.store.updateHeatmapFields(slide, exec, JSON.stringify(fields), JSON.stringify(setting));
 
 	//const rs = await $CAMIC.store.updateHeatmap
 	Loading.close();
@@ -475,7 +475,7 @@ async function saveEditData(){
 
 	if(ImgloaderMode!='imgbox'){
 		// find editor data
-		const data = await $CAMIC.store.findHeatmapEdit(user, specimen, slide, study, exec);
+		const data = await $CAMIC.store.findHeatmapEdit(user, slide, exec);
 		// error
 		if(!Array.isArray(data)&&data.hasError&&data.hasError==true){
 			$UI.message.addError(data.message);
@@ -485,7 +485,7 @@ async function saveEditData(){
 
 		if(data.length!==0){
 			create_date = data[0].create_date;
-			const del = await $CAMIC.store.deleteHeatmapEdit(user, specimen, slide, study, exec);
+			const del = await $CAMIC.store.deleteHeatmapEdit(user, slide, exec);
 			// error
 			if(del.hasError&&del.hasError==true){
 				$UI.message.addError(del.message);
@@ -574,9 +574,9 @@ async function onDeleteEditData(data){
 	let rs = null;
 	if(ImgloaderMode!='imgbox'){
 		if($D.editedDataClusters.isEmpty()){
-			rs = await $CAMIC.store.deleteHeatmapEdit(user, specimen, slide, study, exec);
+			rs = await $CAMIC.store.deleteHeatmapEdit(user, slide, exec);
 		}else{
-			rs = await $CAMIC.store.updateHeatmapEdit(user, specimen, slide, study,  exec, JSON.stringify($D.editedDataClusters.toJSON()));
+			rs = await $CAMIC.store.updateHeatmapEdit(user, slide, exec, JSON.stringify($D.editedDataClusters.toJSON()));
 		}
 		// error
 		if(rs.hasError&&rs.hasError==true){
