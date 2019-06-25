@@ -11,9 +11,14 @@ function toggleViewerMode(opt){
 		magnifierOff();
 		// turn off measurement
 		measurementOff();
+		
+		
 		//open layers menu
+		$UI.toolbar._main_tools[1].querySelector('input[type=checkbox]').checked = true;
 		$UI.layersSideMenu.open();
+		
 		//close apps menu
+		$UI.toolbar._main_tools[0].querySelector('input[type=checkbox]').checked = false;
 		$UI.appsSideMenu.close();
 
 		openMinorControlPanel();
