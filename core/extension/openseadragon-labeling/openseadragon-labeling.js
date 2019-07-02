@@ -140,11 +140,11 @@
 
 	    // create new one
 	    let options = {
-	    	data:'',
-			size:new $.Point(this.width, this.height),
-			center:view_point,
-			viewer:this.viewer,
-			color:'#7cfc00'
+	    	data: '',
+			size: new $.Point(this.width, this.height),
+			center: view_point,
+			viewer: this.viewer,
+			color: '#7cfc00'
 		};
 
 	    if(this.activePatch){
@@ -160,7 +160,7 @@
 
         options.isPoint = this.isPoint;
         options.manager = this;
-        console.log('options:',options);
+        
 	    this.patches.push(new $.Patch(options));
     }
 
@@ -189,6 +189,7 @@
             new $.Rect(center.x, center.y, 0, 0) : 
             new $.Rect(top_left.x, top_left.y, bottom_right.x-top_left.x, bottom_right.y-top_left.y);
     }
+
     function adjust(a, min, max){
         if(a < min)
             return min;
@@ -213,22 +214,28 @@
         if(!validatePatchOptions(options)) return;
         this.viewer = options.viewer;
         this.isPoint = options.isPoint;
+        this.subROIs = [];
         // create random id
         this.id = randomId();
+        
         // element
         this.element = document.createElement('div');
         this.element.id = this.id;
         this.manager = options.manager;
+        this.selIdx = options.selIdx || 0;
+        if(options.parent) this.parent  = options.parent;
         
+        // only for note is list (select)
+        if(options.data!='sROI'&&this.manager&&this.manager.selection&&Array.isArray(this.manager.selection)){
+            options.color = this.color = this.manager.selection[this.selIdx].color;
+            options.data = this.data = this.manager.selection[this.selIdx].text;
+            const size = this.manager.selection[this.selIdx].size;
+            const {x, y, width, height} = this.viewer.viewport.imageToViewportRectangle(new OpenSeadragon.Rect(0, 0, size, size));
+            options.size = new $.Point(width, height);
+        }
 
         const rect = getRect(options.center, options.size, options.viewer, options.isPoint);
         this.color = options.color;
-
-        // only for note is list (select)
-        this.selIdx = options.selIdx || 0;
-        if(this.manager&&this.manager.selection&&this.manager.selection[0]&&this.manager.selection[0].color){
-            options.color = this.color = this.manager.selection[this.selIdx].color;
-        }
 
         this.data =  options.data || '';
         // create ui part
@@ -281,8 +288,24 @@
                 box.style.background = color;
                 input.value = color;
                 element.style.borderColor = color;
+                const idx = this.manager.selection.findIndex((elt)=>color==elt.color);
+                const item = this.manager.selection[idx];
+                this.data = item.text;
+                this.color = item.color;
+                this.selIdx = idx;
+
                 const ctrl = element.querySelector('.controls');
                 if(ctrl) ctrl.style.borderColor = color;
+                // resize
+                const {x, y, width, height} = this.viewer.viewport.imageToViewportRectangle(new OpenSeadragon.Rect(0, 0, item.size, item.size));
+                this.overlay.width = width;
+                this.overlay.height = height;
+                this.overlay.drawHTML(this.viewer.overlaysContainer,this.viewer.viewport);
+                this.setSizeText();
+
+                // close Note selection
+                this.closeNotePanel();
+
             }.bind(this))
             if(hasColor&&!this.isPoint) this.element.querySelector('.color').style.display = 'none';
         }
@@ -293,33 +316,34 @@
         // add events
         const removeIcon = this.element.querySelector('.remove');
         const noteIcon = this.element.querySelector('.note');
+        if(options.data=='sROI')  noteIcon.style.display = 'none';
         const colorIcon = this.element.querySelector('.color');
 
         this.patchTrackers['element'] = new $.MouseTracker({
             element: this.element,
             pressHandler: press.bind(this),
-            dragHandler: moving.bind(this)
-
+            dragHandler: moving.bind(this),
+            releaseHandler: clickOnElement.bind(this)
         });
 
 
         this.patchTrackers['remove'] = new $.MouseTracker({
             element:     removeIcon,
-            pressHandler: press.bind(this),
+            // pressHandler: press.bind(this),
             releaseHandler: clickOnRemove.bind(this)
         });
 
         
         this.patchTrackers['color'] = new $.MouseTracker({
             element:     colorIcon,
-            pressHandler: press.bind(this),
+            // pressHandler: press.bind(this),
             releaseHandler: clickOnColor.bind(this)
         });
         if(this.manager&&this.manager.selection&&this.manager&&this.manager.selection[0].color&&this.isPoint) this.patchTrackers['color'].setTracking(false);
 
         this.patchTrackers['note'] = new $.MouseTracker({
             element:     noteIcon,
-            pressHandler: press.bind(this),
+            // pressHandler: press.bind(this),
             releaseHandler: clickOnNote.bind(this)
         });
 
@@ -333,12 +357,13 @@
             const resizeIcon = this.element.querySelector('.corner');
     		this.patchTrackers['resizing'] = new $.MouseTracker({
     			element:     resizeIcon,
-                pressHandler: press.bind(this),
+                // pressHandler: press.bind(this),
     			dragHandler: resizing.bind(this)
     		});
         }
 
-        this.active();
+
+        //this.active();
 
     }
 
@@ -364,24 +389,34 @@
 
     function moving(e){
     	const delta = this.viewer.viewport.deltaPointsFromPixels(e.delta, true);
-		const top_left = this.viewer.viewport.viewportToImageCoordinates(new $.Point(
-				this.overlay.location.x + delta.x, 
-				this.overlay.location.y + delta.y
-			));
-		const bottom_right = this.viewer.viewport.viewportToImageCoordinates(new $.Point(
-				this.overlay.location.x + delta.x + this.overlay.width, 
-				this.overlay.location.y + delta.y + this.overlay.height
-			));
-		const image1 = this.viewer.world.getItemAt(0);
+		const left = this.overlay.location.x + delta.x;
+        const top = this.overlay.location.y + delta.y;
+
+        const right = this.overlay.location.x + delta.x + this.overlay.width
+        const bottom = this.overlay.location.y + delta.y + this.overlay.height
+        
+        const top_left = this.viewer.viewport.viewportToImageCoordinates(new $.Point(left, top));
+		const bottom_right = this.viewer.viewport.viewportToImageCoordinates(new $.Point(right,bottom));
+		
+        const image1 = this.viewer.world.getItemAt(0);
 		const imgWidth = image1.source.dimensions.x;
 		const imgHeight = image1.source.dimensions.y;
+
+        if(this.parent){
+            const {x,y,width,height} = this.parent.overlay.getBounds(this.viewer);
+            if(x > left  || x+width < right || y>top || y+height < bottom) return;
+        }
 
 		if(top_left.x < 0 || top_left.y < 0 || bottom_right.x > imgWidth|| bottom_right.y > imgHeight) return;
 
 		this.overlay.location.x += delta.x; 
 		this.overlay.location.y += delta.y;
 	    this.overlay.drawHTML(this.viewer.overlaysContainer,this.viewer.viewport);
-    	this.viewer.pmanager.isCreatePatch = false;
+    	
+
+        this.isMoving = true;
+
+        this.subROIs.forEach(sROI=>{moving.call(sROI,e)});
     }
  	
  	function resizing(e){
@@ -411,13 +446,27 @@
  		
     }  
     /* resize end */
+
     function press(e){
         this.closeNotePanel();
         this.closeColorPicker();
-        this.active();
+        //this.active();
+        this.isMoving = false;
+    }
+    function clickOnElement(e){
+
+        if(!this.isMoving && this.subROIs.length < 3){
+            const view_point = this.viewer.viewport.windowToViewportCoordinates(new $.Point(e.originalEvent.clientX,e.originalEvent.clientY));
+            createSubROI(this,view_point);
+        }
     }
     function clickOnNote(e){
-        this.openNotePanel();
+        if(this.element.querySelector('.note_panel').style.display == 'block'){
+            this.closeNotePanel();
+        }else{
+            this.openNotePanel();
+        }
+        
         // e.stopPropagation();
         // e.preventDefault();
     };
@@ -471,8 +520,17 @@
     $.Patch.prototype.remove = function(){
         
         this.deactive();
+        this.subROIs.forEach(sROI => {
+            this.viewer.removeOverlay(sROI.overlay.element);
+        });
 
-        this.viewer.removeOverlay(this.overlay.element); 
+        this.viewer.removeOverlay(this.overlay.element);
+
+        if(this.parent){
+            const index = this.parent.subROIs.findIndex(sROI=> sROI === this);
+            if(index!=-1)this.parent.subROIs.splice(index, 1);
+        }
+        
         this.overlay.destroy();
         this.destroy();
     }
@@ -700,6 +758,21 @@
 
 
         return true;
-    } 
+    }
+
+    function createSubROI(parentPatch, center){
+        const {x, y, width, height} = parentPatch.viewer.viewport.imageToViewportRectangle(new OpenSeadragon.Rect(0, 0, 256, 256));
+        const patch = new $.Patch({
+            isPoint: false,
+            data: 'sROI',
+            size: new $.Point(width, height),
+            center: center,
+            viewer: parentPatch.viewer,
+            color: '#FFFF00',
+            manager: parentPatch.manager,
+            parent: parentPatch
+        });
+        parentPatch.subROIs.push(patch);
+    }
 
 })(OpenSeadragon);

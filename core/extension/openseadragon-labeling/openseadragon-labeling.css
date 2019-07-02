@@ -18,11 +18,14 @@
 }
 
 .patch:hover .color,
-.patch:hover .corner,
+
 .patch:hover .note,
 .patch:hover .remove,
 .patch.active .remove
-/*.patch.active .color,
+
+/*
+.patch:hover .corner,
+.patch.active .color,
 .patch.active .corner,
 .patch.active .note,
 .patch.active .remove*/
@@ -30,10 +33,10 @@
   display:block;
 }
 
-/*.patch.active .info_block,*/
+/*.patch.active .info_block,
 .patch:hover .info_block {
   display:inline-block;
-}
+}*/
 
 
 .patch.active:hover,

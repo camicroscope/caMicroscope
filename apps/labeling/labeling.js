@@ -1,28 +1,54 @@
 const selection = [
   {
     text:'Tumor',
-    color:'#FF0000'
+    color:'#FF0000',
+    size:1024,
+    count:3,
+    num:0
   },
   {
     text:'Tumor-Stroma Transition',
-    color:'#000000'
+    color:'#000000',
+    size:1024,
+    count:3,
+    num:0
   },
   {
     text:'Distant Stroma',
-    color:'#FFC0CB'
+    color:'#FFC0CB',
+    size:1024,
+    count:1,
+    num:0
   },
   {
     text:'Tumor Associated Stroma With Mild Hyalinization',
-    color:'#FF1493'
+    color:'#FF1493',
+    size:1024,
+    count:1,
+    num:0
   },
   {
     text:'Intra-tumoral Stroma With TILs',
-    color:'#0000FF'
+    color:'#0000FF',
+    size:1024,
+    count:3,
+    num:0
   },
   {
     text:'Miscellaneous Regions',
-    color:'#00FF00'
+    color:'#00FF00',
+    size:1024,
+    count:3,
+    num:0
   }
+  // ,
+  // {
+  //   text:'sROI',
+  //   color:'#FFFF00',
+  //   size:256,
+  //   count:0,
+  //   num:0    
+  // }
 ]
 
 // CAMIC is an instance of camicroscope core
@@ -111,11 +137,20 @@ function initCore(){
   $CAMIC.viewer.addHandler('open',function(){
     if($CAMIC.viewer.pmanager)$CAMIC.viewer.pmanager.on();
 
-    $CAMIC.viewer.viewport.zoomBy($CAMIC.viewer.viewport.imageToViewportZoom(0.5),$CAMIC.viewer.viewport.getCenter(),true)
+    $CAMIC.viewer.viewport.zoomTo($CAMIC.viewer.viewport.imageToViewportZoom(0.2),$CAMIC.viewer.viewport.getCenter(),true)
     $CAMIC.viewer.pmanager.selection = selection;
     if(!$CAMIC.viewer.measureInstance) $UI.toolbar.getSubTool('measure').style.display = 'none'
   });
   
+
+  $UI.modalbox = new ModalBox({
+    id:'modalbox',
+    hasHeader:true,
+    headerText:'Labeling List',
+    hasFooter:true
+  });
+
+
   // ui init
   $UI.toolbar = new CaToolbar({
   /* opts that need to think of*/
@@ -194,12 +229,19 @@ function initCore(){
         name:'measure',
         callback:toggleMode
       },
+      // {
+      //   icon:'get_app',// material icons' name
+      //   title:'Download Labeling',
+      //   type:'btn',// btn/check/dropdown
+      //   value:'download',
+      //   callback:downloadLabel
+      // },      
       {
-        icon:'get_app',// material icons' name
-        title:'Download Labeling',
+        icon:'save',// material icons' name
+        title:'Save',
         type:'btn',// btn/check/dropdown
-        value:'download',
-        callback:downloadLabel
+        value:'save',
+        callback:savePatches
       },
       // bug report
       {
@@ -211,7 +253,30 @@ function initCore(){
       }
     ]
   });
+
+  $UI.toolbar.getSubTool('annotation').style.display = 'none';
+  $UI.toolbar.getSubTool('point').style.display = 'none';
 }
+
+function savePatches(){
+  if(!$CAMIC.viewer.pmanager.hasPatches()){
+    alert('No Label to Save');
+    return;
+  }
+  countungLabelNums();
+  createLabelList();
+
+  console.log('saved!');
+}
+function countungLabelNums(){
+  selection.forEach(elt=>elt.num=0);
+  $CAMIC.viewer.pmanager.patches.forEach(label => {
+    const item = selection.find(sel=>label.data===sel.text);
+    if(item) item.num++;
+  });
+}
+
+
 function downloadLabel(){
   if(!$CAMIC.viewer.pmanager.hasPatches()){
     alert('There Is No Patches');
@@ -441,4 +506,54 @@ function annotOff(){
   //$UI.toolbar.getSubTool('annotation').querySelector('label').style.backgroundColor = '';
   $UI.toolbar.getSubTool('annotation').querySelector('label').style.color = '';
 
+}
+
+function createLabelList(){
+  empty($UI.modalbox.body);
+  const header = `
+  <div style='display:table-row; font-weight:bold;'>
+      <div style='text-align: initial; display: table-cell; padding: 5px;'>Label Type</div>
+      <div style='display: table-cell; padding: 5px;'>Required Label#</div>
+      <div style='display: table-cell; padding: 5px;'>Current Label#</div>    
+  </div>`;
+  const rows = selection.map(elt=>`
+    <div style='display:table-row;'>
+      <div style='font-weight:bold; text-align: initial; display: table-cell;padding: 5px; color: ${elt.color};'>${elt.text}</div>
+      <div style='display: table-cell;padding: 5px;'>${elt.count}</div>
+      <div style='display: table-cell;padding: 5px; color:${elt.count==elt.num?'green':'red'};'>${elt.num}</div>
+    </div>`).join('');
+
+  const table = `<div style='display: table;width: 100%; color: #365F9C; text-align: center;'>${header}${rows}</div>`;
+  $UI.modalbox.body.innerHTML = table;
+  // list.forEach(data=>{
+  //   const exec_id = data.provenance.analysis.execution_id;
+  //   const a = document.createElement('a');
+  //   const params = getUrlVars();
+  //   a.href = params.mode?`../heatmap/heatmap.html?slideId=${$D.params.slideId}&execId=${exec_id}&mode=pathdb`:
+  //   `../heatmap/heatmap.html?slideId=${$D.params.slideId}&execId=${exec_id}`;
+  //   a.textContent = exec_id;
+  //   $UI.modalbox.body.appendChild(a);
+  //   $UI.modalbox.body.appendChild(document.createElement('br'));
+  // });
+  const isPassed= checkSelection();
+  const footer = $UI.modalbox.elt.querySelector('.modalbox-footer');
+  footer.innerHTML = `
+  <div style='display:flex;wdith:100%;justify-content: space-between;'>
+    <div style='font-size: 1.5rem; padding: 5px; margin: 5px;font-weight:bold;color:#FF0000;'>
+    ${isPassed?'':'Please Match The Required Number For Each Label Type!'}
+    </div>
+
+    <button ${isPassed?'':'disabled'}>Save</button>
+  </div>`
+  $UI.modalbox.open();
+  const btn = $UI.modalbox.elt.querySelector('.modalbox-footer button')
+  btn.addEventListener('click', ()=>{alert('save!')});
+}
+function checkSelection(){
+  for (var i = selection.length - 1; i >= 0; i--) {
+    if(selection[i].num!=selection[i].count){
+      return false;
+    }
+  }
+  return true;
 }
