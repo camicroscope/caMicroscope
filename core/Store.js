@@ -261,12 +261,7 @@ class Store {
       console.error('Store.findMarkTypes needs slide ... ');
       return null;
     }
-    // numeric->str coerce
-    if ((parseInt(slide)==slide)||(parseFloat(slide)==slide)){
-      query.slide = '"' + slide + '"'
-    } else {
     query.slide = slide
-    }
     if (name) {
       query.name = name
       suffix = "Mark/typesExec"
