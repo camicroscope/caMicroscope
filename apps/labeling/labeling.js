@@ -266,7 +266,6 @@ function savePatches(){
   countungLabelNums();
   createLabelList();
 
-  console.log('saved!');
 }
 function countungLabelNums(){
   selection.forEach(elt=>elt.num=0);
@@ -453,6 +452,7 @@ function createPatchList(patches){
     p.label = pdiv.querySelectorAll('div')[2];
     list.appendChild(pdiv);
   })
+
   $UI.modalbox.body.appendChild(list);
 
 }
@@ -514,28 +514,21 @@ function createLabelList(){
   <div style='display:table-row; font-weight:bold;'>
       <div style='text-align: initial; display: table-cell; padding: 5px;'>Label Type</div>
       <div style='display: table-cell; padding: 5px;'>Required Label#</div>
-      <div style='display: table-cell; padding: 5px;'>Current Label#</div>    
+      <div style='display: table-cell; padding: 5px;'>Current Label#</div> 
+      <div style='display: table-cell; padding: 5px;'></div>    
   </div>`;
   const rows = selection.map(elt=>`
     <div style='display:table-row;'>
       <div style='font-weight:bold; text-align: initial; display: table-cell;padding: 5px; color: ${elt.color};'>${elt.text}</div>
       <div style='display: table-cell;padding: 5px;'>${elt.count}</div>
       <div style='display: table-cell;padding: 5px; color:${elt.count==elt.num?'green':'red'};'>${elt.num}</div>
+      <div id='${elt.color}' style='display: table-cell; padding: 5px;'></div>
     </div>`).join('');
 
   const table = `<div style='display: table;width: 100%; color: #365F9C; text-align: center;'>${header}${rows}</div>`;
   $UI.modalbox.body.innerHTML = table;
-  // list.forEach(data=>{
-  //   const exec_id = data.provenance.analysis.execution_id;
-  //   const a = document.createElement('a');
-  //   const params = getUrlVars();
-  //   a.href = params.mode?`../heatmap/heatmap.html?slideId=${$D.params.slideId}&execId=${exec_id}&mode=pathdb`:
-  //   `../heatmap/heatmap.html?slideId=${$D.params.slideId}&execId=${exec_id}`;
-  //   a.textContent = exec_id;
-  //   $UI.modalbox.body.appendChild(a);
-  //   $UI.modalbox.body.appendChild(document.createElement('br'));
-  // });
-  const isPassed= checkSelection();
+
+  const isPassed = checkSelection();
   const footer = $UI.modalbox.elt.querySelector('.modalbox-footer');
   footer.innerHTML = `
   <div style='display:flex;wdith:100%;justify-content: space-between;'>
@@ -547,8 +540,9 @@ function createLabelList(){
   </div>`
   $UI.modalbox.open();
   const btn = $UI.modalbox.elt.querySelector('.modalbox-footer button')
-  btn.addEventListener('click', ()=>{alert('save!')});
+  btn.addEventListener('click', saveLabelings);
 }
+
 function checkSelection(){
   for (var i = selection.length - 1; i >= 0; i--) {
     if(selection[i].num!=selection[i].count){
@@ -556,4 +550,170 @@ function checkSelection(){
     }
   }
   return true;
+}
+
+function getCoordinates(patch){ // image coordinate
+  const viewer = patch.viewer;
+  const overlay = patch.overlay;
+  const {x, y, width, height} = viewer.viewport.viewportToImageRectangle(overlay.getBounds(viewer.viewport));
+  
+  const left = Math.round(x);
+  const right = Math.round(x + width); 
+  const top = Math.round(y);
+  const bottom = Math.round(y + height);
+
+  return [[left,top],[right,top],[right,bottom],[left,bottom],[left,top]];
+}
+
+async function saveLabelings(e){
+  Loading.open(document.body, 'Labels Saving...');
+  const ROIS = $CAMIC.viewer.pmanager.patches;
+  // get all labels
+  await asyncForEach(ROIS, async (roi)=>{
+    const {ROI, subROIs} = generateROIandSubROI(roi);
+    await saves(ROI, subROIs);
+  });
+  Loading.close();
+  console.log('finished');
+  $UI.modalbox.close()
+
+  // return to home
+  redirect($D.pages.table, 'Redirecting To Table....', 0);
+}
+
+async function saves(ROI, subROIs){
+  // start saving 
+  try {
+    const subroi_list = [];
+    // insert ROI and get ROI id
+    await $CAMIC.store.addLabel(ROI).then( d => d.count );
+
+    // insert subROI 
+    await asyncForEach(subROIs,async (subROI)=>{
+      await $CAMIC.store.addLabel(subROI).then( d => d.count );
+      
+    });
+    // update subPOI
+  } catch(e) {
+
+    // statements
+    console.log(e);
+  }
+  console.log('done');
+}
+
+function generateROIandSubROI(patch){
+  // slide Info
+  const slideId = $D.params.slideId;
+  const slideName = $D.params.data.name;
+  
+  const subROIs = [];
+
+  // get ROI
+  const exec_id = randomId();
+  const roi_id = new ObjectId();
+  const coordinates = getCoordinates(patch);
+  const ROI = {
+        "_id":roi_id.toString(),
+        "provenance": {
+            "image": {
+                "slide": slideId,
+                "name": slideName
+            },
+            "analysis": {
+                "source": "human",
+                "execution_id": exec_id,
+                "computation": "label",
+                "name": exec_id
+            }
+        },
+        "properties": {
+            "type":patch.data,   // for label, there are 6 types
+        },
+        "annotations": [],
+        "subrois": [],
+        "parent": null,
+        "geometries": {
+            "type": "FeatureCollection",
+            "features": [
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "style": {
+                          "color": patch.color
+                        }
+                    },
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [ coordinates ]
+                    },
+                    "bound": {
+                        "type": "Polygon",
+                        "coordinates": [ coordinates ]
+                    }
+                }
+            ]
+        }
+    };
+
+  // get subROI
+  const subROI_ids = [];
+  patch.subROIs.forEach(sROI => {
+    const subExec = randomId();
+    const _id = new ObjectId();
+    ROI.subrois.push(_id.toString());
+    const subCoordinates = getCoordinates(sROI);
+    const subROI = {
+        "_id": _id.toString(),
+        "provenance": {
+            "image": {
+                "slide": slideId,
+                "name": slideName
+            },
+            "analysis": {
+                "source": "human",
+                "execution_id": subExec,
+                "computation":"sub",
+                "name": subExec
+            }
+        },
+        "properties": {
+            "type": "subROI"
+        },
+        "parent": roi_id.toString(),
+        "geometries": {
+            "type": "FeatureCollection",
+            "features": [
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "style": {
+                            "color": "#FFFF00",
+                            "lineCap": "round",
+                            "lineJoin": "round",
+                            "lineWidth": 3
+                        }
+                    },
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [ subCoordinates ]
+                    },
+                    "bound": {
+                        "type": "Polygon",
+                        "coordinates": [ subCoordinates ]
+                    }
+                }
+            ]
+        }
+    };
+    subROIs.push(subROI); 
+  });
+  return {ROI, subROIs};
+}
+
+
+const asyncForEach = async (array, callback) => {
+  for (let index = 0; index < array.length; index++) {
+    await callback(array[index], index, array)
+  }
 }

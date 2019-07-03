@@ -27,8 +27,6 @@
 
 		<link rel='stylesheet' type='text/css' media='all' href='../../core/extension/openseadragon-measurement-tool/openseadragon-measurement-tool.css'/>
 
-		<link rel='stylesheet' type='text/css' media='all' href='../../core/extension/openseadragon-labeling/openseadragon-labeling.css'/>
-
 		<!-- Check If we're logged in ok, otherwise, log in for us -->
     <script src='../../common/authChecker.js'></script>
     <script>
@@ -53,7 +51,6 @@
 
 		<!-- util.js -->
 		<script type='text/javascript' src='../../common/util.js'></script>
-		<script type='text/javascript' src='../../common/Objectid.js'></script>
 		<!-- core (package/ext) libs -->
 		<script type='text/javascript' src='../../common/DrawHelper.js'></script>
 		<script type='text/javascript' src='../../common/simplify.js'></script>
@@ -69,14 +66,13 @@
 		<script type='text/javascript' src='../../core/extension/openseadragon-overlays-manage.js'></script>
 		<script type='text/javascript' src='../../core/extension/openseadragon-measurement-tool/openseadragon-measurement-tool.js'></script>
 		<script type='text/javascript' src='../../core/extension/openseadragon-zoom-control/openseadragon-zoom-control.js'></script>
-		<script type='text/javascript' src='../../core/extension/openseadragon-labeling/openseadragon-labeling.js'></script>
 		<!-- init data -->
 
 		<!-- ods js -->
 		<!-- <script src='./js/uicallbacks.js'></script> -->
 		<!-- <script src='./js/dataloaders.js'></script> -->
 		<script type='text/javascript' src='../../common/dynamicLoadScript.js'></script>
-		<script type='text/javascript' src='./labeling.js'></script>
+		<script type='text/javascript' src='./labelingAnnotation.js'></script>
 		<style type="text/css">
 			.modalbox-footer button{
 				font-weight: bold;
@@ -92,6 +88,10 @@
 			.modalbox-footer button:disabled {
 				border: 1px solid #7f7f7f;
 				background-color: #bfbfbf;
+			}
+			
+			ul.drop_down li {
+				width: fit-content;
 			}
 		</style>
 	</head>
@@ -114,10 +114,14 @@
 		$D.params = getUrlVars();
 
 		// no slide Id error
-		if($D.params && $D.params.slideId){
+		if($D.params && $D.params.slideId && $D.params.labelId){
 			// normal initialization starts
 			document.addEventListener('DOMContentLoaded', initialize);
-		}else if ($D.params && ($D.params.slide || $D.params.specimen ||$D.params.study || $D.params.location)){
+		}
+		else if(!$D.params.labelId){
+			redirect($D.pages.table, 'labelId Is Undefined. Redirecting To Table.');
+		}
+		else if($D.params && ($D.params.slide || $D.params.specimen ||$D.params.study || $D.params.location)){
 			let STORE = new Store()
 			STORE.findSlide($D.params.slide, $D.params.study, $D.params.specimen, $D.params.location).then(x=>{
 				let offset = parseInt($D.params.offset,10) || 0;

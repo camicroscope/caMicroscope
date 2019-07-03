@@ -84,6 +84,12 @@ function empty(elt){
 	while(elt.firstChild) elt.removeChild(elt.firstChild)
 }
 
+const asyncForEach = async (array, callback) => {
+  for (let index = 0; index < array.length; index++) {
+    await callback(array[index], index, array)
+  }
+}
+
 /*
 	ID generator
 */
@@ -454,7 +460,7 @@ function removeElement(array, id){
 function redirect(url ,text = '', sec = 5){
   let timer = sec;
   setInterval(function(){
-    if(!timer) {
+    if(timer < 0) {
       window.location.href = url;
     }
 

@@ -645,6 +645,82 @@ class Store {
   }
 
   /**
+   * post mark
+   * @param {object} json - the mark data
+   * @returns {promise} - promise which resolves with response
+   **/
+  addLabel(json) {
+    var suffix = "Labeling/post"
+    var url = this.base + suffix;
+    if (this.validation.labeling && !this.validation.labeling(json)){
+      console.warn(this.validation.labeling.errors)
+    }
+    return fetch(url, {
+      method: "POST",
+      credentials: "include",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json; charset=utf-8",
+        // "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: JSON.stringify(json)
+    }).then(this.errorHandler)
+  }
+
+  /**
+   * get mark by id
+   * @param {string} id - the mark id
+   * @returns {promise} - promise which resolves with data
+   **/
+  getLabel(id) {
+    var suffix = "Labeling/get"
+    var url = this.base + suffix;
+    var query = {
+      'id': id
+    }
+
+    return fetch(url + "?" + objToParamStr(query), {
+      credentials: "include",
+      mode: "cors"
+    }).then(this.errorHandler).then(x=>this.filterBroken(x, "mark"))
+  }
+
+  findLabel(label, slide, type) {
+    var suffix = "Labeling/find";
+    var url = this.base + suffix;
+
+    if(label) query.labelId = label;
+    if(slide) query.slideId = slide;
+    if(type) query.labelType = type;
+
+    return fetch(url + "?" + objToParamStr(query), {
+      credentials: "include",
+      mode: "cors"
+    }).then(this.errorHandler).then(x=>this.filterBroken(x, "labeling"))    
+  }
+  
+  findLabelByIds(ids, slide, type) {
+    if (!Array.isArray(ids)) {
+      return {
+        hasError: true,
+        message: 'args are illegal'
+      }
+    }
+    var bySlideId
+    var suffix = "Labeling/mutiFindByIds"
+    var url = this.base + suffix;
+    var query = {}
+    var stringifiedIds = ids.map(id => `"${id}"`).join(',');
+    query.labelId = `[${stringifiedIds}]`;
+    if(slide) query.slideId = slide;
+    if(type) query.labelType = type;
+
+    return fetch(url + "?" + objToParamStr(query), {
+      credentials: "include",
+      mode: "cors"
+    }).then(this.errorHandler).then(x=>this.filterBroken(x, "labeling"))
+  }
+  /**
    * post data
    * @param {string} type - the datatype to post
    * @param {object} data - the data to post
