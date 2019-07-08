@@ -32,7 +32,7 @@ class CaMic{
       zoomPerClick: 1,
       animationTime: 0.01,
       minZoomImageRatio:1,
-      maxZoomPixelRatio: 2,
+      maxZoomPixelRatio: 1,
       visibilityRatio: 0,
       springStiffness:0.0001,
 

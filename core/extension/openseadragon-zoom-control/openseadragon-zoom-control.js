@@ -324,7 +324,7 @@
     function getAllImageZoomLevel(viewer){
         const max = getMaxImageZoom(viewer);
         const min = getMinImageZoom(viewer);
-        const samples = [2, 1, 0.5, 0.25];
+        const samples = [1, 0.5, 0.25];
         let divisor = 1;
         //const zoomNums = 3 - (Math.log2(min) >> 0);
         let zooms = [];
