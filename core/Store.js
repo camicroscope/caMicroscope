@@ -698,7 +698,7 @@ class Store {
       mode: "cors"
     }).then(this.errorHandler).then(x=>this.filterBroken(x, "labeling"))    
   }
-  
+
   findLabelByIds(ids, slide, type) {
     if (!Array.isArray(ids)) {
       return {
@@ -719,6 +719,31 @@ class Store {
       credentials: "include",
       mode: "cors"
     }).then(this.errorHandler).then(x=>this.filterBroken(x, "labeling"))
+  }
+  
+  addLabelsAnnotation(slide, label, annotationIds){
+    if (!Array.isArray(annotationIds) || !slide || !label) {
+      return {
+        hasError: true,
+        message: 'args are illegal'
+      }
+    }    
+
+    var suffix = "Labeling/addAnnotations"
+    var url = this.base + suffix;
+    var query = {}
+    query.slide = slide
+    query.label = label
+    
+    var stringifiedIds = annotationIds.map(id => `"${id}"`).join(',');
+    query.annotationIds = `[${stringifiedIds}]`;
+        
+
+    return fetch(url + "?" + objToParamStr(query), {
+      method: "DELETE",
+      credentials: "include",
+      mode: "cors"
+    }).then(this.errorHandler)    
   }
   /**
    * post data

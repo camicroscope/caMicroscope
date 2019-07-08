@@ -73,6 +73,7 @@
         // is drawing things
         this.isDrawing = false;
         this.size = [];
+        this.isSimplify = options.isSimplify || true;
         // create supplies free, square, rectangle, line
         this.drawMode = options.drawMode || 'free'; // 'free', 'square', 'rect', 'line'
         // ctx styles opt
@@ -360,8 +361,9 @@
             else if ("button" in e)  // IE, Opera
                 isRight = e.button == 2;
             if(e.ctrlKey || isRight) return;
-
+            
             this.raiseEvent('start-drawing',{originalEvent:e});
+
             if(this.stop){
                 this.stop = false;
                 return;
@@ -375,6 +377,17 @@
             // start drawing
             this.isDrawing = true;
             this._draw_.style.cursor = 'crosshair'
+            
+            // create a point
+            if(this.drawMode === 'point'){
+                this._last = [Math.round(img_point.x),Math.round(img_point.y)]
+                this.__newFeature(this._last.slice());
+
+                // 
+                this.stopDrawing(e);
+                return;
+            }
+
 
             const imagingHelper = this._viewer.imagingHelper;
             this.style.lineWidth = (imagingHelper.physicalToDataX(2) - imagingHelper.physicalToDataX(0))>> 0;
@@ -540,6 +553,20 @@
          * @param  {Ojbect} first point
          */
         __newFeature:function(point){
+            if(this.drawMode=='point'){
+                this._current_path_={
+                    type:'Feature',
+                    properties:{
+                        style:{}
+                    },
+                    geometry:{
+                        type:"Point",
+                        coordinates:[...point],
+                        path:null
+                    }
+                }; 
+                return;               
+            }
 
             this._current_path_={
                 type:'Feature',
@@ -573,20 +600,45 @@
          * __endNewFeature create a new feature data.
          */
         __endNewFeature:function(){
+            if(this.drawMode=='point'){
+                this._current_path_.properties.style.color = this.style.color;
+                this._current_path_.properties.style.lineJoin = this.style.lineJoin;
+                this._current_path_.properties.style.lineCap = this.style.lineCap;
+                this._current_path_.properties.style.isFill = this.style.isFill;                
+                
+                if(this._path_index < this._draws_data_.length){
+                  this._draws_data_ = this._draws_data_.slice(0,this._path_index);
+                }
+
+                this._draws_data_.push(Object.assign({},this._current_path_));
+                
+                this._path_index++;
+                this._current_path_ = null;
+                DrawHelper.clearCanvas(this._draw_);
+                this._display_ctx_.lineWidth = this.style.lineWidth;
+                this.drawOnCanvas(this._display_ctx_, function(){
+
+                    this.drawMode!=='grid'?DrawHelper.draw(this._display_ctx_, this._draws_data_.slice(0,this._path_index)):
+                    DrawHelper.drawGrids(this._display_ctx_, this._draws_data_.slice(0,this._path_index),this.size);
+                }.bind(this));                
+                return;
+            }
             if(!this._current_path_ || this._current_path_.geometry.coordinates[0].length < 2 || this.__isOnlyTwoSamePoints(this._current_path_.geometry.coordinates[0])  ) return; // click on canvas
             // set style and drawing model
             this._current_path_.properties.style.color = this.style.color;
             this._current_path_.properties.style.lineJoin = this.style.lineJoin;
             this._current_path_.properties.style.lineCap = this.style.lineCap;
             this._current_path_.properties.style.isFill = this.style.isFill;
+
+
             let points = this._current_path_.geometry.coordinates[0];
-            if(!(this.drawMode === 'line' ||this.drawMode === 'grid')) points.push([points[0][0],points[0][1]]);
+            if(!(this.drawMode === 'line' ||this.drawMode === 'grid' || this.drawMode == 'point')) points.push([points[0][0],points[0][1]]);
 
             if(this.drawMode === 'free' || this.drawMode === 'line') {
               // simplify
-              this._current_path_.geometry.coordinates[0] = simplify(points, 3.5);
+              this._current_path_.geometry.coordinates[0] = this.isSimplify?simplify(points, 3.5):points;
             };
-            if(!(this.drawMode === 'line' ||this.drawMode == 'grid')){
+            if(!(this.drawMode === 'line' || this.drawMode == 'grid' || this.drawMode == 'point')){
                 let isIntersect = false;
                 if(isSelfIntersect(this._current_path_.geometry.coordinates[0])){
                     alert('A Self-Intersecting Polygon Will Cause Inaccurate Area and Circumference.');
@@ -611,6 +663,7 @@
 
             }
             // create bounds
+            
             this._current_path_.bound = getBounds(this._current_path_.geometry.coordinates[0]);
             
             if(this._path_index < this._draws_data_.length){
@@ -618,6 +671,7 @@
             }
 
             this._draws_data_.push(Object.assign({},this._current_path_));
+            
             this._path_index++;
             this._current_path_ = null;
             DrawHelper.clearCanvas(this._draw_);

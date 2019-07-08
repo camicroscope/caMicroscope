@@ -1007,6 +1007,10 @@ function createHeatMapList(list){
 /* --  -- */
 /* -- for render anno_data to canavs -- */
 function anno_render(ctx,data){
+	const imagingHelper  = this.viewer.imagingHelper;
+	const lineWidth = (imagingHelper.physicalToDataX(1) - imagingHelper.physicalToDataX(0))>> 0;
+	ctx.lineWidth = lineWidth;
+	ctx.isFull = false;
 	DrawHelper.draw(ctx, data.geometries.features);
 	//DrawHelper.draw(this._canvas_ctx, this.data.canvasData);
 }

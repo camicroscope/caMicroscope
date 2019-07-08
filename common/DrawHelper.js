@@ -183,6 +183,16 @@ caDrawHelper.prototype.draw = function(ctx, image_data){
         if(polygon.geometry.type=='LineString'){
             ctx.fillStyle = style.color;
             polygon.geometry.path = this.drawMultiline(ctx, points);
+        }else if(polygon.geometry.type=='Point'){
+            ctx.strokeStyle = style.color;
+            ctx.beginPath();
+            ctx.arc(
+                polygon.geometry.coordinates[0],
+                polygon.geometry.coordinates[1], 
+                ctx.lineWidth, 0, 2 * Math.PI
+            );
+            ctx.closePath();
+            ctx.stroke();
         }else{
            
             ctx.fillStyle = (ctx.isFill ==undefined || ctx.isFill)?hexToRgbA(style.color,0.5):style.color;

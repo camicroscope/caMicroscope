@@ -42,7 +42,7 @@ class CaMic{
       hasLayerManager:true,
       hasScalebar:true,
       hasMeasurementTool:true,
-      hasPatchManager:true,
+      hasPatchManager:false,
       hasHeatmap:false
     }
     extend(this.setting, options);

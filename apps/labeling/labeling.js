@@ -49,7 +49,7 @@ const selection = [
   //   count:0,
   //   num:0    
   // }
-]
+];
 
 // CAMIC is an instance of camicroscope core
 // $CAMIC in there
@@ -97,7 +97,8 @@ function initCore(){
       hasDrawLayer:true,
       hasLayerManager:true,
       hasScalebar:true,
-      hasMeasurementTool:true
+      hasMeasurementTool:true,
+      hasPatchManager:true
   }
   // set states if exist
   if($D.params.states){
@@ -711,9 +712,3 @@ function generateROIandSubROI(patch){
   return {ROI, subROIs};
 }
 
-
-const asyncForEach = async (array, callback) => {
-  for (let index = 0; index < array.length; index++) {
-    await callback(array[index], index, array)
-  }
-}
