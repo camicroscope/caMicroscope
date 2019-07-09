@@ -1,3 +1,5 @@
+// db.labeling.aggregate([{ $match : { parent:null} },{$sample:{size:1}},{$project:{provenance:1}}]);
+
 // test slideId = 5c8802db36d1a00006d33711
 // labelId = 5d1ca58ff2a6893c5688e95b
 // mutli subroi labelId = 5d1ca58cf2a6893c5688e94e
@@ -23,6 +25,99 @@ const $D = {
   },
   params:null // parameter from url - slide Id and status in it (object).
 };
+window.addEventListener('keydown', (e) => {
+  if(!$CAMIC || !$CAMIC.viewer) return;
+  const keyCode = e.keyCode;
+  
+  // escape key to close all operations
+  if(keyCode==27){
+    // close slide menu
+    const slide_li = $UI.toolbar.getSubTool('list');
+    const slide_chk = slide_li.querySelector('input[type=checkbox]');
+    slide_chk.checked = false;
+    eventFire(slide_chk,'click');
+
+    // close measument tool
+    const m_li = $UI.toolbar.getSubTool('measure');
+    const m_chk = m_li.querySelector('input[type=checkbox]');
+    m_chk.checked = false;
+    eventFire(m_chk,'click');
+    
+    // close annotation pen
+    const a_li = $UI.toolbar.getSubTool('annotation');
+    const a_chk = a_li.querySelector('input[type=checkbox]');
+    $UI.toolbar.getSubTool('annotation').querySelector('label').style.color = '';
+    a_chk.checked = false;
+    eventFire(a_chk,'click');
+    //   
+  }
+
+  //open Tumor Pen (ctrl + t)
+  if(e.ctrlKey && keyCode == 84 && $CAMIC.viewer.canvasDrawInstance){
+    const li = $UI.toolbar.getSubTool('annotation');
+    li.querySelectorAll('.drop_down input[type=radio][value=tumor]')[0].checked = true;
+    const chk = li.querySelector('input[type=checkbox]');
+    chk.checked = true;
+    eventFire(chk,'click');
+    return;
+  }
+  // open Necrosis Pen (ctrl + n)
+  if(e.ctrlKey && keyCode == 78 && $CAMIC.viewer.canvasDrawInstance){
+    const li = $UI.toolbar.getSubTool('annotation');
+    li.querySelectorAll('.drop_down input[type=radio][value=necrosis]')[0].checked = true;
+    const chk = li.querySelector('input[type=checkbox]');
+    chk.checked = true;
+    eventFire(chk,'click');
+    return;
+  }
+  // open Other Pen (ctrl + o)
+  if(e.ctrlKey && keyCode == 79 && $CAMIC.viewer.canvasDrawInstance){
+    const li = $UI.toolbar.getSubTool('annotation');
+    li.querySelectorAll('.drop_down input[type=radio][value=other]')[0].checked = true;
+    const chk = li.querySelector('input[type=checkbox]');
+    chk.checked = true;
+    eventFire(chk,'click');
+    return;
+  }
+  // open Lymphocytes Pen (ctrl + l)
+  if(e.ctrlKey && keyCode == 76 && $CAMIC.viewer.canvasDrawInstance){
+    const li = $UI.toolbar.getSubTool('annotation');
+    li.querySelectorAll('.drop_down input[type=radio][value=lymphocytes]')[0].checked = true;
+    const chk = li.querySelector('input[type=checkbox]');
+    chk.checked = true;
+    eventFire(chk,'click');
+    return;
+  }
+
+  // open Plasma Pen (ctrl + p)
+  if(e.ctrlKey && keyCode == 80 && $CAMIC.viewer.canvasDrawInstance){
+    const li = $UI.toolbar.getSubTool('annotation');
+    li.querySelectorAll('.drop_down input[type=radio][value=plasma]')[0].checked = true;
+    const chk = li.querySelector('input[type=checkbox]');
+    chk.checked = true;
+    eventFire(chk,'click');
+    return;
+  }
+
+  // open Measurement Tool (ctrl + m)
+  if(e.ctrlKey && keyCode == 77 && $CAMIC.viewer.measureInstance){
+    const li = $UI.toolbar.getSubTool('measure');
+    const chk = li.querySelector('input[type=checkbox]');
+    chk.checked = !chk.checked;
+    eventFire(chk,'click');
+    return;
+  }
+
+  // open annotations list
+  if(e.ctrlKey && keyCode == 65 && $UI.annotationsSideMenu){
+    const li = $UI.toolbar.getSubTool('list');
+    const chk = li.querySelector('input[type=checkbox]');
+    chk.checked = !chk.checked;
+    eventFire(chk,'click');
+    return;
+  }
+
+});
 // initialize viewer page
 async function initialize(){
   var checkPackageIsReady = await setInterval(async function () {
@@ -86,7 +181,8 @@ function initCore(){
       hasDrawLayer:true,
       hasLayerManager:true,
       hasScalebar:true,
-      hasMeasurementTool:true
+      hasMeasurementTool:true,
+      minImageZoom:0.5
   }
   // set states if exist
   if($D.params.states){
@@ -138,7 +234,32 @@ function initCore(){
     hasFooter:true
   });
 
+  $UI.annotationsSideMenu = new SideMenu({
+    id:'side_annotation',
+    width: 200,
+    //, isOpen:true
+    callback:(data)=>{
+      if(!data.isOpen) $UI.toolbar.getSubTool('list').querySelector('input[type=checkbox]').checked = false;
+    }
+  });
+  
+  const title = document.createElement('div');
+  title.classList.add('item_head');
+  title.textContent = 'Annotations';
 
+  $UI.annotationsSideMenu.addContent(title);
+
+  // create edited data list
+  $UI.labelAnnotationsPanel = new LabelAnnotationsPanel({
+    // data:$D.heatMapData.editedClusters,
+    data:$D.annotations,
+    // editedDate:$D.
+    onDBClick: locatedAnnotation,
+    onDelete: onDeleteAnnotation
+  });
+
+  $UI.annotationsSideMenu.addContent($UI.labelAnnotationsPanel.elt);
+  
   // ui init
   $UI.toolbar = new CaToolbar({
   /* opts that need to think of*/
@@ -160,11 +281,19 @@ function initCore(){
         }
       },
       {
+        icon: 'view_list',
+        type: 'check',
+        value: 'list',
+        title:'Annotations',
+        name:'list',
+        callback: toggleAnnotList
+      },
+      {
         name:'annotation',
         icon:'create',
-        title:'Annotation',
+        title:'Annotate',
         type:'dropdown',
-        value:'annot',
+        value:'annotation',
         dropdownList:[
           {
             value:'tumor', // red
@@ -190,17 +319,6 @@ function initCore(){
         ],
         callback:toggleAnntation
       },
-      // undo
-      {
-        id:'undo',
-        icon:'undo',
-        title:'Undo',
-        type:'btn',
-        value:'undo',
-        name:'undo',
-        callback:undoAnnotation
-
-      },
       // measurment tool
       {
         id:'labeling_mode',
@@ -209,7 +327,7 @@ function initCore(){
         type:'check',
         value:'measure',
         name:'measure',
-        callback:toggleMode
+        callback:toggleMeasurement
       },     
       {
         icon:'save',// material icons' name
@@ -229,9 +347,8 @@ function initCore(){
     ]
   });
 
-  //$UI.toolbar.getSubTool('annotation').style.display = 'none';
-  //$UI.toolbar.getSubTool('point').style.display = 'none';
 }
+
 async function saveAnnotations(){
   if($D.annotations.length < 1) {
     alert('There Is No Annotaiton. Please Add Some Annotations...');
@@ -252,30 +369,15 @@ async function saveAnnotations(){
   Loading.close();
   redirect($D.pages.table, 'Redirecting To Home....', 0);
 }
-function toggleMode(data){
-  const mode = data.value;
-  // dis
-  const chk = $UI.toolbar.getSubTool('annotation').querySelector('input[type=checkbox]');
-  chk.checked = false;
-  eventFire(chk,'change');
-  switch (mode) {
-    case 'point':
-      $CAMIC.viewer.measureInstance.off();
-      
-      
-      break;
-      // statements_1
-    case 'rect':
-      $CAMIC.viewer.measureInstance.off();
-      
-      
-      break;
-    default:
-      
-      $CAMIC.viewer.measureInstance.on();
-      // statements_def
-      break;
+function toggleMeasurement(data){
+  
+  if(data.checked){
+    annotOff();
+    $CAMIC.viewer.measureInstance.on();
+  }else{
+    $CAMIC.viewer.measureInstance.off();
   }
+
 }
 
 
@@ -288,6 +390,8 @@ function toggleAnntation(e){
   const canvasDraw = $CAMIC.viewer.canvasDrawInstance;
   const target = this.srcElement || this.target || this.eventSource.canvas;
   if(e.checked){ // on
+    $CAMIC.viewer.measureInstance.off();
+    $UI.toolbar.getSubTool('measure').querySelector('input[type=checkbox]').checked = false;
     annotOn(e);
     
 
@@ -342,7 +446,7 @@ function annotOn(e){
   const canvasDraw = $CAMIC.viewer.canvasDrawInstance;
   canvasDraw.drawMode = mode;
   canvasDraw.style.color = color;
-  //$UI.toolbar.getSubTool('annotation').querySelector('label').style.backgroundColor = color;
+  $UI.toolbar.getSubTool('annotation').querySelector('input[type=checkbox]').checked = true;
   $UI.toolbar.getSubTool('annotation').querySelector('label').style.color = color;
   canvasDraw.style.isFill = true;
   canvasDraw.isSimplify = false;
@@ -358,7 +462,7 @@ function annotOff(){
   canvasDraw.drawOff();
   canvasDraw.clear();
 
-  //$UI.toolbar.getSubTool('annotation').querySelector('label').style.backgroundColor = '';
+  $UI.toolbar.getSubTool('annotation').querySelector('input[type=checkbox]').checked = false;
   $UI.toolbar.getSubTool('annotation').querySelector('label').style.color = '';
 
 }
@@ -376,7 +480,6 @@ async function loadingData() {
   if(labelData.subrois&&Array.isArray(labelData.subrois))
    sublabels = await $CAMIC.store.findLabelByIds(labelData.subrois).then(d=>d);
   
-  
   return {ROI:labelData,subROIs:sublabels};
 }
 
@@ -388,8 +491,8 @@ function showLabelData(){
   const x = points[0][0] + (points[2][0] - points[0][0])/2;
   const y = points[0][1] + (points[2][1] - points[0][1])/2;
   const refPoint = $CAMIC.viewer.viewport.imageToViewportCoordinates(x,y);
-  $CAMIC.viewer.viewport.zoomTo($CAMIC.viewer.viewport.imageToViewportZoom(0.5),refPoint,true)
-
+  $CAMIC.viewer.viewport.panTo(refPoint,true);
+  
   // draw label
   const labels = [...$D.subROIs,$D.ROI];
   labels.forEach(label=>{
@@ -407,9 +510,9 @@ function showLabelData(){
 
 function addAnnotaiton(e){
   if($CAMIC.viewer.canvasDrawInstance._draws_data_.length <= 0) return;
-  
   // get current data from osd drawer
   const annotation = getAnnotationDataFrom($CAMIC.viewer.canvasDrawInstance._draws_data_[0]);
+  // console.log(annotation);
   // clear drawer data;
   $CAMIC.viewer.canvasDrawInstance.clear();
 
@@ -426,10 +529,13 @@ function addAnnotaiton(e){
   $CAMIC.viewer.omanager.addOverlay(item);
   $CAMIC.viewer.omanager.updateView();
 
+  $UI.labelAnnotationsPanel.__refresh();
   
 }
 
 function removeAnnotation(e){
+
+  $UI.labelAnnotationsPanel.__refresh();
   console.log('remove Annotaiton');
   console.log(e);
 
@@ -448,7 +554,7 @@ function annotation_render(ctx,data){
     case 'Polygon':
       // polygon
       const points = polygon.geometry.coordinates[0];
-      ctx.fillStyle = hexToRgbA(color,0.1);
+      ctx.fillStyle = hexToRgbA(color,0.2);
       const path = new Path();
 
       // starting draw drawPolygon
@@ -465,9 +571,11 @@ function annotation_render(ctx,data){
     case 'Point':
       // point
       const point = polygon.geometry.coordinates;
+      ctx.fillStyle = color;
       const path1 = new Path();
       path1.arc(point[0], point[1], lineWidth>2?lineWidth:2, 0, 2 * Math.PI);
       path1.closePath();
+      path1.fill(ctx);
       path1.stroke(ctx);
       break;
     default:
@@ -476,6 +584,15 @@ function annotation_render(ctx,data){
   }
   
 }
+
+function toggleAnnotList(e) {
+  if(e.checked){
+    $UI.annotationsSideMenu.open();
+  }else{
+    $UI.annotationsSideMenu.close();
+  }
+}
+
 function label_render(ctx,data){
   // set style
   const imagingHelper  = this.viewer.imagingHelper;
@@ -486,6 +603,37 @@ function label_render(ctx,data){
   ctx.isFill = false;
   ctx.strokeStyle = polygon.properties.style.color;
   polygon.geometry.path = DrawHelper.drawPolygon(ctx, points);
+}
+
+function locatedAnnotation(data){
+  const annotation = data.item
+  if(!annotation) return;
+  const geometry = annotation.geometries.features[0].geometry;
+  const bound = annotation.geometries.features[0].bound;
+  var x = null, y = null;
+  if(geometry.type=='Point'){
+    x = bound[0];
+    y = bound[1];
+  }else if(geometry.type=='Polygon'){
+    const [x0,y0] = bound[0];
+    const [x1,y1] = bound[2];
+    x = ((x1 - x0)/2) + x0;
+    y = ((y1 - y0)/2) + y0;
+  }
+
+  const refPoint = $CAMIC.viewer.viewport.imageToViewportCoordinates(x,y);
+  $CAMIC.viewer.viewport.panTo(refPoint, true);
+
+}
+
+function onDeleteAnnotation(data){
+  const annotation = data.item;
+  if(!confirm(`Do You Want To Delete { ${annotation.properties.type} - Index:${data.index}}?`)) return;
+  
+  $D.annotations.splice(data.index, 1);
+  $UI.labelAnnotationsPanel.__refresh();
+  $CAMIC.viewer.omanager.removeOverlay(data.id);
+  $CAMIC.viewer.omanager.updateView();
 }
 
 function getAnnotationDataFrom(data){
@@ -499,8 +647,10 @@ function getAnnotationDataFrom(data){
   const exec_id = randomId();
 
   if(data.geometry.path) delete data.geometry.path;
+  
   const geometry = Object.assign({}, data.geometry);
-
+  const bound = [...data.bound];
+  
   const annotation = {
         "_id":id.toString(),
         "provenance": {
@@ -533,18 +683,11 @@ function getAnnotationDataFrom(data){
                       }
                   },
                   "geometry": geometry,
-                  "bound": geometry
+                  "bound": bound
                 }
             ]
         }
     };
   return annotation;
-}
-
-function undoAnnotation(){
-  if($D.annotations.length < 1 ) return;
-  const item = $D.annotations.pop();
-  $CAMIC.viewer.omanager.removeOverlay(item._id);
-  $CAMIC.viewer.omanager.updateView();
 }
 

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta name="keywords" content="camicroscope, quip" />
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+
+    <title>caMicroscope</title>
+		<!-- google material icons css sheet -->
+		<link rel='stylesheet' type='text/css' media='all' href='../../iconfont/material-icons.css'/>
+		<!-- css sheet -->
+		<link rel='stylesheet' type='text/css' media='all' href='../../css/style.css'/>    	
+ 		<link rel='stylesheet' type='text/css' media='all' href='../../components/loading/loading.css'/>
+ 		<script type='text/javascript' src='../../components/loading/loading.js' ></script>
+    	<script type='text/javascript' src='../../common/ajv.js'></script>
+    	<script type='text/javascript' src='../../core/Validation.js'></script>
+    	<script type='text/javascript' src='../../core/Store.js'></script>
+		<style type="text/css">
+			.modalbox-footer button{
+				font-weight: bold;
+			    border: none;
+			    background-color: #FFFFFF;
+			    outline: none;
+			    cursor: pointer;
+			    padding: 5px 10px;
+			    margin: 5px 0;
+			    color: #365F9C;
+			}
+			
+			.modalbox-footer button:disabled {
+				border: 1px solid #7f7f7f;
+				background-color: #bfbfbf;
+			}
+		</style>
+	</head>
+	<body>
+		<!-- message-->
+        <button id='pick'>RANDOMLY PICK ONE LABEL</button>
+	</body>
+	<script type="text/javascript">
+		const store = new Store("../../data/", $VALIDATION);
+		async function picker(){
+			Loading.open(document.body,'Randomly Picking...');
+			const labels = await store.findAllLabelsWithoutAnnotations().then(d=>d);
+			const index = getRandomIntInclusive(0,labels.length-1);
+			const label = labels[index];
+			const labelId = label._id;
+			const slideId = label.provenance.image.slide;
+			window.location.href = `./labelingAnnotation.html?labelId=${labelId}&slideId=${slideId}`;
+		}
+		function getRandomIntInclusive(min, max) {
+		  min = Math.ceil(min);
+		  max = Math.floor(max);
+		  return Math.floor(Math.random() * (max - min + 1)) + min; //The maximum is inclusive and the minimum is inclusive 
+		}
+		const btn = document.querySelector('#pick');
+		btn.addEventListener('click', picker);
+	</script>
+</html>

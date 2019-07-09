@@ -43,6 +43,8 @@
         this.base = 40;
         this.zoomIndex;
         this._viewer = options.viewer;
+
+        if(options.minImageZoom) this.minImageZoom = options.minImageZoom;
         var viewer = this._viewer;
         var    viewerSize;
         var   navigatorSize;
@@ -157,12 +159,23 @@
      *        Event
      */
     $.CaZoomControl.prototype.setImageZoomLevel = function(e){
+            const minImageZoom = this.imageZoomLevels[this.imageZoomLevels.length-1]; // min zoom
+            const maxImageZoom = this.imageZoomLevels[0]; // max zoom
+            let currentImageZoom = this._viewer.viewport.viewportToImageZoom(e.zoom);
+            if(currentImageZoom > maxImageZoom || currentImageZoom < minImageZoom) {
+              this._viewer.viewport.zoomTo(
+                this._viewer.viewport.imageToViewportZoom(currentImageZoom > maxImageZoom?maxImageZoom:minImageZoom)
+                ,true);
+              currentImageZoom = currentImageZoom > maxImageZoom?maxImageZoom:minImageZoom;
+              //return;
+            };
+            
             const index = getImageZoomIndex(
                     this.imageZoomRanges,
-                    this._viewer.viewport.viewportToImageZoom(e.zoom)
+                    currentImageZoom
                 );
             if(index!=null) this.imageZoomIndex = this.range.value = index;
-            this.txt.textContent =  `${Number((this._viewer.viewport.viewportToImageZoom(e.zoom)*this.base).toFixed(3))}x`;
+            this.txt.textContent =  `${Number((currentImageZoom*this.base).toFixed(3))}x`;
 
     }
     /**
@@ -291,7 +304,7 @@
      */
     $.CaZoomControl.prototype.getAllImageZoomLevelAndRange = function(viewer){
 
-        this.imageZoomLevels = getAllImageZoomLevel(viewer);
+        this.imageZoomLevels = getAllImageZoomLevel(viewer,this.minImageZoom,this.maxImageZoom);
 
         this.imageZoomRanges = [];
         this.imageZoomRanges.push(Number.POSITIVE_INFINITY);
@@ -321,10 +334,11 @@
         }
         return null;
     }
-    function getAllImageZoomLevel(viewer){
-        const max = getMaxImageZoom(viewer);
-        const min = getMinImageZoom(viewer);
-        const samples = [1, 0.5, 0.25];
+    function getAllImageZoomLevel(viewer,imin,imax){
+        const max = imax || getMaxImageZoom(viewer);
+        const min = imin || getMinImageZoom(viewer);
+
+        const samples = [2, 1, 0.5, 0.25];
         let divisor = 1;
         //const zoomNums = 3 - (Math.log2(min) >> 0);
         let zooms = [];
@@ -333,7 +347,7 @@
             divisor *= 10;
         } while(zooms[zooms.length-1] > min);
 
-        while( zooms[zooms.length-1] < min ){
+        while( zooms[zooms.length-1] <= min ){
             zooms.pop();
         }
         zooms.push(min);

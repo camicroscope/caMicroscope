@@ -22,13 +22,15 @@
  		<link rel='stylesheet' type='text/css' media='all' href='../../components/toolbar/toolbar.css'/>
  		<!-- add modalbox css -->
 		<link rel='stylesheet' type='text/css' media='all' href='../../components/modalbox/modalbox.css'/>
-		<!-- color picker css -->
-		<link rel='stylesheet' type='text/css' media='all' href='../../common/colorpicker/color-picker.css'/>
+		<!-- add labelannotationspanel css -->
+        <link rel='stylesheet' type='text/css' media='all' href='../../components/labelannotationspanel/labelannotationspanel.css'/>
 
 		<link rel='stylesheet' type='text/css' media='all' href='../../core/extension/openseadragon-measurement-tool/openseadragon-measurement-tool.css'/>
-
+		<!-- side menu css -->
+		<link rel='stylesheet' type='text/css' media='all' href='../../components/sidemenu/sidemenu.css'/>
 		<!-- Check If we're logged in ok, otherwise, log in for us -->
-    <script src='../../common/authChecker.js'></script>
+		<!-- sidemenu js -->
+		<script src='../../common/authChecker.js'></script>
     <script>
       __auth_check(2)
     </script>
@@ -38,9 +40,11 @@
 		<script type='text/javascript' src='../../components/camessage/camessage.js'></script>
 		<script type='text/javascript' src='../../components/loading/loading.js' ></script>
 		<script type='text/javascript' src='../../components/toolbar/toolbar.js' ></script>
+		<script type='text/javascript' src='../../components/sidemenu/sidemenu.js'></script>
+		<!-- labelannotationspanel -->
+		<script type='text/javascript' src='../../components/labelannotationspanel/labelannotationspanel.js'></script>
 		<!-- modalbox -->
 		<script type='text/javascript' src='../../components/modalbox/modalbox.js'></script>
-		<script type='text/javascript' src='../../common/colorpicker/color-picker.js' ></script>
 		<script type='text/javascript' src='../../common/FileSaver.min.js' ></script>
 		<script type='text/javascript' src='../../common/jszip.min.js' ></script>
 		<!-- open seadragon lib-->
@@ -75,20 +79,17 @@
 		<script type='text/javascript' src='../../common/dynamicLoadScript.js'></script>
 		<script type='text/javascript' src='./labelingAnnotation.js'></script>
 		<style type="text/css">
-			.modalbox-footer button{
-				font-weight: bold;
-			    border: none;
-			    background-color: #FFFFFF;
-			    outline: none;
+			.item_head {
+			    margin:.2rem;
+			    background-color: #365f9c;
+			    color: rgba(255,255,255,.7);
 			    cursor: pointer;
-			    padding: 5px 10px;
-			    margin: 5px 0;
-			    color: #365F9C;
-			}
-			
-			.modalbox-footer button:disabled {
-				border: 1px solid #7f7f7f;
-				background-color: #bfbfbf;
+			    padding: .5rem;
+			    width: 100%;
+			    border: none;
+			    text-align: left;
+			    outline: none;
+			    font-size: 1.5rem;
 			}
 			
 			ul.drop_down li {
@@ -102,6 +103,8 @@
 		<!-- toolbar -->
 		<div id = 'ca_tools'></div>
 		<div id='modalbox'></div>
+		<!-- annotation list -->
+		<div id='side_annotation' style='z-index:600'></div>
 		<div id ='main_viewer' class='main'></div>
 	</body>
 	<script type="text/javascript">

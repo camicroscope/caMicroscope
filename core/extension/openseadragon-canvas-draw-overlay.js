@@ -561,9 +561,10 @@
                     },
                     geometry:{
                         type:"Point",
-                        coordinates:[...point],
-                        path:null
-                    }
+                        coordinates:[...point]
+                    },
+                    bound:[...point]
+
                 }; 
                 return;               
             }
@@ -575,8 +576,7 @@
                 },
                 geometry:{
                     type:this.drawMode==='line'||this.drawMode==='grid'?"LineString":"Polygon",
-                    coordinates:[[point]],
-                    path:null
+                    coordinates:[[point]]
                 }
             };
         },

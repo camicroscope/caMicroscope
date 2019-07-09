@@ -1,0 +1,67 @@
+/* labelannotationspanel.css */
+
+.lal-container {
+    /*border: 1px solid #ccc;*/
+    display: block;
+    position: relative;
+    padding: .5rem;
+    margin: .5rem;
+    color: #365f9c;
+    font-size:1.3rem;
+}
+
+.lal-container .title {
+	margin-top: .5rem;
+	padding: 0 1.0rem 0 1.5rem;
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+}
+
+.lal-container .title .icon,.lal-container .list .icon {
+    border: #cbcbcb 1px solid;
+    background-color: #f6f6f6;
+    cursor: pointer;
+}
+
+.lal-container .title label,.lal-container .list label {
+    cursor: pointer;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+    display: -webkit-flex;
+    display: flex;
+    flex: 1;
+    margin-left: -1px;
+    border: #cbcbcb 1px solid;
+    font-weight: bold;
+}
+
+.lal-container .title label div,.lal-container .list label div{
+	margin: 0 auto;
+}
+
+.margin-left-1 {
+	margin-left:-1px;
+}
+
+.color-block {
+    box-sizing: border-box;
+    border: #cbcbcb 1px solid;
+	width:2rem;
+	height:2rem;
+}
+
+.lal-container .list {
+	display:flex;
+	flex-direction:column;
+}
+
+.lal-container .list > div{
+	display:flex;
+	flex:1;
+	margin-top: .5rem;
+	padding: 0 2rem 0 3rem;	
+}

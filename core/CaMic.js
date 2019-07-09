@@ -114,6 +114,9 @@ class CaMic{
       }
     }.bind(this));
 
+
+    this.createZoomControl();
+
     // create draw pulgin
     this.createCanvasDraw();
     this.createOverlayers();
@@ -128,7 +131,7 @@ class CaMic{
       nav.style.opacity = 1;
     }
     //if(this.viewer.viewport.getMaxZoom() < 40) this.viewer.viewport.maxZoomLevel = 40
-    this.createZoomControl();
+    
 
     if(this.mpp_x&&this.mpp_y&&this.mpp_x!=1e9&&this.mpp_y!=1e9)
       this.createMeasurementTool(this.mpp_x,this.mpp_y);
@@ -221,7 +224,8 @@ class CaMic{
     if(!this.setting.hasZoomControl || !this.viewer.cazoomctrl) return;
     this.viewer.cazoomctrl({
       position:"BOTTOM_RIGHT",
-      autoFade: false
+      autoFade: false,
+      minImageZoom:this.setting.minImageZoom
     });
   }
   /**

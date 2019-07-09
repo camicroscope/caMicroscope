@@ -261,7 +261,12 @@ class Store {
       console.error('Store.findMarkTypes needs slide ... ');
       return null;
     }
+    // numeric->str coerce
+    if ((parseInt(slide)==slide)||(parseFloat(slide)==slide)){
+      query.slide = '"' + slide + '"'
+    } else {
     query.slide = slide
+    }
     if (name) {
       query.name = name
       suffix = "Mark/typesExec"
@@ -715,7 +720,15 @@ class Store {
       mode: "cors"
     }).then(this.errorHandler).then(x=>this.filterBroken(x, "labeling"))
   }
-  
+
+  findAllLabelsWithoutAnnotations(){// return top 50
+    var suffix = "Labeling/findAllLabelsWithoutAnnotations"
+    var url = this.base + suffix;
+    return fetch(url, {
+      credentials: "include",
+      mode: "cors"
+    }).then(this.errorHandler).then(x=>this.filterBroken(x, "labeling"))    
+  }
   addLabelsAnnotation(slide, label, annotationIds){
     if (!Array.isArray(annotationIds) || !slide || !label) {
       return {
