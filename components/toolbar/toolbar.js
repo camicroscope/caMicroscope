@@ -151,7 +151,7 @@ CaToolbar.prototype.__createBtn = function(options){
 	if(options.name) li.name = options.name;
 	const btn = document.createElement('i');
 	btn.classList.add('material-icons');
-	btn.classList.add('md-24');
+	btn.classList.add('md-36');
 	btn.textContent = options.icon;
 	if(options.title) btn.title = options.title;
 	li.appendChild(btn);
@@ -196,7 +196,7 @@ CaToolbar.prototype.__createCheck = function(options){
 	// icon
 	const icon = document.createElement('label');
 	icon.classList.add('material-icons');
-	icon.classList.add('md-24');
+	icon.classList.add('md-36');
 	icon.textContent = options.icon;
 	icon.htmlFor = id;
 	if(options.title) icon.title = options.title;
@@ -247,7 +247,7 @@ CaToolbar.prototype.__createRadio = function(options){
 	const icon = document.createElement('label');
 	if(options.icon){
 		icon.classList.add('material-icons');
-		icon.classList.add('md-24');
+		icon.classList.add('md-36');
 		icon.textContent = options.icon;
 	}else{
 		const div = document.createElement('div');
@@ -286,7 +286,7 @@ CaToolbar.prototype.__createMultiStateBtns = function(options){
 	const icon = document.createElement('label');
 	icon.id = randomId(); // create a timestamp id
 	icon.classList.add('material-icons');
-	icon.classList.add('md-24');
+	icon.classList.add('md-36');
 	icon.classList.add(0);
 	icon.dataset.state = 0;
 	icon.textContent = options.icon;
@@ -331,7 +331,7 @@ CaToolbar.prototype.__createDropDown = function(options){
 	// icon
 	const icon = document.createElement('label');
 	icon.classList.add('material-icons');
-	icon.classList.add('md-24');
+	icon.classList.add('md-36');
 	icon.textContent = options.icon;
 	icon.htmlFor = id;
 	if(options.title) icon.title = options.title;
