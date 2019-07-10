@@ -10,7 +10,7 @@ const annotationType = {
   '#FF0000':'tumor',
   '#FFFF00':'necrosis',
   '#000000':'other',
-  '#0000FF':'lymphocyte',
+  '#0000FF':'lymphocytes',
   '#00FFFF':'plasma'
 }
 let $CAMIC = null;
@@ -134,8 +134,8 @@ async function initialize(){
       $UI.modalbox = new ModalBox({
         id:'modalbox',
         hasHeader:true,
-        headerText:'Patch List',
-        hasFooter:false
+        headerText:'Annotations Summary',
+        hasFooter:true
       });
       // create a viewer and set up
       initCore();
@@ -224,14 +224,6 @@ function initCore(){
     if(!$CAMIC.viewer.measureInstance) $UI.toolbar.getSubTool('measure').style.display = 'none'
       // TODO
       $CAMIC.viewer.canvasDrawInstance.addHandler('stop-drawing',addAnnotaiton);
-  });
-  
-
-  $UI.modalbox = new ModalBox({
-    id:'modalbox',
-    hasHeader:true,
-    headerText:'Labeling List',
-    hasFooter:true
   });
 
   $UI.annotationsSideMenu = new SideMenu({
@@ -334,7 +326,7 @@ function initCore(){
         title:'Save',
         type:'btn',// btn/check/dropdown
         value:'save',
-        callback:saveAnnotations
+        callback:clickSavebtnHandler
       },
       // bug report
       {
@@ -349,11 +341,18 @@ function initCore(){
 
 }
 
-async function saveAnnotations(){
+function clickSavebtnHandler(){
   if($D.annotations.length < 1) {
     alert('There Is No Annotaiton. Please Add Some Annotations...');
     return;
   }
+
+  // open modal as annotations summary
+  createAnnotationsList();
+}
+
+async function saveAnnotations(){
+
   Loading.open(document.body, 'Saving Annotations...');
   // user and date time
   const creator = getUserId();
@@ -371,8 +370,16 @@ async function saveAnnotations(){
   const annotationIds = $D.annotations.map(elt=>elt._id);
   
   await $CAMIC.store.addLabelsAnnotation(slide,label,annotationIds).then(d=>d);
+  
+  // randomly pick
+  const labels = await $CAMIC.store.findAllLabelsWithoutAnnotations().then(d=>d);
+  const index = getRandomIntInclusive(0,labels.length-1);
+  const nextLabelId = labels[index]._id;
+  const nextSlideId = labels[index].provenance.image.slide;
+  window.location.href = `./labelingAnnotation.html?labelId=${nextLabelId}&slideId=${nextSlideId}`;
+
   Loading.close();
-  redirect($D.pages.table, 'Redirecting To Home....', 0);
+  //redirect($D.pages.table, 'Redirecting To Home....', 0);
 }
 function toggleMeasurement(data){
   
@@ -410,27 +417,32 @@ const pencil = {
   'tumor':{
     color:'#FF0000', // red
     type:'Tumor',
-    mode: 'free'
+    mode: 'free',
+    num:0
   },
   'necrosis':{
     color:'#FFFF00', // yellow
     type:'Necrosis',
-    mode: 'free'
+    mode: 'free',
+    num:0
   },
   'other':{
     color:'#000000', // black
     type:'Other',
-    mode: 'free'
+    mode: 'free',
+    num:0
   },
   'lymphocytes':{ 
     color:'#0000FF', // blue
     type:'Lymphocytes',
     mode: 'point',
+    num:0
   },
   'plasma':{
     color:'#00FFFF', // cyan
     type: 'Plasma',
-    mode: 'point'
+    mode: 'point',
+    num:0
   }
 }
 
@@ -517,13 +529,14 @@ function addAnnotaiton(e){
   if($CAMIC.viewer.canvasDrawInstance._draws_data_.length <= 0) return;
   // get current data from osd drawer
   const annotation = getAnnotationDataFrom($CAMIC.viewer.canvasDrawInstance._draws_data_[0]);
+  const type = annotation.properties.type;
   // console.log(annotation);
   // clear drawer data;
   $CAMIC.viewer.canvasDrawInstance.clear();
 
   // add to data
   $D.annotations.push(annotation);
-  
+  pencil[type].num++;  
   // add to overlay
   const item = {};
   item.id = annotation._id;
@@ -536,14 +549,6 @@ function addAnnotaiton(e){
 
   $UI.labelAnnotationsPanel.__refresh();
   
-}
-
-function removeAnnotation(e){
-
-  $UI.labelAnnotationsPanel.__refresh();
-  console.log('remove Annotaiton');
-  console.log(e);
-
 }
 
 function annotation_render(ctx,data){
@@ -612,6 +617,35 @@ function label_render(ctx,data){
   polygon.geometry.path = DrawHelper.drawPolygon(ctx, points);
 }
 
+function createAnnotationsList(){
+  empty($UI.modalbox.body);
+  // get data;
+  const header = `
+  <div style='display:table-row; font-weight:bold;'>
+      <div style='text-align: initial; display: table-cell; padding: 5px;'>Annotation Type</div>
+      <div style='display: table-cell; padding: 5px;'>Total</div>
+  </div>`;
+  const rows = Object.keys(pencil).map(type=>`
+    <div style='display:table-row;'>
+      <div style='font-weight:bold; text-align: initial; display: table-cell;padding: 5px; color: ${pencil[type].color};'>${pencil[type].type}</div>
+      <div style='display: table-cell; padding: 5px;'>${pencil[type].num}</div>
+    </div>`).join('');
+
+  const table = `<div style='display: table;width: 100%; color: #365F9C; text-align: center;'>${header}${rows}</div>`;
+  $UI.modalbox.body.innerHTML = table;
+
+  const footer = $UI.modalbox.elt.querySelector('.modalbox-footer');
+  footer.innerHTML = `
+  <div style='display:flex;wdith:100%;justify-content: space-between;'>
+    <div style='font-size: 1.5rem; padding: 5px; margin: 5px;font-weight:bold;color:#FF0000;'>
+    </div>
+    <button>Save&Next</button>
+  </div>`
+  $UI.modalbox.open();
+  const btn = $UI.modalbox.elt.querySelector('.modalbox-footer button')
+  btn.addEventListener('click', saveAnnotations);
+}
+
 function locatedAnnotation(data){
   const annotation = data.item
   if(!annotation) return;
@@ -639,6 +673,8 @@ function onDeleteAnnotation(data){
   
   const idx = $D.annotations.findIndex(annotation=>annotation._id==data.id);
   if(idx < 0) return;
+  const type = $D.annotations[idx].properties.type;
+  pencil[type].num--;
   $D.annotations.splice(idx, 1);
   $UI.labelAnnotationsPanel.__refresh();
   $CAMIC.viewer.omanager.removeOverlay(data.id);

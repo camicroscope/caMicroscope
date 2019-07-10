@@ -77,8 +77,8 @@ function initialize(){
       $UI.modalbox = new ModalBox({
         id:'modalbox',
         hasHeader:true,
-        headerText:'Patch List',
-        hasFooter:false
+        headerText:'Labels Summary',
+        hasFooter:true
       });
       // create a viewer and set up
       initCore();
@@ -143,15 +143,6 @@ function initCore(){
     if(!$CAMIC.viewer.measureInstance) $UI.toolbar.getSubTool('measure').style.display = 'none'
   });
   
-
-  $UI.modalbox = new ModalBox({
-    id:'modalbox',
-    hasHeader:true,
-    headerText:'Labeling List',
-    hasFooter:true
-  });
-
-
   // ui init
   $UI.toolbar = new CaToolbar({
   /* opts that need to think of*/
@@ -520,7 +511,7 @@ function createLabelList(){
   </div>`;
   const rows = selection.map(elt=>`
     <div style='display:table-row;'>
-      <div style='font-weight:bold; text-align: initial; display: table-cell;padding: 5px; color: ${elt.color};'>${elt.text}</div>
+      <div style='font-weight:bold; text-align: initial; display: table-cell;padding: 5px; color: ${elt.color};'>${elt.text} ROI</div>
       <div style='display: table-cell;padding: 5px;'>${elt.count}</div>
       <div style='display: table-cell;padding: 5px; color:${elt.count==elt.num?'green':'red'};'>${elt.num}</div>
       <div id='${elt.color}' style='display: table-cell; padding: 5px;'></div>
