@@ -529,7 +529,7 @@ function createLabelList(){
   const table = `<div style='display: table;width: 100%; color: #365F9C; text-align: center;'>${header}${rows}</div>`;
   $UI.modalbox.body.innerHTML = table;
 
-  const isPassed = checkSelection();
+  const isPassed = true; // checkSelection();
   const footer = $UI.modalbox.elt.querySelector('.modalbox-footer');
   footer.innerHTML = `
   <div style='display:flex;wdith:100%;justify-content: space-between;'>
@@ -608,6 +608,10 @@ function generateROIandSubROI(patch){
   const slideId = $D.params.slideId;
   const slideName = $D.params.data.name;
   
+  // user info and create date
+  const creator = getUserId();
+  const dateTime = new Date();
+
   const subROIs = [];
 
   // get ROI
@@ -616,6 +620,8 @@ function generateROIandSubROI(patch){
   const coordinates = getCoordinates(patch);
   const ROI = {
         "_id":roi_id.toString(),
+        "creator": creator,
+        "create_date_time": dateTime,
         "provenance": {
             "image": {
                 "slide": slideId,
@@ -666,6 +672,8 @@ function generateROIandSubROI(patch){
     const subCoordinates = getCoordinates(sROI);
     const subROI = {
         "_id": _id.toString(),
+        "creator": creator,
+        "create_date_time": dateTime,
         "provenance": {
             "image": {
                 "slide": slideId,
@@ -711,4 +719,6 @@ function generateROIandSubROI(patch){
   });
   return {ROI, subROIs};
 }
+
+
 

@@ -545,6 +545,11 @@ function detectIE() {
   return false;
 }
 
+function getUserId(){
+  const token = getCookie('token');
+  const token_data = parseJwt(token);
+  return token_data.name;
+}
 
 function createWarningText(text){
  const temp = `

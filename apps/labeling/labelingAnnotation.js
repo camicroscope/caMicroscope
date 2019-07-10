@@ -355,8 +355,13 @@ async function saveAnnotations(){
     return;
   }
   Loading.open(document.body, 'Saving Annotations...');
+  // user and date time
+  const creator = getUserId();
+  const dateTime = new Date();
   // add annotations 
     await asyncForEach($D.annotations,async (annotation)=>{
+      annotation.creator = creator;
+      annotation.create_date_time = dateTime;
       await $CAMIC.store.addLabel(annotation).then( d => d.count );
       
     });
@@ -548,7 +553,8 @@ function annotation_render(ctx,data){
   const type = polygon.geometry.type;
   const color = polygon.properties.style.color;
 
-  ctx.lineWidth = lineWidth;
+  ctx.lineWidth = lineWidth<3?3:lineWidth;
+  //console.log(lineWidth);
   ctx.strokeStyle = color;
   switch (type) {
     case 'Polygon':
@@ -571,6 +577,7 @@ function annotation_render(ctx,data){
     case 'Point':
       // point
       const point = polygon.geometry.coordinates;
+      ctx.lineWidth = lineWidth<6?6:lineWidth;
       ctx.fillStyle = color;
       const path1 = new Path();
       path1.arc(point[0], point[1], lineWidth>2?lineWidth:2, 0, 2 * Math.PI);
@@ -599,7 +606,7 @@ function label_render(ctx,data){
   const lineWidth = (imagingHelper.physicalToDataX(2) - imagingHelper.physicalToDataX(0))>> 0;
   const polygon = data.geometries.features[0];
   const points = polygon.geometry.coordinates[0];
-  ctx.lineWidth = lineWidth;
+  ctx.lineWidth = lineWidth<3?3:lineWidth;
   ctx.isFill = false;
   ctx.strokeStyle = polygon.properties.style.color;
   polygon.geometry.path = DrawHelper.drawPolygon(ctx, points);
@@ -630,7 +637,9 @@ function onDeleteAnnotation(data){
   const annotation = data.item;
   if(!confirm(`Do You Want To Delete { ${annotation.properties.type} - Index:${data.index}}?`)) return;
   
-  $D.annotations.splice(data.index, 1);
+  const idx = $D.annotations.findIndex(annotation=>annotation._id==data.id);
+  if(idx < 0) return;
+  $D.annotations.splice(idx, 1);
   $UI.labelAnnotationsPanel.__refresh();
   $CAMIC.viewer.omanager.removeOverlay(data.id);
   $CAMIC.viewer.omanager.updateView();
