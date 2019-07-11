@@ -11,9 +11,9 @@
   position:absolute;
   height:250px;
   width:250px;
-  border-width:2px;
+  border-width:3px;
   border-style:solid;
-  opacity:.7;
+  opacity:1;
   background: rgba(255,255,255,.25);
 }
 

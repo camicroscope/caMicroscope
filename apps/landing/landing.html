@@ -1,6 +1,6 @@
 <head>
 
-    <title>caMicroscope</title>
+    <title>FDA HTT - CaMicroscope</title>
     <meta charset="utf-8" />
 
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -16,7 +16,7 @@
 <!-- Header -->
 
 <header id="header">
-
+    <label style="color:white;padding:0 15px;font-size:20px;">CaMicroscope</label>
     <nav id="nav">
 
         <ul>
@@ -37,37 +37,71 @@
     <div class="inner">
 
         <header class="major">
+        <!-- Thank you -->
+        <script src='../../common/authChecker.js'></script>
+        <script>
+            __auth_check(2)
+        </script>
+            <h2>HTT ROI Annotation</h2>
+            <link rel='stylesheet' type='text/css' media='all' href='../../components/loading/loading.css'/>
+            <script type='text/javascript' src='../../components/loading/loading.js' ></script>
+            <script type='text/javascript' src='../../common/ajv.js'></script>
+            <script type='text/javascript' src='../../common/util.js'></script>
+            <script type='text/javascript' src='../../core/Validation.js'></script>
+            <script type='text/javascript' src='../../core/Store.js'></script>
+            <script type="text/javascript">
+                const store = new Store("../../data/", $VALIDATION);
+                async function picking(){
+                    Loading.open(document.body,'Randomly Picking...');
+                    const labels = await store.findAllLabelsWithoutAnnotations().then(d=>d);
+                    if(!Array.isArray(labels)){
+                        Loading.close();                        
+                        alert('Service Error!');
+                        return;
+                    }
+                    if(Array.isArray(labels)&&labels.length==0){
 
-            <h2>caMicroscope Public</h2>
-
+                        Loading.close();
+                        alert("No ROI. Please create ROI.");
+                        return;
+                    }
+                    const index = getRandomIntInclusive(0,labels.length-1);
+                    const label = labels[index];
+                    const labelId = label._id;
+                    const slideId = label.provenance.image.slide;
+                    window.location.href = `../labeling/labelingAnnotation.html?labelId=${labelId}&slideId=${slideId}`;
+                }
+            </script>
         </header>
 
         <!-- Content -->
 
         <div class="content">
-            <p>caMicroscope is a tool to view, annotate, and analyze biomedical images.</p>
+            <p><strong>HTT ROI Annotation</strong> is a tool to view, label, and annotate biomedical images.</p>
             <a href="#" class="image fit"><img src="./banner1.jpg" alt="" /></a>
 
         </div>
 
         <div class="posts">
-
+            <!-- Organizer -->
             <section class="post">
                 <a href="../table.html" class="image"><img src="./camic.jpg" alt=""/></a>
                 <div class="content">
-                    <h3>caMicroscope</h3>
-                    <p>Use camicroscope to explore and mark slides uploaded.</p>
-                    <a href="../table.html" class="button">More</a>
+                    <h3>ROI Creation - Organizers</h3>
+                    <p>Organizers select a slide and create ROIs.</p>
+                    <a href="../table.html" class="button">Create</a>
                 </div>
             </section>
+
             <section class="post">
-                <a target="_blank" href="../loader/loader.html" class="image"><img src="./camic.jpg" style="-webkit-filter: hue-rotate(30deg);filter: hue-rotate(30deg);" alt=""/></a>
+                <a href="javascript:picking()" class="image"><img src="./camic.jpg" style="-webkit-filter: hue-rotate(30deg);filter: hue-rotate(30deg);" alt=""/></a>
                 <div class="content">
-                    <h3>Load an Image</h3>
-                    <p>Load Openslide Compatible Images</p>
-                    <a target="_blank" href="../loader/loader.html" class="button">More</a>
+                    <h3>ROI Annotation - Participants</h3>
+                    <p>Participants randomly pick up a ROI and annotate on it.</p>
+                    <a onclick="picking()" class="button">Pick & Annotate</a>
                 </div>
             </section>
+            <!--
             <section class="post">
                 <a target="_blank" href="https://github.com/camicroscope/" class="image"><img src="./code.jpg" alt=""/></a>
                 <div class="content">
@@ -76,6 +110,7 @@
                     <a target="_blank" href="https://github.com/camicroscope/" class="button">More</a>
                 </div>
             </section>
+            -->
         </div>
 
 </section>

@@ -247,6 +247,7 @@
 </head>
 <body>
 	<div class='container'>
+		<a href="./landing/landing.html">Home</a>
 		<div>
 			<table id = 'datatables'></table>
 		</div>
@@ -352,7 +353,7 @@
 	function openView(e){
 		const oid = e.dataset.id;
 		if(oid){
-			window.location.href = `./viewer/viewer.html?slideId=${oid}`;
+			window.location.href = `./labeling/labeling.html?slideId=${oid}`;
 		}else{
 			alert('No Data Id');
 		}

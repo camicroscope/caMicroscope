@@ -151,15 +151,15 @@ function initCore(){
     hasMainTools:false,
     //mainToolsCallback:mainMenuChange,
     subTools:[{
-        icon: 'insert_photo',
+        icon: 'home',
         type: 'btn',
-        value: 'viewer',
-        title: 'Viewer',
+        value: 'home',
+        title: 'Home',
         callback: function () {
           if (window.location.search.length > 0) {
-            window.location.href = '../viewer/viewer.html' + window.location.search;
+            window.location.href = '../landing/landing.html' + window.location.search;
           } else {
-            window.location.href = '../viewer/viewer.html';
+            window.location.href = '../landing/landing.html';
           }
         }
       },

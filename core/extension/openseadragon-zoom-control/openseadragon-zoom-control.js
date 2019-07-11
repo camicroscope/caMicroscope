@@ -163,11 +163,25 @@
             const maxImageZoom = this.imageZoomLevels[0]; // max zoom
             let currentImageZoom = this._viewer.viewport.viewportToImageZoom(e.zoom);
             if(currentImageZoom > maxImageZoom || currentImageZoom < minImageZoom) {
-              this._viewer.viewport.zoomTo(
-                this._viewer.viewport.imageToViewportZoom(currentImageZoom > maxImageZoom?maxImageZoom:minImageZoom)
-                ,true);
+              // 
+              const viewport = this._viewer.viewport;
+              const refPoint = e.refPoint;
+              const immediately = e.immediately;
+              const zoom = this._viewer.viewport.imageToViewportZoom(currentImageZoom > maxImageZoom?maxImageZoom:minImageZoom);
+              viewport.zoomPoint = refPoint instanceof $.Point &&
+                  !isNaN(refPoint.x) &&
+                  !isNaN(refPoint.y) ?
+                  refPoint :
+                  null;
+
+              if (immediately) {
+                  viewport._adjustCenterSpringsForZoomPoint(function() {
+                      viewport.zoomSpring.resetTo(zoom);
+                  });
+              } else {
+                  viewport.zoomSpring.springTo(zoom);
+              }
               currentImageZoom = currentImageZoom > maxImageZoom?maxImageZoom:minImageZoom;
-              //return;
             };
             
             const index = getImageZoomIndex(
@@ -338,7 +352,7 @@
         const max = imax || getMaxImageZoom(viewer);
         const min = imin || getMinImageZoom(viewer);
 
-        const samples = [2, 1, 0.5, 0.25];
+        const samples = [1, 0.5, 0.25];
         let divisor = 1;
         //const zoomNums = 3 - (Math.log2(min) >> 0);
         let zooms = [];
