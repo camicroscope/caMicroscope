@@ -211,6 +211,13 @@ function initCore(){
         name:'point',
         callback:toggleMode
       },
+      {
+        icon:'save',// material icons' name
+        title:'Save',
+        type:'btn',// btn/check/dropdown
+        value:'save',
+        callback:savePatches
+      },
       // measurment tool
       {
         id:'labeling_mode',
@@ -220,7 +227,7 @@ function initCore(){
         value:'measure',
         name:'measure',
         callback:toggleMode
-      },
+      }
       // {
       //   icon:'get_app',// material icons' name
       //   title:'Download Labeling',
@@ -228,21 +235,15 @@ function initCore(){
       //   value:'download',
       //   callback:downloadLabel
       // },      
-      {
-        icon:'save',// material icons' name
-        title:'Save',
-        type:'btn',// btn/check/dropdown
-        value:'save',
-        callback:savePatches
-      },
+
       // bug report
-      {
-        icon: 'bug_report',
-        title: 'Bug Report',
-        value: 'bugs',
-        type: 'btn',
-        callback: ()=>{window.open('https://goo.gl/forms/mgyhx4ADH0UuEQJ53','_blank').focus()}
-      }
+      // {
+      //   icon: 'bug_report',
+      //   title: 'Bug Report',
+      //   value: 'bugs',
+      //   type: 'btn',
+      //   callback: ()=>{window.open('https://goo.gl/forms/mgyhx4ADH0UuEQJ53','_blank').focus()}
+      // }
     ]
   });
 
