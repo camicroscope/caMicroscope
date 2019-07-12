@@ -25,6 +25,24 @@ const $D = {
   },
   params:null // parameter from url - slide Id and status in it (object).
 };
+const beforeUnloadHandler = e=>{
+  e.preventDefault();
+  e.returnValue = 'leave';
+};
+window.addEventListener('beforeunload',beforeUnloadHandler);
+
+// window.onbeforeunload = function (e) {
+//     e = e || window.event;
+
+//     // For IE and Firefox prior to version 4
+//     if (e) {
+//         e.returnValue = 'Sure?';
+//     }
+
+//     // For Safari
+//     return 'Sure?';
+// };
+
 window.addEventListener('keydown', (e) => {
   if(!$CAMIC || !$CAMIC.viewer) return;
   const keyCode = e.keyCode;
@@ -327,6 +345,28 @@ function initCore(){
         value:'measure',
         name:'measure',
         callback:toggleMeasurement
+      },
+      // skip this roi
+      {
+        id:'next',
+        icon:'skip_next',
+        title:'Next ROI Annotation',
+        type:'btn',
+        value:'next',
+        name:'next',
+        callback:async()=> {
+          Loading.open(document.body,'Loading Next...');
+          window.removeEventListener('beforeunload', beforeUnloadHandler);
+          // randomly pick
+          const labels = await $CAMIC.store.findAllLabelsWithoutAnnotations().then(d=>d);
+          const index = getRandomIntInclusive(0,labels.length-1);
+          const nextLabelId = labels[index]._id;
+          const nextSlideId = labels[index].provenance.image.slide;
+          window.location.href = `./labelingAnnotation.html?labelId=${nextLabelId}&slideId=${nextSlideId}`;
+
+          Loading.close();          
+        }
+
       }    
 
       // bug report

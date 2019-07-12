@@ -64,6 +64,14 @@ const $D = {
   },
   params:null // parameter from url - slide Id and status in it (object).
 };
+
+window.addEventListener('beforeunload', function (e) {
+  //Cancel the event
+  e.preventDefault();
+  //Chrome requires returnValue to be set
+  e.returnValue = 'leave';
+});
+
 // initialize viewer page
 function initialize(){
   var checkPackageIsReady = setInterval(function () {
