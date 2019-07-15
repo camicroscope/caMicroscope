@@ -1,7 +1,10 @@
 function touchHandler(event)
 {
-    var touches = event.changedTouches,
-        first = touches[0],
+    var touches = event.changedTouches;
+    if (!touches.length){
+     return
+    }
+    var first = touches[0],
         type = "";
     switch(event.type)
     {
