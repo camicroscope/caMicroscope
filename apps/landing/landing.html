@@ -5,6 +5,12 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="./main.css" />
+
+    <!-- add modalbox css -->
+    <link rel='stylesheet' type='text/css' media='all' href='../../components/modalbox/modalbox.css'/>
+    <!-- modalbox -->
+    <script type='text/javascript' src='../../components/modalbox/modalbox.js'></script>
+
 </head>
 
 
@@ -14,21 +20,16 @@
 
 
 <!-- Header -->
-
+<div id='modalbox' ></div>
 <header id="header">
     <label style="color:white;padding:0 15px;font-size:20px;">CaMicroscope</label>
     <nav id="nav">
-
         <ul>
             <li><a target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLScL91LxrpAZjU88GBZP9gmcdgdf8__uNUwhws2lzU6Lr4qNwA/viewform">Feedback</a></li>
 
         </ul>
-
     </nav>
-
 </header>
-
-
 
 <!-- Main -->
 
@@ -50,6 +51,35 @@
             <script type='text/javascript' src='../../core/Validation.js'></script>
             <script type='text/javascript' src='../../core/Store.js'></script>
             <script type="text/javascript">
+                // --- temporary for user name --- //
+                const modalbox = new ModalBox({
+                    id:'modalbox',
+                    hasHeader:false,
+                    headerText:'User Name',
+                    hasFooter:false,
+                    clickClose:false
+                });
+                modalbox.body.innerHTML = `
+                    <label>User Name:<input type='text'/></label><button>SAVE</button>
+                `;
+                if(!sessionStorage.getItem('userName')){
+                    modalbox.open();
+                }
+                const btn = modalbox.body.querySelector('button');
+                btn.addEventListener('click', e=>{
+                   const name = modalbox.body.querySelector('input[type=text]').value;
+                   if(!name) {
+                    alert('Please Enter User Name!');
+                    return;
+                   }
+                   sessionStorage.setItem('userName', name);
+                   modalbox.close();
+                })
+                // --- temporary for user name --- //
+
+
+
+
                 const store = new Store("../../data/", $VALIDATION);
                 async function picking(){
                     Loading.open(document.body,'Randomly Picking...');

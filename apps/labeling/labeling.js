@@ -7,7 +7,7 @@ const selection = [
     num:0
   },
   {
-    text:'Tumor-Stroma Transition',
+    text:'Tumor Invasive Margin Or Edge',//text:'Tumor-Stroma Transition',
     color:'#000000',
     size:1024,
     count:3,
@@ -21,14 +21,14 @@ const selection = [
     num:0
   },
   {
-    text:'Tumor Associated Stroma With Mild Hyalinization',
+    text:'Tumor-Associated Stroma With Hyalinization',//text:'Tumor Associated Stroma With Mild Hyalinization',
     color:'#FF1493',
     size:1024,
     count:1,
     num:0
   },
   {
-    text:'Intra-tumoral Stroma With TILs',
+    text:'Tumor-Associated Stroma',// text:'Intra-tumoral Stroma with TILs'
     color:'#0000FF',
     size:1024,
     count:3,
@@ -146,7 +146,7 @@ function initCore(){
   $CAMIC.viewer.addHandler('open',function(){
     if($CAMIC.viewer.pmanager)$CAMIC.viewer.pmanager.on();
 
-    $CAMIC.viewer.viewport.zoomTo($CAMIC.viewer.viewport.imageToViewportZoom(0.2),$CAMIC.viewer.viewport.getCenter(),true)
+    $CAMIC.viewer.viewport.zoomTo($CAMIC.viewer.viewport.imageToViewportZoom(0.25),$CAMIC.viewer.viewport.getCenter(),true)
     $CAMIC.viewer.pmanager.selection = selection;
     if(!$CAMIC.viewer.measureInstance) $UI.toolbar.getSubTool('measure').style.display = 'none'
   });
@@ -609,7 +609,7 @@ function generateROIandSubROI(patch){
   const slideName = $D.params.data.name;
   
   // user info and create date
-  const creator = getUserId();
+  const creator = sessionStorage.getItem('userName') || getUserId();
   const dateTime = new Date();
 
   const subROIs = [];

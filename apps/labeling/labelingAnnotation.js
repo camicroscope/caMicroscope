@@ -396,7 +396,7 @@ async function saveAnnotations(){
 
   Loading.open(document.body, 'Saving Annotations...');
   // user and date time
-  const creator = getUserId();
+  const creator = sessionStorage.getItem('userName') || getUserId();
   const dateTime = new Date();
   // add annotations 
     await asyncForEach($D.annotations,async (annotation)=>{

@@ -28,6 +28,7 @@ function ModalBox(options){
 	this.setting = {
 		hasHeader:true,
 		hasFooder:true,
+		clickClose:true
 
 	};
 	extend(this.setting, options);
@@ -39,8 +40,8 @@ function ModalBox(options){
 	}
 
 	this.__create();
-	this.__close.addEventListener('click',this.close.bind(this));
-	window.onclick = function(event) {
+	if(this.__close) this.__close.addEventListener('click',this.close.bind(this));
+	if(this.setting.clickClose) window.onclick = function(event) {
 	  if (event.target == this.elt)this.close();
 	}.bind(this);
 }
