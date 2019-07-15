@@ -25,11 +25,12 @@ function touchHandler(event)
     event.preventDefault();
 }
 
-function init() 
+function touchMe_init() 
 {
     document.addEventListener("touchstart", touchHandler, true);
     document.addEventListener("touchmove", touchHandler, true);
     document.addEventListener("touchend", touchHandler, true);
     document.addEventListener("touchcancel", touchHandler, true);    
 }
+touchMe_init()
 // thanks, Mickey Shine!
