@@ -1,5 +1,4 @@
 function onTouch(evt) {
-  evt.preventDefault();
   if (evt.touches.length > 1 || (evt.type == "touchend" && evt.touches.length > 0))
     return;
 
@@ -15,10 +14,12 @@ function onTouch(evt) {
     case "touchmove":
       type = "mousemove";
       touch = evt.changedTouches[0];
+      evt.preventDefault();
       break;
     case "touchend":        
       type = "mouseup";
       touch = evt.changedTouches[0];
+      evt.preventDefault();
       break;
   }
 
