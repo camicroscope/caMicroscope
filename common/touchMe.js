@@ -32,7 +32,7 @@ function touchHandler(event) {
       first.clientX, first.clientY, false,
       false, false, false, 0 /*left*/ , null);
 
-    first.target.dispatchEvent(simulatedEvent);
+    event.target.dispatchEvent(simulatedEvent);
     
   }
   if (touches.length==0){
