@@ -1,38 +1,47 @@
-function onTouch(evt) {
-  if (evt.touches.length > 1 || (evt.type == "touchend" && evt.touches.length > 0))
-    return;
+function touchHandler(event) {
+  console.info(event)
+  var touches = event.targetTouches;
+  console.log(touches)
+  for (let i = 0; i < touches.length; i++) {
+    var first = touches[i];
+    var type = "";
+    switch (event.type) {
+      case "touchstart":
+        type = "mousedown";
+        break;
+      case "touchmove":
+        type = "mousemove";
+        event.preventDefault();
+        break;
+      case "touchend":
+        type = "mouseup";
+        event.preventDefault();
+        break;
+      default:
+        type = "mouseup";
+        event.preventDefault();
+        break;
+    }
 
-  var newEvt = document.createEvent("MouseEvents");
-  var type = null;
-  var touch = null;
+    // initMouseEvent(type, canBubble, cancelable, view, clickCount, 
+    //                screenX, screenY, clientX, clientY, ctrlKey, 
+    //                altKey, shiftKey, metaKey, button, relatedTarget);
+    var simulatedEvent = document.createEvent("MouseEvent");
+    simulatedEvent.initMouseEvent(type, true, true, window, 1,
+      first.screenX, first.screenY,
+      first.clientX, first.clientY, false,
+      false, false, false, 0 /*left*/ , null);
 
-  switch (evt.type) {
-    case "touchstart": 
-      type = "mousedown";
-      touch = evt.changedTouches[0];
-      break;
-    case "touchmove":
-      type = "mousemove";
-      touch = evt.changedTouches[0];
-      evt.preventDefault();
-      break;
-    case "touchend":        
-      type = "mouseup";
-      touch = evt.changedTouches[0];
-      evt.preventDefault();
-      break;
+    first.target.dispatchEvent(simulatedEvent);
+    
   }
-
-  newEvt.initMouseEvent(type, true, true, evt.originalTarget.ownerDocument.defaultView, 0,
-    touch.screenX, touch.screenY, touch.clientX, touch.clientY,
-    evt.ctrlKey, evt.altKey, evt.shiftKey, evt.metaKey, 0, null);
-  evt.originalTarget.dispatchEvent(newEvt);
 }
 
 function touchMe_init() {
-  document.addEventListener("touchstart", onTouch, true);
-  document.addEventListener("touchmove", onTouch, true);
-  document.addEventListener("touchend", onTouch, true);
-  document.addEventListener("touchcancel", onTouch, true);
+  document.addEventListener("touchstart", touchHandler, true);
+  document.addEventListener("touchmove", touchHandler, true);
+  document.addEventListener("touchend", touchHandler, true);
+  document.addEventListener("touchcancel", touchHandler, true);
 }
 touchMe_init()
+// thanks, Mickey Shine!
