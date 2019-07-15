@@ -1,12 +1,12 @@
 function touchHandler(event)
 {
     console.info(event)
-    var touches = event.changedTouches;
+    var touches = event.touches;
     console.log(touches)
     if (!touches.length){
      return
     }
-    var first = touches[0];
+    var first = touches[touches.length-1]; // or last?
     var type = "";
     switch(event.type)
     {
