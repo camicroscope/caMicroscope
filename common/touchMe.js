@@ -1,6 +1,6 @@
 function touchHandler(event)
 {
-    var touches = event.changedTouches;
+    var touches = event.touches;
     if (!touches.length){
      return
     }
