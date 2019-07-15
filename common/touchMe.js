@@ -1,6 +1,6 @@
 function touchHandler(event) {
   console.info(event)
-    if (event.touches.length > 1 || (event.type == "touchend" && event.touches.length > 0)){
+    if (event.touches.length > 1){
       return
     }
   var touches = event.targetTouches;
