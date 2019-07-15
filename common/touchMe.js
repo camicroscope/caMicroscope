@@ -1,8 +1,5 @@
 function touchHandler(event) {
   console.info(event)
-    if (event.touches.length > 1){
-      return
-    }
   var touches = event.targetTouches;
   
     var first = touches[0];
