@@ -1,11 +1,13 @@
 function touchHandler(event)
 {
+    console.info(event)
     var touches = event.touches;
+    console.log(touches)
     if (!touches.length){
      return
     }
-    var first = touches[0],
-        type = "";
+    var first = touches[0];
+    var type = "";
     switch(event.type)
     {
         case "touchstart": type = "mousedown"; break;
