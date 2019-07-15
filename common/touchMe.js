@@ -1,8 +1,9 @@
 function touchHandler(event) {
   console.info(event)
   var touches = event.targetTouches;
-  
-    var first = touches[0];
+  console.log(touches)
+  for (let i = 0; i < touches.length; i++) {
+    var first = touches[i];
     var type = "";
     switch (event.type) {
       case "touchstart":
@@ -32,6 +33,17 @@ function touchHandler(event) {
       false, false, false, 0 /*left*/ , null);
 
     first.target.dispatchEvent(simulatedEvent);
+    
+  }
+  if (touches.length==0){
+    var simulatedEvent = document.createEvent("MouseEvent");
+    simulatedEvent.initMouseEvent("mouseup", true, true, window, 1,
+      first.screenX, first.screenY,
+      first.clientX, first.clientY, false,
+      false, false, false, 0 /*left*/ , null);
+
+    first.target.dispatchEvent(simulatedEvent);
+  }
 }
 
 function touchMe_init() {
