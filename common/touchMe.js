@@ -1,7 +1,7 @@
 function touchHandler(event)
 {
     console.info(event)
-    var touches = event.touches;
+    var touches = event.changedTouches;
     console.log(touches)
     if (!touches.length){
      return
