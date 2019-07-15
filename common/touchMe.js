@@ -16,7 +16,8 @@ function touchHandler(event) {
         type = "mouseup";
         break;
       default:
-        return;
+        type = "mouseup";
+        break;
     }
 
     // initMouseEvent(type, canBubble, cancelable, view, clickCount, 
