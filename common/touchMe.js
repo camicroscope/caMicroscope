@@ -38,8 +38,8 @@ function touchHandler(event) {
   if (touches.length==0){
     var simulatedEvent = document.createEvent("MouseEvent");
     simulatedEvent.initMouseEvent("mouseup", true, true, window, 1,
-      first.screenX, first.screenY,
-      first.clientX, first.clientY, false,
+      0, 0,
+      0, 0, false,
       false, false, false, 0 /*left*/ , null);
 
     first.target.dispatchEvent(simulatedEvent);
