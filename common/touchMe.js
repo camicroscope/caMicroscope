@@ -1,9 +1,10 @@
 function touchHandler(event) {
   console.info(event)
   var touches = event.targetTouches;
+  if (touches.length > 1 || (event.type == "touchend" && event.touches.length > 0))
+    return;
   console.log(touches)
-  for (let i = 0; i < touches.length; i++) {
-    var first = touches[i];
+    var first = touches[0];
     var type = "";
     switch (event.type) {
       case "touchstart":
@@ -33,8 +34,6 @@ function touchHandler(event) {
       false, false, false, 0 /*left*/ , null);
 
     first.target.dispatchEvent(simulatedEvent);
-    
-  }
 }
 
 function touchMe_init() {
