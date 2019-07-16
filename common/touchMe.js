@@ -10,39 +10,39 @@ function touchHandler(event) {
       false, false, false, 0 /*left*/ , null);
 
     event.target.dispatchEvent(simulatedEvent);
-  }
-  for (let i = 0; i < touches.length; i++) {
-    var first = touches[i];
-    var type = "";
-    switch (event.type) {
-      case "touchstart":
-        type = "mousedown";
-        break;
-      case "touchmove":
-        type = "mousemove";
-        event.preventDefault();
-        break;
-      case "touchend":
-        type = "mouseup";
-        event.preventDefault();
-        break;
-      default:
-        type = "mouseup";
-        event.preventDefault();
-        break;
+  } else {
+    for (let i = 0; i < touches.length; i++) {
+      var first = touches[i];
+      var type = "";
+      switch (event.type) {
+        case "touchstart":
+          type = "mousedown";
+          break;
+        case "touchmove":
+          type = "mousemove";
+          event.preventDefault();
+          break;
+        case "touchend":
+          type = "mouseup";
+          event.preventDefault();
+          break;
+        default:
+          type = "mouseup";
+          event.preventDefault();
+          break;
+      }
+
+      // initMouseEvent(type, canBubble, cancelable, view, clickCount, 
+      //                screenX, screenY, clientX, clientY, ctrlKey, 
+      //                altKey, shiftKey, metaKey, button, relatedTarget);
+      var simulatedEvent = document.createEvent("MouseEvent");
+      simulatedEvent.initMouseEvent(type, true, true, window, 1,
+        first.screenX, first.screenY,
+        first.clientX, first.clientY, false,
+        false, false, false, 0 /*left*/ , null);
+
+      first.target.dispatchEvent(simulatedEvent);
     }
-
-    // initMouseEvent(type, canBubble, cancelable, view, clickCount, 
-    //                screenX, screenY, clientX, clientY, ctrlKey, 
-    //                altKey, shiftKey, metaKey, button, relatedTarget);
-    var simulatedEvent = document.createEvent("MouseEvent");
-    simulatedEvent.initMouseEvent(type, true, true, window, 1,
-      first.screenX, first.screenY,
-      first.clientX, first.clientY, false,
-      false, false, false, 0 /*left*/ , null);
-
-    first.target.dispatchEvent(simulatedEvent);
-    
   }
 }
 
