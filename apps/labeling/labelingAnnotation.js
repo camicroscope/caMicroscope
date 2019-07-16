@@ -397,6 +397,7 @@ async function saveAnnotations(){
   Loading.open(document.body, 'Saving Annotations...');
   // user and date time
   const creator = sessionStorage.getItem('userName') || getUserId();
+  
   const dateTime = new Date();
   // add annotations 
     await asyncForEach($D.annotations,async (annotation)=>{
@@ -447,7 +448,6 @@ function toggleAnntation(e){
     $UI.toolbar.getSubTool('measure').querySelector('input[type=checkbox]').checked = false;
     annotOn(e);
     
-
     //annotationOn.call(this,state,target);
   }else{ // off
     annotOff(e);
@@ -649,10 +649,11 @@ function toggleAnnotList(e) {
 function label_render(ctx,data){
   // set style
   const imagingHelper  = this.viewer.imagingHelper;
-  const lineWidth = (imagingHelper.physicalToDataX(2) - imagingHelper.physicalToDataX(0))>> 0;
+  const lineWidth = (imagingHelper.physicalToDataX(5) - imagingHelper.physicalToDataX(0))>> 0;
   const polygon = data.geometries.features[0];
   const points = polygon.geometry.coordinates[0];
-  ctx.lineWidth = lineWidth<3?3:lineWidth;
+  ctx.lineWidth = lineWidth<5?5:lineWidth;
+  
   ctx.isFill = false;
   ctx.strokeStyle = polygon.properties.style.color;
   polygon.geometry.path = DrawHelper.drawPolygon(ctx, points);
