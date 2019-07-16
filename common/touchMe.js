@@ -1,6 +1,6 @@
 function touchHandler(event) {
   console.info(event)
-  var touches = event.targetTouches;
+  var touches = event.touches;
   console.log(touches)
   for (let i = 0; i < touches.length; i++) {
     var first = touches[i];
