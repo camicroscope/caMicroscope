@@ -2,6 +2,15 @@ function touchHandler(event) {
   console.info(event.type)
   var touches = event.touches;
   console.log(touches)
+  if (touches.length == 0|| !(touches[0])){
+    var simulatedEvent = document.createEvent("MouseEvent");
+    simulatedEvent.initMouseEvent("mouseup", true, true, window, 1,
+      0, 0,
+      0, 0, false,
+      false, false, false, 0 /*left*/ , null);
+
+    event.target.dispatchEvent(simulatedEvent);
+  }
   for (let i = 0; i < touches.length; i++) {
     var first = touches[i];
     var type = "";
@@ -32,17 +41,8 @@ function touchHandler(event) {
       first.clientX, first.clientY, false,
       false, false, false, 0 /*left*/ , null);
 
-    event.target.dispatchEvent(simulatedEvent);
-    
-  }
-  if (touches.length==0){
-    var simulatedEvent = document.createEvent("MouseEvent");
-    simulatedEvent.initMouseEvent("mouseup", true, true, window, 1,
-      0, 0,
-      0, 0, false,
-      false, false, false, 0 /*left*/ , null);
-
     first.target.dispatchEvent(simulatedEvent);
+    
   }
 }
 
