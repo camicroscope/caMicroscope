@@ -9,8 +9,15 @@ If you are an admin, you should be able to use this form:
   var userSignupUrl = "../../Data/auth/post"
   function addUser(){
     var email = document.getElementById("name").value
-    var attrs = JSON.parse(document.getElementById("attr").value)
-    var doc = {name: email, attrs: attrs}
+    var attr = document.querySelector('input[name="attr"]:checked').value
+    var attr_doc = []
+    if (attr == "admin"){
+      attr_doc = ["write", "admin"]
+    }
+    if (attr == "editor"){
+      attr_doc = ["write"]
+    }
+    var doc = {name: email, attrs: attr_doc}
     fetch(userSignupUrl, {
         method: 'POST',
         mode: 'cors', // no-cors, cors, *same-origin
@@ -37,7 +44,17 @@ If you are an admin, you should be able to use this form:
 
 <div id="signupForm">
   Email: <input id="name" type="text">
-  Attributes: <input id="attr" type="text">
+  <input type="radio" id="attrchoice1"
+     name="attr" value="viewer">
+    <label for="attrchoice1">Viewer</label>
+
+    <input type="radio" id="attrchoice2"
+     name="attr" value="editor">
+    <label for="attrchoice2">Editor</label>
+
+    <input type="radio" id="attrchoice3"
+     name="attr" value="admin">
+    <label for="attrchoice3">Admin (and Editor)</label>
   Submit: <input id="sub" onclick="addUser()" type="submit">
 </div>
 
