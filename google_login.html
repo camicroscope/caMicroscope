@@ -1,5 +1,5 @@
 <html>
-<meta name="google-signin-client_id" content="YOUR_CLIENT_ID.apps.googleusercontent.com">
+<meta name="google-signin-client_id" content="539699277901-99iheradvd3fo53aln49o5j493jahkpi.apps.googleusercontent.com">
 <script src="https://apis.google.com/js/platform.js" async defer></script>
 <div class="g-signin2" data-onsuccess="onSignIn"></div>
 <a href="#" onclick="signOut();">Sign out</a>
@@ -12,7 +12,15 @@
   }
 </script>
 <script>
-
+var cookie_name = "token" // "token" is expected by elevate router
+var base_deployment_url = window.location.toString().split("/").slice(0,-1).join("/")
+var redirect_uri = base_deployment_url + "/login.html"
+var default_redirect = base_deployment_url + "/apps/table.html"
+let state = decodeURIComponent(getUrlParam("state"))
+if (!state || state == "null"){
+  state = default_redirect
+}
+// google's jwk is here: https://www.googleapis.com/oauth2/v3/certs
 function randomString(length) {
     var bytes = new Uint8Array(length);
     var random = window.crypto.getRandomValues(bytes);
@@ -36,15 +44,8 @@ function getUrlParam(name, url) {
 
 function onSignIn(googleUser) {
   var id_token = googleUser.getAuthResponse().id_token;
+  console.info(id_token)
   // trade for camic token
-  var cookie_name = "token" // "token" is expected by elevate router
-  var base_deployment_url = window.location.toString().split("/").slice(0,-1).join("/")
-  var redirect_uri = base_deployment_url + "/login.html"
-  var default_redirect = base_deployment_url + "/apps/table.html"
-  let state = decodeURIComponent(getUrlParam("state"))
-  if (!state){
-    state = default_redirect
-  }
 
   if (id_token){
     document.cookie = cookie_name + "=" + id_token;
@@ -59,7 +60,7 @@ function onSignIn(googleUser) {
         document.cookie = cookie_name + "=" + x.token;
         window.location = state
       } else {
-        console.error("please give me a better failure message/response")
+        window.alert("no!")
       }
 
     })
