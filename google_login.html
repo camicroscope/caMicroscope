@@ -16,6 +16,7 @@ var cookie_name = "token" // "token" is expected by elevate router
 var base_deployment_url = window.location.toString().split("/").slice(0,-1).join("/")
 var redirect_uri = base_deployment_url + "/login.html"
 var default_redirect = base_deployment_url + "/apps/table.html"
+var signup_redirect = base_deployment_url + "/apps/signup/signup.html"
 let state = decodeURIComponent(getUrlParam("state"))
 if (!state || state == "null"){
   state = default_redirect
@@ -60,7 +61,8 @@ function onSignIn(googleUser) {
         document.cookie = cookie_name + "=" + x.token;
         window.location = state
       } else {
-        window.alert("no!")
+        window.alert("User not added.")
+        window.location = signup_redirect
       }
 
     })

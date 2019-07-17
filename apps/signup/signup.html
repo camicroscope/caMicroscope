@@ -1,0 +1,44 @@
+<html>
+<h1> User Signup </h1>
+If you reach this page, it's likely that you tried to log into this instance but lack access.
+Email SOMEONE if you want to be added.
+
+If you are an admin, you should be able to use this form:
+
+<script>
+  var userSignupUrl = "../../Data/auth/post"
+  function addUser(){
+    var email = document.getElementById("name").value
+    var attrs = JSON.parse(document.getElementById("attr").value)
+    var doc = {name: email, attrs: attrs}
+    fetch(userSignupUrl, {
+        method: 'POST',
+        mode: 'cors', // no-cors, cors, *same-origin
+        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+        credentials: 'same-origin', // include, *same-origin, omit
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(doc)
+    }).then(x=>{
+      if (x.status>=400){
+        throw "failed to sign up user"
+      }
+      x.json()
+    }).then(x=>{
+      window.alert("success")
+      console.log(x)
+    }).catch(e=>{
+      window.alert("error!")
+      console.error(e)
+  })
+  }
+</script>
+
+<div id="signupForm">
+  Email: <input id="name" type="text">
+  Attributes: <input id="attr" type="text">
+  Submit: <input id="sub" onclick="addUser()" type="submit">
+</div>
+
+</html>
