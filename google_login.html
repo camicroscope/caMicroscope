@@ -20,7 +20,7 @@ let state = decodeURIComponent(getUrlParam("state"))
 if (!state || state == "null"){
   state = default_redirect
 }
-// google's jwk is here: https://www.googleapis.com/oauth2/v3/certs
+// google's certs are here: https://www.googleapis.com/oauth2/v1/certs; remember to replace literal \n with linebreak
 function randomString(length) {
     var bytes = new Uint8Array(length);
     var random = window.crypto.getRandomValues(bytes);
