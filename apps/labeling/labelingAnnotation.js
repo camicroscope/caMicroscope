@@ -25,7 +25,7 @@ const $D = {
   },
   params:null // parameter from url - slide Id and status in it (object).
 };
-const beforeUnloadHandler = e=>{
+const beforeUnloadHandler = e =>{
   e.preventDefault();
   e.returnValue = 'leave';
 };
@@ -356,12 +356,14 @@ function initCore(){
         name:'next',
         callback:async()=> {
           Loading.open(document.body,'Loading Next...');
-          window.removeEventListener('beforeunload', beforeUnloadHandler);
+          
           // randomly pick
           const labels = await $CAMIC.store.findAllLabelsWithoutAnnotations().then(d=>d);
           const index = getRandomIntInclusive(0,labels.length-1);
           const nextLabelId = labels[index]._id;
           const nextSlideId = labels[index].provenance.image.slide;
+          window.removeEventListener('beforeunload', beforeUnloadHandler);
+
           window.location.href = `./labelingAnnotation.html?labelId=${nextLabelId}&slideId=${nextSlideId}`;
 
           Loading.close();          
@@ -395,6 +397,7 @@ function clickSavebtnHandler(){
 async function saveAnnotations(){
 
   Loading.open(document.body, 'Saving Annotations...');
+
   // user and date time
   const creator = sessionStorage.getItem('userName') || getUserId();
   
@@ -418,6 +421,12 @@ async function saveAnnotations(){
   const index = getRandomIntInclusive(0,labels.length-1);
   const nextLabelId = labels[index]._id;
   const nextSlideId = labels[index].provenance.image.slide;
+  
+  $UI.modalbox.close();
+  // remove listener
+  window.removeEventListener('beforeunload', beforeUnloadHandler);
+ 
+
   window.location.href = `./labelingAnnotation.html?labelId=${nextLabelId}&slideId=${nextSlideId}`;
 
   Loading.close();

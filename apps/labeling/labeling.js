@@ -65,15 +65,18 @@ const $D = {
   params:null // parameter from url - slide Id and status in it (object).
 };
 
-window.addEventListener('beforeunload', function (e) {
+const beforeunloadHandler = (e) => {
   //Cancel the event
   e.preventDefault();
   //Chrome requires returnValue to be set
-  e.returnValue = 'leave';
-});
+  e.returnValue = 'leave';  
+}
+
 
 // initialize viewer page
 function initialize(){
+  window.addEventListener('beforeunload', beforeunloadHandler);
+
   var checkPackageIsReady = setInterval(function () {
     if(IsPackageLoading) {
       clearInterval(checkPackageIsReady);
@@ -264,6 +267,7 @@ function savePatches(){
     alert('No Label to Save');
     return;
   }
+  
   countungLabelNums();
   createLabelList();
 
@@ -567,6 +571,9 @@ function getCoordinates(patch){ // image coordinate
 }
 
 async function saveLabelings(e){
+  // remove listener
+  window.removeEventListener('beforeunload', beforeunloadHandler);
+  // start saving preduce
   Loading.open(document.body, 'Labels Saving...');
   const ROIS = $CAMIC.viewer.pmanager.patches;
   // get all labels
