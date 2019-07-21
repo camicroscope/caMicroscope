@@ -1,5 +1,3 @@
-// segmentpanel.js
-
 function ModelPanel(viewer){
 
 	const temp = `
@@ -80,9 +78,13 @@ ModelPanel.prototype.open = async function(){
 	modsel.appendChild(opt);
 	Object.keys(await tf.io.listModels()).forEach(function (element) {
 		let opt = document.createElement('option');
-		opt.value = element.split("/").pop();
-	    opt.innerHTML = element.split("/").pop().slice(0, -3);
-	    modsel.appendChild(opt);
+		let key = element.split("/").pop();
+		console.log(key.slice(0, 4));
+		if (key.slice(0, 4) == "pred") {
+			opt.value = element.split("/").pop();
+		    opt.innerHTML = element.split("/").pop().slice(5, -3);
+		    modsel.appendChild(opt);
+		}
 	});
 	modsel.selectedIndex = 0;
 	this.__result.innerHTML = '-- result --';
@@ -104,7 +106,7 @@ ModelPanel.prototype.populate = function(models){
 	var opt = document.createElement('option');
 	models.forEach(function (element) {
 		opt.value = element;
-	    opt.innerHTML = element.split("/").pop();
+	    opt.innerHTML = 'pred_' + element.split("/").pop();
 	    modsel.appendChild(opt);
 	});
 }
