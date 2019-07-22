@@ -1,4 +1,34 @@
 let PDR = OpenSeadragon.pixelDensityRatio;
+const IDB_URL = "indexeddb://";
+
+// INITIALIZE DB
+window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
+// id(autoinc), name, location(name+id), classes
+var request, db;
+
+// tensorflowjs creates its own IndexedDB on saving a model.
+async function dbInit() {
+  const model = tf.sequential();
+  await model.save('indexeddb://dummy');
+  await tf.io.removeModel('indexeddb://dummy');
+  console.log('DB initialised');
+}
+
+// Opening the db created by tensorflowjs
+function dbOpen() {
+  request = window.indexedDB.open("tensorflowjs", 1);
+
+  request.onupgradeneeded = function (e) {
+    console.log('nasty!');
+  }
+  request.onerror = function (e){
+    console.log("ERROR", e);
+  }
+  request.onsuccess = function(e) {
+    db = request.result;
+    console.log('tfjs db opened and ready');
+  }
+}
 
 let $CAMIC = null;
 const $UI = {};
@@ -16,20 +46,74 @@ const timeOutMs = 10;
 
 
 function initialize() {
-      var checkPackageIsReady = setInterval(function () {
-        if(IsPackageLoading) {
-          clearInterval(checkPackageIsReady);
-            initUIcomponents();
-            initCore();
-        }
-      }, 100);
+  var checkPackageIsReady = setInterval(async function () {
+    if(IsPackageLoading) {
+      clearInterval(checkPackageIsReady);
+      await dbInit().then(e => dbOpen());
+      initUIcomponents();
+      initCore();
+    }
+  }, 100);
 }
 
-function initUIcomponents() {
+async function initUIcomponents() {
   /* create UI components */
+
+  // Create uploadModal for model uploads.
+  $UI.uploadModal = new ModalBox({
+    id:'upload_panel',
+    hasHeader:true,
+    headerText:'Upload Model',
+    hasFooter:false,
+    provideContent: true,
+    content: `
+      <form action="#">
+        <label align="left"> Name:  </label> <input name="name" id="name" type="text" required /> <br> <hr>
+        <label align="left"> Input image size: </label> <input name="image_size" id="image_size" type="number" required /> <br> <br>
+        <label>Input image format:</label> <br>
+        <input type="radio" id="gray" name="channels" value=1 checked>
+        <label for="gray">Gray</label>
+        <input type="radio" id="rgb" name="channels" value=3>
+        <label for="rgb">RGB</label>
+        <hr>
+        <label class="switch"><input type="checkbox" id="togBtn"><div class="slider"></div></label> <br> <br>
+        <div class="checkfalse"><div>Select model.json first followed by the weight binaries.</div> <br> 
+        <input name="filesupload" id="modelupload" type="file" required/>
+        <input name="filesupload" id="weightsupload" type="file" multiple="" required/> <br> <br> </div>
+        <div class="checktrue" > URL to the ModelAndWeightsConfig JSON describing the model. <br> <br> 
+        <label align-"left"> Enter the URL: </label> <input type="url" name="url" id="url" required> <br><br></div>
+        <button id="submit">Upload</button> <span id="status"></span>
+      </form>  
+    `
+  });
 
   // create the message queue
   $UI.message = new MessageQueue();
+
+  let dropDownList = [
+    {
+      icon: "timeline",
+      title: "Watershed",
+      value: "watershed",
+      checked: true
+    }];
+
+  Object.keys(await tf.io.listModels()).forEach(function (element) {
+    let dict = {};    
+    let value = element.split("/").pop();
+    console.log(value.slice(0, 3))
+    if (value.slice(0, 3) == 'seg') {
+      let title = element.split("/").pop().slice(4, -3);
+      dict.icon = "flip_to_back";
+      dict.title = title;
+      dict.value = value;
+      dict.checked = false;
+      dropDownList.push(dict);
+    }
+  });
+
+  console.log(dropDownList);
+  
   $UI.toolbar = new CaToolbar({
     id: 'ca_tools',
     zIndex: 601,
@@ -42,7 +126,20 @@ function initUIcomponents() {
         value: 'rect',
         title: 'Segment',
         callback: drawRectangle
-      }, {
+      },{
+        icon: 'keyboard_arrow_down',
+        type: 'dropdown',
+        value: 'rect',
+        dropdownList: dropDownList,
+        title: 'Select Model',
+        callback: setValue
+      },{
+        icon: 'add',
+        type: 'btn',
+        value: 'Upload model',
+        title: 'Add model',
+        callback: uploadModel
+      },{
         icon: 'insert_photo',
         type: 'btn',
         value: 'viewer',
@@ -125,16 +222,18 @@ function initCore() {
     }.bind($UI.segmentPanel));
 
     $UI.segmentPanel.__threshold.addEventListener('change', function(e){
-      let src = this.__src;
-      let out = this.__out;
-      const self = this;
-      const alpha = +this.__threshold.value;
-      self.__tlabel.innerHTML = alpha;
-      self.showProgress();
-      setTimeout(function() {
-        watershed(src,out,alpha);
-        self.hideProgress();
-      },timeOutMs);
+      if (!$UI.args || $UI.args.status == 'watershed'){
+        let src = this.__src;
+        let out = this.__out;
+        const self = this;
+        const alpha = +this.__threshold.value;
+        self.__tlabel.innerHTML = alpha;
+        self.showProgress();
+        setTimeout(function() {
+          watershed(src,out,null,alpha);
+          self.hideProgress();
+        },timeOutMs);
+      }
     }.bind($UI.segmentPanel));
 
     //add event for min
@@ -143,16 +242,18 @@ function initCore() {
     }.bind($UI.segmentPanel));
 
     $UI.segmentPanel.__minarea.addEventListener('change', function (e) {
-      let src = this.__src;
-      let out = this.__out;
-      const self = this;
-      const alpha = +this.__threshold.value;
-      this.__minlabel.innerHTML = +this.__minarea.value;
-      self.showProgress();
-      setTimeout(function() {
-        watershed(src,out,alpha);
-        self.hideProgress();
-      },timeOutMs);
+      if (!$UI.args || $UI.args.status == 'watershed') {
+        let src = this.__src;
+        let out = this.__out;
+        const self = this;
+        const alpha = +this.__threshold.value;
+        this.__minlabel.innerHTML = +this.__minarea.value;
+        self.showProgress();
+        setTimeout(function() {
+          watershed(src,out,null,alpha);
+          self.hideProgress();
+        },timeOutMs);
+      }
     }.bind($UI.segmentPanel));
 
     //add event for max
@@ -161,16 +262,38 @@ function initCore() {
     }.bind($UI.segmentPanel));
 
     $UI.segmentPanel.__maxarea.addEventListener('change', function (e) {
-      let src = this.__src;
+      if (!$UI.args || $UI.args.status == 'watershed') {
+        let src = this.__src;
+        let out = this.__out;
+        let self = this;
+        let alpha = +this.__threshold.value;
+        this.__maxlabel.innerHTML = +this.__maxarea.value;
+        self.showProgress();
+        setTimeout(function() {
+          watershed(src,out,null,alpha);
+          self.hideProgress();
+        },timeOutMs);
+      }
+    }.bind($UI.segmentPanel));
+
+    //add event for opacity
+    $UI.segmentPanel.__opacity.addEventListener('input', function(e){
       let out = this.__out;
-      let self = this;
-      let alpha = +this.__threshold.value;
-      this.__maxlabel.innerHTML = +this.__maxarea.value;
-      self.showProgress();
-      setTimeout(function() {
-        watershed(src,out,alpha);
-        self.hideProgress();
-      },timeOutMs);
+      const alpha = +this.__opacity.value;
+      out.style.opacity = alpha;
+      this.__oplabel.innerHTML = alpha;
+    }.bind($UI.segmentPanel));
+
+    $UI.segmentPanel.__opacity.addEventListener('change', function(e){
+      let out = this.__out;
+      let mask =  this.__mask;
+      const self = this;
+      const alpha = +this.__opacity.value;
+      console.log(alpha);
+      self.__oplabel.innerHTML = alpha;
+      out.style.opacity = alpha;
+      mask.style.opacity = alpha;
+      
     }.bind($UI.segmentPanel));
 
     $UI.segmentPanel.__btn_save.addEventListener('click', function(e) {
@@ -185,6 +308,9 @@ function initCore() {
   });
 }
 
+function setValue(args) {
+  $UI.args = args;
+}
 /**
  * Toolbar button callback
  * @param e
@@ -195,7 +321,7 @@ function drawRectangle(e) {
   canvas.style.cursor = e.checked ? 'crosshair' : 'default';
 
   const canvasDraw = $CAMIC.viewer.canvasDrawInstance;
-  canvasDraw.drawMode = 'rect';
+  canvasDraw.drawMode = 'square';
   canvasDraw.style.color = '#FFFF00';
   canvasDraw.style.isFill = false;
 
@@ -224,9 +350,14 @@ function camicStopDraw(e) {
     if (Object.keys(box).length === 0 && box.constructor === Object) {
       console.error('SOMETHING WICKED THIS WAY COMES.');
     } else {
-      segmentROI(box);
+      let args = $UI.args;
+      if (!args || args.status == 'watershed') {
+        segmentROI(box);
+      } else {
+        segmentModel(args.status);
+      }
       $UI.segmentPanel.setPosition(box.rect.x,box.rect.y,box.rect.width,box.rect.height);
-      $UI.segmentPanel.open();
+      $UI.segmentPanel.open(args);
 
       // close
       canvasDraw.clear();
@@ -300,6 +431,111 @@ function checkSize(imgColl, imagingHelper) {
 }
 
 /**
+ * Upload tensorflowjs layers model converted from Keras. Considering channels-last - tensorflow backend models.
+ * @return {none}
+ */
+function uploadModel() {
+
+  var _name = document.querySelector('#name'),
+      _image_size = document.querySelector("#image_size"),
+      topology = document.querySelector('#modelupload'),
+      weights = document.querySelector('#weightsupload'),
+      status = document.querySelector('#status'),
+      toggle = document.querySelector('#togBtn'),
+      url = document.querySelector("#url"),
+      submit = document.querySelector("#submit");
+
+  // Reset previous input
+  _name.value = topology.value = weights.value = status.innerHTML = _image_size.value = url.value = '';
+
+  $UI.uploadModal.open();
+
+  toggle.addEventListener('change', function (e) {
+    if (this.checked) {
+      document.querySelector(".checktrue").style.display = "block";
+      document.querySelector(".checkfalse").style.display = "none";
+    } else {
+      document.querySelector(".checktrue").style.display = "none";
+      document.querySelector(".checkfalse").style.display = "block";
+    }
+
+  });
+
+
+  submit.addEventListener('click', async function (e) {
+    e.preventDefault();
+    
+    if ( _name.value && _image_size.value && 
+      ((!toggle.checked && topology.files[0].name.split('.').pop() == 'json') || (toggle.checked && url))) {
+
+      status.innerHTML = "Uploading";
+      status.classList.remove('error');
+      status.classList.add('blink');
+
+      // Adding some extra digits in the end to maintain uniqueness
+      let name = 'seg_' + _name.value + (new Date().getTime().toString()).slice(-4, -1);
+      // Create an array from comma separated values of classes
+
+      if (toggle.checked) { var modelInput = url.value; }
+      else { var modelInput = tf.io.browserFiles([topology.files[0], ...weights.files]) }
+      
+      try {
+
+        // This also ensures that valid model is uploaded.
+        let _channels = parseInt(document.querySelector('input[name="channels"]:checked').value);
+        console.log(_channels)
+        const size = parseInt(_image_size.value);
+        const model = await tf.loadLayersModel(modelInput);
+        const result = model.predict(tf.ones([1, size, size, _channels]))
+        const shape = result.shape;
+        result.dispose();
+        if (shape[1] != size || shape[2] != size) {
+          console("Shape:", shape[1], shape[2])
+          throw "The application only supports 1:1 image Masks. Import a valid model."
+        }
+
+        await model.save(IDB_URL + name);
+
+        // Update the model store db entry to have the classes array
+        tx = db.transaction("models_store", "readwrite");
+        store = tx.objectStore("models_store");
+
+        store.get(name).onsuccess = function (e) {
+          let data = e.target.result;
+          data['input_shape'] = [1, size, size, _channels]
+
+          let req = store.put(data);
+          req.onsuccess = function (e) {
+            console.log("SUCCESS, ID:", e.target.result);
+            status.innerHTML = "Done! Reload the page to use the model.";
+            status.classList.remove('blink');
+          }
+          req.onerror = function (e) {
+            status.innerHTML = "Some error this way!";
+            console.log(e);
+            status.classList.remove('blink');
+          }
+        }
+        
+      } catch (e) {
+        status.classList.add('error');
+        status.classList.remove('blink');
+        if (toggle.checked) status.innerHTML = "Please enter a valid URL."
+        else status.innerHTML = "Please enter a valid model. Input model.json in first input and all weight binaries in second one without renaming.";
+        console.error(e);
+      } 
+
+    } else {
+      status.innerHTML = "Please fill out all the fields with valid values."
+      status.classList.add('error');
+      console.error(e);
+    }
+    
+  });  
+}
+
+
+/**
  * Make a canvas element & draw the ROI.
  * @param imgData
  * @param canvasId
@@ -315,6 +551,106 @@ function loadImageToCanvas(imgData, canvas) {
 }
 
 /**
+ * Segment using the selected model.
+ * @param  {String} key The primary key of model in indexedDB
+ * @return {none}
+ */
+function segmentModel(key) {
+
+  let self = $UI.segmentPanel;
+
+  // SEGMENTATION CANVAS
+  self.showProgress();
+
+  let fullResCvs = self.__fullsrc;
+  // const prefix_url = ImgloaderMode == 'iip'?`${window.location.origin}/img/IIP/raw/?IIIF=${$D.params.data.location}`:$CAMIC.slideId;
+  const prefix_url = ImgloaderMode == 'iip'?`../../img/IIP/raw/?IIIF=${$D.params.data.location}`:$CAMIC.slideId;
+
+  self.__img.src = prefix_url+'\/'+self.__spImgX+','+self.__spImgY+','+self.__spImgWidth+','+self.__spImgHeight+'\/'+self.__spImgWidth+',/0/default.jpg';
+  self.__img.onload = async function() {
+    let image = cv.imread(self.__img);
+    cv.imshow(fullResCvs, image);
+    image.delete();
+    let imgData = fullResCvs.getContext('2d').getImageData(0,0,fullResCvs.width,fullResCvs.height);
+
+    // Load the model
+    // Starting the transaction and opening the model store
+    let tx = db.transaction("models_store", "readonly");
+    let store = tx.objectStore("models_store");
+
+    console.log(key)
+    let req = store.get(key);
+
+    req.onsuccess = async function (e) {
+      // Keras sorts the labels by alphabetical order.
+      let input_shape = e.target.result.input_shape
+      let input_channels = parseInt(input_shape[3]);
+      let image_size = parseInt(input_shape[1]);
+
+      model = await tf.loadLayersModel(IDB_URL + key);
+
+      console.log('Model Loaded');
+
+      const logits = tf.tidy(() => {
+          // tf.browser.fromPixels() returns a Tensor from an image element.
+          const img = tf.browser.fromPixels(imgData).toFloat();
+          let img2;
+          if (input_channels == 1) {
+            img2 = tf.image.resizeBilinear(img, [image_size, image_size]).mean(2);
+          } else {
+            img2 = tf.image.resizeBilinear(img, [image_size, image_size]);
+          }
+          // console.log(img2)
+
+          // const min = img2.min();
+          // const max = img2.max();
+          // const normalized = img2.sub(min).div(max - min);;
+
+          // Normalize the image from [0, 255] to [-1, 1].
+          const offset = tf.scalar(127.5);
+          const normalized = img2.sub(offset).div(offset);
+
+          // Reshape to a single-element batch so we can pass it to predict.
+          const batched = normalized.reshape([1, image_size, image_size, input_channels]);
+          // console.log(batched);
+
+          // Make a prediction
+          return model.predict(batched);
+      });
+
+      // Get predicted values
+      let values = await logits.data();
+      values = Array.from(values);
+      // Scale values
+      values = values.map(x => x * 255)
+      // console.log(values)
+
+      // Get in the 2D image format (TODO: handle 3D format)
+      let val = new Array();
+      while (values.length > 0) val.push(values.splice(0, image_size));
+
+      // console.log(val);
+      tf.browser.toPixels(val, self.__mask).then(console.log('successs'));
+
+      fit(self.__mask);
+      self.__mask.style.opacity = 0.6;
+      self.__opacity.value = 0.6;
+      self.__oplabel = '0.6';
+
+      // Free memory
+      delete values;
+      delete model;
+
+      self.hideProgress();
+    }; 
+
+    req.onerror = function (e) {
+      console.log('Error in accessing model from DB:', e);
+    }  
+  }
+}
+
+/**
  * Segment! :)
  * @param box
  */
@@ -322,7 +658,6 @@ function segmentROI(box) {
 
   // But first, some setup...
   let self = $UI.segmentPanel;
-
   // let div = document.createElement('div');
   // document.body.appendChild(div);
 
@@ -363,6 +698,8 @@ function segmentROI(box) {
 
   // SEGMENTATION CANVAS
   self.showProgress();
+  console.log($UI.toolbar._sub_tools)
+  console.log($UI.toolbar._sub_tools.value)
 
   let fullResCvs = self.__fullsrc;
   // const prefix_url = ImgloaderMode == 'iip'?`${window.location.origin}/img/IIP/raw/?IIIF=${$D.params.data.location}`:$CAMIC.slideId;
@@ -380,7 +717,7 @@ function segmentROI(box) {
 
     const alpha = +self.__threshold.value;
     self.__tlabel.innerHTML = alpha;
-    watershed(self.__src,self.__out,alpha);
+    watershed(self.__src, self.__out, null, alpha);
     self.hideProgress();
   };
 
@@ -420,12 +757,15 @@ function segmentROI(box) {
  * @param out
  * @param thresh
  */
-function watershed(inn, out, thresh) {
+function watershed(inn, out, save=null, thresh) {
+
 
   // Read image
   const self = $UI.segmentPanel;
   let src = cv.imread(inn);
   let i2s = cv.imread(inn);
+  let dc = null;
+  if (save) dc = cv.imread(save);
   let height = src.rows;
   let width = src.cols;
   // Matrices
@@ -447,19 +787,20 @@ function watershed(inn, out, thresh) {
   // console.log('hemo: ',hemo);
 
   cv.cvtColor(src, src, cv.COLOR_RGBA2RGB, 0);
+
   hemo = colorDeconvolution(src,true);
-  // console.log(hechannels[0]);
-  // console.log(src.data,hemo);
   let hctx = self.__hemo.getContext('2d');
   hctx.clearRect(0, 0, self.__hemo.width, self.__hemo.height);
   let imageData = new ImageData(hemo,width,height);
 
   // Draw image data to the canvas
   hctx.putImageData(imageData, 0, 0);
-  src = cv.imread(self.__hemo);
-  console.log(src);
+
+  if (!save) src = cv.imread(self.__hemo);
+  else console.log('check in');
 
   cv.cvtColor(i2s, i2s, cv.COLOR_RGBA2RGB, 0);
+  // if (save) cv.cvtColor(dc, dc, cv.COLOR_RGBA2RGB, 0);
   // console.log(src);
   // console.log(i2s);
 
@@ -491,7 +832,6 @@ function watershed(inn, out, thresh) {
   // Get foreground - make the objects stand out
   // cv.threshold (src, dst, thresh, maxval, type)
   cv.threshold(distTrans, imageFg, thresh, 1, cv.THRESH_BINARY_INV);
-  console.log(thresh);
 
   // Mark (label) the regions starting with 1 (color output)
   imageFg.convertTo(imageFg, cv.CV_8U, 1, 0);
@@ -557,6 +897,7 @@ function watershed(inn, out, thresh) {
       // console.log(tmp.data32S);
       cv.drawContours(cloneSrc, contours, i, color, lineWidth, cv.FILLED, hierarchy,1);
       cv.drawContours(i2s , contours, i, color, lineWidth, cv.FILLED, hierarchy,1);
+      if (save) cv.drawContours(dc , contours, i, color, lineWidth, cv.FILLED, hierarchy,1);
     }
   }
   console.log(segcount);
@@ -586,7 +927,8 @@ function watershed(inn, out, thresh) {
   //cv.imshow(out, dst);
   //console.log(document.getElementById('test1'));
   cv.imshow(out, cloneSrc);
-  cv.imshow($UI.segmentPanel.__c2s, i2s);
+  if (save) cv.imshow($UI.segmentPanel.__c2s, dc);
+  else cv.imshow($UI.segmentPanel.__c2s, i2s);
   //cv.imshow($UI.segmentPanel.__out, cloneSrc);
 
   // Free up memory
@@ -601,6 +943,62 @@ function watershed(inn, out, thresh) {
   markers.delete();
   M.delete();
 }
+
+
+
+// Util Functions
+
+
+/**
+ * Return size of the element
+ * @param  {Object} element HTML element
+ * @return {Array} [width, height] of the element
+ */
+function _size(element) {
+
+  var bounds = element.getBoundingClientRect()
+  var styles = getComputedStyle(element)
+  var height = (bounds.height|0)
+    + (parseFloat(styles.getPropertyValue('margin-top')) || 0)
+    + (parseFloat(styles.getPropertyValue('margin-bottom')) || 0)
+  var width  = (bounds.width|0)
+    + (parseFloat(styles.getPropertyValue('margin-left')) || 0)
+    + (parseFloat(styles.getPropertyValue('margin-right')) || 0)
+
+  return [width, height]
+}
+
+/**
+ * Fit a canvas to its parent element
+ * @param  {Object} canvas The canvas to be resized
+ * @param  {Object} parent Parent according to which canvas is resized. Defaults to immediate parent.
+ * @param  {Object} scale Scale to which it has to be resized. Defaults to 1 (Same size)
+ * @return {Object}
+ */
+function fit(canvas, parent, scale) {
+
+  canvas.style.position = canvas.style.position || 'absolute'
+  canvas.style.top = 0
+  canvas.style.left = 0
+
+  resize.scale  = parseFloat(scale || 1)
+  resize.parent = parent
+
+  return resize()
+
+  function resize() {
+    var p = resize.parent || canvas.parentNode
+    var psize  = _size(p)
+    var width  = psize[0]|0
+    var height = psize[1]|0
+
+    canvas.style.width = width + 'px'
+    canvas.style.height = height + 'px'
+
+    return resize
+  }
+}
+
 
 /**
  * Convert a dataURI to a Blob

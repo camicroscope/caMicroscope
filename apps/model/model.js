@@ -253,7 +253,7 @@ function drawRectangle(e) {
   canvas.style.cursor = e.checked ? 'crosshair' : 'default';
 
   const canvasDraw = $CAMIC.viewer.canvasDrawInstance;
-  canvasDraw.drawMode = 'rect';
+  canvasDraw.drawMode = 'square';
   canvasDraw.style.color = '#FFFF00';
   canvasDraw.style.isFill = false;
 
@@ -401,6 +401,7 @@ function runPredict(key) {
     let image_size = input_shape[1];
 
     model = await tf.loadLayersModel(IDB_URL + key);
+    self.showProgress("Model loaded...");
 
     // // Warmup the model before using real data.
     // const warmupResult = model.predict(tf.zeros([1, image_size, image_size, 3]));
@@ -465,7 +466,7 @@ async function getTopKClasses(logits, classes, topK) {
   return topClassesAndProbs;
 }
 
-// TO-DO: Allow uploading hosted models & validate the file input
+// TO-DO: Allow uploading and using tensorflow graph models
 function uploadModel() {
 
   var _name = document.querySelector('#name'),
@@ -506,7 +507,7 @@ function uploadModel() {
       status.classList.add('blink');
 
       // Adding some extra digits in the end to maintain uniqueness
-      let name = _name.value + (new Date().getTime().toString()).slice(-4, -1);
+      let name = 'pred_' + _name.value + (new Date().getTime().toString()).slice(-4, -1);
       // Create an array from comma separated values of classes
       let classes = _classes.value.split(/\s*,\s*/);
 
@@ -575,19 +576,23 @@ async function showInfo() {
           size = (data[key].modelTopologyBytes + data[key].weightDataBytes + data[key].weightSpecsBytes) / (1024*1024),
           row = table.insertRow(),
           classes, input_shape, td;
-      store.get(name).onsuccess = function (e) {
-        classes = (e.target.result.classes.join(', '));
-        input_shape = e.target.result.input_shape.slice(1, 3).join("x");
-        td = row.insertCell();
-        td.innerHTML = name.slice(0, -3);
-        td = row.insertCell();
-        td.innerHTML = classes;
-        td = row.insertCell();
-        td.innerHTML = input_shape;
-        td = row.insertCell();
-        td.innerHTML = +size.toFixed(2);
-        td = row.insertCell();
-        td.innerHTML = date;
+
+      console.log(name.slice(0, 4));
+      if (name.slice(0, 4) == "pred") {
+        store.get(name).onsuccess = function (e) {
+          classes = (e.target.result.classes.join(', '));
+          input_shape = e.target.result.input_shape.slice(1, 3).join("x");
+          td = row.insertCell();
+          td.innerHTML = name.slice(5, -3);
+          td = row.insertCell();
+          td.innerHTML = classes;
+          td = row.insertCell();
+          td.innerHTML = input_shape;
+          td = row.insertCell();
+          td.innerHTML = +size.toFixed(2);
+          td = row.insertCell();
+          td.innerHTML = date;
+        }
       }
     }
     callback;
