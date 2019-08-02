@@ -59,7 +59,7 @@ function initialize() {
       }, 100);
 }
 
-function initUIcomponents() {
+async function initUIcomponents() {
   /* create UI components */
 
   // Create uploadModal for model uploads.
@@ -74,7 +74,16 @@ function initUIcomponents() {
         <label align="left"> Name:  </label> <input name="name" id="name" type="text" required /> <br> <hr>
         <div> Enter the classes model classifies into separated by comma. </div>
         <label align="left"> Classes: </label> <input name="classes" id="classes" type="text" required /> <br><hr>
-        <label align="left"> Input image size: </label> <input name="image_size" id="image_size" type="number" required /> <br><hr>
+        <label align="left"> Input image size: </label> <input name="image_size" id="image_size" type="number" required /> <br>
+        <input type="radio" id="gray" name="channels" value=1 checked>
+        <label for="gray">Gray</label>
+        <input type="radio" id="rgb" name="channels" value=3>
+        <label for="rgb">RGB</label> <br>
+        <label for="magnification">Magnification:</label><hr>
+        <select id="magnification">
+          <option value=20>20x</option>
+          <option value=40>40x</option>
+        </select>
         <label class="switch"><input type="checkbox" id="togBtn"><div class="slider"></div></label> <br> <br>
         <div class="checkfalse"><div>Select model.json first followed by the weight binaries.</div> <br> 
         <input name="filesupload" id="modelupload" type="file" required/>
@@ -120,6 +129,22 @@ function initUIcomponents() {
 
   // create the message queue
   $UI.message = new MessageQueue();
+  let dropDownList = [];
+  Object.keys(await tf.io.listModels()).forEach(function (element) {
+    let dict = {};    
+    let value = element.split("/").pop();
+    console.log(value)
+    console.log(value.slice(0, 3))
+    if (value.slice(0, 4) == 'pred') {
+      let title = element.split("/").pop().split("_")[1].slice(0, -3);
+      dict.icon = "flip_to_back";
+      dict.title = title;
+      dict.value = value;
+      dict.checked = false;
+      dropDownList.push(dict);
+    }
+  });
+  console.log(dropDownList)
 
   // create toolbar
   $UI.toolbar = new CaToolbar({
@@ -133,7 +158,14 @@ function initUIcomponents() {
         value: 'rect',
         title: 'Predict',
         callback: drawRectangle
-      }, {
+      },{
+        icon: 'keyboard_arrow_down',
+        type: 'dropdown',
+        value: 'rect',
+        dropdownList: dropDownList,
+        title: 'Select Model',
+        callback: setValue
+      },{
         icon: 'insert_photo',
         type: 'btn',
         value: 'viewer',
@@ -223,10 +255,10 @@ function initCore() {
     $UI.modelPanel = new ModelPanel(viewer);
 
     // Model is selected and run right after you choose it from the select.
-    $UI.modelPanel.__modelselector.addEventListener('change', function(e) {
-      console.log($UI.modelPanel.__modelselector.value);
-      runPredict($UI.modelPanel.__modelselector.value);
-    }.bind($UI.modelPanel));
+    // $UI.modelPanel.__modelselector.addEventListener('change', function(e) {
+    //   console.log($UI.modelPanel.__modelselector.value);
+    //   runPredict($UI.modelPanel.__modelselector.value);
+    // }.bind($UI.modelPanel));
 
     $UI.modelPanel.__btn_save.addEventListener('click', function(e) {
       let fname = $D.params.slideId + '_roi.png';
@@ -243,6 +275,11 @@ function initCore() {
   
 }
 
+function setValue(args) {
+  console.log(args)
+  $UI.args = args;
+}
+
 /**
  * Toolbar button callback
  * @param e
@@ -253,7 +290,13 @@ function drawRectangle(e) {
   canvas.style.cursor = e.checked ? 'crosshair' : 'default';
 
   const canvasDraw = $CAMIC.viewer.canvasDrawInstance;
-  canvasDraw.drawMode = 'square';
+  let args = $UI.args;
+  canvasDraw.drawMode = 'stepSquare';
+  // Save size in an arg list
+  console.log(args)
+  if (args) canvasDraw.size = args.status.split('_')[1].split('-')[0];
+  else canvasDraw.size = 1;
+  console.log(canvasDraw.size)
   canvasDraw.style.color = '#FFFF00';
   canvasDraw.style.isFill = false;
 
@@ -282,29 +325,15 @@ function camicStopDraw(e) {
     if (Object.keys(box).length === 0 && box.constructor === Object) {
       console.error('SOMETHING WICKED THIS WAY COMES.');
     } else { 
-
+      let args = $UI.args;
+      if (args) {
+        runPredict(args.status);
+      }
       $UI.modelPanel.setPosition(box.rect.x,box.rect.y,box.rect.width,box.rect.height);
- 
+      $UI.modelPanel.open(args);
 
-      const self = $UI.modelPanel;
+      canvasDraw.clear();
       csvContent = "";
-
-      var fullResCvs = self.__fullsrc;
-      // const prefix_url = ImgloaderMode == 'iip'?`${window.location.origin}/img/IIP/raw/?IIIF=${$D.params.data.location}`:$CAMIC.slideId;
-      const prefix_url = ImgloaderMode == 'iip'?`../../img/IIP/raw/?IIIF=${$D.params.data.location}`:$CAMIC.slideId;
-      var img = new Image();   // Create new img element
-      img.addEventListener('load', function() {
-
-        fullResCvs.height = img.height;
-        fullResCvs.width = img.width;
-        fullResCvs.getContext('2d').drawImage(img, 0, 0);
-
-        $UI.modelPanel.open();
-        // close
-        canvasDraw.clear();  
-      }, false);
-      img.src = prefix_url+'\/'+self.__spImgX+','+self.__spImgY+','+self.__spImgWidth+','+self.__spImgHeight+'\/'+self.__spImgWidth+',/0/default.jpg';     
-
     }
 
   } else {
@@ -382,7 +411,15 @@ function runPredict(key) {
 
   // But first, some setup...
   const self = $UI.modelPanel;
+  let X = self.__spImgX,
+      Y = self.__spImgY,
+      totalSize = self.__spImgWidth,
+      step = parseInt(key.split('_')[1].split('-')[0]);
 
+      console.log(X, Y, totalSize, step)
+
+
+  const prefix_url = ImgloaderMode == 'iip'?`../../img/IIP/raw/?IIIF=${$D.params.data.location}`:$CAMIC.slideId;
   self.showProgress("Predicting...");
 
   let fullResCvs = self.__fullsrc;
@@ -392,47 +429,84 @@ function runPredict(key) {
   // Starting the transaction and opening the model store
   let tx = db.transaction("models_store", "readonly");
   let store = tx.objectStore("models_store");
-
+  console.log(key)
   store.get(key).onsuccess = async function (e) {
     // Keras sorts the labels by alphabetical order.
     let classes = e.target.result.classes.sort();
 
     let input_shape = e.target.result.input_shape
+    // let input_channels = parseInt(input_shape[3]);
+    let input_channels = 3;
     let image_size = input_shape[1];
 
     model = await tf.loadLayersModel(IDB_URL + key);
     self.showProgress("Model loaded...");
 
-    // // Warmup the model before using real data.
-    // const warmupResult = model.predict(tf.zeros([1, image_size, image_size, 3]));
-    // warmupResult.dataSync();
-    // warmupResult.dispose();
-    // console.log("Model ready");
+    // Warmup the model before using real data.
+    const warmupResult = model.predict(tf.zeros([1, image_size, image_size, input_channels]));
+    warmupResult.dataSync();
+    warmupResult.dispose();
+    console.log("Model ready");
 
-    // TODO: Allow the users to decide below params.
-    const logits = tf.tidy(() => {
-    // tf.browser.fromPixels() returns a Tensor from an image element.
+    let temp = document.querySelector('#dummy');
+    temp.height = step;
+    temp.width = step;
+
+    function addImageProcess(src){
+      return new Promise((resolve, reject) => {
+        let img = new Image()
+        img.onload = () => resolve(img)
+        img.onerror = reject
+        img.src = src
+      })
+    }
+    let results = []
+    let coors = [];
+    var dy = 0;
+    for (let y = Y, dy = 0; y < (Y + totalSize); y+=(step)) {
+      let dx = 0
+      for (let x = X; x < (X + totalSize); x+=(step)) {
+        coors.push([x, y, dx, dy]);
+        dx += step;
+      }
+      dy += step;
+    }
+
+    console.log(coors)
+    self.showProgress("Processing...");
+    for (const cor of coors ) {
+      console.log(cor)
+      const [x, y, dx, dy] = cor;
+      step=48
+      let src = prefix_url+'\/'+x+','+y+','+step+','+step+'\/'+step+',/0/default.jpg';
+      // let img_l = new Image();
+      // img_l.src = src;
+      let l_img = await addImageProcess(src);
+      fullResCvs.height = l_img.height;
+      fullResCvs.width = l_img.width;
+      fullResCvs.getContext('2d').drawImage(l_img, 0, 0);
+
+      // dummy.getContext('2d').drawImage(img, dx, dy);
+      let imgData = fullResCvs.getContext('2d').getImageData(0,0,fullResCvs.width,fullResCvs.height);
+
       const img = tf.browser.fromPixels(imgData).toFloat();
-      const img2 = tf.image.resizeBilinear(img, [image_size, image_size])
-
-      const offset = tf.scalar(127.5);
-      // Normalize the image from [0, 255] to [-1, 1].
-      const normalized = img2.sub(offset).div(offset);
-      // Reshape to a single-element batch so we can pass it to predict.
-      const batched = normalized.reshape(input_shape);
-
-      // Make a prediction through mobilenet.
-      return model.predict(batched);
-    });
-
-    // Retrieving the top class
-    const predictions = await getTopKClasses(logits, classes, 1);
-
-    self.hideProgress();
-
-    // Show the classes in the DOM.
-    self.showResults(predictions[0].className + " - " + predictions[0].probability);
-    
+      let img2;
+      if (input_channels == 1) {
+        img2 = tf.image.resizeBilinear(img, [image_size, image_size]).mean(2);
+      } else {
+        img2 = tf.image.resizeBilinear(img, [image_size, image_size]);
+      }
+      let offset = tf.scalar(127.5);
+      let normalized = img2.sub(offset).div(offset);
+      let batched = normalized.reshape([1, image_size, image_size, input_channels]);
+      let values = await model.predict(batched).data();
+      // Retrieving the top class
+      const predictions = await getTopKClasses(values, classes, 1); 
+      self.hideProgress();
+      console.log(predictions[0].className + " - " + predictions[0].probability);
+      results.push(predictions[0].className + " - " + predictions[0].probability);
+    }
+    console.log(results)
   };
 }
 
@@ -442,9 +516,9 @@ function runPredict(key) {
  * @param logits Tensor representing the logits from MobileNet.
  * @param topK The number of top predictions to show.
  */
-async function getTopKClasses(logits, classes, topK) {
-  const values = await logits.data();
-  console.log(values);
+function getTopKClasses(values, classes, topK) {
+  // const values = await logits.data();
+  // console.log(values);
 
   const indexOfMaxValue = values.reduce((iMax, x, i, arr) => x > arr[iMax] ? i : iMax, 0);
 
@@ -471,6 +545,7 @@ function uploadModel() {
 
   var _name = document.querySelector('#name'),
       _classes = document.querySelector('#classes'),
+      mag = document.querySelector('#magnification'),
       _image_size = document.querySelector("#image_size"),
       topology = document.querySelector('#modelupload'),
       weights = document.querySelector('#weightsupload'),
@@ -506,8 +581,9 @@ function uploadModel() {
       status.classList.remove('error');
       status.classList.add('blink');
 
+      let _channels = parseInt(document.querySelector('input[name="channels"]:checked').value);
       // Adding some extra digits in the end to maintain uniqueness
-      let name = 'pred_' + _name.value + (new Date().getTime().toString()).slice(-4, -1);
+      let name = 'pred_'  + _image_size.value.toString() + '-' + mag.value.toString() + '_' + _name.value + (new Date().getTime().toString()).slice(-4, -1);
       // Create an array from comma separated values of classes
       let classes = _classes.value.split(/\s*,\s*/);
 
@@ -527,7 +603,7 @@ function uploadModel() {
         store.get(name).onsuccess = function (e) {
           let data = e.target.result;
           data['classes'] = classes;
-          data['input_shape'] = [1, parseInt(_image_size.value), parseInt(_image_size.value), 3]
+          data['input_shape'] = [1, parseInt(_image_size.value), parseInt(_image_size.value), parseInt(_channels)]
 
           let req = store.put(data);
           req.onsuccess = function (e) {

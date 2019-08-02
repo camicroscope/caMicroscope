@@ -1,17 +1,17 @@
 function ModelPanel(viewer){
 
 	const temp = `
-		<div class='result' id='result'></div>
 		<div id='close' class='material-icons settings'>close</div>
 		<div id='save' class='material-icons settings' title='Save ROI Image'>save</div>
 		<div id='savecsv' class='material-icons settings' title='Save class probabilities - CSV File'>list</div>
-		<select id='modelselect' class='settings' title='Select the model'><option hidden disabled selected value> -- select a model -- </option>	</select>
+		<div id='result' class='settings' title='Select the model'>--Result--</div>
 		
 		<div id='processing' class='segment-processing'></div>
 		
 		<canvas class='out'></canvas>
 		<canvas class='src'></canvas>
 		<canvas id ='fullsrc' class='hiddenCanvas'></canvas>
+		<canvas id ='dummy' class='hiddenCanvas'></canvas>
 		<canvas id='c2s' class='hiddenCanvas'></canvas>
 		<canvas id='fullSegImg' class='hiddenCanvas'></canvas>
 		<img id='imageEle' class='hiddenCanvas'></img>
@@ -45,7 +45,7 @@ function ModelPanel(viewer){
 	this.__btn_savecsv = this.elt.querySelector('#savecsv');
 	this.__btn_csvDL = this.elt.querySelector('#csvDLB');
 	this.__indicator = this.elt.querySelector('#processing');
-	this.__result = this.elt.querySelector('#result');
+	// this.__result = this.elt.querySelector('#result');
 
 	//threshold
 	this.__modelselector = this.elt.querySelector('#modelselect');
@@ -68,26 +68,26 @@ ModelPanel.prototype.open = async function(){
 
 	// models has keys of object, i.e the url
 	let modsel = this.__modelselector;
-	empty(modsel);
-	// let models = 
-	let opt = document.createElement('option');
-	opt.disabled = true;
-	opt.value = "";
-	opt.index = 0;
-	opt.innerHTML = "-- select a model --";
-	modsel.appendChild(opt);
-	Object.keys(await tf.io.listModels()).forEach(function (element) {
-		let opt = document.createElement('option');
-		let key = element.split("/").pop();
-		console.log(key.slice(0, 4));
-		if (key.slice(0, 4) == "pred") {
-			opt.value = element.split("/").pop();
-		    opt.innerHTML = element.split("/").pop().slice(5, -3);
-		    modsel.appendChild(opt);
-		}
-	});
-	modsel.selectedIndex = 0;
-	this.__result.innerHTML = '-- result --';
+	// empty(modsel);
+	// // let models = 
+	// let opt = document.createElement('option');
+	// opt.disabled = true;
+	// opt.value = "";
+	// opt.index = 0;
+	// opt.innerHTML = "-- select a model --";
+	// modsel.appendChild(opt);
+	// Object.keys(await tf.io.listModels()).forEach(function (element) {
+	// 	let opt = document.createElement('option');
+	// 	let key = element.split("/").pop();
+	// 	console.log(key.slice(0, 4));
+	// 	if (key.slice(0, 4) == "pred") {
+	// 		opt.value = element.split("/").pop();
+	// 	    opt.innerHTML = element.split("/").pop().slice(5, -3);
+	// 	    modsel.appendChild(opt);
+	// 	}
+	// });
+	// modsel.selectedIndex = 0;
+	// this.__result.innerHTML = '-- result --';
 	this.elt.style.display = '';
 };
 
@@ -99,17 +99,17 @@ ModelPanel.prototype.save = function(){
 	alert('Saving Image and Mask!');
 };
 
-ModelPanel.prototype.populate = function(models){
+// ModelPanel.prototype.populate = function(models){
 
-	// models has keys of object, i.e the url
-	var modsel = this.__modelselector;
-	var opt = document.createElement('option');
-	models.forEach(function (element) {
-		opt.value = element;
-	    opt.innerHTML = 'pred_' + element.split("/").pop();
-	    modsel.appendChild(opt);
-	});
-}
+// 	// models has keys of object, i.e the url
+// 	// var modsel = this.__modelselector;
+// 	var opt = document.createElement('option');
+// 	models.forEach(function (element) {
+// 		opt.value = element;
+// 	    opt.innerHTML = 'pred_' + element.split("/").pop();
+// 	    modsel.appendChild(opt);
+// 	});
+// }
 
 ModelPanel.prototype.showProgress = function(text){
 	this.__indicator.style.display = 'flex';
@@ -121,7 +121,7 @@ ModelPanel.prototype.hideProgress = function(){
 }
 
 ModelPanel.prototype.showResults = function(text){
-	this.__result.innerHTML = text;
+	// this.__result.innerHTML = text;
 }
 
 ModelPanel.prototype.setPosition = function(x,y,w,h){
