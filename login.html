@@ -1,28 +1,18 @@
 <html>
-<script async defer src="https://apis.google.com/js/platform.js?onload=handleClientLoad"></script>
-<h1>Redirecting...</h1>
+<meta name="google-signin-client_id" content="XXX.apps.googleusercontent.com">
+<script src="https://apis.google.com/js/platform.js" async defer></script>
+<div class="g-signin2" data-onsuccess="onSignIn"></div>
+<a href="#" onclick="signOut();">Sign out</a>
 <script>
-// config vars, these are DEFAULTS
-var audience = "wolf.cci.emory.edu/camic_uat"
-var scope = "openid%20email"
-var client_id = "YLRDUmEs5Jivi6FX3XtNNAt97X3a0epD"
-// GHC specific
-var GHC_CLIENT_ID = '1064842501836-19n83cvmc5el0l228oqk1a14sj4tjqqp.apps.googleusercontent.com'
-// handle urls automatically
-var base_deployment_url = window.location.toString().split("/").slice(0,-1).join("/")
-var redirect_uri = base_deployment_url + "/login.html"
-var default_redirect = base_deployment_url + "/apps/table.html"
-var response_type = "id_token"
-var base_auth_url = "https://birmstuff.auth0.com/authorize?"
-var cookie_name = "token" // "token" is expected by elevate router
-// make the url
-var auth_url = base_auth_url
-auth_url += "&audience=" + audience
-auth_url += "&scope=" + scope
-auth_url += "&response_type=" + response_type
-auth_url += "&client_id=" + client_id
-auth_url += "&redirect_uri=" + redirect_uri
-
+  function signOut() {
+    var auth2 = gapi.auth2.getAuthInstance();
+    auth2.signOut().then(function () {
+      console.log('User signed out.');
+    });
+  }
+</script>
+<script>
+// google's jwk is here: https://www.googleapis.com/oauth2/v3/certs
 function randomString(length) {
     var bytes = new Uint8Array(length);
     var random = window.crypto.getRandomValues(bytes);
@@ -44,37 +34,43 @@ function getUrlParam(name, url) {
     return decodeURIComponent(results[2].replace(/\+/g, ' '));
 }
 
-// get variables
-let id_token = getUrlParam("id_token")
-let state = decodeURIComponent(getUrlParam("state"))
-if (!state){
-  state = default_redirect
+function onSignIn(googleUser) {
+  var id_token = googleUser.getAuthResponse().id_token;
+  console.info(id_token)
+  // trade for camic token
+  var cookie_name = "token" // "token" is expected by elevate router
+  var base_deployment_url = window.location.toString().split("/").slice(0,-1).join("/")
+  var redirect_uri = base_deployment_url + "/login.html"
+  var default_redirect = base_deployment_url + "/apps/table.html"
+  var state
+  if (getUrlParam("state"))
+  {
+    state = decodeURIComponent(getUrlParam("state"))
+  }
+  if (!state){
+    state = default_redirect
+  }
+
+  if (id_token){
+    document.cookie = cookie_name + "=" + id_token;
+    fetch("./auth/Token/check",
+    {headers: {
+        'Authorization': "Bearer " + id_token
+     }}
+    ).then(x=>x.json()).then(x=>{
+      console.log("{id provider", id_token)
+      console.log("{auth service}", x)
+      if (x.hasOwnProperty('token')){
+        document.cookie = cookie_name + "=" + x.token;
+        window.location = state
+      } else {
+        window.alert("no!")
+      }
+
+    })
+  }
 }
 
-// is this a login pre or post?
-if (id_token){
-  document.cookie = cookie_name + "=" + id_token;
-  fetch("./auth/Token/check",
-  {headers: {
-      'Authorization': "Bearer " + id_token
-   }}
-  ).then(x=>x.json()).then(x=>{
-    console.log("{id provider", id_token)
-    console.log("{auth service}", x)
-    if (x.hasOwnProperty('token')){
-      document.cookie = cookie_name + "=" + x.token;
-      window.location = state
-    } else {
-      console.error("please give me a better failure message/response")
-    }
-
-  })
-} else {
-  window.localStorage.setItem('nonce', randomString(16));
-  auth_url += "&state=" + state
-  auth_url += "&nonce=" + window.localStorage.getItem('nonce')
-  window.location = auth_url
-}
 
 </script>
 <html>
