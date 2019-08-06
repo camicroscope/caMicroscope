@@ -45,7 +45,7 @@ function ModelPanel(viewer){
 	this.__btn_savecsv = this.elt.querySelector('#savecsv');
 	this.__btn_csvDL = this.elt.querySelector('#csvDLB');
 	this.__indicator = this.elt.querySelector('#processing');
-	// this.__result = this.elt.querySelector('#result');
+	this.__result = this.elt.querySelector('#result');
 
 	//threshold
 	this.__modelselector = this.elt.querySelector('#modelselect');
@@ -121,7 +121,7 @@ ModelPanel.prototype.hideProgress = function(){
 }
 
 ModelPanel.prototype.showResults = function(text){
-	// this.__result.innerHTML = text;
+	this.__result.innerHTML = text;
 }
 
 ModelPanel.prototype.setPosition = function(x,y,w,h){

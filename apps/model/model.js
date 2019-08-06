@@ -416,8 +416,6 @@ function runPredict(key) {
       totalSize = self.__spImgWidth,
       step = parseInt(key.split('_')[1].split('-')[0]);
 
-      console.log(X, Y, totalSize, step)
-
 
   const prefix_url = ImgloaderMode == 'iip'?`../../img/IIP/raw/?IIIF=${$D.params.data.location}`:$CAMIC.slideId;
   self.showProgress("Predicting...");
@@ -429,7 +427,6 @@ function runPredict(key) {
   // Starting the transaction and opening the model store
   let tx = db.transaction("models_store", "readonly");
   let store = tx.objectStore("models_store");
-  console.log(key)
   store.get(key).onsuccess = async function (e) {
     // Keras sorts the labels by alphabetical order.
     let classes = e.target.result.classes.sort();
@@ -453,6 +450,7 @@ function runPredict(key) {
     temp.width = step;
 
     function addImageProcess(src){
+      console.log('in load')
       return new Promise((resolve, reject) => {
         let img = new Image()
         img.onload = () => resolve(img)
@@ -460,53 +458,68 @@ function runPredict(key) {
         img.src = src
       })
     }
-    let results = []
-    let coors = [];
+
+    let results = {};
+    classes.forEach((e) => {
+      results[e] = 0;
+    });
+    // let coors = [];
     var dy = 0;
     for (let y = Y, dy = 0; y < (Y + totalSize); y+=(step)) {
       let dx = 0
       for (let x = X; x < (X + totalSize); x+=(step)) {
-        coors.push([x, y, dx, dy]);
+        // coors.push([x, y, dx, dy]);
+
+        step=48
+        let src = prefix_url+'\/'+x+','+y+','+step+','+step+'\/'+step+',/0/default.jpg';
+        // let img_l = new Image();
+        // img_l.src = src;
+        console.log('before load');
+        let l_img = await addImageProcess(src);
+        console.log('after load');
+        fullResCvs.height = l_img.height;
+        fullResCvs.width = l_img.width;
+        fullResCvs.getContext('2d').drawImage(l_img, 0, 0);
+
+        // dummy.getContext('2d').drawImage(img, dx, dy);
+        let imgData = fullResCvs.getContext('2d').getImageData(0,0,fullResCvs.width,fullResCvs.height);
+
+        const img = tf.browser.fromPixels(imgData).toFloat();
+        let img2;
+        if (input_channels == 1) {
+          img2 = tf.image.resizeBilinear(img, [image_size, image_size]).mean(2);
+        } else {
+          img2 = tf.image.resizeBilinear(img, [image_size, image_size]);
+        }
+        let offset = tf.scalar(127.5);
+        let normalized = img2.sub(offset).div(offset);
+        let batched = normalized.reshape([1, image_size, image_size, input_channels]);
+        let values = await model.predict(batched).data();
+        // Retrieving the top class
+        const predictions = await getTopKClasses(values, classes, 1); 
+        self.hideProgress();
+        console.log(predictions[0].className + " - " + predictions[0].probability);
+        predictions.forEach((e) => {
+          results[e.className] = results[e.className] + e.probability;
+        });
+        // results.push(predictions);
+
+
         dx += step;
       }
       dy += step;
     }
 
-    console.log(coors)
-    self.showProgress("Processing...");
-    for (const cor of coors ) {
-      console.log(cor)
-      const [x, y, dx, dy] = cor;
-      step=48
-      let src = prefix_url+'\/'+x+','+y+','+step+','+step+'\/'+step+',/0/default.jpg';
-      // let img_l = new Image();
-      // img_l.src = src;
-      let l_img = await addImageProcess(src);
-      fullResCvs.height = l_img.height;
-      fullResCvs.width = l_img.width;
-      fullResCvs.getContext('2d').drawImage(l_img, 0, 0);
+    let n = totalSize/step;
 
-      // dummy.getContext('2d').drawImage(img, dx, dy);
-      let imgData = fullResCvs.getContext('2d').getImageData(0,0,fullResCvs.width,fullResCvs.height);
+    // mean value
+    Object.keys(results).forEach((e)=>{
+      results[e] /= (n**2)
+    });
 
-      const img = tf.browser.fromPixels(imgData).toFloat();
-      let img2;
-      if (input_channels == 1) {
-        img2 = tf.image.resizeBilinear(img, [image_size, image_size]).mean(2);
-      } else {
-        img2 = tf.image.resizeBilinear(img, [image_size, image_size]);
-      }
-      let offset = tf.scalar(127.5);
-      let normalized = img2.sub(offset).div(offset);
-      let batched = normalized.reshape([1, image_size, image_size, input_channels]);
-      let values = await model.predict(batched).data();
-      // Retrieving the top class
-      const predictions = await getTopKClasses(values, classes, 1); 
-      self.hideProgress();
-      console.log(predictions[0].className + " - " + predictions[0].probability);
-      results.push(predictions[0].className + " - " + predictions[0].probability);
-    }
-    console.log(results)
+    i_max = Object.keys(results).reduce((a, b) => results[a] > results[b] ? a : b);
+    self.showResults('' + i_max + '-' + results[i_max])
+
   };
 }
 
