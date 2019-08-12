@@ -679,7 +679,6 @@ async function segmentModel(key) {
     self.showProgress("Processing...");
 
 
-    var dy = 0; 
     for (let y = Y, dy = 0; y < (Y + totalSize); y+=(step)) {
       let dx = 0
       for (let x = X; x < (X + totalSize); x+=(step)) {

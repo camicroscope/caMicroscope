@@ -421,13 +421,10 @@ function runPredict(key) {
       totalSize = self.__spImgWidth,
       step = parseInt(key.split('_')[1].split('-')[0]);
 
-
   const prefix_url = ImgloaderMode == 'iip'?`../../img/IIP/raw/?IIIF=${$D.params.data.location}`:$CAMIC.slideId;
   self.showProgress("Predicting...");
 
   let fullResCvs = self.__fullsrc;
-
-  var imgData = fullResCvs.getContext('2d').getImageData(0,0,fullResCvs.width,fullResCvs.height);
 
   // Starting the transaction and opening the model store
   let tx = db.transaction("models_store", "readonly");
@@ -469,23 +466,19 @@ function runPredict(key) {
       csvContent += e + ",";
     });
     csvContent += "x,y\n\r";
+    self.showProgress("Predicting...");
 
-    var dy = 0;
     for (let y = Y, dy = 0; y < (Y + totalSize); y+=(step)) {
       let dx = 0
       for (let x = X; x < (X + totalSize); x+=(step)) {
-        // coors.push([x, y, dx, dy]);
 
-        step=48
         let src = prefix_url+'\/'+x+','+y+','+step+','+step+'\/'+step+',/0/default.jpg';
-        // let img_l = new Image();
-        // img_l.src = src;
+
         let l_img = await addImageProcess(src);
         fullResCvs.height = l_img.height;
         fullResCvs.width = l_img.width;
         fullResCvs.getContext('2d').drawImage(l_img, 0, 0);
 
-        // dummy.getContext('2d').drawImage(img, dx, dy);
         let imgData = fullResCvs.getContext('2d').getImageData(0,0,fullResCvs.width,fullResCvs.height);
 
         const img = tf.browser.fromPixels(imgData).toFloat();
@@ -525,7 +518,8 @@ function runPredict(key) {
     }
 
     i_max = Object.keys(final).reduce((a, b) => final[a] > final[b] ? a : b);
-    self.showResults('' + parseInt(i_max)+1 + '-' + classes[i_max] + '-' + final[i_max].toFixed(3));
+    let i = parseInt(i_max) + 1;
+    self.showResults('' + i + ': ' + classes[i_max] + ' - ' + final[i_max].toFixed(3));
     self.hideProgress()
     model = null;
     normalized = [];

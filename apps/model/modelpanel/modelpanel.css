@@ -37,10 +37,11 @@
 #result {
   position: absolute;
   top: -22px;
-  left: 60px;
-  height: 21px;
-  width: 190px;
+  left: 61px;
+  height: 19px;
+  width: 170px;
   font-size: 11px;
+  text-align: center;
 }
 
 #amin {
