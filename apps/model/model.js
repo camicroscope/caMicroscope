@@ -28,7 +28,6 @@ function dbInit() {
   }
   request.onsuccess = function(e) {
     db = request.result;
-    // console.log(db.objectStoreNames);
     console.log('tfjs db opened and ready');
   }
 }
@@ -59,7 +58,7 @@ function initialize() {
       }, 100);
 }
 
-function initUIcomponents() {
+async function initUIcomponents() {
   /* create UI components */
 
   // Create uploadModal for model uploads.
@@ -70,19 +69,47 @@ function initUIcomponents() {
     hasFooter:false,
     provideContent: true,
     content: `
-      <form action="#">
-        <label align="left"> Name:  </label> <input name="name" id="name" type="text" required /> <br> <hr>
-        <div> Enter the classes model classifies into separated by comma. </div>
-        <label align="left"> Classes: </label> <input name="classes" id="classes" type="text" required /> <br><hr>
-        <label align="left"> Input image size: </label> <input name="image_size" id="image_size" type="number" required /> <br><hr>
+      <form action="#" class='form-style'>
+      <ul>
+          <li>
+            <label align="left"> Name:  </label> 
+            <input name="name" id="name" type="text" required />
+            <span> Name of the model </span>
+          </li>
+          <li>
+            <label align="left"> Classes: </label> 
+            <input name="classes" id="classes" type="text" required />
+            <span> Enter the classes model classifies into separated by comma. </span>
+          </li>
+          <li>
+            <label align="left"> Input patch size: </label> 
+            <input name="image_size" id="image_size" type="number" required />
+            <span> The image size on which the model is trained </span>
+          </li>
+            <label>Input image format:</label> <br>            
+            <input type="radio" id="gray" name="channels" value=1 checked>
+            <label for="gray">Gray</label> <br>
+            <input type="radio" id="rgb" name="channels" value=3>
+            <label for="rgb" padding="10px">RGB</label> 
+          <li id="mg">
+            <label for="magnification">Magnification:</label>
+            <select id="magnification">
+              <option value=10>10x</option>
+              <option value=20>20x</option>
+              <option value=40>40x</option>
+            </select>
+            <span> Magnification of input images </span>
+          </li>
+        <hr>
         <label class="switch"><input type="checkbox" id="togBtn"><div class="slider"></div></label> <br> <br>
         <div class="checkfalse"><div>Select model.json first followed by the weight binaries.</div> <br> 
         <input name="filesupload" id="modelupload" type="file" required/>
         <input name="filesupload" id="weightsupload" type="file" multiple="" required/> <br> <br> </div>
         <div class="checktrue" > URL to the ModelAndWeightsConfig JSON describing the model. <br> <br> 
         <label align-"left"> Enter the URL: </label> <input type="url" name="url" id="url" required> <br><br></div>
-        <button id="submit">Upload</button> <span id="status"></span>
+        <button id="submit">Upload</button> <span id="status"></span> <br>
       </form>  
+      <button id="refresh" class='material-icons'>cached</button> 
     `
   });
 
@@ -120,6 +147,19 @@ function initUIcomponents() {
 
   // create the message queue
   $UI.message = new MessageQueue();
+  let dropDownList = [];
+  Object.keys(await tf.io.listModels()).forEach(function (element) {
+    let dict = {};    
+    let value = element.split("/").pop();
+    if (value.slice(0, 4) == 'pred') {
+      let title = element.split("/").pop().split('_').splice(2).join('_').slice(0, -3);
+      dict.icon = "flip_to_back";
+      dict.title = title;
+      dict.value = value;
+      dict.checked = false;
+      dropDownList.push(dict);
+    }
+  });
 
   // create toolbar
   $UI.toolbar = new CaToolbar({
@@ -133,7 +173,14 @@ function initUIcomponents() {
         value: 'rect',
         title: 'Predict',
         callback: drawRectangle
-      }, {
+      },{
+        icon: 'keyboard_arrow_down',
+        type: 'dropdown',
+        value: 'rect',
+        dropdownList: dropDownList,
+        title: 'Select Model',
+        callback: setValue
+      },{
         icon: 'insert_photo',
         type: 'btn',
         value: 'viewer',
@@ -222,12 +269,6 @@ function initCore() {
     // UI to select the part of image
     $UI.modelPanel = new ModelPanel(viewer);
 
-    // Model is selected and run right after you choose it from the select.
-    $UI.modelPanel.__modelselector.addEventListener('change', function(e) {
-      console.log($UI.modelPanel.__modelselector.value);
-      runPredict($UI.modelPanel.__modelselector.value);
-    }.bind($UI.modelPanel));
-
     $UI.modelPanel.__btn_save.addEventListener('click', function(e) {
       let fname = $D.params.slideId + '_roi.png';
 
@@ -243,6 +284,10 @@ function initCore() {
   
 }
 
+function setValue(args) {
+  $UI.args = args;
+}
+
 /**
  * Toolbar button callback
  * @param e
@@ -253,14 +298,26 @@ function drawRectangle(e) {
   canvas.style.cursor = e.checked ? 'crosshair' : 'default';
 
   const canvasDraw = $CAMIC.viewer.canvasDrawInstance;
-  canvasDraw.drawMode = 'square';
+  let args = $UI.args;
+  canvasDraw.drawMode = 'stepSquare';
+  // Save size in an arg list
+  if (args) canvasDraw.size = args.status.split('_')[1].split('-')[0];
+  else canvasDraw.size = 1;
   canvasDraw.style.color = '#FFFF00';
   canvasDraw.style.isFill = false;
 
   if (e.checked) {
+    // Warn about zoom level
+    let current_zoom = parseInt($CAMIC.viewer.imagingHelper._zoomFactor * 40);
+    required_zoom = $UI.args? parseInt($UI.args.status.split('_')[1].split('-')[1]):current_zoom;
+    if (current_zoom != required_zoom) {
+      alert('You are testing the model for a different zoom level. Performance might be affected.');
+    }
+    document.querySelector(".drop_down").classList.add('disabled');
     canvasDraw.drawOn();
   } else {
     canvasDraw.drawOff();
+    document.querySelector(".drop_down").classList.remove('disabled');
   }
 }
 
@@ -282,29 +339,15 @@ function camicStopDraw(e) {
     if (Object.keys(box).length === 0 && box.constructor === Object) {
       console.error('SOMETHING WICKED THIS WAY COMES.');
     } else { 
-
+      let args = $UI.args;
+      if (args) {
+        runPredict(args.status);
+      }
       $UI.modelPanel.setPosition(box.rect.x,box.rect.y,box.rect.width,box.rect.height);
- 
+      $UI.modelPanel.open(args);
 
-      const self = $UI.modelPanel;
+      canvasDraw.clear();
       csvContent = "";
-
-      var fullResCvs = self.__fullsrc;
-      // const prefix_url = ImgloaderMode == 'iip'?`${window.location.origin}/img/IIP/raw/?IIIF=${$D.params.data.location}`:$CAMIC.slideId;
-      const prefix_url = ImgloaderMode == 'iip'?`../../img/IIP/raw/?IIIF=${$D.params.data.location}`:$CAMIC.slideId;
-      var img = new Image();   // Create new img element
-      img.addEventListener('load', function() {
-
-        fullResCvs.height = img.height;
-        fullResCvs.width = img.width;
-        fullResCvs.getContext('2d').drawImage(img, 0, 0);
-
-        $UI.modelPanel.open();
-        // close
-        canvasDraw.clear();  
-      }, false);
-      img.src = prefix_url+'\/'+self.__spImgX+','+self.__spImgY+','+self.__spImgWidth+','+self.__spImgHeight+'\/'+self.__spImgWidth+',/0/default.jpg';     
-
     }
 
   } else {
@@ -332,14 +375,6 @@ function checkSize(imgColl, imagingHelper) {
   self.__spImgY = top_left[1];
   self.__spImgWidth = bottom_right[0]-top_left[0];
   self.__spImgHeight = bottom_right[1]-top_left[1];
-  // console.log('iX: '+self.__spImgX);
-  // console.log('iY: '+self.__spImgY);
-  // console.log('iW: '+self.__spImgWidth);
-  // console.log('iH: '+self.__spImgHeight);
-  
-  // console.log(top_left);
-  // console.log(bottom_right);
-  // console.log(imagingHelper._viewer.viewport.viewportToImageCoordinates(0,0));
 
   // Convert to screen coordinates
   let foo = convertCoordinates(imagingHelper, bound);
@@ -351,7 +386,6 @@ function checkSize(imgColl, imagingHelper) {
     x[1] *= PDR;
     return x;
   });
-  // console.log('bounds', newArray);
 
   const xCoord = Math.round(newArray[0][0]);
   const yCoord = Math.round(newArray[0][1]);
@@ -382,101 +416,135 @@ function runPredict(key) {
 
   // But first, some setup...
   const self = $UI.modelPanel;
+  let X = self.__spImgX,
+      Y = self.__spImgY,
+      totalSize = self.__spImgWidth,
+      step = parseInt(key.split('_')[1].split('-')[0]);
 
+  const prefix_url = ImgloaderMode == 'iip'?`../../img/IIP/raw/?IIIF=${$D.params.data.location}`:$CAMIC.slideId;
   self.showProgress("Predicting...");
 
   let fullResCvs = self.__fullsrc;
 
-  var imgData = fullResCvs.getContext('2d').getImageData(0,0,fullResCvs.width,fullResCvs.height);
-
   // Starting the transaction and opening the model store
   let tx = db.transaction("models_store", "readonly");
   let store = tx.objectStore("models_store");
-
   store.get(key).onsuccess = async function (e) {
     // Keras sorts the labels by alphabetical order.
     let classes = e.target.result.classes.sort();
 
     let input_shape = e.target.result.input_shape
+    // let input_channels = parseInt(input_shape[3]);
+    let input_channels = 3;
     let image_size = input_shape[1];
 
     model = await tf.loadLayersModel(IDB_URL + key);
     self.showProgress("Model loaded...");
 
-    // // Warmup the model before using real data.
-    // const warmupResult = model.predict(tf.zeros([1, image_size, image_size, 3]));
-    // warmupResult.dataSync();
-    // warmupResult.dispose();
-    // console.log("Model ready");
+    // Warmup the model before using real data.
+    const warmupResult = model.predict(tf.zeros([1, image_size, image_size, input_channels]));
+    warmupResult.dataSync();
+    warmupResult.dispose();
+    console.log("Model ready");
 
-    // TODO: Allow the users to decide below params.
-    const logits = tf.tidy(() => {
-    // tf.browser.fromPixels() returns a Tensor from an image element.
-      const img = tf.browser.fromPixels(imgData).toFloat();
-      const img2 = tf.image.resizeBilinear(img, [image_size, image_size])
+    let temp = document.querySelector('#dummy');
+    temp.height = step;
+    temp.width = step;
 
-      const offset = tf.scalar(127.5);
-      // Normalize the image from [0, 255] to [-1, 1].
-      const normalized = img2.sub(offset).div(offset);
-      // Reshape to a single-element batch so we can pass it to predict.
-      const batched = normalized.reshape(input_shape);
+    function addImageProcess(src){
+      return new Promise((resolve, reject) => {
+        let img = new Image()
+        img.onload = () => resolve(img)
+        img.onerror = reject
+        img.src = src
+      })
+    }
 
-      // Make a prediction through mobilenet.
-      return model.predict(batched);
+    let results = [];
+    csvContent = "data:text/csv;charset=utf-8,";
+    classes.forEach((e) => {
+      csvContent += e + ",";
     });
+    csvContent += "x,y\n\r";
+    self.showProgress("Predicting...");
 
-    // Retrieving the top class
-    const predictions = await getTopKClasses(logits, classes, 1);
+    for (let y = Y, dy = 0; y < (Y + totalSize); y+=(step)) {
+      let dx = 0
+      for (let x = X; x < (X + totalSize); x+=(step)) {
 
-    self.hideProgress();
+        let src = prefix_url+'\/'+x+','+y+','+step+','+step+'\/'+step+',/0/default.jpg';
 
-    // Show the classes in the DOM.
-    self.showResults(predictions[0].className + " - " + predictions[0].probability);
-    
+        let l_img = await addImageProcess(src);
+        fullResCvs.height = l_img.height;
+        fullResCvs.width = l_img.width;
+        fullResCvs.getContext('2d').drawImage(l_img, 0, 0);
+
+        let imgData = fullResCvs.getContext('2d').getImageData(0,0,fullResCvs.width,fullResCvs.height);
+
+        const img = tf.browser.fromPixels(imgData).toFloat();
+        let img2;
+        if (input_channels == 1) {
+          img2 = tf.image.resizeBilinear(img, [image_size, image_size]).mean(2);
+        } else {
+          img2 = tf.image.resizeBilinear(img, [image_size, image_size]);
+        }
+        let offset = tf.scalar(127.5);
+        let normalized = img2.sub(offset).div(offset);
+        let batched = normalized.reshape([1, image_size, image_size, input_channels]);
+        let values = await model.predict(batched).data();
+
+        values.forEach((e) => {
+          csvContent += e.toString() + ",";
+        })
+        csvContent += '' + dx + "," + dy + "\n\r";
+
+        results.push(values);
+        // Retrieving the top class
+
+        dx += step;
+      }
+      dy += step;
+    }
+
+    let len = results.length;
+    let final = new Array(results[0].length).fill(0);
+    for (let i = 0; i < results.length; i++) {
+      for (let j = 0; j < results[0].length; j++) {
+          final[j] += results[i][j]
+      }
+    }
+    for (let i = 0; i < final.length; i++) {
+      final[i] /= len;
+    }
+
+    i_max = Object.keys(final).reduce((a, b) => final[a] > final[b] ? a : b);
+    let i = parseInt(i_max) + 1;
+    self.showResults('' + i + ': ' + classes[i_max] + ' - ' + final[i_max].toFixed(3));
+    self.hideProgress()
+    model = null;
+    normalized = [];
+    batched = [];
+    values = [];
+    val = [];
+    imgData = null;
+    img = null;
   };
 }
 
-/**
- * Computes the probabilities of the topK classes given logits by computing
- * softmax to get probabilities and then sorting the probabilities.
- * @param logits Tensor representing the logits from MobileNet.
- * @param topK The number of top predictions to show.
- */
-async function getTopKClasses(logits, classes, topK) {
-  const values = await logits.data();
-  console.log(values);
 
-  const indexOfMaxValue = values.reduce((iMax, x, i, arr) => x > arr[iMax] ? i : iMax, 0);
-
-  const topClassesAndProbs = [];
-
-  topClassesAndProbs.push({
-      className: classes[indexOfMaxValue],
-      probability: values[indexOfMaxValue]
-  })
-
-  csvContent = "data:text/csv;charset=utf-8,"
-
-  try {
-    for (let i = 0; i < classes.length; i++) {
-      csvContent += classes[i] + "," + values[i] + "\r\n"
-    }
-  } catch { console.log("Unequal dimensions of output layer and class input."); }
-
-  return topClassesAndProbs;
-}
-
-// TO-DO: Allow uploading and using tensorflow graph models
+// TO-DO: Allow uploading and using tensorflow graph models. Can't save graph models. Need to use right away.
 function uploadModel() {
 
   var _name = document.querySelector('#name'),
       _classes = document.querySelector('#classes'),
+      mag = document.querySelector('#magnification'),
       _image_size = document.querySelector("#image_size"),
       topology = document.querySelector('#modelupload'),
       weights = document.querySelector('#weightsupload'),
       status = document.querySelector('#status'),
       toggle = document.querySelector('#togBtn'),
       url = document.querySelector("#url"),
+      refresh = document.querySelector("#refresh"),
       submit = document.querySelector("#submit");
 
   // Reset previous input
@@ -495,6 +563,9 @@ function uploadModel() {
 
   });
 
+  refresh.addEventListener('click', () => {
+    initUIcomponents();
+  });
 
   submit.addEventListener('click', async function (e) {
     e.preventDefault();
@@ -506,8 +577,9 @@ function uploadModel() {
       status.classList.remove('error');
       status.classList.add('blink');
 
+      let _channels = parseInt(document.querySelector('input[name="channels"]:checked').value);
       // Adding some extra digits in the end to maintain uniqueness
-      let name = 'pred_' + _name.value + (new Date().getTime().toString()).slice(-4, -1);
+      let name = 'pred_'  + _image_size.value.toString() + '-' + mag.value.toString() + '_' + _name.value + (new Date().getTime().toString()).slice(-4, -1);
       // Create an array from comma separated values of classes
       let classes = _classes.value.split(/\s*,\s*/);
 
@@ -527,12 +599,12 @@ function uploadModel() {
         store.get(name).onsuccess = function (e) {
           let data = e.target.result;
           data['classes'] = classes;
-          data['input_shape'] = [1, parseInt(_image_size.value), parseInt(_image_size.value), 3]
+          data['input_shape'] = [1, parseInt(_image_size.value), parseInt(_image_size.value), parseInt(_channels)]
 
           let req = store.put(data);
           req.onsuccess = function (e) {
             console.log("SUCCESS, ID:", e.target.result);
-            status.innerHTML = "Done!";
+            status.innerHTML = "Done! Click refresh below.";
             status.classList.remove('blink');
           }
           req.onerror = function (e) {
@@ -577,13 +649,12 @@ async function showInfo() {
           row = table.insertRow(),
           classes, input_shape, td;
 
-      console.log(name.slice(0, 4));
       if (name.slice(0, 4) == "pred") {
         store.get(name).onsuccess = function (e) {
           classes = (e.target.result.classes.join(', '));
           input_shape = e.target.result.input_shape.slice(1, 3).join("x");
           td = row.insertCell();
-          td.innerHTML = name.slice(5, -3);
+          td.innerHTML = name.split("/").pop().split('_').splice(2).join('_').slice(0, -3);
           td = row.insertCell();
           td.innerHTML = classes;
           td = row.insertCell();
@@ -699,44 +770,6 @@ function download(canvas, filename) {
   }
 }
 
-// Build a csv of the polygons and associated metadata
-// function buildAndDownloadCSV(contours,fname) {
-//   let data = '';
-//   let tmp = new cv.Mat();
-//   const self = $UI.modelPanel;
-//   const nl = '\n';
-//   const vpx = self.__top_left[0];
-//   const vpy = self.__top_left[1];
-//   const spx = self.__x;
-//   const spy = self.__y;
-
-//   console.log('In Download and Save CSV');
-//   data += 'AreaInPixels,PereimeterInPixels,Polygon\n';
-
-//   for (let i = 1; i < contours.size(); ++i) {
-//     let cnt = contours.get(i);
-//     // console.log(contours[i]);
-//     let area = cv.contourArea(cnt,false);
-//     let perimeter = cv.arcLength(cnt,true);
-//     if(area < self.__maxarea.value && area > self.__minarea.value) {
-//       data += area + ',' + perimeter + ',[';
-//       cv.approxPolyDP(cnt, tmp, 1, true);
-//       let carray = tmp.data32S;
-//       let asize = tmp.data32S.length;
-//       for(j = 0;j < asize-1;j+=2) {
-//         let imgX = carray[j]+vpx+spx;
-//         let imgY = carray[j+1]+vpy+spy;
-//         if(j<(asize-2)) {
-//           data += imgX + ':' + imgY + ':';
-//         } else {
-//           data += imgX + ':' + imgY + ']';
-//         }
-//       }
-//       data += nl;
-//     }
-//   }
-//   downloadCSV(data, fname);
-// }
 
 // Save the polygons to csv with filename.  Uses local save dialog.
 function downloadCSV(filename) {
@@ -745,10 +778,24 @@ function downloadCSV(filename) {
     filename = filename || 'export.csv';
     let data = encodeURI(csvContent);
 
-    link = document.createElement('a');
-    link.setAttribute('href', data);
-    link.setAttribute('download', filename);
-    link.click();
+    var lnk = document.createElement('a'),
+        e;
+    lnk.href = data;
+    lnk.download = filename;
+    /// create a "fake" click-event to trigger the download
+    if (document.createEvent) {
+
+        e = document.createEvent("MouseEvents");
+        e.initMouseEvent("click", true, true, window,
+                         0, 0, 0, 0, 0, false, false, false,
+                         false, 0, null);
+
+        lnk.dispatchEvent(e);
+
+    } else if (lnk.fireEvent) {
+
+        lnk.fireEvent("onclick");
+    }
   } else {
     self.showResults("Pleae select a model first");
   }

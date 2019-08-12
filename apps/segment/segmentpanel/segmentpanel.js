@@ -32,6 +32,7 @@ function SegmentPanel(viewer){
 		
 		<canvas class='out'></canvas>
 		<canvas id='mask' style='display: none;'></canvas>
+		<canvas id='dummy' style='display: none;'></canvas>
 		<canvas class='src'></canvas>
 		<canvas id='hemo' class='hiddenCanvas'></canvas>
 		<canvas id ='fullsrc' class='hiddenCanvas'></canvas>
