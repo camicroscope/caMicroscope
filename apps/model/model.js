@@ -161,6 +161,25 @@ async function initUIcomponents() {
     }
   });
 
+  let filterList = [
+    {
+      icon: "filter_1",
+      title: "Normalization",
+      value: "norm",
+      checked: true
+    },{
+      icon: "filter_2",
+      title: "Centering",
+      value: 'center',
+      checked: false
+    },{
+      icon: "filter_3",
+      title: "Standardization",
+      value: 'std',
+      checked: false
+    }
+  ];
+
   // create toolbar
   $UI.toolbar = new CaToolbar({
     id: 'ca_tools',
@@ -180,6 +199,12 @@ async function initUIcomponents() {
         dropdownList: dropDownList,
         title: 'Select Model',
         callback: setValue
+      },{
+        icon: 'photo_filter',
+        type: 'dropdown',
+        dropdownList: filterList,
+        title: 'Pixel Scaling',
+        callback: setFilter
       },{
         icon: 'insert_photo',
         type: 'btn',
@@ -288,6 +313,10 @@ function setValue(args) {
   $UI.args = args;
 }
 
+function setFilter(filter) {
+  $UI.filter = filter;
+}
+
 /**
  * Toolbar button callback
  * @param e
@@ -311,7 +340,7 @@ function drawRectangle(e) {
     let current_zoom = parseInt($CAMIC.viewer.imagingHelper._zoomFactor * 40);
     required_zoom = $UI.args? parseInt($UI.args.status.split('_')[1].split('-')[1]):current_zoom;
     if (current_zoom != required_zoom) {
-      alert('You are testing the model for a different zoom level. Performance might be affected.');
+      alert(`You are testing the model for a different zoom level (recommended: ${required_zoom}). Performance might be affected.`);
     }
     document.querySelector(".drop_down").classList.add('disabled');
     canvasDraw.drawOn();
@@ -488,8 +517,32 @@ function runPredict(key) {
         } else {
           img2 = tf.image.resizeBilinear(img, [image_size, image_size]);
         }
-        let offset = tf.scalar(127.5);
-        let normalized = img2.sub(offset).div(offset);
+        let scaleMethod = $UI.filter? $UI.filter.status: 'norm';
+        console.log(scaleMethod);
+
+        let normalized;
+        if (scaleMethod == 'norm') {
+          // Pixel Normalization: scale pixel values to the range 0-1.
+
+          let scale = tf.scalar(255);
+          normalized = img2.div(scale);
+
+        } else if (scaleMethod == 'center') {
+          // Pixel Centering: scale pixel values to have a zero mean.
+
+          let mean = img2.mean();
+          normalized = img2.sub(mean);
+          // normalized.mean().print(true); // Uncomment to check mean value.
+          // let min = img2.min();
+          // let max = img2.max();
+          // let normalized = img2.sub(min).div(max.sub(min));
+        } else {
+          // Pixel Standardization: scale pixel values to have a zero mean and unit variance.
+         
+          let mean = img2.mean();
+          let std = (img2.squaredDifference(mean).sum()).div(img2.flatten().shape).sqrt();
+          normalized = img2.sub(mean).div(std);
+        }    
         let batched = normalized.reshape([1, image_size, image_size, input_channels]);
         let values = await model.predict(batched).data();
 
@@ -521,13 +574,7 @@ function runPredict(key) {
     let i = parseInt(i_max) + 1;
     self.showResults('' + i + ': ' + classes[i_max] + ' - ' + final[i_max].toFixed(3));
     self.hideProgress()
-    model = null;
-    normalized = [];
-    batched = [];
-    values = [];
-    val = [];
-    imgData = null;
-    img = null;
+    model.dispose()
   };
 }
 

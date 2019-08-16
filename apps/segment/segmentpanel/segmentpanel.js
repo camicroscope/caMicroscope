@@ -11,7 +11,7 @@ function SegmentPanel(viewer){
 		<div id='mask_vis' class='material-icons settings' title='Toggle Mask'>visibility</div>
 
     <div id='owrap' class='segment-setting settings' style="display: none;">
-      <label for="threshold">Opacity</label><input type='range' id='opacity' min='0' max='1' step='0.01' value='0.6'><label id='olabel'>0.6</label>
+      <label for="opacity">Opacity</label><input type='range' id='opacity' min='0' max='1' step='0.01' value='0.6'><label id='olabel'>0.6</label>
     </div>
     
     <div id='twrap' class='segment-setting settings' style="display: none;">
