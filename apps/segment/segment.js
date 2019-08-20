@@ -419,8 +419,8 @@ function drawRectangle(e) {
 
   if (e.checked) {
     // Warn about zoom level
-    let current_zoom = parseInt($CAMIC.viewer.imagingHelper._zoomFactor * 40);
-    required_zoom = $UI.args&&$UI.args.status!="watershed"? parseInt($UI.args.status.split('_')[0].split('-')[2]):current_zoom;
+    let current_zoom = Math.round($CAMIC.viewer.imagingHelper._zoomFactor * 40);
+    required_zoom = $UI.args && $UI.args.status!="watershed"? parseInt($UI.args.status.split('_')[0].split('-')[2]):current_zoom;
     if (current_zoom != required_zoom) {
       alert(`You are testing the model for a different zoom level (recommended: ${required_zoom}). Performance might be affected.`);
     }
