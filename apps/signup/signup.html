@@ -92,6 +92,10 @@
     input_name.addEventListener('focus',()=>{
       input_name.classList.add('focus');
     });
+    const input_name = document.querySelector('#collections');
+    input_name.addEventListener('focus',()=>{
+      input_name.classList.add('focus');
+    });
     input_name.addEventListener('blur',()=>{
       if(input_name.value=="") input_name.classList.remove('focus');
     });
