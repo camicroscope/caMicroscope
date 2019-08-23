@@ -24,7 +24,7 @@
     if (attr == "editor"){
       attr_doc = ["write"]
     }
-    var doc = {name: email, attrs: attr_doc, :collections}
+    var doc = {name: email, attrs: attr_doc, accessCollection:collections}
     fetch(userSignupUrl, {
         method: 'POST',
         mode: 'cors', // no-cors, cors, *same-origin
