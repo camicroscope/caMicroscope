@@ -64,7 +64,8 @@ function onSignIn(googleUser) {
         document.cookie = cookie_name + "=" + x.token;
         window.location = state
       } else {
-        window.alert("no!")
+        window.alert("User not added")
+        window.location = "./apps/signup/signup"
       }
 
     })
