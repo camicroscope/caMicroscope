@@ -337,7 +337,7 @@ function drawRectangle(e) {
 
   if (e.checked) {
     // Warn about zoom level
-    let current_zoom = parseInt($CAMIC.viewer.imagingHelper._zoomFactor * 40);
+    let current_zoom = Math.round($CAMIC.viewer.imagingHelper._zoomFactor * 40);
     required_zoom = $UI.args? parseInt($UI.args.status.split('_')[1].split('-')[1]):current_zoom;
     if (current_zoom != required_zoom) {
       alert(`You are testing the model for a different zoom level (recommended: ${required_zoom}). Performance might be affected.`);
@@ -637,6 +637,16 @@ function uploadModel() {
 
         // This also ensures that valid model is uploaded.
         const model = await tf.loadLayersModel(modelInput);
+        try {
+          const result = model.predict(tf.ones([1, parseInt(_image_size.value), parseInt(_image_size.value), parseInt(_channels)]))
+          result.dispose();
+        } catch (e) {
+            status.innerHTML = "Model failed on the given values of patch size. Please input values on which the model was trained.";
+            console.log(e);
+            status.classList.remove('blink');
+            return
+        }
+        
         await model.save(IDB_URL + name);
 
         // Update the model store db entry to have the classes array
