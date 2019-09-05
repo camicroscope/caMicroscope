@@ -22,7 +22,7 @@ body {
 
 /* osd main viewer */
 #main_viewer.main {
-    position: absolute;
+    position: fixed;
     top:0;
     left:0;
     width: 100%;
