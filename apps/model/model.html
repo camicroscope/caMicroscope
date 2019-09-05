@@ -5,7 +5,7 @@
   <meta name="keywords" content="camicroscope, quip"/>
   <meta charset='utf-8'>
   <meta http-equiv='X-UA-Compatible' content='IE=edge'>
-  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no'>
 
   <title>caMicroscope</title>
   <!-- google material icons css sheet -->
@@ -255,8 +255,7 @@
 
     .slider:after
     {
-     content:'Upload from the computer';
-     display: block;
+     content:'Upload';
      position: absolute;
      transform: translate(-50%,-50%);
      top: 50%;
@@ -267,12 +266,158 @@
 
     input:checked + .slider:after
     {  
-      content:'Link a hosted model';
+      content:'Link';
       left: 35%;
     }
 
     .checktrue {
       display: none;
+    }
+
+    input[type="radio"] {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+
+    input[type='radio']:checked, input[type='checkbox']:checked {
+      background: #365F9C;
+    }
+
+    input[type="checkbox"] {
+      width: 12px;
+      height: 12px;
+    }
+
+    ul.disabled {
+      pointer-events: none;
+
+      /* for "disabled" effect */
+      opacity: 0.5;
+      background: #CCC;
+    }
+
+    input[type="radio"] {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      box-sizing: border-box;
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      /*display: inline;*/
+      /*outline: none;*/
+      /*border: none;*/
+      /*height: 25px;*/
+      line-height: 25px;
+      font-size: 16px;
+      padding: 5px ;
+    }
+    input[type='radio']:checked {
+      background: #365F9C;
+    }
+
+
+    ul.disabled {
+      pointer-events: none;
+
+      /* for "disabled" effect */
+      opacity: 0.5;
+      background: #CCC;
+    }
+
+    .form-style{
+      color: #464544;
+      font-size: 14px;
+      max-width:400px;
+      margin:10px auto;
+      background:#fff;
+      border-radius:2px;
+      padding:10px;
+      /*font-family: Georgia, "Times New Roman", Times, serif;*/
+    }
+    .form-style #mg{
+      margin-top: 20px;
+      text-align: center;
+    }
+    .form-style ul{
+      list-style:none;
+      padding:0;
+      margin:0; 
+    }
+    .form-style li{
+      display: block;
+      padding: 5px;
+      border:1px solid #DDDDDD;
+      margin-bottom: 20px;
+      border-radius: 3px;
+    }
+    .form-style li:last-child{
+      border:none;
+      margin-bottom: 0px;
+      text-align: center;
+    }
+    .form-style li > label{
+      display: block;
+      float: left;
+      margin-top: -19px;
+      background: #FFFFFF;
+      height: 14px;
+      padding: 2px 5px 2px 5px;
+      color: #464544;
+      font-size: 14px;
+      overflow: hidden;
+      /*font-family: Arial, Helvetica, sans-serif;*/
+    }
+    .form-style input[type="text"],
+    .form-style input[type="date"],
+    .form-style input[type="datetime"],
+    .form-style input[type="number"],
+    .form-style input[type="url"],
+    .form-style textarea,
+    .form-style select 
+    {
+      box-sizing: border-box;
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      width: 100%;
+      display: block;
+      outline: none;
+      border: none;
+      height: 25px;
+      line-height: 25px;
+      font-size: 16px;
+      padding: 0;
+      /*font-family: Georgia, "Times New Roman", Times, serif;*/
+    }
+    .form-style li > span{
+      background: #F3F3F3;
+      display: block;
+      padding: 3px;
+      margin: 0 -9px -9px -9px;
+      text-align: center;
+      color: rgb(104, 94, 94);
+      /*font-family: Arial, Helvetica, sans-serif;*/
+      font-size: 11px;
+    }
+    .form-style textarea{
+      resize:none;
+    }
+    .form-style input[type="submit"],
+    .form-style input[type="button"]{
+      background: #2147FF;
+      border: none;
+      padding: 10px 20px 10px 20px;
+      border-bottom: 3px solid #5994FF;
+      border-radius: 3px;
+      color: #D2E2FF;
+    }
+    .form-style input[type="submit"]:hover,
+    .form-style input[type="button"]:hover{
+      background: #6B9FFF;
+      color:#fff;
+    }
+    #upload_panel .modalbox-content{
+      width: 30%;
     }
 
   </style>
