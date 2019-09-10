@@ -34,13 +34,14 @@
   left: 40px;
 }
 
-#modelselect {
+#result {
   position: absolute;
   top: -22px;
-  left: 60px;
-  height: 21px;
-  width: 190px;
+  left: 61px;
+  height: 19px;
+  width: 170px;
   font-size: 11px;
+  text-align: center;
 }
 
 #amin {
@@ -76,7 +77,7 @@
   top: -83px;
 }
 
-.segment-panel .result {
+/*.segment-panel .result {
   font-size: 11px;
   text-align: center;
   vertical-align: middle;
@@ -92,7 +93,7 @@
   border: 1px solid black;
   border-width: 1px 1px 0px 1px;
 }
-
+*/
 .segment-panel .segment-processing {
   display: none;
   font-size: 11px;

@@ -20,7 +20,6 @@ function PathDbMods() {
     // default dislpay name
     x.name = pathdbid
     x["_id"] = {"$oid": pathdbid}
-    x.location = data.field_iip_path[0].value
     if (data.field_mpp_y && data.field_mpp_y.length >= 1) {
       this.mpp_y = data.field_mpp_y[0].value
       this.mpp = this.mpp_y

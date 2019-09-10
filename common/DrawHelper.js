@@ -17,10 +17,12 @@ caDrawHelper.prototype.forRect = function(start,end){
     return [x,y,width,height];
 }
 
-caDrawHelper.prototype.forSquare = function(start,end){
+caDrawHelper.prototype.forSquare = function(start,end,size=null){
+    
     let dx = Math.abs(start[0] - end[0]);
     let dy = Math.abs(start[1] - end[1]);
-    let length = Math.max(dx,dy); // Math.max(dx,dy);
+    let length = Math.max(dx,dy);
+    if (size) length -= (length % size);
     let x = start[0] < end[0] ? start[0]:start[0] - length;
     let y = start[1] < end[1] ? start[1]:start[1] - length;
     return [x,y,length,length];
@@ -38,14 +40,14 @@ caDrawHelper.prototype.forSquare = function(start,end){
  *         draw as a square
  * @return {Object}  the data that has all points and Path2D that are used to describe the rectangle and the Path
  */
-caDrawHelper.prototype.drawRectangle = function(ctx, start, end, isSquare = false){
+caDrawHelper.prototype.drawRectangle = function(ctx, start, end, isSquare = false, size = null){
     // draw rect
     
     // create a new path
     const path = new Path();
 
     // starting draw rectangle
-    let [x, y, width, height] = isSquare?this.forSquare(start,end):this.forRect(start,end);
+    let [x, y, width, height] = isSquare?this.forSquare(start,end,size):this.forRect(start,end);
     path.rect(x, y, width, height);
     
     // close path and set style

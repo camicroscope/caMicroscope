@@ -1,0 +1,130 @@
+/* signup.css */
+
+body {
+	color: #fff;
+	background: url(bg_img.jpg);
+	background-size: cover;
+	font-family: sans-serif;
+}
+* {
+	box-sizing: border-box;
+	text-decoration: none;
+
+}
+
+.login-panel {
+	width: 320px;
+	/*height: 420px;*/
+	background: rgba(0, 0, 0, 0.5); 
+	top: 50%;
+	left: 50%;
+	position: absolute;
+	transform: translate(-50%, -50%);
+	border-radius: 15px;
+	padding:0 35px;
+}
+.login-panel h1 {
+	text-align: center;
+	margin: 35px auto;
+	background: linear-gradient(120deg,#8e44ad, #3498db);
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+}
+
+.txtb {
+	border-bottom: 2px solid #fff;
+	position: relative;
+	margin: 30px 0 0 0;
+}
+
+
+
+.txtb input[type=text] {
+	font-size: 15px;
+	color: #fff;
+	border: none;
+	width: 100%;
+	outline: none;
+	background: none;
+	padding: 0 5px;
+	height: 40px;
+}
+
+.txtb span::before {
+	content: attr(data-placeholder);
+	position: absolute;
+	top: 50%;
+	left: 5px;
+	color: #fff;
+	transform: translateY(-50%);
+	z-index: -1;
+	transition: .5s;
+}
+
+.txtb span::after {
+	content: '';
+	position: absolute;
+	width: 0%;
+	height: 2px;
+	background: linear-gradient(120deg, #3498db, #8e44ad);
+	transition: .5s;
+}
+
+.txtb input.focus + span::before {
+	top: -5px;
+	color: #3498db;
+}
+
+.txtb input.focus + span::after {
+	width: 100%;
+}
+
+.radb {
+	position: relative;
+	margin-bottom: 30px;
+}
+
+.radb input[type=radio] {
+	margin: 15px 10px 0 50px;
+	transition: .5s;
+}
+.radb input[type=radio]:checked+label {
+	color: #8e44ad;
+	font-weight: bold;
+}
+
+
+
+.sub-btn {
+	border-radius: 25px;
+	display: block;
+	width: 100%;
+	height: 35px;
+	border: none;
+	background: linear-gradient(120deg,rgba(52, 152, 219,.8), #8e44ad,rgba(52, 152, 219,.8));
+	background-size: 200%;
+	color: #fff;
+	outline: none;
+	cursor: pointer;
+	transition: .5s;
+}
+
+
+
+.sub-btn:hover {
+	background-position: right; 
+}
+
+.login-tips {
+	padding: 10px;
+	color: #8e44ad;
+	font-weight: bold;
+	margin: 35px 0;
+	border-radius: 15px;
+	background: rgba(200, 214, 229,0.7);
+/*	width: 100px;
+	height: 100px;
+	position: absolute;
+	top:-50px;
+	left: calc(50% - 50px);*/
+}
