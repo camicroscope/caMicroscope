@@ -74,7 +74,8 @@
         this.isDrawing = false;
         this.size = [];
         // create supplies free, square, rectangle, line
-        this.drawMode = options.drawMode || 'free'; // 'free', 'square', 'rect', 'line'
+        this.drawMode = options.drawMode || 'free'; // 'free', 'square', 'rect', 'line', 'stepSquare'
+        this.size = options.size || null;
         // ctx styles opt
         this.style = {
             color:'#7CFC00',
@@ -163,6 +164,7 @@
 
             // creat supplies free, square, rectangle, line
             this.drawMode = options.drawMode || 'rect'; // 'free', 'square', 'rect', 'line', 'grid'            
+            this.size = options.size || null;
             // ctx styles opt
             this.style = {
                 color:'#7CFC00',
@@ -473,6 +475,16 @@
                 this.drawOnCanvas(this._draw_ctx_,function(){
                     DrawHelper.setStyle(this._draw_ctx_,this.style);
                     const item = DrawHelper.drawRectangle(this._draw_ctx_,this._last,[img_point.x,img_point.y]);
+                    this._current_path_.geometry.path = item.path;
+                    this._current_path_.geometry.coordinates[0] = item.points;
+                }.bind(this));
+                break;
+              case 'stepSquare':
+                // draw squares at steps
+                DrawHelper.clearCanvas(this._draw_);
+                this.drawOnCanvas(this._draw_ctx_,function(){
+                    DrawHelper.setStyle(this._draw_ctx_,this.style);
+                    const item = DrawHelper.drawRectangle(this._draw_ctx_,this._last,[img_point.x,img_point.y], true, this.size);
                     this._current_path_.geometry.path = item.path;
                     this._current_path_.geometry.coordinates[0] = item.points;
                 }.bind(this));
