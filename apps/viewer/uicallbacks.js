@@ -426,7 +426,7 @@ function anno_delete(data){
 	}
 	$UI.annotPopup.close();
 	if(!confirm(message)) return;
-	$CAMIC.store.deleteMark(data.oid,$D.params.data.name)
+	$CAMIC.store.deleteMark(data.oid,$D.params.data.slide)
 	.then(datas =>{
 		// server error
 		if(datas.error){
