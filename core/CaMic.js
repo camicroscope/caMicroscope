@@ -80,7 +80,17 @@ class CaMic{
 
         var pt = new OpenSeadragon.Point(x, y); // x, y should in the image coordinate system
         pt = this.viewer.viewport.imageToViewportCoordinates(pt);
-        this.viewer.viewport.zoomTo(states.z, pt);
+        
+        // is Image Zoom
+        if(states.isIZ){
+          this.viewer.viewport.zoomTo(
+            this.viewer.viewport.imageToViewportZoom(states.z)
+            ,pt,true);
+        }else{
+          // view port zoom
+          this.viewer.viewport.zoomTo(states.z, pt);
+        }
+        
         this.viewer.viewport.panTo(pt, true);
 
         //set a position mark
@@ -90,18 +100,18 @@ class CaMic{
           const mark = document.createElement('div');
           mark.style.transform = 'translate3d(-50%, -50%, 0)';
           mark.style.display = 'flex';
-          mark.style.width = '20px';
-          mark.style.height = '20px';
-          mark.style.border = '2px red solid';
+          mark.style.width = '200px';
+          mark.style.height = '200px';
+          mark.style.border = '3px yellow solid';
           mark.style.alignItems = 'center';
-          mark.style.borderRadius='50%';
+          //mark.style.borderRadius='50%';
           mark.style.textAlign = 'center';
           const center = document.createElement('div');
-          center.style.borderRadius = '50%';
+          //center.style.borderRadius = '50%';
           center.style.margin = '0 auto';
           center.style.width = '4px';
           center.style.height = '4px';
-          center.style.backgroundColor = 'red';
+          center.style.backgroundColor = 'yellow';
           mark.appendChild(center);
           div.appendChild(mark);
           this.viewer.addOverlay({
