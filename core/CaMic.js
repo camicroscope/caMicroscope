@@ -102,7 +102,7 @@ class CaMic{
           mark.style.display = 'flex';
           mark.style.width = '200px';
           mark.style.height = '200px';
-          mark.style.border = '2px yellow solid';
+          mark.style.border = '3px yellow solid';
           mark.style.alignItems = 'center';
           //mark.style.borderRadius='50%';
           mark.style.textAlign = 'center';
