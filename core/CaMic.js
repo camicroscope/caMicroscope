@@ -80,7 +80,17 @@ class CaMic{
 
         var pt = new OpenSeadragon.Point(x, y); // x, y should in the image coordinate system
         pt = this.viewer.viewport.imageToViewportCoordinates(pt);
-        this.viewer.viewport.zoomTo(states.z, pt);
+        
+        // is Image Zoom
+        if(states.isIZ){
+          this.viewer.viewport.zoomTo(
+            this.viewer.viewport.imageToViewportZoom(states.z)
+            ,pt,true);
+        }else{
+          // view port zoom
+          this.viewer.viewport.zoomTo(states.z, pt);
+        }
+        
         this.viewer.viewport.panTo(pt, true);
 
         //set a position mark
