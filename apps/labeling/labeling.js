@@ -1,46 +1,46 @@
 const selection = [
   {
-    text: "Tumor",
-    color: "#FF0000",
+    text: "Intra-Tumoral Stroma",
+    color: "#00FF00", // green
     size: 1024,
     count: 3,
     num: 0
   },
   {
-    text: "Tumor Invasive Margin Or Edge", //text:'Tumor-Stroma Transition',
-    color: "#000000",
+    text: "Tumor with No Intervening Stroma", //text:'Tumor-Stroma Transition',
+    color: "#FF0000", // red
     size: 1024,
-    count: 3,
+    count: 2,
     num: 0
   },
   {
-    text: "Distant Stroma",
-    color: "#FFC0CB",
+    text: "Invasive Margin",
+    color: "#FF00FF", // Magenta
     size: 1024,
-    count: 1,
+    count: 2,
     num: 0
   },
   {
-    text: "Tumor-Associated Stroma With Hyalinization", //text:'Tumor Associated Stroma With Mild Hyalinization',
-    color: "#FF1493",
+    text: "Other Regions", //text:'Tumor Associated Stroma With Mild Hyalinization',
+    color: "#0000FF", // Blue
     size: 1024,
-    count: 1,
-    num: 0
-  },
-  {
-    text: "Tumor-Associated Stroma", // text:'Intra-tumoral Stroma with TILs'
-    color: "#0000FF",
-    size: 1024,
-    count: 3,
-    num: 0
-  },
-  {
-    text: "Miscellaneous Regions",
-    color: "#00FF00",
-    size: 1024,
-    count: 3,
+    count: 4,
     num: 0
   }
+  // ,{
+  //   text: "Tumor-Associated Stroma", // text:'Intra-tumoral Stroma with TILs'
+  //   color: "#0000FF",
+  //   size: 1024,
+  //   count: 3,
+  //   num: 0
+  // },
+  // {
+  //   text: "Miscellaneous Regions",
+  //   color: "#00FF00",
+  //   size: 1024,
+  //   count: 3,
+  //   num: 0
+  // }
   // ,
   // {
   //   text:'sROI',
@@ -560,7 +560,7 @@ function createLabelList() {
   const header = `
   <div style='display:table-row; font-weight:bold;'>
       <div style='text-align: initial; display: table-cell; padding: 5px;'>Label Type</div>
-      <div style='display: table-cell; padding: 5px;'>Required Label#</div>
+      <div style='display: table-cell; padding: 5px;'>Suggested Label#</div>
       <div style='display: table-cell; padding: 5px;'>Current Label#</div> 
       <div style='display: table-cell; padding: 5px;'></div>    
   </div>`;
@@ -638,7 +638,6 @@ async function saveLabelings(e) {
   // get all labels
   await asyncForEach(ROIS, async roi => {
     const { ROI, subROIs } = generateROIandSubROI(roi);
-    console.log(ROI, subROIs);
     await saves(ROI, subROIs);
   });
   Loading.close();
