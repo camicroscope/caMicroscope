@@ -261,7 +261,20 @@
     ) {
       options.color = this.color = this.manager.selection[this.selIdx].color;
       options.data = this.data = this.manager.selection[this.selIdx].text;
-      const size = this.manager.selection[this.selIdx].size;
+    
+    var size;
+    if(this.viewer.mpp ||this.viewer.mpp_x ||this.viewer.mpp_y ){
+        const mpp = this.viewer.mpp || this.viewer.mpp_x || this.viewer.mpp_y;
+        size = 500/getMPP(mpp)
+    }else{
+        size = this.manager.selection[this.selIdx].size;
+    }
+    //   0.1  -> 10X 0.175
+    //   0.25 -> 20X
+    //   0.5  -> 40X 0.375
+      
+
+      
       const {
         x,
         y,
@@ -346,13 +359,20 @@
           const ctrl = element.querySelector(".controls");
           if (ctrl) ctrl.style.borderColor = color;
           // resize
+          var size = item.size;
+          if(this.viewer.mpp ||this.viewer.mpp_x ||this.viewer.mpp_y ){
+              const mpp = this.viewer.mpp || this.viewer.mpp_x || this.viewer.mpp_y;
+              size = 500/getMPP(mpp)
+          }else{
+              size = this.manager.selection[this.selIdx].size;
+          }
           const {
             x,
             y,
             width,
             height
           } = this.viewer.viewport.imageToViewportRectangle(
-            new OpenSeadragon.Rect(0, 0, item.size, item.size)
+            new OpenSeadragon.Rect(0, 0, size, size)
           );
           this.overlay.width = width;
           this.overlay.height = height;
@@ -952,15 +972,28 @@
 
     return true;
   }
-
+  function getMPP(mpp){
+    if(mpp < 0.175){
+        return 0.1; //10X
+    }else if(mpp < 0.375){
+        return 0.25; // 20X
+    }else{
+        return 0.5; //40X
+    }
+  }
   function createSubROI(parentPatch, center) {
+    var size = 256;
+    if(parentPatch.viewer.mpp ||parentPatch.viewer.mpp_x ||parentPatch.viewer.mpp_y ){
+        const mpp = parentPatch.viewer.mpp || parentPatch.viewer.mpp_x || parentPatch.viewer.mpp_y;
+        size = 125/getMPP(mpp)
+    }    
     const {
       x,
       y,
       width,
       height
     } = parentPatch.viewer.viewport.imageToViewportRectangle(
-      new OpenSeadragon.Rect(0, 0, 256, 256)
+      new OpenSeadragon.Rect(0, 0, size, size)
     );
     const patch = new $.Patch({
       isPoint: false,
