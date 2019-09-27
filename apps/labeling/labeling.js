@@ -586,16 +586,18 @@ function createLabelList() {
   const isPassed = true; // checkSelection();
   const footer = $UI.modalbox.elt.querySelector(".modalbox-footer");
   footer.innerHTML = `
-  <div style='display:flex;wdith:100%;justify-content: space-between;'>
+  <div style='display:flex;wdith:100%;justify-content: flex-end;'>
     <div style='font-size: 1.5rem; padding: 5px; margin: 5px;font-weight:bold;color:#FF0000;'>
     ${isPassed ? "" : "Please Match The Required Number For Each Label Type!"}
     </div>
-
-    <button ${isPassed ? "" : "disabled"}>Save</button>
+    <button ${isPassed ? "" : "disabled"} class="continue" style="margin-left:10px;">Continue</button>
+    <button ${isPassed ? "" : "disabled"} class="save" style="margin-left:10px;">Save&Exit</button>
   </div>`;
   $UI.modalbox.open();
-  const btn = $UI.modalbox.elt.querySelector(".modalbox-footer button");
-  btn.addEventListener("click", saveLabelings);
+  const continue_btn = $UI.modalbox.elt.querySelector(".modalbox-footer button.continue");
+  const save_btn = $UI.modalbox.elt.querySelector(".modalbox-footer button.save");
+  continue_btn.addEventListener("click", ()=>{$UI.modalbox.close()});
+  save_btn.addEventListener("click", saveLabelings);
 }
 
 function checkSelection() {
