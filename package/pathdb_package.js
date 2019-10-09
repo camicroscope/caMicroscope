@@ -30,11 +30,11 @@ function PathDbMods() {
     }
     if (data.referencepixelphysicalvaluey && data.referencepixelphysicalvaluey.length >=1){
       x.mpp_y = data.referencepixelphysicalvaluey[0].value
-      x.mpp = this.mpp_y
+      x.mpp = x.mpp_y
     }
     if (data.referencepixelphysicalvaluex && data.referencepixelphysicalvaluex.length >=1){
       x.mpp_x = data.referencepixelphysicalvaluex[0].value
-      x.mpp = this.mpp_x
+      x.mpp = x.mpp_x
     }
     if (data.field_iip_path && data.field_iip_path.length >= 1) {
       x.location = data.field_iip_path[0].value
