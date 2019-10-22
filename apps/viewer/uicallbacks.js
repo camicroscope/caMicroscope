@@ -5,6 +5,8 @@
 function toggleViewerMode(opt){
 	const canvasDraw = $CAMIC.viewer.canvasDrawInstance;
 	if(opt.checked){
+		// turn off preset label
+		presetLabelOff();
 		// turn off drawing
 		annotationOff();
 		// turn off magnifier
@@ -232,7 +234,8 @@ function draw(e){
 		magnifierOff();
 		// off measurement
 		measurementOff();
-
+		// off preset label
+		presetLabelOff();
 		annotationOn.call(this,state,target);
 	}else{ // off
 		annotationOff();
@@ -241,6 +244,53 @@ function draw(e){
 
 
 	}
+}
+function drawLabel(e) {
+	if(!$CAMIC.viewer.canvasDrawInstance){
+		alert('Draw Doesn\'t Initialize');
+		return;
+	}
+
+	if(e.checked){ // turn on preset label
+		// off magnifier
+		magnifierOff();
+		// off measurement
+		measurementOff();
+		// turn off annotation
+		annotationOff();
+		presetLabelOn.call(this,e.status)
+
+	}else{
+		// off preset label
+		presetLabelOff();
+	}
+  }
+
+function presetLabelOn(label){
+	if(!$CAMIC.viewer.canvasDrawInstance) return;
+	const canvasDraw = $CAMIC.viewer.canvasDrawInstance;
+	canvasDraw.drawMode = "free";
+	canvasDraw.style.color = PEN_CONFIG[label].color;
+	canvasDraw.drawOn();
+	$UI.toolbar.getSubTool('preset_label').querySelector('label').style.color = PEN_CONFIG[label].color;
+	//close layers menu
+	$UI.layersSideMenu.close();
+}
+function presetLabelOff(){
+	if(!$CAMIC.viewer.canvasDrawInstance) return;
+	const canvasDraw = $CAMIC.viewer.canvasDrawInstance;
+
+	if(canvasDraw._draws_data_.length && confirm(`Do You Want To Save Annotation Label Before You Leave?`)){
+		savePresetLabel();
+	}else{
+		canvasDraw.clear();
+		canvasDraw.drawOff();
+		$UI.appsSideMenu.close();
+		$UI.toolbar.getSubTool('preset_label').querySelector('input[type=checkbox]').checked = false;
+		$UI.toolbar.getSubTool('preset_label').querySelector('label').style.color = "";
+
+	}
+	
 }
 
 
@@ -321,6 +371,8 @@ function toggleMeasurement(data){
 		$UI.layersSideMenu.close();
 		// turn off annotation
 		annotationOff();
+		// turn off preset label
+		presetLabelOff();
 		// turn off magnifier
 		magnifierOff();
 
@@ -353,6 +405,8 @@ function toggleMagnifier(data){
 		$UI.appsSideMenu.close();
 		// annotation off
 		annotationOff();
+		// turn off preset label
+		presetLabelOff();
 		// measurement off
 		measurementOff();
 	}else{
@@ -507,6 +561,90 @@ function reset_callback(data){
 	$CAMIC.viewer.canvasDrawInstance.clear();
 }
 
+function savePresetLabel(){
+
+
+	if($CAMIC.viewer.canvasDrawInstance._path_index===0){
+		alert('No Markup On Annotation.');
+		return;
+	}
+	// save
+	const type = $UI.toolbar.getSubTool('preset_label').querySelector("input[type=radio]:checked").value;
+	const exec_id = type+randomId();
+	const noteData = {
+		name:exec_id,
+		notes:PEN_CONFIG[type].note,
+	};
+	
+
+	const annotJson = {
+		provenance:{
+			image:{
+				slide:$D.params.slideId
+			},
+			analysis:{
+				source:'human',
+				execution_id:exec_id,
+				name:noteData.name,
+				type:"label"
+			}
+		},
+		properties:{
+			annotations:noteData
+		},
+		geometries:ImageFeaturesToVieweportFeatures($CAMIC.viewer, $CAMIC.viewer.canvasDrawInstance.getImageFeatureCollection())
+	}
+
+	$CAMIC.store.addMark(annotJson)
+	.then(data=>{
+
+		// server error
+		if(data.error){
+			$UI.message.addWarning(`${data.text}:${data.url}`);
+			Loading.close();
+			return;
+		}
+
+		// no data added
+		if(data.count < 1){
+			Loading.close();
+			$UI.message.addWarning(`Annotation Save Failed`);
+			return;
+		}
+		// create layer data
+		const new_item = {id: exec_id, name: noteData.name, typeId: typeIds['human'], typeName: 'human', data: null};
+		$D.overlayers.push(new_item);
+		$UI.layersViewer.addItem(new_item);
+		$UI.layersViewerMinor.addItem(new_item,($minorCAMIC&&$minorCAMIC.viewer)?true:false);
+
+		//console.log($D.overlayers);
+		// data for UI
+		//return;
+		loadAnnotationById($CAMIC,$UI.layersViewer.getDataItemById(exec_id),saveLabelAnnotCallback);
+		if($minorCAMIC&&$minorCAMIC.viewer) loadAnnotationById($minorCAMIC, $UI.layersViewerMinor.getDataItemById(exec_id),null);
+	})
+	.catch(e=>{
+		Loading.close();
+		console.log('save failed');
+		console.log(e);
+	})
+	.finally(()=>{
+
+	});
+}
+function saveLabelAnnotCallback(){
+	/* reset as default */
+	// clear draw data and UI
+	//$CAMIC.viewer.canvasDrawInstance.drawOff();
+	$CAMIC.drawContextmenu.off();
+	$CAMIC.viewer.canvasDrawInstance.clear();
+	// close app side
+	$UI.toolbar._main_tools[0].querySelector('[type=checkbox]').checked = false;
+	$UI.appsSideMenu.close();
+	$UI.toolbar._main_tools[1].querySelector('[type=checkbox]').checked = true;
+	$UI.layersSideMenu.open();
+	$UI.layersViewer.update();
+}
 function anno_callback(data){
 	// is form ok?
 	const noteData = $UI.annotOptPanel._form_.value;
@@ -554,8 +692,7 @@ function anno_callback(data){
 		},
 		geometries:ImageFeaturesToVieweportFeatures($CAMIC.viewer, $CAMIC.viewer.canvasDrawInstance.getImageFeatureCollection())
 	}
-
-	//return;
+	
 	$CAMIC.store.addMark(annotJson)
 	.then(data=>{
 
@@ -868,7 +1005,6 @@ function algoRun(){
 }
 
 function saveAnnotation(){
-
 	anno_callback.call(null,{id:$UI.annotOptPanel.setting.formSchemas[$UI.annotOptPanel._select_.value].id, data:$UI.annotOptPanel._form_.value});
 }
 
@@ -876,15 +1012,22 @@ function saveAnalytics(){
 	console.log('saveAnalytics');
 }
 function startDrawing(e){
-	$CAMIC.viewer.canvasDrawInstance.stop = !$UI.annotOptPanel._form_.isValid();
+	$CAMIC.viewer.canvasDrawInstance.stop =$UI.toolbar.getSubTool('preset_label').querySelector("input[type=checkbox]").checked?false:!$UI.annotOptPanel._form_.isValid();
 	return;
 }
 function stopDrawing(e){
-	const li = $UI.toolbar.getSubTool('annotation');
-	const state = +li.querySelector('label').dataset.state;
-	if(state===1&&$CAMIC.viewer.canvasDrawInstance._draws_data_.length > 0){
-		saveAnnotation();
+	// preset label annotation
+	if($UI.toolbar.getSubTool('preset_label').querySelector("input[type=checkbox]").checked){
+		// save preset label
+		savePresetLabel();
+	}else{ // annotation
+		const li = $UI.toolbar.getSubTool('annotation');
+		const state = +li.querySelector('label').dataset.state;
+		if(state===1&&$CAMIC.viewer.canvasDrawInstance._draws_data_.length > 0){
+			saveAnnotation();
+		}
 	}
+
 }
 
 
