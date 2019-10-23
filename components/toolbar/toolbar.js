@@ -232,6 +232,7 @@ CaToolbar.prototype.__createRadio = function(options){
 	// create UI
 	const li = document.createElement('li');
 	if(options.name) li.name = options.name;
+	if(options.color) li.style.borderBottom = `3px solid ${options.color}`;
 	// radio
 	const id = randomId(); // create a timestamp id
 	const radio = document.createElement('input'); 
@@ -239,6 +240,7 @@ CaToolbar.prototype.__createRadio = function(options){
 	radio.type = 'radio';
 	radio.value = options.value;
 	radio.checked = options.checked?true:false;
+	
 	if(options.id)radio.name = options.id; //
 
 	li.appendChild(radio);
@@ -246,10 +248,18 @@ CaToolbar.prototype.__createRadio = function(options){
 	// icon
 	const icon = document.createElement('label');
 	if(options.icon){
+		
 		icon.classList.add('material-icons');
 		icon.classList.add('md-24');
 		icon.textContent = options.icon;
 	}else{
+		let _fit_content = "fit-content";
+		if(navigator.userAgent.toLowerCase().indexOf('firefox') > -1){
+			// Do Firefox-related activities
+			_fit_content = "-moz-fit-content";
+		}
+		li.style.width = _fit_content;	
+		li.classList.add('text');
 		const div = document.createElement('div');
 		div.textContent = options.title;
 		icon.appendChild(div);
@@ -313,6 +323,7 @@ CaToolbar.prototype.__createMultiStateBtns = function(options){
  * @return {Element} - the DOM Element that represents a tool.
  */
 CaToolbar.prototype.__createDropDown = function(options){
+	console.log(options)
 	if(!options) {
 		console.warn(`${this.name}.__createDropDown:No Option`);
 		return;
@@ -340,6 +351,7 @@ CaToolbar.prototype.__createDropDown = function(options){
 	// create drop_down
 	const _drop = document.createElement('ul');
 	_drop.classList.add('drop_down');
+	
 
 	//
 	const lists = []; 

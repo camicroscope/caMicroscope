@@ -343,6 +343,42 @@ function initUIcomponents() {
     callback: draw
   });
 
+  // example for dropdownlist has icon in each item
+  // subToolsOpt.push({
+  //   name: "test",
+  //   icon: "vpn_key", // material icons' name
+  //   title: "test",
+  //   type: "dropdown",
+  //   value: "test",
+  //   callback: function(e) {
+  //     console.log(e);
+  //   },
+  //   dropdownList: [
+  //     {
+  //       name: "add",
+  //       icon: "add",
+  //       value:"add",
+  //       title: "add"
+  //     },
+  //     {
+  //       name: "add_box",
+  //       icon: "add_box",
+  //       value:"add_box",
+  //       title: "add_box"
+  //     },      {
+  //       name: "add_circle",
+  //       icon: "add_circle",
+  //       value:"add_circle",
+  //       title: "add_circle"
+  //     },      {
+  //       name: "block",
+  //       icon: "block",
+  //       value:"block",
+  //       title: "block"
+  //     }
+  //   ]
+  // });
+
   //preset label
   const penList = [];
   for (let name in PEN_CONFIG) {
@@ -352,6 +388,7 @@ function initUIcomponents() {
       color: PEN_CONFIG[name].color
     });
   }
+
   penList[0].checked = true;
   subToolsOpt.push({
     name: "preset_label",
@@ -507,24 +544,6 @@ function initUIcomponents() {
     mainToolsCallback: mainMenuChange,
     subTools: subToolsOpt
   });
-
-  // change preset label css style
-
-  let _fit_content = "fit-content";
-  if(navigator.userAgent.toLowerCase().indexOf('firefox') > -1){
-      // Do Firefox-related activities
-      _fit_content = "-moz-fit-content";
-  }
-  $UI.toolbar
-  .getSubTool("preset_label")
-  .querySelector("ul").style.width = _fit_content;
-  $UI.toolbar
-    .getSubTool("preset_label")
-    .querySelectorAll("ul.drop_down li")
-    .forEach(li => {
-      li.style.width = _fit_content;
-      li.querySelector("div").style.padding = "0 .3rem 0 .3rem";
-    });
 
   // create two side menus for tools
   $UI.appsSideMenu = new SideMenu({
