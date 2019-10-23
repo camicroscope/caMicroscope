@@ -7,53 +7,68 @@ const $UI = new Map();
 // preset pens
 const PEN_CONFIG = {
   "prostate-benign": {
-    title: "Prostate-Benign",
+    title: "Prostate - Benign",
     note: "Prostate-Benign",
-    color: "#a6cee3"
+    color: "#8dd3c7"
   },
-  "prostate-gleason3": {
-    title: "Prostate-Gleason3",
-    note: "Prostate-Gleason3",
-    color: "#1f78b4"
+  "prostate-gleason_3": {
+    title: "Prostate - Gleason 3",
+    note: "Prostate-Gleason 3",
+    color: "#ffffb3"
   },
-  "prostate-gleason4": {
-    title: "Prostate-Gleason4",
-    note: "Prostate-Gleason4",
-    color: "#b2df8a"
+  "prostate-gleason_4": {
+    title: "Prostate - Gleason 4",
+    note: "Prostate-Gleason 4",
+    color: "#bebada"
   },
-  "prostate-gleason5": {
-    title: "Prostate-Gleason5",
-    note: "Prostate-Gleason5",
-    color: "#33a02c"
+  "prostate-gleason_5": {
+    title: "Prostate - Gleason 5",
+    note: "Prostate-Gleason 5",
+    color: "#fb8072"
+  },
+  "prostate-cancer_nos": {
+    title: "Prostate - Cancer NOS",
+    note: "Prostate-Cancer NOS",
+    color: "#80b1d3"
   },
   "nsclc-benign": {
     title: "NSCLC-Benign",
     note: "NSCLC-Benign",
-    color: "#fb9a99"
+    color: "#fdb462"
   },
-  "nsclc-lepedic": {
-    title: "NSCLC-Lepedic",
-    note: "NSCLC-Lepedic",
-    color: "#e31a1c"
+  "nsclc-squamous_ca": {
+    title: "NSCLC - Squamous CA",
+    note: "NSCLC-Squamous CA",
+    color: "#b3de69"
+  },
+  "nsclc-adeno_ca_all": {
+    title: "NSCLC - Adeno CA (all)",
+    note: "NSCLC-Adeno CA (all)",
+    color: "#fccde5"
   },
   "nsclc-acinar": {
-    title: "NSCLC-Acinar",
+    title: "NSCLC - Acinar",
     note: "NSCLC-Acinar",
-    color: "#fdbf6f"
+    color: "#d9d9d9"
   },
-  "nsclc-papillary": {
-    title: "NSCLC-Papillary",
-    note: "NSCLC-Papillary",
-    color: "#ff7f00"
+  "nsclc-lapidic": {
+    title: "NSCLC - Lapidic",
+    note: "NSCLC-Lapidic",
+    color: "#bc80bd"
   },
   "nsclc-solid": {
-    title: "NSCLC-Solid",
+    title: "NSCLC - Solid",
     note: "NSCLC-Solid",
-    color: "#cab2d6"
+    color: "#ccebc5"
   },
-  "nsclc-squamous": {
-    title: "NSCLC-Squamous",
-    note: "NSCLC-Squamous",
+  "nsclc-papillary": {
+    title: "NSCLC - Papillary",
+    note: "NSCLC-Papillary",
+    color: "#ffed6f"
+  },
+  "nsclc-micropapillary": {
+    title: "NSCLC - Micropapillary",
+    note: "NSCLC-Micropapillary",
     color: "#6a3d9a"
   }
 };
@@ -494,14 +509,20 @@ function initUIcomponents() {
   });
 
   // change preset label css style
+
+  let _fit_content = "fit-content";
+  if(navigator.userAgent.toLowerCase().indexOf('firefox') > -1){
+      // Do Firefox-related activities
+      _fit_content = "-moz-fit-content";
+  }
   $UI.toolbar
-    .getSubTool("preset_label")
-    .querySelector("ul").style.width = "fit-content";
+  .getSubTool("preset_label")
+  .querySelector("ul").style.width = _fit_content;
   $UI.toolbar
     .getSubTool("preset_label")
     .querySelectorAll("ul.drop_down li")
     .forEach(li => {
-      li.style.width = "fit-content";
+      li.style.width = _fit_content;
       li.querySelector("div").style.padding = "0 .3rem 0 .3rem";
     });
 
