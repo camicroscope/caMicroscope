@@ -590,13 +590,23 @@ function createLabelList() {
     <div style='font-size: 1.5rem; padding: 5px; margin: 5px;font-weight:bold;color:#FF0000;'>
     ${isPassed ? "" : "Please Match The Required Number For Each Label Type!"}
     </div>
-    <button ${isPassed ? "" : "disabled"} class="continue" style="margin-left:10px;">Continue</button>
-    <button ${isPassed ? "" : "disabled"} class="save" style="margin-left:10px;">Save&Exit</button>
+    <button ${
+      isPassed ? "" : "disabled"
+    } class="continue" style="margin-left:10px;">Continue</button>
+    <button ${
+      isPassed ? "" : "disabled"
+    } class="save" style="margin-left:10px;">Save&Exit</button>
   </div>`;
   $UI.modalbox.open();
-  const continue_btn = $UI.modalbox.elt.querySelector(".modalbox-footer button.continue");
-  const save_btn = $UI.modalbox.elt.querySelector(".modalbox-footer button.save");
-  continue_btn.addEventListener("click", ()=>{$UI.modalbox.close()});
+  const continue_btn = $UI.modalbox.elt.querySelector(
+    ".modalbox-footer button.continue"
+  );
+  const save_btn = $UI.modalbox.elt.querySelector(
+    ".modalbox-footer button.save"
+  );
+  continue_btn.addEventListener("click", () => {
+    $UI.modalbox.close();
+  });
   save_btn.addEventListener("click", saveLabelings);
 }
 
@@ -676,7 +686,6 @@ function generateROIandSubROI(patch) {
 
   // user info and create date
   const creator = sessionStorage.getItem("userName") || getUserId();
-  const dateTime = new Date();
 
   const subROIs = [];
 
@@ -684,10 +693,11 @@ function generateROIandSubROI(patch) {
   const exec_id = randomId();
   const roi_id = new ObjectId();
   const coordinates = getCoordinates(patch);
+  const { x, y, width, height } = patch.getRect("image");
   const ROI = {
     _id: roi_id.toString(),
     creator: creator,
-    create_date_time: dateTime,
+    create_date_time: patch.createDate,
     provenance: {
       image: {
         slide: slideId,
@@ -702,7 +712,11 @@ function generateROIandSubROI(patch) {
     },
     properties: {
       type: patch.data, // for label, there are 6 types
-      til_density: patch.getTilDensity()
+      til_density: patch.getTilDensity(),
+      x:x,
+      y:y,
+      width:width,
+      height:height
     },
     annotations: [],
     subrois: [],
@@ -737,10 +751,11 @@ function generateROIandSubROI(patch) {
     const _id = new ObjectId();
     ROI.subrois.push(_id.toString());
     const subCoordinates = getCoordinates(sROI);
+    const {x,y,width,height} = sROI.getRect('image');
     const subROI = {
       _id: _id.toString(),
       creator: creator,
-      create_date_time: dateTime,
+      create_date_time: sROI.createDate,
       provenance: {
         image: {
           slide: slideId,
@@ -754,7 +769,11 @@ function generateROIandSubROI(patch) {
         }
       },
       properties: {
-        type: "subROI"
+        type: "subROI",
+        x:x,
+        y:y,
+        width:width,
+        height:height        
       },
       parent: roi_id.toString(),
       geometries: {

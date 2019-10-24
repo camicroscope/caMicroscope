@@ -753,6 +753,45 @@ class Store {
       mode: "cors"
     }).then(this.errorHandler)    
   }
+
+  countByCreator(){
+    var suffix = "Labeling/countByCreator"
+    var url = this.base + suffix;
+    return fetch(url, {
+      credentials: "include",
+      mode: "cors"
+    }).then(this.errorHandler)
+  }
+
+  countBySlide(){
+    var suffix = "Labeling/countBySlide"
+    var url = this.base + suffix;
+    return fetch(url, {
+      credentials: "include",
+      mode: "cors"
+    }).then(this.errorHandler)
+  }
+  
+  countAllLabels(){
+    var suffix = "Labeling/countAllByType"
+    var url = this.base + suffix;
+    var query = {}
+    query.type = 'label'
+    return fetch(url + "?" + objToParamStr(query), {
+      credentials: "include",
+      mode: "cors"
+    }).then(this.errorHandler)
+  }
+  allLabelSheet(){
+    var suffix = "Labeling/allLabelSheet"
+    var url = this.base + suffix;
+    return fetch(url, {
+      credentials: "include",
+      mode: "cors"
+    }).then(this.errorHandler)    
+  }
+
+
   /**
    * post data
    * @param {string} type - the datatype to post

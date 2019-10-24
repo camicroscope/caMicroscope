@@ -244,7 +244,7 @@
     this.subROIs = [];
     // create random id
     this.id = randomId();
-
+    this.createDate = new Date()
     // element
     this.element = document.createElement("div");
     this.element.id = this.id;
@@ -404,8 +404,8 @@
     this.patchTrackers["element"] = new $.MouseTracker({
       element: this.element,
       pressHandler: press.bind(this),
-      dragHandler: moving.bind(this),
-      releaseHandler: clickOnElement.bind(this)
+      dragHandler: moving.bind(this)
+      //releaseHandler: clickOnElement.bind(this)
     });
 
     this.patchTrackers["remove"] = new $.MouseTracker({
@@ -798,6 +798,7 @@
 
     elt.appendChild(info);
     // controls
+
 
     // til density
     if (options.data != "sROI") {
