@@ -641,8 +641,8 @@ function saveLabelAnnotCallback(){
 	// close app side
 	$UI.toolbar._main_tools[0].querySelector('[type=checkbox]').checked = false;
 	$UI.appsSideMenu.close();
-	$UI.toolbar._main_tools[1].querySelector('[type=checkbox]').checked = true;
-	$UI.layersSideMenu.open();
+	// $UI.toolbar._main_tools[1].querySelector('[type=checkbox]').checked = true;
+	// $UI.layersSideMenu.open();
 	$UI.layersViewer.update();
 }
 function anno_callback(data){
