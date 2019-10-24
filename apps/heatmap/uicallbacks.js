@@ -189,6 +189,7 @@ function heatmapSettingChanged(data){
 	}
 	if($CAMIC.viewer.heatmap.mode == data.mode){
 		$CAMIC.viewer.heatmap.drawOnCanvas();
+		$CAMIC.viewer.heatmap.updateLegend();
 	}else{
 		$CAMIC.viewer.heatmap.changeMode(data.mode);
 	}
