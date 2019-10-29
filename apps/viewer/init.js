@@ -4,6 +4,154 @@ let $CAMIC = null;
 let $minorCAMIC = {};
 // for all instances of UI components
 const $UI = new Map();
+
+// brush
+const BRUSH_CONFIG = [
+  {
+    title: "lymph",
+    value: "lymph",
+    children: [
+      {
+        title: "+",
+        value: "+",
+        color: "#ff6296",
+        data: { type: "lymph+", size: 100 }
+      },
+      {
+        title: "-",
+        value: "-",
+        color: "#62ffcb",
+        data: { type: "lymph-", size: 100 }
+      }
+    ]
+  },
+  {
+    title: "neutrophil",
+    value: "neutrophil",
+    children: [
+      {
+        title: "+",
+        value: "+",
+        color: "#ffcb62",
+        data: { type: "neutrophil+", size: 50 }
+      },
+      {
+        title: "-",
+        value: "-",
+        color: "#6296ff",
+        data: { type: "neutrophil-", size: 50 }
+      }
+    ]
+  },
+  {
+    title: "necrosis",
+    value: "necrosis",
+    children: [
+      {
+        title: "+",
+        value: "+",
+        children: [
+          {
+            title: 100,
+            value: 100,
+            color: "#ff00d9",
+            data: { type: "necrosis+", size: 100 }
+          },
+          {
+            title: 500,
+            value: 500,
+            color: "#ff00d9",
+            data: { type: "necrosis+", size: 500 }
+          }
+        ]
+      },
+      {
+        title: "-",
+        value: "-",
+        children: [
+          {
+            title: 100,
+            value: 100,
+            color: "#00ff26",
+            data: { type: "necrosis-", size: 100 }
+          },
+          {
+            title: 500,
+            value: 500,
+            color: "#00ff26",
+            data: { type: "necrosis-", size: 500 }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    title: "tumor",
+    value: "tumor",
+    children: [
+      {
+        title: "+",
+        value: "+",
+        children: [
+          {
+            title: 100,
+            value: 100,
+            color: "#790cff",
+            data: { type: "tumor+", size: 100 }
+          },
+          {
+            title: 300,
+            value: 300,
+            color: "#790cff",
+            data: { type: "tumor+", size: 300 }
+          },
+          {
+            title: 1000,
+            value: 1000,
+            color: "#790cff",
+            data: { type: "tumor+", size: 1000 }
+          },
+          {
+            title: 2000,
+            value: 2000,
+            color: "#790cff",
+            data: { type: "tumor+", size: 2000 }
+          }
+        ]
+      },
+      {
+        title: "-",
+        value: "-",
+        children: [
+          {
+            title: 100,
+            value: 100,
+            color: "#92ff0c",
+            data: { type: "tumor-", size: 100 }
+          },
+          {
+            title: 300,
+            value: 300,
+            color: "#92ff0c",
+            data: { type: "tumor-", size: 300 }
+          },
+          {
+            title: 1000,
+            value: 1000,
+            color: "#92ff0c",
+            data: { type: "tumor-", size: 1000 }
+          },
+          {
+            title: 2000,
+            value: 2000,
+            color: "#92ff0c",
+            data: { type: "tumor-", size: 2000 }
+          }
+        ]
+      }
+    ]
+  }
+];
 // preset pens
 const PEN_CONFIG = {
   "prostate-benign": {
@@ -378,6 +526,20 @@ function initUIcomponents() {
   //     }
   //   ]
   // });
+  
+  // brush
+  
+  subToolsOpt.push({
+    name: "Brush",
+    icon: "brush", // material icons' name
+    title: "Brush Labels",
+    type: "multi-dropdown",
+    value: "brush",
+    callback: function(data){
+      console.log(data)
+    },
+    dropdownList: BRUSH_CONFIG
+  });
 
   //preset label
   const penList = [];
@@ -388,11 +550,12 @@ function initUIcomponents() {
       color: PEN_CONFIG[name].color
     });
   }
-
   penList[0].checked = true;
+
+
   subToolsOpt.push({
     name: "preset_label",
-    icon: "brush", // material icons' name
+    icon: "colorize", // material icons' name
     title: "Preset Labels",
     type: "dropdown",
     value: "prelabels",

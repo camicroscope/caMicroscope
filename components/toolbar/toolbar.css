@@ -1,12 +1,11 @@
-
-ul.tools>li.handler {
+ul.tools > li.handler {
   width: 1.2rem;
   height: 100%;
   /* border-radius: 0 1px 1px 0; */
 }
 
 li.handler label {
-  margin-left: -.6rem;
+  margin-left: -0.6rem;
 }
 
 ul.tools {
@@ -16,116 +15,118 @@ ul.tools {
   padding: 0;
   margin: 0;
   height: 2.4rem;
-  border-radius: 0 .5rem .5rem 0;
-  border: solid #365f9c .2rem;
+  border-radius: 0 0.5rem 0.5rem 0;
+  border: solid #365f9c 0.2rem;
   background-color: #365f9c;
 }
 
-ul.tools li {
+ul.tools > li {
   cursor: pointer;
   height: 100%;
   width: 2.4rem;
   float: left;
-  margin-left: .2rem;
+  margin-left: 0.2rem;
   list-style: none;
   color: #365f9c;
   background-color: #fff;
   /*opacity: 0.5;*/
 }
 
-ul.tools>li.handler {
+ul.tools > li.handler {
   color: #fff;
   background-color: #365f9c;
 }
 
 ul.tools li.separator {
   width: 0;
-  border: .2rem black solid;
+  border: 0.2rem black solid;
   opacity: 0;
 }
 
-ul.tools>li>input {
+ul.tools > li > input {
   display: none;
   /*   position: absolute;
   font-size: 0;
   left: -100%; */
 }
 
-ul.tools>li:not(.handler)>input[type=checkbox]:checked+label {
+ul.tools > li:not(.handler) > input[type="checkbox"]:checked + label {
   background-color: #365f9c;
   color: #fff;
   /*box-shadow: inset 1px 1px 1px rgba(0, 0, 0, 0.3);*/
 }
 
-ul.tools>li:not(.handler)>input[type=checkbox]+label:hover {
+ul.tools > li:not(.handler) > input[type="checkbox"] + label:hover {
   opacity: 1;
 }
 
 /* ------------- */
 
 ul.drop_down {
-  width:2.4rem;
-  padding:0;
-  margin:0;
+  width: 2.4rem;
+  padding: 0;
+  margin: 0;
   display: none;
 }
 
-ul.tools>li:hover ul.drop_down {
+ul.tools > li:hover ul.drop_down {
   flex-direction: column;
   display: flex;
   width: fit-content;
   width: -moz-fit-content;
 }
 
-ul.drop_down li{
-  cursor:pointer;
-  width:2.4rem;
-  height:2.4rem;
+ul.drop_down li {
+  cursor: pointer;
+  width: 2.4rem;
+  height: 2.4rem;
   /*border-radius:.5rem .5rem .5rem .5rem;*/
-  box-shadow: 0 .4rem .8rem 0 rgba(0, 0, 0, 0.2), 0 .6rem .2rem 0 rgba(0, 0, 0, 0.19);
-  padding:0;
-  margin:3px 0 0 0;
-  color:#365f9c;
-  background-color:#fff;
-  opacity:1;
+  box-shadow: 0 0.4rem 0.8rem 0 rgba(0, 0, 0, 0.2),
+    0 0.6rem 0.2rem 0 rgba(0, 0, 0, 0.19);
+  padding: 0;
+  margin: 3px 0 0 0;
+  color: #365f9c;
+  background-color: #fff;
+  opacity: 1;
 }
 ul.drop_down li.text {
-  height:100%;
+  height: 100%;
 }
 
-ul.drop_down>li>input[type=radio] {
+ul.drop_down > li > input[type="radio"] {
   display: none;
   /*   position: absolute;
   font-size: 0;
   left: -100%; */
 }
-ul.tools>li>label.s0 {
+ul.tools > li > label.s0 {
   background-color: #fff;
   color: #365f9c;
 }
-ul.tools>li>label.s1 {
-  background-color: #91A8C9;
-  color: #365f9c
+ul.tools > li > label.s1 {
+  background-color: #91a8c9;
+  color: #365f9c;
 }
-ul.tools>li>label.s2 {
+ul.tools > li > label.s2 {
   background-color: #365f9c;
   color: #fff;
 }
-li > input[type=radio]+label div,
-li > input[type=radio]+label{
-  cursor:pointer;
+li > input[type="radio"] + label div,
+li > input[type="radio"] + label {
+  cursor: pointer;
 }
-li > input[type=radio]:checked+label div,
-li > input[type=radio]:checked+label{
-  cursor:pointer;
-  color:#fff;
-  background-color:#365f9c;
+li > input[type="radio"]:checked + label div,
+li > input[type="radio"]:checked + label {
+  cursor: pointer;
+  color: #fff;
+  background-color: #365f9c;
   /*border-radius:.5rem .5rem .5rem .5rem;*/
-  box-shadow: 0 .4rem .8rem 0 rgba(0, 0, 0, 0.2), 0 .6rem .2rem 0 rgba(0, 0, 0, 0.19);
+  box-shadow: 0 0.4rem 0.8rem 0 rgba(0, 0, 0, 0.2),
+    0 0.6rem 0.2rem 0 rgba(0, 0, 0, 0.19);
 }
-li > input[type=radio]:checked+label div,
-li > input[type=radio]+label div{
-  display:flex;
+li > input[type="radio"]:checked + label div,
+li > input[type="radio"] + label div {
+  display: flex;
   text-align: center;
   align-items: center;
   white-space: nowrap;
@@ -133,8 +134,16 @@ li > input[type=radio]+label div{
   padding: 2px;
   /* height:2.4rem; */
 }
+.tools li {
+  list-style: none;
+}
+li.multi-down {
+  position: relative;
+  color: #365f9c;
+  /* width: fit-content; */
+}
 
-li.text > input[type=radio]+label div {
+li.text > input[type="radio"] + label div {
   font-weight: bold;
 }
 
@@ -145,3 +154,58 @@ ul.drop_down > li > input[type=radio]:checked+label {
   border-radius:.5rem .5rem .5rem .5rem;
 }*/
 
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  left: 0;
+  z-index: 1000;
+  float: left;
+  padding: 5px 0;
+  font-size: 14px;
+  text-align: left;
+  list-style: none;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 2px solid #365f9c;
+  border-radius: 4px;
+  -webkit-box-shadow: 0 6px 12px rgba(54, 95, 156, 0.175);
+  box-shadow: 0 6px 12px rgba(54, 95, 156, 0.175);
+  box-sizing: border-box;
+}
+
+.dropdown-submenu .dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -1px;
+}
+.dropdown-submenu {
+  position: relative;
+  box-sizing: border-box;
+  display: list-item;
+}
+.dropdown-menu li:hover {
+  background-color: #365f9c;
+}
+.dropdown-menu li:hover > a {
+  color: #fff;
+}
+.dropdown-menu > li > a {
+  padding: 3px 20px;
+  clear: both;
+  font-weight: 400;
+  line-height: 1.42857143;
+  font-weight: bold;
+  color: #365f9c;
+  white-space: nowrap;
+  text-decoration: none;
+  background-color: transparent;
+  box-sizing: border-box;
+}
+
+li.multi-down:hover > ul {
+  display: block;
+}
+
+li.dropdown-submenu:hover > ul.dropdown-menu {
+  display: block;
+}

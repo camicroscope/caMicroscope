@@ -126,6 +126,9 @@ CaToolbar.prototype.__create = function(options){
 		case 'dropdown':
 			// create dropdown menu
 			return this.__createDropDown(options);
+		case 'multi-dropdown':
+			// create multi-dropdown menu
+			return this.__createMultiDropDown(options);
 		case 'multistates':
 			// create dropdown menu
 			return this.__createMultiStateBtns(options);
@@ -322,8 +325,82 @@ CaToolbar.prototype.__createMultiStateBtns = function(options){
  * @param  {Object} options - options that describes the type, style and behavior of the tool.
  * @return {Element} - the DOM Element that represents a tool.
  */
+CaToolbar.prototype.__createMultiDropDown = function(options){
+	if(!options) {
+		console.warn(`${this.name}.__createDropDown:No Option`);
+		return;
+	}
+	// create UI
+	const li = document.createElement('li');
+	li.classList.add('multi-down');
+	if(options.name) li.name = options.name;
+	// checkbox
+	const id = randomId(); // create a timestamp id
+	const chk = document.createElement('input'); 
+	chk.id = id;
+	chk.type = 'checkbox';
+	chk.checked = options.checked?true:false;
+	li.appendChild(chk);
+
+	// icon
+	const icon = document.createElement('label');
+	icon.classList.add('material-icons');
+	icon.classList.add('md-24');
+	icon.textContent = options.icon;
+	icon.htmlFor = id;
+	if(options.title) icon.title = options.title;
+	li.appendChild(icon);
+
+
+	// create drop_down
+	li.append(createMenus(options.dropdownList));
+
+	return li;
+}
+function createMenus(children){
+	let ul = null;
+	if(children&&Array.isArray(children)&& children.length>0){
+		ul = document.createElement('ul');
+		ul.classList.add('dropdown-menu');
+		children.forEach(child=>ul.append(createMenu(child)))
+	}
+
+	return ul;
+}
+
+function createMenu(option){
+	const li = document.createElement('li');
+	li.title = option.title
+	li.dataset.value = option.value
+	const a = document.createElement('a');
+	a.tabIndex = -1;
+	a.href = '#';
+	a.textContent = option.title;
+	li.append(a);
+	if(option.children&&Array.isArray(option.children)&& option.children.length>0){
+		li.classList.add('dropdown-submenu');
+		const ul = document.createElement('ul');
+		ul.classList.add('dropdown-menu');
+		option.children.forEach(child=>ul.append(createMenu(child)))
+		li.append(ul);
+	}else{
+		for(let key in option.data){
+			li.dataset[key] = option.data[key]
+		}
+	}
+	return li;
+}
+
+
+
+
+/*
+ * @private 
+ * __createDropDown - create tool as dropdwon menu.
+ * @param  {Object} options - options that describes the type, style and behavior of the tool.
+ * @return {Element} - the DOM Element that represents a tool.
+ */
 CaToolbar.prototype.__createDropDown = function(options){
-	console.log(options)
 	if(!options) {
 		console.warn(`${this.name}.__createDropDown:No Option`);
 		return;
