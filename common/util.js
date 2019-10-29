@@ -174,10 +174,10 @@ function titleCase(str) {
    for (var i = 0; i < splitStr.length; i++) {
        // You do not need to check if i is larger than splitStr length, as your for does that for you
        // Assign it back to the array
-       splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);     
+       splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);
    }
    // Directly return the joined string
-   return splitStr.join(' '); 
+   return splitStr.join(' ');
 }
 /**
  * isTwoLinesIntersect
@@ -708,3 +708,29 @@ EventHandle.prototype = {
         }
     }
 };
+
+
+function getUserId(){
+  let token_info = parseJwt(getCookie("token"))
+  let uid = ""
+  // pathdb with login
+  if (token_info && token_info.hasOwnProperty("drupal") && token_info.drupal.hasOwnProperty("uid")){
+    uid = token_info.drupal.uid
+  }
+  // non-pathdb w login
+  else if (token_info.sub){
+    uid = token_info.sub
+  }
+  // no login, random id
+  else {
+    let rid = getCookie("randomId")
+    // random id
+    if (rid){
+      uid = rid
+    } else {
+      uid = randomId()
+      document.cookie = "randomId=" + uid + ";"
+    }
+  }
+  return uid
+}
