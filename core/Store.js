@@ -640,6 +640,26 @@ class Store {
   }
 
   /**
+   * add a log item
+   ** @param {object} json - the log data
+   * @returns {promise} - promise which resolves with data
+   **/
+   addLog(json){
+     var suffix = "Log/post"
+     var url = this.base + suffix;
+     return fetch(url, {
+       method: "POST",
+       credentials: "include",
+       mode: "cors",
+       headers: {
+         "Content-Type": "application/json; charset=utf-8",
+         // "Content-Type": "application/x-www-form-urlencoded",
+       },
+       body: JSON.stringify(json)
+     }).then(this.errorHandler)
+   }
+
+  /**
    * post data
    * @param {string} type - the datatype to post
    * @param {object} data - the data to post
