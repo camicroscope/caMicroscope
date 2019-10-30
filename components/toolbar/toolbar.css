@@ -183,12 +183,12 @@ ul.drop_down > li > input[type=radio]:checked+label {
   box-sizing: border-box;
   display: list-item;
 }
-.dropdown-menu li:hover {
+/* .dropdown-menu li:hover {
   background-color: #365f9c;
 }
 .dropdown-menu li:hover > a {
   color: #fff;
-}
+} */
 .dropdown-menu > li > a {
   padding: 3px 20px;
   clear: both;
@@ -200,6 +200,8 @@ ul.drop_down > li > input[type=radio]:checked+label {
   text-decoration: none;
   background-color: transparent;
   box-sizing: border-box;
+  appearance: none;
+  outline: none;
 }
 
 li.multi-down:hover > ul {
@@ -208,4 +210,15 @@ li.multi-down:hover > ul {
 
 li.dropdown-submenu:hover > ul.dropdown-menu {
   display: block;
+}
+
+/* li.multi-down li.checked a {
+  color: #fff;
+  background-color: #365f9c;
+} */
+.dropdown-menu li.checked {
+  background-color: #365f9c;
+}
+.dropdown-menu li.checked > a {
+  color: #fff;
 }

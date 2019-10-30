@@ -9,144 +9,145 @@ const $UI = new Map();
 // brush
 const BRUSH_CONFIG = [
   {
-    title: "lymph",
+    title: "Lymph",
     value: "lymph",
     children: [
       {
-        title: "+",
-        value: "+",
+        title: "Positive",
+        value: "positive",
         color: "#ff6296",
-        data: { type: "lymph+", size: 100 }
+        checked: true,
+        data: { type: "lymph-positive", size: 100 }
       },
       {
-        title: "-",
-        value: "-",
+        title: "Negative",
+        value: "negative",
         color: "#62ffcb",
-        data: { type: "lymph-", size: 100 }
+        data: { type: "lymph-negative", size: 100 }
       }
     ]
   },
   {
-    title: "neutrophil",
+    title: "Neutrophil",
     value: "neutrophil",
     children: [
       {
-        title: "+",
-        value: "+",
+        title: "Positive",
+        value: "positive",
         color: "#ffcb62",
-        data: { type: "neutrophil+", size: 50 }
+        data: { type: "neutrophil-positive", size: 50 }
       },
       {
-        title: "-",
-        value: "-",
+        title: "Negative",
+        value: "negative",
         color: "#6296ff",
-        data: { type: "neutrophil-", size: 50 }
+        data: { type: "neutrophil-negative", size: 50 }
       }
     ]
   },
   {
-    title: "necrosis",
+    title: "Necrosis",
     value: "necrosis",
     children: [
       {
-        title: "+",
-        value: "+",
+        title: "Positive",
+        value: "positive",
         children: [
           {
             title: 100,
             value: 100,
             color: "#ff00d9",
-            data: { type: "necrosis+", size: 100 }
+            data: { type: "necrosis-positive", size: 100 }
           },
           {
             title: 500,
             value: 500,
             color: "#ff00d9",
-            data: { type: "necrosis+", size: 500 }
+            data: { type: "necrosis-positive", size: 500 }
           }
         ]
       },
       {
-        title: "-",
-        value: "-",
+        title: "Negative",
+        value: "negative",
         children: [
           {
             title: 100,
             value: 100,
             color: "#00ff26",
-            data: { type: "necrosis-", size: 100 }
+            data: { type: "necrosis-negative", size: 100 }
           },
           {
             title: 500,
             value: 500,
             color: "#00ff26",
-            data: { type: "necrosis-", size: 500 }
+            data: { type: "necrosis-negative", size: 500 }
           }
         ]
       }
     ]
   },
   {
-    title: "tumor",
+    title: "Tumor",
     value: "tumor",
     children: [
       {
-        title: "+",
-        value: "+",
+        title: "Positive",
+        value: "positive",
         children: [
           {
             title: 100,
             value: 100,
             color: "#790cff",
-            data: { type: "tumor+", size: 100 }
+            data: { type: "tumor-positive", size: 100 }
           },
           {
             title: 300,
             value: 300,
             color: "#790cff",
-            data: { type: "tumor+", size: 300 }
+            data: { type: "tumor-positive", size: 300 }
           },
           {
             title: 1000,
             value: 1000,
             color: "#790cff",
-            data: { type: "tumor+", size: 1000 }
+            data: { type: "tumor-positive", size: 1000 }
           },
           {
             title: 2000,
             value: 2000,
             color: "#790cff",
-            data: { type: "tumor+", size: 2000 }
+            data: { type: "tumor-positive", size: 2000 }
           }
         ]
       },
       {
-        title: "-",
-        value: "-",
+        title: "Negative",
+        value: "negative",
         children: [
           {
             title: 100,
             value: 100,
             color: "#92ff0c",
-            data: { type: "tumor-", size: 100 }
+            data: { type: "tumor-negative", size: 100 }
           },
           {
             title: 300,
             value: 300,
             color: "#92ff0c",
-            data: { type: "tumor-", size: 300 }
+            data: { type: "tumor-negative", size: 300 }
           },
           {
             title: 1000,
             value: 1000,
             color: "#92ff0c",
-            data: { type: "tumor-", size: 1000 }
+            data: { type: "tumor-negative", size: 1000 }
           },
           {
             title: 2000,
             value: 2000,
             color: "#92ff0c",
-            data: { type: "tumor-", size: 2000 }
+            data: { type: "tumor-negative", size: 2000 }
           }
         ]
       }
@@ -459,8 +460,8 @@ function initCore() {
     // because UI components need data to initialize
     initUIcomponents();
     // action tracker start
-    tracker = new Tracker($CAMIC, $D.params.data._id.$oid, getUserId());
-    tracker.start();    
+    // tracker = new Tracker($CAMIC, $D.params.data._id.$oid, getUserId());
+    // tracker.start();
   });
 }
 
@@ -530,17 +531,17 @@ function initUIcomponents() {
   //     }
   //   ]
   // });
-  
+
   // brush
-  
+
   subToolsOpt.push({
     name: "Brush",
     icon: "brush", // material icons' name
     title: "Brush Labels",
     type: "multi-dropdown",
     value: "brush",
-    callback: function(data){
-      console.log(data)
+    callback: function(data) {
+      console.log(data);
     },
     dropdownList: BRUSH_CONFIG
   });
@@ -555,7 +556,6 @@ function initUIcomponents() {
     });
   }
   penList[0].checked = true;
-
 
   subToolsOpt.push({
     name: "preset_label",
