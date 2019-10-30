@@ -1,6 +1,7 @@
 // CAMIC is an instance of camicroscope core
 // $CAMIC in there
 let $CAMIC = null;
+let tracker;
 let $minorCAMIC = {};
 // for all instances of UI components
 const $UI = new Map();
@@ -309,6 +310,9 @@ function initCore() {
     // init UI -- some of them need to wait data loader to load data
     // because UI components need data to initialize
     initUIcomponents();
+    // action tracker start
+    tracker = new Tracker($CAMIC, $D.params.data._id.$oid, getUserId());
+    tracker.start();    
   });
 }
 
