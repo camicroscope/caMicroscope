@@ -364,7 +364,7 @@ CaToolbar.prototype.__createMultiDropDown = function(options) {
   chk.addEventListener("click", function(e) {
     options.callback({
       status: chk.checked,
-      data: li.querySelector("li.leaf.checked")
+      data: li.querySelector("li.leaf.checked").dataset
     });
   });
   //
@@ -415,7 +415,7 @@ function createMenu(option) {
   const li = document.createElement("li");
   li.title = option.title;
   li.dataset.value = option.value;
-  const a = document.createElement("a");
+  const a = document.createElement("span");
   a.tabIndex = -1;
   a.href = "#";
   a.textContent = option.title;

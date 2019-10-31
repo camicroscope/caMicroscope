@@ -64,6 +64,7 @@ ul.tools > li:not(.handler) > input[type="checkbox"] + label:hover {
 
 ul.drop_down {
   width: 2.4rem;
+  font-size: 1.4rem;
   padding: 0;
   margin: 0;
   display: none;
@@ -189,7 +190,7 @@ ul.drop_down > li > input[type=radio]:checked+label {
 .dropdown-menu li:hover > a {
   color: #fff;
 } */
-.dropdown-menu > li > a {
+.dropdown-menu > li > span {
   padding: 3px 20px;
   clear: both;
   font-weight: 400;
@@ -219,6 +220,6 @@ li.dropdown-submenu:hover > ul.dropdown-menu {
 .dropdown-menu li.checked {
   background-color: #365f9c;
 }
-.dropdown-menu li.checked > a {
+.dropdown-menu li.checked > span {
   color: #fff;
 }
