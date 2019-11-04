@@ -882,7 +882,6 @@ function saveBrushLabel(isOff) {
     };
     var user_id
     try { user_id = getUserId() } catch(e){ user_id = "user-id-not-provided"}
-    
 
     annotJsons.push({
       provenance: {
@@ -895,7 +894,8 @@ function saveBrushLabel(isOff) {
           name: noteData.name,
           type: "label",
           isGrid: true,
-          userId: user_id
+          userId: user_id,
+          time: Date.now()
         }
       },
       properties: {
@@ -992,7 +992,8 @@ function savePresetLabel() {
         execution_id: exec_id,
         name: noteData.name,
         type: "label",
-	userId: user_id
+	      userId: user_id,
+        time: Date.now()
       }
     },
     properties: {
@@ -1068,7 +1069,7 @@ function saveBrushAnnotCallback() {
   // $UI.toolbar._main_tools[1].querySelector('[type=checkbox]').checked = true;
   // $UI.layersSideMenu.open();
   $UI.layersViewer.update();
-  
+
   if(this==true){ // isOff
     $UI.toolbar
       .getSubTool("brush")
@@ -1077,7 +1078,7 @@ function saveBrushAnnotCallback() {
 
     const bctrl = document.getElementById("bctrl");
 	bctrl.style.display = "none";
-	$CAMIC.status = null;	
+	$CAMIC.status = null;
   }
 }
 
@@ -1135,7 +1136,8 @@ function anno_callback(data) {
         source: "human",
         execution_id: exec_id,
         name: noteData.name,
-	userId: user_id
+	      userId: user_id,
+        time: Date.now()
       }
     },
     properties: {
