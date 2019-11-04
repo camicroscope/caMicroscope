@@ -880,6 +880,9 @@ function saveBrushLabel(isOff) {
       name: exec_id,
       notes: note
     };
+    var user_id
+    try { user_id = getUserId() } catch(e){ user_id = "user-id-not-provided"}
+    
 
     annotJsons.push({
       provenance: {
@@ -891,7 +894,8 @@ function saveBrushLabel(isOff) {
           execution_id: exec_id,
           name: noteData.name,
           type: "label",
-          isGrid: true
+          isGrid: true,
+          userId: user_id
         }
       },
       properties: {
@@ -975,6 +979,8 @@ function savePresetLabel() {
     name: exec_id,
     notes: data.type
   };
+  var user_id
+  try { user_id = getUserId() } catch(e){ user_id = "user-id-not-provided"}
 
   const annotJson = {
     provenance: {
@@ -985,7 +991,8 @@ function savePresetLabel() {
         source: "human",
         execution_id: exec_id,
         name: noteData.name,
-        type: "label"
+        type: "label",
+	userId: user_id
       }
     },
     properties: {
@@ -1116,6 +1123,8 @@ function anno_callback(data) {
   // provenance
   Loading.open($UI.annotOptPanel.elt, "Saving Annotation...");
   const exec_id = randomId();
+  var user_id
+  try { user_id = getUserId() } catch(e){ user_id = "user-id-not-provided"}
 
   const annotJson = {
     provenance: {
@@ -1125,7 +1134,8 @@ function anno_callback(data) {
       analysis: {
         source: "human",
         execution_id: exec_id,
-        name: noteData.name
+        name: noteData.name,
+	userId: user_id
       }
     },
     properties: {
