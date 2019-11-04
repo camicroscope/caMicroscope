@@ -880,10 +880,10 @@ function saveBrushLabel(isOff) {
       name: exec_id,
       notes: note
     };
-    var user_id
-    try { user_id = getUserId() } catch(e){ user_id = "user-id-not-provided"}
 
     annotJsons.push({
+      creator: getUserId(),
+      created_date: new Date(),
       provenance: {
         image: {
           slide: $D.params.slideId
@@ -893,9 +893,7 @@ function saveBrushLabel(isOff) {
           execution_id: exec_id,
           name: noteData.name,
           type: "label",
-          isGrid: true,
-          userId: user_id,
-          time: Date.now()
+          isGrid: true
         }
       },
       properties: {
@@ -979,10 +977,10 @@ function savePresetLabel() {
     name: exec_id,
     notes: data.type
   };
-  var user_id
-  try { user_id = getUserId() } catch(e){ user_id = "user-id-not-provided"}
 
   const annotJson = {
+    creator: getUserId(),
+    created_date: new Date(),
     provenance: {
       image: {
         slide: $D.params.slideId
@@ -991,9 +989,7 @@ function savePresetLabel() {
         source: "human",
         execution_id: exec_id,
         name: noteData.name,
-        type: "label",
-	      userId: user_id,
-        time: Date.now()
+        type: "label"
       }
     },
     properties: {
@@ -1070,15 +1066,16 @@ function saveBrushAnnotCallback() {
   // $UI.layersSideMenu.open();
   $UI.layersViewer.update();
 
-  if(this==true){ // isOff
+  if (this == true) {
+    // isOff
     $UI.toolbar
       .getSubTool("brush")
       .querySelector("input[type=checkbox]").checked = false;
     $UI.toolbar.getSubTool("brush").querySelector("label").style.color = "";
 
     const bctrl = document.getElementById("bctrl");
-	bctrl.style.display = "none";
-	$CAMIC.status = null;
+    bctrl.style.display = "none";
+    $CAMIC.status = null;
   }
 }
 
@@ -1124,10 +1121,10 @@ function anno_callback(data) {
   // provenance
   Loading.open($UI.annotOptPanel.elt, "Saving Annotation...");
   const exec_id = randomId();
-  var user_id
-  try { user_id = getUserId() } catch(e){ user_id = "user-id-not-provided"}
 
   const annotJson = {
+    creator: getUserId(),
+    created_date: new Date(),
     provenance: {
       image: {
         slide: $D.params.slideId
@@ -1135,9 +1132,7 @@ function anno_callback(data) {
       analysis: {
         source: "human",
         execution_id: exec_id,
-        name: noteData.name,
-	      userId: user_id,
-        time: Date.now()
+        name: noteData.name
       }
     },
     properties: {
@@ -1486,8 +1481,10 @@ function loadAnnotationById(camic, layerData, callback) {
       }
 
       // create lay and update view
-      layerData.layer = camic.viewer.omanager.addOverlay(item);
-      camic.viewer.omanager.updateView();
+      if (layerData.isShow) {
+        layerData.layer = camic.viewer.omanager.addOverlay(item);
+        camic.viewer.omanager.updateView();
+      }
 
       if (callback) callback.call(layerData);
     })
@@ -1498,6 +1495,63 @@ function loadAnnotationById(camic, layerData, callback) {
       Loading.close();
     });
 }
+
+// delete annotation from layer manager view
+function removeCallback(layerData) {
+  item = layerData.item;
+  if (item.typeName !== "human") return;
+  if (!item.data) {
+    // load layer data
+    loadAnnotationById($CAMIC, layerData, function() {
+      console.log("data", this);
+      anno_delete({
+        id: layerData.item.id,
+        oid: layerData.item.data._id.$oid,
+        annotation: layerData.item.data.properties.annotation
+      });
+    });
+  } else {
+    anno_delete({
+      id: layerData.item.id,
+      oid: layerData.item.data._id.$oid,
+      annotation: layerData.item.data.properties.annotation
+    });
+  }
+}
+
+function locationCallback(layerData) {
+  item = layerData.item;
+  if (item.typeName !== "human" || item.data == null) return;
+  const bound = item.data.geometries.features[0].bound.coordinates[0];
+  locateAnnotation(bound);
+}
+
+function locateAnnotation(bound) {
+  const [minx, miny] = bound[0];
+  const [maxx, maxy] = bound[2];
+  const rectangle = $CAMIC.viewer.viewport.imageToViewportRectangle(
+    minx,
+    miny,
+    maxx - minx,
+    maxy - miny
+  );
+  const center = rectangle.getCenter();
+  $CAMIC.viewer.viewport.fitBounds(rectangle);
+
+  setTimeout(() => {
+    const max = $CAMIC.viewer.cazoomctrlInstance.getMaxImageZoom($CAMIC.viewer);
+    const current = $CAMIC.viewer.viewport.viewportToImageZoom(
+      $CAMIC.viewer.viewport.getZoom()
+    );
+    if (current > max) {
+      $CAMIC.viewer.viewport.zoomTo(
+        $CAMIC.viewer.viewport.imageToViewportZoom(max),
+        center
+      );
+    }
+  }, 50);
+}
+
 /*
 	collapsible list
 	1. Annotation

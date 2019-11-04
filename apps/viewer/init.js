@@ -487,8 +487,8 @@ function initCore() {
     // because UI components need data to initialize
     initUIcomponents();
     // action tracker start
-    // tracker = new Tracker($CAMIC, $D.params.data._id.$oid, getUserId());
-    // tracker.start();
+    tracker = new Tracker($CAMIC, $D.params.data._id.$oid, getUserId());
+    tracker.start();
   });
 }
 
@@ -836,7 +836,7 @@ function initUIcomponents() {
           }
         ],
         changeCallBack: function(e) {
-          console.log(e);
+          // console.log(e);
         }
       });
       $UI.layersSideMenu.clearContent();
@@ -971,6 +971,8 @@ function createLayerViewer(id, viewerData, callback) {
   const layersViewer = new LayersViewer({
     id: id,
     data: viewerData,
+    removeCallback: removeCallback,
+    locationCallback:locationCallback,
     callback: callback
   });
   layersViewer.elt.parentNode.removeChild(layersViewer.elt);
