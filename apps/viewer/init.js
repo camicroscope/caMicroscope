@@ -329,7 +329,7 @@ function initCore() {
   // create the message queue
   $UI.message = new MessageQueue();
 
-  // TODO zoom info and mmp
+  // zoom info and mmp
   const opt = {
     draw: {
       // extend context menu btn group
@@ -960,10 +960,12 @@ function initUIcomponents() {
   // $UI.multSelector.addHandler('action',multSelector_action);
 
   // add eventlistenter for two btns
-  const brushClearBtn = document.querySelector('#bctrl button.reset');
-  brushClearBtn.addEventListener('click', reset_callback);
-  const brushSaveBtn = document.querySelector('#bctrl button.action');
-  brushSaveBtn.addEventListener('click', saveBrushLabels);
+  const brushClearBtn = document.querySelector("#bctrl button.reset");
+  brushClearBtn.addEventListener("click", reset_callback);
+  const brushSaveBtn = document.querySelector("#bctrl button.action");
+  brushSaveBtn.addEventListener("click", function(e) {
+    saveBrushLabel(false);
+  });
 }
 function createLayerViewer(id, viewerData, callback) {
   const layersViewer = new LayersViewer({
