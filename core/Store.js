@@ -772,6 +772,15 @@ class Store {
     }).then(this.errorHandler)
   }
   
+  countByLabelType(){
+    var suffix = "Labeling/countByLabelType"
+    var url = this.base + suffix;
+    return fetch(url, {
+      credentials: "include",
+      mode: "cors"
+    }).then(this.errorHandler)
+  }
+
   countAllLabels(){
     var suffix = "Labeling/countAllByType"
     var url = this.base + suffix;
@@ -782,6 +791,7 @@ class Store {
       mode: "cors"
     }).then(this.errorHandler)
   }
+
   allLabelSheet(){
     var suffix = "Labeling/allLabelSheet"
     var url = this.base + suffix;

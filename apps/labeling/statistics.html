@@ -337,12 +337,24 @@
   <script>
     let creators;
     let slides;
+    let types;
     let total;
     let sheet;
+
     const creatorHeadMapping = [
       {
         title: "Creator",
         field: "creator"
+      },
+      {
+        title: "Total",
+        field: "total"
+      }
+    ];
+    const typeHeadMapping = [
+      {
+        title: "Label Type",
+        field: "properties.type"
       },
       {
         title: "Total",
@@ -453,9 +465,15 @@
       creators = await store
         .countByCreator()
         .then(rs => rs.sort((a, b) => b.total - a.total));
+      
       slides = await store
         .countBySlide()
         .then(rs => rs.sort((a, b) => b.total - a.total));
+      
+      types = await store
+        .countByLabelType()
+        .then(rs => rs.sort((a, b) => b.total - a.total));        
+      
       total = await store.countAllLabels();
 
       sheet = await store.allLabelSheet().then(rs =>
@@ -483,6 +501,8 @@
         createTable(creatorHeadMapping, creators) +
         "<div class='title'>Rankings of Slides&nbsp;&nbsp;&nbsp;<button id='slide'>Download As CSV</button></div>" +
         createTable(slideHeadMapping, slides) +
+        "<div class='title'>Rankings of Label Types&nbsp;&nbsp;&nbsp;<button id='type'>Download As CSV</button></div>" +
+        createTable(typeHeadMapping, types) +
         "<div class='title'>Detail&nbsp;&nbsp;&nbsp;<button id='sheet' >Download As CSV</button></div>" +
         createTable(sheetHeadMapping, sheet);
 
@@ -497,6 +517,12 @@
         downloadAsCSV(
           createCSVRawData(slideHeadMapping, slides),
           "rankings_of_slides"
+        );
+      });
+      document.querySelector("#type").addEventListener("click", e => {
+        downloadAsCSV(
+          createCSVRawData(typeHeadMapping, types),
+          "rankings_of_label_types"
         );
       });
       document.querySelector("#sheet").addEventListener("click", e => {
