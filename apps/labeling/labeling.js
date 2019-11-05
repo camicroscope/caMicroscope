@@ -54,6 +54,7 @@ const selection = [
 // CAMIC is an instance of camicroscope core
 // $CAMIC in there
 let $CAMIC = null;
+let tracker = null;
 // for all instances of UI components
 const $UI = {};
 
@@ -153,6 +154,11 @@ function initCore() {
     $CAMIC.viewer.pmanager.selection = selection;
     if (!$CAMIC.viewer.measureInstance)
       $UI.toolbar.getSubTool("measure").style.display = "none";
+    
+    // tracker
+    const creator = sessionStorage.getItem("userName") || getUserId();
+    tracker = new Tracker($CAMIC, $D.params.data._id.$oid, creator);
+    tracker.start();
   });
 
   // ui init

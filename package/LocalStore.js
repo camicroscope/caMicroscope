@@ -382,6 +382,10 @@ Store.prototype.addHeatmapEdit = function(json){
   })
 }
 
+Store.prototype.addLog = function(json){
+  console.info("[LOG]", json)
+}
+
 Store.prototype.updateHeatmapEdit = function(user, slide, name, data){
   var query = {}
   if(name){

@@ -537,8 +537,10 @@ function anno_callback(data){
 	// provenance
 	Loading.open($UI.annotOptPanel.elt,'Saving Annotation...');
 	const exec_id = randomId();
-
+	const creator = sessionStorage.getItem("userName") || getUserId();
 	const annotJson = {
+		creator: creator,
+		created_date: new date(),
 		provenance:{
 			image:{
 				slide:$D.params.slideId
