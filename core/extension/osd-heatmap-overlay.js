@@ -1128,7 +1128,7 @@
   };
   function createLegend(container, intervals) {
     container.innerHTML = "";
-    container.innerHTML = intervals
+    container.innerHTML = intervals.reverse()
       .map(
         item =>
           `<i style="background:${

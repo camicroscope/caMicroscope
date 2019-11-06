@@ -1,54 +1,55 @@
 /* css style */
 html {
-    font-size: 10px;
+  font-size: 10px;
 }
 
-html, body {
-    margin: 0;
-    padding: 0;
-    font-family: sans-serif;
-    height: 100%;
-    width: 100%;
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+  height: 100%;
+  width: 100%;
 }
 
 body {
-    color: hsl(0, 0%, 100%);
-    background-color: white;
-    background-size: 2rem 2rem;
-    background-position: 0 0, 5rem 0, 5rem -5rem, 0px 5rem;
-    background-color: rgba(220, 220, 220, 1);
+  color: hsl(0, 0%, 100%);
+  background-color: white;
+  background-size: 2rem 2rem;
+  background-position: 0 0, 5rem 0, 5rem -5rem, 0px 5rem;
+  background-color: rgba(220, 220, 220, 1);
 }
 
 /* osd main viewer */
 #main_viewer.main {
-    position: fixed;
-    top:0;
-    left:0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0);
 }
 
 #main_viewer.left {
-    float: left;
-    box-sizing: border-box;
-    border-right: 2px solid rgb(54, 95, 156);
-    width: 50%;
-    height: 100%;
+  float: left;
+  box-sizing: border-box;
+  border-right: 2px solid rgb(54, 95, 156);
+  width: 50%;
+  height: 100%;
 }
 
 #mult_selector.none,
 #secondary.none,
 #minor_viewer.none {
-    display: none;
+  display: none;
 }
 
 #minor_viewer.right {
-    float: right;
-    box-sizing: border-box;
-    border-left: 2px solid rgb(54, 95, 156);
-    width: 50%;
-    height: 100%;
+  float: right;
+  box-sizing: border-box;
+  border-left: 2px solid rgb(54, 95, 156);
+  width: 50%;
+  height: 100%;
 }
 
 /*#minor_viewer.display {
@@ -74,88 +75,86 @@ body {
 */
 /* label */
 .item_content label {
-    /*font-size: 1.5rem;*/
-    border: none;
+  /*font-size: 1.5rem;*/
+  border: none;
 }
 
 /* for button */
 .item_content button {
-    font-size: 1.5rem;
-    border: none;
+  font-size: 1.5rem;
+  border: none;
 }
 
 .item_content button:hover {
-    cursor: pointer;
-    background-color: rgba(255, 255, 255, 0.7);
-    /*box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);*/
+  cursor: pointer;
+  background-color: rgba(255, 255, 255, 0.7);
+  /*box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);*/
 }
 
 .item_content button:focus {
-    outline: 0;
+  outline: 0;
 }
 
 /* for select */
 .item_content select {
-    cursor: pointer;
-    background-color: rgba(255, 255, 255, 1);
-
+  cursor: pointer;
+  background-color: rgba(255, 255, 255, 1);
 }
 
 .item_content select:hover {
-    cursor: pointer;
-    background-color: rgba(255, 255, 255, 0.7);
-
+  cursor: pointer;
+  background-color: rgba(255, 255, 255, 0.7);
 }
 
 .item_content select:focus {
-    outline: 0;
+  outline: 0;
 }
 
 /**/
 .item_content .separator {
-    margin: 1rem .5rem;
-    border-radius: .1rem;
-    width: 100%;
-    height: 0;
-    border: 0.1rem rgba(255, 255, 255, .3) solid;
+  margin: 1rem 0.5rem;
+  border-radius: 0.1rem;
+  width: 100%;
+  height: 0;
+  border: 0.1rem rgba(255, 255, 255, 0.3) solid;
 }
 
 /* -- for search bar-- */
 .item_content input.search {
-    font-size: 1.2rem;
-    color: #fff;
-    -webkit-text-fill-color: #fff;
-    background-color: rgba(255, 255, 255, 0);
-    border: none;
-    border-bottom: .1rem solid rgba(255, 255, 255, 0.3);
-    border-radius: .1rem;
+  font-size: 1.2rem;
+  color: #fff;
+  -webkit-text-fill-color: #fff;
+  background-color: rgba(255, 255, 255, 0);
+  border: none;
+  border-bottom: 0.1rem solid rgba(255, 255, 255, 0.3);
+  border-radius: 0.1rem;
 }
 
 .item_content input.search:hover {
-    cursor: pointer;
-    border-bottom: .1rem solid rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  border-bottom: 0.1rem solid rgba(255, 255, 255, 0.7);
 }
 
 .item_content input.search:focus {
-    border-bottom: .1rem solid rgba(255, 255, 255, 0.7);
-    outline: 0;
+  border-bottom: 0.1rem solid rgba(255, 255, 255, 0.7);
+  outline: 0;
 }
 
 /* search btn*/
 .item_content button.search {
-    padding: 0;
-    color: rgba(255, 255, 255, 0.3);
-    background-color: rgba(255, 255, 255, 0);
+  padding: 0;
+  color: rgba(255, 255, 255, 0.3);
+  background-color: rgba(255, 255, 255, 0);
 }
 
 .item_content button.search:hover {
-    cursor: pointer;
-    color: rgba(255, 255, 255, 0.7);
-    box-shadow: none;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.7);
+  box-shadow: none;
 }
 
 .item_content button.search:focus {
-    outline: 0;
+  outline: 0;
 }
 
 /*
@@ -166,41 +165,84 @@ body {
 
 /* data_table */
 table.data_table {
-    width: 100%;
+  width: 100%;
 }
 
-table.data_table, table.data_table td, table.data_table th {
-    background-color: #E0FFFF;
-    border: 1px solid #E6E6FA;
-    border-collapse: collapse;
-    color: #000;
+table.data_table,
+table.data_table td,
+table.data_table th {
+  background-color: #e0ffff;
+  border: 1px solid #e6e6fa;
+  border-collapse: collapse;
+  color: #000;
 }
 
 table.data_table th {
-    background-color: #ADD8E6;
+  background-color: #add8e6;
 }
 
 table.data_table td {
-    text-align: left;
+  text-align: left;
 }
 
 table.data_table tr:hover td {
-    background-color: #D3D3D3;
+  background-color: #d3d3d3;
 }
 
 .rectangle {
-    border: 2px solid #FF0000;
-    position: absolute;
+  border: 2px solid #ff0000;
+  position: absolute;
 }
 
 .lock_panel {
-    color:#365f9c;
-    font-size: 1.5rem;
-    margin: .2rem;
-    display: flex;
-    flex-direction: column;
-    margin: 5px;
-    padding: 5px;
-    border: #cbcbcb 1px solid;
-    background: #F5F5F5;
+  color: #365f9c;
+  font-size: 1.5rem;
+  margin: 0.2rem;
+  display: flex;
+  flex-direction: column;
+  margin: 5px;
+  padding: 5px;
+  border: #cbcbcb 1px solid;
+  background: #f5f5f5;
+}
+#bctrl {
+  z-index: 600;
+  position: absolute;
+  margin-top: 0.5rem;
+  top: 0;
+  left: -webkit-calc(50% - 5rem);
+  left: -moz-calc(50% - 5rem);
+  left: calc(50% - 5rem);
+  border: 2px solid #365f9c;
+  background-color: #fff;
+  border-radius: 0.5rem;
+  height: 2.4rem;
+  display: none;
+}
+
+#bctrl button.reset,
+#bctrl button.action {
+  color: #365f9c;
+  background-color: #fff;
+  appearance: none;
+  cursor: pointer;
+  height: 100%;
+  border: none;
+  font-weight: bold;
+  outline: none;
+  /* border-radius: .5rem; */
+}
+#bctrl button.reset {
+  border-right: 1px solid #365f9c;
+  border-radius: 0.3rem 0 0 0.3rem;
+}
+#bctrl button.reset:hover,
+#bctrl button.action:hover {
+  background-color: #365f9c;
+  color: #fff;
+}
+
+#bctrl button.action {
+  border-left: 1px solid #365f9c;
+  border-radius: 0 0.3rem 0.3rem 0;
 }

@@ -5,74 +5,250 @@ let tracker;
 let $minorCAMIC = {};
 // for all instances of UI components
 const $UI = new Map();
-// preset pens
-const PEN_CONFIG = {
-  "prostate-benign": {
-    title: "Prostate - Benign",
-    note: "Prostate-Benign",
-    color: "#8dd3c7"
+
+// brush
+const BRUSH_CONFIG = [
+  {
+    title: "Lymph",
+    value: "Lymph",
+    children: [
+      {
+        title: "Positive",
+        value: "Positive",
+        color: "#ff6296",
+        checked: true,
+        data: { color: "#ff6296", type: "Lymph-Positive", size: 100 }
+      },
+      {
+        title: "Negative",
+        value: "Negative",
+        color: "#62ffcb",
+        data: { color: "#62ffcb", type: "Lymph-Negative", size: 100 }
+      }
+    ]
   },
-  "prostate-gleason_3": {
-    title: "Prostate - Gleason 3",
-    note: "Prostate-Gleason 3",
-    color: "#ffffb3"
+  {
+    title: "Neutrophil",
+    value: "Neutrophil",
+    children: [
+      {
+        title: "Positive",
+        value: "Positive",
+        color: "#ffcb62",
+        data: { color: "#ffcb62", type: "Neutrophil-Positive", size: 50 }
+      },
+      {
+        title: "Negative",
+        value: "Negative",
+        color: "#6296ff",
+        data: { color: "#6296ff", type: "Neutrophil-Negative", size: 50 }
+      }
+    ]
   },
-  "prostate-gleason_4": {
-    title: "Prostate - Gleason 4",
-    note: "Prostate-Gleason 4",
-    color: "#bebada"
+  {
+    title: "Necrosis",
+    value: "Necrosis",
+    children: [
+      {
+        title: "Positive",
+        value: "Positive",
+        children: [
+          {
+            title: 100,
+            value: 100,
+            color: "#ff00d9",
+            data: { color: "#ff00d9", type: "Necrosis-Positive", size: 100 }
+          },
+          {
+            title: 500,
+            value: 500,
+            color: "#ff00d9",
+            data: { color: "#ff00d9", type: "Necrosis-Positive", size: 500 }
+          }
+        ]
+      },
+      {
+        title: "Negative",
+        value: "Negative",
+        children: [
+          {
+            title: 100,
+            value: 100,
+            color: "#00ff26",
+            data: { color: "#00ff26", type: "Necrosis-Negative", size: 100 }
+          },
+          {
+            title: 500,
+            value: 500,
+            color: "#00ff26",
+            data: { color: "#00ff26", type: "Necrosis-Negative", size: 500 }
+          }
+        ]
+      }
+    ]
   },
-  "prostate-gleason_5": {
-    title: "Prostate - Gleason 5",
-    note: "Prostate-Gleason 5",
-    color: "#fb8072"
-  },
-  "prostate-cancer_nos": {
-    title: "Prostate - Cancer NOS",
-    note: "Prostate-Cancer NOS",
-    color: "#80b1d3"
-  },
-  "nsclc-benign": {
-    title: "NSCLC-Benign",
-    note: "NSCLC-Benign",
-    color: "#fdb462"
-  },
-  "nsclc-squamous_ca": {
-    title: "NSCLC - Squamous CA",
-    note: "NSCLC-Squamous CA",
-    color: "#b3de69"
-  },
-  "nsclc-adeno_ca_all": {
-    title: "NSCLC - Adeno CA (all)",
-    note: "NSCLC-Adeno CA (all)",
-    color: "#fccde5"
-  },
-  "nsclc-acinar": {
-    title: "NSCLC - Acinar",
-    note: "NSCLC-Acinar",
-    color: "#d9d9d9"
-  },
-  "nsclc-lapidic": {
-    title: "NSCLC - Lapidic",
-    note: "NSCLC-Lapidic",
-    color: "#bc80bd"
-  },
-  "nsclc-solid": {
-    title: "NSCLC - Solid",
-    note: "NSCLC-Solid",
-    color: "#ccebc5"
-  },
-  "nsclc-papillary": {
-    title: "NSCLC - Papillary",
-    note: "NSCLC-Papillary",
-    color: "#ffed6f"
-  },
-  "nsclc-micropapillary": {
-    title: "NSCLC - Micropapillary",
-    note: "NSCLC-Micropapillary",
-    color: "#6a3d9a"
+  {
+    title: "Tumor",
+    value: "Tumor",
+    children: [
+      {
+        title: "Positive",
+        value: "Positive",
+        children: [
+          {
+            title: 100,
+            value: 100,
+            color: "#790cff",
+            data: { color: "#790cff", type: "Tumor-Positive", size: 100 }
+          },
+          {
+            title: 300,
+            value: 300,
+            color: "#790cff",
+            data: { color: "#790cff", type: "Tumor-Positive", size: 300 }
+          },
+          {
+            title: 1000,
+            value: 1000,
+            color: "#790cff",
+            data: { color: "#790cff", type: "Tumor-Positive", size: 1000 }
+          },
+          {
+            title: 2000,
+            value: 2000,
+            color: "#790cff",
+            data: { color: "#790cff", type: "Tumor-Positive", size: 2000 }
+          }
+        ]
+      },
+      {
+        title: "Negative",
+        value: "Negative",
+        children: [
+          {
+            title: 100,
+            value: 100,
+            color: "#92ff0c",
+            data: { color: "#92ff0c", type: "Tumor-Negative", size: 100 }
+          },
+          {
+            title: 300,
+            value: 300,
+            color: "#92ff0c",
+            data: { color: "#92ff0c", type: "Tumor-Negative", size: 300 }
+          },
+          {
+            title: 1000,
+            value: 1000,
+            color: "#92ff0c",
+            data: { color: "#92ff0c", type: "Tumor-Negative", size: 1000 }
+          },
+          {
+            title: 2000,
+            value: 2000,
+            color: "#92ff0c",
+            data: { color: "#92ff0c", type: "Tumor-Negative", size: 2000 }
+          }
+        ]
+      }
+    ]
   }
-};
+];
+// preset pens
+const PEN_CONFIG = [
+  {
+    title: "Prostate",
+    value: "Prostate",
+    children: [
+      {
+        title: "Benign",
+        value: "Benign",
+        color: "#8dd3c7",
+        checked: true,
+        data: { color: "#8dd3c7", type: "Prostate-Benign" }
+      },
+      {
+        title: "Gleason 3",
+        value: "Gleason 3",
+        color: "#ffffb3",
+        data: { color: "#ffffb3", type: "Prostate-Gleason 3" }
+      },
+      {
+        title: "Gleason 4",
+        value: "Gleason 4",
+        color: "#bebada",
+        data: { color: "#bebada", type: "Prostate-Gleason 4" }
+      },
+      {
+        title: "Gleason 5",
+        value: "Gleason 5",
+        color: "#fb8072",
+        data: { color: "#fb8072", type: "Prostate-Gleason 5" }
+      },
+      {
+        title: "Cancer NOS",
+        value: "Cancer NOS",
+        color: "#80b1d3",
+        data: { color: "#80b1d3", type: "Prostate-Cancer NOS" }
+      }
+    ]
+  },
+  {
+    title: "NSCLC",
+    value: "NSCLC",
+    children: [
+      {
+        title: "Benign",
+        value: "Benign",
+        color: "#fdb462",
+        data: { color: "#fdb462", type: "NSCLC-Benign" }
+      },
+      {
+        title: "Squamous CA",
+        value: "Squamous CA",
+        color: "#b3de69",
+        data: { color: "#b3de69", type: "NSCLC-Squamous CA" }
+      },
+      {
+        title: "Adeno CA (all)",
+        value: "Adeno CA (all)",
+        color: "#fccde5",
+        data: { color: "#fccde5", type: "NSCLC-Adeno CA (all)" }
+      },
+      {
+        title: "Acinar",
+        value: "Acinar",
+        color: "#d9d9d9",
+        data: { color: "#d9d9d9", type: "NSCLC-Acinar" }
+      },
+      {
+        title: "Lapidic",
+        value: "Lapidic",
+        color: "#bc80bd",
+        data: { color: "#bc80bd", type: "NSCLC-Lapidic" }
+      },
+      {
+        title: "Solid",
+        value: "Solid",
+        color: "#ccebc5",
+        data: { color: "#ccebc5", type: "NSCLC-Solid" }
+      },
+      {
+        title: "Papillary",
+        value: "Papillary",
+        color: "#ffed6f",
+        data: { color: "#ffed6f", type: "NSCLC-Papillary" }
+      },
+      {
+        title: "Micropapillary",
+        value: "Micropapillary",
+        color: "#6a3d9a",
+        data: { color: "#6a3d9a", type: "NSCLC-Micropapillary" }
+      }
+    ]
+  }
+];
+
 const $D = {
   pages: {
     home: "../table.html",
@@ -153,7 +329,7 @@ function initCore() {
   // create the message queue
   $UI.message = new MessageQueue();
 
-  // TODO zoom info and mmp
+  // zoom info and mmp
   const opt = {
     draw: {
       // extend context menu btn group
@@ -312,7 +488,7 @@ function initCore() {
     initUIcomponents();
     // action tracker start
     tracker = new Tracker($CAMIC, $D.params.data._id.$oid, getUserId());
-    tracker.start();    
+    tracker.start();
   });
 }
 
@@ -383,25 +559,26 @@ function initUIcomponents() {
   //   ]
   // });
 
-  //preset label
-  const penList = [];
-  for (let name in PEN_CONFIG) {
-    penList.push({
-      value: name,
-      title: PEN_CONFIG[name].title,
-      color: PEN_CONFIG[name].color
-    });
-  }
+  // brush
 
-  penList[0].checked = true;
+  subToolsOpt.push({
+    name: "brush",
+    icon: "brush", // material icons' name
+    title: "Brush Labels",
+    type: "multi-dropdown",
+    value: "brush",
+    callback: toggleBrush,
+    dropdownList: BRUSH_CONFIG
+  });
+
   subToolsOpt.push({
     name: "preset_label",
-    icon: "brush", // material icons' name
+    icon: "colorize", // material icons' name
     title: "Preset Labels",
-    type: "dropdown",
+    type: "multi-dropdown",
     value: "prelabels",
     callback: drawLabel,
-    dropdownList: penList
+    dropdownList: PEN_CONFIG
   });
 
   // magnifier
@@ -659,7 +836,7 @@ function initUIcomponents() {
           }
         ],
         changeCallBack: function(e) {
-          console.log(e);
+          // console.log(e);
         }
       });
       $UI.layersSideMenu.clearContent();
@@ -781,11 +958,21 @@ function initUIcomponents() {
   // $UI.multSelector = new MultSelector({id:'mult_selector'});
   // $UI.multSelector.addHandler('cancel',multSelector_cancel);
   // $UI.multSelector.addHandler('action',multSelector_action);
+
+  // add eventlistenter for two btns
+  const brushClearBtn = document.querySelector("#bctrl button.reset");
+  brushClearBtn.addEventListener("click", reset_callback);
+  const brushSaveBtn = document.querySelector("#bctrl button.action");
+  brushSaveBtn.addEventListener("click", function(e) {
+    saveBrushLabel(false);
+  });
 }
 function createLayerViewer(id, viewerData, callback) {
   const layersViewer = new LayersViewer({
     id: id,
     data: viewerData,
+    removeCallback: removeCallback,
+    locationCallback:locationCallback,
     callback: callback
   });
   layersViewer.elt.parentNode.removeChild(layersViewer.elt);

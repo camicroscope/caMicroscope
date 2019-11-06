@@ -531,6 +531,7 @@ function getGrids(points, size) {
   }
   return grids;
 }
+
 function getTopLeft(point, size) {
   return [
     Math.floor(point[0] / size[0]) * size[0],
@@ -793,6 +794,28 @@ function getUserId() {
     }
   }
   return uid;
+}
+
+function getBounds(points) {
+  let max, min;
+  points.forEach(point => {
+    if (!min && !max) {
+      min = [point[0], point[1]];
+      max = [point[0], point[1]];
+    } else {
+      min[0] = Math.min(point[0], min[0]);
+      max[0] = Math.max(point[0], max[0]);
+      min[1] = Math.min(point[1], min[1]);
+      max[1] = Math.max(point[1], max[1]);
+    }
+  });
+  return [
+    [min[0], min[1]], // top-left
+    [max[0], min[1]], //top-right
+    [max[0], max[1]], // bottom-right
+    [min[0], max[1]],
+    [min[0], min[1]]
+  ];
 }
 
 class Tracker {

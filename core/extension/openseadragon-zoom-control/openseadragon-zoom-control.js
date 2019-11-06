@@ -304,7 +304,9 @@
         this.range.max = this.imageZoomLevels.length - 1;
         this.range.step = 1;
     }
-
+    $.CaZoomControl.prototype.getMaxImageZoom = function() {
+        return getMaxImageZoom(this._viewer);
+    }
     /**
      * @private
      * getZoomIndex

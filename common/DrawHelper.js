@@ -84,12 +84,14 @@ caDrawHelper.prototype.drawMultiline = function(ctx,array){
 }
 
 caDrawHelper.prototype.drawMultiGrid = function(ctx, points, size){
-    ctx.beginPath();
+    const path = new Path();
     points.forEach(p=>{
-        ctx.rect(p[0],p[1],size[0],size[1]);
+        path.rect(p[0],p[1],size[0],size[1]);
     });
-    ctx.fill();
-    // ctx.stroke();
+    path.closePath()
+    path.fill(ctx);
+    // return points and path
+    return path;
 }
 
 /**
@@ -194,43 +196,25 @@ caDrawHelper.prototype.draw = function(ctx, image_data){
     }
 
 }
-caDrawHelper.prototype.drawGrids = function(ctx, image_data, size){
+
+caDrawHelper.prototype.drawGrids = function(ctx, image_data){
     image_data.forEach(polygon =>{
         const style = polygon.properties.style;
+        const size = polygon.properties.size;
         //this.setStyle(ctx, style);
         ctx.fillStyle = hexToRgbA(polygon.properties.style.color,0.5);
         const points = polygon.geometry.coordinates[0];
         const grids = getGrids(points, size);
         this.drawMultiGrid(ctx, grids, size);
     })
-    //     const polygon = image_data[i];
-    //     const style = polygon.properties.style;
-
-    //     // if there is path using path to draw
-    //     // if(polygon.geometry.path){
-    //     //     ctx.fillStyle = hexToRgbA(style.color,0.5);
-    //     //     polygon.geometry.path.fill(ctx);
-    //     //     continue;
-    //     // }
-    //     // other styles
-    //     this.setStyle(ctx, style);
-    //     // fill color
-        
-    //     // if no data 
-    //     const points = polygon.geometry.coordinates[0];
-    //     if(polygon.geometry.type=='LineString'){
-    //         ctx.fillStyle = style.color;
-    //         polygon.geometry.path = this.drawMultiline(ctx, points);
-    //     }else{
-           
-    //         ctx.fillStyle = (ctx.isFill ==undefined || ctx.isFill)?hexToRgbA(style.color,0.5):style.color;
-    //         polygon.geometry.path = this.drawPolygon(ctx, points);
-    //     }
-        
-    // }
-
 }
-
+caDrawHelper.prototype.drawBrushGrids = function(ctx, polygon){
+    const style = polygon.properties.style;
+    const grids = polygon.geometry.coordinates[0];
+    const size = polygon.properties.size;
+    ctx.fillStyle = hexToRgbA(polygon.properties.style.color,0.5);
+    polygon.geometry.path = this.drawMultiGrid(ctx, grids, size);
+}
 
 /**
  * set the style to a specific context2D
