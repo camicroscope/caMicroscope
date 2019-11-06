@@ -1,15 +1,15 @@
 function PathDbMods() {
   console.log("PathDbMods()...");
   // put the auth jwt in cookie as token
-//  fetch("/jwt/token", {
-//    method: 'GET',
-//    credentials: 'include'
-//  }).then(x => x.json()).then(x => {
-//    console.log(x)
-//    if (x.hasOwnProperty('token') && x.token) {
-//      document.cookie = "token=" + x.token + ";"
-//    }
-//  })
+  fetch("/jwt/token", {
+    method: 'GET',
+    credentials: 'include'
+  }).then(x => x.json()).then(x => {
+    console.log(x)
+    if (x.hasOwnProperty('token') && x.token) {
+      document.cookie = "token=" + x.token + ";"
+    }
+  })
 
   function convertPathDbSlide(data){
     let x={}
