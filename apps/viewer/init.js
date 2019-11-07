@@ -6,8 +6,8 @@ let $minorCAMIC = {};
 // for all instances of UI components
 const $UI = new Map();
 
-// brush
-const BRUSH_CONFIG = [
+// preset pens
+const PEN_CONFIG = [
   {
     title: "Lymph",
     value: "Lymph",
@@ -15,15 +15,53 @@ const BRUSH_CONFIG = [
       {
         title: "Positive",
         value: "Positive",
-        color: "#ff6296",
-        checked: true,
-        data: { color: "#ff6296", type: "Lymph-Positive", size: 100 }
+        children: [
+          {
+            title: 100,
+            value: 100,
+            color: "#ff6296",
+            checked: true,
+            data: {
+              color: "#ff6296",
+              mode: "grid",
+              type: "Lymph-Positive",
+              size: 100
+            }
+          },
+          {
+            title: "Point",
+            value: "Point",
+            color: "#ff6296",
+            data: { color: "#ff6296", mode: "point", type: "Lymph-Positive" }
+          }
+        ]
       },
       {
         title: "Negative",
         value: "Negative",
-        color: "#62ffcb",
-        data: { color: "#62ffcb", type: "Lymph-Negative", size: 100 }
+        children: [
+          {
+            title: 100,
+            value: 100,
+            color: "#62ffcb",
+            data: {
+              color: "#62ffcb",
+              mode: "grid",
+              type: "Lymph-Negative",
+              size: 100
+            }
+          },
+          {
+            title: "Point",
+            value: "Point",
+            color: "#62ffcb",
+            data: {
+              color: "#62ffcb",
+              mode: "point",
+              type: "Lymph-Negative"
+            }
+          }
+        ]
       }
     ]
   },
@@ -35,13 +73,23 @@ const BRUSH_CONFIG = [
         title: "Positive",
         value: "Positive",
         color: "#ffcb62",
-        data: { color: "#ffcb62", type: "Neutrophil-Positive", size: 50 }
+        data: {
+          color: "#ffcb62",
+          mode: "grid",
+          type: "Neutrophil-Positive",
+          size: 50
+        }
       },
       {
         title: "Negative",
         value: "Negative",
         color: "#6296ff",
-        data: { color: "#6296ff", type: "Neutrophil-Negative", size: 50 }
+        data: {
+          color: "#6296ff",
+          mode: "grid",
+          type: "Neutrophil-Negative",
+          size: 50
+        }
       }
     ]
   },
@@ -57,13 +105,23 @@ const BRUSH_CONFIG = [
             title: 100,
             value: 100,
             color: "#ff00d9",
-            data: { color: "#ff00d9", type: "Necrosis-Positive", size: 100 }
+            data: {
+              color: "#ff00d9",
+              mode: "grid",
+              type: "Necrosis-Positive",
+              size: 100
+            }
           },
           {
             title: 500,
             value: 500,
             color: "#ff00d9",
-            data: { color: "#ff00d9", type: "Necrosis-Positive", size: 500 }
+            data: {
+              color: "#ff00d9",
+              mode: "grid",
+              type: "Necrosis-Positive",
+              size: 500
+            }
           }
         ]
       },
@@ -75,13 +133,23 @@ const BRUSH_CONFIG = [
             title: 100,
             value: 100,
             color: "#00ff26",
-            data: { color: "#00ff26", type: "Necrosis-Negative", size: 100 }
+            data: {
+              color: "#00ff26",
+              mode: "grid",
+              type: "Necrosis-Negative",
+              size: 100
+            }
           },
           {
             title: 500,
             value: 500,
             color: "#00ff26",
-            data: { color: "#00ff26", type: "Necrosis-Negative", size: 500 }
+            data: {
+              color: "#00ff26",
+              mode: "grid",
+              type: "Necrosis-Negative",
+              size: 500
+            }
           }
         ]
       }
@@ -99,25 +167,45 @@ const BRUSH_CONFIG = [
             title: 100,
             value: 100,
             color: "#790cff",
-            data: { color: "#790cff", type: "Tumor-Positive", size: 100 }
+            data: {
+              color: "#790cff",
+              mode: "grid",
+              type: "Tumor-Positive",
+              size: 100
+            }
           },
           {
             title: 300,
             value: 300,
             color: "#790cff",
-            data: { color: "#790cff", type: "Tumor-Positive", size: 300 }
+            data: {
+              color: "#790cff",
+              mode: "grid",
+              type: "Tumor-Positive",
+              size: 300
+            }
           },
           {
             title: 1000,
             value: 1000,
             color: "#790cff",
-            data: { color: "#790cff", type: "Tumor-Positive", size: 1000 }
+            data: {
+              color: "#790cff",
+              mode: "grid",
+              type: "Tumor-Positive",
+              size: 1000
+            }
           },
           {
             title: 2000,
             value: 2000,
             color: "#790cff",
-            data: { color: "#790cff", type: "Tumor-Positive", size: 2000 }
+            data: {
+              color: "#790cff",
+              mode: "grid",
+              type: "Tumor-Positive",
+              size: 2000
+            }
           }
         ]
       },
@@ -129,33 +217,50 @@ const BRUSH_CONFIG = [
             title: 100,
             value: 100,
             color: "#92ff0c",
-            data: { color: "#92ff0c", type: "Tumor-Negative", size: 100 }
+            data: {
+              color: "#92ff0c",
+              mode: "grid",
+              type: "Tumor-Negative",
+              size: 100
+            }
           },
           {
             title: 300,
             value: 300,
             color: "#92ff0c",
-            data: { color: "#92ff0c", type: "Tumor-Negative", size: 300 }
+            data: {
+              color: "#92ff0c",
+              mode: "grid",
+              type: "Tumor-Negative",
+              size: 300
+            }
           },
           {
             title: 1000,
             value: 1000,
             color: "#92ff0c",
-            data: { color: "#92ff0c", type: "Tumor-Negative", size: 1000 }
+            data: {
+              color: "#92ff0c",
+              mode: "grid",
+              type: "Tumor-Negative",
+              size: 1000
+            }
           },
           {
             title: 2000,
             value: 2000,
             color: "#92ff0c",
-            data: { color: "#92ff0c", type: "Tumor-Negative", size: 2000 }
+            data: {
+              color: "#92ff0c",
+              mode: "grid",
+              type: "Tumor-Negative",
+              size: 2000
+            }
           }
         ]
       }
     ]
-  }
-];
-// preset pens
-const PEN_CONFIG = [
+  },  
   {
     title: "Prostate",
     value: "Prostate",
@@ -165,31 +270,31 @@ const PEN_CONFIG = [
         value: "Benign",
         color: "#8dd3c7",
         checked: true,
-        data: { color: "#8dd3c7", type: "Prostate-Benign" }
+        data: { color: "#8dd3c7", mode: "free", type: "Prostate-Benign" }
       },
       {
         title: "Gleason 3",
         value: "Gleason 3",
         color: "#ffffb3",
-        data: { color: "#ffffb3", type: "Prostate-Gleason 3" }
+        data: { color: "#ffffb3", mode: "free", type: "Prostate-Gleason 3" }
       },
       {
         title: "Gleason 4",
         value: "Gleason 4",
         color: "#bebada",
-        data: { color: "#bebada", type: "Prostate-Gleason 4" }
+        data: { color: "#bebada", mode: "free", type: "Prostate-Gleason 4" }
       },
       {
         title: "Gleason 5",
         value: "Gleason 5",
         color: "#fb8072",
-        data: { color: "#fb8072", type: "Prostate-Gleason 5" }
+        data: { color: "#fb8072", mode: "free", type: "Prostate-Gleason 5" }
       },
       {
         title: "Cancer NOS",
         value: "Cancer NOS",
         color: "#80b1d3",
-        data: { color: "#80b1d3", type: "Prostate-Cancer NOS" }
+        data: { color: "#80b1d3", mode: "free", type: "Prostate-Cancer NOS" }
       }
     ]
   },
@@ -201,49 +306,49 @@ const PEN_CONFIG = [
         title: "Benign",
         value: "Benign",
         color: "#fdb462",
-        data: { color: "#fdb462", type: "NSCLC-Benign" }
+        data: { color: "#fdb462", mode: "free", type: "NSCLC-Benign" }
       },
       {
         title: "Squamous CA",
         value: "Squamous CA",
         color: "#b3de69",
-        data: { color: "#b3de69", type: "NSCLC-Squamous CA" }
+        data: { color: "#b3de69", mode: "free", type: "NSCLC-Squamous CA" }
       },
       {
         title: "Adeno CA (all)",
         value: "Adeno CA (all)",
         color: "#fccde5",
-        data: { color: "#fccde5", type: "NSCLC-Adeno CA (all)" }
+        data: { color: "#fccde5", mode: "free", type: "NSCLC-Adeno CA (all)" }
       },
       {
         title: "Acinar",
         value: "Acinar",
         color: "#d9d9d9",
-        data: { color: "#d9d9d9", type: "NSCLC-Acinar" }
+        data: { color: "#d9d9d9", mode: "free", type: "NSCLC-Acinar" }
       },
       {
         title: "Lapidic",
         value: "Lapidic",
         color: "#bc80bd",
-        data: { color: "#bc80bd", type: "NSCLC-Lapidic" }
+        data: { color: "#bc80bd", mode: "free", type: "NSCLC-Lapidic" }
       },
       {
         title: "Solid",
         value: "Solid",
         color: "#ccebc5",
-        data: { color: "#ccebc5", type: "NSCLC-Solid" }
+        data: { color: "#ccebc5", mode: "free", type: "NSCLC-Solid" }
       },
       {
         title: "Papillary",
         value: "Papillary",
         color: "#ffed6f",
-        data: { color: "#ffed6f", type: "NSCLC-Papillary" }
+        data: { color: "#ffed6f", mode: "free", type: "NSCLC-Papillary" }
       },
       {
         title: "Micropapillary",
         value: "Micropapillary",
         color: "#6a3d9a",
-        data: { color: "#6a3d9a", type: "NSCLC-Micropapillary" }
+        data: { color: "#6a3d9a", mode: "free", type: "NSCLC-Micropapillary" }
       }
     ]
   }
@@ -561,15 +666,15 @@ function initUIcomponents() {
 
   // brush
 
-  subToolsOpt.push({
-    name: "brush",
-    icon: "brush", // material icons' name
-    title: "Brush Labels",
-    type: "multi-dropdown",
-    value: "brush",
-    callback: toggleBrush,
-    dropdownList: BRUSH_CONFIG
-  });
+  // subToolsOpt.push({
+  //   name: "brush",
+  //   icon: "brush", // material icons' name
+  //   title: "Brush Labels",
+  //   type: "multi-dropdown",
+  //   value: "brush",
+  //   callback: toggleBrush,
+  //   dropdownList: BRUSH_CONFIG
+  // });
 
   subToolsOpt.push({
     name: "preset_label",
@@ -960,19 +1065,19 @@ function initUIcomponents() {
   // $UI.multSelector.addHandler('action',multSelector_action);
 
   // add eventlistenter for two btns
-  const brushClearBtn = document.querySelector("#bctrl button.reset");
-  brushClearBtn.addEventListener("click", reset_callback);
-  const brushSaveBtn = document.querySelector("#bctrl button.action");
-  brushSaveBtn.addEventListener("click", function(e) {
-    saveBrushLabel(false);
-  });
+  // const brushClearBtn = document.querySelector("#bctrl button.reset");
+  // brushClearBtn.addEventListener("click", reset_callback);
+  // const brushSaveBtn = document.querySelector("#bctrl button.action");
+  // brushSaveBtn.addEventListener("click", function(e) {
+  //   saveBrushLabel(false);
+  // });
 }
 function createLayerViewer(id, viewerData, callback) {
   const layersViewer = new LayersViewer({
     id: id,
     data: viewerData,
     removeCallback: removeCallback,
-    locationCallback:locationCallback,
+    locationCallback: locationCallback,
     callback: callback
   });
   layersViewer.elt.parentNode.removeChild(layersViewer.elt);

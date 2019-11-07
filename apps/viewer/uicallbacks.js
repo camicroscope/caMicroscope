@@ -271,6 +271,7 @@ function drawLabel(e) {
     alert("Draw Doesn't Initialize");
     return;
   }
+
   if (e.status) {
     if ($CAMIC.status == "label") {
       presetLabelOn.call(this, { ...e.data });
@@ -298,7 +299,9 @@ function drawLabel(e) {
 function presetLabelOn(label) {
   if (!$CAMIC.viewer.canvasDrawInstance) return;
   const canvasDraw = $CAMIC.viewer.canvasDrawInstance;
-  canvasDraw.drawMode = "free";
+  canvasDraw.drawMode = label.mode;
+  if (label.mode == "grid")
+    canvasDraw.size = [parseInt(label.size), parseInt(label.size)];
   canvasDraw.style.color = label.color;
   canvasDraw.drawOn();
   $CAMIC.status = "label";
@@ -349,64 +352,6 @@ function toolsOff() {
     case "brush":
       brushOff();
       break;
-  }
-  return;
-  if (
-    $CAMIC.status != "normal" ||
-    $CAMIC.status != "brush" ||
-    $CAMIC.status != "label"
-  )
-    return;
-  // normal / brush / label / magnifier / measure
-  if (!$CAMIC.viewer.canvasDrawInstance) return;
-  const canvasDraw = $CAMIC.viewer.canvasDrawInstance;
-
-  if (
-    canvasDraw._draws_data_.length &&
-    confirm(`Do You Want To Save Existed Annotation Before You Draw New One?`)
-  ) {
-    switch ($CAMIC.status) {
-      case "normal":
-        saveAnnotation();
-        break;
-      case "brush":
-        saveBrushLabel();
-        break;
-      case "label":
-        savePresetLabel();
-        break;
-      default:
-        //
-        break;
-    }
-  } else if ($CAMIC.status) {
-    canvasDraw.clear();
-    canvasDraw.drawOff();
-    $CAMIC.drawContextmenu.off();
-    $UI.appsSideMenu.close();
-    //
-    switch ($CAMIC.status) {
-      case "normal":
-        toggleOffDrawBtns();
-        break;
-      case "brush":
-        $UI.toolbar
-          .getSubTool("brush")
-          .querySelector("input[type=checkbox]").checked = false;
-        $UI.toolbar.getSubTool("brush").querySelector("label").style.color = "";
-        break;
-      case "label":
-        $UI.toolbar
-          .getSubTool("preset_label")
-          .querySelector("input[type=checkbox]").checked = false;
-        $UI.toolbar
-          .getSubTool("preset_label")
-          .querySelector("label").style.color = "";
-        break;
-      default:
-        //
-        break;
-    }
   }
 }
 
@@ -531,7 +476,7 @@ function brushOn(d) {
   bctrl.style.display = "block";
 
   const canvasDraw = $CAMIC.viewer.canvasDrawInstance;
-  canvasDraw.drawMode = "grid";
+  canvasDraw.drawMode = d.mode;
   canvasDraw.size = [parseInt(d.size), parseInt(d.size)];
   canvasDraw.style.color = d.color;
   canvasDraw.brushType = d.type;
@@ -977,29 +922,67 @@ function savePresetLabel() {
     name: exec_id,
     notes: data.type
   };
-
-  const annotJson = {
-    creator: getUserId(),
-    created_date: new Date(),
-    provenance: {
-      image: {
-        slide: $D.params.slideId
+  const feature = $CAMIC.viewer.canvasDrawInstance.getImageFeatureCollection()
+    .features[0];
+  let annotJson;
+  if (feature.properties.size) {
+    // brush
+    const values = getGrids(
+      feature.geometry.coordinates[0],
+      feature.properties.size
+    );
+    const set = new Set();
+    values.map(i => i.toString()).forEach(v => set.add(v));
+    const points = Array.from(set).map(d => d.split(","));
+    annotJson = {
+      creator: getUserId(),
+      created_date: new Date(),
+      provenance: {
+        image: {
+          slide: $D.params.slideId
+        },
+        analysis: {
+          source: "human",
+          execution_id: exec_id,
+          name: noteData.name,
+          type: "label",
+          isGrid: true
+        }
       },
-      analysis: {
-        source: "human",
-        execution_id: exec_id,
-        name: noteData.name,
-        type: "label"
-      }
-    },
-    properties: {
-      annotations: noteData
-    },
-    geometries: ImageFeaturesToVieweportFeatures(
-      $CAMIC.viewer,
-      $CAMIC.viewer.canvasDrawInstance.getImageFeatureCollection()
-    )
-  };
+      properties: {
+        annotations: noteData
+      },
+      geometries: convertGeometries(points, {
+        note: data.type,
+        size: feature.properties.size,
+        color: feature.properties.style.color
+      })
+    };
+  } else {
+    // point / polygon / stringLine
+    annotJson = {
+      creator: getUserId(),
+      created_date: new Date(),
+      provenance: {
+        image: {
+          slide: $D.params.slideId
+        },
+        analysis: {
+          source: "human",
+          execution_id: exec_id,
+          name: noteData.name,
+          type: "label"
+        }
+      },
+      properties: {
+        annotations: noteData
+      },
+      geometries: ImageFeaturesToVieweportFeatures(
+        $CAMIC.viewer,
+        $CAMIC.viewer.canvasDrawInstance.getImageFeatureCollection()
+      )
+    };
+  }
 
   $CAMIC.store
     .addMark(annotJson)
@@ -1144,6 +1127,7 @@ function anno_callback(data) {
     )
   };
 
+  // save annotation
   $CAMIC.store
     .addMark(annotJson)
     .then(data => {
@@ -1444,40 +1428,43 @@ function loadAnnotationById(camic, layerData, callback) {
         item.clickable = false;
         item.hoverable = false;
       } else {
+        data[0].geometries = VieweportFeaturesToImageFeatures(
+          camic.viewer,
+          data[0].geometries
+        );
         if (data[0].provenance.analysis.isGrid) {
           const width = $CAMIC.viewer.imagingHelper.imgWidth;
           const height = $CAMIC.viewer.imagingHelper.imgHeight;
 
           const feature = data[0].geometries.features[0];
           const size = feature.properties.size;
-          const points = feature.geometry.coordinates[0];
-          const bounds = feature.bound.coordinates[0];
+          // const points = feature.geometry.coordinates[0];
+          // const bounds = feature.bound.coordinates[0];
           feature.properties.size = [
             Math.round(size[0] * width),
             Math.round(size[1] * height)
           ];
-          feature.geometry.coordinates[0] = points.map(p => [
-            Math.round(p[0] * width),
-            Math.round(p[1] * height)
-          ]);
-          feature.bound.coordinates[0] = bounds.map(p => [
-            Math.round(p[0] * width),
-            Math.round(p[1] * height)
-          ]);
-          item.data = data[0];
-          item.render = anno_brush_render;
+          // feature.geometry.coordinates[0] = points.map(p => [
+          //   Math.round(p[0] * width),
+          //   Math.round(p[1] * height)
+          // ]);
+          // feature.bound.coordinates[0] = bounds.map(p => [
+          //   Math.round(p[0] * width),
+          //   Math.round(p[1] * height)
+          // ]);
+          // item.data = data[0];
+          // item.render = anno_brush_render;
         } else {
-          data[0].geometries = VieweportFeaturesToImageFeatures(
-            camic.viewer,
-            data[0].geometries
-          );
-          item.data = data[0];
-          // try to render across multiple objects, by mapping to all and flattening
-          // item.data = data.map(d=>{
-          // 	return VieweportFeaturesToImageFeatures(camic.viewer, d.geometries).features
-          // }).flat();
-          item.render = anno_render;
+          // data[0].geometries = VieweportFeaturesToImageFeatures(
+          //   camic.viewer,
+          //   data[0].geometries
+          // );
+          // item.data = data[0];
+          // item.render = anno_render;
         }
+
+        item.data = data[0];
+        item.render = anno_render;
       }
 
       // create lay and update view
@@ -1503,7 +1490,6 @@ function removeCallback(layerData) {
   if (!item.data) {
     // load layer data
     loadAnnotationById($CAMIC, layerData, function() {
-      console.log("data", this);
       anno_delete({
         id: layerData.item.id,
         oid: layerData.item.data._id.$oid,
@@ -1522,11 +1508,22 @@ function removeCallback(layerData) {
 function locationCallback(layerData) {
   item = layerData.item;
   if (item.typeName !== "human" || item.data == null) return;
-  const bound = item.data.geometries.features[0].bound.coordinates[0];
-  locateAnnotation(bound);
+  if (item.data.geometries.features[0].geometry.type == "Point") {
+    const bound = item.data.geometries.features[0].bound.coordinates;
+    const center = $CAMIC.viewer.viewport.imageToViewportCoordinates(bound[0],bound[1])
+    $CAMIC.viewer.viewport.panTo(
+      center
+    );
+  } else {
+    const bound = item.data.geometries.features[0].bound.coordinates[0];
+    locateAnnotation(bound);
+  }
 }
 
 function locateAnnotation(bound) {
+  // if(){
+
+  // }
   const [minx, miny] = bound[0];
   const [maxx, maxy] = bound[2];
   const rectangle = $CAMIC.viewer.viewport.imageToViewportRectangle(
@@ -1737,11 +1734,14 @@ function createHeatMapList(list) {
 /* --  -- */
 /* -- for render anno_data to canavs -- */
 function anno_render(ctx, data) {
+  const imagingHelper = this.viewer.imagingHelper;
+  ctx._lw =
+    (imagingHelper.physicalToDataX(1) - imagingHelper.physicalToDataX(0)) >> 0;
+  ctx.radius =
+    (imagingHelper.physicalToDataX(3) - imagingHelper.physicalToDataX(0)) >> 0;
   DrawHelper.draw(ctx, data.geometries.features);
-  //DrawHelper.draw(this._canvas_ctx, this.data.canvasData);
 }
 function old_anno_render(ctx, data) {
-  const imagingHelper = this.viewer.imagingHelper;
   const lineWidth =
     (imagingHelper.physicalToDataX(1) - imagingHelper.physicalToDataX(0)) >> 0;
   ctx.lineWidth = lineWidth;
