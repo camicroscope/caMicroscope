@@ -372,15 +372,6 @@ function VieweportFeaturesToImageFeatures(viewer, geometries) {
   this.imgHeight = image.source.dimensions.y;
 
   geometries.features = geometries.features.map(feature => {
-    if(feature.geometry.type=="Point"){
-      feature.geometry.coordinates = [
-          Math.round(feature.geometry.coordinates[0] * imgWidth),
-          Math.round(feature.geometry.coordinates[1] * imgHeight)];
-      feature.bound.coordinates =[
-        Math.round(feature.bound.coordinates[0] * imgWidth),
-        Math.round(feature.bound.coordinates[1] * imgHeight)];
-      return feature;
-    }
     feature.geometry.coordinates[0] = feature.geometry.coordinates[0].map(
       point => {
         //v_point = viewer.viewport.viewportToImageCoordinates(point[0],point[1]);
@@ -421,7 +412,6 @@ function VieweportFeaturesToImageFeaturesOLDMODEL(viewer, geometry) {
 }
 
 function covertToViewportFeature(width, height, og) {
-  og.geometry.type
   feature = {
     type: "Feature",
     properties: {
@@ -430,21 +420,14 @@ function covertToViewportFeature(width, height, og) {
       circumference: null
     },
     geometry: {
-      type: og.geometry.type,
+      type: "Polygon",
       coordinates: [[]]
     },
     bound: {
-      type: og.geometry.type,
+      type: "Polygon",
       coordinates: [[]]
     }
   };
-  if(og.geometry.type=='Point'){
-    let point = og.geometry.coordinates;
-    feature.geometry.coordinates = [point[0] / width, point[1] / height];
-    feature.bound.coordinates = [point[0] / width, point[1] / height];
-    extend(feature.properties.style, og.properties.style);
-    return feature;
-  }
   let points = og.geometry.coordinates[0];
   const path = og.geometry.path;
 

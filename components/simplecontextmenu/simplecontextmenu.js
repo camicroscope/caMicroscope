@@ -309,20 +309,8 @@ $.SimpleContextMenu.prototype.getHandler = function ( eventName ) {
 		style_rect.classList.add('material-icons');
 		style_rect.textContent = 'crop_portrait';
 		rect.appendChild(style_rect);
-		
-		const point = document.createElement('li');
-		point.dataset.model = 'point';
-		//free.classList.add('active');
-		const style_point = document.createElement('a');
-		style_point.classList.add('material-icons');
-		style_point.textContent = 'fiber_manual_record';
-		point.appendChild(style_point);
-		
-		
-		
 		style.appendChild(free);
 		style.appendChild(rect);
-		style.appendChild(point);
 		elt.appendChild(style);
 
 		return elt;
