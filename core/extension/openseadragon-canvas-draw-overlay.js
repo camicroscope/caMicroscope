@@ -72,7 +72,7 @@
     this.isDrawing = false;
     this.size = [];
     // create supplies free, square, rectangle, line
-    this.drawMode = options.drawMode || "free"; // 'free', 'square', 'rect', 'line', 'stepSquare'
+    this.drawMode = options.drawMode || "free"; // 'free', 'square', 'rect', 'line', 'stepSquare', 'grid', 'point'
     this.size = options.size || null;
     // ctx styles opt
     this.style = {
@@ -230,7 +230,9 @@
       ctx.lineWidth = this.style.lineWidth =
         (imagingHelper.physicalToDataX(2) - imagingHelper.physicalToDataX(0)) >>
         0;
-
+      ctx.radius =
+        (imagingHelper.physicalToDataX(3) - imagingHelper.physicalToDataX(0)) >>
+        0;
       DrawHelper.clearCanvas(ctx.canvas);
       ctx.translate(x, y);
       ctx.scale(zoom, zoom);
@@ -285,7 +287,12 @@
       this.style.lineWidth =
         (imagingHelper.physicalToDataX(2) - imagingHelper.physicalToDataX(0)) >>
         0;
-
+      this._draw_ctx_.radius =
+        (imagingHelper.physicalToDataX(3) - imagingHelper.physicalToDataX(0)) >>
+        0;
+      this._display_ctx_.radius =
+        (imagingHelper.physicalToDataX(3) - imagingHelper.physicalToDataX(0)) >>
+        0;
       //this.style.lineWidth = 2*Math.round(Math.max(iamgeBounds.width/this._containerWidth,iamgeBounds.height/this._containerHeight ));
     },
 
@@ -315,15 +322,20 @@
       this._display_ctx_.lineWidth = this.style.lineWidth =
         (imagingHelper.physicalToDataX(2) - imagingHelper.physicalToDataX(0)) >>
         0;
-      this.drawMode !== "grid"
-        ? DrawHelper.draw(
+      this._display_ctx_.radius =
+        (imagingHelper.physicalToDataX(3) - imagingHelper.physicalToDataX(0)) >>
+        0;
+      // this.drawMode !== "grid"
+      //   ? 
+        DrawHelper.draw(
             this._display_ctx_,
             this._draws_data_.slice(0, this._path_index)
-          )
-        : DrawHelper.drawGrids(
-            this._display_ctx_,
-            this._draws_data_.slice(0, this._path_index)
-          );
+        )
+        
+        // : DrawHelper.drawGrids(
+        //     this._display_ctx_,
+        //     this._draws_data_.slice(0, this._path_index)
+        //   );
       this._display_.getContext("2d").setTransform(1, 0, 0, 1, 0, 0);
     },
 
@@ -418,11 +430,26 @@
       this.isDrawing = true;
       this._draw_.style.cursor = "crosshair";
 
+      // create a point
+      if (this.drawMode === "point") {
+        this._last = [Math.round(img_point.x), Math.round(img_point.y)];
+        this.__newFeature(this._last.slice());
+
+        //
+        this.stopDrawing(e);
+        return;
+      }
+
       const imagingHelper = this._viewer.imagingHelper;
       this.style.lineWidth =
         (imagingHelper.physicalToDataX(2) - imagingHelper.physicalToDataX(0)) >>
         0;
-
+      this._draw_ctx_.radius =
+        (imagingHelper.physicalToDataX(3) - imagingHelper.physicalToDataX(0)) >>
+        0;
+      this._display_ctx_.radius =
+        (imagingHelper.physicalToDataX(3) - imagingHelper.physicalToDataX(0)) >>
+        0;
       this._last = [Math.round(img_point.x), Math.round(img_point.y)];
 
       this.__newFeature(this._last.slice());
@@ -656,6 +683,21 @@
      * @param  {Ojbect} first point
      */
     __newFeature: function(point) {
+      if (this.drawMode == "point") {
+        this._current_path_ = {
+          type: "Feature",
+          properties: {
+            style: {}
+          },
+          geometry: {
+            type: "Point",
+            coordinates: [...point]
+          },
+          bound: [...point]
+        };
+        return;
+      }
+
       this._current_path_ = {
         type: "Feature",
         properties: {
@@ -700,6 +742,40 @@
      * __endNewFeature create a new feature data.
      */
     __endNewFeature: function() {
+      if (this.drawMode == "point") {
+        this._current_path_.properties.style.color = this.style.color;
+        this._current_path_.properties.style.lineJoin = this.style.lineJoin;
+        this._current_path_.properties.style.lineCap = this.style.lineCap;
+        this._current_path_.properties.style.isFill = this.style.isFill;
+
+        if (this._path_index < this._draws_data_.length) {
+          this._draws_data_ = this._draws_data_.slice(0, this._path_index);
+        }
+
+        this._draws_data_.push(Object.assign({}, this._current_path_));
+
+        this._path_index++;
+        this._current_path_ = null;
+        DrawHelper.clearCanvas(this._draw_);
+        this._display_ctx_.lineWidth = this.style.lineWidth;
+        this.drawOnCanvas(
+          this._display_ctx_,
+          function() {
+            // this.drawMode !== "grid"
+            //   ? 
+              DrawHelper.draw(
+                  this._display_ctx_,
+                  this._draws_data_.slice(0, this._path_index)
+                )
+              // : DrawHelper.drawGrids(
+              //     this._display_ctx_,
+              //     this._draws_data_.slice(0, this._path_index),
+              //     this.size
+              //   );
+          }.bind(this)
+        );
+        return;
+      }
       if (
         !this._current_path_ ||
         this._current_path_.geometry.coordinates[0].length < 2 ||
@@ -776,15 +852,16 @@
       this.drawOnCanvas(
         this._display_ctx_,
         function() {
-          this.drawMode !== "grid"
-            ? DrawHelper.draw(
+          // this.drawMode !== "grid"
+          //   ? 
+            DrawHelper.draw(
                 this._display_ctx_,
                 this._draws_data_.slice(0, this._path_index)
               )
-            : DrawHelper.drawGrids(
-                this._display_ctx_,
-                this._draws_data_.slice(0, this._path_index)
-              );
+            // : DrawHelper.drawGrids(
+            //     this._display_ctx_,
+            //     this._draws_data_.slice(0, this._path_index)
+            //   );
         }.bind(this)
       );
     },

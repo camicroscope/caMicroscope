@@ -660,6 +660,24 @@ class Store {
    }
 
   /**
+   * add a log item
+   ** @param {object} json - the log data
+   * @returns {promise} - promise which resolves with data
+   **/
+  getConfigByName(name){
+    var suffix = "Configuration/getConfigByName"
+    var url = this.base + suffix;
+    var query = {
+      'name': name
+    }
+
+    return fetch(url + "?" + objToParamStr(query), {
+      credentials: "include",
+      mode: "cors"
+    }).then(this.errorHandler)
+
+  }
+  /**
    * post data
    * @param {string} type - the datatype to post
    * @param {object} data - the data to post

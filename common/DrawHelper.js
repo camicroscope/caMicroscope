@@ -82,7 +82,19 @@ caDrawHelper.prototype.drawMultiline = function(ctx,array){
         this.drawLine(ctx,array[i-1],array[i]);
     }
 }
-
+caDrawHelper.prototype.circle = function(ctx, point, radius){
+    const path = new Path();
+    path.arc(
+        point[0],
+        point[1], 
+        radius, 0, 2 * Math.PI
+    );
+    path.closePath();
+    path.strokeAndFill(ctx);
+    //path.stroke(ctx);
+    // return points and path
+    return path;
+}
 caDrawHelper.prototype.drawMultiGrid = function(ctx, points, size){
     const path = new Path();
     points.forEach(p=>{
@@ -185,8 +197,19 @@ caDrawHelper.prototype.draw = function(ctx, image_data){
         // if no data 
         const points = polygon.geometry.coordinates[0];
         if(polygon.geometry.type=='LineString'){
+            
             ctx.fillStyle = style.color;
-            polygon.geometry.path = this.drawMultiline(ctx, points);
+            if(polygon.properties.size){
+                polygon.geometry.path = this.drawGrid(ctx, polygon);
+            }else{
+                polygon.geometry.path = this.drawMultiline(ctx, points);
+            }
+            
+        }else if(polygon.geometry.type=='Point'){
+            ctx.fillStyle = (ctx.isFill ==undefined || ctx.isFill)?hexToRgbA(style.color,0.7):style.color;
+            polygon.geometry.path = this.circle(ctx, polygon.geometry.coordinates, ctx.radius);
+        }else if(false){
+
         }else{
            
             ctx.fillStyle = (ctx.isFill ==undefined || ctx.isFill)?hexToRgbA(style.color,0.5):style.color;
@@ -208,6 +231,16 @@ caDrawHelper.prototype.drawGrids = function(ctx, image_data){
         this.drawMultiGrid(ctx, grids, size);
     })
 }
+caDrawHelper.prototype.drawGrid = function(ctx, polygon){
+        const style = polygon.properties.style;
+        const size = polygon.properties.size;
+        //this.setStyle(ctx, style);
+        ctx.fillStyle = hexToRgbA(polygon.properties.style.color,0.5);
+        const points = polygon.geometry.coordinates[0];
+        const grids = getGrids(points, size);
+        return this.drawMultiGrid(ctx, grids, size);
+}
+
 caDrawHelper.prototype.drawBrushGrids = function(ctx, polygon){
     const style = polygon.properties.style;
     const grids = polygon.geometry.coordinates[0];

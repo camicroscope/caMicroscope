@@ -1,15 +1,24 @@
 function PathDbMods() {
   console.log("PathDbMods()...");
-  // put the auth jwt in cookie as token
-  fetch("/jwt/token", {
-    method: 'GET',
-    credentials: 'include'
-  }).then(x => x.json()).then(x => {
-    console.log(x)
-    if (x.hasOwnProperty('token') && x.token) {
-      document.cookie = "token=" + x.token + ";"
-    }
-  })
+  // determine if user is authenicated
+  fetch("/user/login_status?_format=json", {credentials: 'include'})
+    .then(response => response.json())
+    .then(function(data) {
+      if (data!=0) {
+         console.log("user is authenticated.  get jwt and put the auth jwt in cookie as token");
+         fetch("/jwt/token", {credentials:'include'})
+           .then(x => x.json()).then(x => {
+              console.log(x)
+              if (x.hasOwnProperty('token') && x.token) {
+                document.cookie = "token=" + x.token + ";"
+              }
+           })
+      } else {
+        console.log("user is unauthenticated.  let them see only public data");
+      }
+     }).catch(function(error) {
+      console.log("bad "+error.status);
+     })
 
   function convertPathDbSlide(data){
     let x={}
