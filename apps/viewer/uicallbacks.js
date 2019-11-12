@@ -1510,10 +1510,11 @@ function locationCallback(layerData) {
   if (item.typeName !== "human" || item.data == null) return;
   if (item.data.geometries.features[0].geometry.type == "Point") {
     const bound = item.data.geometries.features[0].bound.coordinates;
-    const center = $CAMIC.viewer.viewport.imageToViewportCoordinates(bound[0],bound[1])
-    $CAMIC.viewer.viewport.panTo(
-      center
+    const center = $CAMIC.viewer.viewport.imageToViewportCoordinates(
+      bound[0],
+      bound[1]
     );
+    $CAMIC.viewer.viewport.panTo(center);
   } else {
     const bound = item.data.geometries.features[0].bound.coordinates[0];
     locateAnnotation(bound);
@@ -1581,10 +1582,12 @@ function saveAnalytics() {
 function startDrawing(e) {
   if (
     $UI.toolbar.getSubTool("preset_label").querySelector("input[type=checkbox]")
-      .checked ||
-    $UI.toolbar.getSubTool("brush").querySelector("input[type=checkbox]")
       .checked
   ) {
+    //     ||
+    //   $UI.toolbar.getSubTool("brush").querySelector("input[type=checkbox]")
+    //     .checked
+    // )
     $CAMIC.viewer.canvasDrawInstance.stop = false;
   } else {
     $CAMIC.viewer.canvasDrawInstance.stop = !$UI.annotOptPanel._form_.isValid();
