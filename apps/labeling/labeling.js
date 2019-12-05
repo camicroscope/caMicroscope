@@ -247,6 +247,19 @@ function initCore() {
         value: "measure",
         name: "measure",
         callback: toggleMode
+      },
+      // 
+      {
+        id: "tutorial",
+        icon: "help",
+        title: "Tutorial",
+        type: "btn",
+        value: "tutorial",
+        callback: ()=>{
+
+          createTutorial();
+          // window.open('https://drive.google.com/file/d/1tgi31QO0Mu6YH7slPC9HDde0KtSTIWjT/view?usp=sharing');
+        }    
       }
       // {
       //   icon:'get_app',// material icons' name
@@ -560,9 +573,22 @@ function annotOff() {
   //$UI.toolbar.getSubTool('annotation').querySelector('label').style.backgroundColor = '';
   $UI.toolbar.getSubTool("annotation").querySelector("label").style.color = "";
 }
+function createTutorial(){
+  empty($UI.modalbox.body);
+  $UI.modalbox.setHeaderText('Tutorial');
+  
+  $UI.modalbox.body.innerHTML = `
+  <div style="float:left;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;">
+  <H3>The Example Of TIL densities ( <a href="https://drive.google.com/file/d/1tgi31QO0Mu6YH7slPC9HDde0KtSTIWjT/view?usp=sharing" target="_blank">For More Details, Visit Our Training Materials</a> )</H3>
+  <img src="til_tutorial.png" alt="Tutorial" width="80%">
+  </div>`;
+  $UI.modalbox.elt.querySelector(".modalbox-footer").innerHTML = '';
+  $UI.modalbox.open();
+}
 
 function createLabelList() {
   empty($UI.modalbox.body);
+  $UI.modalbox.setHeaderText('Labels Summary');
   const header = `
   <div style='display:table-row; font-weight:bold;'>
       <div style='text-align: initial; display: table-cell; padding: 5px;'>Label Type</div>

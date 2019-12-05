@@ -68,6 +68,7 @@
 	padding:16px;
 	font-size:14px;
   color: black;
+  display:flex;
 }
 
 .modalbox .modalbox-footer {

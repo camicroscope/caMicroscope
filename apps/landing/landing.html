@@ -62,9 +62,10 @@
                 modalbox.body.innerHTML = `
                     <label>User Name:<input type='text'/></label><button>SAVE</button>
                 `;
-                if(!sessionStorage.getItem('userName')){
+                if(!(sessionStorage.getItem('userName') || getUserId())){
                     modalbox.open();
                 }
+
                 const btn = modalbox.body.querySelector('button');
                 btn.addEventListener('click', e=>{
                    const name = modalbox.body.querySelector('input[type=text]').value;
