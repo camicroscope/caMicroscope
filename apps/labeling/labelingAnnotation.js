@@ -368,8 +368,17 @@ function initCore(){
 
           Loading.close();          
         }
-
-      }    
+      }, 
+      {
+        id: "tutorial",
+        icon: "help",
+        title: "Tutorial",
+        type: "btn",
+        value: "tutorial",
+        callback: ()=>{
+          createTutorial();
+        }    
+      }
 
       // bug report
       // {
@@ -670,6 +679,7 @@ function label_render(ctx,data){
 
 function createAnnotationsList(){
   empty($UI.modalbox.body);
+  $UI.modalbox.setHeaderText('Annotations Summary');
   // get data;
   const header = `
   <div style='display:table-row; font-weight:bold;'>
@@ -730,6 +740,19 @@ function onDeleteAnnotation(data){
   $UI.labelAnnotationsPanel.__refresh();
   $CAMIC.viewer.omanager.removeOverlay(data.id);
   $CAMIC.viewer.omanager.updateView();
+}
+
+function createTutorial(){
+  empty($UI.modalbox.body);
+  $UI.modalbox.setHeaderText('Tutorial');
+  
+  $UI.modalbox.body.innerHTML = `
+  <div style="float:left;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;">
+  <H3>The Example Of TIL densities ( <a href="https://drive.google.com/file/d/1tgi31QO0Mu6YH7slPC9HDde0KtSTIWjT/view?usp=sharing" target="_blank">For More Details, Visit Our Training Materials</a> )</H3>
+  <img src="til_tutorial.png" alt="Tutorial" width="80%">
+  </div>`;
+  $UI.modalbox.elt.querySelector(".modalbox-footer").innerHTML = '';
+  $UI.modalbox.open();
 }
 
 function getAnnotationDataFrom(data){
