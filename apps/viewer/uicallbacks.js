@@ -1581,7 +1581,7 @@ function saveAnalytics() {
 }
 function startDrawing(e) {
   if (
-    $UI.toolbar.getSubTool("preset_label").querySelector("input[type=checkbox]")
+    $UI.toolbar.getSubTool("preset_label") && $UI.toolbar.getSubTool("preset_label").querySelector("input[type=checkbox]")
       .checked
   ) {
     //     ||
