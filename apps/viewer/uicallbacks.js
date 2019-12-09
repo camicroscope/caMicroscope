@@ -1602,7 +1602,7 @@ function startDrawing(e) {
 function stopDrawing(e) {
   // preset label annotation
   if (
-    $UI.toolbar.getSubTool("preset_label").querySelector("input[type=checkbox]")
+    $UI.toolbar.getSubTool("preset_label") && $UI.toolbar.getSubTool("preset_label").querySelector("input[type=checkbox]")
       .checked
   ) {
     // save preset label
