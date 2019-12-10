@@ -260,7 +260,7 @@ const $UI = new Map();
 //         ]
 //       }
 //     ]
-//   },  
+//   },
 //   {
 //     title: "Prostate",
 //     value: "Prostate",
@@ -677,7 +677,7 @@ async function initUIcomponents() {
   // });
 
   $D.preset_list = null;
-  $D.preset_list = await $CAMIC.store.getConfigByName('preset_label').then(list=>list.length==0?[]:list[0]);
+  $D.preset_list = await $CAMIC.store.getConfigByName('preset_label').then(list=>list.length==0?null:list[0]);
   if($D.preset_list){
   subToolsOpt.push({
     name: "preset_label",
