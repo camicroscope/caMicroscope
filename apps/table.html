@@ -273,13 +273,26 @@
 	},{
 		title:'MPP',
 		field:'mpp'
+	},{
+		title:'ROIs',
+		field:'rois'
 	}];
 
+	const findROICountByName = (name ,array) => {
+		const index = array.findIndex(d=> d['provenance.image.name'] == name)
+		return index == -1? 0:array[index].total ;
+	}
+
+	const reverse_threshold = 5;
 	function initialize(){
 		const params = getUrlVars();
 		const store = new Store('../data/');
 		store.findSlide()
-		.then(function(data) {
+		.then(async function(data) {
+
+			// get ROI counts for each slide
+			const roi_counts = await store.countBySlide();
+
 			// filter
 			if(!(Object.keys(params).length === 0 && params.constructor === Object)){
 				const keys = Object.keys(params);
@@ -297,13 +310,17 @@
 					const rs = [];
 					keys.forEach((key,i) => {
 						if(i==0) rs.push(d['_id']['$oid'])
+						// add rois #
+						else if(key=='rois') rs.push(findROICountByName(d.name,roi_counts))
 						else if(!d[key]) rs.push('')
+						
 						else rs.push(d[key])
 					});
 					const btn = `<button class="btn" data-id='${rs[0]}' onclick='openView(this)'>Open</button>`
 					rs.push(btn);
 					return rs;
-				});
+				}).sort((a,b)=> a[5]-b[5]);
+				
 			} else {
 				// we have no data to render! Let's add a default button
 				const default_btn = [];
@@ -316,7 +333,18 @@
 				return [default_btn];
 			}
 		})
-		.then(function(data){
+		.then(data => { // reverse
+			const idx = data.findIndex(d=>d[5] >= reverse_threshold);
+			if(idx ===0 || idx ===1) return data;
+			if(idx===-1){
+				data.reverse();
+			}else{
+				const a = data.slice(0,idx).reverse()
+				const b = data.slice(idx)
+				data = a.concat(b)
+			}
+			return data;
+		}).then(function(data){
 			if(data.length==0){
 				var div = document.querySelector('.container');
 				div.textContent = `No Data Found ... x _ x`;
