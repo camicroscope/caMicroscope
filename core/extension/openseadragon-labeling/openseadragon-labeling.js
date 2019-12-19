@@ -445,14 +445,17 @@
         element: tilIcon.querySelector("label"),
         pressHandler: () => {
           til_chk = tilIcon.querySelector("input[type=checkbox]");
+          til_label = tilIcon.querySelector("label");
           til_chk.checked = !til_chk.checked;
           if (til_chk.checked) {
             tilIcon.classList.add("checked");
-
+            til_label.textContent = 'TILs';
             // tilPanel.style.display = "inline-block";
           } else {
             tilIcon.classList.remove("checked");
+            til_label.textContent = 'No TILs';
             // tilPanel.style.display = "none";
+
           }
         }
       });
@@ -813,9 +816,9 @@
 
       // til icon
       const til_icon = document.createElement("label");
-      til_icon.classList.add("material-icons");
-      til_icon.classList.add("til-icon");
-      til_icon.textContent = "grain";
+      //til_icon.classList.add("material-icons");
+      //til_icon.classList.add("til-icon");
+      til_icon.textContent = "No TILs";
       til_icon.htmlFor = _id;
 
       // til label
