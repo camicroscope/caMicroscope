@@ -792,15 +792,25 @@ class Store {
     }).then(this.errorHandler)
   }
 
-  allLabelSheet(){
+  allLabelSheet(type){
     var suffix = "Labeling/allLabelSheet"
     var url = this.base + suffix;
-    return fetch(url, {
+    var query = {}
+    query.type = type
+    return fetch(url+ "?" + objToParamStr(query), {
       credentials: "include",
       mode: "cors"
     }).then(this.errorHandler)    
   }
 
+  getAllUsers(){
+    var suffix = "Auth/list"
+    var url = this.base + suffix
+    return fetch(url, {
+      credentials: "include",
+      mode: "cors"
+    }).then(this.errorHandler)
+  }
   /**
    * add a log item
    ** @param {object} json - the log data

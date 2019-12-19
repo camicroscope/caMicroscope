@@ -340,6 +340,7 @@
     let types;
     let total;
     let sheet;
+    let users;
 
     const creatorHeadMapping = [
       {
@@ -417,6 +418,12 @@
         title: "Created Date"
       }
     ];
+
+    const usersHeadMapping = [{
+      field: "name",
+      title: "E-Mail"
+    }]
+
     function createTable(headers, data) {
       const tab_head = `<thead><tr>${headers
         .map(header => `<th>${header.title}</th>`)
@@ -476,7 +483,7 @@
       
       total = await store.countAllLabels();
 
-      sheet = await store.allLabelSheet().then(rs =>
+      sheet = await store.allLabelSheet('label').then(rs =>
         rs.map(i => {
           return {
             id: i._id,
@@ -496,6 +503,9 @@
         })
       );
 
+      users = await store.getAllUsers();
+
+
       document.querySelector("#viewer").innerHTML =
         `<H2>Total ROIs: ${total.count}</H2><div class='title'>Rankings of Creators&nbsp;&nbsp;&nbsp;<button id='creator'>Download As CSV</button></div>` +
         createTable(creatorHeadMapping, creators) +
@@ -503,6 +513,8 @@
         createTable(slideHeadMapping, slides) +
         "<div class='title'>Rankings of Label Types&nbsp;&nbsp;&nbsp;<button id='type'>Download As CSV</button></div>" +
         createTable(typeHeadMapping, types) +
+        "<div class='title'>Participants&nbsp;&nbsp;&nbsp;<button id='users' >Download As CSV</button></div>" +
+        createTable(usersHeadMapping, users) +
         "<div class='title'>Detail&nbsp;&nbsp;&nbsp;<button id='sheet' >Download As CSV</button></div>" +
         createTable(sheetHeadMapping, sheet);
 
@@ -529,6 +541,12 @@
         downloadAsCSV(
           createCSVRawData(sheetHeadMapping, sheet),
           "all_label_data"
+        );
+      });
+      document.querySelector("#users").addEventListener("click", e => {
+        downloadAsCSV(
+          createCSVRawData(usersHeadMapping, users),
+          "Participants"
         );
       });
     }
