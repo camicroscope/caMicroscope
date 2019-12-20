@@ -33,6 +33,7 @@
         padding: 0;
         height: 100%;
         width: 100%;
+        color:#365f9c;
       }
 
       textarea,
@@ -258,13 +259,14 @@
 
       /* -- table -- */
       table.minimalistBlack {
-        border: 3px solid #000000;
+        border: 3px solid #365f9c;
         text-align: left;
         border-collapse: collapse;
       }
       table.minimalistBlack td,
       table.minimalistBlack th {
-        border: 1px solid #000000;
+        border: 1px solid #365f9c;
+
         padding: 5px 4px;
       }
       table.minimalistBlack tbody td {
@@ -290,19 +292,21 @@
           #d3d3d3 66%,
           #cfcfcf 100%
         );
-        border-bottom: 3px solid #000000;
+        border-bottom: 3px solid #365f9c;
       }
+      
       table.minimalistBlack thead th {
         font-size: 15px;
         font-weight: bold;
-        color: #000000;
-        text-align: left;
+        color:#fff;
+        background: #4787e1;
+        text-align: center;
       }
       table.minimalistBlack tfoot {
         font-size: 14px;
         font-weight: bold;
         color: #000000;
-        border-top: 3px solid #000000;
+        border-top: 3px solid #365f9c;
       }
       table.minimalistBlack tfoot td {
         font-size: 14px;
@@ -315,6 +319,44 @@
         margin-left: 0;
         margin-right: 0;
         font-weight: bold;
+      }
+
+      /* Style the tab */
+      .tab {
+        overflow: hidden;
+        border: 1px solid #365f9c;
+        background-color: #f1f1f1;
+      }
+      /* Style the buttons inside the tab */
+      .tab button {
+        background-color: inherit;
+        float: left;
+        border: none;
+        outline: none;
+        cursor: pointer;
+        padding: 14px 16px;
+        transition: 0.3s;
+        font-size: 17px;
+        color:#365f9c;
+      }
+
+      /* Change background color of buttons on hover */
+      .tab button:hover {
+        background-color: #ddd;
+      }
+
+      /* Create an active/current tablink class */
+      .tab button.active {
+        background-color: #365f9c;
+        color:white;
+      }
+
+      /* Style the tab content */
+      .tabcontent {
+        display: none;
+        padding: 6px 12px;
+        border: 1px solid #365f9c;
+        border-top: none;
       }
     </style>
   </head>
@@ -330,7 +372,30 @@
             >
           </div>
         </div>
-        <div id="viewer" style="padding:20px;"></div>
+        <div id="viewer"></div>
+        <div style="padding:20px;">
+        <div class="tab">
+          <button class="tablinks" onclick="openTab(event, 'creators')" id="defaultOpen">Rankings of Creators</button>
+          <button class="tablinks" onclick="openTab(event, 'slides')">Rankings of Slides</button>
+          <button class="tablinks" onclick="openTab(event, 'labels')">Rankings of Label Types</button>
+          <button class="tablinks" onclick="openTab(event, 'participants')">Participants</button>
+          <button class="tablinks" onclick="openTab(event, 'roi_details')">ROIs Detail</button>
+        </div>
+        
+        
+        <div id="creators" class="tabcontent">
+        </div>
+        
+        <div id="slides" class="tabcontent">
+        </div>
+        
+        <div id="labels" class="tabcontent">
+        </div>
+        <div id="participants" class="tabcontent">
+        </div>
+        <div id="roi_details" class="tabcontent">
+        </div>
+        </div>
       </div>
     </div>
   </body>
@@ -341,6 +406,25 @@
     let total;
     let sheet;
     let users;
+
+    /*  */
+    function openTab(evt, tabName) {
+      var i, tabcontent, tablinks;
+      tabcontent = document.getElementsByClassName("tabcontent");
+      for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+      }
+      tablinks = document.getElementsByClassName("tablinks");
+      for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+      }
+      document.getElementById(tabName).style.display = "block";
+      evt.currentTarget.className += " active";
+    }
+
+  // Get the element with id="defaultOpen" and click on it
+  document.getElementById("defaultOpen").click();
+    /*  */
 
     const creatorHeadMapping = [
       {
@@ -420,6 +504,9 @@
     ];
 
     const usersHeadMapping = [{
+      field: "alais",
+      title: "Name"
+    },{
       field: "name",
       title: "E-Mail"
     }]
@@ -505,18 +592,17 @@
 
       users = await store.getAllUsers();
 
-
-      document.querySelector("#viewer").innerHTML =
-        `<H2>Total ROIs: ${total.count}</H2><div class='title'>Rankings of Creators&nbsp;&nbsp;&nbsp;<button id='creator'>Download As CSV</button></div>` +
-        createTable(creatorHeadMapping, creators) +
-        "<div class='title'>Rankings of Slides&nbsp;&nbsp;&nbsp;<button id='slide'>Download As CSV</button></div>" +
-        createTable(slideHeadMapping, slides) +
-        "<div class='title'>Rankings of Label Types&nbsp;&nbsp;&nbsp;<button id='type'>Download As CSV</button></div>" +
-        createTable(typeHeadMapping, types) +
-        "<div class='title'>Participants&nbsp;&nbsp;&nbsp;<button id='users' >Download As CSV</button></div>" +
-        createTable(usersHeadMapping, users) +
-        "<div class='title'>Detail&nbsp;&nbsp;&nbsp;<button id='sheet' >Download As CSV</button></div>" +
-        createTable(sheetHeadMapping, sheet);
+      document.querySelector("#viewer").innerHTML = `<H2>&nbsp;&nbsp;&nbsp; Total ROIs: ${total.count}</H2>`
+      document.querySelector("#creators").innerHTML =`<div class='title'>Rankings of Creators&nbsp;&nbsp;&nbsp;<button id='creator' class='btn'>Download As CSV</button></div>` +
+      createTable(creatorHeadMapping, creators);
+      document.querySelector("#slides").innerHTML =`<div class='title'>Rankings of Slides&nbsp;&nbsp;&nbsp;<button id='slide' class='btn'>Download As CSV</button></div>` +
+      createTable(slideHeadMapping, slides);
+      document.querySelector("#labels").innerHTML ="<div class='title'>Rankings of Label Types&nbsp;&nbsp;&nbsp;<button id='type' class='btn'>Download As CSV</button></div>" +
+      createTable(typeHeadMapping, types);
+      document.querySelector("#participants").innerHTML ="<div class='title'>Participants&nbsp;&nbsp;&nbsp;<button id='users' class='btn'>Download As CSV</button></div>" +
+      createTable(usersHeadMapping, users);
+      document.querySelector("#roi_details").innerHTML ="<div class='title'>Detail&nbsp;&nbsp;&nbsp;<button id='sheet' class='btn'>Download As CSV</button></div>" +
+      createTable(sheetHeadMapping, sheet);
 
       // add download event
       document.querySelector("#creator").addEventListener("click", e => {
