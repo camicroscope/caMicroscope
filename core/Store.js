@@ -754,6 +754,29 @@ class Store {
     }).then(this.errorHandler)    
   }
 
+  pushLabelAnnotationId(labelId, annotationId){
+
+    if (!labelId || !annotationId) {
+      return {
+        hasError: true,
+        message: 'args are illegal'
+      }
+    }
+
+    var suffix = "Labeling/pushLabelAnnotationId"
+    var url = this.base + suffix;
+    var query = {}
+    query.id = labelId
+    query.annotationId = annotationId
+    
+    return fetch(url + "?" + objToParamStr(query), {
+      method: "DELETE",
+      credentials: "include",
+      mode: "cors"
+    }).then(this.errorHandler)
+
+  }
+
   countByCreator(){
     var suffix = "Labeling/countByCreator"
     var url = this.base + suffix;
