@@ -365,7 +365,7 @@ function initCore(){
           const nextSlideId = labels[index].provenance.image.slide;
           window.removeEventListener('beforeunload', beforeUnloadHandler);
 
-          window.location.href = `./labelingAnnotation.html?labelId=${nextLabelId}&slideId=${nextSlideId}`;
+          window.location.href = `./labelingSimpleAnnotation.html?labelId=${nextLabelId}&slideId=${nextSlideId}`;
 
           Loading.close();          
         }
