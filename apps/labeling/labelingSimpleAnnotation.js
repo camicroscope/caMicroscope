@@ -19,10 +19,10 @@ const $UI = {};
 
 const $D = {
   annotations:[],
-  pages:{
-    home:'../table.html',
-    table:'../table.html'
-  },
+  // pages:{
+  //   home:'../table.html',
+  //   table:'../table.html'
+  // },
   params:null // parameter from url - slide Id and status in it (object).
 };
 const beforeUnloadHandler = e =>{
@@ -201,7 +201,7 @@ function initCore(){
       hasLayerManager:true,
       hasScalebar:true,
       hasMeasurementTool:true,
-      minImageZoom:0.5
+      minImageZoom:0.25
   }
   // set states if exist
   if($D.params.states){
@@ -285,9 +285,9 @@ function initCore(){
         title: 'Home',
         callback: function () {
           if (window.location.search.length > 0) {
-            window.location.href = '../landing/landing.html' + window.location.search;
+            window.location.href = $D.pages.home + window.location.search;
           } else {
-            window.location.href = '../landing/landing.html';
+            window.location.href = $D.pages.home;
           }
         }
       },
@@ -348,28 +348,28 @@ function initCore(){
         callback:toggleMeasurement
       },
       // skip this roi
-      {
-        id:'next',
-        icon:'skip_next',
-        title:'Next ROI Annotation',
-        type:'btn',
-        value:'next',
-        name:'next',
-        callback:async()=> {
-          Loading.open(document.body,'Loading Next...');
+      // {
+      //   id:'next',
+      //   icon:'skip_next',
+      //   title:'Next ROI Annotation',
+      //   type:'btn',
+      //   value:'next',
+      //   name:'next',
+      //   callback:async()=> {
+      //     Loading.open(document.body,'Loading Next...');
           
-          // randomly pick
-          const labels = await $CAMIC.store.findAllLabelsWithoutAnnotations().then(d=>d);
-          const index = getRandomIntInclusive(0,labels.length-1);
-          const nextLabelId = labels[index]._id;
-          const nextSlideId = labels[index].provenance.image.slide;
-          window.removeEventListener('beforeunload', beforeUnloadHandler);
+      //     // randomly pick
+      //     const labels = await $CAMIC.store.findAllLabelsWithoutAnnotations().then(d=>d);
+      //     const index = getRandomIntInclusive(0,labels.length-1);
+      //     const nextLabelId = labels[index]._id;
+      //     const nextSlideId = labels[index].provenance.image.slide;
+      //     window.removeEventListener('beforeunload', beforeUnloadHandler);
 
-          window.location.href = `./labelingSimpleAnnotation.html?labelId=${nextLabelId}&slideId=${nextSlideId}`;
+      //     window.location.href = `./labelingSimpleAnnotation.html?labelId=${nextLabelId}&slideId=${nextSlideId}`;
 
-          Loading.close();          
-        }
-      }, 
+      //     Loading.close();          
+      //   }
+      // }, 
       {
         id: "tutorial",
         icon: "help",
@@ -432,58 +432,57 @@ async function saveAnnotation(annotation){
   await $CAMIC.store.pushLabelAnnotationId(label, annotation._id).then(d=>d);
   
   // randomly pick
-  const labels = await $CAMIC.store.findAllLabelsWithoutAnnotations().then(d=>d);
-  const index = getRandomIntInclusive(0,labels.length-1);
-  const nextLabelId = labels[index]._id;
-  const nextSlideId = labels[index].provenance.image.slide;
+  // const labels = await $CAMIC.store.findAllLabelsWithoutAnnotations().then(d=>d);
+  // const index = getRandomIntInclusive(0,labels.length-1);
+  // const nextLabelId = labels[index]._id;
+  // const nextSlideId = labels[index].provenance.image.slide;
   
   // remove listener
   window.removeEventListener('beforeunload', beforeUnloadHandler);
  
-  window.location.href = `./labelingSimpleAnnotation.html?labelId=${nextLabelId}&slideId=${nextSlideId}`;
+  window.location.href = `./roi_pick.html?slideId=${$D.params.slideId}&collectionId=${$D.params.collectionId}`;
 
   Loading.close();
   
 }
 
-async function saveAnnotations(){
+// async function saveAnnotations(){
 
-  Loading.open(document.body, 'Saving Annotations...');
+//   Loading.open(document.body, 'Saving Annotations...');
 
-  // user and date time
-  const creator = sessionStorage.getItem('userName') || getUserId();
+//   // user and date time
+//   const creator = sessionStorage.getItem('userName') || getUserId();
   
-  const dateTime = new Date();
-  // add annotations 
-    await asyncForEach($D.annotations,async (annotation)=>{
-      annotation.creator = creator;
-      annotation.create_date_time = dateTime;
-      await $CAMIC.store.addLabel(annotation).then( d => d.count );
+//   const dateTime = new Date();
+//   // add annotations 
+//     await asyncForEach($D.annotations,async (annotation)=>{
+//       annotation.creator = creator;
+//       annotation.create_date_time = dateTime;
+//       await $CAMIC.store.addLabel(annotation).then( d => d.count );
       
-    });
-  // update parent
-  const label = $D.params.labelId;
-  const slide = $D.params.slideId;
-  // const annotationIds = $D.annotations.map(elt=>elt._id);
+//     });
+//   // update parent
+//   const label = $D.params.labelId;
+//   const slide = $D.params.slideId;
+//   // const annotationIds = $D.annotations.map(elt=>elt._id);
   
-  await $CAMIC.store.addLabelsAnnotation(slide,label,annotationIds).then(d=>d);
+//   await $CAMIC.store.addLabelsAnnotation(slide,label,annotationIds).then(d=>d);
   
-  // randomly pick
-  const labels = await $CAMIC.store.findAllLabelsWithoutAnnotations().then(d=>d);
-  const index = getRandomIntInclusive(0,labels.length-1);
-  const nextLabelId = labels[index]._id;
-  const nextSlideId = labels[index].provenance.image.slide;
+//   // randomly pick
+//   // const labels = await $CAMIC.store.findAllLabelsWithoutAnnotations().then(d=>d);
+//   // const index = getRandomIntInclusive(0,labels.length-1);
+//   // const nextLabelId = labels[index]._id;
+//   // const nextSlideId = labels[index].provenance.image.slide;
   
-  $UI.modalbox.close();
-  // remove listener
-  window.removeEventListener('beforeunload', beforeUnloadHandler);
+//   //$UI.modalbox.close();
+//   // remove listener
+//   window.removeEventListener('beforeunload', beforeUnloadHandler);
  
+//   window.location.href = `./roi_pick.html?slideId=${$D.params.slideId}&collectionId=${$D.params.collectionId}`;
 
-  window.location.href = `./labelingAnnotation.html?labelId=${nextLabelId}&slideId=${nextSlideId}`;
-
-  Loading.close();
-  //redirect($D.pages.table, 'Redirecting To Home....', 0);
-}
+//   Loading.close();
+//   //redirect($D.pages.table, 'Redirecting To Home....', 0);
+// }
 function toggleMeasurement(data){
   
   if(data.checked){
@@ -704,10 +703,10 @@ function label_render(ctx,data){
   const lineWidth = (imagingHelper.physicalToDataX(5) - imagingHelper.physicalToDataX(0))>> 0;
   const polygon = data.geometries.features[0];
   const points = polygon.geometry.coordinates[0];
-  ctx.lineWidth = lineWidth<5?5:lineWidth;
+  ctx.lineWidth = lineWidth<2?2:lineWidth;
   
   ctx.isFill = false;
-  ctx.strokeStyle = polygon.properties.style.color;
+  ctx.strokeStyle = '#00ff00'; // polygon.properties.style.color;
   polygon.geometry.path = DrawHelper.drawPolygon(ctx, points);
 }
 
@@ -850,22 +849,67 @@ function addROIFormEvent(){
   const vta = document.getElementById('vta');
   const vta_range = document.getElementById('vta_range');
   const vta_txt = document.getElementById('vta_txt');
+  const txt = vta_txt.querySelector('.txt');
+  const ip = vta_txt.querySelector('.ip');
+  const til_message = document.getElementById('til_message');
 
   has_tils.addEventListener('change', e => {
     if(has_tils.checked){
-      has_tils_txt.textContent = ' TILs';
       vta.style.display = 'flex';
+      til_message.style.display = 'block';
+      txt.textContent = `${vta_range.value}%`
+      delete vta_txt.dataset.error;
+      txt.classList.remove('hide')
+      
     }else{
-      has_tils_txt.textContent = ' NO TILs';
       vta.style.display = 'none';
+      til_message.style.display = 'none';
     }
   });
+
+  vta_txt.addEventListener('click', function(e){
+      // set image zoom value to input
+      let value = txt.textContent;
+      value = value.slice(0, value.length-1);
+      ip.value = +value;
+      // hide txt
+      txt.classList.add('hide');
+      ip.focus();
+  }.bind(this));
+
+  vta_txt.addEventListener('keydown', function(e){
+      if(event.key === 'Enter'){
+          ip.blur();
+          
+      }
+  }.bind(this))
+
+  ip.addEventListener('blur', function(e){
+    const regex = new RegExp(/^([1-9]?\d|100)$/);
+    const rs = regex.test(ip.value);
+    if(rs){
+      vta_range.value = ip.value;
+      txt.textContent = `${vta_range.value}%`
+      delete vta_txt.dataset.error;
+      txt.classList.remove('hide')
+    }else{
+      // give error tip
+      vta_txt.dataset.error = `TILs Range (Ineger): 0 ~ 100`;
+      ip.focus();
+    }
+    console.log(rs);
+
+  }.bind(this))
+
+
   function changeText(e){
-    vta_txt.textContent = `${vta_range.value}%`
+    txt.textContent = `${vta_range.value}%`
   }
   vta_range.addEventListener('change', changeText);
   vta_range.addEventListener('mousemove', changeText);
 
+  
+  
   const action_btn = document.querySelector('#left_menu .foot .action');
   
   action_btn.addEventListener('click', e => {

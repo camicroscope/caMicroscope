@@ -151,6 +151,62 @@
 				background-color: #dddddd;
 				border-color: #dddddd;
 			}
+
+			#vta_txt:hover{
+				background:#dcdcdc;
+				/* border-bottom: 1px solid #365f9c; */
+			}
+
+			#vta_txt {
+			min-width: 4.8rem;
+			height: 2.4rem;
+			}
+			#vta_txt div.txt{
+			z-index:9;
+			position: relative;
+			float: left;
+			top: 50%;
+			left: 50%;
+			font-size:1.4rem;
+			transform: translate(-50%, -50%);
+			}
+
+			#vta_txt div.txt.hide {
+			display: none;
+			}
+			#vta_txt input.ip {
+			color:#365f9c;
+			font-size:1.4rem;
+			font-weight: bold;
+			background:#dcdcdc; 
+			z-index:10;
+			outline:0;
+			padding:0;
+			border:none;
+			width: 0;
+			height: 0;
+			}
+			#vta_txt input.ip:focus {
+
+			width: 4.5rem;
+			height: 100%;
+			}
+
+			#vta_txt[data-error]:after {
+
+				position: absolute;
+				content: attr(data-error) !important;
+				color: #800;
+				top:-2.5rem;
+				right:0;
+				border:1px #800 solid;
+				background:white;
+				overflow: hidden;
+				white-space: nowrap;
+				padding:2px;
+				border-radius:5px;
+			}
+		
 		</style>
 	</head>
 	<body >
@@ -174,14 +230,27 @@
 							<div style='padding: 0 0 .5rem .3rem;'><label><input type="radio" name="roi_type" value="Other Regions"> Other Regions</label></div>
 							<hr/>
 							<div style='padding: 0 0 .5rem .3rem;'>
-								<input id='has_tils' type="checkbox"> <label id='has_tils_txt' for='has_tils' style='font-weight: bold;'> NO TILs</label>
+								<input id='has_tils' type="checkbox"> <label id='has_tils_txt' for='has_tils' style='font-weight: bold;'>Eligible for TIL Assessment</label>
 							</div>
 							<div id='vta' style='border: none; margin: .3rem 0; padding-left: 1rem; position: relative; touch-action: none; display: none;'>
-								<input id='vta_range' type="range" min=0 max=100 step=0 value=0 style="flex:1;background: none transparent; border: none; margin: 0; padding: 0px; position: static;">
+								
+									<input id='vta_range' list='vta_tick' type="range" min=0 max=100 step=0 value=0 style="flex:1;background: none transparent; border: none; margin: 0; padding: 0px; position: static;">
+								
+								<datalist id="vta_tick">
+									<option>0</option>
+									<option>25</option>
+									<option>50</option>
+									<option>75</option>
+									<option>100</option>
+								</datalist>
+
 								<div style='min-width:3.6rem;height: 2.4rem;'>
-									<div id='vta_txt' style='font-weight:bold; position:relative; float:left; top:50%; left:50%; transform:translate(-50%, -50%);'>0%</div>
+									<div id='vta_txt' style='font-weight:bold; position:relative; float:left; top:50%; left:50%; transform:translate(-50%, -50%);'>
+										<div class="txt">0%</div><input type="text" class="ip">
+									</div>
 								</div>
 							</div>
+							<div id='til_message' style='padding: 0 0 .5rem .3rem;text-align: right;color:red;display: none;'>Please Assess TIL Density</div>
 						</div>
 					</div>
 					<div class='foot' style='margin:.5rem;'>
@@ -193,6 +262,7 @@
 		</div>
 	</body>
 	<script type="text/javascript">
+	var HomePage;
 		if(detectIE()){
 			createWarningText('You are using an <strong>IE/Edge</strong> browser that may be lead to erratic behavior on caMicroscope. Please switch to <a href="https://www.google.com/chrome/">Chrome</a>, <a href="https://www.mozilla.org/en-US/firefox/new/">Firefox</a> or <a href="https://www.apple.com/safari/">Safari</a> browser to improve your experience.');
 		}
@@ -201,7 +271,9 @@
 		// get slide id from url
 		const url = new URL(window.location.href);
 		$D.params = getUrlVars();
-
+		$D.pages = {};
+		$D.pages.home = `./labelingSimpleAnnotationViewer.html?collectionId=${$D.params.collectionId}`;
+		$D.pages.table = `./labelingSimpleAnnotationViewer.html?collectionId=${$D.params.collectionId}`;
 		// no slide Id error
 		if($D.params && $D.params.slideId && $D.params.labelId){
 			// normal initialization starts

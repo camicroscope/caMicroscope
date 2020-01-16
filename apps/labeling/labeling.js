@@ -256,9 +256,7 @@ function initCore() {
         type: "btn",
         value: "tutorial",
         callback: ()=>{
-
           createTutorial();
-          // window.open('https://drive.google.com/file/d/1tgi31QO0Mu6YH7slPC9HDde0KtSTIWjT/view?usp=sharing');
         }    
       }
       // {

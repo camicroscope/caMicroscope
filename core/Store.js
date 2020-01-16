@@ -584,7 +584,22 @@ class Store {
       mode: "cors"
     }).then(this.errorHandler)
   }
-
+  /**
+   * find By CollectionId
+   * @param {string} [name] - the slide name
+   * @param {string} [location] - the slide location, supporting regex match
+   * @returns {promise} - promise which resolves with data
+   **/
+  findByCollectionId(cid) {
+    var suffix = "Slide/findByCollectionId"
+    var url = this.base + suffix;
+    var query = {}
+    query.cid = cid
+    return fetch(url + "?" + objToParamStr(query), {
+      credentials: "include",
+      mode: "cors"
+    }).then(this.errorHandler)
+  }
   /**
    * get slide by id
    * @param {string} id - the slide id
@@ -852,6 +867,68 @@ class Store {
       },
       body: JSON.stringify(json)
     }).then(this.errorHandler)
+  }
+  
+  findLabelingByTypeOrCreator(slide, type, creator){
+    if (!slide) {
+      return {
+        hasError: true,
+        message: 'args are illegal'
+      }
+    }
+    var suffix = "Labeling/findLabelingByTypeOrCreator"
+    var url = this.base + suffix;
+    var query = {}
+    query.slideId = slide;
+    if(type) query.computation = type;
+    if(creator) query.creator = creator;
+
+    return fetch(url + "?" + objToParamStr(query), {
+      credentials: "include",
+      mode: "cors"
+    }).then(this.errorHandler)
+  }
+
+  countSimpleAnnotationBySlideAndCreator(creator,nameList){
+    if (!Array.isArray(nameList) || !creator) {
+      return {
+        hasError: true,
+        message: 'args are illegal'
+      }
+    }
+    var suffix = "Labeling/countSimpleAnnotationBySlideAndCreator"
+    var url = this.base + suffix;
+    var query = {}
+    var stringifiedNames = nameList.map(name => `"${name}"`).join(',');
+    query.name = `[${stringifiedNames}]`;
+    query.creatorId = creator;
+
+    return fetch(url + "?" + objToParamStr(query), {
+      credentials: "include",
+      mode: "cors"
+    }).then(this.errorHandler)
+  }
+
+  getAllCollections(name){
+    var suffix = "Collection/getAllCollections"
+    var url = this.base + suffix;
+    var query = {}
+    if(name) query.name = name
+    return fetch(url+ "?" + objToParamStr(query), {
+      credentials: "include",
+      mode: "cors"
+    }).then(this.errorHandler)    
+  }
+
+  findCollectionById(id){
+    var suffix = "Collection/findCollectionById"
+    var url = this.base + suffix;
+    var query = {}
+    query.id = id
+    return fetch(url+ "?" + objToParamStr(query), {
+      credentials: "include",
+      mode: "cors"
+    }).then(this.errorHandler)  
   }
 
   /**

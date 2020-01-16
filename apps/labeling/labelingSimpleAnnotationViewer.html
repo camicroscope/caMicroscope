@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta name="keywords" content="camicroscope, quip" />
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <meta name='viewport' content='width=device-width, initial-scale=1, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no'>
+    <!-- common -->
+	<!-- <link rel='stylesheet' type='text/css' media='all' href='../../css/style.css'/> -->
+    <link href="../../common/datatables/vanilla-dataTables.css" rel="stylesheet" />
+    <link href="../../iconfont/material-icons.css" rel="stylesheet" />
+		<!-- Check If we're logged in ok, otherwise, log in for us -->
+		<script src='../../common/authChecker.js'></script>
+		<script>
+			__auth_check(1)
+		</script>
+
+    <script src='../../core/Store.js'></script>
+    <script src='../../common/util.js'></script>
+    <script src='../../common/ajv.js'></script>
+    <script src='../../common/datatables/vanilla-dataTables.js'></script>
+    <script src='../../components/loading/loading.js'></script>
+    <title>CaMicroscope Data Table</title>
+    <style type="text/css">
+		html, body {
+		    margin: 0;
+		    padding: 0;
+		    height: 100%;
+		    width: 100%;
+		}
+
+		textarea, select, input[type="text"] {
+		    font-family: "Lato", sans-serif;
+		    border: 2px solid #95a5a6;
+		    border-radius: 3px;
+		    padding: 6px 12px;
+		    line-height: 18px;
+		}
+
+		.container {
+			font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+			width: 100%;
+			height: 100%;
+			padding: 0;
+			margin: 0;
+		}
+
+		/* CONTAINERS */
+		.dataTable-wrapper.no-header .dataTable-container {
+			border-top: 1px solid #d9d9d9;
+		}
+
+		.dataTable-wrapper.no-footer .dataTable-container {
+			border-bottom: 1px solid #d9d9d9;
+		}
+
+
+		.dataTable-top > div:first-child,
+		.dataTable-bottom > div:first-child {
+			float: left;
+		}
+
+		.dataTable-top > div:last-child,
+		.dataTable-bottom > div:last-child {
+			float: right;
+		}
+
+		.dataTable-selector {
+			padding: 6px;
+		}
+
+		.dataTable-input {
+			padding: 6px 12px;
+		}
+
+		.dataTable-info {
+			margin: 7px 0;
+		}
+
+		/* PAGER */
+		.dataTable-pagination ul {
+			margin: 0;
+			padding-left: 0;
+		}
+
+		.dataTable-pagination li {
+			list-style: none;
+			float: left;
+		}
+
+		.dataTable-pagination a {
+			border: 1px solid transparent;
+			float: left;
+			margin-left: 2px;
+			padding: 6px 12px;
+			position: relative;
+			text-decoration: none;
+			color: #333;
+		}
+
+		.dataTable-pagination a:hover {
+			background-color: #d9d9d9;
+		}
+
+		.dataTable-pagination .active a,
+		.dataTable-pagination .active a:focus,
+		.dataTable-pagination .active a:hover {
+			background-color: #d9d9d9;
+			cursor: default;
+		}
+
+		.dataTable-pagination .ellipsis a,
+		.dataTable-pagination .disabled a,
+		.dataTable-pagination .disabled a:focus,
+		.dataTable-pagination .disabled a:hover {
+			cursor: not-allowed;
+		}
+
+		.dataTable-pagination .disabled a,
+		.dataTable-pagination .disabled a:focus,
+		.dataTable-pagination .disabled a:hover {
+			cursor: not-allowed;
+			opacity: 0.4;
+		}
+
+		.dataTable-pagination .pager a {
+			font-weight: bold;
+		}
+
+		/* TABLE */
+		.dataTable-table {
+			max-width: 100%;
+			width: 100%;
+			border-spacing: 0;
+			border-collapse: collapse;
+		}
+
+		.dataTable-table > tbody > tr > td,
+		.dataTable-table > tbody > tr > th,
+		.dataTable-table > tfoot > tr > td,
+		.dataTable-table > tfoot > tr > th,
+		.dataTable-table > thead > tr > td,
+		.dataTable-table > thead > tr > th {
+			vertical-align: top;
+			padding: 8px 10px;
+		}
+
+		.dataTable-table > tbody > tr:nth-child(even){background-color: #f2f2f2;}
+
+		.dataTable-table > tbody > tr:hover {background-color: #ddd;}
+
+		.dataTable-table > thead > tr > th {
+			color:white;
+			background-color:#365F9C;
+			vertical-align: bottom;
+			text-align: left;
+		}
+
+		.dataTable-table > tfoot > tr > th {
+			vertical-align: bottom;
+			text-align: left;
+			border-top: 1px solid #d9d9d9;
+		}
+
+		.dataTable-table th {
+			vertical-align: bottom;
+			text-align: left;
+		}
+
+		.dataTable-table th a {
+			text-decoration: none;
+			color: inherit;
+		}
+
+		.dataTable-sorter {
+			display: inline-block;
+			height: 100%;
+			position: relative;
+			width: 100%;
+		}
+
+		.dataTable-sorter::before,
+		.dataTable-sorter::after {
+			content: "";
+			height: 0;
+			width: 0;
+			position: absolute;
+			right: 4px;
+			border-left: 4px solid transparent;
+			border-right: 4px solid transparent;
+			opacity: 0;
+		}
+
+		.dataTable-sorter::before {
+			border-top: 4px solid #000;
+			bottom: 2px;
+		}
+
+		.dataTable-sorter::after {
+			border-bottom: 4px solid #000;
+			border-top: 4px solid transparent;
+			top: -2px;
+		}
+
+		.asc .dataTable-sorter::after,
+		.desc .dataTable-sorter::before {
+			opacity: 0.6;
+		}
+
+		.dataTables-empty {
+			text-align: center;
+		}
+
+		.dataTable-top::after, .dataTable-bottom::after {
+			clear: both;
+			content: " ";
+			display: table;
+		}
+		.btn{
+			color: #fff;
+			background-color: #365f9c;
+			border-color: #365f9c;
+			display: inline-block;
+			text-align: center;
+			white-space: nowrap;
+			vertical-align: middle;
+			-webkit-user-select: none;
+			-moz-user-select: none;
+			-ms-user-select: none;
+			user-select: none;
+			border: 1px solid transparent;
+			font-size: 1rem;
+			text-decoration: none;
+			border-radius: .25rem;
+			-webkit-transition: all .2s ease-in-out;
+			-o-transition: all .2s ease-in-out;
+			transition: all .2s ease-in-out;
+			opacity: 0.8;
+		}
+		.btn:hover {
+			color: #fff;
+			background-color: #365f9c;
+			border-color: #365f9c;
+			opacity: 1;
+		}
+    </style>
+</head>
+<body>
+	<div class='container'>
+
+		
+		<div>
+					<div style='width: 100%; height: 35px; background-color: #001871;'> 
+            <div style="padding:8px;">
+                <a style='color:white;text-decoration:none;font-weight: 700;letter-spacing: 0.05em;text-transform: uppercase;font-size: 0.9em;' href="../landing/landing.html">Home</a>
+                &nbsp;&nbsp;&nbsp;
+                <a style='color:white;text-decoration:none;font-weight: 700;letter-spacing: 0.05em;text-transform: uppercase;font-size: 0.9em;' href="../collection/viewer.html">Collection List</a>
+            </div>
+		</div>
+			<table id = 'datatables'></table>
+		</div>
+	</div>
+</body>
+<script>
+	const HeadMapping = [{
+		title:'ID',
+		field:'oid'
+	},{
+		title:'Name',
+		field:'name'
+	},{
+		title:'Study',
+		field:'study'
+	},{
+		title:'Specimen',
+		field:'specimen'
+	},{
+		title:'MPP',
+		field:'mpp'
+	},{
+		title:'ROIs',
+		field:'rois'
+	}];
+
+	const findROICountByName = (name ,array) => {
+		const index = array.findIndex(d=> d['provenance.image.name'] == name)
+		return index == -1? 0:array[index].total ;
+	}
+
+	const reverse_threshold = 5;
+    const params = getUrlVars();
+    const cid = params.collectionId;
+    async function initialize(){
+        
+        
+        const store = new Store('../../data/');
+        
+        
+        //const slide = await store.findByCollectionId(cid);
+        
+        // store.countSimpleAnnotationBySlideAndCreator();
+
+		store.findByCollectionId(cid)
+		.then(async function(data) {
+
+            const namelist = data.map(d=>d.name);
+            const roi_done_counts = await store.countSimpleAnnotationBySlideAndCreator('_0wwttfdvb',namelist);
+			// get ROI counts for each slide
+			const roi_counts = await store.countBySlide();
+			
+			// filter
+			// if(!(Object.keys(params).length === 0 && params.constructor === Object)){
+			// 	const keys = Object.keys(params);
+			// 	const v2 = Object.values(params);
+			// 	data = data.filter((d) => {
+			// 		const v1 = getValues(d,keys);
+			// 		return AND.call(this, v1, v2, eq);
+			// 	});
+			// }
+
+			// mapping data
+			const keys = HeadMapping.map(d=>d.field);
+			if (data.map){
+				return data.map((d) => {
+                    const rs = [];
+                    const done = findROICountByName(d.name,roi_done_counts);
+                    const counts = findROICountByName(d.name,roi_counts);
+					keys.forEach((key,i) => {
+						if(i==0) rs.push(d['_id']['$oid'])
+						// add rois #
+						else if(key=='rois') {
+                            rs.push(`${done}/${counts}`)
+                        }
+						else if(!d[key]) rs.push('')
+						
+						else rs.push(d[key])
+					});
+					//
+                    const btn = counts==done?`<div class='material-icons' style='width:48px;color:#008000;' title='Done'>check_circle</div>`:`<button class="btn" data-id='${rs[0]}' onclick='openView(this)'>Open</button>`
+                    rs.push(btn);
+					return rs;
+				}).sort((a,b)=> a[5]-b[5]);
+				
+			} else {
+				// we have no data to render! Let's add a default button
+				const default_btn = [];
+				keys.forEach((key,i) => {
+					if(i==0) default_btn.push("NO DATA")
+					else default_btn.push('')
+				});
+				const btn = `<button class="btn" onclick='alert("No Data")'>Open</button>`
+				default_btn.push(btn);
+				return [default_btn];
+			}
+		})
+		.then(data => { // reverse
+			const idx = data.findIndex(d=>d[5] >= reverse_threshold);
+			if(idx ===0 || idx ===1) return data;
+			if(idx===-1){
+				data.reverse();
+			}else{
+				const a = data.slice(0,idx).reverse()
+				const b = data.slice(idx)
+				data = a.concat(b)
+			}
+			return data;
+		}).then(function(data){
+			if(data.length==0){
+				var div = document.querySelector('.container');
+				div.textContent = `No Data Found ... x _ x`;
+				return;
+			}
+			const head = HeadMapping.map(d=>d.title);
+			head.push("");
+			const obj = {
+				headings:head ,
+				data:data
+			};
+			dataTableInstance = new DataTable("#datatables",{
+				perPage:50,
+				perPageSelect:[25,50,100],
+				data:obj
+			});
+		});
+	}
+
+	function AND(p, t, func){
+	    return p.reduce((acc,v,i)=>{
+	        return acc&&func.call(this, v, t[i]);
+	    },true);
+	}
+
+	function eq(v1, v2){
+		return v1 == v2;
+	}
+
+	function getValues(d, keys){
+		const rs = [];
+		keys.forEach( key=>{
+			rs.push(d[key]);
+		});
+		return rs;
+	}
+
+	function openView(e){
+		const oid = e.dataset.id;
+		if(oid){
+			window.location.href = `./roi_pick.html?slideId=${oid}&collectionId=${cid}`;
+		}else{
+			alert('No Data Id');
+		}
+	}
+
+	document.addEventListener('DOMContentLoaded', initialize);
+</script>
+</html>

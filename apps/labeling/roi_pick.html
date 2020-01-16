@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="keywords" content="camicroscope, quip" />
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>caMicroscope</title>
+    <!-- google material icons css sheet -->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      media="all"
+      href="../../iconfont/material-icons.css"
+    />
+    <!-- css sheet -->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      media="all"
+      href="../../css/style.css"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      media="all"
+      href="../../components/loading/loading.css"
+    />
+    <script
+      type="text/javascript"
+      src="../../components/loading/loading.js"
+    ></script>
+    <script type="text/javascript" src="../../common/ajv.js"></script>
+    <script type="text/javascript" src="../../common/util.js"></script>
+    <script type="text/javascript" src="../../core/Validation.js"></script>
+    <script type="text/javascript" src="../../core/Store.js"></script>
+    <style type="text/css">
+      .modalbox-footer button {
+        font-weight: bold;
+        border: none;
+        background-color: #ffffff;
+        outline: none;
+        cursor: pointer;
+        padding: 5px 10px;
+        margin: 5px 0;
+        color: #365f9c;
+      }
+
+      .modalbox-footer button:disabled {
+        border: 1px solid #7f7f7f;
+        background-color: #bfbfbf;
+      }
+    </style>
+  </head>
+  <body>
+    <H1 id='message' style='color:black;'>Loading...</H1>
+  </body>
+  <script type="text/javascript">
+  const params = getUrlVars();
+  const slideId = params.slideId;
+  const cid = params.collectionId;
+    async function initialize() {
+      const store = new Store("../../data/");
+      const creator = "_0wwttfdvb";
+      const rois = await store.findLabelingByTypeOrCreator(slideId, "label");
+      let vtas = await store.findLabelingByTypeOrCreator(
+        slideId,
+        "annotation",
+        creator
+      );
+      vtas = vtas
+        .filter(d => d.provenance.analysis.type == "simple")
+        .map(d => d._id);
+
+      for(let i =0;i < rois.length; i++){
+        const roi = rois[i];
+        if(!hasDone(roi,vtas)){
+            //console.log(`./labelingSimpleAnnotation.html?labelId=${roi._id}&slideId=${slideId}&collectionId=${cid}`);
+            window.location.href = `./labelingSimpleAnnotation.html?labelId=${roi._id}&slideId=${slideId}&collectionId=${cid}`;
+        }
+      }
+
+      // All Done
+      redirect(`./labelingSimpleAnnotationViewer.html?collectionId=${cid}`, 'You Are Done With This Silde, Please Pick New One!',3);
+      //window.location.href = `../collection/viewer.html?collectionId=${cid}`;
+    }
+
+    function hasDone(roi, vtas){
+        while (roi.annotations.length > 0) {
+            const labeling_id = roi.annotations[0];
+            if (-1 == vtas.indexOf(labeling_id)) {
+                roi.annotations.shift();
+            }else{
+                // find it.
+                return true;
+            }
+        }
+        return false;
+
+    }
+    document.addEventListener("DOMContentLoaded", initialize);
+  </script>
+</html>
