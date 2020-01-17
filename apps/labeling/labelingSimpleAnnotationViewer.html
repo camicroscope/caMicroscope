@@ -303,9 +303,9 @@
 
 		store.findByCollectionId(cid)
 		.then(async function(data) {
-
+			const creator = sessionStorage.getItem('userName') || getUserId();
             const namelist = data.map(d=>d.name);
-            const roi_done_counts = await store.countSimpleAnnotationBySlideAndCreator('_0wwttfdvb',namelist);
+            const roi_done_counts = await store.countSimpleAnnotationBySlideAndCreator(creator, namelist);
 			// get ROI counts for each slide
 			const roi_counts = await store.countBySlide();
 			
