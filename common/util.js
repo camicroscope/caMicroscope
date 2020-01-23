@@ -806,14 +806,16 @@ function getUserId() {
   }
   return uid;
 }
+
 function getUserRole(){
   let token_info = parseJwt(getCookie("token"));
   let roles = [];
   if (token_info.attrs) {
     roles = token_info.sub;
   }  
-  return role;
+  return roles;
 }
+
 function redirectByRole(urls){ // role, url
   const roles = getUserRole()
   const idx = roles.findIndex(e=>e=='write'||e=='admin');
