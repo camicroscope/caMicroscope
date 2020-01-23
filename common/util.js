@@ -811,7 +811,7 @@ function getUserRole(){
   let token_info = parseJwt(getCookie("token"));
   let roles = [];
   if (token_info.attrs) {
-    roles = token_info.sub;
+    roles = token_info.attrs;
   }  
   return roles;
 }
