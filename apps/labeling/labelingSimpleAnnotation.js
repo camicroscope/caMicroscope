@@ -424,25 +424,32 @@ async function saveAnnotation(annotation){
   // add annotations 
   annotation.creator = creator;
   annotation.create_date_time = dateTime;
-  await $CAMIC.store.addLabel(annotation).then( d => d.count );
+  const rs = await $CAMIC.store.addLabelingAnnotation(annotation).then( d => d );
+  if(rs.count >= 1){
+    // update parent
+    const label = $D.params.labelId;
+    
+    await $CAMIC.store.pushLabelAnnotationId(label, annotation._id).then(d=>d);
+    
+    // randomly pick
+    // const labels = await $CAMIC.store.findAllLabelsWithoutAnnotations().then(d=>d);
+    // const index = getRandomIntInclusive(0,labels.length-1);
+    // const nextLabelId = labels[index]._id;
+    // const nextSlideId = labels[index].provenance.image.slide;
+    
+    // remove listener
+    window.removeEventListener('beforeunload', beforeUnloadHandler);
+   
+    window.location.href = `./roi_pick.html?slideId=${$D.params.slideId}&collectionId=${$D.params.collectionId}`;
 
-  // update parent
-  const label = $D.params.labelId;
-  
-  await $CAMIC.store.pushLabelAnnotationId(label, annotation._id).then(d=>d);
-  
-  // randomly pick
-  // const labels = await $CAMIC.store.findAllLabelsWithoutAnnotations().then(d=>d);
-  // const index = getRandomIntInclusive(0,labels.length-1);
-  // const nextLabelId = labels[index]._id;
-  // const nextSlideId = labels[index].provenance.image.slide;
-  
-  // remove listener
-  window.removeEventListener('beforeunload', beforeUnloadHandler);
- 
-  window.location.href = `./roi_pick.html?slideId=${$D.params.slideId}&collectionId=${$D.params.collectionId}`;
+    Loading.close();
 
-  Loading.close();
+  }else{
+    alert(JSON.stringify(rs))
+
+  }
+
+
   
 }
 

@@ -63,10 +63,10 @@
   const cid = params.collectionId;
     async function initialize() {
       const store = new Store("../../data/");
-
       const creator = sessionStorage.getItem('userName') || getUserId();
+      // const creator = "_0wwttfdvb";
       const rois = await store.findLabelingByTypeOrCreator(slideId, "label");
-      let vtas = await store.findLabelingByTypeOrCreator(
+      let vtas = await store.findLabelingAnnotationByTypeOrCreator(
         slideId,
         "annotation",
         creator

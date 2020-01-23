@@ -304,6 +304,7 @@
 
 		store.findByCollectionId(cid)
 		.then(async function(data) {
+
 			const creator = sessionStorage.getItem('userName') || getUserId();
             const namelist = data.map(d=>d.name);
             const roi_done_counts = await store.countSimpleAnnotationBySlideAndCreator(creator, namelist);
@@ -319,6 +320,7 @@
 			// 		return AND.call(this, v1, v2, eq);
 			// 	});
 			// }
+			// super man spider man bat man cat man ant man iron man 
 
 			// mapping data
 			const keys = HeadMapping.map(d=>d.field);
@@ -375,7 +377,7 @@
 			const head = HeadMapping.map(d=>d.title);
 			head.push("");
 			const obj = {
-				headings:head ,
+				headings:head,
 				data:data
 			};
 			dataTableInstance = new DataTable("#datatables",{

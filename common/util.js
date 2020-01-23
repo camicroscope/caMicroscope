@@ -791,8 +791,7 @@ function getUserId() {
   }
   // non-pathdb w login
   else if (token_info.sub) {
-    uid = token_info.sub;    
-    // uid = SHA256(token_info.sub);
+    uid = token_info.sub;
   }
   // no login, random id
   else {

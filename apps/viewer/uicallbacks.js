@@ -540,7 +540,7 @@ function anno_callback(data){
 	const creator = sessionStorage.getItem("userName") || getUserId();
 	const annotJson = {
 		creator: creator,
-		created_date: new date(),
+		created_date: new Date(),
 		provenance:{
 			image:{
 				slide:$D.params.slideId

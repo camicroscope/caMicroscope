@@ -683,6 +683,29 @@ class Store {
   }
 
   /**
+   * post mark
+   * @param {object} json - the mark data
+   * @returns {promise} - promise which resolves with response
+   **/
+  addLabelingAnnotation(json) {
+    var suffix = "LabelingAnnotation/post"
+    var url = this.base + suffix;
+    if (this.validation.labeling && !this.validation.labeling(json)){
+      console.warn(this.validation.labeling.errors)
+    }
+    return fetch(url, {
+      method: "POST",
+      credentials: "include",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json; charset=utf-8",
+        // "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: JSON.stringify(json)
+    }).then(this.errorHandler)
+  }
+
+  /**
    * get mark by id
    * @param {string} id - the mark id
    * @returns {promise} - promise which resolves with data
@@ -888,6 +911,26 @@ class Store {
       mode: "cors"
     }).then(this.errorHandler)
   }
+  
+  findLabelingAnnotationByTypeOrCreator(slide, type, creator){
+    if (!slide) {
+      return {
+        hasError: true,
+        message: 'args are illegal'
+      }
+    }
+    var suffix = "LabelingAnnotation/findByTypeOrCreator"
+    var url = this.base + suffix;
+    var query = {}
+    query.slideId = slide;
+    if(type) query.computation = type;
+    if(creator) query.creator = creator;
+
+    return fetch(url + "?" + objToParamStr(query), {
+      credentials: "include",
+      mode: "cors"
+    }).then(this.errorHandler)
+  }
 
   countSimpleAnnotationBySlideAndCreator(creator,nameList){
     if (!Array.isArray(nameList) || !creator) {
@@ -896,7 +939,7 @@ class Store {
         message: 'args are illegal'
       }
     }
-    var suffix = "Labeling/countSimpleAnnotationBySlideAndCreator"
+    var suffix = "LabelingAnnotation/countSimpleAnnotationBySlideAndCreator"
     var url = this.base + suffix;
     var query = {}
     var stringifiedNames = nameList.map(name => `"${name}"`).join(',');
