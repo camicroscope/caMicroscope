@@ -400,6 +400,14 @@
     </div>
   </body>
   <script>
+		// --  -- //
+		const roles = getUserRole();
+		const idx = roles.findIndex(e=>e=='write'||e=='admin');
+		if(idx < 0){
+			// crowd
+			window.location = '../landing/crowd.html';
+    }
+    
     let creators;
     let slides;
     let types;
@@ -462,8 +470,12 @@
         field: "id"
       },
       {
-        title: "Slide",
+        title: "Slide Id",
         field: "slide"
+      },
+      {
+        title: "Slide Name",
+        field: "slide_name"
       },
       {
         title: "Creator",
@@ -575,7 +587,8 @@
           return {
             id: i._id,
             creator: i.creator,
-            slide: i.provenance.image.name,
+            slide: i.provenance.image.slide,
+            slide_name: i.provenance.image.name,
             data_type: i.provenance.analysis.computation,
             x: i.properties.x,
             y: i.properties.y,

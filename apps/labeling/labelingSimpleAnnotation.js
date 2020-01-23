@@ -396,14 +396,6 @@ function initCore(){
 
 }
 
-function createForm(){
-
-}
-
-function sdfafdsad(){
-  // if(!confirm(`Do You Want To Delete { ${annotation.properties.type} - Index:${data.index}}?`)) return;
-}
-
 function clickSavebtnHandler(){
   if($D.annotations.length < 1) {
     alert('There Is No Annotaiton. Please Add Some Annotations...');

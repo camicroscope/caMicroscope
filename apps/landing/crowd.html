@@ -47,7 +47,6 @@
             <link rel='stylesheet' type='text/css' media='all' href='../../components/loading/loading.css'/>
             <script type='text/javascript' src='../../components/loading/loading.js' ></script>
             <script type='text/javascript' src='../../common/ajv.js'></script>
-            <script type='text/javascript' src='../../common/SHA256.js'></script>
             <script type='text/javascript' src='../../common/util.js'></script>
             <script type='text/javascript' src='../../core/Validation.js'></script>
             <script type='text/javascript' src='../../core/Store.js'></script>
@@ -57,9 +56,9 @@
                 const idx = roles.findIndex(e=>e=='write'||e=='admin');
                 if(idx < 0){
                     // crowd
-                    window.location = './crowd.html';
+                    //window.location = './landing.html';
                 }else{
-                    //window.location = './crowd.html';
+                    window.location = './landing.html';
                 }
                 // --- temporary for user name --- //
                 const modalbox = new ModalBox({
@@ -88,30 +87,6 @@
                 })
                 // --- temporary for user name --- //
 
-
-
-
-                const store = new Store("../../data/", $VALIDATION);
-                async function picking(){
-                    Loading.open(document.body,'Randomly Picking...');
-                    const labels = await store.findAllLabelsWithoutAnnotations().then(d=>d);
-                    if(!Array.isArray(labels)){
-                        Loading.close();                        
-                        alert('Service Error!');
-                        return;
-                    }
-                    if(Array.isArray(labels)&&labels.length==0){
-
-                        Loading.close();
-                        alert("No ROI. Please create ROI.");
-                        return;
-                    }
-                    const index = getRandomIntInclusive(0,labels.length-1);
-                    const label = labels[index];
-                    const labelId = label._id;
-                    const slideId = label.provenance.image.slide;
-                    window.location.href = `../labeling/labelingSimpleAnnotation.html?labelId=${labelId}&slideId=${slideId}`;
-                }
             </script>
         </header>
 
@@ -124,18 +99,10 @@
         </div>
 
         <div class="posts">
-            <!-- Organizer -->
-            <section class="post">
-                <a href="../table.html" class="image"><img src="./camic.jpg" alt=""/></a>
-                <div class="content">
-                    <h3>ROI Creation - Organizers</h3>
-                    <p>Organizers select a slide and create ROIs.</p>
-                    <a href="../table.html" class="button">Create</a>
-                    <a href="../labeling/statistics.html" class="button">Result</a>
-                </div>
-            </section>
+            <!-- crowd -->
 
             <section class="post">
+                <a href="../collection/viewer.html" class="image"><img src="./camic.jpg" style="-webkit-filter: hue-rotate(30deg);filter: hue-rotate(30deg);" alt=""/></a>
                 <div class="content">
                     <h3>ROI Annotation - Participants</h3>
                     <p>Participants randomly pick up a ROI and annotate on it.</p>

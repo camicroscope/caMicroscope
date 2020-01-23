@@ -806,6 +806,26 @@ function getUserId() {
   }
   return uid;
 }
+function getUserRole(){
+  let token_info = parseJwt(getCookie("token"));
+  let roles = [];
+  if (token_info.attrs) {
+    roles = token_info.sub;
+  }  
+  return role;
+}
+function redirectByRole(urls){ // role, url
+  const roles = getUserRole()
+  const idx = roles.findIndex(e=>e=='write'||e=='admin');
+  if(idx < 0){
+    // crowd
+    window.location = urls[0];
+  } else {
+    // organizers
+    window.location = urls[1]; 
+  }
+}
+
 
 class Tracker {
   constructor(camic, slide, userId, period = 1) {
