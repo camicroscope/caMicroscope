@@ -257,7 +257,8 @@
                 <a style='color:white;text-decoration:none;font-weight: 700;letter-spacing: 0.05em;text-transform: uppercase;font-size: 0.9em;' href="../landing/landing.html">Home</a>
                 &nbsp;&nbsp;&nbsp;
                 <a style='color:white;text-decoration:none;font-weight: 700;letter-spacing: 0.05em;text-transform: uppercase;font-size: 0.9em;' href="../collection/viewer.html">Collection List</a>
-            </div>
+				<a style='float:right;color:white;text-decoration:none;font-weight: 700;letter-spacing: 0.05em;text-transform: uppercase;font-size: 0.9em;' href="../../login.html?logout=true">Sign Out</a>
+			</div>
 		</div>
 			<table id = 'datatables'></table>
 		</div>
@@ -385,6 +386,9 @@
 				perPageSelect:[25,50,100],
 				data:obj
 			});
+		}).catch(e=>{
+			alert(`There Is A Error On Server Side. (${e})`);
+			window.location.href = "../collection/viewer.html";
 		});
 	}
 
