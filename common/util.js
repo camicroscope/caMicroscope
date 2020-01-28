@@ -806,7 +806,6 @@ function getUserId() {
   }
   return uid;
 }
-
 function getUserRole(){
   let token_info = parseJwt(getCookie("token"));
   let roles = [];
@@ -814,6 +813,18 @@ function getUserRole(){
     roles = token_info.attrs;
   }  
   return roles;
+}
+
+function addUserConsentAcceptance(userId){
+  localStorage.setItem(`HTT-${userId}-Acceptance`, true);
+}
+
+function getUserConsentAcceptance(userId){
+  return localStorage.getItem(`HTT-${userId}-Acceptance`);
+}
+
+function removeUserConsentAcceptance(userId){
+  localStorage.removeItem(`HTT-${userId}-Acceptance`);
 }
 
 function redirectByRole(urls){ // role, url

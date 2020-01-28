@@ -138,10 +138,11 @@
                     <button class='btn reset' style="float:right;color:#fff !important;">Decline</button>
                 </div>`;
                 
-                // -- event -- //
+                // -- bind event -- //
                 const continue_btn = modalbox.elt.querySelector('.action');
                 const decline_btn = modalbox.elt.querySelector('.reset');
                 const chk = modalbox.elt.querySelector('.modalbox-footer input[type=checkbox]');
+                
                 chk.addEventListener('change', e=>{
                     if(chk.checked){
                         continue_btn.classList.remove('disabled');
@@ -149,13 +150,18 @@
                         continue_btn.classList.add('disabled');
                     }
                 });
+                
                 continue_btn.addEventListener('click', e=>{
+                    
+                    addUserConsentAcceptance(getUserId());
                     modalbox.close();
                 });
+                
                 decline_btn.addEventListener('click', e=>{
                     window.location = '../../login.html?logout=true';
                 });
-                modalbox.open();
+
+                if(!getUserConsentAcceptance(getUserId())) modalbox.open();
                 
 
 
