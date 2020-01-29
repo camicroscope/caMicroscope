@@ -149,39 +149,23 @@
 			<div style='width: 100%; height: 35px; background-color: #001871;'> 
             <div style="padding:8px;">
                 <a style='color:white;text-decoration:none;font-weight: 700;letter-spacing: 0.05em;text-transform: uppercase;font-size: 0.9em;' href="../landing/landing.html">Home</a>
-                <a style='float:right;color:white;text-decoration:none;font-weight: 700;letter-spacing: 0.05em;text-transform: uppercase;font-size: 0.9em;' href="../../login.html?logout=true">Sign Out</a>
+                <a style='float:right;color:white;text-decoration:none;font-weight: 700;letter-spacing: 0.05em;text-transform: uppercase;font-size: 0.9em;' href="#" onclick='guestUserSignOut("../landing/crowd.html")'>Sign Out</a>
             </div>
 		</div>
 			<table id = 'datatables'></table>
 		</div>
     </div>
-    <div id='card-container' class='card-grid'>
-        <!-- <div class='card' >
-            <div class='card-title'>test1</div>
-            <div class='card-description'>This is test1this is test1this is test1this i is test1this isthis is test1this is test1this isthis is test1this is test1this isthis is test1this is test1this isthis is test1this is test1this isthis is test1thiss test1this isthis is test1this is test1this is test1this is test1test1this is test1this is test1this is test1</div>
-            <div class='card-actions'>
-                <button class='btn action' style='float: left;'>ROIs Collection</button>
-                <button class='btn action' style='float: right;'>ROIs Evaluation</button>
-            </div>
-        </div>
-        <div class='card' ><button class='btn'>333333</button></div>
-        <div class='card' ></div>
-        <div class='card' ></div>
-        <div class='card' ></div>
-        <div class='card' ></div>
-        <div class='card' ></div>
-        <div class='card' ></div>
-        <div class='card' ></div>
-        <div class='card' ></div>
-        <div class='card' ></div>
-        <div class='card' ></div> -->
-    </div>
+    <div id='card-container' class='card-grid'></div>
     <script>
+        // --  -- //
+        if(!doesGuestUserAccept()) {
+            window.location = '../landing/crowd.html';
+        }
+        // --  -- //
         const store = new Store('../../data/');
         const container = document.getElementById('card-container');
         
         function createAllCards(data, container){
-            
             data.forEach(d => {
                 const card = createCard(d);
                 container.append(card);

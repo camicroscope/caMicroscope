@@ -257,7 +257,7 @@
                 <a style='color:white;text-decoration:none;font-weight: 700;letter-spacing: 0.05em;text-transform: uppercase;font-size: 0.9em;' href="../landing/landing.html">Home</a>
                 &nbsp;&nbsp;&nbsp;
                 <a style='color:white;text-decoration:none;font-weight: 700;letter-spacing: 0.05em;text-transform: uppercase;font-size: 0.9em;' href="../collection/viewer.html">Collection List</a>
-				<a style='float:right;color:white;text-decoration:none;font-weight: 700;letter-spacing: 0.05em;text-transform: uppercase;font-size: 0.9em;' href="../../login.html?logout=true">Sign Out</a>
+				<a style='float:right;color:white;text-decoration:none;font-weight: 700;letter-spacing: 0.05em;text-transform: uppercase;font-size: 0.9em;' href="#" onclick='guestUserSignOut("../landing/crowd.html")'>Sign Out</a>
 			</div>
 		</div>
 			<table id = 'datatables'></table>
@@ -265,6 +265,11 @@
 	</div>
 </body>
 <script>
+	// --  -- //
+	if(!doesGuestUserAccept()) {
+		window.location = '../landing/crowd.html';
+	}
+	// --  -- //
 	const HeadMapping = [{
 		title:'ID',
 		field:'oid'
@@ -306,7 +311,7 @@
 		store.findByCollectionId(cid)
 		.then(async function(data) {
 
-			const creator = sessionStorage.getItem('userName') || getUserId();
+			const creator = sessionStorage.getItem('email');
             const namelist = data.map(d=>d.name);
             const roi_done_counts = await store.countSimpleAnnotationBySlideAndCreator(creator, namelist);
 			// get ROI counts for each slide

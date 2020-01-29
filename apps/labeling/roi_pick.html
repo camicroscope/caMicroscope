@@ -58,12 +58,16 @@
     <H1 id='message' style='color:black;'>Loading...</H1>
   </body>
   <script type="text/javascript">
+	if(!doesGuestUserAccept()) {
+		window.location = '../landing/crowd.html';
+  }
+  
   const params = getUrlVars();
   const slideId = params.slideId;
   const cid = params.collectionId;
     async function initialize() {
       const store = new Store("../../data/");
-      const creator = sessionStorage.getItem('userName') || getUserId();
+      const creator = sessionStorage.getItem('email');
       // const creator = "_0wwttfdvb";
       const rois = await store.findLabelingByTypeOrCreator(slideId, "label");
       let vtas = await store.findLabelingAnnotationByTypeOrCreator(

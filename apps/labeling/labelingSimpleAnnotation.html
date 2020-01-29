@@ -262,6 +262,11 @@
 		</div>
 	</body>
 	<script type="text/javascript">
+	// --  -- //
+	if(!doesGuestUserAccept()) {
+		window.location = '../landing/crowd.html';
+	}
+	// --  -- //	
 	var HomePage;
 		if(detectIE()){
 			createWarningText('You are using an <strong>IE/Edge</strong> browser that may be lead to erratic behavior on caMicroscope. Please switch to <a href="https://www.google.com/chrome/">Chrome</a>, <a href="https://www.mozilla.org/en-US/firefox/new/">Firefox</a> or <a href="https://www.apple.com/safari/">Safari</a> browser to improve your experience.');

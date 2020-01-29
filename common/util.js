@@ -116,6 +116,51 @@ function Debounce(func, wait = 16, immediate = true) {
   };
 }
 
+function getGuestUser(){
+  return {
+    email: sessionStorage.getItem('email'),
+    acceptance: sessionStorage.getItem('acceptance')
+  }  
+}
+
+function removeGuestUser(){
+  sessionStorage.removeItem('email');
+  sessionStorage.removeItem('acceptance');
+}
+
+function setGuestUser(email, acceptance){
+  sessionStorage.setItem('email',email);
+  sessionStorage.setItem('acceptance',acceptance);
+}
+
+function doesGuestUserAccept(){
+  const email = sessionStorage.getItem('email');
+  const acceptance = sessionStorage.getItem('acceptance');
+  if(email&&validateEmail(email)&&acceptance&&acceptance=='true'){
+    return true;
+  }else{
+    return false;
+  }
+}
+
+function guestUserSignIn(email, acceptance){
+  setGuestUser(email, acceptance);
+}
+
+function guestUserSignOut(path){
+  removeGuestUser();
+  if(path) window.location = path;
+}
+
+function validateEmail(inputText) {
+  var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+  if(inputText.match(mailformat)) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 function hexToRgbA(hex, opacity = 1) {
   var c;
   if (/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)) {

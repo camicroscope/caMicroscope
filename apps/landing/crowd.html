@@ -8,7 +8,12 @@
 
     <!-- add modalbox css -->
     <link rel='stylesheet' type='text/css' media='all' href='../../components/modalbox/modalbox.css'/>
-    <!-- modalbox -->
+    <link rel='stylesheet' type='text/css' media='all' href='../../components/loading/loading.css'/>
+    <script type='text/javascript' src='../../components/loading/loading.js' ></script>
+    <script type='text/javascript' src='../../common/ajv.js'></script>
+    <script type='text/javascript' src='../../common/util.js'></script>
+    <script type='text/javascript' src='../../core/Validation.js'></script>
+    <script type='text/javascript' src='../../core/Store.js'></script>
     <script type='text/javascript' src='../../components/modalbox/modalbox.js'></script>
     <style>
         .modalbox-header {
@@ -66,6 +71,22 @@
             background-color: #dddddd;
             border-color: #dddddd;
         }
+
+        #email_div[data-error]:after {
+            position: absolute;
+            content: attr(data-error) !important;
+            color: #800;
+            font-size: .8rem;
+            font-weight: bold;
+            left: 83px;
+            bottom: 80px;
+            border: 1px #800 solid;
+            background: white;
+            overflow: hidden;
+            white-space: nowrap;
+            padding: 0 2px;
+            border-radius: 5px;
+        }
     </style>
 </head>
 
@@ -82,7 +103,8 @@
     <nav id="nav">
         <ul>
             <li><a target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLScL91LxrpAZjU88GBZP9gmcdgdf8__uNUwhws2lzU6Lr4qNwA/viewform">Feedback</a></li>
-            <li><a href="../../login.html?logout=true">Sign Out</a></li>
+            <!-- <li><a href="../../login.html?logout=true">Sign Out</a></li> -->
+            <li ><a href="#" onclick='guestUserSignOut("./crowd.html")'>Sign Out</a></li>
         </ul>
     </nav>
 </header>
@@ -94,28 +116,11 @@
     <div class="inner">
 
         <header class="major">
-        <!-- Thank you -->
-        <script src='../../common/authChecker.js'></script>
-        <script>
-            __auth_check(2)
-        </script>
             <h2>HTT ROI Annotation</h2>
-            <link rel='stylesheet' type='text/css' media='all' href='../../components/loading/loading.css'/>
-            <script type='text/javascript' src='../../components/loading/loading.js' ></script>
-            <script type='text/javascript' src='../../common/ajv.js'></script>
-            <script type='text/javascript' src='../../common/util.js'></script>
-            <script type='text/javascript' src='../../core/Validation.js'></script>
-            <script type='text/javascript' src='../../core/Store.js'></script>
-            <script type="text/javascript">
-                // --  -- //
-                const roles = getUserRole();
-                const idx = roles.findIndex(e=>e=='write'||e=='admin');
-                if(idx < 0){
-                    // crowd
-                    //window.location = './landing.html';
-                }else{
-                    window.location = './landing.html';
-                }
+            <!-- Thank you -->
+        <script src='../../common/authChecker.js'></script>
+        <script type="text/javascript">    
+            __auth_check(2)
                 // --- temporary for user name --- //
                 const modalbox = new ModalBox({
                     id:'modalbox',
@@ -127,22 +132,53 @@
                 modalbox.elt.style.paddingTop="60px";
                 modalbox.elt.querySelector(".close").style.display = 'none';
                 modalbox.body.innerHTML = `<iframe src="https://drive.google.com/file/d/1ymkEltNmoiKHyCOblRpurLGeXqNG6dd-/preview" width="100%" height="450"></iframe>`;
+                modalbox.body.style.borderBottom = '3px solid #365f9c';
                 modalbox.body.style.padding = 0;
                 const footer = modalbox.elt.querySelector(".modalbox-footer");
-                footer.style.background = '#f8f8ff';
-                footer.innerHTML = `<label for='consent' style='font-size:1rem;margin: 0 0 .5em 0;'>
-                <input type='checkbox' id='consent' style='opacity:1;background-color:initial;cursor:default;-webkit-appearance:checkbox;box-sizing:border-box;margin: 5px 1.5ex;padding: initial;border: initial;'></input>
-                I Accept The Terms of Consent Form.</label>
+                footer.style.border = '';
+                footer.style.background = '#fff';
+                footer.innerHTML = `
+                <div id='email_div'>
+                    &nbsp;&nbsp;&nbsp;<label for='email' style="display:inline-flex;margin:.5rem 0 .5rem 0; ">E-mail:&nbsp;&nbsp;<input id='email' placeholder='email@example.com' type='text' style='font-size:.8rem;font-weight:bold;padding:0 .5rem;color:#365f9c;height:1.5rem;width:200px; display:inline-flex;'/></label>
+
+                    <label for='consent' style='font-size:1rem;margin: 0 0 .5em 0;display:inline-flex;'>
+                        <input type='checkbox' id='consent' style='z-index:20;opacity:1;background-color:initial;cursor:default;-webkit-appearance:checkbox;box-sizing:border-box;margin: 5px 1.5ex;padding: initial;border: initial;'/>
+                        I Accept The Terms of Consent Form.
+                    </label>
+                </div>
                 <div style="padding-bottom:10px;">
                     &nbsp;&nbsp;&nbsp;<button class='btn action disabled' style="color:#fff !important;">Continue</button>
-                    <button class='btn reset' style="float:right;color:#fff !important;">Decline</button>
+                    <button class='btn reset' style="display:none;float:right;color:#fff !important;">Decline</button>
                 </div>`;
                 
                 // -- bind event -- //
+                const email = modalbox.elt.querySelector('#email');
+                const email_div = modalbox.elt.querySelector('#email_div');
                 const continue_btn = modalbox.elt.querySelector('.action');
                 const decline_btn = modalbox.elt.querySelector('.reset');
                 const chk = modalbox.elt.querySelector('.modalbox-footer input[type=checkbox]');
-                
+                chk.disabled = true;
+                function validate(e){
+
+                    if(validateEmail(email.value)){
+                        // validate email
+                        delete email_div.dataset.error;
+                        chk.disabled = false;
+                        console.log('email right')
+                    }else{
+                        chk.disabled = true;
+                        chk.checked = false; 
+                        continue_btn.classList.add('disabled');
+                        console.log('email error')
+                        email_div.dataset.error = `Please Enter A Valid E-Mail`;
+                        // error message
+
+                    }
+                }
+
+                email.addEventListener('keyup', validate);
+                email.addEventListener('blur', validate);
+
                 chk.addEventListener('change', e=>{
                     if(chk.checked){
                         continue_btn.classList.remove('disabled');
@@ -152,20 +188,21 @@
                 });
                 
                 continue_btn.addEventListener('click', e=>{
-                    
-                    addUserConsentAcceptance(getUserId());
-                    modalbox.close();
+                    guestUserSignIn(email.value, chk.checked);
+                    const userInfo = getGuestUser();
+                    if(userInfo.email == email.value&&doesGuestUserAccept()){
+                        modalbox.close();
+                    }
                 });
                 
                 decline_btn.addEventListener('click', e=>{
                     window.location = '../../login.html?logout=true';
                 });
 
-                if(!getUserConsentAcceptance(getUserId())) modalbox.open();
-                
-
-
-
+                if(!doesGuestUserAccept()) {
+                    modalbox.open();
+                    email.focus();
+                }
             </script>
         </header>
 
