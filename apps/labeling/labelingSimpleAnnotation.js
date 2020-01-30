@@ -201,7 +201,7 @@ function initCore(){
       hasLayerManager:true,
       hasScalebar:true,
       hasMeasurementTool:true,
-      minImageZoom:0.25
+      // minImageZoom:0.25
   }
   // set states if exist
   if($D.params.states){
@@ -369,7 +369,21 @@ function initCore(){
 
       //     Loading.close();          
       //   }
-      // }, 
+      // },
+      {
+        id: "locate",
+        icon: "my_location",
+        title: "ROI Location",
+        type: "btn",
+        value: "roi_location",
+        callback: ()=>{
+          const {x, y, width, height} = $D.ROI.properties;
+          const cx = x + width/2;
+          const cy = y + height/2;
+          const refPoint = $CAMIC.viewer.viewport.imageToViewportCoordinates(cx,cy);
+          $CAMIC.viewer.viewport.panTo(refPoint,true);          
+        }    
+      },
       {
         id: "tutorial",
         icon: "help",
@@ -604,11 +618,13 @@ async function loadingData() {
 
 function showLabelData(){
   // set zoom and ref point
-  const points = $D.ROI.geometries.features[0].geometry.coordinates[0];
-  const x = points[0][0] + (points[2][0] - points[0][0])/2;
-  const y = points[0][1] + (points[2][1] - points[0][1])/2;
-  const refPoint = $CAMIC.viewer.viewport.imageToViewportCoordinates(x,y);
+  const {x, y, width, height} = $D.ROI.properties;
+  const cx = x + width/2;
+  const cy = y + height/2;
+  
+  const refPoint = $CAMIC.viewer.viewport.imageToViewportCoordinates(cx,cy);
   $CAMIC.viewer.viewport.panTo(refPoint,true);
+  $CAMIC.viewer.viewport.zoomTo($CAMIC.viewer.viewport.imageToViewportZoom(.25),refPoint,true);
   
   // draw label
   const labels = [...$D.subROIs,$D.ROI];
@@ -756,7 +772,8 @@ function locatedAnnotation(data){
   }
 
   const refPoint = $CAMIC.viewer.viewport.imageToViewportCoordinates(x,y);
-  $CAMIC.viewer.viewport.panTo(refPoint, true);
+  //$CAMIC.viewer.viewport.panTo(refPoint, true);
+  $CAMIC.viewer.viewport.zoomTo($CAMIC.viewer.viewport.imageToViewportZoom(.25),refPoint,true);
 
 }
 
@@ -777,13 +794,10 @@ function onDeleteAnnotation(data){
 function createTutorial(){
   empty($UI.modalbox.body);
   $UI.modalbox.setHeaderText('Tutorial');
-  
-  $UI.modalbox.body.innerHTML = `
-  <div style="float:left;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;">
-  <H3>The Example Of TIL densities ( <a href="https://drive.google.com/file/d/1tgi31QO0Mu6YH7slPC9HDde0KtSTIWjT/view?usp=sharing" target="_blank">For More Details, Visit Our Training Materials</a> )</H3>
-  <img src="til_tutorial.png" alt="Tutorial" width="80%">
-  </div>`;
-  $UI.modalbox.elt.querySelector(".modalbox-footer").innerHTML = '';
+  $UI.modalbox.elt.style.paddingTop="60px";
+  $UI.modalbox.body.style.padding = 0;
+  $UI.modalbox.body.style.display = 'block';
+  $UI.modalbox.body.innerHTML = `<embed src="./TutorialWebsite.pdf" width="100%" height="550" />`;
   $UI.modalbox.open();
 }
 

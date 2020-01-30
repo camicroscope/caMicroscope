@@ -131,7 +131,7 @@
                 });
                 modalbox.elt.style.paddingTop="60px";
                 modalbox.elt.querySelector(".close").style.display = 'none';
-                modalbox.body.innerHTML = `<iframe src="https://drive.google.com/file/d/1ymkEltNmoiKHyCOblRpurLGeXqNG6dd-/preview" width="100%" height="450"></iframe>`;
+                modalbox.body.innerHTML = `<embed src="./HTT_IRBinformedConsent.pdf" width="100%" height="450" />`;
                 modalbox.body.style.borderBottom = '3px solid #365f9c';
                 modalbox.body.style.padding = 0;
                 const footer = modalbox.elt.querySelector(".modalbox-footer");
@@ -145,6 +145,7 @@
                         <input type='checkbox' id='consent' style='z-index:20;opacity:1;background-color:initial;cursor:default;-webkit-appearance:checkbox;box-sizing:border-box;margin: 5px 1.5ex;padding: initial;border: initial;'/>
                         I Accept The Terms of Consent Form.
                     </label>
+                    &nbsp;&nbsp;&nbsp;<a style="font-weight:bold;color:#365f9c;" href="https://ncihub.org/groups/eedapstudies/wiki/HighThroughputTruthingYear3/File:HTT_IRBinformedConsent.pdf">Download Consent Form</a>
                 </div>
                 <div style="padding-bottom:10px;">
                     &nbsp;&nbsp;&nbsp;<button class='btn action disabled' style="color:#fff !important;">Continue</button>

@@ -574,13 +574,10 @@ function annotOff() {
 function createTutorial(){
   empty($UI.modalbox.body);
   $UI.modalbox.setHeaderText('Tutorial');
-  
-  $UI.modalbox.body.innerHTML = `
-  <div style="float:left;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;">
-  <H3>The Example Of TIL densities ( <a href="https://drive.google.com/file/d/1tgi31QO0Mu6YH7slPC9HDde0KtSTIWjT/view?usp=sharing" target="_blank">For More Details, Visit Our Training Materials</a> )</H3>
-  <img src="til_tutorial.png" alt="Tutorial" width="80%">
-  </div>`;
-  $UI.modalbox.elt.querySelector(".modalbox-footer").innerHTML = '';
+  $UI.modalbox.elt.style.paddingTop="60px";
+  $UI.modalbox.body.style.padding = 0;
+  $UI.modalbox.body.style.display = 'block';
+  $UI.modalbox.body.innerHTML = `<embed src="./TutorialWebsite.pdf" width="100%" height="550" />`;
   $UI.modalbox.open();
 }
 
