@@ -4060,9 +4060,9 @@
 				margin-left: 1.25em !important;
 			}
 
-			#header nav {
+			/* #header nav {
 				display: none;
-			}
+			} */
 
 			#header .navPanelToggle {
 				display: block;
