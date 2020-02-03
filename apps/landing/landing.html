@@ -52,7 +52,7 @@
             <script type='text/javascript' src='../../core/Validation.js'></script>
             <script type='text/javascript' src='../../core/Store.js'></script>
             <script type="text/javascript">
-                // --  -- //
+                // -- authentication check -- //
                 const roles = getUserRole();
                 const idx = roles.findIndex(e=>e=='write'||e=='admin');
                 if(idx < 0){
