@@ -104,7 +104,7 @@
         <ul>
             <li><a target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLScL91LxrpAZjU88GBZP9gmcdgdf8__uNUwhws2lzU6Lr4qNwA/viewform">Feedback</a></li>
             <!-- <li><a href="../../login.html?logout=true">Sign Out</a></li> -->
-            <li ><a href="#" onclick='SignOut("../../login.html?logout=true")'>Sign Out</a></li>
+            <li ><a href="#" onclick='googleSignOut("../../login.html?logout=true")'>Sign Out</a></li>
         </ul>
     </nav>
 </header>
@@ -121,15 +121,8 @@
             <script src='../../common/authChecker.js'></script>
             <script type="text/javascript">    
                 __auth_check(2)
-                // -- check authentication -- //
-                const roles = getUserRole();
-                const idx = roles.findIndex(e=>e=='write'||e=='admin');
-                if(idx < 0){
-                    // crowd
-                    // window.location = './crowd.html';
-                }else{
-                    // window.location = './landing.html';
-                }
+                // -- authentication check -- //
+                if(!hasLoginAsGoogle()) window.location = '../../login.html';
 
                 // --- temporary for user name --- //
                 const modalbox = new ModalBox({
@@ -209,16 +202,13 @@
                 });
                 
                 decline_btn.addEventListener('click', e=>{
-                    SignOut('../../login.html?logout=true');
+                    googleSignOut('../../login.html?logout=true');
                 });
 
                 if(!getUserConsentAcceptance(getUserId())) modalbox.open();
 
 
-                function SignOut(url){
-                    removeUserConsentAcceptance(getUserId());
-                    window.location = url;
-                }
+
             </script>
         </header>
 
@@ -236,8 +226,8 @@
             <section class="post">
                 <a target="_blank" href="https://github.com/camicroscope/" class="image"><img src="./code.jpg" alt=""/></a>
                 <div class="content">
-                    <h3>Participant Survey</h3>
-                    <p>We want to learn more about you. Please take the time to complete this survey.</p>
+                    <h3>Step 1: Participant Survey</h3>
+                    <p>We want to learn more about you. Please take the time to complete this survey. ()</p>
                     <a target="_blank" href="https://forms.gle/K1xi9URpwGfoWgJy9" class="button">Take The Survey</a>
                 </div>
             </section>
@@ -245,7 +235,7 @@
             <section class="post">
                 <a href="../collection/viewer.html" class="image"><img src="./camic.jpg" style="-webkit-filter: hue-rotate(30deg);filter: hue-rotate(30deg);" alt=""/></a>
                 <div class="content">
-                    <h3>ROI Annotation - Participants</h3>
+                    <h3>Step 2: Annotation</h3>
                     <p>Participants randomly pick up a ROI and annotate on it.</p>
                     <a href="../collection/viewer.html" class="button">Pick & Annotate</a>
                 </div>

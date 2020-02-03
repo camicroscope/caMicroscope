@@ -823,6 +823,21 @@ EventHandle.prototype = {
   }
 };
 
+function hasLoginAsGoogle(){
+  let token_info = parseJwt(getCookie("token"));
+  if(token_info&&token_info.sub){
+    return true;
+  }else if(token_info&&token_info.name=='None'){
+    return false;
+  }
+  return false;
+}
+
+function googleSignOut(url){
+  removeUserConsentAcceptance(getUserId());
+  window.location = url;
+}
+
 function getUserId() {
   let token_info = parseJwt(getCookie("token"));
   let uid = "";

@@ -58,9 +58,8 @@
     <H1 id='message' style='color:black;'>Loading...</H1>
   </body>
   <script type="text/javascript">
-	if(!doesGuestUserAccept()) {
-		window.location = '../landing/crowd.html';
-  }
+  // -- authentication check -- //
+  if(!hasLoginAsGoogle()) window.location = '../../login.html';
   
   const params = getUrlVars();
   const slideId = params.slideId;

@@ -262,10 +262,9 @@
 		</div>
 	</body>
 	<script type="text/javascript">
-	// --  -- //
-	if(!doesGuestUserAccept()) {
-		window.location = '../landing/crowd.html';
-	}
+	// -- authentication check -- //
+	if(!hasLoginAsGoogle()) window.location = '../../login.html';
+
 	// --  -- //	
 	var HomePage;
 		if(detectIE()){

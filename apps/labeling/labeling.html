@@ -104,13 +104,17 @@
 		<div id ='main_viewer' class='main'></div>
 	</body>
 	<script type="text/javascript">
-		// --  -- //
+		// -- authentication check -- //
+		if(!hasLoginAsGoogle()) window.location = '../../login.html';
+		
 		const roles = getUserRole();
 		const idx = roles.findIndex(e=>e=='write'||e=='admin');
 		if(idx < 0){
 			// crowd
 			window.location = '../landing/crowd.html';
-		}		
+		}else{
+			//window.location = './crowd.html';
+		}
 		// --  -- //
 		if(detectIE()){
 			createWarningText('You are using an <strong>IE/Edge</strong> browser that may be lead to erratic behavior on caMicroscope. Please switch to <a href="https://www.google.com/chrome/">Chrome</a>, <a href="https://www.mozilla.org/en-US/firefox/new/">Firefox</a> or <a href="https://www.apple.com/safari/">Safari</a> browser to improve your experience.');
