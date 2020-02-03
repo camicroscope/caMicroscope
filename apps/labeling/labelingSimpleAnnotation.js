@@ -423,7 +423,7 @@ function clickSavebtnHandler(){
 async function saveAnnotation(annotation){
   Loading.open(document.body, 'Saving Annotations...');
   // user and date time
-  const creator = sessionStorage.getItem('email');
+  const creator = getUserId();
   
   const dateTime = new Date();
 
