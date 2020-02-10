@@ -265,7 +265,8 @@
     var size;
     if(this.viewer.mpp ||this.viewer.mpp_x ||this.viewer.mpp_y ){
         const mpp = this.viewer.mpp || this.viewer.mpp_x || this.viewer.mpp_y;
-        size = 500/getMPP(mpp)
+        // size = 500/getMPP(mpp)
+        size = Math.round(500/mpp)
     }else{
         size = this.manager.selection[this.selIdx].size;
     }
@@ -362,7 +363,8 @@
           var size = item.size;
           if(this.viewer.mpp ||this.viewer.mpp_x ||this.viewer.mpp_y ){
               const mpp = this.viewer.mpp || this.viewer.mpp_x || this.viewer.mpp_y;
-              size = 500/getMPP(mpp)
+              // size = 500/getMPP(mpp)
+              size = Math.round(500/mpp)
           }else{
               size = this.manager.selection[this.selIdx].size;
           }
@@ -989,7 +991,8 @@
     var size = 256;
     if(parentPatch.viewer.mpp ||parentPatch.viewer.mpp_x ||parentPatch.viewer.mpp_y ){
         const mpp = parentPatch.viewer.mpp || parentPatch.viewer.mpp_x || parentPatch.viewer.mpp_y;
-        size = 125/getMPP(mpp)
+        // size = 125/getMPP(mpp)
+        size = Math.round(125/mpp)
     }    
     const {
       x,
