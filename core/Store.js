@@ -726,7 +726,7 @@ class Store {
   findLabel(label, slide, type) {
     var suffix = "Labeling/find";
     var url = this.base + suffix;
-
+    var query = {}
     if(label) query.labelId = label;
     if(slide) query.slideId = slide;
     if(type) query.labelType = type;
