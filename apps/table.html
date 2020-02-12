@@ -243,6 +243,10 @@
 			border-color: #365f9c;
 			opacity: 1;
 		}
+		.btn.disabled, .btn.disabled:hover  {
+			background-color: #cdcdcd;
+			border-color: #cdcdcd;
+		}
     </style>
 </head>
 <body>
@@ -306,6 +310,7 @@
 		store.findSlide()
 		.then(async function(data) {
 
+			data.sort((a, b)=>{a.name - b.name})
 			// get ROI counts for each slide
 			const roi_counts = await store.countBySlide();
 			// filter
@@ -332,7 +337,7 @@
 						else rs.push(d[key])
 					});
 					const btn = `
-					<button class="btn" data-id='${rs[0]}' onclick='openCreate(this)'>Create</button>
+					<button class="btn disabled" data-id='${rs[0]}' onclick='openCreate(this)' disabled>Create</button>
 					<button class="btn" data-id='${rs[0]}' onclick='openView(this)'>View All</button>`
 					
 					rs.push(btn);
