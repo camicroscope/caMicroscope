@@ -385,6 +385,16 @@ function initCore(){
         }    
       },
       {
+        id: "til_sample",
+        icon: "assessment",
+        title: "TIL Sample",
+        type: "btn",
+        value: "til_sample",
+        callback: ()=>{
+          createTILSample();
+        }    
+      },
+      {
         id: "tutorial",
         icon: "help",
         title: "Tutorial",
@@ -791,6 +801,19 @@ function onDeleteAnnotation(data){
   $CAMIC.viewer.omanager.updateView();
 }
 
+function createTILSample(){
+  empty($UI.modalbox.body);
+  $UI.modalbox.setHeaderText('The Example Of TIL Densities');
+  $UI.modalbox.elt.style.paddingTop="0";
+  $UI.modalbox.body.style.padding = 0;
+  $UI.modalbox.body.style.display = 'block';
+  $UI.modalbox.body.style.textAlign = 'center';
+  $UI.modalbox.body.innerHTML = `<img src="til_tutorial.png" alt="Tutorial" width="550px">`;
+  $UI.modalbox.elt.querySelector(".modalbox-footer").innerHTML = '';
+  $UI.modalbox.open();
+}
+
+
 function createTutorial(){
   empty($UI.modalbox.body);
   $UI.modalbox.setHeaderText('Tutorial');
@@ -893,7 +916,6 @@ function addROIFormEvent(){
   vta_txt.addEventListener('keydown', function(e){
       if(event.key === 'Enter'){
           ip.blur();
-          
       }
   }.bind(this))
 
@@ -914,19 +936,16 @@ function addROIFormEvent(){
 
   }.bind(this))
 
-
   function changeText(e){
     txt.textContent = `${vta_range.value}%`
   }
+
   vta_range.addEventListener('change', changeText);
   vta_range.addEventListener('mousemove', changeText);
 
-  
-  
   const action_btn = document.querySelector('#left_menu .foot .action');
   
-  action_btn.addEventListener('click', e => {
-    
+  action_btn.addEventListener('click', e => {  
     const id = new ObjectId();
     const slide = $D.params.slideId;
     const slideName = $D.params.data.name;
