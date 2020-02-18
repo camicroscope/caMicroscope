@@ -177,7 +177,7 @@
             <div class='card-description'>${d.description}</div>
             <div class='card-actions'>
                 <button class='btn action' style='float: left;display:none;'>ROIs Collection</button>
-                <button class='btn action' style='float: right;' disabled>ROIs Evaluation</button>
+                <button class='btn action' style='float: right;'>ROIs Evaluation</button>
             </div>`
             const btns = card.querySelectorAll('button');
             btns[0].addEventListener('click',e => {
@@ -196,12 +196,12 @@
             var data = await store.getAllCollections();
             
             const main_container = document.querySelector('.container');
-            const div = document.createElement('div');
-            div.style.textAlign='center'
-            div.style.color='red'
-            div.innerHTML = `<H1>FDA HTT Data-Collection Event Is Feb. 28 In LA. Please Come Back Later.</H1>
-            <H1>We Are Looking Forward To Seeing You At The Event</H1>`;
-            main_container.append(div)
+            // const div = document.createElement('div');
+            // div.style.textAlign='center'
+            // div.style.color='red'
+            // div.innerHTML = `<H1>FDA HTT Data-Collection Event Is Feb. 28 In LA. Please Come Back Later.</H1>
+            // <H1>We Are Looking Forward To Seeing You At The Event</H1>`;
+            // main_container.append(div)
 
             createAllCards(data, container);
         }
