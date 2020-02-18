@@ -721,6 +721,8 @@ function generateROIandSubROI(patch) {
   const roi_id = new ObjectId();
   const coordinates = getCoordinates(patch);
   const { x, y, width, height } = patch.getRect("image");
+  const viewer_size = $CAMIC.viewer.viewport.getContainerSize()
+
   const ROI = {
     _id: roi_id.toString(),
     creator: creator,
@@ -748,6 +750,10 @@ function generateROIandSubROI(patch) {
     annotations: [],
     subrois: [],
     parent: null,
+    viewer_size: {
+      width:viewer_size.width,
+      height:viewer_size.height
+    },
     geometries: {
       type: "FeatureCollection",
       features: [

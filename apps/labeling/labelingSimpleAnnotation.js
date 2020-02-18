@@ -440,6 +440,8 @@ async function saveAnnotation(annotation){
   // add annotations 
   annotation.creator = creator;
   annotation.create_date_time = dateTime;
+  const {x, y} = $CAMIC.viewer.viewport.getContainerSize()
+  annotation.viewer_size = {width:x,height:y}
   const rs = await $CAMIC.store.addLabelingAnnotation(annotation).then( d => d );
   if(rs.count >= 1){
     // update parent
