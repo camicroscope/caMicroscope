@@ -1,4 +1,4 @@
-let PDR = OpenSeadragon.pixelDensityRatio;
+flet PDR = OpenSeadragon.pixelDensityRatio;
 const IDB_URL = "indexeddb://";
 var csvContent;
 
@@ -854,6 +854,6 @@ function downloadCSV(filename) {
         lnk.fireEvent("onclick");
     }
   } else {
-    self.showResults("Pleae select a model first");
+    self.showResults("Please select a model first");
   }
 }
