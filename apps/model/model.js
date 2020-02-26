@@ -1,4 +1,4 @@
-flet PDR = OpenSeadragon.pixelDensityRatio;
+let PDR = OpenSeadragon.pixelDensityRatio;
 const IDB_URL = "indexeddb://";
 var csvContent;
 
