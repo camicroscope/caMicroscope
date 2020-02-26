@@ -854,6 +854,6 @@ function downloadCSV(filename) {
         lnk.fireEvent("onclick");
     }
   } else {
-    self.showResults("Pleae select a model first");
+    self.showResults("Please select a model first");
   }
 }
