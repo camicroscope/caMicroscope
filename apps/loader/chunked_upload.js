@@ -46,7 +46,6 @@ async function readFileChunks(file, token) {
 
 
 async function handle_upload(selectedFiles) {
-    //console.log('handle_upload is trigerred');
     var fnametr = document.getElementById("filenameRow")
     var tokentr = document.getElementById("tokenRow")
     var slidetr = document.getElementById("slidenameRow")
