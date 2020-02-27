@@ -15,6 +15,42 @@
             }
             callback();
         }
+        //var listOfFiles = 'this.files';
+        //Adding New Function for Handling Drop
+        function dropHandler(ev) {
+            console.log('File(s) dropped');
+
+            // Prevent default behavior (Prevent file from being opened)
+            ev.preventDefault();
+
+            if (ev.dataTransfer.items) {
+                // Use DataTransferItemList interface to access the file(s)
+                for (var i = 0; i < ev.dataTransfer.items.length; i++) {
+                    // If dropped items aren't files, reject them
+                    if (ev.dataTransfer.items[i].kind === 'file') {
+                        var file = ev.dataTransfer.items[i].getAsFile();
+                        console.log('... file[' + i + '].name = ' + file.name);
+                    }
+                }
+            } else {
+                // Use DataTransfer interface to access the file(s)
+                for (var i = 0; i < ev.dataTransfer.files.length; i++) {
+                    console.log('... file[' + i + '].name = ' + ev.dataTransfer.files[i].name);
+                }
+            }
+            var listOfFiles = ev.dataTransfer.files;
+            //var listOfFiles = list.getAsFile();
+            console.log(listOfFiles);
+            //document.getElementById('input').onchange();
+            handle_upload(listOfFiles);
+
+        }
+        function dragOverHandler(ev) {
+            console.log('File(s) in drop zone');
+
+            // Prevent default behavior (Prevent file from being opened)
+            ev.preventDefault();
+        }
     </script>
 
     <style>
@@ -33,7 +69,8 @@
         </p>
         <form>
             <table class="loaderTable" cellpadding="5" cellspacing="0">
-                <tr><td align="right"><b>Files</b></td><td id="fileUploadInput"><input type="file" id="input"  accept=".tiff , .svs , .vsi" onchange="handle_upload(this.files)" multiple></td></tr>
+                <tr><td align="right"><b>Files</b></td><td id="fileUploadInput"><input type="file" id="input" accept=".tiff , .svs , .vsi" onchange="handle_upload(this.files)" multiple></td></tr>
+                <tr><td colspan="2" id="dropZone" ondrop="dropHandler(event);" ondragover="dragOverHandler(event);" style="background-color:lightpink; border: 2px dotted;" ;> Drag files here</td></tr>
                 <tr id="fileIdRow" align="center"><td align="right"><b>ID</b></td></tr>
                 <tr id="filenameRow"><td align="right"><b>Filename</b></td></tr>
                 <tr id="tokenRow"><td align="right"><b>Token</b></td></tr>
