@@ -6,9 +6,9 @@
     <script>
         function validateForm(callback) {
             let x = document.getElementById("slidenameRow")
-            for(var i=0; i<x.cells.length-1;i++){
-                var slide = document.getElementById("slidename"+i)
-                if(slide.value===""){
+            for (var i = 0; i < x.cells.length - 1; i++) {
+                var slide = document.getElementById("slidename" + i)
+                if (slide.value === "") {
                     changeStatus("UPLOAD", "Please enter slide name");
                     return false;
                 }
@@ -24,32 +24,34 @@
     </style>
 </head>
 <body>
-<div id="upload_form">
-    <h1>Slide Loader</h1>
-    <p>
-        First, use the file input to select a file. It should automatically fill in the token field and start uploading.<br/>
-        When uploading has finished, provide a destination filename with extension, and use "finish upload" to complete the upload.<br/>
-        Finally, POST it to the caMicroscope instance.<br/>
-    </p>
-    <form>
-        <table class="loaderTable" cellpadding="5" cellspacing="0">
-            <tr><td align="right"><b>Files</b></td><td id="fileUploadInput"><input type="file" id="input" onchange="handle_upload(this.files)" multiple></td></tr>
-            <tr id="fileIdRow" align="center"><td align="right"><b>ID</b></td></tr>
-            <tr id="filenameRow"><td align="right"><b>Filename</b></td></tr>
-            <tr id="tokenRow"><td align="right"><b>Token</b></td></tr>
-            <tr id="slidenameRow"><td align="right"><b>Slidename</b></td></tr>
-            <tr><td id="controlButtons" colspan="2">
-                <button type="button" id="finish_btn" value="Finish Upload" onclick="validateForm(finish_upload)">Finish Upload</button>
-                <button type="button" id="check_btn" value="Check" onclick="CheckBtn()">Check</button>
-                <button type="button" id="post_btn" value="Post" onclick="validateForm(PostBtn)">Post</button>
-            </td></tr>
-        </table>
+    <div id="upload_form">
+        <h1>Slide Loader</h1>
+        <p>
+            First, use the file input to select a file. It should automatically fill in the token field and start uploading.<br />
+            When uploading has finished, provide a destination filename with extension, and use "finish upload" to complete the upload.<br />
+            Finally, POST it to the caMicroscope instance.<br />
+        </p>
+        <form>
+            <table class="loaderTable" cellpadding="5" cellspacing="0">
+                <tr><td align="right"><b>Files</b></td><td id="fileUploadInput"><input type="file" id="input"  accept=".tiff , .svs , .vsi" onchange="handle_upload(this.files)" multiple></td></tr>
+                <tr id="fileIdRow" align="center"><td align="right"><b>ID</b></td></tr>
+                <tr id="filenameRow"><td align="right"><b>Filename</b></td></tr>
+                <tr id="tokenRow"><td align="right"><b>Token</b></td></tr>
+                <tr id="slidenameRow"><td align="right"><b>Slidename</b></td></tr>
+                <tr>
+                    <td id="controlButtons" colspan="2">
+                        <button type="button" id="finish_btn" value="Finish Upload" onclick="validateForm(finish_upload)">Finish Upload</button>
+                        <button type="button" id="check_btn" value="Check" onclick="CheckBtn()">Check</button>
+                        <button type="button" id="post_btn" value="Post" onclick="validateForm(PostBtn)">Post</button>
+                    </td>
+                </tr>
+            </table>
 
-    </form>
-</div>
-<div id="load_status">
-    Keep track of status here...
-</div>
-<p id="json_table"></p>
+        </form>
+    </div>
+    <div id="load_status">
+        Keep track of status here...
+    </div>
+    <p id="json_table"></p>
 </body>
 </html>
