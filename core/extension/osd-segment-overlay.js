@@ -65,7 +65,7 @@
 
         this._viewer.canvas.appendChild(this._div);
 
-        // create display_cancavs
+        // create display_canvas
         this._display_ = document.createElement('canvas');
         this._display_.style.position = 'absolute';
         this._display_.style.top = 0;
@@ -330,7 +330,7 @@
     		this._display_.width = this._div.clientWidth;
     		this._display_.height = this._div.clientHeight;
 
-            // get the offset[x,y] in piexl
+            // get the offset[x,y] in pixel
     		this._offset[0] = (this._div.clientWidth - this._viewer.canvas.clientWidth)*0.5;
     		this._offset[1] = (this._div.clientHeight - this._viewer.canvas.clientHeight)*0.5;
 
@@ -345,7 +345,7 @@
             this._center = this._viewer.viewport.getCenter(true);
             this._zoom = this._viewer.viewport.getZoom(true);
 
-            // get the current canvas bounding box under the normalized coordiante
+            // get the current canvas bounding box under the normalized coordinate
     		this._getCanvasBoundBox = this.getCanvasBoundBox();
             // TODO filter with view boundaries
             //this._t_data = this.data.filter(this.viewBoundFilter,this);
@@ -409,7 +409,7 @@
 
     /**
      * @private
-     * covert the distance from screen coordinate(in piexl) to normalized coordinate in x-axis.
+     * covert the distance from screen coordinate(in pixel) to normalized coordinate in x-axis.
      * @param  {Number} width/the distance in x-axis.
      * @param  {OpenSeadragon.ImagingHelper} helper
      *
@@ -422,7 +422,7 @@
 
     /**
      * @private
-     * covert the distance from screen coordinate(in piexl) to normalized coordinate in y-axis.
+     * covert the distance from screen coordinate(in pixel) to normalized coordinate in y-axis.
      * @param  {Number} width/the distance in y-axis.
      * @param  {OpenSeadragon.ImagingHelper} helper
      *
@@ -435,7 +435,7 @@
 
     /**
      * @private
-     * covert the distance from normalized coordinate to screen coordinate(in piexl) in x-axis.
+     * covert the distance from normalized coordinate to screen coordinate(in pixel) in x-axis.
      * @param  {Number} width/the distance in x-axis.
      * @param  {OpenSeadragon.ImagingHelper} helper
      *
@@ -448,7 +448,7 @@
 
     /**
      * @private
-     * covert the distance from normalized coordinate to screen coordinate(in piexl) in y-axis.
+     * covert the distance from normalized coordinate to screen coordinate(in pixel) in y-axis.
      * @param  {Number} width/the distance in y-axis.
      * @param  {OpenSeadragon.ImagingHelper} helper
      *

@@ -10,7 +10,7 @@
 /**
  * @constructor
  * OpenSeadragon measurement plugin 0.0.1 based on canvas overlay plugin.
- * A OpenSeadragon pulgin that provides a way to measure on the image. 
+ * A OpenSeadragon plugin that provides a way to measure on the image. 
  * @param {Object} [options]
  *        Allows configurable properties to be entirely specified by passing an options object to the constructor.
  * @param {Object} options.viewer

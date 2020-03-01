@@ -707,7 +707,7 @@ resolve.schema = resolveSchema;
 /**
  * [resolve and compile the references ($ref)]
  * @this   Ajv
- * @param  {Function} compile reference to schema compilation funciton (localCompile)
+ * @param  {Function} compile reference to schema compilation function (localCompile)
  * @param  {Object} root object with information about the root schema for the current schema
  * @param  {String} ref reference to resolve
  * @return {Object|Function} schema object (if the schema can be inlined) or validation function

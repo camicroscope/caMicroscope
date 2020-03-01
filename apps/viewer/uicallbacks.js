@@ -88,7 +88,7 @@ function multSelector_action(size) {
     $minorCAMIC.viewer.addOnceHandler("tile-drawing", function() {
       $minorCAMIC.viewer.addHandler("zoom", synchornicView2, { type: "zoom" });
       $minorCAMIC.viewer.addHandler("pan", synchornicView2, { type: "pan" });
-      // cerate segment display
+      // create segment display
       $minorCAMIC.viewer.createSegment({
         store: $minorCAMIC.store,
         slide: $D.params.data.name,
@@ -566,7 +566,7 @@ function toggleMagnifier(data) {
       // all tool has turn off
       clearInterval(checkAllToolsOff);
       magnifierOn(+data.status, this.clientX, this.clientY);
-      // trun off the main menu
+      // turn off the main menu
       $UI.layersSideMenu.close();
       $UI.appsSideMenu.close();
       return;

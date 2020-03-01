@@ -1,6 +1,6 @@
 function PathDbMods() {
   console.log("PathDbMods()...");
-  // determine if user is authenicated
+  // determine if user is authenticated
   fetch("/user/login_status?_format=json", {credentials: 'include'})
     .then(response => response.json())
     .then(function(data) {
@@ -26,7 +26,7 @@ function PathDbMods() {
     x.mpp = 1e9
     x.source="pathdb"
     let pathdbid = data.nid[0].value
-    // default dislpay name
+    // default display name
     x.name = pathdbid
     x["_id"] = {"$oid": pathdbid}
     if (data.field_mpp_y && data.field_mpp_y.length >= 1) {

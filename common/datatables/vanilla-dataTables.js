@@ -1726,7 +1726,7 @@
             } else {
                 cells = [];
 
-                // Make temperary headings
+                // Make temporary headings
                 hd = createElement("thead");
                 var r = createElement("tr");
                 var c = this.table.tBodies[0].rows[0].cells;

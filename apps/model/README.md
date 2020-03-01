@@ -9,7 +9,7 @@
 
 Clicking the plus icon will allow adding a Keras/tensorflowjs trained model.
 
-Select the desired model from the dropdow.
+Select the desired model from the dropdown.
 
 Next, zoom in to an area that you would like to predict and select the required area.
 
