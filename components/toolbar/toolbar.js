@@ -13,7 +13,7 @@
 /**
  * CaMicroscope Tool Bar. Currently, it shows at the top-left corner of the screen. It consists of Main Tools and Sub Tools.
  * Main Tools is formed of Apps and Layers. There is a callback function that return the status of Main Tools.
- * Sub Tools can be customized by using optionsions.
+ * Sub Tools can be customized by using options.
  * @constructor
  * @param {Object} options
  *        All required and optional settings for instantiating a new instance of a CaToolbar.
@@ -60,11 +60,11 @@ function CaToolbar(options) {
    */
   this.elt;
   /**
-   * @property {Element[]} _main_tools The elements that reperesent each main tools.
+   * @property {Element[]} _main_tools The elements that represent each main tools.
    */
   this._main_tools = [];
   /**
-   * @property {Element[]} _sub_tools The elements that reperesent each sub tools.
+   * @property {Element[]} _sub_tools The elements that represent each sub tools.
    */
   this._sub_tools = [];
 
@@ -325,7 +325,7 @@ CaToolbar.prototype.__createMultiStateBtns = function(options) {
 };
 /*
  * @private
- * __createDropDown - create tool as dropdwon menu.
+ * __createDropDown - create tool as dropdown menu.
  * @param  {Object} options - options that describes the type, style and behavior of the tool.
  * @return {Element} - the DOM Element that represents a tool.
  */
@@ -444,7 +444,7 @@ function createMenu(option) {
 
 /*
  * @private
- * __createDropDown - create tool as dropdwon menu.
+ * __createDropDown - create tool as dropdown menu.
  * @param  {Object} options - options that describes the type, style and behavior of the tool.
  * @return {Element} - the DOM Element that represents a tool.
  */
@@ -611,7 +611,7 @@ CaToolbar.prototype.changeMainToolStatus = function(tool_value, checked) {
  * @param  {Event} e - event parameter.
  */
 CaToolbar.prototype.__menusChange = function(e) {
-  // default the mian menu is exclusive - show only one tool
+  // default the main menu is exclusive - show only one tool
   this.menus.forEach(menu => {
     const targetId = menu.dataset.target;
     if (menu !== e.target) {

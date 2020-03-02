@@ -26,7 +26,7 @@ Loading.open = function(parentNode ,text = 'Loading...',zIndex=999){
 }
 
 /**
- * factory mothed to create a instance of Loading class/page
+ * factory method to create a instance of Loading class/page
  * @return {Element} the container of Loading page/element
  */
 Loading.createInstance = function(){

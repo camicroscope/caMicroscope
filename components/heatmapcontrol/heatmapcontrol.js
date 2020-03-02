@@ -41,7 +41,7 @@ function HeatmapControl(options){
 }
 /**
  * @private
- * __refresh refresh UI part accoding to this.setting
+ * __refresh refresh UI part according to this.setting
  */
 HeatmapControl.prototype.__refresh = function(){
 	empty(this.elt);

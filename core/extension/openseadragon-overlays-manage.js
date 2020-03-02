@@ -7,7 +7,7 @@
 /**
  * @constructor
  * OpenSeadragon Overlays Manage Plugin 0.0.1 based on canvas overlay plugin.
- * A OpenSeadragon pulgin that provides a way to mange multiple overlays. 
+ * A OpenSeadragon plugin that provides a way to mange multiple overlays. 
  * @param {Object} [options]
  *        Allows configurable properties to be entirely specified by passing an options object to the constructor.
  * @param {Object} options.viewer
@@ -67,14 +67,14 @@
         this._div.style.display = 'none';
         this._div.style.zIndex =  options.zIndex || 100;
         this._viewer.canvas.appendChild(this._div);
-        // create display_cancavs
+        // create display_canvas
         this._display_ = document.createElement('canvas');
         this._display_.style.position = 'absolute';
         this._display_.style.top = 0;
         this._display_.style.left = 0;
         this._display_ctx_ = this._display_.getContext('2d');
         this._div.appendChild(this._display_);
-        // create hover_cancavs
+        // create hover_canvas
         this._hover_ = document.createElement('canvas');
         this._hover_.style.position = 'absolute';
         this._hover_.style.top = 0;

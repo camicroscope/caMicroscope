@@ -16,7 +16,7 @@
 /**
  * @constructor
  * OpenSeadragon Draw plugin 0.0.1 based on canvas overlay plugin.
- * A OpenSeadragon pulgin that provides a way to make/draw multiple marks on the images and transforms the marks to the collection in geojson form.
+ * A OpenSeadragon plugin that provides a way to make/draw multiple marks on the images and transforms the marks to the collection in geojson form.
  * @param {Object} [options]
  *        Allows configurable properties to be entirely specified by passing an options object to the constructor.
  * @param {Object} options.viewer
@@ -298,7 +298,7 @@
 
     /**
      * @private
-     * _updateCanvas transform and scale the cavans bases on the movement of the view
+     * _updateCanvas transform and scale the canvas bases on the movement of the view
      */
     _updateCanvas: function() {
       var viewportZoom = this._viewer.viewport.getZoom(true);
@@ -395,7 +395,7 @@
 
     /*
      * @private
-     * start drawing on the drawing canvas and creata the collection that store the marks in geojson form
+     * start drawing on the drawing canvas and create the collection that store the marks in geojson form
      */
     startDrawing: function(e) {
       //prevent to open context menu when click on drawing mode

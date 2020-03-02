@@ -517,7 +517,7 @@
 
 			try {
 				if (document.selection) {
-					// Timeout neccessary for IE9
+					// Timeout necessary for IE9
 					_nextTick(function () {
 						document.selection.empty();
 					});

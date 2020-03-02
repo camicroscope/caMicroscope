@@ -125,7 +125,7 @@ function initCore(){
         value:'point',
         callback:toggleMode
       },
-      // measurment tool
+      // measurement tool
       {
         id:'labeling_mode',
         icon:'space_bar',
@@ -158,7 +158,7 @@ function downloadLabel(){
     return;
   }
 
-  // create josn object
+  // create json object
   const data = {
     slideId:$D.params.data['_id']['$oid'],
     name:$D.params.data['name'],
@@ -189,7 +189,7 @@ function getPatchsZip(data){
   $UI.modalbox.open();
   // return;
   data.patches.forEach((p,index)=>{
-    // create somthing
+    // create something
     
     // get image from iip
     if(!p.isPoint) getImage({

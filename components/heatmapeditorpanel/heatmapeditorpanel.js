@@ -66,7 +66,7 @@ HeatmapEditorPanel.prototype.getCurrentOperation = function(){
 }
 /**
  * @private
- * __refresh refresh UI part accoding to this.setting
+ * __refresh refresh UI part according to this.setting
  */
 HeatmapEditorPanel.prototype.__refresh = function(){
 	empty(this.elt);

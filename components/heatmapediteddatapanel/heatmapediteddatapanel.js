@@ -38,7 +38,7 @@ function HeatmapEditedDataPanel(options){
 }
 /**
  * @private
- * __refresh refresh UI part accoding to this.setting
+ * __refresh refresh UI part according to this.setting
  */
 HeatmapEditedDataPanel.prototype.__refresh = function(){
 	empty(this.elt);
@@ -49,7 +49,7 @@ HeatmapEditedDataPanel.prototype.__refresh = function(){
 		const index = cluster.index;
 		const value = +cluster.value;
 		const color = cluster.color;
-		const cate_value = value?'Poistive':'Negative';
+		const cate_value = value?'Positive':'Negative';
 		const title = createEditedDataTitle(name,cate_value);
 		this.elt.appendChild(title);
 		// add toggle event

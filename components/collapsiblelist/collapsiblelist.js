@@ -1,7 +1,7 @@
 // proposal:
 // test:
 // constructor:options:id,title,icon,isExpand,
-// setList : refeash UI
+// setList : refresh UI
 // triggerContent(itemId, action = 'close')
 // addContent(itemId, elt)
 // clearContent(itemId)
@@ -12,7 +12,7 @@
 		id - element id
 		list:[
 			{
-				id:identity for one sepific item
+				id:identity for one specific item
 				title: text display on head
 				icon:google icon
 				content: stting or DOM Element
@@ -193,7 +193,7 @@ CollapsibleList.prototype.__createItem = function(options){
 
 /**
  * @private
- * the event that will be triggled when click on the head of a item.
+ * the event that will be triggered when click on the head of a item.
  * @param  {Event} e click event
  */
 CollapsibleList.prototype.__click_head = function(e){
@@ -364,7 +364,7 @@ CollapsibleList.prototype.addContent = function(itemId, elt){
 		};
 		return true;
 	}else{
-		console.warn('id is unvalid...');
+		console.warn('id is invalid...');
 		return false;
 	}
 };
@@ -383,7 +383,7 @@ CollapsibleList.prototype.clearContent = function(itemId){
 		empty(content);
 		return true;
 	}else{
-		console.warn('id is unvalid...');
+		console.warn('id is invalid...');
 		return false;
 	}
 };
