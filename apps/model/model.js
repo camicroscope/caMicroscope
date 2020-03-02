@@ -725,7 +725,6 @@ async function showInfo() {
   // Update table data
   (function (callback) {
     for (let key in data) {
-      console.log("Key: ", key);
       let name = key.split("/").pop(),
           date = data[key].dateSaved.toString().slice(0,15),
           size = (data[key].modelTopologyBytes + data[key].weightDataBytes + data[key].weightSpecsBytes) / (1024*1024),
