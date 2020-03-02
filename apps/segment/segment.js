@@ -1137,7 +1137,10 @@ async function showInfo() {
           td = row.insertCell();
           td.innerHTML = date;
           td = row.insertCell();
-          td.innerHTML = `<button class="btn btn-primary btn-xs my-xs-btn" type="button" onClick=${() => deleteModel(name)}>Remove Model</button>`;
+          td.innerHTML = '<button class="btn btn-primary btn-xs my-xs-btn" type="button">Remove Model</button>';
+          td.innerHTML.addEventListener('click', () => {
+            deleteModel(name);
+          });
         }
       }
     }
