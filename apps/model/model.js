@@ -129,6 +129,7 @@ async function initUIcomponents() {
             <th>Input Size</th>
             <th>Size (MB)</th>
             <th>Date Saved</th>
+            <th>Remove Model</th>
           </tr>
           <tbody id="mdata">
           </tbody>
@@ -684,8 +685,32 @@ function uploadModel() {
       status.classList.add('error');
       console.error(e);
     }
-    
   });  
+}
+
+async function deleteModel(name) {
+  if (confirm("Are you sure you want to delete this model?")) {
+      var res = await tf.io.removeModel(IDB_URL + name);
+      console.log(res);
+      var tx = db.transaction("models_store", 'readwrite');
+      var store = tx.objectStore("models_store");
+      let status = false
+      try {
+          store.delete(name);
+          status = true;
+      }
+      catch (err) {
+          alert(err);
+      }
+      finally {
+          if (status) {
+              alert("Deleted", name);
+          }
+      }
+  }
+  else {
+      return;
+  }
 }
 
 // Shows the uploaded models' details
@@ -700,6 +725,7 @@ async function showInfo() {
   // Update table data
   (function (callback) {
     for (let key in data) {
+      console.log("Key: ", key);
       let name = key.split("/").pop(),
           date = data[key].dateSaved.toString().slice(0,15),
           size = (data[key].modelTopologyBytes + data[key].weightDataBytes + data[key].weightSpecsBytes) / (1024*1024),
@@ -720,6 +746,8 @@ async function showInfo() {
           td.innerHTML = +size.toFixed(2);
           td = row.insertCell();
           td.innerHTML = date;
+          td = row.insertCell();
+          td.innerHTML = `<button class="btn btn-primary btn-xs my-xs-btn" type="button" onClick=${() => deleteModel(name)}>Remove Model</button>`;
         }
       }
     }
