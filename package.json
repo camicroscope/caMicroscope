@@ -9,9 +9,11 @@
   "license": "NONE",
   "dependencies": {
     "chai": "^4.1.2",
+    "chalk": "^3.0.0",
+    "depcheck": "^0.9.2",
     "express": "^4.16.2",
+    "jsdom": "^11.11.0",
     "lodash": "^4.17.10",
-    "node-fetch": "^2.2.0",
-    "jsdom": "^11.11.0"
+    "node-fetch": "^2.2.0"
   }
 }
