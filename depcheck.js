@@ -2,7 +2,10 @@ const depcheck = require('depcheck');
 const chalk = require('chalk');
 const options = {
     ignoreBinPackage: false,
-    ignoreDirs: [], // folder with these names will be ignored,
+    ignoreDirs: [
+      'demo',
+   'apps'
+    ], // folder with these names will be ignored,
     ignoreMatches: [ // ignore dependencies that matches these globs
       'grunt-*'
     ],
