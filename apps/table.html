@@ -3,202 +3,261 @@
 
 <head>
 	<meta name="keywords" content="camicroscope, quip" />
-    <meta charset='utf-8'>
-    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
-    <meta name='viewport' content='width=device-width, initial-scale=1, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no'>
-    <!-- common -->
+	<meta charset='utf-8'>
+	<meta http-equiv='X-UA-Compatible' content='IE=edge'>
+	<meta name='viewport'
+		content='width=device-width, initial-scale=1, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no'>
+	<!-- common -->
 	<!-- <link rel='stylesheet' type='text/css' media='all' href='../css/style.css'/> -->
-		<!-- Check If we're logged in ok, otherwise, log in for us -->
-		<script src='../common/authChecker.js'></script>
-		<script>
-			__auth_check(1)
-		</script>
-
-    <script src='../core/Store.js'></script>
-    <script src='../common/util.js'></script>
-    <script src='../common/ajv.js'></script>
-	<script src='../components/loading/loading.js'></script>
-    <script src="./loader/loader.js"></script>
-    <script src="./loader/chunked_upload.js"></script>
+	<!-- Check If we're logged in ok, otherwise, log in for us -->
+	<script src='../common/authChecker.js'></script>
 	<script>
-        function validateForm(callback) {
-            let x = document.getElementById("slidenameRow")
-            for(var i=0; i<x.cells.length-1;i++){
-                var slide = document.getElementById("slidename"+i)
-                if(slide.value===""){
-                    changeStatus("UPLOAD", "Please enter slide name");
-                    return false;
-                }
-            }
+		__auth_check(1)
+	</script>
+
+	<script src='../core/Store.js'></script>
+	<script src='../common/util.js'></script>
+	<script src='../common/ajv.js'></script>
+	<script src='../components/loading/loading.js'></script>
+	<script src="./loader/loader.js"></script>
+	<script src="./loader/chunked_upload.js"></script>
+	<script>
+		function validateForm(callback) {
+			let x = document.getElementById("slidenameRow")
+			for (var i = 0; i < x.cells.length - 1; i++) {
+				var slide = document.getElementById("slidename" + i)
+				if (slide.value === "") {
+					changeStatus("UPLOAD", "Please enter slide name");
+					return false;
+				}
+			}
 			callback();
-        }
-    </script>
-    <title>CaMicroscope Data Table</title>
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+		}
+	</script>
+	<title>CaMicroscope Data Table</title>
+
+	<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+		integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+		crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+		integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+		crossorigin="anonymous"></script>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+		integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+	<style>
+		html,
+		body {
+			width: 100%;
+			height: 100%;
+			display: flex;
+			flex-direction: column;
+		}
+	</style>
 </head>
+
 <body>
 	<div class="header text-center text-white bg-info p-4">
 		<h1 class="h1">caMicroscope</h1>
 		<p>Digital pathology image viewer with support for human/machine generated annotations and markups.</p>
 	</div>
-	
-	<div class='p-2 bg-light'>
+
+	<div class='p-2 bg-light' style="flex-grow: 1;">
 		<div class="container">
+
 			<div>
-				<div id="upload_form">
-					<h2 class="text-center h2 p-2">Slide Loader</h2>
-					<p class="ins">
-						First, use the file input to select a file. It should automatically fill in the token field and start uploading.
-						When uploading has finished, provide a destination filename with extension, and use "finish upload" to complete the upload.
-						Finally, POST it to the caMicroscope instance.
-					</p>
-					<div>
-						<form>
-							<table class="table table-borderless" cellpadding="5" cellspacing="0">
-								<tr><td align="right"><b>Files</b></td><td id="fileUploadInput"><input type="file" id="input" onchange="handle_upload(this.files)" multiple></td></tr>
-								<tr id="fileIdRow" ><td align="right"><b>ID</b></td></tr>
-								<tr id="filenameRow"><td align="right"><b>Filename</b></td></tr>
-								<tr id="tokenRow"><td align="right"><b>Token</b></td></tr>
-								<tr id="slidenameRow"><td align="right"><b>Slidename</b></td></tr>
-							</table>
-							
-							<div class="text-center">
-								<button class="btn btn-primary" type="button" id="finish_btn" value="Finish Upload" onclick="validateForm(finish_upload)">Finish Upload</button>
-								<button class="btn btn-primary" type="button" id="check_btn" value="Check" onclick="CheckBtn()">Check</button>
-								<button class="btn btn-primary" type="button" id="post_btn" value="Post" onclick="validateForm(PostBtn)">Post</button>
+				<div class="">
+					<h2 class="text-center h2 mb-0">Available Slides</h2>
+					<button type="button" class="btn btn-success float-right mb-2"
+						onclick="(()=>{location.reload();return false;})()">Reload</button>
+					<button type="button" class="btn btn-primary float-right mb-2 mr-2" data-toggle="modal"
+						data-target="#upload-dialog">Upload</button>
+				</div>
+				<table id='datatables' class="table"></table>
+			</div>
+
+			<div class="modal fade" id="upload-dialog" tabindex="-1" role="dialog"
+				aria-labelledby="title-of-dialog" aria-hidden="true">
+				<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="title-of-dialog">Upload New Slide</h5>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body">
+							<div>
+								<div id="upload_form">
+									<div class="alert alert-info" role="alert">
+										First, use the file input to select a file. It should automatically fill in the
+										token field and start uploading.
+										When uploading has finished, provide a destination filename with extension, and
+										use "finish upload" to complete the upload.
+										Finally, POST it to the caMicroscope instance.
+									</div>
+									<div>
+										<form>
+											<table class="table table-borderless" cellpadding="5" cellspacing="0">
+												<tr>
+													<td align="right"><b>Files</b></td>
+													<td id="fileUploadInput"><input type="file" id="input"
+															onchange="handle_upload(this.files)" multiple></td>
+												</tr>
+												<tr id="fileIdRow">
+													<td align="right"><b>ID</b></td>
+												</tr>
+												<tr id="filenameRow">
+													<td align="right"><b>Filename</b></td>
+												</tr>
+												<tr id="tokenRow">
+													<td align="right"><b>Token</b></td>
+												</tr>
+												<tr id="slidenameRow">
+													<td align="right"><b>Slidename</b></td>
+												</tr>
+											</table>
+
+											<div class="text-center">
+												<button class="btn btn-primary" type="button" id="finish_btn"
+													value="Finish Upload" onclick="validateForm(finish_upload)">Finish
+													Upload</button>
+												<button class="btn btn-secondary" type="button" id="check_btn"
+													value="Check" onclick="CheckBtn()">Check</button>
+												<button class="btn btn-success" type="button" id="post_btn" value="Post"
+													onclick="validateForm(PostBtn)">Post</button>
+											</div>
+
+										</form>
+									</div>
+									<div class="text-center p-2">
+										<div id="load_status" class="p-1"></div>
+										<div id="json_table"></div>
+									</div>
+								</div>
 							</div>
-		
-						</form>
-					</div>
-					<div class="text-center p-2">
-						<div id="load_status" class="p-1"></div>
-						<div id="json_table"></div>
+
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+						</div>
 					</div>
 				</div>
 			</div>
-	
-			<hr size=4 style="height:2px;border:none;color:#333;background-color:#333;"/>
-	
-			<div>
-				<div class="text-center pb-2">
-					<h2 class="text-center h2 d-inline-block">Uploaded Slides</h2>
-				<button type="button" class="btn btn-secondary float-right" onclick="(()=>{location.reload();return false;})()">Reload</button>
-				</div>
-				<table id = 'datatables' class="table"></table>
-			</div>
+
 		</div>
 	</div>
 
-	<div class="footer text-center text-white bg-dark p-3">
+	<div class="text-center text-white bg-dark p-3" style="position: static;bottom: 0;width: 100%;">
 		<p class="p">Copyright © 2020 caMicroscope</p>
 	</div>
 </body>
 <script>
 	const HeadMapping = [{
-		title:'ID',
-		field:'oid'
-	},{
-		title:'Name',
-		field:'name'
-	},{
-		title:'Study',
-		field:'study'
-	},{
-		title:'Specimen',
-		field:'specimen'
-	},{
-		title:'MPP',
-		field:'mpp'
+		title: 'ID',
+		field: 'oid'
+	}, {
+		title: 'Name',
+		field: 'name'
+	}, {
+		title: 'Study',
+		field: 'study'
+	}, {
+		title: 'Specimen',
+		field: 'specimen'
+	}, {
+		title: 'MPP',
+		field: 'mpp'
 	}];
 
-	function initialize(){
+	function initialize() {
 		const params = getUrlVars();
 		const store = new Store('../data/');
 		store.findSlide()
-		.then(function(data) {
-			// filter
-			if(!(Object.keys(params).length === 0 && params.constructor === Object)){
-				const keys = Object.keys(params);
-				const v2 = Object.values(params);
-				data = data.filter((d) => {
-					const v1 = getValues(d,keys);
-					return AND.call(this, v1, v2, eq);
-				});
-			}
-
-			// mapping data
-			const keys = HeadMapping.map(d=>d.field);
-			if (data.map){
-				return data.map((d) => {
-					const rs = [];
-					keys.forEach((key,i) => {
-						if(i==0) rs.push(d['_id']['$oid'])
-						else if(!d[key]) rs.push('')
-						else rs.push(d[key])
+			.then(function (data) {
+				// filter
+				if (!(Object.keys(params).length === 0 && params.constructor === Object)) {
+					const keys = Object.keys(params);
+					const v2 = Object.values(params);
+					data = data.filter((d) => {
+						const v1 = getValues(d, keys);
+						return AND.call(this, v1, v2, eq);
 					});
-					const btn = `<button class="btn btn-success" data-id='${rs[0]}' onclick='openView(this)'>Open</button>`
-					rs.push(btn);
-					return rs;
+				}
+
+				// mapping data
+				const keys = HeadMapping.map(d => d.field);
+				if (data.map) {
+					return data.map((d) => {
+						const rs = [];
+						keys.forEach((key, i) => {
+							if (i == 0) rs.push(d['_id']['$oid'])
+							else if (!d[key]) rs.push('')
+							else rs.push(d[key])
+						});
+						const btn = `<button class="btn btn-success" data-id='${rs[0]}' onclick='openView(this)'>Open</button>`
+						rs.push(btn);
+						return rs;
+					});
+				} else {
+					// we have no data to render! Let's add a default button
+					const default_btn = [];
+					keys.forEach((key, i) => {
+						if (i == 0) default_btn.push("NO DATA")
+						else default_btn.push('')
+					});
+					const btn = ``;
+					default_btn.push(btn);
+					return [default_btn];
+				}
+			})
+			.then(function (data) {
+				if (data.length == 0) {
+					var div = document.querySelector('.container');
+					div.textContent = `No Data Found ... x _ x`;
+					div.classList = `text-center p-4`;
+					return;
+				}
+				const thead = HeadMapping.map(d => "<th>" + d.title + "</th>");
+				thead.push("<th></th>");
+
+				tbody = data.map((d) => {
+					return "<tr>" + d.map((a) => "<td>" + a + "</td>").reduce((a, b) => a + b) + "</tr>";
 				});
-			} else {
-				// we have no data to render! Let's add a default button
-				const default_btn = [];
-				keys.forEach((key,i) => {
-					if(i==0) default_btn.push("NO DATA")
-					else default_btn.push('')
-				});
-				const btn = ``;
-				default_btn.push(btn);
-				return [default_btn];
-			}
-		})
-		.then(function(data){
-			if(data.length==0){
-				var div = document.querySelector('.container');
-				div.textContent = `No Data Found ... x _ x`;
-				div.classList = `text-center p-4`;
-				return;
-			}
-			const thead = HeadMapping.map(d=>"<th>"+d.title+"</th>");
-			thead.push("<th></th>");
-			
-			tbody = data.map((d)=>{
-				return "<tr>"+d.map((a)=>"<td>"+a+"</td>").reduce((a,b)=>a+b)+"</tr>";
-			});
-			document.getElementById("datatables").innerHTML = `
-				<thead>${thead.reduce((a,b)=>a+b)}</thead>
-				<tbody>${tbody.reduce((a,b)=>a+b)}</tbody>
+				document.getElementById("datatables").innerHTML = `
+				<thead>${thead.reduce((a, b) => a + b)}</thead>
+				<tbody>${tbody.reduce((a, b) => a + b)}</tbody>
 			`;
-		});
+			});
 	}
 
-	function AND(p, t, func){
-	    return p.reduce((acc,v,i)=>{
-	        return acc&&func.call(this, v, t[i]);
-	    },true);
+	function AND(p, t, func) {
+		return p.reduce((acc, v, i) => {
+			return acc && func.call(this, v, t[i]);
+		}, true);
 	}
 
-	function eq(v1, v2){
+	function eq(v1, v2) {
 		return v1 == v2;
 	}
 
-	function getValues(d, keys){
+	function getValues(d, keys) {
 		const rs = [];
-		keys.forEach( key=>{
+		keys.forEach(key => {
 			rs.push(d[key]);
 		});
 		return rs;
 	}
 
-	function openView(e){
+	function openView(e) {
 		const oid = e.dataset.id;
-		if(oid){
+		if (oid) {
 			window.location.href = `./viewer/viewer.html?slideId=${oid}`;
-		}else{
+		} else {
 			alert('No Data Id');
 		}
 	}
 
 	document.addEventListener('DOMContentLoaded', initialize);
 </script>
+
 </html>
