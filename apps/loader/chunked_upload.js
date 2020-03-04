@@ -107,12 +107,12 @@ function continue_upload(token){
   }
 }
 function finish_upload(){
-
   var reset = true
   for(var i=0; i<document.getElementById("fileIdRow").cells.length-1;i++){
       let token = document.getElementById("token"+i).value
       let filename = document.getElementById("filename"+i).value
       let body = {filename: filename}
+      console.log({finish_url, filename, token});
       changeStatus("UPLOAD", "Finished Reading File, Posting")
       let reg_req = fetch(finish_url + token,{method:'POST', body: JSON.stringify(body),headers: {
                 "Content-Type": "application/json; charset=utf-8"

@@ -24,9 +24,7 @@ function changeStatus(step, text, reset=true){
     if(reset){
       table = document.createElement("table")
       table.id = "statusTable"
-      table.setAttribute('border', '1')
-      table.setAttribute('cellpadding', '10%')
-      table.style.borderCollapse = "collapse"
+      table.classList = "table";
 
       //Add table headers:
       var tr = table.insertRow(-1)
