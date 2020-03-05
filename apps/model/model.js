@@ -690,10 +690,10 @@ function uploadModel() {
 
 async function deleteModel(name) {
   if (confirm("Are you sure you want to delete this model?")) {
-      var res = await tf.io.removeModel(IDB_URL + name);
+      let res = await tf.io.removeModel(IDB_URL + name);
       console.log(res);
-      var tx = db.transaction("models_store", 'readwrite');
-      var store = tx.objectStore("models_store");
+      let tx = db.transaction("models_store", 'readwrite');
+      let store = tx.objectStore("models_store");
       let status = false
       try {
           store.delete(name);
