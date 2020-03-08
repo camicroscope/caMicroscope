@@ -1098,6 +1098,7 @@ async function deleteModel(name) {
       finally {
           if (status) {
               alert("Deleted", name);
+              showInfo();
           }
       }
   }
