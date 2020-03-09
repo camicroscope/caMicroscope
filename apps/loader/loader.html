@@ -6,9 +6,9 @@
     <script>
         function validateForm(callback) {
             let x = document.getElementById("slidenameRow")
-            for (var i = 0; i < x.cells.length - 1; i++) {
-                var slide = document.getElementById("slidename" + i)
-                if (slide.value === "") {
+            for(var i=0; i<x.cells.length-1;i++){
+                var slide = document.getElementById("slidename"+i)
+                if(slide.value===""){
                     changeStatus("UPLOAD", "Please enter slide name");
                     return false;
                 }
