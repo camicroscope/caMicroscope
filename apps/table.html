@@ -53,9 +53,31 @@
 			flex-direction: column;
 		}
 	</style>
+	<link rel="stylesheet" href="./table.css" />
 </head>
 
 <body>
+	<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark" style="position: sticky;">
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarCollapse">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item link">
+        <a class="nav-link" href="landing/landing.html">Home</a>
+      </li>
+      <li class="nav-item active link">
+        <a class="nav-link" href="table.html">Slides</a>
+      </li>
+    </ul>
+    <ul class="navbar-nav">
+      <li class="nav-item link">
+        <a class="nav-link" target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLScL91LxrpAZjU88GBZP9gmcdgdf8__uNUwhws2lzU6Lr4qNwA/viewform">Feedback</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
 	<div class="header text-center text-white bg-info p-4">
 		<h1 class="h1">caMicroscope</h1>
 		<p>Digital pathology image viewer with support for human/machine generated annotations and markups.</p>
