@@ -372,9 +372,11 @@ function camicStopDraw(e) {
       if (args) {
         runPredict(args.status);
       }
+      var memory = tf.memory();
+      console.log(memory);
       $UI.modelPanel.setPosition(box.rect.x,box.rect.y,box.rect.width,box.rect.height);
       $UI.modelPanel.open(args);
-
+      
       canvasDraw.clear();
       csvContent = "";
     }
@@ -471,9 +473,11 @@ function runPredict(key) {
     self.showProgress("Model loaded...");
 
     // Warmup the model before using real data.
+    tf.tidy(()=>{
     const warmupResult = model.predict(tf.zeros([1, image_size, image_size, input_channels]));
     warmupResult.dataSync();
-    warmupResult.dispose();
+   // warmupResult.dispose();
+     });
     console.log("Model ready");
 
     let temp = document.querySelector('#dummy');
@@ -508,43 +512,56 @@ function runPredict(key) {
         fullResCvs.width = l_img.width;
         fullResCvs.getContext('2d').drawImage(l_img, 0, 0);
 
-        let imgData = fullResCvs.getContext('2d').getImageData(0,0,fullResCvs.width,fullResCvs.height);
 
-        const img = tf.browser.fromPixels(imgData).toFloat();
+        let imgData = fullResCvs.getContext('2d').getImageData(0,0,fullResCvs.width,fullResCvs.height);
         let img2;
+       tf.tidy(()=>{
+        const img = tf.browser.fromPixels(imgData).toFloat();
+        
         if (input_channels == 1) {
           img2 = tf.image.resizeBilinear(img, [image_size, image_size]).mean(2);
         } else {
           img2 = tf.image.resizeBilinear(img, [image_size, image_size]);
         }
+        return img2;
+          });
         let scaleMethod = $UI.filter? $UI.filter.status: 'norm';
         console.log(scaleMethod);
-
+         
         let normalized;
         if (scaleMethod == 'norm') {
           // Pixel Normalization: scale pixel values to the range 0-1.
 
           let scale = tf.scalar(255);
           normalized = img2.div(scale);
+          scale.dispose();
 
         } else if (scaleMethod == 'center') {
           // Pixel Centering: scale pixel values to have a zero mean.
-
+          
           let mean = img2.mean();
           normalized = img2.sub(mean);
+          mean.dispose();
           // normalized.mean().print(true); // Uncomment to check mean value.
           // let min = img2.min();
           // let max = img2.max();
           // let normalized = img2.sub(min).div(max.sub(min));
         } else {
           // Pixel Standardization: scale pixel values to have a zero mean and unit variance.
-         
+            tf.tidy(()=> {
+
           let mean = img2.mean();
           let std = (img2.squaredDifference(mean).sum()).div(img2.flatten().shape).sqrt();
           normalized = img2.sub(mean).div(std);
-        }    
-        let batched = normalized.reshape([1, image_size, image_size, input_channels]);
-        let values = await model.predict(batched).data();
+            return normalized;
+          });
+        }
+       
+
+        let batched = normalized.reshape([1, image_size, image_size, input_channels]);   
+        let values1 = await model.predict(batched);
+        let values = await values1.data();
+
 
         values.forEach((e) => {
           csvContent += e.toString() + ",";
@@ -555,6 +572,10 @@ function runPredict(key) {
         // Retrieving the top class
 
         dx += step;
+        img2.dispose();
+        values1.dispose();
+        normalized.dispose();
+        batched.dispose();
       }
       dy += step;
     }
