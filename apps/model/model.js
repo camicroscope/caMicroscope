@@ -517,13 +517,13 @@ function runPredict(key) {
         let img2;
        tf.tidy(()=>{
         const img = tf.browser.fromPixels(imgData).toFloat();
-        
+      
         if (input_channels == 1) {
-          img2 = tf.image.resizeBilinear(img, [image_size, image_size]).mean(2);
+         img2 = tf.image.resizeBilinear(img, [image_size, image_size]).mean(2);
         } else {
           img2 = tf.image.resizeBilinear(img, [image_size, image_size]);
         }
-        return img2;
+        tf.keep(img2);
           });
         let scaleMethod = $UI.filter? $UI.filter.status: 'norm';
         console.log(scaleMethod);
@@ -553,7 +553,7 @@ function runPredict(key) {
           let mean = img2.mean();
           let std = (img2.squaredDifference(mean).sum()).div(img2.flatten().shape).sqrt();
           normalized = img2.sub(mean).div(std);
-            return normalized;
+            tf.keep(normalized);
           });
         }
        
