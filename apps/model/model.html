@@ -1,665 +1,478 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta name="keywords" content="camicroscope, quip" />
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-    />
 
-    <title>caMicroscope</title>
-    <!-- google material icons css sheet -->
-    <link href="../../iconfont/material-icons.css" rel="stylesheet" />
-    <!-- common css START -->
-    <link
-      rel="stylesheet"
-      type="text/css"
-      media="all"
-      href="../../css/style.css"
-    />
-    <!-- color picker css -->
-    <link
-      rel="stylesheet"
-      type="text/css"
-      media="all"
-      href="../../common/colorpicker/color-picker.css"
-    />
-    <!-- add pure-form css -->
-    <link
-      rel="stylesheet"
-      type="text/css"
-      media="all"
-      href="../../common/pureform/pure-form.css"
-    />
-    <link
-      rel="stylesheet"
-      type="text/css"
-      media="all"
-      href="./modelpanel/modelpanel.css"
-    />
-    <!-- common css END -->
+<head>
+  <meta name="keywords" content="camicroscope, quip"/>
+  <meta charset='utf-8'>
+  <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+  <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no'>
 
-    <!-- UI components css START -->
-    <!-- message display bar css -->
-    <link
-      rel="stylesheet"
-      type="text/css"
-      media="all"
-      href="../../components/camessage/camessage.css"
-    />
-    <!-- toolbar css -->
-    <link
-      rel="stylesheet"
-      type="text/css"
-      media="all"
-      href="../../components/toolbar/toolbar.css"
-    />
-    <!-- side menu css -->
-    <link
-      rel="stylesheet"
-      type="text/css"
-      media="all"
-      href="../../components/sidemenu/sidemenu.css"
-    />
-    <!-- layers controller css -->
-    <link
-      rel="stylesheet"
-      type="text/css"
-      media="all"
-      href="../../components/layersviewer/layersviewer.css"
-    />
-    <!-- collapsible list css -->
-    <link
-      rel="stylesheet"
-      type="text/css"
-      media="all"
-      href="../../components/collapsiblelist/collapsiblelist.css"
-    />
-    <!-- operation panel css -->
-    <link
-      rel="stylesheet"
-      type="text/css"
-      media="all"
-      href="../../components/operationpanel/operationpanel.css"
-    />
-    <!-- mult selector css -->
-    <link
-      rel="stylesheet"
-      type="text/css"
-      media="all"
-      href="../../components/multselector/multselector.css"
-    />
-    <!-- stylecontextmenu css -->
-    <link
-      rel="stylesheet"
-      type="text/css"
-      media="all"
-      href="../../components/simplecontextmenu/simplecontextmenu.css"
-    />
-    <!-- message queue css -->
-    <link
-      rel="stylesheet"
-      type="text/css"
-      media="all"
-      href="../../components/messagequeue/messagequeue.css"
-    />
-    <!-- loading cover css -->
-    <link
-      rel="stylesheet"
-      type="text/css"
-      media="all"
-      href="../../components/loading/loading.css"
-    />
-    <!-- popup panel css -->
-    <link
-      rel="stylesheet"
-      type="text/css"
-      media="all"
-      href="../../components/popuppanel/popuppanel.css"
-    />
-    <!-- add spyglass css -->
-    <link
-      rel="stylesheet"
-      type="text/css"
-      media="all"
-      href="../../components/spyglass/spyglass.css"
-    />
-    <!-- modal box -->
-    <link
-      rel="stylesheet"
-      type="text/css"
-      media="all"
-      href="../../components/modalbox/modalbox.css"
-    />
-    <!-- UI components css END -->
+  <title>caMicroscope</title>
+  <!-- google material icons css sheet -->
+  <link href='../../iconfont/material-icons.css' rel='stylesheet'/>
+  <!-- common css START -->
+  <link rel='stylesheet' type='text/css' media='all' href='../../css/style.css'/>
+  <!-- color picker css -->
+  <link rel='stylesheet' type='text/css' media='all' href='../../common/colorpicker/color-picker.css'/>
+  <!-- add pure-form css -->
+  <link rel='stylesheet' type='text/css' media='all' href='../../common/pureform/pure-form.css'/>
+  <link rel='stylesheet' type='text/css' media='all' href='./modelpanel/modelpanel.css'/>
+  <!-- common css END -->
 
-    <!-- osd & core css START -->
-    <!-- zoom control css -->
-    <link
-      rel="stylesheet"
-      type="text/css"
-      media="all"
-      href="../../core/extension/openseadragon-zoom-control/openseadragon-zoom-control.css"
-    />
-    <!-- mesurement tool css -->
-    <link
-      rel="stylesheet"
-      type="text/css"
-      media="all"
-      href="../../core/extension/openseadragon-measurement-tool/openseadragon-measurement-tool.css"
-    />
-    <!-- osd & core css END -->
+  <!-- UI components css START -->
+  <!-- message display bar css -->
+  <link rel='stylesheet' type='text/css' media='all' href='../../components/camessage/camessage.css'/>
+  <!-- toolbar css -->
+  <link rel='stylesheet' type='text/css' media='all' href='../../components/toolbar/toolbar.css'/>
+  <!-- side menu css -->
+  <link rel='stylesheet' type='text/css' media='all' href='../../components/sidemenu/sidemenu.css'/>
+  <!-- layers controller css -->
+  <link rel='stylesheet' type='text/css' media='all' href='../../components/layersviewer/layersviewer.css'/>
+  <!-- collapsible list css -->
+  <link rel='stylesheet' type='text/css' media='all' href='../../components/collapsiblelist/collapsiblelist.css'/>
+  <!-- operation panel css -->
+  <link rel='stylesheet' type='text/css' media='all' href='../../components/operationpanel/operationpanel.css'/>
+  <!-- mult selector css -->
+  <link rel='stylesheet' type='text/css' media='all' href='../../components/multselector/multselector.css'/>
+  <!-- stylecontextmenu css -->
+  <link rel='stylesheet' type='text/css' media='all' href='../../components/simplecontextmenu/simplecontextmenu.css'/>
+  <!-- message queue css -->
+  <link rel='stylesheet' type='text/css' media='all' href='../../components/messagequeue/messagequeue.css'/>
+  <!-- loading cover css -->
+  <link rel='stylesheet' type='text/css' media='all' href='../../components/loading/loading.css'/>
+  <!-- popup panel css -->
+  <link rel='stylesheet' type='text/css' media='all' href='../../components/popuppanel/popuppanel.css'/>
+  <!-- add spyglass css -->
+  <link rel='stylesheet' type='text/css' media='all' href='../../components/spyglass/spyglass.css'/>
+  <!-- modal box -->
+  <link rel="stylesheet" type="text/css" media="all" href="../../components/modalbox/modalbox.css" />
+  <!-- UI components css END -->
 
-    <!-- Check If we're logged in ok, otherwise, log in for us -->
-    <script src="../../common/authChecker.js"></script>
-    <script>
-      __auth_check(2);
-    </script>
-    <!-- tensorflow.js -->
-    <script src="./tf.min.js"></script>
-    <!--  common js START -->
-    <!-- util.js -->
-    <script type="text/javascript" src="../../common/util.js"></script>
-    <script type="text/javascript" src="../../common/DrawHelper.js"></script>
-    <script type="text/javascript" src="../../common/simplify.js"></script>
-    <script type="text/javascript" src="../../common/paths.js"></script>
-    <!-- add pure-form script -->
-    <script
-      type="text/javascript"
-      src="../../common/pureform/document-register-element.js"
-    ></script>
-    <script
-      type="text/javascript"
-      src="../../common/pureform/pure-form.js"
-    ></script>
-    <!-- color picker js -->
-    <script
-      type="text/javascript"
-      src="../../common/colorpicker/color-picker.js"
-    ></script>
-    <!-- sortable js -->
-    <script
-      type="text/javascript"
-      src="../../common/sortable/Sortable.js"
-    ></script>
-    <!-- AJV json validator engine -->
-    <script type="text/javascript" src="../../common/ajv.js"></script>
-    <!-- IDB helper -->
-    <script type="text/javascript" src="../../common/idb.js"></script>
-    <!--  common js END -->
+  <!-- osd & core css START -->
+  <!-- zoom control css -->
+   <link rel='stylesheet' type='text/css' media='all' href='../../core/extension/openseadragon-zoom-control/openseadragon-zoom-control.css'/>
+   <!-- mesurement tool css -->
+   <link rel='stylesheet' type='text/css' media='all' href='../../core/extension/openseadragon-measurement-tool/openseadragon-measurement-tool.css'/>
+   <!-- osd & core css END -->
 
-    <!--  components js START -->
-    <!-- message display js -->
-    <script
-      type="text/javascript"
-      src="../../components/camessage/camessage.js"
-    ></script>
-    <!-- toolbar js -->
-    <script
-      type="text/javascript"
-      src="../../components/toolbar/toolbar.js"
-    ></script>
-    <!-- sidemenu js -->
-    <script
-      type="text/javascript"
-      src="../../components/sidemenu/sidemenu.js"
-    ></script>
+   <!-- Check If we're logged in ok, otherwise, log in for us -->
+   <script src='../../common/authChecker.js'></script>
+   <script>
+     __auth_check(2)
+   </script>
+  <!-- tensorflow.js -->
+  <script src="./tf.min.js"></script> 
+   <!--  common js START -->
+   <!-- util.js -->
+  <script type='text/javascript' src='../../common/util.js'></script>
+  <script type='text/javascript' src='../../common/DrawHelper.js'></script>
+  <script type='text/javascript' src='../../common/simplify.js'></script>
+  <script type='text/javascript' src='../../common/paths.js'></script>
+  <!-- add pure-form script -->
+  <script type='text/javascript' src='../../common/pureform/document-register-element.js'></script>
+  <script type='text/javascript' src='../../common/pureform/pure-form.js'></script>
+  <!-- color picker js -->
+  <script type='text/javascript' src='../../common/colorpicker/color-picker.js'></script>
+  <!-- sortable js -->
+  <script type='text/javascript' src='../../common/sortable/Sortable.js'></script>
+  <!-- AJV json validator engine -->
+  <script type='text/javascript' src='../../common/ajv.js'></script>
+  <!-- IDB helper -->
+  <script type='text/javascript' src='../../common/idb.js'></script>
+  <!--  common js END -->
+
+  <!--  components js START -->
+  <!-- message display js -->
+  <script type='text/javascript' src='../../components/camessage/camessage.js'></script>
+  <!-- toolbar js -->
+  <script type='text/javascript' src='../../components/toolbar/toolbar.js'></script>
+  <!-- sidemenu js -->
+  <script type='text/javascript' src='../../components/sidemenu/sidemenu.js'></script>
     <!-- collapsible list js -->
-    <script
-      type="text/javascript"
-      src="../../components/collapsiblelist/collapsiblelist.js"
-    ></script>
-    <!-- layers controller js -->
-    <script
-      type="text/javascript"
-      src="../../components/layersviewer/layersviewer.js"
-    ></script>
-    <!-- operation panel js -->
-    <script
-      type="text/javascript"
-      src="../../components/operationpanel/operationpanel.js"
-    ></script>
-    <!-- loading cover js -->
-    <script
-      type="text/javascript"
-      src="../../components/loading/loading.js"
-    ></script>
-    <!-- stylecontextmenu js -->
-    <script
-      type="text/javascript"
-      src="../../components/simplecontextmenu/simplecontextmenu.js"
-    ></script>
-    <!-- popup panel js -->
-    <script
-      type="text/javascript"
-      src="../../components/popuppanel/popuppanel.js"
-    ></script>
-    <!-- message queue js -->
-    <script
-      type="text/javascript"
-      src="../../components/messagequeue/messagequeue.js"
-    ></script>
-    <!-- mult selector js -->
-    <script
-      type="text/javascript"
-      src="../../components/multselector/multselector.js"
-    ></script>
-    <!-- spyglass -->
-    <script
-      type="text/javascript"
-      src="../../components/spyglass/spyglass.js"
-    ></script>
-    <!-- script type='text/javascript' src='modelpanel/slider.js'></script -->
-    <script type="text/javascript" src="./modelpanel/modelpanel.js"></script>
-    <!-- modal box -->
-    <script
-      type="text/javascript"
-      src="../../components/modalbox/modalbox.js"
-    ></script>
-    <!--  components js END -->
+    <script type='text/javascript' src='../../components/collapsiblelist/collapsiblelist.js'></script>
+  <!-- layers controller js -->
+  <script type='text/javascript' src='../../components/layersviewer/layersviewer.js'></script>
+  <!-- operation panel js -->
+  <script type='text/javascript' src='../../components/operationpanel/operationpanel.js'></script>
+  <!-- loading cover js -->
+  <script type='text/javascript' src='../../components/loading/loading.js'></script>
+  <!-- stylecontextmenu js -->
+  <script type='text/javascript' src='../../components/simplecontextmenu/simplecontextmenu.js'></script>
+  <!-- popup panel js -->
+  <script type='text/javascript' src='../../components/popuppanel/popuppanel.js'></script>
+  <!-- message queue js -->
+  <script type='text/javascript' src='../../components/messagequeue/messagequeue.js'></script>
+  <!-- mult selector js -->
+  <script type='text/javascript' src='../../components/multselector/multselector.js'></script>
+  <!-- spyglass -->
+  <script type='text/javascript' src='../../components/spyglass/spyglass.js'></script>
+  <!-- script type='text/javascript' src='modelpanel/slider.js'></script -->
+  <script type='text/javascript' src='./modelpanel/modelpanel.js'></script>
+  <!-- modal box -->
+  <script type="text/javascript" src="../../components/modalbox/modalbox.js"></script>
+  <!--  components js END -->
 
-    <!-- osd & core js START -->
-    <script
-      type="text/javascript"
-      src="../../core/openseadragon/openseadragon.js"
-    ></script>
-    <script
-      type="text/javascript"
-      src="../../core/openseadragon-imaginghelper.min.js"
-    ></script>
-    <script
-      type="text/javascript"
-      src="../../core/openseadragon-scalebar.js"
-    ></script>
-    <script
-      type="text/javascript"
-      src="../../core/openseadragonzoomlevels.js"
-    ></script>
 
-    <!-- core (package/ext) libs -->
-    <script type="text/javascript" src="../../core/StatesHelper.js"></script>
-    <script type="text/javascript" src="../../core/Validation.js"></script>
-    <script type="text/javascript" src="../../core/Store.js"></script>
-    <script type="text/javascript" src="../../core/CaMic.js"></script>
+  <!-- osd & core js START -->
+  <script type='text/javascript' src='../../core/openseadragon/openseadragon.js' ></script>
+  <script type='text/javascript' src='../../core/openseadragon-imaginghelper.min.js'></script>
+  <script type='text/javascript' src='../../core/openseadragon-scalebar.js'></script>
+  <script type='text/javascript' src='../../core/openseadragonzoomlevels.js'></script>
 
-    <script
-      type="text/javascript"
-      src="../../core/extension/openseadragon-canvas-draw-overlay.js"
-    ></script>
-    <script
-      type="text/javascript"
-      src="../../core/extension/openseadragon-overlays-manage.js"
-    ></script>
-    <script
-      type="text/javascript"
-      src="../../core/extension/openseadragon-measurement-tool/openseadragon-measurement-tool.js"
-    ></script>
-    <script
-      type="text/javascript"
-      src="../../core/extension/openseadragon-zoom-control/openseadragon-zoom-control.js"
-    ></script>
+  <!-- core (package/ext) libs -->
+  <script type='text/javascript' src='../../core/StatesHelper.js'></script>
+  <script type='text/javascript' src='../../core/Validation.js'></script>
+  <script type='text/javascript' src='../../core/Store.js'></script>
+  <script type='text/javascript' src='../../core/CaMic.js'></script>
 
-    <!-- business js -->
-    <script
-      type="text/javascript"
-      src="../../common/dynamicLoadScript.js"
-    ></script>
-    <!-- <script src="../../dist/imgbox_package.js"></script> -->
+  <script type='text/javascript' src='../../core/extension/openseadragon-canvas-draw-overlay.js'></script>
+  <script type='text/javascript' src='../../core/extension/openseadragon-overlays-manage.js'></script>
+  <script type='text/javascript' src='../../core/extension/openseadragon-measurement-tool/openseadragon-measurement-tool.js'></script>
+  <script type='text/javascript' src='../../core/extension/openseadragon-zoom-control/openseadragon-zoom-control.js'></script>
 
-    <!--
+
+  <!-- business js -->
+  <script type='text/javascript' src='../../common/dynamicLoadScript.js'></script>
+  <!-- <script src="../../dist/imgbox_package.js"></script> -->
+
+  <!--
   <script src='../viewer/uicallbacks.js'></script>
   <script src='../viewer/dataloaders.js'></script>
   <script src='../viewer/init.js'></script>
   -->
 
-    <script src="model.js"></script>
-    <style type="text/css">
-      input {
-        /* required to properly style form 
+  <script src='model.js'></script>
+  <style type="text/css">
+    input {
+    /* required to properly style form 
        elements on WebKit based browsers */
-        -webkit-appearance: none;
+      -webkit-appearance: none;
+      
+      border: 1px solid #333;
+      margin: 0;
+      
+      font-family: inherit;
+      font-size: 90%;
+      
+      -moz-box-sizing: border-box;
+      box-sizing: border-box;
+    }
 
-        border: 1px solid #333;
-        margin: 0;
+    input:focus:invalid {
+      box-shadow: none;
+    }
+    @-webkit-keyframes blinker {
+      50% {
+        opacity: 0;
+      }
+    }
+    .blink{
+      animation: blinker 1s linear infinite;
+    }
+    .error{
+      color: yellow;
+    }
+    #mtable {
+      table-layout: fixed;
+      width: 100%;
+      border-collapse: collapse;
+    }
+    #mtable thead th:nth-child(1) {
+      width: 15%;
+    }
 
-        font-family: inherit;
-        font-size: 90%;
+    #mtable thead th:nth-child(2) {
+      width: 30%;
+    }
 
-        -moz-box-sizing: border-box;
-        box-sizing: border-box;
-      }
+    #mtable thead th:nth-child(3) {
+      width: 15%;
+    }
 
-      input:focus:invalid {
-        box-shadow: none;
-      }
-      @-webkit-keyframes blinker {
-        50% {
-          opacity: 0;
-        }
-      }
-      .blink {
-        animation: blinker 1s linear infinite;
-      }
-      .error {
-        color: yellow;
-      }
-      #mtable {
-        table-layout: fixed;
-        width: 100%;
-        border-collapse: collapse;
-      }
-      #mtable thead th:nth-child(1) {
-        width: 15%;
-      }
+    #mtable thead th:nth-child(4) {
+      width: 15%;
+    }
 
-      #mtable thead th:nth-child(2) {
-        width: 30%;
-      }
+    #mtable thead th:nth-child(4) {
+      width: 25%;
+    }
 
-      #mtable thead th:nth-child(3) {
-        width: 15%;
-      }
+    th {
+      padding: 5px;
+    } 
 
-      #mtable thead th:nth-child(4) {
-        width: 15%;
-      }
+    td {
+      padding: 10px;
+      text-align: center;
+    }
 
-      #mtable thead th:nth-child(4) {
-        width: 25%;
-      }
+    thead, tfoot {
+      background: #d5dbe5;
+    }
 
-      th {
-        padding: 5px;
-      }
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 140px;
+      height: 26px;
+      border: 1px solid black;
+    }
 
-      td {
-        padding: 10px;
-        text-align: center;
-      }
+    .switch input {display:none;}
 
-      thead,
-      tfoot {
-        background: #d5dbe5;
-      }
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      -webkit-transition: .4s;
+      transition: .4s;
+    }
 
-      .switch {
-        position: relative;
-        display: inline-block;
-        width: 140px;
-        height: 26px;
-        border: 1px solid black;
-      }
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 26px;
+      left: 4px;
+      bottom: 4px;
+      background-color: #365F9C;
+      -webkit-transition: .4s;
+      transition: .4s;
+    }
 
-      .switch input {
-        display: none;
-      }
+    input:focus + .slider {
+      box-shadow: 0 0 1px #2196F3;
+    }
 
-      .slider {
-        position: absolute;
-        cursor: pointer;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        -webkit-transition: 0.4s;
-        transition: 0.4s;
-      }
+    input:checked + .slider:before {
+      -webkit-transform: translateX(106px);
+      -ms-transform: translateX(26px);
+      transform: translateX(106px);
+    }
 
-      .slider:before {
-        position: absolute;
-        content: "";
-        height: 18px;
-        width: 26px;
-        left: 4px;
-        bottom: 4px;
-        background-color: #365f9c;
-        -webkit-transition: 0.4s;
-        transition: 0.4s;
-      }
+    .slider:after
+    {
+     content:'Upload';
+     position: absolute;
+     transform: translate(-50%,-50%);
+     top: 50%;
+     left: 54%;
+     font-size: 10px;
+     font-family: Verdana, sans-serif;
+    }
 
-      input:focus + .slider {
-        box-shadow: 0 0 1px #2196f3;
-      }
+    input:checked + .slider:after
+    {  
+      content:'Link';
+      left: 35%;
+    }
 
-      input:checked + .slider:before {
-        -webkit-transform: translateX(106px);
-        -ms-transform: translateX(26px);
-        transform: translateX(106px);
-      }
+    .checktrue {
+      display: none;
+    }
 
-      .slider:after {
-        content: "Upload";
-        position: absolute;
-        transform: translate(-50%, -50%);
-        top: 50%;
-        left: 54%;
-        font-size: 10px;
-        font-family: Verdana, sans-serif;
-      }
+    input[type="radio"] {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
 
-      input:checked + .slider:after {
-        content: "Link";
-        left: 35%;
-      }
+    input[type='radio']:checked, input[type='checkbox']:checked {
+      background: #365F9C;
+    }
 
-      .checktrue {
-        display: none;
-      }
+    input[type="checkbox"] {
+      width: 12px;
+      height: 12px;
+    }
 
-      input[type="radio"] {
-        width: 12px;
-        height: 12px;
-        border-radius: 50%;
-      }
+    ul.disabled {
+      pointer-events: none;
 
-      input[type="radio"]:checked,
-      input[type="checkbox"]:checked {
-        background: #365f9c;
-      }
+      /* for "disabled" effect */
+      opacity: 0.5;
+      background: #CCC;
+    }
 
-      input[type="checkbox"] {
-        width: 12px;
-        height: 12px;
-      }
+    input[type="radio"] {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      box-sizing: border-box;
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      /*display: inline;*/
+      /*outline: none;*/
+      /*border: none;*/
+      /*height: 25px;*/
+      line-height: 25px;
+      font-size: 16px;
+      padding: 5px ;
+    }
+    input[type='radio']:checked {
+      background: #365F9C;
+    }
 
-      ul.disabled {
-        pointer-events: none;
 
-        /* for "disabled" effect */
-        opacity: 0.5;
-        background: #ccc;
-      }
+    ul.disabled {
+      pointer-events: none;
 
-      input[type="radio"] {
-        width: 12px;
-        height: 12px;
-        border-radius: 50%;
-        box-sizing: border-box;
-        -webkit-box-sizing: border-box;
-        -moz-box-sizing: border-box;
-        /*display: inline;*/
-        /*outline: none;*/
-        /*border: none;*/
-        /*height: 25px;*/
-        line-height: 25px;
-        font-size: 16px;
-        padding: 5px;
-      }
-      input[type="radio"]:checked {
-        background: #365f9c;
-      }
+      /* for "disabled" effect */
+      opacity: 0.5;
+      background: #CCC;
+    }
 
-      ul.disabled {
-        pointer-events: none;
+    .form-style{
+      color: #464544;
+      font-size: 14px;
+      max-width:400px;
+      margin:10px auto;
+      background:#fff;
+      border-radius:2px;
+      padding:10px;
+      /*font-family: Georgia, "Times New Roman", Times, serif;*/
+    }
+    .form-style #mg{
+      margin-top: 20px;
+      text-align: center;
+    }
+    .form-style ul{
+      list-style:none;
+      padding:0;
+      margin:0; 
+    }
+    .form-style li{
+      display: block;
+      padding: 5px;
+      border:1px solid #DDDDDD;
+      margin-bottom: 20px;
+      border-radius: 3px;
+    }
+    .form-style li:last-child{
+      border:none;
+      margin-bottom: 0px;
+      text-align: center;
+    }
+    .form-style li > label{
+      display: block;
+      float: left;
+      margin-top: -19px;
+      background: #FFFFFF;
+      height: 14px;
+      padding: 2px 5px 2px 5px;
+      color: #464544;
+      font-size: 14px;
+      overflow: hidden;
+      /*font-family: Arial, Helvetica, sans-serif;*/
+    }
+    .form-style input[type="text"],
+    .form-style input[type="date"],
+    .form-style input[type="datetime"],
+    .form-style input[type="number"],
+    .form-style input[type="url"],
+    .form-style textarea,
+    .form-style select 
+    {
+      box-sizing: border-box;
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      width: 100%;
+      display: block;
+      outline: none;
+      border: none;
+      height: 25px;
+      line-height: 25px;
+      font-size: 16px;
+      padding: 0;
+      /*font-family: Georgia, "Times New Roman", Times, serif;*/
+    }
+    .form-style li > span{
+      background: #F3F3F3;
+      display: block;
+      padding: 3px;
+      margin: 0 -9px -9px -9px;
+      text-align: center;
+      color: rgb(104, 94, 94);
+      /*font-family: Arial, Helvetica, sans-serif;*/
+      font-size: 11px;
+    }
+    .form-style textarea{
+      resize:none;
+    }
+    .form-style input[type="submit"],
+    .form-style input[type="button"]{
+      background: #2147FF;
+      border: none;
+      padding: 10px 20px 10px 20px;
+      border-bottom: 3px solid #5994FF;
+      border-radius: 3px;
+      color: #D2E2FF;
+    }
+    .form-style input[type="submit"]:hover,
+    .form-style input[type="button"]:hover{
+      background: #6B9FFF;
+      color:#fff;
+    }
+    #upload_panel .modalbox-content{
+      width: 30%;
+    }
 
-        /* for "disabled" effect */
-        opacity: 0.5;
-        background: #ccc;
-      }
+  </style>
 
-      .form-style {
-        color: #464544;
-        font-size: 14px;
-        max-width: 400px;
-        margin: 10px auto;
-        background: #fff;
-        border-radius: 2px;
-        padding: 10px;
-        /*font-family: Georgia, "Times New Roman", Times, serif;*/
-      }
-      .form-style #mg {
-        margin-top: 20px;
-        text-align: center;
-      }
-      .form-style ul {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-      }
-      .form-style li {
-        display: block;
-        padding: 5px;
-        border: 1px solid #dddddd;
-        margin-bottom: 20px;
-        border-radius: 3px;
-      }
-      .form-style li:last-child {
-        border: none;
-        margin-bottom: 0px;
-        text-align: center;
-      }
-      .form-style li > label {
-        display: block;
-        float: left;
-        margin-top: -19px;
-        background: #ffffff;
-        height: 14px;
-        padding: 2px 5px 2px 5px;
-        color: #464544;
-        font-size: 14px;
-        overflow: hidden;
-        /*font-family: Arial, Helvetica, sans-serif;*/
-      }
-      .form-style input[type="text"],
-      .form-style input[type="date"],
-      .form-style input[type="datetime"],
-      .form-style input[type="number"],
-      .form-style input[type="url"],
-      .form-style textarea,
-      .form-style select {
-        box-sizing: border-box;
-        -webkit-box-sizing: border-box;
-        -moz-box-sizing: border-box;
-        width: 100%;
-        display: block;
-        outline: none;
-        border: none;
-        height: 25px;
-        line-height: 25px;
-        font-size: 16px;
-        padding: 0;
-        /*font-family: Georgia, "Times New Roman", Times, serif;*/
-      }
-      .form-style li > span {
-        background: #f3f3f3;
-        display: block;
-        padding: 3px;
-        margin: 0 -9px -9px -9px;
-        text-align: center;
-        color: rgb(104, 94, 94);
-        /*font-family: Arial, Helvetica, sans-serif;*/
-        font-size: 11px;
-      }
-      .form-style textarea {
-        resize: none;
-      }
-      .form-style input[type="submit"],
-      .form-style input[type="button"] {
-        background: #2147ff;
-        border: none;
-        padding: 10px 20px 10px 20px;
-        border-bottom: 3px solid #5994ff;
-        border-radius: 3px;
-        color: #d2e2ff;
-      }
-      .form-style input[type="submit"]:hover,
-      .form-style input[type="button"]:hover {
-        background: #6b9fff;
-        color: #fff;
-      }
-      #upload_panel .modalbox-content {
-        width: 30%;
-      }
-    </style>
-  </head>
-  <body>
-    <!-- toolbar -->
-    <div id="ca_tools"></div>
-    <div id="main_viewer" class="main"></div>
-    <div id="upload_panel"></div>
-    <div id="model_info"></div>
-    <div id="help"></div>
-  </body>
-  <script type="text/javascript">
-    if (detectIE()) {
-      createWarningText(
-        'You are using an <strong>IE/Edge</strong> browser that may be lead to erratic behavior on caMicroscope. Please switch to <a href="https://www.google.com/chrome/">Chrome</a>, <a href="https://www.mozilla.org/en-US/firefox/new/">Firefox</a> or <a href="https://www.apple.com/safari/">Safari</a> browser to improve your experience.'
-      );
+</head>
+<body>
+<!-- toolbar -->
+<div id='ca_tools'></div>
+<div id='main_viewer' class='main'></div>
+<div id="upload_panel"></div>
+<div id="model_info"></div>
+<div id="help"></div>
+</body>
+<script type="text/javascript">
+    if(detectIE()){
+      createWarningText('You are using an <strong>IE/Edge</strong> browser that may be lead to erratic behavior on caMicroscope. Please switch to <a href="https://www.google.com/chrome/">Chrome</a>, <a href="https://www.mozilla.org/en-US/firefox/new/">Firefox</a> or <a href="https://www.apple.com/safari/">Safari</a> browser to improve your experience.');
     }
     //Loading.open(document.body, 'CaMicroscope is initializing...');
     // get slide id from url
     $D.params = getUrlVars();
 
     // load if we have at least one slide query element
-    if ($D.params && $D.params.slideId) {
+    if($D.params && $D.params.slideId){
       // normal initialization starts
-      document.addEventListener("DOMContentLoaded", initialize);
-    } else if (
-      $D.params &&
-      ($D.params.slide ||
-        $D.params.specimen ||
-        $D.params.study ||
-        $D.params.location)
-    ) {
-      let STORE = new Store();
-      STORE.findSlide(
-        $D.params.slide,
-        $D.params.study,
-        $D.params.specimen,
-        $D.params.location
-      )
-        .then(x => {
-          let offset = parseInt($D.params.offset, 10) || 0;
-          if (x.length == 0 || offset >= x.length) {
-            redirect($D.pages.table, "No Slide Found. Redirecting to Table.");
-          } else {
-            newParams = $D.params;
-            delete newParams.data;
-            delete newParams.slide;
-            delete newParams.location;
-            delete newParams.offset;
-            newParams.slideId = x[offset]["_id"]["$oid"];
-            newUrl =
-              window.location.href.split("?")[0] +
-              "?" +
-              objToParamStr(newParams);
-            window.location.href = newUrl;
-          }
-        })
-        .catch(e => {
-          console.warn(e);
-          redirect($D.pages.table, "Redirecting to Table.");
-        });
+      document.addEventListener('DOMContentLoaded', initialize);
+    }
+    else if ($D.params && ($D.params.slide || $D.params.specimen ||$D.params.study || $D.params.location)){
+      let STORE = new Store()
+      STORE.findSlide($D.params.slide, $D.params.study, $D.params.specimen, $D.params.location).then(x=>{
+        let offset = parseInt($D.params.offset,10) || 0;
+        if(x.length == 0 || offset >= x.length){
+          redirect($D.pages.table,'No Slide Found. Redirecting to Table.');
+        } else {
+          newParams = $D.params
+          delete newParams.data
+          delete newParams.slide
+          delete newParams.location
+          delete newParams.offset
+          newParams.slideId = x[offset]['_id']['$oid']
+          newUrl = window.location.href.split("?")[0] + "?" + objToParamStr(newParams)
+          window.location.href = newUrl
+        }
+      }).catch(e=>{
+        console.warn(e)
+        redirect($D.pages.table,'Redirecting to Table.');
+      })
       // find the associated slideID
       // open viewer with that slideID
-    } else {
-      redirect($D.pages.table, "Slide is undefined. Redirecting to Table.");
+    }
+    else {
+      redirect($D.pages.table,'Slide is undefined. Redirecting to Table.');
     }
 
     // get states parameters
-    if ($D.params.states)
+    if($D.params.states)
       $D.params.states = StatesHelper.decodeStates($D.params.states);
-  </script>
+</script>
 </html>
