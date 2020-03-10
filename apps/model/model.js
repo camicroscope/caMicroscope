@@ -473,11 +473,11 @@ function runPredict(key) {
     self.showProgress("Model loaded...");
 
     // Warmup the model before using real data.
-    tf.tidy(()=>{
+    
     const warmupResult = model.predict(tf.zeros([1, image_size, image_size, input_channels]));
     warmupResult.dataSync();
-   // warmupResult.dispose();
-     });
+    warmupResult.dispose();
+    
     console.log("Model ready");
 
     let temp = document.querySelector('#dummy');
@@ -515,7 +515,7 @@ function runPredict(key) {
 
         let imgData = fullResCvs.getContext('2d').getImageData(0,0,fullResCvs.width,fullResCvs.height);
         let img2;
-        tf.tidy(()=>{
+        img2 = tf.tidy(()=>{
         const img = tf.browser.fromPixels(imgData).toFloat();
       
         if (input_channels == 1) {
@@ -523,7 +523,7 @@ function runPredict(key) {
         } else {
          img2 = tf.image.resizeBilinear(img, [image_size, image_size]);
         }
-        tf.keep(img2);
+        return img2;
         });
         let scaleMethod = $UI.filter? $UI.filter.status: 'norm';
         console.log(scaleMethod);
@@ -548,12 +548,13 @@ function runPredict(key) {
           // let normalized = img2.sub(min).div(max.sub(min));
         } else {
           // Pixel Standardization: scale pixel values to have a zero mean and unit variance.
-            tf.tidy(()=> {
+          normalized=tf.tidy(()=> {
 
           let mean = img2.mean();
           let std = (img2.squaredDifference(mean).sum()).div(img2.flatten().shape).sqrt();
           normalized = img2.sub(mean).div(std);
-            tf.keep(normalized);
+          //normalized= tf.keep(normalized);
+          return normalized;
           });
         }
        
