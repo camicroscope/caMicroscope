@@ -515,16 +515,16 @@ function runPredict(key) {
 
         let imgData = fullResCvs.getContext('2d').getImageData(0,0,fullResCvs.width,fullResCvs.height);
         let img2;
-       tf.tidy(()=>{
+        tf.tidy(()=>{
         const img = tf.browser.fromPixels(imgData).toFloat();
       
         if (input_channels == 1) {
          img2 = tf.image.resizeBilinear(img, [image_size, image_size]).mean(2);
         } else {
-          img2 = tf.image.resizeBilinear(img, [image_size, image_size]);
+         img2 = tf.image.resizeBilinear(img, [image_size, image_size]);
         }
         tf.keep(img2);
-          });
+        });
         let scaleMethod = $UI.filter? $UI.filter.status: 'norm';
         console.log(scaleMethod);
          
