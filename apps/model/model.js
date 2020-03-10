@@ -129,7 +129,6 @@ async function initUIcomponents() {
             <th>Input Size</th>
             <th>Size (MB)</th>
             <th>Date Saved</th>
-            <th>Remove Model</th>
           </tr>
           <tbody id="mdata">
           </tbody>
@@ -373,14 +372,14 @@ function camicStopDraw(e) {
       if (args) {
         runPredict(args.status);
       }
+      var memory = tf.memory();
+      console.log(memory);
       $UI.modelPanel.setPosition(box.rect.x,box.rect.y,box.rect.width,box.rect.height);
       $UI.modelPanel.open(args);
 
       canvasDraw.clear();
       csvContent = "";
     }
-      var memory = tf.memory();
-      console.log(memory);
 
   } else {
     console.error('Could not get feature collection.')
@@ -548,7 +547,7 @@ function runPredict(key) {
           normalized = img2.sub(mean).div(std);
         }    
         let batched = normalized.reshape([1, image_size, image_size, input_channels]);
-        let values = model.predict(batched).dataSync();
+        let values =model.predict(batched).dataSync();
 
         values.forEach((e) => {
           csvContent += e.toString() + ",";
@@ -559,7 +558,7 @@ function runPredict(key) {
         // Retrieving the top class
 
         dx += step;
-       });
+      });
       }
       dy += step;
     }
@@ -689,33 +688,8 @@ function uploadModel() {
       status.classList.add('error');
       console.error(e);
     }
+    
   });  
-}
-
-async function deleteModel(name) {
-  if (confirm("Are you sure you want to delete this model?")) {
-      let res = await tf.io.removeModel(IDB_URL + name);
-      console.log(res);
-      let tx = db.transaction("models_store", 'readwrite');
-      let store = tx.objectStore("models_store");
-      let status = false
-      try {
-          store.delete(name);
-          status = true;
-      }
-      catch (err) {
-          alert(err);
-      }
-      finally {
-          if (status) {
-              alert("Deleted", name);
-              showInfo();
-          }
-      }
-  }
-  else {
-      return;
-  }
 }
 
 // Shows the uploaded models' details
@@ -750,11 +724,6 @@ async function showInfo() {
           td.innerHTML = +size.toFixed(2);
           td = row.insertCell();
           td.innerHTML = date;
-          td = row.insertCell();
-          td.innerHTML = '<button class="btn btn-primary btn-xs my-xs-btn" id="removeModel" type="button">Remove Model</button>';
-          document.getElementById("removeModel").addEventListener('click', () => {
-            deleteModel(name);
-          });
         }
       }
     }
