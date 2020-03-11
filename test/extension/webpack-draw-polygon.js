@@ -1,6 +1,6 @@
 //Stylesheets
 //google material icons css sheet
-import 'google material icons css sheet'
+import '../../iconfont/material-icons.css'
 //css sheet
 import '../../css/style.css'
 //zoom control css
@@ -18,7 +18,6 @@ import '../../core/extension/openseadragon-labeling/openseadragon-labeling.css'
 
 //JS files
 //Fetch
-import './https://cdnjs.cloudflare.com/ajax/libs/fetch/3.0.0/fetch.min.js'
 import './slideId'
 //loading cover js
 import '../../components/loading/loading.js'
@@ -47,7 +46,7 @@ import '../../core/extension/openseadragon-zoom-control/openseadragon-zoom-contr
 import '../../apps/viewer/uicallbacks.js'
 import '../../apps/viewer/dataloaders.js'
 //init data
-import 'draw-polygon-test.js'
+import './draw-polygon-test'
 const $D = {
     pages: {
         home: '/table.html',
