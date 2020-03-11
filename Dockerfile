@@ -1,5 +1,6 @@
 FROM node:8-alpine
 RUN mkdir -p /var/www/html/
+RUN npm config set unsafe-perm true
 RUN npm install -g http-server
 RUN npm install -g parcel-bundler
 EXPOSE 80

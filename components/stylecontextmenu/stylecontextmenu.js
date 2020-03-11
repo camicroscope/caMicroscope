@@ -21,7 +21,7 @@
  * undo: Raised when undo btn is clicked
  * redo: Raised when redo btn is clicked
  * @param {Element} target
- *        the THML element will popup the context menu
+ *        the HTML element will popup the context menu
  * @param {Object} options
  *        All required and optional settings for instantiating a new instance of a style context menu.
  * @param {Array} [options.btns]
@@ -29,7 +29,7 @@
  * @param {String} options.btns.title
  *        The text of hint on the btn
  * @param {String} options.btns.class
- *        The css class on teh action btn
+ *        The css class on the action btn
  * @param {String} options.btns.text
  *        The text of action btn
  * @param {String} options.btns.type
@@ -178,7 +178,7 @@ function StyleContextMenu(target,options){
 
 /**
  * @private 
- * refresh compoment bases on the setting.
+ * refresh component bases on the setting.
  */
 StyleContextMenu.prototype.__refresh = function(){
     empty(this.elt);

@@ -4,7 +4,7 @@
 /**
  * @constructor
  * OpenSeadragon zoom control 0.0.1.
- * A OpenSeadragon pulgin that provides a scaleable and nice zoom control
+ * A OpenSeadragon plugin that provides a scalable and nice zoom control
  * @param {Object} [options]
  *        Allows configurable properties to be entirely specified by passing an options object to the constructor.
  */

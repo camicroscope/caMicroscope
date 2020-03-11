@@ -8,7 +8,7 @@
 // search bar is workeds
 
 /**
- * CaMicroscope Layers Viewer. A componet that shows all layers by the different categories.
+ * CaMicroscope Layers Viewer. A component that shows all layers by the different categories.
  * @constructor
  * @param {Object} options
  *        All required and optional settings for instantiating a new instance of a Layer Manager.
@@ -38,7 +38,7 @@ function LayersViewer(options) {
 
   /**
    * @property {Object} _v_model
-   *        View Model for the layers mamager
+   *        View Model for the layers manager
    * @property {Object} _v_model.types
    *        data set group by types
    * @property {String} _v_model.types.name
@@ -245,7 +245,7 @@ LayersViewer.prototype.__refreshUI = function() {
   // 	this.moveLayer(_id,'down');
   // }.bind(this)));
 
-  // initalize checkbox
+  // initialize checkbox
   // if(this.setting.isSortableView){
   // 	this.viewModeSwitch('sort');
   // }else{
@@ -370,7 +370,7 @@ LayersViewer.createCategoricalItem = function(data, type) {
     location_div.classList.add("material-icons");
     location_div.classList.add("md-24");
     location_div.textContent = "room";
-    location_div.title = "Loaction";
+    location_div.title = "Location";
 
     //
     remove_div.addEventListener("click", () => {
@@ -555,7 +555,7 @@ LayersViewer.createControlBar = function() {
     }
   ];
 
-  // return obj for seach bar
+  // return obj for search bar
   const searchBar = {};
   searchBar.text = search_input;
   searchBar.btn = search_btn;

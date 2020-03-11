@@ -7,7 +7,7 @@
 
 
 /**
- * A MultSelector that provide multple selected functionality.
+ * A MultSelector that provide multiple selected functionality.
  *
  * Events:
  * 'remove-all', 'remove', 'select-all', 'select', 'cancel', 'action'
@@ -190,7 +190,7 @@ MultSelector.prototype.setData = function(data){
 /**
  * __addOptions add options to target selector
  * @param  {Select} target
- *         a selector that is a html select elemenet
+ *         a selector that is a html select element
  * @param  {Array} data
  *         The data of selector's options. The form of each option should be an array -> [key - identity,value - text on option].
  */
