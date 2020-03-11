@@ -4,7 +4,7 @@
   "description": "",
   "scripts": {
     "test": "mocha test --recursive",
-    "depcheck": "node depcheck"
+    "build": "webpack-dev-server"
   },
   "author": "",
   "license": "NONE",
