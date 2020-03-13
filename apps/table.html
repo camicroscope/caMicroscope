@@ -236,7 +236,7 @@
 					});
 					const btn = ``;
 					default_btn.push(btn);
-					return [default_btn];
+					return [default_btn, default_btn,default_btn];
 				}
 			})
 			.then(function (data) {
@@ -260,17 +260,19 @@
 
 			$("#search-table").on("keyup", function() {
 				var value = $(this).val().toLowerCase();
-				$("#datatables tr").filter(function() {
+				$("#datatables tbody tr").filter(function() {
 					$(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
 				});
 			});
 
 			$(".sort-btn").on("click", function() {
 				var value = $(this)[0].id.substr(5);
-				$("#datatables tr").sort(function(a, b) {
-					console.log(a, b);
-					// $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-				});
+				var index = HeadMapping.findIndex((a)=> a.title.toLowerCase() == value.toLowerCase());
+				$("#datatables tbody tr").sort(function(a, b) {
+					let at=$(a).children('td').get(index).textContent.toLowerCase();
+					let bt=$(a).children('td').get(index).textContent.toLowerCase();
+					return at > bt;
+				}).appendTo("#datatables > tbody");
 			});
 		});
 	}
