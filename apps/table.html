@@ -90,6 +90,9 @@
 			<div>
 				<div class="">
 					<h2 class="text-center h2 mb-0">Available Slides</h2>
+					<div class="search-box float-left">
+						<input id="search-table" type="text" class="form-control" placeholder="Search&hellip;">
+					</div>
 					<button type="button" class="btn btn-success float-right mb-2"
 						onclick="(()=>{location.reload();return false;})()">Reload</button>
 					<button type="button" class="btn btn-primary float-right mb-2 mr-2" data-toggle="modal"
@@ -229,7 +232,7 @@
 					const default_btn = [];
 					keys.forEach((key, i) => {
 						if (i == 0) default_btn.push("NO DATA")
-						else default_btn.push('')
+						else default_btn.push('1')
 					});
 					const btn = ``;
 					default_btn.push(btn);
@@ -243,7 +246,8 @@
 					div.classList = `text-center p-4`;
 					return;
 				}
-				const thead = HeadMapping.map(d => "<th>" + d.title + "</th>");
+
+				const thead = HeadMapping.map(d => "<th>" + d.title + "<img id='sort-"+d.title+"' class='float-right sort-btn' src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABmJLR0QA/wD/AP+gvaeTAAAA2ElEQVRIidXVPU4CQRjG8V+ggZKEWhMvYAwcAQo4h/dw76GVd8BCjgAJXsAEOgkJpTYaKHASEjcr77IU+yRPN/N/P2bmHequZnD9Pe6wuEAubvGJL/Srhnfwjt2vV+hWBW/g5QiePBVvca6yHHhydi58iO+CAD8Yl4VfY1MAT97iJgpvYX4CPPkN7UiApwA8+TlaRb1VpkWPkQAtzALw8CHDlQte06SB/x/aqCw8KSsI8HAunMOwm+TAX1U07Pg7rpcqHNdJxx9O79RNkRLX+HD4Gyah1GqtPbg0gKNKJAqFAAAAAElFTkSuQmCC'/></th>");
 				thead.push("<th></th>");
 
 				tbody = data.map((d) => {
@@ -253,7 +257,22 @@
 				<thead>${thead.reduce((a, b) => a + b)}</thead>
 				<tbody>${tbody.reduce((a, b) => a + b)}</tbody>
 			`;
+
+			$("#search-table").on("keyup", function() {
+				var value = $(this).val().toLowerCase();
+				$("#datatables tr").filter(function() {
+					$(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+				});
 			});
+
+			$(".sort-btn").on("click", function() {
+				var value = $(this)[0].id.substr(5);
+				$("#datatables tr").sort(function(a, b) {
+					console.log(a, b);
+					// $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+				});
+			});
+		});
 	}
 
 	function AND(p, t, func) {
