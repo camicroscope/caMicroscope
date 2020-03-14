@@ -11,3 +11,9 @@
 	font-family: "Open Sans", Helvetica, sans-serif;
 	line-height: 1.8;
 }
+#entries {
+	cursor: pointer;
+}
+.page-item {
+	cursor: pointer;
+}
