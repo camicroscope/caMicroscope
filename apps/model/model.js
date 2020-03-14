@@ -475,7 +475,6 @@ function runPredict(key) {
     // Warmup the model before using real data.
     tf.tidy(()=>{
     const warmupResult = model.predict(tf.zeros([1, image_size, image_size, input_channels]));
-    warmupResult.dataSync();
     console.log("Model ready");
     });
 
