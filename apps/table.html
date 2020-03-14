@@ -90,7 +90,14 @@
 			<div>
 				<div class="">
 					<h3 class="text-center h3 mb-0">Available Slides</h3>
-					<div class="search-box float-left">
+					<div class="search-box float-left form-group form-inline">
+						<select id='entries' class="select form-control mr-2">
+							<option value="10" selected>10 slides/page</option>
+							<option value="20">20 slides/page</option>
+							<option value="40">40 slides/page</option>
+							<option value="50">50 slides/page</option>
+							<option value="100">100 slides/page</option>
+						  </select>
 						<input id="search-table" type="text" class="form-control" placeholder="Search&hellip;">
 					</div>
 					<button type="button" class="btn btn-success float-right mb-2"
@@ -98,7 +105,7 @@
 					<button type="button" class="btn btn-primary float-right mb-2 mr-2" data-toggle="modal"
 						data-target="#upload-dialog">Upload</button>
 				</div>
-				<table id='datatables' class="table"></table>
+				<table id='datatables' class="table table-striped"></table>
 			</div>
 
 			<div class="modal fade" id="upload-dialog" tabindex="-1" role="dialog"
@@ -197,6 +204,42 @@
 		title: 'MPP',
 		field: 'mpp'
 	}];
+	var totaltablepages;
+	var selectedpage;
+	var searching;
+
+	function showTablePage(){
+		$("#datatables tbody tr").filter(function(){
+			$(this).hide();
+		});
+		
+		var trs = "#datatables tbody tr";
+		if(searching){
+			trs = ".searched";
+		}
+		$(trs).slice($("#entries").val()*selectedpage, $("#entries").val()*(selectedpage+1)).filter(function(){
+			$(this).show();
+		});
+		
+		$(`.pages.active`).removeClass("active");
+		$(`.pages:eq(${selectedpage})`).addClass("active");
+	}
+
+	function resetTable(){
+		$(".pages").remove();
+		$("#previous-page").after(function(){
+			if(totaltablepages != 0)
+			return [...Array(totaltablepages).keys()].map((p)=>{
+						return `<li class="page-item pages"><a class="page-link">${p+1}</a></li>`;
+					}).join('');
+		});
+		$(".pages").on('click', function(){
+			selectedpage = parseInt($(this).text())-1;
+			showTablePage();
+		});
+		selectedpage = 0;
+		showTablePage();
+	}
 
 	function initialize() {
 		const params = getUrlVars();
@@ -247,9 +290,9 @@
 					return;
 				}
 
-				const thead = HeadMapping.map(d => "<th>" + d.title + `<img id='sort1${d.title}' class='float-right sort-btn' width='20px' src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAABmJLR0QA/wD/AP+gvaeTAAAAtklEQVRIie3XsQrCMBSF4T+CoJsddHAo9HH6AD634NbNqTgo6FI6WQdTtJLQpG0CxXsglIRyv0ugCYWZRsUGd8ARKIA0FroFTkCjxxnIYqNRcBsaFO9Dg+Cu6KS4LzoJrnh/Mr5oOwpgaSu+GNqVY6wHTN/Jo4DNz1oJrAzv7oH6a/4Ani7duabCvLVrnyKht1pggQUWWOA/g0vD2o3ulRgkOXDhcx1egYNvkTG/IIl+3nUD88gLIHVaGvUECUcAAAAASUVORK5CYII='/>
+				const thead = HeadMapping.map(d => "<th>" + d.title + `<img id='sort1${d.title}' class='float-right sort-btn' width='16px' src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAABmJLR0QA/wD/AP+gvaeTAAAAtklEQVRIie3XsQrCMBSF4T+CoJsddHAo9HH6AD634NbNqTgo6FI6WQdTtJLQpG0CxXsglIRyv0ugCYWZRsUGd8ARKIA0FroFTkCjxxnIYqNRcBsaFO9Dg+Cu6KS4LzoJrnh/Mr5oOwpgaSu+GNqVY6wHTN/Jo4DNz1oJrAzv7oH6a/4Ani7duabCvLVrnyKht1pggQUWWOA/g0vD2o3ulRgkOXDhcx1egYNvkTG/IIl+3nUD88gLIHVaGvUECUcAAAAASUVORK5CYII='/>
 
-				<img id='sort2${d.title}' class='float-right sort-btn' width='20px' src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAABmJLR0QA/wD/AP+gvaeTAAAAs0lEQVRIie3VsQrCMBSF4T/qoFsddBR8Hncf24KTUAquDg4ugoPWwRbSEk2aJhHlHsiQhPCdZAl8KeMBZ+fADLgF6mLNBjgBVT3OwDYFXGqojqvY8NUAV7ye3Tmj8L0EFlhggQX+F3hi2VdAZlgzJQOm2vwCPDx7kWP+Al1G0SnSyqenVsDdt3Ed7xsvgD39b3sE1kMa++BB0L54UNQVj4La8KjoOzwJ2mQJ7IADsEqF/nae93FcRiryrh8AAAAASUVORK5CYII="/>
+				<img id='sort2${d.title}' class='float-right sort-btn' width='16px' src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAABmJLR0QA/wD/AP+gvaeTAAAAs0lEQVRIie3VsQrCMBSF4T/qoFsddBR8Hncf24KTUAquDg4ugoPWwRbSEk2aJhHlHsiQhPCdZAl8KeMBZ+fADLgF6mLNBjgBVT3OwDYFXGqojqvY8NUAV7ye3Tmj8L0EFlhggQX+F3hi2VdAZlgzJQOm2vwCPDx7kWP+Al1G0SnSyqenVsDdt3Ed7xsvgD39b3sE1kMa++BB0L54UNQVj4La8KjoOzwJ2mQJ7IADsEqF/nae93FcRiryrh8AAAAASUVORK5CYII="/>
 				</th>`);
 
 				thead.push("<th></th>");
@@ -257,28 +300,93 @@
 				tbody = data.map((d) => {
 					return "<tr>" + d.map((a) => "<td>" + a + "</td>").reduce((a, b) => a + b) + "</tr>";
 				});
+				totaltablepages = Math.ceil(data.length/$("#entries").val());
+				selectedpage = 0;
+				$("#search-table").val("");
+				searching = false;
+
 				document.getElementById("datatables").innerHTML = `
 				<thead>${thead.reduce((a, b) => a + b)}</thead>
 				<tbody>${tbody.reduce((a, b) => a + b)}</tbody>
+				<tfoot><tr><td colspan='6'>
+					<nav aria-label="Slides Pages" class="">
+						<ul class="pagination justify-content-center">
+							<li id="previous-page" class="page-item"><a class="page-link">Previous</a></li>
+							${[...Array(totaltablepages).keys()].map((p)=>{
+								return `<li class="page-item pages"><a class="page-link">${p+1}</a></li>`;
+							}).join('')}
+							<li id="next-page" class="page-item"><a class="page-link">Next</a></li>
+						</ul>
+					</nav>
+				</td></tr></tfoot>
 			`;
 
+			showTablePage();
+
 			$("#search-table").on("keyup", function() {
-				var value = $(this).val().toLowerCase();
+				var value = String($(this).val()).toLowerCase();
 				$("#datatables tbody tr").filter(function() {
-					$(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+					var t = String($(this).text()).toLowerCase().indexOf(value);
+					if(t > -1){
+						$(this).addClass("searched");
+					}else{
+						$(this).removeClass("searched");
+					}
 				});
+				if(value == ""){
+					searching = false;
+					totaltablepages = Math.ceil(data.length/$("#entries").val());
+				}else{
+					searching = true;
+					totaltablepages = Math.ceil($(".searched").length/$("#entries").val());
+				}
+				resetTable();
 			});
 
 			$(".sort-btn").on("click", function() {
 				var value = $(this)[0].id.substr(5);
 				var upordown = parseInt($(this)[0].id[4]);
 				var index = HeadMapping.findIndex((a)=> a.title.toLowerCase() == value.toLowerCase());
-				$("#datatables tbody tr").sort(function(a, b) {
+				
+				var trs = "#datatables tbody tr";
+				if(searching){
+					trs = ".searched";
+				}
+
+				$(trs).sort(function(a, b) {
 					let at=$(a).children('td').get(index).textContent.toLowerCase();
 					let bt=$(b).children('td').get(index).textContent.toLowerCase();
 					return upordown == 1 ? at > bt: at < bt;
 				}).appendTo("#datatables > tbody");
+				selectedpage = 0;
+				showTablePage();
 			});
+
+			$(".pages").on('click', function(){
+				selectedpage = parseInt($(this).text())-1;
+				showTablePage();
+			});
+
+			$("#previous-page").on('click', function(){
+				if(selectedpage > 0){
+					selectedpage--;
+					showTablePage();
+				}
+			});
+
+			$("#next-page").on('click', function(){
+				if(selectedpage < totaltablepages-1){
+					selectedpage++;
+					showTablePage();
+				}
+			})
+
+			$("#entries").change(function(){
+				if(!searching) totaltablepages = Math.ceil(data.length/$("#entries").val());
+				else totaltablepages = Math.ceil($(".searched").length/$("#entries").val());
+				resetTable();
+			});
+
 		});
 	}
 
