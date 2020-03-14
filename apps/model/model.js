@@ -373,6 +373,8 @@ function camicStopDraw(e) {
       if (args) {
         runPredict(args.status);
       }
+      var memory = tf.memory();
+      console.log(memory);
       $UI.modelPanel.setPosition(box.rect.x,box.rect.y,box.rect.width,box.rect.height);
       $UI.modelPanel.open(args);
 
@@ -472,10 +474,10 @@ function runPredict(key) {
     self.showProgress("Model loaded...");
 
     // Warmup the model before using real data.
+    tf.tidy(()=>{
     const warmupResult = model.predict(tf.zeros([1, image_size, image_size, input_channels]));
-    warmupResult.dataSync();
-    warmupResult.dispose();
     console.log("Model ready");
+    });
 
     let temp = document.querySelector('#dummy');
     temp.height = step;
@@ -510,7 +512,7 @@ function runPredict(key) {
         fullResCvs.getContext('2d').drawImage(l_img, 0, 0);
 
         let imgData = fullResCvs.getContext('2d').getImageData(0,0,fullResCvs.width,fullResCvs.height);
-
+        tf.tidy(()=>{
         const img = tf.browser.fromPixels(imgData).toFloat();
         let img2;
         if (input_channels == 1) {
@@ -545,7 +547,7 @@ function runPredict(key) {
           normalized = img2.sub(mean).div(std);
         }    
         let batched = normalized.reshape([1, image_size, image_size, input_channels]);
-        let values = await model.predict(batched).data();
+        let values =model.predict(batched).dataSync();
 
         values.forEach((e) => {
           csvContent += e.toString() + ",";
@@ -556,6 +558,7 @@ function runPredict(key) {
         // Retrieving the top class
 
         dx += step;
+      });
       }
       dy += step;
     }
