@@ -10,6 +10,12 @@ module.exports = {
         rules: [{
             test: /\.css$/, //file end with extension .css
             loader: ['style-loader', 'css-loader']
-        }]
+        },
+        {
+            test: /\.(png|jpe?g|gif)$/i,
+            loader: 'file-loader'
+        },
+        { test: /\.(png|woff|woff2|eot|ttf|svg)$/, loader: 'url-loader?limit=100000' }
+    ]
     }
 }
