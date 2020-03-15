@@ -38,8 +38,7 @@ body {
 }
 
 
-
-.txtb input[type=text] {
+.txtb input {
 	font-size: 15px;
 	color: #fff;
 	border: none;
@@ -50,47 +49,17 @@ body {
 	height: 40px;
 }
 
-.txtb span::before {
-	content: attr(data-placeholder);
-	position: absolute;
-	top: 50%;
-	left: 5px;
-	color: #fff;
-	transform: translateY(-50%);
-	z-index: -1;
-	transition: .5s;
-}
-
-.txtb span::after {
-	content: '';
-	position: absolute;
-	width: 0%;
-	height: 2px;
-	background: linear-gradient(120deg, #3498db, #8e44ad);
-	transition: .5s;
-}
-
-.txtb input.focus + span::before {
-	top: -5px;
-	color: #3498db;
-}
-
-.txtb input.focus + span::after {
-	width: 100%;
-}
-
-.radb {
-	position: relative;
-	margin-bottom: 30px;
-}
-
-.radb input[type=radio] {
+input[type=radio] {
 	margin: 15px 10px 0 50px;
 	transition: .5s;
 }
-.radb input[type=radio]:checked+label {
+input[type=radio]:checked+label {
 	color: #8e44ad;
 	font-weight: bold;
+}
+.bottom-text {
+	font-size: 12px;
+	padding-top: 7px;
 }
 
 
@@ -107,6 +76,7 @@ body {
 	outline: none;
 	cursor: pointer;
 	transition: .5s;
+	margin-top: 10px;
 }
 
 
