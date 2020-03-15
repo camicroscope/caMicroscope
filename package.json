@@ -10,9 +10,10 @@
   "dependencies": {
     "chai": "^4.1.2",
     "express": "^4.16.2",
+    "jsdom": "^11.11.0",
     "lodash": "^4.17.10",
     "node-fetch": "^2.2.0",
-    "jsdom": "^11.11.0"
+    "openseadragon": "^2.4.2"
   },
   "devDependencies": {
     "webpack": "^4.42.0",
