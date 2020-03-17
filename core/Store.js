@@ -913,16 +913,16 @@ class Store {
   }
   
   findLabelingAnnotationByTypeOrCreator(slide, type, creator){
-    if (!slide) {
-      return {
-        hasError: true,
-        message: 'args are illegal'
-      }
-    }
+    // if (!slide) {
+    //   return {
+    //     hasError: true,
+    //     message: 'args are illegal'
+    //   }
+    // }
     var suffix = "LabelingAnnotation/findByTypeOrCreator"
     var url = this.base + suffix;
     var query = {}
-    query.slideId = slide;
+    if(slide) query.slideId = slide;
     if(type) query.computation = type;
     if(creator) query.creator = creator;
 
