@@ -381,6 +381,7 @@
           <button class="tablinks" onclick="openTab(event, 'labels')">Rankings of Label Types</button>
           <button class="tablinks" onclick="openTab(event, 'participants')">Participants</button>
           <button class="tablinks" onclick="openTab(event, 'roi_details')">ROIs Detail</button>
+          <button class="tablinks" onclick="openTab(event, 'roi_annotations_details')">ROI Annotations Detail</button>
         </div>
         
         
@@ -392,10 +393,16 @@
         
         <div id="labels" class="tabcontent">
         </div>
+
         <div id="participants" class="tabcontent">
         </div>
+        
         <div id="roi_details" class="tabcontent">
         </div>
+        
+        <div id="roi_annotations_details" class="tabcontent">
+        </div>
+        
         </div>
       </div>
     </div>
@@ -419,6 +426,7 @@
     let total;
     let sheet;
     let users;
+    let roi_annotations;
 
     /*  */
     function openTab(evt, tabName) {
@@ -528,6 +536,53 @@
       title: "E-Mail"
     }]
 
+    const roiAnnotationsHeadMapping = [{
+      field: "id",
+      title: "ID"
+    },{
+      field: "slide_name",
+      title: "Slide Name"
+    },{
+      field: "x",
+      title: "X"
+    },{
+      field: "y",
+      title: "Y"
+    },{
+      field: "width",
+      title: "Width"
+    },{
+      field: "height",
+      title: "Height"
+    },{
+      field: "roi_type",
+      title: "ROI Type"
+    },{
+      field: "roi_til_density",
+      title: "ROI TIL Density"
+    },{
+      field: "roi_creator",
+      title: "ROI Creator"
+    },{
+      field: "annotation_type",
+      title: "Annotation Type"
+    },{
+      field: "annotation_til_density",
+      title: "Annotation TIL Density"
+    },{
+      field: "annotation_creator",
+      title: "Annotation Creator"
+    },{
+      field: "date",
+      title: "Create Date Time"
+    },{
+      field: "view_width",
+      title: "View Width"
+    },{
+      field: "view_height",
+      title: "View Height"
+    }]
+
     function createTable(headers, data) {
       const tab_head = `<thead><tr>${headers
         .map(header => `<th>${header.title}</th>`)
@@ -587,7 +642,23 @@
       
       total = await store.countAllLabels();
 
-      sheet = await store.allLabelSheet('label').then(rs =>
+      const roi_annotations_maps = await store.findLabelingAnnotationByTypeOrCreator().then(rs=> {
+        const maps = {}
+        rs.map(i => {
+          maps[i._id] = {
+            id: i._id,
+            creator: i.creator,
+            label_type: i.properties.type,
+            til_density: i.properties.til_density,
+            create_date_time: i.create_date_time,
+            viewer_width: i.viewer_size&&i.viewer_size.width? i.viewer_size.width: `NA`,
+            viewer_height: i.viewer_size&&i.viewer_size.height? i.viewer_size.height: `NA`
+          };
+        })
+        return maps
+      });
+
+      sheet = await store.findLabel(null, null, 'label').then(rs =>
         rs.map(i => {
           return {
             id: i._id,
@@ -603,11 +674,39 @@
             til_density: i.properties.til_density,
             parent: i.parent,
             subrois: i.subrois,
+            annotations:i.annotations,
             create_date_time: i.create_date_time
           };
         })
       );
+      roi_annotations = [];
+      sheet.forEach( record => {
+        record.annotations.forEach( _id => {
+          const left =record['x']
+          const top = record['y']
+          const width = record['width']
+          const height = record['height']
 
+          roi_id = record['slide_name'] + '_left_' + left + '_top_' + top + '_wdith_' + width + '_height_' + height
+          roi_annotations.push({
+            id: roi_id,
+            slide_name: record['slide_name'],
+            x: left,
+            y: top,
+            width: width,
+            height: height,
+            roi_type: record['label_type'],
+            roi_til_density: record['til_density'],
+            roi_creator: record['creator'],
+            annotation_type: roi_annotations_maps[_id]['label_type'],
+            annotation_til_density: roi_annotations_maps[_id]['til_density'],
+            annotation_creator: roi_annotations_maps[_id]['creator'],
+            date: roi_annotations_maps[_id]['create_date_time'],
+            view_width: roi_annotations_maps[_id]['viewer_width'],
+            view_height: roi_annotations_maps[_id]['viewer_height']
+          })
+        })
+      })
       users = await store.getAllUsers();
 
       document.querySelector("#viewer").innerHTML = `<H2>&nbsp;&nbsp;&nbsp; Total ROIs: ${total.count}</H2>`
@@ -621,7 +720,8 @@
       createTable(usersHeadMapping, users);
       document.querySelector("#roi_details").innerHTML ="<div class='title'>Detail&nbsp;&nbsp;&nbsp;<button id='sheet' class='btn'>Download As CSV</button></div>" +
       createTable(sheetHeadMapping, sheet);
-
+      document.querySelector("#roi_annotations_details").innerHTML ="<div class='title'>Detail&nbsp;&nbsp;&nbsp;<button id='roi_annotations' class='btn'>Download As CSV</button></div>" +
+      createTable(roiAnnotationsHeadMapping, roi_annotations);
       // add download event
       document.querySelector("#creator").addEventListener("click", e => {
         downloadAsCSV(
@@ -651,6 +751,12 @@
         downloadAsCSV(
           createCSVRawData(usersHeadMapping, users),
           "Participants"
+        );
+      });
+      document.querySelector("#roi_annotations").addEventListener("click", e => {
+        downloadAsCSV(
+          createCSVRawData(roiAnnotationsHeadMapping, roi_annotations),
+          "roi_annotations_data"
         );
       });
     }
