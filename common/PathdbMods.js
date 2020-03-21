@@ -135,6 +135,4 @@ function PathDbMods() {
 
 }
 
-
-PathDbMods()
 console.warn("This Setup Is Intended For Pathdb")

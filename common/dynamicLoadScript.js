@@ -6,19 +6,13 @@ const params = getUrlVars();
 let file;
 if (params.mode && params.mode==="pathdb"){
 	ImgloaderMode = 'iip';
-	file = '../../dist/pathdb_package.js';
-}else if (params.mode && params.mode==="ghc"){
-	ImgloaderMode = 'imgbox'; // WILL probably need to change
-	file = '../../dist/ghc_package.js';
+	PathDbMods()
 }
 else if(params.slideId&&params.id&&params.slideId==="local"&&params.id.includes('http://localhost:8888')){
 	ImgloaderMode = 'imgbox';
-	file = '../../dist/imgbox_package.js';
+	NanoBorbMods()
+	init_LocalStore()
 }else{
 	ImgloaderMode = 'iip';
-	file = '../../dist/packages.js';
+	// no mods to perform as of now
 }
-
-loadScript(file,function(){
-	IsPackageLoading = true;
-})
