@@ -16,3 +16,4 @@ else if(params.slideId&&params.id&&params.slideId==="local"&&params.id.includes(
 	ImgloaderMode = 'iip';
 	// no mods to perform as of now
 }
+IsPackageLoading=true;
