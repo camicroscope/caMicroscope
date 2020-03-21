@@ -1,6 +1,6 @@
 {
-  "name": "camic_test",
-  "version": "3.0.0",
+  "name": "camicroscope",
+  "version": "3",
   "description": "",
   "scripts": {
     "test": "mocha test --recursive"
@@ -13,6 +13,7 @@
     "jsdom": "^11.11.0",
     "lodash": "^4.17.10",
     "mocha": "^7.1.0",
-    "node-fetch": "^2.2.0"
+    "node-fetch": "^2.2.0",
+    "parceljs": "0.0.1"
   }
 }

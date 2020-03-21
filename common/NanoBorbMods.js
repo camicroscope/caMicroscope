@@ -1,4 +1,4 @@
-function ImgBoxMods() {
+function NanoBorbMods() {
   console.warn("{imgbox mods enabled}")
   CaMic.prototype.default_loadImg = CaMic.prototype.loadImg
   CaMic.prototype.loadImg = function(func) {
@@ -73,6 +73,3 @@ function ImgBoxMods() {
 
   }
 }
-
-
-export default ImgBoxMods

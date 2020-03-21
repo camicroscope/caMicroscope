@@ -1,10 +1,5 @@
-FROM node:8-alpine
-RUN mkdir -p /var/www/html/
-RUN npm config set unsafe-perm true
-RUN npm install -g http-server
-RUN npm install -g parcel-bundler
+FROM httpd:alpine
 EXPOSE 80
-COPY ./ /var/www/html/
-WORKDIR /var/www/html/
+COPY ./ /usr/local/apache2/htdocs/
+WORKDIR /usr/local/apache2/htdocs/
 RUN rm -rf ./.git/
-CMD parcel build package/packages.js; http-server -p 80
