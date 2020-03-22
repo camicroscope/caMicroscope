@@ -112,7 +112,6 @@ function finish_upload(){
       let token = document.getElementById("token"+i).value
       let filename = document.getElementById("filename"+i).value
       let body = {filename: filename}
-      console.log({finish_url, filename, token});
       changeStatus("UPLOAD", "Finished Reading File, Posting")
       let reg_req = fetch(finish_url + token,{method:'POST', body: JSON.stringify(body),headers: {
                 "Content-Type": "application/json; charset=utf-8"
