@@ -1,4 +1,4 @@
-@import url(font-awesome.min.css);
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css');
 @import url("https://fonts.googleapis.com/css?family=Open+Sans:300italic,700italic,700,300");
 
 /*
@@ -2304,6 +2304,7 @@
 					padding-left: 4.5em;
 					position: relative;
 					width: 35%;
+					flex: auto;
 					-ms-flex: auto;
 				}
 
@@ -2322,6 +2323,7 @@
 
 				ul.features li p {
 					width: 65%;
+					flex: auto;
 					-ms-flex: auto;
 					margin-bottom: 0;
 					padding-left: 3em;
@@ -2430,6 +2432,7 @@
 				display: block;
 				margin-right: 2em;
 				width: 40%;
+				flex: auto;
 				-ms-flex: auto;
 			}
 
@@ -2440,6 +2443,7 @@
 
 			.posts .post .content {
 				width: 60%;
+				flex: auto;
 				-ms-flex: auto;
 			}
 
@@ -3618,6 +3622,7 @@
 
 				.wrapper.cta > .inner > * {
 					padding-left: 1.5em;
+					flex: auto;
 					-ms-flex: auto;
 					width: 50%;
 				}
@@ -3829,10 +3834,12 @@
 	}
 
 		#header a {
-			color: inherit;
+			color: grey;
 			text-decoration: none;
 		}
-
+		#header a:hover{
+			color: white;
+		}
 		#header h1 {
 			text-decoration: none;
 			color: #ffffff;
@@ -3872,31 +3879,24 @@
 				width: 2em;
 			}
 
-		#header nav {
-			height: inherit;
-			line-height: inherit;
-			margin-right: 1.5em;
-			position: absolute;
-			right: 0;
-			top: 0;
-		}
-
 			#header nav ul {
-				list-style: none;
+				list-style-type: none;
 				margin: 0;
-				padding: 0;
+				padding-left: 15px;
+				
 			}
 
 				#header nav ul li {
-					display: inline-block;
-					margin-left: 1.5em;
+					float: left;
 				}
 
 					#header nav ul li a {
+						display: block;
 						font-weight: 700;
 						letter-spacing: 0.05em;
 						text-transform: uppercase;
 						font-size: 0.9em;
+						
 					}
 
 						#header nav ul li a.submenu {
@@ -4073,10 +4073,10 @@
 /* Banner */
 
 	#banner {
-		background-image: url("images/overlay.png"), -moz-linear-gradient(45deg, rgba(39, 161, 227, 0.65), rgba(231, 35, 42, 0.65)), url("../../images/banner.jpg");
-		background-image: url("images/overlay.png"), -webkit-linear-gradient(45deg, rgba(39, 161, 227, 0.65), rgba(231, 35, 42, 0.65)), url("../../images/banner.jpg");
-		background-image: url("images/overlay.png"), -ms-linear-gradient(45deg, rgba(39, 161, 227, 0.65), rgba(231, 35, 42, 0.65)), url("../../images/banner.jpg");
-		background-image: url("images/overlay.png"), linear-gradient(45deg, rgba(39, 161, 227, 0.65), rgba(231, 35, 42, 0.65)), url("../../images/banner.jpg");
+		background-image:  -moz-linear-gradient(45deg, rgba(39, 161, 227, 0.65), rgba(231, 35, 42, 0.65)), url("./banner1.jpg");
+		background-image:  -webkit-linear-gradient(45deg, rgba(39, 161, 227, 0.65), rgba(231, 35, 42, 0.65)), url("./banner1.jpg");
+		background-image:  -ms-linear-gradient(45deg, rgba(39, 161, 227, 0.65), rgba(231, 35, 42, 0.65)), url("./banner1.jpg");
+		background-image:  linear-gradient(45deg, rgba(39, 161, 227, 0.65), rgba(231, 35, 42, 0.65)), url("./banner1.jpg");
 		background-position: center center;
 /*		background-size: auto, cover, cover; */
 		background-attachment: fixed, fixed, fixed;
@@ -4301,10 +4301,10 @@
 /* Footer */
 
 	#footer {
-		background-image: url("images/overlay.png"), -moz-linear-gradient(45deg, rgba(39, 161, 227, 0.65), rgba(231, 35, 42, 0.65)), url("../../images/banner.jpg");
-		background-image: url("images/overlay.png"), -webkit-linear-gradient(45deg, rgba(39, 161, 227, 0.65), rgba(231, 35, 42, 0.65)), url("../../images/banner.jpg");
-		background-image: url("images/overlay.png"), -ms-linear-gradient(45deg, rgba(39, 161, 227, 0.65), rgba(231, 35, 42, 0.65)), url("../../images/banner.jpg");
-		background-image: url("images/overlay.png"), linear-gradient(45deg, rgba(39, 161, 227, 0.65), rgba(231, 35, 42, 0.65)), url("../../images/banner.jpg");
+		background-image: -moz-linear-gradient(45deg, rgba(39, 161, 227, 0.65), rgba(231, 35, 42, 0.65)), url("./banner1.jpg");
+		background-image: -webkit-linear-gradient(45deg, rgba(39, 161, 227, 0.65), rgba(231, 35, 42, 0.65)), url("./banner1.jpg");
+		background-image: -ms-linear-gradient(45deg, rgba(39, 161, 227, 0.65), rgba(231, 35, 42, 0.65)), url("./banner1.jpg");
+		background-image: linear-gradient(45deg, rgba(39, 161, 227, 0.65), rgba(231, 35, 42, 0.65)), url("./banner1.jpg");
 		background-position: center center;
 /*		background-size: auto, cover, cover; */
 		background-attachment: fixed, fixed, fixed;
@@ -4656,7 +4656,6 @@
 			right: 0;
 			text-align: right;
 			top: 0;
-			vertical-align: middle;
 			width: 5em;
 		}
 
@@ -4713,4 +4712,17 @@
 					padding: 2.25em 1.25em;
 				}
 
+		}
+		.link{
+			text-transform: uppercase;
+			font-size: 1em;
+			font-weight: 600;
+			color: #5e6875;
+			text-decoration-line: none;
+			text-decoration-style: solid;
+			text-decoration-color: currentcolor;
+			text-decoration-thickness: auto;
+			padding-right: 0.7rem;
+			padding-left: 0.7rem;
+			font-family: "Open Sans", Helvetica, sans-serif;
 		}

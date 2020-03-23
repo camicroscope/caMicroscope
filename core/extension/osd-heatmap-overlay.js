@@ -2,7 +2,7 @@
 /**
  * @constructor
  * OpenSeadragon heatmap Plugin 0.0.1.
- * A OpenSeadragon pulgin that provides a way to show 'heatmap' overlays.
+ * A OpenSeadragon plugin that provides a way to show 'heatmap' overlays.
  * @param {Object} options
  *        Allows configurable properties to be entirely specified by passing an options object to the constructor.
  * @param {Object} options.data
@@ -16,17 +16,17 @@
  *        <x,y> is the position of the top-left point of a patch.
  *        p1,p2,p3 ... are the probabilities that is the corresponding fields.
  * @param {Array} options.fields
- *        the array that each element describes the feild of heatmap
+ *        the array that each element describes the field of heatmap
  * @param {String} options.fields.name
  *        the name of a field
  * @param {Array} options.fields.range
  *        the range of a field - [min, max] in the field
  * @param {Array} [options.fields.thresholds]
- *        the treshold of a field.
+ *        the threshold of a field.
  * @param {Array} options.size
- *        the size of patchs - size:[width,height]
+ *        the size of patches - size:[width,height]
  * @param {Array} [options.intervalTime=300]
- *        the delay time that will update the heatmap when the view changed. deault time is 300 milliseconds.
+ *        the delay time that will update the heatmap when the view changed. default time is 300 milliseconds.
  * @param {Number} [opacity=0.8]
  *        the opacity of the heatmap. default is 0.8.
  * @param {String} [color='#1034A6']
@@ -131,7 +131,7 @@
     this._div.style.opacity = options.opacity || 0.8;
     this._viewer.canvas.appendChild(this._div);
 
-    // create display_cancavs
+    // create display_canvas
     this._display_ = document.createElement("canvas");
     this._display_.style.position = "absolute";
     this._display_.style.top = 0;
@@ -306,7 +306,7 @@
     },
 
     /**
-     * set the coloer of heatmap's cover
+     * set the color of heatmap's cover
      * @param {String} color color in Hex form
      */
     setCoverColor: function(color) {
@@ -832,7 +832,7 @@
   }
   /**
    * validate heatmap's options
-   * @param  {Obejct} options
+   * @param  {Object} options
    *         heatmap's options
    * @return {Boolean}
    *         true if heatmap's options. Otherwise, false.
@@ -918,7 +918,7 @@
 
   /**
    * @private
-   * covert the distance from screen coordinate(in piexl) to normalized coordinate in x-axis.
+   * covert the distance from screen coordinate(in pixel) to normalized coordinate in x-axis.
    * @param  {Number} width/the distance in x-axis.
    * @param  {OpenSeadragon.ImagingHelper} helper
    *
@@ -933,7 +933,7 @@
 
   /**
    * @private
-   * covert the distance from screen coordinate(in piexl) to normalized coordinate in y-axis.
+   * covert the distance from screen coordinate(in pixel) to normalized coordinate in y-axis.
    * @param  {Number} width/the distance in y-axis.
    * @param  {OpenSeadragon.ImagingHelper} helper
    *
@@ -948,7 +948,7 @@
 
   /**
    * @private
-   * covert the distance from normalized coordinate to screen coordinate(in piexl) in x-axis.
+   * covert the distance from normalized coordinate to screen coordinate(in pixel) in x-axis.
    * @param  {Number} width/the distance in x-axis.
    * @param  {OpenSeadragon.ImagingHelper} helper
    *
@@ -963,7 +963,7 @@
 
   /**
    * @private
-   * covert the distance from normalized coordinate to screen coordinate(in piexl) in y-axis.
+   * covert the distance from normalized coordinate to screen coordinate(in pixel) in y-axis.
    * @param  {Number} width/the distance in y-axis.
    * @param  {OpenSeadragon.ImagingHelper} helper
    *
@@ -994,7 +994,7 @@
    *         A bounding box2
    *
    * @return {Boolean}
-   *         return ture if only if two bounding boxes intersect; otherwise, false.
+   *         return true if only if two bounding boxes intersect; otherwise, false.
    */
   $.isIntersectBbox = function(bbox1, bbox2) {
     return (
@@ -1013,7 +1013,7 @@
    * @param  {Number} v2
    *         value2
    * @return {Boolean}
-   *         return ture if v1 >= v2; otherwise, false.
+   *         return true if v1 >= v2; otherwise, false.
    */
   $.gte = function(v1, v2) {
     return v1 >= v2;
@@ -1030,7 +1030,7 @@
    * @param  {Number} v2
    *         value2
    * @return {Boolean}
-   *         return ture if v1 > v2; otherwise, false.
+   *         return true if v1 > v2; otherwise, false.
    */
   $.gt = function(v1, v2) {
     return v1 > v2;
@@ -1043,7 +1043,7 @@
    * @param {Array} options.range
    *        the range of value for the field
    * @param {Number} [options.threshold=0]
-   *        the treshold value for filtering current field
+   *        the threshold value for filtering current field
    */
   $.Heatmap.Field = function({ name, range, value = range.slice() }, index) {
     // validate
@@ -1106,7 +1106,7 @@
       return this.value;
     },
     /**
-     * set the threshold for the currnet field
+     * set the threshold for the current field
      * @param {Number} num the threshold value
      */
     setThresholds: function(min, max) {

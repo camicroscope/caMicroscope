@@ -69,7 +69,7 @@ CaMessage.prototype.changeTxt = function(txt){
  *	       the style that applies on CaMessage
  *	@param {String} [style.size] font size.
  *	@param {String} [style.color] font color.
- *	@param {String} [style.bgColor] backgroud color.
+ *	@param {String} [style.bgColor] background color.
  *	       
  */
 CaMessage.prototype.changeStyle = function(style){
@@ -87,7 +87,7 @@ CaMessage.prototype.changeStyle = function(style){
  *	       the message style
  *	@param {String} [style.size] font size.
  *	@param {String} [style.color] font color.
- *	@param {String} [style.bgColor] backgroud color. 
+ *	@param {String} [style.bgColor] background color. 
  *	@param {number} time 
  *	       The number of seconds to show the message.
  */

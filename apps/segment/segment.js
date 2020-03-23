@@ -125,6 +125,7 @@ async function initUIcomponents() {
             <th>Input Size</th>
             <th>Size (MB)</th>
             <th>Date Saved</th>
+            <th>Remove Model</th>
           </tr>
           <tbody id="mdata">
           </tbody>
@@ -456,12 +457,15 @@ function camicStopDraw(e) {
       } else {
         segmentModel(args.status);
       }
+      var memory = tf.memory();
+      console.log(memory);
       $UI.segmentPanel.setPosition(box.rect.x,box.rect.y,box.rect.width,box.rect.height);
       $UI.segmentPanel.open(args);
 
       // close
       canvasDraw.clear();
     }
+
 
   } else {
     console.error('Could not get feature collection.')
@@ -682,12 +686,12 @@ async function segmentModel(key) {
 
     model = await tf.loadLayersModel(IDB_URL + key);
     console.log('Model Loaded');
-
+     
+    tf.tidy(()=>{
     // Warmup the model before using real data.
     const warmupResult = model.predict(tf.zeros([1, image_size, image_size, input_channels]));
-    warmupResult.dataSync();
-    warmupResult.dispose();
     self.showProgress("Model loaded...");
+    });
 
     let fullResCvs = self.__fullsrc;
     fullResCvs.height = step;
@@ -722,7 +726,8 @@ async function segmentModel(key) {
 
         // dummy.getContext('2d').drawImage(img, dx, dy);
         let imgData = fullResCvs.getContext('2d').getImageData(0,0,fullResCvs.width,fullResCvs.height);
-
+        let val;
+        tf.tidy(()=>{
         const img = tf.browser.fromPixels(imgData).toFloat();
         let img2;
         if (input_channels == 1) {
@@ -759,12 +764,13 @@ async function segmentModel(key) {
 
 
         let batched = normalized.reshape([1, image_size, image_size, input_channels]);
-        let values = await model.predict(batched).data();
+        let values = model.predict(batched).dataSync();
         values = Array.from(values);
         //scale values
         values = values.map(x => x * 255)
-        let val = new Array();
+        val = new Array();
         while (values.length > 0) val.push(values.splice(0, image_size));
+        });
         await tf.browser.toPixels(val, temp);
         finalRes.getContext('2d').drawImage(temp, dx, dy);    
         
@@ -1080,6 +1086,32 @@ function watershed(inn, out, save=null, thresh) {
   markers.delete();
   M.delete();
 }
+async function deleteModel(name) {
+  if (confirm("Are you sure you want to delete this model?")) {
+      let res = await tf.io.removeModel(IDB_URL + name);
+      console.log(res);
+      let tx = db.transaction("models_store", 'readwrite');
+      let store = tx.objectStore("models_store");
+      let status = false
+      try {
+          store.delete(name);
+          status = true;
+      }
+      catch (err) {
+          alert(err);
+      }
+      finally {
+          if (status) {
+              alert("Deleted", name);
+              showInfo();
+          }
+      }
+  }
+  else {
+      return;
+  }
+}
+
 
 // Shows the uploaded models' details
 async function showInfo() {
@@ -1110,6 +1142,11 @@ async function showInfo() {
           td.innerHTML = +size.toFixed(2);
           td = row.insertCell();
           td.innerHTML = date;
+          td = row.insertCell();
+          td.innerHTML = '<button class="btn btn-primary btn-xs my-xs-btn" id="removeModel" type="button">Remove Model</button>';
+          document.getElementById("removeModel").addEventListener('click', () => {
+            deleteModel(name);
+          });
         }
       }
     }
@@ -1311,4 +1348,3 @@ function downloadCSV(data,filename) {
   link.setAttribute('download', filename);
   link.click();
 }
-

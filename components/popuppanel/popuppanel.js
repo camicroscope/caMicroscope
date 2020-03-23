@@ -19,7 +19,7 @@
  * @param {String} [options.footer.title]
  *                 The text of hint on the action btn.   
  * @param {String} [options.footer.class]
- *                 The css class on teh action btn   
+ *                 The css class on the action btn   
  * @param {String} [options.footer.text]
  *                 The text of action btn
  * @param {Function} [options.footer.callback]
@@ -36,7 +36,7 @@ function PopupPanel(options){
 	
 	
 	/**
-	 * @property {Element} elt The elements that reperesent the container of the compoment.
+	 * @property {Element} elt The elements that represent the container of the component.
 	 */
 	this.elt = null;
 	
@@ -98,7 +98,7 @@ function PopupPanel(options){
 
 /**
  * @private 
- * refresh compoment bases on the setting.
+ * refresh component bases on the setting.
  */
 PopupPanel.prototype.__refresh = function(){
 	empty(this.elt);

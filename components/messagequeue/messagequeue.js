@@ -1,6 +1,6 @@
 // proposal:
 // test case:
-// 1. constructor - postions
+// 1. constructor - positions
 // 2. add - check style, check text
 // 3. addError
 // 4. addWarning
@@ -74,7 +74,7 @@ class MessageQueue{
 	 * @param {String} text 
 	 *        the content of the message
 	 * @param {Number} [time=5000]
-	 *        the time, in milliseconds (thousandths of a second), the timer should delay to destory this messge.
+	 *        the time, in milliseconds (thousandths of a second), the timer should delay to destroy this message.
 	 */
 	addError(text, time = 3000){
 		this.__add(text,'error',time);
@@ -84,7 +84,7 @@ class MessageQueue{
 	 * @param {String} text 
 	 *        the content of the message
 	 * @param {Number} [time=3000]
-	 *        the time, in milliseconds (thousandths of a second), the timer should delay to destory this messge.
+	 *        the time, in milliseconds (thousandths of a second), the timer should delay to destroy this message.
 	 */
 	addWarning(text, time = 1000){
 		this.__add(text,'warning',time);
@@ -95,7 +95,7 @@ class MessageQueue{
 	 * @param {String} text 
 	 *        the content of the message
 	 * @param {Number} [time=1000]
-	 *        the time, in milliseconds (thousandths of a second), the timer should delay to destory this messge.
+	 *        the time, in milliseconds (thousandths of a second), the timer should delay to destroy this message.
 	 */
 	add(text, time = 200){
 		this.__add(text,'info',time);
@@ -108,7 +108,7 @@ class MessageQueue{
 	 * @param  {String} [type=info] 
 	 *         the type of the message. 'info' - information, 'warning' - warning message, 'error' - error message.
 	 * @param  {Number} [time=1000]
-	 *         the time, in milliseconds (thousandths of a second), the timer should delay to destory this messge.
+	 *         the time, in milliseconds (thousandths of a second), the timer should delay to destroy this message.
 	 */
 	__add(text, type='info', time = 1000){
 		const div = MessageQueue.createBullet(text, type);

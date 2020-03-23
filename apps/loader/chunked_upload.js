@@ -107,7 +107,6 @@ function continue_upload(token){
   }
 }
 function finish_upload(){
-
   var reset = true
   for(var i=0; i<document.getElementById("fileIdRow").cells.length-1;i++){
       let token = document.getElementById("token"+i).value

@@ -111,7 +111,7 @@ Spyglass.prototype.setOptions = function(opt){
 
 /**
  * @private
- * __zoom the spyclass's zoom level will change when the target viewer's zoom level is changed
+ * __zoom the spyglass's zoom level will change when the target viewer's zoom level is changed
  * @param  {Event} e
  *         Event
  */

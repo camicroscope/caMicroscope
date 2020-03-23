@@ -21,7 +21,7 @@
  * @param {String} [options.id]
  *        The container id for operation panel. The all panel'instance will be stored into this.elt if the id empty.
  * @param {String} [options.zIndex=600]
- *        The z index of Intance on webpage.
+ *        The z index of Instance on webpage.
  * @param {String} [options.title='']
  *        The title of the select control for changing the data form.
  * @param {Object} [options.action]
@@ -122,7 +122,7 @@ function OperationPanel(options){
 
 /**
  * @private
- * __refresh refresh UI part accoding to this.setting
+ * __refresh refresh UI part according to this.setting
  */
 OperationPanel.prototype.__refresh = function(){
 	empty(this.elt);
@@ -221,7 +221,7 @@ OperationPanel.prototype.__refresh = function(){
 
 /**
  * @private
- * __formChange the action that will change the data form if there are multiple froms.
+ * __formChange the action that will change the data form if there are multiple forms.
  */
 OperationPanel.prototype.__formChange = function(e){
 	this._form_.schema = this.setting.formSchemas[this._select_.value];

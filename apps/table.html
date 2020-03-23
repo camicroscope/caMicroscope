@@ -3,361 +3,421 @@
 
 <head>
 	<meta name="keywords" content="camicroscope, quip" />
-    <meta charset='utf-8'>
-    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
-    <meta name='viewport' content='width=device-width, initial-scale=1, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no'>
-    <!-- common -->
+	<meta charset='utf-8'>
+	<meta http-equiv='X-UA-Compatible' content='IE=edge'>
+	<meta name='viewport'
+		content='width=device-width, initial-scale=1, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no'>
+	<!-- common -->
 	<!-- <link rel='stylesheet' type='text/css' media='all' href='../css/style.css'/> -->
-    <link href="../common/datatables/vanilla-dataTables.css" rel="stylesheet" />
-		<!-- Check If we're logged in ok, otherwise, log in for us -->
-		<script src='../common/authChecker.js'></script>
-		<script>
-			__auth_check(1)
-		</script>
+	<!-- Check If we're logged in ok, otherwise, log in for us -->
+	<script src='../common/authChecker.js'></script>
+	<script>
+		__auth_check(1)
+	</script>
 
-    <script src='../core/Store.js'></script>
-    <script src='../common/util.js'></script>
-    <script src='../common/ajv.js'></script>
-    <script src='../common/datatables/vanilla-dataTables.js'></script>
-    <script src='../components/loading/loading.js'></script>
-    <title>CaMicroscope Data Table</title>
-    <style type="text/css">
-		html, body {
-		    margin: 0;
-		    padding: 0;
-		    height: 100%;
-		    width: 100%;
+	<script src='../core/Store.js'></script>
+	<script src='../common/util.js'></script>
+	<script src='../common/ajv.js'></script>
+	<script src='../components/loading/loading.js'></script>
+	<script src="./loader/loader.js"></script>
+	<script src="./loader/chunked_upload.js"></script>
+	<script>
+		function validateForm(callback) {
+			let x = document.getElementById("slidenameRow")
+			for (var i = 0; i < x.cells.length - 1; i++) {
+				var slide = document.getElementById("slidename" + i)
+				if (slide.value === "") {
+					changeStatus("UPLOAD", "Please enter slide name");
+					return false;
+				}
+			}
+			callback();
 		}
+	</script>
+	<title>CaMicroscope Data Table</title>
 
-		textarea, select, input[type="text"] {
-		    font-family: "Lato", sans-serif;
-		    border: 2px solid #95a5a6;
-		    border-radius: 3px;
-		    padding: 6px 12px;
-		    line-height: 18px;
-		}
-
-		.container {
-			font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+	<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+		integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+		crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+		integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+		crossorigin="anonymous"></script>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+		integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+	<style>
+		html,
+		body {
 			width: 100%;
 			height: 100%;
-			padding: 0;
-			margin: 0;
+			display: flex;
+			flex-direction: column;
 		}
-
-		/* CONTAINERS */
-		.dataTable-wrapper.no-header .dataTable-container {
-			border-top: 1px solid #d9d9d9;
-		}
-
-		.dataTable-wrapper.no-footer .dataTable-container {
-			border-bottom: 1px solid #d9d9d9;
-		}
-
-
-		.dataTable-top > div:first-child,
-		.dataTable-bottom > div:first-child {
-			float: left;
-		}
-
-		.dataTable-top > div:last-child,
-		.dataTable-bottom > div:last-child {
-			float: right;
-		}
-
-		.dataTable-selector {
-			padding: 6px;
-		}
-
-		.dataTable-input {
-			padding: 6px 12px;
-		}
-
-		.dataTable-info {
-			margin: 7px 0;
-		}
-
-		/* PAGER */
-		.dataTable-pagination ul {
-			margin: 0;
-			padding-left: 0;
-		}
-
-		.dataTable-pagination li {
-			list-style: none;
-			float: left;
-		}
-
-		.dataTable-pagination a {
-			border: 1px solid transparent;
-			float: left;
-			margin-left: 2px;
-			padding: 6px 12px;
-			position: relative;
-			text-decoration: none;
-			color: #333;
-		}
-
-		.dataTable-pagination a:hover {
-			background-color: #d9d9d9;
-		}
-
-		.dataTable-pagination .active a,
-		.dataTable-pagination .active a:focus,
-		.dataTable-pagination .active a:hover {
-			background-color: #d9d9d9;
-			cursor: default;
-		}
-
-		.dataTable-pagination .ellipsis a,
-		.dataTable-pagination .disabled a,
-		.dataTable-pagination .disabled a:focus,
-		.dataTable-pagination .disabled a:hover {
-			cursor: not-allowed;
-		}
-
-		.dataTable-pagination .disabled a,
-		.dataTable-pagination .disabled a:focus,
-		.dataTable-pagination .disabled a:hover {
-			cursor: not-allowed;
-			opacity: 0.4;
-		}
-
-		.dataTable-pagination .pager a {
-			font-weight: bold;
-		}
-
-		/* TABLE */
-		.dataTable-table {
-			max-width: 100%;
-			width: 100%;
-			border-spacing: 0;
-			border-collapse: collapse;
-		}
-
-		.dataTable-table > tbody > tr > td,
-		.dataTable-table > tbody > tr > th,
-		.dataTable-table > tfoot > tr > td,
-		.dataTable-table > tfoot > tr > th,
-		.dataTable-table > thead > tr > td,
-		.dataTable-table > thead > tr > th {
-			vertical-align: top;
-			padding: 8px 10px;
-		}
-
-		.dataTable-table > tbody > tr:nth-child(even){background-color: #f2f2f2;}
-
-		.dataTable-table > tbody > tr:hover {background-color: #ddd;}
-
-		.dataTable-table > thead > tr > th {
-			color:white;
-			background-color:#365F9C;
-			vertical-align: bottom;
-			text-align: left;
-		}
-
-		.dataTable-table > tfoot > tr > th {
-			vertical-align: bottom;
-			text-align: left;
-			border-top: 1px solid #d9d9d9;
-		}
-
-		.dataTable-table th {
-			vertical-align: bottom;
-			text-align: left;
-		}
-
-		.dataTable-table th a {
-			text-decoration: none;
-			color: inherit;
-		}
-
-		.dataTable-sorter {
-			display: inline-block;
-			height: 100%;
-			position: relative;
-			width: 100%;
-		}
-
-		.dataTable-sorter::before,
-		.dataTable-sorter::after {
-			content: "";
-			height: 0;
-			width: 0;
-			position: absolute;
-			right: 4px;
-			border-left: 4px solid transparent;
-			border-right: 4px solid transparent;
-			opacity: 0;
-		}
-
-		.dataTable-sorter::before {
-			border-top: 4px solid #000;
-			bottom: 2px;
-		}
-
-		.dataTable-sorter::after {
-			border-bottom: 4px solid #000;
-			border-top: 4px solid transparent;
-			top: -2px;
-		}
-
-		.asc .dataTable-sorter::after,
-		.desc .dataTable-sorter::before {
-			opacity: 0.6;
-		}
-
-		.dataTables-empty {
-			text-align: center;
-		}
-
-		.dataTable-top::after, .dataTable-bottom::after {
-			clear: both;
-			content: " ";
-			display: table;
-		}
-		.btn{
-			color: #fff;
-			background-color: #365f9c;
-			border-color: #365f9c;
-			display: inline-block;
-			text-align: center;
-			white-space: nowrap;
-			vertical-align: middle;
-			-webkit-user-select: none;
-			-moz-user-select: none;
-			-ms-user-select: none;
-			user-select: none;
-			border: 1px solid transparent;
-			font-size: 1rem;
-			text-decoration: none;
-			border-radius: .25rem;
-			-webkit-transition: all .2s ease-in-out;
-			-o-transition: all .2s ease-in-out;
-			transition: all .2s ease-in-out;
-			opacity: 0.8;
-		}
-		.btn:hover {
-			color: #fff;
-			background-color: #365f9c;
-			border-color: #365f9c;
-			opacity: 1;
-		}
-    </style>
+	</style>
+	<link rel="stylesheet" href="./table.css" />
+	<link rel="shortcut icon" type="image/x-icon" href="/apps/landing/favicon.png">
 </head>
+
 <body>
-	<div class='container'>
-		<div>
-			<table id = 'datatables'></table>
+	<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark" style="position: sticky;">
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse" id="navbarCollapse">
+			<ul class="navbar-nav mr-auto">
+				<li class="nav-item link">
+					<a class="nav-link" href="landing/landing.html">Home</a>
+				</li>
+				<li class="nav-item active link">
+					<a class="nav-link" href="table.html">Slides</a>
+				</li>
+			</ul>
+			<ul class="navbar-nav">
+				<li class="nav-item link">
+					<a class="nav-link" target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLScL91LxrpAZjU88GBZP9gmcdgdf8__uNUwhws2lzU6Lr4qNwA/viewform">Feedback</a>
+				</li>
+			</ul>
 		</div>
+	</nav>
+
+	<div class="header text-center text-white bg-info p-4">
+		<h1 class="h1">caMicroscope</h1>
+		<p>Digital pathology image viewer with support for human/machine generated annotations and markups.</p>
+	</div>
+
+	<div class='p-2 bg-light' style="flex-grow: 1;">
+		<div class="container">
+
+			<div>
+				<div class="">
+					<h3 class="text-center h3 mb-0">Available Slides</h3>
+					<div class="search-box float-left form-group form-inline">
+						<select id='entries' class="select form-control mr-2">
+							<option value="10" selected>10 slides/page</option>
+							<option value="20">20 slides/page</option>
+							<option value="40">40 slides/page</option>
+							<option value="50">50 slides/page</option>
+							<option value="100">100 slides/page</option>
+						</select>
+						<input id="search-table" type="text" class="form-control" placeholder="Search&hellip;">
+					</div>
+					<button type="button" class="btn btn-success float-right mb-2"
+						onclick="(()=>{location.reload();return false;})()">Reload</button>
+					<button type="button" class="btn btn-primary float-right mb-2 mr-2" data-toggle="modal"
+						data-target="#upload-dialog">Upload</button>
+				</div>
+				<table id='datatables' class="table table-striped"></table>
+			</div>
+
+			<div class="modal fade" id="upload-dialog" tabindex="-1" role="dialog"
+				aria-labelledby="title-of-dialog" aria-hidden="true">
+				<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="title-of-dialog">Upload New Slide</h5>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body">
+							<div>
+								<div id="upload_form">
+									<div class="alert alert-info" role="alert">
+
+										<h3>Steps for uploading.</h3>
+										<ul>
+											<li>Select the file as Input. The <b>Token</b> field should be filled automatically, and start uploading.</li>
+											<li> Provide the destination filename with extension.</li>
+											<li>Click on the <b>Finish Upload</b> to complete the upload </li>
+											<li>Finally <b>Post</b> it to caMicroscope</li>
+										</ul>
+									</div>
+									<div>
+										<form>
+											<table class="table table-borderless" cellpadding="5" cellspacing="0">
+												<tr>
+													<td align="right"><b>Files</b></td>
+													<td id="fileUploadInput"><input type="file" id="input"
+															onchange="handle_upload(this.files)" multiple></td>
+												</tr>
+												<tr id="fileIdRow">
+													<td align="right"><b>ID</b></td>
+												</tr>
+												<tr id="filenameRow">
+													<td align="right"><b>Filename</b></td>
+												</tr>
+												<tr id="tokenRow">
+													<td align="right"><b>Token</b></td>
+												</tr>
+												<tr id="slidenameRow">
+													<td align="right"><b>Slidename</b></td>
+												</tr>
+											</table>
+
+											<div class="text-center">
+												<button class="btn btn-primary" type="button" id="finish_btn"
+													value="Finish Upload" onclick="validateForm(finish_upload)">Finish
+													Upload</button>
+												<button class="btn btn-secondary" type="button" id="check_btn"
+													value="Check" onclick="CheckBtn()">Check</button>
+												<button class="btn btn-success" type="button" id="post_btn" value="Post"
+													onclick="validateForm(PostBtn)">Post</button>
+											</div>
+
+										</form>
+									</div>
+									<div class="text-center p-2">
+										<div id="load_status" class="p-1"></div>
+										<div id="json_table"></div>
+									</div>
+								</div>
+							</div>
+
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+	<div class="text-center text-white bg-dark p-3" style="position: static;bottom: 0;width: 100%;">
+		<p class="p">Copyright © 2020 caMicroscope</p>
 	</div>
 </body>
 <script>
 	const HeadMapping = [{
-		title:'ID',
-		field:'oid'
-	},{
-		title:'Name',
-		field:'name'
-	},{
-		title:'Study',
-		field:'study'
-	},{
-		title:'Specimen',
-		field:'specimen'
-	},{
-		title:'MPP',
-		field:'mpp'
+		title: 'ID',
+		field: 'oid'
+	}, {
+		title: 'Name',
+		field: 'name'
+	}, {
+		title: 'Study',
+		field: 'study'
+	}, {
+		title: 'Specimen',
+		field: 'specimen'
+	}, {
+		title: 'MPP',
+		field: 'mpp'
 	}];
+	var totaltablepages;
+	var selectedpage;
+	var searching;
 
-	function initialize(){
+	function showTablePage(){
+		$("#datatables tbody tr").filter(function(){
+			$(this).hide();
+		});
+		
+		var trs = "#datatables tbody tr";
+		if(searching){
+			trs = ".searched";
+		}
+		$(trs).slice($("#entries").val()*selectedpage, $("#entries").val()*(selectedpage+1)).filter(function(){
+			$(this).show();
+		});
+		
+		$(`.pages.active`).removeClass("active");
+		$(`.pages:eq(${selectedpage})`).addClass("active");
+	}
+
+	function resetTable(){
+		$(".pages").remove();
+		$("#previous-page").after(function(){
+			if(totaltablepages != 0)
+			return [...Array(totaltablepages).keys()].map((p)=>{
+						return `<li class="page-item pages"><a class="page-link">${p+1}</a></li>`;
+					}).join('');
+		});
+		$(".pages").on('click', function(){
+			selectedpage = parseInt($(this).text())-1;
+			showTablePage();
+		});
+		selectedpage = 0;
+		showTablePage();
+	}
+
+	function initialize() {
 		const params = getUrlVars();
 		const store = new Store('../data/');
 		store.findSlide()
-		.then(function(data) {
-			// filter
-			if(!(Object.keys(params).length === 0 && params.constructor === Object)){
-				const keys = Object.keys(params);
-				const v2 = Object.values(params);
-				data = data.filter((d) => {
-					const v1 = getValues(d,keys);
-					return AND.call(this, v1, v2, eq);
-				});
-			}
-
-			// mapping data
-			const keys = HeadMapping.map(d=>d.field);
-			if (data.map){
-				return data.map((d) => {
-					const rs = [];
-					keys.forEach((key,i) => {
-						if(i==0) rs.push(d['_id']['$oid'])
-						else if(!d[key]) rs.push('')
-						else rs.push(d[key])
+			.then(function (data) {
+				// filter
+				if (!(Object.keys(params).length === 0 && params.constructor === Object)) {
+					const keys = Object.keys(params);
+					const v2 = Object.values(params);
+					data = data.filter((d) => {
+						const v1 = getValues(d, keys);
+						return AND.call(this, v1, v2, eq);
 					});
-					const btn = `<button class="btn" data-id='${rs[0]}' onclick='openView(this)'>Open</button>`
-					rs.push(btn);
-					return rs;
+				}
+
+				// mapping data
+				const keys = HeadMapping.map(d => d.field);
+				if (data.map) {
+					return data.map((d) => {
+						const rs = [];
+						keys.forEach((key, i) => {
+							if (i == 0) rs.push(d['_id']['$oid'])
+							else if (!d[key]) rs.push('')
+							else rs.push(d[key])
+						});
+						const btn = `<button class="btn btn-success" data-id='${rs[0]}' onclick='openView(this)'>Open</button>`
+						rs.push(btn);
+						return rs;
+					});
+				} else {
+					// we have no data to render! Let's add a default button
+					const default_btn = [];
+					keys.forEach((key, i) => {
+						if (i == 0) default_btn.push("NO DATA")
+						else default_btn.push('')
+					});
+					const btn = ``;
+					default_btn.push(btn);
+					return [default_btn];
+				}
+			})
+			.then(function (data) {
+				if (data.length == 0) {
+					var div = document.querySelector('.container');
+					div.textContent = `No Data Found ... x _ x`;
+					div.classList = `text-center p-4`;
+					return;
+				}
+
+				const thead = HeadMapping.map(d => "<th>" + d.title + `<img id='sort1${d.title}' class='float-right sort-btn' width='10px' src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAABmJLR0QA/wD/AP+gvaeTAAAAtklEQVRIie3XsQrCMBSF4T+CoJsddHAo9HH6AD634NbNqTgo6FI6WQdTtJLQpG0CxXsglIRyv0ugCYWZRsUGd8ARKIA0FroFTkCjxxnIYqNRcBsaFO9Dg+Cu6KS4LzoJrnh/Mr5oOwpgaSu+GNqVY6wHTN/Jo4DNz1oJrAzv7oH6a/4Ani7duabCvLVrnyKht1pggQUWWOA/g0vD2o3ulRgkOXDhcx1egYNvkTG/IIl+3nUD88gLIHVaGvUECUcAAAAASUVORK5CYII='/>
+
+				<img id='sort2${d.title}' class='float-right sort-btn' width='10px' src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAABmJLR0QA/wD/AP+gvaeTAAAAs0lEQVRIie3VsQrCMBSF4T/qoFsddBR8Hncf24KTUAquDg4ugoPWwRbSEk2aJhHlHsiQhPCdZAl8KeMBZ+fADLgF6mLNBjgBVT3OwDYFXGqojqvY8NUAV7ye3Tmj8L0EFlhggQX+F3hi2VdAZlgzJQOm2vwCPDx7kWP+Al1G0SnSyqenVsDdt3Ed7xsvgD39b3sE1kMa++BB0L54UNQVj4La8KjoOzwJ2mQJ7IADsEqF/nae93FcRiryrh8AAAAASUVORK5CYII="/>
+				</th>`);
+
+				thead.push("<th></th>");
+
+				tbody = data.map((d) => {
+					return "<tr>" + d.map((a) => "<td>" + a + "</td>").reduce((a, b) => a + b) + "</tr>";
 				});
-			} else {
-				// we have no data to render! Let's add a default button
-				const default_btn = [];
-				keys.forEach((key,i) => {
-					if(i==0) default_btn.push("NO DATA")
-					else default_btn.push('')
+				totaltablepages = Math.ceil(data.length/$("#entries").val());
+				selectedpage = 0;
+				$("#search-table").val("");
+				searching = false;
+
+				document.getElementById("datatables").innerHTML = `
+				<thead>${thead.reduce((a, b) => a + b)}</thead>
+				<tbody>${tbody.reduce((a, b) => a + b)}</tbody>
+				<tfoot><tr><td colspan='6'>
+					<nav aria-label="Slides Pages" class="">
+						<ul class="pagination justify-content-center">
+							<li id="previous-page" class="page-item"><a class="page-link">Previous</a></li>
+							${[...Array(totaltablepages).keys()].map((p)=>{
+								return `<li class="page-item pages"><a class="page-link">${p+1}</a></li>`;
+							}).join('')}
+							<li id="next-page" class="page-item"><a class="page-link">Next</a></li>
+						</ul>
+					</nav>
+				</td></tr></tfoot>
+			`;
+
+			showTablePage();
+
+			$("#search-table").on("keyup", function() {
+				var value = String($(this).val()).toLowerCase();
+				$("#datatables tbody tr").filter(function() {
+					var t = String($(this).text()).toLowerCase().indexOf(value);
+					if(t > -1){
+						$(this).addClass("searched");
+					}else{
+						$(this).removeClass("searched");
+					}
 				});
-				const btn = `<button class="btn" onclick='alert("No Data")'>Open</button>`
-				default_btn.push(btn);
-				return [default_btn];
-			}
-		})
-		.then(function(data){
-			if(data.length==0){
-				var div = document.querySelector('.container');
-				div.textContent = `No Data Found ... x _ x`;
-				return;
-			}
-			const head = HeadMapping.map(d=>d.title);
-			head.push("");
-			const obj = {
-				headings:head ,
-				data:data
-			};
-			dataTableInstance = new DataTable("#datatables",{
-				perPage:50,
-				perPageSelect:[25,50,100],
-				data:obj
+				if(value == ""){
+					searching = false;
+					totaltablepages = Math.ceil(data.length/$("#entries").val());
+				}else{
+					searching = true;
+					totaltablepages = Math.ceil($(".searched").length/$("#entries").val());
+				}
+				resetTable();
 			});
+
+			$(".sort-btn").on("click", function() {
+				var value = $(this)[0].id.substr(5);
+				var upordown = parseInt($(this)[0].id[4]);
+				var index = HeadMapping.findIndex((a)=> a.title.toLowerCase() == value.toLowerCase());
+				
+				var trs = "#datatables tbody tr";
+				if(searching){
+					trs = ".searched";
+				}
+
+				$(trs).sort(function(a, b) {
+					let at=$(a).children('td').get(index).textContent.toLowerCase();
+					let bt=$(b).children('td').get(index).textContent.toLowerCase();
+					return upordown == 1 ? at > bt: at < bt;
+				}).appendTo("#datatables > tbody");
+				selectedpage = 0;
+				showTablePage();
+			});
+
+			$(".pages").on('click', function(){
+				selectedpage = parseInt($(this).text())-1;
+				showTablePage();
+			});
+
+			$("#previous-page").on('click', function(){
+				if(selectedpage > 0){
+					selectedpage--;
+					showTablePage();
+				}
+			});
+
+			$("#next-page").on('click', function(){
+				if(selectedpage < totaltablepages-1){
+					selectedpage++;
+					showTablePage();
+				}
+			})
+
+			$("#entries").change(function(){
+				if(!searching) totaltablepages = Math.ceil(data.length/$("#entries").val());
+				else totaltablepages = Math.ceil($(".searched").length/$("#entries").val());
+				resetTable();
+			});
+
 		});
 	}
 
-	function AND(p, t, func){
-	    return p.reduce((acc,v,i)=>{
-	        return acc&&func.call(this, v, t[i]);
-	    },true);
+	function AND(p, t, func) {
+		return p.reduce((acc, v, i) => {
+			return acc && func.call(this, v, t[i]);
+		}, true);
 	}
 
-	function eq(v1, v2){
+	function eq(v1, v2) {
 		return v1 == v2;
 	}
 
-	function getValues(d, keys){
+	function getValues(d, keys) {
 		const rs = [];
-		keys.forEach( key=>{
+		keys.forEach(key => {
 			rs.push(d[key]);
 		});
 		return rs;
 	}
 
-	function openView(e){
+	function openView(e) {
 		const oid = e.dataset.id;
-		if(oid){
+		if (oid) {
 			window.location.href = `./viewer/viewer.html?slideId=${oid}`;
-		}else{
+		} else {
 			alert('No Data Id');
 		}
 	}
 
 	document.addEventListener('DOMContentLoaded', initialize);
 </script>
+
 </html>

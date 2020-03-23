@@ -3,7 +3,7 @@
 // customize position - top, bottom, right, left.
 // customize width/height based on position.
 // test:
-// construtor:
+// constructor:
 // width, isOpen,
 // 
 // method:
@@ -36,12 +36,12 @@ function SideMenu(options){
 	this.elt = null;
 	
 	/**
-     * @property {Element} _close_handler The elements that reperesent the close handler.
+     * @property {Element} _close_handler The elements that represent the close handler.
      */
 	this._close_handler = null; // click to close panel
 	
 	/**
-     * @property {Element} _close_handler The elements that reperesent the content of the menu.
+     * @property {Element} _close_handler The elements that represent the content of the menu.
      */
 	this._content = null;
 

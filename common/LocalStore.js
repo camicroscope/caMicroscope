@@ -814,6 +814,3 @@ if (!template_data){
   template_data.push(defaultTemplate)
   window.localStorage.setItem("template", JSON.stringify(template_data))
 }
-
-
-export default init_LocalStore
