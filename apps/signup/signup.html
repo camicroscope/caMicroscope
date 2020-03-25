@@ -1,116 +1,114 @@
 <!DOCTYPE html>
 <html>
 
-  <head>
-    <meta name="keywords" content="camicroscope, quip" />
-    <meta charset='utf-8'>
-    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
-    <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no'>
-    <title>CaMicroscope - User Signup</title>
+<head>
+  <meta name="keywords" content="camicroscope, quip" />
+  <meta charset='utf-8'>
+  <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+  <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no'>
+  <title>CaMicroscope - User Signup</title>
 
-    <link rel='stylesheet' type='text/css' media='all' href='../../css/normalize.css'/>
-    <link rel='stylesheet' type='text/css' media='all' href='signup.css'/>
-  </head>
-  <script>
-    var userSignupUrl = "../../data/Auth/post"
-    function addUser(){
-      var email = document.getElementById("name").value
-      var collections = document.getElementById("collections").value
-      var attr = document.querySelector('input[name="attr"]:checked').value
-      var attr_doc = []
-      if (attr == "admin"){
-        attr_doc = ["write", "admin"]
+  <link rel='stylesheet' type='text/css' media='all' href='../../css/normalize.css' />
+  <link rel='stylesheet' type='text/css' media='all' href='signup.css' />
+</head>
+<script>
+  var userSignupUrl = "../../data/Auth/post"
+  function addUser() {
+    var email = document.getElementById("name").value
+    var collections = document.getElementById("collections").value
+    var attr = document.querySelector('input[name="attr"]:checked').value
+    var attr_doc = []
+    if (attr == "admin") {
+      attr_doc = ["write", "admin"]
+    }
+    if (attr == "editor") {
+      attr_doc = ["write"]
+    }
+    var doc = { name: email, attrs: attr_doc, accessCollection: collections }
+    fetch(userSignupUrl, {
+      method: 'POST',
+      mode: 'cors', // no-cors, cors, *same-origin
+      cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+      credentials: 'same-origin', // include, *same-origin, omit
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(doc)
+    }).then(x => {
+      if (x.status >= 400) {
+        throw "failed to sign up user"
       }
-      if (attr == "editor"){
-        attr_doc = ["write"]
-      }
-      var doc = {name: email, attrs: attr_doc, accessCollection:collections}
-      fetch(userSignupUrl, {
-          method: 'POST',
-          mode: 'cors', // no-cors, cors, *same-origin
-          cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-          credentials: 'same-origin', // include, *same-origin, omit
-          headers: {
-              'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(doc)
-      }).then(x=>{
-        if (x.status>=400){
-          throw "failed to sign up user"
-        }
-        x.json()
-      }).then(x=>{
-        window.alert("success")
-        console.log(x)
-      }).catch(e=>{
-        window.alert("error!")
-        console.error(e)
+      x.json()
+    }).then(x => {
+      window.alert("success")
+      console.log(x)
+    }).catch(e => {
+      window.alert("error!")
+      console.error(e)
     })
+  }
+</script>
+
+<body>
+
+  <div id="signupForm" class="login-panel">
+    <H1>User Signup</H1>
+
+    <div class="txtb">
+      <input id="name" type="text" onblur="validateEmail(this);" placeholder="Email">
+    </div>
+    <div class="txtb">
+      <input id="collections" type="text" placeholder="['list','of','collections']">
+    </div>
+
+
+    <!-- User Type selection -->
+    <input type="radio" id="attrchoice1" name="attr" value="viewer" checked>
+    <label for="attrchoice1">Viewer</label><br>
+
+    <input type="radio" id="attrchoice2" name="attr" value="editor">
+    <label for="attrchoice2">Editor</label><br>
+
+    <input type="radio" id="attrchoice3" name="attr" value="admin">
+    <label for="attrchoice3">Admin (and Editor)</label>
+
+    <!-- submit btn -->
+    <input id="sub" class="sub-btn" onclick="addUser()" type="submit">
+
+    <div class="bottom-text">
+      Already have an account?
+    </div>
+
+    <div class="login-tips">If you reach this page, it's likely that you tried to log into this instance but lack
+      access.
+      Email the administrator if you want to be added. If you are an admin, you should be able to use this form.
+    </div>
+  </div>
+  <script type="text/javascript">
+    const input_name = document.querySelector('#name');
+    input_name.addEventListener('focus', () => {
+      input_name.classList.add('focus');
+    });
+    const input_collection = document.querySelector('#collections');
+    input_collection.addEventListener('focus', () => {
+      input_collection.classList.add('focus');
+    });
+    input_name.addEventListener('blur', () => {
+      if (input_name.value == "") input_name.classList.remove('focus');
+    });
+
+    function validateEmail(emailField) {
+      var reg = /\S+@\S+\.\S+/;
+
+      if (reg.test(emailField.value) == false) {
+        alert('Invalid Email Address');
+        return false;
+      }
+
+      return true;
+
     }
   </script>
+</body>
 
-  <body>
-
-    <div id="signupForm" class="login-panel">
-      <H1>User Signup</H1>
-
-      <div class="txtb">
-        <input type="text" onblur="validateEmail(this);" placeholder="Email" >
-      </div>
-      <div class="txtb">
-        <input id="collections" type="text" placeholder="['list','of','collections']">
-      </div>
-
-      
-      <!-- User Type selection -->
-      <input type="radio" id="attrchoice1"
-        name="attr" value="viewer" checked>
-      <label for="attrchoice1">Viewer</label><br>
-
-      <input type="radio" id="attrchoice2"
-        name="attr" value="editor">
-      <label for="attrchoice2">Editor</label><br>
-
-      <input type="radio" id="attrchoice3"
-        name="attr" value="admin">
-      <label for="attrchoice3">Admin (and Editor)</label>
-      
-        <!-- submit btn -->
-      <input id="sub" class="sub-btn" onclick="addUser()" type="submit">
-
-      <div class="bottom-text">
-        Already have an account?
-      </div>
-
-      <div class="login-tips">If you reach this page, it's likely that you tried to log into this instance but lack access.
-      Email the administrator if you want to be added. If you are an admin, you should be able to use this form.
-      </div>
-    </div>
-    <script type="text/javascript">
-      const input_name = document.querySelector('#name');
-      input_name.addEventListener('focus',()=>{
-        input_name.classList.add('focus');
-      });
-      const input_collection= document.querySelector('#collections');
-      input_collection.addEventListener('focus',()=>{
-        input_collection.classList.add('focus');
-      });
-      input_name.addEventListener('blur',()=>{
-        if(input_name.value=="") input_name.classList.remove('focus');
-      });
-
-      function validateEmail(emailField){
-        var reg = /\S+@\S+\.\S+/;
-
-        if (reg.test(emailField.value) == false) 
-        {
-            alert('Invalid Email Address');
-            return false;
-        }
-
-        return true;
-
-      }
-    </script>
-  </body>
 </html>
