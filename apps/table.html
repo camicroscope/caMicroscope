@@ -104,83 +104,83 @@
 				<table id='datatables' class="table table-striped"></table>
 			</div>
 		
-			<div class="modal fade" id="upload-dialog" tabindex="-1" role="dialog"
-				aria-labelledby="title-of-dialog" aria-hidden="true">
-				<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
-					<div class="modal-content">
-						<div class="modal-header">
-							<h5 class="modal-title" id="title-of-dialog">Upload New Slide</h5>
-							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-								<span aria-hidden="true">&times;</span>
-							</button>
-						</div>
-						<div class="modal-body">
-							<div>
-								<div id="upload_form">
-									<div class="alert alert-info" role="alert">
-
-										<h3>Steps for uploading.</h3>
-										<ul>
-											<li>Select the file as Input. The <b>Token</b> field should be filled automatically, and start uploading.</li>
-											<li> Provide the destination filename with extension.</li>
-											<li>Click on the <b>Finish Upload</b> to complete the upload </li>
-											<li>Finally <b>Post</b> it to caMicroscope</li>
-										</ul>
-									</div>
-									<div>
-										<form>
-											<table class="table table-borderless" cellpadding="5" cellspacing="0">
-												<tr>
-													<td align="right"><b>Files</b></td>
-													<td id="fileUploadInput"><input type="file" id="input"
-															onchange="handle_upload(this.files)" multiple></td>
-												</tr>
-												<tr id="fileIdRow">
-													<td align="right"><b>ID</b></td>
-												</tr>
-												<tr id="filenameRow">
-													<td align="right"><b>Filename</b></td>
-												</tr>
-												<tr id="tokenRow">
-													<td align="right"><b>Token</b></td>
-												</tr>
-												<tr id="slidenameRow">
-													<td align="right"><b>Slidename</b></td>
-												</tr>
-											</table>
-
-											<div class="text-center">
-												<button class="btn btn-primary" type="button" id="finish_btn"
-													value="Finish Upload" onclick="validateForm(finish_upload)">Finish
-													Upload</button>
-												<button class="btn btn-secondary" type="button" id="check_btn"
-													value="Check" onclick="CheckBtn()">Check</button>
-												<button class="btn btn-success" type="button" id="post_btn" value="Post"
-													onclick="validateForm(PostBtn)">Post</button>
-											</div>
-
-										</form>
-									</div>
-									<div class="text-center p-2">
-										<div id="load_status" class="p-1"></div>
-										<div id="json_table"></div>
-									</div>
-								</div>
-							</div>
-
-						</div>
-						<div class="modal-footer">
-							<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-						</div>
-					</div>
-				</div>
-			</div>
-
+			
 		</div>
 		<button type="button" class="btn btn-success float-right mb-2"
 			onclick="(()=>{location.reload();return false;})()">Reload</button>
 		<button type="button" class="btn btn-primary float-right mb-2 mr-2" data-toggle="modal"
 			data-target="#upload-dialog">Upload</button>
+			<div class="modal fade" id="upload-dialog" tabindex="-1" role="dialog"
+			aria-labelledby="title-of-dialog" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="title-of-dialog">Upload New Slide</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<div>
+							<div id="upload_form">
+								<div class="alert alert-info" role="alert">
+
+									<h3>Steps for uploading.</h3>
+									<ul>
+										<li>Select the file as Input. The <b>Token</b> field should be filled automatically, and start uploading.</li>
+										<li> Provide the destination filename with extension.</li>
+										<li>Click on the <b>Finish Upload</b> to complete the upload </li>
+										<li>Finally <b>Post</b> it to caMicroscope</li>
+									</ul>
+								</div>
+								<div>
+									<form>
+										<table class="table table-borderless" cellpadding="5" cellspacing="0">
+											<tr>
+												<td align="right"><b>Files</b></td>
+												<td id="fileUploadInput"><input type="file" id="input"
+														onchange="handle_upload(this.files)" multiple></td>
+											</tr>
+											<tr id="fileIdRow">
+												<td align="right"><b>ID</b></td>
+											</tr>
+											<tr id="filenameRow">
+												<td align="right"><b>Filename</b></td>
+											</tr>
+											<tr id="tokenRow">
+												<td align="right"><b>Token</b></td>
+											</tr>
+											<tr id="slidenameRow">
+												<td align="right"><b>Slidename</b></td>
+											</tr>
+										</table>
+
+										<div class="text-center">
+											<button class="btn btn-primary" type="button" id="finish_btn"
+												value="Finish Upload" onclick="validateForm(finish_upload)">Finish
+												Upload</button>
+											<button class="btn btn-secondary" type="button" id="check_btn"
+												value="Check" onclick="CheckBtn()">Check</button>
+											<button class="btn btn-success" type="button" id="post_btn" value="Post"
+												onclick="validateForm(PostBtn)">Post</button>
+										</div>
+
+									</form>
+								</div>
+								<div class="text-center p-2">
+									<div id="load_status" class="p-1"></div>
+									<div id="json_table"></div>
+								</div>
+							</div>
+						</div>
+
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
 
 	</div>
 
