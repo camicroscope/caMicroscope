@@ -4,7 +4,7 @@
 function SegmentPanel(viewer){
 
 	const temp = `
-		<div id='close' class='material-icons settings'>close</div>
+		<div id='close' class='material-icons settings' title='Close Panel'>close</div>
 		<div id='save' class='material-icons settings' title='Save ROI Image'>save</div>
 		<div id='savecsv' class='material-icons settings' title='Save ROI CSV File'>list</div>
 		<div id='thresh' class='material-icons settings' title='Open Segmentation Settings'>all_out</div>

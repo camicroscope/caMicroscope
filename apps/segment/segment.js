@@ -1045,6 +1045,7 @@ function watershed(inn, out, save=null, thresh) {
   }
   console.log(segcount);
   console.log("Done Drawing Contours");
+  window.segcnt = segcount  // Will be used later in downloadCSV function 
 
   // Update the count
   let clabel = document.getElementById('segcount');
@@ -1292,6 +1293,11 @@ function download(canvas, filename) {
 
 // Build a csv of the polygons and associated metadata
 function buildAndDownloadCSV(contours,fname) {
+  if(segcnt === 0)
+  {
+    alert("Nothing to download");
+    return;
+  }
   let data = '';
   let tmp = new cv.Mat();
   const self = $UI.segmentPanel;
