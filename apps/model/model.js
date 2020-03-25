@@ -7,6 +7,9 @@ window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndex
 // id(autoinc), name, location(name+id), classes
 var request, db;
 
+// initialize tfvis
+tfvis.visor();
+
 // tensorflowjs creates its own IndexedDB on saving a model.
 (async function(callback) {
     const model = tf.sequential();
@@ -472,6 +475,7 @@ function runPredict(key) {
 
     model = await tf.loadLayersModel(IDB_URL + key);
     self.showProgress("Model loaded...");
+    tfvis.show.modelSummary({name: 'Model Summary', tab: 'Model Inspection'}, model);
 
     // Warmup the model before using real data.
     tf.tidy(()=>{
