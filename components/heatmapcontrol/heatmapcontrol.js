@@ -119,7 +119,7 @@ HeatmapControl.prototype.__refresh = function(){
 	});
 	
 	const legendIntervalsInput = colorsLegendPanel.querySelector("#legendIntervals");
-	//Selecting default value of intervals
+	//Setting default value of intervals
 	legendIntervalsInput.value = 5;
 	const noOfIntervals = legendIntervalsInput.value;
 
@@ -164,14 +164,14 @@ HeatmapControl.prototype._modeChanged = function(flag = true){
 	if(flag)this.__change.call(this);
 }
 //To validate and update heatmap color in binal mode
-HeatmapControl.prototype._colorChanged = function(flag = true){
+HeatmapControl.prototype._colorChanged = function(){
 	const color = this.elt.querySelector("#heatMapColor").value
 	if(cssHexRegExp.test(color)){
 		this.__change.call(this);
 	}
 }
 //To validate and update heatmap colors in gradient mode
-HeatmapControl.prototype._legendColorsChanged = function(flag = true){
+HeatmapControl.prototype._legendColorsChanged = function(){
 	let valid = true;
 	const colorLegendPanel = this.elt.querySelector('.colors-legend-panel');
 	$(colorLegendPanel.querySelector('.legends'))
@@ -344,5 +344,5 @@ function getColors(container){
 	$(container).children().each(function (index,colorDiv) {
 		rs.push(colorDiv.querySelector('input').value)
 	});
-	return rs.reverse();
+	return rs;
 }
