@@ -3,7 +3,8 @@ language: node_js
 node_js:
    - "12"
 install:
-    - npm install
+    - npm ci
+    - npm install jsdom
     - npm install -g http-server
     - npm install -g mocha
 
