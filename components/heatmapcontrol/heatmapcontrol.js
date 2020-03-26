@@ -3,6 +3,7 @@
 
 //Default Color List for gradient view
 const defaultColorList = ["#2b83ba", "#abdda4", "#ffffbf", "#fdae61", "#d7191c"];
+//Regular Expression for testing valid color values
 const cssHexRegExp = new RegExp('^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$');
 function HeatmapControl(options){
 	this.name = 'HeatmapControl';
@@ -102,7 +103,7 @@ HeatmapControl.prototype.__refresh = function(){
 	},this);
 
 	const colorsLegendPanel = this.elt.querySelector('.colors-legend-panel');
-	//min max logic
+	//min max logic for valid number of intervals
 	$(colorsLegendPanel).find('#legendIntervals').on('change', function(e){
 		var min=parseFloat($(this).attr('min'));
 		var max=parseFloat($(this).attr('max'));
@@ -162,14 +163,14 @@ HeatmapControl.prototype._modeChanged = function(flag = true){
 	}
 	if(flag)this.__change.call(this);
 }
-
+//To validate and update heatmap color in binal mode
 HeatmapControl.prototype._colorChanged = function(flag = true){
 	const color = this.elt.querySelector("#heatMapColor").value
 	if(cssHexRegExp.test(color)){
 		this.__change.call(this);
 	}
 }
-
+//To validate and update heatmap colors in gradient mode
 HeatmapControl.prototype._legendColorsChanged = function(flag = true){
 	let valid = true;
 	const colorLegendPanel = this.elt.querySelector('.colors-legend-panel');
@@ -315,7 +316,7 @@ function createOpacities(container, field, changeFunc){
 	container.appendChild(div);
 	return rs;
 }
-
+//Create HTML Color inputs for given noOfIntervals
 function createIntervalInputs(container, noOfIntervals, changeFunc){
 	//Empty the container
 	while ( container.firstChild ) container.removeChild( container.firstChild );
@@ -337,7 +338,7 @@ function createIntervalInputs(container, noOfIntervals, changeFunc){
 		container.appendChild(div);
 	}
 }
-
+// returns selected colors for intervals
 function getColors(container){
 	const rs = [];
 	$(container).children().each(function (index,colorDiv) {

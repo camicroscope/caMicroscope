@@ -806,6 +806,8 @@
     // get list of colors
     //
     // const colorList = interpolateColors(hexToRgb(colors[0]),hexToRgb(colors[1]),steps);
+
+    // Default preset of colors
     const defaultColorList = ["#2b83ba", "#abdda4", "#ffffbf", "#fdae61", "#d7191c"];
 
     if(colors.length + 1 != steps){

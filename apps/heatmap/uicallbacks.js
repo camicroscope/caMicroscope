@@ -171,7 +171,7 @@ function closeSecondaryViewer(){
 function goHome(data){
 	redirect($D.pages.home,`GO Home Page`, 0);
 }
-
+// function to update and repaint the heatmap
 function heatmapSettingChanged(data){
 	switch (data.mode) {
 		case 'binal':
