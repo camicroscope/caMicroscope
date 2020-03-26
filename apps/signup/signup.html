@@ -52,6 +52,7 @@
   <body>
 
     <div id="signupForm" class="login-panel">
+      <p id="error" class="error-message"></p>
       <H1>User Signup</H1>
 
       <div class="txtb">
@@ -104,10 +105,13 @@
 
         if (reg.test(emailField.value) == false) 
         {
-            alert('Invalid Email Address');
+            error = "*Invalid Email Address"
+            document.getElementById("error").innerHTML = error;
+            document.getElementById("error").style.display = "block"
             return false;
         }
-
+        document.getElementById("error").innerHTML = "";
+        document.getElementById("error").style.display = "none"
         return true;
 
       }

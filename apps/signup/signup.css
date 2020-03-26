@@ -98,3 +98,8 @@ input[type=radio]:checked+label {
 	top:-50px;
 	left: calc(50% - 50px);*/
 }
+
+.error-message {
+	color: red;
+ }
+ 
