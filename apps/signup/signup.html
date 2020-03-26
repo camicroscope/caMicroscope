@@ -100,7 +100,7 @@
       });
 
       function validateEmail(emailField){
-        var reg = /\S+@\S+\.\S+/;
+        var reg = /^[^\s@!#$%&*();]+@[^\s@!#$%&*();]+\.[^\s@!#$%&*();]+$/;
 
         if (reg.test(emailField.value) == false) 
         {
