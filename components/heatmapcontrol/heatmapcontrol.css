@@ -8,14 +8,18 @@
     color: #365f9c;
 }
 
-.hmc-container > label,.hmc-container .mode-panel > label{
+.hmc-container > label,.hmc-container .mode-panel > label, .color-panel > label, .colors-legend-panel > label{
 	font-size: 14px;
 }
-.mode-panel {
+.mode-panel, .color-panel, .colors-legend-panel, .colors-legend-panel > .legends  {
 	margin-top:.5rem;
 	margin-bottom:.5rem;
 }
 
+.color-input-container {
+    margin-top:.5rem;
+	margin-bottom:.5rem;
+}
 .fields-panel, .opacity-panel {
 	padding:10px;
 }

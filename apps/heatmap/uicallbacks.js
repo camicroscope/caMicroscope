@@ -178,10 +178,16 @@ function heatmapSettingChanged(data){
 				data.fields.forEach( f=> {
 					$CAMIC.viewer.heatmap.setThresholdsByName(f.name,f.range[0],f.range[1],false);
 				});
+				if(data.color){
+					$CAMIC.viewer.heatmap.setColor(data.color)
+				}
 			break;
 		case 'gradient':
 			$CAMIC.viewer.heatmap.setThresholdsByName(data.field.name,data.field.range[0],data.field.range[1],false);
 			$CAMIC.viewer.heatmap.setCurrentField(data.field.name,false);
+			if(data.colors){
+				$CAMIC.viewer.heatmap.setColors(data.colors)
+			}
 			break;
 		default:
 			// statements_def

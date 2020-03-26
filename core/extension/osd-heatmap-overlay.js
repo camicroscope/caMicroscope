@@ -1,4 +1,7 @@
 //osd-heatmap-overlay.js
+
+//Default Color List for gradient view
+// const defaultColorList = ["#2b83ba", "#abdda4", "#ffffbf", "#fdae61", "#d7191c"];
 /**
  * @constructor
  * OpenSeadragon heatmap Plugin 0.0.1.
@@ -482,6 +485,7 @@
     setColors: function(colors) {
       if (!Array.isArray(colors) || colors.length < 2) return;
       this._colors = colors;
+      this._steps = colors.length + 1;
       // refresh view/heatmap/ui if the heatmap is in 'gradient' mode
       if (this.mode == "gradient") {
         this.drawOnCanvas();
@@ -804,26 +808,31 @@
     // get list of colors
     //
     // const colorList = interpolateColors(hexToRgb(colors[0]),hexToRgb(colors[1]),steps);
+    if(colors.length + 1 != steps){
+      console.log(`Number of colors ${colors.length + 1 } required for steps ${steps} are not right. Switch to default colors`)
+      colors = defaultColorList;
+      steps = defaultColorList.length + 1;
+    }
 
-    const colorList = ["#2b83ba", "#abdda4", "#ffffbf", "#fdae61", "#d7191c"];
+
     //const colorList = ['#f2f0f7','#cbc9e2','#9e9ac8','#756bb1','#54278f'];
     //const colorList = ['#eff3ff','#bdd7e7','#6baed6','#3182bd','#08519c'];
     //const colorList = ['#fee5d9','#fcae91','#fb6a4a','#de2d26','#a50f15'];
     // const colorList = ['#feedde','#fdbe85','#fd8d3c','#e6550d','#a63603'];
     //const colorList = ['#edf8e9','#bae4b3','#74c476','#31a354','#006d2c'];
-    steps = 5;
+     
     // get a boundary list of intervals
     const threstholds = field.value;
     const boundaries = interpolateNums(
       threstholds[0],
       threstholds[1],
-      steps + 1
+      steps
     );
     const rs = [];
-    for (let i = 0; i < colorList.length; i++) {
+    for (let i = 0; i < colors.length; i++) {
       // create a new interval
       rs.push({
-        color: colorList[i],
+        color: colors[i],
         range: [boundaries[i], boundaries[i + 1]],
         data: []
       });
