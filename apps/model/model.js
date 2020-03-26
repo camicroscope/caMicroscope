@@ -7,8 +7,6 @@ window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndex
 // id(autoinc), name, location(name+id), classes
 var request, db;
 
-// initialize tfvis
-tfvis.visor();
 
 // tensorflowjs creates its own IndexedDB on saving a model.
 (async function(callback) {
@@ -246,8 +244,16 @@ async function initUIcomponents() {
         type: 'btn',
         callback: () => {
           window.open('https://goo.gl/forms/mgyhx4ADH0UuEQJ53', '_blank').focus()
-        }
-      }
+        },
+      },
+      {
+        icon: 'info',
+        title: 'Model Summary',
+        value: 'summary',
+        type: 'btn',
+        callback: () => {
+          tfvis.visor().toggle()
+        }}
     ]
   });
 }
