@@ -13,6 +13,7 @@
     "jsdom": "^16.2.1",
     "lodash": "^4.17.15",
     "mocha": "^7.1.0",
+    "mocha-jsdom": "^2.0.0",
     "node-fetch": "^2.2.0",
     "parceljs": "0.0.1"
   }
