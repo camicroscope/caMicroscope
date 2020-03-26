@@ -64,6 +64,7 @@
    <!-- opencv.js -->
    <script type='text/javascript' src='./opencv.js'></script>
    <script type='text/javascript' src='./tf.min.js'></script>
+   <script type='text/javascript' src='./tfjs-vis.min.js'></script>
    <!--  common js START -->
    <!-- util.js -->
   <script type='text/javascript' src='../../common/util.js'></script>
@@ -147,7 +148,6 @@
   <script src='../viewer/dataloaders.js'></script>
   <script src='../viewer/init.js'></script>
   -->
-  <script src='segment.js'></script>
   <style type="text/css">
     input {
     /* required to properly style form
@@ -414,6 +414,9 @@
     #upload_panel .modalbox-content{
       width: 30%;
     }
+    body{
+      color: black;
+    }
   </style>
 
 </head>
@@ -424,6 +427,8 @@
 <div id="model_info"></div>
 <div id="upload_panel"></div>
 </body>
+
+<script src='segment.js'></script>
 <script type="text/javascript">
     if(detectIE()){
       createWarningText('You are using an <strong>IE/Edge</strong> browser that may be lead to erratic behavior on caMicroscope. Please switch to <a href="https://www.google.com/chrome/">Chrome</a>, <a href="https://www.mozilla.org/en-US/firefox/new/">Firefox</a> or <a href="https://www.apple.com/safari/">Safari</a> browser to improve your experience.');

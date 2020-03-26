@@ -247,7 +247,7 @@ async function initUIcomponents() {
         },
       },
       {
-        icon: 'info',
+        icon: 'subject',
         title: 'Model Summary',
         value: 'summary',
         type: 'btn',
