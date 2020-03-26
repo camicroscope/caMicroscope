@@ -2,7 +2,7 @@
 //
 
 //Default Color List for gradient view
-const defaultColorList = ["#2b83ba", "#abdda4", "#ffffbf", "#fdae61", "#d7191c"];
+const defaultColorList = ["#EAF2F8", "#D4E6F1", "#A9CCE3", "#7FB3D5", "#5499C7", "#2980B9", "#2471A3", "#1F618D", "#1A5276", "#154360"];
 //Regular Expression for testing valid color values
 const cssHexRegExp = new RegExp('^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$');
 function HeatmapControl(options){
@@ -73,7 +73,7 @@ HeatmapControl.prototype.__refresh = function(){
 		<label> Color <input id='heatMapColor' type='color' value='#1034A6' /></label>
 	</div>
 	<div class='colors-legend-panel'>
-		<label># of Intervals <input id='legendIntervals' type='number' class='range-enforced' value='5' min='2' max='5'/></label> <div class="warning" style="display: none;"></div>
+		<label># of Intervals <input id='legendIntervals' type='number' class='range-enforced' value='5' min='2' max='10'/></label> <div class="warning" style="display: none;"></div>
 		<div class='legends'>
 		</div>
 	</div>
@@ -329,7 +329,7 @@ function createIntervalInputs(container, noOfIntervals, changeFunc){
 		label.className = 'color-input'
 		const color = document.createElement('input');
 		color.type = 'color';
-		color.value = defaultColorList[i - 1];
+		color.value = defaultColorList[getGradientColorIndex(i, noOfIntervals)];
 		color.oninput = changeFunc
 		//Input for color legends.
 		div.appendChild(label);
@@ -345,4 +345,8 @@ function getColors(container){
 		rs.push(colorDiv.querySelector('input').value)
 	});
 	return rs;
+}
+// returns index of color in defaultColorList for given position and no of intervals  
+function getGradientColorIndex(position, noOfIntervals){
+	return parseInt((position * (10 / noOfIntervals)) - 1) 
 }
