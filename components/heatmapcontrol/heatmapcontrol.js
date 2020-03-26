@@ -127,7 +127,7 @@ HeatmapControl.prototype.__refresh = function(){
 	createIntervalInputs(legendsContainer, noOfIntervals, this._legendColorsChanged.bind(this) );
 	legendIntervalsInput.addEventListener('change',	()=>{
 		createIntervalInputs(legendsContainer, legendIntervalsInput.value, this._legendColorsChanged.bind(this)) 
-		this._colorChanged();
+		this._legendColorsChanged();
 	});
 
 	this._modeChanged(false);
