@@ -1,7 +1,5 @@
 //osd-heatmap-overlay.js
 
-//Default Color List for gradient view
-// const defaultColorList = ["#2b83ba", "#abdda4", "#ffffbf", "#fdae61", "#d7191c"];
 /**
  * @constructor
  * OpenSeadragon heatmap Plugin 0.0.1.
@@ -808,6 +806,8 @@
     // get list of colors
     //
     // const colorList = interpolateColors(hexToRgb(colors[0]),hexToRgb(colors[1]),steps);
+    const defaultColorList = ["#2b83ba", "#abdda4", "#ffffbf", "#fdae61", "#d7191c"];
+
     if(colors.length + 1 != steps){
       console.log(`Number of colors ${colors.length + 1 } required for steps ${steps} are not right. Switch to default colors`)
       colors = defaultColorList;
