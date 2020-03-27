@@ -452,134 +452,140 @@ function runPredict(key) {
       Y = self.__spImgY,
       totalSize = self.__spImgWidth,
       step = parseInt(key.split('_')[1].split('-')[0]);
-
-  const prefix_url = ImgloaderMode == 'iip'?`../../img/IIP/raw/?IIIF=${$D.params.data.location}`:$CAMIC.slideId;
-  self.showProgress("Predicting...");
-
-  let fullResCvs = self.__fullsrc;
-
-  // Starting the transaction and opening the model store
-  let tx = db.transaction("models_store", "readonly");
-  let store = tx.objectStore("models_store");
-  store.get(key).onsuccess = async function (e) {
-    // Keras sorts the labels by alphabetical order.
-    let classes = e.target.result.classes.sort();
-
-    let input_shape = e.target.result.input_shape
-    // let input_channels = parseInt(input_shape[3]);
-    let input_channels = 3;
-    let image_size = input_shape[1];
-
-    model = await tf.loadLayersModel(IDB_URL + key);
-    self.showProgress("Model loaded...");
-
-    // Warmup the model before using real data.
-    tf.tidy(()=>{
-    const warmupResult = model.predict(tf.zeros([1, image_size, image_size, input_channels]));
-    console.log("Model ready");
-    });
-
-    let temp = document.querySelector('#dummy');
-    temp.height = step;
-    temp.width = step;
-
-    function addImageProcess(src){
-      return new Promise((resolve, reject) => {
-        let img = new Image()
-        img.onload = () => resolve(img)
-        img.onerror = reject
-        img.src = src
-      })
-    }
-
-    let results = [];
-    csvContent = "data:text/csv;charset=utf-8,";
-    classes.forEach((e) => {
-      csvContent += e + ",";
-    });
-    csvContent += "x,y\n\r";
+  
+  if(totalSize >0){
+    const prefix_url = ImgloaderMode == 'iip'?`../../img/IIP/raw/?IIIF=${$D.params.data.location}`:$CAMIC.slideId;
     self.showProgress("Predicting...");
 
-    for (let y = Y, dy = 0; y < (Y + totalSize); y+=(step)) {
-      let dx = 0
-      for (let x = X; x < (X + totalSize); x+=(step)) {
+    let fullResCvs = self.__fullsrc;
 
-        let src = prefix_url+'\/'+x+','+y+','+step+','+step+'\/'+step+',/0/default.jpg';
+    // Starting the transaction and opening the model store
+    let tx = db.transaction("models_store", "readonly");
+    let store = tx.objectStore("models_store");
+    store.get(key).onsuccess = async function (e) {
+      // Keras sorts the labels by alphabetical order.
+      let classes = e.target.result.classes.sort();
 
-        let l_img = await addImageProcess(src);
-        fullResCvs.height = l_img.height;
-        fullResCvs.width = l_img.width;
-        fullResCvs.getContext('2d').drawImage(l_img, 0, 0);
+      let input_shape = e.target.result.input_shape
+      // let input_channels = parseInt(input_shape[3]);
+      let input_channels = 3;
+      let image_size = input_shape[1];
 
-        let imgData = fullResCvs.getContext('2d').getImageData(0,0,fullResCvs.width,fullResCvs.height);
-        tf.tidy(()=>{
-        const img = tf.browser.fromPixels(imgData).toFloat();
-        let img2;
-        if (input_channels == 1) {
-          img2 = tf.image.resizeBilinear(img, [image_size, image_size]).mean(2);
-        } else {
-          img2 = tf.image.resizeBilinear(img, [image_size, image_size]);
-        }
-        let scaleMethod = $UI.filter? $UI.filter.status: 'norm';
-        console.log(scaleMethod);
+      model = await tf.loadLayersModel(IDB_URL + key);
+      self.showProgress("Model loaded...");
 
-        let normalized;
-        if (scaleMethod == 'norm') {
-          // Pixel Normalization: scale pixel values to the range 0-1.
-
-          let scale = tf.scalar(255);
-          normalized = img2.div(scale);
-
-        } else if (scaleMethod == 'center') {
-          // Pixel Centering: scale pixel values to have a zero mean.
-
-          let mean = img2.mean();
-          normalized = img2.sub(mean);
-          // normalized.mean().print(true); // Uncomment to check mean value.
-          // let min = img2.min();
-          // let max = img2.max();
-          // let normalized = img2.sub(min).div(max.sub(min));
-        } else {
-          // Pixel Standardization: scale pixel values to have a zero mean and unit variance.
-         
-          let mean = img2.mean();
-          let std = (img2.squaredDifference(mean).sum()).div(img2.flatten().shape).sqrt();
-          normalized = img2.sub(mean).div(std);
-        }    
-        let batched = normalized.reshape([1, image_size, image_size, input_channels]);
-        let values =model.predict(batched).dataSync();
-
-        values.forEach((e) => {
-          csvContent += e.toString() + ",";
-        })
-        csvContent += '' + dx + "," + dy + "\n\r";
-
-        results.push(values);
-        // Retrieving the top class
-
-        dx += step;
+      // Warmup the model before using real data.
+      tf.tidy(()=>{
+      const warmupResult = model.predict(tf.zeros([1, image_size, image_size, input_channels]));
+      console.log("Model ready");
       });
-      }
-      dy += step;
-    }
 
-    let len = results.length;
-    let final = new Array(results[0].length).fill(0);
-    for (let i = 0; i < results.length; i++) {
-      for (let j = 0; j < results[0].length; j++) {
-          final[j] += results[i][j]
-      }
-    }
-    for (let i = 0; i < final.length; i++) {
-      final[i] /= len;
-    }
+      let temp = document.querySelector('#dummy');
+      temp.height = step;
+      temp.width = step;
 
-    i_max = Object.keys(final).reduce((a, b) => final[a] > final[b] ? a : b);
-    let i = parseInt(i_max) + 1;
-    self.showResults('' + i + ': ' + classes[i_max] + ' - ' + final[i_max].toFixed(3));
-    self.hideProgress()
-    model.dispose()
-  };
+      function addImageProcess(src){
+        return new Promise((resolve, reject) => {
+          let img = new Image()
+          img.onload = () => resolve(img)
+          img.onerror = reject
+          img.src = src
+        })
+      }
+
+      let results = [];
+      csvContent = "data:text/csv;charset=utf-8,";
+      classes.forEach((e) => {
+        csvContent += e + ",";
+      });
+      csvContent += "x,y\n\r";
+      self.showProgress("Predicting...");
+
+      for (let y = Y, dy = 0; y < (Y + totalSize); y+=(step)) {
+        let dx = 0
+        for (let x = X; x < (X + totalSize); x+=(step)) {
+
+          let src = prefix_url+'\/'+x+','+y+','+step+','+step+'\/'+step+',/0/default.jpg';
+
+          let l_img = await addImageProcess(src);
+          fullResCvs.height = l_img.height;
+          fullResCvs.width = l_img.width;
+          fullResCvs.getContext('2d').drawImage(l_img, 0, 0);
+
+          let imgData = fullResCvs.getContext('2d').getImageData(0,0,fullResCvs.width,fullResCvs.height);
+          tf.tidy(()=>{
+          const img = tf.browser.fromPixels(imgData).toFloat();
+          let img2;
+          if (input_channels == 1) {
+            img2 = tf.image.resizeBilinear(img, [image_size, image_size]).mean(2);
+          } else {
+            img2 = tf.image.resizeBilinear(img, [image_size, image_size]);
+          }
+          let scaleMethod = $UI.filter? $UI.filter.status: 'norm';
+          console.log(scaleMethod);
+
+          let normalized;
+          if (scaleMethod == 'norm') {
+            // Pixel Normalization: scale pixel values to the range 0-1.
+
+            let scale = tf.scalar(255);
+            normalized = img2.div(scale);
+
+          } else if (scaleMethod == 'center') {
+            // Pixel Centering: scale pixel values to have a zero mean.
+
+            let mean = img2.mean();
+            normalized = img2.sub(mean);
+            // normalized.mean().print(true); // Uncomment to check mean value.
+            // let min = img2.min();
+            // let max = img2.max();
+            // let normalized = img2.sub(min).div(max.sub(min));
+          } else {
+            // Pixel Standardization: scale pixel values to have a zero mean and unit variance.
+           
+            let mean = img2.mean();
+            let std = (img2.squaredDifference(mean).sum()).div(img2.flatten().shape).sqrt();
+            normalized = img2.sub(mean).div(std);
+          }    
+          let batched = normalized.reshape([1, image_size, image_size, input_channels]);
+          let values =model.predict(batched).dataSync();
+
+          values.forEach((e) => {
+            csvContent += e.toString() + ",";
+          })
+          csvContent += '' + dx + "," + dy + "\n\r";
+
+          results.push(values);
+          // Retrieving the top class
+
+          dx += step;
+        });
+        }
+        dy += step;
+      }
+
+      let len = results.length;
+      let final = new Array(results[0].length).fill(0);
+      for (let i = 0; i < results.length; i++) {
+        for (let j = 0; j < results[0].length; j++) {
+            final[j] += results[i][j]
+        }
+      }
+      for (let i = 0; i < final.length; i++) {
+        final[i] /= len;
+      }
+
+      i_max = Object.keys(final).reduce((a, b) => final[a] > final[b] ? a : b);
+      let i = parseInt(i_max) + 1;
+      self.showResults('' + i + ': ' + classes[i_max] + ' - ' + final[i_max].toFixed(3));
+      self.hideProgress()
+      model.dispose()
+    };
+  }
+  else{
+    self.close();
+    alert("Selected section too small. Please select a larger section.");
+  }
 }
 
 
