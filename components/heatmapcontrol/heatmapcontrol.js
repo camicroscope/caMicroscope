@@ -165,7 +165,7 @@ HeatmapControl.prototype._modeChanged = function(flag = true){
 }
 //To validate and update heatmap color in binal mode
 HeatmapControl.prototype._colorChanged = function(){
-	const color = this.elt.querySelector("#heatMapColor").value
+	const color = this.elt.querySelector("#heatMapColor").value;
 	if(cssHexRegExp.test(color)){
 		this.__change.call(this);
 	}
