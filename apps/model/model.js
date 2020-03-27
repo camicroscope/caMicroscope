@@ -475,10 +475,15 @@ function runPredict(key) {
 
     // Warmup the model before using real data.
     tf.tidy(()=>{
-    const warmupResult = model.predict(tf.zeros([1, image_size, image_size, input_channels]));
+    model.predict(tf.zeros([1, image_size, image_size, input_channels]));
     console.log("Model ready");
     });
 
+    const memory = tf.memory()
+    console.log("Model Memory Usage")
+    console.log("GPU : " + memory.numBytesInGPU + " bytes")
+    console.log("Total : " + memory.numBytes + " bytes")
+    
     let temp = document.querySelector('#dummy');
     temp.height = step;
     temp.width = step;
