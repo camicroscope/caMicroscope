@@ -39,7 +39,7 @@ describe('Toolbar Component', function () {
 	/* -- test cases START -- */
 	describe('constructor:options[default]', function () {
 		// menu is close
-		
+
 			it('style', function () {
 				//const tools = ;
 				let list = dom.window.tools.elt.querySelectorAll('li[class]');
@@ -52,16 +52,16 @@ describe('Toolbar Component', function () {
 			});
 
 			it('li > states', function () {
-				// status of check/btn				
+				// status of check/btn
 				dom.window.tools.elt.querySelectorAll(' .tools > li:not([class]) > input[type=checkbox]').forEach(chk=>{
 					assert.equal(chk.checked, false);
 				});
 			});
-			
+
 			it('handler events', function() {
 				const handler = dom.window.tools.elt.querySelector('.handler > label');
 				// click first then all `li`s hide
-				eventFire(handler,'click', dom);
+				handler.click();
 				const list = dom.window.tools.elt.querySelectorAll(' .tools > li:not([class])');
 				assert.equal(list[0].style.display,'');
 				assert.equal(list[1].style.display,'');
@@ -71,7 +71,7 @@ describe('Toolbar Component', function () {
 				assert.equal(list[5].style.display,'none');
 
 				// click first then a;; `li`s diplay
-				eventFire(handler,'click', dom);	
+				handler.click()
 				dom.window.tools.elt.querySelectorAll(' .tools > li:not([class])').forEach(li=>{
 					assert.equal('','');
 				});
@@ -84,14 +84,14 @@ describe('Toolbar Component', function () {
 			it('main tool click events', function () {
 				const list = dom.window.tools.elt.querySelectorAll(' .tools > li:not([class])');
 				let label = list[0].querySelector('label');
-				eventFire(label,'click', dom);
+				label.click()
 				assert.equal(list[0].querySelector('input[type=checkbox]').checked,true);
 				assert.equal(list[1].querySelector('input[type=checkbox]').checked,false);
 				assert.equal(dom.window.changedData.apps, true);
 				assert.equal(dom.window.changedData.layers, false);
 
 				label = list[1].querySelector('label');
-				eventFire(label,'click', dom);
+				label.click()
 				assert.equal(list[0].querySelector('input[type=checkbox]').checked,false);
 				assert.equal(list[1].querySelector('input[type=checkbox]').checked,true);
 				assert.equal(dom.window.changedData.apps, false);
@@ -101,30 +101,30 @@ describe('Toolbar Component', function () {
 			it('btn tool click events', function () {
 				const list = dom.window.tools.elt.querySelectorAll(' .tools > li:not([class])');
 				let i = list[2].querySelector('i');
-				eventFire(i,'click', dom);
+				i.click()
 				assert.equal(dom.window.changedData.value, 'btn');
 			});
 			it('check tool click events', function () {
 				const list = dom.window.tools.elt.querySelectorAll(' .tools > li:not([class])');
 				let label = list[3].querySelector('label');
-				eventFire(label,'click', dom);
+				label.click()
 				assert.equal(list[3].querySelector('input[type=checkbox]').checked,true);
 				assert.equal(dom.window.changedData.checked, true);
 
-				eventFire(label,'click', dom);
+				label.click()
 				assert.equal(list[3].querySelector('input[type=checkbox]').checked,false);
 				assert.equal(dom.window.changedData.checked, false);
 			});
 			it('multistates tool click events', function () {
 				const list = dom.window.tools.elt.querySelectorAll(' .tools > li:not([class])');
 				let label = list[4].querySelector('label');
-				eventFire(label,'click', dom);
+				label.click()
 				assert.equal(dom.window.changedData.state, 1);
 
-				eventFire(label,'click', dom);
+				label.click()
 				assert.equal(dom.window.changedData.state, 2);
 
-				eventFire(label,'click', dom);
+				label.click()
 				assert.equal(dom.window.changedData.state, 0);
 			});
 
@@ -133,12 +133,12 @@ describe('Toolbar Component', function () {
 				let label = list[5].querySelector('label');
 				const li = dom.window.tools.elt.querySelectorAll(' .tools > li:not([class])')[5].querySelectorAll('ul li');
 				const checkList = dom.window.tools.elt.querySelectorAll(' .tools > li:not([class])')[5].querySelectorAll('ul li input[type=radio]');
-				
+
 				assert.equal(checkList[0].checked,true);
 				assert.equal(checkList[1].checked,false);
 				assert.equal(checkList[2].checked,false);
 
-				eventFire(label,'click', dom);
+				label.click()
 				console.log(dom.window.changedData);
 				assert.equal(dom.window.changedData.value, 'dropdown');
 				assert.equal(dom.window.changedData.checked, true);
