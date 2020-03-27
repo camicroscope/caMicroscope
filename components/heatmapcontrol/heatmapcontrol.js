@@ -112,7 +112,7 @@ HeatmapControl.prototype.__refresh = function(){
 		if (curr < min) { $(this).val(min); var changed=true; }
 		if (changed) {
 		  $warning = $(colorsLegendPanel).find('.warning')
-		  $warning.text('Only values in' + min + ' through ' + max + ' allowed.');
+		  $warning.text('Only values in ' + min + ' through ' + max + ' allowed.');
 		  $warning.show()
 		  $warning.fadeOut(4500);
 		}
