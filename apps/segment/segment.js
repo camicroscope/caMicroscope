@@ -233,6 +233,15 @@ async function initUIcomponents() {
         callback: () => {
           window.open('https://goo.gl/forms/mgyhx4ADH0UuEQJ53', '_blank').focus()
         }
+      },
+      {
+        icon: 'subject',
+        title: 'Model Summary',
+        value: 'summary',
+        type: 'btn',
+        callback: () => {
+          tfvis.visor().toggle()
+        }
       }
     ]
   });
@@ -690,6 +699,7 @@ async function segmentModel(key) {
     console.log("GPU : " + memory.numBytesInGPU + " bytes")
     console.log("Total : " + memory.numBytes + " bytes")
     
+    tfvis.show.modelSummary({ name: 'Model Summary', tab: 'Model Inspection' }, model);
     tf.tidy(()=>{
     // Warmup the model before using real data.
     const warmupResult = model.predict(tf.zeros([1, image_size, image_size, input_channels]));
