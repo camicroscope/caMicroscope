@@ -130,6 +130,7 @@ async function initUIcomponents() {
             <th>Size (MB)</th>
             <th>Date Saved</th>
             <th>Remove Model</th>
+            <th>Edit Class List</th>
           </tr>
           <tbody id="mdata">
           </tbody>
@@ -141,6 +142,13 @@ async function initUIcomponents() {
   // Create infoModal to show information about models uploaded.
   $UI.helpModal = new ModalBox({
     id: "help",
+    hasHeader: true,
+    headerText: "Help",
+    hasFooter: false
+  });
+  // Create Modal to take input from user of new class list
+  $UI.chngClassLst = new ModalBox({
+    id: "chngClass",
     hasHeader: true,
     headerText: "Help",
     hasFooter: false
@@ -751,16 +759,56 @@ async function showInfo() {
           td.innerHTML = date;
           td = row.insertCell();
           td.innerHTML = '<button class="btn btn-primary btn-xs my-xs-btn" id="removeModel" type="button">Remove Model</button>';
+          td = row.insertCell();
+          td.innerHTML = '<button class="btn btn-primary btn-xs my-xs-btn" id="chngClassListBtn" type="button">Edit Class List</button>';
           document.getElementById("removeModel").addEventListener('click', () => {
             deleteModel(name);
+          });
+          document.getElementById("chngClassListBtn").addEventListener('click', () => {
+            showNewClassInput(name);
           });
         }
       }
     }
     callback;
   })($UI.infoModal.open())
+}
 
 
+function showNewClassInput(name)
+{
+    let self = $UI.chngClassLst;
+    self.body.innerHTML = `
+    <input id ="new_class_list" type="text"/>
+    <button class="btn btn-primary btn-xs my-xs-btn" id="chngbtn" type="button">Change Class List</button>
+    `
+    $UI.chngClassLst.open(); //Open the box to take input from user
+    document.getElementById("chngbtn").addEventListener('click', () => {
+        // $UI.chngClassLst.close();  
+        var new_list = document.querySelector("#new_class_list").value;         //Get the list inputed by user
+        $UI.infoModal.close();
+        $UI.chngClassLst.close();
+        changeClassList(new_list,name);         //Call to a function to change class list
+    });
+    
+}
+
+async function changeClassList(new_list,name) {
+    var data = await tf.io.listModels(),
+        tx = db.transaction("models_store", "readwrite"),
+        store = tx.objectStore("models_store");
+            for (let key in data) {
+                if(name === key.split("/").pop())
+                {
+                    store.get(name).onsuccess = function (e) {
+                        let d = e.target.result;
+                        let class_list = new_list.split(/\s*,\s*/);
+                        d['classes'] = class_list;
+                        let req = store.put(d);
+                    }
+                }
+            }
+    alert("Classes Changed");
 }
 
 function openHelp() {
