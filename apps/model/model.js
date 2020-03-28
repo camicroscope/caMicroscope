@@ -7,6 +7,7 @@ window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndex
 // id(autoinc), name, location(name+id), classes
 var request, db;
 
+
 // tensorflowjs creates its own IndexedDB on saving a model.
 (async function(callback) {
     const model = tf.sequential();
@@ -243,8 +244,16 @@ async function initUIcomponents() {
         type: 'btn',
         callback: () => {
           window.open('https://goo.gl/forms/mgyhx4ADH0UuEQJ53', '_blank').focus()
-        }
-      }
+        },
+      },
+      {
+        icon: 'subject',
+        title: 'Model Summary',
+        value: 'summary',
+        type: 'btn',
+        callback: () => {
+          tfvis.visor().toggle()
+        }}
     ]
   });
 }
@@ -373,10 +382,10 @@ function camicStopDraw(e) {
       if (args) {
         runPredict(args.status);
       }
-      var memory = tf.memory();
-      console.log(memory);
       $UI.modelPanel.setPosition(box.rect.x,box.rect.y,box.rect.width,box.rect.height);
-      $UI.modelPanel.open(args);
+       if($UI.modelPanel.__spImgWidth != 0){
+        $UI.modelPanel.open(args);
+      }
 
       canvasDraw.clear();
       csvContent = "";
@@ -453,51 +462,52 @@ function runPredict(key) {
       totalSize = self.__spImgWidth,
       step = parseInt(key.split('_')[1].split('-')[0]);
   
-  if(totalSize >0){
-    
-  const prefix_url = ImgloaderMode == 'iip'?`../../img/IIP/raw/?IIIF=${$D.params.data.location}`:$CAMIC.slideId;
-  self.showProgress("Predicting...");
+  self.showResults(" --Result-- ")
+  if(totalSize > 0){
+    const prefix_url = ImgloaderMode == 'iip'?`../../img/IIP/raw/?IIIF=${$D.params.data.location}`:$CAMIC.slideId;
+    self.showProgress("Predicting...");
 
-  let fullResCvs = self.__fullsrc;
+    let fullResCvs = self.__fullsrc;
 
-  // Starting the transaction and opening the model store
-  let tx = db.transaction("models_store", "readonly");
-  let store = tx.objectStore("models_store");
-  store.get(key).onsuccess = async function (e) {
-    // Keras sorts the labels by alphabetical order.
-    let classes = e.target.result.classes.sort();
+    // Starting the transaction and opening the model store
+    let tx = db.transaction("models_store", "readonly");
+    let store = tx.objectStore("models_store");
+    store.get(key).onsuccess = async function (e) {
+      // Keras sorts the labels by alphabetical order.
+      let classes = e.target.result.classes.sort();
 
-    let input_shape = e.target.result.input_shape
-    // let input_channels = parseInt(input_shape[3]);
-    let input_channels = 3;
-    let image_size = input_shape[1];
+      let input_shape = e.target.result.input_shape
+      // let input_channels = parseInt(input_shape[3]);
+      let input_channels = 3;
+      let image_size = input_shape[1];
 
-    model = await tf.loadLayersModel(IDB_URL + key);
-    self.showProgress("Model loaded...");
+      model = await tf.loadLayersModel(IDB_URL + key);
+      self.showProgress("Model loaded...");
+      tfvis.show.modelSummary({name: 'Model Summary', tab: 'Model Inspection'}, model);
 
-    // Warmup the model before using real data.
-    tf.tidy(()=>{
-    model.predict(tf.zeros([1, image_size, image_size, input_channels]));
-    console.log("Model ready");
-    });
+      // Warmup the model before using real data.
+      tf.tidy(()=>{
+      model.predict(tf.zeros([1, image_size, image_size, input_channels]));
+      console.log("Model ready");
+      });
 
-    const memory = tf.memory()
-    console.log("Model Memory Usage")
-    console.log("GPU : " + memory.numBytesInGPU + " bytes")
-    console.log("Total : " + memory.numBytes + " bytes")
-    
-    let temp = document.querySelector('#dummy');
-    temp.height = step;
-    temp.width = step;
+      const memory = tf.memory()
+      console.log("Model Memory Usage")
+      console.log("GPU : " + memory.numBytesInGPU + " bytes")
+      console.log("Total : " + memory.numBytes + " bytes")
+      
+      let temp = document.querySelector('#dummy');
+      temp.height = step;
+      temp.width = step;
 
-    function addImageProcess(src){
-      return new Promise((resolve, reject) => {
-        let img = new Image()
-        img.onload = () => resolve(img)
-        img.onerror = reject
-        img.src = src
-      })
-    }
+      function addImageProcess(src){
+        return new Promise((resolve, reject) => {
+          let img = new Image()
+          img.onload = () => resolve(img)
+          img.onerror = reject
+          img.src = src
+        })
+      }
 
       let results = [];
       csvContent = "data:text/csv;charset=utf-8,";
@@ -589,8 +599,7 @@ function runPredict(key) {
     };
   }
   else{
-    self.close();
-    alert("Selected section too small. Please select a larger section.");
+     alert("Selected section too small. Please select a larger section.");
   }
 }
 
