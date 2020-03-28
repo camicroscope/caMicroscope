@@ -233,6 +233,15 @@ async function initUIcomponents() {
         callback: () => {
           window.open('https://goo.gl/forms/mgyhx4ADH0UuEQJ53', '_blank').focus()
         }
+      },
+      {
+        icon: 'subject',
+        title: 'Model Summary',
+        value: 'summary',
+        type: 'btn',
+        callback: () => {
+          tfvis.visor().toggle()
+        }
       }
     ]
   });
@@ -457,11 +466,10 @@ function camicStopDraw(e) {
       } else {
         segmentModel(args.status);
       }
-      var memory = tf.memory();
-      console.log(memory);
       $UI.segmentPanel.setPosition(box.rect.x,box.rect.y,box.rect.width,box.rect.height);
-      $UI.segmentPanel.open(args);
-
+      if($UI.segmentPanel.__spImgWidth != 0){
+        $UI.segmentPanel.open(args);
+      }
       // close
       canvasDraw.clear();
     }
@@ -667,7 +675,7 @@ async function segmentModel(key) {
       totalSize = self.__spImgWidth,
       step = parseInt(key.split('_')[0].split('-')[1]);
   
-  if(totalSize>0) {
+  if(totalSize > 0){
     const prefix_url = ImgloaderMode == 'iip'?`../../img/IIP/raw/?IIIF=${$D.params.data.location}`:$CAMIC.slideId;
 
 
@@ -687,7 +695,12 @@ async function segmentModel(key) {
 
       model = await tf.loadLayersModel(IDB_URL + key);
       console.log('Model Loaded');
-       
+      const memory = tf.memory()
+      console.log("Model Memory Usage")
+      console.log("GPU : " + memory.numBytesInGPU + " bytes")
+      console.log("Total : " + memory.numBytes + " bytes")
+      
+      tfvis.show.modelSummary({ name: 'Model Summary', tab: 'Model Inspection' }, model);
       tf.tidy(()=>{
       // Warmup the model before using real data.
       const warmupResult = model.predict(tf.zeros([1, image_size, image_size, input_channels]));
@@ -762,8 +775,6 @@ async function segmentModel(key) {
             let std = (img2.squaredDifference(mean).sum()).div(img2.flatten().shape).sqrt();
             normalized = img2.sub(mean).div(std);
           }      
-
-
           let batched = normalized.reshape([1, image_size, image_size, input_channels]);
           let values = model.predict(batched).dataSync();
           values = Array.from(values);
@@ -772,9 +783,10 @@ async function segmentModel(key) {
           val = new Array();
           while (values.length > 0) val.push(values.splice(0, image_size));
           });
+          tf.engine().startScope()
           await tf.browser.toPixels(val, temp);
-          finalRes.getContext('2d').drawImage(temp, dx, dy);    
-          
+          finalRes.getContext('2d').drawImage(temp, dx, dy);  
+          tf.engine().endScope()
           dx += step;
         }
         dy += step;
@@ -788,11 +800,10 @@ async function segmentModel(key) {
       self.__oplabel.innerHTML = '0.6';
 
       model.dispose();
-    } // on success
-  }
-  else {
-    self.close();
-    alert("Selection section too small. Please select a larger section.");
+    }
+  } // on success
+  else{
+    alert("Selected section too small. Please select a larger section.")
   }
 
 }
