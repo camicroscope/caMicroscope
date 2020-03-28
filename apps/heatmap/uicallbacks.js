@@ -171,17 +171,19 @@ function closeSecondaryViewer(){
 function goHome(data){
 	redirect($D.pages.home,`GO Home Page`, 0);
 }
-
+// function to update and repaint the heatmap
 function heatmapSettingChanged(data){
 	switch (data.mode) {
 		case 'binal':
-				data.fields.forEach( f=> {
-					$CAMIC.viewer.heatmap.setThresholdsByName(f.name,f.range[0],f.range[1],false);
-				});
+			data.fields.forEach( f=> {
+				$CAMIC.viewer.heatmap.setThresholdsByName(f.name,f.range[0],f.range[1],false);
+			});
+			if(data.color) $CAMIC.viewer.heatmap.setColor(data.color)
 			break;
 		case 'gradient':
 			$CAMIC.viewer.heatmap.setThresholdsByName(data.field.name,data.field.range[0],data.field.range[1],false);
 			$CAMIC.viewer.heatmap.setCurrentField(data.field.name,false);
+			if(data.colors) $CAMIC.viewer.heatmap.setColors(data.colors)
 			break;
 		default:
 			// statements_def

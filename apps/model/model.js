@@ -7,6 +7,7 @@ window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndex
 // id(autoinc), name, location(name+id), classes
 var request, db;
 
+
 // tensorflowjs creates its own IndexedDB on saving a model.
 (async function(callback) {
     const model = tf.sequential();
@@ -243,8 +244,16 @@ async function initUIcomponents() {
         type: 'btn',
         callback: () => {
           window.open('https://goo.gl/forms/mgyhx4ADH0UuEQJ53', '_blank').focus()
-        }
-      }
+        },
+      },
+      {
+        icon: 'subject',
+        title: 'Model Summary',
+        value: 'summary',
+        type: 'btn',
+        callback: () => {
+          tfvis.visor().toggle()
+        }}
     ]
   });
 }
@@ -472,13 +481,19 @@ function runPredict(key) {
 
     model = await tf.loadLayersModel(IDB_URL + key);
     self.showProgress("Model loaded...");
+    tfvis.show.modelSummary({name: 'Model Summary', tab: 'Model Inspection'}, model);
 
     // Warmup the model before using real data.
     tf.tidy(()=>{
-    const warmupResult = model.predict(tf.zeros([1, image_size, image_size, input_channels]));
+    model.predict(tf.zeros([1, image_size, image_size, input_channels]));
     console.log("Model ready");
     });
 
+    const memory = tf.memory()
+    console.log("Model Memory Usage")
+    console.log("GPU : " + memory.numBytesInGPU + " bytes")
+    console.log("Total : " + memory.numBytes + " bytes")
+    
     let temp = document.querySelector('#dummy');
     temp.height = step;
     temp.width = step;

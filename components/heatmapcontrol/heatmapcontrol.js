@@ -1,5 +1,10 @@
 // heatmapcontrol.js
 //
+
+//Default Color List for gradient view
+const defaultColorList = ["#EAF2F8", "#D4E6F1", "#A9CCE3", "#7FB3D5", "#5499C7", "#2980B9", "#2471A3", "#1F618D", "#1A5276", "#154360"];
+//Regular Expression for testing valid color values
+const cssHexRegExp = new RegExp('^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$');
 function HeatmapControl(options){
 	this.name = 'HeatmapControl';
 	/*
@@ -50,25 +55,36 @@ HeatmapControl.prototype.__refresh = function(){
 	const template = `
 	<div class='mode-panel'>
 
-	<label> Gradient <input type='checkbox' value='gradient' ${this.setting.mode == 'gradient'? 'checked':''} /></label>
+		<label> Gradient <input type='checkbox' value='gradient' ${this.setting.mode == 'gradient'? 'checked':''} /></label>
 	</div>
 	<div class='sel-field-panel'>
-	<select></select>
+		<select></select>
 	</div>
-	<label>Properties:</label>
+		<label>Properties:</label>
 	<div class='fields-panel'>
-
+		
 	</div>
 	<div style='display:none;'>
-	<label>Opacity:</label>
-	<div class='opacity-panel'>
+		<label>Opacity:</label>
+		<div class='opacity-panel'>
+		</div>
 	</div>
+	<div class='color-panel'>
+		<label> Color <input id='heatMapColor' type='color' value='#1034A6' /></label>
+	</div>
+	<div class='colors-legend-panel'>
+		<label># of Intervals <input id='legendIntervals' type='number' class='range-enforced' value='5' min='2' max='10'/></label> <div class="warning" style="display: none;"></div>
+		<div class='legends'>
+		</div>
 	</div>
 	`;
 	this.elt.innerHTML = template;
 	const checkbox = this.elt.querySelector('.mode-panel input[type=checkbox]');
 	checkbox.addEventListener('change', this._modeChanged.bind(this));
 	//
+	const color = this.elt.querySelector('.color-panel input[type=color]');
+	color.addEventListener('input', this._colorChanged.bind(this));
+
 	this.rangeSliders = {};
 	createSelect(this.elt.querySelector('.sel-field-panel select') ,this.setting.fields,this.setting.currentField);
 	this.elt.querySelector('.sel-field-panel select').addEventListener('change', this._selChanged.bind(this));
@@ -86,6 +102,34 @@ HeatmapControl.prototype.__refresh = function(){
 		 this.opacitySliders[f.name] = createOpacities(opacitiesPanel,f,this.__opacityChange.bind(this));
 	},this);
 
+	const colorsLegendPanel = this.elt.querySelector('.colors-legend-panel');
+	//min max logic for valid number of intervals
+	$(colorsLegendPanel).find('#legendIntervals').on('change', function(e){
+		var min=parseFloat($(this).attr('min'));
+		var max=parseFloat($(this).attr('max'));
+		var curr=parseFloat($(this).val());
+		if (curr > max) { $(this).val(max); var changed=true; }
+		if (curr < min) { $(this).val(min); var changed=true; }
+		if (changed) {
+		  $warning = $(colorsLegendPanel).find('.warning')
+		  $warning.text('Only values in ' + min + ' through ' + max + ' allowed.');
+		  $warning.show()
+		  $warning.fadeOut(4500);
+		}
+	});
+	
+	const legendIntervalsInput = colorsLegendPanel.querySelector("#legendIntervals");
+	//Setting default value of intervals
+	legendIntervalsInput.value = 5;
+	const noOfIntervals = legendIntervalsInput.value;
+
+	const legendsContainer = colorsLegendPanel.querySelector('.legends');
+	createIntervalInputs(legendsContainer, noOfIntervals, this._legendColorsChanged.bind(this) );
+	legendIntervalsInput.addEventListener('change',	()=>{
+		createIntervalInputs(legendsContainer, legendIntervalsInput.value, this._legendColorsChanged.bind(this)) 
+		this._legendColorsChanged();
+	});
+
 	this._modeChanged(false);
 }
 
@@ -93,6 +137,8 @@ HeatmapControl.prototype._modeChanged = function(flag = true){
 	const mode = this.elt.querySelector(`.mode-panel input[type=checkbox]`).checked;
 
 	if(!mode){// binal
+		this.elt.querySelector('.color-panel').style.display='';
+		this.elt.querySelector('.colors-legend-panel').style.display='none';
 		this.elt.querySelector('.sel-field-panel').style.display='none';
 		this.setting.fields.forEach( f=> {
 			// statements
@@ -100,6 +146,8 @@ HeatmapControl.prototype._modeChanged = function(flag = true){
 			this.rangeSliders[f.name].disabled(false);
 		},this);
 	}else{ // gradient
+		this.elt.querySelector('.color-panel').style.display='none';
+		this.elt.querySelector('.colors-legend-panel').style.display='';
 		this.elt.querySelector('.sel-field-panel').style.display='';
 		const selectedField = this.elt.querySelector('.sel-field-panel select').value;
 		this.rangeSliders[selectedField].slider.parentNode.style.display='';
@@ -114,6 +162,27 @@ HeatmapControl.prototype._modeChanged = function(flag = true){
 		},this);
 	}
 	if(flag)this.__change.call(this);
+}
+//To validate and update heatmap color in binal mode
+HeatmapControl.prototype._colorChanged = function(){
+	const color = this.elt.querySelector("#heatMapColor").value;
+	if(cssHexRegExp.test(color)){
+		this.__change.call(this);
+	}
+}
+//To validate and update heatmap colors in gradient mode
+HeatmapControl.prototype._legendColorsChanged = function(){
+	let valid = true;
+	const colorLegendPanel = this.elt.querySelector('.colors-legend-panel');
+	$(colorLegendPanel.querySelector('.legends'))
+		.children()
+		.each(function (index,colorDiv) {
+			if(cssHexRegExp.test(colorDiv.querySelector('input').value)===false){
+				valid = false;
+				return;
+			}
+		});
+	if(valid) this.__change.call(this);
 }
 
 HeatmapControl.prototype._selChanged = function(e){
@@ -142,12 +211,19 @@ HeatmapControl.prototype.resize = function(){
 }
 HeatmapControl.prototype.__change = function(){
 	if(this.setting.onChange && typeof this.setting.onChange === 'function'){
+
 		const mode = this.elt.querySelector(`.mode-panel input[type=checkbox]`).checked;
+		const color = this.elt.querySelector("#heatMapColor").value
+		const colorLegendPanel = this.elt.querySelector('.colors-legend-panel');
+		const colors = getColors(colorLegendPanel.querySelector('.legends'));
 		const fields = [];
 		const field = {};
 		const data = {
-			mode:mode?'gradient':'binal'
+			mode:mode?'gradient':'binal',
+			color:color,
+			colors:colors
 		}
+
 		if(!mode){
 			this.setting.fields.forEach( f=> {
 				fields.push({name:f.name,range:this.rangeSliders[f.name].getValue()});
@@ -239,4 +315,38 @@ function createOpacities(container, field, changeFunc){
 	});
 	container.appendChild(div);
 	return rs;
+}
+//Create HTML Color inputs for given noOfIntervals
+function createIntervalInputs(container, noOfIntervals, changeFunc){
+	//Empty the container
+	while ( container.firstChild ) container.removeChild( container.firstChild );
+	for (let i = 1; i <= noOfIntervals; i++) {	
+	
+		const div = document.createElement('div');
+		div.className = 'color-input-container';
+		const label = document.createElement('label');
+		label.textContent = `Interval ${i} `;
+		label.className = 'color-input'
+		const color = document.createElement('input');
+		color.type = 'color';
+		color.value = defaultColorList[getGradientColorIndex(i, noOfIntervals)];
+		color.oninput = changeFunc
+		//Input for color legends.
+		div.appendChild(label);
+		div.appendChild(color);
+	
+		container.appendChild(div);
+	}
+}
+// returns selected colors for intervals
+function getColors(container){
+	const rs = [];
+	$(container).children().each(function (index,colorDiv) {
+		rs.push(colorDiv.querySelector('input').value)
+	});
+	return rs;
+}
+// returns index of color in defaultColorList for given position and no of intervals  
+function getGradientColorIndex(position, noOfIntervals){
+	return parseInt((position * (10 / noOfIntervals)) - 1) 
 }
