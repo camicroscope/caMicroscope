@@ -738,7 +738,6 @@ async function segmentModel(key) {
         } else {
           img2 = tf.image.resizeBilinear(img, [image_size, image_size]);
         }
-        img.dispose()
         let scaleMethod = $UI.filter? $UI.filter.status: 'norm';
         console.log(scaleMethod);
 
@@ -765,8 +764,6 @@ async function segmentModel(key) {
           let std = (img2.squaredDifference(mean).sum()).div(img2.flatten().shape).sqrt();
           normalized = img2.sub(mean).div(std);
         }      
-        img2.dispose()
-
         let batched = normalized.reshape([1, image_size, image_size, input_channels]);
         let values = model.predict(batched).dataSync();
         values = Array.from(values);
