@@ -383,7 +383,7 @@ function camicStopDraw(e) {
         runPredict(args.status);
       }
       $UI.modelPanel.setPosition(box.rect.x,box.rect.y,box.rect.width,box.rect.height);
-       if($UI.modelPanel.__spImgWidth != 0){
+      if($UI.modelPanel.__spImgWidth != 0){
         $UI.modelPanel.open(args);
       }
 
