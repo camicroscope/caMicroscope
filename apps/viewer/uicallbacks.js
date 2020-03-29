@@ -1076,6 +1076,7 @@ function saveLabelAnnotCallback() {
   $UI.layersViewer.update();
   //$CAMIC.status = null;
 }
+
 function anno_callback(data) {
   // is form ok?
   const noteData = $UI.annotOptPanel._form_.value;
@@ -1100,6 +1101,16 @@ function anno_callback(data) {
     alert("No Markup On Annotation.");
     return;
   }
+
+  //Add new lines to notes to prevent overflow
+  str = noteData.notes;
+  var result_string = '';
+  while (str.length > 0) {
+    result_string += str.substring(0, 36) + '\n';
+    str = str.substring(36);
+  }
+  noteData.notes = result_string;
+
   // save
   // provenance
   Loading.open($UI.annotOptPanel.elt, "Saving Annotation...");
