@@ -8,7 +8,8 @@ Toolbar Shorcuts
 |------------- |-----------|
 | Annotation   |  Ctrl + a |
 | Magnifier    |  Ctrl + m |
-| Side-by-Side |  Ctrl + r |
+| Measurement    |  Ctrl + r |
+| Side-by-Side |  Ctrl + s |
 | Close all tools |  ESC   |
 
 
