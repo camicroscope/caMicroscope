@@ -131,7 +131,7 @@ To use pathdb, use pathDbCamic.yml instead of caMicroscope.yml. This deployment 
 
 
 # Developer Guide
-We are collecting feedback to write this section in more detail. Please give any feedback to [this form](https://docs.google.com/forms/d/e/1FAIpQLScL91LxrpAZjU88GBZP9gmcdgdf8__uNUwhws2lzU6Lr4qNwA/viewform).
+We are collecting feedback to write this section in more detail. Please add your suggestions [here](https://github.com/camicroscope/caMicroscope/issues/267).
 
 caMicroscope is open source software. Any involvement and contribution with the caMicroscope project is greatly appreciated. Feel free to get directly involved in any of the repositories in the caMicroscope organization.
 
