@@ -8,8 +8,6 @@ install:
     - npm install jsdom
     - npm install -g http-server
     - npm install -g mocha
-    - npm install -g eslint
-    - npm install -g eslint-config-google
 
 stages:
   - name: tests
@@ -28,14 +26,13 @@ jobs:
     - stage: lintjs
       name: "JS Code Style Check"
       script:
-        - eslint core/*.js
-        - eslint components/**/*.js
-        - eslint apps/heatmap/*.js
-        - eslint apps/labeling/*.js
-        - eslint apps/landing/*.js
-        - eslint apps/loader/*.js
-        - eslint apps/model/*.js
-        - eslint apps/segment/*.js
-        - eslint apps/model/**/*.js
-        - eslint apps/segment/**/*.js
-        - eslint apps/viewer/*.js
+        - ./node_modules/.bin/eslint core/*.js
+        - ./node_modules/.bin/eslint components/**/*.js
+        - ./node_modules/.bin/eslint apps/heatmap/*.js
+        - ./node_modules/.bin/eslint apps/labeling/*.js
+        - ./node_modules/.bin/eslint apps/loader/*.js
+        - ./node_modules/.bin/eslint apps/model/*.js
+        - ./node_modules/.bin/eslint apps/segment/*.js
+        - ./node_modules/.bin/eslint apps/model/**/*.js
+        - ./node_modules/.bin/eslint apps/segment/**/*.js
+        - ./node_modules/.bin/eslint apps/viewer/*.js
