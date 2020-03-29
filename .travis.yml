@@ -12,7 +12,7 @@ install:
     - npm install -g site-validator-cli
 
 stages:
-  - test
+  - name: tests
   - name: lintjs
   - name: linthtml
 
@@ -22,6 +22,9 @@ before_script:
   
 jobs:
   include:
+    - stage: tests
+      name: Unit Tests
+      script: mocha test --recursive --exit
     - stage: lintjs
       name: "JS Code Style Check"
       script: eslint **/*.js **/**/*.js **/**/**/*.js
@@ -29,5 +32,3 @@ jobs:
       name: "HTML Code Style Check"
       script: site-validator --path index.html
 
-script:
-  - mocha test --recursive --exit
