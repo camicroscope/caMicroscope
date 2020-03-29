@@ -8,7 +8,6 @@ install:
     - npm install jsdom
     - npm install -g http-server
     - npm install -g mocha
-    - npm install --only=dev
 
 stages:
   - name: tests

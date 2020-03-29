@@ -14,9 +14,6 @@
     "lodash": "^4.17.15",
     "mocha": "^7.1.0",
     "node-fetch": "^2.2.0",
-    "parceljs": "0.0.1"
-  },
-  "devDependencies": {
     "eslint": "^6.8.0",
     "eslint-config-google": "^0.14.0"
   }
