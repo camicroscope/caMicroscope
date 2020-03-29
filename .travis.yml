@@ -9,6 +9,7 @@ install:
     - npm install -g http-server
     - npm install -g mocha
     - npm install -g eslint
+    - npm install -g eslint-config-google
 
 stages:
   - name: tests
@@ -28,6 +29,13 @@ jobs:
       name: "JS Code Style Check"
       script:
         - eslint core/*.js
-        - eslint core/extension/*.js
         - eslint components/**/*.js
-        - eslint apps/**/*.js
+        - eslint apps/heatmap/*.js
+        - eslint apps/labeling/*.js
+        - eslint apps/landing/*.js
+        - eslint apps/loader/*.js
+        - eslint apps/model/*.js
+        - eslint apps/segment/*.js
+        - eslint apps/model/**/*.js
+        - eslint apps/segment/**/*.js
+        - eslint apps/viewer/*.js
