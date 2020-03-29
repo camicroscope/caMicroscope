@@ -8,6 +8,8 @@ install:
     - npm install jsdom
     - npm install -g http-server
     - npm install -g mocha
+    - npm install eslint
+    - ls node_modules/.bin/
 
 stages:
   - name: tests
