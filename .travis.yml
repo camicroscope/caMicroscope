@@ -19,7 +19,7 @@ stages:
 before_script:
   - http-server -s & # start a Web server
   - sleep 3 # give Web server some time to bind to sockets, etc
-  
+
 jobs:
   include:
     - stage: tests
@@ -27,8 +27,11 @@ jobs:
       script: mocha test --recursive --exit
     - stage: lintjs
       name: "JS Code Style Check"
-      script: eslint **/*.js **/**/*.js **/**/**/*.js
+      script:
+        - eslint core/*.js
+        - eslint core/extension/*.js
+        - eslint components/**/*.js
+        - eslint apps/**/*.js
     - stage: linthtml
       name: "HTML Code Style Check"
       script: site-validator --path index.html
-
