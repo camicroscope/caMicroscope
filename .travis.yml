@@ -9,7 +9,7 @@ install:
     - npm install -g http-server
     - npm install -g mocha
     - npm install eslint
-    - ls node_modules/.bin/
+    - npm install eslint-config-google
 
 stages:
   - name: tests
