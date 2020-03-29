@@ -9,7 +9,6 @@ install:
     - npm install -g http-server
     - npm install -g mocha
     - npm install -g eslint
-    - npm install -g site-validator-cli
 
 stages:
   - name: tests
@@ -32,6 +31,3 @@ jobs:
         - eslint core/extension/*.js
         - eslint components/**/*.js
         - eslint apps/**/*.js
-    - stage: linthtml
-      name: "HTML Code Style Check"
-      script: site-validator --path index.html
