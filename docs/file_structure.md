@@ -38,8 +38,7 @@
     │   │   └── ...
     ├── test                                        # Test files
     │   ├── ui                                      # ui tests
-    │   ├── core                                    # core tests
-    │   └── extension                               # extension tests
+    |   ├── config.js                               # custom config file                 
     ├── demo                                        # all demos code go there
     │   ├── xxx_demo                                # a demo code in there file
     │   └── ...
