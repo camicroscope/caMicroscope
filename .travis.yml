@@ -9,14 +9,12 @@ install:
     - npm install -g http-server
     - npm install -g mocha
     - npm install -g eslint
-
-env:
-  - ACTION=LINT
+    - npm install -g site-validator-cli
 
 stages:
   - test
-  - name: lint
-    if: env(ACTION) = "LINT"
+  - name: lintjs
+  - name: linthtml
 
 before_script:
   - http-server -s & # start a Web server
@@ -24,9 +22,12 @@ before_script:
   
 jobs:
   include:
-    - stage: lint
-      name: "Code Style Check"
-      script: eslint *.js
+    - stage: lintjs
+      name: "JS Code Style Check"
+      script: eslint **/*.js **/**/*.js **/**/**/*.js
+    - stage: linthtml
+      name: "HTML Code Style Check"
+      script: site-validator --path index.html
 
 script:
   - mocha test --recursive --exit
