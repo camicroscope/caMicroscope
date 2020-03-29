@@ -8,6 +8,7 @@ install:
     - npm install jsdom
     - npm install -g http-server
     - npm install -g mocha
+    - npm install --only=dev
 
 stages:
   - name: tests
@@ -26,13 +27,13 @@ jobs:
     - stage: lintjs
       name: "JS Code Style Check"
       script:
-        - ./node_modules/.bin/eslint core/*.js
-        - ./node_modules/.bin/eslint components/**/*.js
-        - ./node_modules/.bin/eslint apps/heatmap/*.js
-        - ./node_modules/.bin/eslint apps/labeling/*.js
-        - ./node_modules/.bin/eslint apps/loader/*.js
-        - ./node_modules/.bin/eslint apps/model/*.js
-        - ./node_modules/.bin/eslint apps/segment/*.js
-        - ./node_modules/.bin/eslint apps/model/**/*.js
-        - ./node_modules/.bin/eslint apps/segment/**/*.js
-        - ./node_modules/.bin/eslint apps/viewer/*.js
+        - ./node_modules/.bin/eslint core/*.js --quiet
+        - ./node_modules/.bin/eslint components/**/*.js --quiet
+        - ./node_modules/.bin/eslint apps/heatmap/*.js --quiet
+        - ./node_modules/.bin/eslint apps/labeling/*.js --quiet
+        - ./node_modules/.bin/eslint apps/loader/*.js --quiet
+        - ./node_modules/.bin/eslint apps/model/*.js --quiet
+        - ./node_modules/.bin/eslint apps/segment/*.js --quiet
+        - ./node_modules/.bin/eslint apps/model/**/*.js --quiet
+        - ./node_modules/.bin/eslint apps/segment/**/*.js --quiet
+        - ./node_modules/.bin/eslint apps/viewer/*.js --quiet
