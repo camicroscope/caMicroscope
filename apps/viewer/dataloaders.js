@@ -97,7 +97,10 @@ function HeatmaplayersLoader() {
           const TypeId = randomId();
           for (let i = 0; i < layers.length; i++) {
             const item = layers[i].provenance.analysis;
-            $D.overlayers.push({id: item.execution_id, name: item.execution_id, typeId: TypeId, typeName: item.computation});
+            $D.overlayers.push({id: item.execution_id,
+              name: item.execution_id,
+              typeId: TypeId,
+              typeName: item.computation});
           }
           _h = true;
         })

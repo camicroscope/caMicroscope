@@ -27,7 +27,8 @@
 /**
  *
  * CaMicroscope Collapsible List. the item in this list consists of the item's head and the item's body.
- * Click on the head, if item's body is collapsed then expand it, if not, then expand it. Only one of item can be expanded.
+ * Click on the head, if item's body is collapsed then expand it, if not, then expand it.
+ * Only one of item can be expanded.
  * @constructor
  * @param {Object} options
  *        All required and optional settings for instantiating a new instance of a Collapsible List.
@@ -46,7 +47,8 @@
  * @param {String} [list.isExpand = false]
  *        The content expand or not.
  * @param {Function} [changeCallBack]
- *        when the expanded item changes the event is fired. Return {id: item id,isExpand: the state of current item[expand or not]}
+ *        when the expanded item changes the event is fired.
+ *        Return {id: item id,isExpand: the state of current item[expand or not]}
  *
  */
 function CollapsibleList(options) {
@@ -378,4 +380,3 @@ CollapsibleList.prototype.clearContent = function(itemId) {
     return false;
   }
 };
-

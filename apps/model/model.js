@@ -73,25 +73,25 @@ async function initUIcomponents() {
       <form action="#" class='form-style'>
       <ul>
           <li>
-            <label align="left"> Name:  </label> 
+            <label align="left"> Name:  </label>
             <input name="name" id="name" type="text" required />
             <span> Name of the model </span>
           </li>
           <li>
-            <label align="left"> Classes: </label> 
+            <label align="left"> Classes: </label>
             <input name="classes" id="classes" type="text" required />
             <span> Enter the classes model classifies into separated by comma. </span>
           </li>
           <li>
-            <label align="left"> Input patch size: </label> 
+            <label align="left"> Input patch size: </label>
             <input name="image_size" id="image_size" type="number" required />
             <span> The image size on which the model is trained </span>
           </li>
-            <label>Input image format:</label> <br>            
+            <label>Input image format:</label> <br>
             <input type="radio" id="gray" name="channels" value=1 checked>
             <label for="gray">Gray</label> <br>
             <input type="radio" id="rgb" name="channels" value=3>
-            <label for="rgb" padding="10px">RGB</label> 
+            <label for="rgb" padding="10px">RGB</label>
           <li id="mg">
             <label for="magnification">Magnification:</label>
             <select id="magnification">
@@ -103,14 +103,14 @@ async function initUIcomponents() {
           </li>
         <hr>
         <label class="switch"><input type="checkbox" id="togBtn"><div class="slider"></div></label> <br> <br>
-        <div class="checkfalse"><div>Select model.json first followed by the weight binaries.</div> <br> 
+        <div class="checkfalse"><div>Select model.json first followed by the weight binaries.</div> <br>
         <input name="filesupload" id="modelupload" type="file" required/>
         <input name="filesupload" id="weightsupload" type="file" multiple="" required/> <br> <br> </div>
-        <div class="checktrue" > URL to the ModelAndWeightsConfig JSON describing the model. <br> <br> 
+        <div class="checktrue" > URL to the ModelAndWeightsConfig JSON describing the model. <br> <br>
         <label align-"left"> Enter the URL: </label> <input type="url" name="url" id="url" required> <br><br></div>
         <button id="submit">Upload</button> <span id="status"></span> <br>
-      </form>  
-      <button id="refresh" class='material-icons'>cached</button> 
+      </form>
+      <button id="refresh" class='material-icons'>cached</button>
     `,
   });
 
@@ -645,7 +645,8 @@ function uploadModel() {
 
       const _channels = parseInt(document.querySelector('input[name="channels"]:checked').value);
       // Adding some extra digits in the end to maintain uniqueness
-      const name = 'pred_' + _image_size.value.toString() + '-' + mag.value.toString() + '_' + _name.value + (new Date().getTime().toString()).slice(-4, -1);
+      const name = 'pred_' + _image_size.value.toString() + '-' + mag.value.toString() +
+      '_' + _name.value + (new Date().getTime().toString()).slice(-4, -1);
       // Create an array from comma separated values of classes
       const classes = _classes.value.split(/\s*,\s*/);
 
@@ -659,10 +660,12 @@ function uploadModel() {
         // This also ensures that valid model is uploaded.
         const model = await tf.loadLayersModel(modelInput);
         try {
-          const result = model.predict(tf.ones([1, parseInt(_image_size.value), parseInt(_image_size.value), parseInt(_channels)]));
+          const result = model.predict(
+              tf.ones([1, parseInt(_image_size.value), parseInt(_image_size.value), parseInt(_channels)]));
           result.dispose();
         } catch (e) {
-          status.innerHTML = 'Model failed on the given values of patch size. Please input values on which the model was trained.';
+          status.innerHTML = 'Model failed on the given values of patch size.' +
+          'Please input values on which the model was trained.';
           console.log(e);
           status.classList.remove('blink');
           return;
@@ -695,7 +698,10 @@ function uploadModel() {
         status.classList.add('error');
         status.classList.remove('blink');
         if (toggle.checked) status.innerHTML = 'Please enter a valid URL.';
-        else status.innerHTML = 'Please enter a valid model. Input model.json in first input and all weight binaries in second one without renaming.';
+        else {
+          status.innerHTML = 'Please enter a valid model.' +
+        'Input model.json in first input and all weight binaries in second one without renaming.';
+        }
         console.error(e);
       }
     } else {
@@ -740,37 +746,43 @@ async function showInfo() {
   // Update table data
   (function(callback) {
     for (const key in data) {
-      const name = key.split('/').pop();
-      const date = data[key].dateSaved.toString().slice(0, 15);
-      const size = (data[key].modelTopologyBytes + data[key].weightDataBytes + data[key].weightSpecsBytes) / (1024*1024);
-      const row = table.insertRow();
-      let classes; let input_shape; let td;
+      if (data.hasOwnProperty(key)) {
+        const name = key.split('/').pop();
+        const date = data[key].dateSaved.toString().slice(0, 15);
+        const size = (data[key].modelTopologyBytes +
+          data[key].weightDataBytes +
+          data[key].weightSpecsBytes) / (1024*1024);
+        const row = table.insertRow();
+        let classes; let input_shape; let td;
 
-      if (name.slice(0, 4) == 'pred') {
-        store.get(name).onsuccess = function(e) {
-          classes = (e.target.result.classes.join(', '));
-          input_shape = e.target.result.input_shape.slice(1, 3).join('x');
-          td = row.insertCell();
-          td.innerHTML = name.split('/').pop().split('_').splice(2).join('_').slice(0, -3);
-          td = row.insertCell();
-          td.innerHTML = classes;
-          td = row.insertCell();
-          td.innerHTML = input_shape;
-          td = row.insertCell();
-          td.innerHTML = +size.toFixed(2);
-          td = row.insertCell();
-          td.innerHTML = date;
-          td = row.insertCell();
-          td.innerHTML = '<button class="btn btn-primary btn-xs my-xs-btn" id="removeModel" type="button">Remove Model</button>';
-          td = row.insertCell();
-          td.innerHTML = '<button class="btn btn-primary btn-xs my-xs-btn" id="chngClassListBtn" type="button">Edit Class List</button>';
-          document.getElementById('removeModel').addEventListener('click', () => {
-            deleteModel(name);
-          });
-          document.getElementById('chngClassListBtn').addEventListener('click', () => {
-            showNewClassInput(name);
-          });
-        };
+        if (name.slice(0, 4) == 'pred') {
+          store.get(name).onsuccess = function(e) {
+            classes = (e.target.result.classes.join(', '));
+            input_shape = e.target.result.input_shape.slice(1, 3).join('x');
+            td = row.insertCell();
+            td.innerHTML = name.split('/').pop().split('_').splice(2).join('_').slice(0, -3);
+            td = row.insertCell();
+            td.innerHTML = classes;
+            td = row.insertCell();
+            td.innerHTML = input_shape;
+            td = row.insertCell();
+            td.innerHTML = +size.toFixed(2);
+            td = row.insertCell();
+            td.innerHTML = date;
+            td = row.insertCell();
+            td.innerHTML = '<button class="btn btn-primary btn-xs my-xs-btn" ' +
+            'id="removeModel" type="button">Remove Model</button>';
+            td = row.insertCell();
+            td.innerHTML = '<button class="btn btn-primary btn-xs my-xs-btn" '+
+            'id="chngClassListBtn" type="button">Edit Class List</button>';
+            document.getElementById('removeModel').addEventListener('click', () => {
+              deleteModel(name);
+            });
+            document.getElementById('chngClassListBtn').addEventListener('click', () => {
+              showNewClassInput(name);
+            });
+          };
+        }
       }
     }
     callback;
@@ -815,10 +827,10 @@ function openHelp() {
   const self = $UI.helpModal;
   self.body.innerHTML = `
     <em>Features</em> <br>
-    This part of caMicroscope allows to predict using a trained model on a selected patch. Some of the sample 
+    This part of caMicroscope allows to predict using a trained model on a selected patch. Some of the sample
     models are hosted <a target="_blank" href="https://github.com/Insiyaa/caMicroscope-tfjs-models">here</a>. <br>
     <i class="material-icons">aspect_ratio</i>: On activation, this button enables drawing on the viewer. After the image is loaded for further processing, a UI will
-    appear for model selection. The Whole-slide images are high resolution images containing the entire sampled tissue so make sure 
+    appear for model selection. The Whole-slide images are high resolution images containing the entire sampled tissue so make sure
     you zoom in and then select a patch. Selecting a large region while being totally zoomed out may slow down the further processing
     due to fairly large image size. <br>
     <i class="material-icons">insert_photo</i>: This will redirect back to main Viewer. <br>

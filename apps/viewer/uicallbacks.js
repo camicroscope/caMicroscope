@@ -641,12 +641,14 @@ function mainMenuChange(data) {
 function convertHumanAnnotationToPopupBody(notes) {
   const rs = {type: 'map', data: []};
   for (let field in notes) {
-    const val = notes[field];
-    field = field
-        .split('_')
-        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(' ');
-    rs.data.push({key: field, value: val});
+    if (notes.hasOwnProperty(field)) {
+      const val = notes[field];
+      field = field
+          .split('_')
+          .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(' ');
+      rs.data.push({key: field, value: val});
+    }
   }
   return rs;
 }
@@ -1337,14 +1339,16 @@ async function callback(data) {
           $UI.layersViewerMinor.setting.categoricalData;
       if (d.isShow) {
         for (const key in cates) {
-          cate = cates[key];
-          if (cate.item.name == 'heatmap') {
-            cate.items.forEach((i) => {
-              if (d !== i && i.isShow) {
-                i.elt.querySelector('input[type=checkbox]').checked = false;
-                i.isShow = false;
-              }
-            });
+          if (cates.hasOwnProperty(key)) {
+            cate = cates[key];
+            if (cate.item.name == 'heatmap') {
+              cate.items.forEach((i) => {
+                if (d !== i && i.isShow) {
+                  i.elt.querySelector('input[type=checkbox]').checked = false;
+                  i.isShow = false;
+                }
+              });
+            }
           }
         }
       }
@@ -1600,7 +1604,8 @@ function saveAnalytics() {
 }
 function startDrawing(e) {
   if (
-    $UI.toolbar.getSubTool('preset_label') && $UI.toolbar.getSubTool('preset_label').querySelector('input[type=checkbox]')
+    $UI.toolbar.getSubTool('preset_label') &&
+    $UI.toolbar.getSubTool('preset_label').querySelector('input[type=checkbox]')
         .checked
   ) {
     //     ||
@@ -1621,8 +1626,8 @@ function startDrawing(e) {
 function stopDrawing(e) {
   // preset label annotation
   if (
-    $UI.toolbar.getSubTool('preset_label') && $UI.toolbar.getSubTool('preset_label').querySelector('input[type=checkbox]')
-        .checked
+    $UI.toolbar.getSubTool('preset_label') &&
+    $UI.toolbar.getSubTool('preset_label').querySelector('input[type=checkbox]').checked
   ) {
     // save preset label
     savePresetLabel();

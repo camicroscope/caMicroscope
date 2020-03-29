@@ -108,7 +108,11 @@ function initCore() {
     // load the heatmap data
 
     var checkImagingHelperIsReady = setInterval(function() {
-      if ($CAMIC.viewer.imagingHelper&& $CAMIC.viewer.imagingHelper._haveImage && $D.heatMapData && $D.editedDataClusters && $UI.editedListSideMenu) {
+      if ($CAMIC.viewer.imagingHelper &&
+        $CAMIC.viewer.imagingHelper._haveImage &&
+        $D.heatMapData &&
+        $D.editedDataClusters &&
+        $UI.editedListSideMenu) {
         clearInterval(checkImagingHelperIsReady);
 
         const opt = {
@@ -363,7 +367,12 @@ function initUIcomponents() {
 
 
   var checkIsReady = setInterval(function() {
-    if ($CAMIC&& $CAMIC.viewer && $CAMIC.viewer.imagingHelper && $CAMIC.viewer.imagingHelper._haveImage && $D.heatMapData && $D.editedDataClusters) {
+    if ($CAMIC &&
+      $CAMIC.viewer &&
+      $CAMIC.viewer.imagingHelper &&
+      $CAMIC.viewer.imagingHelper._haveImage &&
+      $D.heatMapData &&
+      $D.editedDataClusters) {
       clearInterval(checkIsReady);
       // create editor side menu
       $UI.editorSideMenu = new SideMenu({
@@ -402,61 +411,6 @@ function initUIcomponents() {
       $CAMIC.viewer.canvasDrawInstance.size = getGridSizeInImage($D.heatMapData.provenance.analysis.size);
     }
   });
-
-  // $UI.layersSideMenu = new SideMenu({
-  //   id:'side_layers',
-  //   width: 300,
-  //   contentPadding:5,
-  //   //, isOpen:true
-  //   callback:toggleSideMenu
-  // });
-
-  // /* annotation popup */
-  // $UI.annotPopup = new PopupPanel({
-  //   footer:[
-  //     // { // edit
-  //     //   title:'Edit',
-  //     //   class:'material-icons',
-  //     //   text:'notes',
-  //     //   callback:anno_edit
-  //     // },
-  //     { // delete
-  //       title:'Delete',
-  //       class:'material-icons',
-  //       text:'delete_forever',
-  //       callback:anno_delete
-  //     }
-  //   ]
-  // });
-
-  // var checkOverlaysDataReady = setInterval(function () {
-  //   if($D.overlayers) {
-  //     clearInterval(checkOverlaysDataReady);
-
-  //     // create UI and set data
-  //     $UI.layersViewer = new LayersViewer({id:'overlayers',data:$D.overlayers,sortChange:sort_change,callback:callback });
-
-  //     callback($D.overlayers.filter(lay => lay.isShow));
-
-  //     $UI.layersViewer.elt.parentNode.removeChild($UI.layersViewer.elt);
-
-  //     // add to layers side menu
-  //     const title = document.createElement('div');
-  //     title.classList.add('item_head');
-  //     title.textContent = 'Layers Manager';
-  //     $UI.layersSideMenu.addContent(title);
-  //     $UI.layersSideMenu.addContent($UI.layersViewer.elt);
-  //   }
-  // }, 500);
-
-
-  // detach collapsible_list
-  // $UI.appsList.elt.parentNode.removeChild($UI.appsList.elt);
-  // $UI.appsSideMenu.addContent($UI.appsList.elt);
-
-  // $UI.multSelector = new MultSelector({id:'mult_selector'});
-  // $UI.multSelector.addHandler('cancel',multSelector_cancel);
-  // $UI.multSelector.addHandler('action',multSelector_action);
 }
 
 function setEditedDataClusters(editData) {

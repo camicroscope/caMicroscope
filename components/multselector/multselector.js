@@ -24,7 +24,8 @@
  * @param {Element} [options.element]
  *        The container as a html element.
  * @param {Array} [options.data]
- *        The data of selector's options. The form of each option should be an array -> [key - identity,value - text on option].
+ *        The data of selector's options.
+ *        The form of each option should be an array -> [key - identity,value - text on option].
  * @param {String} [options.title]
  *        The title of mult-selector
  * @param {Boolean} [options.hasControl='true']
@@ -166,7 +167,8 @@ MultSelector.prototype.__create = function() {
 /**
  * setData
  * @param {Array} data
- *        The data of selector's options. The form of each option should be an array -> [key - identity,value - text on option].
+ *        The data of selector's options.
+ *        The form of each option should be an array -> [key - identity,value - text on option].
  */
 MultSelector.prototype.setData = function(data) {
   if (!Array.isArray(data)) {
@@ -189,7 +191,8 @@ MultSelector.prototype.setData = function(data) {
  * @param  {Select} target
  *         a selector that is a html select element
  * @param  {Array} data
- *         The data of selector's options. The form of each option should be an array -> [key - identity,value - text on option].
+ *         The data of selector's options.
+ *         The form of each option should be an array -> [key - identity,value - text on option].
  */
 MultSelector.__addOptions = function(target, data) {
   data.forEach((item) => {

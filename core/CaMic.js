@@ -156,7 +156,9 @@ class CaMic {
     if (this.slideQuery.hasOwnProperty('id') && this.slideQuery.id) {
       slidePromise = this.store.getSlide(this.slideQuery.id);
     } else {
-      slidePromise = this.store.findSlide(this.slideQuery.name, this.slideQuery.study, this.slideQuery.specimen, this.slideQuery.location);
+      slidePromise = this.store.findSlide(this.slideQuery.name,
+          this.slideQuery.study, this.slideQuery.specimen,
+          this.slideQuery.location);
     }
     slidePromise
         .then((x)=>{
@@ -174,7 +176,12 @@ class CaMic {
             error: function( xhr, exc ) {
               console.log(xhr, exc);
               Loading.text.textContent = 'Something Wrong With This Slide... X_X';
-              if (func && typeof func === 'function') func.call(null, {hasError: true, isServiceError: true, message: 'Something Wrong With This Slide... X_X'});
+              if (func && typeof func === 'function') {
+                func.call(null,
+                    {hasError: true,
+                      isServiceError: true,
+                      message: 'Something Wrong With This Slide... X_X'});
+              }
             },
           });
         })
@@ -353,7 +360,9 @@ class CaMic {
     // destroy Scalebar's instance if exists
     if (this.viewer.scalebarInstance) {
       for (const key in this.viewer.scalebarInstance) {
-        this.viewer.scalebarInstance[key] = null;
+        if (this.viewer.scalebarInstance.hasOwnProperty(key)) {
+          this.viewer.scalebarInstance[key] = null;
+        }
       }
       this.viewer.scalebarInstance;
     }

@@ -11,7 +11,8 @@
 // collapse/ expand sub tools
 
 /**
- * CaMicroscope Tool Bar. Currently, it shows at the top-left corner of the screen. It consists of Main Tools and Sub Tools.
+ * CaMicroscope Tool Bar. Currently, it shows at the top-left corner of the screen.
+ * It consists of Main Tools and Sub Tools.
  * Main Tools is formed of Apps and Layers. There is a callback function that return the status of Main Tools.
  * Sub Tools can be customized by using options.
  * @constructor
@@ -49,7 +50,8 @@
  * @param {Object[]} [options.subTools.dropdownList.checked = False]
  *        the item of the dropdown list is checked or not.
  * @param {Function} options.subTools.callback
- *        Callback Function that toggles if tool is active such as click(button), changing status(check/radio/dropdown), return a object which has value and status.
+ *        Callback Function that toggles if tool is active such as click(button),
+ *        changing status(check/radio/dropdown), return a object which has value and status.
  *
  */
 function CaToolbar(options) {
@@ -435,7 +437,9 @@ function createMenu(option) {
     li.append(ul);
   } else {
     for (const key in option.data) {
-      li.dataset[key] = option.data[key];
+      if (option.data.hasOwnProperty(key)) {
+        li.dataset[key] = option.data[key];
+      }
     }
     if (option.checked) {
       li.classList.add('checked');

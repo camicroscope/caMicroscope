@@ -225,10 +225,12 @@ LayersViewer.prototype.__refreshUI = function() {
   // expand and collapse control for categorical view
   const cateItems = this.setting.categoricalData;
   for (const key in cateItems) {
-    cateItems[key].elt.firstChild.addEventListener(
-        'click',
-        this.__switch.bind(this),
-    );
+    if (cateItems.hasOwnProperty(key)) {
+      cateItems[key].elt.firstChild.addEventListener(
+          'click',
+          this.__switch.bind(this),
+      );
+    }
   }
 
   // moveup
@@ -295,25 +297,27 @@ LayersViewer.prototype.viewModeSwitch = function(
 LayersViewer.createCategoricalView = function(data) {
   const ul = document.createElement('ul');
   for (const typeId in data) {
-    // create root li
-    const type_data = data[typeId]; // type_data = {id:typeId,name:typeName,items:[{item:,isShow:}]}
-    type_data.elt = LayersViewer.createCategoricalItem.call(
-        this,
-        type_data,
-        'root',
-    );
-    ul.appendChild(type_data.elt); // create li root
+    if (data.hasOwnProperty(typeId)) {
+      // create root li
+      const type_data = data[typeId]; // type_data = {id:typeId,name:typeName,items:[{item:,isShow:}]}
+      type_data.elt = LayersViewer.createCategoricalItem.call(
+          this,
+          type_data,
+          'root',
+      );
+      ul.appendChild(type_data.elt); // create li root
 
-    const children = document.createElement('ul');
-    // add leaf
-    type_data.items.forEach(
-        function(item) {
-          item.elt = LayersViewer.createCategoricalItem.call(this, item);
-          children.appendChild(item.elt); // create li leaf
-        }.bind(this),
-    );
-    //
-    ul.appendChild(children);
+      const children = document.createElement('ul');
+      // add leaf
+      type_data.items.forEach(
+          function(item) {
+            item.elt = LayersViewer.createCategoricalItem.call(this, item);
+            children.appendChild(item.elt); // create li leaf
+          }.bind(this),
+      );
+      //
+      ul.appendChild(children);
+    }
   }
   return {view: ul};
 };
@@ -673,7 +677,9 @@ LayersViewer.prototype.__change = function(e) {
       });
 
       for (const key in this.setting.categoricalData) {
-        this.setting.categoricalData[key].elt.lastChild.checked = checked;
+        if (this.setting.categoricalData.hasOwnProperty(key)) {
+          this.setting.categoricalData[key].elt.lastChild.checked = checked;
+        }
       }
       this.setting.callback.call(null, this.setting.data);
       break;

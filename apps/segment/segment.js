@@ -70,20 +70,20 @@ async function initUIcomponents() {
       <form class="form-style" action="#">
         <ul>
           <li>
-            <label align="left"> Name:  </label> 
+            <label align="left"> Name:  </label>
             <input name="name" id="name" type="text" required />
             <span> Name of the model </span>
           </li>
           <li>
-            <label align="left"> Input patch size: </label> 
+            <label align="left"> Input patch size: </label>
             <input name="image_size" id="image_size" type="number" required />
             <span> The image size on which the model is trained </span>
           </li>
-            <label>Input image format:</label> <br>            
+            <label>Input image format:</label> <br>
             <input type="radio" id="gray" name="channels" value=1 checked>
             <label for="gray">Gray</label> <br>
             <input type="radio" id="rgb" name="channels" value=3>
-            <label for="rgb" padding="10px">RGB</label> 
+            <label for="rgb" padding="10px">RGB</label>
           <li id="mg">
             <label for="magnification">Magnification:</label>
             <select id="magnification">
@@ -96,16 +96,16 @@ async function initUIcomponents() {
           <hr>
 
           <label class="switch"><input type="checkbox" id="togBtn"><div class="slider"></div></label> <br> <br>
-          <div class="checkfalse"><div>Select model.json first followed by the weight binaries.</div> <br> 
+          <div class="checkfalse"><div>Select model.json first followed by the weight binaries.</div> <br>
           <input name="filesupload" id="modelupload" type="file" required/>
           <input name="filesupload" id="weightsupload" type="file" multiple="" required/> <br> <br> </div>
-          <div class="checktrue" > URL to the ModelAndWeightsConfig JSON describing the model. <br> <br> 
+          <div class="checktrue" > URL to the ModelAndWeightsConfig JSON describing the model. <br> <br>
           <label align-"left"> Enter the URL: </label> <input type="url" name="url" id="url" required> <br><br></div>
           <button id="submit">Upload</button> <span id="status"></span>
         </ul>
 
-      </form>  
-      <button id="refresh" class='material-icons'>cached</button> 
+      </form>
+      <button id="refresh" class='material-icons'>cached</button>
 
     `,
   });
@@ -427,7 +427,8 @@ function drawRectangle(e) {
   if (e.checked) {
     // Warn about zoom level
     const current_zoom = Math.round($CAMIC.viewer.imagingHelper._zoomFactor * 40);
-    required_zoom = $UI.args && $UI.args.status!='watershed'? parseInt($UI.args.status.split('_')[0].split('-')[2]):current_zoom;
+    required_zoom = $UI.args &&
+    $UI.args.status!='watershed'? parseInt($UI.args.status.split('_')[0].split('-')[2]):current_zoom;
     if (current_zoom != required_zoom) {
       alert(`You are testing the model for a different zoom level (recommended: ${required_zoom}). Performance might be affected.`);
     }
@@ -588,14 +589,17 @@ function uploadModel() {
         // Adding some extra digits in the end to maintain uniqueness
         const _channels = parseInt(document.querySelector('input[name="channels"]:checked').value);
         const size = parseInt(_image_size.value);
-        const name = 'seg-' + size.toString() + '-' + mag.value.toString() + '_' + _name.value + (new Date().getTime().toString()).slice(-4, -1);
+        const name = 'seg-' + size.toString() +
+        '-' + mag.value.toString() +
+        '_' + _name.value +
+        (new Date().getTime().toString()).slice(-4, -1);
         const model = await tf.loadLayersModel(modelInput);
         const result = model.predict(tf.ones([1, size, size, _channels]));
         const shape = result.shape;
         result.dispose();
         if (shape[1] != size || shape[2] != size) {
           console('Shape:', shape[1], shape[2]);
-          throw 'The application only supports 1:1 image Masks. Import a valid model.';
+          throw new Error('The application only supports 1:1 image Masks. Import a valid model.');
         }
 
         await model.save(IDB_URL + name);
@@ -623,8 +627,12 @@ function uploadModel() {
       } catch (e) {
         status.classList.add('error');
         status.classList.remove('blink');
-        if (toggle.checked) status.innerHTML = 'Please enter a valid URL.';
-        else status.innerHTML = 'Please enter a valid model. Input model.json in first input and all weight binaries in second one without renaming.';
+        if (toggle.checked) {
+          status.innerHTML = 'Please enter a valid URL.';
+        } else {
+          status.innerHTML = 'Please enter a valid model. ' +
+         'Input model.json in first input and all weight binaries in second one without renaming.';
+        }
         console.error(e);
       }
     } else {
@@ -765,7 +773,7 @@ async function segmentModel(key) {
             values = Array.from(values);
             // scale values
             values = values.map((x) => x * 255);
-            val = new Array();
+            val = [];
             while (values.length > 0) val.push(values.splice(0, image_size));
           });
           tf.engine().startScope();
@@ -786,8 +794,7 @@ async function segmentModel(key) {
 
       model.dispose();
     };
-  } // on success
-  else {
+  } else {
     alert('Selected section too small. Please select a larger section.');
   }
 }
@@ -844,10 +851,12 @@ function segmentROI(box) {
   console.log($UI.toolbar._sub_tools.value);
 
   const fullResCvs = self.__fullsrc;
-  // const prefix_url = ImgloaderMode == 'iip'?`${window.location.origin}/img/IIP/raw/?IIIF=${$D.params.data.location}`:$CAMIC.slideId;
-  const prefix_url = ImgloaderMode == 'iip'?`../../img/IIP/raw/?IIIF=${$D.params.data.location}`:$CAMIC.slideId;
+  const prefix_url = ImgloaderMode == 'iip'?
+  `../../img/IIP/raw/?IIIF=${$D.params.data.location}`:$CAMIC.slideId;
 
-  self.__img.src = prefix_url+'\/'+self.__spImgX+','+self.__spImgY+','+self.__spImgWidth+','+self.__spImgHeight+'\/'+self.__spImgWidth+',/0/default.jpg';
+  self.__img.src = prefix_url+'\/'+self.__spImgX+','+self.__spImgY+','+
+  self.__spImgWidth+','+self.__spImgHeight+'\/'+self.__spImgWidth+
+  ',/0/default.jpg';
   self.__img.onload = function() {
     const image = cv.imread(self.__img);
     cv.imshow(fullResCvs, image);
@@ -1118,29 +1127,33 @@ async function showInfo() {
   // Update table data
   (function(callback) {
     for (const key in data) {
-      const name = key.split('/').pop();
-      const date = data[key].dateSaved.toString().slice(0, 15);
-      const size = (data[key].modelTopologyBytes + data[key].weightDataBytes + data[key].weightSpecsBytes) / (1024*1024);
-      const row = table.insertRow();
-      let classes; let input_shape; let td;
+      if (data.hasOwnProperty(key)) {
+        const name = key.split('/').pop();
+        const date = data[key].dateSaved.toString().slice(0, 15);
+        const size = (data[key].modelTopologyBytes + data[key].weightDataBytes +
+          data[key].weightSpecsBytes) / (1024*1024);
+        const row = table.insertRow();
+        let classes; let input_shape; let td;
 
-      if (name.slice(0, 3) == 'seg') {
-        store.get(name).onsuccess = function(e) {
-          input_shape = e.target.result.input_shape.slice(1, 3).join('x');
-          td = row.insertCell();
-          td.innerHTML = name.split('_').splice(1).join('_').slice(0, -3);
-          td = row.insertCell();
-          td.innerHTML = input_shape;
-          td = row.insertCell();
-          td.innerHTML = +size.toFixed(2);
-          td = row.insertCell();
-          td.innerHTML = date;
-          td = row.insertCell();
-          td.innerHTML = '<button class="btn btn-primary btn-xs my-xs-btn" id="removeModel" type="button">Remove Model</button>';
-          document.getElementById('removeModel').addEventListener('click', () => {
-            deleteModel(name);
-          });
-        };
+        if (name.slice(0, 3) == 'seg') {
+          store.get(name).onsuccess = function(e) {
+            input_shape = e.target.result.input_shape.slice(1, 3).join('x');
+            td = row.insertCell();
+            td.innerHTML = name.split('_').splice(1).join('_').slice(0, -3);
+            td = row.insertCell();
+            td.innerHTML = input_shape;
+            td = row.insertCell();
+            td.innerHTML = +size.toFixed(2);
+            td = row.insertCell();
+            td.innerHTML = date;
+            td = row.insertCell();
+            td.innerHTML = '<button class="btn btn-primary btn-xs my-xs-btn" ' +
+            'id="removeModel" type="button">Remove Model</button>';
+            document.getElementById('removeModel').addEventListener('click', () => {
+              deleteModel(name);
+            });
+          };
+        }
       }
     }
     callback;

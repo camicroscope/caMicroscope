@@ -111,7 +111,8 @@ class MessageQueue {
      */
   __add(text, type='info', time = 1000) {
     const div = MessageQueue.createBullet(text, type);
-        this.setting.position.includes('bottom')?this.elt.appendChild(div):this.elt.insertBefore(div, this.elt.firstChild);
+        this.setting.position.includes('bottom')?
+        this.elt.appendChild(div):this.elt.insertBefore(div, this.elt.firstChild);
         if (this.setting.position.includes('right')) div.classList.add('right');
 
         div.addEventListener('webkitTransitionEnd', this.__destroy.bind(div));

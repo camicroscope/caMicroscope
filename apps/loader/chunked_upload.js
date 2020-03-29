@@ -65,7 +65,9 @@ async function handle_upload(selectedFiles) {
   // Add columns
   for (var i=0; i<selectedFiles.length; i++, currID++) {
     idtr.insertCell(-1).innerHTML = '<b>'+Number(currID+1)+'<b>';
-    fnametr.insertCell(-1).innerHTML = '<input type=text name=filename id=\'filename'+currID+'\' value=\''+selectedFiles[i]['name']+'\'>';
+    fnametr.insertCell(-1).innerHTML = '<input type=text name=filename id=\'filename'+
+    currID+'\' value=\''+
+    selectedFiles[i]['name']+'\'>';
     tokentr.insertCell(-1).innerHTML = '<input type=text name=token id=\'token'+currID+'\'>';
     slidetr.insertCell(-1).innerHTML = '<input type=text name=slidename id=\'slidename'+currID+'\'>';
 

@@ -557,7 +557,9 @@ StyleContextMenu.prototype.removeAllHandlers = function( eventName ) {
     this.events[eventName] = [];
   } else {
     for ( const eventType in this.events ) {
-      this.events[eventType] = [];
+      if (this.events.hasOwnProperty(eventType)) {
+        this.events[eventType] = [];
+      }
     }
   }
 },
@@ -574,7 +576,7 @@ StyleContextMenu.prototype.getHandler = function( eventName ) {
   }
   events = events.length === 1 ?
         [events[0]] :
-        Array.apply( null, events );
+        Array( ...events );
   return function( source, args ) {
     let i;
     const length = events.length;
@@ -607,5 +609,3 @@ StyleContextMenu.prototype.raiseEvent = function( eventName, eventArgs ) {
     handler( this, eventArgs );
   }
 };
-
-

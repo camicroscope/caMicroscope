@@ -66,7 +66,8 @@
       // get pos on screen
       const height = target.offsetHeight;
       // const width = target.offsetWidth;
-      for (var left=0, top=0; target != null; left += target.offsetLeft, top += target.offsetTop, target = target.offsetParent);
+      for (var left=0, top=0; target != null;
+        left += target.offsetLeft, top += target.offsetTop, target = target.offsetParent);
       top += height;
       left += 2;// width;
       items.forEach((item) => item.classList.add('list'));
@@ -177,7 +178,9 @@
       this.events[eventName] = [];
     } else {
       for ( const eventType in this.events ) {
-        this.events[eventType] = [];
+        if (this.events.hasOwnProperty(eventType)) {
+          this.events[eventType] = [];
+        }
       }
     }
   },
@@ -194,7 +197,7 @@
     }
     events = events.length === 1 ?
         [events[0]] :
-        Array.apply( null, events );
+        Array( ...events );
     return function( source, args ) {
       let i;
       const length = events.length;
@@ -322,5 +325,3 @@
     return elt;
   }
 })(__);
-
-

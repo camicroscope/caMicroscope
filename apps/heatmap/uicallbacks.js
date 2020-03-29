@@ -546,7 +546,7 @@ async function onDeleteEditData(data) {
   const cluster = data.cluster;
   const idx = data.index;
 
-  if (!confirm(`Do You Want To Delete { ${cluster.name} - ${cluster.value==0?'Negative':'Positive'} Index:${idx} }?`)) return;
+  if (!confirm(`Do You Want To Delete {${cluster.name} - ${cluster.value==0?'Negative':'Positive'} Index:${idx} }?`)) return;
   Loading.open(document.body, `Deleting Edit Data ...`);
 
   // UPDATE EDIT DATA

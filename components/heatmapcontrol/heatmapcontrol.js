@@ -2,7 +2,16 @@
 //
 
 // Default Color List for gradient view
-const defaultColorList = ['#EAF2F8', '#D4E6F1', '#A9CCE3', '#7FB3D5', '#5499C7', '#2980B9', '#2471A3', '#1F618D', '#1A5276', '#154360'];
+const defaultColorList = ['#EAF2F8',
+  '#D4E6F1',
+  '#A9CCE3',
+  '#7FB3D5',
+  '#5499C7',
+  '#2980B9',
+  '#2471A3',
+  '#1F618D',
+  '#1A5276',
+  '#154360'];
 // Regular Expression for testing valid color values
 const cssHexRegExp = new RegExp('^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$');
 function HeatmapControl(options) {
@@ -61,7 +70,7 @@ HeatmapControl.prototype.__refresh = function() {
     </div>
         <label>Properties:</label>
     <div class='fields-panel'>
-        
+
     </div>
     <div style='display:none;'>
         <label>Opacity:</label>

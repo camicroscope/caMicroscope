@@ -167,7 +167,9 @@ function downloadLabel() {
 
   data.patches = $CAMIC.viewer.pmanager.exportPatchesAsJSON('image');
   getPatchsZip(data);
-  // let text =`{"slideId":"${$D.params.data['_id']['$oid']}","name":"${$D.params.data['name']}","patches":${JSON.stringify($CAMIC.viewer.pmanager.exportPatchesAsJSON())}}`;
+  // let text =`{"slideId":"${$D.params.data['_id']['$oid']}",
+  // "name":"${$D.params.data['name']}",
+  // "patches":${JSON.stringify($CAMIC.viewer.pmanager.exportPatchesAsJSON())}}`;
   // var element = document.createElement('a');
   // element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
   // element.setAttribute('download', `${$D.params.data['name']}-Patches-${new Date().toISOString()}.json`);
@@ -224,7 +226,15 @@ function getPatchsZip(data) {
       const patches_content = [patch_cols];
 
       data.patches.forEach((p, idx)=>{
-        patches_content.push([idx, p['color'], p['note'], p['isPoint'], p['size']['x'], p['size']['y'], p['size']['width'], p['size']['height'], p['location']]);
+        patches_content.push([idx,
+          p['color'],
+          p['note'],
+          p['isPoint'],
+          p['size']['x'],
+          p['size']['y'],
+          p['size']['width'],
+          p['size']['height'],
+          p['location']]);
       });
 
       zip.file(`metadata.csv`, meta_content.map((r)=>r.join(',')).join('\n'));
@@ -284,8 +294,9 @@ function getImage(result, callback) {
   const data = result.data;
   const size = result.patch.size;
   const widthInClient = result.patch.widthInClient*OpenSeadragon.pixelDensityRatio;
-  // const url = ImgloaderMode == 'iip'?`${window.location.origin}/img/IIP/raw/?IIIF=${data.location}/${size.x},${size.y},${size.width},${size.height}/${widthInClient},/0/default.jpg` : `${data.location}/${size.x},
-  const url = ImgloaderMode == 'iip'?`../../img/IIP/raw/?IIIF=${data.location}/${size.x},${size.y},${size.width},${size.height}/${widthInClient},/0/default.jpg` : `${data.location}/${size.x},${size.y},${size.width},${size.height}/${widthInClient},/0/default.jpg`;
+  const url = ImgloaderMode == 'iip'?
+  `../../img/IIP/raw/?IIIF=${data.location}/${size.x},${size.y},${size.width},${size.height}/${widthInClient},/0/default.jpg` :
+  `${data.location}/${size.x},${size.y},${size.width},${size.height}/${widthInClient},/0/default.jpg`;
   fetch(url).then(function(response) {
     if (response.ok) {
       return response.blob();
