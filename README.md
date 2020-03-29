@@ -7,7 +7,7 @@ This guide has sections for different kinds of use of the platform. The [User Gu
 
 # User Guide
 
-## Selecing an Image
+## Selecting an Image
 Depending on what is providing the image metadata, a different login process may be necessary. For public instances, no log in is necessary, and you can proceed to view slides. Use of other tools, such as annotations may or may not require login in this case.
 For slim instances, login should be done through a redirect directly. For pathDB instances, login should be done on the login link on the main page.
 At this point, select a collection, if applicable, and proceed to open or "view" the image of your choice.
