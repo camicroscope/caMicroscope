@@ -366,6 +366,9 @@ const $D = {
 };
 
 window.addEventListener("keydown", e => {
+
+  e.preventDefault();
+
   if (!$CAMIC || !$CAMIC.viewer) return;
   const keyCode = e.keyCode;
   // escape key to close all operations
