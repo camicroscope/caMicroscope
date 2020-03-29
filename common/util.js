@@ -76,14 +76,14 @@ function extend() {
 }
 
 /**
-	remove /empty a DOM element
+    remove /empty a DOM element
 */
 function empty(elt) {
   while (elt.firstChild) elt.removeChild(elt.firstChild);
 }
 
 /*
-	ID generator
+    ID generator
 */
 function randomId() {
   // Math.random should be unique because of its seeding algorithm.
