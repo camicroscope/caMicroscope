@@ -66,9 +66,9 @@ function initCore(){
 
   
   try{
-  	let slideQuery = {};
-  	slideQuery.id = $D.params.slideId; 
-  	$CAMIC = new CaMic("main_viewer", slideQuery, opt);
+    let slideQuery = {};
+    slideQuery.id = $D.params.slideId; 
+    $CAMIC = new CaMic("main_viewer", slideQuery, opt);
   }catch(error){
     Loading.close();
     $UI.message.addError('Core Initialization Failed');
@@ -119,8 +119,8 @@ function initCore(){
         //   data.provenance.analysis.fields[1].threshold = 0.01;
         //   $CAMIC.viewer.createHeatmap({
         //     opacity:0.8,
-        //   	data:data.data,
-        //   	size:data.provenance.analysis.size,
+        //      data:data.data,
+        //      size:data.provenance.analysis.size,
         //     fields:data.provenance.analysis.fields
         //   });
 

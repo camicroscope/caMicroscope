@@ -11,7 +11,8 @@
 // collapse/ expand sub tools
 
 /**
- * CaMicroscope Tool Bar. Currently, it shows at the top-left corner of the screen. It consists of Main Tools and Sub Tools.
+ * CaMicroscope Tool Bar. Currently, it shows at the top-left corner of the screen.
+ * It consists of Main Tools and Sub Tools.
  * Main Tools is formed of Apps and Layers. There is a callback function that return the status of Main Tools.
  * Sub Tools can be customized by using options.
  * @constructor
@@ -31,10 +32,10 @@
  *        The information is most often shown as a tooltip text when the mouse moves over the subTools.
  * @param {String} options.subTools.type
  *        The behavior of tool looks like. Currently, Support 4 types of sub tools.
- *        	'btn' - button
- *        	'check' - check box
- *        	'radio' - radio button
- *        	'dropdown' - dropdown list
+ *          'btn' - button
+ *          'check' - check box
+ *          'radio' - radio button
+ *          'dropdown' - dropdown list
  * @param {String} options.subTools.value
  *        Callback function will return this value if click on a sub tool.
  * @param {Object[]} [options.subTools.dropdownList]
@@ -49,11 +50,12 @@
  * @param {Object[]} [options.subTools.dropdownList.checked = False]
  *        the item of the dropdown list is checked or not.
  * @param {Function} options.subTools.callback
- *        Callback Function that toggles if tool is active such as click(button), changing status(check/radio/dropdown), return a object which has value and status.
+ *        Callback Function that toggles if tool is active such as click(button),
+ *        changing status(check/radio/dropdown), return a object which has value and status.
  *
  */
 function CaToolbar(options) {
-  this.name = "CaToolbar";
+  this.name = 'CaToolbar';
   // DOM elts
   /**
    * @property {Element} elt The element to append the toolbar's container element to.
@@ -78,18 +80,18 @@ function CaToolbar(options) {
     // may be it can be extension in future...
     mainTools: [
       {
-        icon: "apps",
-        title: "Applications",
-        type: "check",
-        value: "apps"
+        icon: 'apps',
+        title: 'Applications',
+        type: 'check',
+        value: 'apps',
       },
       {
-        icon: "view_list",
-        title: "Layers",
-        type: "check",
-        value: "layers"
-      }
-    ]
+        icon: 'view_list',
+        title: 'Layers',
+        type: 'check',
+        value: 'layers',
+      },
+    ],
   };
 
   // setting options
@@ -110,22 +112,22 @@ function CaToolbar(options) {
  */
 CaToolbar.prototype.__create = function(options) {
   switch (options.type) {
-    case "btn":
+    case 'btn':
       // create button menu
       return this.__createBtn(options);
-    case "check":
+    case 'check':
       // create checkable menu
       return this.__createCheck(options);
-    case "radio":
+    case 'radio':
       // create radio menu
       return this.__createRadio(options);
-    case "dropdown":
+    case 'dropdown':
       // create dropdown menu
       return this.__createDropDown(options);
-    case "multi-dropdown":
+    case 'multi-dropdown':
       // create multi-dropdown menu
       return this.__createMultiDropDown(options);
-    case "multistates":
+    case 'multistates':
       // create dropdown menu
       return this.__createMultiStateBtns(options);
     default:
@@ -146,28 +148,29 @@ CaToolbar.prototype.__createBtn = function(options) {
     return;
   }
   // create UI
-  const li = document.createElement("li");
+  const li = document.createElement('li');
   if (options.name) li.name = options.name;
-  const btn = document.createElement("i");
-  btn.classList.add("material-icons");
-  btn.classList.add("md-24");
+  const btn = document.createElement('i');
+  btn.classList.add('material-icons');
+  btn.classList.add('md-24');
   btn.textContent = options.icon;
   if (options.title) btn.title = options.title;
   li.appendChild(btn);
 
   // binding event
-  if (options.callback)
+  if (options.callback) {
     li.addEventListener(
-      "click",
-      function(e) {
+        'click',
+        function(e) {
         // callback arguments
-        const args = {};
-        if (options.value) args.value = options.value;
+          const args = {};
+          if (options.value) args.value = options.value;
 
-        //
-        options.callback.call(e, args);
-      }.bind(this)
+          //
+          options.callback.call(e, args);
+        },
     );
+  }
 
   return li;
 };
@@ -184,40 +187,41 @@ CaToolbar.prototype.__createCheck = function(options) {
   }
 
   // create UI
-  const li = document.createElement("li");
+  const li = document.createElement('li');
   if (options.name) li.name = options.name;
   // checkbox
   const id = randomId(); // create a timestamp id
-  const chk = document.createElement("input");
+  const chk = document.createElement('input');
   chk.id = id;
-  chk.type = "checkbox";
+  chk.type = 'checkbox';
   if (options.name) chk.name = options.name;
   if (options.value) chk.value = options.value;
   if (options.checked) chk.checked = options.checked;
   li.appendChild(chk);
 
   // icon
-  const icon = document.createElement("label");
-  icon.classList.add("material-icons");
-  icon.classList.add("md-24");
+  const icon = document.createElement('label');
+  icon.classList.add('material-icons');
+  icon.classList.add('md-24');
   icon.textContent = options.icon;
   icon.htmlFor = id;
   if (options.title) icon.title = options.title;
   li.appendChild(icon);
 
   // binding event
-  if (options.callback)
+  if (options.callback) {
     chk.addEventListener(
-      "click",
-      function(e) {
+        'click',
+        function(e) {
         // callback arguments
-        const args = {};
-        if (options.value) args.value = options.value;
-        args.checked = chk.checked;
-        //
-        options.callback.call(e, args);
-      }.bind(this)
+          const args = {};
+          if (options.value) args.value = options.value;
+          args.checked = chk.checked;
+          //
+          options.callback.call(e, args);
+        },
     );
+  }
 
   return li;
 };
@@ -235,14 +239,14 @@ CaToolbar.prototype.__createRadio = function(options) {
   }
 
   // create UI
-  const li = document.createElement("li");
+  const li = document.createElement('li');
   if (options.name) li.name = options.name;
   if (options.color) li.style.borderBottom = `3px solid ${options.color}`;
   // radio
   const id = randomId(); // create a timestamp id
-  const radio = document.createElement("input");
+  const radio = document.createElement('input');
   radio.id = id;
-  radio.type = "radio";
+  radio.type = 'radio';
   radio.value = options.value;
   radio.checked = options.checked ? true : false;
 
@@ -251,20 +255,20 @@ CaToolbar.prototype.__createRadio = function(options) {
   li.appendChild(radio);
 
   // icon
-  const icon = document.createElement("label");
+  const icon = document.createElement('label');
   if (options.icon) {
-    icon.classList.add("material-icons");
-    icon.classList.add("md-24");
+    icon.classList.add('material-icons');
+    icon.classList.add('md-24');
     icon.textContent = options.icon;
   } else {
-    let _fit_content = "fit-content";
-    if (navigator.userAgent.toLowerCase().indexOf("firefox") > -1) {
+    let _fit_content = 'fit-content';
+    if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
       // Do Firefox-related activities
-      _fit_content = "-moz-fit-content";
+      _fit_content = '-moz-fit-content';
     }
     li.style.width = _fit_content;
-    li.classList.add("text");
-    const div = document.createElement("div");
+    li.classList.add('text');
+    const div = document.createElement('div');
     div.textContent = options.title;
     icon.appendChild(div);
   }
@@ -275,18 +279,19 @@ CaToolbar.prototype.__createRadio = function(options) {
   li.appendChild(icon);
 
   // binding event
-  if (options.callback)
+  if (options.callback) {
     radio.addEventListener(
-      "click",
-      function(e) {
+        'click',
+        function(e) {
         // callback arguments
-        const args = {};
-        if (options.value) args.value = options.value;
-        args.checked = radio.checked;
-        //
-        options.callback.call(e, args);
-      }.bind(this)
+          const args = {};
+          if (options.value) args.value = options.value;
+          args.checked = radio.checked;
+          //
+          options.callback.call(e, args);
+        },
     );
+  }
 
   return li;
 };
@@ -297,19 +302,19 @@ CaToolbar.prototype.__createMultiStateBtns = function(options) {
     return;
   }
   // create UI
-  const li = document.createElement("li");
+  const li = document.createElement('li');
   if (options.name) li.name = options.name;
   // btn
-  const icon = document.createElement("label");
+  const icon = document.createElement('label');
   icon.id = randomId(); // create a timestamp id
-  icon.classList.add("material-icons");
-  icon.classList.add("md-24");
+  icon.classList.add('material-icons');
+  icon.classList.add('md-24');
   icon.classList.add(0);
   icon.dataset.state = 0;
   icon.textContent = options.icon;
   if (options.title) icon.title = options.title;
   li.appendChild(icon);
-  li.addEventListener("click", function(e) {
+  li.addEventListener('click', function(e) {
     icon.classList.remove(`s${icon.dataset.state}`);
     icon.dataset.state++;
     if (icon.dataset.state == 3) icon.dataset.state = 0;
@@ -335,21 +340,21 @@ CaToolbar.prototype.__createMultiDropDown = function(options) {
     return;
   }
   // create UI
-  const li = document.createElement("li");
-  li.classList.add("multi-down");
+  const li = document.createElement('li');
+  li.classList.add('multi-down');
   if (options.name) li.name = options.name;
   // checkbox
   const id = randomId(); // create a timestamp id
-  const chk = document.createElement("input");
+  const chk = document.createElement('input');
   chk.id = id;
-  chk.type = "checkbox";
+  chk.type = 'checkbox';
   chk.checked = options.checked ? true : false;
   li.appendChild(chk);
 
   // icon
-  const icon = document.createElement("label");
-  icon.classList.add("material-icons");
-  icon.classList.add("md-24");
+  const icon = document.createElement('label');
+  icon.classList.add('material-icons');
+  icon.classList.add('md-24');
   icon.textContent = options.icon;
   icon.htmlFor = id;
   if (options.title) icon.title = options.title;
@@ -357,44 +362,44 @@ CaToolbar.prototype.__createMultiDropDown = function(options) {
 
   // create drop_down
   li.append(createMenus(options.dropdownList));
-  
+
   const ll = li.querySelector('li.checked.leaf');
-  if(ll) selected(ll);
+  if (ll) selected(ll);
   //
-  chk.addEventListener("click", function(e) {
+  chk.addEventListener('click', function(e) {
     options.callback({
       status: chk.checked,
-      data: li.querySelector("li.leaf.checked").dataset
+      data: li.querySelector('li.leaf.checked').dataset,
     });
   });
   //
-  const list = li.querySelectorAll(".leaf");
-  const alist = li.querySelectorAll("li");
-  list.forEach(l =>
+  const list = li.querySelectorAll('.leaf');
+  const alist = li.querySelectorAll('li');
+  list.forEach((l) =>
     l.addEventListener(
-      "click",
-      function(e) {
-        chk.checked = true;
-        // clear
-        const alist = li.querySelectorAll("li");
-        alist.forEach(l => l.classList.remove("checked"));
+        'click',
+        function(e) {
+          chk.checked = true;
+          // clear
+          const alist = li.querySelectorAll('li');
+          alist.forEach((l) => l.classList.remove('checked'));
 
-        // selected
-        selected(l);
-        // call function
-        options.callback({ status: true, data: l.dataset });
-      }.bind(this)
-    )
+          // selected
+          selected(l);
+          // call function
+          options.callback({status: true, data: l.dataset});
+        },
+    ),
   );
   return li;
 };
 
 function selected(element) {
   let current = element;
-  while (!current.classList.contains("multi-down")) {
+  while (!current.classList.contains('multi-down')) {
     const tag = current.tagName.toLowerCase();
-    if (tag === "li") {
-      current.classList.add("checked");
+    if (tag === 'li') {
+      current.classList.add('checked');
     }
     current = current.parentElement;
   }
@@ -403,21 +408,21 @@ function selected(element) {
 function createMenus(children) {
   let ul = null;
   if (children && Array.isArray(children) && children.length > 0) {
-    ul = document.createElement("ul");
-    ul.classList.add("dropdown-menu");
-    children.forEach(child => ul.append(createMenu(child)));
+    ul = document.createElement('ul');
+    ul.classList.add('dropdown-menu');
+    children.forEach((child) => ul.append(createMenu(child)));
   }
 
   return ul;
 }
 
 function createMenu(option) {
-  const li = document.createElement("li");
+  const li = document.createElement('li');
   li.title = option.title;
   li.dataset.value = option.value;
-  const a = document.createElement("span");
+  const a = document.createElement('span');
   a.tabIndex = -1;
-  a.href = "#";
+  a.href = '#';
   a.textContent = option.title;
   li.append(a);
   if (
@@ -425,19 +430,21 @@ function createMenu(option) {
     Array.isArray(option.children) &&
     option.children.length > 0
   ) {
-    li.classList.add("dropdown-submenu");
-    const ul = document.createElement("ul");
-    ul.classList.add("dropdown-menu");
-    option.children.forEach(child => ul.append(createMenu(child)));
+    li.classList.add('dropdown-submenu');
+    const ul = document.createElement('ul');
+    ul.classList.add('dropdown-menu');
+    option.children.forEach((child) => ul.append(createMenu(child)));
     li.append(ul);
   } else {
-    for (let key in option.data) {
-      li.dataset[key] = option.data[key];
+    for (const key in option.data) {
+      if (option.data.hasOwnProperty(key)) {
+        li.dataset[key] = option.data[key];
+      }
     }
     if (option.checked) {
-      li.classList.add("checked");
+      li.classList.add('checked');
     }
-    li.classList.add("leaf");
+    li.classList.add('leaf');
   }
   return li;
 }
@@ -454,32 +461,32 @@ CaToolbar.prototype.__createDropDown = function(options) {
     return;
   }
   // create UI
-  const li = document.createElement("li");
+  const li = document.createElement('li');
   if (options.name) li.name = options.name;
   // checkbox
   const id = randomId(); // create a timestamp id
-  const chk = document.createElement("input");
+  const chk = document.createElement('input');
   chk.id = id;
-  chk.type = "checkbox";
+  chk.type = 'checkbox';
   chk.checked = options.checked ? true : false;
   li.appendChild(chk);
 
   // icon
-  const icon = document.createElement("label");
-  icon.classList.add("material-icons");
-  icon.classList.add("md-24");
+  const icon = document.createElement('label');
+  icon.classList.add('material-icons');
+  icon.classList.add('md-24');
   icon.textContent = options.icon;
   icon.htmlFor = id;
   if (options.title) icon.title = options.title;
   li.appendChild(icon);
 
   // create drop_down
-  const _drop = document.createElement("ul");
-  _drop.classList.add("drop_down");
+  const _drop = document.createElement('ul');
+  _drop.classList.add('drop_down');
 
   //
   const lists = [];
-  for (var i = 0; i < options.dropdownList.length; i++) {
+  for (let i = 0; i < options.dropdownList.length; i++) {
     options.dropdownList[i].id = id;
     const radio = this.__createRadio(options.dropdownList[i]);
     lists.push(radio);
@@ -497,12 +504,12 @@ CaToolbar.prototype.__createDropDown = function(options) {
 
   // binding event
   if (options.callback) {
-    chk.addEventListener("click", getStatus.bind(this));
-    lists.forEach(radio =>
-      radio.addEventListener("click", e => {
+    chk.addEventListener('click', getStatus.bind(this));
+    lists.forEach((radio) =>
+      radio.addEventListener('click', (e) => {
         chk.checked = true;
         getStatus.call(this, e);
-      })
+      }),
     );
   }
 
@@ -516,18 +523,18 @@ CaToolbar.prototype.__createDropDown = function(options) {
 CaToolbar.prototype.__refresh = function() {
   // detach elements
   empty(this.elt);
-  this.elt.classList.add("ca_tools");
+  this.elt.classList.add('ca_tools');
 
-  const main_bar = document.createElement("ul");
-  main_bar.classList.add("tools");
+  const main_bar = document.createElement('ul');
+  main_bar.classList.add('tools');
   main_bar.style.zIndex = this.setting.zIndex;
   if (this.setting.hasMainTools) {
     // main tools
 
-    let main_tools = this.setting.mainTools;
+    const main_tools = this.setting.mainTools;
     for (var i = 0; i < main_tools.length; i++) {
       const options = main_tools[i];
-      options.name = "_main_tools";
+      options.name = '_main_tools';
       const tool = this.__create(options);
       this._main_tools.push(tool);
       main_bar.appendChild(tool);
@@ -535,30 +542,30 @@ CaToolbar.prototype.__refresh = function() {
     }
 
     // main tools events
-    const main_chks = main_bar.querySelectorAll("input[name=_main_tools]");
-    main_chks.forEach(chk =>
+    const main_chks = main_bar.querySelectorAll('input[name=_main_tools]');
+    main_chks.forEach((chk) =>
       chk.addEventListener(
-        "change",
-        function(e) {
-          const args = {};
-          main_chks.forEach(aChk => {
-            if (e.target.checked && e.target !== aChk) aChk.checked = false;
-            args[aChk.value] = aChk.checked;
-          });
+          'change',
+          function(e) {
+            const args = {};
+            main_chks.forEach((aChk) => {
+              if (e.target.checked && e.target !== aChk) aChk.checked = false;
+              args[aChk.value] = aChk.checked;
+            });
 
-          this.setting.mainToolsCallback.call(this, args);
-        }.bind(this)
-      )
+            this.setting.mainToolsCallback.call(this, args);
+          }.bind(this),
+      ),
     );
 
     // separator
-    const separator = document.createElement("li");
-    separator.classList.add("separator");
+    const separator = document.createElement('li');
+    separator.classList.add('separator');
     main_bar.appendChild(separator);
   }
 
   // sub tools
-  let sub_tools = this.setting.subTools;
+  const sub_tools = this.setting.subTools;
   for (var i = 0; i < sub_tools.length; i++) {
     const options = sub_tools[i];
     const tool = this.__create(options);
@@ -569,19 +576,19 @@ CaToolbar.prototype.__refresh = function() {
   }
 
   // handler
-  this.handler = document.createElement("li");
-  this.handler.classList.add("handler");
+  this.handler = document.createElement('li');
+  this.handler.classList.add('handler');
 
   const id = randomId();
-  const handler_flag = document.createElement("input");
+  const handler_flag = document.createElement('input');
   handler_flag.id = id;
-  handler_flag.type = "checkbox";
+  handler_flag.type = 'checkbox';
   this.handler.appendChild(handler_flag);
 
-  const handler_icon = document.createElement("label");
+  const handler_icon = document.createElement('label');
   handler_icon.htmlFor = id;
-  handler_icon.classList.add("material-icons");
-  handler_icon.textContent = "keyboard_arrow_left";
+  handler_icon.classList.add('material-icons');
+  handler_icon.textContent = 'keyboard_arrow_left';
   this.handler.appendChild(handler_icon);
   // create main m
   main_bar.appendChild(this.handler);
@@ -589,7 +596,7 @@ CaToolbar.prototype.__refresh = function() {
   this.elt.appendChild(main_bar);
 
   // add handler event
-  this.handler.addEventListener("change", this.switch.bind(this));
+  this.handler.addEventListener('change', this.switch.bind(this));
 };
 
 /**
@@ -600,9 +607,10 @@ CaToolbar.prototype.__refresh = function() {
  *         the status of tool is checked or not.
  */
 CaToolbar.prototype.changeMainToolStatus = function(tool_value, checked) {
-  const tool = this.setting.mainTools.find(item => item.value == tool_value);
-  if (tool && tool.__item)
-    tool.__item.querySelector("input[type=checkbox]").checked = checked;
+  const tool = this.setting.mainTools.find((item) => item.value == tool_value);
+  if (tool && tool.__item) {
+    tool.__item.querySelector('input[type=checkbox]').checked = checked;
+  }
 };
 
 /*
@@ -612,7 +620,7 @@ CaToolbar.prototype.changeMainToolStatus = function(tool_value, checked) {
  */
 CaToolbar.prototype.__menusChange = function(e) {
   // default the main menu is exclusive - show only one tool
-  this.menus.forEach(menu => {
+  this.menus.forEach((menu) => {
     const targetId = menu.dataset.target;
     if (menu !== e.target) {
       menu.checked = false;
@@ -630,7 +638,7 @@ CaToolbar.prototype.__menusChange = function(e) {
  * switch - according to the handle status to expand/collapse the sub tools
  */
 CaToolbar.prototype.switch = function(e) {
-  if (this.handler.querySelector("input").checked) {
+  if (this.handler.querySelector('input').checked) {
     this.collapse();
   } else {
     this.expand();
@@ -641,22 +649,22 @@ CaToolbar.prototype.switch = function(e) {
  * collapse - collapse sub tools.
  */
 CaToolbar.prototype.collapse = function() {
-  this.handler.querySelector("label").textContent = "keyboard_arrow_right";
-  this._sub_tools.forEach(btn => (btn.style.display = "none"));
+  this.handler.querySelector('label').textContent = 'keyboard_arrow_right';
+  this._sub_tools.forEach((btn) => (btn.style.display = 'none'));
 };
 
 /*
  * expand - expand sub tools.
  */
 CaToolbar.prototype.expand = function() {
-  this.handler.querySelector("label").textContent = "keyboard_arrow_left";
-  this._sub_tools.forEach(btn => (btn.style.display = ""));
+  this.handler.querySelector('label').textContent = 'keyboard_arrow_left';
+  this._sub_tools.forEach((btn) => (btn.style.display = ''));
 };
 
 /*
  * getSubToolByName - expand sub tools.
  */
 CaToolbar.prototype.getSubTool = function(name) {
-  //console.log(this._sub_tools);
-  return this._sub_tools.find(li => li.name == name);
+  // console.log(this._sub_tools);
+  return this._sub_tools.find((li) => li.name == name);
 };
