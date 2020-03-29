@@ -910,7 +910,7 @@ function saveBrushLabel(isOff) {
 
 function savePresetLabel() {
   if ($CAMIC.viewer.canvasDrawInstance._path_index === 0) {
-    alert("No Markup On Annotation.");
+    alert("No Markup On Annotation. Try holding and dragging.");
     return;
   }
   // save
@@ -1098,7 +1098,7 @@ function anno_callback(data) {
   // has Path?
 
   if ($CAMIC.viewer.canvasDrawInstance._path_index === 0) {
-    alert("No Markup On Annotation.");
+    alert("No Markup On Annotation. Try holding and dragging.");
     return;
   }
 
