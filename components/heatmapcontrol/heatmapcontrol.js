@@ -8,17 +8,17 @@ const cssHexRegExp = new RegExp('^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$');
 function HeatmapControl(options) {
   this.name = 'HeatmapControl';
   /*
-		list:[
-			{
-				id: ,
-				title: ,
-				icon: ,
-				content:string
-				isExpand:,
+        list:[
+            {
+                id: ,
+                title: ,
+                icon: ,
+                content:string
+                isExpand:,
 
-			}
-		]
-	*/
+            }
+        ]
+    */
   this.setting = {
     fields: null,
     mode: null,
@@ -52,31 +52,31 @@ HeatmapControl.prototype.__refresh = function() {
   this.elt.classList.add('hmc-container');
   this.rangeSliders = {};
   const template = `
-	<div class='mode-panel'>
+    <div class='mode-panel'>
 
-		<label> Gradient <input type='checkbox' value='gradient' ${this.setting.mode == 'gradient'? 'checked':''} /></label>
-	</div>
-	<div class='sel-field-panel'>
-		<select></select>
-	</div>
-		<label>Properties:</label>
-	<div class='fields-panel'>
-		
-	</div>
-	<div style='display:none;'>
-		<label>Opacity:</label>
-		<div class='opacity-panel'>
-		</div>
-	</div>
-	<div class='color-panel'>
-		<label> Color <input id='heatMapColor' type='color' value='#1034A6' /></label>
-	</div>
-	<div class='colors-legend-panel'>
-		<label># of Intervals <input id='legendIntervals' type='number' class='range-enforced' value='5' min='2' max='10'/></label> <div class="warning" style="display: none;"></div>
-		<div class='legends'>
-		</div>
-	</div>
-	`;
+        <label> Gradient <input type='checkbox' value='gradient' ${this.setting.mode == 'gradient'? 'checked':''} /></label>
+    </div>
+    <div class='sel-field-panel'>
+        <select></select>
+    </div>
+        <label>Properties:</label>
+    <div class='fields-panel'>
+        
+    </div>
+    <div style='display:none;'>
+        <label>Opacity:</label>
+        <div class='opacity-panel'>
+        </div>
+    </div>
+    <div class='color-panel'>
+        <label> Color <input id='heatMapColor' type='color' value='#1034A6' /></label>
+    </div>
+    <div class='colors-legend-panel'>
+        <label># of Intervals <input id='legendIntervals' type='number' class='range-enforced' value='5' min='2' max='10'/></label> <div class="warning" style="display: none;"></div>
+        <div class='legends'>
+        </div>
+    </div>
+    `;
   this.elt.innerHTML = template;
   const checkbox = this.elt.querySelector('.mode-panel input[type=checkbox]');
   checkbox.addEventListener('change', this._modeChanged.bind(this));
@@ -92,12 +92,12 @@ HeatmapControl.prototype.__refresh = function() {
 
   const fieldsPanel = this.elt.querySelector('.fields-panel');
   this.setting.fields.forEach((f)=>{
-		 this.rangeSliders[f.name] = createField(fieldsPanel, f, this.__change.bind(this));
+    this.rangeSliders[f.name] = createField(fieldsPanel, f, this.__change.bind(this));
   }, this);
   this.opacitySliders = {};
   const opacitiesPanel = this.elt.querySelector('.opacity-panel');
   this.setting.opacities.forEach((f)=>{
-		 this.opacitySliders[f.name] = createOpacities(opacitiesPanel, f, this.__opacityChange.bind(this));
+    this.opacitySliders[f.name] = createOpacities(opacitiesPanel, f, this.__opacityChange.bind(this));
   }, this);
 
   const colorsLegendPanel = this.elt.querySelector('.colors-legend-panel');
@@ -113,10 +113,10 @@ HeatmapControl.prototype.__refresh = function() {
       $(this).val(min); var changed=true;
     }
     if (changed) {
-		  $warning = $(colorsLegendPanel).find('.warning');
-		  $warning.text('Only values in ' + min + ' through ' + max + ' allowed.');
-		  $warning.show();
-		  $warning.fadeOut(4500);
+      $warning = $(colorsLegendPanel).find('.warning');
+      $warning.text('Only values in ' + min + ' through ' + max + ' allowed.');
+      $warning.show();
+      $warning.fadeOut(4500);
     }
   });
 
@@ -127,7 +127,7 @@ HeatmapControl.prototype.__refresh = function() {
 
   const legendsContainer = colorsLegendPanel.querySelector('.legends');
   createIntervalInputs(legendsContainer, noOfIntervals, this._legendColorsChanged.bind(this) );
-  legendIntervalsInput.addEventListener('change',	()=>{
+  legendIntervalsInput.addEventListener('change', ()=>{
     createIntervalInputs(legendsContainer, legendIntervalsInput.value, this._legendColorsChanged.bind(this));
     this._legendColorsChanged();
   });

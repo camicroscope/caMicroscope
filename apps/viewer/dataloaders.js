@@ -2,16 +2,16 @@
 //
 
 // function SlideDataLoader(){
-// 	function loadingSlideInfo(){
+//  function loadingSlideInfo(){
 
-// 	}
-// 	var checkCoreIsReady = setInterval(function () {
-// 		if($CAMIC) {
-// 			clearInterval(checkCoreIsReady);
-// 			//load data
-// 			loadingSlideInfo();
-// 		}
-// 	}, 1000);
+//  }
+//  var checkCoreIsReady = setInterval(function () {
+//      if($CAMIC) {
+//          clearInterval(checkCoreIsReady);
+//          //load data
+//          loadingSlideInfo();
+//      }
+//  }, 1000);
 // }
 
 function FormTempaltesLoader() {

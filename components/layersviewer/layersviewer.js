@@ -159,7 +159,7 @@ LayersViewer.prototype.__clearUI = function() {
 };
 
 /*
-	refresh UI
+    refresh UI
 */
 LayersViewer.prototype.__refreshUI = function() {
   empty(this.elt); // clear all elements
@@ -173,7 +173,7 @@ LayersViewer.prototype.__refreshUI = function() {
 
   // add switch view event
   // this.viewRadios.list.forEach(
-  // 	radio => radio.elt.addEventListener('click',this.__radioClick.bind(this))
+  //    radio => radio.elt.addEventListener('click',this.__radioClick.bind(this))
   // );
 
   /* create search bar area END */
@@ -234,22 +234,22 @@ LayersViewer.prototype.__refreshUI = function() {
   // moveup
   // const ups = this.sortableView.querySelectorAll('.moveup');
   // ups.forEach( up => up.addEventListener('click',function(e){
-  // 	const _id = e.target.parentNode.dataset.id;
-  // 	this.moveLayer(_id,'up');
+  //    const _id = e.target.parentNode.dataset.id;
+  //    this.moveLayer(_id,'up');
   // }.bind(this)));
 
   // movedown
   // const downs = this.sortableView.querySelectorAll('.movedown');
   // downs.forEach( downs => downs.addEventListener('click',function(e){
-  // 	const _id = e.target.parentNode.dataset.id;
-  // 	this.moveLayer(_id,'down');
+  //    const _id = e.target.parentNode.dataset.id;
+  //    this.moveLayer(_id,'down');
   // }.bind(this)));
 
   // initialize checkbox
   // if(this.setting.isSortableView){
-  // 	this.viewModeSwitch('sort');
+  //    this.viewModeSwitch('sort');
   // }else{
-  // 	this.viewModeSwitch('category');
+  //    this.viewModeSwitch('category');
   // }
 };
 
@@ -624,7 +624,7 @@ LayersViewer.prototype.__search = function(e) {
 };
 
 /*
-	convert og/raw data to categorical model/data
+    convert og/raw data to categorical model/data
 */
 LayersViewer.prototype.__covertData = function() {
   if (!this.setting.data) {

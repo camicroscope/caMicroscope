@@ -426,7 +426,7 @@
          * Astronomy units. Choosing the best unit from arcsec, arcminute, and degree
          */
     ASTRONOMY: function(ppa, minSize) {
-	    const maxSize = minSize * 2;
+        const maxSize = minSize * 2;
       if (maxSize < ppa * 60) {
         return getScalebarSizeAndText(ppa, minSize, '"', false, '');
       }

@@ -1570,9 +1570,9 @@ function locateAnnotation(bound) {
 }
 
 /*
-	collapsible list
-	1. Annotation
-	2. Analytics
+    collapsible list
+    1. Annotation
+    2. Analytics
 */
 function getCurrentItem(data) {
   console.log(data);

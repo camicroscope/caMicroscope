@@ -2,17 +2,17 @@
 function HeatmapEditedDataPanel(options) {
   this.name = 'HeatmapEditedDataPanel';
   /*
-		list:[
-			{
-				id: ,
-				title: ,
-				icon: ,
-				content:string
-				isExpand:,
+        list:[
+            {
+                id: ,
+                title: ,
+                icon: ,
+                content:string
+                isExpand:,
 
-			}
-		]
-	*/
+            }
+        ]
+    */
   this.setting = {
     data: null,
     onDBClick: null,

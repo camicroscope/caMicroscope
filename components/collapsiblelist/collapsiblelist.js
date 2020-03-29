@@ -8,19 +8,19 @@
 // callback
 
 /* attributes in options
-	options{
-		id - element id
-		list:[
-			{
-				id:identity for one specific item
-				title: text display on head
-				icon:google icon
-				content: stting or DOM Element
-				isExpand:
-			}
-		]
-	}
-	// TODO a function
+    options{
+        id - element id
+        list:[
+            {
+                id:identity for one specific item
+                title: text display on head
+                icon:google icon
+                content: stting or DOM Element
+                isExpand:
+            }
+        ]
+    }
+    // TODO a function
 */
 
 
@@ -52,12 +52,12 @@
 function CollapsibleList(options) {
   this.name = 'CollapsibleList';
   /*
-		[{
-			id -
-			head -
-			content -
-		}...]
-	*/
+        [{
+            id -
+            head -
+            content -
+        }...]
+    */
 
   /**
      * @property {Object[]} __v_models
@@ -76,17 +76,17 @@ function CollapsibleList(options) {
   this.__v_models = [];
 
   /*
-		list:[
-			{
-				id: ,
-				title: ,
-				icon: ,
-				content:string
-				isExpand:,
+        list:[
+            {
+                id: ,
+                title: ,
+                icon: ,
+                content:string
+                isExpand:,
 
-			}
-		]
-	*/
+            }
+        ]
+    */
   this.setting = {
   };
 
@@ -121,8 +121,8 @@ function CollapsibleList(options) {
  */
 CollapsibleList.prototype.__createItem = function(options) {
   /*
-		create the item head
-	*/
+        create the item head
+    */
   // the head
   const head = document.createElement('div');
   head.classList.add('item_head');
@@ -152,8 +152,8 @@ CollapsibleList.prototype.__createItem = function(options) {
 
 
   /*
-		create the item content
-	*/
+        create the item content
+    */
 
   // create item body
   const body = document.createElement('div');
@@ -271,8 +271,8 @@ CollapsibleList.prototype.collapse = function() {
   }
 };
 /*
-	id: item's id
-	action - open/close
+    id: item's id
+    action - open/close
 */
 /**
  * trigger item that expands or collapses item's body.

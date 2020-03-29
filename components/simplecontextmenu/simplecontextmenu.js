@@ -5,10 +5,10 @@
   $.SimpleContextMenu = function(target, options) {
     this.elt = createElement();
     this.target = target;
-	    if (!this.target) {
-	        console.error(`${this.className}:No TARGET to operation`);
-	        return;
-	    }
+    if (!this.target) {
+      console.error(`${this.className}:No TARGET to operation`);
+      return;
+    }
 
     this.target.appendChild(this.elt);
 
@@ -91,9 +91,9 @@
     const model = this.elt.querySelector('.style .active').dataset.model;
     return {
       style: {
-        	color: color,
-        	lineJoin: 'round', // "bevel" || "round" || "miter"
-        	lineCap: 'round', // "butt" || "round" || "square"
+        color: color,
+        lineJoin: 'round', // "bevel" || "round" || "miter"
+        lineCap: 'round', // "butt" || "round" || "square"
       },
       model: model,
     };
@@ -121,9 +121,9 @@
       return;
     }
     const isClickOnMenu = clickInsideElement( e, 'draw-menu-wrap' );
-    	if ( isClickOnMenu ) return;
+    if ( isClickOnMenu ) return;
 
-    	this.close();
+    this.close();
   }
   /**
  * Add an event handler for a given event.
@@ -228,15 +228,15 @@
     }
   };
   function selectStyle(e) {
-		  // var e = event;
-		  const theTool = e.target.parentNode;
-		  const toolbarItems = this.elt.querySelectorAll('ul.style li');
-		  for (let i = 0; i < toolbarItems.length; ++i) {
-		    toolbarItems[i].className = '';
-		    // do something with items[i], which is a <li> element
-		  }
-  		theTool.className = 'active';
-  		this.raiseEvent('style-changed', this.getStyle());
+    // var e = event;
+    const theTool = e.target.parentNode;
+    const toolbarItems = this.elt.querySelectorAll('ul.style li');
+    for (let i = 0; i < toolbarItems.length; ++i) {
+      toolbarItems[i].className = '';
+      // do something with items[i], which is a <li> element
+    }
+    theTool.className = 'active';
+    this.raiseEvent('style-changed', this.getStyle());
   }
 
   function createElement() {

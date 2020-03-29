@@ -148,7 +148,7 @@ SideMenu.prototype.addContent = function(elt) {
     content.appendChild(elt);
   }
   // if(typeof element ==='string')
-  // 	this._content.textcontent = element;
+  //    this._content.textcontent = element;
   if (typeof elt === 'string') {
     const div = document.createElement('div');
     div.innerHTML = elt;

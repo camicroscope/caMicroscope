@@ -31,10 +31,10 @@
  *        The information is most often shown as a tooltip text when the mouse moves over the subTools.
  * @param {String} options.subTools.type
  *        The behavior of tool looks like. Currently, Support 4 types of sub tools.
- *        	'btn' - button
- *        	'check' - check box
- *        	'radio' - radio button
- *        	'dropdown' - dropdown list
+ *          'btn' - button
+ *          'check' - check box
+ *          'radio' - radio button
+ *          'dropdown' - dropdown list
  * @param {String} options.subTools.value
  *        Callback function will return this value if click on a sub tool.
  * @param {Object[]} [options.subTools.dropdownList]

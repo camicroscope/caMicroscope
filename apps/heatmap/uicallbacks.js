@@ -17,8 +17,8 @@ function multSelector_action(size) {
   // hidden main viewer's bottom right control and get navigator
   $CAMIC.viewer.controls.bottomright.style.display = 'none';
   // if(event.data.length == 0){
-  // 	alert('No Layer selected');
-  // 	return;
+  //    alert('No Layer selected');
+  //    return;
   // }
 
   // hide the window
@@ -299,9 +299,9 @@ function toggleHeatMapDataList(e) {
     case false:
       heatMapEditedListOff();
       break;
-		// default:
-		// 	console.warn('Editor error');
-		// break;
+        // default:
+        //  console.warn('Editor error');
+        // break;
   }
 }
 
@@ -329,9 +329,9 @@ function toggleHeatMapEditor(e) {
     case false:
       heatmapEditorOff();
       break;
-		// default:
-		// 	console.warn('Editor error');
-		// break;
+        // default:
+        //  console.warn('Editor error');
+        // break;
   }
 }
 
@@ -360,9 +360,9 @@ function heatmapEditorOff() {
 }
 
 /*
-	collapsible list
-	1. Annotation
-	2. Analytics
+    collapsible list
+    1. Annotation
+    2. Analytics
 */
 async function onUpdateHeatmapFields() {
   if (!confirm('Do You Want To Update Threshold?')) return;
@@ -521,9 +521,9 @@ function getDateInString() {
   const dd = String(today.getDate()).padStart(2, '0');
   const mm = String(today.getMonth() + 1).padStart(2, '0'); // January is 0!
   const yyyy = today.getFullYear();
-  const hour = String(today.getHours()).padStart(2, '0');	// Get the hour (0-23)
-  const min = String(today.getMinutes()).padStart(2, '0');	// Get the minute (0-59)
-  const sec = String(today.getSeconds()).padStart(2, '0');	// Get the second (0-59)
+  const hour = String(today.getHours()).padStart(2, '0'); // Get the hour (0-23)
+  const min = String(today.getMinutes()).padStart(2, '0'); // Get the minute (0-59)
+  const sec = String(today.getSeconds()).padStart(2, '0'); // Get the second (0-59)
   const ms = String(today.getMilliseconds()).padStart(3, '0'); //
 
   return `${mm}/${dd}/${yyyy} ${hour}:${min}:${sec}:${ms}`;
@@ -617,7 +617,7 @@ function getBounds(points) { // return x,y,w,h
     }
   });
   return {
-    	min: min,
-    	max: max,
+    min: min,
+    max: max,
   };
 }

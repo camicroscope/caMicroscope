@@ -36,40 +36,40 @@ function PopupPanel(options) {
 
 
   /**
-	 * @property {Element} elt The elements that represent the container of the component.
-	 */
+     * @property {Element} elt The elements that represent the container of the component.
+     */
   this.elt = null;
 
   /**
-	 * @property {Element} the element of the title. change the textContent will change the title of PopupPanel.
-	 */
+     * @property {Element} the element of the title. change the textContent will change the title of PopupPanel.
+     */
   this.title;
 
   /**
-	 * @property {Element} the element of the body. The detail/extra info shows on popup panel.
-	 */
+     * @property {Element} the element of the body. The detail/extra info shows on popup panel.
+     */
   this.body;
 
   /**
-	 * @property {Array} [footerBtns] the extend for popup if needs some actions. etc, delete/add/modify.
-	 */
+     * @property {Array} [footerBtns] the extend for popup if needs some actions. etc, delete/add/modify.
+     */
   this.footerBtns = [];
 
   /**
-	 * @property {Object} setting
-	 *
-	 */
+     * @property {Object} setting
+     *
+     */
   this.setting = {
     title: '',
     bodyHTML: '',
     zIndex: 650,
     footer: [
       // {
-      // 	type:'btn',
-      // 	title:'Annotation',
-      // 	class:'material-icons',
-      // 	text:'description',
-      // 	callback:saveAnnotation
+      //    type:'btn',
+      //    title:'Annotation',
+      //    class:'material-icons',
+      //    text:'description',
+      //    callback:saveAnnotation
       // },{
 
       // }
@@ -203,16 +203,16 @@ PopupPanel.prototype.showFooter = function() {
  * @param {data} body.data
  *        there are two types of body.
  *        'map' - key,value pair.
- *        	[{
- *        		key,
- *        		value,
- *        	},...]
+ *          [{
+ *              key,
+ *              value,
+ *          },...]
  *        'table' - multiple columns and rows.
  *        [{
- *        		col1,
- *        		col2,
- *        		...
- *        	},...]
+ *              col1,
+ *              col2,
+ *              ...
+ *          },...]
  */
 PopupPanel.prototype.setBody = function(body) {
   // clear body
@@ -241,16 +241,16 @@ PopupPanel.prototype.close = function() {
  * @param {data} body.data
  *        there are two types of body.
  *        'map' - key,value pair.
- *        	[{
- *        		key,
- *        		value,
- *        	},...]
+ *          [{
+ *              key,
+ *              value,
+ *          },...]
  *        'table' - multiple columns and rows.
  *        [{
- *        		col1,
- *        		col2,
- *        		...
- *        	},...]
+ *              col1,
+ *              col2,
+ *              ...
+ *          },...]
  * @return {HTML Element} A table style element
  */
 PopupPanel.createBodyContent = function(opt) {
@@ -278,10 +278,10 @@ PopupPanel.createBodyContent = function(opt) {
  * @param  {data} table data
  *        'table' - multiple columns and rows.
  *        [{
- *        		col1,
- *        		col2,
- *        		...
- *        	},...]
+ *              col1,
+ *              col2,
+ *              ...
+ *          },...]
  * @return {HTML Element} A table style element
  */
 PopupPanel.createTable = function(data) {
@@ -310,10 +310,10 @@ PopupPanel.createTable = function(data) {
  * createMap - a static method to handle the map type of data and generate the format data for the body.
  * @param  {data} map data
  *        'map' - key,value pair.
- *        	[{
- *        		key,
- *        		value,
- *        	},...]
+ *          [{
+ *              key,
+ *              value,
+ *          },...]
  * @return {HTML Element} A map style element
  */
 PopupPanel.createMap = function(data) {

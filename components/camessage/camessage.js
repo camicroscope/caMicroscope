@@ -42,7 +42,7 @@ function CaMessage(options) {
 }
 
 /**
- *	reset the message's content to default
+ *  reset the message's content to default
  */
 CaMessage.prototype.reset = function() {
   if (this.setting.defaultText) this.elt.textContent = this.setting.defaultText;
@@ -53,9 +53,9 @@ CaMessage.prototype.reset = function() {
 
 
 /**
- *	set the message's text
- *	@param {String} txt
- *	       text that show on CaMessage
+ *  set the message's text
+ *  @param {String} txt
+ *         text that show on CaMessage
  */
 CaMessage.prototype.changeTxt = function(txt) {
   this.elt.textContent = txt;
@@ -63,12 +63,12 @@ CaMessage.prototype.changeTxt = function(txt) {
 
 
 /*
- *	change message's style
- *	@param {Object} style
- *	       the style that applies on CaMessage
- *	@param {String} [style.size] font size.
- *	@param {String} [style.color] font color.
- *	@param {String} [style.bgColor] background color.
+ *  change message's style
+ *  @param {Object} style
+ *         the style that applies on CaMessage
+ *  @param {String} [style.size] font size.
+ *  @param {String} [style.color] font color.
+ *  @param {String} [style.bgColor] background color.
  *
  */
 CaMessage.prototype.changeStyle = function(style) {
@@ -79,16 +79,16 @@ CaMessage.prototype.changeStyle = function(style) {
 };
 
 /*
- *	temporarily change the text and the style of CaMessage by giving time[sec]
- *	@param {String} txt
- *	       text content
- *	@param {Object} style
- *	       the message style
- *	@param {String} [style.size] font size.
- *	@param {String} [style.color] font color.
- *	@param {String} [style.bgColor] background color.
- *	@param {number} time
- *	       The number of seconds to show the message.
+ *  temporarily change the text and the style of CaMessage by giving time[sec]
+ *  @param {String} txt
+ *         text content
+ *  @param {Object} style
+ *         the message style
+ *  @param {String} [style.size] font size.
+ *  @param {String} [style.color] font color.
+ *  @param {String} [style.bgColor] background color.
+ *  @param {number} time
+ *         The number of seconds to show the message.
  */
 CaMessage.prototype.sendMessage = function(txt, style, time) {
   this.changeTxt(txt);

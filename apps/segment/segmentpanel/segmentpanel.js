@@ -3,11 +3,11 @@
 
 function SegmentPanel(viewer) {
   const temp = `
-		<div id='close' class='material-icons settings' title='Close Panel'>close</div>
-		<div id='save' class='material-icons settings' title='Save ROI Image'>save</div>
-		<div id='savecsv' class='material-icons settings' title='Save ROI CSV File'>list</div>
-		<div id='thresh' class='material-icons settings' title='Open Segmentation Settings'>all_out</div>
-		<div id='mask_vis' class='material-icons settings' title='Toggle Mask'>visibility</div>
+        <div id='close' class='material-icons settings' title='Close Panel'>close</div>
+        <div id='save' class='material-icons settings' title='Save ROI Image'>save</div>
+        <div id='savecsv' class='material-icons settings' title='Save ROI CSV File'>list</div>
+        <div id='thresh' class='material-icons settings' title='Open Segmentation Settings'>all_out</div>
+        <div id='mask_vis' class='material-icons settings' title='Toggle Mask'>visibility</div>
 
     <div id='owrap' class='segment-setting settings' style="display: none;">
       <label for="opacity">Opacity</label><input type='range' id='opacity' min='0' max='1' step='0.01' value='0.6'><label id='olabel'>0.6</label>
@@ -25,22 +25,22 @@ function SegmentPanel(viewer) {
       <label for="maxarea">Max Area</label><input id='maxarea' type='range' min='0' max='5000' step='1' value='4500'><label id='maxlabel'>4500</label>
     </div>
 
-    	
-		<div class='segment-count'><label>Object Count: </label><label id='segcount'></label></div>
-		<div id='processing' class='segment-processing'><span class='blink_me'><em>Processing</em></span></div>
-		
-		<canvas class='out'></canvas>
-		<canvas id='mask' style='display: none;'></canvas>
-		<canvas id='dummy' style='display: none;'></canvas>
-		<canvas class='src'></canvas>
-		<canvas id='hemo' class='hiddenCanvas'></canvas>
-		<canvas id ='fullsrc' class='hiddenCanvas'></canvas>
-		<canvas id='c2s' class='hiddenCanvas'></canvas>
-		<canvas id='fullSegImg' class='hiddenCanvas'></canvas>
-		<img id='imageEle' class='hiddenCanvas'></img>
-		<a id='csvDLB'></a>
-		<input id='inProgress' type='hidden' />
-	`;
+        
+        <div class='segment-count'><label>Object Count: </label><label id='segcount'></label></div>
+        <div id='processing' class='segment-processing'><span class='blink_me'><em>Processing</em></span></div>
+        
+        <canvas class='out'></canvas>
+        <canvas id='mask' style='display: none;'></canvas>
+        <canvas id='dummy' style='display: none;'></canvas>
+        <canvas class='src'></canvas>
+        <canvas id='hemo' class='hiddenCanvas'></canvas>
+        <canvas id ='fullsrc' class='hiddenCanvas'></canvas>
+        <canvas id='c2s' class='hiddenCanvas'></canvas>
+        <canvas id='fullSegImg' class='hiddenCanvas'></canvas>
+        <img id='imageEle' class='hiddenCanvas'></img>
+        <a id='csvDLB'></a>
+        <input id='inProgress' type='hidden' />
+    `;
 
   this.viewer = viewer;
 
@@ -99,10 +99,10 @@ function SegmentPanel(viewer) {
   });
   this.overlay = this.viewer.currentOverlays[this.viewer.currentOverlays.length-1];
   this.elt.querySelector('#close').addEventListener('click', function(e) {
-    	this.close();
+    this.close();
   }.bind(this));
   // this.elt.querySelector('#save').addEventListener('click',function(e){
-  // 	this.save();
+  //    this.save();
   // }.bind(this));
   this.elt.querySelector('#thresh').addEventListener('click', function(e) {
     this.showThreshBar();
@@ -112,10 +112,10 @@ function SegmentPanel(viewer) {
     this.toggleMask();
   }.bind(this));
   // this.elt.querySelector('#amin').addEventListener('click',function(e){
-  // 	this.showMinBar();
+  //    this.showMinBar();
   // }.bind(this));
   // this.elt.querySelector('#amax').addEventListener('click',function(e){
-  // 	this.showMaxBar();
+  //    this.showMaxBar();
   // }.bind(this));
 
   this.close();
@@ -199,21 +199,21 @@ SegmentPanel.prototype.toggleMask = function() {
 };
 // SegmentPanel.prototype.showMinBar = function(){
 
-// 	if(this.__minwrap.style.display === 'none') {
-// 		this.__minwrap.style.display = 'flex';
-// 		this.__twrap.style.display = 'none';
-// 		this.__maxwrap.style.display = 'none';
-// 	}
+//  if(this.__minwrap.style.display === 'none') {
+//      this.__minwrap.style.display = 'flex';
+//      this.__twrap.style.display = 'none';
+//      this.__maxwrap.style.display = 'none';
+//  }
 
 // };
 
 // SegmentPanel.prototype.showMaxBar = function(){
 
-// 	if(this.__maxwrap.style.display === 'none') {
-// 		this.__maxwrap.style.display = 'flex';
-// 		this.__minwrap.style.display = 'none';
-// 		this.__twrap.style.display = 'none';
-// 	}
+//  if(this.__maxwrap.style.display === 'none') {
+//      this.__maxwrap.style.display = 'flex';
+//      this.__minwrap.style.display = 'none';
+//      this.__twrap.style.display = 'none';
+//  }
 
 // };
 

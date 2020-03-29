@@ -11,8 +11,8 @@
  * A operation panel that reads the single or multiple JSON schema and generates the data form and form control.
  *
  * Dependency:
- * 	lib/pureform/pure-form.js
- * 	lib/pureform/pure-form.css
+ *  lib/pureform/pure-form.js
+ *  lib/pureform/pure-form.css
  *
  * @param {Object} options
  *        All required and optional settings for instantiating a new instance of a operation panel.
@@ -57,32 +57,32 @@ function OperationPanel(options) {
   };
 
   /**
-	 * @property {Element} _form_ The instance of pure-form, the core of Operation Panel, generates the data form on UI
-	 */
+     * @property {Element} _form_ The instance of pure-form, the core of Operation Panel, generates the data form on UI
+     */
   this._form_;
 
   /**
-	 * @property {Element} _head_ The Head part of UI, includes head title and options for multiple data form.
-	 */
+     * @property {Element} _head_ The Head part of UI, includes head title and options for multiple data form.
+     */
   this._head_;
 
   /**
-	 * @property {Element} _select_ The select controls to switch the multiple data form.
-	 */
+     * @property {Element} _select_ The select controls to switch the multiple data form.
+     */
   this._select_;
 
   /**
-	 * @property {Element} _ctrl_ the UI part that controls the form actions - reset/clean data form or submit data form.
-	 */
+     * @property {Element} _ctrl_ the UI part that controls the form actions - reset/clean data form or submit data form.
+     */
   this._ctrl_;
 
   /**
-	 * @property {Element} _reset_ The reset btn for data form.
-	 */
+     * @property {Element} _reset_ The reset btn for data form.
+     */
   this._reset_;
   /**
-	 * @property {Element} _action_ The action btn for data form.
-	 */
+     * @property {Element} _action_ The action btn for data form.
+     */
   this._action_;
 
 
@@ -203,15 +203,15 @@ OperationPanel.prototype.__refresh = function() {
   }.bind(this));
 
   // this._form_.addEventListener('pure-form-validation-failed', function(e) {
-  //    	console.log('failded') // form value
-  //    	console.log(e);
-  //    	//this._action_.disabled = true;
+  //        console.log('failded') // form value
+  //        console.log(e);
+  //        //this._action_.disabled = true;
   // }.bind(this));
 
   // this._form_.addEventListener('pure-form-validation-passed', function(e) {
-  //    	console.log('passed');      // pure form element
-  //    	console.log(e);
-  //    	//this._action_.disabled = false;
+  //        console.log('passed');      // pure form element
+  //        console.log(e);
+  //        //this._action_.disabled = false;
   // }.bind(this));
 };
 

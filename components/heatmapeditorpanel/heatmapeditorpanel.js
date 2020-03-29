@@ -36,15 +36,15 @@ function createRadios(fields, name) {
   let radiosTemplate ='';
   fields.forEach((field, idx)=>{
     radiosTemplate+= `&nbsp;&nbsp;<label style='display:inline-flex;'>
-		<input type="radio" name="${name}" value="${idx}|${field.name}|1|${fieldsColors[idx*2]}">
-		<div class='color-square' style='background:${fieldsColors[idx*2]}'></div>
-		${field.name} - positive
-		</label><br>`;
+        <input type="radio" name="${name}" value="${idx}|${field.name}|1|${fieldsColors[idx*2]}">
+        <div class='color-square' style='background:${fieldsColors[idx*2]}'></div>
+        ${field.name} - positive
+        </label><br>`;
     radiosTemplate+= `&nbsp;&nbsp;<label style='display:inline-flex;'>
-		<input type="radio" name="${name}" value="${idx}|${field.name}|0|${fieldsColors[idx*2+1]}">
-		<div class='color-square' style='background:${fieldsColors[idx*2+1]}'></div>
-		${field.name} - negative
-		</label><br>`;
+        <input type="radio" name="${name}" value="${idx}|${field.name}|0|${fieldsColors[idx*2+1]}">
+        <div class='color-square' style='background:${fieldsColors[idx*2+1]}'></div>
+        ${field.name} - negative
+        </label><br>`;
   });
   return radiosTemplate;
 }
@@ -60,7 +60,7 @@ HeatmapEditorPanel.prototype.getAllOperations = function() {
 
 HeatmapEditorPanel.prototype.getCurrentOperation = function() {
   const radio = this.elt.querySelector('.fields-panel input[type=radio]:checked');
-  return 	radio?radio.value.split('|'):null;
+  return radio?radio.value.split('|'):null;
 };
 /**
  * @private
@@ -75,18 +75,18 @@ HeatmapEditorPanel.prototype.__refresh = function() {
 
 
   const template = `
-	<div class ='fields-panel'>
-		<label>Operation:</label><br>
-		${radiosTempalte}
-	</div>
-	<div class='btn-panel'>
-		<button class='reset' style='float:left;'>Clear</button>
-		<button class='action' style='float:right;'>Save</button>
-	</div>
-	<div class='edited-data-panel'>
+    <div class ='fields-panel'>
+        <label>Operation:</label><br>
+        ${radiosTempalte}
+    </div>
+    <div class='btn-panel'>
+        <button class='reset' style='float:left;'>Clear</button>
+        <button class='action' style='float:right;'>Save</button>
+    </div>
+    <div class='edited-data-panel'>
 
-	</div>
-	`;
+    </div>
+    `;
   this.elt.innerHTML = template;
 
   // set change event

@@ -1,28 +1,28 @@
 (function($) {
   /**
-	 * Generate an indented list of links from a nav. Meant for use with panel().
-	 * @return {jQuery} jQuery object.
-	 */
+     * Generate an indented list of links from a nav. Meant for use with panel().
+     * @return {jQuery} jQuery object.
+     */
   $.fn.navList = function() {
-    var	$this = $(this);
+    var $this = $(this);
     $a = $this.find('a'),
     b = [];
 
     $a.each(function() {
-      var	$this = $(this);
+      var   $this = $(this);
       var indent = Math.max(0, $this.parents('li').length - 1);
       var href = $this.attr('href');
       var target = $this.attr('target');
 
       b.push(
           '<a ' +
-					'class="link depth-' + indent + '"' +
-					( (typeof target !== 'undefined' && target != '') ? ' target="' + target + '"' : '') +
-					( (typeof href !== 'undefined' && href != '') ? ' href="' + href + '"' : '') +
-				'>' +
-					'<span class="indent-' + indent + '"></span>' +
-					$this.text() +
-				'</a>',
+                    'class="link depth-' + indent + '"' +
+                    ( (typeof target !== 'undefined' && target != '') ? ' target="' + target + '"' : '') +
+                    ( (typeof href !== 'undefined' && href != '') ? ' href="' + href + '"' : '') +
+                '>' +
+                    '<span class="indent-' + indent + '"></span>' +
+                    $this.text() +
+                '</a>',
       );
     });
 
@@ -30,10 +30,10 @@
   };
 
   /**
-	 * Panel-ify an element.
-	 * @param {object} userConfig User config.
-	 * @return {jQuery} jQuery object.
-	 */
+     * Panel-ify an element.
+     * @param {object} userConfig User config.
+     * @return {jQuery} jQuery object.
+     */
   $.fn.panel = function(userConfig) {
     // No elements?
     if (this.length == 0) {
@@ -50,7 +50,7 @@
     }
 
     // Vars.
-    var	$this = $(this);
+    var $this = $(this);
     var $body = $('body');
     var $window = $(window);
     var id = $this.attr('id');
@@ -172,12 +172,12 @@
     });
 
     $this.on('touchmove', function(event) {
-      if ($this.touchPosX === null	||
-					$this.touchPosY === null) {
+      if ($this.touchPosX === null  ||
+                    $this.touchPosY === null) {
         return;
       }
 
-      var	diffX = $this.touchPosX - event.originalEvent.touches[0].pageX;
+      var   diffX = $this.touchPosX - event.originalEvent.touches[0].pageX;
       var diffY = $this.touchPosY - event.originalEvent.touches[0].pageY;
       var th = $this.outerHeight();
       var ts = ($this.get(0).scrollHeight - $this.scrollTop());
@@ -220,7 +220,7 @@
 
       // Prevent vertical scrolling past the top or bottom.
       if (($this.scrollTop() < 0 && diffY < 0) ||
-						(ts > (th - 2) && ts < (th + 2) && diffY > 0)) {
+                        (ts > (th - 2) && ts < (th + 2) && diffY > 0)) {
         event.preventDefault();
         event.stopPropagation();
       }
@@ -269,9 +269,9 @@
   };
 
   /**
-	 * Apply "placeholder" attribute polyfill to one or more forms.
-	 * @return {jQuery} jQuery object.
-	 */
+     * Apply "placeholder" attribute polyfill to one or more forms.
+     * @return {jQuery} jQuery object.
+     */
   $.fn.placeholder = function() {
     // Browser natively supports placeholders? Bail.
     if (typeof (document.createElement('input')).placeholder != 'undefined') {
@@ -301,7 +301,7 @@
           var i = $(this);
 
           if (i.val() == '' ||
-					i.val() == i.attr('placeholder')) {
+                    i.val() == i.attr('placeholder')) {
             i
                 .addClass('polyfill-placeholder')
                 .val(i.attr('placeholder'));
@@ -471,10 +471,10 @@
   };
 
   /**
-	 * Moves elements to/from the first positions of their respective parents.
-	 * @param {jQuery} $elements Elements (or selector) to move.
-	 * @param {bool} condition If true, moves elements to the top. Otherwise, moves elements back to their original locations.
-	 */
+     * Moves elements to/from the first positions of their respective parents.
+     * @param {jQuery} $elements Elements (or selector) to move.
+     * @param {bool} condition If true, moves elements to the top. Otherwise, moves elements back to their original locations.
+     */
   $.prioritize = function($elements, condition) {
     var key = '__prioritize';
 
@@ -485,7 +485,7 @@
 
     // Step through elements.
     $elements.each(function() {
-      var	$e = $(this); var $p;
+      var   $e = $(this); var $p;
       var $parent = $e.parent();
 
       // No parent? Bail.

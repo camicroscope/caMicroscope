@@ -41,7 +41,7 @@ function ModalBox(options) {
   this.__create();
   this.__close.addEventListener('click', this.close.bind(this));
   window.onclick = function(event) {
-	  if (event.target == this.elt) this.close();
+    if (event.target == this.elt) this.close();
   }.bind(this);
 }
 ModalBox.prototype.__create = function() {
