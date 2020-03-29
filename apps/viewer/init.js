@@ -367,8 +367,6 @@ const $D = {
 
 window.addEventListener("keydown", e => {
 
-  e.preventDefault();
-
   if (!$CAMIC || !$CAMIC.viewer) return;
   const keyCode = e.keyCode;
   // escape key to close all operations
@@ -394,6 +392,7 @@ window.addEventListener("keydown", e => {
   }
   // open measurement (ctrl + r)
   if (e.ctrlKey && keyCode == 82 && $CAMIC.viewer.measureInstance) {
+    e.preventDefault();
     const li = $UI.toolbar.getSubTool("measurement");
     const chk = li.querySelector("input[type=checkbox]");
     chk.checked = !chk.checked;
@@ -402,6 +401,7 @@ window.addEventListener("keydown", e => {
   }
   // open side-by-side (ctrl + s)
   if (e.ctrlKey && keyCode == 83) {
+    e.preventDefault();
     const li = $UI.toolbar.getSubTool("sbsviewer");
     const chk = li.querySelector("input[type=checkbox]");
     chk.checked = !chk.checked;
