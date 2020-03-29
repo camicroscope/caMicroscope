@@ -910,7 +910,7 @@ function saveBrushLabel(isOff) {
 
 function savePresetLabel() {
   if ($CAMIC.viewer.canvasDrawInstance._path_index === 0) {
-    alert("No Markup On Annotation.");
+    alert("No Markup On Annotation. Try holding and dragging.");
     return;
   }
   // save
@@ -1076,6 +1076,7 @@ function saveLabelAnnotCallback() {
   $UI.layersViewer.update();
   //$CAMIC.status = null;
 }
+
 function anno_callback(data) {
   // is form ok?
   const noteData = $UI.annotOptPanel._form_.value;
@@ -1097,9 +1098,19 @@ function anno_callback(data) {
   // has Path?
 
   if ($CAMIC.viewer.canvasDrawInstance._path_index === 0) {
-    alert("No Markup On Annotation.");
+    alert("No Markup On Annotation. Try holding and dragging.");
     return;
   }
+
+  //Add new lines to notes to prevent overflow
+  str = noteData.notes;
+  var result_string = '';
+  while (str.length > 0) {
+    result_string += str.substring(0, 36) + '\n';
+    str = str.substring(36);
+  }
+  noteData.notes = result_string;
+
   // save
   // provenance
   Loading.open($UI.annotOptPanel.elt, "Saving Annotation...");
