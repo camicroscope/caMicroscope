@@ -215,7 +215,7 @@ function getPatchsZip(data){
       delete p.widthInClient;
     })
     const meta_content = [['name','location'],[data.name,data.location]];
-    const patch_cols = ['id','color','note','isPoint','x','y','width','height','loaction'];
+    const patch_cols = ['id','color','note','isPoint','x','y','width','height','location'];
     const patches_content = [patch_cols];
 
     data.patches.forEach((p,idx)=>{
