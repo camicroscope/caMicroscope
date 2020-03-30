@@ -274,11 +274,10 @@ function toggleMode(data) {
 
 function redirect(url, text = '', sec = 5) {
   let timer = sec;
+  if (!timer) {
+    window.location.href = url;
+  }
   setInterval(function() {
-    if (!timer) {
-      window.location.href = url;
-    }
-
     if (Loading.instance.parentNode) {
       Loading.text.textContent = `${text} ${timer}s.`;
     } else {
