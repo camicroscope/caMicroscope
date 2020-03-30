@@ -62,13 +62,13 @@ function CaToolbar(options) {
    */
   this.elt;
   /**
-   * @property {Element[]} _main_tools The elements that represent each main tools.
+   * @property {Element[]} _mainTools The elements that represent each main tools.
    */
-  this._main_tools = [];
+  this._mainTools = [];
   /**
-   * @property {Element[]} _sub_tools The elements that represent each sub tools.
+   * @property {Element[]} _subTools The elements that represent each sub tools.
    */
-  this._sub_tools = [];
+  this._subTools = [];
 
   this.handler;
   // default setting
@@ -261,12 +261,12 @@ CaToolbar.prototype.__createRadio = function(options) {
     icon.classList.add('md-24');
     icon.textContent = options.icon;
   } else {
-    let _fit_content = 'fit-content';
+    let _fitContent = 'fit-content';
     if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
       // Do Firefox-related activities
-      _fit_content = '-moz-fit-content';
+      _fitContent = '-moz-fit-content';
     }
-    li.style.width = _fit_content;
+    li.style.width = _fitContent;
     li.classList.add('text');
     const div = document.createElement('div');
     div.textContent = options.title;
@@ -525,30 +525,30 @@ CaToolbar.prototype.__refresh = function() {
   empty(this.elt);
   this.elt.classList.add('ca_tools');
 
-  const main_bar = document.createElement('ul');
-  main_bar.classList.add('tools');
-  main_bar.style.zIndex = this.setting.zIndex;
+  const mainBar = document.createElement('ul');
+  mainBar.classList.add('tools');
+  mainBar.style.zIndex = this.setting.zIndex;
   if (this.setting.hasMainTools) {
     // main tools
 
-    const main_tools = this.setting.mainTools;
-    for (var i = 0; i < main_tools.length; i++) {
-      const options = main_tools[i];
-      options.name = '_main_tools';
+    const mainTools = this.setting.mainTools;
+    for (var i = 0; i < mainTools.length; i++) {
+      const options = mainTools[i];
+      options.name = '_mainTools';
       const tool = this.__create(options);
-      this._main_tools.push(tool);
-      main_bar.appendChild(tool);
+      this._mainTools.push(tool);
+      mainBar.appendChild(tool);
       options.__item = tool;
     }
 
     // main tools events
-    const main_chks = main_bar.querySelectorAll('input[name=_main_tools]');
-    main_chks.forEach((chk) =>
+    const mainChks = mainBar.querySelectorAll('input[name=_mainTools]');
+    mainChks.forEach((chk) =>
       chk.addEventListener(
           'change',
           function(e) {
             const args = {};
-            main_chks.forEach((aChk) => {
+            mainChks.forEach((aChk) => {
               if (e.target.checked && e.target !== aChk) aChk.checked = false;
               args[aChk.value] = aChk.checked;
             });
@@ -561,17 +561,17 @@ CaToolbar.prototype.__refresh = function() {
     // separator
     const separator = document.createElement('li');
     separator.classList.add('separator');
-    main_bar.appendChild(separator);
+    mainBar.appendChild(separator);
   }
 
   // sub tools
-  const sub_tools = this.setting.subTools;
-  for (var i = 0; i < sub_tools.length; i++) {
-    const options = sub_tools[i];
+  const subTools = this.setting.subTools;
+  for (var i = 0; i < subTools.length; i++) {
+    const options = subTools[i];
     const tool = this.__create(options);
     if (!tool) continue;
-    this._sub_tools.push(tool);
-    main_bar.appendChild(tool);
+    this._subTools.push(tool);
+    mainBar.appendChild(tool);
     options.__item = tool;
   }
 
@@ -580,20 +580,20 @@ CaToolbar.prototype.__refresh = function() {
   this.handler.classList.add('handler');
 
   const id = randomId();
-  const handler_flag = document.createElement('input');
-  handler_flag.id = id;
-  handler_flag.type = 'checkbox';
-  this.handler.appendChild(handler_flag);
+  const handlerFlag = document.createElement('input');
+  handlerFlag.id = id;
+  handlerFlag.type = 'checkbox';
+  this.handler.appendChild(handlerFlag);
 
-  const handler_icon = document.createElement('label');
-  handler_icon.htmlFor = id;
-  handler_icon.classList.add('material-icons');
-  handler_icon.textContent = 'keyboard_arrow_left';
-  this.handler.appendChild(handler_icon);
+  const handlerIcon = document.createElement('label');
+  handlerIcon.htmlFor = id;
+  handlerIcon.classList.add('material-icons');
+  handlerIcon.textContent = 'keyboard_arrow_left';
+  this.handler.appendChild(handlerIcon);
   // create main m
-  main_bar.appendChild(this.handler);
+  mainBar.appendChild(this.handler);
 
-  this.elt.appendChild(main_bar);
+  this.elt.appendChild(mainBar);
 
   // add handler event
   this.handler.addEventListener('change', this.switch.bind(this));
@@ -601,13 +601,13 @@ CaToolbar.prototype.__refresh = function() {
 
 /**
  * Change Main Tool's status by using tools value.
- * @param  {string} tool_value
+ * @param  {string} toolValue
  *         the value of a main tool.
  * @param  {boolean} checked
  *         the status of tool is checked or not.
  */
-CaToolbar.prototype.changeMainToolStatus = function(tool_value, checked) {
-  const tool = this.setting.mainTools.find((item) => item.value == tool_value);
+CaToolbar.prototype.changeMainToolStatus = function(toolValue, checked) {
+  const tool = this.setting.mainTools.find((item) => item.value == toolValue);
   if (tool && tool.__item) {
     tool.__item.querySelector('input[type=checkbox]').checked = checked;
   }
@@ -650,7 +650,7 @@ CaToolbar.prototype.switch = function(e) {
  */
 CaToolbar.prototype.collapse = function() {
   this.handler.querySelector('label').textContent = 'keyboard_arrow_right';
-  this._sub_tools.forEach((btn) => (btn.style.display = 'none'));
+  this._subTools.forEach((btn) => (btn.style.display = 'none'));
 };
 
 /*
@@ -658,13 +658,13 @@ CaToolbar.prototype.collapse = function() {
  */
 CaToolbar.prototype.expand = function() {
   this.handler.querySelector('label').textContent = 'keyboard_arrow_left';
-  this._sub_tools.forEach((btn) => (btn.style.display = ''));
+  this._subTools.forEach((btn) => (btn.style.display = ''));
 };
 
 /*
  * getSubToolByName - expand sub tools.
  */
 CaToolbar.prototype.getSubTool = function(name) {
-  // console.log(this._sub_tools);
-  return this._sub_tools.find((li) => li.name == name);
+  // console.log(this._subTools);
+  return this._subTools.find((li) => li.name == name);
 };

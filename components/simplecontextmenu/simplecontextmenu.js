@@ -264,12 +264,12 @@
     picker.classList.add('icons');
     picker.style.backgroundColor ='#7CFC00';
     // hidden color value
-    const color_input = document.createElement('input');
-    color_input.type = 'hidden';
-    color_input.value='#7CFC00';
+    const colorInput = document.createElement('input');
+    colorInput.type = 'hidden';
+    colorInput.value='#7CFC00';
 
     color.appendChild(picker);
-    color.appendChild(color_input);
+    color.appendChild(colorInput);
 
     elt.appendChild(color);
 
@@ -279,11 +279,11 @@
     clear.classList.add('clear');
     clear.classList.add('item');
 
-    clear_icon = document.createElement('div');
-    clear_icon.classList.add('material-icons');
-    clear_icon.classList.add('icons');
-    clear_icon.textContent = 'layers_clear';
-    clear.appendChild(clear_icon);
+    clearIcon = document.createElement('div');
+    clearIcon.classList.add('material-icons');
+    clearIcon.classList.add('icons');
+    clearIcon.textContent = 'layers_clear';
+    clear.appendChild(clearIcon);
     elt.appendChild(clear);
 
     // mode/draw-style
@@ -294,27 +294,27 @@
     const free = document.createElement('li');
     free.classList.add('active');
     free.dataset.model = 'free';
-    const style_free = document.createElement('a');
-    style_free.classList.add('material-icons');
-    style_free.textContent = 'gesture';
-    free.appendChild(style_free);
+    const styleFree = document.createElement('a');
+    styleFree.classList.add('material-icons');
+    styleFree.textContent = 'gesture';
+    free.appendChild(styleFree);
 
 
     const rect = document.createElement('li');
     rect.dataset.model = 'rect';
     // free.classList.add('active');
-    const style_rect = document.createElement('a');
-    style_rect.classList.add('material-icons');
-    style_rect.textContent = 'crop_portrait';
-    rect.appendChild(style_rect);
+    const styleRect = document.createElement('a');
+    styleRect.classList.add('material-icons');
+    styleRect.textContent = 'crop_portrait';
+    rect.appendChild(styleRect);
 
     const point = document.createElement('li');
     point.dataset.model = 'point';
     // free.classList.add('active');
-    const style_point = document.createElement('a');
-    style_point.classList.add('material-icons');
-    style_point.textContent = 'fiber_manual_record';
-    point.appendChild(style_point);
+    const stylePoint = document.createElement('a');
+    stylePoint.classList.add('material-icons');
+    stylePoint.textContent = 'fiber_manual_record';
+    point.appendChild(stylePoint);
 
 
     style.appendChild(free);

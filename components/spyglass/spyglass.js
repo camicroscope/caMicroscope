@@ -209,12 +209,12 @@ Spyglass.prototype.close = function() {
  */
 Spyglass.prototype.moving = function(e) {
   const point = new OpenSeadragon.Point(e.position.x, e.position.y);
-  const img_point = this._target_viewer.viewport.windowToImageCoordinates(point);
+  const imgPoint = this._target_viewer.viewport.windowToImageCoordinates(point);
   const image1 = this._target_viewer.world.getItemAt(0);
   const imgWidth = image1.source.dimensions.x;
   const imgHeight = image1.source.dimensions.y;
 
-  if (0 > img_point.x || imgWidth < img_point.x || 0 > img_point.y || imgHeight < img_point.y ) {
+  if (0 > imgPoint.x || imgWidth < imgPoint.x || 0 > imgPoint.y || imgHeight < imgPoint.y ) {
     this.elt.style.display = 'none';
     this.indicator.style.display = 'none';
     this.indicator.style.cursor = 'default';
