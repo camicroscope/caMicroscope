@@ -46,7 +46,7 @@
 			let filename = document.getElementById("filename0").value
 			var fileExtension = filename.toLowerCase().split('.').reverse()[0];
 			if(!allowedExtensions.includes(fileExtension)) {
-				changeStatus("UPLOAD", fileExtension + " files are not allowed");
+				changeStatus("UPLOAD", fileExtension + " files are not compatible");
 				return false;
 			}
 			callback();
