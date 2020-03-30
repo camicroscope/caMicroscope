@@ -147,36 +147,30 @@ Spyglass.prototype.adjust = function() {
  *        the vertical coordinate within the application's client area
  *
  */
+Spyglass.prototype.setPosition = function(pos) {
+  this.elt.style.left = `${pos.x + this.elt.offsetWidth*0.5}px`;
+  this.elt.style.top = `${pos.y - this.elt.offsetHeight*0.5}px`;
+  // calculate position
+  if (!this.elt.offsetParent) return;
+  const mostLeftPosition = this.elt.offsetWidth + this.elt.offsetLeft;
 
-Spyglass.prototype.setPosition = function(pos){
-
-    this.elt.style.left = `${pos.x + this.elt.offsetWidth*0.5}px`;
-    this.elt.style.top = `${pos.y - this.elt.offsetHeight*0.5}px`;
-    // calculate position
-    if(!this.elt.offsetParent) return;
-    const mostLeftPosition = this.elt.offsetWidth + this.elt.offsetLeft;
-    
-    // check right edge
-    if(mostLeftPosition > this.elt.offsetParent.offsetWidth) {
-        this.elt.style.left = `${pos.x - this.elt.offsetWidth*1.5}px`;
-    }
-  
-    // check top edge
-    if(this.elt.offsetTop < 0){
-        this.elt.style.left = `${Math.min(Math.max(0, pos.x - this.elt.offsetWidth*0.5),
-                                 this.elt.offsetParent.offsetWidth - this.elt.offsetWidth)}px`;
-        this.elt.style.top = `${pos.y + this.elt.offsetHeight*0.5}px`;
-    }
-  
-    // check bottom edge
-    if(this.elt.offsetTop + this.elt.offsetHeight > this.elt.offsetParent.offsetHeight){
-        this.elt.style.left = `${Math.min(Math.max(0, pos.x - this.elt.offsetWidth*0.5),
-                                 this.elt.offsetParent.offsetWidth - this.elt.offsetWidth)}px`;
-        this.elt.style.top = `${pos.y - this.elt.offsetHeight*1.5}px`;
-    }
-    
-}
-
+  // check right edge
+  if (mostLeftPosition > this.elt.offsetParent.offsetWidth) {
+    this.elt.style.left = `${pos.x - this.elt.offsetWidth*1.5}px`;
+  }
+  // check top edge
+  if (this.elt.offsetTop < 0) {
+    this.elt.style.left = `${Math.min(Math.max(0, pos.x - this.elt.offsetWidth*0.5),
+      this.elt.offsetParent.offsetWidth - this.elt.offsetWidth)}px`;
+    this.elt.style.top = `${pos.y + this.elt.offsetHeight*0.5}px`;
+  }
+  // check bottom edge
+  if (this.elt.offsetTop + this.elt.offsetHeight > this.elt.offsetParent.offsetHeight) {
+    this.elt.style.left = `${Math.min(Math.max(0, pos.x - this.elt.offsetWidth*0.5),
+      this.elt.offsetParent.offsetWidth - this.elt.offsetWidth)}px`;
+    this.elt.style.top = `${pos.y - this.elt.offsetHeight*1.5}px`;
+  }
+};
 
 /**
  * open the spyglass in an specific position
