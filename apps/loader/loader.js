@@ -1,8 +1,8 @@
-var upload_url = '../../load/Slide/upload';
-var check_url = '../../load/Slide/info/';
-var thumb_url = '../../load/Slide/thumb/';
+var upload_url = '../load/Slide/upload';
+var check_url = '../load/Slide/info/';
+var thumb_url = '../load/Slide/thumb/';
 
-var store = new Store('../../data/');
+var store = new Store('../data/');
 
 function changeStatus(step, text, reset=true) {
   // Reset the status bar
