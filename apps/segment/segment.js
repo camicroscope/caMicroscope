@@ -76,7 +76,7 @@ async function initUIcomponents() {
           </li>
           <li>
             <label align="left"> Input patch size: </label>
-            <input name="image_size" id="image_size" type="number" required />
+            <input name="imageSize" id="imageSize" type="number" required />
             <span> The image size on which the model is trained </span>
           </li>
             <label>Input image format:</label> <br>
@@ -426,11 +426,11 @@ function drawRectangle(e) {
 
   if (e.checked) {
     // Warn about zoom level
-    const current_zoom = Math.round($CAMIC.viewer.imagingHelper._zoomFactor * 40);
-    required_zoom = $UI.args &&
-    $UI.args.status!='watershed'? parseInt($UI.args.status.split('_')[0].split('-')[2]):current_zoom;
-    if (current_zoom != required_zoom) {
-      alert(`You are testing the model for a different zoom level (recommended: ${required_zoom}). Performance might be affected.`);
+    const currentZoom = Math.round($CAMIC.viewer.imagingHelper._zoomFactor * 40);
+    requiredZoom = $UI.args &&
+    $UI.args.status!='watershed'? parseInt($UI.args.status.split('_')[0].split('-')[2]):currentZoom;
+    if (currentZoom != requiredZoom) {
+      alert(`You are testing the model for a different zoom level (recommended: ${requiredZoom}). Performance might be affected.`);
     }
     document.querySelector('.drop_down').classList.add('disabled');
     canvasDraw.drawOn();
@@ -480,25 +480,25 @@ function checkSize(imgColl, imagingHelper) {
 
   // get position on viewer
 
-  const top_left = imgColl.features[0].bound[0];
-  const bottom_right = imgColl.features[0].bound[2];
-  const min = imagingHelper._viewer.viewport.imageToViewportCoordinates(top_left[0], top_left[1]);
-  const max = imagingHelper._viewer.viewport.imageToViewportCoordinates(bottom_right[0], bottom_right[1]);
+  const topLeft = imgColl.features[0].bound[0];
+  const bottomRight = imgColl.features[0].bound[2];
+  const min = imagingHelper._viewer.viewport.imageToViewportCoordinates(topLeft[0], topLeft[1]);
+  const max = imagingHelper._viewer.viewport.imageToViewportCoordinates(bottomRight[0], bottomRight[1]);
   const rect = new OpenSeadragon.Rect(min.x, min.y, max.x-min.x, max.y-min.y);
   const self = $UI.segmentPanel;
 
-  self.__top_left = top_left;
-  self.__spImgX = top_left[0];
-  self.__spImgY = top_left[1];
-  self.__spImgWidth = bottom_right[0]-top_left[0];
-  self.__spImgHeight = bottom_right[1]-top_left[1];
+  self.__top_left = topLeft;
+  self.__spImgX = topLeft[0];
+  self.__spImgY = topLeft[1];
+  self.__spImgWidth = bottomRight[0]-topLeft[0];
+  self.__spImgHeight = bottomRight[1]-topLeft[1];
   console.log('iX: '+self.__spImgX);
   console.log('iY: '+self.__spImgY);
   console.log('iW: '+self.__spImgWidth);
   console.log('iH: '+self.__spImgHeight);
 
-  console.log(top_left);
-  console.log(bottom_right);
+  console.log(topLeft);
+  console.log(bottomRight);
   // console.log(imagingHelper._viewer.viewport.viewportToImageCoordinates(0,0));
 
   // Convert to screen coordinates
@@ -540,7 +540,7 @@ function checkSize(imgColl, imagingHelper) {
  */
 function uploadModel() {
   var _name = document.querySelector('#name');
-  var _image_size = document.querySelector('#image_size');
+  var _imageSize = document.querySelector('#imageSize');
   var mag = document.querySelector('#magnification');
   var topology = document.querySelector('#modelupload');
   var weights = document.querySelector('#weightsupload');
@@ -551,7 +551,7 @@ function uploadModel() {
   var submit = document.querySelector('#submit');
 
   // Reset previous input
-  _name.value = topology.value = weights.value = status.innerHTML = _image_size.value = url.value = '';
+  _name.value = topology.value = weights.value = status.innerHTML = _imageSize.value = url.value = '';
 
   $UI.uploadModal.open();
 
@@ -572,7 +572,7 @@ function uploadModel() {
   submit.addEventListener('click', async function(e) {
     e.preventDefault();
 
-    if ( _name.value && _image_size.value &&
+    if ( _name.value && _imageSize.value &&
       ((!toggle.checked && topology.files[0].name.split('.').pop() == 'json') || (toggle.checked && url))) {
       status.innerHTML = 'Uploading';
       status.classList.remove('error');
@@ -588,7 +588,7 @@ function uploadModel() {
         // This also ensures that valid model is uploaded.
         // Adding some extra digits in the end to maintain uniqueness
         const _channels = parseInt(document.querySelector('input[name="channels"]:checked').value);
-        const size = parseInt(_image_size.value);
+        const size = parseInt(_imageSize.value);
         const name = 'seg-' + size.toString() +
         '-' + mag.value.toString() +
         '_' + _name.value +
@@ -670,7 +670,7 @@ async function segmentModel(key) {
   const step = parseInt(key.split('_')[0].split('-')[1]);
 
   if (totalSize > 0) {
-    const prefix_url = ImgloaderMode == 'iip'?`../../img/IIP/raw/?IIIF=${$D.params.data.location}`:$CAMIC.slideId;
+    const prefixUrl = ImgloaderMode == 'iip'?`../../img/IIP/raw/?IIIF=${$D.params.data.location}`:$CAMIC.slideId;
 
 
     // model loading
@@ -683,9 +683,9 @@ async function segmentModel(key) {
       self.showProgress('Loading model...');
 
       // Keras sorts the labels by alphabetical order.
-      const input_shape = e.target.result.input_shape;
-      const input_channels = parseInt(input_shape[3]);
-      const image_size = parseInt(input_shape[1]);
+      const inputShape = e.target.result.input_shape;
+      const inputChannels = parseInt(inputShape[3]);
+      const imageSize = parseInt(inputShape[1]);
 
       model = await tf.loadLayersModel(IDB_URL + key);
       console.log('Model Loaded');
@@ -697,7 +697,7 @@ async function segmentModel(key) {
       tfvis.show.modelSummary({name: 'Model Summary', tab: 'Model Inspection'}, model);
       tf.tidy(()=>{
       // Warmup the model before using real data.
-        const warmupResult = model.predict(tf.zeros([1, image_size, image_size, input_channels]));
+        const warmupResult = model.predict(tf.zeros([1, imageSize, imageSize, inputChannels]));
         self.showProgress('Model loaded...');
       });
 
@@ -726,11 +726,11 @@ async function segmentModel(key) {
       for (let y = Y, dy = 0; y < (Y + totalSize); y+=(step)) {
         let dx = 0;
         for (let x = X; x < (X + totalSize); x+=(step)) {
-          const src = prefix_url+'\/'+x+','+y+','+step+','+step+'\/'+step+',/0/default.jpg';
-          const l_img = await addImageProcess(src);
-          fullResCvs.height = l_img.height;
-          fullResCvs.width = l_img.width;
-          fullResCvs.getContext('2d').drawImage(l_img, 0, 0);
+          const src = prefixUrl+'\/'+x+','+y+','+step+','+step+'\/'+step+',/0/default.jpg';
+          const lImg = await addImageProcess(src);
+          fullResCvs.height = lImg.height;
+          fullResCvs.width = lImg.width;
+          fullResCvs.getContext('2d').drawImage(lImg, 0, 0);
 
           // dummy.getContext('2d').drawImage(img, dx, dy);
           const imgData = fullResCvs.getContext('2d').getImageData(0, 0, fullResCvs.width, fullResCvs.height);
@@ -738,10 +738,10 @@ async function segmentModel(key) {
           tf.tidy(()=>{
             const img = tf.browser.fromPixels(imgData).toFloat();
             let img2;
-            if (input_channels == 1) {
-              img2 = tf.image.resizeBilinear(img, [image_size, image_size]).mean(2);
+            if (inputChannels == 1) {
+              img2 = tf.image.resizeBilinear(img, [imageSize, imageSize]).mean(2);
             } else {
-              img2 = tf.image.resizeBilinear(img, [image_size, image_size]);
+              img2 = tf.image.resizeBilinear(img, [imageSize, imageSize]);
             }
             const scaleMethod = $UI.filter? $UI.filter.status: 'norm';
             console.log(scaleMethod);
@@ -768,13 +768,13 @@ async function segmentModel(key) {
               const std = (img2.squaredDifference(mean).sum()).div(img2.flatten().shape).sqrt();
               normalized = img2.sub(mean).div(std);
             }
-            const batched = normalized.reshape([1, image_size, image_size, input_channels]);
+            const batched = normalized.reshape([1, imageSize, imageSize, inputChannels]);
             let values = model.predict(batched).dataSync();
             values = Array.from(values);
             // scale values
             values = values.map((x) => x * 255);
             val = [];
-            while (values.length > 0) val.push(values.splice(0, image_size));
+            while (values.length > 0) val.push(values.splice(0, imageSize));
           });
           tf.engine().startScope();
           await tf.browser.toPixels(val, temp);
@@ -851,10 +851,10 @@ function segmentROI(box) {
   console.log($UI.toolbar._sub_tools.value);
 
   const fullResCvs = self.__fullsrc;
-  const prefix_url = ImgloaderMode == 'iip'?
+  const prefixUrl = ImgloaderMode == 'iip'?
   `../../img/IIP/raw/?IIIF=${$D.params.data.location}`:$CAMIC.slideId;
 
-  self.__img.src = prefix_url+'\/'+self.__spImgX+','+self.__spImgY+','+
+  self.__img.src = prefixUrl+'\/'+self.__spImgX+','+self.__spImgY+','+
   self.__spImgWidth+','+self.__spImgHeight+'\/'+self.__spImgWidth+
   ',/0/default.jpg';
   self.__img.onload = function() {
@@ -1133,15 +1133,15 @@ async function showInfo() {
         const size = (data[key].modelTopologyBytes + data[key].weightDataBytes +
           data[key].weightSpecsBytes) / (1024*1024);
         const row = table.insertRow();
-        let classes; let input_shape; let td;
+        let classes; let inputShape; let td;
 
         if (name.slice(0, 3) == 'seg') {
           store.get(name).onsuccess = function(e) {
-            input_shape = e.target.result.input_shape.slice(1, 3).join('x');
+            inputShape = e.target.result.input_shape.slice(1, 3).join('x');
             td = row.insertCell();
             td.innerHTML = name.split('_').splice(1).join('_').slice(0, -3);
             td = row.insertCell();
-            td.innerHTML = input_shape;
+            td.innerHTML = inputShape;
             td = row.insertCell();
             td.innerHTML = +size.toFixed(2);
             td = row.insertCell();

@@ -36,7 +36,7 @@ function toggleViewerMode(opt) {
 }
 
 // mainfest
-function multSelector_action(size) {
+function multSelectorAction(size) {
   // hidden main viewer's bottom right control and get navigator
   $CAMIC.viewer.controls.bottomright.style.display = 'none';
   $UI.lockerPanel.style.display = '';
@@ -166,14 +166,14 @@ function openSecondaryViewer() {
   // minor.classList.add('display');
   minor.classList.add('right');
 
-  const nav_size = {
+  const navSize = {
     height: $CAMIC.viewer.controls.bottomright.querySelector('.navigator').style
         .height,
     width: $CAMIC.viewer.controls.bottomright.querySelector('.navigator').style
         .width,
   };
   setTimeout(function() {
-    multSelector_action(nav_size);
+    multSelectorAction(navSize);
   }, 100);
 }
 
@@ -653,7 +653,7 @@ function convertHumanAnnotationToPopupBody(notes) {
   return rs;
 }
 
-function anno_delete(data) {
+function annoDelete(data) {
   if (!data.id) return;
   const annotationData = $D.overlayers.find(
       (d) => d.data && d.data._id.$oid == data.oid,
@@ -690,7 +690,7 @@ function anno_delete(data) {
         data.index = index;
         const layer = $D.overlayers[data.index];
         // update UI
-        if (Array.isArray(layer.data)) deleteCallback_old(data);
+        if (Array.isArray(layer.data)) deleteCallbackOld(data);
         else deleteCallback(data);
       })
       .catch((e) => {
@@ -719,7 +719,7 @@ function deleteCallback(data) {
 }
 
 // for support QUIP2.0 Data model - delete callback
-function deleteCallback_old(data) {
+function deleteCallbackOld(data) {
   const layer = $D.overlayers[data.index];
   // for support QUIP2.0
   const idx = layer.data.findIndex((d) => d._id.$oid === data.oid);
@@ -739,11 +739,11 @@ function deleteCallback_old(data) {
   $UI.annotPopup.close();
 }
 
-function sort_change(sort) {
+function sortChange(sort) {
   $CAMIC.layersManager.sort(sort);
 }
 
-function reset_callback(data) {
+function resetCallback(data) {
   if ($CAMIC.viewer.canvasDrawInstance._path_index === 0) return;
   if (confirm(`Do You Want To Clear Markups?`)) {
     $CAMIC.viewer.canvasDrawInstance.clear();
@@ -754,13 +754,13 @@ function convertToNormalized(points, size, viewer) {
   const height = Math.round(viewer.imagingHelper.imgHeight);
   const width = Math.round(viewer.imagingHelper.imgWidth);
   // convert
-  const normalized_points = points.map((p) => [p[0] / width, p[1] / height]);
-  const normalized_size = [size[0] / width, size[0] / height];
+  const normalizedPoints = points.map((p) => [p[0] / width, p[1] / height]);
+  const normalizedSize = [size[0] / width, size[0] / height];
 
   return {
-    points: normalized_points,
-    bound: getBounds(normalized_points),
-    size: normalized_size,
+    points: normalizedPoints,
+    bound: getBounds(normalizedPoints),
+    size: normalizedSize,
   };
 }
 
@@ -825,9 +825,9 @@ function saveBrushLabel(isOff) {
     const [note, size, color] = key.split('|');
     const points = Array.from(value).map((d) => d.split(','));
 
-    const exec_id = note + randomId();
+    const execId = note + randomId();
     const noteData = {
-      name: exec_id,
+      name: execId,
       notes: note,
     };
 
@@ -840,7 +840,7 @@ function saveBrushLabel(isOff) {
         },
         analysis: {
           source: 'human',
-          execution_id: exec_id,
+          execution_id: execId,
           name: noteData.name,
           type: 'label',
           isGrid: true,
@@ -875,18 +875,18 @@ function saveBrushLabel(isOff) {
             return;
           }
           // create layer data
-          const exec_id = annotJson.provenance.analysis.execution_id;
-          const new_item = {
-            id: exec_id,
+          const execId = annotJson.provenance.analysis.execution_id;
+          const newItem = {
+            id: execId,
             name: annotJson.provenance.analysis.name,
             typeId: typeIds['human'],
             typeName: 'human',
             data: null,
           };
-          $D.overlayers.push(new_item);
-          $UI.layersViewer.addItem(new_item);
+          $D.overlayers.push(newItem);
+          $UI.layersViewer.addItem(newItem);
           $UI.layersViewerMinor.addItem(
-              new_item,
+              newItem,
           $minorCAMIC && $minorCAMIC.viewer ? true : false,
           );
 
@@ -895,13 +895,13 @@ function saveBrushLabel(isOff) {
           // return;
           loadAnnotationById(
               $CAMIC,
-              $UI.layersViewer.getDataItemById(exec_id),
+              $UI.layersViewer.getDataItemById(execId),
               saveBrushAnnotCallback.bind(isOff),
           );
           if ($minorCAMIC && $minorCAMIC.viewer) {
             loadAnnotationById(
                 $minorCAMIC,
-                $UI.layersViewerMinor.getDataItemById(exec_id),
+                $UI.layersViewerMinor.getDataItemById(execId),
                 null,
             );
           }
@@ -923,9 +923,9 @@ function savePresetLabel() {
   const data = $UI.toolbar
       .getSubTool('preset_label')
       .querySelector('li.leaf.checked').dataset;
-  const exec_id = data.type + randomId();
+  const execId = data.type + randomId();
   const noteData = {
-    name: exec_id,
+    name: execId,
     notes: data.type,
   };
   const feature = $CAMIC.viewer.canvasDrawInstance.getImageFeatureCollection()
@@ -949,7 +949,7 @@ function savePresetLabel() {
         },
         analysis: {
           source: 'human',
-          execution_id: exec_id,
+          execution_id: execId,
           name: noteData.name,
           type: 'label',
           isGrid: true,
@@ -975,7 +975,7 @@ function savePresetLabel() {
         },
         analysis: {
           source: 'human',
-          execution_id: exec_id,
+          execution_id: execId,
           name: noteData.name,
           type: 'label',
         },
@@ -1007,17 +1007,17 @@ function savePresetLabel() {
           return;
         }
         // create layer data
-        const new_item = {
-          id: exec_id,
+        const newItem = {
+          id: execId,
           name: noteData.name,
           typeId: typeIds['human'],
           typeName: 'human',
           data: null,
         };
-        $D.overlayers.push(new_item);
-        $UI.layersViewer.addItem(new_item);
+        $D.overlayers.push(newItem);
+        $UI.layersViewer.addItem(newItem);
         $UI.layersViewerMinor.addItem(
-            new_item,
+            newItem,
         $minorCAMIC && $minorCAMIC.viewer ? true : false,
         );
 
@@ -1025,13 +1025,13 @@ function savePresetLabel() {
         // return;
         loadAnnotationById(
             $CAMIC,
-            $UI.layersViewer.getDataItemById(exec_id),
+            $UI.layersViewer.getDataItemById(execId),
             saveLabelAnnotCallback,
         );
         if ($minorCAMIC && $minorCAMIC.viewer) {
           loadAnnotationById(
               $minorCAMIC,
-              $UI.layersViewerMinor.getDataItemById(exec_id),
+              $UI.layersViewerMinor.getDataItemById(execId),
               null,
           );
         }
@@ -1084,7 +1084,7 @@ function saveLabelAnnotCallback() {
   // $CAMIC.status = null;
 }
 
-function anno_callback(data) {
+function annoCallback(data) {
   // is form ok?
   const noteData = $UI.annotOptPanel._form_.value;
   if ($UI.annotOptPanel._action_.disabled || noteData.name == '') {
@@ -1111,17 +1111,17 @@ function anno_callback(data) {
 
   // Add new lines to notes to prevent overflow
   str = noteData.notes;
-  var result_string = '';
+  var resultString = '';
   while (str.length > 0) {
-    result_string += str.substring(0, 36) + '\n';
+    resultString += str.substring(0, 36) + '\n';
     str = str.substring(36);
   }
-  noteData.notes = result_string;
+  noteData.notes = resultString;
 
   // save
   // provenance
   Loading.open($UI.annotOptPanel.elt, 'Saving Annotation...');
-  const exec_id = randomId();
+  const execId = randomId();
 
   const annotJson = {
     creator: getUserId(),
@@ -1132,7 +1132,7 @@ function anno_callback(data) {
       },
       analysis: {
         source: 'human',
-        execution_id: exec_id,
+        execution_id: execId,
         name: noteData.name,
       },
     },
@@ -1163,17 +1163,17 @@ function anno_callback(data) {
           return;
         }
         // create layer data
-        const new_item = {
-          id: exec_id,
+        const newItem = {
+          id: execId,
           name: noteData.name,
           typeId: typeIds['human'],
           typeName: 'human',
           data: null,
         };
-        $D.overlayers.push(new_item);
-        $UI.layersViewer.addItem(new_item);
+        $D.overlayers.push(newItem);
+        $UI.layersViewer.addItem(newItem);
         $UI.layersViewerMinor.addItem(
-            new_item,
+            newItem,
         $minorCAMIC && $minorCAMIC.viewer ? true : false,
         );
 
@@ -1181,13 +1181,13 @@ function anno_callback(data) {
         // return;
         loadAnnotationById(
             $CAMIC,
-            $UI.layersViewer.getDataItemById(exec_id),
+            $UI.layersViewer.getDataItemById(execId),
             saveAnnotCallback,
         );
         if ($minorCAMIC && $minorCAMIC.viewer) {
           loadAnnotationById(
               $minorCAMIC,
-              $UI.layersViewerMinor.getDataItemById(exec_id),
+              $UI.layersViewerMinor.getDataItemById(execId),
               null,
           );
         }
@@ -1223,7 +1223,7 @@ function saveAnnotCallback() {
   $UI.layersViewer.update();
   $CAMIC.status = null;
 }
-function algo_callback(data) {
+function algoCallback(data) {
   console.log(data);
 }
 
@@ -1365,7 +1365,7 @@ async function callback(data) {
     }
   });
 }
-function minor_callback(data) {
+function minorCallback(data) {
   console.log(data);
 }
 
@@ -1447,7 +1447,7 @@ function loadAnnotationById(camic, layerData, callback) {
             };
           });
           // if(item) data[0].isShow = item.isShow;
-          item.render = old_anno_render;
+          item.render = oldAnnoRender;
           item.clickable = false;
           item.hoverable = false;
         } else {
@@ -1476,18 +1476,18 @@ function loadAnnotationById(camic, layerData, callback) {
           //   Math.round(p[1] * height)
           // ]);
           // item.data = data[0];
-          // item.render = anno_brush_render;
+          // item.render = annoBrushRender;
           } else {
           // data[0].geometries = VieweportFeaturesToImageFeatures(
           //   camic.viewer,
           //   data[0].geometries
           // );
           // item.data = data[0];
-          // item.render = anno_render;
+          // item.render = annoRender;
           }
 
           item.data = data[0];
-          item.render = anno_render;
+          item.render = annoRender;
         }
 
         // create lay and update view
@@ -1513,14 +1513,14 @@ function removeCallback(layerData) {
   if (!item.data) {
     // load layer data
     loadAnnotationById($CAMIC, layerData, function() {
-      anno_delete({
+      annoDelete({
         id: layerData.item.id,
         oid: layerData.item.data._id.$oid,
         annotation: layerData.item.data.properties.annotation,
       });
     });
   } else {
-    anno_delete({
+    annoDelete({
       id: layerData.item.id,
       oid: layerData.item.data._id.$oid,
       annotation: layerData.item.data.properties.annotation,
@@ -1591,7 +1591,7 @@ function algoRun() {
 }
 
 function saveAnnotation() {
-  anno_callback.call(null, {
+  annoCallback.call(null, {
     id:
       $UI.annotOptPanel.setting.formSchemas[$UI.annotOptPanel._select_.value]
           .id,
@@ -1745,13 +1745,13 @@ function imgboxHeatmap() {
 function createHeatMapList(list) {
   empty($UI.modalbox.body);
   list.forEach((data) => {
-    const exec_id = data.provenance.analysis.execution_id;
+    const execId = data.provenance.analysis.execution_id;
     const a = document.createElement('a');
     const params = getUrlVars();
     a.href = params.mode ?
-      `../heatmap/heatmap.html?slideId=${$D.params.slideId}&execId=${exec_id}&mode=pathdb` :
-      `../heatmap/heatmap.html?slideId=${$D.params.slideId}&execId=${exec_id}`;
-    a.textContent = exec_id;
+      `../heatmap/heatmap.html?slideId=${$D.params.slideId}&execId=${execId}&mode=pathdb` :
+      `../heatmap/heatmap.html?slideId=${$D.params.slideId}&execId=${execId}`;
+    a.textContent = execId;
     $UI.modalbox.body.appendChild(a);
     $UI.modalbox.body.appendChild(document.createElement('br'));
   });
@@ -1760,7 +1760,7 @@ function createHeatMapList(list) {
 /* call back list END */
 /* --  -- */
 /* -- for render anno_data to canavs -- */
-function anno_render(ctx, data) {
+function annoRender(ctx, data) {
   const imagingHelper = this.viewer.imagingHelper;
   ctx._lw =
     (imagingHelper.physicalToDataX(1) - imagingHelper.physicalToDataX(0)) >> 0;
@@ -1768,13 +1768,13 @@ function anno_render(ctx, data) {
     (imagingHelper.physicalToDataX(3) - imagingHelper.physicalToDataX(0)) >> 0;
   DrawHelper.draw(ctx, data.geometries.features);
 }
-function old_anno_render(ctx, data) {
+function oldAnnoRender(ctx, data) {
   const lineWidth =
     (imagingHelper.physicalToDataX(1) - imagingHelper.physicalToDataX(0)) >> 0;
   ctx.lineWidth = lineWidth;
   DrawHelper.draw(ctx, data);
 }
-function anno_brush_render(ctx, data) {
+function annoBrushRender(ctx, data) {
   caDrawHelper.prototype.drawBrushGrids(ctx, data.geometries.features[0]);
 }
 /* --  -- */

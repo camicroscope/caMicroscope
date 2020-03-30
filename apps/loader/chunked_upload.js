@@ -1,8 +1,8 @@
 // expects changeStatus to be defined from loader.js
 
-var start_url = '../../load/Upload/start';
-var continue_url = '../../load/Upload/continue/';
-var finish_url = '../../load/Upload/finish/';
+var startUrl = '../../load/Upload/start';
+var continueUrl = '../../load/Upload/continue/';
+var finishUrl = '../../load/Upload/finish/';
 var chunkSize = 5*1024*1024;
 
 // read a chunk of the file
@@ -33,7 +33,7 @@ async function readFileChunks(file, token) {
     try {
       const data = await promiseChunkFileReader(file, part);
       const body = {chunkSize: chunkSize, offset: part*chunkSize, data: data};
-      const res = await continue_upload(token)(body);
+      const res = await continueUpload(token)(body);
       part++;
       console.log(part);
     } catch (e) {
@@ -45,7 +45,7 @@ async function readFileChunks(file, token) {
 }
 
 
-async function handle_upload(selectedFiles) {
+async function handleUpload(selectedFiles) {
   var fnametr = document.getElementById('filenameRow');
   var tokentr = document.getElementById('tokenRow');
   var slidetr = document.getElementById('slidenameRow');
@@ -73,8 +73,8 @@ async function handle_upload(selectedFiles) {
 
     selectedFile = selectedFiles[i];
     const filename = document.getElementById('filename'+currID).value;
-    const token = await start_upload(filename);
-    const callback = continue_upload(token);
+    const token = await startUpload(filename);
+    const callback = continueUpload(token);
     document.getElementById('token'+currID).value = token;
     readFileChunks(selectedFile, token);
     // parseFile(selectedFile, callback, 0, x=>(changeStatus("UPLOAD", "Finished Reading File")))
@@ -84,9 +84,9 @@ async function handle_upload(selectedFiles) {
   document.getElementById('controlButtons').colSpan = selectedFiles.length+1;
 }
 
-async function start_upload(filename) {
+async function startUpload(filename) {
   const body = {filename: filename};
-  const token = fetch(start_url, {method: 'POST', body: JSON.stringify(body), headers: {
+  const token = fetch(startUrl, {method: 'POST', body: JSON.stringify(body), headers: {
     'Content-Type': 'application/json; charset=utf-8',
   }}).then((x)=>x.json());
   try {
@@ -98,29 +98,29 @@ async function start_upload(filename) {
   }
 }
 
-function continue_upload(token) {
+function continueUpload(token) {
   return async function(body) {
     changeStatus('UPLOAD', 'Uploading chunk at: '+ body.offset +' of size '+ body.chunkSize);
-    return await fetch(continue_url + token, {method: 'POST', body: JSON.stringify(body), headers: {
+    return await fetch(continueUrl + token, {method: 'POST', body: JSON.stringify(body), headers: {
       'Content-Type': 'application/json; charset=utf-8',
     }});
   };
 }
-function finish_upload() {
+function finishUpload() {
   var reset = true;
   for (var i=0; i<document.getElementById('fileIdRow').cells.length-1; i++) {
     const token = document.getElementById('token'+i).value;
     const filename = document.getElementById('filename'+i).value;
     const body = {filename: filename};
     changeStatus('UPLOAD', 'Finished Reading File, Posting');
-    const reg_req = fetch(finish_url + token, {method: 'POST', body: JSON.stringify(body), headers: {
+    const regReq = fetch(finishUrl + token, {method: 'POST', body: JSON.stringify(body), headers: {
       'Content-Type': 'application/json; charset=utf-8',
     }});
     console.log(i);
-    reg_req.then((x)=>x.json()).then((a)=>{
+    regReq.then((x)=>x.json()).then((a)=>{
       changeStatus('UPLOAD | Finished', a, reset); console.log(a); reset = false;
     });
-    reg_req.then((e)=> {
+    regReq.then((e)=> {
       if (e['ok']===false) {
         changeStatus('UPLOAD | ERROR;', e);
         reset = true;

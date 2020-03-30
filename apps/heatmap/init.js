@@ -472,6 +472,6 @@ function createExportEditData() {
 }
 function getUserId() {
   const token = getCookie('token');
-  const token_data = parseJwt(token);
-  return token_data.name;
+  const tokenData = parseJwt(token);
+  return tokenData.name;
 }
