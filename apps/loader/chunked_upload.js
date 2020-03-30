@@ -15,7 +15,7 @@ function promiseChunkFileReader(file, part) {
         if (d) {
           resolve(d);
         } else {
-          reject('Done Reading');
+          reject(new Error('Done Reading') );
         }
       } else {
         reject(evt.target.error);

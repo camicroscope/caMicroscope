@@ -71,7 +71,7 @@ We are collecting feedback to write this section in more detail. Please add your
 
 caMicroscope is open source software. Any involvement and contribution with the caMicroscope project is greatly appreciated. Feel free to get directly involved in any of the repositories in the caMicroscope organization.
 
-It is highly recommended to make any changes off of the develop branch of a repository, and, when ready, create a PR to the develop branch of the source repository.
+It is highly recommended to make any changes off of the develop branch of a repository, and, when ready, create a PR to the develop branch of the source repository. Before sending the PR, make sure that there are no linting errors by running ```npm install``` and then ```npm run lint``` in the repository folder.
 
 ## Fast Local Changes
 When using the [hosted setup](https://github.com/camicroscope/Distro/), you can have the distribution host the changes from your local. Clone this repository and the distribution in the same parent directory, in this repo, `mv .nocache.htaccess .htaccess` then replace the viewer section of develop.yml with something like this:

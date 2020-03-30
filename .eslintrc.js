@@ -19,8 +19,6 @@ module.exports = {
     "max-len" : ["error", { "code": 120 ,"ignoreTemplateLiterals": true},],
     "no-unused-vars" : 0,
     "no-var" : 0,
-    "prefer-promise-reject-errors" :0,
-    "no-extra-bind" : 0,
     "new-cap" : 0,
   },
 };

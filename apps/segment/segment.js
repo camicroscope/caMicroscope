@@ -385,12 +385,12 @@ function initCore() {
       const fname = $D.params.slideId + '_roi.png';
       if (!$UI.args || $UI.args.status == 'watershed') download($UI.segmentPanel.__c2s, fname);
       else download($UI.segmentPanel.__mask, fname);
-    }.bind($UI.segmentPanel));
+    });
 
     $UI.segmentPanel.__btn_savecsv.addEventListener('click', function(e) {
       const fname = $D.params.slideId + '_roi.csv';
       buildAndDownloadCSV($UI.segmentPanel.__contours, fname);
-    }.bind($UI.segmentPanel));
+    });
   });
 }
 

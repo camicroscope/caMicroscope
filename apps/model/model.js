@@ -316,13 +316,13 @@ function initCore() {
       const fname = $D.params.slideId + '_roi.png';
 
       download($UI.modelPanel.__fullsrc, fname);
-    }.bind($UI.modelPanel));
+    });
 
     // TO-DO -Save class probabilities
     $UI.modelPanel.__btn_savecsv.addEventListener('click', function(e) {
       const fname = $D.params.slideId + '_roi.csv';
       downloadCSV(fname);
-    }.bind($UI.modelPanel));
+    });
   });
 }
 
