@@ -25,7 +25,8 @@
 	<script src="./loader/loader.js"></script>
 	<script src="./loader/chunked_upload.js"></script>
 	<script>
-		var existing_slide_names = [];
+		var existingSlideNames = [];
+		const allowedExtensions = ['svs', 'tif', 'tiff', 'vms', 'vmu', 'ndpi', 'scn', 'mrxs', 'bif', 'svslide'];
 		function validateForm(callback) {
 			let x = document.getElementById("slidenameRow")
 			for (var i = 0; i < x.cells.length - 1; i++) {
@@ -36,10 +37,17 @@
 				}
 
 				//Checking if silde with given name already exists
-				if(existing_slide_names.includes(slide.value)) {
+				if(existingSlideNames.includes(slide.value)) {
 					changeStatus("UPLOAD", "Slide with given name already exists");
 					return false;
 				}
+			}
+			//Checking for extinsion
+			let filename = document.getElementById("filename0").value
+			var fileExtension = filename.toLowerCase().split('.').reverse()[0];
+			if(!allowedExtensions.includes(fileExtension)) {
+				changeStatus("UPLOAD", fileExtension + " files are not allowed");
+				return false;
 			}
 			callback();
 		}
@@ -305,7 +313,7 @@
 				}
 				
 				//Adding names to later validate for new slide names
-				existing_slide_names = data.map(d => d[1]);
+				existingSlideNames = data.map(d => d[1]);
 				
 				const thead = HeadMapping.map(d => "<th>" + d.title + `<img id='sort1${d.title}' class='float-right sort-btn' width='10px' src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAABmJLR0QA/wD/AP+gvaeTAAAAtklEQVRIie3XsQrCMBSF4T+CoJsddHAo9HH6AD634NbNqTgo6FI6WQdTtJLQpG0CxXsglIRyv0ugCYWZRsUGd8ARKIA0FroFTkCjxxnIYqNRcBsaFO9Dg+Cu6KS4LzoJrnh/Mr5oOwpgaSu+GNqVY6wHTN/Jo4DNz1oJrAzv7oH6a/4Ani7duabCvLVrnyKht1pggQUWWOA/g0vD2o3ulRgkOXDhcx1egYNvkTG/IIl+3nUD88gLIHVaGvUECUcAAAAASUVORK5CYII='/>
 
