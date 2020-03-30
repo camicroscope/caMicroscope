@@ -20,7 +20,6 @@ module.exports = {
     "camelcase" : 0,
     "no-unused-vars" : 0,
     "no-var" : 0,
-    "no-extra-bind" : 0,
     "new-cap" : 0,
   },
 };
