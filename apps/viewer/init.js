@@ -866,7 +866,7 @@ async function initUIcomponents() {
       //   title:'Edit',
       //   class:'material-icons',
       //   text:'notes',
-      //   callback:anno_edit
+      //   callback:annoEdit
       // },
       {
         // delete
@@ -1007,10 +1007,10 @@ async function initUIcomponents() {
         // id:
         // element:
         formSchemas: annotSchemas,
-        resetCallback: reset_callback,
+        resetCallback: resetCallback,
         action: {
           title: 'Save',
-          callback: anno_callback,
+          callback: annoCallback,
         },
       });
       // START QUIP550 TEMPORARILY REMOVE Algorithm Panel //
@@ -1073,11 +1073,11 @@ async function initUIcomponents() {
   // END QUIP550 //
   // $UI.multSelector = new MultSelector({id:'mult_selector'});
   // $UI.multSelector.addHandler('cancel',multSelector_cancel);
-  // $UI.multSelector.addHandler('action',multSelector_action);
+  // $UI.multSelector.addHandler('action',multSelectorAction);
 
   // add eventlistenter for two btns
   // const brushClearBtn = document.querySelector("#bctrl button.reset");
-  // brushClearBtn.addEventListener("click", reset_callback);
+  // brushClearBtn.addEventListener("click", resetCallback);
   // const brushSaveBtn = document.querySelector("#bctrl button.action");
   // brushSaveBtn.addEventListener("click", function(e) {
   //   saveBrushLabel(false);
