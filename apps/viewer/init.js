@@ -873,7 +873,7 @@ async function initUIcomponents() {
         title: 'Delete',
         class: 'material-icons',
         text: 'delete_forever',
-        callback: anno_delete,
+        callback: annoDelete,
       },
     ],
   });
