@@ -55,6 +55,16 @@
         console.error(e)
     })
     }
+    let curr = 'signup'
+    let prev = 'login'    
+    const toggleLogin = function(){
+      let temp = prev
+      prev = curr
+      curr = temp
+      document.querySelector('.' + prev + '-form').style.display = 'none'
+      document.querySelector('.' + curr + '-form').style.display = 'block'
+
+    }
   </script>
 
   <body>
@@ -128,8 +138,24 @@
           access.
           Email the administrator if you want to be added. If you are an admin, you should be able to use this form.</p>
       </form>
-      <div class="text-center">Already have an account? </div>
+      <div class="text-center">
+        <a class="login-link" onclick="toggleLogin()">Already have an account? <b>Login</b></a> 
+      </div>
     </div>
+    <div class="login-form" style="display: none;">
+    <img src="https://avatars2.githubusercontent.com/u/12075069?s=400&v=4" alt="logo" class="comp-logo">
+    <div class="login-form-container">
+        <p class="login-type">User Login</p>
+        <form action="" method="POST" style="background-color: transparent; border: none; box-shadow: none;">
+            <input type="email" class="login-email" placeholder="Email">
+            <input type="password" class="login-pass" placeholder="Password">
+            <button type="submit" id="btn-submit"></button>
+            <label for="btn-submit" class="btn-login">LOGIN</label>
+            <a href="#" class="forget-pass">Forgot Password</a>
+            <a href="#" class="new-user" onclick="toggleLogin()">New User? SIGNUP</a>
+        </form>
+    </div>
+  </div>
 
     <!-- JQuery -->
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>

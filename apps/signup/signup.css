@@ -10,22 +10,22 @@ body {
 	border-color: #e1e1e1;
 	border-radius: 0;
 }
-.signup-form {
+.signup-form, .login-form {
 	width: 390px;
 	margin: 0 auto;
 	padding: 30px 0;
 }
-.signup-form h2 {
+.signup-form h2 , .login-form h2{
 	color: #636363;
 	margin: 0 0 15px;
 	text-align: center;
 }
-.signup-form .lead {
+.signup-form .lead, .login-form .lead {
 	font-size: 14px;
 	margin-bottom: 30px;
 	text-align: center;
 }
-.signup-form form {		
+.signup-form form, .login-form form {		
 	border-radius: 1px;
 	margin-bottom: 15px;
 	background: #fff;
@@ -88,4 +88,92 @@ body {
 	font-family: "Open Sans", Helvetica, sans-serif;
 	line-height: 1.8;
 }
+.login-link{
+	cursor: pointer;
+}
+.comp-logo{
+	height: 6rem;
+	position: absolute;
+	top: 27%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+.login-type{
+	font-size: 2rem;
+	letter-spacing: 3px;
+	text-transform: uppercase;
+	display: inline-block;
+	position: absolute;
+	top: -10%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+.login-form-container{
+	display: inline-block;
+	height: 40rem;
+	width: 30rem;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	border-radius: 1rem;
+	box-shadow: 0px 0px 5px 1px gray;
 
+}
+
+.login-email{
+	position: absolute;
+	top: 40%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	height: 3rem;
+	width: 20rem;
+	margin: 0;
+	padding: 1rem;
+	outline: 0;
+	border: none;
+	border-bottom: 1px solid gray;
+}
+.login-pass{
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	height: 3rem;
+	width: 20rem;
+	margin: 0;
+	padding: 1rem;
+	outline: 0;
+	border: none;
+	border-bottom: 1px solid gray;
+}
+#btn-submit{
+	display: none;
+}
+.btn-login{
+	position: absolute;
+	top: 65%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	display: inline-block;
+	padding: 1rem 6rem;
+	background-color: #179b81;
+	color: white;
+	border-radius: 5px;
+	cursor: pointer;
+}
+.forget-pass{
+	position: absolute;
+	top: 78%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	color: #179b81;
+}
+.new-user{
+	position: absolute;
+	top: 85%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	color: #179b81;
+    
+}
