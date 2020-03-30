@@ -10,6 +10,9 @@
 	<!-- common -->
 	<!-- <link rel='stylesheet' type='text/css' media='all' href='../css/style.css'/> -->
 	<!-- Check If we're logged in ok, otherwise, log in for us -->
+	<!-- Font Awesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+
 	<script src='../common/authChecker.js'></script>
 	<script>
 		__auth_check(1)
@@ -96,16 +99,16 @@
 
 	<div class='p-2 bg-light' style="flex-grow: 1;">
 		<button type="button" class="btn btn-success float-right mb-2"
-			onclick="(()=>{location.reload();return false;})()">Reload</button>
+			onclick="(()=>{location.reload();return false;})()"> <i class="fas fa-sync-alt"></i> Reload</button>
 		<button type="button" class="btn btn-primary float-right mb-2 mr-2" data-toggle="modal"
-			data-target="#upload-dialog">Upload</button>
+			data-target="#upload-dialog"> <i class="fas fa-upload"></i> Upload</button>
 			<div class="modal fade" id="upload-dialog" tabindex="-1" role="dialog"
 			aria-labelledby="title-of-dialog" aria-hidden="true">
 			<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
 				<div class="modal-content">
 					<div class="modal-header">
 						<h5 class="modal-title" id="title-of-dialog">Upload New Slide</h5>
-						<button type="button" class="close" onclick="initialize()" data-dismiss="modal" aria-label="Close">
+						<button type="button" class="close" onclick="initialize(); location.reload();" data-dismiss="modal" aria-label="Close">
 							<span aria-hidden="true">&times;</span>
 						</button>
 					</div>
@@ -165,7 +168,7 @@
 
 					</div>
 					<div class="modal-footer">
-						<button type="button" class="btn btn-secondary" onclick="initialize()" data-dismiss="modal">Close</button>
+						<button type="button" class="btn btn-secondary" onclick="initialize(); location.reload();" data-dismiss="modal">Close</button>
 					</div>
 				</div>
 			</div>
