@@ -127,7 +127,7 @@ class Store {
     const query = {};
     const stringifiedIds = ids.map((id) => `"${id}"`).join(',');
     query.nameList = `[${stringifiedIds}]`;
-    query["provenance.image.slide"] = slide;
+    query['provenance.image.slide'] = slide;
     if (source) {
       query.source = source;
     }
@@ -203,8 +203,8 @@ class Store {
     const suffix = 'Mark/delete';
     const url = this.base + suffix;
     const query = {
-      _id: id,
-      "provenance.image.slide": slide
+      '_id': id,
+      'provenance.image.slide': slide,
     };
     return fetch(url + '?' + objToParamStr(query), {
       method: 'DELETE',
@@ -219,7 +219,7 @@ class Store {
    * @return {promise} - promise which resolves with data
    **/
   findMarkTypes(slide, name) {
-    let suffix = 'Mark/types';
+    const suffix = 'Mark/types';
 
     const query = {};
     //
@@ -227,9 +227,9 @@ class Store {
       console.error('Store.findMarkTypes needs slide ... ');
       return null;
     }
-    query["provenance.image.slide"] = slide
+    query['provenance.image.slide'] = slide;
     if (name) {
-      query["provenance.analysis.execution_id"] = name
+      query['provenance.analysis.execution_id'] = name;
     }
     const url = this.base + suffix;
     return fetch(url + '?' + objToParamStr(query), {
@@ -244,10 +244,10 @@ class Store {
     const query = {};
     let bySlideId;
     if (name) {
-      query["provenance.analysis.execution_id"] = name;
+      query['provenance.analysis.execution_id'] = name;
     }
     if (slide) {
-      query["provenance.image.slide"] = slide;
+      query['provenance.image.slide'] = slide;
     }
     return fetch(url + '?' + objToParamStr(query), {
       credentials: 'include',
@@ -259,10 +259,10 @@ class Store {
     const url = this.base + suffix;
     const query = {};
     if (name) {
-      query["provenance.analysis.execution_id"] = name;
+      query['provenance.analysis.execution_id'] = name;
     }
     if (slide) {
-      query["provenance.image.slide"] = slide;
+      query['provenance.image.slide'] = slide;
     }
     return fetch(url + '?' + objToParamStr(query), {
       credentials: 'include',
@@ -278,8 +278,8 @@ class Store {
     const suffix = 'Heatmap/find';
     const url = this.base + suffix;
     const query = {};
-    query["provenance.image.slide"] = slide;
-    query["provenance.analysis.execution_id"] = name;
+    query['provenance.image.slide'] = slide;
+    query['provenance.analysis.execution_id'] = name;
 
     return fetch(url + '?' + objToParamStr(query), {
       credentials: 'include',
@@ -318,8 +318,8 @@ class Store {
     const suffix = 'Heatmap/delete';
     const url = this.base + suffix;
     const query = {
-      _id: id,
-      "provenance.image.slide": slide,
+      '_id': id,
+      'provenance.image.slide': slide,
     };
     return fetch(url + '?' + objToParamStr(query), {
       method: 'DELETE',
@@ -336,17 +336,17 @@ class Store {
 
 
     if (slide) {
-      query["provenance.image.slide"] = slide;
+      query['provenance.image.slide'] = slide;
     }
 
     if (name) {
-      query["provenance.analysis.execution_id"] = name;
+      query['provenance.analysis.execution_id'] = name;
     }
 
     var data = {
       'provenance.analysis.fields': JSON.parse(fields),
-      'provenance.analysis.setting': JSON.parse(setting)
-    }
+      'provenance.analysis.setting': JSON.parse(setting),
+    };
     return fetch(url + '?' + objToParamStr(query), {
       method: 'UPDATE',
       body: JSON.stringify(data),
@@ -386,21 +386,21 @@ class Store {
     const query = {};
 
     if (user) {
-      query["user_id"] = user;
+      query['user_id'] = user;
     }
 
     if (slide) {
-      query["provenance.image.slide"] = slide;
+      query['provenance.image.slide'] = slide;
     }
 
     if (name) {
-      query["provenance.analysis.execution_id"] = name
+      query['provenance.analysis.execution_id'] = name;
     }
 
     return fetch(url + '?' + objToParamStr(query), {
       method: 'UPDATE',
       body: JSON.stringify({
-        data: JSON.parse(data)
+        data: JSON.parse(data),
       }),
       credentials: 'include',
       mode: 'cors',
@@ -412,13 +412,13 @@ class Store {
     const url = this.base + suffix;
     const query = {};
     if (user) {
-      query["user_id"] = user;
+      query['user_id'] = user;
     }
     if (slide) {
-      query["provenance.image.slide"] = slide;
+      query['provenance.image.slide'] = slide;
     }
     if (name) {
-      query["provenance.analysis.execution_id"] = name;
+      query['provenance.analysis.execution_id'] = name;
     }
     return fetch(url + '?' + objToParamStr(query), {
       credentials: 'include',
@@ -436,14 +436,14 @@ class Store {
     const url = this.base + suffix;
     const query = {};
     if (user) {
-      query["user_id"] = user;
+      query['user_id'] = user;
     }
     if (slide) {
-      query["provenance.image.slide"] = slide;
+      query['provenance.image.slide'] = slide;
     }
 
     if (name) {
-      query["provenance.analysis.execution_id"] = name;
+      query['provenance.analysis.execution_id'] = name;
     }
     return fetch(url + '?' + objToParamStr(query), {
       method: 'DELETE',
@@ -608,7 +608,7 @@ class Store {
    * @return {promise} - promise which resolves with data
    **/
   post(type, data) {
-    var postUrl = this.base + type + "/post";
+    var postUrl = this.base + type + '/post';
 
     return fetch(postUrl, {
       method: 'POST',

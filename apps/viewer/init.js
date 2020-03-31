@@ -2,7 +2,7 @@
 // $CAMIC in there
 let $CAMIC = null;
 let tracker;
-let $minorCAMIC = {};
+const $minorCAMIC = {};
 // for all instances of UI components
 const $UI = new Map();
 

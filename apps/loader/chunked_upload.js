@@ -1,8 +1,8 @@
 // expects changeStatus to be defined from loader.js
 
-var start_url = '../loader/upload/start'
-var continue_url = '../loader/upload/continue/'
-var finish_url = '../loader/upload/finish/'
+var start_url = '../loader/upload/start';
+var continue_url = '../loader/upload/continue/';
+var finish_url = '../loader/upload/finish/';
 var chunkSize = 5*1024*1024;
 
 // read a chunk of the file
@@ -50,6 +50,7 @@ async function handle_upload(selectedFiles) {
   var tokentr = document.getElementById('tokenRow');
   var slidetr = document.getElementById('slidenameRow');
   var idtr = document.getElementById('fileIdRow');
+  var filtertr = document.getElementById('filterRow');
 
   // Clear existing
   document.getElementById('json_table').innerHTML = '';
@@ -58,6 +59,7 @@ async function handle_upload(selectedFiles) {
     fnametr.deleteCell(1);
     tokentr.deleteCell(1);
     slidetr.deleteCell(1);
+    filtertr.deleteCell(1);
     idtr.deleteCell(1);
   }
 
@@ -70,6 +72,7 @@ async function handle_upload(selectedFiles) {
     selectedFiles[i]['name']+'\'>';
     tokentr.insertCell(-1).innerHTML = '<input type=text name=token id=\'token'+currID+'\'>';
     slidetr.insertCell(-1).innerHTML = '<input type=text name=slidename id=\'slidename'+currID+'\'>';
+    filtertr.insertCell(-1).innerHTML = '<input type=text name=filter id=\'filter'+currID+'\'>';
 
     selectedFile = selectedFiles[i];
     const filename = document.getElementById('filename'+currID).value;
