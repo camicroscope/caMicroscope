@@ -1,16 +1,40 @@
-sudo: required
+os: linux
+dist: xenial
 language: node_js
 node_js:
    - "12"
 install:
-    - npm ci
+    - npm install
     - npm install jsdom
     - npm install -g http-server
     - npm install -g mocha
+    - npm install eslint
+    - npm install eslint-config-google
+
+stages:
+  - name: tests
+  - name: lintjs
+  - name: linthtml
 
 before_script:
   - http-server -s & # start a Web server
   - sleep 3 # give Web server some time to bind to sockets, etc
 
-script:
-    - mocha test --recursive --exit
+jobs:
+  include:
+    - stage: tests
+      name: Unit Tests
+      script: mocha test --recursive --exit
+    - stage: lintjs
+      name: "JS Code Style Check"
+      script:
+        - ./node_modules/.bin/eslint core/*.js --quiet
+        - ./node_modules/.bin/eslint components/**/*.js --quiet
+        - ./node_modules/.bin/eslint apps/heatmap/*.js --quiet
+        - ./node_modules/.bin/eslint apps/labeling/*.js --quiet
+        - ./node_modules/.bin/eslint apps/loader/*.js --quiet
+        - ./node_modules/.bin/eslint apps/model/*.js --quiet
+        - ./node_modules/.bin/eslint apps/segment/*.js --quiet
+        - ./node_modules/.bin/eslint apps/model/**/*.js --quiet
+        - ./node_modules/.bin/eslint apps/segment/**/*.js --quiet
+        - ./node_modules/.bin/eslint apps/viewer/*.js --quiet
