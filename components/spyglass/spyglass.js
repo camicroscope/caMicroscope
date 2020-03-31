@@ -72,12 +72,12 @@ function Spyglass(options) {
     showNavigationControl: false,
   });
   this.imgsrc = options.imgsrc;
-  this._target_viewer = options.targetViewer;
+  this._targetViewer = options.targetViewer;
   this._viewer.open(this.imgsrc);
 
 
   this._tracker = new OpenSeadragon.MouseTracker({
-    element: this._target_viewer.container,
+    element: this._targetViewer.container,
     startDisabled: true,
     moveHandler: this.moving.bind(this),
   });
@@ -89,8 +89,8 @@ function Spyglass(options) {
   this.elt.style.position = 'absolute';
 
   //
-  this._target_viewer.addOverlay(this.indicator, new OpenSeadragon.Rect(0, 0, 0, 0));
-  this._overlayer = this._target_viewer.currentOverlays[this._target_viewer.currentOverlays.length-1];
+  this._targetViewer.addOverlay(this.indicator, new OpenSeadragon.Rect(0, 0, 0, 0));
+  this._overlayer = this._targetViewer.currentOverlays[this._targetViewer.currentOverlays.length-1];
 }
 
 /**
@@ -135,7 +135,7 @@ Spyglass.prototype.adjust = function() {
   this._overlayer.location.y = rect.y;
   this._overlayer.width = rect.width;
   this._overlayer.height = rect.height;
-  this._overlayer.drawHTML(this._target_viewer.overlaysContainer, this._target_viewer.viewport);
+  this._overlayer.drawHTML(this._targetViewer.overlaysContainer, this._targetViewer.viewport);
 };
 /**
  * set spyglass to the specific position
@@ -180,10 +180,10 @@ Spyglass.prototype.setPosition = function(pos) {
 Spyglass.prototype.open = function(x = 0, y = 0) {
   this.elt.style.display = 'none';
   this.setPosition({x: x, y: y});
-  this._target_viewer.addHandler('zoom', this.events.zoom);
+  this._targetViewer.addHandler('zoom', this.events.zoom);
   this._tracker.setTracking(true);
-  this._target_viewer.container.appendChild(this.elt);
-  this.__zoom({zoom: this._target_viewer.viewport.getZoom()});
+  this._targetViewer.container.appendChild(this.elt);
+  this.__zoom({zoom: this._targetViewer.viewport.getZoom()});
 };
 
 /**
@@ -195,10 +195,10 @@ Spyglass.prototype.close = function() {
   this.indicator.style.display = 'none';
   this.elt.style.top = '-100%';
   this.elt.style.left = '-100%';
-  this._target_viewer.removeHandler('zoom', this.events.zoom);
-  this._target_viewer.removeOverlay(this.indicator);
+  this._targetViewer.removeHandler('zoom', this.events.zoom);
+  this._targetViewer.removeOverlay(this.indicator);
   this._tracker.setTracking(false);
-  if (this.elt.parentNode) this._target_viewer.container.removeChild(this.elt);
+  if (this.elt.parentNode) this._targetViewer.container.removeChild(this.elt);
 };
 
 /**
@@ -209,8 +209,8 @@ Spyglass.prototype.close = function() {
  */
 Spyglass.prototype.moving = function(e) {
   const point = new OpenSeadragon.Point(e.position.x, e.position.y);
-  const imgPoint = this._target_viewer.viewport.windowToImageCoordinates(point);
-  const image1 = this._target_viewer.world.getItemAt(0);
+  const imgPoint = this._targetViewer.viewport.windowToImageCoordinates(point);
+  const image1 = this._targetViewer.world.getItemAt(0);
   const imgWidth = image1.source.dimensions.x;
   const imgHeight = image1.source.dimensions.y;
 
@@ -227,7 +227,7 @@ Spyglass.prototype.moving = function(e) {
   this.indicator.style.display = '';
   this.indicator.style.cursor = 'crosshair';
   this.setPosition(e.position);
-  const pt = this._target_viewer.viewport.pointFromPixel(e.position);
+  const pt = this._targetViewer.viewport.pointFromPixel(e.position);
   this._viewer.viewport.panTo(pt);
 };
 
