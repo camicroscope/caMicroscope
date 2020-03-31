@@ -14,13 +14,13 @@ function toggleViewerMode(opt) {
     // measurementOff();
 
     // open layers menu
-    $UI.toolbar._main_tools[1].querySelector(
+    $UI.toolbar._mainTools[1].querySelector(
         'input[type=checkbox]',
     ).checked = true;
     $UI.layersSideMenu.open();
 
     // close apps menu
-    $UI.toolbar._main_tools[0].querySelector(
+    $UI.toolbar._mainTools[0].querySelector(
         'input[type=checkbox]',
     ).checked = false;
     $UI.appsSideMenu.close();
@@ -1050,9 +1050,9 @@ function saveBrushAnnotCallback() {
   $CAMIC.drawContextmenu.off();
   $CAMIC.viewer.canvasDrawInstance.clear();
   // close app side
-  $UI.toolbar._main_tools[0].querySelector('[type=checkbox]').checked = false;
+  $UI.toolbar._mainTools[0].querySelector('[type=checkbox]').checked = false;
   $UI.appsSideMenu.close();
-  // $UI.toolbar._main_tools[1].querySelector('[type=checkbox]').checked = true;
+  // $UI.toolbar._mainTools[1].querySelector('[type=checkbox]').checked = true;
   // $UI.layersSideMenu.open();
   $UI.layersViewer.update();
 
@@ -1076,9 +1076,9 @@ function saveLabelAnnotCallback() {
   $CAMIC.drawContextmenu.off();
   $CAMIC.viewer.canvasDrawInstance.clear();
   // close app side
-  $UI.toolbar._main_tools[0].querySelector('[type=checkbox]').checked = false;
+  $UI.toolbar._mainTools[0].querySelector('[type=checkbox]').checked = false;
   $UI.appsSideMenu.close();
-  // $UI.toolbar._main_tools[1].querySelector('[type=checkbox]').checked = true;
+  // $UI.toolbar._mainTools[1].querySelector('[type=checkbox]').checked = true;
   // $UI.layersSideMenu.open();
   $UI.layersViewer.update();
   // $CAMIC.status = null;
@@ -1089,11 +1089,11 @@ function annoCallback(data) {
   const noteData = $UI.annotOptPanel._form_.value;
   if ($UI.annotOptPanel._action_.disabled || noteData.name == '') {
     // close layer silde
-    $UI.toolbar._main_tools[1].querySelector('[type=checkbox]').checked = false;
+    $UI.toolbar._mainTools[1].querySelector('[type=checkbox]').checked = false;
     $UI.layersSideMenu.close();
 
     // open app silde
-    $UI.toolbar._main_tools[0].querySelector('[type=checkbox]').checked = true;
+    $UI.toolbar._mainTools[0].querySelector('[type=checkbox]').checked = true;
     $UI.appsSideMenu.open();
 
     // open annotation list
@@ -1207,18 +1207,18 @@ function saveAnnotCallback() {
   toggleOffDrawBtns();
   $CAMIC.viewer.canvasDrawInstance.clear();
   // uncheck pen draw icon and checkbox
-  // $UI.toolbar._sub_tools[1].querySelector('[type=checkbox]').checked = false;
+  // $UI.toolbar._subTools[1].querySelector('[type=checkbox]').checked = false;
   // clear form
   $UI.annotOptPanel.clear();
 
   // close app side
-  $UI.toolbar._main_tools[0].querySelector('[type=checkbox]').checked = false;
+  $UI.toolbar._mainTools[0].querySelector('[type=checkbox]').checked = false;
   $UI.appsSideMenu.close();
   // -- START QUIP550 -- //
   // $UI.appsList.triggerContent('annotation','close');
   // -- END QUIP550 -- //
   // open layer side
-  $UI.toolbar._main_tools[1].querySelector('[type=checkbox]').checked = true;
+  $UI.toolbar._mainTools[1].querySelector('[type=checkbox]').checked = true;
   $UI.layersSideMenu.open();
   $UI.layersViewer.update();
   $CAMIC.status = null;
