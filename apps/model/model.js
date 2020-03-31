@@ -6,7 +6,7 @@ var csvContent;
 window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
 // id(autoinc), name, location(name+id), classes
 var request, db;
-
+var namearray = [];
 // tensorflowjs creates its own IndexedDB on saving a model.
 (async function(callback) {
     const model = tf.sequential();
@@ -589,7 +589,15 @@ function runPredict(key) {
     model.dispose()
   };
 }
-
+//Function to check if model name is repeated or not.
+function checkNameDuplicate(name)
+{
+  if(namearray.indexOf(name)!=-1)
+  {
+    return 1;
+  }
+  return 0;
+}
 
 // TO-DO: Allow uploading and using tensorflow graph models. Can't save graph models. Need to use right away.
 function uploadModel() {
@@ -608,7 +616,7 @@ function uploadModel() {
 
   // Reset previous input
   _name.value = _classes.value = topology.value = weights.value = status.innerHTML = _image_size.value = url.value = '';
-
+  
   $UI.uploadModal.open();
 
   toggle.addEventListener('change', function (e) {
@@ -635,7 +643,7 @@ function uploadModel() {
       status.innerHTML = "Uploading";
       status.classList.remove('error');
       status.classList.add('blink');
-
+      
       let _channels = parseInt(document.querySelector('input[name="channels"]:checked').value);
       // Adding some extra digits in the end to maintain uniqueness
       let name = 'pred_'  + _image_size.value.toString() + '-' + mag.value.toString() + '_' + _name.value + (new Date().getTime().toString()).slice(-4, -1);
@@ -658,9 +666,22 @@ function uploadModel() {
             status.classList.remove('blink');
             return
         }
+
+        // Checking if name is repeated or not
+        try{
+          if(checkNameDuplicate(_name.value))
+          {
+            throw "error"
+          }
+        }
+        catch (e){
+          status.innerHTML = "Model with the same name already exists. Please choose a new name";
+            status.classList.remove('blink');
+            return
+        }
+        namearray.push(_name.value);
         
         await model.save(IDB_URL + name);
-
         // Update the model store db entry to have the classes array
         tx = db.transaction("models_store", "readwrite");
         store = tx.objectStore("models_store");
