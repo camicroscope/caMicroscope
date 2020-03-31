@@ -81,7 +81,7 @@ function initCore() {
 
   $CAMIC.viewer.addHandler('open', function() {
     if ($CAMIC.viewer.pmanager)$CAMIC.viewer.pmanager.on();
-    if (!$CAMIC.viewer.measureInstance) $UI.toolbar._sub_tools[2].style.display = 'none';
+    if (!$CAMIC.viewer.measureInstance) $UI.toolbar._subTools[2].style.display = 'none';
   });
 
   // ui init
