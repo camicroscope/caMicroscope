@@ -847,8 +847,8 @@ function segmentROI(box) {
 
   // SEGMENTATION CANVAS
   self.showProgress();
-  console.log($UI.toolbar._sub_tools);
-  console.log($UI.toolbar._sub_tools.value);
+  // console.log($UI.toolbar._sub_tools);
+  // console.log($UI.toolbar._sub_tools.value);
 
   const fullResCvs = self.__fullsrc;
   const prefixUrl = ImgloaderMode == 'iip'?
