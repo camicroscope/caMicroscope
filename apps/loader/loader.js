@@ -1,6 +1,6 @@
-var upload_url = '../load/Slide/upload';
-var check_url = '../load/Slide/info/';
-var thumb_url = '../load/Slide/thumb/';
+var upload_url = "../loader/upload/start/"
+var check_url = "../loader/data/one/"
+var thumb_url = "../loader/data/thumbnail/"
 
 var store = new Store('../data/');
 

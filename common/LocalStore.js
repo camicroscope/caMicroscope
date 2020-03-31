@@ -104,8 +104,8 @@ function init_LocalStore(){
     data = data || []
     let newData = data.filter(x=>x['_id']['$oid'] !== id)
     window.localStorage.setItem(type, JSON.stringify(newData))
-    console.log(data.length - newData.length)
-    return {'rowsAffected': data.length - newData.length}
+    var diff = data.length - newData.length
+    return {'deletedCount': diff , 'rowsAffected': diff}
   }
 
 

@@ -1,8 +1,8 @@
 // expects changeStatus to be defined from loader.js
 
-var start_url = '../load/Upload/start';
-var continue_url = '../load/Upload/continue/';
-var finish_url = '../load/Upload/finish/';
+var start_url = '../loader/upload/start'
+var continue_url = '../loader/upload/continue/'
+var finish_url = '../loader/upload/finish/'
 var chunkSize = 5*1024*1024;
 
 // read a chunk of the file

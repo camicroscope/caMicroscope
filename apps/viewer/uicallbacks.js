@@ -678,7 +678,7 @@ function anno_delete(data) {
         }
 
         // no data found
-        if (!datas.rowsAffected || datas.rowsAffected < 1) {
+        if (!datas.deletedCount || datas.deletedCount < 1) {
           $UI.message.addWarning(`Delete Annotations Failed.`, 5000);
           return;
         }
