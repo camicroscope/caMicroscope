@@ -44,7 +44,7 @@ function multSelector_action(size) {
   isLock = true;
   // open new instance camic
   try {
-    const slideQuery = {};
+    let slideQuery = {};
     slideQuery.id = $D.params.slideId;
     slideQuery.name = $D.params.slide;
     slideQuery.location = $D.params.location;
