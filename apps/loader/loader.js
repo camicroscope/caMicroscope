@@ -122,7 +122,7 @@ function handlePost(filename, slidename, reset) {
         data.mpp_x = parseFloat(data['mpp-x']);
         data.mpp_y = parseFloat(data['mpp-y']);
         store.post('Slide', data).then(
-            (success) => changeStatus('POST', success, reset), // Handle the success response object
+            (success) => changeStatus('POST', success.result, reset), // Handle the success response object
         ).catch(
             (error) => changeStatus('POST', error, reset), // Handle the error response object
         );
