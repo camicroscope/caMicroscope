@@ -610,7 +610,7 @@ class Store {
   post(type, data) {
     var postUrl = this.base + type + "/post";
 
-    return fetch(postUrl + '?' + objToParamStr(query), {
+    return fetch(postUrl, {
       method: 'POST',
       mode: 'cors',
       body: JSON.stringify(data),
