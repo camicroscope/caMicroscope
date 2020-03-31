@@ -222,7 +222,7 @@ function getPatchsZip(data) {
         delete p.widthInClient;
       });
       const metaContent = [['name', 'location'], [data.name, data.location]];
-      const patchCols = ['id', 'color', 'note', 'isPoint', 'x', 'y', 'width', 'height', 'loaction'];
+      const patchCols = ['id', 'color', 'note', 'isPoint', 'x', 'y', 'width', 'height', 'location'];
       const patchesContent = [patchCols];
 
       data.patches.forEach((p, idx)=>{
@@ -274,11 +274,13 @@ function toggleMode(data) {
 
 function redirect(url, text = '', sec = 5) {
   let timer = sec;
+  if (!timer) {
+    window.location.href = url;
+  }
   setInterval(function() {
     if (!timer) {
       window.location.href = url;
     }
-
     if (Loading.instance.parentNode) {
       Loading.text.textContent = `${text} ${timer}s.`;
     } else {
