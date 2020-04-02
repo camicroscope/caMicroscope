@@ -20,5 +20,6 @@ module.exports = {
     "no-unused-vars" : 0,
     "no-var" : 0,
     "new-cap" : 0,
+    "prefer-const":0,
   },
 };

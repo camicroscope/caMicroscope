@@ -1,7 +1,7 @@
 // CAMIC is an instance of camicroscope core
 // $CAMIC in there
 let $CAMIC = null;
-const $minorCAMIC = null;
+let $minorCAMIC = null;
 // for all instances of UI components
 const $UI = new Map();
 
