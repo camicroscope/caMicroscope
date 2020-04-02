@@ -245,6 +245,22 @@ function draw(e) {
     // measurementOff();
 
     // turn off annotaiton
+    if (state==1) {
+      // show pop-up message to user
+      let popups = document.getElementById('popup-container');
+      if (popups.childElementCount < 2) {
+        let popupBox = document.createElement('div');
+        popupBox.classList.add('popup-msg', 'slide-in');
+        popupBox.innerHTML = `<i class="small material-icons">info</i>
+    For more options, right click anywhere on the image !`;
+        // Add popup box to parent
+        popups.insertBefore(popupBox, popups.childNodes[0]);
+        setTimeout(function() {
+          // popups.lastChild.classList.add('slideOut');
+          popups.removeChild(popups.lastChild);
+        }, 3000);
+      }
+    }
     if ($CAMIC.status == 'normal') {
       annotationOn.call(this, state, target);
       return;
