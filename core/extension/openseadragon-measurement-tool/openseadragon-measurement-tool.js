@@ -52,10 +52,10 @@
 
 
     $.MeasurementTool = function(options) {
-    	this.className = `OpenSeadragon.MeasurementTool`;
+        this.className = `OpenSeadragon.MeasurementTool`;
         this.mpp = {
-        	x:1,
-        	y:1
+            x:1,
+            y:1
         }
         this._viewer = options.viewer;
         if(!this.setMPP(options.mpp)) return;
@@ -117,29 +117,29 @@
             }
 
         },
-    	/**
-    	 * setMPP 'micron per pixel' for measurement tool
-		 * @param {Object} options.mpp
-		 *        the unit of micron per pixel
-		 * @param {Number} options.mpp.x
-		 *        micron per pixel on horizontal direction
-		 * @param {Number} options.mpp.y
-		 *        micron per pixel on vertical direction
-    	 */
-    	setMPP:function(mpp){
-    		if(!mpp || !mpp.x || !mpp.y ){
-    			console.error(`${this.className}:invalid mpp`);
-    			return false;
-    		}
-    		this.mpp = mpp;
-    		return true;
-    	},
-    	/**
-    	 * @private
-    	 * create a ruler for measurement tool and it will show on the screen
-    	 * 
-    	 */
-    	__createRuler:function(mode){
+        /**
+         * setMPP 'micron per pixel' for measurement tool
+         * @param {Object} options.mpp
+         *        the unit of micron per pixel
+         * @param {Number} options.mpp.x
+         *        micron per pixel on horizontal direction
+         * @param {Number} options.mpp.y
+         *        micron per pixel on vertical direction
+         */
+        setMPP:function(mpp){
+            if(!mpp || !mpp.x || !mpp.y ){
+                console.error(`${this.className}:invalid mpp`);
+                return false;
+            }
+            this.mpp = mpp;
+            return true;
+        },
+        /**
+         * @private
+         * create a ruler for measurement tool and it will show on the screen
+         * 
+         */
+        __createRuler:function(mode){
             if(mode == 'coordinate'){
                 this.__createCoordinateRuler();
             }else if(mode == 'straight'){
@@ -155,14 +155,14 @@
             this._ruler.appendChild(close);
             this._ruler.style.zIndex = 101;
             // close
-			this._ruler.addEventListener('mouseover', e=>{close.style.display = ''});
-			this._ruler.addEventListener('mouseout', e=>{close.style.display = 'none'});
-			close.addEventListener('click',e=>{
-            	this._viewer.removeOverlay(this._ruler);
-            	close.style.display = 'none';
+            this._ruler.addEventListener('mouseover', e=>{close.style.display = ''});
+            this._ruler.addEventListener('mouseout', e=>{close.style.display = 'none'});
+            close.addEventListener('click',e=>{
+                this._viewer.removeOverlay(this._ruler);
+                close.style.display = 'none';
                 this.__clearPoints();
             },this);
-    	},
+        },
 
 
         __createCoordinateRuler:function(){
@@ -388,15 +388,15 @@
             const imagePoint = this._viewer.viewport.windowToImageCoordinates(point);
          
             if(0 > imagePoint.x || this.imgWidth < imagePoint.x || 0 > imagePoint.y || this.imgHeight < imagePoint.y )return;
-     			
-            	this._end = imagePoint;
+                
+                this._end = imagePoint;
                 this._end_client = new $.Point(e.clientX, e.clientY);
-				if(this._start && this._end){
-					// remove scale
-					this._viewer.removeOverlay(this._ruler);
+                if(this._start && this._end){
+                    // remove scale
+                    this._viewer.removeOverlay(this._ruler);
 
-					// get the width and height in the image's piexl
-					const [x,y,width, height] = this.__forRect(this._start,this._end);
+                    // get the width and height in the image's piexl
+                    const [x,y,width, height] = this.__forRect(this._start,this._end);
                     const widthInUnit = this.__getScaleUnit(this.mpp.x, width);
                     const heightInUnit = this.__getScaleUnit(this.mpp.y, height);
 
@@ -412,9 +412,9 @@
 
                     if(this.mode == 'coordinate'){
                         // calculate 
-    					// set values for scale
-    					this._h_text.textContent = widthInUnit;
-    					this._v_text.textContent = heightInUnit;
+                        // set values for scale
+                        this._h_text.textContent = widthInUnit;
+                        this._v_text.textContent = heightInUnit;
                     }else if(this.mode == 'straight'){
                         this.__adjustStraightRuler();
                         this._ruler.querySelector('.text').textContent = this.__getScaleUnit(1,Math.sqrt(this.mpp.x*this.mpp.x*width*width+ this.mpp.y*this.mpp.y*height*height));
@@ -423,7 +423,7 @@
 
 
                     this._ruler.style.display = 'flex';
-				}
+                }
 
         },
 
@@ -438,41 +438,41 @@
             if(this.mode =='straight') this._ruler.querySelector('.circle').style.display='none';
         },
 
-		__getRect:function(start,end){
-		    if(start < end){
-		        return [start, end-start]
-		    }else{
-		        return [end, start-end]
-		    }
-		},
+        __getRect:function(start,end){
+            if(start < end){
+                return [start, end-start]
+            }else{
+                return [end, start-end]
+            }
+        },
 
-		__forRect:function(start,end){
-		    let [x,width] = this.__getRect(start.x,end.x);
-		    let [y,height] = this.__getRect(start.y,end.y);
-		    return [x,y,width,height];
-		},
-		/**
-		 * @private
-		 * get the unit based on mpp and value in the image piexl
-		 * @param  {Number} mpp               the micron per pixel
-		 * @param  {Number} valueInImagePiexl the size of piexl
-		 * @return {String}                   the value of unit on a string form
-		 */
+        __forRect:function(start,end){
+            let [x,width] = this.__getRect(start.x,end.x);
+            let [y,height] = this.__getRect(start.y,end.y);
+            return [x,y,width,height];
+        },
+        /**
+         * @private
+         * get the unit based on mpp and value in the image piexl
+         * @param  {Number} mpp               the micron per pixel
+         * @param  {Number} valueInImagePiexl the size of piexl
+         * @return {String}                   the value of unit on a string form
+         */
         __getScaleUnit:function(mpp, valueInImagePiexl){
-        	const value = mpp*valueInImagePiexl;
-			if (value < 0.000001) {
-			    return (value * 1000000000).toFixed(3) + " fm";
-			}
-			if (value < 0.001) {
-			    return (value * 1000000).toFixed(3) + " pm";
-			}
-			if (value < 1) {
-			    return (value * 1000).toFixed(3) + " nm";
-			}
-			if (value >= 1000) {
-			    return (value / 1000).toFixed(3) + " mm";
-			}
-			return (value).toFixed(3) + " μm";
+            const value = mpp*valueInImagePiexl;
+            if (value < 0.000001) {
+                return (value * 1000000000).toFixed(3) + " fm";
+            }
+            if (value < 0.001) {
+                return (value * 1000000).toFixed(3) + " pm";
+            }
+            if (value < 1) {
+                return (value * 1000).toFixed(3) + " nm";
+            }
+            if (value >= 1000) {
+                return (value / 1000).toFixed(3) + " mm";
+            }
+            return (value).toFixed(3) + " μm";
         },
         /**
          * Function to destroy the instance of MeasurementTool and clean up everything created by MeasurementTool.

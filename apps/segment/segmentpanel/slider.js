@@ -1,6 +1,5 @@
 // Initializing class definition
 class Slider {
-
   constructor(divOptions, sliderOptions) {
     this._divId = divOptions.id;
     this._divClass = divOptions.class;
@@ -16,24 +15,20 @@ class Slider {
     this._sliderDefaultValue = sliderOptions.defaultValue;
     this._divOptions = divOptions;
     this._sliderOptions = sliderOptions;
-
-
   }
 
   // Return html string
   getHtml() {
     let style;
-    if (this._divStyle)
-    {
+    if (this._divStyle) {
       style = `style="${this._divStyle}"`;
     }
 
-    let html = `<div id="${this._divId}" class="${this._divClass}" ${style}>
+    const html = `<div id="${this._divId}" class="${this._divClass}" ${style}>
       <label for="${this._sliderLabel}">${Slider.capitalizeFirstLetter(this._sliderLabel)}</label><input type="range" id="${this._sliderId}" min="${this._sliderMin}" max="${this._sliderMax}" step="${this._sliderStep}" value="${this._sliderValue}"><label id="${this._sliderLabelInputId}">${this._sliderDefaultValue}</label>
     </div>`;
 
     return html;
-
   }
 
   static capitalizeFirstLetter(string) {
@@ -144,5 +139,4 @@ class Slider {
   set sliderDefaultValue(value) {
     this._sliderDefaultValue = value;
   }
-
 }

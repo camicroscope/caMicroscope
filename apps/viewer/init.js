@@ -2,7 +2,7 @@
 // $CAMIC in there
 let $CAMIC = null;
 let tracker;
-let $minorCAMIC = {};
+let $minorCAMIC = null;
 // for all instances of UI components
 const $UI = new Map();
 
@@ -356,17 +356,16 @@ const $UI = new Map();
 
 const $D = {
   pages: {
-    home: "../table.html",
-    table: "../table.html"
+    home: '../table.html',
+    table: '../table.html',
   },
   params: null, // parameter from url - slide Id and status in it (object).
   overlayers: null, // array for each layers
   templates: null, // json schema for prue-form
-  segments: []
+  segments: [],
 };
 
-window.addEventListener("keydown", e => {
-
+window.addEventListener('keydown', (e) => {
   if (!$CAMIC || !$CAMIC.viewer) return;
   const keyCode = e.keyCode;
   // escape key to close all operations
@@ -378,34 +377,34 @@ window.addEventListener("keydown", e => {
 
   // open annotation (ctrl + a)
   if (e.ctrlKey && keyCode == 65 && $CAMIC.viewer.canvasDrawInstance) {
-    const li = $UI.toolbar.getSubTool("annotation");
-    eventFire(li, "click");
+    const li = $UI.toolbar.getSubTool('annotation');
+    eventFire(li, 'click');
     return;
   }
   // open magnifier (ctrl + m)
   if (e.ctrlKey && keyCode == 77 && $UI.spyglass) {
-    const li = $UI.toolbar.getSubTool("magnifier");
-    const chk = li.querySelector("input[type=checkbox]");
+    const li = $UI.toolbar.getSubTool('magnifier');
+    const chk = li.querySelector('input[type=checkbox]');
     chk.checked = !chk.checked;
-    eventFire(chk, "change");
+    eventFire(chk, 'change');
     return;
   }
   // open measurement (ctrl + r)
   if (e.ctrlKey && keyCode == 82 && $CAMIC.viewer.measureInstance) {
     e.preventDefault();
-    const li = $UI.toolbar.getSubTool("measurement");
-    const chk = li.querySelector("input[type=checkbox]");
+    const li = $UI.toolbar.getSubTool('measurement');
+    const chk = li.querySelector('input[type=checkbox]');
     chk.checked = !chk.checked;
-    eventFire(chk, "click");
+    eventFire(chk, 'click');
     return;
   }
   // open side-by-side (ctrl + s)
   if (e.ctrlKey && keyCode == 83) {
     e.preventDefault();
-    const li = $UI.toolbar.getSubTool("sbsviewer");
-    const chk = li.querySelector("input[type=checkbox]");
+    const li = $UI.toolbar.getSubTool('sbsviewer');
+    const chk = li.querySelector('input[type=checkbox]');
     chk.checked = !chk.checked;
-    eventFire(chk, "click");
+    eventFire(chk, 'click');
     return;
   }
 });
@@ -444,42 +443,42 @@ function initCore() {
       btns: [
         {
           // annotation
-          type: "btn",
-          title: "Annotation",
-          class: "material-icons",
-          text: "description",
-          callback: saveAnnotation
+          type: 'btn',
+          title: 'Annotation',
+          class: 'material-icons',
+          text: 'description',
+          callback: saveAnnotation,
         },
         {
           // analytics
-          type: "btn",
-          title: "Analytics",
-          class: "material-icons",
-          text: "settings_backup_restore",
-          callback: saveAnalytics
-        }
-      ]
-    }
+          type: 'btn',
+          title: 'Analytics',
+          class: 'material-icons',
+          text: 'settings_backup_restore',
+          callback: saveAnalytics,
+        },
+      ],
+    },
   };
   // set states if exist
   if ($D.params.states) {
     opt.states = $D.params.states;
   }
   // pathdb home directly
-  if ($D.params.mode == "pathdb") {
-    $D.pages.home = "../../../";
-    $D.pages.table = "../../../";
+  if ($D.params.mode == 'pathdb') {
+    $D.pages.home = '../../../';
+    $D.pages.table = '../../../';
   }
 
   try {
-    let slideQuery = {};
+    const slideQuery = {};
     slideQuery.id = $D.params.slideId;
     slideQuery.name = $D.params.slide;
     slideQuery.location = $D.params.location;
-    $CAMIC = new CaMic("main_viewer", slideQuery, opt);
+    $CAMIC = new CaMic('main_viewer', slideQuery, opt);
   } catch (error) {
     Loading.close();
-    $UI.message.addError("Core Initialization Failed");
+    $UI.message.addError('Core Initialization Failed');
     console.error(error);
     return;
   }
@@ -493,7 +492,7 @@ function initCore() {
     } else {
       $D.params.data = e;
       // popup panel
-      $CAMIC.viewer.addHandler("canvas-lay-click", function(e) {
+      $CAMIC.viewer.addHandler('canvas-lay-click', function(e) {
         if (!e.data) {
           $UI.annotPopup.close();
           return;
@@ -506,7 +505,7 @@ function initCore() {
         let attributes;
         let warning = null;
         switch (type) {
-          case "human":
+          case 'human':
             let area;
             let circumference;
             if (data.geometries) {
@@ -514,19 +513,21 @@ function initCore() {
                 (data.selected != null || data.selected != undefined) &&
                 data.geometries.features[data.selected] &&
                 data.geometries.features[data.selected].properties.area
-              )
+              ) {
                 area = `${Math.round(
-                  data.geometries.features[data.selected].properties.area
+                    data.geometries.features[data.selected].properties.area,
                 )}μm^2`;
+              }
               if (
                 (data.selected != null || data.selected != undefined) &&
                 data.geometries.features[data.selected] &&
                 data.geometries.features[data.selected].properties.circumference
-              )
+              ) {
                 circumference = `${Math.round(
-                  data.geometries.features[data.selected].properties
-                    .circumference
+                    data.geometries.features[data.selected].properties
+                        .circumference,
                 )}μm`;
+              }
             } // othereise, don't try to calculate area and circumference
             // human
 
@@ -549,10 +550,10 @@ function initCore() {
 
             $UI.annotPopup.showFooter();
             break;
-          case "computer":
+          case 'computer':
             // handle data.provenance.analysis.computation = `segmentation`
             attributes = data.properties.scalar_features[0].nv;
-            body = { type: "map", data: attributes };
+            body = {type: 'map', data: attributes};
             $UI.annotPopup.hideFooter();
             break;
           default:
@@ -564,7 +565,7 @@ function initCore() {
           id: data.provenance.analysis.execution_id,
           oid: data._id.$oid,
           annotation: attributes,
-          selected: e.data.selected
+          selected: e.data.selected,
         };
         $UI.annotPopup.setTitle(`id:${data.provenance.analysis.execution_id}`);
         $UI.annotPopup.setBody(body);
@@ -576,21 +577,21 @@ function initCore() {
       // create the message bar TODO for reading slide Info TODO
       $UI.slideInfos = new CaMessage({
         /* opts that need to think of*/
-        id: "cames",
-        defaultText: `Slide: ${$D.params.data.name}`
+        id: 'cames',
+        defaultText: `Slide: ${$D.params.data.name}`,
       });
 
       // spyglass
       $UI.spyglass = new Spyglass({
         targetViewer: $CAMIC.viewer,
-        imgsrc: $D.params.data.url
+        imgsrc: $D.params.data.url,
       });
     }
   });
 
-  $CAMIC.viewer.addHandler("open", function() {
-    $CAMIC.viewer.canvasDrawInstance.addHandler("start-drawing", startDrawing);
-    $CAMIC.viewer.canvasDrawInstance.addHandler("stop-drawing", stopDrawing);
+  $CAMIC.viewer.addHandler('open', function() {
+    $CAMIC.viewer.canvasDrawInstance.addHandler('start-drawing', startDrawing);
+    $CAMIC.viewer.canvasDrawInstance.addHandler('stop-drawing', stopDrawing);
     // init UI -- some of them need to wait data loader to load data
     // because UI components need data to initialize
     initUIcomponents();
@@ -605,30 +606,31 @@ async function initUIcomponents() {
   /* create UI components */
 
   $UI.modalbox = new ModalBox({
-    id: "modalbox",
+    id: 'modalbox',
     hasHeader: true,
-    headerText: "HeatMap List",
-    hasFooter: false
+    headerText: 'HeatMap List',
+    hasFooter: false,
   });
 
   const subToolsOpt = [];
   // home
-  if (ImgloaderMode == "iip")
+  if (ImgloaderMode == 'iip') {
     subToolsOpt.push({
-      name: "home",
-      icon: "home", // material icons' name
-      title: "Home",
-      type: "btn", // btn/check/dropdown
-      value: "home",
-      callback: goHome
+      name: 'home',
+      icon: 'home', // material icons' name
+      title: 'Home',
+      type: 'btn', // btn/check/dropdown
+      value: 'home',
+      callback: goHome,
     });
+  }
   // pen
   subToolsOpt.push({
-    name: "annotation",
-    icon: "create", // material icons' name
-    title: "Draw",
-    type: "multistates",
-    callback: draw
+    name: 'annotation',
+    icon: 'create', // material icons' name
+    title: 'Draw',
+    type: 'multistates',
+    callback: draw,
   });
 
   // example for dropdownlist has icon in each item
@@ -680,178 +682,180 @@ async function initUIcomponents() {
   // });
 
   $D.preset_list = null;
-  $D.preset_list = await $CAMIC.store.getConfigByName('preset_label').then(list=>list.length==0?null:list[0]);
-  if($D.preset_list){
-  subToolsOpt.push({
-    name: "preset_label",
-    icon: "colorize", // material icons' name
-    title: "Preset Labels",
-    type: "multi-dropdown",
-    value: "prelabels",
-    callback: drawLabel,
-    dropdownList: $D.preset_list.configuration
-  });
-}
+  $D.preset_list = await $CAMIC.store.getConfigByName('preset_label').then((list)=>list.length==0?null:list[0]);
+  if ($D.preset_list) {
+    subToolsOpt.push({
+      name: 'preset_label',
+      icon: 'colorize', // material icons' name
+      title: 'Preset Labels',
+      type: 'multi-dropdown',
+      value: 'prelabels',
+      callback: drawLabel,
+      dropdownList: $D.preset_list.configuration,
+    });
+  }
 
   // magnifier
   subToolsOpt.push({
-    name: "magnifier",
-    icon: "search",
-    title: "Magnifier",
-    type: "dropdown",
-    value: "magn",
+    name: 'magnifier',
+    icon: 'search',
+    title: 'Magnifier',
+    type: 'dropdown',
+    value: 'magn',
     dropdownList: [
       {
         value: 0.5,
-        title: "0.5",
-        checked: true
+        title: '0.5',
+        checked: true,
       },
       {
         value: 1,
-        title: "1.0"
+        title: '1.0',
       },
       {
         value: 2,
-        title: "2.0"
-      }
+        title: '2.0',
+      },
     ],
-    callback: toggleMagnifier
+    callback: toggleMagnifier,
   });
   // measurement tool
-  if ($CAMIC.viewer.measureInstance)
+  if ($CAMIC.viewer.measureInstance) {
     subToolsOpt.push({
-      name: "measurement",
-      icon: "space_bar",
-      title: "Measurement",
-      type: "check",
-      value: "measure",
-      callback: toggleMeasurement
+      name: 'measurement',
+      icon: 'space_bar',
+      title: 'Measurement',
+      type: 'check',
+      value: 'measure',
+      callback: toggleMeasurement,
     });
+  }
   // share
-  if (ImgloaderMode == "iip")
+  if (ImgloaderMode == 'iip') {
     subToolsOpt.push({
-      name: "share",
-      icon: "share",
-      title: "Share View",
-      type: "btn",
-      value: "share",
-      callback: shareURL
+      name: 'share',
+      icon: 'share',
+      title: 'Share View',
+      type: 'btn',
+      value: 'share',
+      callback: shareURL,
     });
+  }
   // side-by-side
   subToolsOpt.push({
-    name: "sbsviewer",
-    icon: "view_carousel",
-    title: "Side By Side Viewer",
-    value: "dbviewers",
-    type: "check",
-    callback: toggleViewerMode
+    name: 'sbsviewer',
+    icon: 'view_carousel',
+    title: 'Side By Side Viewer',
+    value: 'dbviewers',
+    type: 'check',
+    callback: toggleViewerMode,
   });
   // heatmap
   subToolsOpt.push({
-    name: "heatmap",
-    icon: "satellite",
-    title: "Heat Map",
-    value: "heatmap",
-    type: "btn",
-    callback: openHeatmap
+    name: 'heatmap',
+    icon: 'satellite',
+    title: 'Heat Map',
+    value: 'heatmap',
+    type: 'btn',
+    callback: openHeatmap,
   });
   subToolsOpt.push({
-    name: "labeling",
-    icon: "label",
-    title: "Labeling",
-    value: "labeling",
-    type: "btn",
+    name: 'labeling',
+    icon: 'label',
+    title: 'Labeling',
+    value: 'labeling',
+    type: 'btn',
     callback: function() {
       window.location.href = `../labeling/labeling.html${window.location.search}`;
-    }
+    },
   });
   subToolsOpt.push({
-    name: "segment",
-    icon: "timeline",
-    type: "btn",
-    value: "rect",
-    title: "Segment",
+    name: 'segment',
+    icon: 'timeline',
+    type: 'btn',
+    value: 'rect',
+    title: 'Segment',
     callback: function() {
       if (window.location.search.length > 0) {
         window.location.href =
-          "../segment/segment.html" + window.location.search;
+          '../segment/segment.html' + window.location.search;
       } else {
-        window.location.href = "../segment/segment.html";
+        window.location.href = '../segment/segment.html';
       }
-    }
+    },
   });
   subToolsOpt.push({
-    name: "model",
-    icon: "aspect_ratio",
-    type: "btn",
-    value: "rect",
-    title: "Predict",
+    name: 'model',
+    icon: 'aspect_ratio',
+    type: 'btn',
+    value: 'rect',
+    title: 'Predict',
     callback: function() {
       if (window.location.search.length > 0) {
-        window.location.href = "../model/model.html" + window.location.search;
+        window.location.href = '../model/model.html' + window.location.search;
       } else {
-        window.location.href = "../model/model.html";
+        window.location.href = '../model/model.html';
       }
-    }
+    },
   });
 
   // -- For Nano borb Start -- //
-  if (ImgloaderMode == "imgbox") {
+  if (ImgloaderMode == 'imgbox') {
     // download
     subToolsOpt.push({
-      name: "downloadmarks",
-      icon: "cloud_download",
-      title: "Download Marks",
-      type: "btn",
-      value: "download",
-      callback: Store.prototype.DownloadMarksToFile
+      name: 'downloadmarks',
+      icon: 'cloud_download',
+      title: 'Download Marks',
+      type: 'btn',
+      value: 'download',
+      callback: Store.prototype.DownloadMarksToFile,
     });
     subToolsOpt.push({
-      name: "uploadmarks",
-      icon: "cloud_upload",
-      title: "Load Marks",
-      type: "btn",
-      value: "upload",
-      callback: Store.prototype.LoadMarksFromFile
+      name: 'uploadmarks',
+      icon: 'cloud_upload',
+      title: 'Load Marks',
+      type: 'btn',
+      value: 'upload',
+      callback: Store.prototype.LoadMarksFromFile,
     });
   }
   // -- For Nano borb End -- //
 
   // bug report
   subToolsOpt.push({
-    name: "bugs",
-    icon: "bug_report",
-    title: "Bug Report",
-    value: "bugs",
-    type: "btn",
+    name: 'bugs',
+    icon: 'bug_report',
+    title: 'Bug Report',
+    value: 'bugs',
+    type: 'btn',
     callback: () => {
-      window.open("https://goo.gl/forms/mgyhx4ADH0UuEQJ53", "_blank").focus();
-    }
+      window.open('https://goo.gl/forms/mgyhx4ADH0UuEQJ53', '_blank').focus();
+    },
   });
 
   // create the tool bar
   $UI.toolbar = new CaToolbar({
     /* opts that need to think of*/
-    id: "ca_tools",
+    id: 'ca_tools',
     zIndex: 601,
     mainToolsCallback: mainMenuChange,
-    subTools: subToolsOpt
+    subTools: subToolsOpt,
   });
 
   // create two side menus for tools
   $UI.appsSideMenu = new SideMenu({
-    id: "side_apps",
+    id: 'side_apps',
     width: 300,
-    //, isOpen:true
-    callback: toggleSideMenu
+    // , isOpen:true
+    callback: toggleSideMenu,
   });
 
   $UI.layersSideMenu = new SideMenu({
-    id: "side_layers",
+    id: 'side_layers',
     width: 300,
     contentPadding: 5,
-    //, isOpen:true
-    callback: toggleSideMenu
+    // , isOpen:true
+    callback: toggleSideMenu,
   });
   const loading = `<div class="cover" style="z-index: 500;"><div class="block"><span>loading layers...</span><div class="bar"></div></div></div>`;
   $UI.layersSideMenu.addContent(loading);
@@ -866,12 +870,12 @@ async function initUIcomponents() {
       // },
       {
         // delete
-        title: "Delete",
-        class: "material-icons",
-        text: "delete_forever",
-        callback: anno_delete
-      }
-    ]
+        title: 'Delete',
+        class: 'material-icons',
+        text: 'delete_forever',
+        callback: anno_delete,
+      },
+    ],
   });
 
   var checkOverlaysDataReady = setInterval(function() {
@@ -889,101 +893,101 @@ async function initUIcomponents() {
       $CAMIC.viewer.createSegment({
         store: $CAMIC.store,
         slide: $D.params.data.slide,
-        data: []
+        data: [],
       });
 
       // create control
 
       // create main layer viewer items with states
-      const mainViewerData = $D.overlayers.map(d => {
+      const mainViewerData = $D.overlayers.map((d) => {
         const isShow =
           $D.params.states &&
           $D.params.states.l &&
-          $D.params.states.l.includes(d.id)
-            ? true
-            : false;
-        return { item: d, isShow: isShow };
+          $D.params.states.l.includes(d.id) ?
+            true :
+            false;
+        return {item: d, isShow: isShow};
       });
 
       // create monir layer viewer items
-      const minorViewerData = $D.overlayers.map(d => {
-        return { item: d, isShow: false };
+      const minorViewerData = $D.overlayers.map((d) => {
+        return {item: d, isShow: false};
       });
 
       // create UI and set data
       $UI.layersViewer = createLayerViewer(
-        "overlayers",
-        mainViewerData,
-        callback.bind("main")
+          'overlayers',
+          mainViewerData,
+          callback.bind('main'),
       );
       // create UI and set data - minor
       $UI.layersViewerMinor = createLayerViewer(
-        "overlayersMinor",
-        minorViewerData,
-        callback.bind("minor")
+          'overlayersMinor',
+          minorViewerData,
+          callback.bind('minor'),
       );
 
       //
       if ($D.params.states && $D.params.states.l) {
-        $D.params.states.l.forEach(id =>
-          loadAnnotationById($CAMIC, $UI.layersViewer.getDataItemById(id), null)
+        $D.params.states.l.forEach((id) =>
+          loadAnnotationById($CAMIC, $UI.layersViewer.getDataItemById(id), null),
         );
       }
 
       $UI.layersList = new CollapsibleList({
-        id: "layerslist",
+        id: 'layerslist',
         list: [
           {
-            id: "left",
-            title: "Left Viewer",
+            id: 'left',
+            title: 'Left Viewer',
             // icon:'border_color',
-            content: "No Template Loaded" //$UI.annotOptPanel.elt
+            content: 'No Template Loaded', // $UI.annotOptPanel.elt
             // isExpand:true
           },
           {
-            id: "right",
+            id: 'right',
             // icon:'find_replace',
-            title: "Right Viewer",
-            content: "No Template Loaded" //$UI.algOptPanel.elt,
-          }
+            title: 'Right Viewer',
+            content: 'No Template Loaded', // $UI.algOptPanel.elt,
+          },
         ],
         changeCallBack: function(e) {
           // console.log(e);
-        }
+        },
       });
       $UI.layersSideMenu.clearContent();
       // add to layers side menu
-      const title = document.createElement("div");
-      title.classList.add("item_head");
-      title.textContent = "Layers Manager";
+      const title = document.createElement('div');
+      title.classList.add('item_head');
+      title.textContent = 'Layers Manager';
 
       $UI.layersSideMenu.addContent(title);
       // zoom locker control
-      $UI.lockerPanel = document.createElement("div");
-      $UI.lockerPanel.classList.add("lock_panel");
-      $UI.lockerPanel.style.display = "none";
+      $UI.lockerPanel = document.createElement('div');
+      $UI.lockerPanel.classList.add('lock_panel');
+      $UI.lockerPanel.style.display = 'none';
       $UI.lockerPanel.innerHTML = `<label>Zoom Lock<input type="checkbox" checked></label>`;
       $UI.lockerPanel
-        .querySelector("input[type=checkbox]")
-        .addEventListener("change", e => {
-          isLock = !isLock;
-          if (isLock) {
-            $minorCAMIC.viewer.viewport.zoomTo(
-              $CAMIC.viewer.viewport.getZoom(true),
-              $CAMIC.viewer.viewport.getCenter(true),
-              true
-            );
-            $CAMIC.viewer.controls.bottomright.style.display = "none";
-          } else {
-            $CAMIC.viewer.controls.bottomright.style.display = "";
-          }
-        });
+          .querySelector('input[type=checkbox]')
+          .addEventListener('change', (e) => {
+            isLock = !isLock;
+            if (isLock) {
+              $minorCAMIC.viewer.viewport.zoomTo(
+                  $CAMIC.viewer.viewport.getZoom(true),
+                  $CAMIC.viewer.viewport.getCenter(true),
+                  true,
+              );
+              $CAMIC.viewer.controls.bottomright.style.display = 'none';
+            } else {
+              $CAMIC.viewer.controls.bottomright.style.display = '';
+            }
+          });
       $UI.layersSideMenu.addContent($UI.lockerPanel);
 
-      $UI.layersList.clearContent("left");
-      $UI.layersList.addContent("left", $UI.layersViewer.elt);
-      $UI.layersList.clearContent("right");
-      $UI.layersList.addContent("right", $UI.layersViewerMinor.elt);
+      $UI.layersList.clearContent('left');
+      $UI.layersList.addContent('left', $UI.layersViewer.elt);
+      $UI.layersList.clearContent('right');
+      $UI.layersList.addContent('right', $UI.layersViewerMinor.elt);
 
       $UI.layersList.elt.parentNode.removeChild($UI.layersList.elt);
       closeMinorControlPanel();
@@ -994,32 +998,32 @@ async function initUIcomponents() {
   var checkTemplateSchemasDataReady = setInterval(function() {
     if ($D.templates) {
       clearInterval(checkTemplateSchemasDataReady);
-      const annotRegex = new RegExp("annotation", "gi");
-      const annotSchemas = $D.templates.filter(item =>
-        item.id.match(annotRegex)
+      const annotRegex = new RegExp('annotation', 'gi');
+      const annotSchemas = $D.templates.filter((item) =>
+        item.id.match(annotRegex),
       );
       /* annotation control */
       $UI.annotOptPanel = new OperationPanel({
-        //id:
-        //element:
+        // id:
+        // element:
         formSchemas: annotSchemas,
         resetCallback: reset_callback,
         action: {
-          title: "Save",
-          callback: anno_callback
-        }
+          title: 'Save',
+          callback: anno_callback,
+        },
       });
       // START QUIP550 TEMPORARILY REMOVE Algorithm Panel //
       // add to layers side menu
-      const title = document.createElement("div");
-      title.classList.add("item_head");
-      title.textContent = "Annotation";
+      const title = document.createElement('div');
+      title.classList.add('item_head');
+      title.textContent = 'Annotation';
       $UI.appsSideMenu.addContent(title);
-      $UI.annotOptPanel.elt.classList.add("item_body");
+      $UI.annotOptPanel.elt.classList.add('item_body');
       $UI.appsSideMenu.addContent($UI.annotOptPanel.elt);
 
-      //$UI.appsList.clearContent('annotation');
-      //$UI.appsList.addContent('annotation',$UI.annotOptPanel.elt);
+      // $UI.appsList.clearContent('annotation');
+      // $UI.appsList.addContent('annotation',$UI.annotOptPanel.elt);
       /* algorithm control */
       // const algoRegex = new RegExp('algo', 'gi');
       // const algoSchemas = $D.templates.filter(item => item.id.match(algoRegex));
@@ -1085,14 +1089,14 @@ function createLayerViewer(id, viewerData, callback) {
     data: viewerData,
     removeCallback: removeCallback,
     locationCallback: locationCallback,
-    callback: callback
+    callback: callback,
   });
   layersViewer.elt.parentNode.removeChild(layersViewer.elt);
   return layersViewer;
 }
 // create lay panel for side-by-side control
 function createLayPanelControl() {
-  $UI.layCtrlbar = document.createElement("div");
+  $UI.layCtrlbar = document.createElement('div');
   $UI.layCtrlbar.style = `
   display:none;
   margin: .2rem;
@@ -1108,18 +1112,18 @@ function createLayPanelControl() {
   createRadios();
   $UI.layersSideMenu.addContent($UI.layCtrlbar);
   // control
-  const radios = $UI.layCtrlbar.querySelectorAll("input[name=ctrlPane]");
-  radios.forEach(r => {
-    r.addEventListener("change", function(e) {
+  const radios = $UI.layCtrlbar.querySelectorAll('input[name=ctrlPane]');
+  radios.forEach((r) => {
+    r.addEventListener('change', function(e) {
       const val = e.target.value;
       switch (val) {
-        case "main":
-          $UI.layersViewer.elt.style.display = "flex";
-          $UI.layersViewerMinor.elt.style.display = "none";
+        case 'main':
+          $UI.layersViewer.elt.style.display = 'flex';
+          $UI.layersViewerMinor.elt.style.display = 'none';
           break;
-        case "minor":
-          $UI.layersViewer.elt.style.display = "none";
-          $UI.layersViewerMinor.elt.style.display = "flex";
+        case 'minor':
+          $UI.layersViewer.elt.style.display = 'none';
+          $UI.layersViewerMinor.elt.style.display = 'flex';
           break;
         default:
           // statements_def
@@ -1139,13 +1143,15 @@ function createRadios() {
   $UI.layCtrlbar.innerHTML = temp;
 }
 
-function redirect(url, text = "", sec = 5) {
+function redirect(url, text = '', sec = 5) {
   let timer = sec;
+  if (!timer) {
+    window.location.href = url;
+  }
   setInterval(function() {
     if (!timer) {
       window.location.href = url;
     }
-
     if (Loading.instance && Loading.instance.parentNode) {
       Loading.text.textContent = `${text} ${timer}s.`;
     } else {
