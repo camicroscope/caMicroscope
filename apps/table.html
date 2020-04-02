@@ -25,24 +25,35 @@
 	<script src="./loader/loader.js"></script>
 	<script src="./loader/chunked_upload.js"></script>
 	<script>
+		function sanitize(string) {
+			const map = {
+				'&': '&amp;',
+				'<': '&lt;',
+				'>': '&gt;',
+				'"': '&quot;',
+				"'": '&#x27;',
+				"/": '&#x2F;',
+			};
+			const reg = /[&<>"'/]/ig;
+			return string.replace(reg, (match)=>(map[match]));
+		}
 		var existingSlideNames = [];
 		const allowedExtensions = ['svs', 'tif', 'tiff', 'vms', 'vmu', 'ndpi', 'scn', 'mrxs', 'bif', 'svslide'];
 		function validateForm(callback) {
-			let x = document.getElementById("slidenameRow")
-			for (var i = 0; i < x.cells.length - 1; i++) {
-				var slide = document.getElementById("slidename" + i)
-				if (slide.value === "") {
+			let slide = document.getElementById("slidename0");
+			//Check if slide name is empty
+			if (slide.value === "") {
 					changeStatus("UPLOAD", "Please enter slide name");
 					return false;
-				}
-
-				//Checking if silde with given name already exists
-				if(existingSlideNames.includes(slide.value)) {
-					changeStatus("UPLOAD", "Slide with given name already exists");
-					return false;
-				}
 			}
-			//Checking for extinsion
+			//Sanitizing input
+			slide.value = sanitize(slide.value);
+			//Checking if silde with given name already exists
+			if(existingSlideNames.includes(slide.value)) {
+				changeStatus("UPLOAD", "Slide with given name already exists");
+				return false;
+			}
+			//Checking for extension
 			let filename = document.getElementById("filename0").value
 			var fileExtension = filename.toLowerCase().split('.').reverse()[0];
 			if(!allowedExtensions.includes(fileExtension)) {
