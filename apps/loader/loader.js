@@ -1,6 +1,6 @@
-var upload_url = '../load/Slide/upload';
-var check_url = '../load/Slide/info/';
-var thumb_url = '../load/Slide/thumb/';
+var upload_url = '../loader/upload/start/';
+var check_url = '../loader/data/one/';
+var thumb_url = '../loader/data/thumbnail/';
 
 var store = new Store('../data/');
 
@@ -108,21 +108,24 @@ function handleCheck(filename, reset, id) {
   );
 }
 
-function handlePost(filename, slidename, reset) {
+function handlePost(filename, slidename, filter, reset) {
   fetch(check_url + filename, {credentials: 'same-origin'}).then(
       (response) => response.json(), // if the response is a JSON object
   ).then(
       (data) => {
         data['upload_date'] = new Date(Date.now()).toLocaleString();
         data.name = slidename;
+        if (filter) {
+          data.filter = filter;
+        }
         data.location = '/images/' + filename;
         data.study = '';
         data.specimen = '';
         data.mpp = parseFloat(data['mpp-x']) || parseFloat(data['mpp-y']) || 0;
         data.mpp_x = parseFloat(data['mpp-x']);
         data.mpp_y = parseFloat(data['mpp-y']);
-        store.post('Slide', {}, data).then(
-            (success) => changeStatus('POST', success, reset), // Handle the success response object
+        store.post('Slide', data).then(
+            (success) => changeStatus('POST', success.result, reset), // Handle the success response object
         ).catch(
             (error) => changeStatus('POST', error, reset), // Handle the error response object
         );
@@ -151,7 +154,8 @@ function PostBtn() {
   for (var i=0; i<document.getElementById('fileIdRow').cells.length-1; i++) {
     var filename = document.getElementById('filename'+i).value;
     var slidename = document.getElementById('slidename'+i).value;
-    if (i==0) handlePost(filename, slidename, true);
+    var filter = document.getElementById('filter'+i).value;
+    if (i==0) handlePost(filename, slidename, filter, true);
     else handlePost(filename, slidename, false);
   }
 }

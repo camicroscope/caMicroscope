@@ -88,7 +88,7 @@ class Store {
       query.slide = slide;
     }
     if (name) {
-      query.name = name;
+      query['provenance.analysis.execution_id'] = name;
     }
     if (footprint) {
       query.footprint = footprint;
@@ -114,41 +114,6 @@ class Store {
     }).then(this.errorHandler).then((x)=>this.filterBroken(x, 'mark'));
   }
 
-  /**
-   * find marks which contain a given point
-   * NOTE: this works only by exact match
-   * @param {number} x0 - x min position of rect to search
-   * @param {number} y0 - y min position of rect to search
-   * @param {number} x1 - x max position of rect to search
-   * @param {number} y1 - y max position of rect to search
-   * @param {string} [name] - the associated slide name
-   * @param {string} [slide] - the associated marktype name, supporting regex match
-   * @return {promise} - promise which resolves with data
-   **/
-  findMarkSpatial(x0, y0, x1, y1, name, slide, key) {
-    const suffix = 'Mark/findBound';
-    const url = this.base + suffix;
-    const query = {};
-    query.x0 = x0;
-    query.y0 = y0;
-    query.x1 = x1;
-    query.y1 = y1;
-    if (name) {
-      query.name = name;
-    }
-    if (slide) {
-      query.slide = slide;
-    }
-    if (key) {
-      query.key = key;
-    }
-
-    return fetch(url + '?' + objToParamStr(query), {
-      credentials: 'include',
-      mode: 'cors',
-    }).then(this.errorHandler).then((x)=>this.filterBroken(x, 'mark'));
-  }
-
   getMarkByIds(ids, slide, source, footprint, x0, x1, y0, y1) {
     if (!Array.isArray(ids) || !slide) {
       return {
@@ -161,8 +126,8 @@ class Store {
     const url = this.base + suffix;
     const query = {};
     const stringifiedIds = ids.map((id) => `"${id}"`).join(',');
-    query.name = `[${stringifiedIds}]`;
-    query.slide = slide;
+    query.nameList = `[${stringifiedIds}]`;
+    query['provenance.image.slide'] = slide;
     if (source) {
       query.source = source;
     }
@@ -195,10 +160,10 @@ class Store {
    * @return {promise} - promise which resolves with data
    **/
   getMark(id) {
-    const suffix = 'Mark/get';
+    const suffix = 'Mark/find';
     const url = this.base + suffix;
     const query = {
-      'id': id,
+      '_id': id,
     };
 
     return fetch(url + '?' + objToParamStr(query), {
@@ -238,8 +203,8 @@ class Store {
     const suffix = 'Mark/delete';
     const url = this.base + suffix;
     const query = {
-      id: id,
-      slide: slide,
+      '_id': id,
+      'provenance.image.slide': slide,
     };
     return fetch(url + '?' + objToParamStr(query), {
       method: 'DELETE',
@@ -254,7 +219,7 @@ class Store {
    * @return {promise} - promise which resolves with data
    **/
   findMarkTypes(slide, name) {
-    let suffix = 'Mark/types';
+    const suffix = 'Mark/types';
 
     const query = {};
     //
@@ -262,10 +227,9 @@ class Store {
       console.error('Store.findMarkTypes needs slide ... ');
       return null;
     }
-    query.slide = slide;
+    query['provenance.image.slide'] = slide;
     if (name) {
-      query.name = name;
-      suffix = 'Mark/typesExec';
+      query['provenance.analysis.execution_id'] = name;
     }
     const url = this.base + suffix;
     return fetch(url + '?' + objToParamStr(query), {
@@ -280,10 +244,10 @@ class Store {
     const query = {};
     let bySlideId;
     if (name) {
-      query.name = name;
+      query['provenance.analysis.execution_id'] = name;
     }
     if (slide) {
-      query.slide = slide;
+      query['provenance.image.slide'] = slide;
     }
     return fetch(url + '?' + objToParamStr(query), {
       credentials: 'include',
@@ -295,10 +259,10 @@ class Store {
     const url = this.base + suffix;
     const query = {};
     if (name) {
-      query.name = name;
+      query['provenance.analysis.execution_id'] = name;
     }
     if (slide) {
-      query.slide = slide;
+      query['provenance.image.slide'] = slide;
     }
     return fetch(url + '?' + objToParamStr(query), {
       credentials: 'include',
@@ -311,37 +275,17 @@ class Store {
    * @return {promise} - promise which resolves with data
    **/
   getHeatmap(slide, name) {
-    const suffix = 'Heatmap/get';
+    const suffix = 'Heatmap/find';
     const url = this.base + suffix;
     const query = {};
-    query.slide = slide;
-    query.name = name;
+    query['provenance.image.slide'] = slide;
+    query['provenance.analysis.execution_id'] = name;
 
     return fetch(url + '?' + objToParamStr(query), {
       credentials: 'include',
       mode: 'cors',
     }).then(this.errorHandler).then((x)=>this.filterBroken(x, 'heatmap'));
   }
-  /**
-   * update Heatmap fields - threshold
-   * @param {string} id - the heatmap id
-   * @returns {promise} - promise which resolves with data
-   **/
-  // updateHeatmapThreshold(caseId, execId) {
-  //   var suffix = "Heatmap/get"
-  //   var url = this.base + suffix;
-  //   var query = {};
-  //   query.case = caseId;
-  //   query.subject = caseId;
-  //   query.exec = execId;
-
-  //   return fetch(url + "?" + objToParamStr(query), {
-  //     credentials: "include",
-  //     mode: "cors"
-  //   }).then(this.errorHandler).then(x=>this.filterBroken(x, "heatmap"))
-  // }
-
-
   /**
    * post heatmap
    * @param {object} json - the mark data
@@ -374,8 +318,8 @@ class Store {
     const suffix = 'Heatmap/delete';
     const url = this.base + suffix;
     const query = {
-      id: id,
-      slide: slide,
+      '_id': id,
+      'provenance.image.slide': slide,
     };
     return fetch(url + '?' + objToParamStr(query), {
       method: 'DELETE',
@@ -386,27 +330,26 @@ class Store {
 
 
   updateHeatmapFields(slide, name, fields, setting) {
-    const suffix = 'Heatmap/threshold';
+    const suffix = 'Heatmap/update';
     const url = this.base + suffix;
     const query = {};
 
 
     if (slide) {
-      query.slide = slide;
+      query['provenance.image.slide'] = slide;
     }
 
     if (name) {
-      query.name = name;
+      query['provenance.analysis.execution_id'] = name;
     }
 
-    if (fields) {
-      query.fields = fields;
-    }
-    if (setting) {
-      query.setting = setting;
-    }
+    var data = {
+      'provenance.analysis.fields': JSON.parse(fields),
+      'provenance.analysis.setting': JSON.parse(setting),
+    };
     return fetch(url + '?' + objToParamStr(query), {
-      method: 'DELETE',
+      method: 'UPDATE',
+      body: JSON.stringify(data),
       credentials: 'include',
       mode: 'cors',
     }).then(this.errorHandler);
@@ -443,22 +386,22 @@ class Store {
     const query = {};
 
     if (user) {
-      query.user = user;
+      query['user_id'] = user;
     }
 
     if (slide) {
-      query.slide = slide;
+      query['provenance.image.slide'] = slide;
     }
 
     if (name) {
-      query.name = name;
-    }
-    if (data) {
-      query.data = data;
+      query['provenance.analysis.execution_id'] = name;
     }
 
     return fetch(url + '?' + objToParamStr(query), {
-      method: 'DELETE',
+      method: 'UPDATE',
+      body: JSON.stringify({
+        data: JSON.parse(data),
+      }),
       credentials: 'include',
       mode: 'cors',
     }).then(this.errorHandler);
@@ -469,13 +412,13 @@ class Store {
     const url = this.base + suffix;
     const query = {};
     if (user) {
-      query.user = user;
+      query['user_id'] = user;
     }
     if (slide) {
-      query.slide = slide;
+      query['provenance.image.slide'] = slide;
     }
     if (name) {
-      query.name = name;
+      query['provenance.analysis.execution_id'] = name;
     }
     return fetch(url + '?' + objToParamStr(query), {
       credentials: 'include',
@@ -493,14 +436,14 @@ class Store {
     const url = this.base + suffix;
     const query = {};
     if (user) {
-      query.user = user;
+      query['user_id'] = user;
     }
     if (slide) {
-      query.slide = slide;
+      query['provenance.image.slide'] = slide;
     }
 
     if (name) {
-      query.name = name;
+      query['provenance.analysis.execution_id'] = name;
     }
     return fetch(url + '?' + objToParamStr(query), {
       method: 'DELETE',
@@ -526,24 +469,6 @@ class Store {
     if (slide) {
       query.slide = slide;
     }
-
-    return fetch(url + '?' + objToParamStr(query), {
-      credentials: 'include',
-      mode: 'cors',
-    }).then(this.errorHandler);
-  }
-
-  /**
-   * get overlay by id
-   * @param {string} id - the overlay id
-   * @return {promise} - promise which resolves with data
-   **/
-  getOverlay(id) {
-    const suffix = 'Overlay/get';
-    const url = this.base + suffix;
-    const query = {
-      'id': id,
-    };
 
     return fetch(url + '?' + objToParamStr(query), {
       credentials: 'include',
@@ -586,10 +511,10 @@ class Store {
    * @return {promise} - promise which resolves with data
    **/
   getSlide(id) {
-    const suffix = 'Slide/get';
+    const suffix = 'Slide/find';
     const url = this.base + suffix;
     const query = {
-      'id': id,
+      '_id': id,
     };
 
     return fetch(url + '?' + objToParamStr(query), {
@@ -627,10 +552,10 @@ class Store {
    * @return {promise} - promise which resolves with data
    **/
   getTemplate(id) {
-    const suffix = 'Template/get';
+    const suffix = 'Template/find';
     const url = this.base + suffix;
     const query = {
-      'id': id,
+      '_id': id,
     };
 
     return fetch(url + '?' + objToParamStr(query), {
@@ -660,12 +585,12 @@ class Store {
   }
 
   /**
-   * add a log item
+   * get a config setting
    ** @param {object} json - the log data
    * @return {promise} - promise which resolves with data
    **/
   getConfigByName(name) {
-    const suffix = 'Configuration/getConfigByName';
+    const suffix = 'Configuration/find';
     const url = this.base + suffix;
     const query = {
       'name': name,
@@ -680,13 +605,12 @@ class Store {
    * post data
    * @param {string} type - the datatype to post
    * @param {object} data - the data to post
-   * @param {object} [query] - the query of url parameters
    * @return {promise} - promise which resolves with data
    **/
-  post(type, query, data) {
-    const url = this.base + type + '/post';
+  post(type, data) {
+    var postUrl = this.base + type + '/post';
 
-    return fetch(url + '?' + objToParamStr(query), {
+    return fetch(postUrl, {
       method: 'POST',
       mode: 'cors',
       body: JSON.stringify(data),
@@ -694,42 +618,6 @@ class Store {
       headers: {
         'Content-Type': 'application/json; charset=utf-8',
       },
-    }).then(this.errorHandler);
-  }
-
-  /**
-   * update data
-   * @param {string} type - the datatype to get
-   * @param {object} query - the query of url parameters
-   * @param {object} data - the data to update
-   * @return {promise} - promise which resolves with data
-   **/
-  update(type, query, data) {
-    const url = this.base + type + '/update';
-
-    return fetch(url + '?' + objToParamStr(query), {
-      method: 'UPDATE',
-      mode: 'cors',
-      body: JSON.stringify(data),
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json; charset=utf-8',
-      },
-    }).then(this.errorHandler);
-  }
-
-  /**
-   * delete data
-   * @param {string} type - the datatype to get
-   * @param {object} query - the query of url parameters
-   * @return {promise} - promise which resolves with data
-   **/
-  delete(type, query) {
-    const url = this.base + type + '/delete';
-
-    return fetch(url + '?' + objToParamStr(query), {
-      credentials: 'include',
-      mode: 'cors',
     }).then(this.errorHandler);
   }
 }

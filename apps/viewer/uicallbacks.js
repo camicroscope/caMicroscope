@@ -694,7 +694,7 @@ function anno_delete(data) {
         }
 
         // no data found
-        if (!datas.rowsAffected || datas.rowsAffected < 1) {
+        if (!datas.deletedCount || datas.deletedCount < 1) {
           $UI.message.addWarning(`Delete Annotations Failed.`, 5000);
           return;
         }
@@ -1126,7 +1126,7 @@ function anno_callback(data) {
   }
 
   // Add new lines to notes to prevent overflow
-  str = noteData.notes;
+  let str = noteData.notes || '';
   var result_string = '';
   while (str.length > 0) {
     result_string += str.substring(0, 36) + '\n';
