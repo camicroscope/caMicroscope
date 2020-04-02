@@ -292,7 +292,7 @@
 							else if (!d[key]) rs.push('')
 							else rs.push(d[key])
 						});
-						const btn = `<button class="btn btn-success" data-id='${rs[0]}' onclick='openView(this)'>Open</button>`
+						const btn = `<button class="btn btn-success" data-id='${rs[0]}' onclick='openView(this)'>Open</button> &nbsp; <i class='fas fa-trash-alt' data-id='${rs[0]}'></i>`
 						rs.push(btn);
 						return rs;
 					});
