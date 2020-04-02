@@ -504,9 +504,9 @@ CaToolbar.prototype.__createDropDown = function(options) {
 
   // binding event
   if (options.callback) {
-    chk.addEventListener('click', getStatus.bind(this));
+    chk.addEventListener('change', getStatus.bind(this));
     lists.forEach((radio) =>
-      radio.addEventListener('click', (e) => {
+      radio.addEventListener('change', (e) => {
         chk.checked = true;
         getStatus.call(this, e);
       }),
