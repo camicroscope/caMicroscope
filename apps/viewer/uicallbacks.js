@@ -252,7 +252,7 @@ function draw(e) {
         let popupBox = document.createElement('div');
         popupBox.classList.add('popup-msg', 'slide-in');
         popupBox.innerHTML = `<i class="small material-icons">info</i>
-    For more options, right click anywhere on the image !`;
+    For more options, right click anywhere on the image`;
         // Add popup box to parent
         popups.insertBefore(popupBox, popups.childNodes[0]);
         setTimeout(function() {
