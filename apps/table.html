@@ -209,6 +209,28 @@
 
 	</div>
 
+
+	<!--Delete Modal -->
+	<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+			<h5 class="modal-title" id="exampleModalLabel">Delete Slide ?</h5>
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+			</button>
+			</div>
+			<div class="modal-body">
+				Do you want to delete this slide?
+			</div>
+			<div class="modal-footer">
+			<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+			<button type="button" id='confirmDelete' data-dismiss="modal" class="btn btn-danger">Yes</button>
+			</div>
+		</div>
+		</div>
+	</div>
+
 	<div class="text-center text-white bg-dark p-3" style="position: static;bottom: 0;width: 100%;">
 		<p class="p">Copyright © 2020 caMicroscope</p>
 	</div>
@@ -292,7 +314,7 @@
 							else if (!d[key]) rs.push('')
 							else rs.push(d[key])
 						});
-						const btn = `<button class="btn btn-success" data-id='${rs[0]}' onclick='openView(this)'>Open</button> &nbsp; <i class='fas fa-trash-alt' data-id='${rs[0]}'></i>`
+						const btn = `<div id='open-delete'> <button class="btn btn-success" data-id='${rs[0]}' onclick='openView(this)'>Open</button> <button type='button' class='btn btn-danger' id='deleteBtn' data-id='${rs[0]}' onclick='deleteSld(this)' data-toggle='modal'> <i class='fas fa-trash-alt' ></i> </button></div>`
 						rs.push(btn);
 						return rs;
 					});
@@ -441,6 +463,25 @@
 		const oid = e.dataset.id;
 		if (oid) {
 			window.location.href = `./viewer/viewer.html?slideId=${oid}`;
+		} else {
+			alert('No Data Id');
+		}
+	}
+
+	$(document).ready(function(){
+		$('#deleteModal').on('hidden.bs.modal', function (e) {
+			initialize();
+		  });
+	});
+	function deleteSld(e) {
+		const oid = e.dataset.id;
+		const store = new Store('../data/');
+		if (oid) {
+			$('#deleteModal').modal('toggle');
+			$("#confirmDelete").unbind( "click" );
+			$("#confirmDelete").click(function(){
+				store.deleteSlide(oid);
+			});			
 		} else {
 			alert('No Data Id');
 		}
