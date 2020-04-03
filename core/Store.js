@@ -630,7 +630,7 @@ class Store {
     const suffix = 'Slide/delete';
     const url = this.base + suffix;
     const query = {
-      '_id': id
+      '_id': id,
     };
     return fetch(url + '?' + objToParamStr(query), {
       method: 'DELETE',
