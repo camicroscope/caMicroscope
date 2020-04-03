@@ -523,6 +523,25 @@ class Store {
     }).then(this.errorHandler).then((x)=>this.filterBroken(x, 'slide'));
   }
 
+   /**
+   * Deletes a Slide with given Id
+   * @param {string} id the slide id
+   * @returns {promise} - promise which resolves with data
+   */
+  deleteSlide(id) {
+    const suffix = 'Slide/delete';
+    const url = this.base + suffix;
+    const query = {
+      '_id': id,
+    };
+    return fetch(url + '?' + objToParamStr(query), {
+      method: 'DELETE',
+      credentials: 'include',
+      mode: 'cors',
+    }).then(this.errorHandler);
+  }
+
+  
   /**
    * find templates matching name and/or type
    * @param {string} [name] - the template name, supporting regex match
