@@ -473,6 +473,7 @@
 	});
 	function deleteSld(e) {
 		const oid = e.dataset.id;
+		const oname = e.dataset.name;		
 		const store = new Store('../data/');
 		if (oid) {
 			$('#deleteModal').modal('toggle');
