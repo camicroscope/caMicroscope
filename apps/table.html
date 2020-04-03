@@ -282,7 +282,6 @@
 	}
 
 	function initialize() {
-		$('#datatables').stacktable();
 		const params = getUrlVars();
 		const store = new Store('../data/');
 		store.findSlide()
@@ -432,6 +431,7 @@
 			});
 
 		});
+		$('#datatables').stacktable();
 	}
 
 	function AND(p, t, func) {
@@ -460,7 +460,7 @@
 			alert('No Data Id');
 		}
 	}
-	window.addEventListener('resize', ()=>{$('#datatables').stacktable()});
+	//window.addEventListener('resize', ()=>{$('#datatables').stacktable()});
 	document.addEventListener('DOMContentLoaded', initialize);
 </script>
 
