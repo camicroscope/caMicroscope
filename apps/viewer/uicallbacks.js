@@ -245,6 +245,22 @@ function draw(e) {
     // measurementOff();
 
     // turn off annotaiton
+    if (state==1) {
+      // show pop-up message to user
+      let popups = document.getElementById('popup-container');
+      if (popups.childElementCount < 2) {
+        let popupBox = document.createElement('div');
+        popupBox.classList.add('popup-msg', 'slide-in');
+        popupBox.innerHTML = `<i class="small material-icons">info</i>
+    For more options, right click anywhere on the image`;
+        // Add popup box to parent
+        popups.insertBefore(popupBox, popups.childNodes[0]);
+        setTimeout(function() {
+          // popups.lastChild.classList.add('slideOut');
+          popups.removeChild(popups.lastChild);
+        }, 3000);
+      }
+    }
     if ($CAMIC.status == 'normal') {
       annotationOn.call(this, state, target);
       return;
@@ -678,7 +694,7 @@ function annoDelete(data) {
         }
 
         // no data found
-        if (!datas.rowsAffected || datas.rowsAffected < 1) {
+        if (!datas.deletedCount || datas.deletedCount < 1) {
           $UI.message.addWarning(`Delete Annotations Failed.`, 5000);
           return;
         }
@@ -1110,9 +1126,10 @@ function annoCallback(data) {
   }
 
   // Add new lines to notes to prevent overflow
-  str = noteData.notes;
+
+  let str = noteData.notes || '';
   var resultString = '';
-  while (str.length > 0) {
+  while (typeof str==='string' && str.length > 0) {
     resultString += str.substring(0, 36) + '\n';
     str = str.substring(36);
   }

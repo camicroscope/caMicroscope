@@ -18,21 +18,21 @@
     <link rel='stylesheet' type='text/css' media='all' href='signup.css'/>
   </head>
   <script>
-    var userSignupUrl = "../../data/Auth/post"
+    var userSignupUrl = "../../data/User/post"
     function addUser(){
       var email = document.getElementById("mail").value
-      var collections = document.getElementById("collections").value
+      var filters = document.getElementById("filters").value
       // var attr = document.querySelector('input[name="attr"]:checked').value
       var attrEle = document.getElementById("attr");
       var attr = attrEle.options[attrEle.selectedIndex].value;
-      var attr_doc = []
+      var userType = "Null"
       if (attr == "3"){
-        attr_doc = ["write", "admin"]
+        userType = "Admin"
       }
       if (attr == "2"){
-        attr_doc = ["write"]
+        userType = "Editor"
       }
-      var doc = {name: email, attrs: attr_doc, accessCollection:collections}
+      var doc = {email: email, userType: userType, userFilters:filters}
       fetch(userSignupUrl, {
           method: 'POST',
           mode: 'cors', // no-cors, cors, *same-origin
@@ -107,7 +107,7 @@
         <div class="form-group">
           <div class="input-group">
             <span class="input-group-addon"><i class="fa fa-th-list" style="margin-top: 0.5em;"></i></span>
-            <input type="text" id="collections" class="form-control" placeholder="['list','of','collections']"
+            <input type="text" id="filters" class="form-control" placeholder="['list','of','filters']"
               required="required">
           </div>
         </div> <br>
@@ -116,7 +116,7 @@
         <select id="attr" class="browser-default custom-select">
           <option selected value="1">Viewer</option>
           <option value="2">Editor</option>
-          <option value="3">Admin (and Editor)</option>
+          <option value="3">Admin</option>
         </select>
 
         <br> <br>
@@ -124,9 +124,8 @@
           <button type="submit" id="sub" class="btn btn-primary btn-block btn-lg sub-btn" onclick="addUser()">Sign
             Up</button>
         </div>
-        <p class="small text-center">If you reach this page, it's likely that you tried to log into this instance but lack
-          access.
-          Email the administrator if you want to be added. If you are an admin, you should be able to use this form.</p>
+        <p class="small text-center">This form is only useful to Admin users. If you reach this page, it's likely that you tried to log into this instance but lack
+          access. Email the administrator if you want to be added.</p>
       </form>
       <div class="text-center">Already have an account? </div>
     </div>
