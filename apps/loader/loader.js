@@ -19,7 +19,10 @@ function changeStatus(step, text, reset=true) {
     }
 
     var table;
+    var responsiveContainer;
     if (reset) {
+      responsiveContainer = document.createElement('div');
+      responsiveContainer.classList = 'table-responsive';
       table = document.createElement('table');
       table.id = 'statusTable';
       table.classList = 'table';
@@ -65,7 +68,8 @@ function changeStatus(step, text, reset=true) {
 
     var divContainer = document.getElementById('json_table');
     divContainer.innerHTML = '';
-    divContainer.appendChild(table);
+    responsiveContainer.appendChild(table);
+    divContainer.appendChild(responsiveContainer);
 
     document.getElementById('load_status').innerHTML=step;
   } else {
