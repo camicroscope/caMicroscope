@@ -321,7 +321,6 @@
 					default_btn.push(btn);
 					return [default_btn];
 				}
-				$('#datatables').stacktable();
 			})
 			.then(function (data) {
 				if (data.length == 0) {
@@ -430,7 +429,7 @@
 				else totaltablepages = Math.ceil($(".searched").length/$("#entries").val());
 				resetTable();
 			});
-
+		$('#datatables').stacktable();
 		});
 	}
 
