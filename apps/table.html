@@ -312,7 +312,7 @@
 							else if (!d[key]) rs.push('')
 							else rs.push(d[key])
 						});
-						const btn = `<div id='open-delete'> <button class="btn btn-success" data-id='${rs[0]}' onclick='openView(this)'>Open</button> <button type='button' class='btn btn-danger' id='deleteBtn' data-id='${rs[0]}' onclick='deleteSld(this)' data-toggle='modal'> <i class='fas fa-trash-alt' ></i> </button></div>`
+						const btn = `<div id='open-delete'> <button class="btn btn-success" data-id='${rs[0]}' onclick='openView(this)'>Open</button> <button type='button' class='btn btn-danger' id='deleteBtn' data-id='${rs[0]}' data-name='${rs[1]}' onclick='deleteSld(this)' data-toggle='modal'> <i class='fas fa-trash-alt' ></i> </button></div>``
 						rs.push(btn);
 						return rs;
 					});
