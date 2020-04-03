@@ -265,6 +265,7 @@
 	}
 
 	function resetTable(){
+		$('#datatables').stacktable();
 		$(".pages").remove();
 		$("#previous-page").after(function(){
 			if(totaltablepages != 0)
@@ -281,6 +282,7 @@
 	}
 
 	function initialize() {
+		$('#datatables').stacktable();
 		const params = getUrlVars();
 		const store = new Store('../data/');
 		store.findSlide()
@@ -458,9 +460,6 @@
 			alert('No Data Id');
 		}
 	}
-	// stack tables
-	$('#datatables').stacktable();
-	$('#statusTable').stacktable();
 	document.addEventListener('DOMContentLoaded', initialize);
 </script>
 

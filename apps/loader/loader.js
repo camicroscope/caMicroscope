@@ -70,6 +70,7 @@ function changeStatus(step, text, reset=true) {
     divContainer.innerHTML = '';
     responsiveContainer.appendChild(table);
     divContainer.appendChild(responsiveContainer);
+  	$('#statusTable').stacktable();
 
     document.getElementById('load_status').innerHTML=step;
   } else {
