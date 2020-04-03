@@ -248,9 +248,9 @@ MultSelector.prototype.__select = function(e) {
   [...selected].forEach( function(opt) {
     const num = this.selectors[1].querySelectorAll(`option[value='${opt.value}']`).length;
     if (num === 0) {
-      const new_opt = opt.cloneNode(true);
-      new_opt.textContent = opt.textContent;
-      this.selectors[1].appendChild(new_opt);
+      const newOpt = opt.cloneNode(true);
+      newOpt.textContent = opt.textContent;
+      this.selectors[1].appendChild(newOpt);
       data.push([opt.value, opt.textContent]);
     }
   }, this);

@@ -348,7 +348,7 @@ class Store {
       'provenance.analysis.setting': JSON.parse(setting),
     };
     return fetch(url + '?' + objToParamStr(query), {
-      method: 'UPDATE',
+      method: 'POST',
       body: JSON.stringify(data),
       credentials: 'include',
       mode: 'cors',
@@ -398,7 +398,7 @@ class Store {
     }
 
     return fetch(url + '?' + objToParamStr(query), {
-      method: 'UPDATE',
+      method: 'POST',
       body: JSON.stringify({
         data: JSON.parse(data),
       }),

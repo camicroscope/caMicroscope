@@ -180,18 +180,18 @@ LayersViewer.prototype.__refreshUI = function() {
 
   /* categorical view START*/
   // create categorical view div
-  const cate_view_div = document.createElement('div');
-  cate_view_div.classList.add('layers_list');
+  const cateViewDiv = document.createElement('div');
+  cateViewDiv.classList.add('layers_list');
 
   // create categorical view content
   const objCategories = LayersViewer.createCategoricalView.call(
       this,
       this.setting.categoricalData,
   );
-  cate_view_div.appendChild(objCategories.view);
+  cateViewDiv.appendChild(objCategories.view);
 
-  this.elt.appendChild(cate_view_div);
-  this.categoricalView = cate_view_div;
+  this.elt.appendChild(cateViewDiv);
+  this.categoricalView = cateViewDiv;
   /* categorical view END*/
 
   /* sortable view START */
@@ -299,17 +299,17 @@ LayersViewer.createCategoricalView = function(data) {
   for (const typeId in data) {
     if (data.hasOwnProperty(typeId)) {
       // create root li
-      const type_data = data[typeId]; // type_data = {id:typeId,name:typeName,items:[{item:,isShow:}]}
-      type_data.elt = LayersViewer.createCategoricalItem.call(
+      const typeData = data[typeId]; // typeData = {id:typeId,name:typeName,items:[{item:,isShow:}]}
+      typeData.elt = LayersViewer.createCategoricalItem.call(
           this,
-          type_data,
+          typeData,
           'root',
       );
-      ul.appendChild(type_data.elt); // create li root
+      ul.appendChild(typeData.elt); // create li root
 
       const children = document.createElement('ul');
       // add leaf
-      type_data.items.forEach(
+      typeData.items.forEach(
           function(item) {
             item.elt = LayersViewer.createCategoricalItem.call(this, item);
             children.appendChild(item.elt); // create li leaf
@@ -363,31 +363,31 @@ LayersViewer.createCategoricalItem = function(data, type) {
 
   if (item.typeName && item.typeName == 'human') {
     // remove and relocation
-    const remove_div = document.createElement('div');
-    remove_div.classList.add('material-icons');
-    remove_div.classList.add('md-24');
-    remove_div.textContent = 'clear';
-    remove_div.title = 'Remove';
-    const location_div = document.createElement('div');
-    location_div.style.display = data.isShow?'block':'none';
+    const removeDiv = document.createElement('div');
+    removeDiv.classList.add('material-icons');
+    removeDiv.classList.add('md-24');
+    removeDiv.textContent = 'clear';
+    removeDiv.title = 'Remove';
+    const locationDiv = document.createElement('div');
+    locationDiv.style.display = data.isShow?'block':'none';
     // bind event location_searching
-    location_div.classList.add('material-icons');
-    location_div.classList.add('md-24');
-    location_div.textContent = 'room';
-    location_div.title = 'Location';
+    locationDiv.classList.add('material-icons');
+    locationDiv.classList.add('md-24');
+    locationDiv.textContent = 'room';
+    locationDiv.title = 'Location';
 
     //
-    remove_div.addEventListener('click', () => {
+    removeDiv.addEventListener('click', () => {
       this.setting.removeCallback.call(this, data);
     });
-    location_div.addEventListener('click', () => {
+    locationDiv.addEventListener('click', () => {
       this.setting.locationCallback.call(this, data);
     });
 
     //
-    li.appendChild(location_div);
+    li.appendChild(locationDiv);
     li.appendChild(label);
-    li.appendChild(remove_div);
+    li.appendChild(removeDiv);
   } else {
     li.appendChild(label);
   }
@@ -440,16 +440,16 @@ LayersViewer.createSortableItem = function(item) {
   label.appendChild(text);
 
   // div moveup
-  const up_icon = document.createElement('div');
-  up_icon.classList.add('material-icons');
-  up_icon.classList.add('moveup');
-  up_icon.textContent = 'arrow_drop_up';
+  const upIcon = document.createElement('div');
+  upIcon.classList.add('material-icons');
+  upIcon.classList.add('moveup');
+  upIcon.textContent = 'arrow_drop_up';
 
   // div movedown
-  const down_icon = document.createElement('div');
-  down_icon.classList.add('material-icons');
-  down_icon.classList.add('movedown');
-  down_icon.textContent = 'arrow_drop_down';
+  const downIcon = document.createElement('div');
+  downIcon.classList.add('material-icons');
+  downIcon.classList.add('movedown');
+  downIcon.textContent = 'arrow_drop_down';
 
   // checkbox
   const chk = document.createElement('input');
@@ -459,8 +459,8 @@ LayersViewer.createSortableItem = function(item) {
   chk.dataset.id = item.id;
   chk.dataset.type = 'leaf';
   li.appendChild(label);
-  li.appendChild(up_icon);
-  li.appendChild(down_icon);
+  li.appendChild(upIcon);
+  li.appendChild(downIcon);
   li.appendChild(chk);
   return li;
 };
@@ -475,74 +475,74 @@ LayersViewer.createControlBar = function() {
   const _name = randomId();
 
   /* create cate btn START */
-  const cate_id = randomId();
-  const cate_btn = document.createElement('div');
-  cate_btn.style.display = 'none';
+  const cateId = randomId();
+  const cateBtn = document.createElement('div');
+  cateBtn.style.display = 'none';
   // cate radio
-  const cate_radio = document.createElement('input');
-  cate_radio.id = cate_id;
-  cate_radio.type = 'radio';
-  cate_radio.name = _name;
-  cate_radio.value = 'category';
+  const cateRadio = document.createElement('input');
+  cateRadio.id = cateId;
+  cateRadio.type = 'radio';
+  cateRadio.name = _name;
+  cateRadio.value = 'category';
 
   // cate label
-  const cate_label = document.createElement('label');
-  cate_label.htmlFor = cate_id;
-  cate_label.classList.add('material-icons');
-  cate_label.textContent = 'category';
+  const cateLabel = document.createElement('label');
+  cateLabel.htmlFor = cateId;
+  cateLabel.classList.add('material-icons');
+  cateLabel.textContent = 'category';
 
-  cate_btn.appendChild(cate_radio);
-  cate_btn.appendChild(cate_label);
+  cateBtn.appendChild(cateRadio);
+  cateBtn.appendChild(cateLabel);
 
   // add into view
-  view.appendChild(cate_btn);
+  view.appendChild(cateBtn);
   /* create cate btn END */
 
   /* create cate btn START */
-  const sort_id = randomId();
-  const sort_btn = document.createElement('div');
-  sort_btn.style.display = 'none';
-  const sort_radio = document.createElement('input');
-  sort_radio.id = sort_id;
-  sort_radio.type = 'radio';
-  sort_radio.name = _name;
-  sort_radio.value = 'sort';
+  const sortId = randomId();
+  const sortBtn = document.createElement('div');
+  sortBtn.style.display = 'none';
+  const sortRadio = document.createElement('input');
+  sortRadio.id = sortId;
+  sortRadio.type = 'radio';
+  sortRadio.name = _name;
+  sortRadio.value = 'sort';
 
-  const sort_label = document.createElement('label');
-  sort_label.htmlFor = sort_id;
-  sort_label.classList.add('material-icons');
-  sort_label.textContent = 'sort';
+  const sortLabel = document.createElement('label');
+  sortLabel.htmlFor = sortId;
+  sortLabel.classList.add('material-icons');
+  sortLabel.textContent = 'sort';
 
-  sort_btn.appendChild(sort_radio);
-  sort_btn.appendChild(sort_label);
+  sortBtn.appendChild(sortRadio);
+  sortBtn.appendChild(sortLabel);
 
   // add into view
-  view.appendChild(sort_btn);
+  view.appendChild(sortBtn);
   /* create sort btn END */
 
   /* create search bar START */
   // text input
-  const search_input = document.createElement('input');
-  search_input.type = 'text';
-  search_input.placeholder = 'Search By Name/ID';
+  const searchInput = document.createElement('input');
+  searchInput.type = 'text';
+  searchInput.placeholder = 'Search By Name/ID';
 
   // search btn
-  const search_btn = document.createElement('div');
-  search_btn.classList.add('material-icons');
-  search_btn.textContent = 'find_in_page';
+  const searchBtn = document.createElement('div');
+  searchBtn.classList.add('material-icons');
+  searchBtn.textContent = 'find_in_page';
 
   // add input and btn into ciew
-  view.appendChild(search_input);
-  view.appendChild(search_btn);
+  view.appendChild(searchInput);
+  view.appendChild(searchBtn);
   /* create search bar END */
 
   /* create check all START */
-  const chk_all = document.createElement('input');
-  chk_all.style.display = 'none';
-  chk_all.type = 'checkbox';
-  chk_all.id = 'all';
-  chk_all.dataset.type = 'all';
-  view.appendChild(chk_all);
+  const chkAll = document.createElement('input');
+  chkAll.style.display = 'none';
+  chkAll.type = 'checkbox';
+  chkAll.id = 'all';
+  chkAll.dataset.type = 'all';
+  view.appendChild(chkAll);
   /* create check all END */
 
   // return obj for switch layer views
@@ -550,19 +550,19 @@ LayersViewer.createControlBar = function() {
   viewRadios.name = _name;
   viewRadios.list = [
     {
-      id: cate_id,
-      elt: cate_radio, // categorical view radio btn
+      id: cateId,
+      elt: cateRadio, // categorical view radio btn
     },
     {
-      id: sort_id,
-      elt: sort_radio, // sortable view radio btn
+      id: sortId,
+      elt: sortRadio, // sortable view radio btn
     },
   ];
 
   // return obj for search bar
   const searchBar = {};
-  searchBar.text = search_input;
-  searchBar.btn = search_btn;
+  searchBar.text = searchInput;
+  searchBar.btn = searchBtn;
 
   // return obj for check all
 
@@ -570,7 +570,7 @@ LayersViewer.createControlBar = function() {
     view: view,
     viewRadios: viewRadios, // view switch
     searchBar: searchBar, // searchbar
-    checkAll: chk_all, // check all
+    checkAll: chkAll, // check all
   };
 };
 

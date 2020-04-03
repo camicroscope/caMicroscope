@@ -1,6 +1,6 @@
-var upload_url = '../loader/upload/start/';
-var check_url = '../loader/data/one/';
-var thumb_url = '../loader/data/thumbnail/';
+var uploadUrl = '../loader/upload/start/';
+var checkUrl = '../loader/data/one/';
+var thumbUrl = '../loader/data/thumbnail/';
 
 var store = new Store('../data/');
 
@@ -19,7 +19,10 @@ function changeStatus(step, text, reset=true) {
     }
 
     var table;
+    var responsiveContainer;
     if (reset) {
+      responsiveContainer = document.createElement('div');
+      responsiveContainer.classList = 'table-responsive';
       table = document.createElement('table');
       table.id = 'statusTable';
       table.classList = 'table';
@@ -51,7 +54,7 @@ function changeStatus(step, text, reset=true) {
       if (step == 'CHECK') {
         // During check, thumbnail needs to be fetched & added to the table
         // In this case, text[col[col.length - 1]] is the filename
-        fetch(thumb_url + text[col[col.length - 1]], {credentials: 'same-origin'}).then(
+        fetch(thumbUrl + text[col[col.length - 1]], {credentials: 'same-origin'}).then(
             (response) => response.json(), // if the response is a JSON object
         ).then((x)=>{
           var tabCell = tr.cells[tr.cells.length-1];
@@ -65,8 +68,9 @@ function changeStatus(step, text, reset=true) {
 
     var divContainer = document.getElementById('json_table');
     divContainer.innerHTML = '';
-    divContainer.appendChild(table);
-
+    responsiveContainer.appendChild(table);
+    divContainer.appendChild(responsiveContainer);
+    $('#statusTable').stacktable();
     document.getElementById('load_status').innerHTML=step;
   } else {
     text = JSON.stringify(text);
@@ -80,7 +84,7 @@ function handleUpload(file, filename) {
   data.append('file', file);
   data.append('filename', filename);
   changeStatus('UPLOAD', 'Begun upload');
-  fetch(upload_url, {
+  fetch(uploadUrl, {
     credentials: 'same-origin',
     method: 'POST',
     body: data,
@@ -94,7 +98,7 @@ function handleUpload(file, filename) {
 }
 
 function handleCheck(filename, reset, id) {
-  fetch(check_url + filename, {credentials: 'same-origin'}).then(
+  fetch(checkUrl + filename, {credentials: 'same-origin'}).then(
       (response) => response.json(), // if the response is a JSON object
   ).then(
       (success) => {
@@ -109,7 +113,7 @@ function handleCheck(filename, reset, id) {
 }
 
 function handlePost(filename, slidename, filter, reset) {
-  fetch(check_url + filename, {credentials: 'same-origin'}).then(
+  fetch(checkUrl + filename, {credentials: 'same-origin'}).then(
       (response) => response.json(), // if the response is a JSON object
   ).then(
       (data) => {
