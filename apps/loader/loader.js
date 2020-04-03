@@ -17,6 +17,12 @@ function changeStatus(step, text, reset=true) {
         col.push(key);
       }
     }
+    if (text['location']) {
+      // indicating successful check
+      $('#post_btn').show();
+    } else {
+      $('#post_btn').hide();
+    }
 
     var table;
     if (reset) {
@@ -69,6 +75,7 @@ function changeStatus(step, text, reset=true) {
 
     document.getElementById('load_status').innerHTML=step;
   } else {
+    $('#post_btn').hide();
     text = JSON.stringify(text);
     text = step + ' | ' + text;
     document.getElementById('load_status').innerHTML=text;
@@ -125,7 +132,11 @@ function handlePost(filename, slidename, filter, reset) {
         data.mpp_x = parseFloat(data['mpp-x']);
         data.mpp_y = parseFloat(data['mpp-y']);
         store.post('Slide', data).then(
-            (success) => changeStatus('POST', success.result, reset), // Handle the success response object
+            (success) => {
+              $('#upload-dialog').modal('hide');
+              location.reload();
+              return changeStatus('POST', success.result, reset);
+            }, // Handle the success response object
         ).catch(
             (error) => changeStatus('POST', error, reset), // Handle the error response object
         );

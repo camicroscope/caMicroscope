@@ -42,7 +42,7 @@
 					return false;
 				}
 			}
-			//Checking for extinsion
+			//Checking for extension
 			let filename = document.getElementById("filename0").value
 			var fileExtension = filename.toLowerCase().split('.').reverse()[0];
 			if(!allowedExtensions.includes(fileExtension)) {
@@ -109,7 +109,7 @@
 		<button type="button" class="btn btn-success float-right mb-2"
 			onclick="(()=>{location.reload();return false;})()"> <i class="fas fa-sync-alt"></i> Reload</button>
 		<button type="button" class="btn btn-primary float-right mb-2 mr-2" data-toggle="modal"
-			data-target="#upload-dialog"> <i class="fas fa-upload"></i> Upload</button>
+			data-target="#upload-dialog" onclick=(hidePostButton)> <i class="fas fa-upload"></i> Upload</button>
 			<div class="modal fade" id="upload-dialog" tabindex="-1" role="dialog"
 			aria-labelledby="title-of-dialog" aria-hidden="true">
 			<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
@@ -163,7 +163,7 @@
 												value="Finish Upload" onclick="validateForm(finish_upload)">Finish
 												Upload</button>
 											<button class="btn btn-secondary" type="button" id="check_btn"
-												value="Check" onclick="CheckBtn()">Check</button>
+												value="Check" onclick="validateForm(CheckBtn)">Check</button>
 											<button class="btn btn-success" type="button" id="post_btn" value="Post"
 												onclick="validateForm(PostBtn)">Post</button>
 										</div>
@@ -444,6 +444,11 @@
 		} else {
 			alert('No Data Id');
 		}
+	}
+
+	function hidePostButton()
+	{
+		$('#post_btn').hide();
 	}
 
 	document.addEventListener('DOMContentLoaded', initialize);
