@@ -202,11 +202,13 @@ function freeLine(e){
 
 function redirect(url, text = '', sec = 5) {
   let timer = sec;
-  setInterval(function () {
+  if (!timer) {
+    window.location.href = url;
+  }
+  setInterval(function() {
     if (!timer) {
       window.location.href = url;
     }
-
     if (Loading.instance.parentNode) {
       Loading.text.textContent = `${text} ${timer}s.`;
     } else {
@@ -214,6 +216,5 @@ function redirect(url, text = '', sec = 5) {
     }
     // Hint Message for clients that page is going to redirect to Flex table in 5s
     timer--;
-
   }, 1000);
 }
