@@ -73,6 +73,7 @@
 		crossorigin="anonymous"></script>
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
 		integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+	<link rel="stylesheet" href="../common/stackable.css">
 	<style>
 		html,
 		body {
@@ -82,6 +83,7 @@
 			flex-direction: column;
 		}
 	</style>
+		<script src='../common/stackable.js'></script>
 	<link rel="stylesheet" href="./table.css" />
 	<link rel="shortcut icon" type="image/x-icon" href="/apps/landing/favicon.png">
 </head>
@@ -456,7 +458,9 @@
 			alert('No Data Id');
 		}
 	}
-
+	// stack tables
+	$('#datatables').stacktable();
+	$('#statusTable').stacktable();
 	document.addEventListener('DOMContentLoaded', initialize);
 </script>
 
