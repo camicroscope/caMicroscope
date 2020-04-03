@@ -476,6 +476,7 @@
 		const oname = e.dataset.name;		
 		const store = new Store('../data/');
 		if (oid) {
+			$('#confirmDeleteContent').html(`Are you sure you want to delete the slide ${oname} with id ${oid} ?`);
 			$('#deleteModal').modal('toggle');
 			$("#confirmDelete").unbind( "click" );
 			$("#confirmDelete").click(function(){
