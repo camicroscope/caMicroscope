@@ -1128,7 +1128,7 @@ function anno_callback(data) {
   // Add new lines to notes to prevent overflow
   let str = noteData.notes || '';
   var result_string = '';
-  while (str.length > 0) {
+  while (typeof str==='string' && str.length > 0) {
     result_string += str.substring(0, 36) + '\n';
     str = str.substring(36);
   }
