@@ -321,6 +321,7 @@
 					default_btn.push(btn);
 					return [default_btn];
 				}
+				$('#datatables').stacktable();
 			})
 			.then(function (data) {
 				if (data.length == 0) {
@@ -431,7 +432,6 @@
 			});
 
 		});
-		$('#datatables').stacktable();
 	}
 
 	function AND(p, t, func) {
