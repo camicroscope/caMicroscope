@@ -81,7 +81,7 @@ function initCore() {
 
   $CAMIC.viewer.addHandler('open', function() {
     if ($CAMIC.viewer.pmanager)$CAMIC.viewer.pmanager.on();
-    if (!$CAMIC.viewer.measureInstance) $UI.toolbar._sub_tools[2].style.display = 'none';
+    if (!$CAMIC.viewer.measureInstance) $UI.toolbar._subTools[2].style.display = 'none';
   });
 
   // ui init
@@ -221,12 +221,12 @@ function getPatchsZip(data) {
         delete p.label;
         delete p.widthInClient;
       });
-      const meta_content = [['name', 'location'], [data.name, data.location]];
-      const patch_cols = ['id', 'color', 'note', 'isPoint', 'x', 'y', 'width', 'height', 'location'];
-      const patches_content = [patch_cols];
+      const metaContent = [['name', 'location'], [data.name, data.location]];
+      const patchCols = ['id', 'color', 'note', 'isPoint', 'x', 'y', 'width', 'height', 'location'];
+      const patchesContent = [patchCols];
 
       data.patches.forEach((p, idx)=>{
-        patches_content.push([idx,
+        patchesContent.push([idx,
           p['color'],
           p['note'],
           p['isPoint'],
@@ -237,8 +237,8 @@ function getPatchsZip(data) {
           p['location']]);
       });
 
-      zip.file(`metadata.csv`, meta_content.map((r)=>r.join(',')).join('\n'));
-      zip.file(`patches.csv`, patches_content.map((r)=>r.join(',')).join('\n'));
+      zip.file(`metadata.csv`, metaContent.map((r)=>r.join(',')).join('\n'));
+      zip.file(`patches.csv`, patchesContent.map((r)=>r.join(',')).join('\n'));
 
       zip.generateAsync({type: 'blob'})
           .then(function(content) {

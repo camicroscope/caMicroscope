@@ -13,7 +13,7 @@ function toggleViewerMode(opt) {
 }
 
 // mainfest
-function multSelector_action(size) {
+function multSelectorAction(size) {
   // hidden main viewer's bottom right control and get navigator
   $CAMIC.viewer.controls.bottomright.style.display = 'none';
   // if(event.data.length == 0){
@@ -126,12 +126,12 @@ function openSecondaryViewer() {
   // minor.classList.add('display');
   minor.classList.add('right');
 
-  const nav_size = {
+  const navSize = {
     'height': $CAMIC.viewer.controls.bottomright.querySelector('.navigator').style.height,
     'width': $CAMIC.viewer.controls.bottomright.querySelector('.navigator').style.width,
   };
   setTimeout(function() {
-    multSelector_action(nav_size);
+    multSelectorAction(navSize);
   }, 100);
 }
 
@@ -464,7 +464,7 @@ async function saveEditData() {
 
 
   // delete old one
-  let create_date = now;
+  let createDate = now;
 
   if (ImgloaderMode!='imgbox') {
     // find editor data
@@ -477,7 +477,7 @@ async function saveEditData() {
     }
 
     if (data.length!==0) {
-      create_date = data[0].create_date;
+      createDate = data[0].create_date;
       const del = await $CAMIC.store.deleteHeatmapEdit(user, slide, exec);
       // error
       if (del.hasError&&del.hasError==true) {
@@ -489,7 +489,7 @@ async function saveEditData() {
     // add new one
     const add = await $CAMIC.store.addHeatmapEdit({
       user_id: user,
-      create_date: create_date,
+      create_date: createDate,
       update_date: now,
       provenance: $D.heatMapData.provenance,
       data: editData,

@@ -130,10 +130,10 @@ CollapsibleList.prototype.__createItem = function(options) {
   head.classList.add('item_head');
 
   // the icon for expand/collapse
-  const add_icon = document.createElement('i');
-  add_icon.classList.add('material-icons');
-  add_icon.classList.add('md-24');
-  head.appendChild(add_icon);
+  const addIcon = document.createElement('i');
+  addIcon.classList.add('material-icons');
+  addIcon.classList.add('md-24');
+  head.appendChild(addIcon);
 
   // the icon for customize
   let icon;
@@ -161,10 +161,10 @@ CollapsibleList.prototype.__createItem = function(options) {
   const body = document.createElement('div');
   body.classList.add('item_body');
   if (options.isExpand) {
-    add_icon.textContent = 'remove';
+    addIcon.textContent = 'remove';
     body.classList.add('expand');
   } else {
-    add_icon.textContent = 'add';
+    addIcon.textContent = 'add';
     body.classList.add('collapse');
   }
 
@@ -259,8 +259,8 @@ CollapsibleList.prototype.__refresh = function() {
   this.__v_models = this.setting.list.slice();
   // create a list
   for (let i = 0; i < this.__v_models.length; i++) {
-    const item_options = this.__v_models[i];
-    item_options.elt = this.__createItem(item_options);
+    const itemOptions = this.__v_models[i];
+    itemOptions.elt = this.__createItem(itemOptions);
   }
 };
 

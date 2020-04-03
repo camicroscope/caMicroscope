@@ -48,8 +48,8 @@ HeatmapEditedDataPanel.prototype.__refresh = function() {
     const index = cluster.index;
     const value = +cluster.value;
     const color = cluster.color;
-    const cate_value = value?'Positive':'Negative';
-    const title = createEditedDataTitle(name, cate_value);
+    const cateValue = value?'Positive':'Negative';
+    const title = createEditedDataTitle(name, cateValue);
     this.elt.appendChild(title);
     // add toggle event
     title.querySelector('.icon').addEventListener('click', function(e) {
