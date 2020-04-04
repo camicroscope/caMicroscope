@@ -6,7 +6,7 @@ var csvContent;
 window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
 // id(autoinc), name, location(name+id), classes
 var request; var db;
-
+var namearray = [];
 
 // tensorflowjs creates its own IndexedDB on saving a model.
 (async function(callback) {
@@ -607,6 +607,16 @@ function runPredict(key) {
   }
 }
 
+//Function to check if model name is repeated or not.
+function checkNameDuplicate(name)
+{
+  if(namearray.indexOf(name)!=-1)
+  {
+    return 1;
+  }
+  return 0;
+}
+
 
 // TO-DO: Allow uploading and using tensorflow graph models. Can't save graph models. Need to use right away.
 function uploadModel() {
@@ -677,6 +687,18 @@ function uploadModel() {
           status.classList.remove('blink');
           return;
         }
+
+        
+        try {
+          if (checkNameDuplicate(_name.value))
+          {
+            throw 'error'
+          }
+        } catch (e) {
+          status.innerHTML = 'Model with the same name already exists. Please choose a new name';
+            status.classList.remove('blink');
+        }
+        namearray.push(_name.value);
 
         await model.save(IDB_URL + name);
 
