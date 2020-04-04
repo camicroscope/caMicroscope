@@ -786,11 +786,11 @@ EventHandle.prototype = {
   }
 };
 function getUserType() {
-  let token_info = parseJwt(getCookie("token"));
-  if(token_info && token_info.userType) {
-    return token_info.userType;
+  let tokenInfo = parseJwt(getCookie('token'));
+  if (typeof tokenInfo==='object' && tokenInfo.userType) {
+    return tokenInfo.userType;
   } else {
-    reutrn "Null";
+    return 'Null';
   }
 }
 function getUserId() {
