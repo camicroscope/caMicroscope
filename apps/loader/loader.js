@@ -137,6 +137,7 @@ function handlePost(filename, slidename, filter, reset) {
         data.mpp_y = parseFloat(data['mpp-y']);
         store.post('Slide', data).then(
             (success) => {
+              initialize();
               $('#upload-dialog').modal('hide');
               // show pop-up message to user
               let popups = document.getElementById(
@@ -156,7 +157,6 @@ function handlePost(filename, slidename, filter, reset) {
                 setTimeout(function() {
                   // popups.lastChild.classList.add('slideOut');
                   popups.removeChild(popups.lastChild);
-                  location.reload();
                 }, 2000);
               }
               return changeStatus('POST', success.result, reset);
