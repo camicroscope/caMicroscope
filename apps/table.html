@@ -25,22 +25,33 @@
 	<script src="./loader/loader.js"></script>
 	<script src="./loader/chunked_upload.js"></script>
 	<script>
+		function sanitize(string) {
+			const map = {
+				'&': '&amp;',
+				'<': '&lt;',
+				'>': '&gt;',
+				'"': '&quot;',
+				"'": '&#x27;',
+				"/": '&#x2F;',
+			};
+			const reg = /[&<>"'/]/ig;
+			return string.replace(reg, (match)=>(map[match]));
+		}
 		var existingSlideNames = [];
 		const allowedExtensions = ['svs', 'tif', 'tiff', 'vms', 'vmu', 'ndpi', 'scn', 'mrxs', 'bif', 'svslide'];
 		function validateForm(callback) {
-			let x = document.getElementById("slidenameRow")
-			for (var i = 0; i < x.cells.length - 1; i++) {
-				var slide = document.getElementById("slidename" + i)
-				if (slide.value === "") {
+			let slide = document.getElementById("slidename0");
+			//Check if slide name is empty
+			if (slide.value === "") {
 					changeStatus("UPLOAD", "Please enter slide name");
 					return false;
-				}
-
-				//Checking if silde with given name already exists
-				if(existingSlideNames.includes(slide.value)) {
-					changeStatus("UPLOAD", "Slide with given name already exists");
-					return false;
-				}
+			}
+			//Sanitizing input
+			slide.value = sanitize(slide.value);
+			//Checking if silde with given name already exists
+			if(existingSlideNames.includes(slide.value)) {
+				changeStatus("UPLOAD", "Slide with given name already exists");
+				return false;
 			}
 			//Checking for extension
 			let filename = document.getElementById("filename0").value
@@ -62,6 +73,7 @@
 		crossorigin="anonymous"></script>
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
 		integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+	<link rel="stylesheet" href="../common/stacktable.css">
 	<style>
 		html,
 		body {
@@ -71,6 +83,7 @@
 			flex-direction: column;
 		}
 	</style>
+		<script src='../common/stacktable.js'></script>
 	<link rel="stylesheet" href="./table.css" />
 	<link rel="shortcut icon" type="image/x-icon" href="/apps/landing/favicon.png">
 </head>
@@ -139,7 +152,7 @@
 											<tr>
 												<td align="right"><b>Files</b></td>
 												<td id="fileUploadInput"><input type="file" id="input"
-														onchange="handle_upload(this.files)" multiple></td>
+														onchange="handleUpload(this.files)" multiple></td>
 											</tr>
 											<tr id="fileIdRow">
 												<td align="right"><b>ID</b></td>
@@ -160,7 +173,7 @@
 
 										<div class="text-center" id="controlButtons">
 											<button class="btn btn-primary" type="button" id="finish_btn"
-												value="Finish Upload" onclick="validateForm(finish_upload)">Finish
+												value="Finish Upload" onclick="validateForm(finishUpload)">Finish
 												Upload</button>
 											<button class="btn btn-secondary" type="button" id="check_btn"
 												value="Check" onclick="validateForm(CheckBtn)">Check</button>
@@ -252,6 +265,7 @@
 	}
 
 	function resetTable(){
+		$('#datatables').stacktable();
 		$(".pages").remove();
 		$("#previous-page").after(function(){
 			if(totaltablepages != 0)
@@ -415,7 +429,7 @@
 				else totaltablepages = Math.ceil($(".searched").length/$("#entries").val());
 				resetTable();
 			});
-
+		$('#datatables').stacktable();
 		});
 	}
 
@@ -451,6 +465,7 @@
 		$('#post_btn').hide();
 	}
 
+	//window.addEventListener('resize', ()=>{$('#datatables').stacktable()});
 	document.addEventListener('DOMContentLoaded', initialize);
 </script>
 
