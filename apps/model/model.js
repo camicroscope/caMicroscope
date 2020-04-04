@@ -967,4 +967,4 @@ function downloadCSV(filename) {
   } else {
     self.showResults('Please select a model first');
   }
-}\n
+}
