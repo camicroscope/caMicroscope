@@ -158,7 +158,7 @@ async function initUIcomponents() {
   $UI.chngClassLst = new ModalBox({
     id: 'chngClass',
     hasHeader: true,
-    headerText: "Help",
+    headerText: 'Help',
     hasFooter: false,
   });
 
@@ -688,7 +688,7 @@ function uploadModel() {
 
         try {
           if (checkNameDuplicate(_name.value)) {
-            throw new Error("Model name repeated");
+            throw new Error('Model name repeated');
           }
         } catch (e) {
           status.innerHTML = 'Model with the same name already exists. Please choose a new name';
