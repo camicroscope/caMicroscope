@@ -534,6 +534,17 @@ function checkSize(imgColl, imagingHelper) {
   }
 }
 
+
+//Function to check if model name is repeated or not.
+function checkNameDuplicate(name)
+{
+  if(namearray.indexOf(name)!=-1)
+  {
+    return 1;
+  }
+  return 0;
+}
+
 /**
  * Upload tensorflowjs layers model converted from Keras. Considering channels-last - tensorflow backend models.
  * @return {none}
@@ -601,6 +612,24 @@ function uploadModel() {
           console('Shape:', shape[1], shape[2]);
           throw new Error('The application only supports 1:1 image Masks. Import a valid model.');
         }
+
+
+        // Checking if name is repeated or not
+        try{
+          if(checkNameDuplicate(_name.value))
+          {
+            throw "error"
+          }
+        }
+        catch (e){
+          status.innerHTML = "Model with the same name already exists. Please choose a new name";
+            status.classList.remove('blink');
+            return
+        }
+
+        //storing the name of the model in the array.
+        namearray.push(_name.value);
+
 
         await model.save(IDB_URL + name);
 
