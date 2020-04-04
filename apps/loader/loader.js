@@ -152,6 +152,7 @@ function handlePost(filename, slidename, filter, reset) {
                     popupBox,
                     popups.childNodes[0],
                 );
+                document.getElementById('upload-form').reset();
                 setTimeout(function() {
                   // popups.lastChild.classList.add('slideOut');
                   popups.removeChild(popups.lastChild);
