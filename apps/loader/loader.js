@@ -17,12 +17,6 @@ function changeStatus(step, text, reset=true) {
         col.push(key);
       }
     }
-    if (text['location']) {
-      // indicating successful check
-      $('#post_btn').show();
-    } else {
-      $('#post_btn').hide();
-    }
 
     var table;
     var responsiveContainer;
@@ -68,6 +62,18 @@ function changeStatus(step, text, reset=true) {
           const img = new Image();
           img.src = x.slide;
           tabCell.appendChild(img);
+          if (text['location']) {
+            // indicating successful check
+            checkSuccess = true;
+            if (finishUploadSuccess === true) {
+              $('#post_btn').show();
+            } else {
+              $('#post_btn').hide();
+            }
+          } else {
+            checkSuccess = false;
+            $('#post_btn').hide();
+          }
         });
       }
     }
@@ -79,6 +85,7 @@ function changeStatus(step, text, reset=true) {
     $('#statusTable').stacktable();
     document.getElementById('load_status').innerHTML=step;
   } else {
+    checkSuccess=false;
     $('#post_btn').hide();
     text = JSON.stringify(text);
     text = step + ' | ' + text;
@@ -153,7 +160,7 @@ function handlePost(filename, slidename, filter, reset) {
                     popupBox,
                     popups.childNodes[0],
                 );
-                document.getElementById('upload-form').reset();
+                resetUploadForm();
                 setTimeout(function() {
                   // popups.lastChild.classList.add('slideOut');
                   popups.removeChild(popups.lastChild);

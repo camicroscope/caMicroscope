@@ -41,6 +41,11 @@
 		const allowedExtensions = ['svs', 'tif', 'tiff', 'vms', 'vmu', 'ndpi', 'scn', 'mrxs', 'bif', 'svslide'];
 		function validateForm(callback) {
 			let slide = document.getElementById("slidename0");
+			// Check if input element is rendered or not
+			if(slide===null) {
+				changeStatus("UPLOAD", "Please chose a file first");
+				return false;
+			}
 			//Check if slide name is empty
 			if (slide.value === "") {
 					changeStatus("UPLOAD", "Please enter slide name");
@@ -126,9 +131,9 @@
 		<button type="button" class="btn btn-success float-right mb-2"
 			onclick="(()=>{location.reload();return false;})()"> <i class="fas fa-sync-alt"></i> Reload</button>
 		<button type="button" class="btn btn-primary float-right mb-2 mr-2" data-toggle="modal"
-			data-target="#upload-dialog" onclick="hidePostButton();"> <i class="fas fa-upload"></i> Upload</button>
+			data-target="#upload-dialog" onclick="hidePostButton(); hideCheckButton();"" <i class="fas fa-upload"></i> Upload</button>
 			<div class="modal fade" id="upload-dialog" tabindex="-1" role="dialog"
-			aria-labelledby="title-of-dialog" aria-hidden="true">
+			aria-labelledby="title-of-dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
 			<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
 				<div class="modal-content">
 					<div class="modal-header">
@@ -180,7 +185,7 @@
 												value="Finish Upload" onclick="validateForm(finishUpload)">Finish
 												Upload</button>
 											<button class="btn btn-secondary" type="button" id="check_btn"
-												value="Check" onclick="validateForm(CheckBtn)">Check</button>
+												value="Check" onclick="validateForm(CheckBtn);">Check</button>
 											<button class="btn btn-success" type="button" id="post_btn" value="Post"
 												onclick="validateForm(PostBtn)">Post</button>
 										</div>
@@ -286,6 +291,16 @@
 		});
 		selectedpage = 0;
 		showTablePage();
+	}
+
+	function resetUploadForm()
+	{
+		document.getElementById('upload-form').reset();
+		let filename = document.getElementById("filename0");
+		if(filename!==null)
+		{
+			filename.value='';
+		}
 	}
 
 	function initialize() {
@@ -471,6 +486,13 @@
 	{
 		$('#post_btn').hide();
 	}
+
+	function hideCheckButton()
+	{
+		$('#check_btn').hide();
+	}
+
+	$('[data-dismiss=modal]').on('click', resetUploadForm);
 
 	//window.addEventListener('resize', ()=>{$('#datatables').stacktable()});
 	document.addEventListener('DOMContentLoaded', initialize);

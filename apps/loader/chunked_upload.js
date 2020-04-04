@@ -3,7 +3,8 @@
 var startUrl = '../loader/upload/start';
 var continueUrl = '../loader/upload/continue/';
 var finishUrl = '../loader/upload/finish/';
-
+var finishUploadSuccess = false;
+var checkSuccess = false;
 var chunkSize = 5*1024*1024;
 
 // read a chunk of the file
@@ -123,9 +124,20 @@ function finishUpload() {
     console.log(i);
     regReq.then((x)=>x.json()).then((a)=>{
       changeStatus('UPLOAD | Finished', a, reset); console.log(a); reset = false;
+      finishUploadSuccess=true;
+      if (checkSuccess===true) {
+        $('#check_btn').show();
+        $('#post_btn').show();
+      } else {
+        $('#check_btn').show();
+        $('#post_btn').hide();
+      }
     });
     regReq.then((e)=> {
       if (e['ok']===false) {
+        finishUploadSuccess = false;
+        $('#check_btn').hide();
+        $('#post_btn').hide();
         changeStatus('UPLOAD | ERROR;', e);
         reset = true;
         console.log(e);
