@@ -624,7 +624,7 @@ function uploadModel() {
         catch (e){
           status.innerHTML = "Model with the same name already exists. Please choose a new name";
             status.classList.remove('blink');
-            return
+            return;
         }
 
         //storing the name of the model in the array.
