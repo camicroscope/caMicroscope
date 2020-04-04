@@ -534,6 +534,17 @@ function checkSize(imgColl, imagingHelper) {
   }
 }
 
+
+//Function to check if model name is repeated or not.
+function checkNameDuplicate(name)
+{
+  if(namearray.indexOf(name)!=-1)
+  {
+    return 1;
+  }
+  return 0;
+}
+
 /**
  * Upload tensorflowjs layers model converted from Keras. Considering channels-last - tensorflow backend models.
  * @return {none}
@@ -602,7 +613,6 @@ function uploadModel() {
           throw new Error('The application only supports 1:1 image Masks. Import a valid model.');
         }
 
-<<<<<<< HEAD
 
         // Checking if name is repeated or not
         try{
@@ -621,8 +631,6 @@ function uploadModel() {
         namearray.push(_name.value);
 
 
-=======
->>>>>>> parent of 4f2d83cf... Update segment.js
         await model.save(IDB_URL + name);
 
         // Update the model store db entry to have the classes array
