@@ -785,7 +785,14 @@ EventHandle.prototype = {
     }
   }
 };
-
+function getUserType() {
+  let token_info = parseJwt(getCookie("token"));
+  if(token_info && token_info.userType) {
+    return token_info.userType;
+  } else {
+    reutrn "Null";
+  }
+}
 function getUserId() {
   let token_info = parseJwt(getCookie("token"));
   let uid = "";
