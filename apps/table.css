@@ -17,24 +17,3 @@
 .page-item {
 	cursor: pointer;
 }
-
-nav li{
-	transition: background 0.5s; 
-	border-radius: 3px;
-}
-nav li:not(:first-child){
-	margin-left: 0.3em !important;
-}
-nav li:not(.active):hover{
-	background: white;
-}
-nav li:not(.active):hover a{
-	color: black !important;
-}
-.active{
-	background: white;
-}
-.active a{
-	color: black !important;
-}
-

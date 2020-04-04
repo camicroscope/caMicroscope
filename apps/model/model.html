@@ -61,9 +61,7 @@
      __auth_check(2)
    </script>
   <!-- tensorflow.js -->
-  <script type='text/javascript' src='../../common/tf.min.js'></script>
-  <!-- tfjs visulisation -->
-  <script type='text/javascript' src='../../common/tfjs-vis.min.js'></script>
+  <script src="./tf.min.js"></script>
    <!--  common js START -->
    <!-- util.js -->
   <script type='text/javascript' src='../../common/util.js'></script>
@@ -146,6 +144,7 @@
   <script src='../viewer/init.js'></script>
   -->
 
+  <script src='model.js'></script>
   <style type="text/css">
     input {
     /* required to properly style form
@@ -427,10 +426,6 @@
       width: 30%;
     }
 
-    body{
-      color: black;
-    }
-
   </style>
 
 </head>
@@ -443,9 +438,6 @@
 <div id="help"></div>
 <div id="chngClass"></div> //modal box to change class list
 </body>
-
-<script src='model.js'></script>
-
 <script type="text/javascript">
     if(detectIE()){
       createWarningText('You are using an <strong>IE/Edge</strong> browser that may be lead to erratic behavior on caMicroscope. Please switch to <a href="https://www.google.com/chrome/">Chrome</a>, <a href="https://www.mozilla.org/en-US/firefox/new/">Firefox</a> or <a href="https://www.apple.com/safari/">Safari</a> browser to improve your experience.');

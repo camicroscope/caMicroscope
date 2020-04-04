@@ -5,15 +5,15 @@ const params = getUrlVars();
 // determine nanoborb or hosted, with or without pathdb
 let file;
 if (params.mode && params.mode==="pathdb"){
-    ImgloaderMode = 'iip';
-    PathDbMods()
+	ImgloaderMode = 'iip';
+	PathDbMods()
 }
 else if(params.slideId&&params.id&&params.slideId==="local"&&params.id.includes('http://localhost:8888')){
-    ImgloaderMode = 'imgbox';
-    NanoBorbMods()
-    init_LocalStore()
+	ImgloaderMode = 'imgbox';
+	NanoBorbMods()
+	init_LocalStore()
 }else{
-    ImgloaderMode = 'iip';
-    // no mods to perform as of now
+	ImgloaderMode = 'iip';
+	// no mods to perform as of now
 }
 IsPackageLoading=true;

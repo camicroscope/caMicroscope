@@ -133,5 +133,6 @@ function PathDbMods() {
     return `${location.origin}${location.pathname}?slideId=${$D.params.slideId}&states=${$D.params.states}&mode=${$D.params.mode}`
   };
 
-  console.warn("This Setup Is Intended For Pathdb")
 }
+
+console.warn("This Setup Is Intended For Pathdb")

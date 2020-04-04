@@ -2,6 +2,10 @@
 
     .
     ├── iconfont                                    # Google Material icons
+    ├── package                                     # Packaged Extensions for caMicroscope
+    ├── dist                                        # package/packages.js is built to dist/packages.js in the container build step 
+    │                                               # (or with parcel build package/packages.js)
+    │
     ├── css                                         # the common style sheets for system
     │
     ├── common                                      # all common/utility *.js that will be used by the entire system go there

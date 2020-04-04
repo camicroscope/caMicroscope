@@ -8,31 +8,23 @@
     <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no'>
     <title>CaMicroscope - User Signup</title>
 
-    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700" rel="stylesheet">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
-    <!-- Bootstrap core CSS -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet">
-
     <link rel='stylesheet' type='text/css' media='all' href='../../css/normalize.css'/>
     <link rel='stylesheet' type='text/css' media='all' href='signup.css'/>
   </head>
   <script>
-    var userSignupUrl = "../../data/User/post"
+    var userSignupUrl = "../../data/Auth/post"
     function addUser(){
-      var email = document.getElementById("mail").value
-      var filters = document.getElementById("filters").value
-      // var attr = document.querySelector('input[name="attr"]:checked').value
-      var attrEle = document.getElementById("attr");
-      var attr = attrEle.options[attrEle.selectedIndex].value;
-      var userType = "Null"
-      if (attr == "3"){
-        userType = "Admin"
+      var email = document.getElementById("name").value
+      var collections = document.getElementById("collections").value
+      var attr = document.querySelector('input[name="attr"]:checked').value
+      var attr_doc = []
+      if (attr == "admin"){
+        attr_doc = ["write", "admin"]
       }
-      if (attr == "2"){
-        userType = "Editor"
+      if (attr == "editor"){
+        attr_doc = ["write"]
       }
-      var doc = {email: email, userType: userType, userFilters:filters}
+      var doc = {name: email, attrs: attr_doc, accessCollection:collections}
       fetch(userSignupUrl, {
           method: 'POST',
           mode: 'cors', // no-cors, cors, *same-origin
@@ -51,7 +43,7 @@
         window.alert("success")
         console.log(x)
       }).catch(e=>{
-        // window.alert("error!")
+        window.alert("error!")
         console.error(e)
     })
     }
@@ -59,83 +51,66 @@
 
   <body>
 
-    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark" style="position: sticky;">
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarCollapse">
-        <ul class="navbar-nav mr-auto">
-          <li class="nav-item link">
-            <a class="nav-link" href="../landing/landing.html"> <i class="fas fa-home"></i> Home</a>
-          </li>
-          <li class="nav-item link">
-            <a class="nav-link" href="../table.html"> <i class="fas fa-list-ul"></i>  Slides</a>
-          </li>
-        </ul>
-        <ul class="navbar-nav">
-          <li class="nav-item active link" style="font-family: sans-serif;">
-            <a class="nav-link" href="./signup.html"> <i class="fas fa-user-plus"></i> Signup</a>
-          </li>
-          <li class="nav-item link">
-            <a class="nav-link" target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLScL91LxrpAZjU88GBZP9gmcdgdf8__uNUwhws2lzU6Lr4qNwA/viewform"> <i class="fas fa-comment"></i> Feedback</a>
-          </li>
-        </ul>
+    <div id="signupForm" class="login-panel">
+      <H1>User Signup</H1>
+
+      <div class="txtb">
+        <input type="text" onblur="validateEmail(this);" placeholder="Email" >
       </div>
-    </nav>
-
-
-    <div class="signup-form">
-      <div
-        style="text-align:center; background: #17a2b8; font-size: xx-large; color: white; padding: 4px; border-radius: 5px 5px 0px 0px;">
-        caMicroscope
+      <div class="txtb">
+        <input id="collections" type="text" placeholder="['list','of','collections']">
       </div>
-      <!-- <hr style="width: 24.25em;  height: 0.01em; background-color: black; margin-top: 0em; margin-bottom: 0;"> -->
 
-      <form>
-        <h2 style="margin-top: -.5em;">User Signup</h2>
-        <hr
-          style="width: 24.25em; margin-left: -1.9em; height: 0.01em; background-color: rgb(172, 172, 172); margin-bottom: 2em;">
-        <div class="form-group">
-        </div>
-        <div class="form-group">
-          <div class="input-group">
-            <span class="input-group-addon"><i class="fa fa-envelope" style="margin-top: 0.5em;"></i></span>
-            <input id="mail" type="email" class="form-control" name="email" placeholder="Email" required="required">
-          </div>
-        </div>
-        <br>
-        <div class="form-group">
-          <div class="input-group">
-            <span class="input-group-addon"><i class="fa fa-th-list" style="margin-top: 0.5em;"></i></span>
-            <input type="text" id="filters" class="form-control" placeholder="['list','of','filters']"
-              required="required">
-          </div>
-        </div> <br>
+      
+      <!-- User Type selection -->
+      <input type="radio" id="attrchoice1"
+        name="attr" value="viewer" checked>
+      <label for="attrchoice1">Viewer</label><br>
 
-        <!-- User Type selection -->
-        <select id="attr" class="browser-default custom-select">
-          <option selected value="1">Viewer</option>
-          <option value="2">Editor</option>
-          <option value="3">Admin</option>
-        </select>
+      <input type="radio" id="attrchoice2"
+        name="attr" value="editor">
+      <label for="attrchoice2">Editor</label><br>
 
-        <br> <br>
-        <div class="form-group">
-          <button type="submit" id="sub" class="btn btn-primary btn-block btn-lg sub-btn" onclick="addUser()">Sign
-            Up</button>
-        </div>
-        <p class="small text-center">This form is only useful to Admin users. If you reach this page, it's likely that you tried to log into this instance but lack
-          access. Email the administrator if you want to be added.</p>
-      </form>
-      <div class="text-center">Already have an account? </div>
+      <input type="radio" id="attrchoice3"
+        name="attr" value="admin">
+      <label for="attrchoice3">Admin (and Editor)</label>
+      
+        <!-- submit btn -->
+      <input id="sub" class="sub-btn" onclick="addUser()" type="submit">
+
+      <div class="bottom-text">
+        Already have an account?
+      </div>
+
+      <div class="login-tips">If you reach this page, it's likely that you tried to log into this instance but lack access.
+      Email the administrator if you want to be added. If you are an admin, you should be able to use this form.
+      </div>
     </div>
+    <script type="text/javascript">
+      const input_name = document.querySelector('#name');
+      input_name.addEventListener('focus',()=>{
+        input_name.classList.add('focus');
+      });
+      const input_collection= document.querySelector('#collections');
+      input_collection.addEventListener('focus',()=>{
+        input_collection.classList.add('focus');
+      });
+      input_name.addEventListener('blur',()=>{
+        if(input_name.value=="") input_name.classList.remove('focus');
+      });
 
-    <!-- JQuery -->
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <!-- Bootstrap tooltips -->
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js"></script>
-    <!-- Bootstrap core JavaScript -->
-    <script type="text/javascript"
-      src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/js/bootstrap.min.js"></script>
+      function validateEmail(emailField){
+        var reg = /\S+@\S+\.\S+/;
+
+        if (reg.test(emailField.value) == false) 
+        {
+            alert('Invalid Email Address');
+            return false;
+        }
+
+        return true;
+
+      }
+    </script>
   </body>
 </html>

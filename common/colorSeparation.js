@@ -116,7 +116,7 @@ function colorDeconvolution(image, doIshow) {
   //console.log("DeCon Values:",MODx,MODy,MODz,cosx,cosy,cosz,A,V,C,q);
 
   let pixels = image.data;
-    let newpixels = [];
+	let newpixels = [];
   newpixels[0] = [];
   newpixels[1] = [];
   newpixels[2] = [];
@@ -178,7 +178,7 @@ function canvas2RGBArray(image,cols,rows) {
     let arr=[];
     for(j=0;j<size;j++) {
       arr[j]=image.data[j+x]
-      }
+	  }
     m[i] = arr;
     x+=size;
   }

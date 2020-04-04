@@ -128,32 +128,32 @@
         //     return
         // }
 
-        const img_point = this.viewer.viewport.windowToImageCoordinates(new $.Point(e.originalEvent.clientX,e.originalEvent.clientY));
-        const view_point = this.viewer.viewport.windowToViewportCoordinates(new $.Point(e.originalEvent.clientX,e.originalEvent.clientY));
+	    const img_point = this.viewer.viewport.windowToImageCoordinates(new $.Point(e.originalEvent.clientX,e.originalEvent.clientY));
+	    const view_point = this.viewer.viewport.windowToViewportCoordinates(new $.Point(e.originalEvent.clientX,e.originalEvent.clientY));
 
-        if(0 > img_point.x || this.imgWidth < img_point.x || 0 > img_point.y || this.imgHeight < img_point.y || !this.isCreatePatch) return;
-        
+	    if(0 > img_point.x || this.imgWidth < img_point.x || 0 > img_point.y || this.imgHeight < img_point.y || !this.isCreatePatch) return;
+	    
 
-        this.viewer.innerTracker.keyHandler = this.keyHandler;
-        
-        
+	    this.viewer.innerTracker.keyHandler = this.keyHandler;
+	    
+	    
 
-        // create new one
-        let options = {
-            data:'',
-            size:new $.Point(this.width, this.height),
-            center:view_point,
-            viewer:this.viewer,
-            color:'#7cfc00'
-        };
+	    // create new one
+	    let options = {
+	    	data:'',
+			size:new $.Point(this.width, this.height),
+			center:view_point,
+			viewer:this.viewer,
+			color:'#7cfc00'
+		};
 
-        if(this.activePatch){
-            options = this.activePatch.templateOptions(options);
-            options.center = view_point;
+	    if(this.activePatch){
+	    	options = this.activePatch.templateOptions(options);
+			options.center = view_point;
             if(!this.isPoint && this.activePatch.isPoint){
                 options.size = new $.Point(this.width, this.height);
             }
-        }else if(this.patches[this.patches.length-1]){
+	    }else if(this.patches[this.patches.length-1]){
             options = this.patches[this.patches.length-1].templateOptions(options);
             options.center = view_point;
         }
@@ -161,7 +161,7 @@
         options.isPoint = this.isPoint;
         options.manager = this;
         console.log('options:',options);
-        this.patches.push(new $.Patch(options));
+	    this.patches.push(new $.Patch(options));
     }
 
     function getRect(center, size, viewer, isPoint=false){
@@ -331,11 +331,11 @@
         // adjust the size of patch
         if(!options.isPoint){
             const resizeIcon = this.element.querySelector('.corner');
-            this.patchTrackers['resizing'] = new $.MouseTracker({
-                element:     resizeIcon,
+    		this.patchTrackers['resizing'] = new $.MouseTracker({
+    			element:     resizeIcon,
                 pressHandler: press.bind(this),
-                dragHandler: resizing.bind(this)
-            });
+    			dragHandler: resizing.bind(this)
+    		});
         }
 
         this.active();
@@ -343,9 +343,9 @@
     }
 
     $.Patch.prototype.setSizeText = function(e){
-        const info = this.element.querySelector('.info_block');
-        const rect = this.viewer.viewport.viewportToImageRectangle(this.overlay.getBounds(this.viewer.viewport));
-        this.element.querySelector('.info_block').textContent = `${Math.round(rect.width)}x${Math.round(rect.height)}px`; 
+    	const info = this.element.querySelector('.info_block');
+    	const rect = this.viewer.viewport.viewportToImageRectangle(this.overlay.getBounds(this.viewer.viewport));
+    	this.element.querySelector('.info_block').textContent = `${Math.round(rect.width)}x${Math.round(rect.height)}px`; 
     }
 
     function createSelector(options){
@@ -363,52 +363,52 @@
 
 
     function moving(e){
-        const delta = this.viewer.viewport.deltaPointsFromPixels(e.delta, true);
-        const top_left = this.viewer.viewport.viewportToImageCoordinates(new $.Point(
-                this.overlay.location.x + delta.x, 
-                this.overlay.location.y + delta.y
-            ));
-        const bottom_right = this.viewer.viewport.viewportToImageCoordinates(new $.Point(
-                this.overlay.location.x + delta.x + this.overlay.width, 
-                this.overlay.location.y + delta.y + this.overlay.height
-            ));
-        const image1 = this.viewer.world.getItemAt(0);
-        const imgWidth = image1.source.dimensions.x;
-        const imgHeight = image1.source.dimensions.y;
+    	const delta = this.viewer.viewport.deltaPointsFromPixels(e.delta, true);
+		const top_left = this.viewer.viewport.viewportToImageCoordinates(new $.Point(
+				this.overlay.location.x + delta.x, 
+				this.overlay.location.y + delta.y
+			));
+		const bottom_right = this.viewer.viewport.viewportToImageCoordinates(new $.Point(
+				this.overlay.location.x + delta.x + this.overlay.width, 
+				this.overlay.location.y + delta.y + this.overlay.height
+			));
+		const image1 = this.viewer.world.getItemAt(0);
+		const imgWidth = image1.source.dimensions.x;
+		const imgHeight = image1.source.dimensions.y;
 
-        if(top_left.x < 0 || top_left.y < 0 || bottom_right.x > imgWidth|| bottom_right.y > imgHeight) return;
+		if(top_left.x < 0 || top_left.y < 0 || bottom_right.x > imgWidth|| bottom_right.y > imgHeight) return;
 
-        this.overlay.location.x += delta.x; 
-        this.overlay.location.y += delta.y;
-        this.overlay.drawHTML(this.viewer.overlaysContainer,this.viewer.viewport);
-        this.viewer.pmanager.isCreatePatch = false;
+		this.overlay.location.x += delta.x; 
+		this.overlay.location.y += delta.y;
+	    this.overlay.drawHTML(this.viewer.overlaysContainer,this.viewer.viewport);
+    	this.viewer.pmanager.isCreatePatch = false;
     }
-    
-    function resizing(e){
-        const img_point = this.viewer.viewport.windowToImageCoordinates(new $.Point(e.originalEvent.clientX,e.originalEvent.clientY));
-        const view_point = this.viewer.viewport.windowToViewportCoordinates(new $.Point(e.originalEvent.clientX,e.originalEvent.clientY));
-        const image1 = this.viewer.world.getItemAt(0);
-        const imgWidth = image1.source.dimensions.x;
-        const imgHeight = image1.source.dimensions.y;
-        
-        if(0 > img_point.x || imgWidth < img_point.x || 0 > img_point.y || imgHeight < img_point.y) return;
-        const delta = this.viewer.viewport.deltaPointsFromPixels(e.delta, true);
-        
-        const width = this.overlay.width + delta.x;
-        const height = this.overlay.height + delta.y;
+ 	
+ 	function resizing(e){
+	    const img_point = this.viewer.viewport.windowToImageCoordinates(new $.Point(e.originalEvent.clientX,e.originalEvent.clientY));
+	    const view_point = this.viewer.viewport.windowToViewportCoordinates(new $.Point(e.originalEvent.clientX,e.originalEvent.clientY));
+		const image1 = this.viewer.world.getItemAt(0);
+		const imgWidth = image1.source.dimensions.x;
+		const imgHeight = image1.source.dimensions.y;
+	    
+	    if(0 > img_point.x || imgWidth < img_point.x || 0 > img_point.y || imgHeight < img_point.y) return;
+	    const delta = this.viewer.viewport.deltaPointsFromPixels(e.delta, true);
+	    
+	    const width = this.overlay.width + delta.x;
+	    const height = this.overlay.height + delta.y;
 
-        const sizeInScreen = this.viewer.viewport.deltaPixelsFromPoints(new $.Point(width,height)); // 24 X 24 pixel
-        
-        if(sizeInScreen.x > 42){
-            this.overlay.width = width;
-        }
-        if(sizeInScreen.y > 42){
-            this.overlay.height = height;
-        }
-        this.overlay.drawHTML(this.viewer.overlaysContainer,this.viewer.viewport);
+	    const sizeInScreen = this.viewer.viewport.deltaPixelsFromPoints(new $.Point(width,height)); // 24 X 24 pixel
+	    
+	    if(sizeInScreen.x > 42){
+	    	this.overlay.width = width;
+	    }
+	    if(sizeInScreen.y > 42){
+	    	this.overlay.height = height;
+	    }
+	    this.overlay.drawHTML(this.viewer.overlaysContainer,this.viewer.viewport);
         this.setSizeText();
-        this.viewer.pmanager.isCreatePatch = false;
-        
+	    this.viewer.pmanager.isCreatePatch = false;
+ 		
     }  
     /* resize end */
     function press(e){
@@ -440,10 +440,10 @@
     }
 
     $.Patch.prototype.deactive = function(){
-        this.closeColorPicker();
-        this.closeNotePanel();
-        this.element.classList.remove('active');
-        this.viewer.pmanager.activePatch = null;
+    	this.closeColorPicker();
+    	this.closeNotePanel();
+    	this.element.classList.remove('active');
+    	this.viewer.pmanager.activePatch = null;
     }
     
     $.Patch.prototype.openNotePanel = function(e){
@@ -496,7 +496,7 @@
         }else{
             options.data = this.element.querySelector('.note_panel textarea').value;
         }
-        return options;
+    	return options;
     }
 
     $.Patch.prototype.toJSON = function(coordinates = 'normalize'){ // l/image

@@ -4,7 +4,7 @@
 // constructor
 // load on each component
 
-class CaMic {
+class CaMic{
   /**
   *
   * create a camic core instance
@@ -17,84 +17,84 @@ class CaMic {
   * @property options - the options extend from OpenSeadragon
   *
   */
-  constructor(divId, slideQuery, options) {
+  constructor(divId, slideQuery, options){
     Loading.open(document.body, 'CaMicroscope Is Initializing...');
     // initalize viewer
     this.setting = {
       id: divId,
-      prefixUrl: 'images/',
-      constrainDuringPan: true,
+      prefixUrl: "images/",
+      constrainDuringPan:true,
       // -- navigator setting
-      showNavigationControl: false,
+      showNavigationControl:false,
       showNavigator: true,
       navigatorAutoFade: false,
-      navigatorPosition: 'BOTTOM_RIGHT',
+      navigatorPosition: "BOTTOM_RIGHT",
       zoomPerClick: 1,
       animationTime: 0.01,
-      minZoomImageRatio: 1,
+      minZoomImageRatio:1,
       maxZoomPixelRatio: 1,
       visibilityRatio: 0,
-      springStiffness: 0.0001,
+      springStiffness:0.0001,
 
       /* extension */
-      hasZoomControl: true,
-      hasDrawLayer: true,
-      hasLayerManager: true,
-      hasScalebar: true,
-      hasMeasurementTool: true,
-      hasPatchManager: true,
-      hasHeatmap: false,
-    };
+      hasZoomControl:true,
+      hasDrawLayer:true,
+      hasLayerManager:true,
+      hasScalebar:true,
+      hasMeasurementTool:true,
+      hasPatchManager:true,
+      hasHeatmap:false
+    }
     extend(this.setting, options);
 
     this.viewer = new OpenSeadragon.Viewer(this.setting);
 
     this.slideQuery = slideQuery;
-    this.slideId = slideQuery.id;
+    this.slideId = slideQuery.id
     // initalize store
-    this.store = new Store('../../data/', $VALIDATION);
+    this.store = new Store("../../data/", $VALIDATION);
     // load image
     // set overlay thing
-    this.viewer.addOnceHandler('open', this.init.bind(this));
+    this.viewer.addOnceHandler('open',this.init.bind(this));
   }
 
   /**
    * initialize the CAMIC and the dependenced components
    */
-  init() {
+  init(){
     this.viewer.controls.bottomright.style.zIndex = 600;
 
-    this.viewer.addOnceHandler('tile-loaded', function() {
+    this.viewer.addOnceHandler('tile-loaded', function(){
       // the first tile loaded
       // set zoom and pan
-      if (this.setting.states) {
+      if(this.setting.states){
         const states = this.setting.states;
         let x = states.x;
         let y = states.y;
 
-        if ((!states.coordinate)&& states.coordinate!=='image' ) {
-          const size = this.viewer.world.getItemAt(0).source.dimensions;
-          x = Math.round(x*size.x);
-          y = Math.round(y*size.y);
+        if((!states.coordinate)&& states.coordinate!=='image' ){
+         const size = this.viewer.world.getItemAt(0).source.dimensions;
+         x = Math.round(x*size.x);
+         y = Math.round(y*size.y);
         }
 
-        let pt = new OpenSeadragon.Point(x, y); // x, y should in the image coordinate system
+        var pt = new OpenSeadragon.Point(x, y); // x, y should in the image coordinate system
         pt = this.viewer.viewport.imageToViewportCoordinates(pt);
-
+        
         // is Image Zoom
-        if (states.isIZ) {
+        if(states.isIZ){
           this.viewer.viewport.zoomTo(
-              this.viewer.viewport.imageToViewportZoom(states.z)
-              , pt, true);
-        } else {
+            this.viewer.viewport.imageToViewportZoom(states.z)
+            ,pt,true);
+        }else{
           // view port zoom
           this.viewer.viewport.zoomTo(states.z, pt);
         }
-
+        
         this.viewer.viewport.panTo(pt, true);
 
-        // set a position mark
-        if (states.hasMark) {
+        //set a position mark
+        if(states.hasMark){
           // create a mark
           const div = document.createElement('div');
           const mark = document.createElement('div');
@@ -104,10 +104,10 @@ class CaMic {
           mark.style.height = '200px';
           mark.style.border = '3px yellow solid';
           mark.style.alignItems = 'center';
-          // mark.style.borderRadius='50%';
+          //mark.style.borderRadius='50%';
           mark.style.textAlign = 'center';
           const center = document.createElement('div');
-          // center.style.borderRadius = '50%';
+          //center.style.borderRadius = '50%';
           center.style.margin = '0 auto';
           center.style.width = '4px';
           center.style.height = '4px';
@@ -115,11 +115,12 @@ class CaMic {
           mark.appendChild(center);
           div.appendChild(mark);
           this.viewer.addOverlay({
-            element: div,
-            location: pt,
-            checkResize: false,
+          element: div,
+          location: pt,
+          checkResize: false
           });
         }
+
       }
     }.bind(this));
 
@@ -128,18 +129,19 @@ class CaMic {
     this.createOverlayers();
 
 
+
+
     // change navigator style
-    if (this.setting.showNavigator) {
+    if(this.setting.showNavigator){
       const nav = this.viewer.element.querySelector('.navigator');
       nav.style.backgroundColor = '#365f9c';
       nav.style.opacity = 1;
     }
-    // if(this.viewer.viewport.getMaxZoom() < 40) this.viewer.viewport.maxZoomLevel = 40
+    //if(this.viewer.viewport.getMaxZoom() < 40) this.viewer.viewport.maxZoomLevel = 40
     this.createZoomControl();
 
-    if (this.mpp_x&&this.mpp_y&&this.mpp_x!=1e9&&this.mpp_y!=1e9) {
-      this.createMeasurementTool(this.mpp_x, this.mpp_y);
-    }
+    if(this.mpp_x&&this.mpp_y&&this.mpp_x!=1e9&&this.mpp_y!=1e9)
+      this.createMeasurementTool(this.mpp_x,this.mpp_y);
     this.createPatchManager();
     this.createHeatmap();
     Loading.close();
@@ -148,108 +150,105 @@ class CaMic {
   /**
   * Loads the staged image
   */
-  loadImg(func) {
+  loadImg(func){
     Loading.open(document.body, 'CaMicroscope Is Loading Images ...');
     // loads current image
     // if id is set, use id
-    let slidePromise;
-    if (this.slideQuery.hasOwnProperty('id') && this.slideQuery.id) {
-      slidePromise = this.store.getSlide(this.slideQuery.id);
-    } else {
-      slidePromise = this.store.findSlide(this.slideQuery.name,
-          this.slideQuery.study, this.slideQuery.specimen,
-          this.slideQuery.location);
+    var slidePromise;
+    if(this.slideQuery.hasOwnProperty('id') && this.slideQuery.id){
+      slidePromise = this.store.getSlide(this.slideQuery.id)
+    }
+    else {
+      slidePromise = this.store.findSlide(this.slideQuery.name, this.slideQuery.study, this.slideQuery.specimen, this.slideQuery.location)
     }
     slidePromise
-        .then((x)=>{
-          if (!x || !OpenSeadragon.isArray(x) || !x.length || !x[0].location) {
-            redirect($D.pages.table, `Can't Find The Slide Information`);
-            return;
-          }
-          const data = x[0];
-          // check the slide on service side
-          OpenSeadragon.makeAjaxRequest( {
-            url: '../../img/IIP/raw/?DeepZoom='+ data['location'] + '.dzi',
-            success: function( xhr ) {
-              this.openSlide(data, func);
-            }.bind(this),
-            error: function( xhr, exc ) {
-              console.log(xhr, exc);
-              Loading.text.textContent = 'Something Wrong With This Slide... X_X';
-              if (func && typeof func === 'function') {
-                func.call(null,
-                    {hasError: true,
-                      isServiceError: true,
-                      message: 'Something Wrong With This Slide... X_X'});
-              }
-            },
-          });
-        })
-        .catch((e)=>{
-          console.error(e);
-          // if()
-          Loading.close();
-          if (func && typeof func === 'function') func.call(null, {hasError: true, message: e});
-        });
+      .then((x)=>{
+        if(!x || !OpenSeadragon.isArray(x) || !x.length || !x[0].location){
+          redirect($D.pages.table,`Can't Find The Slide Information`);
+          return;
+        }
+        let data = x[0];
+        // check the slide on service side
+        OpenSeadragon.makeAjaxRequest( {
+                url: "../../img/IIP/raw/?DeepZoom="+ data["location"] + ".dzi",
+                success: function( xhr ) {
+                  this.openSlide(data,func);
+                }.bind(this),
+                error: function ( xhr, exc ) {
+                  console.log(xhr, exc);
+                  Loading.text.textContent = 'Something Wrong With This Slide... X_X';
+                  if(func && typeof func === 'function') func.call(null,{hasError:true,isServiceError:true,message:'Something Wrong With This Slide... X_X'});
+                }.bind(this),
+              });
+
+      })
+      .catch(e=>{
+
+
+        console.error(e);
+        //if()
+        Loading.close();
+        if(func && typeof func === 'function') func.call(null,{hasError:true,message:e});
+      })
   }
 
-  openSlide(data, func) {
-    this.slideId = data['_id']['$oid'];
+  openSlide(data,func){
+    this.slideId = data["_id"]["$oid"]
 
-    this.slideName = data['name'];
+    this.slideName = data['name']
 
-    this.viewer.open('../../img/IIP/raw/?DeepZoom='+ data['location'] + '.dzi');
+    this.viewer.open("../../img/IIP/raw/?DeepZoom="+ data["location"] + ".dzi");
     // set mpp
-    this.mpp_x = +data['mpp-x'];
-    this.mpp_y = +data['mpp-y'];
+    this.mpp_x = +data['mpp-x']
+    this.mpp_y = +data['mpp-y']
     this.mpp = data.mpp || this.mpp_x || this.mpp_y || 1e9;
-    this.mpp_x = +data['mpp-x'] || this.mpp;
-    this.mpp_y = +data['mpp-y'] || this.mpp;
+    this.mpp_x = +data['mpp-x'] || this.mpp
+    this.mpp_y = +data['mpp-y'] || this.mpp
 
     this.viewer.mpp = this.mpp;
     this.viewer.mpp_x = this.mpp_x;
     this.viewer.mpp_y = this.mpp_y;
 
     // set scalebar
-    const mpp = this.mpp_x || this.mpp;
-    if (mpp&&mpp!=1e9) this.createScalebar(this.mpp);
+    let mpp = this.mpp_x || this.mpp;
+    if(mpp&&mpp!=1e9) this.createScalebar(this.mpp)
 
-    const imagingHelper = new OpenSeadragonImaging.ImagingHelper({
-      viewer: this.viewer,
+    var imagingHelper = new OpenSeadragonImaging.ImagingHelper({
+      viewer: this.viewer
     });
 
     imagingHelper.setMaxZoom(1);
-    data.url = '../../img/IIP/raw/?DeepZoom='+ data['location'] + '.dzi';
-    data.slide = this.slideId;
-    if (func && typeof func === 'function') func.call(null, data);
+    data.url = "../../img/IIP/raw/?DeepZoom="+ data["location"] + ".dzi";
+    data.slide = this.slideId
+    if(func && typeof func === 'function') func.call(null,data);
     Loading.text.textContent = `Loading Slide's Tiles...`;
   }
 
   /**
    * set up a zoom control functionality on the image
    */
-  createZoomControl() {
-    if (!this.setting.hasZoomControl || !this.viewer.cazoomctrl) return;
+  createZoomControl(){
+    if(!this.setting.hasZoomControl || !this.viewer.cazoomctrl) return;
     this.viewer.cazoomctrl({
-      position: 'BOTTOM_RIGHT',
-      autoFade: false,
+      position:"BOTTOM_RIGHT",
+      autoFade: false
     });
   }
   /**
    * set up a canvas Draw functionality on the image
    */
-  createCanvasDraw() {
-    if (!this.setting.hasDrawLayer || !this.viewer.canvasDraw) return;
+  createCanvasDraw(){
+    if(!this.setting.hasDrawLayer || !this.viewer.canvasDraw) return;
     this.viewer.canvasDraw();
-    if (!(__&&__.SimpleContextMenu)) return;
+    if(!(__&&__.SimpleContextMenu)) return;
     // create style context menu for draw
     this.drawContextmenu = new __.SimpleContextMenu(
-        this.viewer.container,
-        {},
+      this.viewer.container,
+      {}
     );
 
     // add event to hook up
-    this.drawContextmenu.addHandler('style-changed', function(e) {
+    this.drawContextmenu.addHandler('style-changed',function(e){
       extend(this.viewer.canvasDrawInstance.style, e.style);
       this.viewer.canvasDrawInstance.drawMode = e.model;
     }.bind(this));
@@ -262,23 +261,23 @@ class CaMic {
     //   this.viewer.canvasDrawInstance.redo();
     // }.bind(this));
 
-    this.drawContextmenu.addHandler('clear', function(e) {
-      if (this.viewer.canvasDrawInstance._draws_data_.length == 0) return;
-      if (confirm('Do You Want To Clear All Markups?')) this.viewer.canvasDrawInstance.clear();
+    this.drawContextmenu.addHandler('clear',function(e){
+      if(this.viewer.canvasDrawInstance._draws_data_.length == 0) return;
+      if(confirm("Do You Want To Clear All Markups?")) this.viewer.canvasDrawInstance.clear();
     }.bind(this));
 
     // this.drawContextmenu.addHandler('draw-mode-changed',function(e){
     //   this.viewer.canvasDrawInstance.drawMode = e.mode;
     // }.bind(this));
 
-    // this.drawContextmenu.addHandler('draw',draw);
+    //this.drawContextmenu.addHandler('draw',draw);
   }
 
   /**
    * set up a overlay manage on the image
    */
-  createOverlayers() {
-    if (!this.setting.hasLayerManager || !this.viewer.overlaysManager) return;
+  createOverlayers(){
+    if(!this.setting.hasLayerManager || !this.viewer.overlaysManager) return;
     this.viewer.overlaysManager();
   }
 
@@ -286,42 +285,42 @@ class CaMic {
   * Set up a scalebar on the image
   * @param {number} mpp - microns per pixel of image
   */
-  createScalebar(mpp) {
-    if (!this.setting.hasScalebar || !this.viewer.scalebar) return;
+  createScalebar(mpp){
+    if(!this.setting.hasScalebar || !this.viewer.scalebar) return;
     try {
       this.viewer.scalebar({
-        type: OpenSeadragon.ScalebarType.MAP,
-        pixelsPerMeter: (1 / (parseFloat(mpp) * 0.000001)),
-        xOffset: 5,
-        yOffset: 10,
-        stayInsideImage: true,
-        color: 'rgb(150,150,150)',
-        fontColor: 'rgb(100,100,100)',
-        backgroundColor: 'rgba(255,255,255,0.5)',
-        barThickness: 2,
-      });
-    } catch (ex) {
-      console.log('scalebar err: ', ex.message);
-    }
+              type: OpenSeadragon.ScalebarType.MAP,
+              pixelsPerMeter: (1 / (parseFloat(mpp) * 0.000001)),
+              xOffset: 5,
+              yOffset: 10,
+              stayInsideImage: true,
+              color: "rgb(150,150,150)",
+              fontColor: "rgb(100,100,100)",
+              backgroundColor: "rgba(255,255,255,0.5)",
+              barThickness: 2
+          });
+      } catch (ex) {
+          console.log("scalebar err: ", ex.message);
+      }
   }
 
-  createMeasurementTool(mppx, mppy = mppx) {
-    if (!this.setting.hasMeasurementTool || !this.viewer.measurementTool) return;
+  createMeasurementTool(mppx,mppy = mppx){
+    if(!this.setting.hasMeasurementTool || !this.viewer.measurementTool) return;
     this.viewer.measurementTool({
-      mpp: {
-        x: mppx,
-        y: mppy,
-      },
+      mpp:{
+        x:mppx,
+        y:mppy,
+      }
     });
   }
 
-  createPatchManager() {
-    if (!this.setting.hasPatchManager || !this.viewer.createPatchManager) return;
+  createPatchManager(){
+    if(!this.setting.hasPatchManager || !this.viewer.createPatchManager) return;
     this.viewer.createPatchManager({});
   }
 
-  createHeatmap() {
-    if (!this.setting.hasHeatmap || !this.viewer.createHeatmap) return;
+  createHeatmap(){
+    if(!this.setting.hasHeatmap || !this.viewer.createHeatmap) return;
     this.viewer.createHeatmap({});
   }
 
@@ -338,31 +337,29 @@ class CaMic {
    * camic = null; //important
    *
    */
-  destroy() {
+  destroy(){
     // destroy CanvasDraw's instance if exists
-    if (this.viewer.canvasDrawInstance) {
+    if(this.viewer.canvasDrawInstance){
       this.viewer.canvasDrawInstance.destroy();
       this.viewer.canvasDrawInstance = null;
     }
 
     // destroy CaZoomControl's instance if exists
-    if (this.viewer.cazoomctrlInstance) {
+    if(this.viewer.cazoomctrlInstance){
       this.viewer.cazoomctrlInstance.destroy();
       this.viewer.cazoomctrlInstance = null;
     }
 
     // destroy OverlayManager's instance if exists
-    if (this.viewer.omanager) {
+    if(this.viewer.omanager){
       this.viewer.omanager.destroy();
       this.viewer.omanager = null;
     }
 
     // destroy Scalebar's instance if exists
-    if (this.viewer.scalebarInstance) {
-      for (const key in this.viewer.scalebarInstance) {
-        if (this.viewer.scalebarInstance.hasOwnProperty(key)) {
-          this.viewer.scalebarInstance[key] = null;
-        }
+    if(this.viewer.scalebarInstance){
+      for(const key in this.viewer.scalebarInstance){
+        this.viewer.scalebarInstance[key] = null;
       }
       this.viewer.scalebarInstance;
     }

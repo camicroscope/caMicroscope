@@ -18,7 +18,7 @@
 		vertical-align: baseline;
 	}
 
-	article, aside, details, figcaption, figure, footer, hgroup, menu, nav, section {
+	article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {
 		display: block;
 	}
 
@@ -4714,36 +4714,15 @@
 
 		}
 		.link{
-			letter-spacing: 0.02em;
 			text-transform: uppercase;
-			font-size: 0.99em;
-			font-weight: bold;
+			font-size: 1em;
+			font-weight: 600;
 			color: #5e6875;
-			text-decoration:none;
+			text-decoration-line: none;
+			text-decoration-style: solid;
+			text-decoration-color: currentcolor;
+			text-decoration-thickness: auto;
 			padding-right: 0.7rem;
 			padding-left: 0.7rem;
-			margin-top: 0.2rem;
 			font-family: "Open Sans", Helvetica, sans-serif;
-			line-height: 1.8;
-		}
-
-		
-		nav li{
-			transition: background 0.5s; 
-			border-radius: 3px;
-		}
-		nav li:not(:first-child){
-			margin-left: 0.3em !important;
-		}
-		nav li:not(.active):hover{
-			background: white;
-		}
-		nav li:not(.active):hover a{
-			color: black !important;
-		}
-		.active{
-			background: white;
-		}
-		.active a{
-			color: black !important;
 		}
