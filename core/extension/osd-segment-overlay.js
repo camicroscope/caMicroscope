@@ -22,7 +22,7 @@
             options.viewer = this;
             this.segment = new $.Segment(options);
         } else {
-           	this.segment.updateOptions(options);
+            this.segment.updateOptions(options);
         }
     };
 
@@ -125,56 +125,56 @@
         /**
          * turn on the segment
          */
-    	on:function(isDraw = true){
-    		if(this._isOn) return;
+        on:function(isDraw = true){
+            if(this._isOn) return;
 
             // show segment
-    		this._div.style.display = '';
-    		// add events
-        	this._viewer.addHandler('resize',this.events.updateView);
-        	this._viewer.addHandler('pan',this.events.panning);
-        	this._viewer.addHandler('zoom',this.events.zooming);
-        	this._viewer.addHandler('animation-finish', this.events.updateView);
+            this._div.style.display = '';
+            // add events
+            this._viewer.addHandler('resize',this.events.updateView);
+            this._viewer.addHandler('pan',this.events.panning);
+            this._viewer.addHandler('zoom',this.events.zooming);
+            this._viewer.addHandler('animation-finish', this.events.updateView);
 
             // draw segment immediately
-        	if(isDraw)this.updateView(0);
+            if(isDraw)this.updateView(0);
 
-        	// set on/off flag to true
-        	this._isOn = true;
-    	},
+            // set on/off flag to true
+            this._isOn = true;
+        },
 
         /**
          * turn off the segment
          */
-    	off:function(){
-    		if(!this._isOn) return;
+        off:function(){
+            if(!this._isOn) return;
 
-    		// remove events
-        	this._viewer.removeHandler('resize',this.events.updateView);
-        	this._viewer.removeHandler('pan',this.events.panning);
-        	this._viewer.removeHandler('zoom',this.events.zooming);
-        	this._viewer.removeHandler('animation-finish', this.events.updateView);
+            // remove events
+            this._viewer.removeHandler('resize',this.events.updateView);
+            this._viewer.removeHandler('pan',this.events.panning);
+            this._viewer.removeHandler('zoom',this.events.zooming);
+            this._viewer.removeHandler('animation-finish', this.events.updateView);
 
             // hidden segment
             this._div.style.display = 'none';
 
             // set on/off flag to false
             this._isOn = false;
-    	},
+        },
 
-    	/**
-    	 * setOpacity
-    	 * set the opacity for the canvas div.
-    	 * @param {Number} num the value of the opacity
-    	 */
-    	setOpacity:function(num){
-    		// valid num [0 , 1]
+        /**
+         * setOpacity
+         * set the opacity for the canvas div.
+         * @param {Number} num the value of the opacity
+         */
+        setOpacity:function(num){
+            // valid num [0 , 1]
             if(1 < num || 0 > num ){
                 console.warn(`segment.setOpacity: Invalid Opacity`);
                 return;
             }
-    		this._div.style.opacity = num;
-    	},
+            this._div.style.opacity = num;
+        },
 
         /**
          * change the mode of segment
@@ -265,39 +265,39 @@
             this.resize();
             this.drawOnCanvas();
         },
-    	/**
-    	 * getViewBoundBox
-    	 * get the current bound box of the view in the normalized coordinate system.
-    	 * @return {Object} bbox which has x, y, width, height;
-    	 */
-    	getViewBoundBox:function(){
-    		const {x,y} = this._viewer.imagingHelper._viewportOrigin;
-    		const width = this._viewer.imagingHelper._viewportWidth;
-			const height = this._viewer.imagingHelper._viewportHeight;
-    		return {x,y,width,height};
-    	},
+        /**
+         * getViewBoundBox
+         * get the current bound box of the view in the normalized coordinate system.
+         * @return {Object} bbox which has x, y, width, height;
+         */
+        getViewBoundBox:function(){
+            const {x,y} = this._viewer.imagingHelper._viewportOrigin;
+            const width = this._viewer.imagingHelper._viewportWidth;
+            const height = this._viewer.imagingHelper._viewportHeight;
+            return {x,y,width,height};
+        },
 
-    	/**
-    	 * getCanvasBoundBox
-    	 * get the current bound box of the canvas in the normalized coordinate system.
-    	 * @return {Object} bbox which has x, y, width, height;
-    	 */
-    	getCanvasBoundBox:function(){
-			const x = this._viewer.imagingHelper.physicalToLogicalX(-this._offset[0]);
-			const y = this._viewer.imagingHelper.physicalToLogicalY(-this._offset[1]);
-    		const width = physicalToLogicalDistanceX(this._viewer.canvas.clientWidth + 2*this._offset[0], this._viewer.imagingHelper);
-    		const height = physicalToLogicalDistanceY(this._viewer.canvas.clientHeight + 2*this._offset[1], this._viewer.imagingHelper);
+        /**
+         * getCanvasBoundBox
+         * get the current bound box of the canvas in the normalized coordinate system.
+         * @return {Object} bbox which has x, y, width, height;
+         */
+        getCanvasBoundBox:function(){
+            const x = this._viewer.imagingHelper.physicalToLogicalX(-this._offset[0]);
+            const y = this._viewer.imagingHelper.physicalToLogicalY(-this._offset[1]);
+            const width = physicalToLogicalDistanceX(this._viewer.canvas.clientWidth + 2*this._offset[0], this._viewer.imagingHelper);
+            const height = physicalToLogicalDistanceY(this._viewer.canvas.clientHeight + 2*this._offset[1], this._viewer.imagingHelper);
 
-    		return {x,y,width,height};
-    	},
+            return {x,y,width,height};
+        },
 
         /**
          * update view/segment
          * @param  {Number} the debounce time (in milliseconds) to draw
          */
-    	updateView:function(time){
-    		time = isNaN(time)?this._intervalTime:time;
-			clearTimeout(this._interval);
+        updateView:function(time){
+            time = isNaN(time)?this._intervalTime:time;
+            clearTimeout(this._interval);
             this._interval = setTimeout(function(){
                 if(this._data.length==0){
                     //this.resize();
@@ -321,22 +321,22 @@
 
 
             }.bind(this),time);
-    	},
+        },
         /**
          * reset viewport and canvas css attributes if window resize or viewport changed
          */
-    	resize:function(){
-    		// resize the canvas size
-    		this._display_.width = this._div.clientWidth;
-    		this._display_.height = this._div.clientHeight;
+        resize:function(){
+            // resize the canvas size
+            this._display_.width = this._div.clientWidth;
+            this._display_.height = this._div.clientHeight;
 
             // get the offset[x,y] in pixel
-    		this._offset[0] = (this._div.clientWidth - this._viewer.canvas.clientWidth)*0.5;
-    		this._offset[1] = (this._div.clientHeight - this._viewer.canvas.clientHeight)*0.5;
+            this._offset[0] = (this._div.clientWidth - this._viewer.canvas.clientWidth)*0.5;
+            this._offset[1] = (this._div.clientHeight - this._viewer.canvas.clientHeight)*0.5;
 
             // set the current position for the canvas div
-			this._div.style.left = `${-this._offset[0]}px`;
-        	this._div.style.top = `${-this._offset[1]}px`;
+            this._div.style.left = `${-this._offset[0]}px`;
+            this._div.style.top = `${-this._offset[1]}px`;
             // reset the origin point and scale
             this._div.style.transformOrigin = '0 0';
             this._div.style.transform = 'scale(1,1)';
@@ -346,10 +346,10 @@
             this._zoom = this._viewer.viewport.getZoom(true);
 
             // get the current canvas bounding box under the normalized coordinate
-    		this._getCanvasBoundBox = this.getCanvasBoundBox();
+            this._getCanvasBoundBox = this.getCanvasBoundBox();
             // TODO filter with view boundaries
             //this._t_data = this.data.filter(this.viewBoundFilter,this);
-    	},
+        },
         startLoading:function(){
             if(this._viewer.container.contains(this._loading)) return;
             this._viewer.container.appendChild(this._loading);
@@ -361,7 +361,7 @@
         /**
          * According to the data, thresholds and the size of current screen, draw the segment
          */
-    	drawOnCanvas:function(){
+        drawOnCanvas:function(){
             // clear canvas before draw
             DrawHelper.clearCanvas(this._display_);
             if(this._data.length == 0 || this._isOn==false) return;
@@ -403,7 +403,7 @@
                         }
                     },this)
                 },this)
-    	}
+        }
     }
 
 
@@ -417,7 +417,7 @@
      *         width/the distance in the normalized/Logical coordinate.
      */
     function physicalToLogicalDistanceX(width,helper){
-    	return helper._haveImage ? ((width / helper.getViewerContainerSize().x) * helper._viewportWidth) : 0;
+        return helper._haveImage ? ((width / helper.getViewerContainerSize().x) * helper._viewportWidth) : 0;
     }
 
     /**
@@ -430,7 +430,7 @@
      *         width/the distance in the normalized/Logical coordinate.
      */
     function physicalToLogicalDistanceY(height,helper){
-    	return helper._haveImage ? ((height / helper.getViewerContainerSize().y) * helper._viewportHeight) : 0;
+        return helper._haveImage ? ((height / helper.getViewerContainerSize().y) * helper._viewportHeight) : 0;
     }
 
     /**
@@ -443,7 +443,7 @@
      *         width/the distance in the Screen/Physical coordinate.
      */
     function logicalToPhysicalDistanceX(width,helper){
-    	return helper._haveImage ? ((width / helper._viewportWidth) * helper.getViewerContainerSize().x) : 0;
+        return helper._haveImage ? ((width / helper._viewportWidth) * helper.getViewerContainerSize().x) : 0;
     }
 
     /**
@@ -456,7 +456,7 @@
      *         width/the distance in the Screen/Physical coordinate.
      */
     function logicalToPhysicalDistanceY(height,helper){
-    	return helper._haveImage ? ((height / helper._viewportHeight) * helper.getViewerContainerSize().y) : 0;
+        return helper._haveImage ? ((height / helper._viewportHeight) * helper.getViewerContainerSize().y) : 0;
     }
 
     function createLoading(){

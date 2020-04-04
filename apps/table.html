@@ -10,6 +10,9 @@
 	<!-- common -->
 	<!-- <link rel='stylesheet' type='text/css' media='all' href='../css/style.css'/> -->
 	<!-- Check If we're logged in ok, otherwise, log in for us -->
+	<!-- Font Awesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+
 	<script src='../common/authChecker.js'></script>
 	<script>
 		__auth_check(1)
@@ -22,14 +25,40 @@
 	<script src="./loader/loader.js"></script>
 	<script src="./loader/chunked_upload.js"></script>
 	<script>
+		function sanitize(string) {
+			const map = {
+				'&': '&amp;',
+				'<': '&lt;',
+				'>': '&gt;',
+				'"': '&quot;',
+				"'": '&#x27;',
+				"/": '&#x2F;',
+			};
+			const reg = /[&<>"'/]/ig;
+			return string.replace(reg, (match)=>(map[match]));
+		}
+		var existingSlideNames = [];
+		const allowedExtensions = ['svs', 'tif', 'tiff', 'vms', 'vmu', 'ndpi', 'scn', 'mrxs', 'bif', 'svslide'];
 		function validateForm(callback) {
-			let x = document.getElementById("slidenameRow")
-			for (var i = 0; i < x.cells.length - 1; i++) {
-				var slide = document.getElementById("slidename" + i)
-				if (slide.value === "") {
+			let slide = document.getElementById("slidename0");
+			//Check if slide name is empty
+			if (slide.value === "") {
 					changeStatus("UPLOAD", "Please enter slide name");
 					return false;
-				}
+			}
+			//Sanitizing input
+			slide.value = sanitize(slide.value);
+			//Checking if silde with given name already exists
+			if(existingSlideNames.includes(slide.value)) {
+				changeStatus("UPLOAD", "Slide with given name already exists");
+				return false;
+			}
+			//Checking for extension
+			let filename = document.getElementById("filename0").value
+			var fileExtension = filename.toLowerCase().split('.').reverse()[0];
+			if(!allowedExtensions.includes(fileExtension)) {
+				changeStatus("UPLOAD", fileExtension + " files are not compatible");
+				return false;
 			}
 			callback();
 		}
@@ -44,6 +73,7 @@
 		crossorigin="anonymous"></script>
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
 		integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+	<link rel="stylesheet" href="../common/stacktable.css">
 	<style>
 		html,
 		body {
@@ -53,6 +83,7 @@
 			flex-direction: column;
 		}
 	</style>
+		<script src='../common/stacktable.js'></script>
 	<link rel="stylesheet" href="./table.css" />
 	<link rel="shortcut icon" type="image/x-icon" href="/apps/landing/favicon.png">
 </head>
@@ -65,15 +96,18 @@
 		<div class="collapse navbar-collapse" id="navbarCollapse">
 			<ul class="navbar-nav mr-auto">
 				<li class="nav-item link">
-					<a class="nav-link" href="landing/landing.html">Home</a>
+					<a class="nav-link" href="landing/landing.html"> <i class="fas fa-home"></i> Home</a>
 				</li>
 				<li class="nav-item active link">
-					<a class="nav-link" href="table.html">Slides</a>
+					<a class="nav-link" href="table.html"> <i class="fas fa-list-ul"></i> Slides</a>
 				</li>
 			</ul>
 			<ul class="navbar-nav">
+				<li class="nav-item link" style="font-family: sans-serif;">
+					<a class="nav-link" href="./signup/signup.html"> <i class="fas fa-user-plus"></i> Signup</a>
+				</li>
 				<li class="nav-item link">
-					<a class="nav-link" target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLScL91LxrpAZjU88GBZP9gmcdgdf8__uNUwhws2lzU6Lr4qNwA/viewform">Feedback</a>
+					<a class="nav-link" target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLScL91LxrpAZjU88GBZP9gmcdgdf8__uNUwhws2lzU6Lr4qNwA/viewform"> <i class="fas fa-comment"></i> Feedback</a>
 				</li>
 			</ul>
 		</div>
@@ -85,6 +119,84 @@
 	</div>
 
 	<div class='p-2 bg-light' style="flex-grow: 1;">
+		<button type="button" class="btn btn-success float-right mb-2"
+			onclick="(()=>{location.reload();return false;})()"> <i class="fas fa-sync-alt"></i> Reload</button>
+		<button type="button" class="btn btn-primary float-right mb-2 mr-2" data-toggle="modal"
+			data-target="#upload-dialog"> <i class="fas fa-upload"></i> Upload</button>
+			<div class="modal fade" id="upload-dialog" tabindex="-1" role="dialog"
+			aria-labelledby="title-of-dialog" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="title-of-dialog">Upload New Slide</h5>
+						<button type="button" class="close" onclick="initialize();" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<div>
+							<div id="upload_form">
+								<div class="alert alert-info" role="alert">
+
+									<h3>Steps for uploading.</h3>
+									<ul>
+										<li>Select the file as Input. The <b>Token</b> field should be filled automatically, and start uploading.</li>
+										<li> Provide the destination filename with extension.</li>
+										<li>Click on the <b>Finish Upload</b> to complete the upload </li>
+										<li>Finally <b>Post</b> it to caMicroscope</li>
+									</ul>
+								</div>
+								<div>
+									<form>
+										<table class="table table-borderless" cellpadding="5" cellspacing="0">
+											<tr>
+												<td align="right"><b>Files</b></td>
+												<td id="fileUploadInput"><input type="file" id="input"
+														onchange="handleUpload(this.files)" multiple></td>
+											</tr>
+											<tr id="fileIdRow">
+												<td align="right"><b>ID</b></td>
+											</tr>
+											<tr id="filenameRow">
+												<td align="right"><b>Filename</b></td>
+											</tr>
+											<tr id="tokenRow">
+												<td align="right"><b>Token</b></td>
+											</tr>
+											<tr id="slidenameRow">
+												<td align="right"><b>Slidename</b></td>
+											</tr>
+											<tr id="filterRow">
+												<td align="right"><b>Filter (leave blank for public)</b></td>
+											</tr>
+										</table>
+
+										<div class="text-center" id="controlButtons">
+											<button class="btn btn-primary" type="button" id="finish_btn"
+												value="Finish Upload" onclick="validateForm(finishUpload)">Finish
+												Upload</button>
+											<button class="btn btn-secondary" type="button" id="check_btn"
+												value="Check" onclick="CheckBtn()">Check</button>
+											<button class="btn btn-success" type="button" id="post_btn" value="Post"
+												onclick="validateForm(PostBtn)">Post</button>
+										</div>
+
+									</form>
+								</div>
+								<div class="text-center p-2">
+									<div id="load_status" class="p-1"></div>
+									<div id="json_table"></div>
+								</div>
+							</div>
+						</div>
+
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" onclick="initialize();" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+			</div>
 		<div class="container">
 
 			<div>
@@ -100,87 +212,14 @@
 						</select>
 						<input id="search-table" type="text" class="form-control" placeholder="Search&hellip;">
 					</div>
-					<button type="button" class="btn btn-success float-right mb-2"
-						onclick="(()=>{location.reload();return false;})()">Reload</button>
-					<button type="button" class="btn btn-primary float-right mb-2 mr-2" data-toggle="modal"
-						data-target="#upload-dialog">Upload</button>
 				</div>
-				<table id='datatables' class="table table-striped"></table>
-			</div>
-
-			<div class="modal fade" id="upload-dialog" tabindex="-1" role="dialog"
-				aria-labelledby="title-of-dialog" aria-hidden="true">
-				<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
-					<div class="modal-content">
-						<div class="modal-header">
-							<h5 class="modal-title" id="title-of-dialog">Upload New Slide</h5>
-							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-								<span aria-hidden="true">&times;</span>
-							</button>
-						</div>
-						<div class="modal-body">
-							<div>
-								<div id="upload_form">
-									<div class="alert alert-info" role="alert">
-
-										<h3>Steps for uploading.</h3>
-										<ul>
-											<li>Select the file as Input. The <b>Token</b> field should be filled automatically, and start uploading.</li>
-											<li> Provide the destination filename with extension.</li>
-											<li>Click on the <b>Finish Upload</b> to complete the upload </li>
-											<li>Finally <b>Post</b> it to caMicroscope</li>
-										</ul>
-									</div>
-									<div>
-										<form>
-											<table class="table table-borderless" cellpadding="5" cellspacing="0">
-												<tr>
-													<td align="right"><b>Files</b></td>
-													<td id="fileUploadInput"><input type="file" id="input"
-															onchange="handle_upload(this.files)" multiple></td>
-												</tr>
-												<tr id="fileIdRow">
-													<td align="right"><b>ID</b></td>
-												</tr>
-												<tr id="filenameRow">
-													<td align="right"><b>Filename</b></td>
-												</tr>
-												<tr id="tokenRow">
-													<td align="right"><b>Token</b></td>
-												</tr>
-												<tr id="slidenameRow">
-													<td align="right"><b>Slidename</b></td>
-												</tr>
-											</table>
-
-											<div class="text-center">
-												<button class="btn btn-primary" type="button" id="finish_btn"
-													value="Finish Upload" onclick="validateForm(finish_upload)">Finish
-													Upload</button>
-												<button class="btn btn-secondary" type="button" id="check_btn"
-													value="Check" onclick="CheckBtn()">Check</button>
-												<button class="btn btn-success" type="button" id="post_btn" value="Post"
-													onclick="validateForm(PostBtn)">Post</button>
-											</div>
-
-										</form>
-									</div>
-									<div class="text-center p-2">
-										<div id="load_status" class="p-1"></div>
-										<div id="json_table"></div>
-									</div>
-								</div>
-							</div>
-
-						</div>
-						<div class="modal-footer">
-							<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-						</div>
-					</div>
+				<div class="table-responsive">
+					<table id='datatables' class="table table-striped"></table>
 				</div>
 			</div>
 
 		</div>
+
 	</div>
 
 	<div class="text-center text-white bg-dark p-3" style="position: static;bottom: 0;width: 100%;">
@@ -212,7 +251,7 @@
 		$("#datatables tbody tr").filter(function(){
 			$(this).hide();
 		});
-		
+
 		var trs = "#datatables tbody tr";
 		if(searching){
 			trs = ".searched";
@@ -220,12 +259,13 @@
 		$(trs).slice($("#entries").val()*selectedpage, $("#entries").val()*(selectedpage+1)).filter(function(){
 			$(this).show();
 		});
-		
+
 		$(`.pages.active`).removeClass("active");
 		$(`.pages:eq(${selectedpage})`).addClass("active");
 	}
 
 	function resetTable(){
+		$('#datatables').stacktable();
 		$(".pages").remove();
 		$("#previous-page").after(function(){
 			if(totaltablepages != 0)
@@ -290,6 +330,9 @@
 					return;
 				}
 
+				//Adding names to later validate for new slide names
+				existingSlideNames = data.map(d => d[1]);
+
 				const thead = HeadMapping.map(d => "<th>" + d.title + `<img id='sort1${d.title}' class='float-right sort-btn' width='10px' src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAABmJLR0QA/wD/AP+gvaeTAAAAtklEQVRIie3XsQrCMBSF4T+CoJsddHAo9HH6AD634NbNqTgo6FI6WQdTtJLQpG0CxXsglIRyv0ugCYWZRsUGd8ARKIA0FroFTkCjxxnIYqNRcBsaFO9Dg+Cu6KS4LzoJrnh/Mr5oOwpgaSu+GNqVY6wHTN/Jo4DNz1oJrAzv7oH6a/4Ani7duabCvLVrnyKht1pggQUWWOA/g0vD2o3ulRgkOXDhcx1egYNvkTG/IIl+3nUD88gLIHVaGvUECUcAAAAASUVORK5CYII='/>
 
 				<img id='sort2${d.title}' class='float-right sort-btn' width='10px' src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAABmJLR0QA/wD/AP+gvaeTAAAAs0lEQVRIie3VsQrCMBSF4T/qoFsddBR8Hncf24KTUAquDg4ugoPWwRbSEk2aJhHlHsiQhPCdZAl8KeMBZ+fADLgF6mLNBjgBVT3OwDYFXGqojqvY8NUAV7ye3Tmj8L0EFlhggQX+F3hi2VdAZlgzJQOm2vwCPDx7kWP+Al1G0SnSyqenVsDdt3Ed7xsvgD39b3sE1kMa++BB0L54UNQVj4La8KjoOzwJ2mQJ7IADsEqF/nae93FcRiryrh8AAAAASUVORK5CYII="/>
@@ -347,7 +390,7 @@
 				var value = $(this)[0].id.substr(5);
 				var upordown = parseInt($(this)[0].id[4]);
 				var index = HeadMapping.findIndex((a)=> a.title.toLowerCase() == value.toLowerCase());
-				
+
 				var trs = "#datatables tbody tr";
 				if(searching){
 					trs = ".searched";
@@ -386,7 +429,7 @@
 				else totaltablepages = Math.ceil($(".searched").length/$("#entries").val());
 				resetTable();
 			});
-
+		$('#datatables').stacktable();
 		});
 	}
 
@@ -416,7 +459,7 @@
 			alert('No Data Id');
 		}
 	}
-
+	//window.addEventListener('resize', ()=>{$('#datatables').stacktable()});
 	document.addEventListener('DOMContentLoaded', initialize);
 </script>
 
