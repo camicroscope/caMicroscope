@@ -74,13 +74,38 @@ caMicroscope is open source software. Any involvement and contribution with the 
 It is highly recommended to make any changes off of the develop branch of a repository, and, when ready, create a PR to the develop branch of the source repository. Before sending the PR, make sure that there are no linting errors by running ```npm install``` and then ```npm run lint``` in the repository folder.
 
 ## Fast Local Changes
-When using the [hosted setup](https://github.com/camicroscope/Distro/), you can have the distribution host the changes from your local. Clone this repository and the distribution in the same parent directory, in this repo, `mv .nocache.htaccess .htaccess` then replace the viewer section of develop.yml with something like this:
+When using the hosted setup, you can have the distribution host the changes from your local. Follow these steps :
+- Clone this repository, the [Caracal repository](https://github.com/camicroscope/Caracal/) and [the distribution](https://github.com/camicroscope/Distro/) in the same parent directory
+- In this repo, `mv .nocache.htaccess .htaccess`
+- Replace the 'back' section of develop.yml in Distro repository with something like this:
 ```
-  viewer:
-    build: "https://github.com/caMicroscope/caMicroscope.git#develop"
-    container_name: ca-front
-    environment:
-      - cacheoff=true
+  back:
+    build:
+      context: "../Caracal"
+      args:
+        viewer: "develop"
+    depends_on:
+      - "mongo"
+    ports:
+      - "4010:4010"
+    container_name: ca-back
     volumes:
-      - ../caMicroscope/:/usr/local/apache2/htdocs/
+      - ./config/login.html:/root/src/static/login.html
+      - ./jwt_keys/:/root/src/keys/
+      - ../caMicroscope:/root/src/camicroscope
+    environment:
+      JWK_URL: "https://www.googleapis.com/oauth2/v3/certs"
+      IIP_PATH: "http://ca-iip/fcgi-bin/iipsrv.fcgi"
+      MONGO_URI: "mongodb://ca-mongo"
+      DISABLE_SEC: "true"
+      ALLOW_PUBLIC: "true"
+```
+- Remove this line from 'Dockerfile' in Caracal repository :
+```
+RUN if [ -z ${viewer} ]; then git clone https://github.com/camicroscope/camicroscope.git; else git clone https://github.com/camicroscope/camicroscope.git --branch=$viewer; fi
+```
+- In Distro repository, enter the following commands :
+```
+docker-compose -f develop.yml build
+docker-compose -f develop.yml up
 ```
