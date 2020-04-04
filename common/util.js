@@ -76,14 +76,14 @@ function extend() {
 }
 
 /**
-	remove /empty a DOM element
+    remove /empty a DOM element
 */
 function empty(elt) {
   while (elt.firstChild) elt.removeChild(elt.firstChild);
 }
 
 /*
-	ID generator
+    ID generator
 */
 function randomId() {
   // Math.random should be unique because of its seeding algorithm.
@@ -520,13 +520,15 @@ function removeElement(array, id) {
   return false;
 }
 
-function redirect(url, text = "", sec = 5) {
+function redirect(url, text = '', sec = 5) {
   let timer = sec;
+  if (!timer) {
+    window.location.href = url;
+  }
   setInterval(function() {
     if (!timer) {
       window.location.href = url;
     }
-
     if (Loading.instance && Loading.instance.parentNode) {
       Loading.text.textContent = `${text} ${timer}s.`;
     } else {
@@ -783,7 +785,14 @@ EventHandle.prototype = {
     }
   }
 };
-
+function getUserType() {
+  let token_info = parseJwt(getCookie("token"));
+  if(token_info && token_info.userType) {
+    return token_info.userType;
+  } else {
+    reutrn "Null";
+  }
+}
 function getUserId() {
   let token_info = parseJwt(getCookie("token"));
   let uid = "";

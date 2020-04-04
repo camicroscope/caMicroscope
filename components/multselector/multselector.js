@@ -24,7 +24,8 @@
  * @param {Element} [options.element]
  *        The container as a html element.
  * @param {Array} [options.data]
- *        The data of selector's options. The form of each option should be an array -> [key - identity,value - text on option].
+ *        The data of selector's options.
+ *        The form of each option should be an array -> [key - identity,value - text on option].
  * @param {String} [options.title]
  *        The title of mult-selector
  * @param {Boolean} [options.hasControl='true']
@@ -35,45 +36,45 @@
  *        The text of action btns
  *
  */
-function MultSelector(options){
-	this.className = 'MultSelector';
-	this.elt;
-	this.selectors;
-	this.btns;
-	this.setting = {
-		//title:'a head title',
-		hasControl:true,
-		cancelText:'Cancel',
-		actionText:'Action'
-	}
+function MultSelector(options) {
+  this.className = 'MultSelector';
+  this.elt;
+  this.selectors;
+  this.btns;
+  this.setting = {
+    // title:'a head title',
+    hasControl: true,
+    cancelText: 'Cancel',
+    actionText: 'Action',
+  };
 
-	extend(this.setting, options);
+  extend(this.setting, options);
 
-	this.elt = document.getElementById(this.setting.id);
-	if(!this.elt && options.element){
-		this.elt = options.element;
-	}
+  this.elt = document.getElementById(this.setting.id);
+  if (!this.elt && options.element) {
+    this.elt = options.element;
+  }
 
-	if(!this.elt){
-		// create main
-		this.elt = document.createElement('div');
-	}
+  if (!this.elt) {
+    // create main
+    this.elt = document.createElement('div');
+  }
 
-	// create ui element
-	this.__create();
-	// prepare data
-	if(this.setting.data) this.setData(this.setting.data);
+  // create ui element
+  this.__create();
+  // prepare data
+  if (this.setting.data) this.setData(this.setting.data);
 
-	// add Event
-	this.btns[0].addEventListener('click',this.__selectAll.bind(this));
-	this.btns[1].addEventListener('click',this.__select.bind(this));
-	this.btns[2].addEventListener('click',this.__remove.bind(this));
-	this.btns[3].addEventListener('click',this.__removeAll.bind(this));
+  // add Event
+  this.btns[0].addEventListener('click', this.__selectAll.bind(this));
+  this.btns[1].addEventListener('click', this.__select.bind(this));
+  this.btns[2].addEventListener('click', this.__remove.bind(this));
+  this.btns[3].addEventListener('click', this.__removeAll.bind(this));
 
-	if(this.setting.hasControl && this.cancel && this.action) {
-		this.cancel.addEventListener('click', this.__cancel.bind(this))
-		this.action.addEventListener('click', this.__action.bind(this))
-	}
+  if (this.setting.hasControl && this.cancel && this.action) {
+    this.cancel.addEventListener('click', this.__cancel.bind(this));
+    this.action.addEventListener('click', this.__action.bind(this));
+  }
 }
 
 
@@ -81,127 +82,126 @@ function MultSelector(options){
  * @private
  * __create all HTML Elements based on setting/options.
  */
-MultSelector.prototype.__create = function(){
-	const elt = this.elt;
-	elt.classList.add('multi-select-wrapper');
-	// create title
+MultSelector.prototype.__create = function() {
+  const elt = this.elt;
+  elt.classList.add('multi-select-wrapper');
+  // create title
 
-	if(this.setting.title){
-		this.head = document.createElement('div');
-		this.head.classList.add('header');
-		this.head.textContent = this.setting.title;
-		elt.appendChild(this.head);
-	}
+  if (this.setting.title) {
+    this.head = document.createElement('div');
+    this.head.classList.add('header');
+    this.head.textContent = this.setting.title;
+    elt.appendChild(this.head);
+  }
 
-	// create container
-	const container = document.createElement('div');
-	container.classList.add('multi-select-container');
-	elt.appendChild(container);
+  // create container
+  const container = document.createElement('div');
+  container.classList.add('multi-select-container');
+  elt.appendChild(container);
 
-	// create main select area
-	const main = document.createElement('div');
-	main.classList.add('main');
-	container.appendChild(main);
+  // create main select area
+  const main = document.createElement('div');
+  main.classList.add('main');
+  container.appendChild(main);
 
-	// create main selector
-	const selMain = document.createElement('select');
-	selMain.multiple = true;
-	main.appendChild(selMain);
+  // create main selector
+  const selMain = document.createElement('select');
+  selMain.multiple = true;
+  main.appendChild(selMain);
 
-	// create control
-	const ctrl = document.createElement('div');
-	ctrl.classList.add('ctrl');
-	container.appendChild(ctrl);
+  // create control
+  const ctrl = document.createElement('div');
+  ctrl.classList.add('ctrl');
+  container.appendChild(ctrl);
 
-	// create control btns
-	const selectAll = document.createElement('button');
-	selectAll.classList.add('material-icons');
-	selectAll.textContent = 'last_page';
-	ctrl.appendChild(selectAll);
+  // create control btns
+  const selectAll = document.createElement('button');
+  selectAll.classList.add('material-icons');
+  selectAll.textContent = 'last_page';
+  ctrl.appendChild(selectAll);
 
-	const select = document.createElement('button');
-	select.classList.add('material-icons');
-	select.textContent = 'chevron_right';
-	ctrl.appendChild(select);
+  const select = document.createElement('button');
+  select.classList.add('material-icons');
+  select.textContent = 'chevron_right';
+  ctrl.appendChild(select);
 
-	const remove = document.createElement('button');
-	remove.classList.add('material-icons');
-	remove.textContent = 'chevron_left';
-	ctrl.appendChild(remove);
+  const remove = document.createElement('button');
+  remove.classList.add('material-icons');
+  remove.textContent = 'chevron_left';
+  ctrl.appendChild(remove);
 
-	const removeAll = document.createElement('button');
-	removeAll.classList.add('material-icons');
-	removeAll.textContent = 'first_page';
-	ctrl.appendChild(removeAll);
+  const removeAll = document.createElement('button');
+  removeAll.classList.add('material-icons');
+  removeAll.textContent = 'first_page';
+  ctrl.appendChild(removeAll);
 
-	// create selected area
-	const selected = document.createElement('div');
-	selected.classList.add('selected');
-	container.appendChild(selected);
+  // create selected area
+  const selected = document.createElement('div');
+  selected.classList.add('selected');
+  container.appendChild(selected);
 
-	// create selected selector
-	const selSelected = document.createElement('select');
-	selSelected.multiple = true;
-	selected.appendChild(selSelected);
+  // create selected selector
+  const selSelected = document.createElement('select');
+  selSelected.multiple = true;
+  selected.appendChild(selSelected);
 
-	this.selectors = [selMain,selSelected];
-	this.btns = [selectAll,select,remove,removeAll];
+  this.selectors = [selMain, selSelected];
+  this.btns = [selectAll, select, remove, removeAll];
 
-	// create ctrl btns
-	if(this.setting.hasControl){
-		this.footer = document.createElement('div');
-		this.footer.classList.add('footer');
-		this.cancel = document.createElement('button');
-		this.cancel.textContent = this.setting.cancelText;
-		this.action = document.createElement('button');
-		this.action.textContent = this.setting.actionText ;
-		this.footer.appendChild(this.cancel);
-		this.footer.appendChild(this.action);
-		elt.appendChild(this.footer)
-	}
-	// there are two btns [cancel] and [save]
-
-}
-
+  // create ctrl btns
+  if (this.setting.hasControl) {
+    this.footer = document.createElement('div');
+    this.footer.classList.add('footer');
+    this.cancel = document.createElement('button');
+    this.cancel.textContent = this.setting.cancelText;
+    this.action = document.createElement('button');
+    this.action.textContent = this.setting.actionText;
+    this.footer.appendChild(this.cancel);
+    this.footer.appendChild(this.action);
+    elt.appendChild(this.footer);
+  }
+  // there are two btns [cancel] and [save]
+};
 
 
 /**
  * setData
  * @param {Array} data
- *        The data of selector's options. The form of each option should be an array -> [key - identity,value - text on option].
+ *        The data of selector's options.
+ *        The form of each option should be an array -> [key - identity,value - text on option].
  */
-MultSelector.prototype.setData = function(data){
-
-	if(!Array.isArray(data)){
-		console.error(`${this.className}:setData - data is not an array`);
-		return;
-	}
-	data = data.map(item =>{
-		if(Array.isArray(item)) return item;
-		return [item,item];
-	});
-	this.setting.data = data;
-	// clear all options
-	this.selectors[0].innerHTML = '';
-	this.selectors[1].innerHTML = '';
-	//
-	MultSelector.__addOptions(this.selectors[0],this.setting.data);
+MultSelector.prototype.setData = function(data) {
+  if (!Array.isArray(data)) {
+    console.error(`${this.className}:setData - data is not an array`);
+    return;
+  }
+  data = data.map((item) =>{
+    if (Array.isArray(item)) return item;
+    return [item, item];
+  });
+  this.setting.data = data;
+  // clear all options
+  this.selectors[0].innerHTML = '';
+  this.selectors[1].innerHTML = '';
+  //
+  MultSelector.__addOptions(this.selectors[0], this.setting.data);
 };
 /**
  * __addOptions add options to target selector
  * @param  {Select} target
  *         a selector that is a html select element
  * @param  {Array} data
- *         The data of selector's options. The form of each option should be an array -> [key - identity,value - text on option].
+ *         The data of selector's options.
+ *         The form of each option should be an array -> [key - identity,value - text on option].
  */
-MultSelector.__addOptions = function(target, data){
-	data.forEach(item => {
-		var opt = document.createElement('option');
-		opt.value = item[0];
-		opt.textContent = item[1];
-		target.appendChild(opt);
-	});
-}
+MultSelector.__addOptions = function(target, data) {
+  data.forEach((item) => {
+    const opt = document.createElement('option');
+    opt.value = item[0];
+    opt.textContent = item[1];
+    target.appendChild(opt);
+  });
+};
 
 /**
  * @private
@@ -209,12 +209,12 @@ MultSelector.__addOptions = function(target, data){
  * @param  {Event} e
  *         Event
  */
-MultSelector.prototype.__selectAll = function(e){
-	this.selectors[1].innerHTML = '';
-	this.selectors[1].innerHTML = this.selectors[0].innerHTML;
+MultSelector.prototype.__selectAll = function(e) {
+  this.selectors[1].innerHTML = '';
+  this.selectors[1].innerHTML = this.selectors[0].innerHTML;
 
-	// event fired
-	this.raiseEvent('select-all', {});
+  // event fired
+  this.raiseEvent('select-all', {});
 };
 /**
  * @private
@@ -222,9 +222,9 @@ MultSelector.prototype.__selectAll = function(e){
  * @param  {Event} e
  *         Event
  */
-MultSelector.prototype.__cancel = function(e){
-	// event fired
-	this.raiseEvent('cancel', {});
+MultSelector.prototype.__cancel = function(e) {
+  // event fired
+  this.raiseEvent('cancel', {});
 };
 /**
  * @private
@@ -232,9 +232,9 @@ MultSelector.prototype.__cancel = function(e){
  * @param  {Event} e
  *         Event
  */
-MultSelector.prototype.__action = function(e){
-	// event fired
-	this.raiseEvent('action', {data:this.getSelected()});
+MultSelector.prototype.__action = function(e) {
+  // event fired
+  this.raiseEvent('action', {data: this.getSelected()});
 };
 /**
  * @private
@@ -242,22 +242,22 @@ MultSelector.prototype.__action = function(e){
  * @param  {Event} e
  *         Event
  */
-MultSelector.prototype.__select = function(e){
-	const selected = this.selectors[0].querySelectorAll('option:checked');
-	const data = [];
-	[...selected].forEach( function(opt) {
-		const num = this.selectors[1].querySelectorAll(`option[value='${opt.value}']`).length;
-		if(num === 0) {
-			const new_opt = opt.cloneNode(true);
-			new_opt.textContent = opt.textContent;
-			this.selectors[1].appendChild(new_opt);
-			data.push([opt.value,opt.textContent]);
-		}
-	},this);
+MultSelector.prototype.__select = function(e) {
+  const selected = this.selectors[0].querySelectorAll('option:checked');
+  const data = [];
+  [...selected].forEach( function(opt) {
+    const num = this.selectors[1].querySelectorAll(`option[value='${opt.value}']`).length;
+    if (num === 0) {
+      const newOpt = opt.cloneNode(true);
+      newOpt.textContent = opt.textContent;
+      this.selectors[1].appendChild(newOpt);
+      data.push([opt.value, opt.textContent]);
+    }
+  }, this);
 
-	// event fired
-	this.raiseEvent('select', {data:data});
-}
+  // event fired
+  this.raiseEvent('select', {data: data});
+};
 
 /**
  * @private
@@ -265,12 +265,12 @@ MultSelector.prototype.__select = function(e){
  * @param  {Event} e
  *         Event
  */
-MultSelector.prototype.__removeAll = function(e){
-	this.selectors[1].innerHTML = '';
+MultSelector.prototype.__removeAll = function(e) {
+  this.selectors[1].innerHTML = '';
 
-	// event fired
-	this.raiseEvent('remove-all', {});
-}
+  // event fired
+  this.raiseEvent('remove-all', {});
+};
 
 /**
  * @private
@@ -278,26 +278,26 @@ MultSelector.prototype.__removeAll = function(e){
  * @param  {Event} e
  *         Event
  */
-MultSelector.prototype.__remove = function(e){
-	const selected = this.selectors[1].querySelectorAll('option:checked');
-	const data = [];
-	[...selected].forEach( function(opt) {
-		opt.parentNode.removeChild(opt);
-		data.push([opt.value,opt.textContent]);
-	});
+MultSelector.prototype.__remove = function(e) {
+  const selected = this.selectors[1].querySelectorAll('option:checked');
+  const data = [];
+  [...selected].forEach( function(opt) {
+    opt.parentNode.removeChild(opt);
+    data.push([opt.value, opt.textContent]);
+  });
 
-	// event fired
-	this.raiseEvent('remove', {data:data});
-}
+  // event fired
+  this.raiseEvent('remove', {data: data});
+};
 
 /**
  * getSelected get all selected data
  * @return {Array} the data form same as [[key,value]...]
  */
-MultSelector.prototype.getSelected = function(){
-	const selected = this.selectors[1].querySelectorAll('option');
-	return Array.from(selected).map(opt=>[opt.value,opt.textContent]);
-}
+MultSelector.prototype.getSelected = function() {
+  const selected = this.selectors[1].querySelectorAll('option');
+  return Array.from(selected).map((opt)=>[opt.value, opt.textContent]);
+};
 
 
 // MultSelector inherit from EventHandle in which the MultSelector is able to add Events based on Behaviors.

@@ -6,11 +6,11 @@ global.testFolder = '/test'
 
 
 global.eventFire = function(el, etype, dom){
-	if (el.fireEvent) {
-		el.fireEvent('on' + etype);
-	} else {
-		var evObj = dom.window.document.createEvent('Events');
-		evObj.initEvent(etype, true, false);
-		el.dispatchEvent(evObj);
-	}
+    if (el.fireEvent) {
+        el.fireEvent('on' + etype);
+    } else {
+        var evObj = dom.window.document.createEvent('Events');
+        evObj.initEvent(etype, true, false);
+        el.dispatchEvent(evObj);
+    }
 }
