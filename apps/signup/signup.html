@@ -32,7 +32,7 @@
       if (attr == "2"){
         userType = "Editor"
       }
-      var doc = {email: email, userType: userType, userFilters:filters}
+      var doc = {email: email, userType: userType, userFilter:filters}
       fetch(userSignupUrl, {
           method: 'POST',
           mode: 'cors', // no-cors, cors, *same-origin
