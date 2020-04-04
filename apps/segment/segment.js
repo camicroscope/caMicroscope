@@ -34,8 +34,8 @@ let $CAMIC = null;
 const $UI = {};
 const $D = {
   pages: {
-    home: '',
-    table: '',
+    home: '../table.html',
+    table: '../table.html',
   },
   params: null,
 };
