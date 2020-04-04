@@ -787,7 +787,7 @@ EventHandle.prototype = {
 };
 function getUserType() {
   let tokenInfo = parseJwt(getCookie('token'));
-  if (tokenInfo && tokenInfo.userType) {
+  if (typeof tokenInfo==='object' && tokenInfo.userType) {
     return tokenInfo.userType;
   } else {
     return 'Null';
