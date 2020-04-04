@@ -47,3 +47,6 @@ nav li:not(.active):hover a{
 #open-delete{
 	display: inline-flex;
 }
+.DelButton{
+	display: none;
+}
