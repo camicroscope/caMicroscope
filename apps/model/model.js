@@ -156,10 +156,10 @@ async function initUIcomponents() {
   });
   // Create Modal to take input from user of new class list
   $UI.chngClassLst = new ModalBox({
-    id: "chngClass",
+    id: 'chngClass',
     hasHeader: true,
     headerText: "Help",
-    hasFooter: false
+    hasFooter: false,
   });
 
   // create the message queue
@@ -607,11 +607,9 @@ function runPredict(key) {
   }
 }
 
-//Function to check if model name is repeated or not.
-function checkNameDuplicate(name)
-{
-  if(namearray.indexOf(name)!=-1)
-  {
+//  Function to check if model name is repeated or not.
+function checkNameDuplicate(name) {
+  if (namearray.indexOf(name)!=-1) {
     return 1;
   }
   return 0;
@@ -688,15 +686,13 @@ function uploadModel() {
           return;
         }
 
-        
         try {
-          if (checkNameDuplicate(_name.value))
-          {
-            throw 'error'
+          if (checkNameDuplicate(_name.value)) {
+            throw new Error("Model name repeated");
           }
         } catch (e) {
           status.innerHTML = 'Model with the same name already exists. Please choose a new name';
-            status.classList.remove('blink');
+          status.classList.remove('blink');
         }
         namearray.push(_name.value);
 
