@@ -171,11 +171,11 @@ class Store {
       mode: 'cors',
     }).then(this.errorHandler).then((x)=>this.filterBroken(x, 'mark'));
   }
-  fetchMark(slide_id) {
+  fetchMark(slideId) {
     const suffix = 'Mark/find';
     const url = this.base + suffix;
     const query = {};
-    query['provenance.image.slide'] = slide_id;
+    query['provenance.image.slide'] = slideId;
     return fetch(url + '?' + objToParamStr(query), {
       credentials: 'include',
       mode: 'cors',
@@ -264,11 +264,11 @@ class Store {
       mode: 'cors',
     }).then(this.errorHandler).then((x)=>this.filterBroken(x, 'heatmap'));
   }
-  fetchHeatMap(slide_id) {
+  fetchHeatMap(slideId) {
     const suffix = 'Heatmap/find';
     const url = this.base + suffix;
     const query = {};
-    query['provenance.image.slide'] = slide_id;
+    query['provenance.image.slide'] = slideId;
     return fetch(url + '?' + objToParamStr(query), {
       credentials: 'include',
       mode: 'cors',
