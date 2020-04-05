@@ -541,10 +541,14 @@
 	function checkUserPermissions(){
 		let userType=getUserType();
 		let permissions;
-		getUserPermissions(userType).then(function(response){
-			return response.json();
-		}).then(function(data) {
-			// console.log(data);
+		getUserPermissions(userType)
+		.then(response => response.text())
+		.then((data) => {
+		return (data ? JSON.parse(data) : null);
+		})
+		.then((data)=> {
+			if(data===null)
+				return;
 			permissions = data;
 			if(permissions.slide.delete == true)
 				$(".DelButton").css("display","block");
