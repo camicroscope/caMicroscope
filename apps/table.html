@@ -490,10 +490,14 @@
 	function checkUserPermissions(){
 		let userType=getUserType();
 		let permissions;
-		getUserPermissions(userType).then(function(response){
-			return response.json();   
-		}).then(function(data) {
-			// console.log(data);
+		getUserPermissions(userType)
+		.then(response => response.text())
+		.then((data) => {
+		return (data ? JSON.parse(data) : null);
+		})
+		.then((data)=> {
+			if(data===null)
+				return;
 			permissions = data;
 			if(permissions.slide.delete == true)
 				$(".DelButton").css("display","block");
@@ -501,7 +505,7 @@
 	}
 	function deleteSld(e) {
 		const oid = e.dataset.id;
-		const oname = e.dataset.name;		
+		const oname = e.dataset.name;
 		const store = new Store('../data/');
 		if (oid) {
 			$('#confirmDeleteContent').html(`Are you sure you want to delete the slide ${oname} with id ${oid} ?`);
@@ -509,7 +513,7 @@
 			$("#confirmDelete").unbind( "click" );
 			$("#confirmDelete").click(function(){
 				store.deleteSlide(oid);
-			});			
+			});
 		} else {
 			alert('No Data Id');
 		}
