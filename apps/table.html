@@ -41,22 +41,40 @@
 		const allowedExtensions = ['svs', 'tif', 'tiff', 'vms', 'vmu', 'ndpi', 'scn', 'mrxs', 'bif', 'svslide'];
 		function validateForm(callback) {
 			let slide = document.getElementById("slidename0");
+			// Check if input element is rendered or not
+			if(slide===null) {
+				finishUploadSuccess = false;
+				$('#check_btn').hide();
+				$('#post_btn').hide();
+				changeStatus("UPLOAD", "Please chose a file first");
+				return false;
+			}
 			//Check if slide name is empty
 			if (slide.value === "") {
+					finishUploadSuccess = false;
+					$('#check_btn').hide();
+					$('#post_btn').hide();
 					changeStatus("UPLOAD", "Please enter slide name");
 					return false;
 			}
 			//Sanitizing input
 			slide.value = sanitize(slide.value);
+			console.log(existingSlideNames,slide.value);
 			//Checking if silde with given name already exists
 			if(existingSlideNames.includes(slide.value)) {
 				changeStatus("UPLOAD", "Slide with given name already exists");
+				finishUploadSuccess = false;
+				$('#check_btn').hide();
+				$('#post_btn').hide();
 				return false;
 			}
 			//Checking for extension
 			let filename = document.getElementById("filename0").value
 			var fileExtension = filename.toLowerCase().split('.').reverse()[0];
 			if(!allowedExtensions.includes(fileExtension)) {
+				finishUploadSuccess = false;
+				$('#check_btn').hide();
+				$('#post_btn').hide();
 				changeStatus("UPLOAD", fileExtension + " files are not compatible");
 				return false;
 			}
@@ -74,6 +92,10 @@
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
 		integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 	<link rel="stylesheet" href="../common/stacktable.css">
+
+	<!-- popup css -->
+	<link rel="stylesheet" type="text/css" media="all" href="../../css/popup.css" />
+
 	<style>
 		html,
 		body {
@@ -122,9 +144,9 @@
 		<button type="button" class="btn btn-success float-right mb-2"
 			onclick="(()=>{location.reload();return false;})()"> <i class="fas fa-sync-alt"></i> Reload</button>
 		<button type="button" class="btn btn-primary float-right mb-2 mr-2" data-toggle="modal"
-			data-target="#upload-dialog"> <i class="fas fa-upload"></i> Upload</button>
+			data-target="#upload-dialog" onclick="hidePostButton(); hideCheckButton(); resetUploadForm();"" <i class="fas fa-upload"></i> Upload</button>
 			<div class="modal fade" id="upload-dialog" tabindex="-1" role="dialog"
-			aria-labelledby="title-of-dialog" aria-hidden="true">
+			aria-labelledby="title-of-dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
 			<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
 				<div class="modal-content">
 					<div class="modal-header">
@@ -143,16 +165,17 @@
 										<li>Select the file as Input. The <b>Token</b> field should be filled automatically, and start uploading.</li>
 										<li> Provide the destination filename with extension.</li>
 										<li>Click on the <b>Finish Upload</b> to complete the upload </li>
+										<li>Click on <b>Check</b> to get a preview of the slide  </li>
 										<li>Finally <b>Post</b> it to caMicroscope</li>
 									</ul>
 								</div>
 								<div>
-									<form>
+									<form id="upload-form">
 										<table class="table table-borderless" cellpadding="5" cellspacing="0">
 											<tr>
 												<td align="right"><b>Files</b></td>
 												<td id="fileUploadInput"><input type="file" id="input"
-														onchange="handleUpload(this.files)" multiple></td>
+														onchange="handleUpload(this.files)"></td>
 											</tr>
 											<tr id="fileIdRow">
 												<td align="right"><b>ID</b></td>
@@ -176,7 +199,7 @@
 												value="Finish Upload" onclick="validateForm(finishUpload)">Finish
 												Upload</button>
 											<button class="btn btn-secondary" type="button" id="check_btn"
-												value="Check" onclick="CheckBtn()">Check</button>
+												value="Check" onclick="validateForm(CheckBtn);">Check</button>
 											<button class="btn btn-success" type="button" id="post_btn" value="Post"
 												onclick="validateForm(PostBtn)">Post</button>
 										</div>
@@ -245,6 +268,9 @@
 	<div class="text-center text-white bg-dark p-3" style="position: static;bottom: 0;width: 100%;">
 		<p class="p">Copyright © 2020 caMicroscope</p>
 	</div>
+	<!-- popup--->
+	<div id="popup-container"></div>
+
 </body>
 <script>
 	const HeadMapping = [{
@@ -299,6 +325,18 @@
 		});
 		selectedpage = 0;
 		showTablePage();
+	}
+
+	function resetUploadForm()
+	{
+		document.getElementById('upload-form').reset();
+		$('#fileIdRow').children().slice(1).remove();
+		$('#filenameRow').children().slice(1).remove();
+		$('#tokenRow').children().slice(1).remove();
+		$('#slidenameRow').children().slice(1).remove();
+		$('#filterRow').children().slice(1).remove();
+		$('#json_table').html('');
+		$('#load_status').html('');
 	}
 
 	function initialize() {
@@ -483,6 +521,19 @@
 		}
 	}
 
+	function hidePostButton()
+	{
+		$('#post_btn').hide();
+	}
+
+	function hideCheckButton()
+	{
+		$('#check_btn').hide();
+	}
+
+	$('[data-dismiss=modal]').on('click', resetUploadForm);
+
+	//window.addEventListener('resize', ()=>{$('#datatables').stacktable()});
 	$(document).ready(function(){
 		checkUserPermissions();
 		$('#deleteModal').on('hidden.bs.modal', function (e) {
