@@ -123,6 +123,9 @@
 				<li class="nav-item active link">
 					<a class="nav-link" href="table.html"> <i class="fas fa-list-ul"></i> Slides</a>
 				</li>
+				<li class="nav-item link">
+          <a class="nav-link" href="Info.html"> <i class="fas fa-info-circle"></i> Info</a>
+        </li>
 			</ul>
 			<ul class="navbar-nav">
 				<li class="nav-item link" style="font-family: sans-serif;">
@@ -561,9 +564,9 @@
 		if($("#entries").val() >= tableLength)
 			$("#tablePages").css("display","none");
 		else if($("#entries").val() < tableLength)
-			$("#tablePages").css("display","block");		
+			$("#tablePages").css("display","block");
 	}
-	
+
 	function deleteSld(e) {
 		const oid = e.dataset.id;
 		const oname = e.dataset.name;
