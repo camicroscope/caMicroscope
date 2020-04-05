@@ -154,13 +154,6 @@ async function initUIcomponents() {
     headerText: 'Help',
     hasFooter: false,
   });
-  // Create Modal to take input from user of new class list
-  $UI.chngClassLst = new ModalBox({
-    id: 'chngClass',
-    hasHeader: true,
-    headerText: 'Help',
-    hasFooter: false,
-  });
 
   // create the message queue
   $UI.message = new MessageQueue();
@@ -693,6 +686,7 @@ function uploadModel() {
         } catch (e) {
           status.innerHTML = 'Model with the same name already exists. Please choose a new name';
           status.classList.remove('blink');
+          return;
         }
         namearray.push(_name.value);
 
