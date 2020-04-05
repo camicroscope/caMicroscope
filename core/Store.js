@@ -620,6 +620,40 @@ class Store {
       },
     }).then(this.errorHandler);
   }
+
+  /**
+   * find overlays matching name and/or type
+   * @param {string} [name] - the slide name
+   * @param {string} [location] - the slide location, supporting regex match
+   * @return {promise} - promise which resolves with data
+   **/
+  findSlideAnnotations(slide, specimen, study, location) {
+    const suffix = 'Slide/find/mark';
+    const url = this.base + suffix;
+    const query = {
+      'from': 'mark',
+      'localField': 'slideId',
+      'foreignField': 'provenance.image.slide',
+      'as': 'annotations'
+    };
+    // if (slide) {
+    //   query.slide = slide;
+    // }
+    // if (study) {
+    //   query.study = study;
+    // }
+    // if (specimen) {
+    //   query.specimen = specimen;
+    // }
+    // if (location) {
+    //   query.location = location;
+    // }
+
+    return fetch(url + '?' + objToParamStr(query), {
+      credentials: 'include',
+      mode: 'cors',
+    }).then(this.errorHandler);
+  }
 }
 
 try {
