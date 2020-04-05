@@ -123,11 +123,24 @@ function initCore() {
           editedData: $D.editedDataClusters,
           size: $D.heatMapData.provenance.analysis.size,
           fields: $D.heatMapData.provenance.analysis.fields,
-          color: '#253494', // inputs[3].value
+          color: '#1034A6', // inputs[3].value
         };
 
         if ($D.heatMapData.provenance.analysis.setting) {
           opt.mode = $D.heatMapData.provenance.analysis.setting.mode;
+          if (
+            opt.mode === 'binal' &&
+            $D.heatMapData.provenance.analysis.setting.color
+          ) {
+            opt.color = $D.heatMapData.provenance.analysis.setting.color;
+          } else if (
+            opt.mode === 'gradient' &&
+            $D.heatMapData.provenance.analysis.setting.colors &&
+            $D.heatMapData.provenance.analysis.setting.colors.length>0
+          ) {
+            opt.colors = $D.heatMapData.provenance.analysis.setting.colors;
+            opt.steps = $D.heatMapData.provenance.analysis.setting.colors.length+1;
+          }
           if ($D.heatMapData.provenance.analysis.setting.field) {
             opt.currentFieldName = $D.heatMapData.provenance.analysis.setting.field;
           }
