@@ -373,7 +373,7 @@
 				<thead>${thead.reduce((a, b) => a + b)}</thead>
 				<tbody>${tbody.reduce((a, b) => a + b)}</tbody>
 				<tfoot><tr><td colspan='6'>
-					<nav aria-label="Slides Pages" class="">
+					<nav aria-label="Slides Pages" id='tablePages' class="">
 						<ul class="pagination justify-content-center">
 							<li id="previous-page" class="page-item"><a class="page-link">Previous</a></li>
 							${[...Array(totaltablepages).keys()].map((p)=>{
@@ -449,7 +449,9 @@
 				if(!searching) totaltablepages = Math.ceil(data.length/$("#entries").val());
 				else totaltablepages = Math.ceil($(".searched").length/$("#entries").val());
 				resetTable();
+				pageIndicatorVisible(data.length);
 			});
+			pageIndicatorVisible(data.length);
 		$('#datatables').stacktable();
 		});
 	}
@@ -485,7 +487,7 @@
 		checkUserPermissions();
 		$('#deleteModal').on('hidden.bs.modal', function (e) {
 			initialize();
-		  });
+		});
 	});
 	function checkUserPermissions(){
 		let userType=getUserType();
@@ -499,6 +501,14 @@
 				$(".DelButton").css("display","block");
 		});
 	}
+
+	function pageIndicatorVisible(tableLength){
+		if($("#entries").val() >= tableLength)
+			$("#tablePages").css("display","none");
+		else if($("#entries").val() < tableLength)
+			$("#tablePages").css("display","block");		
+	}
+	
 	function deleteSld(e) {
 		const oid = e.dataset.id;
 		const oname = e.dataset.name;		
