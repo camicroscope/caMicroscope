@@ -43,25 +43,38 @@
 			let slide = document.getElementById("slidename0");
 			// Check if input element is rendered or not
 			if(slide===null) {
+				finishUploadSuccess = false;
+				$('#check_btn').hide();
+				$('#post_btn').hide();
 				changeStatus("UPLOAD", "Please chose a file first");
 				return false;
 			}
 			//Check if slide name is empty
 			if (slide.value === "") {
+					finishUploadSuccess = false;
+					$('#check_btn').hide();
+					$('#post_btn').hide();
 					changeStatus("UPLOAD", "Please enter slide name");
 					return false;
 			}
 			//Sanitizing input
 			slide.value = sanitize(slide.value);
+			console.log(existingSlideNames,slide.value);
 			//Checking if silde with given name already exists
 			if(existingSlideNames.includes(slide.value)) {
 				changeStatus("UPLOAD", "Slide with given name already exists");
+				finishUploadSuccess = false;
+				$('#check_btn').hide();
+				$('#post_btn').hide();
 				return false;
 			}
 			//Checking for extension
 			let filename = document.getElementById("filename0").value
 			var fileExtension = filename.toLowerCase().split('.').reverse()[0];
 			if(!allowedExtensions.includes(fileExtension)) {
+				finishUploadSuccess = false;
+				$('#check_btn').hide();
+				$('#post_btn').hide();
 				changeStatus("UPLOAD", fileExtension + " files are not compatible");
 				return false;
 			}
@@ -152,6 +165,7 @@
 										<li>Select the file as Input. The <b>Token</b> field should be filled automatically, and start uploading.</li>
 										<li> Provide the destination filename with extension.</li>
 										<li>Click on the <b>Finish Upload</b> to complete the upload </li>
+										<li>Click on <b>Check</b> to get a preview of the slide  </li>
 										<li>Finally <b>Post</b> it to caMicroscope</li>
 									</ul>
 								</div>
@@ -161,7 +175,7 @@
 											<tr>
 												<td align="right"><b>Files</b></td>
 												<td id="fileUploadInput"><input type="file" id="input"
-														onchange="handleUpload(this.files)" multiple></td>
+														onchange="handleUpload(this.files)"></td>
 											</tr>
 											<tr id="fileIdRow">
 												<td align="right"><b>ID</b></td>

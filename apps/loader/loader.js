@@ -85,8 +85,6 @@ function changeStatus(step, text, reset=true) {
     $('#statusTable').stacktable();
     document.getElementById('load_status').innerHTML=step;
   } else {
-    checkSuccess=false;
-    $('#post_btn').hide();
     text = JSON.stringify(text);
     text = step + ' | ' + text;
     document.getElementById('load_status').innerHTML=text;
