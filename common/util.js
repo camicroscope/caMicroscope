@@ -790,7 +790,7 @@ function getUserType() {
   if(token_info && token_info.userType) {
     return token_info.userType;
   } else {
-    return "Null";
+    return "Null"; 
   }
 }
 function getUserId() {
