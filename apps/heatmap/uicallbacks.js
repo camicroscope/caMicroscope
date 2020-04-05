@@ -375,10 +375,8 @@ async function onUpdateHeatmapFields() {
   if ($CAMIC.viewer.heatmap.mode=='gradient') {
     setting.field = $CAMIC.viewer.heatmap._currentField.name;
     setting.colors = $CAMIC.viewer.heatmap._colors;
-    setting.color = null;
   } else if ($CAMIC.viewer.heatmap.mode=='binal') {
-    setting.color = $CAMIC.viewer.heatmap._color;
-    setting.colors = [];
+    setting.colors = [$CAMIC.viewer.heatmap._color];
   }
 
   const fields = $D.heatMapData.provenance.analysis.fields;
