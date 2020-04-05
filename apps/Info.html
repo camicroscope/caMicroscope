@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta name="keywords" content="camicroscope, quip" />
+	<meta charset='utf-8'>
+	<meta http-equiv='X-UA-Compatible' content='IE=edge'>
+	<meta name='viewport'
+		content='width=device-width, initial-scale=1, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no'>
+	<!-- common -->
+	<!-- <link rel='stylesheet' type='text/css' media='all' href='../css/style.css'/> -->
+	<!-- Check If we're logged in ok, otherwise, log in for us -->
+	<!-- Font Awesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+
+	<script src='../common/authChecker.js'></script>
+	<script>
+		__auth_check(1)
+	</script>
+
+	<script src='../core/Store.js'></script>
+	<script src='../common/util.js'></script>
+	<script src='../common/ajv.js'></script>
+	<script src='../components/loading/loading.js'></script>
+	<script src="./loader/loader.js"></script>
+	<script src="./loader/chunked_upload.js"></script>
+	<script>
+		function sanitize(string) {
+			const map = {
+				'&': '&amp;',
+				'<': '&lt;',
+				'>': '&gt;',
+				'"': '&quot;',
+				"'": '&#x27;',
+				"/": '&#x2F;',
+			};
+			const reg = /[&<>"'/]/ig;
+			return string.replace(reg, (match)=>(map[match]));
+		}
+		var existingSlideNames = [];
+		const allowedExtensions = ['svs', 'tif', 'tiff', 'vms', 'vmu', 'ndpi', 'scn', 'mrxs', 'bif', 'svslide'];
+		function validateForm(callback) {
+			let slide = document.getElementById("slidename0");
+			//Check if slide name is empty
+			if (slide.value === "") {
+					changeStatus("UPLOAD", "Please enter slide name");
+					return false;
+			}
+			//Sanitizing input
+			slide.value = sanitize(slide.value);
+			//Checking if silde with given name already exists
+			if(existingSlideNames.includes(slide.value)) {
+				changeStatus("UPLOAD", "Slide with given name already exists");
+				return false;
+			}
+			//Checking for extension
+			let filename = document.getElementById("filename0").value
+			var fileExtension = filename.toLowerCase().split('.').reverse()[0];
+			if(!allowedExtensions.includes(fileExtension)) {
+				changeStatus("UPLOAD", fileExtension + " files are not compatible");
+				return false;
+			}
+			callback();
+		}
+	</script>
+	<title>CaMicroscope Data Table</title>
+
+	<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+		integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+		crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+		integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+		crossorigin="anonymous"></script>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+		integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+	<link rel="stylesheet" href="../common/stacktable.css">
+	<style>
+		html,
+		body {
+			width: 100%;
+			height: 100%;
+			display: flex;
+			flex-direction: column;
+		}
+	</style>
+		<script src='../common/stacktable.js'></script>
+	<link rel="stylesheet" href="./table.css" />
+  <link rel="stylesheet" href="./info.css" />
+	<link rel="shortcut icon" type="image/x-icon" href="/apps/landing/favicon.png">
+</head>
+
+<body>
+	<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark" style="position: sticky;">
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse" id="navbarCollapse">
+			<ul class="navbar-nav mr-auto">
+				<li class="nav-item link">
+					<a class="nav-link" href="landing/landing.html"> <i class="fas fa-home"></i> Home</a>
+				</li>
+				<li class="nav-item link">
+					<a class="nav-link" href="table.html"> <i class="fas fa-list-ul"></i> Slides</a>
+				</li>
+        <li class="nav-item active link">
+          <a class="nav-link" href="Info.html"> <i class="fas fa-info-circle"></i> Info</a>
+        </li>
+			</ul>
+			<ul class="navbar-nav">
+				<li class="nav-item link" style="font-family: sans-serif;">
+					<a class="nav-link" href="./signup/signup.html"> <i class="fas fa-user-plus"></i> Signup</a>
+				</li>
+				<li class="nav-item link">
+					<a class="nav-link" target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLScL91LxrpAZjU88GBZP9gmcdgdf8__uNUwhws2lzU6Lr4qNwA/viewform"> <i class="fas fa-comment"></i> Feedback</a>
+				</li>
+			</ul>
+		</div>
+	</nav>
+
+	<div class="header text-center text-white bg-info p-4">
+		<h1 class="h1">caMicroscope</h1>
+		<p>Digital pathology image viewer with support for human/machine generated annotations and markups.</p>
+	</div>
+	<h3 class="text-center h3 mb-0" style="margin-top:8px;margin-bottom:10px;">Information Dashboard</h3>
+  <div class="summary">
+    <table class="dash">
+			<thead></thead>
+			<tbody></tbody>
+    </table>
+  </div>
+	<div class="text-center text-white bg-dark p-3" style="position: absolute;bottom: 0;width: 100%;">
+		<p class="p">Copyright © 2020 caMicroscope</p>
+	</div>
+
+</body>
+<script>
+
+function addhead(){
+	var table = $('table thead');
+	var markup = "<tr><th>_ID</th><th>Name</th><th>Annotations</th><th>Heatmap</th></tr>";
+	table.append(markup);
+	console.log(table);
+}
+function addbody(JSONdata){
+	var table = $('table tbody');
+	// console.log(JSONdata.annotations);
+	var annodisp=null;
+	var heatdisp=null;
+	if(JSONdata.annotations.length===0){
+		annodisp="<i class='fas fa-times' style='color:red;'></i>"
+	}
+	else{
+		annodisp="<i class='fas fa-check'  style='color:green;'></i>"
+	}
+	if(JSONdata.heatmap.length===0){
+		heatdisp="<i class='fas fa-times' style='color:red;'></i>"
+	}
+	else{
+		heatdisp="<i class='fas fa-check'  style='color:green;'></i>"
+	}
+	var markup = "<tr><td>"+JSONdata.id+"</td><td>"+JSONdata.name+"</td><td>"+annodisp+"</td><td>"+heatdisp+"</td></tr>"
+	table.append(markup);
+}
+function initialize() {
+	const params = getUrlVars();
+	const store = new Store('../data/');
+	store.findSlide()
+		.then(function (data) {
+			if (data.length == 0) {
+				var div = document.querySelector('.container');
+				div.textContent = `No Data Found ... x _ x`;
+				div.classList = `text-center p-4`;
+				return;
+			}
+			addhead();
+			for (var i = 0; i < data.length; i++) {
+				const JSONdata={};
+				JSONdata.id=data[i]._id.$oid;
+				JSONdata.name=data[i].name;
+				store.fetchMark(JSONdata.id).then(function(dataq){
+					JSONdata.annotations=dataq;
+					store.fetchHeatMap(JSONdata.id).then(function(dataqt){
+						JSONdata.heatmap=dataqt;
+						addbody(JSONdata);
+					});
+				});
+
+
+			}
+	});
+}
+  	document.addEventListener('DOMContentLoaded', initialize);
+</script>
+
+</html>
