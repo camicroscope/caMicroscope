@@ -346,9 +346,11 @@ function createIntervalInputs(container, noOfIntervals, changeFunc) {
     label.className = 'color-input';
     const color = document.createElement('input');
     color.type = 'color';
-    color.value = $CAMIC.viewer.heatmap.mode==='gradient' ?
-      $CAMIC.viewer.heatmap._colors[i - 1] :
-      defaultColorList[getGradientColorIndex(i, noOfIntervals)];
+    if (i <= $CAMIC.viewer.heatmap._colors.length) {
+      color.value = $CAMIC.viewer.heatmap._colors[i - 1];
+    } else {
+      color.value = defaultColorList[i - 1];
+    }
     color.oninput = changeFunc;
     // Input for color legends.
     div.appendChild(label);

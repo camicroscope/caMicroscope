@@ -89,13 +89,7 @@
       );
     }
     this._color = options.color || '#1034a6'; // heatmap color
-    this._colors = options.colors || [
-      '#D4E6F1',
-      '#7FB3D5',
-      '#2980B9',
-      '#1F618D',
-      '#154360',
-    ]; // heatmap color
+    this._colors = options.colors || ['#EAF2F8', '#D4E6F1', '#A9CCE3', '#7FB3D5', '#5499C7']; // heatmap color
     this.intervals = _getIntervals(
       this._currentField,
       this._colors,
@@ -233,13 +227,7 @@
         );
       }
       this._color = options.color || this._color || '#1034a6';
-      this._colors = options.colors || this._colors || [
-        '#D4E6F1',
-        '#7FB3D5',
-        '#2980B9',
-        '#1F618D',
-        '#154360',
-      ];
+      this._colors = options.colors || this._colors || ['#EAF2F8', '#D4E6F1', '#A9CCE3', '#7FB3D5', '#5499C7'];
       this.intervals = _getIntervals(
         this._currentField,
         this._colors,
@@ -819,7 +807,7 @@
 
   function _getIntervals(
     field,
-    colors = ['#D4E6F1', '#7FB3D5', '#2980B9', '#1F618D', '#154360'],
+    colors = ['#EAF2F8', '#D4E6F1', '#A9CCE3', '#7FB3D5', '#5499C7'],
     steps = 6
   ) {
     // get list of colors
@@ -827,13 +815,7 @@
     // const colorList = interpolateColors(hexToRgb(colors[0]),hexToRgb(colors[1]),steps);
 
     // Default preset of colors
-    const defaultColorList = [
-      '#D4E6F1',
-      '#7FB3D5',
-      '#2980B9',
-      '#1F618D',
-      '#154360',
-    ];
+    const defaultColorList = ['#EAF2F8', '#D4E6F1', '#A9CCE3', '#7FB3D5', '#5499C7'];
 
     if (colors.length + 1 != steps) {
       console.log(
@@ -865,7 +847,7 @@
       rs.push({
         color: colors[i],
         range: [boundaries[i], boundaries[i + 1]],
-        data: []
+        data: [],
       });
     }
     return rs;
