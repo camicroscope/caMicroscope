@@ -144,7 +144,7 @@
 		<button type="button" class="btn btn-success float-right mb-2"
 			onclick="(()=>{location.reload();return false;})()"> <i class="fas fa-sync-alt"></i> Reload</button>
 		<button type="button" class="btn btn-primary float-right mb-2 mr-2" data-toggle="modal"
-			data-target="#upload-dialog" onclick="hidePostButton(); hideCheckButton();"" <i class="fas fa-upload"></i> Upload</button>
+			data-target="#upload-dialog" onclick="hidePostButton(); hideCheckButton(); resetUploadForm();"" <i class="fas fa-upload"></i> Upload</button>
 			<div class="modal fade" id="upload-dialog" tabindex="-1" role="dialog"
 			aria-labelledby="title-of-dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
 			<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
@@ -330,11 +330,13 @@
 	function resetUploadForm()
 	{
 		document.getElementById('upload-form').reset();
-		let filename = document.getElementById("filename0");
-		if(filename!==null)
-		{
-			filename.value='';
-		}
+		$('#fileIdRow').children().slice(1).remove();
+		$('#filenameRow').children().slice(1).remove();
+		$('#tokenRow').children().slice(1).remove();
+		$('#slidenameRow').children().slice(1).remove();
+		$('#filterRow').children().slice(1).remove();
+		$('#json_table').html('');
+		$('#load_status').html('');
 	}
 
 	function initialize() {
