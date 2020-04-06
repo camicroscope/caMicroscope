@@ -1377,6 +1377,7 @@ async function callback(data) {
       loadAnnotationById(camic, d, null);
     } else {
       if (!d.layer) d.layer = camic.viewer.omanager.addOverlay(item);
+      if (!d.isShow) $UI.annotPopup.close();
       d.layer.isShow = d.isShow;
       camic.viewer.omanager.updateView();
     }
