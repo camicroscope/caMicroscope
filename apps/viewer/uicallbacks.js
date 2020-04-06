@@ -1295,7 +1295,7 @@ async function callback(data) {
           mode: 'binal',
           size: $D.heatMapData.provenance.analysis.size,
           fields: $D.heatMapData.provenance.analysis.fields,
-          color: '#253494', // inputs[3].value
+          color: '#1034A6', // inputs[3].value
         };
 
         if ($D.heatMapData.provenance.analysis.setting) {
@@ -1322,7 +1322,7 @@ async function callback(data) {
                   // editedData:$D.editedDataClusters,
                   size: $D.heatMapData.provenance.analysis.size,
                   fields: $D.heatMapData.provenance.analysis.fields,
-                  color: '#253494', // inputs[3].value
+                  color: '#1034A6', // inputs[3].value
                 };
 
                 if ($D.heatMapData.provenance.analysis.setting) {

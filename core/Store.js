@@ -171,6 +171,16 @@ class Store {
       mode: 'cors',
     }).then(this.errorHandler).then((x)=>this.filterBroken(x, 'mark'));
   }
+  fetchMark(slideId) {
+    const suffix = 'Mark/find';
+    const url = this.base + suffix;
+    const query = {};
+    query['provenance.image.slide'] = slideId;
+    return fetch(url + '?' + objToParamStr(query), {
+      credentials: 'include',
+      mode: 'cors',
+    }).then(this.errorHandler).then((x)=>this.filterBroken(x, 'mark'));
+  }
   /**
    * post mark
    * @param {object} json - the mark data
@@ -249,6 +259,16 @@ class Store {
     if (slide) {
       query['provenance.image.slide'] = slide;
     }
+    return fetch(url + '?' + objToParamStr(query), {
+      credentials: 'include',
+      mode: 'cors',
+    }).then(this.errorHandler).then((x)=>this.filterBroken(x, 'heatmap'));
+  }
+  fetchHeatMap(slideId) {
+    const suffix = 'Heatmap/find';
+    const url = this.base + suffix;
+    const query = {};
+    query['provenance.image.slide'] = slideId;
     return fetch(url + '?' + objToParamStr(query), {
       credentials: 'include',
       mode: 'cors',
@@ -650,6 +670,24 @@ class Store {
     // }
 
     return fetch(url + '?' + objToParamStr(query), {
+      credentials: 'include',
+      mode: 'cors',
+    }).then(this.errorHandler);
+  }
+}
+  /**
+   * delete slide
+   * @param {object} id - the slide object id
+   * @return {promise} - promise which resolves with response
+   **/
+  deleteSlide(id) {
+    const suffix = 'Slide/delete';
+    const url = this.base + suffix;
+    const query = {
+      '_id': id,
+    };
+    return fetch(url + '?' + objToParamStr(query), {
+      method: 'DELETE',
       credentials: 'include',
       mode: 'cors',
     }).then(this.errorHandler);

@@ -1,0 +1,38 @@
+body{
+  overflow: hidden;
+}
+.summary{
+  height: auto;
+
+  width: 90vw;
+    margin: auto;
+  margin-bottom: 13vh;
+  overflow-y: auto;
+  margin-top: 1.5vh;
+  overflow-x: auto;
+}
+.dash{
+  margin: auto;
+  width: max-content;
+  border-spacing: 2px;
+  overflow-x: auto;
+}
+th{
+  text-align: center;
+  padding: .75rem;
+  padding-left: 1.2rem;
+  padding-right: 1.2rem;
+  vertical-align: top;
+  border-top: 1px solid #dee2e6;
+  border-bottom: 1px solid #dee2e6;
+}
+td{
+  text-align: center;
+  padding: .75rem;
+  padding-left: 1.2rem;
+  padding-right: 1.2rem;
+  vertical-align: top;
+  border-bottom: 1px solid #dee2e6;
+}
+
+tr:nth-child(even){background-color: #f2f2f2}
