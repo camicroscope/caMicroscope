@@ -516,7 +516,7 @@ function initCore() {
               ) {
                 area = `${Math.round(
                     data.geometries.features[data.selected].properties.area,
-                )}μm^2`;
+                )} μm²`;
               }
               if (
                 (data.selected != null || data.selected != undefined) &&
@@ -526,7 +526,7 @@ function initCore() {
                 circumference = `${Math.round(
                     data.geometries.features[data.selected].properties
                         .circumference,
-                )}μm`;
+                )} μm`;
               }
             } // othereise, don't try to calculate area and circumference
             // human
