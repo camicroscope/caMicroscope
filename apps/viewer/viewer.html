@@ -160,7 +160,7 @@
       media="all"
       href="../../css/popup.css"
     />
-
+    <link href="./bootstrap-tour-standalone.min.css" rel="stylesheet">
     <!--  common js START -->
     <!-- util.js -->
     <script type="text/javascript" src="../../common/util.js"></script>
@@ -324,6 +324,8 @@
     <script src="./uicallbacks.js"></script>
     <script src="./dataloaders.js"></script>
     <script src="./init.js"></script>
+    <script src="./bootstrap-tour-standalone.min.js"></script>
+    <script src="./tut.js"></script>
   </head>
   <body>
     <!-- message-->
@@ -360,7 +362,6 @@
 
     <!-- popup--->
     <div id="popup-container"></div>
-
   </body>
   <script type="text/javascript">
     if (detectIE()) {
@@ -422,5 +423,6 @@
     if ($D.params.states) {
       $D.params.states = StatesHelper.decodeStates($D.params.states);
     }
+
   </script>
 </html>

@@ -832,7 +832,17 @@ async function initUIcomponents() {
       window.open('https://goo.gl/forms/mgyhx4ADH0UuEQJ53', '_blank').focus();
     },
   });
-
+  subToolsOpt.push({
+    name: 'tutorial',
+    icon: 'help',
+    title: 'Tutorial',
+    value: 'tutorial',
+    type: 'btn',
+    callback: function(){
+      tour.init();
+      tour.start(true);
+    },
+  });
   // create the tool bar
   $UI.toolbar = new CaToolbar({
     /* opts that need to think of*/
