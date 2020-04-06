@@ -69,25 +69,22 @@ async function handleUpload(selectedFiles) {
     idtr.deleteCell(1);
   }
 
-  var currID = 0;
   // Add columns
-  for (var i=0; i<selectedFiles.length; i++, currID++) {
-    idtr.insertCell(-1).innerHTML = '<b>'+Number(currID+1)+'<b>';
-    fnametr.insertCell(-1).innerHTML = `<input type=text class="form-control" name=filename id='filename${currID}'
-    onchange=hideCheckButton();hidePostButton(); value='${selectedFiles[i]['name']}'>`;
-    tokentr.insertCell(-1).innerHTML = `<input type=text class="form-control" onchange=hideCheckButton();hidePostButton();
-    disabled name=token id='token${currID}'>`;
-    slidetr.insertCell(-1).innerHTML = `<input type=text class="form-control" name=slidename id='slidename${currID}'>`;
-    filtertr.insertCell(-1).innerHTML = `<input type=text class="form-control" name=filter id='filter${currID}'>`;
+  idtr.insertCell(-1).innerHTML = '<b>'+Number(1)+'<b>';
+  fnametr.insertCell(-1).innerHTML = `<input type=text class="form-control" name=filename id='filename0'
+  onchange=hideCheckButton();hidePostButton(); value='${selectedFiles[0]['name']}'>`;
+  tokentr.insertCell(-1).innerHTML = `<input type=text class="form-control" onchange=hideCheckButton();hidePostButton();
+  disabled name=token id='token0'>`;
+  slidetr.insertCell(-1).innerHTML = `<input type=text class="form-control" name=slidename id='slidename0'>`;
+  filtertr.insertCell(-1).innerHTML = `<input type=text class="form-control" name=filter id='filter0'>`;
 
-    selectedFile = selectedFiles[i];
-    const filename = document.getElementById('filename'+currID).value;
-    const token = await startUpload(filename);
-    const callback = continueUpload(token);
-    document.getElementById('token'+currID).value = token;
-    readFileChunks(selectedFile, token);
-    // parseFile(selectedFile, callback, 0, x=>(changeStatus("UPLOAD", "Finished Reading File")))
-  }
+  selectedFile = selectedFiles[0];
+  const filename = document.getElementById('filename'+0).value;
+  const token = await startUpload(filename);
+  const callback = continueUpload(token);
+  document.getElementById('token'+0).value = token;
+  readFileChunks(selectedFile, token);
+  // parseFile(selectedFile, callback, 0, x=>(changeStatus("UPLOAD", "Finished Reading File")))
 
   document.getElementById('fileUploadInput').colSpan = selectedFiles.length;
   document.getElementById('controlButtons').colSpan = selectedFiles.length+1;
@@ -117,64 +114,61 @@ function continueUpload(token) {
 }
 function finishUpload() {
   var reset = true;
-  for (var i=0; i<document.getElementById('fileIdRow').cells.length-1; i++) {
-    const token = document.getElementById('token'+i).value;
-    const filename = document.getElementById('filename'+i).value;
-    if (token === oldToken) {
-      tokenChange=false;
-    } else {
-      tokenChange=true;
-      oldToken=token;
-    }
-    if (filename === oldFilename) {
-      filenameChange = false;
-    } else {
-      filenameChange=true;
-      oldFilename=filename;
-    }
-    if (!filenameChange && !tokenChange) {
-      if (finishUploadSuccess) {
-        changeStatus('UPLOAD', 'You have already uploaded this file just now.');
-        if (checkSuccess) {
-          $('#check_btn').show();
-          $('#post_btn').show();
-        }
-      }
-      return;
-    }
-    const body = {filename: filename};
-    changeStatus('UPLOAD', 'Finished Reading File, Posting');
-    const regReq = fetch(finishUrl + token, {method: 'POST', body: JSON.stringify(body), headers: {
-      'Content-Type': 'application/json; charset=utf-8',
-    }});
-    console.log(i);
-    regReq.then((x)=>x.json()).then((a)=>{
-      changeStatus('UPLOAD | Finished', a, reset); reset = false;
-      console.log(a);
-      if (typeof a === 'object' && a.error) {
-        finishUploadSuccess = false;
-        $('#check_btn').hide();
-        $('#post_btn').hide();
-      } else {
-        finishUploadSuccess=true;
-        if (checkSuccess===true) {
-          $('#check_btn').show();
-          $('#post_btn').show();
-        } else {
-          $('#check_btn').show();
-          $('#post_btn').hide();
-        }
-      }
-    });
-    regReq.then((e)=> {
-      if (e['ok']===false) {
-        finishUploadSuccess = false;
-        $('#check_btn').hide();
-        $('#post_btn').hide();
-        changeStatus('UPLOAD | ERROR;', e);
-        reset = true;
-        console.log(e);
-      }
-    });
+  const token = document.getElementById('token'+0).value;
+  const filename = document.getElementById('filename'+0).value;
+  if (token === oldToken) {
+    tokenChange=false;
+  } else {
+    tokenChange=true;
+    oldToken=token;
   }
+  if (filename === oldFilename) {
+    filenameChange = false;
+  } else {
+    filenameChange=true;
+    oldFilename=filename;
+  }
+  if (!filenameChange && !tokenChange) {
+    if (finishUploadSuccess) {
+      changeStatus('UPLOAD', 'You have already uploaded this file just now.');
+      if (checkSuccess) {
+        $('#check_btn').show();
+        $('#post_btn').show();
+      }
+    }
+    return;
+  }
+  const body = {filename: filename};
+  changeStatus('UPLOAD', 'Finished Reading File, Posting');
+  const regReq = fetch(finishUrl + token, {method: 'POST', body: JSON.stringify(body), headers: {
+    'Content-Type': 'application/json; charset=utf-8',
+  }});
+  regReq.then((x)=>x.json()).then((a)=>{
+    changeStatus('UPLOAD | Finished', a, reset); reset = false;
+    console.log(a);
+    if (typeof a === 'object' && a.error) {
+      finishUploadSuccess = false;
+      $('#check_btn').hide();
+      $('#post_btn').hide();
+    } else {
+      finishUploadSuccess=true;
+      if (checkSuccess===true) {
+        $('#check_btn').show();
+        $('#post_btn').show();
+      } else {
+        $('#check_btn').show();
+        $('#post_btn').hide();
+      }
+    }
+  });
+  regReq.then((e)=> {
+    if (e['ok']===false) {
+      finishUploadSuccess = false;
+      $('#check_btn').hide();
+      $('#post_btn').hide();
+      changeStatus('UPLOAD | ERROR;', e);
+      reset = true;
+      console.log(e);
+    }
+  });
 }

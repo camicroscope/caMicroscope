@@ -183,19 +183,13 @@ function UploadBtn() {
 }
 
 function CheckBtn() {
-  for (var i=0; i<document.getElementById('fileIdRow').cells.length-1; i++) {
-    var filename = document.getElementById('filename'+i).value;
-    if (i==0) handleCheck(filename, true, i+1);
-    else handleCheck(filename, false, i+1);
-  }
+  var filename = document.getElementById('filename'+0).value;
+  handleCheck(filename, true, 1);
 }
 
 function PostBtn() {
-  for (var i=0; i<document.getElementById('fileIdRow').cells.length-1; i++) {
-    var filename = document.getElementById('filename'+i).value;
-    var slidename = document.getElementById('slidename'+i).value;
-    var filter = document.getElementById('filter'+i).value;
-    if (i==0) handlePost(filename, slidename, filter, true);
-    else handlePost(filename, slidename, false);
-  }
+  var filename = document.getElementById('filename'+0).value;
+  var slidename = document.getElementById('slidename'+0).value;
+  var filter = document.getElementById('filter'+0).value;
+  handlePost(filename, slidename, filter, true);
 }
