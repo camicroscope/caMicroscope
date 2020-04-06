@@ -6,7 +6,7 @@ var csvContent;
 window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
 // id(autoinc), name, location(name+id), classes
 var request; var db;
-var namearray = [];
+var modelName;
 
 // tensorflowjs creates its own IndexedDB on saving a model.
 (async function(callback) {
@@ -158,6 +158,7 @@ async function initUIcomponents() {
   // create the message queue
   $UI.message = new MessageQueue();
   const dropDownList = [];
+  modelName = [];
   Object.keys(await tf.io.listModels()).forEach(function(element) {
     const dict = {};
     const value = element.split('/').pop();
@@ -167,6 +168,8 @@ async function initUIcomponents() {
       dict.title = title;
       dict.value = value;
       dict.checked = false;
+      //Saving to previously defined model names
+      modelName.push(dict['title']);
       dropDownList.push(dict);
     }
   });
@@ -600,14 +603,6 @@ function runPredict(key) {
   }
 }
 
-//  Function to check if model name is repeated or not.
-function checkNameDuplicate(name) {
-  if (namearray.indexOf(name)!=-1) {
-    return 1;
-  }
-  return 0;
-}
-
 
 // TO-DO: Allow uploading and using tensorflow graph models. Can't save graph models. Need to use right away.
 function uploadModel() {
@@ -664,6 +659,18 @@ function uploadModel() {
         var modelInput = tf.io.browserFiles([topology.files[0], ...weights.files]);
       }
 
+      //Check if model with same name is previously defined
+      try {
+        if (modelName.indexOf(_name.value)!=-1) {
+          throw new Error('Model name repeated');
+        }
+      } catch (e) {
+        status.innerHTML = 'Model with the same name already exists. Please choose a new name';
+        status.classList.remove('blink');
+        console.log(e);
+        return;
+      }
+
       try {
         // This also ensures that valid model is uploaded.
         const model = await tf.loadLayersModel(modelInput);
@@ -678,17 +685,6 @@ function uploadModel() {
           status.classList.remove('blink');
           return;
         }
-
-        try {
-          if (checkNameDuplicate(_name.value)) {
-            throw new Error('Model name repeated');
-          }
-        } catch (e) {
-          status.innerHTML = 'Model with the same name already exists. Please choose a new name';
-          status.classList.remove('blink');
-          return;
-        }
-        namearray.push(_name.value);
 
         await model.save(IDB_URL + name);
 
