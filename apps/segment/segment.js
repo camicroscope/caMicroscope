@@ -155,7 +155,7 @@ async function initUIcomponents() {
       dict.title = title;
       dict.value = value;
       dict.checked = false;
-      //Saving to previously defined model names
+      // Saving to previously defined model names
       modelName.push(dict['title']);
       dropDownList.push(dict);
     }
@@ -588,7 +588,7 @@ function uploadModel() {
         var modelInput = tf.io.browserFiles([topology.files[0], ...weights.files]);
       }
 
-      //Check if model with same name is previously defined
+      // Check if model with same name is previously defined
       try {
         if (modelName.indexOf(_name.value)!=-1) {
           throw new Error('Model name repeated');
