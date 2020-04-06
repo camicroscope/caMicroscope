@@ -146,8 +146,8 @@
 	<div class='p-2 bg-light' style="flex-grow: 1;">
 		<button type="button" class="btn btn-success float-right mb-2"
 			onclick="(()=>{location.reload();return false;})()"> <i class="fas fa-sync-alt"></i> Reload</button>
-		<button type="button" class="btn btn-primary float-right mb-2 mr-2" data-toggle="modal"
-			data-target="#upload-dialog" onclick="hidePostButton(); hideCheckButton(); resetUploadForm();"" <i class="fas fa-upload"></i> Upload</button>
+		<button id="slideUploadButton" type="button" class="btn btn-primary float-right mb-2 mr-2" data-toggle="modal"
+			data-target="#upload-dialog" onclick="hidePostButton(); hideCheckButton(); resetUploadForm();" style="display: none;"> <i class="fas fa-upload"></i> Upload</button>
 			<div class="modal fade" id="upload-dialog" tabindex="-1" role="dialog"
 			aria-labelledby="title-of-dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
 			<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
@@ -177,8 +177,14 @@
 										<table class="table table-borderless" cellpadding="5" cellspacing="0">
 											<tr>
 												<td align="right"><b>Files</b></td>
-												<td id="fileUploadInput"><input type="file" id="input"
-														onchange="handleUpload(this.files)"></td>
+												<td id="fileUploadInput">
+														<span class="input-group mb-3" >
+															<span class="custom-file">
+															  <input type="file" class="custom-file-input" id="input" onchange="handleUpload(this.files)">
+															  <label class="custom-file-label" for="input" style="overflow: hidden;">Choose file</label>
+															</span>
+														</span>
+													</td>
 											</tr>
 											<tr id="fileIdRow">
 												<td align="right"><b>ID</b></td>
@@ -542,6 +548,10 @@
 		$('#deleteModal').on('hidden.bs.modal', function (e) {
 			initialize();
 		});
+		$('#input').on('change',function(){
+			var fileName = $(this).val().split('\\').pop();
+			$(this).next('.custom-file-label').html(fileName);
+		});
 	});
 	function checkUserPermissions(){
 		let userType=getUserType();
@@ -557,6 +567,8 @@
 			permissions = data;
 			if(permissions.slide.delete == true)
 				$(".DelButton").css("display","block");
+			if(permissions.slide.post == true)
+				$("#slideUploadButton").css("display","block");
 		});
 	}
 
