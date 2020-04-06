@@ -98,8 +98,11 @@
 				<li class="nav-item link">
 					<a class="nav-link" href="../landing/landing.html"> <i class="fas fa-home"></i> Home</a>
 				</li>
+				<li class="nav-item link">
+					<a class="nav-link" href="../table.html"> <i class="fas fa-list-ul"></i> Slides</a>
+				</li>
 				<li class="nav-item active link">
-					<a class="nav-link" href="table.html"> <i class="fas fa-list-ul"></i> Slides</a>
+					<a class="nav-link" href="#"> <i class="fas fa-chalkboard-teacher"></i> Dashboard</a>
 				</li>
 			</ul>
 			<ul class="navbar-nav">
@@ -148,6 +151,47 @@
 	<div class="text-center text-white bg-dark p-3" style="position: static;bottom: 0;width: 100%;">
 		<p class="p">Copyright © 2020 caMicroscope</p>
 	</div>
+
+
+	<!-- Modal -->
+	<div class="modal fade bd-example-modal-xl" id="detailsModal" tabindex="-1" role="dialog" aria-labelledby="detailsModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+			<h5 class="modal-title" id="detailsModalLabel">Modal title</h5>
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+			</button>
+			</div>
+			<div class="modal-body pb-5">
+				<div class="container">
+					<h4>Annotations</h4>
+					<hr>
+					<div id="annotationsDiv" class="container-fluid">
+						<div class="accordion" id="accordionAnnotation">
+							
+						</div>
+					</div>
+				</div>
+				<div class="container mt-4">
+					<h4>Heatmaps</h4>
+					<hr>
+					<div id="heatmapsDiv" class="container-fluid">
+						<div class="accordion mb-5" id="accordionHeatmap">
+
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+			<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+			<!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+			</div>
+		</div>
+		</div>
+	</div>
+
+
 </body>
 <script>
 	const HeadMapping = [{
@@ -168,10 +212,14 @@
 	}, {
 		title: 'Annotations',
 		field: 'annotationNames'
+	}, {
+		title: 'Heatmaps',
+		field: 'heatmapNames'
 	}];
 	var totaltablepages;
 	var selectedpage;
 	var searching;
+	var filteredData = [];
 
 	function showTablePage(){
 		$("#datatables tbody tr").filter(function(){
@@ -213,7 +261,7 @@
 		store.findSlideAnnotations()
 			.then(function (data) {
 				console.log(data);
-				var filteredData = []
+				filteredData = []
 				// var annotationNames = []
 				data.forEach((data, i) => {
 					if (data.annotations.length) {
@@ -222,6 +270,23 @@
 							annotationNames.push(annotations.provenance.analysis.name);
 						});
 						data.annotationNames = annotationNames.join(', ');
+						// filteredData.push(data);
+					}
+					if (data.heatmaps.length) {
+						var heatmapNames = []
+						data.heatmaps.forEach((heatmaps, k) => {
+							heatmapNames.push(heatmaps.provenance.analysis.execution_id);
+						});
+						data.heatmapNames = heatmapNames.join(', ');
+						// filteredData.push(data);
+					}
+					if (data.annotationNames || data.heatmapNames) {
+						if (!data.annotationNames) {
+							data.annotationNames = "<i class='text text-muted'>None</i>"
+						}
+						if (!data.heatmapNames) {
+							data.heatmapNames = "<i class='text text-muted'>None</i>"
+						}
 						filteredData.push(data);
 					}
 				});
@@ -246,6 +311,8 @@
 							else if (!d[key]) rs.push('')
 							else rs.push(d[key])
 						});
+						const viewBtn = `<button class="btn btn-info" data-id='${rs[0]}' onclick='openModal(this)'>Details</button>`
+						rs.push(viewBtn);
 						const btn = `<button class="btn btn-success" data-id='${rs[0]}' onclick='openView(this)'>Open</button>`
 						rs.push(btn);
 						return rs;
@@ -395,6 +462,96 @@
 		const oid = e.dataset.id;
 		if (oid) {
 			window.location.href = `../viewer/viewer.html?slideId=${oid}`;
+		} else {
+			alert('No Data Id');
+		}
+	}
+
+	function openModal(e) {
+		const oid = e.dataset.id;
+		if (oid) {
+			console.log(oid);
+			filteredData.forEach((data, i) => {
+				if (data.slideId == oid) {
+					if (data.annotations.length) {
+						var annotationData = data.annotations;
+						$('#annotationsDiv .accordion').html('');
+						annotationData.forEach((annotation, j) => {
+							$('#annotationsDiv .accordion').append(`
+								<div class="card">
+									<div class="card-header" id="heading-${annotation._id}">
+										<h2 class="mb-0">
+										<button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapse-${annotation._id}" aria-expanded="false" aria-controls="collapse-${annotation._id}">
+											<h5>Annotation Name: ${annotation.provenance.analysis.name}</h5>
+										</button>
+										</h2>
+									</div>
+									<div id="collapse-${annotation._id}" class="collapse" aria-labelledby="heading-${annotation._id}" data-parent="#accordionAnnotation">
+										<div class="card-body">
+											<ul>
+												<li><b>Name</b>: ${annotation.provenance.analysis.name}</li>
+												<li><b>Source</b>: ${annotation.provenance.analysis.source ? annotation.provenance.analysis.source : '--'}</li>
+												<li><b>Histology</b>: ${annotation.properties.annotations.histology ? annotation.properties.annotations.histology : '--'}</li>
+												<li><b>Normal Tissue Type</b>: ${annotation.properties.annotations.normal_tissue_type ? annotation.properties.annotations.normal_tissue_type : '--'}</li>
+												<li><b>Tumor Present</b>: ${annotation.properties.annotations.tumor_present ? annotation.properties.annotations.tumor_present : '--'}</li>
+												<li><b>Tumor Cellularity</b>: ${annotation.properties.annotations.tumor_cellularity ? annotation.properties.annotations.tumor_cellularity : '--'}</li>
+												<li><b>Tumor Necrosis</b>: ${annotation.properties.annotations.tumor_necrosis ? annotation.properties.annotations.tumor_necrosis : '--'}</li>
+												<li><b>Cellularity 10</b>: ${annotation.properties.annotations.cellularity_10 ? annotation.properties.annotations.cellularity_10 : '--'}</li>
+												<li><b>Adequacy</b>: ${annotation.properties.annotations.adequacy ? annotation.properties.annotations.adequacy : '--'}</li>
+												<li><b>Digital Slide Quality</b>: ${annotation.properties.annotations.digital_slide_quality ? annotation.properties.annotations.digital_slide_quality : '--'}</li>
+												<li><b>Histology Other Type</b>: ${annotation.properties.annotations.hist_other_type ? annotation.properties.annotations.hist_other_type : '--'}</li>
+												<li><b>Additional Notes</b>: ${annotation.properties.annotations.additional_notes ? annotation.properties.annotations.additional_notes : '--'}</li>
+												<li><b>Execution ID</b>: ${annotation.provenance.analysis.execution_id ? annotation.provenance.analysis.execution_id : '--'}</li>
+											</ul>
+										</div>
+									</div>
+								</div>
+							`);
+						});
+					} else {
+						$('#heatmapsDiv .accordion').html('No annotation data found');
+					}
+					if (data.heatmaps.length) {
+						var heatmapData = data.heatmaps;
+						$('#heatmapsDiv .accordion').html('');
+						heatmapData.forEach((heatmap, j) => {
+							var fields = [];
+							if (heatmap.provenance.analysis.fields.length) {
+								heatmap.provenance.analysis.fields.forEach((field) => {
+									fields.push(field.name);
+								});
+							}
+							$('#heatmapsDiv .accordion').append(`
+								<div class="card">
+									<div class="card-header" id="heading-${heatmap._id}">
+										<h2 class="mb-0">
+										<button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapse-${heatmap._id}" aria-expanded="false" aria-controls="collapse-${heatmap._id}">
+											<h5>Heatmap Name: ${heatmap.provenance.analysis.execution_id}</h5>
+										</button>
+										</h2>
+									</div>
+									<div id="collapse-${heatmap._id}" class="collapse" aria-labelledby="heading-${heatmap._id}" data-parent="#accordionHeatmap">
+										<div class="card-body">
+											<ul>
+												<li><b>Name</b>: ${heatmap.provenance.analysis.study_id}</li>
+												<li><b>Computation</b>: ${heatmap.provenance.analysis.computation ? heatmap.provenance.analysis.computation : '--'}</li>
+												<li><b>Type</b>: ${heatmap.provenance.analysis.type ? heatmap.provenance.analysis.type : '--'}</li>
+												<li><b>Co-ordinate System</b>: ${heatmap.provenance.analysis.coordinateSystem ? heatmap.provenance.analysis.coordinateSystem : '--'}</li>
+												<li><b>Execution ID</b>: ${heatmap.provenance.analysis.execution_id ? heatmap.provenance.analysis.execution_id : '--'}</li>
+												<li><b>Fields</b>: ${fields ? fields.join(', ') : '--'}</li>
+											</ul>
+										</div>
+									</div>
+								</div>
+							`);
+						});
+					} else {
+						$('#heatmapsDiv .accordion').html('No heatmap data found');
+					}
+				}
+			});
+
+			$('#detailsModal').modal('show');
 		} else {
 			alert('No Data Id');
 		}
