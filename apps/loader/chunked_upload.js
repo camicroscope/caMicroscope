@@ -73,12 +73,12 @@ async function handleUpload(selectedFiles) {
   // Add columns
   for (var i=0; i<selectedFiles.length; i++, currID++) {
     idtr.insertCell(-1).innerHTML = '<b>'+Number(currID+1)+'<b>';
-    fnametr.insertCell(-1).innerHTML = `<input type=text name=filename id='filename${currID}'
+    fnametr.insertCell(-1).innerHTML = `<input type=text class="form-control" name=filename id='filename${currID}'
     onchange=hideCheckButton();hidePostButton(); value='${selectedFiles[i]['name']}'>`;
-    tokentr.insertCell(-1).innerHTML = `<input type=text onchange=hideCheckButton();hidePostButton();
+    tokentr.insertCell(-1).innerHTML = `<input type=text class="form-control" onchange=hideCheckButton();hidePostButton();
     disabled name=token id='token${currID}'>`;
-    slidetr.insertCell(-1).innerHTML = `<input type=text name=slidename id='slidename${currID}'>`;
-    filtertr.insertCell(-1).innerHTML = `<input type=text name=filter id='filter${currID}'>`;
+    slidetr.insertCell(-1).innerHTML = `<input type=text class="form-control" name=slidename id='slidename${currID}'>`;
+    filtertr.insertCell(-1).innerHTML = `<input type=text class="form-control" name=filter id='filter${currID}'>`;
 
     selectedFile = selectedFiles[i];
     const filename = document.getElementById('filename'+currID).value;
