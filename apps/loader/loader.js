@@ -218,10 +218,10 @@ function deleteSlideFromSystem(filename) {
         } else {
           alert('There was an error in deleting the file. Please try again or refresh the page.');
         }
-      }
-  ).catch(
-      (error) => {
-        console.log('ERROR: ' + error);
-      }, // Handle the error response object
+      },
+      ).catch(
+          (error) => {
+            console.log('ERROR: ' + error);
+          }, // Handle the error response object
   );
 }
