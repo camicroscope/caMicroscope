@@ -69,7 +69,8 @@ async function handleUpload(selectedFiles) {
 
   // Add columns
   fnametr.insertCell(-1).innerHTML = `<input type=text class="form-control" name=filename id='filename0'
-  onchange=hideCheckButton();hidePostButton(); value='${selectedFiles[0]['name']}'>`;
+  onchange=fileNameChange(); value='${selectedFiles[0]['name']}'>`;
+  fileNameChange();
   tokentr.insertCell(-1).innerHTML = `<input type=text class="form-control" onchange=hideCheckButton();hidePostButton();
   disabled name=token id='token0'>`;
   slidetr.insertCell(-1).innerHTML = `<input type=text class="form-control" name=slidename id='slidename0'>`;
