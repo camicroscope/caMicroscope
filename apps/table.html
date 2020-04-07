@@ -621,6 +621,34 @@
 		}
 	}
 
+	function fileNameChange()
+	{
+		hideCheckButton(); hidePostButton();
+		const fileNameInput = $('#filename0');
+		const fileName = fileNameInput.val();
+		let newFileName = fileName.split(" ").join("_");
+		fileNameInput.val(newFileName);
+		let fileExtension = newFileName.toLowerCase().split('.').reverse()[0];
+		if (!allowedExtensions.includes(fileExtension)) {
+			fileNameInput.addClass('is-invalid');
+			if(fileNameInput.parent().children().length===1)
+			{
+				fileNameInput.parent().append(`<div class="invalid-feedback" id="filename-feedback0">
+					${fileExtension} files are not compatible  </div>`);
+			}
+			else
+			{
+				$('#filename-feedback0').html(`${ fileExtension } files are not compatible`)
+			}
+		}
+		else
+		{
+			fileNameInput.removeClass('is-invalid');
+			if (fileNameInput.parent().children().length !== 1) {
+			$('#filename-feedback0').remove();
+			}
+		}
+	}
 
 	document.addEventListener('DOMContentLoaded', initialize);
 </script>
