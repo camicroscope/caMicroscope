@@ -374,7 +374,7 @@
 						});
 						const btn = `<div id='open-delete'> <button class="btn btn-success" data-id='${rs[0]}' onclick='openView(this)'>Open</button> 
 							<button type='button' class='btn btn-danger DelButton' id='deleteBtn' data-id='${rs[0]}' data-name='${rs[1]}' onclick='deleteSld(this)' data-toggle='modal'> <i class='fas fa-trash-alt' ></i> </button>
-							<button type='button' class='btn btn-info DownloadButton' id='downloadBtn' data-id='${rs[0]}' onclick='handleDownload(this)' > <i class='fas fa-download' ></i> </button></div>`
+							<button type='button' class='btn btn-info DownloadButton' id='downloadBtn' data-id='${rs[0]}' onclick='downloadSlide(this)' > <i class='fas fa-download' ></i> </button></div>`
 						rs.push(btn);
 						checkUserPermissions();
 						return rs;
@@ -580,6 +580,11 @@
 			$("#tablePages").css("display","block");
 	}
 
+	function downloadSlide(e){
+		const oid = e.dataset.id;
+		handleDownload(oid);
+	}
+	
 	function deleteSld(e) {
 		const oid = e.dataset.id;
 		const oname = e.dataset.name;

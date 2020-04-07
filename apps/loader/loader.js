@@ -110,8 +110,7 @@ function handleUpload(file, filename) {
   );
 }
 
-function handleDownload(e) {
-  var id=e.dataset.id;
+function handleDownload(id) {
   var fileName='';
   store.getSlide(id)
       .then((response) => {
