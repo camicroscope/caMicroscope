@@ -838,7 +838,7 @@ async function initUIcomponents() {
     title: 'Tutorial',
     value: 'tutorial',
     type: 'btn',
-    callback: function(){
+    callback: function() {
       tour.init();
       tour.start(true);
     },
