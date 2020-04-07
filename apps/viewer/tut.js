@@ -129,6 +129,6 @@ var tour = new Tour({
   '<button class=\'btn btn-default\' data-role=\'next\'>Next »</button></div>'+
   '</div><div style=\'width:100%;display: flex;margin-bottom: 5px;\'>'+
   '<button class=\'btn btn-default\' data-role=\'end\' style=\'margin:auto;\'>End tour</button></div></div>',
-  backdrop:true
+  backdrop: true,
 });
 tour.init();
