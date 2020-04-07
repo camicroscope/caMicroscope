@@ -211,8 +211,14 @@ function deleteSlideFromSystem(filename) {
     },
     body: data,
   }).then(
-      (response) => response.json(), // if the response is a JSON object
-      console.log('Deleted: ' + filename)
+    (response) => response.json())
+    .then((data) => {
+      if (data.success) {
+        alert('File deleted successfully');
+      } else {
+        alert('There was an error in deleting the file. Please try again or refresh the page.');
+      }
+    }
   ).catch(
       (error) => {
         console.log('ERROR: ' + error)
