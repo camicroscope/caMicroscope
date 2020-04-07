@@ -19,7 +19,7 @@
 }
 
 nav li{
-	transition: background 0.5s; 
+	transition: background 0.5s;
 	border-radius: 3px;
 }
 nav li:not(:first-child){
@@ -38,3 +38,18 @@ nav li:not(.active):hover a{
 	color: black !important;
 }
 
+#deleteBtn{
+	margin-left: 0.6em;
+}
+#deleteBtn i{
+	color: white;
+}
+#open-delete{
+	display: inline-flex;
+}
+.DelButton{
+	display: none;
+}
+.custom-file-input{
+	cursor: pointer;
+}

@@ -76,7 +76,7 @@
     this.mode = options.mode || "binal";
     this._fields = createFields(options.fields);
     this._size = options.size;
-    this._steps = options.steps || 3;
+    this._steps = options.steps || 6;
     this._t_data = null;
     this._operator = "AND";
     this._currentField = options.currentField || this._fields[0];
@@ -88,8 +88,8 @@
         f => f.name === options.currentFieldName
       );
     }
-    this._color = options.color || "#045a8d"; // heatmap color
-    this._colors = options.colors || ["#edf8e9", "#006d2c"]; // heatmap color
+    this._color = options.color || '#1034a6'; // heatmap color
+    this._colors = options.colors || ['#EAF2F8', '#D4E6F1', '#A9CCE3', '#7FB3D5', '#5499C7']; // heatmap color
     this.intervals = _getIntervals(
       this._currentField,
       this._colors,
@@ -185,7 +185,7 @@
           this.__legend_info.style.width = "";
           this.__legend_info.style.height = "";
         }
-      }.bind(this)
+      }.bind(this),
     );
     this.__legend.style.display = "none";
 
@@ -226,8 +226,8 @@
           f => f.name === options.currentFieldName
         );
       }
-      this._color = options.color || this._color || "#006d2c";
-      this._colors = options.colors || ["#FFFFFF", "#1034A6"];
+      this._color = options.color || this._color || '#1034a6';
+      this._colors = options.colors || this._colors || ['#EAF2F8', '#D4E6F1', '#A9CCE3', '#7FB3D5', '#5499C7'];
       this.intervals = _getIntervals(
         this._currentField,
         this._colors,
@@ -597,12 +597,15 @@
       const y = d[1]; // top
 
       // current view's bounding box against a patch
+      if (this._getCanvasBoundBox)
       return $.isIntersectBbox(this._getCanvasBoundBox, {
         x: x,
         y: y,
         width: this._size[0],
         height: this._size[1]
       });
+      else
+        console.log(this._getCanvasBoundBox);
     },
     /**
      * [filter description]
@@ -802,16 +805,24 @@
     return ps;
   }
 
-  function _getIntervals(field, colors = ["#FFFFFF", "#000000"], steps = 3) {
+  function _getIntervals(
+    field,
+    colors = ['#EAF2F8', '#D4E6F1', '#A9CCE3', '#7FB3D5', '#5499C7'],
+    steps = 6
+  ) {
     // get list of colors
     //
     // const colorList = interpolateColors(hexToRgb(colors[0]),hexToRgb(colors[1]),steps);
 
     // Default preset of colors
-    const defaultColorList = ["#2b83ba", "#abdda4", "#ffffbf", "#fdae61", "#d7191c"];
+    const defaultColorList = ['#EAF2F8', '#D4E6F1', '#A9CCE3', '#7FB3D5', '#5499C7'];
 
-    if(colors.length + 1 != steps){
-      console.log(`Number of colors ${colors.length + 1 } required for steps ${steps} are not right. Switch to default colors`)
+    if (colors.length + 1 != steps) {
+      console.log(
+        `Number of colors ${
+          colors.length + 1
+        } required for steps ${steps} are not right. Switch to default colors`
+      );
       colors = defaultColorList;
       steps = defaultColorList.length + 1;
     }
@@ -822,7 +833,7 @@
     //const colorList = ['#fee5d9','#fcae91','#fb6a4a','#de2d26','#a50f15'];
     // const colorList = ['#feedde','#fdbe85','#fd8d3c','#e6550d','#a63603'];
     //const colorList = ['#edf8e9','#bae4b3','#74c476','#31a354','#006d2c'];
-     
+
     // get a boundary list of intervals
     const threstholds = field.value;
     const boundaries = interpolateNums(
@@ -836,7 +847,7 @@
       rs.push({
         color: colors[i],
         range: [boundaries[i], boundaries[i + 1]],
-        data: []
+        data: [],
       });
     }
     return rs;

@@ -62,6 +62,18 @@ function changeStatus(step, text, reset=true) {
           const img = new Image();
           img.src = x.slide;
           tabCell.appendChild(img);
+          if (text['location']) {
+            // indicating successful check
+            checkSuccess = true;
+            if (finishUploadSuccess === true) {
+              $('#post_btn').show();
+            } else {
+              $('#post_btn').hide();
+            }
+          } else {
+            checkSuccess = false;
+            $('#post_btn').hide();
+          }
         });
       }
     }
@@ -129,7 +141,31 @@ function handlePost(filename, slidename, filter, reset) {
         data.mpp_x = parseFloat(data['mpp-x']);
         data.mpp_y = parseFloat(data['mpp-y']);
         store.post('Slide', data).then(
-            (success) => changeStatus('POST', success.result, reset), // Handle the success response object
+            (success) => {
+              initialize();
+              $('#upload-dialog').modal('hide');
+              // show pop-up message to user
+              let popups = document.getElementById(
+                  'popup-container',
+              );
+              if (popups.childElementCount < 2) {
+                let popupBox = document.createElement('div');
+                popupBox.classList.add('popup-msg', 'slide-in', 'text-success');
+                popupBox.innerHTML = `<i class="fa fa-check-circle" aria-hidden="true"></i>
+                Slide posted sucessfully`;
+                // Add popup box to parent
+                popups.insertBefore(
+                    popupBox,
+                    popups.childNodes[0],
+                );
+                resetUploadForm();
+                setTimeout(function() {
+                  // popups.lastChild.classList.add('slideOut');
+                  popups.removeChild(popups.lastChild);
+                }, 2000);
+              }
+              return changeStatus('POST', success.result, reset);
+            }, // Handle the success response object
         ).catch(
             (error) => changeStatus('POST', error, reset), // Handle the error response object
         );
@@ -147,19 +183,13 @@ function UploadBtn() {
 }
 
 function CheckBtn() {
-  for (var i=0; i<document.getElementById('fileIdRow').cells.length-1; i++) {
-    var filename = document.getElementById('filename'+i).value;
-    if (i==0) handleCheck(filename, true, i+1);
-    else handleCheck(filename, false, i+1);
-  }
+  var filename = document.getElementById('filename'+0).value;
+  handleCheck(filename, true, 1);
 }
 
 function PostBtn() {
-  for (var i=0; i<document.getElementById('fileIdRow').cells.length-1; i++) {
-    var filename = document.getElementById('filename'+i).value;
-    var slidename = document.getElementById('slidename'+i).value;
-    var filter = document.getElementById('filter'+i).value;
-    if (i==0) handlePost(filename, slidename, filter, true);
-    else handlePost(filename, slidename, false);
-  }
+  var filename = document.getElementById('filename'+0).value;
+  var slidename = document.getElementById('slidename'+0).value;
+  var filter = document.getElementById('filter'+0).value;
+  handlePost(filename, slidename, filter, true);
 }
