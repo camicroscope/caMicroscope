@@ -107,12 +107,12 @@ height:102px;
 }
 
 .flag:checked ~ .clear {
-  transform: translateX(-12px) translateY(14px);
+  transform: translateX(12px) translateY(14px);
   transition-delay: .15s;
 }
 
 .flag:checked ~ .penWidth {
-  transform: translateX(34px) translateY(14px);
+  transform: translateX(-12px) translateY(40px);
   transition-delay: .20s;
 }
 /* global focus */

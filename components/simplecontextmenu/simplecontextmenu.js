@@ -44,10 +44,10 @@
       this.raiseEvent('clear', {});
     }.bind(this));
 
-    // Width event
+    // Thickness event
     const width = this.elt.querySelector('.penWidth');
     width.addEventListener('click', function() {
-      console.log("Setting thickness");
+      this.raiseEvent('style-changed', this.getStyle());
     }.bind(this));
 
     if (options.isOn) this.on();
@@ -94,7 +94,7 @@
   };
   $.SimpleContextMenu.prototype.getStyle = function() {
     const color = this.elt.querySelector('.color input[type=hidden]').value;
-    const width = 2;
+    const width = this.elt.querySelector('.penWidth input[type=range]').value;
     const model = this.elt.querySelector('.style .active').dataset.model;
     return {
       style: {
@@ -199,6 +199,7 @@
  */
   $.SimpleContextMenu.prototype.getHandler = function( eventName ) {
     let events = this.events[eventName];
+    console.log(events);
     if ( !events || !events.length ) {
       return null;
     }
@@ -298,6 +299,14 @@
     width.classList.add('penWidth');
     width.classList.add('item');
     width.title = 'Width';
+
+    const slider = document.createElement('input');
+    slider.type = 'range';
+    slider.value = 1;
+    slider.min = 1;
+    slider.max = 8;
+    slider.display = 'none';
+    width.appendChild(slider);
 
     widthIcon = document.createElement('div');
     widthIcon.classList.add('material-icons');
