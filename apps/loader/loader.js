@@ -165,11 +165,6 @@ function handlePost(filename, slidename, filter, reset) {
                   popups.removeChild(popups.lastChild);
                 }, 2000);
               }
-              if (!$('#datatables')[0]) {
-                setTimeout(function() {
-                  window.location.reload();
-                }, 2000);
-              }
               return changeStatus('POST', success.result, reset);
             }, // Handle the success response object
         ).catch(
