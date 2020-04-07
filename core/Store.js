@@ -657,10 +657,9 @@ class Store {
       credentials: 'include',
       mode: 'cors',
     }).then(
-      deleteSlideFromSystem(filename)
+        deleteSlideFromSystem(filename),
     )
-    .then
-    (this.errorHandler);
+    .then(this.errorHandler);
   }
 }
 
