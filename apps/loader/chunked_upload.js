@@ -55,22 +55,19 @@ async function handleUpload(selectedFiles) {
   var fnametr = document.getElementById('filenameRow');
   var tokentr = document.getElementById('tokenRow');
   var slidetr = document.getElementById('slidenameRow');
-  var idtr = document.getElementById('fileIdRow');
   var filtertr = document.getElementById('filterRow');
 
   // Clear existing
   document.getElementById('json_table').innerHTML = '';
-  var n = idtr.cells.length;
+  var n = tokentr.cells.length;
   for (var i=0; i<n-1; i++) {
     fnametr.deleteCell(1);
     tokentr.deleteCell(1);
     slidetr.deleteCell(1);
     filtertr.deleteCell(1);
-    idtr.deleteCell(1);
   }
 
   // Add columns
-  idtr.insertCell(-1).innerHTML = '<b>'+Number(1)+'<b>';
   fnametr.insertCell(-1).innerHTML = `<input type=text class="form-control" name=filename id='filename0'
   onchange=hideCheckButton();hidePostButton(); value='${selectedFiles[0]['name']}'>`;
   tokentr.insertCell(-1).innerHTML = `<input type=text class="form-control" onchange=hideCheckButton();hidePostButton();
