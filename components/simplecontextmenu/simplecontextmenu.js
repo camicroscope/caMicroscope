@@ -44,6 +44,12 @@
       this.raiseEvent('clear', {});
     }.bind(this));
 
+    // Width event
+    const width = this.elt.querySelector('.penWidth');
+    width.addEventListener('click', function() {
+      console.log("Setting thickness");
+    }.bind(this));
+
     if (options.isOn) this.on();
   };
   $.SimpleContextMenu.prototype.on = function() {
@@ -88,14 +94,14 @@
   };
   $.SimpleContextMenu.prototype.getStyle = function() {
     const color = this.elt.querySelector('.color input[type=hidden]').value;
-
+    const width = 2;
     const model = this.elt.querySelector('.style .active').dataset.model;
     return {
       style: {
         color: color,
         lineJoin: 'round', // "bevel" || "round" || "miter"
         lineCap: 'round', // "butt" || "round" || "square"
-        penWidth: 1,
+        penWidth: width,
       },
       model: model,
     };
@@ -286,6 +292,19 @@
     clearIcon.textContent = 'layers_clear';
     clear.appendChild(clearIcon);
     elt.appendChild(clear);
+
+    // penWidth
+    const width = document.createElement('div');
+    width.classList.add('penWidth');
+    width.classList.add('item');
+    width.title = 'Width';
+
+    widthIcon = document.createElement('div');
+    widthIcon.classList.add('material-icons');
+    widthIcon.classList.add('icons');
+    widthIcon.textContent = 'hdr_strong';
+    width.appendChild(widthIcon);
+    elt.appendChild(width);
 
     // mode/draw-style
     const style = document.createElement('ul');
