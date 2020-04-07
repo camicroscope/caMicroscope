@@ -95,6 +95,7 @@
         color: color,
         lineJoin: 'round', // "bevel" || "round" || "miter"
         lineCap: 'round', // "butt" || "round" || "square"
+        penWidth: 1,
       },
       model: model,
     };

@@ -508,16 +508,19 @@
                 this._draw_ctx_,
                 sx,
                 sy,
-                this.style.lineWidth * 3
+                (this.style.penWidth == 1) ?  this.style.lineWidth * 3 : this.style.lineWidth * 6
               );
               // end point
               DrawHelper.drawCircle(
                 this._draw_ctx_,
                 ex,
                 ey,
-                this.style.lineWidth * 3
+                (this.style.penWidth == 1) ?  this.style.lineWidth * 3 : this.style.lineWidth * 6
               );
-
+              
+              // Setting penWidth for thickness of the pen
+              this.style.lineWidth *= this.style.penWidth;
+              
               DrawHelper.setStyle(this._draw_ctx_, this.style);
               // draw circle
               DrawHelper.drawMultiline(
