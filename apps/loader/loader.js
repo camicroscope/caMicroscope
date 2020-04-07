@@ -223,5 +223,5 @@ function deleteSlideFromSystem(filename) {
           (error) => {
             console.log('ERROR: ' + error);
           }, // Handle the error response object
-  );
+      );
 }
