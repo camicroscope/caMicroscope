@@ -46,7 +46,12 @@
 
     // Thickness event
     const width = this.elt.querySelector('.penWidth');
+    const slider = this.elt.querySelector('.penWidth input');
     width.addEventListener('click', function() {
+      slider.style.display = '';
+    });
+
+    slider.addEventListener('change', function(e) {
       this.raiseEvent('style-changed', this.getStyle());
     }.bind(this));
 
@@ -108,6 +113,7 @@
   };
   $.SimpleContextMenu.prototype.close = function(immediate = false) {
     this.picker.exit();
+    this.elt.querySelector('.penWidth input').style.display = 'none';
     this.elt.querySelector('.flag').checked = false;
     if (immediate) {
       this.elt.style.visibility = ``;
@@ -199,7 +205,6 @@
  */
   $.SimpleContextMenu.prototype.getHandler = function( eventName ) {
     let events = this.events[eventName];
-    console.log(events);
     if ( !events || !events.length ) {
       return null;
     }
@@ -298,21 +303,22 @@
     const width = document.createElement('div');
     width.classList.add('penWidth');
     width.classList.add('item');
-    width.title = 'Width';
-
-    const slider = document.createElement('input');
-    slider.type = 'range';
-    slider.value = 1;
-    slider.min = 1;
-    slider.max = 8;
-    slider.display = 'none';
-    width.appendChild(slider);
+    width.title = 'Thickness';
 
     widthIcon = document.createElement('div');
     widthIcon.classList.add('material-icons');
     widthIcon.classList.add('icons');
     widthIcon.textContent = 'hdr_strong';
     width.appendChild(widthIcon);
+
+    const slider = document.createElement('input');
+    slider.type = 'range';
+    slider.value = 1;
+    slider.min = 1;
+    slider.max = 8;
+    slider.style.display = 'none';
+    width.appendChild(slider);
+
     elt.appendChild(width);
 
     // mode/draw-style
