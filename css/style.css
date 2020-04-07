@@ -246,3 +246,7 @@ table.data_table tr:hover td {
   border-left: 1px solid #365f9c;
   border-radius: 0 0.3rem 0.3rem 0;
 }
+.tour-step-background {
+background: #71daec !important;
+opacity: 0.3 !important;
+}
