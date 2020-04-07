@@ -659,7 +659,7 @@ class Store {
     }).then(
         deleteSlideFromSystem(filename),
     )
-    .then(this.errorHandler);
+        .then(this.errorHandler);
   }
 }
 
