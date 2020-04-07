@@ -151,7 +151,7 @@
 
 			<div class="modal fade" id="upload-dialog" tabindex="-1" role="dialog"
 			aria-labelledby="title-of-dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
-			<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+			<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
 				<div class="modal-content">
 					<div class="modal-header">
 						<h5 class="modal-title" id="title-of-dialog">Upload New Slide</h5>
@@ -177,7 +177,7 @@
 									<form id="upload-form">
 										<table class="table table-borderless" cellpadding="5" cellspacing="0">
 											<tr>
-												<td align="right"><b>Files</b></td>
+												<td align="right"><b>File</b></td>
 												<td id="fileUploadInput">
 														<span class="input-group mb-3" >
 															<span class="custom-file">
@@ -186,9 +186,6 @@
 															</span>
 														</span>
 													</td>
-											</tr>
-											<tr id="fileIdRow">
-												<td align="right"><b>ID</b></td>
 											</tr>
 											<tr id="filenameRow">
 												<td align="right"><b>Filename</b></td>
@@ -347,6 +344,7 @@
 		$('#filterRow').children().slice(1).remove();
 		$('#json_table').html('');
 		$('#load_status').html('');
+		$('.custom-file-label').html('');
 	}
 
 	function initialize() {
