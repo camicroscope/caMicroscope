@@ -165,8 +165,9 @@ function handlePost(filename, slidename, filter, reset) {
                 }, 2000);
               }
               if(!$('#datatables')[0]) {
-                console.log('reloading');
-                window.location.reload();
+                setTimeout(function() {
+                  window.location.reload();
+                }, 2000);
               }
               return changeStatus('POST', success.result, reset);
             }, // Handle the success response object
