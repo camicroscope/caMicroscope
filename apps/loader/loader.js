@@ -1,6 +1,7 @@
 var uploadUrl = '../loader/upload/start/';
 var checkUrl = '../loader/data/one/';
 var thumbUrl = '../loader/data/thumbnail/';
+var downloadURL = '../loader/getSlide/';
 
 var store = new Store('../data/');
 
@@ -108,6 +109,38 @@ function handleUpload(file, filename) {
       (error) => changeStatus('UPLOAD', error), // Handle the error response object
   );
 }
+
+function handleDownload(e) {
+  var id=e.dataset.id;
+  var fileName='';
+  store.getSlide(id)
+      .then((response) => {
+        return response[0]['location'];
+      }).then((location) => {
+        fileName= location.substring(8, location.length);
+        return fileName;
+      }).then((fileName) =>{
+        fetch(downloadURL + fileName, {
+          credentials: 'same-origin',
+          method: 'GET',
+        }).then((response) => response.blob())
+            .then((blob) => {
+              var url = window.URL.createObjectURL(blob);
+              var a = document.createElement('a');
+              a.href = url;
+              a.download = fileName;
+              document.body.appendChild(a);
+              a.click();
+              a.remove(); // afterwards we remove the element again
+              window.URL.revokeObjectURL(blob);
+            }).catch((error) =>{
+              console.log(error);
+              alert('Error! Can\'t download file.');
+            },
+            );
+      });
+}
+
 
 function handleCheck(filename, reset, id) {
   fetch(checkUrl + filename, {credentials: 'same-origin'}).then(
