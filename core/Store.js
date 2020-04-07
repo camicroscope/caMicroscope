@@ -646,7 +646,7 @@ class Store {
    * @param {object} id - the slide object id
    * @return {promise} - promise which resolves with response
    **/
-  deleteSlide(id) {
+  deleteSlide(id, filename) {
     const suffix = 'Slide/delete';
     const url = this.base + suffix;
     const query = {
@@ -656,7 +656,11 @@ class Store {
       method: 'DELETE',
       credentials: 'include',
       mode: 'cors',
-    }).then(this.errorHandler);
+    }).then(
+      deleteSlideFromSystem(filename)
+    )
+    .then
+    (this.errorHandler);
   }
 }
 

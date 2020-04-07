@@ -1,6 +1,7 @@
 var uploadUrl = '../loader/upload/start/';
 var checkUrl = '../loader/data/one/';
 var thumbUrl = '../loader/data/thumbnail/';
+var deleteSlideUrl = '../loader/slide/delete';
 
 var store = new Store('../data/');
 
@@ -197,4 +198,29 @@ function PostBtn() {
   var slidename = document.getElementById('slidename'+0).value;
   var filter = document.getElementById('filter'+0).value;
   handlePost(filename, slidename, filter, true);
+}
+
+function deleteSlideFromSystem(filename) {
+  // var data = new FormData();
+  // data.append('filename', filename);
+  data = {
+    "filename": filename
+  }
+  data = JSON.stringify(data);
+  console.log(data);
+  fetch(deleteSlideUrl, {
+    credentials: 'same-origin',
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: data,
+  }).then(
+      (response) => response.json(), // if the response is a JSON object
+      console.log('Deleted: ' + filename)
+  ).catch(
+      (error) => {
+        console.log('ERROR: ' + error)
+      }, // Handle the error response object
+  );
 }

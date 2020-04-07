@@ -345,6 +345,8 @@
 		$('#json_table').html('');
 		$('#load_status').html('');
 		$('.custom-file-label').html('');
+		hideCheckButton();
+		hidePostButton();
 	}
 
 	function initialize() {
@@ -367,12 +369,14 @@
 				if (data.map) {
 					return data.map((d) => {
 						const rs = [];
+						const filename = d.location.split('/')[d.location.split('/').length - 1];
 						keys.forEach((key, i) => {
 							if (i == 0) rs.push(d['_id']['$oid'])
 							else if (!d[key]) rs.push('')
 							else rs.push(d[key])
 						});
-						const btn = `<div id='open-delete'> <button class="btn btn-success" data-id='${rs[0]}' onclick='openView(this)'>Open</button> <button type='button' class='btn btn-danger DelButton' id='deleteBtn' data-id='${rs[0]}' data-name='${rs[1]}' onclick='deleteSld(this)' data-toggle='modal'> <i class='fas fa-trash-alt' ></i> </button></div>`
+						// console.log(data);
+						const btn = `<div id='open-delete'> <button class="btn btn-success" data-id='${rs[0]}' onclick='openView(this)'>Open</button> <button type='button' class='btn btn-danger DelButton' id='deleteBtn' data-id='${rs[0]}' data-name='${rs[1]}' data-filename='${filename}' onclick='deleteSld(this)' data-toggle='modal'> <i class='fas fa-trash-alt' ></i> </button></div>`
 						rs.push(btn);
 						checkUserPermissions();
 						return rs;
@@ -581,13 +585,15 @@
 	function deleteSld(e) {
 		const oid = e.dataset.id;
 		const oname = e.dataset.name;
+		const filename = e.dataset.filename;
+		console.log(filename);
 		const store = new Store('../data/');
 		if (oid) {
 			$('#confirmDeleteContent').html(`Are you sure you want to delete the slide ${oname} with id ${oid} ?`);
 			$('#deleteModal').modal('toggle');
 			$("#confirmDelete").unbind( "click" );
 			$("#confirmDelete").click(function(){
-				store.deleteSlide(oid);
+				store.deleteSlide(oid, filename);
 			});
 		} else {
 			alert('No Data Id');
