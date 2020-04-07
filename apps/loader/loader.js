@@ -199,8 +199,8 @@ function deleteSlideFromSystem(filename) {
   // var data = new FormData();
   // data.append('filename', filename);
   data = {
-    "filename": filename
-  }
+    'filename': filename,
+  };
   data = JSON.stringify(data);
   console.log(data);
   fetch(deleteSlideUrl, {
@@ -211,17 +211,17 @@ function deleteSlideFromSystem(filename) {
     },
     body: data,
   }).then(
-    (response) => response.json())
-    .then((data) => {
-      if (data.success) {
-        alert('File deleted successfully');
-      } else {
-        alert('There was an error in deleting the file. Please try again or refresh the page.');
+      (response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          alert('File deleted successfully');
+        } else {
+          alert('There was an error in deleting the file. Please try again or refresh the page.');
+        }
       }
-    }
   ).catch(
       (error) => {
-        console.log('ERROR: ' + error)
+        console.log('ERROR: ' + error);
       }, // Handle the error response object
   );
 }
