@@ -114,7 +114,9 @@ function handleDownload(id) {
   var fileName='';
   store.getSlide(id)
       .then((response) => {
-        return response[0]['location'];
+        if (response[0]['location']) {
+          return response[0]['location'];
+        }
       }).then((location) => {
         fileName= location.substring(8, location.length);
         return fileName;
@@ -122,7 +124,13 @@ function handleDownload(id) {
         fetch(downloadURL + fileName, {
           credentials: 'same-origin',
           method: 'GET',
-        }).then((response) => response.blob())
+        }).then((response) => {
+          if (response.status == 404) {
+            throw response;
+          } else {
+            return response.blob();
+          }
+        })
             .then((blob) => {
               var url = window.URL.createObjectURL(blob);
               var a = document.createElement('a');
@@ -137,6 +145,8 @@ function handleDownload(id) {
               alert('Error! Can\'t download file.');
             },
             );
+      }).catch((error) => {
+        console.log(error);
       });
 }
 
