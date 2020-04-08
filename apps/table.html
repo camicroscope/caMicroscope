@@ -375,8 +375,9 @@
 							else if (!d[key]) rs.push('')
 							else rs.push(d[key])
 						});
-						// console.log(data);
-						const btn = `<div id='open-delete'> <button class="btn btn-success" data-id='${rs[0]}' onclick='openView(this)'>Open</button> <button type='button' class='btn btn-danger DelButton' id='deleteBtn' data-id='${rs[0]}' data-name='${rs[1]}' data-filename='${filename}' onclick='deleteSld(this)' data-toggle='modal'> <i class='fas fa-trash-alt' ></i> </button></div>`
+						const btn = `<div id='open-delete'> <button class="btn btn-success" data-id='${rs[0]}' onclick='openView(this)'>Open</button> 
+							<button type='button' class='btn btn-info DownloadButton' id='downloadBtn' data-id='${rs[0]}' onclick='downloadSlide(this)' > <i class='fas fa-download' ></i> </button>
+							<button type='button' class='btn btn-danger DelButton' id='deleteBtn' data-id='${rs[0]}' data-name='${rs[1]}' onclick='deleteSld(this)' data-filename='${filename}' data-toggle='modal'> <i class='fas fa-trash-alt' ></i> </button></div>`
 						rs.push(btn);
 						checkUserPermissions();
 						return rs;
@@ -397,7 +398,7 @@
 				if (data.length == 0) {
 					var div = document.querySelector('.container');
 					div.textContent = `No Data Found ... x _ x`;
-					div.classList = `text-center p-4`;
+					div.classList = `container text-center p-4`;
 					return;
 				}
 
@@ -414,11 +415,38 @@
 				tbody = data.map((d) => {
 					return "<tr>" + d.map((a) => "<td>" + a + "</td>").reduce((a, b) => a + b) + "</tr>";
 				});
-				totaltablepages = Math.ceil(data.length/$("#entries").val());
+				let entriesPerPage;
+				if($('#entries').val()===undefined)
+					entriesPerPage=10; // default value, when initially no slide
+				else
+					entriesPerPage= $('#entries').val();
+				totaltablepages = Math.ceil(data.length/entriesPerPage);
 				selectedpage = 0;
 				$("#search-table").val("");
 				searching = false;
 
+				if( data.length>0 && $('.container').children().length===0)
+				{
+					$('.container').html(`<div>
+						<div>
+						<h3 class="text-center h3 mb-0">Available Slides</h3>
+						<div class="search-box float-left form-group form-inline">
+							<select id='entries' class="select form-control mr-2">
+								<option value="10" selected>10 slides/page</option>
+								<option value="20">20 slides/page</option>
+								<option value="40">40 slides/page</option>
+								<option value="50">50 slides/page</option>
+								<option value="100">100 slides/page</option>
+							</select>
+							<input id="search-table" type="text" class="form-control" placeholder="Search&hellip;">
+					</div>
+						</div>
+						<div class="table-responsive">
+							<table id='datatables' class="table table-striped"></table>
+						</div>
+			</div >
+`);
+				}
 				document.getElementById("datatables").innerHTML = `
 				<thead>${thead.reduce((a, b) => a + b)}</thead>
 				<tbody>${tbody.reduce((a, b) => a + b)}</tbody>
@@ -583,6 +611,11 @@
 			$("#tablePages").css("display","block");
 	}
 
+	function downloadSlide(e){
+		const oid = e.dataset.id;
+		handleDownload(oid);
+	}
+	
 	function deleteSld(e) {
 		const oid = e.dataset.id;
 		const oname = e.dataset.name;
@@ -601,6 +634,34 @@
 		}
 	}
 
+	function fileNameChange()
+	{
+		hideCheckButton(); hidePostButton();
+		const fileNameInput = $('#filename0');
+		const fileName = fileNameInput.val();
+		let newFileName = fileName.split(" ").join("_");
+		fileNameInput.val(newFileName);
+		let fileExtension = newFileName.toLowerCase().split('.').reverse()[0];
+		if (!allowedExtensions.includes(fileExtension)) {
+			fileNameInput.addClass('is-invalid');
+			if(fileNameInput.parent().children().length===1)
+			{
+				fileNameInput.parent().append(`<div class="invalid-feedback" id="filename-feedback0">
+					${fileExtension} files are not compatible  </div>`);
+			}
+			else
+			{
+				$('#filename-feedback0').html(`${ fileExtension } files are not compatible`)
+			}
+		}
+		else
+		{
+			fileNameInput.removeClass('is-invalid');
+			if (fileNameInput.parent().children().length !== 1) {
+			$('#filename-feedback0').remove();
+			}
+		}
+	}
 
 	document.addEventListener('DOMContentLoaded', initialize);
 </script>

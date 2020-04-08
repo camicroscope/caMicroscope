@@ -2,6 +2,7 @@ var uploadUrl = '../loader/upload/start/';
 var checkUrl = '../loader/data/one/';
 var thumbUrl = '../loader/data/thumbnail/';
 var deleteSlideUrl = '../loader/slide/delete';
+var downloadURL = '../loader/getSlide/';
 
 var store = new Store('../data/');
 
@@ -109,6 +110,50 @@ function handleUpload(file, filename) {
       (error) => changeStatus('UPLOAD', error), // Handle the error response object
   );
 }
+
+function handleDownload(id) {
+  var fileName='';
+  store.getSlide(id)
+      .then((response) => {
+        if (response[0]) {
+          return response[0]['location'];
+        } else {
+          throw new Error('Slide not found');
+        }
+      }).then((location) => {
+        fileName= location.substring(location.lastIndexOf('/')+1, location.length);
+        console.log(fileName);
+        return fileName;
+      }).then((fileName) =>{
+        fetch(downloadURL + fileName, {
+          credentials: 'same-origin',
+          method: 'GET',
+        }).then((response) => {
+          if (response.status == 404) {
+            throw response;
+          } else {
+            return response.blob();
+          }
+        })
+            .then((blob) => {
+              var url = window.URL.createObjectURL(blob);
+              var a = document.createElement('a');
+              a.href = url;
+              a.download = fileName;
+              document.body.appendChild(a);
+              a.click();
+              a.remove(); // afterwards we remove the element again
+              window.URL.revokeObjectURL(blob);
+            }).catch((error) =>{
+              console.log(error);
+              alert('Error! Can\'t download file.');
+            },
+            );
+      }).catch((error) => {
+        console.log(error);
+      });
+}
+
 
 function handleCheck(filename, reset, id) {
   fetch(checkUrl + filename, {credentials: 'same-origin'}).then(
