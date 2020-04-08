@@ -676,7 +676,7 @@ function uploadModel() {
         status.innerHTML = 'Model with the same name already exists. Please choose a new name';
         status.classList.remove('blink');
         console.log(e);
-        document.getElementById("name").style = "border:2px; border-style: solid; border-color: red;";
+        document.getElementById('name').style = 'border:2px; border-style: solid; border-color: red;';
         return;
       }
 
@@ -692,7 +692,7 @@ function uploadModel() {
           'Please input values on which the model was trained.';
           console.log(e);
           status.classList.remove('blink');
-          document.getElementById("imageSize").style = "border:2px; border-style: solid; border-color: red;";
+          document.getElementById('imageSize').style = 'border:2px; border-style: solid; border-color: red;';
           return;
         }
 
