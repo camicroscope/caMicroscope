@@ -244,8 +244,8 @@ function deleteSlideFromSystem(id, filename) {
   // var data = new FormData();
   // data.append('filename', filename);
   data = {
-    "filename": filename
-  }
+    'filename': filename,
+  };
   data = JSON.stringify(data);
   console.log(data);
   fetch(deleteSlideUrl, {
