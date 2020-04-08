@@ -114,8 +114,12 @@ function handleDownload(id) {
   var fileName='';
   store.getSlide(id)
       .then((response) => {
-        if (response[0]['location']) {
+        if (response[0]) {
           return response[0]['location'];
+        }
+        else 
+        {
+         throw new Error('Slide not found');
         }
       }).then((location) => {
         fileName= location.substring(8, location.length);
