@@ -120,7 +120,8 @@ function handleDownload(id) {
           throw new Error('Slide not found');
         }
       }).then((location) => {
-        fileName= location.substring(8, location.length);
+        fileName= location.substring(location.lastIndexOf('/')+1, location.length);
+        console.log(fileName);
         return fileName;
       }).then((fileName) =>{
         fetch(downloadURL + fileName, {
