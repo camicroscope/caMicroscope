@@ -38,7 +38,7 @@ nav li:not(.active):hover a{
 	color: black !important;
 }
 
-#deleteBtn{
+#deleteBtn, #downloadBtn{
 	margin-left: 0.6em;
 }
 #deleteBtn i{
