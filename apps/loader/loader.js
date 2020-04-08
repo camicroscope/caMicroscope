@@ -116,10 +116,8 @@ function handleDownload(id) {
       .then((response) => {
         if (response[0]) {
           return response[0]['location'];
-        }
-        else 
-        {
-         throw new Error('Slide not found');
+        } else {
+          throw new Error('Slide not found');
         }
       }).then((location) => {
         fileName= location.substring(8, location.length);
