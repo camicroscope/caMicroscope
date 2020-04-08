@@ -568,6 +568,7 @@
 			if(data===null)
 				return;
 			permissions = data;
+			console.log(data);
 			if(permissions.slide.delete == true)
 				$(".DelButton").css("display","block");
 			if(permissions.slide.post == true)
@@ -593,7 +594,7 @@
 			$('#deleteModal').modal('toggle');
 			$("#confirmDelete").unbind( "click" );
 			$("#confirmDelete").click(function(){
-				store.deleteSlide(oid, filename);
+				deleteSlideFromSystem(oid, filename);
 			});
 		} else {
 			alert('No Data Id');

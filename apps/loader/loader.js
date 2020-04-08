@@ -195,7 +195,7 @@ function PostBtn() {
   handlePost(filename, slidename, filter, true);
 }
 
-function deleteSlideFromSystem(filename) {
+function deleteSlideFromSystem(id, filename) {
   // var data = new FormData();
   // data.append('filename', filename);
   data = {
@@ -204,7 +204,7 @@ function deleteSlideFromSystem(filename) {
   data = JSON.stringify(data);
   console.log(data);
   fetch(deleteSlideUrl, {
-    credentials: 'same-origin',
+    credentials: 'include',
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -214,9 +214,16 @@ function deleteSlideFromSystem(filename) {
     (response) => response.json())
     .then((data) => {
       if (data.success) {
-        alert('File deleted successfully');
+        // return true;
+        store.deleteSlide(id, filename)
+        .then(
+        initialize()
+        ).then(
+          alert('File deleted successfully'),
+        )
       } else {
         alert('There was an error in deleting the file. Please try again or refresh the page.');
+        return false;
       }
     }
   ).catch(
