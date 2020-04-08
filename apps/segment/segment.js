@@ -5,6 +5,7 @@ const IDB_URL = 'indexeddb://';
 window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
 // id(autoinc), name, location(name+id), classes
 var request; var db;
+var modelName;
 
 // tensorflowjs creates its own IndexedDB on saving a model.
 async function dbInit() {
@@ -144,6 +145,7 @@ async function initUIcomponents() {
       checked: true,
     }];
 
+  modelName = [];
   Object.keys(await tf.io.listModels()).forEach(function(element) {
     const dict = {};
     const value = element.split('/').pop();
@@ -153,6 +155,8 @@ async function initUIcomponents() {
       dict.title = title;
       dict.value = value;
       dict.checked = false;
+      // Saving to previously defined model names
+      modelName.push(dict['title']);
       dropDownList.push(dict);
     }
   });
@@ -582,6 +586,18 @@ function uploadModel() {
         var modelInput = url.value;
       } else {
         var modelInput = tf.io.browserFiles([topology.files[0], ...weights.files]);
+      }
+
+      // Check if model with same name is previously defined
+      try {
+        if (modelName.indexOf(_name.value)!=-1) {
+          throw new Error('Model name repeated');
+        }
+      } catch (e) {
+        status.innerHTML = 'Model with the same name already exists. Please choose a new name';
+        status.classList.remove('blink');
+        console.log(e);
+        return;
       }
 
       try {

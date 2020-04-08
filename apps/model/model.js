@@ -6,7 +6,7 @@ var csvContent;
 window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
 // id(autoinc), name, location(name+id), classes
 var request; var db;
-var namearray = [];
+var modelName;
 
 // tensorflowjs creates its own IndexedDB on saving a model.
 (async function(callback) {
@@ -158,6 +158,7 @@ async function initUIcomponents() {
   // create the message queue
   $UI.message = new MessageQueue();
   const dropDownList = [];
+  modelName = [];
   Object.keys(await tf.io.listModels()).forEach(function(element) {
     const dict = {};
     const value = element.split('/').pop();
@@ -167,6 +168,8 @@ async function initUIcomponents() {
       dict.title = title;
       dict.value = value;
       dict.checked = false;
+      // Saving to previously defined model names
+      modelName.push(dict['title']);
       dropDownList.push(dict);
     }
   });
@@ -664,6 +667,18 @@ function uploadModel() {
         var modelInput = tf.io.browserFiles([topology.files[0], ...weights.files]);
       }
 
+      // Check if model with same name is previously defined
+      try {
+        if (modelName.indexOf(_name.value)!=-1) {
+          throw new Error('Model name repeated');
+        }
+      } catch (e) {
+        status.innerHTML = 'Model with the same name already exists. Please choose a new name';
+        status.classList.remove('blink');
+        console.log(e);
+        return;
+      }
+
       try {
         // This also ensures that valid model is uploaded.
         const model = await tf.loadLayersModel(modelInput);
@@ -847,7 +862,7 @@ function openHelp() {
   self.body.innerHTML = `
     <em>Features</em> <br>
     This part of caMicroscope allows to predict using a trained model on a selected patch. Some of the sample
-    models are hosted <a target="_blank" href="https://github.com/Insiyaa/caMicroscope-tfjs-models">here</a>. <br>
+    models are hosted <a target="_blank" href="https://github.com/camicroscope/tfjs-models">here</a>. <br>
     <i class="material-icons">aspect_ratio</i>: On activation, this button enables drawing on the viewer. After the image is loaded for further processing, a UI will
     appear for model selection. The Whole-slide images are high resolution images containing the entire sampled tissue so make sure
     you zoom in and then select a patch. Selecting a large region while being totally zoomed out may slow down the further processing

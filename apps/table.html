@@ -41,22 +41,40 @@
 		const allowedExtensions = ['svs', 'tif', 'tiff', 'vms', 'vmu', 'ndpi', 'scn', 'mrxs', 'bif', 'svslide'];
 		function validateForm(callback) {
 			let slide = document.getElementById("slidename0");
+			// Check if input element is rendered or not
+			if(slide===null) {
+				finishUploadSuccess = false;
+				$('#check_btn').hide();
+				$('#post_btn').hide();
+				changeStatus("UPLOAD", "Please chose a file first");
+				return false;
+			}
 			//Check if slide name is empty
 			if (slide.value === "") {
+					finishUploadSuccess = false;
+					$('#check_btn').hide();
+					$('#post_btn').hide();
 					changeStatus("UPLOAD", "Please enter slide name");
 					return false;
 			}
 			//Sanitizing input
 			slide.value = sanitize(slide.value);
+			console.log(existingSlideNames,slide.value);
 			//Checking if silde with given name already exists
 			if(existingSlideNames.includes(slide.value)) {
 				changeStatus("UPLOAD", "Slide with given name already exists");
+				finishUploadSuccess = false;
+				$('#check_btn').hide();
+				$('#post_btn').hide();
 				return false;
 			}
 			//Checking for extension
 			let filename = document.getElementById("filename0").value
 			var fileExtension = filename.toLowerCase().split('.').reverse()[0];
 			if(!allowedExtensions.includes(fileExtension)) {
+				finishUploadSuccess = false;
+				$('#check_btn').hide();
+				$('#post_btn').hide();
 				changeStatus("UPLOAD", fileExtension + " files are not compatible");
 				return false;
 			}
@@ -74,6 +92,10 @@
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
 		integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 	<link rel="stylesheet" href="../common/stacktable.css">
+
+	<!-- popup css -->
+	<link rel="stylesheet" type="text/css" media="all" href="../../css/popup.css" />
+
 	<style>
 		html,
 		body {
@@ -101,6 +123,9 @@
 				<li class="nav-item active link">
 					<a class="nav-link" href="table.html"> <i class="fas fa-list-ul"></i> Slides</a>
 				</li>
+				<li class="nav-item link">
+          <a class="nav-link" href="Info.html"> <i class="fas fa-info-circle"></i> Info</a>
+        </li>
 			</ul>
 			<ul class="navbar-nav">
 				<li class="nav-item link" style="font-family: sans-serif;">
@@ -121,11 +146,12 @@
 	<div class='p-2 bg-light' style="flex-grow: 1;">
 		<button type="button" class="btn btn-success float-right mb-2"
 			onclick="(()=>{location.reload();return false;})()"> <i class="fas fa-sync-alt"></i> Reload</button>
-		<button type="button" class="btn btn-primary float-right mb-2 mr-2" data-toggle="modal"
-			data-target="#upload-dialog"> <i class="fas fa-upload"></i> Upload</button>
+		<button id="slideUploadButton" type="button" class="btn btn-primary float-right mb-2 mr-2" data-toggle="modal"
+			data-target="#upload-dialog" onclick="hidePostButton(); hideCheckButton(); resetUploadForm();" style="display: none;"> <i class="fas fa-upload"></i> Upload</button>
+
 			<div class="modal fade" id="upload-dialog" tabindex="-1" role="dialog"
-			aria-labelledby="title-of-dialog" aria-hidden="true">
-			<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+			aria-labelledby="title-of-dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+			<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
 				<div class="modal-content">
 					<div class="modal-header">
 						<h5 class="modal-title" id="title-of-dialog">Upload New Slide</h5>
@@ -143,19 +169,23 @@
 										<li>Select the file as Input. The <b>Token</b> field should be filled automatically, and start uploading.</li>
 										<li> Provide the destination filename with extension.</li>
 										<li>Click on the <b>Finish Upload</b> to complete the upload </li>
+										<li>Click on <b>Check</b> to get a preview of the slide  </li>
 										<li>Finally <b>Post</b> it to caMicroscope</li>
 									</ul>
 								</div>
 								<div>
-									<form>
+									<form id="upload-form">
 										<table class="table table-borderless" cellpadding="5" cellspacing="0">
 											<tr>
-												<td align="right"><b>Files</b></td>
-												<td id="fileUploadInput"><input type="file" id="input"
-														onchange="handleUpload(this.files)" multiple></td>
-											</tr>
-											<tr id="fileIdRow">
-												<td align="right"><b>ID</b></td>
+												<td align="right"><b>File</b></td>
+												<td id="fileUploadInput">
+														<span class="input-group mb-3" >
+															<span class="custom-file">
+															  <input type="file" class="custom-file-input" id="input" onchange="handleUpload(this.files)">
+															  <label class="custom-file-label" for="input" style="overflow: hidden;">Choose file</label>
+															</span>
+														</span>
+													</td>
 											</tr>
 											<tr id="filenameRow">
 												<td align="right"><b>Filename</b></td>
@@ -176,7 +206,7 @@
 												value="Finish Upload" onclick="validateForm(finishUpload)">Finish
 												Upload</button>
 											<button class="btn btn-secondary" type="button" id="check_btn"
-												value="Check" onclick="CheckBtn()">Check</button>
+												value="Check" onclick="validateForm(CheckBtn);">Check</button>
 											<button class="btn btn-success" type="button" id="post_btn" value="Post"
 												onclick="validateForm(PostBtn)">Post</button>
 										</div>
@@ -222,9 +252,32 @@
 
 	</div>
 
+
+	<!--Delete Modal -->
+	<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+			<h5 class="modal-title" id="deleteModalLabel">Delete confirmation</h5>
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+			</button>
+			</div>
+			<div class="modal-body" id="confirmDeleteContent"></div>
+			<div class="modal-footer">
+			<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+			<button type="button" id='confirmDelete' data-dismiss="modal" class="btn btn-danger">Yes</button>
+			</div>
+		</div>
+		</div>
+	</div>
+
 	<div class="text-center text-white bg-dark p-3" style="position: static;bottom: 0;width: 100%;">
 		<p class="p">Copyright © 2020 caMicroscope</p>
 	</div>
+	<!-- popup--->
+	<div id="popup-container"></div>
+
 </body>
 <script>
 	const HeadMapping = [{
@@ -281,6 +334,19 @@
 		showTablePage();
 	}
 
+	function resetUploadForm()
+	{
+		document.getElementById('upload-form').reset();
+		$('#fileIdRow').children().slice(1).remove();
+		$('#filenameRow').children().slice(1).remove();
+		$('#tokenRow').children().slice(1).remove();
+		$('#slidenameRow').children().slice(1).remove();
+		$('#filterRow').children().slice(1).remove();
+		$('#json_table').html('');
+		$('#load_status').html('');
+		$('.custom-file-label').html('');
+	}
+
 	function initialize() {
 		const params = getUrlVars();
 		const store = new Store('../data/');
@@ -306,8 +372,11 @@
 							else if (!d[key]) rs.push('')
 							else rs.push(d[key])
 						});
-						const btn = `<button class="btn btn-success" data-id='${rs[0]}' onclick='openView(this)'>Open</button>`
+						const btn = `<div id='open-delete'> <button class="btn btn-success" data-id='${rs[0]}' onclick='openView(this)'>Open</button> 
+							<button type='button' class='btn btn-info DownloadButton' id='downloadBtn' data-id='${rs[0]}' onclick='downloadSlide(this)' > <i class='fas fa-download' ></i> </button>
+							<button type='button' class='btn btn-danger DelButton' id='deleteBtn' data-id='${rs[0]}' data-name='${rs[1]}' onclick='deleteSld(this)' data-toggle='modal'> <i class='fas fa-trash-alt' ></i> </button></div>`
 						rs.push(btn);
+						checkUserPermissions();
 						return rs;
 					});
 				} else {
@@ -326,7 +395,7 @@
 				if (data.length == 0) {
 					var div = document.querySelector('.container');
 					div.textContent = `No Data Found ... x _ x`;
-					div.classList = `text-center p-4`;
+					div.classList = `container text-center p-4`;
 					return;
 				}
 
@@ -343,16 +412,43 @@
 				tbody = data.map((d) => {
 					return "<tr>" + d.map((a) => "<td>" + a + "</td>").reduce((a, b) => a + b) + "</tr>";
 				});
-				totaltablepages = Math.ceil(data.length/$("#entries").val());
+				let entriesPerPage;
+				if($('#entries').val()===undefined)
+					entriesPerPage=10; // default value, when initially no slide
+				else
+					entriesPerPage= $('#entries').val();
+				totaltablepages = Math.ceil(data.length/entriesPerPage);
 				selectedpage = 0;
 				$("#search-table").val("");
 				searching = false;
 
+				if( data.length>0 && $('.container').children().length===0)
+				{
+					$('.container').html(`<div>
+						<div>
+						<h3 class="text-center h3 mb-0">Available Slides</h3>
+						<div class="search-box float-left form-group form-inline">
+							<select id='entries' class="select form-control mr-2">
+								<option value="10" selected>10 slides/page</option>
+								<option value="20">20 slides/page</option>
+								<option value="40">40 slides/page</option>
+								<option value="50">50 slides/page</option>
+								<option value="100">100 slides/page</option>
+							</select>
+							<input id="search-table" type="text" class="form-control" placeholder="Search&hellip;">
+					</div>
+						</div>
+						<div class="table-responsive">
+							<table id='datatables' class="table table-striped"></table>
+						</div>
+			</div >
+`);
+				}
 				document.getElementById("datatables").innerHTML = `
 				<thead>${thead.reduce((a, b) => a + b)}</thead>
 				<tbody>${tbody.reduce((a, b) => a + b)}</tbody>
 				<tfoot><tr><td colspan='6'>
-					<nav aria-label="Slides Pages" class="">
+					<nav aria-label="Slides Pages" id='tablePages' class="">
 						<ul class="pagination justify-content-center">
 							<li id="previous-page" class="page-item"><a class="page-link">Previous</a></li>
 							${[...Array(totaltablepages).keys()].map((p)=>{
@@ -428,7 +524,9 @@
 				if(!searching) totaltablepages = Math.ceil(data.length/$("#entries").val());
 				else totaltablepages = Math.ceil($(".searched").length/$("#entries").val());
 				resetTable();
+				pageIndicatorVisible(data.length);
 			});
+			pageIndicatorVisible(data.length);
 		$('#datatables').stacktable();
 		});
 	}
@@ -459,7 +557,106 @@
 			alert('No Data Id');
 		}
 	}
+
+	function hidePostButton()
+	{
+		$('#post_btn').hide();
+	}
+
+	function hideCheckButton()
+	{
+		$('#check_btn').hide();
+	}
+
+	$('[data-dismiss=modal]').on('click', resetUploadForm);
+
 	//window.addEventListener('resize', ()=>{$('#datatables').stacktable()});
+	$(document).ready(function(){
+		checkUserPermissions();
+		$('#deleteModal').on('hidden.bs.modal', function (e) {
+			initialize();
+		});
+		$('#input').on('change',function(){
+			var fileName = $(this).val().split('\\').pop();
+			$(this).next('.custom-file-label').html(fileName);
+		});
+	});
+	function checkUserPermissions(){
+		let userType=getUserType();
+		let permissions;
+		getUserPermissions(userType)
+		.then(response => response.text())
+		.then((data) => {
+		return (data ? JSON.parse(data) : null);
+		})
+		.then((data)=> {
+			if(data===null)
+				return;
+			permissions = data;
+			if(permissions.slide.delete == true)
+				$(".DelButton").css("display","block");
+			if(permissions.slide.post == true)
+				$("#slideUploadButton").css("display","block");
+		});
+	}
+
+	function pageIndicatorVisible(tableLength){
+		if($("#entries").val() >= tableLength)
+			$("#tablePages").css("display","none");
+		else if($("#entries").val() < tableLength)
+			$("#tablePages").css("display","block");
+	}
+
+	function downloadSlide(e){
+		const oid = e.dataset.id;
+		handleDownload(oid);
+	}
+	
+	function deleteSld(e) {
+		const oid = e.dataset.id;
+		const oname = e.dataset.name;
+		const store = new Store('../data/');
+		if (oid) {
+			$('#confirmDeleteContent').html(`Are you sure you want to delete the slide ${oname} with id ${oid} ?`);
+			$('#deleteModal').modal('toggle');
+			$("#confirmDelete").unbind( "click" );
+			$("#confirmDelete").click(function(){
+				store.deleteSlide(oid);
+			});
+		} else {
+			alert('No Data Id');
+		}
+	}
+
+	function fileNameChange()
+	{
+		hideCheckButton(); hidePostButton();
+		const fileNameInput = $('#filename0');
+		const fileName = fileNameInput.val();
+		let newFileName = fileName.split(" ").join("_");
+		fileNameInput.val(newFileName);
+		let fileExtension = newFileName.toLowerCase().split('.').reverse()[0];
+		if (!allowedExtensions.includes(fileExtension)) {
+			fileNameInput.addClass('is-invalid');
+			if(fileNameInput.parent().children().length===1)
+			{
+				fileNameInput.parent().append(`<div class="invalid-feedback" id="filename-feedback0">
+					${fileExtension} files are not compatible  </div>`);
+			}
+			else
+			{
+				$('#filename-feedback0').html(`${ fileExtension } files are not compatible`)
+			}
+		}
+		else
+		{
+			fileNameInput.removeClass('is-invalid');
+			if (fileNameInput.parent().children().length !== 1) {
+			$('#filename-feedback0').remove();
+			}
+		}
+	}
+
 	document.addEventListener('DOMContentLoaded', initialize);
 </script>
 
