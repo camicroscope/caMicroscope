@@ -312,6 +312,7 @@
     width.appendChild(widthIcon);
 
     const slider = document.createElement('input');
+    slider.classList.add('slider');
     slider.type = 'range';
     slider.value = 1;
     slider.min = 1;
