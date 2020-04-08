@@ -1,7 +1,7 @@
 const PDR = OpenSeadragon.pixelDensityRatio;
 const IDB_URL = 'indexeddb://';
 var csvContent;
-
+var x = 5;
 // INITIALIZE DB
 window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
 // id(autoinc), name, location(name+id), classes
@@ -676,6 +676,7 @@ function uploadModel() {
         status.innerHTML = 'Model with the same name already exists. Please choose a new name';
         status.classList.remove('blink');
         console.log(e);
+        document.getElementById("name").style = "border:2px; border-style: solid; border-color: red;";
         return;
       }
 
@@ -691,6 +692,7 @@ function uploadModel() {
           'Please input values on which the model was trained.';
           console.log(e);
           status.classList.remove('blink');
+          document.getElementById("imageSize").style = "border:2px; border-style: solid; border-color: red;";
           return;
         }
 
