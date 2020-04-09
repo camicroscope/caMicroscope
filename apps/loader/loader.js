@@ -160,8 +160,6 @@ function handleCheck(filename, reset, id) {
   ).then(
       (success) => {
         success['ID'] = id;
-        // hide comment
-        delete success['comment'];
         // Add the filename, to be able to fetch the thumbnail.
         success['preview'] = filename;
         changeStatus('CHECK', success, reset);
