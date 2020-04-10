@@ -52,37 +52,13 @@ async function readFileChunks(file, token) {
 
 
 async function handleUpload(selectedFiles) {
-  var fnametr = document.getElementById('filenameRow');
-  var tokentr = document.getElementById('tokenRow');
-  var slidetr = document.getElementById('slidenameRow');
-  var filtertr = document.getElementById('filterRow');
-
-  // Clear existing
-  document.getElementById('json_table').innerHTML = '';
-  var n = tokentr.cells.length;
-  for (var i=0; i<n-1; i++) {
-    fnametr.deleteCell(1);
-    tokentr.deleteCell(1);
-    slidetr.deleteCell(1);
-    filtertr.deleteCell(1);
-  }
-
-  // Add columns
-  fnametr.insertCell(-1).innerHTML = `<input type=text class="form-control" name=filename id='filename0'
-  onchange=fileNameChange(); value='${selectedFiles[0]['name']}'>`;
-  fileNameChange();
-  tokentr.insertCell(-1).innerHTML = `<input type=text class="form-control" onchange=hideCheckButton();hidePostButton();
-  disabled name=token id='token0'>`;
-  slidetr.insertCell(-1).innerHTML = `<input type=text class="form-control" name=slidename id='slidename0'>`;
-  filtertr.insertCell(-1).innerHTML = `<input type=text class="form-control" name=filter id='filter0'>`;
-
   selectedFile = selectedFiles[0];
-  const filename = document.getElementById('filename'+0).value;
+  const filename = selectedFiles[0]['name'];
   const token = await startUpload(filename);
   const callback = continueUpload(token);
-  document.getElementById('token'+0).value = token;
   readFileChunks(selectedFile, token);
   // parseFile(selectedFile, callback, 0, x=>(changeStatus("UPLOAD", "Finished Reading File")))
+  updateFormOnUpload(selectedFiles[0]['name'], token);
 
   document.getElementById('fileUploadInput').colSpan = selectedFiles.length;
   document.getElementById('controlButtons').colSpan = selectedFiles.length+1;
@@ -178,10 +154,7 @@ async function handleUrlUpload(url) {
   await continueUrlUpload(token, url);
 }
 
-function afterUrlUpload(token, url) {
-  $('#uploadLoading').css('display', 'none');
-  var fileName= url.substring(url.lastIndexOf('/')+1, url.length);
-
+function updateFormOnUpload(fileName, token) {
   var fnametr = document.getElementById('filenameRow');
   var tokentr = document.getElementById('tokenRow');
   var slidetr = document.getElementById('slidenameRow');
@@ -207,6 +180,12 @@ function afterUrlUpload(token, url) {
   document.getElementById('token'+0).value = token;
 }
 
+function afterUrlUpload(token, url) {
+  $('#uploadLoading').css('display', 'none');
+  var fileName= url.substring(url.lastIndexOf('/')+1, url.length);
+  updateFormOnUpload(fileName, token);
+}
+
 async function continueUrlUpload(token, url) {
   var enurl = encodeURIComponent(url);
   const body = {'url': enurl};
@@ -218,8 +197,9 @@ async function continueUrlUpload(token, url) {
     contentType: 'application/json; charset=utf-8',
     dataType: 'json',
   }).then((response)=> {
-    // console.log(response);
     if (response['status']=='OK Uploaded') {
+      console.log(response);
+      console.log('Uploaded');
       afterUrlUpload(token, url);
     }
   }).catch((error) => {
