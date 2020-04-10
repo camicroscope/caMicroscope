@@ -806,12 +806,12 @@ async function showInfo() {
             td = row.insertCell();
             td.innerHTML = date;
             td = row.insertCell();
-            td.innerHTML = '<button class="btn btn-primary btn-xs my-xs-btn" ' +
-            'id="removeModel" type="button"><i class="material-icons"' +  
+            td.innerHTML = '<button class="btn btn-primary btn-xs my-xs-btn" '+
+            'id="removeModel" type="button"><i class="material-icons"'+
             'style="font-size:16px;">delete_forever</i>Remove Model</button>';
             td = row.insertCell();
             td.innerHTML = '<button class="btn btn-primary btn-xs my-xs-btn" '+
-            'id="chngClassListBtn" type="button"><i class="material-icons"' + 
+            'id="chngClassListBtn" type="button"><i class="material-icons"' +
             'style="font-size:16px;">edit</i>  Edit Classes</button>';
             document.getElementById('removeModel').addEventListener('click', () => {
               deleteModel(name);
