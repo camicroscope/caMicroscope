@@ -170,3 +170,92 @@ function finishUpload() {
     }
   });
 }
+
+
+async function handleUrlUpload(url) {
+  $('#uploadLoading').css('display', 'block');
+  const token = await startUpload(url);
+  await continueUrlUpload(token, url);
+}
+
+function afterUrlUpload(token, url) {
+  $('#uploadLoading').css('display', 'none');
+  var fileName= url.substring(url.lastIndexOf('/')+1, url.length);
+
+  var fnametr = document.getElementById('filenameRow');
+  var tokentr = document.getElementById('tokenRow');
+  var slidetr = document.getElementById('slidenameRow');
+  var filtertr = document.getElementById('filterRow');
+
+  // Clear existing
+  document.getElementById('json_table').innerHTML = '';
+  var n = tokentr.cells.length;
+  for (var i=0; i<n-1; i++) {
+    fnametr.deleteCell(1);
+    tokentr.deleteCell(1);
+    slidetr.deleteCell(1);
+    filtertr.deleteCell(1);
+  }
+  // Add columns
+  fnametr.insertCell(-1).innerHTML = `<input type=text class="form-control" name=filename id='filename0'
+    onchange=fileNameChange(); value='${fileName}'>`;
+  fileNameChange();
+  tokentr.insertCell(-1).innerHTML = `<input type=text class="form-control" onchange=hideCheckButton();hidePostButton();
+    disabled name=token id='token0'>`;
+  slidetr.insertCell(-1).innerHTML = `<input type=text class="form-control" name=slidename id='slidename0'>`;
+  filtertr.insertCell(-1).innerHTML = `<input type=text class="form-control" name=filter id='filter0'>`;
+  document.getElementById('token'+0).value = token;
+}
+
+async function continueUrlUpload(token, url) {
+  var enurl = encodeURIComponent(url);
+  const body = {'url': enurl};
+  changeStatus('UPLOAD', 'Uploading URL content ');
+  await $.ajax({
+    url: '../loader/urlupload/continue/'+token,
+    type: 'POST',
+    data: JSON.stringify(body),
+    contentType: 'application/json; charset=utf-8',
+    dataType: 'json',
+  }).then((response)=> {
+    // console.log(response);
+    if (response['status']=='OK Uploaded') {
+      afterUrlUpload(token, url);
+    }
+  }).catch((error) => {
+    if (error.status == 0) {
+      var i=0;
+      var inter=setInterval(function() {
+        i++;
+        if (i>=180) { // 180*5000 = 900000 = 15min max time for running this
+          clearInterval(inter);
+        }
+        fetch('../loader/urlupload/check', {
+          credentials: 'same-origin',
+          method: 'GET',
+        }).then((response)=>{
+          // console.log(response);
+          if (response.status==200) {
+            return response.json();
+          } else {
+            throw new Error('Error in check');
+          }
+        }).then((response)=>{
+          console.log('uploading please wait..');
+          if (response['uploaded']== 'True') { // check if upload completed or not
+            console.log('upload complete');
+            clearInterval(inter);
+            afterUrlUpload(token, url);
+          }
+        }).catch((error) => {
+          console.log(error);
+          clearInterval(inter);
+        });
+      }, 5000); // check for url upload status from server in every 5 sec. (for big files or slow connection)
+    } else {
+      console.log(error);
+      $('#uploadLoading').css('display', 'none');
+      alert(error['responseJSON']['status']);
+    }
+  });
+}
