@@ -255,7 +255,7 @@ async function continueUrlUpload(token, url) {
     } else {
       console.log(error);
       $('#uploadLoading').css('display', 'none');
-      alert(error['responseJSON']['status']);
+      alert(error['responseJSON']['error']);
     }
   });
 }
