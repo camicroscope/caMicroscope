@@ -703,8 +703,10 @@
 
 		if (!isValidHttpUrl(url)) {
 			urlInput.addClass('is-invalid');
-			urlInput.parent().append(`<div class="invalid-feedback" id="inputUrl-feedback0">
+if (urlInput.parent().children().length === 2) {
+				urlInput.parent().append(`<div class="invalid-feedback" id="inputUrl-feedback0">
 					Enter valid URL </div>`);
+			}
 
 		}
 		else
