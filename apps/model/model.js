@@ -873,7 +873,8 @@ function openHelp() {
     <i class="material-icons">add</i>: This will open a dialogue box to upload the model. Make sure to fill in all the fields. The image size field expects a
     single integer. <br>
     <i class="material-icons">info</i>: This will display the details of previously uploaded models. <br>
-    <i class="material-icons">bug_report</i>: Bug report.
+    <i class="material-icons">bug_report</i>: Bug report. <br>
+    <i class="material-icons">subject</i>: This will display the summary of the current selected model.
   `;
   $UI.helpModal.open();
 }
