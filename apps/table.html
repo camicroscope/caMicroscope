@@ -710,8 +710,8 @@
 		else
 		{
 			urlInput.removeClass('is-invalid');
-			if (urlInput.parent().children().length !== 1) {
-			$('#urlInput-feedback0').remove();
+			if (urlInput.parent().children().length !== 2) {
+			$('#inputUrl-feedback0').remove();
 			}
 			$('#urlModal').modal('hide');
 			urlUpload();
