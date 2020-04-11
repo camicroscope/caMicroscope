@@ -656,12 +656,11 @@ class Store {
       method: 'DELETE',
       credentials: 'include',
       mode: 'cors',
-    })
-    .then
-      (this.errorHandler)
-    .then(() => {
-      initialize();
-    });
+    }).then
+        (this.errorHandler)
+        .then(() => {
+          initialize();
+        });
   }
 
   /**
@@ -691,17 +690,16 @@ class Store {
       }),
       credentials: 'include',
       mode: 'cors',
-    })
-      .then
+    }).then
         (this.errorHandler)
-      .then(() => {
-        if (delReqId) {
-          alert('Delete request cancelled');
-        } else {
-          alert('Delete request submitted');
-        }
-        initialize();
-    });
+        .then(() => {
+          if (delReqId) {
+            alert('Delete request cancelled');
+          } else {
+            alert('Delete request submitted');
+          }
+          initialize();
+        });
   }
 };
 
