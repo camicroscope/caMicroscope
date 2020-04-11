@@ -210,7 +210,7 @@ async function continueUrlUpload(token, url) {
         if (i>=180) { // 180*5000 = 900000 = 15min max time for running this
           clearInterval(inter);
         }
-        fetch('../loader/urlupload/check', {
+        fetch('../loader/urlupload/check?url='+enurl+'&token='+token, {
           credentials: 'same-origin',
           method: 'GET',
         }).then((response)=>{
