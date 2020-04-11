@@ -646,10 +646,9 @@ class Store {
    * @param {object} id - the slide object id
    * @return {promise} - promise which resolves with response
    **/
-  deleteSlide(id, filename) {
+  deleteSlide(id) {
     const suffix = 'Slide/delete';
     const url = this.base + suffix;
-    console.log(url)
     const query = {
       '_id': id,
     };
@@ -658,9 +657,48 @@ class Store {
       credentials: 'include',
       mode: 'cors',
     }).then
-    (this.errorHandler);
+    (this.errorHandler)
+    .then(() => {
+      initialize()
+    });
   }
-}
+
+  /**
+   * request deletion of slide
+   * @param {object} slideId - the slide object id
+   * @return {promise} - promise which resolves with response
+   **/
+  requestToDeleteSlide(slideId, slideName=null, delReqId=null, fileName=null) {
+    const suffix = delReqId ? 'Slide/delete/request/remove' : 'Slide/delete/request/add';
+    const url = this.base + suffix;
+    const query = {
+      '_id': slideId,
+    };
+    const data = delReqId ? '' : 
+                  {
+                    'requestedBy': String(getUserId()),
+                    'slideName': String(slideName),
+                    'fileame': String(fileName),
+                  };
+    return fetch(url + '?' + objToParamStr(query), {
+      method: 'POST',
+      body: JSON.stringify({
+        "deleteRequest": data,
+      }),
+      credentials: 'include',
+      mode: 'cors',
+    }).then
+    (this.errorHandler)
+    .then(() => {
+      if (delReqId) {
+        alert("Delete request cancelled");
+      } else {
+        alert("Delete request submitted");
+      }
+      initialize();
+    });
+  }
+};
 
 try {
   module.exports = Store;

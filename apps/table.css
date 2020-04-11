@@ -53,3 +53,78 @@ nav li:not(.active):hover a{
 .custom-file-input{
 	cursor: pointer;
 }
+
+/* Tooltip container */
+.tooltipCustom {
+	position: relative;
+	display: inline-block;
+	/* border-bottom: 1px dotted black; If you want dots under the hoverable text */
+  }
+
+/* Tooltip text */
+.tooltipCustom .tooltiptextCustom {
+	visibility: hidden;
+	background-color: black;
+	color: #fff;
+	text-align: center;
+	padding: 5px 0;
+	border-radius: 6px;
+
+	/* Position the tooltip text */
+	position: absolute;
+	z-index: 100;
+	width: 200px;
+	bottom: 100%;
+	left: 50%;
+	margin-left: -100px; /* Use half of the width (120/2 = 60), to center the tooltip */
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.tooltipCustom:hover .tooltiptextCustom {
+	visibility: visible;
+	z-index: 1000;
+}
+
+.notification-box{
+	padding: 10px 0px; 
+	color: black;
+}
+.bg-gray{
+	background-color: #eee;
+}
+@media (max-width: 640px) {
+	.dropdown-menu{
+		top: 50px;
+		left: -16px;  
+		width: 290px;
+	} 
+	.nav{
+		display: block;
+	}
+	.nav .nav-item,.nav .nav-item a{
+		padding-left: 0px;
+	}
+	.message{
+		font-size: 13px;
+	}
+}
+.dropdown-menu{
+	top: 60px;
+	left: 0px;
+	right: unset;
+	width: 460px;
+	box-shadow: 0px 5px 7px -1px #c1c1c1;
+	padding-bottom: 0px;
+	padding: 0px;
+}
+.dropdown-menu:before{
+	content: "";
+	position: absolute;
+	top: -20px;
+	left: 12px;
+	border:10px solid #343A40;
+	border-color: transparent transparent #343A40 transparent;
+}
+
+
+/*  */
