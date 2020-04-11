@@ -259,18 +259,18 @@ function deleteSlideFromSystem(id, filename) {
       .then((data) => {
         if (data.success) {
         // return true;
-        store.deleteSlide(id)
-        .then(
-          alert('File deleted successfully'),
-        )
-      } else {
-        alert('There was an error in deleting the file. Please try again or refresh the page.');
-      }
-      return true
-    }
-  ).catch(
-      (error) => {
-        console.log('ERROR: ' + error);
-      }, // Handle the error response object
-  );
+          store.deleteSlide(id)
+              .then(
+                  alert('File deleted successfully'),
+              );
+        } else {
+          alert('There was an error in deleting the file. Please try again or refresh the page.');
+        }
+        return true;
+      },
+      ).catch(
+          (error) => {
+            console.log('ERROR: ' + error);
+          }, // Handle the error response object
+      );
 }
