@@ -649,7 +649,7 @@ class Store {
   deleteSlide(id, filename) {
     const suffix = 'Slide/delete';
     const url = this.base + suffix;
-    console.log(url)
+    console.log(url);
     const query = {
       '_id': id,
     };
@@ -657,8 +657,7 @@ class Store {
       method: 'DELETE',
       credentials: 'include',
       mode: 'cors',
-    }).then
-    (this.errorHandler);
+    }).then(this.errorHandler);
   }
 }
 

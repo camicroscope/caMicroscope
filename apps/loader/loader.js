@@ -256,24 +256,24 @@ function deleteSlideFromSystem(id, filename) {
     },
     body: data,
   }).then(
-    (response) => response.json())
-    .then((data) => {
-      if (data.success) {
+      (response) => response.json())
+      .then((data) => {
+        if (data.success) {
         // return true;
-        store.deleteSlide(id, filename)
-        .then(
-        initialize()
-        ).then(
-          alert('File deleted successfully'),
-        )
-      } else {
-        alert('There was an error in deleting the file. Please try again or refresh the page.');
-        return false;
-      }
-    }
-  ).catch(
-      (error) => {
-        console.log('ERROR: ' + error)
-      }, // Handle the error response object
-  );
+          store.deleteSlide(id, filename)
+              .then(
+                  initialize(),
+              ).then(
+                  alert('File deleted successfully'),
+              );
+        } else {
+          alert('There was an error in deleting the file. Please try again or refresh the page.');
+          return false;
+        }
+      },
+      ).catch(
+          (error) => {
+            console.log('ERROR: ' + error);
+          }, // Handle the error response object
+      );
 }
