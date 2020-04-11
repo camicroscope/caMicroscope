@@ -656,10 +656,11 @@ class Store {
       method: 'DELETE',
       credentials: 'include',
       mode: 'cors',
-    }).then
-    (this.errorHandler)
+    })
+    .then
+      (this.errorHandler)
     .then(() => {
-      initialize()
+      initialize();
     });
   }
 
@@ -677,7 +678,7 @@ class Store {
     const query = {
       '_id': slideId,
     };
-    const data = delReqId ? '' : 
+    const data = delReqId ? '' :
                   {
                     'requestedBy': String(getUserId()),
                     'slideName': String(slideName),
@@ -686,19 +687,20 @@ class Store {
     return fetch(url + '?' + objToParamStr(query), {
       method: 'POST',
       body: JSON.stringify({
-        "deleteRequest": data,
+        'deleteRequest': data,
       }),
       credentials: 'include',
       mode: 'cors',
-    }).then
-    (this.errorHandler)
-    .then(() => {
-      if (delReqId) {
-        alert("Delete request cancelled");
-      } else {
-        alert("Delete request submitted");
-      }
-      initialize();
+    })
+      .then
+        (this.errorHandler)
+      .then(() => {
+        if (delReqId) {
+          alert('Delete request cancelled');
+        } else {
+          alert('Delete request submitted');
+        }
+        initialize();
     });
   }
 };
