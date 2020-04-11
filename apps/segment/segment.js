@@ -1163,8 +1163,9 @@ async function showInfo() {
             td = row.insertCell();
             td.innerHTML = date;
             td = row.insertCell();
-            td.innerHTML = '<button class="btn btn-primary btn-xs my-xs-btn" ' +
-            'id="removeModel" type="button">Remove Model</button>';
+            td.innerHTML = '<button class="btn btn-primary btn-xs my-xs-btn" '+
+            'id="removeModel" type="button"><i class="material-icons"'+
+            'style="font-size:16px;">delete_forever</i>Remove Model</button>';
             document.getElementById('removeModel').addEventListener('click', () => {
               deleteModel(name);
             });
