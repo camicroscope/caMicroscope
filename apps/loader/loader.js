@@ -255,9 +255,9 @@ function deleteSlideFromSystem(id, filename) {
     },
     body: data,
   }).then(
-    (response) => response.json())
-    .then((data) => {
-      if (data.success) {
+      (response) => response.json())
+      .then((data) => {
+        if (data.success) {
         // return true;
         store.deleteSlide(id)
         .then(

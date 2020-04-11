@@ -666,6 +666,9 @@ class Store {
   /**
    * request deletion of slide
    * @param {object} slideId - the slide object id
+   * @param {object} slideName - the slide name
+   * @param {object} delReqId - the slide object id for deletion
+   * @param {object} fileName - the slide filename on server system
    * @return {promise} - promise which resolves with response
    **/
   requestToDeleteSlide(slideId, slideName=null, delReqId=null, fileName=null) {
