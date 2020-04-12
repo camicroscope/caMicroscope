@@ -240,7 +240,10 @@
 							<option value="50">50 slides/page</option>
 							<option value="100">100 slides/page</option>
 						</select>
-						<input id="search-table" type="text" class="form-control" placeholder="Search&hellip;">
+						<div class="form-group has-search">
+							<span class="fa fa-search form-control-feedback"></span>
+							<input id="search-table" type="text" class="form-control" placeholder="Search">
+						</div>
 					</div>
 				</div>
 				<div class="table-responsive">
@@ -307,7 +310,7 @@
 
 		var trs = "#datatables tbody tr";
 		if(searching){
-			trs = ".searched";
+			trs+= ".searched";
 		}
 		$(trs).slice($("#entries").val()*selectedpage, $("#entries").val()*(selectedpage+1)).filter(function(){
 			$(this).show();
@@ -372,7 +375,7 @@
 							else if (!d[key]) rs.push('')
 							else rs.push(d[key])
 						});
-						const btn = `<div id='open-delete'> <button class="btn btn-success" data-id='${rs[0]}' onclick='openView(this)'>Open</button> 
+						const btn = `<div id='open-delete'> <button class="btn btn-success" data-id='${rs[0]}' onclick='openView(this)'>Open</button>
 							<button type='button' class='btn btn-info DownloadButton' id='downloadBtn' data-id='${rs[0]}' onclick='downloadSlide(this)' > <i class='fas fa-download' ></i> </button>
 							<button type='button' class='btn btn-danger DelButton' id='deleteBtn' data-id='${rs[0]}' data-name='${rs[1]}' onclick='deleteSld(this)' data-toggle='modal'> <i class='fas fa-trash-alt' ></i> </button></div>`
 						rs.push(btn);
@@ -435,7 +438,10 @@
 								<option value="50">50 slides/page</option>
 								<option value="100">100 slides/page</option>
 							</select>
-							<input id="search-table" type="text" class="form-control" placeholder="Search&hellip;">
+							  <div class="form-group has-search">
+							    <span class="fa fa-search form-control-feedback"></span>
+									<input id="search-table" type="text" class="form-control" placeholder="Search">
+								</div>
 					</div>
 						</div>
 						<div class="table-responsive">
@@ -477,9 +483,13 @@
 					totaltablepages = Math.ceil(data.length/$("#entries").val());
 				}else{
 					searching = true;
-					totaltablepages = Math.ceil($(".searched").length/$("#entries").val());
+					totaltablepages = Math.ceil($("#datatables tbody .searched").length/$("#entries").val());
 				}
 				resetTable();
+					if (!searching)
+					pageIndicatorVisible(data.length);
+				else
+					pageIndicatorVisible($("#datatables tbody .searched").length);
 			});
 
 			$(".sort-btn").on("click", function() {
@@ -489,7 +499,7 @@
 
 				var trs = "#datatables tbody tr";
 				if(searching){
-					trs = ".searched";
+					trs+= ".searched";
 				}
 
 				$(trs).sort(function(a, b) {
@@ -522,11 +532,18 @@
 
 			$("#entries").change(function(){
 				if(!searching) totaltablepages = Math.ceil(data.length/$("#entries").val());
-				else totaltablepages = Math.ceil($(".searched").length/$("#entries").val());
+				else totaltablepages = Math.ceil($("#datatables tbody .searched").length/$("#entries").val());
 				resetTable();
-				pageIndicatorVisible(data.length);
+				if (!searching)
+					pageIndicatorVisible(data.length);
+				else
+					pageIndicatorVisible($("#datatables tbody .searched").length);
 			});
-			pageIndicatorVisible(data.length);
+			if(!searching)
+				pageIndicatorVisible(data.length);
+			else
+			 pageIndicatorVisible($("#datatables tbody .searched").length);
+		resetTable();
 		$('#datatables').stacktable();
 		});
 	}
@@ -611,7 +628,7 @@
 		const oid = e.dataset.id;
 		handleDownload(oid);
 	}
-	
+
 	function deleteSld(e) {
 		const oid = e.dataset.id;
 		const oname = e.dataset.name;
