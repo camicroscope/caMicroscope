@@ -50,6 +50,6 @@ nav li:not(.active):hover a{
 .DelButton{
 	display: none;
 }
-.custom-file-input{
+.custom-file-input, .sort-btn {
 	cursor: pointer;
 }
