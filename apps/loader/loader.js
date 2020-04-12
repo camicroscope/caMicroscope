@@ -261,11 +261,11 @@ function deleteSlideFromSystem(id, filename, reqId) {
         // return true;
           store.deleteSlide(id)
               .then(
-						    store.cancelRequestToDeleteSlide(requestId=reqId, onlyRequestCancel=false),
+                store.cancelRequestToDeleteSlide(requestId=reqId, onlyRequestCancel=false),
               )
-                .then(
-                    alert('File deleted successfully'),
-                );
+              .then(
+                  alert('File deleted successfully'),
+              );
         } else {
           alert('There was an error in deleting the file. Please try again or refresh the page.');
         }
