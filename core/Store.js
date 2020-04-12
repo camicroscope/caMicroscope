@@ -700,7 +700,8 @@ class Store {
   * @param {object} reqId - the request object id
   * @return {promise} - promise which resolves with response
   **/
-  cancelRequestToDeleteSlide(reqId, onlyRequestCancel=true) { // If only cancelling request and not deleting slide file then set to true
+  cancelRequestToDeleteSlide(reqId, onlyRequestCancel=true) { 
+    // If only cancelling request and not deleting slide file then set onlyRequestCancel to true
     const suffix = 'Request/delete';
     const url = this.base + suffix;
     const query = {
