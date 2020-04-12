@@ -722,9 +722,13 @@ function generateROIandSubROI(patch) {
   const coordinates = getCoordinates(patch);
   const { x, y, width, height } = patch.getRect("image");
   const viewer_size = $CAMIC.viewer.viewport.getContainerSize()
+  const location = $D.params.data.location.split('/')
+  const fileName = location[location.length-1]
+  const alias = `${fileName}_x${x}.${width}_y${y}.${height}`
 
   const ROI = {
     _id: roi_id.toString(),
+    alias: alias,
     creator: creator,
     create_date_time: patch.createDate,
     provenance: {

@@ -951,11 +951,19 @@ function addROIFormEvent(){
     const id = new ObjectId();
     const slide = $D.params.slideId;
     const slideName = $D.params.data.name;
+
     const parent = $D.params.labelId;
     const exec_id = randomId();
+    
+    const {x, y, width, height} = $D.ROI.properties;
+
+    const location = $D.params.data.location.split('/')
+    const fileName1 = location[location.length-1]
+    const alias = `${fileName1}_x${x}.${width}_y${y}.${height}`
 
     const annotation = {
       "_id":id.toString(),
+      "alias": alias,
       "provenance": {
           "image": {
               "slide": slide,
