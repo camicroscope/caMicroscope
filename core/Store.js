@@ -695,12 +695,12 @@ class Store {
         });
   }
 
-/**
+  /**
   * request deletion of slide
   * @param {object} reqId - the request object id
   * @return {promise} - promise which resolves with response
-**/
-cancelRequestToDeleteSlide(reqId, onlyRequestCancel=true) { // If only cancelling request and not deleting slide file then set to true
+  **/
+  cancelRequestToDeleteSlide(reqId, onlyRequestCancel=true) { // If only cancelling request and not deleting slide file then set to true
     const suffix = 'Request/delete';
     const url = this.base + suffix;
     const query = {
@@ -737,7 +737,7 @@ cancelRequestToDeleteSlide(reqId, onlyRequestCancel=true) { // If only cancellin
       return fetch(url + '?' + objToParamStr(query), {
         credentials: 'include',
         mode: 'cors',
-      }).then(this.errorHandler);     
+      }).then(this.errorHandler);
     }
   }
 };
