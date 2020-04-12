@@ -267,7 +267,10 @@
 							<option value="50">50 slides/page</option>
 							<option value="100">100 slides/page</option>
 						</select>
-						<input id="search-table" type="text" class="form-control" placeholder="Search&hellip;">
+						<div class="form-group has-search">
+							<span class="fa fa-search form-control-feedback"></span>
+							<input id="search-table" type="text" class="form-control" placeholder="Search">
+						</div>
 					</div>
 				</div>
 				<div class="table-responsive">
@@ -337,7 +340,7 @@
 
 		var trs = "#datatables tbody tr";
 		if(searching){
-			trs = ".searched";
+			trs+= ".searched";
 		}
 		$(trs).slice($("#entries").val()*selectedpage, $("#entries").val()*(selectedpage+1)).filter(function(){
 			$(this).show();
@@ -511,7 +514,10 @@
 								<option value="50">50 slides/page</option>
 								<option value="100">100 slides/page</option>
 							</select>
-							<input id="search-table" type="text" class="form-control" placeholder="Search&hellip;">
+							  <div class="form-group has-search">
+							    <span class="fa fa-search form-control-feedback"></span>
+									<input id="search-table" type="text" class="form-control" placeholder="Search">
+								</div>
 					</div>
 						</div>
 						<div class="table-responsive">
@@ -553,9 +559,13 @@
 					totaltablepages = Math.ceil(data.length/$("#entries").val());
 				}else{
 					searching = true;
-					totaltablepages = Math.ceil($(".searched").length/$("#entries").val());
+					totaltablepages = Math.ceil($("#datatables tbody .searched").length/$("#entries").val());
 				}
 				resetTable();
+					if (!searching)
+					pageIndicatorVisible(data.length);
+				else
+					pageIndicatorVisible($("#datatables tbody .searched").length);
 			});
 
 			$(".sort-btn").on("click", function() {
@@ -565,7 +575,7 @@
 
 				var trs = "#datatables tbody tr";
 				if(searching){
-					trs = ".searched";
+					trs+= ".searched";
 				}
 
 				$(trs).sort(function(a, b) {
@@ -598,11 +608,18 @@
 
 			$("#entries").change(function(){
 				if(!searching) totaltablepages = Math.ceil(data.length/$("#entries").val());
-				else totaltablepages = Math.ceil($(".searched").length/$("#entries").val());
+				else totaltablepages = Math.ceil($("#datatables tbody .searched").length/$("#entries").val());
 				resetTable();
-				pageIndicatorVisible(data.length);
+				if (!searching)
+					pageIndicatorVisible(data.length);
+				else
+					pageIndicatorVisible($("#datatables tbody .searched").length);
 			});
-			pageIndicatorVisible(data.length);
+			if(!searching)
+				pageIndicatorVisible(data.length);
+			else
+			 pageIndicatorVisible($("#datatables tbody .searched").length);
+		resetTable();
 		$('#datatables').stacktable();
 		});
 	}
@@ -695,6 +712,7 @@
 	}
 	
 	function deleteSld(e, delReqId=null, userType=getUserType()) {
+
 		const oid = e.dataset.id;
 		const oname = e.dataset.name;
 		const filename = e.dataset.filename;
