@@ -673,11 +673,11 @@ class Store {
     const suffix = 'Request/add';
     const url = this.base + suffix;
     const query = {};
-    const data = 
+    const data =
                   {
                     'slideName': String(slideName),
                     'fileName': String(fileName),
-                    'slideId': String(slideId)
+                    'slideId': String(slideId),
                   };
     return fetch(url + '?' + objToParamStr(query), {
       method: 'POST',
@@ -695,12 +695,12 @@ class Store {
         });
   }
 
-    /**
-   * request deletion of slide
-   * @param {object} reqId - the request object id
-   * @return {promise} - promise which resolves with response
-   **/
-  cancelRequestToDeleteSlide(reqId, onlyRequestCancel=true) { // If only cancelling request and not deleting slide file then set to true
+/**
+  * request deletion of slide
+  * @param {object} reqId - the request object id
+  * @return {promise} - promise which resolves with response
+**/
+cancelRequestToDeleteSlide(reqId, onlyRequestCancel=true) { // If only cancelling request and not deleting slide file then set to true
     const suffix = 'Request/delete';
     const url = this.base + suffix;
     const query = {
@@ -722,7 +722,7 @@ class Store {
   findRequest(userType=getUserType()) {
     const suffix = 'Request/find';
     const url = this.base + suffix;
-    if (userType === "Admin") {
+    if (userType === 'Admin') {
       var query = {};
 
       return fetch(url + '?' + objToParamStr(query), {
@@ -737,7 +737,7 @@ class Store {
       return fetch(url + '?' + objToParamStr(query), {
         credentials: 'include',
         mode: 'cors',
-      }).then(this.errorHandler);      
+      }).then(this.errorHandler);     
     }
   }
 };
