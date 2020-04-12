@@ -666,38 +666,79 @@ class Store {
    * request deletion of slide
    * @param {object} slideId - the slide object id
    * @param {object} slideName - the slide name
-   * @param {object} delReqId - the slide object id for deletion
    * @param {object} fileName - the slide filename on server system
    * @return {promise} - promise which resolves with response
    **/
-  requestToDeleteSlide(slideId, slideName=null, delReqId=null, fileName=null) {
-    const suffix = delReqId ? 'Slide/delete/request/remove' : 'Slide/delete/request/add';
+  requestToDeleteSlide(slideId, slideName=null, fileName=null) {
+    const suffix = 'Request/add';
     const url = this.base + suffix;
-    const query = {
-      '_id': slideId,
-    };
-    const data = delReqId ? '' :
+    const query = {};
+    const data = 
                   {
-                    'requestedBy': String(getUserId()),
                     'slideName': String(slideName),
-                    'fileame': String(fileName),
+                    'fileName': String(fileName),
+                    'slideId': String(slideId)
                   };
     return fetch(url + '?' + objToParamStr(query), {
       method: 'POST',
       body: JSON.stringify({
-        'deleteRequest': data,
+        'requestedBy': String(getUserId()),
+        'type': 'deleteSlide',
+        'slideDetails': data,
       }),
       credentials: 'include',
       mode: 'cors',
     }).then(this.errorHandler)
         .then(() => {
-          if (delReqId) {
+          alert('Delete request submitted');
+          initialize();
+        });
+  }
+
+    /**
+   * request deletion of slide
+   * @param {object} reqId - the request object id
+   * @return {promise} - promise which resolves with response
+   **/
+  cancelRequestToDeleteSlide(reqId, onlyRequestCancel=true) { // If only cancelling request and not deleting slide file then set to true
+    const suffix = 'Request/delete';
+    const url = this.base + suffix;
+    const query = {
+      '_id': reqId,
+    };
+    return fetch(url + '?' + objToParamStr(query), {
+      method: 'DELETE',
+      credentials: 'include',
+      mode: 'cors',
+    }).then(this.errorHandler)
+        .then(() => {
+          if (onlyRequestCancel) {
             alert('Delete request cancelled');
-          } else {
-            alert('Delete request submitted');
           }
           initialize();
         });
+  }
+
+  findRequest(userType=getUserType()) {
+    const suffix = 'Request/find';
+    const url = this.base + suffix;
+    if (userType === "Admin") {
+      var query = {};
+
+      return fetch(url + '?' + objToParamStr(query), {
+        credentials: 'include',
+        mode: 'cors',
+      }).then(this.errorHandler);
+    } else {
+      var query = {
+        'requestedBy': getUserId(),
+      };
+
+      return fetch(url + '?' + objToParamStr(query), {
+        credentials: 'include',
+        mode: 'cors',
+      }).then(this.errorHandler);      
+    }
   }
 };
 
