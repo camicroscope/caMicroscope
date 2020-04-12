@@ -261,7 +261,7 @@ function deleteSlideFromSystem(id, filename, reqId) {
         // return true;
           store.deleteSlide(id)
               .then(
-                store.cancelRequestToDeleteSlide(requestId=reqId, onlyRequestCancel=false),
+                  store.cancelRequestToDeleteSlide(requestId=reqId, onlyRequestCancel=false),
               )
               .then(
                   alert('File deleted successfully'),
