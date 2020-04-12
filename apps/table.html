@@ -59,7 +59,6 @@
 			}
 			//Sanitizing input
 			slide.value = sanitize(slide.value);
-			console.log(existingSlideNames,slide.value);
 			//Checking if silde with given name already exists
 			if(existingSlideNames.includes(slide.value)) {
 				changeStatus("UPLOAD", "Slide with given name already exists");
@@ -83,9 +82,8 @@
 	</script>
 	<title>CaMicroscope Data Table</title>
 
-	<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
-		integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
-		crossorigin="anonymous"></script>
+	<script src="https://code.jquery.com/jquery-3.4.1.min.js"
+		></script>
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
 		integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
 		crossorigin="anonymous"></script>
@@ -206,13 +204,23 @@
 											<tr>
 												<td align="right"><b>File</b></td>
 												<td id="fileUploadInput">
-														<span class="input-group mb-3" >
-															<span class="custom-file">
-															  <input type="file" class="custom-file-input" id="input" onchange="handleUpload(this.files)">
-															  <label class="custom-file-label" for="input" style="overflow: hidden;">Choose file</label>
-															</span>
+													<span class="input-group mb-3" >
+														<span class="custom-file fileInputClass">
+															<input type="file" class="custom-file-input" id="input" onchange="handleUpload(this.files)">
+															<label class="custom-file-label" for="input" style="overflow: hidden;">Choose file</label>
 														</span>
-													</td>
+														<div class="form-group urlUploadClass" style="display:none; flex-wrap:wrap">
+															<input type="url" placeholder="Enter file URL" class="form-control" id="urlInput" style="width: 20em;" required>
+															<button type="button" class="btn btn-info" onclick="urlInputChange();" style="margin-left: 0.6em; margin-right:-5em" >Upload</button>
+														</div>
+													</span> <div id="uploadLoading" style="display: none;"><span>Uploading...</span> <br>
+													<div class="spinner-grow text-primary" role="status" style="margin-left: 1.2em;">
+														<span class="sr-only"></span>
+													</div> </div>
+													<a href="#" id='urlswitch' onclick="$('#urlInput').val(''); switchToUrl();" > <span style="position: absolute; right:2em;" > <i class="fas fa-link"></i> Upload from URL</span></a>
+													<a href="#" style="display: none;" id="fileswitch" onclick=" switchToFile();" > <span style="position: absolute; right:2em;" > <i class="fas fa-folder"></i> Upload from local</span></a>
+
+												</td>
 											</tr>
 											<tr id="filenameRow">
 												<td align="right"><b>Filename</b></td>
@@ -281,7 +289,6 @@
 		</div>
 
 	</div>
-
 
 	<!--Delete Modal -->
 	<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
@@ -497,6 +504,7 @@
 					<img id='sort2${d.title}' class='float-right sort-btn' width='10px' src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAABmJLR0QA/wD/AP+gvaeTAAAAs0lEQVRIie3VsQrCMBSF4T/qoFsddBR8Hncf24KTUAquDg4ugoPWwRbSEk2aJhHlHsiQhPCdZAl8KeMBZ+fADLgF6mLNBjgBVT3OwDYFXGqojqvY8NUAV7ye3Tmj8L0EFlhggQX+F3hi2VdAZlgzJQOm2vwCPDx7kWP+Al1G0SnSyqenVsDdt3Ed7xsvgD39b3sE1kMa++BB0L54UNQVj4La8KjoOzwJ2mQJ7IADsEqF/nae93FcRiryrh8AAAAASUVORK5CYII="/>
 					</th>`);
 
+
 					thead.push("<th></th>");
 
 					tbody = data.map((d) => {
@@ -578,11 +586,11 @@
 					else
 						pageIndicatorVisible($("#datatables tbody .searched").length);
 				});
-
 				$(".sort-btn").on("click", function() {
 					var value = $(this)[0].id.substr(5);
 					var upordown = parseInt($(this)[0].id[4]);
 					var index = HeadMapping.findIndex((a)=> a.title.toLowerCase() == value.toLowerCase());
+
 
 					var trs = "#datatables tbody tr";
 					if(searching){
@@ -718,6 +726,10 @@
 			$("#tablePages").css("display","block");
 	}
 
+	function urlUpload(){
+		var url= document.getElementById("urlInput").value;
+		handleUrlUpload(url);
+	}
 	function downloadSlide(e){
 		const oid = e.dataset.id;
 		handleDownload(oid);
@@ -782,6 +794,53 @@
 			}
 		}
 	}
+	function switchToFile(){
+		$(".urlUploadClass").css("display","none");
+		$(".fileInputClass").css("display","block");
+		$("#urlswitch").css("display","block");
+		$("#fileswitch").css("display","none");
+		$('#uploadLoading').css('display', 'none');
+	}
+
+	function switchToUrl(){
+		$(".urlUploadClass").css("display","flex");
+		$(".fileInputClass").css("display","none");
+		$("#urlswitch").css("display","none");
+		$("#fileswitch").css("display","block");
+	}
+
+	function isValidHttpUrl(urlstring) {
+		try {
+		  url = new URL(urlstring);
+		} catch (_) {
+		  return false;  
+		} 
+		return url.protocol === "http:";
+	  }
+
+	function urlInputChange()
+	{
+		const urlInput = $('#urlInput');
+		const url = urlInput.val();
+
+		if (!isValidHttpUrl(url)) {
+			urlInput.addClass('is-invalid');
+			if (urlInput.parent().children().length === 2) {
+				urlInput.parent().append(`<div class="invalid-feedback" id="inputUrl-feedback0">
+					Enter valid URL </div>`);
+			}
+
+		}
+		else
+		{
+			urlInput.removeClass('is-invalid');
+			if (urlInput.parent().children().length !== 2) {
+			$('#inputUrl-feedback0').remove();
+			}
+			urlUpload();
+		}
+	}
+
 
 	function appendNotifications(slideDeleteRequests) {
 		$('#notification-nav-link').html(``);
