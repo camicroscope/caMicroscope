@@ -276,7 +276,7 @@ ul.disabled {
 .form-style #weightsupload{
     cursor: pointer;
 }
-#removeModel{
+.btn-del{
       background-color: red;
       border: none; 
       color: white; 
