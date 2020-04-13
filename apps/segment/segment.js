@@ -1125,7 +1125,7 @@ async function deleteModel(name) {
       if (status) {
         alert('Deleted', name);
         showInfo();
-        modelName.splice(modelName.indexOf(name.split('_').splice(1).join('_').slice(0, -3)),1);
+        modelName.splice(modelName.indexOf(name.split('_').splice(1).join('_').slice(0, -3)), 1);
       }
     }
   } else {

@@ -686,7 +686,7 @@ function uploadModel() {
           document.getElementById('imageSize').style = 'border:2px; border-style: solid; border-color: red;';
           return;
         }
-        
+
         await model.save(IDB_URL + name);
 
         // Update the model store db entry to have the classes array
@@ -745,7 +745,7 @@ async function deleteModel(name) {
       if (status) {
         alert('Deleted', name);
         showInfo();
-        modelName.splice(modelName.indexOf(name.split('/').pop().split('_').splice(2).join('_').slice(0, -3)),1);
+        modelName.splice(modelName.indexOf(name.split('/').pop().split('_').splice(2).join('_').slice(0, -3)), 1);
       }
     }
   } else {
