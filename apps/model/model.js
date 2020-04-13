@@ -1,6 +1,7 @@
 const PDR = OpenSeadragon.pixelDensityRatio;
 const IDB_URL = 'indexeddb://';
 var csvContent;
+var nameArray = [];
 
 // INITIALIZE DB
 window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
@@ -686,7 +687,7 @@ function uploadModel() {
           document.getElementById('imageSize').style = 'border:2px; border-style: solid; border-color: red;';
           return;
         }
-        
+
         await model.save(IDB_URL + name);
 
         // Update the model store db entry to have the classes array
