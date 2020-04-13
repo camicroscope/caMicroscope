@@ -633,6 +633,7 @@ function uploadModel() {
             console.log('SUCCESS, ID:', e.target.result);
             status.innerHTML = 'Done! Click refresh below.';
             status.classList.remove('blink');
+            modelName.push(_name.value);
           };
           req.onerror = function(e) {
             status.innerHTML = 'Some error this way!';
