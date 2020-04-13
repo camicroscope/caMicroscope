@@ -604,15 +604,6 @@ function runPredict(key) {
   }
 }
 
-//  Function to check if model name is repeated or not.
-function checkNameDuplicate(name) {
-  if (nameArray.indexOf(name)!=-1) {
-    return 1;
-  }
-  return 0;
-}
-
-
 // TO-DO: Allow uploading and using tensorflow graph models. Can't save graph models. Need to use right away.
 function uploadModel() {
   var _name = document.querySelector('#name');
@@ -697,17 +688,6 @@ function uploadModel() {
           return;
         }
 
-        try {
-          if (checkNameDuplicate(_name.value)) {
-            throw new Error('Model name repeated');
-          }
-        } catch (e) {
-          status.innerHTML = 'Model with the same name already exists. Please choose a new name';
-          status.classList.remove('blink');
-          return;
-        }
-        nameArray.push(_name.value);
-
         await model.save(IDB_URL + name);
 
         // Update the model store db entry to have the classes array
@@ -724,6 +704,7 @@ function uploadModel() {
             console.log('SUCCESS, ID:', e.target.result);
             status.innerHTML = 'Done! Click refresh below.';
             status.classList.remove('blink');
+            modelName.push(_name.value);
           };
           req.onerror = function(e) {
             status.innerHTML = 'Some error this way!';
