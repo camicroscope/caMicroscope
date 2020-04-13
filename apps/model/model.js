@@ -1,6 +1,7 @@
 const PDR = OpenSeadragon.pixelDensityRatio;
 const IDB_URL = 'indexeddb://';
 var csvContent;
+var nameArray = [];
 
 // INITIALIZE DB
 window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
@@ -605,7 +606,7 @@ function runPredict(key) {
 
 //  Function to check if model name is repeated or not.
 function checkNameDuplicate(name) {
-  if (namearray.indexOf(name)!=-1) {
+  if (nameArray.indexOf(name)!=-1) {
     return 1;
   }
   return 0;
@@ -705,7 +706,7 @@ function uploadModel() {
           status.classList.remove('blink');
           return;
         }
-        namearray.push(_name.value);
+        nameArray.push(_name.value);
 
         await model.save(IDB_URL + name);
 
