@@ -603,15 +603,6 @@ function runPredict(key) {
   }
 }
 
-//  Function to check if model name is repeated or not.
-function checkNameDuplicate(name) {
-  if (namearray.indexOf(name)!=-1) {
-    return 1;
-  }
-  return 0;
-}
-
-
 // TO-DO: Allow uploading and using tensorflow graph models. Can't save graph models. Need to use right away.
 function uploadModel() {
   var _name = document.querySelector('#name');
