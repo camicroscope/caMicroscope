@@ -298,7 +298,7 @@ ul.disabled {
       font-size: 14px; 
       cursor: pointer; 
 }
-#chngClassListBtn{
+.btn-change{
       background-color: rgb(133, 53, 199);
       border: none; 
       color: white; 

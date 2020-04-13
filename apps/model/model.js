@@ -792,7 +792,7 @@ async function showInfo() {
             'id=removeModel'+ modelCount+' type="button"><i class="material-icons"'+
             'style="font-size:16px;">delete_forever</i>Remove Model</button>';
             td = row.insertCell();
-            td.innerHTML = '<button class="btn btn-primary btn-xs my-xs-btn" '+
+            td.innerHTML = '<button class="btn-change" '+
             'id=chngClassListBtn'+ modelCount+' type="button"><i class="material-icons"' +
             'style="font-size:16px;">edit</i>  Edit Classes</button>';
             document.getElementById('removeModel'+modelCount).addEventListener('click', () => {
