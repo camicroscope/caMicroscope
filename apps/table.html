@@ -499,9 +499,9 @@
 					//Adding names to later validate for new slide names
 					existingSlideNames = data.map(d => d[1]);
 
-					const thead = HeadMapping.map(d => "<th>" + d.title + `<img id='sort1${d.title}' class='float-right sort-btn' width='10px' src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAABmJLR0QA/wD/AP+gvaeTAAAAtklEQVRIie3XsQrCMBSF4T+CoJsddHAo9HH6AD634NbNqTgo6FI6WQdTtJLQpG0CxXsglIRyv0ugCYWZRsUGd8ARKIA0FroFTkCjxxnIYqNRcBsaFO9Dg+Cu6KS4LzoJrnh/Mr5oOwpgaSu+GNqVY6wHTN/Jo4DNz1oJrAzv7oH6a/4Ani7duabCvLVrnyKht1pggQUWWOA/g0vD2o3ulRgkOXDhcx1egYNvkTG/IIl+3nUD88gLIHVaGvUECUcAAAAASUVORK5CYII='/>
+					const thead = HeadMapping.map(d => "<th>" + d.title + `<img id='sort1${d.title}' class='float-right sort-btn' width='15px' src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAABmJLR0QA/wD/AP+gvaeTAAAAtklEQVRIie3XsQrCMBSF4T+CoJsddHAo9HH6AD634NbNqTgo6FI6WQdTtJLQpG0CxXsglIRyv0ugCYWZRsUGd8ARKIA0FroFTkCjxxnIYqNRcBsaFO9Dg+Cu6KS4LzoJrnh/Mr5oOwpgaSu+GNqVY6wHTN/Jo4DNz1oJrAzv7oH6a/4Ani7duabCvLVrnyKht1pggQUWWOA/g0vD2o3ulRgkOXDhcx1egYNvkTG/IIl+3nUD88gLIHVaGvUECUcAAAAASUVORK5CYII='/>
 
-					<img id='sort2${d.title}' class='float-right sort-btn' width='10px' src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAABmJLR0QA/wD/AP+gvaeTAAAAs0lEQVRIie3VsQrCMBSF4T/qoFsddBR8Hncf24KTUAquDg4ugoPWwRbSEk2aJhHlHsiQhPCdZAl8KeMBZ+fADLgF6mLNBjgBVT3OwDYFXGqojqvY8NUAV7ye3Tmj8L0EFlhggQX+F3hi2VdAZlgzJQOm2vwCPDx7kWP+Al1G0SnSyqenVsDdt3Ed7xsvgD39b3sE1kMa++BB0L54UNQVj4La8KjoOzwJ2mQJ7IADsEqF/nae93FcRiryrh8AAAAASUVORK5CYII="/>
+					<img id='sort2${d.title}' class='float-right sort-btn' width='15px' src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAABmJLR0QA/wD/AP+gvaeTAAAAs0lEQVRIie3VsQrCMBSF4T/qoFsddBR8Hncf24KTUAquDg4ugoPWwRbSEk2aJhHlHsiQhPCdZAl8KeMBZ+fADLgF6mLNBjgBVT3OwDYFXGqojqvY8NUAV7ye3Tmj8L0EFlhggQX+F3hi2VdAZlgzJQOm2vwCPDx7kWP+Al1G0SnSyqenVsDdt3Ed7xsvgD39b3sE1kMa++BB0L54UNQVj4La8KjoOzwJ2mQJ7IADsEqF/nae93FcRiryrh8AAAAASUVORK5CYII="/>
 					</th>`);
 
 
@@ -600,7 +600,29 @@
 					$(trs).sort(function(a, b) {
 						let at=$(a).children('td').get(index).textContent.toLowerCase();
 						let bt=$(b).children('td').get(index).textContent.toLowerCase();
-						return upordown == 1 ? at > bt: at < bt;
+						if(!isNaN(at)&&!isNaN(bt))
+						{
+							at=Number(at);
+							bt=Number(bt);
+						}
+						if(upordown===1)
+						{
+							if(at>bt)
+								return 1;
+							else if(at<bt)
+								return -1;
+							else
+								return 0;
+						}
+						else
+						{
+							if (at < bt)
+								return 1;
+							else if (at > bt)
+								return -1;
+							else
+								return 0;
+						}
 					}).appendTo("#datatables > tbody");
 					selectedpage = 0;
 					showTablePage();
