@@ -798,10 +798,10 @@ async function showInfo() {
             document.getElementById('removeModel'+modelCount).addEventListener('click', () => {
               deleteModel(name);
             });
-            modelCount+=1;
             document.getElementById('chngClassListBtn'+modelCount).addEventListener('click', () => {
               showNewClassInput(name);
             });
+            modelCount+=1;
           };
         }
       }
