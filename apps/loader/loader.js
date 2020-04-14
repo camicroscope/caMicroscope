@@ -1,6 +1,7 @@
 var uploadUrl = '../loader/upload/start/';
 var checkUrl = '../loader/data/one/';
 var thumbUrl = '../loader/data/thumbnail/';
+var deleteSlideUrl = '../loader/slide/delete';
 var downloadURL = '../loader/getSlide/';
 
 var store = new Store('../data/');
@@ -237,4 +238,42 @@ function PostBtn() {
   var slidename = document.getElementById('slidename'+0).value;
   var filter = document.getElementById('filter'+0).value;
   handlePost(filename, slidename, filter, true);
+}
+
+function deleteSlideFromSystem(id, filename, reqId) {
+  // var data = new FormData();
+  // data.append('filename', filename);
+  data = {
+    'filename': filename,
+  };
+  data = JSON.stringify(data);
+  fetch(deleteSlideUrl, {
+    credentials: 'include',
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: data,
+  }).then(
+      (response) => response.json())
+      .then((data) => {
+        if (data.success) {
+        // return true;
+          store.deleteSlide(id)
+              .then(
+                  store.cancelRequestToDeleteSlide(requestId=reqId, onlyRequestCancel=false),
+              )
+              .then(
+                  alert('File deleted successfully'),
+              );
+        } else {
+          alert('There was an error in deleting the file. Please try again or refresh the page.');
+        }
+        return true;
+      },
+      ).catch(
+          (error) => {
+            console.log('ERROR: ' + error);
+          }, // Handle the error response object
+      );
 }
