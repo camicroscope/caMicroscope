@@ -17,7 +17,7 @@ Pull requests are the best way to propose changes to the codebase (we use [Githu
 2. If you've added code that should be tested, add tests.
 3. If you've changed APIs, update the documentation.
 4. Ensure the test suite passes.
-5. Make sure your code lints.
+5. Make sure your code [lints](#Use-a-Consistent-Coding-Style).
 6. Issue that pull request! (If it's a development related update or fix, make sure you pull request into the `develop` branch)
 
 ## Any contributions you make will be under the MIT Software License
