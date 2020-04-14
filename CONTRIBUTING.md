@@ -18,7 +18,7 @@ Pull requests are the best way to propose changes to the codebase (we use [Githu
 3. If you've changed APIs, update the documentation.
 4. Ensure the test suite passes.
 5. Make sure your code lints.
-6. Issue that pull request!
+6. Issue that pull request! (Make sure you pull request into the `develop` branch)
 
 ## Any contributions you make will be under the MIT Software License
 In short, when you submit code changes, your submissions are understood to be under the same [BSD-3 Clause License](https://opensource.org/licenses/BSD-3-Clause) that covers the project. Feel free to contact the maintainers if that's a concern.
