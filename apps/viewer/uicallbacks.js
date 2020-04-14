@@ -578,11 +578,12 @@ function measurementOff() {
   $CAMIC.viewer.measureInstance.off();
   const li = $UI.toolbar.getSubTool('measurement');
   li.querySelector('input[type=checkbox]').checked = false;
+  $CAMIC.status = null;
   rotationOn();
 }
 
-function rotationOff(){
-  const sup = $CAMIC.viewer.rotateBar.txtR.childNodes[1]
+function rotationOff() {
+  const sup = $CAMIC.viewer.rotateBar.txtR.childNodes[1];
   $CAMIC.viewer.rotateBar.txtR.innerHTML = '0';
   $CAMIC.viewer.rotateBar.txtR.appendChild(sup);
   $CAMIC.viewer.rotateBar.range.value = '0';
@@ -591,9 +592,8 @@ function rotationOff(){
   $CAMIC.viewer.rotateBar.divElt.style.opacity = 0.5;
 }
 
-function rotationOn(){
+function rotationOn() {
   $CAMIC.viewer.rotateBar.range.disabled = false;
-  $CAMIC.status = null;
   $CAMIC.viewer.rotateBar.divElt.style.opacity = 1;
 }
 
