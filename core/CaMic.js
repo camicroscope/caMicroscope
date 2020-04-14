@@ -126,7 +126,7 @@ class CaMic {
     // create draw pulgin
     this.createCanvasDraw();
     this.createOverlayers();
-
+    this.createRotationBar();
 
     // change navigator style
     if (this.setting.showNavigator) {
@@ -234,6 +234,9 @@ class CaMic {
       position: 'BOTTOM_RIGHT',
       autoFade: false,
     });
+  }
+  createRotationBar() {
+    this.viewer.rotationBar({});
   }
   /**
    * set up a canvas Draw functionality on the image

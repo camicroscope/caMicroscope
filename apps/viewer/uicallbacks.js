@@ -326,6 +326,7 @@ function presetLabelOn(label) {
     label.color;
   // close layers menu
   $UI.layersSideMenu.close();
+  rotationOff();
 }
 
 function presetLabelOff() {
@@ -348,6 +349,7 @@ function presetLabelOff() {
       '';
     $CAMIC.status = null;
   }
+  rotationOn();
 }
 
 function toolsOff() {
@@ -419,6 +421,7 @@ function annotationOn(state, target) {
   const input = $UI.annotOptPanel._form_.querySelector('#name');
   input.focus();
   input.select();
+  rotationOff();
 }
 
 function annotationOff() {
@@ -438,6 +441,7 @@ function annotationOff() {
     toggleOffDrawBtns();
     $CAMIC.status = null;
   }
+  rotationOn();
 }
 
 function toggleOffDrawBtns() {
@@ -566,6 +570,7 @@ function measurementOn() {
   const li = $UI.toolbar.getSubTool('measurement');
   li.querySelector('input[type=checkbox]').checked = true;
   $CAMIC.status = 'measure';
+  rotationOff();
 }
 
 function measurementOff() {
@@ -573,7 +578,23 @@ function measurementOff() {
   $CAMIC.viewer.measureInstance.off();
   const li = $UI.toolbar.getSubTool('measurement');
   li.querySelector('input[type=checkbox]').checked = false;
+  rotationOn();
+}
+
+function rotationOff(){
+  const sup = $CAMIC.viewer.rotateBar.txtR.childNodes[1]
+  $CAMIC.viewer.rotateBar.txtR.innerHTML = '0';
+  $CAMIC.viewer.rotateBar.txtR.appendChild(sup);
+  $CAMIC.viewer.rotateBar.range.value = '0';
+  $CAMIC.viewer.rotateBar.range.disabled = true;
+  $CAMIC.viewer.viewport.setRotation(0);
+  $CAMIC.viewer.rotateBar.divElt.style.opacity = 0.5;
+}
+
+function rotationOn(){
+  $CAMIC.viewer.rotateBar.range.disabled = false;
   $CAMIC.status = null;
+  $CAMIC.viewer.rotateBar.divElt.style.opacity = 1;
 }
 
 // --- toggle magnifier callback ---//
