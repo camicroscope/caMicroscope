@@ -37,6 +37,7 @@ class StatesHelper {
     }
     // get current zoom
     states.z = $CAMIC.viewer.viewport.getZoom(true);
+    states.a = $CAMIC.viewer.viewport.getRotation(true);
     if ($CAMIC.viewer.omanager) {
       const lays = $CAMIC.viewer.omanager.overlays.reduce(function(rs, lay) {
         if (lay.isShow)rs.push(lay.id);
