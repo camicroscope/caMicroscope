@@ -240,7 +240,7 @@ function PostBtn() {
   handlePost(filename, slidename, filter, true);
 }
 
-function deleteSlideFromSystem(id, filename, reqId) {
+function deleteSlideFromSystem(id, filename, reqId=null) {
   // var data = new FormData();
   // data.append('filename', filename);
   data = {
@@ -260,9 +260,11 @@ function deleteSlideFromSystem(id, filename, reqId) {
         if (data.success) {
         // return true;
           store.deleteSlide(id)
-              .then(
-                  store.cancelRequestToDeleteSlide(requestId=reqId, onlyRequestCancel=false),
-              )
+              .then(function () {
+                if(reqId) {
+                  store.cancelRequestToDeleteSlide(requestId=reqId, onlyRequestCancel=false);
+                }
+              })
               .then(
                   alert('File deleted successfully'),
               );
