@@ -485,7 +485,7 @@
 										` : 
 										`
 											<button type='button' class='btn btn-danger DelButton' id='deleteBtn' data-id='${rs[0]}' data-name='${rs[1]}' onclick='deleteSld(this)' data-filename='${filename}' data-toggle='modal'>
-												${permissions.slide.delete == true ? "Delete" : "Request Deletion"} <i class='fas fa-trash-alt' ></i> 
+												${permissions.slide.delete == true ? "" : "Request Deletion"} <i class='fas fa-trash-alt' ></i> 
 											</button>
 										`
 									}
