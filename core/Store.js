@@ -673,19 +673,11 @@ class Store {
     const suffix = 'Request/add';
     const url = this.base + suffix;
     const query = {};
-<<<<<<< HEAD
-    const data = 
-                  {
-                    'slideName': String(slideName),
-                    'fileName': String(fileName),
-                    'slideId': String(slideId)
-=======
     const data =
                   {
                     'slideName': String(slideName),
                     'fileName': String(fileName),
                     'slideId': String(slideId),
->>>>>>> e5e7d362211a5aeb6efa4fde932d35ef2a651b97
                   };
     return fetch(url + '?' + objToParamStr(query), {
       method: 'POST',
@@ -703,14 +695,6 @@ class Store {
         });
   }
 
-<<<<<<< HEAD
-    /**
-   * request deletion of slide
-   * @param {object} reqId - the request object id
-   * @return {promise} - promise which resolves with response
-   **/
-  cancelRequestToDeleteSlide(reqId, onlyRequestCancel=true) { // If only cancelling request and not deleting slide file then set to true
-=======
   /**
   * request deletion of slide
   * @param {object} reqId - the request object id
@@ -718,7 +702,6 @@ class Store {
   **/
   cancelRequestToDeleteSlide(reqId, onlyRequestCancel=true) {
     // If only cancelling request and not deleting slide file then set onlyRequestCancel to true
->>>>>>> e5e7d362211a5aeb6efa4fde932d35ef2a651b97
     const suffix = 'Request/delete';
     const url = this.base + suffix;
     const query = {
@@ -740,11 +723,7 @@ class Store {
   findRequest(userType=getUserType()) {
     const suffix = 'Request/find';
     const url = this.base + suffix;
-<<<<<<< HEAD
-    if (userType === "Admin") {
-=======
     if (userType === 'Admin') {
->>>>>>> e5e7d362211a5aeb6efa4fde932d35ef2a651b97
       var query = {};
 
       return fetch(url + '?' + objToParamStr(query), {
@@ -759,11 +738,6 @@ class Store {
       return fetch(url + '?' + objToParamStr(query), {
         credentials: 'include',
         mode: 'cors',
-<<<<<<< HEAD
-      }).then(this.errorHandler);      
-    }
-  }
-=======
       }).then(this.errorHandler);
     }
   }
@@ -787,7 +761,6 @@ class Store {
       body: JSON.stringify(update),
     });
   }
->>>>>>> e5e7d362211a5aeb6efa4fde932d35ef2a651b97
 };
 
 try {
