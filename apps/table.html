@@ -781,26 +781,26 @@
 		$('#confirmUpdateSlideContent').html('Enter the new name for the slide having following details: <br><br><b>id</b>: '+id+'<br>'+'<b>Name</b>: '+oldname
 				+ '<br><br><input type="text" id="newSlideName" class="form-control" placeholder="Enter new name" aria-label="newSlideName" required>');
 		const store = new Store('../data/');
-			$('#confirmUpdateSlide').unbind('click');
-			$('#confirmUpdateSlide').click(function(){
-				var newName = $('#newSlideName').val();
-				if(newName!=''){
-					if(existingSlideNames.includes(newName)) {
-						alert('	Slide with given name already exists.');
-					}
-					else {
-						$('#slideNameChangeModal').modal('hide')
-						store.updateSlideName(id, newName).then((response)=>{
-							return response.json();
-						}).then((data)=>{
-							console.log(data);
-							if(data['modifiedCount']==1)
-								alert('Slide name updated succesfully.')
-						});
-						initialize();
-					}
+		$('#confirmUpdateSlide').unbind('click');
+		$('#confirmUpdateSlide').click(function(){
+			var newName = $('#newSlideName').val();
+			if(newName!=''){
+				if(existingSlideNames.includes(newName)) {
+					alert('	Slide with given name already exists.');
 				}
-			});
+				else {
+					$('#slideNameChangeModal').modal('hide')
+					store.updateSlideName(id, newName).then((response)=>{
+						return response.json();
+					}).then((data)=>{
+						console.log(data);
+						if(data['modifiedCount']==1)
+							alert('Slide name updated succesfully.')
+					});
+					initialize();
+				}
+			}
+		});
 	}
 	
 	function pageIndicatorVisible(tableLength){
