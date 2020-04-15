@@ -741,6 +741,26 @@ class Store {
       }).then(this.errorHandler);
     }
   }
+
+
+  // Update slide name
+  updateSlideName(id, newName) {
+    const suffix = 'Slide/update';
+    const url = this.base + suffix;
+    console.log(id+ '   '+ newName);
+    const query = {
+      '_id': id,
+    };
+    const update = {
+      'name': newName,
+    };
+    return fetch(url + '?' + objToParamStr(query), {
+      method: 'POST',
+      credentials: 'include',
+      mode: 'cors',
+      body: JSON.stringify(update),
+    });
+  }
 };
 
 try {

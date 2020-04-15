@@ -38,6 +38,7 @@
 			return string.replace(reg, (match)=>(map[match]));
 		}
 		var existingSlideNames = [];
+		var permissions;
 		const allowedExtensions = ['svs', 'tif', 'tiff', 'vms', 'vmu', 'ndpi', 'scn', 'mrxs', 'bif', 'svslide'];
 		function validateForm(callback) {
 			let slide = document.getElementById("slidename0");
@@ -309,6 +310,29 @@
 		</div>
 	</div>
 
+
+	<!--Slide Name change Modal -->
+	<div class="modal fade" id="slideNameChangeModal" tabindex="-1" role="dialog" aria-labelledby="slideNameChangeModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+			<h5 class="modal-title" id="slideNameChangeModalLabel">Slide name change confirmation</h5>
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+			</button>
+			</div>
+			<form onsubmit="return false">
+			<div class="modal-body" id="confirmUpdateSlideContent"></div>
+			<div class="modal-footer">
+			<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+			<button type="submit" id='confirmUpdateSlide'  class="btn btn-info">Update</button>
+			</form>
+			</div>
+		</div>
+		</div>
+	</div>
+
+
 	<div class="text-center text-white bg-dark p-3" style="position: static;bottom: 0;width: 100%;">
 		<p class="p">Copyright © 2020 caMicroscope</p>
 	</div>
@@ -395,7 +419,7 @@
 		const store = new Store('../data/');
 		store.findRequest()
 			.then(function (requests) {
-				console.log(requests);
+				// console.log(requests);
 				if (requests) {
 					slideDeleteRequests = requests;
 				}
@@ -415,7 +439,7 @@
 					const keys = HeadMapping.map(d => d.field);
 					if (data.map) {
 						return data.map((d, counter) => {
-							console.log('i:' + counter);
+							// console.log('i:' + counter);
 							const rs = [];
 							const filename = d.location.split('/')[d.location.split('/').length - 1];
 							keys.forEach((key, i) => {
@@ -423,7 +447,7 @@
 								else if (!d[key]) rs.push('')
 								else rs.push(d[key])
 							});
-							console.log(d);
+							// console.log(d);
 							// if (getUserType() === "Admin") {
 							// 	if (d.deleteRequest) {
 							// 		slideDeleteRequests.push({
@@ -435,8 +459,8 @@
 							// 	}
 							// }
 							// console.log('reqId:' + slideDeleteRequests.find(o => o.slideDetails.slideId === rs[0])._id.$oid );
-							console.log(rs[0]);
-							console.log(typeof(rs[0]));
+							// console.log(rs[0]);
+							// console.log(typeof(rs[0]));
 
 							const btn = `<div id='open-delete'> 
 									<button class="btn btn-success" data-id='${rs[0]}' onclick='openView(this)'>Open</button> 
@@ -461,13 +485,12 @@
 										` : 
 										`
 											<button type='button' class='btn btn-danger DelButton' id='deleteBtn' data-id='${rs[0]}' data-name='${rs[1]}' onclick='deleteSld(this)' data-filename='${filename}' data-toggle='modal'>
-												${getUserType() === "Admin" ? "Delete" : "Request Deletion"} <i class='fas fa-trash-alt' ></i> 
+												${permissions.slide.delete == true ? "" : "Request Deletion"} <i class='fas fa-trash-alt' ></i> 
 											</button>
 										`
 									}
 								</div>`
 							rs.push(btn);
-							checkUserPermissions();
 							return rs;
 						});
 					} else {
@@ -662,7 +685,8 @@
 				pageIndicatorVisible($("#datatables tbody .searched").length);
 			resetTable();
 			$('#datatables').stacktable();
-			});
+			checkUserPermissions();
+			});	
 		}); 
 	}
 
@@ -708,6 +732,7 @@
 	//window.addEventListener('resize', ()=>{$('#datatables').stacktable()});
 	$(document).ready(function(){
 		checkUserPermissions();
+		initialize();
 		$('#deleteModal').on('hidden.bs.modal', function (e) {
 			initialize();
 		});
@@ -723,7 +748,6 @@
 
 	function checkUserPermissions(){
 		let userType=getUserType();
-		let permissions;
 		getUserPermissions(userType)
 		.then(response => response.text())
 		.then((data) => {
@@ -734,13 +758,50 @@
 				return;
 			permissions = data;
 			// console.log(data);
-			if(permissions.slide.delete == true)
-				$(".DelButton").css("display","block");
 			if(permissions.slide.post == true)
 				$("#slideUploadButton").css("display","block");
+			if(permissions.slide.update == true){
+				$("#datatables").find("tr").each(function(){
+					var currentId = $("td:nth-child(1)", this).html();
+					$("td:nth-child(2)", this).css("cursor","default");
+					$("td:nth-child(2)", this).unbind('mouseenter mouseleave');
+					$("td:nth-child(2)", this).hover(function(){
+						var content = $(this).html();
+						$(this).html(content +`<i style='font-size: small; margin-left:1em; cursor: pointer' onclick="changeSlideName('`+content+`', '`+currentId+`')" class="fas fa-pen" data-toggle="modal" data-target="#slideNameChangeModal"></i>`)  
+					}, function(){
+						$( this ).find( "i" ).last().remove();
+					});
+				});
+			}
 		});
 	}
 
+	function changeSlideName(oldname, id){
+		$('#confirmUpdateSlideContent').html('Enter the new name for the slide having following details: <br><br><b>id</b>: '+id+'<br>'+'<b>Name</b>: '+oldname
+				+ '<br><br><input type="text" id="newSlideName" class="form-control" placeholder="Enter new name" aria-label="newSlideName" required>');
+		const store = new Store('../data/');
+		$('#confirmUpdateSlide').unbind('click');
+		$('#confirmUpdateSlide').click(function(){
+			var newName = $('#newSlideName').val();
+			if(newName!=''){
+				if(existingSlideNames.includes(newName)) {
+					alert('	Slide with given name already exists.');
+				}
+				else {
+					$('#slideNameChangeModal').modal('hide')
+					store.updateSlideName(id, newName).then((response)=>{
+						return response.json();
+					}).then((data)=>{
+						console.log(data);
+						if(data['modifiedCount']==1)
+							alert('Slide name updated successfully.')
+					});
+					initialize();
+				}
+			}
+		});
+	}
+	
 	function pageIndicatorVisible(tableLength){
 		if($("#entries").val() >= tableLength)
 			$("#tablePages").css("display","none");
@@ -768,11 +829,11 @@
 
 		const store = new Store('../data/');
 		if (oid) {
-			$('#confirmDeleteContent').html(`Are you sure you want to ${reqId ? 'cancel the ': ''} ${getUserType() === 'Admin' ? '' : 'request to ' } delete the slide ${oname} with id ${oid} ?`);
+			$('#confirmDeleteContent').html(`Are you sure you want to ${reqId ? 'cancel the ': ''} ${permissions.slide.delete == true ? '' : 'request to ' } delete the slide ${oname} with id ${oid} ?`);
 			$('#deleteModal').modal('toggle');
 			$("#confirmDelete").unbind( "click" );
 			$("#confirmDelete").click(function(){
-				if (userType === "Admin" && !cancel) {
+				if (permissions.slide.delete == true && !cancel) {
 					deleteSlideFromSystem(oid, filename, reqId); // Delete slide
 				} else {
 					if (reqId) {
@@ -906,8 +967,6 @@
 			);
 		}
 	}
-
-	document.addEventListener('DOMContentLoaded', initialize);
 </script>
 
 </html>
