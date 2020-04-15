@@ -38,6 +38,7 @@
 			return string.replace(reg, (match)=>(map[match]));
 		}
 		var existingSlideNames = [];
+		var permissions;
 		const allowedExtensions = ['svs', 'tif', 'tiff', 'vms', 'vmu', 'ndpi', 'scn', 'mrxs', 'bif', 'svslide'];
 		function validateForm(callback) {
 			let slide = document.getElementById("slidename0");
@@ -484,13 +485,12 @@
 										` : 
 										`
 											<button type='button' class='btn btn-danger DelButton' id='deleteBtn' data-id='${rs[0]}' data-name='${rs[1]}' onclick='deleteSld(this)' data-filename='${filename}' data-toggle='modal'>
-												${getUserType() === "Admin" ? "Delete" : "Request Deletion"} <i class='fas fa-trash-alt' ></i> 
+												${permissions.slide.delete == true ? "Delete" : "Request Deletion"} <i class='fas fa-trash-alt' ></i> 
 											</button>
 										`
 									}
 								</div>`
 							rs.push(btn);
-							checkUserPermissions();
 							return rs;
 						});
 					} else {
@@ -685,7 +685,8 @@
 				pageIndicatorVisible($("#datatables tbody .searched").length);
 			resetTable();
 			$('#datatables').stacktable();
-			});
+			checkUserPermissions();
+			});	
 		}); 
 	}
 
@@ -731,6 +732,7 @@
 	//window.addEventListener('resize', ()=>{$('#datatables').stacktable()});
 	$(document).ready(function(){
 		checkUserPermissions();
+		initialize();
 		$('#deleteModal').on('hidden.bs.modal', function (e) {
 			initialize();
 		});
@@ -746,7 +748,6 @@
 
 	function checkUserPermissions(){
 		let userType=getUserType();
-		let permissions;
 		getUserPermissions(userType)
 		.then(response => response.text())
 		.then((data) => {
@@ -830,11 +831,11 @@
 
 		const store = new Store('../data/');
 		if (oid) {
-			$('#confirmDeleteContent').html(`Are you sure you want to ${reqId ? 'cancel the ': ''} ${getUserType() === 'Admin' ? '' : 'request to ' } delete the slide ${oname} with id ${oid} ?`);
+			$('#confirmDeleteContent').html(`Are you sure you want to ${reqId ? 'cancel the ': ''} ${permissions.slide.delete == true ? '' : 'request to ' } delete the slide ${oname} with id ${oid} ?`);
 			$('#deleteModal').modal('toggle');
 			$("#confirmDelete").unbind( "click" );
 			$("#confirmDelete").click(function(){
-				if (userType === "Admin" && !cancel) {
+				if (permissions.slide.delete == true && !cancel) {
 					deleteSlideFromSystem(oid, filename, reqId); // Delete slide
 				} else {
 					if (reqId) {
@@ -968,8 +969,6 @@
 			);
 		}
 	}
-
-	document.addEventListener('DOMContentLoaded', initialize);
 </script>
 
 </html>
