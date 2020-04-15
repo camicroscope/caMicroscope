@@ -633,6 +633,7 @@ function uploadModel() {
             console.log('SUCCESS, ID:', e.target.result);
             status.innerHTML = 'Done! Click refresh below.';
             status.classList.remove('blink');
+            modelName.push(_name.value);
           };
           req.onerror = function(e) {
             status.innerHTML = 'Some error this way!';
@@ -1124,6 +1125,7 @@ async function deleteModel(name) {
       if (status) {
         alert('Deleted', name);
         showInfo();
+        modelName.splice(modelName.indexOf(name.split('_').splice(1).join('_').slice(0, -3)), 1);
       }
     }
   } else {
@@ -1138,6 +1140,7 @@ async function showInfo() {
   var table = document.querySelector('#mdata');
   var tx = db.transaction('models_store', 'readonly');
   var store = tx.objectStore('models_store');
+  var modelCount=0;
 
   empty(table);
   // Update table data
@@ -1163,12 +1166,13 @@ async function showInfo() {
             td = row.insertCell();
             td.innerHTML = date;
             td = row.insertCell();
-            td.innerHTML = '<button class="btn btn-primary btn-xs my-xs-btn" '+
-            'id="removeModel" type="button"><i class="material-icons"'+
+            td.innerHTML = '<button class="btn-del" '+
+            'id=removeModel'+modelCount+' type="button"><i class="material-icons"'+
             'style="font-size:16px;">delete_forever</i>Remove Model</button>';
-            document.getElementById('removeModel').addEventListener('click', () => {
+            document.getElementById('removeModel'+modelCount).addEventListener('click', () => {
               deleteModel(name);
             });
+            modelCount+=1;
           };
         }
       }

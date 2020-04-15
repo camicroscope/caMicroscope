@@ -38,6 +38,7 @@
 			return string.replace(reg, (match)=>(map[match]));
 		}
 		var existingSlideNames = [];
+		var permissions;
 		const allowedExtensions = ['svs', 'tif', 'tiff', 'vms', 'vmu', 'ndpi', 'scn', 'mrxs', 'bif', 'svslide'];
 		function validateForm(callback) {
 			let slide = document.getElementById("slidename0");
@@ -59,7 +60,6 @@
 			}
 			//Sanitizing input
 			slide.value = sanitize(slide.value);
-			console.log(existingSlideNames,slide.value);
 			//Checking if silde with given name already exists
 			if(existingSlideNames.includes(slide.value)) {
 				changeStatus("UPLOAD", "Slide with given name already exists");
@@ -83,9 +83,8 @@
 	</script>
 	<title>CaMicroscope Data Table</title>
 
-	<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
-		integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
-		crossorigin="anonymous"></script>
+	<script src="https://code.jquery.com/jquery-3.4.1.min.js"
+		></script>
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
 		integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
 		crossorigin="anonymous"></script>
@@ -206,13 +205,23 @@
 											<tr>
 												<td align="right"><b>File</b></td>
 												<td id="fileUploadInput">
-														<span class="input-group mb-3" >
-															<span class="custom-file">
-															  <input type="file" class="custom-file-input" id="input" onchange="handleUpload(this.files)">
-															  <label class="custom-file-label" for="input" style="overflow: hidden;">Choose file</label>
-															</span>
+													<span class="input-group mb-3" >
+														<span class="custom-file fileInputClass">
+															<input type="file" class="custom-file-input" id="input" onchange="handleUpload(this.files)">
+															<label class="custom-file-label" for="input" style="overflow: hidden;">Choose file</label>
 														</span>
-													</td>
+														<div class="form-group urlUploadClass" style="display:none; flex-wrap:wrap">
+															<input type="url" placeholder="Enter file URL" class="form-control" id="urlInput" style="width: 20em;" required>
+															<button type="button" class="btn btn-info" onclick="urlInputChange();" style="margin-left: 0.6em; margin-right:-5em" >Upload</button>
+														</div>
+													</span> <div id="uploadLoading" style="display: none;"><span>Uploading...</span> <br>
+													<div class="spinner-grow text-primary" role="status" style="margin-left: 1.2em;">
+														<span class="sr-only"></span>
+													</div> </div>
+													<a href="#" id='urlswitch' onclick="$('#urlInput').val(''); switchToUrl();" > <span style="position: absolute; right:2em;" > <i class="fas fa-link"></i> Upload from URL</span></a>
+													<a href="#" style="display: none;" id="fileswitch" onclick=" switchToFile();" > <span style="position: absolute; right:2em;" > <i class="fas fa-folder"></i> Upload from local</span></a>
+
+												</td>
 											</tr>
 											<tr id="filenameRow">
 												<td align="right"><b>Filename</b></td>
@@ -282,7 +291,6 @@
 
 	</div>
 
-
 	<!--Delete Modal -->
 	<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
 		<div class="modal-dialog" role="document">
@@ -301,6 +309,29 @@
 		</div>
 		</div>
 	</div>
+
+
+	<!--Slide Name change Modal -->
+	<div class="modal fade" id="slideNameChangeModal" tabindex="-1" role="dialog" aria-labelledby="slideNameChangeModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+			<h5 class="modal-title" id="slideNameChangeModalLabel">Slide name change confirmation</h5>
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+			</button>
+			</div>
+			<form onsubmit="return false">
+			<div class="modal-body" id="confirmUpdateSlideContent"></div>
+			<div class="modal-footer">
+			<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+			<button type="submit" id='confirmUpdateSlide'  class="btn btn-info">Update</button>
+			</form>
+			</div>
+		</div>
+		</div>
+	</div>
+
 
 	<div class="text-center text-white bg-dark p-3" style="position: static;bottom: 0;width: 100%;">
 		<p class="p">Copyright © 2020 caMicroscope</p>
@@ -388,7 +419,11 @@
 		const store = new Store('../data/');
 		store.findRequest()
 			.then(function (requests) {
+<<<<<<< HEAD
 				console.log(requests);
+=======
+				// console.log(requests);
+>>>>>>> e5e7d362211a5aeb6efa4fde932d35ef2a651b97
 				if (requests) {
 					slideDeleteRequests = requests;
 				}
@@ -408,7 +443,11 @@
 					const keys = HeadMapping.map(d => d.field);
 					if (data.map) {
 						return data.map((d, counter) => {
+<<<<<<< HEAD
 							console.log('i:' + counter);
+=======
+							// console.log('i:' + counter);
+>>>>>>> e5e7d362211a5aeb6efa4fde932d35ef2a651b97
 							const rs = [];
 							const filename = d.location.split('/')[d.location.split('/').length - 1];
 							keys.forEach((key, i) => {
@@ -416,7 +455,11 @@
 								else if (!d[key]) rs.push('')
 								else rs.push(d[key])
 							});
+<<<<<<< HEAD
 							console.log(d);
+=======
+							// console.log(d);
+>>>>>>> e5e7d362211a5aeb6efa4fde932d35ef2a651b97
 							// if (getUserType() === "Admin") {
 							// 	if (d.deleteRequest) {
 							// 		slideDeleteRequests.push({
@@ -428,8 +471,13 @@
 							// 	}
 							// }
 							// console.log('reqId:' + slideDeleteRequests.find(o => o.slideDetails.slideId === rs[0])._id.$oid );
+<<<<<<< HEAD
 							console.log(rs[0]);
 							console.log(typeof(rs[0]));
+=======
+							// console.log(rs[0]);
+							// console.log(typeof(rs[0]));
+>>>>>>> e5e7d362211a5aeb6efa4fde932d35ef2a651b97
 
 							const btn = `<div id='open-delete'> 
 									<button class="btn btn-success" data-id='${rs[0]}' onclick='openView(this)'>Open</button> 
@@ -454,13 +502,20 @@
 										` : 
 										`
 											<button type='button' class='btn btn-danger DelButton' id='deleteBtn' data-id='${rs[0]}' data-name='${rs[1]}' onclick='deleteSld(this)' data-filename='${filename}' data-toggle='modal'>
+<<<<<<< HEAD
 												${getUserType() === "Admin" ? "Delete" : "Request Deletion"} <i class='fas fa-trash-alt' ></i> 
+=======
+												${permissions.slide.delete == true ? "" : "Request Deletion"} <i class='fas fa-trash-alt' ></i> 
+>>>>>>> e5e7d362211a5aeb6efa4fde932d35ef2a651b97
 											</button>
 										`
 									}
 								</div>`
 							rs.push(btn);
+<<<<<<< HEAD
 							checkUserPermissions();
+=======
+>>>>>>> e5e7d362211a5aeb6efa4fde932d35ef2a651b97
 							return rs;
 						});
 					} else {
@@ -492,6 +547,7 @@
 					//Adding names to later validate for new slide names
 					existingSlideNames = data.map(d => d[1]);
 
+<<<<<<< HEAD
 					const thead = HeadMapping.map(d => "<th>" + d.title + `<img id='sort1${d.title}' class='float-right sort-btn' width='10px' src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAABmJLR0QA/wD/AP+gvaeTAAAAtklEQVRIie3XsQrCMBSF4T+CoJsddHAo9HH6AD634NbNqTgo6FI6WQdTtJLQpG0CxXsglIRyv0ugCYWZRsUGd8ARKIA0FroFTkCjxxnIYqNRcBsaFO9Dg+Cu6KS4LzoJrnh/Mr5oOwpgaSu+GNqVY6wHTN/Jo4DNz1oJrAzv7oH6a/4Ani7duabCvLVrnyKht1pggQUWWOA/g0vD2o3ulRgkOXDhcx1egYNvkTG/IIl+3nUD88gLIHVaGvUECUcAAAAASUVORK5CYII='/>
 
 					<img id='sort2${d.title}' class='float-right sort-btn' width='10px' src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAABmJLR0QA/wD/AP+gvaeTAAAAs0lEQVRIie3VsQrCMBSF4T/qoFsddBR8Hncf24KTUAquDg4ugoPWwRbSEk2aJhHlHsiQhPCdZAl8KeMBZ+fADLgF6mLNBjgBVT3OwDYFXGqojqvY8NUAV7ye3Tmj8L0EFlhggQX+F3hi2VdAZlgzJQOm2vwCPDx7kWP+Al1G0SnSyqenVsDdt3Ed7xsvgD39b3sE1kMa++BB0L54UNQVj4La8KjoOzwJ2mQJ7IADsEqF/nae93FcRiryrh8AAAAASUVORK5CYII="/>
@@ -499,6 +555,16 @@
 
 					thead.push("<th></th>");
 
+=======
+					const thead = HeadMapping.map(d => "<th>" + d.title + `<img id='sort1${d.title}' class='float-right sort-btn' width='15px' src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAABmJLR0QA/wD/AP+gvaeTAAAAtklEQVRIie3XsQrCMBSF4T+CoJsddHAo9HH6AD634NbNqTgo6FI6WQdTtJLQpG0CxXsglIRyv0ugCYWZRsUGd8ARKIA0FroFTkCjxxnIYqNRcBsaFO9Dg+Cu6KS4LzoJrnh/Mr5oOwpgaSu+GNqVY6wHTN/Jo4DNz1oJrAzv7oH6a/4Ani7duabCvLVrnyKht1pggQUWWOA/g0vD2o3ulRgkOXDhcx1egYNvkTG/IIl+3nUD88gLIHVaGvUECUcAAAAASUVORK5CYII='/>
+
+					<img id='sort2${d.title}' class='float-right sort-btn' width='15px' src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAABmJLR0QA/wD/AP+gvaeTAAAAs0lEQVRIie3VsQrCMBSF4T/qoFsddBR8Hncf24KTUAquDg4ugoPWwRbSEk2aJhHlHsiQhPCdZAl8KeMBZ+fADLgF6mLNBjgBVT3OwDYFXGqojqvY8NUAV7ye3Tmj8L0EFlhggQX+F3hi2VdAZlgzJQOm2vwCPDx7kWP+Al1G0SnSyqenVsDdt3Ed7xsvgD39b3sE1kMa++BB0L54UNQVj4La8KjoOzwJ2mQJ7IADsEqF/nae93FcRiryrh8AAAAASUVORK5CYII="/>
+					</th>`);
+
+
+					thead.push("<th></th>");
+
+>>>>>>> e5e7d362211a5aeb6efa4fde932d35ef2a651b97
 					tbody = data.map((d) => {
 						return "<tr>" + d.map((a) => "<td>" + a + "</td>").reduce((a, b) => a + b) + "</tr>";
 					});
@@ -578,11 +644,18 @@
 					else
 						pageIndicatorVisible($("#datatables tbody .searched").length);
 				});
+<<<<<<< HEAD
 
+=======
+>>>>>>> e5e7d362211a5aeb6efa4fde932d35ef2a651b97
 				$(".sort-btn").on("click", function() {
 					var value = $(this)[0].id.substr(5);
 					var upordown = parseInt($(this)[0].id[4]);
 					var index = HeadMapping.findIndex((a)=> a.title.toLowerCase() == value.toLowerCase());
+<<<<<<< HEAD
+=======
+
+>>>>>>> e5e7d362211a5aeb6efa4fde932d35ef2a651b97
 
 					var trs = "#datatables tbody tr";
 					if(searching){
@@ -592,7 +665,33 @@
 					$(trs).sort(function(a, b) {
 						let at=$(a).children('td').get(index).textContent.toLowerCase();
 						let bt=$(b).children('td').get(index).textContent.toLowerCase();
+<<<<<<< HEAD
 						return upordown == 1 ? at > bt: at < bt;
+=======
+						if(!isNaN(at)&&!isNaN(bt))
+						{
+							at=Number(at);
+							bt=Number(bt);
+						}
+						if(upordown===1)
+						{
+							if(at>bt)
+								return 1;
+							else if(at<bt)
+								return -1;
+							else
+								return 0;
+						}
+						else
+						{
+							if (at < bt)
+								return 1;
+							else if (at > bt)
+								return -1;
+							else
+								return 0;
+						}
+>>>>>>> e5e7d362211a5aeb6efa4fde932d35ef2a651b97
 					}).appendTo("#datatables > tbody");
 					selectedpage = 0;
 					showTablePage();
@@ -609,6 +708,7 @@
 						showTablePage();
 					}
 				});
+<<<<<<< HEAD
 
 				$("#next-page").on('click', function(){
 					if(selectedpage < totaltablepages-1){
@@ -617,6 +717,16 @@
 					}
 				})
 
+=======
+
+				$("#next-page").on('click', function(){
+					if(selectedpage < totaltablepages-1){
+						selectedpage++;
+						showTablePage();
+					}
+				})
+
+>>>>>>> e5e7d362211a5aeb6efa4fde932d35ef2a651b97
 				$("#entries").change(function(){
 					if(!searching) totaltablepages = Math.ceil(data.length/$("#entries").val());
 					else totaltablepages = Math.ceil($("#datatables tbody .searched").length/$("#entries").val());
@@ -632,7 +742,12 @@
 				pageIndicatorVisible($("#datatables tbody .searched").length);
 			resetTable();
 			$('#datatables').stacktable();
+<<<<<<< HEAD
 			});
+=======
+			checkUserPermissions();
+			});	
+>>>>>>> e5e7d362211a5aeb6efa4fde932d35ef2a651b97
 		}); 
 	}
 
@@ -678,6 +793,7 @@
 	//window.addEventListener('resize', ()=>{$('#datatables').stacktable()});
 	$(document).ready(function(){
 		checkUserPermissions();
+		initialize();
 		$('#deleteModal').on('hidden.bs.modal', function (e) {
 			initialize();
 		});
@@ -693,7 +809,6 @@
 
 	function checkUserPermissions(){
 		let userType=getUserType();
-		let permissions;
 		getUserPermissions(userType)
 		.then(response => response.text())
 		.then((data) => {
@@ -704,13 +819,55 @@
 				return;
 			permissions = data;
 			// console.log(data);
+<<<<<<< HEAD
 			if(permissions.slide.delete == true)
 				$(".DelButton").css("display","block");
+=======
+>>>>>>> e5e7d362211a5aeb6efa4fde932d35ef2a651b97
 			if(permissions.slide.post == true)
 				$("#slideUploadButton").css("display","block");
+			if(permissions.slide.update == true){
+				$("#datatables").find("tr").each(function(){
+					var currentId = $("td:nth-child(1)", this).html();
+					$("td:nth-child(2)", this).css("cursor","default");
+					$("td:nth-child(2)", this).unbind('mouseenter mouseleave');
+					$("td:nth-child(2)", this).hover(function(){
+						var content = $(this).html();
+						$(this).html(content +`<i style='font-size: small; margin-left:1em; cursor: pointer' onclick="changeSlideName('`+content+`', '`+currentId+`')" class="fas fa-pen" data-toggle="modal" data-target="#slideNameChangeModal"></i>`)  
+					}, function(){
+						$( this ).find( "i" ).last().remove();
+					});
+				});
+			}
 		});
 	}
 
+	function changeSlideName(oldname, id){
+		$('#confirmUpdateSlideContent').html('Enter the new name for the slide having following details: <br><br><b>id</b>: '+id+'<br>'+'<b>Name</b>: '+oldname
+				+ '<br><br><input type="text" id="newSlideName" class="form-control" placeholder="Enter new name" aria-label="newSlideName" required>');
+		const store = new Store('../data/');
+		$('#confirmUpdateSlide').unbind('click');
+		$('#confirmUpdateSlide').click(function(){
+			var newName = $('#newSlideName').val();
+			if(newName!=''){
+				if(existingSlideNames.includes(newName)) {
+					alert('	Slide with given name already exists.');
+				}
+				else {
+					$('#slideNameChangeModal').modal('hide')
+					store.updateSlideName(id, newName).then((response)=>{
+						return response.json();
+					}).then((data)=>{
+						console.log(data);
+						if(data['modifiedCount']==1)
+							alert('Slide name updated successfully.')
+					});
+					initialize();
+				}
+			}
+		});
+	}
+	
 	function pageIndicatorVisible(tableLength){
 		if($("#entries").val() >= tableLength)
 			$("#tablePages").css("display","none");
@@ -718,6 +875,10 @@
 			$("#tablePages").css("display","block");
 	}
 
+	function urlUpload(){
+		var url= document.getElementById("urlInput").value;
+		handleUrlUpload(url);
+	}
 	function downloadSlide(e){
 		const oid = e.dataset.id;
 		handleDownload(oid);
@@ -734,11 +895,19 @@
 
 		const store = new Store('../data/');
 		if (oid) {
+<<<<<<< HEAD
 			$('#confirmDeleteContent').html(`Are you sure you want to ${reqId ? 'cancel the ': ''} ${getUserType() === 'Admin' ? '' : 'request to ' } delete the slide ${oname} with id ${oid} ?`);
 			$('#deleteModal').modal('toggle');
 			$("#confirmDelete").unbind( "click" );
 			$("#confirmDelete").click(function(){
 				if (userType === "Admin" && !cancel) {
+=======
+			$('#confirmDeleteContent').html(`Are you sure you want to ${reqId ? 'cancel the ': ''} ${permissions.slide.delete == true ? '' : 'request to ' } delete the slide ${oname} with id ${oid} ?`);
+			$('#deleteModal').modal('toggle');
+			$("#confirmDelete").unbind( "click" );
+			$("#confirmDelete").click(function(){
+				if (permissions.slide.delete == true && !cancel) {
+>>>>>>> e5e7d362211a5aeb6efa4fde932d35ef2a651b97
 					deleteSlideFromSystem(oid, filename, reqId); // Delete slide
 				} else {
 					if (reqId) {
@@ -782,7 +951,57 @@
 			}
 		}
 	}
+	function switchToFile(){
+		$(".urlUploadClass").css("display","none");
+		$(".fileInputClass").css("display","block");
+		$("#urlswitch").css("display","block");
+		$("#fileswitch").css("display","none");
+		$('#uploadLoading').css('display', 'none');
+	}
 
+<<<<<<< HEAD
+=======
+	function switchToUrl(){
+		$(".urlUploadClass").css("display","flex");
+		$(".fileInputClass").css("display","none");
+		$("#urlswitch").css("display","none");
+		$("#fileswitch").css("display","block");
+	}
+
+	function isValidHttpUrl(urlstring) {
+		try {
+		  url = new URL(urlstring);
+		} catch (_) {
+		  return false;  
+		} 
+		return url.protocol === "http:";
+	  }
+
+	function urlInputChange()
+	{
+		const urlInput = $('#urlInput');
+		const url = urlInput.val();
+
+		if (!isValidHttpUrl(url)) {
+			urlInput.addClass('is-invalid');
+			if (urlInput.parent().children().length === 2) {
+				urlInput.parent().append(`<div class="invalid-feedback" id="inputUrl-feedback0">
+					Enter valid URL </div>`);
+			}
+
+		}
+		else
+		{
+			urlInput.removeClass('is-invalid');
+			if (urlInput.parent().children().length !== 2) {
+			$('#inputUrl-feedback0').remove();
+			}
+			urlUpload();
+		}
+	}
+
+
+>>>>>>> e5e7d362211a5aeb6efa4fde932d35ef2a651b97
 	function appendNotifications(slideDeleteRequests) {
 		$('#notification-nav-link').html(``);
 		$('#notification-box').html('');
@@ -825,8 +1044,11 @@
 			);
 		}
 	}
+<<<<<<< HEAD
 
 	document.addEventListener('DOMContentLoaded', initialize);
+=======
+>>>>>>> e5e7d362211a5aeb6efa4fde932d35ef2a651b97
 </script>
 
 </html>

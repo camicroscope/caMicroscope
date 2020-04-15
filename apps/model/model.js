@@ -603,15 +603,6 @@ function runPredict(key) {
   }
 }
 
-//  Function to check if model name is repeated or not.
-function checkNameDuplicate(name) {
-  if (namearray.indexOf(name)!=-1) {
-    return 1;
-  }
-  return 0;
-}
-
-
 // TO-DO: Allow uploading and using tensorflow graph models. Can't save graph models. Need to use right away.
 function uploadModel() {
   var _name = document.querySelector('#name');
@@ -696,17 +687,6 @@ function uploadModel() {
           return;
         }
 
-        try {
-          if (checkNameDuplicate(_name.value)) {
-            throw new Error('Model name repeated');
-          }
-        } catch (e) {
-          status.innerHTML = 'Model with the same name already exists. Please choose a new name';
-          status.classList.remove('blink');
-          return;
-        }
-        namearray.push(_name.value);
-
         await model.save(IDB_URL + name);
 
         // Update the model store db entry to have the classes array
@@ -723,6 +703,7 @@ function uploadModel() {
             console.log('SUCCESS, ID:', e.target.result);
             status.innerHTML = 'Done! Click refresh below.';
             status.classList.remove('blink');
+            modelName.push(_name.value);
           };
           req.onerror = function(e) {
             status.innerHTML = 'Some error this way!';
@@ -764,6 +745,7 @@ async function deleteModel(name) {
       if (status) {
         alert('Deleted', name);
         showInfo();
+        modelName.splice(modelName.indexOf(name.split('/').pop().split('_').splice(2).join('_').slice(0, -3)), 1);
       }
     }
   } else {
@@ -777,7 +759,7 @@ async function showInfo() {
   var table = document.querySelector('#mdata');
   var tx = db.transaction('models_store', 'readonly');
   var store = tx.objectStore('models_store');
-
+  var modelCount=0;
   empty(table);
   // Update table data
   (function(callback) {
@@ -806,19 +788,20 @@ async function showInfo() {
             td = row.insertCell();
             td.innerHTML = date;
             td = row.insertCell();
-            td.innerHTML = '<button class="btn btn-primary btn-xs my-xs-btn" '+
-            'id="removeModel" type="button"><i class="material-icons"'+
+            td.innerHTML = '<button class="btn-del" '+
+            'id=removeModel'+ modelCount+' type="button"><i class="material-icons"'+
             'style="font-size:16px;">delete_forever</i>Remove Model</button>';
             td = row.insertCell();
-            td.innerHTML = '<button class="btn btn-primary btn-xs my-xs-btn" '+
-            'id="chngClassListBtn" type="button"><i class="material-icons"' +
+            td.innerHTML = '<button class="btn-change" '+
+            'id=chngClassListBtn'+ modelCount+' type="button"><i class="material-icons"' +
             'style="font-size:16px;">edit</i>  Edit Classes</button>';
-            document.getElementById('removeModel').addEventListener('click', () => {
+            document.getElementById('removeModel'+modelCount).addEventListener('click', () => {
               deleteModel(name);
             });
-            document.getElementById('chngClassListBtn').addEventListener('click', () => {
+            document.getElementById('chngClassListBtn'+modelCount).addEventListener('click', () => {
               showNewClassInput(name);
             });
+            modelCount+=1;
           };
         }
       }
