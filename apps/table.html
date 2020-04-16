@@ -790,8 +790,6 @@
 						newSlideName.parent().append(`<div class="invalid-feedback">
 					Slide with given name already exists. </div>`);
 					}
-					else
-					console.log(newSlideName.parent().children().length);
 				}
 				else {
 					newSlideName.removeClass('is-invalid');
@@ -847,7 +845,7 @@
 		const oname = e.dataset.name;
 		const filename = e.dataset.filename;
 		const reqId = e.dataset.reqid;
-		console.log('reqId ' + reqId);
+		// console.log('reqId ' + reqId);
 
 		const store = new Store('../data/');
 		if (oid) {
@@ -953,7 +951,7 @@
 		if (slideDeleteRequests.length > 0) {
 			$('#notification-nav-link').html(`<span class="badge badge-pill badge-warning">${slideDeleteRequests.length}</span>`);
 			slideDeleteRequests.forEach((notif, i) => {
-				console.log(notif)
+				// console.log(notif)
 				$('#notification-box').append(
 					`
 						<div class="row pt-1 pb-2">
