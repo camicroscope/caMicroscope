@@ -24,45 +24,6 @@
 	<script src='../components/loading/loading.js'></script>
 	<script src="./loader/loader.js"></script>
 	<script src="./loader/chunked_upload.js"></script>
-	<script>
-		function sanitize(string) {
-			const map = {
-				'&': '&amp;',
-				'<': '&lt;',
-				'>': '&gt;',
-				'"': '&quot;',
-				"'": '&#x27;',
-				"/": '&#x2F;',
-			};
-			const reg = /[&<>"'/]/ig;
-			return string.replace(reg, (match)=>(map[match]));
-		}
-		var existingSlideNames = [];
-		const allowedExtensions = ['svs', 'tif', 'tiff', 'vms', 'vmu', 'ndpi', 'scn', 'mrxs', 'bif', 'svslide'];
-		function validateForm(callback) {
-			let slide = document.getElementById("slidename0");
-			//Check if slide name is empty
-			if (slide.value === "") {
-					changeStatus("UPLOAD", "Please enter slide name");
-					return false;
-			}
-			//Sanitizing input
-			slide.value = sanitize(slide.value);
-			//Checking if silde with given name already exists
-			if(existingSlideNames.includes(slide.value)) {
-				changeStatus("UPLOAD", "Slide with given name already exists");
-				return false;
-			}
-			//Checking for extension
-			let filename = document.getElementById("filename0").value
-			var fileExtension = filename.toLowerCase().split('.').reverse()[0];
-			if(!allowedExtensions.includes(fileExtension)) {
-				changeStatus("UPLOAD", fileExtension + " files are not compatible");
-				return false;
-			}
-			callback();
-		}
-	</script>
 	<title>CaMicroscope Data Table</title>
 
 	<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
@@ -121,26 +82,41 @@
 		<h1 class="h1">caMicroscope</h1>
 		<p>Digital pathology image viewer with support for human/machine generated annotations and markups.</p>
 	</div>
-	<h3 class="text-center h3 mb-0" style="margin-top:8px;margin-bottom:10px;">Information Dashboard</h3>
-  <div class="summary">
-    <table class="dash">
+
+	<div class="container">
+	<h3 class="text-center h3 mb-2" style="margin-top:8px;margin-bottom:10px;">Information Dashboard</h3>
+	<div class="form-group has-search">
+		<span class="fa fa-search form-control-feedback"></span>
+		<input id="search-table" type="text" class="form-control" placeholder="Search">
+	</div>
+
+  <div class="table-responsive" id="summary">
+    <table class="table table-striped">
 			<thead></thead>
 			<tbody></tbody>
     </table>
-  </div>
-	<div class="text-center text-white bg-dark p-3" style="position: absolute;bottom: 0;width: 100%;">
-		<p class="p">Copyright © 2020 caMicroscope</p>
 	</div>
+</div>
+
+<div class="text-center text-white bg-dark p-3 mt-2 footer" style="position: static;bottom: 0;width: 100%;">
+	<p class="p">Copyright © 2020 caMicroscope</p>
+</div>
 
 </body>
 <script>
 
+var searching=false;
+
 function addhead(){
 	var table = $('table thead');
-	var markup = "<tr><th>_ID</th><th>Name</th><th>Annotations</th><th>Heatmap</th></tr>";
-	table.append(markup);
-	console.log(table);
+	let headingList=['ID','Name','Annotations','Heatmaps']
+	const headingMarkup = headingList.map((title,i) => `<th>${title}
+		<span class="sort-btn" data-order=${1} data-index=${i}>
+		<i class="fa fa-sort"/> </span>
+		</th>`);
+	table.append(`<tr>${headingMarkup}</tr>`);
 }
+
 function addbody(JSONdata){
 	var table = $('table tbody');
 	// console.log(JSONdata.annotations);
@@ -161,6 +137,68 @@ function addbody(JSONdata){
 	var markup = "<tr><td>"+JSONdata.id+"</td><td>"+JSONdata.name+"</td><td>"+annodisp+"</td><td>"+heatdisp+"</td></tr>"
 	table.append(markup);
 }
+
+function searchSummaryTable(e) {
+	var value = String($(this).val()).toLowerCase();
+	$("#summary table tbody tr").filter(function () {
+		var t = String($(this).text()).toLowerCase().indexOf(value);
+		if (t > -1) {
+			$(this).addClass("searched");
+			$(this).removeClass("d-none");
+		} else {
+			$(this).removeClass("searched");
+			$(this).addClass("d-none");
+		}
+	});
+	if (value == "") {
+		searching = false;
+	} else {
+		searching = true;
+	}
+}
+
+function sortSummaryTable(e) {
+	var index = e.currentTarget.dataset.index;
+	var order = parseInt(e.currentTarget.dataset.order);
+	var trs = "#summary table tbody tr";
+	if (searching) {
+		trs += ".searched";
+	}
+
+	$(trs).sort(function (a, b) {
+		let at = $(a).children('td').get(index).textContent;
+		let bt = $(b).children('td').get(index).textContent;
+		if(at&&bt)
+		{
+			at=at.toLowerCase();
+			bt=bt.toLowerCase();
+		}
+		else
+		{
+			at=$(a).children('td').get(index).childNodes[0].classList;
+			bt=$(b).children('td').get(index).childNodes[0].classList;
+		}
+		if (order === 1) {
+			e.currentTarget.dataset.order=2;
+			if (at > bt)
+				return 1;
+			else if (at < bt)
+				return -1;
+			else
+				return 0;
+		}
+		else {
+			e.currentTarget.dataset.order = 1;
+			if (at < bt)
+				return 1;
+			else if (at > bt)
+				return -1;
+			else
+				return 0;
+		}
+	}).appendTo("#summary table tbody");
+}
+
 function initialize() {
 	const params = getUrlVars();
 	const store = new Store('../data/');
@@ -173,6 +211,8 @@ function initialize() {
 				return;
 			}
 			addhead();
+			$("#search-table").on("keyup",searchSummaryTable);
+			$(".sort-btn").on("click", sortSummaryTable);
 			for (var i = 0; i < data.length; i++) {
 				const JSONdata={};
 				JSONdata.id=data[i]._id.$oid;
@@ -184,8 +224,7 @@ function initialize() {
 						addbody(JSONdata);
 					});
 				});
-
-
+						// console.log(JSONdata);
 			}
 	});
 }
