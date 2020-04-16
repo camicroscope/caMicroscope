@@ -696,7 +696,7 @@ class Store {
   }
 
   /**
-  * request deletion of slide
+  * decline request deletion of slide
   * @param {object} reqId - the request object id
   * @return {promise} - promise which resolves with response
   **/
@@ -714,7 +714,7 @@ class Store {
     }).then(this.errorHandler)
         .then(() => {
           if (onlyRequestCancel) {
-            alert('Delete request cancelled');
+            alert('Delete request declined');
           }
           initialize();
         });
@@ -761,7 +761,112 @@ class Store {
       body: JSON.stringify(update),
     });
   }
+
+  /**
+   * request creation of user
+   * @param {object} email - the requested user email
+   * @param {object} userFilter - the requested user filters
+   * @param {object} userType - the requested user type
+   * @return {promise} - promise which resolves with response
+   **/
+  requestToCreateUser(email, userFilter, userType) {
+    const suffix = 'Request/add';
+    const url = '../../data/' + suffix;
+    const query = {};
+    const data =
+                  {
+                    'email': email,
+                    'userType': userType,
+                    'userFilter': userFilter,
+                  };
+    return fetch(url + '?' + objToParamStr(query), {
+      method: 'POST',
+      body: JSON.stringify({
+        'requestedBy': String(getUserId()),
+        'type': 'addUser',
+        'userDetails': data,
+      }),
+      credentials: 'same-origin',
+      mode: 'cors',
+    })
+    .then((response) => {
+      if (!response.ok) {
+        alert('There was some error. Please try again or refresh the page.');
+        throw new Error('Network response was not ok');
+      };
+      return response.blob();
+    })
+    .then((data) => {
+      alert('User registration request submitted');
+      window.location.reload();
+    })
+    .catch((error) => {
+      console.error('There has been a problem with your fetch operation:', error);
+    });
+  }
+
+  /**
+   * accept request creation of user
+   * @param {object} email - the requested user email
+   * @param {object} userFilter - the requested user filters
+   * @param {object} userType - the requested user type
+   * @param {object} reqId - the request object id
+  * @return {promise} - promise which resolves with response
+  **/
+  acceptRequestToDeleteSlide(email, userFilter, userType, reqId) {
+    // If only cancelling request and not deleting slide file then set onlyRequestCancel to true
+    const suffix = 'User/post';
+    const url = this.base + suffix;
+    const query = {};
+    const data = {
+      'email': email,
+      'userFilter': userFilter,
+      'userType': userType
+    }
+
+    return fetch(url + '?' + objToParamStr(query), {
+      method: 'POST',
+      mode: 'cors', // no-cors, cors, *same-origin
+      cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+      credentials: 'same-origin', // include, *same-origin, omit
+      headers: {
+          'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    }).then(this.errorHandler)
+        .then(() => {
+          alert('User creation successful');
+          initialize();
+        });
+  }
+
+  /**
+  * decline user creation request
+  * @param {object} reqId - the request object id
+  * @return {promise} - promise which resolves with response
+  **/
+  cancelRequestToCreateUser(reqId, onlyRequestCancel=true) {
+    // If only cancelling request and not deleting slide file then set onlyRequestCancel to true
+    const suffix = 'Request/delete';
+    const url = this.base + suffix;
+    const query = {
+      '_id': reqId,
+    };
+    return fetch(url + '?' + objToParamStr(query), {
+      method: 'DELETE',
+      credentials: 'include',
+      mode: 'cors',
+    }).then(this.errorHandler)
+        .then(() => {
+          if (onlyRequestCancel) {
+            initialize();
+            alert('User creation request declined');
+          }
+        });
+  }
 };
+
+
 
 try {
   module.exports = Store;

@@ -51,6 +51,11 @@ nav li:not(.active):hover a{
 	cursor: pointer;
 }
 
+#notification-box {
+	overflow-y: scroll;
+	max-height: 40em;
+}
+
 /* Tooltip container */
 .tooltipCustom {
 	position: relative;
@@ -86,6 +91,11 @@ nav li:not(.active):hover a{
 	padding: 10px 0px; 
 	color: black;
 }
+
+#tabs, #content {
+	width: 100%;
+}
+
 .bg-gray{
 	background-color: #eee;
 }
@@ -139,3 +149,7 @@ nav li:not(.active):hover a{
     color: #aaa;
 }
 
+.nav-tabs {
+	/* display: flex; */
+}
+  
