@@ -9,7 +9,7 @@
   box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.1);
   left: 25px;
   padding: 15px;
-  position: absolute;
+  position: fixed;
   z-index: 7500;
   font-size: medium;
 }

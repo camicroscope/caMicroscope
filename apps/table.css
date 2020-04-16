@@ -83,7 +83,7 @@ nav li:not(.active):hover a{
 }
 
 .notification-box{
-	padding: 10px 0px; 
+	padding: 10px 0px;
 	color: black;
 }
 .bg-gray{
@@ -92,9 +92,9 @@ nav li:not(.active):hover a{
 @media (max-width: 640px) {
 	.dropdown-menu{
 		top: 50px;
-		left: -16px;  
+		left: -16px;
 		width: 290px;
-	} 
+	}
 	.nav{
 		display: block;
 	}
@@ -138,4 +138,3 @@ nav li:not(.active):hover a{
     pointer-events: none;
     color: #aaa;
 }
-
