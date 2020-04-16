@@ -713,6 +713,7 @@ function uploadModel() {
               }, 3000);
             }
             $UI.uploadModal.close();
+            initUIcomponents();
           };
           req.onerror = function(e) {
             status.innerHTML = 'Some error this way!';
@@ -764,6 +765,7 @@ async function deleteModel(name) {
           }, 3000);
         }
         $UI.infoModal.close();
+        initUIcomponents();
       }
     }
   } else {
