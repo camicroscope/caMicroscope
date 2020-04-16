@@ -190,7 +190,7 @@ function handlePost(filename, slidename, filter, reset) {
             (success) => {
               initialize();
               $('#upload-dialog').modal('hide');
-              showSuccessPopup('Slide updated successfully');
+              showSuccessPopup('Slide uploaded successfully');
               return changeStatus('POST', success.result, reset);
             }, // Handle the success response object
         ).catch(

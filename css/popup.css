@@ -1,21 +1,22 @@
 #popup-container {
-  z-index: 700;
+  z-index: 8000;
+  position: fixed;
+  bottom: 25px;
+  left: 25px;
 }
 #popup-container .popup-msg {
   background-color: #111;
   color: #fff;
   border: 1px solid #ddd;
-  bottom: 25px;
   box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.1);
-  left: 25px;
   padding: 15px;
-  position: fixed;
+  position: relative;
   z-index: 7500;
   font-size: medium;
 }
 
 @media only screen and (max-width: 720px) {
-  #popup-container .popup-msg {
+  #popup-container {
   bottom: 0px;
   left: 0px;
   }
