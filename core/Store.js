@@ -789,20 +789,20 @@ class Store {
       credentials: 'same-origin',
       mode: 'cors',
     })
-    .then((response) => {
-      if (!response.ok) {
-        alert('There was some error. Please try again or refresh the page.');
-        throw new Error('Network response was not ok');
-      };
-      return response.blob();
-    })
-    .then((data) => {
-      alert('User registration request submitted');
-      window.location.reload();
-    })
-    .catch((error) => {
-      console.error('There has been a problem with your fetch operation:', error);
-    });
+        .then((response) => {
+          if (!response.ok) {
+            alert('There was some error. Please try again or refresh the page.');
+            throw new Error('Network response was not ok');
+          };
+          return response.blob();
+        })
+        .then((data) => {
+          alert('User registration request submitted');
+          window.location.reload();
+        })
+        .catch((error) => {
+          console.error('There has been a problem with your fetch operation:', error);
+        });
   }
 
   /**
@@ -821,8 +821,8 @@ class Store {
     const data = {
       'email': email,
       'userFilter': userFilter,
-      'userType': userType
-    }
+      'userType': userType,
+    };
 
     return fetch(url + '?' + objToParamStr(query), {
       method: 'POST',
@@ -830,7 +830,7 @@ class Store {
       cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
       credentials: 'same-origin', // include, *same-origin, omit
       headers: {
-          'Content-Type': 'application/json',
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify(data),
     }).then(this.errorHandler)
@@ -865,7 +865,6 @@ class Store {
         });
   }
 };
-
 
 
 try {
