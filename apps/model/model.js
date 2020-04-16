@@ -701,9 +701,19 @@ function uploadModel() {
           const req = store.put(data);
           req.onsuccess = function(e) {
             console.log('SUCCESS, ID:', e.target.result);
-            status.innerHTML = 'Done! Click refresh below.';
-            status.classList.remove('blink');
             modelName.push(_name.value);
+            let popups = document.getElementById('popup-container');
+            if (popups.childElementCount < 2) {
+              let popupBox = document.createElement('div');
+              popupBox.classList.add('popup-msg', 'slide-in');
+              popupBox.innerHTML = `<i class="small material-icons">info</i>` + _name.value + ` model uploaded sucessfully`;
+              popups.insertBefore(popupBox, popups.childNodes[0]);
+              setTimeout(function() {
+                popups.removeChild(popups.lastChild);
+              }, 3000);
+            }
+            $UI.uploadModal.close();
+            initUIcomponents();
           };
           req.onerror = function(e) {
             status.innerHTML = 'Some error this way!';
@@ -730,7 +740,8 @@ function uploadModel() {
 }
 
 async function deleteModel(name) {
-  if (confirm('Are you sure you want to delete this model?')) {
+  modelName = name.split('/').pop().split('_').splice(2).join('_').slice(0, -3);
+  if (confirm('Are you sure you want to delete ' + modelName + ' model?')) {
     const res = await tf.io.removeModel(IDB_URL + name);
     console.log(res);
     const tx = db.transaction('models_store', 'readwrite');
@@ -743,9 +754,18 @@ async function deleteModel(name) {
       alert(err);
     } finally {
       if (status) {
-        alert('Deleted', name);
-        showInfo();
-        modelName.splice(modelName.indexOf(name.split('/').pop().split('_').splice(2).join('_').slice(0, -3)), 1);
+        let popups = document.getElementById('popup-container');
+        if (popups.childElementCount < 2) {
+          let popupBox = document.createElement('div');
+          popupBox.classList.add('popup-msg', 'slide-in');
+          popupBox.innerHTML = `<i class="small material-icons">info</i>` + modelName + ` model deleted successfully`;
+          popups.insertBefore(popupBox, popups.childNodes[0]);
+          setTimeout(function() {
+            popups.removeChild(popups.lastChild);
+          }, 3000);
+        }
+        $UI.infoModal.close();
+        initUIcomponents();
       }
     }
   } else {
