@@ -88,8 +88,8 @@
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
 		integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
 		crossorigin="anonymous"></script>
-	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" 
-		integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" 
+	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+		integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
 		crossorigin="anonymous"></script>
 
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
@@ -139,7 +139,7 @@
 						<li class="head text-light bg-dark">
 							<div class="row">
 							<div class="col-lg-12 col-sm-12 col-12 pl-4 pt-2">
-								<h5>Notifications</h5> 
+								<h5>Notifications</h5>
 							</div>
 						</li>
 						<li class="notification-box" id="notification-box">
@@ -462,30 +462,30 @@
 							// console.log(rs[0]);
 							// console.log(typeof(rs[0]));
 
-							const btn = `<div id='open-delete'> 
-									<button class="btn btn-success" data-id='${rs[0]}' onclick='openView(this)'>Open</button> 
+							const btn = `<div id='open-delete'>
+									<button class="btn btn-success" data-id='${rs[0]}' onclick='openView(this)'>Open</button>
 									<button type='button' class='btn btn-info DownloadButton' id='downloadBtn' data-id='${rs[0]}' onclick='downloadSlide(this)' > <i class='fas fa-download' ></i> </button>
 									${
-										slideDeleteRequests.find(o => o.slideDetails.slideId === rs[0]) ? 
+										slideDeleteRequests.find(o => o.slideDetails.slideId === rs[0]) ?
 										`
 											${
 												slideDeleteRequests.find(o => o.requestedBy === getUserId()) ?
 												`
 													<button type='button' class='btn btn-danger DelButton' id='deleteBtn' data-id='${rs[0]}' data-name='${rs[1]}' onclick='deleteSld(this)' data-reqid='${slideDeleteRequests.find(o => o.slideDetails.slideId === rs[0]) ? slideDeleteRequests.find(o => o.slideDetails.slideId === rs[0])._id.$oid : "" }' data-filename='${filename}' data-toggle='modal'>
-														Cancel Delete Request <i class='fas fa-trash-alt' ></i> 
+														Cancel Delete Request <i class='fas fa-trash-alt' ></i>
 													</button>
-												` : 
+												` :
 												`
-													<button disabled type='button' class='btn btn-danger tooltipCustom' id='deleteBtn'> 
+													<button disabled type='button' class='btn btn-danger tooltipCustom' id='deleteBtn'>
 														<span class="tooltiptextCustom p-1">Delete requested by ${slideDeleteRequests.find(o => o.slideDetails.slideId === rs[0]) ? slideDeleteRequests.find(o => o.slideDetails.slideId === rs[0]).requestedBy : ""}</span>
-														Delete Requested <i class='fas fa-trash-alt' ></i> 
+														Delete Requested <i class='fas fa-trash-alt' ></i>
 													</button>
 												`
 											}
-										` : 
+										` :
 										`
 											<button type='button' class='btn btn-danger DelButton' id='deleteBtn' data-id='${rs[0]}' data-name='${rs[1]}' onclick='deleteSld(this)' data-filename='${filename}' data-toggle='modal'>
-												${permissions.slide.delete == true ? "" : "Request Deletion"} <i class='fas fa-trash-alt' ></i> 
+												${permissions.slide.delete == true ? "" : "Request Deletion"} <i class='fas fa-trash-alt' ></i>
 											</button>
 										`
 									}
@@ -685,8 +685,8 @@
 			resetTable();
 			$('#datatables').stacktable();
 			checkUserPermissions();
-			});	
-		}); 
+			});
+		});
 	}
 
 	function AND(p, t, func) {
@@ -739,7 +739,7 @@
 			var fileName = $(this).val().split('\\').pop();
 			$(this).next('.custom-file-label').html(fileName);
 		});
-		// Hide notification nav-link 
+		// Hide notification nav-link
 		if (getUserType() !== "Admin") {
 			$('#notifBell').html('');
 		}
@@ -766,7 +766,7 @@
 					$("td:nth-child(2)", this).unbind('mouseenter mouseleave');
 					$("td:nth-child(2)", this).hover(function(){
 						var content = $(this).html();
-						$(this).html(content +`<i style='font-size: small; margin-left:1em; cursor: pointer' onclick="changeSlideName('`+content+`', '`+currentId+`')" class="fas fa-pen" data-toggle="modal" data-target="#slideNameChangeModal"></i>`)  
+						$(this).html(content +`<i style='font-size: small; margin-left:1em; cursor: pointer' onclick="changeSlideName('`+content+`', '`+currentId+`')" class="fas fa-pen" data-toggle="modal" data-target="#slideNameChangeModal"></i>`)
 					}, function(){
 						$( this ).find( "i" ).last().remove();
 					});
@@ -777,30 +777,51 @@
 
 	function changeSlideName(oldname, id){
 		$('#confirmUpdateSlideContent').html('Enter the new name for the slide having following details: <br><br><b>id</b>: '+id+'<br>'+'<b>Name</b>: '+oldname
-				+ '<br><br><input type="text" id="newSlideName" class="form-control" placeholder="Enter new name" aria-label="newSlideName" required>');
+				+ '<br><br><div class="form-group"><input type="text" id="newSlideName" class="form-control" placeholder="Enter new name" aria-label="newSlideName" required></div>');
 		const store = new Store('../data/');
 		$('#confirmUpdateSlide').unbind('click');
 		$('#confirmUpdateSlide').click(function(){
-			var newName = $('#newSlideName').val();
+			var newSlideName = $("#newSlideName");
+			var newName = newSlideName.val();
 			if(newName!=''){
 				if(existingSlideNames.includes(newName)) {
-					alert('	Slide with given name already exists.');
+					newSlideName.addClass('is-invalid');
+				if (newSlideName.parent().children().length === 1) {
+						newSlideName.parent().append(`<div class="invalid-feedback">
+					Slide with given name already exists. </div>`);
+					}
 				}
 				else {
+					newSlideName.removeClass('is-invalid');
 					$('#slideNameChangeModal').modal('hide')
 					store.updateSlideName(id, newName).then((response)=>{
 						return response.json();
 					}).then((data)=>{
-						console.log(data);
 						if(data['modifiedCount']==1)
-							alert('Slide name updated successfully.')
-					});
-					initialize();
+							{
+								initialize();
+								showSuccessPopup('Slide updated successfully');
+						}
+				});
 				}
 			}
 		});
 	}
-	
+
+	function showSuccessPopup(message) {
+		// show pop-up message to user
+		let popups = document.getElementById('popup-container');
+		if (popups.childElementCount < 2) {
+			let popupBox = document.createElement('div');
+			popupBox.classList.add('popup-msg', 'slide-in', 'text-success');
+			popupBox.innerHTML = `<i class="fa fa-check-circle" aria-hidden="true"></i> ${message}`;
+			popups.insertBefore(popupBox, popups.childNodes[0]);  // Add popup box to parent
+			setTimeout(function () {
+				popups.removeChild(popups.lastChild);
+			}, 2000);
+		}
+	}
+
 	function pageIndicatorVisible(tableLength){
 		if($("#entries").val() >= tableLength)
 			$("#tablePages").css("display","none");
@@ -816,7 +837,7 @@
 		const oid = e.dataset.id;
 		handleDownload(oid);
 	}
-	
+
 	function deleteSld(e, cancel=false) {
 
 		const userType = getUserType();
@@ -824,7 +845,7 @@
 		const oname = e.dataset.name;
 		const filename = e.dataset.filename;
 		const reqId = e.dataset.reqid;
-		console.log('reqId ' + reqId);
+		// console.log('reqId ' + reqId);
 
 		const store = new Store('../data/');
 		if (oid) {
@@ -895,8 +916,8 @@
 		try {
 		  url = new URL(urlstring);
 		} catch (_) {
-		  return false;  
-		} 
+		  return false;
+		}
 		return url.protocol === "http:";
 	  }
 
@@ -930,13 +951,13 @@
 		if (slideDeleteRequests.length > 0) {
 			$('#notification-nav-link').html(`<span class="badge badge-pill badge-warning">${slideDeleteRequests.length}</span>`);
 			slideDeleteRequests.forEach((notif, i) => {
-				console.log(notif)
+				// console.log(notif)
 				$('#notification-box').append(
 					`
 						<div class="row pt-1 pb-2">
 							<div class="col-lg-3 col-sm-3 col-3 text-center">
 								<span class="fas fa-trash-alt fa-2x pt-4"></span>
-								</div>    
+								</div>
 								<div class="col-lg-8 col-sm-8 col-8">
 									<strong class="text-info">Slide Delete Requested</strong>
 								<div class="mb-2">
@@ -948,7 +969,7 @@
 									<div class="col-6"><button data-id="${notif.slideDetails.slideId}" data-filename="${notif.slideDetails.fileName}" data-reqid='${notif._id.$oid}' data-name="${notif.slideDetails.slideName}" onclick='deleteSld(this);' class="btn btn-info btn-sm">Accept</button></div>
 									<div class="col-6"><button data-id="${notif.slideDetails.slideId}" onclick='deleteSld(this, cancel=true);' data-reqid='${notif._id.$oid}' class="btn btn-secondary btn-sm">Decline</button></div>
 								</div>
-							</div>    
+							</div>
 						</div>
 						<hr>
 					`
