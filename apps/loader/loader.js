@@ -260,8 +260,8 @@ function deleteSlideFromSystem(id, filename, reqId=null) {
         if (data.success) {
         // return true;
           store.deleteSlide(id)
-              .then(function () {
-                if(reqId) {
+              .then(function() {
+                if (reqId) {
                   store.cancelRequestToDeleteSlide(requestId=reqId, onlyRequestCancel=false);
                 }
               })
