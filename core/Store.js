@@ -171,6 +171,16 @@ class Store {
       mode: 'cors',
     }).then(this.errorHandler).then((x)=>this.filterBroken(x, 'mark'));
   }
+  fetchMark(slideId) {
+    const suffix = 'Mark/find';
+    const url = this.base + suffix;
+    const query = {};
+    query['provenance.image.slide'] = slideId;
+    return fetch(url + '?' + objToParamStr(query), {
+      credentials: 'include',
+      mode: 'cors',
+    }).then(this.errorHandler).then((x)=>this.filterBroken(x, 'mark'));
+  }
   /**
    * post mark
    * @param {object} json - the mark data
@@ -249,6 +259,16 @@ class Store {
     if (slide) {
       query['provenance.image.slide'] = slide;
     }
+    return fetch(url + '?' + objToParamStr(query), {
+      credentials: 'include',
+      mode: 'cors',
+    }).then(this.errorHandler).then((x)=>this.filterBroken(x, 'heatmap'));
+  }
+  fetchHeatMap(slideId) {
+    const suffix = 'Heatmap/find';
+    const url = this.base + suffix;
+    const query = {};
+    query['provenance.image.slide'] = slideId;
     return fetch(url + '?' + objToParamStr(query), {
       credentials: 'include',
       mode: 'cors',
@@ -620,7 +640,234 @@ class Store {
       },
     }).then(this.errorHandler);
   }
-}
+
+  /**
+   * delete slide
+   * @param {object} id - the slide object id
+   * @return {promise} - promise which resolves with response
+   **/
+  deleteSlide(id) {
+    const suffix = 'Slide/delete';
+    const url = this.base + suffix;
+    const query = {
+      '_id': id,
+    };
+    return fetch(url + '?' + objToParamStr(query), {
+      method: 'DELETE',
+      credentials: 'include',
+      mode: 'cors',
+    }).then(this.errorHandler)
+        .then(() => {
+          initialize();
+        });
+  }
+
+  /**
+   * request deletion of slide
+   * @param {object} slideId - the slide object id
+   * @param {object} slideName - the slide name
+   * @param {object} fileName - the slide filename on server system
+   * @return {promise} - promise which resolves with response
+   **/
+  requestToDeleteSlide(slideId, slideName=null, fileName=null) {
+    const suffix = 'Request/add';
+    const url = this.base + suffix;
+    const query = {};
+    const data =
+                  {
+                    'slideName': String(slideName),
+                    'fileName': String(fileName),
+                    'slideId': String(slideId),
+                  };
+    return fetch(url + '?' + objToParamStr(query), {
+      method: 'POST',
+      body: JSON.stringify({
+        'requestedBy': String(getUserId()),
+        'type': 'deleteSlide',
+        'slideDetails': data,
+      }),
+      credentials: 'include',
+      mode: 'cors',
+    }).then(this.errorHandler)
+        .then(() => {
+          showSuccessPopup('Delete request submitted');
+          initialize();
+        });
+  }
+
+  /**
+  * decline request deletion of slide
+  * @param {object} reqId - the request object id
+  * @return {promise} - promise which resolves with response
+  **/
+  cancelRequestToDeleteSlide(reqId, onlyRequestCancel=true) {
+    // If only cancelling request and not deleting slide file then set onlyRequestCancel to true
+    const suffix = 'Request/delete';
+    const url = this.base + suffix;
+    const query = {
+      '_id': reqId,
+    };
+    return fetch(url + '?' + objToParamStr(query), {
+      method: 'DELETE',
+      credentials: 'include',
+      mode: 'cors',
+    }).then(this.errorHandler)
+        .then(() => {
+          if (onlyRequestCancel) {
+            showSuccessPopup('Delete request declined');
+          }
+          initialize();
+        });
+  }
+
+  findRequest(userType=getUserType()) {
+    const suffix = 'Request/find';
+    const url = this.base + suffix;
+    if (userType === 'Admin') {
+      var query = {};
+
+      return fetch(url + '?' + objToParamStr(query), {
+        credentials: 'include',
+        mode: 'cors',
+      }).then(this.errorHandler);
+    } else {
+      var query = {
+        'requestedBy': getUserId(),
+      };
+
+      return fetch(url + '?' + objToParamStr(query), {
+        credentials: 'include',
+        mode: 'cors',
+      }).then(this.errorHandler);
+    }
+  }
+
+
+  // Update slide name
+  updateSlideName(id, newName) {
+    const suffix = 'Slide/update';
+    const url = this.base + suffix;
+    console.log(id+ '   '+ newName);
+    const query = {
+      '_id': id,
+    };
+    const update = {
+      'name': newName,
+    };
+    return fetch(url + '?' + objToParamStr(query), {
+      method: 'POST',
+      credentials: 'include',
+      mode: 'cors',
+      body: JSON.stringify(update),
+    });
+  }
+
+  /**
+   * request creation of user
+   * @param {object} email - the requested user email
+   * @param {object} userFilter - the requested user filters
+   * @param {object} userType - the requested user type
+   * @return {promise} - promise which resolves with response
+   **/
+  requestToCreateUser(email, userFilter, userType) {
+    const suffix = 'Request/add';
+    const url = '../../data/' + suffix;
+    const query = {};
+    const data =
+                  {
+                    'email': email,
+                    'userType': userType,
+                    'userFilter': userFilter,
+                  };
+    return fetch(url + '?' + objToParamStr(query), {
+      method: 'POST',
+      body: JSON.stringify({
+        'requestedBy': String(getUserId()),
+        'type': 'addUser',
+        'userDetails': data,
+      }),
+      credentials: 'same-origin',
+      mode: 'cors',
+    })
+        .then((response) => {
+          if (!response.ok) {
+            alert('There was some error. Please try again or refresh the page.');
+            throw new Error('Network response was not ok');
+          };
+          return response.blob();
+        })
+        .then((data) => {
+          showSuccessPopup('User registration request submitted');
+          document.getElementById('userForm').reset();
+          // window.location.reload();
+        })
+        .catch((error) => {
+          console.error('There has been a problem with your fetch operation:', error);
+        });
+  }
+
+  /**
+   * accept request creation of user
+   * @param {object} email - the requested user email
+   * @param {object} userFilter - the requested user filters
+   * @param {object} userType - the requested user type
+   * @param {object} reqId - the request object id
+  * @return {promise} - promise which resolves with response
+  **/
+  acceptRequestToDeleteSlide(email, userFilter, userType, reqId) {
+    // If only cancelling request and not deleting slide file then set onlyRequestCancel to true
+    const suffix = 'User/post';
+    const url = this.base + suffix;
+    const query = {};
+    const data = {
+      'email': email,
+      'userFilter': userFilter,
+      'userType': userType,
+    };
+
+    return fetch(url + '?' + objToParamStr(query), {
+      method: 'POST',
+      mode: 'cors', // no-cors, cors, *same-origin
+      cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+      credentials: 'same-origin', // include, *same-origin, omit
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    }).then(this.errorHandler)
+        .then(() => {
+          showSuccessPopup('User creation successful');
+          initialize();
+        });
+  }
+
+  /**
+  * decline user creation request
+  * @param {object} reqId - the request object id
+  * @return {promise} - promise which resolves with response
+  **/
+  cancelRequestToCreateUser(reqId, onlyRequestCancel=true) {
+    // If only cancelling request and not deleting slide file then set onlyRequestCancel to true
+    const suffix = 'Request/delete';
+    const url = this.base + suffix;
+    const query = {
+      '_id': reqId,
+    };
+    return fetch(url + '?' + objToParamStr(query), {
+      method: 'DELETE',
+      credentials: 'include',
+      mode: 'cors',
+    }).then(this.errorHandler)
+        .then(() => {
+          if (onlyRequestCancel) {
+            initialize();
+            // alert('User creation request declined');
+            showSuccessPopup('User creation request declined');
+          }
+        });
+  }
+};
+
 
 try {
   module.exports = Store;

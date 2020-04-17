@@ -3,8 +3,13 @@
 var startUrl = '../loader/upload/start';
 var continueUrl = '../loader/upload/continue/';
 var finishUrl = '../loader/upload/finish/';
-
+var finishUploadSuccess = false;
+var checkSuccess = false;
 var chunkSize = 5*1024*1024;
+var tokenChange = true;
+var filenameChange = true;
+var oldToken = '';
+var oldFilename='';
 
 // read a chunk of the file
 function promiseChunkFileReader(file, part) {
@@ -47,42 +52,13 @@ async function readFileChunks(file, token) {
 
 
 async function handleUpload(selectedFiles) {
-  var fnametr = document.getElementById('filenameRow');
-  var tokentr = document.getElementById('tokenRow');
-  var slidetr = document.getElementById('slidenameRow');
-  var idtr = document.getElementById('fileIdRow');
-  var filtertr = document.getElementById('filterRow');
-
-  // Clear existing
-  document.getElementById('json_table').innerHTML = '';
-  var n = idtr.cells.length;
-  for (var i=0; i<n-1; i++) {
-    fnametr.deleteCell(1);
-    tokentr.deleteCell(1);
-    slidetr.deleteCell(1);
-    filtertr.deleteCell(1);
-    idtr.deleteCell(1);
-  }
-
-  var currID = 0;
-  // Add columns
-  for (var i=0; i<selectedFiles.length; i++, currID++) {
-    idtr.insertCell(-1).innerHTML = '<b>'+Number(currID+1)+'<b>';
-    fnametr.insertCell(-1).innerHTML = '<input type=text name=filename id=\'filename'+
-    currID+'\' value=\''+
-    selectedFiles[i]['name']+'\'>';
-    tokentr.insertCell(-1).innerHTML = '<input type=text name=token id=\'token'+currID+'\'>';
-    slidetr.insertCell(-1).innerHTML = '<input type=text name=slidename id=\'slidename'+currID+'\'>';
-    filtertr.insertCell(-1).innerHTML = '<input type=text name=filter id=\'filter'+currID+'\'>';
-
-    selectedFile = selectedFiles[i];
-    const filename = document.getElementById('filename'+currID).value;
-    const token = await startUpload(filename);
-    const callback = continueUpload(token);
-    document.getElementById('token'+currID).value = token;
-    readFileChunks(selectedFile, token);
-    // parseFile(selectedFile, callback, 0, x=>(changeStatus("UPLOAD", "Finished Reading File")))
-  }
+  selectedFile = selectedFiles[0];
+  const filename = selectedFiles[0]['name'];
+  const token = await startUpload(filename);
+  const callback = continueUpload(token);
+  readFileChunks(selectedFile, token);
+  // parseFile(selectedFile, callback, 0, x=>(changeStatus("UPLOAD", "Finished Reading File")))
+  updateFormOnUpload(selectedFiles[0]['name'], token);
 
   document.getElementById('fileUploadInput').colSpan = selectedFiles.length;
   document.getElementById('controlButtons').colSpan = selectedFiles.length+1;
@@ -112,24 +88,154 @@ function continueUpload(token) {
 }
 function finishUpload() {
   var reset = true;
-  for (var i=0; i<document.getElementById('fileIdRow').cells.length-1; i++) {
-    const token = document.getElementById('token'+i).value;
-    const filename = document.getElementById('filename'+i).value;
-    const body = {filename: filename};
-    changeStatus('UPLOAD', 'Finished Reading File, Posting');
-    const regReq = fetch(finishUrl + token, {method: 'POST', body: JSON.stringify(body), headers: {
-      'Content-Type': 'application/json; charset=utf-8',
-    }});
-    console.log(i);
-    regReq.then((x)=>x.json()).then((a)=>{
-      changeStatus('UPLOAD | Finished', a, reset); console.log(a); reset = false;
-    });
-    regReq.then((e)=> {
-      if (e['ok']===false) {
-        changeStatus('UPLOAD | ERROR;', e);
-        reset = true;
-        console.log(e);
-      }
-    });
+  const token = document.getElementById('token'+0).value;
+  const filename = document.getElementById('filename'+0).value;
+  if (token === oldToken) {
+    tokenChange=false;
+  } else {
+    tokenChange=true;
+    oldToken=token;
   }
+  if (filename === oldFilename) {
+    filenameChange = false;
+  } else {
+    filenameChange=true;
+    oldFilename=filename;
+  }
+  if (!filenameChange && !tokenChange) {
+    if (finishUploadSuccess) {
+      changeStatus('UPLOAD', 'You have already uploaded this file just now.');
+      if (checkSuccess) {
+        $('#check_btn').show();
+        $('#post_btn').show();
+      }
+    }
+    return;
+  }
+  const body = {filename: filename};
+  changeStatus('UPLOAD', 'Finished Reading File, Posting');
+  const regReq = fetch(finishUrl + token, {method: 'POST', body: JSON.stringify(body), headers: {
+    'Content-Type': 'application/json; charset=utf-8',
+  }});
+  regReq.then((x)=>x.json()).then((a)=>{
+    changeStatus('UPLOAD | Finished', a, reset); reset = false;
+    console.log(a);
+    if (typeof a === 'object' && a.error) {
+      finishUploadSuccess = false;
+      $('#check_btn').hide();
+      $('#post_btn').hide();
+    } else {
+      finishUploadSuccess=true;
+      if (checkSuccess===true) {
+        $('#check_btn').show();
+        $('#post_btn').show();
+      } else {
+        $('#check_btn').show();
+        $('#post_btn').hide();
+      }
+    }
+  });
+  regReq.then((e)=> {
+    if (e['ok']===false) {
+      finishUploadSuccess = false;
+      $('#check_btn').hide();
+      $('#post_btn').hide();
+      changeStatus('UPLOAD | ERROR;', e);
+      reset = true;
+      console.log(e);
+    }
+  });
+}
+
+
+async function handleUrlUpload(url) {
+  $('#uploadLoading').css('display', 'block');
+  const token = await startUpload(url);
+  await continueUrlUpload(token, url);
+}
+
+function updateFormOnUpload(fileName, token) {
+  var fnametr = document.getElementById('filenameRow');
+  var tokentr = document.getElementById('tokenRow');
+  var slidetr = document.getElementById('slidenameRow');
+  var filtertr = document.getElementById('filterRow');
+
+  // Clear existing
+  document.getElementById('json_table').innerHTML = '';
+  var n = tokentr.cells.length;
+  for (var i=0; i<n-1; i++) {
+    fnametr.deleteCell(1);
+    tokentr.deleteCell(1);
+    slidetr.deleteCell(1);
+    filtertr.deleteCell(1);
+  }
+  // Add columns
+  fnametr.insertCell(-1).innerHTML = `<input type=text class="form-control" name=filename id='filename0'
+    onchange=fileNameChange(); value='${fileName}'>`;
+  fileNameChange();
+  tokentr.insertCell(-1).innerHTML = `<input type=text class="form-control" onchange=hideCheckButton();hidePostButton();
+    disabled name=token id='token0'>`;
+  slidetr.insertCell(-1).innerHTML = `<input type=text class="form-control" name=slidename id='slidename0'>`;
+  filtertr.insertCell(-1).innerHTML = `<input type=text class="form-control" name=filter id='filter0'>`;
+  document.getElementById('token'+0).value = token;
+}
+
+function afterUrlUpload(token, url) {
+  $('#uploadLoading').css('display', 'none');
+  var fileName= url.substring(url.lastIndexOf('/')+1, url.length);
+  updateFormOnUpload(fileName, token);
+}
+
+async function continueUrlUpload(token, url) {
+  var enurl = encodeURIComponent(url);
+  const body = {'url': enurl};
+  changeStatus('UPLOAD', 'Uploading URL content ');
+  await $.ajax({
+    url: '../loader/urlupload/continue/'+token,
+    type: 'POST',
+    data: JSON.stringify(body),
+    contentType: 'application/json; charset=utf-8',
+    dataType: 'json',
+  }).then((response)=> {
+    if (response['status']=='OK Uploaded') {
+      console.log(response);
+      console.log('Uploaded');
+      afterUrlUpload(token, url);
+    }
+  }).catch((error) => {
+    if (error.status == 0) {
+      var i=0;
+      var inter=setInterval(function() {
+        i++;
+        if (i>=180) { // 180*5000 = 900000 = 15min max time for running this
+          clearInterval(inter);
+        }
+        fetch('../loader/urlupload/check?url='+enurl+'&token='+token, {
+          credentials: 'same-origin',
+          method: 'GET',
+        }).then((response)=>{
+          // console.log(response);
+          if (response.status==200) {
+            return response.json();
+          } else {
+            throw new Error('Error in check');
+          }
+        }).then((response)=>{
+          console.log('uploading please wait..');
+          if (response['uploaded']== 'True') { // check if upload completed or not
+            console.log('upload complete');
+            clearInterval(inter);
+            afterUrlUpload(token, url);
+          }
+        }).catch((error) => {
+          console.log(error);
+          clearInterval(inter);
+        });
+      }, 5000); // check for url upload status from server in every 5 sec. (for big files or slow connection)
+    } else {
+      console.log(error);
+      $('#uploadLoading').css('display', 'none');
+      alert(error['responseJSON']['error']);
+    }
+  });
 }

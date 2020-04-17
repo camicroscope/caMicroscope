@@ -63,7 +63,9 @@ HeatmapControl.prototype.__refresh = function() {
   const template = `
     <div class='mode-panel'>
 
-        <label> Gradient <input type='checkbox' value='gradient' ${this.setting.mode == 'gradient'? 'checked':''} /></label>
+        <label> Gradient <input type='checkbox' value='gradient' ${
+          this.setting.mode == 'gradient' ? 'checked' : ''
+} /></label>
     </div>
     <div class='sel-field-panel'>
         <select></select>
@@ -78,10 +80,16 @@ HeatmapControl.prototype.__refresh = function() {
         </div>
     </div>
     <div class='color-panel'>
-        <label> Color <input id='heatMapColor' type='color' value='#1034A6' /></label>
+        <label> Color <input id='heatMapColor' type='color' value= ${
+          this.setting.mode === 'gradient' ?
+            '#1034A6' :
+            $CAMIC.viewer.heatmap._color
+} /></label>
     </div>
     <div class='colors-legend-panel'>
-        <label># of Intervals <input id='legendIntervals' type='number' class='range-enforced' value='5' min='2' max='10'/></label> <div class="warning" style="display: none;"></div>
+        <label># of Intervals <input id='legendIntervals' type='number' class='range-enforced' value=${
+          this.setting.mode === 'gradient' ? $CAMIC.viewer.heatmap._colors.length : 5
+} min='2' max='10'/></label> <div class="warning" style="display: none;"></div>
         <div class='legends'>
         </div>
     </div>
@@ -97,7 +105,6 @@ HeatmapControl.prototype.__refresh = function() {
   createSelect(this.elt.querySelector('.sel-field-panel select'), this.setting.fields, this.setting.currentField);
   this.elt.querySelector('.sel-field-panel select').addEventListener('change', this._selChanged.bind(this));
   if (this.setting.mode=='binal') this.elt.querySelector('.sel-field-panel').style.display='none';
-
 
   const fieldsPanel = this.elt.querySelector('.fields-panel');
   this.setting.fields.forEach((f)=>{
@@ -131,7 +138,8 @@ HeatmapControl.prototype.__refresh = function() {
 
   const legendIntervalsInput = colorsLegendPanel.querySelector('#legendIntervals');
   // Setting default value of intervals
-  legendIntervalsInput.value = 5;
+  legendIntervalsInput.value =
+    this.setting.mode === 'gradient' ? $CAMIC.viewer.heatmap._colors.length : 5;
   const noOfIntervals = legendIntervalsInput.value;
 
   const legendsContainer = colorsLegendPanel.querySelector('.legends');
@@ -206,6 +214,7 @@ HeatmapControl.prototype._selChanged = function(e) {
       this.rangeSliders[f.name].disabled(true);
     }
   }, this);
+  this.resize.call(this);
   this.__change.call(this);
 };
 HeatmapControl.prototype.resize = function() {
@@ -245,6 +254,7 @@ HeatmapControl.prototype.__change = function() {
       data.field = field;
     }
     this.setting.onChange(data);
+    this.resize.call(this);
   }
 };
 
@@ -327,6 +337,7 @@ function createOpacities(container, field, changeFunc) {
 // Create HTML Color inputs for given noOfIntervals
 function createIntervalInputs(container, noOfIntervals, changeFunc) {
   // Empty the container
+  let colors=[];
   while ( container.firstChild ) container.removeChild( container.firstChild );
   for (let i = 1; i <= noOfIntervals; i++) {
     const div = document.createElement('div');
@@ -336,14 +347,19 @@ function createIntervalInputs(container, noOfIntervals, changeFunc) {
     label.className = 'color-input';
     const color = document.createElement('input');
     color.type = 'color';
-    color.value = defaultColorList[getGradientColorIndex(i, noOfIntervals)];
+    if (i <= $CAMIC.viewer.heatmap._colors.length) {
+      color.value = $CAMIC.viewer.heatmap._colors[i - 1];
+    } else {
+      color.value = defaultColorList[i - 1];
+    }
     color.oninput = changeFunc;
     // Input for color legends.
     div.appendChild(label);
     div.appendChild(color);
-
+    colors.push(color.value);
     container.appendChild(div);
   }
+  $CAMIC.viewer.heatmap.setColors(colors);
 }
 // returns selected colors for intervals
 function getColors(container) {

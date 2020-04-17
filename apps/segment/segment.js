@@ -5,6 +5,7 @@ const IDB_URL = 'indexeddb://';
 window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
 // id(autoinc), name, location(name+id), classes
 var request; var db;
+var modelName;
 
 // tensorflowjs creates its own IndexedDB on saving a model.
 async function dbInit() {
@@ -34,8 +35,8 @@ let $CAMIC = null;
 const $UI = {};
 const $D = {
   pages: {
-    home: '',
-    table: '',
+    home: '../table.html',
+    table: '../table.html',
   },
   params: null,
 };
@@ -144,6 +145,7 @@ async function initUIcomponents() {
       checked: true,
     }];
 
+  modelName = [];
   Object.keys(await tf.io.listModels()).forEach(function(element) {
     const dict = {};
     const value = element.split('/').pop();
@@ -153,6 +155,8 @@ async function initUIcomponents() {
       dict.title = title;
       dict.value = value;
       dict.checked = false;
+      // Saving to previously defined model names
+      modelName.push(dict['title']);
       dropDownList.push(dict);
     }
   });
@@ -584,6 +588,18 @@ function uploadModel() {
         var modelInput = tf.io.browserFiles([topology.files[0], ...weights.files]);
       }
 
+      // Check if model with same name is previously defined
+      try {
+        if (modelName.indexOf(_name.value)!=-1) {
+          throw new Error('Model name repeated');
+        }
+      } catch (e) {
+        status.innerHTML = 'Model with the same name already exists. Please choose a new name';
+        status.classList.remove('blink');
+        console.log(e);
+        return;
+      }
+
       try {
         // This also ensures that valid model is uploaded.
         // Adding some extra digits in the end to maintain uniqueness
@@ -598,7 +614,7 @@ function uploadModel() {
         const shape = result.shape;
         result.dispose();
         if (shape[1] != size || shape[2] != size) {
-          console('Shape:', shape[1], shape[2]);
+          console.info('Shape:', shape[1], shape[2]);
           throw new Error('The application only supports 1:1 image Masks. Import a valid model.');
         }
 
@@ -615,8 +631,19 @@ function uploadModel() {
           const req = store.put(data);
           req.onsuccess = function(e) {
             console.log('SUCCESS, ID:', e.target.result);
-            status.innerHTML = 'Done! Click refresh below.';
-            status.classList.remove('blink');
+            modelName.push(_name.value);
+            let popups = document.getElementById('popup-container');
+            if (popups.childElementCount < 2) {
+              let popupBox = document.createElement('div');
+              popupBox.classList.add('popup-msg', 'slide-in');
+              popupBox.innerHTML = `<i class="small material-icons">info</i>` + _name.value + ` model uploaded sucessfully`;
+              popups.insertBefore(popupBox, popups.childNodes[0]);
+              setTimeout(function() {
+                popups.removeChild(popups.lastChild);
+              }, 3000);
+            }
+            $UI.uploadModal.close();
+            initUIcomponents();
           };
           req.onerror = function(e) {
             status.innerHTML = 'Some error this way!';
@@ -1106,8 +1133,19 @@ async function deleteModel(name) {
       alert(err);
     } finally {
       if (status) {
-        alert('Deleted', name);
-        showInfo();
+        modelName.splice(modelName.indexOf(name.split('_').splice(1).join('_').slice(0, -3)), 1);
+        let popups = document.getElementById('popup-container');
+        if (popups.childElementCount < 2) {
+          let popupBox = document.createElement('div');
+          popupBox.classList.add('popup-msg', 'slide-in');
+          popupBox.innerHTML = `<i class="small material-icons">info</i>` + modelName + ` model deleted successfully`;
+          popups.insertBefore(popupBox, popups.childNodes[0]);
+          setTimeout(function() {
+            popups.removeChild(popups.lastChild);
+          }, 3000);
+        }
+        $UI.infoModal.close();
+        initUIcomponents();
       }
     }
   } else {
@@ -1122,7 +1160,7 @@ async function showInfo() {
   var table = document.querySelector('#mdata');
   var tx = db.transaction('models_store', 'readonly');
   var store = tx.objectStore('models_store');
-
+  var modelCount=0;
   empty(table);
   // Update table data
   (function(callback) {
@@ -1147,11 +1185,13 @@ async function showInfo() {
             td = row.insertCell();
             td.innerHTML = date;
             td = row.insertCell();
-            td.innerHTML = '<button class="btn btn-primary btn-xs my-xs-btn" ' +
-            'id="removeModel" type="button">Remove Model</button>';
-            document.getElementById('removeModel').addEventListener('click', () => {
+            td.innerHTML = '<button class="btn-del" '+
+            'id=removeModel'+modelCount+' type="button"><i class="material-icons"'+
+            'style="font-size:16px;">delete_forever</i>Remove Model</button>';
+            document.getElementById('removeModel'+modelCount).addEventListener('click', () => {
               deleteModel(name);
             });
+            modelCount+=1;
           };
         }
       }

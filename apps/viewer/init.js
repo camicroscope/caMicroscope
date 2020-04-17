@@ -516,7 +516,7 @@ function initCore() {
               ) {
                 area = `${Math.round(
                     data.geometries.features[data.selected].properties.area,
-                )}μm^2`;
+                )} μm²`;
               }
               if (
                 (data.selected != null || data.selected != undefined) &&
@@ -526,7 +526,7 @@ function initCore() {
                 circumference = `${Math.round(
                     data.geometries.features[data.selected].properties
                         .circumference,
-                )}μm`;
+                )} μm`;
               }
             } // othereise, don't try to calculate area and circumference
             // human
@@ -832,7 +832,17 @@ async function initUIcomponents() {
       window.open('https://goo.gl/forms/mgyhx4ADH0UuEQJ53', '_blank').focus();
     },
   });
-
+  subToolsOpt.push({
+    name: 'tutorial',
+    icon: 'help',
+    title: 'Tutorial',
+    value: 'tutorial',
+    type: 'btn',
+    callback: function() {
+      tour.init();
+      tour.start(true);
+    },
+  });
   // create the tool bar
   $UI.toolbar = new CaToolbar({
     /* opts that need to think of*/

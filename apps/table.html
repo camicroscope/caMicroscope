@@ -38,11 +38,23 @@
 			return string.replace(reg, (match)=>(map[match]));
 		}
 		var existingSlideNames = [];
+		var permissions;
 		const allowedExtensions = ['svs', 'tif', 'tiff', 'vms', 'vmu', 'ndpi', 'scn', 'mrxs', 'bif', 'svslide'];
 		function validateForm(callback) {
 			let slide = document.getElementById("slidename0");
+			// Check if input element is rendered or not
+			if(slide===null) {
+				finishUploadSuccess = false;
+				$('#check_btn').hide();
+				$('#post_btn').hide();
+				changeStatus("UPLOAD", "Please chose a file first");
+				return false;
+			}
 			//Check if slide name is empty
 			if (slide.value === "") {
+					finishUploadSuccess = false;
+					$('#check_btn').hide();
+					$('#post_btn').hide();
 					changeStatus("UPLOAD", "Please enter slide name");
 					return false;
 			}
@@ -51,12 +63,18 @@
 			//Checking if silde with given name already exists
 			if(existingSlideNames.includes(slide.value)) {
 				changeStatus("UPLOAD", "Slide with given name already exists");
+				finishUploadSuccess = false;
+				$('#check_btn').hide();
+				$('#post_btn').hide();
 				return false;
 			}
 			//Checking for extension
 			let filename = document.getElementById("filename0").value
 			var fileExtension = filename.toLowerCase().split('.').reverse()[0];
 			if(!allowedExtensions.includes(fileExtension)) {
+				finishUploadSuccess = false;
+				$('#check_btn').hide();
+				$('#post_btn').hide();
 				changeStatus("UPLOAD", fileExtension + " files are not compatible");
 				return false;
 			}
@@ -65,15 +83,22 @@
 	</script>
 	<title>CaMicroscope Data Table</title>
 
-	<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
-		integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
-		crossorigin="anonymous"></script>
+	<script src="https://code.jquery.com/jquery-3.4.1.min.js"
+		></script>
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
 		integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
 		crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+		integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+		crossorigin="anonymous"></script>
+
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
 		integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 	<link rel="stylesheet" href="../common/stacktable.css">
+
+	<!-- popup css -->
+	<link rel="stylesheet" type="text/css" media="all" href="../../css/popup.css" />
+
 	<style>
 		html,
 		body {
@@ -101,6 +126,60 @@
 				<li class="nav-item active link">
 					<a class="nav-link" href="table.html"> <i class="fas fa-list-ul"></i> Slides</a>
 				</li>
+				<li class="nav-item link">
+					<a class="nav-link" href="Info.html"> <i class="fas fa-info-circle"></i> Info</a>
+				</li>
+				<!-- Notification Bell -->
+				<li class="nav-item dropdown" id="notifBell">
+					<a class="nav-link mt-1" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						<i class="fa fa-bell"></i>
+						<span id="notification-nav-link"></span>
+					</a>
+					<ul class="dropdown-menu">
+						<li class="head text-light bg-dark">
+							<div class="row">
+							<div class="col-lg-12 col-sm-12 col-12 pl-4 pt-2">
+								<h5>Notifications</h5>
+							</div>
+						</li>
+						<li class="notification-box" id="notification-box">
+							<div class="container-fluid">
+								<ul id="tabs" class="nav nav-tabs" role="tablist">
+								  <li class="nav-item">
+									<a id="tab-delReq" href="#delReqTab" class="nav-link active" data-toggle="tab" role="tab">Delete Requests <span id="delReqBadge"></span></a>
+								  </li>
+								  <li class="nav-item">
+									<a id="tab-userReq" href="#userReqTab" class="nav-link" data-toggle="tab" role="tab">User Requests <span id="userReqBadge"></span></a>
+								  </li>
+								</ul>
+							  
+								<div id="content" class="tab-content mt-2" role="tablist">
+								  <div id="delReqTab" class="tab-pane fade show active" role="tabpanel" aria-labelledby="tab-delReq">
+									<div class="row">
+										<div class="col-12 text-center text text-muted p-3">
+											<i>No delete requests to show</i>
+										</div>
+									</div>
+								  </div>
+								  <div id="userReqTab" class="tab-pane fade" role="tabpanel" aria-labelledby="tab-userReq">
+									<div class="row">
+										<div class="col-12 text-center text text-muted p-3">
+											<i>No user registration requests to show</i>
+										</div>
+									</div>
+								  </div>
+								</div>
+							  </div>
+						</li>
+					</ul>
+				</li>
+				<script>
+					// To stop notification box from closing when clicked inside
+					$(document).on('click', '#notification-box', function (e) {
+						e.stopPropagation();
+					});
+				</script>
+				<!-- Notification Bell Ends -->
 			</ul>
 			<ul class="navbar-nav">
 				<li class="nav-item link" style="font-family: sans-serif;">
@@ -121,11 +200,12 @@
 	<div class='p-2 bg-light' style="flex-grow: 1;">
 		<button type="button" class="btn btn-success float-right mb-2"
 			onclick="(()=>{location.reload();return false;})()"> <i class="fas fa-sync-alt"></i> Reload</button>
-		<button type="button" class="btn btn-primary float-right mb-2 mr-2" data-toggle="modal"
-			data-target="#upload-dialog"> <i class="fas fa-upload"></i> Upload</button>
+		<button id="slideUploadButton" type="button" class="btn btn-primary float-right mb-2 mr-2" data-toggle="modal"
+			data-target="#upload-dialog" onclick="hidePostButton(); hideCheckButton(); resetUploadForm();" style="display: none;"> <i class="fas fa-upload"></i> Upload</button>
+
 			<div class="modal fade" id="upload-dialog" tabindex="-1" role="dialog"
-			aria-labelledby="title-of-dialog" aria-hidden="true">
-			<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+			aria-labelledby="title-of-dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+			<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
 				<div class="modal-content">
 					<div class="modal-header">
 						<h5 class="modal-title" id="title-of-dialog">Upload New Slide</h5>
@@ -143,19 +223,33 @@
 										<li>Select the file as Input. The <b>Token</b> field should be filled automatically, and start uploading.</li>
 										<li> Provide the destination filename with extension.</li>
 										<li>Click on the <b>Finish Upload</b> to complete the upload </li>
+										<li>Click on <b>Check</b> to get a preview of the slide  </li>
 										<li>Finally <b>Post</b> it to caMicroscope</li>
 									</ul>
 								</div>
 								<div>
-									<form>
+									<form id="upload-form">
 										<table class="table table-borderless" cellpadding="5" cellspacing="0">
 											<tr>
-												<td align="right"><b>Files</b></td>
-												<td id="fileUploadInput"><input type="file" id="input"
-														onchange="handleUpload(this.files)" multiple></td>
-											</tr>
-											<tr id="fileIdRow">
-												<td align="right"><b>ID</b></td>
+												<td align="right"><b>File</b></td>
+												<td id="fileUploadInput">
+													<span class="input-group mb-3" >
+														<span class="custom-file fileInputClass">
+															<input type="file" class="custom-file-input" id="input" onchange="handleUpload(this.files)">
+															<label class="custom-file-label" for="input" style="overflow: hidden;">Choose file</label>
+														</span>
+														<div class="form-group urlUploadClass" style="display:none; flex-wrap:wrap">
+															<input type="url" placeholder="Enter file URL" class="form-control" id="urlInput" style="width: 20em;" required>
+															<button type="button" class="btn btn-info" onclick="urlInputChange();" style="margin-left: 0.6em; margin-right:-5em" >Upload</button>
+														</div>
+													</span> <div id="uploadLoading" style="display: none;"><span>Uploading...</span> <br>
+													<div class="spinner-grow text-primary" role="status" style="margin-left: 1.2em;">
+														<span class="sr-only"></span>
+													</div> </div>
+													<a href="#" id='urlswitch' onclick="$('#urlInput').val(''); switchToUrl();" > <span style="position: absolute; right:2em;" > <i class="fas fa-link"></i> Upload from URL</span></a>
+													<a href="#" style="display: none;" id="fileswitch" onclick=" switchToFile();" > <span style="position: absolute; right:2em;" > <i class="fas fa-folder"></i> Upload from local</span></a>
+
+												</td>
 											</tr>
 											<tr id="filenameRow">
 												<td align="right"><b>Filename</b></td>
@@ -176,7 +270,7 @@
 												value="Finish Upload" onclick="validateForm(finishUpload)">Finish
 												Upload</button>
 											<button class="btn btn-secondary" type="button" id="check_btn"
-												value="Check" onclick="CheckBtn()">Check</button>
+												value="Check" onclick="validateForm(CheckBtn);">Check</button>
 											<button class="btn btn-success" type="button" id="post_btn" value="Post"
 												onclick="validateForm(PostBtn)">Post</button>
 										</div>
@@ -210,7 +304,10 @@
 							<option value="50">50 slides/page</option>
 							<option value="100">100 slides/page</option>
 						</select>
-						<input id="search-table" type="text" class="form-control" placeholder="Search&hellip;">
+						<div class="form-group has-search">
+							<span class="fa fa-search form-control-feedback"></span>
+							<input id="search-table" type="text" class="form-control" placeholder="Search">
+						</div>
 					</div>
 				</div>
 				<div class="table-responsive">
@@ -222,9 +319,54 @@
 
 	</div>
 
+	<!--Delete Modal -->
+	<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+			<h5 class="modal-title" id="deleteModalLabel">Delete confirmation</h5>
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+			</button>
+			</div>
+			<div class="modal-body" id="confirmDeleteContent"></div>
+			<div class="modal-footer">
+			<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+			<button type="button" id='confirmDelete' data-dismiss="modal" class="btn btn-danger">Yes</button>
+			</div>
+		</div>
+		</div>
+	</div>
+
+
+	<!--Slide Name change Modal -->
+	<div class="modal fade" id="slideNameChangeModal" tabindex="-1" role="dialog" aria-labelledby="slideNameChangeModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+			<h5 class="modal-title" id="slideNameChangeModalLabel">Slide name change confirmation</h5>
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+			</button>
+			</div>
+			<form onsubmit="return false">
+			<div class="modal-body" id="confirmUpdateSlideContent"></div>
+			<div class="modal-footer">
+			<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+			<button type="submit" id='confirmUpdateSlide'  class="btn btn-info">Update</button>
+			</form>
+			</div>
+		</div>
+		</div>
+	</div>
+
+
 	<div class="text-center text-white bg-dark p-3" style="position: static;bottom: 0;width: 100%;">
 		<p class="p">Copyright © 2020 caMicroscope</p>
 	</div>
+	<!-- popup -->
+	<div id="popup-container"></div>
+
 </body>
 <script>
 	const HeadMapping = [{
@@ -246,6 +388,10 @@
 	var totaltablepages;
 	var selectedpage;
 	var searching;
+	if (getUserType() === "Admin") {
+		var slideDeleteRequests = [];
+		var userCreateRequests = [];
+	}
 
 	function showTablePage(){
 		$("#datatables tbody tr").filter(function(){
@@ -254,7 +400,7 @@
 
 		var trs = "#datatables tbody tr";
 		if(searching){
-			trs = ".searched";
+			trs+= ".searched";
 		}
 		$(trs).slice($("#entries").val()*selectedpage, $("#entries").val()*(selectedpage+1)).filter(function(){
 			$(this).show();
@@ -281,155 +427,307 @@
 		showTablePage();
 	}
 
+	function resetUploadForm()
+	{
+		document.getElementById('upload-form').reset();
+		$('#fileIdRow').children().slice(1).remove();
+		$('#filenameRow').children().slice(1).remove();
+		$('#tokenRow').children().slice(1).remove();
+		$('#slidenameRow').children().slice(1).remove();
+		$('#filterRow').children().slice(1).remove();
+		$('#json_table').html('');
+		$('#load_status').html('');
+		$('.custom-file-label').html('');
+		hideCheckButton();
+		hidePostButton();
+	}
+
 	function initialize() {
+		slideDeleteRequests = [];
+		userCreateRequests = [];
 		const params = getUrlVars();
 		const store = new Store('../data/');
-		store.findSlide()
-			.then(function (data) {
-				// filter
-				if (!(Object.keys(params).length === 0 && params.constructor === Object)) {
-					const keys = Object.keys(params);
-					const v2 = Object.values(params);
-					data = data.filter((d) => {
-						const v1 = getValues(d, keys);
-						return AND.call(this, v1, v2, eq);
-					});
+		store.findRequest()
+			.then(function (requests) {
+				// console.log(requests);
+				if (requests && ! requests.error) {
+					requests.forEach(function(req) {
+						if(req.type === "addUser") {
+							userCreateRequests.push(req);
+						} else {
+							slideDeleteRequests.push(req);
+						}
+					})
 				}
-
-				// mapping data
-				const keys = HeadMapping.map(d => d.field);
-				if (data.map) {
-					return data.map((d) => {
-						const rs = [];
-						keys.forEach((key, i) => {
-							if (i == 0) rs.push(d['_id']['$oid'])
-							else if (!d[key]) rs.push('')
-							else rs.push(d[key])
+				store.findSlide()
+				.then(function (data) {
+					// filter
+					if (!(Object.keys(params).length === 0 && params.constructor === Object)) {
+						const keys = Object.keys(params);
+						const v2 = Object.values(params);
+						data = data.filter((d) => {
+							const v1 = getValues(d, keys);
+							return AND.call(this, v1, v2, eq);
 						});
-						const btn = `<button class="btn btn-success" data-id='${rs[0]}' onclick='openView(this)'>Open</button>`
-						rs.push(btn);
-						return rs;
+					}
+
+					// mapping data
+					const keys = HeadMapping.map(d => d.field);
+					if (data.map) {
+						return data.map((d, counter) => {
+							// console.log('i:' + counter);
+							const rs = [];
+							const filename = d.location.split('/')[d.location.split('/').length - 1];
+							keys.forEach((key, i) => {
+								if (i == 0) rs.push(d['_id']['$oid'])
+								else if (!d[key]) rs.push('')
+								else rs.push(d[key])
+							});
+							// console.log(d);
+							// if (getUserType() === "Admin") {
+							// 	if (d.deleteRequest) {
+							// 		slideDeleteRequests.push({
+							// 			'slideId': d._id.$oid,
+							// 			'requestedBy': d.deleteRequest.requestedBy,
+							// 			'slideName': d.deleteRequest.slideName,
+							// 			'fileName':  filename,
+							// 		});
+							// 	}
+							// }
+							// console.log('reqId:' + slideDeleteRequests.find(o => o.slideDetails.slideId === rs[0])._id.$oid );
+							// console.log(rs[0]);
+							// console.log(typeof(rs[0]));
+							console.log(counter);
+							console.log(slideDeleteRequests);
+							if (slideDeleteRequests['counter']) {
+								
+							console.log(slideDeleteRequests[counter]);
+							// console.log(slideDeleteRequests[counter - 1]);
+							}
+							console.log('Done one iter');
+
+							const btn = `<div id='open-delete'>
+									<button class="btn btn-success" data-id='${rs[0]}' onclick='openView(this)'>Open</button>
+									<button type='button' class='btn btn-info DownloadButton' id='downloadBtn' data-id='${rs[0]}' onclick='downloadSlide(this)' > <i class='fas fa-download' ></i> </button>
+									${
+										slideDeleteRequests[counter] && slideDeleteRequests[counter].slideDetails && slideDeleteRequests.find(o => o.slideDetails.slideId === rs[0]) ? 
+										`
+											${
+												slideDeleteRequests.find(o => o.requestedBy === getUserId()) ?
+												`
+													<button type='button' class='btn btn-danger DelButton' id='deleteBtn' data-id='${rs[0]}' data-name='${rs[1]}' onclick='deleteSld(this)' data-reqid='${slideDeleteRequests.find(o => o.slideDetails.slideId === rs[0]) ? slideDeleteRequests.find(o => o.slideDetails.slideId === rs[0])._id.$oid : "" }' data-filename='${filename}' data-toggle='modal'>
+														Cancel Delete Request <i class='fas fa-trash-alt' ></i>
+													</button>
+												` :
+												`
+													<button disabled type='button' class='btn btn-danger tooltipCustom' id='deleteBtn'>
+														<span class="tooltiptextCustom p-1">Delete requested by ${slideDeleteRequests.find(o => o.slideDetails.slideId === rs[0]) ? slideDeleteRequests.find(o => o.slideDetails.slideId === rs[0]).requestedBy : ""}</span>
+														Delete Requested <i class='fas fa-trash-alt' ></i>
+													</button>
+												`
+											}
+										` :
+										`
+											<button type='button' class='btn btn-danger DelButton' id='deleteBtn' data-id='${rs[0]}' data-name='${rs[1]}' onclick='deleteSld(this)' data-filename='${filename}' data-toggle='modal'>
+												${permissions.slide.delete == true ? "" : "Request Deletion"} <i class='fas fa-trash-alt' ></i>
+											</button>
+										`
+									}
+								</div>`
+							rs.push(btn);
+							return rs;
+						});
+					} else {
+						// we have no data to render! Let's add a default button
+						const default_btn = [];
+						keys.forEach((key, i) => {
+							if (i == 0) default_btn.push("NO DATA")
+							else default_btn.push('')
+						});
+						const btn = ``;
+						default_btn.push(btn);
+						return [default_btn];
+					}
+				})
+				.then(function (data) {
+					if(getUserType() === "Admin") {
+						appendNotifications(slideDeleteRequests);
+					}
+					return data;
+				})
+				.then(function (data) {
+					if (data.length == 0) {
+						var div = document.querySelector('.container');
+						div.textContent = `No Data Found ... x _ x`;
+						div.classList = `container text-center p-4`;
+						return;
+					}
+
+					//Adding names to later validate for new slide names
+					existingSlideNames = data.map(d => d[1]);
+
+					const thead = HeadMapping.map((d,i) => `<th>${d.title}	<span class="sort-btn fa fa-sort" data-order=${1}
+						 data-index=${i}>  </span> </th>`);
+
+					thead.push("<th></th>");
+
+					tbody = data.map((d) => {
+						return "<tr>" + d.map((a) => "<td>" + a + "</td>").reduce((a, b) => a + b) + "</tr>";
 					});
-				} else {
-					// we have no data to render! Let's add a default button
-					const default_btn = [];
-					keys.forEach((key, i) => {
-						if (i == 0) default_btn.push("NO DATA")
-						else default_btn.push('')
+					let entriesPerPage;
+					if($('#entries').val()===undefined)
+						entriesPerPage=10; // default value, when initially no slide
+					else
+						entriesPerPage= $('#entries').val();
+					totaltablepages = Math.ceil(data.length/entriesPerPage);
+					selectedpage = 0;
+					$("#search-table").val("");
+					searching = false;
+
+					if( data.length>0 && $('.container').children().length===0)
+					{
+						$('.container').html(`<div>
+							<div>
+							<h3 class="text-center h3 mb-0">Available Slides</h3>
+							<div class="search-box float-left form-group form-inline">
+								<select id='entries' class="select form-control mr-2">
+									<option value="10" selected>10 slides/page</option>
+									<option value="20">20 slides/page</option>
+									<option value="40">40 slides/page</option>
+									<option value="50">50 slides/page</option>
+									<option value="100">100 slides/page</option>
+								</select>
+								<div class="form-group has-search">
+									<span class="fa fa-search form-control-feedback"></span>
+										<input id="search-table" type="text" class="form-control" placeholder="Search">
+									</div>
+						</div>
+							</div>
+							<div class="table-responsive">
+								<table id='datatables' class="table table-striped"></table>
+							</div>
+				</div >
+	`);
+					}
+					document.getElementById("datatables").innerHTML = `
+					<thead>${thead.reduce((a, b) => a + b)}</thead>
+					<tbody>${tbody.reduce((a, b) => a + b)}</tbody>
+					<tfoot><tr><td colspan='6'>
+						<nav aria-label="Slides Pages" id='tablePages' class="">
+							<ul class="pagination justify-content-center">
+								<li id="previous-page" class="page-item"><a class="page-link">Previous</a></li>
+								${[...Array(totaltablepages).keys()].map((p)=>{
+									return `<li class="page-item pages"><a class="page-link">${p+1}</a></li>`;
+								}).join('')}
+								<li id="next-page" class="page-item"><a class="page-link">Next</a></li>
+							</ul>
+						</nav>
+					</td></tr></tfoot>
+				`;
+
+				showTablePage();
+
+				$("#search-table").on("keyup", function() {
+					var value = String($(this).val()).toLowerCase();
+					$("#datatables tbody tr").filter(function() {
+						var t = String($(this).text()).toLowerCase().indexOf(value);
+						if(t > -1){
+							$(this).addClass("searched");
+						}else{
+							$(this).removeClass("searched");
+						}
 					});
-					const btn = ``;
-					default_btn.push(btn);
-					return [default_btn];
-				}
-			})
-			.then(function (data) {
-				if (data.length == 0) {
-					var div = document.querySelector('.container');
-					div.textContent = `No Data Found ... x _ x`;
-					div.classList = `text-center p-4`;
-					return;
-				}
-
-				//Adding names to later validate for new slide names
-				existingSlideNames = data.map(d => d[1]);
-
-				const thead = HeadMapping.map(d => "<th>" + d.title + `<img id='sort1${d.title}' class='float-right sort-btn' width='10px' src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAABmJLR0QA/wD/AP+gvaeTAAAAtklEQVRIie3XsQrCMBSF4T+CoJsddHAo9HH6AD634NbNqTgo6FI6WQdTtJLQpG0CxXsglIRyv0ugCYWZRsUGd8ARKIA0FroFTkCjxxnIYqNRcBsaFO9Dg+Cu6KS4LzoJrnh/Mr5oOwpgaSu+GNqVY6wHTN/Jo4DNz1oJrAzv7oH6a/4Ani7duabCvLVrnyKht1pggQUWWOA/g0vD2o3ulRgkOXDhcx1egYNvkTG/IIl+3nUD88gLIHVaGvUECUcAAAAASUVORK5CYII='/>
-
-				<img id='sort2${d.title}' class='float-right sort-btn' width='10px' src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAABmJLR0QA/wD/AP+gvaeTAAAAs0lEQVRIie3VsQrCMBSF4T/qoFsddBR8Hncf24KTUAquDg4ugoPWwRbSEk2aJhHlHsiQhPCdZAl8KeMBZ+fADLgF6mLNBjgBVT3OwDYFXGqojqvY8NUAV7ye3Tmj8L0EFlhggQX+F3hi2VdAZlgzJQOm2vwCPDx7kWP+Al1G0SnSyqenVsDdt3Ed7xsvgD39b3sE1kMa++BB0L54UNQVj4La8KjoOzwJ2mQJ7IADsEqF/nae93FcRiryrh8AAAAASUVORK5CYII="/>
-				</th>`);
-
-				thead.push("<th></th>");
-
-				tbody = data.map((d) => {
-					return "<tr>" + d.map((a) => "<td>" + a + "</td>").reduce((a, b) => a + b) + "</tr>";
-				});
-				totaltablepages = Math.ceil(data.length/$("#entries").val());
-				selectedpage = 0;
-				$("#search-table").val("");
-				searching = false;
-
-				document.getElementById("datatables").innerHTML = `
-				<thead>${thead.reduce((a, b) => a + b)}</thead>
-				<tbody>${tbody.reduce((a, b) => a + b)}</tbody>
-				<tfoot><tr><td colspan='6'>
-					<nav aria-label="Slides Pages" class="">
-						<ul class="pagination justify-content-center">
-							<li id="previous-page" class="page-item"><a class="page-link">Previous</a></li>
-							${[...Array(totaltablepages).keys()].map((p)=>{
-								return `<li class="page-item pages"><a class="page-link">${p+1}</a></li>`;
-							}).join('')}
-							<li id="next-page" class="page-item"><a class="page-link">Next</a></li>
-						</ul>
-					</nav>
-				</td></tr></tfoot>
-			`;
-
-			showTablePage();
-
-			$("#search-table").on("keyup", function() {
-				var value = String($(this).val()).toLowerCase();
-				$("#datatables tbody tr").filter(function() {
-					var t = String($(this).text()).toLowerCase().indexOf(value);
-					if(t > -1){
-						$(this).addClass("searched");
+					if(value == ""){
+						searching = false;
+						totaltablepages = Math.ceil(data.length/$("#entries").val());
 					}else{
-						$(this).removeClass("searched");
+						searching = true;
+						totaltablepages = Math.ceil($("#datatables tbody .searched").length/$("#entries").val());
+					}
+					resetTable();
+						if (!searching)
+						pageIndicatorVisible(data.length);
+					else
+						pageIndicatorVisible($("#datatables tbody .searched").length);
+				});
+				$(".sort-btn").on("click", function(e) {
+					var index = e.currentTarget.dataset.index;
+					var order = parseInt(e.currentTarget.dataset.order);
+
+					var trs = "#datatables tbody tr";
+					if(searching){
+						trs+= ".searched";
+					}
+
+					$(trs).sort(function(a, b) {
+						let at=$(a).children('td').get(index).textContent.toLowerCase();
+						let bt=$(b).children('td').get(index).textContent.toLowerCase();
+						if(!isNaN(at)&&!isNaN(bt))
+						{
+							at=Number(at);
+							bt=Number(bt);
+						}
+						if(order===1)
+						{
+							e.currentTarget.dataset.order = 2;
+							if(at>bt)
+								return 1;
+							else if(at<bt)
+								return -1;
+							else
+								return 0;
+						}
+						else
+						{
+							e.currentTarget.dataset.order = 1;
+							if (at < bt)
+								return 1;
+							else if (at > bt)
+								return -1;
+							else
+								return 0;
+						}
+					}).appendTo("#datatables > tbody");
+					selectedpage = 0;
+					showTablePage();
+				});
+
+				$(".pages").on('click', function(){
+					selectedpage = parseInt($(this).text())-1;
+					showTablePage();
+				});
+
+				$("#previous-page").on('click', function(){
+					if(selectedpage > 0){
+						selectedpage--;
+						showTablePage();
 					}
 				});
-				if(value == ""){
-					searching = false;
-					totaltablepages = Math.ceil(data.length/$("#entries").val());
-				}else{
-					searching = true;
-					totaltablepages = Math.ceil($(".searched").length/$("#entries").val());
-				}
-				resetTable();
+
+				$("#next-page").on('click', function(){
+					if(selectedpage < totaltablepages-1){
+						selectedpage++;
+						showTablePage();
+					}
+				})
+
+				$("#entries").change(function(){
+					if(!searching) totaltablepages = Math.ceil(data.length/$("#entries").val());
+					else totaltablepages = Math.ceil($("#datatables tbody .searched").length/$("#entries").val());
+					resetTable();
+					if (!searching)
+						pageIndicatorVisible(data.length);
+					else
+						pageIndicatorVisible($("#datatables tbody .searched").length);
+				});
+				if(!searching)
+					pageIndicatorVisible(data.length);
+				else
+				pageIndicatorVisible($("#datatables tbody .searched").length);
+			resetTable();
+			$('#datatables').stacktable();
+			checkUserPermissions();
 			});
-
-			$(".sort-btn").on("click", function() {
-				var value = $(this)[0].id.substr(5);
-				var upordown = parseInt($(this)[0].id[4]);
-				var index = HeadMapping.findIndex((a)=> a.title.toLowerCase() == value.toLowerCase());
-
-				var trs = "#datatables tbody tr";
-				if(searching){
-					trs = ".searched";
-				}
-
-				$(trs).sort(function(a, b) {
-					let at=$(a).children('td').get(index).textContent.toLowerCase();
-					let bt=$(b).children('td').get(index).textContent.toLowerCase();
-					return upordown == 1 ? at > bt: at < bt;
-				}).appendTo("#datatables > tbody");
-				selectedpage = 0;
-				showTablePage();
-			});
-
-			$(".pages").on('click', function(){
-				selectedpage = parseInt($(this).text())-1;
-				showTablePage();
-			});
-
-			$("#previous-page").on('click', function(){
-				if(selectedpage > 0){
-					selectedpage--;
-					showTablePage();
-				}
-			});
-
-			$("#next-page").on('click', function(){
-				if(selectedpage < totaltablepages-1){
-					selectedpage++;
-					showTablePage();
-				}
-			})
-
-			$("#entries").change(function(){
-				if(!searching) totaltablepages = Math.ceil(data.length/$("#entries").val());
-				else totaltablepages = Math.ceil($(".searched").length/$("#entries").val());
-				resetTable();
-			});
-		$('#datatables').stacktable();
 		});
 	}
 
@@ -459,8 +757,330 @@
 			alert('No Data Id');
 		}
 	}
+
+	function hidePostButton()
+	{
+		$('#post_btn').hide();
+	}
+
+	function hideCheckButton()
+	{
+		$('#check_btn').hide();
+	}
+
+	$('[data-dismiss=modal]').on('click', resetUploadForm);
+
 	//window.addEventListener('resize', ()=>{$('#datatables').stacktable()});
-	document.addEventListener('DOMContentLoaded', initialize);
+	$(document).ready(function(){
+		checkUserPermissions();
+		initialize();
+		$('#deleteModal').on('hidden.bs.modal', function (e) {
+			initialize();
+		});
+		$('#input').on('change',function(){
+			var fileName = $(this).val().split('\\').pop();
+			$(this).next('.custom-file-label').html(fileName);
+		});
+		// Hide notification nav-link
+		if (getUserType() !== "Admin") {
+			$('#notifBell').html('');
+		}
+	});
+
+	function checkUserPermissions(){
+		let userType=getUserType();
+		getUserPermissions(userType)
+		.then(response => response.text())
+		.then((data) => {
+		return (data ? JSON.parse(data) : null);
+		})
+		.then((data)=> {
+			if(data===null)
+				return;
+			permissions = data;
+			// console.log(data);
+			if(permissions.slide.post == true)
+				$("#slideUploadButton").css("display","block");
+			if(permissions.slide.update == true){
+				$("#datatables").find("tr").each(function(){
+					var currentId = $("td:nth-child(1)", this).html();
+					$("td:nth-child(2)", this).css("cursor","default");
+					$("td:nth-child(2)", this).unbind('mouseenter mouseleave');
+					$("td:nth-child(2)", this).hover(function(){
+						var content = $(this).html();
+						$(this).html(content +`<i style='font-size: small; margin-left:1em; cursor: pointer' onclick="changeSlideName('`+content+`', '`+currentId+`')" class="fas fa-pen" data-toggle="modal" data-target="#slideNameChangeModal"></i>`)
+					}, function(){
+						$( this ).find( "i" ).last().remove();
+					});
+				});
+			}
+		});
+	}
+
+	function changeSlideName(oldname, id){
+		$('#confirmUpdateSlideContent').html('Enter the new name for the slide having following details: <br><br><b>id</b>: '+id+'<br>'+'<b>Name</b>: '+oldname
+				+ '<br><br><div class="form-group"><input type="text" id="newSlideName" class="form-control" placeholder="Enter new name" aria-label="newSlideName" required></div>');
+		const store = new Store('../data/');
+		$('#confirmUpdateSlide').unbind('click');
+		$('#confirmUpdateSlide').click(function(){
+			var newSlideName = $("#newSlideName");
+			var newName = newSlideName.val();
+			if(newName!=''){
+				if(existingSlideNames.includes(newName)) {
+					newSlideName.addClass('is-invalid');
+				if (newSlideName.parent().children().length === 1) {
+						newSlideName.parent().append(`<div class="invalid-feedback">
+					Slide with given name already exists. </div>`);
+					}
+				}
+				else {
+					newSlideName.removeClass('is-invalid');
+					$('#slideNameChangeModal').modal('hide')
+					store.updateSlideName(id, newName).then((response)=>{
+						return response.json();
+					}).then((data)=>{
+						if(data['modifiedCount']==1)
+							{
+								initialize();
+								showSuccessPopup('Slide updated successfully');
+						}
+				});
+				}
+			}
+		});
+	}
+
+
+	function pageIndicatorVisible(tableLength){
+		if($("#entries").val() >= tableLength)
+			$("#tablePages").css("display","none");
+		else if($("#entries").val() < tableLength)
+			$("#tablePages").css("display","block");
+	}
+
+	function urlUpload(){
+		var url= document.getElementById("urlInput").value;
+		handleUrlUpload(url);
+	}
+	function downloadSlide(e){
+		const oid = e.dataset.id;
+		handleDownload(oid);
+	}
+
+	function deleteSld(e, cancel=false) {
+
+		const userType = getUserType();
+		const oid = e.dataset.id;
+		const oname = e.dataset.name;
+		const filename = e.dataset.filename;
+		const reqId = e.dataset.reqid;
+		// console.log('reqId ' + reqId);
+
+		const store = new Store('../data/');
+		if (oid) {
+			$('#confirmDeleteContent').html(`Are you sure you want to ${reqId ? 'decline the ': ''} ${permissions.slide.delete == true ? '' : 'request to ' } delete the slide ${oname} with id ${oid} ?`);
+			// $('#confirmDeleteContent').html(`Are you sure you want to ${reqId ? 'decline the ': ''} ${getUserType() === "Admin" ? '' : 'request to ' } delete the slide ${oname} with id ${oid} ?`);
+			$('#deleteModal').modal('toggle');
+			$("#confirmDelete").unbind( "click" );
+			$("#confirmDelete").click(function(){
+				if (permissions.slide.delete == true && !cancel) {
+				// if (getUserType() === "Admin" && !cancel) {
+					deleteSlideFromSystem(oid, filename, reqId); // Delete slide
+				} else {
+					if (reqId) {
+						store.cancelRequestToDeleteSlide(requestId=reqId); // Cancel the delete request
+					} else {
+						store.requestToDeleteSlide(slideId=oid, slideName=oname, fileName=filename); // Add delete request
+					}
+				}
+			});
+		} else {
+			alert('No Data Id');
+		}
+		return true;
+	}
+
+	function fileNameChange()
+	{
+		hideCheckButton(); hidePostButton();
+		const fileNameInput = $('#filename0');
+		const fileName = fileNameInput.val();
+		let newFileName = fileName.split(" ").join("_");
+		fileNameInput.val(newFileName);
+		let fileExtension = newFileName.toLowerCase().split('.').reverse()[0];
+		if (!allowedExtensions.includes(fileExtension)) {
+			fileNameInput.addClass('is-invalid');
+			if(fileNameInput.parent().children().length===1)
+			{
+				fileNameInput.parent().append(`<div class="invalid-feedback" id="filename-feedback0">
+					${fileExtension} files are not compatible  </div>`);
+			}
+			else
+			{
+				$('#filename-feedback0').html(`${ fileExtension } files are not compatible`)
+			}
+		}
+		else
+		{
+			fileNameInput.removeClass('is-invalid');
+			if (fileNameInput.parent().children().length !== 1) {
+			$('#filename-feedback0').remove();
+			}
+		}
+	}
+	function switchToFile(){
+		$(".urlUploadClass").css("display","none");
+		$(".fileInputClass").css("display","block");
+		$("#urlswitch").css("display","block");
+		$("#fileswitch").css("display","none");
+		$('#uploadLoading').css('display', 'none');
+	}
+
+	function switchToUrl(){
+		$(".urlUploadClass").css("display","flex");
+		$(".fileInputClass").css("display","none");
+		$("#urlswitch").css("display","none");
+		$("#fileswitch").css("display","block");
+	}
+
+	function isValidHttpUrl(urlstring) {
+		try {
+		  url = new URL(urlstring);
+		} catch (_) {
+		  return false;
+		}
+		return url.protocol === "http:";
+	  }
+
+	function urlInputChange()
+	{
+		const urlInput = $('#urlInput');
+		const url = urlInput.val();
+
+		if (!isValidHttpUrl(url)) {
+			urlInput.addClass('is-invalid');
+			if (urlInput.parent().children().length === 2) {
+				urlInput.parent().append(`<div class="invalid-feedback" id="inputUrl-feedback0">
+					Enter valid URL </div>`);
+			}
+
+		}
+		else
+		{
+			urlInput.removeClass('is-invalid');
+			if (urlInput.parent().children().length !== 2) {
+			$('#inputUrl-feedback0').remove();
+			}
+			urlUpload();
+		}
+	}
+
+	
+	function handleUserCreationRequests(e, cancel=false) {
+		const userType = getUserType();
+		const reqId = e.dataset.reqid; 
+
+		if (cancel) {
+			store.cancelRequestToCreateUser(reqId);
+		} else {
+			const email = e.dataset.email;
+			const userType = e.dataset.usertype;
+			const userFilter = JSON.parse(e.dataset.filter.replace(/'/g, '"'));
+			store.cancelRequestToCreateUser(reqId, onlyRequestCancel=false).then(() => {
+				store.acceptRequestToDeleteSlide(email, userFilter, userType);
+			})
+		}
+	}
+
+
+	function appendNotifications(slideDeleteRequests) {
+		$('#notification-nav-link').html(``);
+		$('#delReqTab').html('');
+		$('#userReqTab').html('');
+		$('#delReqBadge').html('');
+		$('#userReqBadge').html('');
+		if (slideDeleteRequests.length + userCreateRequests.length > 0) {
+			$('#notification-nav-link').html(`<span class="badge badge-pill badge-warning">${slideDeleteRequests.length + userCreateRequests.length}</span>`);
+			if (slideDeleteRequests.length > 0) {
+				$('#delReqBadge').html(`<span class="badge ml-2 badge-pill badge-warning">${slideDeleteRequests.length}</span>`);
+				slideDeleteRequests.forEach((notif, i) => {
+					$('#delReqTab').append(
+						`
+							<div class="row pt-1 pb-2">
+								<div class="col-lg-3 col-sm-3 col-3 text-center">
+									<span class="fas fa-trash-alt fa-2x pt-4"></span>
+									</div>    
+									<div class="col-lg-8 col-sm-8 col-8">
+										<strong class="text-info">Slide Delete Requested</strong>
+									<div class="mb-2">
+										Delete requested by: <br>
+										User: ${notif.requestedBy} <br>
+										Slide Name: ${notif.slideDetails.slideName}
+									</div>
+									<div class="row">
+										<div class="col-6"><button data-id="${notif.slideDetails.slideId}" data-filename="${notif.slideDetails.fileName}" data-reqid='${notif._id.$oid}' data-name="${notif.slideDetails.slideName}" onclick='deleteSld(this);' class="btn btn-info btn-sm">Accept</button></div>
+										<div class="col-6"><button data-id="${notif.slideDetails.slideId}" onclick='deleteSld(this, cancel=true);' data-reqid='${notif._id.$oid}' class="btn btn-secondary btn-sm">Decline</button></div>
+									</div>
+								</div>    
+							</div>
+							<hr>
+						`
+					);
+				});
+			} else {
+				$('#delReqTab').append(
+					`
+					<div class="row">
+						<div class="col-12 text-center text text-muted p-3">
+							<i>No delete requests to show</i>
+						</div>
+					</div>
+					`
+				);
+			}
+			if (userCreateRequests.length > 0) {
+				$('#userReqBadge').html(`<span class="badge ml-2 badge-pill badge-warning">${userCreateRequests.length}</span>`);
+				userCreateRequests.forEach((notif, i) => {
+					console.log(notif);
+					$('#userReqTab').append(
+						`
+							<div class="row pt-1 pb-2">
+								<div class="col-lg-3 col-sm-3 col-3 text-center">
+									<span class="fas fa-user fa-2x pt-5"></span>
+									</div>    
+									<div class="col-lg-8 col-sm-8 col-8">
+										<strong class="text-info">User Registration Requested</strong>
+									<div class="mb-2">
+										Requested by: <br>
+										${notif.requestedBy} <br>
+										User details: <br>
+										Email: ${notif.userDetails.email} <br>
+										Filters: ${JSON.parse(notif.userDetails.userFilter.replace(/'/g, '"')).join(', ')} <br>
+										Type: ${notif.userDetails.userType}
+									</div>
+									<div class="row">
+										<div class="col-6"><button data-email="${notif.userDetails.email}" data-filter="${notif.userDetails.userFilter}" data-reqid='${notif._id.$oid}' data-usertype="${notif.userDetails.userType}" onclick='handleUserCreationRequests(this);' class="btn btn-info btn-sm">Accept</button></div>
+										<div class="col-6"><button onclick='handleUserCreationRequests(this, cancel=true);' data-reqid='${notif._id.$oid}' class="btn btn-secondary btn-sm">Decline</button></div>
+									</div>
+								</div>    
+							</div>
+							<hr>
+						`
+					);
+				});
+			} else {
+				$('#userReqTab').append(
+					`
+					<div class="row">
+						<div class="col-12 text-center text text-muted p-3">
+							<i>No user registration requests to show</i>
+						</div>
+					</div>
+					`
+				);
+			}
+		}
+	}
 </script>
 
 </html>

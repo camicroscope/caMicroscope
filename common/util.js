@@ -785,6 +785,26 @@ EventHandle.prototype = {
     }
   }
 };
+function getUserType() {
+  let tokenInfo = parseJwt(getCookie('token'));
+  if (typeof tokenInfo==='object' && tokenInfo.userType) {
+    return tokenInfo.userType;
+  } else {
+    return 'Null';
+  }
+}
+
+function getUserPermissions(userType) {
+  const url = '/data/User/wcido';
+  const query = {
+    'ut': userType,
+  };
+  return fetch(url + '?' + objToParamStr(query), {
+    method: 'GET',
+    credentials: 'include',
+    mode: 'cors',
+  });
+}
 
 function getUserId() {
   let token_info = parseJwt(getCookie("token"));
@@ -876,3 +896,23 @@ class Tracker {
     });
   }
 }
+
+
+function showSuccessPopup(message) {
+  // show pop-up message to user
+  let popups = document.getElementById('popup-container');
+  if (popups.childElementCount < 2) {
+    let popupBox = document.createElement('div');
+    popupBox.classList.add('popup-msg', 'slide-in', 'text-success');
+    popupBox.innerHTML = `<i class="fa fa-check-circle" aria-hidden="true"></i> ${message}`;
+    popups.insertBefore(popupBox, popups.childNodes[0]);  // Add popup box to parent
+    setTimeout(function () {
+      popups.removeChild(popups.lastChild);
+    }, 2000);
+  }
+}
+
+
+
+
+
