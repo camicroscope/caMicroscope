@@ -1191,7 +1191,7 @@ async function showInfo() {
             document.getElementById('removeModel'+modelCount).addEventListener('click', () => {
               deleteModel(name);
             });
-           modelCount+=1;
+            modelCount+=1;
           };
         }
       }
