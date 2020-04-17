@@ -94,7 +94,6 @@ HeatmapEditorPanel.prototype.__refresh = function() {
   radios[0].checked = true;
   radios.forEach((radio) =>{
     radio.addEventListener('change', function(e) {
-      console.log('change');
       const target = e.srcElement || e.target;
       if (isFunction(this.setting.onFieldChange)) {
         this.setting.onFieldChange.call(null, target.value.split('|'));
