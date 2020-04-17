@@ -798,7 +798,7 @@ class Store {
         })
         .then((data) => {
           showSuccessPopup('User registration request submitted');
-          document.getElementById("userForm").reset();
+          document.getElementById('userForm').reset();
           // window.location.reload();
         })
         .catch((error) => {
