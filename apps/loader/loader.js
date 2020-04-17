@@ -51,7 +51,16 @@ function changeStatus(step, text, reset=true) {
       tr = table.insertRow(-1);
       for (var j = 0; j < col.length; j++) {
         var tabCell = tr.insertCell(-1);
-        tabCell.innerHTML = text[col[j]];
+        if(text[col[j]].length>65&&step == 'CHECK')
+        {
+          tabCell.innerHTML= `${text[col[j]].substr(0,65)}<span class="collapse" id="more-${j}">
+             ${text[col[j]].substr(65)}    </span>
+    <span><a href="#more-${j}" data-toggle="collapse">... <i class="fa fa-caret-down"></i></span>`;
+        }
+        else
+        {
+          tabCell.innerHTML = text[col[j]];
+        }
       }
       if (step == 'CHECK') {
         // During check, thumbnail needs to be fetched & added to the table
