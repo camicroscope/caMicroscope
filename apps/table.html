@@ -450,7 +450,7 @@
 		store.findRequest()
 			.then(function (requests) {
 				// console.log(requests);
-				if (requests) {
+				if (requests && ! requests.error) {
 					requests.forEach(function(req) {
 						if(req.type === "addUser") {
 							userCreateRequests.push(req);
