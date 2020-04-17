@@ -16,6 +16,7 @@
 
     <link rel='stylesheet' type='text/css' media='all' href='../../css/normalize.css'/>
     <link rel='stylesheet' type='text/css' media='all' href='signup.css'/>
+    <link rel='stylesheet' type='text/css' media='all' href='../../css/popup.css'/>
 
     <!-- JQuery -->
     <script
@@ -67,7 +68,7 @@
             }
             x.json()
           }).then(x=>{
-            window.alert("success")
+            window.alert("User registered successfully")
             console.log(x)
           }).catch(e=>{
             // window.alert("error!")
@@ -120,7 +121,7 @@
       </div>
       <!-- <hr style="width: 24.25em;  height: 0.01em; background-color: black; margin-top: 0em; margin-bottom: 0;"> -->
 
-      <form onsubmit="return false;">
+      <form id="userForm" onsubmit="return false;">
         <h2 style="margin-top: -.5em;">User Signup</h2>
         <hr
           style="width: 24.25em; margin-left: -1.9em; height: 0.01em; background-color: rgb(172, 172, 172); margin-bottom: 2em;">
@@ -163,6 +164,8 @@
       </form>
       <div class="text-center">Already have an account? </div>
     </div>
+    <!-- popup--->
+    <div id="popup-container"></div>
 
     
     <script src="../../common/util.js"></script>

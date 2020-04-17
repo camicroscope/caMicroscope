@@ -690,7 +690,7 @@ class Store {
       mode: 'cors',
     }).then(this.errorHandler)
         .then(() => {
-          alert('Delete request submitted');
+          showSuccessPopup('Delete request submitted');
           initialize();
         });
   }
@@ -714,7 +714,7 @@ class Store {
     }).then(this.errorHandler)
         .then(() => {
           if (onlyRequestCancel) {
-            alert('Delete request declined');
+            showSuccessPopup('Delete request declined');
           }
           initialize();
         });
@@ -797,8 +797,9 @@ class Store {
           return response.blob();
         })
         .then((data) => {
-          alert('User registration request submitted');
-          window.location.reload();
+          showSuccessPopup('User registration request submitted');
+          document.getElementById("userForm").reset();
+          // window.location.reload();
         })
         .catch((error) => {
           console.error('There has been a problem with your fetch operation:', error);
@@ -835,7 +836,7 @@ class Store {
       body: JSON.stringify(data),
     }).then(this.errorHandler)
         .then(() => {
-          alert('User creation successful');
+          showSuccessPopup('User creation successful');
           initialize();
         });
   }
@@ -860,7 +861,8 @@ class Store {
         .then(() => {
           if (onlyRequestCancel) {
             initialize();
-            alert('User creation request declined');
+            // alert('User creation request declined');
+            showSuccessPopup('User creation request declined');
           }
         });
   }
