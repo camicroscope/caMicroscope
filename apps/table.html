@@ -143,14 +143,42 @@
 							</div>
 						</li>
 						<li class="notification-box" id="notification-box">
-							<div class="row">
-								<div class="col-12 text-center text text-muted">
-									<i>No notifications to show</i>
+							<div class="container-fluid">
+								<ul id="tabs" class="nav nav-tabs" role="tablist">
+								  <li class="nav-item">
+									<a id="tab-delReq" href="#delReqTab" class="nav-link active" data-toggle="tab" role="tab">Delete Requests <span id="delReqBadge"></span></a>
+								  </li>
+								  <li class="nav-item">
+									<a id="tab-userReq" href="#userReqTab" class="nav-link" data-toggle="tab" role="tab">User Requests <span id="userReqBadge"></span></a>
+								  </li>
+								</ul>
+							  
+								<div id="content" class="tab-content mt-2" role="tablist">
+								  <div id="delReqTab" class="tab-pane fade show active" role="tabpanel" aria-labelledby="tab-delReq">
+									<div class="row">
+										<div class="col-12 text-center text text-muted p-3">
+											<i>No delete requests to show</i>
+										</div>
+									</div>
+								  </div>
+								  <div id="userReqTab" class="tab-pane fade" role="tabpanel" aria-labelledby="tab-userReq">
+									<div class="row">
+										<div class="col-12 text-center text text-muted p-3">
+											<i>No user registration requests to show</i>
+										</div>
+									</div>
+								  </div>
 								</div>
-							</div>
+							  </div>
 						</li>
 					</ul>
 				</li>
+				<script>
+					// To stop notification box from closing when clicked inside
+					$(document).on('click', '#notification-box', function (e) {
+						e.stopPropagation();
+					});
+				</script>
 				<!-- Notification Bell Ends -->
 			</ul>
 			<ul class="navbar-nav">
@@ -336,7 +364,7 @@
 	<div class="text-center text-white bg-dark p-3" style="position: static;bottom: 0;width: 100%;">
 		<p class="p">Copyright © 2020 caMicroscope</p>
 	</div>
-	<!-- popup--->
+	<!-- popup -->
 	<div id="popup-container"></div>
 
 </body>
@@ -362,6 +390,7 @@
 	var searching;
 	if (getUserType() === "Admin") {
 		var slideDeleteRequests = [];
+		var userCreateRequests = [];
 	}
 
 	function showTablePage(){
@@ -415,13 +444,20 @@
 
 	function initialize() {
 		slideDeleteRequests = [];
+		userCreateRequests = [];
 		const params = getUrlVars();
 		const store = new Store('../data/');
 		store.findRequest()
 			.then(function (requests) {
 				// console.log(requests);
-				if (requests) {
-					slideDeleteRequests = requests;
+				if (requests && ! requests.error) {
+					requests.forEach(function(req) {
+						if(req.type === "addUser") {
+							userCreateRequests.push(req);
+						} else {
+							slideDeleteRequests.push(req);
+						}
+					})
 				}
 				store.findSlide()
 				.then(function (data) {
@@ -461,12 +497,20 @@
 							// console.log('reqId:' + slideDeleteRequests.find(o => o.slideDetails.slideId === rs[0])._id.$oid );
 							// console.log(rs[0]);
 							// console.log(typeof(rs[0]));
+							console.log(counter);
+							console.log(slideDeleteRequests);
+							if (slideDeleteRequests['counter']) {
+								
+							console.log(slideDeleteRequests[counter]);
+							// console.log(slideDeleteRequests[counter - 1]);
+							}
+							console.log('Done one iter');
 
 							const btn = `<div id='open-delete'>
 									<button class="btn btn-success" data-id='${rs[0]}' onclick='openView(this)'>Open</button>
 									<button type='button' class='btn btn-info DownloadButton' id='downloadBtn' data-id='${rs[0]}' onclick='downloadSlide(this)' > <i class='fas fa-download' ></i> </button>
 									${
-										slideDeleteRequests.find(o => o.slideDetails.slideId === rs[0]) ?
+										slideDeleteRequests[counter] && slideDeleteRequests[counter].slideDetails && slideDeleteRequests.find(o => o.slideDetails.slideId === rs[0]) ? 
 										`
 											${
 												slideDeleteRequests.find(o => o.requestedBy === getUserId()) ?
@@ -806,19 +850,6 @@
 		});
 	}
 
-	function showSuccessPopup(message) {
-		// show pop-up message to user
-		let popups = document.getElementById('popup-container');
-		if (popups.childElementCount < 2) {
-			let popupBox = document.createElement('div');
-			popupBox.classList.add('popup-msg', 'slide-in', 'text-success');
-			popupBox.innerHTML = `<i class="fa fa-check-circle" aria-hidden="true"></i> ${message}`;
-			popups.insertBefore(popupBox, popups.childNodes[0]);  // Add popup box to parent
-			setTimeout(function () {
-				popups.removeChild(popups.lastChild);
-			}, 2000);
-		}
-	}
 
 	function pageIndicatorVisible(tableLength){
 		if($("#entries").val() >= tableLength)
@@ -847,11 +878,13 @@
 
 		const store = new Store('../data/');
 		if (oid) {
-			$('#confirmDeleteContent').html(`Are you sure you want to ${reqId ? 'cancel the ': ''} ${permissions.slide.delete == true ? '' : 'request to ' } delete the slide ${oname} with id ${oid} ?`);
+			$('#confirmDeleteContent').html(`Are you sure you want to ${reqId ? 'decline the ': ''} ${permissions.slide.delete == true ? '' : 'request to ' } delete the slide ${oname} with id ${oid} ?`);
+			// $('#confirmDeleteContent').html(`Are you sure you want to ${reqId ? 'decline the ': ''} ${getUserType() === "Admin" ? '' : 'request to ' } delete the slide ${oname} with id ${oid} ?`);
 			$('#deleteModal').modal('toggle');
 			$("#confirmDelete").unbind( "click" );
 			$("#confirmDelete").click(function(){
 				if (permissions.slide.delete == true && !cancel) {
+				// if (getUserType() === "Admin" && !cancel) {
 					deleteSlideFromSystem(oid, filename, reqId); // Delete slide
 				} else {
 					if (reqId) {
@@ -942,47 +975,110 @@
 		}
 	}
 
+	
+	function handleUserCreationRequests(e, cancel=false) {
+		const userType = getUserType();
+		const reqId = e.dataset.reqid; 
+
+		if (cancel) {
+			store.cancelRequestToCreateUser(reqId);
+		} else {
+			const email = e.dataset.email;
+			const userType = e.dataset.usertype;
+			const userFilter = JSON.parse(e.dataset.filter.replace(/'/g, '"'));
+			store.cancelRequestToCreateUser(reqId, onlyRequestCancel=false).then(() => {
+				store.acceptRequestToDeleteSlide(email, userFilter, userType);
+			})
+		}
+	}
+
 
 	function appendNotifications(slideDeleteRequests) {
 		$('#notification-nav-link').html(``);
-		$('#notification-box').html('');
-		if (slideDeleteRequests.length > 0) {
-			$('#notification-nav-link').html(`<span class="badge badge-pill badge-warning">${slideDeleteRequests.length}</span>`);
-			slideDeleteRequests.forEach((notif, i) => {
-				// console.log(notif)
-				$('#notification-box').append(
-					`
-						<div class="row pt-1 pb-2">
-							<div class="col-lg-3 col-sm-3 col-3 text-center">
-								<span class="fas fa-trash-alt fa-2x pt-4"></span>
-								</div>
-								<div class="col-lg-8 col-sm-8 col-8">
-									<strong class="text-info">Slide Delete Requested</strong>
-								<div class="mb-2">
-									Delete requested by: <br>
-									User: ${notif.requestedBy} <br>
-									Slide Name: ${notif.slideDetails.slideName}
-								</div>
-								<div class="row">
-									<div class="col-6"><button data-id="${notif.slideDetails.slideId}" data-filename="${notif.slideDetails.fileName}" data-reqid='${notif._id.$oid}' data-name="${notif.slideDetails.slideName}" onclick='deleteSld(this);' class="btn btn-info btn-sm">Accept</button></div>
-									<div class="col-6"><button data-id="${notif.slideDetails.slideId}" onclick='deleteSld(this, cancel=true);' data-reqid='${notif._id.$oid}' class="btn btn-secondary btn-sm">Decline</button></div>
-								</div>
+		$('#delReqTab').html('');
+		$('#userReqTab').html('');
+		$('#delReqBadge').html('');
+		$('#userReqBadge').html('');
+		if (slideDeleteRequests.length + userCreateRequests.length > 0) {
+			$('#notification-nav-link').html(`<span class="badge badge-pill badge-warning">${slideDeleteRequests.length + userCreateRequests.length}</span>`);
+			if (slideDeleteRequests.length > 0) {
+				$('#delReqBadge').html(`<span class="badge ml-2 badge-pill badge-warning">${slideDeleteRequests.length}</span>`);
+				slideDeleteRequests.forEach((notif, i) => {
+					$('#delReqTab').append(
+						`
+							<div class="row pt-1 pb-2">
+								<div class="col-lg-3 col-sm-3 col-3 text-center">
+									<span class="fas fa-trash-alt fa-2x pt-4"></span>
+									</div>    
+									<div class="col-lg-8 col-sm-8 col-8">
+										<strong class="text-info">Slide Delete Requested</strong>
+									<div class="mb-2">
+										Delete requested by: <br>
+										User: ${notif.requestedBy} <br>
+										Slide Name: ${notif.slideDetails.slideName}
+									</div>
+									<div class="row">
+										<div class="col-6"><button data-id="${notif.slideDetails.slideId}" data-filename="${notif.slideDetails.fileName}" data-reqid='${notif._id.$oid}' data-name="${notif.slideDetails.slideName}" onclick='deleteSld(this);' class="btn btn-info btn-sm">Accept</button></div>
+										<div class="col-6"><button data-id="${notif.slideDetails.slideId}" onclick='deleteSld(this, cancel=true);' data-reqid='${notif._id.$oid}' class="btn btn-secondary btn-sm">Decline</button></div>
+									</div>
+								</div>    
 							</div>
+							<hr>
+						`
+					);
+				});
+			} else {
+				$('#delReqTab').append(
+					`
+					<div class="row">
+						<div class="col-12 text-center text text-muted p-3">
+							<i>No delete requests to show</i>
 						</div>
-						<hr>
+					</div>
 					`
 				);
-			});
-		} else {
-			$('#notification-box').append(
-				`
-				<div class="row">
-					<div class="col-12 text-center text text-muted">
-						<i>No notifications to show</i>
+			}
+			if (userCreateRequests.length > 0) {
+				$('#userReqBadge').html(`<span class="badge ml-2 badge-pill badge-warning">${userCreateRequests.length}</span>`);
+				userCreateRequests.forEach((notif, i) => {
+					console.log(notif);
+					$('#userReqTab').append(
+						`
+							<div class="row pt-1 pb-2">
+								<div class="col-lg-3 col-sm-3 col-3 text-center">
+									<span class="fas fa-user fa-2x pt-5"></span>
+									</div>    
+									<div class="col-lg-8 col-sm-8 col-8">
+										<strong class="text-info">User Registration Requested</strong>
+									<div class="mb-2">
+										Requested by: <br>
+										${notif.requestedBy} <br>
+										User details: <br>
+										Email: ${notif.userDetails.email} <br>
+										Filters: ${JSON.parse(notif.userDetails.userFilter.replace(/'/g, '"')).join(', ')} <br>
+										Type: ${notif.userDetails.userType}
+									</div>
+									<div class="row">
+										<div class="col-6"><button data-email="${notif.userDetails.email}" data-filter="${notif.userDetails.userFilter}" data-reqid='${notif._id.$oid}' data-usertype="${notif.userDetails.userType}" onclick='handleUserCreationRequests(this);' class="btn btn-info btn-sm">Accept</button></div>
+										<div class="col-6"><button onclick='handleUserCreationRequests(this, cancel=true);' data-reqid='${notif._id.$oid}' class="btn btn-secondary btn-sm">Decline</button></div>
+									</div>
+								</div>    
+							</div>
+							<hr>
+						`
+					);
+				});
+			} else {
+				$('#userReqTab').append(
+					`
+					<div class="row">
+						<div class="col-12 text-center text text-muted p-3">
+							<i>No user registration requests to show</i>
+						</div>
 					</div>
-				</div>
-				`
-			);
+					`
+				);
+			}
 		}
 	}
 </script>
