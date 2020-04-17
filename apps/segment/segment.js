@@ -631,6 +631,7 @@ function uploadModel() {
           const req = store.put(data);
           req.onsuccess = function(e) {
             console.log('SUCCESS, ID:', e.target.result);
+            modelName.push(_name.value);
             let popups = document.getElementById('popup-container');
             if (popups.childElementCount < 2) {
               let popupBox = document.createElement('div');
@@ -1186,9 +1187,10 @@ async function showInfo() {
             td.innerHTML = '<button class="btn-del" '+
             'id=removeModel'+modelCount+' type="button"><i class="material-icons"'+
             'style="font-size:16px;">delete_forever</i>Remove Model</button>';
-            document.getElementById('removeModel').addEventListener('click', () => {
+            document.getElementById('removeModel'+modelCount).addEventListener('click', () => {
               deleteModel(name);
             });
+           modelCount+=1;
           };
         }
       }
