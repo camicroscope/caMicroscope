@@ -869,8 +869,8 @@ async function changeClassList(newList, name) {
     popups.insertBefore(popupBox, popups.childNodes[0]);
     setTimeout(function() {
       popups.removeChild(popups.lastChild);
-      }, 3000);
-    }
+    }, 3000);
+  }
 }
 
 function openHelp() {
