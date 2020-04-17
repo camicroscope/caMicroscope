@@ -614,7 +614,7 @@ function uploadModel() {
         const shape = result.shape;
         result.dispose();
         if (shape[1] != size || shape[2] != size) {
-          console('Shape:', shape[1], shape[2]);
+          console.info('Shape:', shape[1], shape[2]);
           throw new Error('The application only supports 1:1 image Masks. Import a valid model.');
         }
 
