@@ -196,6 +196,7 @@
 
     // get the position of the current center points
     this._center = this._viewer.viewport.getCenter(true);
+    this._getCanvasBoundBox = this.getCanvasBoundBox();
   };
 
   $.Heatmap.prototype = {
@@ -721,7 +722,6 @@
           this._colors,
           this._steps
         );
-
         const index =
           this._fields.findIndex(
             f => f.name === this._currentField.name,
