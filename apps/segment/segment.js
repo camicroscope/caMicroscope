@@ -1133,6 +1133,7 @@ async function deleteModel(name) {
       alert(err);
     } finally {
       if (status) {
+        modelName.splice(modelName.indexOf(name.split('_').splice(1).join('_').slice(0, -3)), 1);
         let popups = document.getElementById('popup-container');
         if (popups.childElementCount < 2) {
           let popupBox = document.createElement('div');
