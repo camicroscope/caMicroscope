@@ -37,6 +37,8 @@
   </head>
   <script>
     var userSignupUrl = "../../data/User/post"
+    var permissions;
+
     function addUser(){
       var email = document.getElementById("mail").value
       var filters = document.getElementById("filters").value
@@ -82,7 +84,18 @@
 
     $(window).on('load', function() {
       $('#sub').text('Sign up');
-      $('#sub').removeAttr('disabled');      
+      $('#sub').removeAttr('disabled'); 
+      
+      getUserPermissions(getUserType())
+        .then(response => response.text())
+        .then((data) => {
+        return (data ? JSON.parse(data) : null);
+        })
+        .then((data)=> {
+            if(data===null)
+                return;
+            permissions = data;
+      })
     });
 
   </script>
