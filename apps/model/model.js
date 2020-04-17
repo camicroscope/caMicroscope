@@ -835,7 +835,7 @@ function showNewClassInput(name) {
   const self = $UI.chngClassLst;
   self.body.innerHTML = `
     <input id ="new_classList" type="text"/>
-    <button class="btn btn-primary btn-xs my-xs-btn btn-final-change" id="chngbtn" type="button">Change Class List</button>
+    <button class="btn btn-primary btn-xs my-xs-btn btn-final-change" id='chngbtn' type="button">Change Class List</button>
     `;
   $UI.chngClassLst.open(); // Open the box to take input from user
   document.getElementById('chngbtn').addEventListener('click', () => {
