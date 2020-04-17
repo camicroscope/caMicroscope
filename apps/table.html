@@ -457,7 +457,7 @@
 						} else {
 							slideDeleteRequests.push(req);
 						}
-					})
+					}).catch(console.error)
 				}
 				store.findSlide()
 				.then(function (data) {
