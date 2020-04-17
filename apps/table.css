@@ -138,3 +138,7 @@ nav li:not(.active):hover a{
     pointer-events: none;
     color: #aaa;
 }
+
+.collapse.in {
+	 display: inline !important;
+}
