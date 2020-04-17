@@ -835,7 +835,7 @@ function showNewClassInput(name) {
   const self = $UI.chngClassLst;
   self.body.innerHTML = `
     <input id ="new_classList" type="text"/>
-    <button class="btn btn-primary btn-xs my-xs-btn" id="chngbtn" type="button">Change Class List</button>
+    <button class="btn btn-primary btn-xs my-xs-btn btn-final-change" id='chngbtn' type="button">Change Class List</button>
     `;
   $UI.chngClassLst.open(); // Open the box to take input from user
   document.getElementById('chngbtn').addEventListener('click', () => {
@@ -861,7 +861,16 @@ async function changeClassList(newList, name) {
       };
     }
   }
-  alert('Classes Changed');
+  let popups = document.getElementById('popup-container');
+  if (popups.childElementCount < 2) {
+    let popupBox = document.createElement('div');
+    popupBox.classList.add('popup-msg', 'slide-in');
+    popupBox.innerHTML = `<i class="small material-icons">info</i>` + ` Classes changed successfuly`;
+    popups.insertBefore(popupBox, popups.childNodes[0]);
+    setTimeout(function() {
+      popups.removeChild(popups.lastChild);
+    }, 3000);
+  }
 }
 
 function openHelp() {
