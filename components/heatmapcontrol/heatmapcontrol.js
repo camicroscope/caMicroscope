@@ -106,7 +106,6 @@ HeatmapControl.prototype.__refresh = function() {
   this.elt.querySelector('.sel-field-panel select').addEventListener('change', this._selChanged.bind(this));
   if (this.setting.mode=='binal') this.elt.querySelector('.sel-field-panel').style.display='none';
 
-
   const fieldsPanel = this.elt.querySelector('.fields-panel');
   this.setting.fields.forEach((f)=>{
     this.rangeSliders[f.name] = createField(fieldsPanel, f, this.__change.bind(this));
@@ -215,6 +214,7 @@ HeatmapControl.prototype._selChanged = function(e) {
       this.rangeSliders[f.name].disabled(true);
     }
   }, this);
+  this.resize.call(this);
   this.__change.call(this);
 };
 HeatmapControl.prototype.resize = function() {
@@ -254,6 +254,7 @@ HeatmapControl.prototype.__change = function() {
       data.field = field;
     }
     this.setting.onChange(data);
+    this.resize.call(this);
   }
 };
 
