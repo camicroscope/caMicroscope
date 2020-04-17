@@ -199,26 +199,7 @@ function handlePost(filename, slidename, filter, reset) {
             (success) => {
               initialize();
               $('#upload-dialog').modal('hide');
-              // show pop-up message to user
-              let popups = document.getElementById(
-                  'popup-container',
-              );
-              if (popups.childElementCount < 2) {
-                let popupBox = document.createElement('div');
-                popupBox.classList.add('popup-msg', 'slide-in', 'text-success');
-                popupBox.innerHTML = `<i class="fa fa-check-circle" aria-hidden="true"></i>
-                Slide posted sucessfully`;
-                // Add popup box to parent
-                popups.insertBefore(
-                    popupBox,
-                    popups.childNodes[0],
-                );
-                resetUploadForm();
-                setTimeout(function() {
-                  // popups.lastChild.classList.add('slideOut');
-                  popups.removeChild(popups.lastChild);
-                }, 2000);
-              }
+              showSuccessPopup('Slide uploaded successfully');
               return changeStatus('POST', success.result, reset);
             }, // Handle the success response object
         ).catch(
@@ -274,9 +255,7 @@ function deleteSlideFromSystem(id, filename, reqId=null) {
                   store.cancelRequestToDeleteSlide(requestId=reqId, onlyRequestCancel=false);
                 }
               })
-              .then(
-                  alert('File deleted successfully'),
-              );
+              .then(showSuccessPopup('Slide deleted successfully'));
         } else {
           alert('There was an error in deleting the file. Please try again or refresh the page.');
         }
