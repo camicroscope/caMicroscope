@@ -603,7 +603,6 @@ function runPredict(key) {
   }
 }
 
-
 // TO-DO: Allow uploading and using tensorflow graph models. Can't save graph models. Need to use right away.
 function uploadModel() {
   var _name = document.querySelector('#name');
@@ -668,6 +667,7 @@ function uploadModel() {
         status.innerHTML = 'Model with the same name already exists. Please choose a new name';
         status.classList.remove('blink');
         console.log(e);
+        document.getElementById('name').style = 'border:2px; border-style: solid; border-color: red;';
         return;
       }
 
@@ -683,6 +683,7 @@ function uploadModel() {
           'Please input values on which the model was trained.';
           console.log(e);
           status.classList.remove('blink');
+          document.getElementById('imageSize').style = 'border:2px; border-style: solid; border-color: red;';
           return;
         }
 
@@ -700,8 +701,19 @@ function uploadModel() {
           const req = store.put(data);
           req.onsuccess = function(e) {
             console.log('SUCCESS, ID:', e.target.result);
-            status.innerHTML = 'Done! Click refresh below.';
-            status.classList.remove('blink');
+            modelName.push(_name.value);
+            let popups = document.getElementById('popup-container');
+            if (popups.childElementCount < 2) {
+              let popupBox = document.createElement('div');
+              popupBox.classList.add('popup-msg', 'slide-in');
+              popupBox.innerHTML = `<i class="small material-icons">info</i>` + _name.value + ` model uploaded sucessfully`;
+              popups.insertBefore(popupBox, popups.childNodes[0]);
+              setTimeout(function() {
+                popups.removeChild(popups.lastChild);
+              }, 3000);
+            }
+            $UI.uploadModal.close();
+            initUIcomponents();
           };
           req.onerror = function(e) {
             status.innerHTML = 'Some error this way!';
@@ -728,7 +740,8 @@ function uploadModel() {
 }
 
 async function deleteModel(name) {
-  if (confirm('Are you sure you want to delete this model?')) {
+  modelName = name.split('/').pop().split('_').splice(2).join('_').slice(0, -3);
+  if (confirm('Are you sure you want to delete ' + modelName + ' model?')) {
     const res = await tf.io.removeModel(IDB_URL + name);
     console.log(res);
     const tx = db.transaction('models_store', 'readwrite');
@@ -741,8 +754,18 @@ async function deleteModel(name) {
       alert(err);
     } finally {
       if (status) {
-        alert('Deleted', name);
-        showInfo();
+        let popups = document.getElementById('popup-container');
+        if (popups.childElementCount < 2) {
+          let popupBox = document.createElement('div');
+          popupBox.classList.add('popup-msg', 'slide-in');
+          popupBox.innerHTML = `<i class="small material-icons">info</i>` + modelName + ` model deleted successfully`;
+          popups.insertBefore(popupBox, popups.childNodes[0]);
+          setTimeout(function() {
+            popups.removeChild(popups.lastChild);
+          }, 3000);
+        }
+        $UI.infoModal.close();
+        initUIcomponents();
       }
     }
   } else {
@@ -756,7 +779,7 @@ async function showInfo() {
   var table = document.querySelector('#mdata');
   var tx = db.transaction('models_store', 'readonly');
   var store = tx.objectStore('models_store');
-
+  var modelCount=0;
   empty(table);
   // Update table data
   (function(callback) {
@@ -785,17 +808,20 @@ async function showInfo() {
             td = row.insertCell();
             td.innerHTML = date;
             td = row.insertCell();
-            td.innerHTML = '<button class="btn btn-primary btn-xs my-xs-btn" ' +
-            'id="removeModel" type="button">Remove Model</button>';
+            td.innerHTML = '<button class="btn-del" '+
+            'id=removeModel'+ modelCount+' type="button"><i class="material-icons"'+
+            'style="font-size:16px;">delete_forever</i>Remove Model</button>';
             td = row.insertCell();
-            td.innerHTML = '<button class="btn btn-primary btn-xs my-xs-btn" '+
-            'id="chngClassListBtn" type="button">Edit Class List</button>';
-            document.getElementById('removeModel').addEventListener('click', () => {
+            td.innerHTML = '<button class="btn-change" '+
+            'id=chngClassListBtn'+ modelCount+' type="button"><i class="material-icons"' +
+            'style="font-size:16px;">edit</i>  Edit Classes</button>';
+            document.getElementById('removeModel'+modelCount).addEventListener('click', () => {
               deleteModel(name);
             });
-            document.getElementById('chngClassListBtn').addEventListener('click', () => {
+            document.getElementById('chngClassListBtn'+modelCount).addEventListener('click', () => {
               showNewClassInput(name);
             });
+            modelCount+=1;
           };
         }
       }
@@ -852,7 +878,8 @@ function openHelp() {
     <i class="material-icons">add</i>: This will open a dialogue box to upload the model. Make sure to fill in all the fields. The image size field expects a
     single integer. <br>
     <i class="material-icons">info</i>: This will display the details of previously uploaded models. <br>
-    <i class="material-icons">bug_report</i>: Bug report.
+    <i class="material-icons">bug_report</i>: Bug report. <br>
+    <i class="material-icons">subject</i>: This will display the summary of the current selected model.
   `;
   $UI.helpModal.open();
 }

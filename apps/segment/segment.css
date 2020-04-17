@@ -263,6 +263,27 @@ ul.disabled {
 #upload_panel .modalbox-content{
     width: 30%;
 }
+.form-style [type=url]:focus,
+.form-style input[type=text]:focus,
+.form-style input[type=number]:focus
+{
+    background-color: #ddd;
+    outline: none;
+    border:2px;
+    border-style: solid;
+}
+.form-style #modelupload,
+.form-style #weightsupload{
+    cursor: pointer;
+}
+.btn-del{
+      background-color: red;
+      border: none; 
+      color: white; 
+      padding: 12px 16px; 
+      font-size: 14px; 
+      cursor: pointer; 
+}
 body{
     color: black;
 }

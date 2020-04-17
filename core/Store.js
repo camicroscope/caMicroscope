@@ -656,9 +656,112 @@ class Store {
       method: 'DELETE',
       credentials: 'include',
       mode: 'cors',
-    }).then(this.errorHandler);
+    }).then(this.errorHandler)
+        .then(() => {
+          initialize();
+        });
   }
-}
+
+  /**
+   * request deletion of slide
+   * @param {object} slideId - the slide object id
+   * @param {object} slideName - the slide name
+   * @param {object} fileName - the slide filename on server system
+   * @return {promise} - promise which resolves with response
+   **/
+  requestToDeleteSlide(slideId, slideName=null, fileName=null) {
+    const suffix = 'Request/add';
+    const url = this.base + suffix;
+    const query = {};
+    const data =
+                  {
+                    'slideName': String(slideName),
+                    'fileName': String(fileName),
+                    'slideId': String(slideId),
+                  };
+    return fetch(url + '?' + objToParamStr(query), {
+      method: 'POST',
+      body: JSON.stringify({
+        'requestedBy': String(getUserId()),
+        'type': 'deleteSlide',
+        'slideDetails': data,
+      }),
+      credentials: 'include',
+      mode: 'cors',
+    }).then(this.errorHandler)
+        .then(() => {
+          alert('Delete request submitted');
+          initialize();
+        });
+  }
+
+  /**
+  * request deletion of slide
+  * @param {object} reqId - the request object id
+  * @return {promise} - promise which resolves with response
+  **/
+  cancelRequestToDeleteSlide(reqId, onlyRequestCancel=true) {
+    // If only cancelling request and not deleting slide file then set onlyRequestCancel to true
+    const suffix = 'Request/delete';
+    const url = this.base + suffix;
+    const query = {
+      '_id': reqId,
+    };
+    return fetch(url + '?' + objToParamStr(query), {
+      method: 'DELETE',
+      credentials: 'include',
+      mode: 'cors',
+    }).then(this.errorHandler)
+        .then(() => {
+          if (onlyRequestCancel) {
+            alert('Delete request cancelled');
+          }
+          initialize();
+        });
+  }
+
+  findRequest(userType=getUserType()) {
+    const suffix = 'Request/find';
+    const url = this.base + suffix;
+    if (userType === 'Admin') {
+      var query = {};
+
+      return fetch(url + '?' + objToParamStr(query), {
+        credentials: 'include',
+        mode: 'cors',
+      }).then(this.errorHandler);
+    } else {
+      var query = {
+        'requestedBy': getUserId(),
+      };
+
+      return fetch(url + '?' + objToParamStr(query), {
+        credentials: 'include',
+        mode: 'cors',
+      }).then(this.errorHandler);
+    }
+  }
+
+
+  // Update slide name
+  updateSlideName(id, newName) {
+    const suffix = 'Slide/update';
+    const url = this.base + suffix;
+    console.log(id+ '   '+ newName);
+    const query = {
+      '_id': id,
+    };
+    const update = {
+      'name': newName,
+    };
+    return fetch(url + '?' + objToParamStr(query), {
+      method: 'POST',
+      credentials: 'include',
+      mode: 'cors',
+      body: JSON.stringify(update),
+    });
+  }
+};
 
 try {
   module.exports = Store;

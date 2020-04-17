@@ -1,6 +1,8 @@
 var uploadUrl = '../loader/upload/start/';
 var checkUrl = '../loader/data/one/';
 var thumbUrl = '../loader/data/thumbnail/';
+var deleteSlideUrl = '../loader/slide/delete';
+var downloadURL = '../loader/getSlide/';
 
 var store = new Store('../data/');
 
@@ -109,6 +111,50 @@ function handleUpload(file, filename) {
   );
 }
 
+function handleDownload(id) {
+  var fileName='';
+  store.getSlide(id)
+      .then((response) => {
+        if (response[0]) {
+          return response[0]['location'];
+        } else {
+          throw new Error('Slide not found');
+        }
+      }).then((location) => {
+        fileName= location.substring(location.lastIndexOf('/')+1, location.length);
+        console.log(fileName);
+        return fileName;
+      }).then((fileName) =>{
+        fetch(downloadURL + fileName, {
+          credentials: 'same-origin',
+          method: 'GET',
+        }).then((response) => {
+          if (response.status == 404) {
+            throw response;
+          } else {
+            return response.blob();
+          }
+        })
+            .then((blob) => {
+              var url = window.URL.createObjectURL(blob);
+              var a = document.createElement('a');
+              a.href = url;
+              a.download = fileName;
+              document.body.appendChild(a);
+              a.click();
+              a.remove(); // afterwards we remove the element again
+              window.URL.revokeObjectURL(blob);
+            }).catch((error) =>{
+              console.log(error);
+              alert('Error! Can\'t download file.');
+            },
+            );
+      }).catch((error) => {
+        console.log(error);
+      });
+}
+
+
 function handleCheck(filename, reset, id) {
   fetch(checkUrl + filename, {credentials: 'same-origin'}).then(
       (response) => response.json(), // if the response is a JSON object
@@ -144,26 +190,7 @@ function handlePost(filename, slidename, filter, reset) {
             (success) => {
               initialize();
               $('#upload-dialog').modal('hide');
-              // show pop-up message to user
-              let popups = document.getElementById(
-                  'popup-container',
-              );
-              if (popups.childElementCount < 2) {
-                let popupBox = document.createElement('div');
-                popupBox.classList.add('popup-msg', 'slide-in', 'text-success');
-                popupBox.innerHTML = `<i class="fa fa-check-circle" aria-hidden="true"></i>
-                Slide posted sucessfully`;
-                // Add popup box to parent
-                popups.insertBefore(
-                    popupBox,
-                    popups.childNodes[0],
-                );
-                resetUploadForm();
-                setTimeout(function() {
-                  // popups.lastChild.classList.add('slideOut');
-                  popups.removeChild(popups.lastChild);
-                }, 2000);
-              }
+              showSuccessPopup('Slide uploaded successfully');
               return changeStatus('POST', success.result, reset);
             }, // Handle the success response object
         ).catch(
@@ -183,19 +210,51 @@ function UploadBtn() {
 }
 
 function CheckBtn() {
-  for (var i=0; i<document.getElementById('fileIdRow').cells.length-1; i++) {
-    var filename = document.getElementById('filename'+i).value;
-    if (i==0) handleCheck(filename, true, i+1);
-    else handleCheck(filename, false, i+1);
-  }
+  var filename = document.getElementById('filename'+0).value;
+  handleCheck(filename, true, 1);
 }
 
 function PostBtn() {
-  for (var i=0; i<document.getElementById('fileIdRow').cells.length-1; i++) {
-    var filename = document.getElementById('filename'+i).value;
-    var slidename = document.getElementById('slidename'+i).value;
-    var filter = document.getElementById('filter'+i).value;
-    if (i==0) handlePost(filename, slidename, filter, true);
-    else handlePost(filename, slidename, false);
-  }
+  var filename = document.getElementById('filename'+0).value;
+  var slidename = document.getElementById('slidename'+0).value;
+  var filter = document.getElementById('filter'+0).value;
+  handlePost(filename, slidename, filter, true);
+}
+
+function deleteSlideFromSystem(id, filename, reqId=null) {
+  // var data = new FormData();
+  // data.append('filename', filename);
+  data = {
+    'filename': filename,
+  };
+  data = JSON.stringify(data);
+  fetch(deleteSlideUrl, {
+    credentials: 'include',
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: data,
+  }).then(
+      (response) => response.json())
+      .then((data) => {
+        if (data.success) {
+        // return true;
+          store.deleteSlide(id)
+              .then(function() {
+                if (reqId) {
+                  store.cancelRequestToDeleteSlide(requestId=reqId, onlyRequestCancel=false);
+                }
+              })
+              .then(showSuccessPopup('Slide deleted successfully'));
+        } else {
+          alert('There was an error in deleting the file. Please try again or refresh the page.');
+        }
+        return true;
+      },
+      ).catch(
+          (error) => {
+            console.log('ERROR: ' + error);
+          }, // Handle the error response object
+      );
 }
