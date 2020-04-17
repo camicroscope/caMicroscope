@@ -205,7 +205,6 @@ HeatmapControl.prototype._legendColorsChanged = function() {
 };
 
 HeatmapControl.prototype._selChanged = function(e) {
-  console.log('selChanged');
   const selectedField = this.elt.querySelector('.sel-field-panel select').value;
   this.rangeSliders[selectedField].slider.parentNode.style.display = '';
   this.rangeSliders[selectedField].disabled(false);
@@ -216,6 +215,7 @@ HeatmapControl.prototype._selChanged = function(e) {
       this.rangeSliders[f.name].disabled(true);
     }
   }, this);
+  this.resize.call(this);
   this.__change.call(this);
 };
 HeatmapControl.prototype.resize = function() {
@@ -255,6 +255,7 @@ HeatmapControl.prototype.__change = function() {
       data.field = field;
     }
     this.setting.onChange(data);
+    this.resize.call(this);
   }
 };
 
