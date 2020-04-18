@@ -442,6 +442,7 @@ async function saveAnnotation(annotation){
   annotation.create_date_time = dateTime;
   const {x, y} = $CAMIC.viewer.viewport.getContainerSize()
   annotation.viewer_size = {width:x,height:y}
+  annotation.viewer_mag = $CAMIC.viewer.viewport.viewportToImageZoom($CAMIC.viewer.viewport.getZoom())*$CAMIC.viewer.cazoomctrlInstance.base;
   const rs = await $CAMIC.store.addLabelingAnnotation(annotation).then( d => d );
   if(rs.count >= 1){
     // update parent
@@ -882,68 +883,125 @@ function getAnnotationDataFrom(data){
 }
 
 function addROIFormEvent(){
-  const has_tils = document.getElementById('has_tils');
-  const has_tils_txt = document.getElementById('has_tils_txt');
+
+  // % intra-tumoral stroma event
+  const its = document.getElementById('its');
+  const its_range = document.getElementById('its_range');
+  const its_txt = document.getElementById('its_txt');
+  const its_txt_content = its_txt.querySelector('.txt');
+  const its_txt_ip = its_txt.querySelector('.ip');
+  const its_message = document.getElementById('til_message');
+  its_txt.addEventListener('click', function(e){
+      if(its_range.disabled) return;
+      // set image zoom value to input
+      let value = its_txt_content.textContent;
+      value = value.slice(0, value.length-1);
+      its_txt_ip.value = +value;
+      // hide txt
+      its_txt_content.classList.add('hide');
+      its_txt_ip.focus();
+  }.bind(this));
+
+  its_txt.addEventListener('keydown', function(e){
+      if(event.key === 'Enter'){
+          its_txt_ip.blur();
+      }
+  }.bind(this))
+
+  its_txt_ip.addEventListener('blur', function(e){
+    const regex = new RegExp(/^([1-9]?\d|100)$/);
+    const rs = regex.test(its_txt_ip.value);
+    if(rs){
+      its_range.value = its_txt_ip.value;
+      its_txt_content.textContent = `${its_range.value}%`
+      delete its_txt.dataset.error;
+      its_txt_content.classList.remove('hide')
+    }else{
+      // give error tip
+      its_txt.dataset.error = `% Stroma Range (Ineger): 0 ~ 100`;
+      its_txt_ip.focus();
+    }
+
+  }.bind(this))
+
+  function itsChangeText(e){
+    if(its_range.value > 0) {
+      enableTIL()
+    } else {
+      disableTIL()
+    }    
+    its_txt_content.textContent = `${its_range.value}%`
+    its_txt_ip.value = its_range.value
+  }
+
+  its_range.addEventListener('change', itsChangeText);
+  its_range.addEventListener('mousemove', itsChangeText);
+
+
+  
+  
+
+  // vta event
   const vta = document.getElementById('vta');
   const vta_range = document.getElementById('vta_range');
   const vta_txt = document.getElementById('vta_txt');
-  const txt = vta_txt.querySelector('.txt');
-  const ip = vta_txt.querySelector('.ip');
+  const vta_txt_content = vta_txt.querySelector('.txt');
+  const vta_txt_ip = vta_txt.querySelector('.ip');
   const til_message = document.getElementById('til_message');
 
-  has_tils.addEventListener('change', e => {
-    if(has_tils.checked){
-      vta.style.display = 'flex';
-      til_message.style.display = 'block';
-      txt.textContent = `${vta_range.value}%`
-      delete vta_txt.dataset.error;
-      txt.classList.remove('hide')
-      
-    }else{
-      vta.style.display = 'none';
-      til_message.style.display = 'none';
-    }
-  });
+  function enableTIL(){
+    vta.style.display = 'flex'
+    til_message.style.display = 'block'
+  }
+  
+  function disableTIL(){
+    vta.style.display = 'none';
+    til_message.style.display = 'none'
+    vta_txt_content.textContent = '0%';
+    vta_txt_ip.value = 0;
+    vta_range.value = 0;
+  }
 
   vta_txt.addEventListener('click', function(e){
+      if(vta_range.disabled) return;
       // set image zoom value to input
-      let value = txt.textContent;
+      let value = vta_txt_content.textContent;
       value = value.slice(0, value.length-1);
-      ip.value = +value;
+      vta_txt_ip.value = +value;
       // hide txt
-      txt.classList.add('hide');
-      ip.focus();
+      vta_txt_content.classList.add('hide');
+      vta_txt_ip.focus();
   }.bind(this));
 
   vta_txt.addEventListener('keydown', function(e){
       if(event.key === 'Enter'){
-          ip.blur();
+          vta_txt_ip.blur();
       }
   }.bind(this))
 
-  ip.addEventListener('blur', function(e){
+  vta_txt_ip.addEventListener('blur', function(e){
     const regex = new RegExp(/^([1-9]?\d|100)$/);
-    const rs = regex.test(ip.value);
+    const rs = regex.test(vta_txt_ip.value);
     if(rs){
-      vta_range.value = ip.value;
-      txt.textContent = `${vta_range.value}%`
+      vta_range.value = vta_txt_ip.value;
+      vta_txt_content.textContent = `${vta_range.value}%`
       delete vta_txt.dataset.error;
-      txt.classList.remove('hide')
+      vta_txt_content.classList.remove('hide')
     }else{
       // give error tip
       vta_txt.dataset.error = `TILs Range (Ineger): 0 ~ 100`;
-      ip.focus();
+      vta_txt_ip.focus();
     }
-    console.log(rs);
 
   }.bind(this))
 
-  function changeText(e){
-    txt.textContent = `${vta_range.value}%`
+  function vtaChangeText(e) {
+    vta_txt_content.textContent = `${vta_range.value}%`
+    vta_txt_ip.value = vta_range.value
   }
 
-  vta_range.addEventListener('change', changeText);
-  vta_range.addEventListener('mousemove', changeText);
+  vta_range.addEventListener('change', vtaChangeText);
+  vta_range.addEventListener('mousemove', vtaChangeText);
 
   const action_btn = document.querySelector('#left_menu .foot .action');
   
@@ -963,6 +1021,7 @@ function addROIFormEvent(){
 
     const annotation = {
       "_id":id.toString(),
+      "task":"doVTA_caMicro_v1.3",
       "alias": alias,
       "provenance": {
           "image": {
@@ -978,9 +1037,9 @@ function addROIFormEvent(){
           }
       },
       "properties": {
-          
           "type": document.querySelector('#left_menu input[type=radio][name=roi_type]:checked').value,
-          "til_density":has_tils.checked?vta_range.value:"None"
+          "percent_stroma":its_range.value,
+          "til_density":vta_range.value
       },
       "parent": parent
     };
