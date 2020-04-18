@@ -1,9 +1,15 @@
-// UI and Core callback and hook
-// all functions help the UI and Core part together that makes workflows.
+/*
+UI and Core callback and hook
+all functions help the UI and Core part together that makes workflows.
+*/
 
-/* UI callback functions list */
+// UI callback functions list
+
+/**
+ * Toggles side-by-side viewer
+ * @param {Object} opt
+ */
 function toggleViewerMode(opt) {
-  const canvasDraw = $CAMIC.viewer.canvasDrawInstance;
   if (opt.checked) {
     // turn off preset label
     toolsOff();
@@ -35,7 +41,10 @@ function toggleViewerMode(opt) {
   }
 }
 
-// mainfest
+/**
+ * Finds the slide for minor-viewer in side-by-side viewer
+ * @param {Object} size object with height and width
+ */
 function multSelectorAction(size) {
   // hidden main viewer's bottom right control and get navigator
   $CAMIC.viewer.controls.bottomright.style.display = 'none';
@@ -155,6 +164,9 @@ function synchornicView2(data) {
   active2 = false;
 }
 
+/**
+ * Opens the side-by-side secondary viewer
+ */
 function openSecondaryViewer() {
   // ui changed
   const main = document.getElementById('main_viewer');
@@ -177,6 +189,9 @@ function openSecondaryViewer() {
   }, 100);
 }
 
+/**
+ * Closes the side-by-side secondary viewer
+ */
 function closeSecondaryViewer() {
   // ui changed
   const main = document.getElementById('main_viewer');
@@ -208,7 +223,10 @@ function closeSecondaryViewer() {
   $UI.layersViewerMinor.setting.data.forEach((d) => delete d.layer);
 }
 
-// side menu close callback
+/**
+ * side menu toggle callback, called from layerManager and annotation side menu
+ * @param {Object} opt
+ */
 function toggleSideMenu(opt) {
   if (!opt.isOpen) {
     const id = opt.target.id.split('_')[1];
@@ -216,7 +234,10 @@ function toggleSideMenu(opt) {
   }
 }
 
-// go home callback
+/**
+ * Home callback for redirecting to table page
+ * @param {Object} data
+ */
 function goHome(data) {
   redirect($D.pages.home, `GO Home Page`, 0);
 }
@@ -350,6 +371,9 @@ function presetLabelOff() {
   }
 }
 
+/**
+ * utility function for switching off given tool
+ */
 function toolsOff() {
   switch ($CAMIC.status) {
     case 'magnifier':
@@ -531,6 +555,10 @@ function brushOff() {
 }
 
 // --- Measurement Tool ---//
+/**
+ * Callback measurement tool to toggle measurement tool
+ * @param {Object} data
+ */
 function toggleMeasurement(data) {
   if (!$CAMIC.viewer.measureInstance) {
     console.warn('No Measurement Tool');
@@ -560,6 +588,9 @@ function toggleMeasurement(data) {
   }
 }
 
+/**
+ * switches measuring tool on, called from toggleMeasurement
+ */
 function measurementOn() {
   if (!$CAMIC.viewer.measureInstance) return;
   $CAMIC.viewer.measureInstance.on();
@@ -568,6 +599,9 @@ function measurementOn() {
   $CAMIC.status = 'measure';
 }
 
+/**
+ * switches measuring tool off, called from toggleMeasurement
+ */
 function measurementOff() {
   if (!$CAMIC.viewer.measureInstance) return;
   $CAMIC.viewer.measureInstance.off();
@@ -576,7 +610,11 @@ function measurementOff() {
   $CAMIC.status = null;
 }
 
-// --- toggle magnifier callback ---//
+// --- Magnifier tool ---//
+/**
+ * Callback magnifier tool to toggle measurement tool
+ * @param {Object} data
+ */
 function toggleMagnifier(data) {
   if (data.checked) {
     if ($CAMIC.status == 'magnifier') {
@@ -610,6 +648,9 @@ function toggleMagnifier(data) {
   }
 }
 
+/**
+ * switches magnifier tool on, called from toggleMagnifier
+ */
 function magnifierOn(factor = 1, x = 0, y = 0) {
   if (!$UI.spyglass) return;
   $UI.spyglass.factor = factor;
@@ -619,6 +660,9 @@ function magnifierOn(factor = 1, x = 0, y = 0) {
   $CAMIC.status = 'magnifier';
 }
 
+/**
+ * switches magnifier tool off, called from toggleMagnifier
+ */
 function magnifierOff() {
   if (!$UI.spyglass) return;
   $UI.spyglass.close();
@@ -634,12 +678,19 @@ function imageDownload(data) {
   console.log(data);
 }
 
-// share url
+/**
+ * share url callback
+ * @param {Object} data
+ */
 function shareURL(data) {
   const URL = StatesHelper.getCurrentStatesURL(true);
   window.prompt('Share this link', URL);
 }
-// main menu changed
+
+/**
+ * main menu changed callback, toggles Layer Manager side app
+ * @param {Object} data
+ */
 function mainMenuChange(data) {
   if (data.apps) {
     $UI.appsSideMenu.open();
@@ -669,6 +720,11 @@ function convertHumanAnnotationToPopupBody(notes) {
   return rs;
 }
 
+/**
+ * Deletes the annotation with given data
+ * called from removeCallback
+ * @param {Object} data
+ */
 function annoDelete(data) {
   if (!data.id) return;
   const annotationData = $D.overlayers.find(
@@ -717,6 +773,11 @@ function annoDelete(data) {
       // console.log('delete end');
       });
 }
+
+/**
+ * Callback for deleting annotation
+ * @param {Object} data
+ */
 function deleteCallback(data) {
   // remove overlay
   $D.overlayers.splice(data.index, 1);
@@ -932,7 +993,17 @@ function saveBrushLabel(isOff) {
 
 function savePresetLabel() {
   if ($CAMIC.viewer.canvasDrawInstance._path_index === 0) {
-    alert('No Markup On Annotation. Try holding and dragging.');
+    // toast
+    let popups = document.getElementById('popup-container');
+    if (popups.childElementCount < 2) {
+      let popupBox = document.createElement('div');
+      popupBox.classList.add('popup-msg', 'slide-in');
+      popupBox.innerHTML = `<i class="small material-icons">info</i> No Markup On Annotation. Try holding and dragging.`;
+      popups.insertBefore(popupBox, popups.childNodes[0]);
+      setTimeout(function() {
+        popups.removeChild(popups.lastChild);
+      }, 3000);
+    }
     return;
   }
   // save
@@ -1100,6 +1171,11 @@ function saveLabelAnnotCallback() {
   // $CAMIC.status = null;
 }
 
+/**
+ * Callback for saving annotations
+ * called from saveAnnotation
+ * @param {Object} data
+ */
 function annoCallback(data) {
   // is form ok?
   const noteData = $UI.annotOptPanel._form_.value;
@@ -1121,7 +1197,17 @@ function annoCallback(data) {
   // has Path?
 
   if ($CAMIC.viewer.canvasDrawInstance._path_index === 0) {
-    alert('No Markup On Annotation. Try holding and dragging.');
+    // toast
+    let popups = document.getElementById('popup-container');
+    if (popups.childElementCount < 2) {
+      let popupBox = document.createElement('div');
+      popupBox.classList.add('popup-msg', 'slide-in');
+      popupBox.innerHTML = `<i class="small material-icons">info</i> No Markup On Annotation. Try holding and dragging.`;
+      popups.insertBefore(popupBox, popups.childNodes[0]);
+      setTimeout(function() {
+        popups.removeChild(popups.lastChild);
+      }, 3000);
+    }
     return;
   }
 
@@ -1244,7 +1330,10 @@ function algoCallback(data) {
   console.log(data);
 }
 
-// overlayer manager callback function for show or hide
+/**
+ * overlayer manager callback function for show or hide
+ * @param {Object} data
+ */
 async function callback(data) {
   const viewerName = this.toString();
   let camic = null;
@@ -1525,7 +1614,10 @@ function loadAnnotationById(camic, layerData, callback) {
       });
 }
 
-// delete annotation from layer manager view
+/**
+ * Deletes annotation from layer manager view
+ * @param {Object} layerData
+ */
 function removeCallback(layerData) {
   item = layerData.item;
   if (item.typeName !== 'human') return;
@@ -1547,6 +1639,10 @@ function removeCallback(layerData) {
   }
 }
 
+/**
+ * Callback for locating annotation on image
+ * @param {Object} layerData
+ */
 function locationCallback(layerData) {
   item = layerData.item;
   if (item.typeName !== 'human' || item.data == null) return;
@@ -1563,6 +1659,11 @@ function locationCallback(layerData) {
   }
 }
 
+/**
+ * Locates annotation on the image
+ * called from locationCallback
+ * @param {Object} bound
+ */
 function locateAnnotation(bound) {
   // if(){
 
@@ -1609,6 +1710,9 @@ function algoRun() {
   $UI.message.add('Algo is running...');
 }
 
+/**
+ * Saves annotation after drawing is stopped
+ */
 function saveAnnotation() {
   annoCallback.call(null, {
     id:
@@ -1690,7 +1794,17 @@ function hostedHeatmap() {
         }
         // get heatmap data
         if (!list.length) {
-          alert(`${slideName} Has No Heatmap Data.`);
+          // No heatmap data
+          let popups = document.getElementById('popup-container');
+          if (popups.childElementCount < 2) {
+            let popupBox = document.createElement('div');
+            popupBox.classList.add('popup-msg', 'slide-in');
+            popupBox.innerHTML = `<i class="small material-icons">info</i> ${slideName} Has No Heatmap Data.`;
+            popups.insertBefore(popupBox, popups.childNodes[0]);
+            setTimeout(function() {
+              popups.removeChild(popups.lastChild);
+            }, 3000);
+          }
           return;
         }
         createHeatMapList(list);
