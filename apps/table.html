@@ -85,11 +85,10 @@
 
 	<script src="https://code.jquery.com/jquery-3.4.1.min.js"
 		></script>
+	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
 		integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
-		crossorigin="anonymous"></script>
-	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
-		integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
 		crossorigin="anonymous"></script>
 
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
@@ -135,7 +134,7 @@
 						<i class="fa fa-bell"></i>
 						<span id="notification-nav-link"></span>
 					</a>
-					<ul class="dropdown-menu">
+					<ul class="dropdown-menu" id="dropNot">
 						<li class="head text-light bg-dark">
 							<div class="row">
 							<div class="col-lg-12 col-sm-12 col-12 pl-4 pt-2">
@@ -200,8 +199,17 @@
 	<div class='p-2 bg-light' style="flex-grow: 1;">
 		<button type="button" class="btn btn-success float-right mb-2"
 			onclick="(()=>{location.reload();return false;})()"> <i class="fas fa-sync-alt"></i> Reload</button>
-		<button id="slideUploadButton" type="button" class="btn btn-primary float-right mb-2 mr-2" data-toggle="modal"
+			<div class="btn-group float-right mb-2 mr-2">
+				<button id="slideUploadButton" type="button" class="btn btn-primary " data-toggle="modal"
 			data-target="#upload-dialog" onclick="hidePostButton(); hideCheckButton(); resetUploadForm();" style="display: none;"> <i class="fas fa-upload"></i> Upload</button>
+				<button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				  <span class="sr-only">Toggle Dropdown</span>
+				</button>
+				<div class="dropdown-menu" >
+				  <a class="dropdown-item" href="../apps/batchloader/batchloader.html">Upload Batch</a>
+				</div>
+			</div>
+		
 
 			<div class="modal fade" id="upload-dialog" tabindex="-1" role="dialog"
 			aria-labelledby="title-of-dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
