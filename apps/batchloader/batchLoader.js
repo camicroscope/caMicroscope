@@ -1,62 +1,95 @@
+let existingFiles = [];
+let existingSlides = [];
+let tokens = [];
+let files= null;
+let fileNames = null;
+let slideNames = null;
+let originalFileNames = null;
+let startUrl = '../../loader/upload/start';
+let continueUrl = '../../loader/upload/continue/';
+let finishUrl = '../../loader/upload/finish/';
+let checkUrl = '../../loader/data/one/';
+let chunkSize = 5*1024*1024;
+let finishUploadSuccess = false;
+
 $(document).ready(function() {
-//   console.log('hi');
-});
-
-$('#filesInput').change(function() {
-  let files = $(this).prop('files');
-  let fileNames = $.map(files, function(val) {
-    return val.name;
+  let store = new Store('../../data/');
+  store.findSlide().then((response) => {
+    for (i=0; i<response.length; i++) {
+      existingSlides.push(response[i].name);
+      existingFiles.push((response[i].location).substring((response[i].location).lastIndexOf('/')+1,
+          (response[i].location).length));
+    }
+  }).catch((error) => {
+    console.log(error);
   });
-  $('#filesInputLabel').html(fileNames.length + ' files selected');
-  if (fileNames.length>0) {
-    $('#filesDetails').css('display', 'block');
-  } else {
-    $('#filesDetails').css('display', 'none');
-    $('#table').css('display', 'none');
-  }
-  $('#start').css('display', 'none');
-  $('#finish').css('display', 'none');
-  $('#check').css('display', 'none');
-  $('#post').css('display', 'none');
-  $('#complete').css('display', 'none');
-  $('#table').css('display', 'none');
-});
 
-$('#fileNameSwitch').change(function() {
-  if ($(this).is(':checked')) {
-    $('.fileName').css('opacity', '1');
-    $('#fileNamesInput').prop('disabled', false);
-    $('#fileNamesInput').prop('required', true);
-    $('#fswitch').prop('title', 'Toggle to keep original file names');
-  } else {
-    $('#fileNamesInput').prop('disabled', true);
-    $('#fswitch').prop('title', 'Toggle to select a generalised file name');
-    $('#fileNamesInput').prop('required', false);
-    $('.fileName').css('opacity', '0.4');
-  }
+  $('#filesInput').change(function() {
+    let files = $(this).prop('files');
+    let fileNames = $.map(files, function(val) {
+      return val.name;
+    });
+    $('#filesInputLabel').html(fileNames.length + ' files selected');
+    if (fileNames.length>0) {
+      $('#filesDetails').css('display', 'block');
+    } else {
+      $('#filesDetails').css('display', 'none');
+      $('#table').css('display', 'none');
+    }
+    $('#start').css('display', 'none');
+    $('#finish').css('display', 'none');
+    $('#check').css('display', 'none');
+    $('#post').css('display', 'none');
+    $('#complete').css('display', 'none');
+    $('#table').css('display', 'none');
+  });
+
+  $('#fileNameSwitch').change(function() {
+    if ($(this).is(':checked')) {
+      $('.fileName').css('opacity', '1');
+      $('#fileNamesInput').prop('disabled', false);
+      $('#fileNamesInput').prop('required', true);
+      $('#fswitch').prop('title', 'Toggle to keep original file names');
+    } else {
+      $('#fileNamesInput').prop('disabled', true);
+      $('#fswitch').prop('title', 'Toggle to select a generalised file name');
+      $('#fileNamesInput').prop('required', false);
+      $('.fileName').css('opacity', '0.4');
+    }
+  });
 });
 
 function addbody(rowData) {
   let table = $('table tbody');
-  let markup = '<tr><th scope="row">'+rowData.serial+'</th><td>'+rowData.fileName+
-               '</td><td>'+rowData.slideName+'</td><td class="token">'+rowData.token+
+  let markup = '<tr><th scope="row">'+rowData.serial+'</th><td><span>'+rowData.fileName+
+               '</span>&nbsp;&nbsp;&nbsp;<i class="fas fa-pen text-dark fileNameEdit" data-toggle="modal"'+
+               ' data-target="#fileNameChangeModal"></i></td><td><span>'+rowData.slideName+
+               '</span>&nbsp;&nbsp;&nbsp;<i class="fas fa-pen text-dark slideNameEdit" data-toggle="modal"'+
+               ' data-target="#slideNameChangeModal"></i>'+
+               '</td><td class="token">'+rowData.token+
                '</td><td class="status text-warning"><i class="fas fa-clock" ></i>'+
-               ' <i class="fas fa-clock" ></i> <i class="fas fa-clock" ></i></td></tr>';
+               ' <i class="fas fa-clock" ></i> <i class="fas fa-clock" ></i></td><td>'+
+               '<i class="fas fa-info-circle text-dark slideInfo" title="Info" data-toggle="modal"'+
+               ' data-target="#slideInfoModal" style="font-size: larger; margin-left:-1em;"></i>'+
+               '<i class="fas fa-minus-circle text-danger slideDelete"'+
+               ' style="margin-left:1.2em; font-size: larger" title="Remove slide"></i></td></tr>';
+
   table.append(markup);
 }
 
-let files= null;
-let fileNames = null;
-let slideNames = [];
 function startTable() {
   slideNames = [];
   fileNames = [];
+  originalFileNames = [];
   let genSlideName = $('#slideNamesInput').val();
   let genFileName=$('#fileNamesInput').val();
   $('table tbody').html('');
   if (genSlideName!='') {
     files = $('#filesInput').prop('files');
     let slidesNum = files.length;
+    originalFileNames = $.map(files, function(val) {
+      return val.name;
+    });
     if ($('#fileNameSwitch').is(':checked') && genFileName!='') {
       for (i=0; i<slidesNum; i++) {
         let fileName = genFileName.substring(0, genFileName.lastIndexOf('.'))+'_'+(i+1)+
@@ -64,9 +97,7 @@ function startTable() {
         fileNames.push(fileName);
       }
     } else {
-      fileNames = $.map(files, function(val) {
-        return val.name;
-      });
+      fileNames = [...originalFileNames];
     }
     let data = {};
     $('#table').css('display', 'block');
@@ -86,19 +117,141 @@ function startTable() {
     $('#check').css('display', 'none');
     $('#post').css('display', 'none');
     $('#complete').css('display', 'none');
+    $('.slideInfo').css('visibility', 'hidden');
+    $('.slideDelete').css('visibility', 'hidden');
+
+    $('.fileNameEdit').css({visibility: 'hidden', fontSize: 'smaller'});
+    $('.slideNameEdit').css({visibility: 'hidden', fontSize: 'smaller'});
+
+    $('table').find('tr').each(function() {
+      $(this).mouseenter(function() {
+        $('.slideInfo, .slideDelete', this).css({opacity: 0.0, visibility: 'visible', cursor: 'pointer'})
+            .animate({opacity: 1.0}, 300);
+      });
+      $(this).mouseleave(function() {
+        $('.slideInfo, .slideDelete', this).css({opacity: 0.0, visibility: 'hidden'})
+            .animate({opacity: 1.0}, 200);
+      });
+      $('td:nth-child(2), td:nth-child(3)', this).mouseenter(function() {
+        $('i', this).css({opacity: 0.0, visibility: 'visible', cursor: 'pointer'})
+            .animate({opacity: 1.0}, 300);
+      });
+      $('td:nth-child(2), td:nth-child(3)', this).mouseleave(function() {
+        $('i', this).css({opacity: 0.0, visibility: 'hidden', cursor: 'pointer'})
+            .animate({opacity: 1.0}, 200);
+      });
+    });
+    $('.fileNameEdit').click(function() {
+      let oldfileName = $(this).prev().html();
+      updateFileName(oldfileName);
+    });
+    $('.slideNameEdit').click(function() {
+      let oldSlideName = $(this).prev().html();
+      updateSlideName(oldSlideName);
+    });
+    $('.slideInfo').click(function() {
+      let slideName = $(this).parent().prev().prev().prev().find('span').html();
+      let index = slideNames.indexOf(slideName);
+      showSlideInfo1(index);
+    });
+    $('.slideDelete').click(function() {
+      let slideName = $(this).parent().prev().prev().prev().find('span').html();
+      let index = slideNames.indexOf(slideName);
+      $(this).parent().parent().hide(400, function() {
+        $(this).remove();
+      });
+      slideNames.splice(index, 1);
+      fileNames.splice(index, 1);
+      originalFileNames.splice(index, 1);
+      tokens.splice(index, 1);
+    });
   } else {
     $('#table').css('display', 'none');
     $('#complete').css('display', 'none');
   }
 }
 
-let startUrl = '../../loader/upload/start';
-let continueUrl = '../../loader/upload/continue/';
-let finishUrl = '../../loader/upload/finish/';
-var checkUrl = '../../loader/data/one/';
-let chunkSize = 5*1024*1024;
-let finishUploadSuccess = false;
-let tokens = [];
+function showSlideInfo1(index) {
+  $('#slideInfoContent').html(`<b>Original Filename:</b> `+originalFileNames[index]+`<br><b>Filename:</b> `+fileNames[index]+
+                         `<br><b>Slide name:</b> `+slideNames[index]+`<br><b>Status:</b> Pending Initial Upload`);
+}
+function showSlideInfo2(index) {
+  $('#slideInfoContent').html(`<b>Original Filename:</b> `+originalFileNames[index]+`<br><b>Filename:</b> `+fileNames[index]+
+                         `<br><b>Slide name:</b> `+slideNames[index]+`<br><b>Token:</b> `+
+                         tokens[index]+`<br><b>Status:</b> Initial Upload done | Token Generated | Final Upload Pending`);
+}
+function showSlideInfo3(index) {
+  $('#slideInfoContent').html(`<b>Original Filename:</b> `+originalFileNames[index]+`<br><b>Filename:</b> `+fileNames[index]+
+                         `<br><b>Slide name:</b> `+slideNames[index]+`<br><b>Token:</b> `+
+                         tokens[index]+`<br><b>Status:</b> Final Upload Done | Check Pending | Post Pending`);
+}
+function showSlideInfo4(index) {
+  $('#slideInfoContent').html(`<b>Original Filename:</b> `+originalFileNames[index]+`<br><b>Filename:</b> `+fileNames[index]+
+                         `<br><b>Slide name:</b> `+slideNames[index]+`<br><b>Token:</b> `+
+                         tokens[index]+`<br><b>Status:</b> Check successfull | Post Pending`);
+}
+function showSlideInfo5(index) {
+  $('#slideInfoContent').html(`<b>Original Filename:</b> `+originalFileNames[index]+`<br><b>Filename:</b> `+fileNames[index]+
+                         `<br><b>Slide name:</b> `+slideNames[index]+`<br><b>Token:</b> `+
+                         tokens[index]+`<br><b>Status:</b> Posted Successfully`);
+}
+
+function updateSlideName(oldSlideName) {
+  $('#confirmUpdateSlideContent').html('Enter the new name for: <br><b>'+oldSlideName+
+         '</b><br><br><div class="form-group"><input type="text" id="newSlideName" class="form-control"'+
+         ' value="'+oldSlideName+'" aria-label="newSlideName" required></div>');
+
+  $('#confirmUpdateSlide').unbind('click');
+  $('#confirmUpdateSlide').click(function() {
+    let newSlideName = $('#newSlideName');
+    let newName = newSlideName.val();
+
+    if (newName!='') {
+      if (slideNames.includes(newName) || existingSlides.includes(newName)) {
+        newSlideName.addClass('is-invalid');
+        if (newSlideName.parent().children().length === 1) {
+          newSlideName.parent().append(`<div class="invalid-feedback">
+               Slide with given name already exists. </div>`);
+        }
+      } else {
+        newSlideName.removeClass('is-invalid');
+        let index = slideNames.indexOf(oldSlideName);
+        slideNames[index] = newName;
+        $('tr:eq('+(index+1)+') td:nth-child(3) span').html(newName);
+        $('#slideNameChangeModal').modal('hide');
+      }
+    }
+  });
+}
+
+function updateFileName(oldfileName) {
+  $('#confirmUpdateFileContent').html('Enter the new name for: <br><b>'+oldfileName+
+         '</b><br><br><div class="form-group"><input type="text" id="newFileName" class="form-control"'+
+         ' value="'+oldfileName+'" aria-label="newFileName" required></div>');
+
+  $('#confirmUpdateFile').unbind('click');
+  $('#confirmUpdateFile').click(function() {
+    let newFileName = $('#newFileName');
+    let newName = newFileName.val();
+
+    if (newName!='') {
+      if (fileNames.includes(newName) || existingFiles.includes(newName)) {
+        newFileName.addClass('is-invalid');
+        if (newFileName.parent().children().length === 1) {
+          newFileName.parent().append(`<div class="invalid-feedback">
+               File with given name already exists. </div>`);
+        }
+      } else {
+        newFileName.removeClass('is-invalid');
+        let index = fileNames.indexOf(oldfileName);
+        fileNames[index] = newName;
+        $('tr:eq('+(index+1)+') td:nth-child(2) span').html(newName);
+        $('#fileNameChangeModal').modal('hide');
+      }
+    }
+  });
+}
+
 
 function startBatch() {
   tokens = [];
@@ -127,6 +280,10 @@ async function handleUpload(selectedFile, filename, i) {
   let status = $('.status:eq('+i+')');
   $('i:nth-child(1)', status).remove();
   $(status).prepend('<i class="fas fa-check-circle text-success" ></i>');
+  $('.slideInfo:eq('+i+')').unbind('click');
+  $('.slideInfo:eq('+i+')').click(function() {
+    showSlideInfo2(i);
+  });
 
   continueUpload(token);
   readFileChunks(selectedFile, token);
@@ -154,7 +311,7 @@ function continueUpload(token) {
 }
 
 function finishUpload(token, filename, i) {
-//   var reset = true;
+//   let reset = true;
 
   const body = {filename: filename};
   //   changeStatus('UPLOAD', 'Finished Reading File, Posting');
@@ -176,6 +333,15 @@ function finishUpload(token, filename, i) {
       let status = $('.status:eq('+i+')');
       $('i:nth-child(2)', status).after('<i class="fas fa-check-circle text-success" ></i>');
       $('i:nth-child(2)', status).remove();
+
+      $('table').find('tr').each(function() {
+        $('td:nth-child(2)', this).unbind('mouseenter mouseleave');
+      });
+
+      $('.slideInfo:eq('+i+')').unbind('click');
+      $('.slideInfo:eq('+i+')').click(function() {
+        showSlideInfo3(i);
+      });
     }
   });
   regReq.then((e)=> {
@@ -192,8 +358,8 @@ function finishUpload(token, filename, i) {
 
 
 async function readFileChunks(file, token) {
-  var part = 0;
-  var complete = false;
+  let part = 0;
+  let complete = false;
   while (!complete) {
     try {
       const data = await promiseChunkFileReader(file, part);
@@ -211,7 +377,7 @@ async function readFileChunks(file, token) {
 // read a chunk of the file
 function promiseChunkFileReader(file, part) {
   return new Promise((resolve, reject)=>{
-    var fr = new FileReader();
+    let fr = new FileReader();
     fr.onload = (evt)=>{
       if (evt.target.error == null) {
         const d = evt.target.result.split(',')[1];
@@ -224,7 +390,7 @@ function promiseChunkFileReader(file, part) {
         reject(evt.target.error);
       }
     };
-    var blob = file.slice(part*chunkSize, (part+1)*chunkSize);
+    let blob = file.slice(part*chunkSize, (part+1)*chunkSize);
     fr.readAsDataURL(blob);
   });
 }
@@ -244,6 +410,10 @@ function handleCheck(filename, i) {
         let status = $('.status:eq('+i+')');
         $('i:nth-child(3)', status).remove();
         $(status).append('<i class="fas fa-check-circle text-success" ></i>');
+        $('.slideInfo:eq('+i+')').unbind('click');
+        $('.slideInfo:eq('+i+')').click(function() {
+          showSlideInfo4(i);
+        });
         // Add the filename, to be able to fetch the thumbnail.
         success['preview'] = filename;
       }, // Handle the success response object
@@ -271,7 +441,7 @@ function handlePost(filename, slidename, i) {
         data.mpp = parseFloat(data['mpp-x']) || parseFloat(data['mpp-y']) || 0;
         data.mpp_x = parseFloat(data['mpp-x']);
         data.mpp_y = parseFloat(data['mpp-y']);
-        var store = new Store('../../data/');
+        let store = new Store('../../data/');
         store.post('Slide', data).then(
             (success) => {
               $('#post').css('display', 'none');
@@ -284,6 +454,15 @@ function handlePost(filename, slidename, i) {
               let status = $('.status:eq('+i+')');
               $(status).append(' <i class="fas fa-check-circle text-primary" ></i>');
               console.log(success);
+
+              $('table').find('tr').each(function() {
+                $('td:nth-child(3)', this).unbind('mouseenter mouseleave');
+              });
+              $('.slideInfo:eq('+i+')').unbind('click');
+              $('.slideInfo:eq('+i+')').click(function() {
+                showSlideInfo5(i);
+              });
+              $('.slideDelete').css('display', 'none');
             //   initialize();
             //   $('#upload-dialog').modal('hide');
             //   showSuccessPopup('Slide uploaded successfully');
