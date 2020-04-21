@@ -60,12 +60,17 @@
     </nav>
     <div style="align-content: center; padding-top: 2em;">
       <form onsubmit="return false;">
-        <div class="input-group mb-3" style="width: 25em; margin: 0 auto;">
+        <div
+          id="files"
+          class="input-group mb-3"
+          style="width: 25em; margin: 0 auto; display: none;"
+        >
           <div class="custom-file">
             <input
               type="file"
               class="custom-file-input"
               id="filesInput"
+              accept=".svs, .tif, .tiff, .vms, .vmu, .ndpi, .scn, .mrxs, .bif, .svslide"
               multiple
               required
             />
@@ -99,7 +104,7 @@
                 type="text"
                 id="fileNamesInput"
                 class="form-control"
-                placeholder="Enter general filename"
+                placeholder="filename (w/o extension)"
                 disabled
               />
             </div>
@@ -151,7 +156,7 @@
               class="btn btn-info"
               style="display: none;"
             >
-              Upload
+              <i class="fas fa-upload"></i> Upload
             </button>
             <button
               id="finish"

@@ -1,6 +1,6 @@
 let existingFiles = [];
 let existingSlides = [];
-let tokens = [];
+let tokens = null;
 let files= null;
 let fileNames = null;
 let slideNames = null;
@@ -13,6 +13,7 @@ let chunkSize = 5*1024*1024;
 let finishUploadSuccess = false;
 
 $(document).ready(function() {
+  $('#files').show(400);
   let store = new Store('../../data/');
   store.findSlide().then((response) => {
     for (i=0; i<response.length; i++) {
@@ -31,7 +32,7 @@ $(document).ready(function() {
     });
     $('#filesInputLabel').html(fileNames.length + ' files selected');
     if (fileNames.length>0) {
-      $('#filesDetails').css('display', 'block');
+      $('#filesDetails').show(500);
     } else {
       $('#filesDetails').css('display', 'none');
       $('#table').css('display', 'none');
@@ -57,14 +58,23 @@ $(document).ready(function() {
       $('.fileName').css('opacity', '0.4');
     }
   });
+
+  $('.modal').on('shown.bs.modal', function() {
+    let input = $(this).find('input:text:visible:first');
+    input.focus();
+  });
+
+  $('#fileNamesInput').change(function() {
+    $(this).val($(this).val().split(' ').join('_'));
+  });
 });
 
 function addbody(rowData) {
   let table = $('table tbody');
   let markup = '<tr><th scope="row">'+rowData.serial+'</th><td><span>'+rowData.fileName+
-               '</span>&nbsp;&nbsp;&nbsp;<i class="fas fa-pen text-dark fileNameEdit" data-toggle="modal"'+
+               '</span>&nbsp;&nbsp;&nbsp;<i id="icon" class="fas fa-pen text-dark fileNameEdit" data-toggle="modal"'+
                ' data-target="#fileNameChangeModal"></i></td><td><span>'+rowData.slideName+
-               '</span>&nbsp;&nbsp;&nbsp;<i class="fas fa-pen text-dark slideNameEdit" data-toggle="modal"'+
+               '</span>&nbsp;&nbsp;&nbsp;<i id="icon" class="fas fa-pen text-dark slideNameEdit" data-toggle="modal"'+
                ' data-target="#slideNameChangeModal"></i>'+
                '</td><td class="token">'+rowData.token+
                '</td><td class="status text-warning"><i class="fas fa-clock" ></i>'+
@@ -81,6 +91,7 @@ function startTable() {
   slideNames = [];
   fileNames = [];
   originalFileNames = [];
+  tokens = [];
   let genSlideName = $('#slideNamesInput').val();
   let genFileName=$('#fileNamesInput').val();
   $('table tbody').html('');
@@ -92,17 +103,18 @@ function startTable() {
     });
     if ($('#fileNameSwitch').is(':checked') && genFileName!='') {
       for (i=0; i<slidesNum; i++) {
-        let fileName = genFileName.substring(0, genFileName.lastIndexOf('.'))+'_'+(i+1)+
-                       '.'+genFileName.substring(genFileName.lastIndexOf('.')+1, genFileName.length);
+        let fileName = genFileName+'_'+(i+1)+'.'+originalFileNames[i]
+            .substring(originalFileNames[i].lastIndexOf('.')+1, originalFileNames[i].length);
         fileNames.push(fileName);
       }
     } else {
       fileNames = [...originalFileNames];
     }
     let data = {};
-    $('#table').css('display', 'block');
+    $('#table').show(400);
     for (i=0; i<slidesNum; i++) {
       let slideName=genSlideName+'_'+(i+1);
+      slideName = sanitize(slideName);
       slideNames.push(slideName);
       let fileName=fileNames[i];
       let token = '--';
@@ -112,7 +124,7 @@ function startTable() {
       data.token= token;
       addbody(data);
     }
-    $('#start').css('display', 'inline-block');
+    $('#start').show(400);
     $('#finish').css('display', 'none');
     $('#check').css('display', 'none');
     $('#post').css('display', 'none');
@@ -133,11 +145,11 @@ function startTable() {
             .animate({opacity: 1.0}, 200);
       });
       $('td:nth-child(2), td:nth-child(3)', this).mouseenter(function() {
-        $('i', this).css({opacity: 0.0, visibility: 'visible', cursor: 'pointer'})
+        $('i#icon', this).css({opacity: 0.0, visibility: 'visible', cursor: 'pointer'})
             .animate({opacity: 1.0}, 300);
       });
       $('td:nth-child(2), td:nth-child(3)', this).mouseleave(function() {
-        $('i', this).css({opacity: 0.0, visibility: 'hidden', cursor: 'pointer'})
+        $('i#icon', this).css({opacity: 0.0, visibility: 'hidden', cursor: 'pointer'})
             .animate({opacity: 1.0}, 200);
       });
     });
@@ -165,9 +177,39 @@ function startTable() {
       originalFileNames.splice(index, 1);
       tokens.splice(index, 1);
     });
+    checkNames();
   } else {
     $('#table').css('display', 'none');
     $('#complete').css('display', 'none');
+  }
+}
+
+function checkNames() {
+  let numErrors = 0;
+  for (i=0; i<originalFileNames.length; i++) {
+    if (existingFiles.includes(fileNames[i])) {
+      let errorIcon = `<i id='fileNameError' class="fas fa-exclamation-circle text-danger" title='File name exixts'></i> &nbsp;&nbsp;`;
+      if ($('.fileNameEdit:eq('+i+')').prev().prev('#fileNameError').length == 0) {
+        $('.fileNameEdit:eq('+i+')').parent().prepend(errorIcon);
+      }
+      numErrors++;
+    } else {
+      $('.fileNameEdit:eq('+i+')').parent().find('#fileNameError').remove();
+    }
+    if (existingSlides.includes(slideNames[i])) {
+      let errorIcon = `<i id='slideNameError' class="fas fa-exclamation-circle text-danger" title='Slide name exixts'></i> &nbsp;&nbsp;`;
+      if ($('.slideNameEdit:eq('+i+')').prev().prev('#slideNameError').length == 0) {
+        $('.slideNameEdit:eq('+i+')').parent().prepend(errorIcon);
+      }
+      numErrors++;
+    } else {
+      $('.slideNameEdit:eq('+i+')').parent().find('#slideNameError').remove();
+    }
+  }
+  if (numErrors > 0) {
+    $('#start').hide();
+  } else {
+    $('#start').show(300);
   }
 }
 
@@ -200,7 +242,8 @@ function updateSlideName(oldSlideName) {
   $('#confirmUpdateSlideContent').html('Enter the new name for: <br><b>'+oldSlideName+
          '</b><br><br><div class="form-group"><input type="text" id="newSlideName" class="form-control"'+
          ' value="'+oldSlideName+'" aria-label="newSlideName" required></div>');
-
+  let input = document.getElementById('newSlideName');
+  input.select();
   $('#confirmUpdateSlide').unbind('click');
   $('#confirmUpdateSlide').click(function() {
     let newSlideName = $('#newSlideName');
@@ -219,6 +262,7 @@ function updateSlideName(oldSlideName) {
         slideNames[index] = newName;
         $('tr:eq('+(index+1)+') td:nth-child(3) span').html(newName);
         $('#slideNameChangeModal').modal('hide');
+        checkNames();
       }
     }
   });
@@ -228,18 +272,36 @@ function updateFileName(oldfileName) {
   $('#confirmUpdateFileContent').html('Enter the new name for: <br><b>'+oldfileName+
          '</b><br><br><div class="form-group"><input type="text" id="newFileName" class="form-control"'+
          ' value="'+oldfileName+'" aria-label="newFileName" required></div>');
+  let input = document.getElementById('newFileName');
+  let value = input.value;
+  input.setSelectionRange(0, value.lastIndexOf('.'));
 
+  $('#newFileName').change(function() {
+    $(this).val($(this).val().split(' ').join('_'));
+  });
   $('#confirmUpdateFile').unbind('click');
   $('#confirmUpdateFile').click(function() {
     let newFileName = $('#newFileName');
     let newName = newFileName.val();
+    let fileExtension = newName.toLowerCase().split('.').reverse()[0];
+    const allowedExtensions = ['svs', 'tif', 'tiff', 'vms', 'vmu', 'ndpi', 'scn', 'mrxs', 'bif', 'svslide'];
 
     if (newName!='') {
       if (fileNames.includes(newName) || existingFiles.includes(newName)) {
         newFileName.addClass('is-invalid');
         if (newFileName.parent().children().length === 1) {
-          newFileName.parent().append(`<div class="invalid-feedback">
-               File with given name already exists. </div>`);
+          newFileName.parent().append(`<div class="invalid-feedback" id="filename-feedback0">
+               File with given name already exists </div>`);
+        } else {
+          $('#filename-feedback0').html(`File with given name already exists`);
+        }
+      } else if (!allowedExtensions.includes(fileExtension)) {
+        newFileName.addClass('is-invalid');
+        if (newFileName.parent().children().length === 1) {
+          newFileName.parent().append(`<div class="invalid-feedback" id="filename-feedback0"> 
+               .${fileExtension} files are not compatible </div>`);
+        } else {
+          $('#filename-feedback0').html(`.${fileExtension} files are not compatible`);
         }
       } else {
         newFileName.removeClass('is-invalid');
@@ -247,6 +309,7 @@ function updateFileName(oldfileName) {
         fileNames[index] = newName;
         $('tr:eq('+(index+1)+') td:nth-child(2) span').html(newName);
         $('#fileNameChangeModal').modal('hide');
+        checkNames();
       }
     }
   });
@@ -258,7 +321,7 @@ function startBatch() {
   for (i=0; i<files.length; i++) {
     handleUpload(files[i], fileNames[i], i);
   }
-  $('#finish').css('display', 'inline-block');
+  $('#finish').show();
   $('#check').css('display', 'none');
   $('#post').css('display', 'none');
   $('#start').css('display', 'none');
@@ -327,7 +390,7 @@ function finishUpload(token, filename, i) {
     //   $('#post_btn').hide();
     } else {
       finishUploadSuccess=true;
-      $('#check').css('display', 'inline-block');
+      $('#check').show();
       $('#finish').css('display', 'none');
 
       let status = $('.status:eq('+i+')');
@@ -406,7 +469,7 @@ function handleCheck(filename, i) {
       (response) => response.json(), // if the response is a JSON object
   ).then(
       (success) => {
-        $('#post').css('display', 'inline-block');
+        $('#post').show(300);
         let status = $('.status:eq('+i+')');
         $('i:nth-child(3)', status).remove();
         $(status).append('<i class="fas fa-check-circle text-success" ></i>');
@@ -446,7 +509,7 @@ function handlePost(filename, slidename, i) {
             (success) => {
               $('#post').css('display', 'none');
               $('#check').css('display', 'none');
-              $('#complete').css('display', 'block');
+              $('#complete').show(400);
               $('form').trigger('reset');
               $('#fileNameSwitch').trigger('change');
               $('#filesInputLabel').html('Choose Files');
@@ -475,4 +538,19 @@ function handlePost(filename, slidename, i) {
   ).catch(
       (error) => console.log(error), // Handle the error response object
   );
+}
+
+function sanitize(string) {
+  const map = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    // eslint-disable-next-line quotes
+    "'": '&#x27;',
+    // eslint-disable-next-line quotes
+    "/": '&#x2F;',
+  };
+  const reg = /[&<>"'/]/ig;
+  return string.replace(reg, (match)=>(map[match]));
 }
