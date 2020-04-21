@@ -11,6 +11,8 @@ let finishUrl = '../../loader/upload/finish/';
 let checkUrl = '../../loader/data/one/';
 let chunkSize = 5*1024*1024;
 let finishUploadSuccess = false;
+const allowedExtensions = ['svs', 'tif', 'tiff', 'vms', 'vmu', 'ndpi', 'scn', 'mrxs', 'bif', 'svslide'];
+
 
 $(document).ready(function() {
   $('#files').show(400);
@@ -193,6 +195,13 @@ function checkNames() {
         $('.fileNameEdit:eq('+i+')').parent().prepend(errorIcon);
       }
       numErrors++;
+    } else if (!allowedExtensions.includes(fileNames[i].substring(fileNames[i].lastIndexOf('.')+1,
+        fileNames[i].length))) {
+      let errorIcon = `<i id='fileNameError' class="fas fa-exclamation-circle text-danger" title='File extension not allowed'></i> &nbsp;&nbsp;`;
+      if ($('.fileNameEdit:eq('+i+')').prev().prev('#fileNameError').length == 0) {
+        $('.fileNameEdit:eq('+i+')').parent().prepend(errorIcon);
+      }
+      numErrors++;
     } else {
       $('.fileNameEdit:eq('+i+')').parent().find('#fileNameError').remove();
     }
@@ -284,7 +293,6 @@ function updateFileName(oldfileName) {
     let newFileName = $('#newFileName');
     let newName = newFileName.val();
     let fileExtension = newName.toLowerCase().split('.').reverse()[0];
-    const allowedExtensions = ['svs', 'tif', 'tiff', 'vms', 'vmu', 'ndpi', 'scn', 'mrxs', 'bif', 'svslide'];
 
     if (newName!='') {
       if (fileNames.includes(newName) || existingFiles.includes(newName)) {
