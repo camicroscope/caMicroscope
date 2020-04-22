@@ -17,11 +17,7 @@
     <script>
       __auth_check(2);
     </script>
-    <script
-      src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
-      integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
-      crossorigin="anonymous"
-    ></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script
       src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
       integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
@@ -64,12 +60,17 @@
     </nav>
     <div style="align-content: center; padding-top: 2em;">
       <form onsubmit="return false;">
-        <div class="input-group mb-3" style="width: 25em; margin: 0 auto;">
+        <div
+          id="files"
+          class="input-group mb-3"
+          style="width: 25em; margin: 0 auto; display: none;"
+        >
           <div class="custom-file">
             <input
               type="file"
               class="custom-file-input"
               id="filesInput"
+              accept=".svs, .tif, .tiff, .vms, .vmu, .ndpi, .scn, .mrxs, .bif, .svslide"
               multiple
               required
             />
@@ -103,7 +104,7 @@
                 type="text"
                 id="fileNamesInput"
                 class="form-control"
-                placeholder="Enter general filename"
+                placeholder="filename (w/o extension)"
                 disabled
               />
             </div>
@@ -155,7 +156,7 @@
               class="btn btn-info"
               style="display: none;"
             >
-              Upload
+              <i class="fas fa-upload"></i> Upload
             </button>
             <button
               id="finish"
@@ -202,11 +203,22 @@
     <div
       id="table"
       class="table-responsive-xl"
-      style="margin-top: 2em; display: none; text-align: center;"
+      style="
+        margin-top: 2em;
+        display: none;
+        text-align: center;
+        margin-bottom: 2em;
+      "
     >
       <table
         class="table table-hover"
-        style="width: 70em; margin: 0 auto; border-radius: 10px;"
+        style="
+          margin: 0 auto;
+          border-radius: 10px;
+          min-width: 50em;
+          max-width: 70em;
+          cursor: default;
+        "
       >
         <thead class="thead-light">
           <tr>
@@ -215,11 +227,134 @@
             <th scope="col">Slide</th>
             <th scope="col">Token</th>
             <th scope="col">Status</th>
+            <th scope="col"></th>
           </tr>
         </thead>
         <tbody></tbody>
       </table>
     </div>
+
+    <!--File Name change Modal -->
+    <div
+      class="modal fade"
+      id="fileNameChangeModal"
+      tabindex="-1"
+      role="dialog"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="fileNameChangeModalLabel">
+              File name change
+            </h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <form onsubmit="return false">
+            <div class="modal-body" id="confirmUpdateFileContent"></div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+              >
+                Cancel
+              </button>
+              <button type="submit" id="confirmUpdateFile" class="btn btn-info">
+                Update
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!--Slide Name change Modal -->
+    <div
+      class="modal fade"
+      id="slideNameChangeModal"
+      tabindex="-1"
+      role="dialog"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="slideNameChangeModalLabel">
+              Slide name change
+            </h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <form onsubmit="return false">
+            <div class="modal-body" id="confirmUpdateSlideContent"></div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                id="confirmUpdateSlide"
+                class="btn btn-info"
+              >
+                Update
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!--Slide Information Modal -->
+    <div
+      class="modal fade"
+      id="slideInfoModal"
+      tabindex="-1"
+      role="dialog"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="slideInfoModalLabel">
+              Slide Information
+            </h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body" id="slideInfoContent"></div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-dismiss="modal">
+              Okay
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <script src="./batchLoader.js"></script>
   </body>
 </html>
