@@ -78,6 +78,33 @@
 				changeStatus("UPLOAD", fileExtension + " files are not compatible");
 				return false;
 			}
+			let filterInput = $("#filter0");
+			if(filterInput.val())
+			{
+				try
+				{
+				let filters = filterInput.val().replace(/'/g, '"')
+				filters=JSON.parse(filters);
+				if(!Array.isArray(filters))
+					throw new Error("Filters should be an array.")
+				else
+					{
+						filterInput.removeClass('is-invalid');
+						if (filterInput.parent().children().length !== 1) {
+						$('#filter-feedback0').remove();
+					}
+					}
+				}
+				catch(err)
+				{
+					filterInput.addClass('is-invalid');
+					if (filterInput.parent().children().length === 1) {
+						filterInput.parent().append(`<div class="invalid-feedback" id="filter-feedback0">
+					Filters should be an array.</div>`);
+					}
+					return false;
+				}
+			}
 			callback();
 		}
 	</script>
@@ -151,7 +178,7 @@
 									<a id="tab-userReq" href="#userReqTab" class="nav-link" data-toggle="tab" role="tab">User Requests <span id="userReqBadge"></span></a>
 								  </li>
 								</ul>
-							  
+
 								<div id="content" class="tab-content mt-2" role="tablist">
 								  <div id="delReqTab" class="tab-pane fade show active" role="tabpanel" aria-labelledby="tab-delReq">
 									<div class="row">
@@ -209,7 +236,7 @@
 				  <a class="dropdown-item" href="../apps/batchloader/batchloader.html">Upload Batch</a>
 				</div>
 			</div>
-		
+
 
 			<div class="modal fade" id="upload-dialog" tabindex="-1" role="dialog"
 			aria-labelledby="title-of-dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
@@ -304,6 +331,10 @@
 			<div>
 				<div class="">
 					<h3 class="text-center h3 mb-0">Available Slides</h3>
+					<div class="row mt-2" id="filters-heading">
+					</div>
+					<div class="row mb-2 ml-1" id="filters-check" >
+					</div>
 					<div class="search-box float-left form-group form-inline">
 						<select id='entries' class="select form-control mr-2">
 							<option value="10" selected>10 slides/page</option>
@@ -377,6 +408,7 @@
 
 </body>
 <script>
+	let selectedFilters=[];
 	const HeadMapping = [{
 		title: 'ID',
 		field: 'oid'
@@ -395,7 +427,8 @@
 	}];
 	var totaltablepages;
 	var selectedpage;
-	var searching;
+	var allSlides;
+
 	if (getUserType() === "Admin") {
 		var slideDeleteRequests = [];
 		var userCreateRequests = [];
@@ -407,9 +440,6 @@
 		});
 
 		var trs = "#datatables tbody tr";
-		if(searching){
-			trs+= ".searched";
-		}
 		$(trs).slice($("#entries").val()*selectedpage, $("#entries").val()*(selectedpage+1)).filter(function(){
 			$(this).show();
 		});
@@ -450,7 +480,45 @@
 		hidePostButton();
 	}
 
+	function createCheckbox(val) {
+			$("#filters-check").append(`<div class="col-6 col-md-3">
+			<input name="filter-val" type="checkbox"
+				class="form-check-input" onchange="handleFilterChange(this)" name=${val} id=${val} value=${val} checked="true">
+		<label for=${val} class="form-check-label">
+				${val}
+				</label>
+			</div>`);
+	}
+
 	function initialize() {
+		let filters=getUserFilter();
+		let isWildcard=false;
+		allSlides = [];
+		if(filters.length>1||(filters.length===1&&filters[0]!=="Public"))
+		{
+				selectedFilters = [];
+				$("#filters-heading").html('<div class="col-sm-6 col-md-2"> <h5>Filters</h5> </div >')
+				$("#filters-check").html('');
+				let val = "Public";
+				createCheckbox(val);
+				selectedFilters.push(val);
+				for (let i = 0; i < filters.length; i++) {
+					let val;
+					if (filters[i] == '**') {
+						isWildcard = true;
+						continue;
+					}
+					else
+						val = filters[i];
+					selectedFilters.push(val);
+					createCheckbox(val);
+				}
+				if (isWildcard) {
+					val = 'Others';
+					createCheckbox(val);
+					selectedFilters.push(val);
+				}
+		}
 		slideDeleteRequests = [];
 		userCreateRequests = [];
 		const params = getUrlVars();
@@ -485,6 +553,15 @@
 						return data.map((d, counter) => {
 							// console.log('i:' + counter);
 							const rs = [];
+							if(d['filter'])
+								{
+								rs.filterList= JSON.parse(d['filter'].replace(/'/g, '"'));
+								if(!rs.filterList.some((filter)=>(filters.indexOf(filter) > -1)))
+									rs.filterList=['Others'];
+								}
+							else
+								rs.filterList= ["Public"];
+							rs.displayed=true;
 							const filename = d.location.split('/')[d.location.split('/').length - 1];
 							keys.forEach((key, i) => {
 								if (i == 0) rs.push(d['_id']['$oid'])
@@ -508,7 +585,7 @@
 							// console.log(counter);
 							// console.log(slideDeleteRequests);
 							if (slideDeleteRequests['counter']) {
-								
+
 							console.log(slideDeleteRequests[counter]);
 							// console.log(slideDeleteRequests[counter - 1]);
 							}
@@ -518,7 +595,7 @@
 									<button class="btn btn-success" data-id='${rs[0]}' onclick='openView(this)'>Open</button>
 									<button type='button' class='btn btn-info DownloadButton' id='downloadBtn' data-id='${rs[0]}' onclick='downloadSlide(this)' > <i class='fas fa-download' ></i> </button>
 									${
-										slideDeleteRequests[counter] && slideDeleteRequests[counter].slideDetails && slideDeleteRequests.find(o => o.slideDetails.slideId === rs[0]) ? 
+										slideDeleteRequests[counter] && slideDeleteRequests[counter].slideDetails && slideDeleteRequests.find(o => o.slideDetails.slideId === rs[0]) ?
 										`
 											${
 												slideDeleteRequests.find(o => o.requestedBy === getUserId()) ?
@@ -574,11 +651,12 @@
 					//Adding names to later validate for new slide names
 					existingSlideNames = data.map(d => d[1]);
 
+					allSlides=data;
+
 					const thead = HeadMapping.map((d,i) => `<th>${d.title}	<span class="sort-btn fa fa-sort" data-order=${1}
 						 data-index=${i}>  </span> </th>`);
 
 					thead.push("<th></th>");
-
 					tbody = data.map((d) => {
 						return "<tr>" + d.map((a) => "<td>" + a + "</td>").reduce((a, b) => a + b) + "</tr>";
 					});
@@ -590,13 +668,16 @@
 					totaltablepages = Math.ceil(data.length/entriesPerPage);
 					selectedpage = 0;
 					$("#search-table").val("");
-					searching = false;
 
 					if( data.length>0 && $('.container').children().length===0)
 					{
 						$('.container').html(`<div>
 							<div>
 							<h3 class="text-center h3 mb-0">Available Slides</h3>
+							<div class="row mt-2" id="filters-heading">
+							</div>
+							<div class="row mb-2 ml-1" id="filters-check" >
+							</div>
 							<div class="search-box float-left form-group form-inline">
 								<select id='entries' class="select form-control mr-2">
 									<option value="10" selected>10 slides/page</option>
@@ -635,45 +716,23 @@
 
 				showTablePage();
 
-				$("#search-table").on("keyup", function() {
-					var value = String($(this).val()).toLowerCase();
-					$("#datatables tbody tr").filter(function() {
-						var t = String($(this).text()).toLowerCase().indexOf(value);
-						if(t > -1){
-							$(this).addClass("searched");
-						}else{
-							$(this).removeClass("searched");
-						}
-					});
-					if(value == ""){
-						searching = false;
-						totaltablepages = Math.ceil(data.length/$("#entries").val());
-					}else{
-						searching = true;
-						totaltablepages = Math.ceil($("#datatables tbody .searched").length/$("#entries").val());
-					}
-					resetTable();
-						if (!searching)
-						pageIndicatorVisible(data.length);
-					else
-						pageIndicatorVisible($("#datatables tbody .searched").length);
-				});
+				$("#search-table").on("keyup",filterSlides);
+
 				$(".sort-btn").on("click", function(e) {
 					var index = e.currentTarget.dataset.index;
 					var order = parseInt(e.currentTarget.dataset.order);
-
-					var trs = "#datatables tbody tr";
-					if(searching){
-						trs+= ".searched";
-					}
-
-					$(trs).sort(function(a, b) {
-						let at=$(a).children('td').get(index).textContent.toLowerCase();
-						let bt=$(b).children('td').get(index).textContent.toLowerCase();
+					const sortedSlideRows = allSlides.sort(function(a, b) {
+						let at=a[index];
+						let bt=b[index];
 						if(!isNaN(at)&&!isNaN(bt))
 						{
 							at=Number(at);
 							bt=Number(bt);
+						}
+						else
+						{
+							at=at.toLowerCase();
+							bt=bt.toLowerCase();
 						}
 						if(order===1)
 						{
@@ -695,7 +754,13 @@
 							else
 								return 0;
 						}
-					}).appendTo("#datatables > tbody");
+					})
+					.filter(slide => slide.displayed)
+					.map((slide) => {
+							return "<tr>" + slide.map((a) => "<td>" + a + "</td>").reduce((a, b) => a + b) + "</tr>";
+						})
+					.reduce((a, b) => a + b, "")
+					$("#datatables > tbody").html(sortedSlideRows)
 					selectedpage = 0;
 					showTablePage();
 				});
@@ -720,18 +785,11 @@
 				})
 
 				$("#entries").change(function(){
-					if(!searching) totaltablepages = Math.ceil(data.length/$("#entries").val());
-					else totaltablepages = Math.ceil($("#datatables tbody .searched").length/$("#entries").val());
+					totaltablepages = Math.ceil($("#datatables tbody tr").length/$("#entries").val());
 					resetTable();
-					if (!searching)
-						pageIndicatorVisible(data.length);
-					else
-						pageIndicatorVisible($("#datatables tbody .searched").length);
+					pageIndicatorVisible($("#datatables tbody tr").length);
 				});
-				if(!searching)
-					pageIndicatorVisible(data.length);
-				else
-				pageIndicatorVisible($("#datatables tbody .searched").length);
+			pageIndicatorVisible($("#datatables tbody tr").length);
 			resetTable();
 			$('#datatables').stacktable();
 			checkUserPermissions();
@@ -984,10 +1042,10 @@
 		}
 	}
 
-	
+
 	function handleUserCreationRequests(e, cancel=false) {
 		const userType = getUserType();
-		const reqId = e.dataset.reqid; 
+		const reqId = e.dataset.reqid;
 
 		if (cancel) {
 			store.cancelRequestToCreateUser(reqId);
@@ -1018,7 +1076,7 @@
 							<div class="row pt-1 pb-2">
 								<div class="col-lg-3 col-sm-3 col-3 text-center">
 									<span class="fas fa-trash-alt fa-2x pt-4"></span>
-									</div>    
+									</div>
 									<div class="col-lg-8 col-sm-8 col-8">
 										<strong class="text-info">Slide Delete Requested</strong>
 									<div class="mb-2">
@@ -1030,7 +1088,7 @@
 										<div class="col-6"><button data-id="${notif.slideDetails.slideId}" data-filename="${notif.slideDetails.fileName}" data-reqid='${notif._id.$oid}' data-name="${notif.slideDetails.slideName}" onclick='deleteSld(this);' class="btn btn-info btn-sm">Accept</button></div>
 										<div class="col-6"><button data-id="${notif.slideDetails.slideId}" onclick='deleteSld(this, cancel=true);' data-reqid='${notif._id.$oid}' class="btn btn-secondary btn-sm">Decline</button></div>
 									</div>
-								</div>    
+								</div>
 							</div>
 							<hr>
 						`
@@ -1056,7 +1114,7 @@
 							<div class="row pt-1 pb-2">
 								<div class="col-lg-3 col-sm-3 col-3 text-center">
 									<span class="fas fa-user fa-2x pt-5"></span>
-									</div>    
+									</div>
 									<div class="col-lg-8 col-sm-8 col-8">
 										<strong class="text-info">User Registration Requested</strong>
 									<div class="mb-2">
@@ -1071,7 +1129,7 @@
 										<div class="col-6"><button data-email="${notif.userDetails.email}" data-filter="${notif.userDetails.userFilter}" data-reqid='${notif._id.$oid}' data-usertype="${notif.userDetails.userType}" onclick='handleUserCreationRequests(this);' class="btn btn-info btn-sm">Accept</button></div>
 										<div class="col-6"><button onclick='handleUserCreationRequests(this, cancel=true);' data-reqid='${notif._id.$oid}' class="btn btn-secondary btn-sm">Decline</button></div>
 									</div>
-								</div>    
+								</div>
 							</div>
 							<hr>
 						`
@@ -1090,6 +1148,69 @@
 			}
 		}
 	}
+
+	function handleFilterChange(target)
+	{
+		let index= selectedFilters.indexOf(target.value);
+		if(target.checked &&  index < 0)
+			{
+				selectedFilters.push(target.value);
+				filterSlides();
+			}
+		else
+		if(!target.checked && index >= 0)
+		  {
+				selectedFilters.splice(index,1);
+				filterSlides();
+			}
+	}
+
+ function filterSlides()
+ {
+	let value = String($("#search-table").val()).toLowerCase();
+	let filters = getUserFilter();
+	let filteredSlides;
+	if (filters.length > 1 || (filters.length === 1 && filters[0] !== "Public"))
+	{
+	filteredSlides = allSlides.filter(function (slide) {
+		var slideFilters = slide.filterList;
+		let found = false;
+		for (let i = 0; i < selectedFilters.length; i++) {
+			if (slideFilters.indexOf(selectedFilters[i]) > -1) {
+				found = true;
+				break;
+			}
+		}
+		if(!found)
+			slide.displayed=false;
+		return found;
+	});
+}
+else
+	filteredSlides=allSlides;
+	const searchedSlides = filteredSlides.filter(function (slide) {
+		var ind = slide.slice(0,5).reduce(function (a, b) {
+			return a +" "+ b;
+		}, " ").toLowerCase().indexOf(value);
+		if (ind > -1) {
+			slide.displayed=true;
+			return true;
+		}
+		else
+			{
+				slide.displayed=false;
+				return false;
+			}
+	});
+	const newSlideRows = searchedSlides.map((d) => {
+		return "<tr>" + d.map((a) => "<td>" + a + "</td>").reduce((a, b) => a + b) + "</tr>";
+	});
+	$("#datatables tbody").html(newSlideRows.reduce((a, b) => a + b,""))
+	totaltablepages = Math.ceil(newSlideRows.length / $("#entries").val());
+	resetTable();
+	pageIndicatorVisible(newSlideRows.length);
+}
+
 </script>
 
 </html>
