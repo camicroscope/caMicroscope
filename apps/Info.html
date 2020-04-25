@@ -86,9 +86,19 @@
 		</div>
 	</div>
 
+
 	<div class="container" style="margin-top: 0.5em;">
 	<h3 class="text-center h3 mb-2" >Information Dashboard</h3>
 	<div class="form-group has-search" style="margin-top:1em">
+
+	<div class="container">
+	<h3 class="text-center h3 mb-2" style="margin-top:8px;margin-bottom:10px;">Information Dashboard</h3>
+	<div class="row mt-2" id="filters-heading">
+	</div>
+	<div class="row mb-2 ml-1" id="filters-check">
+	</div>
+	<div class="form-group has-search">
+
 		<span class="fa fa-search form-control-feedback"></span>
 		<input id="search-table" type="text" class="form-control" placeholder="Search">
 	</div>
@@ -108,13 +118,14 @@
 </body>
 <script>
 
-var searching=false;
+var allSlides;
 
 function addhead(){
 	var table = $('table thead');
-	let headingList=['ID','Name','Annotations','Heatmaps']
+	let headingList=['ID','Name','Annotations','Heatmaps'];
+	let propList=['id','name','annotations','heatmap'];
 	const headingMarkup = headingList.map((title,i) => `<th>${title}
-		<span class="sort-btn" data-order=${1} data-index=${i}>
+		<span class="sort-btn" data-order=${2} data-prop=${propList[i]}>
 		<i class="fa fa-sort"/> </span>
 		</th>`);
 	table.append(`<tr>${headingMarkup}</tr>`);
@@ -141,45 +152,59 @@ function addbody(JSONdata){
 	table.append(markup);
 }
 
-function searchSummaryTable(e) {
-	var value = String($(this).val()).toLowerCase();
-	$("#summary table tbody tr").filter(function () {
-		var t = String($(this).text()).toLowerCase().indexOf(value);
-		if (t > -1) {
-			$(this).addClass("searched");
-			$(this).removeClass("d-none");
-		} else {
-			$(this).removeClass("searched");
-			$(this).addClass("d-none");
+function filterSummaryTable() {
+	$('table tbody').html('');
+	let value = String($("#search-table").val()).toLowerCase();
+	let filters = getUserFilter();
+	let filteredSlides;
+	if (filters.length > 1 || (filters.length === 1 && filters[0] !== "Public")) {
+		filteredSlides = allSlides.filter(function (slide) {
+			var slideFilters = slide.filterList;
+			let found = false;
+			for (let i = 0; i < selectedFilters.length; i++) {
+				if (slideFilters.indexOf(selectedFilters[i]) > -1) {
+					found = true;
+					break;
+				}
+			}
+			if (!found)
+				slide.displayed = false;
+			return found;
+		});
+	}
+	else
+		filteredSlides = allSlides;
+	const searchedSlides = filteredSlides.filter(function (slide) {
+		var ind = (slide.id+" "+slide.name).toLowerCase().indexOf(value);
+		if (ind > -1) {
+			slide.displayed = true;
+			return true;
+		}
+		else {
+			slide.displayed = false;
+			return false;
 		}
 	});
-	if (value == "") {
-		searching = false;
-	} else {
-		searching = true;
-	}
+	searchedSlides.forEach(slide=>addbody(slide));
 }
 
 function sortSummaryTable(e) {
-	var index = e.currentTarget.dataset.index;
+	$('table tbody').html('');
+	var prop = e.currentTarget.dataset.prop;
 	var order = parseInt(e.currentTarget.dataset.order);
-	var trs = "#summary table tbody tr";
-	if (searching) {
-		trs += ".searched";
-	}
+	allSlides.sort(function (a, b) {
 
-	$(trs).sort(function (a, b) {
-		let at = $(a).children('td').get(index).textContent;
-		let bt = $(b).children('td').get(index).textContent;
-		if(at&&bt)
+		let at = a[prop];
+		let bt = b[prop];
+		if(Array.isArray(at)&&Array.isArray(bt))
 		{
-			at=at.toLowerCase();
-			bt=bt.toLowerCase();
+			at=at.length;
+			bt=bt.length;
 		}
 		else
 		{
-			at=$(a).children('td').get(index).childNodes[0].classList;
-			bt=$(b).children('td').get(index).childNodes[0].classList;
+			at = at.toLowerCase();
+			bt = bt.toLowerCase();
 		}
 		if (order === 1) {
 			e.currentTarget.dataset.order=2;
@@ -199,10 +224,51 @@ function sortSummaryTable(e) {
 			else
 				return 0;
 		}
-	}).appendTo("#summary table tbody");
+	})
+	.filter(slide=>slide.displayed)
+	.forEach(slide=> addbody(slide));
+}
+
+function createCheckbox(val)
+{
+$("#filters-check").append(`<div class="col-6 col-md-3">
+			<input name="filter-val" type="checkbox"
+				class="form-check-input" onchange="handleFilterChange(this)" name=${val} id=${val} value=${val} checked="true">
+		<label for=${val} class="form-check-label">
+				${val}
+				</label>
+			</div>`);
 }
 
 function initialize() {
+	allSlides=[];
+	let filters = getUserFilter();
+	let isWildcard = false;
+	if (filters.length > 1 || (filters.length === 1 && filters[0] !== "Public")) {
+		selectedFilters = [];
+		$("#filters-heading").html('<div class="col-sm-6 col-md-2"> <h5>Filters</h5> </div >')
+		$("#filters-check").html('');
+		let val = "Public";
+		createCheckbox(val);
+		selectedFilters.push(val);
+		for (let i = 0; i < filters.length; i++) {
+			let val;
+			if (filters[i] == '**') {
+				isWildcard = true;
+				continue;
+			}
+			else
+				val = filters[i];
+			selectedFilters.push(val);
+			createCheckbox(val);
+		}
+		if(isWildcard)
+		{
+						val = 'Others';
+						createCheckbox(val);
+						selectedFilters.push(val);
+		}
+	}
 	const params = getUrlVars();
 	const store = new Store('../data/');
 	store.findSlide()
@@ -214,16 +280,25 @@ function initialize() {
 				return;
 			}
 			addhead();
-			$("#search-table").on("keyup",searchSummaryTable);
+			$("#search-table").on("keyup",filterSummaryTable);
 			$(".sort-btn").on("click", sortSummaryTable);
 			for (var i = 0; i < data.length; i++) {
 				const JSONdata={};
 				JSONdata.id=data[i]._id.$oid;
 				JSONdata.name=data[i].name;
+				JSONdata.displayed=true;
+				if (data[i].filter) {
+					JSONdata.filterList = JSON.parse(data[i].filter.replace(/'/g, '"'));
+					if (!JSONdata.filterList.some((filter) => (filters.indexOf(filter) > - 1)))
+						JSONdata.filterList = ['Others'];
+				}
+				else
+					JSONdata.filterList = ["Public"];
 				store.fetchMark(JSONdata.id).then(function(dataq){
 					JSONdata.annotations=dataq;
 					store.fetchHeatMap(JSONdata.id).then(function(dataqt){
 						JSONdata.heatmap=dataqt;
+						allSlides.push(JSONdata);
 						addbody(JSONdata);
 					});
 				});
@@ -231,6 +306,19 @@ function initialize() {
 			}
 	});
 }
+
+		function handleFilterChange(target) {
+			let index = selectedFilters.indexOf(target.value);
+			if (target.checked && index < 0) {
+				selectedFilters.push(target.value);
+				filterSummaryTable();
+			}
+			else
+				if (!target.checked && index >= 0) {
+					selectedFilters.splice(index, 1);
+					filterSummaryTable();
+			}
+		}
   	document.addEventListener('DOMContentLoaded', initialize);
 </script>
 

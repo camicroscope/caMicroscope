@@ -176,7 +176,8 @@ function updateFormOnUpload(fileName, token) {
   tokentr.insertCell(-1).innerHTML = `<input type=text class="form-control" onchange=hideCheckButton();hidePostButton();
     disabled name=token id='token0'>`;
   slidetr.insertCell(-1).innerHTML = `<input type=text class="form-control" name=slidename id='slidename0'>`;
-  filtertr.insertCell(-1).innerHTML = `<input type=text class="form-control" name=filter id='filter0'>`;
+  filtertr.insertCell(-1).innerHTML = `<input type=text class="form-control" name=filter id='filter0'
+    placeholder="['list','of','filters']">`;
   document.getElementById('token'+0).value = token;
 }
 

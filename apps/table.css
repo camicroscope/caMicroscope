@@ -51,6 +51,11 @@ nav li:not(.active):hover a{
 	cursor: pointer;
 }
 
+#notification-box {
+	overflow-y: scroll;
+	max-height: 40em;
+}
+
 /* Tooltip container */
 .tooltipCustom {
 	position: relative;
@@ -86,11 +91,16 @@ nav li:not(.active):hover a{
 	padding: 10px 0px;
 	color: black;
 }
+
+#tabs, #content {
+	width: 100%;
+}
+
 .bg-gray{
 	background-color: #eee;
 }
 @media (max-width: 640px) {
-	.dropdown-menu{
+	#dropNot{
 		top: 50px;
 		left: -16px;
 		width: 290px;
@@ -105,7 +115,7 @@ nav li:not(.active):hover a{
 		font-size: 13px;
 	}
 }
-.dropdown-menu{
+#dropNot{
 	top: 60px;
 	left: 0px;
 	right: unset;
@@ -137,4 +147,12 @@ nav li:not(.active):hover a{
     text-align: center;
     pointer-events: none;
     color: #aaa;
+}
+
+.nav-tabs {
+	/* display: flex; */
+}
+
+.collapse.in {
+	 display: inline !important;
 }

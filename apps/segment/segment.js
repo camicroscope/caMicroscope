@@ -614,7 +614,7 @@ function uploadModel() {
         const shape = result.shape;
         result.dispose();
         if (shape[1] != size || shape[2] != size) {
-          console('Shape:', shape[1], shape[2]);
+          console.info('Shape:', shape[1], shape[2]);
           throw new Error('The application only supports 1:1 image Masks. Import a valid model.');
         }
 
@@ -631,9 +631,19 @@ function uploadModel() {
           const req = store.put(data);
           req.onsuccess = function(e) {
             console.log('SUCCESS, ID:', e.target.result);
-            status.innerHTML = 'Done! Click refresh below.';
-            status.classList.remove('blink');
             modelName.push(_name.value);
+            let popups = document.getElementById('popup-container');
+            if (popups.childElementCount < 2) {
+              let popupBox = document.createElement('div');
+              popupBox.classList.add('popup-msg', 'slide-in');
+              popupBox.innerHTML = `<i class="small material-icons">info</i>` + _name.value + ` model uploaded sucessfully`;
+              popups.insertBefore(popupBox, popups.childNodes[0]);
+              setTimeout(function() {
+                popups.removeChild(popups.lastChild);
+              }, 3000);
+            }
+            $UI.uploadModal.close();
+            initUIcomponents();
           };
           req.onerror = function(e) {
             status.innerHTML = 'Some error this way!';
@@ -1110,7 +1120,8 @@ function watershed(inn, out, save=null, thresh) {
   M.delete();
 }
 async function deleteModel(name) {
-  if (confirm('Are you sure you want to delete this model?')) {
+  deletedmodelName = name.split('/').pop().split('_').splice(2).join('_').slice(0, -3);
+  if (confirm('Are you sure you want to delete ' + deletedmodelName + ' model?')) {
     const res = await tf.io.removeModel(IDB_URL + name);
     console.log(res);
     const tx = db.transaction('models_store', 'readwrite');
@@ -1123,9 +1134,19 @@ async function deleteModel(name) {
       alert(err);
     } finally {
       if (status) {
-        alert('Deleted', name);
-        showInfo();
         modelName.splice(modelName.indexOf(name.split('_').splice(1).join('_').slice(0, -3)), 1);
+        let popups = document.getElementById('popup-container');
+        if (popups.childElementCount < 2) {
+          let popupBox = document.createElement('div');
+          popupBox.classList.add('popup-msg', 'slide-in');
+          popupBox.innerHTML = `<i class="small material-icons">info</i>` + deletedmodelName + ` model deleted successfully`;
+          popups.insertBefore(popupBox, popups.childNodes[0]);
+          setTimeout(function() {
+            popups.removeChild(popups.lastChild);
+          }, 3000);
+        }
+        $UI.infoModal.close();
+        initUIcomponents();
       }
     }
   } else {
@@ -1141,7 +1162,6 @@ async function showInfo() {
   var tx = db.transaction('models_store', 'readonly');
   var store = tx.objectStore('models_store');
   var modelCount=0;
-
   empty(table);
   // Update table data
   (function(callback) {

@@ -16,9 +16,29 @@
 
     <link rel='stylesheet' type='text/css' media='all' href='../../css/normalize.css'/>
     <link rel='stylesheet' type='text/css' media='all' href='signup.css'/>
+    <link rel='stylesheet' type='text/css' media='all' href='../../css/popup.css'/>
+
+    <!-- JQuery -->
+    <script
+    src="https://code.jquery.com/jquery-3.4.1.min.js"
+    integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+    crossorigin="anonymous"></script>
+    <!-- Bootstrap core JavaScript -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+      integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+      crossorigin="anonymous"></script>
+    <!-- Bootstrap tooltips -->
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" 
+    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" 
+    crossorigin="anonymous"></script>
+    
+
+
   </head>
   <script>
     var userSignupUrl = "../../data/User/post"
+    var permissions;
+
     function addUser(){
       var email = document.getElementById("mail").value
       var filters = document.getElementById("filters").value
@@ -32,29 +52,52 @@
       if (attr == "2"){
         userType = "Editor"
       }
-      var doc = {email: email, userType: userType, userFilter:filters}
-      fetch(userSignupUrl, {
-          method: 'POST',
-          mode: 'cors', // no-cors, cors, *same-origin
-          cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-          credentials: 'same-origin', // include, *same-origin, omit
-          headers: {
-              'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(doc)
-      }).then(x=>{
-        if (x.status>=400){
-          throw "failed to sign up user"
-        }
-        x.json()
-      }).then(x=>{
-        window.alert("success")
-        console.log(x)
-      }).catch(e=>{
-        // window.alert("error!")
-        console.error(e)
-    })
+      // if (getUserType() === "Admin") {
+      if (permissions.user.post == true) {
+        var doc = {email: email, userType: userType, userFilter:filters}
+        fetch(userSignupUrl, {
+            method: 'POST',
+            mode: 'cors', // no-cors, cors, *same-origin
+            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+            credentials: 'same-origin', // include, *same-origin, omit
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(doc),
+          }).then(x=>{
+            if (x.status>=400){
+              throw "failed to sign up user"
+            }
+            x.json()
+          }).then(x=>{
+            window.alert("User registered successfully")
+            console.log(x)
+          }).catch(e=>{
+            // window.alert("error!")
+            console.error(e)
+        });
+      } else {
+        const store = new Store('../data/');
+        store.requestToCreateUser(email, filters, userType);
+      }
     }
+
+    $(window).on('load', function() {
+      $('#sub').text('Sign up');
+      $('#sub').removeAttr('disabled'); 
+      
+      getUserPermissions(getUserType())
+        .then(response => response.text())
+        .then((data) => {
+        return (data ? JSON.parse(data) : null);
+        })
+        .then((data)=> {
+            if(data===null)
+                return;
+            permissions = data;
+      })
+    });
+
   </script>
 
   <body>
@@ -91,7 +134,7 @@
       </div>
       <!-- <hr style="width: 24.25em;  height: 0.01em; background-color: black; margin-top: 0em; margin-bottom: 0;"> -->
 
-      <form>
+      <form id="userForm" onsubmit="return false;">
         <h2 style="margin-top: -.5em;">User Signup</h2>
         <hr
           style="width: 24.25em; margin-left: -1.9em; height: 0.01em; background-color: rgb(172, 172, 172); margin-bottom: 2em;">
@@ -121,21 +164,25 @@
 
         <br> <br>
         <div class="form-group">
-          <button type="submit" id="sub" class="btn btn-primary btn-block btn-lg sub-btn" onclick="addUser()">Sign
-            Up</button>
+          <button type="submit" id="sub" class="btn btn-primary btn-block btn-lg sub-btn" onclick="addUser()" disabled>
+            Please wait ...
+          </button>
         </div>
-        <p class="small text-center">This form is only useful to Admin users. If you reach this page, it's likely that you tried to log into this instance but lack
-          access. Email the administrator if you want to be added.</p>
+        <!-- <p class="small text-center">This form is only useful to Admin users. If you reach this page, it's likely that you tried to log into this instance but lack
+          access. Email the administrator if you want to be added.</p> -->
+        <p class="small text-center">
+          Non-admin users have to submit a request ticket to admins to get their approval to signup new users. 
+          If you are an Admin, you can directly signup users.
+        </p>
       </form>
       <div class="text-center">Already have an account? </div>
     </div>
+    <!-- popup -->
+    <div id="popup-container"></div>
 
-    <!-- JQuery -->
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <!-- Bootstrap tooltips -->
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js"></script>
-    <!-- Bootstrap core JavaScript -->
-    <script type="text/javascript"
-      src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    
+    <script src="../../common/util.js"></script>
+    <script src="../../core/Store.js"></script>
+
   </body>
 </html>
