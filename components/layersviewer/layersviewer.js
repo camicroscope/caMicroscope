@@ -352,7 +352,7 @@ LayersViewer.createCategoricalItem = function(data, type) {
     ic.textContent = 'keyboard_arrow_down';
     label.style.fontWeight = 'bold';
     chk.dataset.type = 'root';
-    chk.style.display = 'none';
+    //chk.style.display = 'none';
     li.appendChild(ic);
   } else {
     chk.id = id;
