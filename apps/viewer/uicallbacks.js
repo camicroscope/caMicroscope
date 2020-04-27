@@ -1894,20 +1894,13 @@ function createHeatMapList(list) {
 /* --  -- */
 /* -- for render anno_data to canavs -- */
 function annoRender(ctx, data) {
-  const imagingHelper = this.viewer.imagingHelper;
-  ctx._lw =
-    (imagingHelper.physicalToDataX(1) - imagingHelper.physicalToDataX(0)) >> 0;
-  ctx.radius =
-    (imagingHelper.physicalToDataX(3) - imagingHelper.physicalToDataX(0)) >> 0;
   DrawHelper.draw(ctx, data.geometries.features);
 }
 function oldAnnoRender(ctx, data) {
-  const lineWidth =
-    (imagingHelper.physicalToDataX(1) - imagingHelper.physicalToDataX(0)) >> 0;
-  ctx.lineWidth = lineWidth;
   DrawHelper.draw(ctx, data);
 }
-function annoBrushRender(ctx, data) {
-  caDrawHelper.prototype.drawBrushGrids(ctx, data.geometries.features[0]);
-}
+// function annoBrushRender(ctx, data) {
+//   // console.log(3,data)
+//   caDrawHelper.prototype.drawBrushGrids(ctx, data.geometries.features[0]);
+// }
 /* --  -- */
