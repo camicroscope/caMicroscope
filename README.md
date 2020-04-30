@@ -33,6 +33,7 @@ The toolbar is in the top-left of the main content window. Use the toolbar butto
 | ![](https://fonts.gstatic.com/s/i/materialicons/label/v4/24px.svg)      | Labeling      |Use this tool to draw a circle or rectangle around a tumor region, measure an area on the slide, download labels, and submit a bug report. The Labeling tool has its own toolbar with tools in the following order from left to right: return to the previous slide, place a square on the slide, place a circle on the slide, measure an area, download labels, and submit a bug report. Click the left arrow at the far right of the toolbar to hide it, then click the right arrow to show it. |
 | ![](https://fonts.gstatic.com/s/i/materialicons/timeline/v6/24px.svg)      | Segment      | This tool allows you to display, count, and export nuclear segmentations on the image. Clicking this tool opens the following custom toolbar. |
 | ![](https://fonts.gstatic.com/s/i/materialicons/aspect_ratio/v4/24px.svg)      | Model      | Show results from a pre-trained tensorflow compatible model on a ROI of the slide. |
+| ![](https://fonts.gstatic.com/s/i/materialicons/get_app/v4/24px.svg)      | Download Slide      | Download the slide image to your system |
 | ![](https://fonts.gstatic.com/s/i/materialicons/bug_report/v4/24px.svg)      | Bug Report      | Report a bug or give feedback. |
 | ![](https://fonts.gstatic.com/s/i/materialicons/help/v4/24px.svg)      | Tutorial      | Click to view a guided tour of the viewer tools. |
 
