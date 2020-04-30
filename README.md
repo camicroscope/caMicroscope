@@ -10,7 +10,7 @@ This guide has sections for different kinds of use of the platform. The [User Gu
 ![Annotate Areas of Interest](docs/Draw.gif)
 ![Alternate Annotation Method](docs/Paint.gif)
 ![Automatic Object Detection](docs/Segment.gif)
-![Test Classification Models](docs/Precict.gif)
+![Test Classification Models](docs/Predict.gif)
 
 # User Guide
 
