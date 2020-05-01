@@ -100,7 +100,7 @@ nav li:not(.active):hover a{
 	background-color: #eee;
 }
 @media (max-width: 640px) {
-	.dropdown-menu{
+	#dropNot{
 		top: 50px;
 		left: -16px;
 		width: 290px;
@@ -115,7 +115,7 @@ nav li:not(.active):hover a{
 		font-size: 13px;
 	}
 }
-.dropdown-menu{
+#dropNot{
 	top: 60px;
 	left: 0px;
 	right: unset;
