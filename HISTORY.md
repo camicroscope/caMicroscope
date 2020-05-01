@@ -1,5 +1,8 @@
-### caMicroscope [?.?.?](https://github.com/camicroscope/camicroscope/compare/v3.7.2...camicroscope:develop)
+### caMicroscope [?.?.?](https://github.com/camicroscope/camicroscope/compare/v3.7.3...camicroscope:develop)
 ###### ????-??-??
+
+### caMicroscope [3.7.3](https://github.com/camicroscope/camicroscope/compare/v3.7.2...camicroscope:v3.7.3)
+###### 2020-05-01
 * Start this changelog.
 * Use Friendlier Alerts in Viewer (#383)
 * Batch Slide Loader (#385, #389)
