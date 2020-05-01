@@ -30,4 +30,53 @@ body {
 
 .footer {
  margin-top: auto !important;
+
+}
+#detailtable{
+	margin:auto;
+	text-align: left;
+
+}
+#detailtable th{
+	padding: 6px;
+	padding-left: 15px;
+	padding-right: 15px;
+	text-align: right;
+	border-right-style: double;
+}
+#detailtable td{
+	padding: 6px;
+	padding-left: 15px;
+	padding-left: 15px;
+	text-align: left;
+}
+#annotationtable, #heatmaptable{
+	margin: auto;
+	text-align: left;
+	border-collapse: collapse;
+  width: 100%;
+	border-bottom-style: solid;
+	border-bottom-color: #0c5460;
+}
+#annotationtable th,#heatmaptable th{
+	border: 1px solid #0c5460;
+ 	padding: 8px;
+	padding-top: 10px;
+  padding-bottom: 10px;
+  text-align: left;
+  background-color: #0c5460;
+	padding-left: 12px;
+  color: white;
+}
+#annotationtable td, #heatmaptable td{
+	/* border: 1px solid #0c5460; */
+ padding: 8px;
+ padding-left: 12px;
+ font-style: italic;
+}
+#annotationtable tr:nth-child(even), #heatmaptable tr:nth-child(even){
+	background: #b9e2e8;
+}
+#annotationtable tr:hover, #heatmaptable tr:hover{
+	background: #9cc7ce;
 }
