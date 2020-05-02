@@ -1041,23 +1041,6 @@
 		}
 	}
 
-	
-	function handleUserCreationRequests(e, cancel=false) {
-		const userType = getUserType();
-		const reqId = e.dataset.reqid; 
-
-		if (cancel) {
-			store.cancelRequestToCreateUser(reqId);
-		} else {
-			const email = e.dataset.email;
-			const userType = e.dataset.usertype;
-			const userFilter = JSON.parse(e.dataset.filter.replace(/'/g, '"'));
-			store.cancelRequestToCreateUser(reqId, onlyRequestCancel=false).then(() => {
-				store.acceptRequestToDeleteSlide(email, userFilter, userType);
-			})
-		}
-	}
-
 
 	function handleUserCreationRequests(e, cancel=false) {
 		const userType = getUserType();
