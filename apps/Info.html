@@ -87,9 +87,52 @@
 	</div>
 
 
-	<div class="container" style="margin-top: 0.5em;">
-	<h3 class="text-center h3 mb-2" >Information Dashboard</h3>
-	<div class="form-group has-search" style="margin-top:1em">
+	<div class="modal fade" id="detail-dialog" tabindex="-1" role="dialog"
+	aria-labelledby="title-of-dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false" >
+	<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document" style="margin-top:8vh;">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" id="title-of-dialog">Slide Information Details</h4>
+				<button type="button" class="close" onclick="closedetails();" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div>
+					<div id="content">
+						<div class="alert alert-info" role="alert">
+
+							<h4 style="text-align:center">Synopsis</h4><hr style="margin-top:0px;">
+							<table id="detailtable">
+							</table>
+						</div>
+						<div class="alert alert-info" role="alert">
+
+							<h4 style="text-align:center">Annotations</h4><hr style="margin-top:0px;">
+							<table id="annotationtable">
+							</table>
+						</div>
+						<div class="alert alert-info" role="alert">
+
+							<h4 style="text-align:center">Heatmaps</h4><hr style="margin-top:0px;">
+							<table id="heatmaptable">
+							</table>
+						</div>
+						<div class="text-center p-2">
+							<div id="load_status" class="p-1"></div>
+							<div id="json_table"></div>
+						</div>
+					</div>
+				</div>
+
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" onclick="closedetails();" data-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+	</div>
+
 
 	<div class="container">
 	<h3 class="text-center h3 mb-2" style="margin-top:8px;margin-bottom:10px;">Information Dashboard</h3>
@@ -103,10 +146,14 @@
 		<input id="search-table" type="text" class="form-control" placeholder="Search">
 	</div>
 
+
+
+
+
   <div class="table-responsive" id="summary">
     <table class="table table-striped">
-			<thead></thead>
-			<tbody></tbody>
+			<thead id="infothead"></thead>
+			<tbody id="infotbody"></tbody>
     </table>
 	</div>
 </div>
@@ -121,18 +168,19 @@
 var allSlides;
 
 function addhead(){
-	var table = $('table thead');
+	var table = $('#infothead');
 	let headingList=['ID','Name','Annotations','Heatmaps'];
 	let propList=['id','name','annotations','heatmap'];
 	const headingMarkup = headingList.map((title,i) => `<th>${title}
 		<span class="sort-btn" data-order=${2} data-prop=${propList[i]}>
 		<i class="fa fa-sort"/> </span>
 		</th>`);
+		headingMarkup.push("<th></th>")
 	table.append(`<tr>${headingMarkup}</tr>`);
 }
 
 function addbody(JSONdata){
-	var table = $('table tbody');
+	var table = $('#infotbody');
 	// console.log(JSONdata.annotations);
 	var annodisp=null;
 	var heatdisp=null;
@@ -148,8 +196,88 @@ function addbody(JSONdata){
 	else{
 		heatdisp="<i class='fas fa-check'  style='color:green;'></i>"
 	}
-	var markup = "<tr><td>"+JSONdata.id+"</td><td>"+JSONdata.name+"</td><td>"+annodisp+"</td><td>"+heatdisp+"</td></tr>"
+	var button = `<td>	<button class=\"btn btn-primary\" data-id='${allSlides.length}' onclick='openDetails(this)'>Details</button></td>`
+	var markup = "<tr><td>"+JSONdata.id+"</td><td>"+JSONdata.name+"</td><td>"+annodisp+"</td><td>"+heatdisp+"</td>"+button+"</tr>"
 	table.append(markup);
+}
+
+function openDetails(tag){
+	document.getElementById('detail-dialog').style.display = 'block';
+	document.getElementById('detail-dialog').style.opacity = '1';
+	document.getElementById('detail-dialog').style.background = 'rgba(0,0,0,0.5)';
+	var count = (parseInt(tag.dataset.id))-1;
+	var table = $('#detailtable');
+	var json = {
+		id:allSlides[count].id,
+		name:allSlides[count].name,
+		annotations:allSlides[count].annotations.length,
+		heatmaps:allSlides[count].heatmap.length
+	}
+	var table = $('#detailtable');
+	var content = `<tr><th>Slide ID</th><td>${json.id}</td></tr><tr><th>Slide Name</th><td>${json.name}</td></tr><tr><th>Number of Annotations</th><td>${json.annotations} annotations</td></tr><tr><th>Number of Heatmaps</th><td>${json.heatmaps} heatmaps</td></tr>`
+	table.append(content);
+	addAnnotations(allSlides[count].annotations);
+	addHeatmaps(allSlides[count].heatmap);
+	console.log(allSlides[count]);
+}
+
+function addAnnotations(content){
+	if(content.length===0){
+		return;
+	}
+	else{
+		var table = $('#annotationtable');
+		var heading = `<tr><th>S.No</th><th>Name</th><th>Notes</th></tr>`;
+		table.append(heading);
+		for (var i = 0; i < content.length; i++) {
+			var name = content[i].properties.annotations.name;
+			var notes = content[i].properties.annotations.notes;
+			if(typeof(notes)=="undefined"){
+				notes = "";
+			}
+			var Content = "<tr><td>"+(i+1).toString()+".</td><td>"+name+"</td><td>"+notes+"</td></tr>";
+			table.append(Content);
+		}
+	}
+}
+
+function addHeatmaps(content){
+	if(content.length===0){
+		return;
+	}
+	else{
+		var table = $('#heatmaptable');
+		console.log(content);
+		var heading = `<tr><th>S.No</th><th>Study ID</th><th>Coordinate System</th><th>Fields</th></tr>`;
+		table.append(heading);
+		for (var i = 0; i < content.length; i++) {
+			var study_id = content[i].provenance.analysis.study_id;
+			var coordinateSystem = content[i].provenance.analysis.coordinateSystem;
+			var fields = content[i].provenance.analysis.fields.length;
+			var Content = "<tr><td>"+(i+1).toString()+".</td><td>"+study_id+"</td><td>"+coordinateSystem+"</td><td>"+fields+"</td></tr>";
+			table.append(Content);
+		}
+	}
+}
+
+function closedetails(tag){
+	var table = $('#detailtable');
+	console.log(table);
+	for (var i = 0; i < 4; i++) {
+		table[0].deleteRow(0);
+	}
+	table = $('#annotationtable');
+	var length = table[0].rows.length;
+	for (var i = 0; i < length; i++) {
+		table[0].deleteRow(0);
+	}
+	table = $('#heatmaptable');
+	var length = table[0].rows.length;
+	for (var i = 0; i < length; i++) {
+		table[0].deleteRow(0);
+	}
+	document.getElementById('detail-dialog').style.display = 'none';
+	document.getElementById('detail-dialog').style.opacity = '0';
 }
 
 function filterSummaryTable() {

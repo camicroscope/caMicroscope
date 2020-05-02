@@ -186,7 +186,7 @@
                     const path = features[j].geometry.path;
                     const style = features[j].properties.style;
                     this.subIndex = null;
-                    if(layer.hoverable&&path.contains(img_point.x,img_point.y)){
+                    if(layer.hoverable&&path&&path.contains(img_point.x,img_point.y)){
                         this.resize();
                         this.highlightPath = path;
                         this.highlightStyle = style;
@@ -225,6 +225,19 @@
             }
         },
 
+
+        getViewBoundBoxInData: function() {
+            const imagingHelper = this._viewer.imagingHelper;
+            const { x, y } = imagingHelper._viewportOrigin;
+            const width = imagingHelper._viewportWidth;
+            const height = this._viewer.imagingHelper._viewportHeight;
+
+            const x1 = x + width;
+            const y1 = y + height;
+            const min = imagingHelper.logicalToDataPoint({x:x,y:y})
+            const max = imagingHelper.logicalToDataPoint({x:x1,y:y1})
+            return { min, max };
+        },
         /**
          * @private
          * resize the canvas and redraw marks on the proper place
@@ -236,7 +249,15 @@
             this._div.style.transform = 'scale(1,1)';
             this._center = this._viewer.viewport.getCenter(true);
             this._zoom = this._viewer.viewport.getZoom(true);
-            
+
+            // get global variable for renderer
+            const imagingHelper = this._viewer.imagingHelper;
+            this._display_ctx_._lw = (imagingHelper.physicalToDataX(1) - imagingHelper.physicalToDataX(0)) >> 0;
+            this._display_ctx_.radius = (imagingHelper.physicalToDataX(3) - imagingHelper.physicalToDataX(0)) >> 0;
+            this._display_ctx_.lineWidth = (imagingHelper.physicalToDataX(1) - imagingHelper.physicalToDataX(0)) >> 0;;       
+            this._display_ctx_.viewBoundBoxInData = this.getViewBoundBoxInData()
+            this._display_ctx_.imagingHelper = imagingHelper;
+            // 
             if (this._containerWidth !== this._viewer.container.clientWidth) {
                 this._containerWidth = this._viewer.container.clientWidth;
                 this._div.setAttribute('width', this._containerWidth);
@@ -306,6 +327,18 @@
             }
         },
 
+        viewBoundFilter: function(layer) {
+          // current view's bounding box against a patch
+          if (this._getCanvasBoundBox)
+          return $.isIntersectBbox(this._getCanvasBoundBox, {
+            x: x,
+            y: y,
+            width: this._size[0],
+            height: this._size[1]
+          });
+          else
+            console.log(this._getCanvasBoundBox);
+        },
         /**
          * @private
          * drawOnHover draw marks on hover canvas
@@ -446,6 +479,7 @@
         }
     }
 
+    
     $.extend( $.OverlaysManager.prototype, $.EventSource.prototype);
 
 
