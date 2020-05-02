@@ -197,6 +197,13 @@ caDrawHelper.prototype.draw = function(ctx, image_data){
         // if no data 
         const points = polygon.geometry.coordinates[0];
         if(polygon.geometry.type=='LineString'){
+            // determine drawing or not
+            if(ctx.viewBoundBoxInData 
+                && polygon.bound
+                && polygon.bound.coordinates
+                && polygon.bound.coordinates[0]
+                && (!this.doesDraw(polygon.bound.coordinates[0], ctx)
+                || !this.isIntersectBBox(ctx.viewBoundBoxInData, polygon.bound.coordinates[0]))) continue;
             
             ctx.fillStyle = style.color;
             if(polygon.properties.size){
@@ -206,18 +213,49 @@ caDrawHelper.prototype.draw = function(ctx, image_data){
             }
             
         }else if(polygon.geometry.type=='Point'){
+            const point = polygon.geometry.coordinates
+            if(ctx.viewBoundBoxInData
+                && !this.isPointInBBox(ctx.viewBoundBoxInData, {x:point[0],y:point[1]})) continue;
             ctx.fillStyle = (ctx.isFill ==undefined || ctx.isFill)?hexToRgbA(style.color,0.7):style.color;
             polygon.geometry.path = this.circle(ctx, polygon.geometry.coordinates, ctx.radius);
         }else if(false){
 
         }else{
-           
+            // determine drawing or not
+            if(ctx.viewBoundBoxInData 
+                && polygon.bound
+                && polygon.bound.coordinates
+                && polygon.bound.coordinates[0]
+                && (!this.doesDraw(polygon.bound.coordinates[0], ctx)
+                || !this.isIntersectBBox(ctx.viewBoundBoxInData, polygon.bound.coordinates[0]))) continue;
+                
             ctx.fillStyle = (ctx.isFill ==undefined || ctx.isFill)?hexToRgbA(style.color,0.5):style.color;
             polygon.geometry.path = this.drawPolygon(ctx, points);
         }
         
     }
 
+}
+caDrawHelper.prototype.isPointInBBox = function(bbox, point){
+    if( bbox.min.x <= point.x && point.x <= bbox.max.x && bbox.min.y <= point.y && point.y <= bbox.max.y ) {
+        return true;
+    }
+    return false;
+}
+
+caDrawHelper.prototype.isIntersectBBox = function(bbox1, bbox2){
+    return (
+      bbox2[2][0] >= bbox1.min.x &&
+      bbox2[0][0] <= bbox1.max.x &&
+      bbox2[2][1] >= bbox1.min.y &&
+      bbox2[0][1] <= bbox1.max.y
+    );
+}
+
+caDrawHelper.prototype.doesDraw = function(bbox, ctx){
+    const area = (bbox[2][0]-bbox[0][0]) * (bbox[2][1]-bbox[0][1])
+    const minArea = getMinFootprint(ctx.imagingHelper, 6);
+    return minArea <= area ?true: false;
 }
 
 caDrawHelper.prototype.drawGrids = function(ctx, image_data){
@@ -241,13 +279,13 @@ caDrawHelper.prototype.drawGrid = function(ctx, polygon){
         return this.drawMultiGrid(ctx, grids, size);
 }
 
-caDrawHelper.prototype.drawBrushGrids = function(ctx, polygon){
-    const style = polygon.properties.style;
-    const grids = polygon.geometry.coordinates[0];
-    const size = polygon.properties.size;
-    ctx.fillStyle = hexToRgbA(polygon.properties.style.color,0.5);
-    polygon.geometry.path = this.drawMultiGrid(ctx, grids, size);
-}
+// caDrawHelper.prototype.drawBrushGrids = function(ctx, polygon){
+//     const style = polygon.properties.style;
+//     const grids = polygon.geometry.coordinates[0];
+//     const size = polygon.properties.size;
+//     ctx.fillStyle = hexToRgbA(polygon.properties.style.color,0.5);
+//     polygon.geometry.path = this.drawMultiGrid(ctx, grids, size);
+// }
 
 /**
  * set the style to a specific context2D
