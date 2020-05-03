@@ -8,18 +8,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Index
 * **Version 3**
-    * [3.7.x](#camicroscope-3.7.3)
-    * [3.6.x](#camicroscope-3.6.2)
-    * [3.5.x](#camicroscope-3.5.10)
-    * [3.4.x](#camicroscope-3.4.3)
-    * [3.3.x](#camicroscope-3.3.4)
-    * [3.2.x](#camicroscope-3.2.2)
-    * [3.1.x](#camicroscope-3.1.1)
-    * [3.0.x](#camicroscope-3.0.0)
+    * [3.7.x](#camicroscope-373)
+    * [3.6.x](#camicroscope-362)
+    * [3.5.x](#camicroscope-3510)
+    * [3.4.x](#camicroscope-343)
+    * [3.3.x](#camicroscope-334)
+    * [3.2.x](#camicroscope-322)
+    * [3.1.x](#camicroscope-311)
+    * [3.0.x](#camicroscope-300)
 * **Version 2**
-    * [2.0.x](#camicroscope-2.0.1)
+    * [2.0.x](#camicroscope-201)
 * **Version 1**
-    * [1.0.x](#camicroscope-1.0)
+    * [1.0.x](#camicroscope-10)
 
 ### caMicroscope [Unreleased](https://github.com/camicroscope/camicroscope/compare/v3.7.3...camicroscope:develop)
 ###### PRESENT
