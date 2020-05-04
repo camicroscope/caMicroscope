@@ -916,6 +916,7 @@ function addROIFormEvent(){
       its_txt_content.textContent = `${its_range.value}%`
       delete its_txt.dataset.error;
       its_txt_content.classList.remove('hide')
+      itsChangeText()
     }else{
       // give error tip
       its_txt.dataset.error = `% Stroma Range (Ineger): 0 ~ 100`;
