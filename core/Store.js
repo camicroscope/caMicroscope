@@ -73,6 +73,22 @@ class Store {
     }
   }
   /**
+  * Get a description of the system's user permissions
+  * @param {string} userType - the target user type.
+  **/
+  getUserPermissions(userType) {
+    const suffix = 'User/wcido';
+    const url = this.base + suffix;
+    const query = {
+      'ut': userType,
+    };
+    return fetch(url + '?' + objToParamStr(query), {
+      method: 'GET',
+      credentials: 'include',
+      mode: 'cors',
+    });
+  }
+  /**
    * find marks matching slide and/or marktype
    * will search by slide field as exactly given and by the oid slide of that name
    * @param {string} [name] - the associated slide name
