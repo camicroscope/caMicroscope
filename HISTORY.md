@@ -27,8 +27,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### caMicroscope [3.7.4](https://github.com/camicroscope/camicroscope/compare/v3.7.3...camicroscope:v3.7.4)
 ###### 2020-05-15
-* Add download button to viewer ([#392]https://github.com/camicroscope/caMicroscope/pull/392)
-* Expand HISTORY.md ([#396]https://github.com/camicroscope/caMicroscope/pull/396)
+* Add download button to viewer ([#392](https://github.com/camicroscope/caMicroscope/pull/392))
+* Expand HISTORY.md ([#396](https://github.com/camicroscope/caMicroscope/pull/396))
 * Split out large JS sections from table and signup
 * Move getUserPermissions to store
 
