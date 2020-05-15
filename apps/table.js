@@ -530,7 +530,7 @@ $(document).ready(function(){
 
 function checkUserPermissions(){
   let userType=getUserType();
-  getUserPermissions(userType)
+  store.getUserPermissions(userType)
   .then(response => response.text())
   .then((data) => {
   return (data ? JSON.parse(data) : null);
