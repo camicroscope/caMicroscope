@@ -672,10 +672,57 @@ function magnifierOff() {
 }
 
 // image download
-function imageDownload(data) {
-  // TODO functionality
-  alert('Download Image');
-  console.log(data);
+function imageDownload() {
+  var downloadURL = '../../loader/getSlide/';
+  var store = new Store('../../data/');
+  var id=$D.params.slideId;
+  var fileName = '';
+  store
+      .getSlide(id)
+      .then((response) => {
+        if (response[0]) {
+          return response[0]['location'];
+        } else {
+          throw new Error('Slide not found');
+        }
+      })
+      .then((location) => {
+        fileName = location.substring(
+            location.lastIndexOf('/') + 1,
+            location.length,
+        );
+        return fileName;
+      })
+      .then((fileName) => {
+        fetch(downloadURL + fileName, {
+          credentials: 'same-origin',
+          method: 'GET',
+        })
+            .then((response) => {
+              if (response.status == 404) {
+                throw response;
+              } else {
+                return response.blob();
+              }
+            })
+            .then((blob) => {
+              var url = window.URL.createObjectURL(blob);
+              var a = document.createElement('a');
+              a.href = url;
+              a.download = fileName;
+              document.body.appendChild(a);
+              a.click();
+              a.remove(); // afterwards we remove the element again
+              window.URL.revokeObjectURL(blob);
+            })
+            .catch((error) => {
+              console.log(error);
+              alert('Error! Can\'t download file.');
+            });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
 }
 
 /**
