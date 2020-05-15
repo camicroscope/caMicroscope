@@ -106,6 +106,14 @@ var tour = new Tour({
     smartPlacement: true,
   },
   {
+    element: 'i[title=\'Download Slide\']',
+    title: 'Download Slide',
+    content:
+        'Download the slide image to your system',
+    placement: 'auto bottom',
+    smartPlacement: true,
+  },
+  {
     element: 'i[title=\'Bug Report\']',
     title: 'Bug Report',
     content: 'Report a bug or give feedback.',

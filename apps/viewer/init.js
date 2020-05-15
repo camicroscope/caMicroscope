@@ -799,6 +799,15 @@ async function initUIcomponents() {
     },
   });
 
+  subToolsOpt.push({
+    name: 'download',
+    icon: 'get_app',
+    title: 'Download Slide',
+    type: 'btn',
+    value: 'download slide',
+    callback: imageDownload,
+  });
+
   // -- For Nano borb Start -- //
   if (ImgloaderMode == 'imgbox') {
     // download
