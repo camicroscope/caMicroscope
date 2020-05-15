@@ -28,124 +28,14 @@
       integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
       crossorigin="anonymous"></script>
     <!-- Bootstrap tooltips -->
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" 
-    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" 
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
     crossorigin="anonymous"></script>
-    
+
 
 
   </head>
-  <script>
-    var userSignupUrl = "../../data/User/post";
-    var protoTokenUrl = "../../auth/Token/proto";
-    var permissions;
-
-    function addUser(){
-      var email = document.getElementById("mail").value
-      var filters = document.getElementById("filters").value
-      // var attr = document.querySelector('input[name="attr"]:checked').value
-      var attrEle = document.getElementById("attr");
-      var attr = attrEle.options[attrEle.selectedIndex].value;
-      var userType = "Null"
-      if (attr == "3"){
-        userType = "Admin"
-      }
-      if (attr == "2"){
-        userType = "Editor"
-      }
-
-      getUserPermissions(getUserType())
-        .then(response => response.text())
-        .then((data) => {
-        return (data ? JSON.parse(data) : null);
-        })
-        .then((data)=> {
-            if(data===null)
-                return;
-            permissions = data;
-            return;
-      })
-      .then((resp) => {
-        return fetch(protoTokenUrl)
-      })
-      .then((response) => {
-        // console.log(response);
-        return response.json();
-      })
-      .then((data) => {
-        return data.exists
-      })
-      .then((x) => {
-        if (x) {
-          var doc = {email: email, userType: userType, userFilter:filters}
-          fetch(userSignupUrl, {
-              method: 'POST',
-              mode: 'cors', // no-cors, cors, *same-origin
-              cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-              credentials: 'same-origin', // include, *same-origin, omit
-              headers: {
-                  'Content-Type': 'application/json',
-              },
-              body: JSON.stringify(doc),
-            }).then(x=>{
-              if (x.status>=400){
-                throw "failed to sign up user"
-              }
-              x.json()
-            }).then(x=>{
-              window.alert("User registered successfully")
-            }).catch(e=>{
-              // window.alert("error!")
-              console.error(e)
-          });
-        } else {
-          if (permissions.user && permissions.user.post == true) {
-            var doc = {email: email, userType: userType, userFilter:filters}
-            fetch(userSignupUrl, {
-                method: 'POST',
-                mode: 'cors', // no-cors, cors, *same-origin
-                cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-                credentials: 'same-origin', // include, *same-origin, omit
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(doc),
-              }).then(x=>{
-                if (x.status>=400){
-                  throw "failed to sign up user"
-                }
-                x.json()
-              }).then(x=>{
-                window.alert("User registered successfully");
-              }).catch(e=>{
-                // window.alert("error!")
-                console.error(e)
-            });
-          } else {
-            const store = new Store('../data/');
-            store.requestToCreateUser(email, filters, userType);
-          }
-        }
-      });
-    }
-
-    $(window).on('load', function() {
-      $('#sub').text('Sign up');
-      $('#sub').removeAttr('disabled'); 
-      
-      getUserPermissions(getUserType())
-        .then(response => response.text())
-        .then((data) => {
-        return (data ? JSON.parse(data) : null);
-        })
-        .then((data)=> {
-            if(data===null)
-                return;
-            permissions = data;
-      });
-    });
-
-  </script>
+  <script src="./signup.js"></script>
 
   <body>
 
@@ -218,7 +108,7 @@
         <!-- <p class="small text-center">This form is only useful to Admin users. If you reach this page, it's likely that you tried to log into this instance but lack
           access. Email the administrator if you want to be added.</p> -->
         <p class="small text-center">
-          Non-admin users have to submit a request ticket to admins to get their approval to signup new users. 
+          Non-admin users have to submit a request ticket to admins to get their approval to signup new users.
           If you are an Admin, you can directly signup users.
         </p>
       </form>
@@ -227,7 +117,7 @@
     <!-- popup -->
     <div id="popup-container"></div>
 
-    
+
     <script src="../../common/util.js"></script>
     <script src="../../core/Store.js"></script>
 
