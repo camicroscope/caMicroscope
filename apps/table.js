@@ -561,7 +561,7 @@ function changeSlideName(oldname, id) {
   renameInput.setAttribute('placeholder', 'Enter new name');
   renameInput.setAttribute('aria-label', 'newSlideName');
   renameInput.required = true;
-  renameDiv.append(newSlideName);
+  renameDiv.append(renameInput);
   document.getElementById('confirmUpdateSlideContent').innerHTML = '';
   document.getElementById('confirmUpdateSlideContent').append(renameDiv);
   const store = new Store('../data/');
