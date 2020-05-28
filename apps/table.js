@@ -72,8 +72,11 @@ function validateForm(callback) {
     {
       filterInput.addClass('is-invalid');
       if (filterInput.parent().children().length === 1) {
-        filterInput.parent().append(`<div class="invalid-feedback" id="filter-feedback0">
-      Filters should be an array.</div>`);
+        let filter_div = document.createElement("div")
+        filter_div.id = 'filter-feedback0'
+        filter_div.addClass('invalid-feedback')
+        filter_div.textContent = 'Filters should be an array.'
+        filterInput.parent().append(filter_div);
       }
       return false;
     }
