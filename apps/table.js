@@ -257,15 +257,15 @@ function initialize() {
                   // console.log('Done one iter');
 
                   const btn = `<div id='open-delete'>
-                <button class="btn btn-success" data-id='${rs[0]}' onclick='openView(this)'>Open</button>
-                <button type='button' class='btn btn-info DownloadButton' id='downloadBtn' data-id='${rs[0]}' onclick='downloadSlide(this)' > <i class='fas fa-download' ></i> </button>
+                <button class="btn btn-success" data-id='${sanitize(rs[0])}' onclick='openView(this)'>Open</button>
+                <button type='button' class='btn btn-info DownloadButton' id='downloadBtn' data-id='${sanitize(rs[0])}' onclick='downloadSlide(this)' > <i class='fas fa-download' ></i> </button>
                 ${
                   slideDeleteRequests[counter] && slideDeleteRequests[counter].slideDetails && slideDeleteRequests.find((o) => o.slideDetails.slideId === rs[0]) ?
                   `
                     ${
-                      slideDeleteRequests.find((o) => o.requestedBy === getUserId()) ?
+                      slideDeleteRequests.find((o) => o.requestedBy === sanitize(getUserId())) ?
                       `
-                        <button type='button' class='btn btn-danger DelButton' id='deleteBtn' data-id='${rs[0]}' data-name='${rs[1]}' onclick='deleteSld(this)' data-reqid='${slideDeleteRequests.find((o) => o.slideDetails.slideId === rs[0]) ? slideDeleteRequests.find((o) => o.slideDetails.slideId === rs[0])._id.$oid : '' }' data-filename='${filename}' data-toggle='modal'>
+                        <button type='button' class='btn btn-danger DelButton' id='deleteBtn' data-id='${sanitize(rs[0])}' data-name='${sanitize(rs[1])}' onclick='deleteSld(this)' data-reqid='${slideDeleteRequests.find((o) => o.slideDetails.slideId === rs[0]) ? slideDeleteRequests.find((o) => o.slideDetails.slideId === rs[0])._id.$oid : '' }' data-filename='${sanitize(filename)}' data-toggle='modal'>
                           Cancel Delete Request <i class='fas fa-trash-alt' ></i>
                         </button>
                       ` :
@@ -278,7 +278,7 @@ function initialize() {
                     }
                   ` :
                   `
-                    <button type='button' class='btn btn-danger DelButton' id='deleteBtn' data-id='${rs[0]}' data-name='${rs[1]}' onclick='deleteSld(this)' data-filename='${filename}' data-toggle='modal'>
+                    <button type='button' class='btn btn-danger DelButton' id='deleteBtn' data-id='${sanitize(rs[0])}' data-name='${sanitize(rs[1])}' onclick='deleteSld(this)' data-filename='${sanitize(filename)}' data-toggle='modal'>
                       ${permissions.slide.delete == true ? '' : 'Request Deletion'} <i class='fas fa-trash-alt' ></i>
                     </button>
                   `
@@ -318,8 +318,8 @@ function initialize() {
 
               allSlides=data;
 
-              const thead = HeadMapping.map((d, i) => `<th>${d.title} <span class="sort-btn fa fa-sort" data-order=${1}
-           data-index=${i}>  </span> </th>`);
+              const thead = HeadMapping.map((d, i) => `<th>${sanitize(d.title)} <span class="sort-btn fa fa-sort" data-order=${1}
+              data-index=${i}>  </span> </th>`);
 
               thead.push('<th></th>');
               tbody = data.map((d) => {
@@ -480,7 +480,7 @@ function getValues(d, keys) {
 function openView(e) {
   const oid = e.dataset.id;
   if (oid) {
-    window.location.href = `./viewer/viewer.html?slideId=${oid}`;
+    window.location.href = `./viewer/viewer.html?slideId=${sanitize(oid)}`;
   } else {
     alert('No Data Id');
   }
@@ -619,7 +619,7 @@ function deleteSld(e, cancel=false) {
 
   const store = new Store('../data/');
   if (oid) {
-    $('#confirmDeleteContent').html(`Are you sure you want to ${reqId ? 'decline the ': ''} ${permissions.slide.delete == true ? '' : 'request to ' } delete the slide ${oname} with id ${oid} ?`);
+    $('#confirmDeleteContent').html(`Are you sure you want to ${reqId ? 'decline the ': ''} ${permissions.slide.delete == true ? '' : 'request to ' } delete the slide ${sanitize(oname)} with id ${sanitize(oid)} ?`);
     $('#deleteModal').modal('toggle');
     $('#confirmDelete').unbind( 'click' );
     $('#confirmDelete').click(function() {
@@ -750,12 +750,12 @@ function appendNotifications(slideDeleteRequests) {
                   <strong class="text-info">Slide Delete Requested</strong>
                 <div class="mb-2">
                   Delete requested by: <br>
-                  User: ${notif.requestedBy} <br>
-                  Slide Name: ${notif.slideDetails.slideName}
+                  User: ${sanitize(notif.requestedBy)} <br>
+                  Slide Name: ${sanitize(notif.slideDetails.slideName)}
                 </div>
                 <div class="row">
-                  <div class="col-6"><button data-id="${notif.slideDetails.slideId}" data-filename="${notif.slideDetails.fileName}" data-reqid='${notif._id.$oid}' data-name="${notif.slideDetails.slideName}" onclick='deleteSld(this);' class="btn btn-info btn-sm">Accept</button></div>
-                  <div class="col-6"><button data-id="${notif.slideDetails.slideId}" onclick='deleteSld(this, cancel=true);' data-reqid='${notif._id.$oid}' class="btn btn-secondary btn-sm">Decline</button></div>
+                  <div class="col-6"><button data-id="${sanitize(notif.slideDetails.slideId)}" data-filename="${sanitize(notif.slideDetails.fileName)}" data-reqid='${sanitize(notif._id.$oid)}' data-name="${sanitize(notif.slideDetails.slideName)}" onclick='deleteSld(this);' class="btn btn-info btn-sm">Accept</button></div>
+                  <div class="col-6"><button data-id="${sanitize(notif.slideDetails.slideId)}" onclick='deleteSld(this, cancel=true);' data-reqid='${sanitize(notif._id.$oid)}' class="btn btn-secondary btn-sm">Decline</button></div>
                 </div>
               </div>
             </div>
