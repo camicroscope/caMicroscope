@@ -165,6 +165,7 @@ function createCheckbox(val) {
   input.id = val;
   input.value = val;
   input.checked = true;
+  input.textContent = val;
   div.appendChild(input);
   let label = document.createElement('label');
   label.htmlFor = val;
