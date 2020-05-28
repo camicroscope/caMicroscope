@@ -158,7 +158,7 @@ function createCheckbox(val) {
   div.addClass('col-md-3');
   let input = document.createElement('input');
   input.name = 'filter-val';
-  input.type = 'checkbox';
+  input.setAttribute('type', 'checkbox');
   input.addClass('form-check-input');
   input.onchange = handleFilterChange(this);
   input.name = val;
@@ -328,8 +328,8 @@ function initialize() {
               let entriesPerPage;
               if ($('#entries').val()===undefined) {
                 entriesPerPage=10;
-              } // default value, when initially no slide
-              else {
+              } else {
+                // default value, when initially no slide
                 entriesPerPage= $('#entries').val();
               }
               totaltablepages = Math.ceil(data.length/entriesPerPage);
@@ -547,8 +547,20 @@ function checkUserPermissions() {
 }
 
 function changeSlideName(oldname, id) {
-  $('#confirmUpdateSlideContent').html('Enter the new name for the slide having following details: <br><br><b>id</b>: '+id+'<br>'+'<b>Name</b>: '+oldname +
-      '<br><br><div class="form-group"><input type="text" id="newSlideName" class="form-control" placeholder="Enter new name" aria-label="newSlideName" required></div>');
+  let renameDiv = document.createElement('div');
+  renameDiv.addClass('form-group');
+  renameDiv.innerText = 'Enter the new name for the slide having following';
+  renameDiv.innerText += 'details \n\nID: ' + id + '\nName: ' + oldname;
+  let renameInput = document.createElement('input');
+  renameInput.setAttribute('type', 'text');
+  renameInput.id = 'newSlideName';
+  renameInput.addClass('form-control');
+  renameInput.setAttribute('placeholder', 'Enter new name');
+  renameInput.setAttribute('aria-label', 'newSlideName');
+  renameInput.required = true;
+  renameDiv.append(newSlideName);
+  document.getElementById('confirmUpdateSlideContent').innerHTML = '';
+  document.getElementById('confirmUpdateSlideContent').append(renameDiv);
   const store = new Store('../data/');
   $('#confirmUpdateSlide').unbind('click');
   $('#confirmUpdateSlide').click(function() {
@@ -558,8 +570,10 @@ function changeSlideName(oldname, id) {
       if (existingSlideNames.includes(newName)) {
         newSlideName.addClass('is-invalid');
         if (newSlideName.parent().children().length === 1) {
-          newSlideName.parent().append(`<div class="invalid-feedback">
-        Slide with given name already exists. </div>`);
+          let feedbackDiv = document.createElement('div');
+          feedbackDiv.addClass('invalid-feedback');
+          feedbackDiv.textContent = 'Slide with given name already exists.';
+          newSlideName.parent().append(feedbackDiv);
         }
       } else {
         newSlideName.removeClass('is-invalid');
@@ -606,12 +620,10 @@ function deleteSld(e, cancel=false) {
   const store = new Store('../data/');
   if (oid) {
     $('#confirmDeleteContent').html(`Are you sure you want to ${reqId ? 'decline the ': ''} ${permissions.slide.delete == true ? '' : 'request to ' } delete the slide ${oname} with id ${oid} ?`);
-    // $('#confirmDeleteContent').html(`Are you sure you want to ${reqId ? 'decline the ': ''} ${getUserType() === "Admin" ? '' : 'request to ' } delete the slide ${oname} with id ${oid} ?`);
     $('#deleteModal').modal('toggle');
     $('#confirmDelete').unbind( 'click' );
     $('#confirmDelete').click(function() {
       if (permissions.slide.delete == true && !cancel) {
-      // if (getUserType() === "Admin" && !cancel) {
         deleteSlideFromSystem(oid, filename, reqId); // Delete slide
       } else {
         if (reqId) {
@@ -636,11 +648,15 @@ function fileNameChange() {
   let fileExtension = newFileName.toLowerCase().split('.').reverse()[0];
   if (!allowedExtensions.includes(fileExtension)) {
     fileNameInput.addClass('is-invalid');
+    let fDiv = document.createElement('div');
+    fDiv.addClass('invalid-feedback');
+    fDiv.id = 'filename-feedback0';
+    fDiv.textContent = fileExtension + ' files are not compatible';
     if (fileNameInput.parent().children().length===1) {
-      fileNameInput.parent().append(`<div class="invalid-feedback" id="filename-feedback0">
-        ${fileExtension} files are not compatible  </div>`);
+      fileNameInput.parent().append(fDiv);
     } else {
-      $('#filename-feedback0').html(`${ fileExtension } files are not compatible`);
+      document.getElementById('filename-feedback0').innerHTML = '';
+      document.getElementById('filename-feedback0').append(fDiv);
     }
   } else {
     fileNameInput.removeClass('is-invalid');
@@ -680,8 +696,11 @@ function urlInputChange() {
   if (!isValidHttpUrl(url)) {
     urlInput.addClass('is-invalid');
     if (urlInput.parent().children().length === 2) {
-      urlInput.parent().append(`<div class="invalid-feedback" id="inputUrl-feedback0">
-        Enter valid URL </div>`);
+      let fDiv = document.createElement('div');
+      fDiv.addClass('invalid-feedback');
+      fDiv.id = 'inputUrl-feedback0';
+      fDiv.textContent = 'Enter valid URL';
+      urlInput.parent().append(fDiv);
     }
   } else {
     urlInput.removeClass('is-invalid');
@@ -711,7 +730,7 @@ function handleUserCreationRequests(e, cancel=false) {
 
 
 function appendNotifications(slideDeleteRequests) {
-  $('#notification-nav-link').html(``);
+  $('#notification-nav-link').html('');
   $('#delReqTab').html('');
   $('#userReqTab').html('');
   $('#delReqBadge').html('');
