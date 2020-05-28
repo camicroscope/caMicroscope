@@ -65,11 +65,11 @@ function validateForm(callback) {
         }
       }
     } catch (err) {
-      filterInput.addClass('is-invalid');
+      filterInput.classList.add('is-invalid');
       if (filterInput.parent().children().length === 1) {
         let filterDiv = document.createElement('div');
         filterDiv.id = 'filter-feedback0';
-        filterDiv.addClass('invalid-feedback');
+        filterDiv.classList.add('invalid-feedback');
         filterDiv.textContent = 'Filters should be an array.';
         filterInput.parent().append(filterDiv);
       }
@@ -117,7 +117,7 @@ function showTablePage() {
   });
 
   $(`.pages.active`).removeClass('active');
-  $(`.pages:eq(${selectedpage})`).addClass('active');
+  $(`.pages:eq(${selectedpage})`).classList.add('active');
 }
 
 function resetTable() {
@@ -154,12 +154,12 @@ function resetUploadForm() {
 
 function createCheckbox(val) {
   let div = document.createElement('div');
-  div.addClass('col-6');
-  div.addClass('col-md-3');
+  div.classList.add('col-6');
+  div.classList.add('col-md-3');
   let input = document.createElement('input');
   input.name = 'filter-val';
   input.setAttribute('type', 'checkbox');
-  input.addClass('form-check-input');
+  input.classList.add('form-check-input');
   input.onchange = handleFilterChange(this);
   input.name = val;
   input.id = val;
@@ -168,7 +168,7 @@ function createCheckbox(val) {
   div.appendChild(input);
   let label = document.createElement('label');
   label.htmlFor = val;
-  label.addClass('form-check-label');
+  label.classList.add('form-check-label');
   div.appendChild(label);
   document.getElementById('filters-check').append(div);
 }
@@ -258,9 +258,12 @@ function initialize() {
 
                   const btn = `<div id='open-delete'>
                 <button class="btn btn-success" data-id='${sanitize(rs[0])}' onclick='openView(this)'>Open</button>
-                <button type='button' class='btn btn-info DownloadButton' id='downloadBtn' data-id='${sanitize(rs[0])}' onclick='downloadSlide(this)' > <i class='fas fa-download' ></i> </button>
+                <button type='button' class='btn btn-info DownloadButton' id='downloadBtn' data-id='${sanitize(rs[0])}' onclick='downloadSlide(this)' >
+                <i class='fas fa-download' ></i>
+                </button>
                 ${
-                  slideDeleteRequests[counter] && slideDeleteRequests[counter].slideDetails && slideDeleteRequests.find((o) => o.slideDetails.slideId === rs[0]) ?
+                  slideDeleteRequests[counter] && slideDeleteRequests[counter].slideDetails &&
+                    slideDeleteRequests.find((o) => o.slideDetails.slideId === rs[0]) ?
                   `
                     ${
                       slideDeleteRequests.find((o) => o.requestedBy === sanitize(getUserId())) ?
@@ -548,13 +551,13 @@ function checkUserPermissions() {
 
 function changeSlideName(oldname, id) {
   let renameDiv = document.createElement('div');
-  renameDiv.addClass('form-group');
+  renameDiv.classList.add('form-group');
   renameDiv.innerText = 'Enter the new name for the slide having following';
   renameDiv.innerText += 'details \n\nID: ' + id + '\nName: ' + oldname;
   let renameInput = document.createElement('input');
   renameInput.setAttribute('type', 'text');
   renameInput.id = 'newSlideName';
-  renameInput.addClass('form-control');
+  renameInput.classList.add('form-control');
   renameInput.setAttribute('placeholder', 'Enter new name');
   renameInput.setAttribute('aria-label', 'newSlideName');
   renameInput.required = true;
@@ -568,10 +571,10 @@ function changeSlideName(oldname, id) {
     var newName = newSlideName.val();
     if (newName!='') {
       if (existingSlideNames.includes(newName)) {
-        newSlideName.addClass('is-invalid');
+        newSlideName.classList.add('is-invalid');
         if (newSlideName.parent().children().length === 1) {
           let feedbackDiv = document.createElement('div');
-          feedbackDiv.addClass('invalid-feedback');
+          feedbackDiv.classList.add('invalid-feedback');
           feedbackDiv.textContent = 'Slide with given name already exists.';
           newSlideName.parent().append(feedbackDiv);
         }
@@ -647,9 +650,9 @@ function fileNameChange() {
   fileNameInput.val(newFileName);
   let fileExtension = newFileName.toLowerCase().split('.').reverse()[0];
   if (!allowedExtensions.includes(fileExtension)) {
-    fileNameInput.addClass('is-invalid');
+    fileNameInput.classList.add('is-invalid');
     let fDiv = document.createElement('div');
-    fDiv.addClass('invalid-feedback');
+    fDiv.classList.add('invalid-feedback');
     fDiv.id = 'filename-feedback0';
     fDiv.textContent = fileExtension + ' files are not compatible';
     if (fileNameInput.parent().children().length===1) {
@@ -694,10 +697,10 @@ function urlInputChange() {
   const url = urlInput.val();
 
   if (!isValidHttpUrl(url)) {
-    urlInput.addClass('is-invalid');
+    urlInput.classList.add('is-invalid');
     if (urlInput.parent().children().length === 2) {
       let fDiv = document.createElement('div');
-      fDiv.addClass('invalid-feedback');
+      fDiv.classList.add('invalid-feedback');
       fDiv.id = 'inputUrl-feedback0';
       fDiv.textContent = 'Enter valid URL';
       urlInput.parent().append(fDiv);
@@ -765,82 +768,82 @@ function appendNotifications(slideDeleteRequests) {
       });
     } else {
       let drDiv = document.createElement('div');
-      drDiv.addClass('row');
+      drDiv.classList.add('row');
       let drDiv2 = document.createElement('div');
-      drDiv2.addClass('col-12');
-      drDiv2.addClass('text-center ');
-      drDiv2.addClass('text');
-      drDiv2.addClass('text-muted');
-      drDiv2.addClass('p-3');
+      drDiv2.classList.add('col-12');
+      drDiv2.classList.add('text-center ');
+      drDiv2.classList.add('text');
+      drDiv2.classList.add('text-muted');
+      drDiv2.classList.add('p-3');
       drDiv2.innerText = 'No Delete Requests to Show';
       drDiv.appendChild(drDiv2);
       document.getElementById('delReqTab').append(drDiv);
     }
     if (userCreateRequests.length > 0) {
       let notifSpan = document.createElement('span');
-      notifSpan.addClass('badge');
-      notifSpan.addClass('ml-2');
-      notifSpan.addClass('badge-pill');
-      notifSpan.addClass('badge-warning');
+      notifSpan.classList.add('badge');
+      notifSpan.classList.add('ml-2');
+      notifSpan.classList.add('badge-pill');
+      notifSpan.classList.add('badge-warning');
       notifSpan.textContent = userCreateRequests.length;
       document.getElementById('userReqBadge').innerHTML = '';
       document.getElementById('userReqBadge').append(notifSpan);
       userCreateRequests.forEach((notif, i) => {
         console.log(notif);
         let d1 = document.createElement('div');
-        d1.addClass('row');
-        d1.addClass('pt-1');
-        d1.addClass('pb-2');
+        d1.classList.add('row');
+        d1.classList.add('pt-1');
+        d1.classList.add('pb-2');
         let d2 = document.createElement('div');
         let s1 = document.createElement('span');
-        s1.addClass('fas');
-        s1.addClass('fa-user');
-        s1.addClass('fa-2x');
-        s1.addClass('pt-5');
+        s1.classList.add('fas');
+        s1.classList.add('fa-user');
+        s1.classList.add('fa-2x');
+        s1.classList.add('pt-5');
         d2.appendChild(s1);
         d1.appendChild(d2);
         let d3 = document.createElement('div');
-        d3.addClass('col-lg-8');
-        d3.addClass('col-sm-8');
-        d3.addClass('col-8');
+        d3.classList.add('col-lg-8');
+        d3.classList.add('col-sm-8');
+        d3.classList.add('col-8');
         let d3b = document.createElement('strong');
         d3b.textContent = 'User Registration Requested';
         d3.appendChild(d3b);
         let d4 = document.createElement('div');
-        d4.addClass('mb-2');
+        d4.classList.add('mb-2');
         d4.innerText = 'Requested by: \n' + notif.requestedBy + '\nUser details:\n';
         d4.innerText += 'Email: ' + notif.userDetails.email + '\nFilters: ';
         d4.innerText += JSON.parse(notif.userDetails.userFilter.replace(/'/g, '"')).join(', ');
         d4.innerText += '\nType: ' + notif.userDetails.userType;
         d3.appendChild(d4);
         let d5 = document.createElement('div');
-        d5.addClass('col-lg-8');
-        d5.addClass('col-sm-8');
-        d5.addClass('col-8');
+        d5.classList.add('col-lg-8');
+        d5.classList.add('col-sm-8');
+        d5.classList.add('col-8');
         let d6 = document.createElement('div');
-        d6.addClass('row');
+        d6.classList.add('row');
         let d7 = document.createElement('div');
-        d7.addClass('col-6');
+        d7.classList.add('col-6');
         let btn1 = document.createElement('button');
         btn1.setAttribute('data-email', notif.userDetails.email);
         btn1.setAttribute('data-filter', notif.userDetails.userFilter);
         btn1.setAttribute('data-reqid', notif._id.$oid);
         btn1.setAttribute('data-usertype', notif.userDetails.userType);
         btn1.onclick = handleUserCreationRequests(this);
-        btn1.addClass('btn');
-        btn1.addClass('btn-info');
-        btn1.addClass('btn-sm');
+        btn1.classList.add('btn');
+        btn1.classList.add('btn-info');
+        btn1.classList.add('btn-sm');
         btn1.textContent = 'Accept';
         d7.appendChild(btn1);
         d6.appendChild(d7);
         let d8 = document.createElement('div');
-        d8.addClass('col-6');
+        d8.classList.add('col-6');
         let btn2 = document.createElement('button');
         btn2.setAttribute('data-reqid', notif._id.$oid);
         btn2.onclick = handleUserCreationRequests(this, cancel=true);
-        btn2.addClass('btn');
-        btn2.addClass('btn-secondary');
-        btn2.addClass('btn-sm');
+        btn2.classList.add('btn');
+        btn2.classList.add('btn-secondary');
+        btn2.classList.add('btn-sm');
         btn2.textContent = 'Decline';
         d8.appendChild(btn2);
         d6.appendChild(d8);
