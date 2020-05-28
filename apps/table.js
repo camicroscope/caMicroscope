@@ -764,92 +764,92 @@ function appendNotifications(slideDeleteRequests) {
         );
       });
     } else {
-      let drDiv = document.createElement("div")
-      drDiv.addClass("row")
-      let drDiv2 = document.createElement("div")
-      drDiv2.addClass('col-12')
-      drDiv2.addClass('text-center ')
-      drDiv2.addClass('text')
-      drDiv2.addClass('text-muted')
-      drDiv2.addClass('p-3')
-      drDiv2.innerText = "No Delete Requests to Show"
-      drDiv.appendChild(drDiv2)
-      document.getElementById("delReqTab").append(drDiv)
+      let drDiv = document.createElement('div');
+      drDiv.addClass('row');
+      let drDiv2 = document.createElement('div');
+      drDiv2.addClass('col-12');
+      drDiv2.addClass('text-center ');
+      drDiv2.addClass('text');
+      drDiv2.addClass('text-muted');
+      drDiv2.addClass('p-3');
+      drDiv2.innerText = 'No Delete Requests to Show';
+      drDiv.appendChild(drDiv2);
+      document.getElementById('delReqTab').append(drDiv);
     }
     if (userCreateRequests.length > 0) {
-      let notifSpan = document.createElement('span')
-      notifSpan.addClass('badge')
-      notifSpan.addClass('ml-2')
-      notifSpan.addClass('badge-pill')
-      notifSpan.addClass('badge-warning')
-      notifSpan.textContent = userCreateRequests.length
-      document.getElementById("userReqBadge").innerHTML = ''
-      document.getElementById("userReqBadge").append(notifSpan)
+      let notifSpan = document.createElement('span');
+      notifSpan.addClass('badge');
+      notifSpan.addClass('ml-2');
+      notifSpan.addClass('badge-pill');
+      notifSpan.addClass('badge-warning');
+      notifSpan.textContent = userCreateRequests.length;
+      document.getElementById('userReqBadge').innerHTML = '';
+      document.getElementById('userReqBadge').append(notifSpan);
       userCreateRequests.forEach((notif, i) => {
         console.log(notif);
-        let d1 = document.createElement("div")
-        d1.addClass('row')
-        d1.addClass('pt-1')
-        d1.addClass('pb-2')
-        let d2 = document.createElement("div")
-        let s1 = document.createElement("span")
-        s1.addClass('fas')
-        s1.addClass('fa-user')
-        s1.addClass('fa-2x')
-        s1.addClass('pt-5')
-        d2.appendChild(s1)
-        d1.appendChild(d2)
-        let d3 = document.createElement("div")
-        d3.addClass('col-lg-8')
-        d3.addClass('col-sm-8')
-        d3.addClass('col-8')
-        let d3b = document.createElement("strong")
-        d3b.textContent = 'User Registration Requested'
-        d3.appendChild(d3b)
-        let d4 = document.createElement("div")
-        d4.addClass("mb-2")
-        d4.innerText = "Requested by: \n" + notif.requestedBy + "\nUser details:\n"
-        d4.innerText += "Email: " + notif.userDetails.email + "\nFilters: "
-        d4.innerText += JSON.parse(notif.userDetails.userFilter.replace(/'/g, '"')).join(', ')
-        d4.innerText += "\nType: " + notif.userDetails.userType
-        d3.appendChild(d4)
-        let d5 = document.createElement("div")
-        d5.addClass('col-lg-8')
-        d5.addClass('col-sm-8')
-        d5.addClass('col-8')
-        let d6 = document.createElement("div")
-        d6.addClass("row")
-        let d7 = document.createElement("div")
-        d7.addClass("col-6")
-        let btn1 = document.createElement("button")
-        btn1.setAttribute("data-email", notif.userDetails.email)
-        btn1.setAttribute("data-filter", notif.userDetails.userFilter)
-        btn1.setAttribute("data-reqid", notif._id.$oid)
-        btn1.setAttribute("data-usertype", notif.userDetails.userType)
-        btn1.onclick = handleUserCreationRequests(this)
-        btn1.addClass('btn')
-        btn1.addClass('btn-info')
-        btn1.addClass('btn-sm')
-        btn1.textContent = "Accept"
-        d7.appendChild(btn1)
-        d6.appendChild(d7)
-        let d8 = document.createElement("div")
-        d8.addClass("col-6")
-        let btn2 = document.createElement("button")
-        btn2.setAttribute("data-reqid", notif._id.$oid)
-        btn2.onclick = handleUserCreationRequests(this, cancel=true)
-        btn2.addClass('btn')
-        btn2.addClass('btn-secondary')
-        btn2.addClass('btn-sm')
-        btn2.textContent = "Decline"
-        d8.appendChild(btn2)
-        d6.appendChild(d8)
-        d5.appendChild(d6)
-        d3.appendChild(d5)
-        d1.appendChild(d3)
-        let hr1 = document.createElement("hr")
-        d1.appendChild(hr1)
-        document.getElementById(userReqTab).appendChild(d1)
+        let d1 = document.createElement('div');
+        d1.addClass('row');
+        d1.addClass('pt-1');
+        d1.addClass('pb-2');
+        let d2 = document.createElement('div');
+        let s1 = document.createElement('span');
+        s1.addClass('fas');
+        s1.addClass('fa-user');
+        s1.addClass('fa-2x');
+        s1.addClass('pt-5');
+        d2.appendChild(s1);
+        d1.appendChild(d2);
+        let d3 = document.createElement('div');
+        d3.addClass('col-lg-8');
+        d3.addClass('col-sm-8');
+        d3.addClass('col-8');
+        let d3b = document.createElement('strong');
+        d3b.textContent = 'User Registration Requested';
+        d3.appendChild(d3b);
+        let d4 = document.createElement('div');
+        d4.addClass('mb-2');
+        d4.innerText = 'Requested by: \n' + notif.requestedBy + '\nUser details:\n';
+        d4.innerText += 'Email: ' + notif.userDetails.email + '\nFilters: ';
+        d4.innerText += JSON.parse(notif.userDetails.userFilter.replace(/'/g, '"')).join(', ');
+        d4.innerText += '\nType: ' + notif.userDetails.userType;
+        d3.appendChild(d4);
+        let d5 = document.createElement('div');
+        d5.addClass('col-lg-8');
+        d5.addClass('col-sm-8');
+        d5.addClass('col-8');
+        let d6 = document.createElement('div');
+        d6.addClass('row');
+        let d7 = document.createElement('div');
+        d7.addClass('col-6');
+        let btn1 = document.createElement('button');
+        btn1.setAttribute('data-email', notif.userDetails.email);
+        btn1.setAttribute('data-filter', notif.userDetails.userFilter);
+        btn1.setAttribute('data-reqid', notif._id.$oid);
+        btn1.setAttribute('data-usertype', notif.userDetails.userType);
+        btn1.onclick = handleUserCreationRequests(this);
+        btn1.addClass('btn');
+        btn1.addClass('btn-info');
+        btn1.addClass('btn-sm');
+        btn1.textContent = 'Accept';
+        d7.appendChild(btn1);
+        d6.appendChild(d7);
+        let d8 = document.createElement('div');
+        d8.addClass('col-6');
+        let btn2 = document.createElement('button');
+        btn2.setAttribute('data-reqid', notif._id.$oid);
+        btn2.onclick = handleUserCreationRequests(this, cancel=true);
+        btn2.addClass('btn');
+        btn2.addClass('btn-secondary');
+        btn2.addClass('btn-sm');
+        btn2.textContent = 'Decline';
+        d8.appendChild(btn2);
+        d6.appendChild(d8);
+        d5.appendChild(d6);
+        d3.appendChild(d5);
+        d1.appendChild(d3);
+        let hr1 = document.createElement('hr');
+        d1.appendChild(hr1);
+        document.getElementById(userReqTab).appendChild(d1);
       });
     } else {
       $('#userReqTab').append(
