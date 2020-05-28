@@ -161,7 +161,7 @@ function createCheckbox(val) {
   input.name = 'filter-val';
   input.setAttribute('type', 'checkbox');
   input.classList.add('form-check-input');
-  input.onchange = handleFilterChange(this);
+  input.onchange = handleFilterChange(input);
   input.name = val;
   input.id = val;
   input.value = val;
@@ -831,7 +831,7 @@ function appendNotifications(slideDeleteRequests) {
         btn1.setAttribute('data-filter', notif.userDetails.userFilter);
         btn1.setAttribute('data-reqid', notif._id.$oid);
         btn1.setAttribute('data-usertype', notif.userDetails.userType);
-        btn1.onclick = handleUserCreationRequests(this);
+        btn1.onclick = handleUserCreationRequests(btn1);
         btn1.classList.add('btn');
         btn1.classList.add('btn-info');
         btn1.classList.add('btn-sm');
@@ -842,7 +842,7 @@ function appendNotifications(slideDeleteRequests) {
         d8.classList.add('col-6');
         let btn2 = document.createElement('button');
         btn2.setAttribute('data-reqid', notif._id.$oid);
-        btn2.onclick = handleUserCreationRequests(this, cancel=true);
+        btn2.onclick = handleUserCreationRequests(btn2, cancel=true);
         btn2.classList.add('btn');
         btn2.classList.add('btn-secondary');
         btn2.classList.add('btn-sm');
