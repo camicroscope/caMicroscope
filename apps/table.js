@@ -65,11 +65,11 @@ function validateForm(callback) {
         }
       }
     } catch (err) {
-      filterInput.classList.add('is-invalid');
+      filterInput.addClass('is-invalid');
       if (filterInput.parent().children().length === 1) {
         let filterDiv = document.createElement('div');
         filterDiv.id = 'filter-feedback0';
-        filterDiv.classList.add('invalid-feedback');
+        filterDiv.addClass('invalid-feedback');
         filterDiv.textContent = 'Filters should be an array.';
         filterInput.parent().append(filterDiv);
       }
@@ -117,7 +117,7 @@ function showTablePage() {
   });
 
   $(`.pages.active`).removeClass('active');
-  $(`.pages:eq(${selectedpage})`).classList.add('active');
+  $(`.pages:eq(${selectedpage})`).addClass('active');
 }
 
 function resetTable() {
@@ -571,7 +571,7 @@ function changeSlideName(oldname, id) {
     var newName = newSlideName.val();
     if (newName!='') {
       if (existingSlideNames.includes(newName)) {
-        newSlideName.classList.add('is-invalid');
+        newSlideName.addClass('is-invalid');
         if (newSlideName.parent().children().length === 1) {
           let feedbackDiv = document.createElement('div');
           feedbackDiv.classList.add('invalid-feedback');
@@ -650,7 +650,7 @@ function fileNameChange() {
   fileNameInput.val(newFileName);
   let fileExtension = newFileName.toLowerCase().split('.').reverse()[0];
   if (!allowedExtensions.includes(fileExtension)) {
-    fileNameInput.classList.add('is-invalid');
+    fileNameInput.addClass('is-invalid');
     let fDiv = document.createElement('div');
     fDiv.classList.add('invalid-feedback');
     fDiv.id = 'filename-feedback0';
@@ -697,7 +697,7 @@ function urlInputChange() {
   const url = urlInput.val();
 
   if (!isValidHttpUrl(url)) {
-    urlInput.classList.add('is-invalid');
+    urlInput.addClass('is-invalid');
     if (urlInput.parent().children().length === 2) {
       let fDiv = document.createElement('div');
       fDiv.classList.add('invalid-feedback');
