@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Index
 * **Version 3**
-    * [3.7.x](#camicroscope-373)
+    * [3.7.x](#camicroscope-375)
     * [3.6.x](#camicroscope-362)
     * [3.5.x](#camicroscope-3510)
     * [3.4.x](#camicroscope-343)
@@ -21,7 +21,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * **Version 1**
     * [1.0.x](#camicroscope-10)
 
-### caMicroscope [Unreleased](https://github.com/camicroscope/camicroscope/compare/v3.7.4...camicroscope:develop)
+### caMicroscope [Unreleased](https://github.com/camicroscope/camicroscope/compare/v3.7.5...camicroscope:develop)
+*
+
+### caMicroscope [3.7.5](https://github.com/camicroscope/camicroscope/compare/v3.7.4...camicroscope:v3.7.5)
 * Safer HTML in table ([#401](https://github.com/camicroscope/caMicroscope/pull/401))
 
 
