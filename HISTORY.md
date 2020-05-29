@@ -22,7 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     * [1.0.x](#camicroscope-10)
 
 ### caMicroscope [Unreleased](https://github.com/camicroscope/camicroscope/compare/v3.7.4...camicroscope:develop)
-###### PRESENT
+* Safer HTML in table ([#401](https://github.com/camicroscope/caMicroscope/pull/401))
 
 
 ### caMicroscope [3.7.4](https://github.com/camicroscope/camicroscope/compare/v3.7.3...camicroscope:v3.7.4)
