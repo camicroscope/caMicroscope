@@ -253,7 +253,7 @@ function initialize() {
                   keys.forEach((key, i) => {
                     if (i == 0) rs.push(d['_id']['$oid']);
                     else if (key=='review') {
-                      rs.push(d[key]=='true'?`<labelstyle="color:green;">✓</label>`:``);
+                      rs.push(d[key]=='true'?`<label style="color:green;">✓</label>`:``);
                     } else if (!d[key]) rs.push('');
                     else rs.push(d[key]);
                   });
