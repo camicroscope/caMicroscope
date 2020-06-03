@@ -1,5 +1,5 @@
 function sanitize(string) {
-  string = string || ''
+  string = string || '';
   const map = {
     '&': '&amp;',
     '<': '&lt;',
@@ -97,6 +97,9 @@ const HeadMapping = [{
 }, {
   title: 'MPP',
   field: 'mpp',
+}, {
+  title: 'Review',
+  field: 'review',
 }];
 var totaltablepages;
 var selectedpage;
@@ -249,7 +252,9 @@ function initialize() {
                   const filename = d.location.split('/')[d.location.split('/').length - 1];
                   keys.forEach((key, i) => {
                     if (i == 0) rs.push(d['_id']['$oid']);
-                    else if (!d[key]) rs.push('');
+                    else if (key=='review') {
+                      rs.push(d[key]=='true'?`<label class="material-icons md-12" style="width:24px;color:green;" title="">check_circle_outline</label>`:``);
+                    } else if (!d[key]) rs.push('');
                     else rs.push(d[key]);
                   });
                   if (slideDeleteRequests['counter']) {

@@ -778,6 +778,25 @@ class Store {
     });
   }
 
+  // Update slide review status
+  updateSlideReview(id, newStatus) {
+    const suffix = 'Slide/update';
+    const url = this.base + suffix;
+    console.log(id+ '   '+ newStatus);
+    const query = {
+      '_id': id,
+    };
+    const update = {
+      'review': newStatus,
+    };
+    return fetch(url + '?' + objToParamStr(query), {
+      method: 'POST',
+      credentials: 'include',
+      mode: 'cors',
+      body: JSON.stringify(update),
+    });
+  }
+
   /**
    * request creation of user
    * @param {object} email - the requested user email
