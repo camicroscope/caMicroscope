@@ -41,6 +41,7 @@ The toolbar is in the top-left of the main content window. Use the toolbar butto
 | ![](https://fonts.gstatic.com/s/i/materialicons/timeline/v6/24px.svg)      | Segment      | This tool allows you to display, count, and export nuclear segmentations on the image. Clicking this tool opens the following custom toolbar. |
 | ![](https://fonts.gstatic.com/s/i/materialicons/aspect_ratio/v4/24px.svg)      | Model      | Show results from a pre-trained tensorflow compatible model on a ROI of the slide. |
 | ![](https://fonts.gstatic.com/s/i/materialicons/get_app/v4/24px.svg)      | Download Slide      | Download the slide image to your system |
+| ![](https://fonts.gstatic.com/s/i/materialicons/playlist_add_check/v8/24px.svg)      | Mark Reviewed      | Use to signify the completion of review of a slide. |
 | ![](https://fonts.gstatic.com/s/i/materialicons/bug_report/v4/24px.svg)      | Bug Report      | Report a bug or give feedback. |
 | ![](https://fonts.gstatic.com/s/i/materialicons/help/v4/24px.svg)      | Tutorial      | Click to view a guided tour of the viewer tools. |
 
