@@ -841,6 +841,18 @@ async function initUIcomponents() {
       window.open('https://goo.gl/forms/mgyhx4ADH0UuEQJ53', '_blank').focus();
     },
   });
+  // -- view btn START -- //
+  if (!($D.params.data.hasOwnProperty('review') && $D.params.data['review']=='true')) {
+    console.log('create check');
+    subToolsOpt.push({
+      name: 'review',
+      icon: 'playlist_add_check',
+      title: 'has reviewed',
+      type: 'btn',
+      value: 'review',
+      callback: updateSlideView,
+    });
+  }
   subToolsOpt.push({
     name: 'tutorial',
     icon: 'help',
@@ -1179,4 +1191,16 @@ function redirect(url, text = '', sec = 5) {
     // Hint Message for clients that page is going to redirect to Flex table in 5s
     timer--;
   }, 1000);
+}
+
+function updateSlideView() {
+  if (!confirm(`Do you want to mark this slide as reviewed?`)) return;
+  Loading.open(document.body, 'changing review status ...');
+  $CAMIC.store.updateSlideReview($D.params.slideId, 'true').then(function(e) {
+    if (e.status==200) {
+      $UI.toolbar.getSubTool('review').style.display = 'none';
+    }
+  }).finally(function() {
+    Loading.close();
+  });
 }
