@@ -696,7 +696,7 @@ function uploadModel() {
   var submit = document.querySelector('#submit');
 
   // Reset previous input
-  _name.value = _classes.value = topology.value = weights.value = status.innerHTML = _imageSize.value = url.value = '';
+  _name.value = _classes.value = topology.value = weights.value = status.innerText = _imageSize.value = url.value = '';
 
   $UI.uploadModal.open();
 
@@ -719,7 +719,7 @@ function uploadModel() {
 
     if ( _name.value && _classes.value && _imageSize.value &&
       ((!toggle.checked && topology.files[0].name.split('.').pop() == 'json') || (toggle.checked && url))) {
-      status.innerHTML = 'Uploading';
+      status.innerText = 'Uploading';
       status.classList.remove('error');
       status.classList.add('blink');
 
@@ -742,7 +742,7 @@ function uploadModel() {
           throw new Error('Model name repeated');
         }
       } catch (e) {
-        status.innerHTML = 'Model with the same name already exists. Please choose a new name';
+        status.innerText = 'Model with the same name already exists. Please choose a new name';
         status.classList.remove('blink');
         console.log(e);
         document.getElementById('name').style = 'border:2px; border-style: solid; border-color: red;';
@@ -757,7 +757,7 @@ function uploadModel() {
               tf.ones([1, parseInt(_imageSize.value), parseInt(_imageSize.value), parseInt(_channels)]));
           result.dispose();
         } catch (e) {
-          status.innerHTML = 'Model failed on the given values of patch size.' +
+          status.innerText = 'Model failed on the given values of patch size.' +
           'Please input values on which the model was trained.';
           console.log(e);
           status.classList.remove('blink');
@@ -794,7 +794,7 @@ function uploadModel() {
             initUIcomponents();
           };
           req.onerror = function(e) {
-            status.innerHTML = 'Some error this way!';
+            status.innerText = 'Some error this way!';
             console.log(e);
             status.classList.remove('blink');
           };
@@ -804,13 +804,13 @@ function uploadModel() {
         status.classList.remove('blink');
         if (toggle.checked) status.innerHTML = 'Please enter a valid URL.';
         else {
-          status.innerHTML = 'Please enter a valid model.' +
+          status.innerText = 'Please enter a valid model.' +
         'Input model.json in first input and all weight binaries in second one without renaming.';
         }
         console.error(e);
       }
     } else {
-      status.innerHTML = 'Please fill out all the fields with valid values.';
+      status.innerText = 'Please fill out all the fields with valid values.';
       status.classList.add('error');
       console.error(e);
     }
@@ -876,15 +876,15 @@ async function showInfo() {
             classes = (e.target.result.classes.join(', '));
             inputShape = e.target.result.input_shape.slice(1, 3).join('x');
             td = row.insertCell();
-            td.innerHTML = name.split('/').pop().split('_').splice(2).join('_').slice(0, -3);
+            td.innerText = name.split('/').pop().split('_').splice(2).join('_').slice(0, -3);
             td = row.insertCell();
-            td.innerHTML = classes;
+            td.innerText = classes;
             td = row.insertCell();
-            td.innerHTML = inputShape;
+            td.innerText = inputShape;
             td = row.insertCell();
-            td.innerHTML = +size.toFixed(2);
+            td.innerText = +size.toFixed(2);
             td = row.insertCell();
-            td.innerHTML = date;
+            td.innerText = date;
             td = row.insertCell();
             td.innerHTML = '<button class="btn-del" '+
             'id=removeModel'+ modelCount+' type="button"><i class="material-icons"'+
@@ -1080,6 +1080,7 @@ async function selectModel() {
   var store = tx.objectStore('models_store');
   var modelCount=0;
   empty(table);
+  console.log(data);
 
   //  Update table data
   (function(callback) {
@@ -1098,15 +1099,15 @@ async function selectModel() {
             classes = (e.target.result.classes.join(', '));
             inputShape = e.target.result.input_shape.slice(1, 3).join('x');
             td = row.insertCell();
-            td.innerHTML = name.split('/').pop().split('_').splice(2).join('_').slice(0, -3);
+            td.innerText = name.split('/').pop().split('_').splice(2).join('_').slice(0, -3);
             td = row.insertCell();
-            td.innerHTML = classes;
+            td.innerText = classes;
             td = row.insertCell();
-            td.innerHTML = inputShape;
+            td.innerText = inputShape;
             td = row.insertCell();
-            td.innerHTML = +size.toFixed(2);
+            td.innerText = +size.toFixed(2);
             td = row.insertCell();
-            td.innerHTML = date;
+            td.innerText = date;
             td = row.insertCell();
             td.innerHTML = '<button class="btn-sel"'+
             'id=selectModel'+ modelCount+' type="button"><i class="material-icons">done</i></button>';
