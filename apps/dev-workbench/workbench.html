@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dev-Workbench</title>
+    <link rel="stylesheet" href="./workbench.css" />
     <!-- Font Awesome -->
     <link
       rel="stylesheet"
@@ -57,7 +58,10 @@
   </head>
   <body>
     <!--Navbar-->
-    <nav class="navbar navbar-expand-lg navbar-dark primary-color">
+    <nav
+      class="navbar navbar-expand-lg navbar-dark"
+      style="background: rgb(33, 37, 41);"
+    >
       <a href="../table.html"
         ><i data-feather="arrow-left" class="text-white"></i>
       </a>
@@ -65,9 +69,188 @@
       <!-- Navbar brand -->
       <a class="navbar-brand" href="#"> Workbench</a>
     </nav>
-    <br>
-    <div> Hi </div>
     <!--/.Navbar-->
+
+    <div id="headbar">
+      <br />
+      <div id="headContent" style="font-size: xx-large;">
+        Welcome to <b>Development Workbench</b>
+      </div>
+      <div id="headSub" style="font-size: large;">
+        Create your own ML models in 3 simple steps
+      </div>
+      <br />
+    </div>
+
+    <!-- Vertical Steppers -->
+    <div id="stepper">
+      <div class="row mt-1" style="max-width: 90%; margin: 0 auto;">
+        <div class="col-md-12">
+          <!-- Steppers Wrapper -->
+          <ul class="stepper stepper-vertical">
+            <!-- First Step -->
+            <li class="active firstStepHead">
+              <a href="#" onclick="dataSelect();">
+                <span class="circle">1</span>
+                <span class="label">Select/Create Training Data</span>
+              </a>
+              <div class="step-content grey lighten-3">
+                <p style="font-size: 1em;">
+                  Select your own dataset (spritesheet) or create a new one from
+                  caMicroscope labels or own custom data. <br />
+                  <button
+                    id="firstStepButton"
+                    onclick="dataSelect();"
+                    style="
+                      border-radius: 50%;
+                      padding: 1em;
+                      margin-bottom: -1em;
+                    "
+                    type="button"
+                    class="btn btn-primary"
+                  >
+                    <i data-feather="chevron-right" class="text-white"></i>
+                  </button>
+                </p>
+              </div>
+            </li>
+
+            <!-- Second Step -->
+            <li class="secondStepHead">
+              <!--Section Title -->
+              <a href="#!">
+                <span class="circle">2</span>
+                <span class="label">Algorithm Creation and Training</span>
+              </a>
+
+              <!-- Section Description -->
+              <div class="step-content grey lighten-3">
+                <p style="font-size: 1em;">
+                  Create your own customized CNN algorithm and train your model
+                  accordingly. <br />
+                  <button
+                    id="secondStepButton"
+                    style="
+                      border-radius: 50%;
+                      padding: 1em;
+                      margin-bottom: -1em;
+                      display: none;
+                    "
+                    type="button"
+                    class="btn btn-primary"
+                  >
+                    <i data-feather="chevron-right" class="text-white"></i>
+                  </button>
+                </p>
+              </div>
+            </li>
+
+            <!-- Third Step -->
+            <li class="thirdStepHead">
+              <a href="#!">
+                <span class="circle">3</span>
+                <span class="label">Save your work </span>
+              </a>
+              <!-- Section Description -->
+              <div class="step-content grey lighten-3">
+                <p style="font-size: 1em;">
+                  Save your model to use it in caMicroscope or save your
+                  workbench to continue the work later. <br />
+                  <button
+                    id="thirdStepButton"
+                    style="
+                      border-radius: 50%;
+                      padding: 1em;
+                      margin-bottom: -1em;
+                      display: none;
+                    "
+                    type="button"
+                    class="btn btn-primary"
+                  >
+                    <i data-feather="chevron-right" class="text-white"></i>
+                  </button>
+                </p>
+              </div>
+            </li>
+          </ul>
+          <!-- /.Stepers Wrapper -->
+        </div>
+      </div>
+    </div>
+    <!-- /.Vertical Steppers -->
+    <div id="cards" style="display: none;">
+      <br /><br />
+      <div
+        style="
+          align-content: center;
+          display: flex;
+          flex-wrap: wrap;
+          padding: 1em;
+        "
+      >
+        <!-- Cards -->
+        <div class="card" style="max-width: 20em; margin: 0 auto;">
+          <!-- Card content -->
+          <div class="card-body">
+            <!-- Title -->
+            <h4 class="card-title">Select your dataset</h4>
+            <!-- Text -->
+            <p style="text-align: justify;" class="card-text">
+              Select the dataset(.zip) including two files; spritesheet(.png) and a
+              binary labels file from your local storage.
+            </p>
+            <br />
+            <div class="input-group">
+              <div class="custom-file">
+                <input
+                  type="file"
+                  id="spriteInput"
+                  accept=".png"
+                  style="max-width: 98%;"
+                />
+                <label
+                  class="custom-file-label spriteInputLabel"
+                  for="spriteInput"
+                  >Choose file
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="height: 13em; padding: 6em 0; font-size: large;">
+          <b> OR</b>
+        </div>
+        <div class="card" style="max-width: 20em; margin: 0 auto;">
+          <!-- Card content -->
+          <div class="card-body">
+            <!-- Title -->
+            <h4 class="card-title">Create your own</h4>
+            <!-- Text -->
+            <p class="card-text" style="text-align: justify;">
+              Build your own spritesheet using labeling from the caMicroscope
+              instance or browsing your own dataset.
+            </p>
+            <!-- Buttons -->
+            <div style="text-align: center;">
+              <button
+                style="border-radius: 5px; font-size: 0.9em;"
+                class="btn btn-primary px-2"
+              >
+                caM Labels
+              </button>
+              <button
+                style="border-radius: 5px; font-size: 0.9em;"
+                class="btn btn-primary px-2"
+              >
+                Custom Data
+              </button>
+            </div>
+          </div>
+        </div>
+        <!-- Cards -->
+      </div>
+    </div>
+    <script src="./workbench.js"></script>
     <script>
       feather.replace(); // for feather Icons
     </script>

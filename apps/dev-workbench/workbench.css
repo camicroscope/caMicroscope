@@ -1,0 +1,20 @@
+#headbar {
+  background: rgb(23, 162, 184);
+  align-items: center;
+  text-align: center;
+  color: white;
+}
+.step-content {
+  border-radius: 10px;
+}
+#stepper {
+  align-content: center;
+  display: flex;
+  flex-wrap: wrap;
+}
+/* .done a.circle{
+  background-color: green !important;
+} */
+.btn {
+  text-transform: unset !important;
+}
