@@ -1,5 +1,5 @@
 function sanitize(string) {
-  string = string || ''
+  string = string || '';
   const map = {
     '&': '&amp;',
     '<': '&lt;',

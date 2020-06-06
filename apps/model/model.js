@@ -1,6 +1,8 @@
 const PDR = OpenSeadragon.pixelDensityRatio;
 const IDB_URL = 'indexeddb://';
 var csvContent;
+var mem;
+var mem1;
 
 // INITIALIZE DB
 window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
@@ -155,6 +157,75 @@ async function initUIcomponents() {
     hasFooter: false,
   });
 
+  // Create roiExtract for taking details of ROI extraction
+  $UI.roiModal = new ModalBox({
+    id: 'roi_panel',
+    hasHeader: true,
+    headerText: 'ROI Extraction',
+    hasFooter: false,
+    provideContent: true,
+    content: `
+      <div class= "message" >
+      
+        <h3> Please select a model</h3></div><br>
+      <table id='roitable'>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Classes</th>
+            <th>Input Size</th>
+            <th>Size (MB)</th>
+            <th>Date Saved</th>
+            <th>Select Model</th>
+          </tr>
+          <tbody id="roidata">
+          </tbody>
+        </thead>
+      </table>
+    `,
+
+  });
+
+  $UI.choiceModal = new ModalBox({
+    id: 'choice_panel',
+    hasHeader: true,
+    headerText: 'Select Parameters',
+    hasFooter: false,
+    provideContent: true,
+    content: `
+    <div class= "message" >
+      <h3> Select the parameters for the patcehs that you want to downlaod</h3></div><br>
+      <table id='choicetable'>
+        <thead>
+          <tbody id="choicedata">
+          </tbody>
+        </thead>
+      </table>
+    `,
+
+  });
+
+
+  $UI.detailsModal = new ModalBox({
+    id: 'details_panel',
+    hasHeader: true,
+    headerText: 'Details',
+    hasFooter: false,
+    provideContent: true,
+    content: `
+    <div class= "message" >
+      <h3> The details of the extracted patches are : </h3></div><br>
+      <table id='detailstable'>
+        <thead>
+          <tbody id="detailsdata">
+          </tbody>
+        </thead>
+      </table>
+    `,
+
+  });
+
+
   // create the message queue
   $UI.message = new MessageQueue();
   const dropDownList = [];
@@ -249,6 +320,12 @@ async function initUIcomponents() {
         title: 'Help',
         callback: openHelp,
       }, {
+        icon: 'archive',
+        type: 'btn',
+        value: 'ROI',
+        title: 'ROI',
+        callback: selectModel,
+      }, {
         icon: 'bug_report',
         title: 'Bug Report',
         value: 'bugs',
@@ -306,6 +383,7 @@ function initCore() {
       $D.params.data = e;
     }
   });
+
 
   $CAMIC.viewer.addOnceHandler('open', function(e) {
     const viewer = $CAMIC.viewer;
@@ -994,3 +1072,281 @@ function downloadCSV(filename) {
     self.showResults('Please select a model first');
   }
 }
+
+async function selectModel() {
+  var data = await tf.io.listModels();
+  var table = document.querySelector('#roidata');
+  var tx = db.transaction('models_store', 'readonly');
+  var store = tx.objectStore('models_store');
+  var modelCount=0;
+  empty(table);
+
+  //  Update table data
+  (function(callback) {
+    for (const key in data) {
+      if (data.hasOwnProperty(key)) {
+        const name = key.split('/').pop();
+        const date = data[key].dateSaved.toString().slice(0, 15);
+        const size = (data[key].modelTopologyBytes +
+          data[key].weightDataBytes +
+          data[key].weightSpecsBytes) / (1024*1024);
+        const row = table.insertRow();
+        let classes; let inputShape; let td;
+
+        if (name.slice(0, 4) == 'pred') {
+          store.get(name).onsuccess = function(e) {
+            classes = (e.target.result.classes.join(', '));
+            inputShape = e.target.result.input_shape.slice(1, 3).join('x');
+            td = row.insertCell();
+            td.innerHTML = name.split('/').pop().split('_').splice(2).join('_').slice(0, -3);
+            td = row.insertCell();
+            td.innerHTML = classes;
+            td = row.insertCell();
+            td.innerHTML = inputShape;
+            td = row.insertCell();
+            td.innerHTML = +size.toFixed(2);
+            td = row.insertCell();
+            td.innerHTML = date;
+            td = row.insertCell();
+            td.innerHTML = '<button class="btn-sel"'+
+            'id=selectModel'+ modelCount+' type="button"><i class="material-icons">done</i></button>';
+            document.getElementById('selectModel'+modelCount).addEventListener('click', () => {
+              selectChoices(name, classes);
+            });
+            modelCount+=1;
+          };
+        }
+      }
+    }
+    callback;
+  })($UI.roiModal.open());
+}
+
+async function selectChoices(name, classes) {
+  $UI.roiModal.close();
+  (function(callback) {
+    selectedmodelName = name.split('/').pop().split('_').splice(2).join('_').slice(0, -3);
+    var classNames = classes.split(',');
+    var i;
+    $('#choicedata').html('');
+    $('#choicedata').html(' <h4> Classes :</h4> ');
+    for ( i = 0; i < classNames.length; i++) {
+      $('#choicedata').append('<label class="check">'+classNames[i]+'<input type="checkbox" value= ' +
+      classNames[i] + ' id = ' + classNames[i] + ' name = "choice" /><span class="checkmark"></span></label></br>');
+    }
+    $('#choicedata').append(' <h4> Accuracy Level :</h4>'+
+  '<input type="range" min="1" max="100" value="80"  id = "accrange" onchange="updateTextInput(this.value)" />'+
+  ' <input type="text" id="textInput" value="80" /><br>');
+
+    $('#choicedata').append(' <h4> Scaling Method :</h4> '+
+  '<select id="scale_method" name="scale">'+
+  '<option value="norm" selected>Normalization</option>'+
+  '<option value="center">Centering</option>'+
+  '<option value="std">Standardization</option></select> <br>');
+    $('#choicedata').append('<br><div class= "cnt-btn"><button id="submit1">Extract</button></div><br>');
+
+
+    $('#submit1').click(async function() {
+      var boxes = $('input[name=choice]:checked');
+      if (boxes.length==0) {
+        alert('Please select altleast one class.');
+      } else {
+        var choices ={model: '', accuracy: '80', classes: [], scale: 'norm'};
+        for (let i=0; i<boxes.length; i++) {
+          choices.classes.push(boxes[i].id);
+        }
+        choices.scale = document.getElementById('scale_method').value;
+        choices.accuracy = document.getElementById('accrange').value;
+        choices.model = name;
+        console.log(choices);
+        await extractRoi(choices);
+      }
+    });
+
+
+    callback;
+  })($UI.choiceModal.open());
+}
+
+async function extractRoi(choices) {
+  $UI.choiceModal.close();
+  $('#snackbar').html('<h3>Model Loading ...</h3>');
+  document.getElementById('snackbar').className = 'show';
+
+  const self = $UI.modelPanel;
+  var key = choices.model;
+  const step = parseInt(key.split('_')[1].split('-')[0]);
+  const prefixUrl = ImgloaderMode == 'iip'?`../../img/IIP/raw/?IIIF=${$D.params.data.location}`:$CAMIC.slideId;
+
+  const fullResCvs = self.__fullsrc;
+  const height = $D.params.data.height;
+  const width = $D.params.data.width;
+
+  // Starting the transaction and opening the model store
+  const tx = db.transaction('models_store', 'readonly');
+  const store = tx.objectStore('models_store');
+  store.get(key).onsuccess = async function(e) {
+    // Keras sorts the labels by alphabetical order.
+    const classes = e.target.result.classes.sort();
+
+    const inputShape = e.target.result.input_shape;
+    // let inputChannels = parseInt(inputShape[3]);
+    const inputChannels = 3;
+    const imageSize = inputShape[1];
+    const scaleMethod = choices.scale;
+    model = await tf.loadLayersModel(IDB_URL + key);
+    console.log('Model loaded...');
+
+
+    document.getElementById('snackbar').className = '';
+
+    // Warmup the model before using real data.
+    tf.tidy(()=>{
+      model.predict(tf.zeros([1, step, step, inputChannels]));
+      console.log('Model ready');
+    });
+
+
+    const temp = document.querySelector('#dummy');
+    temp.height = step;
+    temp.width = step;
+
+    function addImageProcess(src) {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => resolve(img);
+        img.onerror = reject;
+        img.src = src;
+      });
+    }
+    const regions = [];
+    const regionData = [];
+
+    $('#snackbar').html('');
+    $('#snackbar').html('<h3>Predicting ...</h3>');
+    document.getElementById('snackbar').className = 'show';
+
+    for (let y = 0, dy = 0, i =0; y <=(height-step); y+=(step)) {
+      let dx = 0;
+      for (let x = 0, j=0; x <=( width-step); x+=(step)) {
+        const src = prefixUrl+'\/'+x+','+y+','+step+','+step+'\/'+step+',/0/default.jpg';
+        const results = [];
+        const lImg = await addImageProcess(src);
+        fullResCvs.height = lImg.height;
+        fullResCvs.width = lImg.width;
+        fullResCvs.getContext('2d').drawImage(lImg, 0, 0);
+
+        const imgData = fullResCvs.getContext('2d').getImageData(0, 0, fullResCvs.width, fullResCvs.height);
+        tf.tidy(()=>{
+          const img = tf.browser.fromPixels(imgData).toFloat();
+          let img2;
+          if (inputChannels == 1) {
+            img2 = tf.image.resizeBilinear(img, [imageSize, imageSize]).mean(2);
+          } else {
+            img2 = tf.image.resizeBilinear(img, [imageSize, imageSize]);
+          }
+
+
+          let normalized;
+          if (scaleMethod == 'norm') {
+            // Pixel Normalization: scale pixel values to the range 0-1.
+
+            const scale = tf.scalar(255);
+            normalized = img2.div(scale);
+          } else if (scaleMethod == 'center') {
+            // Pixel Centering: scale pixel values to have a zero mean.
+
+            const mean = img2.mean();
+            normalized = img2.sub(mean);
+            // normalized.mean().print(true); // Uncomment to check mean value.
+            // let min = img2.min();
+            // let max = img2.max();
+            // let normalized = img2.sub(min).div(max.sub(min));
+          } else {
+            // Pixel Standardization: scale pixel values to have a zero mean and unit variance.
+
+            const mean = img2.mean();
+            const std = (img2.squaredDifference(mean).sum()).div(img2.flatten().shape).sqrt();
+            normalized = img2.sub(mean).div(std);
+          }
+          const batched = normalized.reshape([1, imageSize, imageSize, inputChannels]);
+          const values =model.predict(batched).dataSync();
+
+          results.push(values);
+          var maxIndex= results[0].reduce((a, b, i) => a[0] < b ? [b, i] : a, [Number.MIN_VALUE, -1]);
+
+          if (choices.classes.includes(classes[maxIndex[1]]) && ((maxIndex[0]*100)>choices.accuracy)) {
+            regions.push({state: 'true', acc: maxIndex[0], cls: classes[maxIndex[1]], X: x, Y: y});
+          }
+          //  else{
+          //    regions.push({ state: 'false', acc: maxIndex[0], cls : classes[maxIndex[1]], X:x ,Y:y});
+
+          // }
+          console.log('done');
+          j=j+1;
+          dx += step;
+        });
+      }
+      i=i+1;
+      dy += step;
+    }
+    mem = sizeof(regions);
+    model.dispose();
+    console.log(regions);
+    if (regions.length != 0) {
+      document.getElementById('snackbar').className = '';
+      $('#snackbar').html('');
+      $('#snackbar').html('<h3> Downloading ...</h3>');
+      document.getElementById('snackbar').className = 'show';
+
+      for (let k =0; k< regions.length; k++) {
+        console.log('k'+k);
+        const src = prefixUrl+'\/'+regions[k].X+','+regions[k].Y+','+step+','+step+'\/'+step+',/0/default.jpg';
+        const lImg = await addImageProcess(src);
+        fullResCvs.height = lImg.height;
+        fullResCvs.width = lImg.width;
+        fullResCvs.getContext('2d').drawImage(lImg, 0, 0);
+        regionData.push(fullResCvs.toDataURL().replace(/^data:image\/(png|jpg);base64,/, ''));
+      }
+      mem1 = sizeof(regionData);
+
+      var zip = new JSZip();
+      zip.folder('images');
+      var img = zip.folder('images');
+
+      for (var i = 0; i <regionData.length; i++) {
+        console.log(i);
+        img.file( regions[i].cls+ (regions[i].acc*100).toFixed(3) + '.png', regionData[i], {base64: true});
+      }
+
+      await zip.generateAsync({type: 'blob'}).then(function(content) {
+        saveAs(content, 'download.zip');
+      });
+    }
+    console.log('finished');
+    document.getElementById('snackbar').className = '';
+    var counts = {};
+    $('#detailsdata').html('');
+    $('#detailsdata').append('<li><h3>Total number of patches extracted :'+ regionData.length +'</h3></li>' );
+
+    for (let k = 0; k< regions.length; k++) {
+      var i = regions[k].cls;
+      counts[i] = counts[i] ? counts[i] + 1 : 1;
+    }
+    for (let j = 0; j<choices.classes.length; j++) {
+      if (choices.classes[j] in counts) {
+        $('#detailsdata').append('<li>Number of patches extracted  of class <b>'+
+          choices.classes[j]+ ' </b> : '+ counts[choices.classes[j]] +'</li>' );
+      } else {
+        $('#detailsdata').append('<li>Number of patches extracted  of class <b>'+
+         choices.classes[j]+ '</b> : 0  </li>' );
+      }
+    }
+    $UI.detailsModal.open();
+  };
+}
+
+function updateTextInput(val) {
+  document.getElementById('textInput').value=val;
+}
+
