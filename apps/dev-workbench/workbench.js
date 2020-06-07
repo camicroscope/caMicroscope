@@ -1,3 +1,17 @@
+
+// let JSZip = require("jszip");
+// let zip = new JSZip();
+// zip.generateAsync({type: 'blob'})
+//     .then(function(blob) {
+//       saveAs(blob, 'hello.zip');
+//     });
+// function saveAs(theBlob, fileName) {
+//   // A Blob() is almost a File() - it's just missing the two properties below which we will add
+//   theBlob.lastModifiedDate = new Date();
+//   theBlob.name = fileName;
+//   return theBlob;
+// }
+
 function dataSelect() {
   $('#stepper').hide(300);
   $('#headContent').hide(300);
@@ -21,3 +35,4 @@ $('#spriteInput').change(function() {
   $('#firstStepButton').hide();
   $('#secondStepButton').show();
 });
+

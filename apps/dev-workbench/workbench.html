@@ -55,6 +55,8 @@
       rel="stylesheet"
       href="https://fonts.googleapis.com/icon?family=Material+Icons"
     />
+    <script src="../../common/jszip.min.js"></script>
+    <script src="../../common/FileSaver.min.js"></script>
   </head>
   <body>
     <!--Navbar-->
@@ -128,19 +130,23 @@
                 <p style="font-size: 1em;">
                   Create your own customized CNN algorithm and train your model
                   accordingly. <br />
-                  <button
-                    id="secondStepButton"
-                    style="
-                      border-radius: 50%;
-                      padding: 1em;
-                      margin-bottom: -1em;
-                      display: none;
-                    "
-                    type="button"
-                    class="btn btn-primary"
-                  >
-                    <i data-feather="chevron-right" class="text-white"></i>
-                  </button>
+                  <a href="./createAlgo/bench.html">
+                    <button
+                      id="secondStepButton"
+                      style="
+                        border-radius: 50%;
+                        padding: 1em;
+                        margin-bottom: -1em;
+                        display: none;
+                      "
+                      type="button"
+                      class="btn btn-primary"
+                    >
+                      <i
+                        data-feather="chevron-right"
+                        class="text-white"
+                      ></i></button
+                  ></a>
                 </p>
               </div>
             </li>
@@ -196,8 +202,8 @@
             <h4 class="card-title">Select your dataset</h4>
             <!-- Text -->
             <p style="text-align: justify;" class="card-text">
-              Select the dataset(.zip) including two files; spritesheet(.png) and a
-              binary labels file from your local storage.
+              Select the dataset(.zip) including two files; spritesheet(.png)
+              and a binary labels file from your local storage.
             </p>
             <br />
             <div class="input-group">
@@ -205,7 +211,7 @@
                 <input
                   type="file"
                   id="spriteInput"
-                  accept=".png"
+                  accept=".zip"
                   style="max-width: 98%;"
                 />
                 <label
@@ -233,6 +239,8 @@
             <!-- Buttons -->
             <div style="text-align: center;">
               <button
+                data-toggle="modal"
+                data-target="#labelsUploadModal"
                 style="border-radius: 5px; font-size: 0.9em;"
                 class="btn btn-primary px-2"
               >
@@ -250,6 +258,54 @@
         <!-- Cards -->
       </div>
     </div>
+
+    <!-- Labels Upload Modal -->
+    <div
+      class="modal fade"
+      id="labelsUploadModal"
+      tabindex="-1"
+      role="dialog"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLongTitle">
+              Select your labels
+            </h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            Browse your labelling files(.zip) created by the caMicroscope
+            labelling tool. <br />
+            <br />
+            <div class="input-group">
+              <div class="custom-file">
+                <input multiple type="file" id="labelsInput" accept=".zip" />
+                <label
+                  class="custom-file-label labelsInputLabel"
+                  for="labelsInput"
+                  >Choose files
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-success px-2">
+              Save
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <script src="./workbench.js"></script>
     <script>
       feather.replace(); // for feather Icons

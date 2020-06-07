@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Workbench - Create Model</title>
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.8.2/css/all.css"
+    />
+    <!-- Google Fonts -->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
+    />
+    <!-- Bootstrap core CSS -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- Material Design Bootstrap -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.0/css/mdb.min.css"
+      rel="stylesheet"
+    />
+    <!-- JQuery -->
+    <script
+      type="text/javascript"
+      src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"
+    ></script>
+    <!-- Bootstrap tooltips -->
+    <script
+      type="text/javascript"
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js"
+    ></script>
+    <!-- Bootstrap core JavaScript -->
+    <script
+      type="text/javascript"
+      src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/js/bootstrap.min.js"
+    ></script>
+    <!-- MDB core JavaScript -->
+    <script
+      type="text/javascript"
+      src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.0/js/mdb.min.js"
+    ></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <link
+      href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+    />
+    <link rel="stylesheet" href="./bench.css" />
+    <script src="../../../common/jszip.min.js"></script>
+    <script src="../../../common/FileSaver.min.js"></script>
+  </head>
+  <body>
+    <!--Navbar-->
+    <nav
+      class="navbar navbar-expand-lg navbar-dark"
+      style="background: rgb(33, 37, 41);"
+    >
+      <a href="../workbench.html"
+        ><i data-feather="arrow-left" class="text-white"></i>
+      </a>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      <!-- Navbar brand -->
+      <span class="navbar-brand" style="color: white;"> Workbench </span>
+
+      <ul class="navbar-nav mr-auto">
+        <!-- Dropdown -->
+        <li
+          style="position: absolute; right: 2em; margin-top: -1.3em;"
+          class="nav-item dropdown"
+        >
+          <a
+            class="nav-link dropdown-toggle"
+            id="navbarDropdownMenuLink"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+            >Options</a
+          >
+          <div
+            class="dropdown-menu dropdown-primary"
+            aria-labelledby="navbarDropdownMenuLink"
+          >
+            <a class="dropdown-item" href="#"
+              ><i class="fas fa-file-export"></i> Export</a
+            >
+            <a class="dropdown-item" href="#"
+              ><i class="fas fa-file-import"></i> Import</a
+            >
+          </div>
+        </li>
+      </ul>
+    </nav>
+    <!--/.Navbar-->
+
+    <div id="headbar">
+      <br />
+      <div id="headContent" style="font-size: xx-large;">
+        Design your own ML training algorithm here
+      </div>
+      <br />
+    </div>
+
+    <script>
+      feather.replace(); // for feather Icons
+    </script>
+    <script src="./bench.js"></script>
+  </body>
+</html>
