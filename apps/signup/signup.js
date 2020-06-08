@@ -1,7 +1,7 @@
 var userSignupUrl = "../../data/User/post";
 var protoTokenUrl = "../../auth/Token/proto";
 var permissions;
-const store = new Store('../data/');
+const store = new Store('../../data/');
 
 function addUser(){
   var email = document.getElementById("mail").value
