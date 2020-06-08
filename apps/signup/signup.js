@@ -17,7 +17,7 @@ function addUser(){
     userType = "Editor"
   }
 
-  getUserPermissions(getUserType())
+  store.getUserPermissions(getUserType())
     .then(response => response.text())
     .then((data) => {
     return (data ? JSON.parse(data) : null);
