@@ -92,7 +92,7 @@ function resetLabelsModel() {
     var data = new FormData();
     var fileInput = document.getElementById('labelsInput');
     for (i = 0; i < fileNames.length; i++) {
-      data.append('zips', fileInput.files[0], fileNames[i]);
+      data.append('zips', fileInput.files[i], fileNames[i]);
     }
     let url = '';
     $.ajax({
