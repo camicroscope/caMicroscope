@@ -1,4 +1,3 @@
-
 // let JSZip = require("jszip");
 // let zip = new JSZip();
 // zip.generateAsync({type: 'blob'})
@@ -11,6 +10,8 @@
 //   theBlob.name = fileName;
 //   return theBlob;
 // }
+
+// $('#labelsInput').unbind('change');
 
 function dataSelect() {
   $('#stepper').hide(300);
@@ -36,3 +37,188 @@ $('#spriteInput').change(function() {
   $('#secondStepButton').show();
 });
 
+$('.labelsInputGroup').change(function(evt) {
+  let fileNames = $.map($('#labelsInput').prop('files'), function(val) {
+    return val.name;
+  });
+  if (fileNames.length == 1) $('.labelsInputLabel').html('File selected');
+  else if (fileNames.length > 1) {
+    $('.labelsInputLabel').html(fileNames.length + ' files selected');
+  }
+  function handleFile(f) {
+    let title = f.name;
+    // console.log(title);
+    JSZip.loadAsync(f).then(function(zip) {
+      zip.forEach(function(relativePath, zipEntry) {
+        console.log(zipEntry.name);
+      });
+    });
+  }
+  let files = evt.target.files;
+  // console.log(files);
+  // $.ajax({
+  //   method: 'POST',
+  //   url: '../../workbench/getLabelsZips',
+  //   data: files,
+  //   dataType: 'zip',
+  //   processData: false,
+  //   success: function(response) {
+  //     console.log(response);
+  //   },
+  // });
+  for (var i = 0; i < files.length; i++) {
+    handleFile(files[i]);
+  }
+});
+function resetLabelsModel() {
+  $('#labelsSubmitButton').prop('disabled', false);
+  $('#labelsSubmitText').show();
+  $('#labelsSubmitLoading').hide();
+  $('.labelsInputGroup').show();
+  $('#labelsFilterList').html('');
+  $('#filterLabels').hide();
+  $('#labelsDatasetZip').hide();
+  $('#labelsSubmitFinish').hide();
+  $('#labelsUploadForm').unbind('submit');
+  $('#labelsUploadForm').trigger('reset');
+
+  $('#labelsUploadForm').on('submit', function() {
+    $('#labelsSubmitButton').prop('disabled', true);
+    $('#labelsSubmitText').hide(200);
+    $('#labelsSubmitLoading').show(200);
+    let fileNames = $.map($('#labelsInput').prop('files'), function(val) {
+      return val.name;
+    });
+    var data = new FormData();
+    var fileInput = document.getElementById('labelsInput');
+    for (i = 0; i < fileNames.length; i++) {
+      data.append('zips', fileInput.files[0], fileNames[i]);
+    }
+    let url = '';
+    $.ajax({
+      type: 'POST',
+      url: '../../workbench/deleteDataset',
+      success: function(done1) {
+        console.log(done1);
+        if (fileNames.length == 1) {
+          url = '../../workbench/getLabelsZip';
+        } else if (fileNames.length > 1) {
+          url = '../../workbench/getLabelsZips';
+        } else return;
+        $.ajax({
+          type: 'POST',
+          enctype: 'multipart/form-data',
+          url: url,
+          data: data,
+          processData: false,
+          contentType: false,
+          cache: false,
+          timeout: 600000,
+          success: function(data) {
+            console.log(data);
+            $('#labelsSubmitButton').prop('disabled', false);
+            $('#labelsSubmitText').show(200);
+            $('#labelsSubmitLoading').hide(200);
+            displayLabels(data);
+          },
+          error: function(e) {
+            console.log('ERROR : ', e);
+            alert('Error');
+            $('#labelsSubmitButton').prop('disabled', false);
+            $('#labelsSubmitText').show(200);
+            $('#labelsSubmitLoading').hide(200);
+          },
+        });
+      },
+    });
+  });
+}
+
+function displayLabels(data) {
+  $('.labelsInputGroup').hide(180);
+  $('#labelsFilterList').html('');
+  for (let i = 0; i < data.labels.length; i++) {
+    $('#labelsFilterList').append(
+        ` <li
+      class="list-group-item d-flex justify-content-between align-items-center" >
+      <div class="custom-control custom-checkbox">
+        <input
+          type="checkbox"
+          class="custom-control-input"
+          id="labelCheck` +
+        i +
+        `" checked /> <label class="custom-control-label" for="labelCheck` +
+        i +
+        `" >` +
+        data.labels[i] +
+        `</label>
+      </div>
+      <span class="badge badge-primary badge-pill">` +
+        data.counts[i] +
+        `</span>
+    </li>`,
+    );
+  }
+  $('#filterLabels').show(200);
+  selectLabels(data.labels);
+}
+
+function selectLabels(labels) {
+  let selected = [];
+  $('#labelsUploadForm').unbind('submit');
+  $('#labelsUploadForm').on('submit', function() {
+    $('#labelsSubmitButton').prop('disabled', true);
+    $('#labelsSubmitText').hide(200);
+    $('#labelsSubmitLoading').show(200);
+    selected = [];
+    $('#labelsFilterList')
+        .find('input')
+        .each(function() {
+          selected.push($(this).is(':checked'));
+        });
+    // console.log(selected);
+    $.ajax({
+      type: 'POST',
+      url: '../../workbench/deleteUnselected',
+      data: {
+        labels: labels,
+        included: selected,
+      },
+      success: function(done) {
+        console.log(done);
+        $.ajax({
+          type: 'POST',
+          url: '../../workbench/generateSprite',
+          data: {
+            labels: labels,
+            included: selected,
+          },
+          success: function(done) {
+            console.log(done);
+            $('#labelsSubmitButton').prop('disabled', false);
+            $('#labelsSubmitFinish').show(200);
+            $('#labelsSubmitLoading').hide(200);
+            $('#filterLabels').hide(150);
+            $('#labelsDatasetZip').show(200);
+            window.open('../../download/dataset.zip');
+            cleanBackend();
+          },
+        });
+      },
+    });
+  });
+}
+
+function cleanBackend() {
+  $('#labelsUploadForm').unbind('submit');
+  $('#labelsUploadForm').on('submit', function() {
+    $.ajax({
+      type: 'POST',
+      url: '../../workbench/deleteDataset',
+      success: function() {
+        $('#labelsUploadModal').modal('hide');
+        resetLabelsModel();
+      },
+    });
+  });
+}

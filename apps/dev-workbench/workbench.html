@@ -130,14 +130,16 @@
                 <p style="font-size: 1em;">
                   Create your own customized CNN algorithm and train your model
                   accordingly. <br />
-                  <a href="./createAlgo/bench.html">
+                  <a
+                    id="secondStepButton"
+                    href="./createAlgo/bench.html"
+                    style="display: none;"
+                  >
                     <button
-                      id="secondStepButton"
                       style="
                         border-radius: 50%;
                         padding: 1em;
-                        margin-bottom: -1em;
-                        display: none;
+                        margin: -1em 0em -3em -1em;
                       "
                       type="button"
                       class="btn btn-primary"
@@ -202,7 +204,7 @@
             <h4 class="card-title">Select your dataset</h4>
             <!-- Text -->
             <p style="text-align: justify;" class="card-text">
-              Select the dataset(.zip) including two files; spritesheet(.png)
+              Select the dataset(.zip) including two files; spritesheet(.jpg)
               and a binary labels file from your local storage.
             </p>
             <br />
@@ -243,6 +245,7 @@
                 data-target="#labelsUploadModal"
                 style="border-radius: 5px; font-size: 0.9em;"
                 class="btn btn-primary px-2"
+                onclick="resetLabelsModel()"
               >
                 caM Labels
               </button>
@@ -282,26 +285,73 @@
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-          <div class="modal-body">
-            Browse your labelling files(.zip) created by the caMicroscope
-            labelling tool. <br />
-            <br />
-            <div class="input-group">
-              <div class="custom-file">
-                <input multiple type="file" id="labelsInput" accept=".zip" />
-                <label
-                  class="custom-file-label labelsInputLabel"
-                  for="labelsInput"
-                  >Choose files
-                </label>
+          <form
+            id="labelsUploadForm"
+            onsubmit="return false"
+            method="post"
+            enctype="multipart/form-data"
+          >
+            <div class="modal-body">
+              <div class="labelsInputGroup">
+                Browse your labelling files(.zip) created by the caMicroscope
+                labelling tool. <br />
+                <br />
+                <div class="input-group">
+                  <div class="custom-file">
+                    <input
+                      multiple
+                      type="file"
+                      id="labelsInput"
+                      accept=".zip"
+                      required
+                    />
+                    <label
+                      class="custom-file-label labelsInputLabel"
+                      for="labelsInput"
+                      >Choose files
+                    </label>
+                  </div>
+                </div>
               </div>
+              <div id="filterLabels" style="display: none;">
+                Select the labels you want to include in the dataset. <br />
+                <br />
+                <ul id="labelsFilterList" class="list-group"></ul>
+              </div>
+              <div id="labelsDatasetZip" style="display: none;">
+                The spritesheet (.jpg) and labels (binary) files have been
+                created according to your customized data. Download the .zip
+                file and select it in the "Select your dataset" section on this
+                page. <br />
+                Click on "Done" after the download is finished. <br />
+                <br />
+              </div>
+              <br />
             </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-success px-2">
-              Save
-            </button>
-          </div>
+            <div class="modal-footer">
+              <button
+                id="labelsSubmitButton"
+                type="submit"
+                class="btn btn-success"
+                style="padding: 0.6em; font-size: 1em; border-radius: 5px;"
+              >
+                <div id="labelsSubmitText">
+                  Next <i data-feather="chevron-right" class="text-white"></i>
+                </div>
+                <div
+                  id="labelsSubmitLoading"
+                  class="spinner-border"
+                  role="status"
+                  style="display: none;"
+                >
+                  <span class="sr-only">Loading...</span>
+                </div>
+                <div id="labelsSubmitFinish" style="display: none;">
+                  Done <i data-feather="check" class="text-white"></i>
+                </div>
+              </button>
+            </div>
+          </form>
         </div>
       </div>
     </div>
