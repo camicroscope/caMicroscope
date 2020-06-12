@@ -72,6 +72,7 @@ $('.labelsInputGroup').change(function(evt) {
 });
 function resetLabelsModel() {
   $('#labelsSubmitButton').prop('disabled', false);
+  $('#labelSelectModalTitle').text('Select your labels');
   $('#labelsSubmitText').show();
   $('#labelsSubmitLoading').hide();
   $('.labelsInputGroup').show();
@@ -135,6 +136,7 @@ function resetLabelsModel() {
 }
 
 function displayLabels(data) {
+  $('#labelSelectModalTitle').text('Filter your labels');
   $('.labelsInputGroup').hide(180);
   $('#labelsFilterList').text('');
   for (let i = 0; i < data.labels.length; i++) {
@@ -200,6 +202,7 @@ function selectLabels(labels) {
             $('#labelsSubmitLoading').hide(200);
             $('#filterLabels').hide(150);
             $('#labelsDatasetZip').show(200);
+            $('#labelSelectModalTitle').text('Dataset created successfully');
             window.open('../../download/dataset.zip');
             cleanBackend();
           },
