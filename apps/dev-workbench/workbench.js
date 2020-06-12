@@ -16,10 +16,10 @@
 function dataSelect() {
   $('#stepper').hide(300);
   $('#headContent').hide(300);
-  $('#headContent').html('Select or create your own dataset');
+  $('#headContent').text('Select or create your own dataset');
   $('#headContent').show(180);
   $('#headSub').hide(200);
-  $('#headContent').html('Select or create your dataset');
+  $('#headContent').text('Select or create your dataset');
   $('#headContent').show(180);
   $('#cards').show(200);
 }
@@ -27,7 +27,7 @@ function dataSelect() {
 $('#spriteInput').change(function() {
   $('#cards').hide(150);
   $('#stepper').show(200);
-  $('#headContent').html(' Welcome to <b>Development Workbench</b>');
+  $('#headContent').text(' Welcome to <b>Development Workbench</b>');
   $('#headContent').show(400);
   $('#headSub').show(400);
   $('.firstStepHead').attr('class', 'firstStepHead done');
@@ -41,9 +41,9 @@ $('.labelsInputGroup').change(function(evt) {
   let fileNames = $.map($('#labelsInput').prop('files'), function(val) {
     return val.name;
   });
-  if (fileNames.length == 1) $('.labelsInputLabel').html('File selected');
+  if (fileNames.length == 1) $('.labelsInputLabel').text('File selected');
   else if (fileNames.length > 1) {
-    $('.labelsInputLabel').html(fileNames.length + ' files selected');
+    $('.labelsInputLabel').text(fileNames.length + ' files selected');
   }
   function handleFile(f) {
     let title = f.name;
@@ -75,7 +75,7 @@ function resetLabelsModel() {
   $('#labelsSubmitText').show();
   $('#labelsSubmitLoading').hide();
   $('.labelsInputGroup').show();
-  $('#labelsFilterList').html('');
+  $('#labelsFilterList').text('');
   $('#filterLabels').hide();
   $('#labelsDatasetZip').hide();
   $('#labelsSubmitFinish').hide();
@@ -136,7 +136,7 @@ function resetLabelsModel() {
 
 function displayLabels(data) {
   $('.labelsInputGroup').hide(180);
-  $('#labelsFilterList').html('');
+  $('#labelsFilterList').text('');
   for (let i = 0; i < data.labels.length; i++) {
     $('#labelsFilterList').append(
         ` <li
@@ -150,11 +150,11 @@ function displayLabels(data) {
         `" checked /> <label class="custom-control-label" for="labelCheck` +
         i +
         `" >` +
-        data.labels[i] +
+       sanitize(data.labels[i].toString()) +
         `</label>
       </div>
       <span class="badge badge-primary badge-pill">` +
-        data.counts[i] +
+        sanitize(data.counts[i].toString()) +
         `</span>
     </li>`,
     );
@@ -221,4 +221,19 @@ function cleanBackend() {
       },
     });
   });
+}
+
+function sanitize(string) {
+  const map = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    // eslint-disable-next-line quotes
+    "'": '&#x27;',
+    // eslint-disable-next-line quotes
+    "/": '&#x2F;',
+  };
+  const reg = /[&<>"'/]/ig;
+  return string.replace(reg, (match)=>(map[match]));
 }
