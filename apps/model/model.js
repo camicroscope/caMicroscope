@@ -194,7 +194,7 @@ async function initUIcomponents() {
     provideContent: true,
     content: `
     <div class= "message" >
-      <h3> Select the parameters for the patcehs that you want to downlaod</h3></div><br>
+      <h3> Select the parameters for the patches that you want to downlaod</h3></div><br>
       <table id='choicetable'>
         <thead>
           <tbody id="choicedata">
@@ -802,7 +802,7 @@ function uploadModel() {
       } catch (e) {
         status.classList.add('error');
         status.classList.remove('blink');
-        if (toggle.checked) status.innerHTML = 'Please enter a valid URL.';
+        if (toggle.checked) status.innerText = 'Please enter a valid URL.';
         else {
           status.innerText = 'Please enter a valid model.' +
         'Input model.json in first input and all weight binaries in second one without renaming.';
@@ -1080,7 +1080,6 @@ async function selectModel() {
   var store = tx.objectStore('models_store');
   var modelCount=0;
   empty(table);
-  console.log(data);
 
   //  Update table data
   (function(callback) {
@@ -1175,7 +1174,7 @@ async function extractRoi(choices) {
   document.getElementById('snackbar').className = 'show';
 
   const self = $UI.modelPanel;
-  var key = choices.model;
+  const key = choices.model;
   const step = parseInt(key.split('_')[1].split('-')[0]);
   const prefixUrl = ImgloaderMode == 'iip'?`../../img/IIP/raw/?IIIF=${$D.params.data.location}`:$CAMIC.slideId;
 
@@ -1224,8 +1223,11 @@ async function extractRoi(choices) {
     const regionData = [];
 
     $('#snackbar').html('');
-    $('#snackbar').html('<h3>Predicting ...</h3>');
+    $('#snackbar').html('<h3>Predicting ...</h3><span id = "etap"></span>');
     document.getElementById('snackbar').className = 'show';
+
+    const totalPatches = (width/step)*(height/step);
+    var c = 0;
 
     for (let y = 0, dy = 0, i =0; y <=(height-step); y+=(step)) {
       let dx = 0;
@@ -1285,8 +1287,11 @@ async function extractRoi(choices) {
           // }
           console.log('done');
           j=j+1;
+          c+=1;
           dx += step;
         });
+        $('#etap').html('');
+        $('#etap').append('<b>'+ ((c/totalPatches)*100).toFixed(0) + ' % </b>');
       }
       i=i+1;
       dy += step;
@@ -1297,7 +1302,7 @@ async function extractRoi(choices) {
     if (regions.length != 0) {
       document.getElementById('snackbar').className = '';
       $('#snackbar').html('');
-      $('#snackbar').html('<h3> Downloading ...</h3>');
+      $('#snackbar').html('<h3> Downloading ...</h3>'+ '<span id = "etad"></span>');
       document.getElementById('snackbar').className = 'show';
 
       for (let k =0; k< regions.length; k++) {
@@ -1318,6 +1323,9 @@ async function extractRoi(choices) {
       for (var i = 0; i <regionData.length; i++) {
         console.log(i);
         img.file( regions[i].cls+ (regions[i].acc*100).toFixed(3) + '.png', regionData[i], {base64: true});
+
+        $('#etad').html('');
+        $('#etad').append('<b>'+(((i/regionData.length))*100).toFixed(0) + ' % </b>');
       }
 
       await zip.generateAsync({type: 'blob'}).then(function(content) {

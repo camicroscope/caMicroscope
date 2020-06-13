@@ -152,6 +152,13 @@
   <script src='../viewer/dataloaders.js'></script>
   <script src='../viewer/init.js'></script>
   -->
+
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+  <script type="text/javascript" src="//stuk.github.io/jszip/dist/jszip.js"></script>
+  <script type="text/javascript" src="//stuk.github.io/jszip-utils/dist/jszip-utils.js"></script>
+  <script type="text/javascript" src="//stuk.github.io/jszip/vendor/FileSaver.js"></script>
+  <script type='text/javascript' src='../../common/sizeof.compressed.js'></script>
+  
   <!-- segment css -->
   <link rel="stylesheet" type='text/css' href='./segment.css'>
 
@@ -162,7 +169,11 @@
 <div id='main_viewer' class='main'></div>
 <div id="model_info"></div>
 <div id="upload_panel"></div>
+<div id="roi_panel"></div>
+<div id="choice_panel"></div>
+<div id="details_panel"></div>
 <div id="popup-container"></div>
+<div id="snackbar"></div>
 </body>
 
 <script src='segment.js'></script>
