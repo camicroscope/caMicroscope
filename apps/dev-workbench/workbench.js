@@ -19,7 +19,7 @@ function dataSelect() {
   $('#headContent').text('Select or create your own dataset');
   $('#headContent').show(180);
   $('#headSub').hide(200);
-  $('#headContent').text('Select or create your dataset');
+  // $('#headContent').text('Select or create your dataset');
   $('#headContent').show(180);
   $('#cards').show(200);
 }
@@ -50,7 +50,7 @@ $('.labelsInputGroup').change(function(evt) {
     // console.log(title);
     JSZip.loadAsync(f).then(function(zip) {
       zip.forEach(function(relativePath, zipEntry) {
-        console.log(zipEntry.name);
+        // console.log(zipEntry.name);
       });
     });
   }
@@ -87,55 +87,15 @@ function resetLabelsModel() {
     $('#labelsSubmitButton').prop('disabled', true);
     $('#labelsSubmitText').hide(200);
     $('#labelsSubmitLoading').show(200);
+    let files = $('#labelsInput').prop('files');
     let fileNames = $.map($('#labelsInput').prop('files'), function(val) {
       return val.name;
     });
-    var data = new FormData();
-    var fileInput = document.getElementById('labelsInput');
-    for (i = 0; i < fileNames.length; i++) {
-      data.append('zips', fileInput.files[i], fileNames[i]);
-    }
-    let url = '';
-    $.ajax({
-      type: 'POST',
-      url: '../../workbench/deleteDataset',
-      success: function(done1) {
-        console.log(done1);
-        if (fileNames.length == 1) {
-          url = '../../workbench/getLabelsZip';
-        } else if (fileNames.length > 1) {
-          url = '../../workbench/getLabelsZips';
-        } else return;
-        $.ajax({
-          type: 'POST',
-          enctype: 'multipart/form-data',
-          url: url,
-          data: data,
-          processData: false,
-          contentType: false,
-          cache: false,
-          timeout: 600000,
-          success: function(data) {
-            console.log(data);
-            $('#labelsSubmitButton').prop('disabled', false);
-            $('#labelsSubmitText').show(200);
-            $('#labelsSubmitLoading').hide(200);
-            displayLabels(data);
-          },
-          error: function(e) {
-            console.log('ERROR : ', e);
-            alert('Error');
-            $('#labelsSubmitButton').prop('disabled', false);
-            $('#labelsSubmitText').show(200);
-            $('#labelsSubmitLoading').hide(200);
-          },
-        });
-      },
-    });
+    sendToLoader(files, fileNames);
   });
 }
 
-function displayLabels(data) {
+function displayLabels(data, names) {
   $('#labelSelectModalTitle').text('Filter your labels');
   $('.labelsInputGroup').hide(180);
   $('#labelsFilterList').text('');
@@ -152,7 +112,7 @@ function displayLabels(data) {
         `" checked /> <label class="custom-control-label" for="labelCheck` +
         i +
         `" >` +
-       sanitize(data.labels[i].toString()) +
+        sanitize(data.labels[i].toString()) +
         `</label>
       </div>
       <span class="badge badge-primary badge-pill">` +
@@ -162,10 +122,10 @@ function displayLabels(data) {
     );
   }
   $('#filterLabels').show(200);
-  selectLabels(data.labels);
+  selectLabels(data.labels, data.userFolder, names);
 }
 
-function selectLabels(labels) {
+function selectLabels(labels, userFolder, names) {
   let selected = [];
   $('#labelsUploadForm').unbind('submit');
   $('#labelsUploadForm').on('submit', function() {
@@ -178,49 +138,58 @@ function selectLabels(labels) {
         .each(function() {
           selected.push($(this).is(':checked'));
         });
-    // console.log(selected);
+    let data = {
+      labels: labels,
+      included: selected,
+      userFolder: userFolder,
+      fileNames: names,
+    };
     $.ajax({
       type: 'POST',
-      url: '../../workbench/deleteUnselected',
-      data: {
-        labels: labels,
-        included: selected,
-      },
+      url: '../../loader/workbench/generateSprite',
+      dataType: 'json',
+      contentType: 'application/json',
+      data: JSON.stringify(data),
       success: function(done) {
         console.log(done);
-        $.ajax({
-          type: 'POST',
-          url: '../../workbench/generateSprite',
-          data: {
-            labels: labels,
-            included: selected,
-          },
-          success: function(done) {
-            console.log(done);
-            $('#labelsSubmitButton').prop('disabled', false);
-            $('#labelsSubmitFinish').show(200);
-            $('#labelsSubmitLoading').hide(200);
-            $('#filterLabels').hide(150);
-            $('#labelsDatasetZip').show(200);
-            $('#labelSelectModalTitle').text('Dataset created successfully');
-            window.open('../../download/dataset.zip');
-            cleanBackend();
-          },
-        });
+        $('#labelsSubmitButton').prop('disabled', false);
+        $('#labelsSubmitFinish').show(200);
+        $('#labelsSubmitLoading').hide(200);
+        $('#filterLabels').hide(150);
+        $('#labelsDatasetZip').show(200);
+        $('#labelSelectModalTitle').text('Dataset created successfully');
+        window.open('../../loader/' + done.download);
+        cleanBackend(userFolder);
+      },
+      error: function(e) {
+        console.log('ERROR : ', e);
+        alert('Error');
+        $('#labelsSubmitLoading').hide(200);
+        $('#labelsSubmitText').show(200);
       },
     });
   });
 }
 
-function cleanBackend() {
+function cleanBackend(userFolder) {
   $('#labelsUploadForm').unbind('submit');
   $('#labelsUploadForm').on('submit', function() {
     $.ajax({
       type: 'POST',
-      url: '../../workbench/deleteDataset',
+      url: '../../loader/workbench/deleteDataset',
+      dataType: 'json',
+      contentType: 'application/json',
+      data: JSON.stringify({userFolder: userFolder}),
       success: function() {
         $('#labelsUploadModal').modal('hide');
         resetLabelsModel();
+      },
+      error: function(e) {
+        console.log('ERROR : ', e);
+        alert('Error');
+        $('#labelsSubmitFinish').show(200);
+        $('#labelsSubmitLoading').hide(200);
+        $('#labelSelectModalTitle').text('Dataset created successfully');
       },
     });
   });
@@ -235,8 +204,56 @@ function sanitize(string) {
     // eslint-disable-next-line quotes
     "'": '&#x27;',
     // eslint-disable-next-line quotes
-    "/": '&#x2F;',
+    '/': '&#x2F;',
   };
-  const reg = /[&<>"'/]/ig;
-  return string.replace(reg, (match)=>(map[match]));
+  const reg = /[&<>"'/]/gi;
+  return string.replace(reg, (match) => map[match]);
+}
+
+function sendToLoader(files, names) {
+  let Promises = [];
+  let data = {files: [], fileNames: names};
+  function getBase64(file) {
+    Promises.push(
+        new Promise((resolve, reject) => {
+          var reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onload = function() {
+            let result = reader.result;
+            result = result.substr(28, result.length - 28);
+            data.files.push(result);
+            resolve('done');
+          };
+          reader.onerror = function(error) {
+            console.log('Error: ', error);
+          };
+        }),
+    );
+  }
+  for (i = 0; i < files.length; i++) getBase64(files[i]);
+  Promise.all(Promises).then(() => {
+    console.log(data);
+    $.ajax({
+      type: 'POST',
+      url: '../../loader/workbench/getLabelsZips',
+      dataType: 'json',
+      contentType: 'application/json',
+      data: JSON.stringify(data),
+      timeout: 600000,
+      success: function(data) {
+        console.log(data);
+        $('#labelsSubmitButton').prop('disabled', false);
+        $('#labelsSubmitText').show(200);
+        $('#labelsSubmitLoading').hide(200);
+        displayLabels(data, names);
+      },
+      error: function(e) {
+        console.log('ERROR : ', e);
+        alert('Error');
+        $('#labelsSubmitButton').prop('disabled', false);
+        $('#labelsSubmitText').show(200);
+        $('#labelsSubmitLoading').hide(200);
+      },
+    });
+  });
 }
