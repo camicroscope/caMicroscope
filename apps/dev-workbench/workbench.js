@@ -1,18 +1,3 @@
-// let JSZip = require("jszip");
-// let zip = new JSZip();
-// zip.generateAsync({type: 'blob'})
-//     .then(function(blob) {
-//       saveAs(blob, 'hello.zip');
-//     });
-// function saveAs(theBlob, fileName) {
-//   // A Blob() is almost a File() - it's just missing the two properties below which we will add
-//   theBlob.lastModifiedDate = new Date();
-//   theBlob.name = fileName;
-//   return theBlob;
-// }
-
-// $('#labelsInput').unbind('change');
-
 function dataSelect() {
   $('#stepper').hide(300);
   $('#headContent').hide(300);
@@ -45,16 +30,16 @@ $('.labelsInputGroup').change(function(evt) {
   else if (fileNames.length > 1) {
     $('.labelsInputLabel').text(fileNames.length + ' files selected');
   }
-  function handleFile(f) {
-    let title = f.name;
-    // console.log(title);
-    JSZip.loadAsync(f).then(function(zip) {
-      zip.forEach(function(relativePath, zipEntry) {
-        // console.log(zipEntry.name);
-      });
-    });
-  }
-  let files = evt.target.files;
+  // function handleFile(f) {
+  //   let title = f.name;
+  //   // console.log(title);
+  //   JSZip.loadAsync(f).then(function(zip) {
+  //     zip.forEach(function(relativePath, zipEntry) {
+  //       // console.log(zipEntry.name);
+  //     });
+  //   });
+  // }
+  // let files = evt.target.files;
   // console.log(files);
   // $.ajax({
   //   method: 'POST',
@@ -66,9 +51,9 @@ $('.labelsInputGroup').change(function(evt) {
   //     console.log(response);
   //   },
   // });
-  for (var i = 0; i < files.length; i++) {
-    handleFile(files[i]);
-  }
+  // for (var i = 0; i < files.length; i++) {
+  //   handleFile(files[i]);
+  // }
 });
 function resetLabelsModel() {
   $('#labelsSubmitButton').prop('disabled', false);
