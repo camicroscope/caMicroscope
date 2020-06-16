@@ -162,8 +162,8 @@ function selectLabels(labels, userFolder, names) {
         cleanBackend(userFolder);
       },
       error: function(e) {
-        console.log('ERROR : ', e);
-        alert('Error');
+        console.log('ERROR : ', e['responseJSON']['error']);
+        alert(e['responseJSON']['error']);
         $('#labelsSubmitLoading').hide(200);
         $('#labelsSubmitText').show(200);
       },
@@ -176,20 +176,15 @@ function cleanBackend(userFolder) {
   $('#labelsUploadForm').on('submit', function() {
     $.ajax({
       type: 'POST',
-      url: '../../loader/workbench/deleteDataset',
-      dataType: 'json',
-      contentType: 'application/json',
-      data: JSON.stringify({userFolder: userFolder}),
+      url: '../../loader/workbench/deleteDataset/' + userFolder,
       success: function() {
         $('#labelsUploadModal').modal('hide');
         resetLabelsModel();
       },
       error: function(e) {
         console.log('ERROR : ', e);
+        // $('#labelsUploadModal').modal('hide');
         alert('Error');
-        $('#labelsSubmitFinish').show(200);
-        $('#labelsSubmitLoading').hide(200);
-        $('#labelSelectModalTitle').text('Dataset created successfully');
       },
     });
   });
@@ -248,8 +243,8 @@ function sendToLoader(files, names) {
         displayLabels(data, names);
       },
       error: function(e) {
-        console.log('ERROR : ', e);
-        alert('Error');
+        console.log('ERROR : ', e['responseJSON']['error']);
+        alert(e['responseJSON']['error']);
         $('#labelsSubmitButton').prop('disabled', false);
         $('#labelsSubmitText').show(200);
         $('#labelsSubmitLoading').hide(200);
