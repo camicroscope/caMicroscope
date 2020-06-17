@@ -68,9 +68,6 @@
 				<li class="nav-item active link">
 					<a class="nav-link" href="table.html"> <i class="fas fa-list-ul"></i> Slides</a>
 				</li>
-				<li class="nav-item link">
-					<a class="nav-link" href="Info.html"> <i class="fas fa-info-circle"></i> Info</a>
-				</li>
 				<!-- Notification Bell -->
 				<li class="nav-item dropdown" id="notifBell">
 					<a class="nav-link mt-1" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -136,6 +133,13 @@
 	<div class="header text-center text-white bg-info p-4">
 		<h1 class="h1">caMicroscope</h1>
 		<p>Digital pathology image viewer with support for human/machine generated annotations and markups.</p>
+		<div style="align-content: center;">
+			<div style="align-content: center;">
+				<div class="btn-group" role="group">
+				<button type="button" style="border-color: white;" class="btn btn-secondary bg-white text-dark" title="Slides Table"><i class="fas fa-list-alt"></i>  Slides</button>
+				<a href="./Info.html">	<button style="border-color: white; border-radius: 0 5px 5px 0;" type="button" class="btn btn-secondary bg-info text-light" title="Information Dashboard"><i class="fas fa-info-circle"></i>  Info</button> </a></div>
+			</div>
+		</div>
 	</div>
 
 	<div class='p-2 bg-light' style="flex-grow: 1;">
@@ -244,6 +248,11 @@
 		<div class="container">
 
 			<div>
+
+				<div class="" >
+					<h3 class="text-center h3 mb-0" >Available Slides</h3>
+					<div class="search-box float-left form-group form-inline" style="margin-top: 1em;">
+
 				<div class="">
 					<h3 class="text-center h3 mb-0">Available Slides</h3>
 					<div class="row mt-2" id="filters-heading">
@@ -251,6 +260,7 @@
 					<div class="row mb-2 ml-1" id="filters-check" >
 					</div>
 					<div class="search-box float-left form-group form-inline">
+
 						<select id='entries' class="select form-control mr-2">
 							<option value="10" selected>10 slides/page</option>
 							<option value="20">20 slides/page</option>
