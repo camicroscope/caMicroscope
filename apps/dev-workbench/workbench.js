@@ -55,9 +55,21 @@ $('.labelsInputGroup').change(function(evt) {
   //   handleFile(files[i]);
   // }
 });
-function resetLabelsModel() {
+function resetLabelsModel(custom = false) {
   $('#labelsSubmitButton').prop('disabled', false);
-  $('#labelSelectModalTitle').text('Select your labels');
+  if (custom) {
+    $('#labelSelectModalTitle').text('Select custom dataset file');
+    $('#step1Desc')
+        .text(`Browse your dataset file (.zip) in which every folder should be 
+                          label name and should contain images accordingly inside.`);
+    $('#labelsInput').removeAttr('multiple');
+  } else {
+    $('#labelSelectModalTitle').text('Select caMircoscope labelling files');
+    $('#step1Desc').text(
+        'Browse your labelling files(.zip) created by the caMicroscope labelling tool.',
+    );
+    $('#labelsInput').attr('multiple', 'multiple');
+  }
   $('#labelsSubmitText').show();
   $('#labelsSubmitLoading').hide();
   $('.labelsInputGroup').show();
@@ -72,15 +84,15 @@ function resetLabelsModel() {
     $('#labelsSubmitButton').prop('disabled', true);
     $('#labelsSubmitText').hide(200);
     $('#labelsSubmitLoading').show(200);
+
     let files = $('#labelsInput').prop('files');
     let fileNames = $.map($('#labelsInput').prop('files'), function(val) {
       return val.name;
     });
-    sendToLoader(files, fileNames);
+    sendToLoader(files, fileNames, custom);
   });
 }
-
-function displayLabels(data, names) {
+function displayLabels(data, names, custom = false) {
   $('#labelSelectModalTitle').text('Filter your labels');
   $('.labelsInputGroup').hide(180);
   $('#labelsFilterList').text('');
@@ -107,10 +119,10 @@ function displayLabels(data, names) {
     );
   }
   $('#filterLabels').show(200);
-  selectLabels(data.labels, data.userFolder, names);
+  selectLabels(data.labels, data.userFolder, names, custom);
 }
 
-function selectLabels(labels, userFolder, names) {
+function selectLabels(labels, userFolder, names, custom = false) {
   let selected = [];
   $('#labelsUploadForm').unbind('submit');
   $('#labelsUploadForm').on('submit', function() {
@@ -129,9 +141,14 @@ function selectLabels(labels, userFolder, names) {
       userFolder: userFolder,
       fileNames: names,
     };
+    let url = '../../loader/workbench/generateSprite';
+    if (custom) {
+      url = '../../loader/workbench/generateCustomSprite';
+    }
+    console.log(data);
     $.ajax({
       type: 'POST',
-      url: '../../loader/workbench/generateSprite',
+      url: url,
       dataType: 'json',
       contentType: 'application/json',
       data: JSON.stringify(data),
@@ -168,6 +185,7 @@ function cleanBackend(userFolder) {
       },
       error: function(e) {
         console.log('ERROR : ', e);
+        resetLabelsModel();
         // $('#labelsUploadModal').modal('hide');
         alert('Error');
       },
@@ -190,7 +208,7 @@ function sanitize(string) {
   return string.replace(reg, (match) => map[match]);
 }
 
-function sendToLoader(files, names) {
+function sendToLoader(files, names, custom = false) {
   let Promises = [];
   let data = {files: [], fileNames: names};
   function getBase64(file) {
@@ -213,9 +231,13 @@ function sendToLoader(files, names) {
   for (i = 0; i < files.length; i++) getBase64(files[i]);
   Promise.all(Promises).then(() => {
     console.log(data);
+    let url = '../../loader/workbench/getLabelsZips';
+    if (custom) {
+      url = '../../loader/workbench/getCustomData';
+    }
     $.ajax({
       type: 'POST',
-      url: '../../loader/workbench/getLabelsZips',
+      url: url,
       dataType: 'json',
       contentType: 'application/json',
       data: JSON.stringify(data),
@@ -225,7 +247,7 @@ function sendToLoader(files, names) {
         $('#labelsSubmitButton').prop('disabled', false);
         $('#labelsSubmitText').show(200);
         $('#labelsSubmitLoading').hide(200);
-        displayLabels(data, names);
+        displayLabels(data, names, custom);
       },
       error: function(e) {
         console.log('ERROR : ', e['responseJSON']['error']);

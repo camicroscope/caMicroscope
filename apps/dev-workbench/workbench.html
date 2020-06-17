@@ -204,8 +204,9 @@
             <h4 class="card-title">Select your dataset</h4>
             <!-- Text -->
             <p style="text-align: justify;" class="card-text">
-              Select the dataset(.zip) including two files; spritesheet(.jpg)
-              and a binary labels file from your local storage.
+              Select the dataset (.zip) having two files; spritesheet
+              (data.jpg) and a binary labels file (labels.bin) from your local
+              storage.
             </p>
             <br />
             <div class="input-group">
@@ -252,6 +253,9 @@
               <button
                 style="border-radius: 5px; font-size: 0.9em;"
                 class="btn btn-primary px-2"
+                data-toggle="modal"
+                data-target="#labelsUploadModal"
+                onclick="resetLabelsModel(true)"
               >
                 Custom Data
               </button>
@@ -262,7 +266,7 @@
       </div>
     </div>
 
-    <!-- Labels Upload Modal -->
+    <!-- Labels/customData Upload Modal -->
     <div
       class="modal fade"
       id="labelsUploadModal"
@@ -273,9 +277,7 @@
       <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="labelSelectModalTitle">
-              Select your labels
-            </h5>
+            <h5 class="modal-title" id="labelSelectModalTitle"></h5>
             <button
               type="button"
               class="close"
@@ -293,13 +295,11 @@
           >
             <div class="modal-body">
               <div class="labelsInputGroup">
-                Browse your labelling files(.zip) created by the caMicroscope
-                labelling tool. <br />
+                <div id="step1Desc"></div>
                 <br />
                 <div class="input-group">
                   <div class="custom-file">
                     <input
-                      multiple
                       type="file"
                       id="labelsInput"
                       accept=".zip"
@@ -308,7 +308,8 @@
                     <label
                       class="custom-file-label labelsInputLabel"
                       for="labelsInput"
-                      >Choose files
+                    >
+                      Choose
                     </label>
                   </div>
                 </div>
@@ -355,7 +356,6 @@
         </div>
       </div>
     </div>
-
     <script src="./workbench.js"></script>
     <script>
       feather.replace(); // for feather Icons
