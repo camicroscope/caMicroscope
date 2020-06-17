@@ -1,3 +1,14 @@
+$(document).ready(function() {
+  $('#headContent').show(180);
+  $('#headSub').show(200);
+  $('#stepper').show(400);
+});
+
+$('#goBack').click( function() {
+  // window.open('../table.html', '_self');
+  window.history.back();
+});
+
 function dataSelect() {
   $('#stepper').hide(300);
   $('#headContent').hide(300);
@@ -7,6 +18,10 @@ function dataSelect() {
   // $('#headContent').text('Select or create your dataset');
   $('#headContent').show(180);
   $('#cards').show(200);
+  $('#goBack').unbind('click');
+  $('#goBack').click( function() {
+    location.reload();
+  });
 }
 
 $('#spriteInput').change(function() {
@@ -26,7 +41,7 @@ $('.labelsInputGroup').change(function(evt) {
   let fileNames = $.map($('#labelsInput').prop('files'), function(val) {
     return val.name;
   });
-  if (fileNames.length == 1) $('.labelsInputLabel').text('File selected');
+  if (fileNames.length == 1) $('.labelsInputLabel').text(fileNames[0]);
   else if (fileNames.length > 1) {
     $('.labelsInputLabel').text(fileNames.length + ' files selected');
   }
@@ -55,7 +70,7 @@ $('.labelsInputGroup').change(function(evt) {
   //   handleFile(files[i]);
   // }
 });
-function resetLabelsModel(custom = false) {
+function resetLabelsModal(custom = false) {
   $('#labelsSubmitButton').prop('disabled', false);
   if (custom) {
     $('#labelSelectModalTitle').text('Select custom dataset file');
@@ -140,36 +155,60 @@ function selectLabels(labels, userFolder, names, custom = false) {
       included: selected,
       userFolder: userFolder,
       fileNames: names,
+      height: 60,
+      width: 60,
     };
-    let url = '../../loader/workbench/generateSprite';
-    if (custom) {
-      url = '../../loader/workbench/generateCustomSprite';
-    }
-    console.log(data);
-    $.ajax({
-      type: 'POST',
-      url: url,
-      dataType: 'json',
-      contentType: 'application/json',
-      data: JSON.stringify(data),
-      success: function(done) {
-        console.log(done);
-        $('#labelsSubmitButton').prop('disabled', false);
-        $('#labelsSubmitFinish').show(200);
-        $('#labelsSubmitLoading').hide(200);
-        $('#filterLabels').hide(150);
-        $('#labelsDatasetZip').show(200);
-        $('#labelSelectModalTitle').text('Dataset created successfully');
-        window.open('../../loader/' + done.download);
-        cleanBackend(userFolder);
-      },
-      error: function(e) {
-        console.log('ERROR : ', e['responseJSON']['error']);
-        alert(e['responseJSON']['error']);
-        $('#labelsSubmitLoading').hide(200);
-        $('#labelsSubmitText').show(200);
-      },
-    });
+    $('#labelsSubmitButton').prop('disabled', false);
+    $('#labelsSubmitLoading').hide(200);
+    $('#filterLabels').hide(150);
+    $('#selectResolution').show(200);
+    $('#labelsSubmitText').show(200);
+    $('#labelSelectModalTitle').text('Select resolution');
+    selectResolution(data, userFolder, custom);
+  });
+}
+
+function selectResolution(data, userFolder, custom = false) {
+  $('#labelsUploadForm').unbind('submit');
+  $('#labelsUploadForm').on('submit', function() {
+    $('#labelsSubmitButton').prop('disabled', true);
+    $('#labelsSubmitText').hide(200);
+    $('#labelsSubmitLoading').show(200);
+    data.height = $('#datasetNormalHeight').val();
+    data.width = $('#datasetNormalWidth').val();
+    getSprite(data, userFolder, custom);
+  });
+}
+
+function getSprite(data, userFolder, custom) {
+  let url = '../../loader/workbench/generateSprite';
+  if (custom) {
+    url = '../../loader/workbench/generateCustomSprite';
+  }
+  console.log(data);
+  $.ajax({
+    type: 'POST',
+    url: url,
+    dataType: 'json',
+    contentType: 'application/json',
+    data: JSON.stringify(data),
+    success: function(done) {
+      console.log(done);
+      $('#labelsSubmitButton').prop('disabled', false);
+      $('#labelsSubmitFinish').show(200);
+      $('#labelsSubmitLoading').hide(200);
+      $('#selectResolution').hide(200);
+      $('#labelsDatasetZip').show(200);
+      $('#labelSelectModalTitle').text('Dataset created successfully');
+      window.open('../../loader/' + done.download);
+      cleanBackend(userFolder);
+    },
+    error: function(e) {
+      console.log('ERROR : ', e['responseJSON']['error']);
+      alert(e['responseJSON']['error']);
+      $('#labelsSubmitLoading').hide(200);
+      $('#labelsSubmitText').show(200);
+    },
   });
 }
 
@@ -181,11 +220,11 @@ function cleanBackend(userFolder) {
       url: '../../loader/workbench/deleteDataset/' + userFolder,
       success: function() {
         $('#labelsUploadModal').modal('hide');
-        resetLabelsModel();
+        resetLabelsModal();
       },
       error: function(e) {
         console.log('ERROR : ', e);
-        resetLabelsModel();
+        resetLabelsModal();
         // $('#labelsUploadModal').modal('hide');
         alert('Error');
       },

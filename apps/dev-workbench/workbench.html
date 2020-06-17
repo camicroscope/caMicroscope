@@ -64,21 +64,21 @@
       class="navbar navbar-expand-lg navbar-dark"
       style="background: rgb(33, 37, 41);"
     >
-      <a href="../table.html"
-        ><i data-feather="arrow-left" class="text-white"></i>
-      </a>
+      <div style="cursor: pointer;" id="goBack">
+        <i data-feather="arrow-left" class="text-white"></i>
+      </div>
       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
       <!-- Navbar brand -->
-      <a class="navbar-brand" href="#"> Workbench</a>
+      <span style="cursor: default;" class="navbar-brand"> Workbench</span>
     </nav>
     <!--/.Navbar-->
 
     <div id="headbar">
       <br />
-      <div id="headContent" style="font-size: xx-large;">
+      <div id="headContent" style="font-size: xx-large; display: none;">
         Welcome to <b>Development Workbench</b>
       </div>
-      <div id="headSub" style="font-size: large;">
+      <div id="headSub" style="font-size: large; display: none;">
         Create your own ML models in 3 simple steps
       </div>
       <br />
@@ -181,7 +181,7 @@
               </div>
             </li>
           </ul>
-          <!-- /.Stepers Wrapper -->
+          <!-- /.Steppers Wrapper -->
         </div>
       </div>
     </div>
@@ -204,9 +204,8 @@
             <h4 class="card-title">Select your dataset</h4>
             <!-- Text -->
             <p style="text-align: justify;" class="card-text">
-              Select the dataset (.zip) having two files; spritesheet
-              (data.jpg) and a binary labels file (labels.bin) from your local
-              storage.
+              Select the dataset (.zip) having two files; spritesheet (data.jpg)
+              and a binary labels file (labels.bin) from your local storage.
             </p>
             <br />
             <div class="input-group">
@@ -246,7 +245,7 @@
                 data-target="#labelsUploadModal"
                 style="border-radius: 5px; font-size: 0.9em;"
                 class="btn btn-primary px-2"
-                onclick="resetLabelsModel()"
+                onclick="resetLabelsModal()"
               >
                 caM Labels
               </button>
@@ -255,7 +254,7 @@
                 class="btn btn-primary px-2"
                 data-toggle="modal"
                 data-target="#labelsUploadModal"
-                onclick="resetLabelsModel(true)"
+                onclick="resetLabelsModal(true)"
               >
                 Custom Data
               </button>
@@ -307,7 +306,7 @@
                     />
                     <label
                       class="custom-file-label labelsInputLabel"
-                      for="labelsInput"
+                      for="labelsInput" style="overflow: hidden;"
                     >
                       Choose
                     </label>
@@ -317,15 +316,50 @@
               <div id="filterLabels" style="display: none;">
                 Select the labels you want to include in the dataset. <br />
                 <br />
-                <ul id="labelsFilterList" class="list-group"></ul>
+                <ul
+                  id="labelsFilterList"
+                  style="max-height: 25em; overflow: auto;"
+                  class="list-group"
+                ></ul>
               </div>
-              <div id="labelsDatasetZip" style="display: none;">
+              <div id="labelsDatasetZip" style="display: none; margin-bottom: -2.8em;">
                 The spritesheet (.jpg) and labels (binary) files have been
                 created according to your customized data. Download the .zip
                 file and select it in the "Select your dataset" section on this
                 page. <br />
                 Click on "Done" after the download is finished. <br />
                 <br />
+              </div>
+              <div
+                id="selectResolution"
+                style="display: none; margin-bottom: -2em;"
+              >
+                Select normalized image resolution (in px) for the dataset
+                images. Please <b><u>Note</u></b> that more resolution images
+                will take more time to create spritesheet and training and
+                testing may affect accordingly.
+                <br />
+                <div style="display: flex; flex-wrap: wrap;">
+                  <div style="display: flex; margin: 0 auto;">
+                    <input
+                      id="datasetNormalWidth"
+                      class="form-control form-control-sm"
+                      type="number"
+                      value="60"
+                      min="30"
+                      style="width: 7em; margin: 1em;"
+                    />
+                    <span style="margin: 1em;">x</span>
+                    <input
+                      id="datasetNormalHeight"
+                      class="form-control form-control-sm"
+                      type="number"
+                      value="60"
+                      min="30"
+                      style="width: 7em; margin: 1em;"
+                    />
+                  </div>
+                </div>
               </div>
               <br />
             </div>
