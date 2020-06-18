@@ -204,10 +204,10 @@
             <h4 class="card-title">Select your dataset</h4>
             <!-- Text -->
             <p style="text-align: justify;" class="card-text">
-              Select the dataset (.zip) having two files; spritesheet (data.jpg)
-              and a binary labels file (labels.bin) from your local storage.
+              Select the dataset (.zip) having 3 files; spritesheet (data.jpg),
+              a binary labels file (labels.bin) and the labelnames
+              (labelnames.csv) from your local storage.
             </p>
-            <br />
             <div class="input-group">
               <div class="custom-file">
                 <input
@@ -306,7 +306,8 @@
                     />
                     <label
                       class="custom-file-label labelsInputLabel"
-                      for="labelsInput" style="overflow: hidden;"
+                      for="labelsInput"
+                      style="overflow: hidden;"
                     >
                       Choose
                     </label>
@@ -322,7 +323,10 @@
                   class="list-group"
                 ></ul>
               </div>
-              <div id="labelsDatasetZip" style="display: none; margin-bottom: -2.8em;">
+              <div
+                id="labelsDatasetZip"
+                style="display: none; margin-bottom: -2.8em;"
+              >
                 The spritesheet (.jpg) and labels (binary) files have been
                 created according to your customized data. Download the .zip
                 file and select it in the "Select your dataset" section on this
