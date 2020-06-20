@@ -3,7 +3,8 @@ const IDB_URL = 'indexeddb://';
 var csvContent;
 var mem;
 var mem1;
-
+var flag= -1;
+var choices1;
 // INITIALIZE DB
 window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
 // id(autoinc), name, location(name+id), classes
@@ -420,11 +421,20 @@ function setFilter(filter) {
  * @param e
  */
 function drawRectangle(e) {
+  console.log(e);
   const canvas = $CAMIC.viewer.drawer.canvas; // Original Canvas
   canvas.style.cursor = e.checked ? 'crosshair' : 'default';
 
+  var args;
   const canvasDraw = $CAMIC.viewer.canvasDrawInstance;
-  const args = $UI.args;
+  if (e.state == 'roi') {
+    args ={status: ''};
+    args.status = e.model;
+    console.log(args);
+  } else {
+    args = $UI.args;
+  }
+  // console.log(args);
   canvasDraw.drawMode = 'stepSquare';
   // Save size in an arg list
   if (args) canvasDraw.size = args.status.split('_')[1].split('-')[0];
@@ -432,13 +442,16 @@ function drawRectangle(e) {
   canvasDraw.style.color = '#FFFF00';
   canvasDraw.style.isFill = false;
 
-  if (e.checked) {
+  if (e.checked ) {
     // Warn about zoom level
     const currentZoom = Math.round($CAMIC.viewer.imagingHelper._zoomFactor * 40);
     requiredZoom = $UI.args? parseInt($UI.args.status.split('_')[1].split('-')[1]):currentZoom;
-    if (currentZoom != requiredZoom) {
+
+    if (currentZoom != requiredZoom && flag != 0) {
       alert(`You are testing the model for a different zoom level (recommended: ${requiredZoom}). Performance might be affected.`);
     }
+
+
     document.querySelector('.drop_down').classList.add('disabled');
     canvasDraw.drawOn();
   } else {
@@ -452,9 +465,10 @@ function drawRectangle(e) {
  * @param e
  */
 function camicStopDraw(e) {
+  console.log(e);
   const viewer = $CAMIC.viewer;
   const canvasDraw = viewer.canvasDrawInstance;
-
+  console.log(flag);
   const imgColl = canvasDraw.getImageFeatureCollection();
   if (imgColl.features.length > 0) {
     // Check size first
@@ -464,9 +478,15 @@ function camicStopDraw(e) {
       console.error('SOMETHING WICKED THIS WAY COMES.');
     } else {
       const args = $UI.args;
-      if (args) {
-        runPredict(args.status);
+      console.log(flag);
+      if (flag != -1 ) {
+        extractRoi(choices1, flag);
+      } else {
+        if (args) {
+          runPredict(args.status);
+        }
       }
+
       $UI.modelPanel.setPosition(box.rect.x, box.rect.y, box.rect.width, box.rect.height);
       if ($UI.modelPanel.__spImgWidth != 0) {
         $UI.modelPanel.open(args);
@@ -1079,6 +1099,7 @@ async function selectModel() {
   var tx = db.transaction('models_store', 'readonly');
   var store = tx.objectStore('models_store');
   var modelCount=0;
+
   empty(table);
 
   //  Update table data
@@ -1143,7 +1164,10 @@ async function selectChoices(name, classes) {
   '<option value="norm" selected>Normalization</option>'+
   '<option value="center">Centering</option>'+
   '<option value="std">Standardization</option></select> <br>');
-    $('#choicedata').append('<br><div class= "cnt-btn"><button id="submit1">Extract</button></div><br>');
+    $('#choicedata').append('<br><br><div id="ext1"><button id="submit1" class="extract">'+
+      'Extract from entire slide</button></div><br>');
+    $('#choicedata').append('<br><div id="ext2"><button id="submit2" class="extract">'+
+      'Extract from a selected region</button></div><br>');
 
 
     $('#submit1').click(async function() {
@@ -1163,24 +1187,47 @@ async function selectChoices(name, classes) {
       }
     });
 
+    $('#submit2').click(async function() {
+      var boxes = $('input[name=choice]:checked');
+      if (boxes.length==0) {
+        alert('Please select altleast one class.');
+      } else {
+        var choices ={model: '', accuracy: '80', classes: [], scale: 'norm'};
+        for (let i=0; i<boxes.length; i++) {
+          choices.classes.push(boxes[i].id);
+        }
+        choices.scale = document.getElementById('scale_method').value;
+        choices.accuracy = document.getElementById('accrange').value;
+        choices.model = name;
+        console.log(choices);
+        await extractRoiSelect(choices);
+      }
+    });
+
 
     callback;
   })($UI.choiceModal.open());
 }
 
-async function extractRoi(choices) {
+async function extractRoi(choices, flag1) {
   $UI.choiceModal.close();
   $('#snackbar').html('<h3>Model Loading ...</h3>');
   document.getElementById('snackbar').className = 'show';
 
   const self = $UI.modelPanel;
+  var X = self.__spImgX;
+  var Y = self.__spImgY;
+  const totalSize = self.__spImgWidth;
+  self.showResults('');
+
+  self.showProgress('Predicting...');
   const key = choices.model;
   const step = parseInt(key.split('_')[1].split('-')[0]);
   const prefixUrl = ImgloaderMode == 'iip'?`../../img/IIP/raw/?IIIF=${$D.params.data.location}`:$CAMIC.slideId;
 
   const fullResCvs = self.__fullsrc;
-  const height = $D.params.data.height;
-  const width = $D.params.data.width;
+  var height = Y+ totalSize;
+  var width = X + totalSize;
 
   // Starting the transaction and opening the model store
   const tx = db.transaction('models_store', 'readonly');
@@ -1226,12 +1273,19 @@ async function extractRoi(choices) {
     $('#snackbar').html('<h3>Predicting ...</h3><span id = "etap"></span>');
     document.getElementById('snackbar').className = 'show';
 
+
+    if ( flag1 != 0 ) {
+      X=0;
+      Y=0;
+      height = $D.params.data.height;
+      width = $D.params.data.width;
+    }
     const totalPatches = (width/step)*(height/step);
     var c = 0;
 
-    for (let y = 0, dy = 0, i =0; y <=(height-step); y+=(step)) {
+    for (let y = Y, dy = 0, i =0; y <=(height-step); y+=(step)) {
       let dx = 0;
-      for (let x = 0, j=0; x <=( width-step); x+=(step)) {
+      for (let x = X, j=0; x <=( width-step); x+=(step)) {
         const src = prefixUrl+'\/'+x+','+y+','+step+','+step+'\/'+step+',/0/default.jpg';
         const results = [];
         const lImg = await addImageProcess(src);
@@ -1351,10 +1405,24 @@ async function extractRoi(choices) {
          choices.classes[j]+ '</b> : 0  </li>' );
       }
     }
+    if (flag1 == 0 ) {
+      drawRectangle({checked: false});
+      flag = -1;
+    }
+    $UI.modelPanel.close();
     $UI.detailsModal.open();
   };
 }
 
+
+async function extractRoiSelect(choices) {
+  choices1 = choices;
+  console.log(choices);
+  flag = 0;
+  $UI.choiceModal.close();
+
+  drawRectangle({checked: true, state: 'roi', model: choices.model});
+}
 function updateTextInput(val) {
   document.getElementById('textInput').value=val;
 }

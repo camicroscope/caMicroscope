@@ -6,6 +6,8 @@ window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndex
 // id(autoinc), name, location(name+id), classes
 var request; var db;
 var modelName;
+var flag = -1;
+var choices1;
 
 // tensorflowjs creates its own IndexedDB on saving a model.
 async function dbInit() {
@@ -486,11 +488,19 @@ function setFilter(filter) {
  * @param e
  */
 function drawRectangle(e) {
+  console.log(e);
   const canvas = $CAMIC.viewer.drawer.canvas; // Original Canvas
   canvas.style.cursor = e.checked ? 'crosshair' : 'default';
 
   const canvasDraw = $CAMIC.viewer.canvasDrawInstance;
-  const args = $UI.args;
+  var args;
+  if (e.state == 'roi') {
+    args = {status: ''};
+    args.status = e.model;
+    console.log(args);
+  } else {
+    args = $UI.args;
+  }
   if (!args || args.status == 'watershed') {
     canvasDraw.drawMode = 'rect';
   } else {
@@ -498,18 +508,20 @@ function drawRectangle(e) {
     // Save size in an arg list
     const size = args.status.split('_')[0].split('-')[1];
     canvasDraw.size = size;
+
     // change naming convention to hold image size
   }
 
   canvasDraw.style.color = '#FFFF00';
   canvasDraw.style.isFill = false;
 
-  if (e.checked) {
+  if (e.checked ) {
     // Warn about zoom level
     const currentZoom = Math.round($CAMIC.viewer.imagingHelper._zoomFactor * 40);
     requiredZoom = $UI.args &&
     $UI.args.status!='watershed'? parseInt($UI.args.status.split('_')[0].split('-')[2]):currentZoom;
-    if (currentZoom != requiredZoom) {
+
+    if (currentZoom != requiredZoom && flag != 0) {
       alert(`You are testing the model for a different zoom level (recommended: ${requiredZoom}). Performance might be affected.`);
     }
     document.querySelector('.drop_down').classList.add('disabled');
@@ -537,7 +549,9 @@ function camicStopDraw(e) {
       console.error('SOMETHING WICKED THIS WAY COMES.');
     } else {
       const args = $UI.args;
-      if (!args || args.status == 'watershed') {
+      if ( flag != -1) {
+        extractRoi(choices1, flag);
+      } else if (!args || args.status == 'watershed') {
         segmentROI(box);
       } else {
         segmentModel(args.status);
@@ -1135,7 +1149,7 @@ function watershed(inn, out, save=null, thresh) {
 
   console.log('Drawing Contours');
   // console.log($UI.segmentPanel.__minarea.value);
-  // console.log($UI.segmentPanel.__maxarea.value);
+  // console.log($UI.segmentPanel.__maxarea.value);segmentMode
   for (let i = 1; i < contours.size(); ++i) {
     const cnt = contours.get(i);
     // console.log(contours[i]);
@@ -1553,7 +1567,10 @@ async function selectChoices(name) {
   '<option value="norm" selected>Normalization</option>'+
   '<option value="center">Centering</option>'+
   '<option value="std">Standardization</option></select> <br>');
-    $('#choicedata').append('<br><div class= "cnt-btn"><button id="submit1">Extract</button></div><br>');
+    $('#choicedata').append('<br><br><div id="ext1"><button id="submit1" class="extract">'+
+      'Extract from entire slide</button></div><br>');
+    $('#choicedata').append('<br><br><div id="ext2"><button id="submit2" class="extract">'+
+      'Extract from a selected region</button></div><br>');
 
 
     $('#submit1').click(async function() {
@@ -1568,17 +1585,34 @@ async function selectChoices(name) {
       await extractRoi(choices);
     });
 
+    $('#submit2').click(async function() {
+      var choices ={model: '', dow: '', scale: 'norm'};
+
+      choices.dow = $('input[name="choice"]:checked').val();
+      // choices.minObj  = document.getElementById('minobj').value;
+      // choices.opacity = document.getElementById('opacity1').value;
+      choices.model = name;
+      choices.scale = document.getElementById('scale_method').value;
+      console.log(choices);
+      await extractRoiSelect(choices);
+    });
+
 
     callback;
   })($UI.choiceModal.open());
 }
 
 
-async function extractRoi(choices) {
+async function extractRoi(choices, flag1) {
   $UI.choiceModal.close();
   $('#snackbar').html('<h3>Model Loading ...</h3>');
   document.getElementById('snackbar').className = 'show';
   const self = $UI.segmentPanel;
+  var X = self.__spImgX;
+  var Y = self.__spImgY;
+  const totalSize = self.__spImgWidth;
+
+  self.showProgress('Processing ..');
   const key = choices.model;
   const step = parseInt(key.split('_')[0].split('-')[1]);
   const prefixUrl = ImgloaderMode == 'iip'?`../../img/IIP/raw/?IIIF=${$D.params.data.location}`:$CAMIC.slideId;
@@ -1587,7 +1621,6 @@ async function extractRoi(choices) {
   //  model loading
   const tx = db.transaction('models_store', 'readonly');
   const store = tx.objectStore('models_store');
-
   const req = store.get(key);
 
   req.onsuccess = async function(e) {
@@ -1602,12 +1635,12 @@ async function extractRoi(choices) {
     tf.tidy(()=>{
       // Warmup the model before using real data.
       const warmupResult = model.predict(tf.zeros([1, imageSize, imageSize, inputChannels]));
-      self.showProgress('Model loaded...');
     });
 
     const fullResCvs = self.__fullsrc;
-    const height = $D.params.data.height;
-    const width = $D.params.data.width;
+    var height = Y+ totalSize;
+    var width = X + totalSize;
+
 
     fullResCvs.height = step;
     fullResCvs.width = step;
@@ -1626,15 +1659,23 @@ async function extractRoi(choices) {
       });
     }
     var regionData = [];
+
+
+    if ( flag1 != 0 ) {
+      X=0;
+      Y=0;
+      height = $D.params.data.height;
+      width = $D.params.data.width;
+    }
     var c=0;
     const totalPatches = (width/step)*(height/step);
     document.getElementById('snackbar').className = '';
     $('#snackbar').html('');
     $('#snackbar').html('<h3>Predicting ...</h3><span id = "etap"></span>');
     document.getElementById('snackbar').className = 'show';
-    for (let y = 0, dy = 0; y <= (height - step); y+=(step)) {
+    for (let y = Y, dy = 0; y <= (height - step); y+=(step)) {
       let dx = 0;
-      for (let x = 0; x < (width - step); x+=(step)) {
+      for (let x = X; x < (width - step); x+=(step)) {
         const src = prefixUrl+'\/'+x+','+y+','+step+','+step+'\/'+step+',/0/default.jpg';
         const lImg = await addImageProcess(src);
         fullResCvs.height = lImg.height;
@@ -1705,7 +1746,7 @@ async function extractRoi(choices) {
     // finalRes.style.opacity = 0.6;
     // self.__opacity.value = 0.6;
     // self.__oplabel.innerHTML = '0.6';
-
+    self.hideProgress();
     model.dispose();
     var regionMask = [];
     for (var i =0; i< regionData.length; i++) {
@@ -1752,9 +1793,10 @@ async function extractRoi(choices) {
       $('#snackbar').html('');
       $('#snackbar').html('<h3> Downloading Patches...</h3>'+ '<span id = "etadp"></span>');
       document.getElementById('snackbar').className = 'show';
-      for (let y = 0, dy = 0; y <= (height - step); y+=(step)) {
+
+      for (let y = Y, dy = 0; y <= (height - step); y+=(step)) {
         let dx = 0;
-        for (let x = 0; x < (width - step); x+=(step)) {
+        for (let x = X; x < (width - step); x+=(step)) {
           const src = prefixUrl+'\/'+x+','+y+','+step+','+step+'\/'+step+',/0/default.jpg';
           const lImg = await addImageProcess(src);
           fullResCvs.height = lImg.height;
@@ -1780,16 +1822,31 @@ async function extractRoi(choices) {
     });
 
     document.getElementById('snackbar').className = '';
+    $('#detailsdata').html('');
     $('#detailsdata').append('<br><li>Number of patches/masks extracted  <b>'+ regionMask.length+'</li><br>');
+
+    if (flag1 == 0 ) {
+      drawRectangle({checked: false});
+      flag = -1;
+    }
+    $UI.segmentPanel.close();
+
     $UI.detailsModal.open();
     console.log('finished');
   };
-
-
-  // for (var i = Things.length - 1; i >= 0; i--) {
-  //     Things[i]
-  //   }
 }
+
+
+async function extractRoiSelect(choices) {
+  choices1 = choices;
+
+  flag = 0;
+  $UI.choiceModal.close();
+
+  drawRectangle({checked: true, state: 'roi', model: choices.model});
+}
+
+
 function updateTextInput(val, id) {
   document.getElementById(id).value=val;
 }
