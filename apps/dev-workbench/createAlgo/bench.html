@@ -54,6 +54,8 @@
       rel="stylesheet"
       href="https://fonts.googleapis.com/icon?family=Material+Icons"
     />
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-vis"></script>
     <link rel="stylesheet" href="./bench.css" />
     <script src="../../../common/jszip.min.js"></script>
     <script src="../../../common/FileSaver.min.js"></script>
@@ -70,6 +72,33 @@
       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
       <!-- Navbar brand -->
       <span class="navbar-brand" style="color: white;"> Workbench </span>
+      <ul class="navbar-nav mr-auto">
+        <!-- Dropdown -->
+        <li
+          style="position: absolute; right: 2em; margin-top: -1.3em;"
+          class="nav-item dropdown"
+        >
+          <a
+            class="nav-link dropdown-toggle"
+            id="navbarDropdownMenuLink"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+            >Options</a
+          >
+          <div
+            class="dropdown-menu dropdown-primary"
+            aria-labelledby="navbarDropdownMenuLink"
+          >
+            <a class="dropdown-item" href="#"
+              ><i class="fas fa-file-export"></i>&nbsp;&nbsp;Export</a
+            >
+            <a class="dropdown-item" href="#"
+              ><i class="fas fa-file-import"></i>&nbsp;&nbsp;Import</a
+            >
+          </div>
+        </li>
+      </ul>
     </nav>
     <!--/.Navbar-->
 
@@ -81,7 +110,7 @@
       <br />
     </div>
 
-    <br>
+    <br />
     <div style="display: flex; align-items: center;">
       <div style="text-align: center; margin: 0 auto;">
         <div
@@ -132,18 +161,13 @@
                     class="browser-default custom-select modelClassSelect"
                     style="width: 9em; margin: 0 auto; margin-bottom: 2em;"
                   >
-                    <!-- <option value="1">Dense</option> -->
-                    <option value="1" selected>Conv2D </option>
-                    <!-- <option value="3">Flatten</option>
-                <option value="4">Dropout</option>
-                <option value="5">MaxPooling2D</option> --> </select
+                    <option value="1" selected>Conv2D </option> </select
                   >&nbsp;&nbsp; &nbsp;&nbsp;
                   <div class="md-form" style="margin: 0 auto; width: 9em;">
                     <input
                       type="text"
                       id="inputShape"
                       class="form-control"
-                      disabled
                       value="(60,60,1)"
                     />
                     <label for="inputShape">inputShape:</label>
@@ -386,14 +410,6 @@
                   >
                     Delete
                   </button>
-                  <!-- <button
-                type="button"
-                class="btn btn-success "
-                style="margin: 0 auto; display:none"
-                id="saveLayer"
-              >
-                Save
-              </button> -->
                 </div>
               </div>
             </div>
@@ -537,6 +553,8 @@
         </div>
       </div>
     </div>
+    <script src="./utils/data.js"></script>
+    <script src="./utils/script.js"></script>
     <script src="./bench.js"></script>
     <script>
       feather.replace(); // for feather Icons

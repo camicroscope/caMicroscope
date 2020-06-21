@@ -1,3 +1,7 @@
+$('body').on('click', 'label', function() {
+  $(this).prev('input').focus();
+});
+
 $(document).ready(function() {
   getZipFile();
   $('#headContent').show(400);
@@ -16,8 +20,29 @@ function getZipFile() {
   let blob = b64toBlob(zip, 'application/zip');
   JSZip.loadAsync(blob).then(function(zip) {
     zip.forEach(function(relativePath, zipEntry) {
-      console.log(zipEntry.name);
+      // console.log(zipEntry.name);
     });
+    zip.file('data.jpg')
+        .async('blob')
+        .then(function success(content) {
+          let img = new Image();
+          img.onload = function() {
+            // alert(this.width + 'x' + this.height);
+            console.log('Num_data: '+this.height);
+          };
+          let urlCreator = window.URL || window.webkitURL;
+          let imageUrl = urlCreator.createObjectURL(content);
+          img.src = imageUrl;
+        }, function error(e) {
+          console.log(e);
+        });
+    zip.file('labelnames.csv')
+        .async('string')
+        .then(function success(content) {
+          console.log(content.trim().split(','));
+        }, function error(e) {
+          console.log(e);
+        });
   });
 }
 

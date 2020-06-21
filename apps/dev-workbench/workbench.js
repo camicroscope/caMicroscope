@@ -1,5 +1,3 @@
-let zipFile = 'zipFile blob';
-
 $(document).ready(function() {
   $('#headContent').show(180);
   $('#headSub').show(200);
@@ -73,7 +71,7 @@ $('#spriteInput').change(function(evt) {
       $('.secondStepHead').attr('class', 'secondStepHead active');
       $('#firstStepButton').hide();
       $('#secondStepButton').show();
-      zipFile = evt.target.files[0];
+      let zipFile = evt.target.files[0];
       new Promise((resolve, reject) => {
         let reader = new FileReader();
         reader.readAsDataURL(zipFile);
