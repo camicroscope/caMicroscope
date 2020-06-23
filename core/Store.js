@@ -104,7 +104,7 @@ class Store {
       query['provenance.image.slide'] = slide;
     }
     if (name) {
-      let ids = [name]
+      let ids = [name];
       const stringifiedIds = ids.map((id) => `"${id}"`).join(',');
       query.nameList = `[${stringifiedIds}]`;
     }
