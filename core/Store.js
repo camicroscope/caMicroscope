@@ -629,7 +629,7 @@ class Store {
     const suffix = 'Configuration/find';
     const url = this.base + suffix;
     const query = {
-      'name': name,
+      'config_name': name,
     };
 
     return fetch(url + '?' + objToParamStr(query), {
