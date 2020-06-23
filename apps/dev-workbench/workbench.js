@@ -85,7 +85,7 @@ $('#spriteInput').change(function(evt) {
         };
       }).then(function(result) {
         // console.log(result);
-        sessionStorage.setItem('zipFile', result);
+        localforage.setItem('zipFile', result);
       });
     } else {
       alert('Invalid zip file!!');

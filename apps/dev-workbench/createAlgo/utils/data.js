@@ -29,7 +29,7 @@ class Data {
             NUM_DATASET_ELEMENTS * IMAGE_SIZE * 4,
         );
 
-        const chunkSize = 5000;
+        const chunkSize = Math.floor(NUM_TEST_ELEMENTS * 0.15);
         canvas.width = img.width;
         canvas.height = chunkSize;
 

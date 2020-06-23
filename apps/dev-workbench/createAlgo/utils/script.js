@@ -26,24 +26,24 @@ function getModel(Layers, Params) {
   return model;
 }
 
-async function train(model, data, Params) {
+async function train(model, Params) {
   const metrics = ['loss', 'val_loss', 'acc', 'val_acc'];
   const container = {name: 'Model Training', styles: {height: '640px'}};
   const fitCallbacks = tfvis.show.fitCallbacks(container, metrics);
 
   // const BATCH_SIZE = 512;
-  let TRAIN_DATA_SIZE = 0;
-  let TEST_DATA_SIZE = 0;
-  let WIDTH = 0;
-  let HEIGHT = 0;
+  let TRAIN_DATA_SIZE = Params.trainDataSize;
+  let TEST_DATA_SIZE = Params.testDataSize;
+  let WIDTH = Params.width;
+  let HEIGHT = Params.height;
 
   const [trainXs, trainYs] = tf.tidy(() => {
-    const d = data.nextTrainBatch(TRAIN_DATA_SIZE);
+    const d = Data.nextTrainBatch(TRAIN_DATA_SIZE);
     return [d.xs.reshape([TRAIN_DATA_SIZE, WIDTH, HEIGHT, 1]), d.labels];
   });
 
   const [testXs, testYs] = tf.tidy(() => {
-    const d = data.nextTestBatch(TEST_DATA_SIZE);
+    const d = Data.nextTestBatch(TEST_DATA_SIZE);
     return [d.xs.reshape([TEST_DATA_SIZE, WIDTH, HEIGHT, 1]), d.labels];
   });
 

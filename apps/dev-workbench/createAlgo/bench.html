@@ -59,6 +59,7 @@
     <link rel="stylesheet" href="./bench.css" />
     <script src="../../../common/jszip.min.js"></script>
     <script src="../../../common/FileSaver.min.js"></script>
+    <script src="../../../common/localforage.min.js"></script>
   </head>
   <body>
     <!--Navbar-->
@@ -111,7 +112,121 @@
     </div>
 
     <br />
-    <div style="display: flex; align-items: center;">
+
+    <div
+      id="initialSettings"
+      style="display: flex; align-items: center; padding: 1em;"
+    >
+      <div
+        class="card"
+        style="max-width: 50em; min-width: 20em; margin: 0 auto;"
+      >
+        <!-- Card content -->
+        <div class="card-body">
+          <!-- Title -->
+          <h4 class="card-title">Model Settings and information</h4>
+          <!-- Text -->
+          <p style="text-align: justify;" class="card-text">
+            See and configure basic settings for the model here and proceed to
+            customize the individual layers :
+          </p>
+          <hr />
+          Number of dataset images: <b> <span id="numImages">0</span> </b>
+          <div style="display: flex; margin-top: 0.5em;">
+            Classes: &nbsp;
+            <input
+              style="
+                width: 25em;
+                margin-bottom: 0.7em;
+                padding: 1px 1px 1px 6px;
+                height: auto;
+              "
+              type="text"
+              id="classNames"
+              class="form-control"
+            />
+          </div>
+          <div style="display: flex;">
+            Train-Test Ratio: &nbsp;<input
+              style="
+                width: 5em;
+                margin-bottom: 0.7em;
+                padding: 0px 1px 0px 6px;
+                height: auto;
+              "
+              type="number"
+              step="0.02"
+              min="0.20"
+              max="0.98"
+              id="testTrainRatio"
+              class="form-control"
+              value="0.80"
+            />
+          </div>
+          <div style="display: flex;">
+            Train-data Size: &nbsp;<input
+              style="
+                width: 8em;
+                margin-bottom: 0.7em;
+                padding: 0px 1px 0px 6px;
+                height: auto;
+              "
+              type="number"
+              id="trainDataSize"
+              class="form-control"
+            />
+          </div>
+          <div style="display: flex;">
+            Test-data Size: &nbsp;<input
+              style="width: 8em; padding: 0px 1px 0px 6px; height: auto;"
+              type="number"
+              id="testDataSize"
+              class="form-control"
+            />
+          </div>
+          <div style="display: flex;">
+            <div style="display: flex;">
+              <span style="margin-top: 1em;">Resolution(px): </span>
+              <input
+                id="datasetNormalWidth"
+                class="form-control form-control-sm"
+                type="number"
+                value="60"
+                min="30"
+                style="width: 7em; margin: 1em;"
+              />
+              <span style="margin: 1em 0.5em 1em 0.5em;">x</span>
+              <input
+                id="datasetNormalHeight"
+                class="form-control form-control-sm"
+                type="number"
+                value="60"
+                min="30"
+                style="width: 7em; margin: 1em;"
+              />
+            </div>
+          </div>
+          <button
+            id="nextButton"
+            class="btn btn-success"
+            style="
+              padding: 0.6em;
+              font-size: 1em;
+              border-radius: 5px;
+              position: absolute;
+              right: 1em;
+              margin-top: -3em;
+            "
+          >
+            <div>
+              Next <i data-feather="chevron-right" class="text-white"></i>
+            </div>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div id="layersEditor" style="display: none; align-items: center;">
       <div style="text-align: center; margin: 0 auto;">
         <div
           class="accordion md-accordion layersClass"
