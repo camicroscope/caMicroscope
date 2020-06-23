@@ -101,7 +101,7 @@ class Store {
     const query = {};
     let bySlideId;
     if (slide) {
-      query.slide = slide;
+      query['provenance.image.slide'] = slide;
     }
     if (name) {
       query['provenance.analysis.execution_id'] = name;
