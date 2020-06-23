@@ -96,7 +96,7 @@ class Store {
    * @return {promise} - promise which resolves with data
    **/
   findMark(slide, name, footprint, source, x0, x1, y0, y1) {
-    const suffix = 'Mark/find';
+    const suffix = 'Mark/multi';
     const url = this.base + suffix;
     const query = {};
     let bySlideId;
@@ -104,7 +104,9 @@ class Store {
       query['provenance.image.slide'] = slide;
     }
     if (name) {
-      query['provenance.analysis.execution_id'] = name;
+      let ids = [name]
+      const stringifiedIds = ids.map((id) => `"${id}"`).join(',');
+      query.nameList = `[${stringifiedIds}]`;
     }
     if (footprint) {
       query.footprint = footprint;
