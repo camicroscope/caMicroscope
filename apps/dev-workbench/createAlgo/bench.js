@@ -1,24 +1,29 @@
-let spriteImageURL = '';
-let labelsURL = '';
+// let spriteImageURL = '';
+// let labelsURL = '';
 let Params = {};
 let classes = [];
+let Layers = [];
+
 
 $('body').on('click', 'label', function() {
   $(this).prev('input').focus();
 });
 
+
 $(document).ready(function() {
-  getZipFile();
   $('#headContent').show(400);
   $('#headbar').animate({height: 95}, 500, function() {
     $('#headbar').css('height', '100%');
+    getZipFile();
   });
 });
+
 
 $('#goBack').click(function() {
   // window.open('../table.html', '_self');
   window.history.back();
 });
+
 
 function getZipFile() {
   localforage.getItem('zipFile').then(function(zip) {
@@ -39,11 +44,15 @@ function getZipFile() {
               );
               $('#trainDataSize').val(trainDataSize);
               $('#testDataSize').val(this.height - trainDataSize);
+              $('#loading').hide();
+              $('#initialSettings').show(300);
+              $('#initialSettings').css('display', 'flex');
             };
             let urlCreator = window.URL || window.webkitURL;
             let imageUrl = urlCreator.createObjectURL(content);
             img.src = imageUrl;
-            spriteImageURL = imageUrl;
+            // spriteImageURL = imageUrl;
+            localforage.setItem('sprite', content);
           },
           function error(e) {
             console.log(e);
@@ -51,9 +60,10 @@ function getZipFile() {
       );
       zip.file('labels.bin').async('blob').then(
           function success(content) {
-            let urlCreator = window.URL || window.webkitURL;
-            let labelsUrl = urlCreator.createObjectURL(content);
-            labelsURL = labelsUrl;
+            // let urlCreator = window.URL || window.webkitURL;
+            // let labelsUrl = urlCreator.createObjectURL(content);
+            // labelsURL = labelsUrl;
+            localforage.setItem('labels', content);
           },
           function error(e) {
             console.log(e);
@@ -70,6 +80,7 @@ function getZipFile() {
     });
   });
 }
+
 
 function base64toBlob(b64Data, contentType = '', sliceSize = 512) {
   const byteCharacters = atob(b64Data);
@@ -95,18 +106,38 @@ $('#testTrainRatio').on('input', function() {
   $('#testDataSize').val(Number($('#numImages').text()) - trainDataSize);
 });
 
-$('#nextButton').click(function() {
-  classes = $('#classNames').val().trim().split();
+
+$('#initSettingsSubmit').submit(function() {
+  classes = $('#classNames').val().trim().split(',');
+  console.log(classes);
   TRAIN_TEST_RATIO = $('#testTrainRatio').val();
   NUM_DATASET_ELEMENTS = Number($('#numImages').text());
   NUM_CLASSES = classes.length;
-  IMAGE_SIZE = $('#normalDatasetWidth').val() * $('#normalDatasetHeight').val();
-  IMAGES_SPRITE_PATH = spriteImageURL;
-  LABELS_PATH = labelsURL;
-  Params.trainDataSize = $('#trainDataSize').val();
-  Params.testDataSize = $('#testDataSize').val();
-  Params.height = $('#normalDatasetHeight').val();
-  Params.width = $('#normalDatasetWidth').val();
+  IMAGE_SIZE = $('#datasetNormalWidth').val() * $('#datasetNormalHeight').val();
+  // IMAGES_SPRITE_PATH = spriteImageURL;
+  // LABELS_PATH = labelsURL;
+  // console.log(spriteImageURL);
+  // console.log(labelsURL);
+  NUM_TRAIN_ELEMENTS = Math.floor(TRAIN_TEST_RATIO * NUM_DATASET_ELEMENTS);
+  NUM_TEST_ELEMENTS = NUM_DATASET_ELEMENTS - NUM_TRAIN_ELEMENTS;
+  Params.trainDataSize = Number($('#trainDataSize').val());
+  Params.testDataSize = Number($('#testDataSize').val());
+  Params.height = Number($('#datasetNormalHeight').val());
+  Params.width = Number($('#datasetNormalWidth').val());
+  console.log(Params);
+  if ($('#RGBorGrayscale').prop('checked')) {
+    NUM_CHANNELS = 4;
+  } else {
+    NUM_CHANNELS = 1;
+  }
+  $('#inputShape').val('['+$('#datasetNormalWidth').val()+','+$('#datasetNormalHeight').val()+','+NUM_CHANNELS+']');
+  $('#kernelSize1').val($('#kernelSize').val());
+  $('#filters1').val($('#filters').val());
+  $('#units').val(classes.length);
+  $('#initialSettings').hide(300);
+  $('#layersEditor').show(300);
+  $('#layersEditor').css('display', 'flex');
+  $('#userTrain').show(200);
 });
 
 let layerNumber = 1;
@@ -293,3 +324,179 @@ function addFuncLayers() {
         });
   });
 }
+
+
+function saveLayers() {
+  Layers = [
+    tf.layers.conv2d({
+      inputShape: [$('#datasetNormalHeight').val(), $('#datasetNormalWeight').val(), NUM_CHANNELS],
+      kernelSize: Number($('#kernelSize').val()),
+      filters: Number($('#filters').val()),
+      activation: 'relu',
+    }),
+    tf.layers.dense({units: classes.length, activation: 'softmax'}),
+  ];
+  $('.LayerCard').each(function() {
+    let id = $(this).attr('id');
+    let i = 1;
+    let select = $('#' + id)
+        .find('select option:selected')
+        .first()
+        .text();
+    // console.log(select);
+
+    if (id != 'inputLayer' && id != 'outputLayer') {
+      if (select == 'Dense') {
+        let activation = $('#' + id)
+            .find('#activation')
+            .first()
+            .val();
+        let units = $('#' + id)
+            .find('#units')
+            .first()
+            .val();
+        try {
+          Layers.splice(
+              Layers.length - 1,
+              0,
+              tf.layers.dense({units: Number(units), activation: activation}),
+          );
+        } catch (error) {
+          alert(error);
+        }
+      } else if (select == 'Conv2D ') {
+        let activation = $('#' + id)
+            .find('#activation')
+            .first()
+            .val();
+        let kernelSize = Number(
+            $('#' + id)
+                .find('#kernelSize')
+                .first()
+                .val(),
+        );
+        let filters = Number(
+            $('#' + id)
+                .find('#filters')
+                .first()
+                .val(),
+        );
+        try {
+          Layers.splice(
+              Layers.length - 1,
+              0,
+              tf.layers.conv2d({
+                kernelSize: kernelSize,
+                filters: filters,
+                activation: activation,
+              }),
+          );
+        } catch (error) {
+          alert(error);
+        }
+      } else if (select == 'Flatten') {
+        Layers.splice(Layers.length - 1, 0, tf.layers.flatten());
+      } else if (select == 'Dropout') {
+        let rate = parseFloat(
+            $('#' + id)
+                .find('#rate')
+                .first()
+                .val(),
+        );
+        try {
+          Layers.splice(
+              Layers.length - 1,
+              0,
+              tf.layers.dropout({
+                rate: rate,
+              }),
+          );
+        } catch (error) {
+          alert(error);
+        }
+      } else if (select == 'MaxPooling2D') {
+        let poolSize = Number(
+            $('#' + id)
+                .find('#pool_size')
+                .first()
+                .val(),
+        );
+
+        try {
+          Layers.splice(
+              Layers.length - 1,
+              0,
+              tf.layers.maxPooling2d({
+                poolSize: [poolSize, poolSize],
+              }),
+          );
+        } catch (error) {
+          alert(error);
+        }
+      }
+    }
+  });
+  console.log(Layers);
+}
+
+let optimizer = tf.train.adam();
+
+$('#optimize').change(function() {
+  let selected = $(this).val();
+  if ((selected = 1)) optimizer = tf.train.adam();
+  else if ((selected = 2)) optimizer = tf.train.adadelta();
+  else if ((selected = 3)) optimizer = tf.train.adagrade();
+  else if ((selected = 4)) optimizer = tf.train.adamax();
+  else if ((selected = 5)) optimizer = tf.train.ftrl();
+  else if ((selected = 6)) optimizer = tf.train.nadam();
+  else if ((selected = 7)) optimizer = tf.train.rmsprop();
+  else if ((selected = 8)) optimizer = tf.train.sgd();
+
+  Params.optimizer = optimizer;
+});
+
+let shuffle = true;
+
+$('#shuffle').change(function() {
+  if ($(this).is(':checked')) {
+    shuffle = true;
+    Params.shuffle = shuffle;
+  } else {
+    shuffle = false;
+    Params.shuffle = shuffle;
+  }
+});
+
+Params = {
+  optimizer: optimizer,
+  batchSize: 512,
+  epochs: 20,
+  shuffle: shuffle,
+};
+
+$('#userTrain').click(function() {
+  saveLayers();
+  // $('#loading').css('display', 'flex');
+  // let selectedValue = $('#modelSelect').val();
+  Params.epochs = $('#epochs').val();
+  Params.batchSize = $('#batchSize').val();
+  // console.log($("#batchSize").val());
+  try {
+    // if (selectedValue == 1) {
+    //   shapeRun(Layers, Params);
+    //   $('.drawing').css('display', 'none');
+    //   $('#canvas').attr('width', '300px');
+    //   $('#canvas').attr('height', '300px');
+    // } else if (selectedValue == 2) {
+    //   $('.drawing').css('display', 'none');
+    //   $('#canvas').attr('width', '280px');
+    //   $('#canvas').attr('height', '280px');
+    //   digitRun(Layers1, Params);
+    // }
+    // console.log(Params);
+    run(Layers, Params);
+  } catch (error) {
+    $('#loading').css('display', 'none');
+    alert(error);
+  }
+});

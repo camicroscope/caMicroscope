@@ -234,7 +234,7 @@ function getSprite(data, userFolder, custom) {
       $('#selectResolution').hide(200);
       $('#labelsDatasetZip').show(200);
       $('#labelSelectModalTitle').text('Dataset created successfully');
-      window.open('../../loader/' + done.download);
+      window.open('../../loader' + done.download);
       cleanBackend(userFolder);
     },
     error: function(e) {

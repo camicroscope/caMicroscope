@@ -1,14 +1,13 @@
 let IMAGE_SIZE = 0;
 let NUM_CLASSES = 0;
+let NUM_CHANNELS = 4;
 let NUM_DATASET_ELEMENTS = 0;
-
 let TRAIN_TEST_RATIO = 5 / 6;
-
-let NUM_TRAIN_ELEMENTS = Math.floor(TRAIN_TEST_RATIO * NUM_DATASET_ELEMENTS);
-let NUM_TEST_ELEMENTS = NUM_DATASET_ELEMENTS - NUM_TRAIN_ELEMENTS;
-
+let NUM_TRAIN_ELEMENTS = 0;
+let NUM_TEST_ELEMENTS = 0;
 let IMAGES_SPRITE_PATH = '';
 let LABELS_PATH = '';
+
 
 class Data {
   constructor() {
@@ -24,20 +23,25 @@ class Data {
       img.onload = () => {
         img.width = img.naturalWidth;
         img.height = img.naturalHeight;
-
         const datasetBytesBuffer = new ArrayBuffer(
-            NUM_DATASET_ELEMENTS * IMAGE_SIZE * 4,
+            NUM_DATASET_ELEMENTS * IMAGE_SIZE * 4 * NUM_CHANNELS,
         );
-
-        const chunkSize = Math.floor(NUM_TEST_ELEMENTS * 0.15);
+        let factors = (number) => Array
+            .from(Array(number + 1), (_, i) => i)
+            .filter((i) => number % i === 0);
+        // const chunkSize = Math.floor(NUM_TEST_ELEMENTS * 0.15);
+        let factorsList = factors(NUM_DATASET_ELEMENTS);
+        let mid = factorsList[Math.floor((factorsList.length-1)/2)];
+        let midPlus1 = factorsList[Math.floor((factorsList.length-1)/2)+1];
+        const chunkSize = Math.max(mid, midPlus1);
         canvas.width = img.width;
         canvas.height = chunkSize;
 
         for (let i = 0; i < NUM_DATASET_ELEMENTS / chunkSize; i++) {
           const datasetBytesView = new Float32Array(
               datasetBytesBuffer,
-              i * IMAGE_SIZE * chunkSize * 4,
-              IMAGE_SIZE * chunkSize,
+              i * IMAGE_SIZE * chunkSize * 4 * NUM_CHANNELS,
+              IMAGE_SIZE * chunkSize * NUM_CHANNELS,
           );
           ctx.drawImage(
               img,
@@ -52,21 +56,35 @@ class Data {
           );
 
           const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-
-          for (let j = 0; j < imageData.data.length / 4; j++) {
-            // All channels hold an equal value since the image is grayscale, so
-            // just read the red channel.
-            datasetBytesView[j] = imageData.data[j * 4] / 255;
+          let x = 0;
+          for (let j = 0; j < imageData.data.length; j+=4) {
+            for (let i = 0; i < NUM_CHANNELS; i++) {
+              datasetBytesView[x++] = imageData.data[j + i] / 255;
+            }
           }
+          // for (let j = 0; j < imageData.data.length / 4; j++) {
+          //   // All channels hold an equal value since the image is grayscale, so
+          //   // just read the red channel.
+          //   datasetBytesView[j] = imageData.data[j * 4] / 255;
+          // }
         }
         this.datasetImages = new Float32Array(datasetBytesBuffer);
 
         resolve();
       };
-      img.src = IMAGES_SPRITE_PATH;
+      localforage.getItem('sprite').then(function(content) {
+        let urlCreator = window.URL || window.webkitURL;
+        let imageUrl = urlCreator.createObjectURL(content);
+        img.src = imageUrl;
+      });
+      // img.src = IMAGES_SPRITE_PATH;
     });
-
-    const labelsRequest = fetch(LABELS_PATH);
+    // let labelsRequest = fetch(labelsURL);
+    // localforage.getItem('labels').then(function(content) {
+    //   let urlCreator = window.URL || window.webkitURL;
+    //   let labelsURL = urlCreator.createObjectURL(content);
+    // });
+    let labelsRequest = fetch(LABELS_PATH);
     const [imgResponse, labelsResponse] = await Promise.all([
       imgRequest,
       labelsRequest,
@@ -82,9 +100,9 @@ class Data {
     // Slice the the images and labels into train and test sets.
     this.trainImages = this.datasetImages.slice(
         0,
-        IMAGE_SIZE * NUM_TRAIN_ELEMENTS,
+        IMAGE_SIZE * NUM_TRAIN_ELEMENTS * NUM_CHANNELS,
     );
-    this.testImages = this.datasetImages.slice(IMAGE_SIZE * NUM_TRAIN_ELEMENTS);
+    this.testImages = this.datasetImages.slice(IMAGE_SIZE * NUM_TRAIN_ELEMENTS * NUM_CHANNELS);
     this.trainLabels = this.datasetLabels.slice(
         0,
         NUM_CLASSES * NUM_TRAIN_ELEMENTS,
@@ -115,17 +133,16 @@ class Data {
   }
 
   nextBatch(batchSize, data, index) {
-    const batchImagesArray = new Float32Array(batchSize * IMAGE_SIZE);
+    const batchImagesArray = new Float32Array(batchSize * IMAGE_SIZE * NUM_CHANNELS);
     const batchLabelsArray = new Uint8Array(batchSize * NUM_CLASSES);
 
     for (let i = 0; i < batchSize; i++) {
       const idx = index();
-
       const image = data[0].slice(
-          idx * IMAGE_SIZE,
-          idx * IMAGE_SIZE + IMAGE_SIZE,
+          idx * IMAGE_SIZE * NUM_CHANNELS,
+          idx * IMAGE_SIZE * NUM_CHANNELS + IMAGE_SIZE * NUM_CHANNELS,
       );
-      batchImagesArray.set(image, i * IMAGE_SIZE);
+      batchImagesArray.set(image, i * IMAGE_SIZE * NUM_CHANNELS);
 
       const label = data[1].slice(
           idx * NUM_CLASSES,
@@ -134,7 +151,7 @@ class Data {
       batchLabelsArray.set(label, i * NUM_CLASSES);
     }
 
-    const xs = tf.tensor2d(batchImagesArray, [batchSize, IMAGE_SIZE]);
+    const xs = tf.tensor3d(batchImagesArray, [batchSize, IMAGE_SIZE, NUM_CHANNELS]);
     const labels = tf.tensor2d(batchLabelsArray, [batchSize, NUM_CLASSES]);
 
     return {xs, labels};
