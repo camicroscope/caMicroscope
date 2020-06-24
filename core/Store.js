@@ -96,12 +96,12 @@ class Store {
    * @return {promise} - promise which resolves with data
    **/
   findMark(slide, name, footprint, source, x0, x1, y0, y1) {
-    const suffix = 'Mark/find';
+    const suffix = 'Mark/spatial';
     const url = this.base + suffix;
     const query = {};
     let bySlideId;
     if (slide) {
-      query.slide = slide;
+      query['provenance.image.slide'] = slide;
     }
     if (name) {
       query['provenance.analysis.execution_id'] = name;
@@ -629,7 +629,7 @@ class Store {
     const suffix = 'Configuration/find';
     const url = this.base + suffix;
     const query = {
-      'name': name,
+      'config_name': name,
     };
 
     return fetch(url + '?' + objToParamStr(query), {
@@ -769,6 +769,25 @@ class Store {
     };
     const update = {
       'name': newName,
+    };
+    return fetch(url + '?' + objToParamStr(query), {
+      method: 'POST',
+      credentials: 'include',
+      mode: 'cors',
+      body: JSON.stringify(update),
+    });
+  }
+
+  // Update slide review status
+  updateSlideReview(id, newStatus) {
+    const suffix = 'Slide/update';
+    const url = this.base + suffix;
+    console.log(id+ '   '+ newStatus);
+    const query = {
+      '_id': id,
+    };
+    const update = {
+      'review': newStatus,
     };
     return fetch(url + '?' + objToParamStr(query), {
       method: 'POST',

@@ -1,7 +1,7 @@
 var userSignupUrl = "../../data/User/post";
 var protoTokenUrl = "../../auth/Token/proto";
 var permissions;
-const store = new Store('../data/');
+const store = new Store('../../data/');
 
 function addUser(){
   var email = document.getElementById("mail").value
@@ -17,7 +17,7 @@ function addUser(){
     userType = "Editor"
   }
 
-  getUserPermissions(getUserType())
+  store.getUserPermissions(getUserType())
     .then(response => response.text())
     .then((data) => {
     return (data ? JSON.parse(data) : null);
