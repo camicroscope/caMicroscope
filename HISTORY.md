@@ -25,6 +25,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ###### TBD
 * TBD
 
+### caMicroscope [3.7.6](https://github.com/camicroscope/camicroscope/compare/v3.7.5...camicroscope:develop)
+###### 2020-06-24
+* Segmentation Fixes
+* Review Status Workflow and Indicators [#407](https://github.com/camicroscope/caMicroscope/pull/407)
+* Information Dashboard button moved to slides page [#376](https://github.com/camicroscope/caMicroscope/pull/376)
+
 ### caMicroscope [3.7.5](https://github.com/camicroscope/camicroscope/compare/v3.7.4...camicroscope:v3.7.5)
 ###### 2020-05-29
 * Safer HTML in table ([#401](https://github.com/camicroscope/caMicroscope/pull/401))
