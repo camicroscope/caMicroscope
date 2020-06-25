@@ -4,7 +4,6 @@ let Params = {};
 let classes = [];
 let Layers = [];
 
-
 $('body').on('click', 'label', function() {
   $(this).prev('input').focus();
 });
@@ -130,14 +129,31 @@ $('#initSettingsSubmit').submit(function() {
   } else {
     NUM_CHANNELS = 1;
   }
+  // Layers = [
+  //   tf.layers.conv2d({
+  //     inputShape: [$('#datasetNormalWidth').val(), $('#datasetNormalHeight').val(), NUM_CHANNELS],
+  //     kernelSize: Number($('#kernelSize').val()),
+  //     filters: Number($('#filters').val()),
+  //     activation: 'relu',
+  //   }),
+  //   tf.layers.dense({units: classes.length, activation: 'softmax'}),
+  // ];
   $('#inputShape').val('['+$('#datasetNormalWidth').val()+','+$('#datasetNormalHeight').val()+','+NUM_CHANNELS+']');
   $('#kernelSize1').val($('#kernelSize').val());
   $('#filters1').val($('#filters').val());
-  $('#units').val(classes.length);
+  $('#outputLayer').find('#units').first().val(classes.length);
+  // $('#units').val(classes.length);
   $('#initialSettings').hide(300);
   $('#layersEditor').show(300);
   $('#layersEditor').css('display', 'flex');
   $('#userTrain').show(200);
+  $('#headContent').hide('200');
+  $('#headContent').text('Customize the model layers');
+  $('#headContent').show('300');
+  $('#goBack').unbind('click');
+  $('#goBack').click(function() {
+    location.reload();
+  });
 });
 
 let layerNumber = 1;
@@ -153,7 +169,7 @@ $('body').on('click', '#add' + 1, function() {
     layerNumber + 1
   }'  class='collapse'  role='tabpanel'  aria-labelledby='headingOne${
     layerNumber + 1
-  }'  data-parent='#accordionEx'>  <div class='card-body'> <div  style='display: flex; flex-wrap:wrap; align-content:center; max-width: 21em'>  <select    class='browser-default custom-select modelClassSelect'       style='width: 9em; margin:0 auto; margin-bottom: 2em '  >    <option value='1' selected>Dense</option>    <option value='2'>Conv2D </option>    <option value='3'>Flatten</option>    <option value='4'>Dropout</option>    <option value='5'>MaxPooling2D</option> </select  >&nbsp;&nbsp; &nbsp;&nbsp;  <div    class='md-form'    style='margin: 0 auto; width: 9em; display:none'  >    <input      type='text'      id='inputShape'      class='form-control'      disabled          />    <label for='inputShape'>inputShape:</label>  </div>  <div    class='md-form'    style='margin: 0 auto; width: 7em; display:none'  >    <input      type='number'      id='kernelSize'      class='form-control'         />    <label for='kernelSize'>kernelSize:</label>  </div>  <div    class='md-form'    style='margin: 0 auto; width: 5em; display:none'  >    <input      type='number'      id='filters'      class='form-control'          />    <label for='filters'>filters:</label>  </div>  <div class='md-form' style='margin: 0 auto; width: 8em; '>    <input      type='text'      id='activation'      class='form-control'          />    <label for='activation'>activation:</label>  </div>  <div class='md-form' style='margin: 0 auto; width: 6em;'>    <input      type='number'      id='units'      class='form-control'         />    <label for='units'>units:</label>  </div>  <div    class='md-form'    style='margin: 0 auto; width: 6em; display:none'  >    <input      type='number'      id='pool_size'      class='form-control'          />    <label for='pool_size'>pool_size:</label>  </div>  <div    class='md-form'    style='margin: 0 auto; width: 6em; display:none'  >    <input      type='number'      max='1'      min='0'      step='0.01'      id='rate'      class='form-control'    />    <label for='rate'>rate:</label>  </div></div><br /><div  style='display: flex; flex-wrap:wrap; align-content:center; max-width: 21em'>  <button    type='button'    class='btn btn-danger '    style='margin: 0 auto; ' id='deleteLayer' >    Delete  </button>  </div></div></div></div><div class='card add' id='add${
+  }'  data-parent='#accordionEx'>  <div class='card-body'> <div  style='display: flex; flex-wrap:wrap; align-content:center; max-width: 21em'>  <select    class='browser-default custom-select modelClassSelect'       style='width: 9em; margin:0 auto; margin-bottom: 2em '  >    <option value='1' selected>Dense</option>    <option value='2'>Conv2D </option>    <option value='3'>Flatten</option>    <option value='4'>Dropout</option>    <option value='5'>MaxPooling2D</option> <option value='6'>batchNormalization</option> </select  >&nbsp;&nbsp; &nbsp;&nbsp;  <div    class='md-form'    style='margin: 0 auto; width: 9em; display:none'  >    <input      type='text'      id='inputShape'      class='form-control'      disabled          />    <label for='inputShape'>inputShape:</label>  </div>  <div    class='md-form'    style='margin: 0 auto; width: 7em; display:none'  >    <input      type='number'      id='kernelSize'      class='form-control'         />    <label for='kernelSize'>kernelSize:</label>  </div>  <div    class='md-form'    style='margin: 0 auto; width: 5em; display:none'  >    <input      type='number'      id='filters'      class='form-control'          />    <label for='filters'>filters:</label>  </div>  <div class='md-form' style='margin: 0 auto; width: 8em; '>    <input      type='text'      id='activation'      class='form-control'          />    <label for='activation'>activation:</label>  </div>  <div class='md-form' style='margin: 0 auto; width: 6em;'>    <input      type='number'      id='units'      class='form-control'         />    <label for='units'>units:</label>  </div>  <div    class='md-form'    style='margin: 0 auto; width: 6em; display:none'  >    <input      type='number'      id='pool_size'      class='form-control'          />    <label for='pool_size'>pool_size:</label>  </div>  <div    class='md-form'    style='margin: 0 auto; width: 6em; display:none'  >    <input      type='number'      max='1'      min='0'      step='0.01'      id='rate'      class='form-control'    />    <label for='rate'>rate:</label>  </div></div><br /><div  style='display: flex; flex-wrap:wrap; align-content:center; max-width: 21em'>  <button    type='button'    class='btn btn-danger '    style='margin: 0 auto; ' id='deleteLayer' >    Delete  </button>  </div></div></div></div><div class='card add' id='add${
     layerNumber + 1
   }' style='width: 25em; height: 2em' title='Add layer'><h4>+</h4></div>`;
 
@@ -202,7 +218,7 @@ function addCardLayer() {
       layerNumber + 1
     }'  class='collapse'  role='tabpanel'  aria-labelledby='headingOne${
       layerNumber + 1
-    }'  data-parent='#accordionEx'>  <div class='card-body'> <div  style='display: flex; flex-wrap:wrap; align-content:center; max-width: 21em'>  <select    class='browser-default custom-select modelClassSelect'       style='width: 9em; margin:0 auto; margin-bottom: 2em '  >    <option value='1' selected>Dense</option>    <option value='2'>Conv2D </option>    <option value='3'>Flatten</option>    <option value='4'>Dropout</option>    <option value='5'>MaxPooling2D</option> </select  >&nbsp;&nbsp; &nbsp;&nbsp;  <div    class='md-form'    style='margin: 0 auto; width: 9em; display:none'  >    <input      type='text'      id='inputShape'      class='form-control'      disabled          />    <label for='inputShape'>inputShape:</label>  </div>  <div    class='md-form'    style='margin: 0 auto; width: 7em; display:none'  >    <input      type='number'      id='kernelSize'      class='form-control'         />    <label for='kernelSize'>kernelSize:</label>  </div>  <div    class='md-form'    style='margin: 0 auto; width: 5em; display:none'  >    <input      type='number'      id='filters'      class='form-control'          />    <label for='filters'>filters:</label>  </div>  <div class='md-form' style='margin: 0 auto; width: 8em; '>    <input      type='text'      id='activation'      class='form-control'          />    <label for='activation'>activation:</label>  </div>  <div class='md-form' style='margin: 0 auto; width: 6em;'>    <input      type='number'      id='units'      class='form-control'         />    <label for='units'>units:</label>  </div>  <div    class='md-form'    style='margin: 0 auto; width: 6em; display:none'  >    <input      type='number'      id='pool_size'      class='form-control'          />    <label for='pool_size'>pool_size:</label>  </div>  <div    class='md-form'    style='margin: 0 auto; width: 6em; display:none'  >    <input      type='number'      max='1'      min='0'      step='0.01'      id='rate'      class='form-control'    />    <label for='rate'>rate:</label>  </div></div><br /><div  style='display: flex; flex-wrap:wrap; align-content:center; max-width: 21em'>  <button    type='button'    class='btn btn-danger '    style='margin: 0 auto; ' id='deleteLayer' >    Delete  </button>  </div></div></div></div><div class='card add' id='add${
+    }'  data-parent='#accordionEx'>  <div class='card-body'> <div  style='display: flex; flex-wrap:wrap; align-content:center; max-width: 21em'>  <select    class='browser-default custom-select modelClassSelect'       style='width: 9em; margin:0 auto; margin-bottom: 2em '  >    <option value='1' selected>Dense</option>    <option value='2'>Conv2D </option>    <option value='3'>Flatten</option>    <option value='4'>Dropout</option>    <option value='5'>MaxPooling2D</option> <option value='6'>batchNormalization</option> </select  >&nbsp;&nbsp; &nbsp;&nbsp;  <div    class='md-form'    style='margin: 0 auto; width: 9em; display:none'  >    <input      type='text'      id='inputShape'      class='form-control'      disabled          />    <label for='inputShape'>inputShape:</label>  </div>  <div    class='md-form'    style='margin: 0 auto; width: 7em; display:none'  >    <input      type='number'      id='kernelSize'      class='form-control'         />    <label for='kernelSize'>kernelSize:</label>  </div>  <div    class='md-form'    style='margin: 0 auto; width: 5em; display:none'  >    <input      type='number'      id='filters'      class='form-control'          />    <label for='filters'>filters:</label>  </div>  <div class='md-form' style='margin: 0 auto; width: 8em; '>    <input      type='text'      id='activation'      class='form-control'          />    <label for='activation'>activation:</label>  </div>  <div class='md-form' style='margin: 0 auto; width: 6em;'>    <input      type='number'      id='units'      class='form-control'         />    <label for='units'>units:</label>  </div>  <div    class='md-form'    style='margin: 0 auto; width: 6em; display:none'  >    <input      type='number'      id='pool_size'      class='form-control'          />    <label for='pool_size'>pool_size:</label>  </div>  <div    class='md-form'    style='margin: 0 auto; width: 6em; display:none'  >    <input      type='number'      max='1'      min='0'      step='0.01'      id='rate'      class='form-control'    />    <label for='rate'>rate:</label>  </div></div><br /><div  style='display: flex; flex-wrap:wrap; align-content:center; max-width: 21em'>  <button    type='button'    class='btn btn-danger '    style='margin: 0 auto; ' id='deleteLayer' >    Delete  </button>  </div></div></div></div><div class='card add' id='add${
       layerNumber + 1
     }' style='width: 25em; height: 2em' title='Add layer'><h4>+</h4></div>`;
 
@@ -282,7 +298,7 @@ function addFuncLayers() {
                 .find('#rate')
                 .parent()
                 .css('display', 'block');
-          } else {
+          } else if ($(this).val() == 5) {
             $('#' + id)
                 .find(
                     '#inputShape, #units, #rate, #kernelSize, #filters, #activation',
@@ -293,6 +309,13 @@ function addFuncLayers() {
                 .find('#pool_size')
                 .parent()
                 .css('display', 'block');
+          } else {
+            $('#' + id)
+                .find(
+                    '#inputShape, #units, #pool_size, #rate, #kernelSize, #filters, #activation',
+                )
+                .parent()
+                .css('display', 'none');
           }
         });
     $('#' + id).find('#deleteLayer').first()
@@ -327,9 +350,18 @@ function addFuncLayers() {
 
 
 function saveLayers() {
+  // Layers = [
+  //   tf.layers.conv2d({
+  //     inputShape: [60, 60, 4],
+  //     kernelSize: 4,
+  //     filters: 8,
+  //     activation: 'relu',
+  //   }),
+  //   tf.layers.dense({units: 4, activation: 'softmax'}),
+  // ];
   Layers = [
     tf.layers.conv2d({
-      inputShape: [$('#datasetNormalHeight').val(), $('#datasetNormalWeight').val(), NUM_CHANNELS],
+      inputShape: [Number($('#datasetNormalWidth').val()), Number($('#datasetNormalHeight').val()), NUM_CHANNELS],
       kernelSize: Number($('#kernelSize').val()),
       filters: Number($('#filters').val()),
       activation: 'relu',
@@ -396,6 +428,8 @@ function saveLayers() {
         }
       } else if (select == 'Flatten') {
         Layers.splice(Layers.length - 1, 0, tf.layers.flatten());
+      } else if (select == 'batchNormalization') {
+        Layers.splice(Layers.length - 1, 0, tf.layers.batchNormalization());
       } else if (select == 'Dropout') {
         let rate = parseFloat(
             $('#' + id)
