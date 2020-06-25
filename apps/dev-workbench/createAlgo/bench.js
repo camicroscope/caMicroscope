@@ -1,5 +1,4 @@
-// let spriteImageURL = '';
-// let labelsURL = '';
+
 let Params = {};
 let classes = [];
 let Layers = [];
@@ -59,9 +58,6 @@ function getZipFile() {
       );
       zip.file('labels.bin').async('blob').then(
           function success(content) {
-            // let urlCreator = window.URL || window.webkitURL;
-            // let labelsUrl = urlCreator.createObjectURL(content);
-            // labelsURL = labelsUrl;
             localforage.setItem('labels', content);
           },
           function error(e) {
@@ -113,10 +109,6 @@ $('#initSettingsSubmit').submit(function() {
   NUM_DATASET_ELEMENTS = Number($('#numImages').text());
   NUM_CLASSES = classes.length;
   IMAGE_SIZE = $('#datasetNormalWidth').val() * $('#datasetNormalHeight').val();
-  // IMAGES_SPRITE_PATH = spriteImageURL;
-  // LABELS_PATH = labelsURL;
-  // console.log(spriteImageURL);
-  // console.log(labelsURL);
   NUM_TRAIN_ELEMENTS = Math.floor(TRAIN_TEST_RATIO * NUM_DATASET_ELEMENTS);
   NUM_TEST_ELEMENTS = NUM_DATASET_ELEMENTS - NUM_TRAIN_ELEMENTS;
   Params.trainDataSize = Number($('#trainDataSize').val());
@@ -129,15 +121,6 @@ $('#initSettingsSubmit').submit(function() {
   } else {
     NUM_CHANNELS = 1;
   }
-  // Layers = [
-  //   tf.layers.conv2d({
-  //     inputShape: [$('#datasetNormalWidth').val(), $('#datasetNormalHeight').val(), NUM_CHANNELS],
-  //     kernelSize: Number($('#kernelSize').val()),
-  //     filters: Number($('#filters').val()),
-  //     activation: 'relu',
-  //   }),
-  //   tf.layers.dense({units: classes.length, activation: 'softmax'}),
-  // ];
   $('#inputShape').val('['+$('#datasetNormalWidth').val()+','+$('#datasetNormalHeight').val()+','+NUM_CHANNELS+']');
   $('#kernelSize1').val($('#kernelSize').val());
   $('#filters1').val($('#filters').val());
@@ -350,15 +333,6 @@ function addFuncLayers() {
 
 
 function saveLayers() {
-  // Layers = [
-  //   tf.layers.conv2d({
-  //     inputShape: [60, 60, 4],
-  //     kernelSize: 4,
-  //     filters: 8,
-  //     activation: 'relu',
-  //   }),
-  //   tf.layers.dense({units: 4, activation: 'softmax'}),
-  // ];
   Layers = [
     tf.layers.conv2d({
       inputShape: [Number($('#datasetNormalWidth').val()), Number($('#datasetNormalHeight').val()), NUM_CHANNELS],
@@ -516,18 +490,6 @@ $('#userTrain').click(function() {
   Params.batchSize = $('#batchSize').val();
   // console.log($("#batchSize").val());
   try {
-    // if (selectedValue == 1) {
-    //   shapeRun(Layers, Params);
-    //   $('.drawing').css('display', 'none');
-    //   $('#canvas').attr('width', '300px');
-    //   $('#canvas').attr('height', '300px');
-    // } else if (selectedValue == 2) {
-    //   $('.drawing').css('display', 'none');
-    //   $('#canvas').attr('width', '280px');
-    //   $('#canvas').attr('height', '280px');
-    //   digitRun(Layers1, Params);
-    // }
-    // console.log(Params);
     run(Layers, Params);
   } catch (error) {
     $('#loading').css('display', 'none');
