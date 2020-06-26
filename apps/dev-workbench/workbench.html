@@ -57,6 +57,7 @@
     />
     <script src="../../common/jszip.min.js"></script>
     <script src="../../common/FileSaver.min.js"></script>
+    <script src="../../common/localforage.min.js"></script>
   </head>
   <body>
     <!--Navbar-->
@@ -70,6 +71,33 @@
       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
       <!-- Navbar brand -->
       <span style="cursor: default;" class="navbar-brand"> Workbench</span>
+      <ul class="navbar-nav mr-auto">
+        <!-- Dropdown -->
+        <li
+          style="position: absolute; right: 2em; margin-top: -1.3em;"
+          class="nav-item dropdown"
+        >
+          <a
+            class="nav-link dropdown-toggle"
+            id="navbarDropdownMenuLink"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+            >Options</a
+          >
+          <div
+            class="dropdown-menu dropdown-primary"
+            aria-labelledby="navbarDropdownMenuLink"
+          >
+            <a class="dropdown-item" href="#"
+              ><i class="fas fa-file-export"></i>&nbsp;&nbsp;Export</a
+            >
+            <a class="dropdown-item" href="#"
+              ><i class="fas fa-file-import"></i>&nbsp;&nbsp;Import</a
+            >
+          </div>
+        </li>
+      </ul>
     </nav>
     <!--/.Navbar-->
 
@@ -92,7 +120,7 @@
           <ul class="stepper stepper-vertical">
             <!-- First Step -->
             <li class="active firstStepHead">
-              <a href="#" onclick="dataSelect();">
+              <a href="#">
                 <span class="circle">1</span>
                 <span class="label">Select/Create Training Data</span>
               </a>
@@ -157,13 +185,14 @@
             <li class="thirdStepHead">
               <a href="#!">
                 <span class="circle">3</span>
-                <span class="label">Save your work </span>
+                <span class="label">Save and test your work </span>
               </a>
               <!-- Section Description -->
               <div class="step-content grey lighten-3">
                 <p style="font-size: 1em;">
                   Save your model to use it in caMicroscope or save your
                   workbench to continue the work later. <br />
+                  You can also test your model on images.<br />
                   <button
                     id="thirdStepButton"
                     style="
@@ -204,8 +233,8 @@
             <h4 class="card-title">Select your dataset</h4>
             <!-- Text -->
             <p style="text-align: justify;" class="card-text">
-              Select the dataset (.zip) having 3 files; spritesheet (data.jpg),
-              a binary labels file (labels.bin) and the labelnames
+              Select the dataset (.zip) having three files; spritesheet
+              (data.jpg), a binary labels (labels.bin) and the classes
               (labelnames.csv) from your local storage.
             </p>
             <div class="input-group">
@@ -217,6 +246,7 @@
                   style="max-width: 98%;"
                 />
                 <label
+                  style="overflow: hidden;"
                   class="custom-file-label spriteInputLabel"
                   for="spriteInput"
                   >Choose file
@@ -394,6 +424,7 @@
         </div>
       </div>
     </div>
+
     <script src="./workbench.js"></script>
     <script>
       feather.replace(); // for feather Icons

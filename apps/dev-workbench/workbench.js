@@ -4,7 +4,7 @@ $(document).ready(function() {
   $('#stepper').show(400);
 });
 
-$('#goBack').click( function() {
+$('#goBack').click(function() {
   // window.open('../table.html', '_self');
   window.history.back();
 });
@@ -19,22 +19,78 @@ function dataSelect() {
   $('#headContent').show(180);
   $('#cards').show(200);
   $('#goBack').unbind('click');
-  $('#goBack').click( function() {
+  $('#goBack').click(function() {
     location.reload();
   });
 }
 
-$('#spriteInput').change(function() {
-  $('#cards').hide(150);
-  $('#stepper').show(200);
-  $('#headContent').text(' Welcome to <b>Development Workbench</b>');
-  $('#headContent').show(400);
-  $('#headSub').show(400);
-  $('.firstStepHead').attr('class', 'firstStepHead done');
-  $('.done span.circle').css('background-color', 'green');
-  $('.secondStepHead').attr('class', 'secondStepHead active');
-  $('#firstStepButton').hide();
-  $('#secondStepButton').show();
+function checkDataset(evt) {
+  let zipContents = [];
+  let zipFile = evt.target.files;
+  // console.log(file);
+  return new Promise(function(resolve, reject) {
+    JSZip.loadAsync(zipFile[0])
+        .then(function(zip) {
+          zip.forEach(function(relativePath, zipEntry) {
+            zipContents.push(zipEntry.name);
+          });
+        })
+        .then(function() {
+        // console.log(zipContents);
+          if (
+            !zipContents.includes('data.jpg') ||
+          !zipContents.includes('labelnames.csv') ||
+          !zipContents.includes('labels.bin') ||
+          zipContents.length != 3
+          ) {
+            return false;
+          } else {
+            return true;
+          }
+        })
+        .then(function(val) {
+          resolve(val);
+        })
+        .catch(function(e) {
+          console.log(e);
+          alert('Please select a valid zip file');
+        });
+  });
+}
+
+$('#spriteInput').change(function(evt) {
+  checkDataset(evt).then(function(val) {
+    if (val) {
+      $('#cards').hide(150);
+      $('#stepper').show(200);
+      $('#headContent').html('Welcome to <b>Development Workbench</b>');
+      $('#headContent').show(400);
+      $('#headSub').show(400);
+      $('.firstStepHead').attr('class', 'firstStepHead done');
+      $('.done span.circle').css('background-color', 'green');
+      $('.secondStepHead').attr('class', 'secondStepHead active');
+      $('#firstStepButton').hide();
+      $('#secondStepButton').show();
+      let zipFile = evt.target.files[0];
+      new Promise((resolve, reject) => {
+        let reader = new FileReader();
+        reader.readAsDataURL(zipFile);
+        reader.onload = function() {
+          let result = reader.result;
+          result = result.substr(28, result.length - 28);
+          resolve(result);
+        };
+        reader.onerror = function(error) {
+          console.log('Error: ', error);
+        };
+      }).then(function(result) {
+        // console.log(result);
+        localforage.setItem('zipFile', result);
+      });
+    } else {
+      alert('Invalid zip file!!');
+    }
+  });
 });
 
 $('.labelsInputGroup').change(function(evt) {
@@ -45,31 +101,8 @@ $('.labelsInputGroup').change(function(evt) {
   else if (fileNames.length > 1) {
     $('.labelsInputLabel').text(fileNames.length + ' files selected');
   }
-  // function handleFile(f) {
-  //   let title = f.name;
-  //   // console.log(title);
-  //   JSZip.loadAsync(f).then(function(zip) {
-  //     zip.forEach(function(relativePath, zipEntry) {
-  //       // console.log(zipEntry.name);
-  //     });
-  //   });
-  // }
-  // let files = evt.target.files;
-  // console.log(files);
-  // $.ajax({
-  //   method: 'POST',
-  //   url: '../../workbench/getLabelsZips',
-  //   data: files,
-  //   dataType: 'zip',
-  //   processData: false,
-  //   success: function(response) {
-  //     console.log(response);
-  //   },
-  // });
-  // for (var i = 0; i < files.length; i++) {
-  //   handleFile(files[i]);
-  // }
 });
+
 function resetLabelsModal(custom = false) {
   $('#labelsSubmitButton').prop('disabled', false);
   if (custom) {
@@ -107,6 +140,7 @@ function resetLabelsModal(custom = false) {
     sendToLoader(files, fileNames, custom);
   });
 }
+
 function displayLabels(data, names, custom = false) {
   $('#labelSelectModalTitle').text('Filter your labels');
   $('.labelsInputGroup').hide(180);
@@ -200,7 +234,7 @@ function getSprite(data, userFolder, custom) {
       $('#selectResolution').hide(200);
       $('#labelsDatasetZip').show(200);
       $('#labelSelectModalTitle').text('Dataset created successfully');
-      window.open('../../loader/' + done.download);
+      window.open('../../loader' + done.download);
       cleanBackend(userFolder);
     },
     error: function(e) {
