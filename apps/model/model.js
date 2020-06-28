@@ -52,6 +52,21 @@ const $D = {
 // const timeOutMs = 10;
 
 
+function sanitize(string) {
+  string = string || '';
+  const map = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    '\'': '&#x27;',
+    '/': '&#x2F;',
+  };
+  const reg = /[&<>"'/]/ig;
+  return string.toString().replace(reg, (match)=>(map[match]));
+}
+
+
 function initialize() {
   var checkPackageIsReady = setInterval(function() {
     if (IsPackageLoading) {
@@ -1146,8 +1161,12 @@ async function selectModel() {
 async function selectChoices(name, classes) {
   $UI.roiModal.close();
   (function(callback) {
-    selectedmodelName = name.split('/').pop().split('_').splice(2).join('_').slice(0, -3);
+    selectedmodelName = sanitize(name.split('/').pop().split('_').splice(2).join('_').slice(0, -3));
     var classNames = classes.split(',');
+    for ( var i = 0; i < classNames.length; i++) {
+      classNames[i]= sanitize(classNames[i]);
+    }
+
     var i;
     $('#choicedata').html('');
     $('#choicedata').html(' <h4> Classes :</h4> ');
@@ -1399,10 +1418,10 @@ async function extractRoi(choices, flag1) {
     for (let j = 0; j<choices.classes.length; j++) {
       if (choices.classes[j] in counts) {
         $('#detailsdata').append('<li>Number of patches extracted  of class <b>'+
-          choices.classes[j]+ ' </b> : '+ counts[choices.classes[j]] +'</li>' );
+          sanitize(choices.classes[j])+ ' </b> : '+ counts[choices.classes[j]] +'</li>' );
       } else {
         $('#detailsdata').append('<li>Number of patches extracted  of class <b>'+
-         choices.classes[j]+ '</b> : 0  </li>' );
+         sanitize(choices.classes[j])+ '</b> : 0  </li>' );
       }
     }
     if (flag1 == 0 ) {
