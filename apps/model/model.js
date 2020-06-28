@@ -195,7 +195,7 @@ async function initUIcomponents() {
     provideContent: true,
     content: `
     <div class= "message" >
-      <h3> Select the parameters for the patches that you want to downlaod</h3></div><br>
+      <h3> Select the parameters for the patches that you want to download</h3></div><br>
       <table id='choicetable'>
         <thead>
           <tbody id="choicedata">
