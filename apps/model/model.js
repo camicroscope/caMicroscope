@@ -1364,7 +1364,7 @@ async function extractRoi(choices, flag1) {
           dx += step;
         });
         $('#etap').html('');
-        $('#etap').append('<b>'+ ((c /  totalPatches) * 100).toFixed(0) + ' % </b>');
+        $('#etap').append('<b>'+ ((c / totalPatches) * 100).toFixed(0) + ' % </b>');
       }
       i = i + 1;
       dy += step;
@@ -1380,7 +1380,8 @@ async function extractRoi(choices, flag1) {
 
       for (let k = 0; k < regions.length; k++) {
         console.log('k' + k);
-        const src = prefixUrl + '\/'+regions[k].X + ',' + regions[k].Y + ',' + step + ',' + step + '\/'+step + ',/0/default.jpg';
+        const src = prefixUrl + '\/'+regions[k].X + ',' + regions[k].Y + ',' + step +
+        ',' + step + '\/'+step + ',/0/default.jpg';
         const lImg = await addImageProcess(src);
         fullResCvs.height = lImg.height;
         fullResCvs.width = lImg.width;
