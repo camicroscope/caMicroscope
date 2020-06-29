@@ -3,7 +3,7 @@ const IDB_URL = 'indexeddb://';
 var csvContent;
 var mem;
 var mem1;
-var flag= -1;
+var flag = -1;
 var choices1;
 // INITIALIZE DB
 window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
@@ -181,10 +181,10 @@ async function initUIcomponents() {
     hasFooter: false,
     provideContent: true,
     content: `
-      <div class= "message" >
+      <div class = "message" >
       
         <h3> Please select a model</h3></div><br>
-      <table id='roitable'>
+      <table id = 'roitable'>
         <thead>
           <tr>
             <th>Name</th>
@@ -194,7 +194,7 @@ async function initUIcomponents() {
             <th>Date Saved</th>
             <th>Select Model</th>
           </tr>
-          <tbody id="roidata">
+          <tbody id = "roidata">
           </tbody>
         </thead>
       </table>
@@ -209,11 +209,11 @@ async function initUIcomponents() {
     hasFooter: false,
     provideContent: true,
     content: `
-    <div class= "message" >
+    <div class = "message" >
       <h3> Select the parameters for the patches that you want to download</h3></div><br>
-      <table id='choicetable'>
+      <table id = 'choicetable'>
         <thead>
-          <tbody id="choicedata">
+          <tbody id = "choicedata">
           </tbody>
         </thead>
       </table>
@@ -443,7 +443,7 @@ function drawRectangle(e) {
   var args;
   const canvasDraw = $CAMIC.viewer.canvasDrawInstance;
   if (e.state == 'roi') {
-    args ={status: ''};
+    args = {status: ''};
     args.status = e.model;
     console.log(args);
   } else {
@@ -892,7 +892,7 @@ async function showInfo() {
   var table = document.querySelector('#mdata');
   var tx = db.transaction('models_store', 'readonly');
   var store = tx.objectStore('models_store');
-  var modelCount=0;
+  var modelCount = 0;
   empty(table);
   // Update table data
   (function(callback) {
@@ -921,20 +921,20 @@ async function showInfo() {
             td = row.insertCell();
             td.innerText = date;
             td = row.insertCell();
-            td.innerHTML = '<button class="btn-del" '+
-            'id=removeModel'+ modelCount+' type="button"><i class="material-icons"'+
+            td.innerHTML = '<button class="btn-del" ' +
+            'id=removeModel' + modelCount +' type="button"><i class="material-icons"'+
             'style="font-size:16px;">delete_forever</i>Remove Model</button>';
             td = row.insertCell();
             td.innerHTML = '<button class="btn-change" '+
-            'id=chngClassListBtn'+ modelCount+' type="button"><i class="material-icons"' +
+            'id=chngClassListBtn'+ modelCount +' type="button"><i class="material-icons"' +
             'style="font-size:16px;">edit</i>  Edit Classes</button>';
-            document.getElementById('removeModel'+modelCount).addEventListener('click', () => {
+            document.getElementById('removeModel'+ modelCount).addEventListener('click', () => {
               deleteModel(name);
             });
-            document.getElementById('chngClassListBtn'+modelCount).addEventListener('click', () => {
+            document.getElementById('chngClassListBtn' + modelCount).addEventListener('click', () => {
               showNewClassInput(name);
             });
-            modelCount+=1;
+            modelCount += 1;
           };
         }
       }
@@ -1113,7 +1113,7 @@ async function selectModel() {
   var table = document.querySelector('#roidata');
   var tx = db.transaction('models_store', 'readonly');
   var store = tx.objectStore('models_store');
-  var modelCount=0;
+  var modelCount = 0;
 
   empty(table);
 
@@ -1149,7 +1149,7 @@ async function selectModel() {
             document.getElementById('selectModel'+modelCount).addEventListener('click', () => {
               selectChoices(name, classes);
             });
-            modelCount+=1;
+            modelCount += 1;
           };
         }
       }
@@ -1164,38 +1164,38 @@ async function selectChoices(name, classes) {
     selectedmodelName = sanitize(name.split('/').pop().split('_').splice(2).join('_').slice(0, -3));
     var classNames = classes.split(',');
     for ( var i = 0; i < classNames.length; i++) {
-      classNames[i]= sanitize(classNames[i]);
+      classNames[i] = sanitize(classNames[i]);
     }
 
     var i;
     $('#choicedata').html('');
     $('#choicedata').html(' <h4> Classes :</h4> ');
     for ( i = 0; i < classNames.length; i++) {
-      $('#choicedata').append('<label class="check">'+classNames[i]+'<input type="checkbox" value= ' +
+      $('#choicedata').append('<label class="check">' + classNames[i] + '<input type="checkbox" value= ' +
       classNames[i] + ' id = ' + classNames[i] + ' name = "choice" /><span class="checkmark"></span></label></br>');
     }
     $('#choicedata').append(' <h4> Accuracy Level :</h4>'+
   '<input type="range" min="1" max="100" value="80"  id = "accrange" onchange="updateTextInput(this.value)" />'+
   ' <input type="text" id="textInput" value="80" /><br>');
 
-    $('#choicedata').append(' <h4> Scaling Method :</h4> '+
-  '<select id="scale_method" name="scale">'+
-  '<option value="norm" selected>Normalization</option>'+
-  '<option value="center">Centering</option>'+
+    $('#choicedata').append(' <h4> Scaling Method :</h4> ' +
+  '<select id="scale_method" name="scale">' +
+  '<option value="norm" selected>Normalization</option>' +
+  '<option value="center">Centering</option>' +
   '<option value="std">Standardization</option></select> <br>');
-    $('#choicedata').append('<br><br><div id="ext1"><button id="submit1" class="extract">'+
+    $('#choicedata').append('<br><br><div id="ext1"><button id="submit1" class="extract">' +
       'Extract from entire slide</button></div><br>');
-    $('#choicedata').append('<br><div id="ext2"><button id="submit2" class="extract">'+
+    $('#choicedata').append('<br><div id="ext2"><button id="submit2" class="extract">' +
       'Extract from a selected region</button></div><br>');
 
 
     $('#submit1').click(async function() {
       var boxes = $('input[name=choice]:checked');
-      if (boxes.length==0) {
+      if (boxes.length == 0) {
         alert('Please select altleast one class.');
       } else {
-        var choices ={model: '', accuracy: '80', classes: [], scale: 'norm'};
-        for (let i=0; i<boxes.length; i++) {
+        var choices = {model: '', accuracy: '80', classes: [], scale: 'norm'};
+        for (let i = 0; i<boxes.length; i++) {
           choices.classes.push(boxes[i].id);
         }
         choices.scale = document.getElementById('scale_method').value;
@@ -1208,11 +1208,11 @@ async function selectChoices(name, classes) {
 
     $('#submit2').click(async function() {
       var boxes = $('input[name=choice]:checked');
-      if (boxes.length==0) {
+      if (boxes.length == 0) {
         alert('Please select altleast one class.');
       } else {
-        var choices ={model: '', accuracy: '80', classes: [], scale: 'norm'};
-        for (let i=0; i<boxes.length; i++) {
+        var choices = {model: '', accuracy: '80', classes: [], scale: 'norm'};
+        for (let i = 0; i<boxes.length; i++) {
           choices.classes.push(boxes[i].id);
         }
         choices.scale = document.getElementById('scale_method').value;
@@ -1245,7 +1245,7 @@ async function extractRoi(choices, flag1) {
   const prefixUrl = ImgloaderMode == 'iip'?`../../img/IIP/raw/?IIIF=${$D.params.data.location}`:$CAMIC.slideId;
 
   const fullResCvs = self.__fullsrc;
-  var height = Y+ totalSize;
+  var height = Y + totalSize;
   var width = X + totalSize;
 
   // Starting the transaction and opening the model store
@@ -1294,18 +1294,18 @@ async function extractRoi(choices, flag1) {
 
 
     if ( flag1 != 0 ) {
-      X=0;
-      Y=0;
+      X = 0;
+      Y = 0;
       height = $D.params.data.height;
       width = $D.params.data.width;
     }
-    const totalPatches = (width/step)*(height/step);
+    const totalPatches = (width / step) * (height / step);
     var c = 0;
 
-    for (let y = Y, dy = 0, i =0; y <=(height-step); y+=(step)) {
+    for (let y = Y, dy = 0, i = 0; y <= (height-step); y += (step)) {
       let dx = 0;
-      for (let x = X, j=0; x <=( width-step); x+=(step)) {
-        const src = prefixUrl+'\/'+x+','+y+','+step+','+step+'\/'+step+',/0/default.jpg';
+      for (let x = X, j = 0; x <= ( width-step); x+=(step)) {
+        const src = prefixUrl+'\/'+ x +','+ y +','+ step +','+ step + '\/'+ step + ',/0/default.jpg';
         const results = [];
         const lImg = await addImageProcess(src);
         fullResCvs.height = lImg.height;
@@ -1359,14 +1359,14 @@ async function extractRoi(choices, flag1) {
 
           // }
           console.log('done');
-          j=j+1;
-          c+=1;
+          j = j + 1;
+          c += 1;
           dx += step;
         });
         $('#etap').html('');
-        $('#etap').append('<b>'+ ((c/totalPatches)*100).toFixed(0) + ' % </b>');
+        $('#etap').append('<b>'+ ((c /  totalPatches) * 100).toFixed(0) + ' % </b>');
       }
-      i=i+1;
+      i = i + 1;
       dy += step;
     }
     mem = sizeof(regions);
@@ -1375,12 +1375,12 @@ async function extractRoi(choices, flag1) {
     if (regions.length != 0) {
       document.getElementById('snackbar').className = '';
       $('#snackbar').html('');
-      $('#snackbar').html('<h3> Downloading ...</h3>'+ '<span id = "etad"></span>');
+      $('#snackbar').html('<h3> Downloading ...</h3>' + '<span id = "etad"></span>');
       document.getElementById('snackbar').className = 'show';
 
-      for (let k =0; k< regions.length; k++) {
-        console.log('k'+k);
-        const src = prefixUrl+'\/'+regions[k].X+','+regions[k].Y+','+step+','+step+'\/'+step+',/0/default.jpg';
+      for (let k = 0; k < regions.length; k++) {
+        console.log('k' + k);
+        const src = prefixUrl + '\/'+regions[k].X + ',' + regions[k].Y + ',' + step + ',' + step + '\/'+step + ',/0/default.jpg';
         const lImg = await addImageProcess(src);
         fullResCvs.height = lImg.height;
         fullResCvs.width = lImg.width;
@@ -1393,12 +1393,12 @@ async function extractRoi(choices, flag1) {
       zip.folder('images');
       var img = zip.folder('images');
 
-      for (var i = 0; i <regionData.length; i++) {
+      for (var i = 0; i < regionData.length; i++) {
         console.log(i);
-        img.file( regions[i].cls+ (regions[i].acc*100).toFixed(3) + '.png', regionData[i], {base64: true});
+        img.file( regions[i].cls + (regions[i].acc * 100).toFixed(3) + '.png', regionData[i], {base64: true});
 
         $('#etad').html('');
-        $('#etad').append('<b>'+(((i/regionData.length))*100).toFixed(0) + ' % </b>');
+        $('#etad').append('<b>' + (((i / regionData.length)) * 100).toFixed(0) + ' % </b>');
       }
 
       await zip.generateAsync({type: 'blob'}).then(function(content) {
@@ -1411,17 +1411,17 @@ async function extractRoi(choices, flag1) {
     $('#detailsdata').html('');
     $('#detailsdata').append('<li><h3>Total number of patches extracted :'+ regionData.length +'</h3></li>' );
 
-    for (let k = 0; k< regions.length; k++) {
+    for (let k = 0; k < regions.length; k++) {
       var i = regions[k].cls;
       counts[i] = counts[i] ? counts[i] + 1 : 1;
     }
-    for (let j = 0; j<choices.classes.length; j++) {
+    for (let j = 0; j < choices.classes.length; j++) {
       if (choices.classes[j] in counts) {
-        $('#detailsdata').append('<li>Number of patches extracted  of class <b>'+
-          sanitize(choices.classes[j])+ ' </b> : '+ counts[choices.classes[j]] +'</li>' );
+        $('#detailsdata').append('<li>Number of patches extracted  of class <b>' +
+          sanitize(choices.classes[j]) + ' </b> : ' + counts[choices.classes[j]] +'</li>' );
       } else {
-        $('#detailsdata').append('<li>Number of patches extracted  of class <b>'+
-         sanitize(choices.classes[j])+ '</b> : 0  </li>' );
+        $('#detailsdata').append('<li>Number of patches extracted  of class <b>' +
+         sanitize(choices.classes[j]) + '</b> : 0  </li>' );
       }
     }
     if (flag1 == 0 ) {
@@ -1443,6 +1443,6 @@ async function extractRoiSelect(choices) {
   drawRectangle({checked: true, state: 'roi', model: choices.model});
 }
 function updateTextInput(val) {
-  document.getElementById('textInput').value=val;
+  document.getElementById('textInput').value = val;
 }
 

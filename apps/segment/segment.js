@@ -158,7 +158,7 @@ async function initUIcomponents() {
             <th>Date Saved</th>
             <th>Select Model</th>
           </tr>
-          <tbody id="roidata">
+          <tbody id = "roidata">
           </tbody>
         </thead>
       </table>
@@ -174,11 +174,11 @@ async function initUIcomponents() {
     hasFooter: false,
     provideContent: true,
     content: `
-    <div class= "message" >
+    <div class = "message" >
       <h3> Select the parameters for the patches that you want to download</h3></div><br>
-      <table id='choicetable'>
+      <table id ='choicetable'>
         <thead>
-          <tbody id="choicedata">
+          <tbody id = "choicedata">
           </tbody>
         </thead>
       </table>
@@ -193,11 +193,11 @@ async function initUIcomponents() {
     hasFooter: false,
     provideContent: true,
     content: `
-    <div class= "message" >
+    <div class = "message" >
       <h3> The details of the extracted patches are : </h3></div><br>
-      <table id='detailstable'>
+      <table id = 'detailstable'>
         <thead>
-          <tbody id="detailsdata">
+          <tbody id = "detailsdata">
           </tbody>
         </thead>
       </table>
@@ -519,7 +519,7 @@ function drawRectangle(e) {
     // Warn about zoom level
     const currentZoom = Math.round($CAMIC.viewer.imagingHelper._zoomFactor * 40);
     requiredZoom = $UI.args &&
-    $UI.args.status!='watershed'? parseInt($UI.args.status.split('_')[0].split('-')[2]):currentZoom;
+    $UI.args.status!= 'watershed'? parseInt($UI.args.status.split('_')[0].split('-')[2]):currentZoom;
 
     if (currentZoom != requiredZoom && flag != 0) {
       alert(`You are testing the model for a different zoom level (recommended: ${requiredZoom}). Performance might be affected.`);
@@ -1250,7 +1250,7 @@ async function showInfo() {
   var table = document.querySelector('#mdata');
   var tx = db.transaction('models_store', 'readonly');
   var store = tx.objectStore('models_store');
-  var modelCount=0;
+  var modelCount = 0;
   empty(table);
   // Update table data
   (function(callback) {
@@ -1281,7 +1281,7 @@ async function showInfo() {
             document.getElementById('removeModel'+modelCount).addEventListener('click', () => {
               deleteModel(name);
             });
-            modelCount+=1;
+            modelCount += 1;
           };
         }
       }
@@ -1489,7 +1489,7 @@ async function selectModel() {
   var table = document.querySelector('#roidata');
   var tx = db.transaction('models_store', 'readonly');
   var store = tx.objectStore('models_store');
-  var modelCount=0;
+  var modelCount = 0;
   empty(table);
 
   //  Update table data
@@ -1517,12 +1517,12 @@ async function selectModel() {
             td = row.insertCell();
             td.innerText = date;
             td = row.insertCell();
-            td.innerHTML = '<button class="btn-sel"'+
-            'id=selectModel'+ modelCount+' type="button"><i class="material-icons">done</i></button>';
-            document.getElementById('selectModel'+modelCount).addEventListener('click', () => {
+            td.innerHTML = '<button class="btn-sel"' +
+            'id=selectModel' + modelCount + ' type="button"><i class="material-icons">done</i></button>';
+            document.getElementById('selectModel' + modelCount).addEventListener('click', () => {
               selectChoices(name);
             });
-            modelCount+=1;
+            modelCount += 1;
           };
         }
       }
@@ -1560,12 +1560,12 @@ async function selectChoices(name) {
     // ' <input type="text" id="objinput" class= "textInput" value="0" /><br>');
     $('#choicedata').append(' <h4> Download options  :</h4>');
     $('#choicedata').append('<input type= "radio"  name = "choice" checked="checked" id= "both">'+
-    '  Download both patches and masks</input><br><br>'+
+    '  Download both patches and masks</input><br><br>' +
    '<input type="radio" name="choice" id="onlymask"  >  Download only masks</input><br>');
-    $('#choicedata').append(' <h4> Scaling Method :</h4> '+
-  '<select id="scale_method" name="scale">'+
-  '<option value="norm" selected>Normalization</option>'+
-  '<option value="center">Centering</option>'+
+    $('#choicedata').append(' <h4> Scaling Method :</h4> ' +
+  '<select id="scale_method" name="scale">' +
+  '<option value="norm" selected>Normalization</option>' +
+  '<option value="center">Centering</option>' +
   '<option value="std">Standardization</option></select> <br>');
     $('#choicedata').append('<br><br><div id="ext1"><button id="submit1" class="extract">'+
       'Extract from entire slide</button></div><br>');
@@ -1574,7 +1574,7 @@ async function selectChoices(name) {
 
 
     $('#submit1').click(async function() {
-      var choices ={model: '', dow: '', scale: 'norm'};
+      var choices = {model: '', dow: '', scale: 'norm'};
 
       choices.dow = $('input[name="choice"]:checked').val();
       // choices.minObj  = document.getElementById('minobj').value;
@@ -1586,7 +1586,7 @@ async function selectChoices(name) {
     });
 
     $('#submit2').click(async function() {
-      var choices ={model: '', dow: '', scale: 'norm'};
+      var choices = {model: '', dow: '', scale: 'norm'};
 
       choices.dow = $('input[name="choice"]:checked').val();
       // choices.minObj  = document.getElementById('minobj').value;
@@ -1638,7 +1638,7 @@ async function extractRoi(choices, flag1) {
     });
 
     const fullResCvs = self.__fullsrc;
-    var height = Y+ totalSize;
+    var height = Y + totalSize;
     var width = X + totalSize;
 
 
@@ -1662,21 +1662,21 @@ async function extractRoi(choices, flag1) {
 
 
     if ( flag1 != 0 ) {
-      X=0;
-      Y=0;
+      X = 0;
+      Y = 0;
       height = $D.params.data.height;
       width = $D.params.data.width;
     }
-    var c=0;
-    const totalPatches = (width/step)*(height/step);
+    var c = 0;
+    const totalPatches = (width / step) * (height / step);
     document.getElementById('snackbar').className = '';
     $('#snackbar').html('');
     $('#snackbar').html('<h3>Predicting ...</h3><span id = "etap"></span>');
     document.getElementById('snackbar').className = 'show';
-    for (let y = Y, dy = 0; y <= (height - step); y+=(step)) {
+    for (let y = Y, dy = 0; y <= (height - step); y += (step)) {
       let dx = 0;
-      for (let x = X; x < (width - step); x+=(step)) {
-        const src = prefixUrl+'\/'+x+','+y+','+step+','+step+'\/'+step+',/0/default.jpg';
+      for (let x = X; x < (width - step); x += (step)) {
+        const src = prefixUrl + '\/' + x + ',' + y + ',' + step + ',' + step + '\/' + step + ',/0/default.jpg';
         const lImg = await addImageProcess(src);
         fullResCvs.height = lImg.height;
         fullResCvs.width = lImg.width;
@@ -1685,7 +1685,7 @@ async function extractRoi(choices, flag1) {
         // dummy.getContext('2d').drawImage(img, dx, dy);
         const imgData = fullResCvs.getContext('2d').getImageData(0, 0, fullResCvs.width, fullResCvs.height);
         let val;
-        tf.tidy(()=>{
+        tf.tidy(()=> {
           const img = tf.browser.fromPixels(imgData).toFloat();
           let img2;
           if (inputChannels == 1) {
@@ -1733,10 +1733,10 @@ async function extractRoi(choices, flag1) {
         // tf.engine().endScope();
         dx += step;
 
-        c+=1;
+        c += 1;
         console.log(c);
         $('#etap').html('');
-        $('#etap').append('<b>'+(((c/totalPatches))*100).toFixed(0) + ' %</b> ');
+        $('#etap').append('<b>' + (((c / totalPatches)) * 100).toFixed(0) + ' %</b> ');
       }
       dy += step;
     }
@@ -1749,7 +1749,7 @@ async function extractRoi(choices, flag1) {
     self.hideProgress();
     model.dispose();
     var regionMask = [];
-    for (var i =0; i< regionData.length; i++) {
+    for (var i = 0; i < regionData.length; i++) {
       const temp = document.querySelector('#dummy');
       temp.height = step;
       temp.width = step;
@@ -1772,47 +1772,47 @@ async function extractRoi(choices, flag1) {
     var img = zip.folder('masks');
     document.getElementById('snackbar').className = '';
     $('#snackbar').html('');
-    $('#snackbar').html('<h3> Downloading  Masks...</h3>'+ '<span id = "etadm"></span>');
+    $('#snackbar').html('<h3> Downloading  Masks...</h3>' + '<span id = "etadm"></span>');
     document.getElementById('snackbar').className = 'show';
-    for (var i = 0; i <regionMask.length; i++) {
+    for (var i = 0; i < regionMask.length; i++) {
       console.log(i);
       img.file( i+ 'Mask' + '.png', regionMask[i], {base64: true});
 
       $('#etadm').html('');
-      $('#etadm').append('<b>'+(((i/regionMask.length))*100).toFixed(0) + ' % </b>');
+      $('#etadm').append('<b>'+(((i / regionMask.length)) * 100).toFixed(0) + ' % </b>');
     }
 
 
     if ($('#both').is(':checked')) {
-      c=0;
+      c = 0;
       zip.folder('patches');
       var img2 = zip.folder('patches');
 
       document.getElementById('snackbar').className = '';
 
       $('#snackbar').html('');
-      $('#snackbar').html('<h3> Downloading Patches...</h3>'+ '<span id = "etadp"></span>');
+      $('#snackbar').html('<h3> Downloading Patches...</h3>' + '<span id = "etadp"></span>');
       document.getElementById('snackbar').className = 'show';
 
-      for (let y = Y, dy = 0; y <= (height - step); y+=(step)) {
+      for (let y = Y, dy = 0; y <= (height - step); y += (step)) {
         let dx = 0;
-        for (let x = X; x < (width - step); x+=(step)) {
-          const src = prefixUrl+'\/'+x+','+y+','+step+','+step+'\/'+step+',/0/default.jpg';
+        for (let x = X; x < (width - step); x += (step)) {
+          const src = prefixUrl + '\/' + x + ',' + y + ',' + step + ',' + step + '\/' + step + ',/0/default.jpg';
           const lImg = await addImageProcess(src);
           fullResCvs.height = lImg.height;
           fullResCvs.width = lImg.width;
           var t;
           fullResCvs.getContext('2d').drawImage(lImg, 0, 0);
-          t= fullResCvs.toDataURL().replace(/^data:image\/(png|jpg);base64,/, '');
+          t = fullResCvs.toDataURL().replace(/^data:image\/(png|jpg);base64,/, '');
 
-          img2.file( c+ 'patch' + '.png', t, {base64: true});
-          c=c+1;
+          img2.file(c + 'patch' + '.png', t, {base64: true});
+          c = c + 1;
           dx += step; $('#etadp').html('');
-          $('#etadp').append('<b>'+(((c/regionMask.length))*100).toFixed(0) + ' % </b>');
+          $('#etadp').append('<b>' + (((c / regionMask.length)) * 100).toFixed(0) + ' % </b>');
 
           console.log(c);
         }
-        dy+=step;
+        dy += step;
       }
     }
 
@@ -1823,7 +1823,7 @@ async function extractRoi(choices, flag1) {
 
     document.getElementById('snackbar').className = '';
     $('#detailsdata').html('');
-    $('#detailsdata').append('<br><li>Number of patches/masks extracted  <b>'+ regionMask.length+'</li><br>');
+    $('#detailsdata').append('<br><li>Number of patches/masks extracted  <b>' + regionMask.length +'</li><br>');
 
     if (flag1 == 0 ) {
       drawRectangle({checked: false});
@@ -1848,6 +1848,6 @@ async function extractRoiSelect(choices) {
 
 
 function updateTextInput(val, id) {
-  document.getElementById(id).value=val;
+  document.getElementById(id).value = val;
 }
 
