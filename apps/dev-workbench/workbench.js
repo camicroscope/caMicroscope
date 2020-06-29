@@ -72,21 +72,7 @@ $('#spriteInput').change(function(evt) {
       $('#firstStepButton').hide();
       $('#secondStepButton').show();
       let zipFile = evt.target.files[0];
-      new Promise((resolve, reject) => {
-        let reader = new FileReader();
-        reader.readAsDataURL(zipFile);
-        reader.onload = function() {
-          let result = reader.result;
-          result = result.substr(28, result.length - 28);
-          resolve(result);
-        };
-        reader.onerror = function(error) {
-          console.log('Error: ', error);
-        };
-      }).then(function(result) {
-        // console.log(result);
-        localforage.setItem('zipFile', result);
-      });
+      localforage.setItem('zipFile', zipFile);
     } else {
       alert('Invalid zip file!!');
     }
