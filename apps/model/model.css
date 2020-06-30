@@ -435,21 +435,29 @@ body{
     float: right;
 }
 
-.cnt-btn {
+#ext1{
+   
+  text-align: center;
+  font-size: 16px;
+
+
+}
+#ext2{
    
   text-align: center;
   font-size: 16px;
 
 }
-#submit1{
+.extract{
   padding : 3% 6% 3% 6%;
   
   color: white;
   background-color:#46a049 !important;
   border-radius: 7%;
+  width: 70%;
 }
 
-#submit1:hover {
+.extract:hover {
     
     transform: scale(1.2);
     cursor: pointer;

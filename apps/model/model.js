@@ -3,7 +3,8 @@ const IDB_URL = 'indexeddb://';
 var csvContent;
 var mem;
 var mem1;
-
+var flag = -1;
+var choices1;
 // INITIALIZE DB
 window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
 // id(autoinc), name, location(name+id), classes
@@ -49,6 +50,21 @@ const $D = {
 // const objAreaMax = 4500;
 // const lineWidth = 2;
 // const timeOutMs = 10;
+
+
+function sanitize(string) {
+  string = string || '';
+  const map = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    '\'': '&#x27;',
+    '/': '&#x2F;',
+  };
+  const reg = /[&<>"'/]/ig;
+  return string.toString().replace(reg, (match)=>(map[match]));
+}
 
 
 function initialize() {
@@ -165,10 +181,10 @@ async function initUIcomponents() {
     hasFooter: false,
     provideContent: true,
     content: `
-      <div class= "message" >
+      <div class = "message" >
       
         <h3> Please select a model</h3></div><br>
-      <table id='roitable'>
+      <table id = 'roitable'>
         <thead>
           <tr>
             <th>Name</th>
@@ -178,7 +194,7 @@ async function initUIcomponents() {
             <th>Date Saved</th>
             <th>Select Model</th>
           </tr>
-          <tbody id="roidata">
+          <tbody id = "roidata">
           </tbody>
         </thead>
       </table>
@@ -193,11 +209,11 @@ async function initUIcomponents() {
     hasFooter: false,
     provideContent: true,
     content: `
-    <div class= "message" >
-      <h3> Select the parameters for the patcehs that you want to downlaod</h3></div><br>
-      <table id='choicetable'>
+    <div class = "message" >
+      <h3> Select the parameters for the patches that you want to download</h3></div><br>
+      <table id = 'choicetable'>
         <thead>
-          <tbody id="choicedata">
+          <tbody id = "choicedata">
           </tbody>
         </thead>
       </table>
@@ -420,11 +436,20 @@ function setFilter(filter) {
  * @param e
  */
 function drawRectangle(e) {
+  console.log(e);
   const canvas = $CAMIC.viewer.drawer.canvas; // Original Canvas
   canvas.style.cursor = e.checked ? 'crosshair' : 'default';
 
+  var args;
   const canvasDraw = $CAMIC.viewer.canvasDrawInstance;
-  const args = $UI.args;
+  if (e.state == 'roi') {
+    args = {status: ''};
+    args.status = e.model;
+    console.log(args);
+  } else {
+    args = $UI.args;
+  }
+  // console.log(args);
   canvasDraw.drawMode = 'stepSquare';
   // Save size in an arg list
   if (args) canvasDraw.size = args.status.split('_')[1].split('-')[0];
@@ -432,13 +457,16 @@ function drawRectangle(e) {
   canvasDraw.style.color = '#FFFF00';
   canvasDraw.style.isFill = false;
 
-  if (e.checked) {
+  if (e.checked ) {
     // Warn about zoom level
     const currentZoom = Math.round($CAMIC.viewer.imagingHelper._zoomFactor * 40);
     requiredZoom = $UI.args? parseInt($UI.args.status.split('_')[1].split('-')[1]):currentZoom;
-    if (currentZoom != requiredZoom) {
+
+    if (currentZoom != requiredZoom && flag != 0) {
       alert(`You are testing the model for a different zoom level (recommended: ${requiredZoom}). Performance might be affected.`);
     }
+
+
     document.querySelector('.drop_down').classList.add('disabled');
     canvasDraw.drawOn();
   } else {
@@ -452,9 +480,10 @@ function drawRectangle(e) {
  * @param e
  */
 function camicStopDraw(e) {
+  console.log(e);
   const viewer = $CAMIC.viewer;
   const canvasDraw = viewer.canvasDrawInstance;
-
+  console.log(flag);
   const imgColl = canvasDraw.getImageFeatureCollection();
   if (imgColl.features.length > 0) {
     // Check size first
@@ -464,9 +493,15 @@ function camicStopDraw(e) {
       console.error('SOMETHING WICKED THIS WAY COMES.');
     } else {
       const args = $UI.args;
-      if (args) {
-        runPredict(args.status);
+      console.log(flag);
+      if (flag != -1 ) {
+        extractRoi(choices1, flag);
+      } else {
+        if (args) {
+          runPredict(args.status);
+        }
       }
+
       $UI.modelPanel.setPosition(box.rect.x, box.rect.y, box.rect.width, box.rect.height);
       if ($UI.modelPanel.__spImgWidth != 0) {
         $UI.modelPanel.open(args);
@@ -802,7 +837,7 @@ function uploadModel() {
       } catch (e) {
         status.classList.add('error');
         status.classList.remove('blink');
-        if (toggle.checked) status.innerHTML = 'Please enter a valid URL.';
+        if (toggle.checked) status.innerText = 'Please enter a valid URL.';
         else {
           status.innerText = 'Please enter a valid model.' +
         'Input model.json in first input and all weight binaries in second one without renaming.';
@@ -857,7 +892,7 @@ async function showInfo() {
   var table = document.querySelector('#mdata');
   var tx = db.transaction('models_store', 'readonly');
   var store = tx.objectStore('models_store');
-  var modelCount=0;
+  var modelCount = 0;
   empty(table);
   // Update table data
   (function(callback) {
@@ -886,20 +921,20 @@ async function showInfo() {
             td = row.insertCell();
             td.innerText = date;
             td = row.insertCell();
-            td.innerHTML = '<button class="btn-del" '+
-            'id=removeModel'+ modelCount+' type="button"><i class="material-icons"'+
+            td.innerHTML = '<button class="btn-del" ' +
+            'id=removeModel' + modelCount +' type="button"><i class="material-icons"'+
             'style="font-size:16px;">delete_forever</i>Remove Model</button>';
             td = row.insertCell();
             td.innerHTML = '<button class="btn-change" '+
-            'id=chngClassListBtn'+ modelCount+' type="button"><i class="material-icons"' +
+            'id=chngClassListBtn'+ modelCount +' type="button"><i class="material-icons"' +
             'style="font-size:16px;">edit</i>  Edit Classes</button>';
-            document.getElementById('removeModel'+modelCount).addEventListener('click', () => {
+            document.getElementById('removeModel'+ modelCount).addEventListener('click', () => {
               deleteModel(name);
             });
-            document.getElementById('chngClassListBtn'+modelCount).addEventListener('click', () => {
+            document.getElementById('chngClassListBtn' + modelCount).addEventListener('click', () => {
               showNewClassInput(name);
             });
-            modelCount+=1;
+            modelCount += 1;
           };
         }
       }
@@ -1078,9 +1113,9 @@ async function selectModel() {
   var table = document.querySelector('#roidata');
   var tx = db.transaction('models_store', 'readonly');
   var store = tx.objectStore('models_store');
-  var modelCount=0;
+  var modelCount = 0;
+
   empty(table);
-  console.log(data);
 
   //  Update table data
   (function(callback) {
@@ -1114,7 +1149,7 @@ async function selectModel() {
             document.getElementById('selectModel'+modelCount).addEventListener('click', () => {
               selectChoices(name, classes);
             });
-            modelCount+=1;
+            modelCount += 1;
           };
         }
       }
@@ -1126,34 +1161,41 @@ async function selectModel() {
 async function selectChoices(name, classes) {
   $UI.roiModal.close();
   (function(callback) {
-    selectedmodelName = name.split('/').pop().split('_').splice(2).join('_').slice(0, -3);
+    selectedmodelName = sanitize(name.split('/').pop().split('_').splice(2).join('_').slice(0, -3));
     var classNames = classes.split(',');
+    for ( var i = 0; i < classNames.length; i++) {
+      classNames[i] = sanitize(classNames[i]);
+    }
+
     var i;
     $('#choicedata').html('');
     $('#choicedata').html(' <h4> Classes :</h4> ');
     for ( i = 0; i < classNames.length; i++) {
-      $('#choicedata').append('<label class="check">'+classNames[i]+'<input type="checkbox" value= ' +
+      $('#choicedata').append('<label class="check">' + classNames[i] + '<input type="checkbox" value= ' +
       classNames[i] + ' id = ' + classNames[i] + ' name = "choice" /><span class="checkmark"></span></label></br>');
     }
     $('#choicedata').append(' <h4> Accuracy Level :</h4>'+
   '<input type="range" min="1" max="100" value="80"  id = "accrange" onchange="updateTextInput(this.value)" />'+
   ' <input type="text" id="textInput" value="80" /><br>');
 
-    $('#choicedata').append(' <h4> Scaling Method :</h4> '+
-  '<select id="scale_method" name="scale">'+
-  '<option value="norm" selected>Normalization</option>'+
-  '<option value="center">Centering</option>'+
+    $('#choicedata').append(' <h4> Scaling Method :</h4> ' +
+  '<select id="scale_method" name="scale">' +
+  '<option value="norm" selected>Normalization</option>' +
+  '<option value="center">Centering</option>' +
   '<option value="std">Standardization</option></select> <br>');
-    $('#choicedata').append('<br><div class= "cnt-btn"><button id="submit1">Extract</button></div><br>');
+    $('#choicedata').append('<br><br><div id="ext1"><button id="submit1" class="extract">' +
+      'Extract from entire slide</button></div><br>');
+    $('#choicedata').append('<br><div id="ext2"><button id="submit2" class="extract">' +
+      'Extract from a selected region</button></div><br>');
 
 
     $('#submit1').click(async function() {
       var boxes = $('input[name=choice]:checked');
-      if (boxes.length==0) {
+      if (boxes.length == 0) {
         alert('Please select altleast one class.');
       } else {
-        var choices ={model: '', accuracy: '80', classes: [], scale: 'norm'};
-        for (let i=0; i<boxes.length; i++) {
+        var choices = {model: '', accuracy: '80', classes: [], scale: 'norm'};
+        for (let i = 0; i<boxes.length; i++) {
           choices.classes.push(boxes[i].id);
         }
         choices.scale = document.getElementById('scale_method').value;
@@ -1164,24 +1206,47 @@ async function selectChoices(name, classes) {
       }
     });
 
+    $('#submit2').click(async function() {
+      var boxes = $('input[name=choice]:checked');
+      if (boxes.length == 0) {
+        alert('Please select altleast one class.');
+      } else {
+        var choices = {model: '', accuracy: '80', classes: [], scale: 'norm'};
+        for (let i = 0; i<boxes.length; i++) {
+          choices.classes.push(boxes[i].id);
+        }
+        choices.scale = document.getElementById('scale_method').value;
+        choices.accuracy = document.getElementById('accrange').value;
+        choices.model = name;
+        console.log(choices);
+        await extractRoiSelect(choices);
+      }
+    });
+
 
     callback;
   })($UI.choiceModal.open());
 }
 
-async function extractRoi(choices) {
+async function extractRoi(choices, flag1) {
   $UI.choiceModal.close();
   $('#snackbar').html('<h3>Model Loading ...</h3>');
   document.getElementById('snackbar').className = 'show';
 
   const self = $UI.modelPanel;
-  var key = choices.model;
+  var X = self.__spImgX;
+  var Y = self.__spImgY;
+  const totalSize = self.__spImgWidth;
+  self.showResults('');
+
+  self.showProgress('Predicting...');
+  const key = choices.model;
   const step = parseInt(key.split('_')[1].split('-')[0]);
   const prefixUrl = ImgloaderMode == 'iip'?`../../img/IIP/raw/?IIIF=${$D.params.data.location}`:$CAMIC.slideId;
 
   const fullResCvs = self.__fullsrc;
-  const height = $D.params.data.height;
-  const width = $D.params.data.width;
+  var height = Y + totalSize;
+  var width = X + totalSize;
 
   // Starting the transaction and opening the model store
   const tx = db.transaction('models_store', 'readonly');
@@ -1224,13 +1289,23 @@ async function extractRoi(choices) {
     const regionData = [];
 
     $('#snackbar').html('');
-    $('#snackbar').html('<h3>Predicting ...</h3>');
+    $('#snackbar').html('<h3>Predicting ...</h3><span id = "etap"></span>');
     document.getElementById('snackbar').className = 'show';
 
-    for (let y = 0, dy = 0, i =0; y <=(height-step); y+=(step)) {
+
+    if ( flag1 != 0 ) {
+      X = 0;
+      Y = 0;
+      height = $D.params.data.height;
+      width = $D.params.data.width;
+    }
+    const totalPatches = (width / step) * (height / step);
+    var c = 0;
+
+    for (let y = Y, dy = 0, i = 0; y <= (height-step); y += (step)) {
       let dx = 0;
-      for (let x = 0, j=0; x <=( width-step); x+=(step)) {
-        const src = prefixUrl+'\/'+x+','+y+','+step+','+step+'\/'+step+',/0/default.jpg';
+      for (let x = X, j = 0; x <= ( width-step); x+=(step)) {
+        const src = prefixUrl+'\/'+ x +','+ y +','+ step +','+ step + '\/'+ step + ',/0/default.jpg';
         const results = [];
         const lImg = await addImageProcess(src);
         fullResCvs.height = lImg.height;
@@ -1284,11 +1359,14 @@ async function extractRoi(choices) {
 
           // }
           console.log('done');
-          j=j+1;
+          j = j + 1;
+          c += 1;
           dx += step;
         });
+        $('#etap').html('');
+        $('#etap').append('<b>'+ ((c / totalPatches) * 100).toFixed(0) + ' % </b>');
       }
-      i=i+1;
+      i = i + 1;
       dy += step;
     }
     mem = sizeof(regions);
@@ -1297,12 +1375,13 @@ async function extractRoi(choices) {
     if (regions.length != 0) {
       document.getElementById('snackbar').className = '';
       $('#snackbar').html('');
-      $('#snackbar').html('<h3> Downloading ...</h3>');
+      $('#snackbar').html('<h3> Downloading ...</h3>' + '<span id = "etad"></span>');
       document.getElementById('snackbar').className = 'show';
 
-      for (let k =0; k< regions.length; k++) {
-        console.log('k'+k);
-        const src = prefixUrl+'\/'+regions[k].X+','+regions[k].Y+','+step+','+step+'\/'+step+',/0/default.jpg';
+      for (let k = 0; k < regions.length; k++) {
+        console.log('k' + k);
+        const src = prefixUrl + '\/'+regions[k].X + ',' + regions[k].Y + ',' + step +
+        ',' + step + '\/'+step + ',/0/default.jpg';
         const lImg = await addImageProcess(src);
         fullResCvs.height = lImg.height;
         fullResCvs.width = lImg.width;
@@ -1315,9 +1394,12 @@ async function extractRoi(choices) {
       zip.folder('images');
       var img = zip.folder('images');
 
-      for (var i = 0; i <regionData.length; i++) {
+      for (var i = 0; i < regionData.length; i++) {
         console.log(i);
-        img.file( regions[i].cls+ (regions[i].acc*100).toFixed(3) + '.png', regionData[i], {base64: true});
+        img.file( regions[i].cls + (regions[i].acc * 100).toFixed(3) + '.png', regionData[i], {base64: true});
+
+        $('#etad').html('');
+        $('#etad').append('<b>' + (((i / regionData.length)) * 100).toFixed(0) + ' % </b>');
       }
 
       await zip.generateAsync({type: 'blob'}).then(function(content) {
@@ -1330,24 +1412,38 @@ async function extractRoi(choices) {
     $('#detailsdata').html('');
     $('#detailsdata').append('<li><h3>Total number of patches extracted :'+ regionData.length +'</h3></li>' );
 
-    for (let k = 0; k< regions.length; k++) {
+    for (let k = 0; k < regions.length; k++) {
       var i = regions[k].cls;
       counts[i] = counts[i] ? counts[i] + 1 : 1;
     }
-    for (let j = 0; j<choices.classes.length; j++) {
+    for (let j = 0; j < choices.classes.length; j++) {
       if (choices.classes[j] in counts) {
-        $('#detailsdata').append('<li>Number of patches extracted  of class <b>'+
-          choices.classes[j]+ ' </b> : '+ counts[choices.classes[j]] +'</li>' );
+        $('#detailsdata').append('<li>Number of patches extracted  of class <b>' +
+          sanitize(choices.classes[j]) + ' </b> : ' + counts[choices.classes[j]] +'</li>' );
       } else {
-        $('#detailsdata').append('<li>Number of patches extracted  of class <b>'+
-         choices.classes[j]+ '</b> : 0  </li>' );
+        $('#detailsdata').append('<li>Number of patches extracted  of class <b>' +
+         sanitize(choices.classes[j]) + '</b> : 0  </li>' );
       }
     }
+    if (flag1 == 0 ) {
+      drawRectangle({checked: false});
+      flag = -1;
+    }
+    $UI.modelPanel.close();
     $UI.detailsModal.open();
   };
 }
 
+
+async function extractRoiSelect(choices) {
+  choices1 = choices;
+  console.log(choices);
+  flag = 0;
+  $UI.choiceModal.close();
+
+  drawRectangle({checked: true, state: 'roi', model: choices.model});
+}
 function updateTextInput(val) {
-  document.getElementById('textInput').value=val;
+  document.getElementById('textInput').value = val;
 }
 
