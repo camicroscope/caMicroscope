@@ -5,6 +5,8 @@ var mem;
 var mem1;
 var flag = -1;
 var choices1;
+var jsondata;
+var fileName = '';
 // INITIALIZE DB
 window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
 // id(autoinc), name, location(name+id), classes
@@ -400,6 +402,19 @@ function initCore() {
     }
   });
 
+  $CAMIC.store.getSlide($D.params.slideId).then((response) => {
+    if (response[0]) {
+      return response[0]['location'];
+    } else {
+      throw new Error('Slide not found');
+    }
+  }).then((location) => {
+    fileName = location.substring(
+        location.lastIndexOf('/') + 1,
+        location.length,
+    );
+    console.log(fileName);
+  });
 
   $CAMIC.viewer.addOnceHandler('open', function(e) {
     const viewer = $CAMIC.viewer;
@@ -1174,8 +1189,8 @@ async function selectChoices(name, classes) {
       $('#choicedata').append('<label class="check">' + classNames[i] + '<input type="checkbox" value= ' +
       classNames[i] + ' id = ' + classNames[i] + ' name = "choice" /><span class="checkmark"></span></label></br>');
     }
-    $('#choicedata').append(' <h4> Accuracy Level :</h4>'+
-  '<input type="range" min="1" max="100" value="80"  id = "accrange" onchange="updateTextInput(this.value)" />'+
+    $('#choicedata').append(' <h4> Accuracy Level :</h4>' +
+  '<input type="range" min="1" max="100" value="80"  id = "accrange" onchange="updateTextInput(this.value)" />' +
   ' <input type="text" id="textInput" value="80" /><br>');
 
     $('#choicedata').append(' <h4> Scaling Method :</h4> ' +
@@ -1183,6 +1198,10 @@ async function selectChoices(name, classes) {
   '<option value="norm" selected>Normalization</option>' +
   '<option value="center">Centering</option>' +
   '<option value="std">Standardization</option></select> <br>');
+
+    $('#choicedata').append('<br> <h4> Use backend for extracting :</h4>');
+    $('#choicedata').append('<label class="switch1"><input type="checkbox" id="backendOpt">' +
+      '<div class="slider1"></div></label>  <br>');
     $('#choicedata').append('<br><br><div id="ext1"><button id="submit1" class="extract">' +
       'Extract from entire slide</button></div><br>');
     $('#choicedata').append('<br><div id="ext2"><button id="submit2" class="extract">' +
@@ -1201,6 +1220,9 @@ async function selectChoices(name, classes) {
         choices.scale = document.getElementById('scale_method').value;
         choices.accuracy = document.getElementById('accrange').value;
         choices.model = name;
+        if ($('#backendOpt')[0].checked == true) {
+          choices.backend = true;
+        }
         console.log(choices);
         await extractRoi(choices);
       }
@@ -1211,13 +1233,16 @@ async function selectChoices(name, classes) {
       if (boxes.length == 0) {
         alert('Please select altleast one class.');
       } else {
-        var choices = {model: '', accuracy: '80', classes: [], scale: 'norm'};
+        var choices = {model: '', accuracy: '80', classes: [], scale: 'norm', backend: false};
         for (let i = 0; i<boxes.length; i++) {
           choices.classes.push(boxes[i].id);
         }
         choices.scale = document.getElementById('scale_method').value;
         choices.accuracy = document.getElementById('accrange').value;
         choices.model = name;
+        if ($('#backendOpt')[0].checked == true) {
+          choices.backend = true;
+        }
         console.log(choices);
         await extractRoiSelect(choices);
       }
@@ -1369,42 +1394,104 @@ async function extractRoi(choices, flag1) {
       i = i + 1;
       dy += step;
     }
+
+    var fixurl = '../../loader/roiExtract';
+    var downurl = '../../loader/roiextract';
     mem = sizeof(regions);
     model.dispose();
     console.log(regions);
     if (regions.length != 0) {
-      document.getElementById('snackbar').className = '';
-      $('#snackbar').html('');
-      $('#snackbar').html('<h3> Downloading ...</h3>' + '<span id = "etad"></span>');
-      document.getElementById('snackbar').className = 'show';
+      // Use backend for extracting the patches
+      if (choices.backend == true) {
+        var roiData = {predictions: '', slideid: '', filename: ''};
+        roiData.predictions = regions;
+        roiData.slideid = $D.params.slideId;
+        roiData.filename = fileName;
+        console.log(fileName);
+        jsondata = JSON.stringify(roiData);
+        console.log(jsondata);
 
-      for (let k = 0; k < regions.length; k++) {
-        console.log('k' + k);
-        const src = prefixUrl + '\/'+regions[k].X + ',' + regions[k].Y + ',' + step +
+        $.ajax({
+          type: 'POST',
+          url: fixurl,
+          data: jsondata,
+          dataType: 'json',
+          contentType: 'application/json',
+          success: function(e) {
+            //   document.getElementById('snackbar').className = '';
+            //   $('#snackbar').html('');
+            //  $('#snackbar').html('<h3> Downloading ...</h3>'+ '<span id = "etad"></span>');
+            // document.getElementById('snackbar').className = 'show';
+
+
+            console.log('download started');
+            fetch(downurl + '/roi_Download'+ fileName +'.zip', {
+              credenrials: 'same-origin',
+              method: 'GET',
+              cache: 'no-store',
+            }).then((response)=>{
+              if (response.status ==404) {
+                document.getElementById('snackbar').className = '';
+                throw response;
+              } else {
+                return response.blob();
+              }
+            }).then((blob)=>{
+              var url = window.URL.createObjectURL(blob);
+              var a = document.createElement('a');
+              a.href = url;
+              a.download = 'roi_download.zip';
+              document.body.appendChild(a);
+              a.click();
+              a.remove();
+              window.URL.revokeObjectURL(blob);
+            }).catch((error)=>{
+              console.log(error);
+            });
+
+            // document.getElementById('snackbar').className = '';
+          },
+
+
+          error: function(e) {
+            console.log(e);
+          },
+
+        });
+      } else {
+        document.getElementById('snackbar').className = '';
+        $('#snackbar').html('');
+        $('#snackbar').html('<h3> Downloading ...</h3>' + '<span id = "etad"></span>');
+        document.getElementById('snackbar').className = 'show';
+
+        for (let k = 0; k < regions.length; k++) {
+          console.log('k' + k);
+          const src = prefixUrl + '\/'+regions[k].X + ',' + regions[k].Y + ',' + step +
         ',' + step + '\/'+step + ',/0/default.jpg';
-        const lImg = await addImageProcess(src);
-        fullResCvs.height = lImg.height;
-        fullResCvs.width = lImg.width;
-        fullResCvs.getContext('2d').drawImage(lImg, 0, 0);
-        regionData.push(fullResCvs.toDataURL().replace(/^data:image\/(png|jpg);base64,/, ''));
+          const lImg = await addImageProcess(src);
+          fullResCvs.height = lImg.height;
+          fullResCvs.width = lImg.width;
+          fullResCvs.getContext('2d').drawImage(lImg, 0, 0);
+          regionData.push(fullResCvs.toDataURL().replace(/^data:image\/(png|jpg);base64,/, ''));
+        }
+        mem1 = sizeof(regionData);
+
+        var zip = new JSZip();
+
+
+        for (var i = 0; i < regionData.length; i++) {
+          console.log(i);
+          var img = zip.folder(regions[i].cls);
+          img.file( regions[i].cls + (regions[i].acc * 100).toFixed(3) + '.png', regionData[i], {base64: true});
+
+          $('#etad').html('');
+          $('#etad').append('<b>' + (((i / regionData.length)) * 100).toFixed(0) + ' % </b>');
+        }
+
+        await zip.generateAsync({type: 'blob'}).then(function(content) {
+          saveAs(content, 'download.zip');
+        });
       }
-      mem1 = sizeof(regionData);
-
-      var zip = new JSZip();
-      zip.folder('images');
-      var img = zip.folder('images');
-
-      for (var i = 0; i < regionData.length; i++) {
-        console.log(i);
-        img.file( regions[i].cls + (regions[i].acc * 100).toFixed(3) + '.png', regionData[i], {base64: true});
-
-        $('#etad').html('');
-        $('#etad').append('<b>' + (((i / regionData.length)) * 100).toFixed(0) + ' % </b>');
-      }
-
-      await zip.generateAsync({type: 'blob'}).then(function(content) {
-        saveAs(content, 'download.zip');
-      });
     }
     console.log('finished');
     document.getElementById('snackbar').className = '';
@@ -1443,6 +1530,8 @@ async function extractRoiSelect(choices) {
 
   drawRectangle({checked: true, state: 'roi', model: choices.model});
 }
+
+
 function updateTextInput(val) {
   document.getElementById('textInput').value = val;
 }
