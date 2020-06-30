@@ -1374,11 +1374,28 @@ async function extractRoi(choices, flag1) {
           const values =model.predict(batched).dataSync();
 
           results.push(values);
-          var maxIndex= results[0].reduce((a, b, i) => a[0] < b ? [b, i] : a, [Number.MIN_VALUE, -1]);
 
-          if (choices.classes.includes(classes[maxIndex[1]]) && ((maxIndex[0]*100)>choices.accuracy)) {
-            regions.push({state: 'true', acc: maxIndex[0], cls: classes[maxIndex[1]], X: x, Y: y});
+
+          var max = -1.0;
+          var ind = -1; ;
+
+          for (var i = 0; i < classes.length; i++) {
+            if (choices.classes.includes(classes[i]) && ((values[i]*100) > choices.accuracy)) {
+              if ( values[i] > max) {
+                ind = i;
+                max = values[i];
+              }
+            }
           }
+          if (ind != -1) {
+            regions.push({state: 'true', acc: values[ind], cls: classes[ind], X: x, Y: y});
+          }
+          // var maxIndex= results[0].reduce((a, b, i) => a[0] < b ? [b, i] : a, [Number.MIN_VALUE, -1]);
+          // console.log(maxIndex);
+          // for( var i = 0 ; i < )
+          // if (choices.classes.includes(classes[maxIndex[1]]) && ((maxIndex[0]*100)>choices.accuracy)) {
+          //   regions.push({state: 'true', acc: maxIndex[0], cls: classes[maxIndex[1]], X: x, Y: y});
+          // }
           //  else{
           //    regions.push({ state: 'false', acc: maxIndex[0], cls : classes[maxIndex[1]], X:x ,Y:y});
 
@@ -1403,10 +1420,11 @@ async function extractRoi(choices, flag1) {
     if (regions.length != 0) {
       // Use backend for extracting the patches
       if (choices.backend == true) {
-        var roiData = {predictions: '', slideid: '', filename: ''};
+        var roiData = {predictions: '', slideid: '', filename: '', patchsize: ''};
         roiData.predictions = regions;
         roiData.slideid = $D.params.slideId;
         roiData.filename = fileName;
+        roiData.patchsize = step;
         console.log(fileName);
         jsondata = JSON.stringify(roiData);
         console.log(jsondata);
