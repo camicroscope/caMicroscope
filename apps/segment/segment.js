@@ -1483,6 +1483,9 @@ function downloadCSV(data, filename) {
   link.click();
 }
 
+/**
+ * Select model for extracting patches
+ */
 
 async function selectModel() {
   var data = await tf.io.listModels();
@@ -1531,6 +1534,11 @@ async function selectModel() {
   })($UI.roiModal.open());
 }
 
+/**
+ * Selct choices for extracting patches and masks
+ *
+ * @param name : name of the model selected
+ */
 
 async function selectChoices(name) {
   $UI.roiModal.close();
@@ -1538,26 +1546,6 @@ async function selectChoices(name) {
     selectedmodelName = name.split('/').pop().split('_').splice(2).join('_').slice(0, -3);
     var i;
     $('#choicedata').html('');
-    //   $('#choicedata').append(' <h4> Maximum area of contour :</h4>'+
-    // '<input type="range" min="0" max="5000" value="4500"  id = "maxArea"
-    // onchange="updateTextInput(this.value, maxinput.id)" />'+
-    // ' <input type="text" id="maxinput" class= "textInput" value="4500" /><br>');
-    //    $('#choicedata').append(' <h4> Minimum area of contour :</h4>'+
-    // '<input type="range" min="0" max="5000" value="0"  id = "minArea"
-    // onchange="updateTextInput(this.value , mininput.id)" />'+
-    // ' <input type="text" id="mininput" class= "textInput" value="0" /><br>');
-    //     $('#choicedata').append(' <h4> Threshold :</h4>'+
-    // '<input type="range" min="0" max="100" value="80"  id = "threshold1"
-    // onchange="updateTextInput(this.value , thresinput.id)" />'+
-    // ' <input type="text" id="thresinput" class= "textInput" value="80" /><br>');
-    //         $('#choicedata').append(' <h4> Opacity :</h4>'+
-    // '<input type="range" min="0" max="100" value="60"  id = "opacity1"
-    // onchange="updateTextInput(this.value , opacinput.id)" />'+
-    // ' <input type="text" id="opacinput" class= "textInput" value="60" /><br>');
-    //                  $('#choicedata').append(' <h4> Minimum number of objects :</h4>'+
-    // '<input type="range" min="0" max="100" value="0"  id = "minobj"
-    // onchange="updateTextInput(this.value , objinput.id)" />'+
-    // ' <input type="text" id="objinput" class= "textInput" value="0" /><br>');
     $('#choicedata').append(' <h4> Download options  :</h4>');
     $('#choicedata').append('<input type= "radio"  name = "choice" checked="checked" id= "both">'+
     '  Download both patches and masks</input><br><br>' +
@@ -1577,8 +1565,6 @@ async function selectChoices(name) {
       var choices = {model: '', dow: '', scale: 'norm'};
 
       choices.dow = $('input[name="choice"]:checked').val();
-      // choices.minObj  = document.getElementById('minobj').value;
-      // choices.opacity = document.getElementById('opacity1').value;
       choices.model = name;
       choices.scale = document.getElementById('scale_method').value;
       console.log(choices);
@@ -1589,8 +1575,6 @@ async function selectChoices(name) {
       var choices = {model: '', dow: '', scale: 'norm'};
 
       choices.dow = $('input[name="choice"]:checked').val();
-      // choices.minObj  = document.getElementById('minobj').value;
-      // choices.opacity = document.getElementById('opacity1').value;
       choices.model = name;
       choices.scale = document.getElementById('scale_method').value;
       console.log(choices);
@@ -1601,6 +1585,13 @@ async function selectChoices(name) {
     callback;
   })($UI.choiceModal.open());
 }
+
+/**
+ * Extract and download masks and patches
+ *
+ * @param choices : set of choices to download against
+ * @param flag1 : Indicator for using whole slide or portion of slide selected
+ */
 
 
 async function extractRoi(choices, flag1) {
@@ -1644,8 +1635,6 @@ async function extractRoi(choices, flag1) {
 
     fullResCvs.height = step;
     fullResCvs.width = step;
-    // const finalRes = document.querySelector('#mask');
-    // finalRes.getContext('2d').clearRect(0, 0, totalSize, totalSize);
     const temp = document.querySelector('#dummy');
     temp.height = step;
     temp.width = step;
@@ -1727,25 +1716,15 @@ async function extractRoi(choices, flag1) {
         });
 
         regionData.push({value: val, X: x, Y: y});
-        // tf.engine().startScope();
-        // await tf.browser.toPixels(val, temp);
-        // finalRes.getContext('2d').drawImage(temp, dx, dy);
-        // tf.engine().endScope();
         dx += step;
 
         c += 1;
-        console.log(c);
         $('#etap').html('');
         $('#etap').append('<b>' + (((c / totalPatches)) * 100).toFixed(0) + ' %</b> ');
       }
       dy += step;
     }
 
-    // console.log(regionData);
-    // fitCvs(finalRes);
-    // finalRes.style.opacity = 0.6;
-    // self.__opacity.value = 0.6;
-    // self.__oplabel.innerHTML = '0.6';
     self.hideProgress();
     model.dispose();
     var regionMask = [];
@@ -1753,21 +1732,13 @@ async function extractRoi(choices, flag1) {
       const temp = document.querySelector('#dummy');
       temp.height = step;
       temp.width = step;
-      // const finalRes = document.querySelector('#mask');
-      // finalRes.getContext('2d').clearRect(0, 0, step, step);
-
-
       tf.engine().startScope();
       await tf.browser.toPixels(regionData[i].value, temp);
-      // finalRes.getContext('2d').drawImage(temp, regionData[i].X, regionData[i].Y);
-      // fitCvs(finalRes);
       tf.engine().endScope();
       regionMask.push(temp.toDataURL().replace(/^data:image\/(png|jpg);base64,/, ''));
-
-      console.log(i);
     }
 
-    var zip = new JSZip();
+    var zip = new JSZip(); // zip file to download patches
     zip.folder('masks');
     var img = zip.folder('masks');
     document.getElementById('snackbar').className = '';
@@ -1775,7 +1746,6 @@ async function extractRoi(choices, flag1) {
     $('#snackbar').html('<h3> Downloading  Masks...</h3>' + '<span id = "etadm"></span>');
     document.getElementById('snackbar').className = 'show';
     for (var i = 0; i < regionMask.length; i++) {
-      console.log(i);
       img.file( i+ 'Mask' + '.png', regionMask[i], {base64: true});
 
       $('#etadm').html('');
@@ -1809,8 +1779,6 @@ async function extractRoi(choices, flag1) {
           c = c + 1;
           dx += step; $('#etadp').html('');
           $('#etadp').append('<b>' + (((c / regionMask.length)) * 100).toFixed(0) + ' % </b>');
-
-          console.log(c);
         }
         dy += step;
       }
@@ -1836,6 +1804,11 @@ async function extractRoi(choices, flag1) {
   };
 }
 
+/**
+ * Extract and download masks from selected region
+ *
+ * @param choices : set of choices to download against
+ */
 
 async function extractRoiSelect(choices) {
   choices1 = choices;
@@ -1844,10 +1817,5 @@ async function extractRoiSelect(choices) {
   $UI.choiceModal.close();
 
   drawRectangle({checked: true, state: 'roi', model: choices.model});
-}
-
-
-function updateTextInput(val, id) {
-  document.getElementById(id).value = val;
 }
 

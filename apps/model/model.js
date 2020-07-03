@@ -2,7 +2,6 @@ const PDR = OpenSeadragon.pixelDensityRatio;
 const IDB_URL = 'indexeddb://';
 var csvContent;
 var mem;
-var mem1;
 var flag = -1;
 var choices1;
 var jsondata;
@@ -53,6 +52,11 @@ const $D = {
 // const lineWidth = 2;
 // const timeOutMs = 10;
 
+/**
+ * Sanitize the input
+ *
+ * @param string
+ */
 
 function sanitize(string) {
   string = string || '';
@@ -498,7 +502,6 @@ function camicStopDraw(e) {
   console.log(e);
   const viewer = $CAMIC.viewer;
   const canvasDraw = viewer.canvasDrawInstance;
-  console.log(flag);
   const imgColl = canvasDraw.getImageFeatureCollection();
   if (imgColl.features.length > 0) {
     // Check size first
@@ -867,6 +870,12 @@ function uploadModel() {
   });
 }
 
+/**
+ * Delete a model from the store
+ *
+ * @param name : Model name
+ */
+
 async function deleteModel(name) {
   deletedmodelName = name.split('/').pop().split('_').splice(2).join('_').slice(0, -3);
   if (confirm('Are you sure you want to delete ' + deletedmodelName + ' model?')) {
@@ -1123,6 +1132,10 @@ function downloadCSV(filename) {
   }
 }
 
+/**
+ * Select model for extracting patches
+ */
+
 async function selectModel() {
   var data = await tf.io.listModels();
   var table = document.querySelector('#roidata');
@@ -1172,6 +1185,13 @@ async function selectModel() {
     callback;
   })($UI.roiModal.open());
 }
+
+/**
+ * Selct choices for extracting patches
+ *
+ * @param name : name of the model selected
+ * @param classes : classes of the model selected
+ */
 
 async function selectChoices(name, classes) {
   $UI.roiModal.close();
@@ -1252,6 +1272,13 @@ async function selectChoices(name, classes) {
     callback;
   })($UI.choiceModal.open());
 }
+
+/**
+ * Extract and download Region of Interest
+ *
+ * @param choices : set of choices to download against
+ * @param flag1 :   indicator for using whole slide or portion of slide selected
+ */
 
 async function extractRoi(choices, flag1) {
   $UI.choiceModal.close();
@@ -1390,17 +1417,6 @@ async function extractRoi(choices, flag1) {
           if (ind != -1) {
             regions.push({state: 'true', acc: values[ind], cls: classes[ind], X: x, Y: y});
           }
-          // var maxIndex= results[0].reduce((a, b, i) => a[0] < b ? [b, i] : a, [Number.MIN_VALUE, -1]);
-          // console.log(maxIndex);
-          // for( var i = 0 ; i < )
-          // if (choices.classes.includes(classes[maxIndex[1]]) && ((maxIndex[0]*100)>choices.accuracy)) {
-          //   regions.push({state: 'true', acc: maxIndex[0], cls: classes[maxIndex[1]], X: x, Y: y});
-          // }
-          //  else{
-          //    regions.push({ state: 'false', acc: maxIndex[0], cls : classes[maxIndex[1]], X:x ,Y:y});
-
-          // }
-          console.log('done');
           j = j + 1;
           c += 1;
           dx += step;
@@ -1412,41 +1428,38 @@ async function extractRoi(choices, flag1) {
       dy += step;
     }
 
-    var fixurl = '../../loader/roiExtract';
-    var downurl = '../../loader/roiextract';
+    var fixurl = '../../loader/roiExtract'; // route to extract the patches
+    var downurl = '../../loader/roiextract'; // route to download the extracted patches
     mem = sizeof(regions);
     model.dispose();
-    console.log(regions);
     if (regions.length != 0) {
       // Use backend for extracting the patches
+
       if (choices.backend == true) {
         var roiData = {predictions: '', slideid: '', filename: '', patchsize: ''};
         roiData.predictions = regions;
         roiData.slideid = $D.params.slideId;
         roiData.filename = fileName;
         roiData.patchsize = step;
-        console.log(fileName);
         jsondata = JSON.stringify(roiData);
-        console.log(jsondata);
 
+        // send predictions to slideloader for extraction
         $.ajax({
           type: 'POST',
           url: fixurl,
           data: jsondata,
           dataType: 'json',
           contentType: 'application/json',
-          success: function(e) {
-            //   document.getElementById('snackbar').className = '';
-            //   $('#snackbar').html('');
-            //  $('#snackbar').html('<h3> Downloading ...</h3>'+ '<span id = "etad"></span>');
-            // document.getElementById('snackbar').className = 'show';
-
-
+          success: function(e) { // get the extracted patches
+            document.getElementById('snackbar').className = '';
+            $('#snackbar').html('');
+            $('#snackbar').html('<h3> Downloading ...</h3>'+ '<span id = "etad"></span>');
+            document.getElementById('snackbar').className = 'show';
             console.log('download started');
             fetch(downurl + '/roi_Download'+ fileName +'.zip', {
               credenrials: 'same-origin',
               method: 'GET',
-              cache: 'no-store',
+              cache: 'no-store', // required to file is not cached
             }).then((response)=>{
               if (response.status ==404) {
                 document.getElementById('snackbar').className = '';
@@ -1456,7 +1469,7 @@ async function extractRoi(choices, flag1) {
               }
             }).then((blob)=>{
               var url = window.URL.createObjectURL(blob);
-              var a = document.createElement('a');
+              var a = document.createElement('a'); // dummy link to download the zip file
               a.href = url;
               a.download = 'roi_download.zip';
               document.body.appendChild(a);
@@ -1467,7 +1480,7 @@ async function extractRoi(choices, flag1) {
               console.log(error);
             });
 
-            // document.getElementById('snackbar').className = '';
+            document.getElementById('snackbar').className = '';
           },
 
 
@@ -1483,7 +1496,6 @@ async function extractRoi(choices, flag1) {
         document.getElementById('snackbar').className = 'show';
 
         for (let k = 0; k < regions.length; k++) {
-          console.log('k' + k);
           const src = prefixUrl + '\/'+regions[k].X + ',' + regions[k].Y + ',' + step +
         ',' + step + '\/'+step + ',/0/default.jpg';
           const lImg = await addImageProcess(src);
@@ -1492,13 +1504,11 @@ async function extractRoi(choices, flag1) {
           fullResCvs.getContext('2d').drawImage(lImg, 0, 0);
           regionData.push(fullResCvs.toDataURL().replace(/^data:image\/(png|jpg);base64,/, ''));
         }
-        mem1 = sizeof(regionData);
 
-        var zip = new JSZip();
+        var zip = new JSZip(); // zip file to download the patches
 
 
         for (var i = 0; i < regionData.length; i++) {
-          console.log(i);
           var img = zip.folder(regions[i].cls);
           img.file( regions[i].cls + (regions[i].acc * 100).toFixed(3) + '.png', regionData[i], {base64: true});
 
@@ -1539,16 +1549,24 @@ async function extractRoi(choices, flag1) {
   };
 }
 
+/**
+ * Extract and download Region of Interest from selected region
+ *
+ * @param choices : set of choices to download against
+ */
 
 async function extractRoiSelect(choices) {
   choices1 = choices;
-  console.log(choices);
   flag = 0;
   $UI.choiceModal.close();
-
   drawRectangle({checked: true, state: 'roi', model: choices.model});
 }
 
+/**
+ * update the accuracy level in the choices Modal
+ *
+ * @param val : updated value
+ */
 
 function updateTextInput(val) {
   document.getElementById('textInput').value = val;
