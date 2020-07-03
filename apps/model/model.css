@@ -511,3 +511,63 @@ body{
   from {bottom: 30px; opacity: 1;}
   to {bottom: 0; opacity: 0;}
 }
+
+.switch1 {
+    position: relative;
+    display: inline-block;
+    width: 100px;
+    height: 26px;
+    border: 1px solid black;
+}
+
+.switch1 input {display:none;}
+
+.slider1 {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+.slider1:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: #365F9C;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+input:focus + .slider1 {
+    box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider1:before {
+    -webkit-transform: translateX(68px);
+    -ms-transform: translateX(26px);
+    transform: translateX(68px);
+}
+
+.slider1:after
+{
+    content:'NO';
+    position: absolute;
+    transform: translate(-50%,-50%);
+    top: 50%;
+    left: 54%;
+    font-size: 10px;
+    font-family: Verdana, sans-serif;
+}
+
+input:checked + .slider1:after
+{
+    content:'YES';
+    left: 35%;
+}

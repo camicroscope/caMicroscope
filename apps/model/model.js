@@ -2,9 +2,10 @@ const PDR = OpenSeadragon.pixelDensityRatio;
 const IDB_URL = 'indexeddb://';
 var csvContent;
 var mem;
-var mem1;
 var flag = -1;
 var choices1;
+var jsondata;
+var fileName = '';
 // INITIALIZE DB
 window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
 // id(autoinc), name, location(name+id), classes
@@ -51,6 +52,11 @@ const $D = {
 // const lineWidth = 2;
 // const timeOutMs = 10;
 
+/**
+ * Sanitize the input
+ *
+ * @param string
+ */
 
 function sanitize(string) {
   string = string || '';
@@ -400,6 +406,19 @@ function initCore() {
     }
   });
 
+  $CAMIC.store.getSlide($D.params.slideId).then((response) => {
+    if (response[0]) {
+      return response[0]['location'];
+    } else {
+      throw new Error('Slide not found');
+    }
+  }).then((location) => {
+    fileName = location.substring(
+        location.lastIndexOf('/') + 1,
+        location.length,
+    );
+    console.log(fileName);
+  });
 
   $CAMIC.viewer.addOnceHandler('open', function(e) {
     const viewer = $CAMIC.viewer;
@@ -483,7 +502,6 @@ function camicStopDraw(e) {
   console.log(e);
   const viewer = $CAMIC.viewer;
   const canvasDraw = viewer.canvasDrawInstance;
-  console.log(flag);
   const imgColl = canvasDraw.getImageFeatureCollection();
   if (imgColl.features.length > 0) {
     // Check size first
@@ -852,6 +870,12 @@ function uploadModel() {
   });
 }
 
+/**
+ * Delete a model from the store
+ *
+ * @param name : Model name
+ */
+
 async function deleteModel(name) {
   deletedmodelName = name.split('/').pop().split('_').splice(2).join('_').slice(0, -3);
   if (confirm('Are you sure you want to delete ' + deletedmodelName + ' model?')) {
@@ -1108,6 +1132,10 @@ function downloadCSV(filename) {
   }
 }
 
+/**
+ * Select model for extracting patches
+ */
+
 async function selectModel() {
   var data = await tf.io.listModels();
   var table = document.querySelector('#roidata');
@@ -1158,6 +1186,13 @@ async function selectModel() {
   })($UI.roiModal.open());
 }
 
+/**
+ * Selct choices for extracting patches
+ *
+ * @param name : name of the model selected
+ * @param classes : classes of the model selected
+ */
+
 async function selectChoices(name, classes) {
   $UI.roiModal.close();
   (function(callback) {
@@ -1174,8 +1209,8 @@ async function selectChoices(name, classes) {
       $('#choicedata').append('<label class="check">' + classNames[i] + '<input type="checkbox" value= ' +
       classNames[i] + ' id = ' + classNames[i] + ' name = "choice" /><span class="checkmark"></span></label></br>');
     }
-    $('#choicedata').append(' <h4> Accuracy Level :</h4>'+
-  '<input type="range" min="1" max="100" value="80"  id = "accrange" onchange="updateTextInput(this.value)" />'+
+    $('#choicedata').append(' <h4> Accuracy Level :</h4>' +
+  '<input type="range" min="1" max="100" value="80"  id = "accrange" onchange="updateTextInput(this.value)" />' +
   ' <input type="text" id="textInput" value="80" /><br>');
 
     $('#choicedata').append(' <h4> Scaling Method :</h4> ' +
@@ -1183,6 +1218,10 @@ async function selectChoices(name, classes) {
   '<option value="norm" selected>Normalization</option>' +
   '<option value="center">Centering</option>' +
   '<option value="std">Standardization</option></select> <br>');
+
+    $('#choicedata').append('<br> <h4> Use backend for extracting :</h4>');
+    $('#choicedata').append('<label class="switch1"><input type="checkbox" id="backendOpt">' +
+      '<div class="slider1"></div></label>  <br>');
     $('#choicedata').append('<br><br><div id="ext1"><button id="submit1" class="extract">' +
       'Extract from entire slide</button></div><br>');
     $('#choicedata').append('<br><div id="ext2"><button id="submit2" class="extract">' +
@@ -1201,6 +1240,9 @@ async function selectChoices(name, classes) {
         choices.scale = document.getElementById('scale_method').value;
         choices.accuracy = document.getElementById('accrange').value;
         choices.model = name;
+        if ($('#backendOpt')[0].checked == true) {
+          choices.backend = true;
+        }
         console.log(choices);
         await extractRoi(choices);
       }
@@ -1211,13 +1253,16 @@ async function selectChoices(name, classes) {
       if (boxes.length == 0) {
         alert('Please select altleast one class.');
       } else {
-        var choices = {model: '', accuracy: '80', classes: [], scale: 'norm'};
+        var choices = {model: '', accuracy: '80', classes: [], scale: 'norm', backend: false};
         for (let i = 0; i<boxes.length; i++) {
           choices.classes.push(boxes[i].id);
         }
         choices.scale = document.getElementById('scale_method').value;
         choices.accuracy = document.getElementById('accrange').value;
         choices.model = name;
+        if ($('#backendOpt')[0].checked == true) {
+          choices.backend = true;
+        }
         console.log(choices);
         await extractRoiSelect(choices);
       }
@@ -1227,6 +1272,13 @@ async function selectChoices(name, classes) {
     callback;
   })($UI.choiceModal.open());
 }
+
+/**
+ * Extract and download Region of Interest
+ *
+ * @param choices : set of choices to download against
+ * @param flag1 :   indicator for using whole slide or portion of slide selected
+ */
 
 async function extractRoi(choices, flag1) {
   $UI.choiceModal.close();
@@ -1349,16 +1401,22 @@ async function extractRoi(choices, flag1) {
           const values =model.predict(batched).dataSync();
 
           results.push(values);
-          var maxIndex= results[0].reduce((a, b, i) => a[0] < b ? [b, i] : a, [Number.MIN_VALUE, -1]);
 
-          if (choices.classes.includes(classes[maxIndex[1]]) && ((maxIndex[0]*100)>choices.accuracy)) {
-            regions.push({state: 'true', acc: maxIndex[0], cls: classes[maxIndex[1]], X: x, Y: y});
+
+          var max = -1.0;
+          var ind = -1; ;
+
+          for (var i = 0; i < classes.length; i++) {
+            if (choices.classes.includes(classes[i]) && ((values[i]*100) > choices.accuracy)) {
+              if ( values[i] > max) {
+                ind = i;
+                max = values[i];
+              }
+            }
           }
-          //  else{
-          //    regions.push({ state: 'false', acc: maxIndex[0], cls : classes[maxIndex[1]], X:x ,Y:y});
-
-          // }
-          console.log('done');
+          if (ind != -1) {
+            regions.push({state: 'true', acc: values[ind], cls: classes[ind], X: x, Y: y});
+          }
           j = j + 1;
           c += 1;
           dx += step;
@@ -1369,42 +1427,99 @@ async function extractRoi(choices, flag1) {
       i = i + 1;
       dy += step;
     }
+
+    var fixurl = '../../loader/roiExtract'; // route to extract the patches
+    var downurl = '../../loader/roiextract'; // route to download the extracted patches
     mem = sizeof(regions);
     model.dispose();
-    console.log(regions);
     if (regions.length != 0) {
-      document.getElementById('snackbar').className = '';
-      $('#snackbar').html('');
-      $('#snackbar').html('<h3> Downloading ...</h3>' + '<span id = "etad"></span>');
-      document.getElementById('snackbar').className = 'show';
+      // Use backend for extracting the patches
 
-      for (let k = 0; k < regions.length; k++) {
-        console.log('k' + k);
-        const src = prefixUrl + '\/'+regions[k].X + ',' + regions[k].Y + ',' + step +
+      if (choices.backend == true) {
+        var roiData = {predictions: '', slideid: '', filename: '', patchsize: ''};
+        roiData.predictions = regions;
+        roiData.slideid = $D.params.slideId;
+        roiData.filename = fileName;
+        roiData.patchsize = step;
+        jsondata = JSON.stringify(roiData);
+
+        // send predictions to slideloader for extraction
+        $.ajax({
+          type: 'POST',
+          url: fixurl,
+          data: jsondata,
+          dataType: 'json',
+          contentType: 'application/json',
+          success: function(e) { // get the extracted patches
+            document.getElementById('snackbar').className = '';
+            $('#snackbar').html('');
+            $('#snackbar').html('<h3> Downloading ...</h3>'+ '<span id = "etad"></span>');
+            document.getElementById('snackbar').className = 'show';
+            console.log('download started');
+            fetch(downurl + '/roi_Download'+ fileName +'.zip', {
+              credenrials: 'same-origin',
+              method: 'GET',
+              cache: 'no-store', // required to file is not cached
+            }).then((response)=>{
+              if (response.status ==404) {
+                document.getElementById('snackbar').className = '';
+                throw response;
+              } else {
+                return response.blob();
+              }
+            }).then((blob)=>{
+              var url = window.URL.createObjectURL(blob);
+              var a = document.createElement('a'); // dummy link to download the zip file
+              a.href = url;
+              a.download = 'roi_download.zip';
+              document.body.appendChild(a);
+              a.click();
+              a.remove();
+              window.URL.revokeObjectURL(blob);
+            }).catch((error)=>{
+              console.log(error);
+            });
+
+            document.getElementById('snackbar').className = '';
+          },
+
+
+          error: function(e) {
+            console.log(e);
+          },
+
+        });
+      } else {
+        document.getElementById('snackbar').className = '';
+        $('#snackbar').html('');
+        $('#snackbar').html('<h3> Downloading ...</h3>' + '<span id = "etad"></span>');
+        document.getElementById('snackbar').className = 'show';
+
+        for (let k = 0; k < regions.length; k++) {
+          const src = prefixUrl + '\/'+regions[k].X + ',' + regions[k].Y + ',' + step +
         ',' + step + '\/'+step + ',/0/default.jpg';
-        const lImg = await addImageProcess(src);
-        fullResCvs.height = lImg.height;
-        fullResCvs.width = lImg.width;
-        fullResCvs.getContext('2d').drawImage(lImg, 0, 0);
-        regionData.push(fullResCvs.toDataURL().replace(/^data:image\/(png|jpg);base64,/, ''));
+          const lImg = await addImageProcess(src);
+          fullResCvs.height = lImg.height;
+          fullResCvs.width = lImg.width;
+          fullResCvs.getContext('2d').drawImage(lImg, 0, 0);
+          regionData.push(fullResCvs.toDataURL().replace(/^data:image\/(png|jpg);base64,/, ''));
+        }
+
+        var zip = new JSZip(); // zip file to download the patches
+
+
+        for (var i = 0; i < regionData.length; i++) {
+          var img = zip.folder(regions[i].cls);
+          img.file( regions[i].cls + (regions[i].acc * 100).toFixed(3) + '.png', regionData[i], {base64: true});
+
+          $('#etad').html('');
+          $('#etad').append('<b>' + (((i / regionData.length)) * 100).toFixed(0) + ' % </b>');
+        }
+
+        await zip.generateAsync({type: 'blob'}).then(function(content) {
+          saveAs(content, 'download.zip');
+        });
       }
-      mem1 = sizeof(regionData);
-
-      var zip = new JSZip();
-      zip.folder('images');
-      var img = zip.folder('images');
-
-      for (var i = 0; i < regionData.length; i++) {
-        console.log(i);
-        img.file( regions[i].cls + (regions[i].acc * 100).toFixed(3) + '.png', regionData[i], {base64: true});
-
-        $('#etad').html('');
-        $('#etad').append('<b>' + (((i / regionData.length)) * 100).toFixed(0) + ' % </b>');
-      }
-
-      await zip.generateAsync({type: 'blob'}).then(function(content) {
-        saveAs(content, 'download.zip');
-      });
     }
     console.log('finished');
     document.getElementById('snackbar').className = '';
@@ -1434,15 +1549,25 @@ async function extractRoi(choices, flag1) {
   };
 }
 
+/**
+ * Extract and download Region of Interest from selected region
+ *
+ * @param choices : set of choices to download against
+ */
 
 async function extractRoiSelect(choices) {
   choices1 = choices;
-  console.log(choices);
   flag = 0;
   $UI.choiceModal.close();
-
   drawRectangle({checked: true, state: 'roi', model: choices.model});
 }
+
+/**
+ * update the accuracy level in the choices Modal
+ *
+ * @param val : updated value
+ */
+
 function updateTextInput(val) {
   document.getElementById('textInput').value = val;
 }
