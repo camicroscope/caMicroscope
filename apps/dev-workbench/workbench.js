@@ -220,7 +220,9 @@ function getSprite(data, userFolder, custom) {
       $('#selectResolution').hide(200);
       $('#labelsDatasetZip').show(200);
       $('#labelSelectModalTitle').text('Dataset created successfully');
-      window.open('../../loader' + done.download);
+      $('#datasetDownloadButton').click(function() {
+        window.open('../../loader' + done.download);
+      });
       cleanBackend(userFolder);
     },
     error: function(e) {
@@ -281,7 +283,7 @@ function sendToLoader(files, names, custom = false) {
           reader.readAsDataURL(file);
           reader.onload = function() {
             let result = reader.result;
-            result = result.substr(28, result.length - 28);
+            result = result.substring(result.indexOf(',') + 1, result.length);
             data.files.push(result);
             resolve('done');
           };
@@ -323,7 +325,7 @@ function sendToLoader(files, names, custom = false) {
 
 async function customDataToLoader(file, name, chunkSize = 1024 * 1024 * 10) {
   // console.log(file.size);
-  offset = 0;
+  let offset = 0;
   function makeUserFolderName(length) {
     var result = '';
     var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -342,13 +344,13 @@ async function customDataToLoader(file, name, chunkSize = 1024 * 1024 * 10) {
       final = 'true';
     }
     let splitFile = file.slice(offset, end);
-    await sendSplitFile(splitFile, name, offset, final, userFolder);
+    let data = {fileName: name, offset: offset, final: final, userFolder: userFolder};
+    await sendSplitFile(splitFile, data);
     offset += chunkSize;
   }
 }
 
-function sendSplitFile(file, name, offset, final, userFolder) {
-  let data = {fileName: name, offset: offset, final: final, userFolder: userFolder};
+function sendSplitFile(file, data) {
   return new Promise((resolve, reject) => {
     let reader = new FileReader();
     reader.readAsDataURL(file);
@@ -356,8 +358,6 @@ function sendSplitFile(file, name, offset, final, userFolder) {
       let result = reader.result;
       result = result.substring(result.indexOf(',') + 1, result.length);
       data.file = result;
-      // console.log(result);
-      // resolve('done');
       let url = '../../loader/workbench/getCustomData';
       $.ajax({
         type: 'POST',
@@ -366,15 +366,14 @@ function sendSplitFile(file, name, offset, final, userFolder) {
         contentType: 'application/json',
         data: JSON.stringify(data),
         timeout: 600000,
-        success: function(data) {
+        success: function(recData) {
           resolve();
-          // console.log(data);
-          if (final == 'true') {
-            console.log(data);
+          if (data.final == 'true') {
+            console.log(recData);
             $('#labelsSubmitButton').prop('disabled', false);
             $('#labelsSubmitText').show(200);
             $('#labelsSubmitLoading').hide(200);
-            displayLabels(data, [name], true);
+            displayLabels(recData, [data.fileName], true);
           }
         },
         error: function(e) {
