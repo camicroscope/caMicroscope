@@ -268,12 +268,16 @@ function sanitize(string) {
 }
 
 function sendToLoader(files, names, custom = false) {
+  if (custom) {
+    customDataToLoader(files[0], names[0]);
+    return;
+  }
   let Promises = [];
   let data = {files: [], fileNames: names};
   function getBase64(file) {
     Promises.push(
         new Promise((resolve, reject) => {
-          var reader = new FileReader();
+          let reader = new FileReader();
           reader.readAsDataURL(file);
           reader.onload = function() {
             let result = reader.result;
@@ -291,9 +295,6 @@ function sendToLoader(files, names, custom = false) {
   Promise.all(Promises).then(() => {
     console.log(data);
     let url = '../../loader/workbench/getLabelsZips';
-    if (custom) {
-      url = '../../loader/workbench/getCustomData';
-    }
     $.ajax({
       type: 'POST',
       url: url,
@@ -316,5 +317,78 @@ function sendToLoader(files, names, custom = false) {
         $('#labelsSubmitLoading').hide(200);
       },
     });
+  });
+}
+
+
+async function customDataToLoader(file, name, chunkSize = 1024 * 1024 * 10) {
+  // console.log(file.size);
+  offset = 0;
+  function makeUserFolderName(length) {
+    var result = '';
+    var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    var charactersLength = characters.length;
+    for ( var i = 0; i < length; i++ ) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
+  }
+  let userFolder = makeUserFolderName(20);
+  for (i = 0; i < file.size; i += chunkSize) {
+    let end = offset + chunkSize;
+    let final = 'false';
+    if (end >= file.size) {
+      end = file.size;
+      final = 'true';
+    }
+    let splitFile = file.slice(offset, end);
+    await sendSplitFile(splitFile, name, offset, final, userFolder);
+    offset += chunkSize;
+  }
+}
+
+function sendSplitFile(file, name, offset, final, userFolder) {
+  let data = {fileName: name, offset: offset, final: final, userFolder: userFolder};
+  return new Promise((resolve, reject) => {
+    let reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = function() {
+      let result = reader.result;
+      result = result.substring(result.indexOf(',') + 1, result.length);
+      data.file = result;
+      // console.log(result);
+      // resolve('done');
+      let url = '../../loader/workbench/getCustomData';
+      $.ajax({
+        type: 'POST',
+        url: url,
+        dataType: 'json',
+        contentType: 'application/json',
+        data: JSON.stringify(data),
+        timeout: 600000,
+        success: function(data) {
+          resolve();
+          // console.log(data);
+          if (final == 'true') {
+            console.log(data);
+            $('#labelsSubmitButton').prop('disabled', false);
+            $('#labelsSubmitText').show(200);
+            $('#labelsSubmitLoading').hide(200);
+            displayLabels(data, [name], true);
+          }
+        },
+        error: function(e) {
+          resolve();
+          console.log('ERROR : ', e['responseJSON']['error']);
+          alert(e['responseJSON']['error']);
+          $('#labelsSubmitButton').prop('disabled', false);
+          $('#labelsSubmitText').show(200);
+          $('#labelsSubmitLoading').hide(200);
+        },
+      });
+    };
+    reader.onerror = function(error) {
+      console.log('Error: ', error);
+    };
   });
 }
