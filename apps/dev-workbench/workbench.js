@@ -10,6 +10,7 @@ $('#goBack').click(function() {
 });
 
 function dataSelect() {
+  $('.navbar-brand').text(' Workbench - Step 1');
   $('#stepper').hide(300);
   $('#headContent').hide(300);
   $('#headContent').text('Select or create your own dataset');
@@ -53,7 +54,10 @@ function checkDataset(evt) {
         })
         .catch(function(e) {
           console.log(e);
-          alert('Please select a valid zip file');
+          // alert('Please select a valid zip file');
+          $('#toastAlert').removeClass('alert-success alert-danger alert-info');
+          $('#toastContent').text('Please Select a valid zip file');
+          $('#toastAlert').addClass('alert-danger show');
         });
   });
 }
@@ -63,7 +67,8 @@ $('#spriteInput').change(function(evt) {
     if (val) {
       $('#cards').hide(150);
       $('#stepper').show(200);
-      $('#headContent').html('Welcome to <b>Development Workbench</b>');
+      $('#headContent').text('Dataset selected successfully');
+      $('#headSub').text('You can proceed to step 2');
       $('#headContent').show(400);
       $('#headSub').show(400);
       $('.firstStepHead').attr('class', 'firstStepHead done');
@@ -71,10 +76,17 @@ $('#spriteInput').change(function(evt) {
       $('.secondStepHead').attr('class', 'secondStepHead active');
       $('#firstStepButton').hide();
       $('#secondStepButton').show();
+      $('.navbar-brand').text(' Workbench');
+      $('#step1Link').click(function() {
+        dataSelect();
+      });
       let zipFile = evt.target.files[0];
       localforage.setItem('zipFile', zipFile);
     } else {
-      alert('Invalid zip file!!');
+      $('#toastAlert').removeClass('alert-success alert-danger alert-info');
+      $('#toastContent').html('<b>Invalid zip file !!!</b> Please Select a valid zip file');
+      $('#toastAlert').addClass('alert-danger show');
+      // alert('Invalid zip file!!');
     }
   });
 });
@@ -227,7 +239,10 @@ function getSprite(data, userFolder, custom) {
     },
     error: function(e) {
       console.log('ERROR : ', e['responseJSON']['error']);
-      alert(e['responseJSON']['error']);
+      // alert(e['responseJSON']['error']);
+      $('#toastAlert').removeClass('alert-success alert-danger alert-info');
+      $('#toastContent').text(e['responseJSON']['error']);
+      $('#toastAlert').addClass('alert-danger show');
       $('#labelsSubmitLoading').hide(200);
       $('#labelsSubmitText').show(200);
     },
@@ -313,7 +328,10 @@ function sendToLoader(files, names, custom = false) {
       },
       error: function(e) {
         console.log('ERROR : ', e['responseJSON']['error']);
-        alert(e['responseJSON']['error']);
+        // alert(e['responseJSON']['error']);
+        $('#toastAlert').removeClass('alert-success alert-danger alert-info');
+        $('#toastContent').text(e['responseJSON']['error']);
+        $('#toastAlert').addClass('alert-danger show');
         $('#labelsSubmitButton').prop('disabled', false);
         $('#labelsSubmitText').show(200);
         $('#labelsSubmitLoading').hide(200);
@@ -379,7 +397,10 @@ function sendSplitFile(file, data) {
         error: function(e) {
           resolve();
           console.log('ERROR : ', e['responseJSON']['error']);
-          alert(e['responseJSON']['error']);
+          // alert(e['responseJSON']['error']);
+          $('#toastAlert').removeClass('alert-success alert-danger alert-info');
+          $('#toastContent').text(e['responseJSON']['error']);
+          $('#toastAlert').addClass('alert-danger show');
           $('#labelsSubmitButton').prop('disabled', false);
           $('#labelsSubmitText').show(200);
           $('#labelsSubmitLoading').hide(200);

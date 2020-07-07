@@ -84,7 +84,9 @@ async function run(Layers, Params) {
         tfvis.show.modelSummary({name: 'Model Architecture'}, model);
         await train(model, data, Params);
         alert('Training is done');
+        await model.save('indexeddb://my-model');
         await model.save('downloads://my-model');
+        console.log(savedModel);
       } catch (error) {
         alert(error);
         console.log(error);
