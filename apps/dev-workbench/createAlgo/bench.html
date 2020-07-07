@@ -72,7 +72,9 @@
       </div>
       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
       <!-- Navbar brand -->
-      <span class="navbar-brand" style="color: white;"> Workbench - Step 2 </span>
+      <span class="navbar-brand" style="color: white;">
+        Workbench - Step 2
+      </span>
       <ul class="navbar-nav mr-auto">
         <!-- Dropdown -->
         <li
@@ -257,8 +259,11 @@
                 value="8"
               />
             </div>
-                
-                <div class="custom-control custom-switch" title="Check or RGB else grayscale" >
+
+            <div
+              class="custom-control custom-switch"
+              title="Check or RGB else grayscale"
+            >
               <input
                 type="checkbox"
                 class="custom-control-input"
@@ -755,6 +760,70 @@
       >
         Train Model
       </button>
+    </div>
+
+    <!-- Modal -->
+    <div
+      class="modal fade"
+      id="trainedMessage"
+      tabindex="-1"
+      role="dialog"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="trainedMessageHeading">
+              Model Training complete
+            </h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            Download model json and binaries from here which might be used in
+            the caMicroscope prediction tool. <br />
+            After download you can proceed to the next step of testing the
+            model. Or if you want to customize/train model again then close
+            this. <br />
+            <button
+              id="modelDownloadButton"
+              type="button"
+              class="btn btn-info"
+              style="
+                padding: 0.6em;
+                font-size: 1em;
+                border-radius: 5px;
+                margin-top: 1em;
+              "
+            >
+              Download &nbsp;<i data-feather="download" class="text-white"></i>
+            </button>
+          </div>
+          <div class="modal-footer">
+            <button
+              class="btn btn-secondary"
+              style="padding: 0.6em; font-size: 1em; border-radius: 5px;"
+              data-dismiss="modal"
+            >
+              Close
+            </button>
+            <button
+              id="nextStepButton"
+              type="submit"
+              class="btn btn-success"
+              style="padding: 0.6em; font-size: 1em; border-radius: 5px;"
+            >
+              Next <i data-feather="chevron-right" class="text-white"></i>
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
     <script src="./utils/data.js"></script>
     <script src="./utils/script.js"></script>

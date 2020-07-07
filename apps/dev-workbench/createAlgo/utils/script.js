@@ -83,10 +83,12 @@ async function run(Layers, Params) {
         const model = getModel(Layers, Params);
         tfvis.show.modelSummary({name: 'Model Architecture'}, model);
         await train(model, data, Params);
-        alert('Training is done');
+        // alert('Training is done');
         await model.save('indexeddb://my-model');
-        await model.save('downloads://my-model');
-        console.log(savedModel);
+        $('#trainedMessage').modal('show');
+        $('#modelDownloadButton').click(async function() {
+          await model.save('downloads://my-model');
+        });
       } catch (error) {
         alert(error);
         console.log(error);
