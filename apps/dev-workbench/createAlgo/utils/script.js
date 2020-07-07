@@ -32,10 +32,8 @@ async function train(model, data, Params) {
   // const BATCH_SIZE = 512;
   let TRAIN_DATA_SIZE = Params.trainDataSize;
   let TEST_DATA_SIZE = Params.testDataSize;
-  // let WIDTH = Params.width;
-  // let HEIGHT = Params.height;
-  let WIDTH = 60;
-  let HEIGHT = 60;
+  let WIDTH = Params.width;
+  let HEIGHT = Params.height;
 
   const [trainXs, trainYs] = tf.tidy(() => {
     const d = data.nextTrainBatch(TRAIN_DATA_SIZE);
