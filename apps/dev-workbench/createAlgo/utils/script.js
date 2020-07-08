@@ -86,6 +86,7 @@ async function run(Layers, Params) {
         // alert('Training is done');
         await model.save('indexeddb://my-model');
         $('#trainedMessage').modal('show');
+        $('#nextStepButton').show(200);
         $('#modelDownloadButton').click(async function() {
           await model.save('downloads://' + Params.modelName);
         });
