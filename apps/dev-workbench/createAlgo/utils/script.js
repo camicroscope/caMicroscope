@@ -87,7 +87,7 @@ async function run(Layers, Params) {
         await model.save('indexeddb://my-model');
         $('#trainedMessage').modal('show');
         $('#modelDownloadButton').click(async function() {
-          await model.save('downloads://my-model');
+          await model.save('downloads://' + Params.modelName);
         });
       } catch (error) {
         alert(error);
