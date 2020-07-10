@@ -84,7 +84,7 @@ async function run(Layers, Params) {
         tfvis.show.modelSummary({name: 'Model Architecture'}, model);
         await train(model, data, Params);
         // alert('Training is done');
-        await model.save('indexeddb://my-model');
+        // await model.save('indexeddb://my-model');
         $('#trainedMessage').modal('show');
         $('#nextStepButton').show(200);
         $('#modelDownloadButton').click(async function() {
