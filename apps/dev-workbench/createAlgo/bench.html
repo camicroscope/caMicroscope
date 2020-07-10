@@ -73,7 +73,13 @@
       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
       <!-- Navbar brand -->
       <span class="navbar-brand" style="color: white;">
-        Workbench - Step 2
+        Workbench - Step 2 &nbsp;
+        <i
+          id="advancedModeIcon"
+          style="display: none;"
+          title="Advanced Mode is on"
+          class="fas fa-tools"
+        ></i>
       </span>
       <ul class="navbar-nav mr-auto">
         <!-- Dropdown -->
@@ -110,7 +116,6 @@
                     type="checkbox"
                     class="custom-control-input"
                     id="advancedToggle"
-                    checked
                   />
                   <label class="custom-control-label" for="advancedToggle"
                     >Advanced Mode</label
@@ -235,6 +240,8 @@
                 class="form-control"
               />
             </div>
+            <br />
+            <b>Input Layer (Conv2D):</b>
             <div style="display: flex;">
               <div style="display: flex;">
                 <span style="margin-top: 1em;">Resolution (px): </span>
@@ -243,6 +250,7 @@
                   required
                   class="form-control form-control-sm"
                   type="number"
+                  title="Width"
                   value="60"
                   min="30"
                   style="
@@ -259,6 +267,7 @@
                   class="form-control form-control-sm"
                   type="number"
                   value="60"
+                  title="height"
                   min="30"
                   style="
                     width: 6em;
@@ -299,7 +308,69 @@
                 value="8"
               />
             </div>
-
+            <div class="advancedInitialSettings" style="display: none;">
+              <div style="display: flex;">
+                Padding: &nbsp;<input
+                  required
+                  style="
+                    width: 6em;
+                    margin-bottom: 0.7em;
+                    padding: 0px 1px 0px 6px;
+                    height: auto;
+                  "
+                  type="text"
+                  title="same | causal | valid"
+                  id="inputPadding"
+                  class="form-control"
+                  value="same"
+                />
+                <span style="width: 2em;"></span> Strides: &nbsp;<input
+                  style="
+                    width: 3em;
+                    margin-bottom: 0.7em;
+                    padding: 0px 1px 0px 6px;
+                    height: auto;
+                  "
+                  type="number"
+                  required
+                  min="1"
+                  id="inputStride"
+                  class="form-control"
+                  value="1"
+                />
+              </div>
+              <div style="display: flex;">
+                Activation: &nbsp;<input
+                  required
+                  style="
+                    width: 7em;
+                    margin-bottom: 0.7em;
+                    padding: 0px 1px 0px 6px;
+                    height: auto;
+                  "
+                  type="text"
+                  title=" elu | hardSigmoid | linear | relu | relu6 |  selu | sigmoid | softmax | softplus | softsign | tanh "
+                  id="inputActivation"
+                  class="form-control"
+                  value="relu"
+                />
+                <span style="width: 2em;"></span> kernelInitializer:
+                &nbsp;<input
+                  style="
+                    width: 10em;
+                    margin-bottom: 0.7em;
+                    padding: 0px 1px 0px 6px;
+                    height: auto;
+                  "
+                  type="text"
+                  title=" constant | glorotNormal | glorotUniform | heNormal | heUniform | identity |  leCunNormal | leCunUniform | ones | orthogonal | randomNormal |  randomUniform | truncatedNormal | varianceScaling | zeros "
+                  required
+                  id="inputKernelInitializer"
+                  class="form-control"
+                  value="varianceScaling"
+                />
+              </div>
+            </div>
             <div
               class="custom-control custom-switch"
               title="Check or RGB else grayscale"
@@ -310,9 +381,46 @@
                 id="RGBorGrayscale"
                 checked
               />
-              <label class="custom-control-label" for="RGBorGrayscale"
+              <label id="RGBorGrayscaleLabel" class="custom-control-label" for="RGBorGrayscale"
                 >RGB</label
               >
+            </div>
+            <div
+              class="advancedInitialSettings"
+              style="margin-top: 0.8em; display: none;"
+            >
+              <b>Output Layer (Dense):</b>
+              <div style="display: flex; margin-top: 0.8em;">
+                Activation: &nbsp;<input
+                  required
+                  style="
+                    width: 7em;
+                    margin-bottom: 0.7em;
+                    padding: 0px 1px 0px 6px;
+                    height: auto;
+                  "
+                  type="text"
+                  title=" elu | hardSigmoid | linear | relu | relu6 |  selu | sigmoid | softmax | softplus | softsign | tanh "
+                  id="outputActivation"
+                  class="form-control"
+                  value="softmax"
+                />
+                <span style="width: 2em;"></span> kernelInitializer:
+                &nbsp;<input
+                  style="
+                    width: 10em;
+                    margin-bottom: 0.7em;
+                    padding: 0px 1px 0px 6px;
+                    height: auto;
+                  "
+                  type="text"
+                  title=" constant | glorotNormal | glorotUniform | heNormal | heUniform | identity |  leCunNormal | leCunUniform | ones | orthogonal | randomNormal |  randomUniform | truncatedNormal | varianceScaling | zeros "
+                  required
+                  id="outputKernelInitializer"
+                  class="form-control"
+                  value="varianceScaling"
+                />
+              </div>
             </div>
             <button
               id="nextButton"
@@ -393,8 +501,8 @@
                       disabled
                       type="text"
                       id="inputShape"
+                      value="[]"
                       class="form-control"
-                      value="(60,60,1)"
                     />
                     <label for="inputShape">inputShape:</label>
                   </div>
@@ -418,15 +526,57 @@
                     />
                     <label for="filters">filters:</label>
                   </div>
-                  <div class="md-form" style="margin: 0 auto; width: 8em;">
+                  <div
+                    class="md-form"
+                    style="margin: 0 auto; margin-bottom: 1.5em; width: 8em;"
+                  >
                     <input
                       type="text"
-                      id="activation"
+                      id="inputLayerActivation"
                       class="form-control"
                       value="relu"
                       disabled
                     />
-                    <label for="activation">activation:</label>
+                    <label for="inputLayerActivation">activation:</label>
+                  </div>
+                  <div
+                    class="md-form advancedLayersSettings"
+                    style="margin: 0 auto; width: 5em; display: none;"
+                  >
+                    <input
+                      type="text"
+                      id="inputLayerPadding"
+                      class="form-control"
+                      value="same"
+                      disabled
+                    />
+                    <label for="inputLayerPadding">padding:</label>
+                  </div>
+                  <div
+                    class="md-form advancedLayersSettings"
+                    style="margin: 0 auto; width: 5em; display: none;"
+                  >
+                    <input
+                      type="number"
+                      id="inputLayerStrides"
+                      class="form-control"
+                      value="1"
+                      disabled
+                    />
+                    <label for="inputLayerPadding">strides:</label>
+                  </div>
+                  <div
+                    class="md-form advancedLayersSettings"
+                    style="margin: 0 auto; width: 9em; display: none;"
+                  >
+                    <input
+                      type="text"
+                      id="inputLayerKernelInitializer"
+                      class="form-control"
+                      value="varianceScaling"
+                      disabled
+                    />
+                    <label for="inputLayerPadding">kernelInitializer:</label>
                   </div>
                   <div
                     class="md-form"
@@ -575,12 +725,12 @@
                   <div class="md-form" style="margin: 0 auto; width: 8em;">
                     <input
                       type="text"
-                      id="activation1"
+                      id="outputLayerActivation"
                       class="form-control"
                       value="softmax"
                       disabled
                     />
-                    <label for="activation1">activation:</label>
+                    <label for="outputLayerActivation">activation:</label>
                   </div>
                   <div class="md-form" style="margin: 0 auto; width: 6em;">
                     <input
@@ -591,6 +741,19 @@
                       disabled
                     />
                     <label for="units">units:</label>
+                  </div>
+                  <div
+                    class="md-form advancedLayersSettings"
+                    style="margin: 0 auto; width: 9em; display: none;"
+                  >
+                    <input
+                      type="text"
+                      id="outputLayerKernelInitializer"
+                      class="form-control"
+                      value="varianceScaling"
+                      disabled
+                    />
+                    <label for="outputLayerPadding">kernelInitializer:</label>
                   </div>
                   <div
                     class="md-form"

@@ -2,6 +2,7 @@
 let Params = {};
 let classes = [];
 let Layers = [];
+let advancedMode = false;
 
 $('body').on('click', 'label', function() {
   $(this).prev('input').focus();
@@ -9,13 +10,48 @@ $('body').on('click', 'label', function() {
 
 
 $(document).ready(function() {
+  if (localStorage.getItem('advancedMode') == 'true') {
+    advancedMode = true;
+    $('.advancedInitialSettings').show();
+    $('#advancedModeIcon').show();
+    $('#advancedToggle').prop('checked', true);
+    console.log('Mode: Advanced');
+  }
   $('#headContent').show(400);
   $('#headbar').animate({height: 95}, 500, function() {
     $('#headbar').css('height', '100%');
     getZipFile();
   });
+  $('#RGBorGrayscale').change(function() {
+    if ($(this).prop('checked')) {
+      $('#RGBorGrayscaleLabel').text('RGB');
+    } else {
+      $('#RGBorGrayscaleLabel').text('Grayscale');
+    }
+  });
 });
 
+$('#advancedToggle').change(function() {
+  if ($(this).prop('checked')) {
+    localStorage.setItem('advancedMode', 'true');
+    location.reload();
+  } else {
+    localStorage.setItem('advancedMode', 'false');
+    location.reload();
+  }
+});
+
+function advancedModeChanges() {
+  if (advancedMode) {
+    $('.advancedLayersSettings').show();
+    $('#inputLayerActivation').val($('#inputActivation').val());
+    $('#inputLayerPadding').val($('#inputPadding').val());
+    $('#inputLayerStrides').val(Number($('#inputStride').val()));
+    $('#inputLayerKernelInitializer').val($('#inputKernelInitializer').val());
+    $('#outputLayerKernelInitializer').val($('#outputKernelInitializer').val());
+    $('#outputLayerActivation').val($('#outputActivation').val());
+  }
+}
 
 $('#goBack').click(function() {
   // window.open('../table.html', '_self');
@@ -119,6 +155,7 @@ $('#initSettingsSubmit').submit(function() {
   $('#headContent').text('Customize the layers for ' + '"' + $('#modelName').val() + '"');
   $('#headContent').show('300');
   $('#goBack').unbind('click');
+  advancedModeChanges();
   $('#goBack').click(function() {
     location.reload();
   });
@@ -324,34 +361,51 @@ function addFuncLayers() {
 }
 
 function saveLayers() {
-  Layers = [
-    tf.layers.conv2d({
-      inputShape: [Number($('#datasetNormalWidth').val()), Number($('#datasetNormalHeight').val()), NUM_CHANNELS],
-      kernelSize: Number($('#kernelSize').val()),
-      filters: Number($('#filters').val()),
-      activation: 'relu',
-    }),
-    tf.layers.dense({units: classes.length, activation: 'softmax'}),
-  ];
+  if (advancedMode) {
+    Layers = [
+      tf.layers.conv2d({
+        inputShape: [
+          Number($('#datasetNormalWidth').val()),
+          Number($('#datasetNormalHeight').val()),
+          NUM_CHANNELS,
+        ],
+        kernelSize: Number($('#kernelSize').val()),
+        filters: Number($('#filters').val()),
+        activation: $('#inputActivation').val(),
+        strides: Number($('#inputStride').val()),
+        kernelInitializer: $('#inputKernelInitializer').val(),
+      }),
+      tf.layers.dense({
+        units: classes.length,
+        activation: $('#outputActivation').val(),
+        kernelInitializer: $('#outputKernelInitializer').val(),
+      }),
+    ];
+  } else {
+    Layers = [
+      tf.layers.conv2d({
+        inputShape: [
+          Number($('#datasetNormalWidth').val()),
+          Number($('#datasetNormalHeight').val()),
+          NUM_CHANNELS,
+        ],
+        kernelSize: Number($('#kernelSize').val()),
+        filters: Number($('#filters').val()),
+        activation: 'relu',
+      }),
+      tf.layers.dense({units: classes.length, activation: 'softmax'}),
+    ];
+  }
+
   $('.LayerCard').each(function() {
     let id = $(this).attr('id');
-    let i = 1;
-    let select = $('#' + id)
-        .find('select option:selected')
-        .first()
-        .text();
+    let select = $('#' + id).find('select option:selected').first().text();
     // console.log(select);
 
     if (id != 'inputLayer' && id != 'outputLayer') {
       if (select == 'Dense') {
-        let activation = $('#' + id)
-            .find('#activation')
-            .first()
-            .val();
-        let units = $('#' + id)
-            .find('#units')
-            .first()
-            .val();
+        let activation = $('#' + id).find('#activation').first().val();
+        let units = $('#' + id).find('#units').first().val();
         try {
           Layers.splice(
               Layers.length - 1,
@@ -362,21 +416,12 @@ function saveLayers() {
           alert(error);
         }
       } else if (select == 'Conv2D ') {
-        let activation = $('#' + id)
-            .find('#activation')
-            .first()
-            .val();
+        let activation = $('#' + id).find('#activation').first().val();
         let kernelSize = Number(
-            $('#' + id)
-                .find('#kernelSize')
-                .first()
-                .val(),
+            $('#' + id).find('#kernelSize').first().val(),
         );
         let filters = Number(
-            $('#' + id)
-                .find('#filters')
-                .first()
-                .val(),
+            $('#' + id).find('#filters').first().val(),
         );
         try {
           Layers.splice(
@@ -397,10 +442,7 @@ function saveLayers() {
         Layers.splice(Layers.length - 1, 0, tf.layers.batchNormalization());
       } else if (select == 'Dropout') {
         let rate = parseFloat(
-            $('#' + id)
-                .find('#rate')
-                .first()
-                .val(),
+            $('#' + id).find('#rate').first().val(),
         );
         try {
           Layers.splice(
@@ -415,10 +457,7 @@ function saveLayers() {
         }
       } else if (select == 'MaxPooling2D') {
         let poolSize = Number(
-            $('#' + id)
-                .find('#pool_size')
-                .first()
-                .val(),
+            $('#' + id).find('#pool_size').first().val(),
         );
 
         try {
