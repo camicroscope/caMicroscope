@@ -9,6 +9,7 @@ let NUM_TEST_ELEMENTS = 0;
 
 let IMAGES_SPRITE_PATH = '';
 let LABELS_PATH = '';
+let advancedMode = false;
 
 
 class Data {
