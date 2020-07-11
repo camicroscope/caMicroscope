@@ -4,25 +4,31 @@ var pos = {x: 0, y: 0};
 var rawImage;
 var model;
 
+
 function getModel(Layers, Params) {
   try {
     model = tf.sequential({
       layers: Layers,
     });
-  } catch (error) {
-    alert(error);
-  }
 
-  try {
-    model.compile({
-      optimizer: Params.optimizer,
-      loss: 'categoricalCrossentropy',
-      metrics: ['accuracy'],
-    });
+    if (advancedMode) {
+      model.compile({
+        optimizer: Params.optimizer,
+        loss: Params.modelCompileLoss,
+        metrics: Params.modelCompileMetrics,
+      });
+    } else {
+      model.compile({
+        optimizer: Params.optimizer,
+        loss: 'categoricalCrossentropy',
+        metrics: ['accuracy'],
+      });
+    }
   } catch (error) {}
 
   return model;
 }
+
 
 async function train(model, data, Params) {
   const metrics = ['loss', 'val_loss', 'acc', 'val_acc'];
@@ -55,19 +61,19 @@ async function train(model, data, Params) {
 }
 
 
-function save(rawImage1) {
-  try {
-    var raw = tf.browser.fromPixels(rawImage1, 1);
-    var resized = tf.image.resizeBilinear(raw, [HEIGHT, WIDTH]);
-    var tensor = resized.expandDims(0);
-    var prediction = model.predict(tensor);
-    var pIndex = tf.argMax(prediction, 1).dataSync();
+// function save(rawImage1) {
+//   try {
+//     var raw = tf.browser.fromPixels(rawImage1, 1);
+//     var resized = tf.image.resizeBilinear(raw, [HEIGHT, WIDTH]);
+//     var tensor = resized.expandDims(0);
+//     var prediction = model.predict(tensor);
+//     var pIndex = tf.argMax(prediction, 1).dataSync();
 
-    alert(pIndex);
-  } catch (error) {
-    // alert(error);
-  }
-}
+//     alert(pIndex);
+//   } catch (error) {
+//     // alert(error);
+//   }
+// }
 
 
 async function run(Layers, Params) {

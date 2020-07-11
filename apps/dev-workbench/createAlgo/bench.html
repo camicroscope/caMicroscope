@@ -143,6 +143,7 @@
         <span class="sr-only">Loading...</span>
       </div>
     </div>
+
     <div
       id="initialSettings"
       style="
@@ -381,7 +382,10 @@
                 id="RGBorGrayscale"
                 checked
               />
-              <label id="RGBorGrayscaleLabel" class="custom-control-label" for="RGBorGrayscale"
+              <label
+                id="RGBorGrayscaleLabel"
+                class="custom-control-label"
+                for="RGBorGrayscale"
                 >RGB</label
               >
             </div>
@@ -578,39 +582,6 @@
                     />
                     <label for="inputLayerPadding">kernelInitializer:</label>
                   </div>
-                  <div
-                    class="md-form"
-                    style="margin: 0 auto; width: 6em; display: none;"
-                  >
-                    <input type="number" id="units" class="form-control" />
-                    <label for="units">units:</label>
-                  </div>
-                  <div
-                    class="md-form"
-                    style="margin: 0 auto; width: 6em; display: none;"
-                  >
-                    <input
-                      type="number"
-                      id="pool_size"
-                      class="form-control"
-                      value="2"
-                    />
-                    <label for="pool_size">pool_size:</label>
-                  </div>
-                  <div
-                    class="md-form"
-                    style="margin: 0 auto; width: 6em; display: none;"
-                  >
-                    <input
-                      type="number"
-                      max="1"
-                      min="0"
-                      step="0.01"
-                      id="rate"
-                      class="form-control"
-                    />
-                    <label for="rate">rate:</label>
-                  </div>
                 </div>
 
                 <div
@@ -685,43 +656,6 @@
                   >
                     <option value="1" selected>Dense</option> </select
                   >&nbsp;&nbsp; &nbsp;&nbsp;
-                  <div
-                    class="md-form"
-                    style="margin: 0 auto; width: 9em; display: none;"
-                  >
-                    <input
-                      type="text"
-                      id="inputShape1"
-                      class="form-control"
-                      disabled
-                      value="(60,60,1)"
-                    />
-                    <label for="inputShape1">inputShape:</label>
-                  </div>
-                  <div
-                    class="md-form"
-                    style="margin: 0 auto; width: 5em; display: none;"
-                  >
-                    <input
-                      type="number"
-                      id="kernelSize1"
-                      class="form-control"
-                      value="4"
-                    />
-                    <label for="kernelSize">kernelSize:</label>
-                  </div>
-                  <div
-                    class="md-form"
-                    style="margin: 0 auto; width: 5em; display: none;"
-                  >
-                    <input
-                      type="number"
-                      id="filters1"
-                      class="form-control"
-                      value="8"
-                    />
-                    <label for="filters">filters:</label>
-                  </div>
                   <div class="md-form" style="margin: 0 auto; width: 8em;">
                     <input
                       type="text"
@@ -754,32 +688,6 @@
                       disabled
                     />
                     <label for="outputLayerPadding">kernelInitializer:</label>
-                  </div>
-                  <div
-                    class="md-form"
-                    style="margin: 0 auto; width: 6em; display: none;"
-                  >
-                    <input
-                      type="number"
-                      id="pool_size"
-                      class="form-control"
-                      value="2"
-                    />
-                    <label for="pool_size">pool_size:</label>
-                  </div>
-                  <div
-                    class="md-form"
-                    style="margin: 0 auto; width: 6em; display: none;"
-                  >
-                    <input
-                      type="number"
-                      max="1"
-                      min="0"
-                      step="0.01"
-                      id="rate"
-                      class="form-control"
-                    />
-                    <label for="rate">rate:</label>
                   </div>
                 </div>
                 <div
@@ -844,7 +752,11 @@
               style="width: 25em;"
             >
               <div class="card-body">
-                <select class="browser-default custom-select" id="optimizer">
+                <select
+                  style="width: 20em;"
+                  class="browser-default custom-select"
+                  id="optimizer"
+                >
                   <option value="0" selected>Select optimizer</option>
                   <option value="1">Adam</option>
                   <option value="2">Adadelta</option>
@@ -855,6 +767,42 @@
                   <option value="7">RMSprop</option>
                   <option value="8">SGD</option>
                 </select>
+                <div
+                  class="md-form advancedLayersSettings"
+                  style="
+                    margin: 0 auto;
+                    width: 20em;
+                    margin-top: 1.5em;
+                    display: none;
+                  "
+                >
+                  <input
+                    type="text"
+                    id="modelCompileLoss"
+                    title="Loss function name"
+                    class="form-control"
+                    value="categoricalCrossentropy"
+                  />
+                  <label for="modelCompileLoss">loss:</label>
+                </div>
+                <div
+                  class="md-form advancedLayersSettings"
+                  style="
+                    margin: 0 auto;
+                    width: 20em;
+                    margin-top: 1.5em;
+                    display: none;
+                  "
+                >
+                  <input
+                    type="text"
+                    title="Metrics (comma separated)"
+                    id="modelCompileMetrics"
+                    class="form-control"
+                    value="accuracy"
+                  />
+                  <label for="modelCompileLoss">metrics:</label>
+                </div>
               </div>
             </div>
           </div>

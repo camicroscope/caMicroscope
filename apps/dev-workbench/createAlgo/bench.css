@@ -16,3 +16,6 @@
   background: rgba(84, 221, 191, 0.644);
   cursor: pointer;
 }
+#layersEditor input{
+  margin-bottom: 1em;
+}
