@@ -10,6 +10,7 @@ $('#goBack').click(function() {
 });
 
 function dataSelect() {
+  $('.navbar-brand').text(' Workbench - Step 1');
   $('#stepper').hide(300);
   $('#headContent').hide(300);
   $('#headContent').text('Select or create your own dataset');
@@ -53,7 +54,10 @@ function checkDataset(evt) {
         })
         .catch(function(e) {
           console.log(e);
-          alert('Please select a valid zip file');
+          // alert('Please select a valid zip file');
+          $('#toastAlert').removeClass('alert-success alert-danger alert-info');
+          $('#toastContent').text('Please Select a valid zip file');
+          $('#toastAlert').addClass('alert-danger show');
         });
   });
 }
@@ -63,7 +67,8 @@ $('#spriteInput').change(function(evt) {
     if (val) {
       $('#cards').hide(150);
       $('#stepper').show(200);
-      $('#headContent').html('Welcome to <b>Development Workbench</b>');
+      $('#headContent').text('Dataset selected successfully');
+      $('#headSub').text('You can proceed to step 2');
       $('#headContent').show(400);
       $('#headSub').show(400);
       $('.firstStepHead').attr('class', 'firstStepHead done');
@@ -71,24 +76,17 @@ $('#spriteInput').change(function(evt) {
       $('.secondStepHead').attr('class', 'secondStepHead active');
       $('#firstStepButton').hide();
       $('#secondStepButton').show();
-      let zipFile = evt.target.files[0];
-      new Promise((resolve, reject) => {
-        let reader = new FileReader();
-        reader.readAsDataURL(zipFile);
-        reader.onload = function() {
-          let result = reader.result;
-          result = result.substr(28, result.length - 28);
-          resolve(result);
-        };
-        reader.onerror = function(error) {
-          console.log('Error: ', error);
-        };
-      }).then(function(result) {
-        // console.log(result);
-        localforage.setItem('zipFile', result);
+      $('.navbar-brand').text(' Workbench');
+      $('#step1Link').click(function() {
+        dataSelect();
       });
+      let zipFile = evt.target.files[0];
+      localforage.setItem('zipFile', zipFile);
     } else {
-      alert('Invalid zip file!!');
+      $('#toastAlert').removeClass('alert-success alert-danger alert-info');
+      $('#toastContent').html('<b>Invalid zip file !!!</b> Please Select a valid zip file');
+      $('#toastAlert').addClass('alert-danger show');
+      // alert('Invalid zip file!!');
     }
   });
 });
@@ -234,12 +232,17 @@ function getSprite(data, userFolder, custom) {
       $('#selectResolution').hide(200);
       $('#labelsDatasetZip').show(200);
       $('#labelSelectModalTitle').text('Dataset created successfully');
-      window.open('../../loader' + done.download);
+      $('#datasetDownloadButton').click(function() {
+        window.open('../../loader' + done.download);
+      });
       cleanBackend(userFolder);
     },
     error: function(e) {
       console.log('ERROR : ', e['responseJSON']['error']);
-      alert(e['responseJSON']['error']);
+      // alert(e['responseJSON']['error']);
+      $('#toastAlert').removeClass('alert-success alert-danger alert-info');
+      $('#toastContent').text(e['responseJSON']['error']);
+      $('#toastAlert').addClass('alert-danger show');
       $('#labelsSubmitLoading').hide(200);
       $('#labelsSubmitText').show(200);
     },
@@ -282,16 +285,20 @@ function sanitize(string) {
 }
 
 function sendToLoader(files, names, custom = false) {
+  if (custom) {
+    customDataToLoader(files[0], names[0]);
+    return;
+  }
   let Promises = [];
   let data = {files: [], fileNames: names};
   function getBase64(file) {
     Promises.push(
         new Promise((resolve, reject) => {
-          var reader = new FileReader();
+          let reader = new FileReader();
           reader.readAsDataURL(file);
           reader.onload = function() {
             let result = reader.result;
-            result = result.substr(28, result.length - 28);
+            result = result.substring(result.indexOf(',') + 1, result.length);
             data.files.push(result);
             resolve('done');
           };
@@ -305,9 +312,6 @@ function sendToLoader(files, names, custom = false) {
   Promise.all(Promises).then(() => {
     console.log(data);
     let url = '../../loader/workbench/getLabelsZips';
-    if (custom) {
-      url = '../../loader/workbench/getCustomData';
-    }
     $.ajax({
       type: 'POST',
       url: url,
@@ -324,11 +328,87 @@ function sendToLoader(files, names, custom = false) {
       },
       error: function(e) {
         console.log('ERROR : ', e['responseJSON']['error']);
-        alert(e['responseJSON']['error']);
+        // alert(e['responseJSON']['error']);
+        $('#toastAlert').removeClass('alert-success alert-danger alert-info');
+        $('#toastContent').text(e['responseJSON']['error']);
+        $('#toastAlert').addClass('alert-danger show');
         $('#labelsSubmitButton').prop('disabled', false);
         $('#labelsSubmitText').show(200);
         $('#labelsSubmitLoading').hide(200);
       },
     });
+  });
+}
+
+
+async function customDataToLoader(file, name, chunkSize = 1024 * 1024 * 10) {
+  // console.log(file.size);
+  let offset = 0;
+  function makeUserFolderName(length) {
+    var result = '';
+    var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    var charactersLength = characters.length;
+    for ( var i = 0; i < length; i++ ) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
+  }
+  let userFolder = makeUserFolderName(20);
+  for (i = 0; i < file.size; i += chunkSize) {
+    let end = offset + chunkSize;
+    let final = 'false';
+    if (end >= file.size) {
+      end = file.size;
+      final = 'true';
+    }
+    let splitFile = file.slice(offset, end);
+    let data = {fileName: name, offset: offset, final: final, userFolder: userFolder};
+    await sendSplitFile(splitFile, data);
+    offset += chunkSize;
+  }
+}
+
+function sendSplitFile(file, data) {
+  return new Promise((resolve, reject) => {
+    let reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = function() {
+      let result = reader.result;
+      result = result.substring(result.indexOf(',') + 1, result.length);
+      data.file = result;
+      let url = '../../loader/workbench/getCustomData';
+      $.ajax({
+        type: 'POST',
+        url: url,
+        dataType: 'json',
+        contentType: 'application/json',
+        data: JSON.stringify(data),
+        timeout: 600000,
+        success: function(recData) {
+          resolve();
+          if (data.final == 'true') {
+            console.log(recData);
+            $('#labelsSubmitButton').prop('disabled', false);
+            $('#labelsSubmitText').show(200);
+            $('#labelsSubmitLoading').hide(200);
+            displayLabels(recData, [data.fileName], true);
+          }
+        },
+        error: function(e) {
+          resolve();
+          console.log('ERROR : ', e['responseJSON']['error']);
+          // alert(e['responseJSON']['error']);
+          $('#toastAlert').removeClass('alert-success alert-danger alert-info');
+          $('#toastContent').text(e['responseJSON']['error']);
+          $('#toastAlert').addClass('alert-danger show');
+          $('#labelsSubmitButton').prop('disabled', false);
+          $('#labelsSubmitText').show(200);
+          $('#labelsSubmitLoading').hide(200);
+        },
+      });
+    };
+    reader.onerror = function(error) {
+      console.log('Error: ', error);
+    };
   });
 }

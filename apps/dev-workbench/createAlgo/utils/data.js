@@ -1,6 +1,7 @@
+// constants; defined at runtime
 let IMAGE_SIZE = 0;
 let NUM_CLASSES = 0;
-let NUM_CHANNELS = 0;
+let NUM_CHANNELS = 0; // 1 for grayscale; 4 for rgba
 let NUM_DATASET_ELEMENTS = 0;
 let TRAIN_TEST_RATIO = 5 / 6;
 let NUM_TRAIN_ELEMENTS = 0;
@@ -8,6 +9,7 @@ let NUM_TEST_ELEMENTS = 0;
 
 let IMAGES_SPRITE_PATH = '';
 let LABELS_PATH = '';
+let advancedMode = false;
 
 
 class Data {

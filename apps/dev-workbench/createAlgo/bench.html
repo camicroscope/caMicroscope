@@ -72,7 +72,15 @@
       </div>
       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
       <!-- Navbar brand -->
-      <span class="navbar-brand" style="color: white;"> Workbench </span>
+      <span class="navbar-brand" style="color: white;">
+        Workbench - Step 2 &nbsp;
+        <i
+          id="advancedModeIcon"
+          style="display: none;"
+          title="Advanced Mode is on"
+          class="fas fa-tools"
+        ></i>
+      </span>
       <ul class="navbar-nav mr-auto">
         <!-- Dropdown -->
         <li
@@ -90,6 +98,7 @@
           <div
             class="dropdown-menu dropdown-primary"
             aria-labelledby="navbarDropdownMenuLink"
+            style="margin-left: -6em;"
           >
             <a class="dropdown-item" href="#"
               ><i class="fas fa-file-export"></i>&nbsp;&nbsp;Export</a
@@ -97,6 +106,23 @@
             <a class="dropdown-item" href="#"
               ><i class="fas fa-file-import"></i>&nbsp;&nbsp;Import</a
             >
+            <form style="width: 12em;">
+              <div style="margin-left: 1em;">
+                <div
+                  class="custom-control custom-switch"
+                  title="Toggle Advanced Mode"
+                >
+                  <input
+                    type="checkbox"
+                    class="custom-control-input"
+                    id="advancedToggle"
+                  />
+                  <label class="custom-control-label" for="advancedToggle"
+                    >Advanced Mode</label
+                  >
+                </div>
+              </div>
+            </form>
           </div>
         </li>
       </ul>
@@ -117,9 +143,15 @@
         <span class="sr-only">Loading...</span>
       </div>
     </div>
+
     <div
       id="initialSettings"
-      style="display: none; align-items: center; padding: 1em;"
+      style="
+        display: none;
+        align-items: center;
+        padding: 1em;
+        margin-bottom: -5em;
+      "
     >
       <div
         class="card"
@@ -137,6 +169,22 @@
           <hr />
           Number of dataset images: <b> <span id="numImages">0</span> </b>
           <form id="initSettingsSubmit" onsubmit="return false;">
+            <div style="display: flex; margin-top: 0.5em;">
+              Model Name: &nbsp;
+              <input
+                required
+                style="
+                  width: 15em;
+                  margin-bottom: 0.25em;
+                  padding: 1px 1px 1px 6px;
+                  height: auto;
+                "
+                value="myModel"
+                type="text"
+                id="modelName"
+                class="form-control"
+              />
+            </div>
             <div style="display: flex; margin-top: 0.5em;">
               Classes: &nbsp;
               <input
@@ -162,7 +210,7 @@
                   height: auto;
                 "
                 type="number"
-                step="0.02"
+                step="0.01"
                 min="0.20"
                 max="0.98"
                 id="testTrainRatio"
@@ -193,14 +241,17 @@
                 class="form-control"
               />
             </div>
+            <br />
+            <b>Input Layer (Conv2D):</b>
             <div style="display: flex;">
               <div style="display: flex;">
-                <span style="margin-top: 1em;">Resolution(px): </span>
+                <span style="margin-top: 1em;">Resolution (px): </span>
                 <input
                   id="datasetNormalWidth"
                   required
                   class="form-control form-control-sm"
                   type="number"
+                  title="Width"
                   value="60"
                   min="30"
                   style="
@@ -217,6 +268,7 @@
                   class="form-control form-control-sm"
                   type="number"
                   value="60"
+                  title="height"
                   min="30"
                   style="
                     width: 6em;
@@ -257,17 +309,122 @@
                 value="8"
               />
             </div>
-                
-                <div class="custom-control custom-switch" title="Check or RGB else grayscale" >
+            <div class="advancedInitialSettings" style="display: none;">
+              <div style="display: flex;">
+                Padding: &nbsp;<input
+                  required
+                  style="
+                    width: 6em;
+                    margin-bottom: 0.7em;
+                    padding: 0px 1px 0px 6px;
+                    height: auto;
+                  "
+                  type="text"
+                  title="same | causal | valid"
+                  id="inputPadding"
+                  class="form-control"
+                  value="same"
+                />
+                <span style="width: 2em;"></span> Strides: &nbsp;<input
+                  style="
+                    width: 3em;
+                    margin-bottom: 0.7em;
+                    padding: 0px 1px 0px 6px;
+                    height: auto;
+                  "
+                  type="number"
+                  required
+                  min="1"
+                  id="inputStride"
+                  class="form-control"
+                  value="1"
+                />
+              </div>
+              <div style="display: flex;">
+                Activation: &nbsp;<input
+                  required
+                  style="
+                    width: 7em;
+                    margin-bottom: 0.7em;
+                    padding: 0px 1px 0px 6px;
+                    height: auto;
+                  "
+                  type="text"
+                  title=" elu | hardSigmoid | linear | relu | relu6 |  selu | sigmoid | softmax | softplus | softsign | tanh "
+                  id="inputActivation"
+                  class="form-control"
+                  value="relu"
+                />
+                <span style="width: 2em;"></span> kernelInitializer:
+                &nbsp;<input
+                  style="
+                    width: 10em;
+                    margin-bottom: 0.7em;
+                    padding: 0px 1px 0px 6px;
+                    height: auto;
+                  "
+                  type="text"
+                  title=" constant | glorotNormal | glorotUniform | heNormal | heUniform | identity |  leCunNormal | leCunUniform | ones | orthogonal | randomNormal |  randomUniform | truncatedNormal | varianceScaling | zeros "
+                  required
+                  id="inputKernelInitializer"
+                  class="form-control"
+                  value="varianceScaling"
+                />
+              </div>
+            </div>
+            <div
+              class="custom-control custom-switch"
+              title="Check or RGB else grayscale"
+            >
               <input
                 type="checkbox"
                 class="custom-control-input"
                 id="RGBorGrayscale"
                 checked
               />
-              <label class="custom-control-label" for="RGBorGrayscale"
+              <label
+                id="RGBorGrayscaleLabel"
+                class="custom-control-label"
+                for="RGBorGrayscale"
                 >RGB</label
               >
+            </div>
+            <div
+              class="advancedInitialSettings"
+              style="margin-top: 0.8em; display: none;"
+            >
+              <b>Output Layer (Dense):</b>
+              <div style="display: flex; margin-top: 0.8em;">
+                Activation: &nbsp;<input
+                  required
+                  style="
+                    width: 7em;
+                    margin-bottom: 0.7em;
+                    padding: 0px 1px 0px 6px;
+                    height: auto;
+                  "
+                  type="text"
+                  title=" elu | hardSigmoid | linear | relu | relu6 |  selu | sigmoid | softmax | softplus | softsign | tanh "
+                  id="outputActivation"
+                  class="form-control"
+                  value="softmax"
+                />
+                <span style="width: 2em;"></span> kernelInitializer:
+                &nbsp;<input
+                  style="
+                    width: 10em;
+                    margin-bottom: 0.7em;
+                    padding: 0px 1px 0px 6px;
+                    height: auto;
+                  "
+                  type="text"
+                  title=" constant | glorotNormal | glorotUniform | heNormal | heUniform | identity |  leCunNormal | leCunUniform | ones | orthogonal | randomNormal |  randomUniform | truncatedNormal | varianceScaling | zeros "
+                  required
+                  id="outputKernelInitializer"
+                  class="form-control"
+                  value="varianceScaling"
+                />
+              </div>
             </div>
             <button
               id="nextButton"
@@ -348,8 +505,8 @@
                       disabled
                       type="text"
                       id="inputShape"
+                      value="[]"
                       class="form-control"
-                      value="(60,60,1)"
                     />
                     <label for="inputShape">inputShape:</label>
                   </div>
@@ -373,48 +530,57 @@
                     />
                     <label for="filters">filters:</label>
                   </div>
-                  <div class="md-form" style="margin: 0 auto; width: 8em;">
+                  <div
+                    class="md-form"
+                    style="margin: 0 auto; margin-bottom: 1.5em; width: 8em;"
+                  >
                     <input
                       type="text"
-                      id="activation"
+                      id="inputLayerActivation"
                       class="form-control"
                       value="relu"
                       disabled
                     />
-                    <label for="activation">activation:</label>
+                    <label for="inputLayerActivation">activation:</label>
                   </div>
                   <div
-                    class="md-form"
-                    style="margin: 0 auto; width: 6em; display: none;"
+                    class="md-form advancedLayersSettings"
+                    style="margin: 0 auto; width: 5em; display: none;"
                   >
-                    <input type="number" id="units" class="form-control" />
-                    <label for="units">units:</label>
+                    <input
+                      type="text"
+                      id="inputLayerPadding"
+                      class="form-control"
+                      value="same"
+                      disabled
+                    />
+                    <label for="inputLayerPadding">padding:</label>
                   </div>
                   <div
-                    class="md-form"
-                    style="margin: 0 auto; width: 6em; display: none;"
+                    class="md-form advancedLayersSettings"
+                    style="margin: 0 auto; width: 5em; display: none;"
                   >
                     <input
                       type="number"
-                      id="pool_size"
+                      id="inputLayerStrides"
                       class="form-control"
-                      value="2"
+                      value="1"
+                      disabled
                     />
-                    <label for="pool_size">pool_size:</label>
+                    <label for="inputLayerPadding">strides:</label>
                   </div>
                   <div
-                    class="md-form"
-                    style="margin: 0 auto; width: 6em; display: none;"
+                    class="md-form advancedLayersSettings"
+                    style="margin: 0 auto; width: 9em; display: none;"
                   >
                     <input
-                      type="number"
-                      max="1"
-                      min="0"
-                      step="0.01"
-                      id="rate"
+                      type="text"
+                      id="inputLayerKernelInitializer"
                       class="form-control"
+                      value="varianceScaling"
+                      disabled
                     />
-                    <label for="rate">rate:</label>
+                    <label for="inputLayerPadding">kernelInitializer:</label>
                   </div>
                 </div>
 
@@ -490,52 +656,15 @@
                   >
                     <option value="1" selected>Dense</option> </select
                   >&nbsp;&nbsp; &nbsp;&nbsp;
-                  <div
-                    class="md-form"
-                    style="margin: 0 auto; width: 9em; display: none;"
-                  >
-                    <input
-                      type="text"
-                      id="inputShape1"
-                      class="form-control"
-                      disabled
-                      value="(60,60,1)"
-                    />
-                    <label for="inputShape1">inputShape:</label>
-                  </div>
-                  <div
-                    class="md-form"
-                    style="margin: 0 auto; width: 5em; display: none;"
-                  >
-                    <input
-                      type="number"
-                      id="kernelSize1"
-                      class="form-control"
-                      value="4"
-                    />
-                    <label for="kernelSize">kernelSize:</label>
-                  </div>
-                  <div
-                    class="md-form"
-                    style="margin: 0 auto; width: 5em; display: none;"
-                  >
-                    <input
-                      type="number"
-                      id="filters1"
-                      class="form-control"
-                      value="8"
-                    />
-                    <label for="filters">filters:</label>
-                  </div>
                   <div class="md-form" style="margin: 0 auto; width: 8em;">
                     <input
                       type="text"
-                      id="activation1"
+                      id="outputLayerActivation"
                       class="form-control"
                       value="softmax"
                       disabled
                     />
-                    <label for="activation1">activation:</label>
+                    <label for="outputLayerActivation">activation:</label>
                   </div>
                   <div class="md-form" style="margin: 0 auto; width: 6em;">
                     <input
@@ -548,30 +677,17 @@
                     <label for="units">units:</label>
                   </div>
                   <div
-                    class="md-form"
-                    style="margin: 0 auto; width: 6em; display: none;"
+                    class="md-form advancedLayersSettings"
+                    style="margin: 0 auto; width: 9em; display: none;"
                   >
                     <input
-                      type="number"
-                      id="pool_size"
+                      type="text"
+                      id="outputLayerKernelInitializer"
                       class="form-control"
-                      value="2"
+                      value="varianceScaling"
+                      disabled
                     />
-                    <label for="pool_size">pool_size:</label>
-                  </div>
-                  <div
-                    class="md-form"
-                    style="margin: 0 auto; width: 6em; display: none;"
-                  >
-                    <input
-                      type="number"
-                      max="1"
-                      min="0"
-                      step="0.01"
-                      id="rate"
-                      class="form-control"
-                    />
-                    <label for="rate">rate:</label>
+                    <label for="outputLayerPadding">kernelInitializer:</label>
                   </div>
                 </div>
                 <div
@@ -636,7 +752,11 @@
               style="width: 25em;"
             >
               <div class="card-body">
-                <select class="browser-default custom-select" id="optimizer">
+                <select
+                  style="width: 20em;"
+                  class="browser-default custom-select"
+                  id="optimizer"
+                >
                   <option value="0" selected>Select optimizer</option>
                   <option value="1">Adam</option>
                   <option value="2">Adadelta</option>
@@ -647,6 +767,42 @@
                   <option value="7">RMSprop</option>
                   <option value="8">SGD</option>
                 </select>
+                <div
+                  class="md-form advancedLayersSettings"
+                  style="
+                    margin: 0 auto;
+                    width: 20em;
+                    margin-top: 1.5em;
+                    display: none;
+                  "
+                >
+                  <input
+                    type="text"
+                    id="modelCompileLoss"
+                    title="Loss function name"
+                    class="form-control"
+                    value="categoricalCrossentropy"
+                  />
+                  <label for="modelCompileLoss">loss:</label>
+                </div>
+                <div
+                  class="md-form advancedLayersSettings"
+                  style="
+                    margin: 0 auto;
+                    width: 20em;
+                    margin-top: 1.5em;
+                    display: none;
+                  "
+                >
+                  <input
+                    type="text"
+                    title="Metrics (comma separated)"
+                    id="modelCompileMetrics"
+                    class="form-control"
+                    value="accuracy"
+                  />
+                  <label for="modelCompileLoss">metrics:</label>
+                </div>
               </div>
             </div>
           </div>
@@ -741,20 +897,115 @@
         margin-bottom: 4em;
       "
     >
-      <button
-        type="button"
-        class="btn btn-secondary px-2"
-        id="userTrain"
-        style="
-          margin: 0 auto;
-          border-radius: 5px;
-          font-size: 1em;
-          padding: 0.7em;
-          display: none;
-        "
+      <div
+        style="margin: 0 auto; max-width: 20em; min-width: 15em; display: flex;"
       >
-        Train Model
-      </button>
+        <button
+          type="button"
+          class="btn btn-secondary px-2"
+          id="userTrain"
+          style="
+            margin: 1em auto;
+            border-radius: 5px;
+            font-size: 1em;
+            padding: 0.7em;
+            display: none;
+          "
+        >
+          Train Model
+        </button>
+        <button
+          id="nextStepButton"
+          class="btn btn-success"
+          style="
+            margin: 1em auto;
+            padding: 0.6em;
+            font-size: 1em;
+            border-radius: 5px;
+            display: none;
+          "
+        >
+          Next <i data-feather="chevron-right" class="text-white"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Modal -->
+    <div
+      class="modal fade"
+      id="trainedMessage"
+      tabindex="-1"
+      role="dialog"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="trainedMessageHeading">
+              Model Training complete
+            </h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            Download model json and binaries from here which might be used in
+            the caMicroscope prediction tool. <br />
+            After download you can proceed to the next step of testing the
+            model. Or if you want to customize/train model again then close
+            this. <br />
+            <button
+              id="modelDownloadButton"
+              type="button"
+              class="btn btn-info"
+              style="
+                padding: 0.6em;
+                font-size: 1em;
+                border-radius: 5px;
+                margin-top: 1em;
+              "
+            >
+              Download &nbsp;<i data-feather="download" class="text-white"></i>
+            </button>
+          </div>
+          <div class="modal-footer">
+            <a href="../../table.html">
+              <button
+                class="btn btn-danger"
+                style="
+                  padding: 0.6em;
+                  font-size: 1em;
+                  border-radius: 5px;
+                  position: absolute;
+                  left: 1em;
+                  bottom: 0.8em;
+                "
+              >
+                Exit Workbench
+              </button>
+            </a>
+            <button
+              class="btn btn-secondary"
+              style="padding: 0.6em; font-size: 1em; border-radius: 5px;"
+              data-dismiss="modal"
+            >
+              Close
+            </button>
+            <button
+              id="nextStepButton"
+              class="btn btn-success"
+              style="padding: 0.6em; font-size: 1em; border-radius: 5px;"
+            >
+              Next <i data-feather="chevron-right" class="text-white"></i>
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
     <script src="./utils/data.js"></script>
     <script src="./utils/script.js"></script>

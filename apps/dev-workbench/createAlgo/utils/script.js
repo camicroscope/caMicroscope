@@ -4,25 +4,31 @@ var pos = {x: 0, y: 0};
 var rawImage;
 var model;
 
+
 function getModel(Layers, Params) {
   try {
     model = tf.sequential({
       layers: Layers,
     });
-  } catch (error) {
-    alert(error);
-  }
 
-  try {
-    model.compile({
-      optimizer: Params.optimizer,
-      loss: 'categoricalCrossentropy',
-      metrics: ['accuracy'],
-    });
+    if (advancedMode) {
+      model.compile({
+        optimizer: Params.optimizer,
+        loss: Params.modelCompileLoss,
+        metrics: Params.modelCompileMetrics,
+      });
+    } else {
+      model.compile({
+        optimizer: Params.optimizer,
+        loss: 'categoricalCrossentropy',
+        metrics: ['accuracy'],
+      });
+    }
   } catch (error) {}
 
   return model;
 }
+
 
 async function train(model, data, Params) {
   const metrics = ['loss', 'val_loss', 'acc', 'val_acc'];
@@ -32,10 +38,8 @@ async function train(model, data, Params) {
   // const BATCH_SIZE = 512;
   let TRAIN_DATA_SIZE = Params.trainDataSize;
   let TEST_DATA_SIZE = Params.testDataSize;
-  // let WIDTH = Params.width;
-  // let HEIGHT = Params.height;
-  let WIDTH = 60;
-  let HEIGHT = 60;
+  let WIDTH = Params.width;
+  let HEIGHT = Params.height;
 
   const [trainXs, trainYs] = tf.tidy(() => {
     const d = data.nextTrainBatch(TRAIN_DATA_SIZE);
@@ -57,19 +61,19 @@ async function train(model, data, Params) {
 }
 
 
-function save(rawImage1) {
-  try {
-    var raw = tf.browser.fromPixels(rawImage1, 1);
-    var resized = tf.image.resizeBilinear(raw, [HEIGHT, WIDTH]);
-    var tensor = resized.expandDims(0);
-    var prediction = model.predict(tensor);
-    var pIndex = tf.argMax(prediction, 1).dataSync();
+// function save(rawImage1) {
+//   try {
+//     var raw = tf.browser.fromPixels(rawImage1, 1);
+//     var resized = tf.image.resizeBilinear(raw, [HEIGHT, WIDTH]);
+//     var tensor = resized.expandDims(0);
+//     var prediction = model.predict(tensor);
+//     var pIndex = tf.argMax(prediction, 1).dataSync();
 
-    alert(pIndex);
-  } catch (error) {
-    // alert(error);
-  }
-}
+//     alert(pIndex);
+//   } catch (error) {
+//     // alert(error);
+//   }
+// }
 
 
 async function run(Layers, Params) {
@@ -85,8 +89,13 @@ async function run(Layers, Params) {
         const model = getModel(Layers, Params);
         tfvis.show.modelSummary({name: 'Model Architecture'}, model);
         await train(model, data, Params);
-        alert('Training is done');
-        await model.save('downloads://my-model');
+        // alert('Training is done');
+        // await model.save('indexeddb://my-model');
+        $('#trainedMessage').modal('show');
+        $('#nextStepButton').show(200);
+        $('#modelDownloadButton').click(async function() {
+          await model.save('downloads://' + Params.modelName);
+        });
       } catch (error) {
         alert(error);
         console.log(error);

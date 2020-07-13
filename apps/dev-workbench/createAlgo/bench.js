@@ -9,13 +9,48 @@ $('body').on('click', 'label', function() {
 
 
 $(document).ready(function() {
+  if (localStorage.getItem('advancedMode') == 'true') {
+    advancedMode = true;
+    $('.advancedInitialSettings').show();
+    $('#advancedModeIcon').show();
+    $('#advancedToggle').prop('checked', true);
+    console.log('Mode: Advanced');
+  }
   $('#headContent').show(400);
   $('#headbar').animate({height: 95}, 500, function() {
     $('#headbar').css('height', '100%');
     getZipFile();
   });
+  $('#RGBorGrayscale').change(function() {
+    if ($(this).prop('checked')) {
+      $('#RGBorGrayscaleLabel').text('RGB');
+    } else {
+      $('#RGBorGrayscaleLabel').text('Grayscale');
+    }
+  });
 });
 
+$('#advancedToggle').change(function() {
+  if ($(this).prop('checked')) {
+    localStorage.setItem('advancedMode', 'true');
+    location.reload();
+  } else {
+    localStorage.setItem('advancedMode', 'false');
+    location.reload();
+  }
+});
+
+function advancedModeChanges() {
+  if (advancedMode) {
+    $('.advancedLayersSettings').show();
+    $('#inputLayerActivation').val($('#inputActivation').val());
+    $('#inputLayerPadding').val($('#inputPadding').val());
+    $('#inputLayerStrides').val(Number($('#inputStride').val()));
+    $('#inputLayerKernelInitializer').val($('#inputKernelInitializer').val());
+    $('#outputLayerKernelInitializer').val($('#outputKernelInitializer').val());
+    $('#outputLayerActivation').val($('#outputActivation').val());
+  }
+}
 
 $('#goBack').click(function() {
   // window.open('../table.html', '_self');
@@ -25,8 +60,8 @@ $('#goBack').click(function() {
 
 function getZipFile() {
   localforage.getItem('zipFile').then(function(zip) {
-    let blob = base64toBlob(zip, 'application/zip');
-    JSZip.loadAsync(blob).then(function(zip) {
+    // let blob = base64toBlob(zip, 'application/zip');
+    JSZip.loadAsync(zip).then(function(zip) {
       zip.forEach(function(relativePath, zipEntry) {
         // console.log(zipEntry.name);
       });
@@ -77,22 +112,6 @@ function getZipFile() {
 }
 
 
-function base64toBlob(b64Data, contentType = '', sliceSize = 512) {
-  const byteCharacters = atob(b64Data);
-  const byteArrays = [];
-  for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
-    const slice = byteCharacters.slice(offset, offset + sliceSize);
-    const byteNumbers = new Array(slice.length);
-    for (let i = 0; i < slice.length; i++) {
-      byteNumbers[i] = slice.charCodeAt(i);
-    }
-    const byteArray = new Uint8Array(byteNumbers);
-    byteArrays.push(byteArray);
-  }
-  const blob = new Blob(byteArrays, {type: contentType});
-  return blob;
-}
-
 $('#testTrainRatio').on('input', function() {
   let trainDataSize = Math.floor(
       Number($('#numImages').text()) * $('#testTrainRatio').val(),
@@ -115,6 +134,9 @@ $('#initSettingsSubmit').submit(function() {
   Params.testDataSize = Number($('#testDataSize').val());
   Params.height = Number($('#datasetNormalHeight').val());
   Params.width = Number($('#datasetNormalWidth').val());
+  Params.modelName = $('#modelName').val();
+  Params.modelCompileLoss = $('#modelCompileLoss').val();
+  Params.modelCompileMetrics = $('#modelCompileMetrics').val().trim().split(',');
   console.log(Params);
   if ($('#RGBorGrayscale').prop('checked')) {
     NUM_CHANNELS = 4;
@@ -131,9 +153,10 @@ $('#initSettingsSubmit').submit(function() {
   $('#layersEditor').css('display', 'flex');
   $('#userTrain').show(200);
   $('#headContent').hide('200');
-  $('#headContent').text('Customize the model layers');
+  $('#headContent').text('Customize the layers for ' + '"' + $('#modelName').val() + '"');
   $('#headContent').show('300');
   $('#goBack').unbind('click');
+  advancedModeChanges();
   $('#goBack').click(function() {
     location.reload();
   });
@@ -152,9 +175,9 @@ $('body').on('click', '#add' + 1, function() {
     layerNumber + 1
   }'  class='collapse'  role='tabpanel'  aria-labelledby='headingOne${
     layerNumber + 1
-  }'  data-parent='#accordionEx'>  <div class='card-body'> <div  style='display: flex; flex-wrap:wrap; align-content:center; max-width: 21em'>  <select    class='browser-default custom-select modelClassSelect'       style='width: 9em; margin:0 auto; margin-bottom: 2em '  >    <option value='1' selected>Dense</option>    <option value='2'>Conv2D </option>    <option value='3'>Flatten</option>    <option value='4'>Dropout</option>    <option value='5'>MaxPooling2D</option> <option value='6'>batchNormalization</option> </select  >&nbsp;&nbsp; &nbsp;&nbsp;  <div    class='md-form'    style='margin: 0 auto; width: 9em; display:none'  >    <input      type='text'      id='inputShape'      class='form-control'      disabled          />    <label for='inputShape'>inputShape:</label>  </div>  <div    class='md-form'    style='margin: 0 auto; width: 7em; display:none'  >    <input      type='number'      id='kernelSize'      class='form-control'         />    <label for='kernelSize'>kernelSize:</label>  </div>  <div    class='md-form'    style='margin: 0 auto; width: 5em; display:none'  >    <input      type='number'      id='filters'      class='form-control'          />    <label for='filters'>filters:</label>  </div>  <div class='md-form' style='margin: 0 auto; width: 8em; '>    <input      type='text'      id='activation'      class='form-control'          />    <label for='activation'>activation:</label>  </div>  <div class='md-form' style='margin: 0 auto; width: 6em;'>    <input      type='number'      id='units'      class='form-control'         />    <label for='units'>units:</label>  </div>  <div    class='md-form'    style='margin: 0 auto; width: 6em; display:none'  >    <input      type='number'      id='pool_size'      class='form-control'          />    <label for='pool_size'>pool_size:</label>  </div>  <div    class='md-form'    style='margin: 0 auto; width: 6em; display:none'  >    <input      type='number'      max='1'      min='0'      step='0.01'      id='rate'      class='form-control'    />    <label for='rate'>rate:</label>  </div></div><br /><div  style='display: flex; flex-wrap:wrap; align-content:center; max-width: 21em'>  <button    type='button'    class='btn btn-danger '    style='margin: 0 auto; ' id='deleteLayer' >    Delete  </button>  </div></div></div></div><div class='card add' id='add${
+  }'  data-parent='#accordionEx'>  <div class='card-body'> <div  style='display: flex; flex-wrap:wrap; align-content:center; max-width: 21em'>  <select id="heyClass" class="browser-default custom-select modelClassSelect" style="width: 9em; margin: 0 auto; margin-bottom: 2em;" ><option value="1" selected="">Dense</option ><option value="2">Conv2D</option ><option value="3">Flatten</option ><option value="4">Dropout</option ><option value="5">MaxPooling2D</option ><option value="6">batchNormalization</option ><option class="advancedLayersSettings" style="display: none;" value="7" >activation</option ><option class="advancedLayersSettings" style="display: none;" value="8" >conv2dTranspose</option ><option class="advancedLayersSettings" style="display: none;" value="9" >averagePooling2d</option ><option class="advancedLayersSettings" style="display: none;" value="10" >globalAveragePooling2d</option ><option class="advancedLayersSettings" style="display: none;" value="11" >globalMaxPooling2d</option > </select >&nbsp;&nbsp; &nbsp;&nbsp;<div class="md-form" style="margin: 0 auto; width: 7em; display: none;" > <input type="number" id="kernelSize" class="form-control" /> <label for="kernelSize">kernelSize:</label></div><div class="md-form" style="margin: 0 auto; width: 5em; display: none;" > <input type="number" id="filters" class="form-control" /> <label for="filters">filters:</label></div><div class="md-form" style="margin: 0 auto; width: 8em;"> <input type="text" id="activation" class="form-control" /> <label for="activation">activation:</label></div><div class="md-form" style="margin: 0 auto; width: 6em;"> <input type="number" id="units" class="form-control" /> <label for="units">units:</label></div><div class="md-form" style="margin: 0 auto; width: 6em; display: none;" > <input type="number" id="pool_size" class="form-control" /> <label for="pool_size">pool_size:</label></div><div class="md-form" style="margin: 0 auto; width: 6em; display: none;" > <input type="text" id="padding" class="form-control" /> <label for="padding">padding:</label></div><div class="md-form" style="margin: 0 auto; width: 6em; display: none;" > <input type="number" id="strides" class="form-control" /> <label for="strides">strides:</label></div><div class="md-form advancedLayersSettings" style="margin: 0 auto; width: 10em; display: none;" > <input type="text" id="kernelInitializer" class="form-control" /> <label for="kernelInitializer">kernelInitializer:</label></div><div class="md-form" style="margin: 0 auto; width: 7em; display: none;" > <input type="text" id="dataFormat" value="channelsLast" class="form-control" title="channelsFirst | channelsLast" /> <label class="active" for="dataFormat">dataFormat:</label></div><div class="md-form" style="margin: 0 auto; width: 5em; display: none;" > <input type="number" id="axis" class="form-control" /> <label for="axis">axis:</label></div><div class="md-form" style="margin: 0 auto; width: 6em; display: none;" > <input type="number" id="momentum" class="form-control" /> <label for="momentum">momentum:</label></div><div class="md-form" style="margin: 0 auto; width: 6em; display: none;" > <input type="number" max="1" min="0" step="0.01" id="rate" class="form-control" /> <label for="rate">rate:</label></div></div><br /><div  style='display: flex; flex-wrap:wrap; align-content:center; max-width: 21em'>  <button title="Delete Layer" class="btn btn-danger"id=deleteLayer style="padding:.4em .7em .4em .7em;font-size:1em;border-radius:5px;margin:0 auto;position:absolute;right:1em;bottom:1em;"><i class="fa-trash fas text-white"></i></button></div></div></div></div><div class='card add' id='add${
     layerNumber + 1
-  }' style='width: 25em; height: 2em' title='Add layer'><h4>+</h4></div>`;
+  }' style='width: 25em; height: 0.6em' title='Add layer'><h4></h4></div>`;
 
   $('#add' + 1).after(newLayerCard);
   $('#headingOne' + (layerNumber + 1)).css('height', '0');
@@ -201,9 +224,9 @@ function addCardLayer() {
       layerNumber + 1
     }'  class='collapse'  role='tabpanel'  aria-labelledby='headingOne${
       layerNumber + 1
-    }'  data-parent='#accordionEx'>  <div class='card-body'> <div  style='display: flex; flex-wrap:wrap; align-content:center; max-width: 21em'>  <select    class='browser-default custom-select modelClassSelect'       style='width: 9em; margin:0 auto; margin-bottom: 2em '  >    <option value='1' selected>Dense</option>    <option value='2'>Conv2D </option>    <option value='3'>Flatten</option>    <option value='4'>Dropout</option>    <option value='5'>MaxPooling2D</option> <option value='6'>batchNormalization</option> </select  >&nbsp;&nbsp; &nbsp;&nbsp;  <div    class='md-form'    style='margin: 0 auto; width: 9em; display:none'  >    <input      type='text'      id='inputShape'      class='form-control'      disabled          />    <label for='inputShape'>inputShape:</label>  </div>  <div    class='md-form'    style='margin: 0 auto; width: 7em; display:none'  >    <input      type='number'      id='kernelSize'      class='form-control'         />    <label for='kernelSize'>kernelSize:</label>  </div>  <div    class='md-form'    style='margin: 0 auto; width: 5em; display:none'  >    <input      type='number'      id='filters'      class='form-control'          />    <label for='filters'>filters:</label>  </div>  <div class='md-form' style='margin: 0 auto; width: 8em; '>    <input      type='text'      id='activation'      class='form-control'          />    <label for='activation'>activation:</label>  </div>  <div class='md-form' style='margin: 0 auto; width: 6em;'>    <input      type='number'      id='units'      class='form-control'         />    <label for='units'>units:</label>  </div>  <div    class='md-form'    style='margin: 0 auto; width: 6em; display:none'  >    <input      type='number'      id='pool_size'      class='form-control'          />    <label for='pool_size'>pool_size:</label>  </div>  <div    class='md-form'    style='margin: 0 auto; width: 6em; display:none'  >    <input      type='number'      max='1'      min='0'      step='0.01'      id='rate'      class='form-control'    />    <label for='rate'>rate:</label>  </div></div><br /><div  style='display: flex; flex-wrap:wrap; align-content:center; max-width: 21em'>  <button    type='button'    class='btn btn-danger '    style='margin: 0 auto; ' id='deleteLayer' >    Delete  </button>  </div></div></div></div><div class='card add' id='add${
+    }'  data-parent='#accordionEx'>  <div class='card-body'> <div  style='display: flex; flex-wrap:wrap; align-content:center; max-width: 21em'><select id="heyClass" class="browser-default custom-select modelClassSelect" style="width: 9em; margin: 0 auto; margin-bottom: 2em;" ><option value="1" selected="">Dense</option ><option value="2">Conv2D</option ><option value="3">Flatten</option ><option value="4">Dropout</option ><option value="5">MaxPooling2D</option ><option value="6">batchNormalization</option ><option class="advancedLayersSettings" style="display: none;" value="7" >activation</option ><option class="advancedLayersSettings" style="display: none;" value="8" >conv2dTranspose</option ><option class="advancedLayersSettings" style="display: none;" value="9" >averagePooling2d</option ><option class="advancedLayersSettings" style="display: none;" value="10" >globalAveragePooling2d</option ><option class="advancedLayersSettings" style="display: none;" value="11" >globalMaxPooling2d</option > </select >&nbsp;&nbsp; &nbsp;&nbsp;<div class="md-form" style="margin: 0 auto; width: 7em; display: none;" > <input type="number" id="kernelSize" class="form-control" /> <label for="kernelSize">kernelSize:</label></div><div class="md-form" style="margin: 0 auto; width: 5em; display: none;" > <input type="number" id="filters" class="form-control" /> <label for="filters">filters:</label></div><div class="md-form" style="margin: 0 auto; width: 8em;"> <input type="text" id="activation" class="form-control" /> <label for="activation">activation:</label></div><div class="md-form" style="margin: 0 auto; width: 6em;"> <input type="number" id="units" class="form-control" /> <label for="units">units:</label></div><div class="md-form" style="margin: 0 auto; width: 6em; display: none;" > <input type="number" id="pool_size" class="form-control" /> <label for="pool_size">pool_size:</label></div><div class="md-form" style="margin: 0 auto; width: 6em; display: none;" > <input type="text" id="padding" class="form-control" /> <label for="padding">padding:</label></div><div class="md-form" style="margin: 0 auto; width: 6em; display: none;" > <input type="number" id="strides" class="form-control" /> <label for="strides">strides:</label></div><div class="md-form advancedLayersSettings" style="margin: 0 auto; width: 10em; display: none;" > <input type="text" id="kernelInitializer" class="form-control" /> <label for="kernelInitializer">kernelInitializer:</label></div><div class="md-form" style="margin: 0 auto; width: 7em; display: none;" > <input type="text" id="dataFormat" value="channelsLast" class="form-control" title="channelsFirst | channelsLast" /> <label class="active" for="dataFormat">dataFormat:</label></div><div class="md-form" style="margin: 0 auto; width: 5em; display: none;" > <input type="number" id="axis" class="form-control" /> <label for="axis">axis:</label></div><div class="md-form" style="margin: 0 auto; width: 6em; display: none;" > <input type="number" id="momentum" class="form-control" /> <label for="momentum">momentum:</label></div><div class="md-form" style="margin: 0 auto; width: 6em; display: none;" > <input type="number" max="1" min="0" step="0.01" id="rate" class="form-control" /> <label for="rate">rate:</label></div></div><br /><div  style='display: flex; flex-wrap:wrap; align-content:center; max-width: 21em'> <button title="Delete Layer" class="btn btn-danger"id=deleteLayer style="padding:.4em .7em .4em .7em;font-size:1em;border-radius:5px;margin:0 auto;position:absolute;right:1em;bottom:1em;"><i class="fa-trash fas text-white"></i></button>  </div></div></div></div><div class='card add' id='add${
       layerNumber + 1
-    }' style='width: 25em; height: 2em' title='Add layer'><h4>+</h4></div>`;
+    }' style='width: 25em; height: 0.6em' title='Add layer'><h4></h4></div>`;
 
     $('#add' + i).after(newLayerCard);
     $('#headingOne' + (layerNumber + 1)).css('height', '0');
@@ -245,60 +268,144 @@ function addFuncLayers() {
     $('#' + id).find('.modelClassSelect').first()
         .change(function() {
         // console.log(1);
-          if ($(this).val() == 1) {
-            $('#' + id)
-                .find('#inputShape, #kernelSize, #filters, #pool_size, #rate')
-                .parent()
-                .css('display', 'none');
-            $('#' + id)
-                .find('#activation, #units')
-                .parent()
-                .css('display', 'block');
-          } else if ($(this).val() == 2) {
-            $('#' + id)
-                .find('#inputShape, #units, #pool_size, #rate')
-                .parent()
-                .css('display', 'none');
-            $('#' + id)
-                .find('#kernelSize, #filters, #activation')
-                .parent()
-                .css('display', 'block');
-          } else if ($(this).val() == 3) {
-            $('#' + id)
-                .find(
-                    '#inputShape, #units, #pool_size, #rate, #kernelSize, #filters, #activation',
-                )
-                .parent()
-                .css('display', 'none');
-          } else if ($(this).val() == 4) {
-            $('#' + id)
-                .find(
-                    '#inputShape, #units, #pool_size, #kernelSize, #filters, #activation',
-                )
-                .parent()
-                .css('display', 'none');
-            $('#' + id)
-                .find('#rate')
-                .parent()
-                .css('display', 'block');
-          } else if ($(this).val() == 5) {
-            $('#' + id)
-                .find(
-                    '#inputShape, #units, #rate, #kernelSize, #filters, #activation',
-                )
-                .parent()
-                .css('display', 'none');
-            $('#' + id)
-                .find('#pool_size')
-                .parent()
-                .css('display', 'block');
+          if (advancedMode) {
+            if ($(this).val() == 1) {
+              $('#' + id)
+                  .find('#inputShape, #kernelSize, #filters, #pool_size, #rate, #padding,'+
+                  ' #strides, #dataFormat, #axis, #momentum')
+                  .parent()
+                  .css('display', 'none');
+              $('#' + id)
+                  .find('#activation, #units, #kernelInitializer')
+                  .parent()
+                  .css('display', 'block');
+            } else if ($(this).val() == 2 || $(this).val() == 8) {
+              $('#' + id)
+                  .find('#inputShape, #units, #pool_size, #rate, #axis, #momentum')
+                  .parent()
+                  .css('display', 'none');
+              $('#' + id)
+                  .find('#kernelSize, #filters, #activation, #padding, #strides, #kernelInitializer,'+
+                  ' #dataFormat')
+                  .parent()
+                  .css('display', 'block');
+            } else if ($(this).val() == 3 || $(this).val() == 10 || $(this).val() == 11) {
+              $('#' + id)
+                  .find(
+                      '#inputShape, #units, #pool_size, #rate, #kernelSize, #filters, #activation, '+
+                      '#kernelInitializer, #padding, #strides, #axis, #momentum',
+                  )
+                  .parent()
+                  .css('display', 'none');
+              $('#' + id)
+                  .find('#dataFormat')
+                  .parent()
+                  .css('display', 'block');
+            } else if ($(this).val() == 4) {
+              $('#' + id)
+                  .find(
+                      '#inputShape, #units, #pool_size, #kernelSize, #filters, #activation,'+
+                      ' #kernelInitializer, #padding, #strides, #dataFormat, #axis, #momentum',
+                  )
+                  .parent()
+                  .css('display', 'none');
+              $('#' + id)
+                  .find('#rate')
+                  .parent()
+                  .css('display', 'block');
+            } else if ($(this).val() == 5 || $(this).val() == 9) {
+              $('#' + id)
+                  .find(
+                      '#inputShape, #units, #rate, #kernelSize, #filters, #activation,'+
+                      ' #kernelInitializer, #axis, #momentum',
+                  )
+                  .parent()
+                  .css('display', 'none');
+              $('#' + id)
+                  .find('#pool_size, #padding, #strides, #dataFormat')
+                  .parent()
+                  .css('display', 'block');
+            } else if ($(this).val() == 6) {
+              $('#' + id)
+                  .find(
+                      '#inputShape, #units, #pool_size, #rate, #kernelSize, #filters, #activation,'+
+                      ' #kernelInitializer, #padding, #strides, #dataFormat',
+                  )
+                  .parent()
+                  .css('display', 'none');
+              $('#' + id)
+                  .find('#axis, #momentum')
+                  .parent()
+                  .css('display', 'block');
+            } else if ($(this).val() == 7) {
+              $('#' + id)
+                  .find(
+                      '#inputShape, #units, #pool_size, #rate, #axis, #momentum, #kernelSize,'+
+                      ' #filters, #kernelInitializer, #padding, #strides, #dataFormat',
+                  )
+                  .parent()
+                  .css('display', 'none');
+              $('#' + id)
+                  .find('#activation')
+                  .parent()
+                  .css('display', 'block');
+            }
           } else {
-            $('#' + id)
-                .find(
-                    '#inputShape, #units, #pool_size, #rate, #kernelSize, #filters, #activation',
-                )
-                .parent()
-                .css('display', 'none');
+            if ($(this).val() == 1) {
+              $('#' + id)
+                  .find('#inputShape, #kernelSize, #filters, #pool_size, #rate')
+                  .parent()
+                  .css('display', 'none');
+              $('#' + id)
+                  .find('#activation, #units')
+                  .parent()
+                  .css('display', 'block');
+            } else if ($(this).val() == 2) {
+              $('#' + id)
+                  .find('#inputShape, #units, #pool_size, #rate')
+                  .parent()
+                  .css('display', 'none');
+              $('#' + id)
+                  .find('#kernelSize, #filters, #activation')
+                  .parent()
+                  .css('display', 'block');
+            } else if ($(this).val() == 3) {
+              $('#' + id)
+                  .find(
+                      '#inputShape, #units, #pool_size, #rate, #kernelSize, #filters, #activation',
+                  )
+                  .parent()
+                  .css('display', 'none');
+            } else if ($(this).val() == 4) {
+              $('#' + id)
+                  .find(
+                      '#inputShape, #units, #pool_size, #kernelSize, #filters, #activation',
+                  )
+                  .parent()
+                  .css('display', 'none');
+              $('#' + id)
+                  .find('#rate')
+                  .parent()
+                  .css('display', 'block');
+            } else if ($(this).val() == 5) {
+              $('#' + id)
+                  .find(
+                      '#inputShape, #units, #rate, #kernelSize, #filters, #activation',
+                  )
+                  .parent()
+                  .css('display', 'none');
+              $('#' + id)
+                  .find('#pool_size')
+                  .parent()
+                  .css('display', 'block');
+            } else {
+              $('#' + id)
+                  .find(
+                      '#inputShape, #units, #pool_size, #rate, #kernelSize, #filters, #activation',
+                  )
+                  .parent()
+                  .css('display', 'none');
+            }
           }
         });
     $('#' + id).find('#deleteLayer').first()
@@ -329,89 +436,131 @@ function addFuncLayers() {
               });
         });
   });
+  $('.add').mouseenter(function() {
+    $(this).find('h4').text('+');
+    $(this).animate({height: '2em'}, 1);
+  }).mouseleave(function() {
+    $(this).animate({height: '0.6em'}, 1);
+    $(this).find('h4').text('');
+  });
+  advancedModeChanges();
 }
 
-
 function saveLayers() {
-  Layers = [
-    tf.layers.conv2d({
-      inputShape: [Number($('#datasetNormalWidth').val()), Number($('#datasetNormalHeight').val()), NUM_CHANNELS],
-      kernelSize: Number($('#kernelSize').val()),
-      filters: Number($('#filters').val()),
-      activation: 'relu',
-    }),
-    tf.layers.dense({units: classes.length, activation: 'softmax'}),
-  ];
+  if (advancedMode) {
+    Layers = [
+      tf.layers.conv2d({
+        inputShape: [
+          Number($('#datasetNormalWidth').val()),
+          Number($('#datasetNormalHeight').val()),
+          NUM_CHANNELS,
+        ],
+        kernelSize: Number($('#kernelSize').val()),
+        filters: Number($('#filters').val()),
+        activation: $('#inputActivation').val(),
+        strides: Number($('#inputStride').val()),
+        kernelInitializer: $('#inputKernelInitializer').val(),
+      }),
+      tf.layers.dense({
+        units: classes.length,
+        activation: $('#outputActivation').val(),
+        kernelInitializer: $('#outputKernelInitializer').val(),
+      }),
+    ];
+  } else {
+    Layers = [
+      tf.layers.conv2d({
+        inputShape: [
+          Number($('#datasetNormalWidth').val()),
+          Number($('#datasetNormalHeight').val()),
+          NUM_CHANNELS,
+        ],
+        kernelSize: Number($('#kernelSize').val()),
+        filters: Number($('#filters').val()),
+        activation: 'relu',
+      }),
+      tf.layers.dense({units: classes.length, activation: 'softmax'}),
+    ];
+  }
+
   $('.LayerCard').each(function() {
     let id = $(this).attr('id');
-    let i = 1;
-    let select = $('#' + id)
-        .find('select option:selected')
-        .first()
-        .text();
+    let select = $('#' + id).find('select option:selected').first().text();
     // console.log(select);
-
-    if (id != 'inputLayer' && id != 'outputLayer') {
-      if (select == 'Dense') {
-        let activation = $('#' + id)
-            .find('#activation')
-            .first()
-            .val();
-        let units = $('#' + id)
-            .find('#units')
-            .first()
-            .val();
-        try {
-          Layers.splice(
-              Layers.length - 1,
-              0,
-              tf.layers.dense({units: Number(units), activation: activation}),
+    try {
+      if (id != 'inputLayer' && id != 'outputLayer') {
+        if (select == 'Dense') {
+          let activation = $('#' + id).find('#activation').first().val();
+          let units = $('#' + id).find('#units').first().val();
+          if (advancedMode) {
+            let kernelInitializer = $('#' + id).find('#kernelInitializer').first().val();
+            Layers.splice(
+                Layers.length - 1,
+                0,
+                tf.layers.dense({units: Number(units), activation: activation, kernelInitializer: kernelInitializer}),
+            );
+          } else {
+            Layers.splice(
+                Layers.length - 1,
+                0,
+                tf.layers.dense({units: Number(units), activation: activation}),
+            );
+          }
+        } else if (select == 'Conv2D ') {
+          let activation = $('#' + id).find('#activation').first().val();
+          let kernelSize = Number(
+              $('#' + id).find('#kernelSize').first().val(),
           );
-        } catch (error) {
-          alert(error);
-        }
-      } else if (select == 'Conv2D ') {
-        let activation = $('#' + id)
-            .find('#activation')
-            .first()
-            .val();
-        let kernelSize = Number(
-            $('#' + id)
-                .find('#kernelSize')
-                .first()
-                .val(),
-        );
-        let filters = Number(
-            $('#' + id)
-                .find('#filters')
-                .first()
-                .val(),
-        );
-        try {
-          Layers.splice(
-              Layers.length - 1,
-              0,
-              tf.layers.conv2d({
-                kernelSize: kernelSize,
-                filters: filters,
-                activation: activation,
-              }),
+          let filters = Number(
+              $('#' + id).find('#filters').first().val(),
           );
-        } catch (error) {
-          alert(error);
-        }
-      } else if (select == 'Flatten') {
-        Layers.splice(Layers.length - 1, 0, tf.layers.flatten());
-      } else if (select == 'batchNormalization') {
-        Layers.splice(Layers.length - 1, 0, tf.layers.batchNormalization());
-      } else if (select == 'Dropout') {
-        let rate = parseFloat(
-            $('#' + id)
-                .find('#rate')
-                .first()
-                .val(),
-        );
-        try {
+          if (advancedMode) {
+            let kernelInitializer = $('#' + id).find('#kernelInitializer').first().val();
+            let strides = $('#' + id).find('#strides').first().val();
+            let padding = $('#' + id).find('#padding').first().val();
+            let dataFormat = $('#' + id).find('#dataFormat').first().val();
+            Layers.splice(
+                Layers.length - 1, 0,
+                tf.layers.conv2d({
+                  kernelSize: kernelSize,
+                  filters: filters,
+                  activation: activation,
+                  padding: padding,
+                  strides: Number(strides),
+                  kernelInitializer: kernelInitializer,
+                  dataFormat: dataFormat,
+                }),
+            );
+          } else {
+            Layers.splice(
+                Layers.length - 1, 0,
+                tf.layers.conv2d({
+                  kernelSize: kernelSize,
+                  filters: filters,
+                  activation: activation,
+                }),
+            );
+          }
+        } else if (select == 'Flatten') {
+          if (advancedMode) {
+            let dataFormat = $('#' + id).find('#dataFormat').first().val();
+            Layers.splice(Layers.length - 1, 0, tf.layers.flatten({dataFormat: dataFormat}));
+          } else {
+            Layers.splice(Layers.length - 1, 0, tf.layers.flatten());
+          }
+        } else if (select == 'batchNormalization') {
+          if (advancedMode) {
+            let axis = $('#' + id).find('#axis').first().val();
+            let momentum = $('#' + id).find('#momentum').first().val();
+            Layers.splice(Layers.length - 1, 0,
+                tf.layers.batchNormalization({axis: Number(axis), momentum: Number(momentum)}));
+          } else {
+            Layers.splice(Layers.length - 1, 0, tf.layers.batchNormalization());
+          }
+        } else if (select == 'Dropout') {
+          let rate = parseFloat(
+              $('#' + id).find('#rate').first().val(),
+          );
           Layers.splice(
               Layers.length - 1,
               0,
@@ -419,29 +568,90 @@ function saveLayers() {
                 rate: rate,
               }),
           );
-        } catch (error) {
-          alert(error);
-        }
-      } else if (select == 'MaxPooling2D') {
-        let poolSize = Number(
-            $('#' + id)
-                .find('#pool_size')
-                .first()
-                .val(),
-        );
-
-        try {
+        } else if (select == 'MaxPooling2D') {
+          let poolSize = Number(
+              $('#' + id).find('#pool_size').first().val(),
+          );
+          if (advancedMode) {
+            let dataFormat = $('#' + id).find('#dataFormat').first().val();
+            let strides = $('#' + id).find('#strides').first().val();
+            let padding = $('#' + id).find('#padding').first().val();
+            Layers.splice(
+                Layers.length - 1, 0,
+                tf.layers.maxPooling2d({
+                  poolSize: [poolSize, poolSize],
+                  dataFormat: dataFormat,
+                  strides: Number(strides),
+                  padding: padding,
+                }),
+            );
+          } else {
+            Layers.splice(
+                Layers.length - 1,
+                0,
+                tf.layers.maxPooling2d({
+                  poolSize: [poolSize, poolSize],
+                }),
+            );
+          }
+        } else if (select == 'activation') {
+          let activation = $('#' + id).find('#activation').first().val();
           Layers.splice(
-              Layers.length - 1,
-              0,
-              tf.layers.maxPooling2d({
-                poolSize: [poolSize, poolSize],
+              Layers.length - 1, 0,
+              tf.layers.activation({
+                activation: activation,
               }),
           );
-        } catch (error) {
-          alert(error);
+        } else if (select == 'conv2dTranspose') {
+          let activation = $('#' + id).find('#activation').first().val();
+          let kernelSize = Number(
+              $('#' + id).find('#kernelSize').first().val(),
+          );
+          let filters = Number(
+              $('#' + id).find('#filters').first().val(),
+          );
+          let kernelInitializer = $('#' + id).find('#kernelInitializer').first().val();
+          let strides = $('#' + id).find('#strides').first().val();
+          let padding = $('#' + id).find('#padding').first().val();
+          let dataFormat = $('#' + id).find('#dataFormat').first().val();
+          Layers.splice(
+              Layers.length - 1, 0,
+              tf.layers.conv2dTranspose({
+                kernelSize: kernelSize,
+                filters: filters,
+                activation: activation,
+                padding: padding,
+                strides: Number(strides),
+                kernelInitializer: kernelInitializer,
+                dataFormat: dataFormat,
+              }),
+          );
+        } else if (select == 'averagePooling2d') {
+          let poolSize = Number(
+              $('#' + id).find('#pool_size').first().val(),
+          );
+          let dataFormat = $('#' + id).find('#dataFormat').first().val();
+          let strides = $('#' + id).find('#strides').first().val();
+          let padding = $('#' + id).find('#padding').first().val();
+          Layers.splice(
+              Layers.length - 1, 0,
+              tf.layers.averagePooling2d({
+                poolSize: [poolSize, poolSize],
+                dataFormat: dataFormat,
+                strides: Number(strides),
+                padding: padding,
+              }),
+          );
+        } else if (select == 'globalAveragePooling2d') {
+          let dataFormat = $('#' + id).find('#dataFormat').first().val();
+          Layers.splice(Layers.length - 1, 0, tf.layers.globalAveragePooling2d({dataFormat: dataFormat}));
+        } else if (select == 'globalMaxPooling2d') {
+          let dataFormat = $('#' + id).find('#dataFormat').first().val();
+          Layers.splice(Layers.length - 1, 0, tf.layers.globalMaxPooling2d({dataFormat: dataFormat}));
         }
       }
+    } catch (e) {
+      alert(e);
     }
   });
   console.log(Layers);
@@ -483,6 +693,7 @@ Params = {
 };
 
 $('#userTrain').click(function() {
+  $('#nextStepButton').hide(200);
   saveLayers();
   // $('#loading').css('display', 'flex');
   // let selectedValue = $('#modelSelect').val();
