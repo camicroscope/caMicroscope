@@ -80,6 +80,13 @@
           title="Advanced Mode is on"
           class="fas fa-tools"
         ></i>
+        &nbsp;
+        <i
+          id="serverModeIcon"
+          style="display: none;"
+          title="Server Training Mode is on"
+          class="fas fa-server"
+        ></i>
       </span>
       <ul class="navbar-nav mr-auto">
         <!-- Dropdown -->
@@ -926,15 +933,16 @@
             padding: 0.7em;
             display: none;
           "
-        > <span id="trainButtonText">Train Model</span>
-          <div
-          id="trainingLoading"
-          class="spinner-border"
-          role="status"
-          style="display: none;"
         >
-          <span class="sr-only">Loading...</span>
-        </div>
+          <span id="trainButtonText">Train Model</span>
+          <div
+            id="trainingLoading"
+            class="spinner-border"
+            role="status"
+            style="display: none;"
+          >
+            <span class="sr-only">Loading...</span>
+          </div>
         </button>
         <button
           id="nextStepButton"

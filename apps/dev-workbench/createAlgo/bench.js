@@ -17,6 +17,7 @@ $(document).ready(function() {
   }
   if (localStorage.getItem('serverSide') == 'true') {
     serverSide = true;
+    $('#serverModeIcon').show();
     $('#serverSideToggle').prop('checked', true);
     console.log('Server side: ON');
   }
@@ -48,8 +49,10 @@ $('#serverSideToggle').change(function() {
   if ($(this).prop('checked')) {
     localStorage.setItem('serverSide', 'true');
     serverSide = true;
+    $('#serverModeIcon').show(150);
   } else {
     localStorage.setItem('serverSide', 'false');
+    $('#serverModeIcon').hide(150);
     serverSide = false;
   }
 });
