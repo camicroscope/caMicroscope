@@ -98,7 +98,7 @@
           <div
             class="dropdown-menu dropdown-primary"
             aria-labelledby="navbarDropdownMenuLink"
-            style="margin-left: -6em;"
+            style="margin-left: -8em;"
           >
             <a class="dropdown-item" href="#"
               ><i class="fas fa-file-export"></i>&nbsp;&nbsp;Export</a
@@ -106,7 +106,8 @@
             <a class="dropdown-item" href="#"
               ><i class="fas fa-file-import"></i>&nbsp;&nbsp;Import</a
             >
-            <form style="width: 12em;">
+            <hr style="margin-top: 0;" />
+            <form style="width: 14em;">
               <div style="margin-left: 1em;">
                 <div
                   class="custom-control custom-switch"
@@ -119,6 +120,22 @@
                   />
                   <label class="custom-control-label" for="advancedToggle"
                     >Advanced Mode</label
+                  >
+                </div>
+              </div>
+              <hr />
+              <div style="margin-left: 1em; margin-bottom: 0.4em;">
+                <div
+                  class="custom-control custom-switch"
+                  title="Toggle Server-side Model Training"
+                >
+                  <input
+                    type="checkbox"
+                    class="custom-control-input"
+                    id="serverSideToggle"
+                  />
+                  <label class="custom-control-label" for="serverSideToggle"
+                    >Server-side Training</label
                   >
                 </div>
               </div>
@@ -215,7 +232,7 @@
                 max="0.98"
                 id="testTrainRatio"
                 class="form-control"
-                value="0.80"
+                value="0.85"
               />
             </div>
             <div style="display: flex;">
@@ -252,8 +269,7 @@
                   class="form-control form-control-sm"
                   type="number"
                   title="Width"
-                  value="60"
-                  min="30"
+                  min="20"
                   style="
                     width: 6em;
                     margin: 1em;
@@ -267,9 +283,8 @@
                   id="datasetNormalHeight"
                   class="form-control form-control-sm"
                   type="number"
-                  value="60"
                   title="height"
-                  min="30"
+                  min="20"
                   style="
                     width: 6em;
                     margin: 1em;
@@ -911,8 +926,15 @@
             padding: 0.7em;
             display: none;
           "
+        > <span id="trainButtonText">Train Model</span>
+          <div
+          id="trainingLoading"
+          class="spinner-border"
+          role="status"
+          style="display: none;"
         >
-          Train Model
+          <span class="sr-only">Loading...</span>
+        </div>
         </button>
         <button
           id="nextStepButton"
@@ -946,7 +968,7 @@
             </h5>
             <button
               type="button"
-              class="close"
+              class="close trainedModelClose"
               data-dismiss="modal"
               aria-label="Close"
             >
@@ -976,7 +998,7 @@
           <div class="modal-footer">
             <a href="../../table.html">
               <button
-                class="btn btn-danger"
+                class="btn btn-danger exitWorkbench"
                 style="
                   padding: 0.6em;
                   font-size: 1em;
@@ -990,7 +1012,7 @@
               </button>
             </a>
             <button
-              class="btn btn-secondary"
+              class="btn btn-secondary trainedModelClose"
               style="padding: 0.6em; font-size: 1em; border-radius: 5px;"
               data-dismiss="modal"
             >

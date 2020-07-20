@@ -3,13 +3,13 @@ let IMAGE_SIZE = 0;
 let NUM_CLASSES = 0;
 let NUM_CHANNELS = 0; // 1 for grayscale; 4 for rgba
 let NUM_DATASET_ELEMENTS = 0;
-let TRAIN_TEST_RATIO = 5 / 6;
+let TRAIN_TEST_RATIO = 0;
 let NUM_TRAIN_ELEMENTS = 0;
 let NUM_TEST_ELEMENTS = 0;
-
 let IMAGES_SPRITE_PATH = '';
 let LABELS_PATH = '';
 let advancedMode = false;
+let serverSide = false;
 
 
 class Data {
@@ -29,14 +29,14 @@ class Data {
         const datasetBytesBuffer = new ArrayBuffer(
             NUM_DATASET_ELEMENTS * IMAGE_SIZE * 4 * NUM_CHANNELS,
         );
+
         let factors = (number) => Array
             .from(Array(number + 1), (_, i) => i)
             .filter((i) => number % i === 0);
-        // const chunkSize = Math.floor(NUM_TEST_ELEMENTS * 0.15);
         let factorsList = factors(NUM_DATASET_ELEMENTS);
         let mid = factorsList[Math.floor((factorsList.length-1)/2)];
         let midPlus1 = factorsList[Math.floor((factorsList.length-1)/2)+1];
-        const chunkSize = Math.max(mid, midPlus1);
+        let chunkSize = Math.max(mid, midPlus1);
         canvas.width = img.width;
         canvas.height = chunkSize;
 
@@ -47,29 +47,16 @@ class Data {
               IMAGE_SIZE * chunkSize * NUM_CHANNELS,
           );
           ctx.drawImage(
-              img,
-              0,
-              i * chunkSize,
-              img.width,
-              chunkSize,
-              0,
-              0,
-              img.width,
-              chunkSize,
+              img, 0, i * chunkSize, img.width, chunkSize, 0, 0, img.width, chunkSize,
           );
 
-          const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+          let imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
           let x = 0;
           for (let j = 0; j < imageData.data.length; j+=4) {
             for (let i = 0; i < NUM_CHANNELS; i++) {
               datasetBytesView[x++] = imageData.data[j + i] / 255;
             }
           }
-          // for (let j = 0; j < imageData.data.length / 4; j++) {
-          //   // All channels hold an equal value since the image is grayscale, so
-          //   // just read the red channel.
-          //   datasetBytesView[j] = imageData.data[j * 4] / 255;
-          // }
         }
         this.datasetImages = new Float32Array(datasetBytesBuffer);
 
@@ -80,13 +67,8 @@ class Data {
         let imageUrl = urlCreator.createObjectURL(content);
         img.src = imageUrl;
       });
-      // img.src = IMAGES_SPRITE_PATH;
     });
-    // let labelsRequest = fetch(labelsURL);
-    // localforage.getItem('labels').then(function(content) {
-    //   let urlCreator = window.URL || window.webkitURL;
-    //   let labelsURL = urlCreator.createObjectURL(content);
-    // });
+
     let labelsRequest = fetch(LABELS_PATH);
     const [imgResponse, labelsResponse] = await Promise.all([
       imgRequest,
@@ -94,31 +76,21 @@ class Data {
     ]);
 
     this.datasetLabels = new Uint8Array(await labelsResponse.arrayBuffer());
-    console.log(this.datasetLabels);
+
     // Create shuffled indices into the train/test set for when we select a
     // random dataset element for training / validation.
     this.trainIndices = tf.util.createShuffledIndices(NUM_TRAIN_ELEMENTS);
     this.testIndices = tf.util.createShuffledIndices(NUM_TEST_ELEMENTS);
 
     // Slice the the images and labels into train and test sets.
-    this.trainImages = this.datasetImages.slice(
-        0,
-        IMAGE_SIZE * NUM_TRAIN_ELEMENTS * NUM_CHANNELS,
-    );
+    this.trainImages = this.datasetImages.slice( 0, IMAGE_SIZE * NUM_TRAIN_ELEMENTS * NUM_CHANNELS );
     this.testImages = this.datasetImages.slice(IMAGE_SIZE * NUM_TRAIN_ELEMENTS * NUM_CHANNELS);
-    this.trainLabels = this.datasetLabels.slice(
-        0,
-        NUM_CLASSES * NUM_TRAIN_ELEMENTS,
-    );
-    this.testLabels = this.datasetLabels.slice(
-        NUM_CLASSES * NUM_TRAIN_ELEMENTS,
-    );
+    this.trainLabels = this.datasetLabels.slice( 0, NUM_CLASSES * NUM_TRAIN_ELEMENTS );
+    this.testLabels = this.datasetLabels.slice( NUM_CLASSES * NUM_TRAIN_ELEMENTS );
   }
 
   nextTrainBatch(batchSize) {
-    return this.nextBatch(
-        batchSize,
-        [this.trainImages, this.trainLabels],
+    return this.nextBatch( batchSize, [this.trainImages, this.trainLabels],
         () => {
           this.shuffledTrainIndex =
           (this.shuffledTrainIndex + 1) % this.trainIndices.length;
