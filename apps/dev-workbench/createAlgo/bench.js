@@ -54,17 +54,6 @@ $('#serverSideToggle').change(function() {
   }
 });
 
-function advancedModeChanges() {
-  if (advancedMode) {
-    $('.advancedLayersSettings').show();
-    $('#inputLayerActivation').val($('#inputActivation').val());
-    $('#inputLayerPadding').val($('#inputPadding').val());
-    $('#inputLayerStrides').val(Number($('#inputStride').val()));
-    $('#inputLayerKernelInitializer').val($('#inputKernelInitializer').val());
-    $('#outputLayerKernelInitializer').val($('#outputKernelInitializer').val());
-    $('#outputLayerActivation').val($('#outputActivation').val());
-  }
-}
 
 function advancedModeChanges() {
   if (advancedMode) {
