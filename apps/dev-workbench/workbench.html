@@ -120,7 +120,7 @@
           <ul class="stepper stepper-vertical">
             <!-- First Step -->
             <li class="active firstStepHead">
-              <a id="step1Link" href="#">
+              <a id="step1Link" href="#" style="cursor: default;">
                 <span class="circle">1</span>
                 <span class="label">Select/Create Training Data</span>
               </a>
@@ -185,12 +185,13 @@
             <li class="thirdStepHead">
               <a href="#!">
                 <span class="circle">3</span>
-                <span class="label">Test your work </span>
+                <span class="label"> Save and test your work </span>
               </a>
               <!-- Section Description -->
               <div class="step-content grey lighten-3">
                 <p style="font-size: 1em;">
-                   Test your model on images.<br />
+                  Save your model (JSON/binaries) to disk for later use and test
+                  your model on images.<br />
                 </p>
               </div>
             </li>
@@ -426,22 +427,23 @@
         </div>
       </div>
     </div>
-    <div id="toastAlert"
+    <div
+      id="toastAlert"
       style="
         position: fixed;
-        bottom: 1em;
-        left: 1em;
+        top: 1em;
+        left: 35%;
         max-width: 40em;
         min-width: 10em;
       "
-      class="alert alert-success alert-dismissible fade"
+      class="alert alert-dismissible fade"
       role="alert"
-    > <span id="toastContent"></span>
+    >
+      <span id="toastContent"></span>
       <button
         type="button"
         class="close"
-        data-dismiss="alert"
-        aria-label="Close"
+        onclick="$('#toastAlert').removeClass('show');"
       >
         <span aria-hidden="true">&times;</span>
       </button>
