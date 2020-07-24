@@ -181,17 +181,26 @@ $('#initSettingsSubmit').submit(function() {
   $('#kernelSize1').val($('#kernelSize').val());
   $('#filters1').val($('#filters').val());
   $('#outputLayer').find('#units').first().val(classes.length);
-  $('#initialSettings').hide(300);
-  $('#layersEditor').show(300);
+  $('#initialSettings').hide(200);
+  $('#layersEditor').show(200);
   $('#layersEditor').css('display', 'flex');
   $('#userTrain').show(200);
-  $('#headContent').hide('200');
+  $('#headContent').hide('50');
   $('#headContent').text('Customize the layers for ' + '"' + $('#modelName').val() + '"');
-  $('#headContent').show('300');
-  $('#goBack').unbind('click');
+  $('#headContent').show('100');
   advancedModeChanges();
+  $('#goBack').unbind('click');
   $('#goBack').click(function() {
-    location.reload();
+    $('#initialSettings').show(200);
+    $('#layersEditor').hide(200);
+    $('#userTrain').hide(200);
+    $('#headContent').hide('50');
+    $('#headContent').text('Design your own ML training algorithm here');
+    $('#headContent').show('100');
+    $('#goBack').unbind('click');
+    $('#goBack').click(function() {
+      window.history.back();
+    });
   });
 });
 
