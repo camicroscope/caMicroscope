@@ -13,6 +13,7 @@ $(document).ready(function() {
     $('.advancedInitialSettings').show();
     $('#advancedModeIcon').show();
     $('#advancedToggle').prop('checked', true);
+    showToast('alert-info', 'Advanced Mode is on !');
     console.log('Mode: Advanced');
   }
   if (localStorage.getItem('serverSide') == 'true') {
@@ -50,6 +51,7 @@ $('#serverSideToggle').change(function() {
     localStorage.setItem('serverSide', 'true');
     serverSide = true;
     $('#serverModeIcon').show(150);
+    showToast('alert-info', 'Turned on Server-side training !');
   } else {
     localStorage.setItem('serverSide', 'false');
     $('#serverModeIcon').hide(150);
@@ -150,11 +152,11 @@ $('#testDataSize').on('input', function() {
 $('#initSettingsSubmit').submit(function() {
   classes = $('#classNames').val().trim().split(',');
   console.log(classes);
-  TRAIN_TEST_RATIO = $('#testTrainRatio').val();
+  let trainTestRatio = $('#testTrainRatio').val();
   NUM_DATASET_ELEMENTS = Number($('#numImages').text());
   NUM_CLASSES = classes.length;
   IMAGE_SIZE = $('#datasetNormalWidth').val() * $('#datasetNormalHeight').val();
-  NUM_TRAIN_ELEMENTS = Math.floor(TRAIN_TEST_RATIO * NUM_DATASET_ELEMENTS);
+  NUM_TRAIN_ELEMENTS = Math.floor(trainTestRatio * NUM_DATASET_ELEMENTS);
   NUM_TEST_ELEMENTS = NUM_DATASET_ELEMENTS - NUM_TRAIN_ELEMENTS;
   if ($('#RGBorGrayscale').prop('checked')) {
     NUM_CHANNELS = 4;
@@ -802,7 +804,8 @@ function saveLayers() {
         }
       }
     } catch (e) {
-      alert(e);
+      console.log(e);
+      showToast('alert-danger', e);
     }
   });
   // console.log(Layers);
@@ -850,7 +853,7 @@ $('#userTrain').click(function() {
     }
   } catch (error) {
     $('#loading').css('display', 'none');
-    alert(error);
+    showToast('alert-danger', error);
   }
 });
 
@@ -876,7 +879,8 @@ function sendDatasetToServer() {
         },
         error: function(e) {
           console.log('ERROR : ', e.responseJSON.message);
-          alert(e.responseJSON.message);
+          // alert(e.responseJSON.message);
+          showToast('alert-danger', e.responseJSON.message, false);
           $('#trainButtonText').show(150);
           $('#trainingLoading').hide(150);
         },
@@ -912,7 +916,8 @@ function sendAndTrain(userFolder) {
     },
     error: function(e) {
       console.log('ERROR : ', e.responseJSON.message);
-      alert(e.responseJSON.message);
+      // alert(e.responseJSON.message);
+      showToast('alert-danger', e.responseJSON.message, false);
       $('#trainButtonText').show(150);
       $('#trainingLoading').hide(150);
     },
@@ -933,8 +938,8 @@ function downloadModelFromServer(Model) {
       window.open('../../..' + recData.url);
     },
     error: function(e) {
-      console.log('ERROR : ', e);
       alert(e);
+      showToast('alert-danger', 'Error! ' + e);
     },
   });
 }

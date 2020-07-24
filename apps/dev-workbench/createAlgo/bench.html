@@ -1037,6 +1037,49 @@
         </div>
       </div>
     </div>
+
+    <!-- Toast Alert -->
+    <div
+      id="toastPlaceholder"
+      style="
+        position: fixed;
+        top: 1em;
+        width: 100%;
+        display: none;
+        align-content: center;
+      "
+    >
+      <div
+        id="toastAlert"
+        style="max-width: 40em; min-width: 10em; margin: 0 auto;"
+        class="alert alert-dismissible fade"
+        role="alert"
+      >
+        <span id="toastContent"></span>
+        <button
+          type="button"
+          class="close"
+          onclick="$('#toastAlert').removeClass('show');"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    </div>
+
+    <script>
+      function showToast(type, message, dismissible = true) {
+        $('#toastPlaceholder').css('display', 'flex');
+        $('#toastAlert').removeClass('alert-success alert-danger alert-info');
+        $('#toastContent').html(message);
+        $('#toastAlert').addClass(type + ' show');
+        if (dismissible) {
+          setTimeout(function () {
+            $('#toastAlert').removeClass('show');
+            $('#toastPlaceholder').hide();
+          }, 5000);
+        }
+      }
+    </script>
     <script src="./utils/data.js"></script>
     <script src="./utils/script.js"></script>
     <script src="./bench.js"></script>

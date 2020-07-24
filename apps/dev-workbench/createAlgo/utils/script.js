@@ -20,7 +20,9 @@ function getModel(Layers, Params) {
         metrics: ['accuracy'],
       });
     }
-  } catch (error) {}
+  } catch (error) {
+    showToast('alert-danger', error, false);
+  }
 
   return model;
 }
@@ -68,7 +70,7 @@ async function run(Layers, Params) {
         const model = getModel(Layers, Params);
         tfvis.show.modelSummary({name: 'Model Architecture'}, model);
         await train(model, data, Params);
-        alert('Training is done');
+        // alert('Training is done');
         // await model.save('indexeddb://my-model');
         $('#trainedMessage').modal('show');
         $('#nextStepButton').show(200);
@@ -76,12 +78,14 @@ async function run(Layers, Params) {
           await model.save('downloads://' + Params.modelName);
         });
       } catch (error) {
-        alert(error);
+        // alert(error);
         console.log(error);
+        showToast('alert-danger', error, false);
       };
     });
   } catch (error) {
-    alert(error);
+    // alert(error);
+    showToast('alert-danger', error, false);
     console.log(error);
   }
 }

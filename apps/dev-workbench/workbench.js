@@ -406,12 +406,14 @@ function sendSplitFile(file, data) {
 }
 
 function showToast(type, message, dismissible = true) {
+  $('#toastPlaceholder').css('display', 'flex');
   $('#toastAlert').removeClass('alert-success alert-danger alert-info');
   $('#toastContent').html(message);
   $('#toastAlert').addClass(type + ' show');
   if (dismissible) {
     setTimeout(function() {
       $('#toastAlert').removeClass('show');
+      $('#toastPlaceholder').hide();
     }, 5000);
   }
 }

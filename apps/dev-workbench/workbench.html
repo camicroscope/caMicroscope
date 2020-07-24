@@ -427,27 +427,35 @@
         </div>
       </div>
     </div>
+
+    <!-- Toast Alert -->
     <div
-      id="toastAlert"
+      id="toastPlaceholder"
       style="
         position: fixed;
         top: 1em;
-        left: 35%;
-        max-width: 40em;
-        min-width: 10em;
+        width: 100%;
+        display: none;
+        align-content: center;
       "
-      class="alert alert-dismissible fade"
-      role="alert"
     >
-      <span id="toastContent"></span>
-      <button
-        type="button"
-        class="close"
-        onclick="$('#toastAlert').removeClass('show');"
+      <div
+        id="toastAlert"
+        style="max-width: 40em; min-width: 10em; margin: 0 auto;"
+        class="alert alert-dismissible fade"
+        role="alert"
       >
-        <span aria-hidden="true">&times;</span>
-      </button>
+        <span id="toastContent"></span>
+        <button
+          type="button"
+          class="close"
+          onclick="$('#toastAlert').removeClass('show');"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
     </div>
+
     <script src="./workbench.js"></script>
     <script>
       feather.replace(); // for feather Icons
