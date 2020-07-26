@@ -83,6 +83,7 @@ async function run(Layers, Params) {
       $('#modelDownloadButton').click(async function() {
         await model.save('downloads://' + Params.modelName);
         tf.dispose([trained, model]);
+        tf.disposeVariables();
       });
     });
   } catch (error) {
@@ -90,6 +91,7 @@ async function run(Layers, Params) {
     showToast('alert-danger', error, false);
     console.log(error);
     tf.dispose([trained, model]);
+    tf.disposeVariables();
   }
 }
 
