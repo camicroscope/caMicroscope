@@ -919,6 +919,7 @@ function sendAndTrain(userFolder) {
       $('#modelDownloadButton').click(async function() {
         downloadModelFromServer(Model);
       });
+      $('.trainedModelClose, #nextStepButton, .exitWorkbench').unbind('click');
       $('.trainedModelClose, #nextStepButton, .exitWorkbench').click(function() {
         deleteDataFromServer(userFolder);
       });
@@ -927,6 +928,7 @@ function sendAndTrain(userFolder) {
       console.log('ERROR : ', e.responseJSON.message);
       // alert(e.responseJSON.message);
       showToast('alert-danger', e.responseJSON.message, false);
+      deleteDataFromServer(userFolder);
       $('#trainButtonText').show(150);
       $('#trainingLoading').hide(150);
     },

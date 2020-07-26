@@ -54,43 +54,42 @@ async function train(model, data, Params) {
     epochs: Number(Params.epochs),
     shuffle: Params.shuffle,
     callbacks: fitCallbacks,
+  }).then(() => {
+    tf.dispose([trainXs, trainYs, testXs, testYs]);
   });
 }
 
 
 async function run(Layers, Params) {
+  let model; let trained;
   try {
     const data = new Data();
     localforage.getItem('labels').then(async function(content) {
       let urlCreator = window.URL || window.webkitURL;
       let labelsURL = urlCreator.createObjectURL(content);
       LABELS_PATH = labelsURL;
-      try {
-        await data.load();
-        const model = getModel(Layers, Params);
-        tfvis.show.modelSummary({name: 'Model Architecture'}, model);
-        await train(model, data, Params);
-        // alert('Training is done');
-        // await model.save('indexeddb://my-model');
+      await data.load();
+      model = getModel(Layers, Params);
+      tfvis.show.modelSummary({name: 'Model Architecture'}, model);
+      trained = await train(model, data, Params);
+      console.log('Training is done');
+      // await model.save('indexeddb://my-model');
+      $('#trainedMessage').modal('show');
+      $('#nextStepButton').show(200);
+      $('#nextStepButton').click(function() {
         $('#trainedMessage').modal('show');
-        $('#nextStepButton').show(200);
-        $('#nextStepButton').click(function() {
-          $('#trainedMessage').modal('show');
-        });
-        $('#modelDownloadButton').unbind('click');
-        $('#modelDownloadButton').click(async function() {
-          await model.save('downloads://' + Params.modelName);
-        });
-      } catch (error) {
-        // alert(error);
-        console.log(error);
-        showToast('alert-danger', error, false);
-      };
+      });
+      $('#modelDownloadButton').unbind('click');
+      $('#modelDownloadButton').click(async function() {
+        await model.save('downloads://' + Params.modelName);
+        tf.dispose([trained, model]);
+      });
     });
   } catch (error) {
     // alert(error);
     showToast('alert-danger', error, false);
     console.log(error);
+    tf.dispose([trained, model]);
   }
 }
 
