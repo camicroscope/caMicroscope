@@ -916,6 +916,7 @@ function sendAndTrain(userFolder) {
       $('#trainingLoading').hide(150);
       $('#trainedMessage').modal('show');
       $('#nextStepButton').show(200);
+      $('#modelDownloadButton').unbind('click');
       $('#modelDownloadButton').click(async function() {
         downloadModelFromServer(Model);
       });
