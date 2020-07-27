@@ -45,16 +45,16 @@ Save the mask using the save button.
 
 ### Example usage 
 
-![toolbar button](assets/toolbar_seg.png)
+![toolbar button](img/toolbar_seg.png)
 
 Clicking on the roi button opens a window to choose a model from the available ones. Select a desired model.
 
-![model select button](assets/modelSelect.png)
+![model select button](img/modelSelect.png)
 
 
 Now, choose if you want to download only masks or both masks and patches from the next menu. 
 
-![param select button](assets/params.png)
+![param select button](img/params.png)
 
 
 Next, choose if you want to download patches/masks from the complete slide or from a selected region. If you want to download from a selected region, select the region next. After this the segmentation and extraction process will begin . Once finished you'll be prompted to download the patches/masks on your local computer. 
