@@ -23,24 +23,24 @@ The result box shows the class with maximum average probability taken across all
 
 ## Region of Interest (roi) Extraction
 
-> Allows downloading patches from current slide according to given criteria by applying a classification model
+> Allows downloading patches from current slide according to given criteria by applying a classification model.
 
 
 ### Example usage 
 
 ![toolbar button](assets/toolbar.png)
 
-Clicking on the roi button opens a window to choose a model from the available ones. Select a desired model .
+Clicking on the roi button opens a window to choose a model from the available ones. Select a desired model.
 
 ![model select button](assets/modelSelect.png)
 
-Now , choose the parameters according to which the patches will be downloaded from the nexxt menu . You can also use ``` use backend for extracting ``` option to do the processing in the local machine instead of the browser in case of large slides
+
+Now, choose the parameters according to which the patches will be downloaded from the next menu. You can also use ``` use backend for extracting ``` option to do the processing in the local machine instead of the browser in case of large slides.
 
 ![param select button](assets/params.png)
 
 
-
-Next, choose if you want to download patches from the complete slide or from a selected region. If you want to download from a selected region , select the region next. After this the prediction and extraction process will begin . Once finished you'll be prompted to download the patches on your local computer. 
+Next, choose if you want to download patches from the complete slide or from a selected region. If you want to download from a selected region, select the region next. After this the prediction and extraction process will begin . Once finished you'll be prompted to download the patches on your local computer. 
 
 
 

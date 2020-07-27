@@ -1,9 +1,12 @@
-# Lite Segmentation
+
+# Segment App
+
+## Lite Segmentation
 > Segments nuclear material and allows testing segmentation models
 
 <!-- ![](../header.png) -->
 
-## Example usage
+### Example usage
 
 Select the Segmentation button on the toolbar.  Hint: It's the one on the far right.
 
@@ -34,5 +37,28 @@ Select the desired model from the dropdown and select the required area.
 
 Toggle the mask or change the opacity as required.
 Save the mask using the save button.
+
+## Region of Interest (roi) Extraction
+
+> Allows downloading patches and masks from current slide by applying a segmentation model.
+
+
+### Example usage 
+
+![toolbar button](assets/toolbar_seg.png)
+
+Clicking on the roi button opens a window to choose a model from the available ones. Select a desired model.
+
+![model select button](assets/modelSelect.png)
+
+
+Now, choose if you want to download only masks or both masks and patches from the next menu. 
+
+![param select button](assets/params.png)
+
+
+Next, choose if you want to download patches/masks from the complete slide or from a selected region. If you want to download from a selected region, select the region next. After this the segmentation and extraction process will begin . Once finished you'll be prompted to download the patches/masks on your local computer. 
+
+
 
 
