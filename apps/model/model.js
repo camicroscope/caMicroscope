@@ -1572,3 +1572,11 @@ function updateTextInput(val) {
   document.getElementById('textInput').value = val;
 }
 
+
+$(document).keydown(function(event) { 
+  if (event.keyCode == 27) { 
+    $('#roi_panel').hide();
+    $('#choice_panel').hide();
+
+  }
+});

@@ -280,6 +280,7 @@ ul.disabled {
 
 #roi_panel .modalbox-content{
     width: 45%;
+    border-collapse: collapse;
 
 }
 #choice_panel .modalbox-content{
