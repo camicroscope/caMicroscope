@@ -126,14 +126,16 @@ function initCore() {
           color: '#1034A6', // inputs[3].value
         };
 
-        if ($D.heatMapData.provenance.analysis.setting) {
+        if (
+          $D.heatMapData.provenance.analysis.setting &&
+          $D.heatMapData.provenance.analysis.setting.colors &&
+          $D.heatMapData.provenance.analysis.setting.colors.length) {
           opt.mode = $D.heatMapData.provenance.analysis.setting.mode;
           if (opt.mode === 'binal') {
             opt.color = $D.heatMapData.provenance.analysis.setting.colors[0];
           } else if (opt.mode === 'gradient') {
-            let prevColors = $D.heatMapData.provenance.analysis.setting.colors || [];
-            opt.colors = prevColors;
-            opt.steps = prevColors.length + 1;
+            opt.colors = $D.heatMapData.provenance.analysis.setting.colors;
+            opt.steps = $D.heatMapData.provenance.analysis.setting.colors.length;
           }
           if ($D.heatMapData.provenance.analysis.setting.field) {
             opt.currentFieldName = $D.heatMapData.provenance.analysis.setting.field;
