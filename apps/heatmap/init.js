@@ -131,8 +131,9 @@ function initCore() {
           if (opt.mode === 'binal') {
             opt.color = $D.heatMapData.provenance.analysis.setting.colors[0];
           } else if (opt.mode === 'gradient') {
-            opt.colors = $D.heatMapData.provenance.analysis.setting.colors;
-            opt.steps = $D.heatMapData.provenance.analysis.setting.colors.length + 1;
+            let prevColors = $D.heatMapData.provenance.analysis.setting.colors || [];
+            opt.colors = prevColors;
+            opt.steps = prevColors.length + 1;
           }
           if ($D.heatMapData.provenance.analysis.setting.field) {
             opt.currentFieldName = $D.heatMapData.provenance.analysis.setting.field;
