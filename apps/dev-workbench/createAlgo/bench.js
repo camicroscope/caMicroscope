@@ -21,6 +21,7 @@ $(document).ready(function() {
     $('#serverModeIcon').show();
     $('#serverSideToggle').prop('checked', true);
     console.log('Server side: ON');
+    checkForServerPermission();
   }
   $('#headContent').show(400);
   $('#headbar').animate({height: 95}, 500, function() {
@@ -973,4 +974,25 @@ function deleteDataFromServer(userFolder) {
       // alert(e);
     },
   });
+}
+
+// to check if user is allowed to perform server-side training
+function checkForServerPermission() {
+  let userType=getUserType();
+  const store = new Store('../../../data/');
+  store.getUserPermissions(userType).then((response) => response.text())
+      .then((data) => {
+        return data ? JSON.parse(data) : null;
+      })
+      .then((permissions) => {
+        if (permissions === null) {
+          return;
+        }
+        if (permissions.slide.post == false) { // because 'slide.post' is an editor+ level permission
+          $('#serverSideToggle').prop('disabled', true);
+          $('#serverSideToggle').prop('checked', false);
+          $('#serverSideToggle').parent().prop('title', 'Permission not allowed');
+          serverSide = false;
+        }
+      });
 }
