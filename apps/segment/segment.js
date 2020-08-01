@@ -1820,10 +1820,10 @@ async function extractRoiSelect(choices) {
 }
 
 
-$(document).keydown(function(event) { 
-  if (event.keyCode == 27) { 
+window.addEventListener('keydown', function(event) {
+  if (event.code == 'Escape') {
     $('#roi_panel').hide();
     $('#choice_panel').hide();
-
+    $('#model_info').hide();
   }
-});
+}, true);
