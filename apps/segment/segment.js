@@ -1819,3 +1819,11 @@ async function extractRoiSelect(choices) {
   drawRectangle({checked: true, state: 'roi', model: choices.model});
 }
 
+
+window.addEventListener('keydown', function(event) {
+  if (event.code == 'Escape') {
+    $('#roi_panel').hide();
+    $('#choice_panel').hide();
+    $('#model_info').hide();
+  }
+}, true);
