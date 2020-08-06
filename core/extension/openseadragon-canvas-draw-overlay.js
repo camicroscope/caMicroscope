@@ -798,10 +798,15 @@
       if (!(this.drawMode === "line" || this.drawMode == "grid")) {
         let isIntersect = false;
         if (isSelfIntersect(this._current_path_.geometry.coordinates[0])) {
-          alert(
-            "A Self-Intersecting Polygon Will Cause Inaccurate Area and Circumference."
-          );
           isIntersect = true;
+          console.info("The polygon just drawn has an intersection.");
+          if (! window.localStorage.getItem("_intersect_warn")) {
+            alert(
+              "A Self-Intersecting Polygon Will Cause Inaccurate Area and Circumference."
+            );
+            console.info("Firing Intersect user Alert just this once.");
+            window.localStorage.setItem("_intersect_warn", "true");
+          }
         }
         let sqmpsqp = null; // square microns per square pixels
         if (
