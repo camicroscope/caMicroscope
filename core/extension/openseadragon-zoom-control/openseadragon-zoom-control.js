@@ -124,6 +124,7 @@
             this.getAllImageZoomLevelAndRange(this._viewer);
             this.setImageZoomLevel({zoom:this._viewer.viewport.getZoom(true)});
         }.bind(this));
+        this.toggle.addEventListener('click', this.toggleUp.bind(this));
         this.zoomIn.addEventListener('click', this.doZoomIn.bind(this));
         this.zoomOut.addEventListener('click', this.doZoomOut.bind(this));
         viewer.addHandler("canvas-click", function(e){
@@ -164,6 +165,36 @@
             if(index!=null) this.imageZoomIndex = this.range.value = index;
             this.txt.textContent =  `${Number((this._viewer.viewport.viewportToImageZoom(e.zoom)*this.base).toFixed(3))}x`;
 
+    }
+    $.CaZoomControl.prototype.zoomScaleVisible = function(visible) {
+        if(visible) {
+            this.zoomIn.style.display = '';
+            this.range.style.display = '';
+            this.zoomOut.style.display = '';
+            this.idx.style.display = '';
+        } else {
+            this.zoomIn.style.display = 'none';
+            this.range.style.display = 'none';
+            this.zoomOut.style.display = 'none';
+            this.idx.style.display = 'none';
+        }
+    }
+    /**
+     * toggleUp - show/hide navigator
+     *
+     */
+    $.CaZoomControl.prototype.toggleUp = function() {
+        if(this.toggle.textContent=='unfold_more') {
+            this.toggle.textContent = 'unfold_less';
+            this.zoomScaleVisible(true);
+            console.log('show');
+            this._viewer.controls[0].setVisible(true)
+        } else {
+            this.toggle.textContent = 'unfold_more';
+            this.zoomScaleVisible(false);
+            console.log('hide');
+            this._viewer.controls[0].setVisible(false)
+        }
     }
     /**
      * doZoomIn - do one scale move in action
@@ -215,6 +246,14 @@
     $.CaZoomControl.prototype.createZoomControl = function(){
         if(this.element.parentNode) this.element.parentNode.style = 'block';
         this.element.style.display = 'flex';
+
+        // toggle
+        this.toggle = document.createElement( 'div' );
+        this.toggle.classList.add('material-icons');
+        this.toggle.classList.add('md-24');
+        this.toggle.classList.add('zoom');
+        this.toggle.textContent = 'unfold_less';
+
         // zoom in
         this.zoomIn = document.createElement( 'div' );
         this.zoomIn.classList.add('material-icons');
@@ -270,13 +309,13 @@
         this.range = $.makeNeutralElement( 'input' );
         this.range.type = 'range';
 
-
         this.element.appendChild(this.zoomIn);
         this.element.appendChild(this.range);
         this.element.appendChild(this.zoomOut);
         this.element.appendChild(this.idx);
-
+        this.element.appendChild(this.toggle);
     }
+
 
     /**
      * @private
