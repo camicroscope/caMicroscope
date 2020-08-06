@@ -250,3 +250,23 @@ table.data_table tr:hover td {
 background: #71daec !important;
 opacity: 0.3 !important;
 }
+
+@media (max-width: 1200px) {
+  ul.tools>li {
+    height: 2vw !important;
+    width: 2vw !important;
+    min-height: 25px;
+    min-width: 25px;
+  }
+
+  .material-icons.md-24 {
+    font-size: 2vw !important;
+  }
+
+  li.handler{
+    width: 0.5vw !important;
+  }
+  li.seperator{
+    width: 0.5vw !important;
+  }
+}
