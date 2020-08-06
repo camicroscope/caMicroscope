@@ -251,7 +251,7 @@ background: #71daec !important;
 opacity: 0.3 !important;
 }
 
-@media (max-width: 1200px) {
+@media (min-width: 1200px) {
   ul.tools>li {
     height: 2vw !important;
     width: 2vw !important;
