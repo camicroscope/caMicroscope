@@ -1,11 +1,7 @@
 
-var canvas; var ctx; var saveButton;
-var pos = {x: 0, y: 0};
-var rawImage;
-var model;
-
 
 function getModel(Layers, Params) {
+  let model;
   try {
     model = tf.sequential({
       layers: Layers,
@@ -24,7 +20,9 @@ function getModel(Layers, Params) {
         metrics: ['accuracy'],
       });
     }
-  } catch (error) {}
+  } catch (error) {
+    showToast('alert-danger', error, false);
+  }
 
   return model;
 }
@@ -35,7 +33,6 @@ async function train(model, data, Params) {
   const container = {name: 'Model Training', styles: {height: '640px'}};
   const fitCallbacks = tfvis.show.fitCallbacks(container, metrics);
 
-  // const BATCH_SIZE = 512;
   let TRAIN_DATA_SIZE = Params.trainDataSize;
   let TEST_DATA_SIZE = Params.testDataSize;
   let WIDTH = Params.width;
@@ -57,53 +54,44 @@ async function train(model, data, Params) {
     epochs: Number(Params.epochs),
     shuffle: Params.shuffle,
     callbacks: fitCallbacks,
+  }).then(() => {
+    tf.dispose([trainXs, trainYs, testXs, testYs]);
   });
 }
 
 
-// function save(rawImage1) {
-//   try {
-//     var raw = tf.browser.fromPixels(rawImage1, 1);
-//     var resized = tf.image.resizeBilinear(raw, [HEIGHT, WIDTH]);
-//     var tensor = resized.expandDims(0);
-//     var prediction = model.predict(tensor);
-//     var pIndex = tf.argMax(prediction, 1).dataSync();
-
-//     alert(pIndex);
-//   } catch (error) {
-//     // alert(error);
-//   }
-// }
-
-
 async function run(Layers, Params) {
-  // console.log(Params);
+  let model; let trained;
   try {
     const data = new Data();
     localforage.getItem('labels').then(async function(content) {
       let urlCreator = window.URL || window.webkitURL;
       let labelsURL = urlCreator.createObjectURL(content);
       LABELS_PATH = labelsURL;
-      try {
-        await data.load();
-        const model = getModel(Layers, Params);
-        tfvis.show.modelSummary({name: 'Model Architecture'}, model);
-        await train(model, data, Params);
-        // alert('Training is done');
-        // await model.save('indexeddb://my-model');
+      await data.load();
+      model = getModel(Layers, Params);
+      tfvis.show.modelSummary({name: 'Model Architecture'}, model);
+      trained = await train(model, data, Params);
+      console.log('Training is done');
+      // await model.save('indexeddb://my-model');
+      $('#trainedMessage').modal('show');
+      $('#nextStepButton').show(200);
+      $('#nextStepButton').click(function() {
         $('#trainedMessage').modal('show');
-        $('#nextStepButton').show(200);
-        $('#modelDownloadButton').click(async function() {
-          await model.save('downloads://' + Params.modelName);
-        });
-      } catch (error) {
-        alert(error);
-        console.log(error);
-      };
+      });
+      $('#modelDownloadButton').unbind('click');
+      $('#modelDownloadButton').click(async function() {
+        await model.save('downloads://' + Params.modelName);
+        tf.dispose([trained, model]);
+        tf.disposeVariables();
+      });
     });
   } catch (error) {
-    alert(error);
+    // alert(error);
+    showToast('alert-danger', error, false);
     console.log(error);
+    tf.dispose([trained, model]);
+    tf.disposeVariables();
   }
 }
 

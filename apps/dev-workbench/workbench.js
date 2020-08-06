@@ -55,9 +55,7 @@ function checkDataset(evt) {
         .catch(function(e) {
           console.log(e);
           // alert('Please select a valid zip file');
-          $('#toastAlert').removeClass('alert-success alert-danger alert-info');
-          $('#toastContent').text('Please Select a valid zip file');
-          $('#toastAlert').addClass('alert-danger show');
+          showToast('alert-danger', 'Please Select a valid zip file');
         });
   });
 }
@@ -83,9 +81,9 @@ $('#spriteInput').change(function(evt) {
       let zipFile = evt.target.files[0];
       localforage.setItem('zipFile', zipFile);
     } else {
-      $('#toastAlert').removeClass('alert-success alert-danger alert-info');
-      $('#toastContent').html('<b>Invalid zip file !!!</b> Please Select a valid zip file');
-      $('#toastAlert').addClass('alert-danger show');
+      showToast('alert-danger',
+          '<b>Invalid zip file !!!</b> Please Select a valid zip file',
+      );
       // alert('Invalid zip file!!');
     }
   });
@@ -240,9 +238,7 @@ function getSprite(data, userFolder, custom) {
     error: function(e) {
       console.log('ERROR : ', e['responseJSON']['error']);
       // alert(e['responseJSON']['error']);
-      $('#toastAlert').removeClass('alert-success alert-danger alert-info');
-      $('#toastContent').text(e['responseJSON']['error']);
-      $('#toastAlert').addClass('alert-danger show');
+      showToast('alert-danger', e['responseJSON']['error']);
       $('#labelsSubmitLoading').hide(200);
       $('#labelsSubmitText').show(200);
     },
@@ -263,7 +259,7 @@ function cleanBackend(userFolder) {
         console.log('ERROR : ', e);
         resetLabelsModal();
         // $('#labelsUploadModal').modal('hide');
-        alert('Error');
+        // alert('Error');
       },
     });
   });
@@ -329,9 +325,7 @@ function sendToLoader(files, names, custom = false) {
       error: function(e) {
         console.log('ERROR : ', e['responseJSON']['error']);
         // alert(e['responseJSON']['error']);
-        $('#toastAlert').removeClass('alert-success alert-danger alert-info');
-        $('#toastContent').text(e['responseJSON']['error']);
-        $('#toastAlert').addClass('alert-danger show');
+        showToast('alert-danger', e['responseJSON']['error']);
         $('#labelsSubmitButton').prop('disabled', false);
         $('#labelsSubmitText').show(200);
         $('#labelsSubmitLoading').hide(200);
@@ -345,10 +339,10 @@ async function customDataToLoader(file, name, chunkSize = 1024 * 1024 * 10) {
   // console.log(file.size);
   let offset = 0;
   function makeUserFolderName(length) {
-    var result = '';
-    var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    var charactersLength = characters.length;
-    for ( var i = 0; i < length; i++ ) {
+    let result = '';
+    let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let charactersLength = characters.length;
+    for ( let i = 0; i < length; i++ ) {
       result += characters.charAt(Math.floor(Math.random() * charactersLength));
     }
     return result;
@@ -398,9 +392,7 @@ function sendSplitFile(file, data) {
           resolve();
           console.log('ERROR : ', e['responseJSON']['error']);
           // alert(e['responseJSON']['error']);
-          $('#toastAlert').removeClass('alert-success alert-danger alert-info');
-          $('#toastContent').text(e['responseJSON']['error']);
-          $('#toastAlert').addClass('alert-danger show');
+          showToast('alert-danger', e['responseJSON']['error']);
           $('#labelsSubmitButton').prop('disabled', false);
           $('#labelsSubmitText').show(200);
           $('#labelsSubmitLoading').hide(200);
@@ -412,3 +404,18 @@ function sendSplitFile(file, data) {
     };
   });
 }
+
+function showToast(type, message, dismissible = true) {
+  $('#toastPlaceholder').css('display', 'flex');
+  $('#toastAlert').removeClass('alert-success alert-danger alert-info');
+  $('#toastContent').html(message);
+  $('#toastAlert').addClass(type + ' show');
+  if (dismissible) {
+    setTimeout(function() {
+      $('#toastAlert').removeClass('show');
+      $('#toastPlaceholder').hide();
+    }, 5000);
+  }
+}
+
+

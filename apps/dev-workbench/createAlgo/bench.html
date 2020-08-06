@@ -60,6 +60,8 @@
     <script src="../../../common/jszip.min.js"></script>
     <script src="../../../common/FileSaver.min.js"></script>
     <script src="../../../common/localforage.min.js"></script>
+    <script src="../../../core/Store.js"></script>
+    <script src="../../../common/util.js"></script>
   </head>
   <body>
     <!--Navbar-->
@@ -80,6 +82,13 @@
           title="Advanced Mode is on"
           class="fas fa-tools"
         ></i>
+        &nbsp;
+        <i
+          id="serverModeIcon"
+          style="display: none;"
+          title="Server Training Mode is on"
+          class="fas fa-server"
+        ></i>
       </span>
       <ul class="navbar-nav mr-auto">
         <!-- Dropdown -->
@@ -98,7 +107,7 @@
           <div
             class="dropdown-menu dropdown-primary"
             aria-labelledby="navbarDropdownMenuLink"
-            style="margin-left: -6em;"
+            style="margin-left: -8em;"
           >
             <a class="dropdown-item" href="#"
               ><i class="fas fa-file-export"></i>&nbsp;&nbsp;Export</a
@@ -106,7 +115,8 @@
             <a class="dropdown-item" href="#"
               ><i class="fas fa-file-import"></i>&nbsp;&nbsp;Import</a
             >
-            <form style="width: 12em;">
+            <hr style="margin-top: 0;" />
+            <form style="width: 14em;">
               <div style="margin-left: 1em;">
                 <div
                   class="custom-control custom-switch"
@@ -119,6 +129,22 @@
                   />
                   <label class="custom-control-label" for="advancedToggle"
                     >Advanced Mode</label
+                  >
+                </div>
+              </div>
+              <hr />
+              <div style="margin-left: 1em; margin-bottom: 0.4em;">
+                <div
+                  class="custom-control custom-switch"
+                  title="Toggle Server-side Model Training"
+                >
+                  <input
+                    type="checkbox"
+                    class="custom-control-input"
+                    id="serverSideToggle"
+                  />
+                  <label class="custom-control-label" for="serverSideToggle"
+                    >Server-side Training</label
                   >
                 </div>
               </div>
@@ -215,7 +241,7 @@
                 max="0.98"
                 id="testTrainRatio"
                 class="form-control"
-                value="0.80"
+                value="0.85"
               />
             </div>
             <div style="display: flex;">
@@ -252,8 +278,7 @@
                   class="form-control form-control-sm"
                   type="number"
                   title="Width"
-                  value="60"
-                  min="30"
+                  min="20"
                   style="
                     width: 6em;
                     margin: 1em;
@@ -267,9 +292,8 @@
                   id="datasetNormalHeight"
                   class="form-control form-control-sm"
                   type="number"
-                  value="60"
                   title="height"
-                  min="30"
+                  min="20"
                   style="
                     width: 6em;
                     margin: 1em;
@@ -912,7 +936,15 @@
             display: none;
           "
         >
-          Train Model
+          <span id="trainButtonText">Train Model</span>
+          <div
+            id="trainingLoading"
+            class="spinner-border"
+            role="status"
+            style="display: none;"
+          >
+            <span class="sr-only">Loading...</span>
+          </div>
         </button>
         <button
           id="nextStepButton"
@@ -946,7 +978,7 @@
             </h5>
             <button
               type="button"
-              class="close"
+              class="close trainedModelClose"
               data-dismiss="modal"
               aria-label="Close"
             >
@@ -976,7 +1008,7 @@
           <div class="modal-footer">
             <a href="../../table.html">
               <button
-                class="btn btn-danger"
+                class="btn btn-danger exitWorkbench"
                 style="
                   padding: 0.6em;
                   font-size: 1em;
@@ -990,7 +1022,7 @@
               </button>
             </a>
             <button
-              class="btn btn-secondary"
+              class="btn btn-secondary trainedModelClose"
               style="padding: 0.6em; font-size: 1em; border-radius: 5px;"
               data-dismiss="modal"
             >
@@ -1007,6 +1039,49 @@
         </div>
       </div>
     </div>
+
+    <!-- Toast Alert -->
+    <div
+      id="toastPlaceholder"
+      style="
+        position: fixed;
+        top: 1em;
+        width: 100%;
+        display: none;
+        align-content: center;
+      "
+    >
+      <div
+        id="toastAlert"
+        style="max-width: 40em; min-width: 10em; margin: 0 auto;"
+        class="alert alert-dismissible fade"
+        role="alert"
+      >
+        <span id="toastContent"></span>
+        <button
+          type="button"
+          class="close"
+          onclick="$('#toastAlert').removeClass('show');"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    </div>
+
+    <script>
+      function showToast(type, message, dismissible = true) {
+        $('#toastPlaceholder').css('display', 'flex');
+        $('#toastAlert').removeClass('alert-success alert-danger alert-info');
+        $('#toastContent').html(message);
+        $('#toastAlert').addClass(type + ' show');
+        if (dismissible) {
+          setTimeout(function () {
+            $('#toastAlert').removeClass('show');
+            $('#toastPlaceholder').hide();
+          }, 5000);
+        }
+      }
+    </script>
     <script src="./utils/data.js"></script>
     <script src="./utils/script.js"></script>
     <script src="./bench.js"></script>
