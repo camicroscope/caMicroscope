@@ -467,6 +467,24 @@ function importWork() {
               });
             });
           }
+          if (JSON.parse(file).step == 2) {
+            zip.file('dataset.zip').async('blob').then((dataset) => {
+              localforage.setItem('zipFile', dataset);
+              localStorage.setItem('import', 'true');
+              localforage.setItem('importProp', JSON.parse(file));
+              if (JSON.parse(file).advancedMode) {
+                localStorage.setItem('advancedMode', 'true');
+              } else {
+                localStorage.setItem('advancedMode', 'false');
+              }
+              if (JSON.parse(file).serverSide) {
+                localStorage.setItem('serverSide', 'true');
+              } else {
+                localStorage.setItem('serverSide', 'false');
+              }
+              window.open('./createAlgo/bench.html', '_self');
+            });
+          }
         });
       }
     }).catch(function(e) {
