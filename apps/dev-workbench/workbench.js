@@ -74,7 +74,7 @@ $('#spriteInput').change(function(evt) {
       $('.secondStepHead').attr('class', 'secondStepHead active');
       $('#firstStepButton').hide();
       $('#secondStepButton').show();
-      $('#exportOption').show().click(function() {
+      $('#exportOption').show().unbind('click').click(function() {
         exportWork();
       });
       $('.navbar-brand').text(' Workbench');
@@ -451,7 +451,20 @@ function importWork() {
           if (JSON.parse(file).step == 1) {
             zip.file('dataset.zip').async('blob').then((dataset) => {
               localforage.setItem('zipFile', dataset);
-              window.open('./createAlgo/bench.html', '_self');
+              $('#headContent').text('Dataset selected successfully');
+              $('#headSub').text('You can proceed to step 2');
+              $('.firstStepHead').attr('class', 'firstStepHead done');
+              $('.done span.circle').css('background-color', 'green');
+              $('.secondStepHead').attr('class', 'secondStepHead active');
+              $('#firstStepButton').hide();
+              $('#secondStepButton').show();
+              $('#exportOption').show().unbind('click').click(function() {
+                exportWork();
+              });
+              $('.navbar-brand').text(' Workbench');
+              $('#step1Link').click(function() {
+                dataSelect();
+              });
             });
           }
         });
