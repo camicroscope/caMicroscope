@@ -109,12 +109,13 @@
             aria-labelledby="navbarDropdownMenuLink"
             style="margin-left: -8em;"
           >
-            <a class="dropdown-item" href="#"
+            <a id="exportOption" class="dropdown-item" href="#"
               ><i class="fas fa-file-export"></i>&nbsp;&nbsp;Export</a
             >
-            <a class="dropdown-item" href="#"
+            <a id="importOption" class="dropdown-item" href="#"
               ><i class="fas fa-file-import"></i>&nbsp;&nbsp;Import</a
             >
+            <input type="file" id="importFile" style="display: none;" />
             <hr style="margin-top: 0;" />
             <form style="width: 14em;">
               <div style="margin-left: 1em;">
@@ -782,14 +783,14 @@
                   id="optimizer"
                 >
                   <option value="0" selected>Select optimizer</option>
-                  <option value="1">Adam</option>
-                  <option value="2">Adadelta</option>
-                  <option value="3">Adagrad</option>
-                  <option value="4">Adamax</option>
-                  <option value="5">Ftrl</option>
-                  <option value="6">Nadam</option>
-                  <option value="7">RMSprop</option>
-                  <option value="8">SGD</option>
+                  <option value="1">adam</option>
+                  <option value="2">adadelta</option>
+                  <option value="3">adagrad</option>
+                  <option value="4">adamax</option>
+                  <option value="5">ftrl</option>
+                  <option value="6">nadam</option>
+                  <option value="7">rmsprop</option>
+                  <option value="8">sgd</option>
                 </select>
                 <div
                   class="md-form advancedLayersSettings"
@@ -1061,7 +1062,7 @@
         <button
           type="button"
           class="close"
-          onclick="$('#toastAlert').removeClass('show');"
+          onclick="$('#toastAlert').removeClass('show'); $('#toastPlaceholder').hide();"
         >
           <span aria-hidden="true">&times;</span>
         </button>

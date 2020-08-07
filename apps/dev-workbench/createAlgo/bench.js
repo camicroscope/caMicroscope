@@ -21,7 +21,6 @@ $(document).ready(function() {
     $('#serverModeIcon').show();
     $('#serverSideToggle').prop('checked', true);
     console.log('Server side: ON');
-    checkForServerPermission();
   }
   $('#headContent').show(400);
   $('#headbar').animate({height: 95}, 500, function() {
@@ -35,6 +34,7 @@ $(document).ready(function() {
       $('#RGBorGrayscaleLabel').text('Grayscale');
     }
   });
+  checkForServerPermission();
 });
 
 $('#advancedToggle').change(function() {
@@ -80,10 +80,7 @@ $('#goBack').click(function() {
 
 function getZipFile() {
   localforage.getItem('zipFile').then(function(zip) {
-    // let blob = base64toBlob(zip, 'application/zip');
     JSZip.loadAsync(zip).then(function(zip) {
-      zip.forEach(function(relativePath, zipEntry) {
-      });
       zip.file('data.jpg').async('blob').then(
           function success(content) {
             let img = new Image();
@@ -109,23 +106,28 @@ function getZipFile() {
           function error(e) {
             console.log(e);
           },
-      );
-      zip.file('labels.bin').async('blob').then(
-          function success(content) {
-            localforage.setItem('labels', content);
-          },
-          function error(e) {
-            console.log(e);
-          },
-      );
-      zip.file('labelnames.csv').async('string').then(
-          function success(content) {
-            $('#classNames').val(content.trim());
-          },
-          function error(e) {
-            console.log(e);
-          },
-      );
+      ).then(()=>{
+        zip.file('labels.bin').async('blob').then(
+            function success(content) {
+              localforage.setItem('labels', content);
+            },
+            function error(e) {
+              console.log(e);
+            },
+        );
+      }).then(()=>{
+        zip.file('labelnames.csv').async('string').then(
+            function success(content) {
+              $('#classNames').val(content.trim());
+              if (localStorage.getItem('import') == 'true') {
+                setLayersFromImport();
+              }
+            },
+            function error(e) {
+              console.log(e);
+            },
+        );
+      });
     });
   });
 }
@@ -169,10 +171,6 @@ $('#initSettingsSubmit').submit(function() {
   Params.height = Number($('#datasetNormalHeight').val());
   Params.width = Number($('#datasetNormalWidth').val());
   Params.modelName = $('#modelName').val();
-  if (advancedMode) {
-    Params.modelCompileLoss = $('#modelCompileLoss').val();
-    Params.modelCompileMetrics = $('#modelCompileMetrics').val().trim().split(',');
-  }
   if (serverSide) {
     Params.numClasses = classes.length;
     Params.advancedMode = advancedMode;
@@ -186,18 +184,18 @@ $('#initSettingsSubmit').submit(function() {
   $('#layersEditor').show(200);
   $('#layersEditor').css('display', 'flex');
   $('#userTrain').show(200);
-  $('#headContent').hide('50');
+  $('#headContent').hide(200);
   $('#headContent').text('Customize the layers for ' + '"' + $('#modelName').val() + '"');
-  $('#headContent').show('100');
+  $('#headContent').show(300);
   advancedModeChanges();
   $('#goBack').unbind('click');
   $('#goBack').click(function() {
     $('#initialSettings').show(200);
     $('#layersEditor').hide(200);
     $('#userTrain').hide(200);
-    $('#headContent').hide('50');
+    $('#headContent').hide(200);
     $('#headContent').text('Design your own ML training algorithm here');
-    $('#headContent').show('100');
+    $('#headContent').show(300);
     $('#goBack').unbind('click');
     $('#goBack').click(function() {
       window.history.back();
@@ -432,6 +430,7 @@ function saveLayers() {
           activation: $('#inputActivation').val(),
           strides: Number($('#inputStride').val()),
           kernelInitializer: $('#inputKernelInitializer').val(),
+          padding: $('#inputLayerPadding').val(),
         },
         {
           layer: 'dense',
@@ -453,6 +452,7 @@ function saveLayers() {
           activation: $('#inputActivation').val(),
           strides: Number($('#inputStride').val()),
           kernelInitializer: $('#inputKernelInitializer').val(),
+          padding: $('#inputLayerPadding').val(),
         }),
         tf.layers.dense({
           units: classes.length,
@@ -821,25 +821,9 @@ function saveLayers() {
   // console.log(Layers);
 }
 
-// let optimizer = tf.train.adam();
-
-$('#optimizer').change(function() {
-  let optimizer = '';
-  let selected = $(this).val();
-  if ((selected == 1)) optimizer = 'adam';
-  else if ((selected == 2)) optimizer = 'adadelta';
-  else if ((selected == 3)) optimizer = 'adagrade';
-  else if ((selected == 4)) optimizer = 'adamax';
-  else if ((selected == 5)) optimizer = 'ftrl';
-  else if ((selected == 6)) optimizer = 'nadam';
-  else if ((selected == 7)) optimizer = 'rmsprop';
-  else if ((selected == 8)) optimizer = 'sgd';
-  console.log(optimizer);
-  Params.optimizer = optimizer;
-});
 
 Params.shuffle = true;
-$('#shuffle').change(function() {
+$('.shuffle').change(function() {
   if ($(this).is(':checked')) {
     Params.shuffle = true;
   } else {
@@ -853,6 +837,11 @@ $('#userTrain').click(function() {
   saveLayers();
   Params.epochs = $('#epochs').val();
   Params.batchSize = $('#batchSize').val();
+  Params.optimizer = $('#optimizer option:selected').text();
+  if (advancedMode) {
+    Params.modelCompileLoss = $('#modelCompileLoss').val();
+    Params.modelCompileMetrics = $('#modelCompileMetrics').val().trim().split(',');
+  }
   try {
     if (serverSide) {
       $('#trainButtonText').hide(150);
@@ -995,4 +984,182 @@ function checkForServerPermission() {
           serverSide = false;
         }
       });
+}
+
+
+$('#exportOption').unbind('click').click(function() {
+  exportWork();
+});
+
+function exportWork() {
+  localforage.getItem('zipFile').then(function(datasetZip) {
+    let prop = {step: 2};
+    let serverSide1 = serverSide;
+    serverSide = true;
+    saveLayers();
+    prop.Params = Params;
+    prop.Layers = Layers;
+    prop.Params.classes = $('#classNames').val();
+    serverSide = serverSide1;
+    prop.advancedMode = advancedMode;
+    prop.serverSide = serverSide;
+    Params.optimizer = $('#optimizer option:selected').text();
+    prop.Params.epochs = $('#epochs').val();
+    prop.Params.batchSize = $('#batchSize').val();
+    if ($('#RGBorGrayscale').is(':checked')) {
+      Params.rgb = true;
+    } else {
+      Params.rgb = false;
+    }
+    if (advancedMode) {
+      Params.modelCompileLoss = $('#modelCompileLoss').val();
+      Params.modelCompileMetrics = $('#modelCompileMetrics').val().trim().split(',');
+    }
+    let zip = new JSZip();
+    console.log(prop);
+    zip.file('dataset.zip', datasetZip);
+    zip.file('prop.json', JSON.stringify(prop));
+    zip.generateAsync({type: 'blob'}).then(function(blob) {
+      saveAs(blob, 'userExport-Step2.zip');
+    });
+  });
+}
+
+
+$('#importOption').click(function() {
+  importWork();
+});
+
+function importWork() {
+  $('#importFile').click().unbind('change').change(function(evt) {
+    let zipContents = [];
+    JSZip.loadAsync(evt.target.files[0]).then(function(file) {
+      file.forEach(function(relativePath, zipEntry) {
+        zipContents.push(zipEntry.name);
+      });
+      return file;
+    }).then(function(zip) {
+      if (
+        !zipContents.includes('dataset.zip') ||
+        !zipContents.includes('prop.json') ||
+        zipContents.length != 2
+      ) {
+        showToast('alert-danger', 'Invalid import zip file!', false);
+      } else {
+        zip.file('prop.json').async('string').then((prop) => {
+          if (JSON.parse(prop).step == 2) {
+            zip.file('dataset.zip').async('blob').then((dataset) => {
+              localforage.setItem('zipFile', dataset);
+              localStorage.setItem('import', 'true');
+              localforage.setItem('importProp', JSON.parse(prop));
+              if (JSON.parse(prop).advancedMode) {
+                localStorage.setItem('advancedMode', 'true');
+              } else {
+                localStorage.setItem('advancedMode', 'false');
+              }
+              if (JSON.parse(prop).serverSide) {
+                localStorage.setItem('serverSide', 'true');
+              } else {
+                localStorage.setItem('serverSide', 'false');
+              }
+              location.reload();
+            });
+          } else {
+            showToast('alert-danger', 'Please select a file exported from STEP 2 only !');
+          }
+        });
+      }
+    }).catch(function(e) {
+      console.log(e);
+      showToast('alert-danger', 'Please Select a valid zip file');
+    });
+  });
+}
+
+
+function setLayersFromImport() {
+  localforage.getItem('importProp').then(function(prop) {
+    console.log(prop);
+    $('#datasetNormalWidth').val(prop.Params.width);
+    $('#datasetNormalHeight').val(prop.Params.height);
+    $('#modelName').val(prop.Params.modelName);
+    $('#classNames').val(prop.Params.classes);
+    $('#trainDataSize').val(prop.Params.trainDataSize);
+    $('#testDataSize').val(prop.Params.testDataSize);
+    $('#testTrainRatio').val(($('#trainDataSize').val() / Number($('#numImages').text())).toFixed(2));
+    $('#optimizer option').filter(function() {
+      return ($(this).text() == prop.Params.optimizer);
+    }).prop('selected', true);
+    $('#kernelSize').val(prop.Layers[0].kernelSize);
+    $('#batchSize').val(Number(prop.Params.batchSize));
+    $('#epochs').val(Number(prop.Params.epochs));
+    $('#modelCompileLoss').val(prop.Params.modelCompileLoss);
+    $('#modelCompileMetrics').val(prop.Params.modelCompileMetrics.join());
+
+    if (prop.Params.rgb) {
+      $('#RGBorGrayscale').prop('checked', true);
+    } else {
+      $('#RGBorGrayscale').prop('checked', false);
+    }
+    if (prop.Params.shuffle) {
+      $('.shuffle').prop('checked', true).change();
+    } else {
+      $('.shuffle').prop('checked', false).change();
+    }
+    $('#filters').val(prop.Layers[0].filters);
+    if (advancedMode) {
+      $('#inputPadding').val(prop.Layers[0].padding);
+      $('#inputStride').val(prop.Layers[0].strides);
+      $('#inputActivation').val(prop.Layers[0].activation);
+      $('#inputKernelInitializer').val(prop.Layers[0].kernelInitializer);
+      $('#outputActivation').val(prop.Layers[prop.Layers.length - 1].activation);
+      $('#outputKernelInitializer').val(prop.Layers[prop.Layers.length - 1].kernelInitializer);
+    }
+
+    for (let i = 1; i < prop.Layers.length - 1; i++) {
+      $('#add' + i).click();
+    }
+    $('#add1').mouseleave();
+
+    $('#initSettingsSubmit').submit(function() {
+      let i = 1;
+      $('.LayerCard').each(function() {
+        let id = $(this).attr('id');
+        if (id != 'inputLayer' && id != 'outputLayer') {
+          if (prop.Layers[i].layer == 'dense') {
+            $('#' + id + ' .modelClassSelect').val(1).change();
+          } else if (prop.Layers[i].layer == 'conv2d') {
+            $('#' + id + ' .modelClassSelect').val(2).change();
+          } else if (prop.Layers[i].layer == 'flatten') {
+            $('#' + id + ' .modelClassSelect').val(3).change();
+          } else if (prop.Layers[i].layer == 'batchNormalization') {
+            $('#' + id + ' .modelClassSelect').val(6).change();
+          } else if (prop.Layers[i].layer == 'dropout') {
+            $('#' + id + ' .modelClassSelect').val(4).change();
+          } else if (prop.Layers[i].layer == 'maxpooling2d') {
+            $('#' + id + ' .modelClassSelect').val(5).change();
+          } else if (prop.Layers[i].layer == 'activation') {
+            $('#' + id + ' .modelClassSelect').val(7).change();
+          } else if (prop.Layers[i].layer == 'conv2dTranspose') {
+            $('#' + id + ' .modelClassSelect').val(8).change();
+          } else if (prop.Layers[i].layer == 'averagePooling2d') {
+            $('#' + id + ' .modelClassSelect').val(9).change();
+          } else if (prop.Layers[i].layer == 'globalAveragePooling2d') {
+            $('#' + id + ' .modelClassSelect').val(10).change();
+          } else if (prop.Layers[i].layer == 'globalMaxPooling2d') {
+            $('#' + id + ' .modelClassSelect').val(11).change();
+          }
+          delete prop.Layers[i].layer;
+          for (let param in prop.Layers[i]) {
+            if (prop.Layers[i].hasOwnProperty(param)) {
+              $('#' + id + ' #' + param).val(prop.Layers[i][param]);
+              $('#' + id + ' #' + param).next('label').addClass('active');
+            }
+          }
+          i++;
+        }
+      });
+    });
+  });
+  localStorage.removeItem('import');
 }

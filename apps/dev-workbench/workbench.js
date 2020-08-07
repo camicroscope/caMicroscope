@@ -74,6 +74,9 @@ $('#spriteInput').change(function(evt) {
       $('.secondStepHead').attr('class', 'secondStepHead active');
       $('#firstStepButton').hide();
       $('#secondStepButton').show();
+      $('#exportOption').show().click(function() {
+        exportWork();
+      });
       $('.navbar-brand').text(' Workbench');
       $('#step1Link').click(function() {
         dataSelect();
@@ -143,23 +146,19 @@ function displayLabels(data, names, custom = false) {
   $('#labelsFilterList').text('');
   for (let i = 0; i < data.labels.length; i++) {
     $('#labelsFilterList').append(
-        ` <li
-      class="list-group-item d-flex justify-content-between align-items-center" >
+        ` <li class="list-group-item d-flex justify-content-between align-items-center" >
       <div class="custom-control custom-checkbox">
         <input
           type="checkbox"
           class="custom-control-input"
-          id="labelCheck` +
-        i +
-        `" checked /> <label class="custom-control-label" for="labelCheck` +
-        i +
-        `" >` +
+          id="labelCheck` + i +
+        `" checked /> <label class="custom-control-label" for="labelCheck` + i + `" >` +
         sanitize(data.labels[i].toString()) +
         `</label>
       </div>
       <span class="badge badge-primary badge-pill">` +
         sanitize(data.counts[i].toString()) +
-        `</span>
+      `</span>
     </li>`,
     );
   }
@@ -418,4 +417,49 @@ function showToast(type, message, dismissible = true) {
   }
 }
 
+
+function exportWork() {
+  localforage.getItem('zipFile').then(function(datasetZip) {
+    let prop = JSON.stringify({step: 1});
+    let zip = new JSZip();
+    zip.file('dataset.zip', datasetZip);
+    zip.file('prop.json', prop);
+    zip.generateAsync({type: 'blob'}).then(function(blob) {
+      saveAs(blob, 'userExport-Step1.zip');
+    });
+  });
+}
+
+
+function importWork() {
+  $('#importFile').click().unbind('change').change(function(evt) {
+    let zipContents = [];
+    JSZip.loadAsync(evt.target.files[0]).then(function(file) {
+      file.forEach(function(relativePath, zipEntry) {
+        zipContents.push(zipEntry.name);
+      });
+      return file;
+    }).then(function(zip) {
+      if (
+        !zipContents.includes('dataset.zip') ||
+        !zipContents.includes('prop.json') ||
+        zipContents.length != 2
+      ) {
+        showToast('alert-danger', 'Invalid import zip file!', false);
+      } else {
+        zip.file('prop.json').async('string').then((file) => {
+          if (JSON.parse(file).step == 1) {
+            zip.file('dataset.zip').async('blob').then((dataset) => {
+              localforage.setItem('zipFile', dataset);
+              window.open('./createAlgo/bench.html', '_self');
+            });
+          }
+        });
+      }
+    }).catch(function(e) {
+      console.log(e);
+      showToast('alert-danger', 'Please Select a valid zip file');
+    });
+  });
+}
 

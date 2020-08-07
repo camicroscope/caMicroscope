@@ -86,15 +86,21 @@
             >Options</a
           >
           <div
+            style="margin-left: -3em;"
             class="dropdown-menu dropdown-primary"
             aria-labelledby="navbarDropdownMenuLink"
           >
-            <a class="dropdown-item" href="#"
+            <a
+              id="exportOption"
+              class="dropdown-item"
+              href="#"
+              style="display: none;"
               ><i class="fas fa-file-export"></i>&nbsp;&nbsp;Export</a
             >
-            <a class="dropdown-item" href="#"
+            <a class="dropdown-item" href="#" onclick="importWork()"
               ><i class="fas fa-file-import"></i>&nbsp;&nbsp;Import</a
             >
+            <input type="file" id="importFile" style="display: none;" />
           </div>
         </li>
       </ul>
@@ -120,7 +126,7 @@
           <ul class="stepper stepper-vertical">
             <!-- First Step -->
             <li class="active firstStepHead">
-              <a id="step1Link" href="#" style="cursor: default;">
+              <a id="step1Link" href="#">
                 <span class="circle">1</span>
                 <span class="label">Select/Create Training Data</span>
               </a>
@@ -449,7 +455,7 @@
         <button
           type="button"
           class="close"
-          onclick="$('#toastAlert').removeClass('show');"
+          onclick="$('#toastAlert').removeClass('show'); $('#toastPlaceholder').hide();"
         >
           <span aria-hidden="true">&times;</span>
         </button>
