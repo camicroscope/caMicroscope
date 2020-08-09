@@ -79,8 +79,8 @@ $('#goBack').click(function() {
 
 
 function getZipFile() {
-  localforage.getItem('zipFile').then(function(zip) {
-    JSZip.loadAsync(zip).then(function(zip) {
+  localforage.getItem('zipFile').then(function(zipFile) {
+    JSZip.loadAsync(zipFile).then(function(zip) {
       zip.file('data.jpg').async('blob').then(
           function success(content) {
             let img = new Image();
@@ -905,7 +905,7 @@ function sendAndTrain(userFolder) {
       $('#trainButtonText').show(150);
       $('#trainingLoading').hide(150);
       $('#trainedMessage').modal('show');
-      $('#nextStepButton').show(200);
+      // $('#nextStepButton').show(200);
       $('#modelDownloadButton').unbind('click');
       $('#modelDownloadButton').click(async function() {
         downloadModelFromServer(Model);
@@ -937,7 +937,17 @@ function downloadModelFromServer(Model) {
     timeout: 600000,
     success: function(recData) {
       console.log(recData);
-      window.open('../../..' + recData.url);
+      // window.open('../../..' + recData.url);
+      fetch(recData.url).then((res) => res.blob()).then((blob) => {
+        JSZip.loadAsync(blob).then(function(zip) {
+          zip.file('model.json').async('blob').then((modelJSON) => {
+            saveAs(modelJSON, Params.modelName + '.json');
+          });
+          zip.file('weights.bin').async('blob').then((weights) => {
+            saveAs(weights, 'weights.bin');
+          });
+        });
+      });
     },
     error: function(e) {
       alert(e);
@@ -1049,20 +1059,22 @@ function importWork() {
         zip.file('prop.json').async('string').then((prop) => {
           if (JSON.parse(prop).step == 2) {
             zip.file('dataset.zip').async('blob').then((dataset) => {
-              localforage.setItem('zipFile', dataset);
-              localStorage.setItem('import', 'true');
-              localforage.setItem('importProp', JSON.parse(prop));
-              if (JSON.parse(prop).advancedMode) {
-                localStorage.setItem('advancedMode', 'true');
-              } else {
-                localStorage.setItem('advancedMode', 'false');
-              }
-              if (JSON.parse(prop).serverSide) {
-                localStorage.setItem('serverSide', 'true');
-              } else {
-                localStorage.setItem('serverSide', 'false');
-              }
-              location.reload();
+              dataset = new Blob([dataset], {type: 'application/zip'});
+              localforage.setItem('zipFile', dataset).then(() => {
+                localStorage.setItem('import', 'true');
+                localforage.setItem('importProp', JSON.parse(prop));
+                if (JSON.parse(prop).advancedMode) {
+                  localStorage.setItem('advancedMode', 'true');
+                } else {
+                  localStorage.setItem('advancedMode', 'false');
+                }
+                if (JSON.parse(prop).serverSide) {
+                  localStorage.setItem('serverSide', 'true');
+                } else {
+                  localStorage.setItem('serverSide', 'false');
+                }
+                location.reload();
+              });
             });
           } else {
             showToast('alert-danger', 'Please select a file exported from STEP 2 only !');
@@ -1162,4 +1174,10 @@ function setLayersFromImport() {
     });
   });
   localStorage.removeItem('import');
+  showToast('alert-info', 'Import Successful !');
 }
+
+$('.exitWorkbench').click(function() {
+  localforage.clear();
+  window.open('../../table.html', '_self');
+});

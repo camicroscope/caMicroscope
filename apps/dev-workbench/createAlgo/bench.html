@@ -963,7 +963,7 @@
       </div>
     </div>
 
-    <!-- Modal -->
+    <!-- Trained Message Modal -->
     <div
       class="modal fade"
       id="trainedMessage"
@@ -989,9 +989,8 @@
           <div class="modal-body">
             Download model json and binaries from here which might be used in
             the caMicroscope prediction tool. <br />
-            After download you can proceed to the next step of testing the
-            model. Or if you want to customize/train model again then close
-            this. <br />
+            After download you can exit the workbench or click on close to
+            customize/train model again. <br />
             <button
               id="modelDownloadButton"
               type="button"
@@ -1007,21 +1006,19 @@
             </button>
           </div>
           <div class="modal-footer">
-            <a href="../../table.html">
-              <button
-                class="btn btn-danger exitWorkbench"
-                style="
-                  padding: 0.6em;
-                  font-size: 1em;
-                  border-radius: 5px;
-                  position: absolute;
-                  left: 1em;
-                  bottom: 0.8em;
-                "
-              >
-                Exit Workbench
-              </button>
-            </a>
+            <button
+              class="btn btn-danger exitWorkbench"
+              style="
+                padding: 0.6em;
+                font-size: 1em;
+                border-radius: 5px;
+                position: absolute;
+                left: 1em;
+                bottom: 0.8em;
+              "
+            >
+              Exit Workbench
+            </button>
             <button
               class="btn btn-secondary trainedModelClose"
               style="padding: 0.6em; font-size: 1em; border-radius: 5px;"

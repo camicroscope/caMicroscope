@@ -458,6 +458,7 @@ function importWork() {
               $('.secondStepHead').attr('class', 'secondStepHead active');
               $('#firstStepButton').hide();
               $('#secondStepButton').show();
+              showToast('alert-info', 'Import Successful !');
               $('#exportOption').show().unbind('click').click(function() {
                 exportWork();
               });
@@ -469,20 +470,21 @@ function importWork() {
           }
           if (JSON.parse(file).step == 2) {
             zip.file('dataset.zip').async('blob').then((dataset) => {
-              localforage.setItem('zipFile', dataset);
-              localStorage.setItem('import', 'true');
-              localforage.setItem('importProp', JSON.parse(file));
-              if (JSON.parse(file).advancedMode) {
-                localStorage.setItem('advancedMode', 'true');
-              } else {
-                localStorage.setItem('advancedMode', 'false');
-              }
-              if (JSON.parse(file).serverSide) {
-                localStorage.setItem('serverSide', 'true');
-              } else {
-                localStorage.setItem('serverSide', 'false');
-              }
-              window.open('./createAlgo/bench.html', '_self');
+              localforage.setItem('zipFile', dataset).then(() => {
+                localStorage.setItem('import', 'true');
+                localforage.setItem('importProp', JSON.parse(file));
+                if (JSON.parse(file).advancedMode) {
+                  localStorage.setItem('advancedMode', 'true');
+                } else {
+                  localStorage.setItem('advancedMode', 'false');
+                }
+                if (JSON.parse(file).serverSide) {
+                  localStorage.setItem('serverSide', 'true');
+                } else {
+                  localStorage.setItem('serverSide', 'false');
+                }
+                window.open('./createAlgo/bench.html', '_self');
+              });
             });
           }
         });
