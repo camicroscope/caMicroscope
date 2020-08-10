@@ -126,6 +126,7 @@ function resetLabelsModal(custom = false) {
   $('#labelsSubmitFinish').hide();
   $('#labelsUploadForm').unbind('submit');
   $('#labelsUploadForm').trigger('reset');
+  $('#selectResolution').hide();
 
   $('#labelsUploadForm').on('submit', function() {
     $('#labelsSubmitButton').prop('disabled', true);
