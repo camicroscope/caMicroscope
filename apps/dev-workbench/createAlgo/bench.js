@@ -1181,3 +1181,15 @@ $('.exitWorkbench').click(function() {
   localforage.clear();
   window.open('../../table.html', '_self');
 });
+
+$('.helpButton').click(function() {
+  fetch('../readme.md').then((res) => res.blob()).then((blob) => {
+    let f = new FileReader();
+    f.onload = function(e) {
+      $('#helpModal .modal-body').html(marked(e.target.result));
+      $('#helpModal .modal-body td, #helpModal .modal-body th')
+          .css('border', '2px solid #dddddd').css('padding', '5px');
+    };
+    f.readAsText(blob);
+  });
+});

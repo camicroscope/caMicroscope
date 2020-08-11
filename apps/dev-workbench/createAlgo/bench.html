@@ -56,6 +56,7 @@
     />
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-vis"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <link rel="stylesheet" href="./bench.css" />
     <script src="../../../common/jszip.min.js"></script>
     <script src="../../../common/FileSaver.min.js"></script>
@@ -114,6 +115,15 @@
             >
             <a id="importOption" class="dropdown-item" href="#"
               ><i class="fas fa-file-import"></i>&nbsp;&nbsp;Import</a
+            >
+            <a
+              class="dropdown-item helpButton"
+              href="#"
+              data-toggle="modal"
+              data-target="#helpModal"
+            >
+              <i class="fas fa-question-circle"></i>
+              &nbsp;&nbsp;Help/User Guide</a
             >
             <input type="file" id="importFile" style="display: none;" />
             <hr style="margin-top: 0;" />
@@ -1032,6 +1042,45 @@
               style="padding: 0.6em; font-size: 1em; border-radius: 5px;"
             >
               Next <i data-feather="chevron-right" class="text-white"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Help/User-Guide Modal -->
+    <div
+      class="modal fade"
+      id="helpModal"
+      tabindex="-1"
+      role="dialog"
+      aria-hidden="true"
+    >
+      <div
+        class="modal-dialog modal-top modal-full-height modal-dialog-scrollable"
+        role="document"
+      >
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="helpModalTitle">Help - User Guide</h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body" style="align-content: center;"></div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary px-3"
+              data-dismiss="modal"
+              style="border-radius: 5px; font-size: 1em; padding: 0.65em;"
+            >
+              Close
             </button>
           </div>
         </div>

@@ -19,7 +19,7 @@ The compatible zip file can be created using the dataset generator tool. The too
 - caMicrocope Labeling tool exports
 -  Custom data
 
-**Labeling tool files** are exported from caMicroscope labeling tool. The labels are extracted from the zip file(s) and used as classes for the model with respective images.
+**Labeling tool files** are exported from caMicroscope labeling tool. The labels are extracted from the zip file(s) and used as classes for the model with respective images. <br>
 **Custom Data** has to be a zip file which must contain folders where every folder-name must be the label name of images it contains inside.
 
 Custom Label filtering and image resolution can be adjusted accordingly in both types of data.
@@ -91,7 +91,7 @@ After the user clicks on ‘train’ the training process will start and visuali
 |strides|(*number*) The strides of the convolution in each dimension.|
 |units|(*number*) Positive integer, dimensionality of the output space|
 
-Tensorflow.js [documentation](https://js.tensorflow.org/api/latest/) can be referred for more detailed use.
+<br>Tensorflow.js [documentation](https://js.tensorflow.org/api/latest/) can be referred for more detailed use.
 
 ## 3. Saving the trained model
 After the training is complete, the user is prompted to download the trained model. Doing so will save two files: *model JSON* and *weight binaries*.
