@@ -56,6 +56,7 @@
     />
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-vis"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <link rel="stylesheet" href="./bench.css" />
     <script src="../../../common/jszip.min.js"></script>
     <script src="../../../common/FileSaver.min.js"></script>
@@ -109,12 +110,22 @@
             aria-labelledby="navbarDropdownMenuLink"
             style="margin-left: -8em;"
           >
-            <a class="dropdown-item" href="#"
+            <a id="exportOption" class="dropdown-item" href="#"
               ><i class="fas fa-file-export"></i>&nbsp;&nbsp;Export</a
             >
-            <a class="dropdown-item" href="#"
+            <a id="importOption" class="dropdown-item" href="#"
               ><i class="fas fa-file-import"></i>&nbsp;&nbsp;Import</a
             >
+            <a
+              class="dropdown-item helpButton"
+              href="#"
+              data-toggle="modal"
+              data-target="#helpModal"
+            >
+              <i class="fas fa-question-circle"></i>
+              &nbsp;&nbsp;Help/User Guide</a
+            >
+            <input type="file" id="importFile" style="display: none;" />
             <hr style="margin-top: 0;" />
             <form style="width: 14em;">
               <div style="margin-left: 1em;">
@@ -782,14 +793,14 @@
                   id="optimizer"
                 >
                   <option value="0" selected>Select optimizer</option>
-                  <option value="1">Adam</option>
-                  <option value="2">Adadelta</option>
-                  <option value="3">Adagrad</option>
-                  <option value="4">Adamax</option>
-                  <option value="5">Ftrl</option>
-                  <option value="6">Nadam</option>
-                  <option value="7">RMSprop</option>
-                  <option value="8">SGD</option>
+                  <option value="1">adam</option>
+                  <option value="2">adadelta</option>
+                  <option value="3">adagrad</option>
+                  <option value="4">adamax</option>
+                  <option value="5">ftrl</option>
+                  <option value="6">nadam</option>
+                  <option value="7">rmsprop</option>
+                  <option value="8">sgd</option>
                 </select>
                 <div
                   class="md-form advancedLayersSettings"
@@ -962,7 +973,7 @@
       </div>
     </div>
 
-    <!-- Modal -->
+    <!-- Trained Message Modal -->
     <div
       class="modal fade"
       id="trainedMessage"
@@ -988,9 +999,8 @@
           <div class="modal-body">
             Download model json and binaries from here which might be used in
             the caMicroscope prediction tool. <br />
-            After download you can proceed to the next step of testing the
-            model. Or if you want to customize/train model again then close
-            this. <br />
+            After download you can exit the workbench or click on close to
+            customize/train model again. <br />
             <button
               id="modelDownloadButton"
               type="button"
@@ -1006,21 +1016,19 @@
             </button>
           </div>
           <div class="modal-footer">
-            <a href="../../table.html">
-              <button
-                class="btn btn-danger exitWorkbench"
-                style="
-                  padding: 0.6em;
-                  font-size: 1em;
-                  border-radius: 5px;
-                  position: absolute;
-                  left: 1em;
-                  bottom: 0.8em;
-                "
-              >
-                Exit Workbench
-              </button>
-            </a>
+            <button
+              class="btn btn-danger exitWorkbench"
+              style="
+                padding: 0.6em;
+                font-size: 1em;
+                border-radius: 5px;
+                position: absolute;
+                left: 1em;
+                bottom: 0.8em;
+              "
+            >
+              Exit Workbench
+            </button>
             <button
               class="btn btn-secondary trainedModelClose"
               style="padding: 0.6em; font-size: 1em; border-radius: 5px;"
@@ -1034,6 +1042,45 @@
               style="padding: 0.6em; font-size: 1em; border-radius: 5px;"
             >
               Next <i data-feather="chevron-right" class="text-white"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Help/User-Guide Modal -->
+    <div
+      class="modal fade"
+      id="helpModal"
+      tabindex="-1"
+      role="dialog"
+      aria-hidden="true"
+    >
+      <div
+        class="modal-dialog modal-top modal-full-height modal-dialog-scrollable"
+        role="document"
+      >
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="helpModalTitle">Help - User Guide</h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body" style="align-content: center;"></div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary px-3"
+              data-dismiss="modal"
+              style="border-radius: 5px; font-size: 1em; padding: 0.65em;"
+            >
+              Close
             </button>
           </div>
         </div>
@@ -1061,7 +1108,7 @@
         <button
           type="button"
           class="close"
-          onclick="$('#toastAlert').removeClass('show');"
+          onclick="$('#toastAlert').removeClass('show'); $('#toastPlaceholder').hide();"
         >
           <span aria-hidden="true">&times;</span>
         </button>

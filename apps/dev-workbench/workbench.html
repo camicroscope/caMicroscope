@@ -55,6 +55,7 @@
       rel="stylesheet"
       href="https://fonts.googleapis.com/icon?family=Material+Icons"
     />
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="../../common/jszip.min.js"></script>
     <script src="../../common/FileSaver.min.js"></script>
     <script src="../../common/localforage.min.js"></script>
@@ -86,14 +87,29 @@
             >Options</a
           >
           <div
+            style="margin-left: -3em;"
             class="dropdown-menu dropdown-primary"
             aria-labelledby="navbarDropdownMenuLink"
           >
-            <a class="dropdown-item" href="#"
+            <a
+              id="exportOption"
+              class="dropdown-item"
+              href="#"
+              style="display: none;"
               ><i class="fas fa-file-export"></i>&nbsp;&nbsp;Export</a
             >
-            <a class="dropdown-item" href="#"
+            <a class="dropdown-item" href="#" onclick="importWork()"
               ><i class="fas fa-file-import"></i>&nbsp;&nbsp;Import</a
+            >
+            <input type="file" id="importFile" style="display: none;" />
+            <a
+              class="dropdown-item helpButton"
+              href="#"
+              data-toggle="modal"
+              data-target="#helpModal"
+            >
+              <i class="fas fa-question-circle"></i>
+              &nbsp;&nbsp;Help/User Guide</a
             >
           </div>
         </li>
@@ -120,7 +136,7 @@
           <ul class="stepper stepper-vertical">
             <!-- First Step -->
             <li class="active firstStepHead">
-              <a id="step1Link" href="#" style="cursor: default;">
+              <a id="step1Link" href="#">
                 <span class="circle">1</span>
                 <span class="label">Select/Create Training Data</span>
               </a>
@@ -185,13 +201,12 @@
             <li class="thirdStepHead">
               <a href="#!">
                 <span class="circle">3</span>
-                <span class="label"> Save and test your work </span>
+                <span class="label"> Save your work </span>
               </a>
               <!-- Section Description -->
               <div class="step-content grey lighten-3">
                 <p style="font-size: 1em;">
-                  Save your model (JSON/binaries) to disk for later use and test
-                  your model on images.<br />
+                  Save your model (JSON/binaries) to disk for later use<br />
                 </p>
               </div>
             </li>
@@ -428,6 +443,45 @@
       </div>
     </div>
 
+    <!-- Help/User-Guide Modal -->
+    <div
+      class="modal fade"
+      id="helpModal"
+      tabindex="-1"
+      role="dialog"
+      aria-hidden="true"
+    >
+      <div
+        class="modal-dialog modal-top modal-full-height modal-dialog-scrollable"
+        role="document"
+      >
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="helpModalTitle">Help - User Guide</h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body" style="align-content: center;"></div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary px-3"
+              data-dismiss="modal"
+              style="border-radius: 5px; font-size: 1em; padding: 0.65em;"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Toast Alert -->
     <div
       id="toastPlaceholder"
@@ -449,7 +503,7 @@
         <button
           type="button"
           class="close"
-          onclick="$('#toastAlert').removeClass('show');"
+          onclick="$('#toastAlert').removeClass('show'); $('#toastPlaceholder').hide();"
         >
           <span aria-hidden="true">&times;</span>
         </button>
