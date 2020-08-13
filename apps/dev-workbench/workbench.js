@@ -5,26 +5,23 @@ $(document).ready(function() {
 });
 
 $('#goBack').click(function() {
-  // window.open('../table.html', '_self');
   window.history.back();
 });
 
+// initialize Step 1
 function dataSelect() {
   $('.navbar-brand').text(' Workbench - Step 1');
   $('#stepper').hide(300);
-  $('#headContent').hide(300);
-  $('#headContent').text('Select or create your own dataset');
-  $('#headContent').show(180);
+  $('#headContent').hide(300).text('Select or create your own dataset').show(180);
   $('#headSub').hide(200);
-  // $('#headContent').text('Select or create your dataset');
   $('#headContent').show(180);
   $('#cards').show(200);
-  $('#goBack').unbind('click');
-  $('#goBack').click(function() {
+  $('#goBack').unbind('click').click(function() {
     location.reload();
   });
 }
 
+// validating the uploaded dataset zip
 function checkDataset(evt) {
   let zipContents = [];
   let zipFile = evt.target.files;
@@ -67,8 +64,7 @@ $('#spriteInput').change(function(evt) {
       $('#stepper').show(200);
       $('#headContent').text('Dataset selected successfully');
       $('#headSub').text('You can proceed to step 2');
-      $('#headContent').show(400);
-      $('#headSub').show(400);
+      $('#headContent, #headSub').show(400);
       $('.firstStepHead').attr('class', 'firstStepHead done');
       $('.done span.circle').css('background-color', 'green');
       $('.secondStepHead').attr('class', 'secondStepHead active');
@@ -102,6 +98,7 @@ $('.labelsInputGroup').change(function(evt) {
   }
 });
 
+// resetting the dataset creator modal
 function resetLabelsModal(custom = false) {
   $('#labelsSubmitButton').prop('disabled', false);
   if (custom) {
@@ -121,11 +118,8 @@ function resetLabelsModal(custom = false) {
   $('#labelsSubmitLoading').hide();
   $('.labelsInputGroup').show();
   $('#labelsFilterList').text('');
-  $('#filterLabels').hide();
-  $('#labelsDatasetZip').hide();
-  $('#labelsSubmitFinish').hide();
-  $('#labelsUploadForm').unbind('submit');
-  $('#labelsUploadForm').trigger('reset');
+  $('#filterLabels, #labelsDatasetZip, #labelsSubmitFinish').hide();
+  $('#labelsUploadForm').unbind('submit').trigger('reset');
   $('#selectResolution').hide();
 
   $('#labelsUploadForm').on('submit', function() {
@@ -137,7 +131,11 @@ function resetLabelsModal(custom = false) {
     let fileNames = $.map($('#labelsInput').prop('files'), function(val) {
       return val.name;
     });
-    sendToLoader(files, fileNames, custom);
+    if (custom) {
+      customDataToLoader(files[0], fileNames[0]);
+    } else {
+      sendToLoader(files, fileNames, custom);
+    }
   });
 }
 
@@ -152,14 +150,13 @@ function displayLabels(data, names, custom = false) {
         <input
           type="checkbox"
           class="custom-control-input"
-          id="labelCheck` + i +
-        `" checked /> <label class="custom-control-label" for="labelCheck` + i + `" >` +
-        sanitize(data.labels[i].toString()) +
-        `</label>
+          id="labelCheck${i}" checked /> <label class="custom-control-label" for="labelCheck${i}" >
+        ${sanitize(data.labels[i].toString())}
+        </label>
       </div>
-      <span class="badge badge-primary badge-pill">` +
-        sanitize(data.counts[i].toString()) +
-      `</span>
+      <span class="badge badge-primary badge-pill">
+        ${sanitize(data.counts[i].toString())}
+      </span>
     </li>`,
     );
   }
@@ -169,8 +166,7 @@ function displayLabels(data, names, custom = false) {
 
 function selectLabels(labels, userFolder, names, custom = false) {
   let selected = [];
-  $('#labelsUploadForm').unbind('submit');
-  $('#labelsUploadForm').on('submit', function() {
+  $('#labelsUploadForm').unbind('submit').on('submit', function() {
     $('#labelsSubmitButton').prop('disabled', true);
     $('#labelsSubmitText').hide(200);
     $('#labelsSubmitLoading').show(200);
@@ -191,16 +187,14 @@ function selectLabels(labels, userFolder, names, custom = false) {
     $('#labelsSubmitButton').prop('disabled', false);
     $('#labelsSubmitLoading').hide(200);
     $('#filterLabels').hide(150);
-    $('#selectResolution').show(200);
-    $('#labelsSubmitText').show(200);
+    $('#selectResolution, #labelsSubmitText').show(200);
     $('#labelSelectModalTitle').text('Select resolution');
     selectResolution(data, userFolder, custom);
   });
 }
 
 function selectResolution(data, userFolder, custom = false) {
-  $('#labelsUploadForm').unbind('submit');
-  $('#labelsUploadForm').on('submit', function() {
+  $('#labelsUploadForm').unbind('submit').on('submit', function() {
     $('#labelsSubmitButton').prop('disabled', true);
     $('#labelsSubmitText').hide(200);
     $('#labelsSubmitLoading').show(200);
@@ -210,6 +204,7 @@ function selectResolution(data, userFolder, custom = false) {
   });
 }
 
+// Getting spritesheet/dataset from slideloader
 function getSprite(data, userFolder, custom) {
   let url = '../../loader/workbench/generateSprite';
   if (custom) {
@@ -226,8 +221,7 @@ function getSprite(data, userFolder, custom) {
       console.log(done);
       $('#labelsSubmitButton').prop('disabled', false);
       $('#labelsSubmitFinish').show(200);
-      $('#labelsSubmitLoading').hide(200);
-      $('#selectResolution').hide(200);
+      $('#labelsSubmitLoading, #selectResolution').hide(200);
       $('#labelsDatasetZip').show(200);
       $('#labelSelectModalTitle').text('Dataset created successfully');
       $('#datasetDownloadButton').click(function() {
@@ -245,9 +239,9 @@ function getSprite(data, userFolder, custom) {
   });
 }
 
+// Clean user folder on backend after dataset creation
 function cleanBackend(userFolder) {
-  $('#labelsUploadForm').unbind('submit');
-  $('#labelsUploadForm').on('submit', function() {
+  $('#labelsUploadForm').unbind('submit').on('submit', function() {
     $.ajax({
       type: 'POST',
       url: '../../loader/workbench/deleteDataset/' + userFolder,
@@ -280,13 +274,12 @@ function sanitize(string) {
   return string.replace(reg, (match) => map[match]);
 }
 
+// Sending caM Labels data to slideloader for dataset/spritesheet creation
 function sendToLoader(files, names, custom = false) {
-  if (custom) {
-    customDataToLoader(files[0], names[0]);
-    return;
-  }
   let Promises = [];
   let data = {files: [], fileNames: names};
+
+  // convert a file/blob to base64 string
   function getBase64(file) {
     Promises.push(
         new Promise((resolve, reject) => {
@@ -334,11 +327,11 @@ function sendToLoader(files, names, custom = false) {
   });
 }
 
-
+// Send custom data to slideLoader in chunks for dataset creation
 async function customDataToLoader(file, name, chunkSize = 1024 * 1024 * 10) {
   // console.log(file.size);
   let offset = 0;
-  function makeUserFolderName(length) {
+  function makeUserFolderName(length) { // generate random folder name for user
     let result = '';
     let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     let charactersLength = characters.length;
@@ -362,6 +355,7 @@ async function customDataToLoader(file, name, chunkSize = 1024 * 1024 * 10) {
   }
 }
 
+// send splitted files data to slideloader (for custom data)
 function sendSplitFile(file, data) {
   return new Promise((resolve, reject) => {
     let reader = new FileReader();
@@ -484,6 +478,8 @@ function importWork() {
                 } else {
                   localStorage.setItem('serverSide', 'false');
                 }
+
+                // go to step 2
                 window.open('./createAlgo/bench.html', '_self');
               });
             });
@@ -497,6 +493,7 @@ function importWork() {
   });
 }
 
+// getting markdown from readme.md and parsing/displaying it as user-guide
 $('.helpButton').click(function() {
   fetch('./readme.md').then((res) => res.blob()).then((blob) => {
     let f = new FileReader();
