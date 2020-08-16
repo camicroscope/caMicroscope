@@ -34,6 +34,7 @@ $(document).ready(function() {
       $('#RGBorGrayscaleLabel').text('Grayscale');
     }
   });
+  $('#exportOption').hide();
   checkForServerPermission();
 });
 
@@ -181,7 +182,7 @@ $('#initSettingsSubmit').submit(function() {
   $('#outputLayer').find('#units').first().val(classes.length);
   $('#initialSettings').hide(200);
   $('#layersEditor').show(200).css('display', 'flex');
-  $('#userTrain').show(200);
+  $('#userTrain, #exportOption').show(200);
   $('#headContent').hide(200)
       .text('Customize the layers for ' + '"' + $('#modelName').val() + '"').show(300);
   advancedModeChanges();

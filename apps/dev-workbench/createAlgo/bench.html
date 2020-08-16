@@ -79,14 +79,12 @@
         Workbench - Step 2 &nbsp;
         <i
           id="advancedModeIcon"
-          style="display: none;"
           title="Advanced Mode is on"
           class="fas fa-tools"
         ></i>
         &nbsp;
         <i
           id="serverModeIcon"
-          style="display: none;"
           title="Server Training Mode is on"
           class="fas fa-server"
         ></i>
@@ -125,7 +123,7 @@
               <i class="fas fa-question-circle"></i>
               &nbsp;&nbsp;Help/User Guide</a
             >
-            <input type="file" id="importFile" style="display: none;" />
+            <input type="file" id="importFile" />
             <hr style="margin-top: 0;" />
             <form style="width: 14em;">
               <div style="margin-left: 1em;">
@@ -168,7 +166,7 @@
 
     <div id="headbar" style="height: 0;">
       <br />
-      <div id="headContent" style="font-size: xx-large; display: none;">
+      <div id="headContent" style="font-size: xx-large;">
         Design your own ML training algorithm here
       </div>
       <br />
@@ -184,7 +182,6 @@
     <div
       id="initialSettings"
       style="
-        display: none;
         align-items: center;
         padding: 1em;
         margin-bottom: -5em;
@@ -344,7 +341,7 @@
                 value="8"
               />
             </div>
-            <div class="advancedInitialSettings" style="display: none;">
+            <div class="advancedInitialSettings">
               <div style="display: flex;">
                 Padding: &nbsp;<input
                   required
@@ -426,7 +423,7 @@
             </div>
             <div
               class="advancedInitialSettings"
-              style="margin-top: 0.8em; display: none;"
+              style="margin-top: 0.8em;"
             >
               <b>Output Layer (Dense):</b>
               <div style="display: flex; margin-top: 0.8em;">
@@ -483,7 +480,7 @@
       </div>
     </div>
 
-    <div id="layersEditor" style="display: none; align-items: center;">
+    <div id="layersEditor" style="align-items: center;">
       <div style="text-align: center; margin: 0 auto;">
         <div>
           <i
@@ -596,7 +593,7 @@
                   </div>
                   <div
                     class="md-form advancedLayersSettings"
-                    style="margin: 0 auto; width: 5em; display: none;"
+                    style="margin: 0 auto; width: 5em;"
                   >
                     <input
                       type="text"
@@ -609,7 +606,7 @@
                   </div>
                   <div
                     class="md-form advancedLayersSettings"
-                    style="margin: 0 auto; width: 5em; display: none;"
+                    style="margin: 0 auto; width: 5em;"
                   >
                     <input
                       type="number"
@@ -622,7 +619,7 @@
                   </div>
                   <div
                     class="md-form advancedLayersSettings"
-                    style="margin: 0 auto; width: 9em; display: none;"
+                    style="margin: 0 auto; width: 9em;"
                   >
                     <input
                       type="text"
@@ -646,7 +643,7 @@
                   <button
                     type="button"
                     class="btn btn-danger"
-                    style="margin: 0 auto; display: none;"
+                    style="margin: 0 auto;"
                     id="deleteLayer"
                   >
                     Delete
@@ -729,7 +726,7 @@
                   </div>
                   <div
                     class="md-form advancedLayersSettings"
-                    style="margin: 0 auto; width: 9em; display: none;"
+                    style="margin: 0 auto; width: 9em;"
                   >
                     <input
                       type="text"
@@ -753,7 +750,7 @@
                     type="button"
                     class="btn btn-danger"
                     id="deleteLayer"
-                    style="margin: 0 auto; display: none;"
+                    style="margin: 0 auto;"
                   >
                     Delete
                   </button>
@@ -824,7 +821,6 @@
                     margin: 0 auto;
                     width: 20em;
                     margin-top: 1.5em;
-                    display: none;
                   "
                 >
                   <input
@@ -842,7 +838,7 @@
                     margin: 0 auto;
                     width: 20em;
                     margin-top: 1.5em;
-                    display: none;
+                    
                   "
                 >
                   <input
@@ -960,7 +956,7 @@
             border-radius: 5px;
             font-size: 1em;
             padding: 0.7em;
-            display: none;
+            
           "
         >
           <span id="trainButtonText">Train Model</span>
@@ -968,7 +964,7 @@
             id="trainingLoading"
             class="spinner-border"
             role="status"
-            style="display: none;"
+     
           >
             <span class="sr-only">Loading...</span>
           </div>
@@ -981,7 +977,7 @@
             padding: 0.6em;
             font-size: 1em;
             border-radius: 5px;
-            display: none;
+       
           "
         >
           Next <i data-feather="chevron-right" class="text-white"></i>
@@ -1103,7 +1099,6 @@
         position: fixed;
         top: 1em;
         width: 100%;
-        display: none;
         align-content: center;
       "
     >

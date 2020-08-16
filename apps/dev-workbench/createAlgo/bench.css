@@ -33,3 +33,20 @@
 #resetButton:hover {
   transform: rotate(60deg);
 }
+
+/* All with display: none */
+#advancedModeIcon,
+#serverModeIcon,
+#importFile,
+#headContent,
+#initialSettings,
+.advancedInitialSettings,
+.advancedLayersSettings,
+#layersEditor,
+#deleteLayer,
+#userTrain,
+#trainingLoading,
+#nextStepButton,
+#toastPlaceholder {
+  display: none;
+}
