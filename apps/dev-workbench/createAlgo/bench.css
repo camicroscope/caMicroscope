@@ -26,3 +26,10 @@
   border-color: #31aa4f;
   background-color: #31aa4f;
 }
+
+#resetButton {
+  transition: transform ease 0.5s;
+}
+#resetButton:hover {
+  transform: rotate(60deg);
+}

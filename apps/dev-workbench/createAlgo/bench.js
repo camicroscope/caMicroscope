@@ -1192,3 +1192,16 @@ $('.helpButton').click(function() {
     f.readAsText(blob);
   });
 });
+
+function resetLayers() {
+  $('.add').each(function() {
+    if ($(this).next().attr('id') != 'outputLayer') {
+      $(this).next().remove();
+    }
+  });
+  $('.add').each(function() {
+    if ($(this).attr('id') != 'add1') {
+      $(this).remove();
+    }
+  });
+}
