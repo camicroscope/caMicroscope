@@ -18,3 +18,18 @@
 .btn {
   text-transform: unset !important;
 }
+
+/* All display none */
+#importFile,
+#headContent,
+#headSub,
+#secondStepButton,
+#cards,
+#filterLabels,
+#labelsDatasetZip,
+#selectResolution,
+#labelsSubmitLoading,
+#labelsSubmitFinish,
+#toastPlaceholder {
+  display: none;
+}
