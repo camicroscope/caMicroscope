@@ -778,6 +778,44 @@ class Store {
     });
   }
 
+  addPresetLabels(labels) {
+    const suffix = 'Presetlabels/add';
+    const url = this.base + suffix;
+    return fetch(url, {
+      method: 'POST',
+      credentials: 'include',
+      mode: 'cors',
+      body: JSON.stringify(labels),
+    }).then(this.errorHandler);
+  }
+
+  updatePresetLabels(key, labels) {
+    const suffix = 'Presetlabels/update';
+    const url = this.base + suffix;
+    const query = {key: key};
+
+    return fetch(url + '?' + objToParamStr(query), {
+      method: 'POST',
+      credentials: 'include',
+      mode: 'cors',
+      body: JSON.stringify(labels),
+    }).then(this.errorHandler);
+  }
+
+  removePresetLabels(key) {
+    const suffix = 'Presetlabels/remove';
+    const url = this.base + suffix;
+    const query = {
+      key:key
+    };
+    return fetch(url + '?' + objToParamStr(query), {
+      method: 'POST',
+      credentials: 'include',
+      mode: 'cors'
+    }).then(this.errorHandler);
+  }  
+
+
   // Update slide review status
   updateSlideReview(id, newStatus) {
     const suffix = 'Slide/update';

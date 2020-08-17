@@ -276,6 +276,14 @@ opacity: 0.3 !important;
 
   .material-icons.md-24 {
     font-size: 2vw !important;
+    min-width: 25px;
+    min-height: 25px;
   }
 
+}
+
+.color-picker.static {
+  display: inline-block;
+  position: static;
+  box-shadow: none;
 }
