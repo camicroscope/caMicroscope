@@ -594,7 +594,7 @@ async function initUIcomponents() {
 
   $UI.labelsSideMenu.addContent(labels_title);
 
-  $D.labels = await $CAMIC.store.getConfigByName('labels').then((list)=>list.length==0?null:list[0]);
+  $D.labels = await $CAMIC.store.getConfigByName('preset_label').then((list)=>list.length==0?null:list[0]);
   
 
     // onAdd()

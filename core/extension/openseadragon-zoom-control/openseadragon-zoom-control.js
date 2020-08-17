@@ -187,12 +187,10 @@
         if(this.toggle.textContent=='unfold_more') {
             this.toggle.textContent = 'unfold_less';
             this.zoomScaleVisible(true);
-            console.log('show');
             this._viewer.controls[0].setVisible(true)
         } else {
             this.toggle.textContent = 'unfold_more';
             this.zoomScaleVisible(false);
-            console.log('hide');
             this._viewer.controls[0].setVisible(false)
         }
     }

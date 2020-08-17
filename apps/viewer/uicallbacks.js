@@ -1930,6 +1930,7 @@ async function editPresetLabelsHandler(oldElt, newLabel){
   if(rs.ok&&rs.nModified > 0) {
     $UI.labelsViewer.setLabels(oldElt,newLabel)
     $UI.message.add(`Label "${newLabel.type}" Has been Updated`);
+    if(oldElt.classList.contains('selected')) drawLabel({value: 'prelabels',checked:true})
   }else {
     $UI.message.addError('Updating The Label Has Failed');
   }
