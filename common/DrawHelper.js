@@ -164,10 +164,12 @@ caDrawHelper.prototype.drawPolygon = function(ctx, paths){
     // close path and set style
     path.closePath()
     if(ctx.isFill ==undefined || ctx.isFill){
-        path.fill(ctx);
+        // path.fill(ctx);
+        path.stroke(ctx);
     }else{
         path.stroke(ctx);
     }
+    
     // return points and path
     return path
 }

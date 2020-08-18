@@ -350,17 +350,24 @@
             div.style.cursor = 'point';
             ctx.lineJoin = 'round';
             ctx.lineCap = 'round';
-            ctx.fillStyle = hexToRgbA(style.color,0.5);
+            ctx.fillStyle = hexToRgbA(style.color, 0.2);
             ctx.strokeStyle = style.color;
             ctx.lineWidth = style.lineWidth;
             
 
             if(style.isFill ==undefined || style.isFill){
+                const imagingHelper = this._viewer.imagingHelper;
+                const lineWidth = (imagingHelper.physicalToDataX(2) - imagingHelper.physicalToDataX(0))>> 0;
+                ctx.lineWidth = lineWidth;
+                console.log(ctx.lineWidth)
+                path.stroke(this._hover_ctx_);
                 path.fill(this._hover_ctx_);
+
             }else{
                 const imagingHelper = this._viewer.imagingHelper;
                 const lineWidth = (imagingHelper.physicalToDataX(2) - imagingHelper.physicalToDataX(0))>> 0;
                 ctx.lineWidth = lineWidth;
+                console.log(ctx.lineWidth)
                 path.stroke(this._hover_ctx_);
             }
             

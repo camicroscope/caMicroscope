@@ -99,6 +99,10 @@ class MessageQueue {
   add(text, time = 5000) {
     this.__add(text, 'info', time);
   }
+  
+  addSmall(text,time = 1000) {
+    this.__add(text, 'small', time);
+  }
   /**
      * @private
      * add the different type of message to the message queue.

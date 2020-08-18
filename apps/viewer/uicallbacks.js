@@ -1038,136 +1038,6 @@ function saveBrushLabel(isOff) {
   });
 }
 
-// function savePresetLabel() {
-//   if ($CAMIC.viewer.canvasDrawInstance._path_index === 0) {
-//     // toast
-//     $UI.message.addWarning('<i class="small material-icons">info</i> No Markup On Annotation. Try Holding And Dragging.', 4000)
-//     return;
-//   }
-//   // save
-//   const data = $UI.toolbar
-//       .getSubTool('preset_label')
-//       .querySelector('li.leaf.checked').dataset;
-//   const execId = data.type + randomId();
-//   const noteData = {
-//     name: execId,
-//     notes: data.type,
-//   };
-//   const feature = $CAMIC.viewer.canvasDrawInstance.getImageFeatureCollection()
-//       .features[0];
-//   let annotJson;
-//   if (feature.properties.size) {
-//     // brush
-//     const values = getGrids(
-//         feature.geometry.coordinates[0],
-//         feature.properties.size,
-//     );
-//     const set = new Set();
-//     values.map((i) => i.toString()).forEach((v) => set.add(v));
-//     const points = Array.from(set).map((d) => d.split(','));
-//     annotJson = {
-//       creator: getUserId(),
-//       created_date: new Date(),
-//       provenance: {
-//         image: {
-//           slide: $D.params.slideId,
-//         },
-//         analysis: {
-//           source: 'human',
-//           execution_id: execId,
-//           name: noteData.name,
-//           type: 'label',
-//           isGrid: true,
-//         },
-//       },
-//       properties: {
-//         annotations: noteData,
-//       },
-//       geometries: convertGeometries(points, {
-//         note: data.type,
-//         size: feature.properties.size,
-//         color: feature.properties.style.color,
-//       }),
-//     };
-//   } else {
-//     // point / polygon / stringLine
-//     annotJson = {
-//       creator: getUserId(),
-//       created_date: new Date(),
-//       provenance: {
-//         image: {
-//           slide: $D.params.slideId,
-//         },
-//         analysis: {
-//           source: 'human',
-//           execution_id: execId,
-//           name: noteData.name,
-//           type: 'label',
-//         },
-//       },
-//       properties: {
-//         annotations: noteData,
-//       },
-//       geometries: ImageFeaturesToVieweportFeatures(
-//           $CAMIC.viewer,
-//           $CAMIC.viewer.canvasDrawInstance.getImageFeatureCollection(),
-//       ),
-//     };
-//   }
-
-//   $CAMIC.store
-//       .addMark(annotJson)
-//       .then((data) => {
-//       // server error
-//         if (data.error) {
-//           $UI.message.addError(`${data.text}:${data.url}`);
-//           Loading.close();
-//           return;
-//         }
-
-//         // no data added
-//         if (data.count < 1) {
-//           Loading.close();
-//           $UI.message.addWarning(`Annotation Save Failed`);
-//           return;
-//         }
-//         // create layer data
-//         const newItem = {
-//           id: execId,
-//           name: noteData.name,
-//           typeId: typeIds['human'],
-//           typeName: 'human',
-//           data: null,
-//         };
-//         $D.overlayers.push(newItem);
-//         $UI.layersViewer.addItem(newItem);
-//         $UI.layersViewerMinor.addItem(
-//             newItem,
-//         $minorCAMIC && $minorCAMIC.viewer ? true : false,
-//         );
-
-//         // data for UI
-//         // return;
-//         loadAnnotationById(
-//             $CAMIC,
-//             $UI.layersViewer.getDataItemById(execId),
-//             saveLabelAnnotCallback,
-//         );
-//         if ($minorCAMIC && $minorCAMIC.viewer) {
-//           loadAnnotationById(
-//               $minorCAMIC,
-//               $UI.layersViewerMinor.getDataItemById(execId),
-//               null,
-//           );
-//         }
-//       })
-//       .catch((e) => {
-//         Loading.close();
-//         console.log('save failed');
-//       })
-//       .finally(() => {});
-// }
-
 function saveBrushAnnotCallback() {
   /* reset as default */
   // clear draw data and UI
@@ -2127,6 +1997,7 @@ function savePresetLabel() {
           $UI.message.addWarning(`Annotation Save Failed`);
           return;
         }
+        const __data = data.ops[0]
         // create layer data
         const newItem = {
           id: execId,
@@ -2142,18 +2013,19 @@ function savePresetLabel() {
         $minorCAMIC && $minorCAMIC.viewer ? true : false,
         );
 
-        // data for UI
-        // return;
-        loadAnnotationById(
+        __data._id = {$oid:__data._id} 
+        addAnnotation(
             $CAMIC,
             $UI.layersViewer.getDataItemById(execId),
-            saveLabelAnnotCallback,
+            __data,
+            saveLabelAnnotCallback
         );
         if ($minorCAMIC && $minorCAMIC.viewer) {
-          loadAnnotationById(
+          addAnnotation(
               $minorCAMIC,
               $UI.layersViewerMinor.getDataItemById(execId),
-              null,
+              __data,
+              null
           );
         }
       })
@@ -2161,7 +2033,37 @@ function savePresetLabel() {
         Loading.close();
         console.log('save failed');
       })
-      .finally(() => {});
+      .finally(() => {$UI.message.addSmall(`Added The '${noteData.name}' Annotation.`)});
+}
+
+function addAnnotation(camic, layerData, data, callback) {
+  const item = layerData.item;
+  data.geometries = VieweportFeaturesToImageFeatures(
+      camic.viewer,
+      data.geometries,
+  );
+  if (data.provenance.analysis.isGrid) {
+    const width = $CAMIC.viewer.imagingHelper.imgWidth;
+    const height = $CAMIC.viewer.imagingHelper.imgHeight;
+
+    const feature = data.geometries.features[0];
+    const size = feature.properties.size;
+    feature.properties.size = [
+      Math.round(size[0] * width),
+      Math.round(size[1] * height),
+    ];
+  } else {
+  }
+  item.data = data;
+  item.render = annoRender;
+
+
+  // create lay and update view
+  if (layerData.isShow) {
+    layerData.layer = camic.viewer.omanager.addOverlay(item);
+    camic.viewer.omanager.updateView();
+  }
+  if (callback) callback.call(layerData);
 }
 
 
