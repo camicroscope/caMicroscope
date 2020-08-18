@@ -1,4 +1,4 @@
-.labels-editor, .labels-viewer, .labels-container {
+.labels-editor, .labels-viewer {
 	display: -webkit-box;      /* OLD - iOS 6-, Safari 3.1-6 */
 	display: -moz-box;         /* OLD - Firefox 19- (buggy but mostly works) */
 	display: -ms-flexbox;      /* TWEENER - IE 10 */
@@ -7,6 +7,9 @@
 	flex-direction: column;
     background:#F5F5F5;
     
+}
+.labels-container {
+   background:#F5F5F5; 
 }
 .labels-editor > .btn-group > .btn, .labels-viewer > .btn {
     padding: 3px 12px;
