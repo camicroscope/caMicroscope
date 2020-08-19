@@ -515,7 +515,6 @@ async function initUIcomponents() {
   });
   // -- view btn START -- //
   if (!($D.params.data.hasOwnProperty('review') && $D.params.data['review']=='true')) {
-    console.log('create check');
     subToolsOpt.push({
       name: 'review',
       icon: 'playlist_add_check',

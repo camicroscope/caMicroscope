@@ -359,7 +359,6 @@
                 const imagingHelper = this._viewer.imagingHelper;
                 const lineWidth = (imagingHelper.physicalToDataX(2) - imagingHelper.physicalToDataX(0))>> 0;
                 ctx.lineWidth = lineWidth;
-                console.log(ctx.lineWidth)
                 path.stroke(this._hover_ctx_);
                 path.fill(this._hover_ctx_);
 
@@ -367,7 +366,6 @@
                 const imagingHelper = this._viewer.imagingHelper;
                 const lineWidth = (imagingHelper.physicalToDataX(2) - imagingHelper.physicalToDataX(0))>> 0;
                 ctx.lineWidth = lineWidth;
-                console.log(ctx.lineWidth)
                 path.stroke(this._hover_ctx_);
             }
             

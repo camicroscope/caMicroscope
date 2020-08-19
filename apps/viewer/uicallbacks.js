@@ -1553,7 +1553,10 @@ function locationCallback(layerData) {
     );
     $CAMIC.viewer.viewport.panTo(center);
   } else {
-    const bound = item.data.geometries.features[0].bound.coordinates[0];
+    const bound = [...item.data.geometries.features[0].bound.coordinates[0]];
+    if(item.data.provenance&&item.data.provenance.analysis&&item.data.provenance.analysis.isGrid){
+      bound[2] = [bound[2][0] + item.data.geometries.features[0].properties.size[0],bound[2][1] + item.data.geometries.features[0].properties.size[1]]
+    }
     locateAnnotation(bound);
   }
 }
