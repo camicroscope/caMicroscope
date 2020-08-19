@@ -22,7 +22,7 @@
 	transition: opacity 0.7s ease-in-out;
 	opacity: 1;
 }
-.small {
+.bullet-container > .small {
 	color: #004085;
     background-color: #cce5ff;
     border-color: #b8daff;
@@ -32,15 +32,15 @@
     border: 1px solid;
     border-radius: .25rem;
 }
-.warning {
+.bullet-container > .warning {
 	color:#f6f6f6;
 	background-color:#ffc107;
 }
-.info {
+.bullet-container > .info {
 	color:#f6f6f6;
 	background-color:#2684FF
 }
-.error {
+.bullet-container > .error {
 	color:#f6f6f6;
 	background-color:#dc3545
 }
