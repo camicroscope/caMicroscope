@@ -296,75 +296,6 @@ function draw(e) {
   }
 }
 
-// function drawLabel(e) {
-//   if (!$CAMIC.viewer.canvasDrawInstance) {
-//     alert('Draw Doesn\'t Initialize');
-//     return;
-//   }
-
-//   if (e.status) {
-//     if ($CAMIC.status == 'label') {
-//       presetLabelOn.call(this, {...e.data});
-//       return;
-//     }
-//     // turn off annotation
-//     toolsOff();
-
-//     var checkAllToolsOff = setInterval(
-//         function() {
-//           if ($CAMIC && $CAMIC.status == null) {
-//           // all tool has turn off
-//             clearInterval(checkAllToolsOff);
-//             presetLabelOn.call(this, {...e.data});
-//           }
-//         }.bind(this),
-//         100,
-//     );
-//   } else {
-//     // off preset label
-//     presetLabelOff();
-//   }
-// }
-
-// function presetLabelOn(label) {
-//   console.log(label)
-//   if (!$CAMIC.viewer.canvasDrawInstance) return;
-//   const canvasDraw = $CAMIC.viewer.canvasDrawInstance;
-//   canvasDraw.drawMode = label.mode;
-//   if (label.mode == 'grid') {
-//     canvasDraw.size = [parseInt(label.size), parseInt(label.size)];
-//   }
-//   canvasDraw.style.color = label.color;
-//   canvasDraw.drawOn();
-//   $CAMIC.status = 'label';
-//   $UI.toolbar.getSubTool('preset_label').querySelector('label').style.color =
-//     label.color;
-//   // close layers menu
-//   $UI.layersSideMenu.close();
-// }
-
-// function presetLabelOff() {
-//   if (!$CAMIC.viewer.canvasDrawInstance) return;
-//   const canvasDraw = $CAMIC.viewer.canvasDrawInstance;
-
-//   if (
-//     canvasDraw._draws_data_.length &&
-//     confirm(`Do You Want To Save Annotation Label Before You Leave?`)
-//   ) {
-//     savePresetLabel();
-//   } else {
-//     canvasDraw.clear();
-//     canvasDraw.drawOff();
-//     $UI.appsSideMenu.close();
-//     $UI.toolbar
-//         .getSubTool('preset_label')
-//         .querySelector('input[type=checkbox]').checked = false;
-//     $UI.toolbar.getSubTool('preset_label').querySelector('label').style.color =
-//       '';
-//     $CAMIC.status = null;
-//   }
-// }
-
 /**
  * utility function for switching off given tool
  */
@@ -2018,19 +1949,17 @@ function savePresetLabel() {
 
         __data._id = {$oid:__data._id} 
         addAnnotation(
-            $CAMIC,
-            $UI.layersViewer.getDataItemById(execId),
-            __data,
-            saveLabelAnnotCallback
+            execId,
+            __data
         );
-        if ($minorCAMIC && $minorCAMIC.viewer) {
-          addAnnotation(
-              $minorCAMIC,
-              $UI.layersViewerMinor.getDataItemById(execId),
-              __data,
-              null
-          );
-        }
+        // if ($minorCAMIC && $minorCAMIC.viewer) {
+        //   addAnnotation(
+        //       $minorCAMIC,
+        //       $UI.layersViewerMinor.getDataItemById(execId),
+        //       __data,
+        //       null
+        //   );
+        // }
       })
       .catch((e) => {
         Loading.close();
@@ -2039,10 +1968,12 @@ function savePresetLabel() {
       .finally(() => {$UI.message.addSmall(`Added The '${noteData.name}' Annotation.`)});
 }
 
-function addAnnotation(camic, layerData, data, callback) {
+function addAnnotation(id, data) {
+  const layerData = $UI.layersViewer.getDataItemById(id)
+  const layerDataMinor = $UI.layersViewerMinor.getDataItemById(id)
   const item = layerData.item;
   data.geometries = VieweportFeaturesToImageFeatures(
-      camic.viewer,
+      $CAMIC.viewer,
       data.geometries,
   );
   if (data.provenance.analysis.isGrid) {
@@ -2055,18 +1986,26 @@ function addAnnotation(camic, layerData, data, callback) {
       Math.round(size[0] * width),
       Math.round(size[1] * height),
     ];
-  } else {
   }
   item.data = data;
   item.render = annoRender;
-
-
   // create lay and update view
   if (layerData.isShow) {
-    layerData.layer = camic.viewer.omanager.addOverlay(item);
-    camic.viewer.omanager.updateView();
+    layerData.layer = $CAMIC.viewer.omanager.addOverlay(item);
+    $CAMIC.viewer.omanager.updateView();
   }
-  if (callback) callback.call(layerData);
+  if($minorCAMIC && $minorCAMIC.viewer && layerDataMinor.isShow) {
+    layerDataMinor.layer = $minorCAMIC.viewer.omanager.addOverlay(item);
+    $minorCAMIC.viewer.omanager.updateView();
+  }
+
+  $CAMIC.drawContextmenu.off();
+  $CAMIC.viewer.canvasDrawInstance.clear();
+  // close app side
+  $UI.toolbar._mainTools[0].querySelector('[type=checkbox]').checked = false;
+  $UI.appsSideMenu.close();
+  $UI.layersViewer.update();
+  $UI.layersViewerMinor.update();
 }
 
 
