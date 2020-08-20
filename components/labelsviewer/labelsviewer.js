@@ -76,9 +76,12 @@ LabelsViewer.prototype.__refreshUI = function() {
         </div>
 
         <div class='checklist'>
+            <label>  Polygon  <input type='checkbox' value='free' checked/></label>
+            <label>  Square  <input type='checkbox' value='square' checked/></label>
+            <label>  Rectangle  <input type='checkbox' value='rect' checked/></label>
             <label>  Point  <input type='checkbox' value='point' checked/></label>
             <label>  Brush  <input type='checkbox' value='grid' checked/></label>
-            <label>  Pen  <input type='checkbox' value='free' checked/></label>
+            
         </div>
         <div class='labels-grid'>
             ${this.__createLables(this.setting.data)}
@@ -140,8 +143,11 @@ LabelsViewer.prototype.__refreshUI = function() {
     <label>Shape</label> 
     <select>
         <option value="free">Polygen</option>
+        <option value="rect">Rectangle</option>
+        <option value="square">Square</option>
         <option value="point">Point</option>
         <option value="grid">Brush</option>
+
     </select>
     <div></div>
 
@@ -246,12 +252,13 @@ LabelsViewer.prototype.__refreshUI = function() {
     var __preKey='';
     this.keyZone.text.addEventListener('keydown',e=>__key = e.key)
     this.keyZone.text.addEventListener('keyup',e=>{
+        console.log(e.key,this.keyZone.text.value)
         var regex = new RegExp('^[A-Za-z0-9]$');
         if(__key == e.key && regex.test(e.key)){
             this.keyZone.text.value = e.key.toLocaleLowerCase();
             __preKey = e.key;
         }else{
-            this.keyZone.text.value = __preKey.toLocaleLowerCase();
+            this.keyZone.text.value = "";
         }
         this.__validEditor()
     })
@@ -323,9 +330,7 @@ LabelsViewer.prototype.setLabels = function(elt,labels){
     // set name
     divs[1].textContent = labels.type
     // set other
-    divs[2].innerHTML = `${labels.size ?
-        `${labels.mode=='grid'?'BRUSH':labels.mode.toUpperCase()} ${labels.size}px`
-        :`${labels.mode=='grid'?'BRUSH':labels.mode.toUpperCase()}`
+    divs[2].innerHTML = `${this.__getLabelText({mode,size})}
     }<br>Ctrl + ${labels.key}`
 
 }
@@ -375,14 +380,20 @@ LabelsViewer.prototype.__createLabelsCard = function ({type, color, mode, size, 
         <div style="border-radius:2px;border:1px #808080 solid;color:${color};background:${color}">${color}</div>
         <div class="labels-title">${type}</div>
         <div class="labels-description">
-            ${size?`${mode=='grid'?'BRUSH':mode.toUpperCase()} ${size}px`:`${mode=='grid'?'BRUSH':mode.toUpperCase()}`}<br>
+            ${this.__getLabelText({mode,size})}<br>
             Ctrl + ${key}
         </div>
         <div class="material-icons edit" title="Edit">short_text</div>
         <div class="material-icons remove" title="Delete">clear</div>
     </div>`
 }
-
+LabelsViewer.prototype.__getLabelText = function({mode, size}) {
+    if(size&&mode=='grid') return `BRUSH ${size}px`;
+    if(mode=='free') return 'POLYGON';
+    if(mode=='square') return 'SQUARE';
+    if(mode=='rect') return 'RECTANGLE';
+    if(mode=='point') return 'POINT';
+}
 LabelsViewer.prototype.__switch = function(target) {
     if(target=='view'){
         this.view.style.display =''
@@ -408,8 +419,9 @@ LabelsViewer.prototype.getLabelsEditorValue = function (){
         type:this.nameZone.text.value,
         color:this.colorZone.text.value,
         mode:this.modeZone.text.value,
-        key:this.keyZone.text.value
+        
     }
+    if(this.keyZone.text.value) labels.key = this.keyZone.text.value;
     if(labels.mode=='grid') labels.size = this.sizeZone.text.value;
     return labels;
 }
@@ -565,6 +577,10 @@ LabelsViewer.prototype.__sizeValid = function(){
 }
 LabelsViewer.prototype.__keyValid = function(){
     var regex = new RegExp('^[A-z0-9]$');
+    if(this.keyZone.text.value=="") {
+        this.keyZone.error.textContent = '';
+        return true
+    };
     if(regex.test(this.keyZone.text.value)){
         const keys = ["a","m","r","s",...this.setting.data.map(d=>d.key)];
         if(this.__editLabelElt) {
