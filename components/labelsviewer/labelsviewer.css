@@ -13,6 +13,7 @@
 }
 .labels-editor > .btn-group > .btn, .labels-viewer > .btn {
     padding: 3px 12px;
+    font-weight: bold;
 }
 .labels-editor, .labels-viewer {
     margin: 0 .5rem;
@@ -65,12 +66,6 @@
 	font-size:18px;
 }
 
-.labels-viewer div.checklist {
-    font-size: 12px;
-    display: flex;
-    justify-content: space-around;
-}
-
 .labels-viewer div.labels-grid {
     box-sizing: border-box;
     display: -webkit-flex;
@@ -79,6 +74,23 @@
     display: flex;
     justify-content: space-between;
     flex-flow: row wrap;
+}
+
+.labels-viewer div.checklist {
+    box-sizing: border-box;
+    display: -webkit-flex;
+    -webkit-justify-content: unset;
+    -webkit-flex-flow: row wrap;
+    display: flex;
+    justify-content: unset;
+    flex-flow: row wrap;
+}
+
+.labels-viewer div.checklist > label {
+    width: 85px;
+    font-size: 13px;
+    font-weight: bold;
+    margin: 3px;
 }
 
 .labels-viewer div.labels-grid > .labels {

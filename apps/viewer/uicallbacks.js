@@ -1730,7 +1730,7 @@ async function addPresetLabelsHandler(label){
 }
 
 async function editPresetLabelsHandler(oldElt, newLabel){
-  const rs = await $CAMIC.store.updatePresetLabels(oldElt.dataset.key ,newLabel).then(d=>d.result);
+  const rs = await $CAMIC.store.updatePresetLabels(oldElt.dataset.id ,newLabel).then(d=>d.result);
   if(rs.ok&&rs.nModified > 0) {
     $UI.labelsViewer.setLabels(oldElt,newLabel)
     $UI.message.add(`Label "${newLabel.type}" Has been Updated`);
@@ -1742,13 +1742,10 @@ async function editPresetLabelsHandler(oldElt, newLabel){
 }
 
 async function removePresetLabelsHandler(elt, label) {
-  console.log('removePresetLabelsHandler')
-
-  console.log(elt, label)
-  const rs = await $CAMIC.store.removePresetLabels(label.key).then(d=>d.result);
+  const rs = await $CAMIC.store.removePresetLabels(label.id).then(d=>d.result);
   if(rs.ok&&rs.nModified > 0){
     $UI.message.add(`Label "${label.type}" Has been removed`);
-    $UI.labelsViewer.removeLabel(label.key)
+    $UI.labelsViewer.removeLabel(label.id)
     
   } else {
     $UI.message.addError(`Deleting The '${label.type}' Label Has Failed`);

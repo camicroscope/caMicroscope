@@ -789,10 +789,10 @@ class Store {
     }).then(this.errorHandler);
   }
 
-  updatePresetLabels(key, labels) {
+  updatePresetLabels(id, labels) {
     const suffix = 'Presetlabels/update';
     const url = this.base + suffix;
-    const query = {key: key};
+    const query = {id: id};
 
     return fetch(url + '?' + objToParamStr(query), {
       method: 'POST',
@@ -802,12 +802,10 @@ class Store {
     }).then(this.errorHandler);
   }
 
-  removePresetLabels(key) {
+  removePresetLabels(id) {
     const suffix = 'Presetlabels/remove';
     const url = this.base + suffix;
-    const query = {
-      key:key
-    };
+    const query = {id: id};
     return fetch(url + '?' + objToParamStr(query), {
       method: 'POST',
       credentials: 'include',

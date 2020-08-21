@@ -68,7 +68,7 @@ window.addEventListener('keydown', (e) => {
     && $D.labels.configuration.length > 0
     && e.ctrlKey){
       e.key
-      const elt = $UI.labelsViewer.allLabels.find(l=>l.dataset.key.toLowerCase()==e.key.toLowerCase())
+      const elt = $UI.labelsViewer.allLabels.find(l=>l.dataset.key&&l.dataset.key.toLowerCase()==e.key.toLowerCase())
       if(elt) {
         $UI.toolbar
         .getSubTool('preset_label')

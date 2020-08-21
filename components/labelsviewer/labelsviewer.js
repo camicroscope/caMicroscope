@@ -76,12 +76,11 @@ LabelsViewer.prototype.__refreshUI = function() {
         </div>
 
         <div class='checklist'>
-            <label>  Polygon  <input type='checkbox' value='free' checked/></label>
-            <label>  Square  <input type='checkbox' value='square' checked/></label>
-            <label>  Rectangle  <input type='checkbox' value='rect' checked/></label>
-            <label>  Point  <input type='checkbox' value='point' checked/></label>
-            <label>  Brush  <input type='checkbox' value='grid' checked/></label>
-            
+            <label><input type='checkbox' value='free' checked/> Polygon</label>
+            <label><input type='checkbox' value='square' checked/> Square</label>
+            <label><input type='checkbox' value='rect' checked/> Rectangle</label>
+            <label><input type='checkbox' value='point' checked/> Point</label>
+            <label><input type='checkbox' value='grid' checked/> Brush</label>
         </div>
         <div class='labels-grid'>
             ${this.__createLables(this.setting.data)}
@@ -142,7 +141,7 @@ LabelsViewer.prototype.__refreshUI = function() {
     
     <label>Shape</label> 
     <select>
-        <option value="free">Polygen</option>
+        <option value="free">Polygon</option>
         <option value="rect">Rectangle</option>
         <option value="square">Square</option>
         <option value="point">Point</option>
@@ -252,7 +251,6 @@ LabelsViewer.prototype.__refreshUI = function() {
     var __preKey='';
     this.keyZone.text.addEventListener('keydown',e=>__key = e.key)
     this.keyZone.text.addEventListener('keyup',e=>{
-        console.log(e.key,this.keyZone.text.value)
         var regex = new RegExp('^[A-Za-z0-9]$');
         if(__key == e.key && regex.test(e.key)){
             this.keyZone.text.value = e.key.toLocaleLowerCase();
@@ -263,32 +261,7 @@ LabelsViewer.prototype.__refreshUI = function() {
         this.__validEditor()
     })
 
-
-    // check on shortcut
-
-    // check on size
-
-    //this.saveBtn.addEventListener('click', e=>{
-        // const rs0 = $CAMIC.store.addPresetLabels({
-        //     "color":"#ff00ff",
-        //     "mode":"grid",
-        //     "type":"Tumor-Test3",
-        //     "size":100,
-        //     "key":"a"       
-        // }).then(res=>res.json())
-        // console.log(rs0)
-
-        // const rs1 = $CAMIC.store.updatePresetLabels('aaa',{
-        //     "color":"#0066ff",
-        //     "mode":"point",
-        //     "type":"Tumor-NoPoint",
-        //     "key":"x"
-        // })
-        // console.log(rs1)
-
-        // const rs2 = $CAMIC.store.removePresetLabels('o').then(res=>res.json())
-        // console.log(rs2)    
-    //})
+    // event
     this.backBtn.addEventListener('click', ()=>this.__switch('view'))
     this.cleanBtn.addEventListener('click', ()=>{this.cleanLabelsEditorValue();this.__validEditor()})
     this.saveBtn.addEventListener('click', this.__saveBtnHandler.bind(this))
@@ -297,21 +270,20 @@ LabelsViewer.prototype.__refreshUI = function() {
 }
 LabelsViewer.prototype.__saveBtnHandler = function(e){
     const labels = this.getLabelsEditorValue()
-    if(this.isNewLabel){ // new 
+    if(this.isNewLabel){ // new
+        if(!labels.id) labels.id = randomId();
         if(isFunction(this.setting.onAdd)) this.setting.onAdd(labels)
     }else{ // edit
-        console.log(labels, e.currentTarget)
         if(isFunction(this.setting.onEdit)) this.setting.onEdit(this.__editLabelElt,labels)
     }
     this.__switch('view')
 
 }
 LabelsViewer.prototype.setLabels = function(elt,labels){
-    const key = elt.dataset.key;
-    const _i = this.setting.data.findIndex(d=>d.key==key);
+    const _i = this.setting.data.findIndex(d=>d.id==labels.id);
     if(_i!=-1) this.setting.data[_i]= {...labels}
     // set data
-    //this.__editLabelElt.dataset = {...labels}
+    this.__editLabelElt.setAttribute("data-id", labels.id);
     this.__editLabelElt.setAttribute("data-type", labels.type);
     this.__editLabelElt.setAttribute("data-color", labels.color);
     this.__editLabelElt.setAttribute("data-mode", labels.mode);
@@ -320,8 +292,14 @@ LabelsViewer.prototype.setLabels = function(elt,labels){
         this.__editLabelElt.setAttribute("data-size", labels.size);
     else
         this.__editLabelElt.removeAttribute("data-size");
+
+    if(labels.key){
+        this.__editLabelElt.setAttribute("data-key", labels.key);
+    } else {
+        this.__editLabelElt.removeAttribute("data-key");
+    }
+
     
-    this.__editLabelElt.setAttribute("data-key", labels.key);
     const divs = this.__editLabelElt.querySelectorAll('div');
     // set color
     divs[0].textContent = labels.color
@@ -330,8 +308,7 @@ LabelsViewer.prototype.setLabels = function(elt,labels){
     // set name
     divs[1].textContent = labels.type
     // set other
-    divs[2].innerHTML = `${this.__getLabelText({mode,size})}
-    }<br>Ctrl + ${labels.key}`
+    divs[2].innerHTML = `${this.__getLabelText({mode:labels.mode,size:labels.size})} ${labels.key?`<br>Ctrl + ${labels.key}`:''}`
 
 }
 LabelsViewer.prototype.selectLabel = function(elt){
@@ -374,14 +351,14 @@ LabelsViewer.prototype.__createLables = function(data){
         return `<div class='empty'>No Labels, Please Add One.</div>`
     }
 }
-LabelsViewer.prototype.__createLabelsCard = function ({type, color, mode, size, key, selected}) {
+LabelsViewer.prototype.__createLabelsCard = function ({id, type, color, mode, size, key}) {
     return `
-    <div class="labels" data-type="${type}" data-key="${key}" data-color="${color}" data-mode="${mode}" ${size?`data-size="${size}"`:""} >
+    <div class="labels" data-id="${id}" data-type="${type}" ${key?`data-key=${key}`:''} data-color="${color}" data-mode="${mode}" ${size?`data-size="${size}"`:""} >
         <div style="border-radius:2px;border:1px #808080 solid;color:${color};background:${color}">${color}</div>
         <div class="labels-title">${type}</div>
         <div class="labels-description">
-            ${this.__getLabelText({mode,size})}<br>
-            Ctrl + ${key}
+            ${this.__getLabelText({mode,size})}
+            ${key?`<br>Ctrl + ${key}`:''}
         </div>
         <div class="material-icons edit" title="Edit">short_text</div>
         <div class="material-icons remove" title="Delete">clear</div>
@@ -416,9 +393,10 @@ LabelsViewer.prototype.toggleSizeZone = function(isShow){
 }
 LabelsViewer.prototype.getLabelsEditorValue = function (){
     const labels = {
-        type:this.nameZone.text.value,
-        color:this.colorZone.text.value,
-        mode:this.modeZone.text.value,
+        id: this.editor.dataset.id,
+        type: this.nameZone.text.value,
+        color :this.colorZone.text.value,
+        mode: this.modeZone.text.value,
         
     }
     if(this.keyZone.text.value) labels.key = this.keyZone.text.value;
@@ -428,8 +406,16 @@ LabelsViewer.prototype.getLabelsEditorValue = function (){
 
 
 LabelsViewer.prototype.setLabelsEditorValue = function(labels){
+    
     this.cleanLabelsEditorValue()
     if(labels){
+        
+        // set uid
+        if(labels.id)
+            this.editor.dataset.id = labels.id;
+        else
+            this.editor.removeAttribute("data-id");
+
         this.nameZone.text.value = labels.type;
         this.nameZone.error.textContent = '';
         this.colorZone.text.value = labels.color;
@@ -443,11 +429,13 @@ LabelsViewer.prototype.setLabelsEditorValue = function(labels){
             this.toggleSizeZone(false)
         this.sizeZone.text.value = labels.size;
         this.sizeZone.error.textContent = '';
-        this.keyZone.text.value = labels.key;
+        
+        if(labels.key)
+            this.keyZone.text.value = labels.key;
+        
         this.keyZone.error.textContent = '';
     }
 }
-
 
 LabelsViewer.prototype.cleanLabelsEditorValue = function(){
     this.nameZone.text.value = null;
@@ -464,12 +452,9 @@ LabelsViewer.prototype.cleanLabelsEditorValue = function(){
     this.keyZone.error.textContent = '';
 
 }
-LabelsViewer.prototype.updateEditor = function(label){
-    
 
-}
 LabelsViewer.prototype.addLabel = function(label){
-    
+    if(!label.id) label.id = randomId();
     const new_labels = this.__createElementFromHTML(this.__createLabelsCard(label))
     this.setting.data.unshift(label);
     this.allLabels.unshift(new_labels)
@@ -514,7 +499,6 @@ LabelsViewer.prototype.__editLabelsHandler = function(e){
 LabelsViewer.prototype.__removeLabelsHandler = function(e){
     e.preventDefault()
     e.stopPropagation()
-    console.log('remove')
     const elt = e.currentTarget.parentElement;
     const labels = {...elt.dataset}
     if(!confirm(`Do You Want To Delete "${labels.type}" label?`)) return;
@@ -525,12 +509,12 @@ LabelsViewer.prototype.editLabel = function(label){
     
 }
 
-LabelsViewer.prototype.removeLabel = function(key){
+LabelsViewer.prototype.removeLabel = function(id){
 
-    const _i = this.setting.data.findIndex(d=>d.key==key);
+    const _i = this.setting.data.findIndex(d=>d.id==id);
     if(_i!=-1) this.setting.data.splice(_i,1);
 
-    const _idx =this.allLabels.findIndex(d=>d.dataset.key==key);
+    const _idx =this.allLabels.findIndex(d=>d.dataset.id==id);
     this.allLabels[_idx].remove();
     if(_i!=-1) this.allLabels.splice(_i,1);
 
