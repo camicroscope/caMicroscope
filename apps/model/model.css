@@ -305,6 +305,11 @@ ul.disabled {
 .form-style #weightsupload{
     cursor: pointer;
 }
+
+#roitable{
+  border-collapse: collapse;
+  position: relative;
+}
 .btn-del{
       background-color: red;
       border: none; 
