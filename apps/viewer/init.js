@@ -554,7 +554,7 @@ async function initUIcomponents() {
 
   $UI.layersSideMenu = new SideMenu({
     id: 'side_layers',
-    width: 300,
+    width: 250,
     contentPadding: 5,
     // , isOpen:true
     callback: toggleSideMenu,
@@ -584,7 +584,7 @@ async function initUIcomponents() {
   // TODO -- labels //
   $UI.labelsSideMenu = new SideMenu({
     id: 'labels_layers',
-    width: 300,
+    width: 180,
     contentPadding: 5
   });
   var labels_title = document.createElement('div');

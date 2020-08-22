@@ -71,16 +71,16 @@ LabelsViewer.prototype.__refreshUI = function() {
     const view_html = `
         <button class='btn btn-info'>Add Labels</button>
         <div class='searchbar'>
-            <input type='text' placeholder='Search By Label Name'/>
+            <input type='text' placeholder='Search By Name'/>
             <div class='material-icons'>find_in_page</div>
         </div>
 
         <div class='checklist'>
-            <label><input type='checkbox' value='free' checked/> Polygon</label>
-            <label><input type='checkbox' value='square' checked/> Square</label>
-            <label><input type='checkbox' value='rect' checked/> Rectangle</label>
-            <label><input type='checkbox' value='point' checked/> Point</label>
-            <label><input type='checkbox' value='grid' checked/> Brush</label>
+            <label><input type='checkbox' value='point' checked/>  Point</label>
+            <label><input type='checkbox' value='grid' checked/>  Brush</label>
+            <label><input type='checkbox' value='free' checked/>  Polygon</label>
+            <label><input type='checkbox' value='square' checked/>  Square</label>
+            <label style='width:8rem;'><input type='checkbox' value='rect' checked/>  Rectangle</label>
         </div>
         <div class='labels-grid'>
             ${this.__createLables(this.setting.data)}
@@ -153,7 +153,7 @@ LabelsViewer.prototype.__refreshUI = function() {
     <label>Size (px) <span style='color:#ff0000;font-size:12px;'></span></label><input type='number' placeholder='Integer Only'/>
     <div class='size-after'></div>
 
-    <label>Shortcut <span style='color:#ff0000;font-size:12px;'></span></label><div><span>Ctrl + </span><input type='text' placeholder='Number Or Alphabet'/></div>
+    <label>Shortcut <span style='color:#ff0000;font-size:12px;'></span></label><div><span>Ctrl + </span><input type='text' size=3 placeholder='Key'/></div>
     <div class='btn-group' style='display:flex;justify-content:center;'>
         <button class='btn btn-primary'>Back</button>
         <button class='btn btn-primary'>Clean</button>
@@ -354,7 +354,7 @@ LabelsViewer.prototype.__createLables = function(data){
 LabelsViewer.prototype.__createLabelsCard = function ({id, type, color, mode, size, key}) {
     return `
     <div class="labels" data-id="${id}" data-type="${type}" ${key?`data-key=${key}`:''} data-color="${color}" data-mode="${mode}" ${size?`data-size="${size}"`:""} >
-        <div style="border-radius:2px;border:1px #808080 solid;color:${color};background:${color}">${color}</div>
+        <div style="font-size:3px;border-radius:2px;border:1px #808080 solid;color:${color};background:${color}">${color}</div>
         <div class="labels-title">${type}</div>
         <div class="labels-description">
             ${this.__getLabelText({mode,size})}

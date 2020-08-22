@@ -12,13 +12,10 @@
    background:#F5F5F5; 
 }
 .labels-editor > .btn-group > .btn, .labels-viewer > .btn {
-    padding: 3px 12px;
-    font-weight: bold;
+    padding: .2rem 1rem;
 }
 .labels-editor, .labels-viewer {
-    margin: 0 .5rem;
-    padding: 5px;
-	border:#cbcbcb 1px solid;
+    padding: .5rem;
 }
 
 .labels-editor *, .labels-viewer * {
@@ -72,8 +69,9 @@
     -webkit-justify-content: space-around;
     -webkit-flex-flow: row wrap;
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
     flex-flow: row wrap;
+    margin-top: .5rem;
 }
 
 .labels-viewer div.checklist {
@@ -84,19 +82,19 @@
     display: flex;
     justify-content: unset;
     flex-flow: row wrap;
+    padding-bottom: .5rem;
+    border-bottom: #cdcdcd .2rem solid;
 }
 
 .labels-viewer div.checklist > label {
-    width: 85px;
-    font-size: 13px;
-    font-weight: bold;
-    margin: 3px;
+    width: 7rem;
+    font-size: 1.2rem;
+    margin: .3rem;
 }
 
 .labels-viewer div.labels-grid > .labels {
-    padding: 5px;
-    width: 115px;
-    height: 115px;
+    width: 70px;
+    height: 75px;
     background-color: #f2f2f2;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     margin: 5px 0;
@@ -129,11 +127,11 @@
     box-shadow: 0 4px 8px 0 rgba(107, 72, 72, 0.4), 0 6px 20px 0 rgba(0, 0, 0, 0.38);
 }
 .labels-viewer div.labels-grid > .labels > .labels-title, .labels-viewer div.labels-grid > .labels > .labels-description {
-    margin:5px 0;
+    margin-top:.3rem;
 }
 .labels-viewer div.labels-grid > .labels > .labels-title {
     color: #365f9c;
-    font-size: 14px;
+    font-size: 12px;
     text-align: center;
     font-weight: bold;
 
@@ -149,8 +147,7 @@
     white-space: nowrap;
     color: #808080;
     text-align: center;
-    font-size: 12px;
-    font-weight: bold;
+    font-size: 10px;
 }
 .labels-viewer input+div{
 	margin-left: -1px;
@@ -169,10 +166,12 @@
 .labels-viewer div.labels-grid > .labels > .material-icons.remove {
     bottom: 0;
     right: 0;
+    font-size: 18px;
 }
 .labels-viewer div.labels-grid > .labels > .material-icons.edit {
     bottom: 0;
     left: 0;
+    font-size: 18px;
 }
 
 
