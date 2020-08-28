@@ -1087,7 +1087,7 @@ function importWork() {
   });
 }
 
-// set user customized layer into the UI fro imported file
+// set user customized layer into the UI from imported file
 function setLayersFromImport() {
   localforage.getItem('importProp').then(function(prop) {
     console.log(prop);
@@ -1104,8 +1104,6 @@ function setLayersFromImport() {
     $('#kernelSize').val(prop.Layers[0].kernelSize);
     $('#batchSize').val(Number(prop.Params.batchSize));
     $('#epochs').val(Number(prop.Params.epochs));
-    $('#modelCompileLoss').val(prop.Params.modelCompileLoss);
-    $('#modelCompileMetrics').val(prop.Params.modelCompileMetrics.join());
 
     if (prop.Params.rgb) {
       $('#RGBorGrayscale').prop('checked', true);
@@ -1125,6 +1123,8 @@ function setLayersFromImport() {
       $('#inputKernelInitializer').val(prop.Layers[0].kernelInitializer);
       $('#outputActivation').val(prop.Layers[prop.Layers.length - 1].activation);
       $('#outputKernelInitializer').val(prop.Layers[prop.Layers.length - 1].kernelInitializer);
+      $('#modelCompileLoss').val(prop.Params.modelCompileLoss);
+      $('#modelCompileMetrics').val(prop.Params.modelCompileMetrics.join());
     }
 
     for (let i = 1; i < prop.Layers.length - 1; i++) {
