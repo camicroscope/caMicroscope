@@ -43,4 +43,4 @@ Now, choose the parameters according to which the patches will be downloaded fro
 Next, choose if you want to download patches from the complete slide or from a selected region. If you want to download from a selected region, select the region next. After this the prediction and extraction process will begin . Once finished you'll be prompted to download the patches on your local computer. 
 
 
-
+### A video demo of ROI feature is available [here](https://www.youtube.com/watch?v=cxE4JAACWi0)
