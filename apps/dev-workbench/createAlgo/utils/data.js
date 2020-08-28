@@ -1,3 +1,5 @@
+// Handling the dataset from spritesheet in batches
+
 // constants; defined at runtime
 let IMAGE_SIZE = 0;
 let NUM_CLASSES = 0;

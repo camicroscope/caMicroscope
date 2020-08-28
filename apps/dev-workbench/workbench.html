@@ -101,7 +101,7 @@
             <a class="dropdown-item" href="#" onclick="importWork()"
               ><i class="fas fa-file-import"></i>&nbsp;&nbsp;Import</a
             >
-            <input type="file" id="importFile" style="display: none;" />
+            <input type="file" id="importFile" />
             <a
               class="dropdown-item helpButton"
               href="#"
@@ -119,10 +119,10 @@
 
     <div id="headbar">
       <br />
-      <div id="headContent" style="font-size: xx-large; display: none;">
+      <div id="headContent" style="font-size: xx-large;">
         Welcome to <b>Development Workbench</b>
       </div>
-      <div id="headSub" style="font-size: large; display: none;">
+      <div id="headSub" style="font-size: large;">
         Create your own ML models in 3 simple steps
       </div>
       <br />
@@ -174,16 +174,12 @@
                 <p style="font-size: 1em;">
                   Create your own customized CNN algorithm and train your model
                   accordingly. <br />
-                  <a
-                    id="secondStepButton"
-                    href="./createAlgo/bench.html"
-                    style="display: none;"
-                  >
+                  <a id="secondStepButton" href="./createAlgo/bench.html">
                     <button
                       style="
                         border-radius: 50%;
                         padding: 1em;
-                        margin: -1em 0em -3em -1em;
+                        margin: 1em 0em -1em -1em;
                       "
                       type="button"
                       class="btn btn-primary"
@@ -216,7 +212,7 @@
       </div>
     </div>
     <!-- /.Vertical Steppers -->
-    <div id="cards" style="display: none;">
+    <div id="cards">
       <br /><br />
       <div
         style="
@@ -345,7 +341,7 @@
                   </div>
                 </div>
               </div>
-              <div id="filterLabels" style="display: none;">
+              <div id="filterLabels">
                 Select the labels you want to include in the dataset. <br />
                 <br />
                 <ul
@@ -354,10 +350,7 @@
                   class="list-group"
                 ></ul>
               </div>
-              <div
-                id="labelsDatasetZip"
-                style="display: none; margin-bottom: -2.8em;"
-              >
+              <div id="labelsDatasetZip" style="margin-bottom: -2.8em;">
                 The spritesheet (.jpg) and labels (binary) files have been
                 created according to your customized data. Download the .zip
                 file and select it in the "Select your dataset" section on this
@@ -382,10 +375,7 @@
                 <br />
                 <br />
               </div>
-              <div
-                id="selectResolution"
-                style="display: none; margin-bottom: -2em;"
-              >
+              <div id="selectResolution" style="margin-bottom: -2em;">
                 Select normalized image resolution (in px) for the dataset
                 images. Please <b><u>Note</u></b> that more resolution images
                 will take more time to create spritesheet and training and
@@ -429,11 +419,10 @@
                   id="labelsSubmitLoading"
                   class="spinner-border"
                   role="status"
-                  style="display: none;"
                 >
                   <span class="sr-only">Loading...</span>
                 </div>
-                <div id="labelsSubmitFinish" style="display: none;">
+                <div id="labelsSubmitFinish">
                   Done <i data-feather="check" class="text-white"></i>
                 </div>
               </button>
@@ -485,13 +474,7 @@
     <!-- Toast Alert -->
     <div
       id="toastPlaceholder"
-      style="
-        position: fixed;
-        top: 1em;
-        width: 100%;
-        display: none;
-        align-content: center;
-      "
+      style="position: fixed; top: 1em; width: 100%; align-content: center;"
     >
       <div
         id="toastAlert"

@@ -34,6 +34,7 @@ $(document).ready(function() {
       $('#RGBorGrayscaleLabel').text('Grayscale');
     }
   });
+  $('#exportOption').hide();
   checkForServerPermission();
 });
 
@@ -60,7 +61,7 @@ $('#serverSideToggle').change(function() {
   }
 });
 
-
+// changes to be triggered if advanced mode is enabled
 function advancedModeChanges() {
   if (advancedMode) {
     $('.advancedLayersSettings').show();
@@ -77,7 +78,7 @@ $('#goBack').click(function() {
   window.history.back();
 });
 
-
+// getting dataset zip file from browser storage and validating it
 function getZipFile() {
   localforage.getItem('zipFile').then(function(zipFile) {
     JSZip.loadAsync(zipFile).then(function(zip) {
@@ -94,8 +95,7 @@ function getZipFile() {
               $('#trainDataSize').val(trainDataSize);
               $('#testDataSize').val(this.height - trainDataSize);
               $('#loading').hide();
-              $('#initialSettings').show(300);
-              $('#initialSettings').css('display', 'flex');
+              $('#initialSettings').show(300).css('display', 'flex');
             };
             let urlCreator = window.URL || window.webkitURL;
             let imageUrl = urlCreator.createObjectURL(content);
@@ -181,29 +181,23 @@ $('#initSettingsSubmit').submit(function() {
   $('#filters1').val($('#filters').val());
   $('#outputLayer').find('#units').first().val(classes.length);
   $('#initialSettings').hide(200);
-  $('#layersEditor').show(200);
-  $('#layersEditor').css('display', 'flex');
-  $('#userTrain').show(200);
-  $('#headContent').hide(200);
-  $('#headContent').text('Customize the layers for ' + '"' + $('#modelName').val() + '"');
-  $('#headContent').show(300);
+  $('#layersEditor').show(200).css('display', 'flex');
+  $('#userTrain, #exportOption').show(200);
+  $('#headContent').hide(200)
+      .text('Customize the layers for ' + '"' + $('#modelName').val() + '"').show(300);
   advancedModeChanges();
-  $('#goBack').unbind('click');
-  $('#goBack').click(function() {
+  $('#goBack').unbind('click').click(function() {
     $('#initialSettings').show(200);
-    $('#layersEditor').hide(200);
-    $('#userTrain').hide(200);
-    $('#headContent').hide(200);
-    $('#headContent').text('Design your own ML training algorithm here');
-    $('#headContent').show(300);
-    $('#goBack').unbind('click');
-    $('#goBack').click(function() {
+    $('#layersEditor, #userTrain, #headContent').hide(200);
+    $('#headContent').text('Design your own ML training algorithm here').show(300);
+    $('#goBack').unbind('click').click(function() {
       window.history.back();
     });
   });
 });
 
 let layerNumber = 1;
+// to be triggered on first layer addition
 $('body').on('click', '#add' + 1, function() {
   // $("#add" + 1).click(function() {
   let newLayerCard = `<div class='card LayerCard' id='Layer${layerNumber}'><!-- Card header --><div class='card-header' role='tab' id='headingOne${
@@ -243,6 +237,7 @@ $('body').on('click', '#add' + 1, function() {
   addCardLayer();
 });
 
+// responsible for triggering the addition of any layer after 1st layer is added
 function addCardLayer() {
   let i = layerNumber;
   $('body').on('click', '#add' + layerNumber, function() {
@@ -269,6 +264,7 @@ function addCardLayer() {
   });
 }
 
+// renaming the layer numbers correctly every time in case of addition/deletion etc.
 function renameCorrectLayers() {
   let j = 1;
   $('.layersClass').children('.card').each(function() {
@@ -287,6 +283,7 @@ function renameCorrectLayers() {
   addFuncLayers();
 }
 
+// to add all visual functions to every new layer added like displaying parameters according to layer function etc.
 function addFuncLayers() {
   $('.LayerCard').each(function() {
     let id = $(this).attr('id');
@@ -414,6 +411,7 @@ function addFuncLayers() {
   advancedModeChanges();
 }
 
+// Scans all the layers iteratively and creates model properties according to user customization
 function saveLayers() {
   if (advancedMode) {
     if (serverSide) {
@@ -856,7 +854,7 @@ $('#userTrain').click(function() {
   }
 });
 
-
+// (in case of server-side training) Send dataset to server
 function sendDatasetToServer() {
   localforage.getItem('zipFile').then((zip)=>{
     let reader = new FileReader();
@@ -888,6 +886,7 @@ function sendDatasetToServer() {
   });
 }
 
+// (in case of server-side training) sending user customized model customization to server and training accordingly
 function sendAndTrain(userFolder) {
   let Model = {};
   Model.Params = Params;
@@ -906,12 +905,10 @@ function sendAndTrain(userFolder) {
       $('#trainingLoading').hide(150);
       $('#trainedMessage').modal('show');
       // $('#nextStepButton').show(200);
-      $('#modelDownloadButton').unbind('click');
-      $('#modelDownloadButton').click(async function() {
+      $('#modelDownloadButton').unbind('click').click(async function() {
         downloadModelFromServer(Model);
       });
-      $('.trainedModelClose, #nextStepButton, .exitWorkbench').unbind('click');
-      $('.trainedModelClose, #nextStepButton, .exitWorkbench').click(function() {
+      $('.trainedModelClose, .exitWorkbench').unbind('click').click(function() {
         deleteDataFromServer(userFolder);
       });
     },
@@ -926,6 +923,7 @@ function sendAndTrain(userFolder) {
   });
 }
 
+// (in case of server-side training) getting the trained model files from server and saving them to user disk
 function downloadModelFromServer(Model) {
   delete Model.Layers;
   $.ajax({
@@ -956,6 +954,7 @@ function downloadModelFromServer(Model) {
   });
 }
 
+// (in case of server-side training) deleting data (user folder) from server after training complete
 function deleteDataFromServer(userFolder) {
   let data = {userFolder: userFolder};
   $.ajax({
@@ -1088,7 +1087,7 @@ function importWork() {
   });
 }
 
-
+// set user customized layer into the UI fro imported file
 function setLayersFromImport() {
   localforage.getItem('importProp').then(function(prop) {
     console.log(prop);
@@ -1182,6 +1181,7 @@ $('.exitWorkbench').click(function() {
   window.open('../../table.html', '_self');
 });
 
+// getting markdown from readme.md and parsing/displaying it as user-guide
 $('.helpButton').click(function() {
   fetch('../readme.md').then((res) => res.blob()).then((blob) => {
     let f = new FileReader();
@@ -1193,3 +1193,16 @@ $('.helpButton').click(function() {
     f.readAsText(blob);
   });
 });
+
+function resetLayers() {
+  $('.add').each(function() {
+    if ($(this).next().attr('id') != 'outputLayer') {
+      $(this).next().remove();
+    }
+  });
+  $('.add').each(function() {
+    if ($(this).attr('id') != 'add1') {
+      $(this).remove();
+    }
+  });
+}
