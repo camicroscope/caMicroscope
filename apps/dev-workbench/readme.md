@@ -95,4 +95,7 @@ After the user clicks on ‘train’ the training process will start and visuali
 
 ## 3. Saving the trained model
 After the training is complete, the user is prompted to download the trained model. Doing so will save two files: *model JSON* and *weight binaries*.
-These two files can then be used in caMircoscope's prediction tool.
+These two files can then be used in caMircoscope's prediction tool.<br>
+
+### A demo video is available [here](https://www.youtube.com/watch?v=jPGWBvuS1tM)
+
