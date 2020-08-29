@@ -75,7 +75,7 @@ class MessageQueue {
      * @param {Number} [time=5000]
      *        the time, in milliseconds (thousandths of a second), the timer should delay to destroy this message.
      */
-  addError(text, time = 3000) {
+  addError(text, time = 5000) {
     this.__add(text, 'error', time);
   }
   /**
@@ -85,7 +85,7 @@ class MessageQueue {
      * @param {Number} [time=3000]
      *        the time, in milliseconds (thousandths of a second), the timer should delay to destroy this message.
      */
-  addWarning(text, time = 1000) {
+  addWarning(text, time = 5000) {
     this.__add(text, 'warning', time);
   }
 
@@ -96,8 +96,12 @@ class MessageQueue {
      * @param {Number} [time=1000]
      *        the time, in milliseconds (thousandths of a second), the timer should delay to destroy this message.
      */
-  add(text, time = 200) {
+  add(text, time = 5000) {
     this.__add(text, 'info', time);
+  }
+  
+  addSmall(text,time = 1000) {
+    this.__add(text, 'small', time);
   }
   /**
      * @private
@@ -146,7 +150,7 @@ class MessageQueue {
     const div = document.createElement('div');
     div.classList.add('bullet');
     div.classList.add(type);
-    div.textContent = text;
+    div.innerHTML = text;
     return div;
   }
 }

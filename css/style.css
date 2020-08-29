@@ -250,3 +250,40 @@ table.data_table tr:hover td {
 background: #71daec !important;
 opacity: 0.3 !important;
 }
+
+@media (min-width: 1200px) {
+
+  ul.tools>li{
+    height: 2vw !important;
+    width: 2vw !important;
+    min-height: 25px;
+    min-width: 25px;
+  }
+
+  ul.tools>li.handler {
+    width: 0.25vw !important;
+    min-width: 12px !important;
+  }
+
+  ul.tools>li.separator {
+    width: 0.25vw !important;
+    min-width: 5px !important;
+  }
+
+  ul.tools{
+    height: 2vw !important;
+  }
+
+  .material-icons.md-24 {
+    font-size: 2vw !important;
+    min-width: 25px;
+    min-height: 25px;
+  }
+
+}
+
+.color-picker.static {
+  display: inline-block;
+  position: static;
+  box-shadow: none;
+}

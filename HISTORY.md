@@ -21,9 +21,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * **Version 1**
     * [1.0.x](#camicroscope-10)
 
-### caMicroscope [Unreleased](https://github.com/camicroscope/camicroscope/compare/v3.7.5...camicroscope:develop)
+### caMicroscope [Unreleased](https://github.com/camicroscope/camicroscope/compare/v3.7.7...camicroscope:develop)
 ###### TBD
 * TBD
+
+### caMicroscope [3.7.7](https://github.com/camicroscope/camicroscope/compare/v3.7.6......camicroscope:v3.7.7)
+###### 2020-06-24
+* Bugfix for Heatmap Color Editing
+
+### caMicroscope [3.7.6](https://github.com/camicroscope/camicroscope/compare/v3.7.5...camicroscope:v3.7.6)
+###### 2020-06-24
+* Segmentation Fixes
+* Review Status Workflow and Indicators [#407](https://github.com/camicroscope/caMicroscope/pull/407)
+* Information Dashboard button moved to slides page [#376](https://github.com/camicroscope/caMicroscope/pull/376)
 
 ### caMicroscope [3.7.5](https://github.com/camicroscope/camicroscope/compare/v3.7.4...camicroscope:v3.7.5)
 ###### 2020-05-29

@@ -71,6 +71,13 @@
       media="all"
       href="../../components/layersviewer/layersviewer.css"
     />
+    <!-- labels controller css -->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      media="all"
+      href="../../components/labelsviewer/labelsviewer.css"
+    />
     <!-- collapsible list css -->
     <link
       rel="stylesheet"
@@ -220,6 +227,11 @@
       type="text/javascript"
       src="../../components/layersviewer/layersviewer.js"
     ></script>
+    <!-- labels controller js -->
+    <script
+      type="text/javascript"
+      src="../../components/labelsviewer/labelsviewer.js"
+    ></script>
     <!-- operation panel js -->
     <script
       type="text/javascript"
@@ -324,7 +336,6 @@
     <script src="./uicallbacks.js"></script>
     <script src="./dataloaders.js"></script>
     <script src="./init.js"></script>
-    <script src="../loader/loader.js"></script>
     <script src="../../common/bootstrap-tour-standalone/bootstrap-tour-standalone.min.js"></script>
     <script src="./tut.js"></script>
   </head>
@@ -349,8 +360,11 @@
     <!-- side menu for apps-->
     <div id="side_apps" style="z-index:600"></div>
 
-    <!-- side menu for layers-->
+    <!-- side menu for layers -->
     <div id="side_layers" style="z-index:600"></div>
+
+    <!-- side menu for labels -->
+    <div id="labels_layers" style="z-index:600"></div>
 
     <!-- collapsible list - annotation and analytics -->
     <div id="collapsiblelist" style="z-index:600"></div>
@@ -360,9 +374,9 @@
     <div id="overlayers" style="z-index:600"></div>
 
     <div id="overlayersMinor" style="z-index:600"></div>
-
-    <!-- popup--->
-    <div id="popup-container"></div>
+    
+    <!-- labels manager -->
+    <div id="labelmanager" style="z-index:600"></div>
   </body>
   <script type="text/javascript">
     if (detectIE()) {

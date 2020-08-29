@@ -810,6 +810,17 @@ function getUserFilter() {
     return ['Public'];
   }
 }
+function getUserPermissions(userType) {
+  const url = '/data/User/wcido';
+  const query = {
+    'ut': userType,
+  };
+  return fetch(url + '?' + objToParamStr(query), {
+    method: 'GET',
+    credentials: 'include',
+    mode: 'cors',
+  });
+}
 
 function getUserId() {
   let token_info = parseJwt(getCookie('token'));

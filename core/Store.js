@@ -96,12 +96,12 @@ class Store {
    * @return {promise} - promise which resolves with data
    **/
   findMark(slide, name, footprint, source, x0, x1, y0, y1) {
-    const suffix = 'Mark/find';
+    const suffix = 'Mark/spatial';
     const url = this.base + suffix;
     const query = {};
     let bySlideId;
     if (slide) {
-      query.slide = slide;
+      query['provenance.image.slide'] = slide;
     }
     if (name) {
       query['provenance.analysis.execution_id'] = name;
@@ -629,7 +629,7 @@ class Store {
     const suffix = 'Configuration/find';
     const url = this.base + suffix;
     const query = {
-      'name': name,
+      'config_name': name,
     };
 
     return fetch(url + '?' + objToParamStr(query), {
@@ -777,6 +777,42 @@ class Store {
       body: JSON.stringify(update),
     });
   }
+
+  addPresetLabels(labels) {
+    const suffix = 'Presetlabels/add';
+    const url = this.base + suffix;
+    return fetch(url, {
+      method: 'POST',
+      credentials: 'include',
+      mode: 'cors',
+      body: JSON.stringify(labels),
+    }).then(this.errorHandler);
+  }
+
+  updatePresetLabels(id, labels) {
+    const suffix = 'Presetlabels/update';
+    const url = this.base + suffix;
+    const query = {id: id};
+
+    return fetch(url + '?' + objToParamStr(query), {
+      method: 'POST',
+      credentials: 'include',
+      mode: 'cors',
+      body: JSON.stringify(labels),
+    }).then(this.errorHandler);
+  }
+
+  removePresetLabels(id) {
+    const suffix = 'Presetlabels/remove';
+    const url = this.base + suffix;
+    const query = {id: id};
+    return fetch(url + '?' + objToParamStr(query), {
+      method: 'POST',
+      credentials: 'include',
+      mode: 'cors'
+    }).then(this.errorHandler);
+  }  
+
 
   // Update slide review status
   updateSlideReview(id, newStatus) {
