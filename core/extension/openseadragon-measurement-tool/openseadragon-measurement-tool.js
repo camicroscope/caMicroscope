@@ -61,6 +61,8 @@
         if(!this.setMPP(options.mpp)) return;
         // on/off
         this.isOn = false;
+        this.onAdd = options.onAdd
+        this.onDelete = options.onDelete
         // is measuring things
         this.isMeasuring = false;
         this.mode = 'straight'; // straight : coordinate
@@ -166,12 +168,20 @@
             ruler.addEventListener('mouseover', e=>{close.style.display = ''});
             ruler.addEventListener('mouseout', e=>{close.style.display = 'none'});
             close.addEventListener('click',e=>{
-                this._viewer.removeOverlay(ruler);
-                close.style.display = 'none';
-                this.__clearPoints();
+                if(this.onDelete&&isFunction(this.onDelete)) this.onDelete(this._viewer.getOverlayById(ruler))
+                // this._viewer.removeOverlay(ruler);
+                // close.style.display = 'none';
+                // this.__clearPoints();
             },this);
 
             return ruler;
+        },
+        removeRulerById(id){
+            const ruler = this._viewer.currentOverlays.find(d=>d.element.dataset.id == id)
+            if(ruler) {
+                this._viewer.removeOverlay(ruler.element);
+                this.__clearPoints()
+            }
         },
 
 
@@ -234,6 +244,33 @@
             return Math.atan(opposite / adjacent);
         },
 
+        addRuler:function(option){
+            const {id, mode, rect, innerHTML, isShow} = option;
+            const ruler = document.createElement('div');
+            ruler.classList.add('ruler');
+            ruler.style.zIndex = 101;
+            ruler.innerHTML = innerHTML;
+            ruler.dataset.id = id;
+            ruler.dataset.mode = mode;
+            if(!isShow) ruler.style.display = 'none';
+            this._viewer.addOverlay({
+                element: ruler,
+                location: new OpenSeadragon.Rect(rect.x,rect.y,rect.width,rect.height),
+            });
+
+            // close
+            const close = ruler.querySelector('.material-icons.close');
+            ruler.addEventListener('mouseover', e=>{close.style.display = ''});
+            ruler.addEventListener('mouseout', e=>{close.style.display = 'none'});
+            close.addEventListener('click',e=>{
+                if(this.onDelete&&isFunction(this.onDelete)) this.onDelete(this._viewer.getOverlayById(ruler))
+                // this._viewer.removeOverlay(ruler);
+                // close.style.display = 'none';
+                // this.__clearPoints();
+            },this);
+            
+            return this._viewer.getOverlayById(ruler)
+        },
         __adjustStraightRuler:function(){
 
             const w = Math.abs(this._start_client.x-this._end_client.x);
@@ -421,17 +458,16 @@
                     if(this.mode == 'coordinate'){
                         // calculate 
                         // set values for scale
+                        this._currentRuler.dataset.mode = 'coordinate'
                         this._currentRuler.querySelector('.h_text').textContent = widthInUnit;
                         this._currentRuler.querySelector('.v_text').textContent = heightInUnit;
                         // this._h_text.textContent = widthInUnit;
                         // this._v_text.textContent = heightInUnit;
                     }else if(this.mode == 'straight'){
+                        this._currentRuler.dataset.mode = 'straight'
                         this.__adjustStraightRuler();
                         this._currentRuler.querySelector('.text').textContent = this.__getScaleUnit(1,Math.sqrt(this.mpp.x*this.mpp.x*width*width+ this.mpp.y*this.mpp.y*height*height));
-
                     }
-
-
                     this._currentRuler.style.display = 'flex';
                 }
 
@@ -442,12 +478,19 @@
         * stop to measure the image
         */
         stop:function(e){
+            if(this._end == null) {
+                this.isMeasuring = false;
+                this._currentRuler = null;
+                this.__clearPoints()
+            }
             if(this.isMeasuring===false) return;
             this.isMeasuring = false;
             this._viewer.canvas.style.cursor = 'pointer';
             if(this.mode =='straight') this._currentRuler.querySelector('.circle').style.display='none';
 
+            if(this.onAdd&&isFunction(this.onAdd)&&this._currentRuler) this.onAdd(this._viewer.getOverlayById(this._currentRuler))
             this._currentRuler = null;
+            this.__clearPoints()
         },
 
         __getRect:function(start,end){

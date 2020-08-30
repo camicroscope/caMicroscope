@@ -238,6 +238,19 @@ class Store {
       mode: 'cors',
     }).then(this.errorHandler);
   }
+  deleteMarkByExecId(execId, slide) {
+    const suffix = 'Mark/delete';
+    const url = this.base + suffix;
+    const query = {
+      'provenance.analysis.execution_id': execId,
+      'provenance.image.slide': slide,
+    };
+    return fetch(url + '?' + objToParamStr(query), {
+      method: 'DELETE',
+      credentials: 'include',
+      mode: 'cors',
+    }).then(this.errorHandler);
+  }
   /**
    * find marktypes given slide and name
    * @param {string} [name] - the associated slide name

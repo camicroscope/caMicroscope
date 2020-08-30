@@ -66,6 +66,8 @@ function multSelectorAction(size) {
       // customized options
       // hasZoomControl:false,
       hasDrawLayer: false,
+      addRulerCallback: onAddRuler,
+      deleteRulerCallback: onDeleteRuler,
       // hasLayerManager:false,
       // hasScalebar:false,
       // states options
@@ -494,6 +496,7 @@ function toggleMeasurement(data) {
     // trun off the main menu
     $UI.layersSideMenu.close();
     if ($CAMIC.status == 'measure') {
+      $CAMIC.viewer.measureInstance.mode = data.status
       measurementOn();
       return;
     }
@@ -503,6 +506,7 @@ function toggleMeasurement(data) {
       if ($CAMIC && $CAMIC.status == null) {
         // all tool has turn off
         clearInterval(checkAllToolsOff);
+        $CAMIC.viewer.measureInstance.mode = data.status
         measurementOn();
       }
     }, 100);
@@ -519,8 +523,14 @@ function toggleMeasurement(data) {
 function measurementOn() {
   if (!$CAMIC.viewer.measureInstance) return;
   $CAMIC.viewer.measureInstance.on();
-  const li = $UI.toolbar.getSubTool('measurement');
+  const li = $UI.toolbar.getSubTool('measurement')
   li.querySelector('input[type=checkbox]').checked = true;
+  const value = li.querySelector('.drop_down input[type=radio]:checked').value;
+  if(value=='straight') {
+    li.querySelector('label').textContent = 'straighten'
+  } else if(value=='coordinate') {
+    li.querySelector('label').textContent = 'square_foot'
+  }
   $CAMIC.status = 'measure';
 }
 
@@ -1180,6 +1190,34 @@ async function callback(data) {
 
   data.forEach(function(d) {
     const item = d.item;
+    if (item.typeName == 'ruler') {
+      if (!item.data)
+        loadRulerById(camic, d, null);
+      else {
+        if (!d.layer) {
+          const [xmin,ymin] = item.data.geometries.features[0].geometry.coordinates[0][0];
+          const [xmax,ymax] = item.data.geometries.features[0].geometry.coordinates[0][2];
+          // create lay and update view
+          d.layer = camic.viewer.measureInstance.addRuler({
+            id: item.id,
+            mode: item.data.properties.mode,
+            rect: {
+              x: xmin,
+              y: ymin,
+              width: xmax-xmin,
+              height: ymax-ymin,
+            },
+            innerHTML: item.data.properties.innerHTML,
+            isShow: d.isShow,
+          });
+        }      
+        if(d.isShow) d.layer.element.style.display ='';
+        else d.layer.element.style.display ='none';
+      }
+
+      return;
+    }
+
     if (item.typeName == 'segmentation') {
       if (d.isShow) {
         // add
@@ -1292,7 +1330,7 @@ async function callback(data) {
     }
 
     if (!item.data) {
-      // load layer data
+      // load annotation layer data
       loadAnnotationById(camic, d, null);
     } else {
       if (!d.layer) d.layer = camic.viewer.omanager.addOverlay(item);
@@ -1321,6 +1359,65 @@ function closeMinorControlPanel() {
   $UI.layersList.triggerContent('right', 'close');
 }
 
+function loadRulerById(camic, rulerData, callback) {
+  const {item, elt} = rulerData;
+  $CAMIC.store
+      .getMarkByIds([item.id], $D.params.slideId)
+      .then((data) => {
+
+        // response error
+        if (data.error) {
+          const errorMessage = `${data.text}: ${data.url}`;
+          console.error(errorMessage);
+          $UI.message.addError(errorMessage, 4000);
+          // delete item form layview
+          removeElement($D.overlayers, item.id);
+          $UI.layersViewer.removeItemById(item.id);
+          $UI.layersViewerMinor.removeItemById(item.id);
+          return;
+        }
+
+        // no data found
+        // if(data.length < 1){
+        if (!data[0]) {
+          console.warn(`Ruler: ${item.name}(${item.id}) doesn't exist.`);
+          $UI.message.addWarning(
+              `Ruler: ${item.name}(${item.id}) doesn't exist.`,
+              4000,
+          );
+          // delete item form layview
+          removeElement($D.overlayers, item.id);
+          $UI.layersViewer.removeItemById(item.id);
+          $UI.layersViewerMinor.removeItemById(item.id);
+          return;
+        }
+        item.data = data[0];
+        item.data.properties.innerHTML = item.data.properties.innerHTML.split('&lt;').join('<');
+        item.data.properties.innerHTML = item.data.properties.innerHTML.split('&gt;').join('>');
+        item.data.properties.innerHTML = item.data.properties.innerHTML.split('&nbsp;').join(' ');
+        const [xmin,ymin] = item.data.geometries.features[0].geometry.coordinates[0][0];
+        const [xmax,ymax] = item.data.geometries.features[0].geometry.coordinates[0][2];
+        // create lay and update view
+        rulerData.layer = camic.viewer.measureInstance.addRuler({
+          id: item.id,
+          mode: item.data.properties.mode,
+          rect: {
+            x: xmin,
+            y: ymin,
+            width: xmax-xmin,
+            height: ymax-ymin,
+          },
+          innerHTML: item.data.properties.innerHTML,
+          isShow: rulerData.isShow,
+        });
+      })
+      .catch((e) => {
+        console.error(e);
+      })
+      .finally(() => {
+        Loading.close();
+      });
+}
 function loadAnnotationById(camic, layerData, callback) {
   layerData.item.loading = true;
   const item = layerData.item;
@@ -1450,6 +1547,10 @@ function loadAnnotationById(camic, layerData, callback) {
  */
 function removeCallback(layerData) {
   item = layerData.item;
+  if (item.typeName == 'ruler') {
+    deleteRulerHandler(item.id)
+    return;
+  }
   if (item.typeName !== 'human') return;
   if (!item.data) {
     // load layer data
@@ -1474,8 +1575,10 @@ function removeCallback(layerData) {
  * @param {Object} layerData
  */
 function locationCallback(layerData) {
-  item = layerData.item;
-  if (item.typeName !== 'human' || item.data == null) return;
+  let isImageViewer = true;
+  const item = layerData.item;
+  if ((item.typeName !== 'human'&&item.typeName !== 'ruler') || item.data == null) return;
+  if(item.typeName == 'ruler') isImageViewer = false;
   if (item.data.geometries.features[0].geometry.type == 'Point') {
     const bound = item.data.geometries.features[0].bound.coordinates;
     const center = $CAMIC.viewer.viewport.imageToViewportCoordinates(
@@ -1488,7 +1591,7 @@ function locationCallback(layerData) {
     if(item.data.provenance&&item.data.provenance.analysis&&item.data.provenance.analysis.isGrid){
       bound[2] = [bound[2][0] + item.data.geometries.features[0].properties.size[0],bound[2][1] + item.data.geometries.features[0].properties.size[1]]
     }
-    locateAnnotation(bound);
+    locateAnnotation(bound, isImageViewer);
   }
 }
 
@@ -1497,18 +1600,24 @@ function locationCallback(layerData) {
  * called from locationCallback
  * @param {Object} bound
  */
-function locateAnnotation(bound) {
+function locateAnnotation(bound, isImageViewer) {
   // if(){
 
   // }
   const [minx, miny] = bound[0];
   const [maxx, maxy] = bound[2];
-  const rectangle = $CAMIC.viewer.viewport.imageToViewportRectangle(
-      minx,
-      miny,
-      maxx - minx,
-      maxy - miny,
-  );
+  const rectangle = isImageViewer?
+  $CAMIC.viewer.viewport.imageToViewportRectangle(
+    minx,
+    miny,
+    maxx - minx,
+    maxy - miny,
+  ):new OpenSeadragon.Rect(
+    minx,
+    miny,
+    maxx - minx,
+    maxy - miny,
+  )
   const center = rectangle.getCenter();
   $CAMIC.viewer.viewport.fitBounds(rectangle);
 
@@ -2005,6 +2114,213 @@ function addAnnotation(id, data) {
   $UI.layersViewerMinor.update();
 }
 
+function onDeleteRuler(ruler) {
+  const id = ruler.element.dataset.id;
+  deleteRulerHandler(id);
+
+}
+
+function deleteRulerHandler(execId){
+  if(!confirm(message = `Are You Sure You Want To Delete This Ruler {ID:${execId}}?`)) return;
+  $CAMIC.store
+  .deleteMarkByExecId(execId, $D.params.data.slide)
+  .then((datas) => {
+    console.log(datas)
+  // server error
+    if (datas.error) {
+      const errorMessage = `${datas.text}: ${datas.url}`;
+      $UI.message.addError(errorMessage, 4000);
+      // close
+      return;
+    }
+
+    // no data found
+    if (!datas.deletedCount || datas.deletedCount < 1) {
+      $UI.message.addWarning(`Delete Ruler Failed.`, 4000);
+      return;
+    }
+    // update UI
+    removeElement($D.overlayers, execId);
+    $UI.layersViewer.removeItemById(execId);
+    $UI.layersViewerMinor.removeItemById(execId);
+    $CAMIC.viewer.measureInstance.removeRulerById(execId)
+    if($minorCAMIC&&$minorCAMIC.viewer&&$minorCAMIC.viewer.measureInstance)$minorCAMIC.viewer.measureInstance.removeRulerById(execId)
+    $UI.message.addSmall(`Deleted The '${execId}' Ruler.`)
+  })
+  .catch((e) => {
+    $UI.message.addError(e);
+    console.error(e);
+  })
+  .finally(() => {
+  // console.log('delete end');
+  });
+}
+
+
+function onAddRuler(ruler) {
+  const {x, y, width, height} = ruler.getBounds($CAMIC.viewer.viewport)
+  const execId = 'ruler' + randomId();
+  ruler.element.dataset.id = execId;
+  let innerHTML = ruler.element.innerHTML;
+  innerHTML = innerHTML.split('<').join('&lt;');
+  innerHTML = innerHTML.split('>').join('&gt;');
+  innerHTML = innerHTML.split(' ').join('&nbsp;');
+  let rulerJson = {
+    creator: getUserId(),
+    created_date: new Date(),
+    provenance: {
+      image: {
+        slide: $D.params.slideId,
+      },
+      analysis: {
+        source: 'ruler',
+        execution_id: execId,
+        name: execId,
+        type: 'ruler',
+      },
+    },
+    properties: {
+      annotations: {
+        name: execId,
+        notes: 'ruler',
+      },
+      mode: ruler.element.dataset.mode,
+      innerHTML: innerHTML
+    },
+    geometries: {
+      type: "FeatureCollection",
+      features: [
+        {
+          type: "Feature",
+          geometry: {
+            type: "Polygon",
+            coordinates: [
+              [
+                [
+                  x,
+                  y,
+                ],
+                [
+                  x + width,
+                  y
+                ],
+                [
+                  x + width,
+                  y + height,
+                ],
+                [
+                  x,
+                  y + height,
+                ],
+                [
+                  x,
+                  y,
+                ]
+              ]
+            ]
+          },
+          bound : {
+            type : "Polygon",
+            coordinates: [
+              [
+                [
+                  x,
+                  y,
+                ],
+                [
+                  x + width,
+                  y
+                ],
+                [
+                  x + width,
+                  y + height,
+                ],
+                [
+                  x,
+                  y + height,
+                ],
+                [
+                  x,
+                  y,
+                ]
+              ]
+            ]
+          }
+        }
+      ]
+    }
+  
+  };
+
+  $CAMIC.store
+      .addMark(rulerJson)
+      .then((data) => {
+      // server error
+        if (data.error) {
+          $UI.message.addError(`${data.text}:${data.url}`);
+          return;
+        }
+
+        // no data added
+        if (data.result && data.result.ok && data.result.n < 1) {
+          Loading.close();
+          $UI.message.addWarning(`Ruler Save Failed`);
+          return;
+        }
+
+        const __data = data.ops[0]
+        // create layer data
+        const newItem = {
+          id: execId,
+          name: execId,
+          typeId: typeIds['ruler'],
+          typeName: 'ruler',
+          data: data.ops[0],
+        };
+        newItem.data.properties.innerHTML = newItem.data.properties.innerHTML.split('&lt;').join('<');
+        newItem.data.properties.innerHTML = newItem.data.properties.innerHTML.split('&gt;').join('>');
+        newItem.data.properties.innerHTML = newItem.data.properties.innerHTML.split('&nbsp;').join(' ');
+        newItem.data._id = {$oid:newItem.data._id}
+        $D.overlayers.push(newItem);
+        $UI.layersViewer.addItem(newItem);
+        $UI.layersViewerMinor.addItem(
+            newItem,
+        $minorCAMIC && $minorCAMIC.viewer ? true : false,
+        );
+
+        const rulerData = $UI.layersViewer.getDataItemById(execId)
+        rulerData.layer = $CAMIC.viewer.getOverlayById(ruler.element)
+
+        const rulerDataMinor = $UI.layersViewerMinor.getDataItemById(execId)
+        // create lay and update view
+        if($minorCAMIC && $minorCAMIC.viewer && rulerDataMinor.isShow) {
+          const [xmin,ymin] = newItem.data.geometries.features[0].geometry.coordinates[0][0];
+          const [xmax,ymax] = newItem.data.geometries.features[0].geometry.coordinates[0][2];          
+          rulerDataMinor.layer = $minorCAMIC.viewer.measureInstance.addRuler({
+            id: newItem.id,
+            mode: newItem.data.properties.mode,
+            rect: {
+              x: xmin,
+              y: ymin,
+              width: xmax-xmin,
+              height: ymax-ymin,
+            },
+            innerHTML: newItem.data.properties.innerHTML,
+            isShow: rulerDataMinor.isShow,
+          })
+        }     
+      
+        // close app side
+        $UI.layersViewer.update();
+        $UI.layersViewerMinor.update();
+
+        $UI.message.addSmall(`Added The '${execId}' Ruler.`)
+      })
+      .catch((e) => {
+        Loading.close();
+        console.log('Ruler Save Failed');
+      })
+}
 
 /* call back list END */
 /* --  -- */

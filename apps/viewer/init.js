@@ -135,6 +135,7 @@ function initCore() {
   // set states if exist
   if ($D.params.states) {
     opt.states = $D.params.states;
+
   }
   // pathdb home directly
   if ($D.params.mode == 'pathdb') {
@@ -147,6 +148,8 @@ function initCore() {
     slideQuery.id = $D.params.slideId;
     slideQuery.name = $D.params.slide;
     slideQuery.location = $D.params.location;
+    opt.addRulerCallback = onAddRuler;
+    opt.deleteRulerCallback = onDeleteRuler;
     $CAMIC = new CaMic('main_viewer', slideQuery, opt);
   } catch (error) {
     Loading.close();
@@ -404,10 +407,23 @@ async function initUIcomponents() {
   if ($CAMIC.viewer.measureInstance) {
     subToolsOpt.push({
       name: 'measurement',
-      icon: 'space_bar',
+      icon: 'straighten',
       title: 'Measurement',
-      type: 'check',
+      type: 'dropdown',
       value: 'measure',
+      dropdownList: [
+        {
+          value: 'straight',
+          title: 'straight',
+          icon: 'straighten',
+          checked: true,
+        },
+        {
+          value: 'coordinate',
+          title: 'coordinate',
+          icon: 'square_foot',
+        },
+      ],      
       callback: toggleMeasurement,
     });
   }
