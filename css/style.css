@@ -252,6 +252,9 @@ opacity: 0.3 !important;
 }
 
 @media (min-width: 1200px) {
+  ul.drop_down { 
+    font-size: 1.3vw !important;
+  }
 
   ul.tools>li{
     height: 2vw !important;

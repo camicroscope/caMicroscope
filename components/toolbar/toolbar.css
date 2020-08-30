@@ -79,8 +79,8 @@ ul.tools > li:hover ul.drop_down {
 
 ul.drop_down li {
   cursor: pointer;
-  width: 2.4rem;
-  height: 2.4rem;
+  /* width: 2.4rem;
+  height: 2.4rem; */
   /*border-radius:.5rem .5rem .5rem .5rem;*/
   box-shadow: 0 0.4rem 0.8rem 0 rgba(0, 0, 0, 0.2),
     0 0.6rem 0.2rem 0 rgba(0, 0, 0, 0.19);
@@ -126,15 +126,22 @@ li > input[type="radio"]:checked + label {
     0 0.6rem 0.2rem 0 rgba(0, 0, 0, 0.19);
 }
 li > input[type="radio"]:checked + label div,
-li > input[type="radio"] + label div {
+li > input[type="radio"]:checked + label,
+li > input[type="radio"] + label div,
+li > input[type="radio"] + label {
   display: flex;
   text-align: center;
   align-items: center;
   white-space: nowrap;
   margin: 0 auto;
-  padding: 2px;
+  /* padding: 0 2px; */
   /* height:2.4rem; */
 }
+li > input[type="radio"]:checked + label div,
+li > input[type="radio"] + label div {
+  padding: 0 2px;
+}
+
 .tools li {
   list-style: none;
 }
