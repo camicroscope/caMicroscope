@@ -101,7 +101,8 @@ caDrawHelper.prototype.drawMultiGrid = function(ctx, points, size){
         path.rect(p[0],p[1],size[0],size[1]);
     });
     path.closePath()
-    path.fill(ctx);
+    //path.fill(ctx);
+    path.stroke(ctx);
     // return points and path
     return path;
 }
@@ -164,10 +165,12 @@ caDrawHelper.prototype.drawPolygon = function(ctx, paths){
     // close path and set style
     path.closePath()
     if(ctx.isFill ==undefined || ctx.isFill){
-        path.fill(ctx);
+        // path.fill(ctx);
+        path.stroke(ctx);
     }else{
         path.stroke(ctx);
     }
+    
     // return points and path
     return path
 }
@@ -202,9 +205,9 @@ caDrawHelper.prototype.draw = function(ctx, image_data){
                 && polygon.bound
                 && polygon.bound.coordinates
                 && polygon.bound.coordinates[0]
+                && (!polygon.properties.size)
                 && (!this.doesDraw(polygon.bound.coordinates[0], ctx)
                 || !this.isIntersectBBox(ctx.viewBoundBoxInData, polygon.bound.coordinates[0]))) continue;
-            
             ctx.fillStyle = style.color;
             if(polygon.properties.size){
                 polygon.geometry.path = this.drawGrid(ctx, polygon);
@@ -216,7 +219,8 @@ caDrawHelper.prototype.draw = function(ctx, image_data){
             const point = polygon.geometry.coordinates
             if(ctx.viewBoundBoxInData
                 && !this.isPointInBBox(ctx.viewBoundBoxInData, {x:point[0],y:point[1]})) continue;
-            ctx.fillStyle = (ctx.isFill ==undefined || ctx.isFill)?hexToRgbA(style.color,0.7):style.color;
+            
+            ctx.fillStyle = (ctx.isFill ==undefined || ctx.isFill)?hexToRgbA(style.color,1):style.color;
             polygon.geometry.path = this.circle(ctx, polygon.geometry.coordinates, ctx.radius);
         }else if(false){
 
@@ -263,7 +267,7 @@ caDrawHelper.prototype.drawGrids = function(ctx, image_data){
         const style = polygon.properties.style;
         const size = polygon.properties.size;
         //this.setStyle(ctx, style);
-        ctx.fillStyle = hexToRgbA(polygon.properties.style.color,0.5);
+        ctx.fillStyle = hexToRgbA(polygon.properties.style.color,0.1);
         const points = polygon.geometry.coordinates[0];
         const grids = getGrids(points, size);
         this.drawMultiGrid(ctx, grids, size);
@@ -273,7 +277,7 @@ caDrawHelper.prototype.drawGrid = function(ctx, polygon){
         const style = polygon.properties.style;
         const size = polygon.properties.size;
         //this.setStyle(ctx, style);
-        ctx.fillStyle = hexToRgbA(polygon.properties.style.color,0.5);
+        ctx.fillStyle = hexToRgbA(polygon.properties.style.color,0.1);
         const points = polygon.geometry.coordinates[0];
         const grids = getGrids(points, size);
         return this.drawMultiGrid(ctx, grids, size);

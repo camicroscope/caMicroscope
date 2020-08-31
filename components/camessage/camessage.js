@@ -23,7 +23,7 @@ function CaMessage(options) {
     // id
     defaultText: 'No Content',
     // size .font-size
-    size: '1.3rem',
+    size: '1.5rem',
     // color - font color
     color: '#f6f6f6',
     // bgColor - background color

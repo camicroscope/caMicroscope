@@ -312,6 +312,8 @@ class CaMic {
         x: mppx,
         y: mppy,
       },
+      onAdd: this.setting.addRulerCallback,
+      onDelete: this.setting.deleteRulerCallback,
     });
   }
 

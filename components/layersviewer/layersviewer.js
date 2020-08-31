@@ -361,7 +361,7 @@ LayersViewer.createCategoricalItem = function(data, type) {
     li.title = item.name;
   }
 
-  if (item.typeName && item.typeName == 'human') {
+  if (item.typeName && (item.typeName == 'human' || item.typeName=='ruler')) {
     // remove and relocation
     const removeDiv = document.createElement('div');
     removeDiv.classList.add('material-icons');
@@ -373,6 +373,7 @@ LayersViewer.createCategoricalItem = function(data, type) {
     // bind event location_searching
     locationDiv.classList.add('material-icons');
     locationDiv.classList.add('md-24');
+    locationDiv.classList.add('location');
     locationDiv.textContent = 'room';
     locationDiv.title = 'Location';
 
@@ -697,10 +698,10 @@ LayersViewer.prototype.__change = function(e) {
       data.isShow = checked;
       data.elt.lastChild.checked = checked;
 
-      const location = e.target.parentElement.querySelector('div');
-      if (checked) {
+      const location = e.target.parentElement.querySelector('div.location');
+      if (location&&checked) {
         location.style.display = 'block';
-      } else {
+      } else if(location&&!checked) {
         location.style.display = 'none';
       }
 

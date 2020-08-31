@@ -10,26 +10,37 @@
 	text-align: center;
 	background-color:#2684FF;
 	color:#f6f6f6;
-	font-size:1.5rem;
+	font-size:2rem;
 	font-family:Sans-serif;
-	padding:.3rem 1rem;
-	margin:.3rem;
+	padding:1.5rem;
+	margin:2.5rem;
 	border-radius:.5rem;
 	-webkit-transition: opacity 0.7s ease-in-out;
 	-moz-transition: opacity 0.7s ease-in-out;
 	-ms-transition: opacity 0.7s ease-in-out;
 	-o-transition: opacity 0.7s ease-in-out;
+	transition: opacity 0.7s ease-in-out;
 	opacity: 1;
 }
-.warning {
-	color:#212529;
+.bullet-container > .small {
+	color: #004085;
+    background-color: #cce5ff;
+    border-color: #b8daff;
+    padding: 0.5rem 1.25rem;
+    font-size: 1.3rem;
+    margin: 0.5rem;
+    border: 1px solid;
+    border-radius: .25rem;
+}
+.bullet-container > .warning {
+	color:#f6f6f6;
 	background-color:#ffc107;
 }
-.info {
+.bullet-container > .info {
 	color:#f6f6f6;
 	background-color:#2684FF
 }
-.error {
+.bullet-container > .error {
 	color:#f6f6f6;
 	background-color:#dc3545
 }

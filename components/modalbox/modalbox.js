@@ -95,7 +95,7 @@ ModalBox.prototype.appendBody=function() {
 
 };
 ModalBox.prototype.setHeaderText = function(text) {
-  this.elt.querySelector('.modal-footer');
+  this.elt.querySelector('.modalbox-header > div').textContent = text;
 };
 ModalBox.prototype.setFooterText = function(text) {
 

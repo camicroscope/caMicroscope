@@ -60,12 +60,9 @@
 				<li class="nav-item link">
 					<a class="nav-link" href="landing/landing.html"> <i class="fas fa-home"></i> Home</a>
 				</li>
-				<li class="nav-item link">
+				<li class="nav-item link active">
 					<a class="nav-link" href="table.html"> <i class="fas fa-list-ul"></i> Slides</a>
 				</li>
-        <li class="nav-item active link">
-          <a class="nav-link" href="Info.html"> <i class="fas fa-info-circle"></i> Info</a>
-        </li>
 			</ul>
 			<ul class="navbar-nav">
 				<li class="nav-item link" style="font-family: sans-serif;">
@@ -81,7 +78,14 @@
 	<div class="header text-center text-white bg-info p-4">
 		<h1 class="h1">caMicroscope</h1>
 		<p>Digital pathology image viewer with support for human/machine generated annotations and markups.</p>
+		<div style="align-content: center;">
+			<div class="btn-group" role="group">
+			<a href="./table.html">	<button style="border-color: white; border-radius: 5px 0 0 5px;" type="button" class="btn btn-secondary bg-info text-light" title="Slides Table"><i class="fas fa-list-alt"></i>  Slides</button> </a>
+			<button type="button" style="border-color: white;" class="btn btn-secondary bg-white text-dark" title="Information Dashboard"> <i class="fas fa-info-circle"></i> Info</button>
+			</div>
+		</div>
 	</div>
+
 
 	<div class="modal fade" id="detail-dialog" tabindex="-1" role="dialog"
 	aria-labelledby="title-of-dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false" >
@@ -137,6 +141,7 @@
 	<div class="row mb-2 ml-1" id="filters-check">
 	</div>
 	<div class="form-group has-search">
+
 		<span class="fa fa-search form-control-feedback"></span>
 		<input id="search-table" type="text" class="form-control" placeholder="Search">
 	</div>
