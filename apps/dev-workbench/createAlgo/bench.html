@@ -1,0 +1,1108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Workbench - Create Model</title>
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.8.2/css/all.css"
+    />
+    <!-- Google Fonts -->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
+    />
+    <!-- Bootstrap core CSS -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- Material Design Bootstrap -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.0/css/mdb.min.css"
+      rel="stylesheet"
+    />
+    <!-- JQuery -->
+    <script
+      type="text/javascript"
+      src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"
+    ></script>
+    <!-- Bootstrap tooltips -->
+    <script
+      type="text/javascript"
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js"
+    ></script>
+    <!-- Bootstrap core JavaScript -->
+    <script
+      type="text/javascript"
+      src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/js/bootstrap.min.js"
+    ></script>
+    <!-- MDB core JavaScript -->
+    <script
+      type="text/javascript"
+      src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.0/js/mdb.min.js"
+    ></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <link
+      href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-vis"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="stylesheet" href="./bench.css" />
+    <script src="../../../common/jszip.min.js"></script>
+    <script src="../../../common/FileSaver.min.js"></script>
+    <script src="../../../common/localforage.min.js"></script>
+    <script src="../../../core/Store.js"></script>
+    <script src="../../../common/util.js"></script>
+  </head>
+  <body>
+    <!--Navbar-->
+    <nav
+      class="navbar navbar-expand-lg navbar-dark"
+      style="background: rgb(33, 37, 41);"
+    >
+      <div id="goBack" style="cursor: pointer;">
+        <i data-feather="arrow-left" class="text-white"></i>
+      </div>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      <!-- Navbar brand -->
+      <span class="navbar-brand" style="color: white;">
+        Workbench - Step 2 &nbsp;
+        <i
+          id="advancedModeIcon"
+          title="Advanced Mode is on"
+          class="fas fa-tools"
+        ></i>
+        &nbsp;
+        <i
+          id="serverModeIcon"
+          title="Server Training Mode is on"
+          class="fas fa-server"
+        ></i>
+      </span>
+      <ul class="navbar-nav mr-auto">
+        <!-- Dropdown -->
+        <li
+          style="position: absolute; right: 2em; margin-top: -1.3em;"
+          class="nav-item dropdown"
+        >
+          <a
+            class="nav-link dropdown-toggle"
+            id="navbarDropdownMenuLink"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+            >Options</a
+          >
+          <div
+            class="dropdown-menu dropdown-primary"
+            aria-labelledby="navbarDropdownMenuLink"
+            style="margin-left: -8em;"
+          >
+            <a id="exportOption" class="dropdown-item" href="#"
+              ><i class="fas fa-file-export"></i>&nbsp;&nbsp;Export</a
+            >
+            <a id="importOption" class="dropdown-item" href="#"
+              ><i class="fas fa-file-import"></i>&nbsp;&nbsp;Import</a
+            >
+            <a
+              class="dropdown-item helpButton"
+              href="#"
+              data-toggle="modal"
+              data-target="#helpModal"
+            >
+              <i class="fas fa-question-circle"></i>
+              &nbsp;&nbsp;Help/User Guide</a
+            >
+            <input type="file" id="importFile" />
+            <hr style="margin-top: 0;" />
+            <form style="width: 14em;">
+              <div style="margin-left: 1em;">
+                <div
+                  class="custom-control custom-switch"
+                  title="Toggle Advanced Mode"
+                >
+                  <input
+                    type="checkbox"
+                    class="custom-control-input"
+                    id="advancedToggle"
+                  />
+                  <label class="custom-control-label" for="advancedToggle"
+                    >Advanced Mode</label
+                  >
+                </div>
+              </div>
+              <hr />
+              <div style="margin-left: 1em; margin-bottom: 0.4em;">
+                <div
+                  class="custom-control custom-switch"
+                  title="Toggle Server-side Model Training"
+                >
+                  <input
+                    type="checkbox"
+                    class="custom-control-input"
+                    id="serverSideToggle"
+                  />
+                  <label class="custom-control-label" for="serverSideToggle"
+                    >Server-side Training</label
+                  >
+                </div>
+              </div>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </nav>
+    <!--/.Navbar-->
+
+    <div id="headbar" style="height: 0;">
+      <br />
+      <div id="headContent" style="font-size: xx-large;">
+        Design your own ML training algorithm here
+      </div>
+      <br />
+    </div>
+
+    <br />
+    <div id="loading" style="text-align: center;">
+      <div class="spinner-border" role="status">
+        <span class="sr-only">Loading...</span>
+      </div>
+    </div>
+
+    <div
+      id="initialSettings"
+      style="
+        align-items: center;
+        padding: 1em;
+        margin-bottom: -5em;
+      "
+    >
+      <div
+        class="card"
+        style="max-width: 50em; min-width: 20em; margin: 0 auto;"
+      >
+        <!-- Card content -->
+        <div class="card-body">
+          <!-- Title -->
+          <h4 class="card-title">Model Settings and information</h4>
+          <!-- Text -->
+          <p style="text-align: justify;" class="card-text">
+            See and configure basic settings for the model here and proceed to
+            customize the individual layers :
+          </p>
+          <hr />
+          Number of dataset images: <b> <span id="numImages">0</span> </b>
+          <form id="initSettingsSubmit" onsubmit="return false;">
+            <div style="display: flex; margin-top: 0.5em;">
+              Model Name: &nbsp;
+              <input
+                required
+                style="
+                  width: 15em;
+                  margin-bottom: 0.25em;
+                  padding: 1px 1px 1px 6px;
+                  height: auto;
+                "
+                value="myModel"
+                type="text"
+                id="modelName"
+                class="form-control"
+              />
+            </div>
+            <div style="display: flex; margin-top: 0.5em;">
+              Classes: &nbsp;
+              <input
+                required
+                style="
+                  width: 25em;
+                  margin-bottom: 0.7em;
+                  padding: 1px 1px 1px 6px;
+                  height: auto;
+                "
+                type="text"
+                id="classNames"
+                class="form-control"
+              />
+            </div>
+            <div style="display: flex;">
+              Train-Test Ratio: &nbsp;<input
+                required
+                style="
+                  width: 5em;
+                  margin-bottom: 0.7em;
+                  padding: 0px 1px 0px 6px;
+                  height: auto;
+                "
+                type="number"
+                step="0.01"
+                min="0.20"
+                max="0.98"
+                id="testTrainRatio"
+                class="form-control"
+                value="0.85"
+              />
+            </div>
+            <div style="display: flex;">
+              Train-data Size: &nbsp;<input
+                required
+                style="
+                  width: 8em;
+                  margin-bottom: 0.7em;
+                  padding: 0px 1px 0px 6px;
+                  height: auto;
+                "
+                type="number"
+                id="trainDataSize"
+                class="form-control"
+              />
+            </div>
+            <div style="display: flex;">
+              Test-data Size: &nbsp;<input
+                required
+                style="width: 8em; padding: 0px 1px 0px 6px; height: auto;"
+                type="number"
+                id="testDataSize"
+                class="form-control"
+              />
+            </div>
+            <br />
+            <b>Input Layer (Conv2D):</b>
+            <div style="display: flex;">
+              <div style="display: flex;">
+                <span style="margin-top: 1em;">Resolution (px): </span>
+                <input
+                  id="datasetNormalWidth"
+                  required
+                  class="form-control form-control-sm"
+                  type="number"
+                  title="Width"
+                  min="20"
+                  style="
+                    width: 6em;
+                    margin: 1em;
+                    padding: 0px 1px 0px 6px;
+                    height: auto;
+                  "
+                />
+                <span style="margin: 1em 0.3em 1em 0.3em;">x</span>
+                <input
+                  required
+                  id="datasetNormalHeight"
+                  class="form-control form-control-sm"
+                  type="number"
+                  title="height"
+                  min="20"
+                  style="
+                    width: 6em;
+                    margin: 1em;
+                    padding: 0px 1px 0px 6px;
+                    height: auto;
+                  "
+                />
+              </div>
+            </div>
+            <div style="display: flex;">
+              Kernel Size: &nbsp;<input
+                required
+                style="
+                  width: 3em;
+                  margin-bottom: 0.7em;
+                  padding: 0px 1px 0px 6px;
+                  height: auto;
+                "
+                type="number"
+                id="kernelSize"
+                min="1"
+                class="form-control"
+                value="4"
+              />
+              <span style="width: 2em;"></span> Filters: &nbsp;<input
+                style="
+                  width: 3em;
+                  margin-bottom: 0.7em;
+                  padding: 0px 1px 0px 6px;
+                  height: auto;
+                "
+                type="number"
+                required
+                min="2"
+                id="filters"
+                class="form-control"
+                value="8"
+              />
+            </div>
+            <div class="advancedInitialSettings">
+              <div style="display: flex;">
+                Padding: &nbsp;<input
+                  required
+                  style="
+                    width: 6em;
+                    margin-bottom: 0.7em;
+                    padding: 0px 1px 0px 6px;
+                    height: auto;
+                  "
+                  type="text"
+                  title="same | causal | valid"
+                  id="inputPadding"
+                  class="form-control"
+                  value="same"
+                />
+                <span style="width: 2em;"></span> Strides: &nbsp;<input
+                  style="
+                    width: 3em;
+                    margin-bottom: 0.7em;
+                    padding: 0px 1px 0px 6px;
+                    height: auto;
+                  "
+                  type="number"
+                  required
+                  min="1"
+                  id="inputStride"
+                  class="form-control"
+                  value="1"
+                />
+              </div>
+              <div style="display: flex;">
+                Activation: &nbsp;<input
+                  required
+                  style="
+                    width: 7em;
+                    margin-bottom: 0.7em;
+                    padding: 0px 1px 0px 6px;
+                    height: auto;
+                  "
+                  type="text"
+                  title=" elu | hardSigmoid | linear | relu | relu6 |  selu | sigmoid | softmax | softplus | softsign | tanh "
+                  id="inputActivation"
+                  class="form-control"
+                  value="relu"
+                />
+                <span style="width: 2em;"></span> kernelInitializer:
+                &nbsp;<input
+                  style="
+                    width: 10em;
+                    margin-bottom: 0.7em;
+                    padding: 0px 1px 0px 6px;
+                    height: auto;
+                  "
+                  type="text"
+                  title=" constant | glorotNormal | glorotUniform | heNormal | heUniform | identity |  leCunNormal | leCunUniform | ones | orthogonal | randomNormal |  randomUniform | truncatedNormal | varianceScaling | zeros "
+                  required
+                  id="inputKernelInitializer"
+                  class="form-control"
+                  value="varianceScaling"
+                />
+              </div>
+            </div>
+            <div
+              class="custom-control custom-switch"
+              title="Check or RGB else grayscale"
+            >
+              <input
+                type="checkbox"
+                class="custom-control-input"
+                id="RGBorGrayscale"
+                checked
+              />
+              <label
+                id="RGBorGrayscaleLabel"
+                class="custom-control-label"
+                for="RGBorGrayscale"
+                >RGB</label
+              >
+            </div>
+            <div
+              class="advancedInitialSettings"
+              style="margin-top: 0.8em;"
+            >
+              <b>Output Layer (Dense):</b>
+              <div style="display: flex; margin-top: 0.8em;">
+                Activation: &nbsp;<input
+                  required
+                  style="
+                    width: 7em;
+                    margin-bottom: 0.7em;
+                    padding: 0px 1px 0px 6px;
+                    height: auto;
+                  "
+                  type="text"
+                  title=" elu | hardSigmoid | linear | relu | relu6 |  selu | sigmoid | softmax | softplus | softsign | tanh "
+                  id="outputActivation"
+                  class="form-control"
+                  value="softmax"
+                />
+                <span style="width: 2em;"></span> kernelInitializer:
+                &nbsp;<input
+                  style="
+                    width: 10em;
+                    margin-bottom: 0.7em;
+                    padding: 0px 1px 0px 6px;
+                    height: auto;
+                  "
+                  type="text"
+                  title=" constant | glorotNormal | glorotUniform | heNormal | heUniform | identity |  leCunNormal | leCunUniform | ones | orthogonal | randomNormal |  randomUniform | truncatedNormal | varianceScaling | zeros "
+                  required
+                  id="outputKernelInitializer"
+                  class="form-control"
+                  value="varianceScaling"
+                />
+              </div>
+            </div>
+            <button
+              id="nextButton"
+              type="submit"
+              class="btn btn-success"
+              style="
+                padding: 0.6em;
+                font-size: 1em;
+                border-radius: 5px;
+                position: absolute;
+                right: 0.6em;
+                margin-top: -2.5em;
+              "
+            >
+              <div>
+                Next <i data-feather="chevron-right" class="text-white"></i>
+              </div>
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div id="layersEditor" style="align-items: center;">
+      <div style="text-align: center; margin: 0 auto;">
+        <div>
+          <i
+            title="Reset/delete all layers"
+            id="resetButton"
+            onclick="resetLayers();"
+            style="
+              cursor: pointer;
+              position: relative;
+              left: 8em;
+              bottom: 0.4em;
+              font-size: 1.4em;
+              color: #02967c;
+            "
+            class="fas fa-sync"
+          ></i>
+        </div>
+        <div
+          class="accordion md-accordion layersClass"
+          id="accordionEx"
+          role="tablist"
+          aria-multiselectable="true"
+        >
+          <div class="card LayerCard" id="inputLayer" style="width: 25em;">
+            <!-- Card header -->
+            <div class="card-header" role="tab" id="headingOne1">
+              <a
+                data-toggle="collapse"
+                data-parent="#accordionEx"
+                href="#collapseOne1"
+                aria-expanded="false"
+                aria-controls="collapseOne1"
+              >
+                <h5 class="mb-0">
+                  Input Layer
+
+                  <i
+                    class="fas fa-angle-down rotate-icon"
+                    style="position: absolute; right: 0.8em;"
+                  ></i>
+                </h5>
+              </a>
+            </div>
+
+            <!-- Card body -->
+            <div
+              id="collapseOne1"
+              class="collapse"
+              role="tabpanel"
+              aria-labelledby="headingOne1"
+              data-parent="#accordionEx"
+            >
+              <div class="card-body">
+                <div
+                  style="
+                    display: flex;
+                    flex-wrap: wrap;
+                    align-content: center;
+                    max-width: 21em;
+                  "
+                >
+                  <select
+                    class="browser-default custom-select modelClassSelect"
+                    style="width: 9em; margin: 0 auto; margin-bottom: 2em;"
+                  >
+                    <option value="1" selected>Conv2D </option> </select
+                  >&nbsp;&nbsp; &nbsp;&nbsp;
+                  <div class="md-form" style="margin: 0 auto; width: 9em;">
+                    <input
+                      disabled
+                      type="text"
+                      id="inputShape"
+                      value="[]"
+                      class="form-control"
+                    />
+                    <label for="inputShape">inputShape:</label>
+                  </div>
+                  <div class="md-form" style="margin: 0 auto; width: 5em;">
+                    <input
+                      type="number"
+                      id="kernelSize1"
+                      class="form-control"
+                      value="4"
+                      disabled
+                    />
+                    <label for="kernelSize">kernelSize:</label>
+                  </div>
+                  <div class="md-form" style="margin: 0 auto; width: 5em;">
+                    <input
+                      type="number"
+                      id="filters1"
+                      class="form-control"
+                      value="8"
+                      disabled
+                    />
+                    <label for="filters">filters:</label>
+                  </div>
+                  <div
+                    class="md-form"
+                    style="margin: 0 auto; margin-bottom: 1.5em; width: 8em;"
+                  >
+                    <input
+                      type="text"
+                      id="inputLayerActivation"
+                      class="form-control"
+                      value="relu"
+                      disabled
+                    />
+                    <label for="inputLayerActivation">activation:</label>
+                  </div>
+                  <div
+                    class="md-form advancedLayersSettings"
+                    style="margin: 0 auto; width: 5em;"
+                  >
+                    <input
+                      type="text"
+                      id="inputLayerPadding"
+                      class="form-control"
+                      value="same"
+                      disabled
+                    />
+                    <label for="inputLayerPadding">padding:</label>
+                  </div>
+                  <div
+                    class="md-form advancedLayersSettings"
+                    style="margin: 0 auto; width: 5em;"
+                  >
+                    <input
+                      type="number"
+                      id="inputLayerStrides"
+                      class="form-control"
+                      value="1"
+                      disabled
+                    />
+                    <label for="inputLayerPadding">strides:</label>
+                  </div>
+                  <div
+                    class="md-form advancedLayersSettings"
+                    style="margin: 0 auto; width: 9em;"
+                  >
+                    <input
+                      type="text"
+                      id="inputLayerKernelInitializer"
+                      class="form-control"
+                      value="varianceScaling"
+                      disabled
+                    />
+                    <label for="inputLayerPadding">kernelInitializer:</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="card add"
+            id="add1"
+            style="width: 25em; height: 2em;"
+            title="Add layer"
+          >
+            <h4>+</h4>
+          </div>
+          <div class="card LayerCard" id="outputLayer" style="width: 25em;">
+            <!-- Card header -->
+            <div class="card-header" role="tab" id="headingTwo2">
+              <a
+                class="collapsed"
+                data-toggle="collapse"
+                data-parent="#accordionEx"
+                href="#collapseTwo2"
+                aria-expanded="false"
+                aria-controls="collapseTwo2"
+              >
+                <h5 class="mb-0">
+                  Output Layer
+                  <i
+                    class="fas fa-angle-down rotate-icon"
+                    style="position: absolute; right: 0.8em;"
+                  ></i>
+                </h5>
+              </a>
+            </div>
+
+            <!-- Card body -->
+            <div
+              id="collapseTwo2"
+              class="collapse"
+              role="tabpanel"
+              aria-labelledby="headingTwo2"
+              data-parent="#accordionEx"
+            >
+              <div class="card-body">
+                <div
+                  style="
+                    display: flex;
+                    flex-wrap: wrap;
+                    align-content: center;
+                    max-width: 21em;
+                  "
+                >
+                  <select
+                    class="browser-default custom-select modelClassSelect"
+                    style="width: 9em; margin: 0 auto; margin-bottom: 2em;"
+                  >
+                    <option value="1" selected>Dense</option> </select
+                  >&nbsp;&nbsp; &nbsp;&nbsp;
+                  <div class="md-form" style="margin: 0 auto; width: 8em;">
+                    <input
+                      type="text"
+                      id="outputLayerActivation"
+                      class="form-control"
+                      value="softmax"
+                      disabled
+                    />
+                    <label for="outputLayerActivation">activation:</label>
+                  </div>
+                  <div class="md-form" style="margin: 0 auto; width: 6em;">
+                    <input
+                      type="number"
+                      id="units"
+                      class="form-control"
+                      value="4"
+                      disabled
+                    />
+                    <label for="units">units:</label>
+                  </div>
+                  <div
+                    class="md-form advancedLayersSettings"
+                    style="margin: 0 auto; width: 9em;"
+                  >
+                    <input
+                      type="text"
+                      id="outputLayerKernelInitializer"
+                      class="form-control"
+                      value="varianceScaling"
+                      disabled
+                    />
+                    <label for="outputLayerPadding">kernelInitializer:</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Accordion card -->
+        </div>
+
+        <div
+          class="accordion11 md-accordion"
+          id="accordionEx11"
+          role="tablist"
+          aria-multiselectable="true"
+          style="margin-top: 1.2em;"
+        >
+          <!-- Accordion card -->
+          <div class="card" style="width: 25em;">
+            <!-- Card header -->
+            <div class="card-header" role="tab" id="headingThree311">
+              <a
+                class="collapsed"
+                data-toggle="collapse"
+                data-parent="#accordionEx11"
+                href="#collapseThree311"
+                aria-expanded="false"
+                aria-controls="collapseThree311"
+              >
+                <h5 class="mb-0">
+                  Model.compile()
+                  <i
+                    class="fas fa-angle-down rotate-icon"
+                    style="position: absolute; right: 0.8em;"
+                  ></i>
+                </h5>
+              </a>
+            </div>
+
+            <!-- Card body -->
+            <div
+              id="collapseThree311"
+              class="collapse"
+              role="tabpanel"
+              aria-labelledby="headingThree311"
+              data-parent="#accordionEx11"
+              style="width: 25em;"
+            >
+              <div class="card-body">
+                <select
+                  style="width: 20em;"
+                  class="browser-default custom-select"
+                  id="optimizer"
+                >
+                  <option value="0" selected>Select optimizer</option>
+                  <option value="1">adam</option>
+                  <option value="2">adadelta</option>
+                  <option value="3">adagrad</option>
+                  <option value="4">adamax</option>
+                  <option value="5">ftrl</option>
+                  <option value="6">nadam</option>
+                  <option value="7">rmsprop</option>
+                  <option value="8">sgd</option>
+                </select>
+                <div
+                  class="md-form advancedLayersSettings"
+                  style="
+                    margin: 0 auto;
+                    width: 20em;
+                    margin-top: 1.5em;
+                  "
+                >
+                  <input
+                    type="text"
+                    id="modelCompileLoss"
+                    title="Loss function name"
+                    class="form-control"
+                    value="categoricalCrossentropy"
+                  />
+                  <label for="modelCompileLoss">loss:</label>
+                </div>
+                <div
+                  class="md-form advancedLayersSettings"
+                  style="
+                    margin: 0 auto;
+                    width: 20em;
+                    margin-top: 1.5em;
+                    
+                  "
+                >
+                  <input
+                    type="text"
+                    title="Metrics (comma separated)"
+                    id="modelCompileMetrics"
+                    class="form-control"
+                    value="accuracy"
+                  />
+                  <label for="modelCompileLoss">metrics:</label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Accordion card -->
+        </div>
+        <div
+          class="accordion md-accordion"
+          id="accordionEx"
+          role="tablist"
+          aria-multiselectable="true"
+          style="margin-top: 1.2em;"
+        >
+          <!-- Accordion card -->
+          <div class="card" style="width: 25em;">
+            <!-- Card header -->
+            <div class="card-header" role="tab" id="headingThree3">
+              <a
+                class="collapsed"
+                data-toggle="collapse"
+                data-parent="#accordionEx"
+                href="#collapseThree3"
+                aria-expanded="false"
+                aria-controls="collapseThree3"
+              >
+                <h5 class="mb-0">
+                  Model.fit()
+                  <i
+                    class="fas fa-angle-down rotate-icon"
+                    style="position: absolute; right: 0.8em;"
+                  ></i>
+                </h5>
+              </a>
+            </div>
+
+            <!-- Card body -->
+            <div
+              id="collapseThree3"
+              class="collapse"
+              role="tabpanel"
+              aria-labelledby="headingThree3"
+              data-parent="#accordionEx"
+              style="width: 25em;"
+            >
+              <div
+                class="card-body"
+                style="display: flex; flex-wrap: wrap; align-content: center;"
+              >
+                <div class="md-form" style="margin: 0 auto; width: 5em;">
+                  <input
+                    type="number"
+                    id="batchSize"
+                    class="form-control"
+                    value="512"
+                  />
+                  <label for="batchSize">batchSize:</label>
+                </div>
+                <div class="md-form" style="margin: 0 auto; width: 5em;">
+                  <input
+                    type="number"
+                    id="epochs"
+                    class="form-control"
+                    value="20"
+                  />
+                  <label for="epochs">epochs:</label>
+                </div>
+                <div
+                  class="custom-control custom-switch"
+                  style="width: 20em !important;"
+                >
+                  <input
+                    type="checkbox"
+                    checked
+                    class="custom-control-input shuffle"
+                    id="customSwitches"
+                  />
+                  <label class="custom-control-label" for="customSwitches"
+                    >Shuffle</label
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Accordion card -->
+        </div>
+      </div>
+    </div>
+    <div
+      style="
+        display: flex;
+        align-items: center;
+        margin-top: 2em;
+        margin-bottom: 4em;
+      "
+    >
+      <div
+        style="margin: 0 auto; max-width: 20em; min-width: 15em; display: flex;"
+      >
+        <button
+          type="button"
+          class="btn btn-secondary px-2"
+          id="userTrain"
+          style="
+            margin: 1em auto;
+            border-radius: 5px;
+            font-size: 1em;
+            padding: 0.7em;
+            
+          "
+        >
+          <span id="trainButtonText">Train Model</span>
+          <div
+            id="trainingLoading"
+            class="spinner-border"
+            role="status"
+     
+          >
+            <span class="sr-only">Loading...</span>
+          </div>
+        </button>
+        <button
+          id="nextStepButton"
+          class="btn btn-success"
+          style="
+            margin: 1em auto;
+            padding: 0.6em;
+            font-size: 1em;
+            border-radius: 5px;
+       
+          "
+        >
+          Next <i data-feather="chevron-right" class="text-white"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Trained Message Modal -->
+    <div
+      class="modal fade"
+      id="trainedMessage"
+      tabindex="-1"
+      role="dialog"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="trainedMessageHeading">
+              Model Training complete
+            </h5>
+            <button
+              type="button"
+              class="close trainedModelClose"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            Download model json and binaries from here which might be used in
+            the caMicroscope prediction tool. <br />
+            After download you can exit the workbench or click on close to
+            customize/train model again. <br />
+            <button
+              id="modelDownloadButton"
+              type="button"
+              class="btn btn-info"
+              style="
+                padding: 0.6em;
+                font-size: 1em;
+                border-radius: 5px;
+                margin-top: 1em;
+              "
+            >
+              Download &nbsp;<i data-feather="download" class="text-white"></i>
+            </button>
+          </div>
+          <div class="modal-footer">
+            <button
+              class="btn btn-danger exitWorkbench"
+              style="
+                padding: 0.6em;
+                font-size: 1em;
+                border-radius: 5px;
+                position: absolute;
+                left: 1em;
+                bottom: 0.8em;
+              "
+            >
+              Exit Workbench
+            </button>
+            <button
+              class="btn btn-secondary trainedModelClose"
+              style="padding: 0.6em; font-size: 1em; border-radius: 5px;"
+              data-dismiss="modal"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Help/User-Guide Modal -->
+    <div
+      class="modal fade"
+      id="helpModal"
+      tabindex="-1"
+      role="dialog"
+      aria-hidden="true"
+    >
+      <div
+        class="modal-dialog modal-top modal-full-height modal-dialog-scrollable"
+        role="document"
+      >
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="helpModalTitle">Help - User Guide</h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body" style="align-content: center;"></div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary px-3"
+              data-dismiss="modal"
+              style="border-radius: 5px; font-size: 1em; padding: 0.65em;"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast Alert -->
+    <div
+      id="toastPlaceholder"
+      style="
+        position: fixed;
+        top: 1em;
+        width: 100%;
+        align-content: center;
+      "
+    >
+      <div
+        id="toastAlert"
+        style="max-width: 40em; min-width: 10em; margin: 0 auto;"
+        class="alert alert-dismissible fade"
+        role="alert"
+      >
+        <span id="toastContent"></span>
+        <button
+          type="button"
+          class="close"
+          onclick="$('#toastAlert').removeClass('show'); $('#toastPlaceholder').hide();"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    </div>
+
+    <script>
+      function showToast(type, message, dismissible = true) {
+        $('#toastPlaceholder').css('display', 'flex');
+        $('#toastAlert').removeClass('alert-success alert-danger alert-info');
+        $('#toastContent').html(message);
+        $('#toastAlert').addClass(type + ' show');
+        if (dismissible) {
+          setTimeout(function () {
+            $('#toastAlert').removeClass('show');
+            $('#toastPlaceholder').hide();
+          }, 5000);
+        }
+      }
+    </script>
+    <script src="./utils/data.js"></script>
+    <script src="./utils/script.js"></script>
+    <script src="./bench.js"></script>
+    <script>
+      feather.replace(); // for feather Icons
+    </script>
+  </body>
+</html>

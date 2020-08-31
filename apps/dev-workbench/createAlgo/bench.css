@@ -1,0 +1,51 @@
+#headbar {
+  background: rgb(23, 162, 184);
+  align-items: center;
+  text-align: center;
+  color: white;
+}
+.btn {
+  text-transform: unset !important;
+}
+
+.add:hover {
+  background: rgba(153, 218, 2, 0.87);
+}
+
+.add {
+  transition: 0.35s;
+  background: rgba(84, 221, 191, 0.644);
+  cursor: pointer;
+}
+
+#layersEditor input {
+  margin-bottom: 1em;
+}
+
+#serverSideToggle:checked ~ .custom-control-label::before {
+  border-color: #31aa4f;
+  background-color: #31aa4f;
+}
+
+#resetButton {
+  transition: transform ease 0.5s;
+}
+#resetButton:hover {
+  transform: rotate(60deg);
+}
+
+/* All with display: none */
+#advancedModeIcon,
+#serverModeIcon,
+#importFile,
+#headContent,
+#initialSettings,
+.advancedInitialSettings,
+.advancedLayersSettings,
+#layersEditor,
+#userTrain,
+#trainingLoading,
+#nextStepButton,
+#toastPlaceholder {
+  display: none;
+}
