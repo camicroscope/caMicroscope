@@ -352,7 +352,7 @@ LayersViewer.createCategoricalItem = function(data, type) {
     ic.textContent = 'keyboard_arrow_down';
     label.style.fontWeight = 'bold';
     chk.dataset.type = 'root';
-    chk.style.display = 'none';
+    if(!item.name == 'human' && !item.name=='ruler') chk.style.display = 'none';
     li.appendChild(ic);
   } else {
     chk.id = id;
@@ -686,6 +686,7 @@ LayersViewer.prototype.__change = function(e) {
       break;
     case 'root':
       this.setting.categoricalData[id].items.forEach((d) => {
+        if(d.elt.style.display == 'none') return;
         d.isShow = checked;
         d.elt.lastChild.checked = checked;
         // item.sortItem.lastChild.checked = checked;

@@ -257,8 +257,28 @@ class Store {
    * @param {string} [slide] - the marktype name, supporting regex match
    * @return {promise} - promise which resolves with data
    **/
+  // findMarkTypes(slide, name) {
+  //   const suffix = 'Mark/types';
+
+  //   const query = {};
+  //   //
+  //   if (!slide) {
+  //     console.error('Store.findMarkTypes needs slide ... ');
+  //     return null;
+  //   }
+  //   query['provenance.image.slide'] = slide;
+  //   if (name) {
+  //     query['provenance.analysis.execution_id'] = name;
+  //   }
+  //   const url = this.base + suffix;
+  //   return fetch(url + '?' + objToParamStr(query), {
+  //     credentials: 'include',
+  //     mode: 'cors',
+  //   }).then(this.errorHandler);
+  // }
+  
   findMarkTypes(slide, name) {
-    const suffix = 'Mark/types';
+    const suffix = 'Mark/findMarkTypes';
 
     const query = {};
     //
@@ -266,9 +286,9 @@ class Store {
       console.error('Store.findMarkTypes needs slide ... ');
       return null;
     }
-    query['provenance.image.slide'] = slide;
+    query['slide'] = slide;
     if (name) {
-      query['provenance.analysis.execution_id'] = name;
+      query['name'] = name;
     }
     const url = this.base + suffix;
     return fetch(url + '?' + objToParamStr(query), {
