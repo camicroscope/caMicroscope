@@ -332,7 +332,7 @@ LabelsViewer.prototype.__search = function(pattern) {
     //const pattern = e.target.value;
     const regex = new RegExp(pattern, 'gi');
     
-    const checked_type = [...$UI.labelsViewer.searchList.querySelectorAll('input:checked')].map(elt=>elt.value)
+    const checked_type = [...this.searchList.querySelectorAll('input:checked')].map(elt=>elt.value)
 
     this.allLabels.forEach(elt => {
       if(!elt.dataset.type.match(regex)) {

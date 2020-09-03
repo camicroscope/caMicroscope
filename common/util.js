@@ -495,14 +495,28 @@ function covertToLayViewer(item) {
       name: item.execution_id,
       typeId: typeIds[typeName],
       typeName: item.computation,
+      creator: item.creator,
       data: null,
     };
   }
+  if (item.source == 'human') {
+    return {
+      id: id,
+      name: name,
+      typeId: typeIds[typeName],
+      typeName: typeName,
+      creator: item.creator,
+      shape: item.shape,
+      isGrid: item.isGrid? true: false,
+      data: null,
+    };
+  }  
   return {
     id: id,
     name: name,
     typeId: typeIds[typeName],
     typeName: typeName,
+    creator: item.creator,
     data: null,
   };
 }

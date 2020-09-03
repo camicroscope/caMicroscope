@@ -946,6 +946,8 @@ function saveBrushLabel(isOff) {
             name: annotJson.provenance.analysis.name,
             typeId: typeIds['human'],
             typeName: 'human',
+            creator: getUserId(),
+            shape: annotJson.geometries.features[0].geometry.type,            
             data: null,
           };
           $D.overlayers.push(newItem);
@@ -1111,6 +1113,8 @@ function annoCallback(data) {
           name: noteData.name,
           typeId: typeIds['human'],
           typeName: 'human',
+          creator: getUserId(),
+          shape: annotJson.geometries.features[0].geometry.type,
           data: null,
         };
         $D.overlayers.push(newItem);
@@ -2044,6 +2048,8 @@ function savePresetLabel() {
           name: noteData.name,
           typeId: typeIds['human'],
           typeName: 'human',
+          creator: getUserId(),
+          shape: annotJson.geometries.features[0].geometry.type,
           data: null,
         };
         $D.overlayers.push(newItem);
@@ -2276,6 +2282,7 @@ function onAddRuler(ruler) {
           typeId: typeIds['ruler'],
           typeName: 'ruler',
           data: data.ops[0],
+          creator: getUserId()
         };
         newItem.data.properties.innerHTML = newItem.data.properties.innerHTML.split('&lt;').join('<');
         newItem.data.properties.innerHTML = newItem.data.properties.innerHTML.split('&gt;').join('>');
