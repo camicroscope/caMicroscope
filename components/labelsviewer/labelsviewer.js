@@ -67,7 +67,7 @@ LabelsViewer.prototype.__refreshUI = function() {
   //
   this.view = document.createElement('div');
   this.view.classList.add('labels-viewer');
-  const view_html = `
+  const viewHtml = `
         <button class='btn btn-info'>Add Labels</button>
         <div class='searchbar'>
             <input type='text' placeholder='Search By Name'/>
@@ -84,7 +84,7 @@ LabelsViewer.prototype.__refreshUI = function() {
         <div class='labels-grid'>
             ${this.__createLables(this.setting.data)}
         </div>`;
-  this.view.innerHTML = view_html;
+  this.view.innerHTML = viewHtml;
   this.elt.append(this.view);
 
   this.labelsGrid = this.view.querySelector('.labels-grid');
@@ -134,13 +134,13 @@ LabelsViewer.prototype.__refreshUI = function() {
   this.editor = document.createElement('div');
   this.editor.classList.add('labels-editor');
   this.editor.style.display = 'none';
-  const editor_html = `
+  const editorHtml = `
     <label>Label Name <span style='color:#ff0000;font-size:12px;'></span></label> <input type='text' placeholder='Enter Label Name'/>
     <div></div>
     <label>Color (#RRGGBB)<span style='border:2px black solid;'>color</span></label><input type='text' />
     <div></div>
-    
-    <label>Shape</label> 
+
+    <label>Shape</label>
     <select>
         <option value="free">Polygon</option>
         <option value="rect">Rectangle</option>
@@ -163,33 +163,33 @@ LabelsViewer.prototype.__refreshUI = function() {
     `;
 
 
-  this.editor.innerHTML = editor_html;
-  const labels_text = this.editor.querySelectorAll('label');
-  const labels_input = this.editor.querySelectorAll('input');
+  this.editor.innerHTML = editorHtml;
+  const labelsText = this.editor.querySelectorAll('label');
+  const labelsInput = this.editor.querySelectorAll('input');
   this.nameZone = {
-    label: labels_text[0],
-    text: labels_input[0],
-    error: labels_text[0].querySelector('span'),
+    label: labelsText[0],
+    text: labelsInput[0],
+    error: labelsText[0].querySelector('span'),
   };
   // color pick zone
   this.colorZone = {
-    label: labels_text[1],
-    text: labels_input[1],
-    span: labels_text[1].querySelector('span'),
-    cpr: new CP(labels_input[1]),
+    label: labelsText[1],
+    text: labelsInput[1],
+    span: labelsText[1].querySelector('span'),
+    cpr: new CP(labelsInput[1]),
   };
 
   // create a static color picker
   this.colorZone.cpr.on('change', (color)=>{
-    labels_input[1].value = '#' + color;
-    labels_text[1].querySelector('span').style.color = '#' + color;
-    labels_text[1].querySelector('span').style.background = '#' + color;
+    labelsInput[1].value = '#' + color;
+    labelsText[1].querySelector('span').style.color = '#' + color;
+    labelsText[1].querySelector('span').style.background = '#' + color;
   });
 
   const update = () => {
-    this.colorZone.cpr.set(labels_input[1].value).enter();
-    labels_text[1].querySelector('span').style.color = labels_input[1].value;
-    labels_text[1].querySelector('span').style.background = labels_input[1].value;
+    this.colorZone.cpr.set(labelsInput[1].value).enter();
+    labelsText[1].querySelector('span').style.color = labelsInput[1].value;
+    labelsText[1].querySelector('span').style.background = labelsInput[1].value;
   };
   this.colorZone.cpr.target.oncut = update;
   this.colorZone.cpr.target.onpaste = update;
@@ -204,18 +204,18 @@ LabelsViewer.prototype.__refreshUI = function() {
 
 
   this.modeZone = {
-    label: labels_text[2],
+    label: labelsText[2],
     text: this.editor.querySelector('select'),
   };
   this.sizeZone = {
-    label: labels_text[3],
-    text: labels_input[2],
-    error: labels_text[3].querySelector('span'),
+    label: labelsText[3],
+    text: labelsInput[2],
+    error: labelsText[3].querySelector('span'),
   };
   this.keyZone = {
-    label: labels_text[4],
-    text: labels_input[3],
-    error: labels_text[4].querySelector('span'),
+    label: labelsText[4],
+    text: labelsInput[3],
+    error: labelsText[4].querySelector('span'),
   };
   const btns = this.editor.querySelectorAll('.btn-group .btn');
   this.backBtn = btns[0];
@@ -331,13 +331,13 @@ LabelsViewer.prototype.__search = function(pattern) {
   // const pattern = e.target.value;
   const regex = new RegExp(pattern, 'gi');
 
-  const checked_type = [...this.searchList.querySelectorAll('input:checked')].map((elt)=>elt.value);
+  const checkedType = [...this.searchList.querySelectorAll('input:checked')].map((elt)=>elt.value);
 
   this.allLabels.forEach((elt) => {
     if (!elt.dataset.type.match(regex)) {
       elt.style.display = 'none';
     }
-    if (!checked_type.includes(elt.dataset.mode)) {
+    if (!checkedType.includes(elt.dataset.mode)) {
       elt.style.display = 'none';
     }
   });
@@ -454,21 +454,21 @@ LabelsViewer.prototype.cleanLabelsEditorValue = function() {
 
 LabelsViewer.prototype.addLabel = function(label) {
   if (!label.id) label.id = randomId();
-  const new_labels = this.__createElementFromHTML(this.__createLabelsCard(label));
+  const newLabels = this.__createElementFromHTML(this.__createLabelsCard(label));
   this.setting.data.unshift(label);
-  this.allLabels.unshift(new_labels);
-  this.labelsGrid.prepend(new_labels);
+  this.allLabels.unshift(newLabels);
+  this.labelsGrid.prepend(newLabels);
   const empty = this.labelsGrid.querySelector('.empty');
   if (empty) {
     empty.remove();
-    new_labels.classList.add('selected');
+    newLabels.classList.add('selected');
     const labels = this.getSelectedLabels();
     if (isFunction(this.setting.onSelected)) this.setting.onSelected(labels);
   }
 
   // event TODO
-  this.__addAllEventsForLabels(new_labels);
-  return new_labels;
+  this.__addAllEventsForLabels(newLabels);
+  return newLabels;
 };
 
 LabelsViewer.prototype.__addAllEventsForLabels = function(labels) {
@@ -620,5 +620,3 @@ LabelsViewer.prototype.__createElementFromHTML= function(htmlString) {
 
 //
 // `^[A-Za-z0-9]$`;
-
-

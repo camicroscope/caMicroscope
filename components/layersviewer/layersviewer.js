@@ -628,12 +628,12 @@ LayersViewer.prototype.__search = function(e) {
   const pattern = this.searchBar.text.value;
   const items = this.setting.data;
   const regex = new RegExp(pattern, 'gi');
-  const checked_type = [...this.searchList.querySelectorAll('input:checked')].map((elt)=>elt.value);
+  const checkedType = [...this.searchList.querySelectorAll('input:checked')].map((elt)=>elt.value);
   list.filter((d)=>d.item.typeName=='human'||d.item.typeName=='ruler').forEach((data) => {
     if (!data.item.name.match(regex) && !data.item.creator.match(regex)) {
       data.elt.style.display = 'none';
     }
-    if (data.item.typeName=='human'&&!checked_type.includes(data.item.shape)) {
+    if (data.item.typeName=='human'&&!checkedType.includes(data.item.shape)) {
       data.elt.style.display = 'none';
     }
   });

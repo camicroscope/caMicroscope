@@ -599,11 +599,11 @@ async function initUIcomponents() {
     width: 180,
     contentPadding: 5,
   });
-  var labels_title = document.createElement('div');
-  labels_title.classList.add('item_head');
-  labels_title.textContent = 'Label Manager';
+  var labelsTitle = document.createElement('div');
+  labelsTitle.classList.add('item_head');
+  labelsTitle.textContent = 'Label Manager';
 
-  $UI.labelsSideMenu.addContent(labels_title);
+  $UI.labelsSideMenu.addContent(labelsTitle);
 
   $D.labels = await $CAMIC.store.getConfigByName('preset_label').then((list)=>list.length==0?null:list[0]);
 

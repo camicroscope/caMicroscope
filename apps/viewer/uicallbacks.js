@@ -1592,7 +1592,9 @@ function locationCallback(layerData) {
   } else {
     const bound = [...item.data.geometries.features[0].bound.coordinates[0]];
     if (item.data.provenance&&item.data.provenance.analysis&&item.data.provenance.analysis.isGrid) {
-      bound[2] = [bound[2][0] + item.data.geometries.features[0].properties.size[0], bound[2][1] + item.data.geometries.features[0].properties.size[1]];
+      bound[2] = [bound[2][0] +
+        item.data.geometries.features[0].properties.size[0], bound[2][1] +
+        item.data.geometries.features[0].properties.size[1]];
     }
     locateAnnotation(bound, isImageViewer);
   }
@@ -1946,7 +1948,8 @@ function presetLabelOff() {
 function savePresetLabel() {
   if ($CAMIC.viewer.canvasDrawInstance._path_index === 0) {
     // toast
-    $UI.message.addWarning('<i class="small material-icons">info</i> No Markup On Annotation. Try Holding And Dragging.', 4000);
+    $UI.message.addWarning('<i class="small material-icons">info</i>'+
+      'No Markup On Annotation. Try Holding And Dragging.', 4000);
     return;
   }
   const data = $UI.labelsViewer.getSelectedLabels();
@@ -2148,7 +2151,11 @@ function deleteRulerHandler(execId) {
         $UI.layersViewer.removeItemById(execId);
         $UI.layersViewerMinor.removeItemById(execId);
         $CAMIC.viewer.measureInstance.removeRulerById(execId);
-        if ($minorCAMIC&&$minorCAMIC.viewer&&$minorCAMIC.viewer.measureInstance)$minorCAMIC.viewer.measureInstance.removeRulerById(execId);
+        if ($minorCAMIC &&
+          $minorCAMIC.viewer &&
+          $minorCAMIC.viewer.measureInstance) {
+          $minorCAMIC.viewer.measureInstance.removeRulerById(execId);
+        }
         $UI.message.addSmall(`Deleted The '${execId}' Ruler.`);
       })
       .catch((e) => {
@@ -2341,5 +2348,3 @@ function oldAnnoRender(ctx, data) {
 //   caDrawHelper.prototype.drawBrushGrids(ctx, data.geometries.features[0]);
 // }
 /* --  -- */
-
-
