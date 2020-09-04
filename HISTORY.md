@@ -33,6 +33,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Incorperation of the Automatic ROI Selector (GSOC 2020 @leoarc) [#439](https://github.com/camicroscope/caMicroscope/pull/439)
 * Updated preset label tool
 * Layer viewer usability optimizations
+* Add the "coordinate" measurement style
+* Treat the measurement tool as annotation
 * UI Tweaks for better high-res screen support
 * "softer" warning popups
 
