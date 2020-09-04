@@ -25,7 +25,7 @@ window.addEventListener('keydown', (e) => {
     magnifierOff();
     measurementOff();
     annotationOff();
-    presetLabelOff()
+    presetLabelOff();
   }
 
   // open annotation (ctrl + a)
@@ -62,23 +62,20 @@ window.addEventListener('keydown', (e) => {
   }
 
   // shortcuts for preset labels
-  if($D.labels
-    && $D.labels.configuration
-    && Array.isArray($D.labels.configuration)
-    && $D.labels.configuration.length > 0
-    && e.ctrlKey){
-      e.key
-      const elt = $UI.labelsViewer.allLabels.find(l=>l.dataset.key&&l.dataset.key.toLowerCase()==e.key.toLowerCase())
-      if(elt) {
-        $UI.toolbar
-        .getSubTool('preset_label')
-        .querySelector('input[type=checkbox]').checked = true;
-        $UI.labelsViewer.selectLabel(elt);
-      }
-
-      
+  if ($D.labels &&
+    $D.labels.configuration &&
+    Array.isArray($D.labels.configuration) &&
+    $D.labels.configuration.length > 0 &&
+    e.ctrlKey) {
+    e.key;
+    const elt = $UI.labelsViewer.allLabels.find((l)=>l.dataset.key&&l.dataset.key.toLowerCase()==e.key.toLowerCase());
+    if (elt) {
+      $UI.toolbar
+          .getSubTool('preset_label')
+          .querySelector('input[type=checkbox]').checked = true;
+      $UI.labelsViewer.selectLabel(elt);
+    }
   }
-
 });
 
 // initialize viewer page
@@ -106,7 +103,7 @@ function initCore() {
   // start initial
 
   // create the message queue
-  $UI.message = new MessageQueue({position:"bottom-left"});
+  $UI.message = new MessageQueue({position: 'bottom-left'});
 
   // zoom info and mmp
   const opt = {
@@ -135,7 +132,6 @@ function initCore() {
   // set states if exist
   if ($D.params.states) {
     opt.states = $D.params.states;
-
   }
   // pathdb home directly
   if ($D.params.mode == 'pathdb') {
@@ -376,7 +372,7 @@ async function initUIcomponents() {
     title: 'Preset Labels',
     type: 'check',
     value: 'prelabels',
-    callback: drawLabel
+    callback: drawLabel,
   });
 
   // magnifier
@@ -423,7 +419,7 @@ async function initUIcomponents() {
           title: 'coordinate',
           icon: 'square_foot',
         },
-      ],      
+      ],
       callback: toggleMeasurement,
     });
   }
@@ -601,7 +597,7 @@ async function initUIcomponents() {
   $UI.labelsSideMenu = new SideMenu({
     id: 'labels_layers',
     width: 180,
-    contentPadding: 5
+    contentPadding: 5,
   });
   var labels_title = document.createElement('div');
   labels_title.classList.add('item_head');
@@ -610,27 +606,27 @@ async function initUIcomponents() {
   $UI.labelsSideMenu.addContent(labels_title);
 
   $D.labels = await $CAMIC.store.getConfigByName('preset_label').then((list)=>list.length==0?null:list[0]);
-  
 
-    // onAdd()
-    // onRemove(labels)
-    // onUpdate(labels)
-    // onSelected()
+
+  // onAdd()
+  // onRemove(labels)
+  // onUpdate(labels)
+  // onSelected()
   $UI.labelsViewer = new LabelsViewer({
-    id:'labelmanager',
-    data:$D.labels?$D.labels.configuration:[],
-    onAdd:addPresetLabelsHandler,
-    onEdit:editPresetLabelsHandler,
-    onRemove:removePresetLabelsHandler,
-    onSelected:selectedPresetLabelsHandler
-    }
+    id: 'labelmanager',
+    data: $D.labels?$D.labels.configuration:[],
+    onAdd: addPresetLabelsHandler,
+    onEdit: editPresetLabelsHandler,
+    onRemove: removePresetLabelsHandler,
+    onSelected: selectedPresetLabelsHandler,
+  },
   );
   $UI.labelsViewer.elt.parentNode.removeChild($UI.labelsViewer.elt);
   $UI.labelsSideMenu.addContent($UI.labelsViewer.elt);
 
   // == end -- //
 
-    
+
   var checkOverlaysDataReady = setInterval(function() {
     if (
       $D.params.data &&

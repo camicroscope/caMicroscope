@@ -276,7 +276,7 @@ class Store {
   //     mode: 'cors',
   //   }).then(this.errorHandler);
   // }
-  
+
   findMarkTypes(slide, name) {
     const suffix = 'Mark/findMarkTypes';
 
@@ -842,9 +842,9 @@ class Store {
     return fetch(url + '?' + objToParamStr(query), {
       method: 'POST',
       credentials: 'include',
-      mode: 'cors'
+      mode: 'cors',
     }).then(this.errorHandler);
-  }  
+  }
 
 
   // Update slide review status

@@ -496,7 +496,7 @@ function toggleMeasurement(data) {
     // trun off the main menu
     $UI.layersSideMenu.close();
     if ($CAMIC.status == 'measure') {
-      $CAMIC.viewer.measureInstance.mode = data.status
+      $CAMIC.viewer.measureInstance.mode = data.status;
       measurementOn();
       return;
     }
@@ -506,7 +506,7 @@ function toggleMeasurement(data) {
       if ($CAMIC && $CAMIC.status == null) {
         // all tool has turn off
         clearInterval(checkAllToolsOff);
-        $CAMIC.viewer.measureInstance.mode = data.status
+        $CAMIC.viewer.measureInstance.mode = data.status;
         measurementOn();
       }
     }, 100);
@@ -523,13 +523,13 @@ function toggleMeasurement(data) {
 function measurementOn() {
   if (!$CAMIC.viewer.measureInstance) return;
   $CAMIC.viewer.measureInstance.on();
-  const li = $UI.toolbar.getSubTool('measurement')
+  const li = $UI.toolbar.getSubTool('measurement');
   li.querySelector('input[type=checkbox]').checked = true;
   const value = li.querySelector('.drop_down input[type=radio]:checked').value;
-  if(value=='straight') {
-    li.querySelector('label').textContent = 'straighten'
-  } else if(value=='coordinate') {
-    li.querySelector('label').textContent = 'square_foot'
+  if (value=='straight') {
+    li.querySelector('label').textContent = 'straighten';
+  } else if (value=='coordinate') {
+    li.querySelector('label').textContent = 'square_foot';
   }
   $CAMIC.status = 'measure';
 }
@@ -689,7 +689,7 @@ function mainMenuChange(data) {
   if (data.labels) {
     $UI.labelsSideMenu.open();
   } else {
-    presetLabelOff()
+    presetLabelOff();
   }
 }
 
@@ -947,7 +947,7 @@ function saveBrushLabel(isOff) {
             typeId: typeIds['human'],
             typeName: 'human',
             creator: getUserId(),
-            shape: annotJson.geometries.features[0].geometry.type,            
+            shape: annotJson.geometries.features[0].geometry.type,
             data: null,
           };
           $D.overlayers.push(newItem);
@@ -1195,12 +1195,12 @@ async function callback(data) {
   data.forEach(function(d) {
     const item = d.item;
     if (item.typeName == 'ruler') {
-      if (!item.data)
+      if (!item.data) {
         loadRulerById(camic, d, null);
-      else {
+      } else {
         if (!d.layer) {
-          const [xmin,ymin] = item.data.geometries.features[0].geometry.coordinates[0][0];
-          const [xmax,ymax] = item.data.geometries.features[0].geometry.coordinates[0][2];
+          const [xmin, ymin] = item.data.geometries.features[0].geometry.coordinates[0][0];
+          const [xmax, ymax] = item.data.geometries.features[0].geometry.coordinates[0][2];
           // create lay and update view
           d.layer = camic.viewer.measureInstance.addRuler({
             id: item.id,
@@ -1214,8 +1214,8 @@ async function callback(data) {
             innerHTML: item.data.properties.innerHTML,
             isShow: d.isShow,
           });
-        }      
-        if(d.isShow) d.layer.element.style.display ='';
+        }
+        if (d.isShow) d.layer.element.style.display ='';
         else d.layer.element.style.display ='none';
       }
 
@@ -1368,7 +1368,6 @@ function loadRulerById(camic, rulerData, callback) {
   $CAMIC.store
       .getMarkByIds([item.id], $D.params.slideId)
       .then((data) => {
-
         // response error
         if (data.error) {
           const errorMessage = `${data.text}: ${data.url}`;
@@ -1399,8 +1398,8 @@ function loadRulerById(camic, rulerData, callback) {
         item.data.properties.innerHTML = item.data.properties.innerHTML.split('&lt;').join('<');
         item.data.properties.innerHTML = item.data.properties.innerHTML.split('&gt;').join('>');
         item.data.properties.innerHTML = item.data.properties.innerHTML.split('&nbsp;').join(' ');
-        const [xmin,ymin] = item.data.geometries.features[0].geometry.coordinates[0][0];
-        const [xmax,ymax] = item.data.geometries.features[0].geometry.coordinates[0][2];
+        const [xmin, ymin] = item.data.geometries.features[0].geometry.coordinates[0][0];
+        const [xmax, ymax] = item.data.geometries.features[0].geometry.coordinates[0][2];
         // create lay and update view
         rulerData.layer = camic.viewer.measureInstance.addRuler({
           id: item.id,
@@ -1552,7 +1551,7 @@ function loadAnnotationById(camic, layerData, callback) {
 function removeCallback(layerData) {
   item = layerData.item;
   if (item.typeName == 'ruler') {
-    deleteRulerHandler(item.id)
+    deleteRulerHandler(item.id);
     return;
   }
   if (item.typeName !== 'human') return;
@@ -1582,7 +1581,7 @@ function locationCallback(layerData) {
   let isImageViewer = true;
   const item = layerData.item;
   if ((item.typeName !== 'human'&&item.typeName !== 'ruler') || item.data == null) return;
-  if(item.typeName == 'ruler') isImageViewer = false;
+  if (item.typeName == 'ruler') isImageViewer = false;
   if (item.data.geometries.features[0].geometry.type == 'Point') {
     const bound = item.data.geometries.features[0].bound.coordinates;
     const center = $CAMIC.viewer.viewport.imageToViewportCoordinates(
@@ -1592,8 +1591,8 @@ function locationCallback(layerData) {
     $CAMIC.viewer.viewport.panTo(center);
   } else {
     const bound = [...item.data.geometries.features[0].bound.coordinates[0]];
-    if(item.data.provenance&&item.data.provenance.analysis&&item.data.provenance.analysis.isGrid){
-      bound[2] = [bound[2][0] + item.data.geometries.features[0].properties.size[0],bound[2][1] + item.data.geometries.features[0].properties.size[1]]
+    if (item.data.provenance&&item.data.provenance.analysis&&item.data.provenance.analysis.isGrid) {
+      bound[2] = [bound[2][0] + item.data.geometries.features[0].properties.size[0], bound[2][1] + item.data.geometries.features[0].properties.size[1]];
     }
     locateAnnotation(bound, isImageViewer);
   }
@@ -1612,16 +1611,16 @@ function locateAnnotation(bound, isImageViewer) {
   const [maxx, maxy] = bound[2];
   const rectangle = isImageViewer?
   $CAMIC.viewer.viewport.imageToViewportRectangle(
-    minx,
-    miny,
-    maxx - minx,
-    maxy - miny,
+      minx,
+      miny,
+      maxx - minx,
+      maxy - miny,
   ):new OpenSeadragon.Rect(
-    minx,
-    miny,
-    maxx - minx,
-    maxy - miny,
-  )
+      minx,
+      miny,
+      maxx - minx,
+      maxy - miny,
+  );
   const center = rectangle.getCenter();
   $CAMIC.viewer.viewport.fitBounds(rectangle);
 
@@ -1830,43 +1829,42 @@ function createHeatMapList(list) {
 }
 
 
-async function addPresetLabelsHandler(label){
-  const rs = await $CAMIC.store.addPresetLabels(label).then(d=>d.result);
-  console.log(rs)
-  if(rs.ok&&rs.nModified > 0) {
-    $UI.labelsViewer.addLabel(label)
+async function addPresetLabelsHandler(label) {
+  const rs = await $CAMIC.store.addPresetLabels(label).then((d)=>d.result);
+  console.log(rs);
+  if (rs.ok&&rs.nModified > 0) {
+    $UI.labelsViewer.addLabel(label);
     $UI.message.add(`Label "${label.type}" Has been Added`);
-  }else {
+  } else {
     $UI.message.addError('Creating The New Label Has Failed');
   }
-  $UI.labelsViewer.__switch('view')
+  $UI.labelsViewer.__switch('view');
 }
 
-async function editPresetLabelsHandler(oldElt, newLabel){
-  const rs = await $CAMIC.store.updatePresetLabels(oldElt.dataset.id ,newLabel).then(d=>d.result);
-  if(rs.ok&&rs.nModified > 0) {
-    $UI.labelsViewer.setLabels(oldElt,newLabel)
+async function editPresetLabelsHandler(oldElt, newLabel) {
+  const rs = await $CAMIC.store.updatePresetLabels(oldElt.dataset.id, newLabel).then((d)=>d.result);
+  if (rs.ok&&rs.nModified > 0) {
+    $UI.labelsViewer.setLabels(oldElt, newLabel);
     $UI.message.add(`Label "${newLabel.type}" Has been Updated`);
-    if(oldElt.classList.contains('selected')) drawLabel({value: 'prelabels',checked:true})
-  }else {
+    if (oldElt.classList.contains('selected')) drawLabel({value: 'prelabels', checked: true});
+  } else {
     $UI.message.addError('Updating The Label Has Failed');
   }
-  $UI.labelsViewer.__switch('view')
+  $UI.labelsViewer.__switch('view');
 }
 
 async function removePresetLabelsHandler(elt, label) {
-  const rs = await $CAMIC.store.removePresetLabels(label.id).then(d=>d.result);
-  if(rs.ok&&rs.nModified > 0){
+  const rs = await $CAMIC.store.removePresetLabels(label.id).then((d)=>d.result);
+  if (rs.ok&&rs.nModified > 0) {
     $UI.message.add(`Label "${label.type}" Has been removed`);
-    $UI.labelsViewer.removeLabel(label.id)
-    
+    $UI.labelsViewer.removeLabel(label.id);
   } else {
     $UI.message.addError(`Deleting The '${label.type}' Label Has Failed`);
   }
 }
 
 function selectedPresetLabelsHandler(label) {
-  drawLabel({value: 'prelabels',checked:true})
+  drawLabel({value: 'prelabels', checked: true});
 }
 
 function drawLabel(e) {
@@ -1902,16 +1900,16 @@ function drawLabel(e) {
 function presetLabelOn(label) {
   if (!$CAMIC.viewer.canvasDrawInstance) return;
   // open labels viewer
-  mainMenuChange({ apps:false, layers: false, labels: true})
+  mainMenuChange({apps: false, layers: false, labels: true});
   const canvasDraw = $CAMIC.viewer.canvasDrawInstance;
-  if(!label) {
-    $UI.message.addWarning('No Label Exist. Please Add A Label')
+  if (!label) {
+    $UI.message.addWarning('No Label Exist. Please Add A Label');
     $UI.toolbar.getSubTool('preset_label').querySelector('label').style.color = '';
     canvasDraw.clear();
     canvasDraw.drawOff();
     return;
   }
-  
+
   canvasDraw.drawMode = label.mode;
   if (label.mode == 'grid') {
     canvasDraw.size = [parseInt(label.size), parseInt(label.size)];
@@ -1921,7 +1919,6 @@ function presetLabelOn(label) {
   $CAMIC.status = 'label';
   $UI.toolbar.getSubTool('preset_label').querySelector('label').style.color =
     label.color;
-
 }
 
 function presetLabelOff() {
@@ -1941,7 +1938,7 @@ function presetLabelOff() {
         .querySelector('input[type=checkbox]').checked = false;
     $UI.toolbar.getSubTool('preset_label').querySelector('label').style.color =
       '';
-    $UI.labelsSideMenu.close()
+    $UI.labelsSideMenu.close();
     $CAMIC.status = null;
   }
 }
@@ -1949,12 +1946,12 @@ function presetLabelOff() {
 function savePresetLabel() {
   if ($CAMIC.viewer.canvasDrawInstance._path_index === 0) {
     // toast
-    $UI.message.addWarning('<i class="small material-icons">info</i> No Markup On Annotation. Try Holding And Dragging.', 4000)
+    $UI.message.addWarning('<i class="small material-icons">info</i> No Markup On Annotation. Try Holding And Dragging.', 4000);
     return;
   }
-  const data = $UI.labelsViewer.getSelectedLabels()
-  if(!data) {
-    $UI.message.addWarning('No Label Selected. Please select One.', 4000)
+  const data = $UI.labelsViewer.getSelectedLabels();
+  if (!data) {
+    $UI.message.addWarning('No Label Selected. Please select One.', 4000);
     return;
   }
 
@@ -2041,7 +2038,7 @@ function savePresetLabel() {
           $UI.message.addWarning(`Annotation Save Failed`);
           return;
         }
-        const __data = data.ops[0]
+        const __data = data.ops[0];
         // create layer data
         const newItem = {
           id: execId,
@@ -2059,10 +2056,10 @@ function savePresetLabel() {
         $minorCAMIC && $minorCAMIC.viewer ? true : false,
         );
 
-        __data._id = {$oid:__data._id} 
+        __data._id = {$oid: __data._id};
         addAnnotation(
             execId,
-            __data
+            __data,
         );
         // if ($minorCAMIC && $minorCAMIC.viewer) {
         //   addAnnotation(
@@ -2077,12 +2074,14 @@ function savePresetLabel() {
         Loading.close();
         console.log('save failed');
       })
-      .finally(() => {$UI.message.addSmall(`Added The '${noteData.name}' Annotation.`)});
+      .finally(() => {
+        $UI.message.addSmall(`Added The '${noteData.name}' Annotation.`);
+      });
 }
 
 function addAnnotation(id, data) {
-  const layerData = $UI.layersViewer.getDataItemById(id)
-  const layerDataMinor = $UI.layersViewerMinor.getDataItemById(id)
+  const layerData = $UI.layersViewer.getDataItemById(id);
+  const layerDataMinor = $UI.layersViewerMinor.getDataItemById(id);
   const item = layerData.item;
   data.geometries = VieweportFeaturesToImageFeatures(
       $CAMIC.viewer,
@@ -2106,7 +2105,7 @@ function addAnnotation(id, data) {
     layerData.layer = $CAMIC.viewer.omanager.addOverlay(item);
     $CAMIC.viewer.omanager.updateView();
   }
-  if($minorCAMIC && $minorCAMIC.viewer && layerDataMinor.isShow) {
+  if ($minorCAMIC && $minorCAMIC.viewer && layerDataMinor.isShow) {
     layerDataMinor.layer = $minorCAMIC.viewer.omanager.addOverlay(item);
     $minorCAMIC.viewer.omanager.updateView();
   }
@@ -2123,48 +2122,47 @@ function addAnnotation(id, data) {
 function onDeleteRuler(ruler) {
   const id = ruler.element.dataset.id;
   deleteRulerHandler(id);
-
 }
 
-function deleteRulerHandler(execId){
-  if(!confirm(message = `Are You Sure You Want To Delete This Ruler {ID:${execId}}?`)) return;
+function deleteRulerHandler(execId) {
+  if (!confirm(message = `Are You Sure You Want To Delete This Ruler {ID:${execId}}?`)) return;
   $CAMIC.store
-  .deleteMarkByExecId(execId, $D.params.data.slide)
-  .then((datas) => {
-    console.log(datas)
-  // server error
-    if (datas.error) {
-      const errorMessage = `${datas.text}: ${datas.url}`;
-      $UI.message.addError(errorMessage, 4000);
-      // close
-      return;
-    }
+      .deleteMarkByExecId(execId, $D.params.data.slide)
+      .then((datas) => {
+        console.log(datas);
+        // server error
+        if (datas.error) {
+          const errorMessage = `${datas.text}: ${datas.url}`;
+          $UI.message.addError(errorMessage, 4000);
+          // close
+          return;
+        }
 
-    // no data found
-    if (!datas.deletedCount || datas.deletedCount < 1) {
-      $UI.message.addWarning(`Delete Ruler Failed.`, 4000);
-      return;
-    }
-    // update UI
-    removeElement($D.overlayers, execId);
-    $UI.layersViewer.removeItemById(execId);
-    $UI.layersViewerMinor.removeItemById(execId);
-    $CAMIC.viewer.measureInstance.removeRulerById(execId)
-    if($minorCAMIC&&$minorCAMIC.viewer&&$minorCAMIC.viewer.measureInstance)$minorCAMIC.viewer.measureInstance.removeRulerById(execId)
-    $UI.message.addSmall(`Deleted The '${execId}' Ruler.`)
-  })
-  .catch((e) => {
-    $UI.message.addError(e);
-    console.error(e);
-  })
-  .finally(() => {
-  // console.log('delete end');
-  });
+        // no data found
+        if (!datas.deletedCount || datas.deletedCount < 1) {
+          $UI.message.addWarning(`Delete Ruler Failed.`, 4000);
+          return;
+        }
+        // update UI
+        removeElement($D.overlayers, execId);
+        $UI.layersViewer.removeItemById(execId);
+        $UI.layersViewerMinor.removeItemById(execId);
+        $CAMIC.viewer.measureInstance.removeRulerById(execId);
+        if ($minorCAMIC&&$minorCAMIC.viewer&&$minorCAMIC.viewer.measureInstance)$minorCAMIC.viewer.measureInstance.removeRulerById(execId);
+        $UI.message.addSmall(`Deleted The '${execId}' Ruler.`);
+      })
+      .catch((e) => {
+        $UI.message.addError(e);
+        console.error(e);
+      })
+      .finally(() => {
+        // console.log('delete end');
+      });
 }
 
 
 function onAddRuler(ruler) {
-  const {x, y, width, height} = ruler.getBounds($CAMIC.viewer.viewport)
+  const {x, y, width, height} = ruler.getBounds($CAMIC.viewer.viewport);
   const execId = 'ruler' + randomId();
   ruler.element.dataset.id = execId;
   let innerHTML = ruler.element.innerHTML;
@@ -2191,15 +2189,15 @@ function onAddRuler(ruler) {
         notes: 'ruler',
       },
       mode: ruler.element.dataset.mode,
-      innerHTML: innerHTML
+      innerHTML: innerHTML,
     },
     geometries: {
-      type: "FeatureCollection",
+      type: 'FeatureCollection',
       features: [
         {
-          type: "Feature",
+          type: 'Feature',
           geometry: {
-            type: "Polygon",
+            type: 'Polygon',
             coordinates: [
               [
                 [
@@ -2208,7 +2206,7 @@ function onAddRuler(ruler) {
                 ],
                 [
                   x + width,
-                  y
+                  y,
                 ],
                 [
                   x + width,
@@ -2221,12 +2219,12 @@ function onAddRuler(ruler) {
                 [
                   x,
                   y,
-                ]
-              ]
-            ]
+                ],
+              ],
+            ],
           },
-          bound : {
-            type : "Polygon",
+          bound: {
+            type: 'Polygon',
             coordinates: [
               [
                 [
@@ -2235,7 +2233,7 @@ function onAddRuler(ruler) {
                 ],
                 [
                   x + width,
-                  y
+                  y,
                 ],
                 [
                   x + width,
@@ -2248,14 +2246,14 @@ function onAddRuler(ruler) {
                 [
                   x,
                   y,
-                ]
-              ]
-            ]
-          }
-        }
-      ]
-    }
-  
+                ],
+              ],
+            ],
+          },
+        },
+      ],
+    },
+
   };
 
   $CAMIC.store
@@ -2274,7 +2272,7 @@ function onAddRuler(ruler) {
           return;
         }
 
-        const __data = data.ops[0]
+        const __data = data.ops[0];
         // create layer data
         const newItem = {
           id: execId,
@@ -2282,12 +2280,12 @@ function onAddRuler(ruler) {
           typeId: typeIds['ruler'],
           typeName: 'ruler',
           data: data.ops[0],
-          creator: getUserId()
+          creator: getUserId(),
         };
         newItem.data.properties.innerHTML = newItem.data.properties.innerHTML.split('&lt;').join('<');
         newItem.data.properties.innerHTML = newItem.data.properties.innerHTML.split('&gt;').join('>');
         newItem.data.properties.innerHTML = newItem.data.properties.innerHTML.split('&nbsp;').join(' ');
-        newItem.data._id = {$oid:newItem.data._id}
+        newItem.data._id = {$oid: newItem.data._id};
         $D.overlayers.push(newItem);
         $UI.layersViewer.addItem(newItem);
         $UI.layersViewerMinor.addItem(
@@ -2295,14 +2293,14 @@ function onAddRuler(ruler) {
         $minorCAMIC && $minorCAMIC.viewer ? true : false,
         );
 
-        const rulerData = $UI.layersViewer.getDataItemById(execId)
-        rulerData.layer = $CAMIC.viewer.getOverlayById(ruler.element)
+        const rulerData = $UI.layersViewer.getDataItemById(execId);
+        rulerData.layer = $CAMIC.viewer.getOverlayById(ruler.element);
 
-        const rulerDataMinor = $UI.layersViewerMinor.getDataItemById(execId)
+        const rulerDataMinor = $UI.layersViewerMinor.getDataItemById(execId);
         // create lay and update view
-        if($minorCAMIC && $minorCAMIC.viewer && rulerDataMinor.isShow) {
-          const [xmin,ymin] = newItem.data.geometries.features[0].geometry.coordinates[0][0];
-          const [xmax,ymax] = newItem.data.geometries.features[0].geometry.coordinates[0][2];          
+        if ($minorCAMIC && $minorCAMIC.viewer && rulerDataMinor.isShow) {
+          const [xmin, ymin] = newItem.data.geometries.features[0].geometry.coordinates[0][0];
+          const [xmax, ymax] = newItem.data.geometries.features[0].geometry.coordinates[0][2];
           rulerDataMinor.layer = $minorCAMIC.viewer.measureInstance.addRuler({
             id: newItem.id,
             mode: newItem.data.properties.mode,
@@ -2314,19 +2312,19 @@ function onAddRuler(ruler) {
             },
             innerHTML: newItem.data.properties.innerHTML,
             isShow: rulerDataMinor.isShow,
-          })
-        }     
-      
+          });
+        }
+
         // close app side
         $UI.layersViewer.update();
         $UI.layersViewerMinor.update();
 
-        $UI.message.addSmall(`Added The '${execId}' Ruler.`)
+        $UI.message.addSmall(`Added The '${execId}' Ruler.`);
       })
       .catch((e) => {
         Loading.close();
         console.log('Ruler Save Failed');
-      })
+      });
 }
 
 /* call back list END */
