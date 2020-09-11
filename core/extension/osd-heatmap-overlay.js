@@ -30,8 +30,8 @@
  *        the delay time that will update the heatmap when the view changed. default time is 300 milliseconds.
  * @param {Number} [opacity=0.8]
  *        the opacity of the heatmap. default is 0.8.
- * @param {String} [color='#1034A6']
- *        the patch's color. default is '#1034A6'.
+ * @param {String} [color='#ffa500']
+ *        the patch's color. default is '#ffa500'.
  * @param {Number} [zIndex=100]
  *        the z-index of heatmap in the entire viewport.
  */
@@ -88,7 +88,7 @@
         f => f.name === options.currentFieldName
       );
     }
-    this._color = options.color || '#1034a6'; // heatmap color
+    this._color = options.color || '#ffa500'; // heatmap color
     this._colors = options.colors || ['#EAF2F8', '#D4E6F1', '#A9CCE3', '#7FB3D5', '#5499C7']; // heatmap color
     this.intervals = _getIntervals(
       this._currentField,
@@ -227,7 +227,7 @@
           f => f.name === options.currentFieldName
         );
       }
-      this._color = options.color || this._color || '#1034a6';
+      this._color = options.color || this._color || '#ffa500';
       this._colors = options.colors || this._colors || ['#EAF2F8', '#D4E6F1', '#A9CCE3', '#7FB3D5', '#5499C7'];
       this.intervals = _getIntervals(
         this._currentField,

@@ -1256,7 +1256,7 @@ async function callback(data) {
           mode: 'binal',
           size: $D.heatMapData.provenance.analysis.size,
           fields: $D.heatMapData.provenance.analysis.fields,
-          color: '#1034A6', // inputs[3].value
+          color: '#ffa500', // inputs[3].value
         };
 
         if ($D.heatMapData.provenance.analysis.setting) {
@@ -1267,6 +1267,8 @@ async function callback(data) {
           }
         }
         camic.viewer.createHeatmap(opt);
+        if($D.heatMapData.provenance.analysis.setting&&$D.heatMapData.provenance.analysis.setting.mode=='binal') camic.viewer.heatmap.setColor($D.heatMapData.provenance.analysis.setting.colors[0])
+        if($D.heatMapData.provenance.analysis.setting&&$D.heatMapData.provenance.analysis.setting.mode=='gradient') camic.viewer.heatmap.setColors($D.heatMapData.provenance.analysis.setting.colors)
       } else {
         Loading.open(document.body, 'Loading Heatmap Data...');
         // load heatmap
@@ -1283,7 +1285,7 @@ async function callback(data) {
                   // editedData:$D.editedDataClusters,
                   size: $D.heatMapData.provenance.analysis.size,
                   fields: $D.heatMapData.provenance.analysis.fields,
-                  color: '#1034A6', // inputs[3].value
+                  color: '#ffa500', // inputs[3].value
                 };
 
                 if ($D.heatMapData.provenance.analysis.setting) {
@@ -1294,7 +1296,8 @@ async function callback(data) {
                   }
                 }
                 camic.viewer.createHeatmap(opt);
-              }
+                if($D.heatMapData.provenance.analysis.setting&&$D.heatMapData.provenance.analysis.setting.mode=='binal') camic.viewer.heatmap.setColor($D.heatMapData.provenance.analysis.setting.colors[0])
+                if($D.heatMapData.provenance.analysis.setting&&$D.heatMapData.provenance.analysis.setting.mode=='gradient') camic.viewer.heatmap.setColors($D.heatMapData.provenance.analysis.setting.colors)              }
             })
             .catch(function(error) {
             // heatmap schema

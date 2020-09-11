@@ -361,7 +361,7 @@ LayersViewer.createCategoricalItem = function(data, type) {
     ic.textContent = 'keyboard_arrow_down';
     label.style.fontWeight = 'bold';
     chk.dataset.type = 'root';
-    if (!item.name == 'human' && !item.name=='ruler') chk.style.display = 'none';
+    if (item.name != 'human' && item.name!='ruler') chk.style.display = 'none';
     li.appendChild(ic);
   } else {
     chk.id = id;
@@ -534,7 +534,7 @@ LayersViewer.createControlBar = function() {
   // text input
   const searchInput = document.createElement('input');
   searchInput.type = 'text';
-  searchInput.placeholder = 'Search By Name/ID/Creator';
+  searchInput.placeholder = 'Search By Name/Creator';
 
   // search btn
   const searchBtn = document.createElement('div');
