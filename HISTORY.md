@@ -39,7 +39,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * "softer" warning popups
 
 ### caMicroscope [3.7.7](https://github.com/camicroscope/camicroscope/compare/v3.7.6......camicroscope:v3.7.7)
-###### 2020-06-24
+###### 2020-07-30
 * Bugfix for Heatmap Color Editing
 
 ### caMicroscope [3.7.6](https://github.com/camicroscope/camicroscope/compare/v3.7.5...camicroscope:v3.7.6)
