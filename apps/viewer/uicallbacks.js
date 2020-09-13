@@ -1267,8 +1267,14 @@ async function callback(data) {
           }
         }
         camic.viewer.createHeatmap(opt);
-        if ($D.heatMapData.provenance.analysis.setting&&$D.heatMapData.provenance.analysis.setting.mode=='binal') camic.viewer.heatmap.setColor($D.heatMapData.provenance.analysis.setting.colors[0]);
-        if ($D.heatMapData.provenance.analysis.setting&&$D.heatMapData.provenance.analysis.setting.mode=='gradient') camic.viewer.heatmap.setColors($D.heatMapData.provenance.analysis.setting.colors);
+        if ($D.heatMapData.provenance.analysis.setting &&
+          $D.heatMapData.provenance.analysis.setting.mode=='binal') {
+          camic.viewer.heatmap.setColor($D.heatMapData.provenance.analysis.setting.colors[0]);
+        }
+        if ($D.heatMapData.provenance.analysis.setting &&
+          $D.heatMapData.provenance.analysis.setting.mode=='gradient') {
+          camic.viewer.heatmap.setColors($D.heatMapData.provenance.analysis.setting.colors);
+        }
       } else {
         Loading.open(document.body, 'Loading Heatmap Data...');
         // load heatmap
@@ -1296,8 +1302,14 @@ async function callback(data) {
                   }
                 }
                 camic.viewer.createHeatmap(opt);
-                if ($D.heatMapData.provenance.analysis.setting&&$D.heatMapData.provenance.analysis.setting.mode=='binal') camic.viewer.heatmap.setColor($D.heatMapData.provenance.analysis.setting.colors[0]);
-                if ($D.heatMapData.provenance.analysis.setting&&$D.heatMapData.provenance.analysis.setting.mode=='gradient') camic.viewer.heatmap.setColors($D.heatMapData.provenance.analysis.setting.colors);
+                if ($D.heatMapData.provenance.analysis.setting &&
+                  $D.heatMapData.provenance.analysis.setting.mode=='binal') {
+                  camic.viewer.heatmap.setColor($D.heatMapData.provenance.analysis.setting.colors[0]);
+                }
+                if ($D.heatMapData.provenance.analysis.setting &&
+                  $D.heatMapData.provenance.analysis.setting.mode=='gradient') {
+                  camic.viewer.heatmap.setColors($D.heatMapData.provenance.analysis.setting.colors);
+                }
               }
             })
             .catch(function(error) {
