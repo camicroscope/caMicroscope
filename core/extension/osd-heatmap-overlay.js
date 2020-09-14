@@ -165,7 +165,7 @@
     this.__legend_btn = document.createElement("div");
     this.__legend_btn.classList.add("material-icons");
     this.__legend_btn.classList.add("md-24");
-    this.__legend_btn.textContent = "keyboard_arrow_up";
+    this.__legend_btn.textContent = "unfold_less";
     this.__legend_btn.style.color = "#000";
     this.__legend_btn.style.float = "right";
     this.__legend_btn.style.cursor = "pointer";
@@ -176,12 +176,12 @@
     this.__legend_btn.addEventListener(
       "click",
       function(e) {
-        if (this.__legend_btn.textContent == "keyboard_arrow_up") {
-          this.__legend_btn.textContent = "keyboard_arrow_down";
+        if (this.__legend_btn.textContent == "unfold_less") {
+          this.__legend_btn.textContent = "unfold_more";
           this.__legend_info.style.width = 0;
           this.__legend_info.style.height = 0;
         } else {
-          this.__legend_btn.textContent = "keyboard_arrow_up";
+          this.__legend_btn.textContent = "unfold_less";
           this.__legend_info.style.width = "";
           this.__legend_info.style.height = "";
         }
@@ -1148,15 +1148,32 @@
       this.value[1] = max;
     }
   };
-  function createLegend(container, intervals) {
+  function createLegend(container, intervals, isAscend = false) {
     container.innerHTML = "";
-    container.innerHTML = intervals
+    
+    container.innerHTML = `<div class="material-icons md-24">${isAscend?'arrow_drop_up':'arrow_drop_down'}</div></br>` + (isAscend?intervals
       .map(
         item =>
           `<i style="background:${
             item.color
           };width:18px;height:18px;float:left;margin-right: 8px;"></i>${item.range[0].toLocaleString()} - ${item.range[1].toLocaleString()}</br>`
       )
-      .join("");
+      .join(""):
+      intervals.slice().reverse()
+      .map(
+        item =>
+          `<i style="background:${
+            item.color
+          };width:18px;height:18px;float:left;margin-right: 8px;"></i>${item.range[0].toLocaleString()} - ${item.range[1].toLocaleString()}</br>`
+      )
+      .join(""));
+
+      container.querySelector('.material-icons').addEventListener('click',()=>{
+        if(container.querySelector('.material-icons').textContent == 'arrow_drop_up'){
+          createLegend(container, intervals, false)
+        } else {
+          createLegend(container, intervals, true)
+        }
+      })
   }
 })(OpenSeadragon);

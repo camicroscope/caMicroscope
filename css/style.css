@@ -290,3 +290,8 @@ opacity: 0.3 !important;
   position: static;
   box-shadow: none;
 }
+
+
+.material-icons {
+  cursor: pointer;
+}
