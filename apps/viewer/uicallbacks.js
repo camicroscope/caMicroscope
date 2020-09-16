@@ -1410,12 +1410,12 @@ function loadRulerById(camic, rulerData, callback) {
           $UI.layersViewerMinor.removeItemById(item.id);
           return;
         }
-        
+
         item.data = data[0];
         if (data[0].provenance&&
           data[0].provenance.analysis&&
           data[0].provenance.analysis.coordinate&&
-          data[0].provenance.analysis.coordinate == 'image'){
+          data[0].provenance.analysis.coordinate == 'image') {
           data[0].geometries = ImageFeaturesToVieweportFeatures(
               camic.viewer,
               data[0].geometries,
@@ -1520,13 +1520,13 @@ function loadAnnotationById(camic, layerData, callback) {
           if (data[0].provenance &&
             data[0].provenance.analysis&&
             (data[0].provenance.analysis.coordinate == undefined||
-              data[0].provenance.analysis.coordinate == 'normalized')){
+              data[0].provenance.analysis.coordinate == 'normalized')) {
             data[0].geometries = VieweportFeaturesToImageFeatures(
                 camic.viewer,
                 data[0].geometries,
             );
           }
-          
+
           if (data[0].provenance.analysis.isGrid) {
             const width = $CAMIC.viewer.imagingHelper.imgWidth;
             const height = $CAMIC.viewer.imagingHelper.imgHeight;
