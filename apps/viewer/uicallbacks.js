@@ -1410,12 +1410,24 @@ function loadRulerById(camic, rulerData, callback) {
           $UI.layersViewerMinor.removeItemById(item.id);
           return;
         }
+        
         item.data = data[0];
+        if (data[0].provenance&&
+          data[0].provenance.analysis&&
+          data[0].provenance.analysis.coordinate&&
+          data[0].provenance.analysis.coordinate == 'image'){
+          data[0].geometries = ImageFeaturesToVieweportFeatures(
+              camic.viewer,
+              data[0].geometries,
+          );
+        }
+
         item.data.properties.innerHTML = item.data.properties.innerHTML.split('&lt;').join('<');
         item.data.properties.innerHTML = item.data.properties.innerHTML.split('&gt;').join('>');
         item.data.properties.innerHTML = item.data.properties.innerHTML.split('&nbsp;').join(' ');
-        const [xmin, ymin] = item.data.geometries.features[0].geometry.coordinates[0][0];
-        const [xmax, ymax] = item.data.geometries.features[0].geometry.coordinates[0][2];
+        let [xmin, ymin] = item.data.geometries.features[0].geometry.coordinates[0][0];
+        let [xmax, ymax] = item.data.geometries.features[0].geometry.coordinates[0][2];
+
         // create lay and update view
         rulerData.layer = camic.viewer.measureInstance.addRuler({
           id: item.id,
@@ -1505,10 +1517,16 @@ function loadAnnotationById(camic, layerData, callback) {
           item.clickable = false;
           item.hoverable = false;
         } else {
-          data[0].geometries = VieweportFeaturesToImageFeatures(
-              camic.viewer,
-              data[0].geometries,
-          );
+          if (data[0].provenance &&
+            data[0].provenance.analysis&&
+            (data[0].provenance.analysis.coordinate == undefined||
+              data[0].provenance.analysis.coordinate == 'normalized')){
+            data[0].geometries = VieweportFeaturesToImageFeatures(
+                camic.viewer,
+                data[0].geometries,
+            );
+          }
+          
           if (data[0].provenance.analysis.isGrid) {
             const width = $CAMIC.viewer.imagingHelper.imgWidth;
             const height = $CAMIC.viewer.imagingHelper.imgHeight;

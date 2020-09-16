@@ -19,9 +19,9 @@ const $D = {
 
 window.addEventListener('keydown', (e) => {
   if (!$CAMIC || !$CAMIC.viewer) return;
-  const keyCode = e.keyCode;
+  const key = e.key;
   // escape key to close all operations
-  if (keyCode == 27) {
+  if ('Escape' == key.toLocaleLowerCase()) {
     magnifierOff();
     measurementOff();
     annotationOff();
@@ -29,13 +29,13 @@ window.addEventListener('keydown', (e) => {
   }
 
   // open annotation (ctrl + a)
-  if (e.ctrlKey && keyCode == 65 && $CAMIC.viewer.canvasDrawInstance) {
+  if (e.ctrlKey && 'a' == key.toLocaleLowerCase() && $CAMIC.viewer.canvasDrawInstance) {
     const li = $UI.toolbar.getSubTool('annotation');
     eventFire(li, 'click');
     return;
   }
   // open magnifier (ctrl + m)
-  if (e.ctrlKey && keyCode == 77 && $UI.spyglass) {
+  if (e.ctrlKey && 'm' == key.toLocaleLowerCase() && $UI.spyglass) {
     const li = $UI.toolbar.getSubTool('magnifier');
     const chk = li.querySelector('input[type=checkbox]');
     chk.checked = !chk.checked;
@@ -43,16 +43,16 @@ window.addEventListener('keydown', (e) => {
     return;
   }
   // open measurement (ctrl + r)
-  if (e.ctrlKey && keyCode == 82 && $CAMIC.viewer.measureInstance) {
+  if (e.ctrlKey && 'r' == key.toLocaleLowerCase() && $CAMIC.viewer.measureInstance) {
     e.preventDefault();
     const li = $UI.toolbar.getSubTool('measurement');
     const chk = li.querySelector('input[type=checkbox]');
     chk.checked = !chk.checked;
-    eventFire(chk, 'click');
+    eventFire(chk, 'change');
     return;
   }
   // open side-by-side (ctrl + s)
-  if (e.ctrlKey && keyCode == 83) {
+  if (e.ctrlKey && 's' == key.toLocaleLowerCase()) {
     e.preventDefault();
     const li = $UI.toolbar.getSubTool('sbsviewer');
     const chk = li.querySelector('input[type=checkbox]');

@@ -372,6 +372,17 @@
                         const points = polygon.geometry.coordinates[0];
                         const style = polygon.properties.style;
 
+                        // default coordinate is 'normalized'
+                        let convertX = this._viewer.imagingHelper.logicalToPhysicalX;
+                        let convertY = this._viewer.imagingHelper.logicalToPhysicalY;
+                        // if coordinate is 'image'
+                        if(segment.provenance &&
+                            segment.provenance.analysis &&
+                            segment.provenance.analysis.coordinate &&
+                            segment.provenance.analysis.coordinate == 'image'){
+                                convertX = this._viewer.imagingHelper.dataToLogicalX;
+                                convertY = this._viewer.imagingHelper.dataToPhysicalY;                              
+                        }
                         this._display_ctx_.lineJoin = style.lineJoin;
                         this._display_ctx_.lineCap = style.lineCap;
                         this._display_ctx_.lineWidth = 1;
@@ -384,18 +395,18 @@
                         this._display_ctx_.beginPath()
                         // starting draw drawPolygon
                         this._display_ctx_.moveTo(
-                            this._viewer.imagingHelper.logicalToPhysicalX(points[0][0]) + this._offset[0],
-                            this._viewer.imagingHelper.logicalToPhysicalY(points[0][1]) + this._offset[1],
+                            convertX(points[0][0]) + this._offset[0],
+                            convertY(points[0][1]) + this._offset[1],
                         );
 
                         for (var i = 1; i < points.length-1; i++) {
-                             const x = this._viewer.imagingHelper.logicalToPhysicalX(points[i][0]);
-                             const y = this._viewer.imagingHelper.logicalToPhysicalY(points[i][1]);
+                             const x = convertX(points[i][0]);
+                             const y = convertY(points[i][1]);
                             this._display_ctx_.lineTo(x+this._offset[0],y+this._offset[1]);
                         }
                         this._display_ctx_.lineTo(
-                            this._viewer.imagingHelper.logicalToPhysicalX(points[0][0]) + this._offset[0],
-                            this._viewer.imagingHelper.logicalToPhysicalY(points[0][1]) + this._offset[1]);
+                            convertX(points[0][0]) + this._offset[0],
+                            convertY(points[0][1]) + this._offset[1]);
                         if(this.mode === 'fill'){
                             this._display_ctx_.fill();
                         }else if(this.mode === 'stroke'){
