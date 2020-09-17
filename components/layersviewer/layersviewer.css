@@ -106,7 +106,7 @@
 }*/
 
 /* checkbox */
-.layer_viewer [type="checkbox"] {
+.layers_list [type="checkbox"] {
 	margin-left:5px;
 	border:#cbcbcb 1px solid;
     pointer-events: all;
@@ -121,7 +121,7 @@
     outline: 0;
     transition: background-color .25s ease-in-out, border-color .25s ease-in-out, box-shadow .25s ease-in-out;
 }
-.layer_viewer [type="checkbox"]:before {
+.layers_list [type="checkbox"]:before {
     position: absolute;
     display: block;
     height: 18px;
@@ -136,12 +136,12 @@
     line-height: 19px;
 }
 
-.layer_viewer [type="checkbox"]:checked {
+.layers_list [type="checkbox"]:checked {
     background-color: #365f9c;
     /*box-shadow: inset 0 0 0px 1px #365f9c;*/
 }
 
-.layer_viewer [type="checkbox"]:checked:before {
+.layers_list [type="checkbox"]:checked:before {
     position: absolute;
     display: block;
     height: 18px;
@@ -158,7 +158,7 @@
     line-height: 19px;
 }
 
-.layer_viewer [type="checkbox"]:after {
+.layers_list [type="checkbox"]:after {
     content: "";
     position: absolute;
     display: block;
@@ -174,19 +174,41 @@
     line-height: 20px;
 }
 
-.layer_viewer [type="checkbox"]:checked:after { 
+.layers_list [type="checkbox"]:checked:after { 
     left: 30px;
 }
 
-/* sort list css */
- {
-  flex:1;
-  padding:0 1rem;
-  list-style-type: none;
+.layer_viewer div.checklist {
+    box-sizing: border-box;
+    display: -webkit-flex;
+    -webkit-justify-content: unset;
+    -webkit-flex-flow: row wrap;
+    display: flex;
+    justify-content: unset;
+    flex-flow: row wrap;
+    padding:.5rem 0;
+    border-bottom: #cdcdcd .2rem solid;
 }
-.sort_list li {
+
+.layer_viewer div.checklist > label {
+    width: 7rem;
+    font-size: 1.2rem;
+    margin: .3rem;
+}
+
+.layer_viewer div.labels-grid > .labels {
+    width: 70px;
+    height: 75px;
+    background-color: #f2f2f2;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    margin: 5px 0;
+    overflow: hidden;
+    position: relative;
+    border: 1px solid rgba(0, 0, 0, .1);
+    border-radius: 2px;
 
 }
+/* sort list css */
 
 
 

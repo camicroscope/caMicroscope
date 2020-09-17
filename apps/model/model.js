@@ -1,7 +1,11 @@
 const PDR = OpenSeadragon.pixelDensityRatio;
 const IDB_URL = 'indexeddb://';
 var csvContent;
-
+var mem;
+var flag = -1;
+var choices1;
+var jsondata;
+var fileName = '';
 // INITIALIZE DB
 window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
 // id(autoinc), name, location(name+id), classes
@@ -47,6 +51,26 @@ const $D = {
 // const objAreaMax = 4500;
 // const lineWidth = 2;
 // const timeOutMs = 10;
+
+/**
+ * Sanitize the input
+ *
+ * @param string
+ */
+
+function sanitize(string) {
+  string = string || '';
+  const map = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    '\'': '&#x27;',
+    '/': '&#x2F;',
+  };
+  const reg = /[&<>"'/]/ig;
+  return string.toString().replace(reg, (match)=>(map[match]));
+}
 
 
 function initialize() {
@@ -155,6 +179,75 @@ async function initUIcomponents() {
     hasFooter: false,
   });
 
+  // Create roiExtract for taking details of ROI extraction
+  $UI.roiModal = new ModalBox({
+    id: 'roi_panel',
+    hasHeader: true,
+    headerText: 'ROI Extraction',
+    hasFooter: false,
+    provideContent: true,
+    content: `
+      <div class = "message" >
+      
+        <h3> Please select a model</h3></div><br>
+      <table id = 'roitable'>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Classes</th>
+            <th>Input Size</th>
+            <th>Size (MB)</th>
+            <th>Date Saved</th>
+            <th>Select Model</th>
+          </tr>
+          <tbody id = "roidata">
+          </tbody>
+        </thead>
+      </table>
+    `,
+
+  });
+
+  $UI.choiceModal = new ModalBox({
+    id: 'choice_panel',
+    hasHeader: true,
+    headerText: 'Select Parameters',
+    hasFooter: false,
+    provideContent: true,
+    content: `
+    <div class = "message" >
+      <h3> Select the parameters for the patches that you want to download</h3></div><br>
+      <table id = 'choicetable'>
+        <thead>
+          <tbody id = "choicedata">
+          </tbody>
+        </thead>
+      </table>
+    `,
+
+  });
+
+
+  $UI.detailsModal = new ModalBox({
+    id: 'details_panel',
+    hasHeader: true,
+    headerText: 'Details',
+    hasFooter: false,
+    provideContent: true,
+    content: `
+    <div class= "message" >
+      <h3> The details of the extracted patches are : </h3></div><br>
+      <table id='detailstable'>
+        <thead>
+          <tbody id="detailsdata">
+          </tbody>
+        </thead>
+      </table>
+    `,
+
+  });
+
+
   // create the message queue
   $UI.message = new MessageQueue();
   const dropDownList = [];
@@ -249,6 +342,12 @@ async function initUIcomponents() {
         title: 'Help',
         callback: openHelp,
       }, {
+        icon: 'archive',
+        type: 'btn',
+        value: 'ROI',
+        title: 'ROI',
+        callback: selectModel,
+      }, {
         icon: 'bug_report',
         title: 'Bug Report',
         value: 'bugs',
@@ -307,6 +406,20 @@ function initCore() {
     }
   });
 
+  $CAMIC.store.getSlide($D.params.slideId).then((response) => {
+    if (response[0]) {
+      return response[0]['location'];
+    } else {
+      throw new Error('Slide not found');
+    }
+  }).then((location) => {
+    fileName = location.substring(
+        location.lastIndexOf('/') + 1,
+        location.length,
+    );
+    console.log(fileName);
+  });
+
   $CAMIC.viewer.addOnceHandler('open', function(e) {
     const viewer = $CAMIC.viewer;
     // add stop draw function
@@ -342,11 +455,20 @@ function setFilter(filter) {
  * @param e
  */
 function drawRectangle(e) {
+  console.log(e);
   const canvas = $CAMIC.viewer.drawer.canvas; // Original Canvas
   canvas.style.cursor = e.checked ? 'crosshair' : 'default';
 
+  var args;
   const canvasDraw = $CAMIC.viewer.canvasDrawInstance;
-  const args = $UI.args;
+  if (e.state == 'roi') {
+    args = {status: ''};
+    args.status = e.model;
+    console.log(args);
+  } else {
+    args = $UI.args;
+  }
+  // console.log(args);
   canvasDraw.drawMode = 'stepSquare';
   // Save size in an arg list
   if (args) canvasDraw.size = args.status.split('_')[1].split('-')[0];
@@ -354,13 +476,16 @@ function drawRectangle(e) {
   canvasDraw.style.color = '#FFFF00';
   canvasDraw.style.isFill = false;
 
-  if (e.checked) {
+  if (e.checked ) {
     // Warn about zoom level
     const currentZoom = Math.round($CAMIC.viewer.imagingHelper._zoomFactor * 40);
     requiredZoom = $UI.args? parseInt($UI.args.status.split('_')[1].split('-')[1]):currentZoom;
-    if (currentZoom != requiredZoom) {
+
+    if (currentZoom != requiredZoom && flag != 0) {
       alert(`You are testing the model for a different zoom level (recommended: ${requiredZoom}). Performance might be affected.`);
     }
+
+
     document.querySelector('.drop_down').classList.add('disabled');
     canvasDraw.drawOn();
   } else {
@@ -374,9 +499,9 @@ function drawRectangle(e) {
  * @param e
  */
 function camicStopDraw(e) {
+  console.log(e);
   const viewer = $CAMIC.viewer;
   const canvasDraw = viewer.canvasDrawInstance;
-
   const imgColl = canvasDraw.getImageFeatureCollection();
   if (imgColl.features.length > 0) {
     // Check size first
@@ -386,9 +511,15 @@ function camicStopDraw(e) {
       console.error('SOMETHING WICKED THIS WAY COMES.');
     } else {
       const args = $UI.args;
-      if (args) {
-        runPredict(args.status);
+      console.log(flag);
+      if (flag != -1 ) {
+        extractRoi(choices1, flag);
+      } else {
+        if (args) {
+          runPredict(args.status);
+        }
       }
+
       $UI.modelPanel.setPosition(box.rect.x, box.rect.y, box.rect.width, box.rect.height);
       if ($UI.modelPanel.__spImgWidth != 0) {
         $UI.modelPanel.open(args);
@@ -618,7 +749,7 @@ function uploadModel() {
   var submit = document.querySelector('#submit');
 
   // Reset previous input
-  _name.value = _classes.value = topology.value = weights.value = status.innerHTML = _imageSize.value = url.value = '';
+  _name.value = _classes.value = topology.value = weights.value = status.innerText = _imageSize.value = url.value = '';
 
   $UI.uploadModal.open();
 
@@ -641,7 +772,7 @@ function uploadModel() {
 
     if ( _name.value && _classes.value && _imageSize.value &&
       ((!toggle.checked && topology.files[0].name.split('.').pop() == 'json') || (toggle.checked && url))) {
-      status.innerHTML = 'Uploading';
+      status.innerText = 'Uploading';
       status.classList.remove('error');
       status.classList.add('blink');
 
@@ -664,7 +795,7 @@ function uploadModel() {
           throw new Error('Model name repeated');
         }
       } catch (e) {
-        status.innerHTML = 'Model with the same name already exists. Please choose a new name';
+        status.innerText = 'Model with the same name already exists. Please choose a new name';
         status.classList.remove('blink');
         console.log(e);
         document.getElementById('name').style = 'border:2px; border-style: solid; border-color: red;';
@@ -679,7 +810,7 @@ function uploadModel() {
               tf.ones([1, parseInt(_imageSize.value), parseInt(_imageSize.value), parseInt(_channels)]));
           result.dispose();
         } catch (e) {
-          status.innerHTML = 'Model failed on the given values of patch size.' +
+          status.innerText = 'Model failed on the given values of patch size.' +
           'Please input values on which the model was trained.';
           console.log(e);
           status.classList.remove('blink');
@@ -716,7 +847,7 @@ function uploadModel() {
             initUIcomponents();
           };
           req.onerror = function(e) {
-            status.innerHTML = 'Some error this way!';
+            status.innerText = 'Some error this way!';
             console.log(e);
             status.classList.remove('blink');
           };
@@ -724,20 +855,26 @@ function uploadModel() {
       } catch (e) {
         status.classList.add('error');
         status.classList.remove('blink');
-        if (toggle.checked) status.innerHTML = 'Please enter a valid URL.';
+        if (toggle.checked) status.innerText = 'Please enter a valid URL.';
         else {
-          status.innerHTML = 'Please enter a valid model.' +
+          status.innerText = 'Please enter a valid model.' +
         'Input model.json in first input and all weight binaries in second one without renaming.';
         }
         console.error(e);
       }
     } else {
-      status.innerHTML = 'Please fill out all the fields with valid values.';
+      status.innerText = 'Please fill out all the fields with valid values.';
       status.classList.add('error');
       console.error(e);
     }
   });
 }
+
+/**
+ * Delete a model from the store
+ *
+ * @param name : Model name
+ */
 
 async function deleteModel(name) {
   deletedmodelName = name.split('/').pop().split('_').splice(2).join('_').slice(0, -3);
@@ -779,7 +916,7 @@ async function showInfo() {
   var table = document.querySelector('#mdata');
   var tx = db.transaction('models_store', 'readonly');
   var store = tx.objectStore('models_store');
-  var modelCount=0;
+  var modelCount = 0;
   empty(table);
   // Update table data
   (function(callback) {
@@ -798,30 +935,30 @@ async function showInfo() {
             classes = (e.target.result.classes.join(', '));
             inputShape = e.target.result.input_shape.slice(1, 3).join('x');
             td = row.insertCell();
-            td.innerHTML = name.split('/').pop().split('_').splice(2).join('_').slice(0, -3);
+            td.innerText = name.split('/').pop().split('_').splice(2).join('_').slice(0, -3);
             td = row.insertCell();
-            td.innerHTML = classes;
+            td.innerText = classes;
             td = row.insertCell();
-            td.innerHTML = inputShape;
+            td.innerText = inputShape;
             td = row.insertCell();
-            td.innerHTML = +size.toFixed(2);
+            td.innerText = +size.toFixed(2);
             td = row.insertCell();
-            td.innerHTML = date;
+            td.innerText = date;
             td = row.insertCell();
-            td.innerHTML = '<button class="btn-del" '+
-            'id=removeModel'+ modelCount+' type="button"><i class="material-icons"'+
+            td.innerHTML = '<button class="btn-del" ' +
+            'id=removeModel' + modelCount +' type="button"><i class="material-icons"'+
             'style="font-size:16px;">delete_forever</i>Remove Model</button>';
             td = row.insertCell();
             td.innerHTML = '<button class="btn-change" '+
-            'id=chngClassListBtn'+ modelCount+' type="button"><i class="material-icons"' +
+            'id=chngClassListBtn'+ modelCount +' type="button"><i class="material-icons"' +
             'style="font-size:16px;">edit</i>  Edit Classes</button>';
-            document.getElementById('removeModel'+modelCount).addEventListener('click', () => {
+            document.getElementById('removeModel'+ modelCount).addEventListener('click', () => {
               deleteModel(name);
             });
-            document.getElementById('chngClassListBtn'+modelCount).addEventListener('click', () => {
+            document.getElementById('chngClassListBtn' + modelCount).addEventListener('click', () => {
               showNewClassInput(name);
             });
-            modelCount+=1;
+            modelCount += 1;
           };
         }
       }
@@ -994,3 +1131,452 @@ function downloadCSV(filename) {
     self.showResults('Please select a model first');
   }
 }
+
+/**
+ * Select model for extracting patches
+ */
+
+async function selectModel() {
+  var data = await tf.io.listModels();
+  var table = document.querySelector('#roidata');
+  var tx = db.transaction('models_store', 'readonly');
+  var store = tx.objectStore('models_store');
+  var modelCount = 0;
+
+  empty(table);
+
+  //  Update table data
+  (function(callback) {
+    for (const key in data) {
+      if (data.hasOwnProperty(key)) {
+        const name = key.split('/').pop();
+        const date = data[key].dateSaved.toString().slice(0, 15);
+        const size = (data[key].modelTopologyBytes +
+          data[key].weightDataBytes +
+          data[key].weightSpecsBytes) / (1024*1024);
+        const row = table.insertRow();
+        let classes; let inputShape; let td;
+
+        if (name.slice(0, 4) == 'pred') {
+          store.get(name).onsuccess = function(e) {
+            classes = (e.target.result.classes.join(', '));
+            inputShape = e.target.result.input_shape.slice(1, 3).join('x');
+            td = row.insertCell();
+            td.innerText = name.split('/').pop().split('_').splice(2).join('_').slice(0, -3);
+            td = row.insertCell();
+            td.innerText = classes;
+            td = row.insertCell();
+            td.innerText = inputShape;
+            td = row.insertCell();
+            td.innerText = +size.toFixed(2);
+            td = row.insertCell();
+            td.innerText = date;
+            td = row.insertCell();
+            td.innerHTML = '<button class="btn-sel"'+
+            'id=selectModel'+ modelCount+' type="button"><i class="material-icons">done</i></button>';
+            document.getElementById('selectModel'+modelCount).addEventListener('click', () => {
+              selectChoices(name, classes);
+            });
+            modelCount += 1;
+          };
+        }
+      }
+    }
+    callback;
+  })($UI.roiModal.open());
+}
+
+/**
+ * Selct choices for extracting patches
+ *
+ * @param name : name of the model selected
+ * @param classes : classes of the model selected
+ */
+
+async function selectChoices(name, classes) {
+  $UI.roiModal.close();
+  (function(callback) {
+    selectedmodelName = sanitize(name.split('/').pop().split('_').splice(2).join('_').slice(0, -3));
+    var classNames = classes.split(',');
+    for ( var i = 0; i < classNames.length; i++) {
+      classNames[i] = sanitize(classNames[i]);
+    }
+
+    var i;
+    $('#choicedata').html('');
+    $('#choicedata').html(' <h4> Classes :</h4> ');
+    for ( i = 0; i < classNames.length; i++) {
+      $('#choicedata').append('<label class="check">' + classNames[i] + '<input type="checkbox" value= ' +
+      classNames[i] + ' id = ' + classNames[i] + ' name = "choice" /><span class="checkmark"></span></label></br>');
+    }
+    $('#choicedata').append(' <h4> Accuracy Level :</h4>' +
+  '<input type="range" min="1" max="100" value="80"  id = "accrange" onchange="updateTextInput(this.value)" />' +
+  ' <input type="text" id="textInput" value="80" /><br>');
+
+    $('#choicedata').append(' <h4> Scaling Method :</h4> ' +
+  '<select id="scale_method" name="scale">' +
+  '<option value="norm" selected>Normalization</option>' +
+  '<option value="center">Centering</option>' +
+  '<option value="std">Standardization</option></select> <br>');
+
+    $('#choicedata').append('<br> <h4> Use backend for extracting :</h4>');
+    $('#choicedata').append('<label class="switch1"><input type="checkbox" id="backendOpt">' +
+      '<div class="slider1"></div></label>  <br>');
+    $('#choicedata').append('<br><br><div id="ext1"><button id="submit1" class="extract">' +
+      'Extract from entire slide</button></div><br>');
+    $('#choicedata').append('<br><div id="ext2"><button id="submit2" class="extract">' +
+      'Extract from a selected region</button></div><br>');
+
+
+    $('#submit1').click(async function() {
+      var boxes = $('input[name=choice]:checked');
+      if (boxes.length == 0) {
+        alert('Please select altleast one class.');
+      } else {
+        var choices = {model: '', accuracy: '80', classes: [], scale: 'norm'};
+        for (let i = 0; i<boxes.length; i++) {
+          choices.classes.push(boxes[i].id);
+        }
+        choices.scale = document.getElementById('scale_method').value;
+        choices.accuracy = document.getElementById('accrange').value;
+        choices.model = name;
+        if ($('#backendOpt')[0].checked == true) {
+          choices.backend = true;
+        }
+        console.log(choices);
+        await extractRoi(choices);
+      }
+    });
+
+    $('#submit2').click(async function() {
+      var boxes = $('input[name=choice]:checked');
+      if (boxes.length == 0) {
+        alert('Please select altleast one class.');
+      } else {
+        var choices = {model: '', accuracy: '80', classes: [], scale: 'norm', backend: false};
+        for (let i = 0; i<boxes.length; i++) {
+          choices.classes.push(boxes[i].id);
+        }
+        choices.scale = document.getElementById('scale_method').value;
+        choices.accuracy = document.getElementById('accrange').value;
+        choices.model = name;
+        if ($('#backendOpt')[0].checked == true) {
+          choices.backend = true;
+        }
+        console.log(choices);
+        await extractRoiSelect(choices);
+      }
+    });
+
+
+    callback;
+  })($UI.choiceModal.open());
+}
+
+/**
+ * Extract and download Region of Interest
+ *
+ * @param choices : set of choices to download against
+ * @param flag1 :   indicator for using whole slide or portion of slide selected
+ */
+
+async function extractRoi(choices, flag1) {
+  $UI.choiceModal.close();
+  $('#snackbar').html('<h3>Model Loading ...</h3>');
+  document.getElementById('snackbar').className = 'show';
+
+  const self = $UI.modelPanel;
+  var X = self.__spImgX;
+  var Y = self.__spImgY;
+  const totalSize = self.__spImgWidth;
+  self.showResults('');
+
+  self.showProgress('Predicting...');
+  const key = choices.model;
+  const step = parseInt(key.split('_')[1].split('-')[0]);
+  const prefixUrl = ImgloaderMode == 'iip'?`../../img/IIP/raw/?IIIF=${$D.params.data.location}`:$CAMIC.slideId;
+
+  const fullResCvs = self.__fullsrc;
+  var height = Y + totalSize;
+  var width = X + totalSize;
+
+  // Starting the transaction and opening the model store
+  const tx = db.transaction('models_store', 'readonly');
+  const store = tx.objectStore('models_store');
+  store.get(key).onsuccess = async function(e) {
+    // Keras sorts the labels by alphabetical order.
+    const classes = e.target.result.classes.sort();
+
+    const inputShape = e.target.result.input_shape;
+    // let inputChannels = parseInt(inputShape[3]);
+    const inputChannels = 3;
+    const imageSize = inputShape[1];
+    const scaleMethod = choices.scale;
+    model = await tf.loadLayersModel(IDB_URL + key);
+    console.log('Model loaded...');
+
+
+    document.getElementById('snackbar').className = '';
+
+    // Warmup the model before using real data.
+    tf.tidy(()=>{
+      model.predict(tf.zeros([1, step, step, inputChannels]));
+      console.log('Model ready');
+    });
+
+
+    const temp = document.querySelector('#dummy');
+    temp.height = step;
+    temp.width = step;
+
+    function addImageProcess(src) {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => resolve(img);
+        img.onerror = reject;
+        img.src = src;
+      });
+    }
+    const regions = [];
+    const regionData = [];
+
+    $('#snackbar').html('');
+    $('#snackbar').html('<h3>Predicting ...</h3><span id = "etap"></span>');
+    document.getElementById('snackbar').className = 'show';
+
+
+    if ( flag1 != 0 ) {
+      X = 0;
+      Y = 0;
+      height = $D.params.data.height;
+      width = $D.params.data.width;
+    }
+    const totalPatches = (width / step) * (height / step);
+    var c = 0;
+
+    for (let y = Y, dy = 0, i = 0; y <= (height-step); y += (step)) {
+      let dx = 0;
+      for (let x = X, j = 0; x <= ( width-step); x+=(step)) {
+        const src = prefixUrl+'\/'+ x +','+ y +','+ step +','+ step + '\/'+ step + ',/0/default.jpg';
+        const results = [];
+        const lImg = await addImageProcess(src);
+        fullResCvs.height = lImg.height;
+        fullResCvs.width = lImg.width;
+        fullResCvs.getContext('2d').drawImage(lImg, 0, 0);
+
+        const imgData = fullResCvs.getContext('2d').getImageData(0, 0, fullResCvs.width, fullResCvs.height);
+        tf.tidy(()=>{
+          const img = tf.browser.fromPixels(imgData).toFloat();
+          let img2;
+          if (inputChannels == 1) {
+            img2 = tf.image.resizeBilinear(img, [imageSize, imageSize]).mean(2);
+          } else {
+            img2 = tf.image.resizeBilinear(img, [imageSize, imageSize]);
+          }
+
+
+          let normalized;
+          if (scaleMethod == 'norm') {
+            // Pixel Normalization: scale pixel values to the range 0-1.
+
+            const scale = tf.scalar(255);
+            normalized = img2.div(scale);
+          } else if (scaleMethod == 'center') {
+            // Pixel Centering: scale pixel values to have a zero mean.
+
+            const mean = img2.mean();
+            normalized = img2.sub(mean);
+            // normalized.mean().print(true); // Uncomment to check mean value.
+            // let min = img2.min();
+            // let max = img2.max();
+            // let normalized = img2.sub(min).div(max.sub(min));
+          } else {
+            // Pixel Standardization: scale pixel values to have a zero mean and unit variance.
+
+            const mean = img2.mean();
+            const std = (img2.squaredDifference(mean).sum()).div(img2.flatten().shape).sqrt();
+            normalized = img2.sub(mean).div(std);
+          }
+          const batched = normalized.reshape([1, imageSize, imageSize, inputChannels]);
+          const values =model.predict(batched).dataSync();
+
+          results.push(values);
+
+
+          var max = -1.0;
+          var ind = -1; ;
+
+          for (var i = 0; i < classes.length; i++) {
+            if (choices.classes.includes(classes[i]) && ((values[i]*100) > choices.accuracy)) {
+              if ( values[i] > max) {
+                ind = i;
+                max = values[i];
+              }
+            }
+          }
+          if (ind != -1) {
+            regions.push({state: 'true', acc: values[ind], cls: classes[ind], X: x, Y: y});
+          }
+          j = j + 1;
+          c += 1;
+          dx += step;
+        });
+        $('#etap').html('');
+        $('#etap').append('<b>'+ ((c / totalPatches) * 100).toFixed(0) + ' % </b>');
+      }
+      i = i + 1;
+      dy += step;
+    }
+
+    var fixurl = '../../loader/roiExtract'; // route to extract the patches
+    var downurl = '../../loader/roiextract'; // route to download the extracted patches
+    mem = sizeof(regions);
+    model.dispose();
+    if (regions.length != 0) {
+      // Use backend for extracting the patches
+
+      if (choices.backend == true) {
+        var roiData = {predictions: '', slideid: '', filename: '', patchsize: ''};
+        roiData.predictions = regions;
+        roiData.slideid = $D.params.slideId;
+        roiData.filename = fileName;
+        roiData.patchsize = step;
+        jsondata = JSON.stringify(roiData);
+
+        // send predictions to slideloader for extraction
+        $.ajax({
+          type: 'POST',
+          url: fixurl,
+          data: jsondata,
+          dataType: 'json',
+          contentType: 'application/json',
+          success: function(e) { // get the extracted patches
+            document.getElementById('snackbar').className = '';
+            $('#snackbar').html('');
+            $('#snackbar').html('<h3> Downloading ...</h3>'+ '<span id = "etad"></span>');
+            document.getElementById('snackbar').className = 'show';
+            console.log('download started');
+            fetch(downurl + '/roi_Download'+ fileName +'.zip', {
+              credenrials: 'same-origin',
+              method: 'GET',
+              cache: 'no-store', // required to file is not cached
+            }).then((response)=>{
+              if (response.status ==404) {
+                document.getElementById('snackbar').className = '';
+                throw response;
+              } else {
+                return response.blob();
+              }
+            }).then((blob)=>{
+              var url = window.URL.createObjectURL(blob);
+              var a = document.createElement('a'); // dummy link to download the zip file
+              a.href = url;
+              a.download = 'roi_download.zip';
+              document.body.appendChild(a);
+              a.click();
+              a.remove();
+              window.URL.revokeObjectURL(blob);
+            }).catch((error)=>{
+              console.log(error);
+            });
+
+            document.getElementById('snackbar').className = '';
+          },
+
+
+          error: function(e) {
+            console.log(e);
+          },
+
+        });
+      } else {
+        document.getElementById('snackbar').className = '';
+        $('#snackbar').html('');
+        $('#snackbar').html('<h3> Downloading ...</h3>' + '<span id = "etad"></span>');
+        document.getElementById('snackbar').className = 'show';
+
+        for (let k = 0; k < regions.length; k++) {
+          const src = prefixUrl + '\/'+regions[k].X + ',' + regions[k].Y + ',' + step +
+        ',' + step + '\/'+step + ',/0/default.jpg';
+          const lImg = await addImageProcess(src);
+          fullResCvs.height = lImg.height;
+          fullResCvs.width = lImg.width;
+          fullResCvs.getContext('2d').drawImage(lImg, 0, 0);
+          regionData.push(fullResCvs.toDataURL().replace(/^data:image\/(png|jpg);base64,/, ''));
+        }
+
+        var zip = new JSZip(); // zip file to download the patches
+
+
+        for (var i = 0; i < regionData.length; i++) {
+          var img = zip.folder(regions[i].cls);
+          img.file( regions[i].cls + (regions[i].acc * 100).toFixed(3) + '.png', regionData[i], {base64: true});
+
+          $('#etad').html('');
+          $('#etad').append('<b>' + (((i / regionData.length)) * 100).toFixed(0) + ' % </b>');
+        }
+
+        await zip.generateAsync({type: 'blob'}).then(function(content) {
+          saveAs(content, 'download.zip');
+        });
+      }
+    }
+    console.log('finished');
+    document.getElementById('snackbar').className = '';
+    var counts = {};
+    $('#detailsdata').html('');
+    $('#detailsdata').append('<li><h3>Total number of patches extracted :'+ regionData.length +'</h3></li>' );
+
+    for (let k = 0; k < regions.length; k++) {
+      var i = regions[k].cls;
+      counts[i] = counts[i] ? counts[i] + 1 : 1;
+    }
+    for (let j = 0; j < choices.classes.length; j++) {
+      if (choices.classes[j] in counts) {
+        $('#detailsdata').append('<li>Number of patches extracted  of class <b>' +
+          sanitize(choices.classes[j]) + ' </b> : ' + counts[choices.classes[j]] +'</li>' );
+      } else {
+        $('#detailsdata').append('<li>Number of patches extracted  of class <b>' +
+         sanitize(choices.classes[j]) + '</b> : 0  </li>' );
+      }
+    }
+    if (flag1 == 0 ) {
+      drawRectangle({checked: false});
+      flag = -1;
+    }
+    $UI.modelPanel.close();
+    $UI.detailsModal.open();
+  };
+}
+
+/**
+ * Extract and download Region of Interest from selected region
+ *
+ * @param choices : set of choices to download against
+ */
+
+async function extractRoiSelect(choices) {
+  choices1 = choices;
+  flag = 0;
+  $UI.choiceModal.close();
+  drawRectangle({checked: true, state: 'roi', model: choices.model});
+}
+
+/**
+ * update the accuracy level in the choices Modal
+ *
+ * @param val : updated value
+ */
+
+function updateTextInput(val) {
+  document.getElementById('textInput').value = val;
+}
+
+
+window.addEventListener('keydown', function(event) {
+  if (event.code == 'Escape') {
+    $('#roi_panel').hide();
+    $('#choice_panel').hide();
+    $('#model_info').hide();
+  }
+}, true);

@@ -177,7 +177,16 @@ LayersViewer.prototype.__refreshUI = function() {
   // );
 
   /* create search bar area END */
-
+  const checkDiv = document.createElement('div');
+  checkDiv.classList.add('checklist');
+  checkDiv.innerHTML = `<label><input type='checkbox' value='Point' checked/>  Point</label>
+  <label><input type='checkbox' value='LineString' checked/>  Brush</label>
+  <label><input type='checkbox' value='Polygon' checked/>  Polygon</label>`;
+  this.elt.appendChild(checkDiv);
+  this.searchList = checkDiv;
+  [...this.searchList.querySelectorAll('input[type=checkbox]')].forEach((chk)=>chk.addEventListener('change', (e)=>{
+    this.__search(this.searchBar.text.value);
+  }));
   /* categorical view START*/
   // create categorical view div
   const cateViewDiv = document.createElement('div');
@@ -352,7 +361,7 @@ LayersViewer.createCategoricalItem = function(data, type) {
     ic.textContent = 'keyboard_arrow_down';
     label.style.fontWeight = 'bold';
     chk.dataset.type = 'root';
-    chk.style.display = 'none';
+    if (item.name != 'human' && item.name!='ruler') chk.style.display = 'none';
     li.appendChild(ic);
   } else {
     chk.id = id;
@@ -361,7 +370,7 @@ LayersViewer.createCategoricalItem = function(data, type) {
     li.title = item.name;
   }
 
-  if (item.typeName && item.typeName == 'human') {
+  if (item.typeName && (item.typeName == 'human' || item.typeName=='ruler')) {
     // remove and relocation
     const removeDiv = document.createElement('div');
     removeDiv.classList.add('material-icons');
@@ -373,6 +382,7 @@ LayersViewer.createCategoricalItem = function(data, type) {
     // bind event location_searching
     locationDiv.classList.add('material-icons');
     locationDiv.classList.add('md-24');
+    locationDiv.classList.add('location');
     locationDiv.textContent = 'room';
     locationDiv.title = 'Location';
 
@@ -524,7 +534,7 @@ LayersViewer.createControlBar = function() {
   // text input
   const searchInput = document.createElement('input');
   searchInput.type = 'text';
-  searchInput.placeholder = 'Search By Name/ID';
+  searchInput.placeholder = 'Search By Name/Creator';
 
   // search btn
   const searchBtn = document.createElement('div');
@@ -615,14 +625,16 @@ LayersViewer.prototype.__search = function(e) {
     data.elt.style.display = 'flex';
     // item.sortItem.style.display='flex';
   });
-  const pattern = e.target.value;
+  const pattern = this.searchBar.text.value;
   const items = this.setting.data;
   const regex = new RegExp(pattern, 'gi');
-
-  list.forEach((data) => {
-    if (!data.item.name.match(regex)) {
+  const checkedType = [...this.searchList.querySelectorAll('input:checked')].map((elt)=>elt.value);
+  list.filter((d)=>d.item.typeName=='human'||d.item.typeName=='ruler').forEach((data) => {
+    if (!data.item.name.match(regex) && !data.item.creator.match(regex)) {
       data.elt.style.display = 'none';
-      // item.sortItem.style.display = 'none';
+    }
+    if (data.item.typeName=='human'&&!checkedType.includes(data.item.shape)) {
+      data.elt.style.display = 'none';
     }
   });
 };
@@ -685,6 +697,7 @@ LayersViewer.prototype.__change = function(e) {
       break;
     case 'root':
       this.setting.categoricalData[id].items.forEach((d) => {
+        if (d.elt.style.display == 'none') return;
         d.isShow = checked;
         d.elt.lastChild.checked = checked;
         // item.sortItem.lastChild.checked = checked;
@@ -697,10 +710,10 @@ LayersViewer.prototype.__change = function(e) {
       data.isShow = checked;
       data.elt.lastChild.checked = checked;
 
-      const location = e.target.parentElement.querySelector('div');
-      if (checked) {
+      const location = e.target.parentElement.querySelector('div.location');
+      if (location&&checked) {
         location.style.display = 'block';
-      } else {
+      } else if (location&&!checked) {
         location.style.display = 'none';
       }
 

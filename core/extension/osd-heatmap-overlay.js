@@ -30,8 +30,8 @@
  *        the delay time that will update the heatmap when the view changed. default time is 300 milliseconds.
  * @param {Number} [opacity=0.8]
  *        the opacity of the heatmap. default is 0.8.
- * @param {String} [color='#1034A6']
- *        the patch's color. default is '#1034A6'.
+ * @param {String} [color='#ffa500']
+ *        the patch's color. default is '#ffa500'.
  * @param {Number} [zIndex=100]
  *        the z-index of heatmap in the entire viewport.
  */
@@ -88,7 +88,7 @@
         f => f.name === options.currentFieldName
       );
     }
-    this._color = options.color || '#1034a6'; // heatmap color
+    this._color = options.color || '#ffa500'; // heatmap color
     this._colors = options.colors || ['#EAF2F8', '#D4E6F1', '#A9CCE3', '#7FB3D5', '#5499C7']; // heatmap color
     this.intervals = _getIntervals(
       this._currentField,
@@ -165,7 +165,7 @@
     this.__legend_btn = document.createElement("div");
     this.__legend_btn.classList.add("material-icons");
     this.__legend_btn.classList.add("md-24");
-    this.__legend_btn.textContent = "keyboard_arrow_up";
+    this.__legend_btn.textContent = "unfold_less";
     this.__legend_btn.style.color = "#000";
     this.__legend_btn.style.float = "right";
     this.__legend_btn.style.cursor = "pointer";
@@ -176,12 +176,12 @@
     this.__legend_btn.addEventListener(
       "click",
       function(e) {
-        if (this.__legend_btn.textContent == "keyboard_arrow_up") {
-          this.__legend_btn.textContent = "keyboard_arrow_down";
+        if (this.__legend_btn.textContent == "unfold_less") {
+          this.__legend_btn.textContent = "unfold_more";
           this.__legend_info.style.width = 0;
           this.__legend_info.style.height = 0;
         } else {
-          this.__legend_btn.textContent = "keyboard_arrow_up";
+          this.__legend_btn.textContent = "unfold_less";
           this.__legend_info.style.width = "";
           this.__legend_info.style.height = "";
         }
@@ -227,7 +227,7 @@
           f => f.name === options.currentFieldName
         );
       }
-      this._color = options.color || this._color || '#1034a6';
+      this._color = options.color || this._color || '#ffa500';
       this._colors = options.colors || this._colors || ['#EAF2F8', '#D4E6F1', '#A9CCE3', '#7FB3D5', '#5499C7'];
       this.intervals = _getIntervals(
         this._currentField,
@@ -1148,15 +1148,32 @@
       this.value[1] = max;
     }
   };
-  function createLegend(container, intervals) {
+  function createLegend(container, intervals, isAscend = false) {
     container.innerHTML = "";
-    container.innerHTML = intervals
+    
+    container.innerHTML = `<div class="material-icons md-24">${isAscend?'arrow_drop_up':'arrow_drop_down'}</div></br>` + (isAscend?intervals
       .map(
         item =>
           `<i style="background:${
             item.color
           };width:18px;height:18px;float:left;margin-right: 8px;"></i>${item.range[0].toLocaleString()} - ${item.range[1].toLocaleString()}</br>`
       )
-      .join("");
+      .join(""):
+      intervals.slice().reverse()
+      .map(
+        item =>
+          `<i style="background:${
+            item.color
+          };width:18px;height:18px;float:left;margin-right: 8px;"></i>${item.range[0].toLocaleString()} - ${item.range[1].toLocaleString()}</br>`
+      )
+      .join(""));
+
+      container.querySelector('.material-icons').addEventListener('click',()=>{
+        if(container.querySelector('.material-icons').textContent == 'arrow_drop_up'){
+          createLegend(container, intervals, false)
+        } else {
+          createLegend(container, intervals, true)
+        }
+      })
   }
 })(OpenSeadragon);

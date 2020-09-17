@@ -446,7 +446,7 @@ function covertToViewportFeature(width, height, og) {
     let point = og.geometry.coordinates;
     feature.geometry.coordinates = [point[0] / width, point[1] / height];
     feature.bound.coordinates = [point[0] / width, point[1] / height];
-    extend(feature.properties.style, og.properties.style);
+    if(og.properties&&og.properties.style) extend(feature.properties.style, og.properties.style);
     return feature;
   }
   let points = og.geometry.coordinates[0];
@@ -458,19 +458,19 @@ function covertToViewportFeature(width, height, og) {
       return [point[0] / width, point[1] / height];
     });
   }
-  points = og.bound;
+  points = og.bound.coordinates[0];
   for (let i = 0; i < points.length; i++) {
-    feature.bound.coordinates[0] = og.bound.map((point) => {
+    feature.bound.coordinates[0] = og.bound.coordinates[0].map((point) => {
       // v_point = viewer.viewport.imageToViewportCoordinates(point[0],point[1]);
       return [point[0] / width, point[1] / height];
     });
   }
-  extend(feature.properties.style, og.properties.style);
+  if(og.properties&&og.properties.style) extend(feature.properties.style, og.properties.style);
   // add area
-  feature.properties.area = og.properties.area;
-  feature.properties.circumference = og.properties.circumference;
-  if (og.properties.nommp) feature.properties.nommp = og.properties.nommp;
-  if (og.properties.isIntersect) {
+  if (og.properties&&og.properties.area) feature.properties.area = og.properties.area;
+  if (og.properties&&og.properties.circumference) feature.properties.circumference = og.properties.circumference;
+  if (og.properties&&og.properties.nommp) feature.properties.nommp = og.properties.nommp;
+  if (og.properties&&og.properties.isIntersect) {
     feature.properties.isIntersect = og.properties.isIntersect;
   }
   return feature;
@@ -495,14 +495,28 @@ function covertToLayViewer(item) {
       name: item.execution_id,
       typeId: typeIds[typeName],
       typeName: item.computation,
+      creator: item.creator,
       data: null,
     };
   }
+  if (item.source == 'human') {
+    return {
+      id: id,
+      name: name,
+      typeId: typeIds[typeName],
+      typeName: typeName,
+      creator: item.creator,
+      shape: item.shape,
+      isGrid: item.isGrid? true: false,
+      data: null,
+    };
+  }  
   return {
     id: id,
     name: name,
     typeId: typeIds[typeName],
     typeName: typeName,
+    creator: item.creator,
     data: null,
   };
 }
@@ -809,6 +823,17 @@ function getUserFilter() {
   } else {
     return ['Public'];
   }
+}
+function getUserPermissions(userType) {
+  const url = '/data/User/wcido';
+  const query = {
+    'ut': userType,
+  };
+  return fetch(url + '?' + objToParamStr(query), {
+    method: 'GET',
+    credentials: 'include',
+    mode: 'cors',
+  });
 }
 
 function getUserId() {

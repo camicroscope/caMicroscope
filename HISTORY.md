@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Index
 * **Version 3**
+    * [3.8.x](#camicroscope-380)
+    * [3.7.x](#camicroscope-377)
     * [3.7.x](#camicroscope-375)
     * [3.6.x](#camicroscope-362)
     * [3.5.x](#camicroscope-3510)
@@ -21,9 +23,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * **Version 1**
     * [1.0.x](#camicroscope-10)
 
-### caMicroscope [Unreleased](https://github.com/camicroscope/camicroscope/compare/v3.7.7...camicroscope:develop)
+### caMicroscope [Unreleased](https://github.com/camicroscope/camicroscope/compare/v3.8.0...camicroscope:develop)
 ###### TBD
 * TBD
+
+### caMicroscope [3.8.0](https://github.com/camicroscope/camicroscope/compare/v3.7.7...camicroscope:v3.8.0)
+###### 2020-09-04
+* Incorperation of the Machine Learning Development Workbench (GSOC 2020 @akhil-rana) [#438](https://github.com/camicroscope/caMicroscope/pull/438)
+* Incorperation of the Automatic ROI Selector (GSOC 2020 @leoarc) [#439](https://github.com/camicroscope/caMicroscope/pull/439)
+* Updated preset label tool
+* Layer viewer usability optimizations
+* Add the "coordinate" measurement style
+* Treat the measurement tool as annotation
+* UI Tweaks for better high-res screen support
+* "softer" warning popups
 
 ### caMicroscope [3.7.7](https://github.com/camicroscope/camicroscope/compare/v3.7.6......camicroscope:v3.7.7)
 ###### 2020-07-30

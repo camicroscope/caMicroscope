@@ -238,14 +238,47 @@ class Store {
       mode: 'cors',
     }).then(this.errorHandler);
   }
+  deleteMarkByExecId(execId, slide) {
+    const suffix = 'Mark/delete';
+    const url = this.base + suffix;
+    const query = {
+      'provenance.analysis.execution_id': execId,
+      'provenance.image.slide': slide,
+    };
+    return fetch(url + '?' + objToParamStr(query), {
+      method: 'DELETE',
+      credentials: 'include',
+      mode: 'cors',
+    }).then(this.errorHandler);
+  }
   /**
    * find marktypes given slide and name
    * @param {string} [name] - the associated slide name
    * @param {string} [slide] - the marktype name, supporting regex match
    * @return {promise} - promise which resolves with data
    **/
+  // findMarkTypes(slide, name) {
+  //   const suffix = 'Mark/types';
+
+  //   const query = {};
+  //   //
+  //   if (!slide) {
+  //     console.error('Store.findMarkTypes needs slide ... ');
+  //     return null;
+  //   }
+  //   query['provenance.image.slide'] = slide;
+  //   if (name) {
+  //     query['provenance.analysis.execution_id'] = name;
+  //   }
+  //   const url = this.base + suffix;
+  //   return fetch(url + '?' + objToParamStr(query), {
+  //     credentials: 'include',
+  //     mode: 'cors',
+  //   }).then(this.errorHandler);
+  // }
+
   findMarkTypes(slide, name) {
-    const suffix = 'Mark/types';
+    const suffix = 'Mark/findMarkTypes';
 
     const query = {};
     //
@@ -253,9 +286,9 @@ class Store {
       console.error('Store.findMarkTypes needs slide ... ');
       return null;
     }
-    query['provenance.image.slide'] = slide;
+    query['slide'] = slide;
     if (name) {
-      query['provenance.analysis.execution_id'] = name;
+      query['name'] = name;
     }
     const url = this.base + suffix;
     return fetch(url + '?' + objToParamStr(query), {
@@ -777,6 +810,42 @@ class Store {
       body: JSON.stringify(update),
     });
   }
+
+  addPresetLabels(labels) {
+    const suffix = 'Presetlabels/add';
+    const url = this.base + suffix;
+    return fetch(url, {
+      method: 'POST',
+      credentials: 'include',
+      mode: 'cors',
+      body: JSON.stringify(labels),
+    }).then(this.errorHandler);
+  }
+
+  updatePresetLabels(id, labels) {
+    const suffix = 'Presetlabels/update';
+    const url = this.base + suffix;
+    const query = {id: id};
+
+    return fetch(url + '?' + objToParamStr(query), {
+      method: 'POST',
+      credentials: 'include',
+      mode: 'cors',
+      body: JSON.stringify(labels),
+    }).then(this.errorHandler);
+  }
+
+  removePresetLabels(id) {
+    const suffix = 'Presetlabels/remove';
+    const url = this.base + suffix;
+    const query = {id: id};
+    return fetch(url + '?' + objToParamStr(query), {
+      method: 'POST',
+      credentials: 'include',
+      mode: 'cors',
+    }).then(this.errorHandler);
+  }
+
 
   // Update slide review status
   updateSlideReview(id, newStatus) {

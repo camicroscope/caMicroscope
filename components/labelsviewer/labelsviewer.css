@@ -1,0 +1,185 @@
+.labels-editor, .labels-viewer {
+	display: -webkit-box;      /* OLD - iOS 6-, Safari 3.1-6 */
+	display: -moz-box;         /* OLD - Firefox 19- (buggy but mostly works) */
+	display: -ms-flexbox;      /* TWEENER - IE 10 */
+	display: -webkit-flex;     /* NEW - Chrome */
+	display:flex;
+	flex-direction: column;
+    background:#F5F5F5;
+    
+}
+.labels-container {
+   background:#F5F5F5; 
+}
+.labels-editor > .btn-group > .btn, .labels-viewer > .btn {
+    padding: .2rem 1rem;
+}
+.labels-editor, .labels-viewer {
+    padding: .5rem;
+}
+
+.labels-editor *, .labels-viewer * {
+	padding:0;
+	margin:0;
+	color:#365f9c;
+}
+.labels-editor input {
+    text-align: center;
+}
+
+/* .labels-editor label, .labels-editor input, .labels-editor select { */
+.labels-editor *:not(button) {
+    margin:5px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.labels-viewer div.searchbar {
+	
+	display: -webkit-box;      /* OLD - iOS 6-, Safari 3.1-6 */
+	display: -moz-box;         /* OLD - Firefox 19- (buggy but mostly works) */
+	display: -ms-flexbox;      /* TWEENER - IE 10 */
+	display: -webkit-flex;     /* NEW - Chrome */
+    display:flex;
+    margin: 10px 0;
+}
+
+/* input type='input'*/
+.labels-viewer div.searchbar > input[type=text] {
+	flex: 1;
+	border:#cbcbcb 1px solid;
+	padding:0 0 0 5px;
+	width:auto;
+
+}
+.labels-viewer div.searchbar > input[type=text]:focus {
+	outline:0;
+}
+
+.labels-viewer div.searchbar > div.material-icons {
+	border:#cbcbcb 1px solid;
+	background-color:#f6f6f6;
+	cursor:pointer;
+	font-size:18px;
+}
+
+.labels-viewer div.labels-grid {
+    box-sizing: border-box;
+    display: -webkit-flex;
+    -webkit-justify-content: space-around;
+    -webkit-flex-flow: row wrap;
+    display: flex;
+    justify-content: space-around;
+    flex-flow: row wrap;
+    margin-top: .5rem;
+}
+
+.labels-viewer div.checklist {
+    box-sizing: border-box;
+    display: -webkit-flex;
+    -webkit-justify-content: unset;
+    -webkit-flex-flow: row wrap;
+    display: flex;
+    justify-content: unset;
+    flex-flow: row wrap;
+    padding-bottom: .5rem;
+    border-bottom: #cdcdcd .2rem solid;
+}
+
+.labels-viewer div.checklist > label {
+    width: 7rem;
+    font-size: 1.2rem;
+    margin: .3rem;
+}
+
+.labels-viewer div.labels-grid > .labels {
+    width: 70px;
+    height: 75px;
+    background-color: #f2f2f2;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    margin: 5px 0;
+    overflow: hidden;
+    position: relative;
+    border: 1px solid rgba(0, 0, 0, .1);
+    border-radius: 2px;
+
+}
+
+.labels-viewer div.labels-grid > .empty {
+    color: #ff0000;
+    font-weight: bold;
+    width: 100%;
+    font-size: 14px;
+    text-align: center;
+    margin: 10px;
+}
+
+.labels-viewer div.labels-grid > .labels.selected {
+    background-color: #365f9c;
+    border: 1px solid rgba(54, 95, 156, .1);
+}
+
+
+.labels-viewer div.labels-grid > .labels.selected:hover {
+    box-shadow: 0 4px 8px 0 rgba(54, 95, 156, 0.4), 0 6px 20px 0 rgba(54, 95, 156, 0.38);
+}
+.labels-viewer div.labels-grid > .labels:hover {
+    box-shadow: 0 4px 8px 0 rgba(107, 72, 72, 0.4), 0 6px 20px 0 rgba(0, 0, 0, 0.38);
+}
+.labels-viewer div.labels-grid > .labels > .labels-title, .labels-viewer div.labels-grid > .labels > .labels-description {
+    margin-top:.3rem;
+}
+.labels-viewer div.labels-grid > .labels > .labels-title {
+    color: #365f9c;
+    font-size: 12px;
+    text-align: center;
+    font-weight: bold;
+
+}
+
+.labels-viewer div.labels-grid > .labels.selected > .labels-title {
+    color: #f2f2f2;
+}
+
+.labels-viewer div.labels-grid > .labels > .labels-description {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    color: #808080;
+    text-align: center;
+    font-size: 10px;
+}
+.labels-viewer input+div{
+	margin-left: -1px;
+}
+.labels-viewer div.labels-grid > .labels.selected > .material-icons {
+    color:#f2f2f2;
+}
+.labels-viewer div.labels-grid > .labels > .material-icons {
+    position: absolute;
+    opacity: 0.7;
+}
+.labels-viewer div.labels-grid > .labels > .material-icons:hover {
+    cursor: pointer;
+    opacity: 1;
+}
+.labels-viewer div.labels-grid > .labels > .material-icons.remove {
+    bottom: 0;
+    right: 0;
+    font-size: 18px;
+}
+.labels-viewer div.labels-grid > .labels > .material-icons.edit {
+    bottom: 0;
+    left: 0;
+    font-size: 18px;
+}
+
+
+
+
+
+
+
+
+
+

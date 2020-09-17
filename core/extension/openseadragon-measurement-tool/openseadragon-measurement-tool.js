@@ -61,12 +61,14 @@
         if(!this.setMPP(options.mpp)) return;
         // on/off
         this.isOn = false;
+        this.onAdd = options.onAdd
+        this.onDelete = options.onDelete
         // is measuring things
         this.isMeasuring = false;
         this.mode = 'straight'; // straight : coordinate
 
-        this._ruler = document.createElement('div');
-        this._ruler.classList.add('ruler');
+        // this._ruler = document.createElement('div');
+        // this._ruler.classList.add('ruler');
         // this._ruler: the ruler element
         // this._h_text: the horizontal scale text
         // this._v_text: the vertical scale text
@@ -78,6 +80,9 @@
           stop:this.stop.bind(this),
           measuring:this.measuring.bind(this)
         };
+
+        // drawing ruler
+        this._currentRuler = null;
 
         // start and stop points in image
         this._start = null;
@@ -140,10 +145,14 @@
          * 
          */
         __createRuler:function(mode){
+            // new ruler
+            const ruler = document.createElement('div');
+            ruler.classList.add('ruler');
+
             if(mode == 'coordinate'){
-                this.__createCoordinateRuler();
+                this.__createCoordinateRuler(ruler);
             }else if(mode == 'straight'){
-                this.__createStraightRuler();
+                this.__createStraightRuler(ruler);
             }
             // close btn
             const close = document.createElement('div');
@@ -152,21 +161,32 @@
             close.classList.add('close');
             close.textContent = 'close';
             close.style.display = 'none';
-            this._ruler.appendChild(close);
-            this._ruler.style.zIndex = 101;
+            
+            ruler.appendChild(close);
+            ruler.style.zIndex = 101;
             // close
-            this._ruler.addEventListener('mouseover', e=>{close.style.display = ''});
-            this._ruler.addEventListener('mouseout', e=>{close.style.display = 'none'});
+            ruler.addEventListener('mouseover', e=>{close.style.display = ''});
+            ruler.addEventListener('mouseout', e=>{close.style.display = 'none'});
             close.addEventListener('click',e=>{
-                this._viewer.removeOverlay(this._ruler);
-                close.style.display = 'none';
-                this.__clearPoints();
+                if(this.onDelete&&isFunction(this.onDelete)) this.onDelete(this._viewer.getOverlayById(ruler))
+                // this._viewer.removeOverlay(ruler);
+                // close.style.display = 'none';
+                // this.__clearPoints();
             },this);
+
+            return ruler;
+        },
+        removeRulerById(id){
+            const ruler = this._viewer.currentOverlays.find(d=>d.element.dataset.id == id)
+            if(ruler) {
+                this._viewer.removeOverlay(ruler.element);
+                this.__clearPoints()
+            }
         },
 
 
-        __createCoordinateRuler:function(){
-            empty(this._ruler);
+        __createCoordinateRuler:function(ruler){
+            // empty(this._ruler);
             // h
             const h_scale = document.createElement('div');
             h_scale.classList.add('h_scale');
@@ -176,7 +196,7 @@
             h_text.classList.add('h_text');
             h_scale.appendChild(h_text);
 
-            this._h_text = h_text;
+            // this._h_text = h_text;
 
             const v_scale = document.createElement('div');
             v_scale.classList.add('v_scale');
@@ -186,31 +206,29 @@
             v_text.classList.add('v_text');
 
             v_scale.appendChild(v_text);
-            this._v_text = v_text;
+            // this._v_text = v_text;
 
-            this._ruler.appendChild(h_scale);
-            this._ruler.appendChild(v_scale);
+            ruler.appendChild(h_scale);
+            ruler.appendChild(v_scale);
         },
 
-        __createStraightRuler:function(){
-            empty(this._ruler);
+        __createStraightRuler:function(ruler){
             // create text
             const box = document.createElement('div');
             box.classList.add('box');
             const text = document.createElement('div');
             text.classList.add('text');
             box.appendChild(text);
-            this._ruler.appendChild(box);
+            ruler.appendChild(box);
 
             // create circle
             const circle = document.createElement('div');
             circle.classList.add('circle');
-            this._ruler.appendChild(circle);
+            ruler.appendChild(circle);
 
             // create scale
             const scale = document.createElement('div');
             scale.classList.add('scale');
-            this._scale = scale;
             
             const l = document.createElement('div');
             l.classList.add('l');
@@ -220,22 +238,49 @@
             r.classList.add('r');
             scale.appendChild(r);
 
-            this._ruler.appendChild(scale);
+            ruler.appendChild(scale);
         },
         calcAngle:function(opposite, adjacent) {
             return Math.atan(opposite / adjacent);
         },
 
+        addRuler:function(option){
+            const {id, mode, rect, innerHTML, isShow} = option;
+            const ruler = document.createElement('div');
+            ruler.classList.add('ruler');
+            ruler.style.zIndex = 101;
+            ruler.innerHTML = innerHTML;
+            ruler.dataset.id = id;
+            ruler.dataset.mode = mode;
+            if(!isShow) ruler.style.display = 'none';
+            this._viewer.addOverlay({
+                element: ruler,
+                location: new OpenSeadragon.Rect(rect.x,rect.y,rect.width,rect.height),
+            });
+
+            // close
+            const close = ruler.querySelector('.material-icons.close');
+            ruler.addEventListener('mouseover', e=>{close.style.display = ''});
+            ruler.addEventListener('mouseout', e=>{close.style.display = 'none'});
+            close.addEventListener('click',e=>{
+                if(this.onDelete&&isFunction(this.onDelete)) this.onDelete(this._viewer.getOverlayById(ruler))
+                // this._viewer.removeOverlay(ruler);
+                // close.style.display = 'none';
+                // this.__clearPoints();
+            },this);
+            
+            return this._viewer.getOverlayById(ruler)
+        },
         __adjustStraightRuler:function(){
 
             const w = Math.abs(this._start_client.x-this._end_client.x);
             const h = Math.abs(this._start_client.y-this._end_client.y);
             const z = Math.sqrt(w*w+h*h);
 
-            const scale = this._ruler.querySelector('.scale');
-            const circle = this._ruler.querySelector('.circle');
+            const scale = this._currentRuler.querySelector('.scale');
+            const circle = this._currentRuler.querySelector('.circle');
             circle.style.display = '';
-            const text = this._ruler.querySelector('.text');
+            const text = this._currentRuler.querySelector('.text');
             text.textContent = this.__getScaleUnit(1,Math.sqrt(w*w*this.mpp.x*this.mpp.x + h*h*this.mpp.y*this.mpp.y));
 
             if(this._start.x == this._end.x && this._start.y != this._end.y){
@@ -245,8 +290,8 @@
                 scale.style.width = '2px';
                 scale.style.transform = '';
                 scale.style.left = 0;
-                circle.style.width = this._ruler.offsetHeight+'px';
-                circle.style.left = `-${this._ruler.offsetHeight/2}px`;
+                circle.style.width = this._currentRuler.offsetHeight+'px';
+                circle.style.left = `-${this._currentRuler.offsetHeight/2}px`;
 
             }else if(this._start.y == this._end.y && this._start.x != this._end.x){
                 // change the both sides of ticks
@@ -256,8 +301,8 @@
                 scale.style.width = '100%';
                 scale.style.transform = '';
                 scale.style.left = 0;
-                circle.style.height = this._ruler.offsetWidth+'px';
-                circle.style.top = `-${this._ruler.offsetWidth/2}px`;
+                circle.style.height = this._currentRuler.offsetWidth+'px';
+                circle.style.top = `-${this._currentRuler.offsetWidth/2}px`;
             }else if((this._start.x < this._end.x && this._start.y < this._end.y) ||
                     (this._start.x > this._end.x && this._start.y > this._end.y)){
                 // change the both sides of ticks
@@ -373,7 +418,7 @@
             this._start = imagePoint;
             this._start_client = new $.Point(e.clientX, e.clientY);
             
-            this.__createRuler(this.mode);
+            this._currentRuler = this.__createRuler(this.mode);
         },
 
         /**
@@ -393,7 +438,7 @@
                 this._end_client = new $.Point(e.clientX, e.clientY);
                 if(this._start && this._end){
                     // remove scale
-                    this._viewer.removeOverlay(this._ruler);
+                    this._viewer.removeOverlay(this._currentRuler);
 
                     // get the width and height in the image's piexl
                     const [x,y,width, height] = this.__forRect(this._start,this._end);
@@ -406,23 +451,24 @@
                     ));
 
                     this._viewer.addOverlay({
-                        element: this._ruler,
+                        element: this._currentRuler,
                         location: rect
                     });
 
                     if(this.mode == 'coordinate'){
                         // calculate 
                         // set values for scale
-                        this._h_text.textContent = widthInUnit;
-                        this._v_text.textContent = heightInUnit;
+                        this._currentRuler.dataset.mode = 'coordinate'
+                        this._currentRuler.querySelector('.h_text').textContent = widthInUnit;
+                        this._currentRuler.querySelector('.v_text').textContent = heightInUnit;
+                        // this._h_text.textContent = widthInUnit;
+                        // this._v_text.textContent = heightInUnit;
                     }else if(this.mode == 'straight'){
+                        this._currentRuler.dataset.mode = 'straight'
                         this.__adjustStraightRuler();
-                        this._ruler.querySelector('.text').textContent = this.__getScaleUnit(1,Math.sqrt(this.mpp.x*this.mpp.x*width*width+ this.mpp.y*this.mpp.y*height*height));
-
+                        this._currentRuler.querySelector('.text').textContent = this.__getScaleUnit(1,Math.sqrt(this.mpp.x*this.mpp.x*width*width+ this.mpp.y*this.mpp.y*height*height));
                     }
-
-
-                    this._ruler.style.display = 'flex';
+                    this._currentRuler.style.display = 'flex';
                 }
 
         },
@@ -432,10 +478,19 @@
         * stop to measure the image
         */
         stop:function(e){
+            if(this._end == null) {
+                this.isMeasuring = false;
+                this._currentRuler = null;
+                this.__clearPoints()
+            }
             if(this.isMeasuring===false) return;
             this.isMeasuring = false;
             this._viewer.canvas.style.cursor = 'pointer';
-            if(this.mode =='straight') this._ruler.querySelector('.circle').style.display='none';
+            if(this.mode =='straight') this._currentRuler.querySelector('.circle').style.display='none';
+
+            if(this.onAdd&&isFunction(this.onAdd)&&this._currentRuler) this.onAdd(this._viewer.getOverlayById(this._currentRuler))
+            this._currentRuler = null;
+            this.__clearPoints()
         },
 
         __getRect:function(start,end){

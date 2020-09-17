@@ -119,6 +119,27 @@ input:checked + .slider:after
 #mtable thead th:nth-child(4) {
     width: 25%;
 }
+#roitable {
+    table-layout: fixed;
+    width: 100%;
+    border-collapse: collapse;
+}
+#roitable thead th:nth-child(1) {
+    width: 20%;
+}
+
+#roitable thead th:nth-child(2) {
+    width: 20%;
+}
+
+#roitable thead th:nth-child(3) {
+    width: 20%;
+}
+
+#roitable thead th:nth-child(4) {
+    width: 20%;
+}
+
 
 th {
     padding: 5px;
@@ -167,6 +188,20 @@ ul.disabled {
     /* for "disabled" effect */
     opacity: 0.5;
     background: #CCC;
+}
+
+#roi_panel .modalbox-content{
+    width: 45%;
+
+}
+#choice_panel .modalbox-content{
+    width: 25%;
+
+   
+}
+#details_panel .modalbox-content{
+    width: 25%;
+
 }
 
 .form-style{
@@ -286,4 +321,188 @@ ul.disabled {
 }
 body{
     color: black;
+}
+
+
+.btn-sel {
+  
+  border: 10px ;
+  border-color: black;
+  padding: 10px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  border-radius: 100%
+}
+.btn-sel:hover {
+    background-color: #3e8e41;
+    transform: scale(1.3);
+    cursor: pointer;
+
+
+}
+
+body{
+    color: black;
+}
+.message {
+    color: #0c5460;
+    background-color: #d1ecf1;
+    border-color: #bee5eb;
+    padding: 10px 20px 10px 20px;
+}
+
+#choicedata {
+    font-size: 16px;
+}
+
+.check {
+  display: block;
+  position: relative;
+  padding-left: 35px;
+  cursor: pointer;
+  font-size: 14px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Hide the browser's default checkbox */
+.check input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+/* Create a custom checkbox */
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 25px;
+  width: 25px;
+  background-color: #eee;
+}
+
+/* On mouse-over, add a grey background color */
+.check:hover input ~ .checkmark {
+  background-color: #ccc;
+}
+
+/* When the checkbox is checked, add a blue background */
+.check input:checked ~ .checkmark {
+  background-color: #2196F3;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the checkmark when checked */
+.check input:checked ~ .checkmark:after {
+  display: block;
+}
+
+/* Style the checkmark/indicator */
+.check .checkmark:after {
+  left: 9px;
+  top: 5px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+
+
+.textInput{
+    width: 12%;
+    float: right;
+}
+
+#ext1{
+   
+  text-align: center;
+  font-size: 16px;
+
+
+}
+#ext2{
+   
+  text-align: center;
+  font-size: 16px;
+
+}
+.extract{
+  padding : 3% 6% 3% 6%;
+  
+  color: white;
+  background-color:#46a049 !important;
+  border-radius: 7%;
+  width: 90%;
+  float : right;
+}
+
+.extract:hover {
+    
+    transform: scale(1.2);
+    cursor: pointer;
+
+
+}
+#snackbar {
+  visibility: hidden; /* Hidden by default. Visible on click */
+  min-width: 250px; /* Set a default minimum width */
+  margin-left: -125px; /* Divide value of min-width by 2 */
+  background-color: #333; /* Black background color */
+  color: #fff; /* White text color */
+  text-align: center; /* Centered text */
+  border-radius: 2px; /* Rounded borders */
+  padding: 16px; /* Padding */
+  position: fixed; /* Sit on top of the screen */
+  z-index: 1; /* Add a z-index if needed */
+  left: 50%; /* Center the snackbar */
+  bottom: 30px; /* 30px from the bottom */
+  border-radius: 10px;
+}
+
+
+/* Show the snackbar when clicking on a button (class added with JavaScript) */
+#snackbar.show {
+  visibility: visible; /* Show the snackbar */
+  /* Add animation: Take 0.5 seconds to fade in and out the snackbar.
+  However, delay the fade out process for 2.5 seconds */
+  -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+  animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+
+/* Animations to fade the snackbar in and out */
+@-webkit-keyframes fadein {
+  from {bottom: 0; opacity: 0;}
+  to {bottom: 30px; opacity: 1;}
+}
+
+@keyframes fadein {
+  from {bottom: 0; opacity: 0;}
+  to {bottom: 30px; opacity: 1;}
+}
+
+@-webkit-keyframes fadeout {
+  from {bottom: 30px; opacity: 1;}
+  to {bottom: 0; opacity: 0;}
+}
+
+@keyframes fadeout {
+  from {bottom: 30px; opacity: 1;}
+  to {bottom: 0; opacity: 0;}
 }

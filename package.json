@@ -4,8 +4,8 @@
   "description": "",
   "scripts": {
     "test": "mocha test --recursive",
-    "lint": "eslint ./core/*.js  ./components/**/*.js  ./apps/*.js ./apps/heatmap/*.js  ./apps/labeling/*.js  ./apps/loader/*.js  ./apps/model/*.js  ./apps/segment/*.js  ./apps/model/**/*.js  ./apps/segment/**/*.js  ./apps/viewer/*.js --quiet",
-    "lint-fix": "eslint ./core/*.js  ./components/**/*.js ./apps/*.js  ./apps/heatmap/*.js  ./apps/labeling/*.js  ./apps/loader/*.js  ./apps/model/*.js  ./apps/segment/*.js  ./apps/model/**/*.js  ./apps/segment/**/*.js  ./apps/viewer/*.js --quiet --fix"
+    "lint": "eslint ./core/*.js  ./components/**/*.js  ./apps/*.js ./apps/convert/*.js ./apps/heatmap/*.js  ./apps/labeling/*.js  ./apps/loader/*.js  ./apps/model/*.js  ./apps/segment/*.js  ./apps/model/**/*.js  ./apps/segment/**/*.js  ./apps/viewer/*.js --quiet",
+    "lint-fix": "eslint ./core/*.js  ./components/**/*.js ./apps/*.js  ./apps/convert/*.js ./apps/heatmap/*.js  ./apps/labeling/*.js  ./apps/loader/*.js  ./apps/model/*.js  ./apps/segment/*.js  ./apps/model/**/*.js  ./apps/segment/**/*.js  ./apps/viewer/*.js --quiet --fix"
   },
   "author": "",
   "license": "NONE",
@@ -17,6 +17,6 @@
     "jsdom": "^16.2.1",
     "lodash": "^4.17.19",
     "mocha": "^7.1.0",
-    "node-fetch": "^2.2.0"
+    "node-fetch": "^2.6.1"
   }
 }
