@@ -36,7 +36,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Add the "coordinate" measurement style
 * Treat the measurement tool as annotation
 * UI Tweaks for better high-res screen support
-* "softer" warning popups
+* Softer warning popups
+* Image Coordinate support
+* Initial XML Annotation Converter
 
 ### caMicroscope [3.7.7](https://github.com/camicroscope/camicroscope/compare/v3.7.6......camicroscope:v3.7.7)
 ###### 2020-07-30
