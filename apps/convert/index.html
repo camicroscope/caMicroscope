@@ -1,12 +1,24 @@
+<!DOCTYPE html>
 <html>
-<script src="./xml2geo.js"></script>
-<label for="slide_id">Slide Id:</label>
-<input type="text" id="slide_id" name="slide_id"><br>
-<label for="annot_name">Annotation Name:</label>
-<input type="text" id="annot_name" name="annot_name"><br>
-<label for="annot_name">XML Contents:</label>
-<textarea id="xml_in" name="input" rows="10" cols="30"></textarea><br>
-<button id="convert_btn" onclick="xml2geo()" type="button">Convert</button>
-<br><br>
-<div id="output"></div>
+<head>
+  <script src="./xml2geo.js"></script>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <h1>Convert Annotations from XML</h1>
+  <h3>Info</h3>
+  <div class="form">
+  <label for="slide_id">Slide Id:</label>
+  <input type="text" id="slide_id" name="slide_id"><br>
+  <label for="annot_name">Annotation Name:</label>
+  <input type="text" id="annot_name" name="annot_name"><br>
+  <h3>File Contents</h3>
+  <label for="annot_name">XML Contents:</label>
+  <textarea id="xml_in" name="input" rows="10" cols="30"></textarea><br>
+  <button id="convert_btn" onclick="xml2geo()" type="button">Convert</button>
+  </div>
+  <br><br>
+  <h3>Output</h3>
+  <textarea id="output" rows="10" cols="30"></textarea>
+</body>
 </html>
