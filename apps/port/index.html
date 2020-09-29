@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <script src="../../core/Store.js"></script>
   <script src="./port.js"></script>
   <script src="./xml2geo.js"></script>
   <link rel="stylesheet" href="./style.css">
-  <title>caMicroscope - Import and Export</title>
+  <title>Import and Export [caMicroscope]</title>
 </head>
 <body>
   <h1>Import Annotations</h1>
@@ -16,14 +17,14 @@
   <input type="text" id="annot_name" name="annot_name"><br>
   <h3>File Contents</h3>
   <label for="annot_name">Input:</label>
-  <textarea id="xml_in" name="input" rows="10" cols="30"></textarea><br>
+  <textarea id="input" name="input" rows="10" cols="30"></textarea><br>
   <button id="convert_btn" onclick="xml2geo()" type="button">Convert from XML</button>
-  <button id="preare_btn" onclick="prepare_annot()" type="button">Prepare</button>
+  <button id="prepare_btn" onclick="prepareAnnot()" type="button">Prepare JSON</button>
   </div>
   <br><br>
   <h3>Output</h3>
   <textarea id="output" rows="10" cols="30"></textarea>
   <br>
-  <button id="post_btn" onclick="save_annot()" type="button">Post</button>
+  <button id="post_btn" onclick="saveAnnot()" type="button">Post</button>
 </body>
 </html>
