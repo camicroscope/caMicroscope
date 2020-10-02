@@ -62,12 +62,10 @@ function changeStatus(step, text, reset=true) {
       if (step == 'CHECK') {
         // During check, thumbnail needs to be fetched & added to the table
         // In this case, text[col[col.length - 1]] is the filename
+        console.log(text['location'], "H1")
         fetch(thumbUrl + text[col[col.length - 1]], {credentials: 'same-origin'}).then(
             (response) => response.json(), // if the response is a JSON object
         ).then((x)=>{
-          if (! tr.cells.length ){
-            tr.insertCell(-1);
-          }
           var tabCell = tr.cells[tr.cells.length-1];
           tabCell.innerHTML = '';
           const img = new Image();
