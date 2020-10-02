@@ -65,6 +65,9 @@ function changeStatus(step, text, reset=true) {
         fetch(thumbUrl + text[col[col.length - 1]], {credentials: 'same-origin'}).then(
             (response) => response.json(), // if the response is a JSON object
         ).then((x)=>{
+          if (! tr.cells.length ){
+            tr.insertCell(-1);
+          }
           var tabCell = tr.cells[tr.cells.length-1];
           tabCell.innerHTML = '';
           const img = new Image();
