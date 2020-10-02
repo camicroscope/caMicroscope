@@ -10,7 +10,7 @@ function changeStatus(step, text, reset=true) {
   // Reset the status bar
   console.log('Previous: ', document.getElementById('load_status').innerHTML);
   document.getElementById('load_status').innerHTML='';
-
+  console.log(text, "h2")
   // Display JSON as table:
   if (typeof text === 'object') { // If the text arg is a JSON
     var col = []; // List of column headers
@@ -51,7 +51,7 @@ function changeStatus(step, text, reset=true) {
       tr = table.insertRow(-1);
       for (var j = 0; j < col.length; j++) {
         var tabCell = tr.insertCell(-1);
-        if (text[col[j]].length>65&&step == 'CHECK') {
+        if (text[col[j]] && text[col[j]].length>65&&step == 'CHECK') {
           tabCell.innerHTML= `${text[col[j]].substr(0, 65)}<span class="collapse" id="more-${j}">
              ${text[col[j]].substr(65)}    </span>
     <span><a href="#more-${j}" data-toggle="collapse">... <i class="fa fa-caret-down"></i></span>`;
@@ -62,7 +62,7 @@ function changeStatus(step, text, reset=true) {
       if (step == 'CHECK') {
         // During check, thumbnail needs to be fetched & added to the table
         // In this case, text[col[col.length - 1]] is the filename
-        console.log(text['location'], "H1")
+        console.log(text, "H1")
         fetch(thumbUrl + text[col[col.length - 1]], {credentials: 'same-origin'}).then(
             (response) => response.json(), // if the response is a JSON object
         ).then((x)=>{
@@ -128,7 +128,7 @@ function handleDownload(id) {
           throw new Error('Slide not found');
         }
       }).then((location) => {
-        fileName= location.substring(location.lastIndexOf('/')+1, location.length);
+        fileName = location.substring(location.lastIndexOf('/')+1, location.length);
         console.log(fileName);
         return fileName;
       }).then((fileName) =>{
