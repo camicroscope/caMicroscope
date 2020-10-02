@@ -104,8 +104,35 @@ function OperationPanel(options) {
   // check form schema
   if (!this.setting.formSchemas || this.setting.formSchemas.length == 0) {
     // console.error(`${this.name}:No Form Schema ...`);
-    this.elt.textContent = `${this.name}:No Form Schema ...`;
-    return;
+    // this.elt.textContent = `${this.name}:No Form Schema ...`;
+    this.setting.formSchemas = [{
+      "_id":"0",
+      "type":"object",
+      "id":"annotation-form",
+      "name":"AnnotSchema",
+      "description":"",
+      "links":[
+         
+      ],
+      "additionalProperties":false,
+      "properties":{
+         "name":{
+            "id":"a0",
+            "title":"Identity Name",
+            "type":"string",
+            "required":true,
+            "description":"note name"
+         },
+         "notes":{
+            "id":"a1",
+            "title":"Notes: ",
+            "type":"string",
+            "format":"textarea",
+            "maxLength":128
+         }
+      }
+   }]
+  // return;
   }
   if (!this.setting.action || !this.setting.action.callback) {
     // console.error(`${this.name}:No Action ...`);

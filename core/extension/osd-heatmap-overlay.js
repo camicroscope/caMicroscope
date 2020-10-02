@@ -696,9 +696,6 @@
         finalData = this.__thresholdingData();
         // set patch color
         this._display_ctx_.fillStyle = this._color;
-        // get the patch's size on the screen
-        //const w = logicalToPhysicalDistanceX(this._size[0],this._viewer.imagingHelper);
-        //const h = logicalToPhysicalDistanceY(this._size[1],this._viewer.imagingHelper);
 
         // start to draw each patch
         this._display_ctx_.beginPath();
