@@ -10,7 +10,6 @@ function changeStatus(step, text, reset=true) {
   // Reset the status bar
   console.log('Previous: ', document.getElementById('load_status').innerHTML);
   document.getElementById('load_status').innerHTML='';
-  console.log(text, "h2")
   // Display JSON as table:
   if (typeof text === 'object') { // If the text arg is a JSON
     var col = []; // List of column headers
@@ -62,7 +61,6 @@ function changeStatus(step, text, reset=true) {
       if (step == 'CHECK') {
         // During check, thumbnail needs to be fetched & added to the table
         // In this case, text[col[col.length - 1]] is the filename
-        console.log(text, "H1")
         fetch(thumbUrl + text[col[col.length - 1]], {credentials: 'same-origin'}).then(
             (response) => response.json(), // if the response is a JSON object
         ).then((x)=>{

@@ -9,7 +9,7 @@ var template = {
       'source': 'human',
       'execution_id': 'TEMPLATE',
       'name': 'TEMPLATE',
-      'coordinate': 'image'
+      'coordinate': 'image',
     },
   },
   'properties': {
