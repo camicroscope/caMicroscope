@@ -23,9 +23,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * **Version 1**
     * [1.0.x](#camicroscope-10)
 
-### caMicroscope [Unreleased](https://github.com/camicroscope/camicroscope/compare/v3.8.0...camicroscope:develop)
+### caMicroscope [Unreleased](https://github.com/camicroscope/camicroscope/compare/v3.8.1...camicroscope:develop)
 ###### TBD
 * TBD
+
+### caMicroscope [3.8.1](https://github.com/camicroscope/camicroscope/compare/v3.8.0...camicroscope:v3.8.1)
+###### 2020-10-05
+* Added baked-in default annotation schema
+* Loader Bugfix
 
 ### caMicroscope [3.8.0](https://github.com/camicroscope/camicroscope/compare/v3.7.7...camicroscope:v3.8.0)
 ###### 2020-09-04

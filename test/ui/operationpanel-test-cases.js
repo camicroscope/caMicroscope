@@ -49,10 +49,10 @@ describe('Operation Panel Component',function(){
         //  multipleElt = dom.window.document.getElementById('multiple');
         // });
         // Options Error: No Schema Error
-        it('Options Error: No Schema Error', function () {
-            let error = dom.window.document.getElementById('error1');
-            assert.equal(error.textContent,'OperationPanel:No Form Schema ...');
-        });
+        // it('Options Error: No Schema Error', function () {
+        //     let error = dom.window.document.getElementById('error1');
+        //     assert.equal(error.textContent,'OperationPanel:No Form Schema ...');
+        // });
 
         // Options Error: No Action Error
         it('Options Error: No Action Error', function () {
