@@ -60,6 +60,15 @@ window.addEventListener('keydown', (e) => {
     eventFire(chk, 'click');
     return;
   }
+  // open side-by-side (ctrl + l)
+  if (e.ctrlKey && 'l' == key.toLocaleLowerCase()) {
+    e.preventDefault();
+    const li = $UI.toolbar.getSubTool('preset_label');
+    const chk = li.querySelector('input[type=checkbox]');
+    chk.checked = !chk.checked;
+    eventFire(chk, 'click');
+    return;
+  }
 
   // shortcuts for preset labels
   if ($D.labels &&
