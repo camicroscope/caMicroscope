@@ -99,7 +99,10 @@ function initialize() {
       FormTempaltesLoader();
 
       // loading the overlayers data
-      OverlayersLoader();
+      HumanlayersLoader();
+
+      // loading the overlayers data
+      ComputerlayersLoader();
 
       // loading the heatmap overlayers data
       HeatmaplayersLoader();
@@ -640,6 +643,7 @@ async function initUIcomponents() {
     if (
       $D.params.data &&
       _l &&
+      _c &&
       _h &&
       $D.overlayers &&
       $CAMIC &&

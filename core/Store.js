@@ -277,19 +277,20 @@ class Store {
   //   }).then(this.errorHandler);
   // }
 
-  findMarkTypes(slide, name) {
+
+
+  findMarkTypes(slide, type) { // type = 'human' or 'computer'
     const suffix = 'Mark/findMarkTypes';
 
     const query = {};
     //
-    if (!slide) {
-      console.error('Store.findMarkTypes needs slide ... ');
+    if (!slide || !type ) {
+      console.error('Store.findMarkTypes needs slide and type ... ');
       return null;
     }
     query['slide'] = slide;
-    if (name) {
-      query['name'] = name;
-    }
+    query['type'] = type;
+    
     const url = this.base + suffix;
     return fetch(url + '?' + objToParamStr(query), {
       credentials: 'include',
