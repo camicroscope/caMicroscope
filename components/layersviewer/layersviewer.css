@@ -50,7 +50,9 @@
 	border:#cbcbcb 1px solid;
 	background-color:#f6f6f6;
 	cursor:pointer;
-	font-size:18px;
+    font-size: 18px !important;
+    min-width: 18px !important;
+    min-height: 18px !important;
 }
 .layer_viewer div.material-icons:hover, .layer_viewer div input[type=radio]:hover+label {
 	background-color:#ededed;
