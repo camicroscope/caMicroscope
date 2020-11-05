@@ -21,7 +21,7 @@ window.addEventListener('keydown', (e) => {
   if (!$CAMIC || !$CAMIC.viewer) return;
   const key = e.key;
   // escape key to close all operations
-  if ('Escape' == key.toLocaleLowerCase()) {
+  if ('escape' == key.toLocaleLowerCase()) {
     magnifierOff();
     measurementOff();
     annotationOff();
