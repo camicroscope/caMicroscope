@@ -1,6 +1,9 @@
 .cazoomctrl .zoom {
   color: rgba(255,255,255,0.7);
-  background:#38609A; 
+  background:#38609A;
+  font-size: 25px !important;
+  min-width: 25px !important;
+  min-height: 25px !important;
 }
 
 .cazoomctrl .zoom:hover {
