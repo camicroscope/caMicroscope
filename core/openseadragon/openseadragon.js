@@ -3914,7 +3914,19 @@ $.EventSource.prototype = {
          * @param {Object} event.userData
          *      Arbitrary user-defined object.
          */
-        blurHandler: function () { }
+        blurHandler: function () { },
+
+        startTrackingScroll: function () {
+            const event = 'wheel';
+            var delegate = getMouseTrackerDelegate(this);
+            
+            $.addEvent(
+                this.element,
+                event,
+                delegate[ event ],
+                false
+            );
+        }
     };
 
     /**
@@ -4389,7 +4401,9 @@ $.EventSource.prototype = {
             delegate.tracking = true;
         }
     }
-
+    function getMouseTrackerDelegate(tracker) {
+        return delegate = THIS[ tracker.hash ];
+    }
     /**
      * Stops tracking pointer events on the tracked element.
      * @private

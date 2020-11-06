@@ -349,6 +349,7 @@
       //this._viewer.controls.bottomright.style.display = 'none';
       this.updateView();
       this._viewer.setMouseNavEnabled(false);
+      this._viewer.innerTracker.startTrackingScroll();
       this._div.style.cursor = "pointer";
       this._div.style.display = "block";
 
