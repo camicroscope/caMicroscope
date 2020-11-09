@@ -52,7 +52,6 @@ let _l = false;
 function HumanlayersLoader() {
   function loadingOverlayers() {
     $CAMIC.store.findMarkTypes($D.params.slideId, 'human').then(function(layers) {
-      typeIds = {};
       if (!$D.overlayers) $D.overlayers = [];
       // convert part not nesscary
       $D.overlayers.push(...layers.map(covertToHumanLayer));
@@ -73,12 +72,11 @@ function HumanlayersLoader() {
     }
   }, 500);
 }
-
+let typeIds = {};
 let _c = false;
 function ComputerlayersLoader() {
   function loadingOverlayers() {
     $CAMIC.store.findMarkTypes($D.params.slideId, 'computer').then(function(layers) {
-      typeIds = {};
       if (!$D.overlayers) $D.overlayers = [];
       // convert part not nesscary
       $D.overlayers.push(...layers.map(covertToCumputerLayer));
