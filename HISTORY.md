@@ -23,9 +23,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * **Version 1**
     * [1.0.x](#camicroscope-10)
 
-### caMicroscope [Unreleased](https://github.com/camicroscope/camicroscope/compare/v3.8.1...camicroscope:develop)
+### caMicroscope [Unreleased](https://github.com/camicroscope/camicroscope/compare/v3.8.2...camicroscope:develop)
 ###### TBD
 * TBD
+
+### caMicroscope [3.8.2](https://github.com/camicroscope/camicroscope/compare/v3.8.1...camicroscope:v3.8.2)
+###### 2020-11-10
+* Add ctrl+l shortcut for label preset tool
+* Annotation and Segmentation Rendering Optimizations
+* Layer manager bugfixes
 
 ### caMicroscope [3.8.1](https://github.com/camicroscope/camicroscope/compare/v3.8.0...camicroscope:v3.8.1)
 ###### 2020-10-05
