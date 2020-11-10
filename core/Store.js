@@ -278,7 +278,6 @@ class Store {
   // }
 
 
-
   findMarkTypes(slide, type) { // type = 'human' or 'computer'
     const suffix = 'Mark/findMarkTypes';
 
@@ -290,7 +289,7 @@ class Store {
     }
     query['slide'] = slide;
     query['type'] = type;
-    
+
     const url = this.base + suffix;
     return fetch(url + '?' + objToParamStr(query), {
       credentials: 'include',

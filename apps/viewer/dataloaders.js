@@ -61,7 +61,7 @@ function HumanlayersLoader() {
       _l = true;
       $UI.message.addError('Loading Human Layers is Error');
       console.error(error);
-    })
+    });
   }
 
   var checkCoreIsReady = setInterval(function() {
