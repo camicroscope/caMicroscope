@@ -562,7 +562,7 @@ LabelsViewer.prototype.__keyValid = function() {
     return true;
   };
   if (regex.test(this.keyZone.text.value)) {
-    const keys = ['a', 'm', 'r', 's', ...this.setting.data.map((d)=>d.key)];
+    const keys = ['a', 'm', 'r', 's', 'l', ...this.setting.data.map((d)=>d.key)];
     if (this.__editLabelElt) {
       const _i = keys.findIndex((d)=>d==this.__editLabelElt.dataset.key);
       if (_i!=-1) keys.splice(_i, 1);

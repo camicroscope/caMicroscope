@@ -21,7 +21,7 @@ window.addEventListener('keydown', (e) => {
   if (!$CAMIC || !$CAMIC.viewer) return;
   const key = e.key;
   // escape key to close all operations
-  if ('Escape' == key.toLocaleLowerCase()) {
+  if ('escape' == key.toLocaleLowerCase()) {
     magnifierOff();
     measurementOff();
     annotationOff();
@@ -60,6 +60,15 @@ window.addEventListener('keydown', (e) => {
     eventFire(chk, 'click');
     return;
   }
+  // open side-by-side (ctrl + l)
+  if (e.ctrlKey && 'l' == key.toLocaleLowerCase()) {
+    e.preventDefault();
+    const li = $UI.toolbar.getSubTool('preset_label');
+    const chk = li.querySelector('input[type=checkbox]');
+    chk.checked = !chk.checked;
+    eventFire(chk, 'click');
+    return;
+  }
 
   // shortcuts for preset labels
   if ($D.labels &&
@@ -90,7 +99,10 @@ function initialize() {
       FormTempaltesLoader();
 
       // loading the overlayers data
-      OverlayersLoader();
+      HumanlayersLoader();
+
+      // loading the overlayers data
+      ComputerlayersLoader();
 
       // loading the heatmap overlayers data
       HeatmaplayersLoader();
@@ -631,6 +643,7 @@ async function initUIcomponents() {
     if (
       $D.params.data &&
       _l &&
+      _c &&
       _h &&
       $D.overlayers &&
       $CAMIC &&

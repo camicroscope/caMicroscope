@@ -373,15 +373,15 @@
                         const style = polygon.properties.style;
 
                         // default coordinate is 'normalized'
-                        let convertX = this._viewer.imagingHelper.logicalToPhysicalX;
-                        let convertY = this._viewer.imagingHelper.logicalToPhysicalY;
+                        let convertX = this._viewer.imagingHelper.logicalToPhysicalX.bind(this._viewer.imagingHelper);
+                        let convertY = this._viewer.imagingHelper.logicalToPhysicalY.bind(this._viewer.imagingHelper);
                         // if coordinate is 'image'
                         if(segment.provenance &&
                             segment.provenance.analysis &&
                             segment.provenance.analysis.coordinate &&
                             segment.provenance.analysis.coordinate == 'image'){
-                                convertX = this._viewer.imagingHelper.dataToLogicalX;
-                                convertY = this._viewer.imagingHelper.dataToPhysicalY;                              
+                                convertX = this._viewer.imagingHelper.dataToPhysicalX.bind(this._viewer.imagingHelper);
+                                convertY = this._viewer.imagingHelper.dataToPhysicalY.bind(this._viewer.imagingHelper);                          
                         }
                         this._display_ctx_.lineJoin = style.lineJoin;
                         this._display_ctx_.lineCap = style.lineCap;

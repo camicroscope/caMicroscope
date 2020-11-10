@@ -700,7 +700,11 @@ LayersViewer.prototype.__change = function(e) {
         if (d.elt.style.display == 'none') return;
         d.isShow = checked;
         d.elt.lastChild.checked = checked;
-        // item.sortItem.lastChild.checked = checked;
+        if (checked) {
+          d.elt.firstChild.style.display = '';
+        } else {
+          d.elt.firstChild.style.display = 'none';
+        }
       });
       this.setting.callback.call(null, this.setting.categoricalData[id].items);
       break;
