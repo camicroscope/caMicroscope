@@ -42,18 +42,7 @@ describe('Operation Panel Component',function(){
 
     //
     describe('constructor:options', function () {
-        // let singleElt;
-        // let multipleElt;
-        // before(function(){
-        //  singleElt = dom.window.document.getElementById('single');
-        //  multipleElt = dom.window.document.getElementById('multiple');
-        // });
-        // Options Error: No Schema Error
-        // it('Options Error: No Schema Error', function () {
-        //     let error = dom.window.document.getElementById('error1');
-        //     assert.equal(error.textContent,'OperationPanel:No Form Schema ...');
-        // });
-
+                  
         // Options Error: No Action Error
         it('Options Error: No Action Error', function () {
             let error = dom.window.document.getElementById('error2');
@@ -65,10 +54,8 @@ describe('Operation Panel Component',function(){
             const btn1 = singleElt.querySelector('.action');
             const btn2 = multipleElt.querySelector('.action');
             assert.equal(btn1.textContent,'Save');
-            //assert.equal(btn1.disabled,true);
             assert.equal(btn2.textContent,'Submit');
-            //assert.equal(btn2.disabled,true);
-        });
+           });
 
         // check callback
         it('Options:check callback',function(){
