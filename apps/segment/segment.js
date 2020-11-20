@@ -574,8 +574,8 @@ function checkSize(imgColl, imagingHelper) {
 
   // get position on viewer
 
-  const topLeft = imgColl.features[0].bound[0];
-  const bottomRight = imgColl.features[0].bound[2];
+  const topLeft = imgColl.features[0].bound.coordinates[0][0];
+  const bottomRight = imgColl.features[0].bound.coordinates[0][2];
   const min = imagingHelper._viewer.viewport.imageToViewportCoordinates(topLeft[0], topLeft[1]);
   const max = imagingHelper._viewer.viewport.imageToViewportCoordinates(bottomRight[0], bottomRight[1]);
   const rect = new OpenSeadragon.Rect(min.x, min.y, max.x-min.x, max.y-min.y);
@@ -1377,7 +1377,7 @@ function dataURItoBlob(dataURI) {
  * Convert image coordinates
  */
 function convertCoordinates(imagingHelper, bound) {
-  const newArray = bound.map(function(arr) {
+  const newArray = bound.coordinates[0].map(function(arr) {
     return arr.slice(); // copy
   });
 
