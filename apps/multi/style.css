@@ -1,3 +1,6 @@
+body{
+  margin: 25px;
+}
 .flex-grid {
   display: flex;
 }
