@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### caMicroscope [Unreleased](https://github.com/camicroscope/camicroscope/compare/v3.8.2...camicroscope:develop)
 ###### TBD
 * Bugfix: Model Failed to read coordinates [#454](https://github.com/camicroscope/caMicroscope/pull/454)[#455](https://github.com/camicroscope/caMicroscope/pull/455)
+* multislide explorer (#456) [#456](https://github.com/camicroscope/caMicroscope/pull/456)
 
 ### caMicroscope [3.8.2](https://github.com/camicroscope/camicroscope/compare/v3.8.1...camicroscope:v3.8.2)
 ###### 2020-11-10
