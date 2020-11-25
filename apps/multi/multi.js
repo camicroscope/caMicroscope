@@ -18,11 +18,12 @@ function addTiles(n) {
     d.width = '200px';
     d.height = '200px';
     // append
+    workspace.appendChild(d);
     viewers[n] = OpenSeadragon({
       id: d.id,
       prefixUrl: prefixUrl
     });
-    workspace.appendChild(d);
+
   }
   // TODO create "open this slide button"
   // TODO style
