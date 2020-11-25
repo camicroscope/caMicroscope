@@ -12,7 +12,6 @@ let viewers = [];
 
 // run the pathdb mods as needed
 if (mode == "pathdb"){
-  const StatesHelper = {}
   PathDbMods();
 }
 
