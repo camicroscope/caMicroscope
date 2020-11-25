@@ -1,9 +1,9 @@
 // initalize dependencies and params
 let store = new Store('../../data/');
-const MAX_TILES = urlParams.get('mt') || 16
 const urlParams = new URLSearchParams(window.location.search);
 const page = urlParams.get('p');
 const mode = 'normal';
+const MAX_TILES = urlParams.get('mt') || 16
 const prefixUrl = 'https://cdn.jsdelivr.net/npm/openseadragon@2.3/build/openseadragon/images/';
 let query = JSON.parse(urlParams.get('q') || '{}');
 
