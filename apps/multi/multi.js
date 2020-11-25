@@ -2,6 +2,7 @@
 let store = new Store('../../data/');
 const urlParams = new URLSearchParams(window.location.search);
 const page = urlParams.get('p');
+// TODO pathdb mode
 const mode = 'normal';
 const MAX_TILES = urlParams.get('mt') || 16;
 const prefixUrl = 'https://cdn.jsdelivr.net/npm/openseadragon@2.3/build/openseadragon/images/';
@@ -47,17 +48,18 @@ function changeTile(url, i, name, dest) {
 
 function onInit() {
   addTiles(MAX_TILES);
-  // TODO pathdb variant
+  let promises = []
   if(list.length){
-    let promises = []
     for (j of list){
       promises.push(store.getSlide(j))
     }
-    Promise.all(promises).then(xx=>{
-      console.log(xx)
-    })
   }
-  store.findSlide(null, null, null, null, query).then((x)=>{
+  else{
+    promises.push(store.findSlide(null, null, null, null, query))
+  }
+  Promise.all(promises).then((xx)=>{
+    let x = xx.flat()
+    console.log(x)
     for (let n = 0; n < Math.min(x.length, MAX_TILES); n++) {
       let item = x[n];
       // TODO respect max size
