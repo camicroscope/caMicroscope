@@ -68,7 +68,7 @@ function onInit() {
       let p = document.createElement('a');
       let prevParam = new URLSearchParams(window.location.search);
       p.id = 'prevPage';
-      prevParam.set(p, page-1);
+      prevParam.set("p", page-1);
       p.innerText = 'Prev';
       p.href = './multi.html?' + prevParam.toString();
       document.getElementById('pages').append(p);
@@ -78,7 +78,7 @@ function onInit() {
       let p = document.createElement('a');
       let nextParam = new URLSearchParams(window.location.search);
       p.id = 'nextPage';
-      nextParam.set(p, page+1);
+      nextParam.set("p", page+1);
       p.innerText = 'Next';
       p.href = './multi.html?' + nextParam.toString();
       document.getElementById('pages').append(p);
