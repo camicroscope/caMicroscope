@@ -31,16 +31,21 @@ function changeTile(url, n) {
   viewers[n].open(url);
 }
 
-// TODO respect max size
-for (let n = 0; n<list.length; n++) {
-  let item = list[n];
-  // TODO pathdb variant
-  store.findSlide(item).then((x)=>{
-    addTile(x.location, n);
-  });
+function onInit(){
+  // TODO respect max size
+  for (let n = 0; n<list.length; n++) {
+    let item = list[n];
+    // TODO pathdb variant
+    store.findSlide(item).then((x)=>{
+      addTile(x.location, n);
+    });
+  }
 }
+
 
 // TODO pagination
 
 
 // ?? how many can we reasonably open at once?
+
+window.onload = onInit
