@@ -4,7 +4,7 @@ const urlParams = new URLSearchParams(window.location.search);
 const page = urlParams.get('p');
 const mode = 'normal';
 const prefixUrl = 'https://cdn.jsdelivr.net/npm/openseadragon@2.3/build/openseadragon/images/';
-let list = JSON.parse(urlParams.get('l') || '[]');
+let query = JSON.parse(urlParams.get('q') || '{}');
 
 let viewers = [];
 
@@ -32,16 +32,15 @@ function changeTile(url, n) {
 }
 
 function onInit(){
-  // TODO respect max size
-  for (let n = 0; n<list.length; n++) {
-    let item = list[n];
-    // TODO pathdb variant
-    store.findSlide(item).then((x)=>{
-      addTile(x.location, n);
-    });
-  }
+  // TODO pathdb variant
+  store.findSlide(null, null, null, null, query).then((x)=>{
+    for (let n = 0; n<x.length; n++) {
+      let item = list[n];
+      // TODO respect max size
+      addTile(item.location, n);
+    }
+  });
 }
-
 
 // TODO pagination
 
