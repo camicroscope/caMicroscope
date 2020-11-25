@@ -16,9 +16,8 @@ function addTiles(n) {
     let d = document.createElement('div');
     d.id = 'osd' + i;
     d.className = 'osd col';
-    // hide to begin
-    d.style.display = "none";
-    d.style = "min-width: 400px; width:22%; height:400px;"
+    // tile size, and hidden to start
+    d.style = "min-width: 400px; width:22%; height:400px; display:none;"
     // add link to slide
     let b = document.createElement("a")
     b.id = "link" + i;
