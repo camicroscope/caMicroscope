@@ -16,6 +16,8 @@ function addTiles(n) {
     let d = document.createElement('div');
     d.id = 'osd' + i;
     d.className = 'osd col';
+    // hide to begin
+    d.style.display = "none";
     d.style = "min-width: 400px; width:22%; height:400px;"
     // add link to slide
     let b = document.createElement("a")
@@ -34,6 +36,9 @@ function addTiles(n) {
 }
 
 function changeTile(url, i, name, dest) {
+  let d = document.getElementById("osd" + i)
+  // unhide if something is in it
+  d.style.display = "inherit";
   viewers[i].open(url);
   let b = document.getElementById("link" + i)
   b.innerText = name
@@ -56,7 +61,7 @@ function onInit() {
 }
 
 // TODO pagination
-
+// (be sure to hide all in between each page turn to avoid ghostly tiles)
 
 // ?? how many can we reasonably open at once?
 
