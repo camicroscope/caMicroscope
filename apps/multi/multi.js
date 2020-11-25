@@ -41,7 +41,8 @@ function onInit() {
       let item = x[n];
       // TODO respect max size
       // TODO fix url!
-      changeTile(item.location, n);
+      let loc = "../../img/IIP/raw/?DeepZoom=" + item.location + ".dzi"
+      changeTile(loc, n);
     }
   });
 }
