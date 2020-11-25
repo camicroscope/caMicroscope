@@ -555,12 +555,12 @@ class Store {
    * @return {promise} - promise which resolves with data
    **/
   findSlide(slide, specimen, study, location, q) {
-    let query
-    if (q){
-      query = q
+    let query;
+    const suffix = 'Slide/find';
+    const url = this.base + suffix;
+    if (q) {
+      query = q;
     } else {
-      const suffix = 'Slide/find';
-      const url = this.base + suffix;
       if (slide) {
         query.slide = slide;
       }

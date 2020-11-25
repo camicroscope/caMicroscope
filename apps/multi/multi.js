@@ -22,7 +22,7 @@ function addTile(url, n) {
     prefixUrl: prefixUrl,
     tileSources: url,
   });
-  workspace.appendChild(d)
+  workspace.appendChild(d);
   // TODO create "open this slide button"
   // TODO style
 }
@@ -31,7 +31,7 @@ function changeTile(url, n) {
   viewers[n].open(url);
 }
 
-function onInit(){
+function onInit() {
   // TODO pathdb variant
   store.findSlide(null, null, null, null, query).then((x)=>{
     for (let n = 0; n<x.length; n++) {
@@ -47,4 +47,4 @@ function onInit(){
 
 // ?? how many can we reasonably open at once?
 
-window.onload = onInit
+window.onload = onInit;
