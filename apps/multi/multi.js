@@ -18,7 +18,7 @@ function addTiles(n) {
     d.className = 'osd col';
     d.style = "min-width: 400px; width:22%; height:400px;"
     // add link to slide
-    let b = document.createElement("button")
+    let b = document.createElement("a")
     b.id = "link" + i;
     d.appendChild(b)
     // append
@@ -36,8 +36,8 @@ function addTiles(n) {
 function changeTile(url, i, name, dest) {
   viewers[i].open(url);
   let b = document.getElementById("link" + i)
-  b.innerHTML = name
-  b.onclick ="location.href=" + dest
+  b.innerText = name
+  b.href=dest
 }
 
 function onInit() {
