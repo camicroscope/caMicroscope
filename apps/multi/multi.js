@@ -10,19 +10,20 @@ let viewers = [];
 
 const workspace = document.getElementById('workspace');
 
-function addTile(url, n) {
-  let d = document.createElement('div');
-  d.id = 'osd' + n;
-  d.className = 'osd';
-  d.width = '200px';
-  d.height = '200px';
-  // append
-  viewers[n] = OpenSeadragon({
-    id: 'first',
-    prefixUrl: prefixUrl,
-    tileSources: url,
-  });
-  workspace.appendChild(d);
+function addTiles(n) {
+  for (let i=0; i<n ; i++){
+    let d = document.createElement('div');
+    d.id = 'osd' + n;
+    d.className = 'osd';
+    d.width = '200px';
+    d.height = '200px';
+    // append
+    viewers[n] = OpenSeadragon({
+      id: d.id,
+      prefixUrl: prefixUrl
+    });
+    workspace.appendChild(d);
+  }
   // TODO create "open this slide button"
   // TODO style
 }
@@ -32,12 +33,14 @@ function changeTile(url, n) {
 }
 
 function onInit() {
+  addTiles(5)
   // TODO pathdb variant
   store.findSlide(null, null, null, null, query).then((x)=>{
-    for (let n = 0; n<x.length; n++) {
+    for (let n = 0; n < Math.min(x.length, 5); n++) {
       let item = x[n];
       // TODO respect max size
-      addTile(item.location, n);
+      // TODO fix url!
+      changeTile(item.location, n);
     }
   });
 }
