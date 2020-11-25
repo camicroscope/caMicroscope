@@ -51,7 +51,7 @@ function onInit() {
   if(list.length){
     let promises = []
     for (j of list){
-      promises.append(store.getSlide(j))
+      promises.push(store.getSlide(j))
     }
     Promise.all(promises).then(xx=>{
       console.log(xx)
