@@ -11,7 +11,7 @@ let list = JSON.parse(urlParams.get('l') || '[]');
 let viewers = [];
 
 // run the pathdb mods as needed
-if (mode == "pathdb"){
+if (mode == 'pathdb') {
   PathDbMods();
 }
 
@@ -52,26 +52,46 @@ function changeTile(url, i, name, dest) {
 
 function onInit() {
   addTiles(MAX_TILES);
-  let promises = []
-  if(list.length){
-    for (j of list){
-      promises.push(store.getSlide(j))
+  let promises = [];
+  if (list.length) {
+    for (j of list) {
+      promises.push(store.getSlide(j));
     }
-  }
-  else{
-    promises.push(store.findSlide(null, null, null, null, query))
+  } else {
+    promises.push(store.findSlide(null, null, null, null, query));
   }
   Promise.all(promises).then((xx)=>{
-    let x = xx.flat()
-    console.log(x)
-    let start = MAX_TILES * page
-    let stop = Math.min(x.length, start+MAX_TILES)
+    let x = xx.flat();
+    // pagination
+    // previous?
+    if (page > 0) {
+      let p = document.createElement('a');
+      let prevParam = new URLSearchParams(window.location.search);
+      p.id = 'prevPage';
+      prevParam.set(p, page-1);
+      p.innerText = 'Prev';
+      p.href = './multi.html' + prevParam.toString();
+      document.getElementById('pages').append(p);
+    }
+    // next?
+    if (page < Math.ceil(x.length/MAX_TILES)) {
+      let p = document.createElement('a');
+      let nextParam = new URLSearchParams(window.location.search);
+      p.id = 'nextPage';
+      nextParam.set(p, page+1);
+      p.innerText = 'Next';
+      p.href = './multi.html' + nextParam.toString();
+      document.getElementById('pages').append(p);
+    }
+    // tiles
+    let start = MAX_TILES * page;
+    let stop = Math.min(x.length, start+MAX_TILES);
     for (let n = start; n < stop; n++) {
       let item = x[n];
       let loc = '../../img/IIP/raw/?DeepZoom=' + item.location + '.dzi';
       let dest = '../viewer/viewer.html?slideId=' + item._id['$oid'];
-      if (mode == "pathdb"){
-        dest += "&mode=pathdb"
+      if (mode == 'pathdb') {
+        dest += '&mode=pathdb';
       }
       changeTile(loc, n, item.name, dest);
     }
@@ -79,6 +99,5 @@ function onInit() {
 }
 
 // TODO pagination
-// (be sure to hide all in between each page turn to avoid ghostly tiles)
 
 window.onload = onInit;
