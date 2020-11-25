@@ -1,5 +1,6 @@
 // initalize dependencies and params
 let store = new Store('../../data/');
+const MAX_TILES = urlParams.get('mt') || 16
 const urlParams = new URLSearchParams(window.location.search);
 const page = urlParams.get('p');
 const mode = 'normal';
@@ -14,7 +15,7 @@ function addTiles(n) {
   for (let i=0; i<n ; i++){
     let d = document.createElement('div');
     d.id = 'osd' + i;
-    d.className = 'osd';
+    d.className = 'osd col';
     d.style.width = '200px';
     d.style.height = '200px';
     // append
@@ -34,10 +35,10 @@ function changeTile(url, n) {
 }
 
 function onInit() {
-  addTiles(5)
+  addTiles(MAX_TILES)
   // TODO pathdb variant
   store.findSlide(null, null, null, null, query).then((x)=>{
-    for (let n = 0; n < Math.min(x.length, 5); n++) {
+    for (let n = 0; n < Math.min(x.length, MAX_TILES); n++) {
       let item = x[n];
       // TODO respect max size
       // TODO fix url!
