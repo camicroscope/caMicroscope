@@ -18,26 +18,24 @@ if (mode == 'pathdb') {
 const workspace = document.getElementById('workspace');
 
 function addTile(url, i, name, dest) {
-  for (let i=0; i<n; i++) {
-    let d = document.createElement('div');
-    d.id = 'osd' + i;
-    d.className = 'osd col';
-    // tile size, and hidden to start
-    d.style = 'min-width: 400px; width:22%; height:400px';
-    // add link to slide
-    let b = document.createElement('a');
-    b.id = 'link' + i;
-    b.innerText = name;
-    b.href=dest;
-    d.appendChild(b);
-    d.appendChild(document.createElement('br'));
-    workspace.appendChild(d);
-    viewers[i] = OpenSeadragon({
-      id: d.id,
-      prefixUrl: prefixUrl,
-      tileSources: url
-    });
-  }
+  let d = document.createElement('div');
+  d.id = 'osd' + i;
+  d.className = 'osd col';
+  // tile size, and hidden to start
+  d.style = 'min-width: 400px; width:22%; height:400px';
+  // add link to slide
+  let b = document.createElement('a');
+  b.id = 'link' + i;
+  b.innerText = name;
+  b.href=dest;
+  d.appendChild(b);
+  d.appendChild(document.createElement('br'));
+  workspace.appendChild(d);
+  viewers[i] = OpenSeadragon({
+    id: d.id,
+    prefixUrl: prefixUrl,
+    tileSources: url
+  });
 }
 
 function onInit() {
