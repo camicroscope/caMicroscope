@@ -22,6 +22,7 @@ function addTile(url, n) {
     prefixUrl: prefixUrl,
     tileSources: url,
   });
+  workspace.appendChild(d)
   // TODO create "open this slide button"
   // TODO style
 }
@@ -31,7 +32,7 @@ function changeTile(url, n) {
 }
 
 // TODO respect max size
-for (let n = 0; n<n.length; n++) {
+for (let n = 0; n<list.length; n++) {
   let item = list[n];
   // TODO pathdb variant
   store.findSlide(item).then((x)=>{
