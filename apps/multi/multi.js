@@ -17,6 +17,10 @@ function addTiles(n) {
     d.id = 'osd' + i;
     d.className = 'osd col';
     d.style = "min-width: 400px; width:22%; height:400px;"
+    // add link to slide
+    let b = document.createElement("button")
+    b.id = "link" + i;
+    d.appendChild(b)
     // append
     workspace.appendChild(d);
     viewers[i] = OpenSeadragon({
@@ -29,8 +33,11 @@ function addTiles(n) {
   // TODO style
 }
 
-function changeTile(url, n) {
-  viewers[n].open(url);
+function changeTile(url, i, name, dest) {
+  viewers[i].open(url);
+  let b = document.getElementById("link" + i)
+  b.innerHTML = name
+  b.onclick ="location.href=" + dest
 }
 
 function onInit() {
@@ -42,7 +49,8 @@ function onInit() {
       // TODO respect max size
       // TODO fix url!
       let loc = "../../img/IIP/raw/?DeepZoom=" + item.location + ".dzi"
-      changeTile(loc, n);
+      let dest = "../viewer/viewer.html?slideId=" + item._id["$oid"]
+      changeTile(loc, n, item.name, dest);
     }
   });
 }
