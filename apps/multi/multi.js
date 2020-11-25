@@ -13,13 +13,13 @@ const workspace = document.getElementById('workspace');
 function addTiles(n) {
   for (let i=0; i<n ; i++){
     let d = document.createElement('div');
-    d.id = 'osd' + n;
+    d.id = 'osd' + i;
     d.className = 'osd';
     d.width = '200px';
     d.height = '200px';
     // append
     workspace.appendChild(d);
-    viewers[n] = OpenSeadragon({
+    viewers[i] = OpenSeadragon({
       id: d.id,
       prefixUrl: prefixUrl
     });
