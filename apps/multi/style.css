@@ -8,3 +8,8 @@ body{
 .col {
   flex: 1;
 }
+
+.osd{
+  padding: 10px;
+  background-color: HoneyDew;
+}
