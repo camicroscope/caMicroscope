@@ -1,9 +1,9 @@
 // initalize dependencies and params
 let store = new Store('../../data/');
 const urlParams = new URLSearchParams(window.location.search);
-const page = urlParams.get('p');
+const page = urlParams.get('p') || 0;
 const mode = urlParams.get('mode');
-const MAX_TILES = urlParams.get('mt') || 99;
+const MAX_TILES = urlParams.get('mt') || 16;
 const prefixUrl = 'https://cdn.jsdelivr.net/npm/openseadragon@2.3/build/openseadragon/images/';
 let query = JSON.parse(urlParams.get('q') || '{}');
 let list = JSON.parse(urlParams.get('l') || '[]');
@@ -64,10 +64,10 @@ function onInit() {
   Promise.all(promises).then((xx)=>{
     let x = xx.flat()
     console.log(x)
-    for (let n = 0; n < Math.min(x.length, MAX_TILES); n++) {
+    let start = MAX_TILES * page
+    let stop = Math.min(x.length, start+MAX_TILES)
+    for (let n = start; n < stop; n++) {
       let item = x[n];
-      // TODO respect max size
-      // TODO fix url!
       let loc = '../../img/IIP/raw/?DeepZoom=' + item.location + '.dzi';
       let dest = '../viewer/viewer.html?slideId=' + item._id['$oid'];
       if (mode == "pathdb"){
