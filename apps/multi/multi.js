@@ -15,8 +15,8 @@ function addTiles(n) {
     let d = document.createElement('div');
     d.id = 'osd' + i;
     d.className = 'osd';
-    d.width = '200px';
-    d.height = '200px';
+    d.style.width = '200px';
+    d.style.height = '200px';
     // append
     workspace.appendChild(d);
     viewers[i] = OpenSeadragon({
