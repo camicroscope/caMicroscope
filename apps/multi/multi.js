@@ -61,7 +61,7 @@ function onInit() {
       document.getElementById('pages').append(p);
     }
     // next?
-    if (page < Math.ceil(x.length/MAX_TILES)) {
+    if (page < Math.floor(x.length/MAX_TILES)-1) {
       let p = document.createElement('a');
       let nextParam = new URLSearchParams(window.location.search);
       p.id = 'nextPage';
