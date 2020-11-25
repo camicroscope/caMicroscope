@@ -6,6 +6,7 @@ const mode = 'normal';
 const MAX_TILES = urlParams.get('mt') || 16;
 const prefixUrl = 'https://cdn.jsdelivr.net/npm/openseadragon@2.3/build/openseadragon/images/';
 let query = JSON.parse(urlParams.get('q') || '{}');
+let list = JSON.parse(urlParams.get('l') || '[]');
 
 let viewers = [];
 
@@ -47,6 +48,15 @@ function changeTile(url, i, name, dest) {
 function onInit() {
   addTiles(MAX_TILES);
   // TODO pathdb variant
+  if(list.length){
+    let promises = []
+    for (j of list){
+      promises.append(store.getSlide(j))
+    }
+    Promise.all(promises).then(xx=>{
+      console.log(xx)
+    })
+  }
   store.findSlide(null, null, null, null, query).then((x)=>{
     for (let n = 0; n < Math.min(x.length, MAX_TILES); n++) {
       let item = x[n];
