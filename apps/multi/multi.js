@@ -22,6 +22,7 @@ function addTiles(n) {
     let b = document.createElement("a")
     b.id = "link" + i;
     d.appendChild(b)
+    d.appendChild(document.createElement("br"))
     // append
     workspace.appendChild(d);
     viewers[i] = OpenSeadragon({
