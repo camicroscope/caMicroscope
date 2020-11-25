@@ -124,7 +124,7 @@ function PathDbMods() {
     })
   }
 
-  if (StatesHelper){
+  if (!(typeof StatesHelper === 'undefined')){
     StatesHelper.prototype.default_getCurrentStatesURL = StatesHelper.prototype.getCurrentStatesURL;
     getCurrentStatesURL = function(isImageCoordinate=false){
       let states = StatesHelper.getCurrentStates(isImageCoordinate);
