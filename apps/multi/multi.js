@@ -1,9 +1,9 @@
 // initalize dependencies and params
 let store = new Store('../../data/');
 const urlParams = new URLSearchParams(window.location.search);
-const page = urlParams.get('p') || 0;
+const page = parseInt(urlParams.get('p'), 10) || 0;
 const mode = urlParams.get('mode');
-const MAX_TILES = urlParams.get('mt') || 16;
+const MAX_TILES = parseInt(urlParams.get('mt'), 10) || 16;
 const prefixUrl = 'https://cdn.jsdelivr.net/npm/openseadragon@2.3/build/openseadragon/images/';
 let query = JSON.parse(urlParams.get('q') || '{}');
 let list = JSON.parse(urlParams.get('l') || '[]');
@@ -34,7 +34,7 @@ function addTile(url, i, name, dest) {
   viewers[i] = OpenSeadragon({
     id: d.id,
     prefixUrl: prefixUrl,
-    tileSources: url
+    tileSources: url,
   });
 }
 
@@ -55,7 +55,7 @@ function onInit() {
       let p = document.createElement('a');
       let prevParam = new URLSearchParams(window.location.search);
       p.id = 'prevPage';
-      prevParam.set("p", page-1);
+      prevParam.set('p', page-1);
       p.innerText = 'Prev';
       p.href = './multi.html?' + prevParam.toString();
       document.getElementById('pages').append(p);
@@ -65,7 +65,7 @@ function onInit() {
       let p = document.createElement('a');
       let nextParam = new URLSearchParams(window.location.search);
       p.id = 'nextPage';
-      nextParam.set("p", page+1);
+      nextParam.set('p', page+1);
       p.innerText = 'Next';
       p.href = './multi.html?' + nextParam.toString();
       document.getElementById('pages').append(p);
