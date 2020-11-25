@@ -70,7 +70,7 @@ function onInit() {
       p.id = 'prevPage';
       prevParam.set(p, page-1);
       p.innerText = 'Prev';
-      p.href = './multi.html' + prevParam.toString();
+      p.href = './multi.html?' + prevParam.toString();
       document.getElementById('pages').append(p);
     }
     // next?
@@ -80,7 +80,7 @@ function onInit() {
       p.id = 'nextPage';
       nextParam.set(p, page+1);
       p.innerText = 'Next';
-      p.href = './multi.html' + nextParam.toString();
+      p.href = './multi.html?' + nextParam.toString();
       document.getElementById('pages').append(p);
     }
     // tiles
