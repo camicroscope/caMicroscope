@@ -17,41 +17,30 @@ if (mode == 'pathdb') {
 
 const workspace = document.getElementById('workspace');
 
-function addTiles(n) {
+function addTile(url, i, name, dest) {
   for (let i=0; i<n; i++) {
     let d = document.createElement('div');
     d.id = 'osd' + i;
     d.className = 'osd col';
     // tile size, and hidden to start
-    d.style = 'min-width: 400px; width:22%; height:400px; display:none;';
+    d.style = 'min-width: 400px; width:22%; height:400px';
     // add link to slide
     let b = document.createElement('a');
     b.id = 'link' + i;
+    b.innerText = name;
+    b.href=dest;
     d.appendChild(b);
     d.appendChild(document.createElement('br'));
-    // append
     workspace.appendChild(d);
     viewers[i] = OpenSeadragon({
       id: d.id,
       prefixUrl: prefixUrl,
+      tileSources: url
     });
   }
-  // TODO create "open this slide button"
-  // TODO style
-}
-
-function changeTile(url, i, name, dest) {
-  let d = document.getElementById('osd' + i);
-  // unhide if something is in it
-  d.style.display = 'inherit';
-  viewers[i].open(url);
-  let b = document.getElementById('link' + i);
-  b.innerText = name;
-  b.href=dest;
 }
 
 function onInit() {
-  addTiles(MAX_TILES);
   let promises = [];
   if (list.length) {
     for (j of list) {
@@ -93,7 +82,7 @@ function onInit() {
       if (mode == 'pathdb') {
         dest += '&mode=pathdb';
       }
-      changeTile(loc, n, item.name, dest);
+      addTile(loc, n, item.name, dest);
     }
   });
 }
