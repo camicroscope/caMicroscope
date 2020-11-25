@@ -35,7 +35,7 @@ function onInit() {
   // TODO pathdb variant
   store.findSlide(null, null, null, null, query).then((x)=>{
     for (let n = 0; n<x.length; n++) {
-      let item = list[n];
+      let item = x[n];
       // TODO respect max size
       addTile(item.location, n);
     }
