@@ -2,14 +2,18 @@
 let store = new Store('../../data/');
 const urlParams = new URLSearchParams(window.location.search);
 const page = urlParams.get('p');
-// TODO pathdb mode
-const mode = 'normal';
+const mode = urlParams.get('mode');
 const MAX_TILES = urlParams.get('mt') || 16;
 const prefixUrl = 'https://cdn.jsdelivr.net/npm/openseadragon@2.3/build/openseadragon/images/';
 let query = JSON.parse(urlParams.get('q') || '{}');
 let list = JSON.parse(urlParams.get('l') || '[]');
 
 let viewers = [];
+
+// run the pathdb mods as needed
+if (mode == "pathdb"){
+  PathDbMods();
+}
 
 const workspace = document.getElementById('workspace');
 
@@ -66,6 +70,9 @@ function onInit() {
       // TODO fix url!
       let loc = '../../img/IIP/raw/?DeepZoom=' + item.location + '.dzi';
       let dest = '../viewer/viewer.html?slideId=' + item._id['$oid'];
+      if (mode == "pathdb"){
+        dest += "&mode=pathdb"
+      }
       changeTile(loc, n, item.name, dest);
     }
   });
@@ -73,7 +80,5 @@ function onInit() {
 
 // TODO pagination
 // (be sure to hide all in between each page turn to avoid ghostly tiles)
-
-// ?? how many can we reasonably open at once?
 
 window.onload = onInit;
