@@ -956,7 +956,7 @@ async function showInfo() {
               deleteModel(name);
             });
             document.getElementById('chngClassListBtn' + modelCount).addEventListener('click', () => {
-              showNewClassInput(name,classes);
+              showNewClassInput(name, classes);
             });
             modelCount += 1;
           };
@@ -968,13 +968,13 @@ async function showInfo() {
 }
 
 
-function showNewClassInput(name,classes) {
+function showNewClassInput(name, classes) {
   const self = $UI.chngClassLst;
   self.body.innerHTML = `
     <input id ="new_classList" type="text"/>
     <button class="btn btn-primary btn-xs my-xs-btn btn-final-change" id='chngbtn' type="button">Change Class List</button>
     `;
-  document.getElementById("new_classList").defaultValue = classes;
+    document.getElementById('new_classList').defaultValue = classes;
   $UI.chngClassLst.open(); // Open the box to take input from user
   document.getElementById('chngbtn').addEventListener('click', () => {
     // $UI.chngClassLst.close();
