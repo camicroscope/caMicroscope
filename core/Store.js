@@ -547,27 +547,33 @@ class Store {
 
   /**
    * find overlays matching name and/or type
-   * @param {string} [name] - the slide name
-   * @param {string} [location] - the slide location, supporting regex match
+   * @param {string} [name] - the slide's name
+   * @param {string} [specimen] - the slide's noted specimen
+   * @param {string} [study] - the slide's noted study
+   * @param {string} [location] - the slide's file location
+   * @param {string} [q] - override query - ignores all other params if set
    * @return {promise} - promise which resolves with data
    **/
-  findSlide(slide, specimen, study, location) {
+  findSlide(slide, specimen, study, location, q) {
+    let query;
     const suffix = 'Slide/find';
     const url = this.base + suffix;
-    const query = {};
-    if (slide) {
-      query.slide = slide;
+    if (q) {
+      query = q;
+    } else {
+      if (slide) {
+        query.slide = slide;
+      }
+      if (study) {
+        query.study = study;
+      }
+      if (specimen) {
+        query.specimen = specimen;
+      }
+      if (location) {
+        query.location = location;
+      }
     }
-    if (study) {
-      query.study = study;
-    }
-    if (specimen) {
-      query.specimen = specimen;
-    }
-    if (location) {
-      query.location = location;
-    }
-
     return fetch(url + '?' + objToParamStr(query), {
       credentials: 'include',
       mode: 'cors',

@@ -1,0 +1,16 @@
+body{
+  margin: 25px;
+}
+.flex-grid {
+  display: flex;
+  flex-wrap: wrap;
+}
+.col {
+  flex: 1;
+}
+
+.osd{
+  margin: 10px;
+  padding: 10px;
+  background-color: HoneyDew;
+}

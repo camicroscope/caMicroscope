@@ -188,7 +188,7 @@ async function initUIcomponents() {
     provideContent: true,
     content: `
       <div class = "message" >
-      
+
         <h3> Please select a model</h3></div><br>
       <table id = 'roitable'>
         <thead>
@@ -503,7 +503,7 @@ function camicStopDraw(e) {
   const viewer = $CAMIC.viewer;
   const canvasDraw = viewer.canvasDrawInstance;
   const imgColl = canvasDraw.getImageFeatureCollection();
-  if (imgColl.features.length > 0) {
+  if (imgColl.features.length > 0 && imgColl.features[0].bound.coordinates[0].length >= 5) {
     // Check size first
     const box = checkSize(imgColl, viewer.imagingHelper);
 
@@ -539,8 +539,8 @@ function checkSize(imgColl, imagingHelper) {
   // slide images svsslide images svs
   // get position on viewer
 
-  const topLeft = imgColl.features[0].bound[0];
-  const bottomRight = imgColl.features[0].bound[2];
+  const topLeft = imgColl.features[0].bound.coordinates[0][0];
+  const bottomRight = imgColl.features[0].bound.coordinates[0][2];
   const min = imagingHelper._viewer.viewport.imageToViewportCoordinates(topLeft[0], topLeft[1]);
   const max = imagingHelper._viewer.viewport.imageToViewportCoordinates(bottomRight[0], bottomRight[1]);
   const rect = new OpenSeadragon.Rect(min.x, min.y, max.x-min.x, max.y-min.y);
@@ -956,7 +956,7 @@ async function showInfo() {
               deleteModel(name);
             });
             document.getElementById('chngClassListBtn' + modelCount).addEventListener('click', () => {
-              showNewClassInput(name);
+              showNewClassInput(name, classes);
             });
             modelCount += 1;
           };
@@ -968,12 +968,13 @@ async function showInfo() {
 }
 
 
-function showNewClassInput(name) {
+function showNewClassInput(name, classes) {
   const self = $UI.chngClassLst;
   self.body.innerHTML = `
     <input id ="new_classList" type="text"/>
     <button class="btn btn-primary btn-xs my-xs-btn btn-final-change" id='chngbtn' type="button">Change Class List</button>
     `;
+  document.getElementById('new_classList').defaultValue = classes;
   $UI.chngClassLst.open(); // Open the box to take input from user
   document.getElementById('chngbtn').addEventListener('click', () => {
     // $UI.chngClassLst.close();
@@ -1061,7 +1062,7 @@ function dataURItoBlob(dataURI) {
  * Convert image coordinates
  */
 function convertCoordinates(imagingHelper, bound) {
-  const newArray = bound.map(function(arr) {
+  const newArray = bound.coordinates[0].map(function(arr) {
     return arr.slice(); // copy
   });
 

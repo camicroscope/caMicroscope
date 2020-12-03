@@ -23,9 +23,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * **Version 1**
     * [1.0.x](#camicroscope-10)
 
-### caMicroscope [Unreleased](https://github.com/camicroscope/camicroscope/compare/v3.8.2...camicroscope:develop)
+### caMicroscope [Unreleased](https://github.com/camicroscope/camicroscope/compare/v3.8.3...camicroscope:develop)
 ###### TBD
-* TBD
+* 
+
+### caMicroscope [Unreleased](https://github.com/camicroscope/camicroscope/compare/v3.8.2...camicroscope:v3.8.3)
+###### 2020-12-03
+* Bugfix: Model Failed to read coordinates [#454](https://github.com/camicroscope/caMicroscope/pull/454)[#455](https://github.com/camicroscope/caMicroscope/pull/455)
+* multislide explorer [#456](https://github.com/camicroscope/caMicroscope/pull/456)
+* Model Class List Edit Field Defaults [#457](https://github.com/camicroscope/caMicroscope/pull/457)
 
 ### caMicroscope [3.8.2](https://github.com/camicroscope/camicroscope/compare/v3.8.1...camicroscope:v3.8.2)
 ###### 2020-11-10
