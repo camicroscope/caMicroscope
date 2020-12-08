@@ -106,3 +106,8 @@ $(window).on('load', function() {
         permissions = data;
   });
 });
+
+function loginPage(){
+  const url = "/login.html";
+  window.location.href = url;
+}

@@ -110,3 +110,7 @@ nav li:not(.active):hover a{
 .active a{
 	color: black !important;
 }
+
+.text-center{
+	cursor: pointer;
+}
