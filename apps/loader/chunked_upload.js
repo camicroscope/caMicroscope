@@ -39,7 +39,7 @@ async function readFileChunks(file, token) {
     try {
       const data = await promiseChunkFileReader(file, part);
       const body = {chunkSize: chunkSize, offset: part*chunkSize, data: data};
-      const res = await continueUpload(token)(body);
+      const res = await continueUpload(token)(body, file);
       part++;
       console.log(part);
     } catch (e) {
@@ -79,8 +79,8 @@ async function startUpload(filename) {
 }
 
 function continueUpload(token) {
-  return async function(body) {
-    changeStatus('UPLOAD', 'Uploading chunk at: '+ body.offset +' of size '+ body.chunkSize);
+  return async function(body, file) {
+    changeStatus('UPLOAD', 'Uploading chunk at: '+ body.offset/(1024*1024) +'MB of size '+ Math.round(file.size/(1024*1024)) + 'MB');
     return await fetch(continueUrl + token, {method: 'POST', body: JSON.stringify(body), headers: {
       'Content-Type': 'application/json; charset=utf-8',
     }});
