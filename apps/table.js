@@ -179,6 +179,7 @@ function createCheckbox(val) {
 }
 
 function initialize() {
+  $('#filenameRow, #tokenRow, #slidenameRow, #filterRow').hide();
   let filters=getUserFilter();
   let isWildcard=false;
   allSlides = [];

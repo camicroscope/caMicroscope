@@ -182,9 +182,8 @@
 									<ul>
 										<li>Select the file as Input. The <b>Token</b> field should be filled automatically, and start uploading.</li>
 										<li> Provide the destination filename with extension.</li>
-										<li>Click on the <b>Finish Upload</b> to complete the upload </li>
-										<li>Click on <b>Check</b> to get a preview of the slide  </li>
-										<li>Finally <b>Post</b> it to caMicroscope</li>
+										<li>Click on the <b><i class="fas fa-arrow-right"></i></b> button to get check a preview of the slide  </li>
+										<li>Finally <b>Finish Upload</b> to post the slide to caMicroscope</li>
 									</ul>
 								</div>
 								<div>
@@ -224,17 +223,17 @@
 												<td align="right"><b>Filter (leave blank for public)</b></td>
 											</tr>
 										</table>
-
-										<div class="text-center" id="controlButtons">
-											<button class="btn btn-primary" type="button" id="finish_btn"
-												value="Finish Upload" onclick="validateForm(finishUpload)">Finish
-												Upload</button>
-											<button class="btn btn-secondary" type="button" id="check_btn"
-												value="Check" onclick="validateForm(CheckBtn);">Check</button>
-											<button class="btn btn-success" type="button" id="post_btn" value="Post"
-												onclick="validateForm(PostBtn)">Post</button>
+										<div id="upload-progress-div" style="display: none; align-content: center;">
+											<div class="progress" style="width: 50%; margin: 0 auto">
+												<div id="upload-progress" class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+											</div> <br>
 										</div>
-
+										<div class="text-center" id="controlButtons">
+											<button class="btn btn-primary" type="button" id="finish_btn" style="display: none;"
+												value="Finish Upload" onclick="validateForm(finishUpload)"><i class="fas fa-arrow-right"></i></button>
+											<button class="btn btn-success" type="button" id="post_btn" value="Post"
+												onclick="validateForm(PostBtn)">Finish Upload</button>
+										</div>
 									</form>
 								</div>
 								<div class="text-center p-2">
