@@ -156,3 +156,6 @@ nav li:not(.active):hover a{
 .collapse.in {
 	 display: inline !important;
 }
+.p{
+	margin-bottom: 0;
+}
