@@ -80,3 +80,6 @@ body {
 #annotationtable tr:hover, #heatmaptable tr:hover{
 	background: #9cc7ce;
 }
+.p{
+	margin-bottom: 0;
+}
