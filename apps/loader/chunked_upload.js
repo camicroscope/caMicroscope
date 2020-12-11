@@ -34,17 +34,20 @@ function promiseChunkFileReader(file, part) {
 
 async function readFileChunks(file, token) {
   var part = 0;
+  $('#upload-progress-div').css('display', 'flex');
   var complete = false;
   while (!complete) {
     try {
       const data = await promiseChunkFileReader(file, part);
       const body = {chunkSize: chunkSize, offset: part*chunkSize, data: data};
-      const res = await continueUpload(token)(body);
+      const res = await continueUpload(token)(body, file);
       part++;
       console.log(part);
     } catch (e) {
       console.log(e);
       changeStatus('UPLOAD', e);
+      $('#filenameRow, #slidenameRow, #filterRow, #finish_btn').show(400);
+      $('#upload-progress-div').fadeOut();
       complete = true;
     }
   }
@@ -55,6 +58,7 @@ async function handleUpload(selectedFiles) {
   selectedFile = selectedFiles[0];
   const filename = selectedFiles[0]['name'];
   const token = await startUpload(filename);
+  $('#tokenRow').show(300);
   const callback = continueUpload(token);
   readFileChunks(selectedFile, token);
   // parseFile(selectedFile, callback, 0, x=>(changeStatus("UPLOAD", "Finished Reading File")))
@@ -79,13 +83,17 @@ async function startUpload(filename) {
 }
 
 function continueUpload(token) {
-  return async function(body) {
-    changeStatus('UPLOAD', 'Uploading chunk at: '+ body.offset +' of size '+ body.chunkSize);
+  return async function(body, file) {
+    let progressValue = Math.floor((body.offset/file.size)*100);
+    $('#upload-progress').css('width', progressValue+'%').attr('aria-valuenow', progressValue).text(progressValue + '%');
+    changeStatus('UPLOAD', 'Uploading chunk at: '+ body.offset/(1024*1024) +'MB of total '+
+                  Math.round(file.size/(1024*1024)) + 'MB');
     return await fetch(continueUrl + token, {method: 'POST', body: JSON.stringify(body), headers: {
       'Content-Type': 'application/json; charset=utf-8',
     }});
   };
 }
+
 function finishUpload() {
   var reset = true;
   const token = document.getElementById('token'+0).value;
@@ -143,8 +151,11 @@ function finishUpload() {
       changeStatus('UPLOAD | ERROR;', e);
       reset = true;
       console.log(e);
+    } else {
+      validateForm(CheckBtn);
     }
-  });
+  },
+  );
 }
 
 
