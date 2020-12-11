@@ -25,7 +25,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### caMicroscope [Unreleased](https://github.com/camicroscope/camicroscope/compare/v3.8.3...camicroscope:develop)
 ###### TBD
-* 
+* Upload process enhancement [#463](https://github.com/camicroscope/caMicroscope/pull/463)
+* Table and Info page UI harmonization [#464](https://github.com/camicroscope/caMicroscope/pull/464)
+* Add Login button to signup page [#461](https://github.com/camicroscope/caMicroscope/pull/461)
 
 ### caMicroscope [Unreleased](https://github.com/camicroscope/camicroscope/compare/v3.8.2...camicroscope:v3.8.3)
 ###### 2020-12-03
