@@ -16,6 +16,20 @@ $VALIDATION.slide = ajv.compile({
     },
   },
 });
+$VALIDATION.collection = ajv.compile({
+  type: 'object',
+  required: ['id', 'name', 'slides'],
+  properties: {    
+    name: {
+      type: 'string',
+      description: 'collection name'
+    },
+    slides: {
+      type: 'array',
+      description: 'slide id in collection'
+    },
+  },
+});
 $VALIDATION.mark = ajv.compile({
   type: 'object',
   required: ['provenance'],

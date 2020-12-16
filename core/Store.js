@@ -853,6 +853,98 @@ class Store {
   }
 
 
+
+  /**
+   * post collection
+   * @param {object} json - the collection data
+   * @return {promise} - promise which resolves with response
+   **/
+  addCollection(json) {
+    const suffix = 'Collection/post';
+    const url = this.base + suffix;
+    if (this.validation.collection && !this.validation.collection(json)) {
+      console.warn(this.validation.collection.errors);
+    }
+    return fetch(url, {
+      method: 'POST',
+      credentials: 'include',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json; charset=utf-8',
+        // "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: JSON.stringify(json),
+    }).then(this.errorHandler);
+  }
+
+    /**
+   * get a collection info
+   * @param {object} json - the log data
+   * @return {promise} - promise which resolves with data
+   **/
+  getAllCollection() {
+    const suffix = 'Collection/find';
+    const url = this.base + suffix;
+
+    return fetch(url, {
+      credentials: 'include',
+      mode: 'cors',
+    }).then(this.errorHandler);
+  }
+  /**
+   * get a collection info
+   * @param {object} json - the log data
+   * @return {promise} - promise which resolves with data
+   **/
+  getCollection(id) {
+    const suffix = 'Collection/find';
+    const url = this.base + suffix;
+    const query = {
+      '_id': id,
+    };
+    return fetch(url + '?' + objToParamStr(query), {
+      credentials: 'include',
+      mode: 'cors',
+    }).then(this.errorHandler);
+  }
+  /**
+   * update a collection info
+   * @param {string} id - the collection id
+   * @param {object} json - the data
+   * @return {promise} - promise which resolves with data
+   **/
+  updateCollection(id, data) {
+    const suffix = 'Collection/update';
+    const url = this.base + suffix;
+    const query = {
+      '_id': id,
+    };
+    return fetch(url + '?' + objToParamStr(query), {
+      method: 'POST',
+      credentials: 'include',
+      mode: 'cors',
+      body: JSON.stringify(data),
+    });
+  }
+  /**
+   * delete collection
+   * @param {object} id - the collection object id
+   * @return {promise} - promise which resolves with response
+   **/
+  deleteCollection(id) {
+    const suffix = 'Collection/delete';
+    const url = this.base + suffix;
+    const query = {
+      '_id': id
+    };
+    return fetch(url + '?' + objToParamStr(query), {
+      method: 'DELETE',
+      credentials: 'include',
+      mode: 'cors',
+    }).then(this.errorHandler);
+  }
+
+
   // Update slide review status
   updateSlideReview(id, newStatus) {
     const suffix = 'Slide/update';
