@@ -19,14 +19,14 @@ $VALIDATION.slide = ajv.compile({
 $VALIDATION.collection = ajv.compile({
   type: 'object',
   required: ['id', 'name', 'slides'],
-  properties: {    
+  properties: {
     name: {
       type: 'string',
-      description: 'collection name'
+      description: 'collection name',
     },
     slides: {
       type: 'array',
-      description: 'slide id in collection'
+      description: 'slide id in collection',
     },
   },
 });
