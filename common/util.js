@@ -485,7 +485,8 @@ function covertToHumanLayer(data) {
   const typeName = item.analysis.source;
   const id = item.analysis.execution_id;
   const name = item.analysis.name || item.analysis.execution_id;
-
+  
+  if (!item.shape) item.shape = ["Polygon"];
   if (!typeIds[typeName]) typeIds[typeName] = randomId();
   return {
     id: id,

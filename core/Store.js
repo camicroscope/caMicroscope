@@ -853,7 +853,6 @@ class Store {
   }
 
 
-
   /**
    * post collection
    * @param {object} json - the collection data
@@ -877,7 +876,7 @@ class Store {
     }).then(this.errorHandler);
   }
 
-    /**
+  /**
    * get a collection info
    * @param {object} json - the log data
    * @return {promise} - promise which resolves with data
@@ -935,7 +934,7 @@ class Store {
     const suffix = 'Collection/delete';
     const url = this.base + suffix;
     const query = {
-      '_id': id
+      '_id': id,
     };
     return fetch(url + '?' + objToParamStr(query), {
       method: 'DELETE',
