@@ -254,17 +254,18 @@ async function continueUrlUpload(token, url) {
   });
 }
 
+// Start the Google Picker for Google Drive Upload
 function googlePickerStart() {
   // The Browser API key obtained from the Google API Console.
   // Replace with your own Browser API key, or your own key.
-  var developerKey = 'xxxx';
+  var developerKey = 'xxxxxx';
 
   // The Client ID obtained from the Google API Console. Replace with your own Client ID.
-  var clientId = 'xxxx';
+  var clientId = 'xxxxxx';
 
   // Replace with your own project number from console.developers.google.com.
   // See "Project number" under "IAM & Admin" > "Settings"
-  var appId = 'xxxx';
+  var appId = 'xxxxxx';
 
   // Scope to use to access user's Drive items.
   var scope = ['https://www.googleapis.com/auth/drive.file'];
@@ -300,7 +301,7 @@ function googlePickerStart() {
     }
   }
 
-  // Create and render a Picker object for searching images.
+  // Create and render a Picker object
   function createPicker() {
     if (pickerApiLoaded && oauthToken) {
       let view = new google.picker.DocsView(google.picker.ViewId.DOCS).setParent('root').setIncludeFolders(true);
@@ -337,8 +338,8 @@ function startGoogleDriveUpload(userId, fileId, fileName) {
   $('#uploadLoading').show();
   $('#gdriveUpload, #urlswitch').hide();
   let data = JSON.stringify({'userId': userId, 'fileId': fileId});
-  console.log(data);
-  var requestOptions = {
+  // console.log(data);
+  let requestOptions = {
     method: 'POST',
     body: data,
     headers: {
@@ -364,23 +365,16 @@ function startGoogleDriveUpload(userId, fileId, fileName) {
 
 function continueGoogleDriveUpload(token) {
   let data = JSON.stringify({'token': token});
-  var requestOptions = {
+  let requestOptions = {
     method: 'POST',
     body: data,
     headers: {
       'Content-Type': 'application/json; charset=utf-8',
     },
   };
-  fetch(continueGoogleDriveUrl, requestOptions)
-      .then((response) => response.text())
-      .then((result) => {
-        result = JSON.parse(result);
-        console.log(result);
-      })
-      .catch((error) => console.log('error', error));
 
   let i = 0;
-  let inter=setInterval(function() {
+  let inter=setInterval(function() { // Calling this route every 3 sec. till the download is complete
     i++;
     if (i>=180) { // 180*3000 ms = 9 minutes (max time for running this)
       clearInterval(inter);
@@ -401,6 +395,7 @@ function continueGoogleDriveUpload(token) {
         })
         .catch((error) => {
           console.log('error', error);
+          alert('ERROR: '+error);
           clearInterval(inter);
         });
   }, 3000);
