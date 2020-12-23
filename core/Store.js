@@ -876,6 +876,57 @@ class Store {
   }
 
   /**
+   * get a freeform document by id. Try not to use this in core.
+   * @param {string} id - the mongo doc's id
+   * @return {promise} - promise which resolves with data
+   **/
+  getFreeform(id) {
+    const suffix = 'Freeform/find';
+    const url = this.base + suffix;
+    const query = {
+      '_id': id,
+    };
+    return fetch(url + '?' + objToParamStr(query), {
+      credentials: 'include',
+      mode: 'cors',
+    }).then(this.errorHandler);
+  }
+
+  /**
+   * find a freeform document by arbitrary query. Try not to use this in core.
+   * @param {string} id - the mongo doc's id
+   * @return {promise} - promise which resolves with data
+   **/
+  findFreeform(query) {
+    const suffix = 'Freeform/find';
+    const url = this.base + suffix;
+    return fetch(url + '?' + objToParamStr(query), {
+      credentials: 'include',
+      mode: 'cors',
+    }).then(this.errorHandler);
+  }
+
+  /**
+   * post a freeform document.  Try not to use this in core.
+   * @param {object} json - the collection data
+   * @return {promise} - promise which resolves with response
+   **/
+  addFreeform(json) {
+    const suffix = 'Freeform/post';
+    const url = this.base + suffix;
+    return fetch(url, {
+      method: 'POST',
+      credentials: 'include',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json; charset=utf-8',
+        // "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: JSON.stringify(json),
+    }).then(this.errorHandler);
+  }
+
+  /**
    * get a collection info
    * @param {object} json - the log data
    * @return {promise} - promise which resolves with data
@@ -891,7 +942,7 @@ class Store {
   }
   /**
    * get a collection info
-   * @param {object} json - the log data
+   * @param {string} id - the mongo doc's id
    * @return {promise} - promise which resolves with data
    **/
   getCollection(id) {
