@@ -111,12 +111,12 @@ if (getUserType() === 'Admin') {
 }
 
 function showTablePage() {
-  $('#datatables tbody tr').filter(function() {
+  $('#datatables tbody tr').filter(function () {
     $(this).hide();
   });
 
   var trs = '#datatables tbody tr';
-  $(trs).slice($('#entries').val() * selectedpage, $('#entries').val() * (selectedpage + 1)).filter(function() {
+  $(trs).slice($('#entries').val() * selectedpage, $('#entries').val() * (selectedpage + 1)).filter(function () {
     $(this).show();
   });
 
@@ -127,14 +127,14 @@ function showTablePage() {
 function resetTable() {
   $('#datatables').stacktable();
   $('.pages').remove();
-  $('#previous-page').after(function() {
+  $('#previous-page').after(function () {
     if (totaltablepages != 0) {
       return [...Array(totaltablepages).keys()].map((p) => {
         return `<li class="page-item pages"><a class="page-link">${p + 1}</a></li>`;
       }).join('');
     }
   });
-  $('.pages').on('click', function() {
+  $('.pages').on('click', function () {
     selectedpage = parseInt($(this).text()) - 1;
     showTablePage();
   });
@@ -213,77 +213,93 @@ function initialize() {
   const store = new Store('../data/');
 
   store.findRequest()
-      .then(function(requests) {
-        console.log(requests);
-        if (requests && !requests.error) {
-          requests.forEach(function(req) {
-            if (req.type === 'addUser') {
-              userCreateRequests.push(req);
-            } else {
-              slideDeleteRequests.push(req);
-            }
-          });
-        }
-        const CID = params['cid'] ? params['cid'] : null;
-
-        // create collection panel
-        store.getAllCollection().then((data) => {
-          if (data) {
-            createCollectionPanel(data, CID);
-          } else { // error
-
+    .then(function (requests) {
+      console.log(requests);
+      if (requests && !requests.error) {
+        requests.forEach(function (req) {
+          if (req.type === 'addUser') {
+            userCreateRequests.push(req);
+          } else {
+            slideDeleteRequests.push(req);
           }
         });
+      }
+      const CID = params['cid'] ? params['cid'] : null;
 
 
-        store.findSlide()
-            .then(function(data) {
-              if (CID) {
-                delete params['cid'];
-                data = data.filter((d) => d['collections'].includes(CID));
+
+
+      const Promises = [];
+      
+      Promises.push(store.getAllCollection())
+      Promises.push(store.findSlide())
+
+      
+      Promise.all(Promises)
+
+      // create collection panel
+      var collection;
+      // store.getAllCollection().then(data => {
+
+      // })
+
+
+      Promise.all(Promises)
+        .then(function (resps) {
+          // collection list
+          const colData = resps[0];
+          if (colData) {
+            collection = colData.find(d=>d._id['$oid']==CID);
+            createCollectionPanel(colData, CID);
+          } else { // error
+  
+          }
+          // slide table
+          var data = resps[1];
+          if (CID) {
+            delete params['cid'];
+            data = data.filter(d => collection&&collection.slides.includes(d._id['$oid']))
+          }
+          // filter
+          if (!(Object.keys(params).length === 0 && params.constructor === Object)) {
+            const keys = Object.keys(params);
+            const v2 = Object.values(params);
+            data = data.filter((d) => {
+              const v1 = getValues(d, keys);
+              return AND.call(this, v1, v2, eq);
+            });
+          }
+
+          // mapping data
+          const keys = HeadMapping.map((d) => d.field);
+          if (data.map) {
+            return data.map((d, counter) => {
+              // console.log('i:' + counter);
+              const rs = [];
+              if (d['filter']) {
+                rs.filterList = JSON.parse(d['filter'].replace(/'/g, '"'));
+                if (!rs.filterList.some((filter) => (filters.indexOf(filter) > -1))) {
+                  rs.filterList = ['Others'];
+                }
               } else {
-                data = [];
+                rs.filterList = ['Public'];
               }
-              // filter
-              if (!(Object.keys(params).length === 0 && params.constructor === Object)) {
-                const keys = Object.keys(params);
-                const v2 = Object.values(params);
-                data = data.filter((d) => {
-                  const v1 = getValues(d, keys);
-                  return AND.call(this, v1, v2, eq);
-                });
+              rs.displayed = true;
+              const filename = d.location.split('/')[d.location.split('/').length - 1];
+              keys.forEach((key, i) => {
+                if (i == 0) rs.push(d['_id']['$oid']);
+                else if (key == 'review') {
+                  rs.push(d[key] == 'true' ? `<label style="color:green;">✓</label>` : ``);
+                } else if (!d[key]) rs.push('');
+                else rs.push(d[key]);
+              });
+              if (slideDeleteRequests['counter']) {
+                console.log(slideDeleteRequests[counter]);
+                // console.log(slideDeleteRequests[counter - 1]);
               }
+              // console.log('Done one iter');
 
-              // mapping data
-              const keys = HeadMapping.map((d) => d.field);
-              if (data.map) {
-                return data.map((d, counter) => {
-                  // console.log('i:' + counter);
-                  const rs = [];
-                  if (d['filter']) {
-                    rs.filterList = JSON.parse(d['filter'].replace(/'/g, '"'));
-                    if (!rs.filterList.some((filter) => (filters.indexOf(filter) > -1))) {
-                      rs.filterList = ['Others'];
-                    }
-                  } else {
-                    rs.filterList = ['Public'];
-                  }
-                  rs.displayed = true;
-                  const filename = d.location.split('/')[d.location.split('/').length - 1];
-                  keys.forEach((key, i) => {
-                    if (i == 0) rs.push(d['_id']['$oid']);
-                    else if (key == 'review') {
-                      rs.push(d[key] == 'true' ? `<label style="color:green;">✓</label>` : ``);
-                    } else if (!d[key]) rs.push('');
-                    else rs.push(d[key]);
-                  });
-                  if (slideDeleteRequests['counter']) {
-                    console.log(slideDeleteRequests[counter]);
-                    // console.log(slideDeleteRequests[counter - 1]);
-                  }
-                  // console.log('Done one iter');
-
-                  const btn = `<div id='open-delete'>
+              const btn = `<div id='open-delete'>
                 <button class="btn btn-primary btn-sm" data-id='${sanitize(rs[0])}' onclick='openView(this)'>Open</button>
                 <button type='button' class='btn btn-primary btn-sm DownloadButton' id='downloadBtn' data-id='${sanitize(rs[0])}' onclick='downloadSlide(this)'>
                 <i class='fas fa-download' ></i>
@@ -310,68 +326,68 @@ function initialize() {
                       ${permissions.slide.delete == true ? '' : 'Request Deletion'} <i class='fas fa-trash-alt' ></i>
                     </button>
                   `
-}
+                }
               </div>`;
-                  rs.push(btn);
-                  return rs;
-                });
-              } else {
-                // we have no data to render! Let's add a default button
-                const defaultBtn = [];
-                keys.forEach((key, i) => {
-                  if (i == 0) defaultBtn.push('NO DATA');
-                  else defaultBtn.push('');
-                });
-                const btn = ``;
-                defaultBtn.push(btn);
-                return [defaultBtn];
-              }
-            })
-            .then(function(data) {
-              if (getUserType() === 'Admin') {
-                appendNotifications(slideDeleteRequests);
-              }
-              return data;
-            })
-            .then(function(data) {
-              if (CID == null && data.length == 0) {
-                var dataTable = document.getElementById('datatables');
-                dataTable.textContent = `Please Select A Collection`;
-                dataTable.classList = `container text-center p-4`;
-                return;
-              }
-              if (data.length == 0) {
-                var dataTable = document.getElementById('datatables');
-                dataTable.textContent = `No Data Found ... x _ x`;
-                dataTable.classList = `container text-center p-4`;
-                return;
-              }
+              rs.push(btn);
+              return rs;
+            });
+          } else {
+            // we have no data to render! Let's add a default button
+            const defaultBtn = [];
+            keys.forEach((key, i) => {
+              if (i == 0) defaultBtn.push('NO DATA');
+              else defaultBtn.push('');
+            });
+            const btn = ``;
+            defaultBtn.push(btn);
+            return [defaultBtn];
+          }
+        })
+        .then(function (data) {
+          if (getUserType() === 'Admin') {
+            appendNotifications(slideDeleteRequests);
+          }
+          return data;
+        })
+        .then(function (data) {
+          if (CID == null && data.length == 0) {
+            var dataTable = document.getElementById("datatables");
+            dataTable.textContent = `Please Select A Collection`;
+            dataTable.classList = `container text-center p-4`;
+            return;
+          }
+          if (data.length == 0) {
+            var dataTable = document.getElementById("datatables");
+            dataTable.textContent = `No Data Found ... x _ x`;
+            dataTable.classList = `container text-center p-4`;
+            return;
+          }
 
-              // Adding names to later validate for new slide names
-              existingSlideNames = data.map((d) => d[1]);
+          // Adding names to later validate for new slide names
+          existingSlideNames = data.map((d) => d[1]);
 
-              allSlides = data;
+          allSlides = data;
 
-              const thead = HeadMapping.map((d, i) => `<th>${sanitize(d.title)} <span class="sort-btn fa fa-sort" data-order=${1}
+          const thead = HeadMapping.map((d, i) => `<th>${sanitize(d.title)} <span class="sort-btn fa fa-sort" data-order=${1}
               data-index=${i}>  </span> </th>`);
 
-              thead.push('<th></th>');
-              tbody = data.map((d) => {
-                return '<tr>' + d.map((a) => '<td>' + a + '</td>').reduce((a, b) => a + b) + '</tr>';
-              });
-              let entriesPerPage;
-              if ($('#entries').val() === undefined) {
-                entriesPerPage = 10;
-              } else {
-                // default value, when initially no slide
-                entriesPerPage = $('#entries').val();
-              }
-              totaltablepages = Math.ceil(data.length / entriesPerPage);
-              selectedpage = 0;
-              $('#search-table').val('');
+          thead.push('<th></th>');
+          tbody = data.map((d) => {
+            return '<tr>' + d.map((a) => '<td>' + a + '</td>').reduce((a, b) => a + b) + '</tr>';
+          });
+          let entriesPerPage;
+          if ($('#entries').val() === undefined) {
+            entriesPerPage = 10;
+          } else {
+            // default value, when initially no slide
+            entriesPerPage = $('#entries').val();
+          }
+          totaltablepages = Math.ceil(data.length / entriesPerPage);
+          selectedpage = 0;
+          $('#search-table').val('');
 
-              if (data.length > 0 && $('.container').children().length === 0) {
-                $('.container').html(`
+          if (data.length > 0 && $('.container').children().length === 0) {
+            $('.container').html(`
             <div>
               <div>
                 <h3 class="text-center h3 mb-0">Available Slides</h3>
@@ -395,9 +411,9 @@ function initialize() {
                 <table id='datatables' class="table table-striped"></table>
               </div>
             </div>`);
-              }
+          }
 
-              document.getElementById('datatables').innerHTML = `
+          document.getElementById('datatables').innerHTML = `
             <thead>${thead.reduce((a, b) => a + b)}</thead>
             <tbody>${tbody.reduce((a, b) => a + b)}</tbody>
             <tfoot>
@@ -407,8 +423,8 @@ function initialize() {
                     <ul class="pagination justify-content-center">
                       <li id="previous-page" class="page-item"><a class="page-link">Previous</a></li>
                       ${[...Array(totaltablepages).keys()].map((p) => {
-    return `<li class="page-item pages"><a class="page-link">${p + 1}</a></li>`;
-  }).join('')}
+            return `<li class="page-item pages"><a class="page-link">${p + 1}</a></li>`;
+          }).join('')}
                       <li id="next-page" class="page-item"><a class="page-link">Next</a></li>
                     </ul>
                   </nav>
@@ -416,83 +432,83 @@ function initialize() {
               </tr>
             </tfoot>`;
 
+          showTablePage();
+
+          $('#search-table').on('keyup', filterSlides);
+
+          $('.sort-btn').on('click', function (e) {
+            var index = e.currentTarget.dataset.index;
+            var order = parseInt(e.currentTarget.dataset.order);
+            const sortedSlideRows = allSlides.sort(function (a, b) {
+              let at = a[index];
+              let bt = b[index];
+              if (!isNaN(at) && !isNaN(bt)) {
+                at = Number(at);
+                bt = Number(bt);
+              } else {
+                at = at.toLowerCase();
+                bt = bt.toLowerCase();
+              }
+              if (order === 1) {
+                e.currentTarget.dataset.order = 2;
+                if (at > bt) {
+                  return 1;
+                } else if (at < bt) {
+                  return -1;
+                } else {
+                  return 0;
+                }
+              } else {
+                e.currentTarget.dataset.order = 1;
+                if (at < bt) {
+                  return 1;
+                } else if (at > bt) {
+                  return -1;
+                } else {
+                  return 0;
+                }
+              }
+            })
+              .filter((slide) => slide.displayed)
+              .map((slide) => {
+                return '<tr>' + slide.map((a) => '<td>' + a + '</td>').reduce((a, b) => a + b) + '</tr>';
+              })
+              .reduce((a, b) => a + b, '');
+            $('#datatables > tbody').html(sortedSlideRows);
+            selectedpage = 0;
+            showTablePage();
+          });
+
+          $('.pages').on('click', function () {
+            selectedpage = parseInt($(this).text()) - 1;
+            showTablePage();
+          });
+
+          $('#previous-page').on('click', function () {
+            if (selectedpage > 0) {
+              selectedpage--;
               showTablePage();
+            }
+          });
 
-              $('#search-table').on('keyup', filterSlides);
+          $('#next-page').on('click', function () {
+            if (selectedpage < totaltablepages - 1) {
+              selectedpage++;
+              showTablePage();
+            }
+          });
 
-              $('.sort-btn').on('click', function(e) {
-                var index = e.currentTarget.dataset.index;
-                var order = parseInt(e.currentTarget.dataset.order);
-                const sortedSlideRows = allSlides.sort(function(a, b) {
-                  let at = a[index];
-                  let bt = b[index];
-                  if (!isNaN(at) && !isNaN(bt)) {
-                    at = Number(at);
-                    bt = Number(bt);
-                  } else {
-                    at = at.toLowerCase();
-                    bt = bt.toLowerCase();
-                  }
-                  if (order === 1) {
-                    e.currentTarget.dataset.order = 2;
-                    if (at > bt) {
-                      return 1;
-                    } else if (at < bt) {
-                      return -1;
-                    } else {
-                      return 0;
-                    }
-                  } else {
-                    e.currentTarget.dataset.order = 1;
-                    if (at < bt) {
-                      return 1;
-                    } else if (at > bt) {
-                      return -1;
-                    } else {
-                      return 0;
-                    }
-                  }
-                })
-                    .filter((slide) => slide.displayed)
-                    .map((slide) => {
-                      return '<tr>' + slide.map((a) => '<td>' + a + '</td>').reduce((a, b) => a + b) + '</tr>';
-                    })
-                    .reduce((a, b) => a + b, '');
-                $('#datatables > tbody').html(sortedSlideRows);
-                selectedpage = 0;
-                showTablePage();
-              });
-
-              $('.pages').on('click', function() {
-                selectedpage = parseInt($(this).text()) - 1;
-                showTablePage();
-              });
-
-              $('#previous-page').on('click', function() {
-                if (selectedpage > 0) {
-                  selectedpage--;
-                  showTablePage();
-                }
-              });
-
-              $('#next-page').on('click', function() {
-                if (selectedpage < totaltablepages - 1) {
-                  selectedpage++;
-                  showTablePage();
-                }
-              });
-
-              $('#entries').change(function() {
-                totaltablepages = Math.ceil($('#datatables tbody tr').length / $('#entries').val());
-                resetTable();
-                pageIndicatorVisible($('#datatables tbody tr').length);
-              });
-              pageIndicatorVisible($('#datatables tbody tr').length);
-              resetTable();
-              $('#datatables').stacktable();
-              checkUserPermissions();
-            });
-      });
+          $('#entries').change(function () {
+            totaltablepages = Math.ceil($('#datatables tbody tr').length / $('#entries').val());
+            resetTable();
+            pageIndicatorVisible($('#datatables tbody tr').length);
+          });
+          pageIndicatorVisible($('#datatables tbody tr').length);
+          resetTable();
+          $('#datatables').stacktable();
+          checkUserPermissions();
+        });
+    });
 }
 
 function AND(p, t, func) {
@@ -533,14 +549,14 @@ function hideCheckButton() {
 $('[data-dismiss=modal]').on('click', resetUploadForm);
 
 // window.addEventListener('resize', ()=>{$('#datatables').stacktable()});
-$(document).ready(function() {
+$(document).ready(function () {
   $('#slideUploadButton').hide();
   checkUserPermissions();
   initialize();
-  $('#deleteModal').on('hidden.bs.modal', function(e) {
+  $('#deleteModal').on('hidden.bs.modal', function (e) {
     initialize();
   });
-  $('#input').on('change', function() {
+  $('#input').on('change', function () {
     var fileName = $(this).val().split('\\').pop();
     $(this).next('.custom-file-label').html(fileName);
   });
@@ -553,33 +569,33 @@ $(document).ready(function() {
 function checkUserPermissions() {
   let userType = getUserType();
   store.getUserPermissions(userType)
-      .then((response) => response.text())
-      .then((data) => {
-        return (data ? JSON.parse(data) : null);
-      })
-      .then((data) => {
-        if (data === null) {
-          return;
-        }
-        permissions = data;
-        // console.log(data);
-        if (permissions.slide.post == true) {
-          $('#slideUploadButton').show();
-        }
-        if (permissions.slide.update == true) {
-          $('#datatables').find('tr').each(function() {
-            var currentId = $('td:nth-child(1)', this).html();
-            $('td:nth-child(2)', this).css('cursor', 'default');
-            $('td:nth-child(2)', this).unbind('mouseenter mouseleave');
-            $('td:nth-child(2)', this).hover(function() {
-              var content = $(this).html();
-              $(this).html(content + `<i style='font-size: small; margin-left:1em; cursor: pointer' onclick="changeSlideName('` + content + `', '` + currentId + `')" class="fas fa-pen" data-toggle="modal" data-target="#slideNameChangeModal"></i>`);
-            }, function() {
-              $(this).find('i').last().remove();
-            });
+    .then((response) => response.text())
+    .then((data) => {
+      return (data ? JSON.parse(data) : null);
+    })
+    .then((data) => {
+      if (data === null) {
+        return;
+      }
+      permissions = data;
+      // console.log(data);
+      if (permissions.slide.post == true) {
+        $('#slideUploadButton').show();
+      }
+      if (permissions.slide.update == true) {
+        $('#datatables').find('tr').each(function () {
+          var currentId = $('td:nth-child(1)', this).html();
+          $('td:nth-child(2)', this).css('cursor', 'default');
+          $('td:nth-child(2)', this).unbind('mouseenter mouseleave');
+          $('td:nth-child(2)', this).hover(function () {
+            var content = $(this).html();
+            $(this).html(content + `<i style='font-size: small; margin-left:1em; cursor: pointer' onclick="changeSlideName('` + content + `', '` + currentId + `')" class="fas fa-pen" data-toggle="modal" data-target="#slideNameChangeModal"></i>`);
+          }, function () {
+            $(this).find('i').last().remove();
           });
-        }
-      });
+        });
+      }
+    });
 }
 
 function changeSlideName(oldname, id) {
@@ -599,7 +615,7 @@ function changeSlideName(oldname, id) {
   document.getElementById('confirmUpdateSlideContent').append(renameDiv);
   const store = new Store('../data/');
   $('#confirmUpdateSlide').unbind('click');
-  $('#confirmUpdateSlide').click(function() {
+  $('#confirmUpdateSlide').click(function () {
     var newSlideName = $('#newSlideName');
     var newName = newSlideName.val();
     if (newName != '') {
@@ -658,7 +674,7 @@ function deleteSld(e, cancel = false) {
     $('#confirmDeleteContent').html(`Are you sure you want to ${reqId ? 'decline the ' : ''} ${permissions.slide.delete == true ? '' : 'request to '} delete the slide ${sanitize(oname)} with id ${sanitize(oid)} ?`);
     $('#deleteModal').modal('toggle');
     $('#confirmDelete').unbind('click');
-    $('#confirmDelete').click(function() {
+    $('#confirmDelete').click(function () {
       if (permissions.slide.delete == true && !cancel) {
         deleteSlideFromSystem(oid, filename, reqId); // Delete slide
       } else {
@@ -777,7 +793,7 @@ function appendNotifications(slideDeleteRequests) {
       $('#delReqBadge').html(`<span class="badge ml-2 badge-pill badge-warning">${slideDeleteRequests.length}</span>`);
       slideDeleteRequests.forEach((notif, i) => {
         $('#delReqTab').append(
-            `
+          `
             <div class="row pt-1 pb-2">
               <div class="col-lg-3 col-sm-3 col-3 text-center">
                 <span class="fas fa-trash-alt fa-2x pt-4"></span>
@@ -889,7 +905,7 @@ function appendNotifications(slideDeleteRequests) {
       });
     } else {
       $('#userReqTab').append(
-          `
+        `
         <div class="row">
           <div class="col-12 text-center text text-muted p-3">
             <i>No user registration requests to show</i>
@@ -907,22 +923,34 @@ function handleFilterChange(target) {
     selectedFilters.push(target.value);
     filterSlides();
   } else
-  if (!target.checked && index >= 0) {
-    selectedFilters.splice(index, 1);
-    filterSlides();
-  }
+    if (!target.checked && index >= 0) {
+      selectedFilters.splice(index, 1);
+      filterSlides();
+    }
 }
 
 function createCollectionPanel(data, cid) {
-  const panel = document.getElementById('collection-list');
-  const _html = data.map((d) => `<li
+  const panel = $('#collection-list')
+  panel.find('item').remove();
+
+  data.forEach(d=>{
+    const html = `<li
       class="list-group-item ${cid == d._id['$oid'] ? 'list-group-item-primary' : ''} item d-flex justify-content-between align-items-center"
       onclick = "location.href='./table.html?cid=${d._id['$oid']}'"
       >
     <div class="text-in-line">${d.name}</div>
     <span class="badge bg-primary rounded-pill" style="color:white;">${d.slides.length}</span>
-    </li>`).join('');
-  panel.innerHTML = panel.innerHTML + _html;
+    </li>`;
+    panel.append($.parseHTML(html));
+  })
+  // const _html = data.map(d => `<li
+  //     class="list-group-item ${cid == d._id['$oid'] ? 'list-group-item-primary' : ''} item d-flex justify-content-between align-items-center"
+  //     onclick = "location.href='./table.html?cid=${d._id['$oid']}'"
+  //     >
+  //   <div class="text-in-line">${d.name}</div>
+  //   <span class="badge bg-primary rounded-pill" style="color:white;">${d.slides.length}</span>
+  //   </li>`).join('');
+  // panel.innerHTML = panel.innerHTML + _html;
 }
 
 function filterSlides() {
@@ -930,7 +958,7 @@ function filterSlides() {
   let filters = getUserFilter();
   let filteredSlides;
   if (filters.length > 1 || (filters.length === 1 && filters[0] !== 'Public')) {
-    filteredSlides = allSlides.filter(function(slide) {
+    filteredSlides = allSlides.filter(function (slide) {
       var slideFilters = slide.filterList;
       let found = false;
       for (let i = 0; i < selectedFilters.length; i++) {
@@ -947,8 +975,8 @@ function filterSlides() {
   } else {
     filteredSlides = allSlides;
   }
-  const searchedSlides = filteredSlides.filter(function(slide) {
-    var ind = slide.slice(0, 5).reduce(function(a, b) {
+  const searchedSlides = filteredSlides.filter(function (slide) {
+    var ind = slide.slice(0, 5).reduce(function (a, b) {
       return a + ' ' + b;
     }, ' ').toLowerCase().indexOf(value);
     if (ind > -1) {

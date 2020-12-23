@@ -25,13 +25,6 @@
 	cursor: pointer;
 }
 
-.text-in-line {
-	/* padding:0 .5rem; */
-	margin: 0 auto;
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
-}
 /* #collection-list .item:hover {
 	background-color:#f8f9fa;
 } */
