@@ -21,5 +21,6 @@ module.exports = {
     "no-var" : 0,
     "new-cap" : 0,
     "prefer-const":0,
+    "linebreak-style": 0,
   },
 };

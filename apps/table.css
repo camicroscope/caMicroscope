@@ -23,13 +23,33 @@ footer{
 	padding-left: 0.7rem;
 	margin-top: 0.2rem;
 	font-family: "Open Sans", Helvetica, sans-serif;
-	line-height: 1.8;
+	/* line-height: 1.8; */
+}
+
+#collection-list li.item {
+	cursor: pointer;
+}
+#collection-list li.item:hover {
+	background-color:#deeeff;
 }
 #entries {
 	cursor: pointer;
 }
 .page-item {
 	cursor: pointer;
+}
+
+/* #collection-list .item:hover {
+	background-color:#f8f9fa;
+} */
+
+#collection-list .item {
+	/* font-weight:bold; */
+	color:#007bff;
+	padding: 0.5rem;
+}
+#collection-list .item i {
+	padding: 0.25rem;
 }
 
 nav li{
@@ -169,4 +189,7 @@ nav li:not(.active):hover a{
 
 .collapse.in {
 	 display: inline !important;
+}
+.p{
+	margin-bottom: 0;
 }

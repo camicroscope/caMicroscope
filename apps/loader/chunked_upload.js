@@ -3,6 +3,8 @@
 var startUrl = '../loader/upload/start';
 var continueUrl = '../loader/upload/continue/';
 var finishUrl = '../loader/upload/finish/';
+var startGoogleDriveUrl = '../loader/googleDriveUpload/getFile';
+var continueGoogleDriveUrl = '../loader/googleDriveUpload/checkStatus';
 var finishUploadSuccess = false;
 var checkSuccess = false;
 var chunkSize = 5*1024*1024;
@@ -34,17 +36,20 @@ function promiseChunkFileReader(file, part) {
 
 async function readFileChunks(file, token) {
   var part = 0;
+  $('#upload-progress-div').css('display', 'flex');
   var complete = false;
   while (!complete) {
     try {
       const data = await promiseChunkFileReader(file, part);
       const body = {chunkSize: chunkSize, offset: part*chunkSize, data: data};
-      const res = await continueUpload(token)(body);
+      const res = await continueUpload(token)(body, file);
       part++;
       console.log(part);
     } catch (e) {
       console.log(e);
       changeStatus('UPLOAD', e);
+      $('#filenameRow, #slidenameRow, #filterRow, #finish_btn').show(400);
+      $('#upload-progress-div').fadeOut();
       complete = true;
     }
   }
@@ -55,6 +60,7 @@ async function handleUpload(selectedFiles) {
   selectedFile = selectedFiles[0];
   const filename = selectedFiles[0]['name'];
   const token = await startUpload(filename);
+  $('#tokenRow').show(300);
   const callback = continueUpload(token);
   readFileChunks(selectedFile, token);
   // parseFile(selectedFile, callback, 0, x=>(changeStatus("UPLOAD", "Finished Reading File")))
@@ -79,13 +85,17 @@ async function startUpload(filename) {
 }
 
 function continueUpload(token) {
-  return async function(body) {
-    changeStatus('UPLOAD', 'Uploading chunk at: '+ body.offset +' of size '+ body.chunkSize);
+  return async function(body, file) {
+    let progressValue = Math.floor((body.offset/file.size)*100);
+    $('#upload-progress').css('width', progressValue+'%').attr('aria-valuenow', progressValue).text(progressValue + '%');
+    changeStatus('UPLOAD', 'Uploading chunk at: '+ body.offset/(1024*1024) +'MB of total '+
+                  Math.round(file.size/(1024*1024)) + 'MB');
     return await fetch(continueUrl + token, {method: 'POST', body: JSON.stringify(body), headers: {
       'Content-Type': 'application/json; charset=utf-8',
     }});
   };
 }
+
 function finishUpload() {
   var reset = true;
   const token = document.getElementById('token'+0).value;
@@ -143,8 +153,11 @@ function finishUpload() {
       changeStatus('UPLOAD | ERROR;', e);
       reset = true;
       console.log(e);
+    } else {
+      validateForm(CheckBtn);
     }
-  });
+  },
+  );
 }
 
 
@@ -239,4 +252,151 @@ async function continueUrlUpload(token, url) {
       alert(error['responseJSON']['error']);
     }
   });
+}
+
+// Start the Google Picker for Google Drive Upload
+function googlePickerStart() {
+  // The Browser API key obtained from the Google API Console.
+  // Replace with your own Browser API key, or your own key.
+  var developerKey = 'xxxxxx';
+
+  // The Client ID obtained from the Google API Console. Replace with your own Client ID.
+  var clientId = 'xxxxxx';
+
+  // Replace with your own project number from console.developers.google.com.
+  // See "Project number" under "IAM & Admin" > "Settings"
+  var appId = 'xxxxxx';
+
+  // Scope to use to access user's Drive items.
+  var scope = ['https://www.googleapis.com/auth/drive.file'];
+
+  var pickerApiLoaded = false;
+  var oauthToken;
+
+  // Use the Google API Loader script to load the google.picker script.
+  function loadPicker() {
+    gapi.load('auth', {'callback': onAuthApiLoad});
+    gapi.load('picker', {'callback': onPickerApiLoad});
+  }
+
+  function onAuthApiLoad() {
+    window.gapi.auth.authorize(
+        {
+          'client_id': clientId,
+          'scope': scope,
+          'immediate': false,
+        },
+        handleAuthResult);
+  }
+
+  function onPickerApiLoad() {
+    pickerApiLoaded = true;
+    createPicker();
+  }
+
+  function handleAuthResult(authResult) {
+    if (authResult && !authResult.error) {
+      oauthToken = authResult.access_token;
+      createPicker();
+    }
+  }
+
+  // Create and render a Picker object
+  function createPicker() {
+    if (pickerApiLoaded && oauthToken) {
+      let view = new google.picker.DocsView(google.picker.ViewId.DOCS).setParent('root').setIncludeFolders(true);
+      let picker = new google.picker.PickerBuilder()
+          .enableFeature(google.picker.Feature.NAV_HIDDEN)
+          .setAppId(appId)
+          .setOAuthToken(oauthToken)
+          .addView(view)
+          .addView(new google.picker.DocsUploadView())
+          .setDeveloperKey(developerKey)
+          .setCallback(pickerCallback)
+          .build();
+      picker.setVisible(true);
+    }
+  }
+
+  // A simple callback implementation.
+  function pickerCallback(data) {
+    if (data.action == google.picker.Action.PICKED) {
+      let fileId = data.docs[0].id;
+      let fileName = data.docs[0].name;
+      // alert('The user selected: ' + fileId);
+      startGoogleDriveUpload(getUserId(), fileId, fileName);
+    }
+  }
+  loadPicker();
+  $('#upload-dialog').modal('hide');
+}
+
+
+function startGoogleDriveUpload(userId, fileId, fileName) {
+  $('#upload-dialog').modal('show');
+  $('.fileInputClass label').text(fileName);
+  $('#uploadLoading').show();
+  $('#gdriveUpload, #urlswitch').hide();
+  let data = JSON.stringify({'userId': userId, 'fileId': fileId});
+  // console.log(data);
+  let requestOptions = {
+    method: 'POST',
+    body: data,
+    headers: {
+      'Content-Type': 'application/json; charset=utf-8',
+    },
+  };
+
+  fetch(startGoogleDriveUrl, requestOptions)
+      .then((response) => response.text())
+      .then((result) => {
+        result = JSON.parse(result);
+        console.log(result);
+        token = result['token'];
+        updateFormOnUpload(fileName, token);
+        $('#tokenRow').show(300);
+        if (result['authURL'] != null) {
+          window.open(result['authURL'], '_blank');
+        }
+        continueGoogleDriveUpload(token);
+      })
+      .catch((error) => console.log('error', error));
+}
+
+function continueGoogleDriveUpload(token) {
+  let data = JSON.stringify({'token': token});
+  let requestOptions = {
+    method: 'POST',
+    body: data,
+    headers: {
+      'Content-Type': 'application/json; charset=utf-8',
+    },
+  };
+
+  let i = 0;
+  let inter=setInterval(function() { // Calling this route every 3 sec. till the download is complete
+    i++;
+    if (i>=180) { // 180*3000 ms = 9 minutes (max time for running this)
+      clearInterval(inter);
+    }
+    fetch(continueGoogleDriveUrl, requestOptions)
+        .then((response) => response.text())
+        .then((result) => {
+          result = JSON.parse(result);
+          console.log(result);
+          if (result['downloadDone']) {
+            changeStatus('UPLOAD', 'Done uploading file from google drive');
+            $('#filenameRow, #slidenameRow, #filterRow, #finish_btn').show(400);
+            $('#upload-progress-div, #uploadLoading').fadeOut();
+            $('#gdriveUpload, #urlswitch').show();
+            complete = true;
+            clearInterval(inter);
+          }
+        })
+        .catch((error) => {
+          console.log('error', error);
+          alert('ERROR: '+error);
+          clearInterval(inter);
+        });
+  }, 3000);
 }
