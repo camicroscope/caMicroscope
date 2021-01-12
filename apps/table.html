@@ -41,23 +41,14 @@
 
 	<!-- popup css -->
 	<link rel="stylesheet" type="text/css" media="all" href="../../css/popup.css" />
-
-	<style>
-		html,
-		body {
-			width: 100%;
-			height: 100%;
-			min-height: 100%;
-			display: flex;
-			flex-direction: column;
-		}
-	</style>
-		<script src='../common/stacktable.js'></script>
+<script src='../common/stacktable.js'></script>
 	<link rel="stylesheet" href="./table.css" />
 	<link rel="shortcut icon" type="image/x-icon" href="/apps/landing/favicon.png">
 </head>
 
 <body>
+	<div class="page-container">
+	<div>
 	<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark" style="position: sticky;">
 		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
 			<span class="navbar-toggler-icon"></span>
@@ -69,6 +60,9 @@
 				</li>
 				<li class="nav-item active link">
 					<a class="nav-link" href="table.html"> <i class="fas fa-list-ul"></i> Slides</a>
+				</li>
+				<li class="nav-item link">
+					<a class="nav-link" href="Info.html"> <i class="fas fa-info-circle"></i> Info</a>
 				</li>
 				<li class="nav-item link">
 					<a class="nav-link" href="./dev-workbench/workbench.html"> <i class="fas fa-pencil-ruler"></i> Workbench</a>
@@ -147,8 +141,20 @@
 		</div>
 	</div>
 
-	<div class='p-2 bg-light' style="flex-grow: 1;">
-		
+	<div class='bg-light'>
+		<div class="p-2">
+		<button type="button" class="btn btn-success float-right mb-2"
+			onclick="(()=>{location.reload();return false;})()"> <i class="fas fa-sync-alt"></i> Reload</button>
+			<div id="slideUploadButton" class="btn-group float-right mb-2 mr-2">
+				<button type="button" class="btn btn-primary " data-toggle="modal"
+			data-target="#upload-dialog" onclick="hidePostButton(); hideCheckButton(); resetUploadForm();" > <i class="fas fa-upload"></i> Upload</button>
+				<button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				  <span class="sr-only">Toggle Dropdown</span>
+				</button>
+				<div class="dropdown-menu" >
+				  <a class="dropdown-item" href="../apps/batchloader/batchloader.html">Upload Batch</a>
+				</div>
+			</div>
 
 
 			<div class="modal fade" id="upload-dialog" tabindex="-1" role="dialog"
@@ -333,14 +339,19 @@
 		</div>
 		</div>
 	</div>
+	<!-- popup -->	
+	<div id="popup-container"></div>
 </div>
 
 
-	<div class="text-center text-white bg-dark p-3" style="position: static;bottom: 0;width: 100%;">
-		<p class="p">Copyright © 2020 caMicroscope</p>
-	</div>
-	<!-- popup -->
-	<div id="popup-container"></div>
+
+</div>
+
+
+	<footer class="text-center text-white bg-dark p-3">
+		<p class="p">Copyright © 2021 caMicroscope</p>
+	</footer>
+	
 
 </body>
 <script src="./table.js">
