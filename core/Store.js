@@ -927,6 +927,23 @@ class Store {
   }
 
   /**
+   * delete freeform document
+   * @param {object} id - the freeform object id
+   * @return {promise} - promise which resolves with response
+   **/
+  deleteFreeform(id){
+    const suffix = 'Freeform/delete';
+    const url = this.base + suffix;
+    const query = {
+      '_id': id
+    };
+    return fetch(url + '?' + objToParamStr(query), {
+      method: 'DELETE',
+      credentials: 'include',
+      mode: 'cors',
+    }).then(this.errorHandler);
+  }
+  /**
    * get a collection info
    * @param {object} json - the log data
    * @return {promise} - promise which resolves with data
