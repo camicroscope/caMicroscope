@@ -1178,6 +1178,7 @@ function algoCallback(data) {
  * overlayer manager callback function for show or hide
  * @param {Object} data
  */
+const heatmapDefaultColor = "#1034a6";
 async function callback(data) {
   const viewerName = this.toString();
   let camic = null;
@@ -1256,7 +1257,7 @@ async function callback(data) {
           mode: 'binal',
           size: $D.heatMapData.provenance.analysis.size,
           fields: $D.heatMapData.provenance.analysis.fields,
-          color: '#ffa500', // inputs[3].value
+          color: heatmapDefaultColor, // inputs[3].value
         };
 
         if ($D.heatMapData.provenance.analysis.setting) {
@@ -1291,7 +1292,7 @@ async function callback(data) {
                   // editedData:$D.editedDataClusters,
                   size: $D.heatMapData.provenance.analysis.size,
                   fields: $D.heatMapData.provenance.analysis.fields,
-                  color: '#ffa500', // inputs[3].value
+                  color: heatmapDefaultColor, // inputs[3].value
                 };
 
                 if ($D.heatMapData.provenance.analysis.setting) {

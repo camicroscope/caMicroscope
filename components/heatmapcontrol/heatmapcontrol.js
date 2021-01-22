@@ -1,17 +1,20 @@
-// heatmapcontrol.js
-//
-
+const defaultColorList = {
+3:["#2b83ba", "#ffffbf", "#d7191c"],
+4:["#2b83ba", "#abdda4", "#fdae61", "#d7191c"],
+5:["#2b83ba", "#abdda4", "#ffffbf", "#fdae61", "#d7191c"],
+6:["#3288bd", "#99d594", "#e6f598", "#fee08b", "#fc8d59", "#d53e4f"],
+7:["#3288bd", "#99d594", "#e6f598", "#ffffbf", "#fee08b", "#fc8d59", "#d53e4f"],
+8:["#3288bd", "#66c2a5", "#abdda4", "#e6f598", "#fee08b", "#fdae61", "#f46d43", "#d53e4f"],
+9:["#3288bd", "#66c2a5", "#abdda4", "#e6f598", "#ffffbf", "#fee08b", "#fdae61", "#f46d43", "#d53e4f"],
+10:["#5e4fa2", "#3288bd", "#66c2a5", "#abdda4", "#e6f598", "#fee08b", "#fdae61", "#f46d43", "#d53e4f", "#9e0142"],
+11:["#5e4fa2", "#3288bd", "#66c2a5", "#abdda4", "#e6f598", "#ffffbf", "#fee08b", "#fdae61", "#f46d43", "#d53e4f", "#9e0142"],
+}
 // Default Color List for gradient view
-const defaultColorList = ['#EAF2F8',
-  '#D4E6F1',
-  '#A9CCE3',
-  '#7FB3D5',
-  '#5499C7',
-  '#2980B9',
-  '#2471A3',
-  '#1F618D',
-  '#1A5276',
-  '#154360'];
+// const defaultColorList = ["#d7191c",
+// "#fdae61",
+// "#ffffbf",
+// "#abdda4",
+// "#2b83ba"];
 // Regular Expression for testing valid color values
 const cssHexRegExp = new RegExp('^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$');
 function HeatmapControl(options) {
@@ -350,7 +353,7 @@ function createIntervalInputs(container, noOfIntervals, changeFunc) {
     if (i <= $CAMIC.viewer.heatmap._colors.length) {
       color.value = $CAMIC.viewer.heatmap._colors[i - 1];
     } else {
-      color.value = defaultColorList[i - 1];
+      color.value = defaultColorList[i];
     }
     color.oninput = changeFunc;
     // Input for color legends.
