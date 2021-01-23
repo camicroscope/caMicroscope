@@ -4,6 +4,7 @@
 <div class="g-signin2" data-onsuccess="onSignIn"></div>
 <a href="#" onclick="signOut();">Sign out</a>
 <script>
+  // This function is invoked when sign out button is clicked. It signs out the existing user
   function signOut() {
     var auth2 = gapi.auth2.getAuthInstance();
     auth2.signOut().then(function () {
@@ -12,7 +13,14 @@
   }
 </script>
 <script>
-var cookie_name = "token" // "token" is expected by elevate router
+/* The variables are -
+  cookie_name : "token" is expected by elevate router
+  base_deployment_url : for storing the base url
+  redirect_uri : redirecting link to login.html
+  default_redirect : The default redirecting link is to table.html
+  signup_redirect : This link stores the redirect link to signup page
+*/
+var cookie_name = "token"
 var base_deployment_url = window.location.toString().split("/").slice(0,-1).join("/")
 var redirect_uri = base_deployment_url + "/login.html"
 var default_redirect = base_deployment_url + "/apps/table.html"
@@ -42,7 +50,7 @@ function getUrlParam(name, url) {
     if (!results[2]) return '';
     return decodeURIComponent(results[2].replace(/\+/g, ' '));
 }
-
+// The function is called when sign in option is called
 function onSignIn(googleUser) {
   var id_token = googleUser.getAuthResponse().id_token;
   console.info(id_token)
