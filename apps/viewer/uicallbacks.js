@@ -1178,7 +1178,7 @@ function algoCallback(data) {
  * overlayer manager callback function for show or hide
  * @param {Object} data
  */
-const heatmapDefaultColor = "#1034a6";
+const heatmapDefaultColor = '#1034a6';
 async function callback(data) {
   const viewerName = this.toString();
   let camic = null;
