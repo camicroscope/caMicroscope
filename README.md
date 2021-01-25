@@ -119,3 +119,4 @@ RUN if [ -z ${viewer} ]; then git clone https://github.com/camicroscope/camicros
 docker-compose -f develop.yml build
 docker-compose -f develop.yml up
 ```
+- To enable and setup cloud upload APIs for caMicroscope, follow and replicate the instructions as provided in [Cloud  Upload APIs Guide](https://github.com/camicroscope/caMicroscope/blob/develop/docs/cloudUploadAPIs.md)
