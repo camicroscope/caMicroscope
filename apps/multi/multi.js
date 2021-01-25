@@ -45,7 +45,12 @@ function onInit() {
       promises.push(store.getSlide(j));
     }
   } else {
-    promises.push(store.findSlide(null, null, null, null, query));
+    if (mode == 'pathdb') {
+      // use pathdb query instead
+      // promises.push(store.findSlide(null, null, null, null, query));
+    } else {
+      promises.push(store.findSlide(null, null, null, null, query));
+    }
   }
   Promise.all(promises).then((xx)=>{
     let x = xx.flat();

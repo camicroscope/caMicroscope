@@ -1,0 +1,124 @@
+#main-grid {
+  flex-flow: row wrap;
+}
+
+.search-box {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+.text-in-line {
+  margin: 0;
+}
+
+.has-search .form-control-feedback {
+  position: absolute;
+  z-index: 2;
+  display: block;
+  width: 2.375rem;
+  height: 2.375rem;
+  line-height: 2.375rem;
+  text-align: center;
+  pointer-events: none;
+  color: #aaa;
+}
+
+.has-search .form-control {
+  padding-left: 2.375rem;
+}
+
+p.card-text {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  font-size: 0.8rem;
+  height: 2.4rem;
+  overflow: hidden;
+  text-indent: 1em;
+}
+
+div.card.col-card {
+  margin: 0.5rem 1.5rem 1.5rem 0.5rem;
+  cursor: pointer;
+  width: 16rem;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+div.card.col-card:hover {
+  box-shadow: 0 4px 8px 0 rgba(107, 72, 72, 0.4),
+    0 6px 20px 0 rgba(0, 0, 0, 0.38);
+}
+
+.text-in-line {
+  color: #5d5d5d;
+}
+
+/* custom tips  */
+.bs-tooltip-top .arrow::before {
+  top: -1;
+  border-width: .5rem .5rem 0;
+  border-top-color: #5d5d5d;
+}
+.bs-tooltip-bottom .arrow::before {
+  bottom: -1;
+  border-width: 0 .5rem .5rem;
+  border-bottom-color: #5d5d5d;
+}
+.bs-tooltip-right .arrow::before {
+  right: -1;
+  border-width: .5rem .5rem 0 .5rem;
+  border-right-color: #5d5d5d;
+}
+.bs-tooltip-left .arrow::before {
+  left: -1;
+  border-width: .5rem 0 .5rem 0.5rem;
+  border-left-color: #5d5d5d;
+}
+
+.tooltip .tooltip-inner {
+  font-size: .8rem;
+  background-color: #5d5d5d;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+
+#edit-modal .card {
+  border: none;
+}
+
+.alert {
+  box-sizing: border-box;
+  padding: .75rem 1.25rem;
+  position: absolute;
+  bottom: 2rem;
+  left: 2rem;
+  padding: .5rem 1.75rem .5rem .5rem;
+  margin: 0;
+  z-index: 1100;
+}
+
+
+.alert-dismissible .close {
+  position: absolute;
+  top: -1px;
+  right: 0;
+  padding: .5rem;
+  color: inherit;
+}
+#selected-slide li,
+#unselected-slide li {
+  opacity: .85;
+  cursor: pointer;
+}
+
+#selected-slide li:hover,
+#unselected-slide li:hover {
+  opacity: 1;
+  background: #e9ecef;
+}
+#selected-slide li i.fas, #unselected-slide li i.fas {
+  opacity: .7;
+}
+
+#selected-slide li i.fas:hover, #unselected-slide li i.fas:hover {
+  opacity: 1;
+}

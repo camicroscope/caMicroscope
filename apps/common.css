@@ -1,0 +1,7 @@
+.text-in-line {
+	margin: 0 auto;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+

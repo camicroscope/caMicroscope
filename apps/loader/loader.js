@@ -90,7 +90,7 @@ function changeStatus(step, text, reset=true) {
     responsiveContainer.appendChild(table);
     divContainer.appendChild(responsiveContainer);
     $('#statusTable').stacktable();
-    document.getElementById('load_status').innerHTML=step;
+    // document.getElementById('load_status').innerHTML=step;
   } else {
     text = JSON.stringify(text);
     text = step + ' | ' + text;
@@ -169,6 +169,8 @@ function handleCheck(filename, reset, id) {
         // Add the filename, to be able to fetch the thumbnail.
         success['preview'] = filename;
         changeStatus('CHECK', success, reset);
+        $('#finish_btn').fadeOut(300);
+        $('#filename0, #slidename0, #filter0').prop('disabled', true);
       }, // Handle the success response object
   ).catch(
       (error) => changeStatus('CHECK', error, reset), // Handle the error response object
@@ -220,6 +222,7 @@ function CheckBtn() {
 }
 
 function PostBtn() {
+  document.getElementById('load_status').innerHTML='';
   var filename = document.getElementById('filename'+0).value;
   var slidename = document.getElementById('slidename'+0).value;
   var filter = document.getElementById('filter'+0).value;
