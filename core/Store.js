@@ -931,11 +931,11 @@ class Store {
    * @param {object} id - the freeform object id
    * @return {promise} - promise which resolves with response
    **/
-  deleteFreeform(id){
+  deleteFreeform(id) {
     const suffix = 'Freeform/delete';
     const url = this.base + suffix;
     const query = {
-      '_id': id
+      '_id': id,
     };
     return fetch(url + '?' + objToParamStr(query), {
       method: 'DELETE',
