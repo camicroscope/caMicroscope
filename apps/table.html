@@ -13,7 +13,11 @@
 	<!-- Font Awesome -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
 
+	<!-- Dropbox -->
+	<script type="text/javascript" src="https://www.dropbox.com/static/api/2/dropins.js" id="dropboxjs" data-app-key="YOUR_APP_KEY"></script>
+
 	<script src='../common/authChecker.js'></script>
+
 	<script>
 		__auth_check(1)
 	</script>
@@ -200,6 +204,7 @@
 														<span class="sr-only"></span>
 													</div> </div>
 													<a title="Upload from google drive" href="#" id='gdriveUpload' onclick="googlePickerStart()"><i style="font-size: 1.2em;" class="fab fa-google-drive"></i></a>
+													<a title="Upload from Dropbox" href="#" id='dropboxUpload' onclick="dropboxChooserStart()"><i style="font-size: 1.2em;" class="fab fa-dropbox"></i></a>
 													<a href="#" id='urlswitch' onclick="$('#urlInput').val(''); switchToUrl();" > <span style="position: absolute; right:2em;" > <i class="fas fa-link"></i> Upload from URL</span></a>
 													<a href="#" style="display: none;" id="fileswitch" onclick=" switchToFile();" > <span style="position: absolute; right:2em;" > <i class="fas fa-folder"></i> Upload from local</span></a>
 
