@@ -1,18 +1,4 @@
-// dataloaders.js
-//
 
-// function SlideDataLoader(){
-//  function loadingSlideInfo(){
-
-//  }
-//  var checkCoreIsReady = setInterval(function () {
-//      if($CAMIC) {
-//          clearInterval(checkCoreIsReady);
-//          //load data
-//          loadingSlideInfo();
-//      }
-//  }, 1000);
-// }
 
 function FormTempaltesLoader() {
   function loadingFormTemplates() {
@@ -48,84 +34,89 @@ function FormTempaltesLoader() {
   }, 500);
 }
 
-let _l = false;
-function HumanlayersLoader() {
-  function loadingOverlayers() {
+function layersLoader() {
+  // human
+  function loadingHumanOverlayers() {
     $CAMIC.store.findMarkTypes($D.params.slideId, 'human').then(function(layers) {
-      if (!$D.overlayers) $D.overlayers = [];
+      
       // convert part not nesscary
-      $D.overlayers.push(...layers.map(covertToHumanLayer));
-      _l = true;
+      $D.humanlayers = [...layers.map(covertToHumanLayer)];
+      console.log('loaded Human layers', $D.humanlayers)
+
+      // add data and create ui item
+      addHumanLayerItems()
+
     }).catch(function(error) {
       // overlayers schema
-      _l = true;
       $UI.message.addError('Loading Human Layers is Error');
       console.error(error);
     });
   }
-
-  var checkCoreIsReady = setInterval(function() {
-    if ($CAMIC && $D.params.data) {
-      clearInterval(checkCoreIsReady);
-      // load data
-      loadingOverlayers();
-    }
-  }, 500);
-}
-let typeIds = {};
-let _c = false;
-function ComputerlayersLoader() {
-  function loadingOverlayers() {
-    $CAMIC.store.findMarkTypes($D.params.slideId, 'computer').then(function(layers) {
-      if (!$D.overlayers) $D.overlayers = [];
+  // ruler
+  function loadingRulerOverlayers() {
+    $CAMIC.store.findMarkTypes($D.params.slideId, 'ruler').then(function(layers) {
+      
       // convert part not nesscary
-      $D.overlayers.push(...layers.map(covertToCumputerLayer));
-      _c = true;
+      $D.rulerlayers = [...layers.map(covertToRulerLayer)];
+      console.log('loaded ruler layers', $D.rulerlayers)
+
+      // add data and create ui item
+      addRulerLayerItems()
+
     }).catch(function(error) {
       // overlayers schema
-      _c = true;
-      $UI.message.addError('Loading Computer Layers is Error');
+      $UI.message.addError('Loading Ruler Layers is Error');
       console.error(error);
     });
   }
-
-  var checkCoreIsReady = setInterval(function() {
-    if ($CAMIC && $D.params.data) {
-      clearInterval(checkCoreIsReady);
-      // load data
-      loadingOverlayers();
-    }
-  }, 500);
-}
-
-let _h = false; // loading heatmap
-function HeatmaplayersLoader() {
+  // heatmap
   function loadingHeatmapOverlayers() {
     $CAMIC.store.findHeatmapType($D.params.slideId).then(function(layers) {
-      if (!$D.overlayers)$D.overlayers = [];
+      $D.heatmaplayers = [];
       // convert and load heatmap layer
-      const TypeId = randomId();
       for (let i = 0; i < layers.length; i++) {
         const item = layers[i].provenance.analysis;
-        $D.overlayers.push({id: item.execution_id,
+        $D.heatmaplayers.push({id: item.execution_id,
           name: item.execution_id,
-          typeId: TypeId,
-          typeName: item.computation});
+          typeId: "heatmap",
+          typeName: "heatmap"
+        });
       }
-      _h = true;
+      console.log('loaded heatmap layers', $D.heatmaplayers)
+      // add data and create ui item
+      addHeatmapLayerItems()
     }).catch(function(error) {
       // overlayers schema
-      _h = true;
       $UI.message.addError('Loading heatmap Overlayers is Error');
       console.error(error);
     });
   }
 
+  // segmentation
+  function loadingComputerOverlayers() {
+    $CAMIC.store.findMarkTypes($D.params.slideId, 'computer').then(function(layers) {
+      
+      // convert part not nesscary
+      $D.computerlayers=[...layers.map(covertToCumputerLayer)];
+      console.log('loaded computer layers', $D.computerlayers)
+      // add data and create ui item
+      addComputerLayerItems()      
+    }).catch(function(error) {
+      $UI.message.addError('Loading Computer Layers is Error');
+      console.error(error);
+    });
+  }
   var checkCoreIsReady = setInterval(function() {
-    if ($CAMIC && $D.params.data) {
+    if ($UI.layersViewer && $UI.layersViewerMinor) {
       clearInterval(checkCoreIsReady);
-      // load data
+      loadingHumanOverlayers();
+      loadingRulerOverlayers();
       loadingHeatmapOverlayers();
+      loadingComputerOverlayers();
     }
   }, 500);
 }
+
+
+
+

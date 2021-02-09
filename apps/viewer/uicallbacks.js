@@ -220,7 +220,7 @@ function closeSecondaryViewer() {
     $minorCAMIC = null;
   }
 
-  // hide on layersViewer
+  // hide on layersViewer TODO 
   $UI.layersViewerMinor.toggleAllItems();
   $UI.layersViewerMinor.setting.data.forEach((d) => delete d.layer);
 }
@@ -715,7 +715,7 @@ function convertHumanAnnotationToPopupBody(notes) {
  */
 function annoDelete(data) {
   if (!data.id) return;
-  const annotationData = $D.overlayers.find(
+  const annotationData = $D.humanlayers.find(
       (d) => d.data && d.data._id.$oid == data.oid,
   );
   let message;
@@ -743,12 +743,12 @@ function annoDelete(data) {
           return;
         }
 
-        const index = $D.overlayers.findIndex((layer) => layer.id == data.id);
+        const index = $D.humanlayers.findIndex((layer) => layer.id == data.id);
 
         if (index == -1) return;
 
         data.index = index;
-        const layer = $D.overlayers[data.index];
+        const layer = $D.humanlayers[data.index];
         // update UI
         if (Array.isArray(layer.data)) deleteCallbackOld(data);
         else deleteCallback(data);
@@ -758,7 +758,7 @@ function annoDelete(data) {
         console.error(e);
       })
       .finally(() => {
-      // console.log('delete end');
+        console.log('delete end');
       });
 }
 
@@ -768,10 +768,10 @@ function annoDelete(data) {
  */
 function deleteCallback(data) {
   // remove overlay
-  $D.overlayers.splice(data.index, 1);
+  $D.humanlayers.splice(data.index, 1);
   // update layer manager
-  $UI.layersViewer.removeItemById(data.id);
-  $UI.layersViewerMinor.removeItemById(data.id);
+  $UI.layersViewer.removeItemById(data.id, "human");
+  $UI.layersViewerMinor.removeItemById(data.id, "human");
 
   $CAMIC.viewer.omanager.removeOverlay(data.id);
   if ($minorCAMIC && $minorCAMIC.viewer) {
@@ -785,7 +785,7 @@ function deleteCallback(data) {
 
 // for support QUIP2.0 Data model - delete callback
 function deleteCallbackOld(data) {
-  const layer = $D.overlayers[data.index];
+  const layer = $D.humanlayers[data.index];
   // for support QUIP2.0
   const idx = layer.data.findIndex((d) => d._id.$oid === data.oid);
   if (idx == -1) return;
@@ -793,13 +793,13 @@ function deleteCallbackOld(data) {
 
   // delete entire layer if there is no data.
   if (layer.data.length == 0) {
-    $D.overlayers.splice(data.index, 1);
+    $D.humanlayers.splice(data.index, 1);
     $CAMIC.viewer.omanager.removeOverlay(data.id);
   }
 
   $CAMIC.viewer.omanager.updateView();
   // update layers Viewer
-  $UI.layersViewer.update();
+  // $UI.layersViewer.update();
   // close popup panel
   $UI.annotPopup.close();
 }
@@ -944,17 +944,18 @@ function saveBrushLabel(isOff) {
           const newItem = {
             id: execId,
             name: annotJson.provenance.analysis.name,
-            typeId: typeIds['human'],
+            typeId: 'human',
             typeName: 'human',
             creator: getUserId(),
             shape: annotJson.geometries.features[0].geometry.type,
             data: null,
           };
-          $D.overlayers.push(newItem);
-          $UI.layersViewer.addItem(newItem);
+          $D.humanlayers.push(newItem);
+          $UI.layersViewer.addItem(newItem, 'human');
           $UI.layersViewerMinor.addItem(
               newItem,
-          $minorCAMIC && $minorCAMIC.viewer ? true : false,
+              'human',
+              $minorCAMIC && $minorCAMIC.viewer ? true : false,
           );
 
           // console.log($D.overlayers);
@@ -962,13 +963,13 @@ function saveBrushLabel(isOff) {
           // return;
           loadAnnotationById(
               $CAMIC,
-              $UI.layersViewer.getDataItemById(execId),
+              $UI.layersViewer.getDataItemById(execId, 'human'),
               saveBrushAnnotCallback.bind(isOff),
           );
           if ($minorCAMIC && $minorCAMIC.viewer) {
             loadAnnotationById(
                 $minorCAMIC,
-                $UI.layersViewerMinor.getDataItemById(execId),
+                $UI.layersViewerMinor.getDataItemById(execId, 'human'),
                 null,
             );
           }
@@ -992,7 +993,7 @@ function saveBrushAnnotCallback() {
   $UI.appsSideMenu.close();
   // $UI.toolbar._mainTools[1].querySelector('[type=checkbox]').checked = true;
   // $UI.layersSideMenu.open();
-  $UI.layersViewer.update();
+  // $UI.layersViewer.update();
 
   if (this == true) {
     // isOff
@@ -1018,7 +1019,7 @@ function saveLabelAnnotCallback() {
   $UI.appsSideMenu.close();
   // $UI.toolbar._mainTools[1].querySelector('[type=checkbox]').checked = true;
   // $UI.layersSideMenu.open();
-  $UI.layersViewer.update();
+  // $UI.layersViewer.update();
   // $CAMIC.status = null;
 }
 
@@ -1111,30 +1112,31 @@ function annoCallback(data) {
         const newItem = {
           id: execId,
           name: noteData.name,
-          typeId: typeIds['human'],
+          typeId: 'human',
           typeName: 'human',
           creator: getUserId(),
           shape: annotJson.geometries.features[0].geometry.type,
           data: null,
         };
-        $D.overlayers.push(newItem);
-        $UI.layersViewer.addItem(newItem);
+        $D.humanlayers.push(newItem);
+        $UI.layersViewer.addItem(newItem, 'human');
         $UI.layersViewerMinor.addItem(
             newItem,
-        $minorCAMIC && $minorCAMIC.viewer ? true : false,
+            'human',
+            $minorCAMIC && $minorCAMIC.viewer ? true : false,
         );
 
         // data for UI
         // return;
         loadAnnotationById(
             $CAMIC,
-            $UI.layersViewer.getDataItemById(execId),
+            $UI.layersViewer.getDataItemById(execId, 'human'),
             saveAnnotCallback,
         );
         if ($minorCAMIC && $minorCAMIC.viewer) {
           loadAnnotationById(
               $minorCAMIC,
-              $UI.layersViewerMinor.getDataItemById(execId),
+              $UI.layersViewerMinor.getDataItemById(execId, 'human'),
               null,
           );
         }
@@ -1167,7 +1169,7 @@ function saveAnnotCallback() {
   // open layer side
   $UI.toolbar._mainTools[1].querySelector('[type=checkbox]').checked = true;
   $UI.layersSideMenu.open();
-  $UI.layersViewer.update();
+  // $UI.layersViewer.update();
   $CAMIC.status = null;
 }
 function algoCallback(data) {
@@ -1192,7 +1194,8 @@ async function callback(data) {
     default:
       break;
   }
-
+  console.log(data)
+  
   data.forEach(function(d) {
     const item = d.item;
     if (item.typeName == 'ruler') {
@@ -1319,9 +1322,7 @@ async function callback(data) {
             })
             .finally(function() {
               Loading.close();
-              if ($D.overlayers) {
-              } else {
-              // set message
+              if (!$D.heatMapData) {
                 $UI.message.addError('Loading Heatmap Data Is Error');
               }
             });
@@ -1391,9 +1392,9 @@ function loadRulerById(camic, rulerData, callback) {
           console.error(errorMessage);
           $UI.message.addError(errorMessage, 4000);
           // delete item form layview
-          removeElement($D.overlayers, item.id);
-          $UI.layersViewer.removeItemById(item.id);
-          $UI.layersViewerMinor.removeItemById(item.id);
+          removeElement($D.rulerlayers, item.id);
+          $UI.layersViewer.removeItemById(item.id, "ruler");
+          $UI.layersViewerMinor.removeItemById(item.id, "ruler");
           return;
         }
 
@@ -1406,9 +1407,9 @@ function loadRulerById(camic, rulerData, callback) {
               4000,
           );
           // delete item form layview
-          removeElement($D.overlayers, item.id);
-          $UI.layersViewer.removeItemById(item.id);
-          $UI.layersViewerMinor.removeItemById(item.id);
+          removeElement($D.rulerlayers, item.id);
+          $UI.layersViewer.removeItemById(item.id, "ruler");
+          $UI.layersViewerMinor.removeItemById(item.id, "ruler");
           return;
         }
 
@@ -1467,9 +1468,9 @@ function loadAnnotationById(camic, layerData, callback) {
           console.error(errorMessage);
           $UI.message.addError(errorMessage, 4000);
           // delete item form layview
-          removeElement($D.overlayers, item.id);
-          $UI.layersViewer.removeItemById(item.id);
-          $UI.layersViewerMinor.removeItemById(item.id);
+          removeElement($D.humanlayers, item.id);
+          $UI.layersViewer.removeItemById(item.id, "human");
+          $UI.layersViewerMinor.removeItemById(item.id, "human");
           return;
         }
 
@@ -1482,9 +1483,9 @@ function loadAnnotationById(camic, layerData, callback) {
               4000,
           );
           // delete item form layview
-          removeElement($D.overlayers, item.id);
-          $UI.layersViewer.removeItemById(item.id);
-          $UI.layersViewerMinor.removeItemById(item.id);
+          removeElement($D.humanlayers, item.id);
+          $UI.layersViewer.removeItemById(item.id, "human");
+          $UI.layersViewerMinor.removeItemById(item.id, "human");
           return;
         }
         // for support quip 2.0 data model
@@ -2081,32 +2082,26 @@ function savePresetLabel() {
         const newItem = {
           id: execId,
           name: noteData.name,
-          typeId: typeIds['human'],
+          typeId: 'human',
           typeName: 'human',
           creator: getUserId(),
           shape: annotJson.geometries.features[0].geometry.type,
           data: null,
         };
-        $D.overlayers.push(newItem);
-        $UI.layersViewer.addItem(newItem);
+        $D.humanlayers.push(newItem);
+        $UI.layersViewer.addItem(newItem, 'human');
         $UI.layersViewerMinor.addItem(
             newItem,
-        $minorCAMIC && $minorCAMIC.viewer ? true : false,
+            'human',
+            $minorCAMIC && $minorCAMIC.viewer ? true : false,
         );
 
         __data._id = {$oid: __data._id};
         addAnnotation(
             execId,
             __data,
+            'human'
         );
-        // if ($minorCAMIC && $minorCAMIC.viewer) {
-        //   addAnnotation(
-        //       $minorCAMIC,
-        //       $UI.layersViewerMinor.getDataItemById(execId),
-        //       __data,
-        //       null
-        //   );
-        // }
       })
       .catch((e) => {
         Loading.close();
@@ -2117,9 +2112,10 @@ function savePresetLabel() {
       });
 }
 
-function addAnnotation(id, data) {
-  const layerData = $UI.layersViewer.getDataItemById(id);
-  const layerDataMinor = $UI.layersViewerMinor.getDataItemById(id);
+function addAnnotation(id, data, type) {
+  console.log(id, data, type)
+  const layerData = $UI.layersViewer.getDataItemById(id, type);
+  const layerDataMinor = $UI.layersViewerMinor.getDataItemById(id, type);
   const item = layerData.item;
   data.geometries = VieweportFeaturesToImageFeatures(
       $CAMIC.viewer,
@@ -2153,8 +2149,8 @@ function addAnnotation(id, data) {
   // close app side
   $UI.toolbar._mainTools[0].querySelector('[type=checkbox]').checked = false;
   $UI.appsSideMenu.close();
-  $UI.layersViewer.update();
-  $UI.layersViewerMinor.update();
+  // $UI.layersViewer.update();
+  // $UI.layersViewerMinor.update();
 }
 
 function onDeleteRuler(ruler) {
@@ -2182,9 +2178,9 @@ function deleteRulerHandler(execId) {
           return;
         }
         // update UI
-        removeElement($D.overlayers, execId);
-        $UI.layersViewer.removeItemById(execId);
-        $UI.layersViewerMinor.removeItemById(execId);
+        removeElement($D.rulerlayers, execId);
+        $UI.layersViewer.removeItemById(execId, "ruler");
+        $UI.layersViewerMinor.removeItemById(execId, "ruler");
         $CAMIC.viewer.measureInstance.removeRulerById(execId);
         if ($minorCAMIC &&
           $minorCAMIC.viewer &&
@@ -2319,7 +2315,7 @@ function onAddRuler(ruler) {
         const newItem = {
           id: execId,
           name: execId,
-          typeId: typeIds['ruler'],
+          typeId: 'ruler',
           typeName: 'ruler',
           data: data.ops[0],
           creator: getUserId(),
@@ -2328,17 +2324,18 @@ function onAddRuler(ruler) {
         newItem.data.properties.innerHTML = newItem.data.properties.innerHTML.split('&gt;').join('>');
         newItem.data.properties.innerHTML = newItem.data.properties.innerHTML.split('&nbsp;').join(' ');
         newItem.data._id = {$oid: newItem.data._id};
-        $D.overlayers.push(newItem);
-        $UI.layersViewer.addItem(newItem);
+        $D.rulerlayers.push(newItem);
+        $UI.layersViewer.addItem(newItem, 'ruler');
         $UI.layersViewerMinor.addItem(
             newItem,
-        $minorCAMIC && $minorCAMIC.viewer ? true : false,
+            'ruler',
+            $minorCAMIC && $minorCAMIC.viewer ? true : false,
         );
 
-        const rulerData = $UI.layersViewer.getDataItemById(execId);
+        const rulerData = $UI.layersViewer.getDataItemById(execId, 'ruler');
         rulerData.layer = $CAMIC.viewer.getOverlayById(ruler.element);
 
-        const rulerDataMinor = $UI.layersViewerMinor.getDataItemById(execId);
+        const rulerDataMinor = $UI.layersViewerMinor.getDataItemById(execId, 'ruler');
         // create lay and update view
         if ($minorCAMIC && $minorCAMIC.viewer && rulerDataMinor.isShow) {
           const [xmin, ymin] = newItem.data.geometries.features[0].geometry.coordinates[0][0];
@@ -2358,8 +2355,8 @@ function onAddRuler(ruler) {
         }
 
         // close app side
-        $UI.layersViewer.update();
-        $UI.layersViewerMinor.update();
+        // $UI.layersViewer.update();
+        // $UI.layersViewerMinor.update();
 
         $UI.message.addSmall(`Added The '${execId}' Ruler.`);
       })
