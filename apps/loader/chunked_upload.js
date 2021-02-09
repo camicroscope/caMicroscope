@@ -423,7 +423,7 @@ function dropboxChooserStart(){
 
     // Optional. A value of false (default) limits selection to a single file, while
     // true enables multiple file selection.
-    multiselect: true, // or false
+    multiselect: false, // or true
 
     // Optional. This is a list of file extensions. If specified, the user will
     // only be able to select files with these extensions. You may also specify
