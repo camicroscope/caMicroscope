@@ -76,6 +76,10 @@ Use `docker-compose -f caMicroscope.yml build` to rebuild the services.
 
 Once everything is up, go to \<the host this is running on\>:4010/ to see the landing page.
 
+# Other Resources
+- **Slack:** <http://bit.ly/camicroscope>
+- **Discussion mailing list:** <https://groups.google.com/g/camicroscope>
+
 # Developer Guide
 We are collecting feedback to write this section in more detail. Please add your suggestions [here](https://github.com/camicroscope/caMicroscope/issues/267).
 
