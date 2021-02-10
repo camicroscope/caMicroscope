@@ -402,13 +402,13 @@ function continueGoogleDriveUpload(token) {
 }
 
 // to upload a file from Dropbox
-function dropboxChooserStart(){
-  //refer docs: https://www.dropbox.com/developers/chooser
+function dropboxChooserStart() {
+  // refer docs: https://www.dropbox.com/developers/chooser
   options = {
 
     // Required. Called when a user selects an item in the Chooser.
     success: function(files) {
-        handleUpload(files);
+      handleUpload(files);
     },
 
     // Called when the user closes the dialog without selecting a file
@@ -419,7 +419,7 @@ function dropboxChooserStart(){
 
     // Optional. "preview" (default) is a preview link to the document for sharing,
     // "direct" is an expiring link to download the contents of the file.
-    linkType: "direct", // or "direct"
+    linkType: 'direct', // or "direct"
 
     // Optional. A value of false (default) limits selection to a single file, while
     // true enables multiple file selection.
@@ -427,8 +427,8 @@ function dropboxChooserStart(){
 
     // Optional. This is a list of file extensions. If specified, the user will
     // only be able to select files with these extensions. You may also specify
-    // file types, such as "video" or "images" in the list. 
-    //extensions: ['.pdf', '.doc', '.docx'],
+    // file types, such as "video" or "images" in the list.
+    // extensions: ['.pdf', '.doc', '.docx'],
 
     // Optional. A value of false (default) limits selection to files,
     // while true allows the user to select both folders and files.
@@ -436,10 +436,9 @@ function dropboxChooserStart(){
     folderselect: false, // or true
 
     // A limit on the size of each file that may be selected, in bytes.
-    //sizeLimit: 1024, // or any positive number
-};
+    // sizeLimit: 1024, // or any positive number
+  };
 
-//triggers dropbox chooser
-Dropbox.choose(options);
-
+  // triggers dropbox chooser
+  Dropbox.choose(options);
 }
