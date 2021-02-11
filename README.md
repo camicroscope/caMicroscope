@@ -56,17 +56,6 @@ The toolbar is in the top-left of the main content window. Use the toolbar butto
 | Side-by-Side |  Ctrl + s |
 | Close all tools |  ESC   |
 
-
-# nanoBorb
-To use caMicroscope as a standalone application, see [nanoBorb](https://github.com/SBU-BMI/nanoBorb/releases).
-The [user guide screencast](https://drive.google.com/open?id=1HkkL5FqEIgi7fzqKijtUhWBPlplh_uHF) should explain the basics of nanoBorb.
-
-1. Download zip file.
-2. Unzip.
-3.
-    * For Windows, Run "nanoborb.exe" in the unzipped folder
-    * For MacOS, Move nanoBorb app to Applications folder and Double-click copied nanoBorb file to run.
-
 # Hosted Setup
 The full distribution repository for hosted caMicroscope is [here](https://github.com/camicroscope/Distro/).
 run with `docker-compose -f caMicroscope.yml up`
@@ -79,6 +68,7 @@ Once everything is up, go to \<the host this is running on\>:4010/ to see the la
 # Other Resources
 - **Slack:** <http://bit.ly/camicroscope>
 - **Discussion mailing list:** <https://groups.google.com/g/camicroscope>
+- **Sample Tensorflow Models:** <https://github.com/camicroscope/tfjs-models>
 
 # Developer Guide
 We are collecting feedback to write this section in more detail. Please add your suggestions [here](https://github.com/camicroscope/caMicroscope/issues/267).
