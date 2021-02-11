@@ -7,6 +7,7 @@
 // expand/collapse if click on a node
 // search bar is workeds
 
+
 /**
  * CaMicroscope Layers Viewer. A component that shows all layers by the different categories.
  * @constructor
@@ -32,9 +33,9 @@ function LayersViewer(options) {
     // id: doc element
     // data: layers dataset
     // categoricalData
-
     isSortableView: false,
   };
+  this.defaultType = ["human", "ruler", "segmentation", "heatmap"]
 
   /**
    * @property {Object} _v_model
@@ -67,29 +68,85 @@ function LayersViewer(options) {
   // this.setting.data.sort(LayersViewer.compare);
   // give index
   // convert og data to categorical data
-  this.__covertData();
-  this.__refreshUI();
+  this.setting.categoricalData = {
+    "heatmap":{
+      item: {id: "heatmap", name: "heatmap"},
+      items: [],
+    },
+    "segmentation":{
+      item: {id: "segmentation", name: "segmentation"},
+      items: [],
+    },
+    "ruler":{
+      item: {id: "ruler", name: "ruler"},
+      items: [],
+    },
+    "human":{
+      item: {id: "human", name: "human"},
+      items: [],
+    }
+  }
+  //this.__covertData();
+  this.__initUI();
 }
 
 LayersViewer.prototype.toggleAllItems = function(isShow = false, fresh = true) {
+
   this.setting.data.forEach((d) => (d.isShow = isShow));
   if (fresh) this.update();
 };
 
-LayersViewer.prototype.addItem = function(item, isShow = true, fresh = true) {
-  this.setting.data.push({item: item, isShow: isShow});
-  if (fresh) this.update();
+LayersViewer.prototype.addItem = function(item, type, isShow = true, fresh = true) {
+  if(!this.defaultType.includes(type)) {
+    console.warn("Error Type !!!")
+    return;
+  }
+  const cate = this.setting.categoricalData[type];
+  const items = cate.items;
+  const data = {item, isShow}
+  // add Data
+  items.push(data);
+
+  // add item on UI
+  data.elt = LayersViewer.createCategoricalItem.call(this, data);
+  const chk = data.elt.querySelector("input[type=checkbox]")
+  // add show/hidden event on check box
+  chk.addEventListener('change', this.__change.bind(this)),
+  // cate.children.appendChild(data.elt)
+  cate.children.insertBefore(data.elt, cate.children.firstChild);
+
+  // update num
+  cate.num.textContent = cate.items.length;
+  
 };
 
-LayersViewer.prototype.removeItemById = function(id, fresh = true) {
-  const index = this.setting.data.findIndex((d) => d.item.id == id);
+LayersViewer.prototype.removeItemById = function(id, type, fresh = true) {
+  if(!this.defaultType.includes(type)) {
+    console.warn("Error Type !!!")
+    return;
+  }
+  const cate = this.setting.categoricalData[type];
+  const items = cate.items;
+  const index = items.findIndex((d) => d.item.id == id);
   if (index == -1) return;
-  this.setting.data.splice(index, 1);
-  if (fresh) this.update();
+  const li = items[index].elt;
+  // ui remove
+  li.parentNode.removeChild(li);
+  // data remove
+  items.splice(index, 1);
+  // change num
+  cate.num.textContent = items.length;
 };
 
-LayersViewer.prototype.getDataItemById = function(id) {
-  return this.setting.data.find((d) => d.item.id == id);
+LayersViewer.prototype.getDataItemById = function(id, type) {
+  if(!this.defaultType.includes(type)) {
+    console.warn("Error Type !!!")
+    return;
+  }
+
+  const cate = this.setting.categoricalData[type];
+  const items = cate.items;
+  return items.find(d => d.item.id == id);
 };
 
 LayersViewer.prototype.onEnd = function(e) {
@@ -157,11 +214,10 @@ LayersViewer.prototype.__clearUI = function() {
   this.sortableView = null;
   this.sortable = null;
 };
-
 /*
     refresh UI
 */
-LayersViewer.prototype.__refreshUI = function() {
+LayersViewer.prototype.__initUI = function() {
   empty(this.elt); // clear all elements
   this.__clearUI();
 
@@ -171,14 +227,11 @@ LayersViewer.prototype.__refreshUI = function() {
   this.searchBar = ctrlObj.searchBar; // searchbar
   this.elt.appendChild(ctrlObj.view);
 
-  // add switch view event
-  // this.viewRadios.list.forEach(
-  //    radio => radio.elt.addEventListener('click',this.__radioClick.bind(this))
-  // );
 
   /* create search bar area END */
   const checkDiv = document.createElement('div');
   checkDiv.classList.add('checklist');
+  checkDiv.style.display = "none"
   checkDiv.innerHTML = `<label><input type='checkbox' value='Point' checked/>  Point</label>
   <label><input type='checkbox' value='LineString' checked/>  Brush</label>
   <label><input type='checkbox' value='Polygon' checked/>  Polygon</label>`;
@@ -191,7 +244,10 @@ LayersViewer.prototype.__refreshUI = function() {
   // create categorical view div
   const cateViewDiv = document.createElement('div');
   cateViewDiv.classList.add('layers_list');
+  
 
+
+  
   // create categorical view content
   const objCategories = LayersViewer.createCategoricalView.call(
       this,
@@ -314,24 +370,61 @@ LayersViewer.createCategoricalView = function(data) {
           typeData,
           'root',
       );
+      typeData.num = typeData.elt.querySelector("div.num")
       ul.appendChild(typeData.elt); // create li root
 
       const children = document.createElement('ul');
+      children.style.display = "none"
       // add leaf
-      typeData.items.forEach(
-          function(item) {
-            item.elt = LayersViewer.createCategoricalItem.call(this, item);
-            children.appendChild(item.elt); // create li leaf
-          }.bind(this),
-      );
+      // typeData.items.forEach(
+      //     function(item) {
+      //       item.elt = LayersViewer.createCategoricalItem.call(this, item);
+      //       children.appendChild(item.elt); // create li leaf
+      //     }.bind(this),
+      // );
       //
       ul.appendChild(children);
+      typeData.children = children;
     }
   }
   return {view: ul};
 };
 
+LayersViewer.prototype.addItems = function(data, type){
+
+  const typeData = this.setting.categoricalData[type];
+  
+  // show up arrow icon
+  const arrow_icon = typeData.elt.querySelector("div.material-icons");
+  arrow_icon.style.display = null;
+  // remove loading icon
+  const loading_icon = typeData.elt.querySelector("div.loading-icon");
+  if(loading_icon) loading_icon.parentNode.removeChild(loading_icon);
+
+  if(type=="human" || type=="ruler"){
+    this.searchBar.elt.style.display = null;
+    this.searchList.style.display = null;
+    const chk = typeData.elt.querySelector("input[type=checkbox]");
+    chk.style.display = "";
+  }
+
+  // create ui item
+  data.forEach(item=>{
+    item.elt = LayersViewer.createCategoricalItem.call(this, item);
+    const chk = item.elt.querySelector("input[type=checkbox]")
+    // add show/hidden event on check box
+    chk.addEventListener('change', this.__change.bind(this)),
+    typeData.children.appendChild(item.elt)
+  })
+
+  typeData.items = [...typeData.items, ...data];
+  typeData.num.textContent = typeData.items.length;
+
+}
+
+
 LayersViewer.createCategoricalItem = function(data, type) {
+  
   const item = data.item;
   const id = `cate.${item.id}`;
   // create li
@@ -358,13 +451,21 @@ LayersViewer.createCategoricalItem = function(data, type) {
   if (type === 'root') {
     const ic = document.createElement('div');
     ic.classList.add('material-icons');
-    ic.textContent = 'keyboard_arrow_down';
+    ic.textContent = 'keyboard_arrow_right';
+    ic.style.display = "none";
     label.style.fontWeight = 'bold';
     chk.dataset.type = 'root';
-    if (item.name != 'human' && item.name!='ruler') chk.style.display = 'none';
+    chk.style.display = 'none';
     li.appendChild(ic);
+    const loading_icon = document.createElement('div');
+    loading_icon.classList.add("loading-icon")  
+    label.prepend(loading_icon)
+    const num = document.createElement('div');
+    num.classList.add("num")
+    label.append(num)
   } else {
     chk.id = id;
+    chk.dataset.cate = item.typeId;
     chk.dataset.type = 'leaf';
     chk.checked = data.isShow;
     li.title = item.name;
@@ -475,10 +576,21 @@ LayersViewer.createSortableItem = function(item) {
   return li;
 };
 /* For Sortable View functions END */
+LayersViewer.prototype.toggleSearchPanel = function(isShow=true){
+  if(isShow){
+    this.searchBar.elt.style.display =null;
+    this.searchList.style.display = null;
+  }else{
 
+    this.searchBar.elt.style.display = "none";
+    this.searchList.style.display = "none";
+  }
+}
 /* For control area functions START */
 LayersViewer.createControlBar = function() {
+
   const view = document.createElement('div');
+  view.style.display = "none";
   view.classList.add('searchbar');
 
   // create view radios name
@@ -571,6 +683,7 @@ LayersViewer.createControlBar = function() {
 
   // return obj for search bar
   const searchBar = {};
+  searchBar.elt = view;
   searchBar.text = searchInput;
   searchBar.btn = searchBtn;
 
@@ -609,7 +722,7 @@ LayersViewer.prototype.setData = function(data) {
  */
 LayersViewer.prototype.update = function() {
   // this.setting.data = data;
-  this.__covertData();
+  // this.__covertData();
   this.__refreshUI();
 };
 
@@ -620,17 +733,23 @@ LayersViewer.prototype.update = function() {
  */
 LayersViewer.prototype.__search = function(e) {
   // show all li with leaf class
-  const list = this.setting.data;
+  const human = this.setting.categoricalData['human'].items
+  const ruler = this.setting.categoricalData['ruler'].items
+  const heatmap = this.setting.categoricalData['heatmap'].items
+  const segmentation = this.setting.categoricalData['segmentation'].items
+  const list = [...human, ...ruler, ...heatmap, ...segmentation];
+  
   list.forEach((data) => {
     data.elt.style.display = 'flex';
     // item.sortItem.style.display='flex';
   });
+
   const pattern = this.searchBar.text.value;
-  const items = this.setting.data;
+  
   const regex = new RegExp(pattern, 'gi');
   const checkedType = [...this.searchList.querySelectorAll('input:checked')].map((elt)=>elt.value);
   list.filter((d)=>d.item.typeName=='human'||d.item.typeName=='ruler').forEach((data) => {
-    if (!data.item.name.match(regex) && !data.item.creator.match(regex)) {
+    if (!data.item.name.match(regex) && !(data.item.creator&&data.item.creator.match(regex))) {
       data.elt.style.display = 'none';
     }
     if (data.item.typeName=='human'&&!checkedType.includes(data.item.shape)) {
@@ -639,26 +758,28 @@ LayersViewer.prototype.__search = function(e) {
   });
 };
 
+
+
 /*
     convert og/raw data to categorical model/data
 */
-LayersViewer.prototype.__covertData = function() {
-  if (!this.setting.data) {
-    console.warn(`${this.className}: No Raw Data`);
-    // return;
-  }
-  this.setting.categoricalData = this.setting.data.reduce(function(model, d) {
-    const item = d.item;
-    if (!model[item.typeId]) {
-      model[item.typeId] = {
-        item: {id: item.typeId, name: item.typeName},
-        items: [],
-      };
-    }
-    model[item.typeId].items.push(d);
-    return model;
-  }, {});
-};
+// LayersViewer.prototype.__covertData = function() {
+//   if (!this.setting.data) {
+//     console.warn(`${this.className}: No Raw Data`);
+//     // return;
+//   }
+//   this.setting.categoricalData = this.setting.data.reduce(function(model, d) {
+//     const item = d.item;
+//     if (!model[item.typeId]) {
+//       model[item.typeId] = {
+//         item: {id: item.typeId, name: item.typeName},
+//         items: [],
+//       };
+//     }
+//     model[item.typeId].items.push(d);
+//     return model;
+//   }, {});
+// };
 
 // expand or collapse layer list
 LayersViewer.prototype.__switch = function(e) {
@@ -675,26 +796,27 @@ LayersViewer.prototype.__switch = function(e) {
 //
 LayersViewer.prototype.__change = function(e) {
   // confirm TODO
-
   const id = e.target.dataset.id;
   const type = e.target.dataset.type;
   const checked = e.target.checked;
   const list = this.setting.data;
-  switch (type) {
-    case 'all':
-      this.setting.data.forEach((d) => {
-        d.isShow = checked;
-        d.elt.lastChild.checked = checked;
-        // item.sortItem.lastChild.checked = checked;
-      });
 
-      for (const key in this.setting.categoricalData) {
-        if (this.setting.categoricalData.hasOwnProperty(key)) {
-          this.setting.categoricalData[key].elt.lastChild.checked = checked;
-        }
-      }
-      this.setting.callback.call(null, this.setting.data);
-      break;
+  switch (type) {
+    // case 'all':
+    //   this.setting.data.forEach((d) => {
+    //     d.isShow = checked;
+    //     d.elt.lastChild.checked = checked;
+    //     // item.sortItem.lastChild.checked = checked;
+    //   });
+
+    //   for (const key in this.setting.categoricalData) {
+    //     if (this.setting.categoricalData.hasOwnProperty(key)) {
+    //       this.setting.categoricalData[key].elt.lastChild.checked = checked;
+    //     }
+    //   }
+    //   this.setting.callback.call(null, this.setting.data);
+    //   break;
+
     case 'root':
       this.setting.categoricalData[id].items.forEach((d) => {
         if (d.elt.style.display == 'none') return;
@@ -709,7 +831,8 @@ LayersViewer.prototype.__change = function(e) {
       this.setting.callback.call(null, this.setting.categoricalData[id].items);
       break;
     case 'leaf':
-      const data = this.setting.data.find((d) => d.item.id == id);
+      const cate = e.target.dataset.cate;
+      const data = this.setting.categoricalData[cate].items.find((d) => d.item.id == id);
       if (!data) return;
       data.isShow = checked;
       data.elt.lastChild.checked = checked;

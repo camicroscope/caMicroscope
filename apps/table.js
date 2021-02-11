@@ -599,7 +599,7 @@ function checkUserPermissions() {
 function changeSlideName(oldname, id) {
   let renameDiv = document.createElement('div');
   renameDiv.classList.add('form-group');
-  renameDiv.innerText = 'Enter the new name for the slide having following';
+  renameDiv.innerText = 'Enter the new name for the slide having following ';
   renameDiv.innerText += 'details \n\nID: ' + id + '\nName: ' + oldname;
   let renameInput = document.createElement('input');
   renameInput.setAttribute('type', 'text');

@@ -35,7 +35,6 @@
 
 .item_body {
   overflow:hidden;
-  transition:flex .5s;
   margin:0 .5rem;
   color:#000;
 }

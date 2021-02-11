@@ -228,8 +228,9 @@
           f => f.name === options.currentFieldName
         );
       }
-      this._color = options.color || this._color || '#ffa500';
-      this._colors = options.colors || this._colors || ['#EAF2F8', '#D4E6F1', '#A9CCE3', '#7FB3D5', '#5499C7'];
+      this._color = options.color || '#1034a6'; // heatmap color
+      // this._colors = options.colors || ['#EAF2F8', '#D4E6F1', '#A9CCE3', '#7FB3D5', '#5499C7']; // heatmap color
+      this._colors = options.colors || ["#2b83ba", "#abdda4", "#ffffbf", "#fdae61", "#d7191c"]; // heatmap color
       this.intervals = _getIntervals(
         this._currentField,
         this._colors,

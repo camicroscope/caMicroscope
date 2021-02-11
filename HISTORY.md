@@ -28,11 +28,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 ### caMicroscope [3.8.4](https://github.com/camicroscope/camicroscope/compare/v3.8.3...camicroscope:v3.8.4)
-###### TBD
+###### 2021-01-25
+* Addition of a collection type, and related panel in table
+* Google Drive Upload Support [#467](https://github.com/camicroscope/caMicroscope/pull/467)
 * Upload process enhancement [#463](https://github.com/camicroscope/caMicroscope/pull/463)
 * Table and Info page UI harmonization [#464](https://github.com/camicroscope/caMicroscope/pull/464)
+* Footer Position Imrovements for Info and Table [#475](https://github.com/camicroscope/caMicroscope/pull/475)
 * Add Login button to signup page [#461](https://github.com/camicroscope/caMicroscope/pull/461)
 * Windows Lint Linebreak Fix [#470](https://github.com/camicroscope/caMicroscope/pull/470)
+* Default Annotation Shape set to Polygon [#466](https://github.com/camicroscope/caMicroscope/pull/466)
 * Heatmap Default Color Change to "Rainbow"
 
 ### caMicroscope [3.8.3](https://github.com/camicroscope/camicroscope/compare/v3.8.2...camicroscope:v3.8.3)

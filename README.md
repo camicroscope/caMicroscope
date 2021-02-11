@@ -56,17 +56,6 @@ The toolbar is in the top-left of the main content window. Use the toolbar butto
 | Side-by-Side |  Ctrl + s |
 | Close all tools |  ESC   |
 
-
-# nanoBorb
-To use caMicroscope as a standalone application, see [nanoBorb](https://github.com/SBU-BMI/nanoBorb/releases).
-The [user guide screencast](https://drive.google.com/open?id=1HkkL5FqEIgi7fzqKijtUhWBPlplh_uHF) should explain the basics of nanoBorb.
-
-1. Download zip file.
-2. Unzip.
-3.
-    * For Windows, Run "nanoborb.exe" in the unzipped folder
-    * For MacOS, Move nanoBorb app to Applications folder and Double-click copied nanoBorb file to run.
-
 # Hosted Setup
 The full distribution repository for hosted caMicroscope is [here](https://github.com/camicroscope/Distro/).
 run with `docker-compose -f caMicroscope.yml up`
@@ -76,12 +65,19 @@ Use `docker-compose -f caMicroscope.yml build` to rebuild the services.
 
 Once everything is up, go to \<the host this is running on\>:4010/ to see the landing page.
 
+# Other Resources
+- **Slack:** <http://bit.ly/camicroscope>
+- **Discussion mailing list:** <https://groups.google.com/g/camicroscope>
+- **Sample Tensorflow Models:** <https://github.com/camicroscope/tfjs-models>
+
 # Developer Guide
 We are collecting feedback to write this section in more detail. Please add your suggestions [here](https://github.com/camicroscope/caMicroscope/issues/267).
 
-caMicroscope is open source software. Any involvement and contribution with the caMicroscope project is greatly appreciated. Feel free to get directly involved in any of the repositories in the caMicroscope organization.
+caMicroscope is open source software. Any involvement and contribution with the caMicroscope project is greatly appreciated. Feel free to get directly involved in any of the repositories in the caMicroscope organization. New developers may find the notes in [CONTRIBUTING](https://github.com/camicroscope/caMicroscope/blob/master/CONTRIBUTING.md) helpful to start contributing to caMicroscope. 
 
 It is highly recommended to make any changes off of the develop branch of a repository, and, when ready, create a PR to the develop branch of the source repository. Before sending the PR, make sure that there are no linting errors by running ```npm install``` and then ```npm run lint```  to see the errors and ```npm run lint-fix``` to automatically fix the errors in the repository folder.
+
+Source code organization ie the file structure of caMicroscope can be found in [file structure](https://github.com/camicroscope/caMicroscope/blob/master/docs/file_structure.md)
 
 ## Fast Local Changes
 When using the hosted setup, you can have the distribution host the changes from your local. Follow these steps :
@@ -112,7 +108,7 @@ When using the hosted setup, you can have the distribution host the changes from
 ```
 - Remove this line from 'Dockerfile' in Caracal repository :
 ```
-RUN if [ -z ${viewer} ]; then git clone https://github.com/camicroscope/camicroscope.git; else git clone https://github.com/camicroscope/camicroscope.git --branch=$viewer; fi
+RUN git clone https://github.com/${fork:-camicroscope}/camicroscope.git --branch=${viewer:-master}
 ```
 - In Distro repository, enter the following commands :
 ```
