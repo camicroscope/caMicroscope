@@ -76,12 +76,18 @@ Use `docker-compose -f caMicroscope.yml build` to rebuild the services.
 
 Once everything is up, go to \<the host this is running on\>:4010/ to see the landing page.
 
+# Other Resources
+- **Slack:** <http://bit.ly/camicroscope>
+- **Discussion mailing list:** <https://groups.google.com/g/camicroscope>
+
 # Developer Guide
 We are collecting feedback to write this section in more detail. Please add your suggestions [here](https://github.com/camicroscope/caMicroscope/issues/267).
 
-caMicroscope is open source software. Any involvement and contribution with the caMicroscope project is greatly appreciated. Feel free to get directly involved in any of the repositories in the caMicroscope organization.
+caMicroscope is open source software. Any involvement and contribution with the caMicroscope project is greatly appreciated. Feel free to get directly involved in any of the repositories in the caMicroscope organization. New developers may find the notes in [CONTRIBUTING](https://github.com/camicroscope/caMicroscope/blob/master/CONTRIBUTING.md) helpful to start contributing to caMicroscope. 
 
 It is highly recommended to make any changes off of the develop branch of a repository, and, when ready, create a PR to the develop branch of the source repository. Before sending the PR, make sure that there are no linting errors by running ```npm install``` and then ```npm run lint```  to see the errors and ```npm run lint-fix``` to automatically fix the errors in the repository folder.
+
+Source code organization ie the file structure of caMicroscope can be found in [file structure](https://github.com/camicroscope/caMicroscope/blob/master/docs/file_structure.md)
 
 ## Fast Local Changes
 When using the hosted setup, you can have the distribution host the changes from your local. Follow these steps :
@@ -112,7 +118,7 @@ When using the hosted setup, you can have the distribution host the changes from
 ```
 - Remove this line from 'Dockerfile' in Caracal repository :
 ```
-RUN if [ -z ${viewer} ]; then git clone https://github.com/camicroscope/camicroscope.git; else git clone https://github.com/camicroscope/camicroscope.git --branch=$viewer; fi
+RUN git clone https://github.com/${fork:-camicroscope}/camicroscope.git --branch=${viewer:-master}
 ```
 - In Distro repository, enter the following commands :
 ```
