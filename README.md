@@ -82,30 +82,7 @@ Source code organization ie the file structure of caMicroscope can be found in [
 ## Fast Local Changes
 When using the hosted setup, you can have the distribution host the changes from your local. Follow these steps :
 - Clone this repository, the [Caracal repository](https://github.com/camicroscope/Caracal/) and [the distribution](https://github.com/camicroscope/Distro/) in the same parent directory
-- Replace the 'back' section of develop.yml in Distro repository with something like this:
-```
-  back:
-    build:
-      context: "../Caracal"
-      args:
-        viewer: "develop"
-    depends_on:
-      - "mongo"
-    ports:
-      - "4010:4010"
-    container_name: ca-back
-    volumes:
-      - ./config/login.html:/src/static/login.html
-      - ./jwt_keys/:/src/keys/
-      - ./config/routes.json:/src/routes.json
-      - ../caMicroscope:/src/camicroscope
-    environment:
-      JWK_URL: "https://www.googleapis.com/oauth2/v3/certs"
-      IIP_PATH: "http://ca-iip/fcgi-bin/iipsrv.fcgi"
-      MONGO_URI: "mongodb://ca-mongo"
-      DISABLE_SEC: "true"
-      ALLOW_PUBLIC: "true"
-```
+- Set the build to build your local changes instead of the hosted git versions by editing the ca-back container section of your develop.yml. Replace the build context section with the path to your caracal checkout ("../Caracal"), and add `- ../caMicroscope:/src/camicroscope` to the volumes.
 - Remove this line from 'Dockerfile' in Caracal repository :
 ```
 RUN git clone https://github.com/${fork:-camicroscope}/camicroscope.git --branch=${viewer:-master}
