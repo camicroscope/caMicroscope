@@ -487,11 +487,10 @@ function covertToHumanLayer(data) {
   const name = item.analysis.name || item.analysis.execution_id;
   
   if (!item.shape) item.shape = ["Polygon"];
-  if (!typeIds[typeName]) typeIds[typeName] = randomId();
   return {
     id: id,
     name: name,
-    typeId: typeIds[typeName],
+    typeId: typeName,
     typeName: typeName,
     creator: item.creator,
     shape: item.shape[0],
@@ -500,15 +499,27 @@ function covertToHumanLayer(data) {
   };  
 }
 
+function covertToRulerLayer(data) {
+  return {
+    id: data.execution_id,
+    name: data.name,
+    typeId: data.type,
+    typeName: data.source,
+    shape: "Polygon",
+    creator: data.creator,
+    data: null,
+  };  
+}
+
 function covertToCumputerLayer(data) {
   const typeName = data.source;
   const id = data.execution_id;
   
-  if (!typeIds[typeName]) typeIds[typeName] = randomId();
+  //if (!typeIds[typeName]) typeIds[typeName] = randomId();
   return {
     id: id,
     name: id,
-    typeId: typeIds[typeName],
+    typeId: data.computation,
     typeName: data.computation,
     creator: data.creator,
     data: null,

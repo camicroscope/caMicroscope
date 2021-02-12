@@ -208,8 +208,35 @@
     position: relative;
     border: 1px solid rgba(0, 0, 0, .1);
     border-radius: 2px;
-
 }
+
+.layer_viewer div.loading-icon {
+    box-sizing: border-box;
+    border: .3rem solid #365f9c;
+    border-radius: 50%;
+    border-top: .3rem solid #fff;
+    border-left: .3rem solid #fff;
+    width: 1.8rem;
+    height: 1.8rem;
+    margin: .1rem .3rem!important;
+    -webkit-animation: spin 2s linear infinite; /* Safari */
+    animation: spin 2s linear infinite;
+  }
+  .layer_viewer div.num {
+    box-sizing: border-box;
+    margin: .1rem .3rem!important;
+  }
+  
+  /* Safari */
+  @-webkit-keyframes spin {
+    0% { -webkit-transform: rotate(0deg); }
+    100% { -webkit-transform: rotate(360deg); }
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
 /* sort list css */
 
 

@@ -99,13 +99,8 @@ function initialize() {
       FormTempaltesLoader();
 
       // loading the overlayers data
-      HumanlayersLoader();
+      layersLoader()
 
-      // loading the overlayers data
-      ComputerlayersLoader();
-
-      // loading the heatmap overlayers data
-      HeatmaplayersLoader();
     }
   }, 100);
 }
@@ -316,68 +311,6 @@ async function initUIcomponents() {
     callback: draw,
   });
 
-  // example for dropdownlist has icon in each item
-  // subToolsOpt.push({
-  //   name: "test",
-  //   icon: "vpn_key", // material icons' name
-  //   title: "test",
-  //   type: "dropdown",
-  //   value: "test",
-  //   callback: function(e) {
-  //     console.log(e);
-  //   },
-  //   dropdownList: [
-  //     {
-  //       name: "add",
-  //       icon: "add",
-  //       value:"add",
-  //       title: "add"
-  //     },
-  //     {
-  //       name: "add_box",
-  //       icon: "add_box",
-  //       value:"add_box",
-  //       title: "add_box"
-  //     },      {
-  //       name: "add_circle",
-  //       icon: "add_circle",
-  //       value:"add_circle",
-  //       title: "add_circle"
-  //     },      {
-  //       name: "block",
-  //       icon: "block",
-  //       value:"block",
-  //       title: "block"
-  //     }
-  //   ]
-  // });
-
-  // brush
-
-  // subToolsOpt.push({
-  //   name: "brush",
-  //   icon: "brush", // material icons' name
-  //   title: "Brush Labels",
-  //   type: "multi-dropdown",
-  //   value: "brush",
-  //   callback: toggleBrush,
-  //   dropdownList: BRUSH_CONFIG
-  // });
-
-  // $D.preset_list = null;
-  // $D.preset_list = await $CAMIC.store.getConfigByName('preset_label').then((list)=>list.length==0?null:list[0]);
-  // if ($D.preset_list) {
-  //   subToolsOpt.push({
-  //     name: 'preset_label',
-  //     icon: 'colorize', // material icons' name
-  //     title: 'Preset Labels',
-  //     type: 'multi-dropdown',
-  //     value: 'prelabels',
-  //     callback: drawLabel,
-  //     dropdownList: $D.preset_list.configuration,
-  //   });
-  // }
-
   subToolsOpt.push({
     name: 'preset_label',
     icon: 'colorize', // material icons' name
@@ -586,6 +519,10 @@ async function initUIcomponents() {
 
   const loading = `<div class="cover" style="z-index: 500;"><div class="block"><span>loading layers...</span><div class="bar"></div></div></div>`;
   $UI.layersSideMenu.addContent(loading);
+  // TODO add layer viewer
+
+
+
   /* annotation popup */
   $UI.annotPopup = new PopupPanel({
     footer: [
@@ -638,14 +575,9 @@ async function initUIcomponents() {
 
   // == end -- //
 
-
   var checkOverlaysDataReady = setInterval(function() {
     if (
       $D.params.data &&
-      _l &&
-      _c &&
-      _h &&
-      $D.overlayers &&
       $CAMIC &&
       $CAMIC.viewer &&
       $CAMIC.viewer.omanager
@@ -660,41 +592,44 @@ async function initUIcomponents() {
 
       // create control
 
+      // TODO move to add layers
       // create main layer viewer items with states
-      const mainViewerData = $D.overlayers.map((d) => {
-        const isShow =
-          $D.params.states &&
-          $D.params.states.l &&
-          $D.params.states.l.includes(d.id) ?
-            true :
-            false;
-        return {item: d, isShow: isShow};
-      });
+      // const mainViewerData = $D.overlayers.map((d) => {
+      //   const isShow =
+      //     $D.params.states &&
+      //     $D.params.states.l &&
+      //     $D.params.states.l.includes(d.id) ?
+      //       true :
+      //       false;
+      //   return {item: d, isShow: isShow};
+      // });
 
+
+      // TODO move to add layers
       // create monir layer viewer items
-      const minorViewerData = $D.overlayers.map((d) => {
-        return {item: d, isShow: false};
-      });
+      // const minorViewerData = $D.overlayers.map((d) => {
+      //   return {item: d, isShow: false};
+      // });
 
       // create UI and set data
       $UI.layersViewer = createLayerViewer(
           'overlayers',
-          mainViewerData,
+          null,
           callback.bind('main'),
       );
       // create UI and set data - minor
       $UI.layersViewerMinor = createLayerViewer(
           'overlayersMinor',
-          minorViewerData,
+          null,
           callback.bind('minor'),
       );
 
-      //
-      if ($D.params.states && $D.params.states.l) {
-        $D.params.states.l.forEach((id) =>
-          loadAnnotationById($CAMIC, $UI.layersViewer.getDataItemById(id), null),
-        );
-      }
+      // TODO move to add layers
+      // if ($D.params.states && $D.params.states.l) {
+      //   $D.params.states.l.forEach((id) =>
+      //     loadAnnotationById($CAMIC, $UI.layersViewer.getDataItemById(id), null),
+      //   );
+      // }
 
       $UI.layersList = new CollapsibleList({
         id: 'layerslist',
@@ -702,13 +637,11 @@ async function initUIcomponents() {
           {
             id: 'left',
             title: 'Left Viewer',
-            // icon:'border_color',
             content: 'No Template Loaded', // $UI.annotOptPanel.elt
             // isExpand:true
           },
           {
             id: 'right',
-            // icon:'find_replace',
             title: 'Right Viewer',
             content: 'No Template Loaded', // $UI.algOptPanel.elt,
           },
@@ -936,3 +869,79 @@ function updateSlideView() {
     Loading.close();
   });
 }
+
+
+function addHumanLayerItems(){
+
+      const mainViewerData = $D.humanlayers.map((d) => {
+        const isShow =
+          $D.params.states &&
+          $D.params.states.l &&
+          $D.params.states.l.includes(d.id) ?
+            true :
+            false;
+        return {item: d, isShow: isShow};
+      });
+
+      // create monir layer viewer items
+      const minorViewerData = $D.humanlayers.map((d) => {
+        return {item: d, isShow: false};
+      });
+
+      $UI.layersViewer.addItems(mainViewerData, "human")
+      $UI.layersViewerMinor.addItems(minorViewerData, "human")
+
+}
+
+function addRulerLayerItems(data){
+      const mainViewerData = $D.rulerlayers.map((d) => {
+        return {item: d, isShow: false};
+      });
+      // create monir layer viewer items
+      const minorViewerData = $D.rulerlayers.map((d) => {
+        return {item: d, isShow: false};
+      });
+      $UI.layersViewer.addItems(mainViewerData, "ruler")
+      $UI.layersViewerMinor.addItems(minorViewerData, "ruler")
+}
+
+function addComputerLayerItems(data){
+  const mainViewerData = $D.computerlayers.map((d) => {
+    return {item: d, isShow: false};
+  });
+  // create monir layer viewer items
+  const minorViewerData = $D.computerlayers.map((d) => {
+    return {item: d, isShow: false};
+  });
+  $UI.layersViewer.addItems(mainViewerData, "segmentation")
+  $UI.layersViewerMinor.addItems(minorViewerData, "segmentation")  
+}
+
+function addHeatmapLayerItems(data){
+  const mainViewerData = $D.heatmaplayers.map((d) => {
+    return {item: d, isShow: false};
+  });
+  // create monir layer viewer items
+  const minorViewerData = $D.heatmaplayers.map((d) => {
+    return {item: d, isShow: false};
+  });
+  $UI.layersViewer.addItems(mainViewerData, "heatmap")
+  $UI.layersViewerMinor.addItems(minorViewerData, "heatmap")
+}
+
+      // const mainViewerData = $D.overlayers.map((d) => {
+      //   const isShow =
+      //     $D.params.states &&
+      //     $D.params.states.l &&
+      //     $D.params.states.l.includes(d.id) ?
+      //       true :
+      //       false;
+      //   return {item: d, isShow: isShow};
+      // });
+
+
+      // TODO move to add layers
+      // create monir layer viewer items
+      // const minorViewerData = $D.overlayers.map((d) => {
+      //   return {item: d, isShow: false};
+      // });
