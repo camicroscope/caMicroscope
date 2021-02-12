@@ -25,7 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### caMicroscope [Unreleased](https://github.com/camicroscope/camicroscope/compare/v3.8.4...camicroscope:develop)
 ###### TBD
-
+* Auto convert png and jpg files via table load.
 
 ### caMicroscope [3.8.4](https://github.com/camicroscope/camicroscope/compare/v3.8.3...camicroscope:v3.8.4)
 ###### 2021-01-25
