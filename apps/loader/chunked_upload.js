@@ -441,5 +441,7 @@ function dropboxChooserStart() {
   };
 
   // triggers dropbox chooser
+  
+  Dropbox.appKey = dropboxConfig.APP_KEY;
   Dropbox.choose(options);
 }
