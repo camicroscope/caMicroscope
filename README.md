@@ -95,9 +95,10 @@ When using the hosted setup, you can have the distribution host the changes from
       - "4010:4010"
     container_name: ca-back
     volumes:
-      - ./config/login.html:/root/src/static/login.html
-      - ./jwt_keys/:/root/src/keys/
-      - ../caMicroscope:/root/src/camicroscope
+      - ./config/login.html:/src/static/login.html
+      - ./jwt_keys/:/src/keys/
+      - ./config/routes.json:/src/routes.json
+      - ../caMicroscope:/src/camicroscope
     environment:
       JWK_URL: "https://www.googleapis.com/oauth2/v3/certs"
       IIP_PATH: "http://ca-iip/fcgi-bin/iipsrv.fcgi"
