@@ -38,6 +38,12 @@
       this.raiseEvent('style-changed', this.getStyle());
     }.bind(this));
 
+    // undo event
+    const undo = this.elt.querySelector('.undo');
+    undo.addEventListener('click', function() {
+      this.raiseEvent('undo', {});
+    }.bind(this));
+
     // clear event
     const clear = this.elt.querySelector('.clear');
     clear.addEventListener('click', function() {
@@ -285,6 +291,19 @@
     clearIcon.textContent = 'layers_clear';
     clear.appendChild(clearIcon);
     elt.appendChild(clear);
+
+    // undo
+    const undo = document.createElement('div');
+    // clear.title = 'Clear';
+    undo.classList.add('undo');
+    undo.classList.add('item');
+
+    undoIcon = document.createElement('div');
+    undoIcon.classList.add('material-icons');
+    undoIcon.classList.add('icons');
+    undoIcon.textContent = 'undo';
+    undo.appendChild(undoIcon);
+    elt.appendChild(undo);
 
     // mode/draw-style
     const style = document.createElement('ul');
