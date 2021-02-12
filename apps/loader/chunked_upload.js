@@ -428,7 +428,7 @@ function dropboxChooserStart() {
     // Optional. This is a list of file extensions. If specified, the user will
     // only be able to select files with these extensions. You may also specify
     // file types, such as "video" or "images" in the list.
-    
+
     extensions: ['.svs', '.tif', '.tiff', '.vms', '.vmu', '.ndpi', '.scn', '.mrxs', '.bif', '.svslide'],
 
     // Optional. A value of false (default) limits selection to files,
