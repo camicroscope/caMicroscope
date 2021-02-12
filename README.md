@@ -82,7 +82,6 @@ Source code organization ie the file structure of caMicroscope can be found in [
 ## Fast Local Changes
 When using the hosted setup, you can have the distribution host the changes from your local. Follow these steps :
 - Clone this repository, the [Caracal repository](https://github.com/camicroscope/Caracal/) and [the distribution](https://github.com/camicroscope/Distro/) in the same parent directory
-- In this repo, `mv .nocache.htaccess .htaccess`
 - Replace the 'back' section of develop.yml in Distro repository with something like this:
 ```
   back:
