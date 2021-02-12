@@ -169,6 +169,11 @@ function handleCheck(filename, reset, id, noRetry) {
       (response) => response.json(), // if the response is a JSON object
   ).then(
       (success) => {
+        // errors aren't always non-success, so need to check here too
+        if(success.error){
+          console.error(success.error);
+          throw success;
+        }
         success['ID'] = id;
         // Add the filename, to be able to fetch the thumbnail.
         success['preview'] = filename;
