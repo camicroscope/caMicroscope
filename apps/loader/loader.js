@@ -159,8 +159,12 @@ function handleDownload(id) {
       });
 }
 
+function convertSlide(filename, dest_filename){
+  let convUrl = "../loader/slide/" + filename + "/pyramid/" + dest_filename;
+  return fetch(convUrl, {'method': 'POST'}).then((response) => response.json());
+}
 
-function handleCheck(filename, reset, id) {
+function handleCheck(filename, reset, id, noRetry) {
   fetch(checkUrl + filename, {credentials: 'same-origin'}).then(
       (response) => response.json(), // if the response is a JSON object
   ).then(
@@ -172,9 +176,16 @@ function handleCheck(filename, reset, id) {
         $('#finish_btn').fadeOut(300);
         $('#filename0, #slidename0, #filter0').prop('disabled', true);
       }, // Handle the success response object
-  ).catch(
-      (error) => changeStatus('CHECK', error, reset), // Handle the error response object
-  );
+  ).catch({
+    if (!noRetry){
+      console.log("retrying with conversion")
+      let dest_filename = filename.replace(".","_") + "_conv.tif";
+      convertSlide(filename, dest_filename).then(handleCheck(dest_filename, reset, id, true)).catch(err=>changeStatus('CHECK', error, reset));
+    } else {
+      console.info("not retrying")
+      changeStatus('CHECK', error, reset) // Handle the error response object
+    }
+  });
 }
 
 function handlePost(filename, slidename, filter, reset) {
