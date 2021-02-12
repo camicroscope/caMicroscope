@@ -159,8 +159,8 @@ function handleDownload(id) {
       });
 }
 
-function convertSlide(filename, dest_filename){
-  let convUrl = "../loader/slide/" + filename + "/pyramid/" + dest_filename;
+function convertSlide(filename, destFilename) {
+  let convUrl = '../loader/slide/' + filename + '/pyramid/' + destFilename;
   return fetch(convUrl, {'method': 'POST'}).then((response) => response.json());
 }
 
@@ -176,14 +176,15 @@ function handleCheck(filename, reset, id, noRetry) {
         $('#finish_btn').fadeOut(300);
         $('#filename0, #slidename0, #filter0').prop('disabled', true);
       }, // Handle the success response object
-  ).catch({
-    if (!noRetry){
-      console.log("retrying with conversion")
-      let dest_filename = filename.replace(".","_") + "_conv.tif";
-      convertSlide(filename, dest_filename).then(handleCheck(dest_filename, reset, id, true)).catch(err=>changeStatus('CHECK', error, reset));
+  ).catch((error)=>{
+    if (!(noRetry)) {
+      console.log('retrying with conversion');
+      let destFilename = filename.replace('.', '_') + '_conv.tif';
+      convertSlide(filename, destFilename).then(handleCheck(destFilename, reset, id, true))
+          .catch((err)=>changeStatus('CHECK', error, reset));
     } else {
-      console.info("not retrying")
-      changeStatus('CHECK', error, reset) // Handle the error response object
+      console.info('not retrying');
+      changeStatus('CHECK', error, reset); // Handle the error response object
     }
   });
 }
