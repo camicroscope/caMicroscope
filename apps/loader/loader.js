@@ -186,7 +186,7 @@ function handleCheck(filename, reset, id, noRetry) {
       console.log('retrying with conversion');
       let destFilename = filename.replace('.', '_') + '_conv.tif';
       document.getElementById('filename'+0).value = destFilename;
-      convertSlide(filename, destFilename).then(handleCheck(destFilename, reset, id, true))
+      convertSlide(filename, destFilename).then(x=>handleCheck(destFilename, reset, id, true))
           .catch((err)=>changeStatus('CHECK', error, reset));
     } else {
       console.info('not retrying');
