@@ -48,9 +48,11 @@ Read more at https://developers.google.com/drive
 - Scroll down to Chooser/Saver/Embedder Domains
     1. If using it for development, type `localhost` and click on add 
     2. Otherwise, type the domain of the deployed version `https://wolf.cci.emory.edu//camic_org` and click add
-- COPY the `APP key` from that page and replace the `YOUR_APP_KEY` in [table.html](https://github.com/camicroscope/caMicroscope/blob/master/apps/table.html) in apps folder of the caMicroscope repository:
+- COPY the `APP key` from that page and replace the `YOUR_APP_KEY_HERE` in [config.js](https://github.com/camicroscope/caMicroscope/blob/master/apps/loader/config.js) in apps folder of the caMicroscope repository:
     ```
-    <script type="text/javascript" src="https://www.dropbox.com/static/api/2/dropins.js" id="dropboxjs" data-app-key="YOUR_APP_KEY"></script>
+    const dropboxConfig = {
+        'APP_KEY': 'YOUR_APP_KEY_HERE',
+    };
     ```
 Read more at https://www.dropbox.com/developers/chooser
  
