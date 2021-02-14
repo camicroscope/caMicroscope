@@ -1,3 +1,3 @@
 const dropboxConfig = {
-  'APP_KEY': '6yibvsbuan5leo7',
+  'APP_KEY': 'YOUR_APP_KEY_HERE',
 };
