@@ -99,8 +99,7 @@ function initialize() {
       FormTempaltesLoader();
 
       // loading the overlayers data
-      layersLoader()
-
+      layersLoader();
     }
   }, 100);
 }
@@ -489,21 +488,21 @@ async function initUIcomponents() {
     title: 'Slide Capture',
     type: 'btn',
     value: 'slCap',
-    callback: function(){
+    callback: function() {
       toolsOff();
       console.log($CAMIC.viewer);
       const canvaInFocus = $CAMIC.viewer.canvas.firstChild;
-      const imageData = canvaInFocus.toDataURL("image/jpeg", 1.0);
+      const imageData = canvaInFocus.toDataURL('image/jpeg', 1.0);
       const downloadLink = document.createElement('a');
-      var imgFileName = prompt("Enter filename", "slideCaptureShot");
-      if(imgFileName == null){
-        imgFileName = "slideCaptureShot.jpeg";
-      }else{
-        imgFileName += ".jpeg";
+      var imgFileName = prompt('Enter filename', 'slideCaptureShot');
+      if (imgFileName == null) {
+        imgFileName = 'slideCaptureShot.jpeg';
+      } else {
+        imgFileName += '.jpeg';
       }
       downloadLink.download = imgFileName;
       downloadLink.href = imageData;
-      downloadLink.click(); 
+      downloadLink.click();
     },
   });
 
@@ -546,7 +545,6 @@ async function initUIcomponents() {
   const loading = `<div class="cover" style="z-index: 500;"><div class="block"><span>loading layers...</span><div class="bar"></div></div></div>`;
   $UI.layersSideMenu.addContent(loading);
   // TODO add layer viewer
-
 
 
   /* annotation popup */
@@ -897,41 +895,39 @@ function updateSlideView() {
 }
 
 
-function addHumanLayerItems(){
-
-      const mainViewerData = $D.humanlayers.map((d) => {
-        const isShow =
+function addHumanLayerItems() {
+  const mainViewerData = $D.humanlayers.map((d) => {
+    const isShow =
           $D.params.states &&
           $D.params.states.l &&
           $D.params.states.l.includes(d.id) ?
             true :
             false;
-        return {item: d, isShow: isShow};
-      });
+    return {item: d, isShow: isShow};
+  });
 
-      // create monir layer viewer items
-      const minorViewerData = $D.humanlayers.map((d) => {
-        return {item: d, isShow: false};
-      });
+  // create monir layer viewer items
+  const minorViewerData = $D.humanlayers.map((d) => {
+    return {item: d, isShow: false};
+  });
 
-      $UI.layersViewer.addItems(mainViewerData, "human")
-      $UI.layersViewerMinor.addItems(minorViewerData, "human")
-
+  $UI.layersViewer.addItems(mainViewerData, 'human');
+  $UI.layersViewerMinor.addItems(minorViewerData, 'human');
 }
 
-function addRulerLayerItems(data){
-      const mainViewerData = $D.rulerlayers.map((d) => {
-        return {item: d, isShow: false};
-      });
-      // create monir layer viewer items
-      const minorViewerData = $D.rulerlayers.map((d) => {
-        return {item: d, isShow: false};
-      });
-      $UI.layersViewer.addItems(mainViewerData, "ruler")
-      $UI.layersViewerMinor.addItems(minorViewerData, "ruler")
+function addRulerLayerItems(data) {
+  const mainViewerData = $D.rulerlayers.map((d) => {
+    return {item: d, isShow: false};
+  });
+  // create monir layer viewer items
+  const minorViewerData = $D.rulerlayers.map((d) => {
+    return {item: d, isShow: false};
+  });
+  $UI.layersViewer.addItems(mainViewerData, 'ruler');
+  $UI.layersViewerMinor.addItems(minorViewerData, 'ruler');
 }
 
-function addComputerLayerItems(data){
+function addComputerLayerItems(data) {
   const mainViewerData = $D.computerlayers.map((d) => {
     return {item: d, isShow: false};
   });
@@ -939,11 +935,11 @@ function addComputerLayerItems(data){
   const minorViewerData = $D.computerlayers.map((d) => {
     return {item: d, isShow: false};
   });
-  $UI.layersViewer.addItems(mainViewerData, "segmentation")
-  $UI.layersViewerMinor.addItems(minorViewerData, "segmentation")  
+  $UI.layersViewer.addItems(mainViewerData, 'segmentation');
+  $UI.layersViewerMinor.addItems(minorViewerData, 'segmentation');
 }
 
-function addHeatmapLayerItems(data){
+function addHeatmapLayerItems(data) {
   const mainViewerData = $D.heatmaplayers.map((d) => {
     return {item: d, isShow: false};
   });
@@ -951,23 +947,23 @@ function addHeatmapLayerItems(data){
   const minorViewerData = $D.heatmaplayers.map((d) => {
     return {item: d, isShow: false};
   });
-  $UI.layersViewer.addItems(mainViewerData, "heatmap")
-  $UI.layersViewerMinor.addItems(minorViewerData, "heatmap")
+  $UI.layersViewer.addItems(mainViewerData, 'heatmap');
+  $UI.layersViewerMinor.addItems(minorViewerData, 'heatmap');
 }
 
-      // const mainViewerData = $D.overlayers.map((d) => {
-      //   const isShow =
-      //     $D.params.states &&
-      //     $D.params.states.l &&
-      //     $D.params.states.l.includes(d.id) ?
-      //       true :
-      //       false;
-      //   return {item: d, isShow: isShow};
-      // });
+// const mainViewerData = $D.overlayers.map((d) => {
+//   const isShow =
+//     $D.params.states &&
+//     $D.params.states.l &&
+//     $D.params.states.l.includes(d.id) ?
+//       true :
+//       false;
+//   return {item: d, isShow: isShow};
+// });
 
 
-      // TODO move to add layers
-      // create monir layer viewer items
-      // const minorViewerData = $D.overlayers.map((d) => {
-      //   return {item: d, isShow: false};
-      // });
+// TODO move to add layers
+// create monir layer viewer items
+// const minorViewerData = $D.overlayers.map((d) => {
+//   return {item: d, isShow: false};
+// });
