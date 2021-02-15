@@ -38,14 +38,12 @@ function layersLoader() {
   // human
   function loadingHumanOverlayers() {
     $CAMIC.store.findMarkTypes($D.params.slideId, 'human').then(function(layers) {
-      
       // convert part not nesscary
       $D.humanlayers = [...layers.map(covertToHumanLayer)];
-      console.log('loaded Human layers', $D.humanlayers)
+      console.log('loaded Human layers', $D.humanlayers);
 
       // add data and create ui item
-      addHumanLayerItems()
-
+      addHumanLayerItems();
     }).catch(function(error) {
       // overlayers schema
       $UI.message.addError('Loading Human Layers is Error');
@@ -55,14 +53,12 @@ function layersLoader() {
   // ruler
   function loadingRulerOverlayers() {
     $CAMIC.store.findMarkTypes($D.params.slideId, 'ruler').then(function(layers) {
-      
       // convert part not nesscary
       $D.rulerlayers = [...layers.map(covertToRulerLayer)];
-      console.log('loaded ruler layers', $D.rulerlayers)
+      console.log('loaded ruler layers', $D.rulerlayers);
 
       // add data and create ui item
-      addRulerLayerItems()
-
+      addRulerLayerItems();
     }).catch(function(error) {
       // overlayers schema
       $UI.message.addError('Loading Ruler Layers is Error');
@@ -78,13 +74,13 @@ function layersLoader() {
         const item = layers[i].provenance.analysis;
         $D.heatmaplayers.push({id: item.execution_id,
           name: item.execution_id,
-          typeId: "heatmap",
-          typeName: "heatmap"
+          typeId: 'heatmap',
+          typeName: 'heatmap',
         });
       }
-      console.log('loaded heatmap layers', $D.heatmaplayers)
+      console.log('loaded heatmap layers', $D.heatmaplayers);
       // add data and create ui item
-      addHeatmapLayerItems()
+      addHeatmapLayerItems();
     }).catch(function(error) {
       // overlayers schema
       $UI.message.addError('Loading heatmap Overlayers is Error');
@@ -95,12 +91,11 @@ function layersLoader() {
   // segmentation
   function loadingComputerOverlayers() {
     $CAMIC.store.findMarkTypes($D.params.slideId, 'computer').then(function(layers) {
-      
       // convert part not nesscary
       $D.computerlayers=[...layers.map(covertToCumputerLayer)];
-      console.log('loaded computer layers', $D.computerlayers)
+      console.log('loaded computer layers', $D.computerlayers);
       // add data and create ui item
-      addComputerLayerItems()      
+      addComputerLayerItems();
     }).catch(function(error) {
       $UI.message.addError('Loading Computer Layers is Error');
       console.error(error);
@@ -116,7 +111,5 @@ function layersLoader() {
     }
   }, 500);
 }
-
-
 
 

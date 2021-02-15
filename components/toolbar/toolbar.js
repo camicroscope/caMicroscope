@@ -158,9 +158,9 @@ CaToolbar.prototype.__createBtn = function(options) {
     btn.title = options.title;
     tippy(btn, {
       content: options.title,
-      placement:'right',
+      placement: 'right',
       delay: 300,
-      theme:'light-border'
+      theme: 'light-border',
     });
   }
   li.appendChild(btn);
@@ -217,9 +217,9 @@ CaToolbar.prototype.__createCheck = function(options) {
     icon.title = options.title;
     tippy(icon, {
       content: options.title,
-      placement:'right',
+      placement: 'right',
       delay: 300,
-      theme:'light-border'
+      theme: 'light-border',
     });
   }
   li.appendChild(icon);
@@ -294,9 +294,9 @@ CaToolbar.prototype.__createRadio = function(options) {
     icon.title = options.title;
     tippy(icon, {
       content: options.title,
-      placement:'right',
+      placement: 'right',
       delay: 300,
-      theme:'light-border'
+      theme: 'light-border',
     });
   }
 
@@ -340,9 +340,9 @@ CaToolbar.prototype.__createMultiStateBtns = function(options) {
     icon.title = options.title;
     tippy(icon, {
       content: options.title,
-      placement:'right',
+      placement: 'right',
       delay: 300,
-      theme:'light-border'
+      theme: 'light-border',
     });
   }
   li.appendChild(icon);
@@ -393,9 +393,9 @@ CaToolbar.prototype.__createMultiDropDown = function(options) {
     icon.title = options.title;
     tippy(icon, {
       content: options.title,
-      placement:'right',
+      placement: 'right',
       delay: 300,
-      theme:'light-border'
+      theme: 'light-border',
     });
   }
   li.appendChild(icon);
@@ -521,9 +521,9 @@ CaToolbar.prototype.__createDropDown = function(options) {
     icon.title = options.title;
     tippy(icon, {
       content: options.title,
-      placement:'right',
+      placement: 'right',
       delay: 300,
-      theme:'light-border'
+      theme: 'light-border',
     });
   }
   li.appendChild(icon);
