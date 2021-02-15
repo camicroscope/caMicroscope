@@ -220,7 +220,7 @@ function closeSecondaryViewer() {
     $minorCAMIC = null;
   }
 
-  // hide on layersViewer TODO 
+  // hide on layersViewer TODO
   $UI.layersViewerMinor.toggleAllItems();
   $UI.layersViewerMinor.setting.data.forEach((d) => delete d.layer);
 }
@@ -770,8 +770,8 @@ function deleteCallback(data) {
   // remove overlay
   $D.humanlayers.splice(data.index, 1);
   // update layer manager
-  $UI.layersViewer.removeItemById(data.id, "human");
-  $UI.layersViewerMinor.removeItemById(data.id, "human");
+  $UI.layersViewer.removeItemById(data.id, 'human');
+  $UI.layersViewerMinor.removeItemById(data.id, 'human');
 
   $CAMIC.viewer.omanager.removeOverlay(data.id);
   if ($minorCAMIC && $minorCAMIC.viewer) {
@@ -1194,8 +1194,8 @@ async function callback(data) {
     default:
       break;
   }
-  console.log(data)
-  
+  console.log(data);
+
   data.forEach(function(d) {
     const item = d.item;
     if (item.typeName == 'ruler') {
@@ -1393,8 +1393,8 @@ function loadRulerById(camic, rulerData, callback) {
           $UI.message.addError(errorMessage, 4000);
           // delete item form layview
           removeElement($D.rulerlayers, item.id);
-          $UI.layersViewer.removeItemById(item.id, "ruler");
-          $UI.layersViewerMinor.removeItemById(item.id, "ruler");
+          $UI.layersViewer.removeItemById(item.id, 'ruler');
+          $UI.layersViewerMinor.removeItemById(item.id, 'ruler');
           return;
         }
 
@@ -1408,8 +1408,8 @@ function loadRulerById(camic, rulerData, callback) {
           );
           // delete item form layview
           removeElement($D.rulerlayers, item.id);
-          $UI.layersViewer.removeItemById(item.id, "ruler");
-          $UI.layersViewerMinor.removeItemById(item.id, "ruler");
+          $UI.layersViewer.removeItemById(item.id, 'ruler');
+          $UI.layersViewerMinor.removeItemById(item.id, 'ruler');
           return;
         }
 
@@ -1469,8 +1469,8 @@ function loadAnnotationById(camic, layerData, callback) {
           $UI.message.addError(errorMessage, 4000);
           // delete item form layview
           removeElement($D.humanlayers, item.id);
-          $UI.layersViewer.removeItemById(item.id, "human");
-          $UI.layersViewerMinor.removeItemById(item.id, "human");
+          $UI.layersViewer.removeItemById(item.id, 'human');
+          $UI.layersViewerMinor.removeItemById(item.id, 'human');
           return;
         }
 
@@ -1484,8 +1484,8 @@ function loadAnnotationById(camic, layerData, callback) {
           );
           // delete item form layview
           removeElement($D.humanlayers, item.id);
-          $UI.layersViewer.removeItemById(item.id, "human");
-          $UI.layersViewerMinor.removeItemById(item.id, "human");
+          $UI.layersViewer.removeItemById(item.id, 'human');
+          $UI.layersViewerMinor.removeItemById(item.id, 'human');
           return;
         }
         // for support quip 2.0 data model
@@ -2100,7 +2100,7 @@ function savePresetLabel() {
         addAnnotation(
             execId,
             __data,
-            'human'
+            'human',
         );
       })
       .catch((e) => {
@@ -2113,7 +2113,7 @@ function savePresetLabel() {
 }
 
 function addAnnotation(id, data, type) {
-  console.log(id, data, type)
+  console.log(id, data, type);
   const layerData = $UI.layersViewer.getDataItemById(id, type);
   const layerDataMinor = $UI.layersViewerMinor.getDataItemById(id, type);
   const item = layerData.item;
@@ -2179,8 +2179,8 @@ function deleteRulerHandler(execId) {
         }
         // update UI
         removeElement($D.rulerlayers, execId);
-        $UI.layersViewer.removeItemById(execId, "ruler");
-        $UI.layersViewerMinor.removeItemById(execId, "ruler");
+        $UI.layersViewer.removeItemById(execId, 'ruler');
+        $UI.layersViewerMinor.removeItemById(execId, 'ruler');
         $CAMIC.viewer.measureInstance.removeRulerById(execId);
         if ($minorCAMIC &&
           $minorCAMIC.viewer &&

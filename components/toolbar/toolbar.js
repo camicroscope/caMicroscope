@@ -157,9 +157,9 @@ CaToolbar.prototype.__createBtn = function(options) {
   if (options.title) {
     tippy(btn, {
       content: options.title,
-      placement:'right',
+      placement: 'right',
       delay: 300,
-      theme:'light-border'
+      theme: 'light-border',
     });
   }
   li.appendChild(btn);
@@ -215,10 +215,10 @@ CaToolbar.prototype.__createCheck = function(options) {
   if (options.title) {
     tippy(icon, {
       content: options.title,
-      placement:'right',
+      placement: 'right',
       delay: 300,
-      theme:'light-border'
-    });    
+      theme: 'light-border',
+    });
   }
   li.appendChild(icon);
 
@@ -291,10 +291,10 @@ CaToolbar.prototype.__createRadio = function(options) {
   if (options.title) {
     tippy(icon, {
       content: options.title,
-      placement:'right',
+      placement: 'right',
       delay: 300,
-      theme:'light-border'
-    });    
+      theme: 'light-border',
+    });
   }
 
   li.appendChild(icon);
@@ -336,10 +336,10 @@ CaToolbar.prototype.__createMultiStateBtns = function(options) {
   if (options.title) {
     tippy(icon, {
       content: options.title,
-      placement:'right',
+      placement: 'right',
       delay: 300,
-      theme:'light-border'
-    });    
+      theme: 'light-border',
+    });
   }
   li.appendChild(icon);
   li.addEventListener('click', function(e) {
@@ -388,10 +388,10 @@ CaToolbar.prototype.__createMultiDropDown = function(options) {
   if (options.title) {
     tippy(icon, {
       content: options.title,
-      placement:'right',
+      placement: 'right',
       delay: 300,
-      theme:'light-border'
-    });    
+      theme: 'light-border',
+    });
   }
   li.appendChild(icon);
 
@@ -515,9 +515,9 @@ CaToolbar.prototype.__createDropDown = function(options) {
   if (options.title) {
     tippy(icon, {
       content: options.title,
-      placement:'right',
+      placement: 'right',
       delay: 300,
-      theme:'light-border'
+      theme: 'light-border',
     });
   }
   li.appendChild(icon);
