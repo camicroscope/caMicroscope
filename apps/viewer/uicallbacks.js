@@ -2366,6 +2366,61 @@ function onAddRuler(ruler) {
       });
 }
 
+/* Slide Capture Tool */
+
+function captureSlide() {
+  toolsOff();
+  // console.log($CAMIC.viewer);
+  const slideCanvas = $CAMIC.viewer.canvas.firstChild;
+  if (!slideCanvas) {
+    console.warn('Incorrect Slide Canvas');
+    return;
+  }
+  const slideCtx = slideCanvas.getContext('2d');
+  const combiningCanvas = document.createElement('CANVAS');
+  combiningCanvas.height = window.innerHeight;
+  combiningCanvas.width = window.innerWidth;
+  const combiningCtx = combiningCanvas.getContext('2d');
+  const slideImageData = slideCanvas.toDataURL('image/png');
+  const slideImage = new Image();
+  slideImage.onload = function() {
+    combiningCtx.drawImage(slideImage, 0, 0, window.innerWidth, window.innerHeight);
+    const overlayCanvas = $CAMIC.viewer.omanager._display_;
+    if (overlayCanvas) {
+      combiningCtx.globalCompositeOperation = 'source-over';
+      const overlayCtx = overlayCanvas.getContext('2d');
+      const overlayImageData = overlayCanvas.toDataURL('image/png');
+      const overlayImage = new Image();
+      overlayImage.onload = function() {
+        combiningCtx.drawImage(overlayImage, 0, 0, window.innerWidth, window.innerHeight);
+        downloadSlideCapture(combiningCanvas);
+      };
+      overlayImage.src = overlayImageData;
+    } else {
+      console.warn('Incorrect Annotation Canvas');
+      downloadSlideCapture(combiningCanvas);
+    }
+  };
+  slideImage.src = slideImageData;
+}
+
+function downloadSlideCapture(combiningCanvas) {
+  const imageData = combiningCanvas.toDataURL('image/jpeg');
+  const downloadLink = document.createElement('a');
+  var imgFileName = prompt('Enter filename', 'slideCaptureShot');
+  if (imgFileName == null) {
+    ;
+  } else {
+    if (imgFileName === '') {
+      imgFileName = 'slideCapture';
+    }
+    imgFileName += '.jpeg';
+    downloadLink.download = imgFileName;
+    downloadLink.href = imageData;
+    downloadLink.click();
+  }
+}
+
 /* call back list END */
 /* --  -- */
 /* -- for render anno_data to canavs -- */

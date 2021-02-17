@@ -488,22 +488,7 @@ async function initUIcomponents() {
     title: 'Slide Capture',
     type: 'btn',
     value: 'slCap',
-    callback: function() {
-      toolsOff();
-      console.log($CAMIC.viewer);
-      const canvaInFocus = $CAMIC.viewer.canvas.firstChild;
-      const imageData = canvaInFocus.toDataURL('image/jpeg', 1.0);
-      const downloadLink = document.createElement('a');
-      var imgFileName = prompt('Enter filename', 'slideCaptureShot');
-      if (imgFileName == null) {
-        imgFileName = 'slideCaptureShot.jpeg';
-      } else {
-        imgFileName += '.jpeg';
-      }
-      downloadLink.download = imgFileName;
-      downloadLink.href = imageData;
-      downloadLink.click();
-    },
+    callback: captureSlide,
   });
 
   subToolsOpt.push({
