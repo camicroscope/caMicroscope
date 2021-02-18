@@ -457,7 +457,6 @@ function brushOn(d) {
 }
 
 function brushOff() {
-  console.log('brushOff');
   if (!$CAMIC.viewer.canvasDrawInstance) return;
   const canvasDraw = $CAMIC.viewer.canvasDrawInstance;
 
@@ -714,10 +713,8 @@ function convertHumanAnnotationToPopupBody(notes) {
  * called from removeCallback
  * @param {Object} data
  */
-function annoDelete(data, parentType) {
+function annoDelete(data) {
   if (!data.id) return;
-
-
   const annotationData = $D.humanlayers.find(
       (d) => d.data && d.data._id.$oid == data.oid,
   );
@@ -753,8 +750,8 @@ function annoDelete(data, parentType) {
         data.index = index;
         const layer = $D.humanlayers[data.index];
         // update UI
-        if (Array.isArray(layer.data)) deleteCallbackOld(data, parentType);
-        else deleteCallback(data, parentType);
+        if (Array.isArray(layer.data)) deleteCallbackOld(data);
+        else deleteCallback(data);
       })
       .catch((e) => {
         $UI.message.addError(e);
@@ -769,12 +766,12 @@ function annoDelete(data, parentType) {
  * Callback for deleting annotation
  * @param {Object} data
  */
-function deleteCallback(data, parentType) {
+function deleteCallback(data) {
   // remove overlay
   $D.humanlayers.splice(data.index, 1);
   // update layer manager
-  $UI.layersViewer.removeItemById(data.id, 'human', parentType);
-  $UI.layersViewerMinor.removeItemById(data.id, 'human', parentType);
+  $UI.layersViewer.removeItemById(data.id, 'human');
+  $UI.layersViewerMinor.removeItemById(data.id, 'human');
 
   $CAMIC.viewer.omanager.removeOverlay(data.id);
   if ($minorCAMIC && $minorCAMIC.viewer) {
@@ -787,24 +784,17 @@ function deleteCallback(data, parentType) {
 }
 
 // for support QUIP2.0 Data model - delete callback
-function deleteCallbackOld(data, parentType) {
+function deleteCallbackOld(data) {
   const layer = $D.humanlayers[data.index];
   // for support QUIP2.0
   const idx = layer.data.findIndex((d) => d._id.$oid === data.oid);
   if (idx == -1) return;
   layer.data.splice(idx, 1);
 
-  // update layer manager
-  $UI.layersViewer.removeItemById(data.id, 'human', parentType);
-  $UI.layersViewerMinor.removeItemById(data.id, 'human', parentType);
-
   // delete entire layer if there is no data.
   if (layer.data.length == 0) {
     $D.humanlayers.splice(data.index, 1);
     $CAMIC.viewer.omanager.removeOverlay(data.id);
-    if ($minorCAMIC && $minorCAMIC.viewer) {
-      $minorCAMIC.viewer.omanager.removeOverlay(data.id);
-    }
   }
 
   $CAMIC.viewer.omanager.updateView();
@@ -961,8 +951,8 @@ function saveBrushLabel(isOff) {
             data: null,
           };
           $D.humanlayers.push(newItem);
-          $UI.layersViewer.addHumanItem(newItem, 'human' );
-          $UI.layersViewerMinor.addHumanItem(
+          $UI.layersViewer.addItem(newItem, 'human');
+          $UI.layersViewerMinor.addItem(
               newItem,
               'human',
               $minorCAMIC && $minorCAMIC.viewer ? true : false,
@@ -974,7 +964,6 @@ function saveBrushLabel(isOff) {
           loadAnnotationById(
               $CAMIC,
               $UI.layersViewer.getDataItemById(execId, 'human'),
-              // TODO
               saveBrushAnnotCallback.bind(isOff),
           );
           if ($minorCAMIC && $minorCAMIC.viewer) {
@@ -1017,6 +1006,21 @@ function saveBrushAnnotCallback() {
     bctrl.style.display = 'none';
     $CAMIC.status = null;
   }
+}
+
+function saveLabelAnnotCallback() {
+  /* reset as default */
+  // clear draw data and UI
+  // $CAMIC.viewer.canvasDrawInstance.drawOff();
+  $CAMIC.drawContextmenu.off();
+  $CAMIC.viewer.canvasDrawInstance.clear();
+  // close app side
+  $UI.toolbar._mainTools[0].querySelector('[type=checkbox]').checked = false;
+  $UI.appsSideMenu.close();
+  // $UI.toolbar._mainTools[1].querySelector('[type=checkbox]').checked = true;
+  // $UI.layersSideMenu.open();
+  // $UI.layersViewer.update();
+  // $CAMIC.status = null;
 }
 
 /**
@@ -1115,11 +1119,10 @@ function annoCallback(data) {
           data: null,
         };
         $D.humanlayers.push(newItem);
-        $UI.layersViewer.addHumanItem(newItem, 'human', 'other');
-        $UI.layersViewerMinor.addHumanItem(
+        $UI.layersViewer.addItem(newItem, 'human');
+        $UI.layersViewerMinor.addItem(
             newItem,
             'human',
-            'other',
             $minorCAMIC && $minorCAMIC.viewer ? true : false,
         );
 
@@ -1127,22 +1130,20 @@ function annoCallback(data) {
         // return;
         loadAnnotationById(
             $CAMIC,
-            $UI.layersViewer.getDataItemById(execId, 'human', 'other'),
-            'other',
+            $UI.layersViewer.getDataItemById(execId, 'human'),
             saveAnnotCallback,
         );
         if ($minorCAMIC && $minorCAMIC.viewer) {
           loadAnnotationById(
               $minorCAMIC,
-              $UI.layersViewerMinor.getDataItemById(execId, 'human', 'other'),
-              'other',
+              $UI.layersViewerMinor.getDataItemById(execId, 'human'),
               null,
           );
         }
       })
       .catch((e) => {
         Loading.close();
-        console.log('save failed', e);
+        console.log('save failed');
       })
       .finally(() => {});
 }
@@ -1193,9 +1194,8 @@ async function callback(data) {
     default:
       break;
   }
-  // console.log(data)
+  console.log(data);
 
-  // return;
   data.forEach(function(d) {
     const item = d.item;
     if (item.typeName == 'ruler') {
@@ -1451,7 +1451,7 @@ function loadRulerById(camic, rulerData, callback) {
         Loading.close();
       });
 }
-function loadAnnotationById(camic, layerData, parentType, callback) {
+function loadAnnotationById(camic, layerData, callback) {
   layerData.item.loading = true;
   const item = layerData.item;
 
@@ -1469,8 +1469,8 @@ function loadAnnotationById(camic, layerData, parentType, callback) {
           $UI.message.addError(errorMessage, 4000);
           // delete item form layview
           removeElement($D.humanlayers, item.id);
-          $UI.layersViewer.removeItemById(item.id, 'human', parentType);
-          $UI.layersViewerMinor.removeItemById(item.id, 'human', parentType);
+          $UI.layersViewer.removeItemById(item.id, 'human');
+          $UI.layersViewerMinor.removeItemById(item.id, 'human');
           return;
         }
 
@@ -1484,16 +1484,16 @@ function loadAnnotationById(camic, layerData, parentType, callback) {
           );
           // delete item form layview
           removeElement($D.humanlayers, item.id);
-          $UI.layersViewer.removeItemById(item.id, 'human', parentType);
-          $UI.layersViewerMinor.removeItemById(item.id, 'human', parentType);
+          $UI.layersViewer.removeItemById(item.id, 'human');
+          $UI.layersViewerMinor.removeItemById(item.id, 'human');
           return;
         }
         // for support quip 2.0 data model
         if (data[0].geometry) {
         // twist them
           var image = camic.viewer.world.getItemAt(0);
-          var imgWidth = image.source.dimensions.x;
-          var imgHeight = image.source.dimensions.y;
+          this.imgWidth = image.source.dimensions.x;
+          this.imgHeight = image.source.dimensions.y;
           item.data = data.map((d) => {
             d.geometry.coordinates[0] = d.geometry.coordinates[0].map((point) => {
               return [
@@ -1501,7 +1501,6 @@ function loadAnnotationById(camic, layerData, parentType, callback) {
                 Math.round(point[1] * imgHeight),
               ];
             });
-            d.properties = {};
             d.properties.style = {
               color: '#000080',
               lineCap: 'round',
@@ -1585,7 +1584,7 @@ function loadAnnotationById(camic, layerData, parentType, callback) {
  * Deletes annotation from layer manager view
  * @param {Object} layerData
  */
-function removeCallback(layerData, parentType) {
+function removeCallback(layerData) {
   item = layerData.item;
   if (item.typeName == 'ruler') {
     deleteRulerHandler(item.id);
@@ -1594,19 +1593,19 @@ function removeCallback(layerData, parentType) {
   if (item.typeName !== 'human') return;
   if (!item.data) {
     // load layer data
-    loadAnnotationById($CAMIC, layerData, parentType, function() {
+    loadAnnotationById($CAMIC, layerData, function() {
       annoDelete({
         id: layerData.item.id,
         oid: layerData.item.data._id.$oid,
         annotation: layerData.item.data.properties.annotation,
-      }, parentType);
+      });
     });
   } else {
     annoDelete({
       id: layerData.item.id,
       oid: layerData.item.data._id.$oid,
       annotation: layerData.item.data.properties.annotation,
-    }, parentType);
+    });
   }
 }
 
@@ -1619,32 +1618,6 @@ function locationCallback(layerData) {
   const item = layerData.item;
   if ((item.typeName !== 'human'&&item.typeName !== 'ruler') || item.data == null) return;
   if (item.typeName == 'ruler') isImageViewer = false;
-
-  // loaction annotation 2.0
-  if (Array.isArray(item.data)) {
-    let maxx = 0;
-    let maxy = 0;
-    let minx = Number.POSITIVE_INFINITY;
-    let miny = Number.POSITIVE_INFINITY;
-    item.data.forEach((d)=>{
-      d.geometry.coordinates[0].forEach(([x, y])=>{
-        maxx = Math.max(maxx, x);
-        maxy = Math.max(maxy, y);
-        minx = Math.min(minx, x);
-        miny = Math.min(miny, y);
-      });
-    });
-    const bound = [
-      [minx, miny],
-      [maxx, miny],
-      [maxx, maxy],
-      [minx, maxy],
-      [minx, miny],
-    ];
-    locateAnnotation(bound, isImageViewer);
-    return;
-  }
-  //  locate annotation 3.0
   if (item.data.geometries.features[0].geometry.type == 'Point') {
     const bound = item.data.geometries.features[0].bound.coordinates;
     const center = $CAMIC.viewer.viewport.imageToViewportCoordinates(
@@ -1896,7 +1869,7 @@ function createHeatMapList(list) {
 
 async function addPresetLabelsHandler(label) {
   const rs = await $CAMIC.store.addPresetLabels(label).then((d)=>d.result);
-
+  console.log(rs);
   if (rs.ok&&rs.nModified > 0) {
     $UI.labelsViewer.addLabel(label);
     $UI.message.add(`Label "${label.type}" Has been Added`);
@@ -2022,7 +1995,6 @@ function savePresetLabel() {
   }
 
   const execId = data.type + randomId();
-  const parent = data.type;
   const noteData = {
     name: execId,
     notes: data.type,
@@ -2117,11 +2089,10 @@ function savePresetLabel() {
           data: null,
         };
         $D.humanlayers.push(newItem);
-        $UI.layersViewer.addHumanItem(newItem, 'human', parent);
-        $UI.layersViewerMinor.addHumanItem(
+        $UI.layersViewer.addItem(newItem, 'human');
+        $UI.layersViewerMinor.addItem(
             newItem,
             'human',
-            parent,
             $minorCAMIC && $minorCAMIC.viewer ? true : false,
         );
 
@@ -2130,22 +2101,21 @@ function savePresetLabel() {
             execId,
             __data,
             'human',
-            parent,
         );
       })
       .catch((e) => {
         Loading.close();
-        console.log('save failed', e);
+        console.log('save failed');
       })
       .finally(() => {
         $UI.message.addSmall(`Added The '${noteData.name}' Annotation.`);
       });
 }
 
-function addAnnotation(id, data, type, parent) {
+function addAnnotation(id, data, type) {
   console.log(id, data, type);
-  const layerData = $UI.layersViewer.getDataItemById(id, type, parent);
-  const layerDataMinor = $UI.layersViewerMinor.getDataItemById(id, type, parent);
+  const layerData = $UI.layersViewer.getDataItemById(id, type);
+  const layerDataMinor = $UI.layersViewerMinor.getDataItemById(id, type);
   const item = layerData.item;
   data.geometries = VieweportFeaturesToImageFeatures(
       $CAMIC.viewer,
@@ -2396,170 +2366,6 @@ function onAddRuler(ruler) {
       });
 }
 
-async function rootCallback({root, parent, items}) {
-  // start a message
-  openLoadStatus(`${root==parent?root:`${root} - ${parent}`}`);
-  //
-  const viewerName = this.toString();
-  let camic = null;
-  switch (viewerName) {
-    case 'main':
-      camic = $CAMIC;
-      break;
-    case 'minor':
-      camic = $minorCAMIC;
-      break;
-    default:
-      break;
-  }
-
-  parent = parent=='other'?null:parent;
-  // human other
-  var data;
-  // const ids = items.filter(d => d.item.id);
-  const ids = items.reduce(function(rs, d) {
-    if (!d.item.data) rs.push(d.item.id);
-    return rs;
-  }, []);
-  // loading
-  if (ids.length) {
-    // mult rulers
-    try {
-      data = await $CAMIC.store.getMarkByIds(ids, $D.params.slideId, parent, root);
-
-      if (data.error) { // error
-        closeLoadStatus();
-        const errorMessage = `${data.text}: ${data.url}`;
-        console.error(errorMessage);
-        $UI.message.addError(errorMessage, 4000);
-        return;
-      }
-      // covert the ruler data
-      if (root == 'ruler') {
-        data.forEach((d) => {
-          if (d.provenance&&
-            d.provenance.analysis&&
-            d.provenance.analysis.coordinate&&
-            d.provenance.analysis.coordinate == 'image') {
-            d.geometries = ImageFeaturesToVieweportFeatures(camic.viewer, d.geometries);
-          }
-
-          d.properties.innerHTML = d.properties.innerHTML.split('&lt;').join('<');
-          d.properties.innerHTML = d.properties.innerHTML.split('&gt;').join('>');
-          d.properties.innerHTML = d.properties.innerHTML.split('&nbsp;').join(' ');
-        });
-      } else {
-        // covert the human data
-        data.forEach((d)=>{
-          // for support quip 2.0 data model
-          if (d.geometry) {
-            var image = camic.viewer.world.getItemAt(0);
-            var imgWidth = image.source.dimensions.x;
-            var imgHeight = image.source.dimensions.y;
-
-            // convert coordinates
-            d.geometry.coordinates[0] = d.geometry.coordinates[0].map((point) => {
-              return [
-                Math.round(point[0] * imgWidth),
-                Math.round(point[1] * imgHeight),
-              ];
-            });
-            // set default color
-            d.properties = {};
-            d.properties.style = {
-              color: '#000080',
-              lineCap: 'round',
-              lineJoin: 'round',
-              isFill: false,
-            };
-          } else {
-            // conver coordinate if is `normalized`
-            if (d.provenance &&
-              d.provenance.analysis&&
-              (d.provenance.analysis.coordinate == undefined||
-                d.provenance.analysis.coordinate == 'normalized')) {
-              d.geometries = VieweportFeaturesToImageFeatures( camic.viewer, d.geometries );
-            }
-            // if annotaion is brush then covert the size's coordinates
-            if (d.provenance.analysis.isGrid) {
-              const width = camic.viewer.imagingHelper.imgWidth;
-              const height = camic.viewer.imagingHelper.imgHeight;
-
-              const feature = d.geometries.features[0];
-              const size = feature.properties.size;
-              feature.properties.size = [
-                Math.round(size[0] * width),
-                Math.round(size[1] * height),
-              ];
-            }
-          }
-        });
-      }
-
-      // add to layer
-    } catch (error) {
-      closeLoadStatus();
-      // finish loaded
-      console.eorror('loading human annotations error', error);
-      $UI.message.addError('loading human annotations error', 4000);
-      return;
-    }
-  }
-
-  if (root == 'ruler') {
-    items.forEach((rulerData) => {
-      const item = rulerData.item;
-      // if no data then find and add to layer
-      if (!item.data) {
-      // TODO change to things else
-        const d = data.find( (d) => d.provenance.analysis.execution_id==item.id);
-        item.data = d;
-        let [xmin, ymin] = d.geometries.features[0].geometry.coordinates[0][0];
-        let [xmax, ymax] = d.geometries.features[0].geometry.coordinates[0][2];
-        // create lay and update view
-        rulerData.layer = camic.viewer.measureInstance.addRuler({
-          id: item.id,
-          mode: d.properties.mode,
-          rect: {
-            x: xmin,
-            y: ymin,
-            width: xmax-xmin,
-            height: ymax-ymin,
-          },
-          innerHTML: item.data.properties.innerHTML,
-          isShow: rulerData.isShow,
-        });
-      }
-      if (rulerData.isShow) rulerData.layer.element.style.display ='';
-      else rulerData.layer.element.style.display ='none';
-    });
-  }
-
-  if (root == 'human') {
-    items.forEach((HumanData) => {
-      const item = HumanData.item;
-
-      if (!item.data) {
-        const d = data.filter( (d) => d.provenance.analysis.execution_id==item.id);
-        item.data = d[0].geometry?d:d[0];
-        if (Array.isArray(item.data)&&item.data[0].geometry) { // 2.0
-          item.render = oldAnnoRender;
-          item.clickable = false;
-          item.hoverable = false;
-        } else {
-          item.render = annoRender;
-        }
-        // HumanData.layer = camic.viewer.omanager.addOverlay(item);
-      }
-      if (!HumanData.layer) HumanData.layer = camic.viewer.omanager.addOverlay(item);
-      HumanData.layer.isShow = HumanData.isShow;
-    });
-
-    camic.viewer.omanager.updateView();
-  }
-  closeLoadStatus();
-}
-
 /* Slide Capture Tool */
 
 function captureSlide() {
@@ -2613,6 +2419,7 @@ function downloadSlideCapture(combiningCanvas) {
     downloadLink.href = imageData;
     downloadLink.click();
   }
+}
 
 /* call back list END */
 /* --  -- */

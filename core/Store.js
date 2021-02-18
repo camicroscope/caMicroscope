@@ -129,8 +129,8 @@ class Store {
     }).then(this.errorHandler).then((x)=>this.filterBroken(x, 'mark'));
   }
 
-  getMarkByIds(ids, slide, notes, source, footprint, x0, x1, y0, y1) {
-    if (!slide) {
+  getMarkByIds(ids, slide, source, footprint, x0, x1, y0, y1) {
+    if (!Array.isArray(ids) || !slide) {
       return {
         hasError: true,
         message: 'args are illegal',
@@ -140,21 +140,12 @@ class Store {
     const suffix = 'Mark/multi';
     const url = this.base + suffix;
     const query = {};
+    const stringifiedIds = ids.map((id) => `"${id}"`).join(',');
+    query.nameList = `[${stringifiedIds}]`;
     query['provenance.image.slide'] = slide;
-
     if (source) {
       query.source = source;
     }
-
-    if (notes) {
-      query.notes = notes;
-    }
-
-    if (Array.isArray(ids)) {
-      // const stringifiedIds = ids.map((id) => `"${id}"`).join(',');
-      query.ids = ids;
-    }
-
     if (footprint) {
       query.footprint = footprint;
     }
@@ -171,14 +162,9 @@ class Store {
       query.y1 = y1;
     }
 
-    return fetch(url, {
-      method: 'POST',
+    return fetch(url + '?' + objToParamStr(query), {
       credentials: 'include',
       mode: 'cors',
-      headers: {
-        'Content-Type': 'application/json; charset=utf-8',
-      },
-      body: JSON.stringify(query),
     }).then(this.errorHandler).then((x)=>this.filterBroken(x, 'mark'));
   }
 

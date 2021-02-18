@@ -295,32 +295,3 @@ opacity: 0.3 !important;
 .material-icons {
   cursor: pointer;
 }
-
-div.load-status {
-  display: flex;
-  padding: .5rem;
-  color: #365f9c;
-  font-size: 1.2rem;
-  font-weight: bold;
-  align-items: center;
-}
-div.load-status div.loading {
-  box-sizing: border-box;
-  -webkit-animation: spinning 2s linear infinite; /* Safari */
-  animation: spinning 2s linear infinite;
-}
-div.load-status div.text {
-  box-sizing: border-box;
-  padding-left: .5rem;
-}
-
-/* Safari */
-@-webkit-keyframes spinning {
-  0% { -webkit-transform: rotate(360deg); }
-  100%{ -webkit-transform: rotate(0deg); }
-}
-
-@keyframes spinning {
-  0% { transform: rotate(360deg); }
-  100% { transform: rotate(0deg); }
-}

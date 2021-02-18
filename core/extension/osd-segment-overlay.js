@@ -309,6 +309,7 @@
                 // start
                 this.startLoading();
                 const ids = this._data[this._data.length-1].id;
+                //this._store.getMarkByIds([ids], this._slide, null, null, null, footprint, x, x+width, y, y+height).then(function(segments){
                 this._store.findMark(this._slide, ids, footprint, null, x, x+width, y, y+height).then(function(segments){
                     this._data[this._data.length-1].data = [...segments];
                     this.stopLoading();
