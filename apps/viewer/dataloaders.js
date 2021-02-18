@@ -40,7 +40,6 @@ function layersLoader() {
     $CAMIC.store.findMarkTypes($D.params.slideId, 'human').then(function(layers) {
       // convert part not nesscary
       $D.humanlayers = [...layers.map(covertToHumanLayer)];
-      console.log('loaded Human layers', $D.humanlayers);
 
       // add data and create ui item
       addHumanLayerItems();
@@ -55,7 +54,6 @@ function layersLoader() {
     $CAMIC.store.findMarkTypes($D.params.slideId, 'ruler').then(function(layers) {
       // convert part not nesscary
       $D.rulerlayers = [...layers.map(covertToRulerLayer)];
-      console.log('loaded ruler layers', $D.rulerlayers);
 
       // add data and create ui item
       addRulerLayerItems();
@@ -78,7 +76,6 @@ function layersLoader() {
           typeName: 'heatmap',
         });
       }
-      console.log('loaded heatmap layers', $D.heatmaplayers);
       // add data and create ui item
       addHeatmapLayerItems();
     }).catch(function(error) {
@@ -93,7 +90,6 @@ function layersLoader() {
     $CAMIC.store.findMarkTypes($D.params.slideId, 'computer').then(function(layers) {
       // convert part not nesscary
       $D.computerlayers=[...layers.map(covertToCumputerLayer)];
-      console.log('loaded computer layers', $D.computerlayers);
       // add data and create ui item
       addComputerLayerItems();
     }).catch(function(error) {
