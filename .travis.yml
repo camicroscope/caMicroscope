@@ -22,9 +22,6 @@ before_script:
 
 jobs:
   include:
-    - stage: tests
-      name: Unit Tests
-      script: mocha test --recursive --exit
     - stage: lintjs
       name: "JS Code Style Check"
       script:
@@ -38,3 +35,6 @@ jobs:
         - ./node_modules/.bin/eslint apps/model/**/*.js --quiet
         - ./node_modules/.bin/eslint apps/segment/**/*.js --quiet
         - ./node_modules/.bin/eslint apps/viewer/*.js --quiet
+    - stage: tests
+      name: Unit Tests
+      script: mocha test --recursive --exit
