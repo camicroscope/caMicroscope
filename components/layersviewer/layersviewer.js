@@ -533,8 +533,7 @@ LayersViewer.prototype.addItems = function(data, type) {
   if (loadingIcon) loadingIcon.parentNode.removeChild(loadingIcon);
 
   if (type=='human' || type=='ruler') {
-    this.searchBar.elt.style.display = null;
-    this.searchList.style.display = null;
+    this.toggleSearchPanel();
     const chk = typeData.elt.querySelector('input[type=checkbox]');
     chk.style.display = '';
   }
@@ -707,7 +706,7 @@ LayersViewer.createSortableItem = function(item) {
 /* For Sortable View functions END */
 LayersViewer.prototype.toggleSearchPanel = function(isShow=true) {
   if (isShow) {
-    this.searchBar.elt.style.display =null;
+    this.searchBar.elt.style.display = null;
     this.searchList.style.display = null;
   } else {
     this.searchBar.elt.style.display = 'none';
@@ -860,7 +859,11 @@ LayersViewer.prototype.update = function() {
  */
 LayersViewer.prototype.__search = function(e) {
   // show all li with leaf class
-  const human = this.setting.categoricalData['human'].items;
+  const human = [];
+  for (const [key, data] of Object.entries(this.setting.categoricalData['human'].items)) {
+    human.push(...data.items)
+  }
+
   const ruler = this.setting.categoricalData['ruler'].items;
   const heatmap = this.setting.categoricalData['heatmap'].items;
   const segmentation = this.setting.categoricalData['segmentation'].items;
@@ -868,7 +871,6 @@ LayersViewer.prototype.__search = function(e) {
 
   list.forEach((data) => {
     data.elt.style.display = 'flex';
-    // item.sortItem.style.display='flex';
   });
 
   const pattern = this.searchBar.text.value;
