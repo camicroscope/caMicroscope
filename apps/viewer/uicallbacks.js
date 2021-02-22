@@ -2570,32 +2570,46 @@ function captureSlide() {
     console.warn('Incorrect Slide Canvas');
     return;
   }
-  const slideCtx = slideCanvas.getContext('2d');
-  const combiningCanvas = document.createElement('CANVAS');
-  combiningCanvas.height = window.innerHeight;
-  combiningCanvas.width = window.innerWidth;
-  const combiningCtx = combiningCanvas.getContext('2d');
-  const slideImageData = slideCanvas.toDataURL('image/png');
-  const slideImage = new Image();
-  slideImage.onload = function() {
-    combiningCtx.drawImage(slideImage, 0, 0, window.innerWidth, window.innerHeight);
-    const overlayCanvas = $CAMIC.viewer.omanager._display_;
-    if (overlayCanvas) {
-      combiningCtx.globalCompositeOperation = 'source-over';
-      const overlayCtx = overlayCanvas.getContext('2d');
-      const overlayImageData = overlayCanvas.toDataURL('image/png');
-      const overlayImage = new Image();
-      overlayImage.onload = function() {
-        combiningCtx.drawImage(overlayImage, 0, 0, window.innerWidth, window.innerHeight);
-        downloadSlideCapture(combiningCanvas);
-      };
-      overlayImage.src = overlayImageData;
-    } else {
-      console.warn('Incorrect Annotation Canvas');
-      downloadSlideCapture(combiningCanvas);
-    }
-  };
-  slideImage.src = slideImageData;
+
+  // creat the basic canvas 
+  const canvas = document.createElement('CANVAS');
+  
+  const ctx = canvas.getContext('2d');
+  canvas.height = slideCanvas.height 
+  canvas.width = slideCanvas.width;
+  ctx.drawImage( slideCanvas, 0, 0)
+  
+
+  // draw the heatmaps
+  if($CAMIC.viewer.heatmap && $CAMIC.viewer.heatmap._display_){
+    ctx.globalAlpha = 0.8;
+    const heatmapCanvas = $CAMIC.viewer.heatmap._display_;
+    const offset = $CAMIC.viewer.heatmap._offset;
+    ctx.drawImage(
+      heatmapCanvas,
+      offset[0], offset[1], $CAMIC.viewer.canvas.clientWidth, $CAMIC.viewer.canvas.clientHeight,
+      0, 0, canvas.width, canvas.height
+    )
+  }
+
+  // draw the segmentations
+  if($CAMIC.viewer.segment && $CAMIC.viewer.segment._display_){
+    ctx.globalAlpha = 1;
+    const segmentationCanvas = $CAMIC.viewer.segment._display_;
+    const offset = $CAMIC.viewer.segment._offset;
+    ctx.drawImage(
+      segmentationCanvas,
+      offset[0], offset[1], $CAMIC.viewer.canvas.clientWidth, $CAMIC.viewer.canvas.clientHeight,
+      0, 0, canvas.width, canvas.height
+    )
+  }
+
+  // draw the Annotations
+  const overlayCanvas = $CAMIC.viewer.omanager._display_;
+  ctx.drawImage( overlayCanvas, 0, 0, canvas.width, canvas.height)
+  
+  // save as jpeg
+  downloadSlideCapture(canvas);
 }
 
 function downloadSlideCapture(combiningCanvas) {

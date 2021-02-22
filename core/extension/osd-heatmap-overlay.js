@@ -129,7 +129,7 @@
     this._div.style.height = "150%";
     this._div.style.transformOrigin = "0 0";
     this._div.style.transform = "scale(1,1)";
-    this._div.style.zIndex = options.zIndex || 98;
+    this._div.style.zIndex = options.zIndex || 101;
     this._div.style.opacity = options.opacity || 0.8;
     this._viewer.canvas.appendChild(this._div);
 
@@ -146,7 +146,7 @@
     this.__legend.style.top = "50px";
     this.__legend.style.right = 0;
     this.__legend.style.padding = "6px 8px";
-    this.__legend.style.zIndex = options.zIndex + 1 || 99;
+    this.__legend.style.zIndex = options.zIndex + 1 || 101;
     this.__legend.style.font = "14px/16px Arial, Helvetica, sans-serif";
     this.__legend.style.fontSize = "14px";
     this.__legend.style.lineHeight = "16px";
