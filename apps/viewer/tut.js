@@ -121,6 +121,13 @@ var tour = new Tour({
     smartPlacement: true,
   },
   {
+    element: 'i[title=\'Slide Capture\']',
+    title: 'Slide Capture',
+    content: 'Take Screenshot of the slide.',
+    placement: 'auto bottom',
+    smartPlacement: true,
+  },
+  {
     element: 'i[title=\'Tutorial\']',
     title: 'Tutorial',
     content: 'Click here to start viewer Tour.',

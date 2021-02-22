@@ -480,6 +480,15 @@ async function initUIcomponents() {
       callback: updateSlideView,
     });
   }
+  // screenshot
+  subToolsOpt.push({
+    name: 'slideCapture',
+    icon: 'camera_enhance',
+    title: 'Slide Capture',
+    type: 'btn',
+    value: 'slCap',
+    callback: captureSlide,
+  });
   subToolsOpt.push({
     name: 'tutorial',
     icon: 'help',
