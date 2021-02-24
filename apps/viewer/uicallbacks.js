@@ -2562,54 +2562,13 @@ async function rootCallback({root, parent, items}) {
 
 /* Slide Capture Tool */
 
-function captureSlide() {
-  toolsOff();
-  // console.log($CAMIC.viewer);
-  const slideCanvas = $CAMIC.viewer.canvas.firstChild;
-  if (!slideCanvas) {
-    console.warn('Incorrect Slide Canvas');
-    return;
-  }
-
-  // creat the basic canvas 
-  const canvas = document.createElement('CANVAS');
+async function captureSlide() {
   
-  const ctx = canvas.getContext('2d');
-  canvas.height = slideCanvas.height 
-  canvas.width = slideCanvas.width;
-  ctx.drawImage( slideCanvas, 0, 0)
-  
-
-  // draw the heatmaps
-  if($CAMIC.viewer.heatmap && $CAMIC.viewer.heatmap._display_){
-    ctx.globalAlpha = 0.8;
-    const heatmapCanvas = $CAMIC.viewer.heatmap._display_;
-    const offset = $CAMIC.viewer.heatmap._offset;
-    ctx.drawImage(
-      heatmapCanvas,
-      offset[0], offset[1], $CAMIC.viewer.canvas.clientWidth, $CAMIC.viewer.canvas.clientHeight,
-      0, 0, canvas.width, canvas.height
-    )
-  }
-
-  // draw the segmentations
-  if($CAMIC.viewer.segment && $CAMIC.viewer.segment._display_){
-    ctx.globalAlpha = 1;
-    const segmentationCanvas = $CAMIC.viewer.segment._display_;
-    const offset = $CAMIC.viewer.segment._offset;
-    ctx.drawImage(
-      segmentationCanvas,
-      offset[0], offset[1], $CAMIC.viewer.canvas.clientWidth, $CAMIC.viewer.canvas.clientHeight,
-      0, 0, canvas.width, canvas.height
-    )
-  }
-
-  // draw the Annotations
-  const overlayCanvas = $CAMIC.viewer.omanager._display_;
-  ctx.drawImage( overlayCanvas, 0, 0, canvas.width, canvas.height)
-  
+  const canvas = await captureScreen($CAMIC);
   // save as jpeg
   downloadSlideCapture(canvas);
+  toolsOff();
+  $UI.layersSideMenu.close();
 }
 
 function downloadSlideCapture(combiningCanvas) {
