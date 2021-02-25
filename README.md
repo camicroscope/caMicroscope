@@ -5,12 +5,12 @@
 caMicroscope is a web-based biomedical image and data viewer, with a strong emphasis on cancer pathology WSI (Whole Slide Imaging).
 This guide has sections for different kinds of use of the platform. The [User Guide](#user-guide) covers the basics on how to use caMicroscope viewer. [nanoBorb](#nanoborb) covers nanoBorb, the version of caMicroscope designed as a standalone application for individual users without a server. [Hosted Setup](#hosted-setup) covers how to set up caMicroscope for multiple users on a server. [Developer Guide](#developer-guide) covers the broad strokes on how to add new functionality to caMicroscope.
 
-![View Slides](docs/View.gif)
-![Measure Features](docs/Measure.gif)
-![Annotate Areas of Interest](docs/Draw.gif)
-![Alternate Annotation Method](docs/Paint.gif)
-![Automatic Object Detection](docs/Segment.gif)
-![Test Classification Models](docs/Predict.gif)
+![View Slides](docs/img/View.gif)
+![Measure Features](docs/img/Measure.gif)
+![Annotate Areas of Interest](docs/img/Draw.gif)
+![Alternate Annotation Method](docs/img/Paint.gif)
+![Automatic Object Detection](docs/img/Segment.gif)
+![Test Classification Models](docs/img/Predict.gif)
 
 # User Guide
 
@@ -75,7 +75,7 @@ Once everything is up, go to \<the host this is running on\>:4010/ to see the la
 # Developer Guide
 We are collecting feedback to write this section in more detail. Please add your suggestions [here](https://github.com/camicroscope/caMicroscope/issues/267).
 
-caMicroscope is open source software. Any involvement and contribution with the caMicroscope project is greatly appreciated. Feel free to get directly involved in any of the repositories in the caMicroscope organization. New developers may find the notes in [CONTRIBUTING](https://github.com/camicroscope/caMicroscope/blob/master/CONTRIBUTING.md) helpful to start contributing to caMicroscope. 
+caMicroscope is open source software. Any involvement and contribution with the caMicroscope project is greatly appreciated. Feel free to get directly involved in any of the repositories in the caMicroscope organization. New developers may find the notes in [CONTRIBUTING](https://github.com/camicroscope/caMicroscope/blob/master/CONTRIBUTING.md) helpful to start contributing to caMicroscope.
 
 It is highly recommended to make any changes off of the develop branch of a repository, and, when ready, create a PR to the develop branch of the source repository. Before sending the PR, make sure that there are no linting errors by running ```npm install``` and then ```npm run lint```  to see the errors and ```npm run lint-fix``` to automatically fix the errors in the repository folder.
 
