@@ -861,7 +861,7 @@ LayersViewer.prototype.__search = function(e) {
   // show all li with leaf class
   const human = [];
   for (const [key, data] of Object.entries(this.setting.categoricalData['human'].items)) {
-    human.push(...data.items)
+    human.push(...data.items);
   }
 
   const ruler = this.setting.categoricalData['ruler'].items;

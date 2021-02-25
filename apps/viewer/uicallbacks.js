@@ -2563,7 +2563,6 @@ async function rootCallback({root, parent, items}) {
 /* Slide Capture Tool */
 
 async function captureSlide() {
-  
   const canvas = await captureScreen($CAMIC);
   // save as jpeg
   downloadSlideCapture(canvas);
