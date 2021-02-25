@@ -23,8 +23,10 @@ Different situations require different kinds of annotation, so caMicroscope nati
 
 ## Preset Annotation Labels
 caMicroscope provides the preset labels to associate users to quickly create annotations on the slide.
+
 ![Preset Annotation Label Menu](img/PresetLabelUse.png)
 
 ### Customizing Preset Labels
 To further increase efficiency for specific cases, we recommend changing the preset labels to match the kinds of review that is desired. Consider setting a keyboard shortcut to further decrease time menuing.
+
 ![Preset Annotation Label Menu](img/PresetLabelEdit.png)
