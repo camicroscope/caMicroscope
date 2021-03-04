@@ -121,6 +121,13 @@ var tour = new Tour({
     smartPlacement: true,
   },
   {
+    element: 'i[title=\'Slide Capture\']',
+    title: 'Slide Capture',
+    content: 'Take Screenshot of the slide.',
+    placement: 'auto bottom',
+    smartPlacement: true,
+  },
+  {
     element: 'i[title=\'Tutorial\']',
     title: 'Tutorial',
     content: 'Click here to start viewer Tour.',
@@ -138,5 +145,9 @@ var tour = new Tour({
   '</div><div style=\'width:100%;display: flex;margin-bottom: 5px;\'>'+
   '<button class=\'btn btn-default\' data-role=\'end\' style=\'margin:auto;\'>End tour</button></div></div>',
   backdrop: true,
+  // resets tour always to resume always from the beginning
+  onEnd: function reset() {
+    window.localStorage.setItem('Tour_current_step', 0);
+  },
 });
 tour.init();

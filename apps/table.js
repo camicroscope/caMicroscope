@@ -13,7 +13,7 @@ function sanitize(string) {
 }
 var existingSlideNames = [];
 var permissions;
-const allowedExtensions = ['svs', 'tif', 'tiff', 'vms', 'vmu', 'ndpi', 'scn', 'mrxs', 'bif', 'svslide'];
+const allowedExtensions = ['svs', 'tif', 'tiff', 'vms', 'vmu', 'ndpi', 'scn', 'mrxs', 'bif', 'svslide', 'jpg', 'png'];
 function validateForm(callback) {
   let slide = document.getElementById('slidename0');
   // Check if input element is rendered or not
@@ -599,7 +599,7 @@ function checkUserPermissions() {
 function changeSlideName(oldname, id) {
   let renameDiv = document.createElement('div');
   renameDiv.classList.add('form-group');
-  renameDiv.innerText = 'Enter the new name for the slide having following';
+  renameDiv.innerText = 'Enter the new name for the slide having following ';
   renameDiv.innerText += 'details \n\nID: ' + id + '\nName: ' + oldname;
   let renameInput = document.createElement('input');
   renameInput.setAttribute('type', 'text');

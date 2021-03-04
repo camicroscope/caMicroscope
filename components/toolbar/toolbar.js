@@ -154,7 +154,15 @@ CaToolbar.prototype.__createBtn = function(options) {
   btn.classList.add('material-icons');
   btn.classList.add('md-24');
   btn.textContent = options.icon;
-  if (options.title) btn.title = options.title;
+  if (options.title) {
+    btn.title = options.title;
+    tippy(btn, {
+      content: options.title,
+      placement: 'right',
+      delay: 300,
+      theme: 'light-border',
+    });
+  }
   li.appendChild(btn);
 
   // binding event
@@ -205,7 +213,15 @@ CaToolbar.prototype.__createCheck = function(options) {
   icon.classList.add('md-24');
   icon.textContent = options.icon;
   icon.htmlFor = id;
-  if (options.title) icon.title = options.title;
+  if (options.title) {
+    icon.title = options.title;
+    tippy(icon, {
+      content: options.title,
+      placement: 'right',
+      delay: 300,
+      theme: 'light-border',
+    });
+  }
   li.appendChild(icon);
 
   // binding event
@@ -274,7 +290,15 @@ CaToolbar.prototype.__createRadio = function(options) {
   }
 
   icon.htmlFor = id;
-  if (options.title) icon.title = options.title;
+  if (options.title) {
+    icon.title = options.title;
+    tippy(icon, {
+      content: options.title,
+      placement: 'right',
+      delay: 300,
+      theme: 'light-border',
+    });
+  }
 
   li.appendChild(icon);
 
@@ -312,7 +336,15 @@ CaToolbar.prototype.__createMultiStateBtns = function(options) {
   icon.classList.add(0);
   icon.dataset.state = 0;
   icon.textContent = options.icon;
-  if (options.title) icon.title = options.title;
+  if (options.title) {
+    icon.title = options.title;
+    tippy(icon, {
+      content: options.title,
+      placement: 'right',
+      delay: 300,
+      theme: 'light-border',
+    });
+  }
   li.appendChild(icon);
   li.addEventListener('click', function(e) {
     icon.classList.remove(`s${icon.dataset.state}`);
@@ -357,7 +389,15 @@ CaToolbar.prototype.__createMultiDropDown = function(options) {
   icon.classList.add('md-24');
   icon.textContent = options.icon;
   icon.htmlFor = id;
-  if (options.title) icon.title = options.title;
+  if (options.title) {
+    icon.title = options.title;
+    tippy(icon, {
+      content: options.title,
+      placement: 'right',
+      delay: 300,
+      theme: 'light-border',
+    });
+  }
   li.appendChild(icon);
 
   // create drop_down
@@ -477,7 +517,15 @@ CaToolbar.prototype.__createDropDown = function(options) {
   icon.classList.add('md-24');
   icon.textContent = options.icon;
   icon.htmlFor = id;
-  if (options.title) icon.title = options.title;
+  if (options.title) {
+    icon.title = options.title;
+    tippy(icon, {
+      content: options.title,
+      placement: 'right',
+      delay: 300,
+      theme: 'light-border',
+    });
+  }
   li.appendChild(icon);
 
   // create drop_down

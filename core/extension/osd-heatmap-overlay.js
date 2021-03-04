@@ -32,7 +32,7 @@
  *        the opacity of the heatmap. default is 0.8.
  * @param {String} [color='#ffa500']
  *        the patch's color. default is '#ffa500'.
- * @param {Number} [zIndex=100]
+ * @param {Number} [zIndex=98]
  *        the z-index of heatmap in the entire viewport.
  */
 (function($) {
@@ -118,7 +118,7 @@
     this._cover_div.style.width = "150%";
     this._cover_div.style.height = "150%";
     this._cover_div.style.background = options.coverColor || "#000000";
-    this._cover_div.style.zIndex = options.zIndex - 1 || 97;
+    this._cover_div.style.zIndex = options.zIndex - 1 || 98;
     this._cover_div.style.opacity = options.coverOpacity || 0.6;
     this._viewer.canvas.appendChild(this._cover_div);
 
@@ -146,7 +146,7 @@
     this.__legend.style.top = "50px";
     this.__legend.style.right = 0;
     this.__legend.style.padding = "6px 8px";
-    this.__legend.style.zIndex = options.zIndex + 1 || 99;
+    this.__legend.style.zIndex = options.zIndex + 1 || 101;
     this.__legend.style.font = "14px/16px Arial, Helvetica, sans-serif";
     this.__legend.style.fontSize = "14px";
     this.__legend.style.lineHeight = "16px";
@@ -228,8 +228,9 @@
           f => f.name === options.currentFieldName
         );
       }
-      this._color = options.color || this._color || '#ffa500';
-      this._colors = options.colors || this._colors || ['#EAF2F8', '#D4E6F1', '#A9CCE3', '#7FB3D5', '#5499C7'];
+      this._color = options.color || '#1034a6'; // heatmap color
+      // this._colors = options.colors || ['#EAF2F8', '#D4E6F1', '#A9CCE3', '#7FB3D5', '#5499C7']; // heatmap color
+      this._colors = options.colors || ["#2b83ba", "#abdda4", "#ffffbf", "#fdae61", "#d7191c"]; // heatmap color
       this.intervals = _getIntervals(
         this._currentField,
         this._colors,

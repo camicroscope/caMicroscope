@@ -5,12 +5,12 @@
 caMicroscope is a web-based biomedical image and data viewer, with a strong emphasis on cancer pathology WSI (Whole Slide Imaging).
 This guide has sections for different kinds of use of the platform. The [User Guide](#user-guide) covers the basics on how to use caMicroscope viewer. [nanoBorb](#nanoborb) covers nanoBorb, the version of caMicroscope designed as a standalone application for individual users without a server. [Hosted Setup](#hosted-setup) covers how to set up caMicroscope for multiple users on a server. [Developer Guide](#developer-guide) covers the broad strokes on how to add new functionality to caMicroscope.
 
-![View Slides](docs/View.gif)
-![Measure Features](docs/Measure.gif)
-![Annotate Areas of Interest](docs/Draw.gif)
-![Alternate Annotation Method](docs/Paint.gif)
-![Automatic Object Detection](docs/Segment.gif)
-![Test Classification Models](docs/Predict.gif)
+![View Slides](docs/img/View.gif)
+![Measure Features](docs/img/Measure.gif)
+![Annotate Areas of Interest](docs/img/Draw.gif)
+![Alternate Annotation Method](docs/img/Paint.gif)
+![Automatic Object Detection](docs/img/Segment.gif)
+![Test Classification Models](docs/img/Predict.gif)
 
 # User Guide
 
@@ -32,6 +32,7 @@ The toolbar is in the top-left of the main content window. Use the toolbar butto
 | ![](https://fonts.gstatic.com/s/i/materialicons/view_list/v4/24px.svg)      | Layer Manager      | Opens the Layers Manager panel, where you can select which layers to view. |
 | ![](https://fonts.gstatic.com/s/i/materialicons/home/v4/24px.svg)      | Home      | Return to the data table so that you can open another slide.|
 | ![](https://fonts.gstatic.com/s/i/materialicons/create/v4/24px.svg)      | Draw      |  Draw thin lines, thick lines, or polygons on the image. To maintain the integrity of measurements, avoid drawing shapes that overlap or intersect one another. |
+| ![](https://fonts.gstatic.com/s/i/materialicons/colorize/v4/24px.svg)      | Preset Labels      |  Use a preset annotation type immediately to quickly annotate a silde consistently. |
 | ![](https://fonts.gstatic.com/s/i/materialicons/search/v4/24px.svg)       | Magnifier      |The Magnifier works like a magnifying glass and allows you to see the slide at normal magnification (1.0), low magnification (0.5), or high magnification (2.0). Click a magnification level and place the bounding box on the area of the slide you want to magnify. |
 | ![](https://fonts.gstatic.com/s/i/materialicons/space_bar/v4/24px.svg)      | Measurement      | Drag this tool on the slide to learn the measurement in micrometers. |
 | ![](https://fonts.gstatic.com/s/i/materialicons/share/v4/24px.svg)      | Share View      |Opens a window with a URL to the current presentation state of the slide including the magnification level, layers that are currently open, and your position on the image.|
@@ -43,6 +44,7 @@ The toolbar is in the top-left of the main content window. Use the toolbar butto
 | ![](https://fonts.gstatic.com/s/i/materialicons/get_app/v4/24px.svg)      | Download Slide      | Download the slide image to your system |
 | ![](https://fonts.gstatic.com/s/i/materialicons/playlist_add_check/v8/24px.svg)      | Mark Reviewed      | Use to signify the completion of review of a slide. |
 | ![](https://fonts.gstatic.com/s/i/materialicons/bug_report/v4/24px.svg)      | Bug Report      | Report a bug or give feedback. |
+| ![](https://fonts.gstatic.com/s/i/materialicons/camera_enhance/v4/24px.svg)      | Slide Capture      | Click to take a screenshot of the slide and annotations on it. |
 | ![](https://fonts.gstatic.com/s/i/materialicons/help/v4/24px.svg)      | Tutorial      | Click to view a guided tour of the viewer tools. |
 
 
@@ -56,17 +58,6 @@ The toolbar is in the top-left of the main content window. Use the toolbar butto
 | Side-by-Side |  Ctrl + s |
 | Close all tools |  ESC   |
 
-
-# nanoBorb
-To use caMicroscope as a standalone application, see [nanoBorb](https://github.com/SBU-BMI/nanoBorb/releases).
-The [user guide screencast](https://drive.google.com/open?id=1HkkL5FqEIgi7fzqKijtUhWBPlplh_uHF) should explain the basics of nanoBorb.
-
-1. Download zip file.
-2. Unzip.
-3.
-    * For Windows, Run "nanoborb.exe" in the unzipped folder
-    * For MacOS, Move nanoBorb app to Applications folder and Double-click copied nanoBorb file to run.
-
 # Hosted Setup
 The full distribution repository for hosted caMicroscope is [here](https://github.com/camicroscope/Distro/).
 run with `docker-compose -f caMicroscope.yml up`
@@ -76,43 +67,27 @@ Use `docker-compose -f caMicroscope.yml build` to rebuild the services.
 
 Once everything is up, go to \<the host this is running on\>:4010/ to see the landing page.
 
+# Other Resources
+- **Slack:** <http://bit.ly/camicroscope>
+- **Discussion mailing list:** <https://groups.google.com/g/camicroscope>
+- **Sample Tensorflow Models:** <https://github.com/camicroscope/tfjs-models>
+
 # Developer Guide
 We are collecting feedback to write this section in more detail. Please add your suggestions [here](https://github.com/camicroscope/caMicroscope/issues/267).
 
-caMicroscope is open source software. Any involvement and contribution with the caMicroscope project is greatly appreciated. Feel free to get directly involved in any of the repositories in the caMicroscope organization.
+caMicroscope is open source software. Any involvement and contribution with the caMicroscope project is greatly appreciated. Feel free to get directly involved in any of the repositories in the caMicroscope organization. New developers may find the notes in [CONTRIBUTING](https://github.com/camicroscope/caMicroscope/blob/master/CONTRIBUTING.md) helpful to start contributing to caMicroscope.
 
 It is highly recommended to make any changes off of the develop branch of a repository, and, when ready, create a PR to the develop branch of the source repository. Before sending the PR, make sure that there are no linting errors by running ```npm install``` and then ```npm run lint```  to see the errors and ```npm run lint-fix``` to automatically fix the errors in the repository folder.
+
+Source code organization ie the file structure of caMicroscope can be found in [file structure](https://github.com/camicroscope/caMicroscope/blob/master/docs/file_structure.md)
 
 ## Fast Local Changes
 When using the hosted setup, you can have the distribution host the changes from your local. Follow these steps :
 - Clone this repository, the [Caracal repository](https://github.com/camicroscope/Caracal/) and [the distribution](https://github.com/camicroscope/Distro/) in the same parent directory
-- In this repo, `mv .nocache.htaccess .htaccess`
-- Replace the 'back' section of develop.yml in Distro repository with something like this:
-```
-  back:
-    build:
-      context: "../Caracal"
-      args:
-        viewer: "develop"
-    depends_on:
-      - "mongo"
-    ports:
-      - "4010:4010"
-    container_name: ca-back
-    volumes:
-      - ./config/login.html:/root/src/static/login.html
-      - ./jwt_keys/:/root/src/keys/
-      - ../caMicroscope:/root/src/camicroscope
-    environment:
-      JWK_URL: "https://www.googleapis.com/oauth2/v3/certs"
-      IIP_PATH: "http://ca-iip/fcgi-bin/iipsrv.fcgi"
-      MONGO_URI: "mongodb://ca-mongo"
-      DISABLE_SEC: "true"
-      ALLOW_PUBLIC: "true"
-```
+- Set the build to build your local changes instead of the hosted git versions by editing the ca-back container section of your develop.yml. Replace the build context section with the path to your caracal checkout ("../Caracal"), and add `- ../caMicroscope:/src/camicroscope` to the volumes.
 - Remove this line from 'Dockerfile' in Caracal repository :
 ```
-RUN if [ -z ${viewer} ]; then git clone https://github.com/camicroscope/camicroscope.git; else git clone https://github.com/camicroscope/camicroscope.git --branch=$viewer; fi
+RUN git clone https://github.com/${fork:-camicroscope}/camicroscope.git --branch=${viewer:-master}
 ```
 - In Distro repository, enter the following commands :
 ```

@@ -159,12 +159,21 @@ function handleDownload(id) {
       });
 }
 
+function convertSlide(filename, destFilename) {
+  let convUrl = '../loader/slide/' + filename + '/pyramid/' + destFilename;
+  return fetch(convUrl, {'method': 'POST'}).then((response) => response.json());
+}
 
-function handleCheck(filename, reset, id) {
+function handleCheck(filename, reset, id, noRetry) {
   fetch(checkUrl + filename, {credentials: 'same-origin'}).then(
       (response) => response.json(), // if the response is a JSON object
   ).then(
       (success) => {
+        // errors aren't always non-success, so need to check here too
+        if (success.error) {
+          console.error(success.error);
+          throw success;
+        }
         success['ID'] = id;
         // Add the filename, to be able to fetch the thumbnail.
         success['preview'] = filename;
@@ -172,9 +181,18 @@ function handleCheck(filename, reset, id) {
         $('#finish_btn').fadeOut(300);
         $('#filename0, #slidename0, #filter0').prop('disabled', true);
       }, // Handle the success response object
-  ).catch(
-      (error) => changeStatus('CHECK', error, reset), // Handle the error response object
-  );
+  ).catch((error)=>{
+    if (!(noRetry)) {
+      console.log('retrying with conversion');
+      let destFilename = filename.replace('.', '_') + '_conv.tif';
+      document.getElementById('filename'+0).value = destFilename;
+      convertSlide(filename, destFilename).then((x)=>handleCheck(destFilename, reset, id, true))
+          .catch((err)=>changeStatus('CHECK', error, reset));
+    } else {
+      console.info('not retrying');
+      changeStatus('CHECK', error, reset); // Handle the error response object
+    }
+  });
 }
 
 function handlePost(filename, slidename, filter, reset) {

@@ -132,7 +132,7 @@ CollapsibleList.prototype.__createItem = function(options) {
   // the icon for expand/collapse
   const addIcon = document.createElement('i');
   addIcon.classList.add('material-icons');
-  addIcon.classList.add('md-24');
+  addIcon.classList.add('md-18');
   head.appendChild(addIcon);
 
   // the icon for customize
@@ -140,7 +140,7 @@ CollapsibleList.prototype.__createItem = function(options) {
   if (options.icon) {
     icon = document.createElement('i');
     icon.classList.add('material-icons');
-    icon.classList.add('md-24');
+    icon.classList.add('md-18');
     icon.textContent = options.icon;
     head.appendChild(icon);
   }
@@ -320,14 +320,14 @@ CollapsibleList.prototype.displayContent = function(itemId, action = true, part 
   if (item) {
     switch (part) {
       case 'head':
-        item.elt.head.style.display = action?'block':'none';
+        item.elt.head.style.display = action?'flex':'none';
         break;
       case 'body':
         item.elt.body.style.display = action?'block':'none';
         // statements_1
         break;
       default:
-        item.elt.head.style.display = action?'block':'none';
+        item.elt.head.style.display = action?'flex':'none';
         item.elt.body.style.display = action?'block':'none';
         // statements_def
         break;

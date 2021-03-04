@@ -23,9 +23,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * **Version 1**
     * [1.0.x](#camicroscope-10)
 
-### caMicroscope [Unreleased](https://github.com/camicroscope/camicroscope/compare/v3.8.4...camicroscope:develop)
+### caMicroscope [Unreleased](https://github.com/camicroscope/camicroscope/compare/v3.9.0...camicroscope:develop)
 ###### TBD
+* 
 
+### caMicroscope [Unreleased](https://github.com/camicroscope/camicroscope/compare/v3.8.4...camicroscope:v3.9.0)
+###### 2021-03-04
+* Asynchronous Layer Manager
+* Auto convert png and jpg files via table load.
+* Undo Draw Button [#491](https://github.com/camicroscope/caMicroscope/pull/491)
+* Addition of screenshot feature to the viewer [#496](https://github.com/camicroscope/caMicroscope/pull/496)
+* Table Button Responsiveness [#477](https://github.com/camicroscope/caMicroscope/pull/477)
+* Improved Documentation [#478](https://github.com/camicroscope/caMicroscope/pull/478), [#488](https://github.com/camicroscope/caMicroscope/pull/488)
+* Tour, save state and resume [#487](https://github.com/camicroscope/caMicroscope/pull/487)
+* Toolbar Dependency Bugfix [#494](https://github.com/camicroscope/caMicroscope/pull/494)
 
 ### caMicroscope [3.8.4](https://github.com/camicroscope/camicroscope/compare/v3.8.3...camicroscope:v3.8.4)
 ###### 2021-01-25
