@@ -94,3 +94,4 @@ RUN git clone https://github.com/${fork:-camicroscope}/camicroscope.git --branch
 docker-compose -f develop.yml build
 docker-compose -f develop.yml up
 ```
+- To enable and setup cloud upload APIs for caMicroscope, follow and replicate the instructions as provided in [Cloud  Upload APIs Guide](https://github.com/camicroscope/caMicroscope/blob/develop/docs/cloudUploadAPIs.md)
