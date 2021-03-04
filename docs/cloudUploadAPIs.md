@@ -35,3 +35,24 @@ Google drive API is to be used on Slideloader backend server to allow the downlo
 **Note**: Do not rename the `google-drive.json` file
 
 Read more at https://developers.google.com/drive
+
+
+## Dropbox Chooser API
+
+**Instructions:**
+- Login/Sign up to [Dropbox](https://www.dropbox.com/login)
+- Create a new app on the [DBX Platform](https://www.dropbox.com/developers/apps/create)
+  1. Choose an API
+  2. Choose type of access you need (App folder or Full Dropbox)
+  3. Name your App (must be unique)
+- You will be redirected to App Settings Page
+- Scroll down to Chooser/Saver/Embedder Domains
+    1. If using it for development, type `localhost` and click on add 
+    2. Otherwise, type the domain of the deployed version `https://wolf.cci.emory.edu//camic_org` and click add
+- COPY the `APP key` from that page and replace the `YOUR_APP_KEY_HERE` in [config.js](https://github.com/camicroscope/caMicroscope/blob/master/apps/loader/config.js) in apps folder of the caMicroscope repository:
+    ```
+    const dropboxConfig = {
+        'APP_KEY': 'YOUR_APP_KEY_HERE',
+    };
+    ```
+Read more at https://www.dropbox.com/developers/chooser
