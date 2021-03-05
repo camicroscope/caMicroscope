@@ -2500,7 +2500,7 @@ async function rootCallback({root, parent, items}) {
     } catch (error) {
       closeLoadStatus();
       // finish loaded
-      console.eorror('loading human annotations error', error);
+      console.error('loading human annotations error', error);
       $UI.message.addError('loading human annotations error', 4000);
       return;
     }
