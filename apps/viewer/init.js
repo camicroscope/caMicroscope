@@ -921,7 +921,7 @@ function addHumanLayerItems() {
         false;
     var isFind = false;
     for (const key in items) {
-      if (d.id.includes(key)) {
+      if (d.id.includes(`${key}_`)) {
         isFind = true;
         items[key].items.push({item: d, isShow});
       }
