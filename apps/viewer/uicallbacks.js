@@ -1384,7 +1384,7 @@ function closeMinorControlPanel() {
 function loadRulerById(camic, rulerData, callback) {
   const {item, elt} = rulerData;
   $CAMIC.store
-      .getMarkByIds([item.id], $D.params.slideId)
+      .getMarkByIds([item.id], $D.params.slideId, null, item.typeId)
       .then((data) => {
         // response error
         if (data.error) {
@@ -1458,7 +1458,7 @@ function loadAnnotationById(camic, layerData, parentType, callback) {
   Loading.open(document.body, 'Loading Layers...');
 
   $CAMIC.store
-      .getMarkByIds([item.id], $D.params.slideId)
+      .getMarkByIds([item.id], $D.params.slideId, null, item.typeId)
       .then((data) => {
         delete item.loading;
 
@@ -2500,7 +2500,7 @@ async function rootCallback({root, parent, items}) {
     } catch (error) {
       closeLoadStatus();
       // finish loaded
-      console.eorror('loading human annotations error', error);
+      console.error('loading human annotations error', error);
       $UI.message.addError('loading human annotations error', 4000);
       return;
     }
