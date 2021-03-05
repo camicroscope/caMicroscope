@@ -1384,7 +1384,7 @@ function closeMinorControlPanel() {
 function loadRulerById(camic, rulerData, callback) {
   const {item, elt} = rulerData;
   $CAMIC.store
-      .getMarkByIds([item.id], $D.params.slideId)
+      .getMarkByIds([item.id], $D.params.slideId, null, item.typeId)
       .then((data) => {
         // response error
         if (data.error) {
@@ -1458,7 +1458,7 @@ function loadAnnotationById(camic, layerData, parentType, callback) {
   Loading.open(document.body, 'Loading Layers...');
 
   $CAMIC.store
-      .getMarkByIds([item.id], $D.params.slideId)
+      .getMarkByIds([item.id], $D.params.slideId, null, item.typeId)
       .then((data) => {
         delete item.loading;
 
