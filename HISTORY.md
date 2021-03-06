@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Index
 * **Version 3**
+    * [3.9.x](#camicroscope-390)
     * [3.8.x](#camicroscope-380)
     * [3.7.x](#camicroscope-377)
     * [3.7.x](#camicroscope-375)
@@ -25,9 +26,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### caMicroscope [Unreleased](https://github.com/camicroscope/camicroscope/compare/v3.9.0...camicroscope:develop)
 ###### TBD
-* 
+*
 
-### caMicroscope [Unreleased](https://github.com/camicroscope/camicroscope/compare/v3.8.4...camicroscope:v3.9.0)
+### caMicroscope [3.9.1](https://github.com/camicroscope/camicroscope/compare/v3.8.4...camicroscope:v3.9.0)
+###### 2021-03-05
+* Bugfix: Annotation Name Filtering
+
+### caMicroscope [3.9.0](https://github.com/camicroscope/camicroscope/compare/v3.8.4...camicroscope:v3.9.0)
 ###### 2021-03-04
 * Asynchronous Layer Manager
 * Auto convert png and jpg files via table load.
