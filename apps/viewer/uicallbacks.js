@@ -2560,6 +2560,24 @@ async function rootCallback({root, parent, items}) {
   closeLoadStatus();
 }
 
+/* Enhance Tool */
+function enhance(data){
+    const canvas = $CAMIC.viewer.canvas.firstChild;
+    let width = canvas.width, height = canvas.height;
+    var img = canvas.getContext('2d').getImageData(0,0,width,height);
+    if (data.status == 'Histogram Eq')
+      canvas.getContext('2d').putImageData(clahe(img,64,0.015),0,0);
+    else if (data.status == 'Edge')
+      canvas.getContext('2d').putImageData(edgedetect(img,150,0,0,width,height),0,0);
+    else if(data.status == 'Sharpen'){
+      var filter = [[0,-1,0],[-1,10,-1],[0,-1,0]];
+      filter = [filter,filter,filter];
+      var newimg = new ImageData(new Uint8ClampedArray(applyfilter(img,filter,0,0,width,height)),width,height);
+      canvas.getContext('2d').putImageData(newimg,0,0);
+    }
+}
+
+
 /* Slide Capture Tool */
 
 function captureSlide() {
