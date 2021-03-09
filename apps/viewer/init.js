@@ -238,12 +238,29 @@ function initCore() {
             // statements_def
             break;
         }
+        
         $UI.annotPopup.data = {
           id: data.provenance.analysis.execution_id,
           oid: data._id.$oid,
           annotation: attributes,
           selected: e.data.selected,
         };
+        const getCateName = () => {
+          const items = $UI.layersViewer.setting.categoricalData.human.items;
+          var dataType = null;
+          for(const key in items){
+            dataType = key;
+            if (items.hasOwnProperty(key)&&Array.isArray(items[key].items)&&items[key].items.some(i=>i.item.id == $UI.annotPopup.data.id)) break;
+          }
+          return dataType;
+        }
+        
+        
+
+        $UI.annotPopup.dataType = null;
+        $UI.annotPopup.dataType = data.provenance && data.provenance.analysis && data.provenance.analysis.source && data.provenance.analysis.source=='human'?
+        getCateName($UI.annotPopup.data.id):null;
+
         $UI.annotPopup.setTitle(`id:${data.provenance.analysis.execution_id}`);
         $UI.annotPopup.setBody(body);
         if (warning) $UI.annotPopup.body.innerHTML += warning;
@@ -961,7 +978,7 @@ function addHumanLayerItems() {
         false;
     var isFind = false;
     for (const key in items) {
-      if (d.id.includes(key)) {
+      if (d.id.includes(`${key}_`)) {
         isFind = true;
         items[key].items.push({item: d, isShow});
       }
