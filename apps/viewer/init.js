@@ -373,7 +373,7 @@ async function initUIcomponents() {
     icon: 'invert_colors',
     title: 'Enhance',
     type: 'dropdown',
-    value: 'slCap',
+    value: 'Enhance',
     dropdownList: [
       {
         value: 'Histogram Eq',
@@ -390,6 +390,11 @@ async function initUIcomponents() {
         value: 'Sharpen',
         title: 'Sharpen',
         icon: 'change_history',
+      },
+      {
+        value: 'Custom',
+        title: 'Custom',
+        icon: 'api',
       },
     ],
     callback: enhance,

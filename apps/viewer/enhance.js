@@ -139,7 +139,6 @@ function edgedetect(imgData,threshold,is,js,sx,sy){
   }
   return new ImageData(new Uint8ClampedArray(newdata),sx,sy);
 }
-
 /***********************************************************************************************************************/
 /** Apply Filter
 *@param {ImageData} imageData
@@ -157,6 +156,7 @@ function applyfilter(imgData, kernel, is,js,sx,sy){
   var kernelSizex2 = Math.floor(kernelSizex/2)
   var newdata = new Array(4*sx*sy);
   var data = imgData.data;
+  var width = imgData.width, height = imgData.height
 
   var sumkr=0,sumkg=0,sumkb=0;
   for(var x = 0; x < kernelSizex; x++){
@@ -166,19 +166,21 @@ function applyfilter(imgData, kernel, is,js,sx,sy){
         sumkb+=(kernel[2][y][x]);}}
   if(!sumkr)sumkr=1;if(!sumkg)sumkg=1;if(!sumkb)sumkb=1;
 
-  for(var i=is-kernelSizex2;i<is+sx-kernelSizex2;i+=1){
-    for(var j=js-kernelSizey2;j<js+sy-kernelSizey2;j+=1){
+  var x1=is-kernelSizex2,x2=is+sx-kernelSizex2;
+  var y1=js-kernelSizey2,y2=js+sy-kernelSizey2;
+  for(var i=x1;i<x2;i+=1){
+    for(var j=y1;j<y2;j+=1){
       var sumr=0,sumg=0,sumb=0;
       for(var x = 0; x < kernelSizex; x++){
           for(var y = 0; y < kernelSizey; y++){
-            if(i+x>=imgData.width || j+y>=imgData.height || i+x<0 || j+y<0) continue;
-            var px = getpix(data,j+y,i+x,imgData.width);
+            if(i+x>= width || j+y>=height || i+x<0 || j+y<0) continue;
+            var px = getpix(data,j+y,i+x,width);
             sumr += (px[0])*kernel[0][y][x];
             sumg += (px[1])*kernel[1][y][x];
             sumb += (px[2])*kernel[2][y][x];
           }
         }
-        var col = getpix(data,j+kernelSizey2,i+kernelSizex2,imgData.width);
+        var col = getpix(data,j+kernelSizey2,i+kernelSizex2,width);
         col[0] = Math.abs(Math.floor(sumr/sumkr));
         col[1] = Math.abs(Math.floor(sumg/sumkg));
         col[2] = Math.abs(Math.floor(sumb/sumkb));
