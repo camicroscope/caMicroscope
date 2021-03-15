@@ -2564,6 +2564,7 @@ async function rootCallback({root, parent, items}) {
 function enhance(data){
     document.querySelector('[title="Enhance"').previousSibling.checked = true;
 
+    // Canvas information
     const canvas = $CAMIC.viewer.canvas.firstChild;
     const context = canvas.getContext('2d');
     let width = canvas.width, height = canvas.height;
@@ -2577,10 +2578,25 @@ function enhance(data){
         var filter = [[0,-1,0],[-1,7,-1],[0,-1,0]];
         filter = [filter,filter,filter];
         var newimg = new ImageData(new Uint8ClampedArray(applyfilter(img,filter,0,0,width,height)),width,height);
-        context.putImageData(newimg,0,0);
-    }
+        context.putImageData(newimg,0,0);}
+        
     else if (data.status == "Custom"){
-        var filter = eval(prompt("Enter the Kernel: Eg:[[1,0],[0,1]]"));
+        var input = prompt("Enter the 2D Kernel: Eg : [[1, 0], [0, 1]]"), f=0;
+        // JSON Parse test
+        try{
+        var filter = JSON.parse(input), sz = filter[0].length;}
+        catch{
+          alert("Invalid Kernel : " + input);
+          return;}
+        // 2D array check
+        for(var r=0; r<filter.length; r++)
+        if(!Array.isArray(filter[r]) || filter[r].length!=sz || sz==0) f=1;
+        else for(var c = 0; c<filter[r].length; c++)
+            if(Array.isArray(filter[r][c]))f=1;
+        if (f){
+          alert("Invalid Kernel : " + input);
+          return;}
+        // Apply
         filter = [filter,filter,filter];
         var newimg = new ImageData(new Uint8ClampedArray(applyfilter(img,filter,0,0,width,height)),width,height);
         context.putImageData(newimg,0,0);
@@ -2601,7 +2617,7 @@ function captureSlide() {
     return;
   }
 
-  // creat the basic canvas 
+  // create the basic canvas
   const canvas = document.createElement('CANVAS');
   
   const ctx = canvas.getContext('2d');
