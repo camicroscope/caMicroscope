@@ -2562,7 +2562,7 @@ async function rootCallback({root, parent, items}) {
 
 /* Enhance Tool */
 function enhance(data){
-    document.querySelector('[title="Enhance"').previousSibling.checked = true;
+    document.querySelector('[title="Enhance"]').previousSibling.checked = true;
 
     // Canvas information
     const canvas = $CAMIC.viewer.canvas.firstChild;
@@ -2603,7 +2603,7 @@ function enhance(data){
     }
 }
 function unenhance(){
-  document.querySelector('[title="Enhance"').previousSibling.checked = false;
+  document.querySelector('[title="Enhance"]').previousSibling.checked = false;
 }
 
 /* Slide Capture Tool */
