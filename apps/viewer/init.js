@@ -238,7 +238,7 @@ function initCore() {
             // statements_def
             break;
         }
-        
+
         $UI.annotPopup.data = {
           id: data.provenance.analysis.execution_id,
           oid: data._id.$oid,
@@ -248,17 +248,21 @@ function initCore() {
         const getCateName = () => {
           const items = $UI.layersViewer.setting.categoricalData.human.items;
           var dataType = null;
-          for(const key in items){
-            dataType = key;
-            if (items.hasOwnProperty(key)&&Array.isArray(items[key].items)&&items[key].items.some(i=>i.item.id == $UI.annotPopup.data.id)) break;
+          for (const key in items) {
+            if ({}.hasOwnProperty.call(items, key)) {
+              dataType = key;
+              if (items.hasOwnProperty(key)&&
+                  Array.isArray(items[key].items)&&
+                  items[key].items.some((i)=>i.item.id == $UI.annotPopup.data.id)) break;
+            }
           }
           return dataType;
-        }
-        
-        
+        };
+
 
         $UI.annotPopup.dataType = null;
-        $UI.annotPopup.dataType = data.provenance && data.provenance.analysis && data.provenance.analysis.source && data.provenance.analysis.source=='human'?
+        $UI.annotPopup.dataType = data.provenance && data.provenance.analysis &&
+                                  data.provenance.analysis.source && data.provenance.analysis.source=='human'?
         getCateName($UI.annotPopup.data.id):null;
 
         $UI.annotPopup.setTitle(`id:${data.provenance.analysis.execution_id}`);
