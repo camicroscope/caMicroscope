@@ -34,5 +34,5 @@ jobs:
     - run: npm install eslint-config-google
     - run: http-server -s &
     - run: npm run build --if-present
-    - run: npm lint
+    - run: npm run lint
     - run: npm test
