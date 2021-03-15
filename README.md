@@ -5,12 +5,12 @@
 caMicroscope is a web-based biomedical image and data viewer, with a strong emphasis on cancer pathology WSI (Whole Slide Imaging).
 This guide has sections for different kinds of use of the platform. The [User Guide](#user-guide) covers the basics on how to use caMicroscope viewer. [nanoBorb](#nanoborb) covers nanoBorb, the version of caMicroscope designed as a standalone application for individual users without a server. [Hosted Setup](#hosted-setup) covers how to set up caMicroscope for multiple users on a server. [Developer Guide](#developer-guide) covers the broad strokes on how to add new functionality to caMicroscope.
 
-![View Slides](docs/View.gif)
-![Measure Features](docs/Measure.gif)
-![Annotate Areas of Interest](docs/Draw.gif)
-![Alternate Annotation Method](docs/Paint.gif)
-![Automatic Object Detection](docs/Segment.gif)
-![Test Classification Models](docs/Predict.gif)
+![View Slides](docs/img/View.gif)
+![Measure Features](docs/img/Measure.gif)
+![Annotate Areas of Interest](docs/img/Draw.gif)
+![Alternate Annotation Method](docs/img/Paint.gif)
+![Automatic Object Detection](docs/img/Segment.gif)
+![Test Classification Models](docs/img/Predict.gif)
 
 # User Guide
 
@@ -32,6 +32,7 @@ The toolbar is in the top-left of the main content window. Use the toolbar butto
 | ![](https://fonts.gstatic.com/s/i/materialicons/view_list/v4/24px.svg)      | Layer Manager      | Opens the Layers Manager panel, where you can select which layers to view. |
 | ![](https://fonts.gstatic.com/s/i/materialicons/home/v4/24px.svg)      | Home      | Return to the data table so that you can open another slide.|
 | ![](https://fonts.gstatic.com/s/i/materialicons/create/v4/24px.svg)      | Draw      |  Draw thin lines, thick lines, or polygons on the image. To maintain the integrity of measurements, avoid drawing shapes that overlap or intersect one another. |
+| ![](https://fonts.gstatic.com/s/i/materialicons/colorize/v4/24px.svg)      | Preset Labels      |  Use a preset annotation type immediately to quickly annotate a silde consistently. |
 | ![](https://fonts.gstatic.com/s/i/materialicons/search/v4/24px.svg)       | Magnifier      |The Magnifier works like a magnifying glass and allows you to see the slide at normal magnification (1.0), low magnification (0.5), or high magnification (2.0). Click a magnification level and place the bounding box on the area of the slide you want to magnify. |
 | ![](https://fonts.gstatic.com/s/i/materialicons/space_bar/v4/24px.svg)      | Measurement      | Drag this tool on the slide to learn the measurement in micrometers. |
 | ![](https://fonts.gstatic.com/s/i/materialicons/share/v4/24px.svg)      | Share View      |Opens a window with a URL to the current presentation state of the slide including the magnification level, layers that are currently open, and your position on the image.|
@@ -74,7 +75,7 @@ Once everything is up, go to \<the host this is running on\>:4010/ to see the la
 # Developer Guide
 We are collecting feedback to write this section in more detail. Please add your suggestions [here](https://github.com/camicroscope/caMicroscope/issues/267).
 
-caMicroscope is open source software. Any involvement and contribution with the caMicroscope project is greatly appreciated. Feel free to get directly involved in any of the repositories in the caMicroscope organization. New developers may find the notes in [CONTRIBUTING](https://github.com/camicroscope/caMicroscope/blob/master/CONTRIBUTING.md) helpful to start contributing to caMicroscope. 
+caMicroscope is open source software. Any involvement and contribution with the caMicroscope project is greatly appreciated. Feel free to get directly involved in any of the repositories in the caMicroscope organization. New developers may find the notes in [CONTRIBUTING](https://github.com/camicroscope/caMicroscope/blob/master/CONTRIBUTING.md) helpful to start contributing to caMicroscope.
 
 It is highly recommended to make any changes off of the develop branch of a repository, and, when ready, create a PR to the develop branch of the source repository. Before sending the PR, make sure that there are no linting errors by running ```npm install``` and then ```npm run lint```  to see the errors and ```npm run lint-fix``` to automatically fix the errors in the repository folder.
 

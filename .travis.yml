@@ -12,13 +12,11 @@ install:
     - npm install eslint-config-google
 
 stages:
-  - name: tests
   - name: lintjs
-  - name: linthtml
+  - name: tests
 
 before_script:
   - http-server -s & # start a Web server
-  - sleep 3 # give Web server some time to bind to sockets, etc
 
 jobs:
   include:

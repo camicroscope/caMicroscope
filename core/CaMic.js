@@ -254,9 +254,9 @@ class CaMic {
       this.viewer.canvasDrawInstance.drawMode = e.model;
     }.bind(this));
 
-     this.drawContextmenu.addHandler('undo',function(e){
-       this.viewer.canvasDrawInstance.undo();
-     }.bind(this));
+    this.drawContextmenu.addHandler('undo', function(e) {
+      this.viewer.canvasDrawInstance.undo();
+    }.bind(this));
 
     // this.drawContextmenu.addHandler('redo',function(e){
     //   this.viewer.canvasDrawInstance.redo();

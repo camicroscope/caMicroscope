@@ -1384,7 +1384,7 @@ function closeMinorControlPanel() {
 function loadRulerById(camic, rulerData, callback) {
   const {item, elt} = rulerData;
   $CAMIC.store
-      .getMarkByIds([item.id], $D.params.slideId)
+      .getMarkByIds([item.id], $D.params.slideId, null, item.typeId)
       .then((data) => {
         // response error
         if (data.error) {
@@ -1458,7 +1458,7 @@ function loadAnnotationById(camic, layerData, parentType, callback) {
   Loading.open(document.body, 'Loading Layers...');
 
   $CAMIC.store
-      .getMarkByIds([item.id], $D.params.slideId)
+      .getMarkByIds([item.id], $D.params.slideId, null, item.typeId)
       .then((data) => {
         delete item.loading;
 
@@ -2500,7 +2500,7 @@ async function rootCallback({root, parent, items}) {
     } catch (error) {
       closeLoadStatus();
       // finish loaded
-      console.eorror('loading human annotations error', error);
+      console.error('loading human annotations error', error);
       $UI.message.addError('loading human annotations error', 4000);
       return;
     }
@@ -2608,54 +2608,12 @@ function unenhance(){
 
 /* Slide Capture Tool */
 
-function captureSlide() {
-  toolsOff();
-  // console.log($CAMIC.viewer);
-  const slideCanvas = $CAMIC.viewer.canvas.firstChild;
-  if (!slideCanvas) {
-    console.warn('Incorrect Slide Canvas');
-    return;
-  }
-
-  // create the basic canvas
-  const canvas = document.createElement('CANVAS');
-  
-  const ctx = canvas.getContext('2d');
-  canvas.height = slideCanvas.height 
-  canvas.width = slideCanvas.width;
-  ctx.drawImage( slideCanvas, 0, 0)
-  
-
-  // draw the heatmaps
-  if($CAMIC.viewer.heatmap && $CAMIC.viewer.heatmap._display_){
-    ctx.globalAlpha = 0.8;
-    const heatmapCanvas = $CAMIC.viewer.heatmap._display_;
-    const offset = $CAMIC.viewer.heatmap._offset;
-    ctx.drawImage(
-      heatmapCanvas,
-      offset[0], offset[1], $CAMIC.viewer.canvas.clientWidth, $CAMIC.viewer.canvas.clientHeight,
-      0, 0, canvas.width, canvas.height
-    )
-  }
-
-  // draw the segmentations
-  if($CAMIC.viewer.segment && $CAMIC.viewer.segment._display_){
-    ctx.globalAlpha = 1;
-    const segmentationCanvas = $CAMIC.viewer.segment._display_;
-    const offset = $CAMIC.viewer.segment._offset;
-    ctx.drawImage(
-      segmentationCanvas,
-      offset[0], offset[1], $CAMIC.viewer.canvas.clientWidth, $CAMIC.viewer.canvas.clientHeight,
-      0, 0, canvas.width, canvas.height
-    )
-  }
-
-  // draw the Annotations
-  const overlayCanvas = $CAMIC.viewer.omanager._display_;
-  ctx.drawImage( overlayCanvas, 0, 0, canvas.width, canvas.height)
-  
+async function captureSlide() {
+  const canvas = await captureScreen($CAMIC);
   // save as jpeg
   downloadSlideCapture(canvas);
+  toolsOff();
+  $UI.layersSideMenu.close();
 }
 
 function downloadSlideCapture(combiningCanvas) {

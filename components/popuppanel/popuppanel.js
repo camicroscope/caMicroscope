@@ -364,7 +364,7 @@ PopupPanel.createBtn = function(parent, opt, thisArg = null) {
   btn.classList.add(opt.class);
   btn.textContent = opt.text;
   btn.addEventListener('click', function(e) {
-    opt.callback.call(null, thisArg.data);
+    opt.callback.call(null, thisArg.data, thisArg.dataType);
   });
   parent.appendChild(btn);
   return btn;

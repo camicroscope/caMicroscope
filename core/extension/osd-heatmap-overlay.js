@@ -32,7 +32,7 @@
  *        the opacity of the heatmap. default is 0.8.
  * @param {String} [color='#ffa500']
  *        the patch's color. default is '#ffa500'.
- * @param {Number} [zIndex=100]
+ * @param {Number} [zIndex=98]
  *        the z-index of heatmap in the entire viewport.
  */
 (function($) {
@@ -118,7 +118,7 @@
     this._cover_div.style.width = "150%";
     this._cover_div.style.height = "150%";
     this._cover_div.style.background = options.coverColor || "#000000";
-    this._cover_div.style.zIndex = options.zIndex - 1 || 97;
+    this._cover_div.style.zIndex = options.zIndex - 1 || 98;
     this._cover_div.style.opacity = options.coverOpacity || 0.6;
     this._viewer.canvas.appendChild(this._cover_div);
 
@@ -129,7 +129,7 @@
     this._div.style.height = "150%";
     this._div.style.transformOrigin = "0 0";
     this._div.style.transform = "scale(1,1)";
-    this._div.style.zIndex = options.zIndex || 101;
+    this._div.style.zIndex = options.zIndex || 98;
     this._div.style.opacity = options.opacity || 0.8;
     this._viewer.canvas.appendChild(this._div);
 

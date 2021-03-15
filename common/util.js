@@ -945,3 +945,123 @@ function showSuccessPopup(message) {
     }, 2000);
   }
 }
+
+async function captureScreen(camic, {
+  hasHeatmap = true,
+  hasSegment = true,
+  hasAnnotation = true,
+  hasRuler = true,
+  hasScalebar = true,
+} = {}){
+  // verify 
+  if(!camic instanceof CaMic) {
+    console.error(`camic isn't an instance of CaMic!`);
+    return null;
+  }
+  // get viewer
+  const viewer = camic.viewer;
+  // get the basic slide canvas
+  const slideCanvas = viewer.canvas.firstChild;
+  if (!slideCanvas) {
+    console.error('camic has no slide canvas!');
+    return null;
+  }
+
+  // create the result canvas
+  const canvas = document.createElement('CANVAS');
+  const ctx = canvas.getContext('2d');
+  // set canvas's height and width
+  canvas.height = slideCanvas.height 
+  canvas.width = slideCanvas.width;
+
+  // draw slide on the result canvas
+  ctx.drawImage( slideCanvas, 0, 0)
+  
+
+  // draw the heatmaps on the result canvas
+  if(hasHeatmap &&
+    viewer.heatmap &&
+    viewer.heatmap._div &&
+    viewer.heatmap._div.style.display!='none' &&
+    viewer.heatmap._display_ ){
+    // set opacity
+    ctx.globalAlpha = viewer.heatmap._div.style.opacity;
+    // get heatmap canvas
+    const heatmapCanvas = viewer.heatmap._display_;
+    const offset = viewer.heatmap._offset;
+
+    // draw the heatmaps on the result canvas
+    ctx.drawImage(
+      heatmapCanvas,
+      offset[0], offset[1], viewer.canvas.clientWidth, viewer.canvas.clientHeight,
+      0, 0, canvas.width, canvas.height
+    )
+    // reset opacity
+    ctx.globalAlpha = 1;
+  }
+
+  // draw the segmentations on the result canvas
+  if(hasSegment &&
+    viewer.segment &&
+    viewer.segment._div &&
+    viewer.segment._div.style.display!='none' &&
+    viewer.segment._display_ ){
+    // get segmentation canvas
+    const segmentationCanvas = viewer.segment._display_;
+    const offset = viewer.segment._offset;
+    
+    // draw the segmentation on the result canvas
+    ctx.drawImage(
+      segmentationCanvas,
+      offset[0], offset[1], viewer.canvas.clientWidth, viewer.canvas.clientHeight,
+      0, 0, canvas.width, canvas.height
+    )
+  }
+
+  // draw the Annotations on the result canvas
+  if(hasAnnotation &&
+    viewer.omanager &&
+    viewer.omanager._div &&
+    viewer.omanager._div.style.display!='none' &&
+    viewer.omanager._display_ ){
+    // get annotation canvas
+    const overlayCanvas = viewer.omanager._display_;
+    
+    // draw the annotations on the result canvas
+    ctx.drawImage( overlayCanvas, 0, 0, canvas.width, canvas.height)
+  }
+
+  // draw the rulers on the result canvas TODO performance
+  /*
+  if(hasRuler &&
+    viewer.measureInstance &&
+    viewer.currentOverlays.some(layer=>layer.element.classList.contains('ruler')&&layer.element.style.display!='none')
+    ) {
+      const measureCanvas = await html2canvas(viewer.overlaysContainer,{
+        backgroundColor: null,
+        width: canvas.width,
+        height: canvas.height
+      })
+
+      ctx.drawImage(
+        measureCanvas,
+        
+        0, 0
+      )
+  }
+
+  if(hasScalebar && viewer.scalebarInstance && viewer.scalebarInstance.divElt) {
+    const {xOffset, yOffset, divElt} = viewer.scalebarInstance;
+     const {x,y} = viewer.scalebarInstance.getScalebarLocation()
+    const scaleCanvas = await html2canvas(divElt)
+    ctx.drawImage(
+      scaleCanvas,
+      x + xOffset,
+      y + yOffset
+    )
+  }
+  */
+
+  return canvas;
+
+}
