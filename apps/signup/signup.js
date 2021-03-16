@@ -9,6 +9,12 @@ function addUser(){
   // var attr = document.querySelector('input[name="attr"]:checked').value
   var attrEle = document.getElementById("attr");
   var attr = attrEle.options[attrEle.selectedIndex].value;
+
+  if (!(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(email))) {
+    window.alert("Please enter a valid email");
+    return;
+  }
+
   var userType = "Null"
   if (attr == "3"){
     userType = "Admin"
