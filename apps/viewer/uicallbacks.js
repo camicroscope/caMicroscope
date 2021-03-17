@@ -2563,6 +2563,11 @@ async function rootCallback({root, parent, items}) {
 /* Enhance Tool */
 function enhance(data){
     document.querySelector('[title="Enhance"]').previousSibling.checked = true;
+    if(!set_enhance){
+      // $UI.message.add('<i class="small material-icons">info</i>On Movement, enhance would be undone', 2000);
+      $CAMIC.viewer.addHandler('zoom', unenhance);
+      $CAMIC.viewer.addHandler('pan', unenhance);
+      set_enhance = true;}
 
     // Canvas information
     const canvas = $CAMIC.viewer.canvas.firstChild;
@@ -2575,7 +2580,7 @@ function enhance(data){
     else if (data.status == 'Edge')
         context.putImageData(edgedetect(img,150,0,0,width,height),0,0);
     else if(data.status == 'Sharpen'){
-        var filter = [[0,-1,0],[-1,7,-1],[0,-1,0]];
+        var filter = [[-1,-1,-1],[-1,14,-1],[-1,-1,-1]];
         filter = [filter,filter,filter];
         var newimg = new ImageData(new Uint8ClampedArray(applyfilter(img,filter,0,0,width,height)),width,height);
         context.putImageData(newimg,0,0);}
@@ -2602,7 +2607,11 @@ function enhance(data){
         context.putImageData(newimg,0,0);
     }
 }
+var set_enhance = false;
 function unenhance(){
+  set_enhance = false;
+  $CAMIC.viewer.removeHandler('zoom', unenhance);
+  $CAMIC.viewer.removeHandler('pan', unenhance);
   document.querySelector('[title="Enhance"]').previousSibling.checked = false;
 }
 

@@ -181,9 +181,9 @@ function applyfilter(imgData, kernel, is,js,sx,sy){
           }
         }
         var col = getpix(data,j+kernelSizey2,i+kernelSizex2,width);
-        col[0] = Math.abs(Math.floor(sumr/sumkr));
-        col[1] = Math.abs(Math.floor(sumg/sumkg));
-        col[2] = Math.abs(Math.floor(sumb/sumkb));
+        col[0] = Math.floor(sumr/sumkr);
+        col[1] = Math.floor(sumg/sumkg);
+        col[2] = Math.floor(sumb/sumkb);
         setpix(newdata,j-js+kernelSizey2,i-is+kernelSizex2,sx,col);
 
     }

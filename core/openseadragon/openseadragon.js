@@ -10172,7 +10172,6 @@ function updateOnce( viewer ) {
          * @property {OpenSeadragon.Viewer} eventSource - A reference to the Viewer which raised this event.
          * @property {?Object} userData - Arbitrary subscriber-defined object.
          */
-        unenhance();
         viewer.raiseEvent('viewport-change');
     }
 
