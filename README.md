@@ -75,7 +75,7 @@ Once everything is up, go to \<the host this is running on\>:4010/ to see the la
 # Developer Guide
 We are collecting feedback to write this section in more detail. Please add your suggestions [here](https://github.com/camicroscope/caMicroscope/issues/267).
 
-caMicroscope is open source software. Any involvement and contribution with the caMicroscope project is greatly appreciated. Feel free to get directly involved in any of the repositories in the caMicroscope organization. New developers may find the notes in [CONTRIBUTING](https://github.com/camicroscope/caMicroscope/blob/master/CONTRIBUTING.md) helpful to start contributing to caMicroscope.
+caMicroscope is an open source software. Any involvement and contribution with the caMicroscope project is greatly appreciated. Feel free to get directly involved in any of the repositories in the caMicroscope organization. New developers may find the notes in [CONTRIBUTING](https://github.com/camicroscope/caMicroscope/blob/master/CONTRIBUTING.md) helpful to start contributing to caMicroscope.
 
 It is highly recommended to make any changes off of the develop branch of a repository, and, when ready, create a PR to the develop branch of the source repository. Before sending the PR, make sure that there are no linting errors by running ```npm install``` and then ```npm run lint```  to see the errors and ```npm run lint-fix``` to automatically fix the errors in the repository folder.
 
