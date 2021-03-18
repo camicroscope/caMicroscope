@@ -260,9 +260,9 @@ function initCore() {
 
 
         $UI.annotPopup.dataType = null;
-        var condition1 = data.provenance && data.provenance.analysis && data.provenance.analysis.source;
-        var condition2 = data.provenance.analysis.source=='human';
-        if ( condition1 && condition2 ) {
+        var isHuman = data.provenance && data.provenance.analysis && data.provenance.analysis.source;
+                         data.provenance.analysis.source=='human';
+        if ( isHuman ) {
           $UI.annotPopup.dataType = getCateName($UI.annotPopup.data.id);
         }
         $UI.annotPopup.setTitle(`id:${data.provenance.analysis.execution_id}`);
