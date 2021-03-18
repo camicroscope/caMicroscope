@@ -8,7 +8,7 @@
     "lint-fix": "eslint ./core/*.js  ./components/**/*.js ./apps/*.js  ./apps/port/*.js ./apps/heatmap/*.js ./apps/multi/*.js ./apps/labeling/*.js  ./apps/loader/*.js  ./apps/model/*.js  ./apps/segment/*.js  ./apps/model/**/*.js  ./apps/segment/**/*.js  ./apps/viewer/*.js --quiet --fix"
   },
   "author": "",
-  "license": "NONE",
+  "license": "BSD-3-Clause",
   "dependencies": {
     "chai": "^4.3.0",
     "eslint": "^6.8.0",
