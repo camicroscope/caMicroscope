@@ -238,7 +238,7 @@ function initCore() {
             // statements_def
             break;
         }
-        
+
         $UI.annotPopup.data = {
           id: data.provenance.analysis.execution_id,
           oid: data._id.$oid,
@@ -248,19 +248,23 @@ function initCore() {
         const getCateName = () => {
           const items = $UI.layersViewer.setting.categoricalData.human.items;
           var dataType = null;
-          for(const key in items){
+          for (const [key, value] of Object.entries(animals)) {
+            // split condition to condition 1 and condition 2 to abide by eslint(max-len)
             dataType = key;
-            if (items.hasOwnProperty(key)&&Array.isArray(items[key].items)&&items[key].items.some(i=>i.item.id == $UI.annotPopup.data.id)) break;
+            var condition1 = items.hasOwnProperty(key)&&Array.isArray(items[key].items);
+            var condition2 = items[key].items.some((i)=>i.item.id == $UI.annotPopup.data.id);
+            if (condition1&&condition2) break;
           }
           return dataType;
-        }
-        
-        
+        };
+
 
         $UI.annotPopup.dataType = null;
-        $UI.annotPopup.dataType = data.provenance && data.provenance.analysis && data.provenance.analysis.source && data.provenance.analysis.source=='human'?
-        getCateName($UI.annotPopup.data.id):null;
-
+        var condition1 = data.provenance && data.provenance.analysis && data.provenance.analysis.source;
+        var condition2 = data.provenance.analysis.source=='human';
+        if ( condition1 && condition2 ) {
+          $UI.annotPopup.dataType = getCateName($UI.annotPopup.data.id);
+        }
         $UI.annotPopup.setTitle(`id:${data.provenance.analysis.execution_id}`);
         $UI.annotPopup.setBody(body);
         if (warning) $UI.annotPopup.body.innerHTML += warning;
