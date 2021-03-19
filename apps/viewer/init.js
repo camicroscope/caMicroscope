@@ -388,6 +388,38 @@ async function initUIcomponents() {
       callback: toggleMeasurement,
     });
   }
+  // enhance
+  subToolsOpt.push({
+    name: 'Enhance',
+    icon: 'invert_colors',
+    title: 'Enhance',
+    type: 'dropdown',
+    value: 'Enhance',
+    dropdownList: [
+      {
+        value: 'Histogram Eq',
+        title: 'Histogram Equalization',
+        icon: 'leaderboard',
+        checked: true,
+      },
+      {
+        value: 'Edge',
+        title: 'Edge',
+        icon: 'show_chart',
+      },
+      {
+        value: 'Sharpen',
+        title: 'Sharpen',
+        icon: 'change_history',
+      },
+      {
+        value: 'Custom',
+        title: 'Custom',
+        icon: 'api',
+      },
+    ],
+    callback: enhance,
+  });
   // share
   if (ImgloaderMode == 'iip') {
     subToolsOpt.push({
