@@ -2,7 +2,7 @@
 This guide aims to flatten the learning curve needed to perform review on slides quickly and efficiently.
 
 ## Creating Annotations
-It may be useful to add annotations to aid with review, or for any other reason. Using the pencil button will bring up a form, in which you can add a name (required) and any other freeform notes (optional). After the form is filled out, drawing on the slide will create that annotation automatically. Alternatively, you can group annotations by clicking on the pencil again, and having it enter infinite mode. In this mode, you can create multiple annotations with the same name and notes at once, but you must click save when finished.
+It may be useful to add annotations to aid with review, or for any other reason. Using the pencil button will bring up a form, in which you can add a name (required) and/or any other freeform notes (optional). After the form is filled out, drawing on the slide will create that annotation automatically. Alternatively, you can group annotations by clicking on the pencil again, and make it enter infinite mode. In this mode, you can create multiple annotations with the same name and notes at once, but you must click save when you are finished with the creation .
 
 1. Enter the annotation name
 2. Enter the annotation note
