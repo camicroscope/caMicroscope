@@ -66,6 +66,7 @@ this will build all services and run in the foreground.
 Use `docker-compose -f caMicroscope.yml build` to rebuild the services.
 
 Once everything is up, go to \<the host this is running on\>:4010/ to see the landing page.
+
 Click <a href = "./windowsSetup.md">here</a> for **detailed setup for Windows 10**. 
 # Other Resources
 - **Slack:** <http://bit.ly/camicroscope>
