@@ -81,10 +81,10 @@ var tour = new Tour({
     element: 'i[title=\'Labeling\']',
     title: 'Labeling',
     content: 'Use this tool to draw a circle or rectangle around a tumor region,'+
-    ' measure an area on the slide, download labels, and submit a bug report.'+
+    ' measure an area on the slide, and download labels.'+
     ' The Labeling tool has its own toolbar with tools in the following order from left to right:'+
     ' return to the previous slide, place a square on the slide, place a circle on the slide,'+
-    ' measure an area, download labels, and submit a bug report.'+
+    ' measure an area, and download labels.'+
     ' Click the left arrow at the far right of the toolbar to hide it,'+
     ' then click the right arrow to show it.',
     placement: 'auto bottom',
@@ -110,13 +110,6 @@ var tour = new Tour({
     title: 'Download Slide',
     content:
         'Download the slide image to your system',
-    placement: 'auto bottom',
-    smartPlacement: true,
-  },
-  {
-    element: 'i[title=\'Bug Report\']',
-    title: 'Bug Report',
-    content: 'Report a bug or give feedback.',
     placement: 'auto bottom',
     smartPlacement: true,
   },
