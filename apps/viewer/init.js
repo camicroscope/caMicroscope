@@ -575,11 +575,11 @@ async function initUIcomponents() {
   } else {
     try {
       var additionalLinks = await additionalLinksFetchResponse.json();
-  
+
       additionalLinks.forEach(function(additionalLink) {
         var openInNewTab = additionalLink.openInNewTab === false ? false : true;
         var url = additionalLink.url;
-    
+
         subToolsOpt.push({
           name: additionalLink.displayName,
           icon: additionalLink.icon ? additionalLink.icon : 'link',
