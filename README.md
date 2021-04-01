@@ -60,14 +60,14 @@ The toolbar is in the top-left of the main content window. Use the toolbar butto
 
 # Hosted Setup
 The full distribution repository for hosted caMicroscope is [here](https://github.com/camicroscope/Distro/).
-run with `docker-compose -f caMicroscope.yml up`
 
-this will build all services and run in the foreground.
+run with `docker-compose -f caMicroscope.yml up`, this will build all services and run in the foreground.
 Use `docker-compose -f caMicroscope.yml build` to rebuild the services.
 
 Once everything is up, go to \<the host this is running on\>:4010/ to see the landing page.
 
-Click <a href = "./windowsSetup.md">here</a> for **detailed setup for Windows 10**. 
+**Setup for Windows:** <a href = "https://github.com/camicroscope/Distro/Readme.md">here</a>
+
 # Other Resources
 - **Slack:** <http://bit.ly/camicroscope>
 - **Discussion mailing list:** <https://groups.google.com/g/camicroscope>
