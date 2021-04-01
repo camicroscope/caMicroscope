@@ -3,9 +3,7 @@
 1. Install Windows Subsystem for Linux (WSL2) from the link given here: <a href = "https://docs.microsoft.com/en-us/windows/wsl/install-win10#manual-installation-steps">WSL2</a>, **FOLLOW STEPS 1 to 5 ONLY (Step 6 - Install your Linux distribution of choice IS NOT REQUIRED)** 
 2. After completing all the five steps, <a href = "">Install Docker Desktop for Windows</a>, click on the "Get Docker" button on the right and run the "Docker Desktop Installer" to complete the installation.
 3. Now, select any folder (say E:/) and open the command prompt.
-4. Clone the three repositories: caMicroscope, Distro and Caracal using <code>git clone</code> commands given below:<br>
-    <code>git clone https://github.com/camicroscope/caMicroscope.git</code><br>
-    <code>git clone https://github.com/camicroscope/Caracal.git</code><br>
+4. Clone the Distro repository using <code>git clone</code> commands given below:<br>
     <code>git clone https://github.com/camicroscope/Distro.git</code><br>
 
 5. Open the "caMicroscope.yml" file which can be found in the Distro folder, "Distro/caMicroscope.yml".
