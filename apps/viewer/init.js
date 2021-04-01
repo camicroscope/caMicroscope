@@ -511,17 +511,6 @@ async function initUIcomponents() {
   }
   // -- For Nano borb End -- //
 
-  // bug report
-  subToolsOpt.push({
-    name: 'bugs',
-    icon: 'bug_report',
-    title: 'Bug Report',
-    value: 'bugs',
-    type: 'btn',
-    callback: () => {
-      window.open('https://goo.gl/forms/mgyhx4ADH0UuEQJ53', '_blank').focus();
-    },
-  });
   // -- view btn START -- //
   if (!($D.params.data.hasOwnProperty('review') && $D.params.data['review']=='true')) {
     subToolsOpt.push({
