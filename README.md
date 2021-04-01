@@ -66,7 +66,7 @@ Use `docker-compose -f caMicroscope.yml build` to rebuild the services.
 
 Once everything is up, go to \<the host this is running on\>:4010/ to see the landing page.
 
-**Setup for Windows:** <a href = "https://github.com/camicroscope/Distro/Readme.md">here</a>
+**Setup for Windows:** <a href = "https://github.com/siddhanth339/Distro#camicroscope-distribution">here</a>
 
 # Other Resources
 - **Slack:** <http://bit.ly/camicroscope>
