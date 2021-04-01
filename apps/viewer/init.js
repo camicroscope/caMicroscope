@@ -553,6 +553,50 @@ async function initUIcomponents() {
       tour.start(true);
     },
   });
+
+  // Additional Links handler
+  var headers = {
+    'Access-Control-Allow-Origin': '*',
+  };
+
+  function additionalLinksHandler(url, openInNewTab) {
+    if (openInNewTab === true) {
+      window.open(url, '_blank').focus();
+    } else {
+      window.location.href = url;
+    }
+  }
+
+  var additionalLinksFetchResponse = await fetch('http://localhost:4010/additional_links.json', {headers: headers});
+  // Handle error
+  if (!additionalLinksFetchResponse.ok) {
+    var message = `Error ${additionalLinksFetchResponse.status}: File containing JSON data for additional links not found`;
+    console.error(message);
+  } else {
+    try {
+      var additionalLinks = await additionalLinksFetchResponse.json();
+  
+      additionalLinks.forEach(function(additionalLink) {
+        var openInNewTab = additionalLink.openInNewTab === false ? false : true;
+        var url = additionalLink.url;
+    
+        subToolsOpt.push({
+          name: additionalLink.displayName,
+          icon: additionalLink.icon ? additionalLink.icon : 'link',
+          title: additionalLink.displayName,
+          value: additionalLink.displayName,
+          type: 'btn',
+          callback: function() {
+            additionalLinksHandler(url, openInNewTab);
+          },
+        });
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+
   // create the tool bar
   $UI.toolbar = new CaToolbar({
     /* opts that need to think of*/
