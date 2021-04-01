@@ -568,6 +568,13 @@ async function initUIcomponents() {
   }
 
   var additionalLinksFetchResponse = await fetch('http://localhost:4010/additional_links.json', {headers: headers});
+  // Handle error
+  if (!additionalLinksFetchResponse.ok) {
+    var message = `Error ${additionalLinksFetchResponse.status}: File not found or file not in correct format`;
+    alert(message);
+    throw new Error(message);
+  }
+
   var additionalLinks = await additionalLinksFetchResponse.json();
 
   additionalLinks.forEach(function(additionalLink) {
