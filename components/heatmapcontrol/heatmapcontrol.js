@@ -286,10 +286,6 @@ HeatmapControl.prototype.__opacityChange = function() {
 };
 
 // createSelect         - creates options for each field
-// createField          - creates fields and their sliders
-// createOpacities      - creates opacity field and it's slider
-// createIntervalInputs - creates HTML Color inputs for given noOfIntervals
-
 function createSelect(sel, fields, currentField = null) {
   fields.forEach((field) => {
     const option = document.createElement('option');
@@ -301,6 +297,7 @@ function createSelect(sel, fields, currentField = null) {
     if (currentField) sel.value = currentField;
   });
 }
+// createField          - creates fields and their sliders
 function createField(container, field, changeFunc) {
   const div = document.createElement('div');
   const label = document.createElement('label');
@@ -327,6 +324,7 @@ function createField(container, field, changeFunc) {
   container.appendChild(div);
   return rs;
 }
+// createOpacities      - creates opacity field and it's slider
 function createOpacities(container, field, changeFunc) {
   const div = document.createElement('div');
   const label = document.createElement('label');
@@ -351,6 +349,7 @@ function createOpacities(container, field, changeFunc) {
   container.appendChild(div);
   return rs;
 }
+// createIntervalInputs - creates HTML Color inputs for given noOfIntervals
 function createIntervalInputs(container, noOfIntervals, changeFunc) {
   // Empty the container
   let colors=[];
