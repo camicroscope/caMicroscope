@@ -101,7 +101,7 @@ HeatmapControl.prototype.__refresh = function() {
   this.elt.innerHTML = template;
   const checkbox = this.elt.querySelector('.mode-panel input[type=checkbox]');
   checkbox.addEventListener('change', this._modeChanged.bind(this));
-  //
+
   const color = this.elt.querySelector('.color-panel input[type=color]');
   color.addEventListener('input', this._colorChanged.bind(this));
 
@@ -156,6 +156,7 @@ HeatmapControl.prototype.__refresh = function() {
   this._modeChanged(false);
 };
 
+// called when model panel checkbox value changes
 HeatmapControl.prototype._modeChanged = function(flag = true) {
   const mode = this.elt.querySelector(`.mode-panel input[type=checkbox]`).checked;
 
@@ -207,6 +208,7 @@ HeatmapControl.prototype._legendColorsChanged = function() {
   if (valid) this.__change.call(this);
 };
 
+// called when selected value changed
 HeatmapControl.prototype._selChanged = function(e) {
   const selectedField = this.elt.querySelector('.sel-field-panel select').value;
   this.rangeSliders[selectedField].slider.parentNode.style.display = '';
@@ -221,6 +223,8 @@ HeatmapControl.prototype._selChanged = function(e) {
   this.resize.call(this);
   this.__change.call(this);
 };
+
+// call function on resizing slider
 HeatmapControl.prototype.resize = function() {
   this.setting.fields.forEach( (f) => {
     // statements
@@ -232,6 +236,8 @@ HeatmapControl.prototype.resize = function() {
     this.opacitySliders[f.name].onResize();
   }, this);
 };
+
+// called when any element changes
 HeatmapControl.prototype.__change = function() {
   if (this.setting.onChange && typeof this.setting.onChange === 'function') {
     const mode = this.elt.querySelector(`.mode-panel input[type=checkbox]`).checked;
@@ -262,11 +268,13 @@ HeatmapControl.prototype.__change = function() {
   }
 };
 
+// should get all elements that have classname "fields-panel"
+// check if it works as return is missing
 HeatmapControl.prototype.getThreshold = function() {
   elt.querySelectorAll('.fields-panel > div').filter((elt)=>{});
 };
 
-
+// update changed value of opacity to setting
 HeatmapControl.prototype.__opacityChange = function() {
   if (this.setting.onChange && typeof this.setting.onChange === 'function') {
     const data = {};
@@ -277,6 +285,7 @@ HeatmapControl.prototype.__opacityChange = function() {
   }
 };
 
+// createSelect         - creates options for each field
 function createSelect(sel, fields, currentField = null) {
   fields.forEach((field) => {
     const option = document.createElement('option');
@@ -288,6 +297,7 @@ function createSelect(sel, fields, currentField = null) {
     if (currentField) sel.value = currentField;
   });
 }
+// createField          - creates fields and their sliders
 function createField(container, field, changeFunc) {
   const div = document.createElement('div');
   const label = document.createElement('label');
@@ -314,6 +324,7 @@ function createField(container, field, changeFunc) {
   container.appendChild(div);
   return rs;
 }
+// createOpacities      - creates opacity field and it's slider
 function createOpacities(container, field, changeFunc) {
   const div = document.createElement('div');
   const label = document.createElement('label');
@@ -338,7 +349,7 @@ function createOpacities(container, field, changeFunc) {
   container.appendChild(div);
   return rs;
 }
-// Create HTML Color inputs for given noOfIntervals
+// createIntervalInputs - creates HTML Color inputs for given noOfIntervals
 function createIntervalInputs(container, noOfIntervals, changeFunc) {
   // Empty the container
   let colors=[];

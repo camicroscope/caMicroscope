@@ -13,8 +13,9 @@ let chunkSize = 5*1024*1024;
 let finishUploadSuccess = false;
 const allowedExtensions = ['svs', 'tif', 'tiff', 'vms', 'vmu', 'ndpi', 'scn', 'mrxs', 'bif', 'svslide'];
 
-
+// call on document ready
 $(document).ready(function() {
+  // fill all current files and slides to existingFiles[] and existingSlides
   $('#files').show(400);
   let store = new Store('../../data/');
   store.findSlide().then((response) => {
@@ -26,7 +27,7 @@ $(document).ready(function() {
   }).catch((error) => {
     console.log(error);
   });
-
+  // display file details when called
   $('#filesInput').change(function() {
     let files = $(this).prop('files');
     let fileNames = $.map(files, function(val) {
@@ -46,7 +47,7 @@ $(document).ready(function() {
     $('#complete').css('display', 'none');
     $('#table').css('display', 'none');
   });
-
+  // called when filenameswitch checkbox changes
   $('#fileNameSwitch').change(function() {
     if ($(this).is(':checked')) {
       $('.fileName').css('opacity', '1');
@@ -70,7 +71,7 @@ $(document).ready(function() {
     $(this).val($(this).val().split(' ').join('_'));
   });
 });
-
+// fuction to add each row (per slide)
 function addbody(rowData) {
   let table = $('table tbody');
   let markup = '<tr><th scope="row">'+rowData.serial+'</th><td><span>'+rowData.fileName+
@@ -88,7 +89,8 @@ function addbody(rowData) {
 
   table.append(markup);
 }
-
+// function called on page load
+// initializes table, adds rows, monitors change or click events and checks for errors in names
 function startTable() {
   slideNames = [];
   fileNames = [];
@@ -185,7 +187,7 @@ function startTable() {
     $('#complete').css('display', 'none');
   }
 }
-
+// checks for erroes in names
 function checkNames() {
   let numErrors = 0;
   for (i=0; i<originalFileNames.length; i++) {
@@ -222,6 +224,7 @@ function checkNames() {
   }
 }
 
+// showSlideInfoX - shows info of slide based on the slide properties
 function showSlideInfo1(index) {
   $('#slideInfoContent').html(`<b>Original Filename:</b> `+originalFileNames[index]+`<br><b>Filename:</b> `+fileNames[index]+
                          `<br><b>Slide name:</b> `+slideNames[index]+`<br><b>Status:</b> Pending Initial Upload`);
@@ -246,7 +249,7 @@ function showSlideInfo5(index) {
                          `<br><b>Slide name:</b> `+slideNames[index]+`<br><b>Token:</b> `+
                          tokens[index]+`<br><b>Status:</b> Posted Successfully`);
 }
-
+// updates the name of the slide after checking if it's not null or duplicated
 function updateSlideName(oldSlideName) {
   $('#confirmUpdateSlideContent').html('Enter the new name for: <br><b>'+oldSlideName+
          '</b><br><br><div class="form-group"><input type="text" id="newSlideName" class="form-control"'+
@@ -276,7 +279,7 @@ function updateSlideName(oldSlideName) {
     }
   });
 }
-
+// updates the name of the file if not null, not duplicated and has the correct file extension
 function updateFileName(oldfileName) {
   $('#confirmUpdateFileContent').html('Enter the new name for: <br><b>'+oldfileName+
          '</b><br><br><div class="form-group"><input type="text" id="newFileName" class="form-control"'+
@@ -323,7 +326,7 @@ function updateFileName(oldfileName) {
   });
 }
 
-
+// function to start batch upload
 function startBatch() {
   tokens = [];
   for (i=0; i<files.length; i++) {
@@ -335,6 +338,7 @@ function startBatch() {
   $('#start').css('display', 'none');
 }
 
+// function to finish batch upload
 function finishBatch() {
   for (i=0; i<fileNames.length; i++) {
     finishUpload(tokens[i], fileNames[i], i);
@@ -359,7 +363,7 @@ async function handleUpload(selectedFile, filename, i) {
   continueUpload(token);
   readFileChunks(selectedFile, token);
 }
-
+// convert to json and POST per file
 async function startUpload(filename) {
   const body = {filename: filename};
   const token = fetch(startUrl, {method: 'POST', body: JSON.stringify(body), headers: {
@@ -380,7 +384,7 @@ function continueUpload(token) {
     }});
   };
 }
-
+// called when upload of a file is finished.
 function finishUpload(token, filename, i) {
 //   let reset = true;
 
@@ -465,13 +469,13 @@ function promiseChunkFileReader(file, part) {
     fr.readAsDataURL(blob);
   });
 }
-
+// checks for all files
 function checkBatch() {
   for (i=0; i<fileNames.length; i++) {
     handleCheck(fileNames[i], i);
   }
 }
-
+// checks if each file doesn't have an error
 function handleCheck(filename, i) {
   fetch(checkUrl + filename, {credentials: 'same-origin'}).then(
       (response) => response.json(), // if the response is a JSON object
@@ -492,13 +496,13 @@ function handleCheck(filename, i) {
       (error) => console.log(error), // Handle the error response object
   );
 }
-
+// upload all files
 function postBatch() {
   for (i=0; i<fileNames.length; i++) {
     handlePost(fileNames[i], slideNames[i], i);
   }
 }
-
+// upload each file with timestamp
 function handlePost(filename, slidename, i) {
   fetch(checkUrl + filename, {credentials: 'same-origin'}).then(
       (response) => response.json(), // if the response is a JSON object
@@ -547,7 +551,7 @@ function handlePost(filename, slidename, i) {
       (error) => console.log(error), // Handle the error response object
   );
 }
-
+// replace certain symbols for proper parsing in html
 function sanitize(string) {
   const map = {
     '&': '&amp;',
