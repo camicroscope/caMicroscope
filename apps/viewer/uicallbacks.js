@@ -2560,6 +2560,68 @@ async function rootCallback({root, parent, items}) {
   closeLoadStatus();
 }
 
+/* Enhance Tool */
+function enhance(data) {
+  document.querySelector('[title="Enhance"]').previousSibling.checked = true;
+  if (!setEnhance) {
+    // $UI.message.add('<i class="small material-icons">info</i>On Movement, enhance would be undone', 2000);
+    $CAMIC.viewer.addHandler('zoom', unenhance);
+    $CAMIC.viewer.addHandler('pan', unenhance);
+    setEnhance = true;
+  }
+
+  // Canvas information
+  const canvas = $CAMIC.viewer.canvas.firstChild;
+  const context = canvas.getContext('2d');
+  let width = canvas.width; let height = canvas.height;
+  var img = context.getImageData(0, 0, width, height);
+
+  if (data.status == 'Histogram Eq') {
+    context.putImageData(clahe(img, 64, 0.015), 0, 0);
+  } else if (data.status == 'Edge') {
+    context.putImageData(edgedetect(img, 150, 0, 0, width, height), 0, 0);
+  } else if (data.status == 'Sharpen') {
+    var filter = [[-1, -1, -1], [-1, 14, -1], [-1, -1, -1]];
+    filter = [filter, filter, filter];
+    var newimg = new ImageData(new Uint8ClampedArray(applyfilter(img, filter, 0, 0, width, height)), width, height);
+    context.putImageData(newimg, 0, 0);
+  } else if (data.status == 'Custom') {
+    var input = prompt('Enter the 2D Kernel: Eg : [[1, 0], [0, 1]]'); var f=0;
+    // JSON Parse test
+    try {
+      var filter = JSON.parse(input); var sz = filter[0].length;
+    } catch (e) {
+      console.error(e);
+      alert('Invalid Kernel : ' + input);
+      return;
+    }
+    // 2D array check
+    for (var r=0; r<filter.length; r++) {
+      if (!Array.isArray(filter[r]) || filter[r].length!=sz || sz==0) f=1;
+      else {
+        for (var c = 0; c<filter[r].length; c++) {
+          if (Array.isArray(filter[r][c]))f=1;
+        }
+      }
+    }
+    if (f) {
+      alert('Invalid Kernel : ' + input);
+      return;
+    }
+    // Apply
+    filter = [filter, filter, filter];
+    var newimg = new ImageData(new Uint8ClampedArray(applyfilter(img, filter, 0, 0, width, height)), width, height);
+    context.putImageData(newimg, 0, 0);
+  }
+}
+var setEnhance = false;
+function unenhance() {
+  setEnhance = false;
+  $CAMIC.viewer.removeHandler('zoom', unenhance);
+  $CAMIC.viewer.removeHandler('pan', unenhance);
+  document.querySelector('[title="Enhance"]').previousSibling.checked = false;
+}
+
 /* Slide Capture Tool */
 
 async function captureSlide() {

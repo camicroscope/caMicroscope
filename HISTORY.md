@@ -24,11 +24,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * **Version 1**
     * [1.0.x](#camicroscope-10)
 
-### caMicroscope [Unreleased](https://github.com/camicroscope/camicroscope/compare/v3.9.0...camicroscope:develop)
+### caMicroscope [Unreleased](https://github.com/camicroscope/camicroscope/compare/v3.9.2...camicroscope:develop)
 ###### TBD
-*
 
-### caMicroscope [3.9.1](https://github.com/camicroscope/camicroscope/compare/v3.8.4...camicroscope:v3.9.0)
+### caMicroscope [3.9.2](https://github.com/camicroscope/camicroscope/compare/v3.9.1...camicroscope:v3.9.2)
+###### 2021-04-07
+* Github action for ci testing [#502](https://github.com/camicroscope/caMicroscope/pull/502)
+* Validate Emails on signup [#501](https://github.com/camicroscope/caMicroscope/pull/501)
+* Image Enhancements [#500](https://github.com/camicroscope/caMicroscope/pull/500)
+* Configurable Toolbar Links [#511](https://github.com/camicroscope/caMicroscope/pull/511)
+* Documentation Improvements [#506](https://github.com/camicroscope/caMicroscope/pull/506)
+
+
+### caMicroscope [3.9.1](https://github.com/camicroscope/camicroscope/compare/v3.8.4...camicroscope:v3.9.1)
 ###### 2021-03-05
 * Bugfix: Annotation Name Filtering
 

@@ -238,7 +238,7 @@ function initCore() {
             // statements_def
             break;
         }
-        
+
         $UI.annotPopup.data = {
           id: data.provenance.analysis.execution_id,
           oid: data._id.$oid,
@@ -248,17 +248,21 @@ function initCore() {
         const getCateName = () => {
           const items = $UI.layersViewer.setting.categoricalData.human.items;
           var dataType = null;
-          for(const key in items){
-            dataType = key;
-            if (items.hasOwnProperty(key)&&Array.isArray(items[key].items)&&items[key].items.some(i=>i.item.id == $UI.annotPopup.data.id)) break;
+          for (const key in items) {
+            if ({}.hasOwnProperty.call(items, key)) {
+              dataType = key;
+              if (items.hasOwnProperty(key)&&
+                  Array.isArray(items[key].items)&&
+                  items[key].items.some((i)=>i.item.id == $UI.annotPopup.data.id)) break;
+            }
           }
           return dataType;
-        }
-        
-        
+        };
+
 
         $UI.annotPopup.dataType = null;
-        $UI.annotPopup.dataType = data.provenance && data.provenance.analysis && data.provenance.analysis.source && data.provenance.analysis.source=='human'?
+        $UI.annotPopup.dataType = data.provenance && data.provenance.analysis &&
+                                  data.provenance.analysis.source && data.provenance.analysis.source=='human'?
         getCateName($UI.annotPopup.data.id):null;
 
         $UI.annotPopup.setTitle(`id:${data.provenance.analysis.execution_id}`);
@@ -384,6 +388,38 @@ async function initUIcomponents() {
       callback: toggleMeasurement,
     });
   }
+  // enhance
+  subToolsOpt.push({
+    name: 'Enhance',
+    icon: 'invert_colors',
+    title: 'Enhance',
+    type: 'dropdown',
+    value: 'Enhance',
+    dropdownList: [
+      {
+        value: 'Histogram Eq',
+        title: 'Histogram Equalization',
+        icon: 'leaderboard',
+        checked: true,
+      },
+      {
+        value: 'Edge',
+        title: 'Edge',
+        icon: 'show_chart',
+      },
+      {
+        value: 'Sharpen',
+        title: 'Sharpen',
+        icon: 'change_history',
+      },
+      {
+        value: 'Custom',
+        title: 'Custom',
+        icon: 'api',
+      },
+    ],
+    callback: enhance,
+  });
   // share
   if (ImgloaderMode == 'iip') {
     subToolsOpt.push({
@@ -475,17 +511,6 @@ async function initUIcomponents() {
   }
   // -- For Nano borb End -- //
 
-  // bug report
-  subToolsOpt.push({
-    name: 'bugs',
-    icon: 'bug_report',
-    title: 'Bug Report',
-    value: 'bugs',
-    type: 'btn',
-    callback: () => {
-      window.open('https://goo.gl/forms/mgyhx4ADH0UuEQJ53', '_blank').focus();
-    },
-  });
   // -- view btn START -- //
   if (!($D.params.data.hasOwnProperty('review') && $D.params.data['review']=='true')) {
     subToolsOpt.push({
@@ -517,6 +542,50 @@ async function initUIcomponents() {
       tour.start(true);
     },
   });
+
+  // Additional Links handler
+  var headers = {
+    'Access-Control-Allow-Origin': '*',
+  };
+
+  function additionalLinksHandler(url, openInNewTab) {
+    if (openInNewTab === true) {
+      window.open(url, '_blank').focus();
+    } else {
+      window.location.href = url;
+    }
+  }
+
+  var additionalLinksFetchResponse = await fetch('http://localhost:4010/additional_links.json', {headers: headers});
+  // Handle error
+  if (!additionalLinksFetchResponse.ok) {
+    var message = `Error ${additionalLinksFetchResponse.status}: File containing JSON data for additional links not found`;
+    console.error(message);
+  } else {
+    try {
+      var additionalLinks = await additionalLinksFetchResponse.json();
+
+      additionalLinks.forEach(function(additionalLink) {
+        var openInNewTab = additionalLink.openInNewTab === false ? false : true;
+        var url = additionalLink.url;
+
+        subToolsOpt.push({
+          name: additionalLink.displayName,
+          icon: additionalLink.icon ? additionalLink.icon : 'link',
+          title: additionalLink.displayName,
+          value: additionalLink.displayName,
+          type: 'btn',
+          callback: function() {
+            additionalLinksHandler(url, openInNewTab);
+          },
+        });
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+
   // create the tool bar
   $UI.toolbar = new CaToolbar({
     /* opts that need to think of*/
