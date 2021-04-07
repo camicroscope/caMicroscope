@@ -295,7 +295,7 @@ function updateFileName(oldfileName) {
     let newFileName = $('#newFileName');
     let newName = newFileName.val();
     let fileExtension = newName.toLowerCase().split('.').reverse()[0];
-    alert(fileExtension);
+  
     if (newName!='') {
       if (fileNames.includes(newName) || existingFiles.includes(newName)) {
         newFileName.addClass('is-invalid');
