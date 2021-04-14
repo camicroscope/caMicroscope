@@ -1062,6 +1062,161 @@ async function captureScreen(camic, {
   }
   */
 
+  if(hasRuler &&
+    viewer.measureInstance
+    ) {
+      // get HTML elements of all ruler divs
+      const availableRulers = document.getElementsByClassName('ruler');
+
+      for(let i = 0; i < availableRulers.length; i++) {
+        // add to canvas only if ruler is visible on the slide
+        if(availableRulers[i].style.display !== 'none') {
+
+          // details about position and size of ruler div
+          const rulerDiv = {
+            left : parseFloat(availableRulers[i].style.left),
+            top : parseFloat(availableRulers[i].style.top),
+            width : parseFloat(availableRulers[i].style.width),
+            height : parseFloat(availableRulers[i].style.height),
+            direction : null
+          }
+          // skip iteration if Ruler Div has some missing attributes
+          if(isNaN(rulerDiv.left) || isNaN(rulerDiv.top) || isNaN(rulerDiv.width) || isNaN(rulerDiv.height)) {
+            console.error('Required Attributes of Ruler Missing');
+            continue;
+          }
+          // for ruler mode straight
+          if(availableRulers[i].dataset.mode === 'straight') {
+
+            // checking direction of ruler in this mode
+            for(let j = 0; j < availableRulers[i].children.length; j++) {
+
+              if(availableRulers[i].children[j].className === 'scale h') {
+                let rotateIndex = availableRulers[i].children[j].style.transform.search('rotate');
+                let len = availableRulers[i].children[j].style.transform.length;
+                let rotateAngle;
+                if(rotateIndex != -1) {
+                  rotateAngle = parseFloat(availableRulers[i].children[j].style.transform.substring(rotateIndex + 7, len));
+                }
+                if(isNaN(rotateAngle)){
+                  rotateAngle = (Math.PI);
+                }
+                if(rotateAngle >= (Math.PI / 2)) {
+                  rulerDiv.direction = 'r2l';
+                } else{
+                  rulerDiv.direction = 'l2r';
+                }
+                break;
+              }
+
+            }
+            // drawing ruler on result canvas
+            ctx.strokeStyle = '#acfc03e6';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            if(rulerDiv.direction === 'l2r') {
+              ctx.moveTo(rulerDiv.left, rulerDiv.top);
+              ctx.lineTo(rulerDiv.width + rulerDiv.left, rulerDiv.height + rulerDiv.top);
+            } else if(rulerDiv.direction === 'r2l') {
+              ctx.moveTo(rulerDiv.width + rulerDiv.left, rulerDiv.top);
+              ctx.lineTo(rulerDiv.left, rulerDiv.height + rulerDiv.top);
+            } else {
+              console.error('Something went wrong');
+              continue;
+            }           
+            ctx.stroke();
+            
+            // writing ruler Value on result canvas
+            let scaleValue = '';
+            let fontSize = 13;
+            for(let j = 0; j < availableRulers[i].children.length; j++){
+              if(availableRulers[i].children[j].className === 'box'){
+                try{
+                  scaleValue = availableRulers[i].children[j].children[0].innerHTML;
+                }
+                catch(error){
+                  scaleValue = '';
+                }
+                break;
+              }
+            }
+            // background behind scale value
+            ctx.font = `900 ${fontSize}px sans-serif`;
+            ctx.fillStyle = '#acfc03e6';
+            let xOffset = (rulerDiv.width/2 + rulerDiv.left);
+            let yOffset = (rulerDiv.height/2 + rulerDiv.top);
+            ctx.fillRect(xOffset - ctx.measureText(scaleValue).width/2, yOffset - fontSize + 2, ctx.measureText(scaleValue).width, fontSize);
+
+            // scale value text
+            ctx.fillStyle = 'black';
+            ctx.textAlign = 'center';
+            ctx.fillText(scaleValue, xOffset , yOffset);
+
+          } else {
+            // for ruler mode coordinate
+            // drawing coordinate ruler on result canvas
+            ctx.strokeStyle = '#acfc03e6';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(rulerDiv.left, rulerDiv.top);
+            ctx.lineTo(rulerDiv.left, rulerDiv.height + rulerDiv.top);
+            ctx.moveTo(rulerDiv.left, rulerDiv.height + rulerDiv.top);
+            ctx.lineTo(rulerDiv.left + rulerDiv.width, rulerDiv.height + rulerDiv.top);
+            ctx.stroke();
+
+            let h_scaleValue = '';
+            let v_scaleValue = '';
+
+            for(let j = 0; j < availableRulers[i].children.length; j++){
+              if(availableRulers[i].children[j].className === 'h_scale'){
+                try{
+                  h_scaleValue = availableRulers[i].children[j].children[0].innerHTML;
+                }
+                catch(error){
+                  h_scaleValue = '';
+                }
+              } else if(availableRulers[i].children[j].className === 'v_scale'){
+                try{
+                  v_scaleValue = availableRulers[i].children[j].children[0].innerHTML;
+                }
+                catch(error){
+                  v_scaleValue = '';
+                }
+              }
+            }
+
+            let fontSize = 13;
+            
+            let h_xOffset = (rulerDiv.left);
+            let h_yOffset = (rulerDiv.height/2 + rulerDiv.top);
+            let v_xOffset = (rulerDiv.width/2 + rulerDiv.left);
+            let v_yOffset = (rulerDiv.height + rulerDiv.top) + 11;
+
+             // background behind scale value
+            ctx.font = `900 ${fontSize}px sans-serif`;
+            ctx.fillStyle = '#acfc03e6';
+            ctx.fillRect(h_xOffset - ctx.measureText(h_scaleValue).width/2, h_yOffset - fontSize + 2, ctx.measureText(h_scaleValue).width, fontSize);
+
+            // scale value text
+            ctx.fillStyle = 'black';
+            ctx.textAlign = 'center';
+            ctx.fillText(h_scaleValue, h_xOffset , h_yOffset);
+
+             // background behind scale value
+            ctx.font = `900 ${fontSize}px sans-serif`;
+            ctx.fillStyle = '#acfc03e6';
+            ctx.fillRect(v_xOffset - ctx.measureText(v_scaleValue).width/2, v_yOffset - fontSize + 2, ctx.measureText(v_scaleValue).width , fontSize);
+
+            // scale value text
+            ctx.fillStyle = 'black';
+            ctx.textAlign = 'center';
+            ctx.fillText(v_scaleValue, v_xOffset , v_yOffset);
+
+          }          
+        }
+      }
+  }
+
   return canvas;
 
 }
