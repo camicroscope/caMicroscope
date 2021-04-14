@@ -1074,10 +1074,10 @@ async function captureScreen(camic, {
 
           // details about position and size of ruler div
           const rulerDiv = {
-            left : parseFloat(availableRulers[i].style.left),
-            top : parseFloat(availableRulers[i].style.top),
-            width : parseFloat(availableRulers[i].style.width),
-            height : parseFloat(availableRulers[i].style.height),
+            left : parseFloat(window.getComputedStyle(availableRulers[i], null).getPropertyValue('left')),
+            top : parseFloat(window.getComputedStyle(availableRulers[i], null).getPropertyValue('top')),
+            width : parseFloat(window.getComputedStyle(availableRulers[i], null).getPropertyValue('width')),
+            height : parseFloat(window.getComputedStyle(availableRulers[i], null).getPropertyValue('height')),
             direction : null
           }
           // skip iteration if Ruler Div has some missing attributes
