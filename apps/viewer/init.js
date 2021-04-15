@@ -556,13 +556,13 @@ async function initUIcomponents() {
     }
   }
 
-  
+
   // handle pathdb case
   let additionalLinksUrl = '../../additional_links.json';
   if ($D.params.mode == 'pathdb') {
     additionalLinksUrl = '../../../additional_links.json';
-  } 
-    
+  }
+
   var additionalLinksFetchResponse = await fetch(additionalLinksUrl, {headers: headers});
   // Handle error
   if (!additionalLinksFetchResponse.ok) {
