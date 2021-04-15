@@ -550,7 +550,7 @@ async function initUIcomponents() {
 
   function additionalLinksHandler(url, openInNewTab, appendSlide) {
     if (appendSlide === true) {
-      url = url + '?slide=' + $D.params.slideId;
+      url = url + $D.params.slideId;
     }
     if (openInNewTab === true) {
       window.open(url, '_blank').focus();
