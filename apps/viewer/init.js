@@ -548,7 +548,10 @@ async function initUIcomponents() {
     'Access-Control-Allow-Origin': '*',
   };
 
-  function additionalLinksHandler(url, openInNewTab) {
+  function additionalLinksHandler(url, openInNewTab, appendSlide) {
+    if (appendSlide === true) {
+      url = url + '?slide=' + $D.params.slideId;
+    }
     if (openInNewTab === true) {
       window.open(url, '_blank').focus();
     } else {
@@ -556,25 +559,24 @@ async function initUIcomponents() {
     }
   }
 
-
   // handle pathdb case
-  let additionalLinksUrl = '../../additional_links.json';
-  if ($D.params.mode == 'pathdb') {
-    additionalLinksUrl = '../../../additional_links.json';
-  }
-
-  var additionalLinksFetchResponse = await fetch(additionalLinksUrl, {headers: headers});
-  // Handle error
-  if (!additionalLinksFetchResponse.ok) {
-    var message = `Error ${additionalLinksFetchResponse.status}: File containing JSON data for additional links not found`;
-    console.error(message);
-  } else {
-    try {
+  try {
+    let additionalLinksUrl = '../../additional_links.json';
+    if ($D.params.mode == 'pathdb') {
+      additionalLinksUrl = '../../../additional_links.json';
+    }
+    var additionalLinksFetchResponse = await fetch(additionalLinksUrl, {headers: headers});
+    // Handle error
+    if (!additionalLinksFetchResponse.ok) {
+      var message = `Error ${additionalLinksFetchResponse.status}: File containing JSON data for additional links not found`;
+      console.error(message);
+    } else {
       var additionalLinks = await additionalLinksFetchResponse.json();
 
       additionalLinks.forEach(function(additionalLink) {
         var openInNewTab = additionalLink.openInNewTab === false ? false : true;
         var url = additionalLink.url;
+        var appendSlide = additionalLink.appendSlide === true ? true : false;
 
         subToolsOpt.push({
           name: additionalLink.displayName,
@@ -583,13 +585,13 @@ async function initUIcomponents() {
           value: additionalLink.displayName,
           type: 'btn',
           callback: function() {
-            additionalLinksHandler(url, openInNewTab);
+            additionalLinksHandler(url, openInNewTab, appendSlide);
           },
         });
       });
-    } catch (error) {
-      console.error(error);
     }
+  } catch (error) {
+    console.error(error);
   }
 
 
