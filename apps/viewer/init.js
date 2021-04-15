@@ -556,7 +556,14 @@ async function initUIcomponents() {
     }
   }
 
-  var additionalLinksFetchResponse = await fetch('http://localhost:4010/additional_links.json', {headers: headers});
+  
+  // handle pathdb case
+  let additionalLinksUrl = '../../additional_links.json';
+  if ($D.params.mode == 'pathdb') {
+    additionalLinksUrl = '../../../additional_links.json';
+  } 
+    
+  var additionalLinksFetchResponse = await fetch(additionalLinksUrl, {headers: headers});
   // Handle error
   if (!additionalLinksFetchResponse.ok) {
     var message = `Error ${additionalLinksFetchResponse.status}: File containing JSON data for additional links not found`;
