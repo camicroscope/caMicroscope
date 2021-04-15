@@ -27,6 +27,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### caMicroscope [Unreleased](https://github.com/camicroscope/camicroscope/compare/v3.9.2...camicroscope:develop)
 ###### TBD
 
+### caMicroscope [3.9.3](https://github.com/camicroscope/camicroscope/compare/v3.9.2...camicroscope:v3.9.3)
+###### 2021-04-15
+* Bugfix for additional links url
+* Additional links can launch with slide id
+
 ### caMicroscope [3.9.2](https://github.com/camicroscope/camicroscope/compare/v3.9.1...camicroscope:v3.9.2)
 ###### 2021-04-07
 * Github action for ci testing [#502](https://github.com/camicroscope/caMicroscope/pull/502)
