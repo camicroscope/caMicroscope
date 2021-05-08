@@ -5,6 +5,10 @@ body {
 	color: #999;
 	background: #f5f5f5;
 	font-family: 'Roboto', sans-serif;
+	overflow-x: hidden;
+}
+.bg-dark {
+    background-color: #343a40!important;
 }
 .form-control, .form-control:focus, .input-group-addon {
 	border-color: #e1e1e1;
@@ -12,7 +16,7 @@ body {
 }
 .signup-form {
 	width: 390px;
-	margin: 0 auto;
+	margin: 5% auto;
 	padding: 30px 0;
 }
 .signup-form h2 {
@@ -113,4 +117,15 @@ nav li:not(.active):hover a{
 
 .text-center{
 	cursor: pointer;
+}
+
+@media screen and (max-width:736px) {
+	.signup-form {
+		margin: 20% auto;
+	}
+}
+@media screen and (max-width: 480px) {
+	.signup-form {
+		width: 300px;
+	}
 }

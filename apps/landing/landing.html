@@ -4,16 +4,12 @@
     <meta charset="utf-8" />
 
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet" 
+        integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0"
+        crossorigin="anonymous">
     <link rel="stylesheet" href="./main.css" />
     <link rel="shortcut icon" type="image/x-icon" href="favicon.png">
-    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
-		integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
-		crossorigin="anonymous"></script>
-	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
-		integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
-		crossorigin="anonymous"></script>
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-		integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
 </head>
 <body>
 
@@ -38,33 +34,35 @@
 
 </header> -->
 
-<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark" style="position: sticky; margin-top: -4em;">
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarCollapse" >
-        <ul class="navbar-nav mr-auto">
-            <li class="nav-item active link" style="font-family: sans-serif;">
-               <a class="nav-link" href="landing.html"> <i class="fas fa-home"></i> Home</a>
-            </li>
-            <li class="nav-item  link" style="font-family: sans-serif;">
-                <a class="nav-link" href="../table.html"> <i class="fas fa-list-ul"></i>  Slides</a>
-            </li>
-            <li class="nav-item link">
-                <a class="nav-link" href="../Info.html"> <i class="fas fa-info-circle"></i> Info</a>
-            </li>
-            <li class="nav-item link">
-                <a class="nav-link" href="../dev-workbench/workbench.html"> <i class="fas fa-pencil-ruler"></i> Workbench</a>
-            </li>
-        </ul>
-        <ul class="navbar-nav">
-            <li class="nav-item link" style="font-family: sans-serif;">
-                <a class="nav-link" href="../signup/signup.html"> <i class="fas fa-user-plus"></i> Signup</a>
-            </li>
-            <li class="nav-item link" style="font-family: sans-serif;">
-                <a class="nav-link" target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLScL91LxrpAZjU88GBZP9gmcdgdf8__uNUwhws2lzU6Lr4qNwA/viewform"> <i class="fas fa-comment"></i> Feedback</a>
-            </li>
-        </ul>
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark" style="position: sticky; margin-top: -4em;">
+    <div class="container-fluid">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent" >
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active link" style="font-family: sans-serif;">
+                       <a class="nav-link" href="landing.html"> <i class="fas fa-home"></i> Home</a>
+                    </li>
+                    <li class="nav-item  link" style="font-family: sans-serif;">
+                        <a class="nav-link" href="../table.html"> <i class="fas fa-list-ul"></i>  Slides</a>
+                    </li>
+                    <li class="nav-item link">
+                        <a class="nav-link" href="../Info.html"> <i class="fas fa-info-circle"></i> Info</a>
+                    </li>
+                    <li class="nav-item link">
+                        <a class="nav-link" href="../dev-workbench/workbench.html"> <i class="fas fa-pencil-ruler"></i> Workbench</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item link" style="font-family: sans-serif;">
+                        <a class="nav-link" href="../signup/signup.html"> <i class="fas fa-user-plus"></i> Signup</a>
+                    </li>
+                    <li class="nav-item link" style="font-family: sans-serif;">
+                        <a class="nav-link" target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLScL91LxrpAZjU88GBZP9gmcdgdf8__uNUwhws2lzU6Lr4qNwA/viewform"> <i class="fas fa-comment"></i> Feedback</a>
+                    </li>
+                </ul>
+            </div>
     </div>
 </nav>
 
@@ -89,8 +87,7 @@
 
         </div>
 
-        <div class="posts">
-
+        <div class="posts" style="margin-top: 5em;">
             <section class="post">
                 <a href="../table.html" class="image"><img src="./camic.jpg" alt=""/></a>
                 <div class="content">
@@ -140,7 +137,7 @@
 
 
 <!-- Scripts -->
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8" crossorigin="anonymous"></script>
 <script src="./jquery.min.js"></script>
 
 <script src="./jquery.dropotron.min.js"></script>
