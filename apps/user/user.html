@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CaMicroscope User Management</title>
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.8.2/css/all.css"
+    />
+    <link
+      rel="stylesheet"
+      href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+      integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.css"
+    />
+    <link rel="stylesheet" href="../common.css" />
+    <link rel="stylesheet" href="./user.css" />
+
+    <script src="../../../core/Store.js"></script>
+  </head>
+
+  <body>
+    <div class="search-box bg-light p-4 clearfix">
+      <div
+        class="btn btn-primary font-weight-bold float-right"
+        data-toggle="tooltip"
+        data-placement="left"
+        title="Create A New User"
+        onclick="openEditor()"
+      >
+        <i class="fas fa-plus"></i>
+      </div>
+    </div>
+    <div class="container-fluid p-4">
+      <table id="table" class="display" width="100%"></table>
+    </div>
+    <!-- Delete Modal -->
+    <div
+      class="modal fade"
+      id="del-modal"
+      tabindex="-1"
+      aria-labelledby="del-label"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-sm" style="margin-top: 5rem">
+        <div class="modal-content">
+          <div class="modal-header bg-danger text-white font-weight-bold py-1">
+            <h6 class="modal-title" id="del-label">
+              <i class="fas fa-exclamation-triangle"></i>&nbsp;&nbsp;Delete
+            </h6>
+          </div>
+          <div
+            class="modal-body text-dark"
+            style="font-weight: bold; font-size: 0.9rem"
+          >
+            Are you sure you want to remove
+            <span class="text-danger">XXXXX</span>?
+          </div>
+          <div class="modal-footer py-1">
+            <button
+              type="button"
+              class="btn btn-sm btn-secondary py-0"
+              data-dismiss="modal"
+            >
+              Cancel
+            </button>
+            <button type="button" class="btn btn-sm btn-danger py-0">
+              Yes
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Editer Modal -->
+    <div
+      class="modal fade"
+      id="edit-modal"
+      tabindex="-1"
+      aria-labelledby="edit-label"
+      aria-hidden="true"
+      data-backdrop="static"
+      data-keyboard="false"
+    >
+      <div class="modal-dialog modal-sm modal-dialog-scrollable">
+        <div class="modal-content" style="max-width: 300px">
+          <div class="modal-header bg-primary font-weight-bold text-white py-2">
+            <div class="modal-title" id="edit-label">
+              <i class="fas fa-edit"></i>&nbsp;&nbsp;Edit Panel
+            </div>
+          </div>
+          <div class="modal-body bg-light text-dark font-weight-bold">
+            <form>
+              <div class="form-group">
+                <label for="col-id">ID</label>
+                <input type="text" class="form-control" id="col-id" disabled />
+              </div>
+              <div class="form-group">
+                <label for="col-email">Email</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="col-email"
+                  aria-describedby="col-email-tip"
+                  placeholder="Enter A Email"
+                />
+                <div class="invalid-feedback">
+                  Please provide a valid email.
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="col-user-type">User Type</label>
+                <select class="form-control" id="col-user-type">
+                  <option>Admin</option>
+                  <option>Editor</option>
+                  <option>Viewer</option>
+                </select>
+                <div class="invalid-feedback">
+                  Please select a valid user type.
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="col-user-filter">User Filter: Public</label>
+                <input id="col-user-filter" type="checkbox" checked />
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary btn-secondary font-weight-bold"
+              data-dismiss="modal"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary font-weight-bold"
+              onclick="saveUser()"
+            >
+              <i class="fas fa-save"></i>&nbsp;&nbsp; SAVE
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <script
+    src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+    crossorigin="anonymous"
+  ></script>
+  <script
+    src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+    integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+    crossorigin="anonymous"
+  ></script>
+  <script
+    type="text/javascript"
+    charset="utf8"
+    src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.js"
+  ></script>
+  <script src="./user.js"></script>
+</html>

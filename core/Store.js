@@ -18,7 +18,7 @@ function objToParamStr(obj) {
       if (Array.isArray(obj[i])) {
         // arrays are a list of strings with escaped quotes, surrounded by []
         parts.push(encodeURIComponent(i) +
-         '=' + encodeURIComponent('[' + obj[i].map((x) => '\"' + x + '\"').toString() + ']'));
+          '=' + encodeURIComponent('[' + obj[i].map((x) => '\"' + x + '\"').toString() + ']'));
       } else {
         parts.push(encodeURIComponent(i) + '=' + encodeURIComponent(obj[i]));
       }
@@ -70,6 +70,73 @@ class Store {
         }
       }
     }
+  }
+  getUsers(email) {
+    const suffix = 'User/find';
+    const url = email ? `${this.base}${suffix}?${objToParamStr({email})}` : `${this.base}${suffix}`;
+    return fetch(url, {
+      credentials: 'include',
+      mode: 'cors',
+    }).then(this.errorHandler).then((x) => this.filterBroken(x, 'mark'));
+  }
+  /**
+   * update a collection info
+   * @param {string} id - the collection id
+   * @param {object} json - the data
+   * @return {promise} - promise which resolves with data
+   **/
+  updateUser(id, data) {
+    const suffix = 'User/update';
+    const url = this.base + suffix;
+    const query = {
+      '_id': id,
+    };
+    return fetch(url + '?' + objToParamStr(query), {
+      method: 'POST',
+      credentials: 'include',
+      mode: 'cors',
+      body: JSON.stringify(data),
+    });
+  }
+  /**
+   * post user
+   * @param {object} json - the user data
+   * @return {promise} - promise which resolves with response
+   **/
+  addUser(json) {
+    const suffix = 'User/post';
+    const url = this.base + suffix;
+    if (this.validation.user && !this.validation.user(json)) {
+      console.warn(this.validation.user.errors);
+    }
+    return fetch(url, {
+      method: 'POST',
+      credentials: 'include',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json; charset=utf-8',
+        // "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: JSON.stringify(json),
+    }).then(this.errorHandler);
+  }
+
+  /**
+   * delete user
+   * @param {object} id - the user object id
+   * @return {promise} - promise which resolves with response
+  **/
+  deleteUser(id) {
+    const suffix = 'User/delete';
+    const url = this.base + suffix;
+    const query = {
+      '_id': id,
+    };
+    return fetch(url + '?' + objToParamStr(query), {
+      method: 'DELETE',
+      credentials: 'include',
+      mode: 'cors',
+    }).then(this.errorHandler);
   }
   /**
   * Get a description of the system's user permissions
@@ -126,7 +193,7 @@ class Store {
     return fetch(url + '?' + objToParamStr(query), {
       credentials: 'include',
       mode: 'cors',
-    }).then(this.errorHandler).then((x)=>this.filterBroken(x, 'mark'));
+    }).then(this.errorHandler).then((x) => this.filterBroken(x, 'mark'));
   }
 
   getMarkByIds(ids, slide, notes, source, footprint, x0, x1, y0, y1) {
@@ -179,7 +246,7 @@ class Store {
         'Content-Type': 'application/json; charset=utf-8',
       },
       body: JSON.stringify(query),
-    }).then(this.errorHandler).then((x)=>this.filterBroken(x, 'mark'));
+    }).then(this.errorHandler).then((x) => this.filterBroken(x, 'mark'));
   }
 
 
@@ -198,7 +265,7 @@ class Store {
     return fetch(url + '?' + objToParamStr(query), {
       credentials: 'include',
       mode: 'cors',
-    }).then(this.errorHandler).then((x)=>this.filterBroken(x, 'mark'));
+    }).then(this.errorHandler).then((x) => this.filterBroken(x, 'mark'));
   }
   fetchMark(slideId) {
     const suffix = 'Mark/find';
@@ -208,7 +275,7 @@ class Store {
     return fetch(url + '?' + objToParamStr(query), {
       credentials: 'include',
       mode: 'cors',
-    }).then(this.errorHandler).then((x)=>this.filterBroken(x, 'mark'));
+    }).then(this.errorHandler).then((x) => this.filterBroken(x, 'mark'));
   }
   /**
    * post mark
@@ -296,7 +363,7 @@ class Store {
 
     const query = {};
     //
-    if (!slide || !type ) {
+    if (!slide || !type) {
       console.error('Store.findMarkTypes needs slide and type ... ');
       return null;
     }
@@ -324,7 +391,7 @@ class Store {
     return fetch(url + '?' + objToParamStr(query), {
       credentials: 'include',
       mode: 'cors',
-    }).then(this.errorHandler).then((x)=>this.filterBroken(x, 'heatmap'));
+    }).then(this.errorHandler).then((x) => this.filterBroken(x, 'heatmap'));
   }
   fetchHeatMap(slideId) {
     const suffix = 'Heatmap/find';
@@ -334,7 +401,7 @@ class Store {
     return fetch(url + '?' + objToParamStr(query), {
       credentials: 'include',
       mode: 'cors',
-    }).then(this.errorHandler).then((x)=>this.filterBroken(x, 'heatmap'));
+    }).then(this.errorHandler).then((x) => this.filterBroken(x, 'heatmap'));
   }
   findHeatmapType(slide, name) {
     const suffix = 'Heatmap/types';
@@ -349,7 +416,7 @@ class Store {
     return fetch(url + '?' + objToParamStr(query), {
       credentials: 'include',
       mode: 'cors',
-    }).then(this.errorHandler).then((x)=>this.filterBroken(x, 'heatmap'));
+    }).then(this.errorHandler).then((x) => this.filterBroken(x, 'heatmap'));
   }
   /**
    * get heatmap by id
@@ -366,7 +433,7 @@ class Store {
     return fetch(url + '?' + objToParamStr(query), {
       credentials: 'include',
       mode: 'cors',
-    }).then(this.errorHandler).then((x)=>this.filterBroken(x, 'heatmap'));
+    }).then(this.errorHandler).then((x) => this.filterBroken(x, 'heatmap'));
   }
   /**
    * post heatmap
@@ -608,7 +675,7 @@ class Store {
     return fetch(url + '?' + objToParamStr(query), {
       credentials: 'include',
       mode: 'cors',
-    }).then(this.errorHandler).then((x)=>this.filterBroken(x, 'slide'));
+    }).then(this.errorHandler).then((x) => this.filterBroken(x, 'slide'));
   }
 
   /**
@@ -631,7 +698,7 @@ class Store {
     return fetch(url + '?' + objToParamStr(query), {
       credentials: 'include',
       mode: 'cors',
-    }).then(this.errorHandler).then((x)=>this.filterBroken(x, 'template'));
+    }).then(this.errorHandler).then((x) => this.filterBroken(x, 'template'));
   }
 
   /**
@@ -649,7 +716,7 @@ class Store {
     return fetch(url + '?' + objToParamStr(query), {
       credentials: 'include',
       mode: 'cors',
-    }).then(this.errorHandler).then((x)=>this.filterBroken(x, 'template'));
+    }).then(this.errorHandler).then((x) => this.filterBroken(x, 'template'));
   }
 
   /**
@@ -737,16 +804,16 @@ class Store {
    * @param {object} fileName - the slide filename on server system
    * @return {promise} - promise which resolves with response
    **/
-  requestToDeleteSlide(slideId, slideName=null, fileName=null) {
+  requestToDeleteSlide(slideId, slideName = null, fileName = null) {
     const suffix = 'Request/add';
     const url = this.base + suffix;
     const query = {};
     const data =
-                  {
-                    'slideName': String(slideName),
-                    'fileName': String(fileName),
-                    'slideId': String(slideId),
-                  };
+    {
+      'slideName': String(slideName),
+      'fileName': String(fileName),
+      'slideId': String(slideId),
+    };
     return fetch(url + '?' + objToParamStr(query), {
       method: 'POST',
       body: JSON.stringify({
@@ -768,7 +835,7 @@ class Store {
   * @param {object} reqId - the request object id
   * @return {promise} - promise which resolves with response
   **/
-  cancelRequestToDeleteSlide(reqId, onlyRequestCancel=true) {
+  cancelRequestToDeleteSlide(reqId, onlyRequestCancel = true) {
     // If only cancelling request and not deleting slide file then set onlyRequestCancel to true
     const suffix = 'Request/delete';
     const url = this.base + suffix;
@@ -788,7 +855,7 @@ class Store {
         });
   }
 
-  findRequest(userType=getUserType()) {
+  findRequest(userType = getUserType()) {
     const suffix = 'Request/find';
     const url = this.base + suffix;
     if (userType === 'Admin') {
@@ -815,7 +882,7 @@ class Store {
   updateSlideName(id, newName) {
     const suffix = 'Slide/update';
     const url = this.base + suffix;
-    console.log(id+ '   '+ newName);
+    console.log(id + '   ' + newName);
     const query = {
       '_id': id,
     };
@@ -1029,7 +1096,7 @@ class Store {
   updateSlideReview(id, newStatus) {
     const suffix = 'Slide/update';
     const url = this.base + suffix;
-    console.log(id+ '   '+ newStatus);
+    console.log(id + '   ' + newStatus);
     const query = {
       '_id': id,
     };
@@ -1056,11 +1123,11 @@ class Store {
     const url = '../../data/' + suffix;
     const query = {};
     const data =
-                  {
-                    'email': email,
-                    'userType': userType,
-                    'userFilter': userFilter,
-                  };
+    {
+      'email': email,
+      'userType': userType,
+      'userFilter': userFilter,
+    };
     return fetch(url + '?' + objToParamStr(query), {
       method: 'POST',
       body: JSON.stringify({
@@ -1081,7 +1148,7 @@ class Store {
         .then((data) => {
           showSuccessPopup('User registration request submitted');
           document.getElementById('userForm').reset();
-          // window.location.reload();
+        // window.location.reload();
         })
         .catch((error) => {
           console.error('There has been a problem with your fetch operation:', error);
@@ -1128,7 +1195,7 @@ class Store {
   * @param {object} reqId - the request object id
   * @return {promise} - promise which resolves with response
   **/
-  cancelRequestToCreateUser(reqId, onlyRequestCancel=true) {
+  cancelRequestToCreateUser(reqId, onlyRequestCancel = true) {
     // If only cancelling request and not deleting slide file then set onlyRequestCancel to true
     const suffix = 'Request/delete';
     const url = this.base + suffix;
