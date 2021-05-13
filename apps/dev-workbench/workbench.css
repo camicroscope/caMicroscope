@@ -18,7 +18,9 @@
 .btn {
   text-transform: unset !important;
 }
-
+.navbar {
+  padding-left: 20px;
+}
 /* All display none */
 #importFile,
 #headContent,
