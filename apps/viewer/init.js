@@ -544,11 +544,11 @@ async function initUIcomponents() {
   });
 
   // Additional Links handler
-  var headers = {
-    'Access-Control-Allow-Origin': '*',
-  };
-
   function additionalLinksHandler(url, openInNewTab) {
+    if (appendSlide === true) {
+      url = url + '?slide=' + $D.params.slideId;
+      url = url + '&state=' + StatesHelper.encodeStates(StatesHelper.getCurrentStates());
+    }
     if (openInNewTab === true) {
       window.open(url, '_blank').focus();
     } else {
@@ -560,6 +560,7 @@ async function initUIcomponents() {
   if (additionalLinksConfig&&additionalLinksConfig.configuration&&Array.isArray(additionalLinksConfig.configuration)) {
     additionalLinksConfig.configuration.forEach((link)=>{
       var openInNewTab = link.openInNewTab === false ? false : true;
+      var appendSlide = link.appendSlide === true ? true : false;
       var url = link.url;
       subToolsOpt.push({
         name: link.displayName,
@@ -568,7 +569,7 @@ async function initUIcomponents() {
         value: link.displayName,
         type: 'btn',
         callback: function() {
-          additionalLinksHandler(url, openInNewTab);
+          additionalLinksHandler(url, openInNewTab, appendSlide);
         },
       });
     });
