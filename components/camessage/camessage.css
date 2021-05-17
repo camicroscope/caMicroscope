@@ -1,12 +1,62 @@
 /* ca_message css */
 div.camessage {
-  position:absolute;
-  top:0;
+  overflow-x: hidden;
+  max-height: 100%;
+  max-width: 250px;
+  position: absolute;
   right:0;
-  margin:0;
+  top:0;
+  background-color: #365f9c;
+  color: #f6f6f6;
   border-radius:0 0 0 1rem;
-  padding:.3rem 1rem;
-  background-color:#365f9c;
-  color:#f6f6f6;
-  font-size:1.5rem;
+  display: flex;
+  flex-direction: column;
+  /* font-family: sans-serif; */
+
+}
+.camessage .message-head {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+.camessage .message-head .row {
+  padding: 0 .8rem;
+  font-size: 1.2rem;
+}
+.camessage .message-head span {
+  color: #bababa; 
+}
+
+/* .message-body {
+  overflow: hidden;
+} */
+
+.camessage .row .title{
+  color: #bababa;
+  text-align: right;
+}
+
+.camessage .row .text {
+  text-align: right;
+  font-size: 1.4rem;
+}
+.camessage .message-content {
+  overflow-y: auto;
+  /* overflow: hidden; */
+  flex: 1;
+  margin-top: .8rem;
+}
+.camessage .message-content .row {
+  padding-bottom: .8rem;
+}
+
+.camessage .message-content .row * {
+  padding:.2rem .8rem .4rem .8rem;
+}
+
+
+
+.material-icons:hover {
+  background:#6397D5;
+  cursor:pointer;
 }

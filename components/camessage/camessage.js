@@ -20,14 +20,7 @@ function CaMessage(options) {
      */
   this.elt;
   this.setting = {
-    // id
-    defaultText: 'No Content',
-    // size .font-size
-    size: '1.5rem',
-    // color - font color
-    color: '#f6f6f6',
-    // bgColor - background color
-    bgColor: '#365f9c',
+    opened: false,
   };
   extend(this.setting, options);
   this.elt = document.getElementById(this.setting.id);
@@ -37,61 +30,48 @@ function CaMessage(options) {
   }
 
   this.elt.classList.add('camessage');
-
-  this.reset();
+  this.__createMessageElt();
 }
 
 /**
  *  reset the message's content to default
  */
-CaMessage.prototype.reset = function() {
-  if (this.setting.defaultText) this.elt.textContent = this.setting.defaultText;
-  this.elt.style.fontSize= this.setting.size;
-  this.elt.style.color= this.setting.color;
-  this.elt.style.backgroundColor= this.setting.bgColor;
+CaMessage.prototype.__createMessageElt = function() {
+  //
+  const strHeader = `<div class='message-head' ${this.setting.metadata?'':'style="padding:.4rem 0;"'}>
+  <div class='row'>
+    <div>
+      <span>${this.setting.content.key}</span>
+      <strong>${this.setting.content.value}</strong></div>
+    </div>
+    ${this.setting.metadata?`<div class='material-icons'>
+      ${this.setting.opened?'keyboard_arrow_down':'keyboard_arrow_up'}
+    </div>`:``}
+  </div>`;
+
+  const strContent = this.setting.metadata?`<div class='message-content' style='display:${this.setting.opened?null:'none'}'>${this.__createContent()}</div>`:'';
+
+  this.elt.innerHTML =`${strHeader}${strContent}`;
+  if (this.setting.metadata) {
+    const icon = this.elt.querySelector('.material-icons');
+    const content = this.elt.querySelector('.message-content');
+    icon.addEventListener('click', (e)=>{
+      if (icon.textContent =='keyboard_arrow_down') {
+        icon.textContent = 'keyboard_arrow_up';
+        content.style.display = 'none';
+      } else {
+        icon.textContent = 'keyboard_arrow_down';
+        content.style.display = null;
+      }
+    });
+  }
 };
 
-
-/**
- *  set the message's text
- *  @param {String} txt
- *         text that show on CaMessage
- */
-CaMessage.prototype.changeTxt = function(txt) {
-  this.elt.textContent = txt;
-};
-
-
-/*
- *  change message's style
- *  @param {Object} style
- *         the style that applies on CaMessage
- *  @param {String} [style.size] font size.
- *  @param {String} [style.color] font color.
- *  @param {String} [style.bgColor] background color.
- *
- */
-CaMessage.prototype.changeStyle = function(style) {
-  if (!style) return;
-  if (style.size) this.elt.style.fontSize = style.size;
-  if (style.color) this.elt.style.color = style.color;
-  if (style.bgColor) this.elt.style.backgroundColor = style.bgColor;
-};
-
-/*
- *  temporarily change the text and the style of CaMessage by giving time[sec]
- *  @param {String} txt
- *         text content
- *  @param {Object} style
- *         the message style
- *  @param {String} [style.size] font size.
- *  @param {String} [style.color] font color.
- *  @param {String} [style.bgColor] background color.
- *  @param {number} time
- *         The number of seconds to show the message.
- */
-CaMessage.prototype.sendMessage = function(txt, style, time) {
-  this.changeTxt(txt);
-  if (style) this.changeStyle(style);
-  if (time) setTimeout(this.reset.bind(this), time*1000);
+CaMessage.prototype.__createContent = function() {
+  const metadata = this.setting.metadata;
+  const rows = [];
+  for (const [key, value] of Object.entries(metadata)) {
+    rows.push(`<div class='row'><div class='title'>${key}</div><div class='text'>${value}</div></div>`);
+  }
+  return `<div class='message-body'>${rows.join('')}</div>`;
 };

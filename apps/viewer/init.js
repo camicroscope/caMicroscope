@@ -160,7 +160,7 @@ function initCore() {
     return;
   }
 
-  $CAMIC.loadImg(function(e) {
+  $CAMIC.loadImg(async function(e) {
     // image loaded
     if (e.hasError) {
       $UI.message.addError(e.message);
@@ -273,11 +273,19 @@ function initCore() {
       });
 
       // create the message bar TODO for reading slide Info TODO
-      $UI.slideInfos = new CaMessage({
-        /* opts that need to think of*/
+      const messageOpt = {
         id: 'cames',
-        defaultText: `Slide: ${$D.params.data.name}`,
-      });
+        content: {key: 'Slide', value: $D.params.data.name},
+      };
+      if ($D.params.data.metadata_location) {
+        const metadata = await $CAMIC.store.getSlideMetadata($D.params.data.metadata_location).then();
+        if (metadata.hasError) {
+          $UI.message.addError(metadata.error.toString(), 5000);
+        } else {
+          messageOpt.metadata = metadata;
+        }
+      }
+      $UI.slideInfos = new CaMessage(messageOpt);
 
       // spyglass
       $UI.spyglass = new Spyglass({

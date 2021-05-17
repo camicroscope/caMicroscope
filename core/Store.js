@@ -625,6 +625,25 @@ class Store {
     }).then(this.errorHandler);
   }
 
+  getSlideMetadata(path) {
+    const ext = (/[.]/.exec(path)) ? /[^.]+$/.exec(path) : undefined;
+    if (!ext) return {hasError: true, error: `the file format doesn't support.`};
+    const suffix = 'Slide/metadata';
+    const url = this.base + suffix;
+    let query = {
+      path: path,
+    };
+    return fetch(url + '?' + objToParamStr(query), {
+      credentials: 'include',
+      mode: 'cors',
+    }).then((resp) =>{
+      if (ext[0]=='json') {
+        return resp.json();
+      } else if (ext[0]=='csv') {
+        return resp.text();
+      }
+    });
+  }
   /**
    * find overlays matching name and/or type
    * @param {string} [name] - the slide's name
