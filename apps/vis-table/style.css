@@ -1,0 +1,10 @@
+.slidebox{
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+
+  padding: 5px;
+  height: 10%;
+  width: 10%;
+}
