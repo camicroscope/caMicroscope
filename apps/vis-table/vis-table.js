@@ -13,7 +13,10 @@ function renderSlide(data) {
   label.innerText = data.name;
   // add checkmark if reviewed, for now
   if (data.review) {
-    label.innerText += '✔';
+    let checkmark = document.createElement('div');
+    checkmark.classList.add('checkmark');
+    checkmark.innerText = '&#10004;'; // ✔
+    div.appendChild(checkmark);
   }
   // add to a link
   let anchor = document.createElement('a');
