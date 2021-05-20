@@ -7,11 +7,13 @@ function renderSlide(data) {
   // add thumbnail
   let thumbnailUrl = `../../img/IIP/raw/?FIF=${location}&WID=200&CVT=png`;
   div.style.backgroundImage = `url(${thumbnailUrl});`;
-  // add text
-  div.innerText = data.name;
+  // add label text
+  let label = document.createElement('div');
+  label.classList.add('namebox');
+  label.innerText = data.name;
   // add checkmark if reviewed, for now
   if (data.review) {
-    div.innerText += '✔';
+    label.innerText += '✔';
   }
   // add to a link
   let anchor = document.createElement('a');
