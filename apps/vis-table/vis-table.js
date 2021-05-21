@@ -16,6 +16,7 @@ function renderSlide(data) {
     let checkmark = document.createElement('div');
     checkmark.classList.add('checkmark');
     checkmark.innerText = '&#10004;'; // ✔
+    checkmark.title = "reviewed"
     div.appendChild(checkmark);
   }
   // add to a link
