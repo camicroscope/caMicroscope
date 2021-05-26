@@ -3,10 +3,10 @@ function renderSlide(data) {
   // make div
   let div = document.createElement('div');
   div.classList.add('slidebox');
-  let location = data.location;
+  let loc = data.location;
   // add thumbnail
-  let thumbnailUrl = `../../img/IIP/raw/?FIF=${location}&WID=200&CVT=png`;
-  div.style.backgroundImage = `url(${thumbnailUrl});`;
+  let thumbnailUrl = `url('../../img/IIP/raw/?FIF=${loc}&WID=200');`;
+  div.style.backgroundImage = thumbnailUrl
   // add label text
   let label = document.createElement('div');
   label.classList.add('namebox');
