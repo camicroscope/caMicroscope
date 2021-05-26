@@ -10,6 +10,7 @@ function renderSlide(data) {
   // add label text
   let label = document.createElement('div');
   label.classList.add('namebox');
+  label.classList.add('bg-dark');
   label.innerText = data.name;
   // add checkmark if reviewed, for now
   if (data.review) {
@@ -36,6 +37,9 @@ function init(filters) {
   // render each one
 }
 
+// handle searchbar
+
+// TODO filters
 
 // get url params
 filters = {};

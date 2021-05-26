@@ -7,10 +7,34 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
   </head>
   <nav class="navbar navbar-light text-white bg-dark">
-    <span class="navbar-brand text-white mb-0 h1">Navbar</span>
+    <a class="navbar-brand" href="#">
+      <img src="./favicon.ico" width="30" height="30" alt="caMicroscope">
+    </a>
+    <form class="form-inline">
+      <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+      <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#filterCollapse" aria-expanded="false" aria-controls="filterCollapse">Filters &#9662; </button>
+    </form>
+    <ul class="nav justify-content-end text-white">
+      <li class="nav-item">
+        <a class="nav-link active text-white" href="#">Signup</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-white" href="#">Load</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link  text-white" href="#">Workbench</a>
+      </li>
+    </ul>
   </nav>
   <body>
     <div id="container">
+      <div id="explore">
+        <div class="collapse" id="filterCollapse">
+          <div class="card card-body">
+            Filter Stuff
+          </div>
+        </div>
+      </div>
       <div id="table">
         <a href="#" class="slidelink">
           <div class="slidebox" style="background-image: url('sample.jpg');">
@@ -44,6 +68,14 @@
           </div>
         </a>
       </div>
+      <nav>
+        <ul class="pagination justify-content-center">
+          <li class="page-item"><a class="page-link" href="#">1</a></li>
+          <li class="page-item"><a class="page-link" href="#">2</a></li>
+          <li class="page-item"><a class="page-link" href="#">3</a></li>
+        </ul>
+      </nav>
+
     </div>
   </body>
 </html>
