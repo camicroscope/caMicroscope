@@ -12,6 +12,7 @@ function renderSlide(data) {
   label.classList.add('namebox');
   label.classList.add('bg-dark');
   label.innerText = data.name;
+  div.appendChild(label);
   // add checkmark if reviewed, for now
   if (data.review) {
     let checkmark = document.createElement('div');
@@ -29,9 +30,9 @@ function renderSlide(data) {
 
 // initialization routine
 function init(filters) {
-  const STORE = Store('../../data');
+  const STORE = new Store('../../data/');
   // get slide data w/filters
-  STORE.findSlide(filters).then((x)=>{
+  STORE.findSlide().then((x)=>{
     x.forEach(renderSlide);
   });
   // render each one
