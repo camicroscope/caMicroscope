@@ -5,8 +5,8 @@ function renderSlide(data) {
   div.classList.add('slidebox');
   let loc = data.location;
   // add thumbnail
-  let thumbnailUrl = `url('../../img/IIP/raw/?FIF=${loc}&WID=200');`;
-  div.style.backgroundImage = thumbnailUrl
+  let thumbnailUrl = `url(../../img/IIP/raw/?FIF=${loc}&WID=200&CVT=.jpg);`;
+  div.style.backgroundImage = thumbnailUrl;
   // add label text
   let label = document.createElement('div');
   label.classList.add('namebox');
@@ -15,7 +15,7 @@ function renderSlide(data) {
   div.appendChild(label);
   // add checkmark if reviewed, for now
   if (data.review) {
-    let checkmark = document.createElement('div');
+    let checkmark = document.createElement('p');
     checkmark.classList.add('checkmark');
     checkmark.innerText = '&#10004;'; // ✔
     checkmark.title = 'reviewed';
