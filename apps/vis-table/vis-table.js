@@ -7,8 +7,8 @@ function renderSlide(data) {
   // add thumbnail
   let thumbnailUrl = `url(../../img/IIP/raw/?FIF=${loc}&WID=200&CVT=.jpg)`;
   div.style.backgroundImage = thumbnailUrl;
-  console.log(thumbnailUrl)
-  console.log(div.style.backgroundImage)
+  console.log(thumbnailUrl);
+  console.log(div.style.backgroundImage);
   // add label text
   let label = document.createElement('div');
   label.classList.add('namebox');
