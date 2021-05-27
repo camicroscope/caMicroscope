@@ -5,7 +5,7 @@ function renderSlide(data) {
   div.classList.add('slidebox');
   let loc = data.location;
   // add thumbnail
-  let thumbnailUrl = `url(../../img/IIP/raw/?FIF=${loc}&WID=200&CVT=.jpg);`;
+  let thumbnailUrl = `url(../../img/IIP/raw/?FIF=${loc}&WID=200&CVT=.jpg)`;
   div.style.backgroundImage = thumbnailUrl;
   console.log(thumbnailUrl)
   console.log(div.style.backgroundImage)
