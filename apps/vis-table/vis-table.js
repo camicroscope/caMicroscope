@@ -17,7 +17,7 @@ function renderSlide(data) {
   if (data.review) {
     let checkmark = document.createElement('p');
     checkmark.classList.add('checkmark');
-    checkmark.innerText = '&#10004;'; // ✔
+    checkmark.innerText = '✔';
     checkmark.title = 'reviewed';
     div.appendChild(checkmark);
   }
