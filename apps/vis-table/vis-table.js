@@ -27,6 +27,13 @@ function renderSlide(data) {
   let anchor = document.createElement('a');
   anchor.href = `../viewer/viewer.html?slideId=${data['_id']['$oid']}`;
   anchor.appendChild(div);
+  // use html elem dataset for filtering
+  let searchStr = '';
+  searchStr += data.study + ' ' + data.specimen + ' ' + data.name;
+  if (data.review) {
+    searchStr += ' ' + 'reviewed';
+  }
+  anchor.dataset.searchable = searchStr;
   document.getElementById('table').appendChild(anchor);
 }
 
@@ -40,7 +47,21 @@ function init(filters) {
   // render each one
 }
 
-// handle searchbar
+function onSearch() {
+  // get search term
+  let query = document.getElementById('searchbar').value;
+  // get list of anchor elems
+  // hide ones which don't match
+  let slides = document.getElementById('table').children;
+  for (let i = 0; i < slides.length; i++) {
+    console.log('searchable', slide.dataset.searchable);
+    if (slides[i].dataset.searchable.includes(query)) {
+      slides[i].style.display='';
+    } else {
+      slides[i].style.display='none';
+    }
+  }
+}
 
 // TODO filters
 
