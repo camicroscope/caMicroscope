@@ -50,8 +50,7 @@ function init(filters) {
 function onSearch() {
   // get search term
   let query = document.getElementById('searchbar').value;
-  // get list of anchor elems
-  // hide ones which don't match
+  // get list of anchor elems and hide ones which don't match
   let slides = document.getElementById('table').children;
   for (let i = 0; i < slides.length; i++) {
     console.log('searchable', slides[i].dataset.searchable);
