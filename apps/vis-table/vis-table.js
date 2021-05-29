@@ -54,7 +54,7 @@ function onSearch() {
   // hide ones which don't match
   let slides = document.getElementById('table').children;
   for (let i = 0; i < slides.length; i++) {
-    console.log('searchable', slide.dataset.searchable);
+    console.log('searchable', slides[i].dataset.searchable);
     if (slides[i].dataset.searchable.includes(query)) {
       slides[i].style.display='';
     } else {
