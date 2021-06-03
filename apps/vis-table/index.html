@@ -36,16 +36,56 @@
       <div id="explore">
         <div class="collapse" id="filterCollapse">
           <div class="card card-body">
-            <ul class="list-group">
-              <li class="list-group-item">
-                <input class="form-check-input me-1" type="checkbox" value="" aria-label="...">
-                First checkbox
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+              <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="subject-tab" data-bs-toggle="tab" data-bs-target="#subject" type="button" role="tab" aria-controls="subject" aria-selected="true">Subject</button>
               </li>
-              <li class="list-group-item">
-                <input class="form-check-input me-1" type="checkbox" value="" aria-label="...">
-                Second checkbox
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" id="study-tab" data-bs-toggle="tab" data-bs-target="#study" type="button" role="tab" aria-controls="study" aria-selected="false">Study</button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" id="type-tab" data-bs-toggle="tab" data-bs-target="#type" type="button" role="tab" aria-controls="type" aria-selected="false">Cancer Type</button>
               </li>
             </ul>
+            <div class="tab-content" id="myTabContent">
+              <div class="tab-pane fade show active" id="subject" role="tabpanel" aria-labelledby="subject-tab">
+                <ul class="list-group">
+                  <li class="list-group-item">
+                    <input class="form-check-input me-1" type="checkbox" value="" aria-label="...">
+                    First checkbox
+                  </li>
+                  <li class="list-group-item">
+                    <input class="form-check-input me-1" type="checkbox" value="" aria-label="...">
+                    Second checkbox
+                  </li>
+                </ul>
+              </div>
+              <div class="tab-pane fade" id="study" role="tabpanel" aria-labelledby="study-tab">
+                <ul class="list-group">
+                  <li class="list-group-item">
+                    <input class="form-check-input me-1" type="checkbox" value="" aria-label="...">
+                    Third checkbox
+                  </li>
+                  <li class="list-group-item">
+                    <input class="form-check-input me-1" type="checkbox" value="" aria-label="...">
+                    Fourth checkbox
+                  </li>
+                </ul>
+              </div>
+              <div class="tab-pane fade" id="type" role="tabpanel" aria-labelledby="type-tab">
+                <ul class="list-group">
+                  <li class="list-group-item">
+                    <input class="form-check-input me-1" type="checkbox" value="" aria-label="...">
+                    Fifth checkbox
+                  </li>
+                  <li class="list-group-item">
+                    <input class="form-check-input me-1" type="checkbox" value="" aria-label="...">
+                    Sizth checkbox
+                  </li>
+                </ul>
+              </div>
+            </div>
+
           </div>
         </div>
       </div>
