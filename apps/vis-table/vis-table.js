@@ -24,6 +24,7 @@ function renderSlide(data) {
   // populate uniques
   filterVars.forEach((x)=>{
     UNIQUES[x].add(data[x]);
+    anchor.dataset[x] = data[x];
   });
   // add checkmark if reviewed, for now
   if (data.review) {
