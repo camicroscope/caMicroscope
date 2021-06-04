@@ -301,7 +301,13 @@ function initialize() {
                 <button class="btn btn-primary btn-sm" data-id='${sanitize(rs[0])}' onclick='openView(this)'>Open</button>
                 <button type='button' class='btn btn-primary btn-sm DownloadButton' id='downloadBtn' data-id='${sanitize(rs[0])}' onclick='downloadSlide(this)'>
                 <i class='fas fa-download' ></i>
+                </button>       
+                <button class="btn btn-outline-primary btn-sm" style="margin-left: 8px;"
+                  onclick="showCollaborationModal();"
+                >
+                  Manage Collaboration
                 </button>
+
                 ${slideDeleteRequests[counter] && slideDeleteRequests[counter].slideDetails &&
                   slideDeleteRequests.find((o) => o.slideDetails.slideId === rs[0]) ?
                   `
@@ -324,7 +330,7 @@ function initialize() {
                       ${permissions.slide.delete == true ? '' : 'Request Deletion'} <i class='fas fa-trash-alt' ></i>
                     </button>
                   `
-}
+                  }
               </div>`;
                   rs.push(btn);
                   return rs;
@@ -993,4 +999,8 @@ function filterSlides() {
   totaltablepages = Math.ceil(newSlideRows.length / $('#entries').val());
   resetTable();
   pageIndicatorVisible(newSlideRows.length);
+}
+
+function showCollaborationModal () {
+  $('#manageCollaborationModal').modal('toggle');
 }

@@ -11,6 +11,11 @@
     <!-- Check If we're logged in ok, otherwise, log in for us -->
     <!-- REMOVE JQUERY AND AJAX AFTER MODERNIZING DICOM PACKAGE-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+
+    <!-- ==================================== -->
+    <script src="http://localhost:4050/socket.io/socket.io.js"></script>
+    <!-- ==================================== -->
+
     <!-- Thank you -->
     <script src="../../common/authChecker.js"></script>
     <script>
@@ -173,7 +178,12 @@
     <!-- tippy theme -->
     <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/themes/light-border.css" />
     <!--  common js START -->
+    <script>
+      console.log('here');
+    </script>
     <!-- util.js -->
+    <script defer src="../../core/socketio/init.sockets.js"></script>
+
     <script type="text/javascript" src="../../common/util.js"></script>
     <script type="text/javascript" src="../../common/DrawHelper.js"></script>
     <script type="text/javascript" src="../../common/simplify.js"></script>

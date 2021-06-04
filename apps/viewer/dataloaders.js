@@ -106,6 +106,8 @@ function layersLoader() {
       loadingComputerOverlayers();
     }
   }, 500);
+
+  console.log('called', $D);
 }
 
 

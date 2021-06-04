@@ -284,6 +284,7 @@ class Store {
    **/
   addMark(json) {
     const suffix = 'Mark/post';
+    console.log('adding mark');
     const url = this.base + suffix;
     if (this.validation.mark && !this.validation.mark(json)) {
       console.warn(this.validation.mark.errors);
@@ -297,7 +298,9 @@ class Store {
         // "Content-Type": "application/x-www-form-urlencoded",
       },
       body: JSON.stringify(json),
-    }).then(this.errorHandler);
+    },
+    true // Sockets config
+    ).then(this.errorHandler);
   }
   /**
    * delete mark
