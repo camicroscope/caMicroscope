@@ -6,8 +6,9 @@ filterVars.forEach((x)=>{
 
 // render each thumbnail
 function renderSlide(data) {
-  // make div
+  // make div and anchor
   let div = document.createElement('div');
+  let anchor = document.createElement('a');
   div.classList.add('slidebox');
   let loc = data.location;
   // add thumbnail
@@ -34,8 +35,7 @@ function renderSlide(data) {
     checkmark.title = 'reviewed';
     div.appendChild(checkmark);
   }
-  // add to a link
-  let anchor = document.createElement('a');
+  // add to the link
   anchor.href = `../viewer/viewer.html?slideId=${data['_id']['$oid']}`;
   anchor.appendChild(div);
   // use html elem dataset for filtering
