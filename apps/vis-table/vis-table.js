@@ -1,3 +1,9 @@
+var UNIQUES = {};
+let filterVars = ['study', 'subject'];
+filterVars.forEach((x)=>{
+  UNIQUES[x] = new Set();
+});
+
 // render each thumbnail
 function renderSlide(data) {
   // make div
@@ -15,6 +21,10 @@ function renderSlide(data) {
   label.classList.add('bg-dark');
   label.innerText = data.name;
   div.appendChild(label);
+  // populate uniques
+  filterVars.forEach((x)=>{
+    UNIQUES[x].add(data[x]);
+  });
   // add checkmark if reviewed, for now
   if (data.review) {
     let checkmark = document.createElement('p');
@@ -62,7 +72,20 @@ function onSearch() {
   }
 }
 
-// TODO filters
+// handle filters
+
+function initFilters(uniques) {
+  Object.keys(uniques).forEach((x)=>{
+    console.log(x, uniques[x]);
+  });
+  // add tabs for each filter var
+  // add space for checkboxes
+  // for each in vars:
+  // collect list of distinct values
+  // add checkboxes
+}
+console.log(UNIQUES);
+initFilters(UNIQUES);
 
 // get url params
 filters = {};
