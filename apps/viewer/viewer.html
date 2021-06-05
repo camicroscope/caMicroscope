@@ -168,10 +168,19 @@
       media="all"
       href="../../css/popup.css"
     />
+    <!-- cross viewer css -->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      media="all"
+      href="../../components/crossmenu/crossmenu.css"
+    />
     <link href="../../common/bootstrap-tour-standalone/bootstrap-tour-standalone.min.css" rel="stylesheet">
 
     <!-- tippy theme -->
     <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/themes/light-border.css" />
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
     <!--  common js START -->
     <!-- util.js -->
     <script type="text/javascript" src="../../common/util.js"></script>
@@ -340,6 +349,7 @@
     <script src="./uicallbacks.js"></script>
     <script src="./dataloaders.js"></script>
     <script src="./init.js"></script>
+    <script src="../../components/crossmenu/crossmenu.js"></script>
     <script src="enhance.js"></script>
     <script src="../../common/bootstrap-tour-standalone/bootstrap-tour-standalone.min.js"></script>
     <script src="./tut.js"></script>
@@ -383,6 +393,57 @@
     
     <!-- labels manager -->
     <div id="labelmanager" style="z-index:600"></div>
+
+    <!-- menu of available slides -->
+    <div id="crossMenu" style="z-index:600;" class="none">
+      <div id="cmTitleBar">
+        <span class = "cmHead">Available Slides</span>
+        <span class="material-icons" onclick="closeCrossMenu()">close</span>
+      </div>
+      <div class="cmContainer" style="color: black;">
+        <div class="row" id="filters-heading">
+        </div>
+        <div class="row" id="filters-check">
+        </div>
+        <div class="cmSearchBox">
+            <div class="cmSelect">
+              <!-- Pagination Not Yet Implemented -->
+              <!-- <select id='entries' class="select form-control">
+                  <option value="10" selected>10 slides/page</option>
+                  <option value="20">20 slides/page</option>
+                  <option value="40">40 slides/page</option>
+                  <option value="50">50 slides/page</option>
+                  <option value="100">100 slides/page</option>
+              </select> -->
+            </div>
+            <div class="cmSearch">
+              <span class="fa fa-search"></span>
+              <input id="search-table" type="text" placeholder="Search">
+            </div>
+        </div>
+        <div class="table-responsive" id="cmTable">
+          <table id="cmDatatable">
+            <thead id="cmThead"></thead>
+            <tbody id="cmTbody"></tbody>
+            <tfoot id="cmTfoot">
+              <tr>
+                <td colspan="6">
+                  <!-- Pagination Not Yet Implemented -->
+                  <!-- <nav aria-label="Slides Pages" id="tablePages" class="" style="display: none;">
+                    <ul class="pagination justify-content-center">
+                      <li id="previous-page" class="page-item"><a class="page-link">Previous</a></li><li class="page-item pages active"><a class="page-link">1</a></li>
+                      
+                      <li id="next-page" class="page-item"><a class="page-link">Next</a></li>
+                    </ul>
+                  </nav> -->
+                </td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+    </div>
+
     <!-- Popper & tippy -->
     <script src="https://unpkg.com/@popperjs/core@2"></script>
     <script src="https://unpkg.com/tippy.js@6"></script>

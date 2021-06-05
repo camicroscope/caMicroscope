@@ -522,6 +522,15 @@ async function initUIcomponents() {
       callback: updateSlideView,
     });
   }
+  // cross slide
+  subToolsOpt.push({
+    name: 'crossviewer',
+    icon: 'compare',
+    title: 'Cross Slide Viewer',
+    value: 'csviewer',
+    type: 'check',
+    callback: toggleCrossMenu,
+  });
   // screenshot
   subToolsOpt.push({
     name: 'slideCapture',

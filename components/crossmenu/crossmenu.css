@@ -1,0 +1,161 @@
+#crossMenu.none {
+    display: none;
+}
+
+#crossMenu.display {
+    position: absolute;
+    display: grid;
+    grid-template-rows: 3vh 1fr;
+    width: 58vw;
+    /* height: 70vh; */
+    max-height: 80vh;
+    overflow-y: auto;
+    top: 10vh;
+    left: 21vw;
+    background-color: white;
+    border-style: solid;
+    border-width: 2px;
+    border-color: rgb(54, 95, 156);
+}
+
+.cmContainer {
+    padding-top: 2vh;
+    padding-bottom: 4vh;
+}
+
+#cmTitleBar{
+    background-color: rgb(54, 95, 156);
+    color: rgb(236 236 236);
+    display: grid;
+    grid-template-columns: 28fr 1fr;
+    font-size: 2rem;
+    padding-top: 0.1rem;
+    padding-bottom: 0.4rem;
+    font-family: sans-serif;
+    font-weight: 900;
+}
+#cmTitleBar > .cmHead {
+    text-align: center;
+    margin: auto;
+    font-variant: all-small-caps;
+}
+#cmTable{
+    height: calc(64vh - 20rem);
+    width: 50vw;
+    margin: auto;
+    overflow: auto;
+}
+#cmDatatable{
+    width: 48vw;
+    font-family: sans-serif;
+    font-size: 1.6rem;
+    text-align: left;
+    border-collapse: collapse;
+    margin-top: 2vh;
+}
+#cmTbody > tr:nth-child(odd) {
+    background-color: rgb(236 236 236);
+}
+#cmTbody > tr > td,
+#cmThead > tr > th {
+    padding: 0.5rem 0.7rem;
+    min-width: fit-content;
+}
+#cmThead > tr > th{
+    border-style: solid;
+    border-width: 0px;
+    border-color: black;
+    border-bottom-width: 1.5px;
+}
+.cmBtn{
+    background-color: rgba(0,0,0,0);
+    font-family: sans-serif;
+    font-size: 1.6rem;
+    padding: 0.4rem 0.8rem;
+    color: rgb(54, 95, 156);
+    border: none;
+}
+#cmTfoot{
+    border-style: solid;
+    border-width: 0px;
+    border-color: black;
+    border-top-width: 1.5px;
+}
+.cmSearchBox {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 50vw;
+    padding-right: 2vw;
+    margin: auto;
+}
+.cmSearch{
+    text-align: right;
+    position: relative;
+    width: 100%;
+    margin-bottom: 1vh;
+}
+/* Pagination Not Yet Implemented */
+/* .cmSelect{
+    text-align: left;
+    position: relative;
+    width: 100%;
+}
+.cmSelect > select {
+    font-size: 1.3rem;
+    padding: 0.45rem;
+    background-color: whitesmoke;
+    outline: none;
+    border: 1px solid rgb(0, 0, 0);
+} */
+#entries:focus {
+    box-shadow: 0 0 5px rgb(54, 95, 156);
+    border: 1px solid rgb(54, 95, 156);
+}
+.cmSearch > span {
+    position: absolute;
+    font-size: 1.9rem;
+    line-height: 2.8rem;
+    color: rgb(158 158 158);
+}
+.cmSearch > input {
+    font-size: 1.3rem;
+    padding: 0.5rem;
+    padding-left: 2.8rem;
+    margin-left: -0.5rem;
+    outline: none;
+    border: 1px solid rgb(0, 0, 0);
+}
+#search-table:focus {
+    box-shadow: 0 0 5px rgb(54, 95, 156);
+    border: 1px solid rgb(54, 95, 156);
+}
+.cmNoData {
+    color: black;
+    margin: auto;
+    font-size: 1.8rem;
+    font-family: sans-serif;
+}
+.cmContainer > #filters-heading {
+    width: 94%;
+    margin: auto;
+}
+.cmContainer > #filters-check {
+    width: 94%;
+    margin: auto;
+}
+.cmContainer > #filters-heading > h5 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-family: sans-serif;
+    font-variant: petite-caps;
+}
+.cmContainer > #filters-check {
+    display: flex;
+    flex-wrap: wrap;
+    font-size: 1.4rem;
+    max-height: calc(8rem);
+    overflow-y: auto;
+}
+.cmFilterCheck{
+    padding: 1rem;
+}
