@@ -206,5 +206,5 @@ function handleFilterChange(target) {
 	}
 }
 function openCrossViewer(elem){
-	window.location.href = `../crossviewer/crossviewer.html?left=${getUrlVars().slideId}&right=${elem.dataset.id}`;
+	window.location.href = `../crossviewer/crossviewer.html?main=${getUrlVars().slideId}&minor=${elem.dataset.id}`;
 }
