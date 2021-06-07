@@ -78,14 +78,68 @@ function onSearch() {
 function initFilters(uniques) {
   Object.keys(uniques).forEach((x)=>{
     console.log(x, uniques[x]);
+    let pane = document.createElement('div');
+    pane.classList.add('tab-pane');
+    pane.classList.add('fade');
+    pane.id = x;
+    pane.setAttribute('role', 'tabpanel');
+    pane.setAttribute('aria-labelledby', x + '-tab');
+    let listGroup = document.createElement('div');
+    pane.appendChild(listGroup);
+    for (y of uniques[x]) {
+      `<div class="tab-pane fade" id="subject" role="tabpanel" aria-labelledby="subject-tab">
+        <div class="list-group">
+          <label class="list-group-item">
+            <input class="form-check-input me-1" type="checkbox" value="">
+            3 checkbox
+          </label>
+          <label class="list-group-item">
+            <input class="form-check-input me-1" type="checkbox" value="">
+            4 checkbox
+          </label>
+        </div>
+      </div>`;
+      let label = document.createElement('label');
+      label.classList.add('list-group-item');
+      let input = document.createElement('input');
+      input.classList.add('form-check-input');
+      input.classList.add('me-1');
+      input.setAttribute('type', 'checkbox');
+      input.value = y;
+      input.innerText= y;
+      input.dataset.field = x;
+      input.dataset.value = y;
+      label.appendChild(input);
+      listGroup.appendChild(label);
+    }
+    document.getElementById('tabContent').appendChild(pane);
   });
-  // add tabs for each filter var
-  // add space for checkboxes
-  // for each in vars:
-  // collect list of distinct values
-  // add checkboxes
+}
+
+function createTabs(vars) {
+  let tabContainer = document.getElementById('tabContainer');
+  vars.forEach((x)=>{
+    console.log(x);
+    // create tab pane button
+    let button = document.createElement('button');
+    button.classList.add('nav-link');
+    button.id = x + '-tab';
+    button.dataset['bs-toggle'] = 'tab';
+    button.dataset['bs-target'] = '#' + x;
+    button.setAttribute('type', 'button');
+    button.setAttribute('role', 'tab');
+    button.setAttribute('aria-controls', x);
+    button.innerText = x;
+    // create <li class="nav-item" role="presentation">
+    document.createElement('li');
+    li.classList.add('nav-item');
+    button.setAttribute('role', 'presentation');
+    li.appendChild(button);
+    tabContainer.appendChild(li);
+  });
 }
 console.log(UNIQUES);
+createTabs(filterVars);
 initFilters(UNIQUES);
 
 // get url params
