@@ -125,7 +125,7 @@ function createTabs(vars) {
     button.classList.add('nav-link');
     button.id = x + '-tab';
     button.setAttribute('bs-toggle', 'tab');
-    button.dataset('bs-target', '#' + x);
+    button.setAttribute('bs-target', '#' + x);
     button.setAttribute('type', 'button');
     button.setAttribute('role', 'tab');
     button.setAttribute('aria-controls', x);
