@@ -124,14 +124,14 @@ function createTabs(vars) {
     let button = document.createElement('button');
     button.classList.add('nav-link');
     button.id = x + '-tab';
-    button.dataset['bs-toggle'] = 'tab';
-    button.dataset['bs-target'] = '#' + x;
+    button.setAttribute('bs-toggle', 'tab');
+    button.dataset('bs-target', '#' + x);
     button.setAttribute('type', 'button');
     button.setAttribute('role', 'tab');
     button.setAttribute('aria-controls', x);
     button.innerText = x;
     // create <li class="nav-item" role="presentation">
-    document.createElement('li');
+    let li = document.createElement('li');
     li.classList.add('nav-item');
     button.setAttribute('role', 'presentation');
     li.appendChild(button);
