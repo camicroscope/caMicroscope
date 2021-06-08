@@ -298,40 +298,41 @@ function initialize() {
                   // console.log('Done one iter');
 
                   const btn = `<div id='open-delete'>
-                <button class="btn btn-primary btn-sm" data-id='${sanitize(rs[0])}' onclick='openView(this)'>Open</button>
-                <button type='button' class='btn btn-primary btn-sm DownloadButton' id='downloadBtn' data-id='${sanitize(rs[0])}' onclick='downloadSlide(this)'>
-                <i class='fas fa-download' ></i>
-                </button>       
-                <button class="btn btn-outline-primary btn-sm" style="margin-left: 8px;"
-                  onclick="showCollaborationModal();"
-                >
-                  Manage Collaboration
-                </button>
+                    <button class="btn btn-primary btn-sm" data-id='${sanitize(rs[0])}' onclick='openView(this)'>Open</button>
+                    <button type='button' class='btn btn-primary btn-sm DownloadButton' id='downloadBtn' data-id='${sanitize(rs[0])}' onclick='downloadSlide(this)'>
+                    <i class='fas fa-download' ></i>
+                    </button>       
+                    <button class="btn btn-outline-primary btn-sm" style="margin-left: 8px;"
+                      data-slideId="${d._id.$oid}"
+                      onclick="showCollaborationModal(this);"
+                    >
+                      Manage Collaboration
+                    </button>
 
-                ${slideDeleteRequests[counter] && slideDeleteRequests[counter].slideDetails &&
-                  slideDeleteRequests.find((o) => o.slideDetails.slideId === rs[0]) ?
-                  `
-                    ${slideDeleteRequests.find((o) => o.requestedBy === sanitize(getUserId())) ?
-                    `
-                        <button type='button' class='btn btn-danger btn-sm DelButton' id='deleteBtn' data-id='${sanitize(rs[0])}' data-name='${sanitize(rs[1])}' onclick='deleteSld(this)' data-reqid='${slideDeleteRequests.find((o) => o.slideDetails.slideId === rs[0]) ? slideDeleteRequests.find((o) => o.slideDetails.slideId === rs[0])._id.$oid : ''}' data-filename='${sanitize(filename)}' data-toggle='modal'>
-                          Cancel Delete Request <i class='fas fa-trash-alt' ></i>
-                        </button>
+                    ${slideDeleteRequests[counter] && slideDeleteRequests[counter].slideDetails &&
+                      slideDeleteRequests.find((o) => o.slideDetails.slideId === rs[0]) ?
+                      `
+                        ${slideDeleteRequests.find((o) => o.requestedBy === sanitize(getUserId())) ?
+                        `
+                            <button type='button' class='btn btn-danger btn-sm DelButton' id='deleteBtn' data-id='${sanitize(rs[0])}' data-name='${sanitize(rs[1])}' onclick='deleteSld(this)' data-reqid='${slideDeleteRequests.find((o) => o.slideDetails.slideId === rs[0]) ? slideDeleteRequests.find((o) => o.slideDetails.slideId === rs[0])._id.$oid : ''}' data-filename='${sanitize(filename)}' data-toggle='modal'>
+                              Cancel Delete Request <i class='fas fa-trash-alt' ></i>
+                            </button>
+                          ` :
+                        `
+                            <button disabled type='button' class='btn btn-danger btn-sm tooltipCustom' id='deleteBtn'>
+                              <span class="tooltiptextCustom p-1">Delete requested by ${slideDeleteRequests.find((o) => o.slideDetails.slideId === rs[0]) ? slideDeleteRequests.find((o) => o.slideDetails.slideId === rs[0]).requestedBy : ''}</span>
+                              Delete Requested <i class='fas fa-trash-alt' ></i>
+                            </button>
+                          `
+                      }
                       ` :
-                    `
-                        <button disabled type='button' class='btn btn-danger btn-sm tooltipCustom' id='deleteBtn'>
-                          <span class="tooltiptextCustom p-1">Delete requested by ${slideDeleteRequests.find((o) => o.slideDetails.slideId === rs[0]) ? slideDeleteRequests.find((o) => o.slideDetails.slideId === rs[0]).requestedBy : ''}</span>
-                          Delete Requested <i class='fas fa-trash-alt' ></i>
+                      `
+                        <button type='button' class='btn btn-danger btn-sm DelButton' id='deleteBtn' data-id='${sanitize(rs[0])}' data-name='${sanitize(rs[1])}' onclick='deleteSld(this)' data-filename='${sanitize(filename)}' data-toggle='modal'>
+                          ${permissions.slide.delete == true ? '' : 'Request Deletion'} <i class='fas fa-trash-alt' ></i>
                         </button>
                       `
-                  }
-                  ` :
-                  `
-                    <button type='button' class='btn btn-danger btn-sm DelButton' id='deleteBtn' data-id='${sanitize(rs[0])}' data-name='${sanitize(rs[1])}' onclick='deleteSld(this)' data-filename='${sanitize(filename)}' data-toggle='modal'>
-                      ${permissions.slide.delete == true ? '' : 'Request Deletion'} <i class='fas fa-trash-alt' ></i>
-                    </button>
-                  `
-                  }
-              </div>`;
+                      }
+                  </div>`;
                   rs.push(btn);
                   return rs;
                 });
@@ -1001,6 +1002,33 @@ function filterSlides() {
   pageIndicatorVisible(newSlideRows.length);
 }
 
-function showCollaborationModal () {
+function showCollaborationModal (event) {
+  const element = event;
+  const slideId = element.getAttribute('data-slideId');
+  const store = new Store('../data/');
+  store.getSlide(slideId).then(response => {
+    document.getElementById('modal-collab-slidename').innerText = response[0].name;
+    if (response[0].collabStatus === true) {
+      $('#modal-collab-status-switch').bootstrapToggle('on');
+    } else {
+      $('#modal-collab-status-switch').bootstrapToggle('off');
+    }
+    document.getElementById('modal-collab-save').dataset.slideId = slideId;
+  });
   $('#manageCollaborationModal').modal('toggle');
+}
+
+function handleCollaborationStatusChange(element) {
+  if (element.getAttribute('data-slide-id')) {
+    const slideId = element.getAttribute('data-slide-id');
+    const status = document.getElementById('modal-collab-status-switch').checked;
+    const store = new Store('../data/');
+    store.updateSlideCollabStatus(slideId, status).then(async response => {
+      const responseData = await response.json();
+      $('#manageCollaborationModal').modal('toggle');
+    })
+  } else {
+    $('#manageCollaborationModal').modal('toggle');
+  }
+  // document.getElementById('modal-collab-save').removeEventListener('click', this, false);
 }

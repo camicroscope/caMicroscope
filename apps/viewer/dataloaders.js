@@ -34,9 +34,12 @@ function FormTempaltesLoader() {
   }, 500);
 }
 
+var loadingHumanOverlayers;
+var loadingHeatmapOverlayers;
+
 function layersLoader() {
   // human
-  function loadingHumanOverlayers() {
+  loadingHumanOverlayers = () => {
     $CAMIC.store.findMarkTypes($D.params.slideId, 'human').then(function(layers) {
       // convert part not nesscary
       $D.humanlayers = [...layers.map(covertToHumanLayer)];
@@ -64,7 +67,7 @@ function layersLoader() {
     });
   }
   // heatmap
-  function loadingHeatmapOverlayers() {
+  loadingHeatmapOverlayers = () => {
     $CAMIC.store.findHeatmapType($D.params.slideId).then(function(layers) {
       $D.heatmaplayers = [];
       // convert and load heatmap layer
@@ -104,6 +107,7 @@ function layersLoader() {
       loadingRulerOverlayers();
       loadingHeatmapOverlayers();
       loadingComputerOverlayers();
+      socketInit();
     }
   }, 500);
 

@@ -458,7 +458,10 @@ class Store {
         // "Content-Type": "application/x-www-form-urlencoded",
       },
       body: JSON.stringify(json),
-    }).then(this.errorHandler);
+    },
+    true, // Sockets config
+    'heatmap'
+    ).then(this.errorHandler);
   }
   /**
    * delete heatmap
@@ -891,6 +894,25 @@ class Store {
     };
     const update = {
       'name': newName,
+    };
+    return fetch(url + '?' + objToParamStr(query), {
+      method: 'POST',
+      credentials: 'include',
+      mode: 'cors',
+      body: JSON.stringify(update),
+    });
+  }
+
+  // Update slide name
+  updateSlideCollabStatus(id, status) {
+    const suffix = 'Slide/update';
+    const url = this.base + suffix;
+    console.log(id + '   ' + status);
+    const query = {
+      '_id': id,
+    };
+    const update = {
+      'collabStatus': status,
     };
     return fetch(url + '?' + objToParamStr(query), {
       method: 'POST',
