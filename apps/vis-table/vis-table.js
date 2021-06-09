@@ -59,13 +59,26 @@ function init(filters) {
 }
 
 function onSearch() {
-  // get search term
+  let inputs = document.querySelectorAll('input');
+  let search = '';
+  let checks = {};
+  filterVars.forEach((x)=>{
+    checks[x] = new Set();
+  });
+  for (i of inputs) {
+    if (i.type == 'search') {
+      search = i.value;
+    } else if (i.type == 'checkbox') {
+      checks[i.dataset.field].add(i.dataset.value);
+    }
+  }
   let query = document.getElementById('searchbar').value;
   // get list of anchor elems and hide ones which don't match
   let slides = document.getElementById('table').children;
   for (let i = 0; i < slides.length; i++) {
-    console.log('searchable', slides[i].dataset.searchable);
-    if (slides[i].dataset.searchable.includes(query)) {
+    let matchesSearchbar = slides[i].dataset.searchable.includes(query);
+    let matchesCheckboxes = true;
+    if (matchesSearchbar && matchesCheckboxes) {
       slides[i].style.display='';
     } else {
       slides[i].style.display='none';
@@ -155,14 +168,6 @@ function createTabs(vars) {
 console.log(UNIQUES);
 createTabs(filterVars);
 initFilters(UNIQUES);
-
-function onFilterChange() {
-  // get list of currently checked filters
-  // if incl (ALL), don't filter on that attr
-  // if incl (EMPTY), include unset
-  // go through the data attrs and filter
-  return 0;
-}
 
 // TODO get url params
 filters = {};
