@@ -113,7 +113,7 @@ function initFilters(uniques) {
       input.classList.add('me-1');
       input.setAttribute('type', 'checkbox');
       input.value = y;
-      input.innerText = y;
+      label.innerText = y;
       input.dataset.field = x;
       input.dataset.value = y;
       label.appendChild(input);
