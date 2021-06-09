@@ -156,7 +156,15 @@ console.log(UNIQUES);
 createTabs(filterVars);
 initFilters(UNIQUES);
 
-// get url params
+function onFilterChange() {
+  // get list of currently checked filters
+  // if incl (ALL), don't filter on that attr
+  // if incl (EMPTY), include unset
+  // go through the data attrs and filter
+  return 0;
+}
+
+// TODO get url params
 filters = {};
 // initialize with url params as filters
 init(filters);
