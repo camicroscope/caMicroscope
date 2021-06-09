@@ -2,7 +2,7 @@ var UNIQUES = {};
 let filterVars = ['study', 'subject'];
 filterVars.forEach((x)=>{
   UNIQUES[x] = new Set();
-  UNIQUES[x].add("<EMPTY>")
+  UNIQUES[x].add('<EMPTY>');
 });
 
 // render each thumbnail
@@ -75,6 +75,7 @@ function onSearch() {
 // handle filters
 
 function initFilters(uniques) {
+  let isFirstList = true;
   Object.keys(uniques).forEach((x)=>{
     console.log(x, uniques[x]);
     let pane = document.createElement('div');
@@ -83,6 +84,11 @@ function initFilters(uniques) {
     pane.id = x;
     pane.setAttribute('role', 'tabpanel');
     pane.setAttribute('aria-labelledby', x + '-tab');
+    if (isFirstList) {
+      isFirstList = false;
+      pane.classList.add('active');
+      pane.classList.add('show');
+    }
     let listGroup = document.createElement('div');
     pane.appendChild(listGroup);
     for (y of uniques[x]) {
@@ -105,7 +111,7 @@ function initFilters(uniques) {
       input.classList.add('me-1');
       input.setAttribute('type', 'checkbox');
       input.value = y;
-      input.innerText= y;
+      input.innerHTML = y;
       input.dataset.field = x;
       input.dataset.value = y;
       label.appendChild(input);
@@ -117,6 +123,7 @@ function initFilters(uniques) {
 
 function createTabs(vars) {
   let tabContainer = document.getElementById('tabContainer');
+  let isFirstTab = true;
   vars.forEach((x)=>{
     console.log(x);
     // create tab pane button
@@ -128,6 +135,10 @@ function createTabs(vars) {
     button.setAttribute('type', 'button');
     button.setAttribute('role', 'tab');
     button.setAttribute('aria-controls', x);
+    if (isFirstTab) {
+      isFirstTab = false;
+      button.classList.add('active');
+    }
     button.innerText = x;
     // create <li class="nav-item" role="presentation">
     let li = document.createElement('li');
