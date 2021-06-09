@@ -90,6 +90,7 @@ function initFilters(uniques) {
       pane.classList.add('show');
     }
     let listGroup = document.createElement('div');
+    listGroup.classList.add('list-group');
     pane.appendChild(listGroup);
     for (y of uniques[x]) {
       `<div class="tab-pane fade" id="subject" role="tabpanel" aria-labelledby="subject-tab">
