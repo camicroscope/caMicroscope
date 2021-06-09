@@ -2,7 +2,7 @@ var UNIQUES = {};
 let filterVars = ['study', 'subject'];
 filterVars.forEach((x)=>{
   UNIQUES[x] = new Set();
-  UNIQUES[x].add('<EMPTY>');
+  UNIQUES[x].add('(EMPTY)');
 });
 
 // render each thumbnail
