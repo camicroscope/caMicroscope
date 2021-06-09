@@ -112,7 +112,7 @@ function initFilters(uniques) {
       input.classList.add('me-1');
       input.setAttribute('type', 'checkbox');
       input.value = y;
-      input.innerHTML = y;
+      input.innerText = y;
       input.dataset.field = x;
       input.dataset.value = y;
       label.appendChild(input);
@@ -131,8 +131,8 @@ function createTabs(vars) {
     let button = document.createElement('button');
     button.classList.add('nav-link');
     button.id = x + '-tab';
-    button.setAttribute('bs-toggle', 'tab');
-    button.setAttribute('bs-target', '#' + x);
+    button.setAttribute('data-bs-toggle', 'tab');
+    button.setAttribute('data-bs-target', '#' + x);
     button.setAttribute('type', 'button');
     button.setAttribute('role', 'tab');
     button.setAttribute('aria-controls', x);
