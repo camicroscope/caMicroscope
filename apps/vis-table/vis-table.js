@@ -116,7 +116,7 @@ function initFilters(uniques) {
       input.dataset.field = x;
       input.dataset.value = y;
       label.appendChild(input);
-      label.innerText = y;
+      label.innerText += y;
       listGroup.appendChild(label);
     }
     document.getElementById('tabContent').appendChild(pane);
