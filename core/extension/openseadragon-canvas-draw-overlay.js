@@ -110,6 +110,8 @@
     this._current_path_ = {};
     this._draws_data_ = [];
     this._path_index = 0;
+    // aligndata
+    this._align_data = null;
 
     // -- create container div, and draw, display canvas -- //
     this._containerWidth = 0;
@@ -400,6 +402,8 @@
      */
     startDrawing: function(e) {
       //prevent to open context menu when click on drawing mode
+      if(!this.isOn)return;
+
       let isRight;
       e = e || window.event;
       if ("which" in e)
@@ -419,6 +423,11 @@
       if (this.contextMenu) this.contextMenu.close(e);
       let point = new OpenSeadragon.Point(e.clientX, e.clientY);
       let img_point = this._viewer.viewport.windowToImageCoordinates(point);
+
+      // alignment
+      spen.initcanvas(this._viewer.drawer.canvas);
+      this.align_fy = this._viewer.drawer.canvas.width/this._display_.width;
+      this.align_fx = this._viewer.drawer.canvas.height/this._display_.height;
 
       if (
         0 > img_point.x ||
@@ -475,6 +484,7 @@
         return;
       img_point.x = Math.round(img_point.x);
       img_point.y = Math.round(img_point.y);
+      img_point = this.__align_real(img_point);
       //set style for ctx
       DrawHelper.setStyle(this._draw_ctx_, this.style);
       this._draw_ctx_.fillStyle = hexToRgbA(this.style.color, 0.3);
@@ -644,7 +654,7 @@
      * stop drawing on the drawing canvas
      */
     stopDrawing: function(e) {
-      if (this.isDrawing) {
+      if (this.isDrawing && this.isOn) {
         // add style and data to data collection
         this.__endNewFeature();
         try {
@@ -799,16 +809,18 @@
       this._current_path_.properties.style.lineCap = this.style.lineCap;
       this._current_path_.properties.style.isFill = this.style.isFill;
       let points = this._current_path_.geometry.coordinates[0];
-      if (!(this.drawMode === "line" || this.drawMode === "grid"))
-        points.push([points[0][0], points[0][1]]);
 
-      if (this.drawMode === "free" || this.drawMode === "line") {
+      // Modify
+      if (!(this.drawMode === "line" || this.drawMode === "grid"))
+        points.push(points[0]);
+      points = this.__align(points);
+      if (!(this.drawMode === "grid")) {
         // simplify
-        this._current_path_.geometry.coordinates[0] = simplify(points, 3.5);
+        points = simplify(points, 3.5);
       }
       if (!(this.drawMode === "line" || this.drawMode == "grid")) {
         let isIntersect = false;
-        if (isSelfIntersect(this._current_path_.geometry.coordinates[0])) {
+        if (isSelfIntersect(points)) {
           isIntersect = true;
           console.info("The polygon just drawn has an intersection.");
           if (! window.localStorage.getItem("_intersect_warn")) {
@@ -829,9 +841,9 @@
           sqmpsqp = this._viewer.mpp_x * this._viewer.mpp_y;
           // calculate the are of polygon
           this._current_path_.properties.area =
-            sqmpsqp * polygonArea(this._current_path_.geometry.coordinates[0]);
+            sqmpsqp * polygonArea(points);
           this._current_path_.properties.circumference = getCircumference(
-            this._current_path_.geometry.coordinates[0],
+            points,
             this._viewer.mpp_x,
             this._viewer.mpp_y
           );
@@ -840,9 +852,9 @@
           sqmpsqp = this._viewer.mpp * this._viewer.mpp;
           // calculate the are of polygon
           this._current_path_.properties.area =
-            sqmpsqp * polygonArea(this._current_path_.geometry.coordinates[0]);
+            sqmpsqp * polygonArea(points);
           this._current_path_.properties.circumference = getCircumference(
-            this._current_path_.geometry.coordinates[0],
+            points,
             this._viewer.mpp_x,
             this._viewer.mpp_y
           );
@@ -851,6 +863,7 @@
           this._current_path_.properties.nommp = true;
         }
       }
+      this._current_path_.geometry.coordinates[0] = points;
       // create bounds
       this._current_path_.bound.coordinates[0] = getBounds(
         this._current_path_.geometry.coordinates[0]
@@ -950,8 +963,78 @@
       for (const key in this) {
         this[key] = null;
       }
+    },
+
+    // Align Functions
+    /**
+     * Align stroke
+     *@param {points}
+     *@return {points}
+    */
+    __align: function(points) {
+        if (spen.mode != 1)
+           return points;
+        this._align_data = points.slice();
+        var dist = new Array(),
+        ol = points;
+        for (i = 0; i < ol.length; i++) {
+            dist.push(new OpenSeadragon.Point(ol[i][0], ol[i][1]));
+            dist[i] = this._viewer.viewport.imageToWindowCoordinates(dist[i])
+            dist[i].x = Math.floor(dist[i].x * this.align_fx);
+            dist[i].y = Math.floor(dist[i].y * this.align_fy);
+        }
+        dist = spen.align(dist);
+        for (i = 0; i < dist.length; i++) {
+            dist[i] = new OpenSeadragon.Point(dist[i].x / this.align_fx, dist[i].y / this.align_fy);
+            dist[i] = this._viewer.viewport.windowToImageCoordinates(dist[i])
+            dist[i].x = Math.floor(dist[i].x);
+            dist[i].y = Math.floor(dist[i].y);
+            points[i] = [dist[i].x, dist[i].y];
+        }
+        return points;
+    },
+    __align_real: function(pix) {
+        if (spen.mode != 2)
+            return pix;
+        var pt = pix;
+        pt = this._viewer.viewport.imageToWindowCoordinates(pt);
+        pt.x = Math.floor(pt.x * this.align_fx);
+        pt.y = Math.floor(pt.y * this.align_fy);
+        pt = spen.align_r(pt);
+        pt = new OpenSeadragon.Point(pt.x / this.align_fx, pt.y / this.align_fy);
+        pt = this._viewer.viewport.windowToImageCoordinates(pt);
+        pt.x = Math.floor(pt.x);
+        pt.y = Math.floor(pt.y);
+        return pt;
+    },
+    /**
+     * undo align
+    */
+    __align_undo() {
+        if (this._path_index > 0 && this._align_data !== null) {
+            this._draws_data_ = this._draws_data_.slice(0, this._path_index)
+            this._draws_data_[this._path_index - 1].geometry.coordinates[0] = this._align_data;
+            this._align_data = null;
+            this.drawOnCanvas(
+                this._display_ctx_,
+                function() {
+                    this.drawMode !== "grid" ?
+                        DrawHelper.draw(
+                            this._display_ctx_,
+                            this._draws_data_
+                        ) :
+                        DrawHelper.drawGrids(
+                            this._display_ctx_,
+                            this._draws_data_
+                        );
+                }.bind(this)
+            );
+        }
+        else
+            this.undo();
     }
-  };
+};
+
 
   $.extend($.CanvasDraw.prototype, $.EventSource.prototype);
 
