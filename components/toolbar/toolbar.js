@@ -130,6 +130,9 @@ CaToolbar.prototype.__create = function(options) {
     case 'multistates':
       // create dropdown menu
       return this.__createMultiStateBtns(options);
+    case 'multistates-dropdown':
+      // create multistates dropdown menu
+      return this.__createMultiStateBtnsDropDown(options);
     default:
       // return null if unvalid type
       return null;
@@ -360,6 +363,73 @@ CaToolbar.prototype.__createMultiStateBtns = function(options) {
 
   return li;
 };
+
+
+
+CaToolbar.prototype.__createMultiStateBtnsDropDown = function(options) {
+  if (!options) {
+    console.warn(`${this.name}.__createMultiStateBtnsDropDown:No Option`);
+    return;
+  }
+  // create UI
+  const li = document.createElement('li');
+  if (options.name) li.name = options.name;
+  // checkbox
+  const id = randomId(); // create a timestamp id
+  const chk = document.createElement('input');
+  chk.id = id;
+  chk.type = 'checkbox';
+  chk.checked = options.checked ? true : false;
+  li.appendChild(chk);
+
+  // icon
+  const icon = document.createElement('label');
+  icon.classList.add('material-icons');
+  icon.classList.add('md-24');
+  icon.textContent = options.icon;
+  icon.htmlFor = id;
+  if (options.title) {
+    icon.title = options.title;
+    tippy(icon, {
+      content: options.title,
+      placement: 'right',
+      delay: 300,
+      theme: 'light-border',
+    });
+  }
+  li.appendChild(icon);
+
+  // create drop_down
+  const _drop = document.createElement('ul');
+  _drop.classList.add('drop_down');
+
+  //
+  const lists = [];
+  for (let i = 0; i < options.dropdownList.length; i++) {
+    options.dropdownList[i].id = id;
+    const multiBtn = this.__createMultiStateBtns(options.dropdownList[i]);
+    lists.push(multiBtn);
+    _drop.appendChild(multiBtn);
+  }
+  li.appendChild(_drop);
+
+  li.addEventListener('click', function(e){    
+    for (let i = 0; i < lists.length; i++) {
+      if(lists[i].children[0].dataset.state != 0){
+        chk.checked = true;
+        return;
+      }
+    }
+    chk.checked = false;
+    return;
+  });
+  
+  return li;
+};
+
+
+
+
 /*
  * @private
  * __createDropDown - create tool as dropdown menu.

@@ -1,4 +1,6 @@
 // CAMIC is an instance of camicroscope core
+
+
 // $CAMIC in there
 let $CAMIC = null;
 let $minorCAMIC = null;
@@ -82,7 +84,9 @@ function initCore(){
                 title: 'Annotation',
                 class: 'material-icons',
                 text: 'description',
-                callback: saveAnnotationMain,
+                callback: function(){
+                    saveAnnotation('main');
+                },
               },
               {
                 // analytics
@@ -106,7 +110,9 @@ function initCore(){
                 title: 'Annotation',
                 class: 'material-icons',
                 text: 'description',
-                callback: saveAnnotationMinor,
+                callback: function(){
+                    saveAnnotation('minor');
+                },
               },
               {
                 // analytics
@@ -124,10 +130,18 @@ function initCore(){
         const slideQueryMinor = {};
         slideQueryMain.id = $D.params.main;
         slideQueryMinor.id = $D.params.minor;
-        optMain.addRulerCallback = onAddRulerMain;
-        optMain.deleteRulerCallback = onDeleteRulerMain;
-        optMinor.addRulerCallback = onAddRulerMinor;
-        optMinor.deleteRulerCallback = onDeleteRulerMinor;
+        optMain.addRulerCallback = function(ruler){
+            onAddRuler(ruler, 'main');
+        };
+        optMain.deleteRulerCallback = function(ruler){
+            onDeleteRuler(ruler, 'main');
+        };
+        optMinor.addRulerCallback = function(ruler){
+            onAddRuler(ruler, 'minor');
+        };
+        optMinor.deleteRulerCallback = function(ruler){
+            onDeleteRuler(ruler, 'minor');
+        };;
         $CAMIC = new CaMic('main_viewer', slideQueryMain, optMain);
         $minorCAMIC = new CaMic('minor_viewer', slideQueryMinor, optMinor);
     } 
@@ -148,8 +162,8 @@ function initCore(){
             // popup panel
             $CAMIC.viewer.addHandler('canvas-lay-click', function(e) {
                 if (!e.data) {
-                $UI.annotPopupMain.close();
-                return;
+                    $UI.annotPopupMain.close();
+                    return;
                 }
                 // for support QUIP 2.0
                 const data = Array.isArray(e.data) ? e.data[e.data.selected] : e.data;
@@ -378,23 +392,36 @@ function initCore(){
     let minorOpenTag = false;
 
     $CAMIC.viewer.addHandler('open', function(){
-        $CAMIC.viewer.canvasDrawInstance.addHandler('start-drawing', startDrawing);
-        $CAMIC.viewer.canvasDrawInstance.addHandler('stop-drawing', stopDrawing);
+        $CAMIC.viewer.canvasDrawInstance.addHandler('start-drawing', (e) => {
+            startDrawing(e, 'main');
+        });
+        $CAMIC.viewer.canvasDrawInstance.addHandler('stop-drawing', (e) => {
+            stopDrawing(e, 'main');
+        });
         mainOpenTag = true;
     });
     $minorCAMIC.viewer.addHandler('open', function(){
-        $minorCAMIC.viewer.canvasDrawInstance.addHandler('start-drawing', startDrawing);
-        $minorCAMIC.viewer.canvasDrawInstance.addHandler('stop-drawing', stopDrawing);
+        $minorCAMIC.viewer.canvasDrawInstance.addHandler('start-drawing', (e) => {
+            startDrawing(e, 'minor');
+        });
+        $minorCAMIC.viewer.canvasDrawInstance.addHandler('stop-drawing', (e) => {
+            stopDrawing(e, 'minor');
+        });
         minorOpenTag = true;
     });
     var checkViewersOpen = setInterval(function(){
         if(mainOpenTag && minorOpenTag){
             clearInterval(checkViewersOpen);
             // create the message bar TODO for reading slide Info TODO
-            $UI.slideInfos = new CaMessage({
+            $UI.slideInfosMain = new CaMessage({
                 /* opts that need to think of*/
-                id: 'cames',
-                defaultText: `Slide: ${$D.params.mainData.name}  ||  Slide: ${$D.params.minorData.name}`,
+                id: 'cames_main',
+                defaultText: `Slide: ${$D.params.mainData.name}`,
+            });
+            $UI.slideInfosMinor = new CaMessage({
+                /* opts that need to think of*/
+                id: 'cames_minor',
+                defaultText: `Slide: ${$D.params.minorData.name}`,
             });
             initUIcomponents();
             // action tracker start
@@ -425,11 +452,35 @@ async function initUIcomponents(){
     // annotations
     subToolsOpt.push({
         name: 'annotation',
-        icon: 'create', // material icons' name
+        icon: 'create',
         title: 'Draw',
-        type: 'multistates',
-        callback: draw,
+        type: 'multistates-dropdown',
+        value: 'annoDraw',
+        dropdownList: [
+            {
+                name: 'Left Viewer Annotations',
+                icon: 'arrow_left', // material icons' name
+                title: 'Left Viewer',
+                type: 'multistates',
+                callback: function(e){
+                    draw.call(this, e, 'main');
+                },
+            },
+            {
+                name: 'Right Viewer Annotations',
+                icon: 'arrow_right', // material icons' name
+                title: 'Right Viewer',
+                type: 'multistates',
+                callback: function(e){
+                    draw.call(this, e, 'minor');
+                },
+            },
+        ],
+        callback: function(data){
+            console.log(data);
+        }
     });
+
     // preset labels
     subToolsOpt.push({
         name: 'preset_label',
@@ -487,6 +538,16 @@ async function initUIcomponents(){
           callback: toggleMeasurement,
         });
     }
+    // screenshot
+    subToolsOpt.push({
+        name: 'slideCapture',
+        icon: 'camera_enhance',
+        title: 'Slide Capture',
+        type: 'btn',
+        value: 'slCap',
+        callback: captureSlide,
+    });
+
     // create toolbar
     $UI.toolbar = new CaToolbar({
         /* opts that need to think of*/
@@ -527,7 +588,9 @@ async function initUIcomponents(){
             title: 'Delete',
             class: 'material-icons',
             text: 'delete_forever',
-            callback: annoDeleteMain,
+            callback: function(data, parentType){
+                annoDelete(data, parentType, 'main');
+            },
         },
         ],
     });
@@ -544,7 +607,9 @@ async function initUIcomponents(){
             title: 'Delete',
             class: 'material-icons',
             text: 'delete_forever',
-            callback: annoDeleteMain,
+            callback: function(data, parentType){
+                annoDelete(data, parentType, 'minor');
+            },
         },
         ],
     });
@@ -609,8 +674,12 @@ async function initUIcomponents(){
               null,
               callback.bind('main'),
               rootCallback.bind('main'),
-              removeCallbackMain,
-              locationCallbackMain,
+              function(layerData, parentType){
+                  removeCallback(layerData, parentType, 'main');
+                },
+              function(layerData){
+                  locationCallback(layerData, 'main');
+              },
           );
           // create UI and set data - minor
           $UI.layersViewerMinor = createLayerViewer(
@@ -618,8 +687,12 @@ async function initUIcomponents(){
               null,
               callback.bind('minor'),
               rootCallback.bind('minor'),
-              removeCallbackMinor,
-              locationCallbackMinor,
+              function(layerData, parentType){
+                    removeCallback(layerData, parentType, 'minor');
+                },  
+              function(layerData){
+                    locationCallback(layerData, 'minor');
+                },
           );
     
           $UI.layersList = new CollapsibleList({
@@ -690,12 +763,32 @@ async function initUIcomponents(){
             // id:
             // element:
             formSchemas: annotSchemas,
-            resetCallback: resetCallback,
+            resetCallback: function(data){
+                resetCallback(data, 'check');
+            },
             action: {
             title: 'Save',
-            callback: annoCallback,
+            callback: function(data){
+                annoCallback(data, 'check');
+            },
             },
         });
+
+        // $UI.annotOptPanelMinor = new OperationPanel({
+        //     // id:
+        //     // element:
+        //     formSchemas: annotSchemasMinor,
+        //     resetCallback: function(data){
+        //         resetCallback(data, 'minor');
+        //     },
+        //     action: {
+        //     title: 'Save',
+        //     callback: function(data){
+        //         annoCallback(data, 'minor');
+        //     },
+        //     },
+        // });
+
         // START QUIP550 TEMPORARILY REMOVE Algorithm Panel //
         // add to layers side menu
         const title = document.createElement('div');
@@ -704,6 +797,13 @@ async function initUIcomponents(){
         $UI.appsSideMenu.addContent(title);
         $UI.annotOptPanel.elt.classList.add('item_body');
         $UI.appsSideMenu.addContent($UI.annotOptPanel.elt);
+
+        // const titleMinor = document.createElement('div');
+        // titleMinor.classList.add('item_head');
+        // titleMinor.textContent = 'Annotation for Right Viewer';
+        // $UI.appsSideMenuMinor.addContent(title);
+        // $UI.annotOptPanelMinor.elt.classList.add('item_body');
+        // $UI.appsSideMenuMinor.addContent($UI.annotOptPanelMinor.elt);
     
         // $UI.appsList.clearContent('annotation');
         // $UI.appsList.addContent('annotation',$UI.annotOptPanel.elt);

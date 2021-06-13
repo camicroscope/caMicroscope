@@ -119,7 +119,7 @@
     }.bind(this), 100);
   };
   function eventOpen(e) {
-    this.open({x: e.clientX, y: e.clientY});
+    this.open({x: e.offsetX, y: e.offsetY});
     e.preventDefault();
   }
   function eventClose(e) {

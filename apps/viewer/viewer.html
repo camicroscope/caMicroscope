@@ -395,47 +395,47 @@
     <div id="labelmanager" style="z-index:600"></div>
 
     <!-- menu of available slides -->
-    <div id="crossMenu" style="z-index:600;" class="none">
-      <div id="cmTitleBar">
-        <span class = "cmHead">Available Slides</span>
-        <span class="material-icons" onclick="closeCrossMenu()">close</span>
+    <div id="crossMenuWrapper" style="z-index:600;" class="none">
+      <div id="crossMenuTitleBar">
+        <span class = "crossMenuHead">Available Slides</span>
+        <span class="material-icons" onclick="CloseCrossMenu()">close</span>
       </div>
-      <div class="cmContainer" style="color: black;">
-        <div class="row" id="filters-heading">
+      <div class="crossMenuContainer" style="color: black;">
+        <div class="crossMenuRow" id="crossMenuFiltersHeading">
         </div>
-        <div class="row" id="filters-check">
+        <div class="crossMenuRow" id="crossMenuFiltersCheck">
         </div>
-        <div class="cmSearchBox">
-            <div class="cmSelect">
+        <div class="crossMenuSearchBox">
+            <div class="crossMenuSelect">
               <!-- Pagination Not Yet Implemented -->
-              <!-- <select id='entries' class="select form-control">
-                  <option value="10" selected>10 slides/page</option>
+              <select id="crossMenuEntries" onchange="FilterCrossMenu()">
+                  <option value="5" selected>5 slides/page</option>
+                  <option value="10">10 slides/page</option>
                   <option value="20">20 slides/page</option>
                   <option value="40">40 slides/page</option>
                   <option value="50">50 slides/page</option>
                   <option value="100">100 slides/page</option>
-              </select> -->
+              </select>
             </div>
-            <div class="cmSearch">
+            <div class="crossMenuSearch">
               <span class="fa fa-search"></span>
-              <input id="search-table" type="text" placeholder="Search">
+              <input id="crossMenuSearchTable" type="text" placeholder="Search">
             </div>
         </div>
-        <div class="table-responsive" id="cmTable">
-          <table id="cmDatatable">
-            <thead id="cmThead"></thead>
-            <tbody id="cmTbody"></tbody>
-            <tfoot id="cmTfoot">
+        <div id="crossMenuTable">
+          <table id="crossMenuDatatable">
+            <thead id="crossMenuThead"></thead>
+            <tbody id="crossMenuTbody"></tbody>
+            <tfoot id="crossMenuTfoot">
               <tr>
                 <td colspan="6">
-                  <!-- Pagination Not Yet Implemented -->
-                  <!-- <nav aria-label="Slides Pages" id="tablePages" class="" style="display: none;">
-                    <ul class="pagination justify-content-center">
-                      <li id="previous-page" class="page-item"><a class="page-link">Previous</a></li><li class="page-item pages active"><a class="page-link">1</a></li>
-                      
-                      <li id="next-page" class="page-item"><a class="page-link">Next</a></li>
+                  <nav aria-label="Slides Pages" id="crossMenuTablePages" class="" style="display: block;">
+                    <ul class="crossMenuPagination" id="crossMenuTablePagesList">
+                      <li id="crossMenuPreviousPage" class="crossMenuPageItem"><a class="crossMenuPageLink">Previous</a></li>
+                      <li class="crossMenuPageItem pages active"><a class="crossMenuPageLink">1</a></li>                    
+                      <li id="crossMenuNextPage" class="crossMenuPageItem"><a class="crossMenuPageLink">Next</a></li>
                     </ul>
-                  </nav> -->
+                  </nav>
                 </td>
               </tr>
             </tfoot>

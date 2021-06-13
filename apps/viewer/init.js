@@ -529,7 +529,7 @@ async function initUIcomponents() {
     title: 'Cross Slide Viewer',
     value: 'csviewer',
     type: 'check',
-    callback: toggleCrossMenu,
+    callback: ToggleCrossMenu,
   });
   // screenshot
   subToolsOpt.push({

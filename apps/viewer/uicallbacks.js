@@ -322,7 +322,7 @@ function toolsOff() {
       break;
       
     default :
-      closeCrossMenu();
+      CloseCrossMenu();
       break;
   }
 }

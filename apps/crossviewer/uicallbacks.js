@@ -12,158 +12,278 @@ function toggleSideMenu(opt) {
 /**
  * Deletes annotation from layer manager view
  * @param {Object} layerData
+ * @param {Object} parentType
+ * @param {String} viewerName
  */
-function removeCallbackMain(layerData, parentType) {
-    item = layerData.item;
-    if (item.typeName == 'ruler') {
-      deleteRulerHandler(item.id, 'main');
-      console.log('Ruler Delete from Main Layers Manager Callback');
-      return;
+
+function removeCallback(layerData, parentType, viewerName) {
+  item = layerData.item;
+  if (item.typeName == 'ruler') {
+    deleteRulerHandler(item.id, viewerName);
+    console.log(`Ruler Delete from ${viewerName} Layers Manager Callback`);
+    return;
+  }
+  if (item.typeName !== 'human') return;
+  if (!item.data) {
+    // load layer data
+    switch(viewerName){
+      case 'main':
+        loadAnnotationById($CAMIC, layerData, parentType, function() {
+          annoDelete({
+            id: layerData.item.id,
+            oid: layerData.item.data._id.$oid,
+            annotation: layerData.item.data.properties.annotation,
+          }, parentType, 'main');
+        }, $D.params.main, 'main');
+        break;
+      case 'minor':
+        loadAnnotationById($minorCAMIC, layerData, parentType, function() {
+          annoDelete({
+            id: layerData.item.id,
+            oid: layerData.item.data._id.$oid,
+            annotation: layerData.item.data.properties.annotation,
+          }, parentType, 'minor');
+        }, $D.params.minor, 'minor');
+        break;
+      default:
+        console.error('Viewer Name not specified in removeCallBack function');
     }
-    if (item.typeName !== 'human') return;
-    if (!item.data) {
-      // load layer data
-      loadAnnotationById($CAMIC, layerData, parentType, function() {
-        annoDeleteMain({
+  } else {
+    switch(viewerName){
+      case 'main':
+        annoDelete({
           id: layerData.item.id,
           oid: layerData.item.data._id.$oid,
           annotation: layerData.item.data.properties.annotation,
-        }, parentType);
-      }, $D.params.main, 'main');
-    } else {
-      annoDeleteMain({
-        id: layerData.item.id,
-        oid: layerData.item.data._id.$oid,
-        annotation: layerData.item.data.properties.annotation,
-      }, parentType);
-    }
-}
-function removeCallbackMinor(layerData, parentType) {
-    item = layerData.item;
-    if (item.typeName == 'ruler') {
-      deleteRulerHandler(item.id, 'minor');
-      console.log('Ruler Delete from Main Layers Manager Callback');
-      return;
-    }
-    if (item.typeName !== 'human') return;
-    if (!item.data) {
-      // load layer data
-      loadAnnotationById($minorCAMIC, layerData, parentType, function() {
-        annoDeleteMinor({
+        }, parentType, 'main');
+        break;
+      case 'minor':
+        annoDelete({
           id: layerData.item.id,
           oid: layerData.item.data._id.$oid,
           annotation: layerData.item.data.properties.annotation,
-        }, parentType);
-      }, $D.params.minor, 'minor');
-    } else {
-      annoDeleteMinor({
-        id: layerData.item.id,
-        oid: layerData.item.data._id.$oid,
-        annotation: layerData.item.data.properties.annotation,
-      }, parentType);
+        }, parentType, 'minor');
+        break;
+      default:
+        console.error('Viewer Name not specified in removeCallBack funciton');
     }
+  }
 }
+
+// function removeCallbackMain(layerData, parentType) {
+//     item = layerData.item;
+//     if (item.typeName == 'ruler') {
+//       deleteRulerHandler(item.id, 'main');
+//       console.log('Ruler Delete from Main Layers Manager Callback');
+//       return;
+//     }
+//     if (item.typeName !== 'human') return;
+//     if (!item.data) {
+//       // load layer data
+//       loadAnnotationById($CAMIC, layerData, parentType, function() {
+//         annoDeleteMain({
+//           id: layerData.item.id,
+//           oid: layerData.item.data._id.$oid,
+//           annotation: layerData.item.data.properties.annotation,
+//         }, parentType);
+//       }, $D.params.main, 'main');
+//     } else {
+//       annoDeleteMain({
+//         id: layerData.item.id,
+//         oid: layerData.item.data._id.$oid,
+//         annotation: layerData.item.data.properties.annotation,
+//       }, parentType);
+//     }
+// }
+// function removeCallbackMinor(layerData, parentType) {
+//     item = layerData.item;
+//     if (item.typeName == 'ruler') {
+//       deleteRulerHandler(item.id, 'minor');
+//       console.log('Ruler Delete from Main Layers Manager Callback');
+//       return;
+//     }
+//     if (item.typeName !== 'human') return;
+//     if (!item.data) {
+//       // load layer data
+//       loadAnnotationById($minorCAMIC, layerData, parentType, function() {
+//         annoDeleteMinor({
+//           id: layerData.item.id,
+//           oid: layerData.item.data._id.$oid,
+//           annotation: layerData.item.data.properties.annotation,
+//         }, parentType);
+//       }, $D.params.minor, 'minor');
+//     } else {
+//       annoDeleteMinor({
+//         id: layerData.item.id,
+//         oid: layerData.item.data._id.$oid,
+//         annotation: layerData.item.data.properties.annotation,
+//       }, parentType);
+//     }
+// }
 
 /**
  * Callback for locating annotation on image
  * @param {Object} layerData
  */
-function locationCallbackMain(layerData) {
-    let isImageViewer = true;
-    const item = layerData.item;
-    if ((item.typeName !== 'human'&&item.typeName !== 'ruler') || item.data == null) return;
-    if (item.typeName == 'ruler') isImageViewer = false;
+
+function locationCallback(layerData, viewerName){
+  let camic = null;
+  switch(viewerName){
+    case 'main':
+      camic = $CAMIC;
+      break;
+    case 'minor':
+      camic = $minorCAMIC;
+      break;
+    default:
+      console.error('Viewer Name is not specified while calling the function locationCallBack');
+      break;
+  }
+  let isImageViewer = true;
+  const item = layerData.item;
+  if ((item.typeName !== 'human'&&item.typeName !== 'ruler') || item.data == null) return;
+  if (item.typeName == 'ruler') isImageViewer = false;
 
     // loaction annotation 2.0
-    if (Array.isArray(item.data)) {
-        let maxx = 0;
-        let maxy = 0;
-        let minx = Number.POSITIVE_INFINITY;
-        let miny = Number.POSITIVE_INFINITY;
-        item.data.forEach((d)=>{
-        d.geometry.coordinates[0].forEach(([x, y])=>{
-            maxx = Math.max(maxx, x);
-            maxy = Math.max(maxy, y);
-            minx = Math.min(minx, x);
-            miny = Math.min(miny, y);
-        });
-        });
-        const bound = [
-        [minx, miny],
-        [maxx, miny],
-        [maxx, maxy],
-        [minx, maxy],
-        [minx, miny],
-        ];
-        locateAnnotation(bound, isImageViewer, $CAMIC);
-        return;
-    }
-    //  locate annotation 3.0
-    if (item.data.geometries.features[0].geometry.type == 'Point') {
-        const bound = item.data.geometries.features[0].bound.coordinates;
-        const center = $CAMIC.viewer.viewport.imageToViewportCoordinates(
-            bound[0],
-            bound[1],
-        );
-        $CAMIC.viewer.viewport.panTo(center);
-    } else {
-        const bound = [...item.data.geometries.features[0].bound.coordinates[0]];
-        if (item.data.provenance&&item.data.provenance.analysis&&item.data.provenance.analysis.isGrid) {
-        bound[2] = [bound[2][0] +
-            item.data.geometries.features[0].properties.size[0], bound[2][1] +
-            item.data.geometries.features[0].properties.size[1]];
-        }
-        locateAnnotation(bound, isImageViewer, $CAMIC);
-    }
+  if (Array.isArray(item.data)) {
+      let maxx = 0;
+      let maxy = 0;
+      let minx = Number.POSITIVE_INFINITY;
+      let miny = Number.POSITIVE_INFINITY;
+      item.data.forEach((d)=>{
+      d.geometry.coordinates[0].forEach(([x, y])=>{
+          maxx = Math.max(maxx, x);
+          maxy = Math.max(maxy, y);
+          minx = Math.min(minx, x);
+          miny = Math.min(miny, y);
+      });
+      });
+      const bound = [
+      [minx, miny],
+      [maxx, miny],
+      [maxx, maxy],
+      [minx, maxy],
+      [minx, miny],
+      ];
+      locateAnnotation(bound, isImageViewer, camic);
+      return;
+  }
+  //  locate annotation 3.0
+  if (item.data.geometries.features[0].geometry.type == 'Point') {
+      const bound = item.data.geometries.features[0].bound.coordinates;
+      const center = camic.viewer.viewport.imageToViewportCoordinates(
+          bound[0],
+          bound[1],
+      );
+      camic.viewer.viewport.panTo(center);
+  } else {
+      const bound = [...item.data.geometries.features[0].bound.coordinates[0]];
+      if (item.data.provenance&&item.data.provenance.analysis&&item.data.provenance.analysis.isGrid) {
+      bound[2] = [bound[2][0] +
+          item.data.geometries.features[0].properties.size[0], bound[2][1] +
+          item.data.geometries.features[0].properties.size[1]];
+      }
+      locateAnnotation(bound, isImageViewer, camic);
+  }
 }
-function locationCallbackMinor(layerData) {
-    let isImageViewer = true;
-    const item = layerData.item;
-    if ((item.typeName !== 'human'&&item.typeName !== 'ruler') || item.data == null) return;
-    if (item.typeName == 'ruler') isImageViewer = false;
 
-    // loaction annotation 2.0
-    if (Array.isArray(item.data)) {
-        let maxx = 0;
-        let maxy = 0;
-        let minx = Number.POSITIVE_INFINITY;
-        let miny = Number.POSITIVE_INFINITY;
-        item.data.forEach((d)=>{
-        d.geometry.coordinates[0].forEach(([x, y])=>{
-            maxx = Math.max(maxx, x);
-            maxy = Math.max(maxy, y);
-            minx = Math.min(minx, x);
-            miny = Math.min(miny, y);
-        });
-        });
-        const bound = [
-        [minx, miny],
-        [maxx, miny],
-        [maxx, maxy],
-        [minx, maxy],
-        [minx, miny],
-        ];
-        locateAnnotation(bound, isImageViewer, $minorCAMIC);
-        return;
-    }
-    //  locate annotation 3.0
-    if (item.data.geometries.features[0].geometry.type == 'Point') {
-        const bound = item.data.geometries.features[0].bound.coordinates;
-        const center = $CAMIC.viewer.viewport.imageToViewportCoordinates(
-            bound[0],
-            bound[1],
-        );
-        $minorCAMIC.viewer.viewport.panTo(center);
-    } else {
-        const bound = [...item.data.geometries.features[0].bound.coordinates[0]];
-        if (item.data.provenance&&item.data.provenance.analysis&&item.data.provenance.analysis.isGrid) {
-        bound[2] = [bound[2][0] +
-            item.data.geometries.features[0].properties.size[0], bound[2][1] +
-            item.data.geometries.features[0].properties.size[1]];
-        }
-        locateAnnotation(bound, isImageViewer, $minorCAMIC);
-    }
-}
+
+// function locationCallbackMain(layerData) {
+//     let isImageViewer = true;
+//     const item = layerData.item;
+//     if ((item.typeName !== 'human'&&item.typeName !== 'ruler') || item.data == null) return;
+//     if (item.typeName == 'ruler') isImageViewer = false;
+
+//     // loaction annotation 2.0
+//     if (Array.isArray(item.data)) {
+//         let maxx = 0;
+//         let maxy = 0;
+//         let minx = Number.POSITIVE_INFINITY;
+//         let miny = Number.POSITIVE_INFINITY;
+//         item.data.forEach((d)=>{
+//         d.geometry.coordinates[0].forEach(([x, y])=>{
+//             maxx = Math.max(maxx, x);
+//             maxy = Math.max(maxy, y);
+//             minx = Math.min(minx, x);
+//             miny = Math.min(miny, y);
+//         });
+//         });
+//         const bound = [
+//         [minx, miny],
+//         [maxx, miny],
+//         [maxx, maxy],
+//         [minx, maxy],
+//         [minx, miny],
+//         ];
+//         locateAnnotation(bound, isImageViewer, $CAMIC);
+//         return;
+//     }
+//     //  locate annotation 3.0
+//     if (item.data.geometries.features[0].geometry.type == 'Point') {
+//         const bound = item.data.geometries.features[0].bound.coordinates;
+//         const center = $CAMIC.viewer.viewport.imageToViewportCoordinates(
+//             bound[0],
+//             bound[1],
+//         );
+//         $CAMIC.viewer.viewport.panTo(center);
+//     } else {
+//         const bound = [...item.data.geometries.features[0].bound.coordinates[0]];
+//         if (item.data.provenance&&item.data.provenance.analysis&&item.data.provenance.analysis.isGrid) {
+//         bound[2] = [bound[2][0] +
+//             item.data.geometries.features[0].properties.size[0], bound[2][1] +
+//             item.data.geometries.features[0].properties.size[1]];
+//         }
+//         locateAnnotation(bound, isImageViewer, $CAMIC);
+//     }
+// }
+// function locationCallbackMinor(layerData) {
+//     let isImageViewer = true;
+//     const item = layerData.item;
+//     if ((item.typeName !== 'human'&&item.typeName !== 'ruler') || item.data == null) return;
+//     if (item.typeName == 'ruler') isImageViewer = false;
+
+//     // loaction annotation 2.0
+//     if (Array.isArray(item.data)) {
+//         let maxx = 0;
+//         let maxy = 0;
+//         let minx = Number.POSITIVE_INFINITY;
+//         let miny = Number.POSITIVE_INFINITY;
+//         item.data.forEach((d)=>{
+//         d.geometry.coordinates[0].forEach(([x, y])=>{
+//             maxx = Math.max(maxx, x);
+//             maxy = Math.max(maxy, y);
+//             minx = Math.min(minx, x);
+//             miny = Math.min(miny, y);
+//         });
+//         });
+//         const bound = [
+//         [minx, miny],
+//         [maxx, miny],
+//         [maxx, maxy],
+//         [minx, maxy],
+//         [minx, miny],
+//         ];
+//         locateAnnotation(bound, isImageViewer, $minorCAMIC);
+//         return;
+//     }
+//     //  locate annotation 3.0
+//     if (item.data.geometries.features[0].geometry.type == 'Point') {
+//         const bound = item.data.geometries.features[0].bound.coordinates;
+//         const center = $CAMIC.viewer.viewport.imageToViewportCoordinates(
+//             bound[0],
+//             bound[1],
+//         );
+//         $minorCAMIC.viewer.viewport.panTo(center);
+//     } else {
+//         const bound = [...item.data.geometries.features[0].bound.coordinates[0]];
+//         if (item.data.provenance&&item.data.provenance.analysis&&item.data.provenance.analysis.isGrid) {
+//         bound[2] = [bound[2][0] +
+//             item.data.geometries.features[0].properties.size[0], bound[2][1] +
+//             item.data.geometries.features[0].properties.size[1]];
+//         }
+//         locateAnnotation(bound, isImageViewer, $minorCAMIC);
+//     }
+// }
 
 /**
  * Locates annotation on the image
@@ -705,22 +825,37 @@ function loadRulerById(camic, rulerData, callback, slideId) {
 /**
  * Saves annotation after drawing is stopped. Separate callbacks for main and minor viewer
  */
-function saveAnnotationMain() {
-    annoCallback.call(null, {
+
+function saveAnnotation(viewerName){
+  switch(viewerName){
+    case 'main':
+      annoCallback.call(null, {
+          id:
+          $UI.annotOptPanel.setting.formSchemas[$UI.annotOptPanel._select_.value]
+              .id,
+          data: $UI.annotOptPanel._form_.value,
+      }, 'main');
+      break;
+    case 'minor':
+      annoCallback.call(null, {
         id:
-        $UI.annotOptPanel.setting.formSchemas[$UI.annotOptPanel._select_.value]
-            .id,
-        data: $UI.annotOptPanel._form_.value,
-    }, 'main');
+          $UI.annotOptPanel.setting.formSchemas[$UI.annotOptPanel._select_.value]
+              .id,
+          data: $UI.annotOptPanel._form_.value,
+      }, 'minor');
+      break;
+    default:
+      console.error('Viewer Name not specified while calling the funciton saveAnnotation');
+      break;
+  }
 }
-function saveAnnotationMinor() {
-    annoCallback.call(null, {
-        id:
-        $UI.annotOptPanel.setting.formSchemas[$UI.annotOptPanel._select_.value]
-            .id,
-        data: $UI.annotOptPanel._form_.value,
-    }, 'minor');
-}
+
+// function saveAnnotationMain() {
+    
+// }
+// function saveAnnotationMinor() {
+    
+// }
 
 /**
  * Callback for saving annotations
@@ -729,23 +864,60 @@ function saveAnnotationMinor() {
  * @param {String} viewerName
  */
 function annoCallback(data, viewerName) {
-    // is form ok?
-    const noteData = $UI.annotOptPanel._form_.value;
-    if ($UI.annotOptPanel._action_.disabled || noteData.name == '') {
-      // close layer silde
-      $UI.toolbar._mainTools[1].querySelector('[type=checkbox]').checked = false;
-      $UI.layersSideMenu.close();
-  
-      // open app silde
-      $UI.toolbar._mainTools[0].querySelector('[type=checkbox]').checked = true;
-      $UI.appsSideMenu.open();
-  
-      // open annotation list
-      // -- START QUIP550 -- //
-      // $UI.appsList.triggerContent('annotation','open');
-      // -- END QUIP550 -- //
-      return;
+
+
+    if(viewerName === 'check'){
+      if($CAMIC.status == 'normal'){
+        viewerName = 'main';
+      } else if($minorCAMIC.status == 'normal'){
+        viewerName = 'minor';
+      }
     }
+
+    let noteData = null;
+    switch(viewerName){
+      case 'main':
+        noteData = $UI.annotOptPanel._form_.value;
+        if ($UI.annotOptPanel._action_.disabled || noteData.name == '') {
+          // close layer silde
+          $UI.toolbar._mainTools[1].querySelector('[type=checkbox]').checked = false;
+          $UI.layersSideMenu.close();
+      
+          // open app silde
+          $UI.toolbar._mainTools[0].querySelector('[type=checkbox]').checked = true;
+          $UI.appsSideMenu.open();
+      
+          // open annotation list
+          // -- START QUIP550 -- //
+          // $UI.appsList.triggerContent('annotation','open');
+          // -- END QUIP550 -- //
+          return;
+        }
+        break;
+      case 'minor':
+        noteData = $UI.annotOptPanel._form_.value;
+        if ($UI.annotOptPanel._action_.disabled || noteData.name == '') {
+          // close layer silde
+          $UI.toolbar._mainTools[1].querySelector('[type=checkbox]').checked = false;
+          $UI.layersSideMenu.close();
+      
+          // open app silde
+          $UI.toolbar._mainTools[0].querySelector('[type=checkbox]').checked = true;
+          $UI.appsSideMenu.open();
+      
+          // open annotation list
+          // -- START QUIP550 -- //
+          // $UI.appsList.triggerContent('annotation','open');
+          // -- END QUIP550 -- //
+          return;
+        }
+        break;
+      default:
+        console.error('Viewer Name not specified while calling annoCallBack funciton');
+        return;
+    }
+    // is form ok?
+    
     // has Path?
   
     if (viewerName === "main" && $CAMIC.viewer.canvasDrawInstance._path_index === 0) {
@@ -771,20 +943,25 @@ function annoCallback(data, viewerName) {
   
     // save
     // provenance
-    Loading.open($UI.annotOptPanel.elt, 'Saving Annotation...');
+    
     const execId = randomId();
 
     let camic = null;
     let slideId = null;
     switch(viewerName){
         case 'main':
-            camic = $CAMIC;
-            slideId = $D.params.main;
-            break;
+          camic = $CAMIC;
+          slideId = $D.params.main;
+          Loading.open($UI.annotOptPanel.elt, 'Saving Annotation...');
+          break;
         case 'minor':
-            camic = $minorCAMIC;
-            slideId = $D.params.minor;
-            break;
+          camic = $minorCAMIC;
+          slideId = $D.params.minor;
+          Loading.open($UI.annotOptPanel.elt, 'Saving Annotation...');
+          break;
+        default:
+          console.error('Viewer Name not specified while calling the funciton annoCallBack');
+          break;
     }
 
     const annotJson = {
@@ -845,7 +1022,9 @@ function annoCallback(data, viewerName) {
                         $CAMIC,
                         $UI.layersViewer.getDataItemById(execId, 'human', 'other'),
                         'other',
-                        saveAnnotCallbackMain,
+                        function(){
+                          saveAnnotCallback('main');
+                        },
                         slideId,
                         viewerName
                     );
@@ -857,7 +1036,9 @@ function annoCallback(data, viewerName) {
                         $minorCAMIC,
                         $UI.layersViewerMinor.getDataItemById(execId, 'human', 'other'),
                         'other',
-                        saveAnnotCallbackMinor,
+                        function(){
+                          saveAnnotCallback('minor');
+                        },
                         slideId,
                         viewerName
                     );
@@ -1044,22 +1225,47 @@ function loadAnnotationById(camic, layerData, parentType, callback, slideId, vie
  * called from removeCallback
  * @param {Object} data
  */
-function annoDeleteMain(data, parentType) {
-    if (!data.id) return;
+
+function annoDelete(data, parentType, viewerName){
+  if (!data.id) return;
   
-  
-    const annotationData = $D.humanlayers.main.find(
+  let annotationData = null;
+  let camic = null;
+  switch(viewerName){
+    case 'main':
+      camic = $CAMIC;
+      annotationData = $D.humanlayers.main.find(
         (d) => d.data && d.data._id.$oid == data.oid,
-    );
-    let message;
-    if (annotationData.data.geometries) {
-      message = `Are You Sure You Want To Delete This Annotation {ID:${data.id}} With ${annotationData.data.geometries.features.length} Mark(s)?`;
-    } else {
-      message = `Are You Sure You Want To Delete This Markup {ID:${data.id}}?`;
-    }
-    $UI.annotPopupMain.close();
-    if (!confirm(message)) return;
-    $CAMIC.store
+      );
+      break;
+    case 'minor':
+      camic = $minorCAMIC;
+      annotationData = $D.humanlayers.minor.find(
+        (d) => d.data && d.data._id.$oid == data.oid,
+      );
+      break;
+    default:
+      console.error('Viewer Name not specified while calling annoDelete function');
+      break;
+  }
+  let message;
+  if (annotationData.data.geometries) {
+    message = `Are You Sure You Want To Delete This Annotation {ID:${data.id}} With ${annotationData.data.geometries.features.length} Mark(s)?`;
+  } else {
+    message = `Are You Sure You Want To Delete This Markup {ID:${data.id}}?`;
+  }
+  switch(viewerName){
+    case 'main':
+      $UI.annotPopupMain.close();
+      break;
+    case 'minor':
+      $UI.annotPopupMinor.close();
+      break;
+  }
+  if (!confirm(message)) return;
+  switch(viewerName){
+    case 'main':
+      camic.store
         .deleteMark(data.oid, $D.params.mainData.slide)
         .then((datas) => {
         // server error
@@ -1093,24 +1299,9 @@ function annoDeleteMain(data, parentType) {
         .finally(() => {
           console.log('delete end');
         });
-}
-
-function annoDeleteMinor(data, parentType) {
-    if (!data.id) return;
-  
-  
-    const annotationData = $D.humanlayers.minor.find(
-        (d) => d.data && d.data._id.$oid == data.oid,
-    );
-    let message;
-    if (annotationData.data.geometries) {
-      message = `Are You Sure You Want To Delete This Annotation {ID:${data.id}} With ${annotationData.data.geometries.features.length} Mark(s)?`;
-    } else {
-      message = `Are You Sure You Want To Delete This Markup {ID:${data.id}}?`;
-    }
-    $UI.annotPopupMinor.close();
-    if (!confirm(message)) return;
-    $minorCAMIC.store
+      break;
+    case 'minor':
+      camic.store
         .deleteMark(data.oid, $D.params.minorData.slide)
         .then((datas) => {
         // server error
@@ -1144,7 +1335,112 @@ function annoDeleteMinor(data, parentType) {
         .finally(() => {
           console.log('delete end');
         });
+      break;
+  }
+  
 }
+
+// function annoDeleteMain(data, parentType) {
+//     if (!data.id) return;
+  
+  
+//     const annotationData = $D.humanlayers.main.find(
+//         (d) => d.data && d.data._id.$oid == data.oid,
+//     );
+//     let message;
+//     if (annotationData.data.geometries) {
+//       message = `Are You Sure You Want To Delete This Annotation {ID:${data.id}} With ${annotationData.data.geometries.features.length} Mark(s)?`;
+//     } else {
+//       message = `Are You Sure You Want To Delete This Markup {ID:${data.id}}?`;
+//     }
+//     $UI.annotPopupMain.close();
+//     if (!confirm(message)) return;
+//     $CAMIC.store
+//         .deleteMark(data.oid, $D.params.mainData.slide)
+//         .then((datas) => {
+//         // server error
+//           if (datas.error) {
+//             const errorMessage = `${datas.text}: ${datas.url}`;
+//             $UI.message.addError(errorMessage, 4000);
+//             // close
+//             return;
+//           }
+  
+//           // no data found
+//           if (!datas.deletedCount || datas.deletedCount < 1) {
+//             $UI.message.addWarning(`Delete Annotations Failed.`, 4000);
+//             return;
+//           }
+  
+//           const index = $D.humanlayers.main.findIndex((layer) => layer.id == data.id);
+  
+//           if (index == -1) return;
+  
+//           data.index = index;
+//           const layer = $D.humanlayers.main[data.index];
+//           // update UI
+//           if (Array.isArray(layer.data)) deleteCallbackOld(data, parentType, 'main');
+//           else deleteCallback(data, parentType, 'main');
+//         })
+//         .catch((e) => {
+//           $UI.message.addError(e);
+//           console.error(e);
+//         })
+//         .finally(() => {
+//           console.log('delete end');
+//         });
+// }
+
+// function annoDeleteMinor(data, parentType) {
+//     if (!data.id) return;
+  
+  
+//     const annotationData = $D.humanlayers.minor.find(
+//         (d) => d.data && d.data._id.$oid == data.oid,
+//     );
+//     let message;
+//     if (annotationData.data.geometries) {
+//       message = `Are You Sure You Want To Delete This Annotation {ID:${data.id}} With ${annotationData.data.geometries.features.length} Mark(s)?`;
+//     } else {
+//       message = `Are You Sure You Want To Delete This Markup {ID:${data.id}}?`;
+//     }
+//     $UI.annotPopupMinor.close();
+//     if (!confirm(message)) return;
+//     $minorCAMIC.store
+//         .deleteMark(data.oid, $D.params.minorData.slide)
+//         .then((datas) => {
+//         // server error
+//           if (datas.error) {
+//             const errorMessage = `${datas.text}: ${datas.url}`;
+//             $UI.message.addError(errorMessage, 4000);
+//             // close
+//             return;
+//           }
+  
+//           // no data found
+//           if (!datas.deletedCount || datas.deletedCount < 1) {
+//             $UI.message.addWarning(`Delete Annotations Failed.`, 4000);
+//             return;
+//           }
+  
+//           const index = $D.humanlayers.minor.findIndex((layer) => layer.id == data.id);
+  
+//           if (index == -1) return;
+  
+//           data.index = index;
+//           const layer = $D.humanlayers.minor[data.index];
+//           // update UI
+//           if (Array.isArray(layer.data)) deleteCallbackOld(data, parentType, 'minor');
+//           else deleteCallback(data, parentType, 'minor');
+//         })
+//         .catch((e) => {
+//           $UI.message.addError(e);
+//           console.error(e);
+//         })
+//         .finally(() => {
+//           console.log('delete end');
+//         });
+// }
 
 /**
  * Callback for deleting annotation
@@ -1221,74 +1517,135 @@ function deleteCallbackOld(data, parentType, viewerName) {
     }
 }
 
-function saveAnnotCallbackMain() {
-    /* reset as default */
-    // clear draw data and UI
-    $CAMIC.viewer.canvasDrawInstance.drawOff();
-    $CAMIC.drawContextmenu.off();
-    toggleOffDrawBtns();
-    $CAMIC.viewer.canvasDrawInstance.clear();
-    // uncheck pen draw icon and checkbox
-    // $UI.toolbar._subTools[1].querySelector('[type=checkbox]').checked = false;
-    // clear form
-    $UI.annotOptPanel.clear();
-  
-    // close app side
-    $UI.toolbar._mainTools[0].querySelector('[type=checkbox]').checked = false;
-    $UI.appsSideMenu.close();
-    // -- START QUIP550 -- //
-    // $UI.appsList.triggerContent('annotation','close');
-    // -- END QUIP550 -- //
-    // open layer side
-    $UI.toolbar._mainTools[1].querySelector('[type=checkbox]').checked = true;
-    $UI.layersSideMenu.open();
-    // $UI.layersViewer.update();
-    $CAMIC.status = null;
-    $minorCAMIC.status = null;
+function saveAnnotCallback(viewerName){
+  switch(viewerName){
+    case 'main':
+        /* reset as default */
+      // clear draw data and UI
+      $CAMIC.viewer.canvasDrawInstance.drawOff();
+      $CAMIC.drawContextmenu.off();
+      toggleOffDrawBtns('main');
+      $CAMIC.viewer.canvasDrawInstance.clear();
+      // uncheck pen draw icon and checkbox
+      // $UI.toolbar._subTools[1].querySelector('[type=checkbox]').checked = false;
+      // clear form
+      $UI.annotOptPanel.clear();
+    
+      // close app side
+      $UI.toolbar._mainTools[0].querySelector('[type=checkbox]').checked = false;
+      $UI.appsSideMenu.close();
+      // -- START QUIP550 -- //
+      // $UI.appsList.triggerContent('annotation','close');
+      // -- END QUIP550 -- //
+      // open layer side
+      $UI.toolbar._mainTools[1].querySelector('[type=checkbox]').checked = true;
+      $UI.layersSideMenu.open();
+      // $UI.layersViewer.update();
+      $CAMIC.status = null;
+      // $minorCAMIC.status = null;
+      break;
+    case 'minor':
+      /* reset as default */
+      // clear draw data and UI
+      $minorCAMIC.viewer.canvasDrawInstance.drawOff();
+      $minorCAMIC.drawContextmenu.off();
+      toggleOffDrawBtns('minor');
+      $minorCAMIC.viewer.canvasDrawInstance.clear();
+      // uncheck pen draw icon and checkbox
+      // $UI.toolbar._subTools[1].querySelector('[type=checkbox]').checked = false;
+      // clear form
+      $UI.annotOptPanel.clear();
+    
+      // close app side
+      $UI.toolbar._mainTools[0].querySelector('[type=checkbox]').checked = false;
+      $UI.appsSideMenu.close();
+      // -- START QUIP550 -- //
+      // $UI.appsList.triggerContent('annotation','close');
+      // -- END QUIP550 -- //
+      // open layer side
+      $UI.toolbar._mainTools[1].querySelector('[type=checkbox]').checked = true;
+      $UI.layersSideMenu.open();
+      // $UI.layersViewer.update();
+      // $CAMIC.status = null;
+      $minorCAMIC.status = null;
+      break;
+    default:
+      console.error('Viewer Name not specified while calling saveAnnotCallBack');
+  }
 }
 
-function saveAnnotCallbackMinor() {
-    /* reset as default */
-    // clear draw data and UI
-    $minorCAMIC.viewer.canvasDrawInstance.drawOff();
-    $minorCAMIC.drawContextmenu.off();
-    toggleOffDrawBtns();
-    $minorCAMIC.viewer.canvasDrawInstance.clear();
-    // uncheck pen draw icon and checkbox
-    // $UI.toolbar._subTools[1].querySelector('[type=checkbox]').checked = false;
-    // clear form
-    $UI.annotOptPanel.clear();
+// function saveAnnotCallbackMain() {
+//     /* reset as default */
+//     // clear draw data and UI
+//     $CAMIC.viewer.canvasDrawInstance.drawOff();
+//     $CAMIC.drawContextmenu.off();
+//     toggleOffDrawBtns();
+//     $CAMIC.viewer.canvasDrawInstance.clear();
+//     // uncheck pen draw icon and checkbox
+//     // $UI.toolbar._subTools[1].querySelector('[type=checkbox]').checked = false;
+//     // clear form
+//     $UI.annotOptPanelMain.clear();
   
-    // close app side
-    $UI.toolbar._mainTools[0].querySelector('[type=checkbox]').checked = false;
-    $UI.appsSideMenu.close();
-    // -- START QUIP550 -- //
-    // $UI.appsList.triggerContent('annotation','close');
-    // -- END QUIP550 -- //
-    // open layer side
-    $UI.toolbar._mainTools[1].querySelector('[type=checkbox]').checked = true;
-    $UI.layersSideMenu.open();
-    // $UI.layersViewer.update();
-    $CAMIC.status = null;
-    $minorCAMIC.status = null;
-}
+//     // close app side
+//     $UI.toolbar._mainTools[0].querySelector('[type=checkbox]').checked = false;
+//     $UI.appsSideMenuMain.close();
+//     // -- START QUIP550 -- //
+//     // $UI.appsList.triggerContent('annotation','close');
+//     // -- END QUIP550 -- //
+//     // open layer side
+//     $UI.toolbar._mainTools[1].querySelector('[type=checkbox]').checked = true;
+//     $UI.layersSideMenu.open();
+//     // $UI.layersViewer.update();
+//     $CAMIC.status = null;
+//     // $minorCAMIC.status = null;
+// }
 
-function toggleOffDrawBtns() {
-    const li = $UI.toolbar.getSubTool('annotation');
-    const lab = li.querySelector('label');
-    const state = +lab.dataset.state;
-    lab.classList.remove(`s${state}`);
-    lab.dataset.state = 0;
-    lab.classList.add(`s0`);
-    if (label.parentNode) li.removeChild(label);
-}
+// function saveAnnotCallbackMinor() {
+//     /* reset as default */
+//     // clear draw data and UI
+//     $minorCAMIC.viewer.canvasDrawInstance.drawOff();
+//     $minorCAMIC.drawContextmenu.off();
+//     toggleOffDrawBtns();
+//     $minorCAMIC.viewer.canvasDrawInstance.clear();
+//     // uncheck pen draw icon and checkbox
+//     // $UI.toolbar._subTools[1].querySelector('[type=checkbox]').checked = false;
+//     // clear form
+//     $UI.annotOptPanelMain.clear();
+  
+//     // close app side
+//     $UI.toolbar._mainTools[0].querySelector('[type=checkbox]').checked = false;
+//     $UI.appsSideMenuMain.close();
+//     // -- START QUIP550 -- //
+//     // $UI.appsList.triggerContent('annotation','close');
+//     // -- END QUIP550 -- //
+//     // open layer side
+//     $UI.toolbar._mainTools[1].querySelector('[type=checkbox]').checked = true;
+//     $UI.layersSideMenu.open();
+//     // $UI.layersViewer.update();
+//     // $CAMIC.status = null;
+//     $minorCAMIC.status = null;
+// }
+
   
 function saveAnalytics() {
     console.log('saveAnalytics');
 }
 
-function onAddRulerMain(ruler) {
-    console.log('Ruler Adding in Main');
+function onAddRuler(ruler, viewerName){
+  console.log(`Ruler Adding in ${viewerName}`);
+  let camic = null;
+  switch(viewerName){
+    case 'main':
+      camic = $CAMIC;
+      break;
+    case 'minor':
+      camic = $minorCAMIC;
+      break;
+    default:
+      console.error('Viewer Name not specified while calling the funciton onAddRuler');
+      break;
+  }
+  if(viewerName === 'main'){
     const {x, y, width, height} = ruler.getBounds($CAMIC.viewer.viewport);
     const execId = 'ruler' + randomId();
     ruler.element.dataset.id = execId;
@@ -1456,10 +1813,8 @@ function onAddRulerMain(ruler) {
           console.error(e);
           console.log('Ruler Save Failed');
         });
-}
-
-function onAddRulerMinor(ruler) {
-    console.log('Ruler Adding in Minor');
+  }
+  else if(viewerName === 'minor'){
     const {x, y, width, height} = ruler.getBounds($minorCAMIC.viewer.viewport);
     const execId = 'ruler' + randomId();
     ruler.element.dataset.id = execId;
@@ -1625,21 +1980,364 @@ function onAddRulerMinor(ruler) {
           console.error(e);
           console.log('Ruler Save Failed');
         });
+  }
+
 }
 
-function onDeleteRuler(ruler) {
-    console.log(ruler);
+// function onAddRulerMain(ruler) {
+//     console.log('Ruler Adding in Main');
+//     const {x, y, width, height} = ruler.getBounds($CAMIC.viewer.viewport);
+//     const execId = 'ruler' + randomId();
+//     ruler.element.dataset.id = execId;
+//     let innerHTML = ruler.element.innerHTML;
+//     innerHTML = innerHTML.split('<').join('&lt;');
+//     innerHTML = innerHTML.split('>').join('&gt;');
+//     innerHTML = innerHTML.split(' ').join('&nbsp;');
+//     let rulerJson = {
+//       creator: getUserId(),
+//       created_date: new Date(),
+//       provenance: {
+//         image: {
+//           slide: $D.params.main,
+//         },
+//         analysis: {
+//           source: 'ruler',
+//           execution_id: execId,
+//           name: execId,
+//           type: 'ruler',
+//         },
+//       },
+//       properties: {
+//         annotations: {
+//           name: execId,
+//           notes: 'ruler',
+//         },
+//         mode: ruler.element.dataset.mode,
+//         innerHTML: innerHTML,
+//       },
+//       geometries: {
+//         type: 'FeatureCollection',
+//         features: [
+//           {
+//             type: 'Feature',
+//             geometry: {
+//               type: 'Polygon',
+//               coordinates: [
+//                 [
+//                   [
+//                     x,
+//                     y,
+//                   ],
+//                   [
+//                     x + width,
+//                     y,
+//                   ],
+//                   [
+//                     x + width,
+//                     y + height,
+//                   ],
+//                   [
+//                     x,
+//                     y + height,
+//                   ],
+//                   [
+//                     x,
+//                     y,
+//                   ],
+//                 ],
+//               ],
+//             },
+//             bound: {
+//               type: 'Polygon',
+//               coordinates: [
+//                 [
+//                   [
+//                     x,
+//                     y,
+//                   ],
+//                   [
+//                     x + width,
+//                     y,
+//                   ],
+//                   [
+//                     x + width,
+//                     y + height,
+//                   ],
+//                   [
+//                     x,
+//                     y + height,
+//                   ],
+//                   [
+//                     x,
+//                     y,
+//                   ],
+//                 ],
+//               ],
+//             },
+//           },
+//         ],
+//       },
+  
+//     };
+  
+//     $CAMIC.store
+//         .addMark(rulerJson)
+//         .then((data) => {
+//         // server error
+//           if (data.error) {
+//             $UI.message.addError(`${data.text}:${data.url}`);
+//             return;
+//           }
+  
+//           // no data added
+//           if (data.result && data.result.ok && data.result.n < 1) {
+//             Loading.close();
+//             $UI.message.addWarning(`Ruler Save Failed`);
+//             return;
+//           }
+  
+//           const __data = data.ops[0];
+//           // create layer data
+//           const newItem = {
+//             id: execId,
+//             name: execId,
+//             typeId: 'ruler',
+//             typeName: 'ruler',
+//             data: data.ops[0],
+//             creator: getUserId(),
+//           };
+//           newItem.data.properties.innerHTML = newItem.data.properties.innerHTML.split('&lt;').join('<');
+//           newItem.data.properties.innerHTML = newItem.data.properties.innerHTML.split('&gt;').join('>');
+//           newItem.data.properties.innerHTML = newItem.data.properties.innerHTML.split('&nbsp;').join(' ');
+//           newItem.data._id = {$oid: newItem.data._id};
+//           $D.rulerlayers.main.push(newItem);
+//           $UI.layersViewer.addItem(newItem, 'ruler');
+
+//         //   TODO Add code to synchronously add rulers to both main and minor viewers
+//         //   $UI.layersViewerMinor.addItem(
+//         //       newItem,
+//         //       'ruler',
+//         //       $minorCAMIC && $minorCAMIC.viewer ? true : false,
+//         //   );
+  
+//           const rulerData = $UI.layersViewer.getDataItemById(execId, 'ruler');
+//           rulerData.layer = $CAMIC.viewer.getOverlayById(ruler.element);
+  
+//         //   const rulerDataMinor = $UI.layersViewerMinor.getDataItemById(execId, 'ruler');
+//         //   // create lay and update view
+//         //   if ($minorCAMIC && $minorCAMIC.viewer && rulerDataMinor.isShow) {
+//         //     const [xmin, ymin] = newItem.data.geometries.features[0].geometry.coordinates[0][0];
+//         //     const [xmax, ymax] = newItem.data.geometries.features[0].geometry.coordinates[0][2];
+//         //     rulerDataMinor.layer = $minorCAMIC.viewer.measureInstance.addRuler({
+//         //       id: newItem.id,
+//         //       mode: newItem.data.properties.mode,
+//         //       rect: {
+//         //         x: xmin,
+//         //         y: ymin,
+//         //         width: xmax-xmin,
+//         //         height: ymax-ymin,
+//         //       },
+//         //       innerHTML: newItem.data.properties.innerHTML,
+//         //       isShow: rulerDataMinor.isShow,
+//         //     });
+//         //   }
+  
+//           // close app side
+//           // $UI.layersViewer.update();
+//           // $UI.layersViewerMinor.update();
+  
+//           $UI.message.addSmall(`Added The '${execId}' Ruler.`);
+//         })
+//         .catch((e) => {
+//           Loading.close();
+//           console.error(e);
+//           console.log('Ruler Save Failed');
+//         });
+// }
+
+// function onAddRulerMinor(ruler) {
+//     console.log('Ruler Adding in Minor');
+//     const {x, y, width, height} = ruler.getBounds($minorCAMIC.viewer.viewport);
+//     const execId = 'ruler' + randomId();
+//     ruler.element.dataset.id = execId;
+//     let innerHTML = ruler.element.innerHTML;
+//     innerHTML = innerHTML.split('<').join('&lt;');
+//     innerHTML = innerHTML.split('>').join('&gt;');
+//     innerHTML = innerHTML.split(' ').join('&nbsp;');
+//     let rulerJson = {
+//       creator: getUserId(),
+//       created_date: new Date(),
+//       provenance: {
+//         image: {
+//           slide: $D.params.minor,
+//         },
+//         analysis: {
+//           source: 'ruler',
+//           execution_id: execId,
+//           name: execId,
+//           type: 'ruler',
+//         },
+//       },
+//       properties: {
+//         annotations: {
+//           name: execId,
+//           notes: 'ruler',
+//         },
+//         mode: ruler.element.dataset.mode,
+//         innerHTML: innerHTML,
+//       },
+//       geometries: {
+//         type: 'FeatureCollection',
+//         features: [
+//           {
+//             type: 'Feature',
+//             geometry: {
+//               type: 'Polygon',
+//               coordinates: [
+//                 [
+//                   [
+//                     x,
+//                     y,
+//                   ],
+//                   [
+//                     x + width,
+//                     y,
+//                   ],
+//                   [
+//                     x + width,
+//                     y + height,
+//                   ],
+//                   [
+//                     x,
+//                     y + height,
+//                   ],
+//                   [
+//                     x,
+//                     y,
+//                   ],
+//                 ],
+//               ],
+//             },
+//             bound: {
+//               type: 'Polygon',
+//               coordinates: [
+//                 [
+//                   [
+//                     x,
+//                     y,
+//                   ],
+//                   [
+//                     x + width,
+//                     y,
+//                   ],
+//                   [
+//                     x + width,
+//                     y + height,
+//                   ],
+//                   [
+//                     x,
+//                     y + height,
+//                   ],
+//                   [
+//                     x,
+//                     y,
+//                   ],
+//                 ],
+//               ],
+//             },
+//           },
+//         ],
+//       },
+  
+//     };
+  
+//     $minorCAMIC.store
+//         .addMark(rulerJson)
+//         .then((data) => {
+//         // server error
+//           if (data.error) {
+//             $UI.message.addError(`${data.text}:${data.url}`);
+//             return;
+//           }
+  
+//           // no data added
+//           if (data.result && data.result.ok && data.result.n < 1) {
+//             Loading.close();
+//             $UI.message.addWarning(`Ruler Save Failed`);
+//             return;
+//           }
+  
+//           const __data = data.ops[0];
+//           // create layer data
+//           const newItem = {
+//             id: execId,
+//             name: execId,
+//             typeId: 'ruler',
+//             typeName: 'ruler',
+//             data: data.ops[0],
+//             creator: getUserId(),
+//           };
+//           newItem.data.properties.innerHTML = newItem.data.properties.innerHTML.split('&lt;').join('<');
+//           newItem.data.properties.innerHTML = newItem.data.properties.innerHTML.split('&gt;').join('>');
+//           newItem.data.properties.innerHTML = newItem.data.properties.innerHTML.split('&nbsp;').join(' ');
+//           newItem.data._id = {$oid: newItem.data._id};
+//           $D.rulerlayers.minor.push(newItem);
+//           $UI.layersViewerMinor.addItem(newItem, 'ruler');
+//         //   $UI.layersViewerMinor.addItem(
+//         //       newItem,
+//         //       'ruler',
+//         //       $minorCAMIC && $minorCAMIC.viewer ? true : false,
+//         //   );
+  
+//           const rulerData = $UI.layersViewerMinor.getDataItemById(execId, 'ruler');
+//           rulerData.layer = $minorCAMIC.viewer.getOverlayById(ruler.element);
+  
+//         //   const rulerDataMinor = $UI.layersViewerMinor.getDataItemById(execId, 'ruler');
+//         //   // create lay and update view
+//         //   if ($minorCAMIC && $minorCAMIC.viewer && rulerDataMinor.isShow) {
+//         //     const [xmin, ymin] = newItem.data.geometries.features[0].geometry.coordinates[0][0];
+//         //     const [xmax, ymax] = newItem.data.geometries.features[0].geometry.coordinates[0][2];
+//         //     rulerDataMinor.layer = $minorCAMIC.viewer.measureInstance.addRuler({
+//         //       id: newItem.id,
+//         //       mode: newItem.data.properties.mode,
+//         //       rect: {
+//         //         x: xmin,
+//         //         y: ymin,
+//         //         width: xmax-xmin,
+//         //         height: ymax-ymin,
+//         //       },
+//         //       innerHTML: newItem.data.properties.innerHTML,
+//         //       isShow: rulerDataMinor.isShow,
+//         //     });
+//         //   }
+  
+//           // close app side
+//           // $UI.layersViewer.update();
+//           // $UI.layersViewerMinor.update();
+  
+//           $UI.message.addSmall(`Added The '${execId}' Ruler.`);
+//         })
+//         .catch((e) => {
+//           Loading.close();
+//           console.error(e);
+//           console.log('Ruler Save Failed');
+//         });
+// }
+
+function onDeleteRuler(ruler, viewerName) {
+  const id = ruler.element.dataset.id;
+  deleteRulerHandler(id, viewerName);
 }
 
-function onDeleteRulerMain(ruler) {
-    const id = ruler.element.dataset.id;
-    deleteRulerHandler(id, 'main');
-}
+// function onDeleteRulerMain(ruler) {
+//     const id = ruler.element.dataset.id;
+//     deleteRulerHandler(id, 'main');
+// }
 
-function onDeleteRulerMinor(ruler) {
-    const id = ruler.element.dataset.id;
-    deleteRulerHandler(id, 'minor');
-}
+// function onDeleteRulerMinor(ruler) {
+//     const id = ruler.element.dataset.id;
+//     deleteRulerHandler(id, 'minor');
+// }
 
 /**
  * Callback for deleting rulers
@@ -1783,9 +2481,10 @@ function toolsOff() {
       case 'measure':
         measurementOff();
         break;
-    //   case 'normal':
-    //     annotationOff();
-    //     break;
+      case 'normal':
+        console.log('checkingMain');
+        annotationOff('main');
+        break;
       case 'label':
         presetLabelOff();
         break;
@@ -1796,6 +2495,12 @@ function toolsOff() {
         
       default :
         // closeCrossMenu();
+        break;
+    }
+    switch($minorCAMIC.status){
+      case 'normal':
+        console.log('checking');
+        annotationOff('minor');
         break;
     }
 }
@@ -2187,7 +2892,7 @@ function presetLabelOn(label) {
       label.color;
 }
 
-function startDrawing(e) {
+function startDrawing(e, viewerName) {
     if (
       $UI.toolbar.getSubTool('preset_label') &&
       $UI.toolbar.getSubTool('preset_label').querySelector('input[type=checkbox]')
@@ -2197,19 +2902,29 @@ function startDrawing(e) {
       //   $UI.toolbar.getSubTool("brush").querySelector("input[type=checkbox]")
       //     .checked
       // )
-      if(e.eventSource._viewer.id === "main_viewer"){
-        $CAMIC.viewer.canvasDrawInstance.stop = false;
-        $minorCAMIC.viewer.canvasDrawInstance.stop = true;
-      } else if(e.eventSource._viewer.id === "minor_viewer"){
-        $minorCAMIC.viewer.canvasDrawInstance.stop = false;
-        $CAMIC.viewer.canvasDrawInstance.stop = true;
+      switch(viewerName){
+        case 'main':
+          $CAMIC.viewer.canvasDrawInstance.stop = false;
+          break;
+        case 'minor':
+          $minorCAMIC.viewer.canvasDrawInstance.stop = false;
+          break;
+        default:
+          console.error('Viewer Name not specified while calling startDrawing when adding Preset Labels');
+          break;
       }
       
     } else {
-        if(e.eventSource._viewer.id === "main_viewer"){
+        switch(viewerName){
+          case 'main':
             $CAMIC.viewer.canvasDrawInstance.stop = !$UI.annotOptPanel._form_.isValid();
-        } else if(e.eventSource._viewer.id === "minor_viewer"){
+            break;
+          case 'minor':
             $minorCAMIC.viewer.canvasDrawInstance.stop = !$UI.annotOptPanel._form_.isValid();
+            break;
+          default:
+            console.error('Viewer Name not specified while calling startDrawing when adding annotations');
+            break;
         }
     }
     //   $CAMIC.viewer.canvasDrawInstance.stop = $UI.toolbar
@@ -2220,33 +2935,52 @@ function startDrawing(e) {
     return;
 }
 
-function stopDrawing(e) {
+function stopDrawing(e, viewerName) {
 // preset label annotation
     if (
         $UI.toolbar.getSubTool('preset_label') &&
         $UI.toolbar.getSubTool('preset_label').querySelector('input[type=checkbox]').checked
     ) {
         // save preset label
-        if(e.eventSource._viewer.id === "main_viewer") {
+        switch(viewerName){
+          case 'main':
             savePresetLabel('main');
-        } else if(e.eventSource._viewer.id === "minor_viewer") {
+            break;
+          case 'minor':
             savePresetLabel('minor');
+            break;
+          default:
+            console.error('Viewer Name not specified while calling stopDrawing when adding preset labels');
+            break;
         }
     } else {
         // annotation
-        const li = $UI.toolbar.getSubTool('annotation');
-        const state = +li.querySelector('label').dataset.state;
-        if ( $CAMIC.viewer.canvasDrawInstance &&
-        state === 1 &&
-        $CAMIC.viewer.canvasDrawInstance._draws_data_.length > 0
-        ) {
-        saveAnnotationMain();
-        }
-        if ( $minorCAMIC.viewer.canvasDrawInstance &&
-        state === 1 &&
-        $minorCAMIC.viewer.canvasDrawInstance._draws_data_.length > 0
-        ) {
-        saveAnnotationMinor();
+        let li = null;
+        let state = null;
+        switch(viewerName){
+          case 'main':
+            li = $UI.toolbar.getSubTool('annotation');
+            state = +li.querySelector('.drop_down').querySelectorAll('li')[0].querySelector('label').dataset.state;
+            if ( $CAMIC.viewer.canvasDrawInstance &&
+            state === 1 &&
+            $CAMIC.viewer.canvasDrawInstance._draws_data_.length > 0
+            ) {
+              saveAnnotation('main');
+            }
+            break;
+          case 'minor':
+            li = $UI.toolbar.getSubTool('annotation');
+            state = +li.querySelector('.drop_down').querySelectorAll('li')[1].querySelector('label').dataset.state;
+            if ( $minorCAMIC.viewer.canvasDrawInstance &&
+            state === 1 &&
+            $minorCAMIC.viewer.canvasDrawInstance._draws_data_.length > 0
+            ) {
+              saveAnnotation('minor');
+            }
+            break;
+          default:
+            console.error('Viewer Name not specified while calling stopDrawing when adding annotations');
+            break;
         }
     }
 }
@@ -2347,6 +3081,7 @@ function toggleMagnifier(data) {
         // turn off the main menu
         $UI.layersSideMenu.close();
         $UI.appsSideMenu.close();
+        //$UI.appsSideMenuMinor.close();
         return;
       }
       // annotation off
@@ -2360,6 +3095,7 @@ function toggleMagnifier(data) {
               // trun off the main menu
               $UI.layersSideMenu.close();
               $UI.appsSideMenu.close();
+              //$UI.appsSideMenuMinor.close();
             }
           }.bind(this),
           100,
@@ -2522,19 +3258,29 @@ function measurementOff() {
     $minorCAMIC.status = null;
 }
 
-function resetCallback(data) {
-    if ($CAMIC.viewer.canvasDrawInstance._path_index === 0 && $minorCAMIC.viewer.canvasDrawInstance._path_index === 0) return;
+function resetCallback(data, viewerName) {
+    let camic = null;
+    if(viewerName === 'check'){
+      if($CAMIC.status == 'normal'){
+        viewerName = 'main';
+      } else if($minorCAMIC.status == 'normal'){
+        viewerName = 'minor';
+      }
+    }
+    switch(viewerName){
+      case 'main':
+        camic = $CAMIC;
+        break;
+      case 'minor':
+        camic = $minorCAMIC;
+        break;
+      default:
+        console.error('Viewer Name is not specified while calling the function resetCallBack');
+        break;
+    }
+    if (camic.viewer.canvasDrawInstance._path_index === 0) return;
     if (confirm(`Do You Want To Clear Markups?`)) {
-        try{
-            $CAMIC.viewer.canvasDrawInstance.clear();
-        } catch(e){
-            console.error(e);
-        }
-        try{
-            $minorCAMIC.viewer.canvasDrawInstance.clear();
-        } catch(e){
-            console.error(e);
-        }
+      camic.viewer.canvasDrawInstance.clear();
     }
 }
 
@@ -2545,13 +3291,25 @@ label.style.transformOrigin = 'center';
 label.style.height = 0;
 label.style.width = 0;
 
-function draw(e) {
-  if (!$CAMIC.viewer.canvasDrawInstance && !$minorCAMIC.viewer.canvasDrawInstance) {
+function draw(e, viewerName) {
+  let camic = null;
+  switch(viewerName){
+    case 'main':
+      camic = $CAMIC;
+      break;
+    case 'minor':
+      camic = $minorCAMIC;
+      break;
+    default:
+      console.error('Viewer Name not specified while calling Draw');
+      break;
+  }
+  if (!camic.viewer.canvasDrawInstance) {
     alert('Draw Doesn\'t Initialize');
     return;
   }
   const state = +e.state;
-  const canvasDraw = $CAMIC.viewer.canvasDrawInstance;
+  const canvasDraw = camic.viewer.canvasDrawInstance;
   const target = this.srcElement || this.target || this.eventSource.canvas;
   if (state) {
     // on
@@ -2560,164 +3318,254 @@ function draw(e) {
     // magnifierOff();
     // off measurement
     // measurementOff();
-
     // turn off annotaiton
     if (state == 1) {
       // show pop-up message to user
       $UI.message.add('<i class="small material-icons">info</i>For More Options, Right Click Anywhere On The Image', 4000);
+      toolsOff();
     }
-    if ($CAMIC.status == 'normal') {
-      annotationOn.call(this, state, target);
+    if (camic.status == 'normal') {
+      switch(viewerName){
+        case 'main':
+          annotationOn.call(this, state, target, 'main');
+          break;
+        case 'minor':
+          annotationOn.call(this, state, target, 'minor');
+          break;
+        default:
+          console.error('Viewer name not specified while calling Draw');
+          break;
+      }
       return;
     }
-    toolsOff();
+    if(state != 1) toolsOff();
+
     var checkAllToolsOff = setInterval(
         function() {
-          if ($CAMIC && $minorCAMIC && $CAMIC.status == null) {
+          if (camic && camic.status == null) {
           // all tool has turn off
             clearInterval(checkAllToolsOff);
-            annotationOn.call(this, state, target);
+            switch(viewerName){
+              case 'main':
+                annotationOn.call(this, state, target, 'main');
+                break;
+              case 'minor':
+                annotationOn.call(this, state, target, 'minor');
+                break;
+              default:
+                console.error('Viewer name not specified while calling Draw');
+            }
           }
         }.bind(this),
         100,
     );
   } else {
     // off
-    annotationOff();
+    switch(viewerName){
+      case 'main':
+        annotationOff('main');
+        break;
+      case 'minor':
+        annotationOff('minor');
+        break;
+      default:
+        console.error('Viewer name not specified while calling Draw');
+    }
   }
 }
 
-function annotationOn(state, target) {
-    if (!$CAMIC.viewer.canvasDrawInstance && !$minorCAMIC.viewer.canvasDrawInstance) return;
-    const canvasDraw = $CAMIC.viewer.canvasDrawInstance;
-    const canvasDrawMinor = $minorCAMIC.viewer.canvasDrawInstance;
-    const li = $UI.toolbar.getSubTool('annotation');
-    try{
-        const {style, model} = $CAMIC.drawContextmenu.getStyle();
-        canvasDraw.drawMode = model;
-        canvasDraw.style.color = style.color;
-    } catch(e) {
-        console.error(e);
-    }
-
-    try{
-        const {style, model} = $minorCAMIC.drawContextmenu.getStyle();
-        canvasDrawMinor.drawMode = model;
-        canvasDrawMinor.style.color = style.color;
-    } catch(e) {
-        console.error(e);
-    }
-    
-  
-    li.appendChild(label);
-    switch (state) {
-      case 1:
-        $UI.annotOptPanel._action_.style.display = 'none';
-        label.style.transform = 'translateY(-12px) translateX(18px)';
-        label.textContent = '1';
-        label.style.color = '';
+function annotationOn(state, target, viewerName) {
+    let camic = null;
+    switch(viewerName){
+      case 'main':
+        camic = $CAMIC;
         break;
-      case 2:
-        $UI.annotOptPanel._action_.style.display = '';
-        label.style.transform =
-          ' rotate(-90deg) translateX(2px) translateY(13px)';
-        label.textContent = '8';
-        label.style.color = 'white';
+      case 'minor':
+        camic = $minorCAMIC;
         break;
       default:
-        // statements_def
+        console.error('Viewer Name not Specified while calling annotation on funciton');
         break;
     }
-    try{
-        canvasDraw.drawOn();
-        $CAMIC.drawContextmenu.on();
-        $CAMIC.drawContextmenu.open({
-            x: this.clientX,
-            y: this.clientY,
-            target: target,
-        });
-        $CAMIC.status = 'normal';
-        $minorCAMIC.status = 'normal';
-    } catch(e) {
-        console.error(e);
-    }
+    if (!camic.viewer.canvasDrawInstance) return;
 
-    try{
-        canvasDrawMinor.drawOn();
-        $minorCAMIC.drawContextmenu.on();
-        $minorCAMIC.drawContextmenu.open({
-            x: this.clientX,
-            y: this.clientY,
-            target: target,
-        });
-        $CAMIC.status = 'normal';
-        $minorCAMIC.status = 'normal';
-    } catch(e) {
-        console.error(e);
-    }
+    const canvasDraw = camic.viewer.canvasDrawInstance;
+
+    const li = $UI.toolbar.getSubTool('annotation').querySelector('.drop_down').children[viewerName == 'main' ? 0 : 1];
+    const {style, model} = camic.drawContextmenu.getStyle();
+    canvasDraw.drawMode = model;
+    canvasDraw.style.color = style.color;
+    
+    // li.appendChild(label);
+    // switch (state) {
+    //   case 1:
+    //     switch(viewerName){
+    //       case 'main':
+    //         $UI.annotOptPanelMain._action_.style.display = 'none';
+    //         break;
+    //       case 'minor':
+    //         $UI.annotOptPanelMain._action_.style.display = 'none';
+    //         break;
+    //     }        
+    //     label.style.transform = 'translateY(-12px) translateX(18px)';
+    //     label.textContent = '1';
+    //     label.style.color = '';
+    //     break;
+    //   case 2:
+    //     switch(viewerName){
+    //       case 'main':
+    //         $UI.annotOptPanelMain._action_.style.display = '';
+    //         break;
+    //       case 'minor':
+    //         $UI.annotOptPanelMain._action_.style.display = '';
+    //         break;
+    //     }
+    //     label.style.transform =
+    //       ' rotate(-90deg) translateX(2px) translateY(13px)';
+    //     label.textContent = '8';
+    //     label.style.color = 'white';
+    //     break;
+    //   default:
+    //     // statements_def
+    //     break;
+    // }
+    canvasDraw.drawOn();
+    camic.drawContextmenu.on();
+    // camic.drawContextmenu.open({
+    //     x: this.clientX,
+    //     y: this.clientY,
+    //     target: target,
+    // });
+    camic.status = 'normal';
+    //$minorCAMIC.status = 'normal';
     
     // close layers menu
     $UI.layersSideMenu.close();
     // open annotation menu
-    $UI.appsSideMenu.open();
+    switch(viewerName){
+      case 'main':
+        $UI.appsSideMenu.open();
+        const input = $UI.annotOptPanel._form_.querySelector('#name');
+        input.focus();
+        input.select();
+        break;
+      case 'minor':
+        $UI.appsSideMenu.open();
+        const inputMinor = $UI.annotOptPanel._form_.querySelector('#name');
+        inputMinor.focus();
+        inputMinor.select();
+        break;
+    }  
     // -- START QUIP550 -- //
     // $UI.appsList.triggerContent('annotation','open');
     // -- END QUIP550 -- //
-    const input = $UI.annotOptPanel._form_.querySelector('#name');
-    input.focus();
-    input.select();
 }
   
-function annotationOff() {
-    if (!$CAMIC.viewer.canvasDrawInstance && !$minorCAMIC.viewer.canvasDrawInstance) return;
-    const canvasDraw = $CAMIC.viewer.canvasDrawInstance;
-    const canvasDrawMinor = $minorCAMIC.viewer.canvasDrawInstance;
-    try{
-        if (
-            canvasDraw._draws_data_.length &&
-            confirm(`Do You Want To Save Annotation Before You Leave?`)
-          ) {
-            saveAnnotationMain();
-          } else {
-            canvasDraw.clear();
-            canvasDraw.drawOff();
-            $CAMIC.drawContextmenu.off();
-            $UI.appsSideMenu.close();
-            toggleOffDrawBtns();
-            $CAMIC.status = null;
-            $minorCAMIC.status = null;
-          }
-    } catch(e) {
-        console.error(e);
+function annotationOff(viewerName) {
+    let camic = null;
+    switch(viewerName){
+      case 'main':
+        camic = $CAMIC;
+        break;
+      case 'minor':
+        camic = $minorCAMIC;
+        break;
+      default:
+        console.error('Viewer Name not Specified while calling annotation off funciton');
+        break;
     }
-
-    try{
-        if (
-            canvasDrawMinor._draws_data_.length &&
-            confirm(`Do You Want To Save Annotation Before You Leave?`)
-          ) {
-            saveAnnotationMinor();
-          } else {
-            canvasDrawMinor.clear();
-            canvasDrawMinor.drawOff();
-            $minorCAMIC.drawContextmenu.off();
-            $UI.appsSideMenu.close();
-            toggleOffDrawBtns();
-            $CAMIC.status = null;
-            $minorCAMIC.status = null;
-          }
-    } catch(e) {
-        console.error(e);
+    if (!camic.viewer.canvasDrawInstance) return;
+    const canvasDraw = camic.viewer.canvasDrawInstance;
+    if (
+      canvasDraw._draws_data_.length &&
+      confirm(`Do You Want To Save Annotation Before You Leave?`)
+    ) {
+      switch(viewerName){
+        case 'main':
+          saveAnnotation('main');
+          break;
+        case 'minor':
+          saveAnnotation('minor');
+          break;
+      }
+    } else {
+      canvasDraw.clear();
+      canvasDraw.drawOff();
+      camic.drawContextmenu.off();
+      switch(viewerName){
+        case 'main':
+          $UI.appsSideMenu.close();
+          toggleOffDrawBtns('main');
+          break;
+        case 'minor':
+          $UI.appsSideMenu.close();
+          toggleOffDrawBtns('minor');
+          break;
+      }
+      
+      camic.status = null;
     }
     
 }
   
-function toggleOffDrawBtns() {
-    const li = $UI.toolbar.getSubTool('annotation');
+function toggleOffDrawBtns(viewerName) {
+    let li = null;
+    switch(viewerName){
+      case 'main':
+        li = $UI.toolbar.getSubTool('annotation').querySelector('.drop_down').children[0];
+        break;
+      case 'minor':
+        li = $UI.toolbar.getSubTool('annotation').querySelector('.drop_down').children[1];
+        break;
+      default:
+        console.error('Viewer Name not specified while calling toggleOffDrawBtns function');
+        break;
+    }
     const lab = li.querySelector('label');
     const state = +lab.dataset.state;
     lab.classList.remove(`s${state}`);
     lab.dataset.state = 0;
     lab.classList.add(`s0`);
-    if (label.parentNode) li.removeChild(label);
+    $UI.toolbar.getSubTool('annotation').click();
+    //if (label.parentNode) $UI.toolbar.getSubTool('annotation').removeChild(label);
+}
+
+async function captureSlide() {
+  const canvas = await captureScreen($CAMIC, {hasRuler : false});
+  const canvasMinor = await captureScreen($minorCAMIC, {hasRuler : false});
+  const resultCanvas = await combineCanvas(canvas, canvasMinor);
+  // save as jpeg
+  downloadSlideCapture(resultCanvas);
+  toolsOff();
+  $UI.layersSideMenu.close();
+}
+
+async function combineCanvas(canvas, canvasMinor){
+  const resultCanvas = document.createElement('CANVAS');
+  const ctx = resultCanvas.getContext('2d');
+  // set canvas's height and width
+  resultCanvas.height = Math.max(canvas.height, canvasMinor.height); 
+  resultCanvas.width = canvas.width + canvasMinor.width;
+
+  ctx.drawImage(canvas, 0, 0);
+  ctx.drawImage(canvasMinor, canvas.width, 0);
+
+  return resultCanvas;
+}
+
+function downloadSlideCapture(combiningCanvas) {
+  const imageData = combiningCanvas.toDataURL('image/jpeg');
+  const downloadLink = document.createElement('a');
+  var imgFileName = prompt('Enter filename', 'slideCaptureShot');
+  if (imgFileName == null) {
+    ;
+  } else {
+    if (imgFileName === '') {
+      imgFileName = 'slideCapture';
+    }
+    imgFileName += '.jpeg';
+    downloadLink.download = imgFileName;
+    downloadLink.href = imageData;
+    downloadLink.click();
+  }
 }

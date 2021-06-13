@@ -1,8 +1,8 @@
-#crossMenu.none {
+#crossMenuWrapper.none {
     display: none;
 }
 
-#crossMenu.display {
+#crossMenuWrapper.display {
     position: absolute;
     display: grid;
     grid-template-rows: 3vh 1fr;
@@ -18,12 +18,12 @@
     border-color: rgb(54, 95, 156);
 }
 
-.cmContainer {
+.crossMenuContainer {
     padding-top: 2vh;
     padding-bottom: 4vh;
 }
 
-#cmTitleBar{
+#crossMenuTitleBar{
     background-color: rgb(54, 95, 156);
     color: rgb(236 236 236);
     display: grid;
@@ -34,18 +34,18 @@
     font-family: sans-serif;
     font-weight: 900;
 }
-#cmTitleBar > .cmHead {
+#crossMenuTitleBar > .crossMenuHead {
     text-align: center;
     margin: auto;
     font-variant: all-small-caps;
 }
-#cmTable{
-    height: calc(64vh - 20rem);
+#crossMenuTable{
+    height: calc(68vh - 20rem);
     width: 50vw;
     margin: auto;
     overflow: auto;
 }
-#cmDatatable{
+#crossMenuDatatable{
     width: 48vw;
     font-family: sans-serif;
     font-size: 1.6rem;
@@ -53,21 +53,21 @@
     border-collapse: collapse;
     margin-top: 2vh;
 }
-#cmTbody > tr:nth-child(odd) {
+#crossMenuTbody > tr:nth-child(odd) {
     background-color: rgb(236 236 236);
 }
-#cmTbody > tr > td,
-#cmThead > tr > th {
+#crossMenuTbody > tr > td,
+#crossMenuThead > tr > th {
     padding: 0.5rem 0.7rem;
     min-width: fit-content;
 }
-#cmThead > tr > th{
+#crossMenuThead > tr > th{
     border-style: solid;
     border-width: 0px;
     border-color: black;
     border-bottom-width: 1.5px;
 }
-.cmBtn{
+.crossMenuBtn{
     background-color: rgba(0,0,0,0);
     font-family: sans-serif;
     font-size: 1.6rem;
@@ -75,49 +75,32 @@
     color: rgb(54, 95, 156);
     border: none;
 }
-#cmTfoot{
+#crossMenuTfoot{
     border-style: solid;
     border-width: 0px;
     border-color: black;
     border-top-width: 1.5px;
 }
-.cmSearchBox {
+.crossMenuSearchBox {
     display: grid;
     grid-template-columns: 1fr 1fr;
     width: 50vw;
     padding-right: 2vw;
     margin: auto;
 }
-.cmSearch{
+.crossMenuSearch{
     text-align: right;
     position: relative;
     width: 100%;
     margin-bottom: 1vh;
 }
-/* Pagination Not Yet Implemented */
-/* .cmSelect{
-    text-align: left;
-    position: relative;
-    width: 100%;
-}
-.cmSelect > select {
-    font-size: 1.3rem;
-    padding: 0.45rem;
-    background-color: whitesmoke;
-    outline: none;
-    border: 1px solid rgb(0, 0, 0);
-} */
-#entries:focus {
-    box-shadow: 0 0 5px rgb(54, 95, 156);
-    border: 1px solid rgb(54, 95, 156);
-}
-.cmSearch > span {
+.crossMenuSearch > span {
     position: absolute;
     font-size: 1.9rem;
     line-height: 2.8rem;
     color: rgb(158 158 158);
 }
-.cmSearch > input {
+.crossMenuSearch > input {
     font-size: 1.3rem;
     padding: 0.5rem;
     padding-left: 2.8rem;
@@ -125,37 +108,81 @@
     outline: none;
     border: 1px solid rgb(0, 0, 0);
 }
-#search-table:focus {
+#crossMenuSearchTable:focus {
     box-shadow: 0 0 5px rgb(54, 95, 156);
     border: 1px solid rgb(54, 95, 156);
 }
-.cmNoData {
+.crossMenuNoData {
     color: black;
     margin: auto;
     font-size: 1.8rem;
     font-family: sans-serif;
 }
-.cmContainer > #filters-heading {
+.crossMenuContainer > #crossMenuFiltersHeading {
     width: 94%;
     margin: auto;
 }
-.cmContainer > #filters-check {
+.crossMenuContainer > #crossMenuFiltersCheck {
     width: 94%;
     margin: auto;
 }
-.cmContainer > #filters-heading > h5 {
+.crossMenuContainer > #crossMenuFiltersHeading > h5 {
     margin: 0;
     font-size: 1.5rem;
     font-family: sans-serif;
     font-variant: petite-caps;
 }
-.cmContainer > #filters-check {
+.crossMenuContainer > #crossMenuFiltersCheck {
     display: flex;
     flex-wrap: wrap;
     font-size: 1.4rem;
     max-height: calc(8rem);
     overflow-y: auto;
 }
-.cmFilterCheck{
+.crossMenuFilterCheck{
     padding: 1rem;
+}
+.crossMenuSelect {
+    margin-bottom: 1vh;
+    padding-left: 2rem;
+}
+.crossMenuSelect > select {
+    padding: 0.5rem;
+    font-size: 1.3rem;
+    font-family: sans-serif;
+    outline: none;
+    border: 1px solid rgb(0, 0, 0);
+    background-color: whitesmoke;
+}
+#crossMenuEntries:focus{
+    box-shadow: 0 0 5px rgb(54, 95, 156);
+    border: 1px solid rgb(54, 95, 156);
+}
+.crossMenuPageItem{
+    cursor: pointer;
+}
+.crossMenuPageLink{
+    position: relative;
+    display: block;
+    color: rgb(54, 95, 156);
+    text-decoration: none;
+    background-color: #fff;
+    border: 1px solid #dee2e6;
+    padding: .6rem 1.2rem;
+    font-size: 1.6rem;
+}
+.crossMenuPageLink:hover{
+    background-color: rgb(236 236 236);
+    color: black;
+}
+.crossMenuPageItem.pages.active .crossMenuPageLink{
+    background-color: rgb(54, 95, 156);
+    color: white;
+}
+.crossMenuPagination{
+    display: flex;
+    padding-left: 0;
+    list-style: none;
+    justify-content: center !important;
+    flex-wrap: wrap;
 }

@@ -157,7 +157,7 @@ function FormTempaltesLoader() {
     }
   
     var checkCoreIsReady = setInterval(function() {
-      if ($CAMIC) {
+      if ($CAMIC && $minorCAMIC) {
         clearInterval(checkCoreIsReady);
         // load data
         loadingFormTemplates();
