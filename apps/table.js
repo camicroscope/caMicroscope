@@ -407,7 +407,6 @@ function initialize() {
               </div>
               <div class="table-responsive">
                 <table id='datatables' class="table table-striped"></table>
-                <table id='datatables_pagination'></table>
               </div>
             </div>`);
               }
@@ -415,6 +414,9 @@ function initialize() {
               document.getElementById('datatables').innerHTML = `
             <thead>${thead.reduce((a, b) => a + b)}</thead>
             <tbody>${tbody.reduce((a, b) => a + b)}</tbody>`;
+           let dtpag = document.createElement('div');
+           dtpag.id = 'datatables_pagination';
+           document.getElementById('datatables').parentNode.appendChild(dtpag);
            document.getElementById('datatables_pagination').innerHTML = `<tfoot>
               <tr>
                 <td colspan='6'>
