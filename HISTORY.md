@@ -24,8 +24,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * **Version 1**
     * [1.0.x](#camicroscope-10)
 
-### caMicroscope [Unreleased](https://github.com/camicroscope/camicroscope/compare/v3.9.2...camicroscope:develop)
+### caMicroscope [Unreleased](https://github.com/camicroscope/camicroscope/compare/v3.9.4...camicroscope:develop)
 ###### TBD
+
+### caMicroscope [3.9.4](https://github.com/camicroscope/camicroscope/compare/v3.9.3...camicroscope:v3.9.4)
+###### 2021-06-16
+* Github action for ci testing [#514](https://github.com/camicroscope/caMicroscope/pull/514)
+* Bootstrap Upgrades [#518](https://github.com/camicroscope/caMicroscope/pull/518), [#519](https://github.com/camicroscope/caMicroscope/pull/519)
+* Migrate Additional Links to mongo from conf file
+* Table Style Fix for large number of pages
 
 ### caMicroscope [3.9.3](https://github.com/camicroscope/camicroscope/compare/v3.9.2...camicroscope:v3.9.3)
 ###### 2021-04-15
