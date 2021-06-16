@@ -816,7 +816,7 @@
       points = this.__align(points);
       if (!(this.drawMode === "grid")) {
         // simplify
-        points = simplify(points, 3.5);
+        //points = simplify(points, 3.5);
       }
       if (!(this.drawMode === "line" || this.drawMode == "grid")) {
         let isIntersect = false;
@@ -994,7 +994,7 @@
         return points;
     },
     __align_real: function(pix) {
-        if (spen.mode != 2)
+        if (spen.mode == 0)
             return pix;
         var pt = pix;
         pt = this._viewer.viewport.imageToWindowCoordinates(pt);
@@ -1005,6 +1005,8 @@
         pt = this._viewer.viewport.windowToImageCoordinates(pt);
         pt.x = Math.floor(pt.x);
         pt.y = Math.floor(pt.y);
+        if (spen.mode == 1)
+            return pix;
         return pt;
     },
     /**

@@ -1,4 +1,4 @@
-//requires enhance and tippy module
+/*requires enhance and tippy module*/
 
 /* class for align */
 class smartpen{
@@ -8,6 +8,7 @@ class smartpen{
   init(){
     this.canvas;
     this.context;
+    this.data = new Map();
     this.threshold = this.t = 90;
     this.smoothness= 4*4;
     this.radius = 30;
@@ -24,7 +25,7 @@ class smartpen{
   // call edge detection
   detect(x1,y1,x,y,ch=4){
       var newdata = this.context.getImageData(x1,y1,x,y);
-      var dst = edgedetect_canny(newdata,~~(this.t/1.5),this.t,5,1.8,ch);
+      var dst = edgedetect_canny(newdata,~~(this.t/2),this.t,7,2,ch);
       return dst;
   }
   // collects edges
@@ -43,48 +44,40 @@ class smartpen{
   // get optimum pts for a stroke
   apply(arr){
       var n = 3, th = this.smoothness, lambda=1.5;
-      var pop = [],clean=[], mod1=[], mod2=[], final=[], nearest = [], pts = [], f = arr.length-1,f1=0,f2=0, prev;
-
-      //populate
-      for(var i=0;i<=f-1;i++){
-        var d = this.distance(arr[i],arr[i+1]);
-        var m = spen.min([~~(Math.sqrt(d)/4), 150]);
-        if(d>=64)pop.push(...this.populate([arr[i],arr[i+1]],m));
-        else pop.push(arr[i]);}
-      pop.push(arr[f]);
-      f = pop.length-1;
-      // clean
-      clean.push(pop[0]);
-      for(var i=1;i<=f;i++)
-         if(!this.eqlpt(pop[i],pop[i-1]))
-            clean.push(pop[i]);
+      var pop = [],clean=[], mod1=[], mod2=[], final=[], nearest = [], pts = [], f = arr.length-1,f1=0,f2=0, prev, c;
+      //-----populate and clean-----
+      clean = mtool.populate(arr,4,150);
       f = clean.length-1;
-      // Nearest
+      //-----Nearest-----
       for(var i = 0;i<=f;i++){
-        var c = this.nearest(clean[i],true);
+        if(this.data[mtool.hash(clean[i])]!=undefined)
+          c = this.data[mtool.hash(clean[i])];
+        else {c = this.nearest(clean[i],true); f1++;}
         nearest.push(c[0]);
         pts.push(c[1]);}
-      // Continuity Heuristic 1
+        //console.log("reduced: ", f1);
+        this.data = new Map(); f1=0;
+      //----- Continuity Heuristic 1 -----
       for(var i = 0; i<=f ;i++){
-        var mean = this.average(nearest,i,n);
+        var mean = mtool.average(nearest,i,n);
         var dist = pts[i], mind = 10e10,point = clean[i],near=clean[i];
         for(var j =0;j<dist.length;j++){
-            var d = lambda*this.distance(point,dist[j])+this.distance(mean,dist[j]);
+            var d = lambda*mtool.distance(point,dist[j])+mtool.distance(mean,dist[j]);
             if(d<mind){
                 mind = d;
                 near = dist[j];}}
         mod1.push(near);
-        f1+=this.eqlpt(near,nearest[i]);f2+=1;}
-      f1=0;f2=0;
+        f1+=mtool.eqlpt(near,nearest[i]);f2+=1;}
       //console.log("heuristic 1: ", f1/(f2-f1));
-      // Continuity Heuristic 2
+      f1=0;f2=0;
+      //-----Continuity Heuristic 2-----
       for(var i = 0; i<=f ;i++){
-        var mean = this.average(mod1,i,n);
-        if (this.distance(mean,mod1[i])>th){
+        var mean = mtool.average(mod1,i,n);
+        if (mtool.distance(mean,mod1[i])>th){
             mod2.push(mean);f1++;}
         else {mod2.push(mod1[i]);f2++;}}
       //console.log("heuristic 2: ",f2/f1);
-      // copy
+      //-----copy-----
       console.log(f);
       for(var i = 0; i<=f ;i++)
           final.push(mod2[i]);
@@ -93,10 +86,10 @@ class smartpen{
     // get optimum pt for a pt
     nearest(point,all = false){
       var r = this.radius
-      var x1 = this.max([point.x-Math.floor(r/2),0])
-      var y1 = this.max([point.y-Math.floor(r/2),0])
-      var x = this.min([r,this.canvas.width-x1])
-      var y = this.min([r,this.canvas.height-y1])
+      var x1 = Math.max(point.x-Math.floor(r/2),0)
+      var y1 = Math.max(point.y-Math.floor(r/2),0)
+      var x = Math.min(r,this.canvas.width-x1)
+      var y = Math.min(r,this.canvas.height-y1)
 
       var dist = [], trials=3; this.t=this.threshold;
       while(!dist.length && --trials){
@@ -104,71 +97,24 @@ class smartpen{
         this.t/=2;this.t=~~this.t;
       }
       var near = point;
-      var d , mind = 1000000*100000;
+      var d , mind = 900000*100000;
       for(var i =0;i<dist.length;i++){
-          var d = this.distance(point,dist[i]);
+          var d = mtool.distance(point,dist[i]);
           if(d<mind){
-              mind = d;
-              near = dist[i];
+              mind = d;near = dist[i];
           }
       }
+      this.data[mtool.hash(point)] = [near,dist];
       if(all)
         return [near,dist];
       else
         return near;
     }
     align_r(arr){
-      if(this.mode==2)return this.nearest(arr);
-      else return arr;
+      return this.nearest(arr);
     }
     align(arr){
-      if(this.mode==1)return this.apply(arr);
-      else return arr;
-    }
-    // intepolates in between points
-    populate(points,n){
-        var ln = points.length, dist=[];
-        for(var i = 0; i<ln-1; i++){
-            var a=points[i],b=points[i+1];
-            for(var j=0; j<n; j++){
-                var x = a.x + j*(b.x-a.x)/n, y = a.y + j*(b.y-a.y)/n;
-                dist.push({x:Math.floor(x),y:Math.floor(y)});}
-        }
-        return dist;
-    }
-    // distance function
-    distance(pos1,pos2){
-      return (pos1.x-pos2.x)*(pos1.x-pos2.x)+(pos1.y-pos2.y)*(pos1.y-pos2.y);
-    }
-    // average function
-    average(mod1,i,n){
-      var c=0, mean={x:0,y:0};
-      for(var j=-n; j<=n ;j++){
-        if(i+j>=mod1.length||j==0||(i+j)<0)continue;
-        mean.x+=mod1[(i+j)].x
-        mean.y+=mod1[(i+j)].y
-        c+=1;}
-      mean.x=~~(mean.x/c);mean.y=~~(mean.y/c);
-      return mean;
-    }
-    // equal points
-    eqlpt(a,b){
-      if(a.x==b.x && a.y==b.y)return true;
-      else return false;
-    }
-    max(a){
-      var m = -100000000000;
-      for(var i=0;i<a.length;i++){
-        m = m>a[i]? m : a[i];
-      }
-      return m;
-    }
-    min(a){
-      var m = 100000000000;
-      for(var i=0;i<a.length;i++){
-        m = m<a[i]? m : a[i];
-      }
-      return m;
+      return this.apply(arr);
     }
 
 /**********************************************************/
@@ -177,7 +123,6 @@ class smartpen{
         if(this.menuon)return;
         this.init();
         this.menuon = true;
-
         var temp = `
         <input type="checkbox" id="align_flag1" style="display:none;">
         <input type="checkbox" id="align_flag2" style="display:none;">
@@ -246,6 +191,59 @@ class smartpen{
       this.menubar.remove();
       this.menuon = false;
     }
-}
+};
+
+/* class for misc math tools */
+class mathtools_smartpen{
+  // intepolates in between points with min distance c and max points m
+  populate(points,c=4,m=150){
+      var ln = points.length, dist=[points[0]];
+      for(var i = 1; i<ln; i++){
+          var a=points[i-1],b=points[i];
+          var d = this.distance(a,b);
+          if(d>=c*c*4){
+            var n = Math.min(~~(Math.sqrt(d)/c), m);
+            for(var j=1; j<=n; j++){
+                var x = a.x + j*(b.x-a.x)/n, y = a.y + j*(b.y-a.y)/n;
+                dist.push({x:Math.floor(x),y:Math.floor(y)});}
+          }
+          else dist.push(b);
+      }
+      return this.clear(dist);
+  }
+  // distance function
+  distance(pos1,pos2){
+    return (pos1.x-pos2.x)*(pos1.x-pos2.x)+(pos1.y-pos2.y)*(pos1.y-pos2.y);
+  }
+  // average function
+  average(mod1,i,n){
+    var c=0, mean={x:0,y:0};
+    for(var j=-n; j<=n ;j++){
+      if(i+j>=mod1.length||j==0||(i+j)<0)continue;
+      mean.x+=mod1[(i+j)].x
+      mean.y+=mod1[(i+j)].y
+      c+=1;}
+    mean.x=~~(mean.x/c);mean.y=~~(mean.y/c);
+    return mean;
+  }
+  // equal points
+  eqlpt(a,b){
+    return (a.x==b.x && a.y==b.y);
+  }
+  // point to number
+  hash(pt, r=10000){
+    return Math.floor(pt.x)*r+Math.floor(pt.y);
+  }
+  // clean the array
+  clear(arr){
+    var clean = [];
+    clean.push(arr[0]);
+    for(var i=1;i<=arr.length-1;i++)
+       if(!this.eqlpt(arr[i],arr[i-1]))
+          clean.push(arr[i]);
+    return clean;
+  }
+};
 
 var spen = new smartpen();
+var mtool = new mathtools_smartpen()
