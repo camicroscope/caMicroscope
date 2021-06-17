@@ -299,7 +299,8 @@ class Store {
       },
       body: JSON.stringify(json),
     },
-    true // Sockets config
+    true, // Sockets config
+    'mark'
     ).then(this.errorHandler);
   }
   /**
@@ -532,7 +533,10 @@ class Store {
         // "Content-Type": "application/x-www-form-urlencoded",
       },
       body: JSON.stringify(json),
-    }).then(this.errorHandler);
+    },
+    true, // Sockets config
+    'heatmap'
+    ).then(this.errorHandler);
   }
 
   updateHeatmapEdit(user, slide, name, data) {
@@ -903,16 +907,41 @@ class Store {
     });
   }
 
-  // Update slide name
-  updateSlideCollabStatus(id, status) {
-    const suffix = 'Slide/update';
+  /**
+   * get slide collab details by id
+   * @param {string} id - the slide id
+   * @return {promise} - promise which resolves with data
+   **/
+  getSlideCollabDetails(id) {
+    const suffix = 'CollabRoom/find';
+    const url = this.base + suffix;
+    const query = {
+      'slideId': id,
+    };
+
+    return fetch(url + '?' + objToParamStr(query), {
+      credentials: 'include',
+      mode: 'cors',
+    }).then(this.errorHandler).then((x) => this.filterBroken(x, 'slide'));
+  }
+
+  /**
+   * Update slide collabStatus
+   * @param {string} id - the slide id
+   * @param {string} status - the status of collaboration room
+   * @param {string} members - the list of accepted members
+   * @return {promise} - promise which resolves with data
+   **/
+  updateCollabRoom(id, status, members) {
+    const suffix = 'CollabRoom/update';
     const url = this.base + suffix;
     console.log(id + '   ' + status);
     const query = {
-      '_id': id,
+      'slideId': id,
     };
     const update = {
       'collabStatus': status,
+      'members': members,
     };
     return fetch(url + '?' + objToParamStr(query), {
       method: 'POST',

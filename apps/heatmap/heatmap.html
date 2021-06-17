@@ -62,13 +62,22 @@
 		<!-- REMOVE JQUERY AND AJAX AFTER MODENRIZING DICOM PACKAGE-->
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 		<!-- Thank you -->
+		
+		<!-- SocketIO Import ==================================== -->
+		<script src="http://localhost:5000/socket.io/socket.io.js"></script>
+		<!-- ==================================== -->
+
 		<!-- Check If we're logged in ok, otherwise, log in for us -->
     <script src='../../common/authChecker.js'></script>
     <script>
       __auth_check(2)
     </script>
 
- 		<!--  common js START -->
+		 <!--  common js START -->
+		<!-- SocketIO Config ========================================= -->
+		<script defer src="../../core/socketio/init.sockets.js"></script>
+		<!-- ========================================= -->
+
  		<!-- util.js -->
 		<script type='text/javascript' src='../../common/util.js'></script>
 		<script type='text/javascript' src='../../common/DrawHelper.js'></script>

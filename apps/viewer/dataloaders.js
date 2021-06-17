@@ -107,6 +107,7 @@ function layersLoader() {
       loadingRulerOverlayers();
       loadingHeatmapOverlayers();
       loadingComputerOverlayers();
+      // initialize sockets
       socketInit();
     }
   }, 500);

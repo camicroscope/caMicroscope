@@ -33,7 +33,11 @@
 		rel="stylesheet" 
 		integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0" 
 		crossorigin="anonymous">
-	<link rel="stylesheet" href="../common/stacktable.css">
+  <link rel="stylesheet" href="../common/stacktable.css">
+  
+  <!-- Multiple Dropdown -->
+  <link rel="stylesheet" href="https://unpkg.com/multiple-select@1.5.2/dist/multiple-select.min.css">
+  <script src="https://unpkg.com/multiple-select@1.5.2/dist/multiple-select.min.js"></script>
 
 	<!-- popup css -->
 	<link rel="stylesheet" type="text/css" media="all" href="../../css/popup.css" />
@@ -273,7 +277,7 @@
 
   <!-- Manage Collaboration Modal -->
   <div class="modal fade" id="manageCollaborationModal" role="dialog" tabindex="-1" aria-labelledby="manageCollaborationModalLabel" aria-hidden="false">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="manageCollaborationModalLabel">Manage Collaboration</h5>
@@ -294,6 +298,35 @@
               >
             </div>
           </div>
+          <div class="row mt-3 mb-3">
+            <div class="col-sm-12">
+              <label for="addMembersDropdown">Add members : </label>
+              <select name="membersList" id="addMembersDropdown" multiple="multiple" class="multiple-select"
+                placeholder="Select Members from Dropdown"
+                data-width="600"
+              >
+                <!-- ==== Left blank as data is loaded dynamically ==== -->
+              </select>
+            </div>
+          </div>
+          <script>
+              // Script to load members for "add members" dropdown
+              $(function() {
+                const store = new Store('../data/'); // Already declared
+                store.getUsers().then(response => {
+                  const data = []
+                  response.forEach(user => {
+                    data.push({
+                      text: user.email, 
+                      value: user._id.$oid
+                    });
+                  });
+                  $('#addMembersDropdown').multipleSelect({
+                    data,
+                  });
+                });
+              })
+          </script>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="$('#manageCollaborationModal').modal('hide')">Close</button>

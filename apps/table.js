@@ -178,6 +178,15 @@ function createCheckbox(val) {
   document.getElementById('filters-check').append(div);
 }
 
+function getUsersForSlides() {
+    console.log('called');
+    const store = new Store('../data/');
+    store.getUsers().then(resp => {
+      console.log('response users: ', resp)
+      return resp;  
+    });
+}
+
 function initialize() {
   $('#filenameRow, #tokenRow, #slidenameRow, #filterRow').hide();
   let filters = getUserFilter();
@@ -512,6 +521,7 @@ function initialize() {
               resetTable();
               $('#datatables').stacktable();
               checkUserPermissions();
+              getUsersForSlides();
             });
       });
 }
@@ -1006,8 +1016,8 @@ function showCollaborationModal (event) {
   const element = event;
   const slideId = element.getAttribute('data-slideId');
   const store = new Store('../data/');
-  store.getSlide(slideId).then(response => {
-    document.getElementById('modal-collab-slidename').innerText = response[0].name;
+  store.getSlideCollabDetails(slideId).then(response => {
+    document.getElementById('modal-collab-slidename').innerText = response[0].roomId;
     if (response[0].collabStatus === true) {
       $('#modal-collab-status-switch').bootstrapToggle('on');
     } else {
@@ -1015,6 +1025,10 @@ function showCollaborationModal (event) {
     }
     document.getElementById('modal-collab-save').dataset.slideId = slideId;
   });
+  store.getSlideCollabDetails(slideId).then(response => {
+    const {members} = response[0];
+    $('#addMembersDropdown').multipleSelect('setSelects', members);
+  })
   $('#manageCollaborationModal').modal('toggle');
 }
 
@@ -1022,8 +1036,9 @@ function handleCollaborationStatusChange(element) {
   if (element.getAttribute('data-slide-id')) {
     const slideId = element.getAttribute('data-slide-id');
     const status = document.getElementById('modal-collab-status-switch').checked;
+    const members = $('#addMembersDropdown').multipleSelect('getSelects');
     const store = new Store('../data/');
-    store.updateSlideCollabStatus(slideId, status).then(async response => {
+    store.updateCollabRoom(slideId, status, members).then(async response => {
       const responseData = await response.json();
       $('#manageCollaborationModal').modal('toggle');
     })
