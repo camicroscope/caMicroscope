@@ -1,11 +1,11 @@
-/*requires enhance and tippy module*/
+/* requires enhance and tippy module*/
 
 /* class for align */
-class smartpen{
-  constructor(){
+class smartpen {
+  constructor() {
     this.init();
   }
-  init(){
+  init() {
     this.canvas;
     this.context;
     this.data = new Map();
@@ -18,112 +18,126 @@ class smartpen{
     this.menuon = false;
     this.undo;
   }
-  initcanvas(canvas){
+  initcanvas(canvas) {
     this.canvas = canvas;
     this.context = canvas.getContext('2d');
   }
   // call edge detection
-  detect(x1,y1,x,y,ch=4){
-      var newdata = this.context.getImageData(x1,y1,x,y);
-      var dst = edgedetect_canny(newdata,~~(this.t/2),this.t,7,2,ch);
-      return dst;
+  detect(x1, y1, x, y, ch=4) {
+    var newdata = this.context.getImageData(x1, y1, x, y);
+    var dst = edgedetect_canny(newdata, ~~(this.t/2), this.t, 7, 2, ch);
+    return dst;
   }
   // collects edges
-  edge(x1,y1,x,y){
-     var dist = [];
-     var temp = this.detect(x1,y1,x,y,1);
-     var l = temp.data;
-     for (var i = x1;i<x1+x;i++)
-       for(var j = y1;j<y1+y;j++){
-         var e = l[(j-y1)*x+i-x1];
-         if(e>200)
-           dist.push({x:i,y:j})
-       }
-   return dist;
-   }
+  edge(x1, y1, x, y) {
+    var dist = [];
+    var temp = this.detect(x1, y1, x, y, 1);
+    var l = temp.data;
+    for (var i = x1; i<x1+x; i++) {
+      for (var j = y1; j<y1+y; j++) {
+        var e = l[(j-y1)*x+i-x1];
+        if (e>200) {
+          dist.push({x: i, y: j});
+        }
+      }
+    }
+    return dist;
+  }
   // get optimum pts for a stroke
-  apply(arr){
-      var n = 3, th = this.smoothness, lambda=1.5;
-      var pop = [],clean=[], mod1=[], mod2=[], final=[], nearest = [], pts = [], f = arr.length-1,f1=0,f2=0, prev, c;
-      //-----populate and clean-----
-      clean = mtool.populate(arr,4,150);
-      f = clean.length-1;
-      //-----Nearest-----
-      for(var i = 0;i<=f;i++){
-        if(this.data[mtool.hash(clean[i])]!=undefined)
-          c = this.data[mtool.hash(clean[i])];
-        else {c = this.nearest(clean[i],true); f1++;}
-        nearest.push(c[0]);
-        pts.push(c[1]);}
-        //console.log("reduced: ", f1);
-        this.data = new Map(); f1=0;
-      //----- Continuity Heuristic 1 -----
-      for(var i = 0; i<=f ;i++){
-        var mean = mtool.average(nearest,i,n);
-        var dist = pts[i], mind = 10e10,point = clean[i],near=clean[i];
-        for(var j =0;j<dist.length;j++){
-            var d = lambda*mtool.distance(point,dist[j])+mtool.distance(mean,dist[j]);
-            if(d<mind){
-                mind = d;
-                near = dist[j];}}
-        mod1.push(near);
-        f1+=mtool.eqlpt(near,nearest[i]);f2+=1;}
-      //console.log("heuristic 1: ", f1/(f2-f1));
-      f1=0;f2=0;
-      //-----Continuity Heuristic 2-----
-      for(var i = 0; i<=f ;i++){
-        var mean = mtool.average(mod1,i,n);
-        if (mtool.distance(mean,mod1[i])>th){
-            mod2.push(mean);f1++;}
-        else {mod2.push(mod1[i]);f2++;}}
-      //console.log("heuristic 2: ",f2/f1);
-      //-----copy-----
-      console.log(f);
-      for(var i = 0; i<=f ;i++)
-          final.push(mod2[i]);
-      return final;
-    }
-    // get optimum pt for a pt
-    nearest(point,all = false){
-      var r = this.radius
-      var x1 = Math.max(point.x-Math.floor(r/2),0)
-      var y1 = Math.max(point.y-Math.floor(r/2),0)
-      var x = Math.min(r,this.canvas.width-x1)
-      var y = Math.min(r,this.canvas.height-y1)
-
-      var dist = [], trials=3; this.t=this.threshold;
-      while(!dist.length && --trials){
-        dist = this.edge(x1,y1,x,y)
-        this.t/=2;this.t=~~this.t;
+  apply(arr) {
+    var n = 3; var th = this.smoothness; var lambda=1.5;
+    var pop = []; var clean=[]; var mod1=[]; var mod2=[]; var final=[]; var nearest = []; var pts = [];
+    var f = arr.length-1; var f1=0; var f2=0; var prev; var c;
+    // -----populate and clean-----
+    clean = mtool.populate(arr, 4, 150);
+    f = clean.length-1;
+    // -----Nearest-----
+    for (var i = 0; i<=f; i++) {
+      if (this.data[mtool.hash(clean[i])]!=undefined) {
+        c = this.data[mtool.hash(clean[i])];
+      } else {
+        c = this.nearest(clean[i], true); f1++;
       }
-      var near = point;
-      var d , mind = 900000*100000;
-      for(var i =0;i<dist.length;i++){
-          var d = mtool.distance(point,dist[i]);
-          if(d<mind){
-              mind = d;near = dist[i];
-          }
+      nearest.push(c[0]);
+      pts.push(c[1]);
+    }
+    // console.log("reduced: ", f1);
+    this.data = new Map(); f1=0;
+    // ----- Continuity Heuristic 1 -----
+    for (var i = 0; i<=f; i++) {
+      var mean = mtool.average(nearest, i, n);
+      var dist = pts[i]; var mind = 10e12; var point = clean[i]; var near=clean[i];
+      for (var j =0; j<dist.length; j++) {
+        var d = lambda*mtool.distance(point, dist[j])+mtool.distance(mean, dist[j]);
+        if (d<mind) {
+          mind = d;
+          near = dist[j];
+        }
       }
-      this.data[mtool.hash(point)] = [near,dist];
-      if(all)
-        return [near,dist];
-      else
-        return near;
+      mod1.push(near);
+      f1+=mtool.eqlpt(near, nearest[i]); f2+=1;
     }
-    align_r(arr){
-      return this.nearest(arr);
+    // console.log("heuristic 1: ", f1/(f2-f1));
+    f1=0; f2=0;
+    // -----Continuity Heuristic 2-----
+    for (var i = 0; i<=f; i++) {
+      var mean = mtool.average(mod1, i, n);
+      if (mtool.distance(mean, mod1[i])>th) {
+        mod2.push(mean); f1++;
+      } else {
+        mod2.push(mod1[i]); f2++;
+      }
     }
-    align(arr){
-      return this.apply(arr);
+    // console.log("heuristic 2: ",f2/f1);
+    // -----copy-----
+    console.log(f);
+    for (var i = 0; i<=f; i++) {
+      final.push(mod2[i]);
     }
+    return final;
+  }
+  // get optimum pt for a pt
+  nearest(point, all = false) {
+    var r = this.radius;
+    var x1 = Math.max(point.x-Math.floor(r/2), 0);
+    var y1 = Math.max(point.y-Math.floor(r/2), 0);
+    var x = Math.min(r, this.canvas.width-x1);
+    var y = Math.min(r, this.canvas.height-y1);
 
-/**********************************************************/
-// UI
-    menu(x,y){
-        if(this.menuon)return;
-        this.init();
-        this.menuon = true;
-        var temp = `
+    var dist = []; var trials=3; this.t=this.threshold;
+    while (!dist.length && --trials) {
+      dist = this.edge(x1, y1, x, y);
+      this.t/=2; this.t=~~this.t;
+    }
+    var near = point;
+    var d; var mind = 900000*100000;
+    for (var i =0; i<dist.length; i++) {
+      var d = mtool.distance(point, dist[i]);
+      if (d<mind) {
+        mind = d; near = dist[i];
+      }
+    }
+    this.data[mtool.hash(point)] = [near, dist];
+    if (all) {
+      return [near, dist];
+    } else {
+      return near;
+    }
+  }
+  alignR(arr) {
+    return this.nearest(arr);
+  }
+  align(arr) {
+    return this.apply(arr);
+  }
+
+  /** ********************************************************/
+  // UI
+  menu(x, y) {
+    if (this.menuon) return;
+    this.init();
+    this.menuon = true;
+    var temp = `
         <input type="checkbox" id="align_flag1" style="display:none;">
         <input type="checkbox" id="align_flag2" style="display:none;">
         <button id="align_openbtn" style="z-index:602; width:100px;" class="material-icons">auto_graph</button>
@@ -136,114 +150,132 @@ class smartpen{
           <pre>Threshold</pre><input type="range" id="align_threshold" max=300 min=20 value=90><span id="align_t">90</span>
           <br>
           <pre>Roughness</pre><input type="range" id="align_smooth" max=10 min=1 value=4><span id="align_s">4</span>&nbsp;
-        </div>`
+        </div>`;
 
-        var dv = document.createElement('div');
-        dv.style.textAlign = "center";
-        dv.style.position = "absolute";
-        dv.style.left = x+"%";dv.style.top = y+"%";
-        dv.id = "align_menu";
-        dv.style.zIndex = "601";
-        dv.innerHTML = temp;
-        document.getElementsByTagName("BODY")[0].appendChild(dv);
-        this.menubar = dv;
-        var children = dv.children;
-        for(var i = 0; i<children.length;i++){
-          children[i].style.left = x+"%";children[i].style.top = y+"%";children[i].style.position = "fixed";
-        }
+    var dv = document.createElement('div');
+    dv.style.textAlign = 'center';
+    dv.style.position = 'absolute';
+    dv.style.left = x+'%'; dv.style.top = y+'%';
+    dv.id = 'align_menu';
+    dv.style.zIndex = '601';
+    dv.innerHTML = temp;
+    document.getElementsByTagName('BODY')[0].appendChild(dv);
+    this.menubar = dv;
+    var children = dv.children;
+    for (var i = 0; i<children.length; i++) {
+      children[i].style.left = x+'%'; children[i].style.top = y+'%'; children[i].style.position = 'fixed';
+    }
 
-        var openbtn = document.getElementById("align_openbtn");
-        var mode = document.getElementById("align_mode");
-        this.undo = document.getElementById("align_undoalign");
-        var setting = document.getElementById("align_setting");
-        var radius = document.getElementById("align_radius");
-        var threshold = document.getElementById("align_threshold");
-        var smoothness = document.getElementById("align_smooth");
-        var check1 = document.getElementById("align_flag1");
-        var check2 = document.getElementById("align_flag2");
-        var r = document.getElementById("align_r");
-        var s = document.getElementById("align_s");
-        var t = document.getElementById("align_t");
-        var blink;
-        openbtn.onclick = function (){
-          check1.checked=!check1.checked;if(!check1.checked)check2.checked=false;}
-        //logo change, blink and width
-        mode.onclick = () => {
-          this.mode = (this.mode+1)%3;
-          if(this.mode == 0){
-            mode.style.color="red";mode.innerHTML="power_settings_new";
-            clearInterval(blink);openbtn.style.color="blue";}
-          if(this.mode == 1){
-            mode.style.color="green";mode.innerHTML="edit";
-            blink=setInterval(() => {if(openbtn.style.color=="blue")openbtn.style.color="red";else openbtn.style.color="blue";}, 1000);}
-          if(this.mode == 2)mode.innerHTML="motion_photos_on";}
-        //this.undo.onclick;
-        setting.onclick = function (){check2.checked=!check2.checked;}
-        radius.onchange = () => {this.radius = Number(radius.value); r.innerHTML = this.radius;}
-        threshold.onchange = () => {this.threshold = Number(threshold.value); t.innerHTML = this.threshold;}
-        smoothness.onchange = () => {this.smoothness = Number(smoothness.value); if(this.smoothness == 10)this.smoothness = 1000; s.innerHTML = this.smoothness;}
-        tippy(openbtn, {content: "SmartPen",placement: 'right',delay: 300,theme: 'light-border'});
-        tippy(mode, {content: "Mode",placement: 'right',delay: 300,theme: 'light-border'});
-        tippy(this.undo, {content: "Undo",placement: 'right',delay: 300,theme: 'light-border'});
-        tippy(setting, {content: "Settings",placement: 'right',delay: 300,theme: 'light-border'});
-    }
-    close(){
-      this.menubar.remove();
-      this.menuon = false;
-    }
+    var openbtn = document.getElementById('align_openbtn');
+    var mode = document.getElementById('align_mode');
+    this.undo = document.getElementById('align_undoalign');
+    var setting = document.getElementById('align_setting');
+    var radius = document.getElementById('align_radius');
+    var threshold = document.getElementById('align_threshold');
+    var smoothness = document.getElementById('align_smooth');
+    var check1 = document.getElementById('align_flag1');
+    var check2 = document.getElementById('align_flag2');
+    var r = document.getElementById('align_r');
+    var s = document.getElementById('align_s');
+    var t = document.getElementById('align_t');
+    var blink;
+    openbtn.onclick = function() {
+      check1.checked=!check1.checked; if (!check1.checked)check2.checked=false;
+    };
+    // logo change, blink and width
+    mode.onclick = () => {
+      this.mode = (this.mode+1)%3;
+      if (this.mode == 0) {
+        mode.style.color='red'; mode.innerHTML='power_settings_new';
+        clearInterval(blink); openbtn.style.color='blue';
+      }
+      if (this.mode == 1) {
+        mode.style.color='green'; mode.innerHTML='edit';
+        blink=setInterval(() => {
+          if (openbtn.style.color=='blue')openbtn.style.color='red'; else openbtn.style.color='blue';
+        }, 1000);
+      }
+      if (this.mode == 2)mode.innerHTML='motion_photos_on';
+    };
+    // this.undo.onclick;
+    setting.onclick = function() {
+      check2.checked=!check2.checked;
+    };
+    radius.onchange = () => {
+      this.radius = Number(radius.value); r.innerHTML = this.radius;
+    };
+    threshold.onchange = () => {
+      this.threshold = Number(threshold.value); t.innerHTML = this.threshold;
+    };
+    smoothness.onchange = () => {
+      this.smoothness = Number(smoothness.value);
+      if (this.smoothness == 10) this.smoothness = 1000; s.innerHTML = this.smoothness;
+    };
+    tippy(openbtn, {content: 'SmartPen', placement: 'right', delay: 300, theme: 'light-border'});
+    tippy(mode, {content: 'Mode', placement: 'right', delay: 300, theme: 'light-border'});
+    tippy(this.undo, {content: 'Undo', placement: 'right', delay: 300, theme: 'light-border'});
+    tippy(setting, {content: 'Settings', placement: 'right', delay: 300, theme: 'light-border'});
+  }
+  close() {
+    this.menubar.remove();
+    this.menuon = false;
+  }
 };
 
 /* class for misc math tools */
-class mathtools_smartpen{
+class mathtoolsSmartpen {
   // intepolates in between points with min distance c and max points m
-  populate(points,c=4,m=150){
-      var ln = points.length, dist=[points[0]];
-      for(var i = 1; i<ln; i++){
-          var a=points[i-1],b=points[i];
-          var d = this.distance(a,b);
-          if(d>=c*c*4){
-            var n = Math.min(~~(Math.sqrt(d)/c), m);
-            for(var j=1; j<=n; j++){
-                var x = a.x + j*(b.x-a.x)/n, y = a.y + j*(b.y-a.y)/n;
-                dist.push({x:Math.floor(x),y:Math.floor(y)});}
-          }
-          else dist.push(b);
-      }
-      return this.clear(dist);
+  populate(points, c=4, m=150) {
+    var ln = points.length; var dist=[points[0]];
+    for (var i = 1; i<ln; i++) {
+      var a=points[i-1]; var b=points[i];
+      var d = this.distance(a, b);
+      if (d>=c*c*4) {
+        var n = Math.min(~~(Math.sqrt(d)/c), m);
+        for (var j=1; j<=n; j++) {
+          var x = a.x + j*(b.x-a.x)/n; var y = a.y + j*(b.y-a.y)/n;
+          dist.push({x: Math.floor(x), y: Math.floor(y)});
+        }
+      } else dist.push(b);
+    }
+    return dist;
   }
   // distance function
-  distance(pos1,pos2){
+  distance(pos1, pos2) {
     return (pos1.x-pos2.x)*(pos1.x-pos2.x)+(pos1.y-pos2.y)*(pos1.y-pos2.y);
   }
   // average function
-  average(mod1,i,n){
-    var c=0, mean={x:0,y:0};
-    for(var j=-n; j<=n ;j++){
-      if(i+j>=mod1.length||j==0||(i+j)<0)continue;
-      mean.x+=mod1[(i+j)].x
-      mean.y+=mod1[(i+j)].y
-      c+=1;}
-    mean.x=~~(mean.x/c);mean.y=~~(mean.y/c);
+  average(mod1, i, n) {
+    var c=0; var mean={x: 0, y: 0};
+    for (var j=-n; j<=n; j++) {
+      if (i+j>=mod1.length||j==0||(i+j)<0) continue;
+      mean.x+=mod1[(i+j)].x;
+      mean.y+=mod1[(i+j)].y;
+      c+=1;
+    }
+    mean.x=~~(mean.x/c); mean.y=~~(mean.y/c);
     return mean;
   }
   // equal points
-  eqlpt(a,b){
+  eqlpt(a, b) {
     return (a.x==b.x && a.y==b.y);
   }
   // point to number
-  hash(pt, r=10000){
+  hash(pt, r=100000) {
     return Math.floor(pt.x)*r+Math.floor(pt.y);
   }
   // clean the array
-  clear(arr){
+  clear(arr) {
     var clean = [];
     clean.push(arr[0]);
-    for(var i=1;i<=arr.length-1;i++)
-       if(!this.eqlpt(arr[i],arr[i-1]))
-          clean.push(arr[i]);
+    for (var i=1; i<=arr.length-1; i++) {
+      if (!this.eqlpt(arr[i], arr[i-1])) {
+        clean.push(arr[i]);
+      }
+    }
     return clean;
   }
 };
 
 var spen = new smartpen();
-var mtool = new mathtools_smartpen()
+var mtool = new mathtoolsSmartpen();

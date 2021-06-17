@@ -335,9 +335,9 @@ function annotationOn(state, target) {
   li.appendChild(label);
   switch (state) {
     case 1:
-      spen.menu(65,0.2);
+      spen.menu(65, 0.2);
       spen.undo.onclick=()=>canvasDraw.__align_undo();
-      //open menu
+      // open menu
       $UI.annotOptPanel._action_.style.display = '';
       label.style.transform = 'translateY(-12px) translateX(18px)';
       label.textContent = '1';
@@ -385,8 +385,8 @@ function annotationOff() {
   ) {
     saveAnnotation();
   } else {
-  spen.close();
-  //close menu
+    spen.close();
+    // close menu
     canvasDraw.clear();
     canvasDraw.drawOff();
     $CAMIC.drawContextmenu.off();
@@ -1980,8 +1980,8 @@ function presetLabelOn(label) {
     return;
   }
 
-  spen.menu(65,0.2);
-  //open menu
+  spen.menu(65, 0.2);
+  // open menu
   canvasDraw.drawMode = label.mode;
   if (label.mode == 'grid') {
     canvasDraw.size = [parseInt(label.size), parseInt(label.size)];
@@ -1997,7 +1997,7 @@ function presetLabelOff() {
   if (!$CAMIC.viewer.canvasDrawInstance) return;
   const canvasDraw = $CAMIC.viewer.canvasDrawInstance;
   spen.close();
-  //close spen
+  // close spen
   if (
     canvasDraw._draws_data_.length &&
     confirm(`Do You Want To Save Annotation Label Before You Leave?`)
@@ -2570,52 +2570,58 @@ async function rootCallback({root, parent, items}) {
 }
 
 /* Enhance Tool */
-function enhance(e){
-    document.querySelector('[title="Enhance"]').previousSibling.checked = true;
-    if(!set_enhance){
-      // $UI.message.add('<i class="small material-icons">info</i>On Movement, enhance would be undone', 2000);
-      $CAMIC.viewer.addHandler('zoom', unenhance);
-      $CAMIC.viewer.addHandler('pan', unenhance);
-      set_enhance = true;}
+function enhance(e) {
+  document.querySelector('[title="Enhance"]').previousSibling.checked = true;
+  if (!setEnhance) {
+    // $UI.message.add('<i class="small material-icons">info</i>On Movement, enhance would be undone', 2000);
+    $CAMIC.viewer.addHandler('zoom', unenhance);
+    $CAMIC.viewer.addHandler('pan', unenhance);
+    setEnhance = true;
+  }
 
-    // Canvas information
-    const canvas = $CAMIC.viewer.canvas.firstChild;
-    const context = canvas.getContext('2d');
-    let width = canvas.width, height = canvas.height;
-    var img = context.getImageData(0,0,width,height);
-    var data = img.data;
+  // Canvas information
+  const canvas = $CAMIC.viewer.canvas.firstChild;
+  const context = canvas.getContext('2d');
+  let width = canvas.width; let height = canvas.height;
+  var img = context.getImageData(0, 0, width, height);
+  var data = img.data;
 
-    if (e.status == 'Histogram Eq')
-        context.putImageData(clahe(img,64,0.015),0,0);
-    else if (e.status == 'Edge'){
-        context.putImageData(edgedetect_sobel(img,80),0,0);}
-    else if(e.status == 'Sharpen'){
-        var filter = [[-1,-1,-1],[-1,14,-1],[-1,-1,-1]];
-        context.putImageData(applyfilter(img,filter),0,0);}
-
-    else if (e.status == "Custom"){
-        var input = prompt("Enter the 2D Kernel: Eg : [[1, 0], [0, 1]]"), f=0;
-        // JSON Parse test
-        try{
-        var filter = JSON.parse(input), sz = filter[0].length;}
-        catch{
-          alert("Invalid Kernel : " + input);
-          return;}
-        // 2D array check
-        for(var r=0; r<filter.length; r++)
-        if(!Array.isArray(filter[r]) || filter[r].length!=sz || sz==0) f=1;
-        else for(var c = 0; c<filter[r].length; c++)
-            if(Array.isArray(filter[r][c]))f=1;
-        if (f){
-          alert("Invalid Kernel : " + input);
-          return;}
-        // Apply
-        context.putImageData(applyfilter(img,filter),0,0);
+  if (e.status == 'Histogram Eq') {
+    context.putImageData(clahe(img, 64, 0.015), 0, 0);
+  } else if (e.status == 'Edge') {
+    context.putImageData(edgedetect_sobel(img, 80), 0, 0);
+  } else if (e.status == 'Sharpen') {
+    var filter = [[-1, -1, -1], [-1, 14, -1], [-1, -1, -1]];
+    context.putImageData(applyfilter(img, filter), 0, 0);
+  } else if (e.status == 'Custom') {
+    var input = prompt('Enter the 2D Kernel: Eg : [[1, 0], [0, 1]]'); var f=0;
+    // JSON Parse test
+    try {
+      var filter = JSON.parse(input); var sz = filter[0].length;
+    } catch (e) {
+      alert('Invalid Kernel : ' + input);
+      return;
+    }
+    // 2D array check
+    for (var r=0; r<filter.length; r++) {
+      if (!Array.isArray(filter[r]) || filter[r].length!=sz || sz==0) f=1;
+      else {
+        for (var c = 0; c<filter[r].length; c++) {
+          if (Array.isArray(filter[r][c]))f=1;
+        }
       }
+    }
+    if (f) {
+      alert('Invalid Kernel : ' + input);
+      return;
+    }
+    // Apply
+    context.putImageData(applyfilter(img, filter), 0, 0);
+  }
 }
-var set_enhance = false;
+var setEnhance = false;
 function unenhance() {
-  set_enhance = false;
+  setEnhance = false;
   $CAMIC.viewer.removeHandler('zoom', unenhance);
   $CAMIC.viewer.removeHandler('pan', unenhance);
   document.querySelector('[title="Enhance"]').previousSibling.checked = false;

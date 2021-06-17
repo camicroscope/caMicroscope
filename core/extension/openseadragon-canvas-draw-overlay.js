@@ -1000,7 +1000,7 @@
         pt = this._viewer.viewport.imageToWindowCoordinates(pt);
         pt.x = Math.floor(pt.x * this.align_fx);
         pt.y = Math.floor(pt.y * this.align_fy);
-        pt = spen.align_r(pt);
+        pt = spen.alignR(pt);
         pt = new OpenSeadragon.Point(pt.x / this.align_fx, pt.y / this.align_fy);
         pt = this._viewer.viewport.windowToImageCoordinates(pt);
         pt.x = Math.floor(pt.x);
