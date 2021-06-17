@@ -8,6 +8,7 @@
 
 .text-in-line {
   margin: 0;
+  color: #5d5d5d;
 }
 
 .has-search .form-control-feedback {
@@ -46,10 +47,6 @@ div.card.col-card {
 div.card.col-card:hover {
   box-shadow: 0 4px 8px 0 rgba(107, 72, 72, 0.4),
     0 6px 20px 0 rgba(0, 0, 0, 0.38);
-}
-
-.text-in-line {
-  color: #5d5d5d;
 }
 
 /* custom tips  */

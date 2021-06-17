@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta author="JasoxNaN" />
     <!-- css files -->
-    <link rel="stylesheet" href="../common.css"/>
+    <link rel="stylesheet" href="../common.css" />
     <link
       rel="stylesheet"
       href="https://use.fontawesome.com/releases/v5.8.2/css/all.css"
@@ -40,7 +40,8 @@
     <title>CaMicroScope Bashboard</title>
   </head>
   <body>
-    <header id="nav-bar"
+    <header
+      id="nav-bar"
       class="navbar navbar-dark sticky-top bg-primary flex-md-nowrap p-0 shadow"
     >
       <a
@@ -74,7 +75,6 @@
         <nav
           id="sidebarMenu"
           class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse"
-          style=""
         >
           <div class="position-sticky pt-3">
             <ul class="nav flex-column">
@@ -82,6 +82,7 @@
                 <div
                   class="nav-link active d-flex align-items-center"
                   aria-current="page"
+                  onclick="redirectPath(this, '../collection/collection.html')"
                 >
                   <i class="fa fa-archive"></i>
                   <div class="title">Collection</div>
@@ -100,6 +101,7 @@
                 <div
                   class="nav-link d-flex align-items-center"
                   aria-current="page"
+                  onclick="redirectPath(this, '../user/user.html')"
                 >
                   <i class="fas fa-user"></i>
                   <div class="title">User</div>
@@ -109,7 +111,7 @@
           </div>
         </nav>
         <main id="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
-          <iframe src="../collection/collection.html" frameborder="0" ></iframe>
+          <iframe src="../collection/collection.html" frameborder="0"></iframe>
         </main>
       </div>
     </div>

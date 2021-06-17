@@ -1,0 +1,29 @@
+.search-box {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+}
+.text-in-line {
+  margin: 0;
+  color: #5d5d5d;
+}
+.has-search .form-control-feedback {
+  position: absolute;
+  z-index: 2;
+  display: block;
+  width: 2.375rem;
+  height: 2.375rem;
+  line-height: 2.375rem;
+  text-align: center;
+  pointer-events: none;
+  color: #aaa;
+}
+
+.has-search .form-control {
+  padding-left: 2.375rem;
+}
+/* 
+table.dataTable tbody tr.selected,
+table.dataTable.display tbody tr.even.selected > .sorting_1,
+table.dataTable.order-column.stripe tbody tr.even.selected > .sorting_1 {
+  background-color: #007bff;
+  opacity: 0.5; 
+}*/

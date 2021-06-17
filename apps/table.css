@@ -3,12 +3,16 @@ html,
 		width: 100%;
 		height: 100%;
 		min-height: 100%;
+		font-family: Arial, Helvetica, sans-serif;
 	}
 
 footer{
   position: relative;
   bottom: 0;
   width: 100%;
+}
+.header {
+	margin-top: 60px;
 }
 
 .page-container{
@@ -31,7 +35,12 @@ footer{
 	font-family: "Open Sans", Helvetica, sans-serif;
 	/* line-height: 1.8; */
 }
-
+.bg-dark {
+	background-color: #343a40 !important;
+}
+.bg-info {
+    background-color: #17a2b8!important;
+}
 #collection-list li.item {
 	cursor: pointer;
 }
