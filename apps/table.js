@@ -429,8 +429,11 @@ function initialize() {
 
               document.getElementById('datatables').innerHTML = `
             <thead>${thead.reduce((a, b) => a + b)}</thead>
-            <tbody>${tbody.reduce((a, b) => a + b)}</tbody>
-            <tfoot>
+            <tbody>${tbody.reduce((a, b) => a + b)}</tbody>`;
+              let dtpag = document.createElement('div');
+              dtpag.id = 'datatables_pagination';
+              document.getElementById('datatables').parentNode.appendChild(dtpag);
+              document.getElementById('datatables_pagination').innerHTML = `<tfoot>
               <tr>
                 <td colspan='6'>
                   <nav aria-label="Slides Pages" id='tablePages' class="">
