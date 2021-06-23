@@ -300,10 +300,10 @@
           </div>
           <div class="row mt-3 mb-3">
             <div class="col-sm-12">
-              <label for="addMembersDropdown">Add members : </label>
+              <label for="addMembersDropdown" style="margin-right: 10px;">Add or Remove members </label>
               <select name="membersList" id="addMembersDropdown" multiple="multiple" class="multiple-select"
                 placeholder="Select Members from Dropdown"
-                data-width="600"
+                data-width="500"
               >
                 <!-- ==== Left blank as data is loaded dynamically ==== -->
               </select>
@@ -318,7 +318,7 @@
                   response.forEach(user => {
                     data.push({
                       text: user.email, 
-                      value: user._id.$oid
+                      value: user.email,
                     });
                   });
                   $('#addMembersDropdown').multipleSelect({
@@ -327,6 +327,40 @@
                 });
               })
           </script>
+          <div class="row mt-5 mb-3">
+            <div class="col-xs-12">
+              <h4>Members List</h4>
+              <table class="table table-hover table-responsive" id="collabRoomMembersListTable">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Email</th>
+                    <!-- <th scope="col">Member Since</th> -->
+                    <th scope="col">Role</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">1</th>
+                    <td>Mark</td>
+                    <td>
+                      <select name="role" id="collabRoomMemberRole">
+                        <option value="" disabled>Change Role</option>
+                        <option value="contributor" selected>Contributor</option>
+                        <option value="general">General</option>
+                        <option value="admin">Admin</option>
+                      </select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th scope="row">2</th>
+                    <td>Jacob</td>
+                    <td>@fat</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="$('#manageCollaborationModal').modal('hide')">Close</button>

@@ -2663,3 +2663,38 @@ function oldAnnoRender(ctx, data) {
 //   caDrawHelper.prototype.drawBrushGrids(ctx, data.geometries.features[0]);
 // }
 /* --  -- */
+
+function showCollaborationModal (event) {
+  const element = event;
+  const slideId = window.getUrlVars().slideId;
+  const store = new Store('../../data/');
+  store.getSlideCollabDetails(slideId).then(response => {
+    document.getElementById('modal-collab-slidename').innerText = response[0].roomId;
+    if (response[0].collabStatus === true) {
+      $('#modal-collab-status-switch').bootstrapToggle('on');
+    } else {
+      $('#modal-collab-status-switch').bootstrapToggle('off');
+    }
+    document.getElementById('modal-collab-save').dataset.slideId = slideId;
+  });
+  store.getSlideCollabDetails(slideId).then(response => {
+    const {members} = response[0];
+    $('#addMembersDropdown').multipleSelect('setSelects', members);
+  })
+  $('#manageCollaborationModal').modal('toggle');
+}
+
+function handleCollaborationStatusChange(element) {
+  if (element.getAttribute('data-slide-id')) {
+    const slideId = element.getAttribute('data-slide-id');
+    const status = document.getElementById('modal-collab-status-switch').checked;
+    const members = $('#addMembersDropdown').multipleSelect('getSelects');
+    const store = new Store('../../data/');
+    store.updateCollabRoom(slideId, status, members).then(async response => {
+      const responseData = await response.json();
+      $('#manageCollaborationModal').modal('toggle');
+    })
+  } else {
+    $('#manageCollaborationModal').modal('toggle');
+  }
+}

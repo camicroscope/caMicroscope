@@ -542,6 +542,16 @@ async function initUIcomponents() {
       tour.start(true);
     },
   });
+  subToolsOpt.push({
+    name: 'Collaboration Room',
+    icon: 'groups',
+    title: 'Collaboration Room',
+    value: 'collabRoom',
+    type: 'btn',
+    callback: function() {
+      showCollaborationModal();
+    },
+  });
 
   // Additional Links handler
   function additionalLinksHandler(url, openInNewTab) {

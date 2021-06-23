@@ -1029,8 +1029,29 @@ function showCollaborationModal (event) {
     document.getElementById('modal-collab-save').dataset.slideId = slideId;
   });
   store.getSlideCollabDetails(slideId).then(response => {
-    const {members} = response[0];
+    const members = response[0].members.map(member => {
+      return member.email;
+    });
     $('#addMembersDropdown').multipleSelect('setSelects', members);
+    $('#collabRoomMembersListTable > tbody').html('');
+    response[0].members.forEach((member, i) => {
+      $('#collabRoomMembersListTable > tbody:last-child').append(
+        `
+        <tr>
+          <th scope="row">${i + 1}</th>
+          <td>${member.email}</td>
+          <td>
+            <select name="role" id="collabRoomMemberRole-for-user-${member.email}">
+              <option value="" disabled>Change Role</option>
+              <option value="contributor" ${member.role === 'contributor' ? 'selected' : ''}>Contributor</option>
+              <option value="general" ${member.role === 'general' ? 'selected' : ''}>General</option>
+              <option value="admin" ${member.role === 'admin' ? 'selected' : ''}>Admin</option>
+            </select>
+          </td>
+        </tr>
+        `
+      );
+    })
   })
   $('#manageCollaborationModal').modal('toggle');
 }
@@ -1039,7 +1060,13 @@ function handleCollaborationStatusChange(element) {
   if (element.getAttribute('data-slide-id')) {
     const slideId = element.getAttribute('data-slide-id');
     const status = document.getElementById('modal-collab-status-switch').checked;
-    const members = $('#addMembersDropdown').multipleSelect('getSelects');
+    const members = $('#addMembersDropdown').multipleSelect('getSelects').map(member => {
+      const dropdownId = 'collabRoomMemberRole-for-user-' + member;
+      return {
+        email: member,
+        role: document.getElementById(dropdownId) ? document.getElementById(dropdownId).value : 'contributor',
+      }
+    });
     const store = new Store('../data/');
     store.updateCollabRoom(slideId, status, members).then(async response => {
       const responseData = await response.json();

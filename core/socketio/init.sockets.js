@@ -1,6 +1,3 @@
-// var socket;
-
-// const Store = require("../Store");
 
 // function socketInit() {}
 
@@ -9,7 +6,6 @@ function socketInit() {
   const { slideId } = window.getUrlVars();
   store.getSlideCollabDetails(slideId).then(response => {
     let collaborationStatus = response.length > 0 ? response[0].collabStatus : false;
-    console.log('collaborationStatus: ', collaborationStatus);
     if (collaborationStatus) {
       const socket = io("http://localhost:5000", {
         // WARNING: in that case, there is no fallback to long-polling
@@ -31,6 +27,11 @@ function socketInit() {
   
       socket.on("user joined", (data) => {
         console.log('user joined room: ', data);
+      });
+
+      // Error Handling
+      socket.on("connect_error", err => {
+        console.log('Socket Error: ', err);
       })
   
       const constantMock = window.fetch;
