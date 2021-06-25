@@ -230,3 +230,15 @@ li.dropdown-submenu:hover > ul.dropdown-menu {
 .dropdown-menu li.checked > span {
   color: #fff;
 }
+ul.tools > li > ul.drop_down > li > label.s0 {
+  background-color: #fff;
+  color: #365f9c;
+}
+ul.tools > li > ul.drop_down > li > label.s1 {
+  background-color: #91a8c9;
+  color: #365f9c;
+}
+ul.tools > li > ul.drop_down > li > label.s2 {
+  background-color: #365f9c;
+  color: #fff;
+}

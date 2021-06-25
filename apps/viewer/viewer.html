@@ -168,10 +168,19 @@
       media="all"
       href="../../css/popup.css"
     />
+    <!-- cross viewer css -->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      media="all"
+      href="../../components/crossmenu/crossmenu.css"
+    />
     <link href="../../common/bootstrap-tour-standalone/bootstrap-tour-standalone.min.css" rel="stylesheet">
 
     <!-- tippy theme -->
     <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/themes/light-border.css" />
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
     <!--  common js START -->
     <!-- util.js -->
     <script type="text/javascript" src="../../common/util.js"></script>
@@ -340,6 +349,7 @@
     <script src="./uicallbacks.js"></script>
     <script src="./dataloaders.js"></script>
     <script src="./init.js"></script>
+    <script src="../../components/crossmenu/crossmenu.js"></script>
     <script src="enhance.js"></script>
     <script src="../../common/bootstrap-tour-standalone/bootstrap-tour-standalone.min.js"></script>
     <script src="./tut.js"></script>
@@ -383,6 +393,57 @@
     
     <!-- labels manager -->
     <div id="labelmanager" style="z-index:600"></div>
+
+    <!-- menu of available slides -->
+    <div id="crossMenuWrapper" style="z-index:600;" class="none">
+      <div id="crossMenuTitleBar">
+        <span class = "crossMenuHead">Available Slides</span>
+        <span class="material-icons" onclick="CloseCrossMenu()">close</span>
+      </div>
+      <div class="crossMenuContainer" style="color: black;">
+        <div class="crossMenuRow" id="crossMenuFiltersHeading">
+        </div>
+        <div class="crossMenuRow" id="crossMenuFiltersCheck">
+        </div>
+        <div class="crossMenuSearchBox">
+            <div class="crossMenuSelect">
+              <!-- Pagination Not Yet Implemented -->
+              <select id="crossMenuEntries" onchange="FilterCrossMenu()">
+                  <option value="5" selected>5 slides/page</option>
+                  <option value="10">10 slides/page</option>
+                  <option value="20">20 slides/page</option>
+                  <option value="40">40 slides/page</option>
+                  <option value="50">50 slides/page</option>
+                  <option value="100">100 slides/page</option>
+              </select>
+            </div>
+            <div class="crossMenuSearch">
+              <span class="fa fa-search"></span>
+              <input id="crossMenuSearchTable" type="text" placeholder="Search">
+            </div>
+        </div>
+        <div id="crossMenuTable">
+          <table id="crossMenuDatatable">
+            <thead id="crossMenuThead"></thead>
+            <tbody id="crossMenuTbody"></tbody>
+            <tfoot id="crossMenuTfoot">
+              <tr>
+                <td colspan="6">
+                  <nav aria-label="Slides Pages" id="crossMenuTablePages" class="" style="display: block;">
+                    <ul class="crossMenuPagination" id="crossMenuTablePagesList">
+                      <li id="crossMenuPreviousPage" class="crossMenuPageItem"><a class="crossMenuPageLink">Previous</a></li>
+                      <li class="crossMenuPageItem pages active"><a class="crossMenuPageLink">1</a></li>                    
+                      <li id="crossMenuNextPage" class="crossMenuPageItem"><a class="crossMenuPageLink">Next</a></li>
+                    </ul>
+                  </nav>
+                </td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+    </div>
+
     <!-- Popper & tippy -->
     <script src="https://unpkg.com/@popperjs/core@2"></script>
     <script src="https://unpkg.com/tippy.js@6"></script>

@@ -114,6 +114,13 @@ var tour = new Tour({
     smartPlacement: true,
   },
   {
+    element: 'label[title=\'Cross Slide Viewer\']',
+    title: 'Cross Slide Viewer',
+    content: 'Open Cross Slide Viewer to view two different slides next to each other.',
+    placement: 'auto bottom',
+    smartPlacement: true,
+  },
+  {
     element: 'i[title=\'Slide Capture\']',
     title: 'Slide Capture',
     content: 'Take Screenshot of the slide.',
