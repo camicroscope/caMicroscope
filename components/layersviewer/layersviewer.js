@@ -87,7 +87,11 @@ function LayersViewer(options) {
     },
   };
   // this.__covertData();
-  this.__initUI();
+  if (options.crossview) {
+    this.__initUI('enable crossview', options.viewerName);
+  } else {
+    this.__initUI();
+  }
 }
 
 LayersViewer.prototype.toggleAllItems = function(isShow = false, fresh = true) {
@@ -277,7 +281,38 @@ LayersViewer.prototype.__clearUI = function() {
 LayersViewer.prototype.__initUI = function() {
   empty(this.elt); // clear all elements
   this.__clearUI();
+  /* TODO : Manual Configure for sync
+  if(arguments.length != 0 && arguments[0] === 'enable crossview'){
 
+    const syncHead = document.createElement('div');
+    syncHead.classList.add('item_head', 'crossview_layer');
+    syncHead.innerHTML = 'Configure for Sync';
+    this.elt.appendChild(syncHead);
+
+    const originChoice = document.createElement('div');
+    originChoice.classList.add(arguments[1], 'origin_choice', 'crossview_layer');
+    originChoice.innerHTML = `<span>Point of Origin</span><span class="material-icons">my_location</span>`;
+    this.elt.appendChild(originChoice);
+
+     // TODO : Rotation Bar
+     // const rotationBar = document.createElement('div');
+     // rotationBar.classList.add(arguments[1], 'rotation_panel', 'crossview_layer');
+     // rotationBar.innerHTML = `<label>Rotation<br><input type="range"></label>`;
+     // this.elt.appendChild(rotationBar);
+
+
+    const zoomBar = document.createElement('div');
+    zoomBar.classList.add(arguments[1], 'zoom_panel', 'crossview_layer');
+    zoomBar.innerHTML = `<label>Zoom<br><input type="range"></label>`;
+    this.elt.appendChild(zoomBar);
+
+
+    const resultsHead = document.createElement('div');
+    resultsHead.classList.add('item_head');
+    resultsHead.innerHTML = 'Available Results';
+    this.elt.appendChild(resultsHead);
+  }
+*/
   /* create search bar area START */
   const ctrlObj = LayersViewer.createControlBar();
   // this.viewRadios = ctrlObj.viewRadios;  // view switch

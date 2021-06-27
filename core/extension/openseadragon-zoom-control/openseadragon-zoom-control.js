@@ -344,6 +344,9 @@
     $.CaZoomControl.prototype.getMaxImageZoom = function() {
         return getMaxImageZoom(this._viewer);
     }
+    $.CaZoomControl.prototype.getMinImageZoom = function() {
+        return getMinImageZoom(this._viewer);
+    }
     /**
      * @private
      * getZoomIndex

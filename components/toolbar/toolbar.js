@@ -365,7 +365,6 @@ CaToolbar.prototype.__createMultiStateBtns = function(options) {
 };
 
 
-
 CaToolbar.prototype.__createMultiStateBtnsDropDown = function(options) {
   if (!options) {
     console.warn(`${this.name}.__createMultiStateBtnsDropDown:No Option`);
@@ -413,9 +412,9 @@ CaToolbar.prototype.__createMultiStateBtnsDropDown = function(options) {
   }
   li.appendChild(_drop);
 
-  li.addEventListener('click', function(e){    
+  li.addEventListener('click', function(e) {
     for (let i = 0; i < lists.length; i++) {
-      if(lists[i].children[0].dataset.state != 0){
+      if (lists[i].children[0].dataset.state != 0) {
         chk.checked = true;
         return;
       }
@@ -423,11 +422,9 @@ CaToolbar.prototype.__createMultiStateBtnsDropDown = function(options) {
     chk.checked = false;
     return;
   });
-  
+
   return li;
 };
-
-
 
 
 /*

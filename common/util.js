@@ -1066,7 +1066,7 @@ async function captureScreen(camic, {
     viewer.measureInstance
     ) {
       // get HTML elements of all ruler divs
-      const availableRulers = document.getElementsByClassName('ruler');
+      const availableRulers = document.querySelectorAll(`#${viewer.id} .ruler`);
 
       for(let i = 0; i < availableRulers.length; i++) {
         // add to canvas only if ruler is visible on the slide
@@ -1087,10 +1087,10 @@ async function captureScreen(camic, {
           //   direction : null
           // }
           const rulerDiv = {
-            left : parseFloat(availableRulers[i].style.left)*(slideCanvas.width/window.innerWidth),
-            top : parseFloat(availableRulers[i].style.top)*(slideCanvas.height/window.innerHeight),
-            width : parseFloat(availableRulers[i].style.width)*(slideCanvas.width/window.innerWidth),
-            height : parseFloat(availableRulers[i].style.height)*(slideCanvas.height/window.innerHeight),
+            left : parseFloat(availableRulers[i].style.left)*(slideCanvas.width/viewer.element.clientWidth),
+            top : parseFloat(availableRulers[i].style.top)*(slideCanvas.height/viewer.element.clientHeight),
+            width : parseFloat(availableRulers[i].style.width)*(slideCanvas.width/viewer.element.clientWidth),
+            height : parseFloat(availableRulers[i].style.height)*(slideCanvas.height/viewer.element.clientHeight),
             direction : null
           }
           // console.log(slideCanvas);
@@ -1134,7 +1134,7 @@ async function captureScreen(camic, {
             }
             // drawing ruler on result canvas
             ctx.strokeStyle = '#acfc03e6';
-            ctx.lineWidth = 2* ((slideCanvas.width) / (window.innerWidth));
+            ctx.lineWidth = 2* ((slideCanvas.width) / (viewer.element.clientWidth));
             ctx.beginPath();
             if(rulerDiv.direction === 'l2r') {
               ctx.moveTo(rulerDiv.left, rulerDiv.top);
@@ -1150,7 +1150,7 @@ async function captureScreen(camic, {
             
             // writing ruler Value on result canvas
             let scaleValue = '';
-            let fontSize = 13 * ((slideCanvas.width) / (window.innerWidth));
+            let fontSize = 13 * ((slideCanvas.width) / (viewer.element.clientWidth));
             for(let j = 0; j < availableRulers[i].children.length; j++){
               if(availableRulers[i].children[j].className === 'box'){
                 try{
@@ -1167,7 +1167,7 @@ async function captureScreen(camic, {
             ctx.fillStyle = '#acfc03e6';
             let xOffset = (rulerDiv.width/2 + rulerDiv.left);
             let yOffset = (rulerDiv.height/2 + rulerDiv.top);
-            ctx.fillRect(xOffset - ctx.measureText(scaleValue).width/2, yOffset - fontSize + (2 * ((slideCanvas.width) / (window.innerWidth))), ctx.measureText(scaleValue).width, fontSize);
+            ctx.fillRect(xOffset - ctx.measureText(scaleValue).width/2, yOffset - fontSize + (2 * ((slideCanvas.width) / (viewer.element.clientWidth))), ctx.measureText(scaleValue).width, fontSize);
 
             // scale value text
             ctx.fillStyle = 'black';
@@ -1178,7 +1178,7 @@ async function captureScreen(camic, {
             // for ruler mode coordinate
             // drawing coordinate ruler on result canvas
             ctx.strokeStyle = '#acfc03e6';
-            ctx.lineWidth = 2 * ((slideCanvas.width) / (window.innerWidth));
+            ctx.lineWidth = 2 * ((slideCanvas.width) / (viewer.element.clientWidth));
             ctx.beginPath();
             ctx.moveTo(rulerDiv.left, rulerDiv.top);
             ctx.lineTo(rulerDiv.left, rulerDiv.height + rulerDiv.top);
@@ -1208,17 +1208,17 @@ async function captureScreen(camic, {
             }
             console.log(h_scaleValue);
             console.log(v_scaleValue);
-            let fontSize = 13 * ((slideCanvas.width) / (window.innerWidth));
+            let fontSize = 13 * ((slideCanvas.width) / (viewer.element.clientWidth));
             
             let v_xOffset = (rulerDiv.left);
             let v_yOffset = (rulerDiv.height/2 + rulerDiv.top);
             let h_xOffset = (rulerDiv.width/2 + rulerDiv.left);
-            let h_yOffset = (rulerDiv.height + rulerDiv.top) + (11 * ((slideCanvas.width) / (window.innerWidth)));
+            let h_yOffset = (rulerDiv.height + rulerDiv.top) + (11 * ((slideCanvas.width) / (viewer.element.clientWidth)));
 
              // background behind scale value
             ctx.font = `900 ${fontSize}px sans-serif`;
             ctx.fillStyle = '#acfc03e6';
-            ctx.fillRect(h_xOffset - ctx.measureText(h_scaleValue).width/2, h_yOffset - fontSize + (2 * ((slideCanvas.width) / (window.innerWidth))), ctx.measureText(h_scaleValue).width, fontSize);
+            ctx.fillRect(h_xOffset - ctx.measureText(h_scaleValue).width/2, h_yOffset - fontSize + (2 * ((slideCanvas.width) / (viewer.element.clientWidth))), ctx.measureText(h_scaleValue).width, fontSize);
 
             // scale value text
             ctx.fillStyle = 'black';
@@ -1228,7 +1228,7 @@ async function captureScreen(camic, {
              // background behind scale value
             ctx.font = `900 ${fontSize}px sans-serif`;
             ctx.fillStyle = '#acfc03e6';
-            ctx.fillRect(v_xOffset - ctx.measureText(v_scaleValue).width/2, v_yOffset - fontSize + (2 * ((slideCanvas.width) / (window.innerWidth))), ctx.measureText(v_scaleValue).width , fontSize);
+            ctx.fillRect(v_xOffset - ctx.measureText(v_scaleValue).width/2, v_yOffset - fontSize + (2 * ((slideCanvas.width) / (viewer.element.clientWidth))), ctx.measureText(v_scaleValue).width , fontSize);
 
             // scale value text
             ctx.fillStyle = 'black';
