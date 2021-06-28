@@ -11,14 +11,6 @@
     <!-- Check If we're logged in ok, otherwise, log in for us -->
     <!-- REMOVE JQUERY AND AJAX AFTER MODERNIZING DICOM PACKAGE-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-    
-		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" 
-		rel="stylesheet" 
-		integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0" 
-		crossorigin="anonymous">
-
-    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8" crossorigin="anonymous"></script>
-
 
     <!-- ==================================== -->
     <script src="http://localhost:5000/socket.io/socket.io.js"></script>
@@ -364,8 +356,8 @@
     <script src="../../common/html2canvas.min.js"></script>
     
     <!-- Bootstrap 4 toggle switch -->
-    <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
+    <!-- <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script> -->
 
     <!-- Multiple Dropdown -->
     <link rel="stylesheet" href="https://unpkg.com/multiple-select@1.5.2/dist/multiple-select.min.css">
@@ -414,15 +406,15 @@
     <script src="https://unpkg.com/@popperjs/core@2"></script>
     <script src="https://unpkg.com/tippy.js@6"></script>
 
-    <!-- ========================= COLLAB MODAL ============================ -->
+    <!-- Modal Styles -->
     <style>
-      body {font-family: Arial, Helvetica, sans-serif;}
+      /* body {font-family: Arial, Helvetica, sans-serif;} */
       
       /* The Modal (background) */
       .modal {
         display: none; /* Hidden by default */
         position: fixed; /* Stay in place */
-        z-index: 1; /* Sit on top */
+        z-index: 100; /* Sit on top */
         padding-top: 100px; /* Location of the box */
         left: 0;
         top: 0;
@@ -436,6 +428,8 @@
       /* Modal Content */
       .modal-content {
         background-color: #fefefe;
+        color: black;
+        font-size: 16px;
         margin: auto;
         padding: 20px;
         border: 1px solid #888;
@@ -456,85 +450,115 @@
         text-decoration: none;
         cursor: pointer;
       }
-    </style>
-    <!-- Trigger/Open The Modal -->
-    <!-- <button id="myBtn" style="position: absolute; ">Open Modal</button> -->
 
-    <!-- The Modal -->
-    <div id="myModal" class="modal">
-
-      <!-- Modal content -->
-      <div class="modal-content">
-        <span class="close">&times;</span>
-        <p>Some text in the Modal..</p>
-      </div>
-
-    </div>
-
-    <script>
-    // Get the modal
-    var modal = document.getElementById("myModal");
-
-    // Get the button that opens the modal
-    var btn = document.getElementById("myBtn");
-
-    // Get the <span> element that closes the modal
-    var span = document.getElementsByClassName("close")[0];
-
-    // When the user clicks the button, open the modal 
-    btn.onclick = function() {
-      modal.style.display = "block";
-    }
-
-    // When the user clicks on <span> (x), close the modal
-    span.onclick = function() {
-      modal.style.display = "none";
-    }
-
-    // When the user clicks anywhere outside of the modal, close it
-    window.onclick = function(event) {
-      if (event.target == modal) {
-        modal.style.display = "none";
+      th {
+        min-width: 40px;
+        max-width: 80px;
+        text-align: left;
       }
-    }
-    </script>
-    <!-- =================================================================== -->
 
-    <!-- Manage Collaboration Modal -->
-    <div class="modal fade"  data-backdrop="false" id="manageCollaborationModal" role="dialog" aria-labelledby="manageCollaborationModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+      td {
+        min-width: 300px;
+        max-width: 360px;
+        text-align: left;
+      }
+
+      /* Toggle switch */
+
+      .toggle-btn {
+        width: 80px;
+        height: 40px;
+        margin: 10px;
+        border-radius: 50px;
+        display: inline-block;
+        position: relative;
+        background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAyklEQVQ4T42TaxHCQAyENw5wAhLACVUAUkABOCkSwEkdhNmbpHNckzv689L98toIAKjqGcAFwElEFr5ln6ruAMwA7iLyFBM/TPDuQSrxwf6fCKBoX2UMIYGYkg8BLOnVg2RiAEexGaQQq4w9e9klcxGLLAUwgDAcihlYAR1IvZA1sz/+AAaQjXhTQQVoe2Yo3E7UQiT2ijeQdojRtClOfVKvMVyVpU594kZK9zzySWTlcNqZY9tjCsUds00+A57z1e35xzlzJjee8xf0HYp+cOZQUQAAAABJRU5ErkJggg==") no-repeat 50px center #e74c3c;
+        cursor: pointer;
+        -webkit-transition: background-color 0.4s ease-in-out;
+        -moz-transition: background-color 0.4s ease-in-out;
+        -o-transition: background-color 0.4s ease-in-out;
+        transition: background-color 0.4s ease-in-out;
+        cursor: pointer;
+      }
+      .toggle-btn.active {
+        background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAmUlEQVQ4T6WT0RWDMAhFeZs4ipu0mawZpaO4yevBc6hUIWLNd+4NeQDk5sE/PMkZwFvZywKSTxF5iUgH0C4JHGyF97IggFVSqyCFga0CvQSg70Mdwd8QSSr4sGBMcgavAgdvwQCtApvA2uKr1x7Pu++06ItrF5LXPB/CP4M0kKTwYRIDyRAOR9lJTuF0F0hOAJbKopVHOZN9ACS0UgowIx8ZAAAAAElFTkSuQmCC") no-repeat 10px center #2ecc71;
+      }
+      .toggle-btn.active .round-btn {
+        left: 45px;
+      }
+      .toggle-btn .round-btn {
+        width: 30px;
+        height: 30px;
+        background-color: #fff;
+        border-radius: 50%;
+        display: inline-block;
+        position: absolute;
+        left: 5px;
+        top: 50%;
+        margin-top: -15px;
+        -webkit-transition: all 0.3s ease-in-out;
+        -moz-transition: all 0.3s ease-in-out;
+        -o-transition: all 0.3s ease-in-out;
+        transition: all 0.3s ease-in-out;
+      }
+      .toggle-btn .cb-value {
+        position: absolute;
+        left: 0;
+        right: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        z-index: 9;
+        cursor: pointer;
+        -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+      }
+      </style>
+
+      <!-- The Modal -->
+      <div id="myModal" class="modal">
+
+        <!-- Modal content -->
         <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="manageCollaborationModalLabel">Manage Collaboration</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="$('#manageCollaborationModal').modal('hide')">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <b>Slide Name: <span id="modal-collab-slidename"></span></b>
-            <div class="row mt-3 mb-3">
-              <div class="col-xs-12">
-                <span style="margin-right: 4rem;">Real Time Collaboration Status</span>
-                <input type="checkbox" data-toggle="toggle"
-                  id="modal-collab-status-switch"
-                  data-on="Active" data-off="Inactive"
-                  data-onstyle="success" data-offstyle="secondary"
-                  data-width="100"
-                >
-              </div>
+          <span class="close" onclick="closeCollabRoomModal()">&times;</span>
+          <h3>
+            Manage Collaboration
+          </h3>
+          <hr>
+          <p>
+              Slide Name: <span id="collabRoomModalSlideId"></span>
+          </p>
+          <p>
+            Collaboration Status: 
+            <div class="toggle-btn" id="collabRoomModalToggleBtn">
+              <input type="checkbox" id="collabRoomStatusToggle" class="cb-value" />
+              <span class="round-btn"></span>
             </div>
-            <div class="row mt-3 mb-3">
-              <div class="col-sm-12">
-                <label for="addMembersDropdown">Add members : </label>
-                <select name="membersList" id="addMembersDropdown" multiple="multiple" class="multiple-select"
-                  placeholder="Select Members from Dropdown"
-                  data-width="600"
-                >
-                  <!-- ==== Left blank as data is loaded dynamically ==== -->
-                </select>
-              </div>
+          </p>
+          <p>
+            <label for="addMembersDropdown" style="margin-right: 10px;">Add or Remove members </label>
+            <select name="membersList" id="addMembersDropdown" multiple="multiple" class="multiple-select"
+              placeholder="Select Members from Dropdown"
+              data-width="500"
+            >
+            <!-- ==== Left blank as data is loaded dynamically ==== -->
+            </select>
+            <div class="col-xs-12">
+              <h4>Members List</h4>
+              <table class="table table-hover table-responsive" id="collabRoomMembersListTable">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Email</th>
+                    <!-- <th scope="col">Member Since</th> -->
+                    <th scope="col">Role</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- Data will be appended here -->
+                </tbody>
+              </table>
             </div>
-            <script>
+            <script defer>
                 // Script to load members for "add members" dropdown
                 $(function() {
                   const store = new Store('../../data/'); // Already declared
@@ -550,21 +574,77 @@
                       data,
                     });
                   });
+                  const slideId = window.getUrlVars().slideId;
+                  store.getSlideCollabDetails(slideId).then(response => {
+                    console.log(response);
+                    if (response[0].collabStatus === true) {
+                      document.getElementById('collabRoomModalToggleBtn').classList.add('active');
+                      document.getElementById('collabRoomStatusToggle').checked = true;
+                    } else {
+                      document.getElementById('collabRoomStatusToggle').checked = false;
+                    }
+                  });
+                  store.getSlideCollabDetails(slideId).then(response => {
+                    const members = response[0].members.map(member => {
+                      return member.email;
+                    });
+                    $('#addMembersDropdown').multipleSelect('setSelects', members);
+                    $('#collabRoomMembersListTable > tbody').html('');
+                    response[0].members.forEach((member, i) => {
+                      $('#collabRoomMembersListTable > tbody:last-child').append(
+                        `
+                        <tr>
+                          <th scope="row">${i + 1}</th>
+                          <td>${member.email}</td>
+                          <td>
+                            <select name="role" id="collabRoomMemberRole-for-user-${member.email}">
+                              <option value="" disabled>Change Role</option>
+                              <option value="contributor" ${member.role === 'contributor' ? 'selected' : ''}>Contributor</option>
+                              <option value="general" ${member.role === 'general' ? 'selected' : ''}>General</option>
+                              <option value="admin" ${member.role === 'admin' ? 'selected' : ''}>Admin</option>
+                            </select>
+                          </td>
+                        </tr>
+                        `
+                      );
+                    })
+                  })
+                  $('.cb-value').click(function() {
+                    var mainParent = $(this).parent('.toggle-btn');
+                    if($(mainParent).find('input.cb-value').is(':checked')) {
+                      $(mainParent).addClass('active');
+                    } else {
+                      $(mainParent).removeClass('active');
+                    }
+
+                  })
                 })
             </script>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="$('#manageCollaborationModal').modal('hide')">Close</button>
-            <button type="button" class="btn btn-primary"
-              id="modal-collab-save"
-              onclick="handleCollaborationStatusChange(this)"
-            >
-              Save changes
-            </button>
-          </div>
+          </p>
+          <p>
+            <button onclick="handleCollaborationStatusChange()">Save Changes</button>
+          </p>
         </div>
+
       </div>
-    </div>
+
+    <script defer>
+        // Get the modal
+        document.getElementById('collabRoomModalSlideId').innerText = window.getUrlVars().slideId;
+
+        function closeCollabRoomModal() {
+          var modal = document.getElementById("myModal");
+          modal.style.display = "none";
+        }
+        
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function(event) {
+          var modal = document.getElementById("myModal");
+            if (event.target == modal) {
+              modal.style.display = "none";
+            }
+          }
+      </script>
   </body>
 
   <script type="text/javascript">

@@ -299,6 +299,24 @@ function initCore() {
   });
 }
 
+function handleCollaborationStatusChange() {
+  const slideId = window.getUrlVars().slideId;
+  const status = document.getElementById('collabRoomStatusToggle').checked;
+  const members = $('#addMembersDropdown').multipleSelect('getSelects').map(member => {
+    const dropdownId = 'collabRoomMemberRole-for-user-' + member;
+    return {
+      email: member,
+      role: document.getElementById(dropdownId) ? document.getElementById(dropdownId).value : 'contributor',
+    }
+  });
+  const store = new Store('../../data/');
+  store.updateCollabRoom(slideId, status, members).then(async response => {
+    const responseData = await response.json();
+    var modal = document.getElementById("myModal");
+    modal.style.display = "none";
+  })
+}
+
 // initialize all UI components
 async function initUIcomponents() {
   /* create UI components */
@@ -542,6 +560,7 @@ async function initUIcomponents() {
       tour.start(true);
     },
   });
+  // Collaboration Room management
   subToolsOpt.push({
     name: 'Collaboration Room',
     icon: 'groups',
@@ -549,9 +568,24 @@ async function initUIcomponents() {
     value: 'collabRoom',
     type: 'btn',
     callback: function() {
-      showCollaborationModal();
+      showCollabRoomModal();
     },
   });
+  // 
+  subToolsOpt.push({
+    name: 'Voice/Video Meet',
+    icon: 'phone_in_talk',
+    title: 'Voice/Video Meet',
+    value: 'jitsiMeet',
+    type: 'btn',
+    callback: function() {
+      redirectToJitsiMeet();
+    },
+  });
+
+  function redirectToJitsiMeet(jitsiUrl="https://localhost:8443/") {
+    window.open(jitsiUrl, '_blank');
+  }
 
   // Additional Links handler
   function additionalLinksHandler(url, openInNewTab) {
@@ -585,6 +619,13 @@ async function initUIcomponents() {
     });
   }
 
+  function showCollabRoomModal() {
+    console.log('Modal show called');
+    var modal = document.getElementById("myModal");    
+    // When the user clicks the button, open the modal 
+    modal.style.display = "block";
+  }
+
   // create the tool bar
   $UI.toolbar = new CaToolbar({
     /* opts that need to think of*/
@@ -594,7 +635,7 @@ async function initUIcomponents() {
     subTools: subToolsOpt,
   });
 
-  // create two side menus for tools
+  // create three side menus for tools
   $UI.appsSideMenu = new SideMenu({
     id: 'side_apps',
     width: 300,
@@ -609,6 +650,25 @@ async function initUIcomponents() {
     // , isOpen:true
     callback: toggleSideMenu,
   });
+
+  // $UI.collabRoomSideMenu = new SideMenu({
+  //   id: 'side_collabRoom',
+  //   width: 400,
+  //   contentPadding: 5,
+  //   // , isOpen:true
+  //   callback: toggleSideMenu,
+  // });
+
+  // const collabRoomContent = `
+  //   <span style="margin-right: 4rem;">Real Time Collaboration Status</span>
+  //     <input type="checkbox" data-toggle="toggle"
+  //       id="modal-collab-status-switch"
+  //       data-on="Active" data-off="Inactive"
+  //       data-onstyle="success" data-offstyle="secondary"
+  //       data-width="100"
+  //     >
+  // `
+  // $UI.collabRoomSideMenu.addContent(collabRoomContent);
 
   const loading = `<div class="cover" style="z-index: 500;"><div class="block"><span>loading layers...</span><div class="bar"></div></div></div>`;
   $UI.layersSideMenu.addContent(loading);

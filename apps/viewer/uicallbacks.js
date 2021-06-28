@@ -675,6 +675,7 @@ function shareURL(data) {
  * @param {Object} data
  */
 function mainMenuChange(data) {
+  console.log('data change: ', data);
   if (data.apps) {
     $UI.appsSideMenu.open();
   } else {
