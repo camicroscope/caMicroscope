@@ -172,19 +172,22 @@ function edgedetect_sobel(imgData,threshold,ch=4){
  *@param {int} Ouput_channels (0/4)
  *@return {ImageData} image
 **/
+var oldkerneln = -1; //cache gaussian kernal
+var gaussMatrix;
 function edgedetect_canny(imgData,lt=20,ut=60,kerneln=5,sigma=1.8,ch=4){
     var height = imgData.height,width=imgData.width, data=imgData.data;
     //console.time('Canny');
     var gradientMagnitude = new Array(width*height);
     const gradientDirection = new Array(width*height);
-    var kernelh = Math.floor(kerneln/2), gaussMatrix=[];
-
-    for(var i=-kernelh;i<kerneln-kernelh;i++){
-      var row = [];
-      for(var j=-kernelh;j<kerneln-kernelh;j++){
-        var e = Math.floor(Math.exp((2*kernelh*kernelh-i*i-j*j)/(2*sigma*sigma))*2)
-        row.push(e);}
-      gaussMatrix.push(row);
+    if(oldkerneln != kerneln){
+      var kernelh = Math.floor(kerneln/2); gaussMatrix=[]; oldkerneln = kerneln;
+      for(var i=-kernelh;i<kerneln-kernelh;i++){
+        var row = [];
+        for(var j=-kernelh;j<kerneln-kernelh;j++){
+          var e = Math.floor(Math.exp((2*kernelh*kernelh-i*i-j*j)/(2*sigma*sigma))*2)
+          row.push(e);}
+        gaussMatrix.push(row);
+      }
     }
     //console.log(gaussMatrix);
     const kernelx = [[1, 0, -1], [2, 0, -2], [1, 0, -1]];
