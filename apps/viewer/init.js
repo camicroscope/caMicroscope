@@ -544,7 +544,7 @@ async function initUIcomponents() {
   });
 
   // Additional Links handler
-  function additionalLinksHandler(url, openInNewTab) {
+  function additionalLinksHandler(url, openInNewTab, appendSlide) {
     if (appendSlide === true) {
       url = url + '?slide=' + $D.params.slideId;
       url = url + '&state=' + StatesHelper.encodeStates(StatesHelper.getCurrentStates());
