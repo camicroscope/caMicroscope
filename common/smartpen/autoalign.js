@@ -10,7 +10,7 @@ class smartpen {
     this.context;
     this.data = new Map();
     this.threshold = this.t = 90;
-    this.smoothness= 4*4;
+    this.smoothness = this.s = 4*4;
     this.radius = 30;
     this.mode = 0;
     // 0 for Off, 1 for after finish, 2 for realtime
@@ -198,10 +198,10 @@ class smartpen {
       this.radius = Number(radius.value); r.innerHTML = this.radius;
     };
     threshold.onchange = () => {
-      this.threshold = Number(threshold.value); t.innerHTML = this.threshold;
+      this.threshold = this.t = Number(threshold.value); t.innerHTML = this.threshold;
     };
     smoothness.onchange = () => {
-      this.smoothness = Number(smoothness.value);
+      this.smoothness = this.s = Number(smoothness.value);
       if (this.smoothness == 10) this.smoothness = 1000; s.innerHTML = this.smoothness;
     };
     tippy(openbtn, {content: 'SmartPen', placement: 'right', delay: 300, theme: 'light-border'});

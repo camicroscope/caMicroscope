@@ -466,7 +466,7 @@
           var st = this._moveset[0][0], ind = this._moveset[0][1];
           // throw the moving stroke to current path
           this._current_path_ = this._draws_data_[st];
-          this._current_path_.geometry.coordinates[0] = mtool.populate(this._current_path_.geometry.coordinates[0], ~~this.scaleWindowtoImage(5), ~~this.scaleWindowtoImage(1), 150,ind,500);
+          this._current_path_.geometry.coordinates[0] = mtool.populate(this._current_path_.geometry.coordinates[0], ~~this.scaleWindowtoImage(5), ~~this.scaleWindowtoImage(1), 150);
           this._draws_data_.splice(st, 1);
           this.drawOnCanvas(
               this._display_ctx_,
@@ -878,25 +878,29 @@
       this._current_path_.properties.style.lineCap = this.style.lineCap;
       this._current_path_.properties.style.isFill = this.style.isFill;
       let points = this._current_path_.geometry.coordinates[0];
+      /* Modifications */
 
-      // Modifications
-      if (!this.isMoving) {
-        if (!(this.drawMode === 'line' || this.drawMode === 'grid')) {
-          points.push(points[0]);
-        }
-        // for align
-        if (!(this.drawMode === 'grid')) {
+      // last point push
+      if (!(this.drawMode === 'line' || this.drawMode === 'grid'))
+        points.push(points[0]);
+
+      // preprocess
+      if (!(this.drawMode === 'grid'))
+        if(spen.mode == 1)
           points = mtool.populate(points, ~~this.scaleWindowtoImage(5), ~~this.scaleWindowtoImage(1), 150);
-        }
-        // align
-        points = this.__align(points);
-      }
-      // simplify
-      if (!(this.drawMode === 'grid'));
+      if(this.isMoving) {spen.s = spen.smoothness; spen.smoothness = 10e12;}
+
+      // align
+      points = this.__align(points);
+
+      // simplify and postprocess
+      if(this.isMoving) spen.smoothness = spen.s;
+      if (!(this.drawMode === 'grid'))
         if(spen.mode == 1)
           points = mtool.populate(points, 500000, ~~this.scaleWindowtoImage(2), 150);
         else
           points = simplify(points, 3.5);
+
       // float to integer
       points = this._convert_integer(points);
       console.log(points.length);
