@@ -1030,6 +1030,7 @@ function saveBrushAnnotCallback() {
  * @param {Object} data
  */
 function annoCallback(data) {
+  spen.close();
   // is form ok?
   const noteData = $UI.annotOptPanel._form_.value;
   if ($UI.annotOptPanel._action_.disabled || noteData.name == '') {
@@ -2578,7 +2579,6 @@ function enhance(e) {
     $CAMIC.viewer.addHandler('pan', unenhance);
     setEnhance = true;
   }
-
   // Canvas information
   const canvas = $CAMIC.viewer.canvas.firstChild;
   const context = canvas.getContext('2d');
