@@ -335,7 +335,10 @@ function annotationOn(state, target) {
   li.appendChild(label);
   switch (state) {
     case 1:
-      $UI.annotOptPanel._action_.style.display = 'none';
+      spen.menu(65, 0.2);
+      spen.undo.onclick=()=>canvasDraw.__align_undo();
+      // open menu
+      $UI.annotOptPanel._action_.style.display = '';
       label.style.transform = 'translateY(-12px) translateX(18px)';
       label.textContent = '1';
       label.style.color = '';
@@ -382,6 +385,8 @@ function annotationOff() {
   ) {
     saveAnnotation();
   } else {
+    spen.close();
+    // close menu
     canvasDraw.clear();
     canvasDraw.drawOff();
     $CAMIC.drawContextmenu.off();
@@ -1026,6 +1031,7 @@ function saveBrushAnnotCallback() {
  * @param {Object} data
  */
 function annoCallback(data) {
+  spen.close();
   // is form ok?
   const noteData = $UI.annotOptPanel._form_.value;
   if ($UI.annotOptPanel._action_.disabled || noteData.name == '') {
@@ -1773,7 +1779,7 @@ function stopDrawing(e) {
       state === 1 &&
       $CAMIC.viewer.canvasDrawInstance._draws_data_.length > 0
     ) {
-      saveAnnotation();
+      $CAMIC.viewer.canvasDrawInstance.isOn = false;
     }
   }
 }
@@ -1976,6 +1982,8 @@ function presetLabelOn(label) {
     return;
   }
 
+  spen.menu(65, 0.2);
+  // open menu
   canvasDraw.drawMode = label.mode;
   if (label.mode == 'grid') {
     canvasDraw.size = [parseInt(label.size), parseInt(label.size)];
@@ -1990,6 +1998,8 @@ function presetLabelOn(label) {
 function presetLabelOff() {
   if (!$CAMIC.viewer.canvasDrawInstance) return;
   const canvasDraw = $CAMIC.viewer.canvasDrawInstance;
+  spen.close();
+  // close spen
   if (
     canvasDraw._draws_data_.length &&
     confirm(`Do You Want To Save Annotation Label Before You Leave?`)
@@ -2562,7 +2572,7 @@ async function rootCallback({root, parent, items}) {
 }
 
 /* Enhance Tool */
-function enhance(data) {
+function enhance(e) {
   document.querySelector('[title="Enhance"]').previousSibling.checked = true;
   if (!setEnhance) {
     // $UI.message.add('<i class="small material-icons">info</i>On Movement, enhance would be undone', 2000);
@@ -2570,29 +2580,26 @@ function enhance(data) {
     $CAMIC.viewer.addHandler('pan', unenhance);
     setEnhance = true;
   }
-
   // Canvas information
   const canvas = $CAMIC.viewer.canvas.firstChild;
   const context = canvas.getContext('2d');
   let width = canvas.width; let height = canvas.height;
   var img = context.getImageData(0, 0, width, height);
+  var data = img.data;
 
-  if (data.status == 'Histogram Eq') {
+  if (e.status == 'Histogram Eq') {
     context.putImageData(clahe(img, 64, 0.015), 0, 0);
-  } else if (data.status == 'Edge') {
-    context.putImageData(edgedetect(img, 150, 0, 0, width, height), 0, 0);
-  } else if (data.status == 'Sharpen') {
+  } else if (e.status == 'Edge') {
+    context.putImageData(edgedetect_sobel(img, 80), 0, 0);
+  } else if (e.status == 'Sharpen') {
     var filter = [[-1, -1, -1], [-1, 14, -1], [-1, -1, -1]];
-    filter = [filter, filter, filter];
-    var newimg = new ImageData(new Uint8ClampedArray(applyfilter(img, filter, 0, 0, width, height)), width, height);
-    context.putImageData(newimg, 0, 0);
-  } else if (data.status == 'Custom') {
+    context.putImageData(applyfilter(img, filter), 0, 0);
+  } else if (e.status == 'Custom') {
     var input = prompt('Enter the 2D Kernel: Eg : [[1, 0], [0, 1]]'); var f=0;
     // JSON Parse test
     try {
       var filter = JSON.parse(input); var sz = filter[0].length;
     } catch (e) {
-      console.error(e);
       alert('Invalid Kernel : ' + input);
       return;
     }
@@ -2610,9 +2617,7 @@ function enhance(data) {
       return;
     }
     // Apply
-    filter = [filter, filter, filter];
-    var newimg = new ImageData(new Uint8ClampedArray(applyfilter(img, filter, 0, 0, width, height)), width, height);
-    context.putImageData(newimg, 0, 0);
+    context.putImageData(applyfilter(img, filter), 0, 0);
   }
 }
 var setEnhance = false;
