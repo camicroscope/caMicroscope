@@ -5,6 +5,7 @@ function socketInit() {
   const store = new Store('../../data/');
   const { slideId } = window.getUrlVars();
   store.getSlideCollabDetails(slideId).then(response => {
+    console.log(response[0].collabStatus);
     let collaborationStatus = response.length > 0 ? response[0].collabStatus : false;
     if (collaborationStatus) {
       const socket = io("http://localhost:5000", {
