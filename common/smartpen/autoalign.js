@@ -10,7 +10,7 @@ class smartpen {
     this.context;
     this.data = new Map();
     this.threshold = this.t = 90;
-    this.smoothness= 4*4;
+    this.smoothness = this.s = 4*4;
     this.radius = 30;
     this.mode = 0;
     // 0 for Off, 1 for after finish, 2 for realtime
@@ -23,7 +23,7 @@ class smartpen {
     this.context = canvas.getContext('2d');
   }
   // call edge detection
-  detect(x1, y1, x, y, ch=4) {
+  detect(x1, y1, x, y, ch=1) {
     var newdata = this.context.getImageData(x1, y1, x, y);
     var dst = edgedetect_canny(newdata, ~~(this.t/2), this.t, 7, 2, ch);
     return dst;
@@ -48,9 +48,7 @@ class smartpen {
     var n = 3; var th = this.smoothness; var lambda=1.5;
     var pop = []; var clean=[]; var mod1=[]; var mod2=[]; var final=[]; var nearest = []; var pts = [];
     var f = arr.length-1; var f1=0; var f2=0; var prev; var c;
-    // -----populate and clean-----
-    clean = mtool.populate(arr, 4, 150);
-    f = clean.length-1;
+    clean = arr;
     // -----Nearest-----
     for (var i = 0; i<=f; i++) {
       if (this.data[mtool.hash(clean[i])]!=undefined) {
@@ -66,7 +64,7 @@ class smartpen {
     // ----- Continuity Heuristic 1 -----
     for (var i = 0; i<=f; i++) {
       var mean = mtool.average(nearest, i, n);
-      var dist = pts[i]; var mind = 10e12; var point = clean[i]; var near=clean[i];
+      var dist = pts[i]; var mind = 10e10; var point = clean[i]; var near=clean[i];
       for (var j =0; j<dist.length; j++) {
         var d = lambda*mtool.distance(point, dist[j])+mtool.distance(mean, dist[j]);
         if (d<mind) {
@@ -89,12 +87,7 @@ class smartpen {
       }
     }
     // console.log("heuristic 2: ",f2/f1);
-    // -----copy-----
-    console.log(f);
-    for (var i = 0; i<=f; i++) {
-      final.push(mod2[i]);
-    }
-    return final;
+    return mod2;
   }
   // get optimum pt for a pt
   nearest(point, all = false) {
@@ -205,10 +198,10 @@ class smartpen {
       this.radius = Number(radius.value); r.innerHTML = this.radius;
     };
     threshold.onchange = () => {
-      this.threshold = Number(threshold.value); t.innerHTML = this.threshold;
+      this.threshold = this.t = Number(threshold.value); t.innerHTML = this.threshold;
     };
     smoothness.onchange = () => {
-      this.smoothness = Number(smoothness.value);
+      this.smoothness = this.s = Number(smoothness.value);
       if (this.smoothness == 10) this.smoothness = 1000; s.innerHTML = this.smoothness;
     };
     tippy(openbtn, {content: 'SmartPen', placement: 'right', delay: 300, theme: 'light-border'});
@@ -217,26 +210,43 @@ class smartpen {
     tippy(setting, {content: 'Settings', placement: 'right', delay: 300, theme: 'light-border'});
   }
   close() {
+    if (!this.menuon) return;
     this.menubar.remove();
     this.menuon = false;
   }
 };
 
 /* class for misc math tools */
-class mathtoolsSmartpen {
-  // intepolates in between points with min distance c and max points m
-  populate(points, c=4, m=150) {
-    var ln = points.length; var dist=[points[0]];
+class mathtoolSmartpen {
+// interpolation id: id of pt, p: final pt, b: const, fc: neighbour limit
+  gaussianInterpolate(arr, id, p, b=15, fc=1) {
+    var f = arr.length;
+    var ln = ~~(f*fc);
+    var l = id+ln;
+    var r = id-ln;
+    var dx = p.x-arr[id][0]; var dy = p.y-arr[id][1];
+    for (var i=l; i>=r; i--) {
+      var y = Math.exp(-(((id-i)/b)**2));
+      arr[(i+f)%f][0] += (y*dx); arr[(i+f)%f][1]+= (y*dy);
+    }
+    return arr;
+  }
+  // intepolates in between points with max distance c, min distance low, and max points m
+  populate(points, c=4, low=2, m=150) {
+    var ln = points.length; var dist=[points[0]]; var prev = points[0];
     for (var i = 1; i<ln; i++) {
-      var a=points[i-1]; var b=points[i];
-      var d = this.distance(a, b);
+      var a=prev; var b=points[i];
+      var d = this.distance({x: a[0], y: a[1]}, {x: b[0], y: b[1]});
       if (d>=c*c*4) {
         var n = Math.min(~~(Math.sqrt(d)/c), m);
         for (var j=1; j<=n; j++) {
-          var x = a.x + j*(b.x-a.x)/n; var y = a.y + j*(b.y-a.y)/n;
-          dist.push({x: Math.floor(x), y: Math.floor(y)});
+          var x = a[0] + j*(b[0]-a[0])/n; var y = a[1] + j*(b[1]-a[1])/n;
+          dist.push([x, y]);
         }
-      } else dist.push(b);
+        prev = b;
+      } else if (d>=low*low) {
+        dist.push(b); prev=b;
+      }
     }
     return dist;
   }
@@ -261,21 +271,10 @@ class mathtoolsSmartpen {
     return (a.x==b.x && a.y==b.y);
   }
   // point to number
-  hash(pt, r=100000) {
+  hash(pt, r=10000) {
     return Math.floor(pt.x)*r+Math.floor(pt.y);
-  }
-  // clean the array
-  clear(arr) {
-    var clean = [];
-    clean.push(arr[0]);
-    for (var i=1; i<=arr.length-1; i++) {
-      if (!this.eqlpt(arr[i], arr[i-1])) {
-        clean.push(arr[i]);
-      }
-    }
-    return clean;
   }
 };
 
 var spen = new smartpen();
-var mtool = new mathtoolsSmartpen();
+var mtool = new mathtoolSmartpen();
