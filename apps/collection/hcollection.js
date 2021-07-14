@@ -1,0 +1,651 @@
+// dom-checkbox sorting plug-in
+$.fn.dataTable.ext.order['dom-checkbox'] = function( settings, col ) {
+  return this.api().column( col, {order: 'index'} ).nodes().map( function( td, i ) {
+    return $('input', td).prop('checked') ? '1' : '0';
+  } );
+};
+
+
+$(function() {
+  $('[data-toggle="tooltip"]').tooltip({delay: {'show': 1000, 'hide': 1000}});
+});
+var $DTable;
+var $collectionList;
+var $collectionTree;
+var _selectedNodeId;
+var $slideData;
+
+// create the store
+const store = new Store('../../../data/');
+
+// loading the collections
+store.getAllCollection().then((data) => {
+  if (Array.isArray(data)) {
+    $collectionList = data.map((d)=>{
+      d.id = d._id.$oid;
+      delete d._id;
+      return d;
+    });
+    $collectionTree = listToTree(data);
+
+
+    $('#main-tree-view').jstree({
+      'core': {
+        'data': $collectionTree,
+        'multiple': false,
+        'check_callback': true,
+      },
+      'types': {
+        '#': {'max_children': 1, 'max_depth': 4, 'valid_children': ['default']},
+        'default': {'valid_children': ['default']},
+      },
+      'plugins': ['search', 'wholerow'],
+    });
+
+
+    $('#main-tree-view').on('loaded.jstree', () => {
+      if (data.length == 0) $('#coll-message').show();
+    });
+
+    // bind select node event
+    $('#main-tree-view').on('select_node.jstree', function(event, _data) {
+      if ( _selectedNodeId === _data.node.id ) {
+        // unselected node
+        _data.instance.deselect_node(_data.node);
+        _selectedNodeId = null;
+        //
+        selectCollectionHandler(null);
+        // hide rename/remove btns
+        $('#col-rename').hide();
+        $('#col-delete').hide();
+      } else {
+        // selected node
+        _selectedNodeId = _data.node.id;
+        // show rename/remove btns
+
+        $('#col-rename').show();
+        $('#col-delete').show();
+        selectCollectionHandler(_data.node);
+
+        // show up breadcrum
+      }
+    });
+  } else {
+    // error message
+
+  }
+});
+
+// load slides
+
+store.findSlide().then((data) => data.map((d) => ({
+  'id': d._id.$oid,
+  'name': d.name,
+  'width': d.width,
+  'height': d.height,
+  'selected': false,
+})))
+    .then((data) => {
+      $slideData = data;
+      createDataTable($slideData);
+    });
+
+function createDataTable(data) {
+  $DTable = $('#data-table-view').DataTable({
+    'rowId': 'id',
+    'order': [[4, 'desc']],
+    'data': data,
+    'columns': [
+      {data: 'id', title: 'Id'},
+      {data: 'name', title: 'Name'},
+      {data: 'width', title: 'Width'},
+      {data: 'height', title: 'Height'},
+      {
+        data: 'selected',
+        orderable: true,
+        orderDataType: 'dom-checkbox',
+        title: `<label onclick='stopEvent(event)'>
+                  <input data-id='__all__'  type="checkbox" onchange='toggleAllSlides(event)' onclick='stopEvent(event)' >
+                  All
+                </label>`,
+      },
+    ],
+    'columnDefs': [{
+      'className': 'dt-center',
+      'targets': 4,
+      'data': null,
+      'render': (data, type, row, mate) => {
+        // TODO set the checked by data
+        return `<input data-id="${row.id}" type="checkbox" onchange='toggleASlide(event)' ${data?'checked':''}>`;
+      },
+    }],
+  });
+}
+function stopEvent(e) {
+  e.stopPropagation();
+}
+function toggleAllSlides(e) {
+  console.log('all');
+  const tree = $('#main-tree-view').jstree(true);
+  const selectedNodes = tree.get_selected(true)[0];
+  const cid = selectedNodes.id;
+  const nodes = $DTable.rows({search: 'applied'}).nodes().to$();
+  //
+  const sids = [...nodes].map((d)=>d.id);
+
+  if (e.target.checked) {
+    // add slide to collection
+    store.addSlidesToCollection(cid, sids).then((rs)=>{
+      console.log('add', rs);
+      nodes.find('input[type=checkbox]').prop('checked', e.target.checked);
+      $slideData.forEach((d)=>{
+        if (sids.includes(d.id)) d.selected = e.target.checked;
+      });
+    });
+  } else {
+    // remove slide from collection
+    store.removeSlidesFromCollection(cid, sids).then((rs)=>{
+      console.log('remove', rs);
+      nodes.find('input[type=checkbox]').prop('checked', e.target.checked);
+      $slideData.forEach((d)=>{
+        if (sids.includes(d.id)) d.selected = e.target.checked;
+      });
+    });
+  }
+
+
+  e.stopPropagation();
+}
+function toggleASlide(e) {
+  console.log('test', e.target.checked);
+  const sid = e.target.dataset.id;
+  const tree = $('#main-tree-view').jstree(true);
+  const selectedNodes = tree.get_selected(true)[0];
+  const cid = selectedNodes.id;
+  if (e.target.checked) {
+    // add slide to collection
+    store.addSlidesToCollection(cid, [sid]).then((rs)=>{
+      console.log('add', rs);
+      const sData = $DTable.row(`#${sid}`).data();
+      sData.selected = !sData.selected;
+      $DTable.row(`#${sid}`).data(sData);
+      // console.log(sData);
+    });
+  } else {
+    // remove slide from collection
+    store.removeSlidesFromCollection(cid, [sid]).then((rs)=>{
+      console.log('remove', rs);
+
+      //
+      const sData = $DTable.row(`#${sid}`).data();
+      sData.selected = !sData.selected;
+      $DTable.row(`#${sid}`).data(sData);
+    });
+  }
+  e.stopPropagation();
+  // e.stop
+}
+
+$('#search-table').on('change keyup', (e) => search(e.target.value));
+$('#edit-modal input[type=text].search').on('change keyup', (e) => slideSearch(e.target));
+
+function createColItem(data) {
+  const html = `
+  <div id ='${data._id['$oid']}' class='card col-card bg-light'>
+    <div class='card-body'>
+      <div class='card-title d-flex align-items-center justify-content-between mb-1'>
+        <div class='text-in-line font-weight-bold pr-2'>${data.name}</div>
+        <span class='badge badge-primary badge-pill' data-toggle='tooltip' data-placement='bottom' title='# Of Slides'>${data.slides.length}</span>
+      </div>
+      <p class='card-text text-muted'>${data.description}</p>
+      <div class='d-flex align-items-center justify-content-between'>
+        <div href='#' class='btn btn-sm btn-primary' data-toggle='tooltip' data-placement='top' title='Edit' onclick='openEditor("${data._id['$oid']}")'><i class='fas fa-cog'></i></div>
+        <div href='#' class='btn btn-sm btn-danger' data-toggle='tooltip' data-placement='top' title='Delete' onclick='openDelConfirm("${data._id['$oid']}","${data.name}")'><i class='fas fa-trash-alt'></i></div>
+      </div>
+    </div>
+  </div>`;
+  const elt = $.parseHTML(html);
+  $(elt).find('[data-toggle="tooltip"]').tooltip({delay: {'show': 1000, 'hide': 1000}});
+  return elt;
+}
+
+function search(pattern) {
+  const regex = new RegExp(pattern, 'gi');
+
+  $('.card.col-card').each((idx, elt) => {
+    const text = $(elt).find('.text-in-line').text();
+    text.match(regex) ? $(elt).show() : $(elt).hide();
+  });
+}
+
+function slideSearch(target) {
+  const pid = $(target).data('target');
+  const pattern = target.value;
+  const regex = new RegExp(pattern, 'gi');
+
+  $(`#${pid} li`).each((idx, li) => {
+    const text = $(li).find('.text-in-line').text();
+    if (text.match(regex)) {
+      $(li).show();
+      $(li).addClass('d-flex');
+    } else {
+      $(li).hide();
+      $(li).removeClass('d-flex');
+    }
+  });
+}
+
+async function openEditor(node) {
+  clearEditor();
+  setEditor(node);
+  $('#edit-modal').modal('show');
+}
+
+function openDelConfirm(node) {
+  // set parent path text
+  const parentNames = getParentNames(node);
+  const names = [...parentNames.reverse(), node.text];
+  $('#del-modal .modal-body span.text-danger').text(`${names.join(' > ')}`);
+  // set children text
+  $('#del-modal .modal-body span.children-text').html('');
+  const childrenNames = getAllChildrenNames(node);
+  if (childrenNames.length) $('#del-modal .modal-body span.children-text').html(` ( includes <span class="text-danger">${childrenNames.join(', ')}</span> )`);
+
+  $('#del-modal .modal-footer .btn.btn-sm.btn-danger').on('click', (elt) => {
+    delCollection(node);
+    $('#del-modal .modal-footer .btn.btn-sm.btn-danger').off('click');
+  });
+  $('#del-modal').modal('show');
+}
+
+function getAllChildrenNames(node) {
+  return node.children_d.map((id)=>{
+    const cdata = $collectionList.find((d)=>d.id == id);
+    return cdata.text;
+  });
+}
+
+function getParentNames(node) {
+  const rs = [];
+  node.parents.forEach((id) => {
+    if (id!=='#') {
+      const cdata = $collectionList.find((d)=>d.id == id);
+      rs.push(cdata.text);
+    }
+  });
+  return rs;
+}
+
+
+function delCollection(node) {
+  node.children_d.push(node.id);
+  // deleteCollection
+  store.deleteMultiCollections(node.children_d).then((resp) => {
+    const {collectionResponse, slideResponse} = resp;
+    if (collectionResponse.ok && slideResponse.ok) {
+      const tree = $('#main-tree-view').jstree(true);
+      tree.delete_node(node);
+      // hide table and show up message
+      $('#table-panel').hide();
+      $('#table-message').show();
+      showMessage('Collection Delected Successfully!', node.text, 'success');
+      setTimeout(hideMessage, 3000);
+      $('#del-modal').modal('hide');
+    } else {
+      showMessage('Collection Failed To Delete!', node.text, 'danger');
+    }
+  });
+}
+
+
+/**
+ * create editor items
+ *
+ */
+
+function createSlideItems(d, mode = 'unselected') {
+  const html = `
+  <li id='${d._id['$oid']}' class='slide list-group-item d-flex justify-content-between align-items-center py-2 px-3'>
+    <input type='checkbox' class='' />
+    <div class='text-in-line mx-2' data-toggle='tooltip' data-placement='top' title='${d.name}'>${d.name}</div>
+    <i class='fas fa-times text-danger ${mode == 'selected' ? '' : 'd-none'}' onclick='moveSlideItem('${d._id['$oid']}','unselected')'></i>
+    <i class='fas fa-plus text-primary ${mode == 'unselected' ? '' : 'd-none'}' onclick='moveSlideItem('${d._id['$oid']}','selected')'></i>
+  </li>`;
+  const elt = $.parseHTML(html);
+  $(elt).find('[data-toggle="tooltip"]').tooltip({delay: {'show': 1000, 'hide': 1000}});
+  return elt;
+}
+
+
+// getCollection
+
+function updateEditor(data) {
+  //
+  if (data) {
+    $('#edit-modal').data('id', data._id['$oid']);
+    $('#edit-modal').find('#col-name').val(data.name);
+    $('#edit-modal').find('#col-description').val(data.description);
+  } else {
+    $('#edit-modal').removeData('id');
+    $('#edit-modal').find('#col-name').val(null);
+    $('#edit-modal').find('#col-description').val(null);
+  }
+}
+
+
+async function saveCollection() {
+  // show up the error message if colleciton text is empty
+  if (!$('#edit-modal').find('#col-name').val()) {
+    $('#col-name-invalid-message').text(`Please enter a collection name`);
+    $('#edit-modal').find('#col-name').addClass('is-invalid');
+    return;
+  } else {
+    $('#edit-modal').find('#col-name').removeClass('is-invalid');
+  }
+
+  // get the collection text and id
+  const collection = getDataFromEditor();
+  delete collection.id;
+  const d = await store.getCollection(collection);
+  // deal error
+
+
+  if (Array.isArray(d)) {
+    // the text already exsits
+    if (d.length > 0) {
+      $('#col-name-invalid-message').text(`That collection name already exists`);
+      $('#edit-modal').find('#col-name').addClass('is-invalid');
+      return;
+    } else {
+      $('#edit-modal').find('#col-name').removeClass('is-invalid');
+    }
+  }
+
+  const id = $('#edit-modal').data('id');
+  if (id) {
+    const cdata = $collectionList.find((d)=>d.id==id);
+    const data = {
+      text: $('#edit-modal').find('#col-name').val(),
+    };
+
+    // update text
+    store
+        .updateCollection(id, data)
+        .then((resp) => {
+          if (resp.status == 200 && resp.ok) {
+            // update js tree name
+            var tree = $('#main-tree-view').jstree(true);
+            var selectedNodes = tree.get_selected(true);
+            const node = selectedNodes[0];
+            tree.rename_node(node, $('#edit-modal').find('#col-name').val());
+            // change the name in list
+            const cdata = $collectionList.find((d)=>d.id==id);
+            cdata.text = data.text;
+            // update breadcrumb
+            createBreadcrumb(node);
+            showMessage('Collection Updated Successfully!', data.text, 'success');
+            $('#edit-modal').modal('hide');
+            setTimeout(hideMessage, 3000);
+          } else {
+            showMessage('Collection Failed To Update!', data.text, 'danger');
+          }
+        });
+  } else {
+    // insert a new collection
+    // get Parent id
+    var tree = $('#main-tree-view').jstree(true);
+    const selectedNodes = tree.get_selected(true);
+    const newNode = {
+      'text': $('#edit-modal').find('#col-name').val(),
+    };
+    var parentNode;
+    if (selectedNodes.length) {
+      parentNode = selectedNodes[0];
+      newNode.pid = parentNode.id;
+    }
+
+    const rs = await store.addCollection(newNode).then((resp)=>{
+      console.log('rs', resp);
+      if (resp.result && resp.result.ok) {
+        const opt = resp.ops[0];
+        newNode.id = opt._id;
+        const currentId = tree.create_node(parentNode?parentNode:'#', newNode, 'first');
+        $collectionList.push(newNode);
+        if (parentNode) tree.open_node(parentNode);
+        tree.deselect_all();
+        tree.select_node(currentId);
+        showMessage('Collection Created Successfully!', newNode.text, 'success');
+        $('#edit-modal').modal('hide');
+        setTimeout(hideMessage, 3000);
+      } else {
+        showMessage('Collection Failed To Create!', newNode.text, 'danger');
+      }
+    });
+  }
+}
+
+
+function clearEditor() {
+  $('#edit-modal').removeData('id');
+  $('#edit-modal').find('#col-name').val(null);
+  // $('#edit-modal').find('#col-description').val(null);
+  // $('#selected-slide').empty();
+  // $('#unselected-slide').empty();
+}
+function setEditor(node) {
+  const tree = $('#main-tree-view').jstree(true);
+  var selectedNodes = tree.get_selected(true)[0];
+  $('#edit-modal #col-path').text('');
+  if (selectedNodes) {
+    var parentNames = getParentNames(selectedNodes);
+    var names;
+    if (node) {
+      var names = [...parentNames.reverse(), ''];
+    } else {
+      var names = [...parentNames.reverse(), selectedNodes.text, ''];
+    }
+    $('#edit-modal #col-path').text(`${names.join(' > ')}`);
+  }
+
+  // set up collection basic info
+  if (node) {
+    $('#edit-modal').data('id', node.id);
+    $('#edit-modal').find('#col-name').val(node.text);
+    // $('#edit-modal').find('#col-description').val(col.description);
+  }
+  // set up selected slides info
+  // slides.forEach((d) => {
+  //   if (col && col.slides && col.slides.includes(d._id['$oid'])) {
+  //     const selected = createSlideItems(d, 'selected');
+  //     $('#selected-slide').append(selected);
+  //   } else {
+  //     const unselected = createSlideItems(d, 'unselected');
+  //     $('#unselected-slide').append(unselected);
+  //   }
+  // });
+}
+
+function getDataFromEditor() {
+  return {
+    id: $('#edit-modal').data('id'),
+    text: $('#edit-modal').find('#col-name').val(),
+  };
+}
+function validateEditor() {
+  var isValid = true;
+  if (!$('#edit-modal').find('#col-name').val()) {
+    $('#edit-modal').find('#col-name').addClass('is-invalid');
+    isValid = false;
+  } else {
+    $('#edit-modal').find('#col-name').removeClass('is-invalid');
+  }
+
+
+  if ($('#selected-slide').find('li.slide').length == 0) {
+    $('#selected-slide-error').addClass('is-invalid');
+    isValid = false;
+  } else {
+    $('#selected-slide-error').removeClass('is-invalid');
+  }
+
+
+  return isValid;
+}
+
+
+function moveSlideItem(id, mode = 'unselected') {
+  const slideItem = $('#edit-modal').find(`li[id=${id}]`);
+  slideItem.detach();
+  switch (mode) {
+    case 'unselected':
+      $('#unselected-slide').append(slideItem);
+      slideItem.find('.fas.fa-times.text-danger').addClass('d-none');
+      slideItem.find('.fas.fa-plus.text-primary').removeClass('d-none');
+      break;
+    case 'selected':
+      $('#selected-slide').append(slideItem);
+      slideItem.find('.fas.fa-times.text-danger').removeClass('d-none');
+      slideItem.find('.fas.fa-plus.text-primary').addClass('d-none');
+      break;
+    default:
+      break;
+  }
+}
+
+function moveSlideItems(panelId, mode = 'unselected') {
+  $(`#${panelId} li:visible`).each((idx, li) => {
+    const chk = $(li).find('input[type=checkbox]');
+    if (chk.prop('checked')) {
+      chk.prop('checked', false);
+      moveSlideItem(li.id, mode);
+    }
+  });
+
+  // clear status and show up
+  $(`#${panelId} li:hidden`).find('input[type=checkbox]').prop('checked', false);
+  $(`#${panelId} li:hidden`).addClass('d-flex');
+  $(`#${panelId} li:hidden`).show();
+  $(`#edit-modal input[type=text][data-target='${panelId}']`).val('');
+  $(`input[type=checkbox].${panelId}`).prop('checked', false);
+}
+
+
+function showMessage(message, title = '', style = 'primary') {
+  const html = `<div class='message alert alert-${style} alert-dismissible fade show' role='alert'>
+  <strong>${title}</strong>&nbsp;&nbsp;${message}
+  <button type='button' class='close' data-dismiss='alert' aria-label='Close'>
+    <span aria-hidden='true'>&times;</span>
+  </button>
+  </div>`;
+  $(document.body).append($.parseHTML(html));
+}
+function hideMessage() {
+  $('.message.alert').alert('close');
+}
+
+function checkAllSlideItems(chk, panelId) {
+  const slideItems = $(`#${panelId}`).find('li.slide');
+
+  slideItems.each((idx, item) => {
+    const checked = $(item).css('display') !== 'none' && $(chk).prop('checked');
+    $(item).find('input[type=checkbox]').prop('checked', checked);
+  });
+}
+
+
+function createCollection() {
+  openEditor();
+};
+function renameCollection() {
+  var tree = $('#main-tree-view').jstree(true);
+  var selectedNodes = tree.get_selected(true);
+  if (!selectedNodes.length) {
+    showMessage('Please select a collection to rename', '', 'warning');
+    setTimeout(hideMessage, 3000);
+    return;
+  }
+  const node = selectedNodes[0];
+  openEditor(node);
+};
+
+function deleteCollection() {
+  var tree = $('#main-tree-view').jstree(true);
+  var selectedNodes = tree.get_selected(true);
+  if (!selectedNodes.length) {
+    showMessage('Please select a collection to remove', '', 'warning');
+    setTimeout(hideMessage, 3000);
+    return;
+  }
+  const node = selectedNodes[0];
+  openDelConfirm(node);
+};
+
+function listToTree(list) {
+  var map = {}; var node; var roots = []; var i;
+
+  for (i = 0; i < list.length; i += 1) {
+    map[list[i].id] = i; // initialize the map
+    list[i].children = []; // initialize the children
+  }
+
+  for (i = 0; i < list.length; i += 1) {
+    node = list[i];
+    if (node.pid) {
+      // if you have dangling branches check that map[node.parentId] exists
+      list[map[node.pid]].children.push(node);
+    } else {
+      roots.push(node);
+    }
+  }
+  return roots;
+}
+
+function selectCollectionHandler(node) {
+  if (node) {
+    // UI control
+    $('#table-message').hide();
+    $('#table-panel').show();
+
+    // create collection path
+    createBreadcrumb(node);
+    if (node.children.length > 0) {
+      $('#data-table-view_wrapper').hide();
+      $('#sub-message').show();
+      return;
+    }
+    $('#sub-message').hide();
+    $('#data-table-view_wrapper').show();
+    // let slides checked if the slides in the collection
+    const collData = $collectionList.find((d)=>d.id==node.id);
+    // deselected all slides
+    $slideData.forEach((slide)=>{
+      if (collData&&collData.slides&&Array.isArray(collData.slides)&&collData.slides.length) {
+        slide.selected = collData.slides.some((id)=>id==slide.id);
+      } else {
+        slide.selected = false;
+      }
+    });
+    $DTable.clear();
+    $DTable.rows.add($slideData).search('').draw(true);
+  } else {
+    // UI control
+    $('#table-message').show();
+    $('#table-panel').hide();
+  }
+  // UI control
+}
+
+function createBreadcrumb(node) {
+  // clear the old crumb
+  $('#table-breadcrumb').empty();
+  if (!node) return;
+  //
+  const parentNames = getParentNames(node);
+
+  const crumbList = [...parentNames.reverse(), node.text];
+
+
+  $('#table-breadcrumb').html(crumbList.map((text)=>
+    text==node.text?`<div class="breadcrumb-item active" aria-current="page">${text}</div>`:`<div class="breadcrumb-item" ><a href="#">${text}</a></div>`,
+  ).join(''));
+}

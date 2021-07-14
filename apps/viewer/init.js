@@ -77,7 +77,7 @@ window.addEventListener('keydown', (e) => {
     $D.labels.configuration.length > 0 &&
     e.ctrlKey) {
     e.key;
-    const elt = $UI.labelsViewer.allLabels.find((l)=>l.dataset.key&&l.dataset.key.toLowerCase()==e.key.toLowerCase());
+    const elt = $UI.labelsViewer.allLabels.find((l) => l.dataset.key && l.dataset.key.toLowerCase() == e.key.toLowerCase());
     if (elt) {
       $UI.toolbar
           .getSubTool('preset_label')
@@ -251,9 +251,9 @@ function initCore() {
           for (const key in items) {
             if ({}.hasOwnProperty.call(items, key)) {
               dataType = key;
-              if (items.hasOwnProperty(key)&&
-                  Array.isArray(items[key].items)&&
-                  items[key].items.some((i)=>i.item.id == $UI.annotPopup.data.id)) break;
+              if (items.hasOwnProperty(key) &&
+                Array.isArray(items[key].items) &&
+                items[key].items.some((i) => i.item.id == $UI.annotPopup.data.id)) break;
             }
           }
           return dataType;
@@ -262,8 +262,8 @@ function initCore() {
 
         $UI.annotPopup.dataType = null;
         $UI.annotPopup.dataType = data.provenance && data.provenance.analysis &&
-                                  data.provenance.analysis.source && data.provenance.analysis.source=='human'?
-        getCateName($UI.annotPopup.data.id):null;
+          data.provenance.analysis.source && data.provenance.analysis.source == 'human' ?
+          getCateName($UI.annotPopup.data.id) : null;
 
         $UI.annotPopup.setTitle(`id:${data.provenance.analysis.execution_id}`);
         $UI.annotPopup.setBody(body);
@@ -309,6 +309,8 @@ function initCore() {
 
 // initialize all UI components
 async function initUIcomponents() {
+  /* loading configurations */
+  $D.configurations = await $CAMIC.store.getConfigByName();
   /* create UI components */
 
   $UI.modalbox = new ModalBox({
@@ -328,6 +330,57 @@ async function initUIcomponents() {
       type: 'btn', // btn/check/dropdown
       value: 'home',
       callback: goHome,
+    });
+  }
+
+  // get evaluation data
+
+  // get evaluation config
+  const evaluationConfig = $D.configurations.find((d)=>d.config_name=='evaluation_form');
+
+  // evaluation form
+  if (evaluationConfig && evaluationConfig.enable) {
+    const evaluationData = await $CAMIC.store.findEvaluation({
+      'user_id': getUserId(),
+      'slide_id': $D.params.slideId,
+    });
+    $UI.evalSideMenu = new SideMenu({
+      id: 'eval_panel',
+      width: 250,
+      contentPadding: 5,
+    });
+    var evalTitle = document.createElement('div');
+    evalTitle.classList.add('item_head');
+    evalTitle.textContent = 'Evaluation';
+    var evalDiv = document.createElement('div');
+    evalDiv.id = 'eval_form';
+    $UI.evalSideMenu.addContent(evalTitle);
+    $UI.evalSideMenu.addContent(evalDiv);
+
+    const formOpt = evaluationConfig.configuration;
+    formOpt.options.form = {
+      'buttons': {
+        'submit': {'label': 'save', 'click': saveEvaluation},
+      },
+    };
+
+    // set data if evaluation Data existed
+    if (evaluationData && Array.isArray(evaluationData) && evaluationData[0] && evaluationData[0].evaluation) {
+      $D.isEvalDataExist = true;
+      formOpt.data = evaluationData[0].evaluation;
+    } else {
+      $D.isEvalDataExist = false;
+    }
+
+    $('#eval_form').alpaca(formOpt);
+
+    subToolsOpt.push({
+      name: 'eval',
+      icon: 'list_alt', // material icons' name
+      title: 'Evaluation',
+      type: 'check', // btn/check/dropdown
+      value: 'eval',
+      callback: toggleEvalPanel,
     });
   }
   // pen
@@ -520,7 +573,7 @@ async function initUIcomponents() {
   // -- For Nano borb End -- //
 
   // -- view btn START -- //
-  if (!($D.params.data.hasOwnProperty('review') && $D.params.data['review']=='true')) {
+  if (!($D.params.data.hasOwnProperty('review') && $D.params.data['review'] == 'true')) {
     subToolsOpt.push({
       name: 'review',
       icon: 'playlist_add_check',
@@ -552,7 +605,7 @@ async function initUIcomponents() {
   });
 
   // Additional Links handler
-  function additionalLinksHandler(url, openInNewTab, appendSlide) {
+  function additionalLinksHandler(url, openInNewTab) {
     if (appendSlide === true) {
       url = url + '?slide=' + $D.params.slideId;
       url = url + '&state=' + StatesHelper.encodeStates(StatesHelper.getCurrentStates());
@@ -563,10 +616,10 @@ async function initUIcomponents() {
       window.location.href = url;
     }
   }
-  var additionalLinksConfig = await $CAMIC.store.getConfigByName('additional_links')
-      .then((list)=>list.length==0?null:list[0]);
-  if (additionalLinksConfig&&additionalLinksConfig.configuration&&Array.isArray(additionalLinksConfig.configuration)) {
-    additionalLinksConfig.configuration.forEach((link)=>{
+
+  var additionalLinksConfig = $D.configurations.find((d)=>d.config_name=='additional_links');
+  if (additionalLinksConfig && additionalLinksConfig.configuration && Array.isArray(additionalLinksConfig.configuration)) {
+    additionalLinksConfig.configuration.forEach((link) => {
       var openInNewTab = link.openInNewTab === false ? false : true;
       var appendSlide = link.appendSlide === true ? true : false;
       var url = link.url;
@@ -610,8 +663,6 @@ async function initUIcomponents() {
 
   const loading = `<div class="cover" style="z-index: 500;"><div class="block"><span>loading layers...</span><div class="bar"></div></div></div>`;
   $UI.layersSideMenu.addContent(loading);
-  // TODO add layer viewer
-
 
   /* annotation popup */
   $UI.annotPopup = new PopupPanel({
@@ -644,16 +695,10 @@ async function initUIcomponents() {
 
   $UI.labelsSideMenu.addContent(labelsTitle);
 
-  $D.labels = await $CAMIC.store.getConfigByName('preset_label').then((list)=>list.length==0?null:list[0]);
-
-
-  // onAdd()
-  // onRemove(labels)
-  // onUpdate(labels)
-  // onSelected()
+  $D.labels = $D.configurations.find((d)=>d.config_name=='preset_label');
   $UI.labelsViewer = new LabelsViewer({
     id: 'labelmanager',
-    data: $D.labels?$D.labels.configuration:[],
+    data: $D.labels ? $D.labels.configuration : [],
     onAdd: addPresetLabelsHandler,
     onEdit: editPresetLabelsHandler,
     onRemove: removePresetLabelsHandler,
@@ -704,14 +749,14 @@ async function initUIcomponents() {
       // create UI and set data
       $UI.layersViewer = createLayerViewer(
           'overlayers',
-          null,
+          [],
           callback.bind('main'),
           rootCallback.bind('main'),
       );
       // create UI and set data - minor
       $UI.layersViewerMinor = createLayerViewer(
           'overlayersMinor',
-          null,
+          [],
           callback.bind('minor'),
           rootCallback.bind('minor'),
       );
@@ -965,7 +1010,7 @@ function updateSlideView() {
   if (!confirm(`Do you want to mark this slide as reviewed?`)) return;
   Loading.open(document.body, 'changing review status ...');
   $CAMIC.store.updateSlideReview($D.params.slideId, 'true').then(function(e) {
-    if (e.status==200) {
+    if (e.status == 200) {
       $UI.toolbar.getSubTool('review').style.display = 'none';
     }
   }).finally(function() {
@@ -976,7 +1021,7 @@ function updateSlideView() {
 
 function addHumanLayerItems() {
   // main viewer
-  const mainViewerItems = $D.labels.configuration.reduce((rs, label)=>{
+  const mainViewerItems = $D.labels.configuration.reduce((rs, label) => {
     rs[label.type] = {
       item: {
         id: label.type,
@@ -995,12 +1040,12 @@ function addHumanLayerItems() {
     items: [],
   };
 
-  $D.humanlayers.reduce((items, d)=> {
+  $D.humanlayers.reduce((items, d) => {
     const isShow =
       $D.params.states &&
-      $D.params.states.l &&
-      $D.params.states.l.includes(d.id) ?
-        true:
+        $D.params.states.l &&
+        $D.params.states.l.includes(d.id) ?
+        true :
         false;
     var isFind = false;
     for (const key in items) {
@@ -1016,7 +1061,7 @@ function addHumanLayerItems() {
   $UI.layersViewer.addHumanItems(mainViewerItems);
 
   // minor viewer minorViewer
-  const minorViewerItems = $D.labels.configuration.reduce((rs, label)=>{
+  const minorViewerItems = $D.labels.configuration.reduce((rs, label) => {
     rs[label.type] = {
       item: {
         id: label.type,
@@ -1035,12 +1080,12 @@ function addHumanLayerItems() {
     items: [],
   };
 
-  $D.humanlayers.reduce((items, d)=> {
+  $D.humanlayers.reduce((items, d) => {
     const isShow =
       $D.params.states &&
-      $D.params.states.l &&
-      $D.params.states.l.includes(d.id) ?
-        true:
+        $D.params.states.l &&
+        $D.params.states.l.includes(d.id) ?
+        true :
         false;
     var isFind = false;
     for (const key in items) {

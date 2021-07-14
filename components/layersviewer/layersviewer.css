@@ -111,6 +111,7 @@
 /* checkbox */
 .layers_list [type="checkbox"] {
 	margin-left:5px;
+    margin-top:0;
 	border:#cbcbcb 1px solid;
     pointer-events: all;
     -webkit-appearance: none !important;

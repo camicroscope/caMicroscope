@@ -33,6 +33,7 @@ function LayersViewer(options) {
     // id: doc element
     // data: layers dataset
     // categoricalData
+    data: [],
     isSortableView: false,
   };
   this.defaultType = ['human', 'ruler', 'segmentation', 'heatmap'];
@@ -849,7 +850,7 @@ LayersViewer.prototype.setData = function(data) {
 LayersViewer.prototype.update = function() {
   // this.setting.data = data;
   // this.__covertData();
-  this.__refreshUI();
+  // this.__refreshUI();
 };
 
 /**

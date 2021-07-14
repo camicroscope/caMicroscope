@@ -44,9 +44,7 @@ CaMessage.prototype.__createMessageElt = function() {
       <span>${this.setting.content.key}</span>
       <strong>${this.setting.content.value}</strong></div>
     </div>
-    ${this.setting.metadata?`<div class='material-icons'>
-      ${this.setting.opened?'keyboard_arrow_down':'keyboard_arrow_up'}
-    </div>`:``}
+    ${this.setting.metadata?`<div class='material-icons'>${this.setting.opened?'keyboard_arrow_up':'keyboard_arrow_down'}</div>`:``}
   </div>`;
 
   const strContent = this.setting.metadata?`<div class='message-content' style='display:${this.setting.opened?null:'none'}'>${this.__createContent()}</div>`:'';
@@ -56,12 +54,12 @@ CaMessage.prototype.__createMessageElt = function() {
     const icon = this.elt.querySelector('.material-icons');
     const content = this.elt.querySelector('.message-content');
     icon.addEventListener('click', (e)=>{
-      if (icon.textContent =='keyboard_arrow_down') {
+      if (icon.textContent == 'keyboard_arrow_down') {
         icon.textContent = 'keyboard_arrow_up';
-        content.style.display = 'none';
+        content.style.display = null;
       } else {
         icon.textContent = 'keyboard_arrow_down';
-        content.style.display = null;
+        content.style.display = 'none';
       }
     });
   }

@@ -320,6 +320,8 @@ function toolsOff() {
     case 'brush':
       brushOff();
       break;
+    case 'eval':
+      evalPanelOff();
   }
 }
 
@@ -666,6 +668,51 @@ function imageDownload() {
       });
 }
 
+function toggleEvalPanel(e) {
+  if (e.checked) {
+    if ($CAMIC.status == 'eval') {
+      evalPanelOn();
+      return;
+    }
+    // turn off annotation
+    toolsOff();
+
+    var checkAllToolsOff = setInterval(() =>{
+      if ($CAMIC && $CAMIC.status == null) {
+        // all tool has turn off
+        clearInterval(checkAllToolsOff);
+        evalPanelOn();
+      }
+    },
+    100,
+    );
+  } else {
+    // off
+    evalPanelOff();
+  }
+}
+/**
+ * switches evaluation form panel on, called from toggleMeasurement
+ */
+function evalPanelOn() {
+  mainMenuChange({apps: false, layers: false, labels: false, eval: true});
+  const li = $UI.toolbar.getSubTool('eval');
+  li.querySelector('input[type=checkbox]').checked = true;
+  // open labels viewer
+  $UI.evalSideMenu.open();
+  $CAMIC.status = 'eval';
+}
+
+/**
+ * switches evaluation form panel off, called from toggleMeasurement
+ */
+function evalPanelOff() {
+  const li = $UI.toolbar.getSubTool('eval');
+  li.querySelector('input[type=checkbox]').checked = false;
+  $UI.evalSideMenu.close();
+  $CAMIC.status = null;
+}
+
 /**
  * share url callback
  * @param {Object} data
@@ -696,6 +743,12 @@ function mainMenuChange(data) {
     $UI.labelsSideMenu.open();
   } else {
     presetLabelOff();
+  }
+
+  if (data.eval) {
+    $UI.evalSideMenu.open();
+  } else {
+    evalPanelOff();
   }
 }
 
@@ -1779,6 +1832,7 @@ function stopDrawing(e) {
       $CAMIC.viewer.canvasDrawInstance._draws_data_.length > 0
     ) {
       $CAMIC.viewer.canvasDrawInstance.isOn = false;
+      saveAnnotation();
     }
   }
 }
@@ -1968,10 +2022,52 @@ function drawLabel(e) {
   }
 }
 
+async function saveEvaluation(e) {
+  if (!$D.isEvalDataExist) {
+    const evalData = {
+      'user_id': getUserId(),
+      'slide_id': $D.params.slideId,
+      'slide_name': $D.params.data.name,
+      'evaluation': this.getValue(),
+      'create_date': new Date(),
+      'creator': getUserId(),
+    };
+    const rs = await $CAMIC.store.addEvaluation(evalData);
+    if (rs.error) {
+      $UI.message.addError(rs.text);
+    } else if (rs.insertedCount && rs.result && rs.result.ok ) {
+      $UI.message.add(`Evaluation Saved`);
+      $D.isEvalDataExist = true;
+    } else {
+      $UI.message.addWarning(`Something Happened When Saving Evaluation!`);
+    }
+  } else {
+    const query = {
+      'user_id': getUserId(),
+      'slide_id': $D.params.slideId,
+    };
+    const evalData = {
+      'evaluation': this.getValue(),
+      'update_date': new Date(),
+      'updater': getUserId(),
+    };
+    const rs = await $CAMIC.store.updateEvaluation(query, evalData);
+    if (rs.error) {
+      $UI.message.addError(rs.text);
+    } else if (rs.modifiedCount && rs.result && rs.result.ok ) {
+      $UI.message.add(`Evaluation Updated`);
+      $D.isEvalDataExist = true;
+    } else {
+      $UI.message.addWarning(`Something Happened When Saving Evaluation!`);
+    }
+  }
+}
+
 function presetLabelOn(label) {
   if (!$CAMIC.viewer.canvasDrawInstance) return;
   // open labels viewer
   mainMenuChange({apps: false, layers: false, labels: true});
+  mainMenuChange({apps: false, layers: false, labels: true, eval: false});
   const canvasDraw = $CAMIC.viewer.canvasDrawInstance;
   if (!label) {
     $UI.message.addWarning('No Label Exist. Please Add A Label');

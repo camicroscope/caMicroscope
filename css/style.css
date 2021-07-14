@@ -1,15 +1,21 @@
 /* css style */
-html {
-  font-size: 10px;
-}
+/* html {
+  
+} */
 
 html,
 body {
+  font-size: 10px;
   margin: 0;
   padding: 0;
-  font-family: sans-serif;
+  /* font-family: sans-serif; */
+  line-height: normal;
   height: 100%;
   width: 100%;
+}
+
+label {
+  margin-bottom: 0;
 }
 
 body {
@@ -282,6 +288,9 @@ opacity: 0.3 !important;
     min-width: 25px;
     min-height: 25px;
   }
+  .side_menu > div.close {
+    height: 2.2vw !important;
+  }
 
 }
 
@@ -324,3 +333,26 @@ div.load-status div.text {
   0% { transform: rotate(360deg); }
   100% { transform: rotate(0deg); }
 }
+/* 
+.row {
+  margin: 0;
+} */
+
+#eval_form {
+  color: #365f9c;
+  font-size: 1.3rem;
+}
+
+#eval_form div.checkbox > label {
+  font-weight: bold;
+}
+
+/* #eval_form .alpaca-container-item {
+  border-bottom:1px solid #d3d3d3;
+} */
+#eval_form .alpaca-form-buttons-container {
+  text-align: center;
+}
+/* #eval_form .help-block {
+  color: ;
+} */

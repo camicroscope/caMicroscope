@@ -1,3 +1,6 @@
+ul.tools, ul.tools * {
+  box-sizing:content-box;
+}
 ul.tools > li.handler {
   width: 1.2rem;
   height: 100%;

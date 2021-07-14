@@ -1,4 +1,7 @@
 var UNIQUES = {};
+var $collectionList;
+var $collectionTree;
+var $slideData;
 let filterVars = ['study', 'subject'];
 filterVars.forEach((x)=>{
   UNIQUES[x] = new Set();
@@ -21,6 +24,7 @@ function renderSlide(data) {
   label.classList.add('namebox');
   label.classList.add('bg-dark');
   label.innerText = data.name;
+  label.title = data.name;
   div.appendChild(label);
   // populate uniques
   filterVars.forEach((x)=>{
@@ -51,11 +55,94 @@ function renderSlide(data) {
 // initialization routine
 function init(filters) {
   const STORE = new Store('../../data/');
+  STORE.addSurvey({
+    first: 'test_first',
+    second: 'test_second',
+    email: 'email@test.com',
+  }).then((data) => {
+    console.log(data);
+  });
+
+  STORE.getAllCollection().then((data) => {
+    if (Array.isArray(data)) {
+      $collectionList = data.map((d)=>{
+        d.id = d._id.$oid;
+        delete d._id;
+        return d;
+      });
+      $collectionTree = listToTree(data);
+
+
+      $('#collection-tree-view').jstree({
+        'core': {
+          'data': $collectionTree,
+          'multiple': false,
+          'check_callback': true,
+        },
+        'types': {
+          '#': {'max_children': 1, 'max_depth': 4, 'valid_children': ['default']},
+          'default': {'valid_children': ['default']},
+        },
+        'plugins': ['search', 'wholerow'],
+      });
+
+      showMessage();
+      // $('#collection-tree-view').on('loaded.jstree', () => {
+      //   if (data.length == 0) $('#coll-message').show();
+      // });
+
+      // bind select node event
+      $('#collection-tree-view').on('select_node.jstree', function(event, _data) {
+        const node = _data.node;
+        if (node.children.length > 0) {
+          showMessage();
+          return;
+        }
+        hideMessage();
+
+
+        const slides = $slideData.filter((d)=>d.collections&&d.collections.includes(node.id));
+        $('#table').empty();
+        $('#table').show();
+        if (slides.length) {
+          slides.forEach(renderSlide);
+        } else {
+          showEmptyMessage();
+        }
+
+        // if ( _selectedNodeId === _data.node.id ) {
+        //   // unselected node
+        //   _data.instance.deselect_node(_data.node);
+        //   _selectedNodeId = null;
+        //   //
+        //   selectCollectionHandler(null);
+        //   // hide rename/remove btns
+        //   $('#col-rename').hide();
+        //   $('#col-delete').hide();
+        // } else {
+        //   // selected node
+        //   _selectedNodeId = _data.node.id;
+        //   // show rename/remove btns
+
+        //   $('#col-rename').show();
+        //   $('#col-delete').show();
+        //   selectCollectionHandler(_data.node);
+
+        // show up breadcrum
+        // }
+      });
+    } else {
+      // error message
+
+    }
+  });
+
+
   // get slide data w/filters
   STORE.findSlide().then((x)=>{
-    x.forEach(renderSlide);
+    $slideData = x;
+    // x.forEach(renderSlide);
   });
-  // render each one
 }
 
 function onSearch() {
@@ -173,3 +260,41 @@ initFilters(UNIQUES);
 filters = {};
 // initialize with url params as filters
 init(filters);
+
+function listToTree(list) {
+  var map = {}; var node; var roots = []; var i;
+
+  for (i = 0; i < list.length; i += 1) {
+    map[list[i].id] = i; // initialize the map
+    list[i].children = []; // initialize the children
+  }
+
+  for (i = 0; i < list.length; i += 1) {
+    node = list[i];
+    if (node.pid) {
+      // if you have dangling branches check that map[node.parentId] exists
+      list[map[node.pid]].children.push(node);
+    } else {
+      roots.push(node);
+    }
+  }
+  return roots;
+}
+
+function showMessage() {
+  $('#table').empty();
+  $('#table').html(`<div id="message" class="alert alert-warning" role="alert">
+    Please Select A Collection Without Subcollection on Right Collection Tree</div>`);
+  $('#table').show();
+}
+
+function hideMessage() {
+  $('#table').hide();
+}
+
+function showEmptyMessage() {
+  $('#table').empty();
+  $('#table').html(`<div id="message" class="alert alert-warning" role="alert">
+    The Selected Collection Is Empty. Please Add Slides Into It.</div>`);
+  $('#table').show();
+}

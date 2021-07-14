@@ -120,7 +120,23 @@ class Store {
       body: JSON.stringify(json),
     }).then(this.errorHandler);
   }
-
+  addSurvey(json) {
+    const suffix = 'Survey/post';
+    const url = this.base + suffix;
+    // if (this.validation.user && !this.validation.user(json)) {
+    //   console.warn(this.validation.user.errors);
+    // }
+    return fetch(url, {
+      method: 'POST',
+      credentials: 'include',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json; charset=utf-8',
+        // "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: JSON.stringify(json),
+    }).then(this.errorHandler);
+  }
   /**
    * delete user
    * @param {object} id - the user object id
@@ -765,12 +781,10 @@ class Store {
    **/
   getConfigByName(name) {
     const suffix = 'Configuration/find';
-    const url = this.base + suffix;
-    const query = {
-      'config_name': name,
-    };
+    // var url = this.base + suffix;
+    const url = name? `${this.base}${suffix}?${objToParamStr({'config_name': name})}`:`${this.base}${suffix}`;
 
-    return fetch(url + '?' + objToParamStr(query), {
+    return fetch(url, {
       credentials: 'include',
       mode: 'cors',
     }).then(this.errorHandler);
@@ -1044,6 +1058,96 @@ class Store {
     }).then(this.errorHandler);
   }
   /**
+   * get a freeform document by id. Try not to use this in core.
+   * @param {string} id - the mongo doc's id
+   * @return {promise} - promise which resolves with data
+   **/
+  getEvaluation(id) {
+    const suffix = 'Evaluation/find';
+    const url = this.base + suffix;
+    const query = {
+      '_id': id,
+    };
+    return fetch(url + '?' + objToParamStr(query), {
+      credentials: 'include',
+      mode: 'cors',
+    }).then(this.errorHandler);
+  }
+
+  /**
+   * find a freeform document by arbitrary query. Try not to use this in core.
+   * @param {string} id - the mongo doc's id
+   * @return {promise} - promise which resolves with data
+   **/
+  findEvaluation(query) {
+    const suffix = 'Evaluation/find';
+    const url = this.base + suffix;
+    return fetch(url + '?' + objToParamStr(query), {
+      credentials: 'include',
+      mode: 'cors',
+    }).then(this.errorHandler);
+  }
+
+  /**
+   * post a freeform document.  Try not to use this in core.
+   * @param {object} json - the collection data
+   * @return {promise} - promise which resolves with response
+   **/
+  addEvaluation(json) {
+    const suffix = 'Evaluation/post';
+    const url = this.base + suffix;
+    return fetch(url, {
+      method: 'POST',
+      credentials: 'include',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json; charset=utf-8',
+        // "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: JSON.stringify(json),
+    }).then(this.errorHandler);
+  }
+
+  /**
+   * delete Evaluation document
+   * @param {object} id - the freeform object id
+   * @return {promise} - promise which resolves with response
+   **/
+  deleteEvaluation(id) {
+    const suffix = 'Evaluation/delete';
+    const url = this.base + suffix;
+    const query = {
+      '_id': id,
+    };
+    return fetch(url + '?' + objToParamStr(query), {
+      method: 'DELETE',
+      credentials: 'include',
+      mode: 'cors',
+    }).then(this.errorHandler);
+  }
+
+  /**
+   * update a evaluation info
+   * @param {string} id - the evaluation id
+   * @param {object} json - the data
+   * @return {promise} - promise which resolves with data
+   **/
+  updateEvaluation(query, data) {
+    const suffix = 'Evaluation/update';
+    const url = this.base + suffix;
+    if (query.id) {
+      query._id = query.id;
+      delete query.id;
+    }
+    return fetch(url + '?' + objToParamStr(query), {
+      method: 'POST',
+      credentials: 'include',
+      mode: 'cors',
+      body: JSON.stringify(data),
+    }).then(this.errorHandler);
+  }
+
+  /**
    * get a collection info
    * @param {object} json - the log data
    * @return {promise} - promise which resolves with data
@@ -1062,12 +1166,13 @@ class Store {
    * @param {string} id - the mongo doc's id
    * @return {promise} - promise which resolves with data
    **/
-  getCollection(id) {
+  getCollection(obj) {
     const suffix = 'Collection/find';
     const url = this.base + suffix;
-    const query = {
-      '_id': id,
-    };
+    const query = {};
+    if (obj.id) query['_id'] = obj.id;
+    if (obj.text) query['text'] = obj.text;
+
     return fetch(url + '?' + objToParamStr(query), {
       credentials: 'include',
       mode: 'cors',
@@ -1110,6 +1215,67 @@ class Store {
     }).then(this.errorHandler);
   }
 
+  deleteMultiCollections(ids) {
+    if (!Array.isArray(ids) || ids.length == 0) {
+      return {
+        hasError: true,
+        message: 'args are illegal',
+      };
+    }
+    const suffix = 'Collection/deleteMulti';
+    const url = this.base + suffix;
+    const query = {ids: ids};
+    return fetch(url, {
+      method: 'POST',
+      credentials: 'include',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json; charset=utf-8',
+      },
+      body: JSON.stringify(query),
+    }).then(this.errorHandler);
+  }
+  /**
+   * add Slides To Collection
+   * @param {string} cid - the collection id
+   * @param {object} sids - slide ids
+   * @return {promise} - promise which resolves with data
+   **/
+  addSlidesToCollection(cid, sids) {
+    const suffix = 'Collection/addSlidesToCollection';
+    const url = this.base + suffix;
+    const query = {
+      cid: cid,
+      sids: sids,
+    };
+    return fetch(url, {
+      method: 'POST',
+      credentials: 'include',
+      mode: 'cors',
+      body: JSON.stringify(query),
+    }).then(this.errorHandler);
+  }
+
+  /**
+   * remove Slides From Collection
+   * @param {string} cid - the collection id
+   * @param {object} sids - slide ids
+   * @return {promise} - promise which resolves with data
+   **/
+  removeSlidesFromCollection(cid, sids) {
+    const suffix = 'Collection/removeSlidesFromCollection';
+    const url = this.base + suffix;
+    const query = {
+      cid: cid,
+      sids: sids,
+    };
+    return fetch(url, {
+      method: 'POST',
+      credentials: 'include',
+      mode: 'cors',
+      body: JSON.stringify(query),
+    }).then(this.errorHandler);
+  }
 
   // Update slide review status
   updateSlideReview(id, newStatus) {

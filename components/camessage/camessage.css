@@ -22,6 +22,7 @@ div.camessage {
 .camessage .message-head .row {
   padding: 0 .8rem;
   font-size: 1.2rem;
+  margin: 0;
 }
 .camessage .message-head span {
   color: #bababa; 
@@ -48,6 +49,7 @@ div.camessage {
 }
 .camessage .message-content .row {
   padding-bottom: .8rem;
+  margin: 0;
 }
 
 .camessage .message-content .row * {

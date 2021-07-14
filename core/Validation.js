@@ -18,9 +18,9 @@ $VALIDATION.slide = ajv.compile({
 });
 $VALIDATION.collection = ajv.compile({
   type: 'object',
-  required: ['id', 'name', 'slides'],
+  required: ['id', 'text'],
   properties: {
-    name: {
+    text: {
       type: 'string',
       description: 'collection name',
     },

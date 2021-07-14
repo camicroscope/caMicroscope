@@ -13,7 +13,7 @@
 }
 
 .item_head {
-    margin:.2rem;
+    margin:0;
     background-color: #365f9c;
     color: rgba(255,255,255,.7);
     cursor: pointer;

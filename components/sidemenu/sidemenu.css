@@ -6,10 +6,9 @@
     z-index: 1;
     top: 0;
     left: 0;
-    border:#cbcbcb 1px solid;
+    /* border:#cbcbcb 1px solid; */
     box-shadow: 1px 2px 3px #aaa;
     background-color: rgba(245,245,245,1);
-    border-right:;
     overflow-x: hidden;
     transition: 0.5s;
 }

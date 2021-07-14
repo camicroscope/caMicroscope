@@ -18,7 +18,7 @@ class CaMic {
   *
   */
   constructor(divId, slideQuery, options) {
-    Loading.open(document.body, 'CaMicroscope Is Initializing...');
+    Loading.open(document.getElementById(divId), 'CaMicroscope Is Initializing...');
     // initalize viewer
     this.setting = {
       id: divId,
@@ -149,7 +149,7 @@ class CaMic {
   * Loads the staged image
   */
   loadImg(func) {
-    Loading.open(document.body, 'CaMicroscope Is Loading Images ...');
+    Loading.open(this.viewer.element, 'CaMicroscope Is Loading Images ...');
     // loads current image
     // if id is set, use id
     let slidePromise;

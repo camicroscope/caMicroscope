@@ -935,6 +935,7 @@ function createCollectionPanel(data, cid) {
   panel.find('item').remove();
 
   data.forEach((d)=>{
+    if (!d.slides) return;
     const html = `<li
       class="list-group-item ${cid == d._id['$oid'] ? 'list-group-item-primary' : ''} item d-flex justify-content-between align-items-center"
       onclick = "location.href='./table.html?cid=${d._id['$oid']}'"

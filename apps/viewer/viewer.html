@@ -17,9 +17,13 @@
       __auth_check(2);
     </script>
     <title>caMicroscope</title>
+    <!-- bootstrap css -->
+    <link type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet"/>
+    
     <!-- google material icons css sheet -->
     <link href="https://fonts.googleapis.com/css2?family=Material+Icons"
       rel="stylesheet">
+    
     <!-- common css START -->
     <link
       rel="stylesheet"
@@ -161,6 +165,8 @@
     />
     <!-- osd & core css END -->
 
+    <!-- alpaca css -->
+    <link type="text/css" href="//cdn.jsdelivr.net/npm/alpaca@1.5.27/dist/alpaca/bootstrap/alpaca.min.css" rel="stylesheet"/>
     <!-- popup css -->
     <link
       rel="stylesheet"
@@ -195,6 +201,13 @@
       type="text/javascript"
       src="../../common/pureform/pure-form.js"
     ></script>
+    <!-- add alpaca and dependencies script -->
+    <!-- <script type="text/javascript" src="//code.jquery.com/jquery-1.12.1.min.js"></script> -->
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js"></script>
+    <script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="//cdn.jsdelivr.net/npm/alpaca@1.5.27/dist/alpaca/bootstrap/alpaca.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
     <!-- color picker js -->
     <script
       type="text/javascript"
@@ -377,6 +390,9 @@
 
     <!-- side menu for labels -->
     <div id="labels_layers" style="z-index:600"></div>
+
+    <!-- side evaluation form for labels -->
+    <div id="eval_panel" style="z-index:600"></div>
 
     <!-- collapsible list - annotation and analytics -->
     <div id="collapsiblelist" style="z-index:600"></div>
