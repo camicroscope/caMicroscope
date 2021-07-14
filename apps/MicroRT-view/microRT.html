@@ -1,0 +1,355 @@
+<html>
+
+<head>
+	<title>caMicroscope MicroRT view</title>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<!-- Check If we're logged in ok, otherwise, log in for us -->
+    <!-- REMOVE JQUERY AND AJAX AFTER MODERNIZING DICOM PACKAGE-->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+	
+    <!-- Thank you -->
+    <script src="../../common/authChecker.js"></script>
+    <!-- AJV json validator engine -->
+    <script type="text/javascript" src="../../common/ajv.js"></script>
+    <!-- util.js -->
+    <script type="text/javascript" src="../../common/util.js"></script>
+    <script type="text/javascript" src="../../common/DrawHelper.js"></script>
+    <script type="text/javascript" src="../../common/simplify.js"></script>
+    <script type="text/javascript" src="../../common/paths.js"></script>
+    <script type="text/javascript" src="../../common/touchMe.js"></script>
+
+​
+	<!--Bootstrap Js-->
+	<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
+	<!--Bootstrap Css-->
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+	<link 
+		rel="stylesheet"
+		type="text/css"
+		media="all"
+		href="./microRT.css"
+	/>
+
+	<!-- common css START -->
+	<link
+		rel="stylesheet"
+		type="text/css"
+		media="all"
+		href="../../css/style.css"
+	/>
+
+    <!-- osd & core css START -->
+    <!-- zoom control css -->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      media="all"
+      href="../../core/extension/openseadragon-zoom-control/openseadragon-zoom-control.css"
+    />
+    <!-- mesurement tool css -->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      media="all"
+      href="../../core/extension/openseadragon-measurement-tool/openseadragon-measurement-tool.css"
+    />
+    <!-- loading cover css -->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      media="all"
+      href="../../components/loading/loading.css"
+    />
+    <!-- google material icons css sheet -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Icons"
+      rel="stylesheet">    
+    <!-- loading cover js -->
+    <script
+      type="text/javascript"
+      src="../../components/loading/loading.js"
+    ></script>
+    <!-- osd & core css END -->
+    <!-- osd & core js START -->
+    <script
+      type="text/javascript"
+      src="../../core/openseadragon/openseadragon.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="../../core/openseadragon-imaginghelper.min.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="../../core/openseadragon-scalebar.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="../../core/openseadragonzoomlevels.js"
+    ></script>
+​
+    <!-- core (package/ext) libs -->
+    <script type="text/javascript" src="../../core/StatesHelper.js"></script>
+​
+    <script type="text/javascript" src="../../core/Validation.js"></script>
+    <script type="text/javascript" src="../../core/Store.js"></script>
+    <script type="text/javascript" src="../../core/CaMic.js"></script>
+    <script
+      type="text/javascript"
+      src="../../core/extension/openseadragon-canvas-draw-overlay.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="../../core/extension/openseadragon-overlays-manage.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="../../core/extension/openseadragon-measurement-tool/openseadragon-measurement-tool.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="../../core/extension/openseadragon-zoom-control/openseadragon-zoom-control.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="../../core/extension/osd-heatmap-overlay.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="../../core/extension/osd-segment-overlay.js"
+    ></script>
+
+	<script 
+		type="text/javascript"
+		src="../../core/openseadragon/openseadragonselection.js"
+	></script>
+
+	<link rel="stylesheet" 
+	href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.4.0/min/dropzone.min.css"/>
+
+   <link rel="stylesheet" 
+	href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.4.0/min/basic.min.css"/>
+
+   <script type="application/javascript" 
+	src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.4.0/min/dropzone.min.js">
+   </script>
+
+</head>
+
+<body>
+	<div class="page-container">
+	<div class="header text-center text-white bg-info p-4">
+		<h1 class="h1">caMicroscope</h1>
+		<p>Digital pathology image viewer with support for human/machine generated annotations and markups.</p>
+	</div>
+	</div>
+
+<div class="container-fluid">
+ <div class="row">
+	<div class="col-5">
+		<center><h4>Microscope View</h4></center>
+	</div>
+	<div class="col-1">
+	</div>
+	<div class="col-6">
+		<center><h4>WSIImage View</h4></center>
+	</div>
+ </div>
+  <div class="row">
+	<div class='col-2'></div>
+    <div id="parent2" class="col-8">		
+    </div>
+	<div class='col-2'></div>
+  </div>
+  <div class="row mb-5">
+	<div id="buttons-division" class="container mt-5 rounded-right rounded-left">
+		<div class="row">
+			<div class="col-5 ml-5 mr-2 mt-3 mb-2 odd rounded-right rounded-left border border-dark">
+				<div class="row text-dark mt-2 mb-3 d-flex justify-content-center h3">Take Stage Coordinates</div>
+				<!--action="http://192.168.10.21:9000/take_stage_image"-->
+				<form id="stage_form"  method="post" enctype="multipart/form-data">
+					<div class="row mt-2 mb-2 d-flex justify-content-center"><button name="order" id="stage_1" type="submit"  class="btn btn-light btn-lg d-flex justify-content-center">Take Stage position1</button></div>
+					<div class="row mt-2 mb-2 d-flex justify-content-center"><button name="order" id="stage_2" type="submit" class="btn btn-light btn-lg d-flex justify-content-center">Take Stage position2</button></div>
+					<div class="row mt-2 mb-3 d-flex justify-content-center"><button name="order" id="stage_3" type="submit" class="btn btn-light btn-lg d-flex justify-content-center">Take Stage position3</button></div>
+					
+				</form>
+			</div>
+			<div class="col-5 ml-5 mr-2 mt-3 mb-2 odd rounded-right rounded-left border border-dark">
+				<div class="row text-dark mt-2 mb-3 d-flex justify-content-center h3">Take WSI Coordinates</div>
+				<!--action="http://192.168.10.21:8020/take_wsi_image" -->
+				<form id="wsi_form" method="post" onsubmit="return formSubmit(this);" enctype="multipart/form-data">
+					<div class="row mt-2 mb-2 d-flex justify-content-center"><button name="capture" id="wsi_1" type="submit"  onclick="return register(1);" class="btn btn-light btn-lg d-flex justify-content-center">Take WSI position1</button></div>
+					<div class="row mt-2 mb-2 d-flex justify-content-center"><button name="capture" id="wsi_2" type="submit"  onclick=" return register(2);" class="btn btn-light btn-lg d-flex justify-content-center">Take WSI position2</button></div>
+					<div class="row mt-2 mb-3 d-flex justify-content-center"><button name="capture" id="wsi_3" type="submit"  onclick="return register(3);" class="btn btn-light btn-lg d-flex justify-content-center">Take WSI position3</button></div>
+				</form>	
+			</div>
+
+		</div>
+		<div class="row">
+			<div class="col-1"></div>
+			<div class="col-9 mt-4 ml-2 mb-3 d-flex justify-content-center bg-light border border-dark">
+				<div class="col-4 mr-2 ml-2 mb-2 mt-2 even">
+					<div class="row text-dark d-flex justify-content-center h5">Registration1</div>
+					<div class="row text-dark d-flex justify-content-left h5">WSI position1</div>
+					<div class="row mt-4 mb-4 text-dark d-flex justify-content-center h6">
+						<div class="col-2 d-flex justify-content-center">
+							X:
+						</div>
+						<div id="box" class="col-3 d-flex justify-content-center">
+						    1
+						</div>
+						<div class="col-1"></div>
+						<div class="col-2 d-flex justify-content-center">
+							Y:
+						</div>
+						<div id="box" class="col-3 d-flex justify-content-center">
+						    2
+						</div>
+						<div class="col-1"></div>
+					</div>
+					<div class="row text-dark d-flex justify-content-left h5">Stage position1</div>
+					<div class="row mt-4 mb-4 text-dark d-flex justify-content-center h6">
+						<div class="col-2">
+							X:
+						</div>
+						<div id="box" class="col-3 d-flex justify-content-center">
+						    3
+						</div>
+						<div class="col-1"></div>
+						<div class="col-2 d-flex justify-content-center">
+							Y:
+						</div>
+						<div id="box" class="col-3 d-flex justify-content-center">
+						    4
+						</div>
+						<div class="col-1"></div>
+					</div>
+				</div>
+				<div class="col-4 mr-2 mb-2 mt-2 even">
+					<div class="row text-dark d-flex justify-content-center h5">Registration2</div>
+					<div class="row text-dark d-flex justify-content-left h5">WSI position2</div>
+					<div class="row mt-4 mb-4 text-dark d-flex justify-content-center h6">
+						<div class="col-2 d-flex justify-content-center">
+							X:
+						</div>
+						<div id="box" class="col-3 d-flex justify-content-center">
+						    5
+						</div>
+						<div class="col-1"></div>
+						<div class="col-2 d-flex justify-content-center">
+							Y:
+						</div>
+						<div id="box" class="col-3 d-flex justify-content-center">
+						    6
+						</div>
+						<div class="col-1"></div>
+					</div>
+					<div class="row text-dark d-flex justify-content-left h5">Stage position2</div>
+					<div class="row mt-4 mb-4 text-dark d-flex justify-content-center h6">
+						<div class="col-2 d-flex justify-content-center">
+							X:
+						</div>
+						<div id="box" class="col-3 d-flex justify-content-center">
+						    7
+						</div>
+						<div class="col-1"></div>
+						<div class="col-2 d-flex justify-content-center">
+							Y:
+						</div>
+						<div id="box" class="col-3 d-flex justify-content-center">
+						    8
+						</div>
+						<div class="col-1"></div>
+					</div>
+				</div>
+				<div class="col-4 mr-2 mb-2 mt-2 even">
+					<div class="row text-dark d-flex justify-content-center h5 ">Registration3</div>
+					<div class="row text-dark d-flex justify-content-left h5">WSI position3</div>
+					<div class="row mt-4 mb-4 text-dark d-flex justify-content-center h6">
+						<div class="col-2 d-flex justify-content-center">
+							X:
+						</div>
+						<div id="box" class="col-3 d-flex justify-content-center">
+						    9
+						</div>
+						<div class="col-1"></div>
+						<div class="col-2 d-flex justify-content-center">
+							Y:
+						</div>
+						<div id="box" class="col-3 d-flex justify-content-center">
+						    10
+						</div>
+						<div class="col-1"></div>
+					</div>
+					<div class="row text-dark d-flex justify-content-left h5">Stage position3</div>
+					<div class="row mt-4 mb-4 text-dark d-flex justify-content-center h6">
+						<div class="col-2 d-flex justify-content-center">
+							X:
+						</div>
+						<div id="box" class="col-3 d-flex justify-content-center">
+						    11
+						</div>
+						<div class="col-1"></div>
+						<div class="col-2 d-flex justify-content-center">
+							Y:
+						</div>
+						<div id="box" class="col-3 d-flex justify-content-center">
+						    12
+						</div>
+						<div class="col-1"></div>
+					</div>
+				</div>
+			</div>
+			<div class="col-2"></div>
+		</div>
+	</div>
+  </div>
+</div>
+<div>
+<P>Hello world and welcome</P>
+<dialog id="favDialog">
+	<center>
+	<button type="button" id="view-button" onclick="openRegisterview()" class="btn btn-info btn-lg">View</button>
+	</center>
+	<div style="display: flex;">
+	</div>
+	<!--action='http://192.168.10.21:8020/'-->
+	<form method="dialog" method="POST" id='dialog-id' >
+	  <menu>
+		<button name="cancelBtn" class="btn btn-info btn-lg" id='cancelBtn'>Cancel</button>
+		<button name="confirmBtn" class="btn btn-info btn-lg" id="confirmBtn">Confirm</button>
+	  </menu>
+	</form>
+</dialog>
+  
+  <output aria-live="polite"></output>
+
+</div>
+<center><button type="button" value="Launch" onclick="openLink()" class="btn btn-info btn-lg">Launch</button></center>
+<center><button type="button" value="Enable Crop" onclick="enable_opeation()" class="btn btn-info btn-lg">Enable Crop</button></center>
+<center><button id="updateDetails" class="btn btn-info btn-lg">View</button></center>
+<center>
+
+<!--action="http://192.168.10.21:8020/template_matching"-->
+<form id="register-id" method="POST">
+	<button class="btn btn-info btn-lg" name="slideid-value" id="template-button" type="submit">Register</button>
+	
+</form>
+</center>
+<footer class="text-center text-white bg-dark p-3">
+	<p class="p">Copyright © 2021 caMicroscope</p>
+</footer>
+
+<!--Init Js-->
+<script type="text/javascript" src='./init.js'></script>
+<script>
+
+
+</script>
+</body>
+</html>
