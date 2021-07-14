@@ -273,8 +273,19 @@
         },
         __adjustStraightRuler:function(){
 
-            const w = Math.abs(this._start_client.x-this._end_client.x);
-            const h = Math.abs(this._start_client.y-this._end_client.y);
+            const vertex = this._viewer.viewport.imageToViewerElementCoordinates(new OpenSeadragon.Point(this._end.x, this._start.y));
+
+            const w = Math.sqrt(
+                ((this._start_client.x - vertex.x)*(this._start_client.x - vertex.x)) + 
+                ((this._start_client.y - vertex.y)*(this._start_client.y - vertex.y))
+            );
+            const h = Math.sqrt(
+                ((this._end_client.x - vertex.x)*(this._end_client.x - vertex.x)) + 
+                ((this._end_client.y - vertex.y)*(this._end_client.y - vertex.y))
+            );
+
+            // const w = Math.abs(this._start_client.x-this._end_client.x);
+            // const h = Math.abs(this._start_client.y-this._end_client.y);
             const z = Math.sqrt(w*w+h*h);
 
             const scale = this._currentRuler.querySelector('.scale');
@@ -416,7 +427,7 @@
             //
             
             this._start = imagePoint;
-            this._start_client = new $.Point(e.clientX, e.clientY);
+            this._start_client = this._viewer.viewport.imageToViewerElementCoordinates(imagePoint); // new $.Point(e.clientX, e.clientY);
             
             this._currentRuler = this.__createRuler(this.mode);
         },
@@ -435,7 +446,7 @@
             if(0 > imagePoint.x || this.imgWidth < imagePoint.x || 0 > imagePoint.y || this.imgHeight < imagePoint.y )return;
                 
                 this._end = imagePoint;
-                this._end_client = new $.Point(e.clientX, e.clientY);
+                this._end_client = this._viewer.viewport.imageToViewerElementCoordinates(imagePoint); // new $.Point(e.clientX, e.clientY);
                 if(this._start && this._end){
                     // remove scale
                     this._viewer.removeOverlay(this._currentRuler);

@@ -211,7 +211,8 @@ Spyglass.prototype.close = function() {
  */
 Spyglass.prototype.moving = function(e) {
   const point = new OpenSeadragon.Point(e.position.x, e.position.y);
-  const imgPoint = this._targetViewer.viewport.viewerElementToImageCoordinates(point); // this has been changed from windowToImageCoordinates to facilitate multiple images
+  // this has been changed from windowToImageCoordinates to facilitate multiple images
+  const imgPoint = this._targetViewer.viewport.viewerElementToImageCoordinates(point);
   const image1 = this._targetViewer.world.getItemAt(0);
   const imgWidth = image1.source.dimensions.x;
   const imgHeight = image1.source.dimensions.y;

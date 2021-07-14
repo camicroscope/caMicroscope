@@ -320,8 +320,8 @@ function toolsOff() {
     case 'brush':
       brushOff();
       break;
-      
-    default :
+
+    default:
       CloseCrossMenu();
       break;
   }
