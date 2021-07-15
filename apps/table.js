@@ -298,6 +298,7 @@ function initialize() {
                   // console.log('Done one iter');
 
                   const btn = `<div id='open-delete'>
+                <button style='margin-right:6px' class="btn btn-primary btn-sm" data-id='${sanitize(rs[0])}' onclick='MicroRT_view(this);'>MicroRT View</button>
                 <button class="btn btn-primary btn-sm" data-id='${sanitize(rs[0])}' onclick='openView(this)'>Open</button>
                 <button type='button' class='btn btn-primary btn-sm DownloadButton' id='downloadBtn' data-id='${sanitize(rs[0])}' onclick='downloadSlide(this)'>
                 <i class='fas fa-download' ></i>
@@ -413,11 +414,8 @@ function initialize() {
 
               document.getElementById('datatables').innerHTML = `
             <thead>${thead.reduce((a, b) => a + b)}</thead>
-            <tbody>${tbody.reduce((a, b) => a + b)}</tbody>`;
-              let dtpag = document.createElement('div');
-              dtpag.id = 'datatables_pagination';
-              document.getElementById('datatables').parentNode.appendChild(dtpag);
-              document.getElementById('datatables_pagination').innerHTML = `<tfoot>
+            <tbody>${tbody.reduce((a, b) => a + b)}</tbody>
+            <tfoot>
               <tr>
                 <td colspan='6'>
                   <nav aria-label="Slides Pages" id='tablePages' class="">
@@ -996,4 +994,17 @@ function filterSlides() {
   totaltablepages = Math.ceil(newSlideRows.length / $('#entries').val());
   resetTable();
   pageIndicatorVisible(newSlideRows.length);
+}
+
+
+
+//MicroRT fucntions
+function MicroRT_view(e) {
+  const oid = e.dataset.id;
+  if (oid) {
+    window.location.href = `./MicroRT-view/microRT.html?slideId=${sanitize(oid)}`;
+  } else {
+    alert('No Data Id');
+  }
+  
 }

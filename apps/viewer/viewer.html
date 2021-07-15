@@ -169,23 +169,16 @@
       href="../../css/popup.css"
     />
     <link href="../../common/bootstrap-tour-standalone/bootstrap-tour-standalone.min.css" rel="stylesheet">
+
     <!-- tippy theme -->
     <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/themes/light-border.css" />
-
     <!--  common js START -->
-    <!-- Smartpen -->
-    <script type="text/javascript" src="../../common/enhance.js"></script>
-    <script type="text/javascript" src="../../common/smartpen/autoalign.js"></script>
-    <link rel="stylesheet" type="text/css" media="all" href="../../common/smartpen/autoalign.css"/>
-    <!-- Smartpen end -->
-    
     <!-- util.js -->
     <script type="text/javascript" src="../../common/util.js"></script>
     <script type="text/javascript" src="../../common/DrawHelper.js"></script>
     <script type="text/javascript" src="../../common/simplify.js"></script>
     <script type="text/javascript" src="../../common/paths.js"></script>
     <script type="text/javascript" src="../../common/touchMe.js"></script>
-
     <!-- add pure-form script -->
     <script
       type="text/javascript"
@@ -347,6 +340,7 @@
     <script src="./uicallbacks.js"></script>
     <script src="./dataloaders.js"></script>
     <script src="./init.js"></script>
+    <script src="enhance.js"></script>
     <script src="../../common/bootstrap-tour-standalone/bootstrap-tour-standalone.min.js"></script>
     <script src="./tut.js"></script>
     <script src="../../common/html2canvas.min.js"></script>
@@ -404,7 +398,8 @@
     //Loading.open(document.body, 'CaMicroscope is initializing...');
     // get slide id from url
     $D.params = getUrlVars();
-
+    console.log('yes');
+    console.log($D.params);
     // load if we have at least one slide query element
     if ($D.params && $D.params.slideId) {
       // normal initialization starts
