@@ -40,23 +40,14 @@ function socketInit() {
         // Get the parameter in arguments
         // Intercept the parameter here
         if (arguments[2] === true) {
-          console.log('arguments: ', arguments);
-          console.log('argument 2: ', arguments[2]);
-          console.log('argument 3: ', arguments[3]);
-          console.log('inside here');
           // return constantMock.apply(this, arguments).then(arguments[2](JSON.parse(arguments[1].body)));
           return constantMock.apply(this, arguments).then(async (data) => {
             let body = data.clone();
             body = await body.json();
             // const  { data, body } = dataObj;
-            console.log('data:', data);
-            console.log('body: ', body);
             socket.emit('message', { roomId: window.getUrlVars().slideId, body, typeOfEvent: arguments[3] });
             return data;
           });
-          // .then((dataObj) => {
-  
-          // });
         }
         return constantMock.apply(this, arguments);
       }
