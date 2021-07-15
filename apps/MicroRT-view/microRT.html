@@ -171,7 +171,6 @@
 		<div class="row">
 			<div class="col-5 ml-5 mr-2 mt-3 mb-2 odd rounded-right rounded-left border border-dark">
 				<div class="row text-dark mt-2 mb-3 d-flex justify-content-center h3">Take Stage Coordinates</div>
-				<!--action="http://192.168.10.21:9000/take_stage_image"-->
 				<form id="stage_form"  method="post" enctype="multipart/form-data">
 					<div class="row mt-2 mb-2 d-flex justify-content-center"><button name="order" id="stage_1" type="submit"  class="btn btn-light btn-lg d-flex justify-content-center">Take Stage position1</button></div>
 					<div class="row mt-2 mb-2 d-flex justify-content-center"><button name="order" id="stage_2" type="submit" class="btn btn-light btn-lg d-flex justify-content-center">Take Stage position2</button></div>
@@ -181,7 +180,6 @@
 			</div>
 			<div class="col-5 ml-5 mr-2 mt-3 mb-2 odd rounded-right rounded-left border border-dark">
 				<div class="row text-dark mt-2 mb-3 d-flex justify-content-center h3">Take WSI Coordinates</div>
-				<!--action="http://192.168.10.21:8020/take_wsi_image" -->
 				<form id="wsi_form" method="post" onsubmit="return formSubmit(this);" enctype="multipart/form-data">
 					<div class="row mt-2 mb-2 d-flex justify-content-center"><button name="capture" id="wsi_1" type="submit"  onclick="return register(1);" class="btn btn-light btn-lg d-flex justify-content-center">Take WSI position1</button></div>
 					<div class="row mt-2 mb-2 d-flex justify-content-center"><button name="capture" id="wsi_2" type="submit"  onclick=" return register(2);" class="btn btn-light btn-lg d-flex justify-content-center">Take WSI position2</button></div>
@@ -318,7 +316,6 @@
 	</center>
 	<div style="display: flex;">
 	</div>
-	<!--action='http://192.168.10.21:8020/'-->
 	<form method="dialog" method="POST" id='dialog-id' >
 	  <menu>
 		<button name="cancelBtn" class="btn btn-info btn-lg" id='cancelBtn'>Cancel</button>
@@ -335,7 +332,6 @@
 <center><button id="updateDetails" class="btn btn-info btn-lg">View</button></center>
 <center>
 
-<!--action="http://192.168.10.21:8020/template_matching"-->
 <form id="register-id" method="POST">
 	<button class="btn btn-info btn-lg" name="slideid-value" id="template-button" type="submit">Register</button>
 	
