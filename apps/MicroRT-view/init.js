@@ -45,8 +45,8 @@ $CAMIC.viewer.addHandler('canvas-click', function(event) {
         var imagePoint = $CAMIC.viewer.viewport.viewportToImageCoordinates(viewportPoint);
     
         // Show the results.
-        console.log(webPoint);
-        console.log(webPoint.toString(), viewportPoint.toString(), imagePoint.toString());
+        //console.log(webPoint);
+        //console.log(webPoint.toString(), viewportPoint.toString(), imagePoint.toString());
     });
     //selection.disable();
     //selection.toggleState();
@@ -59,14 +59,14 @@ $CAMIC.viewer.addHandler('canvas-click', function(event) {
         returnPixelCoordinates:  true,
         prefixUrl: '../../core/openseadragon/images/',
         onSelection: function(rect){
-             console.log(rect);
-             console.log('topleft');
-             console.log(rect.getTopLeft().x);
-             console.log(rect.getTopLeft().y);
+             //console.log(rect);
+             //console.log('topleft');
+             //console.log(rect.getTopLeft().x);
+            //  console.log(rect.getTopLeft().y);
              
-             console.log('bottomright');
-             console.log(rect.getBottomRight().x);
-             console.log(rect.getBottomRight().y);
+            //  console.log('bottomright');
+            //  console.log(rect.getBottomRight().x);
+            //  console.log(rect.getBottomRight().y);
              
 
              //Information regarding the croped size
@@ -156,7 +156,7 @@ window.onload= function(){
 
 
                                             }).catch((err)=>{
-                                                console.log(err);
+                                                //console.log(err);
                                             })
     
 
@@ -191,10 +191,10 @@ var sendBase64ToServer = function(name,base64){
     data=JSON.stringify({image: base64});
     httpPost.onreadystatechange = function(err){
         if(httpPost.readyState==4 && httpPost.status==200){
-            console.log(httpPost.responseText);
+           // console.log(httpPost.responseText);
         }
         else{
-            console.log(err);
+           // console.log(err);
         }
     };
     httpPost.open("POST",path,true);
@@ -212,7 +212,7 @@ function register(chance){
     if(!isEmpty(coordinates)){
         document.getElementById('image_data').setAttribute('value',coordinates['x'].toString()+"-"+coordinates['y'].toString()+"-"+coordinates['imageWidth'].toString()+"-"+coordinates['height'].toString()+"-"+$CAMIC.slideId+"_wsi_"+chance.toString());
         var image_slideId=$CAMIC.slideId;
-        console.log(image_slideId);
+        //console.log(image_slideId);
         var coord=coordinates;
 
 
@@ -224,11 +224,11 @@ function register(chance){
                             throw new Error('There is an error occured while running so can you retry the process again!!!');
                         });
         api_call.then((result)=>{
-            console.log("in result");
-            console.log('coordinates');
-            console.log(coord);
+            // console.log("in result");
+            // console.log('coordinates');
+            // console.log(coord);
             var crop_url="http://localhost:4010/img/IIP/raw/?IIIF="+ result[0].location+"/"+coord["x"]+","+coord["y"]+","+coord["width"]+","+coord["height"]+"/"+coord["imageWidth"]+",/0/default.jpg";
-            console.log(crop_url);
+            // console.log(crop_url);
             
             var send_crop_url=client+"/img/IIP/raw/?IIIF="+ result[0].location+"/"+coord["x"]+","+coord["y"]+","+coord["width"]+","+coord["height"]+"/"+coord["imageWidth"]+",/0/default.jpg";
 
@@ -244,7 +244,7 @@ function register(chance){
     else{
         alert("Please select the Region of interest")
     }
-    console.log('done...');
+    // console.log('done...');
     for(var i=0;i<4;i++){
         promise[i]=0;
     }
@@ -257,7 +257,7 @@ function register(chance){
 
 function formSubmit(form) {
     setTimeout(function() {
-        console.log("success...");
+    // console.log("success...");
         form.submit();
     }, 3000);  // 3 seconds
     return false;
@@ -286,7 +286,7 @@ if  (typeof favDialog.showModal === "function") {
 
 });
 confirmBtn.addEventListener('click',function onSelect(e){
-    console.log('conformed');
+    // console.log('conformed');
     var flag=0;
     for(var i=0;i<4;i++){
         if(promise[i]==1){
@@ -300,7 +300,7 @@ confirmBtn.addEventListener('click',function onSelect(e){
         document.getElementById('confirmBtn').setAttribute('value',$CAMIC.slideId.toString()+"_"+flag.toString());
     }
    
-    console.log(e);
+    // console.log(e);
 });
 // "Confirm" button of form triggers "close" on dialog because of [method="dialog"]
 favDialog.addEventListener('close', function onClose() {
