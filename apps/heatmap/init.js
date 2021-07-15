@@ -25,6 +25,10 @@ function initialize() {
       initUIcomponents();
       // create a viewer and set up
       initCore();
+      setTimeout(() => {
+        // initialize sockets
+        socketInit();
+      }, 500);
     }
   }, 100);
   // loading the form template data

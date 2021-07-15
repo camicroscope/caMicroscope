@@ -284,6 +284,7 @@ class Store {
    **/
   addMark(json) {
     const suffix = 'Mark/post';
+    console.log('adding mark');
     const url = this.base + suffix;
     if (this.validation.mark && !this.validation.mark(json)) {
       console.warn(this.validation.mark.errors);
@@ -297,7 +298,10 @@ class Store {
         // "Content-Type": "application/x-www-form-urlencoded",
       },
       body: JSON.stringify(json),
-    }).then(this.errorHandler);
+    },
+    true, // Sockets config
+    'mark'
+    ).then(this.errorHandler);
   }
   /**
    * delete mark
@@ -455,7 +459,10 @@ class Store {
         // "Content-Type": "application/x-www-form-urlencoded",
       },
       body: JSON.stringify(json),
-    }).then(this.errorHandler);
+    },
+    true, // Sockets config
+    'heatmap'
+    ).then(this.errorHandler);
   }
   /**
    * delete heatmap
@@ -526,7 +533,10 @@ class Store {
         // "Content-Type": "application/x-www-form-urlencoded",
       },
       body: JSON.stringify(json),
-    }).then(this.errorHandler);
+    },
+    true, // Sockets config
+    'heatmap'
+    ).then(this.errorHandler);
   }
 
   updateHeatmapEdit(user, slide, name, data) {
@@ -888,6 +898,50 @@ class Store {
     };
     const update = {
       'name': newName,
+    };
+    return fetch(url + '?' + objToParamStr(query), {
+      method: 'POST',
+      credentials: 'include',
+      mode: 'cors',
+      body: JSON.stringify(update),
+    });
+  }
+
+  /**
+   * get slide collab details by id
+   * @param {string} id - the slide id
+   * @return {promise} - promise which resolves with data
+   **/
+  getSlideCollabDetails(id) {
+    const suffix = 'CollabRoom/find';
+    const url = this.base + suffix;
+    const query = {
+      'slideId': id,
+    };
+
+    return fetch(url + '?' + objToParamStr(query), {
+      credentials: 'include',
+      mode: 'cors',
+    }).then(this.errorHandler).then((x) => this.filterBroken(x, 'slide'));
+  }
+
+  /**
+   * Update slide collabStatus
+   * @param {string} id - the slide id
+   * @param {string} status - the status of collaboration room
+   * @param {string} members - the list of accepted members
+   * @return {promise} - promise which resolves with data
+   **/
+  updateCollabRoom(id, status, members) {
+    const suffix = 'CollabRoom/update';
+    const url = this.base + suffix;
+    console.log(id + '   ' + status);
+    const query = {
+      'slideId': id,
+    };
+    const update = {
+      'collabStatus': status,
+      'members': members,
     };
     return fetch(url + '?' + objToParamStr(query), {
       method: 'POST',
