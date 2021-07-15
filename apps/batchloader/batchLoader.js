@@ -11,7 +11,7 @@ let finishUrl = '../../loader/upload/finish/';
 let checkUrl = '../../loader/data/one/';
 let chunkSize = 5*1024*1024;
 let finishUploadSuccess = false;
-const allowedExtensions = ['svs', 'tif', 'tiff', 'vms', 'vmu', 'ndpi', 'scn', 'mrxs', 'bif', 'svslide'];
+const allowedExtensions = ['svs', 'tif', 'tiff', 'vms', 'vmu', 'ndpi', 'scn', 'mrxs', 'bif', 'svslide' , 'JPG' ,'jpg' , 'jpeg', 'png'];
 
 // call on document ready
 $(document).ready(function() {
@@ -92,6 +92,7 @@ function addbody(rowData) {
 // function called on page load
 // initializes table, adds rows, monitors change or click events and checks for errors in names
 function startTable() {
+
   slideNames = [];
   fileNames = [];
   originalFileNames = [];
@@ -284,6 +285,7 @@ function updateFileName(oldfileName) {
   $('#confirmUpdateFileContent').html('Enter the new name for: <br><b>'+oldfileName+
          '</b><br><br><div class="form-group"><input type="text" id="newFileName" class="form-control"'+
          ' value="'+oldfileName+'" aria-label="newFileName" required></div>');
+  
   let input = document.getElementById('newFileName');
   let value = input.value;
   input.setSelectionRange(0, value.lastIndexOf('.'));
@@ -296,7 +298,7 @@ function updateFileName(oldfileName) {
     let newFileName = $('#newFileName');
     let newName = newFileName.val();
     let fileExtension = newName.toLowerCase().split('.').reverse()[0];
-
+  
     if (newName!='') {
       if (fileNames.includes(newName) || existingFiles.includes(newName)) {
         newFileName.addClass('is-invalid');
@@ -306,7 +308,8 @@ function updateFileName(oldfileName) {
         } else {
           $('#filename-feedback0').html(`File with given name already exists`);
         }
-      } else if (!allowedExtensions.includes(fileExtension)) {
+      } else if (!allowedExtensions.includes(fileExtension.toLowerCase())) {
+        // console.log(fileExtension);
         newFileName.addClass('is-invalid');
         if (newFileName.parent().children().length === 1) {
           newFileName.parent().append(`<div class="invalid-feedback" id="filename-feedback0"> 
