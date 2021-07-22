@@ -17,9 +17,9 @@ function csv2Json(csv) {
   return result;
 }
 
-function getManifest(event) {
-  console.log(event);
-  var file = event.target.files[0];
+function getManifest(e) {
+  console.log(e);
+  var file = e.target.files[0];
   let reader = new FileReader();
   // callbacks
   reader.onload = handleManifest;
@@ -29,8 +29,17 @@ function getManifest(event) {
 
 function handleManifest(e) {
   let manifest = e.target.result;
-  console.log('got manifest file');
+  console.info('got manifest file');
   console.log(csv2Json(manifest));
 }
 
-document.getElementById('manifestSelect').addEventListener("change", getManifest, false);
+function handleImport(e) {
+  console.info('got ' + e.target.files.length + ' files');
+  for (let x of e.target.files) {
+    console.log(x.name);
+    // find match in manifest
+  }
+}
+
+document.getElementById('manifestSelect').addEventListener('change', getManifest, false);
+document.getElementById('importSelect').addEventListener('change', handleImport, false);
