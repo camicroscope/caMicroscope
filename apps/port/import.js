@@ -17,32 +17,47 @@ function csv2Json(csv) {
   return result;
 }
 
-function getManifest(e) {
-  console.log(e);
-  var file = e.target.files[0];
-  let reader = new FileReader();
-  // callbacks
-  reader.onload = handleManifest;
-  reader.onerror = console.error;
-  reader.readAsText(file);
+function getManifest() {
+  // todo check len
+  var files = document.getElementById('manifestSelect').files;
+  if (files.length) {
+    let reader = new FileReader();
+    // callbacks
+    reader.onload = handleManifest;
+    reader.onerror = console.error;
+    reader.readAsText(files[0]);
+  } else {
+    return false;
+  }
 }
 
 function handleManifest(e) {
   let manifest = e.target.result;
   console.info('got manifest file');
   console.log(csv2Json(manifest));
+  let filemap = getFilemap();
 }
 
-function handleImport(e) {
+function getFilemap() {
+  let files = document.getElementById('importSelect').files;
   let filemap = {};
-  console.info('got ' + e.target.files.length + ' files');
-  for (let x of e.target.files) {
+  console.info('got ' + files.length + ' files');
+  for (let x of files) {
     console.log(x.name);
     filemap[x.name] = x;
   }
-  console.log(filemap)
+  console.log(filemap);
   return filemap;
 }
 
-document.getElementById('manifestSelect').addEventListener('change', getManifest, false);
-document.getElementById('importSelect').addEventListener('change', handleImport, false);
+function runImport() {
+  // get manifest if exists
+  let hasManifest = getManifest();
+  if (!hasManifest) {
+    // if not, then just operate directly on filemap
+    console.warn('importing w/o manifest, using file refs');
+    let filemap = getFilemap();
+  }
+}
+
+document.getElementById('start').addEventListener('click', runImport, false);
