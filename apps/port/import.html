@@ -1,11 +1,17 @@
 <html>
 <body>
 Title bar
-select type
 upload/preview manifest div
 preview one result div
 start button
 progress bar
+<label for="datatype">Data Type:</label>
+
+<select name="datatype" id="datatype">
+ <option value="slide">slide</option>
+ <option value="mark">mark</option>
+ <option value="heatmap">heatmap</option>
+</select>
 <input type="file" id="manifestSelect" accept=".csv">
 <input type="file" id="importSelect" multiple>
 <script src="./import.js"></script>

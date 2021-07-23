@@ -34,11 +34,14 @@ function handleManifest(e) {
 }
 
 function handleImport(e) {
+  let filemap = {};
   console.info('got ' + e.target.files.length + ' files');
   for (let x of e.target.files) {
     console.log(x.name);
-    // find match in manifest
+    filemap[x.name] = x;
   }
+  console.log(filemap)
+  return filemap;
 }
 
 document.getElementById('manifestSelect').addEventListener('change', getManifest, false);
