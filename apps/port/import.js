@@ -38,9 +38,10 @@ function getManifest() {
           } else {
             delete x['file'];
             delete x['filename'];
-            keyedManifest[x] = x;
+            keyedManifest[f] = x;
           }
         }
+        console.info(keyedManifest);
         res(keyedManifest);
       };
       reader.onerror = console.error;
@@ -52,21 +53,25 @@ function getManifest() {
 }
 
 
-function getFilemap() {
+function getImportFiles() {
   let files = document.getElementById('importSelect').files;
-  let filemap = {};
   console.info('got ' + files.length + ' files');
-  for (let x of files) {
-    console.log(x.name);
-    filemap[x.name] = x;
-  }
-  console.log(filemap);
-  return filemap;
+  return files;
 }
 
 function importFile(file, dataType, manifestRecord) {
   return new Promise(function(res, rej) {
-    res(false);
+    let r = new FileReader();
+    // callbacks
+    r.onload = function(e) {
+      let data = JSON.parse(e.target.result);
+      console.log(data);
+      // inject manifest data
+      // inject slide lookup
+      res(data);
+    };
+    r.onerror = console.error;
+    r.readAsText(file);
   });
 }
 
@@ -74,13 +79,13 @@ function runImport() {
   let dataType = document.getElementById('dataType').value;
   // get manifest if exists
   getManifest().then((manifest)=>{
-    let filemap = getFilemap();
-    for (file of filemap) {
-      console.log(file);
+    let files = getImportFiles();
+    for (file of files) {
+      let manifestRecord = {};
       if (dataType == 'slide') {
         // insert data from manifest if applicable
         if (manifest) {
-          console.info('with manifest');
+          manifestRecord = manifest[file.name] || {};
         }
         // chunked upload process, incl finish this file via load service
         // lookup required fields from load service
@@ -88,14 +93,9 @@ function runImport() {
       } else {
         // insert data from manifest if applicable
         if (manifest) {
-          console.info('with manifest');
+          manifestRecord = manifest[file.name] || {};
         }
-        // look up slide
-        // insert into document
-        // -- field maps to do -- /
-        // slide - provenance.analysis.slide
-        //
-        // post
+        importFile(file, dataType, manifestRecord);
       }
     }
   });
