@@ -571,7 +571,17 @@ async function initUIcomponents() {
       showCollabRoomModal();
     },
   });
-  // 
+  subToolsOpt.push({
+    name: 'Instant Messaging',
+    icon: 'forum',
+    title: 'Instant Messaging',
+    value: 'messaging',
+    type: 'btn',
+    callback: function() {
+      alert('clicked');
+    },
+  });
+  // Jitsi Meet 
   subToolsOpt.push({
     name: 'Voice/Video Meet',
     icon: 'phone_in_talk',
@@ -651,24 +661,16 @@ async function initUIcomponents() {
     callback: toggleSideMenu,
   });
 
-  // $UI.collabRoomSideMenu = new SideMenu({
-  //   id: 'side_collabRoom',
-  //   width: 400,
-  //   contentPadding: 5,
-  //   // , isOpen:true
-  //   callback: toggleSideMenu,
-  // });
+  $UI.messagingSideMenu = new SideMenu({
+    id: 'side_messaging',
+    width: 250,
+    contentPadding: 5,
+    // isOpen: true,
+    callback: toggleSideMenu,
+  });
 
-  // const collabRoomContent = `
-  //   <span style="margin-right: 4rem;">Real Time Collaboration Status</span>
-  //     <input type="checkbox" data-toggle="toggle"
-  //       id="modal-collab-status-switch"
-  //       data-on="Active" data-off="Inactive"
-  //       data-onstyle="success" data-offstyle="secondary"
-  //       data-width="100"
-  //     >
-  // `
-  // $UI.collabRoomSideMenu.addContent(collabRoomContent);
+  const loading2 = `<div class="cover" style="z-index: 500;"><div class="block"><span>loading layers...</span><div class="bar"></div></div></div>`;
+  $UI.messagingSideMenu.addContent(loading2);
 
   const loading = `<div class="cover" style="z-index: 500;"><div class="block"><span>loading layers...</span><div class="bar"></div></div></div>`;
   $UI.layersSideMenu.addContent(loading);
