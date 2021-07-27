@@ -54,18 +54,32 @@ function getFilemap() {
 }
 
 function runImport() {
+  let dataType = document.getElementById('dataType').value;
   // get manifest if exists
   let manifest = getManifest();
   let filemap = getFilemap();
   for (file of filemap) {
     console.log(file);
-    // insert data from manifest if applicable
-    if (manifest) {
-      console.info('with manifest');
+    if (dataType == 'slide') {
+      // insert data from manifest if applicable
+      if (manifest) {
+        console.info('with manifest');
+      }
+      // chunked upload process, incl finish this file via load service
+      // lookup required fields from load service
+      // post slide
+    } else {
+      // insert data from manifest if applicable
+      if (manifest) {
+        console.info('with manifest');
+      }
+      // look up slide
+      // insert into document
+      // -- field maps to do -- /
+      // slide - provenance.analysis.slide
+      //
+      // post
     }
-    // look up slide
-    // insert into document
-    // post
   }
 }
 
