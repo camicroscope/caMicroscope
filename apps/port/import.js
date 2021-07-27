@@ -1,3 +1,6 @@
+// initalize store, dependency
+let _STORE = new Store('../../data/');
+
 // borrowed conversion helper?
 function csv2Json(csv) {
   const lines = csv.split('\n');
@@ -52,11 +55,17 @@ function getFilemap() {
 
 function runImport() {
   // get manifest if exists
-  let hasManifest = getManifest();
-  if (!hasManifest) {
-    // if not, then just operate directly on filemap
-    console.warn('importing w/o manifest, using file refs');
-    let filemap = getFilemap();
+  let manifest = getManifest();
+  let filemap = getFilemap();
+  for (file of filemap) {
+    console.log(file);
+    // insert data from manifest if applicable
+    if (manifest) {
+      console.info('with manifest');
+    }
+    // look up slide
+    // insert into document
+    // post
   }
 }
 
