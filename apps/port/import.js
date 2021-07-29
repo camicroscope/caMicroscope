@@ -1,6 +1,12 @@
 // initalize store, dependency
 let _STORE = new Store('../../data/');
 
+let _postFunctions = {
+  'slide': _STORE.addSlide,
+  'mark': _STORE.addMark,
+  'heatmap': _STORE.addHeatmap,
+};
+
 // borrowed conversion helper?
 function csv2Json(csv) {
   const lines = csv.split('\n');
@@ -59,7 +65,7 @@ function getImportFiles() {
   return files;
 }
 
-function importFile(file, dataType, manifestRecord) {
+function prepareFile(file, dataType, manifestRecord) {
   return new Promise(function(res, rej) {
     let r = new FileReader();
     // callbacks
@@ -67,7 +73,10 @@ function importFile(file, dataType, manifestRecord) {
       let data = JSON.parse(e.target.result);
       console.log(data);
       // inject manifest data
-      // inject slide lookup
+      // if we have a pre-given slide id, use that and don't look up
+      // -- slideId or id or nodeId or nid
+      // otherwise, inject slide lookup based on ??
+      // -- ?? or ?? and ?? or ?? and ?? or ??
       res(data);
     };
     r.onerror = console.error;
@@ -95,7 +104,10 @@ function runImport() {
         if (manifest) {
           manifestRecord = manifest[file.name] || {};
         }
-        importFile(file, dataType, manifestRecord);
+        prepareFile(file, dataType, manifestRecord).then((x)=>{
+          // post the document to the appropriate place
+          _postFunctions[dataType](data).then(console.log); // todo better result page
+        });
       }
     }
   });

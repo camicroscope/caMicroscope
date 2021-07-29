@@ -677,7 +677,28 @@ class Store {
       mode: 'cors',
     }).then(this.errorHandler).then((x) => this.filterBroken(x, 'slide'));
   }
-
+  /**
+   * post slide (metadata, not the file itself)
+   * @param {object} json - the slide data
+   * @return {promise} - promise which resolves with response
+   **/
+  addSlide(json) {
+    const suffix = 'Slide/post';
+    const url = this.base + suffix;
+    if (this.validation.mark && !this.validation.slide(json)) {
+      console.warn(this.validation.mark.errors);
+    }
+    return fetch(url, {
+      method: 'POST',
+      credentials: 'include',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json; charset=utf-8',
+        // "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: JSON.stringify(json),
+    }).then(this.errorHandler);
+  }
   /**
    * find templates matching name and/or type
    * @param {string} [name] - the template name, supporting regex match
