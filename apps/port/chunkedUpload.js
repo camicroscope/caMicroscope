@@ -34,11 +34,11 @@ async function readFileChunks(file, token) {
 // reserve a token
 function startUpload() {
   return fetch(startUrl).then((x)=>{
-    return x;
+    return x['upload_token'];
   });
 }
 
-async function doUpload(token, file) {
+async function continueUpload(token, file) {
   var part = 0;
   $('#upload-progress-div').css('display', 'flex');
   var complete = false;
@@ -57,6 +57,10 @@ async function doUpload(token, file) {
       complete = true;
     }
   }
+  return token;
+}
+
+async function finishUpload(token) {
   // finish the upload
   let regReq = await fetch(finishUrl + token, {method: 'POST', body: JSON.stringify(body), headers: {
     'Content-Type': 'application/json; charset=utf-8',

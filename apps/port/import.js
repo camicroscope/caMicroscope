@@ -107,31 +107,33 @@ function prepareFile(file, dataType, manifestRecord) {
   });
 }
 
-function runImport() {
+async function runImport() {
   let dataType = document.getElementById('dataType').value;
   // get manifest if exists
-  getManifest().then((manifest)=>{
-    let files = getImportFiles();
-    for (file of files) {
-      let manifestRecord = {};
-      if (dataType == 'slide') {
-        // insert data from manifest if applicable
-        if (manifest) {
-          manifestRecord = manifest[file.name] || {};
-        }
-        // TODO --
-        // chunked upload process, incl finish this file via load service
-        // lookup required fields from load service
-        // post slide
-      } else {
-        // insert data from manifest if applicable
-        if (manifest) {
-          manifestRecord = manifest[file.name] || {};
-        }
-        importFile(file, dataType, manifestRecord).then(console.log);
+  manifest = await getManifest();
+  let files = getImportFiles();
+  for (file of files) {
+    let manifestRecord = {};
+    if (dataType == 'slide') {
+      // insert data from manifest if applicable
+      if (manifest) {
+        manifestRecord = manifest[file.name] || {};
       }
+      // TODO --
+      // upload the file to the load service
+      let fileUpload = await startUpload().then((x)=>continueUpload(x, file)).then((x)=>finishUpload(x));
+      // lookup required/recommended fields (mpp) from load service -- TODO
+      let record = manifestRecord || {};
+      // TODO what else goes in this record?
+      let slidePost = await _STORE.addSlide(record);
+    } else {
+      // insert data from manifest if applicable
+      if (manifest) {
+        manifestRecord = manifest[file.name] || {};
+      }
+      importFile(file, dataType, manifestRecord).then(console.log);
     }
-  });
+  }
 }
 
 document.getElementById('start').addEventListener('click', runImport, false);
