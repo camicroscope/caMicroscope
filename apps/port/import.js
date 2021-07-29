@@ -73,34 +73,31 @@ function prepareFile(file, dataType, manifestRecord) {
       let data = JSON.parse(e.target.result);
       console.log(data);
       for (record of data) {
+        record.provenance = record.provenance || {};
+        record.provenance.image = record.provenance.image || {};
         // inject relevant manifest data
-        // !! TODO fix injection locations to match standard
         let manifestId = manifestRecord['slideId'] || manifestRecord['nodeId'] || manifestRecord['id'];
-        if (manifestId) record['slideId'] = manifestId;
+        if (manifestId) record.provenance.image['slideId'] = manifestId;
         let manifestSlide = manifestRecord['slide'] || manifestRecord['name'];
-        if (manifestSlide) record['slide'] = manifestSlide;
+        if (manifestSlide) record.provenance.image['slide'] = manifestSlide;
         let manifestStudy = manifestRecord['study'];
-        if (manifestStudy) record['study'] = manifestStudy;
+        if (manifestStudy) record.provenance.image['study'] = manifestStudy;
         let manifestSpecimen = record['specimen'] || record['subject'];
-        if (manifestSpecimen) record['specimen'] = manifestSpecimen;
+        if (manifestSpecimen) record.provenance.image['specimen'] = manifestSpecimen;
         // if we have a pre-given slide id, use that and don't look up
-        // -- slideId or id or nodeId or nid
         let slideId = record['slideId'] || record['nodeId'] || record['id'];
         if (slideId) {
-          _postFunctions[dataType](record).then(console.log); // TODO better result page
+          _postFunctions[dataType](record).then(console.log);
         } else {
           // otherwise, inject slide lookup based on manifest or document attrs
-          // !! TODO fix read locations to match standard
-          let name = record['slide'] || record['name'];
-          let specimen = record['specimen'] || record['subject'];
-          let study = record['study'];
+          let name = record.provenance.image['slide'] || record.provenance.image['name'];
+          let specimen = record.provenance.image['specimen'] || record.provenance.image['subject'];
+          let study = record.provenance.image['study'];
           let lookup = _STORE.findSlide(slide, specimen, study).then((x)=>{
-            record.provenance = record.provenance || {};
-            record.provenance.image = record.provenance.image || {};
             record.provenance.image.slide = x[0]['_id']['$oid'];
             return record;
           });
-          lookup.then(_postFunctions[dataType]).then(console.log); // todo better result page
+          lookup.then(_postFunctions[dataType]).then(console.log);
         }
       }
       res(true); // note that find/post callbacks may not be done
