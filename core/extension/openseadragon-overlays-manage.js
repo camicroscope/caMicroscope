@@ -47,11 +47,13 @@
             updateView:this.updateView.bind(this),
             zooming:this._zooming.bind(this),
             panning:this._panning.bind(this),
-            drawing:this._drawing.bind(this)
+            drawing:this._drawing.bind(this),
+            rotating:this._rotating.bind(this)
         }
         // -- create container div, and hover, display canvas -- // 
         this._containerWidth = 0;
         this._containerHeight = 0;
+        this._angle = 0;
         
         // create container div
         this._div = document.createElement( 'div');
@@ -91,6 +93,7 @@
         this._viewer.addHandler('resize',this.updateView.bind(this));
         this._viewer.addHandler('pan',this.events.panning);
         this._viewer.addHandler('zoom',this.events.zooming);
+        this._viewer.addHandler('rotate',this.events.rotating);
         this._viewer.addHandler('animation-finish', this.events.drawing);
 
         this._div.addEventListener('mousemove', this.events.highlight);
@@ -144,6 +147,12 @@
             }
             this.updateView();
         },
+
+        _rotating:function(e){
+            this._display_.style.transform = `rotate(${+this._viewer.viewport.getRotation() - this._angle}deg)`;
+            this._hover_.style.transform = `rotate(${+this._viewer.viewport.getRotation() - this._angle}deg)`;
+        },
+
         /**
          * @private
          * highlight the path if cursor on the path
@@ -234,8 +243,23 @@
 
             const x1 = x + width;
             const y1 = y + height;
-            const min = imagingHelper.logicalToDataPoint({x:x,y:y})
-            const max = imagingHelper.logicalToDataPoint({x:x1,y:y1})
+
+            const boundRect = this._viewer.container.getBoundingClientRect();
+
+            const vertex = {
+                top_left : this._viewer.viewport.viewerElementToViewportCoordinates(new OpenSeadragon.Point(0,0)),
+                top_right : this._viewer.viewport.viewerElementToViewportCoordinates(new OpenSeadragon.Point(boundRect.width,0)),
+                bottom_left : this._viewer.viewport.viewerElementToViewportCoordinates(new OpenSeadragon.Point(0,boundRect.height)),
+                bottom_right : this._viewer.viewport.viewerElementToViewportCoordinates(new OpenSeadragon.Point(boundRect.width,boundRect.height))
+            };
+
+            const xmin = Math.min(x, vertex.top_left.x, vertex.top_right.x, vertex.bottom_left.x, vertex.bottom_right.x);
+            const xmax = Math.max(x1, vertex.top_left.x, vertex.top_right.x, vertex.bottom_left.x, vertex.bottom_right.x);
+            const ymin = Math.min(y, (this._viewer.imagingHelper.imgAspectRatio) * Math.min(vertex.top_left.y, vertex.top_right.y, vertex.bottom_left.y, vertex.bottom_right.y));
+            const ymax = Math.max(y1, (this._viewer.imagingHelper.imgAspectRatio) * Math.max(vertex.top_left.y, vertex.top_right.y, vertex.bottom_left.y, vertex.bottom_right.y));
+
+            const min = imagingHelper.logicalToDataPoint({x:xmin,y:ymin})
+            const max = imagingHelper.logicalToDataPoint({x:xmax,y:ymax})
             return { min, max };
         },
         /**
@@ -247,6 +271,8 @@
             this._div.style.left = 0;
             this._div.style.transformOrigin = '0 0';
             this._div.style.transform = 'scale(1,1)';
+            this._display_.style.transform = `rotate(0deg)`;
+            this._hover_.style.transform = `rotate(0deg)`;
             this._center = this._viewer.viewport.getCenter(true);
             this._zoom = this._viewer.viewport.getZoom(true);
 
@@ -272,7 +298,7 @@
                 this._display_.setAttribute('height', this._containerHeight);
             }
             this._viewportOrigin = new $.Point(0, 0);
-            var boundsRect = this._viewer.viewport.getBounds(true);
+            var boundsRect = this._viewer.viewport.getBoundsNoRotate(true);
             this._viewportOrigin.x = boundsRect.x;
             this._viewportOrigin.y = boundsRect.y * this.imgAspectRatio;
             
@@ -300,8 +326,25 @@
             var y=((this._viewportOrigin.y/this.imgHeight-this._viewportOrigin.y )/this._viewportHeight)*this._containerHeight;
 
             DrawHelper.clearCanvas(args[0].canvas);
-            args[0].translate(x,y);
-            args[0].scale(zoom,zoom);
+            // args[0].translate(x,y);
+            // args[0].scale(zoom,zoom);
+
+            this._display_.style.transform = `rotate(0deg)`;
+            this._hover_.style.transform = `rotate(0deg)`;
+
+            var angle = +this._viewer.viewport.getRotation();
+            this._angle = angle;
+            var cos=Math.cos(-1*angle*Math.PI / 180);
+            var sin=Math.sin(-1*angle*Math.PI / 180);
+            var center = this._viewer.viewport.viewportToViewerElementCoordinates(this._viewer.viewport.getCenter());
+            let a = (zoom*cos);
+            let c = (zoom*sin);
+            let e = (x*cos)-(center.x*cos)+(y*sin)-(center.y*sin)+center.x;
+            let b = (-1*zoom*sin);
+            let d = (zoom*cos);
+            let f = center.y+(y*cos)+(center.x*sin)-(center.y*cos)-(x*sin);
+            args[0].setTransform(a,b,c,d,e,f);
+
             drawFuc.apply(this,args);
             //this.drawOnDisplay(this._display_ctx_);
             args[0].setTransform(1, 0, 0, 1, 0, 0);

@@ -461,6 +461,7 @@ async function initUIcomponents() {
         title: 'Left Viewer',
         type: 'multistates',
         callback: function(e) {
+          $CAMIC.viewer.viewport.setRotation(0);
           draw.call(this, e, 'main');
         },
       },
@@ -470,6 +471,7 @@ async function initUIcomponents() {
         title: 'Right Viewer',
         type: 'multistates',
         callback: function(e) {
+          $minorCAMIC.viewer.viewport.setRotation(0);
           draw.call(this, e, 'minor');
         },
       },
@@ -762,16 +764,18 @@ async function initUIcomponents() {
           removeSynchronizationHandlers();
         }
       });
-      /* TODO : Manual Configuration for Sync
+      
           setZoomControlLayer('main');
           setZoomControlLayer('minor');
-          // TODO : Rotation Bar
-           // setRotationControlLayer('main');
-           // setRotationControlLayer('minor');
+          
+          setRotationControlLayer('main');
+          setRotationControlLayer('minor');
 
+          /* TODO : Choice of Origin
           setOriginControlLayer('main');
           setOriginControlLayer('minor');
           */
+      
     }
   }, 300);
 

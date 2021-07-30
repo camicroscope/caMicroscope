@@ -281,24 +281,25 @@ LayersViewer.prototype.__clearUI = function() {
 LayersViewer.prototype.__initUI = function() {
   empty(this.elt); // clear all elements
   this.__clearUI();
-  /* TODO : Manual Configure for sync
+  
   if(arguments.length != 0 && arguments[0] === 'enable crossview'){
 
     const syncHead = document.createElement('div');
     syncHead.classList.add('item_head', 'crossview_layer');
-    syncHead.innerHTML = 'Configure for Sync';
+    syncHead.innerHTML = 'Controls';
     this.elt.appendChild(syncHead);
 
-    const originChoice = document.createElement('div');
-    originChoice.classList.add(arguments[1], 'origin_choice', 'crossview_layer');
-    originChoice.innerHTML = `<span>Point of Origin</span><span class="material-icons">my_location</span>`;
-    this.elt.appendChild(originChoice);
+     /* TODO : Adding choice for selecting origin
+      const originChoice = document.createElement('div');
+      originChoice.classList.add(arguments[1], 'origin_choice', 'crossview_layer');
+      originChoice.innerHTML = `<span>Point of Origin</span><span class="material-icons">my_location</span>`;
+      this.elt.appendChild(originChoice);
+    */
 
-     // TODO : Rotation Bar
-     // const rotationBar = document.createElement('div');
-     // rotationBar.classList.add(arguments[1], 'rotation_panel', 'crossview_layer');
-     // rotationBar.innerHTML = `<label>Rotation<br><input type="range"></label>`;
-     // this.elt.appendChild(rotationBar);
+    const rotationBar = document.createElement('div');
+    rotationBar.classList.add(arguments[1], 'rotation_panel', 'crossview_layer');
+    rotationBar.innerHTML = `<label>Rotation<br><input type="range"></label>`;
+    this.elt.appendChild(rotationBar);
 
 
     const zoomBar = document.createElement('div');
@@ -308,11 +309,11 @@ LayersViewer.prototype.__initUI = function() {
 
 
     const resultsHead = document.createElement('div');
-    resultsHead.classList.add('item_head');
+    resultsHead.classList.add('item_head', 'crossview_layer');
     resultsHead.innerHTML = 'Available Results';
     this.elt.appendChild(resultsHead);
   }
-*/
+
   /* create search bar area START */
   const ctrlObj = LayersViewer.createControlBar();
   // this.viewRadios = ctrlObj.viewRadios;  // view switch

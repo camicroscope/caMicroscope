@@ -104,11 +104,13 @@
     this._offset = [null, null];
     this._interval = null;
     this._intervalTime = options.intervalTime || 300;
+    this._angle = 0;
 
     this.events = {
       updateView: this.updateView.bind(this),
       zooming: this._zooming.bind(this),
-      panning: this._panning.bind(this)
+      panning: this._panning.bind(this),
+      rotating: this._rotating.bind(this)
     };
 
     // -- create cover div -- //
@@ -242,10 +244,13 @@
 
       this._intervalTime = options.intervalTime || 300;
 
+      this._angle = 0
+
       this.events = {
         updateView: this.updateView.bind(this),
         zooming: this._zooming.bind(this),
-        panning: this._panning.bind(this)
+        panning: this._panning.bind(this),
+        rotating: this._rotating.bind(this)
       };
 
       // -- create container div and display canvas -- //
@@ -330,6 +335,7 @@
       this._viewer.addHandler("resize", this.events.updateView);
       this._viewer.addHandler("pan", this.events.panning);
       this._viewer.addHandler("zoom", this.events.zooming);
+      this._viewer.addHandler("rotate", this.events.rotating);
       this._viewer.addHandler("animation-finish", this.events.updateView);
 
       // draw heatmap immediately
@@ -358,6 +364,7 @@
       this._viewer.removeHandler("pan", this.events.panning);
       this._viewer.removeHandler("zoom", this.events.zooming);
       this._viewer.removeHandler("animation-finish", this.events.updateView);
+      this._viewer.removeHandler("rotate", this.events.rotating);
 
       // hidden heatmap
       this._div.style.display = "none";
@@ -556,6 +563,10 @@
       this._center = e.center;
     },
 
+    _rotating: function(e) {
+      this._display_.style.transform = `rotate(${+this._viewer.viewport.getRotation() - this._angle}deg)`;
+    },
+
     /**
      * getViewBoundBox
      * get the current bound box of the view in the normalized coordinate system.
@@ -599,16 +610,27 @@
       const x = d[0]; // left
       const y = d[1]; // top
 
-      // current view's bounding box against a patch
-      if (this._getCanvasBoundBox)
-      return $.isIntersectBbox(this._getCanvasBoundBox, {
-        x: x,
-        y: y,
-        width: this._size[0],
-        height: this._size[1]
-      });
-      else
-        console.log(this._getCanvasBoundBox);
+      if(+this._viewer.viewport.getRotation() != 0) {
+        const yprime = y / this._viewer.imagingHelper.imgAspectRatio;
+        const coord = this._viewer.viewport.viewportToViewerElementCoordinates(new OpenSeadragon.Point(x, yprime));
+        const boundingRect = this._viewer.container.getBoundingClientRect();
+
+        if(coord.x < 0 || coord.x > boundingRect.width || coord.y < 0 || coord.y > boundingRect.height) return false;
+
+        return true;
+      }
+      else {
+        // current view's bounding box against a patch
+        if (this._getCanvasBoundBox)
+        return $.isIntersectBbox(this._getCanvasBoundBox, {
+          x: x,
+          y: y,
+          width: this._size[0],
+          height: this._size[1]
+        });
+        else
+          console.log(this._getCanvasBoundBox);
+      }
     },
     /**
      * [filter description]
@@ -648,6 +670,31 @@
      */
     resize: function() {
       // resize the canvas size
+      // if(+this._viewer.viewport.getRotation() != 0){
+      //   const screenAspectRatio = this._div.clientWidth / this._div.clientHeight;
+      //   if( screenAspectRatio > 1 ) {
+      //     this._display_.width = screenAspectRatio * this._div.clientWidth;
+      //     this._display_.height = screenAspectRatio * this._div.clientHeight;
+      //     const xnew = ((screenAspectRatio - 1) * this._div.clientWidth / 2);
+      //     const ynew = ((screenAspectRatio - 1) * this._div.clientHeight / 2);
+      //     this._display_.style.top = `${(-1) * ynew}px`;
+      //     this._display_.style.left = `${(-1) * xnew}px`;
+      //   }
+      //   else {
+      //     this._display_.width = this._div.clientWidth / screenAspectRatio;
+      //     this._display_.height = this._div.clientHeight / screenAspectRatio;
+      //     const xnew = (((1/screenAspectRatio) - 1) * this._div.clientWidth / 2);
+      //     const ynew = (((1/screenAspectRatio) - 1) * this._div.clientHeight / 2);
+      //     this._display_.style.top = `${(-1) * ynew}px`;
+      //     this._display_.style.left = `${(-1) * xnew}px`;
+      //   }
+      // }
+      // else {
+      //   this._display_.width = this._div.clientWidth;
+      //   this._display_.height = this._div.clientHeight;
+      //   this._display_.style.top = `0px`;
+      //   this._display_.style.left = `0px`;
+      // }
       this._display_.width = this._div.clientWidth;
       this._display_.height = this._div.clientHeight;
 
@@ -691,8 +738,34 @@
         this._size[1],
         this._viewer.imagingHelper
       );
+      // add rotation support for heatmaps by rotating the canvas element
+      // if(+this._viewer.viewport.getRotation() != 0) {
+      //   const xnew = (-1.0) * parseFloat(this._display_.style.left);
+      //   const ynew = (-1.0) * parseFloat(this._display_.style.top);
+      //   this._display_ctx_.translate(xnew, ynew);
+      // }
       // clear canvas before draw
+
+      this._display_.style.transform = `rotate(0deg)`;
+
       DrawHelper.clearCanvas(this._display_);
+
+      var angle = +this._viewer.viewport.getRotation();
+      this._angle = angle;
+      var cos=Math.cos(-1*angle*Math.PI / 180);
+      var sin=Math.sin(-1*angle*Math.PI / 180);
+      var center = this._viewer.viewport.viewportToViewerElementCoordinates(this._viewer.viewport.getCenter());
+      center.x += this._offset[0];
+      center.y += this._offset[1];
+      let a = (cos);
+      let c = (sin);
+      let e = center.x-(center.x*cos)-(center.y*sin);
+      let b = (-1*sin);
+      let d = (cos);
+      let f = center.y+(center.x*sin)-(center.y*cos);
+      this._display_ctx_.setTransform(a,b,c,d,e,f);
+
+      
       if (this.mode === "binal") {
         // filter by thresholds
         finalData = this.__thresholdingData();
@@ -788,6 +861,7 @@
           });
           this._display_ctx_.fill();
         });
+        this._display_ctx_.setTransform(1, 0, 0, 1, 0, 0);
     }
   };
   function removeDeplicateAndLogicalToPhysical(points, imagingHelper) {

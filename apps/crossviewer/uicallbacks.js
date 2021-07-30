@@ -2918,7 +2918,7 @@ function downloadSlideCapture(combiningCanvas) {
   }
 }
 
-/*
+
 function setZoomControlLayer(viewerName){
   document.querySelector(`.${viewerName}.zoom_panel.crossview_layer`).innerHTML = '';
 
@@ -3080,117 +3080,120 @@ function setZoomControlLayer(viewerName){
 
 
 }
-*/
-/* TODO : Rotation Bar
-  function setRotationControlLayer(viewerName){
-    let camic = null;
-    switch(viewerName){
-      case 'main':
-        camic = $CAMIC;
-        break;
-      case 'minor':
-        camic =$minorCAMIC;
-        break;
-      default:
-        console.error('Viewer Name not specified while calling setRotationControlLayer function');
-    }
-    document.querySelector(`.${viewerName}.rotation_panel.crossview_layer`).innerHTML = '';
-
-    const div = document.createElement('div');
-    const minus = document.createElement('span');
-    minus.classList.add('material-icons');
-    minus.style.margin = 'auto';
-    minus.innerText = 'remove';
-    const add = document.createElement('span');
-    add.classList.add('material-icons');
-    add.style.margin = 'auto';
-    add.innerText = 'add';
-
-    const input = document.createElement('input');
-    input.type = 'range';
-    input.min = 0;
-    input.max = 360;
-    input.step = 1;
-    input.value = camic.viewer.viewport.getRotation();
-
-    div.appendChild(minus);
-    div.appendChild(input);
-    div.appendChild(add);
-
-    const label = document.createElement('label');
-    label.innerHTML = `<span>Rotation</span>`;
-    const idx = document.createElement('div');
-    const txt = document.createElement('div');
-    const ip = document.createElement('input');
-    txt.classList.add('txt', 'show');
-    ip.classList.add('ip', 'hide');
-    ip.type = 'text';
-    idx.appendChild(txt);
-    idx.appendChild(ip);
-    label.appendChild(idx);
-    txt.innerHTML = `${(camic.viewer.viewport.getRotation())}<sup>o</sup>`;
-
-    document.querySelector(`.${viewerName}.rotation_panel.crossview_layer`).appendChild(label);
-    document.querySelector(`.${viewerName}.rotation_panel.crossview_layer`).appendChild(div);
 
 
-    add.addEventListener('click', () => {
-      const angle = +input.value;
-      if(angle < 360) {
-        camic.viewer.viewport.setRotation(angle + 1);
-        input.value = angle + 1;
-        txt.innerHTML = `${(camic.viewer.viewport.getRotation())}<sup>o</sup>`
-      }
-    });
-
-    minus.addEventListener('click', () => {
-      const angle = +input.value;
-      if(angle > 0) {
-        camic.viewer.viewport.setRotation(angle - 1);
-        input.value = angle - 1;
-        txt.innerHTML = `${(camic.viewer.viewport.getRotation())}<sup>o</sup>`
-      }
-    });
-
-    input.addEventListener('change', (e) => {
-      camic.viewer.viewport.setRotation(+e.target.value);
-      txt.innerHTML = `${(+e.target.value)}<sup>o</sup>`
-    });
-
-    input.addEventListener('mousemove', (e) => {
-      if(+e.target.value == Math.floor(camic.viewer.viewport.getRotation())) return;
-      if(+e.target.value == Math.ceil(camic.viewer.viewport.getRotation())) return;
-      camic.viewer.viewport.setRotation(+e.target.value);
-      txt.innerHTML = `${(+e.target.value)}<sup>o</sup>`
-    });
-
-    txt.addEventListener('click', ()=>{
-      txt.classList.remove('show');
-      txt.classList.add('hide');
-      ip.classList.remove('hide');
-      ip.classList.add('show');
-      ip.value = `${camic.viewer.viewport.getRotation()}`;
-    });
-
-    ip.addEventListener('keyup', (e) =>{
-      if(e.code === 'Enter'){
-        ip.classList.remove('show');
-        ip.classList.add('hide');
-        txt.classList.remove('hide');
-        txt.classList.add('show');
-        if(isNaN(+ip.value)) {
-          return;
-        } else if(0 > (+ip.value)||180 < (+ip.value)) {
-          return;
-        } else {
-          camic.viewer.viewport.setRotation(+ip.value);
-          input.value = +ip.value;
-          txt.innerHTML = `${(camic.viewer.viewport.getRotation())}<sup>o</sup>`
-        }
-      }
-    });
+function setRotationControlLayer(viewerName){
+  let camic = null;
+  switch(viewerName){
+    case 'main':
+      camic = $CAMIC;
+      break;
+    case 'minor':
+      camic =$minorCAMIC;
+      break;
+    default:
+      console.error('Viewer Name not specified while calling setRotationControlLayer function');
   }
-*/
+  document.querySelector(`.${viewerName}.rotation_panel.crossview_layer`).innerHTML = '';
+
+  const div = document.createElement('div');
+  const minus = document.createElement('span');
+  minus.classList.add('material-icons');
+  minus.style.margin = 'auto';
+  minus.innerText = 'remove';
+  const add = document.createElement('span');
+  add.classList.add('material-icons');
+  add.style.margin = 'auto';
+  add.innerText = 'add';
+
+  const input = document.createElement('input');
+  input.type = 'range';
+  input.min = 0;
+  input.max = 360;
+  input.step = 1;
+  input.value = camic.viewer.viewport.getRotation();
+
+  div.appendChild(minus);
+  div.appendChild(input);
+  div.appendChild(add);
+
+  const label = document.createElement('label');
+  label.innerHTML = `<span>Rotation</span>`;
+  const idx = document.createElement('div');
+  const txt = document.createElement('div');
+  const ip = document.createElement('input');
+  txt.classList.add('txt', 'show');
+  ip.classList.add('ip', 'hide');
+  ip.type = 'text';
+  idx.appendChild(txt);
+  idx.appendChild(ip);
+  label.appendChild(idx);
+  txt.innerHTML = `${(camic.viewer.viewport.getRotation())}<sup>o</sup>`;
+
+  document.querySelector(`.${viewerName}.rotation_panel.crossview_layer`).appendChild(label);
+  document.querySelector(`.${viewerName}.rotation_panel.crossview_layer`).appendChild(div);
+
+  camic.viewer.addHandler('rotate', (...args) => {
+    if(+args[0]['degrees'] == 0 && +args[0]['degrees'] != +input.value) input.value = +args[0]['degrees'];
+  });
+
+  add.addEventListener('click', () => {
+    const angle = +input.value;
+    if(angle < 360) {
+      camic.viewer.viewport.setRotation(angle + 1);
+      input.value = angle + 1;
+      txt.innerHTML = `${(camic.viewer.viewport.getRotation())}<sup>o</sup>`
+    }
+  });
+
+  minus.addEventListener('click', () => {
+    const angle = +input.value;
+    if(angle > 0) {
+      camic.viewer.viewport.setRotation(angle - 1);
+      input.value = angle - 1;
+      txt.innerHTML = `${(camic.viewer.viewport.getRotation())}<sup>o</sup>`
+    }
+  });
+
+  input.addEventListener('change', (e) => {
+    camic.viewer.viewport.setRotation(+e.target.value);
+    txt.innerHTML = `${(+e.target.value)}<sup>o</sup>`
+  });
+
+  input.addEventListener('mousemove', (e) => {
+    if(+e.target.value == Math.floor(camic.viewer.viewport.getRotation())) return;
+    if(+e.target.value == Math.ceil(camic.viewer.viewport.getRotation())) return;
+    camic.viewer.viewport.setRotation(+e.target.value);
+    txt.innerHTML = `${(+e.target.value)}<sup>o</sup>`
+  });
+
+  txt.addEventListener('click', ()=>{
+    txt.classList.remove('show');
+    txt.classList.add('hide');
+    ip.classList.remove('hide');
+    ip.classList.add('show');
+    ip.value = `${camic.viewer.viewport.getRotation()}`;
+  });
+
+  ip.addEventListener('keyup', (e) =>{
+    if(e.code === 'Enter'){
+      ip.classList.remove('show');
+      ip.classList.add('hide');
+      txt.classList.remove('hide');
+      txt.classList.add('show');
+      if(isNaN(+ip.value)) {
+        return;
+      } else if(0 > (+ip.value)||180 < (+ip.value)) {
+        return;
+      } else {
+        camic.viewer.viewport.setRotation(+ip.value);
+        input.value = +ip.value;
+        txt.innerHTML = `${(camic.viewer.viewport.getRotation())}<sup>o</sup>`
+      }
+    }
+  });
+}
+
 /*
 function setOriginControlLayer(viewerName){
   const loc = document.querySelector(`.${viewerName}.origin_choice.crossview_layer > .material-icons`);
