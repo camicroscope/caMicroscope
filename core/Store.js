@@ -272,7 +272,7 @@ class Store {
     const url = this.base + suffix;
     const query = {
       'provenance.analysis.execution_id': id,
-      'provenance.image.slide':slide,
+      'provenance.image.slide': slide,
     };
 
     return fetch(url + '?' + objToParamStr(query), {

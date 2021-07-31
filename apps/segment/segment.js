@@ -356,7 +356,7 @@ function initCore() {
     slideQuery.name = $D.params.slide;
     slideQuery.location = $D.params.location;
     $CAMIC = new CaMic('main_viewer', slideQuery, opt);
-    anno = new segmentationanno($CAMIC,$D,$UI,slideQuery.id);
+    anno = new segmentationanno($CAMIC, $D, $UI, slideQuery.id);
   } catch (error) {
     Loading.close();
     $UI.message.addError('Core Initialization Failed');
@@ -571,32 +571,34 @@ function camicStopDraw(e) {
   }
 }
 
-function saveAnnotation(){
-  let notes = {name:$UI.segmentPanel.__name.value, notes:$UI.segmentPanel.__notes.value};
+function saveAnnotation() {
+  let notes = {name: $UI.segmentPanel.__name.value, notes: $UI.segmentPanel.__notes.value};
   let canv = !$UI.args||$UI.args.status == 'watershed'? $UI.segmentPanel.__out: $UI.segmentPanel.__mask;
-  //let image = canv.getContext('2d').getImageData(0,0,canv.width,canv.height);
-  const canvasDraw = $CAMIC.viewer.canvasDrawInstance, viewer = $CAMIC.viewer;
+  // let image = canv.getContext('2d').getImageData(0,0,canv.width,canv.height);
+  const canvasDraw = $CAMIC.viewer.canvasDrawInstance; const viewer = $CAMIC.viewer;
 
   canvasDraw.clear();
   canvasDraw._simplify = false;
-  if($UI.args && $UI.args.status != 'watershed')
-    findContour(canv,canv,0.11);
+  if ($UI.args && $UI.args.status != 'watershed') {
+    findContour(canv, canv, 0.11);
+  }
   let data = $UI.segmentPanel.__contours;
   const vpx = $UI.segmentPanel.__top_left[0];
   const vpy = $UI.segmentPanel.__top_left[1];
   $UI.segmentPanel.close();
-  //let te = {data:Array.from(image.data),width:image.width,height:image.height,x:vpx,y:vpy};
-  for(var i=0;i<data.length;i++){
+  // let te = {data:Array.from(image.data),width:image.width,height:image.height,x:vpx,y:vpy};
+  for (var i=0; i<data.length; i++) {
     var d = data[i].data32S;
     var arr=[];
-    for(var j = 0; j<d.length-1;j+=2){
-      arr.push([d[j] + vpx , d[j+1] + vpy]);}
-    canvasDraw._redraw(arr,'Polygon');
+    for (var j = 0; j<d.length-1; j+=2) {
+      arr.push([d[j] + vpx, d[j+1] + vpy]);
+    }
+    canvasDraw._redraw(arr, 'Polygon');
   }
   let temp = canvasDraw.getImageFeatureCollection();
   canvasDraw.clear();
   canvasDraw._simplify = true;
-  anno.saveSegment(null,temp,notes);
+  anno.saveSegment(null, temp, notes);
 }
 
 function checkSize(imgColl, imagingHelper) {
@@ -1044,7 +1046,7 @@ function segmentROI(box) {
   console.log(f);
   */
 }
-function findContour(inn,out,thresh){
+function findContour(inn, out, thresh) {
   let src = cv.imread(inn);
   let dst = cv.Mat.zeros(src.cols, src.rows, cv.CV_8UC3);
   cv.cvtColor(src, src, cv.COLOR_RGBA2GRAY, 0);
@@ -1135,7 +1137,7 @@ function watershed(inn, out, save=null, thresh) {
 
   // Find the stuff that IS an object
   cv.dilate(gray, opening, M); // remove any small white noises in the image
-  //cv.dilate(opening, imageBg, M, new cv.Point(-1, -1), 3); // remove any small holes in the object
+  // cv.dilate(opening, imageBg, M, new cv.Point(-1, -1), 3); // remove any small holes in the object
 
   // Distance transform - for the stuff we're not sure about
   cv.distanceTransform(opening, distTrans, cv.DIST_L2, 5);
@@ -1147,10 +1149,10 @@ function watershed(inn, out, save=null, thresh) {
 
   // Mark (label) the regions starting with 1 (color output)
   imageFg.convertTo(imageFg, cv.CV_8U, 1, 0);
-  //cv.subtract(imageBg, imageFg, unknown);
+  // cv.subtract(imageBg, imageFg, unknown);
 
   // Get connected components markers
-  //const x = cv.connectedComponents(imageFg, markers);
+  // const x = cv.connectedComponents(imageFg, markers);
 
   // Get Polygons
   const contours = new cv.MatVector();
@@ -1160,16 +1162,16 @@ function watershed(inn, out, save=null, thresh) {
   $UI.segmentPanel.__contours = contours;
   console.log('Getting contours.');
 
-  //for (let i = 0; i < markers.rows; i++) {
+  // for (let i = 0; i < markers.rows; i++) {
   //  for (let j = 0; j < markers.cols; j++) {
   //    markers.intPtr(i, j)[0] = markers.ucharPtr(i, j)[0] + 1;
   //    if (unknown.ucharPtr(i, j)[0] === 255) {
   //      markers.intPtr(i, j)[0] = 0;
   //    }
   //  }
-  //}
+  // }
   cv.cvtColor(src, dst, cv.COLOR_RGBA2RGB, 0);
-  //cv.watershed(dst, markers);
+  // cv.watershed(dst, markers);
   const cloneSrc = cv.Mat.zeros(src.rows, src.cols, cv.CV_8UC4);
   const listContours = cv.Mat.zeros(src.rows, src.cols, cv.CV_8UC4);
   console.log(cv.COLOR_RGBA2RGB);

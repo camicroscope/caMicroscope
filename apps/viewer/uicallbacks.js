@@ -106,13 +106,14 @@ function multSelectorAction(size) {
         data: [],
       });
       $minorCAMIC.viewer.segment = new segmentationanno(
-        $minorCAMIC,
-        $D,
-        $UI,
-        $D.params.slideId,
-        (id)=>
-          {$UI.layersViewerMinor.removeItemById(id, 'computer');
-           $UI.layersViewer.removeItemById(id, 'computer');}
+          $minorCAMIC,
+          $D,
+          $UI,
+          $D.params.slideId,
+          (id)=> {
+            $UI.layersViewerMinor.removeItemById(id, 'computer');
+            $UI.layersViewer.removeItemById(id, 'computer');
+          },
       );
     });
   } catch (error) {

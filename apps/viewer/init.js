@@ -663,15 +663,16 @@ async function initUIcomponents() {
       clearInterval(checkOverlaysDataReady);
       // for segmentation
       $CAMIC.viewer.segment = new segmentationanno(
-        $CAMIC,
-        $D,
-        $UI,
-        $D.params.slideId,
-        (id)=>
-          {$UI.layersViewerMinor.removeItemById(id, 'computer');
-           $UI.layersViewer.removeItemById(id, 'computer');}
+          $CAMIC,
+          $D,
+          $UI,
+          $D.params.slideId,
+          (id)=> {
+            $UI.layersViewerMinor.removeItemById(id, 'computer');
+            $UI.layersViewer.removeItemById(id, 'computer');
+          },
       );
-      
+
 
       // create control
 

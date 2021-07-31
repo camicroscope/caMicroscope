@@ -99,7 +99,7 @@ function SegmentPanel(viewer) {
   this.__oplabel = this.elt.querySelector('.segment-setting label#olabel');
   this.__opwrap = this.elt.querySelector('#owrap');
 
-  //annotation
+  // annotation
   this.__name = this.elt.querySelector('#_name');
   this.__notes = this.elt.querySelector('#_notes');
   this.__annotation = this.elt.querySelector('#_save');

@@ -48,7 +48,7 @@ class segmentationanno{
       resultString += str.substring(0, 36) + '\n';
       str = str.substring(36);}
     notes.notes = resultString;
-    const execId = "segment"+randomId();
+    const execId = notes.name+randomId();
 
     const annotJson = {
       creator: getUserId(),
@@ -128,8 +128,8 @@ class segmentationanno{
   deleteSegment = (p) => { //segmentation
     if (!confirm(`Are You Sure You Want To Delete This Segmentation {ID:${p.id}}?`)) return;
     this.data.splice(this.data.findIndex(e => e.id === p.id),1);
-    this.camic.viewer.omanager.removeOverlay(p.id);
     this.annotPopup.close();
+    this.camic.viewer.omanager.removeOverlay(p.id);
     if(this.deleteCallback)
       this.deleteCallback(p.id);
     this.camic.store
