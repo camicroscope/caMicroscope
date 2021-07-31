@@ -1107,6 +1107,7 @@ async function captureScreen(camic, {
             console.error('Required Attributes of Ruler Missing');
             continue;
           }
+          let angle = +viewer.viewport.getRotation();
           // for ruler mode straight
           if(availableRulers[i].dataset.mode === 'straight') {
 
@@ -1135,13 +1136,16 @@ async function captureScreen(camic, {
             // drawing ruler on result canvas
             ctx.strokeStyle = '#acfc03e6';
             ctx.lineWidth = 2* ((slideCanvas.width) / (viewer.element.clientWidth));
+            ctx.save();
+            ctx.translate(rulerDiv.left, rulerDiv.top);
+            ctx.rotate((Math.PI / 180)*angle);
             ctx.beginPath();
             if(rulerDiv.direction === 'l2r') {
-              ctx.moveTo(rulerDiv.left, rulerDiv.top);
-              ctx.lineTo(rulerDiv.width + rulerDiv.left, rulerDiv.height + rulerDiv.top);
+              ctx.moveTo(0, 0);
+              ctx.lineTo(rulerDiv.width + 0, rulerDiv.height + 0);
             } else if(rulerDiv.direction === 'r2l') {
-              ctx.moveTo(rulerDiv.width + rulerDiv.left, rulerDiv.top);
-              ctx.lineTo(rulerDiv.left, rulerDiv.height + rulerDiv.top);
+              ctx.moveTo(rulerDiv.width + 0, 0);
+              ctx.lineTo(0, rulerDiv.height + 0);
             } else {
               console.error('Something went wrong');
               continue;
@@ -1165,25 +1169,29 @@ async function captureScreen(camic, {
             // background behind scale value
             ctx.font = `900 ${fontSize}px sans-serif`;
             ctx.fillStyle = '#acfc03e6';
-            let xOffset = (rulerDiv.width/2 + rulerDiv.left);
-            let yOffset = (rulerDiv.height/2 + rulerDiv.top);
+            let xOffset = (rulerDiv.width/2 + 0);
+            let yOffset = (rulerDiv.height/2 + 0);
             ctx.fillRect(xOffset - ctx.measureText(scaleValue).width/2, yOffset - fontSize + (2 * ((slideCanvas.width) / (viewer.element.clientWidth))), ctx.measureText(scaleValue).width, fontSize);
 
             // scale value text
             ctx.fillStyle = 'black';
             ctx.textAlign = 'center';
             ctx.fillText(scaleValue, xOffset , yOffset);
+            ctx.restore();
 
           } else {
             // for ruler mode coordinate
             // drawing coordinate ruler on result canvas
             ctx.strokeStyle = '#acfc03e6';
             ctx.lineWidth = 2 * ((slideCanvas.width) / (viewer.element.clientWidth));
+            ctx.save();
+            ctx.translate(rulerDiv.left, rulerDiv.top);
+            ctx.rotate((Math.PI / 180)*angle);
             ctx.beginPath();
-            ctx.moveTo(rulerDiv.left, rulerDiv.top);
-            ctx.lineTo(rulerDiv.left, rulerDiv.height + rulerDiv.top);
-            ctx.moveTo(rulerDiv.left, rulerDiv.height + rulerDiv.top);
-            ctx.lineTo(rulerDiv.left + rulerDiv.width, rulerDiv.height + rulerDiv.top);
+            ctx.moveTo(0, 0);
+            ctx.lineTo(0, rulerDiv.height + 0);
+            ctx.moveTo(0, rulerDiv.height + 0);
+            ctx.lineTo(0 + rulerDiv.width, rulerDiv.height + 0);
             ctx.stroke();
 
             let h_scaleValue = '';
@@ -1206,14 +1214,14 @@ async function captureScreen(camic, {
                 }
               }
             }
-            console.log(h_scaleValue);
-            console.log(v_scaleValue);
+            // console.log(h_scaleValue);
+            // console.log(v_scaleValue);
             let fontSize = 13 * ((slideCanvas.width) / (viewer.element.clientWidth));
             
-            let v_xOffset = (rulerDiv.left);
-            let v_yOffset = (rulerDiv.height/2 + rulerDiv.top);
-            let h_xOffset = (rulerDiv.width/2 + rulerDiv.left);
-            let h_yOffset = (rulerDiv.height + rulerDiv.top) + (11 * ((slideCanvas.width) / (viewer.element.clientWidth)));
+            let v_xOffset = (0);
+            let v_yOffset = (rulerDiv.height/2 + 0);
+            let h_xOffset = (rulerDiv.width/2 + 0);
+            let h_yOffset = (rulerDiv.height + 0) + (11 * ((slideCanvas.width) / (viewer.element.clientWidth)));
 
              // background behind scale value
             ctx.font = `900 ${fontSize}px sans-serif`;
@@ -1234,7 +1242,7 @@ async function captureScreen(camic, {
             ctx.fillStyle = 'black';
             ctx.textAlign = 'center';
             ctx.fillText(v_scaleValue, v_xOffset , v_yOffset);
-
+            ctx.restore();
           }          
         }
       }

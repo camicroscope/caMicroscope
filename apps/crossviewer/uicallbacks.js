@@ -3134,7 +3134,10 @@ function setRotationControlLayer(viewerName){
   document.querySelector(`.${viewerName}.rotation_panel.crossview_layer`).appendChild(div);
 
   camic.viewer.addHandler('rotate', (...args) => {
-    if(+args[0]['degrees'] == 0 && +args[0]['degrees'] != +input.value) input.value = +args[0]['degrees'];
+    if(+args[0]['degrees'] != +input.value) {
+      input.value = (+args[0]['degrees'] + 360) % 360;
+      txt.innerHTML = `${(+input.value)}<sup>o</sup>`;
+    }
   });
 
   add.addEventListener('click', () => {
@@ -3157,14 +3160,14 @@ function setRotationControlLayer(viewerName){
 
   input.addEventListener('change', (e) => {
     camic.viewer.viewport.setRotation(+e.target.value);
-    txt.innerHTML = `${(+e.target.value)}<sup>o</sup>`
+    txt.innerHTML = `${(+e.target.value)}<sup>o</sup>`;
   });
 
   input.addEventListener('mousemove', (e) => {
     if(+e.target.value == Math.floor(camic.viewer.viewport.getRotation())) return;
     if(+e.target.value == Math.ceil(camic.viewer.viewport.getRotation())) return;
     camic.viewer.viewport.setRotation(+e.target.value);
-    txt.innerHTML = `${(+e.target.value)}<sup>o</sup>`
+    txt.innerHTML = `${(+e.target.value)}<sup>o</sup>`;
   });
 
   txt.addEventListener('click', ()=>{
@@ -3286,19 +3289,25 @@ function addSynchronizationHandlers() {
   $CAMIC.syncSettings = {
     center: $CAMIC.viewer.viewport.getCenter(),
     zoom: $CAMIC.viewer.viewport.getZoom(),
+    angle: $CAMIC.viewer.viewport.getRotation(),
     panSource: true,
     zoomSource: true,
+    rotateSource: true,
   };
   $minorCAMIC.syncSettings = {
     center: $minorCAMIC.viewer.viewport.getCenter(),
     zoom: $minorCAMIC.viewer.viewport.getZoom(),
+    angle: $minorCAMIC.viewer.viewport.getRotation(),
     panSource: true,
     zoomSource: true,
+    rotateSource: true,
   };
   $CAMIC.viewer.addHandler('pan', panSync);
   $minorCAMIC.viewer.addHandler('pan', panSync);
   $CAMIC.viewer.addHandler('zoom', zoomSync);
   $minorCAMIC.viewer.addHandler('zoom', zoomSync);
+  $CAMIC.viewer.addHandler('rotate', rotateSync);
+  $minorCAMIC.viewer.addHandler('rotate', rotateSync);
 }
 
 function removeSynchronizationHandlers() {
@@ -3306,6 +3315,8 @@ function removeSynchronizationHandlers() {
   $minorCAMIC.viewer.removeHandler('pan', panSync);
   $CAMIC.viewer.removeHandler('zoom', zoomSync);
   $minorCAMIC.viewer.removeHandler('zoom', zoomSync);
+  $CAMIC.viewer.removeHandler('rotate', rotateSync);
+  $minorCAMIC.viewer.removeHandler('rotate', rotateSync);
 }
 
 function panSync(event) {
@@ -3330,9 +3341,16 @@ function panSync(event) {
     width: oppCamic.viewer.viewport.getBounds().width / camic.viewer.viewport.getBounds().width,
     height: oppCamic.viewer.viewport.getBounds().height / camic.viewer.viewport.getBounds().height,
   };
-  let delta = new OpenSeadragon.Point(
+  let tdelta = new OpenSeadragon.Point(
       scale.width * (currCenter.x - camic.syncSettings.center.x),
       scale.height * (currCenter.y - camic.syncSettings.center.y),
+  );
+  let theta = (oppCamic.syncSettings.angle - camic.syncSettings.angle) * Math.PI / 180;
+  let cos = Math.cos(theta);
+  let sin = Math.sin(theta);
+  let delta = new OpenSeadragon.Point(
+    (tdelta.x*cos) + (tdelta.y*sin),
+    (tdelta.y*cos) - (tdelta.x*sin)
   );
   let newCenter = new OpenSeadragon.Point(
       oppCamic.syncSettings.center.x + delta.x,
@@ -3378,4 +3396,28 @@ function zoomSync(event) {
   oppCamic.viewer.viewport.zoomTo(newZoom);
   oppCamic.syncSettings.zoomSource = true;
   camic.viewer.viewport.panTo(camic.viewer.viewport.getCenter());
+}
+
+function rotateSync(event) {
+  let camic = null;
+  let oppCamic = null;
+  switch (event.eventSource.id) {
+    case 'main_viewer':
+      camic = $CAMIC;
+      oppCamic = $minorCAMIC;
+      break;
+    case 'minor_viewer':
+      camic = $minorCAMIC;
+      oppCamic = $CAMIC;
+      break;
+    default:
+      console.error('Viewer Name not specified');
+      break;
+  }
+  if (!camic.syncSettings.rotateSource) return;
+  let currRotate = camic.viewer.viewport.getRotation();
+  let delta = (currRotate - camic.syncSettings.angle);
+  oppCamic.syncSettings.rotateSource = false;
+  oppCamic.viewer.viewport.setRotation((delta+oppCamic.syncSettings.angle));
+  oppCamic.syncSettings.rotateSource = true;
 }

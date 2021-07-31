@@ -488,7 +488,13 @@ async function initUIcomponents() {
     title: 'Preset Labels',
     type: 'check',
     value: 'prelabels',
-    callback: drawLabel,
+    callback: function(e) {
+      if(+$CAMIC.viewer.viewport.getRotation() != 0 || +$minorCAMIC.viewer.viewport.getRotation() != 0) {
+        $UI.message.addError('Addition of labels not supported on rotated slides');
+        return;
+      }
+      drawLabel.call(this, e);
+    },
   });
   // magnifier
   subToolsOpt.push({
@@ -546,6 +552,18 @@ async function initUIcomponents() {
     type: 'btn',
     value: 'slCap',
     callback: captureSlide,
+  });
+
+  subToolsOpt.push({
+    name: 'tutorial',
+    icon: 'help',
+    title: 'Tutorial',
+    value: 'tutorial',
+    type: 'btn',
+    callback: function() {
+      tour.init();
+      tour.start(true);
+    },
   });
 
   // create toolbar
