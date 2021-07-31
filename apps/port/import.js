@@ -65,7 +65,7 @@ function getImportFiles() {
   return files;
 }
 
-function prepareFile(file, dataType, manifestRecord) {
+function importFile(file, dataType, manifestRecord) {
   return new Promise(function(res, rej) {
     let r = new FileReader();
     // callbacks
@@ -90,7 +90,7 @@ function prepareFile(file, dataType, manifestRecord) {
           _postFunctions[dataType](record).then(console.log);
         } else {
           // otherwise, inject slide lookup based on manifest or document attrs
-          let name = record.provenance.image['slide'] || record.provenance.image['name'];
+          let slide = record.provenance.image['slide'] || record.provenance.image['name'];
           let specimen = record.provenance.image['specimen'] || record.provenance.image['subject'];
           let study = record.provenance.image['study'];
           let lookup = _STORE.findSlide(slide, specimen, study).then((x)=>{
