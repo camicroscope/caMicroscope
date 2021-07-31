@@ -46,7 +46,7 @@ const objAreaMin = 60;
 const objAreaMax = 4500;
 const lineWidth = 2;
 const timeOutMs = 10;
-
+let anno = {};
 
 function initialize() {
   var checkPackageIsReady = setInterval(async function() {
@@ -80,7 +80,7 @@ async function initUIcomponents() {
           <li>
             <label align="left"> Input patch size: </label>
             <input name="imageSize" id="imageSize" type="number" required />
-            <span> The image size on which the model is trained </span>
+            <span> The image size on which the model is trained (y x y)</span>
           </li>
             <label>Input image format:</label> <br>
             <input type="radio" id="gray" name="channels" value=1 checked>
@@ -100,7 +100,7 @@ async function initUIcomponents() {
 
           <label class="switch"><input type="checkbox" id="togBtn"><div class="slider"></div></label> <br> <br>
           <div class="checkfalse"><div>Select model.json first followed by the weight binaries.</div> <br>
-          <input name="filesupload" id="modelupload" type="file" required/>
+          <input name="filesupload" id="modelupload" type="file" required/><br><br>
           <input name="filesupload" id="weightsupload" type="file" multiple="" required/> <br> <br> </div>
           <div class="checktrue" > URL to the ModelAndWeightsConfig JSON describing the model. <br> <br>
           <label align-"left"> Enter the URL: </label> <input type="url" name="url" id="url" required> <br><br></div>
@@ -356,6 +356,7 @@ function initCore() {
     slideQuery.name = $D.params.slide;
     slideQuery.location = $D.params.location;
     $CAMIC = new CaMic('main_viewer', slideQuery, opt);
+    anno = new segmentationanno($CAMIC,$D,$UI,slideQuery.id);
   } catch (error) {
     Loading.close();
     $UI.message.addError('Core Initialization Failed');
@@ -377,11 +378,6 @@ function initCore() {
 
     // add stop draw function
     viewer.canvasDrawInstance.addHandler('stop-drawing', camicStopDraw);
-
-    viewer.addHandler('zoom', (e) => {
-      const mask = $UI.segmentPanel.__mask;
-      fitCvs(mask);
-    });
 
     $UI.segmentPanel = new SegmentPanel(viewer);
 
@@ -473,6 +469,10 @@ function initCore() {
       const fname = $D.params.slideId + '_roi.csv';
       buildAndDownloadCSV($UI.segmentPanel.__contours, fname);
     });
+
+    $UI.segmentPanel.__annotation.addEventListener('click', function(e) {
+      saveAnnotation();
+    });
   });
 }
 
@@ -551,10 +551,13 @@ function camicStopDraw(e) {
       const args = $UI.args;
       if ( flag != -1) {
         extractRoi(choices1, flag);
+        $UI.segmentPanel.toggleMask(1);
       } else if (!args || args.status == 'watershed') {
         segmentROI(box);
+        $UI.segmentPanel.toggleMask(2);
       } else {
         segmentModel(args.status);
+        $UI.segmentPanel.toggleMask(1);
       }
       $UI.segmentPanel.setPosition(box.rect.x, box.rect.y, box.rect.width, box.rect.height);
       if ($UI.segmentPanel.__spImgWidth != 0) {
@@ -566,6 +569,34 @@ function camicStopDraw(e) {
   } else {
     console.error('Could not get feature collection.');
   }
+}
+
+function saveAnnotation(){
+  let notes = {name:$UI.segmentPanel.__name.value, notes:$UI.segmentPanel.__notes.value};
+  let canv = !$UI.args||$UI.args.status == 'watershed'? $UI.segmentPanel.__out: $UI.segmentPanel.__mask;
+  //let image = canv.getContext('2d').getImageData(0,0,canv.width,canv.height);
+  const canvasDraw = $CAMIC.viewer.canvasDrawInstance, viewer = $CAMIC.viewer;
+
+  canvasDraw.clear();
+  canvasDraw._simplify = false;
+  if($UI.args && $UI.args.status != 'watershed')
+    findContour(canv,canv,0.11);
+  let data = $UI.segmentPanel.__contours;
+  const vpx = $UI.segmentPanel.__top_left[0];
+  const vpy = $UI.segmentPanel.__top_left[1];
+  $UI.segmentPanel.close();
+  //let te = {data:Array.from(image.data),width:image.width,height:image.height,x:vpx,y:vpy};
+  for(var i=0;i<data.length;i++){
+    var d = data[i].data32S;
+    var arr=[];
+    for(var j = 0; j<d.length-1;j+=2){
+      arr.push([d[j] + vpx , d[j+1] + vpy]);}
+    canvasDraw._redraw(arr,'Polygon');
+  }
+  let temp = canvasDraw.getImageFeatureCollection();
+  canvasDraw.clear();
+  canvasDraw._simplify = true;
+  anno.saveSegment(null,temp,notes);
 }
 
 function checkSize(imgColl, imagingHelper) {
@@ -902,9 +933,7 @@ async function segmentModel(key) {
         dy += step;
       }
 
-
       self.hideProgress();
-      fitCvs(finalRes);
       finalRes.style.opacity = 0.6;
       self.__opacity.value = 0.6;
       self.__oplabel.innerText = '0.6';
@@ -1015,6 +1044,25 @@ function segmentROI(box) {
   console.log(f);
   */
 }
+function findContour(inn,out,thresh){
+  let src = cv.imread(inn);
+  let dst = cv.Mat.zeros(src.cols, src.rows, cv.CV_8UC3);
+  cv.cvtColor(src, src, cv.COLOR_RGBA2GRAY, 0);
+  cv.threshold(src, src, 255*thresh, 255, cv.THRESH_BINARY);
+  let contours = new cv.MatVector();
+  let hierarchy = new cv.Mat();
+  cv.findContours(src, contours, hierarchy, cv.RETR_CCOMP, cv.CHAIN_APPROX_SIMPLE);
+  let cntr = [];
+  for (let i = 1; i < contours.size(); ++i) {
+    const cnt = contours.get(i);
+    const area = cv.contourArea(cnt, false);
+    if (area < $UI.segmentPanel.__maxarea.value && area > $UI.segmentPanel.__minarea.value) {
+      cntr.push(cnt);
+    }
+  }
+  src.delete(); dst.delete(); contours.delete(); hierarchy.delete();
+  $UI.segmentPanel.__contours = cntr;
+}
 
 /**
  * WATERSHED SEGMENTATION
@@ -1087,7 +1135,7 @@ function watershed(inn, out, save=null, thresh) {
 
   // Find the stuff that IS an object
   cv.dilate(gray, opening, M); // remove any small white noises in the image
-  cv.dilate(opening, imageBg, M, new cv.Point(-1, -1), 3); // remove any small holes in the object
+  //cv.dilate(opening, imageBg, M, new cv.Point(-1, -1), 3); // remove any small holes in the object
 
   // Distance transform - for the stuff we're not sure about
   cv.distanceTransform(opening, distTrans, cv.DIST_L2, 5);
@@ -1099,10 +1147,10 @@ function watershed(inn, out, save=null, thresh) {
 
   // Mark (label) the regions starting with 1 (color output)
   imageFg.convertTo(imageFg, cv.CV_8U, 1, 0);
-  cv.subtract(imageBg, imageFg, unknown);
+  //cv.subtract(imageBg, imageFg, unknown);
 
   // Get connected components markers
-  const x = cv.connectedComponents(imageFg, markers);
+  //const x = cv.connectedComponents(imageFg, markers);
 
   // Get Polygons
   const contours = new cv.MatVector();
@@ -1112,16 +1160,16 @@ function watershed(inn, out, save=null, thresh) {
   $UI.segmentPanel.__contours = contours;
   console.log('Getting contours.');
 
-  for (let i = 0; i < markers.rows; i++) {
-    for (let j = 0; j < markers.cols; j++) {
-      markers.intPtr(i, j)[0] = markers.ucharPtr(i, j)[0] + 1;
-      if (unknown.ucharPtr(i, j)[0] === 255) {
-        markers.intPtr(i, j)[0] = 0;
-      }
-    }
-  }
+  //for (let i = 0; i < markers.rows; i++) {
+  //  for (let j = 0; j < markers.cols; j++) {
+  //    markers.intPtr(i, j)[0] = markers.ucharPtr(i, j)[0] + 1;
+  //    if (unknown.ucharPtr(i, j)[0] === 255) {
+  //      markers.intPtr(i, j)[0] = 0;
+  //    }
+  //  }
+  //}
   cv.cvtColor(src, dst, cv.COLOR_RGBA2RGB, 0);
-  cv.watershed(dst, markers);
+  //cv.watershed(dst, markers);
   const cloneSrc = cv.Mat.zeros(src.rows, src.cols, cv.CV_8UC4);
   const listContours = cv.Mat.zeros(src.rows, src.cols, cv.CV_8UC4);
   console.log(cv.COLOR_RGBA2RGB);
@@ -1148,6 +1196,7 @@ function watershed(inn, out, save=null, thresh) {
   const tmp = new cv.Mat();
 
   console.log('Drawing Contours');
+  let cntr = [];
   // console.log($UI.segmentPanel.__minarea.value);
   // console.log($UI.segmentPanel.__maxarea.value);segmentMode
   for (let i = 1; i < contours.size(); ++i) {
@@ -1159,11 +1208,13 @@ function watershed(inn, out, save=null, thresh) {
       ++segcount;
       cv.approxPolyDP(cnt, tmp, 1, true);
       // console.log(tmp.data32S);
+      cntr.push(cnt);
       cv.drawContours(cloneSrc, contours, i, color, lineWidth, cv.FILLED, hierarchy, 1);
       cv.drawContours(i2s, contours, i, color, lineWidth, cv.FILLED, hierarchy, 1);
       if (save) cv.drawContours(dc, contours, i, color, lineWidth, cv.FILLED, hierarchy, 1);
     }
   }
+  $UI.segmentPanel.__contours = cntr;
   console.log(segcount);
   console.log('Done Drawing Contours');
   window.segcnt = segcount; // Will be used later in downloadCSV function
@@ -1310,42 +1361,6 @@ function _size(element) {
 
   return [width, height];
 }
-
-/**
- * Fit a canvas to its parent element
- * @param  {Object} canvas The canvas to be resized
- * @param  {Object} parent Parent according to which canvas is resized. Defaults to immediate parent.
- * @param  {Object} scale Scale to which it has to be resized. Defaults to 1 (Same size)
- * @return {Object}
- */
-function fitCvs(canvas, parent, scale) {
-  canvas.style.position = canvas.style.position || 'absolute';
-  canvas.style.top = 0;
-  canvas.style.left = 0;
-
-  resize.scale = parseFloat(scale || 1);
-  resize.parent = parent;
-
-  return resize(); // if (segcnt === 0) {
-  //   alert('Nothing to download');
-  //   return;
-  // }
-
-  function resize() {
-    var p = resize.parent || canvas.parentNode;
-    // console.log(resize.parent , canvas.parentNode)
-    var psize = _size(p);
-    var width = psize[0]|0;
-    var height = psize[1]|0;
-
-    canvas.style.width = width + 'px';
-    canvas.style.height = height + 'px';
-
-    return resize;
-  }
-}
-
-
 /**
  * Convert a dataURI to a Blob
  *
