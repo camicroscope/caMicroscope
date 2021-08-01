@@ -281,15 +281,14 @@ LayersViewer.prototype.__clearUI = function() {
 LayersViewer.prototype.__initUI = function() {
   empty(this.elt); // clear all elements
   this.__clearUI();
-  
-  if(arguments.length != 0 && arguments[0] === 'enable crossview'){
 
+  if (arguments.length != 0 && arguments[0] === 'enable crossview') {
     const syncHead = document.createElement('div');
     syncHead.classList.add('item_head', 'crossview_layer');
     syncHead.innerHTML = 'Controls';
     this.elt.appendChild(syncHead);
 
-     /* TODO : Adding choice for selecting origin
+    /* TODO : Adding choice for selecting origin
       const originChoice = document.createElement('div');
       originChoice.classList.add(arguments[1], 'origin_choice', 'crossview_layer');
       originChoice.innerHTML = `<span>Point of Origin</span><span class="material-icons">my_location</span>`;

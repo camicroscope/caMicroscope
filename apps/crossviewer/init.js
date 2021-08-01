@@ -489,7 +489,7 @@ async function initUIcomponents() {
     type: 'check',
     value: 'prelabels',
     callback: function(e) {
-      if(+$CAMIC.viewer.viewport.getRotation() != 0 || +$minorCAMIC.viewer.viewport.getRotation() != 0) {
+      if (+$CAMIC.viewer.viewport.getRotation() != 0 || +$minorCAMIC.viewer.viewport.getRotation() != 0) {
         $UI.message.addError('Addition of labels not supported on rotated slides');
         return;
       }
@@ -782,18 +782,17 @@ async function initUIcomponents() {
           removeSynchronizationHandlers();
         }
       });
-      
-          setZoomControlLayer('main');
-          setZoomControlLayer('minor');
-          
-          setRotationControlLayer('main');
-          setRotationControlLayer('minor');
 
-          /* TODO : Choice of Origin
+      setZoomControlLayer('main');
+      setZoomControlLayer('minor');
+
+      setRotationControlLayer('main');
+      setRotationControlLayer('minor');
+
+      /* TODO : Choice of Origin
           setOriginControlLayer('main');
           setOriginControlLayer('minor');
           */
-      
     }
   }, 300);
 
