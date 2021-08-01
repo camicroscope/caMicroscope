@@ -159,6 +159,7 @@
          * @param  {Event} e the event
          */
         highlight:function(e){
+            if(this._hover_.style.transform != `rotate(0deg)`) this.drawOnCanvas(this.drawOnDisplay,[this._display_ctx_]);
             this._div.style.cursor = 'default';
             DrawHelper.clearCanvas(this._hover_);
             const point = new OpenSeadragon.Point(e.clientX, e.clientY);
