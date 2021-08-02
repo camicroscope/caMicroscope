@@ -40,7 +40,6 @@ function startUpload() {
 
 async function continueUpload(token, file) {
   var part = 0;
-  $('#upload-progress-div').css('display', 'flex');
   var complete = false;
   while (!complete) {
     try {

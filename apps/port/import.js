@@ -95,6 +95,7 @@ function importFile(file, dataType, manifestRecord) {
           let study = record.provenance.image['study'];
           let lookup = _STORE.findSlide(slide, specimen, study).then((x)=>{
             record.provenance.image.slide = x[0]['_id']['$oid'];
+            console.log(record);
             return record;
           });
           lookup.then(_postFunctions[dataType]).then(console.log);
