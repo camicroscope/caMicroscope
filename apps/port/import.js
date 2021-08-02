@@ -1,11 +1,15 @@
 // initalize store, dependency
 let _STORE = new Store('../../data/');
 
-let _postFunctions = {
-  'slide': _STORE.addSlide,
-  'mark': _STORE.addMark,
-  'heatmap': _STORE.addHeatmap,
-};
+function postDoc(dataType, data) {
+  if (dataType == 'mark') {
+    _STORE.addMark(data).then(console.log);
+  } else if (dataType == 'heatmap') {
+    _STORE.addHeatmap(data).then(console.log);
+  } else {
+    console.error('Unknown type ', dataType);
+  }
+}
 
 // borrowed conversion helper?
 function csv2Json(csv) {
@@ -37,7 +41,7 @@ function getManifest() {
         console.info('got manifest');
         // convert to filename as key
         let keyedManifest = {};
-        for (x of manifest) {
+        for (let x of manifest) {
           let f = x.file || x.filename;
           if (!f) {
             rej(new Error('Could not find file reference in manifest.'));
@@ -71,14 +75,19 @@ function importFile(file, dataType, manifestRecord) {
     // callbacks
     r.onload = function(e) {
       let data = JSON.parse(e.target.result);
+      // put into array if not already
+      if (!Array.isArray(data)) {
+        data = [data];
+      }
       console.log(data);
-      for (record of data) {
+      for (let record of data) {
         record.provenance = record.provenance || {};
         record.provenance.image = record.provenance.image || {};
         // inject relevant manifest data
         let manifestId = manifestRecord['slideId'] || manifestRecord['nodeId'] || manifestRecord['id'];
         if (manifestId) record.provenance.image['slideId'] = manifestId;
         let manifestSlide = manifestRecord['slide'] || manifestRecord['name'];
+        console.log(manifestSlide);
         if (manifestSlide) record.provenance.image['slide'] = manifestSlide;
         let manifestStudy = manifestRecord['study'];
         if (manifestStudy) record.provenance.image['study'] = manifestStudy;
@@ -87,18 +96,19 @@ function importFile(file, dataType, manifestRecord) {
         // if we have a pre-given slide id, use that and don't look up
         let slideId = record['slideId'] || record['nodeId'] || record['id'];
         if (slideId) {
-          _postFunctions[dataType](record).then(console.log);
+          postDoc(dataType, data);
         } else {
           // otherwise, inject slide lookup based on manifest or document attrs
           let slide = record.provenance.image['slide'] || record.provenance.image['name'];
           let specimen = record.provenance.image['specimen'] || record.provenance.image['subject'];
           let study = record.provenance.image['study'];
+          console.log(slide, specimen, study);
           let lookup = _STORE.findSlide(slide, specimen, study).then((x)=>{
             record.provenance.image.slide = x[0]['_id']['$oid'];
             console.log(record);
             return record;
           });
-          lookup.then(_postFunctions[dataType]).then(console.log);
+          lookup.then((x)=>postDoc(dataType, data)).then(console.log);
         }
       }
       res(true); // note that find/post callbacks may not be done
@@ -113,9 +123,11 @@ async function runImport() {
   // get manifest if exists
   manifest = await getManifest();
   let files = getImportFiles();
-  for (file of files) {
+  for (let file of files) {
     let manifestRecord = {};
     if (dataType == 'slide') {
+      // TODO -- test and rm this warning.
+      alert('Slide Mode Untested.');
       // insert data from manifest if applicable
       if (manifest) {
         manifestRecord = manifest[file.name] || {};

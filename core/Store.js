@@ -642,7 +642,7 @@ class Store {
       query = q;
     } else {
       if (slide) {
-        query.slide = slide;
+        query.name = slide;
       }
       if (study) {
         query.study = study;
