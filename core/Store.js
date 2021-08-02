@@ -267,6 +267,19 @@ class Store {
       mode: 'cors',
     }).then(this.errorHandler).then((x) => this.filterBroken(x, 'mark'));
   }
+  getMarkbyExecId(id, slide) {
+    const suffix = 'Mark/find';
+    const url = this.base + suffix;
+    const query = {
+      'provenance.analysis.execution_id': id,
+      'provenance.image.slide': slide,
+    };
+
+    return fetch(url + '?' + objToParamStr(query), {
+      credentials: 'include',
+      mode: 'cors',
+    }).then(this.errorHandler).then((x) => this.filterBroken(x, 'mark'));
+  }
   fetchMark(slideId) {
     const suffix = 'Mark/find';
     const url = this.base + suffix;

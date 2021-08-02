@@ -519,8 +519,8 @@ function covertToCumputerLayer(data) {
   return {
     id: id,
     name: id,
-    typeId: data.computation,
-    typeName: data.computation,
+    typeId: data.typeId,
+    typeName: data.source,
     creator: data.creator,
     data: null,
   };

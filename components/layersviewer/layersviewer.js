@@ -35,7 +35,7 @@ function LayersViewer(options) {
     // categoricalData
     isSortableView: false,
   };
-  this.defaultType = ['human', 'ruler', 'segmentation', 'heatmap'];
+  this.defaultType = ['human', 'ruler', 'computer', 'heatmap'];
 
   /**
    * @property {Object} _v_model
@@ -73,8 +73,8 @@ function LayersViewer(options) {
       item: {id: 'heatmap', name: 'heatmap'},
       items: [],
     },
-    'segmentation': {
-      item: {id: 'segmentation', name: 'segmentation'},
+    'computer': {
+      item: {id: 'computer', name: 'computer'},
       items: [],
     },
     'ruler': {
@@ -866,8 +866,8 @@ LayersViewer.prototype.__search = function(e) {
 
   const ruler = this.setting.categoricalData['ruler'].items;
   const heatmap = this.setting.categoricalData['heatmap'].items;
-  const segmentation = this.setting.categoricalData['segmentation'].items;
-  const list = [...human, ...ruler, ...heatmap, ...segmentation];
+  const computer = this.setting.categoricalData['computer'].items;
+  const list = [...human, ...ruler, ...heatmap, ...computer];
 
   list.forEach((data) => {
     data.elt.style.display = 'flex';
