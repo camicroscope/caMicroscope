@@ -31,13 +31,6 @@ function SegmentPanel(viewer) {
         
         <canvas class='out'></canvas>
         <canvas id='mask' style='display: none;'></canvas>
-
-        <div class="annotation">
-          <label>Name:&nbsp&nbsp<textarea id='_name'></textarea></label>
-          <label>Notes:&nbsp&nbsp<textarea id='_notes'></textarea></label>
-          <button id='_save'>Save</button>
-        </div>
-
         <canvas id='dummy' style='display: none;'></canvas>
         <canvas class='src'></canvas>
         <canvas id='hemo' class='hiddenCanvas'></canvas>
@@ -98,11 +91,6 @@ function SegmentPanel(viewer) {
   this.__opacity = this.elt.querySelector('.segment-setting input[type=range]#opacity');
   this.__oplabel = this.elt.querySelector('.segment-setting label#olabel');
   this.__opwrap = this.elt.querySelector('#owrap');
-
-  // annotation
-  this.__name = this.elt.querySelector('#_name');
-  this.__notes = this.elt.querySelector('#_notes');
-  this.__annotation = this.elt.querySelector('#_save');
 
   this.viewer.addOverlay({
     element: this.elt,
@@ -198,10 +186,10 @@ SegmentPanel.prototype.hideProgress = function() {
   this.__indicator.style.display = 'none';
 };
 
-SegmentPanel.prototype.toggleMask = function(e=0) {
+SegmentPanel.prototype.toggleMask = function() {
   console.log('toggleMask');
 
-  if (this.__mask.style.display == 'none' && e!=2 || e==1) {
+  if (this.__mask.style.display == 'none') {
     this.__mask.style.display = '';
     this.__out.style.display = 'none';
   } else {

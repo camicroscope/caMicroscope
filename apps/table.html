@@ -29,9 +29,9 @@
 
 	<script src="https://code.jquery.com/jquery-3.4.1.min.js"
 		></script>
-		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css"
-		rel="stylesheet"
-		integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0"
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" 
+		rel="stylesheet" 
+		integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0" 
 		crossorigin="anonymous">
 	<link rel="stylesheet" href="../common/stacktable.css">
 
@@ -110,7 +110,7 @@
                     </div>
                     <div class="row" id="filters-check" >
                     </div>
-                    <div class="search-box float-left form-group d-md-inline-flex mb-4">
+                    <div class="search-box float-left form-group d-md-inline-flex">
                         <div class="w-sm-50 pl-md-2 pt-2">
                         <select id='entries' class="select form-control">
                             <option value="10" selected>10 slides/page</option>
@@ -126,13 +126,13 @@
                         </div>
                     </div>
                 </div>
-                <div class="table-responsive ">
+                <div class="table-responsive " style="margin-left:4%;">
                     <table id='datatables' class="table table-striped"></table>
                 </div>
             </div>
             </div>
-
-            <div class="d-md-inline-flex" style="width:18%;">
+          
+            <div class="d-md-inline-flex">
                 <div class="pl-md-2 pt-2">
                     <button type="button" class="btn btn-success float-right w-md-100"
                         onclick="(()=>{location.reload();return false;})()"> <i class="fas fa-sync-alt"></i>

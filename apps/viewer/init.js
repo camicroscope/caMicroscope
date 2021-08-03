@@ -228,7 +228,11 @@ function initCore() {
             $UI.annotPopup.showFooter();
             break;
           case 'computer':
-            return;
+            // handle data.provenance.analysis.computation = `segmentation`
+            attributes = data.properties.scalar_features[0].nv;
+            body = {type: 'map', data: attributes};
+            $UI.annotPopup.hideFooter();
+            break;
           default:
             return;
             // statements_def
@@ -662,17 +666,11 @@ async function initUIcomponents() {
     ) {
       clearInterval(checkOverlaysDataReady);
       // for segmentation
-      $CAMIC.viewer.segment = new segmentationanno(
-          $CAMIC,
-          $D,
-          $UI,
-          $D.params.slideId,
-          (id)=> {
-            $UI.layersViewerMinor.removeItemById(id, 'computer');
-            $UI.layersViewer.removeItemById(id, 'computer');
-          },
-      );
-
+      $CAMIC.viewer.createSegment({
+        store: $CAMIC.store,
+        slide: $D.params.data.slide,
+        data: [],
+      });
 
       // create control
 
@@ -1095,8 +1093,8 @@ function addComputerLayerItems(data) {
   const minorViewerData = $D.computerlayers.map((d) => {
     return {item: d, isShow: false};
   });
-  $UI.layersViewer.addItems(mainViewerData, 'computer');
-  $UI.layersViewerMinor.addItems(minorViewerData, 'computer');
+  $UI.layersViewer.addItems(mainViewerData, 'segmentation');
+  $UI.layersViewerMinor.addItems(minorViewerData, 'segmentation');
 }
 
 function addHeatmapLayerItems(data) {
