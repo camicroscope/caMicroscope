@@ -134,7 +134,7 @@ async function runImport() {
       }
       // TODO --
       // upload the file to the load service
-      let fileUpload = await startUpload().then((x)=>continueUpload(x, file)).then((x)=>finishUpload(x));
+      let fileUpload = await startUpload(file.name).then((x)=>continueUpload(x, file)).then((x)=>finishUpload(x, file.name));
       // lookup required/recommended fields (mpp) from load service -- TODO
       let record = manifestRecord || {};
       // TODO what else goes in this record?

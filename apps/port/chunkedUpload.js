@@ -1,8 +1,8 @@
 // expects changeStatus to be defined from loader.js
 
-var startUrl = '../loader/upload/start';
-var continueUrl = '../loader/upload/continue/';
-var finishUrl = '../loader/upload/finish/';
+var startUrl = '../../loader/upload/start';
+var continueUrl = '../../loader/upload/continue/';
+var finishUrl = '../../loader/upload/finish/';
 var chunkSize = 5*1024*1024;
 
 // read a chunk of the file
@@ -32,13 +32,18 @@ async function readFileChunks(file, token) {
 
 
 // reserve a token
-function startUpload() {
-  return fetch(startUrl).then((x)=>{
+function startUpload(filename) {
+  const body = {filename: filename};
+  return fetch(startUrl, {method: 'POST', body: JSON.stringify(body), headers: {
+    'Content-Type': 'application/json; charset=utf-8',
+  }}).then((x)=>{
+    console.log(x)
     return x['upload_token'];
   });
 }
 
 async function continueUpload(token, file) {
+  console.log(token)
   var part = 0;
   var complete = false;
   while (!complete) {
@@ -59,8 +64,9 @@ async function continueUpload(token, file) {
   return token;
 }
 
-async function finishUpload(token) {
+async function finishUpload(token, filename) {
   // finish the upload
+  const body = {filename: filename};
   let regReq = await fetch(finishUrl + token, {method: 'POST', body: JSON.stringify(body), headers: {
     'Content-Type': 'application/json; charset=utf-8',
   }});
