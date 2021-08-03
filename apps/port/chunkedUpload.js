@@ -36,7 +36,7 @@ function startUpload(filename) {
   const body = {filename: filename};
   return fetch(startUrl, {method: 'POST', body: JSON.stringify(body), headers: {
     'Content-Type': 'application/json; charset=utf-8',
-  }}).then((x)=>{
+  }}).then((x)=>x.json()).then((x)=>{
     console.log(x)
     return x['upload_token'];
   });
@@ -53,7 +53,7 @@ async function continueUpload(token, file) {
       // TODO replace upload call
       const res = await fetch(continueUrl + token, {method: 'POST', body: JSON.stringify(body), headers: {
         'Content-Type': 'application/json; charset=utf-8',
-      }});
+      }}).then((x)=>x.json());
       part++;
       console.info(part);
     } catch (e) {
@@ -69,5 +69,5 @@ async function finishUpload(token, filename) {
   const body = {filename: filename};
   let regReq = await fetch(finishUrl + token, {method: 'POST', body: JSON.stringify(body), headers: {
     'Content-Type': 'application/json; charset=utf-8',
-  }});
+  }}).then((x)=>x.json());
 }
