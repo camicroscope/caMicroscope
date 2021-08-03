@@ -170,24 +170,6 @@
   padding-right: 5px;
 }
 
-.annotation{
-  width:200px;
-  font-size: 12px;
-  text-align: center;
-  vertical-align: middle;
-}
-.annotation *{
-  padding: 1px 1px 1px 5px !important;
-  display:flex;
-  background-color:white;
-}
-.annotation textarea{
-  width:150px;
-  height:15px;
-  word-wrap: break-word;
-  word-break: break-all;
-}
-
 #csvDLB {
   display: none;
 }

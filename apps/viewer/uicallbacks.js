@@ -105,16 +105,6 @@ function multSelectorAction(size) {
         slide: $D.params.data.name,
         data: [],
       });
-      $minorCAMIC.viewer.segment = new segmentationanno(
-          $minorCAMIC,
-          $D,
-          $UI,
-          $D.params.slideId,
-          (id)=> {
-            $UI.layersViewerMinor.removeItemById(id, 'computer');
-            $UI.layersViewer.removeItemById(id, 'computer');
-          },
-      );
     });
   } catch (error) {
     Loading.close();
@@ -1242,8 +1232,14 @@ async function callback(data) {
       return;
     }
 
-    if (item.typeName == 'computer') {
-      camic.viewer.segment.loadsegmentation(item.id, d.isShow);
+    if (item.typeName == 'segmentation') {
+      if (d.isShow) {
+        // add
+        camic.viewer.segment.addSegmentId(item.id);
+      } else {
+        // remove
+        camic.viewer.segment.removeSegmentId(item.id);
+      }
       return;
     }
     if (item.typeName == 'heatmap') {
