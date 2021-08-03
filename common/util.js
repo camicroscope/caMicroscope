@@ -97,7 +97,7 @@ function randomId() {
       .substr(2, 9)}`;
 }
 
-function Debounce(func, wait = 16, immediate = true) {
+function Debounce(func, wait = 16, immediate = false) {
   var timeout;
   return function() {
     var context = this;
@@ -111,6 +111,25 @@ function Debounce(func, wait = 16, immediate = true) {
     timeout = setTimeout(later, wait);
     if (callNow) func.apply(context, args);
   };
+}
+function listToTree(list) {
+  var map = {}; var node; var roots = []; var i;
+
+  for (i = 0; i < list.length; i += 1) {
+    map[list[i].id] = i; // initialize the map
+    list[i].children = []; // initialize the children
+  }
+
+  for (i = 0; i < list.length; i += 1) {
+    node = list[i];
+    if (node.pid) {
+      // if you have dangling branches check that map[node.parentId] exists
+      list[map[node.pid]].children.push(node);
+    } else {
+      roots.push(node);
+    }
+  }
+  return roots;
 }
 
 function hexToRgbA(hex, opacity = 1) {
@@ -446,7 +465,7 @@ function covertToViewportFeature(width, height, og) {
     let point = og.geometry.coordinates;
     feature.geometry.coordinates = [point[0] / width, point[1] / height];
     feature.bound.coordinates = [point[0] / width, point[1] / height];
-    if(og.properties&&og.properties.style) extend(feature.properties.style, og.properties.style);
+    if (og.properties&&og.properties.style) extend(feature.properties.style, og.properties.style);
     return feature;
   }
   let points = og.geometry.coordinates[0];
@@ -465,7 +484,7 @@ function covertToViewportFeature(width, height, og) {
       return [point[0] / width, point[1] / height];
     });
   }
-  if(og.properties&&og.properties.style) extend(feature.properties.style, og.properties.style);
+  if (og.properties&&og.properties.style) extend(feature.properties.style, og.properties.style);
   // add area
   if (og.properties&&og.properties.area) feature.properties.area = og.properties.area;
   if (og.properties&&og.properties.circumference) feature.properties.circumference = og.properties.circumference;
@@ -485,8 +504,8 @@ function covertToHumanLayer(data) {
   const typeName = item.analysis.source;
   const id = item.analysis.execution_id;
   const name = item.analysis.name || item.analysis.execution_id;
-  
-  if (!item.shape) item.shape = ["Polygon"];
+
+  if (!item.shape) item.shape = ['Polygon'];
   return {
     id: id,
     name: name,
@@ -496,7 +515,7 @@ function covertToHumanLayer(data) {
     shape: item.shape[0],
     isGrid: item.analysis.isGrid? true: false,
     data: null,
-  };  
+  };
 }
 
 function covertToRulerLayer(data) {
@@ -505,17 +524,17 @@ function covertToRulerLayer(data) {
     name: data.name,
     typeId: data.type,
     typeName: data.source,
-    shape: "Polygon",
+    shape: 'Polygon',
     creator: data.creator,
     data: null,
-  };  
+  };
 }
 
 function covertToCumputerLayer(data) {
   const typeName = data.source;
   const id = data.execution_id;
-  
-  //if (!typeIds[typeName]) typeIds[typeName] = randomId();
+
+  // if (!typeIds[typeName]) typeIds[typeName] = randomId();
   return {
     id: id,
     name: id,
@@ -810,6 +829,7 @@ EventHandle.prototype = {
     }
   },
 };
+
 function getUserType() {
   let tokenInfo = parseJwt(getCookie('token'));
   if (typeof tokenInfo==='object' && tokenInfo.userType) {
@@ -916,7 +936,7 @@ class Tracker {
         center.x,
         center.y,
     );
-    const image_zoom = viewer.viewport.viewportToImageZoom(
+    const imageZoom = viewer.viewport.viewportToImageZoom(
         viewer.viewport.getZoom(true),
     );
 
@@ -925,7 +945,7 @@ class Tracker {
       user: this.__userId,
       x: Math.round(x),
       y: Math.round(y),
-      z: image_zoom,
+      z: imageZoom,
       time: new Date(),
     });
   }
@@ -952,9 +972,9 @@ async function captureScreen(camic, {
   hasAnnotation = true,
   hasRuler = true,
   hasScalebar = true,
-} = {}){
-  // verify 
-  if(!camic instanceof CaMic) {
+} = {}) {
+  // verify
+  if (!camic instanceof CaMic) {
     console.error(`camic isn't an instance of CaMic!`);
     return null;
   }
@@ -971,19 +991,19 @@ async function captureScreen(camic, {
   const canvas = document.createElement('CANVAS');
   const ctx = canvas.getContext('2d');
   // set canvas's height and width
-  canvas.height = slideCanvas.height 
+  canvas.height = slideCanvas.height;
   canvas.width = slideCanvas.width;
 
   // draw slide on the result canvas
-  ctx.drawImage( slideCanvas, 0, 0)
-  
+  ctx.drawImage( slideCanvas, 0, 0);
+
 
   // draw the heatmaps on the result canvas
-  if(hasHeatmap &&
+  if (hasHeatmap &&
     viewer.heatmap &&
     viewer.heatmap._div &&
     viewer.heatmap._div.style.display!='none' &&
-    viewer.heatmap._display_ ){
+    viewer.heatmap._display_ ) {
     // set opacity
     ctx.globalAlpha = viewer.heatmap._div.style.opacity;
     // get heatmap canvas
@@ -992,43 +1012,43 @@ async function captureScreen(camic, {
 
     // draw the heatmaps on the result canvas
     ctx.drawImage(
-      heatmapCanvas,
-      offset[0], offset[1], viewer.canvas.clientWidth, viewer.canvas.clientHeight,
-      0, 0, canvas.width, canvas.height
-    )
+        heatmapCanvas,
+        offset[0], offset[1], viewer.canvas.clientWidth, viewer.canvas.clientHeight,
+        0, 0, canvas.width, canvas.height,
+    );
     // reset opacity
     ctx.globalAlpha = 1;
   }
 
   // draw the segmentations on the result canvas
-  if(hasSegment &&
+  if (hasSegment &&
     viewer.segment &&
     viewer.segment._div &&
     viewer.segment._div.style.display!='none' &&
-    viewer.segment._display_ ){
+    viewer.segment._display_ ) {
     // get segmentation canvas
     const segmentationCanvas = viewer.segment._display_;
     const offset = viewer.segment._offset;
-    
+
     // draw the segmentation on the result canvas
     ctx.drawImage(
-      segmentationCanvas,
-      offset[0], offset[1], viewer.canvas.clientWidth, viewer.canvas.clientHeight,
-      0, 0, canvas.width, canvas.height
-    )
+        segmentationCanvas,
+        offset[0], offset[1], viewer.canvas.clientWidth, viewer.canvas.clientHeight,
+        0, 0, canvas.width, canvas.height,
+    );
   }
 
   // draw the Annotations on the result canvas
-  if(hasAnnotation &&
+  if (hasAnnotation &&
     viewer.omanager &&
     viewer.omanager._div &&
     viewer.omanager._div.style.display!='none' &&
-    viewer.omanager._display_ ){
+    viewer.omanager._display_ ) {
     // get annotation canvas
     const overlayCanvas = viewer.omanager._display_;
-    
+
     // draw the annotations on the result canvas
-    ctx.drawImage( overlayCanvas, 0, 0, canvas.width, canvas.height)
+    ctx.drawImage( overlayCanvas, 0, 0, canvas.width, canvas.height);
   }
 
   // draw the rulers on the result canvas TODO performance
@@ -1045,7 +1065,7 @@ async function captureScreen(camic, {
 
       ctx.drawImage(
         measureCanvas,
-        
+
         0, 0
       )
   }
@@ -1062,184 +1082,174 @@ async function captureScreen(camic, {
   }
   */
 
-  if(hasRuler &&
+  if (hasRuler &&
     viewer.measureInstance
-    ) {
-      // get HTML elements of all ruler divs
-      const availableRulers = document.getElementsByClassName('ruler');
+  ) {
+    // get HTML elements of all ruler divs
+    const availableRulers = document.getElementsByClassName('ruler');
 
-      for(let i = 0; i < availableRulers.length; i++) {
-        // add to canvas only if ruler is visible on the slide
-        if(availableRulers[i].style.display !== 'none') {
+    for (let i = 0; i < availableRulers.length; i++) {
+      // add to canvas only if ruler is visible on the slide
+      if (availableRulers[i].style.display !== 'none') {
+        // let overlay = viewer.getOverlayById(availableRulers[i]);
+        // //console.log(overlay);
+        // let overlayBounds = viewer.viewport.viewportToViewerElementRectangle(overlay.getBounds(viewer.viewport));
+        // //console.log(overlayBounds);
 
-          // let overlay = viewer.getOverlayById(availableRulers[i]);
-          // //console.log(overlay);
-          // let overlayBounds = viewer.viewport.viewportToViewerElementRectangle(overlay.getBounds(viewer.viewport));
-          // //console.log(overlayBounds);
 
-
-          // details about position and size of ruler div
-          // const rulerDiv = {
-          //   left : parseFloat(window.getComputedStyle(availableRulers[i], null).getPropertyValue('left')),
-          //   top : parseFloat(window.getComputedStyle(availableRulers[i], null).getPropertyValue('top')),
-          //   width : parseFloat(window.getComputedStyle(availableRulers[i], null).getPropertyValue('width')),
-          //   height : parseFloat(window.getComputedStyle(availableRulers[i], null).getPropertyValue('height')),
-          //   direction : null
-          // }
-          const rulerDiv = {
-            left : parseFloat(availableRulers[i].style.left)*(slideCanvas.width/window.innerWidth),
-            top : parseFloat(availableRulers[i].style.top)*(slideCanvas.height/window.innerHeight),
-            width : parseFloat(availableRulers[i].style.width)*(slideCanvas.width/window.innerWidth),
-            height : parseFloat(availableRulers[i].style.height)*(slideCanvas.height/window.innerHeight),
-            direction : null
+        // details about position and size of ruler div
+        // const rulerDiv = {
+        //   left : parseFloat(window.getComputedStyle(availableRulers[i], null).getPropertyValue('left')),
+        //   top : parseFloat(window.getComputedStyle(availableRulers[i], null).getPropertyValue('top')),
+        //   width : parseFloat(window.getComputedStyle(availableRulers[i], null).getPropertyValue('width')),
+        //   height : parseFloat(window.getComputedStyle(availableRulers[i], null).getPropertyValue('height')),
+        //   direction : null
+        // }
+        const rulerDiv = {
+          left: parseFloat(availableRulers[i].style.left)*(slideCanvas.width/window.innerWidth),
+          top: parseFloat(availableRulers[i].style.top)*(slideCanvas.height/window.innerHeight),
+          width: parseFloat(availableRulers[i].style.width)*(slideCanvas.width/window.innerWidth),
+          height: parseFloat(availableRulers[i].style.height)*(slideCanvas.height/window.innerHeight),
+          direction: null,
+        };
+        // console.log(slideCanvas);
+        // console.log(canvas);
+        // console.log(rulerDiv);
+        // const rulerDiv ={
+        //   left : overlayBounds.x,
+        //   top : overlayBounds.y,
+        //   width : overlayBounds.width,
+        //   height : overlayBounds.height
+        // }
+        // skip iteration if Ruler Div has some missing attributes
+        if (isNaN(rulerDiv.left) || isNaN(rulerDiv.top) || isNaN(rulerDiv.width) || isNaN(rulerDiv.height)) {
+          console.error('Required Attributes of Ruler Missing');
+          continue;
+        }
+        // for ruler mode straight
+        if (availableRulers[i].dataset.mode === 'straight') {
+          // checking direction of ruler in this mode
+          for (let j = 0; j < availableRulers[i].children.length; j++) {
+            if (availableRulers[i].children[j].className === 'scale h') {
+              let rotateIndex = availableRulers[i].children[j].style.transform.search('rotate');
+              let len = availableRulers[i].children[j].style.transform.length;
+              let rotateAngle;
+              if (rotateIndex != -1) {
+                rotateAngle = parseFloat(availableRulers[i].children[j].style.transform.substring(rotateIndex + 7, len));
+              }
+              if (isNaN(rotateAngle)) {
+                rotateAngle = (Math.PI);
+              }
+              if (rotateAngle >= (Math.PI / 2)) {
+                rulerDiv.direction = 'r2l';
+              } else {
+                rulerDiv.direction = 'l2r';
+              }
+              break;
+            }
           }
-          // console.log(slideCanvas);
-          // console.log(canvas);
-          // console.log(rulerDiv);
-          // const rulerDiv ={
-          //   left : overlayBounds.x,
-          //   top : overlayBounds.y,
-          //   width : overlayBounds.width,
-          //   height : overlayBounds.height
-          // }
-          // skip iteration if Ruler Div has some missing attributes
-          if(isNaN(rulerDiv.left) || isNaN(rulerDiv.top) || isNaN(rulerDiv.width) || isNaN(rulerDiv.height)) {
-            console.error('Required Attributes of Ruler Missing');
+          // drawing ruler on result canvas
+          ctx.strokeStyle = '#acfc03e6';
+          ctx.lineWidth = 2* ((slideCanvas.width) / (window.innerWidth));
+          ctx.beginPath();
+          if (rulerDiv.direction === 'l2r') {
+            ctx.moveTo(rulerDiv.left, rulerDiv.top);
+            ctx.lineTo(rulerDiv.width + rulerDiv.left, rulerDiv.height + rulerDiv.top);
+          } else if (rulerDiv.direction === 'r2l') {
+            ctx.moveTo(rulerDiv.width + rulerDiv.left, rulerDiv.top);
+            ctx.lineTo(rulerDiv.left, rulerDiv.height + rulerDiv.top);
+          } else {
+            console.error('Something went wrong');
             continue;
           }
-          // for ruler mode straight
-          if(availableRulers[i].dataset.mode === 'straight') {
+          ctx.stroke();
 
-            // checking direction of ruler in this mode
-            for(let j = 0; j < availableRulers[i].children.length; j++) {
-
-              if(availableRulers[i].children[j].className === 'scale h') {
-                let rotateIndex = availableRulers[i].children[j].style.transform.search('rotate');
-                let len = availableRulers[i].children[j].style.transform.length;
-                let rotateAngle;
-                if(rotateIndex != -1) {
-                  rotateAngle = parseFloat(availableRulers[i].children[j].style.transform.substring(rotateIndex + 7, len));
-                }
-                if(isNaN(rotateAngle)){
-                  rotateAngle = (Math.PI);
-                }
-                if(rotateAngle >= (Math.PI / 2)) {
-                  rulerDiv.direction = 'r2l';
-                } else{
-                  rulerDiv.direction = 'l2r';
-                }
-                break;
+          // writing ruler Value on result canvas
+          let scaleValue = '';
+          let fontSize = 13 * ((slideCanvas.width) / (window.innerWidth));
+          for (let j = 0; j < availableRulers[i].children.length; j++) {
+            if (availableRulers[i].children[j].className === 'box') {
+              try {
+                scaleValue = availableRulers[i].children[j].children[0].innerHTML;
+              } catch (error) {
+                scaleValue = '';
               }
-
+              break;
             }
-            // drawing ruler on result canvas
-            ctx.strokeStyle = '#acfc03e6';
-            ctx.lineWidth = 2* ((slideCanvas.width) / (window.innerWidth));
-            ctx.beginPath();
-            if(rulerDiv.direction === 'l2r') {
-              ctx.moveTo(rulerDiv.left, rulerDiv.top);
-              ctx.lineTo(rulerDiv.width + rulerDiv.left, rulerDiv.height + rulerDiv.top);
-            } else if(rulerDiv.direction === 'r2l') {
-              ctx.moveTo(rulerDiv.width + rulerDiv.left, rulerDiv.top);
-              ctx.lineTo(rulerDiv.left, rulerDiv.height + rulerDiv.top);
-            } else {
-              console.error('Something went wrong');
-              continue;
-            }           
-            ctx.stroke();
-            
-            // writing ruler Value on result canvas
-            let scaleValue = '';
-            let fontSize = 13 * ((slideCanvas.width) / (window.innerWidth));
-            for(let j = 0; j < availableRulers[i].children.length; j++){
-              if(availableRulers[i].children[j].className === 'box'){
-                try{
-                  scaleValue = availableRulers[i].children[j].children[0].innerHTML;
-                }
-                catch(error){
-                  scaleValue = '';
-                }
-                break;
+          }
+          // background behind scale value
+          ctx.font = `900 ${fontSize}px sans-serif`;
+          ctx.fillStyle = '#acfc03e6';
+          let xOffset = (rulerDiv.width/2 + rulerDiv.left);
+          let yOffset = (rulerDiv.height/2 + rulerDiv.top);
+          ctx.fillRect(xOffset - ctx.measureText(scaleValue).width/2, yOffset - fontSize + (2 * ((slideCanvas.width) / (window.innerWidth))), ctx.measureText(scaleValue).width, fontSize);
+
+          // scale value text
+          ctx.fillStyle = 'black';
+          ctx.textAlign = 'center';
+          ctx.fillText(scaleValue, xOffset, yOffset);
+        } else {
+          // for ruler mode coordinate
+          // drawing coordinate ruler on result canvas
+          ctx.strokeStyle = '#acfc03e6';
+          ctx.lineWidth = 2 * ((slideCanvas.width) / (window.innerWidth));
+          ctx.beginPath();
+          ctx.moveTo(rulerDiv.left, rulerDiv.top);
+          ctx.lineTo(rulerDiv.left, rulerDiv.height + rulerDiv.top);
+          ctx.moveTo(rulerDiv.left, rulerDiv.height + rulerDiv.top);
+          ctx.lineTo(rulerDiv.left + rulerDiv.width, rulerDiv.height + rulerDiv.top);
+          ctx.stroke();
+
+          let h_scaleValue = '';
+          let v_scaleValue = '';
+
+          for (let j = 0; j < availableRulers[i].children.length; j++) {
+            if (availableRulers[i].children[j].className === 'h_scale') {
+              try {
+                h_scaleValue = availableRulers[i].children[j].children[0].innerHTML;
+              } catch (error) {
+                h_scaleValue = '';
               }
-            }
-            // background behind scale value
-            ctx.font = `900 ${fontSize}px sans-serif`;
-            ctx.fillStyle = '#acfc03e6';
-            let xOffset = (rulerDiv.width/2 + rulerDiv.left);
-            let yOffset = (rulerDiv.height/2 + rulerDiv.top);
-            ctx.fillRect(xOffset - ctx.measureText(scaleValue).width/2, yOffset - fontSize + (2 * ((slideCanvas.width) / (window.innerWidth))), ctx.measureText(scaleValue).width, fontSize);
-
-            // scale value text
-            ctx.fillStyle = 'black';
-            ctx.textAlign = 'center';
-            ctx.fillText(scaleValue, xOffset , yOffset);
-
-          } else {
-            // for ruler mode coordinate
-            // drawing coordinate ruler on result canvas
-            ctx.strokeStyle = '#acfc03e6';
-            ctx.lineWidth = 2 * ((slideCanvas.width) / (window.innerWidth));
-            ctx.beginPath();
-            ctx.moveTo(rulerDiv.left, rulerDiv.top);
-            ctx.lineTo(rulerDiv.left, rulerDiv.height + rulerDiv.top);
-            ctx.moveTo(rulerDiv.left, rulerDiv.height + rulerDiv.top);
-            ctx.lineTo(rulerDiv.left + rulerDiv.width, rulerDiv.height + rulerDiv.top);
-            ctx.stroke();
-
-            let h_scaleValue = '';
-            let v_scaleValue = '';
-
-            for(let j = 0; j < availableRulers[i].children.length; j++){
-              if(availableRulers[i].children[j].className === 'h_scale'){
-                try{
-                  h_scaleValue = availableRulers[i].children[j].children[0].innerHTML;
-                }
-                catch(error){
-                  h_scaleValue = '';
-                }
-              } else if(availableRulers[i].children[j].className === 'v_scale'){
-                try{
-                  v_scaleValue = availableRulers[i].children[j].children[0].innerHTML;
-                }
-                catch(error){
-                  v_scaleValue = '';
-                }
+            } else if (availableRulers[i].children[j].className === 'v_scale') {
+              try {
+                v_scaleValue = availableRulers[i].children[j].children[0].innerHTML;
+              } catch (error) {
+                v_scaleValue = '';
               }
             }
-            console.log(h_scaleValue);
-            console.log(v_scaleValue);
-            let fontSize = 13 * ((slideCanvas.width) / (window.innerWidth));
-            
-            let v_xOffset = (rulerDiv.left);
-            let v_yOffset = (rulerDiv.height/2 + rulerDiv.top);
-            let h_xOffset = (rulerDiv.width/2 + rulerDiv.left);
-            let h_yOffset = (rulerDiv.height + rulerDiv.top) + (11 * ((slideCanvas.width) / (window.innerWidth)));
+          }
+          console.log(h_scaleValue);
+          console.log(v_scaleValue);
+          let fontSize = 13 * ((slideCanvas.width) / (window.innerWidth));
 
-             // background behind scale value
-            ctx.font = `900 ${fontSize}px sans-serif`;
-            ctx.fillStyle = '#acfc03e6';
-            ctx.fillRect(h_xOffset - ctx.measureText(h_scaleValue).width/2, h_yOffset - fontSize + (2 * ((slideCanvas.width) / (window.innerWidth))), ctx.measureText(h_scaleValue).width, fontSize);
+          let v_xOffset = (rulerDiv.left);
+          let v_yOffset = (rulerDiv.height/2 + rulerDiv.top);
+          let h_xOffset = (rulerDiv.width/2 + rulerDiv.left);
+          let h_yOffset = (rulerDiv.height + rulerDiv.top) + (11 * ((slideCanvas.width) / (window.innerWidth)));
 
-            // scale value text
-            ctx.fillStyle = 'black';
-            ctx.textAlign = 'center';
-            ctx.fillText(h_scaleValue, h_xOffset , h_yOffset);
+          // background behind scale value
+          ctx.font = `900 ${fontSize}px sans-serif`;
+          ctx.fillStyle = '#acfc03e6';
+          ctx.fillRect(h_xOffset - ctx.measureText(h_scaleValue).width/2, h_yOffset - fontSize + (2 * ((slideCanvas.width) / (window.innerWidth))), ctx.measureText(h_scaleValue).width, fontSize);
 
-             // background behind scale value
-            ctx.font = `900 ${fontSize}px sans-serif`;
-            ctx.fillStyle = '#acfc03e6';
-            ctx.fillRect(v_xOffset - ctx.measureText(v_scaleValue).width/2, v_yOffset - fontSize + (2 * ((slideCanvas.width) / (window.innerWidth))), ctx.measureText(v_scaleValue).width , fontSize);
+          // scale value text
+          ctx.fillStyle = 'black';
+          ctx.textAlign = 'center';
+          ctx.fillText(h_scaleValue, h_xOffset, h_yOffset);
 
-            // scale value text
-            ctx.fillStyle = 'black';
-            ctx.textAlign = 'center';
-            ctx.fillText(v_scaleValue, v_xOffset , v_yOffset);
+          // background behind scale value
+          ctx.font = `900 ${fontSize}px sans-serif`;
+          ctx.fillStyle = '#acfc03e6';
+          ctx.fillRect(v_xOffset - ctx.measureText(v_scaleValue).width/2, v_yOffset - fontSize + (2 * ((slideCanvas.width) / (window.innerWidth))), ctx.measureText(v_scaleValue).width, fontSize);
 
-          }          
+          // scale value text
+          ctx.fillStyle = 'black';
+          ctx.textAlign = 'center';
+          ctx.fillText(v_scaleValue, v_xOffset, v_yOffset);
         }
       }
+    }
   }
 
   return canvas;
-
 }

@@ -1,65 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+    <meta name="keywords" content="camicroscope, camic, quip" />
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0 maximum-scale=1.0, user-scalable=no" />
+    <!-- common -->
+    <link rel="stylesheet" type="text/css" media="all" href="../common.css" />
+    <!-- Check If we're logged in ok, otherwise, log in for us -->
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" />
 
-<html>
-  <head>
-    <title>caMicroscope</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
+    <script src="../../common/authChecker.js"></script>
+    <script>
+        __auth_check(2);
+    </script>
+    <script src="../../core/Store.js"></script>
+    <script src="../../common/util.js"></script>
+    <script src="../../common/ajv.js"></script>
+    <script src="../../components/loading/loading.js"></script>
+    <!-- paginator css & js-->
+    <script src="../../components/paginator/paginator.js"></script>
+    <link href="../../components/paginator/paginator.css" rel="stylesheet" type="text/css" media="all"/>
+
+    <!-- jquery&UI -->
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"/>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    
+    <!-- jstree -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
-   
-  </head>
-  <nav class="navbar navbar-light text-white bg-dark">
-    <a class="navbar-brand" href="#">
-      <img src="./favicon.ico" width="30" height="30" alt="caMicroscope">
-    </a>
-    <ul class="nav justify-content-end text-white">
-      <li class="nav-item">
-        <form class="form-inline">
-          <input class="form-control mr-sm-2" type="search" onkeyup="onSearch()" id="searchbar" placeholder="Search" aria-label="Search">
-          <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#filterCollapse" aria-expanded="false" aria-controls="filterCollapse">Filters &#9662; </button>
-        </form>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link active text-white" href="../signup/signup.html">Signup</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link text-white" href="../load/">Load</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link  text-white" href="../dev-workbench/workbench.html">Workbench</a>
-      </li>
-    </ul>
-  </nav>
-  <body>
-    <div id="container">
-      <div id="explore">
-        <div class="collapse" id="filterCollapse">
-          <div class="card card-body">
-            <ul class="nav nav-tabs" id="tabContainer" role="tablist">
-            </ul>
-            <div class="tab-content" id="tabContent">
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class='main-view bg-light'>
-        <div id="collection-tree-view">
-        </div>
-        <div id="table" class="display">
-        </div>
-      </div
-    </div>
 
-    <nav class="navbar navbar-light bg-light fixed-bottom">
-      <div class="">U24 CA18092401A1, Tools to Analyze Morphology and Spatially Mapped Molecular Data</div>
+    <!-- bootstrap css & boudle -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+
+    
+
+    <!-- datatables -->
+    <!-- <link href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css" rel="stylesheet"
+        crossorigin="anonymous" />
+    <script src="//cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js" crossorigin="anonymous"></script> -->
+
+    <!-- icon -->
+    <link rel="shortcut icon" type="image/x-icon" href="/apps/landing/favicon.png" />
+
+    <!-- style css -->
+    <link rel="stylesheet" href="./style.css" />
+
+
+</head>
+
+<body>
+    <title>CaMicroscope Initial Table</title>
+    <!-- navbar start -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark" style="position: sticky; margin-top: -4em">
+        <div class="container-fluid">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item link" style="font-family: sans-serif">
+                        <a class="nav-link" href="landing/landing.html">
+                            <i class="fas fa-home"></i> Home</a>
+                    </li>
+                    <li class="nav-item active link" style="font-family: sans-serif">
+                        <a class="nav-link" href="table.html">
+                            <i class="fas fa-list-ul"></i> Slides</a>
+                    </li>
+                    <li class="nav-item link">
+                        <a class="nav-link" href="Info.html">
+                            <i class="fas fa-info-circle"></i> Info</a>
+                    </li>
+                    <li class="nav-item link">
+                        <a class="nav-link" href="./dev-workbench/workbench.html">
+                            <i class="fas fa-pencil-ruler"></i> Workbench</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item link" style="font-family: sans-serif">
+                        <a class="nav-link" href="./signup/signup.html">
+                            <i class="fas fa-user-plus"></i> Signup</a>
+                    </li>
+                    <li class="nav-item link" style="font-family: sans-serif">
+                        <a class="nav-link" target="_blank"
+                            href="https://docs.google.com/forms/d/e/1FAIpQLScL91LxrpAZjU88GBZP9gmcdgdf8__uNUwhws2lzU6Lr4qNwA/viewform">
+                            <i class="fas fa-comment"></i> Feedback</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
     </nav>
-  </body>
-  <script src="../../core/Store.js"></script>
-  <script src="vis-table.js"></script>
+    <!-- navbar end -->
+
+    <!-- page header start -->
+    <!-- <div class="header text-center text-white bg-info p-4">
+      <h1 class="h1">caMicroscope</h1>
+      <p>
+        Digital pathology image viewer with support for human/machine generated
+        annotations and markups.
+      </p>
+    </div> -->
+    <!-- page header end -->
+
+    <!-- main view start -->
+    <div class="container-fluid">
+        <div class="row h-fit">
+            <div class="col-lg-3 col-md-3 col-sm-12 bg-light tree-view">
+                <div class="search-box bg-light p-4 clearfix" style='height:64px;'>
+
+                </div>
+                <div id="coll-message" class=" alert alert-warning m-4" role="alert" style="display:none">
+                    No Collection, Please Create A Collection
+                </div>
+                <div id="main-tree-view" class="p-4" >Loading Collections ...</div>
+
+            </div>
+            <div class="col-lg-9 col-md-9 col-sm-12 main-view">
+                <!-- main message -->
+                <!-- message -->
+                <div id="main-view-message" class="alert alert-warning mt-4" role="alert">
+                    Please Select A Collection From The Collection Tree On Right ...
+                </div>
+
+
+                <!-- main view start -->
+                <div id="main-view-panel" class="container-fluid" style='display: none;'>
+                <!-- mansonry control  start -->
+
+                <!-- breadcrumb -->
+                <div id="main-view-breadcrumb" class="alert alert-primary breadcrumb mt-4 mb-0 p-2">
+                    <div class="breadcrumb-item"><a href="#"></a>Home</a></div>
+                    <div class="breadcrumb-item"><a href="#">Library</a></div>
+                    <div class="breadcrumb-item active" aria-current="page">Data</div>
+                </div>
+              
+                <div class="row my-3">
+                    <div class="col-sm-12 col-md-6">
+                        <label class='ctrl-label'>
+                            Show
+                            <select id="selRecordPerPage" class="form-select form-select-sm" aria-label=".form-select-sm">
+                                <option value=10 selected>10</option>
+                                <option value=25 >25</option>
+                                <option value=50>50</option>
+                                <option value=100>100</option>
+                            </select>
+                        entities
+                        </label>
+                    </div>
+                    <div class="col-sm-12 col-md-6">
+                            <!-- <button class="btn bg-primary btn-sm" tabindex="0"
+                                type="button" title="Change views">
+                                <span class="fa fa-fw fa-table" style='color: #fff;'></span>
+                            </button> -->
+                            <label class='ctrl-label justify-content-end'>Search:<input id="slideSearch" type="search" class="form-control form-control-sm"
+                                    placeholder="Slide Name" ></label>
+                    </div>
+                </div>
+                <!-- mansonry control end -->
+
+                    <!-- masonry start -->
+                    
+                        
+                        <!-- mansonry grid start -->
+                        <div class="row grid-view">
+                            <div class="col-12 inner-grid-view">
+                                <div class='loader'></div>               
+                            </div>
+
+                        </div>
+                        <!-- mansonry grid end -->
+                        
+                        <!-- mansonry pagination start -->
+                        <div class="row pagination-control mt-3 mb-3">
+                            <div class="col-sm-12 col-md-6 col-lg-6">
+                                <div id="recordMessage" class="pagination-sm">
+                                    Showing 31 to 40 of 57 entries
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-6 col-lg-6">
+                                <div id='paginator'></div>
+                            </div>
+                        </div>
+                    
+                    <!-- masonry end -->
+                </div>
+                <!-- main view end -->
+                
+            </div>
+
+        </div>
+    </div>
+    <!-- </div>
+    </div> -->
+    <!-- main view end -->
+    <!-- footer start -->
+    <footer class="text-center text-white bg-dark p-3">
+        <p class="p">Copyright © 2021 caMicroscope</p>
+    </footer>
+    <!-- footer end -->
+</body>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
+    
+<script src="index.js"></script>
 </html>

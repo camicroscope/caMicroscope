@@ -580,26 +580,6 @@ function deleteCollection() {
   openDelConfirm(node);
 };
 
-function listToTree(list) {
-  var map = {}; var node; var roots = []; var i;
-
-  for (i = 0; i < list.length; i += 1) {
-    map[list[i].id] = i; // initialize the map
-    list[i].children = []; // initialize the children
-  }
-
-  for (i = 0; i < list.length; i += 1) {
-    node = list[i];
-    if (node.pid) {
-      // if you have dangling branches check that map[node.parentId] exists
-      list[map[node.pid]].children.push(node);
-    } else {
-      roots.push(node);
-    }
-  }
-  return roots;
-}
-
 function selectCollectionHandler(node) {
   if (node) {
     // UI control

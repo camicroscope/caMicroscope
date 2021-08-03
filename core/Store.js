@@ -19,6 +19,8 @@ function objToParamStr(obj) {
         // arrays are a list of strings with escaped quotes, surrounded by []
         parts.push(encodeURIComponent(i) +
           '=' + encodeURIComponent('[' + obj[i].map((x) => '\"' + x + '\"').toString() + ']'));
+      } else if (i=='sort' || i=='_search_') {
+        parts.push(encodeURIComponent(i) + '=' + encodeURIComponent(JSON.stringify(obj[i])));
       } else {
         parts.push(encodeURIComponent(i) + '=' + encodeURIComponent(obj[i]));
       }
@@ -659,6 +661,23 @@ class Store {
         return resp.text();
       }
     });
+  }
+  /**
+   * count the slide collection
+   * @param {string} id - the mongo doc's id
+   * @return {promise} - promise which resolves with data
+   **/
+  countSlide(query) {
+    const suffix = 'Slide/count';
+    let url = this.base + suffix;
+    // const query = {};
+    if (query) {
+      url = `${url}?${objToParamStr(query)}`;
+    }
+    return fetch(url, {
+      credentials: 'include',
+      mode: 'cors',
+    }).then(this.errorHandler);
   }
   /**
    * find overlays matching name and/or type

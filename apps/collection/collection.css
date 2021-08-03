@@ -61,7 +61,7 @@
   padding: 2rem;
 }
 /* Small devices (landscape phones, less than 768px) */
-@media (max-width: 576.98px) {
+@media (max-width: 768px) {
   .tree-view, .table-view {
     border-right: none;
     border-bottom: 1px solid rgba(0, 0, 0, 0.125);
