@@ -204,8 +204,6 @@ class Store {
       };
     }
     let bySlideId;
-    const suffix = 'Mark/multi';
-    const url = this.base + suffix;
     const query = {};
     query['provenance.image.slide'] = slide;
 
@@ -237,8 +235,9 @@ class Store {
     if (y1) {
       query.y1 = y1;
     }
-
-    return fetch(url, {
+    const markSuffix = 'Mark/multi';
+    const markUrl = this.base + markSuffix;
+    const markPromise = fetch(markUrl, {
       method: 'POST',
       credentials: 'include',
       mode: 'cors',
@@ -247,6 +246,24 @@ class Store {
       },
       body: JSON.stringify(query),
     }).then(this.errorHandler).then((x) => this.filterBroken(x, 'mark'));
+
+    const segmentSuffix = 'Segment/multi';
+    const segmentUrl = this.base + segmentSuffix;
+    const segmentPromise = fetch(segmentUrl, {
+      method: 'POST',
+      credentials: 'include',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json; charset=utf-8',
+      },
+      body: JSON.stringify(query),
+    }).then(this.errorHandler).then((x) => this.filterBroken(x, 'mark'));
+    return Promise.all([markPromise, segmentPromise]).then((x)=> {
+      let allMarks = x.flat();
+      allMarks = allMarks.filter((e)=> e!== undefined);
+      console.log(allMarks);
+      return allMarks;
+    });
   }
 
 
@@ -359,8 +376,6 @@ class Store {
 
 
   findMarkTypes(slide, type) { // type = 'human' or 'computer'
-    const suffix = 'Mark/findMarkTypes';
-
     const query = {};
     //
     if (!slide || !type) {
@@ -369,6 +384,13 @@ class Store {
     }
     query['slide'] = slide;
     query['type'] = type;
+    let suffix;
+    if (query['type'] == 'computer') {
+      suffix = 'Segmentation/types';
+      delete query['type'];
+    } else {
+      suffix = 'Mark/findMarkTypes';
+    }
 
     const url = this.base + suffix;
     return fetch(url + '?' + objToParamStr(query), {
