@@ -27,9 +27,13 @@ SVG Icons - svgicons.sparkk.fr
 }
 
 #jitsi-iframe {
-    width: 450px;
-    height: 330px;
+    width: 420px;
+    height: 280px;
     border-radius: 10px;
+    background-color: transparent;
+}
+
+#jitsi-iframe:hover {
     background: repeating-linear-gradient(
         45deg,
         rgba(255, 255, 255, 0.1),
@@ -41,7 +45,8 @@ SVG Icons - svgicons.sparkk.fr
 }
 
 #jitsi-iframe iframe {
-    margin-left: 5%;
+    margin-left: 2%;
+    margin-top: -6%;
     border-radius: 10px;
     box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 15px 0px;
 }
