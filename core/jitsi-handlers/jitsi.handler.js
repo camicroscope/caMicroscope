@@ -1,4 +1,4 @@
-function makeid(length=6) {
+function generateRandomCallId(length=6) {
     var result           = '';
     var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     var charactersLength = characters.length;
@@ -33,7 +33,7 @@ function initiateJitsiCall() {
     }
     $( "#jitsi-iframe iframe" ).remove();
     const options = {
-        roomName: 'JitsiMeetAPIExample',
+        roomName: generateRandomCallId(),
         width: 400,
         height: 250,
         parentNode: document.querySelector('#jitsi-iframe')
