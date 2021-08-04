@@ -1,6 +1,13 @@
 // initalize store, dependency
 let _STORE = new Store('../../data/');
 
+function addToStatus(text) {
+  let status = document.getElementById('status');
+  let li = document.createElement('li');
+  li.innerText = text;
+  status.prepend(li);
+}
+
 function postDoc(dataType, data) {
   if (dataType == 'mark') {
     _STORE.addMark(data).then(console.log);
@@ -106,9 +113,15 @@ function importFile(file, dataType, manifestRecord) {
           let lookup = _STORE.findSlide(slide, specimen, study).then((x)=>{
             record.provenance.image.slide = x[0]['_id']['$oid'];
             console.log(record);
+            addToStatus('Found a match for slide ' + slide);
             return record;
           });
-          lookup.then((x)=>postDoc(dataType, data)).then(console.log);
+          lookup.then((x)=>postDoc(dataType, data)).then(console.log)
+              .then((x)=>addToStatus('Posted  a ' + dataType))
+              .catch((e)=>{
+                console.error(e);
+                addToStatus('Error posting a ' + dataType);
+              });
         }
       }
       res(true); // note that find/post callbacks may not be done
@@ -126,25 +139,43 @@ async function runImport() {
   for (let file of files) {
     let manifestRecord = {};
     if (dataType == 'slide') {
-      // TODO -- test and rm this warning.
-      alert('Slide Mode Untested.');
       // insert data from manifest if applicable
       if (manifest) {
         manifestRecord = manifest[file.name] || {};
       }
-      // TODO --
       // upload the file to the load service
-      let fileUpload = await startUpload(file.name).then((x)=>continueUpload(x, file)).then((x)=>finishUpload(x, file.name));
-      // lookup required/recommended fields (mpp) from load service -- TODO
+      let fileUpload = await startUpload(file.name)
+          .then((x)=>continueUpload(x, file))
+          .then((x)=>finishUpload(x, file.name))
+          .then((x)=>{
+            addToStatus('Uploaded file ' + file.name);
+          }).catch((e)=>{
+            console.error(e);
+            addToStatus('Error uploading file ' + file.name);
+          });
+      // TODO lookup fields (e.g. mpp) from load service
       let record = manifestRecord || {};
-      // TODO what else goes in this record?
-      let slidePost = await _STORE.addSlide(record);
+      record.name = record.name || file.name.split('.').join('_');
+      record.specimen = record.specimen || '';
+      record.study = record.study || '';
+      record.location = record.location || '/images/' + file.name;
+      let slidePost = await _STORE.addSlide(record).then((x)=>{
+        addToStatus('Added slide ' + record.name);
+      }).catch((e)=>{
+        addToStatus('Error adding slide ' + record.name);
+      });
     } else {
       // insert data from manifest if applicable
       if (manifest) {
         manifestRecord = manifest[file.name] || {};
       }
-      importFile(file, dataType, manifestRecord).then(console.log);
+      importFile(file, dataType, manifestRecord).then(console.log)
+          .then((x)=>{
+            addToStatus('Imported a ' + dataType);
+          }).catch((e)=>{
+            console.error(e);
+            addToStatus('Error Importing a ' + dataType);
+          });
     }
   }
 }
