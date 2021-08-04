@@ -3,6 +3,7 @@
 let $CAMIC = null;
 let tracker;
 let $minorCAMIC = null;
+let $chatOpen = false;
 // for all instances of UI components
 const $UI = new Map();
 
@@ -711,13 +712,19 @@ async function initUIcomponents() {
     value: 'messaging',
     type: 'btn',
     callback: async function () {
-      fetchMessagesIntoChat();
-      $UI.messagingSideMenu.open();
-      document.getElementById('chatInput').focus();
-      setTimeout(() => {
-        var messageArea = document.getElementById("chatsDisplayArea");
-        messageArea.scrollTop = messageArea.scrollHeight;
-      }, 500);
+      if (!$chatOpen) {
+        fetchMessagesIntoChat();
+        $UI.messagingSideMenu.open();
+        document.getElementById('chatInput').focus();
+        setTimeout(() => {
+          var messageArea = document.getElementById("chatsDisplayArea");
+          messageArea.scrollTop = messageArea.scrollHeight;
+        }, 500);
+        $chatOpen = true;
+      } else {
+        $chatOpen = false;
+        $UI.messagingSideMenu.close();
+      }
     },
   });
   // Jitsi Meet 
