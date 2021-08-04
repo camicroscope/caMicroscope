@@ -30,6 +30,7 @@ var tour = new Tour({
     element: 'label[title=\'Draw\']',
     title: 'Draw',
     content: 'Draw thin lines, thick lines, or polygons on the image.'+
+    ' Annotations can also be computer aided using the Smart-pen tool. Draw them, stretch them, remove them.'+
     ' To maintain the integrity of measurements, avoid drawing shapes that overlap or intersect one another.',
     placement: 'auto bottom',
     smartPlacement: true,

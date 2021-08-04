@@ -125,6 +125,7 @@
     this._hash_data = new Map();
     // aligndata
     this._align_data = [];
+    this._simplify = true;
 
     // -- create container div, and draw, display canvas -- //
     this._containerWidth = 0;
@@ -356,7 +357,7 @@
      */
     drawOn: function() {
       // stop turning on draw mode if already turn on
-      if (this.isOn === true) return;
+      if (this.isOn === true && this.moveOn === true) return;
       // clock viewer
       // this._viewer.controls.bottomright.style.display = 'none';
       this.updateView();
@@ -386,7 +387,7 @@
     drawOff: function() {
       // stop turning off draw mode if already turn off
       // if(this.contextMenu) this.contextMenu.
-      if (this.isOn === false) return;
+      if (this.isOn === false && this.moveOn == false) return;
       // unclock viewer
       // this._viewer.controls.bottomright.style.display = '';
       this._viewer.setMouseNavEnabled(true);
@@ -530,12 +531,12 @@
       }
       img_point.x = Math.round(img_point.x);
       img_point.y = Math.round(img_point.y);
-      img_point = this.__align_real(img_point);
       // set style for ctx
       DrawHelper.setStyle(this._draw_ctx_, this.style);
       this._draw_ctx_.fillStyle = hexToRgbA(this.style.color, 0.3);
 
       if (this.isDrawing) {
+        img_point = this.__align_real(img_point);
         switch (this.drawMode) {
           case 'free':
           // draw line
@@ -895,15 +896,14 @@
 
       // simplify and postprocess
       if(this.isMoving) spen.smoothness = spen.s;
-      if (!(this.drawMode === 'grid'))
-        if(spen.mode == 1)
+      if (!(this.drawMode === 'grid') && this._simplify)
+        if(spen.mode != 0)
           points = mtool.populate(points, 500000, ~~this.scaleWindowtoImage(2), 150);
         else
           points = simplify(points, 3.5);
 
       // float to integer
       points = this._convert_integer(points);
-      console.log(points.length);
 
       if (!(this.drawMode === 'line' || this.drawMode == 'grid')) {
         let isIntersect = false;
@@ -1120,12 +1120,11 @@
     },
     __align_undo() {
       if (this._path_index > 0 && this._align_data.length) {
-        this._current_path_ = this._draws_data_[--this._path_index];
-      	this._draws_data_ = this._draws_data_.slice(0, this._path_index);
-      	this._current_path_.geometry.coordinates[0] = this._align_data;
         var tm = spen.mode; spen.mode = 3;
-        this.__endNewFeature();
-      	this.refresh_data();
+        var type = this._draws_data_[--this._path_index].geometry.type;
+        this._draws_data_ = this._draws_data_.slice(0, this._path_index);
+        this._redraw(this._align_data,type);
+        this.refresh_data();
         spen.mode = tm;
       } else this.undo();
     },
@@ -1182,6 +1181,14 @@
       let dx = this._viewer.viewport.windowToImageCoordinates(pt).x - this._viewer.viewport.windowToImageCoordinates(pt2).x;
       return dx;
     },
+    _redraw(data, type){
+      var t = this.drawMode
+      this.drawMode = type;
+      this.__newFeature(data[0]);
+      this._current_path_.geometry.coordinates[0] = data;
+      this.__endNewFeature();
+      this.drawMode = t;
+    }
   };
 
 
