@@ -728,7 +728,8 @@ async function initUIcomponents() {
     value: 'jitsiMeet',
     type: 'btn',
     callback: function() {
-      redirectToJitsiMeet();
+      // redirectToJitsiMeet();
+      initiateJitsiCall();
     },
   });
 
