@@ -461,7 +461,7 @@ async function initUIcomponents() {
         title: 'Left Viewer',
         type: 'multistates',
         callback: function(e) {
-          $CAMIC.viewer.viewport.setRotation(0);
+          // $CAMIC.viewer.viewport.setRotation(0);
           draw.call(this, e, 'main');
         },
       },
@@ -471,7 +471,7 @@ async function initUIcomponents() {
         title: 'Right Viewer',
         type: 'multistates',
         callback: function(e) {
-          $minorCAMIC.viewer.viewport.setRotation(0);
+          // $minorCAMIC.viewer.viewport.setRotation(0);
           draw.call(this, e, 'minor');
         },
       },
@@ -488,13 +488,7 @@ async function initUIcomponents() {
     title: 'Preset Labels',
     type: 'check',
     value: 'prelabels',
-    callback: function(e) {
-      if (+$CAMIC.viewer.viewport.getRotation() != 0 || +$minorCAMIC.viewer.viewport.getRotation() != 0) {
-        $UI.message.addError('Addition of labels not supported on rotated slides');
-        return;
-      }
-      drawLabel.call(this, e);
-    },
+    callback: drawLabel,
   });
   // magnifier
   subToolsOpt.push({

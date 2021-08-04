@@ -234,8 +234,19 @@
         (imagingHelper.physicalToDataX(3) - imagingHelper.physicalToDataX(0)) >>
         0;
       DrawHelper.clearCanvas(ctx.canvas);
-      ctx.translate(x, y);
-      ctx.scale(zoom, zoom);
+      // ctx.translate(x, y);
+      // ctx.scale(zoom, zoom);
+      var angle = +this._viewer.viewport.getRotation();
+      var cos=Math.cos(-1*angle*Math.PI / 180);
+      var sin=Math.sin(-1*angle*Math.PI / 180);
+      var center = this._viewer.viewport.viewportToViewerElementCoordinates(this._viewer.viewport.getCenter());
+      let a = (zoom*cos);
+      let c = (zoom*sin);
+      let e = (x*cos)-(center.x*cos)+(y*sin)-(center.y*sin)+center.x;
+      let b = (-1*zoom*sin);
+      let d = (zoom*cos);
+      let f = center.y+(y*cos)+(center.x*sin)-(center.y*cos)-(x*sin);
+      ctx.setTransform(a,b,c,d,e,f);
       //
       drawFuc();
       //
@@ -269,7 +280,7 @@
         this._display_.setAttribute("height", this._containerHeight);
       }
       this._viewportOrigin = new $.Point(0, 0);
-      var boundsRect = this._viewer.viewport.getBounds(true);
+      var boundsRect = this._viewer.viewport.getBoundsNoRotate(true);
       this._viewportOrigin.x = boundsRect.x;
       this._viewportOrigin.y = boundsRect.y * this.imgAspectRatio;
 
@@ -315,8 +326,8 @@
         this._containerHeight;
 
       this.clearCanvas();
-      this._display_.getContext("2d").translate(x, y);
-      this._display_.getContext("2d").scale(zoom, zoom);
+      // this._display_.getContext("2d").translate(x, y);
+      // this._display_.getContext("2d").scale(zoom, zoom);
       const imagingHelper = this._viewer.imagingHelper;
 
       this._display_ctx_.lineWidth = this.style.lineWidth =
@@ -327,6 +338,19 @@
         0;
       // this.drawMode !== "grid"
       //   ? 
+
+      var angle = +this._viewer.viewport.getRotation();
+      var cos=Math.cos(-1*angle*Math.PI / 180);
+      var sin=Math.sin(-1*angle*Math.PI / 180);
+      var center = this._viewer.viewport.viewportToViewerElementCoordinates(this._viewer.viewport.getCenter());
+      let a = (zoom*cos);
+      let c = (zoom*sin);
+      let e = (x*cos)-(center.x*cos)+(y*sin)-(center.y*sin)+center.x;
+      let b = (-1*zoom*sin);
+      let d = (zoom*cos);
+      let f = center.y+(y*cos)+(center.x*sin)-(center.y*cos)-(x*sin);
+      this._display_ctx_.setTransform(a,b,c,d,e,f);
+
         DrawHelper.draw(
             this._display_ctx_,
             this._draws_data_.slice(0, this._path_index)
