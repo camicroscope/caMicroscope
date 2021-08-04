@@ -21,7 +21,6 @@ function openJitsiInNewTab () {
 }
 
 function closeJitsiCall () {
-    alert('clicked')
     jitsiIframeApi.executeCommand('hangup');
     $( "#jitsi-iframe iframe" ).remove();
     $( "#jitsi-iframe" ).addClass('hide'); 	
