@@ -422,7 +422,6 @@ function brushOn(d) {
 }
 
 
-
 // --- Measurement Tool ---//
 /**
  * Callback measurement tool to toggle measurement tool
@@ -1703,25 +1702,23 @@ async function addPresetLabelsHandler(label) {
 }
 
 async function editPresetLabelsHandler(oldElt, newLabel) {
-  
   Loading.open($UI.labelsViewer.elt, 'Saving Label ...');
 
   const rs = await $CAMIC.store.updatePresetLabels(oldElt.dataset.id, newLabel).then((d)=>d.result);
-  
+
   if (rs.ok) {
-    
     // update
     const rs1 = await $CAMIC.store.updateMarksLabel(newLabel.id, newLabel.type).then((d)=>d.result);
-    if(rs1.ok){
+    if (rs1.ok) {
       // update UI
       updateMarksLabel(newLabel.id, newLabel.type, $UI.layersViewer);
       updateMarksLabel(newLabel.id, newLabel.type, $UI.layersViewerMinor);
 
-      // 
+      //
       $UI.labelsViewer.setLabels(oldElt, newLabel);
       $UI.message.add(`Label "${newLabel.type}" Has been Updated`);
       if (oldElt.classList.contains('selected')) drawLabel({value: 'prelabels', checked: true});
-    }else{
+    } else {
       $UI.message.addError(`Updating The Marks' Label Has Failed`);
     }
   } else {
@@ -1730,20 +1727,20 @@ async function editPresetLabelsHandler(oldElt, newLabel) {
   Loading.close();
   $UI.labelsViewer.__switch('view');
 }
-function updateMarksLabel(id, name, layersViewer){
-  const cate = layersViewer.setting.categoricalData.human.items[id]
-  if(cate){
+function updateMarksLabel(id, name, layersViewer) {
+  const cate = layersViewer.setting.categoricalData.human.items[id];
+  if (cate) {
     cate.item.name = name;
     cate.elt.querySelector('label > div').textContent = name;
     cate.elt.querySelector('input[type=checkbox]').dataset.name = name;
-    cate.items.forEach(e=>{
+    cate.items.forEach((e)=>{
       e.item.name = name;
       e.item.label.name = name;
-      const newName = `${name}${e.elt.dataset.id}`
+      const newName = `${name}${e.elt.dataset.id}`;
       e.elt.dataset.title = newName;
       e.elt.querySelector('label > div').textContent = newName;
-      
-      if(e.item.data){
+
+      if (e.item.data) {
         e.item.data.provenance.analysis.name = name;
         e.item.data.properties.annotations.name = name;
         e.item.data.properties.annotations.notes = name;
@@ -1857,7 +1854,7 @@ function savePresetLabel() {
     $UI.message.addWarning('No Label Selected. Please select One.', 4000);
     return;
   }
-  const execId = randomId() 
+  const execId = randomId();
   const labelId = data.id;
   const labelName = data.type;
   // const parent = data.type;
@@ -1957,8 +1954,8 @@ function savePresetLabel() {
           creator: getUserId(),
           shape: annotJson.geometries.features[0].geometry.type,
           isGrid: annotJson.provenance.analysis.isGrid? true: false,
-          label:{
-            id:annotJson.provenance.analysis.labelId,
+          label: {
+            id: annotJson.provenance.analysis.labelId,
             name: annotJson.provenance.analysis.name,
           },
           data: null,
@@ -2272,7 +2269,6 @@ async function rootCallback({root, parent, parentName, items}) {
   if (ids.length) {
     // mult rulers
     try {
-
       data = await $CAMIC.store.getMarkByIds(ids, $D.params.slideId, (root=='human'&&parent!==null)?parentName:parent, root);
 
       if (data.error) { // error

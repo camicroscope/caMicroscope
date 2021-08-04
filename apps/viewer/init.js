@@ -808,11 +808,8 @@ async function initUIcomponents() {
       $UI.appsSideMenu.addContent(title);
       $UI.annotOptPanel.elt.classList.add('item_body');
       $UI.appsSideMenu.addContent($UI.annotOptPanel.elt);
-
     }
   }, 300);
-
-
 }
 function createLayerViewer(id, viewerData, callback, rootCallback) {
   const layersViewer = new LayersViewer({
@@ -916,8 +913,8 @@ function addHumanLayerItems() {
         id: 'other',
         name: 'other',
       },
-      items: [],    
-    }
+      items: [],
+    },
   };
 
   $D.humanlayers.reduce((items, d)=> {
@@ -927,24 +924,24 @@ function addHumanLayerItems() {
       $D.params.states.l.includes(d.id) ?
         true:
         false;
-    if(d.label&&d.label.id&&d.label.name){ // preset  label
+    if (d.label&&d.label.id&&d.label.name) { // preset  label
       const {id, name} = d.label;
-      if(!items[id]){
+      if (!items[id]) {
         items[id] = {
-            item: {
-              id: id,
-              name: name,
-            },
-            items: [],
-          }
+          item: {
+            id: id,
+            name: name,
+          },
+          items: [],
+        };
       }
       items[id].items.push({item: d, isShow});
-    }else{ // other
+    } else { // other
       items['other'].items.push({item: d, isShow});
     }
     return items;
   }, mainViewerItems);
-  
+
   $UI.layersViewer.addHumanItems(mainViewerItems);
 
   // minor viewer minorViewer
@@ -954,9 +951,9 @@ function addHumanLayerItems() {
         id: 'other',
         name: 'other',
       },
-      items: [],    
-    }
-  };  
+      items: [],
+    },
+  };
   $D.humanlayers.reduce((items, d)=> {
     const isShow =
       $D.params.states &&
@@ -964,27 +961,27 @@ function addHumanLayerItems() {
       $D.params.states.l.includes(d.id) ?
         true:
         false;
-    if(d.label&&d.label.id&&d.label.name){
+    if (d.label&&d.label.id&&d.label.name) {
 
     }
-    if(d.label&&d.label.id&&d.label.name){ // preset  label
+    if (d.label&&d.label.id&&d.label.name) { // preset  label
       const {id, name} = d.label;
-      if(!items[id]){
+      if (!items[id]) {
         items[id] = {
-            item: {
-              id: id,
-              name: name,
-            },
-            items: [],
-          }
+          item: {
+            id: id,
+            name: name,
+          },
+          items: [],
+        };
       }
       items[id].items.push({item: d, isShow});
-    }else{ // other
+    } else { // other
       items['other'].items.push({item: d, isShow});
-    }    
+    }
     return items;
   }, minorViewerItems);
-  
+
   $UI.layersViewerMinor.addHumanItems(minorViewerItems);
 }
 function openLoadStatus(text) {
