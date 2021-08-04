@@ -37,13 +37,13 @@ function startUpload(filename) {
   return fetch(startUrl, {method: 'POST', body: JSON.stringify(body), headers: {
     'Content-Type': 'application/json; charset=utf-8',
   }}).then((x)=>x.json()).then((x)=>{
-    console.log(x)
+    console.log(x);
     return x['upload_token'];
   });
 }
 
 async function continueUpload(token, file) {
-  console.log(token)
+  console.log(token);
   var part = 0;
   var complete = false;
   while (!complete) {
