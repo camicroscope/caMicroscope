@@ -921,6 +921,18 @@ class Store {
     }).then(this.errorHandler);
   }
 
+  updateMarksLabel(id, name) {
+    const suffix = 'Mark/updateMarksLabel';
+    const url = this.base + suffix;
+    const query = {id, name};
+
+    return fetch(url + '?' + objToParamStr(query), {
+      method: 'POST',
+      credentials: 'include',
+      mode: 'cors',
+    }).then(this.errorHandler);
+  }
+
   removePresetLabels(id) {
     const suffix = 'Presetlabels/remove';
     const url = this.base + suffix;

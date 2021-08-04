@@ -903,7 +903,6 @@
 
       // float to integer
       points = this._convert_integer(points);
-      console.log(points.length);
 
       if (!(this.drawMode === 'line' || this.drawMode == 'grid')) {
         let isIntersect = false;

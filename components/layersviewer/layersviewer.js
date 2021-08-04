@@ -101,7 +101,26 @@ LayersViewer.prototype.addHumanItem = function(item, type, parent, isShow = true
     return;
   }
 
-  const cate = this.setting.categoricalData[type].items[parent];
+  var cate = this.setting.categoricalData[type].items[parent];
+  if(!cate) { // no parent node
+    const newCate = {};
+    if(item.label){
+      newCate[item.label.id] = {
+        item: {
+          id: item.label.id,
+          name: item.label.name
+        },
+        items: []
+      }
+      this.setting.categoricalData[type].items[parent] = newCate;
+      this.addHumanItems(newCate);
+      cate = this.setting.categoricalData[type].items[parent];    
+    }else{
+      console.error('Layersviewer.addHumanItem has error')
+    }
+    
+  }
+
   const data = {item, isShow};
   // add Data
   cate.items.push(data);
@@ -109,10 +128,10 @@ LayersViewer.prototype.addHumanItem = function(item, type, parent, isShow = true
   // add item on UI
   data.elt = document.createElement('li');
   data.elt.dataset.id = data.item.id;
-  data.elt.dataset.title = data.item.name;
+  data.elt.dataset.title = data.item.label?`${data.item.name}${data.item.id}`:`${data.item.name}`;
   data.elt.innerHTML = `<div class="material-icons md-24 location" title="Location" style="display:${isShow?'':'none'};">room</div>
   <label for="cate.${data.item.id}">
-    <div>${data.item.name}</div>
+    <div>${data.item.label?`${data.item.name}${data.item.id}`:`${data.item.name}`}</div>
   </label>
   <div class="material-icons md-24 remove" title="Remove">clear</div>
   <input type="checkbox" data-id="${data.item.id}" data-root="human" data-parent="${cate.item.id}" id="cate.${data.item.id}" data-type="leaf" ${isShow?'checked':''}>`;
@@ -447,21 +466,24 @@ LayersViewer.createCategoricalView = function(data) {
 
 LayersViewer.prototype.addHumanItems = function(data) {
   const human = this.setting.categoricalData['human'];
-  human.items = data;
+  // human.items = data;
+
   const ul = document.createElement('ul');
   var num = 0;
-  for (const [name, cate] of Object.entries(data)) {
+  for (const [id, cate] of Object.entries(data)) {
+    human.items[id] = cate;
+    const name = cate.item.name;
     const li = document.createElement('li');
-    li.dataset.id = name;
+    li.dataset.id = id;
     li.style.display = cate.items.length?null:'none';
     num += cate.items.length;
     // create
     li.innerHTML = `<div class="material-icons">keyboard_arrow_right</div>
-      <label for="cate.${name}" style="font-weight: bold;">
+      <label for="cate.${id}" style="font-weight: bold;">
         <div>${titleCase(name)}</div>
         <div class="num">${cate.items.length}</div>
       </label>
-      <input type="checkbox" data-id="${name}" data-root="human" data-type="root">`;
+      <input type="checkbox" data-id="${id}" data-name="${name}" data-root="human" data-type="root">`;
 
     const allChk = li.querySelector('input[type=checkbox][data-type=root]');
     allChk.addEventListener('change', this.__change.bind(this));
@@ -472,10 +494,10 @@ LayersViewer.prototype.addHumanItems = function(data) {
     cate.items.forEach((data) => {
       data.elt = document.createElement('li');
       data.elt.dataset.id = data.item.id;
-      data.elt.dataset.title = data.item.name;
+      data.elt.dataset.title = data.item.label?`${data.item.name}${data.item.id}`:`${data.item.name}`;
       data.elt.innerHTML = `<div class="material-icons md-24 location" title="Location" style="display: none;">room</div>
         <label for="cate.${data.item.id}">
-          <div>${data.item.name}</div>
+          <div>${data.item.label?`${data.item.name}${data.item.id}`:`${data.item.name}`}</div>
         </label>
         <div class="material-icons md-24 remove" title="Remove">clear</div>
         <input type="checkbox" data-id="${data.item.id}" data-root="human" data-parent="${cate.item.id}" id="cate.${data.item.id}" data-type="leaf">`;
@@ -927,6 +949,7 @@ LayersViewer.prototype.__change = function(e) {
   const dataset = e.target.dataset;
   const id = dataset.id;
   const type = dataset.type;
+  const name = dataset.name;
   const checked = e.target.checked;
 
   switch (type) {
@@ -951,7 +974,7 @@ LayersViewer.prototype.__change = function(e) {
           d.elt.firstChild.style.display = 'none';
         }
       });
-      this.setting.rootCallback.call(null, {root, parent: dataset.id, items});
+      this.setting.rootCallback.call(null, {root, parent: id, parentName: name, items});
       break;
     case 'leaf':
       var data;

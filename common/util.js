@@ -487,16 +487,34 @@ function covertToHumanLayer(data) {
   const name = item.analysis.name || item.analysis.execution_id;
   
   if (!item.shape) item.shape = ["Polygon"];
-  return {
-    id: id,
-    name: name,
-    typeId: typeName,
-    typeName: typeName,
-    creator: item.creator,
-    shape: item.shape[0],
-    isGrid: item.analysis.isGrid? true: false,
-    data: null,
-  };  
+  if(item.analysis.type&&item.analysis.type=='label') { // preset label
+    return {
+      id: id,
+      name: name,
+      typeId: typeName,
+      typeName: typeName,
+      creator: item.creator,
+      shape: item.shape[0],
+      isGrid: item.analysis.isGrid? true: false,
+      label:{
+        id:item.analysis.labelId,
+        name: item.analysis.name,
+      },
+      data: null,
+    };  
+  } else {
+    return {
+      id: id,
+      name: name,
+      typeId: typeName,
+      typeName: typeName,
+      creator: item.creator,
+      shape: item.shape[0],
+      isGrid: item.analysis.isGrid? true: false,
+      data: null,
+    };    
+  }
+ 
 }
 
 function covertToRulerLayer(data) {
