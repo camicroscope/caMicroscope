@@ -1,7 +1,47 @@
 <html>
-title bar
-type selection
-table w/searches
-output type selection
-download button
+	<script src='../../core/Store.js'></script>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+<body>
+	<nav class="navbar navbar-light text-white bg-dark">
+		<a class="navbar-brand" href="#">
+			<img src="./favicon.ico" width="30" height="30" alt="caMicroscope">
+		</a>
+		<ul class="nav justify-content-end text-white">
+			<li class="nav-item">
+				<a class="nav-link active text-white" href="../signup/signup.html">Signup</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link text-white" href="../load/">Load</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link  text-white" href="../dev-workbench/workbench.html">Workbench</a>
+			</li>
+		</ul>
+	</nav>
+	<div id="exportForm">
+		<form>
+		<div class="form-group">
+			<label for="dataType">Data Type:</label>
+			<select name="dataType" id="dataType">
+			 <option value="mark">mark</option>
+			 <option value="heatmap">heatmap</option>
+			</select>
+		</div>
+    <div class="form-group">
+      <label for="slide">Slide:</label>
+      <input class="form-control" id="slideInput" placeholder="Slide name">
+    </div>
+		<button type="button" class="btn btn-primary" id="start">Start Export</button>
+	</form>
+	</div>
+	<div id="statusContainer">
+		<h2>Status:</h2>
+		<ul id="status"></ul>
+	</div>
+<a id="downloadAnchorElem" style="display:none"></a>
+<script src="./export.js"></script>
+</body>
 </html>
