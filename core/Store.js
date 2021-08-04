@@ -887,6 +887,73 @@ class Store {
     }
   }
 
+  /**
+ * get messages by text
+ * @param {string} keyword - the room search keyword
+ * @return {promise} - promise which resolves with data
+ **/
+  getMessages(keyword) {
+    const suffix = 'Chat/search';
+    const url = this.base + suffix;
+    const query = {
+      'searchKey': keyword,
+    };
+
+    return fetch(url + '?' + objToParamStr(query), {
+      credentials: 'include',
+      mode: 'cors',
+    }).then(this.errorHandler).then((x) => this.filterBroken(x, 'chat'));
+  }
+  fetchMessages(roomId) {
+    const suffix = 'Chat/find';
+    const url = this.base + suffix;
+    const query = {
+      'roomId': roomId,
+    };
+    return fetch(url + '?' + objToParamStr(query), {
+      credentials: 'include',
+      mode: 'cors',
+    }).then(this.errorHandler).then((x) => this.filterBroken(x, 'chat'));
+  }
+  /**
+   * post message
+   * @param {object} json - the message data
+   * @return {promise} - promise which resolves with response
+   **/
+  addMessage(json) {
+    const suffix = 'Chat/post';
+    console.log('chat');
+    const url = this.base + suffix;
+    return fetch(url, {
+      method: 'POST',
+      credentials: 'include',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json; charset=utf-8',
+      },
+      body: JSON.stringify(json),
+    },
+    true, // Sockets config
+    'chat'
+    ).then(this.errorHandler);
+  }
+  /**
+   * delete message
+   * @param {object} id - the message object id
+   * @return {promise} - promise which resolves with response
+   **/
+  deleteMessage(id) {
+    const suffix = 'Chat/delete';
+    const url = this.base + suffix;
+    const query = {
+      '_id': id,
+    };
+    return fetch(url + '?' + objToParamStr(query), {
+      method: 'DELETE',
+      credentials: 'include',
+      mode: 'cors',
+    }).then(this.errorHandler);
+  }
 
   // Update slide name
   updateSlideName(id, newName) {

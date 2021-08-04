@@ -317,6 +317,139 @@ function handleCollaborationStatusChange() {
   })
 }
 
+const sendMessageToChat = () => {
+  // e.preventDefault();
+  const inputElement = document.getElementById('chatInput');
+  const body = inputElement.value.trim();
+  if (body !== '') {
+    const { slideId } = window.getUrlVars();
+    const timestamp = new Date();
+    const data = {
+      body,
+      roomId: slideId,
+      timestamp,
+    }
+  
+    const store = new Store('../../data/'); 
+    store.addMessage(data).then(data => {
+      inputElement.value = '';
+      const message = data.ops[0];
+      document.getElementById('chatsDisplayArea').innerHTML += `
+        <div class="message message-sent">
+          <div class="message-content">
+            <div class="message-date">
+              You:
+            </div>
+            ${message.body}
+          </div>
+          <div class="message-date">
+            ${timestamp.toLocaleString()}
+          </div>
+        </div>
+      `;
+      var messageArea = document.getElementById("chatsDisplayArea");
+      messageArea.scrollTop = messageArea.scrollHeight;
+    })
+  }
+}
+
+const fetchMessagesIntoChat = () => {
+  const { slideId } = window.getUrlVars();
+  const store = new Store('../../data/');
+  const userId = getUserId(); 
+  store.fetchMessages(slideId).then(data => {
+    data.forEach(message => {
+      let classType = message.from === userId ? 'message-sent' : 'message-received';
+      document.getElementById('chatsDisplayArea').innerHTML += `
+        <div class="message ${classType}">
+          <div class="message-content">
+            <div class="message-date">
+              ${message.from === userId ? 'You' : message.from}
+            </div>
+            ${message.body}
+          </div>
+          <div class="message-date">
+            ${message.timestamp ? message.timestamp.toLocaleString() : ''}
+          </div>
+        </div>
+      `;
+    })
+  })
+}
+
+const receiveMessageIntoChat = (message) => {
+  const userId = getUserId(); 
+  let classType = message.from === userId ? 'message-sent' : 'message-received';
+  document.getElementById('chatsDisplayArea').innerHTML += `
+    <div class="message ${classType}">
+      <div class="message-content">
+        <div class="message-date">
+          ${message.from}
+        </div>
+        ${message.body}
+      </div>
+      <div class="message-date">
+        ${message.timestamp ? message.timestamp.toLocaleString() : ''}
+      </div>
+    </div>
+  `;
+  var messageArea = document.getElementById("chatsDisplayArea");
+  messageArea.scrollTop = messageArea.scrollHeight;
+  // highlightSearchText('hello')
+}
+
+const searchMessagesIntoChat = () => {
+  const inputElement = document.getElementById('chatSearchInput');
+  const searchKey = inputElement.value.trim();
+  if (searchKey === '') {
+    document.getElementById('chatsDisplayArea').innerHTML = '';
+    inputElement.value = '';
+    fetchMessagesIntoChat();
+    setTimeout(() => {
+      var messageArea = document.getElementById("chatsDisplayArea");
+      messageArea.scrollTop = messageArea.scrollHeight;
+    }, 500);
+  } else {
+    const store = new Store('../../data/');
+    const userId = getUserId(); 
+    const regEx = new RegExp(searchKey, 'gi');
+    document.getElementById('chatsDisplayArea').innerHTML = '';
+    store.getMessages(searchKey).then(data => {
+      data.forEach(message => {
+        let classType = message.from === userId ? 'message-sent' : 'message-received';
+        document.getElementById('chatsDisplayArea').innerHTML += `
+          <div class="message ${classType}">
+            <div class="message-date">
+              ${message.from === userId ? 'You' : message.from}
+            </div>
+            <div class="message-content">
+              ${message.body.replace(regEx, (match) => {
+                return `<span class="highlighted-search">${match}</span>`
+              })}
+            </div>
+            <div class="message-date">
+              ${message.timestamp ? message.timestamp.toLocaleString() : ''}
+            </div>
+          </div>
+        `;
+      })
+    })
+  }
+}
+
+
+function highlightSearchText(text) {
+  const messages = document.getElementsByClassName("message-content");
+  messages.forEach(message => {
+    let innerHTML = message.innerHTML;
+    let index = innerHTML.indexOf(text);
+    if (index >= 0) { 
+    innerHTML = innerHTML.substring(0,index) + "<span class='highlighted-search'>" + innerHTML.substring(index,index+text.length) + "</span>" + innerHTML.substring(index + text.length);
+    message.innerHTML = innerHTML;
+    }
+  })
+}
+
 // initialize all UI components
 async function initUIcomponents() {
   /* create UI components */
@@ -577,8 +710,14 @@ async function initUIcomponents() {
     title: 'Instant Messaging',
     value: 'messaging',
     type: 'btn',
-    callback: function() {
-      alert('clicked');
+    callback: async function () {
+      fetchMessagesIntoChat();
+      $UI.messagingSideMenu.open();
+      document.getElementById('chatInput').focus();
+      setTimeout(() => {
+        var messageArea = document.getElementById("chatsDisplayArea");
+        messageArea.scrollTop = messageArea.scrollHeight;
+      }, 500);
     },
   });
   // Jitsi Meet 
@@ -663,13 +802,56 @@ async function initUIcomponents() {
 
   $UI.messagingSideMenu = new SideMenu({
     id: 'side_messaging',
-    width: 250,
-    contentPadding: 5,
+    width: 350,
     // isOpen: true,
     callback: toggleSideMenu,
   });
 
-  const loading2 = `<div class="cover" style="z-index: 500;"><div class="block"><span>loading layers...</span><div class="bar"></div></div></div>`;
+  const loading2 = `
+    <style>
+      .message {
+        border-radius: 4px;
+        background-color: #fff;
+        color: #000;
+        max-width: 160px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        // position: relative;
+      }
+      
+      .message-content {
+        padding: 8px 4px 8px 4px;
+        border-radius: 4px;
+        box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px;
+      }
+
+      .message-received .message-content {
+        background-color: #eee;
+      }
+
+      .message-sent {
+        margin-left: auto;
+        margin-right: 0;
+      }
+
+      .message-date {
+        font-size: 10px;
+        color: #bbb;
+      }
+    </style>
+    <div class="cover" style="z-index: 500;">
+      <div class="block" style="width: 320px;">
+        <input type="text" id="chatSearchInput" placeholder="Search messages" style="width: 200px;">
+        <button onclick="searchMessagesIntoChat()">Search Chat</button>
+        <div id="chatsDisplayArea" style="background-color: #fff; height: 90vh; max-height: 80vh; overflow-y: scroll; overflow-x: hidden; padding: 4px; margin-top: 1vh; margin-bottom: 1vh;">
+        </div>
+        <input type="text" id="chatInput" placeholder="Send a message" style="width: 240px;">
+        <button onclick="sendMessageToChat()">Send</button>
+        <!-- <div class="bar"></div> -->
+      </div>
+    </div>
+  `;
+
   $UI.messagingSideMenu.addContent(loading2);
 
   const loading = `<div class="cover" style="z-index: 500;"><div class="block"><span>loading layers...</span><div class="bar"></div></div></div>`;

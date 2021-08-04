@@ -8,11 +8,11 @@ function socketInit() {
     console.log(response[0].collabStatus);
     let collaborationStatus = response.length > 0 ? response[0].collabStatus : false;
     if (collaborationStatus) {
-      const socket = io("http://localhost:5000", {
+      const socket = io("http://192.168.29.139:5000", {
         // WARNING: in that case, there is no fallback to long-polling
         transports: ["websocket"], // or [ "websocket", "polling" ] (the order matters)
         auth: {
-          token: document.cookie.split(';')[1].split('=')[1],
+          token: document.cookie && document.cookie.split(';')[1] ? document.cookie.split(';')[1].split('=')[1] : '',
           slideId: window.getUrlVars().slideId,
         },
       });
@@ -67,6 +67,9 @@ function socketInit() {
           console.log('heatmap socket received');
           // loadingHeatmapOverlayers();
           initialize();
+        } else if (arg.typeOfEvent === 'chat') {
+          receiveMessageIntoChat(arg.body.ops[0]);
+          // console.log('chat received', arg);
         }
         // addHumanLayerItems();
         // initialize();
