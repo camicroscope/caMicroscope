@@ -612,10 +612,27 @@
 
       if(+this._viewer.viewport.getRotation() != 0) {
         const yprime = y / this._viewer.imagingHelper.imgAspectRatio;
-        const coord = this._viewer.viewport.viewportToViewerElementCoordinates(new OpenSeadragon.Point(x, yprime));
-        const boundingRect = this._viewer.container.getBoundingClientRect();
+        // const coord = this._viewer.viewport.viewportToViewerElementCoordinates(new OpenSeadragon.Point(x, yprime));
+        // const boundingRect = this._viewer.container.getBoundingClientRect();
 
-        if(coord.x < 0 || coord.x > boundingRect.width || coord.y < 0 || coord.y > boundingRect.height) return false;
+        //if(coord.x < 0 || coord.x > boundingRect.width || coord.y < 0 || coord.y > boundingRect.height) return false;
+
+        const patch_bounds = {
+          top_left :  this._viewer.viewport.viewportToViewerElementCoordinates(new OpenSeadragon.Point(x, yprime)),
+          top_right : this._viewer.viewport.viewportToViewerElementCoordinates(new OpenSeadragon.Point(x + this._size[0], yprime)),
+          bottom_left : this._viewer.viewport.viewportToViewerElementCoordinates(new OpenSeadragon.Point(x, yprime + this._size[1])),
+          bottom_right : this._viewer.viewport.viewportToViewerElementCoordinates(new OpenSeadragon.Point(x + this._size[0], yprime + this._size[1])),
+        };
+        const bounding_rect = this._viewer.container.getBoundingClientRect();
+
+        if((patch_bounds.top_left.x < 0 || patch_bounds.top_left.x > bounding_rect.width || 
+          patch_bounds.top_left.y < 0 || patch_bounds.top_left.y > bounding_rect.height) && 
+          (patch_bounds.top_right.x < 0 || patch_bounds.top_right.x > bounding_rect.width || 
+            patch_bounds.top_right.y < 0 || patch_bounds.top_right.y > bounding_rect.height) &&
+            (patch_bounds.bottom_left.x < 0 || patch_bounds.bottom_left.x > bounding_rect.width || 
+              patch_bounds.bottom_left.y < 0 || patch_bounds.bottom_left.y > bounding_rect.height) &&
+            (patch_bounds.bottom_right.x < 0 || patch_bounds.bottom_right.x > bounding_rect.width || 
+              patch_bounds.bottom_right.y < 0 || patch_bounds.bottom_right.y > bounding_rect.height)) return false;
 
         return true;
       }
@@ -670,31 +687,7 @@
      */
     resize: function() {
       // resize the canvas size
-      // if(+this._viewer.viewport.getRotation() != 0){
-      //   const screenAspectRatio = this._div.clientWidth / this._div.clientHeight;
-      //   if( screenAspectRatio > 1 ) {
-      //     this._display_.width = screenAspectRatio * this._div.clientWidth;
-      //     this._display_.height = screenAspectRatio * this._div.clientHeight;
-      //     const xnew = ((screenAspectRatio - 1) * this._div.clientWidth / 2);
-      //     const ynew = ((screenAspectRatio - 1) * this._div.clientHeight / 2);
-      //     this._display_.style.top = `${(-1) * ynew}px`;
-      //     this._display_.style.left = `${(-1) * xnew}px`;
-      //   }
-      //   else {
-      //     this._display_.width = this._div.clientWidth / screenAspectRatio;
-      //     this._display_.height = this._div.clientHeight / screenAspectRatio;
-      //     const xnew = (((1/screenAspectRatio) - 1) * this._div.clientWidth / 2);
-      //     const ynew = (((1/screenAspectRatio) - 1) * this._div.clientHeight / 2);
-      //     this._display_.style.top = `${(-1) * ynew}px`;
-      //     this._display_.style.left = `${(-1) * xnew}px`;
-      //   }
-      // }
-      // else {
-      //   this._display_.width = this._div.clientWidth;
-      //   this._display_.height = this._div.clientHeight;
-      //   this._display_.style.top = `0px`;
-      //   this._display_.style.left = `0px`;
-      // }
+      
       this._display_.width = this._div.clientWidth;
       this._display_.height = this._div.clientHeight;
 
