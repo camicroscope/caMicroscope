@@ -999,17 +999,25 @@ class Store {
    * @param {string} members - the list of accepted members
    * @return {promise} - promise which resolves with data
    **/
-  updateCollabRoom(id, status, members) {
+  updateCollabRoom(id, status, members, privateStatus, updateMembersList) {
     const suffix = 'CollabRoom/update';
     const url = this.base + suffix;
-    console.log(id + '   ' + status);
     const query = {
       'slideId': id,
     };
-    const update = {
-      'collabStatus': status,
-      'members': members,
-    };
+    let update;
+    if (updateMembersList) {
+      update = {
+        'collabStatus': status,
+        'members': members,
+        'privateStatus': privateStatus
+      };
+    } else {
+      update = {
+        'collabStatus': status,
+        'privateStatus': privateStatus
+      };
+    }
     return fetch(url + '?' + objToParamStr(query), {
       method: 'POST',
       credentials: 'include',
