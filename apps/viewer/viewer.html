@@ -532,7 +532,7 @@
       </style>
 
       <!-- The Modal -->
-      <div id="myModal" class="modal">
+      <div id="collabRoomModal" class="modal">
 
         <!-- Modal content -->
         <div class="modal-content">
@@ -548,6 +548,13 @@
             Collaboration Status: 
             <div class="toggle-btn" id="collabRoomModalToggleBtn">
               <input type="checkbox" id="collabRoomStatusToggle" class="cb-value" />
+              <span class="round-btn"></span>
+            </div>
+          </p>
+          <p>
+            Private Status: 
+            <div class="toggle-btn" id="priPubToggleBtn">
+              <input type="checkbox" id="priPubToggle" class="cb-value" />
               <span class="round-btn"></span>
             </div>
           </p>
@@ -591,41 +598,6 @@
                       data,
                     });
                   });
-                  const slideId = window.getUrlVars().slideId;
-                  store.getSlideCollabDetails(slideId).then(response => {
-                    console.log(response);
-                    if (response[0].collabStatus === true) {
-                      document.getElementById('collabRoomModalToggleBtn').classList.add('active');
-                      document.getElementById('collabRoomStatusToggle').checked = true;
-                    } else {
-                      document.getElementById('collabRoomStatusToggle').checked = false;
-                    }
-                  });
-                  store.getSlideCollabDetails(slideId).then(response => {
-                    const members = response[0].members.map(member => {
-                      return member.email;
-                    });
-                    $('#addMembersDropdown').multipleSelect('setSelects', members);
-                    $('#collabRoomMembersListTable > tbody').html('');
-                    response[0].members.forEach((member, i) => {
-                      $('#collabRoomMembersListTable > tbody:last-child').append(
-                        `
-                        <tr>
-                          <th scope="row">${i + 1}</th>
-                          <td>${member.email}</td>
-                          <td>
-                            <select name="role" id="collabRoomMemberRole-for-user-${member.email}">
-                              <option value="" disabled>Change Role</option>
-                              <option value="contributor" ${member.role === 'contributor' ? 'selected' : ''}>Contributor</option>
-                              <option value="general" ${member.role === 'general' ? 'selected' : ''}>General</option>
-                              <option value="admin" ${member.role === 'admin' ? 'selected' : ''}>Admin</option>
-                            </select>
-                          </td>
-                        </tr>
-                        `
-                      );
-                    })
-                  })
                   $('.cb-value').click(function() {
                     var mainParent = $(this).parent('.toggle-btn');
                     if($(mainParent).find('input.cb-value').is(':checked')) {
@@ -665,13 +637,13 @@
         document.getElementById('collabRoomModalSlideId').innerText = window.getUrlVars().slideId;
 
         function closeCollabRoomModal() {
-          var modal = document.getElementById("myModal");
+          var modal = document.getElementById("collabRoomModal");
           modal.style.display = "none";
         }
         
         // When the user clicks anywhere outside of the modal, close it
         window.onclick = function(event) {
-          var modal = document.getElementById("myModal");
+          var modal = document.getElementById("collabRoomModal");
             if (event.target == modal) {
               modal.style.display = "none";
             }

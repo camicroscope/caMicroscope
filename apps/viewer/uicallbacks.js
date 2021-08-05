@@ -2670,37 +2670,103 @@ function oldAnnoRender(ctx, data) {
 // }
 /* --  -- */
 
-function showCollaborationModal (event) {
-  const element = event;
+
+
+function showCollabRoomModal() {
   const slideId = window.getUrlVars().slideId;
   const store = new Store('../../data/');
   store.getSlideCollabDetails(slideId).then(response => {
-    document.getElementById('modal-collab-slidename').innerText = response[0].roomId;
+    document.getElementById('collabRoomModalSlideId').innerText = response[0].roomId;
     if (response[0].collabStatus === true) {
-      $('#modal-collab-status-switch').bootstrapToggle('on');
+      document.getElementById('collabRoomModalToggleBtn').classList.add('active');
+      document.getElementById('collabRoomStatusToggle').checked = true;
     } else {
-      $('#modal-collab-status-switch').bootstrapToggle('off');
+      document.getElementById('collabRoomStatusToggle').checked = false;
     }
-    document.getElementById('modal-collab-save').dataset.slideId = slideId;
-  });
-  store.getSlideCollabDetails(slideId).then(response => {
-    const {members} = response[0];
-    $('#addMembersDropdown').multipleSelect('setSelects', members);
+    if (response[0].privateStatus === true) {
+      document.getElementById('priPubToggleBtn').classList.add('active');
+      document.getElementById('priPubToggle').checked = true;
+    } else {
+      document.getElementById('priPubToggle').checked = false;
+    }
+    // document.getElementById('modal-collab-save').dataset.slideId = slideId;
+    window.localStorage.setItem(`privateToggleStatus-${slideId}`, JSON.stringify({slideId, privateStatus: response[0].privateStatus}));
+    const members = response[0].members.map(member => {
+      return member.email;
+    });
+    if (response[0].privateStatus === true) {
+      $('#addMembersDropdown').multipleSelect('setSelects', members);
+      $('#addMembersDropdown').multipleSelect('enable');
+    } else {
+      $('#addMembersDropdown').multipleSelect('checkAll');
+      $('#addMembersDropdown').multipleSelect('disable');
+    }
+    $('#collabRoomMembersListTable > tbody').html('');
+    response[0].members.forEach((member, i) => {
+      if (response[0].privateStatus) {
+        $('#collabRoomMembersListTable > tbody:last-child').append(
+          `
+          <tr>
+            <th scope="row">${i + 1}</th>
+            <td>${member.email}</td>
+            <td>
+              <select name="role" id="collabRoomMemberRole-for-user-${member.email}">
+                <option value="" disabled>Change Role</option>
+                <option value="contributor" ${member.role === 'contributor' ? 'selected' : ''}>Contributor</option>
+                <option value="general" ${member.role === 'general' ? 'selected' : ''}>General</option>
+                <option value="admin" ${member.role === 'admin' ? 'selected' : ''}>Admin</option>
+              </select>
+            </td>
+          </tr>
+          `
+        );
+      } else {
+        if (member.role === 'admin') {
+          $('#collabRoomMembersListTable > tbody:last-child').append(
+            `
+            <tr>
+              <th scope="row">${i + 1}</th>
+              <td>${member.email}</td>
+              <td>
+                <select name="role" disabled="${response[0].privateStatus ? false : true}" id="collabRoomMemberRole-for-user-${member.email}">
+                  <option value="" disabled>Change Role</option>
+                  <option value="contributor" ${member.role === 'contributor' ? 'selected' : ''}>Contributor</option>
+                  <option value="general" ${member.role === 'general' ? 'selected' : ''}>General</option>
+                  <option value="admin" ${member.role === 'admin' ? 'selected' : ''}>Admin</option>
+                </select>
+              </td>
+            </tr>
+            `
+          );
+        }
+      }
+    })
+    var modal = document.getElementById("collabRoomModal");    
+    // When the user clicks the button, open the modal 
+    modal.style.display = "block";
   })
-  $('#manageCollaborationModal').modal('toggle');
 }
 
 function handleCollaborationStatusChange(element) {
-  if (element.getAttribute('data-slide-id')) {
-    const slideId = element.getAttribute('data-slide-id');
-    const status = document.getElementById('modal-collab-status-switch').checked;
-    const members = $('#addMembersDropdown').multipleSelect('getSelects');
-    const store = new Store('../../data/');
-    store.updateCollabRoom(slideId, status, members).then(async response => {
-      const responseData = await response.json();
-      $('#manageCollaborationModal').modal('toggle');
-    })
-  } else {
-    $('#manageCollaborationModal').modal('toggle');
+  const slideId = window.getUrlVars().slideId;
+  const status = document.getElementById('collabRoomStatusToggle').checked;
+  const privateStatus = document.getElementById('priPubToggle').checked;
+  const members = $('#addMembersDropdown').multipleSelect('getSelects').map(member => {
+    const dropdownId = 'collabRoomMemberRole-for-user-' + member;
+    return {
+      email: member,
+      role: document.getElementById(dropdownId) ? document.getElementById(dropdownId).value : 'contributor',
+    }
+  });
+  let updateMembersList = true;
+  const previousPrivateStatus = window.localStorage.getItem(`privateToggleStatus-${slideId}`) ? JSON.parse(window.localStorage.getItem(`privateToggleStatus-${slideId}`)).privateStatus : true; 
+  if (!previousPrivateStatus || !privateStatus) {
+    updateMembersList = false;
   }
+  const store = new Store('../../data/');
+  store.updateCollabRoom(slideId, status, members, privateStatus, updateMembersList).then(async response => {
+    const responseData = await response.json();
+    var modal = document.getElementById("collabRoomModal");
+    modal.style.display = "none";
+  })
 }

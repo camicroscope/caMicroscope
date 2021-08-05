@@ -300,24 +300,6 @@ function initCore() {
   });
 }
 
-function handleCollaborationStatusChange() {
-  const slideId = window.getUrlVars().slideId;
-  const status = document.getElementById('collabRoomStatusToggle').checked;
-  const members = $('#addMembersDropdown').multipleSelect('getSelects').map(member => {
-    const dropdownId = 'collabRoomMemberRole-for-user-' + member;
-    return {
-      email: member,
-      role: document.getElementById(dropdownId) ? document.getElementById(dropdownId).value : 'contributor',
-    }
-  });
-  const store = new Store('../../data/');
-  store.updateCollabRoom(slideId, status, members).then(async response => {
-    const responseData = await response.json();
-    var modal = document.getElementById("myModal");
-    modal.style.display = "none";
-  })
-}
-
 const sendMessageToChat = () => {
   // e.preventDefault();
   const inputElement = document.getElementById('chatInput');
@@ -774,13 +756,6 @@ async function initUIcomponents() {
         },
       });
     });
-  }
-
-  function showCollabRoomModal() {
-    console.log('Modal show called');
-    var modal = document.getElementById("myModal");    
-    // When the user clicks the button, open the modal 
-    modal.style.display = "block";
   }
 
   // create the tool bar
