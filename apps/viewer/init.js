@@ -544,7 +544,7 @@ async function initUIcomponents() {
   });
 
   // Additional Links handler
-  function additionalLinksHandler(url, openInNewTab) {
+  function additionalLinksHandler(url, openInNewTab, appendSlide) {
     if (appendSlide === true) {
       url = url + '?slide=' + $D.params.slideId;
       url = url + '&state=' + StatesHelper.encodeStates(StatesHelper.getCurrentStates());
@@ -801,75 +801,15 @@ async function initUIcomponents() {
           callback: annoCallback,
         },
       });
-      // START QUIP550 TEMPORARILY REMOVE Algorithm Panel //
-      // add to layers side menu
+
       const title = document.createElement('div');
       title.classList.add('item_head');
       title.textContent = 'Annotation';
       $UI.appsSideMenu.addContent(title);
       $UI.annotOptPanel.elt.classList.add('item_body');
       $UI.appsSideMenu.addContent($UI.annotOptPanel.elt);
-
-      // $UI.appsList.clearContent('annotation');
-      // $UI.appsList.addContent('annotation',$UI.annotOptPanel.elt);
-      /* algorithm control */
-      // const algoRegex = new RegExp('algo', 'gi');
-      // const algoSchemas = $D.templates.filter(item => item.id.match(algoRegex));
-      // $UI.algOptPanel = new OperationPanel({
-      //   //id:
-      //   //element:
-      //   title:'Algorithm:',
-      //   formSchemas:algoSchemas,
-      //   action:{
-      //     title:'Run',
-      //     callback:algo_callback
-      //   }
-      // });
-      // $UI.appsList.clearContent('analytics');
-      // $UI.appsList.addContent('analytics',$UI.algOptPanel.elt);
-      // $UI.appsList.addContent('analytics', AnalyticsPanelContent);
-      // END QUIP550 TEMPORARILY REMOVE Algorithm Panel //
     }
   }, 300);
-
-  // START QUIP550 //
-  //   // collapsible list
-  // $UI.appsList = new CollapsibleList({
-  //   id:'collapsiblelist',
-  //   list:[
-  //     {
-  //       id:'annotation',
-  //       title:'Annotation',
-  //       icon:'border_color',
-  //       content: "No Template Loaded" //$UI.annotOptPanel.elt
-  //       // isExpand:true
-
-  //     }
-  //     ,{
-  //       id:'analytics',
-  //       icon:'find_replace',
-  //       title:'Analytics',
-  //       content:"No Template Loaded" //$UI.algOptPanel.elt,
-  //     }
-  //   ],
-  //   changeCallBack:getCurrentItem
-  // });
-
-  // // detach collapsible_list
-  // $UI.appsList.elt.parentNode.removeChild($UI.appsList.elt);
-  // $UI.appsSideMenu.addContent($UI.appsList.elt);
-  // END QUIP550 //
-  // $UI.multSelector = new MultSelector({id:'mult_selector'});
-  // $UI.multSelector.addHandler('cancel',multSelector_cancel);
-  // $UI.multSelector.addHandler('action',multSelectorAction);
-
-  // add eventlistenter for two btns
-  // const brushClearBtn = document.querySelector("#bctrl button.reset");
-  // brushClearBtn.addEventListener("click", resetCallback);
-  // const brushSaveBtn = document.querySelector("#bctrl button.action");
-  // brushSaveBtn.addEventListener("click", function(e) {
-  //   saveBrushLabel(false);
-  // });
 }
 function createLayerViewer(id, viewerData, callback, rootCallback) {
   const layersViewer = new LayersViewer({
@@ -967,24 +907,14 @@ function updateSlideView() {
 
 
 function addHumanLayerItems() {
-  // main viewer
-  const mainViewerItems = $D.labels.configuration.reduce((rs, label)=>{
-    rs[label.type] = {
+  const mainViewerItems = {
+    'other': {
       item: {
-        id: label.type,
-        name: label.type,
+        id: 'other',
+        name: 'other',
       },
       items: [],
-    };
-    return rs;
-  }, {});
-
-  mainViewerItems['other'] = {
-    item: {
-      id: 'other',
-      name: 'other',
     },
-    items: [],
   };
 
   $D.humanlayers.reduce((items, d)=> {
@@ -994,39 +924,36 @@ function addHumanLayerItems() {
       $D.params.states.l.includes(d.id) ?
         true:
         false;
-    var isFind = false;
-    for (const key in items) {
-      if (d.id.includes(`${key}_`)) {
-        isFind = true;
-        items[key].items.push({item: d, isShow});
+    if (d.label&&d.label.id&&d.label.name) { // preset  label
+      const {id, name} = d.label;
+      if (!items[id]) {
+        items[id] = {
+          item: {
+            id: id,
+            name: name,
+          },
+          items: [],
+        };
       }
+      items[id].items.push({item: d, isShow});
+    } else { // other
+      items['other'].items.push({item: d, isShow});
     }
-    if (!isFind) items['other'].items.push({item: d, isShow});
     return items;
   }, mainViewerItems);
 
   $UI.layersViewer.addHumanItems(mainViewerItems);
 
   // minor viewer minorViewer
-  const minorViewerItems = $D.labels.configuration.reduce((rs, label)=>{
-    rs[label.type] = {
+  const minorViewerItems = {
+    'other': {
       item: {
-        id: label.type,
-        name: label.type,
+        id: 'other',
+        name: 'other',
       },
       items: [],
-    };
-    return rs;
-  }, {});
-
-  minorViewerItems['other'] = {
-    item: {
-      id: 'other',
-      name: 'other',
     },
-    items: [],
   };
-
   $D.humanlayers.reduce((items, d)=> {
     const isShow =
       $D.params.states &&
@@ -1034,36 +961,28 @@ function addHumanLayerItems() {
       $D.params.states.l.includes(d.id) ?
         true:
         false;
-    var isFind = false;
-    for (const key in items) {
-      if (d.id.includes(`${key}_`)) {
-        isFind = true;
-        items[key].items.push({item: d, isShow});
-      }
+    if (d.label&&d.label.id&&d.label.name) {
+
     }
-    if (!isFind) items['other'].items.push({item: d, isShow: true});
+    if (d.label&&d.label.id&&d.label.name) { // preset  label
+      const {id, name} = d.label;
+      if (!items[id]) {
+        items[id] = {
+          item: {
+            id: id,
+            name: name,
+          },
+          items: [],
+        };
+      }
+      items[id].items.push({item: d, isShow});
+    } else { // other
+      items['other'].items.push({item: d, isShow});
+    }
     return items;
   }, minorViewerItems);
+
   $UI.layersViewerMinor.addHumanItems(minorViewerItems);
-
-  return;
-  // const mainViewerData = $D.humanlayers.map((d) => {
-  //   const isShow =
-  //     $D.params.states &&
-  //     $D.params.states.l &&
-  //     $D.params.states.l.includes(d.id) ?
-  //       true:
-  //       false;
-  //   return {item: d, isShow: isShow};
-  // });
-
-  // // create monir layer viewer items
-  // const minorViewerData = $D.humanlayers.map((d) => {
-  //   return {item: d, isShow: false};
-  // });
-
-  // $UI.layersViewer.addItems(mainViewerData, "human")
-  // $UI.layersViewerMinor.addItems(minorViewerData, "human")
 }
 function openLoadStatus(text) {
   const txt = $UI.loadStatus.querySelector('.text');

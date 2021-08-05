@@ -316,10 +316,6 @@ function toolsOff() {
     case 'label':
       presetLabelOff();
       break;
-
-    case 'brush':
-      brushOff();
-      break;
   }
 }
 
@@ -335,7 +331,10 @@ function annotationOn(state, target) {
   li.appendChild(label);
   switch (state) {
     case 1:
-      $UI.annotOptPanel._action_.style.display = 'none';
+      spen.menu(65, 0.2);
+      spen.undo.onclick=()=>canvasDraw.__align_undo();
+      // open menu
+      $UI.annotOptPanel._action_.style.display = '';
       label.style.transform = 'translateY(-12px) translateX(18px)';
       label.textContent = '1';
       label.style.color = '';
@@ -382,6 +381,8 @@ function annotationOff() {
   ) {
     saveAnnotation();
   } else {
+    spen.close();
+    // close menu
     canvasDraw.clear();
     canvasDraw.drawOff();
     $CAMIC.drawContextmenu.off();
@@ -400,43 +401,7 @@ function toggleOffDrawBtns() {
   lab.classList.add(`s0`);
   if (label.parentNode) li.removeChild(label);
 }
-// --- Brush Tool ---//
-function toggleBrush(d) {
-  if (!$CAMIC.viewer.canvasDrawInstance) {
-    alert('Draw Doesn\'t Initialize');
-    return;
-  }
 
-  //   return;
-  if (d.status) {
-    // turn on brush label
-    // off magnifier
-    // magnifierOff();
-    // off measurement
-    // measurementOff();
-    if ($CAMIC.status == 'brush') {
-      brushOn.call(this, {...d.data});
-      return;
-    }
-    // turn off annotation
-    toolsOff();
-    // turn off preset label
-    // presetLabelOff();
-    var checkAllToolsOff = setInterval(
-        function() {
-          if ($CAMIC && $CAMIC.status == null) {
-          // all tool has turn off
-            clearInterval(checkAllToolsOff);
-            brushOn.call(this, {...d.data});
-          }
-        }.bind(this),
-        100,
-    );
-  } else {
-    // off preset label
-    brushOff();
-  }
-}
 
 function brushOn(d) {
   if (!$CAMIC.viewer.canvasDrawInstance) return;
@@ -456,31 +421,6 @@ function brushOn(d) {
   //   $UI.layersSideMenu.close();
 }
 
-function brushOff() {
-  console.log('brushOff');
-  if (!$CAMIC.viewer.canvasDrawInstance) return;
-  const canvasDraw = $CAMIC.viewer.canvasDrawInstance;
-
-  if (
-    canvasDraw._draws_data_.length &&
-    confirm(`Do You Want To Save Annotation Label Before You Leave?`)
-  ) {
-    saveBrushLabel(true);
-  } else {
-    canvasDraw.clear();
-    canvasDraw.drawOff();
-    $UI.appsSideMenu.close();
-    $UI.toolbar
-        .getSubTool('brush')
-        .querySelector('input[type=checkbox]').checked = false;
-    $UI.toolbar.getSubTool('brush').querySelector('label').style.color = '';
-
-    const bctrl = document.getElementById('bctrl');
-    bctrl.style.display = 'none';
-
-    $CAMIC.status = null;
-  }
-}
 
 // --- Measurement Tool ---//
 /**
@@ -873,158 +813,13 @@ function convertGeometries(features, data) {
   };
 }
 
-function saveBrushLabel(isOff) {
-  if ($CAMIC.viewer.canvasDrawInstance._path_index === 0) {
-    alert('No Brushed Markup On Annotation.');
-    return;
-  }
-  // get all data
-  const features = $CAMIC.viewer.canvasDrawInstance.getImageFeatureCollection()
-      .features;
-
-  // merge and reduce duplicated points
-  const map = features.reduce(function(map, f) {
-    const key = `${f.properties.notes}|${f.properties.size.toString()}|${
-      f.properties.style.color
-    }`;
-    if (!map.has(key)) map.set(key, new Set());
-    const set = map.get(key);
-    const values = getGrids(f.geometry.coordinates[0], f.properties.size);
-    values.map((i) => i.toString()).forEach((v) => set.add(v));
-    return map;
-  }, new Map());
-
-  // recreate annotation in the required json form
-  const annotJsons = [];
-  for (var [key, value] of map.entries()) {
-    const [note, size, color] = key.split('|');
-    const points = Array.from(value).map((d) => d.split(','));
-
-    const execId = note + randomId();
-    const noteData = {
-      name: execId,
-      notes: note,
-    };
-
-    annotJsons.push({
-      creator: getUserId(),
-      created_date: new Date(),
-      provenance: {
-        image: {
-          slide: $D.params.slideId,
-        },
-        analysis: {
-          source: 'human',
-          execution_id: execId,
-          name: noteData.name,
-          type: 'label',
-          isGrid: true,
-        },
-      },
-      properties: {
-        annotations: noteData,
-      },
-      geometries: convertGeometries(points, {
-        note: note,
-        size: size.split(',').map((p) => +p),
-        color: color,
-      }),
-    });
-  }
-
-  annotJsons.forEach((annotJson) => {
-    $CAMIC.store
-        .addMark(annotJson)
-        .then((data) => {
-        // server error
-          if (data.error) {
-            $UI.message.addWarning(`${data.text}:${data.url}`);
-            Loading.close();
-            return;
-          }
-
-          // no data added
-          if (data.count < 1) {
-            Loading.close();
-            $UI.message.addWarning(`Annotation Save Failed`);
-            return;
-          }
-          // create layer data
-          const execId = annotJson.provenance.analysis.execution_id;
-          const newItem = {
-            id: execId,
-            name: annotJson.provenance.analysis.name,
-            typeId: 'human',
-            typeName: 'human',
-            creator: getUserId(),
-            shape: annotJson.geometries.features[0].geometry.type,
-            data: null,
-          };
-          $D.humanlayers.push(newItem);
-          $UI.layersViewer.addHumanItem(newItem, 'human' );
-          $UI.layersViewerMinor.addHumanItem(
-              newItem,
-              'human',
-              $minorCAMIC && $minorCAMIC.viewer ? true : false,
-          );
-
-          // console.log($D.overlayers);
-          // data for UI
-          // return;
-          loadAnnotationById(
-              $CAMIC,
-              $UI.layersViewer.getDataItemById(execId, 'human'),
-              // TODO
-              saveBrushAnnotCallback.bind(isOff),
-          );
-          if ($minorCAMIC && $minorCAMIC.viewer) {
-            loadAnnotationById(
-                $minorCAMIC,
-                $UI.layersViewerMinor.getDataItemById(execId, 'human'),
-                null,
-            );
-          }
-        })
-        .catch((e) => {
-          Loading.close();
-          console.log('save failed');
-        })
-        .finally(() => {});
-  });
-}
-
-function saveBrushAnnotCallback() {
-  /* reset as default */
-  // clear draw data and UI
-  // $CAMIC.viewer.canvasDrawInstance.drawOff();
-  $CAMIC.drawContextmenu.off();
-  $CAMIC.viewer.canvasDrawInstance.clear();
-  // close app side
-  $UI.toolbar._mainTools[0].querySelector('[type=checkbox]').checked = false;
-  $UI.appsSideMenu.close();
-  // $UI.toolbar._mainTools[1].querySelector('[type=checkbox]').checked = true;
-  // $UI.layersSideMenu.open();
-  // $UI.layersViewer.update();
-
-  if (this == true) {
-    // isOff
-    $UI.toolbar
-        .getSubTool('brush')
-        .querySelector('input[type=checkbox]').checked = false;
-    $UI.toolbar.getSubTool('brush').querySelector('label').style.color = '';
-
-    const bctrl = document.getElementById('bctrl');
-    bctrl.style.display = 'none';
-    $CAMIC.status = null;
-  }
-}
-
 /**
  * Callback for saving annotations
  * called from saveAnnotation
  * @param {Object} data
  */
 function annoCallback(data) {
+  spen.close();
   // is form ok?
   const noteData = $UI.annotOptPanel._form_.value;
   if ($UI.annotOptPanel._action_.disabled || noteData.name == '') {
@@ -1772,7 +1567,7 @@ function stopDrawing(e) {
       state === 1 &&
       $CAMIC.viewer.canvasDrawInstance._draws_data_.length > 0
     ) {
-      saveAnnotation();
+      $CAMIC.viewer.canvasDrawInstance.isOn = false;
     }
   }
 }
@@ -1907,17 +1702,52 @@ async function addPresetLabelsHandler(label) {
 }
 
 async function editPresetLabelsHandler(oldElt, newLabel) {
+  Loading.open($UI.labelsViewer.elt, 'Saving Label ...');
+
   const rs = await $CAMIC.store.updatePresetLabels(oldElt.dataset.id, newLabel).then((d)=>d.result);
-  if (rs.ok&&rs.nModified > 0) {
-    $UI.labelsViewer.setLabels(oldElt, newLabel);
-    $UI.message.add(`Label "${newLabel.type}" Has been Updated`);
-    if (oldElt.classList.contains('selected')) drawLabel({value: 'prelabels', checked: true});
+
+  if (rs.ok) {
+    // update
+    const rs1 = await $CAMIC.store.updateMarksLabel(newLabel.id, newLabel.type).then((d)=>d.result);
+    if (rs1.ok) {
+      // update UI
+      updateMarksLabel(newLabel.id, newLabel.type, $UI.layersViewer);
+      updateMarksLabel(newLabel.id, newLabel.type, $UI.layersViewerMinor);
+
+      //
+      $UI.labelsViewer.setLabels(oldElt, newLabel);
+      $UI.message.add(`Label "${newLabel.type}" Has been Updated`);
+      if (oldElt.classList.contains('selected')) drawLabel({value: 'prelabels', checked: true});
+    } else {
+      $UI.message.addError(`Updating The Marks' Label Has Failed`);
+    }
   } else {
     $UI.message.addError('Updating The Label Has Failed');
   }
+  Loading.close();
   $UI.labelsViewer.__switch('view');
 }
+function updateMarksLabel(id, name, layersViewer) {
+  const cate = layersViewer.setting.categoricalData.human.items[id];
+  if (cate) {
+    cate.item.name = name;
+    cate.elt.querySelector('label > div').textContent = name;
+    cate.elt.querySelector('input[type=checkbox]').dataset.name = name;
+    cate.items.forEach((e)=>{
+      e.item.name = name;
+      e.item.label.name = name;
+      const newName = `${name}${e.elt.dataset.id}`;
+      e.elt.dataset.title = newName;
+      e.elt.querySelector('label > div').textContent = newName;
 
+      if (e.item.data) {
+        e.item.data.provenance.analysis.name = name;
+        e.item.data.properties.annotations.name = name;
+        e.item.data.properties.annotations.notes = name;
+      }
+    });
+  }
+}
 async function removePresetLabelsHandler(elt, label) {
   const rs = await $CAMIC.store.removePresetLabels(label.id).then((d)=>d.result);
   if (rs.ok&&rs.nModified > 0) {
@@ -1975,6 +1805,8 @@ function presetLabelOn(label) {
     return;
   }
 
+  spen.menu(65, 0.2);
+  // open menu
   canvasDraw.drawMode = label.mode;
   if (label.mode == 'grid') {
     canvasDraw.size = [parseInt(label.size), parseInt(label.size)];
@@ -1989,6 +1821,8 @@ function presetLabelOn(label) {
 function presetLabelOff() {
   if (!$CAMIC.viewer.canvasDrawInstance) return;
   const canvasDraw = $CAMIC.viewer.canvasDrawInstance;
+  spen.close();
+  // close spen
   if (
     canvasDraw._draws_data_.length &&
     confirm(`Do You Want To Save Annotation Label Before You Leave?`)
@@ -2020,11 +1854,14 @@ function savePresetLabel() {
     $UI.message.addWarning('No Label Selected. Please select One.', 4000);
     return;
   }
-
-  const execId = data.type + randomId();
-  const parent = data.type;
+  const execId = randomId();
+  const labelId = data.id;
+  const labelName = data.type;
+  // const parent = data.type;
   const noteData = {
-    name: execId,
+    id: execId,
+    labelId: labelId,
+    name: labelName,
     notes: data.type,
   };
   const feature = $CAMIC.viewer.canvasDrawInstance.getImageFeatureCollection()
@@ -2048,8 +1885,9 @@ function savePresetLabel() {
         },
         analysis: {
           source: 'human',
-          execution_id: execId,
-          name: noteData.name,
+          execution_id: execId, // randomId
+          name: labelName, // labelName
+          labelId: labelId,
           type: 'label',
           isGrid: true,
         },
@@ -2074,8 +1912,9 @@ function savePresetLabel() {
         },
         analysis: {
           source: 'human',
-          execution_id: execId,
-          name: noteData.name,
+          execution_id: execId, // randomId
+          name: labelName, // labelName
+          labelId: labelId,
           type: 'label',
         },
       },
@@ -2114,14 +1953,19 @@ function savePresetLabel() {
           typeName: 'human',
           creator: getUserId(),
           shape: annotJson.geometries.features[0].geometry.type,
+          isGrid: annotJson.provenance.analysis.isGrid? true: false,
+          label: {
+            id: annotJson.provenance.analysis.labelId,
+            name: annotJson.provenance.analysis.name,
+          },
           data: null,
         };
         $D.humanlayers.push(newItem);
-        $UI.layersViewer.addHumanItem(newItem, 'human', parent);
+        $UI.layersViewer.addHumanItem(newItem, 'human', labelId);
         $UI.layersViewerMinor.addHumanItem(
             newItem,
             'human',
-            parent,
+            labelId,
             $minorCAMIC && $minorCAMIC.viewer ? true : false,
         );
 
@@ -2130,7 +1974,7 @@ function savePresetLabel() {
             execId,
             __data,
             'human',
-            parent,
+            labelId,
         );
       })
       .catch((e) => {
@@ -2143,7 +1987,6 @@ function savePresetLabel() {
 }
 
 function addAnnotation(id, data, type, parent) {
-  console.log(id, data, type);
   const layerData = $UI.layersViewer.getDataItemById(id, type, parent);
   const layerDataMinor = $UI.layersViewerMinor.getDataItemById(id, type, parent);
   const item = layerData.item;
@@ -2396,9 +2239,10 @@ function onAddRuler(ruler) {
       });
 }
 
-async function rootCallback({root, parent, items}) {
+async function rootCallback({root, parent, parentName, items}) {
+  console.log({root, parent, items});
   // start a message
-  openLoadStatus(`${root==parent?root:`${root} - ${parent}`}`);
+  openLoadStatus(`${root==parent?root:`${root} - ${parentName}`}`);
   //
   const viewerName = this.toString();
   let camic = null;
@@ -2425,7 +2269,7 @@ async function rootCallback({root, parent, items}) {
   if (ids.length) {
     // mult rulers
     try {
-      data = await $CAMIC.store.getMarkByIds(ids, $D.params.slideId, parent, root);
+      data = await $CAMIC.store.getMarkByIds(ids, $D.params.slideId, (root=='human'&&parent!==null)?parentName:parent, root);
 
       if (data.error) { // error
         closeLoadStatus();
@@ -2561,7 +2405,7 @@ async function rootCallback({root, parent, items}) {
 }
 
 /* Enhance Tool */
-function enhance(data) {
+function enhance(e) {
   document.querySelector('[title="Enhance"]').previousSibling.checked = true;
   if (!setEnhance) {
     // $UI.message.add('<i class="small material-icons">info</i>On Movement, enhance would be undone', 2000);
@@ -2569,29 +2413,26 @@ function enhance(data) {
     $CAMIC.viewer.addHandler('pan', unenhance);
     setEnhance = true;
   }
-
   // Canvas information
   const canvas = $CAMIC.viewer.canvas.firstChild;
   const context = canvas.getContext('2d');
   let width = canvas.width; let height = canvas.height;
   var img = context.getImageData(0, 0, width, height);
+  var data = img.data;
 
-  if (data.status == 'Histogram Eq') {
+  if (e.status == 'Histogram Eq') {
     context.putImageData(clahe(img, 64, 0.015), 0, 0);
-  } else if (data.status == 'Edge') {
-    context.putImageData(edgedetect(img, 150, 0, 0, width, height), 0, 0);
-  } else if (data.status == 'Sharpen') {
+  } else if (e.status == 'Edge') {
+    context.putImageData(edgedetect_sobel(img, 80), 0, 0);
+  } else if (e.status == 'Sharpen') {
     var filter = [[-1, -1, -1], [-1, 14, -1], [-1, -1, -1]];
-    filter = [filter, filter, filter];
-    var newimg = new ImageData(new Uint8ClampedArray(applyfilter(img, filter, 0, 0, width, height)), width, height);
-    context.putImageData(newimg, 0, 0);
-  } else if (data.status == 'Custom') {
+    context.putImageData(applyfilter(img, filter), 0, 0);
+  } else if (e.status == 'Custom') {
     var input = prompt('Enter the 2D Kernel: Eg : [[1, 0], [0, 1]]'); var f=0;
     // JSON Parse test
     try {
       var filter = JSON.parse(input); var sz = filter[0].length;
     } catch (e) {
-      console.error(e);
       alert('Invalid Kernel : ' + input);
       return;
     }
@@ -2609,9 +2450,7 @@ function enhance(data) {
       return;
     }
     // Apply
-    filter = [filter, filter, filter];
-    var newimg = new ImageData(new Uint8ClampedArray(applyfilter(img, filter, 0, 0, width, height)), width, height);
-    context.putImageData(newimg, 0, 0);
+    context.putImageData(applyfilter(img, filter), 0, 0);
   }
 }
 var setEnhance = false;
@@ -2658,8 +2497,4 @@ function annoRender(ctx, data) {
 function oldAnnoRender(ctx, data) {
   DrawHelper.draw(ctx, data);
 }
-// function annoBrushRender(ctx, data) {
-//   // console.log(3,data)
-//   caDrawHelper.prototype.drawBrushGrids(ctx, data.geometries.features[0]);
-// }
 /* --  -- */
