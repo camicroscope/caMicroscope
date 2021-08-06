@@ -27,6 +27,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### caMicroscope [Unreleased](https://github.com/camicroscope/camicroscope/compare/v3.9.4...camicroscope:develop)
 ###### TBD
 
+### caMicroscope [3.9.6](https://github.com/camicroscope/camicroscope/compare/v3.9.4...camicroscope:v3.9.6)
+###### 2021-08-05
+* Some integration with the "Smartpen" concept [#526](https://github.com/camicroscope/caMicroscope/pull/526), [#532](https://github.com/camicroscope/caMicroscope/pull/532)
+* Preset label bugfix
+
 ### caMicroscope [3.9.4](https://github.com/camicroscope/camicroscope/compare/v3.9.3...camicroscope:v3.9.4)
 ###### 2021-06-16
 * Github action for ci testing [#514](https://github.com/camicroscope/caMicroscope/pull/514)
