@@ -278,11 +278,11 @@ LayersViewer.prototype.__clearUI = function() {
 /*
     refresh UI
 */
-LayersViewer.prototype.__initUI = function() {
+LayersViewer.prototype.__initUI = function(...args) {
   empty(this.elt); // clear all elements
   this.__clearUI();
 
-  if (arguments.length != 0 && arguments[0] === 'enable crossview') {
+  if (args.length != 0 && args[0] === 'enable crossview') {
     const syncHead = document.createElement('div');
     syncHead.classList.add('item_head', 'crossview_layer');
     syncHead.innerHTML = 'Controls';
@@ -296,13 +296,13 @@ LayersViewer.prototype.__initUI = function() {
     */
 
     const rotationBar = document.createElement('div');
-    rotationBar.classList.add(arguments[1], 'rotation_panel', 'crossview_layer');
+    rotationBar.classList.add(args[1], 'rotation_panel', 'crossview_layer');
     rotationBar.innerHTML = `<label>Rotation<br><input type="range"></label>`;
     this.elt.appendChild(rotationBar);
 
 
     const zoomBar = document.createElement('div');
-    zoomBar.classList.add(arguments[1], 'zoom_panel', 'crossview_layer');
+    zoomBar.classList.add(args[1], 'zoom_panel', 'crossview_layer');
     zoomBar.innerHTML = `<label>Zoom<br><input type="range"></label>`;
     this.elt.appendChild(zoomBar);
 
