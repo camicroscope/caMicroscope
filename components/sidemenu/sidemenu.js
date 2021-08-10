@@ -53,6 +53,7 @@ function SideMenu(options) {
     width: 300,
     // menu initial status
     isOpen: false,
+    position: 'left',
   };
 
   // user setting
@@ -84,8 +85,15 @@ SideMenu.prototype.__refresh = function() {
   empty(this.elt);
 
   this.elt.style.width = 0;
-  this.elt.style.left = `-10px`;
+
   this.elt.classList.add('side_menu');
+  if (this.setting.position == 'right') {
+    this.elt.classList.add('right');
+    this.elt.style.right = `-10px`;
+  } else {
+    this.elt.classList.add('left');
+    this.elt.style.left = `-10px`;
+  }
   this.elt.classList.add('flex-container');
 
   // create 'close' hand
@@ -115,7 +123,8 @@ SideMenu.prototype.__refresh = function() {
  * open the side menu
  */
 SideMenu.prototype.open = function() {
-  this.elt.style.left = 0;
+  if (this.setting.position == 'left') this.elt.style.left = 0;
+  if (this.setting.position == 'right') this.elt.style.right = 0;
   this.elt.style.width = this.setting.width+'px';
 
   if (this.setting.callback) {
@@ -129,7 +138,8 @@ SideMenu.prototype.open = function() {
  * close the side menu
  */
 SideMenu.prototype.close = function() {
-  this.elt.style.left = `-10px`;
+  if (this.setting.position == 'left') this.elt.style.left = `-10px`;
+  if (this.setting.position == 'right') this.elt.style.right = `-10px`;
   this.elt.style.width = 0;
   if (this.setting.callback) {
     this.setting.callback.call(this, {

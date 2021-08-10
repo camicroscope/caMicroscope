@@ -277,14 +277,14 @@ function initCore() {
         id: 'cames',
         content: {key: 'Slide', value: $D.params.data.name},
       };
-      if ($D.params.data.metadata_location) {
-        const metadata = await $CAMIC.store.getSlideMetadata($D.params.data.metadata_location).then();
-        if (metadata.hasError) {
-          $UI.message.addError(metadata.error.toString(), 5000);
-        } else {
-          messageOpt.metadata = metadata;
-        }
-      }
+      // if ($D.params.data.metadata_location) {
+      //   const metadata = await $CAMIC.store.getSlideMetadata($D.params.data.metadata_location).then();
+      //   if (metadata.hasError) {
+      //     $UI.message.addError(metadata.error.toString(), 5000);
+      //   } else {
+      //     messageOpt.metadata = metadata;
+      //   }
+      // }
       $UI.slideInfos = new CaMessage(messageOpt);
 
       // spyglass
@@ -346,8 +346,9 @@ async function initUIcomponents() {
     });
     $UI.evalSideMenu = new SideMenu({
       id: 'eval_panel',
-      width: 250,
+      width: 265,
       contentPadding: 5,
+      position: 'right',
     });
     var evalTitle = document.createElement('div');
     evalTitle.classList.add('item_head');
@@ -383,6 +384,45 @@ async function initUIcomponents() {
       callback: toggleEvalPanel,
     });
   }
+
+  // meta data
+  $UI.metaSideMenu = new SideMenu({
+    id: 'meta_panel',
+    width: 250,
+    contentPadding: 5,
+  });
+
+  subToolsOpt.push({
+    name: 'meta',
+    icon: 'description', // material icons' name
+    title: 'Metadata',
+    type: 'check', // btn/check/dropdown
+    value: 'meta',
+    callback: toggleMetaPanel,
+  });
+
+  var metaTitle = document.createElement('div');
+  metaTitle.classList.add('item_head');
+  metaTitle.textContent = 'Slide Metadata';
+  var metaDiv = document.createElement('div');
+  metaDiv.innerHTML = createMetadataContent();
+  metaDiv.id = 'meta_form';
+  $UI.metaSideMenu.addContent(metaTitle);
+  $UI.metaSideMenu.addContent(metaDiv);
+
+  // create the meta data from
+  function createMetadataContent() {
+    const metadata = $D.params.data;
+    const rows = [];
+    const skips = ['md5sum', '_id', 'collections', 'comment', 'location', 'slide', 'url'];
+    for (const [key, value] of Object.entries(metadata)) {
+      if (!skips.includes(key)&&value) {
+        rows.push(`<div class='row'><div class='title'>${key}</div><div class='text'>${value}</div></div>`);
+      }
+    }
+    return `<div class='message-body'>${rows.join('')}</div>`;
+  };
+
   // pen
   subToolsOpt.push({
     name: 'annotation',

@@ -356,3 +356,28 @@ div.load-status div.text {
 /* #eval_form .help-block {
   color: ;
 } */
+
+#meta_form {
+  /* color: #000; */
+  font-size: 1.5rem;
+  /* padding: 2rem; */
+}
+
+#meta_form .row {
+  margin: 0;
+  padding:1rem 1.5rem 0  1.5rem;
+}
+
+#meta_form .row .title {
+  color: #888;
+  font-style: italic;
+  font-weight: 450;
+  
+  margin-bottom: .5rem;
+}
+#meta_form .row .text {
+  font-weight: 700;
+  color: #365f9c;
+  padding-left: 1rem;
+  /* text-align: center; */
+}
