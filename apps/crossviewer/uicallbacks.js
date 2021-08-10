@@ -3374,11 +3374,13 @@ function zoomSync(event) {
     newZoom = oppCamic.viewer.viewport.getMaxZoom();
     camic.syncSettings.zoomSource = false;
     camic.viewer.viewport.zoomTo(newZoom / scale);
+    camic.viewer.raiseEvent('animation-finish', []); // event not firing inherently
     camic.syncSettings.zoomSource = true;
   } else if (newZoom < oppCamic.viewer.viewport.getMinZoom()) {
     newZoom = oppCamic.viewer.viewport.getMinZoom();
     camic.syncSettings.zoomSource = false;
     camic.viewer.viewport.zoomTo(newZoom / scale);
+    camic.viewer.raiseEvent('animation-finish', []); // event not firing inherently
     camic.syncSettings.zoomSource = true;
   }
   oppCamic.syncSettings.zoomSource = false;
