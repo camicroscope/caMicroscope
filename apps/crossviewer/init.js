@@ -27,7 +27,8 @@ window.addEventListener('keydown', (e) => {
   if ('escape' == key.toLocaleLowerCase()) {
     magnifierOff();
     measurementOff();
-    //   annotationOff();
+    annotationOff('main');
+    annotationOff('minor');
     presetLabelOff();
   }
 });
@@ -461,7 +462,6 @@ async function initUIcomponents() {
         title: 'Left Viewer',
         type: 'multistates',
         callback: function(e) {
-          // $CAMIC.viewer.viewport.setRotation(0);
           draw.call(this, e, 'main');
         },
       },
@@ -471,7 +471,6 @@ async function initUIcomponents() {
         title: 'Right Viewer',
         type: 'multistates',
         callback: function(e) {
-          // $minorCAMIC.viewer.viewport.setRotation(0);
           draw.call(this, e, 'minor');
         },
       },
@@ -765,14 +764,8 @@ async function initUIcomponents() {
 
       $UI.lockerPanel.querySelector('label input[type=\'checkbox\']').addEventListener('input', (opt) => {
         if (opt.target.checked) {
-          //   for (let index = 0; index < document.getElementsByClassName('crossview_layer').length; index++) {
-          //     document.getElementsByClassName('crossview_layer')[index].style.display = 'none';
-          //   }
           addSynchronizationHandlers();
         } else {
-          // for (let index = 0; index < document.getElementsByClassName('crossview_layer').length; index++) {
-          //     document.getElementsByClassName('crossview_layer')[index].style.display = '';
-          //   }
           removeSynchronizationHandlers();
         }
       });
@@ -786,7 +779,7 @@ async function initUIcomponents() {
       /* TODO : Choice of Origin
           setOriginControlLayer('main');
           setOriginControlLayer('minor');
-          */
+      */
     }
   }, 300);
 

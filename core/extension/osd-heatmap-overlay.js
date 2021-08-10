@@ -731,32 +731,28 @@
         this._size[1],
         this._viewer.imagingHelper
       );
-      // add rotation support for heatmaps by rotating the canvas element
-      // if(+this._viewer.viewport.getRotation() != 0) {
-      //   const xnew = (-1.0) * parseFloat(this._display_.style.left);
-      //   const ynew = (-1.0) * parseFloat(this._display_.style.top);
-      //   this._display_ctx_.translate(xnew, ynew);
-      // }
+
+      // rotate canvas to zero degrees before draw
+      this._display_.style.transform = `rotate(0deg)`; 
+
       // clear canvas before draw
-
-      this._display_.style.transform = `rotate(0deg)`;
-
       DrawHelper.clearCanvas(this._display_);
 
-      var angle = +this._viewer.viewport.getRotation();
-      this._angle = angle;
-      var cos=Math.cos(-1*angle*Math.PI / 180);
-      var sin=Math.sin(-1*angle*Math.PI / 180);
-      var center = this._viewer.viewport.viewportToViewerElementCoordinates(this._viewer.viewport.getCenter());
+      // transformation matrix parameters of the display canvas
+      let angle = +this._viewer.viewport.getRotation();
+      let cos = Math.cos(-1 * angle * Math.PI / 180);
+      let sin = Math.sin(-1 * angle * Math.PI / 180);
+      let center = this._viewer.viewport.viewportToViewerElementCoordinates(this._viewer.viewport.getCenter());
       center.x += this._offset[0];
       center.y += this._offset[1];
-      let a = (cos);
-      let c = (sin);
-      let e = center.x-(center.x*cos)-(center.y*sin);
-      let b = (-1*sin);
-      let d = (cos);
-      let f = center.y+(center.x*sin)-(center.y*cos);
+      let a = cos;
+      let c = sin;
+      let e = center.x - (center.x * cos) - (center.y * sin);
+      let b = -1 * sin;
+      let d = cos;
+      let f = center.y + (center.x * sin) - (center.y * cos);
       this._display_ctx_.setTransform(a,b,c,d,e,f);
+      this._angle = angle;
 
       
       if (this.mode === "binal") {

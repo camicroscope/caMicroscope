@@ -236,16 +236,16 @@
       DrawHelper.clearCanvas(ctx.canvas);
       // ctx.translate(x, y);
       // ctx.scale(zoom, zoom);
-      var angle = +this._viewer.viewport.getRotation();
-      var cos=Math.cos(-1*angle*Math.PI / 180);
-      var sin=Math.sin(-1*angle*Math.PI / 180);
-      var center = this._viewer.viewport.viewportToViewerElementCoordinates(this._viewer.viewport.getCenter());
-      let a = (zoom*cos);
-      let c = (zoom*sin);
-      let e = (x*cos)-(center.x*cos)+(y*sin)-(center.y*sin)+center.x;
-      let b = (-1*zoom*sin);
-      let d = (zoom*cos);
-      let f = center.y+(y*cos)+(center.x*sin)-(center.y*cos)-(x*sin);
+      let angle = +this._viewer.viewport.getRotation();
+      let cos = Math.cos(-1 * angle * Math.PI / 180);
+      let sin = Math.sin(-1 * angle * Math.PI / 180);
+      let center = this._viewer.viewport.viewportToViewerElementCoordinates(this._viewer.viewport.getCenter());
+      let a = zoom * cos;
+      let c = zoom * sin;
+      let e = (x * cos) - (center.x * cos) + (y * sin) - (center.y * sin) + center.x;
+      let b = -1 * zoom * sin;
+      let d = zoom * cos;
+      let f = center.y + (y * cos) + (center.x * sin) - (center.y * cos) - (x*sin);
       ctx.setTransform(a,b,c,d,e,f);
       //
       drawFuc();
@@ -339,16 +339,16 @@
       // this.drawMode !== "grid"
       //   ? 
 
-      var angle = +this._viewer.viewport.getRotation();
-      var cos=Math.cos(-1*angle*Math.PI / 180);
-      var sin=Math.sin(-1*angle*Math.PI / 180);
-      var center = this._viewer.viewport.viewportToViewerElementCoordinates(this._viewer.viewport.getCenter());
-      let a = (zoom*cos);
-      let c = (zoom*sin);
-      let e = (x*cos)-(center.x*cos)+(y*sin)-(center.y*sin)+center.x;
-      let b = (-1*zoom*sin);
-      let d = (zoom*cos);
-      let f = center.y+(y*cos)+(center.x*sin)-(center.y*cos)-(x*sin);
+      let angle = +this._viewer.viewport.getRotation();
+      let cos = Math.cos(-1 * angle * Math.PI / 180);
+      let sin = Math.sin(-1 * angle * Math.PI / 180);
+      let center = this._viewer.viewport.viewportToViewerElementCoordinates(this._viewer.viewport.getCenter());
+      let a = zoom * cos;
+      let c = zoom * sin;
+      let e = (x * cos) - (center.x * cos) + (y * sin) - (center.y * sin) + center.x;
+      let b = -1 * zoom * sin;
+      let d = zoom * cos;
+      let f = center.y + (y * cos) + (center.x * sin) - (center.y * cos) - (x * sin);
       this._display_ctx_.setTransform(a,b,c,d,e,f);
 
         DrawHelper.draw(

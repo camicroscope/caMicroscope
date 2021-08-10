@@ -330,21 +330,23 @@
             // args[0].translate(x,y);
             // args[0].scale(zoom,zoom);
 
+            // rotate canvas to zero degrees before draw
             this._display_.style.transform = `rotate(0deg)`;
             this._hover_.style.transform = `rotate(0deg)`;
 
-            var angle = +this._viewer.viewport.getRotation();
-            this._angle = angle;
-            var cos=Math.cos(-1*angle*Math.PI / 180);
-            var sin=Math.sin(-1*angle*Math.PI / 180);
-            var center = this._viewer.viewport.viewportToViewerElementCoordinates(this._viewer.viewport.getCenter());
-            let a = (zoom*cos);
-            let c = (zoom*sin);
-            let e = (x*cos)-(center.x*cos)+(y*sin)-(center.y*sin)+center.x;
-            let b = (-1*zoom*sin);
-            let d = (zoom*cos);
-            let f = center.y+(y*cos)+(center.x*sin)-(center.y*cos)-(x*sin);
+            // transformation matrix parameters of the current canvas
+            let angle = +this._viewer.viewport.getRotation();
+            let cos = Math.cos(-1 * angle * Math.PI / 180);
+            let sin = Math.sin(-1 * angle * Math.PI / 180);
+            let center = this._viewer.viewport.viewportToViewerElementCoordinates(this._viewer.viewport.getCenter());
+            let a = zoom * cos;
+            let c = zoom * sin;
+            let e = (x * cos) - (center.x * cos) + (y * sin) - (center.y * sin) + center.x;
+            let b = -1 * zoom * sin;
+            let d = zoom * cos;
+            let f = center.y + (y * cos) + (center.x * sin) - (center.y * cos) - (x * sin);
             args[0].setTransform(a,b,c,d,e,f);
+            this._angle = angle;
 
             drawFuc.apply(this,args);
             //this.drawOnDisplay(this._display_ctx_);

@@ -679,6 +679,7 @@ function loadRulerById(camic, rulerData, callback, slideId) {
 
 /**
  * Saves annotation after drawing is stopped. Separate callbacks for main and minor viewer
+ * @param {String} viewerName
  */
 
 function saveAnnotation(viewerName) {
@@ -705,12 +706,6 @@ function saveAnnotation(viewerName) {
   }
 }
 
-// function saveAnnotationMain() {
-
-// }
-// function saveAnnotationMinor() {
-
-// }
 
 /**
  * Callback for saving annotations
@@ -1077,6 +1072,7 @@ function loadAnnotationById(camic, layerData, parentType, callback, slideId, vie
  * Deletes the annotation with given data
  * called from removeCallback
  * @param {Object} data
+ * @param {String} viewerName
  */
 
 function annoDelete(data, parentType, viewerName) {
@@ -1195,6 +1191,7 @@ function annoDelete(data, parentType, viewerName) {
 /**
  * Callback for deleting annotation
  * @param {Object} data
+ * @param {String} viewerName
  */
 function deleteCallback(data, parentType, viewerName) {
   switch (viewerName) {
@@ -1685,16 +1682,6 @@ function onDeleteRuler(ruler, viewerName) {
   deleteRulerHandler(id, viewerName);
 }
 
-// function onDeleteRulerMain(ruler) {
-//     const id = ruler.element.dataset.id;
-//     deleteRulerHandler(id, 'main');
-// }
-
-// function onDeleteRulerMinor(ruler) {
-//     const id = ruler.element.dataset.id;
-//     deleteRulerHandler(id, 'minor');
-// }
-
 /**
  * Callback for deleting rulers
  * Called from onDeleteRuler{Main/Minor}
@@ -1909,6 +1896,10 @@ function presetLabelOff() {
   }
 }
 
+/**
+ * callback for saving preset labels
+ * @param {String} viewerName
+ */
 function savePresetLabel(viewerName) {
   let camic = null;
   let slideId = null;
