@@ -27,7 +27,8 @@ window.addEventListener('keydown', (e) => {
   if ('escape' == key.toLocaleLowerCase()) {
     magnifierOff();
     measurementOff();
-    //   annotationOff();
+    annotationOff('main');
+    annotationOff('minor');
     presetLabelOff();
   }
 });
@@ -546,6 +547,18 @@ async function initUIcomponents() {
     callback: captureSlide,
   });
 
+  subToolsOpt.push({
+    name: 'tutorial',
+    icon: 'help',
+    title: 'Tutorial',
+    value: 'tutorial',
+    type: 'btn',
+    callback: function() {
+      tour.init();
+      tour.start(true);
+    },
+  });
+
   // create toolbar
   $UI.toolbar = new CaToolbar({
     /* opts that need to think of*/
@@ -751,27 +764,22 @@ async function initUIcomponents() {
 
       $UI.lockerPanel.querySelector('label input[type=\'checkbox\']').addEventListener('input', (opt) => {
         if (opt.target.checked) {
-          //   for (let index = 0; index < document.getElementsByClassName('crossview_layer').length; index++) {
-          //     document.getElementsByClassName('crossview_layer')[index].style.display = 'none';
-          //   }
           addSynchronizationHandlers();
         } else {
-          // for (let index = 0; index < document.getElementsByClassName('crossview_layer').length; index++) {
-          //     document.getElementsByClassName('crossview_layer')[index].style.display = '';
-          //   }
           removeSynchronizationHandlers();
         }
       });
-      /* TODO : Manual Configuration for Sync
-          setZoomControlLayer('main');
-          setZoomControlLayer('minor');
-          // TODO : Rotation Bar
-           // setRotationControlLayer('main');
-           // setRotationControlLayer('minor');
 
+      setZoomControlLayer('main');
+      setZoomControlLayer('minor');
+
+      setRotationControlLayer('main');
+      setRotationControlLayer('minor');
+
+      /* TODO : Choice of Origin
           setOriginControlLayer('main');
           setOriginControlLayer('minor');
-          */
+      */
     }
   }, 300);
 

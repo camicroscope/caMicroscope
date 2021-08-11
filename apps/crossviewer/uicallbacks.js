@@ -679,6 +679,7 @@ function loadRulerById(camic, rulerData, callback, slideId) {
 
 /**
  * Saves annotation after drawing is stopped. Separate callbacks for main and minor viewer
+ * @param {String} viewerName
  */
 
 function saveAnnotation(viewerName) {
@@ -705,12 +706,6 @@ function saveAnnotation(viewerName) {
   }
 }
 
-// function saveAnnotationMain() {
-
-// }
-// function saveAnnotationMinor() {
-
-// }
 
 /**
  * Callback for saving annotations
@@ -1077,6 +1072,7 @@ function loadAnnotationById(camic, layerData, parentType, callback, slideId, vie
  * Deletes the annotation with given data
  * called from removeCallback
  * @param {Object} data
+ * @param {String} viewerName
  */
 
 function annoDelete(data, parentType, viewerName) {
@@ -1195,6 +1191,7 @@ function annoDelete(data, parentType, viewerName) {
 /**
  * Callback for deleting annotation
  * @param {Object} data
+ * @param {String} viewerName
  */
 function deleteCallback(data, parentType, viewerName) {
   switch (viewerName) {
@@ -1685,16 +1682,6 @@ function onDeleteRuler(ruler, viewerName) {
   deleteRulerHandler(id, viewerName);
 }
 
-// function onDeleteRulerMain(ruler) {
-//     const id = ruler.element.dataset.id;
-//     deleteRulerHandler(id, 'main');
-// }
-
-// function onDeleteRulerMinor(ruler) {
-//     const id = ruler.element.dataset.id;
-//     deleteRulerHandler(id, 'minor');
-// }
-
 /**
  * Callback for deleting rulers
  * Called from onDeleteRuler{Main/Minor}
@@ -1909,6 +1896,10 @@ function presetLabelOff() {
   }
 }
 
+/**
+ * callback for saving preset labels
+ * @param {String} viewerName
+ */
 function savePresetLabel(viewerName) {
   let camic = null;
   let slideId = null;
@@ -2918,8 +2909,8 @@ function downloadSlideCapture(combiningCanvas) {
   }
 }
 
-/*
-function setZoomControlLayer(viewerName){
+
+function setZoomControlLayer(viewerName) {
   document.querySelector(`.${viewerName}.zoom_panel.crossview_layer`).innerHTML = '';
 
   const div = document.createElement('div');
@@ -2934,7 +2925,7 @@ function setZoomControlLayer(viewerName){
   const input = document.createElement('input');
   input.type = 'range';
   let camic = null;
-  switch(viewerName){
+  switch (viewerName) {
     case 'main':
       input.min = 0;
       input.max = $CAMIC.viewer.cazoomctrlInstance.imageZoomLevels.length - 1;
@@ -2969,34 +2960,34 @@ function setZoomControlLayer(viewerName){
   idx.appendChild(ip);
   label.appendChild(idx);
   let zoomIndex = camic.viewer.cazoomctrlInstance.imageZoomIndex;
-  txt.innerText = `${(camic.viewer.cazoomctrlInstance.imageZoomLevels[zoomIndex]
-    * camic.viewer.cazoomctrlInstance.base).toFixed(3)}x`
+  txt.innerText = `${(camic.viewer.cazoomctrlInstance.imageZoomLevels[zoomIndex] *
+    camic.viewer.cazoomctrlInstance.base).toFixed(3)}x`;
   txt.addEventListener('click', ()=>{
     txt.classList.remove('show');
     txt.classList.add('hide');
     ip.classList.remove('hide');
     ip.classList.add('show');
-    ip.value = `${Number((camic.viewer.viewport.viewportToImageZoom(camic.viewer.viewport.getZoom(true))
-      *camic.viewer.cazoomctrlInstance.base).toFixed(3))}`;
+    ip.value = `${Number((camic.viewer.viewport.viewportToImageZoom(camic.viewer.viewport.getZoom(true))*
+      camic.viewer.cazoomctrlInstance.base).toFixed(3))}`;
   });
 
   ip.addEventListener('keyup', (e) =>{
-    if(e.code === 'Enter'){
+    if (e.code === 'Enter') {
       ip.classList.remove('show');
       ip.classList.add('hide');
       txt.classList.remove('hide');
       txt.classList.add('show');
       let max = camic.viewer.cazoomctrlInstance.imageZoomLevels[0] * camic.viewer.cazoomctrlInstance.base;
-      let min = camic.viewer.cazoomctrlInstance.imageZoomLevels[camic.viewer.cazoomctrlInstance.imageZoomLevels.length - 1]
-      * camic.viewer.cazoomctrlInstance.base;
-      if(isNaN(+ip.value)) {
+      let min = camic.viewer.cazoomctrlInstance.imageZoomLevels[camic.viewer.cazoomctrlInstance.imageZoomLevels.length - 1] *
+      camic.viewer.cazoomctrlInstance.base;
+      if (isNaN(+ip.value)) {
         return;
-      } else if(min.toFixed(3) > (+ip.value)||max < (+ip.value)) {
+      } else if (min.toFixed(3) > (+ip.value)||max < (+ip.value)) {
         return;
       } else {
         camic.viewer.viewport.zoomTo(camic.viewer.viewport.imageToViewportZoom(
-          +ip.value/camic.viewer.cazoomctrlInstance.base),
-        camic.viewer.viewport.getCenter(),true);
+            +ip.value/camic.viewer.cazoomctrlInstance.base),
+        camic.viewer.viewport.getCenter(), true);
       }
     }
   });
@@ -3007,7 +2998,7 @@ function setZoomControlLayer(viewerName){
 
   add.addEventListener('click', (e) => {
     const index = camic.viewer.cazoomctrlInstance.imageZoomIndex;
-    if(index != 0){
+    if (index != 0) {
       const imageZoom = camic.viewer.cazoomctrlInstance.imageZoomLevels[index - 1];
       input.value = (index - 1);
       camic.viewer.viewport.zoomTo(camic.viewer.viewport.imageToViewportZoom(imageZoom));
@@ -3016,7 +3007,7 @@ function setZoomControlLayer(viewerName){
 
   minus.addEventListener('click', (e)=> {
     const index = camic.viewer.cazoomctrlInstance.imageZoomIndex;
-    if(index != camic.viewer.cazoomctrlInstance.imageZoomLevels.length - 1){
+    if (index != camic.viewer.cazoomctrlInstance.imageZoomLevels.length - 1) {
       const imageZoom = camic.viewer.cazoomctrlInstance.imageZoomLevels[index + 1];
       input.value = (index + 1);
       camic.viewer.viewport.zoomTo(camic.viewer.viewport.imageToViewportZoom(imageZoom));
@@ -3025,7 +3016,7 @@ function setZoomControlLayer(viewerName){
 
   input.addEventListener('change', (e) =>{
     const index = +e.target.value;
-    if(index == camic.viewer.cazoomctrlInstance.imageZoomIndex) return;
+    if (index == camic.viewer.cazoomctrlInstance.imageZoomIndex) return;
     camic.viewer.cazoomctrlInstance.imageZoomIndex = index;
     const imageZoom = camic.viewer.cazoomctrlInstance.imageZoomLevels[index];
     camic.viewer.viewport.zoomTo(camic.viewer.viewport.imageToViewportZoom(imageZoom));
@@ -3033,7 +3024,7 @@ function setZoomControlLayer(viewerName){
 
   input.addEventListener('mousemove', (e) =>{
     const index = +e.target.value;
-    if(index == camic.viewer.cazoomctrlInstance.imageZoomIndex) return;
+    if (index == camic.viewer.cazoomctrlInstance.imageZoomIndex) return;
     camic.viewer.cazoomctrlInstance.imageZoomIndex = index;
     const imageZoom = camic.viewer.cazoomctrlInstance.imageZoomLevels[index];
     camic.viewer.viewport.zoomTo(camic.viewer.viewport.imageToViewportZoom(imageZoom));
@@ -3041,16 +3032,16 @@ function setZoomControlLayer(viewerName){
 
   camic.viewer.addHandler('zoom', (e) => {
     const index = getImageZoomIndex(
-      camic.viewer.cazoomctrlInstance.imageZoomRanges,
-      camic.viewer.viewport.viewportToImageZoom(e.zoom)
+        camic.viewer.cazoomctrlInstance.imageZoomRanges,
+        camic.viewer.viewport.viewportToImageZoom(e.zoom),
     );
-    if(index!=null) input.value = index;
-    txt.innerText = `${Number((camic.viewer.viewport.viewportToImageZoom(e.zoom)
-      *camic.viewer.cazoomctrlInstance.base).toFixed(3))}x`;
+    if (index!=null) input.value = index;
+    txt.innerText = `${Number((camic.viewer.viewport.viewportToImageZoom(e.zoom)*
+      camic.viewer.cazoomctrlInstance.base).toFixed(3))}x`;
 
-    function getImageZoomIndex(range, zoom){
-      for(let i = 0; i < range.length - 1; i++){
-          if(range[i] >= zoom && zoom > range[i+1]) return i;
+    function getImageZoomIndex(range, zoom) {
+      for (let i = 0; i < range.length - 1; i++) {
+        if (range[i] >= zoom && zoom > range[i+1]) return i;
       }
       return null;
     }
@@ -3061,15 +3052,15 @@ function setZoomControlLayer(viewerName){
     const min = camic.viewer.cazoomctrlInstance.getMinImageZoom();
     const samples = [1, 0.5, 0.25];
     let divisor = 1;
-    //const zoomNums = 3 - (Math.log2(min) >> 0);
+    // const zoomNums = 3 - (Math.log2(min) >> 0);
     let zooms = [];
     do {
-        zooms = [...zooms,...samples.map(e=>e/divisor)]
-        divisor *= 10;
-    } while(zooms[zooms.length-1] > min);
+      zooms = [...zooms, ...samples.map((e)=>e/divisor)];
+      divisor *= 10;
+    } while (zooms[zooms.length-1] > min);
 
-    while( zooms[zooms.length-1] < min ){
-        zooms.pop();
+    while ( zooms[zooms.length-1] < min ) {
+      zooms.pop();
     }
     zooms.push(min);
     input.min = 0;
@@ -3077,120 +3068,124 @@ function setZoomControlLayer(viewerName){
     input.step = 1;
     camic.viewer.viewport.zoomTo(camic.viewer.viewport.getZoom(true));
   });
-
-
 }
-*/
-/* TODO : Rotation Bar
-  function setRotationControlLayer(viewerName){
-    let camic = null;
-    switch(viewerName){
-      case 'main':
-        camic = $CAMIC;
-        break;
-      case 'minor':
-        camic =$minorCAMIC;
-        break;
-      default:
-        console.error('Viewer Name not specified while calling setRotationControlLayer function');
-    }
-    document.querySelector(`.${viewerName}.rotation_panel.crossview_layer`).innerHTML = '';
-
-    const div = document.createElement('div');
-    const minus = document.createElement('span');
-    minus.classList.add('material-icons');
-    minus.style.margin = 'auto';
-    minus.innerText = 'remove';
-    const add = document.createElement('span');
-    add.classList.add('material-icons');
-    add.style.margin = 'auto';
-    add.innerText = 'add';
-
-    const input = document.createElement('input');
-    input.type = 'range';
-    input.min = 0;
-    input.max = 360;
-    input.step = 1;
-    input.value = camic.viewer.viewport.getRotation();
-
-    div.appendChild(minus);
-    div.appendChild(input);
-    div.appendChild(add);
-
-    const label = document.createElement('label');
-    label.innerHTML = `<span>Rotation</span>`;
-    const idx = document.createElement('div');
-    const txt = document.createElement('div');
-    const ip = document.createElement('input');
-    txt.classList.add('txt', 'show');
-    ip.classList.add('ip', 'hide');
-    ip.type = 'text';
-    idx.appendChild(txt);
-    idx.appendChild(ip);
-    label.appendChild(idx);
-    txt.innerHTML = `${(camic.viewer.viewport.getRotation())}<sup>o</sup>`;
-
-    document.querySelector(`.${viewerName}.rotation_panel.crossview_layer`).appendChild(label);
-    document.querySelector(`.${viewerName}.rotation_panel.crossview_layer`).appendChild(div);
 
 
-    add.addEventListener('click', () => {
-      const angle = +input.value;
-      if(angle < 360) {
-        camic.viewer.viewport.setRotation(angle + 1);
-        input.value = angle + 1;
-        txt.innerHTML = `${(camic.viewer.viewport.getRotation())}<sup>o</sup>`
-      }
-    });
-
-    minus.addEventListener('click', () => {
-      const angle = +input.value;
-      if(angle > 0) {
-        camic.viewer.viewport.setRotation(angle - 1);
-        input.value = angle - 1;
-        txt.innerHTML = `${(camic.viewer.viewport.getRotation())}<sup>o</sup>`
-      }
-    });
-
-    input.addEventListener('change', (e) => {
-      camic.viewer.viewport.setRotation(+e.target.value);
-      txt.innerHTML = `${(+e.target.value)}<sup>o</sup>`
-    });
-
-    input.addEventListener('mousemove', (e) => {
-      if(+e.target.value == Math.floor(camic.viewer.viewport.getRotation())) return;
-      if(+e.target.value == Math.ceil(camic.viewer.viewport.getRotation())) return;
-      camic.viewer.viewport.setRotation(+e.target.value);
-      txt.innerHTML = `${(+e.target.value)}<sup>o</sup>`
-    });
-
-    txt.addEventListener('click', ()=>{
-      txt.classList.remove('show');
-      txt.classList.add('hide');
-      ip.classList.remove('hide');
-      ip.classList.add('show');
-      ip.value = `${camic.viewer.viewport.getRotation()}`;
-    });
-
-    ip.addEventListener('keyup', (e) =>{
-      if(e.code === 'Enter'){
-        ip.classList.remove('show');
-        ip.classList.add('hide');
-        txt.classList.remove('hide');
-        txt.classList.add('show');
-        if(isNaN(+ip.value)) {
-          return;
-        } else if(0 > (+ip.value)||180 < (+ip.value)) {
-          return;
-        } else {
-          camic.viewer.viewport.setRotation(+ip.value);
-          input.value = +ip.value;
-          txt.innerHTML = `${(camic.viewer.viewport.getRotation())}<sup>o</sup>`
-        }
-      }
-    });
+function setRotationControlLayer(viewerName) {
+  let camic = null;
+  switch (viewerName) {
+    case 'main':
+      camic = $CAMIC;
+      break;
+    case 'minor':
+      camic =$minorCAMIC;
+      break;
+    default:
+      console.error('Viewer Name not specified while calling setRotationControlLayer function');
   }
-*/
+  document.querySelector(`.${viewerName}.rotation_panel.crossview_layer`).innerHTML = '';
+
+  const div = document.createElement('div');
+  const minus = document.createElement('span');
+  minus.classList.add('material-icons');
+  minus.style.margin = 'auto';
+  minus.innerText = 'remove';
+  const add = document.createElement('span');
+  add.classList.add('material-icons');
+  add.style.margin = 'auto';
+  add.innerText = 'add';
+
+  const input = document.createElement('input');
+  input.type = 'range';
+  input.min = 0;
+  input.max = 360;
+  input.step = 1;
+  input.value = camic.viewer.viewport.getRotation();
+
+  div.appendChild(minus);
+  div.appendChild(input);
+  div.appendChild(add);
+
+  const label = document.createElement('label');
+  label.innerHTML = `<span>Rotation</span>`;
+  const idx = document.createElement('div');
+  const txt = document.createElement('div');
+  const ip = document.createElement('input');
+  txt.classList.add('txt', 'show');
+  ip.classList.add('ip', 'hide');
+  ip.type = 'text';
+  idx.appendChild(txt);
+  idx.appendChild(ip);
+  label.appendChild(idx);
+  txt.innerHTML = `${(camic.viewer.viewport.getRotation())}<sup>o</sup>`;
+
+  document.querySelector(`.${viewerName}.rotation_panel.crossview_layer`).appendChild(label);
+  document.querySelector(`.${viewerName}.rotation_panel.crossview_layer`).appendChild(div);
+
+  camic.viewer.addHandler('rotate', (...args) => {
+    if (+args[0]['degrees'] != +input.value) {
+      input.value = (+args[0]['degrees'] + 360) % 360;
+      txt.innerHTML = `${(+input.value)}<sup>o</sup>`;
+    }
+  });
+
+  add.addEventListener('click', () => {
+    const angle = +input.value;
+    if (angle < 360) {
+      camic.viewer.viewport.setRotation(angle + 1);
+      input.value = angle + 1;
+      txt.innerHTML = `${(camic.viewer.viewport.getRotation())}<sup>o</sup>`;
+    }
+  });
+
+  minus.addEventListener('click', () => {
+    const angle = +input.value;
+    if (angle > 0) {
+      camic.viewer.viewport.setRotation(angle - 1);
+      input.value = angle - 1;
+      txt.innerHTML = `${(camic.viewer.viewport.getRotation())}<sup>o</sup>`;
+    }
+  });
+
+  input.addEventListener('change', (e) => {
+    camic.viewer.viewport.setRotation(+e.target.value);
+    txt.innerHTML = `${(+e.target.value)}<sup>o</sup>`;
+  });
+
+  input.addEventListener('mousemove', (e) => {
+    if (+e.target.value == Math.floor(camic.viewer.viewport.getRotation())) return;
+    if (+e.target.value == Math.ceil(camic.viewer.viewport.getRotation())) return;
+    camic.viewer.viewport.setRotation(+e.target.value);
+    txt.innerHTML = `${(+e.target.value)}<sup>o</sup>`;
+  });
+
+  txt.addEventListener('click', ()=>{
+    txt.classList.remove('show');
+    txt.classList.add('hide');
+    ip.classList.remove('hide');
+    ip.classList.add('show');
+    ip.value = `${camic.viewer.viewport.getRotation()}`;
+  });
+
+  ip.addEventListener('keyup', (e) =>{
+    if (e.code === 'Enter') {
+      ip.classList.remove('show');
+      ip.classList.add('hide');
+      txt.classList.remove('hide');
+      txt.classList.add('show');
+      if (isNaN(+ip.value)) {
+        return;
+      } else if (0 > (+ip.value)||180 < (+ip.value)) {
+        return;
+      } else {
+        camic.viewer.viewport.setRotation(+ip.value);
+        input.value = +ip.value;
+        txt.innerHTML = `${(camic.viewer.viewport.getRotation())}<sup>o</sup>`;
+      }
+    }
+  });
+}
+
 /*
 function setOriginControlLayer(viewerName){
   const loc = document.querySelector(`.${viewerName}.origin_choice.crossview_layer > .material-icons`);
@@ -3283,19 +3278,25 @@ function addSynchronizationHandlers() {
   $CAMIC.syncSettings = {
     center: $CAMIC.viewer.viewport.getCenter(),
     zoom: $CAMIC.viewer.viewport.getZoom(),
+    angle: $CAMIC.viewer.viewport.getRotation(),
     panSource: true,
     zoomSource: true,
+    rotateSource: true,
   };
   $minorCAMIC.syncSettings = {
     center: $minorCAMIC.viewer.viewport.getCenter(),
     zoom: $minorCAMIC.viewer.viewport.getZoom(),
+    angle: $minorCAMIC.viewer.viewport.getRotation(),
     panSource: true,
     zoomSource: true,
+    rotateSource: true,
   };
   $CAMIC.viewer.addHandler('pan', panSync);
   $minorCAMIC.viewer.addHandler('pan', panSync);
   $CAMIC.viewer.addHandler('zoom', zoomSync);
   $minorCAMIC.viewer.addHandler('zoom', zoomSync);
+  $CAMIC.viewer.addHandler('rotate', rotateSync);
+  $minorCAMIC.viewer.addHandler('rotate', rotateSync);
 }
 
 function removeSynchronizationHandlers() {
@@ -3303,6 +3304,8 @@ function removeSynchronizationHandlers() {
   $minorCAMIC.viewer.removeHandler('pan', panSync);
   $CAMIC.viewer.removeHandler('zoom', zoomSync);
   $minorCAMIC.viewer.removeHandler('zoom', zoomSync);
+  $CAMIC.viewer.removeHandler('rotate', rotateSync);
+  $minorCAMIC.viewer.removeHandler('rotate', rotateSync);
 }
 
 function panSync(event) {
@@ -3327,9 +3330,16 @@ function panSync(event) {
     width: oppCamic.viewer.viewport.getBounds().width / camic.viewer.viewport.getBounds().width,
     height: oppCamic.viewer.viewport.getBounds().height / camic.viewer.viewport.getBounds().height,
   };
-  let delta = new OpenSeadragon.Point(
+  let tdelta = new OpenSeadragon.Point(
       scale.width * (currCenter.x - camic.syncSettings.center.x),
       scale.height * (currCenter.y - camic.syncSettings.center.y),
+  );
+  let theta = (oppCamic.syncSettings.angle - camic.syncSettings.angle) * Math.PI / 180;
+  let cos = Math.cos(theta);
+  let sin = Math.sin(theta);
+  let delta = new OpenSeadragon.Point(
+      (tdelta.x*cos) + (tdelta.y*sin),
+      (tdelta.y*cos) - (tdelta.x*sin),
   );
   let newCenter = new OpenSeadragon.Point(
       oppCamic.syncSettings.center.x + delta.x,
@@ -3364,15 +3374,41 @@ function zoomSync(event) {
     newZoom = oppCamic.viewer.viewport.getMaxZoom();
     camic.syncSettings.zoomSource = false;
     camic.viewer.viewport.zoomTo(newZoom / scale);
+    camic.viewer.raiseEvent('animation-finish', []); // event not firing inherently
     camic.syncSettings.zoomSource = true;
   } else if (newZoom < oppCamic.viewer.viewport.getMinZoom()) {
     newZoom = oppCamic.viewer.viewport.getMinZoom();
     camic.syncSettings.zoomSource = false;
     camic.viewer.viewport.zoomTo(newZoom / scale);
+    camic.viewer.raiseEvent('animation-finish', []); // event not firing inherently
     camic.syncSettings.zoomSource = true;
   }
   oppCamic.syncSettings.zoomSource = false;
   oppCamic.viewer.viewport.zoomTo(newZoom);
   oppCamic.syncSettings.zoomSource = true;
   camic.viewer.viewport.panTo(camic.viewer.viewport.getCenter());
+}
+
+function rotateSync(event) {
+  let camic = null;
+  let oppCamic = null;
+  switch (event.eventSource.id) {
+    case 'main_viewer':
+      camic = $CAMIC;
+      oppCamic = $minorCAMIC;
+      break;
+    case 'minor_viewer':
+      camic = $minorCAMIC;
+      oppCamic = $CAMIC;
+      break;
+    default:
+      console.error('Viewer Name not specified');
+      break;
+  }
+  if (!camic.syncSettings.rotateSource) return;
+  let currRotate = camic.viewer.viewport.getRotation();
+  let delta = (currRotate - camic.syncSettings.angle);
+  oppCamic.syncSettings.rotateSource = false;
+  oppCamic.viewer.viewport.setRotation((delta+oppCamic.syncSettings.angle));
+  oppCamic.syncSettings.rotateSource = true;
 }

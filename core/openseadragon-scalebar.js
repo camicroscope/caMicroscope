@@ -251,6 +251,8 @@
       const location = this.getScalebarLocation();
       this.divElt.style.left = location.x + 'px';
       this.divElt.style.top = location.y + 'px';
+      this.divElt.style.transformOrigin = `left`;
+      this.divElt.style.transform = `rotate(${this.viewer.viewport.getRotation()}deg)`;
     },
     drawMicroscopyScalebar: function(size, text) {
       this.divElt.style.fontSize = this.fontSize;

@@ -240,7 +240,6 @@
   }
 /* sort list css */
 
-/*
 .zoom_panel, .rotation_panel {
     color: #365f9c;
     font-size: 1.5rem;
@@ -279,6 +278,12 @@
     padding: 0;
 }
 
+.item_head.crossview_layer {
+    text-align: center;
+    margin-left: -8px;
+}
+
+/*
 .origin_choice{
     color: #365f9c;
     font-size: 1.5rem;
