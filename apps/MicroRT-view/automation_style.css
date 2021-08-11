@@ -1,0 +1,7 @@
+#loading-message {
+    visibility: hidden;
+
+}
+#loading-message.display{
+    visibility: visible;
+}

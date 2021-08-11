@@ -8,7 +8,9 @@
 	<!-- Check If we're logged in ok, otherwise, log in for us -->
     <!-- REMOVE JQUERY AND AJAX AFTER MODERNIZING DICOM PACKAGE-->
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-	
+
+
+
     <!-- Thank you -->
     <script src="../../common/authChecker.js"></script>
     <!-- AJV json validator engine -->
@@ -150,16 +152,6 @@
 	</div>
 
 <div class="container-fluid">
- <div class="row">
-	<div class="col-5">
-		<center><h4>Microscope View</h4></center>
-	</div>
-	<div class="col-1">
-	</div>
-	<div class="col-6">
-		<center><h4>WSIImage View</h4></center>
-	</div>
- </div>
   <div class="row">
 	<div class='col-2'></div>
     <div id="parent2" class="col-8">		
@@ -171,16 +163,16 @@
 		<div class="row">
 			<div class="col-5 ml-5 mr-2 mt-3 mb-2 odd rounded-right rounded-left border border-dark">
 				<div class="row text-dark mt-2 mb-3 d-flex justify-content-center h3">Take Stage Coordinates</div>
-				<form id="stage_form"  method="post" enctype="multipart/form-data">
-					<div class="row mt-2 mb-2 d-flex justify-content-center"><button name="order" id="stage_1" type="submit"  class="btn btn-light btn-lg d-flex justify-content-center">Take Stage position1</button></div>
-					<div class="row mt-2 mb-2 d-flex justify-content-center"><button name="order" id="stage_2" type="submit" class="btn btn-light btn-lg d-flex justify-content-center">Take Stage position2</button></div>
-					<div class="row mt-2 mb-3 d-flex justify-content-center"><button name="order" id="stage_3" type="submit" class="btn btn-light btn-lg d-flex justify-content-center">Take Stage position3</button></div>
+				<form id="stage_form" method="post" enctype="multipart/form-data">
+					<div class="row mt-2 mb-2 d-flex justify-content-center"><button name="order" id="stage_1"  onclick="return stage(1);" type="submit"  class="btn btn-light btn-lg d-flex justify-content-center">Take Stage position1</button></div>
+					<div class="row mt-2 mb-2 d-flex justify-content-center"><button name="order" id="stage_2"  onclick="return stage(2);" type="submit" class="btn btn-light btn-lg d-flex justify-content-center">Take Stage position2</button></div>
+					<div class="row mt-2 mb-3 d-flex justify-content-center"><button name="order" id="stage_3"  onclick="return stage(3);" type="submit" class="btn btn-light btn-lg d-flex justify-content-center">Take Stage position3</button></div>
 					
 				</form>
 			</div>
 			<div class="col-5 ml-5 mr-2 mt-3 mb-2 odd rounded-right rounded-left border border-dark">
 				<div class="row text-dark mt-2 mb-3 d-flex justify-content-center h3">Take WSI Coordinates</div>
-				<form id="wsi_form" method="post" onsubmit="return formSubmit(this);" enctype="multipart/form-data">
+				<form id="wsi_form" method="post" onsubmit="return formSubmit2(this);" enctype="multipart/form-data">
 					<div class="row mt-2 mb-2 d-flex justify-content-center"><button name="capture" id="wsi_1" type="submit"  onclick="return register(1);" class="btn btn-light btn-lg d-flex justify-content-center">Take WSI position1</button></div>
 					<div class="row mt-2 mb-2 d-flex justify-content-center"><button name="capture" id="wsi_2" type="submit"  onclick=" return register(2);" class="btn btn-light btn-lg d-flex justify-content-center">Take WSI position2</button></div>
 					<div class="row mt-2 mb-3 d-flex justify-content-center"><button name="capture" id="wsi_3" type="submit"  onclick="return register(3);" class="btn btn-light btn-lg d-flex justify-content-center">Take WSI position3</button></div>
@@ -198,15 +190,15 @@
 						<div class="col-2 d-flex justify-content-center">
 							X:
 						</div>
-						<div id="box" class="col-3 d-flex justify-content-center">
-						    1
+						<div name="wsi_1_x" id="box" class="col-3 d-flex justify-content-center">
+						    0
 						</div>
 						<div class="col-1"></div>
 						<div class="col-2 d-flex justify-content-center">
 							Y:
 						</div>
-						<div id="box" class="col-3 d-flex justify-content-center">
-						    2
+						<div name="wsi_1_y" id="box" class="col-3 d-flex justify-content-center">
+						    0
 						</div>
 						<div class="col-1"></div>
 					</div>
@@ -215,18 +207,19 @@
 						<div class="col-2">
 							X:
 						</div>
-						<div id="box" class="col-3 d-flex justify-content-center">
-						    3
+						<div name="stage_1_x" id="box" class="col-3 d-flex justify-content-center">
+						    0
 						</div>
 						<div class="col-1"></div>
 						<div class="col-2 d-flex justify-content-center">
 							Y:
 						</div>
-						<div id="box" class="col-3 d-flex justify-content-center">
-						    4
+						<div name="stage_1_y" id="box" class="col-3 d-flex justify-content-center">
+						    0
 						</div>
 						<div class="col-1"></div>
 					</div>
+					<div id='status-1' class="row mt-4 mb-4 text-light bg-danger d-flex justify-content-center h3">INCOMPLETE</div>
 				</div>
 				<div class="col-4 mr-2 mb-2 mt-2 even">
 					<div class="row text-dark d-flex justify-content-center h5">Registration2</div>
@@ -235,15 +228,15 @@
 						<div class="col-2 d-flex justify-content-center">
 							X:
 						</div>
-						<div id="box" class="col-3 d-flex justify-content-center">
-						    5
+						<div name="wsi_2_x" id="box" class="col-3 d-flex justify-content-center">
+						    0
 						</div>
 						<div class="col-1"></div>
 						<div class="col-2 d-flex justify-content-center">
 							Y:
 						</div>
-						<div id="box" class="col-3 d-flex justify-content-center">
-						    6
+						<div name="wsi_2_y" id="box" class="col-3 d-flex justify-content-center">
+						    0
 						</div>
 						<div class="col-1"></div>
 					</div>
@@ -252,18 +245,19 @@
 						<div class="col-2 d-flex justify-content-center">
 							X:
 						</div>
-						<div id="box" class="col-3 d-flex justify-content-center">
-						    7
+						<div name="stage_2_x" id="box" class="col-3 d-flex justify-content-center">
+						    0
 						</div>
 						<div class="col-1"></div>
 						<div class="col-2 d-flex justify-content-center">
 							Y:
 						</div>
-						<div id="box" class="col-3 d-flex justify-content-center">
-						    8
+						<div name="stage_2_y" id="box" class="col-3 d-flex justify-content-center">
+						    0
 						</div>
 						<div class="col-1"></div>
 					</div>
+					<div id='status-2' class="row mt-4 mb-4 text-light bg-danger d-flex justify-content-center h3">INCOMPLETE</div>
 				</div>
 				<div class="col-4 mr-2 mb-2 mt-2 even">
 					<div class="row text-dark d-flex justify-content-center h5 ">Registration3</div>
@@ -272,15 +266,15 @@
 						<div class="col-2 d-flex justify-content-center">
 							X:
 						</div>
-						<div id="box" class="col-3 d-flex justify-content-center">
-						    9
+						<div name="wsi_3_x" id="box" class="col-3 d-flex justify-content-center">
+						    0
 						</div>
 						<div class="col-1"></div>
 						<div class="col-2 d-flex justify-content-center">
 							Y:
 						</div>
-						<div id="box" class="col-3 d-flex justify-content-center">
-						    10
+						<div name="wsi_3_y" id="box" class="col-3 d-flex justify-content-center">
+						    0
 						</div>
 						<div class="col-1"></div>
 					</div>
@@ -289,18 +283,19 @@
 						<div class="col-2 d-flex justify-content-center">
 							X:
 						</div>
-						<div id="box" class="col-3 d-flex justify-content-center">
-						    11
+						<div name="stage_3_x" id="box" class="col-3 d-flex justify-content-center">
+						    0
 						</div>
 						<div class="col-1"></div>
 						<div class="col-2 d-flex justify-content-center">
 							Y:
 						</div>
-						<div id="box" class="col-3 d-flex justify-content-center">
-						    12
+						<div name="stage_3_y" id="box" class="col-3 d-flex justify-content-center">
+						    0
 						</div>
 						<div class="col-1"></div>
 					</div>
+					<div id='status-3' class="row mt-4 mb-4 text-light bg-danger d-flex justify-content-center h3">INCOMPLETE</div>
 				</div>
 			</div>
 			<div class="col-2"></div>
@@ -309,18 +304,28 @@
   </div>
 </div>
 <div>
-<P>Hello world and welcome</P>
 <dialog id="favDialog">
 	<center>
-	<button type="button" id="view-button" onclick="openRegisterview()" class="btn btn-info btn-lg">View</button>
+	<!--<button type="button" id="view-button" onclick="openRegisterview()" class="btn btn-info btn-lg">View</button>-->
 	</center>
 	<div style="display: flex;">
 	</div>
 	<form method="dialog" method="POST" id='dialog-id' >
-	  <menu>
+		<!--src="http://192.168.29.6:3000/sending_images/" -->
+		
+		<!--<iframe id='preview-section' src="http://192.168.10.16:8020/preview_two_images/" width="825" height="410" scrolling="no"></iframe>-->
+		<div id="preview-section">
+		</div>
+
+
+
+	  <center><menu>
 		<button name="cancelBtn" class="btn btn-info btn-lg" id='cancelBtn'>Cancel</button>
-		<button name="confirmBtn" class="btn btn-info btn-lg" id="confirmBtn">Confirm</button>
+		<form action="http://192.168.29.6:3000/get_coordinates_data/" id="updating-coordinates" method="POST">
+			<input type="submit" name="confirmBtn" class="btn btn-info btn-lg" id="confirmBtn"></input>
+		</form>
 	  </menu>
+	</center>
 	</form>
 </dialog>
   
@@ -334,9 +339,14 @@
 
 <form id="register-id" method="POST">
 	<button class="btn btn-info btn-lg" name="slideid-value" id="template-button" type="submit">Register</button>
-	
 </form>
+
 </center>
+<center>
+		<input  type='submit' onclick="return check_values();"	value='Final-Submission' class="btn btn-info btn-lg">Final-Submission</input>
+</center>
+
+
 <footer class="text-center text-white bg-dark p-3">
 	<p class="p">Copyright © 2021 caMicroscope</p>
 </footer>
@@ -349,3 +359,4 @@
 </script>
 </body>
 </html>
+

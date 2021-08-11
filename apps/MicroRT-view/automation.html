@@ -1,0 +1,247 @@
+<html>
+
+<head>
+	<title>caMicroscope MicroRT view</title>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<!-- Check If we're logged in ok, otherwise, log in for us -->
+    <!-- REMOVE JQUERY AND AJAX AFTER MODERNIZING DICOM PACKAGE-->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+
+
+
+    <!-- Thank you -->
+    <script src="../../common/authChecker.js"></script>
+    <!-- AJV json validator engine -->
+    <script type="text/javascript" src="../../common/ajv.js"></script>
+    <!-- util.js -->
+    <script type="text/javascript" src="../../common/util.js"></script>
+    <script type="text/javascript" src="../../common/DrawHelper.js"></script>
+    <script type="text/javascript" src="../../common/simplify.js"></script>
+    <script type="text/javascript" src="../../common/paths.js"></script>
+    <script type="text/javascript" src="../../common/touchMe.js"></script>
+
+​
+	<!--Bootstrap Js-->
+	<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
+	<!--inner css-->
+  <link rel='stylesheet' href='./automation_style.css'/>
+  <!--Bootstrap Css-->
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+	<link 
+		rel="stylesheet"
+		type="text/css"
+		media="all"
+		href="./microRT.css"
+	/>
+
+	<!-- common css START -->
+	<link
+		rel="stylesheet"
+		type="text/css"
+		media="all"
+		href="../../css/style.css"
+	/>
+
+    <!-- osd & core css START -->
+    <!-- zoom control css -->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      media="all"
+      href="../../core/extension/openseadragon-zoom-control/openseadragon-zoom-control.css"
+    />
+    <!-- mesurement tool css -->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      media="all"
+      href="../../core/extension/openseadragon-measurement-tool/openseadragon-measurement-tool.css"
+    />
+    <!-- loading cover css -->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      media="all"
+      href="../../components/loading/loading.css"
+    />
+    <!-- google material icons css sheet -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Icons"
+      rel="stylesheet">    
+    <!-- loading cover js -->
+    <script
+      type="text/javascript"
+      src="../../components/loading/loading.js"
+    ></script>
+    <!-- osd & core css END -->
+    <!-- osd & core js START -->
+    <script
+      type="text/javascript"
+      src="../../core/openseadragon/openseadragon.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="../../core/openseadragon-imaginghelper.min.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="../../core/openseadragon-scalebar.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="../../core/openseadragonzoomlevels.js"
+    ></script>
+​
+    <!-- core (package/ext) libs -->
+    <script type="text/javascript" src="../../core/StatesHelper.js"></script>
+​
+    <script type="text/javascript" src="../../core/Validation.js"></script>
+    <script type="text/javascript" src="../../core/Store.js"></script>
+    <script type="text/javascript" src="../../core/CaMic.js"></script>
+    <script
+      type="text/javascript"
+      src="../../core/extension/openseadragon-canvas-draw-overlay.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="../../core/extension/openseadragon-overlays-manage.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="../../core/extension/openseadragon-measurement-tool/openseadragon-measurement-tool.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="../../core/extension/openseadragon-zoom-control/openseadragon-zoom-control.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="../../core/extension/osd-heatmap-overlay.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="../../core/extension/osd-segment-overlay.js"
+    ></script>
+
+	<script 
+		type="text/javascript"
+		src="../../core/openseadragon/openseadragonselection.js"
+	></script>
+
+	<link rel="stylesheet" 
+	href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.4.0/min/dropzone.min.css"/>
+
+   <link rel="stylesheet" 
+	href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.4.0/min/basic.min.css"/>
+
+   <script type="application/javascript" 
+	src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.4.0/min/dropzone.min.js">
+   </script>
+
+</head>
+
+<body>
+	<div class="page-container">
+	<div class="header text-center text-white bg-info p-4">
+		<h1 class="h1">caMicroscope</h1>
+		<p>Digital pathology image viewer with support for human/machine generated annotations and markups.</p>
+	</div>
+	</div>
+    <div class="container-fluid">
+        <div class="row ">
+            <div class="col-7 text-light text-center bg-dark border border-light"><h2>WSI-VIEW</h2></div>
+            <div class="col-5 text-light text-center bg-dark border border-light"><h2>STAGE-VIEW</h2></div>
+        </div>
+        <div class="row">
+          <div id="wsi_view" class="col-7">		
+          </div>
+          <div class='col-5'>
+              <div class="row">
+                <object id='display-section' width="800" height="555">
+                </object>
+              </div>
+              <div class="row mt-4"></div>
+              <div class="container border border-dark">
+                <div class='row mt-2 mb-4' >
+                  <div class="col-2"></div>
+                  <div class="col-8 bg-warning text-dark d-flex justify-content-center h2" id='loading-message'>Stage movement...</div>
+                  <div class="col-2"></div>
+                </div>
+                <div class="row mt-4 mb-4 text-dark justify-content-center h2">WSI COORDINATES</div>
+                <div class="row">
+                    <div class="col-2 text-dark d-flex h5">
+                        X-Coordinate:
+                    </div>
+                    <div name='wsi-x-coord' class="col-3 text-dark d-flex justify-content-center h3" id="box">
+                        0
+                    </div>
+                    <div class="col-1 "></div>
+                    <div class="col-2 text-dark d-flex h5">
+                        Y-Coordinate:
+                    </div>
+                    <div name='wsi-y-coord' class="col-3 text-dark d-flex justify-content-center h3" id="box">
+                        0
+                    </div>
+
+                </div>
+
+                <div class="row mt-4 mb-4 text-dark justify-content-center h2">STAGE COORDINATES</div>
+                <div class="row">
+                    <div class="col-2 text-dark d-flex h5">
+                        X-Coordinate:
+                    </div>
+                    <div name='stage-x-coord' class="col-3 text-dark d-flex justify-content-center h3" id="box">
+                        0
+                    </div>
+                    <div class="col-1 "></div>
+                    <div class="col-2 text-dark d-flex h5">
+                        Y-Coordinate:
+                    </div>
+                    <div name='stage-y-coord' class="col-3 text-dark d-flex justify-content-center h3" id="box">
+                        0
+                    </div>
+
+                </div>
+                <div class='row mt-4 mb-2'>
+                  <div class="col-6 d-flex justify-content-center">
+                    <form id='transform' method="post" enctype="multipart/form-data" >
+                      <input class='btn btn-info btn-lg' type='submit' value='Calculate'/>
+                      <input type="hidden" name='x-coord-wsi' id='x-coord-wsi' style='visibility: hidden;'/>
+                      <input type="hidden" name='y-coord-wsi' id='y-coord-wsi' style="visibility: hidden;"/>
+
+                    </form>
+
+                  </div>
+
+                  <div class="col-6 d-flex justify-content-center">
+                    <input id='move_lens_position' class='btn btn-info btn-lg' type='submit' value='Move'/>
+                  </div>
+
+                </div>
+              
+          </div>
+          </div>
+    </div>
+    </div>
+
+
+
+
+<footer class="text-center text-white bg-dark p-3">
+	<p class="p">Copyright © 2021 caMicroscope</p>
+</footer>
+
+<!--automation Js-->
+<script type="text/javascript" src='./automation.js'></script> 
+<script>
+
+
+</script>
+</body>
+</html>
+

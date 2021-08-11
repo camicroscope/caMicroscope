@@ -20,7 +20,7 @@
   background-color: white;
 }
 .even{
-	background-color: #8DDE45;
+	background-color: #66B2FF;
 }
 .odd{
 	background-color: #DE0604;
@@ -28,4 +28,9 @@
 body{
     background-color: white !important;
 	line-height: 0px;
+}
+#wsi_view{
+		height: 849px;
+		border: 3px solid black;
+		padding: 0px;
 }
