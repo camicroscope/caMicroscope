@@ -1837,7 +1837,7 @@ async function saveEvaluation(e) {
     const rs = await $CAMIC.store.updateEvaluation(query, evalData);
     if (rs.error) {
       $UI.message.addError(rs.text);
-    } else if (rs.modifiedCount && rs.result && rs.result.ok ) {
+    } else if (rs && rs.result && rs.result.ok ) {
       $UI.message.add(`Evaluation Updated`);
       $D.isEvalDataExist = true;
     } else {

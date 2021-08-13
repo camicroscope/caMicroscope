@@ -358,11 +358,162 @@ async function initUIcomponents() {
     $UI.evalSideMenu.addContent(evalTitle);
     $UI.evalSideMenu.addContent(evalDiv);
 
-    const formOpt = evaluationConfig.configuration;
+    // const formOpt = evaluationConfig.configuration;
+    const formOpt = {
+      data: {
+        slide_quality: null,
+        tumor_present: null,
+        tumor_histology: null,
+        informativeness: null,
+      },
+      options: {
+        fields: {
+          slide_quality: {
+            label: 'Slide Quality',
+            hideNone: true,
+            required: true,
+            optionLabels: [
+              'Unsatisfactory',
+              'Satisfactory',
+            ],
+          },
+          tumor_present: {
+            label: 'Tumor Present',
+            hideNone: true,
+            optionLabels: [
+              'No',
+              'Yes',
+            ],
+            validator: function(callback) {
+              const tumorPresent = this.getValue();
+              if (tumorPresent === '1') {
+                $CAMIC.store.countMark({
+                  'creator': getUserId(),
+                  'provenance.image.slide': $D.params.slideId,
+                  'provenance.analysis.source': 'human',
+
+                }).then((d)=>{
+                  if (d > 0) {
+                    callback({
+                      status: true,
+                    });
+                  } else {
+                    callback({
+                      status: false,
+                      message: 'Please Create an annotation',
+                    });
+                  }
+                });
+              } else {
+                callback({
+                  status: true,
+                });
+              }
+            },
+          },
+          tumor_histology: {
+            label: 'Tumor Histology',
+            hideNone: true,
+            optionLabels: [
+              'Incorrect',
+              'Correct',
+            ],
+            events: {
+              change: function() {
+                var comments = this.getParent().childrenByPropertyId['comments'];
+                comments.refreshValidationState();
+              },
+            },
+          },
+          informativeness: {
+            label: 'Informativeness',
+            hideNone: true,
+            optionLabels: [
+              'Uninformative',
+              'Informative',
+            ],
+          },
+          comments: {
+            disabled: true,
+            type: 'textarea',
+            label: 'comments',
+            helper: 'State correct CAP protocol term',
+            helpersPosition: 'above',
+            rows: 2,
+            validator: function(callback) {
+              var tumorHistology = this.getParent().childrenByPropertyId['tumor_histology'].getValue();
+              var comments = this.getValue();
+              if (tumorHistology === '0' && !comments) {
+                callback({
+                  status: false,
+                  message: 'Please Fill In The Comments',
+                });
+              } else {
+                callback({
+                  status: true,
+                });
+              }
+            },
+          },
+        },
+      },
+      schema: {
+        type: 'object',
+        properties: {
+          slide_quality: {
+            required: true,
+            enum: ['0', '1'],
+          },
+          tumor_present: {
+            required: true,
+            enum: ['0', '1'],
+          },
+          tumor_histology: {
+            required: true,
+            enum: ['0', '1'],
+          },
+          informativeness: {
+            required: true,
+            enum: ['0', '1'],
+          },
+          comments: {
+
+            type: 'string',
+            // required: true,
+          },
+        },
+
+      },
+      postRender: function(control) {
+        var slideQuality = control.childrenByPropertyId['slide_quality'];
+        var tumorPresent = control.childrenByPropertyId['tumor_present'];
+        var tumorHistology = control.childrenByPropertyId['tumor_histology'];
+        var informativeness = control.childrenByPropertyId['informativeness'];
+        var comments = control.childrenByPropertyId['comments'];
+        if (!$D.isEvalDataExist) {
+          slideQuality.setValue(null);
+          tumorPresent.setValue(null);
+          tumorHistology.setValue(null);
+          informativeness.setValue(null);
+        }
+        tumorHistology.on('change', ()=>{
+          const val = tumorHistology.getValue();
+          if (val == 0) {
+            comments.control.prop('disabled', false);
+          } else {
+            comments.setValue(null);
+            comments.control.prop('disabled', true);
+          }
+        });
+      },
+
+    };
+    // console.log(formOpt);
     formOpt.options.form = {
       'buttons': {
         'submit': {'label': 'save', 'click': saveEvaluation},
       },
+
     };
 
     // set data if evaluation Data existed

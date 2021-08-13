@@ -79,7 +79,7 @@ class Store {
     return fetch(url, {
       credentials: 'include',
       mode: 'cors',
-    }).then(this.errorHandler).then((x) => this.filterBroken(x, 'mark'));
+    }).then(this.errorHandler).then((x) => this.filterBroken(x, 'user'));
   }
   /**
    * update a collection info
@@ -267,7 +267,17 @@ class Store {
     }).then(this.errorHandler).then((x) => this.filterBroken(x, 'mark'));
   }
 
-
+  countMark(query) {
+    const suffix = 'Mark/count';
+    var url = this.base + suffix;
+    if (query) {
+      url = `${url}?${objToParamStr(query)}`;
+    }
+    return fetch(url, {
+      credentials: 'include',
+      mode: 'cors',
+    }).then(this.errorHandler);
+  }
   /**
    * get mark by id
    * @param {string} id - the mark id

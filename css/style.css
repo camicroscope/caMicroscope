@@ -381,3 +381,15 @@ div.load-status div.text {
   padding-left: 1rem;
   /* text-align: center; */
 }
+
+#eval_form .has-error .control-label,
+#eval_form .has-error .radio,
+#eval_form .has-error .checkbox,
+#eval_form .has-error .radio-inline,
+#eval_form .has-error .checkbox-inline,
+#eval_form .has-error.radio label,
+#eval_form .has-error.checkbox label,
+#eval_form .has-error.radio-inline label,
+#eval_form .has-error.checkbox-inline label {
+  color: #365f9c;
+}

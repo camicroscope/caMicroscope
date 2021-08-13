@@ -634,7 +634,7 @@ function changeSlideName(oldname, id) {
         store.updateSlideName(id, newName).then((response) => {
           return response.json();
         }).then((data) => {
-          if (data['modifiedCount'] == 1) {
+          if (data.ok == 1) {
             initialize();
             showSuccessPopup('Slide updated successfully');
           }
