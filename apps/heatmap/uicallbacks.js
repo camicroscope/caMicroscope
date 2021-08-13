@@ -492,13 +492,14 @@ async function saveEditData() {
       }
     }
     // add new one
+    const socketHeatmapData = $CAMIC.viewer.heatmap ? $CAMIC.viewer.heatmap._editedData.clusters : null; // pass heatmap data to sockets
     const add = await $CAMIC.store.addHeatmapEdit({
       user_id: user,
       create_date: createDate,
       update_date: now,
       provenance: $D.heatMapData.provenance,
       data: editData,
-    });
+    }, socketHeatmapData);
 
     // error
     if (add.hasError&&add.hasError==true) {
@@ -517,10 +518,8 @@ async function saveEditData() {
   $CAMIC.viewer.canvasDrawInstance.clear();
 
   heatMapEditedListOn();
-
-
-  console.log('saved');
 }
+
 function getDateInString() {
   const today = new Date();
   const dd = String(today.getDate()).padStart(2, '0');
@@ -564,12 +563,13 @@ async function onDeleteEditData(data) {
   const study = $D.heatMapData.provenance.image.study;
   const exec = $D.heatMapData.provenance.analysis.execution_id;
 
+  const socketHeatmapData = $CAMIC.viewer.heatmap ? $CAMIC.viewer.heatmap._editedData.clusters : null; // pass heatmap data to sockets
   let rs = null;
   if (ImgloaderMode!='imgbox') {
     if ($D.editedDataClusters.isEmpty()) {
-      rs = await $CAMIC.store.deleteHeatmapEdit(user, slide, exec);
+      rs = await $CAMIC.store.deleteHeatmapEdit(user, slide, exec, socketHeatmapData);
     } else {
-      rs = await $CAMIC.store.updateHeatmapEdit(user, slide, exec, JSON.stringify($D.editedDataClusters.toJSON()));
+      rs = await $CAMIC.store.updateHeatmapEdit(user, slide, exec, JSON.stringify($D.editedDataClusters.toJSON()), socketHeatmapData);
     }
     // error
     if (rs.hasError&&rs.hasError==true) {
@@ -625,4 +625,10 @@ function getBounds(points) { // return x,y,w,h
     min: min,
     max: max,
   };
+}
+
+function addScript(src) {
+  var s = document.createElement('script');
+  s.setAttribute('src', src);
+  document.body.appendChild(s);
 }

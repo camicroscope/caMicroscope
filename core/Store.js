@@ -284,7 +284,6 @@ class Store {
    **/
   addMark(json) {
     const suffix = 'Mark/post';
-    console.log('adding mark');
     const url = this.base + suffix;
     if (this.validation.mark && !this.validation.mark(json)) {
       console.warn(this.validation.mark.errors);
@@ -514,10 +513,11 @@ class Store {
   /**
    * add a Heatmap Edit Data
    * @param {object} json - the heatmap edit data
+   * @param {[object, null]} heatmapDataForSockets - the heatmap edit data to be sent over sockets channel
    * @return {promise} - promise which resolves with response
    *
    **/
-  addHeatmapEdit(json) {
+  addHeatmapEdit(json, heatmapDataForSockets=null) {
     const suffix = 'HeatmapEdit/post';
     const url = this.base + suffix;
     // TODO check on valid
@@ -535,11 +535,15 @@ class Store {
       body: JSON.stringify(json),
     },
     true, // Sockets config
-    'heatmap'
+    'heatmap',
+    heatmapDataForSockets
     ).then(this.errorHandler);
   }
 
-  updateHeatmapEdit(user, slide, name, data) {
+  /**
+   * @param {[object, null]} heatmapDataForSockets - the heatmap edit data to be sent over sockets channel
+   */
+  updateHeatmapEdit(user, slide, name, data, heatmapDataForSockets=null) {
     const suffix = 'HeatmapEdit/update';
     const url = this.base + suffix;
     const query = {};
@@ -563,7 +567,11 @@ class Store {
       }),
       credentials: 'include',
       mode: 'cors',
-    }).then(this.errorHandler);
+    },
+    true, // Sockets config
+    'heatmap',
+    heatmapDataForSockets
+    ).then(this.errorHandler);
   }
 
   findHeatmapEdit(user, slide, name) {
@@ -582,15 +590,19 @@ class Store {
     return fetch(url + '?' + objToParamStr(query), {
       credentials: 'include',
       mode: 'cors',
-    }).then(this.errorHandler);
+    },
+    // true, // Sockets config
+    // 'heatmap'
+    ).then(this.errorHandler);
   }
   /**
    * delete heatmap
    * @param {object} id - the heatmap object id
    * @param {object} slide - the associated slide
+   * @param {[object, null]} heatmapDataForSockets - the heatmap edit data to be sent over sockets channel
    * @return {promise} - promise which resolves with response
    **/
-  deleteHeatmapEdit(user, slide, name) {
+  deleteHeatmapEdit(user, slide, name, heatmapDataForSockets=null) {
     const suffix = 'HeatmapEdit/delete';
     const url = this.base + suffix;
     const query = {};
@@ -608,7 +620,11 @@ class Store {
       method: 'DELETE',
       credentials: 'include',
       mode: 'cors',
-    }).then(this.errorHandler);
+    },
+    true, // Sockets config
+    'heatmap',
+    heatmapDataForSockets
+    ).then(this.errorHandler);
   }
 
 
@@ -922,7 +938,6 @@ class Store {
    **/
   addMessage(json) {
     const suffix = 'Chat/post';
-    console.log('chat');
     const url = this.base + suffix;
     return fetch(url, {
       method: 'POST',

@@ -1020,7 +1020,6 @@ function showCollaborationModal (event) {
   const slideId = element.getAttribute('data-slideId');
   const store = new Store('../data/');
   store.getSlideCollabDetails(slideId).then(response => {
-    console.log(response)
     document.getElementById('modal-collab-slidename').innerText = response[0].roomId;
     if (response[0].collabStatus === true) {
       $('#modal-collab-status-switch').bootstrapToggle('on');
