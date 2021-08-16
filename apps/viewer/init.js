@@ -326,7 +326,7 @@ const sendMessageToChat = () => {
             ${message.body}
           </div>
           <div class="message-date">
-            ${timestamp.toLocaleString()}
+            ${new Date(timestamp).toLocaleString()}
           </div>
         </div>
       `;
@@ -352,7 +352,7 @@ const fetchMessagesIntoChat = () => {
             ${message.body}
           </div>
           <div class="message-date">
-            ${message.timestamp ? message.timestamp.toLocaleString() : ''}
+            ${message.timestamp ? new Date(message.timestamp).toLocaleString() : ''}
           </div>
         </div>
       `;
@@ -372,7 +372,7 @@ const receiveMessageIntoChat = (message) => {
         ${message.body}
       </div>
       <div class="message-date">
-        ${message.timestamp ? message.timestamp.toLocaleString() : ''}
+        ${message.timestamp ? new Date(message.timestamp).toLocaleString() : ''}
       </div>
     </div>
   `;
@@ -411,7 +411,7 @@ const searchMessagesIntoChat = () => {
               })}
             </div>
             <div class="message-date">
-              ${message.timestamp ? message.timestamp.toLocaleString() : ''}
+              ${message.timestamp ? new Date(message.timestamp).toLocaleString() : ''}
             </div>
           </div>
         `;
