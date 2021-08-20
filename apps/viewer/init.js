@@ -695,6 +695,7 @@ async function initUIcomponents() {
     type: 'btn',
     callback: async function () {
       if (!$chatOpen) {
+        document.getElementById('chatsDisplayArea').innerHTML = '';
         fetchMessagesIntoChat();
         $UI.messagingSideMenu.open();
         document.getElementById('chatInput').focus();
