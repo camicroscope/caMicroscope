@@ -51,7 +51,7 @@ function layersLoader() {
       $UI.message.addError('Loading Human Layers is Error');
       console.error(error);
     });
-  }
+  };
   // ruler
   function loadingRulerOverlayers() {
     $CAMIC.store.findMarkTypes($D.params.slideId, 'ruler').then(function(layers) {
@@ -86,7 +86,7 @@ function layersLoader() {
       $UI.message.addError('Loading heatmap Overlayers is Error');
       console.error(error);
     });
-  }
+  };
 
   // segmentation
   function loadingComputerOverlayers() {

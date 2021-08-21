@@ -491,8 +491,9 @@ async function saveEditData() {
         return;
       }
     }
+    // pass heatmap data to sockets
+    const socketHeatmapData = $CAMIC.viewer.heatmap ? $CAMIC.viewer.heatmap._editedData.clusters : null;
     // add new one
-    const socketHeatmapData = $CAMIC.viewer.heatmap ? $CAMIC.viewer.heatmap._editedData.clusters : null; // pass heatmap data to sockets
     const add = await $CAMIC.store.addHeatmapEdit({
       user_id: user,
       create_date: createDate,
@@ -563,13 +564,15 @@ async function onDeleteEditData(data) {
   const study = $D.heatMapData.provenance.image.study;
   const exec = $D.heatMapData.provenance.analysis.execution_id;
 
-  const socketHeatmapData = $CAMIC.viewer.heatmap ? $CAMIC.viewer.heatmap._editedData.clusters : null; // pass heatmap data to sockets
+  // pass heatmap data to sockets
+  const socketHeatmapData = $CAMIC.viewer.heatmap ? $CAMIC.viewer.heatmap._editedData.clusters : null;
   let rs = null;
   if (ImgloaderMode!='imgbox') {
     if ($D.editedDataClusters.isEmpty()) {
       rs = await $CAMIC.store.deleteHeatmapEdit(user, slide, exec, socketHeatmapData);
     } else {
-      rs = await $CAMIC.store.updateHeatmapEdit(user, slide, exec, JSON.stringify($D.editedDataClusters.toJSON()), socketHeatmapData);
+      rs = await $CAMIC.store.updateHeatmapEdit(user, slide, exec,
+          JSON.stringify($D.editedDataClusters.toJSON()), socketHeatmapData);
     }
     // error
     if (rs.hasError&&rs.hasError==true) {

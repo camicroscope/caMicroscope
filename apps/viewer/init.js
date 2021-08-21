@@ -305,16 +305,16 @@ const sendMessageToChat = () => {
   const inputElement = document.getElementById('chatInput');
   const body = inputElement.value.trim();
   if (body !== '') {
-    const { slideId } = window.getUrlVars();
+    const {slideId} = window.getUrlVars();
     const timestamp = new Date();
     const data = {
       body,
       roomId: slideId,
       timestamp,
-    }
-  
-    const store = new Store('../../data/'); 
-    store.addMessage(data).then(data => {
+    };
+
+    const store = new Store('../../data/');
+    store.addMessage(data).then((data) => {
       inputElement.value = '';
       const message = data.ops[0];
       document.getElementById('chatsDisplayArea').innerHTML += `
@@ -330,18 +330,18 @@ const sendMessageToChat = () => {
           </div>
         </div>
       `;
-      var messageArea = document.getElementById("chatsDisplayArea");
+      var messageArea = document.getElementById('chatsDisplayArea');
       messageArea.scrollTop = messageArea.scrollHeight;
-    })
+    });
   }
-}
+};
 
 const fetchMessagesIntoChat = () => {
-  const { slideId } = window.getUrlVars();
+  const {slideId} = window.getUrlVars();
   const store = new Store('../../data/');
-  const userId = getUserId(); 
-  store.fetchMessages(slideId).then(data => {
-    data.forEach(message => {
+  const userId = getUserId();
+  store.fetchMessages(slideId).then((data) => {
+    data.forEach((message) => {
       let classType = message.from === userId ? 'message-sent' : 'message-received';
       document.getElementById('chatsDisplayArea').innerHTML += `
         <div class="message ${classType}">
@@ -356,12 +356,13 @@ const fetchMessagesIntoChat = () => {
           </div>
         </div>
       `;
-    })
-  })
-}
+    });
+  });
+};
 
-const receiveMessageIntoChat = (message) => {4
-  const userId = getUserId(); 
+const receiveMessageIntoChat = (message) => {
+  4;
+  const userId = getUserId();
   let classType = message.from === userId ? 'message-sent' : 'message-received';
   document.getElementById('chatsDisplayArea').innerHTML += `
     <div class="message ${classType}">
@@ -376,13 +377,13 @@ const receiveMessageIntoChat = (message) => {4
       </div>
     </div>
   `;
-  var messageArea = document.getElementById("chatsDisplayArea");
+  var messageArea = document.getElementById('chatsDisplayArea');
   messageArea.scrollTop = messageArea.scrollHeight;
   // highlightSearchText('hello')
-}
+};
 
 const searchMessagesIntoChat = () => {
-  const { slideId } = window.getUrlVars();
+  const {slideId} = window.getUrlVars();
   const inputElement = document.getElementById('chatSearchInput');
   const searchKey = inputElement.value.trim();
   if (searchKey === '') {
@@ -390,16 +391,16 @@ const searchMessagesIntoChat = () => {
     inputElement.value = '';
     fetchMessagesIntoChat();
     setTimeout(() => {
-      var messageArea = document.getElementById("chatsDisplayArea");
+      var messageArea = document.getElementById('chatsDisplayArea');
       messageArea.scrollTop = messageArea.scrollHeight;
     }, 500);
   } else {
     const store = new Store('../../data/');
-    const userId = getUserId(); 
+    const userId = getUserId();
     const regEx = new RegExp(searchKey, 'gi');
     document.getElementById('chatsDisplayArea').innerHTML = '';
-    store.getMessages(searchKey, slideId).then(data => {
-      data.forEach(message => {
+    store.getMessages(searchKey, slideId).then((data) => {
+      data.forEach((message) => {
         let classType = message.from === userId ? 'message-sent' : 'message-received';
         document.getElementById('chatsDisplayArea').innerHTML += `
           <div class="message ${classType}">
@@ -408,30 +409,33 @@ const searchMessagesIntoChat = () => {
             </div>
             <div class="message-content">
               ${message.body.replace(regEx, (match) => {
-                return `<span class="highlighted-search">${match}</span>`
-              })}
+    return `<span class="highlighted-search">${match}</span>`;
+  })}
             </div>
             <div class="message-date">
               ${message.timestamp ? new Date(message.timestamp).toLocaleString() : ''}
             </div>
           </div>
         `;
-      })
-    })
+      });
+    });
   }
-}
+};
 
 
 function highlightSearchText(text) {
-  const messages = document.getElementsByClassName("message-content");
-  messages.forEach(message => {
+  const messages = document.getElementsByClassName('message-content');
+  messages.forEach((message) => {
     let innerHTML = message.innerHTML;
     let index = innerHTML.indexOf(text);
-    if (index >= 0) { 
-    innerHTML = innerHTML.substring(0,index) + "<span class='highlighted-search'>" + innerHTML.substring(index,index+text.length) + "</span>" + innerHTML.substring(index + text.length);
-    message.innerHTML = innerHTML;
+    if (index >= 0) {
+      innerHTML = innerHTML.substring(0, index) +
+      '<span class=\'highlighted-search\'>' +
+        innerHTML.substring(index, index+text.length) +
+      '</span>' + innerHTML.substring(index + text.length);
+      message.innerHTML = innerHTML;
     }
-  })
+  });
 }
 
 // initialize all UI components
@@ -694,14 +698,14 @@ async function initUIcomponents() {
     title: 'Instant Messaging',
     value: 'messaging',
     type: 'btn',
-    callback: async function () {
+    callback: async function() {
       if (!$chatOpen) {
         document.getElementById('chatsDisplayArea').innerHTML = '';
         fetchMessagesIntoChat();
         $UI.messagingSideMenu.open();
         document.getElementById('chatInput').focus();
         setTimeout(() => {
-          var messageArea = document.getElementById("chatsDisplayArea");
+          var messageArea = document.getElementById('chatsDisplayArea');
           messageArea.scrollTop = messageArea.scrollHeight;
         }, 500);
         $chatOpen = true;
@@ -711,7 +715,7 @@ async function initUIcomponents() {
       }
     },
   });
-  // Jitsi Meet 
+  // Jitsi Meet
   subToolsOpt.push({
     name: 'Voice/Video Meet',
     icon: 'phone_in_talk',
@@ -724,7 +728,7 @@ async function initUIcomponents() {
     },
   });
 
-  function redirectToJitsiMeet(jitsiUrl="https://localhost:8443/") {
+  function redirectToJitsiMeet(jitsiUrl='https://localhost:8443/') {
     window.open(jitsiUrl, '_blank');
   }
 

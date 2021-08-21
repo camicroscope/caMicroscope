@@ -179,12 +179,12 @@ function createCheckbox(val) {
 }
 
 function getUsersForSlides() {
-    console.log('called');
-    const store = new Store('../data/');
-    store.getUsers().then(resp => {
-      console.log('response users: ', resp)
-      return resp;  
-    });
+  console.log('called');
+  const store = new Store('../data/');
+  store.getUsers().then((resp) => {
+    console.log('response users: ', resp);
+    return resp;
+  });
 }
 
 function initialize() {
@@ -340,7 +340,7 @@ function initialize() {
                           ${permissions.slide.delete == true ? '' : 'Request Deletion'} <i class='fas fa-trash-alt' ></i>
                         </button>
                       `
-                      }
+}
                   </div>`;
                   rs.push(btn);
                   return rs;
@@ -1015,11 +1015,11 @@ function filterSlides() {
   pageIndicatorVisible(newSlideRows.length);
 }
 
-function showCollaborationModal (event) {
+function showCollaborationModal(event) {
   const element = event;
   const slideId = element.getAttribute('data-slideId');
   const store = new Store('../data/');
-  store.getSlideCollabDetails(slideId).then(response => {
+  store.getSlideCollabDetails(slideId).then((response) => {
     document.getElementById('modal-collab-slidename').innerText = response[0].roomId;
     if (response[0].collabStatus === true) {
       $('#modal-collab-status-switch').bootstrapToggle('on');
@@ -1034,8 +1034,8 @@ function showCollaborationModal (event) {
     document.getElementById('modal-collab-save').dataset.slideId = slideId;
     window.localStorage.setItem(`privateToggleStatus-${slideId}`, JSON.stringify({slideId, privateStatus: response[0].privateStatus}));
   });
-  store.getSlideCollabDetails(slideId).then(response => {
-    const members = response[0].members.map(member => {
+  store.getSlideCollabDetails(slideId).then((response) => {
+    const members = response[0].members.map((member) => {
       return member.email;
     });
     if (response[0].privateStatus === true) {
@@ -1049,7 +1049,7 @@ function showCollaborationModal (event) {
     response[0].members.forEach((member, i) => {
       if (response[0].privateStatus) {
         $('#collabRoomMembersListTable > tbody:last-child').append(
-          `
+            `
           <tr>
             <th scope="row">${i + 1}</th>
             <td>${member.email}</td>
@@ -1062,12 +1062,12 @@ function showCollaborationModal (event) {
               </select>
             </td>
           </tr>
-          `
+          `,
         );
       } else {
         if (member.role === 'admin') {
           $('#collabRoomMembersListTable > tbody:last-child').append(
-            `
+              `
             <tr>
               <th scope="row">${i + 1}</th>
               <td>${member.email}</td>
@@ -1080,12 +1080,12 @@ function showCollaborationModal (event) {
                 </select>
               </td>
             </tr>
-            `
+            `,
           );
         }
       }
-    })
-  })
+    });
+  });
   $('#manageCollaborationModal').modal('toggle');
 }
 
@@ -1094,23 +1094,23 @@ function handleCollaborationStatusChange(element) {
     const slideId = element.getAttribute('data-slide-id');
     const status = document.getElementById('modal-collab-status-switch').checked;
     const privateStatus = document.getElementById('modal-collab-pripub-switch').checked;
-    const members = $('#addMembersDropdown').multipleSelect('getSelects').map(member => {
+    const members = $('#addMembersDropdown').multipleSelect('getSelects').map((member) => {
       const dropdownId = 'collabRoomMemberRole-for-user-' + member;
       return {
         email: member,
         role: document.getElementById(dropdownId) ? document.getElementById(dropdownId).value : 'contributor',
-      }
+      };
     });
     const store = new Store('../data/');
     let updateMembersList = true;
-    const previousPrivateStatus = window.localStorage.getItem(`privateToggleStatus-${slideId}`) ? JSON.parse(window.localStorage.getItem(`privateToggleStatus-${slideId}`)).privateStatus : true; 
+    const previousPrivateStatus = window.localStorage.getItem(`privateToggleStatus-${slideId}`) ? JSON.parse(window.localStorage.getItem(`privateToggleStatus-${slideId}`)).privateStatus : true;
     if (!previousPrivateStatus || !privateStatus) {
       updateMembersList = false;
     }
-    store.updateCollabRoom(slideId, status, members, privateStatus, updateMembersList).then(async response => {
+    store.updateCollabRoom(slideId, status, members, privateStatus, updateMembersList).then(async (response) => {
       const responseData = await response.json();
       $('#manageCollaborationModal').modal('toggle');
-    })
+    });
   } else {
     $('#manageCollaborationModal').modal('toggle');
   }

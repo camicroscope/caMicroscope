@@ -299,7 +299,7 @@ class Store {
       body: JSON.stringify(json),
     },
     true, // Sockets config
-    'mark'
+    'mark',
     ).then(this.errorHandler);
   }
   /**
@@ -460,7 +460,7 @@ class Store {
       body: JSON.stringify(json),
     },
     true, // Sockets config
-    'heatmap'
+    'heatmap',
     ).then(this.errorHandler);
   }
   /**
@@ -536,7 +536,7 @@ class Store {
     },
     true, // Sockets config
     'heatmap',
-    heatmapDataForSockets
+    heatmapDataForSockets,
     ).then(this.errorHandler);
   }
 
@@ -570,7 +570,7 @@ class Store {
     },
     true, // Sockets config
     'heatmap',
-    heatmapDataForSockets
+    heatmapDataForSockets,
     ).then(this.errorHandler);
   }
 
@@ -623,7 +623,7 @@ class Store {
     },
     true, // Sockets config
     'heatmap',
-    heatmapDataForSockets
+    heatmapDataForSockets,
     ).then(this.errorHandler);
   }
 
@@ -913,7 +913,7 @@ class Store {
     const url = this.base + suffix;
     const query = {
       'searchKey': keyword,
-      'roomId': roomId
+      'roomId': roomId,
     };
 
     return fetch(url + '?' + objToParamStr(query), {
@@ -950,7 +950,7 @@ class Store {
       body: JSON.stringify(json),
     },
     true, // Sockets config
-    'chat'
+    'chat',
     ).then(this.errorHandler);
   }
   /**
@@ -1026,12 +1026,12 @@ class Store {
       update = {
         'collabStatus': status,
         'members': members,
-        'privateStatus': privateStatus
+        'privateStatus': privateStatus,
       };
     } else {
       update = {
         'collabStatus': status,
-        'privateStatus': privateStatus
+        'privateStatus': privateStatus,
       };
     }
     return fetch(url + '?' + objToParamStr(query), {

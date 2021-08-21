@@ -372,8 +372,10 @@
   <body>
     <!-- Load Jitsi and Socket scripts dynamically -->
     <script>
-      var jitsiScriptUrl = 'https://' + window.location.hostname + ':8443/external_api.js';
+      var hostname = window.location.hostname !== 'localhost' ? window.location.hostname : '127.0.0.1';
+      var jitsiScriptUrl = 'https://' + hostname + ':8443/external_api.js';
       var socketsScriptUrl = window.location.protocol + '//' + window.location.hostname + ':5000/socket.io/socket.io.js';
+      console.log(jitsiScriptUrl, socketsScriptUrl)
       addScript(jitsiScriptUrl);
       addScript(socketsScriptUrl);
     </script>

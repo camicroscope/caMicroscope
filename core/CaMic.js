@@ -44,7 +44,7 @@ class CaMic {
       hasMeasurementTool: true,
       hasPatchManager: true,
       hasHeatmap: false,
-      hasChatOpen: false
+      hasChatOpen: false,
     };
     extend(this.setting, options);
 

@@ -2671,11 +2671,10 @@ function oldAnnoRender(ctx, data) {
 /* --  -- */
 
 
-
 function showCollabRoomModal() {
   const slideId = window.getUrlVars().slideId;
   const store = new Store('../../data/');
-  store.getSlideCollabDetails(slideId).then(response => {
+  store.getSlideCollabDetails(slideId).then((response) => {
     document.getElementById('collabRoomModalSlideId').innerText = response[0].roomId;
     if (response[0].collabStatus === true) {
       document.getElementById('collabRoomModalToggleBtn').classList.add('active');
@@ -2691,7 +2690,7 @@ function showCollabRoomModal() {
     }
     // document.getElementById('modal-collab-save').dataset.slideId = slideId;
     window.localStorage.setItem(`privateToggleStatus-${slideId}`, JSON.stringify({slideId, privateStatus: response[0].privateStatus}));
-    const members = response[0].members.map(member => {
+    const members = response[0].members.map((member) => {
       return member.email;
     });
     if (response[0].privateStatus === true) {
@@ -2705,7 +2704,7 @@ function showCollabRoomModal() {
     response[0].members.forEach((member, i) => {
       if (response[0].privateStatus) {
         $('#collabRoomMembersListTable > tbody:last-child').append(
-          `
+            `
           <tr>
             <th scope="row">${i + 1}</th>
             <td>${member.email}</td>
@@ -2718,12 +2717,12 @@ function showCollabRoomModal() {
               </select>
             </td>
           </tr>
-          `
+          `,
         );
       } else {
         if (member.role === 'admin') {
           $('#collabRoomMembersListTable > tbody:last-child').append(
-            `
+              `
             <tr>
               <th scope="row">${i + 1}</th>
               <td>${member.email}</td>
@@ -2736,39 +2735,39 @@ function showCollabRoomModal() {
                 </select>
               </td>
             </tr>
-            `
+            `,
           );
         }
       }
-    })
-    var modal = document.getElementById("collabRoomModal");    
-    // When the user clicks the button, open the modal 
-    modal.style.display = "block";
-  })
+    });
+    var modal = document.getElementById('collabRoomModal');
+    // When the user clicks the button, open the modal
+    modal.style.display = 'block';
+  });
 }
 
 function handleCollaborationStatusChange(element) {
   const slideId = window.getUrlVars().slideId;
   const status = document.getElementById('collabRoomStatusToggle').checked;
   const privateStatus = document.getElementById('priPubToggle').checked;
-  const members = $('#addMembersDropdown').multipleSelect('getSelects').map(member => {
+  const members = $('#addMembersDropdown').multipleSelect('getSelects').map((member) => {
     const dropdownId = 'collabRoomMemberRole-for-user-' + member;
     return {
       email: member,
       role: document.getElementById(dropdownId) ? document.getElementById(dropdownId).value : 'contributor',
-    }
+    };
   });
   let updateMembersList = true;
-  const previousPrivateStatus = window.localStorage.getItem(`privateToggleStatus-${slideId}`) ? JSON.parse(window.localStorage.getItem(`privateToggleStatus-${slideId}`)).privateStatus : true; 
+  const previousPrivateStatus = window.localStorage.getItem(`privateToggleStatus-${slideId}`) ? JSON.parse(window.localStorage.getItem(`privateToggleStatus-${slideId}`)).privateStatus : true;
   if (!previousPrivateStatus || !privateStatus) {
     updateMembersList = false;
   }
   const store = new Store('../../data/');
-  store.updateCollabRoom(slideId, status, members, privateStatus, updateMembersList).then(async response => {
+  store.updateCollabRoom(slideId, status, members, privateStatus, updateMembersList).then(async (response) => {
     const responseData = await response.json();
-    var modal = document.getElementById("collabRoomModal");
-    modal.style.display = "none";
-  })
+    var modal = document.getElementById('collabRoomModal');
+    modal.style.display = 'none';
+  });
 }
 
 function addScript(src) {
