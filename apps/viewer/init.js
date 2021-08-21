@@ -360,7 +360,7 @@ const fetchMessagesIntoChat = () => {
   })
 }
 
-const receiveMessageIntoChat = (message) => {
+const receiveMessageIntoChat = (message) => {4
   const userId = getUserId(); 
   let classType = message.from === userId ? 'message-sent' : 'message-received';
   document.getElementById('chatsDisplayArea').innerHTML += `
@@ -382,6 +382,7 @@ const receiveMessageIntoChat = (message) => {
 }
 
 const searchMessagesIntoChat = () => {
+  const { slideId } = window.getUrlVars();
   const inputElement = document.getElementById('chatSearchInput');
   const searchKey = inputElement.value.trim();
   if (searchKey === '') {
@@ -397,7 +398,7 @@ const searchMessagesIntoChat = () => {
     const userId = getUserId(); 
     const regEx = new RegExp(searchKey, 'gi');
     document.getElementById('chatsDisplayArea').innerHTML = '';
-    store.getMessages(searchKey).then(data => {
+    store.getMessages(searchKey, slideId).then(data => {
       data.forEach(message => {
         let classType = message.from === userId ? 'message-sent' : 'message-received';
         document.getElementById('chatsDisplayArea').innerHTML += `

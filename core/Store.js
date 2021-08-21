@@ -908,11 +908,12 @@ class Store {
  * @param {string} keyword - the room search keyword
  * @return {promise} - promise which resolves with data
  **/
-  getMessages(keyword) {
+  getMessages(keyword, roomId) {
     const suffix = 'Chat/search';
     const url = this.base + suffix;
     const query = {
       'searchKey': keyword,
+      'roomId': roomId
     };
 
     return fetch(url + '?' + objToParamStr(query), {
