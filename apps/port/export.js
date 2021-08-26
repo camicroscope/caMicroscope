@@ -1,6 +1,22 @@
 // initalize store, dependency
 let _STORE = new Store('../../data/');
 
+// hide slide field if slide export selected
+function hideSlideInput() {
+  if (document.getElementById('dataType').value == 'slide') {
+    document.getElementById('slideInput').parentElement.style.display = 'none';
+  } else {
+    document.getElementById('slideInput').parentElement.style.display = 'block';
+  }
+};
+
+document.getElementById('dataType').onchange = function() {
+  hideSlideInput();
+};
+window.onload = function() {
+  hideSlideInput();
+};
+
 
 function addToStatus(text) {
   let status = document.getElementById('status');
@@ -53,22 +69,26 @@ async function runExport() {
   let slide = document.getElementById('slideInput').value;
   let dataType = document.getElementById('dataType').value;
   let outputType = document.getElementById('outType').value;
-  // get type
-  // get type for slide
-  let slideRes = await _STORE.findSlide(slide);
-  console.log(slideRes);
-  let slideData = slideRes[0];
-  let slideId = slideData['_id']['$oid'];
   let res = [];
-  if (dataType == 'mark') {
-    res = await _STORE.findMark(slideId);
-  } else if (dataType = 'heatmap') {
-    res = await _STORE.findHeatmap(slideId);
-  }
-  // for each record, add slide info (name, study, speicmen, etc)
-  for (let record of res) {
-    // append name at least
-    record['provenance']['image']['name'] = slideData['name'];
+  if (dataType == 'slide') {
+    res = await _STORE.findSlide();
+    slide = 'all';
+  } else {
+    let slideRes = await _STORE.findSlide(slide);
+    console.log(slideRes);
+    let slideData = slideRes[0];
+    let slideId = slideData['_id']['$oid'];
+    let res = [];
+    if (dataType == 'mark') {
+      res = await _STORE.findMark(slideId);
+    } else if (dataType == 'heatmap') {
+      res = await _STORE.findHeatmap(slideId);
+    }
+    // for each record, add slide info (name, study, speicmen, etc)
+    for (let record of res) {
+      // append name at least
+      record['provenance']['image']['name'] = slideData['name'];
+    }
   }
   console.log(res);
   // trigger download
