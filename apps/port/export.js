@@ -41,7 +41,6 @@ function json2csv(json) {
     for (i of headers) {
       // replace newlines with two spaces, commas with one
       r.push(String(y[i]).replaceAll('\n', '  ').replaceAll(',', ' '));
-      console.log(r)
     }
     return r.join(',');
   });
