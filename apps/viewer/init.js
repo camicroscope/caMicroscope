@@ -340,7 +340,7 @@ async function initUIcomponents() {
 
   // evaluation form
   if (evaluationConfig && evaluationConfig.enable) {
-    const evaluationData = await $CAMIC.store.findEvaluation({
+    $D.evaluationData = await $CAMIC.store.findEvaluation({
       'user_id': getUserId(),
       'slide_id': $D.params.slideId,
     });
@@ -353,11 +353,66 @@ async function initUIcomponents() {
     var evalTitle = document.createElement('div');
     evalTitle.classList.add('item_head');
     evalTitle.textContent = 'Evaluation';
-    var evalDiv = document.createElement('div');
-    evalDiv.id = 'eval_form';
-    $UI.evalSideMenu.addContent(evalTitle);
-    $UI.evalSideMenu.addContent(evalDiv);
+    var evalMessge = document.createElement('div');
+    evalMessge.id = 'eval_message';
+    var evalForm = document.createElement('div');
+    evalForm.id = 'eval_form';
 
+    $UI.evalSideMenu.addContent(evalTitle);
+    $UI.evalSideMenu.addContent(evalMessge);
+    $UI.evalSideMenu.addContent(evalForm);
+
+
+    async function saveDraft(data) {
+      if ($D.isDraftEvalData == false) return;
+      if (!$D.isEvalDataExist) {
+        const evalData = {
+          'user_id': getUserId(),
+          'slide_id': $D.params.slideId,
+          'slide_name': $D.params.data.name,
+          'evaluation': data,
+          'create_date': new Date(),
+          'creator': getUserId(),
+          'is_draft': true,
+        };
+        try {
+          const rs = await $CAMIC.store.addEvaluation(evalData);
+          if (rs.error) {
+            $UI.message.addError(rs.text);
+          } else if (rs.insertedCount && rs.result && rs.result.ok ) {
+            $UI.message.add(`Evaluation Draft Saved`);
+            $D.isEvalDataExist = true;
+          } else {
+            $UI.message.addWarning(`Something Happened When Saving Evaluation Draft!`);
+          }
+        } catch (error) {
+          $UI.message.addError(error);
+        }
+      } else {
+        const query = {
+          'user_id': getUserId(),
+          'slide_id': $D.params.slideId,
+        };
+        const evalData = {
+          'evaluation': data,
+          'update_date': new Date(),
+          'updater': getUserId(),
+        };
+        try {
+          const rs = await $CAMIC.store.updateEvaluation(query, evalData);
+          if (rs.error) {
+            $UI.message.addError(rs.text);
+          } else if (rs && rs.result && rs.result.ok ) {
+            $UI.message.add(`Evaluation Draft Updated`);
+            $D.isEvalDataExist = true;
+          } else {
+            $UI.message.addWarning(`Something Happened When Saving Evaluation Draft!`);
+          }
+        } catch (error) {
+          $UI.message.addError(error);
+        }
+      }
+    }
     // const formOpt = evaluationConfig.configuration;
     const formOpt = {
       data: {
@@ -376,6 +431,11 @@ async function initUIcomponents() {
               'Unsatisfactory',
               'Satisfactory',
             ],
+            events: {
+              change: function() {
+                saveDraft(this.getParent().getValue());
+              },
+            },
           },
           tumor_present: {
             label: 'Tumor Present',
@@ -384,6 +444,11 @@ async function initUIcomponents() {
               'No',
               'Yes',
             ],
+            events: {
+              change: function() {
+                saveDraft(this.getParent().getValue());
+              },
+            },
             validator: function(callback) {
               const tumorPresent = this.getValue();
               if (tumorPresent === '1') {
@@ -422,8 +487,10 @@ async function initUIcomponents() {
               change: function() {
                 var comments = this.getParent().childrenByPropertyId['comments'];
                 comments.refreshValidationState();
+                saveDraft(this.getParent().getValue());
               },
             },
+
           },
           informativeness: {
             label: 'Informativeness',
@@ -432,6 +499,11 @@ async function initUIcomponents() {
               'Uninformative',
               'Informative',
             ],
+            events: {
+              change: function() {
+                saveDraft(this.getParent().getValue());
+              },
+            },
           },
           comments: {
             disabled: true,
@@ -440,6 +512,11 @@ async function initUIcomponents() {
             helper: 'State correct CAP protocol term',
             helpersPosition: 'above',
             rows: 2,
+            events: {
+              change: function() {
+                saveDraft(this.getParent().getValue());
+              },
+            },
             validator: function(callback) {
               var tumorHistology = this.getParent().childrenByPropertyId['tumor_histology'].getValue();
               var comments = this.getValue();
@@ -495,16 +572,41 @@ async function initUIcomponents() {
           tumorPresent.setValue(null);
           tumorHistology.setValue(null);
           informativeness.setValue(null);
+          comments.setValue(null);
+        } else {
+          if ($D.isDraftEvalData) {
+            const eval = $D.evaluationData[0].evaluation;
+            if (eval.slide_quality == null || eval.slide_quality == undefined) {
+              slideQuality.setValue(null);
+            }
+            if (eval.tumor_present == null || eval.tumor_present == undefined) {
+              tumorPresent.setValue(null);
+            }
+            if (eval.tumor_histology == null || eval.tumor_histology == undefined) {
+              tumorHistology.setValue(null);
+            }
+            if (eval.informativeness == null || eval.informativeness == undefined) {
+              informativeness.setValue(null);
+            }
+            if (eval.comments == null || eval.comments == undefined) {
+              comments.setValue(null);
+            }
+            control.refreshValidationState();
+            control.domEl.find('button[data-key=submit]').prop('disabled', true);
+          }
         }
         tumorHistology.on('change', ()=>{
           const val = tumorHistology.getValue();
+          const form = tumorHistology.getParent();
           if (val == 0) {
             comments.control.prop('disabled', false);
           } else {
             comments.setValue(null);
             comments.control.prop('disabled', true);
           }
+          form.refreshValidationState();
         });
+        control.refreshValidationState();
       },
 
     };
@@ -517,13 +619,20 @@ async function initUIcomponents() {
     };
 
     // set data if evaluation Data existed
-    if (evaluationData && Array.isArray(evaluationData) && evaluationData[0] && evaluationData[0].evaluation) {
+    if ($D.evaluationData && Array.isArray($D.evaluationData) && $D.evaluationData[0] && $D.evaluationData[0].evaluation) {
       $D.isEvalDataExist = true;
-      formOpt.data = evaluationData[0].evaluation;
+      $D.isDraftEvalData = $D.evaluationData[0].is_draft;
+      formOpt.data = $D.evaluationData[0].evaluation;
+      if ($D.isDraftEvalData) {
+        evalMessge.textContent = 'Draft Data: Please Complete the Evaluation and Save';
+      } else {
+        evalMessge.textContent = null;
+      }
     } else {
       $D.isEvalDataExist = false;
+      $D.isDraftEvalData = true;
+      evalMessge.textContent = 'Draft Data: Please Complete the Evaluation and Save';
     }
-
     $('#eval_form').alpaca(formOpt);
 
     subToolsOpt.push({

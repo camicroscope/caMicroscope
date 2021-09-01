@@ -3,7 +3,13 @@
 // var totalPages = Math.ceil(totalCount / size)
 //   query.skip = size * (pageNo - 1) page # start from 1
 //  query.limit = size
-
+const rankLevel = [
+  'No Evaluated',
+  '1st Most Informative',
+  '2nd Most Informative',
+  '3rd Most Informative',
+  'Less Informative',
+];
 $D = {
   // for pagination
   recordCount: 0,
@@ -14,6 +20,8 @@ $D = {
   collectionData: null,
   collectionTree: null,
   currentSlideData: null,
+  isRankEnable: false,
+  slidesRank: null,
 
 };
 $UI = {
@@ -176,12 +184,36 @@ async function loadSlideInfo(node) {
   if (Array.isArray(slides)&& slides.length > 0) {
     $D.currentSlideData = slides;
 
+
     createGridCards();
   } else {
     $D.currentSlideData = null;
   }
 }
+async function getSlideRankStatus() {
+  const sids = $D.selectedNode.original&&
+  $D.selectedNode.original.slides&&
+  Array.isArray($D.selectedNode.original.slides)?
+  $D.selectedNode.original.slides:[];
+  if (sids.length == 0) return false;
+  var sinfo = await store.getSlidesHumanMarkNum(sids);
+  sinfo = sinfo.map((d)=>d._id);
 
+  for (let index = 0; index < sids.length; index++) {
+    const sid = sids[index];
+    // check evalutions
+    const evalData = $D.SlidesEvaluations.find((e)=>e.sid==sid);
+    if (evalData&&evalData.eval&&evalData.eval.some((e)=>e.creator == getUserId())&&sinfo.includes(sid)) {
+    } else {
+      return false;
+    }
+    // check anntations
+
+    //
+    //
+  }
+  return true;
+}
 
 async function onPaginationChange({currentPage, totalPage}) {
   $D.currentPage = currentPage;
@@ -203,6 +235,7 @@ async function onPaginationChange({currentPage, totalPage}) {
 
   const slides = await store.findSlide(null, null, null, null, query);
 
+
   if (Array.isArray(slides)&& slides.length > 0) {
     $D.currentSlideData = slides;
 
@@ -211,49 +244,177 @@ async function onPaginationChange({currentPage, totalPage}) {
     $D.currentSlideData = null;
   }
 }
-function createGridCards() {
+async function createGridCards() {
   $UI.gridViewContainer.empty();
   $D.currentSlideData.forEach((slide) => {
     $UI.gridViewContainer.append(createGridCard(slide));
   });
 }
+
 function createGridCard(d) {
+  const sid = d['_id']['$oid'];
   const card = document.createElement('div');
+  card.id = sid;
   card.classList.add('grid-card');
+
+  // add to the link
+  const anchor = document.createElement('a');
+  anchor.href = `../viewer/viewer.html?slideId=${sid}`;
+
   const title = document.createElement('div');
 
   const loader = document.createElement('div');
   loader.classList.add('loader');
-  card.append(loader);
+  anchor.append(loader);
   // create Image
   const img = document.createElement('img');
   img.alt = `${d.name}`;
-  // HEI
-  // WID
+
   if (d.height > d.width) {
+    // HEI
     img.src = `../../img/IIP/raw/?FIF=${d.location}&HEI=256&CVT=.jpg`;
   } else {
+    // WID
     img.src = `../../img/IIP/raw/?FIF=${d.location}&WID=256&CVT=.jpg`;
   }
 
   img.onload = ()=>{
     loader.remove();
-    card.append(img);
+    anchor.append(img);
   };
+
+
   // add title
   title.classList.add('grid-card-title');
   title.classList.add('bg-dark');
   title.title = `${d.name}`;
   title.textContent = `${d.name}`;
-  card.appendChild(title);
-  // add to the link
-  const anchor = document.createElement('a');
-  anchor.href = `../viewer/viewer.html?slideId=${d['_id']['$oid']}`;
-  anchor.appendChild(card);
+  anchor.appendChild(title);
 
-  return anchor;
+  // DOE customized
+  // informativeness indicator
+  const informativenessIndicator = document.createElement('div');
+  informativenessIndicator.classList.add('indicator');
+  const indicatorIcon = getInformativenessIndicatorIcon(sid);
+  informativenessIndicator.appendChild(indicatorIcon);
+  anchor.appendChild(informativenessIndicator);
+  // card.appendChild(title);
+  if ($D.isRankEnable && indicatorIcon.classList.contains('fa-check') ) {
+    const rankDropDown = generateDropdownMenu(card, d);
+    anchor.appendChild(rankDropDown);
+  }
+  // anchor
+
+  card.appendChild(anchor);
+  // anchor.appendChild(card);
+
+  return card;
 }
 
+function generateDropdownMenu(elt, data) {
+  console.log(elt, data);
+  const div = document.createElement('div');
+  div.classList.add('rank-dropdown');
+  div.classList.add('dropdown');
+  const level = getRankLevel(elt.id);
+  console.log(level);
+  const dropdown = `
+  <button class="btn btn-sm btn-primary dropdown-toggle" type="button" id="dropdown_${elt.id}" data-bs-toggle="dropdown" aria-expanded="false">${rankLevel[level]}</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown_${elt.id}">
+    <li data-sid="${elt.id}" data-level="1"><a class="dropdown-item ${level==1?'active':''}" href="#">1st Most Informative</a></li>
+    <li data-sid="${elt.id}" data-level="2"><a class="dropdown-item ${level==2?'active':''}" href="#">2nd Most Informative</a></li>
+    <li data-sid="${elt.id}" data-level="3"><a class="dropdown-item ${level==3?'active':''}" href="#">3rd Most Informative</a></li>
+    <li data-sid="${elt.id}" data-level="less"><a class="dropdown-item ${level==4?'active':''}" href="#">Less Informative</a></li>
+  </ul>`;
+  div.innerHTML = dropdown;
+  $(div).find('li').on('click', async function(e) {
+    const {sid, level} = this.dataset;
+
+    // TODO update DB
+    const data = await store.rankSlidesInformativeness($D.selectedNode.id, getUserId(), sid, level); // $D.selectedNode.id;
+    console.log(data);
+    if (data&&data.result&&data.result.ok&&data.result.n) { // correct
+      const slidesRank = await store.findSlidesInformativeness($D.selectedNode.id, getUserId());
+      if (slidesRank&&Array.isArray(slidesRank)) {
+        $D.slidesRank = slidesRank.length==0?null:slidesRank[0];
+        // sync ui
+        syncSlideRankDropdown(sid, level);
+      } else { // error TODO
+
+      }
+    } else { // error
+
+    }
+
+
+    // change UI
+    // $(this).parent().find('li > a').removeClass('active');
+    // $(this).find('a').addClass('active');
+    // $(`#dropdown_${sid}`).text($(this).text());
+  });
+  return div;
+}
+
+function syncSlideRankDropdown() {
+  $('.grid-view .inner-grid-view .grid-card').each(function(i) {
+    const level = getRankLevel(this.id);
+    $(this).find('li > a').removeClass('active');
+    $(this).find('.dropdown-toggle').text(rankLevel[level]);
+    switch (level) {
+      case 1:
+        $(this).find('li[data-level=1] > a').addClass('active');
+        break;
+      case 2:
+        $(this).find('li[data-level=2] > a').addClass('active');
+        break;
+      case 3:
+        $(this).find('li[data-level=3] > a').addClass('active');
+        break;
+      case 4:
+        $(this).find('li[data-level=less] > a').addClass('active');
+        break;
+    }
+  });
+}
+
+function getRankLevel(sid) {
+  if (!$D.slidesRank) return 0;
+  if ($D.slidesRank.first==sid) return 1;
+  if ($D.slidesRank.second==sid) return 2;
+  if ($D.slidesRank.third==sid) return 3;
+  if ($D.slidesRank.less.includes(sid)) return 4; // less
+  return 0;
+}
+function getInformativenessIndicatorIcon(sid) {
+  const icon = document.createElement('i');
+  icon.classList.add('fas');
+  for (let index = 0; index < $D.SlidesEvaluations.length; index++) {
+    const slideEvals = $D.SlidesEvaluations[index];
+    if (slideEvals.sid == sid && slideEvals.eval&&Array.isArray(slideEvals.eval)) {
+      const evaluations = slideEvals.eval;
+      for (let idx = 0; idx < evaluations.length; idx++) {
+        const eval = evaluations[idx];
+        if (eval.creator == getUserId()&&eval.evaluation&&eval.evaluation.informativeness) {
+          if (eval.evaluation.informativeness == '1') {
+            icon.classList.add('fa-check');
+            icon.classList.add('text-success');
+            icon.title = 'Informative';
+          } else {
+            icon.classList.add('fa-times');
+            icon.classList.add('text-danger');
+            icon.title = 'Uninformative';
+          }
+          return icon;
+        }
+      }
+    }
+  }
+  //
+  icon.classList.add('fa-question');
+  icon.classList.add('text-muted');
+  icon.title = 'Not Evaluated';
+  return icon;
+}
 function createCollectionTree() {
   $UI.colTree.jstree({
     'core': {
@@ -277,9 +438,9 @@ function createCollectionTree() {
   });
 
   // bind select node event
-  $UI.colTree.on('select_node.jstree', function(event, _data) {
+  $UI.colTree.on('select_node.jstree', async function(event, _data) {
     const node = _data.node;
-    if (node) {
+    if (node&&$D.selectedNode!==node) {
       $D.selectedNode = node;
       // UI control
 
@@ -298,9 +459,19 @@ function createCollectionTree() {
       } else {
 
       }
+      // set the rank slide status
+      $D.isRankEnable = await getSlideRankStatus();
+      // get the rank data
+      if ($D.isRankEnable) {
+        const slidesRank = await store.findSlidesInformativeness(node.id, getUserId());
+        if (slidesRank&&Array.isArray(slidesRank)) {
+          $D.slidesRank = slidesRank.length==0?null:slidesRank[0];
+        } else { // error TODO
+
+        }
+      }
       // loading slide data
       // $D.s = await
-
       loadSlideInfo(node);
 
       // let slides checked if the slides in the collection
@@ -316,6 +487,13 @@ function createCollectionTree() {
 window.addEventListener('resize', resize);
 // console.log(calculateSize(document.querySelector('.pagination-control')));
 window.addEventListener('load', async ()=> {
+  var edata = await store.getSlidesEvaluations(getUserId());
+  $D.SlidesEvaluations = edata;
+  if (Array.isArray(edata)) {
+    $D.slideEvalNums = edata.filter((d)=>d.eval).map((d)=>d._id);
+  } else { // error
+    $D.slideEvalNums = [];
+  }
   // get the collection data
   var data = await store.getAllCollection();
   if (Array.isArray(data)) {
@@ -328,6 +506,11 @@ window.addEventListener('load', async ()=> {
     $D.collectionTree = listToTree($D.collectionData);
     $D.collectionData.forEach((d)=>{
       if (d.children && d.children.length == 0) d.text = `${d.text} [${d.slides?d.slides.length:0}]`;
+      if (d.slides) {
+        d.icon = setCollectionIcon(d);
+      } else {
+        d.icon = './folder.png';
+      }
     });
     createCollectionTree();
   } else { // error message
@@ -397,4 +580,12 @@ function getParentNames(node) {
     }
   });
   return rs;
+}
+
+function setCollectionIcon(node) {
+  for (let index = 0; index < node.slides.length; index++) {
+    const sid = node.slides[index];
+    if (!$D.slideEvalNums.includes(sid)) return './folder.png';
+  }
+  return './check-folder.png';
 }

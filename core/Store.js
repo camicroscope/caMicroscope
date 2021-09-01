@@ -213,7 +213,23 @@ class Store {
       mode: 'cors',
     }).then(this.errorHandler).then((x) => this.filterBroken(x, 'mark'));
   }
-
+  getSlidesHumanMarkNum(sids) {
+    const suffix = 'Mark/getSlidesHumanMarkNum';
+    const url = this.base + suffix;
+    const query = {};
+    if (Array.isArray(sids)) {
+      query.sids = sids;
+    }
+    return fetch(url, {
+      method: 'POST',
+      credentials: 'include',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json; charset=utf-8',
+      },
+      body: JSON.stringify(query),
+    }).then(this.errorHandler);
+  }
   getMarkByIds(ids, slide, notes, source, footprint, x0, x1, y0, y1) {
     if (!slide) {
       return {
@@ -295,11 +311,19 @@ class Store {
       mode: 'cors',
     }).then(this.errorHandler).then((x) => this.filterBroken(x, 'mark'));
   }
-  fetchMark(slideId) {
+
+  fetchMark(sid, type, uid ) {
     const suffix = 'Mark/find';
     const url = this.base + suffix;
     const query = {};
-    query['provenance.image.slide'] = slideId;
+    query['provenance.image.slide'] = sid;
+
+    if (type) {
+      query['provenance.analysis.source'] = type;
+    }
+    if (uid) {
+      query['creator'] = uid;
+    }
     return fetch(url + '?' + objToParamStr(query), {
       credentials: 'include',
       mode: 'cors',
@@ -652,7 +676,22 @@ class Store {
       mode: 'cors',
     }).then(this.errorHandler);
   }
+  getSlidesEvaluations(uid, cid) {
+    const suffix = 'Slide/getEvaluations';
+    const url = this.base + suffix;
+    const query = {};
+    if (uid) {
+      query.uid = uid;
+    }
+    if (cid) {
+      query.cid = cid;
+    }
 
+    return fetch(url + '?' + objToParamStr(query), {
+      credentials: 'include',
+      mode: 'cors',
+    }).then(this.errorHandler);
+  }
   getSlideMetadata(path) {
     const ext = (/[.]/.exec(path)) ? /[^.]+$/.exec(path) : undefined;
     if (!ext) return {hasError: true, error: `the file format doesn't support.`};
@@ -1317,6 +1356,47 @@ class Store {
       body: JSON.stringify(query),
     }).then(this.errorHandler);
   }
+  // ranking the slide of informative
+  // first informativeness - 1
+  // second informativeness - 2
+  // third informativeness - 3
+  // less informativeness - 4
+  rankSlidesInformativeness(cid, uid, sid, level) {
+    //
+    if (!cid || !uid || !sid || !level) {
+      return {
+        hasError: true,
+        message: 'args are illegal',
+      };
+    }
+    const suffix = 'SlideInformativeness/rank';
+    const url = this.base + suffix;
+    const query = {cid, uid, sid, level};
+    return fetch(url, {
+      method: 'POST',
+      credentials: 'include',
+      mode: 'cors',
+      body: JSON.stringify(query),
+    }).then(this.errorHandler);
+  }
+
+  findSlidesInformativeness(cid, uid) {
+    if (!cid || !uid) {
+      return {
+        hasError: true,
+        message: 'args are illegal',
+      };
+    }
+    const suffix = 'SlideInformativeness/find';
+    const url = this.base + suffix;
+    const query = {uid, cid};
+    return fetch(url + '?' + objToParamStr(query), {
+      method: 'GET',
+      credentials: 'include',
+      mode: 'cors',
+    }).then(this.errorHandler);
+  }
+
 
   // Update slide review status
   updateSlideReview(id, newStatus) {

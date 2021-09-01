@@ -1814,15 +1814,23 @@ async function saveEvaluation(e) {
       'evaluation': this.getValue(),
       'create_date': new Date(),
       'creator': getUserId(),
+      'is_draft': false,
     };
-    const rs = await $CAMIC.store.addEvaluation(evalData);
-    if (rs.error) {
-      $UI.message.addError(rs.text);
-    } else if (rs.insertedCount && rs.result && rs.result.ok ) {
-      $UI.message.add(`Evaluation Saved`);
-      $D.isEvalDataExist = true;
-    } else {
-      $UI.message.addWarning(`Something Happened When Saving Evaluation!`);
+    try {
+      const rs = await $CAMIC.store.addEvaluation(evalData);
+      if (rs.error) {
+        $UI.message.addError(rs.text);
+      } else if (rs.insertedCount && rs.result && rs.result.ok ) {
+        $UI.message.add(`Evaluation Saved`);
+        $D.isEvalDataExist = true;
+        $D.isDraftEvalData = false;
+        const evalMessage = document.getElementById('eval_message');
+        evalMessage.textContent = null;
+      } else {
+        $UI.message.addWarning(`Something Happened When Saving Evaluation!`);
+      }
+    } catch (error) {
+      $UI.message.addError(error);
     }
   } else {
     const query = {
@@ -1833,15 +1841,23 @@ async function saveEvaluation(e) {
       'evaluation': this.getValue(),
       'update_date': new Date(),
       'updater': getUserId(),
+      'is_draft': false,
     };
-    const rs = await $CAMIC.store.updateEvaluation(query, evalData);
-    if (rs.error) {
-      $UI.message.addError(rs.text);
-    } else if (rs && rs.result && rs.result.ok ) {
-      $UI.message.add(`Evaluation Updated`);
-      $D.isEvalDataExist = true;
-    } else {
-      $UI.message.addWarning(`Something Happened When Saving Evaluation!`);
+    try {
+      const rs = await $CAMIC.store.updateEvaluation(query, evalData);
+      if (rs.error) {
+        $UI.message.addError(rs.text);
+      } else if (rs && rs.result && rs.result.ok ) {
+        $UI.message.add(`Evaluation Updated`);
+        $D.isEvalDataExist = true;
+        $D.isDraftEvalData = false;
+        const evalMessage = document.getElementById('eval_message');
+        evalMessage.textContent = null;
+      } else {
+        $UI.message.addWarning(`Something Happened When Saving Evaluation!`);
+      }
+    } catch (error) {
+      $UI.message.addError(error);
     }
   }
 }

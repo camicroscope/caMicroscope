@@ -186,3 +186,24 @@ nav li:not(.active):hover a{
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
   }
+
+  .grid-view .inner-grid-view .grid-card .rank-dropdown{
+    margin: .25rem;
+    position:absolute;
+    top:0;
+    right:0;
+  }
+
+  .grid-view .inner-grid-view .grid-card .indicator {
+    margin: .25rem;
+    font-size: 1.5rem;
+    position:absolute;
+    top:0;
+    left:0;
+    height: 25px;
+    width: 25px;
+    line-height:0;
+    display: flex;
+    align-items: center;
+    justify-content: center;    
+  }

@@ -18,12 +18,18 @@
     </script>
     <title>caMicroscope</title>
     <!-- bootstrap css -->
-    <link type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet"/>
-    
+    <link
+      type="text/css"
+      href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
     <!-- google material icons css sheet -->
-    <link href="https://fonts.googleapis.com/css2?family=Material+Icons"
-      rel="stylesheet">
-    
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Icons"
+      rel="stylesheet"
+    />
+
     <!-- common css START -->
     <link
       rel="stylesheet"
@@ -166,7 +172,11 @@
     <!-- osd & core css END -->
 
     <!-- alpaca css -->
-    <link type="text/css" href="//cdn.jsdelivr.net/npm/alpaca@1.5.27/dist/alpaca/bootstrap/alpaca.min.css" rel="stylesheet"/>
+    <link
+      type="text/css"
+      href="//cdn.jsdelivr.net/npm/alpaca@1.5.27/dist/alpaca/bootstrap/alpaca.min.css"
+      rel="stylesheet"
+    />
     <!-- popup css -->
     <link
       rel="stylesheet"
@@ -174,17 +184,31 @@
       media="all"
       href="../../css/popup.css"
     />
-    <link href="../../common/bootstrap-tour-standalone/bootstrap-tour-standalone.min.css" rel="stylesheet">
+    <link
+      href="../../common/bootstrap-tour-standalone/bootstrap-tour-standalone.min.css"
+      rel="stylesheet"
+    />
     <!-- tippy theme -->
-    <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/themes/light-border.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/tippy.js@6/themes/light-border.css"
+    />
 
     <!--  common js START -->
     <!-- Smartpen -->
     <script type="text/javascript" src="../../common/enhance.js"></script>
-    <script type="text/javascript" src="../../common/smartpen/autoalign.js"></script>
-    <link rel="stylesheet" type="text/css" media="all" href="../../common/smartpen/autoalign.css"/>
+    <script
+      type="text/javascript"
+      src="../../common/smartpen/autoalign.js"
+    ></script>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      media="all"
+      href="../../common/smartpen/autoalign.css"
+    />
     <!-- Smartpen end -->
-    
+
     <!-- util.js -->
     <script type="text/javascript" src="../../common/util.js"></script>
     <script type="text/javascript" src="../../common/DrawHelper.js"></script>
@@ -203,11 +227,23 @@
     ></script>
     <!-- add alpaca and dependencies script -->
     <!-- <script type="text/javascript" src="//code.jquery.com/jquery-1.12.1.min.js"></script> -->
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js"></script>
-    <script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="//cdn.jsdelivr.net/npm/alpaca@1.5.27/dist/alpaca/bootstrap/alpaca.min.js"></script>
+    <script
+      type="text/javascript"
+      src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="//cdn.jsdelivr.net/npm/alpaca@1.5.27/dist/alpaca/bootstrap/alpaca.min.js"
+    ></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
+    <link
+      rel="stylesheet"
+      href="https://code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css"
+    />
     <!-- color picker js -->
     <script
       type="text/javascript"
@@ -350,9 +386,9 @@
 
     <!-- business js -->
     <!-- <script src="../../dist/packages.js"></script> -->
-    <script type='text/javascript' src='../../common/PathdbMods.js'></script>
-    <script type='text/javascript' src='../../common/LocalStore.js'></script>
-    <script type='text/javascript' src='../../common/NanoBorbMods.js'></script>
+    <script type="text/javascript" src="../../common/PathdbMods.js"></script>
+    <script type="text/javascript" src="../../common/LocalStore.js"></script>
+    <script type="text/javascript" src="../../common/NanoBorbMods.js"></script>
     <script
       type="text/javascript"
       src="../../common/dynamicLoadScript.js"
@@ -363,6 +399,13 @@
     <script src="../../common/bootstrap-tour-standalone/bootstrap-tour-standalone.min.js"></script>
     <script src="./tut.js"></script>
     <script src="../../common/html2canvas.min.js"></script>
+    <style>
+      #eval_message {
+        color: #a94442;
+        font-size: 1.5rem;
+        padding: 0.5rem 0 0 1rem;
+      }
+    </style>
   </head>
   <body>
     <!-- message-->
@@ -383,34 +426,33 @@
       ><button class="action" style="float: right;">Save</button>
     </div> -->
     <!-- side menu for apps-->
-    <div id="side_apps" style="z-index:600"></div>
+    <div id="side_apps" style="z-index: 600"></div>
 
     <!-- side menu for layers -->
-    <div id="side_layers" style="z-index:600"></div>
+    <div id="side_layers" style="z-index: 600"></div>
 
     <!-- side menu for labels -->
-    <div id="labels_layers" style="z-index:600"></div>
+    <div id="labels_layers" style="z-index: 600"></div>
 
     <!-- side evaluation form for labels -->
-    <div id="eval_panel" style="z-index:600"></div>
+    <div id="eval_panel" style="z-index: 600"></div>
     <!-- side metadata form for labels -->
     <div id="meta_panel" style="z-index: 599"></div>
 
     <!-- collapsible list - annotation and analytics -->
-    <div id="collapsiblelist" style="z-index:600"></div>
+    <div id="collapsiblelist" style="z-index: 600"></div>
     <!-- collapsible list - main/minor (right/left) layers -->
-    <div id="layerslist" style="z-index:600"></div>
+    <div id="layerslist" style="z-index: 600"></div>
     <!-- overlayer manager -->
-    <div id="overlayers" style="z-index:600"></div>
+    <div id="overlayers" style="z-index: 600"></div>
 
-    <div id="overlayersMinor" style="z-index:600"></div>
-    
+    <div id="overlayersMinor" style="z-index: 600"></div>
+
     <!-- labels manager -->
-    <div id="labelmanager" style="z-index:600"></div>
+    <div id="labelmanager" style="z-index: 600"></div>
     <!-- Popper & tippy -->
     <script src="https://unpkg.com/@popperjs/core@2"></script>
     <script src="https://unpkg.com/tippy.js@6"></script>
-    
   </body>
 
   <script type="text/javascript">
@@ -441,7 +483,7 @@
         $D.params.specimen,
         $D.params.location
       )
-        .then(x => {
+        .then((x) => {
           let offset = parseInt($D.params.offset, 10) || 0;
           if (x.length == 0 || offset >= x.length) {
             redirect($D.pages.table, "No Slide Found. Redirecting To Table.");
@@ -459,7 +501,7 @@
             window.location.href = newUrl;
           }
         })
-        .catch(e => {
+        .catch((e) => {
           console.warn(e);
           redirect($D.pages.table, "Redirecting to Table.");
         });
@@ -473,6 +515,5 @@
     if ($D.params.states) {
       $D.params.states = StatesHelper.decodeStates($D.params.states);
     }
-
   </script>
 </html>
