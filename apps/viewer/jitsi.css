@@ -1,0 +1,92 @@
+/* -----
+SVG Icons - svgicons.sparkk.fr
+----- */
+
+.svg-icon {
+    width: 1em;
+    height: 1em;
+}
+
+.svg-icon path,
+.svg-icon polygon,
+.svg-icon rect {
+    fill: #fff;
+}
+
+.svg-icon circle {
+    stroke: #fff;
+    stroke-width: 1;
+}
+
+.overlay {
+    position: relative;
+    z-index: 1000;
+    top: 5rem;
+    left: 32rem;
+    /* left: 50%; */
+}
+
+#jitsi-iframe {
+    width: 420px;
+    height: 280px;
+    border-radius: 10px;
+    background-color: transparent;
+}
+
+#jitsi-iframe:hover {
+    background: repeating-linear-gradient(
+        45deg,
+        rgba(255, 255, 255, 0.1),
+        rgba(255, 255, 255, 0.1) 10px,
+        rgba(0, 0, 0, 0.1) 10px,
+        rgba(0, 0, 0, 0.1) 20px
+    );
+    box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 15px 0px;
+}
+
+#jitsi-iframe iframe {
+    margin-left: 2%;
+    margin-top: -6%;
+    border-radius: 10px;
+    box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 15px 0px;
+}
+
+#jitsi-iframe:hover {
+    cursor: grab;
+}
+
+#jitsi-iframe:active {
+    cursor: grabbing;
+}
+
+.openJitsiInNewTab {
+    background-color: transparent;
+    border: 0;
+    color: white;
+    font-size: 30px;
+    border-radius: 10px;
+}
+
+.openJitsiInNewTab:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    box-shadow: rgba(0, 0, 0, 0.56) 0px 22px 70px 4px;
+    cursor: pointer;
+}
+
+.closeJitsiCall {
+    background-color: transparent;
+    border: 0;
+    color: white;
+    font-size: 30px;
+    border-radius: 10px;
+}
+
+.closeJitsiCall:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    box-shadow: rgba(0, 0, 0, 0.56) 0px 22px 70px 4px;
+    cursor: pointer;
+}
+
+.hide {
+    display: none;
+}

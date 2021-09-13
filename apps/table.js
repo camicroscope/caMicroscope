@@ -178,6 +178,15 @@ function createCheckbox(val) {
   document.getElementById('filters-check').append(div);
 }
 
+function getUsersForSlides() {
+  console.log('called');
+  const store = new Store('../data/');
+  store.getUsers().then((resp) => {
+    console.log('response users: ', resp);
+    return resp;
+  });
+}
+
 function initialize() {
   $('#filenameRow, #tokenRow, #slidenameRow, #filterRow').hide();
   let filters = getUserFilter();
@@ -298,34 +307,41 @@ function initialize() {
                   // console.log('Done one iter');
 
                   const btn = `<div id='open-delete'>
-                <button class="btn btn-primary btn-sm" data-id='${sanitize(rs[0])}' onclick='openView(this)'>Open</button>
-                <button type='button' class='btn btn-primary btn-sm DownloadButton' id='downloadBtn' data-id='${sanitize(rs[0])}' onclick='downloadSlide(this)'>
-                <i class='fas fa-download' ></i>
-                </button>
-                ${slideDeleteRequests[counter] && slideDeleteRequests[counter].slideDetails &&
-                  slideDeleteRequests.find((o) => o.slideDetails.slideId === rs[0]) ?
-                  `
-                    ${slideDeleteRequests.find((o) => o.requestedBy === sanitize(getUserId())) ?
-                    `
-                        <button type='button' class='btn btn-danger btn-sm DelButton' id='deleteBtn' data-id='${sanitize(rs[0])}' data-name='${sanitize(rs[1])}' onclick='deleteSld(this)' data-reqid='${slideDeleteRequests.find((o) => o.slideDetails.slideId === rs[0]) ? slideDeleteRequests.find((o) => o.slideDetails.slideId === rs[0])._id.$oid : ''}' data-filename='${sanitize(filename)}' data-toggle='modal'>
-                          Cancel Delete Request <i class='fas fa-trash-alt' ></i>
-                        </button>
+                    <button class="btn btn-primary btn-sm" data-id='${sanitize(rs[0])}' onclick='openView(this)'>Open</button>
+                    <button type='button' class='btn btn-primary btn-sm DownloadButton' id='downloadBtn' data-id='${sanitize(rs[0])}' onclick='downloadSlide(this)'>
+                    <i class='fas fa-download' ></i>
+                    </button>       
+                    <button class="btn btn-outline-primary btn-sm" style="margin-left: 8px;"
+                      data-slideId="${d._id.$oid}"
+                      onclick="showCollaborationModal(this);"
+                    >
+                      Manage Collaboration
+                    </button>
+
+                    ${slideDeleteRequests[counter] && slideDeleteRequests[counter].slideDetails &&
+                      slideDeleteRequests.find((o) => o.slideDetails.slideId === rs[0]) ?
+                      `
+                        ${slideDeleteRequests.find((o) => o.requestedBy === sanitize(getUserId())) ?
+                        `
+                            <button type='button' class='btn btn-danger btn-sm DelButton' id='deleteBtn' data-id='${sanitize(rs[0])}' data-name='${sanitize(rs[1])}' onclick='deleteSld(this)' data-reqid='${slideDeleteRequests.find((o) => o.slideDetails.slideId === rs[0]) ? slideDeleteRequests.find((o) => o.slideDetails.slideId === rs[0])._id.$oid : ''}' data-filename='${sanitize(filename)}' data-toggle='modal'>
+                              Cancel Delete Request <i class='fas fa-trash-alt' ></i>
+                            </button>
+                          ` :
+                        `
+                            <button disabled type='button' class='btn btn-danger btn-sm tooltipCustom' id='deleteBtn'>
+                              <span class="tooltiptextCustom p-1">Delete requested by ${slideDeleteRequests.find((o) => o.slideDetails.slideId === rs[0]) ? slideDeleteRequests.find((o) => o.slideDetails.slideId === rs[0]).requestedBy : ''}</span>
+                              Delete Requested <i class='fas fa-trash-alt' ></i>
+                            </button>
+                          `
+                      }
                       ` :
-                    `
-                        <button disabled type='button' class='btn btn-danger btn-sm tooltipCustom' id='deleteBtn'>
-                          <span class="tooltiptextCustom p-1">Delete requested by ${slideDeleteRequests.find((o) => o.slideDetails.slideId === rs[0]) ? slideDeleteRequests.find((o) => o.slideDetails.slideId === rs[0]).requestedBy : ''}</span>
-                          Delete Requested <i class='fas fa-trash-alt' ></i>
+                      `
+                        <button type='button' class='btn btn-danger btn-sm DelButton' id='deleteBtn' data-id='${sanitize(rs[0])}' data-name='${sanitize(rs[1])}' onclick='deleteSld(this)' data-filename='${sanitize(filename)}' data-toggle='modal'>
+                          ${permissions.slide.delete == true ? '' : 'Request Deletion'} <i class='fas fa-trash-alt' ></i>
                         </button>
                       `
-                  }
-                  ` :
-                  `
-                    <button type='button' class='btn btn-danger btn-sm DelButton' id='deleteBtn' data-id='${sanitize(rs[0])}' data-name='${sanitize(rs[1])}' onclick='deleteSld(this)' data-filename='${sanitize(filename)}' data-toggle='modal'>
-                      ${permissions.slide.delete == true ? '' : 'Request Deletion'} <i class='fas fa-trash-alt' ></i>
-                    </button>
-                  `
 }
-              </div>`;
+                  </div>`;
                   rs.push(btn);
                   return rs;
                 });
@@ -508,6 +524,7 @@ function initialize() {
               resetTable();
               $('#datatables').stacktable();
               checkUserPermissions();
+              getUsersForSlides();
             });
       });
 }
@@ -996,4 +1013,106 @@ function filterSlides() {
   totaltablepages = Math.ceil(newSlideRows.length / $('#entries').val());
   resetTable();
   pageIndicatorVisible(newSlideRows.length);
+}
+
+function showCollaborationModal(event) {
+  const element = event;
+  const slideId = element.getAttribute('data-slideId');
+  const store = new Store('../data/');
+  store.getSlideCollabDetails(slideId).then((response) => {
+    document.getElementById('modal-collab-slidename').innerText = response[0].roomId;
+    if (response[0].collabStatus === true) {
+      $('#modal-collab-status-switch').bootstrapToggle('on');
+    } else {
+      $('#modal-collab-status-switch').bootstrapToggle('off');
+    }
+    if (response[0].privateStatus === true) {
+      $('#modal-collab-pripub-switch').bootstrapToggle('on');
+    } else {
+      $('#modal-collab-pripub-switch').bootstrapToggle('off');
+    }
+    document.getElementById('modal-collab-save').dataset.slideId = slideId;
+    window.localStorage.setItem(`privateToggleStatus-${slideId}`, JSON.stringify({slideId, privateStatus: response[0].privateStatus}));
+  });
+  store.getSlideCollabDetails(slideId).then((response) => {
+    const members = response[0].members.map((member) => {
+      return member.email;
+    });
+    if (response[0].privateStatus === true) {
+      $('#addMembersDropdown').multipleSelect('setSelects', members);
+      $('#addMembersDropdown').multipleSelect('enable');
+    } else {
+      $('#addMembersDropdown').multipleSelect('checkAll');
+      $('#addMembersDropdown').multipleSelect('disable');
+    }
+    $('#collabRoomMembersListTable > tbody').html('');
+    response[0].members.forEach((member, i) => {
+      if (response[0].privateStatus) {
+        $('#collabRoomMembersListTable > tbody:last-child').append(
+            `
+          <tr>
+            <th scope="row">${i + 1}</th>
+            <td>${member.email}</td>
+            <td>
+              <select name="role" id="collabRoomMemberRole-for-user-${member.email}">
+                <option value="" disabled>Change Role</option>
+                <option value="contributor" ${member.role === 'contributor' ? 'selected' : ''}>Contributor</option>
+                <option value="general" ${member.role === 'general' ? 'selected' : ''}>General</option>
+                <option value="admin" ${member.role === 'admin' ? 'selected' : ''}>Admin</option>
+              </select>
+            </td>
+          </tr>
+          `,
+        );
+      } else {
+        if (member.role === 'admin') {
+          $('#collabRoomMembersListTable > tbody:last-child').append(
+              `
+            <tr>
+              <th scope="row">${i + 1}</th>
+              <td>${member.email}</td>
+              <td>
+                <select name="role" disabled="${response[0].privateStatus ? false : true}" id="collabRoomMemberRole-for-user-${member.email}">
+                  <option value="" disabled>Change Role</option>
+                  <option value="contributor" ${member.role === 'contributor' ? 'selected' : ''}>Contributor</option>
+                  <option value="general" ${member.role === 'general' ? 'selected' : ''}>General</option>
+                  <option value="admin" ${member.role === 'admin' ? 'selected' : ''}>Admin</option>
+                </select>
+              </td>
+            </tr>
+            `,
+          );
+        }
+      }
+    });
+  });
+  $('#manageCollaborationModal').modal('toggle');
+}
+
+function handleCollaborationStatusChange(element) {
+  if (element.getAttribute('data-slide-id')) {
+    const slideId = element.getAttribute('data-slide-id');
+    const status = document.getElementById('modal-collab-status-switch').checked;
+    const privateStatus = document.getElementById('modal-collab-pripub-switch').checked;
+    const members = $('#addMembersDropdown').multipleSelect('getSelects').map((member) => {
+      const dropdownId = 'collabRoomMemberRole-for-user-' + member;
+      return {
+        email: member,
+        role: document.getElementById(dropdownId) ? document.getElementById(dropdownId).value : 'contributor',
+      };
+    });
+    const store = new Store('../data/');
+    let updateMembersList = true;
+    const previousPrivateStatus = window.localStorage.getItem(`privateToggleStatus-${slideId}`) ? JSON.parse(window.localStorage.getItem(`privateToggleStatus-${slideId}`)).privateStatus : true;
+    if (!previousPrivateStatus || !privateStatus) {
+      updateMembersList = false;
+    }
+    store.updateCollabRoom(slideId, status, members, privateStatus, updateMembersList).then(async (response) => {
+      const responseData = await response.json();
+      $('#manageCollaborationModal').modal('toggle');
+    });
+  } else {
+    $('#manageCollaborationModal').modal('toggle');
+  }
+  // document.getElementById('modal-collab-save').removeEventListener('click', this, false);
 }

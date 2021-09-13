@@ -37,17 +37,17 @@
  */
 (function($) {
   if (!$) {
-    $ = require("openseadragon");
+    $ = require('openseadragon');
     if (!$) {
-      throw new Error("OpenSeadragon is missing.");
+      throw new Error('OpenSeadragon is missing.');
     }
   }
 
   // check version
   if (!$.version || $.version.major < 2) {
     throw new Error(
-      "This version of OpenSeadragonCanvasDrawOverlay requires " +
-        "OpenSeadragon version 2.2.0+"
+        'This version of OpenSeadragonCanvasDrawOverlay requires ' +
+        'OpenSeadragon version 2.2.0+',
     );
   }
   // initialize the instance of DrawOverlay
@@ -66,79 +66,94 @@
   $.CanvasDraw = function(options) {
     this._viewer = options.viewer;
     // flag
-    // draw mode on/off
+    // drawing mode on/off, initialises draw
     this.isOn = false;
-    // is drawing things
+    // moving mode on/off
+    this.moveOn = false;
+    // is drawing? helps in drawing
     this.isDrawing = false;
+    // is moving? helps in moving
+    this.isMoving = false;
     this.size = [];
     // create supplies free, square, rectangle, line
-    this.drawMode = options.drawMode || "free"; // 'free', 'square', 'rect', 'line', 'stepSquare', 'grid', 'point'
+    this.drawMode = options.drawMode || 'free'; // 'free', 'square', 'rect', 'line', 'stepSquare', 'grid', 'point'
     this.size = options.size || null;
     // ctx styles opt
     this.style = {
-      color: "#7CFC00",
-      //lineWidth:3,
-      lineJoin: "round", // "bevel" || "round" || "miter"
-      lineCap: "round", // "butt" || "round" || "square"
-      isFill: true
+      color: '#7CFC00',
+      // lineWidth:3,
+      lineJoin: 'round', // "bevel" || "round" || "miter"
+      lineCap: 'round', // "butt" || "round" || "square"
+      isFill: true,
     };
 
-    if (options.style && options.style.color)
+    if (options.style && options.style.color) {
       this.style.color = options.style.color;
-    //if(options.style && options.style.lineWidth) this.style.lineWidth = options.style.lineWidth;
-    if (options.style && options.style.lineJoin)
+    }
+    // if(options.style && options.style.lineWidth) this.style.lineWidth = options.style.lineWidth;
+    if (options.style && options.style.lineJoin) {
       this.style.lineJoin = options.style.lineJoin;
-    if (options.style && options.style.lineCap)
+    }
+    if (options.style && options.style.lineCap) {
       this.style.lineCap = options.style.lineCap;
+    }
     if (
       options.style &&
       options.style.isFill != undefined &&
       options.style.isFill == false
-    )
+    ) {
       this.style.isFill = false;
+    }
     this.events = {};
     // global events list for easily remove and add
     this._event = {
       start: this.startDrawing.bind(this),
       stop: this.stopDrawing.bind(this),
       drawing: this.drawing.bind(this),
-      updateView: this.updateView.bind(this)
+      updateView: this.updateView.bind(this),
     };
 
     // status data
     this._last = [0, 0];
+    // current stroke
     this._current_path_ = {};
+    // all data
     this._draws_data_ = [];
     this._path_index = 0;
+    // movement
+    this._moveset = [];
+    this._hash_data = new Map();
+    // aligndata
+    this._align_data = [];
 
     // -- create container div, and draw, display canvas -- //
     this._containerWidth = 0;
     this._containerHeight = 0;
 
     // container div
-    this._div = document.createElement("div");
-    this._div.style.position = "absolute";
+    this._div = document.createElement('div');
+    this._div.style.position = 'absolute';
     this._div.style.left = 0;
     this._div.style.top = 0;
-    this._div.style.width = "100%";
-    this._div.style.height = "100%";
-    this._div.style.display = "none";
+    this._div.style.width = '100%';
+    this._div.style.height = '100%';
+    this._div.style.display = 'none';
     this._div.style.zIndex = options.zIndex || 200;
     this._viewer.canvas.appendChild(this._div);
-    // draw canvas
-    this._draw_ = document.createElement("canvas");
-    this._draw_.style.position = "absolute";
+    // draw canvas, for current stroke
+    this._draw_ = document.createElement('canvas');
+    this._draw_.style.position = 'absolute';
     this._draw_.style.top = 0;
     this._draw_.style.left = 0;
-    this._draw_ctx_ = this._draw_.getContext("2d");
+    this._draw_ctx_ = this._draw_.getContext('2d');
     this._div.appendChild(this._draw_);
 
-    // display vanvas
-    this._display_ = document.createElement("canvas");
-    this._display_.style.position = "absolute";
+    // display canvas for all strokes
+    this._display_ = document.createElement('canvas');
+    this._display_.style.position = 'absolute';
     this._display_.style.top = 0;
     this._display_.style.left = 0;
-    this._display_ctx_ = this._display_.getContext("2d");
+    this._display_ctx_ = this._display_.getContext('2d');
     this._div.appendChild(this._display_);
 
     this.updateView();
@@ -162,51 +177,48 @@
     updateOptions: function(options) {
       // draw mode on/off
       this.isOn = false;
+      this.moveOn = false;
       // is drawing things
       this.isDrawing = false;
+      this.isMoving = false;
 
       // creat supplies free, square, rectangle, line
-      this.drawMode = options.drawMode || "rect"; // 'free', 'square', 'rect', 'line', 'grid'
+      this.drawMode = options.drawMode || 'rect'; // 'free', 'square', 'rect', 'line', 'grid'
       this.size = options.size || null;
       // ctx styles opt
       this.style = {
-        color: "#7CFC00",
-        //lineWidth:0,
-        lineJoin: "round", // "bevel" || "round" || "miter"
-        lineCap: "round", // "butt" || "round" || "square"
-        isFill: true
+        color: '#7CFC00',
+        // lineWidth:0,
+        lineJoin: 'round', // "bevel" || "round" || "miter"
+        lineCap: 'round', // "butt" || "round" || "square"
+        isFill: true,
       };
 
-      if (options.style && options.style.color)
+      if (options.style && options.style.color) {
         this.style.color = options.style.color;
-      //if(options.style && options.style.lineWidth) this.style.lineWidth = options.style.lineWidth;
-      if (options.style && options.style.lineJoin)
+      }
+      // if(options.style && options.style.lineWidth) this.style.lineWidth = options.style.lineWidth;
+      if (options.style && options.style.lineJoin) {
         this.style.lineJoin = options.style.lineJoin;
-      if (options.style && options.style.lineCap)
+      }
+      if (options.style && options.style.lineCap) {
         this.style.lineCap = options.style.lineCap;
+      }
       if (
         options.style &&
         options.style.isFill != undefined &&
         options.style.isFill == false
-      )
+      ) {
         this.style.isFill = false;
+      }
 
-      this._div.style.display = "none";
+      this._div.style.display = 'none';
       this._div.style.zIndex = options.zIndex || 500;
       this.clearStatus();
       this.clearCanvas();
       this.drawOff();
     },
 
-    /**
-     * clearStatus clear all datas that are used to associate with the feature collection
-     */
-    clearStatus: function() {
-      this._last = [0, 0];
-      this._current_path_ = {};
-      this._draws_data_ = [];
-      this._path_index = 0;
-    },
     /**
      * @private
      * drawOnCanvas draw marks on canvas
@@ -257,16 +269,16 @@
     resize: function() {
       if (this._containerWidth !== this._viewer.container.clientWidth) {
         this._containerWidth = this._viewer.container.clientWidth;
-        this._div.setAttribute("width", this._containerWidth);
-        this._draw_.setAttribute("width", this._containerWidth);
-        this._display_.setAttribute("width", this._containerWidth);
+        this._div.setAttribute('width', this._containerWidth);
+        this._draw_.setAttribute('width', this._containerWidth);
+        this._display_.setAttribute('width', this._containerWidth);
       }
 
       if (this._containerHeight !== this._viewer.container.clientHeight) {
         this._containerHeight = this._viewer.container.clientHeight;
-        this._div.setAttribute("height", this._containerHeight);
-        this._draw_.setAttribute("height", this._containerHeight);
-        this._display_.setAttribute("height", this._containerHeight);
+        this._div.setAttribute('height', this._containerHeight);
+        this._draw_.setAttribute('height', this._containerHeight);
+        this._display_.setAttribute('height', this._containerHeight);
       }
       this._viewportOrigin = new $.Point(0, 0);
       var boundsRect = this._viewer.viewport.getBounds(true);
@@ -282,7 +294,7 @@
       this.imgHeight = image1.source.dimensions.y;
       this.imgAspectRatio = this.imgWidth / this.imgHeight;
 
-      //var iamgeBounds = this._viewer.viewport.viewportToImageRectangle(boundsRect);
+      // var iamgeBounds = this._viewer.viewport.viewportToImageRectangle(boundsRect);
       const imagingHelper = this._viewer.imagingHelper;
       this.style.lineWidth =
         (imagingHelper.physicalToDataX(2) - imagingHelper.physicalToDataX(0)) >>
@@ -293,7 +305,7 @@
       this._display_ctx_.radius =
         (imagingHelper.physicalToDataX(3) - imagingHelper.physicalToDataX(0)) >>
         0;
-      //this.style.lineWidth = 2*Math.round(Math.max(iamgeBounds.width/this._containerWidth,iamgeBounds.height/this._containerHeight ));
+      // this.style.lineWidth = 2*Math.round(Math.max(iamgeBounds.width/this._containerWidth,iamgeBounds.height/this._containerHeight ));
     },
 
     /**
@@ -315,8 +327,8 @@
         this._containerHeight;
 
       this.clearCanvas();
-      this._display_.getContext("2d").translate(x, y);
-      this._display_.getContext("2d").scale(zoom, zoom);
+      this._display_.getContext('2d').translate(x, y);
+      this._display_.getContext('2d').scale(zoom, zoom);
       const imagingHelper = this._viewer.imagingHelper;
 
       this._display_ctx_.lineWidth = this.style.lineWidth =
@@ -326,17 +338,17 @@
         (imagingHelper.physicalToDataX(3) - imagingHelper.physicalToDataX(0)) >>
         0;
       // this.drawMode !== "grid"
-      //   ? 
-        DrawHelper.draw(
-            this._display_ctx_,
-            this._draws_data_.slice(0, this._path_index)
-        )
-        
-        // : DrawHelper.drawGrids(
-        //     this._display_ctx_,
-        //     this._draws_data_.slice(0, this._path_index)
-        //   );
-      this._display_.getContext("2d").setTransform(1, 0, 0, 1, 0, 0);
+      //   ?
+      DrawHelper.draw(
+          this._display_ctx_,
+          this._draws_data_.slice(0, this._path_index),
+      );
+
+      // : DrawHelper.drawGrids(
+      //     this._display_ctx_,
+      //     this._draws_data_.slice(0, this._path_index)
+      //   );
+      this._display_.getContext('2d').setTransform(1, 0, 0, 1, 0, 0);
     },
 
     /**
@@ -346,25 +358,26 @@
       // stop turning on draw mode if already turn on
       if (this.isOn === true) return;
       // clock viewer
-      //this._viewer.controls.bottomright.style.display = 'none';
+      // this._viewer.controls.bottomright.style.display = 'none';
       this.updateView();
       this._viewer.setMouseNavEnabled(false);
       this._viewer.innerTracker.startTrackingScroll();
-      this._div.style.cursor = "pointer";
-      this._div.style.display = "block";
+      this._div.style.cursor = 'pointer';
+      this._div.style.display = 'block';
 
-      // add Events
-      this._div.addEventListener("mousemove", this._event.drawing);
-      this._div.addEventListener("mouseout", this._event.stop);
-      this._div.addEventListener("mouseup", this._event.stop);
-      this._div.addEventListener("mousedown", this._event.start);
+      // add Event listeners
+      this._div.addEventListener('mousemove', this._event.drawing);
+      this._div.addEventListener('mouseout', this._event.stop);
+      this._div.addEventListener('mouseup', this._event.stop);
+      this._div.addEventListener('mousedown', this._event.start);
 
-      this._viewer.addHandler("update-viewport", this._event.updateView);
-      this._viewer.addHandler("open", this._event.updateView);
+      this._viewer.addHandler('update-viewport', this._event.updateView);
+      this._viewer.addHandler('open', this._event.updateView);
       //
       this.isOn = true;
+      this.moveOn = true;
 
-      this._viewer.raiseEvent("canvas-draw-on", { draw: true });
+      this._viewer.raiseEvent('canvas-draw-on', {draw: true});
     },
 
     /**
@@ -372,45 +385,52 @@
      */
     drawOff: function() {
       // stop turning off draw mode if already turn off
-      //if(this.contextMenu) this.contextMenu.
+      // if(this.contextMenu) this.contextMenu.
       if (this.isOn === false) return;
       // unclock viewer
-      //this._viewer.controls.bottomright.style.display = '';
+      // this._viewer.controls.bottomright.style.display = '';
       this._viewer.setMouseNavEnabled(true);
-      this._div.style.cursor = "default";
-      this._div.style.display = "none";
+      this._div.style.cursor = 'default';
+      this._div.style.display = 'none';
 
       // remove Events
-      this._div.removeEventListener("mousemove", this._event.drawing);
-      this._div.removeEventListener("mouseout", this._event.stop);
-      this._div.removeEventListener("mouseup", this._event.stop);
-      this._div.removeEventListener("mousedown", this._event.start);
+      this._div.removeEventListener('mousemove', this._event.drawing);
+      this._div.removeEventListener('mouseout', this._event.stop);
+      this._div.removeEventListener('mouseup', this._event.stop);
+      this._div.removeEventListener('mousedown', this._event.start);
 
-      this._viewer.removeHandler("update-viewport", this._event.updateView);
-      this._viewer.removeHandler("open", this._event.updateView);
+      this._viewer.removeHandler('update-viewport', this._event.updateView);
+      this._viewer.removeHandler('open', this._event.updateView);
 
       this.isOn = false;
+      this.moveOn = false;
 
-      this._viewer.raiseEvent("canvas-draw-off", { draw: false });
+      this._viewer.raiseEvent('canvas-draw-off', {draw: false});
     },
 
     /*
      * @private
      * start drawing on the drawing canvas and create the collection that store the marks in geojson form
+     * as the mouse steps in
      */
     startDrawing: function(e) {
-      //prevent to open context menu when click on drawing mode
+      // prevent to open context menu when click on drawing mode
+
       let isRight;
       e = e || window.event;
-      if ("which" in e)
-        // Gecko (Firefox), WebKit (Safari/Chrome) & Opera
+      if ('which' in e)
+      // Gecko (Firefox), WebKit (Safari/Chrome) & Opera
+      {
         isRight = e.which == 3;
-      else if ("button" in e)
-        // IE, Opera
+      } else if ('button' in e)
+      // IE, Opera
+      {
         isRight = e.button == 2;
+      }
       if (e.ctrlKey || isRight) return;
 
-      this.raiseEvent("start-drawing", { originalEvent: e });
+      // custom event on start
+      this.raiseEvent('start-drawing', {originalEvent: e});
       if (this.stop) {
         this.stop = false;
         return;
@@ -419,51 +439,85 @@
       if (this.contextMenu) this.contextMenu.close(e);
       let point = new OpenSeadragon.Point(e.clientX, e.clientY);
       let img_point = this._viewer.viewport.windowToImageCoordinates(point);
+      img_point.x = Math.floor(img_point.x); img_point.y = Math.floor(img_point.y);
+
+      // alignment
+      spen.initcanvas(this._viewer.drawer.canvas);
+      this.align_fy = this._viewer.drawer.canvas.width/this._display_.width;
+      this.align_fx = this._viewer.drawer.canvas.height/this._display_.height;
 
       if (
         0 > img_point.x ||
         this.imgWidth < img_point.x ||
         0 > img_point.y ||
         this.imgHeight < img_point.y
-      )
-        return;
-      // start drawing
-      this.isDrawing = true;
-      this._draw_.style.cursor = "crosshair";
-
-      // create a point
-      if (this.drawMode === "point") {
-        this._last = [Math.round(img_point.x), Math.round(img_point.y)];
-        this.__newFeature(this._last.slice());
-
-        //
-        this.stopDrawing(e);
+      ) {
         return;
       }
 
-      const imagingHelper = this._viewer.imagingHelper;
-      this.style.lineWidth =
-        (imagingHelper.physicalToDataX(2) - imagingHelper.physicalToDataX(0)) >>
-        0;
-      this._draw_ctx_.radius =
-        (imagingHelper.physicalToDataX(3) - imagingHelper.physicalToDataX(0)) >>
-        0;
-      this._display_ctx_.radius =
-        (imagingHelper.physicalToDataX(3) - imagingHelper.physicalToDataX(0)) >>
-        0;
-      this._last = [Math.round(img_point.x), Math.round(img_point.y)];
+      // check either moving or drawing
+      // start moving
+      if (this.moveOn) {
+        this._init_hash_data();
+        var pt = this._close_anno(img_point, ~~this.scaleWindowtoImage(5));
+        this._moveset = [this._hash_data[mtool.hash(pt, this.imgWidth*10)], pt];
+        if (this._moveset[0] != undefined) {
+          this.isMoving = true;
+          var st = this._moveset[0][0], ind = this._moveset[0][1];
+          // throw the moving stroke to current path
+          this._current_path_ = this._draws_data_[st];
+          this._current_path_.geometry.coordinates[0] = mtool.populate(this._current_path_.geometry.coordinates[0], ~~this.scaleWindowtoImage(5), ~~this.scaleWindowtoImage(1), 150);
+          this._draws_data_.splice(st, 1);
+          this.drawOnCanvas(
+              this._display_ctx_,
+              function() {
+                DrawHelper.draw(this._display_ctx_, this._draws_data_.slice(0, --this._path_index));
+              }.bind(this));
+          this.drawing(e);
+          return;
+        }
+      }
 
-      this.__newFeature(this._last.slice());
+      if (this.isOn) {
+        // start drawing
+        this.isDrawing = true;
+        this._draw_.style.cursor = 'crosshair';
+
+        // create a point
+        if (this.drawMode === 'point') {
+          this._last = [Math.round(img_point.x), Math.round(img_point.y)];
+          this.__newFeature(this._last.slice());
+
+          //
+          this.stopDrawing(e);
+          return;
+        }
+
+        const imagingHelper = this._viewer.imagingHelper;
+        this.style.lineWidth =
+          (imagingHelper.physicalToDataX(2) - imagingHelper.physicalToDataX(0)) >>
+          0;
+        this._draw_ctx_.radius =
+          (imagingHelper.physicalToDataX(3) - imagingHelper.physicalToDataX(0)) >>
+          0;
+        this._display_ctx_.radius =
+          (imagingHelper.physicalToDataX(3) - imagingHelper.physicalToDataX(0)) >>
+          0;
+        this._last = [Math.round(img_point.x), Math.round(img_point.y)];
+
+        this.__newFeature(this._last.slice());
+      }
     },
 
     /**
      * @private
-     * each drawing and collects the path data as point.
+     * each drawing and collects the path data as point, as the mouse moves
      * @param  {Event} e the event
      */
     drawing: function(e) {
-      if (!this.isDrawing || !this.isOn) return;
-      // drawing
+      // anything happening?
+      if (!(this.isDrawing) && !(this.isMoving)) return;
+
       let point = new OpenSeadragon.Point(e.clientX, e.clientY);
       let img_point = this._viewer.viewport.windowToImageCoordinates(point);
       if (
@@ -471,194 +525,218 @@
         this.imgWidth < img_point.x ||
         0 > img_point.y ||
         this.imgHeight < img_point.y
-      )
+      ) {
         return;
+      }
       img_point.x = Math.round(img_point.x);
       img_point.y = Math.round(img_point.y);
-      //set style for ctx
+      img_point = this.__align_real(img_point);
+      // set style for ctx
       DrawHelper.setStyle(this._draw_ctx_, this.style);
       this._draw_ctx_.fillStyle = hexToRgbA(this.style.color, 0.3);
-      switch (this.drawMode) {
-        case "free":
-          // draw line
-          this._last = [img_point.x, img_point.y];
-          // store current point
-          this._current_path_.geometry.coordinates[0].push(this._last.slice());
-          this.drawOnCanvas(
-            this._draw_ctx_,
-            function() {
-              // draw circle
-              const sx = this._current_path_.geometry.coordinates[0][0][0];
-              const sy = this._current_path_.geometry.coordinates[0][0][1];
-              let start = new OpenSeadragon.Point(sx, sy);
-              start = this._viewer.viewport.imageToWindowCoordinates(start);
-              const ex = this._current_path_.geometry.coordinates[0][
-                this._current_path_.geometry.coordinates[0].length - 1
-              ][0];
-              const ey = this._current_path_.geometry.coordinates[0][
-                this._current_path_.geometry.coordinates[0].length - 1
-              ][1];
-              let end = new OpenSeadragon.Point(ex, ey);
-              end = this._viewer.viewport.imageToWindowCoordinates(end);
-              const dx = Math.round(Math.abs(start.x - end.x));
-              const dy = Math.round(Math.abs(start.y - end.y));
-              const distance = Math.sqrt(dx * dx + dy * dy);
-              this._draw_ctx_.strokeStyle = distance > 14 ? "red" : "blue";
-              // start point
-              DrawHelper.drawCircle(
-                this._draw_ctx_,
-                sx,
-                sy,
-                this.style.lineWidth * 3
-              );
-              // end point
-              DrawHelper.drawCircle(
-                this._draw_ctx_,
-                ex,
-                ey,
-                this.style.lineWidth * 3
-              );
 
-              DrawHelper.setStyle(this._draw_ctx_, this.style);
-              // draw circle
-              DrawHelper.drawMultiline(
-                this._draw_ctx_,
-                this._current_path_.geometry.coordinates[0]
-              );
-            }.bind(this)
-          );
-          break;
-        case "line":
+      if (this.isDrawing) {
+        switch (this.drawMode) {
+          case 'free':
           // draw line
-          this._last = [img_point.x, img_point.y];
+            this._last = [img_point.x, img_point.y];
+            // store current point
+            this._current_path_.geometry.coordinates[0].push(this._last.slice());
+            this.drawOnCanvas(
+                this._draw_ctx_,
+                function() {
+                // draw circle
+                  const sx = this._current_path_.geometry.coordinates[0][0][0];
+                  const sy = this._current_path_.geometry.coordinates[0][0][1];
+                  let start = new OpenSeadragon.Point(sx, sy);
+                  start = this._viewer.viewport.imageToWindowCoordinates(start);
+                  const ex = this._current_path_.geometry.coordinates[0][
+                      this._current_path_.geometry.coordinates[0].length - 1
+                  ][0];
+                  const ey = this._current_path_.geometry.coordinates[0][
+                      this._current_path_.geometry.coordinates[0].length - 1
+                  ][1];
+                  let end = new OpenSeadragon.Point(ex, ey);
+                  end = this._viewer.viewport.imageToWindowCoordinates(end);
+                  const dx = Math.round(Math.abs(start.x - end.x));
+                  const dy = Math.round(Math.abs(start.y - end.y));
+                  const distance = Math.sqrt(dx * dx + dy * dy);
+                  this._draw_ctx_.strokeStyle = distance > 14 ? 'red' : 'blue';
+                  // start point
+                  DrawHelper.drawCircle(
+                      this._draw_ctx_,
+                      sx,
+                      sy,
+                      this.style.lineWidth * 3,
+                  );
+                  // end point
+                  DrawHelper.drawCircle(
+                      this._draw_ctx_,
+                      ex,
+                      ey,
+                      this.style.lineWidth * 3,
+                  );
 
-          // store current point
-          this._current_path_.geometry.coordinates[0].push(this._last.slice());
-          this.drawOnCanvas(
-            this._draw_ctx_,
-            function() {
-              DrawHelper.drawMultiline(
-                this._draw_ctx_,
-                this._current_path_.geometry.coordinates[0]
-              );
-            }.bind(this)
-          );
-          break;
-        case "grid":
+                  DrawHelper.setStyle(this._draw_ctx_, this.style);
+                  // draw circle
+                  DrawHelper.drawMultiline(
+                      this._draw_ctx_,
+                      this._current_path_.geometry.coordinates[0],
+                  );
+                }.bind(this),
+            );
+            break;
+          case 'line':
           // draw line
-          this._last = [img_point.x, img_point.y];
-          // store current point
-          this._current_path_.geometry.coordinates[0].push(this._last.slice());
-          const grids = getGrids(
-            this._current_path_.geometry.coordinates[0],
-            this._current_path_.properties.size
-          );
-          this._draw_ctx_.fillStyle = hexToRgbA(this.style.color, 0.5);
-          this.drawOnCanvas(
-            this._draw_ctx_,
-            function() {
-              DrawHelper.drawMultiGrid(
+            this._last = [img_point.x, img_point.y];
+
+            // store current point
+            this._current_path_.geometry.coordinates[0].push(this._last.slice());
+            this.drawOnCanvas(
                 this._draw_ctx_,
-                grids,
-                this._current_path_.properties.size
-              );
-              //DrawHelper.drawGrid(this._draw_ctx_,this._current_path_.geometry.coordinates[0]);
-            }.bind(this)
-          );
-          // this.drawOnCanvas(this._draw_ctx_,function(){
-          //     DrawHelper.drawMultiline(this._draw_ctx_,this._current_path_.geometry.coordinates[0]);
-          // }.bind(this));
-          break;
-        case "square":
+                function() {
+                  DrawHelper.drawMultiline(
+                      this._draw_ctx_,
+                      this._current_path_.geometry.coordinates[0],
+                  );
+                }.bind(this),
+            );
+            break;
+          case 'grid':
+          // draw line
+            this._last = [img_point.x, img_point.y];
+            // store current point
+            this._current_path_.geometry.coordinates[0].push(this._last.slice());
+            const grids = getGrids(
+                this._current_path_.geometry.coordinates[0],
+                this._current_path_.properties.size,
+            );
+            this._draw_ctx_.fillStyle = hexToRgbA(this.style.color, 0.5);
+            this.drawOnCanvas(
+                this._draw_ctx_,
+                function() {
+                  DrawHelper.drawMultiGrid(
+                      this._draw_ctx_,
+                      grids,
+                      this._current_path_.properties.size,
+                  );
+                // DrawHelper.drawGrid(this._draw_ctx_,this._current_path_.geometry.coordinates[0]);
+                }.bind(this),
+            );
+            // this.drawOnCanvas(this._draw_ctx_,function(){
+            //     DrawHelper.drawMultiline(this._draw_ctx_,this._current_path_.geometry.coordinates[0]);
+            // }.bind(this));
+            break;
+          case 'square':
           // draw square
-          DrawHelper.clearCanvas(this._draw_);
-          this.drawOnCanvas(
-            this._draw_ctx_,
-            function() {
-              DrawHelper.setStyle(this._draw_ctx_, this.style);
-              const item = DrawHelper.drawRectangle(
+            DrawHelper.clearCanvas(this._draw_);
+            this.drawOnCanvas(
                 this._draw_ctx_,
-                this._last,
-                [img_point.x, img_point.y],
-                true
-              );
-              this._current_path_.geometry.path = item.path;
-              this._current_path_.geometry.coordinates[0] = item.points;
-            }.bind(this)
-          );
-          break;
-        case "rect":
+                function() {
+                  DrawHelper.setStyle(this._draw_ctx_, this.style);
+                  const item = DrawHelper.drawRectangle(
+                      this._draw_ctx_,
+                      this._last,
+                      [img_point.x, img_point.y],
+                      true,
+                  );
+                  this._current_path_.geometry.path = item.path;
+                  this._current_path_.geometry.coordinates[0] = item.points;
+                }.bind(this),
+            );
+            break;
+          case 'rect':
           // draw rectangle
-          DrawHelper.clearCanvas(this._draw_);
-          this.drawOnCanvas(
-            this._draw_ctx_,
-            function() {
-              DrawHelper.setStyle(this._draw_ctx_, this.style);
-              const item = DrawHelper.drawRectangle(
+            DrawHelper.clearCanvas(this._draw_);
+            this.drawOnCanvas(
                 this._draw_ctx_,
-                this._last,
-                [img_point.x, img_point.y]
-              );
-              this._current_path_.geometry.path = item.path;
-              this._current_path_.geometry.coordinates[0] = item.points;
-            }.bind(this)
-          );
-          break;
-        case "stepSquare":
+                function() {
+                  DrawHelper.setStyle(this._draw_ctx_, this.style);
+                  const item = DrawHelper.drawRectangle(
+                      this._draw_ctx_,
+                      this._last,
+                      [img_point.x, img_point.y],
+                  );
+                  this._current_path_.geometry.path = item.path;
+                  this._current_path_.geometry.coordinates[0] = item.points;
+                }.bind(this),
+            );
+            break;
+          case 'stepSquare':
           // draw squares at steps
-          DrawHelper.clearCanvas(this._draw_);
-          this.drawOnCanvas(
+            DrawHelper.clearCanvas(this._draw_);
+            this.drawOnCanvas(
+                this._draw_ctx_,
+                function() {
+                  DrawHelper.setStyle(this._draw_ctx_, this.style);
+                  const item = DrawHelper.drawRectangle(
+                      this._draw_ctx_,
+                      this._last,
+                      [img_point.x, img_point.y],
+                      true,
+                      this.size,
+                  );
+                  this._current_path_.geometry.path = item.path;
+                  this._current_path_.geometry.coordinates[0] = item.points;
+                }.bind(this),
+            );
+            break;
+          // case 'grid':
+          //   // draw rectangle
+          //   DrawHelper.clearCanvas(this._draw_);
+          //   this.drawOnCanvas(this._draw_ctx_,function(){
+          //       DrawHelper.setStyle(this._draw_ctx_,this.style);
+          //       const item = DrawHelper.drawRectangle(this._draw_ctx_,getTopLeft(this._last,this.size),this.size);
+          //       this._current_path_.geometry.path = item.path;
+          //       this._current_path_.geometry.coordinates[0] = item.points;
+          //   }.bind(this));
+          //   break;
+          default:
+          // statements_def
+            break;
+        }
+      } else if (this.isMoving) {
+        var ind = this._moveset[0][1];
+        var disp = this._current_path_.geometry.coordinates[0]; var mx = Math.min(disp.length, 500);
+        disp = mtool.gaussianInterpolate(disp, ind, img_point, 40*mx/500, mx/disp.length);
+        this._current_path_.geometry.coordinates[0] = disp.slice();
+        disp.push(disp[0]);
+        this.drawOnCanvas(
             this._draw_ctx_,
             function() {
-              DrawHelper.setStyle(this._draw_ctx_, this.style);
-              const item = DrawHelper.drawRectangle(
-                this._draw_ctx_,
-                this._last,
-                [img_point.x, img_point.y],
-                true,
-                this.size
+              DrawHelper.drawMultiline(
+                  this._draw_ctx_,
+                  disp,
               );
-              this._current_path_.geometry.path = item.path;
-              this._current_path_.geometry.coordinates[0] = item.points;
-            }.bind(this)
-          );
-          break;
-        // case 'grid':
-        //   // draw rectangle
-        //   DrawHelper.clearCanvas(this._draw_);
-        //   this.drawOnCanvas(this._draw_ctx_,function(){
-        //       DrawHelper.setStyle(this._draw_ctx_,this.style);
-        //       const item = DrawHelper.drawRectangle(this._draw_ctx_,getTopLeft(this._last,this.size),this.size);
-        //       this._current_path_.geometry.path = item.path;
-        //       this._current_path_.geometry.coordinates[0] = item.points;
-        //   }.bind(this));
-        //   break;
-        default:
-          // statements_def
-          break;
+            }.bind(this),
+        );
       }
     },
 
     /*
      * @private
-     * stop drawing on the drawing canvas
+     * stop drawing on the drawing canvas, when the mouse is up
      */
     stopDrawing: function(e) {
-      if (this.isDrawing) {
+      // if any movement or drawing
+      if ((this.isDrawing) || (this.isMoving)) {
         // add style and data to data collection
+        // saving the stroke to all data
         this.__endNewFeature();
         try {
-          this.raiseEvent("stop-drawing", { originalEvent: e });
+          // custom event on stop
+          this.raiseEvent('stop-drawing', {originalEvent: e});
         } catch (e) {
           // statements
-          console.error("draw-overlay:stop-drawing error:");
+          console.error('draw-overlay:stop-drawing error:');
           console.error(e);
         }
       }
       // this is the geometry data, in points; conv to geojson
       this.isDrawing = false;
+      this.isMoving = false;
       this.stop = false;
-      this._draw_.style.cursor = "pointer";
+      this._draw_.style.cursor = 'pointer';
     },
 
     /**
@@ -666,10 +744,10 @@
      * @return {geojson} the collection in the geojson form.
      */
     getImageFeatureCollection() {
-      //Image [for draw on image] // Viewport
+      // Image [for draw on image] // Viewport
       const rs = {
-        type: "FeatureCollection",
-        features: []
+        type: 'FeatureCollection',
+        features: [],
       };
       // for (var i = 0; i < this._path_index; i++) {
       //     const featrue = this._draws_data_[i].feature;
@@ -684,47 +762,47 @@
      * @param  {Ojbect} first point
      */
     __newFeature: function(point) {
-      if (this.drawMode == "point") {
+      if (this.drawMode == 'point') {
         this._current_path_ = {
-          type: "Feature",
+          type: 'Feature',
           properties: {
-            style: {}
+            style: {},
           },
           geometry: {
-            type: "Point",
-            coordinates: [...point]
+            type: 'Point',
+            coordinates: [...point],
           },
           bound: {
-            type: "Point",
-            coordinates: [...point]
-          }
+            type: 'Point',
+            coordinates: [...point],
+          },
         };
         return;
       }
 
       this._current_path_ = {
-        type: "Feature",
+        type: 'Feature',
         properties: {
-          style: {}
+          style: {},
         },
         geometry: {
           type:
-            this.drawMode === "line" || this.drawMode === "grid"
-              ? "LineString"
-              : "Polygon",
+            this.drawMode === 'line' || this.drawMode === 'grid' ?
+              'LineString' :
+              'Polygon',
           coordinates: [[point]],
-          path: null
+          path: null,
         },
         bound: {
           type:
-            this.drawMode === "line" || this.drawMode === "grid"
-              ? "LineString"
-              : "Polygon",
-          coordinates: [[point]]
-        }
+            this.drawMode === 'line' || this.drawMode === 'grid' ?
+              'LineString' :
+              'Polygon',
+          coordinates: [[point]],
+        },
       };
 
-      if (this.drawMode === "grid") {
+      if (this.drawMode === 'grid') {
         this._current_path_.properties.size = [...this.size];
         this._current_path_.properties.notes = this.brushType;
       }
@@ -753,7 +831,7 @@
      * __endNewFeature create a new feature data.
      */
     __endNewFeature: function() {
-      if (this.drawMode == "point") {
+      if (this.drawMode == 'point') {
         this._current_path_.properties.style.color = this.style.color;
         this._current_path_.properties.style.lineJoin = this.style.lineJoin;
         this._current_path_.properties.style.lineCap = this.style.lineCap;
@@ -770,20 +848,20 @@
         DrawHelper.clearCanvas(this._draw_);
         this._display_ctx_.lineWidth = this.style.lineWidth;
         this.drawOnCanvas(
-          this._display_ctx_,
-          function() {
+            this._display_ctx_,
+            function() {
             // this.drawMode !== "grid"
-            //   ? 
+            //   ?
               DrawHelper.draw(
                   this._display_ctx_,
-                  this._draws_data_.slice(0, this._path_index)
-                )
+                  this._draws_data_.slice(0, this._path_index),
+              );
               // : DrawHelper.drawGrids(
               //     this._display_ctx_,
               //     this._draws_data_.slice(0, this._path_index),
               //     this.size
               //   );
-          }.bind(this)
+            }.bind(this),
         );
         return;
       }
@@ -791,32 +869,53 @@
         !this._current_path_ ||
         this._current_path_.geometry.coordinates[0].length < 2 ||
         this.__isOnlyTwoSamePoints(this._current_path_.geometry.coordinates[0])
-      )
-        return; // click on canvas
+      ) {
+        return;
+      } // click on canvas
       // set style and drawing model
       this._current_path_.properties.style.color = this.style.color;
       this._current_path_.properties.style.lineJoin = this.style.lineJoin;
       this._current_path_.properties.style.lineCap = this.style.lineCap;
       this._current_path_.properties.style.isFill = this.style.isFill;
       let points = this._current_path_.geometry.coordinates[0];
-      if (!(this.drawMode === "line" || this.drawMode === "grid"))
-        points.push([points[0][0], points[0][1]]);
+      /* Modifications */
 
-      if (this.drawMode === "free" || this.drawMode === "line") {
-        // simplify
-        this._current_path_.geometry.coordinates[0] = simplify(points, 3.5);
-      }
-      if (!(this.drawMode === "line" || this.drawMode == "grid")) {
+      // last point push
+      if (!(this.drawMode === 'line' || this.drawMode === 'grid'))
+        points.push(points[0]);
+
+      // preprocess
+      if (!(this.drawMode === 'grid'))
+        if(spen.mode == 1)
+          points = mtool.populate(points, ~~this.scaleWindowtoImage(5), ~~this.scaleWindowtoImage(1), 150);
+      if(this.isMoving) {spen.s = spen.smoothness; spen.smoothness = 10e12;}
+
+      // align
+      points = this.__align(points);
+
+      // simplify and postprocess
+      if(this.isMoving) spen.smoothness = spen.s;
+      if (!(this.drawMode === 'grid'))
+        if(spen.mode == 1)
+          points = mtool.populate(points, 500000, ~~this.scaleWindowtoImage(2), 150);
+        else
+          points = simplify(points, 3.5);
+
+      // float to integer
+      points = this._convert_integer(points);
+      console.log(points.length);
+
+      if (!(this.drawMode === 'line' || this.drawMode == 'grid')) {
         let isIntersect = false;
-        if (isSelfIntersect(this._current_path_.geometry.coordinates[0])) {
+        if (isSelfIntersect(points)) {
           isIntersect = true;
-          console.info("The polygon just drawn has an intersection.");
-          if (! window.localStorage.getItem("_intersect_warn")) {
+          console.info('The polygon just drawn has an intersection.');
+          if (! window.localStorage.getItem('_intersect_warn')) {
             alert(
-              "A Self-Intersecting Polygon Will Cause Inaccurate Area and Circumference."
+                'A Self-Intersecting Polygon Will Cause Inaccurate Area and Circumference.',
             );
-            console.info("Firing Intersect user Alert just this once.");
-            window.localStorage.setItem("_intersect_warn", "true");
+            console.info('Firing Intersect user Alert just this once.');
+            window.localStorage.setItem('_intersect_warn', 'true');
           }
         }
         let sqmpsqp = null; // square microns per square pixels
@@ -829,31 +928,32 @@
           sqmpsqp = this._viewer.mpp_x * this._viewer.mpp_y;
           // calculate the are of polygon
           this._current_path_.properties.area =
-            sqmpsqp * polygonArea(this._current_path_.geometry.coordinates[0]);
+            sqmpsqp * polygonArea(points);
           this._current_path_.properties.circumference = getCircumference(
-            this._current_path_.geometry.coordinates[0],
-            this._viewer.mpp_x,
-            this._viewer.mpp_y
+              points,
+              this._viewer.mpp_x,
+              this._viewer.mpp_y,
           );
           this._current_path_.properties.isIntersect = isIntersect;
         } else if (this._viewer.mpp && this._viewer.mpp != 1e9) {
           sqmpsqp = this._viewer.mpp * this._viewer.mpp;
           // calculate the are of polygon
           this._current_path_.properties.area =
-            sqmpsqp * polygonArea(this._current_path_.geometry.coordinates[0]);
+            sqmpsqp * polygonArea(points);
           this._current_path_.properties.circumference = getCircumference(
-            this._current_path_.geometry.coordinates[0],
-            this._viewer.mpp_x,
-            this._viewer.mpp_y
+              points,
+              this._viewer.mpp_x,
+              this._viewer.mpp_y,
           );
           this._current_path_.properties.isIntersect = isIntersect;
         } else {
           this._current_path_.properties.nommp = true;
         }
       }
+      this._current_path_.geometry.coordinates[0] = points;
       // create bounds
       this._current_path_.bound.coordinates[0] = getBounds(
-        this._current_path_.geometry.coordinates[0]
+          this._current_path_.geometry.coordinates[0],
       );
 
       if (this._path_index < this._draws_data_.length) {
@@ -866,19 +966,19 @@
       DrawHelper.clearCanvas(this._draw_);
       this._display_ctx_.lineWidth = this.style.lineWidth;
       this.drawOnCanvas(
-        this._display_ctx_,
-        function() {
+          this._display_ctx_,
+          function() {
           // this.drawMode !== "grid"
-          //   ? 
+          //   ?
             DrawHelper.draw(
                 this._display_ctx_,
-                this._draws_data_.slice(0, this._path_index)
-              )
+                this._draws_data_.slice(0, this._path_index),
+            );
             // : DrawHelper.drawGrids(
             //     this._display_ctx_,
             //     this._draws_data_.slice(0, this._path_index)
             //   );
-        }.bind(this)
+          }.bind(this),
       );
     },
 
@@ -887,21 +987,24 @@
      */
     undo: function() {
       if (this._path_index > 0)
-        // redraw path
+      // redraw path
+      {
         this.drawOnCanvas(
-          this._display_ctx_,
-          function() {
-            this.drawMode !== "grid"
-              ? DrawHelper.draw(
+            this._display_ctx_,
+            function() {
+            this.drawMode !== 'grid' ?
+              DrawHelper.draw(
                   this._display_ctx_,
-                  this._draws_data_.slice(0, --this._path_index)
-                )
-              : DrawHelper.drawGrids(
+                  this._draws_data_.slice(0, --this._path_index),
+              ) :
+              DrawHelper.drawGrids(
                   this._display_ctx_,
-                  this._draws_data_.slice(0, --this._path_index)
-                );
-          }.bind(this)
+                  this._draws_data_.slice(0, --this._path_index),
+              );
+            }.bind(this),
         );
+      }
+      this.refresh_data();
     },
 
     /**
@@ -909,21 +1012,23 @@
      */
     redo: function() {
       if (this._draws_data_.length > this._path_index)
-        // redraw path
+      // redraw path
+      {
         this.drawOnCanvas(
-          this._display_ctx_,
-          function() {
-            this.drawMode !== "grid"
-              ? DrawHelper.draw(
+            this._display_ctx_,
+            function() {
+            this.drawMode !== 'grid' ?
+              DrawHelper.draw(
                   this._display_ctx_,
-                  this._draws_data_.slice(0, ++this._path_index)
-                )
-              : DrawHelper.drawGrids(
+                  this._draws_data_.slice(0, ++this._path_index),
+              ) :
+              DrawHelper.drawGrids(
                   this._display_ctx_,
-                  this._draws_data_.slice(0, ++this._path_index)
-                );
-          }.bind(this)
+                  this._draws_data_.slice(0, ++this._path_index),
+              );
+            }.bind(this),
         );
+      }
     },
 
     /**
@@ -932,6 +1037,21 @@
     clear: function() {
       this.clearStatus();
       this.clearCanvas();
+    },
+    /**
+     * clearStatus clear all datas that are used to associate with the feature collection
+     */
+    clearStatus: function() {
+      this._last = [0, 0];
+      this._current_path_ = {};
+      this._draws_data_ = [];
+      this._path_index = 0;
+      this._hash_data = new Map();
+      this._align_data = [];
+    },
+    // clear/refresh misc cache of strokes
+    refresh_data: function() {
+      this._align_data = [];
     },
     /**
      * Function to destroy the instance of CanvasDraw and clean up everything created by CanvasDraw.
@@ -950,14 +1070,126 @@
       for (const key in this) {
         this[key] = null;
       }
-    }
+    },
+
+    /**
+     * Align functions
+     *@param {points}
+     *@return {points}
+     */
+    __align: function(points) {
+      if (spen.mode != 1) {
+        return points;
+      }
+      this._align_data = points.slice();
+      var dist = new Array();
+      var ol = points;
+      for (i = 0; i < ol.length; i++) {
+        dist.push(new OpenSeadragon.Point(ol[i][0], ol[i][1]));
+        dist[i] = this._viewer.viewport.imageToWindowCoordinates(dist[i]);
+        dist[i].x = Math.floor(dist[i].x * this.align_fx);
+        dist[i].y = Math.floor(dist[i].y * this.align_fy);
+      }
+      dist = spen.align(dist);
+      for (i = 0; i < dist.length; i++) {
+        dist[i] = new OpenSeadragon.Point(dist[i].x / this.align_fx, dist[i].y / this.align_fy);
+        dist[i] = this._viewer.viewport.windowToImageCoordinates(dist[i]);
+        dist[i].x = Math.floor(dist[i].x);
+        dist[i].y = Math.floor(dist[i].y);
+        points[i] = [dist[i].x, dist[i].y];
+      }
+      return points;
+    },
+    __align_real: function(pix) {
+      if (spen.mode == 0) {
+        return pix;
+      }
+      var pt = pix;
+      pt = this._viewer.viewport.imageToWindowCoordinates(pt);
+      pt.x = Math.floor(pt.x * this.align_fx);
+      pt.y = Math.floor(pt.y * this.align_fy);
+      pt = spen.alignR(pt);
+      pt = new OpenSeadragon.Point(pt.x / this.align_fx, pt.y / this.align_fy);
+      pt = this._viewer.viewport.windowToImageCoordinates(pt);
+      pt.x = Math.floor(pt.x);
+      pt.y = Math.floor(pt.y);
+      if (spen.mode == 1) {
+        return pix;
+      }
+      return pt;
+    },
+    __align_undo() {
+      if (this._path_index > 0 && this._align_data.length) {
+        this._current_path_ = this._draws_data_[--this._path_index];
+      	this._draws_data_ = this._draws_data_.slice(0, this._path_index);
+      	this._current_path_.geometry.coordinates[0] = this._align_data;
+        var tm = spen.mode; spen.mode = 3;
+        this.__endNewFeature();
+      	this.refresh_data();
+        spen.mode = tm;
+      } else this.undo();
+    },
+
+    /**
+     * Movement functions
+     */
+    _init_hash_data() {
+      this._hash_data = new Map();
+      for (var i = 0; i < this._path_index; i++) {
+      	var cur = this._draws_data_[i].geometry.coordinates[0];
+        cur = mtool.populate(cur, ~~this.scaleWindowtoImage(5), ~~this.scaleWindowtoImage(1), 150);
+      	for (var j = 0; j < cur.length; j++) {
+      		this._hash_data[mtool.hash({
+      			x: cur[j][0],
+      			y: cur[j][1],
+      		}, this.imgWidth * 10)] = [i, j];
+      	}
+      }
+    },
+    _close_anno(pt, cl = 50) {
+      var d = 100000; d*=d, opt = pt;
+      for (var i = -cl; i < cl; i++)
+        for (var j = -cl; j < cl; j++) {
+          var nt = {x: pt.x + i, y: pt.y + j};
+          if (this._hash_data[mtool.hash(nt, this.imgWidth*10)] != undefined) {
+            var dd = mtool.distance(pt, nt);
+            if (d > dd) {
+              d = dd; opt = nt;
+            }
+          }
+        }
+      return opt;
+    },
+    // function to convert array of points to array of pair or vice-versa
+    _convert_arr(arr, topoint = true) {
+      var dist = [];
+      if (topoint) {
+      	arr.forEach((e) => dist.push(new OpenSeadragon.Point(e[0], e[1])));
+      } else {
+      	arr.forEach((e) => dist.push([e.x, e.y]));
+      }
+      return dist;
+    },
+    // convert float arr to integer
+    _convert_integer(arr) {
+      var dist = [];
+      arr.forEach((e) => dist.push([~~e[0], ~~e[1]]));
+      return dist;
+    },
+    scaleWindowtoImage(x) {
+      let pt = new OpenSeadragon.Point(x, 0);
+      let pt2 = new OpenSeadragon.Point(0, 0);
+      let dx = this._viewer.viewport.windowToImageCoordinates(pt).x - this._viewer.viewport.windowToImageCoordinates(pt2).x;
+      return dx;
+    },
   };
+
 
   $.extend($.CanvasDraw.prototype, $.EventSource.prototype);
 
   function getBounds(points) {
-    let max, min;
-    points.forEach(point => {
+    let max; let min;
+    points.forEach((point) => {
       if (!min && !max) {
         min = [point[0], point[1]];
         max = [point[0], point[1]];
@@ -970,10 +1202,10 @@
     });
     return [
       [min[0], min[1]], // top-left
-      [max[0], min[1]], //top-right
+      [max[0], min[1]], // top-right
       [max[0], max[1]], // bottom-right
       [min[0], max[1]],
-      [min[0], min[1]]
+      [min[0], min[1]],
     ];
   }
 })(OpenSeadragon);

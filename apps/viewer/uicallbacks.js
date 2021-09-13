@@ -335,7 +335,10 @@ function annotationOn(state, target) {
   li.appendChild(label);
   switch (state) {
     case 1:
-      $UI.annotOptPanel._action_.style.display = 'none';
+      spen.menu(65, 0.2);
+      spen.undo.onclick=()=>canvasDraw.__align_undo();
+      // open menu
+      $UI.annotOptPanel._action_.style.display = '';
       label.style.transform = 'translateY(-12px) translateX(18px)';
       label.textContent = '1';
       label.style.color = '';
@@ -382,6 +385,8 @@ function annotationOff() {
   ) {
     saveAnnotation();
   } else {
+    spen.close();
+    // close menu
     canvasDraw.clear();
     canvasDraw.drawOff();
     $CAMIC.drawContextmenu.off();
@@ -675,6 +680,7 @@ function shareURL(data) {
  * @param {Object} data
  */
 function mainMenuChange(data) {
+  console.log('data change: ', data);
   if (data.apps) {
     $UI.appsSideMenu.open();
   } else {
@@ -1025,6 +1031,7 @@ function saveBrushAnnotCallback() {
  * @param {Object} data
  */
 function annoCallback(data) {
+  spen.close();
   // is form ok?
   const noteData = $UI.annotOptPanel._form_.value;
   if ($UI.annotOptPanel._action_.disabled || noteData.name == '') {
@@ -1772,7 +1779,7 @@ function stopDrawing(e) {
       state === 1 &&
       $CAMIC.viewer.canvasDrawInstance._draws_data_.length > 0
     ) {
-      saveAnnotation();
+      $CAMIC.viewer.canvasDrawInstance.isOn = false;
     }
   }
 }
@@ -1975,6 +1982,8 @@ function presetLabelOn(label) {
     return;
   }
 
+  spen.menu(65, 0.2);
+  // open menu
   canvasDraw.drawMode = label.mode;
   if (label.mode == 'grid') {
     canvasDraw.size = [parseInt(label.size), parseInt(label.size)];
@@ -1989,6 +1998,8 @@ function presetLabelOn(label) {
 function presetLabelOff() {
   if (!$CAMIC.viewer.canvasDrawInstance) return;
   const canvasDraw = $CAMIC.viewer.canvasDrawInstance;
+  spen.close();
+  // close spen
   if (
     canvasDraw._draws_data_.length &&
     confirm(`Do You Want To Save Annotation Label Before You Leave?`)
@@ -2561,7 +2572,7 @@ async function rootCallback({root, parent, items}) {
 }
 
 /* Enhance Tool */
-function enhance(data) {
+function enhance(e) {
   document.querySelector('[title="Enhance"]').previousSibling.checked = true;
   if (!setEnhance) {
     // $UI.message.add('<i class="small material-icons">info</i>On Movement, enhance would be undone', 2000);
@@ -2569,29 +2580,26 @@ function enhance(data) {
     $CAMIC.viewer.addHandler('pan', unenhance);
     setEnhance = true;
   }
-
   // Canvas information
   const canvas = $CAMIC.viewer.canvas.firstChild;
   const context = canvas.getContext('2d');
   let width = canvas.width; let height = canvas.height;
   var img = context.getImageData(0, 0, width, height);
+  var data = img.data;
 
-  if (data.status == 'Histogram Eq') {
+  if (e.status == 'Histogram Eq') {
     context.putImageData(clahe(img, 64, 0.015), 0, 0);
-  } else if (data.status == 'Edge') {
-    context.putImageData(edgedetect(img, 150, 0, 0, width, height), 0, 0);
-  } else if (data.status == 'Sharpen') {
+  } else if (e.status == 'Edge') {
+    context.putImageData(edgedetect_sobel(img, 80), 0, 0);
+  } else if (e.status == 'Sharpen') {
     var filter = [[-1, -1, -1], [-1, 14, -1], [-1, -1, -1]];
-    filter = [filter, filter, filter];
-    var newimg = new ImageData(new Uint8ClampedArray(applyfilter(img, filter, 0, 0, width, height)), width, height);
-    context.putImageData(newimg, 0, 0);
-  } else if (data.status == 'Custom') {
+    context.putImageData(applyfilter(img, filter), 0, 0);
+  } else if (e.status == 'Custom') {
     var input = prompt('Enter the 2D Kernel: Eg : [[1, 0], [0, 1]]'); var f=0;
     // JSON Parse test
     try {
       var filter = JSON.parse(input); var sz = filter[0].length;
     } catch (e) {
-      console.error(e);
       alert('Invalid Kernel : ' + input);
       return;
     }
@@ -2609,9 +2617,7 @@ function enhance(data) {
       return;
     }
     // Apply
-    filter = [filter, filter, filter];
-    var newimg = new ImageData(new Uint8ClampedArray(applyfilter(img, filter, 0, 0, width, height)), width, height);
-    context.putImageData(newimg, 0, 0);
+    context.putImageData(applyfilter(img, filter), 0, 0);
   }
 }
 var setEnhance = false;
@@ -2663,3 +2669,109 @@ function oldAnnoRender(ctx, data) {
 //   caDrawHelper.prototype.drawBrushGrids(ctx, data.geometries.features[0]);
 // }
 /* --  -- */
+
+
+function showCollabRoomModal() {
+  const slideId = window.getUrlVars().slideId;
+  const store = new Store('../../data/');
+  store.getSlideCollabDetails(slideId).then((response) => {
+    document.getElementById('collabRoomModalSlideId').innerText = response[0].roomId;
+    if (response[0].collabStatus === true) {
+      document.getElementById('collabRoomModalToggleBtn').classList.add('active');
+      document.getElementById('collabRoomStatusToggle').checked = true;
+    } else {
+      document.getElementById('collabRoomStatusToggle').checked = false;
+    }
+    if (response[0].privateStatus === true) {
+      document.getElementById('priPubToggleBtn').classList.add('active');
+      document.getElementById('priPubToggle').checked = true;
+    } else {
+      document.getElementById('priPubToggle').checked = false;
+    }
+    // document.getElementById('modal-collab-save').dataset.slideId = slideId;
+    window.localStorage.setItem(`privateToggleStatus-${slideId}`, JSON.stringify({slideId, privateStatus: response[0].privateStatus}));
+    const members = response[0].members.map((member) => {
+      return member.email;
+    });
+    if (response[0].privateStatus === true) {
+      $('#addMembersDropdown').multipleSelect('setSelects', members);
+      $('#addMembersDropdown').multipleSelect('enable');
+    } else {
+      $('#addMembersDropdown').multipleSelect('checkAll');
+      $('#addMembersDropdown').multipleSelect('disable');
+    }
+    $('#collabRoomMembersListTable > tbody').html('');
+    response[0].members.forEach((member, i) => {
+      if (response[0].privateStatus) {
+        $('#collabRoomMembersListTable > tbody:last-child').append(
+            `
+          <tr>
+            <th scope="row">${i + 1}</th>
+            <td>${member.email}</td>
+            <td>
+              <select name="role" id="collabRoomMemberRole-for-user-${member.email}">
+                <option value="" disabled>Change Role</option>
+                <option value="contributor" ${member.role === 'contributor' ? 'selected' : ''}>Contributor</option>
+                <option value="general" ${member.role === 'general' ? 'selected' : ''}>General</option>
+                <option value="admin" ${member.role === 'admin' ? 'selected' : ''}>Admin</option>
+              </select>
+            </td>
+          </tr>
+          `,
+        );
+      } else {
+        if (member.role === 'admin') {
+          $('#collabRoomMembersListTable > tbody:last-child').append(
+              `
+            <tr>
+              <th scope="row">${i + 1}</th>
+              <td>${member.email}</td>
+              <td>
+                <select name="role" disabled="${response[0].privateStatus ? false : true}" id="collabRoomMemberRole-for-user-${member.email}">
+                  <option value="" disabled>Change Role</option>
+                  <option value="contributor" ${member.role === 'contributor' ? 'selected' : ''}>Contributor</option>
+                  <option value="general" ${member.role === 'general' ? 'selected' : ''}>General</option>
+                  <option value="admin" ${member.role === 'admin' ? 'selected' : ''}>Admin</option>
+                </select>
+              </td>
+            </tr>
+            `,
+          );
+        }
+      }
+    });
+    var modal = document.getElementById('collabRoomModal');
+    // When the user clicks the button, open the modal
+    modal.style.display = 'block';
+  });
+}
+
+function handleCollaborationStatusChange(element) {
+  const slideId = window.getUrlVars().slideId;
+  const status = document.getElementById('collabRoomStatusToggle').checked;
+  const privateStatus = document.getElementById('priPubToggle').checked;
+  const members = $('#addMembersDropdown').multipleSelect('getSelects').map((member) => {
+    const dropdownId = 'collabRoomMemberRole-for-user-' + member;
+    return {
+      email: member,
+      role: document.getElementById(dropdownId) ? document.getElementById(dropdownId).value : 'contributor',
+    };
+  });
+  let updateMembersList = true;
+  const previousPrivateStatus = window.localStorage.getItem(`privateToggleStatus-${slideId}`) ? JSON.parse(window.localStorage.getItem(`privateToggleStatus-${slideId}`)).privateStatus : true;
+  if (!previousPrivateStatus || !privateStatus) {
+    updateMembersList = false;
+  }
+  const store = new Store('../../data/');
+  store.updateCollabRoom(slideId, status, members, privateStatus, updateMembersList).then(async (response) => {
+    const responseData = await response.json();
+    var modal = document.getElementById('collabRoomModal');
+    modal.style.display = 'none';
+  });
+}
+
+function addScript(src) {
+  var s = document.createElement('script');
+  s.setAttribute('src', src);
+  document.body.appendChild(s);
+}

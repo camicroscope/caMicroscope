@@ -34,9 +34,12 @@ function FormTempaltesLoader() {
   }, 500);
 }
 
+var loadingHumanOverlayers;
+var loadingHeatmapOverlayers;
+
 function layersLoader() {
   // human
-  function loadingHumanOverlayers() {
+  loadingHumanOverlayers = () => {
     $CAMIC.store.findMarkTypes($D.params.slideId, 'human').then(function(layers) {
       // convert part not nesscary
       $D.humanlayers = [...layers.map(covertToHumanLayer)];
@@ -48,7 +51,7 @@ function layersLoader() {
       $UI.message.addError('Loading Human Layers is Error');
       console.error(error);
     });
-  }
+  };
   // ruler
   function loadingRulerOverlayers() {
     $CAMIC.store.findMarkTypes($D.params.slideId, 'ruler').then(function(layers) {
@@ -64,7 +67,7 @@ function layersLoader() {
     });
   }
   // heatmap
-  function loadingHeatmapOverlayers() {
+  loadingHeatmapOverlayers = () => {
     $CAMIC.store.findHeatmapType($D.params.slideId).then(function(layers) {
       $D.heatmaplayers = [];
       // convert and load heatmap layer
@@ -83,7 +86,7 @@ function layersLoader() {
       $UI.message.addError('Loading heatmap Overlayers is Error');
       console.error(error);
     });
-  }
+  };
 
   // segmentation
   function loadingComputerOverlayers() {
@@ -104,8 +107,12 @@ function layersLoader() {
       loadingRulerOverlayers();
       loadingHeatmapOverlayers();
       loadingComputerOverlayers();
+      // initialize sockets
+      socketInit();
     }
   }, 500);
+
+  console.log('called', $D);
 }
 
 

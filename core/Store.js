@@ -297,7 +297,10 @@ class Store {
         // "Content-Type": "application/x-www-form-urlencoded",
       },
       body: JSON.stringify(json),
-    }).then(this.errorHandler);
+    },
+    true, // Sockets config
+    'mark',
+    ).then(this.errorHandler);
   }
   /**
    * delete mark
@@ -455,7 +458,10 @@ class Store {
         // "Content-Type": "application/x-www-form-urlencoded",
       },
       body: JSON.stringify(json),
-    }).then(this.errorHandler);
+    },
+    true, // Sockets config
+    'heatmap',
+    ).then(this.errorHandler);
   }
   /**
    * delete heatmap
@@ -507,10 +513,11 @@ class Store {
   /**
    * add a Heatmap Edit Data
    * @param {object} json - the heatmap edit data
+   * @param {[object, null]} heatmapDataForSockets - the heatmap edit data to be sent over sockets channel
    * @return {promise} - promise which resolves with response
    *
    **/
-  addHeatmapEdit(json) {
+  addHeatmapEdit(json, heatmapDataForSockets=null) {
     const suffix = 'HeatmapEdit/post';
     const url = this.base + suffix;
     // TODO check on valid
@@ -526,10 +533,17 @@ class Store {
         // "Content-Type": "application/x-www-form-urlencoded",
       },
       body: JSON.stringify(json),
-    }).then(this.errorHandler);
+    },
+    true, // Sockets config
+    'heatmap',
+    heatmapDataForSockets,
+    ).then(this.errorHandler);
   }
 
-  updateHeatmapEdit(user, slide, name, data) {
+  /**
+   * @param {[object, null]} heatmapDataForSockets - the heatmap edit data to be sent over sockets channel
+   */
+  updateHeatmapEdit(user, slide, name, data, heatmapDataForSockets=null) {
     const suffix = 'HeatmapEdit/update';
     const url = this.base + suffix;
     const query = {};
@@ -553,7 +567,11 @@ class Store {
       }),
       credentials: 'include',
       mode: 'cors',
-    }).then(this.errorHandler);
+    },
+    true, // Sockets config
+    'heatmap',
+    heatmapDataForSockets,
+    ).then(this.errorHandler);
   }
 
   findHeatmapEdit(user, slide, name) {
@@ -572,15 +590,19 @@ class Store {
     return fetch(url + '?' + objToParamStr(query), {
       credentials: 'include',
       mode: 'cors',
-    }).then(this.errorHandler);
+    },
+    // true, // Sockets config
+    // 'heatmap'
+    ).then(this.errorHandler);
   }
   /**
    * delete heatmap
    * @param {object} id - the heatmap object id
    * @param {object} slide - the associated slide
+   * @param {[object, null]} heatmapDataForSockets - the heatmap edit data to be sent over sockets channel
    * @return {promise} - promise which resolves with response
    **/
-  deleteHeatmapEdit(user, slide, name) {
+  deleteHeatmapEdit(user, slide, name, heatmapDataForSockets=null) {
     const suffix = 'HeatmapEdit/delete';
     const url = this.base + suffix;
     const query = {};
@@ -598,7 +620,11 @@ class Store {
       method: 'DELETE',
       credentials: 'include',
       mode: 'cors',
-    }).then(this.errorHandler);
+    },
+    true, // Sockets config
+    'heatmap',
+    heatmapDataForSockets,
+    ).then(this.errorHandler);
   }
 
 
@@ -877,6 +903,73 @@ class Store {
     }
   }
 
+  /**
+ * get messages by text
+ * @param {string} keyword - the room search keyword
+ * @return {promise} - promise which resolves with data
+ **/
+  getMessages(keyword, roomId) {
+    const suffix = 'Chat/search';
+    const url = this.base + suffix;
+    const query = {
+      'searchKey': keyword,
+      'roomId': roomId,
+    };
+
+    return fetch(url + '?' + objToParamStr(query), {
+      credentials: 'include',
+      mode: 'cors',
+    }).then(this.errorHandler).then((x) => this.filterBroken(x, 'chat'));
+  }
+  fetchMessages(roomId) {
+    const suffix = 'Chat/find';
+    const url = this.base + suffix;
+    const query = {
+      'roomId': roomId,
+    };
+    return fetch(url + '?' + objToParamStr(query), {
+      credentials: 'include',
+      mode: 'cors',
+    }).then(this.errorHandler).then((x) => this.filterBroken(x, 'chat'));
+  }
+  /**
+   * post message
+   * @param {object} json - the message data
+   * @return {promise} - promise which resolves with response
+   **/
+  addMessage(json) {
+    const suffix = 'Chat/post';
+    const url = this.base + suffix;
+    return fetch(url, {
+      method: 'POST',
+      credentials: 'include',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json; charset=utf-8',
+      },
+      body: JSON.stringify(json),
+    },
+    true, // Sockets config
+    'chat',
+    ).then(this.errorHandler);
+  }
+  /**
+   * delete message
+   * @param {object} id - the message object id
+   * @return {promise} - promise which resolves with response
+   **/
+  deleteMessage(id) {
+    const suffix = 'Chat/delete';
+    const url = this.base + suffix;
+    const query = {
+      '_id': id,
+    };
+    return fetch(url + '?' + objToParamStr(query), {
+      method: 'DELETE',
+      credentials: 'include',
+      mode: 'cors',
+    }).then(this.errorHandler);
+  }
 
   // Update slide name
   updateSlideName(id, newName) {
@@ -889,6 +982,58 @@ class Store {
     const update = {
       'name': newName,
     };
+    return fetch(url + '?' + objToParamStr(query), {
+      method: 'POST',
+      credentials: 'include',
+      mode: 'cors',
+      body: JSON.stringify(update),
+    });
+  }
+
+  /**
+   * get slide collab details by id
+   * @param {string} id - the slide id
+   * @return {promise} - promise which resolves with data
+   **/
+  getSlideCollabDetails(id) {
+    const suffix = 'CollabRoom/find';
+    const url = this.base + suffix;
+    const query = {
+      'slideId': id,
+    };
+
+    return fetch(url + '?' + objToParamStr(query), {
+      credentials: 'include',
+      mode: 'cors',
+    }).then(this.errorHandler).then((x) => this.filterBroken(x, 'slide'));
+  }
+
+  /**
+   * Update slide collabStatus
+   * @param {string} id - the slide id
+   * @param {string} status - the status of collaboration room
+   * @param {string} members - the list of accepted members
+   * @return {promise} - promise which resolves with data
+   **/
+  updateCollabRoom(id, status, members, privateStatus, updateMembersList) {
+    const suffix = 'CollabRoom/update';
+    const url = this.base + suffix;
+    const query = {
+      'slideId': id,
+    };
+    let update;
+    if (updateMembersList) {
+      update = {
+        'collabStatus': status,
+        'members': members,
+        'privateStatus': privateStatus,
+      };
+    } else {
+      update = {
+        'collabStatus': status,
+        'privateStatus': privateStatus,
+      };
+    }
     return fetch(url + '?' + objToParamStr(query), {
       method: 'POST',
       credentials: 'include',

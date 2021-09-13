@@ -11,6 +11,10 @@
     <!-- Check If we're logged in ok, otherwise, log in for us -->
     <!-- REMOVE JQUERY AND AJAX AFTER MODERNIZING DICOM PACKAGE-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="./jitsi.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" defer integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
+    <script src="../../core/jitsi-handlers/jitsi.handler.js" defer></script>
+
     <!-- Thank you -->
     <script src="../../common/authChecker.js"></script>
     <script>
@@ -169,16 +173,28 @@
       href="../../css/popup.css"
     />
     <link href="../../common/bootstrap-tour-standalone/bootstrap-tour-standalone.min.css" rel="stylesheet">
-
     <!-- tippy theme -->
     <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/themes/light-border.css" />
+
     <!--  common js START -->
+    <!-- Smartpen -->
+    <script type="text/javascript" src="../../common/enhance.js"></script>
+    <script type="text/javascript" src="../../common/smartpen/autoalign.js"></script>
+    <link rel="stylesheet" type="text/css" media="all" href="../../common/smartpen/autoalign.css"/>
+    <!-- Smartpen end -->
+    
     <!-- util.js -->
+
+		<!-- SocketIO Config -->
+		<script defer src="../../core/socketio/handlers.sockets.js"></script>
+    <script defer src="../../core/socketio/init.sockets.js"></script>
+
     <script type="text/javascript" src="../../common/util.js"></script>
     <script type="text/javascript" src="../../common/DrawHelper.js"></script>
     <script type="text/javascript" src="../../common/simplify.js"></script>
     <script type="text/javascript" src="../../common/paths.js"></script>
     <script type="text/javascript" src="../../common/touchMe.js"></script>
+
     <!-- add pure-form script -->
     <script
       type="text/javascript"
@@ -340,12 +356,30 @@
     <script src="./uicallbacks.js"></script>
     <script src="./dataloaders.js"></script>
     <script src="./init.js"></script>
-    <script src="enhance.js"></script>
     <script src="../../common/bootstrap-tour-standalone/bootstrap-tour-standalone.min.js"></script>
     <script src="./tut.js"></script>
     <script src="../../common/html2canvas.min.js"></script>
+    
+    <!-- Bootstrap 4 toggle switch -->
+    <!-- <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script> -->
+
+    <!-- Multiple Dropdown -->
+    <link rel="stylesheet" href="https://unpkg.com/multiple-select@1.5.2/dist/multiple-select.min.css">
+    <script src="https://unpkg.com/multiple-select@1.5.2/dist/multiple-select.min.js"></script>
+
   </head>
   <body>
+    <!-- Load Jitsi and Socket scripts dynamically -->
+    <script>
+      var hostname = window.location.hostname !== 'localhost' ? window.location.hostname : '127.0.0.1';
+      var jitsiScriptUrl = 'https://' + hostname + ':8443/external_api.js';
+      var socketsScriptUrl = window.location.protocol + '//' + window.location.hostname + ':5000/socket.io/socket.io.js';
+      console.log(jitsiScriptUrl, socketsScriptUrl)
+      addScript(jitsiScriptUrl);
+      addScript(socketsScriptUrl);
+    </script>
+
     <!-- message-->
     <div id="cames" style="z-index:600"></div>
 
@@ -372,6 +406,10 @@
     <!-- side menu for labels -->
     <div id="labels_layers" style="z-index:600"></div>
 
+    
+    <!-- side menu for messaging/chat -->
+    <div id="side_messaging" style="z-index:600"></div>
+
     <!-- collapsible list - annotation and analytics -->
     <div id="collapsiblelist" style="z-index:600"></div>
     <!-- collapsible list - main/minor (right/left) layers -->
@@ -386,7 +424,239 @@
     <!-- Popper & tippy -->
     <script src="https://unpkg.com/@popperjs/core@2"></script>
     <script src="https://unpkg.com/tippy.js@6"></script>
-    
+
+    <!-- Modal Styles -->
+    <style>
+      /* body {font-family: Arial, Helvetica, sans-serif;} */
+      
+      /* The Modal (background) */
+      .modal {
+        display: none; /* Hidden by default */
+        position: fixed; /* Stay in place */
+        z-index: 100; /* Sit on top */
+        padding-top: 100px; /* Location of the box */
+        left: 0;
+        top: 0;
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        overflow: auto; /* Enable scroll if needed */
+        background-color: rgb(0,0,0); /* Fallback color */
+        background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+      }
+      
+      /* Modal Content */
+      .modal-content {
+        background-color: #fefefe;
+        color: black;
+        font-size: 16px;
+        margin: auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+      }
+      
+      /* The Close Button */
+      .close {
+        color: #aaaaaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+      }
+      
+      .close:hover,
+      .close:focus {
+        color: #000;
+        text-decoration: none;
+        cursor: pointer;
+      }
+
+      th {
+        min-width: 40px;
+        max-width: 80px;
+        text-align: left;
+      }
+
+      td {
+        min-width: 300px;
+        max-width: 360px;
+        text-align: left;
+      }
+
+      /* Toggle switch */
+
+      .toggle-btn {
+        width: 80px;
+        height: 40px;
+        margin: 10px;
+        border-radius: 50px;
+        display: inline-block;
+        position: relative;
+        background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAyklEQVQ4T42TaxHCQAyENw5wAhLACVUAUkABOCkSwEkdhNmbpHNckzv689L98toIAKjqGcAFwElEFr5ln6ruAMwA7iLyFBM/TPDuQSrxwf6fCKBoX2UMIYGYkg8BLOnVg2RiAEexGaQQq4w9e9klcxGLLAUwgDAcihlYAR1IvZA1sz/+AAaQjXhTQQVoe2Yo3E7UQiT2ijeQdojRtClOfVKvMVyVpU594kZK9zzySWTlcNqZY9tjCsUds00+A57z1e35xzlzJjee8xf0HYp+cOZQUQAAAABJRU5ErkJggg==") no-repeat 50px center #e74c3c;
+        cursor: pointer;
+        -webkit-transition: background-color 0.4s ease-in-out;
+        -moz-transition: background-color 0.4s ease-in-out;
+        -o-transition: background-color 0.4s ease-in-out;
+        transition: background-color 0.4s ease-in-out;
+        cursor: pointer;
+      }
+      .toggle-btn.active {
+        background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAmUlEQVQ4T6WT0RWDMAhFeZs4ipu0mawZpaO4yevBc6hUIWLNd+4NeQDk5sE/PMkZwFvZywKSTxF5iUgH0C4JHGyF97IggFVSqyCFga0CvQSg70Mdwd8QSSr4sGBMcgavAgdvwQCtApvA2uKr1x7Pu++06ItrF5LXPB/CP4M0kKTwYRIDyRAOR9lJTuF0F0hOAJbKopVHOZN9ACS0UgowIx8ZAAAAAElFTkSuQmCC") no-repeat 10px center #2ecc71;
+      }
+      .toggle-btn.active .round-btn {
+        left: 45px;
+      }
+      .toggle-btn .round-btn {
+        width: 30px;
+        height: 30px;
+        background-color: #fff;
+        border-radius: 50%;
+        display: inline-block;
+        position: absolute;
+        left: 5px;
+        top: 50%;
+        margin-top: -15px;
+        -webkit-transition: all 0.3s ease-in-out;
+        -moz-transition: all 0.3s ease-in-out;
+        -o-transition: all 0.3s ease-in-out;
+        transition: all 0.3s ease-in-out;
+      }
+      .toggle-btn .cb-value {
+        position: absolute;
+        left: 0;
+        right: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        z-index: 9;
+        cursor: pointer;
+        -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+      }
+      .highlighted-search {
+        background-color: yellow;
+      }
+      #chatsDisplayArea {
+        scroll-behavior: smooth;
+      }
+      </style>
+
+      <!-- The Modal -->
+      <div id="collabRoomModal" class="modal">
+
+        <!-- Modal content -->
+        <div class="modal-content">
+          <span class="close" onclick="closeCollabRoomModal()">&times;</span>
+          <h3>
+            Manage Collaboration
+          </h3>
+          <hr>
+          <p>
+              Slide Name: <span id="collabRoomModalSlideId"></span>
+          </p>
+          <p>
+            Collaboration Status: 
+            <div class="toggle-btn" id="collabRoomModalToggleBtn">
+              <input type="checkbox" id="collabRoomStatusToggle" class="cb-value" />
+              <span class="round-btn"></span>
+            </div>
+          </p>
+          <p>
+            Private Status: 
+            <div class="toggle-btn" id="priPubToggleBtn">
+              <input type="checkbox" id="priPubToggle" class="cb-value" />
+              <span class="round-btn"></span>
+            </div>
+          </p>
+          <p>
+            <label for="addMembersDropdown" style="margin-right: 10px;">Add or Remove members </label>
+            <select name="membersList" id="addMembersDropdown" multiple="multiple" class="multiple-select"
+              placeholder="Select Members from Dropdown"
+              data-width="500"
+            >
+            <!-- ==== Left blank as data is loaded dynamically ==== -->
+            </select>
+            <div class="col-xs-12">
+              <h4>Members List</h4>
+              <table class="table table-hover table-responsive" id="collabRoomMembersListTable">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Email</th>
+                    <!-- <th scope="col">Member Since</th> -->
+                    <th scope="col">Role</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- Data will be appended here -->
+                </tbody>
+              </table>
+            </div>
+            <script defer>
+                // Script to load members for "add members" dropdown
+                $(function() {
+                  const store = new Store('../../data/'); // Already declared
+                  store.getUsers().then(response => {
+                    const data = []
+                    response.forEach(user => {
+                      data.push({
+                        text: user.email, 
+                        value: user.email,
+                      });
+                    });
+                    $('#addMembersDropdown').multipleSelect({
+                      data,
+                    });
+                  });
+                  $('.cb-value').click(function() {
+                    var mainParent = $(this).parent('.toggle-btn');
+                    if($(mainParent).find('input.cb-value').is(':checked')) {
+                      $(mainParent).addClass('active');
+                    } else {
+                      $(mainParent).removeClass('active');
+                    }
+
+                  })
+                })
+            </script>
+          </p>
+          <p>
+            <button onclick="handleCollaborationStatusChange()">Save Changes</button>
+          </p>
+        </div>
+
+      </div>
+      <div class="jitsi-iframe hide" id="jitsi-iframe">
+        <div class="overlay">
+            <button class="openJitsiInNewTab" onclick="openJitsiInNewTab()">
+                <svg class="svg-icon" viewBox="0 0 20 20">
+                    <path fill="none" d="M16.198,10.896c-0.252,0-0.455,0.203-0.455,0.455v2.396c0,0.626-0.511,1.137-1.138,1.137H5.117c-0.627,0-1.138-0.511-1.138-1.137V7.852c0-0.626,0.511-1.137,1.138-1.137h5.315c0.252,0,0.456-0.203,0.456-0.455c0-0.251-0.204-0.455-0.456-0.455H5.117c-1.129,0-2.049,0.918-2.049,2.047v5.894c0,1.129,0.92,2.048,2.049,2.048h9.488c1.129,0,2.048-0.919,2.048-2.048v-2.396C16.653,11.099,16.45,10.896,16.198,10.896z"></path>
+                    <path fill="none" d="M14.053,4.279c-0.207-0.135-0.492-0.079-0.63,0.133c-0.137,0.211-0.077,0.493,0.134,0.63l1.65,1.073c-4.115,0.62-5.705,4.891-5.774,5.082c-0.084,0.236,0.038,0.495,0.274,0.581c0.052,0.019,0.103,0.027,0.154,0.027c0.186,0,0.361-0.115,0.429-0.301c0.014-0.042,1.538-4.023,5.238-4.482l-1.172,1.799c-0.137,0.21-0.077,0.492,0.134,0.629c0.076,0.05,0.163,0.074,0.248,0.074c0.148,0,0.294-0.073,0.382-0.207l1.738-2.671c0.066-0.101,0.09-0.224,0.064-0.343c-0.025-0.118-0.096-0.221-0.197-0.287L14.053,4.279z"></path>
+                </svg>
+            </button>
+            <button class="closeJitsiCall" onclick="closeJitsiCall()">
+                <svg class="svg-icon" viewBox="0 0 20 20">
+                    <path fill="none" d="M15.898,4.045c-0.271-0.272-0.713-0.272-0.986,0l-4.71,4.711L5.493,4.045c-0.272-0.272-0.714-0.272-0.986,0s-0.272,0.714,0,0.986l4.709,4.711l-4.71,4.711c-0.272,0.271-0.272,0.713,0,0.986c0.136,0.136,0.314,0.203,0.492,0.203c0.179,0,0.357-0.067,0.493-0.203l4.711-4.711l4.71,4.711c0.137,0.136,0.314,0.203,0.494,0.203c0.178,0,0.355-0.067,0.492-0.203c0.273-0.273,0.273-0.715,0-0.986l-4.711-4.711l4.711-4.711C16.172,4.759,16.172,4.317,15.898,4.045z"></path>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <script defer>
+        // Get the modal
+        document.getElementById('collabRoomModalSlideId').innerText = window.getUrlVars().slideId;
+
+        function closeCollabRoomModal() {
+          var modal = document.getElementById("collabRoomModal");
+          modal.style.display = "none";
+        }
+        
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function(event) {
+          var modal = document.getElementById("collabRoomModal");
+            if (event.target == modal) {
+              modal.style.display = "none";
+            }
+          }
+      </script>
   </body>
 
   <script type="text/javascript">
