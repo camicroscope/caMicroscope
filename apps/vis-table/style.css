@@ -96,10 +96,21 @@ nav li:not(.active):hover a{
     white-space: nowrap;
     display: flex;
     align-items: center;
-    justify-content: center;    
+    justify-content: center;
+    
 
 }
-
+.grid-card-content {
+  overflow: hidden;
+  position: relative;
+  height: 100%;
+  width: 100%;
+  cursor: pointer;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  justify-content: center;  
+}
 .grid-card-title {
     vertical-align: middle;
     position: absolute;
@@ -188,6 +199,7 @@ nav li:not(.active):hover a{
   }
 
   .grid-view .inner-grid-view .grid-card .rank-dropdown{
+    /* z-index: 10; */
     margin: .25rem;
     position:absolute;
     top:0;
@@ -206,4 +218,13 @@ nav li:not(.active):hover a{
     display: flex;
     align-items: center;
     justify-content: center;    
+  }
+
+  .grid-view .inner-grid-view .grid-card .score {
+    font-weight: bold;
+    /* font-size: 1rem; */
+    position:absolute;
+    bottom:32px;
+    left:0;
+    display: flex;
   }

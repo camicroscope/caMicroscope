@@ -256,16 +256,19 @@ function createGridCard(d) {
   const card = document.createElement('div');
   card.id = sid;
   card.classList.add('grid-card');
-
+  const cardContent = document.createElement('div');
+  cardContent.id = sid;
+  cardContent.classList.add('grid-card-content');
   // add to the link
-  const anchor = document.createElement('a');
-  anchor.href = `../viewer/viewer.html?slideId=${sid}`;
+  cardContent.addEventListener('click', ()=>{
+    location.href=`../viewer/viewer.html?slideId=${sid}`;
+  });
+  card.appendChild(cardContent);
 
-  const title = document.createElement('div');
 
   const loader = document.createElement('div');
   loader.classList.add('loader');
-  anchor.append(loader);
+  cardContent.append(loader);
   // create Image
   const img = document.createElement('img');
   img.alt = `${d.name}`;
@@ -280,46 +283,47 @@ function createGridCard(d) {
 
   img.onload = ()=>{
     loader.remove();
-    anchor.append(img);
+    cardContent.append(img);
   };
 
 
   // add title
+  const title = document.createElement('div');
   title.classList.add('grid-card-title');
   title.classList.add('bg-dark');
   title.title = `${d.name}`;
   title.textContent = `${d.name}`;
-  anchor.appendChild(title);
+  cardContent.appendChild(title);
 
   // DOE customized
   // informativeness indicator
-  const informativenessIndicator = document.createElement('div');
-  informativenessIndicator.classList.add('indicator');
-  const indicatorIcon = getInformativenessIndicatorIcon(sid);
-  informativenessIndicator.appendChild(indicatorIcon);
-  anchor.appendChild(informativenessIndicator);
-  // card.appendChild(title);
-  if ($D.isRankEnable && indicatorIcon.classList.contains('fa-check') ) {
+  const [indicator, score] = getInformativenessInfos(sid);
+  card.appendChild(indicator);
+  if (score) card.appendChild(score);
+  //
+
+  //
+  const indicatorIcon = indicator.querySelector('i');
+  if ($D.isRankEnable && indicatorIcon && indicatorIcon.classList.contains('fa-check') ) {
     const rankDropDown = generateDropdownMenu(card, d);
-    anchor.appendChild(rankDropDown);
+    card.appendChild(rankDropDown);
   }
   // anchor
 
-  card.appendChild(anchor);
+
   // anchor.appendChild(card);
 
   return card;
 }
 
 function generateDropdownMenu(elt, data) {
-  console.log(elt, data);
   const div = document.createElement('div');
   div.classList.add('rank-dropdown');
   div.classList.add('dropdown');
   const level = getRankLevel(elt.id);
-  console.log(level);
+
   const dropdown = `
-  <button class="btn btn-sm btn-primary dropdown-toggle" type="button" id="dropdown_${elt.id}" data-bs-toggle="dropdown" aria-expanded="false">${rankLevel[level]}</button>
+  <button class="btn btn-sm ${level?'btn-primary':'btn-danger'} dropdown-toggle" type="button" id="dropdown_${elt.id}" data-bs-toggle="dropdown" aria-expanded="false">${rankLevel[level]}</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown_${elt.id}">
     <li data-sid="${elt.id}" data-level="1"><a class="dropdown-item ${level==1?'active':''}" href="#">1st Most Informative</a></li>
     <li data-sid="${elt.id}" data-level="2"><a class="dropdown-item ${level==2?'active':''}" href="#">2nd Most Informative</a></li>
@@ -329,10 +333,8 @@ function generateDropdownMenu(elt, data) {
   div.innerHTML = dropdown;
   $(div).find('li').on('click', async function(e) {
     const {sid, level} = this.dataset;
-
     // TODO update DB
     const data = await store.rankSlidesInformativeness($D.selectedNode.id, getUserId(), sid, level); // $D.selectedNode.id;
-    console.log(data);
     if (data&&data.result&&data.result.ok&&data.result.n) { // correct
       const slidesRank = await store.findSlidesInformativeness($D.selectedNode.id, getUserId());
       if (slidesRank&&Array.isArray(slidesRank)) {
@@ -345,12 +347,6 @@ function generateDropdownMenu(elt, data) {
     } else { // error
 
     }
-
-
-    // change UI
-    // $(this).parent().find('li > a').removeClass('active');
-    // $(this).find('a').addClass('active');
-    // $(`#dropdown_${sid}`).text($(this).text());
   });
   return div;
 }
@@ -360,6 +356,8 @@ function syncSlideRankDropdown() {
     const level = getRankLevel(this.id);
     $(this).find('li > a').removeClass('active');
     $(this).find('.dropdown-toggle').text(rankLevel[level]);
+    $(this).find('.dropdown-toggle').addClass('btn-primary');
+    $(this).find('.dropdown-toggle').removeClass('btn-danger');
     switch (level) {
       case 1:
         $(this).find('li[data-level=1] > a').addClass('active');
@@ -373,6 +371,9 @@ function syncSlideRankDropdown() {
       case 4:
         $(this).find('li[data-level=less] > a').addClass('active');
         break;
+      default:
+        $(this).find('.dropdown-toggle').removeClass('btn-primary');
+        $(this).find('.dropdown-toggle').addClass('btn-danger');
     }
   });
 }
@@ -385,7 +386,10 @@ function getRankLevel(sid) {
   if ($D.slidesRank.less.includes(sid)) return 4; // less
   return 0;
 }
-function getInformativenessIndicatorIcon(sid) {
+function getInformativenessInfos(sid) {
+  var informativenessScore = null;
+  const informativenessIndicator = document.createElement('div');
+  informativenessIndicator.classList.add('indicator');
   const icon = document.createElement('i');
   icon.classList.add('fas');
   for (let index = 0; index < $D.SlidesEvaluations.length; index++) {
@@ -399,12 +403,20 @@ function getInformativenessIndicatorIcon(sid) {
             icon.classList.add('fa-check');
             icon.classList.add('text-success');
             icon.title = 'Informative';
+            // create score div
+            informativenessScore = document.createElement('div');
+            informativenessScore.classList.add('score');// badge bg-success
+            informativenessScore.classList.add('badge');
+            informativenessScore.classList.add('rounded-pill');
+            informativenessScore.classList.add('bg-success');
+            informativenessScore.textContent = `SCORE: ${eval.evaluation.absolute_informativeness}`;
           } else {
             icon.classList.add('fa-times');
             icon.classList.add('text-danger');
             icon.title = 'Uninformative';
           }
-          return icon;
+          informativenessIndicator.appendChild(icon);
+          return [informativenessIndicator, informativenessScore];
         }
       }
     }
@@ -413,7 +425,8 @@ function getInformativenessIndicatorIcon(sid) {
   icon.classList.add('fa-question');
   icon.classList.add('text-muted');
   icon.title = 'Not Evaluated';
-  return icon;
+  informativenessIndicator.appendChild(icon);
+  return [informativenessIndicator, informativenessScore];
 }
 function createCollectionTree() {
   $UI.colTree.jstree({

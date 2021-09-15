@@ -125,7 +125,9 @@ function listToTree(list) {
     if (node.pid) {
       // if you have dangling branches check that map[node.parentId] exists
       list[map[node.pid]].children.push(node);
+      // list[i].icon = './folder.png';
     } else {
+      // list[i].icon = './check-folder.png';
       roots.push(node);
     }
   }
@@ -505,7 +507,7 @@ function covertToHumanLayer(data) {
   const id = item.analysis.execution_id;
   const name = item.analysis.name || item.analysis.execution_id;
 
-  if (!item.shape) item.shape = ["Polygon"];
+  if (!item.shape) item.shape = ['Polygon'];
   if (item.analysis.type&&item.analysis.type=='label') { // preset label
     return {
       id: id,
