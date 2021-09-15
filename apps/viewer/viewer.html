@@ -178,7 +178,7 @@
     <script type="text/javascript" src="../../common/smartpen/autoalign.js"></script>
     <link rel="stylesheet" type="text/css" media="all" href="../../common/smartpen/autoalign.css"/>
     <!-- Smartpen end -->
-    
+
     <!-- util.js -->
     <script type="text/javascript" src="../../common/util.js"></script>
     <script type="text/javascript" src="../../common/DrawHelper.js"></script>
@@ -386,13 +386,13 @@
     <div id="overlayers" style="z-index:600"></div>
 
     <div id="overlayersMinor" style="z-index:600"></div>
-    
+
     <!-- labels manager -->
     <div id="labelmanager" style="z-index:600"></div>
     <!-- Popper & tippy -->
     <script src="https://unpkg.com/@popperjs/core@2"></script>
     <script src="https://unpkg.com/tippy.js@6"></script>
-    
+
   </body>
 
   <script type="text/javascript">
@@ -414,14 +414,17 @@
       ($D.params.slide ||
         $D.params.specimen ||
         $D.params.study ||
-        $D.params.location)
+        $D.params.location,
+        $D.params.collection
+      )
     ) {
       let STORE = new Store();
       STORE.findSlide(
         $D.params.slide,
         $D.params.study,
         $D.params.specimen,
-        $D.params.location
+        $D.params.location,
+        $D.params.collection
       )
         .then(x => {
           let offset = parseInt($D.params.offset, 10) || 0;
