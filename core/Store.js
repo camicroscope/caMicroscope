@@ -213,13 +213,14 @@ class Store {
       mode: 'cors',
     }).then(this.errorHandler).then((x) => this.filterBroken(x, 'mark'));
   }
-  getSlidesHumanMarkNum(sids) {
+  getSlidesHumanMarkNum(sids, uid) {
     const suffix = 'Mark/getSlidesHumanMarkNum';
     const url = this.base + suffix;
     const query = {};
     if (Array.isArray(sids)) {
       query.sids = sids;
     }
+    if (uid) query.uid = uid;
     return fetch(url, {
       method: 'POST',
       credentials: 'include',
@@ -671,6 +672,18 @@ class Store {
       query.slide = slide;
     }
 
+    return fetch(url + '?' + objToParamStr(query), {
+      credentials: 'include',
+      mode: 'cors',
+    }).then(this.errorHandler);
+  }
+  getSlidesExtraInfoByCollectionId(cid) {
+    if (!cid) {
+      return {hasError: true, error: `No Collection Id.`};
+    }
+    const suffix = 'Seer/getSlidesExtraInfoByCollectionId';
+    const url = this.base + suffix;
+    const query = {cid};
     return fetch(url + '?' + objToParamStr(query), {
       credentials: 'include',
       mode: 'cors',
@@ -1361,17 +1374,18 @@ class Store {
   // second informativeness - 2
   // third informativeness - 3
   // less informativeness - 4
-  rankSlidesInformativeness(cid, uid, sid, level) {
+  rankSlidesInformativeness(cid, uid=null, sid, level) {
     //
-    if (!cid || !uid || !sid || !level) {
+    if (!cid || !sid || !level) {
       return {
         hasError: true,
         message: 'args are illegal',
       };
     }
+    const query = {cid, sid, level};
+    if (uid) query.uid = uid;
     const suffix = 'SlideInformativeness/rank';
     const url = this.base + suffix;
-    const query = {cid, uid, sid, level};
     return fetch(url, {
       method: 'POST',
       credentials: 'include',
@@ -1380,8 +1394,8 @@ class Store {
     }).then(this.errorHandler);
   }
 
-  findSlidesInformativeness(cid, uid) {
-    if (!cid || !uid) {
+  findSlidesInformativeness(cid, uid=null) {
+    if (!cid) {
       return {
         hasError: true,
         message: 'args are illegal',
@@ -1389,7 +1403,8 @@ class Store {
     }
     const suffix = 'SlideInformativeness/find';
     const url = this.base + suffix;
-    const query = {uid, cid};
+    const query = {cid};
+    if (uid) query.uid = uid;
     return fetch(url + '?' + objToParamStr(query), {
       method: 'GET',
       credentials: 'include',
@@ -1397,6 +1412,55 @@ class Store {
     }).then(this.errorHandler);
   }
 
+  setCollectionTaskStatusByCollectionId(cid, status) {
+    return this.setCollectionTaskStatus(cid, null, status);
+  }
+
+  setCollectionTaskStatusBySlideId(sid, status) {
+    return this.setCollectionTaskStatus(null, sid, status);
+  }
+
+  setCollectionTaskStatus(cid, sid, status) {
+    if (!sid && !cid) {
+      return {
+        hasError: true,
+        message: 'args are illegal',
+      };
+    }
+    const suffix = 'Collection/setCollectionTaskStatus';
+    const url = this.base + suffix;
+    const query = cid?{cid, status}:{sid, status};
+    return fetch(url + '?' + objToParamStr(query), {
+      method: 'POST',
+      credentials: 'include',
+      mode: 'cors',
+    }).then(this.errorHandler);
+  }
+
+  getCollectionTaskStatusByCollectionId(cid) {
+    return this.getCollectionTaskStatus(cid, null);
+  }
+
+  getCollectionTaskStatusBySlideId(sid) {
+    return this.getCollectionTaskStatus(null, sid);
+  }
+
+  getCollectionTaskStatus(cid, sid) {
+    if (!sid && !cid) {
+      return {
+        hasError: true,
+        message: 'args are illegal',
+      };
+    }
+    const suffix = 'Collection/getCollectionTaskStatus';
+    const url = this.base + suffix;
+    const query = cid?{cid}:{sid};
+    return fetch(url + '?' + objToParamStr(query), {
+      method: 'GET',
+      credentials: 'include',
+      mode: 'cors',
+    }).then(this.errorHandler);
+  }
 
   // Update slide review status
   updateSlideReview(id, newStatus) {

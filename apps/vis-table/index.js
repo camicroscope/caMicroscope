@@ -1,8 +1,33 @@
 
 
+// the close case button
+const closeCaseBtn = document.getElementById('closeCase');
 // var totalPages = Math.ceil(totalCount / size)
 //   query.skip = size * (pageNo - 1) page # start from 1
 //  query.limit = size
+closeCaseBtn.addEventListener('click', async ()=>{
+  try {
+    const rs = await store.setCollectionTaskStatusByCollectionId($D.selectedNode.id, true);
+    if (rs&&rs.ok) {
+      $D.selectedNode.original.task_status = 'true';
+      // check is case close
+      const colTree = $($UI.colTree).jstree();
+      colTree.set_icon($D.selectedNode, './check-folder.png');
+      const domNode = colTree.get_node($D.selectedNode, true);
+      domNode.addClass('text-success');
+      $UI.message.add(`The Collection <span class='text-blue'>${fullPathName($D.selectedNode)}</span> Case Closed!`);
+    } else {
+      // db update error
+      console.error(`setCollectionTaskStatusByCollectionId update failed`);
+      $UI.message.addError(`Changing The Collection ${$D.selectedNode.original.name} Case Status Failed!`);
+    }
+  } catch (error) {
+    // server error
+    console.error(`setCollectionTaskStatusByCollectionId error`);
+    $UI.message.addError(error);
+  }
+});
+
 const rankLevel = [
   'No Evaluated',
   '1st Most Informative',
@@ -13,16 +38,16 @@ const rankLevel = [
 $D = {
   // for pagination
   recordCount: 0,
-  recordPerPage: 10,
+  recordPerPage: 2,
   totalPage: 0,
   currentPage: 1,
   // for collection
   collectionData: null,
   collectionTree: null,
-  currentSlideData: null,
+
   isRankEnable: false,
   slidesRank: null,
-
+  currentSlideData: null,
 };
 $UI = {
   // collection UI
@@ -40,6 +65,8 @@ $UI = {
   gridViewContainer: $('.inner-grid-view'),
   paginator: null,
   selectedNode: null,
+  // any hit message on the screen
+  message: new MessageQueue({position: 'bottom-left'}),
 };
 
 const store = new Store('../../data/');
@@ -108,14 +135,14 @@ $UI.selRecordPerPage.on('change', async ()=>{
     skip: $D.recordPerPage * ($D.currentPage - 1),
   };
 
-  const slides = await store.findSlide(null, null, null, null, query);
-  if (Array.isArray(slides)&& slides.length > 0) {
-    $D.currentSlideData = slides;
+  // const slides = await store.findSlide(null, null, null, null, query);
+  // if (Array.isArray(slides)&& slides.length > 0) {
+  //   $D.currentSlideData = slides;
 
-    createGridCards();
-  } else {
-    $D.currentSlideData = null;
-  }
+  createGridCards();
+  // } else {
+  //   $D.currentSlideData = null;
+  // }
   // $UI.paginator.setting.currentPage = $D.currentPage;
   // $UI.paginator.setting.totalPage = $D.totalPage;
   // $UI.paginator.draw();
@@ -140,6 +167,8 @@ $UI.selRecordPerPage.on('change', async ()=>{
 // });
 
 async function loadSlideInfo(node) {
+  closeCaseBtn.disabled = true;
+
   if (!node.original.slides || node.original.slides.length == 0) {
     $UI.slideMessage.html(`The Collection <label class='text-primary' style='font-weight:bold;'>${node.original.name}</label> Doesn't Have Slides.`);
     $UI.mainView.hide();
@@ -176,41 +205,116 @@ async function loadSlideInfo(node) {
   const query={
     collections: node.id,
     sort: {'name': 1},
-    limit: $D.recordPerPage,
-    skip: $D.recordPerPage * ($D.currentPage - 1),
+    // limit: $D.recordPerPage,
+    // skip: $D.recordPerPage * ($D.currentPage - 1),
   };
-
+  // TODO 123
   const slides = await store.findSlide(null, null, null, null, query);
-  if (Array.isArray(slides)&& slides.length > 0) {
+  const {evaluations, humanAnnotationCounts} = await store.getSlidesExtraInfoByCollectionId(node.id);
+
+  if (Array.isArray(slides)&& slides.length > 0 && evaluations && humanAnnotationCounts) {
+    // merge eval and human annotation count into slide data
+    slides.forEach((slide)=>{
+      const sid = slide._id.$oid;
+
+      // search on evaluations
+      slide.evaluation = evaluations.find((eval)=>eval.slide_id==sid);
+      // search on humanAnnotationCounts
+      slide.annotationCount = humanAnnotationCounts.find((d)=>d._id==sid);
+    });
     $D.currentSlideData = slides;
 
+    // is show relaive informativeness rank
+    $D.isRankEnable = getSlideRankStatus();
+
+    // get the rank data
+    if ($D.isRankEnable) {
+      const slidesRank = await store.findSlidesInformativeness(node.id);
+      if (slidesRank&&Array.isArray(slidesRank)) {
+        $D.slidesRank = slidesRank.length==0?null:slidesRank[0];
+        if ($D.slidesRank) {
+          isCaseClosed();
+        }
+      } else { // error TODO
+
+      }
+    }
 
     createGridCards();
   } else {
     $D.currentSlideData = null;
   }
 }
-async function getSlideRankStatus() {
-  const sids = $D.selectedNode.original&&
-  $D.selectedNode.original.slides&&
-  Array.isArray($D.selectedNode.original.slides)?
-  $D.selectedNode.original.slides:[];
-  if (sids.length == 0) return false;
-  var sinfo = await store.getSlidesHumanMarkNum(sids);
-  sinfo = sinfo.map((d)=>d._id);
+function isCaseClosed() {
+  // the slide in selected collection
+  const slidesA = $D.currentSlideData.filter((slide)=>slide.evaluation&&slide.evaluation.evaluation.informativeness=='1')
+      .map((d)=>d._id.$oid);
+  // the slide that has relative informativeness
+  const slidesB = [...$D.slidesRank.less];
+  if ($D.slidesRank.first) slidesB.push($D.slidesRank.first);
+  if ($D.slidesRank.second) slidesB.push($D.slidesRank.second);
+  if ($D.slidesRank.third) slidesB.push($D.slidesRank.third);
+  if (arrayCompare(slidesA, slidesB)) {
+    // enable Case Close btn
+    closeCaseBtn.disabled = false;
+    return true;
+  } else {
+    // disable Case Close btn
+    closeCaseBtn.disabled = true;
+    return false;
+  }
+}
 
-  for (let index = 0; index < sids.length; index++) {
-    const sid = sids[index];
-    // check evalutions
-    const evalData = $D.SlidesEvaluations.find((e)=>e.sid==sid);
-    if (evalData&&evalData.eval&&evalData.eval.some((e)=>e.creator == getUserId())&&sinfo.includes(sid)) {
-    } else {
+function arrayCompare(arrayA, arrayB) {
+  if (
+    !Array.isArray(arrayA) ||
+    !Array.isArray(arrayB) ||
+    arrayA.length !== arrayB.length
+  ) {
+    return false;
+  }
+
+  // .concat() to not mutate arguments
+  const a = arrayA.concat().sort();
+  const b = arrayB.concat().sort();
+
+  for (let i = 0; i < a.length; i++) {
+    if (a[i] !== b[i]) {
       return false;
     }
-    // check anntations
+  }
 
-    //
-    //
+  return true;
+}
+
+function getSlideRankStatus() {
+  // const sids = $D.selectedNode.original&&
+  // $D.selectedNode.original.slides&&
+  // Array.isArray($D.selectedNode.original.slides)?
+  // $D.selectedNode.original.slides:[];
+  // if (sids.length == 0) return false;
+  // var sinfo = await store.getSlidesHumanMarkNum(sids);
+  // sinfo = sinfo.map((d)=>d._id);
+
+  // for (let index = 0; index < sids.length; index++) {
+  //   const sid = sids[index];
+  //   // check evalutions
+  //   const evalData = $D.SlidesEvaluations.find((e)=>e.sid==sid);
+  //   if (evalData&&evalData.eval&&evalData.eval.some((e)=>e.creator == getUserId())&&sinfo.includes(sid)) {
+  //   } else {
+  //     return false;
+  //   }
+  //   // check anntations
+
+  //   //
+  //   //
+  // }
+  // return true;
+  for (let index = 0; index < $D.currentSlideData.length; index++) {
+    const slide = $D.currentSlideData[index];
+    if (!slide.evaluation) return false;
+    const eval = slide.evaluation.evaluation;
+    if (eval.tumor_present == '1'&&!slide.annotationCount) return false;
   }
   return true;
 }
@@ -225,7 +329,7 @@ async function onPaginationChange({currentPage, totalPage}) {
 
 
   $D.currentPage = currentPage;
-  const query={
+  const query = {
     collections: $D.selectedNode.id,
     sort: {'name': 1},
     limit: $D.recordPerPage,
@@ -233,20 +337,24 @@ async function onPaginationChange({currentPage, totalPage}) {
   };
   $UI.recordMessage.text(`Showing ${$D.recordPerPage * ($D.currentPage-1) + 1} to ${Math.min($D.recordPerPage * $D.currentPage, $D.recordCount)} of ${$D.recordCount} entities`);
 
-  const slides = await store.findSlide(null, null, null, null, query);
+  // const slides = await store.findSlide(null, null, null, null, query);
 
 
-  if (Array.isArray(slides)&& slides.length > 0) {
-    $D.currentSlideData = slides;
+  // if (Array.isArray(slides)&& slides.length > 0) {
+  //   $D.currentSlideData = slides;
 
-    createGridCards();
-  } else {
-    $D.currentSlideData = null;
-  }
+  createGridCards();
+  // } else {
+  //   $D.currentSlideData = null;
+  // }
 }
 async function createGridCards() {
   $UI.gridViewContainer.empty();
-  $D.currentSlideData.forEach((slide) => {
+  console.log($D.recordPerPage);
+  // limit: $D.recordPerPage,
+  const start = $D.recordPerPage * ($D.currentPage - 1);
+  const slides = $D.currentSlideData.slice(start, start + $D.recordPerPage);
+  slides.forEach((slide) => {
     $UI.gridViewContainer.append(createGridCard(slide));
   });
 }
@@ -295,14 +403,15 @@ function createGridCard(d) {
   title.textContent = `${d.name}`;
   cardContent.appendChild(title);
 
-  // DOE customized
+
+  // DOE customized TODO
   // informativeness indicator
-  const [indicator, score] = getInformativenessInfos(sid);
+  const [indicator, score] = getInformativenessInfos(d);
   card.appendChild(indicator);
   if (score) card.appendChild(score);
   //
 
-  //
+  // TODO
   const indicatorIcon = indicator.querySelector('i');
   if ($D.isRankEnable && indicatorIcon && indicatorIcon.classList.contains('fa-check') ) {
     const rankDropDown = generateDropdownMenu(card, d);
@@ -332,20 +441,45 @@ function generateDropdownMenu(elt, data) {
   </ul>`;
   div.innerHTML = dropdown;
   $(div).find('li').on('click', async function(e) {
+    closeCaseBtn.disabled = true;
     const {sid, level} = this.dataset;
     // TODO update DB
-    const data = await store.rankSlidesInformativeness($D.selectedNode.id, getUserId(), sid, level); // $D.selectedNode.id;
+    const data = await store.rankSlidesInformativeness($D.selectedNode.id, null, sid, level); // $D.selectedNode.id;
+    console.log(data);
     if (data&&data.result&&data.result.ok&&data.result.n) { // correct
-      const slidesRank = await store.findSlidesInformativeness($D.selectedNode.id, getUserId());
+      // sync ui
+
+      const slidesRank = await store.findSlidesInformativeness($D.selectedNode.id);
+      // no relative informativeness data
       if (slidesRank&&Array.isArray(slidesRank)) {
         $D.slidesRank = slidesRank.length==0?null:slidesRank[0];
-        // sync ui
-        syncSlideRankDropdown(sid, level);
-      } else { // error TODO
-
+        syncSlideRankDropdown();
+        if ($D.slidesRank&&!isCaseClosed()) {
+          try {
+            const rs = await store.setCollectionTaskStatusByCollectionId($D.selectedNode.id, false);
+            if (rs&&rs.ok) {
+              $D.selectedNode.original.task_status = 'false';
+              // reopen if case closed
+              const colTree = $($UI.colTree).jstree();
+              colTree.set_icon($D.selectedNode, './folder.png');
+              const domNode = colTree.get_node($D.selectedNode, true);
+              domNode.removeClass('text-success');
+              $UI.message.add(`The Collection <span class='text-blue'>${fullPathName($D.selectedNode)}</span> Case Reopened!`);
+            } else {
+              // db update error
+              console.error(`setCollectionTaskStatusByCollectionId update failed`);
+              $UI.message.addError(`Changing The Collection ${$D.selectedNode.original.name} Case Status Failed!`);
+            }
+          } catch (error) {
+            // server error
+            console.error(`setCollectionTaskStatusByCollectionId error`);
+            $UI.message.addError(error);
+          }
+        }
       }
-    } else { // error
-
+    } else { // can't get relative informativeness data
+      console.error(`rankSlidesInformativeness update failed`);
+      $UI.message.addError(`Update The Relative Informativeness Rank Failed`);
     }
   });
   return div;
@@ -386,45 +520,51 @@ function getRankLevel(sid) {
   if ($D.slidesRank.less.includes(sid)) return 4; // less
   return 0;
 }
-function getInformativenessInfos(sid) {
+function getInformativenessInfos(slide) {
   var informativenessScore = null;
   const informativenessIndicator = document.createElement('div');
   informativenessIndicator.classList.add('indicator');
   const icon = document.createElement('i');
   icon.classList.add('fas');
-  for (let index = 0; index < $D.SlidesEvaluations.length; index++) {
-    const slideEvals = $D.SlidesEvaluations[index];
-    if (slideEvals.sid == sid && slideEvals.eval&&Array.isArray(slideEvals.eval)) {
-      const evaluations = slideEvals.eval;
-      for (let idx = 0; idx < evaluations.length; idx++) {
-        const eval = evaluations[idx];
-        if (eval.creator == getUserId()&&eval.evaluation&&eval.evaluation.informativeness) {
-          if (eval.evaluation.informativeness == '1') {
-            icon.classList.add('fa-check');
-            icon.classList.add('text-success');
-            icon.title = 'Informative';
-            // create score div
-            informativenessScore = document.createElement('div');
-            informativenessScore.classList.add('score');// badge bg-success
-            informativenessScore.classList.add('badge');
-            informativenessScore.classList.add('rounded-pill');
-            informativenessScore.classList.add('bg-success');
-            informativenessScore.textContent = `SCORE: ${eval.evaluation.absolute_informativeness}`;
-          } else {
-            icon.classList.add('fa-times');
-            icon.classList.add('text-danger');
-            icon.title = 'Uninformative';
-          }
-          informativenessIndicator.appendChild(icon);
-          return [informativenessIndicator, informativenessScore];
-        }
-      }
-    }
-  }
   //
-  icon.classList.add('fa-question');
-  icon.classList.add('text-muted');
-  icon.title = 'Not Evaluated';
+  if (slide.evaluation) {
+    const evalData = slide.evaluation.evaluation;
+    if (evalData.informativeness == '1') {
+      icon.classList.add('fa-check');
+      icon.classList.add('text-success');
+      icon.title = 'Informative';
+      // create score div
+      informativenessScore = document.createElement('div');
+      informativenessScore.classList.add('score');// badge bg-success
+      informativenessScore.classList.add('badge');
+      informativenessScore.classList.add('rounded-pill');
+      informativenessScore.classList.add('bg-success');
+      informativenessScore.textContent = `SCORE: ${evalData.absolute_informativeness}`;
+    } else {
+      icon.classList.add('fa-times');
+      icon.classList.add('text-danger');
+      icon.title = 'Uninformative';
+    }
+  } else {
+    icon.classList.add('fa-question');
+    icon.classList.add('text-muted');
+    icon.title = 'Not Evaluated';
+  }
+  // for (let index = 0; index < $D.SlidesEvaluations.length; index++) {
+  //   const slideEvals = $D.SlidesEvaluations[index];
+  //   if (slideEvals.sid == sid && slideEvals.eval&&Array.isArray(slideEvals.eval)) {
+  //     const evaluations = slideEvals.eval;
+  //     for (let idx = 0; idx < evaluations.length; idx++) {
+  //       const eval = evaluations[idx];
+  //       if (eval.creator == getUserId()&&eval.evaluation&&eval.evaluation.informativeness) {
+  //         informativenessIndicator.appendChild(icon);
+  //         return [informativenessIndicator, informativenessScore];
+  //       }
+  //     }
+  //   }
+  // }
+  // //
+
   informativenessIndicator.appendChild(icon);
   return [informativenessIndicator, informativenessScore];
 }
@@ -473,16 +613,7 @@ function createCollectionTree() {
 
       }
       // set the rank slide status
-      $D.isRankEnable = await getSlideRankStatus();
-      // get the rank data
-      if ($D.isRankEnable) {
-        const slidesRank = await store.findSlidesInformativeness(node.id, getUserId());
-        if (slidesRank&&Array.isArray(slidesRank)) {
-          $D.slidesRank = slidesRank.length==0?null:slidesRank[0];
-        } else { // error TODO
-
-        }
-      }
+      // TODO
       // loading slide data
       // $D.s = await
       loadSlideInfo(node);
@@ -498,32 +629,35 @@ function createCollectionTree() {
 }
 
 window.addEventListener('resize', resize);
-// console.log(calculateSize(document.querySelector('.pagination-control')));
+
 window.addEventListener('load', async ()=> {
-  var edata = await store.getSlidesEvaluations(getUserId());
-  $D.SlidesEvaluations = edata;
-  if (Array.isArray(edata)) {
-    $D.slideEvalNums = edata.filter((d)=>d.eval).map((d)=>d._id);
-  } else { // error
-    $D.slideEvalNums = [];
-  }
+  // var edata = await store.getSlidesEvaluations();
+  // $D.SlidesEvaluations = edata;
+  // if (Array.isArray(edata)) {
+  //   $D.slideEvalNums = edata.filter((d)=>d.eval).map((d)=>d._id);
+  // } else { // error
+  //   $D.slideEvalNums = [];
+  // }
   // get the collection data
   var data = await store.getAllCollection();
   if (Array.isArray(data)) {
     $D.collectionData = data.map((d)=>{
       d.id = d._id.$oid;
+      if (d.task_status&&d.task_status=='true') {
+        d.icon = './check-folder.png';
+        d.li_attr = {'class': 'text-success'};
+      } else {
+        d.icon = './folder.png';
+      }
+
       d.name = d.text;
       delete d._id;
       return d;
     });
     $D.collectionTree = listToTree($D.collectionData);
+    //
     $D.collectionData.forEach((d)=>{
       if (d.children && d.children.length == 0) d.text = `${d.text} [${d.slides?d.slides.length:0}]`;
-      if (d.slides) {
-        d.icon = setCollectionIcon(d);
-      } else {
-        d.icon = './folder.png';
-      }
     });
     createCollectionTree();
   } else { // error message
@@ -569,12 +703,16 @@ function calculateSize(elt) {
   return {width, height, offsetWidth: Math.ceil(elt.offsetWidth), offsetHeight: Math.ceil(elt.offsetHeight)};
 }
 
-
+function fullPathName(node) {
+  const parentNames = getParentNames(node);
+  const crumbList = [...parentNames.reverse(), node.original.name];
+  return crumbList.join('/');
+}
 function createBreadcrumb(node) {
   // clear the old crumb
   $UI.slideBreadcrumb.empty();
   if (!node) return;
-  //
+
   const parentNames = getParentNames(node);
 
   const crumbList = [...parentNames.reverse(), node.original.name];
@@ -593,12 +731,4 @@ function getParentNames(node) {
     }
   });
   return rs;
-}
-
-function setCollectionIcon(node) {
-  for (let index = 0; index < node.slides.length; index++) {
-    const sid = node.slides[index];
-    if (!$D.slideEvalNums.includes(sid)) return './folder.png';
-  }
-  return './check-folder.png';
 }

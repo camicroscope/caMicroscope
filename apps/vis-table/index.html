@@ -51,7 +51,12 @@
 
     <!-- icon -->
     <link rel="shortcut icon" type="image/x-icon" href="/apps/landing/favicon.png" />
-
+    <link
+      rel="stylesheet"
+      type="text/css"
+      media="all"
+      href="../../components/messagequeue/messagequeue.css"
+    />
     <!-- style css -->
     <link rel="stylesheet" href="./style.css" />
 
@@ -146,27 +151,27 @@
                 </div>
               
                 <div class="row my-3">
-                    <div class="col-sm-12 col-md-6">
+                    <div class="col-sm-12 col-md-12 d-flex justify-content-between">
                         <label class='ctrl-label'>
                             Show
                             <select id="selRecordPerPage" class="form-select form-select-sm" aria-label=".form-select-sm">
-                                <option value=10 selected>10</option>
+                                <option value=2 selected>2</option>
+                                <option value=5>5</option>
+                                <option value=10>10</option>
                                 <option value=25 >25</option>
                                 <option value=50>50</option>
                                 <option value=100>100</option>
                             </select>
                         entities
                         </label>
-                    </div>
-                    <div class="col-sm-12 col-md-6 d-flex justify-content-end">
-                            <!-- <div id="rankSlide" class="btn btn-sm bg-primary text-white disabled">Rank Slides</div> -->
-                            <!-- <div class="btn btn-sm bg-primary text-white" style="margin-left: 1rem;">Score slide</div> -->
-                            <!-- <button class="btn bg-primary btn-sm" tabindex="0"
-                                type="button" title="Change views">
-                                <span class="fa fa-fw fa-table" style='color: #fff;'></span>
-                            </button> -->
-                            <!-- <label class='ctrl-label justify-content-end'>Search:<input id="slideSearch" type="search" class="form-control form-control-sm"
-                                    placeholder="Slide Name" ></label> -->
+                        <!-- search -->
+                        <!-- <label class='ctrl-label'>Search:<input id="slideSearch" type="search" class="form-control form-control-sm"
+                            placeholder="Slide Name" ></label> -->
+                        <!-- Case Close -->
+                        <button id='closeCase' class="btn bg-primary btn-sm text-white" tabindex="0"
+                            type="button" title="Close Case" disabled>Close Case
+                        </button>
+
                     </div>
                 </div>
                 <!-- mansonry control end -->
@@ -215,6 +220,10 @@
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
-    
+    <!-- message queue js -->
+    <script
+      type="text/javascript"
+      src="../../components/messagequeue/messagequeue.js"
+    ></script>    
 <script src="index.js"></script>
 </html>

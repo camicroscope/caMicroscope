@@ -946,6 +946,8 @@ function annoCallback(data) {
               null,
           );
         }
+        // DOE customized
+        changeCollectionTaskStatusToFalse();
       })
       .catch((e) => {
         Loading.close();
@@ -1804,13 +1806,28 @@ function drawLabel(e) {
     presetLabelOff();
   }
 }
+function isSameEval(eval1, eval2) {
+  if (!isSameProperty(eval1, eval2, 'slide_quality')) return false;
+  if (!isSameProperty(eval1, eval2, 'tumor_present')) return false;
+  if (!isSameProperty(eval1, eval2, 'tumor_histology')) return false;
+  if (!isSameProperty(eval1, eval2, 'informativeness')) return false;
+  if (!isSameProperty(eval1, eval2, 'absolute_informativeness')) return false;
+  if (!isSameProperty(eval1, eval2, 'comments')) return false;
+  return true;
+}
 
+function isSameProperty(eval1, eval2, propsName) {
+  if (eval1.hasOwnProperty(propsName)===false&&eval2.hasOwnProperty(propsName)==false) return true;
+  return eval1.hasOwnProperty(propsName)&&eval2.hasOwnProperty(propsName)&&eval1[propsName]===eval2[propsName];
+}
 async function saveEvaluation(e) {
+  // return;
+
   if (!$D.isEvalDataExist) {
     const evalData = {
-      'user_id': getUserId(),
+      // 'user_id': getUserId(),
       'slide_id': $D.params.slideId,
-      'slide_name': $D.params.data.name,
+      // 'slide_name': $D.params.data.name,
       'evaluation': this.getValue(),
       'create_date': new Date(),
       'creator': getUserId(),
@@ -1834,7 +1851,7 @@ async function saveEvaluation(e) {
     }
   } else {
     const query = {
-      'user_id': getUserId(),
+      // 'user_id': getUserId(),
       'slide_id': $D.params.slideId,
     };
     const evalData = {
@@ -1844,6 +1861,16 @@ async function saveEvaluation(e) {
       'is_draft': false,
     };
     try {
+      var evals = await $CAMIC.store.findEvaluation({
+        // 'user_id': getUserId(),
+        'slide_id': $D.params.slideId,
+      });
+      //
+      if (evals&&Array.isArray(evals)&&evals[0]&&evals[0].evaluation&&isSameEval(evals[0].evaluation, evalData.evaluation)) {
+        $UI.message.addWarning('Evaluation Form Is No Changes.');
+        return;
+      }
+
       const rs = await $CAMIC.store.updateEvaluation(query, evalData);
       if (rs.error) {
         $UI.message.addError(rs.text);
@@ -1853,6 +1880,19 @@ async function saveEvaluation(e) {
         $D.isDraftEvalData = false;
         const evalMessage = document.getElementById('eval_message');
         evalMessage.textContent = null;
+        // change collection status
+        try {
+          const rs = await $CAMIC.store.setCollectionTaskStatusBySlideId($D.params.slideId, false);
+          if (rs&&rs.ok) {
+            console.log(`Eval setCollectionTaskStatusBySlideId(${$D.params.slideId},false) succeeded`);
+          } else {
+            // db update error
+            console.error(`Eval setCollectionTaskStatusBySlideId update failed`);
+          }
+        } catch (error) {
+          // server error
+          console.error(`Eval setCollectionTaskStatusBySlideId error`);
+        }
       } else {
         $UI.message.addWarning(`Something Happened When Saving Evaluation!`);
       }
@@ -2046,6 +2086,8 @@ function savePresetLabel() {
             'human',
             labelId,
         );
+        // DOE customized
+        changeCollectionTaskStatusToFalse();
       })
       .catch((e) => {
         Loading.close();
@@ -2054,6 +2096,22 @@ function savePresetLabel() {
       .finally(() => {
         $UI.message.addSmall(`Added The '${noteData.name}' Annotation.`);
       });
+}
+// DOE customized
+async function changeCollectionTaskStatusToFalse() {
+  // change collection status
+  try {
+    const rs = await $CAMIC.store.setCollectionTaskStatusBySlideId($D.params.slideId, false);
+    if (rs&&rs.ok) {
+      console.log(`setCollectionTaskStatusBySlideId(${$D.params.slideId},false) succeeded`);
+    } else {
+      // db update error
+      console.error(`setCollectionTaskStatusBySlideId update failed`);
+    }
+  } catch (error) {
+    // server error
+    console.error(`setCollectionTaskStatusBySlideId error`);
+  }
 }
 
 function addAnnotation(id, data, type, parent) {
@@ -2302,6 +2360,8 @@ function onAddRuler(ruler) {
         // $UI.layersViewerMinor.update();
 
         $UI.message.addSmall(`Added The '${execId}' Ruler.`);
+        // DOE customized
+        changeCollectionTaskStatusToFalse();
       })
       .catch((e) => {
         Loading.close();

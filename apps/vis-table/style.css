@@ -228,3 +228,15 @@ nav li:not(.active):hover a{
     left:0;
     display: flex;
   }
+
+  .bullet {
+    font-size: 1rem;
+    padding: .75rem;
+  }
+
+  .text-blue {
+    color: #0000ff;
+  }
+  .text-red {
+    color: #ff0000;
+  }

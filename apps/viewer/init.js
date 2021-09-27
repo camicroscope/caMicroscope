@@ -332,8 +332,7 @@ async function initUIcomponents() {
       callback: goHome,
     });
   }
-
-  // get evaluation data
+  // DOE customized for evaluation START
 
   // get evaluation config
   const evaluationConfig = $D.configurations.find((d)=>d.config_name=='evaluation_form');
@@ -341,7 +340,7 @@ async function initUIcomponents() {
   // evaluation form
   if (evaluationConfig && evaluationConfig.enable) {
     $D.evaluationData = await $CAMIC.store.findEvaluation({
-      'user_id': getUserId(),
+      // 'user_id': getUserId(),
       'slide_id': $D.params.slideId,
     });
     $UI.evalSideMenu = new SideMenu({
@@ -354,7 +353,6 @@ async function initUIcomponents() {
     evalCloseDiv.style.cssText = 'height:24px !important; flex:none;';
     $(evalCloseDiv).find('i').css( 'display', 'none' );
     // eval_panel.
-    $UI.evalSideMenu.open();
     var evalTitle = document.createElement('div');
     evalTitle.classList.add('item_head');
     evalTitle.textContent = 'Evaluation';
@@ -372,9 +370,9 @@ async function initUIcomponents() {
       if ($D.isDraftEvalData == false) return;
       if (!$D.isEvalDataExist) {
         const evalData = {
-          'user_id': getUserId(),
+          // 'user_id': getUserId(),
           'slide_id': $D.params.slideId,
-          'slide_name': $D.params.data.name,
+          // 'slide_name': $D.params.data.name,
           'evaluation': data,
           'create_date': new Date(),
           'creator': getUserId(),
@@ -395,7 +393,7 @@ async function initUIcomponents() {
         }
       } else {
         const query = {
-          'user_id': getUserId(),
+          // 'user_id': getUserId(),
           'slide_id': $D.params.slideId,
         };
         const evalData = {
@@ -461,7 +459,6 @@ async function initUIcomponents() {
                   'creator': getUserId(),
                   'provenance.image.slide': $D.params.slideId,
                   'provenance.analysis.source': 'human',
-
                 }).then((d)=>{
                   if (d > 0) {
                     callback({
@@ -646,46 +643,46 @@ async function initUIcomponents() {
           absoluteInformativeness.control.find('input').prop('disabled', true);
           comments.setValue(null);
         } else {
-          if ($D.isDraftEvalData) {
-            const eval = $D.evaluationData[0].evaluation;
-            if (eval.slide_quality == null || eval.slide_quality == undefined) {
-              slideQuality.setValue(null);
-            }
-            if (eval.tumor_present == null || eval.tumor_present == undefined) {
-              tumorPresent.setValue(null);
-            }
-            if (eval.tumor_histology == null || eval.tumor_histology == undefined) {
-              tumorHistology.setValue(null);
-            }
-            if (eval.informativeness == null || eval.informativeness == undefined) {
-              informativeness.setValue(null);
-            }
-            if (eval.absolute_informativeness == null || eval.absolute_informativeness == undefined) {
-              absoluteInformativeness.setValue(null);
-            }
-            if (eval.informativeness == 1) {
-              absoluteInformativeness.enable();
-              absoluteInformativeness.field.removeClass('disabled');
-              absoluteInformativeness.field.removeClass('alpaca-disabled');
-              absoluteInformativeness.control.removeClass('disabled');
-              absoluteInformativeness.control.find('input').prop('disabled', false);
-              absoluteInformativeness.refreshValidationState();
-            } else if (eval.informativeness == 0) {
-              absoluteInformativeness.disable();
-              absoluteInformativeness.setValue(eval.absolute_informativeness);
-              absoluteInformativeness.field.addClass('disabled');
-              absoluteInformativeness.field.addClass('alpaca-disabled');
-              absoluteInformativeness.control.addClass('disabled');
-              absoluteInformativeness.control.find('input').prop('disabled', true);
-            } else {
-              absoluteInformativeness.setValue(null);
-            }
-            if (eval.comments == null || eval.comments == undefined) {
-              comments.setValue(null);
-            }
-            control.refreshValidationState();
-            control.domEl.find('button[data-key=submit]').prop('disabled', true);
+          // if ($D.isDraftEvalData) {
+          const eval = $D.evaluationData[0].evaluation;
+          if (eval.slide_quality == null || eval.slide_quality == undefined) {
+            slideQuality.setValue(null);
           }
+          if (eval.tumor_present == null || eval.tumor_present == undefined) {
+            tumorPresent.setValue(null);
+          }
+          if (eval.tumor_histology == null || eval.tumor_histology == undefined) {
+            tumorHistology.setValue(null);
+          }
+          if (eval.informativeness == null || eval.informativeness == undefined) {
+            informativeness.setValue(null);
+          }
+          if (eval.absolute_informativeness == null || eval.absolute_informativeness == undefined) {
+            absoluteInformativeness.setValue(null);
+          }
+          if (eval.informativeness == 1) {
+            absoluteInformativeness.enable();
+            absoluteInformativeness.field.removeClass('disabled');
+            absoluteInformativeness.field.removeClass('alpaca-disabled');
+            absoluteInformativeness.control.removeClass('disabled');
+            absoluteInformativeness.control.find('input').prop('disabled', false);
+            absoluteInformativeness.refreshValidationState();
+          } else if (eval.informativeness == null || eval.comments == undefined || eval.informativeness == 0) {
+            absoluteInformativeness.disable();
+            absoluteInformativeness.setValue(eval.absolute_informativeness);
+            absoluteInformativeness.field.addClass('disabled');
+            absoluteInformativeness.field.addClass('alpaca-disabled');
+            absoluteInformativeness.control.addClass('disabled');
+            absoluteInformativeness.control.find('input').prop('disabled', true);
+          } else {
+            absoluteInformativeness.setValue(null);
+          }
+          if (eval.comments == null || eval.comments == undefined) {
+            comments.setValue(null);
+          }
+          control.refreshValidationState();
+          control.domEl.find('button[data-key=submit]').prop('disabled', true);
+          // }
         }
         control.refreshValidationState();
       },
@@ -715,7 +712,7 @@ async function initUIcomponents() {
       evalMessge.textContent = 'Draft Data: Please Complete the Evaluation and Save';
     }
     $('#eval_form').alpaca(formOpt);
-
+    if (!$D.isEvalDataExist|| $D.isDraftEvalData) $UI.evalSideMenu.open();
     subToolsOpt.push({
       name: 'eval',
       icon: 'list_alt', // material icons' name
@@ -725,6 +722,7 @@ async function initUIcomponents() {
       callback: toggleEvalPanel,
     });
   }
+  // DOE customized for evaluation END
 
   // meta data
   $UI.metaSideMenu = new SideMenu({
