@@ -70,6 +70,17 @@ $UI = {
 };
 
 const store = new Store('../../data/');
+// test download
+store.collectionDataExports([1, 2, 3, 4, 5, 6]).then((blob)=>{
+  var url = window.URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = 'test.zip';
+  document.body.appendChild(a);
+  a.click();
+  a.remove(); // afterwards we remove the element again
+  window.URL.revokeObjectURL(blob);
+});
 
 $UI.slideSearch.on('keyup', Debounce(()=>{
   const name = ($UI.slideSearch.val()).trim();

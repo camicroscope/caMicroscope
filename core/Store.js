@@ -677,6 +677,20 @@ class Store {
       mode: 'cors',
     }).then(this.errorHandler);
   }
+  collectionDataExports(cids) {
+    if (!cids || !Array.isArray(cids)|| cids.length < 1) {
+      return {hasError: true, error: `No Collection Ids.`};
+    }
+    const suffix = 'Collection/collectionDataExports';
+    const url = this.base + suffix;
+    return fetch(url, {
+      method: 'POST',
+      credentials: 'include',
+      mode: 'cors',
+      body: JSON.stringify(cids),
+    }).then((data)=>data.blob());
+  }
+
   getSlidesExtraInfoByCollectionId(cid) {
     if (!cid) {
       return {hasError: true, error: `No Collection Id.`};
@@ -685,6 +699,7 @@ class Store {
     const url = this.base + suffix;
     const query = {cid};
     return fetch(url + '?' + objToParamStr(query), {
+      method: 'GET',
       credentials: 'include',
       mode: 'cors',
     }).then(this.errorHandler);
@@ -701,6 +716,7 @@ class Store {
     }
 
     return fetch(url + '?' + objToParamStr(query), {
+      method: 'GET',
       credentials: 'include',
       mode: 'cors',
     }).then(this.errorHandler);
