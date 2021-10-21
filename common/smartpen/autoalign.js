@@ -133,7 +133,7 @@ class smartpen {
     var temp = `
         <input type="checkbox" id="align_flag1" style="display:none;">
         <input type="checkbox" id="align_flag2" style="display:none;">
-        <button id="align_openbtn" style="z-index:602; width:100px;" class="material-icons">auto_graph</button>
+        <button id="align_openbtn" style="z-index:602; width:200px; font-size:17px;">Smart-Pen</button>
         <button id="align_mode" class="material-icons">power_settings_new</button>
         <button id="align_undoalign" class="material-icons">fast_rewind</button>
         <button id="align_setting" class="material-icons">tune</button>
@@ -172,10 +172,15 @@ class smartpen {
     var s = document.getElementById('align_s');
     var t = document.getElementById('align_t');
     var blink;
+    // logo change, blink and width, text
     openbtn.onclick = function() {
-      check1.checked=!check1.checked; if (!check1.checked)check2.checked=false;
+      check1.checked=!check1.checked;
+      if (!check1.checked) {
+        check2.checked=false; openbtn.innerHTML = 'Smart-Pen'; openbtn.className = '';
+      } else {
+        openbtn.innerHTML = 'auto_graph'; openbtn.className = 'material-icons';
+      }
     };
-    // logo change, blink and width
     mode.onclick = () => {
       this.mode = (this.mode+1)%3;
       if (this.mode == 0) {
@@ -241,7 +246,7 @@ class mathtoolSmartpen {
         var n = Math.min(~~(Math.sqrt(d)/c), m);
         for (var j=1; j<=n; j++) {
           var x = a[0] + j*(b[0]-a[0])/n; var y = a[1] + j*(b[1]-a[1])/n;
-          dist.push([x, y]);
+          dist.push([~~x, ~~y]);
         }
         prev = b;
       } else if (d>=low*low) {

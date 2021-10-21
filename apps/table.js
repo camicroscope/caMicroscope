@@ -590,7 +590,7 @@ function checkUserPermissions() {
             $('td:nth-child(2)', this).unbind('mouseenter mouseleave');
             $('td:nth-child(2)', this).hover(function() {
               var content = $(this).html();
-              $(this).html(content + `<i style='font-size: small; margin-left:1em; cursor: pointer' onclick="changeSlideName('` + content + `', '` + currentId + `')" class="fas fa-pen" data-toggle="modal" data-target="#slideNameChangeModal"></i>`);
+              $(this).html(content + `<i style='font-size: small; margin-left:1em; cursor: pointer' onclick="changeSlideName('` + content + `', '` + currentId + `')" class="fas fa-pen" data-bs-toggle="modal" data-bs-target="#slideNameChangeModal"></i>`);
             }, function() {
               $(this).find('i').last().remove();
             });

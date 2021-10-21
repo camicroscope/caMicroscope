@@ -163,9 +163,17 @@ function initCore() {
   $CAMIC.loadImg(function(e) {
     // image loaded
     if (e.hasError) {
-      $UI.message.addError(e.message);
-      // can't reach Slide and return to home page
-      if (e.isServiceError) redirect($D.pages.table, e.message, 0);
+      // if this is a retry, assume normal behavior (one retry per slide)
+      if ($D.params.retry) {
+        $UI.message.addError(e.message);
+        // can't reach Slide and return to home page
+        if (e.isServiceError) redirect($D.pages.table, e.message, 0);
+      } else {
+        // If this is our first attempt, try one more time.
+        let params = new URLSearchParams(window.location.search);
+        params.set('retry', '1');
+        window.location.search = params.toString();
+      }
     } else {
       $D.params.data = e;
       // popup panel
