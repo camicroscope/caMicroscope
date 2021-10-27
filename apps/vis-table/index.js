@@ -6,6 +6,19 @@ const closeCaseBtn = document.getElementById('closeCase');
 //   query.skip = size * (pageNo - 1) page # start from 1
 //  query.limit = size
 closeCaseBtn.addEventListener('click', async ()=>{
+  // verify the most relative informative slides
+  if (!$D.slidesRank.first) {
+    alert('Please Select 1st Most Informative Slide Before Close Case!');
+    return;
+  }
+  if (!$D.slidesRank.second) {
+    alert('Please Select 2nd Most Informative Slide Before Close Case!');
+    return;
+  }
+  if (!$D.slidesRank.third) {
+    alert('Please Select 3rd Most Informative Slide Before Close Case!');
+    return;
+  }
   try {
     const rs = await store.setCollectionTaskStatusByCollectionId($D.selectedNode.id, true);
     if (rs&&rs.ok) {
@@ -38,7 +51,7 @@ const rankLevel = [
 $D = {
   // for pagination
   recordCount: 0,
-  recordPerPage: 2,
+  recordPerPage: 10,
   totalPage: 0,
   currentPage: 1,
   // for collection
@@ -70,17 +83,6 @@ $UI = {
 };
 
 const store = new Store('../../data/');
-// test download
-store.collectionDataExports([1, 2, 3, 4, 5, 6]).then((blob)=>{
-  var url = window.URL.createObjectURL(blob);
-  var a = document.createElement('a');
-  a.href = url;
-  a.download = 'test.zip';
-  document.body.appendChild(a);
-  a.click();
-  a.remove(); // afterwards we remove the element again
-  window.URL.revokeObjectURL(blob);
-});
 
 $UI.slideSearch.on('keyup', Debounce(()=>{
   const name = ($UI.slideSearch.val()).trim();
@@ -361,7 +363,6 @@ async function onPaginationChange({currentPage, totalPage}) {
 }
 async function createGridCards() {
   $UI.gridViewContainer.empty();
-  console.log($D.recordPerPage);
   // limit: $D.recordPerPage,
   const start = $D.recordPerPage * ($D.currentPage - 1);
   const slides = $D.currentSlideData.slice(start, start + $D.recordPerPage);
@@ -666,7 +667,7 @@ window.addEventListener('load', async ()=> {
       return d;
     });
     $D.collectionTree = listToTree($D.collectionData);
-    //
+
     $D.collectionData.forEach((d)=>{
       if (d.children && d.children.length == 0) d.text = `${d.text} [${d.slides?d.slides.length:0}]`;
     });
@@ -699,8 +700,9 @@ function resize() {
 
   const {x, y} = gridView.getBoundingClientRect();
   const pageCtrlRect = calculateSize(pagCtrl);
-  const footerRect = calculateSize(footer);
-  gridView.style.height = `${Math.ceil(innerHeight - y - pageCtrlRect.height - footerRect.height )}px`;
+  // const footerRect = calculateSize(footer);
+  gridView.style.height = `${Math.ceil(innerHeight - y - pageCtrlRect.height - 50 )}px`;
+  // gridView.style.height = `${Math.ceil(innerHeight - y - pageCtrlRect.height - footerRect.height )}px`;
 }
 
 function calculateSize(elt) {

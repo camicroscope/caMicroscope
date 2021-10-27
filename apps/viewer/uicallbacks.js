@@ -1866,7 +1866,8 @@ async function saveEvaluation(e) {
         'slide_id': $D.params.slideId,
       });
       //
-      if (evals&&Array.isArray(evals)&&evals[0]&&evals[0].evaluation&&isSameEval(evals[0].evaluation, evalData.evaluation)) {
+      if (evals&&Array.isArray(evals)&&evals[0]&&evals[0].evaluation&&
+      evals[0].is_draft==evalData.is_draft&&isSameEval(evals[0].evaluation, evalData.evaluation)) {
         $UI.message.addWarning('Evaluation Form Is No Changes.');
         return;
       }

@@ -688,7 +688,7 @@ class Store {
       credentials: 'include',
       mode: 'cors',
       body: JSON.stringify(cids),
-    }).then((data)=>data.blob());
+    });
   }
 
   getSlidesExtraInfoByCollectionId(cid) {

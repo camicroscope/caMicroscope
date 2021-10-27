@@ -14,7 +14,9 @@ footer{
 .header {
 	margin-top: 60px;
 }
-
+table.dataTable.no-footer {
+    border-bottom: none;
+}
 .bg-dark {
 	background-color: #343a40 !important;
 }
@@ -42,101 +44,9 @@ nav li:not(.active):hover a{
 	color: black !important;
 }
 
-/* .h-fit { 
-  height: calc(100vh - 128px);
-  overflow: hidden;
-} */
-
 .h-fit { 
-  height: calc(100vh - 56px);
-  overflow: hidden;
-}
-
-.tree-view, .main-view {
-  border-right: 1px solid rgba(0, 0, 0, 0.125);
-  padding: 0;
-}
-.main-view {
-  padding: 0rem 2rem 0rem 2rem;
-  display: flex;
-  flex-direction: column;
-  
-}
-
-#main-view-panel {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-}
-#main-view-breadcrumb {
-  width: fit-content;
-}
-.grid-view {
-  overflow-y: auto;
-  box-sizing: border-box;
-
-  border-radius: .2rem;
-  border: 1px solid #dee2e6; 
-}
-.inner-grid-view {
-  box-sizing: border-box;
-  display: -webkit-flex;
-  display: flex;
-  -webkit-justify-content: space-around;
-  -webkit-flex-flow: row wrap;
-  justify-content: space-around;
-  flex-flow: row wrap;
-  align-items: center;
-
-}
-.grid-card {
-    width: 256px;
-    height: 256px;
-    box-shadow: 0 4px 8px 0 rgb(0 0 0 / 20%), 0 6px 20px 0 rgb(0 0 0 / 19%);
-    margin: .5rem;
-    background: #d3d3d3;
-    overflow: hidden;
-    position: relative;
-    border-radius: .25rem;
-    white-space: nowrap;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    
-
-}
-.grid-card-content {
-  overflow: hidden;
-  position: relative;
-  height: 100%;
-  width: 100%;
-  cursor: pointer;
-  white-space: nowrap;
-  display: flex;
-  align-items: center;
-  justify-content: center;  
-}
-.grid-card-title {
-    vertical-align: middle;
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    opacity: 0.7;
-    color: #dfdfdf;
-    width: 100%;
-    padding: .25rem .75rem;
-    text-align: center;
-    font-size: 1rem;
-    font-weight: bold;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
-}
-
-
-
-.grid-card:hover {
-  box-shadow: 0 4px 8px 0 rgba(107, 72, 72, 0.4), 0 6px 20px 0 rgba(0, 0, 0, 0.38);
+  /* height: calc(100vh - 128px); */
+  padding: 2rem;
 }
 
 #recordMessage {
@@ -225,14 +135,7 @@ nav li:not(.active):hover a{
     justify-content: center;    
   }
 
-  .grid-view .inner-grid-view .grid-card .score {
-    font-weight: bold;
-    /* font-size: 1rem; */
-    position:absolute;
-    bottom:32px;
-    left:0;
-    display: flex;
-  }
+
 
   .bullet {
     font-size: 1rem;

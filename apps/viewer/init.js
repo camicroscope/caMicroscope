@@ -8,8 +8,8 @@ const $UI = new Map();
 
 const $D = {
   pages: {
-    home: '../table.html',
-    table: '../table.html',
+    home: '../vis-table/index.html',
+    table: '../vis-table/index.html',
   },
   params: null, // parameter from url - slide Id and status in it (object).
   overlayers: null, // array for each layers
@@ -352,7 +352,7 @@ async function initUIcomponents() {
     const evalCloseDiv = $UI.evalSideMenu.elt.querySelector('.close');
     evalCloseDiv.style.cssText = 'height:24px !important; flex:none;';
     $(evalCloseDiv).find('i').css( 'display', 'none' );
-    // eval_panel.
+
     var evalTitle = document.createElement('div');
     evalTitle.classList.add('item_head');
     evalTitle.textContent = 'Evaluation';
@@ -712,7 +712,7 @@ async function initUIcomponents() {
       evalMessge.textContent = 'Draft Data: Please Complete the Evaluation and Save';
     }
     $('#eval_form').alpaca(formOpt);
-    if (!$D.isEvalDataExist|| $D.isDraftEvalData) $UI.evalSideMenu.open();
+
     subToolsOpt.push({
       name: 'eval',
       icon: 'list_alt', // material icons' name
@@ -753,10 +753,27 @@ async function initUIcomponents() {
   function createMetadataContent() {
     const metadata = $D.params.data;
     const rows = [];
-    const skips = ['md5sum', '_id', 'collections', 'comment', 'location', 'slide', 'url'];
+
+    const skips = ['slide_id', '_id', 'collections', 'comment', 'height', 'level_count', 'location', 'md5sum', 'mpp',
+      'mpp-x', 'name', '', 'slide', 'specimen', 'study', 'timestamp', 'url', 'width'];
+    const titleMap = {
+      token_id: 'Token ID',
+      vendor: 'Scanner Make',
+      objective: 'Scanning Magnification',
+      proc_seq: 'Procedure Sequence',
+      spec_site: 'Speciman Site',
+      image_id: 'Image ID',
+      registry_code: 'Registry Code',
+      primary_tumor_site_code: 'Primary Tumor Site Code',
+      primary_tumor_site_term: 'Primary Tumor Site Term',
+      morphology_code: 'ICD-O Morphology Code',
+      seer_coded_histology: 'SEER Coded Histology',
+      behavior_code: 'Behavior Code',
+    };
+    // ['md5sum', '_id', 'collections', 'common', 'location', 'slide', 'url'];
     for (const [key, value] of Object.entries(metadata)) {
       if (!skips.includes(key)&&value) {
-        rows.push(`<div class='row'><div class='title'>${key}</div><div class='text'>${value}</div></div>`);
+        rows.push(`<div class='row'><div class='title'>${titleMap[key]}</div><div class='text'>${value}</div></div>`);
       }
     }
     return `<div class='message-body'>${rows.join('')}</div>`;
@@ -1023,6 +1040,12 @@ async function initUIcomponents() {
     mainToolsCallback: mainMenuChange,
     subTools: subToolsOpt,
   });
+
+  if (!$D.isEvalDataExist|| $D.isDraftEvalData) {
+    const li = $UI.toolbar.getSubTool('eval');
+    li.querySelector('input[type=checkbox]').checked = true;
+    $UI.evalSideMenu.open();
+  }
 
   // create two side menus for tools
   $UI.appsSideMenu = new SideMenu({

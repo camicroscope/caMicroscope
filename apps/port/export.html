@@ -1,55 +1,210 @@
-<html>
-	<script src='../../core/Store.js'></script>
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
-<body>
-	<nav class="navbar navbar-light text-white bg-dark">
-		<a class="navbar-brand" href="#">
-			<img src="./favicon.ico" width="30" height="30" alt="caMicroscope">
-		</a>
-		<ul class="nav justify-content-end text-white">
-			<li class="nav-item">
-				<a class="nav-link active text-white" href="../signup/signup.html">Signup</a>
-			</li>
-			<li class="nav-item">
-				<a class="nav-link text-white" href="../load/">Load</a>
-			</li>
-			<li class="nav-item">
-				<a class="nav-link  text-white" href="../dev-workbench/workbench.html">Workbench</a>
-			</li>
-		</ul>
-	</nav>
-	<div id="exportForm">
-		<form>
-		<div class="form-group">
-			<label for="dataType">Data Type:</label>
-			<select name="dataType" id="dataType">
-			 <option value="mark">mark</option>
-			 <option value="heatmap">heatmap</option>
-			 <option value="slide">slide metadata</option>
-			</select>
-		</div>
-		<div class="form-group">
-			<label for="outType">Output Type:</label>
-			<select name="outType" id="outType">
-			 <option value="json">json</option>
-			 <option value="csv">csv</option>
-			</select>
-		</div>
-    <div class="form-group">
-      <label for="slide">Slide:</label>
-      <input class="form-control" id="slideInput" placeholder="Slide name">
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="keywords" content="camicroscope, camic, quip" />
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0 maximum-scale=1.0, user-scalable=no"
+    />
+    <!-- common -->
+    <link rel="stylesheet" type="text/css" media="all" href="../common.css" />
+    <!-- Check If we're logged in ok, otherwise, log in for us -->
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.8.2/css/all.css"
+    />
+
+    <script src="../../common/authChecker.js"></script>
+    <script>
+      __auth_check(2);
+    </script>
+    <script src="../../core/Store.js"></script>
+    <script src="../../common/util.js"></script>
+    <script src="../../common/ajv.js"></script>
+    <script src="../../components/loading/loading.js"></script>
+    <!-- paginator css & js-->
+    <script src="../../components/paginator/paginator.js"></script>
+    <link
+      href="../../components/paginator/paginator.css"
+      rel="stylesheet"
+      type="text/css"
+      media="all"
+    />
+
+    <!-- jquery&UI -->
+    <link
+      rel="stylesheet"
+      href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"
+    />
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+    <!-- jstree -->
+    <!-- <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css"
+    /> -->
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script> -->
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <!-- bootstrap css & boudle -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+      crossorigin="anonymous"
+    ></script>
+
+    <!-- datatables -->
+    <!-- <link href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css" rel="stylesheet"
+        crossorigin="anonymous" />
+     -->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.css"
+    />
+    <!-- icon -->
+    <link
+      rel="shortcut icon"
+      type="image/x-icon"
+      href="/apps/landing/favicon.png"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      media="all"
+      href="../../components/messagequeue/messagequeue.css"
+    />
+    <!-- style css -->
+    <link rel="stylesheet" href="./export.css" />
+  </head>
+
+  <body>
+    <title>CaMicroscope SEER Data Export</title>
+    <!-- navbar start -->
+    <nav
+      class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark"
+      style="position: sticky"
+    >
+      <div class="container-fluid">
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item link" style="font-family: sans-serif">
+              <a class="nav-link" href="../landing/landing.html">
+                <i class="fas fa-home"></i> Home</a
+              >
+            </li>
+            <li class="nav-item link">
+              <a class="nav-link" href="../vis-table/index.html">
+                <i class="fas fa-table"></i> Collection View</a
+              >
+            </li>
+            <li class="nav-item active link" style="font-family: sans-serif">
+              <a class="nav-link" href="../export.html">
+                <i class="fas fa-file-download"></i> Data Export</a
+              >
+            </li>
+            <li class="nav-item link">
+              <a class="nav-link" href="../collection/hcollection.html">
+                <i class="fas fa-list-ul"></i> Collection Management</a
+              >
+            </li>
+          </ul>
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item link" style="font-family: sans-serif">
+              <a class="nav-link" href="../signup/signup.html">
+                <i class="fas fa-user-plus"></i> Signup</a
+              >
+            </li>
+            <li class="nav-item link" style="font-family: sans-serif">
+              <a
+                class="nav-link"
+                target="_blank"
+                href="https://docs.google.com/forms/d/e/1FAIpQLScL91LxrpAZjU88GBZP9gmcdgdf8__uNUwhws2lzU6Lr4qNwA/viewform"
+              >
+                <i class="fas fa-comment"></i> Feedback</a
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <!-- navbar end -->
+
+    <!-- page header start -->
+    <!-- <div class="header text-center text-white bg-info p-4">
+      <h1 class="h1">caMicroscope</h1>
+      <p>
+        Digital pathology image viewer with support for human/machine generated
+        annotations and markups.
+      </p>
+    </div> -->
+    <!-- page header end -->
+
+    <!-- main view start -->
+    <div class="container-fluid h-fit">
+      <div class="row">
+        <div class="col-12 d-flex justify-content-end mb-3">
+          <button
+            type="button"
+            class="btn btn-primary float-right"
+            onclick="dataExport();"
+          >
+            <i class="fas fa-download"></i><span class="m-2">Export</span>
+          </button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12">
+          <table
+            id="data-table-view"
+            class="display"
+            style="width: 100%"
+          ></table>
+        </div>
+      </div>
     </div>
-		<button type="button" class="btn btn-primary" id="start">Start Export</button>
-	</form>
-	</div>
-	<div id="statusContainer">
-		<h2>Status:</h2>
-		<ul id="status"></ul>
-	</div>
-<a id="downloadAnchorElem" style="display:none"></a>
-<script src="./export.js"></script>
-</body>
+    <!-- main view end -->
+    <!-- footer start -->
+    <!-- <footer
+      class="text-center text-white bg-dark p-3 fixed-bottom"
+      style="position: absolute"
+    >
+      <p class="p">Copyright © 2021 caMicroscope</p>
+    </footer> -->
+    <!-- footer end -->
+  </body>
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script> -->
+  <script
+    src="//cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"
+    crossorigin="anonymous"
+  ></script>
+  <!-- message queue js -->
+  <script
+    type="text/javascript"
+    src="../../components/messagequeue/messagequeue.js"
+  ></script>
+  <script src="export.js"></script>
 </html>

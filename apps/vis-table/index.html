@@ -66,7 +66,7 @@
 <body>
     <title>CaMicroscope Initial Table</title>
     <!-- navbar start -->
-    <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark" style="position: sticky; margin-top: -4em">
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark" style="position: sticky;">
         <div class="container-fluid">
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
@@ -76,25 +76,25 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item link" style="font-family: sans-serif">
-                        <a class="nav-link" href="landing/landing.html">
+                        <a class="nav-link" href="../landing/landing.html">
                             <i class="fas fa-home"></i> Home</a>
                     </li>
-                    <li class="nav-item active link" style="font-family: sans-serif">
-                        <a class="nav-link" href="table.html">
-                            <i class="fas fa-list-ul"></i> Slides</a>
+                    <li class="nav-item active link">
+                        <a class="nav-link" href="./index.html">
+                            <i class="fas fa-table"></i> Collection View</a>
+                    </li>
+                    <li class="nav-item  link" style="font-family: sans-serif">
+                        <a class="nav-link" href="../port/export.html">
+                            <i class="fas fa-file-download"></i> Data Export</a>
                     </li>
                     <li class="nav-item link">
-                        <a class="nav-link" href="Info.html">
-                            <i class="fas fa-info-circle"></i> Info</a>
-                    </li>
-                    <li class="nav-item link">
-                        <a class="nav-link" href="./dev-workbench/workbench.html">
-                            <i class="fas fa-pencil-ruler"></i> Workbench</a>
+                        <a class="nav-link" href="../collection/hcollection.html">
+                            <i class="fas fa-list-ul"></i> Collection Management</a>
                     </li>
                 </ul>
-                <ul class="navbar-nav ms-auto">
+                <!-- <ul class="navbar-nav ms-auto">
                     <li class="nav-item link" style="font-family: sans-serif">
-                        <a class="nav-link" href="./signup/signup.html">
+                        <a class="nav-link" href="../signup/signup.html">
                             <i class="fas fa-user-plus"></i> Signup</a>
                     </li>
                     <li class="nav-item link" style="font-family: sans-serif">
@@ -102,7 +102,7 @@
                             href="https://docs.google.com/forms/d/e/1FAIpQLScL91LxrpAZjU88GBZP9gmcdgdf8__uNUwhws2lzU6Lr4qNwA/viewform">
                             <i class="fas fa-comment"></i> Feedback</a>
                     </li>
-                </ul>
+                </ul> -->
             </div>
         </div>
     </nav>
@@ -122,9 +122,7 @@
     <div class="container-fluid">
         <div class="row h-fit">
             <div class="col-lg-3 col-md-3 col-sm-12 bg-light tree-view">
-                <div class="search-box bg-light p-4 clearfix" style='height:64px;'>
-
-                </div>
+                <!-- <div class="search-box bg-light p-4 clearfix" style='height:64px;'></div> -->
                 <div id="coll-message" class=" alert alert-warning m-4" role="alert" style="display:none">
                     No Collection, Please Create A Collection
                 </div>
@@ -155,9 +153,9 @@
                         <label class='ctrl-label'>
                             Show
                             <select id="selRecordPerPage" class="form-select form-select-sm" aria-label=".form-select-sm">
-                                <option value=2 selected>2</option>
-                                <option value=5>5</option>
-                                <option value=10>10</option>
+                                <!-- <option value=2 selected>2</option>
+                                <option value=5>5</option> -->
+                                <option value=10 selected>10</option>
                                 <option value=25 >25</option>
                                 <option value=50>50</option>
                                 <option value=100>100</option>
@@ -212,9 +210,9 @@
     </div> -->
     <!-- main view end -->
     <!-- footer start -->
-    <footer class="text-center text-white bg-dark p-3">
+    <!-- <footer class="text-center text-white bg-dark p-3">
         <p class="p">Copyright © 2021 caMicroscope</p>
-    </footer>
+    </footer> -->
     <!-- footer end -->
 </body>
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
