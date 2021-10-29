@@ -474,14 +474,16 @@
       ($D.params.slide ||
         $D.params.specimen ||
         $D.params.study ||
-        $D.params.location)
+        $D.params.location ||
+        $D.params.collection)
     ) {
       let STORE = new Store();
       STORE.findSlide(
         $D.params.slide,
         $D.params.study,
         $D.params.specimen,
-        $D.params.location
+        $D.params.location,
+        $D.params.collection
       )
         .then((x) => {
           let offset = parseInt($D.params.offset, 10) || 0;

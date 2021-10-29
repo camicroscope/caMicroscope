@@ -90,8 +90,8 @@ function PathDbMods() {
   }
   console.warn("{PathDB mods enabled}")
   Store.prototype.default_findSlide = Store.prototype.findSlide;
-  Store.prototype.findSlide = function(slide, specimen, study, location) {
-    var url = "/node/" + slide + "?_format=json"
+  Store.prototype.findSlide = function(slide, specimen, study, location, collection) {
+    var url = `/idlookup/${collection}/${study}/${specimen}/${slide}?_format=json`
     return fetch(url, {
       mode: "cors",
       headers: new Headers({
