@@ -881,6 +881,9 @@ function getUserPermissions(userType) {
 }
 
 function getUserId() {
+  // for seer start
+  if (xRemoteUser) return xRemoteUser;
+  // for seer end
   let token_info = parseJwt(getCookie('token'));
   let uid = '';
   // pathdb with login
