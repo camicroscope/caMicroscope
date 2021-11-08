@@ -158,7 +158,7 @@ class CaMic {
     } else {
       slidePromise = this.store.findSlide(this.slideQuery.name,
           this.slideQuery.study, this.slideQuery.specimen,
-          this.slideQuery.location);
+          this.slideQuery.location, this.slideQuery.collection);
     }
     slidePromise
         .then((x)=>{
