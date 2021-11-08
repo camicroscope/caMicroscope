@@ -634,15 +634,15 @@ class Store {
    * @param {string} [q] - override query - ignores all other params if set
    * @return {promise} - promise which resolves with data
    **/
-  findSlide(slide, specimen, study, location, q) {
-    let query;
+  findSlide(name, specimen, study, location, q) {
+    let query = {};
     const suffix = 'Slide/find';
     const url = this.base + suffix;
     if (q) {
       query = q;
     } else {
-      if (slide) {
-        query.slide = slide;
+      if (name) {
+        query.name = name;
       }
       if (study) {
         query.study = study;
