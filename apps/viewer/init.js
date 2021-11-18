@@ -150,6 +150,7 @@ function initCore() {
     slideQuery.id = $D.params.slideId;
     slideQuery.name = $D.params.slide;
     slideQuery.location = $D.params.location;
+    slideQuery.collection = $D.params.collection;
     opt.addRulerCallback = onAddRuler;
     opt.deleteRulerCallback = onDeleteRuler;
     $CAMIC = new CaMic('main_viewer', slideQuery, opt);

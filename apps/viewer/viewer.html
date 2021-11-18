@@ -418,12 +418,13 @@
         $D.params.collection
       )
     ) {
-      let STORE = new Store();
+      let STORE = new Store('../../data/');
       STORE.findSlide(
         $D.params.slide,
         $D.params.study,
         $D.params.specimen,
         $D.params.location,
+        null,
         $D.params.collection
       )
         .then(x => {

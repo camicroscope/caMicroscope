@@ -24,8 +24,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * **Version 1**
     * [1.0.x](#camicroscope-10)
 
-### caMicroscope [Unreleased](https://github.com/camicroscope/camicroscope/compare/v3.9.4...camicroscope:develop)
+### caMicroscope [Unreleased](https://github.com/camicroscope/camicroscope/compare/v3.9.8...camicroscope:develop)
 ###### TBD
+
+
+### caMicroscope [3.9.8](https://github.com/camicroscope/camicroscope/compare/v3.9.6...camicroscope:v3.9.8)
+###### 2021-10-21
+* Add Segmentation -> Annotation Functionality [#542](https://github.com/camicroscope/caMicroscope/pull/542)
+* Margin and Table UI Fixes [#549](https://github.com/camicroscope/caMicroscope/pull/549) [#551](https://github.com/camicroscope/caMicroscope/pull/551)
+* Add Pathdb Quad Lookup
+* Add Docs link to landing
+* retry slides one time if they have an error
 
 ### caMicroscope [3.9.6](https://github.com/camicroscope/camicroscope/compare/v3.9.4...camicroscope:v3.9.6)
 ###### 2021-08-05
