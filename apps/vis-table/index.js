@@ -366,12 +366,17 @@ async function createGridCards() {
   // limit: $D.recordPerPage,
   const start = $D.recordPerPage * ($D.currentPage - 1);
   const slides = $D.currentSlideData.slice(start, start + $D.recordPerPage);
+
+  //
+  const parentNames = getParentNames($D.selectedNode);
+  const crumbList = [...parentNames.reverse(), $D.selectedNode.original.name];
+  console.log('test', crumbList);
   slides.forEach((slide) => {
-    $UI.gridViewContainer.append(createGridCard(slide));
+    $UI.gridViewContainer.append(createGridCard(slide, crumbList));
   });
 }
 
-function createGridCard(d) {
+function createGridCard(d, crumbList) {
   const sid = d['_id']['$oid'];
   const card = document.createElement('div');
   card.id = sid;
@@ -381,7 +386,7 @@ function createGridCard(d) {
   cardContent.classList.add('grid-card-content');
   // add to the link
   cardContent.addEventListener('click', ()=>{
-    location.href=`../viewer/viewer.html?slideId=${sid}`;
+    location.href=`../viewer/viewer.html?slideId=${sid}&crumb=${crumbList.join('/')}`;
   });
   card.appendChild(cardContent);
 

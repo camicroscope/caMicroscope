@@ -59,19 +59,31 @@
 	font-size:16px;
 }
 .modalbox .modalbox-header {
-  padding: 2px 16px;
+  padding: 1rem;
   background-color: #365f9c;
   color: white;
+  font-weight: bold;
 }
 
 .modalbox .modalbox-body {
 	padding:16px;
 	font-size:14px;
-  color: black;
+  color: #365f9c;
+}
+.modalbox .modalbox-body input[type=radio] {
+  vertical-align: middle;
+  margin-top: -2px;
+  margin-bottom: 1px;
 }
 
 .modalbox .modalbox-footer {
-  padding: 2px 16px;
+  display: flex;
+  justify-content: flex-end;
+  padding: 1rem;
   background-color: #365f9c;
   color: white;
+}
+.modalbox .modalbox-footer .btn {
+  color: #365f9c;
+  font-weight: bold;
 }

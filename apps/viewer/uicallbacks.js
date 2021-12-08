@@ -2619,6 +2619,43 @@ function downloadSlideCapture(combiningCanvas) {
   }
 }
 
+
+function reassignCaseClickhandler() {
+  const {id, value} = $UI.caseReassignmentModal.elt
+      .querySelector('.modalbox-body input[type=radio][name=caseGenre]:checked');
+  if (confirm('Proceed with Case Reassignment?')) {
+    console.log(id, value);
+    const collection = $D.collections.find((c)=>c.text==$D.params.crumb.split('/')[1]);
+    if (collection&&collection._id&&collection._id.$oid) {
+      //
+      $CAMIC.store.updateCollection(collection._id.$oid, {pid: id}).then((rs)=>{
+        if (rs.ok&&rs.nModified) {
+          window.location.href = `../vis-table/index.html`;
+        } else {
+          $UI.message.addError(`Something Wrong. Please Try Again Later ...`, 5000);
+        }
+      }).catch((e)=>{ // handler backend error
+        console.error(e);
+        $UI.message.addError(e, 6000);
+      }).finally(()=>{ // close window
+        $UI.caseReassignmentModal.close();
+        resetCaseReassignmentModal();
+      });
+    } else { // collection error
+      $UI.caseReassignmentModal.close();
+      resetCaseReassignmentModal();
+      $UI.message.addWarning(`Can't Find The Case Id!`, 5000);
+    }
+  } else {
+    $UI.caseReassignmentModal.close();
+    resetCaseReassignmentModal();
+  }
+}
+
+function resetCaseReassignmentModal() {
+  $UI.caseReassignmentModal.elt.querySelector('.modalbox-footer .btn').disabled = false;
+  $UI.caseReassignmentModal.elt.querySelector('.modalbox-body input[type=radio][name=caseGenre]:checked').checked = false;
+}
 /* call back list END */
 /* --  -- */
 /* -- for render anno_data to canavs -- */

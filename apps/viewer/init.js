@@ -283,7 +283,7 @@ function initCore() {
       // create the message bar TODO for reading slide Info TODO
       const messageOpt = {
         id: 'cames',
-        content: {key: 'Slide', value: $D.params.data.name},
+        content: {key: 'Slide', value: $D.params.crumb?`${$D.params.crumb}/${$D.params.data.name}`:$D.params.data.name},
       };
       // if ($D.params.data.metadata_location) {
       //   const metadata = await $CAMIC.store.getSlideMetadata($D.params.data.metadata_location).then();
@@ -327,9 +327,32 @@ async function initUIcomponents() {
     headerText: 'HeatMap List',
     hasFooter: false,
   });
+  $UI.caseReassignmentModal = new ModalBox({
+    id: 'caseReassignmentModal',
+    hasHeader: true,
+    headerText: 'Case Reassignment',
+    hasFooter: true,
+  });
+  // -- case reassignment modal start -- //
+  $UI.caseReassignmentModal.setFooterHTML(`<button class='btn btn-default btn-xs' onclick='reassignCaseClickhandler()' disabled>Reassign</button>`);
+  $D.collections = await $CAMIC.store.getAllCollection();
+
+
+  $UI.caseReassignmentModal.setBody($D.collections.filter((c)=>!c.pid&&$D.params.crumb.split('/')[0]!==c.text)
+      .map((c)=>`<div style="margin:1rem 0 0 1rem;"><input type="radio" id="${c._id.$oid}" name="caseGenre" value="${c.text}">
+      <label for="${c._id.$oid}">${c.text}</label></div>`).join(''));
+  const radios = $UI.caseReassignmentModal.elt.querySelectorAll('.modalbox-body input[type=radio][name=caseGenre]');
+  radios.forEach((r) => {
+    r.addEventListener('change', ()=>{
+      $UI.caseReassignmentModal.elt.querySelector('.modalbox-footer .btn').disabled = false;
+    });
+  });
+
+
+  // -- case reassignment modal end -- //
 
   const subToolsOpt = [];
-  // home
+  // home;
   if (ImgloaderMode == 'iip') {
     subToolsOpt.push({
       name: 'home',
@@ -977,16 +1000,27 @@ async function initUIcomponents() {
   // -- For Nano borb End -- //
 
   // -- view btn START -- //
-  if (!($D.params.data.hasOwnProperty('review') && $D.params.data['review'] == 'true')) {
-    subToolsOpt.push({
-      name: 'review',
-      icon: 'playlist_add_check',
-      title: 'has reviewed',
-      type: 'btn',
-      value: 'review',
-      callback: updateSlideView,
-    });
-  }
+  // if (!($D.params.data.hasOwnProperty('review') && $D.params.data['review'] == 'true')) {
+  //   subToolsOpt.push({
+  //     name: 'review',
+  //     icon: 'playlist_add_check',
+  //     title: 'has reviewed',
+  //     type: 'btn',
+  //     value: 'review',
+  //     callback: updateSlideView,
+  //   });
+  // }
+  subToolsOpt.push({
+    name: 'reassign',
+    icon: 'sync_alt',
+    title: 'Case Reassignment',
+    type: 'btn',
+    value: 'reassign',
+    callback: ()=>{
+      $UI.caseReassignmentModal.open();
+    },
+  });
+
   // screenshot
   subToolsOpt.push({
     name: 'slideCapture',

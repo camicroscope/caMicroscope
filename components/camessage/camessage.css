@@ -2,7 +2,7 @@
 div.camessage {
   overflow-x: hidden;
   max-height: 100%;
-  max-width: 250px;
+  /* max-width: 250px; */
   position: absolute;
   right:0;
   top:0;

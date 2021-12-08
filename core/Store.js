@@ -82,8 +82,8 @@ class Store {
     }).then(this.errorHandler).then((x) => this.filterBroken(x, 'user'));
   }
   /**
-   * update a collection info
-   * @param {string} id - the collection id
+   * update a user info
+   * @param {string} id - the user id
    * @param {object} json - the data
    * @return {promise} - promise which resolves with data
    **/
@@ -1325,7 +1325,7 @@ class Store {
       credentials: 'include',
       mode: 'cors',
       body: JSON.stringify(data),
-    });
+    }).then(this.errorHandler);
   }
   /**
    * delete collection

@@ -88,8 +88,8 @@ ModalBox.prototype.open = function() {
 ModalBox.prototype.close = function() {
   this.elt.style.display = 'none';
 };
-ModalBox.prototype.setBody=function() {
-
+ModalBox.prototype.setBody = function(html) {
+  this.body.innerHTML = html;
 };
 ModalBox.prototype.appendBody=function() {
 
@@ -97,6 +97,6 @@ ModalBox.prototype.appendBody=function() {
 ModalBox.prototype.setHeaderText = function(text) {
   this.elt.querySelector('.modalbox-header > div').textContent = text;
 };
-ModalBox.prototype.setFooterText = function(text) {
-
+ModalBox.prototype.setFooterHTML = function(html) {
+  this.elt.querySelector('.modalbox-footer').innerHTML = html;
 };
