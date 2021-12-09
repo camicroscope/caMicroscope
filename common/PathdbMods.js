@@ -22,7 +22,7 @@ function PathDbMods() {
 
   function convertPathDbSlide(data){
     let x={}
-    if (data.length > 0){
+    if (Array.isArray(data) && data.length > 0){
       data = data[0]
     }
     x["_raw"] = data
