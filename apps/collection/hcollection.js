@@ -372,7 +372,7 @@ async function saveCollection() {
     store
         .updateCollection(id, data)
         .then((resp) => {
-          if (resp.status == 200 && resp.ok) {
+          if (resp.nModified && resp.n && resp.ok) {
             // update js tree name
             var tree = $('#main-tree-view').jstree(true);
             var selectedNodes = tree.get_selected(true);
@@ -537,10 +537,10 @@ function showMessage(message, title = '', style = 'primary') {
     <span aria-hidden='true'>&times;</span>
   </button>
   </div>`;
-  $(document.body).append($.parseHTML(html));
+  $('.table-view').prepend($.parseHTML(html));
 }
 function hideMessage() {
-  $('.message.alert').alert('close');
+  $('.table-view .message.alert').alert('close');
 }
 
 function checkAllSlideItems(chk, panelId) {

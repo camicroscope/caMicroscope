@@ -15,7 +15,7 @@ closeCaseBtn.addEventListener('click', async ()=>{
     alert('Please Select 2nd Most Informative Slide Before Close Case!');
     return;
   }
-  if (!$D.slidesRank.third) {
+  if ($D.currentSlideData.length > 2 &&!$D.slidesRank.third) {
     alert('Please Select 3rd Most Informative Slide Before Close Case!');
     return;
   }
@@ -453,7 +453,9 @@ function generateDropdownMenu(elt, data) {
   <ul class="dropdown-menu" aria-labelledby="dropdown_${elt.id}">
     <li data-sid="${elt.id}" data-level="1"><a class="dropdown-item ${level==1?'active':''}" href="#">1st Most Informative</a></li>
     <li data-sid="${elt.id}" data-level="2"><a class="dropdown-item ${level==2?'active':''}" href="#">2nd Most Informative</a></li>
-    <li data-sid="${elt.id}" data-level="3"><a class="dropdown-item ${level==3?'active':''}" href="#">3rd Most Informative</a></li>
+   ${$D.currentSlideData.length > 2 ?
+    `<li data-sid="${elt.id}" data-level="3"><a class="dropdown-item ${level==3?'active':''}" href="#">3rd Most Informative</a></li>`:
+    ''}
     <li data-sid="${elt.id}" data-level="less"><a class="dropdown-item ${level==4?'active':''}" href="#">Less Informative</a></li>
   </ul>`;
   div.innerHTML = dropdown;
