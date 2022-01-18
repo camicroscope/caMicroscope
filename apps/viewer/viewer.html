@@ -405,6 +405,11 @@
     // get slide id from url
     $D.params = getUrlVars();
 
+    if ($D.params.mode == 'pathdb') {
+      $D.pages.home = '../../../';
+      $D.pages.table = '../../../';
+    }
+    
     // load if we have at least one slide query element
     if ($D.params && $D.params.slideId) {
       // normal initialization starts
