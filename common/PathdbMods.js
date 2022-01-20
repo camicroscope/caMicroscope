@@ -22,6 +22,9 @@ function PathDbMods() {
 
   function convertPathDbSlide(data){
     let x={}
+    if (Array.isArray(data) && data.length > 0){
+      data = data[0]
+    }
     x["_raw"] = data
     x.mpp = 1e9
     x.source="pathdb"
@@ -103,7 +106,7 @@ function PathDbMods() {
         text: response.statusText,
         url: response.url
       };
-      return response.json().then(convertPathDbSlide).then(x => [x]);
+      return response.json().then(x=>convertPathDbSlide(x[0])).then(x => [x]);
     })
   }
   Store.prototype.default_getSlide = Store.prototype.getSlide
