@@ -11,7 +11,7 @@
   overflow: auto; /* Enable scroll if needed */
   background-color: rgb(0,0,0); /* Fallback color */
   background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-  z-index: 9999;
+  z-index: 900;
 }
 
 /* Modal Content */
@@ -68,6 +68,7 @@
 	padding:16px;
 	font-size:14px;
   color: black;
+  display:flex;
 }
 
 .modalbox .modalbox-footer {

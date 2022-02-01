@@ -1,4 +1,4 @@
-@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css');
+@import url(font-awesome.min.css);
 @import url("https://fonts.googleapis.com/css?family=Open+Sans:300italic,700italic,700,300");
 
 /*
@@ -9,24 +9,21 @@
 
 /* Reset */
 
-
 	html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
 		margin: 0;
 		padding: 0;
 		border: 0;
 		font-size: 100%;
 		font: inherit;
-		color:#212529;
 		vertical-align: baseline;
-		font-family: Arial, Helvetica, sans-serif;
 	}
 
-	article, aside, details, figcaption, figure, footer, hgroup, menu, nav, section {
+	article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {
 		display: block;
 	}
 
 	body {
-		line-height: 1.5;
+		line-height: 1;
 	}
 
 	ol, ul {
@@ -963,7 +960,7 @@
 	}
 
 	@media screen and (max-width: 736px) {
-		
+
 		.row > * {
 			padding: 0 0 0 2em;
 		}
@@ -1178,7 +1175,6 @@
 	}
 
 	@media screen and (max-width: 480px) {
-		
 
 		.row > * {
 			padding: 0 0 0 2em;
@@ -1473,15 +1469,15 @@
 	}
 
 	p {
-		margin: 0 0 1em 0;
+		margin: 0 0 2em 0;
 	}
 
 	h1, h2, h3, h4, h5, h6 {
 		font-weight: 700;
 		line-height: 1em;
+		margin: 0 0 1em 0;
 		text-transform: uppercase;
 		letter-spacing: 0.05em;
-		font: inherit;
 	}
 
 		h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
@@ -1490,12 +1486,12 @@
 		}
 
 	h2 {
-		font-size: 2em;
+		font-size: 1.75em;
 		line-height: 1.5em;
 	}
 
 	h3 {
-		font-size: 1.75em;
+		font-size: 0.9em;
 		line-height: 1.5em;
 	}
 
@@ -1516,7 +1512,7 @@
 
 	@media screen and (max-width: 1280px) {
 
-		h2, h3 {
+		h2 {
 			font-size: 1.5em;
 		}
 
@@ -1524,7 +1520,7 @@
 
 	@media screen and (max-width: 736px) {
 
-		h2, h3 {
+		h2 {
 			font-size: 1.25em;
 		}
 
@@ -2308,7 +2304,6 @@
 					padding-left: 4.5em;
 					position: relative;
 					width: 35%;
-					flex: auto;
 					-ms-flex: auto;
 				}
 
@@ -2327,7 +2322,6 @@
 
 				ul.features li p {
 					width: 65%;
-					flex: auto;
 					-ms-flex: auto;
 					margin-bottom: 0;
 					padding-left: 3em;
@@ -2436,7 +2430,6 @@
 				display: block;
 				margin-right: 2em;
 				width: 40%;
-				flex: auto;
 				-ms-flex: auto;
 			}
 
@@ -2447,7 +2440,6 @@
 
 			.posts .post .content {
 				width: 60%;
-				flex: auto;
 				-ms-flex: auto;
 			}
 
@@ -2552,7 +2544,7 @@
 	}
 
 		header.major p {
-			/* margin-bottom: 1em; */
+			margin-bottom: 1em;
 		}
 
 		header.major:after {
@@ -3626,7 +3618,6 @@
 
 				.wrapper.cta > .inner > * {
 					padding-left: 1.5em;
-					flex: auto;
 					-ms-flex: auto;
 					width: 50%;
 				}
@@ -3764,9 +3755,6 @@
 			.wrapper {
 				padding: 2.5em 1.5em 0.5em 1.5em ;
 			}
-			header.major {
-				text-align: center;
-			}
 
 		}
 
@@ -3841,12 +3829,10 @@
 	}
 
 		#header a {
-			color: grey;
+			color: inherit;
 			text-decoration: none;
 		}
-		#header a:hover{
-			color: white;
-		}
+
 		#header h1 {
 			text-decoration: none;
 			color: #ffffff;
@@ -3886,24 +3872,31 @@
 				width: 2em;
 			}
 
+		#header nav {
+			height: inherit;
+			line-height: inherit;
+			margin-right: 1.5em;
+			position: absolute;
+			right: 0;
+			top: 0;
+		}
+
 			#header nav ul {
-				list-style-type: none;
+				list-style: none;
 				margin: 0;
-				padding-left: 15px;
-				
+				padding: 0;
 			}
 
 				#header nav ul li {
-					float: left;
+					display: inline-block;
+					margin-left: 1.5em;
 				}
 
 					#header nav ul li a {
-						display: block;
 						font-weight: 700;
 						letter-spacing: 0.05em;
 						text-transform: uppercase;
 						font-size: 0.9em;
-						
 					}
 
 						#header nav ul li a.submenu {
@@ -4067,9 +4060,9 @@
 				margin-left: 1.25em !important;
 			}
 
-			#header nav {
+			/* #header nav {
 				display: none;
-			}
+			} */
 
 			#header .navPanelToggle {
 				display: block;
@@ -4080,10 +4073,10 @@
 /* Banner */
 
 	#banner {
-		background-image:  -moz-linear-gradient(45deg, rgba(39, 161, 227, 0.65), rgba(231, 35, 42, 0.65)), url("./banner1.jpg");
-		background-image:  -webkit-linear-gradient(45deg, rgba(39, 161, 227, 0.65), rgba(231, 35, 42, 0.65)), url("./banner1.jpg");
-		background-image:  -ms-linear-gradient(45deg, rgba(39, 161, 227, 0.65), rgba(231, 35, 42, 0.65)), url("./banner1.jpg");
-		background-image:  linear-gradient(45deg, rgba(39, 161, 227, 0.65), rgba(231, 35, 42, 0.65)), url("./banner1.jpg");
+		background-image: url("images/overlay.png"), -moz-linear-gradient(45deg, rgba(39, 161, 227, 0.65), rgba(231, 35, 42, 0.65)), url("../../images/banner.jpg");
+		background-image: url("images/overlay.png"), -webkit-linear-gradient(45deg, rgba(39, 161, 227, 0.65), rgba(231, 35, 42, 0.65)), url("../../images/banner.jpg");
+		background-image: url("images/overlay.png"), -ms-linear-gradient(45deg, rgba(39, 161, 227, 0.65), rgba(231, 35, 42, 0.65)), url("../../images/banner.jpg");
+		background-image: url("images/overlay.png"), linear-gradient(45deg, rgba(39, 161, 227, 0.65), rgba(231, 35, 42, 0.65)), url("../../images/banner.jpg");
 		background-position: center center;
 /*		background-size: auto, cover, cover; */
 		background-attachment: fixed, fixed, fixed;
@@ -4308,10 +4301,10 @@
 /* Footer */
 
 	#footer {
-		background-image: -moz-linear-gradient(45deg, rgba(39, 161, 227, 0.65), rgba(231, 35, 42, 0.65)), url("./banner1.jpg");
-		background-image: -webkit-linear-gradient(45deg, rgba(39, 161, 227, 0.65), rgba(231, 35, 42, 0.65)), url("./banner1.jpg");
-		background-image: -ms-linear-gradient(45deg, rgba(39, 161, 227, 0.65), rgba(231, 35, 42, 0.65)), url("./banner1.jpg");
-		background-image: linear-gradient(45deg, rgba(39, 161, 227, 0.65), rgba(231, 35, 42, 0.65)), url("./banner1.jpg");
+		background-image: url("images/overlay.png"), -moz-linear-gradient(45deg, rgba(39, 161, 227, 0.65), rgba(231, 35, 42, 0.65)), url("../../images/banner.jpg");
+		background-image: url("images/overlay.png"), -webkit-linear-gradient(45deg, rgba(39, 161, 227, 0.65), rgba(231, 35, 42, 0.65)), url("../../images/banner.jpg");
+		background-image: url("images/overlay.png"), -ms-linear-gradient(45deg, rgba(39, 161, 227, 0.65), rgba(231, 35, 42, 0.65)), url("../../images/banner.jpg");
+		background-image: url("images/overlay.png"), linear-gradient(45deg, rgba(39, 161, 227, 0.65), rgba(231, 35, 42, 0.65)), url("../../images/banner.jpg");
 		background-position: center center;
 /*		background-size: auto, cover, cover; */
 		background-attachment: fixed, fixed, fixed;
@@ -4410,9 +4403,6 @@
 		#footer header.major:after {
 			background-color: #ffffff;
 		}
-		.about {
-			color: #fff;
-		}
 
 		#footer .content {
 			padding: 6.5em 0 4.5em 0 ;
@@ -4435,8 +4425,7 @@
 
 				#footer .content > .inner .about {
 					padding-left: 0;
-					width: 60%;
-					margin: 0 auto;
+					width: 50%;
 				}
 
 			@media screen and (max-width: 1280px) {
@@ -4667,6 +4656,7 @@
 			right: 0;
 			text-align: right;
 			top: 0;
+			vertical-align: middle;
 			width: 5em;
 		}
 
@@ -4723,43 +4713,4 @@
 					padding: 2.25em 1.25em;
 				}
 
-		}
-		.link{
-			letter-spacing: 0.02em;
-			text-transform: uppercase;
-			font-size: 0.99em;
-			font-weight: bold;
-			color: #5e6875;
-			text-decoration:none;
-			padding-right: 0.7rem;
-			padding-left: 0.7rem;
-			margin-top: 0.2rem;
-			font-family: "Open Sans", Helvetica, sans-serif;
-			line-height: 1.8;
-		}
-		nav li{
-			transition: background 0.5s; 
-			border-radius: 3px;
-		}
-		nav li:not(:first-child){
-			margin-left: 0.3em !important;
-		}
-		nav li:not(.active):hover{
-			background: white;
-		}
-		nav li:not(.active):hover a{
-			color: black !important;
-		}
-		.active{
-			background: white;
-		}
-		.active a{
-			color: black !important;
-		}
-		.bg-dark {
-			background-color: #343a40 !important;
-		}
-		.fas {
-			/* color: rgba(255,255,255,.5);; */
-			color: inherit;
 		}

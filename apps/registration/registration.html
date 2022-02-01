@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>caMicroscope</title>
+    <meta charset="utf-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- dependencies (jquery, handlebars and bootstrap) -->
+    <script
+      type="text/javascript"
+      src="//code.jquery.com/jquery-1.11.1.min.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js"
+    ></script>
+    <link
+      type="text/css"
+      href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <script
+      type="text/javascript"
+      src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"
+    ></script>
+
+    <!-- alpaca -->
+    <link
+      type="text/css"
+      href="//cdn.jsdelivr.net/npm/alpaca@1.5.27/dist/alpaca/bootstrap/alpaca.min.css"
+      rel="stylesheet"
+    />
+    <script
+      type="text/javascript"
+      src="//cdn.jsdelivr.net/npm/alpaca@1.5.27/dist/alpaca/bootstrap/alpaca.min.js"
+    ></script>
+
+    <!--  -->
+    <link rel="stylesheet" href="./main.css" />
+    <!-- message queue css -->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      media="all"
+      href="../../components/messagequeue/messagequeue.css"
+    />
+    <!-- message queue js -->
+    <script
+      type="text/javascript"
+      src="../../components/messagequeue/messagequeue.js"
+    ></script>
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.png" />
+    <script type="text/javascript" src="../../core/Store.js"></script>
+    <script type="text/javascript" src="../../common/util.js"></script>
+    <script type="text/javascript" src="../../common/authChecker.js"></script>
+
+    <style></style>
+  </head>
+  <body>
+    <header id="header">
+      <label style="color: white; padding: 0 15px; font-size: 20px"
+        >CaMicroscope</label
+      >
+    </header>
+    <!-- Main -->
+    <section id="main" class="wrapper">
+      <div class="inner">
+        <header class="major">
+          <h1>MDDT Data Collection</h1>
+        </header>
+
+        <!-- Content -->
+
+        <div class="content">
+          <br />
+          <p>
+            Thank you for your interest in participating in data collection for
+            the High-Throughput Truthing project (HTT). The data we are
+            collecting are intended to inform the agency’s approach to novel
+            algorithm validation, ensuring high quality commercial products with
+            a faster FDA-pipeline to approval.
+          </p>
+          <br />
+          <p>
+            Please visit
+            <a href="https://ncihub.org/groups/eedapstudies" target="_blank">
+              https://ncihub.org/groups/eedapstudies
+            </a>
+            for information about the project, data-collection training, IRB
+            participation consent, and to begin data collection.
+          </p>
+          <br />
+          <p>
+            If you have any questions or feedback, please contact
+            <a href="mailto: brandon.gallas@fda.hhs.gov" target="_blank">
+              brandon.gallas@fda.hhs.gov </a
+            >.
+          </p>
+          <br />
+          <p>Have a great day.</p>
+          <br />
+        </div>
+        <!-- Progress bar -->
+        <div class="content">
+          <div class="progressbar">
+            <div class="progress" id="progress"></div>
+            <div
+              class="progress-step progress-step-active"
+              data-title="Consent From"
+            ></div>
+            <div class="progress-step" data-title="Basic Info"></div>
+            <div class="progress-step" data-title="Professional"></div>
+            <div class="progress-step" data-title="Certifications"></div>
+          </div>
+        </div>
+        <!-- Steps -->
+        <div class="content form-step form-step-active">
+          <form class="alpaca-form">
+            <div
+              class="
+                alpaca-field
+                alpaca-field-object
+                alpaca-optional
+                alpaca-create
+                alpaca-top
+              "
+            >
+              <legend class="alpaca-container-label">Consent Form</legend>
+              <embed
+                id="consentForm"
+                src="./HTT_IRBinformedConsent.pdf"
+                width="100%"
+                height="550"
+              />
+              <div class="consent-footer">
+                <label for="isConsent">
+                  <input
+                    type="checkbox"
+                    id="isConsent"
+                    onchange="consentChange()"
+                  />
+                  I Accept The Terms of Consent Form
+                </label>
+                <a
+                  style="font-weight: bold; color: #365f9c"
+                  href="https://ncihub.org/groups/eedapstudies/wiki/HighThroughputTruthingYear3/File:HTT_IRBinformedConsent.pdf"
+                >
+                  Download Consent Form
+                </a>
+              </div>
+              <div class="consent-footer">
+                <button
+                  type="button"
+                  class="agree alpaca-form-button btn btn-default"
+                  onclick="next()"
+                  disabled
+                >
+                  Agree
+                </button>
+                <button
+                  type="button"
+                  class="decline alpaca-form-button btn btn-default"
+                  onclick="decline()"
+                >
+                  Decline
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="content form-step">
+          <div id="basic"></div>
+        </div>
+        <div class="content form-step">
+          <div id="professional"></div>
+        </div>
+        <div class="content form-step">
+          <div id="certifications"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Scripts -->
+    <script type="text/javascript" src="./registration.js"></script>
+  </body>
+</html>

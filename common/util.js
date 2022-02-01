@@ -85,6 +85,12 @@ function empty(elt) {
   while (elt.firstChild) elt.removeChild(elt.firstChild);
 }
 
+const asyncForEach = async (array, callback) => {
+  for (let index = 0; index < array.length; index++) {
+    await callback(array[index], index, array);
+  }
+};
+
 /*
     ID generator
 */
@@ -486,7 +492,7 @@ function covertToHumanLayer(data) {
   const id = item.analysis.execution_id;
   const name = item.analysis.name || item.analysis.execution_id;
 
-  if (!item.shape) item.shape = ["Polygon"];
+  if (!item.shape) item.shape = ['Polygon'];
   if (item.analysis.type&&item.analysis.type=='label') { // preset label
     return {
       id: id,
@@ -522,7 +528,7 @@ function covertToRulerLayer(data) {
     name: data.name,
     typeId: data.type,
     typeName: data.source,
-    shape: "Polygon",
+    shape: 'Polygon',
     creator: data.creator,
     data: null,
   };
@@ -827,6 +833,22 @@ EventHandle.prototype = {
     }
   },
 };
+
+function hasLoginAsGoogle() {
+  let token_info = parseJwt(getCookie('token'));
+  if (token_info&&token_info.sub) {
+    return true;
+  } else if (token_info&&token_info.name=='None') {
+    return false;
+  }
+  return false;
+}
+
+function googleSignOut(url) {
+  removeUserConsentAcceptance(getUserId());
+  window.location = url;
+}
+
 function getUserType() {
   let tokenInfo = parseJwt(getCookie('token'));
   if (typeof tokenInfo==='object' && tokenInfo.userType) {
@@ -857,7 +879,9 @@ function getUserPermissions(userType) {
     mode: 'cors',
   });
 }
-
+function getUserInfo() {
+  return parseJwt(getCookie('token'));
+}
 function getUserId() {
   let token_info = parseJwt(getCookie('token'));
   let uid = '';
@@ -868,6 +892,10 @@ function getUserId() {
     token_info.drupal.hasOwnProperty('uid')
   ) {
     uid = token_info.drupal.uid;
+  }
+  // need email first
+  else if (token_info.email) {
+    uid = token_info.email;
   }
   // non-pathdb w login
   else if (token_info.sub) {
@@ -885,6 +913,38 @@ function getUserId() {
     }
   }
   return uid;
+}
+function getUserRole() {
+  let token_info = parseJwt(getCookie('token'));
+  let roles = [];
+  if (token_info.attrs) {
+    roles = token_info.attrs;
+  }
+  return roles;
+}
+
+function addUserConsentAcceptance(userId) {
+  localStorage.setItem(`HTT-${userId}-Acceptance`, true);
+}
+
+function getUserConsentAcceptance(userId) {
+  return localStorage.getItem(`HTT-${userId}-Acceptance`);
+}
+
+function removeUserConsentAcceptance(userId) {
+  localStorage.removeItem(`HTT-${userId}-Acceptance`);
+}
+
+function redirectByRole(urls) { // role, url
+  const roles = getUserRole();
+  const idx = roles.findIndex((e)=>e=='write'||e=='admin');
+  if (idx < 0) {
+    // crowd
+    window.location = urls[0];
+  } else {
+    // organizers
+    window.location = urls[1];
+  }
 }
 
 function getBounds(points) {

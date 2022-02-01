@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<div>
+  <head>
+    <meta name="keywords" content="camicroscope, quip" />
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <!-- common -->
+    <!-- <link rel='stylesheet' type='text/css' media='all' href='../../css/style.css'/> -->
+    <link
+      href="../../common/datatables/vanilla-dataTables.css"
+      rel="stylesheet"
+    />
+    <!-- Check If we're logged in ok, otherwise, log in for us -->
+    <script src="../../common/authChecker.js"></script>
+    <script>
+      __auth_check(2);
+    </script>
+
+    <script src="../../core/Store.js"></script>
+    <script src="../../common/util.js"></script>
+    <script src="../../common/ajv.js"></script>
+    <script src="../../common/datatables/vanilla-dataTables.js"></script>
+    <script src="../../components/loading/loading.js"></script>
+    <title>CaMicroscope Data Table</title>
+    <style type="text/css">
+      * {
+        box-sizing: border-box;
+        font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+      }
+
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        width: 100%;
+        color: #365f9c;
+      }
+
+      .card-grid {
+        box-sizing: border-box;
+        /*compatibility*/
+        display: -webkit-flex;
+        -webkit-justify-content: space-around;
+        -webkit-flex-flow: row wrap;
+        /*standard*/
+        display: flex;
+        justify-content: space-around;
+        flex-flow: row wrap;
+      }
+
+      .card {
+        padding: 8px;
+        width: 256px;
+        height: 170px;
+        background-color: #f2f2f2;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2),
+          0 6px 20px 0 rgba(0, 0, 0, 0.19);
+        margin: 15px 0;
+        overflow: hidden;
+        position: relative;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        border-radius: 5px;
+      }
+
+      .card:hover {
+        box-shadow: 0 4px 8px 0 rgba(107, 72, 72, 0.4),
+          0 6px 20px 0 rgba(0, 0, 0, 0.38);
+      }
+
+      .card-title {
+        color: #365f9c;
+        height: 36px;
+        font-size: 24px;
+        font-weight: bold;
+      }
+
+      .card-description {
+        text-overflow: ellipsis;
+        overflow: hidden;
+        /* white-space: nowrap; */
+        color: #808080;
+        height: 88px;
+      }
+
+      .card-actions {
+        height: 30px;
+        padding-top: 5px;
+      }
+
+      .card-actions .btn {
+        font-size: 0.8rem;
+        height: 1.5rem;
+        text-decoration: none;
+        border-radius: 5px;
+        cursor: pointer;
+        appearance: none;
+        -moz-appearance: none;
+        -webkit-appearance: none;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        background-color: transparent;
+        /* color: #4d5968 !important; */
+        letter-spacing: 0.05em;
+        /* text-transform: uppercase; */
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: middle;
+      }
+
+      .card-actions .btn.reset {
+        color: #fff;
+        background-color: #28a745;
+        border-color: #28a745;
+      }
+
+      .card-actions .btn.reset:hover {
+        color: #fff;
+        background-color: #218838;
+        border-color: #1e7e34;
+      }
+
+      .card-actions .btn.action {
+        color: #fff;
+        background-color: #007bff;
+        border-color: #007bff;
+      }
+
+      .card-actions .btn.action:hover {
+        color: #fff;
+        background-color: #0069d9;
+        border-color: #0062cc;
+      }
+
+      .card-actions .btn.action:disabled {
+        background-color: #dddddd;
+        border-color: #dddddd;
+      }
+    </style>
+  </head>
+  <body>
+    <div></div>
+    <div class="container">
+      <div>
+        <div style="width: 100%; height: 35px; background-color: #001871">
+          <div style="padding: 8px">
+            <a
+              style="
+                color: white;
+                text-decoration: none;
+                font-weight: 700;
+                letter-spacing: 0.05em;
+                text-transform: uppercase;
+                font-size: 0.9em;
+              "
+              href="../landing/crowd.html"
+              >Home</a
+            >
+            <a
+              style="
+                float: right;
+                color: white;
+                text-decoration: none;
+                font-weight: 700;
+                letter-spacing: 0.05em;
+                text-transform: uppercase;
+                font-size: 0.9em;
+              "
+              href="#"
+              onclick='googleSignOut("../../login.html?logout=true")'
+              >Sign Out</a
+            >
+          </div>
+        </div>
+        <table id="datatables"></table>
+      </div>
+    </div>
+    <div id="card-container" class="card-grid"></div>
+    <script>
+      // -- authentication check -- //
+      if (!hasLoginAsGoogle()) window.location = "../../login.html";
+      // --  -- //
+      const store = new Store("../../data/");
+      const container = document.getElementById("card-container");
+
+      function createAllCards(data, container) {
+        data.forEach((d) => {
+          const card = createCard(d);
+          container.append(card);
+        });
+      }
+
+      function createCard(d) {
+        const card = document.createElement("div");
+        card.classList.add("card");
+        card.innerHTML = `<div class='card-title'>${d.name}</div>
+            <div class='card-description'>${d.description}</div>
+            <div class='card-actions'>
+                <button class='btn action' style='float: left;display:none;'>ROIs Collection</button>
+                <button class='btn action' style='float: right;'>ROIs Evaluation</button>
+            </div>`;
+        const btns = card.querySelectorAll("button");
+        btns[0].addEventListener("click", (e) => {
+          window.location.href = `../table.html`;
+          // redirect('../table.html', e.message, 0);
+        });
+        btns[1].addEventListener("click", (e) => {
+          window.location.href = `../labeling/labelingSimpleAnnotationViewer.html?collectionId=${d._id.$oid}`;
+          // redirect('../labeling/labelingSimpleAnnotationViewer.html?', e.message, 0);
+        });
+        return card;
+      }
+
+      async function initialize() {
+        var data = await store.getAllCollection();
+
+        const main_container = document.querySelector(".container");
+        // const div = document.createElement('div');
+        // div.style.textAlign='center'
+        // div.style.color='red'
+        // div.innerHTML = `<H1>FDA HTT Data-Collection Event Is Feb. 28 In LA. Please Come Back Later.</H1>
+        // <H1>We Are Looking Forward To Seeing You At The Event</H1>`;
+        // main_container.append(div)
+
+        createAllCards(data, container);
+      }
+
+      document.addEventListener("DOMContentLoaded", initialize);
+    </script>
+  </body>
+</div>

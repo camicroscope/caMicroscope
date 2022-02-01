@@ -405,11 +405,6 @@
     // get slide id from url
     $D.params = getUrlVars();
 
-    if ($D.params.mode == 'pathdb') {
-      $D.pages.home = '../../../';
-      $D.pages.table = '../../../';
-    }
-
     // load if we have at least one slide query element
     if ($D.params && $D.params.slideId) {
       // normal initialization starts
@@ -423,13 +418,12 @@
         $D.params.collection
       )
     ) {
-      let STORE = new Store('../../data/');
+      let STORE = new Store();
       STORE.findSlide(
         $D.params.slide,
-        $D.params.specimen,
         $D.params.study,
+        $D.params.specimen,
         $D.params.location,
-        null,
         $D.params.collection
       )
         .then(x => {

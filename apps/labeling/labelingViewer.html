@@ -4,11 +4,11 @@
     <meta name="keywords" content="camicroscope, quip" />
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <!-- <meta name='viewport' content='width=device-width, initial-scale=1'> -->
     <meta
       name="viewport"
       content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
     />
-
     <!-- Thank you -->
     <script src="../../common/authChecker.js"></script>
     <script>
@@ -36,6 +36,11 @@
       type="text/css"
       media="all"
       href="../../core/extension/openseadragon-zoom-control/openseadragon-zoom-control.css"
+    />
+    <!-- tippy theme -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/tippy.js@6/themes/light-border.css"
     />
     <!-- message queue css -->
     <link
@@ -69,12 +74,12 @@
       media="all"
       href="../../components/modalbox/modalbox.css"
     />
-    <!-- color picker css -->
+    <!-- add labelannotationspanel css -->
     <link
       rel="stylesheet"
       type="text/css"
       media="all"
-      href="../../common/colorpicker/color-picker.css"
+      href="../../components/labelannotationspanel/labelannotationspanel.css"
     />
 
     <link
@@ -83,18 +88,16 @@
       media="all"
       href="../../core/extension/openseadragon-measurement-tool/openseadragon-measurement-tool.css"
     />
-
+    <!-- side menu css -->
     <link
       rel="stylesheet"
       type="text/css"
       media="all"
-      href="../../core/extension/openseadragon-labeling/openseadragon-labeling.css"
+      href="../../components/sidemenu/sidemenu.css"
     />
-    <!-- tippy theme -->
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/tippy.js@6/themes/light-border.css"
-    />
+    <!-- Check If we're logged in ok, otherwise, log in for us -->
+    <!-- sidemenu js -->
+
     <!-- message queue js -->
     <script
       type="text/javascript"
@@ -112,14 +115,19 @@
       type="text/javascript"
       src="../../components/toolbar/toolbar.js"
     ></script>
+    <script
+      type="text/javascript"
+      src="../../components/sidemenu/sidemenu.js"
+    ></script>
+    <!-- labelannotationspanel -->
+    <script
+      type="text/javascript"
+      src="../../components/labelannotationspanel/labelannotationspanel.js"
+    ></script>
     <!-- modalbox -->
     <script
       type="text/javascript"
       src="../../components/modalbox/modalbox.js"
-    ></script>
-    <script
-      type="text/javascript"
-      src="../../common/colorpicker/color-picker.js"
     ></script>
     <script type="text/javascript" src="../../common/FileSaver.min.js"></script>
     <script type="text/javascript" src="../../common/jszip.min.js"></script>
@@ -142,7 +150,6 @@
     ></script>
 
     <!-- util.js -->
-    <script type="text/javascript" src="../../common/SHA256.js"></script>
     <script type="text/javascript" src="../../common/util.js"></script>
     <script type="text/javascript" src="../../common/Objectid.js"></script>
     <!-- core (package/ext) libs -->
@@ -172,10 +179,6 @@
       type="text/javascript"
       src="../../core/extension/openseadragon-zoom-control/openseadragon-zoom-control.js"
     ></script>
-    <script
-      type="text/javascript"
-      src="../../core/extension/openseadragon-labeling/openseadragon-labeling.js"
-    ></script>
     <!-- init data -->
     <!-- Popper & tippy -->
     <script src="https://unpkg.com/@popperjs/core@2"></script>
@@ -187,8 +190,20 @@
       type="text/javascript"
       src="../../common/dynamicLoadScript.js"
     ></script>
-    <script type="text/javascript" src="./labeling.js"></script>
+    <script type="text/javascript" src="./labelingViewer.js"></script>
     <style type="text/css">
+      .item_head {
+        margin: 0.2rem;
+        background-color: #365f9c;
+        color: rgba(255, 255, 255, 0.7);
+        cursor: pointer;
+        padding: 0.5rem;
+        width: 100%;
+        border: none;
+        text-align: left;
+        outline: none;
+        font-size: 1.5rem;
+      }
       .modalbox-footer button {
         font-weight: bold;
         border: none;
@@ -204,6 +219,103 @@
         border: 1px solid #7f7f7f;
         background-color: #bfbfbf;
       }
+      ul.drop_down li {
+        width: fit-content;
+      }
+
+      #main_viewer .left_menu {
+        box-sizing: border-box;
+        border-right: 0.3rem solid #365f9c;
+        width: 250px;
+        background-color: white;
+      }
+
+      #main_viewer .right_viewer {
+        /* width:calc(100% - 250px); */
+        width: 100%;
+      }
+
+      #ca_tools .handler {
+        display: none;
+      }
+      ul.tools {
+        border-radius: 0;
+      }
+      .item_head {
+        height: 3.6rem;
+        padding: 0.2rem;
+        margin: 0;
+      }
+
+      div.foot button.action {
+        color: #fff;
+        background-color: #007bff;
+        border-color: #007bff;
+      }
+
+      div.foot button.action:hover {
+        color: #fff;
+        background-color: #0069d9;
+        border-color: #0062cc;
+      }
+
+      div.foot button.action:disabled {
+        background-color: #dddddd;
+        border-color: #dddddd;
+      }
+
+      #vta_txt:hover {
+        background: #dcdcdc;
+        /* border-bottom: 1px solid #365f9c; */
+      }
+
+      #vta_txt {
+        min-width: 4.8rem;
+        height: 2.4rem;
+      }
+      #vta_txt div.txt {
+        z-index: 9;
+        position: relative;
+        float: left;
+        top: 50%;
+        left: 50%;
+        font-size: 1.4rem;
+        transform: translate(-50%, -50%);
+      }
+
+      #vta_txt div.txt.hide {
+        display: none;
+      }
+      #vta_txt input.ip {
+        color: #365f9c;
+        font-size: 1.4rem;
+        font-weight: bold;
+        background: #dcdcdc;
+        z-index: 10;
+        outline: 0;
+        padding: 0;
+        border: none;
+        width: 0;
+        height: 0;
+      }
+      #vta_txt input.ip:focus {
+        width: 4.5rem;
+        height: 100%;
+      }
+
+      #vta_txt[data-error]:after {
+        position: absolute;
+        content: attr(data-error) !important;
+        color: #800;
+        top: -2.5rem;
+        right: 0;
+        border: 1px #800 solid;
+        background: white;
+        overflow: hidden;
+        white-space: nowrap;
+        padding: 2px;
+        border-radius: 5px;
+      }
     </style>
   </head>
   <body>
@@ -212,7 +324,11 @@
     <!-- toolbar -->
     <div id="ca_tools"></div>
     <div id="modalbox"></div>
-    <div id="main_viewer" class="main"></div>
+    <!-- annotation list -->
+    <div id="side_annotation" style="z-index: 600"></div>
+    <div id="main_viewer" class="main" style="display: flex">
+      <div id="right_viewer" class="right_viewer"></div>
+    </div>
   </body>
   <script type="text/javascript">
     // -- authentication check -- //
@@ -223,6 +339,7 @@
       window.location = "./landing/crowd.html";
     }
     // --  -- //
+    var HomePage;
     if (detectIE()) {
       createWarningText(
         'You are using an <strong>IE/Edge</strong> browser that may be lead to erratic behavior on caMicroscope. Please switch to <a href="https://www.google.com/chrome/">Chrome</a>, <a href="https://www.mozilla.org/en-US/firefox/new/">Firefox</a> or <a href="https://www.apple.com/safari/">Safari</a> browser to improve your experience.'
@@ -233,7 +350,9 @@
     // get slide id from url
     const url = new URL(window.location.href);
     $D.params = getUrlVars();
-
+    $D.pages = {};
+    $D.pages.home = `../htt-table.html`;
+    $D.pages.table = `../htt-table.html`;
     // no slide Id error
     if ($D.params && $D.params.slideId) {
       // normal initialization starts
@@ -255,7 +374,7 @@
         .then((x) => {
           let offset = parseInt($D.params.offset, 10) || 0;
           if (x.length == 0 || offset >= x.length) {
-            // redirect($D.pages.table, "No Slide Found. Redirecting To Table.");
+            redirect($D.pages.table, "No Slide Found. Redirecting To Table.");
           } else {
             newParams = $D.params;
             delete newParams.data;
@@ -272,12 +391,15 @@
         })
         .catch((e) => {
           console.warn(e);
-          // redirect($D.pages.table,'Redirecting To Table.');
+          redirect($D.pages.table, "Redirecting To Table.");
         });
       // find the associated slideID
       // open viewer with that slideID
     } else {
-      // redirect($D.pages.table,'Slide Id Is Undefined. Redirecting To Flex Table.');
+      redirect(
+        $D.pages.table,
+        "Slide Id Is Undefined. Redirecting To Flex Table."
+      );
     }
 
     // get states parameters

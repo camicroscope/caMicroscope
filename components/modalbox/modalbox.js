@@ -16,87 +16,88 @@
 //   </div>
 
 // </div>
-function ModalBox(options) {
-  this.name = 'ModalBox';
-  // DOM elts
-  /**
+function ModalBox(options){
+	this.name = 'ModalBox';
+	// DOM elts
+	/**
      * @property {Element} elt The element to append the toolbar's container element to.
      */
-  this.elt;
+	this.elt;
 
-  //
-  this.setting = {
-    hasHeader: true,
-    hasFooder: true,
+	//
+	this.setting = {
+		hasHeader:true,
+		hasFooder:true,
+		clickClose:true
 
-  };
-  extend(this.setting, options);
+	};
+	extend(this.setting, options);
 
-  this.elt = document.getElementById(this.setting.id);
-  if (!this.elt) {
-    console.error(`${this.name}:No Main Container...`);
-    return;
-  }
+	this.elt = document.getElementById(this.setting.id);
+	if(!this.elt){
+		console.error(`${this.name}:No Main Container...`);
+		return;
+	}
 
-  this.__create();
-  this.__close.addEventListener('click', this.close.bind(this));
-  window.onclick = function(event) {
-    if (event.target == this.elt) this.close();
-  }.bind(this);
+	this.__create();
+	if(this.__close) this.__close.addEventListener('click',this.close.bind(this));
+	if(this.setting.clickClose) window.onclick = function(event) {
+	  if (event.target == this.elt)this.close();
+	}.bind(this);
 }
-ModalBox.prototype.__create = function() {
-  function createHeater(text) {
-    const header = document.createElement('div');
-    header.classList.add('modalbox-header');
-    const title = document.createElement('div');
-    title.textContent = text;
-    const close = document.createElement('span');
-    close.textContent = 'x';
-    close.classList.add('close');
-    header.appendChild(close);
-    header.appendChild(title);
+ModalBox.prototype.__create = function(){
+	function createHeater(text){
+		const header = document.createElement('div');
+		header.classList.add('modalbox-header');
+		const title = document.createElement('div');
+		title.textContent = text;
+		const close = document.createElement('span');
+		close.textContent = 'x';
+		close.classList.add('close');
+		header.appendChild(close);
+		header.appendChild(title);
 
-    return header;
-  }
-  function createFooter(text) {
-    const footer = document.createElement('div');
-    footer.classList.add('modalbox-footer');
-    const title = document.createElement('h4');
-    title.textContent = text;
-    footer.appendChild(title);
-    return footer;
-  }
-  empty(this.elt);
-  this.elt.classList.add('modalbox');
-  const content = document.createElement('div');
-  content.classList.add('modalbox-content');
-  if (this.setting.hasHeader) content.appendChild(createHeater(this.setting.headerText));
-  this.body = document.createElement('div');
-  this.body.classList.add('modalbox-body');
-  if (this.setting.provideContent) {
-    this.body.innerHTML = this.setting.content;
-  }
-  content.appendChild(this.body);
-  if (this.setting.hasFooter) content.appendChild(createFooter(this.setting.footerText));
+		return header;
 
-  this.elt.appendChild(content);
-  this.__close = this.elt.querySelector('.modalbox-header .close');
-};
-ModalBox.prototype.open = function() {
-  this.elt.style.display = 'block';
-};
-ModalBox.prototype.close = function() {
-  this.elt.style.display = 'none';
-};
-ModalBox.prototype.setBody=function() {
+	}
+	function createFooter(text){
+		const footer = document.createElement('div');
+		footer.classList.add('modalbox-footer');
+		const title = document.createElement('h4');
+		title.textContent = text;
+		footer.appendChild(title);
+		return footer;		
+	}
+	empty(this.elt);
+	this.elt.classList.add('modalbox');
+	const content = document.createElement('div');
+	content.classList.add('modalbox-content');
+	if(this.setting.hasHeader) content.appendChild(createHeater(this.setting.headerText));
+	this.body = document.createElement('div');
+	this.body.classList.add('modalbox-body');
+	if (this.setting.provideContent) {this.body.innerHTML = this.setting.content}
+	content.appendChild(this.body);
+	if(this.setting.hasFooter) content.appendChild(createFooter(this.setting.footerText));
 
-};
-ModalBox.prototype.appendBody=function() {
+	this.elt.appendChild(content);
+	this.__close = this.elt.querySelector('.modalbox-header .close');
 
-};
-ModalBox.prototype.setHeaderText = function(text) {
-  this.elt.querySelector('.modalbox-header > div').textContent = text;
-};
-ModalBox.prototype.setFooterText = function(text) {
+}
+ModalBox.prototype.open = function(){
+	this.elt.style.display = 'block';
+}
+ModalBox.prototype.close = function(){
+	this.elt.style.display = 'none';
+}
+ModalBox.prototype.setBody=function(){
 
-};
+}
+ModalBox.prototype.appendBody=function(){
+
+}
+ModalBox.prototype.setHeaderText = function(text){
+	this.elt.querySelector('.modalbox-header div').textContent = text;
+}
+ModalBox.prototype.setFooterText = function(text){
+
+}

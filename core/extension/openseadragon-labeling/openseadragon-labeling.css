@@ -11,18 +11,23 @@
   position:absolute;
   height:250px;
   width:250px;
-  border-width:2px;
+  border-width:3px;
   border-style:solid;
-  opacity:.7;
+  opacity:1;
   background: rgba(255,255,255,.25);
 }
 
 .patch:hover .color,
-.patch:hover .corner,
+
 .patch:hover .note,
 .patch:hover .remove,
+.patch:hover .til,
+.patch:hover .til.checked,
 .patch.active .remove
-/*.patch.active .color,
+
+/*
+.patch:hover .corner,
+.patch.active .color,
 .patch.active .corner,
 .patch.active .note,
 .patch.active .remove*/
@@ -30,10 +35,11 @@
   display:block;
 }
 
-/*.patch.active .info_block,*/
+
+/*.patch.active .info_block,
 .patch:hover .info_block {
   display:inline-block;
-}
+}*/
 
 
 .patch.active:hover,
@@ -87,10 +93,81 @@
   display:none;
 }
 
+.patch .til {
+  top:20px;
+  right:0;
+  display:none;
+  background: #fff;
+}
+.patch .til.checked {
+  top:20px;
+  right:-159px;
+  display:none;
+}
+.patch .til input[type=checkbox] {
+  display:none;
+}
+
+.patch .til label {
+  font-size:18px;
+  border:1px solid black;
+  /*border-radius: 50%;*/
+}
+
+.patch .til input[type=checkbox]:checked+label {
+  color:#fff;
+  background:#000;
+}
+.patch .til input[type=checkbox]+label {
+  color:#000;
+  background:#fff;  
+}
+
+.patch:hover .til input[type=checkbox]:checked+label+input[type=range],
+.patch:hover .til input[type=checkbox]:checked+label+input[type=range]+div {
+  display: inline-block;
+  position: relative;
+}
+
+.patch .til input[type=checkbox]+label+input[type=range],
+.patch .til input[type=checkbox]+label+input[type=range]+div {
+  display: none;
+}
+.patch .til div.label {
+  width: 20px;
+  margin: 0 3px;
+  font-size: 14px;
+  color: #000; 
+  text-align: center;
+}
 /*.note:hover {
   color:white;
   background:black;
 }*/
+/**  **/
+/* .patch .til_panel {
+  z-index:999;
+  box-sizing:border-box;
+  top:20px;
+  left:calc(100% + 3px);
+  border:1px #000 solid;
+  background:#fff;
+  display:none;
+  position: relative;
+  justify-items: center;
+  align-items: center;
+}
+.patch .til_panel div,
+.patch .til_panel input[type=range]{
+  display: inline;
+  font-size: 15px;
+  text-align: center;
+  color: #000;
+  position: relative;
+}
+.patch .til_panel div {
+  margin: 0 3px;
+} */
 
 /** text note **/
 .patch .note_panel {

@@ -77,7 +77,7 @@ class Store {
     return fetch(url, {
       credentials: 'include',
       mode: 'cors',
-    }).then(this.errorHandler).then((x) => this.filterBroken(x, 'mark'));
+    }).then(this.errorHandler);
   }
   /**
    * update a collection info
@@ -96,7 +96,7 @@ class Store {
       credentials: 'include',
       mode: 'cors',
       body: JSON.stringify(data),
-    });
+    }).then(this.errorHandler);
   }
   /**
    * post user
@@ -625,6 +625,16 @@ class Store {
     }).then(this.errorHandler);
   }
 
+  findSlideLabelingStat(cid, uid) {
+    const suffix = 'Slide/findLabelingStat';
+    const url = this.base + suffix;
+    return fetch(url + '?' + objToParamStr({cid, uid}), {
+      credentials: 'include',
+      mode: 'cors',
+      method: 'GET',
+    }).then(this.errorHandler);
+  }
+
   /**
    * find overlays matching name and/or type
    * @param {string} [name] - the slide's name
@@ -634,15 +644,15 @@ class Store {
    * @param {string} [q] - override query - ignores all other params if set
    * @return {promise} - promise which resolves with data
    **/
-  findSlide(name, specimen, study, location, q) {
-    let query = {};
+  findSlide(slide, specimen, study, location, q) {
+    let query;
     const suffix = 'Slide/find';
     const url = this.base + suffix;
     if (q) {
       query = q;
     } else {
-      if (name) {
-        query.name = name;
+      if (slide) {
+        query.slide = slide;
       }
       if (study) {
         query.study = study;
@@ -678,6 +688,94 @@ class Store {
     }).then(this.errorHandler).then((x) => this.filterBroken(x, 'slide'));
   }
 
+  countLabelingBySlide() {
+    const suffix = 'Slide/countLabeling';
+    var url = this.base + suffix;
+    return fetch(url, {
+      method: 'GET',
+      credentials: 'include',
+      mode: 'cors',
+    }).then(this.errorHandler);
+  }
+
+  findLabeling(query) {
+    const suffix = 'Labeling/find';
+    var url = this.base + suffix;
+
+    if (query&&Object.keys(query).length !== 0) {
+      url = url + '?' + objToParamStr(query);
+    }
+    return fetch(url, {
+      method: 'GET',
+      credentials: 'include',
+      mode: 'cors',
+    }).then(this.errorHandler);
+  }
+  /**
+   * post labeling
+   * @param {object} json - the mark data
+   * @returns {promise} - promise which resolves with response
+   **/
+  addLabel(json) {
+    var suffix = 'Labeling/post';
+    var url = this.base + suffix;
+    // if (this.validation.labeling && !this.validation.labeling(json)) {
+    //   console.warn(this.validation.labeling.errors);
+    // }
+    return fetch(url, {
+      method: 'POST',
+      credentials: 'include',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json; charset=utf-8',
+        // "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: JSON.stringify(json),
+    }).then(this.errorHandler);
+  }
+
+  findLabelingAnnotation(query) {
+    const suffix = 'LabelingAnnotation/find';
+    var url = this.base + suffix;
+
+    if (query&&Object.keys(query).length !== 0) {
+      url = url + '?' + objToParamStr(query);
+    }
+    return fetch(url, {
+      credentials: 'include',
+      mode: 'cors',
+    }).then(this.errorHandler);
+  }
+
+  addLabelingAnnotation(annotation) {
+    const suffix = 'LabelingAnnotation/post';
+    const url = this.base + suffix;
+    return fetch(url, {
+      method: 'POST',
+      credentials: 'include',
+      mode: 'cors',
+      body: JSON.stringify(annotation),
+    }).then(this.errorHandler);
+  }
+
+  pushAnnotationFromLabeling(labelId, annotationId) {
+    const suffix = 'Labeling/pushAnnotation';
+    const url = this.base + suffix;
+    return fetch(url + '?' + objToParamStr({labelId, annotationId}), {
+      method: 'GET',
+      credentials: 'include',
+      mode: 'cors',
+    }).then(this.errorHandler);
+  }
+  pullAnnotationFromLabeling(labelId, annotationId) {
+    const suffix = 'Labeling/pullAnnotation';
+    const url = this.base + suffix;
+    return fetch(url + '?' + objToParamStr({labelId, annotationId}), {
+      method: 'GET',
+      credentials: 'include',
+      mode: 'cors',
+    }).then(this.errorHandler);
+  }
   /**
    * find templates matching name and/or type
    * @param {string} [name] - the template name, supporting regex match

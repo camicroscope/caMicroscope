@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="keywords" content="camicroscope, quip" />
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <!-- common -->
+    <!-- <link rel='stylesheet' type='text/css' media='all' href='../css/style.css'/> -->
+    <link
+      href="../../common/datatables/vanilla-dataTables.css"
+      rel="stylesheet"
+    />
+    <!-- Check If we're logged in ok, otherwise, log in for us -->
+    <script src="../../common/authChecker.js"></script>
+    <script>
+      __auth_check(2);
+    </script>
+
+    <script src="../../core/Store.js"></script>
+    <script src="../../common/util.js"></script>
+    <script src="../../common/ajv.js"></script>
+    <script src="../../common/datatables/vanilla-dataTables.js"></script>
+    <script src="../../components/loading/loading.js"></script>
+    <title>CaMicroscope Data Table</title>
+    <style type="text/css">
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        width: 100%;
+        color: #365f9c;
+      }
+
+      textarea,
+      select,
+      input[type="text"] {
+        font-family: "Lato", sans-serif;
+        border: 2px solid #95a5a6;
+        border-radius: 3px;
+        padding: 6px 12px;
+        line-height: 18px;
+      }
+
+      .container {
+        font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+        width: 100%;
+        height: 100%;
+        padding: 0;
+        margin: 0;
+      }
+
+      /* CONTAINERS */
+      .dataTable-wrapper.no-header .dataTable-container {
+        border-top: 1px solid #d9d9d9;
+      }
+
+      .dataTable-wrapper.no-footer .dataTable-container {
+        border-bottom: 1px solid #d9d9d9;
+      }
+
+      .dataTable-top > div:first-child,
+      .dataTable-bottom > div:first-child {
+        float: left;
+      }
+
+      .dataTable-top > div:last-child,
+      .dataTable-bottom > div:last-child {
+        float: right;
+      }
+
+      .dataTable-selector {
+        padding: 6px;
+      }
+
+      .dataTable-input {
+        padding: 6px 12px;
+      }
+
+      .dataTable-info {
+        margin: 7px 0;
+      }
+
+      /* PAGER */
+      .dataTable-pagination ul {
+        margin: 0;
+        padding-left: 0;
+      }
+
+      .dataTable-pagination li {
+        list-style: none;
+        float: left;
+      }
+
+      .dataTable-pagination a {
+        border: 1px solid transparent;
+        float: left;
+        margin-left: 2px;
+        padding: 6px 12px;
+        position: relative;
+        text-decoration: none;
+        color: #333;
+      }
+
+      .dataTable-pagination a:hover {
+        background-color: #d9d9d9;
+      }
+
+      .dataTable-pagination .active a,
+      .dataTable-pagination .active a:focus,
+      .dataTable-pagination .active a:hover {
+        background-color: #d9d9d9;
+        cursor: default;
+      }
+
+      .dataTable-pagination .ellipsis a,
+      .dataTable-pagination .disabled a,
+      .dataTable-pagination .disabled a:focus,
+      .dataTable-pagination .disabled a:hover {
+        cursor: not-allowed;
+      }
+
+      .dataTable-pagination .disabled a,
+      .dataTable-pagination .disabled a:focus,
+      .dataTable-pagination .disabled a:hover {
+        cursor: not-allowed;
+        opacity: 0.4;
+      }
+
+      .dataTable-pagination .pager a {
+        font-weight: bold;
+      }
+
+      /* TABLE */
+      .dataTable-table {
+        max-width: 100%;
+        width: 100%;
+        border-spacing: 0;
+        border-collapse: collapse;
+      }
+
+      .dataTable-table > tbody > tr > td,
+      .dataTable-table > tbody > tr > th,
+      .dataTable-table > tfoot > tr > td,
+      .dataTable-table > tfoot > tr > th,
+      .dataTable-table > thead > tr > td,
+      .dataTable-table > thead > tr > th {
+        vertical-align: top;
+        padding: 8px 10px;
+      }
+
+      .dataTable-table > tbody > tr:nth-child(even) {
+        background-color: #f2f2f2;
+      }
+
+      .dataTable-table > tbody > tr:hover {
+        background-color: #ddd;
+      }
+
+      .dataTable-table > thead > tr > th {
+        color: white;
+        background-color: #365f9c;
+        vertical-align: bottom;
+        text-align: left;
+      }
+
+      .dataTable-table > tfoot > tr > th {
+        vertical-align: bottom;
+        text-align: left;
+        border-top: 1px solid #d9d9d9;
+      }
+
+      .dataTable-table th {
+        vertical-align: bottom;
+        text-align: left;
+      }
+
+      .dataTable-table th a {
+        text-decoration: none;
+        color: inherit;
+      }
+
+      .dataTable-sorter {
+        display: inline-block;
+        height: 100%;
+        position: relative;
+        width: 100%;
+      }
+
+      .dataTable-sorter::before,
+      .dataTable-sorter::after {
+        content: "";
+        height: 0;
+        width: 0;
+        position: absolute;
+        right: 4px;
+        border-left: 4px solid transparent;
+        border-right: 4px solid transparent;
+        opacity: 0;
+      }
+
+      .dataTable-sorter::before {
+        border-top: 4px solid #000;
+        bottom: 2px;
+      }
+
+      .dataTable-sorter::after {
+        border-bottom: 4px solid #000;
+        border-top: 4px solid transparent;
+        top: -2px;
+      }
+
+      .asc .dataTable-sorter::after,
+      .desc .dataTable-sorter::before {
+        opacity: 0.6;
+      }
+
+      .dataTables-empty {
+        text-align: center;
+      }
+
+      .dataTable-top::after,
+      .dataTable-bottom::after {
+        clear: both;
+        content: " ";
+        display: table;
+      }
+      .btn {
+        color: #fff;
+        background-color: #365f9c;
+        border-color: #365f9c;
+        display: inline-block;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        border: 1px solid transparent;
+        font-size: 1rem;
+        text-decoration: none;
+        border-radius: 0.25rem;
+        -webkit-transition: all 0.2s ease-in-out;
+        -o-transition: all 0.2s ease-in-out;
+        transition: all 0.2s ease-in-out;
+        opacity: 0.8;
+      }
+      .btn:hover {
+        color: #fff;
+        background-color: #365f9c;
+        border-color: #365f9c;
+        opacity: 1;
+      }
+
+      /* -- table -- */
+      table.minimalistBlack {
+        border: 3px solid #365f9c;
+        text-align: left;
+        border-collapse: collapse;
+      }
+      table.minimalistBlack td,
+      table.minimalistBlack th {
+        border: 1px solid #365f9c;
+
+        padding: 5px 4px;
+      }
+      table.minimalistBlack tbody td {
+        font-size: 13px;
+      }
+      table.minimalistBlack thead {
+        background: #cfcfcf;
+        background: -moz-linear-gradient(
+          top,
+          #dbdbdb 0%,
+          #d3d3d3 66%,
+          #cfcfcf 100%
+        );
+        background: -webkit-linear-gradient(
+          top,
+          #dbdbdb 0%,
+          #d3d3d3 66%,
+          #cfcfcf 100%
+        );
+        background: linear-gradient(
+          to bottom,
+          #dbdbdb 0%,
+          #d3d3d3 66%,
+          #cfcfcf 100%
+        );
+        border-bottom: 3px solid #365f9c;
+      }
+
+      table.minimalistBlack thead th {
+        font-size: 15px;
+        font-weight: bold;
+        color: #fff;
+        background: #4787e1;
+        text-align: center;
+      }
+      table.minimalistBlack tfoot {
+        font-size: 14px;
+        font-weight: bold;
+        color: #000000;
+        border-top: 3px solid #365f9c;
+      }
+      table.minimalistBlack tfoot td {
+        font-size: 14px;
+      }
+      .title {
+        display: block;
+        font-size: 1.17em;
+        margin-top: 1em;
+        margin-bottom: 1em;
+        margin-left: 0;
+        margin-right: 0;
+        font-weight: bold;
+      }
+
+      /* Style the tab */
+      .tab {
+        overflow: hidden;
+        border: 1px solid #365f9c;
+        background-color: #f1f1f1;
+      }
+      /* Style the buttons inside the tab */
+      .tab button {
+        background-color: inherit;
+        float: left;
+        border: none;
+        outline: none;
+        cursor: pointer;
+        padding: 14px 16px;
+        transition: 0.3s;
+        font-size: 17px;
+        color: #365f9c;
+      }
+
+      /* Change background color of buttons on hover */
+      .tab button:hover {
+        background-color: #ddd;
+      }
+
+      /* Create an active/current tablink class */
+      .tab button.active {
+        background-color: #365f9c;
+        color: white;
+      }
+
+      /* Style the tab content */
+      .tabcontent {
+        display: none;
+        padding: 6px 12px;
+        border: 1px solid #365f9c;
+        border-top: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div>
+        <div style="width: 100%; height: 35px; background-color: #001871">
+          <div style="padding: 8px">
+            <a
+              style="
+                color: white;
+                text-decoration: none;
+                font-weight: 700;
+                letter-spacing: 0.05em;
+                text-transform: uppercase;
+                font-size: 0.9em;
+              "
+              href="../landing/landing.html"
+              >Home</a
+            >
+            <a
+              style="
+                float: right;
+                color: white;
+                text-decoration: none;
+                font-weight: 700;
+                letter-spacing: 0.05em;
+                text-transform: uppercase;
+                font-size: 0.9em;
+              "
+              href="#"
+              onclick="googleSignOut('../../login.html?logout=true')"
+              >Sign Out</a
+            >
+          </div>
+        </div>
+        <div id="viewer"></div>
+        <div style="padding: 20px">
+          <div class="tab">
+            <button
+              class="tablinks"
+              onclick="openTab(event, 'creators')"
+              id="defaultOpen"
+            >
+              Rankings of Creators
+            </button>
+            <button class="tablinks" onclick="openTab(event, 'slides')">
+              Rankings of Slides
+            </button>
+            <button class="tablinks" onclick="openTab(event, 'labels')">
+              Rankings of Label Types
+            </button>
+            <button class="tablinks" onclick="openTab(event, 'participants')">
+              Participants
+            </button>
+            <button class="tablinks" onclick="openTab(event, 'roi_details')">
+              ROIs Detail
+            </button>
+            <button
+              class="tablinks"
+              onclick="openTab(event, 'roi_annotations_details')"
+            >
+              ROI Annotations Detail
+            </button>
+          </div>
+
+          <div id="creators" class="tabcontent"></div>
+
+          <div id="slides" class="tabcontent"></div>
+
+          <div id="labels" class="tabcontent"></div>
+
+          <div id="participants" class="tabcontent"></div>
+
+          <div id="roi_details" class="tabcontent"></div>
+
+          <div id="roi_annotations_details" class="tabcontent"></div>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script>
+    // -- authentication check -- //
+    if (!hasLoginAsGoogle()) window.location = "../../login.html";
+
+    const roles = getUserRole();
+    const idx = roles.findIndex((e) => e == "write" || e == "admin");
+    if (idx < 0) {
+      // crowd
+      window.location = "../landing/crowd.html";
+    } else {
+      //window.location = './crowd.html';
+    }
+
+    let creators;
+    let slides;
+    let types;
+    let total;
+    let sheet;
+    let users;
+    let roi_annotations;
+
+    /*  */
+    function openTab(evt, tabName) {
+      var i, tabcontent, tablinks;
+      tabcontent = document.getElementsByClassName("tabcontent");
+      for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+      }
+      tablinks = document.getElementsByClassName("tablinks");
+      for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+      }
+      document.getElementById(tabName).style.display = "block";
+      evt.currentTarget.className += " active";
+    }
+
+    // Get the element with id="defaultOpen" and click on it
+    document.getElementById("defaultOpen").click();
+    /*  */
+
+    const creatorHeadMapping = [
+      {
+        title: "Creator",
+        field: "creator",
+      },
+      {
+        title: "Total",
+        field: "total",
+      },
+    ];
+    const typeHeadMapping = [
+      {
+        title: "Label Type",
+        field: "properties.type",
+      },
+      {
+        title: "Total",
+        field: "total",
+      },
+    ];
+    const slideHeadMapping = [
+      {
+        title: "Slide",
+        field: "provenance.image.name",
+      },
+      {
+        title: "Total",
+        field: "total",
+      },
+    ];
+    const sheetHeadMapping = [
+      {
+        title: "Id",
+        field: "id",
+      },
+      {
+        title: "Slide Id",
+        field: "slide",
+      },
+      {
+        title: "Slide Name",
+        field: "slide_name",
+      },
+      {
+        title: "Creator",
+        field: "creator",
+      },
+      {
+        title: "Data Type",
+        field: "data_type",
+      },
+      {
+        title: "X (pixel)",
+        field: "x",
+      },
+      {
+        title: "Y (pixel)",
+        field: "y",
+      },
+      {
+        title: "Width (pixel)",
+        field: "width",
+      },
+      {
+        title: "Height (pixel)",
+        field: "height",
+      },
+      {
+        title: "Label Type",
+        field: "label_type",
+      },
+      {
+        title: "TIL Density",
+        field: "til_density",
+      },
+      {
+        field: "create_date_time",
+        title: "Created Date",
+      },
+    ];
+
+    const usersHeadMapping = [
+      {
+        field: "alias",
+        title: "Name",
+      },
+      {
+        field: "name",
+        title: "E-Mail",
+      },
+    ];
+
+    const roiAnnotationsHeadMapping = [
+      {
+        field: "id",
+        title: "ID",
+      },
+      {
+        field: "slide_name",
+        title: "Slide Name",
+      },
+      {
+        field: "x",
+        title: "X",
+      },
+      {
+        field: "y",
+        title: "Y",
+      },
+      {
+        field: "width",
+        title: "Width",
+      },
+      {
+        field: "height",
+        title: "Height",
+      },
+      {
+        field: "roi_type",
+        title: "ROI Type",
+      },
+      {
+        field: "roi_til_density",
+        title: "ROI TIL Density",
+      },
+      {
+        field: "roi_creator",
+        title: "ROI Creator",
+      },
+      {
+        field: "annotation_type",
+        title: "Annotation Type",
+      },
+      {
+        field: "annotation_til_density",
+        title: "Annotation TIL Density",
+      },
+      {
+        field: "annotation_creator",
+        title: "Annotation Creator",
+      },
+      {
+        field: "date",
+        title: "Create Date Time",
+      },
+      {
+        field: "view_width",
+        title: "View Width",
+      },
+      {
+        field: "view_height",
+        title: "View Height",
+      },
+    ];
+
+    function createTable(headers, data) {
+      const tab_head = `<thead><tr>${headers
+        .map((header) => `<th>${header.title}</th>`)
+        .join("")}</tr></thead>`;
+
+      const tab_body = `<tbody>${data
+        .map(
+          (d) =>
+            `<tr>${headers
+              .map(
+                (header) =>
+                  `<td>${
+                    d[header.field] == undefined ? "" : d[header.field]
+                  }</td>`
+              )
+              .join("")}</tr>`
+        )
+        .join("")}</tbody>`;
+
+      return `<table class="minimalistBlack">${tab_head}${tab_body}</table>`;
+    }
+    function createCSVRawData(headers, data) {
+      const csv = [];
+
+      // header
+      const h = headers.map((header) => header.title);
+      csv.push(h);
+
+      // data
+      data.forEach((d) => {
+        csv.push(
+          headers.map((header) =>
+            d[header.field] == undefined ? "" : d[header.field]
+          )
+        );
+      });
+      return csv;
+    }
+    function getTimeString() {
+      const d = new Date();
+      return `${d.toLocaleDateString()}-${d.toLocaleTimeString()}`;
+    }
+    async function initialize() {
+      const params = getUrlVars();
+      const store = new Store("../../data/");
+      creators = await store
+        .countByCreator()
+        .then((rs) => rs.sort((a, b) => b.total - a.total));
+
+      slides = await store
+        .countBySlide()
+        .then((rs) => rs.sort((a, b) => b.total - a.total));
+
+      types = await store
+        .countByLabelType()
+        .then((rs) => rs.sort((a, b) => b.total - a.total));
+
+      total = await store.countAllLabels();
+
+      const roi_annotations_maps = await store
+        .findLabelingAnnotationByTypeOrCreator()
+        .then((rs) => {
+          const maps = {};
+          rs.map((i) => {
+            maps[i._id] = {
+              id: i._id,
+              creator: i.creator,
+              label_type: i.properties.type,
+              til_density: i.properties.til_density,
+              create_date_time: i.create_date_time,
+              viewer_width:
+                i.viewer_size && i.viewer_size.width
+                  ? i.viewer_size.width
+                  : `NA`,
+              viewer_height:
+                i.viewer_size && i.viewer_size.height
+                  ? i.viewer_size.height
+                  : `NA`,
+            };
+          });
+          return maps;
+        });
+
+      sheet = await store.findLabel(null, null, "label").then((rs) =>
+        rs.map((i) => {
+          return {
+            id: i._id,
+            creator: i.creator,
+            slide: i.provenance.image.slide,
+            slide_name: i.provenance.image.name,
+            data_type: i.provenance.analysis.computation,
+            x: i.properties.x,
+            y: i.properties.y,
+            width: i.properties.width,
+            height: i.properties.height,
+            label_type: i.properties.type,
+            til_density: i.properties.til_density,
+            parent: i.parent,
+            subrois: i.subrois,
+            annotations: i.annotations,
+            create_date_time: i.create_date_time,
+          };
+        })
+      );
+      roi_annotations = [];
+      sheet.forEach((record) => {
+        record.annotations.forEach((_id) => {
+          const left = record["x"];
+          const top = record["y"];
+          const width = record["width"];
+          const height = record["height"];
+
+          roi_id =
+            record["slide_name"] +
+            "_left_" +
+            left +
+            "_top_" +
+            top +
+            "_wdith_" +
+            width +
+            "_height_" +
+            height;
+          roi_annotations.push({
+            id: roi_id,
+            slide_name: record["slide_name"],
+            x: left,
+            y: top,
+            width: width,
+            height: height,
+            roi_type: record["label_type"],
+            roi_til_density: record["til_density"],
+            roi_creator: record["creator"],
+            annotation_type: roi_annotations_maps[_id]["label_type"],
+            annotation_til_density: roi_annotations_maps[_id]["til_density"],
+            annotation_creator: roi_annotations_maps[_id]["creator"],
+            date: roi_annotations_maps[_id]["create_date_time"],
+            view_width: roi_annotations_maps[_id]["viewer_width"],
+            view_height: roi_annotations_maps[_id]["viewer_height"],
+          });
+        });
+      });
+      users = await store.getAllUsers();
+
+      document.querySelector(
+        "#viewer"
+      ).innerHTML = `<H2>&nbsp;&nbsp;&nbsp; Total ROIs: ${total.count}</H2>`;
+      document.querySelector("#creators").innerHTML =
+        `<div class='title'>Rankings of Creators&nbsp;&nbsp;&nbsp;<button id='creator' class='btn'>Download As CSV</button></div>` +
+        createTable(creatorHeadMapping, creators);
+      document.querySelector("#slides").innerHTML =
+        `<div class='title'>Rankings of Slides&nbsp;&nbsp;&nbsp;<button id='slide' class='btn'>Download As CSV</button></div>` +
+        createTable(slideHeadMapping, slides);
+      document.querySelector("#labels").innerHTML =
+        "<div class='title'>Rankings of Label Types&nbsp;&nbsp;&nbsp;<button id='type' class='btn'>Download As CSV</button></div>" +
+        createTable(typeHeadMapping, types);
+      document.querySelector("#participants").innerHTML =
+        "<div class='title'>Participants&nbsp;&nbsp;&nbsp;<button id='users' class='btn'>Download As CSV</button></div>" +
+        createTable(usersHeadMapping, users);
+      document.querySelector("#roi_details").innerHTML =
+        "<div class='title'>Detail&nbsp;&nbsp;&nbsp;<button id='sheet' class='btn'>Download As CSV</button></div>" +
+        createTable(sheetHeadMapping, sheet);
+      document.querySelector("#roi_annotations_details").innerHTML =
+        "<div class='title'>Detail&nbsp;&nbsp;&nbsp;<button id='roi_annotations' class='btn'>Download As CSV</button></div>" +
+        createTable(roiAnnotationsHeadMapping, roi_annotations);
+      // add download event
+      document.querySelector("#creator").addEventListener("click", (e) => {
+        downloadAsCSV(
+          createCSVRawData(creatorHeadMapping, creators),
+          "rankings_of_creators"
+        );
+      });
+      document.querySelector("#slide").addEventListener("click", (e) => {
+        downloadAsCSV(
+          createCSVRawData(slideHeadMapping, slides),
+          "rankings_of_slides"
+        );
+      });
+      document.querySelector("#type").addEventListener("click", (e) => {
+        downloadAsCSV(
+          createCSVRawData(typeHeadMapping, types),
+          "rankings_of_label_types"
+        );
+      });
+      document.querySelector("#sheet").addEventListener("click", (e) => {
+        downloadAsCSV(
+          createCSVRawData(sheetHeadMapping, sheet),
+          "all_label_data"
+        );
+      });
+      document.querySelector("#users").addEventListener("click", (e) => {
+        downloadAsCSV(
+          createCSVRawData(usersHeadMapping, users),
+          "Participants"
+        );
+      });
+      document
+        .querySelector("#roi_annotations")
+        .addEventListener("click", (e) => {
+          downloadAsCSV(
+            createCSVRawData(roiAnnotationsHeadMapping, roi_annotations),
+            "roi_annotations_data"
+          );
+        });
+    }
+
+    function downloadAsCSV(rows, fileName) {
+      // get csv content
+      let csvContent =
+        "data:text/csv;charset=utf-8," +
+        rows.map((e) => e.join(",")).join("\n");
+      let encodedUri = encodeURI(csvContent);
+      let link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", `${fileName}_${getTimeString()}.csv`);
+      document.body.appendChild(link); // Required for FF
+
+      link.click();
+      // Remove the link
+      document.body.removeChild(link);
+    }
+
+    document.addEventListener("DOMContentLoaded", initialize);
+  </script>
+</html>
