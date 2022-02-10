@@ -874,7 +874,7 @@ function annoCallback(data) {
 
   const annotJson = {
     creator: getUserId(),
-    created_date: new Date(),
+    create_date: new Date(),
     provenance: {
       image: {
         slide: $D.params.slideId,
@@ -1703,7 +1703,6 @@ function createHeatMapList(list) {
   $UI.modalbox.open();
 }
 
-
 async function addPresetLabelsHandler(label) {
   const rs = await $CAMIC.store.addPresetLabels(label).then((d)=>d.result);
 
@@ -1989,7 +1988,7 @@ function savePresetLabel() {
     const points = Array.from(set).map((d) => d.split(','));
     annotJson = {
       creator: getUserId(),
-      created_date: new Date(),
+      create_date: new Date(),
       provenance: {
         image: {
           slide: $D.params.slideId,
@@ -2016,7 +2015,7 @@ function savePresetLabel() {
     // point / polygon / stringLine
     annotJson = {
       creator: getUserId(),
-      created_date: new Date(),
+      create_date: new Date(),
       provenance: {
         image: {
           slide: $D.params.slideId,
@@ -2211,7 +2210,7 @@ function onAddRuler(ruler) {
   innerHTML = innerHTML.split(' ').join('&nbsp;');
   let rulerJson = {
     creator: getUserId(),
-    created_date: new Date(),
+    create_date: new Date(),
     provenance: {
       image: {
         slide: $D.params.slideId,
