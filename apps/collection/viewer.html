@@ -71,7 +71,9 @@
         box-shadow: 0 4px 8px 0 rgba(107, 72, 72, 0.4),
           0 6px 20px 0 rgba(0, 0, 0, 0.38);
       }
-
+      .card.feedback {
+        background-color: #edffc2;
+      }
       .card-title {
         color: #365f9c;
         height: 36px;
@@ -195,15 +197,19 @@
           container.append(card);
         });
       }
-
       function createCard(d) {
         const card = document.createElement("div");
         card.classList.add("card");
-        card.innerHTML = `<div class='card-title'>${d.name}</div>
+        if (d.hasFeedback) card.classList.add("feedback");
+        card.innerHTML = `<div class='card-title'>${
+          d.hasFeedback ? `<label style='color:red;'>*</label>` : ""
+        } ${d.name}</div>
             <div class='card-description'>${d.description}</div>
             <div class='card-actions'>
                 <button class='btn action' style='float: left;display:none;'>ROIs Collection</button>
-                <button class='btn action' style='float: right;'>ROIs Evaluation</button>
+                <button class='btn action' style='float: right;'>
+                  ROIs Evaluation
+                </button>
             </div>`;
         const btns = card.querySelectorAll("button");
         btns[0].addEventListener("click", (e) => {

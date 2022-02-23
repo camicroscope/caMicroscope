@@ -288,7 +288,9 @@ async function saveRegistration() {
     }
   } else {
     const {email, name, userFilter, userType} = getUserInfo();
-    userInfo = {email, name, userFilter, userType};
+
+    userInfo = {email, name, userFilter};
+    userInfo.userType = userType =='Null'?'Editor':userType;
     userInfo.creator = userInfo.email;
     userInfo.registration = registrationForm;
     userInfo.isAgreed = isConsent.checked;

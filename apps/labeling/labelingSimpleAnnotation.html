@@ -324,6 +324,16 @@
         padding: 2px;
         border-radius: 5px;
       }
+      #feedbackList,
+      #feedbackList td,
+      #feedbackList th {
+        border: 1px solid #ccc;
+        text-align: center;
+      }
+      #feedbackList {
+        width: 100%;
+        border-collapse: collapse;
+      }
     </style>
   </head>
   <body>
@@ -355,6 +365,7 @@
               <div style="font-weight: bold; padding-bottom: 0.5rem">
                 ROI Type:
               </div>
+              <!--
               <div style="padding: 0 0 0.5rem 0.3rem">
                 <label
                   ><input
@@ -397,6 +408,29 @@
                     onchange="changeROITypeValue(this)"
                   />
                   Other Regions</label
+                >
+              </div>
+              -->
+              <div style="padding: 0 0 0.5rem 0.3rem">
+                <label
+                  ><input
+                    type="radio"
+                    name="roi_type"
+                    value="Evaluable for sTILs"
+                    onchange="changeROITypeValue(this)"
+                  />
+                  Evaluable for sTILs</label
+                >
+              </div>
+              <div style="padding: 0 0 0.5rem 0.3rem">
+                <label
+                  ><input
+                    type="radio"
+                    name="roi_type"
+                    value="Not Evaluable for sTILs"
+                    onchange="changeROITypeValue(this)"
+                  />
+                  Not Evaluable for sTILs</label
                 >
               </div>
               <hr />
@@ -531,7 +565,7 @@
                   display: none;
                 "
               >
-                Please Assess TIL Density
+                sTIL Density
               </div>
             </div>
           </div>
@@ -545,6 +579,54 @@
               Save & Next
             </button>
           </div>
+        </div>
+        <div
+          id="feedback"
+          class="side_content flex-container"
+          style="display: none"
+        >
+          <div class="operations item_body" style="padding: 0.5rem">
+            <div
+              class="item_content"
+              style="
+                color: #365f9c;
+                font-size: 1.3rem;
+                border: 2px solid #ccc;
+                padding: 0.5rem;
+              "
+            >
+              <div style="font-weight: bold; padding-bottom: 0.5rem">
+                Expert Panel Annotations:
+              </div>
+              <table id="feedbackList">
+                <tr>
+                  <th>ROI Type</th>
+                  <th>% Tumor-Associated Stroma</th>
+                  <th>% sTIL Density</th>
+                </tr>
+              </table>
+              <div id="percentStromaAvg" style="padding: 0.5rem 0 0.5rem 0">
+                <strong>Mean Percent Stroma: </strong>NA
+              </div>
+              <div id="densityTILsAvg" style="padding-bottom: 0.5rem">
+                <strong>Mean sTIL Density: </strong>NA
+              </div>
+              <div id="comments" style="padding-bottom: 0.5rem">
+                <strong>Comments: </strong>NA
+              </div>
+              <div id="pitfalls" style="padding-bottom: 0.5rem">
+                <strong>Pitfalls: </strong>NA
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="next" class="foot" style="margin: 0.5rem; display: none">
+          <button
+            class="action"
+            style="float: right; font-weight: bold; font-size: 1.2rem"
+          >
+            Next
+          </button>
         </div>
       </div>
       <div id="right_viewer" class="right_viewer"></div>

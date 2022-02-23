@@ -439,60 +439,77 @@ async function saveAnnotation(annotation) {
 
     const count = await $CAMIC.store.pushAnnotationFromLabeling( $D.params.labelId, rs.insertedIds[0])
         .then((d)=>d);
-    // randomly pick
-    // const labels = await $CAMIC.store.findAllLabelsWithoutAnnotations().then(d=>d);
-    // const index = getRandomIntInclusive(0,labels.length-1);
-    // const nextLabelId = labels[index]._id;
-    // const nextSlideId = labels[index].provenance.image.slide;
-
     // remove listener
     window.removeEventListener('beforeunload', beforeUnloadHandler);
 
-    window.location.href = `./roi_pick.html?slideId=${$D.params.slideId}&collectionId=${$D.params.collectionId}`;
+    // TODO
+    const collData = await $CAMIC.store.getCollection($D.params.collectionId);
 
+    //
+    if (Array.isArray(collData)&& collData.length >= 1 && collData[0].hasFeedback) {
+      console.log('yes');
+      const feeback = await $CAMIC.store.getFeedback({parent: $D.params.labelId});
+      if (Array.isArray(feeback)&& feeback.length >= 1) {
+        disableROIForm();
+        setFeedbackForm(feeback[0]);
+        enableFeedbackForm();
+      } else {
+
+      }
+      console.log(feeback);
+    } else {
+      window.location.href = `./roi_pick.html?slideId=${$D.params.slideId}&collectionId=${$D.params.collectionId}`;
+    }
     Loading.close();
   } else {
     alert(JSON.stringify(rs));
   }
 }
 
-// async function saveAnnotations(){
+function setFeedbackForm(feedback) {
+  // set feedback list
+  if (feedback&&feedback.annotations) {
+    const table = document.getElementById('feedbackList').querySelector('tbody');
+    feedback.annotations.forEach((d)=>{
+      console.log(d);
+      const row = document.createElement('tr');
+      row.innerHTML = `<td>${d.roiType}</td><td>${d.percentStroma}</td><td>${d.densitysTILs}</td>`;
+      table.append(row);
+    });
+  }
+  // set percent Stroma Avg
+  const txtPercentStromaAvg = document.getElementById('percentStromaAvg');
+  if (feedback&&feedback.percentStromaAvg) txtPercentStromaAvg.innerHTML =`<strong>Mean Percent Stroma: </strong>${feedback.percentStromaAvg}`;
 
-//   Loading.open(document.body, 'Saving Annotations...');
+  // set densityTILs
+  const txtDensityTILsAvg = document.getElementById('densityTILsAvg');
+  if (feedback&&feedback.densitysTILsAvg) txtDensityTILsAvg.innerHTML =`<strong>Mean sTIL Density: </strong>${feedback.densitysTILsAvg}`;
 
-//   // user and date time
-//   const creator = sessionStorage.getItem('userName') || getUserId();
+  // set comments
+  const txtComments = document.getElementById('comments');
+  if (feedback&&feedback.comment) txtComments.innerHTML =`<strong>Comments: </strong>${feedback.comment}`;
 
-//   const dateTime = new Date();
-//   // add annotations
-//     await asyncForEach($D.annotations,async (annotation)=>{
-//       annotation.creator = creator;
-//       annotation.create_date_time = dateTime;
-//       await $CAMIC.store.addLabel(annotation).then( d => d.count );
-
-//     });
-//   // update parent
-//   const label = $D.params.labelId;
-//   const slide = $D.params.slideId;
-//   // const annotationIds = $D.annotations.map(elt=>elt._id);
-
-//   await $CAMIC.store.addLabelsAnnotation(slide,label,annotationIds).then(d=>d);
-
-//   // randomly pick
-//   // const labels = await $CAMIC.store.findAllLabelsWithoutAnnotations().then(d=>d);
-//   // const index = getRandomIntInclusive(0,labels.length-1);
-//   // const nextLabelId = labels[index]._id;
-//   // const nextSlideId = labels[index].provenance.image.slide;
-
-//   //$UI.modalbox.close();
-//   // remove listener
-//   window.removeEventListener('beforeunload', beforeUnloadHandler);
-
-//   window.location.href = `./roi_pick.html?slideId=${$D.params.slideId}&collectionId=${$D.params.collectionId}`;
-
-//   Loading.close();
-//   //redirect($D.pages.table, 'Redirecting To Home....', 0);
-// }
+  // set pitfalls
+  const txtPitfalls = document.getElementById('pitfalls');
+  if (feedback&&feedback.pitfalls) txtPitfalls.innerHTML =`<strong>Pitfalls: </strong>${feedback.pitfalls}`;
+}
+function disableROIForm() {
+  const btnSave = document.getElementById('save');
+  btnSave.style.display = 'none';
+  const inputList = document.getElementById('roi_form').querySelectorAll('input');
+  inputList.forEach((input)=>{
+    input.disabled = true;
+  });
+}
+function enableFeedbackForm() {
+  const feedback = document.getElementById('feedback');
+  const next = document.getElementById('next');
+  next.addEventListener('click', ()=>{
+    window.location.href = `./roi_pick.html?slideId=${$D.params.slideId}&collectionId=${$D.params.collectionId}`;
+  });
+  feedback.style.display = 'block';
+  next.style.display = 'block';
+}
 function toggleMeasurement(data) {
   if (data.checked) {
     // annotOff();
@@ -859,14 +876,13 @@ function getAnnotationDataFrom(data) {
 }
 // the ROI Form Event
 function changeROITypeValue(radio) {
-  console.log(radio.value);
-  // group 1: Intra Tumoral Stroma or Invasive Margin
-  if (radio.value=='Intra-Tumoral Stroma' || radio.value=='Invasive Margin') {
+  // group 1: Evaluable for sTILs
+  if (radio.value=='Evaluable for sTILs') {
     enableITS();
     disableSaveBtn();
   }
-  // group 2: Tumor with No Intervening Stroma or Other Regions
-  if (radio.value=='Tumor with No Intervening Stroma' || radio.value=='Other Regions') {
+  // group 2: Not Evaluable for sTILs
+  if (radio.value=='Not Evaluable for sTILs') {
     disableITS();
     disableTIL();
     enableSaveBtn();
@@ -1037,7 +1053,7 @@ function addROIFormEvent() {
 
     const annotation = {
       '_id': id.toString(),
-      'task': 'doVTA_caMicro_v1.3',
+      'task': 'doVTA_caMicro_v1.4',
       'alias': alias,
       'provenance': {
         'image': {
