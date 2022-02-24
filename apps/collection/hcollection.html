@@ -14,9 +14,9 @@
       href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"
     />
     <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
       rel="stylesheet"
-      href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-      integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
       crossorigin="anonymous"
     />
     <link
@@ -35,9 +35,40 @@
   </head>
 
   <body>
-
+    <!-- navbar start -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark" style='position: sticky;'>
+      <div class="container-fluid">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+              data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+              aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+              <ul class="navbar-nav mr-auto">
+                  <li class="nav-item link" style="font-family: sans-serif">
+                      <a class="nav-link" href="../landing/landing.html">
+                          <i class="fas fa-home"></i> Home</a>
+                  </li>
+                  <li class="nav-item link">
+                      <a class="nav-link" href="../vis-table/index.html">
+                          <i class="fas fa-table"></i> Collection View</a>
+                  </li>
+                  <li class="nav-item  link" style="font-family: sans-serif">
+                      <a class="nav-link" href="../port/export.html">
+                          <i class="fas fa-file-download"></i> Data Export</a>
+                  </li>
+                  <li class="nav-item active link">
+                      <a class="nav-link" href="../collection/hcollection.html">
+                          <i class="fas fa-list-ul"></i> Collection Management</a>
+                  </li>
+              </ul>
+          </div>
+      </div>
+  </nav>
+  <!-- navbar end -->
     <div class="container-fluid">
-      <div class="row row-h-100">
+
+      <div class="row h-fit">
         <div class="col-lg-3 col-md-3 col-sm-12 bg-light tree-view">
           <div class="search-box bg-light p-4 clearfix">
             <!-- <div class="has-search float-left">
@@ -76,7 +107,7 @@
             <button
               id="col-rename"
               type="button"
-              class="btn btn-info"
+              class="btn btn-success"
               data-toggle="tooltip"
               data-placement="bottom"
               title="Rename The Selected Collection"
@@ -120,12 +151,15 @@
             <div id="sub-message" class="alert alert-warning" role="alert" style="display: none;">
               Please Select A Collection Without Subcollection to Add/Remove the Slides ...
             </div>
+            
             <!-- data-table -->
+            
           <table
             id="data-table-view"
             class="display"
             style="width: 100%"
           ></table>
+        
           </div>
 
         </div>
@@ -139,6 +173,8 @@
       tabindex="-1"
       aria-labelledby="del-label"
       aria-hidden="true"
+      data-bs-backdrop="static"
+      data-bs-keyboard="false"
     >
       <div class="modal-dialog modal-sm" style="margin-top: 5rem">
         <div class="modal-content">
@@ -162,7 +198,7 @@
             <button
               type="button"
               class="btn btn-sm btn-secondary py-0"
-              data-dismiss="modal"
+              data-bs-dismiss="modal"
             >
               Cancel
             </button>
@@ -180,8 +216,8 @@
       tabindex="-1"
       aria-labelledby="edit-label"
       aria-hidden="true"
-      data-backdrop="static"
-      data-keyboard="false"
+      data-bs-backdrop="static"
+      data-bs-keyboard="false"
     >
       <div class="modal-dialog modal-md modal-dialog-scrollable">
         <div class="modal-content">
@@ -212,7 +248,7 @@
             <button
               type="button"
               class="btn btn-secondary btn-secondary font-weight-bold"
-              data-dismiss="modal"
+              data-bs-dismiss="modal"
             >
               Cancel
             </button>
@@ -231,14 +267,10 @@
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script
-      src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
-      integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
-      crossorigin="anonymous"
-    ></script>
-    <script
-      src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
-      integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
       crossorigin="anonymous"
     ></script>
     <script

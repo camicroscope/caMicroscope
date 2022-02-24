@@ -7,13 +7,20 @@ $.fn.dataTable.ext.order['dom-checkbox'] = function( settings, col ) {
 
 
 $(function() {
-  $('[data-toggle="tooltip"]').tooltip({delay: {'show': 1000, 'hide': 1000}});
+  $('[data-toggle="tooltip"]').tooltip({delay: {'show': 700, 'hide': 1000}});
 });
 var $DTable;
 var $collectionList;
 var $collectionTree;
 var _selectedNodeId;
 var $slideData;
+
+
+const editModalEl = document.getElementById('edit-modal');
+editModalEl.addEventListener('show.bs.modal', function(event) {
+  // disable error message
+  $('#edit-modal').find('#col-name').removeClass('is-invalid');
+});
 
 // create the store
 const store = new Store('../../../data/');
@@ -22,6 +29,7 @@ const store = new Store('../../../data/');
 store.getAllCollection().then((data) => {
   if (Array.isArray(data)) {
     $collectionList = data.map((d)=>{
+      d.icon ='./folder.png';
       d.id = d._id.$oid;
       delete d._id;
       return d;
@@ -37,7 +45,9 @@ store.getAllCollection().then((data) => {
       },
       'types': {
         '#': {'max_children': 1, 'max_depth': 4, 'valid_children': ['default']},
-        'default': {'valid_children': ['default']},
+        'default': {
+          'valid_children': ['default'],
+        },
       },
       'plugins': ['search', 'wholerow'],
     });
@@ -253,6 +263,7 @@ function openDelConfirm(node) {
 
   $('#del-modal .modal-footer .btn.btn-sm.btn-danger').on('click', (elt) => {
     delCollection(node);
+
     $('#del-modal .modal-footer .btn.btn-sm.btn-danger').off('click');
   });
   $('#del-modal').modal('show');
@@ -288,6 +299,11 @@ function delCollection(node) {
       // hide table and show up message
       $('#table-panel').hide();
       $('#table-message').show();
+
+      // hide rename/remove btns
+      selectCollectionHandler(null);
+      $('#col-rename').hide();
+      $('#col-delete').hide();
       showMessage('Collection Delected Successfully!', node.text, 'success');
       setTimeout(hideMessage, 3000);
       $('#del-modal').modal('hide');
@@ -334,25 +350,33 @@ function updateEditor(data) {
 
 
 async function saveCollection() {
+  // get the collection text and id
+  var {id, text} = getDataFromEditor();
+  // name dosen't change
+  if ($('#edit-modal').data('name')&&$('#edit-modal').data('name')==text) {
+    $('#edit-modal').modal('hide');
+    return;
+  }
   // show up the error message if colleciton text is empty
   if (!$('#edit-modal').find('#col-name').val()) {
     $('#col-name-invalid-message').text(`Please enter a collection name`);
     $('#edit-modal').find('#col-name').addClass('is-invalid');
     return;
   } else {
+    $('#col-name-invalid-message').text('');
     $('#edit-modal').find('#col-name').removeClass('is-invalid');
   }
 
-  // get the collection text and id
-  const collection = getDataFromEditor();
-  delete collection.id;
-  const d = await store.getCollection(collection);
+
+  // delete collection.id;
+  const d = await store.getCollection({text});
   // deal error
 
 
   if (Array.isArray(d)) {
+    // d.filter(e=>e._id.$oid!==id).length;
     // the text already exsits
-    if (d.length > 0) {
+    if (d.filter((e)=>e._id.$oid!==id).length > 0) {
       $('#col-name-invalid-message').text(`That collection name already exists`);
       $('#edit-modal').find('#col-name').addClass('is-invalid');
       return;
@@ -361,7 +385,7 @@ async function saveCollection() {
     }
   }
 
-  const id = $('#edit-modal').data('id');
+  var id = $('#edit-modal').data('id');
   if (id) {
     const cdata = $collectionList.find((d)=>d.id==id);
     const data = {
@@ -409,6 +433,7 @@ async function saveCollection() {
       if (resp.result && resp.result.ok) {
         const opt = resp.ops[0];
         newNode.id = opt._id;
+        newNode.icon = './folder.png';
         const currentId = tree.create_node(parentNode?parentNode:'#', newNode, 'first');
         $collectionList.push(newNode);
         if (parentNode) tree.open_node(parentNode);
@@ -450,8 +475,11 @@ function setEditor(node) {
   // set up collection basic info
   if (node) {
     $('#edit-modal').data('id', node.id);
+    $('#edit-modal').data('name', node.text);
     $('#edit-modal').find('#col-name').val(node.text);
     // $('#edit-modal').find('#col-description').val(col.description);
+  } else {
+    $('#edit-modal').removeData('name');
   }
   // set up selected slides info
   // slides.forEach((d) => {
@@ -533,8 +561,7 @@ function moveSlideItems(panelId, mode = 'unselected') {
 function showMessage(message, title = '', style = 'primary') {
   const html = `<div class='message alert alert-${style} alert-dismissible fade show' role='alert'>
   <strong>${title}</strong>&nbsp;&nbsp;${message}
-  <button type='button' class='close' data-dismiss='alert' aria-label='Close'>
-    <span aria-hidden='true'>&times;</span>
+  <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'>
   </button>
   </div>`;
   $('.table-view').prepend($.parseHTML(html));
