@@ -135,7 +135,6 @@ function stopEvent(e) {
   e.stopPropagation();
 }
 function toggleAllSlides(e) {
-  console.log('all');
   const tree = $('#main-tree-view').jstree(true);
   const selectedNodes = tree.get_selected(true)[0];
   const cid = selectedNodes.id;
@@ -146,19 +145,31 @@ function toggleAllSlides(e) {
   if (e.target.checked) {
     // add slide to collection
     store.addSlidesToCollection(cid, sids).then((rs)=>{
-      console.log('add', rs);
       nodes.find('input[type=checkbox]').prop('checked', e.target.checked);
       $slideData.forEach((d)=>{
         if (sids.includes(d.id)) d.selected = e.target.checked;
+      });
+      // reload collection info
+      store.getCollection({id: cid}).then((rs)=>{
+        const collData = $collectionList.find((d)=>d.id==cid);
+        if (rs&&Array.isArray(rs)&&rs[0]&&rs[0].slides&&collData&&collData.slides) {
+          collData.slides = rs[0].slides;
+        }
       });
     });
   } else {
     // remove slide from collection
     store.removeSlidesFromCollection(cid, sids).then((rs)=>{
-      console.log('remove', rs);
       nodes.find('input[type=checkbox]').prop('checked', e.target.checked);
       $slideData.forEach((d)=>{
         if (sids.includes(d.id)) d.selected = e.target.checked;
+      });
+      // reload collection info
+      store.getCollection({id: cid}).then((rs)=>{
+        const collData = $collectionList.find((d)=>d.id==cid);
+        if (rs&&Array.isArray(rs)&&rs[0]&&rs[0].slides&&collData&&collData.slides) {
+          collData.slides = rs[0].slides;
+        }
       });
     });
   }
@@ -167,7 +178,6 @@ function toggleAllSlides(e) {
   e.stopPropagation();
 }
 function toggleASlide(e) {
-  console.log('test', e.target.checked);
   const sid = e.target.dataset.id;
   const tree = $('#main-tree-view').jstree(true);
   const selectedNodes = tree.get_selected(true)[0];
@@ -175,21 +185,31 @@ function toggleASlide(e) {
   if (e.target.checked) {
     // add slide to collection
     store.addSlidesToCollection(cid, [sid]).then((rs)=>{
-      console.log('add', rs);
       const sData = $DTable.row(`#${sid}`).data();
       sData.selected = !sData.selected;
       $DTable.row(`#${sid}`).data(sData);
-      // console.log(sData);
+      // reload collection info
+      store.getCollection({id: cid}).then((rs)=>{
+        const collData = $collectionList.find((d)=>d.id==cid);
+        if (rs&&Array.isArray(rs)&&rs[0]&&rs[0].slides&&collData&&collData.slides) {
+          collData.slides = rs[0].slides;
+        }
+      });
     });
   } else {
     // remove slide from collection
     store.removeSlidesFromCollection(cid, [sid]).then((rs)=>{
-      console.log('remove', rs);
-
       //
       const sData = $DTable.row(`#${sid}`).data();
       sData.selected = !sData.selected;
       $DTable.row(`#${sid}`).data(sData);
+      // reload collection info
+      store.getCollection({id: cid}).then((rs)=>{
+        const collData = $collectionList.find((d)=>d.id==cid);
+        if (rs&&Array.isArray(rs)&&rs[0]&&rs[0].slides&&collData&&collData.slides) {
+          collData.slides = rs[0].slides;
+        }
+      });
     });
   }
   e.stopPropagation();
@@ -429,7 +449,6 @@ async function saveCollection() {
     }
 
     const rs = await store.addCollection(newNode).then((resp)=>{
-      console.log('rs', resp);
       if (resp.result && resp.result.ok) {
         const opt = resp.ops[0];
         newNode.id = opt._id;
