@@ -707,6 +707,14 @@ function annoDelete(data, parentType) {
         // update UI
         if (Array.isArray(layer.data)) deleteCallbackOld(data, parentType);
         else deleteCallback(data, parentType);
+
+        // DOE customized start
+        // re-verify form
+        $('#eval_form').alpaca().form.refreshValidationState(true);
+        setTimeout(() => {
+          $('#eval_form').alpaca().form.adjustSubmitButtonState();
+        }, 1000);
+        // DOE customized end
       })
       .catch((e) => {
         $UI.message.addError(e);
@@ -946,8 +954,14 @@ function annoCallback(data) {
               null,
           );
         }
-        // DOE customized
+        // DOE customized start
         changeCollectionTaskStatusToFalse();
+        // re-verify form
+        $('#eval_form').alpaca().form.refreshValidationState(true);
+        setTimeout(() => {
+          $('#eval_form').alpaca().form.adjustSubmitButtonState();
+        }, 1000);
+        // DOE customized end
       })
       .catch((e) => {
         Loading.close();
@@ -1821,13 +1835,13 @@ function isSameProperty(eval1, eval2, propsName) {
 }
 async function saveEvaluation(e) {
   // return;
-
+  const evaluation = this.getValue();
   if (!$D.isEvalDataExist) {
     const evalData = {
       // 'user_id': getUserId(),
       'slide_id': $D.params.slideId,
       // 'slide_name': $D.params.data.name,
-      'evaluation': this.getValue(),
+      'evaluation': evaluation,
       'create_date': new Date(),
       'creator': getUserId(),
       'is_draft': false,
@@ -1854,7 +1868,7 @@ async function saveEvaluation(e) {
       'slide_id': $D.params.slideId,
     };
     const evalData = {
-      'evaluation': this.getValue(),
+      'evaluation': evaluation,
       'update_date': new Date(),
       'updater': getUserId(),
       'is_draft': false,
@@ -1892,6 +1906,13 @@ async function saveEvaluation(e) {
         } catch (error) {
           // server error
           console.error(`Eval setCollectionTaskStatusBySlideId error`);
+        }
+        // change
+        if (evaluation.informativeness==0) {
+          const collection = $D.collections.find((c)=>c.text==$D.params.crumb.split('/')[1]);
+          if (collection&&collection._id&&collection._id.$oid) {
+            const data = await $CAMIC.store.removeRankSlidesInformativeness(collection._id.$oid, null, $D.params.slideId);
+          }
         }
       } else {
         $UI.message.addWarning(`Something Happened When Saving Evaluation!`);
@@ -2086,8 +2107,14 @@ function savePresetLabel() {
             'human',
             labelId,
         );
-        // DOE customized
+        // DOE customized start
         changeCollectionTaskStatusToFalse();
+        // re-verify form
+        $('#eval_form').alpaca().form.refreshValidationState(true);
+        setTimeout(() => {
+          $('#eval_form').alpaca().form.adjustSubmitButtonState();
+        }, 1000);
+        // DOE customized end
       })
       .catch((e) => {
         Loading.close();
@@ -2360,8 +2387,14 @@ function onAddRuler(ruler) {
         // $UI.layersViewerMinor.update();
 
         $UI.message.addSmall(`Added The '${execId}' Ruler.`);
-        // DOE customized
+        // DOE customized start
         changeCollectionTaskStatusToFalse();
+        // re-verify form
+        $('#eval_form').alpaca().form.refreshValidationState(true);
+        setTimeout(() => {
+          $('#eval_form').alpaca().form.adjustSubmitButtonState();
+        }, 1000);
+        // DOE customized end
       })
       .catch((e) => {
         Loading.close();

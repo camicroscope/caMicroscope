@@ -531,10 +531,10 @@ async function initUIcomponents() {
                   informativeness.control.removeClass('disabled');
                   informativeness.control.find('input').prop('disabled', false);
                 }
-                tumorHistology.refreshValidationState();
-                informativeness.refreshValidationState();
-                absoluteInformativeness.refreshValidationState();
-                comments.refreshValidationState();
+                tumorHistology.refreshValidationState(true);
+                informativeness.refreshValidationState(true);
+                absoluteInformativeness.refreshValidationState(true);
+                comments.refreshValidationState(true);
                 saveDraft(this.getParent().getValue());
               },
             },
@@ -551,6 +551,8 @@ async function initUIcomponents() {
                       status: true,
                     });
                   } else {
+                    // disable submitButton
+                    $('#eval_form').alpaca().form.disableSubmitButton();
                     callback({
                       status: false,
                       message: 'Please Create an annotation',
@@ -583,7 +585,7 @@ async function initUIcomponents() {
                   comments.disable();
                   // comments.control.prop('disabled', true);
                 }
-                comments.refreshValidationState();
+                comments.refreshValidationState(true);
                 saveDraft(this.getParent().getValue());
               },
             },
@@ -626,7 +628,7 @@ async function initUIcomponents() {
                   absoluteInformativeness.control.addClass('disabled');
                   absoluteInformativeness.control.find('input').prop('disabled', true);
                 }
-                absoluteInformativeness.refreshValidationState();
+                absoluteInformativeness.refreshValidationState(true);
                 saveDraft(this.getParent().getValue());
               },
 
@@ -772,6 +774,7 @@ async function initUIcomponents() {
           if (eval.absolute_informativeness == null || eval.absolute_informativeness == undefined) {
             absoluteInformativeness.setValue(null);
           }
+
           if (eval.tumor_present != 1 ) {
             // disable Tumor Histology
             tumorHistology.disable();
@@ -794,7 +797,7 @@ async function initUIcomponents() {
             absoluteInformativeness.field.removeClass('alpaca-disabled');
             absoluteInformativeness.control.removeClass('disabled');
             absoluteInformativeness.control.find('input').prop('disabled', false);
-            absoluteInformativeness.refreshValidationState();
+            absoluteInformativeness.refreshValidationState(true);
           } else if (eval.informativeness == null || eval.comments == undefined || eval.informativeness == 0) {
             absoluteInformativeness.disable();
             absoluteInformativeness.setValue(eval.absolute_informativeness);
@@ -808,11 +811,14 @@ async function initUIcomponents() {
           if (eval.comments == null || eval.comments == undefined) {
             comments.setValue(null);
           }
-          control.refreshValidationState();
-          control.domEl.find('button[data-key=submit]').prop('disabled', true);
-          // }
+          control.refreshValidationState(true);
+          //
         }
-        control.refreshValidationState();
+        // re-verify form
+        control.form.refreshValidationState(true);
+        setTimeout(() => {
+          control.form.adjustSubmitButtonState();
+        }, 1000);
       },
 
     };
@@ -839,7 +845,9 @@ async function initUIcomponents() {
       $D.isDraftEvalData = true;
       evalMessge.textContent = 'Draft Data: Please Complete the Evaluation and Save';
     }
+
     $('#eval_form').alpaca(formOpt);
+
 
     subToolsOpt.push({
       name: 'eval',
@@ -1180,11 +1188,16 @@ async function initUIcomponents() {
     subTools: subToolsOpt,
   });
 
-  if (!$D.isEvalDataExist|| $D.isDraftEvalData) {
-    const li = $UI.toolbar.getSubTool('eval');
-    li.querySelector('input[type=checkbox]').checked = true;
-    $UI.evalSideMenu.open();
-  }
+  // evaluation panel and meta data panel open
+  // if (!$D.isEvalDataExist|| $D.isDraftEvalData) {
+  const evalLi = $UI.toolbar.getSubTool('eval');
+  evalLi.querySelector('input[type=checkbox]').checked = true;
+  $UI.evalSideMenu.open();
+
+  const metaLi = $UI.toolbar.getSubTool('meta');
+  metaLi.querySelector('input[type=checkbox]').checked = true;
+  $UI.metaSideMenu.open();
+  // }
 
   // create two side menus for tools
   $UI.appsSideMenu = new SideMenu({

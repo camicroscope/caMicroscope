@@ -1406,6 +1406,26 @@ class Store {
       body: JSON.stringify(query),
     }).then(this.errorHandler);
   }
+
+  removeRankSlidesInformativeness(cid, uid=null, sid) {
+    //
+    if (!cid || !sid) {
+      return {
+        hasError: true,
+        message: 'args are illegal',
+      };
+    }
+    const query = {cid, sid};
+    if (uid) query.uid = uid;
+    const suffix = 'SlideInformativeness/removeRank';
+    const url = this.base + suffix;
+    return fetch(url, {
+      method: 'POST',
+      credentials: 'include',
+      mode: 'cors',
+      body: JSON.stringify(query),
+    }).then(this.errorHandler);
+  }
   // ranking the slide of informative
   // first informativeness - 1
   // second informativeness - 2
