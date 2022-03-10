@@ -899,7 +899,7 @@ function enableSaveBtn() {
   btn.disabled = false;
 }
 function itsChangeText(e) {
-  if (itsRange.value > -1) {
+  if (itsRange.value > 0) {
     enableTIL();
   } else {
     disableTIL();
