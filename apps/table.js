@@ -97,9 +97,6 @@ const HeadMapping = [{
 }, {
   title: 'MPP',
   field: 'mpp',
-}, {
-  title: 'Review',
-  field: 'review',
 }];
 var totaltablepages;
 var selectedpage;
@@ -214,7 +211,6 @@ function initialize() {
 
   store.findRequest()
       .then(function(requests) {
-        console.log(requests);
         if (requests && !requests.error) {
           requests.forEach(function(req) {
             if (req.type === 'addUser') {
@@ -248,7 +244,7 @@ function initialize() {
               const colData = resps[0];
               if (colData) {
                 collection = colData.find((d)=>d._id['$oid']==CID);
-                createCollectionPanel(colData, CID);
+                // createCollectionPanel(colData, CID);
               } else { // error
 
               }
@@ -272,7 +268,6 @@ function initialize() {
               const keys = HeadMapping.map((d) => d.field);
               if (data.map) {
                 return data.map((d, counter) => {
-                  // console.log('i:' + counter);
                   const rs = [];
                   if (d['filter']) {
                     rs.filterList = JSON.parse(d['filter'].replace(/'/g, '"'));
@@ -292,39 +287,13 @@ function initialize() {
                     else rs.push(d[key]);
                   });
                   if (slideDeleteRequests['counter']) {
-                    console.log(slideDeleteRequests[counter]);
-                    // console.log(slideDeleteRequests[counter - 1]);
                   }
-                  // console.log('Done one iter');
-
                   const btn = `<div id='open-delete'>
-                <button class="btn btn-primary btn-sm" data-id='${sanitize(rs[0])}' onclick='openView(this)'>Open</button>
-                <button type='button' class='btn btn-primary btn-sm DownloadButton' id='downloadBtn' data-id='${sanitize(rs[0])}' onclick='downloadSlide(this)'>
+                
+                <button type='button' class='btn btn-primary btn-sm DownloadButton' id='downloadBtn' data-id='${sanitize(rs[0])}' data-location='${sanitize(d.location)}' onclick='downloadSlide(this)'>
                 <i class='fas fa-download' ></i>
                 </button>
-                ${slideDeleteRequests[counter] && slideDeleteRequests[counter].slideDetails &&
-                  slideDeleteRequests.find((o) => o.slideDetails.slideId === rs[0]) ?
-                  `
-                    ${slideDeleteRequests.find((o) => o.requestedBy === sanitize(getUserId())) ?
-                    `
-                        <button type='button' class='btn btn-danger btn-sm DelButton' id='deleteBtn' data-id='${sanitize(rs[0])}' data-name='${sanitize(rs[1])}' onclick='deleteSld(this)' data-reqid='${slideDeleteRequests.find((o) => o.slideDetails.slideId === rs[0]) ? slideDeleteRequests.find((o) => o.slideDetails.slideId === rs[0])._id.$oid : ''}' data-filename='${sanitize(filename)}' data-toggle='modal'>
-                          Cancel Delete Request <i class='fas fa-trash-alt' ></i>
-                        </button>
-                      ` :
-                    `
-                        <button disabled type='button' class='btn btn-danger btn-sm tooltipCustom' id='deleteBtn'>
-                          <span class="tooltiptextCustom p-1">Delete requested by ${slideDeleteRequests.find((o) => o.slideDetails.slideId === rs[0]) ? slideDeleteRequests.find((o) => o.slideDetails.slideId === rs[0]).requestedBy : ''}</span>
-                          Delete Requested <i class='fas fa-trash-alt' ></i>
-                        </button>
-                      `
-                  }
-                  ` :
-                  `
-                    <button type='button' class='btn btn-danger btn-sm DelButton' id='deleteBtn' data-id='${sanitize(rs[0])}' data-name='${sanitize(rs[1])}' onclick='deleteSld(this)' data-filename='${sanitize(filename)}' data-toggle='modal'>
-                      ${permissions.slide.delete == true ? '' : 'Request Deletion'} <i class='fas fa-trash-alt' ></i>
-                    </button>
-                  `
-}
+ 
               </div>`;
                   rs.push(btn);
                   return rs;
@@ -579,23 +548,25 @@ function checkUserPermissions() {
           return;
         }
         permissions = data;
-        // console.log(data);
-        if (permissions.slide.post == true) {
-          $('#slideUploadButton').show();
-        }
-        if (permissions.slide.update == true) {
-          $('#datatables').find('tr').each(function() {
-            var currentId = $('td:nth-child(1)', this).html();
-            $('td:nth-child(2)', this).css('cursor', 'default');
-            $('td:nth-child(2)', this).unbind('mouseenter mouseleave');
-            $('td:nth-child(2)', this).hover(function() {
-              var content = $(this).html();
-              $(this).html(content + `<i style='font-size: small; margin-left:1em; cursor: pointer' onclick="changeSlideName('` + content + `', '` + currentId + `')" class="fas fa-pen" data-bs-toggle="modal" data-bs-target="#slideNameChangeModal"></i>`);
-            }, function() {
-              $(this).find('i').last().remove();
-            });
-          });
-        }
+
+        // if (permissions.slide.post == true) {
+        //   $('#slideUploadButton').show();
+        // }
+        // if (permissions.slide.update == true) {
+        //   $('#datatables').find('tr').each(function() {
+        //     var currentId = $('td:nth-child(1)', this).html();
+        //     $('td:nth-child(2)', this).css('cursor', 'default');
+        //     $('td:nth-child(2)', this).unbind('mouseenter mouseleave');
+        //     $('td:nth-child(2)', this).hover(function() {
+        //       var content = $(this).html();
+        //       $(this).html(content + `<i style='font-size: small; margin-left:1em; cursor: pointer'
+        // onclick="changeSlideName('` + content + `', '` + currentId + `')" class="fas fa-pen"
+        // data-bs-toggle="modal" data-bs-target="#slideNameChangeModal"></i>`);
+        //     }, function() {
+        //       $(this).find('i').last().remove();
+        //     });
+        //   });
+        // }
       });
 }
 
@@ -658,8 +629,71 @@ function urlUpload() {
   handleUrlUpload(url);
 }
 function downloadSlide(e) {
-  const oid = e.dataset.id;
-  handleDownload(oid);
+  const {id, location} = e.dataset;
+  const store = new Store('../data/');
+
+  var fileName =``;
+  var len = 0;
+  var cur = 0;
+  store.downloadSlide(location).then((response) => {
+    if (response.status == 200) {
+      const headers = response.headers;
+      const disposition = headers.get('content-disposition');
+      len = headers.get('content-length');
+      if (disposition && disposition.indexOf('attachment') !== -1) {
+        var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+        var matches = filenameRegex.exec(disposition);
+        if (matches != null && matches[1]) {
+          fileName = matches[1].replace(/['"]/g, '');
+        }
+      }
+      setDownloadModalTitle(fileName);
+      setDownloadModalProgress(0);
+      showDownloadModal();
+      return response.body;
+    } else {
+      throw response;
+    }
+  })
+      .then((body) => {
+        const reader = body.getReader();
+
+        return new ReadableStream({
+          start(controller) {
+            return pump();
+
+            function pump() {
+              return reader.read().then(({done, value}) => {
+                // When no more data needs to be consumed, close the stream
+                if (done) {
+                  controller.close();
+                  return;
+                }
+                // Enqueue the next data chunk into our target stream
+                cur+=value.length;
+                setDownloadModalProgress(Math.round(cur/len *100));
+                controller.enqueue(value);
+                return pump();
+              });
+            }
+          },
+        });
+      })
+      .then((stream) => new Response(stream))
+      .then((response) => response.blob())
+      .then((blob)=>{
+        var url = window.URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
+        a.remove(); // afterwards we remove the element again
+
+        hideDownloadModal();
+        window.URL.revokeObjectURL(blob);
+      })
+      .catch((err) => console.error(err));
 }
 
 function deleteSld(e, cancel = false) {
@@ -668,8 +702,6 @@ function deleteSld(e, cancel = false) {
   const oname = e.dataset.name;
   const filename = e.dataset.filename;
   const reqId = e.dataset.reqid;
-  // console.log('reqId ' + reqId);
-
   const store = new Store('../data/');
   if (oid) {
     $('#confirmDeleteContent').html(`Are you sure you want to ${reqId ? 'decline the ' : ''} ${permissions.slide.delete == true ? '' : 'request to '} delete the slide ${sanitize(oname)} with id ${sanitize(oid)} ?`);
@@ -839,7 +871,6 @@ function appendNotifications(slideDeleteRequests) {
       document.getElementById('userReqBadge').innerHTML = '';
       document.getElementById('userReqBadge').append(notifSpan);
       userCreateRequests.forEach((notif, i) => {
-        console.log(notif);
         let d1 = document.createElement('div');
         d1.classList.add('row');
         d1.classList.add('pt-1');
@@ -996,4 +1027,16 @@ function filterSlides() {
   totaltablepages = Math.ceil(newSlideRows.length / $('#entries').val());
   resetTable();
   pageIndicatorVisible(newSlideRows.length);
+}
+function showDownloadModal() {
+  $('#downloadModal').modal('show');
+}
+function hideDownloadModal() {
+  $('#downloadModal').modal('hide');
+}
+function setDownloadModalTitle(title) {
+  $('#downloadModal').find('.modal-title').text(title);
+}
+function setDownloadModalProgress(num) {
+  $('#downloadModal').find('.progress-bar').css('width', `${num}%`).attr('aria-valuenow', num).text(`${num}%`);
 }

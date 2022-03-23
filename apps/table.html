@@ -43,6 +43,22 @@
 </head>
 
 <body>
+    <!-- Download Progress Modal Start -->
+    <div class="modal fade" id="downloadModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title">Modal title</h5>
+            </div>
+            <div class="modal-body">
+                <div class="progress" style="height: 20px;">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+    <!-- Download Progress Modal End -->
 	<div class="page-container">
 	<div>
 	<nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark" style="position: sticky; margin-top: -4em;">
@@ -55,7 +71,7 @@
 						<li class="nav-item link" style="font-family: sans-serif;">
 						   <a class="nav-link" href="landing/landing.html"> <i class="fas fa-home"></i> Home</a>
 						</li>
-						<li class="nav-item active link" style="font-family: sans-serif;">
+						<!-- <li class="nav-item active link" style="font-family: sans-serif;">
 							<a class="nav-link" href="table.html"> <i class="fas fa-list-ul"></i>  Slides</a>
 						</li>
 						<li class="nav-item link">
@@ -69,7 +85,7 @@
 						</li>
 						<li class="nav-item link" style="font-family: sans-serif;">
 							<a class="nav-link" target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLScL91LxrpAZjU88GBZP9gmcdgdf8__uNUwhws2lzU6Lr4qNwA/viewform"> <i class="fas fa-comment"></i> Feedback</a>
-						</li>
+						</li> -->
 					</ul>
 				</div>
 		</div>
@@ -79,11 +95,11 @@
 		<h1 class="h1">caMicroscope</h1>
 		<p>Digital pathology image viewer with support for human/machine generated annotations and markups.</p>
 		<div style="align-content: center;">
-			<div style="align-content: center;">
+			<!-- <div style="align-content: center;">
 				<div class="btn-group" role="group">
 				<button type="button" style="border-color: white;" class="btn btn-secondary bg-white text-dark" title="Slides Table"><i class="fas fa-list-alt"></i>  Slides</button>
 				<a href="./Info.html">	<button style="border-color: white; border-radius: 0 5px 5px 0;" type="button" class="btn btn-secondary bg-info text-light" title="Information Dashboard"><i class="fas fa-info-circle"></i>  Info</button> </a></div>
-			</div>
+			</div> -->
 		</div>
 	</div>
 
@@ -91,8 +107,9 @@
 		<div class="p-2">
         <div class="d-flex justify-content-between">
             <div class="d-md-inline-flex m-2 w-100">
-            <div style="padding:0 1rem">
+            <div style="padding:0 1rem;">
                 <div class="row">
+                    <!--
                     <ul id = "collection-list" class="list-group">
                         <li class="list-group-item d-flex align-items-center justify-content-between active">
                             <i class="fas fa-archive"></i>
@@ -100,6 +117,7 @@
                             <i class="fas fa-plus" style="cursor: pointer;"></i>
                         </li>
                     </ul>
+                    -->
                 </div>
             </div>
             <div class="w-100">
@@ -137,7 +155,7 @@
                         Reload</button>
                 </div>
                 <div> 
-			    <div id="slideUploadButton" class="btn-group float-right pl-md-2 pt-2">
+			   <!-- <div id="slideUploadButton" class="btn-group float-right pl-md-2 pt-2">
 				    <button type="button" class="btn btn-primary " data-bs-toggle="modal"
 			data-bs-target="#upload-dialog" onclick="hidePostButton(); hideCheckButton(); resetUploadForm();" > <i class="fas fa-upload"></i> Upload</button>
 				    <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -146,7 +164,7 @@
 				<div class="dropdown-menu" >
 				  <a class="dropdown-item" href="../apps/batchloader/batchloader.html">Upload Batch</a>
 				</div>
-                </div>
+                </div> -->
             </div>
         </div>
             
@@ -276,7 +294,7 @@
 				<span aria-hidden="true">&times;</span>
 			</button>
 			</div>
-			<form onsubmit="return false">
+			<form>
 			<div class="modal-body" id="confirmUpdateSlideContent"></div>
 			<div class="modal-footer">
 			<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>

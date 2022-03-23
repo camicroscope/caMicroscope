@@ -895,6 +895,19 @@ class Store {
         });
   }
 
+  downloadSlide(location) {
+    const suffix = 'Slide/download';
+    const url = this.base + suffix;
+    const query = {
+      'location': location,
+    };
+    return fetch(url + '?' + objToParamStr(query), {
+      method: 'GET',
+      credentials: 'include',
+      mode: 'cors',
+    });
+  }
+
   /**
    * request deletion of slide
    * @param {object} slideId - the slide object id
@@ -1130,6 +1143,16 @@ class Store {
     };
     return fetch(url + '?' + objToParamStr(query), {
       method: 'DELETE',
+      credentials: 'include',
+      mode: 'cors',
+    }).then(this.errorHandler);
+  }
+
+  getFeedback(query) {
+    const suffix = 'ExpertsFeedback/find';
+    const url = this.base + suffix;
+
+    return fetch(url + '?' + objToParamStr(query), {
       credentials: 'include',
       mode: 'cors',
     }).then(this.errorHandler);
