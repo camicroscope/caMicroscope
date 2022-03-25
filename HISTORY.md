@@ -27,6 +27,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### caMicroscope [Unreleased](https://github.com/camicroscope/camicroscope/compare/v3.9.10...camicroscope:develop)
 ###### TBD
 
+### caMicroscope [3.9.9](https://github.com/camicroscope/camicroscope/compare/v3.9.8...camicroscope:v3.9.9)
+###### 2021-11-08
+* Fix and enhance Human Readable URL support
 
 ### caMicroscope [3.9.10](https://github.com/camicroscope/camicroscope/compare/v3.9.8...camicroscope:v3.9.10)
 ###### 2021-01-20
