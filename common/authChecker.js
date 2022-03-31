@@ -1,6 +1,5 @@
 const __auth_check = async function(levels) {
   const resp = await fetch('../'.repeat(levels) + 'data/Template/find');
-  console.log(resp);
   if (resp.status == 401) {
     // send them to login
     window.location = '../'.repeat(levels) + 'login.html?state=' + encodeURIComponent(window.location);
@@ -12,11 +11,11 @@ const checkRegistrationStatus = async function(levels) {
   const dbStore = new Store(base);
   try {
     var user = await dbStore.getUsers(getUserId());
+
     if (Array.isArray(user)&&user.length>0) { // user exist
-      user = user[0];
+      $USER = user = user[0];
       if (user.registration&&user.isAgreed) { //
         const userType = getUserType();
-        console.log(userType);
         if (userType == 'Admin') {
           if (-1 === window.location.href.indexOf('landing/landing.html')) {
             window.location = '../'.repeat(levels) + 'apps/landing/landing.html';

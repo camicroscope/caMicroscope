@@ -178,6 +178,18 @@
               onclick='googleSignOut("../../login.html?logout=true")'
               >Sign Out</a
             >
+            <div
+              id="screenName"
+              style="
+                display: none;
+                float: right;
+                color: #c9c9c9;
+                text-decoration: none;
+                letter-spacing: 0.05em;
+                font-size: 0.9em;
+                padding: 0 1.5rem;
+              "
+            ></div>
           </div>
         </div>
         <table id="datatables"></table>
@@ -190,6 +202,16 @@
       // --  -- //
       const store = new Store("../../data/");
       const container = document.getElementById("card-container");
+
+      store.getUsers(getUserId()).then((data) => {
+        if (Array.isArray(data) && data.length > 0) {
+          // user exist
+          $USER = data[0];
+          const screenName = document.getElementById("screenName");
+          screenName.innerText = `hi, ${$USER.registration.screenName}`;
+          screenName.style.display = "";
+        }
+      });
 
       function createAllCards(data, container) {
         data.forEach((d) => {

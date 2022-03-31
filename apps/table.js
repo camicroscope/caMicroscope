@@ -209,6 +209,16 @@ function initialize() {
   const params = getUrlVars();
   const store = new Store('../data/');
 
+  store.getUsers(getUserId()).then((data) => {
+    if (Array.isArray(data) && data.length > 0) {
+      // user exist
+      $USER = data[0];
+      const screenName = document.getElementById('screenName');
+      screenName.innerText = `hi, ${$USER.registration.screenName}`;
+      screenName.style.display = '';
+    }
+  });
+
   store.findRequest()
       .then(function(requests) {
         if (requests && !requests.error) {

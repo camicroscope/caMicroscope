@@ -54,13 +54,30 @@
     <script type="text/javascript" src="../../common/util.js"></script>
     <script type="text/javascript" src="../../common/authChecker.js"></script>
 
-    <style></style>
+    <style>
+      .signout {
+        padding: 0 1.5rem;
+        font-weight: 700;
+        text-decoration: none;
+        text-transform: uppercase;
+        cursor: pointer;
+      }
+      .signout:hover {
+        background: #595959;
+      }
+    </style>
   </head>
   <body>
-    <header id="header">
+    <header id="header" style="display: flex; justify-content: space-between">
       <label style="color: white; padding: 0 15px; font-size: 20px"
         >CaMicroscope</label
       >
+      <div
+        class="signout"
+        onclick="googleSignOut('../../login.html?logout=true')"
+      >
+        Sign Out
+      </div>
     </header>
     <!-- Main -->
     <section id="main" class="wrapper">
@@ -117,13 +134,7 @@
         <div class="content form-step form-step-active">
           <form class="alpaca-form">
             <div
-              class="
-                alpaca-field
-                alpaca-field-object
-                alpaca-optional
-                alpaca-create
-                alpaca-top
-              "
+              class="alpaca-field alpaca-field-object alpaca-optional alpaca-create alpaca-top"
             >
               <legend class="alpaca-container-label">Consent Form</legend>
               <embed

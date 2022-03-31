@@ -38,6 +38,7 @@
     <label style="color:white;padding:0 15px;font-size:20px;">CaMicroscope</label>
     <nav id="nav">
         <ul>
+            <li id="screenName" style="display:none;"></li>
             <li><a target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLScL91LxrpAZjU88GBZP9gmcdgdf8__uNUwhws2lzU6Lr4qNwA/viewform">Feedback</a></li>
             <li><a href="#" onclick="googleSignOut('../../login.html?logout=true')">Sign Out</a></li>
         </ul>
@@ -132,11 +133,16 @@
 
 <script src="./util.js"></script>
 <script type='text/javascript' src='../../common/util.js'></script>
-
-
-
+<script type='text/javascript'>
+var checkUserInfo = setInterval(function() {
+    if ($USER&&$USER.registration&&$USER.registration.screenName) {
+      clearInterval(checkUserInfo);
+      // 
+      const screenName = document.getElementById('screenName');
+      screenName.innerText = `hi, ${$USER.registration.screenName}`;
+      screenName.style.display = '';
+    }
+  }, 250);
+</script>
 </body>
-
-
-
 </html>

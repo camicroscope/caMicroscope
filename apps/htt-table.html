@@ -9,24 +9,19 @@
       content="width=device-width, initial-scale=1, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"
     />
     <!-- common -->
-    <!-- <link rel='stylesheet' type='text/css' media='all' href='../../css/style.css'/> -->
-    <link
-      href="../../common/datatables/vanilla-dataTables.css"
-      rel="stylesheet"
-    />
-    <link href="../../iconfont/material-icons.css" rel="stylesheet" />
+    <!-- <link rel='stylesheet' type='text/css' media='all' href='../css/style.css'/> -->
+    <link href="../common/datatables/vanilla-dataTables.css" rel="stylesheet" />
     <!-- Check If we're logged in ok, otherwise, log in for us -->
-    <script src="../../common/authChecker.js"></script>
+    <script src="../common/authChecker.js"></script>
     <script>
-      __auth_check(2);
+      __auth_check(1);
     </script>
 
-    <script src="../../core/Store.js"></script>
-    <script type="text/javascript" src="../../common/SHA256.js"></script>
-    <script src="../../common/util.js"></script>
-    <script src="../../common/ajv.js"></script>
-    <script src="../../common/datatables/vanilla-dataTables.js"></script>
-    <script src="../../components/loading/loading.js"></script>
+    <script src="../core/Store.js"></script>
+    <script src="../common/util.js"></script>
+    <script src="../common/ajv.js"></script>
+    <script src="../common/datatables/vanilla-dataTables.js"></script>
+    <script src="../components/loading/loading.js"></script>
     <title>CaMicroscope Data Table</title>
     <style type="text/css">
       html,
@@ -257,6 +252,11 @@
         border-color: #365f9c;
         opacity: 1;
       }
+      .btn.disabled,
+      .btn.disabled:hover {
+        background-color: #cdcdcd;
+        border-color: #cdcdcd;
+      }
     </style>
   </head>
   <body>
@@ -273,21 +273,8 @@
                 text-transform: uppercase;
                 font-size: 0.9em;
               "
-              href="../landing/landing.html"
+              href="./landing/landing.html"
               >Home</a
-            >
-            &nbsp;&nbsp;&nbsp;
-            <a
-              style="
-                color: white;
-                text-decoration: none;
-                font-weight: 700;
-                letter-spacing: 0.05em;
-                text-transform: uppercase;
-                font-size: 0.9em;
-              "
-              href="../collection/viewer.html"
-              >Collection List</a
             >
             <a
               style="
@@ -300,7 +287,7 @@
                 font-size: 0.9em;
               "
               href="#"
-              onclick='googleSignOut("../../login.html?logout=true")'
+              onclick="googleSignOut('../login.html?logout=true')"
               >Sign Out</a
             >
             <div
@@ -323,12 +310,20 @@
   </body>
   <script>
     // -- authentication check -- //
-    if (!hasLoginAsGoogle()) window.location = "../../login.html";
+    if (!hasLoginAsGoogle()) window.location = "../login.html";
+
+    const type = getUserType();
+
+    // const idx = roles.findIndex((e) => e == "write" || e == "admin");
+    if (type !== "Admin") {
+      // crowd
+      window.location = "./landing/crowd.html";
+    }
 
     const HeadMapping = [
       {
         title: "ID",
-        field: "_id",
+        field: "oid",
       },
       {
         title: "Name",
@@ -348,102 +343,151 @@
       },
       {
         title: "ROIs",
-        field: "stat",
+        field: "rois",
       },
     ];
 
-    // const reverse_threshold = 5;
-    const params = getUrlVars();
-    const cid = params.collectionId;
-    async function initialize() {
-      const store = new Store("../../data/");
-      try {
-        store.getUsers(getUserId()).then((data) => {
-          if (Array.isArray(data) && data.length > 0) {
-            // user exist
-            $USER = data[0];
-            const screenName = document.getElementById("screenName");
-            screenName.innerText = `hi, ${$USER.registration.screenName}`;
-            screenName.style.display = "";
+    const findROICountByName = (name, array) => {
+      const index = array.findIndex((d) => d["_id"]["name"] == name);
+      return index == -1 ? 0 : array[index].count;
+    };
+
+    const reverse_threshold = 5;
+    function initialize() {
+      const params = getUrlVars();
+      const store = new Store("../data/");
+      store.getUsers(getUserId()).then((data) => {
+        if (Array.isArray(data) && data.length > 0) {
+          // user exist
+          $USER = data[0];
+          const screenName = document.getElementById("screenName");
+          screenName.innerText = `hi, ${$USER.registration.screenName}`;
+          screenName.style.display = "";
+        }
+      });
+      store
+        .findSlide()
+        .then(async function (data) {
+          data.sort((a, b) => {
+            a.name - b.name;
+          });
+          // get ROI counts for each slide
+          const roi_counts = await store.countLabelingBySlide();
+
+          // filter
+          if (
+            !(Object.keys(params).length === 0 && params.constructor === Object)
+          ) {
+            const keys = Object.keys(params);
+            const v2 = Object.values(params);
+            data = data.filter((d) => {
+              const v1 = getValues(d, keys);
+              return AND.call(this, v1, v2, eq);
+            });
           }
-        });
-        const slides = await store.findSlideLabelingStat(cid, getUserId());
-        if (slides && Array.isArray(slides)) {
-          if (slides.length == 0) {
-            var div = document.querySelector("#datatables");
+
+          // mapping data
+          const keys = HeadMapping.map((d) => d.field);
+          if (data.map) {
+            return data
+              .map((d) => {
+                const rs = [];
+                keys.forEach((key, i) => {
+                  if (i == 0) rs.push(d["_id"]["$oid"]);
+                  // add rois #
+                  else if (key == "rois")
+                    rs.push(findROICountByName(d.name, roi_counts));
+                  else if (!d[key]) rs.push("");
+                  else rs.push(d[key]);
+                });
+                // <button class="btn disabled" data-id='${rs[0]}' onclick='openCreate(this)' disabled>Create</button>
+                const btn = `
+					<button class="btn disabled" data-id='${rs[0]}' onclick='openCreate(this)' disabled>Create</button>
+					<button class="btn" data-id='${rs[0]}' onclick='openView(this)'>View All</button>`;
+
+                rs.push(btn);
+                return rs;
+              })
+              .sort((a, b) => a[5] - b[5]);
+          } else {
+            // we have no data to render! Let's add a default button
+            const default_btn = [];
+            keys.forEach((key, i) => {
+              if (i == 0) default_btn.push("NO DATA");
+              else default_btn.push("");
+            });
+            const btn = `<button class="btn" onclick='alert("No Data")'>Open</button>`;
+            default_btn.push(btn);
+            return [default_btn];
+          }
+        })
+        .then((data) => {
+          // reverse
+          const idx = data.findIndex((d) => d[5] >= reverse_threshold);
+          if (idx === 0 || idx === 1) return data;
+          if (idx === -1) {
+            data.reverse();
+          } else {
+            const a = data.slice(0, idx).reverse();
+            const b = data.slice(idx);
+            data = a.concat(b);
+          }
+          return data;
+        })
+        .then(function (data) {
+          if (data.length == 0) {
+            var div = document.querySelector(".container");
             div.textContent = `No Data Found ... x _ x`;
             return;
           }
-
-          //
-          const keys = HeadMapping.map((d) => d.field);
-          const data = slides
-            .map((slide) => {
-              const rs = [];
-              const { labelingAnnotationCount, labelingCount } = slide.stat;
-              keys.forEach((key, i) => {
-                if (key == "stat") {
-                  rs.push(`${labelingAnnotationCount}/${labelingCount}`);
-                } else {
-                  rs.push(slide[key]);
-                }
-              });
-              const btn =
-                labelingAnnotationCount == labelingCount
-                  ? `<div class='material-icons' style='width:48px;color:#008000;' title='Done'>check_circle</div>`
-                  : `<button class="btn" data-id='${rs[0]}' onclick='openView(this)'>Open</button>`;
-              rs.push(btn);
-              return rs;
-            })
-            .sort((a, b) => a[5] - b[5]);
-
-          const headings = HeadMapping.map((d) => d.title);
-          headings.push("");
+          const head = HeadMapping.map((d) => d.title);
+          head.push("");
+          const obj = {
+            headings: head,
+            data: data,
+          };
           dataTableInstance = new DataTable("#datatables", {
             perPage: 50,
             perPageSelect: [25, 50, 100],
-            data: { headings, data },
+            data: obj,
           });
-        } else {
-          console.log(slides);
-          // error
-          alert(`There Is A Error On Server Side. (${slides})`);
-          // window.location.href = "../collection/viewer.html";
-        }
-      } catch (error) {
-        console.log(error);
-        alert(`There Is A Error On Server Side. (${error})`);
-        // window.location.href = "../collection/viewer.html";
-      }
+        });
     }
 
-    // function AND(p, t, func) {
-    //   return p.reduce((acc, v, i) => {
-    //     return acc && func.call(this, v, t[i]);
-    //   }, true);
-    // }
+    function AND(p, t, func) {
+      return p.reduce((acc, v, i) => {
+        return acc && func.call(this, v, t[i]);
+      }, true);
+    }
 
-    // function eq(v1, v2) {
-    //   return v1 == v2;
-    // }
+    function eq(v1, v2) {
+      return v1 == v2;
+    }
 
-    // function getValues(d, keys) {
-    //   const rs = [];
-    //   keys.forEach((key) => {
-    //     rs.push(d[key]);
-    //   });
-    //   return rs;
-    // }
+    function getValues(d, keys) {
+      const rs = [];
+      keys.forEach((key) => {
+        rs.push(d[key]);
+      });
+      return rs;
+    }
 
-    function openView(e) {
+    function openCreate(e) {
       const oid = e.dataset.id;
       if (oid) {
-        window.location.href = `./roi_pick.html?slideId=${oid}&collectionId=${cid}`;
+        window.location.href = `./labeling/labeling.html?slideId=${oid}`;
       } else {
         alert("No Data Id");
       }
     }
-
+    function openView(e) {
+      const oid = e.dataset.id;
+      if (oid) {
+        window.location.href = `./labeling/labelingViewer.html?slideId=${oid}`;
+      } else {
+        alert("No Data Id");
+      }
+    }
     document.addEventListener("DOMContentLoaded", initialize);
   </script>
 </html>
