@@ -1,6 +1,8 @@
 const store = new Store('../../data/');
 // create the message queue
 const message = new MessageQueue();
+const modal = document.getElementById('emailModal');
+
 var userId = getUserId();
 var userInfo;
 // get user info
@@ -18,6 +20,15 @@ if (userInfo&&userInfo.registration&&userInfo.isAgreed&&userInfo.userType=='Admi
 } else if (userInfo&&userInfo.registration&&userInfo.isAgreed) {
   window.location = '../landing/crowd.html';
 }
+
+// modal  footer btn event
+$('#emailModal').find('.modal-footer .btn').on('click', ()=>{
+  if (getUserType() == 'Admin') {
+    window.location = '../landing/landing.html';
+  } else {
+    window.location = '../landing/crowd.html';
+  }
+});
 
 Alpaca.Form.prototype.enableSubmitButton = function() {
   this.domEl.find('.alpaca-form-button-submit').attrProp('disabled', false);
@@ -108,6 +119,11 @@ $('#basic').alpaca({
         'title': 'Last Name',
         'required': true,
       },
+      'screenName': {
+        'type': 'string',
+        'title': 'Please provide a screen name for your data collection',
+        'required': true,
+      },
       'contactEmail': {
         'type': 'string',
         'title': 'Contact Email',
@@ -168,17 +184,6 @@ $('#professional').alpaca({
         'type': 'string',
         'required': true,
       },
-      'specialties': {
-        'type': 'string',
-        'title': 'Board certifications and specialties (or equivalent in your country)',
-        'required': true,
-      },
-      'organizationCountry': {
-        'type': 'string',
-        'title': 'Board certification or residency organization and country',
-        'required': true,
-      },
-
     },
     'dependencies': {
       'other': ['roleAtInstitution'],
@@ -222,8 +227,18 @@ $('#certifications').alpaca({
     'title': 'Certifications',
     'type': 'object',
     'properties': {
-      'certYear': {
+      'specialties': {
         'type': 'string',
+        'title': 'Board certifications and specialties or equivalent for your country (or enter NA)',
+        'required': true,
+      },
+      'organizationCountry': {
+        'type': 'string',
+        'title': 'Board certification or residency organization and country (or enter NA)',
+        'required': true,
+      },
+      'certYear': {
+        'type': 'integer',
         'title':
           `If you are a board-certified anatomic pathologist or the equivalent for your country,
            enter the number of years since your certification. 
@@ -231,15 +246,10 @@ $('#certifications').alpaca({
         'required': true,
       },
       'yearsOfResidency': {
-        'type': 'string',
+        'type': 'integer',
         'title': `If you are an anatomic pathology resident, 
           how many years of residency have you had? 
           (If you are not a anatomic pathology resident, enter -1)`,
-        'required': true,
-      },
-      'screenName': {
-        'type': 'string',
-        'title': 'Please provide a screen name for your data collection',
         'required': true,
       },
     },
@@ -278,7 +288,7 @@ async function saveRegistration() {
     userInfo.isAgreed = isConsent.checked;
     try {
       const rs = await store.updateUser(id, userInfo);
-      if (rs.ok&&nModified) {
+      if (rs.ok&&rs.nModified) {
       } else {
         message.addError('Core Initialization Failed');
       }
@@ -296,7 +306,7 @@ async function saveRegistration() {
     userInfo.isAgreed = isConsent.checked;
     try {
       const rs = await store.addUser(userInfo);
-      if (rs.ok&&nModified) {
+      if (rs.ok&&rs.nModified) {
       } else {
         message.addError('Core Initialization Failed');
       }
@@ -305,9 +315,42 @@ async function saveRegistration() {
       message.addError('Core Initialization Failed');
     }
   }
-  if (getUserType() == 'Admin') {
-    window.location = '../landing/landing.html';
+  console.log(userInfo);
+
+  const rs = await store.sendRegistrationEmail(userInfo.registration.screenName, `${userInfo.email}, ${userInfo.registration.contactEmail}`).then((res)=>res.json());
+  console.log(rs);
+  if (rs.error) {
+    openEmailModal(`<p class='text-danger'>
+    <label>Somthing Wrong... Please Contact Administration.</label>
+    <label style='margin:0;'>Error Message:</label>
+    ${rs.error.response}</p>`, false);
   } else {
-    window.location = '../landing/crowd.html';
+    openEmailModal(`<p class='text-primary'>
+    <label>Your registration has been successfully completed.</label>
+    An email has been sent to your registration email.<p>`);
   }
 }
+
+function openEmailModal(message, isSucceed=true) {
+  if (isSucceed) {
+    //
+    $('#emailModal').find('.modal-header').removeClass('bg-danger');
+    $('#emailModal').find('.modal-header').addClass('bg-primary');
+    $('#emailModal').find('.modal-title').html(`<label style='margin:0;'>Registration Successful</label>`);
+    $('#emailModal').find('.modal-footer .btn').removeClass('btn-danger');
+    $('#emailModal').find('.modal-footer .btn').addClass('btn-primary');
+    $('#emailModal').find('.modal-footer .btn').text('Countine');
+  } else {
+    //
+    $('#emailModal').find('.modal-header').removeClass('bg-primary');
+    $('#emailModal').find('.modal-header').addClass('bg-danger');
+    $('#emailModal').find('.modal-title').html(`<label class='text-danger' style='margin:0;'>Registration Failed!</label>`);
+    $('#emailModal').find('.modal-footer .btn').addClass('btn-danger');
+    $('#emailModal').find('.modal-footer .btn').removeClass('btn-primary');
+    $('#emailModal').find('.modal-footer .btn').text('Ok');
+  }
+  $('#emailModal').find('.modal-body')
+      .html(message);
+  $('#emailModal').modal('show');
+}
+

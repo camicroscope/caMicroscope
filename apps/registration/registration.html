@@ -65,9 +65,27 @@
       .signout:hover {
         background: #595959;
       }
+      .modal-dialog {
+        margin: 25% auto;
+      }
     </style>
   </head>
   <body>
+    <!-- Modal Start -->
+    <div id="emailModal" class="modal fade" data-backdrop="static">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header" style="border-radius: 6px">
+            <h4 class="modal-title">Modal title</h4>
+          </div>
+          <div class="modal-body"></div>
+          <div class="modal-footer">
+            <button type="button" class="btn">btn</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Modal End -->
     <header id="header" style="display: flex; justify-content: space-between">
       <label style="color: white; padding: 0 15px; font-size: 20px"
         >CaMicroscope</label
