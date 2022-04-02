@@ -908,6 +908,19 @@ class Store {
     });
   }
 
+  sendRegistrationEmail(name, email) {
+    const suffix = 'Email/registration';
+    const url = this.base + suffix;
+    const query = {
+      name, email,
+    };
+    return fetch(url + '?' + objToParamStr(query), {
+      method: 'GET',
+      credentials: 'include',
+      mode: 'cors',
+    });
+  }
+
   /**
    * request deletion of slide
    * @param {object} slideId - the slide object id
