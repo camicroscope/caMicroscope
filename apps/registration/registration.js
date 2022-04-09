@@ -339,7 +339,7 @@ function openEmailModal(message, isSucceed=true) {
     $('#emailModal').find('.modal-title').html(`<label style='margin:0;'>Registration Successful</label>`);
     $('#emailModal').find('.modal-footer .btn').removeClass('btn-danger');
     $('#emailModal').find('.modal-footer .btn').addClass('btn-primary');
-    $('#emailModal').find('.modal-footer .btn').text('Countine');
+    $('#emailModal').find('.modal-footer .btn').text('Contiune');
   } else {
     //
     $('#emailModal').find('.modal-header').removeClass('bg-primary');
