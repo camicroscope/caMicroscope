@@ -388,6 +388,14 @@ function initCore() {
       },
     },
     {
+      id: 'slide_download',
+      icon: 'file_download',
+      title: 'Download Slide',
+      type: 'btn',
+      value: 'slide_download',
+      callback: downloadSlide,
+    },
+    {
       id: 'tutorial',
       icon: 'help',
       title: 'Tutorial',
@@ -458,7 +466,7 @@ async function saveAnnotation(annotation) {
       }
       console.log(feeback);
     } else {
-      window.location.href = `./roi_pick.html?slideId=${$D.params.slideId}&collectionId=${$D.params.collectionId}`;
+      // window.location.href = `./roi_pick.html?slideId=${$D.params.slideId}&collectionId=${$D.params.collectionId}`;
     }
     Loading.close();
   } else {
@@ -1077,4 +1085,83 @@ function addROIFormEvent() {
     };
     saveAnnotation(annotation);
   });
+}
+
+function downloadSlide(e) {
+  const location = $D.params.data.location;
+  var fileName =``;
+  var len = 0;
+  var cur = 0;
+  $CAMIC.store.downloadSlide(location).then((response) => {
+    if (response.status == 200) {
+      const headers = response.headers;
+      const disposition = headers.get('content-disposition');
+      len = headers.get('content-length');
+      if (disposition && disposition.indexOf('attachment') !== -1) {
+        var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+        var matches = filenameRegex.exec(disposition);
+        if (matches != null && matches[1]) {
+          fileName = matches[1].replace(/['"]/g, '');
+        }
+      }
+      setDownloadModalTitle(fileName);
+      setDownloadModalProgress(0);
+      showDownloadModal();
+      return response.body;
+    } else {
+      throw response;
+    }
+  })
+      .then((body) => {
+        const reader = body.getReader();
+
+        return new ReadableStream({
+          start(controller) {
+            return pump();
+
+            function pump() {
+              return reader.read().then(({done, value}) => {
+                // When no more data needs to be consumed, close the stream
+                if (done) {
+                  controller.close();
+                  return;
+                }
+                // Enqueue the next data chunk into our target stream
+                cur+=value.length;
+                setDownloadModalProgress(Math.round(cur/len *100));
+                controller.enqueue(value);
+                return pump();
+              });
+            }
+          },
+        });
+      })
+      .then((stream) => new Response(stream))
+      .then((response) => response.blob())
+      .then((blob)=>{
+        var url = window.URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
+        a.remove(); // afterwards we remove the element again
+
+        hideDownloadModal();
+        window.URL.revokeObjectURL(blob);
+      })
+      .catch((err) => console.error(err));
+}
+
+function showDownloadModal() {
+  $('#downloadModal').modal('show');
+}
+function hideDownloadModal() {
+  $('#downloadModal').modal('hide');
+}
+function setDownloadModalTitle(title) {
+  $('#downloadModal').find('.modal-title').text(title);
+}
+function setDownloadModalProgress(num) {
+  $('#downloadModal').find('.progress-bar').css('width', `${num}%`).attr('aria-valuenow', num).text(`${num}%`);
 }
