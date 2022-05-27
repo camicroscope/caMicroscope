@@ -298,14 +298,8 @@ function initialize() {
                   });
                   if (slideDeleteRequests['counter']) {
                   }
-                  const btn = `<div id='open-delete'>
-                
-                <button type='button' class='btn btn-primary btn-sm DownloadButton' id='downloadBtn' data-id='${sanitize(rs[0])}' data-location='${sanitize(d.location)}' onclick='downloadSlide(this)'>
-                <i class='fas fa-download' ></i>
-                </button>
- 
-              </div>`;
-                  rs.push(btn);
+                  const multiCheck = `<input type="checkbox" name='multiDownload' data-id='${sanitize(rs[0])}' data-location='${sanitize(d.location)}' />`;
+                  rs.push(multiCheck);
                   return rs;
                 });
               } else {
@@ -347,11 +341,11 @@ function initialize() {
 
               const thead = HeadMapping.map((d, i) => `<th>${sanitize(d.title)} <span class="sort-btn fa fa-sort" data-order=${1}
               data-index=${i}>  </span> </th>`);
-
-              thead.push('<th></th>');
-              tbody = data.map((d) => {
-                return '<tr>' + d.map((a) => '<td>' + a + '</td>').reduce((a, b) => a + b) + '</tr>';
-              });
+              thead.push(`<th style="text-align: center; vertical-align: middle;" >
+                <button type='button' class='btn btn-primary btn-sm'onclick='downloadSlides(this)'><i class='fas fa-download' ></i></button>
+                <button type='button' class='btn btn-danger btn-sm'onclick='deselectedDownloadCheckbox()'><i class='fas fa-window-close'></i></button>
+              </th>`);
+              tbody = data.map((d) => `<tr> ${d.map((a, idx) => idx < 5 ? `<td> ${a} </td>`:`<td style="text-align: center; vertical-align: middle;"> ${a} </td>`).reduce((a, b) => a + b)} </tr>`);
               let entriesPerPage;
               if ($('#entries').val() === undefined) {
                 entriesPerPage = 10;
@@ -638,10 +632,30 @@ function urlUpload() {
   var url = document.getElementById('urlInput').value;
   handleUrlUpload(url);
 }
-function downloadSlide(e) {
-  const {id, location} = e.dataset;
-  const store = new Store('../data/');
+function deselectedDownloadCheckbox() {
+  $('input[type="checkbox"][name="multiDownload"]').prop('checked', false);
+}
+function downloadSlides(e) {
+  const checkboxes = $('input[type="checkbox"][name="multiDownload"]:checked');
 
+  if (!checkboxes.length) {
+    alert('Please select the slides to download.');
+    return;
+  }
+  if (checkboxes.length > 10) {
+    alert('Please select less than 10 slides to download.');
+    return;
+  }
+
+  checkboxes.each((idx, e)=>{
+    const id = $(e).data('id');
+    const location = $(e).data('location');
+    downloadSlide(id, location);
+  });
+}
+
+function downloadSlide(id, location) {
+  const store = new Store('../data/');
   var fileName =``;
   var len = 0;
   var cur = 0;
@@ -657,8 +671,7 @@ function downloadSlide(e) {
           fileName = matches[1].replace(/['"]/g, '');
         }
       }
-      setDownloadModalTitle(fileName);
-      setDownloadModalProgress(0);
+      createSlideDownloadPanel(id, fileName);
       showDownloadModal();
       return response.body;
     } else {
@@ -681,7 +694,7 @@ function downloadSlide(e) {
                 }
                 // Enqueue the next data chunk into our target stream
                 cur+=value.length;
-                setDownloadModalProgress(Math.round(cur/len *100));
+                setDownloadModalProgress(id, Math.round(cur/len *100));
                 controller.enqueue(value);
                 return pump();
               });
@@ -699,8 +712,7 @@ function downloadSlide(e) {
         document.body.appendChild(a);
         a.click();
         a.remove(); // afterwards we remove the element again
-
-        hideDownloadModal();
+        removeSlideDownloadPanel(id);
         window.URL.revokeObjectURL(blob);
       })
       .catch((err) => console.error(err));
@@ -985,15 +997,6 @@ function createCollectionPanel(data, cid) {
     </li>`;
     panel.append($.parseHTML(html));
   });
-  // const _html = data.map(d => `<li
-  //     class="list-group-item ${cid == d._id['$oid'] ? 'list-group-item-primary' : ''}
-  //            item d-flex justify-content-between align-items-center"
-  //     onclick = "location.href='./table.html?cid=${d._id['$oid']}'"
-  //     >
-  //   <div class="text-in-line">${d.name}</div>
-  //   <span class="badge bg-primary rounded-pill" style="color:white;">${d.slides.length}</span>
-  //   </li>`).join('');
-  // panel.innerHTML = panel.innerHTML + _html;
 }
 
 function filterSlides() {
@@ -1038,15 +1041,30 @@ function filterSlides() {
   resetTable();
   pageIndicatorVisible(newSlideRows.length);
 }
+
+function createSlideDownloadPanel(id, name) {
+  const body = $('#downloadModal .modal-body');
+  body.append($.parseHTML(`<div class='slide-download-panel' id=${id}>
+    <label class='text-secondary'>${name}</label>
+    <div class="progress" style="height: 20px;">
+      <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 30%">
+      0%</div>
+    </div>
+  </div>`));
+}
+function removeSlideDownloadPanel(id) {
+  $(`#downloadModal #${id}`).remove();
+  if (!$('#downloadModal .slide-download-panel').length) {
+    $(`#downloadModal`).modal('hide');
+  }
+}
+
 function showDownloadModal() {
   $('#downloadModal').modal('show');
 }
 function hideDownloadModal() {
   $('#downloadModal').modal('hide');
 }
-function setDownloadModalTitle(title) {
-  $('#downloadModal').find('.modal-title').text(title);
-}
-function setDownloadModalProgress(num) {
-  $('#downloadModal').find('.progress-bar').css('width', `${num}%`).attr('aria-valuenow', num).text(`${num}%`);
+function setDownloadModalProgress(id, num) {
+  $(`#downloadModal #${id}`).find('.progress-bar').css('width', `${num}%`).attr('aria-valuenow', num).text(`${num}%`);
 }

@@ -208,3 +208,11 @@ nav li:not(.active):hover a{
 .p{
 	margin-bottom: 0;
 }
+
+.slide-download-panel {
+	margin-bottom: .75rem;
+}
+
+.slide-download-panel label {
+	font-weight: bold;
+}
