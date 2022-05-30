@@ -51,7 +51,7 @@ const rankLevel = [
 $D = {
   // for pagination
   recordCount: 0,
-  recordPerPage: 10,
+  recordPerPage: 25,
   totalPage: 0,
   currentPage: 1,
   // for collection

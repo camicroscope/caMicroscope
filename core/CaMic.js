@@ -31,7 +31,7 @@ class CaMic {
       navigatorPosition: 'BOTTOM_RIGHT',
       zoomPerClick: 1,
       animationTime: 0.01,
-      minZoomImageRatio: 1,
+      minZoomImageRatio: .5,
       maxZoomPixelRatio: 1,
       visibilityRatio: 0,
       springStiffness: 0.0001,

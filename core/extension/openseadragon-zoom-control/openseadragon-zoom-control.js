@@ -26,6 +26,7 @@
         mpp           Image Zoom             Magnification
           .                    .                         .
           .                    .                         .
+         20                0.0125                      .5x
          10                0.025                        1x
           5                 0.05                        2x
         2.5                  0.1                        4x
@@ -116,7 +117,8 @@
         // get all possible image zoom level and range
         this.getAllImageZoomLevelAndRange(this._viewer);
         //viewer.viewport.zoomTo(min);
-        this.setImageZoomLevel({zoom:this._viewer.viewport.getMinZoom()});
+        // this.setImageZoomLevel({zoom:this._viewer.viewport.getMinZoom()});
+        this.setImageZoomLevel({zoom: this._viewer.viewport.getZoom(true)});
 
         // let the control correspond to the zoom
         viewer.addHandler('zoom',this.setImageZoomLevel.bind(this));
@@ -363,8 +365,8 @@
     function getAllImageZoomLevel(viewer){
         const max = getMaxImageZoom(viewer);
         const min = getMinImageZoom(viewer);
-        const samples = [1, 0.5, 0.25];
-        let divisor = 1;
+        const samples = [0.5, 0.25, 0.125];
+        let divisor = .5;
         //const zoomNums = 3 - (Math.log2(min) >> 0);
         let zooms = [];
         do {
@@ -376,6 +378,7 @@
             zooms.pop();
         }
         zooms.push(min);
+
         return zooms;
     }
 
