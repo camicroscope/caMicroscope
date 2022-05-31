@@ -1,37 +1,37 @@
 let params = getUrlVars();
 let isPathdb = false;
 
-if (params.hasOwnProperty("mode") && params.mode == "pathdb"){
+if (params.hasOwnProperty('mode') && params.mode == 'pathdb') {
   PathDbMods();
   isPathdb = true;
 }
 
 // TESTING ONLY
 
-params = {slide:'VTRBC_gene_BC2390_BL3_00'}
+params = {slide: 'VTRBC_gene_BC2390_BL3_00'};
 
 // end testing
 
 const store = new Store('../data/');
 
-if (params.hasOwnProperty("slide")){
-  store.findSlide(params.slide, params.specimen, params.study, 0, 0, params.collection).then(x=>{
+if (params.hasOwnProperty('slide')) {
+  store.findSlide(params.slide, params.specimen, params.study, 0, 0, params.collection).then((x)=>{
     console.info(x);
-    if (x.length <=0){
-      throw "No Matches found"
+    if (x.length <=0) {
+      throw new Error('No Matches found');
     }
-    if (isPathdb){
+    if (isPathdb) {
       // get the pathdb url
-      window.location = './viewer/viewer.html?slideId=' + a[0]['_id']["$oid"] "&mode=pathdb";
+      window.location = './viewer/viewer.html?slideId=' + a[0]['_id']['$oid'] + '&mode=pathdb';
     } else {
       // get the normal url
-      window.location = './viewer/viewer.html?slideId=' + a[0]['_id']["$oid"];
+      window.location = './viewer/viewer.html?slideId=' + a[0]['_id']['$oid'];
     }
-  }).catch(e=>{
+  }).catch((e)=>{
     console.error(e);
-    alert("ERROR!")
+    alert('ERROR!');
   });
 } else {
-  console.error("no slide passed?");
-  alert("ERROR!")
+  console.error('no slide passed?');
+  alert('ERROR!');
 }
