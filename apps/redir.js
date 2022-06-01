@@ -6,12 +6,6 @@ if (params.hasOwnProperty('mode') && params.mode == 'pathdb') {
   isPathdb = true;
 }
 
-// TESTING ONLY
-
-params = {slide: 'VTRBC_gene_BC2390_BL3_00'};
-
-// end testing
-
 const store = new Store('../data/');
 
 if (params.hasOwnProperty('slide')) {
@@ -22,10 +16,10 @@ if (params.hasOwnProperty('slide')) {
     }
     if (isPathdb) {
       // get the pathdb url
-      window.location = './viewer/viewer.html?slideId=' + a[0]['_id']['$oid'] + '&mode=pathdb';
+      window.location = './viewer/viewer.html?slideId=' + x[0]['_id']['$oid'] + '&mode=pathdb';
     } else {
       // get the normal url
-      window.location = './viewer/viewer.html?slideId=' + a[0]['_id']['$oid'];
+      window.location = './viewer/viewer.html?slideId=' + x[0]['_id']['$oid'];
     }
   }).catch((e)=>{
     console.error(e);
