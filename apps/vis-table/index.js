@@ -8,15 +8,15 @@ const closeCaseBtn = document.getElementById('closeCase');
 closeCaseBtn.addEventListener('click', async ()=>{
   // verify the most relative informative slides
   if (!$D.slidesRank.first) {
-    alert('Please Select 1st Most Informative Slide Before Close Case!');
+    alert('Please Select the Most Informative Slide Before Closing the Case!');
     return;
   }
   if (!$D.slidesRank.second) {
-    alert('Please Select 2nd Most Informative Slide Before Close Case!');
+    alert('Please Select the 2nd Most Informative Slide Before Closing the Case!');
     return;
   }
   if ($D.currentSlideData.length > 2 &&!$D.slidesRank.third) {
-    alert('Please Select 3rd Most Informative Slide Before Close Case!');
+    alert('Please Select 3rd Most Informative Slide Before Closing the Case!');
     return;
   }
   try {
@@ -42,7 +42,7 @@ closeCaseBtn.addEventListener('click', async ()=>{
 });
 
 const rankLevel = [
-  'No Evaluated',
+  'Not Evaluated',
   '1st Most Informative',
   '2nd Most Informative',
   '3rd Most Informative',

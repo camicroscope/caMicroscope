@@ -1881,7 +1881,7 @@ async function saveEvaluation(e) {
       //
       if (evals&&Array.isArray(evals)&&evals[0]&&evals[0].evaluation&&
       evals[0].is_draft==evalData.is_draft&&isSameEval(evals[0].evaluation, evalData.evaluation)) {
-        $UI.message.addWarning('Evaluation Form Is No Changes.');
+        $UI.message.addWarning('Evaluation Form includes no changes.');
         return;
       }
 

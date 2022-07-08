@@ -890,16 +890,15 @@ async function initUIcomponents() {
     const metadata = $D.params.data;
     const rows = [];
 
-    const skips = ['slide_id', '_id', 'collections', 'comment', 'height', 'level_count', 'location', 'md5sum', 'mpp',
-      'mpp-x', 'name', '', 'slide', 'specimen', 'study', 'timestamp', 'url', 'width'];
+    const skips = [undefined, 'slide_id', '_id', 'collections', 'comment', 'height', 'level_count', 'location', 'md5sum',
+      'mpp', 'mpp-x', 'name', '', 'slide', 'specimen', 'study', 'timestamp', 'url', 'width', 'registry_code', 'create_date'];
     const titleMap = {
       token_id: 'Token ID',
       vendor: 'Scanner Make',
       objective: 'Scanning Magnification',
       proc_seq: 'Procedure Sequence',
-      spec_site: 'Speciman Site',
+      spec_site: 'Specimen Site',
       image_id: 'Image ID',
-      registry_code: 'Registry Code',
       primary_tumor_site_code: 'Primary Tumor Site Code',
       primary_tumor_site_term: 'Primary Tumor Site Term',
       morphology_code: 'ICD-O Morphology Code',
@@ -908,7 +907,7 @@ async function initUIcomponents() {
     };
     // ['md5sum', '_id', 'collections', 'common', 'location', 'slide', 'url'];
     for (const [key, value] of Object.entries(metadata)) {
-      if (!skips.includes(key)&&value) {
+      if (!skips.includes(key)&&titleMap[key]&&value) {
         rows.push(`<div class='row'><div class='title'>${titleMap[key]}</div><div class='text'>${value}</div></div>`);
       }
     }
