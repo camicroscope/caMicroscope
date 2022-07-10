@@ -908,7 +908,7 @@ async function initUIcomponents() {
     // ['md5sum', '_id', 'collections', 'common', 'location', 'slide', 'url'];
 
     for (const [key, value] of Object.entries(titleMap)) {
-      rows.push(`<div class='row'><div class='title'>${value}</div><div class='text'>${$D.params.data[key]?$D.params.data:''}</div></div>`);
+      rows.push(`<div class='row'><div class='title'>${value}</div><div class='text'>${$D.params.data[key]?$D.params.data[key]:''}</div></div>`);
     }
     return `<div class='message-body'>${rows.join('')}</div>`;
   };
