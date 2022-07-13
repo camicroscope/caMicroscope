@@ -398,7 +398,11 @@ function createGridCard(d, crumbList) {
   const img = document.createElement('img');
   img.alt = `${d.name}`;
 
-  if (d.height > d.width) {
+  if (d.thumbnail){
+    // use a prebaked thumbnail if possible
+    img.src = d.thumbnail;
+  }
+  else if (d.height > d.width) {
     // HEI
     img.src = `../../img/IIP/raw/?FIF=${d.location}&HEI=256&CVT=.jpg`;
   } else {
