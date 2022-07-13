@@ -400,7 +400,7 @@ function createGridCard(d, crumbList) {
 
   if (d.thumbnail){
     // use a prebaked thumbnail if possible
-    img.src = d.thumbnail;
+    img.src = "../../" + d.thumbnail;
   }
   else if (d.height > d.width) {
     // HEI
