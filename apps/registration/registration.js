@@ -316,19 +316,19 @@ async function saveRegistration() {
     }
   }
   console.log(userInfo);
-
-  const rs = await store.sendRegistrationEmail(userInfo.registration.screenName, `${userInfo.email}, ${userInfo.registration.contactEmail}`).then((res)=>res.json());
-  console.log(rs);
-  if (rs.error) {
-    openEmailModal(`<p class='text-danger'>
-    <label>Somthing Wrong... Please Contact Administration.</label>
-    <label style='margin:0;'>Error Message:</label>
-    ${rs.error.response}</p>`, false);
-  } else {
-    openEmailModal(`<p class='text-primary'>
-    <label>Your registration has been successfully completed.</label>
-    An email has been sent to your registration email.<p>`);
-  }
+  alert('Your registration has been successfully completed');
+//   const rs = await store.sendRegistrationEmail(userInfo.registration.screenName, `${userInfo.email}, ${userInfo.registration.contactEmail}`).then((res)=>res.json());
+//   console.log(rs);
+//   if (rs.error) {
+//     openEmailModal(`<p class='text-danger'>
+//     <label>Somthing Wrong... Please Contact Administration.</label>
+//     <label style='margin:0;'>Error Message:</label>
+//     ${rs.error.response}</p>`, false);
+//   } else {
+//     openEmailModal(`<p class='text-primary'>
+//     <label>Your registration has been successfully completed.</label>
+//     An email has been sent to your registration email.<p>`);
+//   }
 }
 
 function openEmailModal(message, isSucceed=true) {
