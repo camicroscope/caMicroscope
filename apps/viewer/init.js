@@ -890,8 +890,8 @@ async function initUIcomponents() {
     const metadata = $D.params.data;
     const rows = [];
 
-    const skips = [undefined, 'slide_id', '_id', 'collections', 'comment', 'height', 'level_count', 'location', 'md5sum',
-      'mpp', 'mpp-x', 'name', '', 'slide', 'specimen', 'study', 'timestamp', 'url', 'width', 'registry_code', 'create_date'];
+    // const skips = [undefined, 'slide_id', '_id', 'collections', 'comment', 'height', 'level_count', 'location', 'md5sum',
+    //   'mpp', 'mpp-x', 'name', '', 'slide', 'specimen', 'study', 'timestamp', 'url', 'width', 'registry_code', 'create_date'];
     const titleMap = {
       token_id: 'Token ID',
       vendor: 'Scanner Make',
@@ -906,10 +906,9 @@ async function initUIcomponents() {
       behavior_code: 'Behavior Code',
     };
     // ['md5sum', '_id', 'collections', 'common', 'location', 'slide', 'url'];
-    for (const [key, value] of Object.entries(metadata)) {
-      if (!skips.includes(key)&&titleMap[key]&&value) {
-        rows.push(`<div class='row'><div class='title'>${titleMap[key]}</div><div class='text'>${value}</div></div>`);
-      }
+
+    for (const [key, value] of Object.entries(titleMap)) {
+      rows.push(`<div class='row'><div class='title'>${value}</div><div class='text'>${$D.params.data[key]?$D.params.data[key]:''}</div></div>`);
     }
     return `<div class='message-body'>${rows.join('')}</div>`;
   };
