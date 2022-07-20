@@ -466,7 +466,7 @@ async function saveAnnotation(annotation) {
       }
       console.log(feeback);
     } else {
-      // window.location.href = `./roi_pick.html?slideId=${$D.params.slideId}&collectionId=${$D.params.collectionId}`;
+      window.location.href = `./roi_pick.html?slideId=${$D.params.slideId}&collectionId=${$D.params.collectionId}`;
     }
     Loading.close();
   } else {
