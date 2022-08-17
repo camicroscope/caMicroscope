@@ -594,7 +594,7 @@ async function initUIcomponents() {
               if (tumorPresent === '1'&&!this.getValue()) {
                 callback({
                   status: false,
-                  message: 'This field is not optional',
+                  message: '',
                 });
               } else {
                 callback({
@@ -890,8 +890,10 @@ async function initUIcomponents() {
     const metadata = $D.params.data;
     const rows = [];
 
-    // const skips = [undefined, 'slide_id', '_id', 'collections', 'comment', 'height', 'level_count', 'location', 'md5sum',
-    //   'mpp', 'mpp-x', 'name', '', 'slide', 'specimen', 'study', 'timestamp', 'url', 'width', 'registry_code', 'create_date'];
+    // const skips = [undefined, 'slide_id', '_id', 'collections', 'comment',
+    // 'height', 'level_count', 'location', 'md5sum',
+    // 'mpp', 'mpp-x', 'name', '', 'slide', 'specimen', 'study', 'timestamp',
+    // 'url', 'width', 'registry_code', 'create_date'];
     const titleMap = {
       token_id: 'Token ID',
       vendor: 'Scanner Make',
