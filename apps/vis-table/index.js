@@ -1,4 +1,4 @@
-
+// $($UI.colTree).jstree(true).get_json('#', { flat: true });
 
 // the close case button
 const closeCaseBtn = document.getElementById('closeCase');
@@ -398,11 +398,10 @@ function createGridCard(d, crumbList) {
   const img = document.createElement('img');
   img.alt = `${d.name}`;
 
-  if (d.thumbnail){
+  if (d.thumbnail) {
     // use a prebaked thumbnail if possible
-    img.src = "../../" + d.thumbnail;
-  }
-  else if (d.height > d.width) {
+    img.src = '../../' + d.thumbnail;
+  } else if (d.height > d.width) {
     // HEI
     img.src = `../../img/IIP/raw/?FIF=${d.location}&HEI=256&CVT=.jpg`;
   } else {
@@ -602,54 +601,80 @@ function createCollectionTree() {
       '#': {'max_children': 1, 'max_depth': 4, 'valid_children': ['default']},
       'default': {'valid_children': ['default']},
     },
-    'plugins': ['search', 'wholerow'],
+    'plugins': ['search', 'wholerow', 'changed'],
   });
 
 
-  $UI.colTree.on('loaded.jstree', () => {
+  $UI.colTree.on('loaded.jstree', async () => {
     //
-    if ($D.collectionData&&$D.collectionData.length) return;
+    if ($D.collectionData&&$D.collectionData.length) {
+      const node = $D.collectionData.find((node)=>node.state&&node.state.selected);
+      if (node) {
+        selectNode(null, {node: $($UI.colTree).jstree().get_node(node.id)});
+      }
+      return;
+    };
     // show up message
     $UI.colMessage.show();
   });
 
   // bind select node event
-  $UI.colTree.on('select_node.jstree', async function(event, _data) {
-    const node = _data.node;
-    if (node&&$D.selectedNode!==node) {
-      $D.selectedNode = node;
-      // UI control
-
-      // create collection path
-      createBreadcrumb(node);
-      if (node.children.length > 0) {
-        $UI.slideMessage.text('Please Select A Collection Without Subcollection ...');
-        $UI.mainView.hide();
-        $UI.slideMessage.show();
-        return;
-      }
-
-      // the collection has slides
-      if (node.original.slides&&node.original.slides.length>0) {
-
-      } else {
-
-      }
-      // set the rank slide status
-      // TODO
-      // loading slide data
-      // $D.s = await
-      loadSlideInfo(node);
-
-      // let slides checked if the slides in the collection
-      // const collData = $D.collectionData.find((d)=>d.id==node.id);
-      // deselected all slides
-
-      // $DTable.clear();
-      // $DTable.rows.add($slideData).search('').draw(true);
-    }
-  });
+  $UI.colTree.on('select_node.jstree', selectNode);
 }
+// bind open and close nodes and record status
+$UI.colTree.on('open_node.jstree', (event, _data) => {
+  console.log('open', event, _data.node);
+  recordNodeState();
+});
+$UI.colTree.on('close_node.jstree', (event, _data) => {
+  console.log('close', event, _data.node);
+  recordNodeState();
+});
+async function selectNode(event, _data) {
+  const node = _data.node;
+  if (event) recordNodeState();
+  if (node&&$D.selectedNode!==node) {
+    $D.selectedNode = node;
+    // UI control
+
+    // create collection path
+    createBreadcrumb(node);
+    if (node.children.length > 0) {
+      $UI.slideMessage.text('Please Select A Collection Without Subcollection ...');
+      $UI.mainView.hide();
+      $UI.slideMessage.show();
+      return;
+    }
+
+    // the collection has slides
+    if (node.original.slides&&node.original.slides.length>0) {
+
+    } else {
+
+    }
+    // set the rank slide status
+    // TODO
+    // loading slide data
+    // $D.s = await
+    loadSlideInfo(node);
+
+    // let slides checked if the slides in the collection
+    // const collData = $D.collectionData.find((d)=>d.id==node.id);
+    // deselected all slides
+
+    // $DTable.clear();
+    // $DTable.rows.add($slideData).search('').draw(true);
+  }
+}
+function recordNodeState() {
+  var data = $($UI.colTree).jstree(true).get_json('#', {flat: true});
+  data = data.map((d) =>{
+    const {id, state: {opened, selected}}= d;
+    return {id, state: {opened, selected}};
+  });
+  sessionStorage.setItem('treeStates', JSON.stringify(data));
+}
+
 
 window.addEventListener('resize', resize);
 
@@ -672,9 +697,17 @@ window.addEventListener('load', async ()=> {
       } else {
         d.icon = './folder.png';
       }
-
       d.name = d.text;
       delete d._id;
+      // set tree state if treeStates exist
+      var treeStates = sessionStorage.getItem('treeStates');
+      if (treeStates) {
+        treeStates = JSON.parse(treeStates);
+        const nodeState = treeStates.find((node)=>node.id == d.id);
+        if (nodeState) d.state = {opened: nodeState.state.opened, selected: nodeState.state.selected};
+      } else {
+        d.state = {opened: false, selected: false};
+      }
       return d;
     });
     $D.collectionTree = listToTree($D.collectionData);
