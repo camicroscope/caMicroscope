@@ -258,6 +258,8 @@ async function loadSlideInfo(node) {
     $D.currentSlideData = null;
   }
 }
+
+// TODO
 function isCaseClosed() {
   // the slide in selected collection
   const slidesA = $D.currentSlideData.filter((slide)=>slide.evaluation&&slide.evaluation.evaluation.informativeness=='1')
@@ -434,7 +436,10 @@ function createGridCard(d, crumbList) {
   // TODO
   const indicatorIcon = indicator.querySelector('i');
   if ($D.isRankEnable && indicatorIcon && indicatorIcon.classList.contains('fa-check') ) {
-    const rankDropDown = generateDropdownMenu(card, d);
+    const informativenessSlides = $D.currentSlideData.filter((slide)=>{
+      return slide.evaluation&&slide.evaluation.evaluation&&slide.evaluation.evaluation.informativeness==1;
+    });
+    const rankDropDown = generateDropdownMenu(card, d, informativenessSlides);
     card.appendChild(rankDropDown);
   }
   // anchor
@@ -445,7 +450,7 @@ function createGridCard(d, crumbList) {
   return card;
 }
 
-function generateDropdownMenu(elt, data) {
+function generateDropdownMenu(elt, data, informativenessSlides) {
   const div = document.createElement('div');
   div.classList.add('rank-dropdown');
   div.classList.add('dropdown');
@@ -454,12 +459,17 @@ function generateDropdownMenu(elt, data) {
   const dropdown = `
   <button class="btn btn-sm ${level?'btn-primary':'btn-danger'} dropdown-toggle" type="button" id="dropdown_${elt.id}" data-bs-toggle="dropdown" aria-expanded="false">${rankLevel[level]}</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown_${elt.id}">
+    
     <li data-sid="${elt.id}" data-level="1"><a class="dropdown-item ${level==1?'active':''}" href="#">1st Most Informative</a></li>
-    <li data-sid="${elt.id}" data-level="2"><a class="dropdown-item ${level==2?'active':''}" href="#">2nd Most Informative</a></li>
-   ${$D.currentSlideData.length > 2 ?
+    ${informativenessSlides.length > 1 ?
+    `<li data-sid="${elt.id}" data-level="2"><a class="dropdown-item ${level==2?'active':''}" href="#">2nd Most Informative</a></li>`:
+    ''}
+    ${informativenessSlides.length > 2 ?
     `<li data-sid="${elt.id}" data-level="3"><a class="dropdown-item ${level==3?'active':''}" href="#">3rd Most Informative</a></li>`:
     ''}
-    <li data-sid="${elt.id}" data-level="less"><a class="dropdown-item ${level==4?'active':''}" href="#">Less Informative</a></li>
+    ${informativenessSlides.length > 3 ?
+    `<li data-sid="${elt.id}" data-level="less"><a class="dropdown-item ${level==4?'active':''}" href="#">Less Informative</a></li>`:
+    ''}
   </ul>`;
   div.innerHTML = dropdown;
   $(div).find('li').on('click', async function(e) {
