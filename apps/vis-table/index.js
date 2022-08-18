@@ -7,16 +7,17 @@ const closeCaseBtn = document.getElementById('closeCase');
 //  query.limit = size
 closeCaseBtn.addEventListener('click', async ()=>{
   // verify the most relative informative slides
-  if (!$D.slidesRank.first) {
-    alert('Please Select the Most Informative Slide Before Closing the Case!');
+  const informativeSlides = $D.currentSlideData.filter((slide)=>{
+    return slide.evaluation&&slide.evaluation.evaluation&&slide.evaluation.evaluation.informativeness=='1';
+  });
+  if (informativeSlides.length == 1 && !$D.slidesRank.first) {
+    alert('Please Select the 1st Most Informative Slide Before Closing the Case!');
     return;
-  }
-  if (!$D.slidesRank.second) {
-    alert('Please Select the 2nd Most Informative Slide Before Closing the Case!');
+  } else if (informativeSlides.length == 2 && (!$D.slidesRank.first || !$D.slidesRank.second)) {
+    alert('Please Select the 1st & 2nd Most Informative Slide Before Closing the Case!');
     return;
-  }
-  if ($D.currentSlideData.length > 2 &&!$D.slidesRank.third) {
-    alert('Please Select 3rd Most Informative Slide Before Closing the Case!');
+  } else if (informativeSlides.length >= 3 && (!$D.slidesRank.first || !$D.slidesRank.second || !$D.slidesRank.third)) {
+    alert('Please Select the 1st & 2nd & 3rd Most Informative Slide Before Closing the Case!');
     return;
   }
   try {
@@ -95,31 +96,7 @@ $UI.slideSearch.on('keyup', Debounce(()=>{
   const Promises = [];
   Promises.push(store.countSlide());
   Promises.push(store.findSlide());
-
-
-  // Promise.all(Promises);
-
-
-  // Promise.all(Promises)
-  //     .then(function(resps) {
-  //       console.log(resps);
-  //     });
 }, 500));
-// const query={
-//   collections: '60dc90103fc2ac00332541fb',
-//   _search_: {'name': 'test'},
-//   sort: {'name': 1},
-//   limit: 10,
-//   skip: 0,
-// };
-
-// store.findSlide(null, null, null, null, query).then((data)=>{
-//   console.log('slides', data);
-// });
-// store.countSlide({collections: '60dc90103fc2ac00332541fb', _search_: {'name': 'test'}}).then((data)=>{
-//   console.log('count', data);
-// });
-
 
 $UI.selRecordPerPage.on('change', async ()=>{
   const newPrePage = +$UI.selRecordPerPage.val();
@@ -147,37 +124,9 @@ $UI.selRecordPerPage.on('change', async ()=>{
     limit: $D.recordPerPage,
     skip: $D.recordPerPage * ($D.currentPage - 1),
   };
-
-  // const slides = await store.findSlide(null, null, null, null, query);
-  // if (Array.isArray(slides)&& slides.length > 0) {
-  //   $D.currentSlideData = slides;
-
   createGridCards();
-  // } else {
-  //   $D.currentSlideData = null;
-  // }
-  // $UI.paginator.setting.currentPage = $D.currentPage;
-  // $UI.paginator.setting.totalPage = $D.totalPage;
-  // $UI.paginator.draw();
-  // // $D.recordPerPage = newPrePage;
-  // console.log(currentPage, recordPerPage);
 });
-// loading the collections
-// store.getAllCollection().then((data) => {
-//   if (Array.isArray(data)) {
-//     $collectionList = data.map((d)=>{
-//       d.id = d._id.$oid;
-//       delete d._id;
-//       return d;
-//     });
-//     $collectionTree = listToTree(data);
 
-
-//   } else {
-//     // error message
-
-//   }
-// });
 
 async function loadSlideInfo(node) {
   closeCaseBtn.disabled = true;
@@ -259,11 +208,19 @@ async function loadSlideInfo(node) {
   }
 }
 
-// TODO
 function isCaseClosed() {
   // the slide in selected collection
-  const slidesA = $D.currentSlideData.filter((slide)=>slide.evaluation&&slide.evaluation.evaluation.informativeness=='1')
-      .map((d)=>d._id.$oid);
+  const slidesA = $D.currentSlideData.filter((slide)=>{
+    return slide.evaluation&&slide.evaluation.evaluation&&slide.evaluation.evaluation.informativeness=='1';
+  }).map((d)=>d._id.$oid);
+
+  if (slidesA.length == 1 && !$D.slidesRank.first) {
+    return false;
+  } else if (slidesA.length == 2 && (!$D.slidesRank.first || !$D.slidesRank.second)) {
+    return false;
+  } else if (slidesA.length >= 3 && (!$D.slidesRank.first || !$D.slidesRank.second || !$D.slidesRank.third)) {
+    return false;
+  }
   // the slide that has relative informativeness
   const slidesB = [...$D.slidesRank.less];
   if ($D.slidesRank.first) slidesB.push($D.slidesRank.first);
@@ -372,7 +329,6 @@ async function createGridCards() {
   //
   const parentNames = getParentNames($D.selectedNode);
   const crumbList = [...parentNames.reverse(), $D.selectedNode.original.name];
-  console.log('test', crumbList);
   slides.forEach((slide) => {
     $UI.gridViewContainer.append(createGridCard(slide, crumbList));
   });
@@ -455,7 +411,6 @@ function generateDropdownMenu(elt, data, informativenessSlides) {
   div.classList.add('rank-dropdown');
   div.classList.add('dropdown');
   const level = getRankLevel(elt.id);
-
   const dropdown = `
   <button class="btn btn-sm ${level?'btn-primary':'btn-danger'} dropdown-toggle" type="button" id="dropdown_${elt.id}" data-bs-toggle="dropdown" aria-expanded="false">${rankLevel[level]}</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown_${elt.id}">
@@ -475,9 +430,8 @@ function generateDropdownMenu(elt, data, informativenessSlides) {
   $(div).find('li').on('click', async function(e) {
     closeCaseBtn.disabled = true;
     const {sid, level} = this.dataset;
-    // TODO update DB
+    // update DB
     const data = await store.rankSlidesInformativeness($D.selectedNode.id, null, sid, level); // $D.selectedNode.id;
-    console.log(data);
     if (data&&data.result&&data.result.ok&&data.result.n) { // correct
       // sync ui
 
@@ -633,11 +587,9 @@ function createCollectionTree() {
 }
 // bind open and close nodes and record status
 $UI.colTree.on('open_node.jstree', (event, _data) => {
-  console.log('open', event, _data.node);
   recordNodeState();
 });
 $UI.colTree.on('close_node.jstree', (event, _data) => {
-  console.log('close', event, _data.node);
   recordNodeState();
 });
 async function selectNode(event, _data) {
@@ -761,12 +713,8 @@ function resize() {
 
 function calculateSize(elt) {
   const {marginLeft, marginRight, marginTop, marginBottom} = getComputedStyle(elt);
-
-
   const width = Math.ceil(elt.offsetWidth) + parseInt(marginLeft) + parseInt(marginRight);
   const height = Math.ceil(elt.offsetHeight) + parseInt(marginTop) + parseInt(marginBottom);
-  // console.log(elt.offsetWidth, elt.offsetHeight);
-  // console.log(width, height);
   return {width, height, offsetWidth: Math.ceil(elt.offsetWidth), offsetHeight: Math.ceil(elt.offsetHeight)};
 }
 
