@@ -1,47 +1,156 @@
 <html>
 	<script src='../../core/Store.js'></script>
 	<script src='./chunkedUpload.js'></script>
+	<link rel="stylesheet" type="text/css" media="all" href="../common.css" />
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+	<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+	<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+	rel="stylesheet"
+	integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+	crossorigin="anonymous"
+  	/>
+  	<script
+	src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+	integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+	crossorigin="anonymous"
+  	></script>
+	<!-- Font Awesome -->
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css"/>
+    <!-- paginator css & js-->
+    <script src="../../components/paginator/paginator.js"></script>
+    <link
+      href="../../components/paginator/paginator.css"
+      rel="stylesheet"
+      type="text/css"
+      media="all"
+    />
+
+    <!-- jquery&UI -->
+    <link
+      rel="stylesheet"
+      href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"
+    />
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+    <!-- jstree -->
+    <!-- <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css"
+    /> -->
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script> -->
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <!-- bootstrap css & boudle -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+      crossorigin="anonymous"
+    ></script>
+	<style>
+		nav li{
+			transition: background 0.5s;
+			border-radius: 3px;
+		}
+		nav li:not(:first-child){
+			margin-left: 0.3em !important;
+		}
+		nav li:not(.active):hover{
+			background: white;
+		}
+		nav li:not(.active):hover a{
+			color: black !important;
+		}
+		.nav-item.active{
+			background: white;
+		}
+		.active a.nav-link{
+			color: black !important;
+		}
+		.form-group label {
+			font-weight: bold;
+		}
+	</style>
 <body>
-	<nav class="navbar navbar-light text-white bg-dark">
-		<a class="navbar-brand" href="#">
-			<img src="./favicon.ico" width="30" height="30" alt="caMicroscope">
-		</a>
-		<ul class="nav justify-content-end text-white">
-			<li class="nav-item">
-				<a class="nav-link active text-white" href="../signup/signup.html">Signup</a>
-			</li>
-			<li class="nav-item">
-				<a class="nav-link text-white" href="../load/">Load</a>
-			</li>
-			<li class="nav-item">
-				<a class="nav-link  text-white" href="../dev-workbench/workbench.html">Workbench</a>
-			</li>
-		</ul>
-	</nav>
+	<title>CaMicroscope SEER Data Import</title>
+    <!-- navbar start -->
+    <nav
+      class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark"
+      style="position: sticky"
+    >
+      <div class="container-fluid">
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item link" style="font-family: sans-serif">
+              <a class="nav-link" href="../landing/landing.html">
+                <i class="fas fa-home"></i> Home</a
+              >
+            </li>
+            <li class="nav-item link">
+              <a class="nav-link" href="../vis-table/index.html">
+                <i class="fas fa-table"></i> Collection View</a
+              >
+            </li>
+            <li class="nav-item link" style="font-family: sans-serif">
+              <a class="nav-link" href="./export.html">
+                <i class="fas fa-file-download"></i> Data Export</a
+              >
+            </li>
+            <li class="nav-item active link" style="font-family: sans-serif">
+              <a class="nav-link" href="./import.html">
+                <i class="fas fa-file-upload"></i> Data Import</a
+              >
+            </li>
+            <li class="nav-item link">
+              <a class="nav-link" href="../collection/hcollection.html">
+                <i class="fas fa-list-ul"></i> Collection Management</a
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <!-- navbar end -->
+	<div class="container p-5" style="max-width:650px">
 	<div id="importForm">
-		<form>
+		<form class="container">
 		<div class="form-group">
 			<label for="dataType">Data Type:</label>
-
-			<select name="dataType" id="dataType">
-			 <option value="mark">mark</option>
-			 <option value="heatmap">heatmap</option>
-			 <option value="slide">slide</option>
+			<select name="dataType" id="dataType" class="form-control" >
+				<option value="mark">mark</option>
+				<option value="heatmap">heatmap</option>
+				<option value="slide">slide</option>
 			</select>
 		</div>
 		<div class="form-group">
 			<label for="manifestSelect">Manifest(optional):</label>
-			<input type="file" id="manifestSelect" accept=".csv">
+			<input type="file" class="form-control" id="manifestSelect" accept=".csv">
 		</div>
 		<div class="form-group">
 			<label for="importSelect">File(s) to import:</label>
-			<input type="file" id="importSelect" multiple>
+			<input type="file" class="form-control" id="importSelect" multiple>
 		</div>
-		<button type="button" class="btn btn-primary" id="start">Start Import</button>
+		<div class="form-group nav justify-content-center">
+			<button type="button" class="btn btn-primary" id="start">Start Import</button>
+		</div>
 	</form>
 	</div>
 	<div id="statusContainer">
