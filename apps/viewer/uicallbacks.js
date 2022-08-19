@@ -331,10 +331,7 @@ function annotationOn(state, target) {
   li.appendChild(label);
   switch (state) {
     case 1:
-      spen.menu(65, 0.2);
-      spen.undo.onclick=()=>canvasDraw.__align_undo();
-      // open menu
-      $UI.annotOptPanel._action_.style.display = '';
+      $UI.annotOptPanel._action_.style.display = 'none';
       label.style.transform = 'translateY(-12px) translateX(18px)';
       label.textContent = '1';
       label.style.color = '';
@@ -381,7 +378,6 @@ function annotationOff() {
   ) {
     saveAnnotation();
   } else {
-    spen.close();
     // close menu
     canvasDraw.clear();
     canvasDraw.drawOff();
@@ -839,7 +835,6 @@ function convertGeometries(features, data) {
  * @param {Object} data
  */
 function annoCallback(data) {
-  spen.close();
   // is form ok?
   const noteData = $UI.annotOptPanel._form_.value;
   if ($UI.annotOptPanel._action_.disabled || noteData.name == '') {
@@ -1595,7 +1590,7 @@ function stopDrawing(e) {
       state === 1 &&
       $CAMIC.viewer.canvasDrawInstance._draws_data_.length > 0
     ) {
-      $CAMIC.viewer.canvasDrawInstance.isOn = false;
+      // $CAMIC.viewer.canvasDrawInstance.isOn = false;
       saveAnnotation();
     }
   }
@@ -1936,8 +1931,6 @@ function presetLabelOn(label) {
     return;
   }
 
-  spen.menu(65, 0.2);
-  // open menu
   canvasDraw.drawMode = label.mode;
   if (label.mode == 'grid') {
     canvasDraw.size = [parseInt(label.size), parseInt(label.size)];
@@ -1952,8 +1945,6 @@ function presetLabelOn(label) {
 function presetLabelOff() {
   if (!$CAMIC.viewer.canvasDrawInstance) return;
   const canvasDraw = $CAMIC.viewer.canvasDrawInstance;
-  spen.close();
-  // close spen
   if (
     canvasDraw._draws_data_.length &&
     confirm(`Do You Want To Save Annotation Label Before You Leave?`)
