@@ -1,5 +1,4 @@
 function make_tree_table(id){
-    console.log("tree table")
     var
         $table = $('#' + id),
         rows = $table.find('tr');
@@ -14,7 +13,7 @@ function make_tree_table(id){
 
         if (children.length) {
             var expander = $columnName.prepend('' +
-                '<span class="treegrid-expander glyphicon glyphicon-chevron-right"></span>' +
+                '<span class="treegrid-expander glyphicon glyphicon-chevron-right">&#9660;</span>' +
                 '');
 
             children.hide();

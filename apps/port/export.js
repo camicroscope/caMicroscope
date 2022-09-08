@@ -2,6 +2,7 @@ const store = new Store('../../data');
 
 function populateList() {
   console.log("populating list...")
+  name_field = "name"
   // testing the tree table
   let res = [{"name":'a', "id":1}, {"name":'b', "id":2}, {"name":'c', "id":3}];
   let annots = [{"name":'circles', "type": "mark", "id":"x1"}, {"name":'boxes', "type": "heatmap", "id":"x2"}]
@@ -19,7 +20,6 @@ function populateList() {
   }
   table.appendChild(hdr_tr);
   for (let x of res){
-    console.log(x)
     let parent = document.createElement("tr");
     parent.setAttribute("data-id", x.id);
     parent.setAttribute("data-parent", 0);
@@ -27,6 +27,9 @@ function populateList() {
     for (let z of headers){
       let d = document.createElement("td");
       d.innerText = x[z] || "?";
+      if (z==name_field){
+        d.setAttribute("data-column","name");
+      }
       parent.appendChild(d);
     }
     table.appendChild(parent)
@@ -38,6 +41,9 @@ function populateList() {
       for (let z of headers){
         let d = document.createElement("td");
         d.innerText = y[z] || "?";
+        if (z==name_field){
+          d.setAttribute("data-column","name");
+        }
         child.appendChild(d);
       }
       table.appendChild(child)
