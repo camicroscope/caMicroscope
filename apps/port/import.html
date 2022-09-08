@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="../../core/Store.js"></script>
+  <script src="./import.js"></script>
+  <script src="./xml2geo.js"></script>
+  <link rel="stylesheet" href="./style.css">
+  <title>Import and Export [caMicroscope]</title>
+</head>
+<body>
+  <h1>Import Annotations</h1>
+  <h3>Info</h3>
+  <div class="form">
+  <label for="slide_id">Slide Id:</label>
+  <input type="text" id="slide_id" name="slide_id"><br>
+  <label for="annot_name">Annotation Name:</label>
+  <input type="text" id="annot_name" name="annot_name"><br>
+  <h3>File Contents</h3>
+  <label for="annot_name">Input:</label>
+  <textarea id="input" name="input" rows="10" cols="30"></textarea><br>
+  <button id="convert_btn" onclick="xml2geo()" type="button">Convert from XML</button>
+  <button id="prepare_btn" onclick="prepareAnnot()" type="button">Prepare JSON</button>
+  </div>
+  <br><br>
+  <h3>Output</h3>
+  <textarea id="output" rows="10" cols="30"></textarea>
+  <br>
+  <button id="post_btn" onclick="saveAnnot()" type="button">Post</button>
+</body>
+</html>
