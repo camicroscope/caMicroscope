@@ -1,6 +1,7 @@
-$(function () {
+function make_tree_table(id){
+    console.log("tree table")
     var
-        $table = $('#tree-table'),
+        $table = $('#' + id),
         rows = $table.find('tr');
 
     rows.each(function (index, row) {
@@ -61,4 +62,4 @@ $(function () {
             children.hide();
         }
     };
-});
+}

@@ -1,19 +1,23 @@
 const store = new Store('../../data');
 
 function populateList() {
+  console.log("populating list...")
   // testing the tree table
   let res = [{"name":'a', "id":1}, {"name":'b', "id":2}, {"name":'c', "id":3}];
   let annots = [{"name":'circles', "type": "mark", "id":"x1"}, {"name":'boxes', "type": "heatmap", "id":"x2"}]
   let headers = ["name", "id"]
-  let table = document.createElement("table");
-  table.id = "result_table";
-  table.classList.add("table", "table-hover", "table-bordered");
+  let t = document.createElement("table");
+  t.id = "tree-table";
+  t.classList.add("table", "table-hover", "table-bordered");
   // add headers
+  let table = document.createElement("tbody")
+  let hdr_tr = document.createElement("tr");
   for (let z of headers){
     let th = document.createElement("th");
     th.innerText = z || "?"
-    table.appendChild(th);
+    hdr_tr.appendChild(th);
   }
+  table.appendChild(hdr_tr);
   for (let x of res){
     console.log(x)
     let parent = document.createElement("tr");
@@ -28,7 +32,7 @@ function populateList() {
     table.appendChild(parent)
     for (let y of annots){
       let child = document.createElement("tr");
-      child.setAttribute("data-id", y.id);
+      child.setAttribute("data-id", x.id+"-"+y.id);
       child.setAttribute("data-parent", x.id);
       child.setAttribute("data-level", 2);
       for (let z of headers){
@@ -39,7 +43,9 @@ function populateList() {
       table.appendChild(child)
     }
   }
-  document.getElementById("output").appendChild(table);
+  t.appendChild(table);
+  document.getElementById("output").appendChild(t);
+  make_tree_table("tree-table")
 }
 
 function downloadResults() {
