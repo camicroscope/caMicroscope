@@ -317,6 +317,7 @@ async function saveRegistration() {
   }
   console.log(userInfo);
   alert('Your registration has been successfully completed');
+  window.location.href = "../landing/landing.html";
 //   const rs = await store.sendRegistrationEmail(userInfo.registration.screenName, `${userInfo.email}, ${userInfo.registration.contactEmail}`).then((res)=>res.json());
 //   console.log(rs);
 //   if (rs.error) {
