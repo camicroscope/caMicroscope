@@ -1,11 +1,39 @@
-const store = new Store('../../data');
+const store = new Store('../../data/');
 
-function populateList() {
+async function populateList() {
   // clear any previous
   document.getElementById("output").innerHTML = "";
   console.log("populating list...")
   name_field = "name"
-  // testing the tree table
+  // get slide and associated result information
+  let slides = []
+  let results = {}
+  let slideList = document.getElementById("slide_id").value;
+  slideList = slideList.replace(/\s+/g, '');
+  slideList = slideList.split(",")
+  for (id of slideList){
+    let slide = await store.getSlide(id);
+    slide = slide[0]
+    if (slide && slide["_id"]){
+      let s = {"id": slide["_id"]["$oid"], "name": slide['name'], "type": "slide"}
+      console.log(s)
+      slides.push(s)
+      // get associated result types
+      r = []
+      for (let a of await store.findMarkTypes(slide["_id"]["$oid"], "computer")){
+        r.push({"id": a["_id"]["analysis"]['execution_id'], "name": a["_id"]["analysis"]['name'], "type": "computer mark"})
+      }
+      for (let a of await store.findMarkTypes(slide["_id"]["$oid"], "human")){
+        r.push({"id": a["_id"]["analysis"]['execution_id'], "name": a["_id"]["analysis"]['name'], "type": "human mark"})
+      }
+      // todo -- is this right for heatmapType results?
+      for (let a of await store.findHeatmapType(slide["_id"]["$oid"])){
+        r.push({"id": a["provenance"]["analysis"]["execution_id"], "name": a["provenance"]["analysis"]["execution_id"], "type": "heatmap"})
+      }
+      results[slide["_id"]["$oid"]] = r;
+    }
+  }
+
   let res = [{"name":'a', "type": "slide", "id":1}, {"name":'b', "type": "slide", "id":2}, {"name":'c', "type": "slide", "id":3}];
   let annots = [{"name":'circles', "type": "mark", "id":"x1"}, {"name":'boxes', "type": "heatmap", "id":"x2"}]
   let headers = ["name", "id", "type"]
@@ -26,7 +54,7 @@ function populateList() {
   hdr_tr.appendChild(select_th);
   table.append(hdr_tr);
   // populate results
-  for (let x of res){
+  for (let x of slides){
     let parent = document.createElement("tr");
     parent.setAttribute("data-id", x.id);
     parent.setAttribute("data-parent", 0);
@@ -43,10 +71,10 @@ function populateList() {
     parentCheck = document.createElement("input");
     parentCheck.classList.add("form-check-input")
     parentCheck.type = "checkbox"
-    parentCheck.checked = true;
+    parentCheck.indeterminate = true; // cool!
     parent.appendChild(parentCheck);
     table.appendChild(parent)
-    for (let y of annots){
+    for (let y of results[x.id]){
       let child = document.createElement("tr");
       child.setAttribute("data-id", x.id+"-"+y.id);
       child.setAttribute("data-parent", x.id);
@@ -63,6 +91,10 @@ function populateList() {
       childCheck = document.createElement("input");
       childCheck.type = "checkbox"
       childCheck.classList.add("form-check-input")
+      childCheck.classList.add("result")
+      childCheck.setAttribute("data-target", x.id);
+      childCheck.setAttribute("data-self", y.id);
+      childCheck.setAttribute("data-type", y.type);
       childCheck.checked = true;
       child.appendChild(childCheck);
       table.appendChild(child)
