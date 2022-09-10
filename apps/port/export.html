@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="../../core/Store.js"></script>
+  <title>Export Results [caMicroscope]</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+  <style>
+    body{
+      padding:20px;
+    }
+    #output{
+      padding: 20px;
+    }
+    span{
+      display:inline-block;
+    }
+    .form-check-input{
+      padding:5px !important;
+    }
+    </style>
+</head>
+<body>
+
+  <h1>Export Results</h1>
+  <div class="form">
+  <label for="slide_id">Slide Ids (exact matches, comma delimited):</label>
+  <input type="text" id="slide_id" name="slide_id"><br>
+
+  <button id="populate_btn" onclick="populateList()" type="button">Get List of Results</button>
+
+  </div>
+  <br><br>
+  <h3>Select Results</h3>
+  <div id="output"></div>
+  <button id="convert_btn" onclick="downloadResults()" type="button">Download Selected Results</button>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8" crossorigin="anonymous"></script>
+  <script src="//code.jquery.com/jquery.min.js"></script>
+  <script src="./tree_table.js"></script>
+  <script src="./export.js"></script>
+</body>
+</html>
