@@ -11,11 +11,11 @@ async function populateList() {
   let slideList = document.getElementById("slide_id").value;
   slideList = slideList.replace(/\s+/g, '');
   slideList = slideList.split(",")
-  for (id of slideList){
+  for (let id of slideList){
     let slide = await store.getSlide(id);
     slide = slide[0]
     if (slide && slide["_id"]){
-      let s = {"id": slide["_id"]["$oid"], "name": slide['name'], "type": "slide"}
+      let s = {"id": slide["_id"]["$oid"], "name": slide['name'], "type": "slide", "raw":slide}
       console.log(s)
       slides.push(s)
       // get associated result types
@@ -72,9 +72,12 @@ async function populateList() {
     parentCheck.classList.add("form-check-input")
     parentCheck.type = "checkbox"
     parentCheck.indeterminate = true; // cool!
-    parent.appendChild(parentCheck);
+    // TODO -- finish this. you'd want to add logic that sets this checkbox to true, false or indeterminate
+    //         depending on children selection. also select/deselect all children on change of this.
+    //parent.appendChild(parentCheck);
     table.appendChild(parent)
     for (let y of results[x.id]){
+      console.log(x.raw)
       let child = document.createElement("tr");
       child.setAttribute("data-id", x.id+"-"+y.id);
       child.setAttribute("data-parent", x.id);
@@ -94,6 +97,7 @@ async function populateList() {
       childCheck.classList.add("result")
       childCheck.setAttribute("data-target", x.id);
       childCheck.setAttribute("data-self", y.id);
+      childCheck.setAttribute("data-slideInfo", JSON.stringify(x.raw));
       childCheck.setAttribute("data-type", y.type);
       childCheck.checked = true;
       child.appendChild(childCheck);
@@ -105,6 +109,49 @@ async function populateList() {
   make_tree_table("tree-table")
 }
 
-function downloadResults() {
-  console.log('hi again')
+async function downloadResults() {
+  let checks = document.querySelectorAll('.result:checked');
+  let marks = []
+  let heatmaps = []
+  for (let c of checks){
+    console.log(c.dataset)
+    let parentSlide = JSON.parse(checks[0].dataset.slideinfo)
+    if (c.dataset.type == "human mark" || c.dataset.type == "human mark"){
+      let mark = await store.getMarkByIds([c.dataset.self], c.dataset.target)
+      for(m of mark){
+        m.provenance.image = parentSlide;
+        marks.push(m);
+      }
+      console.log(mark)
+    } else if (c.dataset.type == "heatmap" ) {
+      let hm = await store.getHeatmap(c.dataset.parent, c.dataset.target)
+      for(h of hm){
+        h.provenance.image = parentSlide;
+        heatmaps.push(h);
+      }
+    }
+  }
+  console.log(marks, heatmaps)
+  if (marks){
+    var element = document.createElement('a');
+    element.setAttribute('href', 'data:application/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(marks)));
+    element.setAttribute('download', "camic_export_marks.json");
+    element.style.display = 'none';
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+  }
+  if (heatmaps){
+    var element = document.createElement('a');
+    element.setAttribute('href', 'data:application/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(heatmaps)));
+    element.setAttribute('download', "camic_export_heatmaps.json");
+    element.style.display = 'none';
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+  }
+  // tell the user that data is missing
+  if (!heatmaps && !marks){
+    alert("No data selected for download.")
+  }
 }

@@ -37,7 +37,7 @@ function make_tree_table(id){
         }
 
         $columnName.prepend('' +
-            '<span class="treegrid-indent" style="width:' + 15 * level + 'px"></span>' +
+            '<span class="treegrid-indent" style="width:' + 25 * level + 'px"></span>' +
             '');
     });
 
