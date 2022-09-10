@@ -131,7 +131,7 @@ async function downloadResults() {
     }
   }
   console.log(marks, heatmaps);
-  if (marks) {
+  if (marks.length) {
     var element = document.createElement('a');
     element.setAttribute('href', 'data:application/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(marks)));
     element.setAttribute('download', 'camic_export_marks.json');
@@ -140,7 +140,7 @@ async function downloadResults() {
     element.click();
     document.body.removeChild(element);
   }
-  if (heatmaps) {
+  if (heatmaps.length) {
     var element = document.createElement('a');
     element.setAttribute('href', 'data:application/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(heatmaps)));
     element.setAttribute('download', 'camic_export_heatmaps.json');
@@ -150,7 +150,7 @@ async function downloadResults() {
     document.body.removeChild(element);
   }
   // tell the user that data is missing
-  if (!heatmaps && !marks) {
+  if (!heatmaps.length && !marks.length) {
     alert('No data selected for download.');
   }
 }
