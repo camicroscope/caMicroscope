@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>401 Unauthorized Error</title>
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.8.2/css/all.css"
+    />    
+    <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+    crossorigin="anonymous"
+    />
+    <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+    crossorigin="anonymous"
+    ></script>
+    <style>
+        .container {
+            padding-top: 1rem;
+        }
+        .alert label {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        .alert p {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin: 0;
+            color: #5b5f79;
+        }
+		.link{
+			letter-spacing: 0.02em;
+			text-transform: uppercase;
+			font-size: 0.99em;
+			font-weight: bold;
+			color: #5e6875;
+			text-decoration:none;
+			padding-right: 0.7rem;
+			padding-left: 0.7rem;
+			margin-top: 0.2rem;
+			font-family: "Open Sans", Helvetica, sans-serif;
+			line-height: 1.8;
+		}
+		nav li{
+			transition: background 0.5s; 
+			border-radius: 3px;
+		}
+		nav li:not(:first-child){
+			margin-left: 0.3em !important;
+		}
+		nav li:not(.active):hover{
+			background: white;
+		}
+		nav li:not(.active):hover a{
+			color: black !important;
+		}
+		.active{
+			background: white;
+		}
+		.active a{
+			color: black !important;
+		}
+		.bg-dark {
+			background-color: #343a40 !important;
+		}
+		.fas {
+			/* color: rgba(255,255,255,.5);; */
+			color: inherit;
+		}        
+    </style>
+  </head>
+
+  <body>
+    <nav class="navbar navbar-dark bg-dark">
+        <div class="container-fluid justify-content-end">
+            <ul class="navbar-nav ">
+                <li class="nav-item link" style="font-family: sans-serif;">
+                <a class="nav-link"
+                    href="https://oauth-openshift.apps.marble.ccs.ornl.gov/oauth/authorize?approval_prompt=force&client_id=ingress-authentication-oauth-proxy&redirect_uri=https%3A%2F%2Fcamtest.apps.marble.ccs.ornl.gov%2Foauth%2Fcallback&response_type=code&scope=user%3Ainfo+user%3Acheck-access&state=f84d1ee063d10a62ab9f6d0413b00440%3A%2Fapps%2Fvis-table%2Findex.html">
+                    <i class="fas fa-home"></i> Login</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="alert alert-danger text-center text-capitalize" role="alert">
+                    <Label>401 - unauthorized error</Label>
+                </div>
+            </div>
+            <div class="col-sm-12">
+                <div class="alert border bg-light text-center text-capitalize" role="alert">
+                    <p>Sorry, you are not authorized to access this websit. Please contact administrator to address your issue.</p>
+                </div>
+                
+            </div>
+        </div>
+       
+    </div>
+  </body>
+
+</html>

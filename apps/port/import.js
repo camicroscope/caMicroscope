@@ -1,5 +1,23 @@
 // initalize store, dependency
 let _STORE = new Store('../../data/');
+var $D = {};
+_STORE.getCurrentUser().then((resp)=>{
+  if (resp.status!=200) {
+    window.location.href = '../error/401.html';
+  }
+  return resp;
+}).then((resp)=> resp.json()).then((user)=>{
+  if (Array.isArray(user)&&user.length==0) {
+    window.location.href = '../error/401.html';
+  }
+  if (Array.isArray(user)&&user.length > 0) {
+    $D.user = user[0];
+    if (user[0].userType!=='Admin') {
+      window.location.href = '../landing/landing.html';
+    }
+  }
+});
+
 
 function addToStatus(text) {
   let status = document.getElementById('status');

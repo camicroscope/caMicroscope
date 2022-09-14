@@ -315,8 +315,48 @@ function initCore() {
   });
 }
 
+function createCollectionList() {
+  if ($D.collections.length < 1) return 'No Specialties In System';
+  return $D.collections.filter((c)=>!c.pid&&$D.params.crumb.split('/')[0]!==c.text).map((c)=>`<div style="margin:1rem 0 0 1rem;"><input type="radio" id="${c._id.$oid}" name="caseGenre" value="${c._id.$oid}">
+  <label for="${c._id.$oid}">${c.text}</label></div>`).join('');
+}
+
+function createSeniorList() {
+  if ($D.seniors.length < 1) return 'No Senior Pathologists In System';
+  return $D.seniors.map((s)=>`<div style="margin:1rem 0 0 1rem;"><input type="radio" id="${s._id.$oid}" name="caseSenior" value="${s.key}">
+  <label for="${s._id.$oid}">${s.key}</label></div>`).join('');
+}
+
+function createBody() {
+  return `<div class="container-fluid" style="max-height:950px; overflow:auto;">
+  <div class="row">
+    <div class="col-sm-6">
+    <label class="title">Specialties:</label>
+    ${createCollectionList()}
+    </div>
+    <div class="col-sm-6">
+    <label class="title">Senior Pathologists:</label>
+    ${createSeniorList()}
+    </div>
+  </div>
+</div>`;
+}
 // initialize all UI components
 async function initUIcomponents() {
+  // get current user
+  const user = await $CAMIC.store.getCurrentUser().then((resp)=>{
+    if (resp.status!=200) {
+      window.location.href = '../error/401.html';
+    }
+    return resp;
+  }).then((resp)=> resp.json());
+  if (Array.isArray(user)&&user.length==0) {
+    window.location.href = '../error/401.html';
+  }
+  if (Array.isArray(user)&&user.length > 0) {
+    $D.user = user[0];
+  }
+
   /* loading configurations */
   $D.configurations = await $CAMIC.store.getConfigByName();
   /* create UI components */
@@ -334,19 +374,23 @@ async function initUIcomponents() {
     hasFooter: true,
   });
   // -- case reassignment modal start -- //
-  $UI.caseReassignmentModal.setFooterHTML(`<button class='btn btn-default btn-xs' onclick='reassignCaseClickhandler()' disabled>Reassign</button>`);
+
+  // get collection list
   $D.collections = await $CAMIC.store.getAllCollection();
 
+  // get senior pathologist list
+  $D.seniors = await $CAMIC.store.getSeniorUsers();
+  $UI.caseReassignmentModal.setFooterHTML(`<button class='btn btn-default btn-xs' onclick='reassignCaseClickhandler()' disabled>Reassign</button>`);
 
-  $UI.caseReassignmentModal.setBody($D.collections.filter((c)=>!c.pid&&$D.params.crumb.split('/')[0]!==c.text)
-      .map((c)=>`<div style="margin:1rem 0 0 1rem;"><input type="radio" id="${c._id.$oid}" name="caseGenre" value="${c.text}">
-      <label for="${c._id.$oid}">${c.text}</label></div>`).join(''));
-  const radios = $UI.caseReassignmentModal.elt.querySelectorAll('.modalbox-body input[type=radio][name=caseGenre]');
-  radios.forEach((r) => {
-    r.addEventListener('change', ()=>{
-      $UI.caseReassignmentModal.elt.querySelector('.modalbox-footer .btn').disabled = false;
-    });
-  });
+  $UI.caseReassignmentModal.setBody(createBody());
+
+  $('#caseReassignmentModal .modalbox-body input[type=radio][name=caseGenre]').on('change', radiosChange);
+  $('#caseReassignmentModal .modalbox-body input[type=radio][name=caseSenior]').on('change', radiosChange);
+  function radiosChange() {
+    const caseGenre = $('#caseReassignmentModal .modalbox-body input[type=radio][name=caseGenre]:checked').val();
+    const caseSenior = $('#caseReassignmentModal .modalbox-body input[type=radio][name=caseSenior]:checked').val();
+    if (caseGenre&&caseSenior) $UI.caseReassignmentModal.elt.querySelector('.modalbox-footer .btn').disabled = false;
+  }
 
 
   // -- case reassignment modal end -- //
@@ -371,7 +415,7 @@ async function initUIcomponents() {
   // evaluation form
   if (evaluationConfig && evaluationConfig.enable) {
     $D.evaluationData = await $CAMIC.store.findEvaluation({
-      // 'user_id': getUserId(),
+      'creator': $D.user.key,
       'slide_id': $D.params.slideId,
     });
     $UI.evalSideMenu = new SideMenu({
@@ -401,12 +445,11 @@ async function initUIcomponents() {
       if ($D.isDraftEvalData == false) return;
       if (!$D.isEvalDataExist) {
         const evalData = {
-          // 'user_id': getUserId(),
           'slide_id': $D.params.slideId,
           // 'slide_name': $D.params.data.name,
           'evaluation': data,
           'create_date': new Date(),
-          'creator': getUserId(),
+          'creator': $D.user.key,
           'is_draft': true,
         };
         try {
@@ -424,13 +467,13 @@ async function initUIcomponents() {
         }
       } else {
         const query = {
-          // 'user_id': getUserId(),
+          'creator': $D.user.key,
           'slide_id': $D.params.slideId,
         };
         const evalData = {
           'evaluation': data,
           'update_date': new Date(),
-          'updater': getUserId(),
+          'updater': $D.user.key,
         };
         try {
           const rs = await $CAMIC.store.updateEvaluation(query, evalData);
@@ -542,7 +585,7 @@ async function initUIcomponents() {
               const tumorPresent = this.getValue();
               if (tumorPresent === '1') {
                 $CAMIC.store.countMark({
-                  'creator': getUserId(),
+                  'creator': $D.user.key,
                   'provenance.image.slide': $D.params.slideId,
                   'provenance.analysis.source': 'human',
                 }).then((d)=>{
@@ -747,6 +790,7 @@ async function initUIcomponents() {
         if (!$D.isEvalDataExist) {
           slideQuality.setValue(null);
           tumorPresent.setValue(null);
+          // hidden message
           tumorHistology.setValue(null);
           informativeness.setValue(null);
           absoluteInformativeness.setValue(null);

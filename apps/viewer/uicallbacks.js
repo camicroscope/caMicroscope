@@ -876,7 +876,7 @@ function annoCallback(data) {
   const execId = randomId();
 
   const annotJson = {
-    creator: getUserId(),
+    creator: $D.user.key,
     create_date: new Date(),
     provenance: {
       image: {
@@ -920,7 +920,7 @@ function annoCallback(data) {
           name: noteData.name,
           typeId: 'human',
           typeName: 'human',
-          creator: getUserId(),
+          creator: $D.user.key,
           shape: annotJson.geometries.features[0].geometry.type,
           data: null,
         };
@@ -1838,7 +1838,7 @@ async function saveEvaluation(e) {
       // 'slide_name': $D.params.data.name,
       'evaluation': evaluation,
       'create_date': new Date(),
-      'creator': getUserId(),
+      'creator': $D.user.key,
       'is_draft': false,
     };
     try {
@@ -1859,7 +1859,7 @@ async function saveEvaluation(e) {
     }
   } else {
     const query = {
-      // 'user_id': getUserId(),
+      'creator': $D.user.key,
       'slide_id': $D.params.slideId,
     };
     const evalData = {
@@ -1869,10 +1869,7 @@ async function saveEvaluation(e) {
       'is_draft': false,
     };
     try {
-      var evals = await $CAMIC.store.findEvaluation({
-        // 'user_id': getUserId(),
-        'slide_id': $D.params.slideId,
-      });
+      var evals = await $CAMIC.store.findEvaluation(query);
       //
       if (evals&&Array.isArray(evals)&&evals[0]&&evals[0].evaluation&&
       evals[0].is_draft==evalData.is_draft&&isSameEval(evals[0].evaluation, evalData.evaluation)) {
@@ -1891,9 +1888,9 @@ async function saveEvaluation(e) {
         evalMessage.textContent = null;
         // change collection status
         try {
-          const rs = await $CAMIC.store.setCollectionTaskStatusBySlideId($D.params.slideId, false);
+          const rs = await $CAMIC.store.setCollectionTaskStatusBySlideId($D.user.key, $D.params.slideId, false);
           if (rs&&rs.ok) {
-            console.log(`Eval setCollectionTaskStatusBySlideId(${$D.params.slideId},false) succeeded`);
+            console.log(`Eval setCollectionTaskStatusBySlideId(${$D.user.key}, ${$D.params.slideId},false) succeeded`);
           } else {
             // db update error
             console.error(`Eval setCollectionTaskStatusBySlideId update failed`);
@@ -1906,7 +1903,11 @@ async function saveEvaluation(e) {
         if (evaluation.informativeness==0) {
           const collection = $D.collections.find((c)=>c.text==$D.params.crumb.split('/')[1]);
           if (collection&&collection._id&&collection._id.$oid) {
-            const data = await $CAMIC.store.removeRankSlidesInformativeness(collection._id.$oid, null, $D.params.slideId);
+            const data = await $CAMIC.store.removeRankSlidesInformativeness(
+                collection._id.$oid,
+                $D.user.key,
+                $D.params.slideId,
+            );
           }
         }
       } else {
@@ -1999,7 +2000,7 @@ function savePresetLabel() {
     values.map((i) => i.toString()).forEach((v) => set.add(v));
     const points = Array.from(set).map((d) => d.split(','));
     annotJson = {
-      creator: getUserId(),
+      creator: $D.user.key,
       create_date: new Date(),
       provenance: {
         image: {
@@ -2026,7 +2027,7 @@ function savePresetLabel() {
   } else {
     // point / polygon / stringLine
     annotJson = {
-      creator: getUserId(),
+      creator: $D.user.key,
       create_date: new Date(),
       provenance: {
         image: {
@@ -2073,7 +2074,7 @@ function savePresetLabel() {
           name: noteData.name,
           typeId: 'human',
           typeName: 'human',
-          creator: getUserId(),
+          creator: $D.user.key,
           shape: annotJson.geometries.features[0].geometry.type,
           isGrid: annotJson.provenance.analysis.isGrid? true: false,
           label: {
@@ -2119,9 +2120,9 @@ function savePresetLabel() {
 async function changeCollectionTaskStatusToFalse() {
   // change collection status
   try {
-    const rs = await $CAMIC.store.setCollectionTaskStatusBySlideId($D.params.slideId, false);
+    const rs = await $CAMIC.store.setCollectionTaskStatusBySlideId($D.user.key, $D.params.slideId, false);
     if (rs&&rs.ok) {
-      console.log(`setCollectionTaskStatusBySlideId(${$D.params.slideId},false) succeeded`);
+      console.log(`setCollectionTaskStatusBySlideId(${$D.user.key}, ${$D.params.slideId},false) succeeded`);
     } else {
       // db update error
       console.error(`setCollectionTaskStatusBySlideId update failed`);
@@ -2182,7 +2183,6 @@ function deleteRulerHandler(execId) {
   $CAMIC.store
       .deleteMarkByExecId(execId, $D.params.data.slide)
       .then((datas) => {
-        console.log(datas);
         // server error
         if (datas.error) {
           const errorMessage = `${datas.text}: ${datas.url}`;
@@ -2227,7 +2227,7 @@ function onAddRuler(ruler) {
   innerHTML = innerHTML.split('>').join('&gt;');
   innerHTML = innerHTML.split(' ').join('&nbsp;');
   let rulerJson = {
-    creator: getUserId(),
+    creator: $D.user.key,
     create_date: new Date(),
     provenance: {
       image: {
@@ -2337,7 +2337,7 @@ function onAddRuler(ruler) {
           typeId: 'ruler',
           typeName: 'ruler',
           data: data.ops[0],
-          creator: getUserId(),
+          creator: $D.user.key,
         };
         newItem.data.properties.innerHTML = newItem.data.properties.innerHTML.split('&lt;').join('<');
         newItem.data.properties.innerHTML = newItem.data.properties.innerHTML.split('&gt;').join('>');
@@ -2646,12 +2646,15 @@ function downloadSlideCapture(combiningCanvas) {
 function reassignCaseClickhandler() {
   const {id, value} = $UI.caseReassignmentModal.elt
       .querySelector('.modalbox-body input[type=radio][name=caseGenre]:checked');
+  const seniorkey = $('.modalbox-body input[type=radio][name=caseSenior]:checked').val();
   if (confirm('Proceed with Case Reassignment?')) {
-    console.log(id, value);
     const collection = $D.collections.find((c)=>c.text==$D.params.crumb.split('/')[1]);
     if (collection&&collection._id&&collection._id.$oid) {
       //
-      $CAMIC.store.updateCollection(collection._id.$oid, {pid: id}).then((rs)=>{
+      $CAMIC.store.reassignCollection(
+          $D.user.key, collection._id.$oid,
+          {'users.$.user': seniorkey, 'users.$.task_status': false, 'pid': id},
+      ).then((rs)=>{
         if (rs.ok&&rs.nModified) {
           window.location.href = `../vis-table/index.html`;
         } else {
@@ -2678,6 +2681,7 @@ function reassignCaseClickhandler() {
 function resetCaseReassignmentModal() {
   $UI.caseReassignmentModal.elt.querySelector('.modalbox-footer .btn').disabled = false;
   $UI.caseReassignmentModal.elt.querySelector('.modalbox-body input[type=radio][name=caseGenre]:checked').checked = false;
+  $UI.caseReassignmentModal.elt.querySelector('.modalbox-body input[type=radio][name=caseSenior]:checked').checked = false;
 }
 /* call back list END */
 /* --  -- */

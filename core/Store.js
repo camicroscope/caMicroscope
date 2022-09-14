@@ -73,6 +73,23 @@ class Store {
       }
     }
   }
+  getCurrentUser() {
+    const suffix = 'User/getCurrentUser';
+    const url = this.base + suffix;
+    return fetch(url, {
+      method: 'GET',
+      credentials: 'include',
+      mode: 'cors',
+    });
+  }
+  getSeniorUsers() {
+    const suffix = 'User/find';
+    const url = `${this.base}${suffix}?${objToParamStr({isSenior: true})}`;
+    return fetch(url, {
+      credentials: 'include',
+      mode: 'cors',
+    }).then(this.errorHandler).then((x) => this.filterBroken(x, 'user'));
+  }
   getUsers(email) {
     const suffix = 'User/find';
     const url = email ? `${this.base}${suffix}?${objToParamStr({email})}` : `${this.base}${suffix}`;
@@ -409,7 +426,24 @@ class Store {
   //     mode: 'cors',
   //   }).then(this.errorHandler);
   // }
+  findCurrentUserMarkTypes(slide, type) {
+    const suffix = 'Mark/findCurrentUserMarkTypes';
 
+    const query = {};
+    //
+    if (!slide || !type) {
+      console.error('Store.findCurrentUserMarkTypes needs slide and type ... ');
+      return null;
+    }
+    query['slide'] = slide;
+    query['type'] = type;
+
+    const url = this.base + suffix;
+    return fetch(url + '?' + objToParamStr(query), {
+      credentials: 'include',
+      mode: 'cors',
+    }).then(this.errorHandler);
+  }
 
   findMarkTypes(slide, type) { // type = 'human' or 'computer'
     const suffix = 'Mark/findMarkTypes';
@@ -1308,6 +1342,20 @@ class Store {
       mode: 'cors',
     }).then(this.errorHandler);
   }
+  reassignCollection(ukey, id, data) {
+    const suffix = 'Collection/update';
+    const url = this.base + suffix;
+    const query = {
+      '_id': id,
+      'users.user': ukey,
+    };
+    return fetch(url + '?' + objToParamStr(query), {
+      method: 'POST',
+      credentials: 'include',
+      mode: 'cors',
+      body: JSON.stringify(data),
+    }).then(this.errorHandler);
+  }
   /**
    * update a collection info
    * @param {string} id - the collection id
@@ -1385,6 +1433,42 @@ class Store {
       body: JSON.stringify(query),
     }).then(this.errorHandler);
   }
+  /**
+   * add users To Collection
+   * @param {string} cid - the collection id
+   * @param {object} ukeys - user key
+   * @return {promise} - promise which resolves with data
+   **/
+  addUsersToCollection(cid, ukeys) {
+    const suffix = 'Collection/addUsersToCollection';
+    const url = this.base + suffix;
+    const query = {cid, ukeys};
+    return fetch(url, {
+      method: 'POST',
+      credentials: 'include',
+      mode: 'cors',
+      body: JSON.stringify(query),
+    }).then(this.errorHandler);
+  }
+
+  /**
+   * remove Users From Collection
+   * @param {string} cid - the collection id
+   * @param {object} ukeys - user keys
+   * @return {promise} - promise which resolves with data
+   **/
+  removeUsersFromCollection(cid, ukeys) {
+    console.log(cid, ukeys);
+    const suffix = 'Collection/removeUsersFromCollection';
+    const url = this.base + suffix;
+    const query = {cid, ukeys};
+    return fetch(url, {
+      method: 'POST',
+      credentials: 'include',
+      mode: 'cors',
+      body: JSON.stringify(query),
+    }).then(this.errorHandler);
+  }
 
   /**
    * remove Slides From Collection
@@ -1407,7 +1491,7 @@ class Store {
     }).then(this.errorHandler);
   }
 
-  removeRankSlidesInformativeness(cid, uid=null, sid) {
+  removeRankSlidesInformativeness(cid, creator=null, sid) {
     //
     if (!cid || !sid) {
       return {
@@ -1416,7 +1500,7 @@ class Store {
       };
     }
     const query = {cid, sid};
-    if (uid) query.uid = uid;
+    if (creator) query.creator = creator;
     const suffix = 'SlideInformativeness/removeRank';
     const url = this.base + suffix;
     return fetch(url, {
@@ -1431,7 +1515,7 @@ class Store {
   // second informativeness - 2
   // third informativeness - 3
   // less informativeness - 4
-  rankSlidesInformativeness(cid, uid=null, sid, level) {
+  rankSlidesInformativeness(cid, creator=null, sid, level) {
     //
     if (!cid || !sid || !level) {
       return {
@@ -1440,7 +1524,7 @@ class Store {
       };
     }
     const query = {cid, sid, level};
-    if (uid) query.uid = uid;
+    if (creator) query.creator = creator;
     const suffix = 'SlideInformativeness/rank';
     const url = this.base + suffix;
     return fetch(url, {
@@ -1451,7 +1535,7 @@ class Store {
     }).then(this.errorHandler);
   }
 
-  findSlidesInformativeness(cid, uid=null) {
+  findSlidesInformativeness(cid, creator=null) {
     if (!cid) {
       return {
         hasError: true,
@@ -1461,7 +1545,7 @@ class Store {
     const suffix = 'SlideInformativeness/find';
     const url = this.base + suffix;
     const query = {cid};
-    if (uid) query.uid = uid;
+    if (creator) query.creator = creator;
     return fetch(url + '?' + objToParamStr(query), {
       method: 'GET',
       credentials: 'include',
@@ -1469,16 +1553,16 @@ class Store {
     }).then(this.errorHandler);
   }
 
-  setCollectionTaskStatusByCollectionId(cid, status) {
-    return this.setCollectionTaskStatus(cid, null, status);
+  setCollectionTaskStatusByCollectionId(ukey, cid, status) {
+    return this.setCollectionTaskStatus(ukey, cid, null, status);
   }
 
-  setCollectionTaskStatusBySlideId(sid, status) {
-    return this.setCollectionTaskStatus(null, sid, status);
+  setCollectionTaskStatusBySlideId(ukey, sid, status) {
+    return this.setCollectionTaskStatus(ukey, null, sid, status);
   }
 
-  setCollectionTaskStatus(cid, sid, status) {
-    if (!sid && !cid) {
+  setCollectionTaskStatus(ukey, cid, sid, status) {
+    if (!sid && !cid && !ukey) {
       return {
         hasError: true,
         message: 'args are illegal',
@@ -1486,7 +1570,8 @@ class Store {
     }
     const suffix = 'Collection/setCollectionTaskStatus';
     const url = this.base + suffix;
-    const query = cid?{cid, status}:{sid, status};
+    const query = cid?{ukey, cid, status}:{ukey, sid, status};
+    console.log(query);
     return fetch(url + '?' + objToParamStr(query), {
       method: 'POST',
       credentials: 'include',

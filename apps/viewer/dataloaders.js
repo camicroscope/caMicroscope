@@ -37,7 +37,8 @@ function FormTempaltesLoader() {
 function layersLoader() {
   // human
   function loadingHumanOverlayers() {
-    $CAMIC.store.findMarkTypes($D.params.slideId, 'human').then(function(layers) {
+    // $CAMIC.store.findMarkTypes($D.params.slideId, 'human').then(function(layers) {
+    $CAMIC.store.findCurrentUserMarkTypes($D.params.slideId, 'human').then(function(layers) {
       // convert part not nesscary
       $D.humanlayers = [...layers.map(covertToHumanLayer)];
 
@@ -51,7 +52,8 @@ function layersLoader() {
   }
   // ruler
   function loadingRulerOverlayers() {
-    $CAMIC.store.findMarkTypes($D.params.slideId, 'ruler').then(function(layers) {
+    // $CAMIC.store.findMarkTypes($D.params.slideId, 'ruler').then(function(layers) {
+    $CAMIC.store.findCurrentUserMarkTypes($D.params.slideId, 'ruler').then(function(layers) {
       // convert part not nesscary
       $D.rulerlayers = [...layers.map(covertToRulerLayer)];
 

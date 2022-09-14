@@ -112,7 +112,11 @@ nav li:not(.active):hover a{
   font-size: 1rem;
   content: ">";
 }
-
+.tab-content {
+  padding-top: 1rem;
+  overflow-y: auto;
+  height: calc(100vh - 225px);
+}
 
 
 

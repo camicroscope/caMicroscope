@@ -60,9 +60,9 @@
                   <li class="nav-item  link" style="font-family: sans-serif">
                     <a class="nav-link" href="../port/import.html">
                         <i class="fas fa-file-upload"></i> Data Import</a>
-                  </li>                  
+                  </li>
                   <li class="nav-item active link">
-                      <a class="nav-link" href="../collection/hcollection.html">
+                      <a class="nav-link" href="../collection/collection.html">
                           <i class="fas fa-list-ul"></i> Collection Management</a>
                   </li>
               </ul>
@@ -155,14 +155,46 @@
             <div id="sub-message" class="alert alert-warning" role="alert" style="display: none;">
               Please Select A Collection Without Subcollection to Add/Remove the Slides ...
             </div>
-            
+            <div id="nav-tabs-panel" class="nav-tabs-panel">
+              <ul class="nav nav-tabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                  <button class="nav-link active" id="slides-tab"
+                    data-bs-toggle="tab" data-bs-target="#slides" 
+                    type="button" role="tab" aria-controls="slides" aria-selected="true">
+                    Slides
+                  </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <button class="nav-link" id="users-tab"
+                    data-bs-toggle="tab" data-bs-target="#users" 
+                    type="button" role="tab" aria-controls="users" aria-selected="false">
+                    Users
+                  </button>
+                </li>
+              </ul>
+              <div class="tab-content">
+                <div class="tab-pane fade show active" id="slides" role="tabpanel" aria-labelledby="slides-tab">
+                  <table
+                  id="slides-data-table-view"
+                  class="display"
+                  style="width: 100%"
+                ></table>
+                </div>
+                <div class="tab-pane fade" id="users" role="tabpanel" aria-labelledby="users-tab">
+                  <table
+                  id="users-data-table-view"
+                  class="display"
+                  style="width: 100%"
+                ></table>
+                </div>
+              </div>
+            </div>
             <!-- data-table -->
-            
-          <table
+          <!-- <table
             id="data-table-view"
             class="display"
             style="width: 100%"
-          ></table>
+          ></table> -->
         
           </div>
 
@@ -282,6 +314,6 @@
       charset="utf8"
       src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.js"
     ></script>
-    <script src="./hcollection.js"></script>
+    <script src="./collection.js"></script>
   </body>
 </html>

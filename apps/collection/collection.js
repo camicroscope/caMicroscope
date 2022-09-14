@@ -9,11 +9,13 @@ $.fn.dataTable.ext.order['dom-checkbox'] = function( settings, col ) {
 $(function() {
   $('[data-toggle="tooltip"]').tooltip({delay: {'show': 700, 'hide': 1000}});
 });
-var $DTable;
+var $SlideDTable;
+var $UserDTable;
 var $collectionList;
 var $collectionTree;
 var _selectedNodeId;
 var $slideData;
+var $D={};
 
 
 const editModalEl = document.getElementById('edit-modal');
@@ -24,6 +26,23 @@ editModalEl.addEventListener('show.bs.modal', function(event) {
 
 // create the store
 const store = new Store('../../../data/');
+store.getCurrentUser().then((resp)=>{
+  if (resp.status!=200) {
+    window.location.href = '../error/401.html';
+  }
+  return resp;
+}).then((resp)=> resp.json()).then((user)=>{
+  if (Array.isArray(user)&&user.length==0) {
+    window.location.href = '../error/401.html';
+  }
+  if (Array.isArray(user)&&user.length > 0) {
+    $D.user = user[0];
+    if (Array.isArray(user)&&user.length>0&&user[0].userType!=='Admin') {
+      window.location.href = '../landing/landing.html';
+    }
+  }
+});
+
 
 // loading the collections
 store.getAllCollection().then((data) => {
@@ -94,14 +113,67 @@ store.findSlide().then((data) => data.map((d) => ({
   'width': d.width,
   'height': d.height,
   'selected': false,
-})))
-    .then((data) => {
-      $slideData = data;
-      createDataTable($slideData);
-    });
+}))).then((data) => {
+  $slideData = data;
+  createSlideDataTable($slideData);
+});
 
-function createDataTable(data) {
-  $DTable = $('#data-table-view').DataTable({
+// load users
+store.getUsers().then((data) => data.map((d) => ({
+  'id': d._id.$oid,
+  'email': d.email,
+  'key': d.key,
+  'user_type': d.userType,
+  'senior': d.isSenior,
+  'selected': false,
+}))).then((data) => {
+  $userData = data;
+  createUserDataTable($userData);
+});
+
+// create user table
+function createUserDataTable(data) {
+  $UserDTable = $('#users-data-table-view').DataTable({
+    'rowId': 'key',
+    'order': [[5, 'desc']],
+    'data': data,
+    'columns': [
+      {data: 'id', title: 'Id'},
+      {data: 'email', title: 'Email'},
+      {data: 'key', title: 'ORNL ID'},
+      {data: 'user_type', title: 'User Type'},
+      {data: 'senior', title: 'Senior'},
+      {
+        data: 'selected',
+        orderable: true,
+        orderDataType: 'dom-checkbox',
+        title: `<label onclick='stopEvent(event)'>
+                  <input data-id='__all__'  type="checkbox" onchange='toggleAllUsers(event)' onclick='stopEvent(event)' >
+                  All
+                </label>`,
+      },
+    ],
+    'columnDefs': [{
+      'className': 'dt-center',
+      'targets': 4,
+      'data': null,
+      'render': (data, type, row, mate) => {
+        return `${data?'<i class="fas fa-check text-success"></i>':'<i class="fas fa-times text-danger"></i>'}`;
+      },
+    }, {
+      'className': 'dt-center',
+      'targets': 5,
+      'data': null,
+      'render': (data, type, row, mate) => {
+        // TODO set the checked by data
+        return `<input data-id="${row.key}" type="checkbox" onchange='toggleAUser(event)' ${data?'checked':''}>`;
+      },
+    }],
+  });
+}
+// create slide table
+function createSlideDataTable(data) {
+  $SlideDTable = $('#slides-data-table-view').DataTable({
     'rowId': 'id',
     'order': [[4, 'desc']],
     'data': data,
@@ -134,11 +206,52 @@ function createDataTable(data) {
 function stopEvent(e) {
   e.stopPropagation();
 }
+function toggleAllUsers(e) {
+  const tree = $('#main-tree-view').jstree(true);
+  const selectedNodes = tree.get_selected(true)[0];
+  const cid = selectedNodes.id;
+  const nodes = $UserDTable.rows({search: 'applied'}).nodes().to$();
+  //
+  const uids = [...nodes].map((d)=>d.id);
+
+  if (e.target.checked) {
+    // add user to collection
+    store.addUsersToCollection(cid, uids).then((rs)=>{
+      nodes.find('input[type=checkbox]').prop('checked', e.target.checked);
+      $userData.forEach((d)=>{
+        if (uids.includes(d.id)) d.selected = e.target.checked;
+      });
+      // reload collection info
+      store.getCollection({id: cid}).then((rs)=>{
+        const collData = $collectionList.find((d)=>d.id==cid);
+        if (rs&&Array.isArray(rs)&&rs[0]&&rs[0].users&&collData&&collData.users) {
+          collData.users = rs[0].users;
+        }
+      });
+    });
+  } else {
+    // remove slide from collection
+    store.removeUsersFromCollection(cid, uids).then((rs)=>{
+      nodes.find('input[type=checkbox]').prop('checked', e.target.checked);
+      $userData.forEach((d)=>{
+        if (uids.includes(d.id)) d.selected = e.target.checked;
+      });
+      // reload collection info
+      store.getCollection({id: cid}).then((rs)=>{
+        const collData = $collectionList.find((d)=>d.id==cid);
+        if (rs&&Array.isArray(rs)&&rs[0]&&rs[0].users&&collData&&collData.users) {
+          collData.users = rs[0].users;
+        }
+      });
+    });
+  }
+  e.stopPropagation();
+}
 function toggleAllSlides(e) {
   const tree = $('#main-tree-view').jstree(true);
   const selectedNodes = tree.get_selected(true)[0];
   const cid = selectedNodes.id;
-  const nodes = $DTable.rows({search: 'applied'}).nodes().to$();
+  const nodes = $SlideDTable.rows({search: 'applied'}).nodes().to$();
   //
   const sids = [...nodes].map((d)=>d.id);
 
@@ -177,6 +290,44 @@ function toggleAllSlides(e) {
 
   e.stopPropagation();
 }
+function toggleAUser(e) {
+  const uid = e.target.dataset.id;
+  const tree = $('#main-tree-view').jstree(true);
+  const selectedNodes = tree.get_selected(true)[0];
+  const cid = selectedNodes.id;
+  if (e.target.checked) {
+    // add slide to collection
+    store.addUsersToCollection(cid, [uid]).then((rs)=>{
+      const sData = $UserDTable.row(`#${uid}`).data();
+      sData.selected = !sData.selected;
+      $UserDTable.row(`#${uid}`).data(sData);
+      // reload collection info
+      store.getCollection({id: cid}).then((rs)=>{
+        const collData = $collectionList.find((d)=>d.id==cid);
+        if (rs&&Array.isArray(rs)&&rs[0]&&rs[0].users&&collData&&collData.users) {
+          collData.users = rs[0].users;
+        }
+      });
+    });
+  } else {
+    // remove slide from collection
+    store.removeUsersFromCollection(cid, [uid]).then((rs)=>{
+      //
+      const sData = $UserDTable.row(`#${uid}`).data();
+      sData.selected = !sData.selected;
+      $UserDTable.row(`#${uid}`).data(sData);
+      // reload collection info
+      store.getCollection({id: cid}).then((rs)=>{
+        const collData = $collectionList.find((d)=>d.id==cid);
+        if (rs&&Array.isArray(rs)&&rs[0]&&rs[0].users&&collData&&collData.users) {
+          collData.users = rs[0].users;
+        }
+      });
+    });
+  }
+  e.stopPropagation();
+}
+
 function toggleASlide(e) {
   const sid = e.target.dataset.id;
   const tree = $('#main-tree-view').jstree(true);
@@ -185,9 +336,9 @@ function toggleASlide(e) {
   if (e.target.checked) {
     // add slide to collection
     store.addSlidesToCollection(cid, [sid]).then((rs)=>{
-      const sData = $DTable.row(`#${sid}`).data();
+      const sData = $SlideDTable.row(`#${sid}`).data();
       sData.selected = !sData.selected;
-      $DTable.row(`#${sid}`).data(sData);
+      $SlideDTable.row(`#${sid}`).data(sData);
       // reload collection info
       store.getCollection({id: cid}).then((rs)=>{
         const collData = $collectionList.find((d)=>d.id==cid);
@@ -200,9 +351,9 @@ function toggleASlide(e) {
     // remove slide from collection
     store.removeSlidesFromCollection(cid, [sid]).then((rs)=>{
       //
-      const sData = $DTable.row(`#${sid}`).data();
+      const sData = $SlideDTable.row(`#${sid}`).data();
       sData.selected = !sData.selected;
-      $DTable.row(`#${sid}`).data(sData);
+      $SlideDTable.row(`#${sid}`).data(sData);
       // reload collection info
       store.getCollection({id: cid}).then((rs)=>{
         const collData = $collectionList.find((d)=>d.id==cid);
@@ -635,15 +786,17 @@ function selectCollectionHandler(node) {
     // create collection path
     createBreadcrumb(node);
     if (node.children.length > 0) {
-      $('#data-table-view_wrapper').hide();
+      // $('#data-table-view_wrapper').hide();
+      $('#nav-tabs-panel').hide();
       $('#sub-message').show();
       return;
     }
     $('#sub-message').hide();
-    $('#data-table-view_wrapper').show();
+    // $('#data-table-view_wrapper').show();
+    $('#nav-tabs-panel').show();
     // let slides checked if the slides in the collection
     const collData = $collectionList.find((d)=>d.id==node.id);
-    // deselected all slides
+    // deselected/selected all slides
     $slideData.forEach((slide)=>{
       if (collData&&collData.slides&&Array.isArray(collData.slides)&&collData.slides.length) {
         slide.selected = collData.slides.some((id)=>id==slide.id);
@@ -651,8 +804,19 @@ function selectCollectionHandler(node) {
         slide.selected = false;
       }
     });
-    $DTable.clear();
-    $DTable.rows.add($slideData).search('').draw(true);
+    $SlideDTable.clear();
+    $SlideDTable.rows.add($slideData).search('').draw(true);
+
+    // deselected/selected all users
+    $userData.forEach((user)=>{
+      if (collData&&collData.users&&Array.isArray(collData.users)&&collData.users.length) {
+        user.selected = collData.users.some((u)=>u.user==user.key);
+      } else {
+        user.selected = false;
+      }
+    });
+    $UserDTable.clear();
+    $UserDTable.rows.add($userData).search('').draw(true);
   } else {
     // UI control
     $('#table-message').show();

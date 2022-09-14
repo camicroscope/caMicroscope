@@ -393,3 +393,8 @@ div.load-status div.text {
 #eval_form .has-error.checkbox-inline label {
   color: #365f9c;
 }
+
+#caseReassignmentModal label.title {
+  color:#122a4e;
+  font-size: 1.8rem;
+}

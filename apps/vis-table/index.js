@@ -21,9 +21,10 @@ closeCaseBtn.addEventListener('click', async ()=>{
     return;
   }
   try {
-    const rs = await store.setCollectionTaskStatusByCollectionId($D.selectedNode.id, true);
+    const rs = await store.setCollectionTaskStatusByCollectionId($D.user.key, $D.selectedNode.id, true);
     if (rs&&rs.ok) {
-      $D.selectedNode.original.task_status = 'true';
+      const user = $D.selectedNode.original.users.find((u)=>u.user == $D.user.key);
+      if (user) user.task_status = true;
       // check is case close
       const colTree = $($UI.colTree).jstree();
       colTree.set_icon($D.selectedNode, './check-folder.png');
@@ -50,6 +51,7 @@ const rankLevel = [
   'Less Informative',
 ];
 $D = {
+  user: null,
   // for pagination
   recordCount: 0,
   recordPerPage: 25,
@@ -170,7 +172,6 @@ async function loadSlideInfo(node) {
     // limit: $D.recordPerPage,
     // skip: $D.recordPerPage * ($D.currentPage - 1),
   };
-  // TODO 123
   const slides = await store.findSlide(null, null, null, null, query);
   const {evaluations, humanAnnotationCounts} = await store.getSlidesExtraInfoByCollectionId(node.id);
 
@@ -191,7 +192,7 @@ async function loadSlideInfo(node) {
 
     // get the rank data
     if ($D.isRankEnable) {
-      const slidesRank = await store.findSlidesInformativeness(node.id);
+      const slidesRank = await store.findSlidesInformativeness(node.id, $D.user.key);
       if (slidesRank&&Array.isArray(slidesRank)) {
         $D.slidesRank = slidesRank.length==0?null:slidesRank[0];
         if ($D.slidesRank) {
@@ -431,20 +432,21 @@ function generateDropdownMenu(elt, data, informativenessSlides) {
     closeCaseBtn.disabled = true;
     const {sid, level} = this.dataset;
     // update DB
-    const data = await store.rankSlidesInformativeness($D.selectedNode.id, null, sid, level); // $D.selectedNode.id;
+    const data = await store.rankSlidesInformativeness($D.selectedNode.id, $D.user.key, sid, level); // $D.selectedNode.id;
     if (data&&data.result&&data.result.ok&&data.result.n) { // correct
       // sync ui
 
-      const slidesRank = await store.findSlidesInformativeness($D.selectedNode.id);
+      const slidesRank = await store.findSlidesInformativeness($D.selectedNode.id, $D.user.key);
       // no relative informativeness data
       if (slidesRank&&Array.isArray(slidesRank)) {
         $D.slidesRank = slidesRank.length==0?null:slidesRank[0];
         syncSlideRankDropdown();
         if ($D.slidesRank&&!isCaseClosed()) {
           try {
-            const rs = await store.setCollectionTaskStatusByCollectionId($D.selectedNode.id, false);
+            const rs = await store.setCollectionTaskStatusByCollectionId($D.user.key, $D.selectedNode.id, false);
             if (rs&&rs.ok) {
-              $D.selectedNode.original.task_status = 'false';
+              const user = $D.selectedNode.original.users.find((u)=>u.user == $D.user.key);
+              if (user) user.task_status = false;
               // reopen if case closed
               const colTree = $($UI.colTree).jstree();
               colTree.set_icon($D.selectedNode, './folder.png');
@@ -641,19 +643,42 @@ function recordNodeState() {
 window.addEventListener('resize', resize);
 
 window.addEventListener('load', async ()=> {
-  // var edata = await store.getSlidesEvaluations();
-  // $D.SlidesEvaluations = edata;
-  // if (Array.isArray(edata)) {
-  //   $D.slideEvalNums = edata.filter((d)=>d.eval).map((d)=>d._id);
-  // } else { // error
-  //   $D.slideEvalNums = [];
-  // }
+  const user = await store.getCurrentUser().then((resp)=>{
+    if (resp.status!=200) {
+      window.location.href = '../error/401.html';
+    }
+    return resp;
+  }).then((resp)=> resp.json());
+  if (Array.isArray(user)&&user.length==0) {
+    window.location.href = '../error/401.html';
+  }
+  if (Array.isArray(user)&&user.length > 0) {
+    $D.user = user[0];
+    if (user[0].userType=='Admin') {
+      $('#import-item').show();
+      $('#export-item').show();
+      $('#collection-item').show();
+    }
+  }
   // get the collection data
   var data = await store.getAllCollection();
+
   if (Array.isArray(data)) {
-    $D.collectionData = data.map((d)=>{
+    $D.collectionData = [];
+    const cases = data.filter((d) => d.users&&d.users.some((u)=>u.user==$D.user.key));
+    $D.collectionData = [...cases];
+    // $D.collectionData = $D.collectionData.map((d)=>{
+    //   if (d.users&&Array.isArray(d.uesrs)&&d.users.some((u)=>u.user==$D.user.key)) {
+    //     const currentUserStatus = d.users.find((u)=>u.user==$D.user);
+    //     d.task_status = currentUserStatus.task_status;
+    //   }
+    //   return d;
+    // });
+    cases.forEach((c) => getAllParents(c, data));
+
+    $D.collectionData.forEach((d)=>{
       d.id = d._id.$oid;
-      if (d.task_status&&d.task_status=='true') {
+      if (d.users&&d.users.some((u)=>u.user = $D.user.key)&&d.users.find((u)=>u.user = $D.user.key).task_status) {
         d.icon = './check-folder.png';
         d.li_attr = {'class': 'text-success'};
       } else {
@@ -670,13 +695,17 @@ window.addEventListener('load', async ()=> {
       } else {
         d.state = {opened: false, selected: false};
       }
-      return d;
+      // return d;
     });
     $D.collectionTree = listToTree($D.collectionData);
 
     $D.collectionData.forEach((d)=>{
+      // remove unauthorized node
       if (d.children && d.children.length == 0) d.text = `${d.text} [${d.slides?d.slides.length:0}]`;
     });
+    // $D.collectionData = $D.collectionData.filter((d) => {
+    //   return !(d.children && d.children.length==0&&d.users&&d.users.some((u)=>u.user==$D.user.key));
+    // });
     createCollectionTree();
   } else { // error message
     $UI.colTree.hide();
@@ -688,6 +717,16 @@ window.addEventListener('load', async ()=> {
     return;
   }
 });
+
+function getAllParents(node, data) {
+  if (node&&node.pid) {
+    const parent = data.find((d)=>d._id.$oid==node.pid);
+    if (parent&&!$D.collectionData.some((d)=> d._id.$oid==parent._id.$oid)) {
+      $D.collectionData.push(parent);
+    }
+    getAllParents(parent, data);
+  }
+}
 
 function resize() {
   // don't calculate if the main view is hidden

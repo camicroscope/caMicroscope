@@ -371,7 +371,7 @@ function getUrlVars() {
       key,
       value,
   ) {
-    vars[key] = value;
+    vars[key] = decodeURIComponent(value);
   });
   return vars;
 }
