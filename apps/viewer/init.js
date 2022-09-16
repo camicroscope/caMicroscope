@@ -335,7 +335,7 @@ function createBody() {
     ${createCollectionList()}
     </div>
     <div class="col-sm-6">
-    <label class="title">Senior Pathologists:</label>
+    <label class="title">Other Pathologist:</label>
     ${createSeniorList()}
     </div>
   </div>
