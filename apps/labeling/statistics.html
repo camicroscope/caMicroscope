@@ -386,6 +386,7 @@
                 letter-spacing: 0.05em;
                 text-transform: uppercase;
                 font-size: 0.9em;
+                display: none;
               "
               href="#"
               onclick="googleSignOut('../../login.html?logout=true')"
@@ -440,7 +441,7 @@
   </body>
   <script>
     // -- authentication check -- //
-    if (!hasLoginAsGoogle()) window.location = "../../login.html";
+    // if (!hasLoginAsGoogle()) window.location = "../../login.html";
 
     const roles = getUserRole();
     const idx = roles.findIndex((e) => e == "write" || e == "admin");

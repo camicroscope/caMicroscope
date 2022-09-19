@@ -164,6 +164,7 @@
               href="../landing/crowd.html"
               >Home</a
             >
+
             <a
               style="
                 float: right;
@@ -173,6 +174,7 @@
                 letter-spacing: 0.05em;
                 text-transform: uppercase;
                 font-size: 0.9em;
+                display: none;
               "
               href="#"
               onclick='googleSignOut("../../login.html?logout=true")'
@@ -198,17 +200,17 @@
     <div id="card-container" class="card-grid"></div>
     <script>
       // -- authentication check -- //
-      if (!hasLoginAsGoogle()) window.location = "../../login.html";
+      // if (!hasLoginAsGoogle()) window.location = "../../login.html";
       // --  -- //
       const store = new Store("../../data/");
       const container = document.getElementById("card-container");
 
-      store.getUsers(getUserId()).then((data) => {
-        if (Array.isArray(data) && data.length > 0) {
+      store.getCurrentUserId().then((data) => {
+        if (data) {
           // user exist
-          $USER = data[0];
+          $USER = data;
           const screenName = document.getElementById("screenName");
-          screenName.innerText = `hi, ${$USER.registration.screenName}`;
+          screenName.innerText = `hi, ${$USER}`;
           screenName.style.display = "";
         }
       });

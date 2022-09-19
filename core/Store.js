@@ -71,6 +71,15 @@ class Store {
       }
     }
   }
+  getCurrentUserId() {
+    const suffix = 'User/getCurrentUserId';
+    const url = `${this.base}${suffix}`;
+    return fetch(url, {
+      credentials: 'include',
+      mode: 'cors',
+    }).then(this.errorHandler);
+  }
+
   getUsers(email) {
     const suffix = 'User/find';
     const url = email ? `${this.base}${suffix}?${objToParamStr({email})}` : `${this.base}${suffix}`;

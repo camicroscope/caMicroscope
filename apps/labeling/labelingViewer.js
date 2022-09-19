@@ -31,7 +31,7 @@ async function initialize() {
       $UI.message = new MessageQueue();
       // create a viewer and set up
       initCore();
-
+      $USER = await $CAMIC.store.getCurrentUserId();
       // loading label and sub label
       try {
         Loading.open(document.body, 'Loading Labels Data...');
@@ -294,7 +294,7 @@ function clickSavebtnHandler() {
 async function saveAnnotation(annotation) {
   Loading.open(document.body, 'Saving Annotations...');
   // user and date time
-  const creator = getUserId();
+  const creator = $USER;
 
 
   // add annotations

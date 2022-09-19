@@ -152,9 +152,12 @@ async function initialize() {
         headerText: 'Annotations Summary',
         hasFooter: true,
       });
+
+
       // create a viewer and set up
       initCore();
-
+      // get user id;
+      $USER = await $CAMIC.store.getCurrentUserId();
       // loading label and sub label
       try {
         Loading.open(document.body, 'Loading Labels Data...');
@@ -432,7 +435,8 @@ function clickSavebtnHandler() {
 async function saveAnnotation(annotation) {
   Loading.open(document.body, 'Saving Annotations...');
   // user and date time
-  const creator = getUserId();
+  // const creator = getUserId();
+  const creator = $USER;
 
 
   // add annotations
@@ -466,7 +470,7 @@ async function saveAnnotation(annotation) {
       }
       console.log(feeback);
     } else {
-      window.location.href = `./roi_pick.html?slideId=${$D.params.slideId}&collectionId=${$D.params.collectionId}`;
+      // window.location.href = `./roi_pick.html?slideId=${$D.params.slideId}&collectionId=${$D.params.collectionId}`;
     }
     Loading.close();
   } else {

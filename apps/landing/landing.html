@@ -15,9 +15,10 @@
     <script src='../../common/util.js'></script>
     <script src='../../common/authChecker.js'></script>
     <script type="text/javascript">
+        window.location.href = './crowd.html';
         (async function () {
             await __auth_check(2);
-            await checkRegistrationStatus(2);
+            // await checkRegistrationStatus(2);
         })();
     </script>
     <style>
@@ -40,7 +41,7 @@
         <ul>
             <li id="screenName" style="display:none;"></li>
             <li><a target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLScL91LxrpAZjU88GBZP9gmcdgdf8__uNUwhws2lzU6Lr4qNwA/viewform">Feedback</a></li>
-            <li><a href="#" onclick="googleSignOut('../../login.html?logout=true')">Sign Out</a></li>
+            <li style="display:none;"><a href="#" onclick="googleSignOut('../../login.html?logout=true')">Sign Out</a></li>
         </ul>
     </nav>
 </header>
@@ -134,15 +135,25 @@
 <script src="./util.js"></script>
 <script type='text/javascript' src='../../common/util.js'></script>
 <script type='text/javascript'>
-var checkUserInfo = setInterval(function() {
-    if ($USER&&$USER.registration&&$USER.registration.screenName) {
-      clearInterval(checkUserInfo);
-      // 
-      const screenName = document.getElementById('screenName');
-      screenName.innerText = `hi, ${$USER.registration.screenName}`;
-      screenName.style.display = '';
+    const store = new Store('../../data/');
+    store.getCurrentUserId().then((data) => {
+    if (data) {
+        // user exist
+        $USER = data;
+        const screenName = document.getElementById("screenName");
+        screenName.innerText = `hi, ${$USER}`;
+        screenName.style.display = "";
     }
-  }, 250);
+    });    
+// var checkUserInfo = setInterval(function() {
+//     if ($USER) {
+//       clearInterval(checkUserInfo);
+//       // 
+//       const screenName = document.getElementById('screenName');
+//       screenName.innerText = `hi, ${$USER}`;
+//       screenName.style.display = '';
+//     }
+//   }, 250);
 </script>
 </body>
 </html>

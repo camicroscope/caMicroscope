@@ -209,12 +209,13 @@ function initialize() {
   const params = getUrlVars();
   const store = new Store('../data/');
 
-  store.getUsers(getUserId()).then((data) => {
-    if (Array.isArray(data) && data.length > 0) {
+  store.getCurrentUserId().then((data) => {
+    console.log(data);
+    if (data) {
       // user exist
-      $USER = data[0];
+      $USER = data;
       const screenName = document.getElementById('screenName');
-      screenName.innerText = `hi, ${$USER.registration.screenName}`;
+      screenName.innerText = `hi, ${$USER}`;
       screenName.style.display = '';
     }
   });
