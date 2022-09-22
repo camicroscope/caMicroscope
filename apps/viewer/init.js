@@ -309,6 +309,8 @@ function initCore() {
 
 // initialize all UI components
 async function initUIcomponents() {
+  $USER = await await $CAMIC.store.getCurrentUserId();
+
   /* create UI components */
 
   $UI.modalbox = new ModalBox({
