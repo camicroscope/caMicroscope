@@ -167,7 +167,7 @@ function initCore() {
       if ($D.params.retry) {
         $UI.message.addError(e.message);
         // can't reach Slide and return to home page
-        if (e.isServiceError) redirect($D.pages.table, e.message, 0);
+        if (e.isServiceError) redirect($D.pages.table, e.message, 1);
       } else {
         // If this is our first attempt, try one more time.
         let params = new URLSearchParams(window.location.search);
