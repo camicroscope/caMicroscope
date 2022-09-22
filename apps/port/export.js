@@ -59,7 +59,12 @@ function createDataTable(data) {
       tr.find('i.fas').removeClass('text-danger');
       tr.find('i.fas').addClass('fa-plus-square');
       tr.find('i.fas').addClass('text-primary');
-      row.child(createUserList(row.data())).show();
+      const data = row.data();
+      if (data.users&&Array.isArray(data.users)&&data.users.length>0) {
+        row.child(createUserList(row.data())).show();
+      } else {
+        row.child(createNonUserMessage()).show();
+      }
     }
   });
 
@@ -67,6 +72,9 @@ function createDataTable(data) {
   $('#data-table-view').append(
       $('<tfoot/>').append( $('#data-table-view thead tr').clone() ),
   );
+}
+function createNonUserMessage() {
+  return `The case hasn't been assigned`;
 }
 function userChkChangeHandler(elt) {
   const {colId, key} = elt.dataset;

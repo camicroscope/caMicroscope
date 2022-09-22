@@ -224,7 +224,7 @@ function toggleAllUsers(e) {
       // reload collection info
       store.getCollection({id: cid}).then((rs)=>{
         const collData = $collectionList.find((d)=>d.id==cid);
-        if (rs&&Array.isArray(rs)&&rs[0]&&rs[0].users&&collData&&collData.users) {
+        if (rs&&Array.isArray(rs)&&rs[0]&&rs[0].users&&collData) {
           collData.users = rs[0].users;
         }
       });
@@ -239,7 +239,7 @@ function toggleAllUsers(e) {
       // reload collection info
       store.getCollection({id: cid}).then((rs)=>{
         const collData = $collectionList.find((d)=>d.id==cid);
-        if (rs&&Array.isArray(rs)&&rs[0]&&rs[0].users&&collData&&collData.users) {
+        if (rs&&Array.isArray(rs)&&rs[0]&&rs[0].users&&collData) {
           collData.users = rs[0].users;
         }
       });
@@ -265,7 +265,7 @@ function toggleAllSlides(e) {
       // reload collection info
       store.getCollection({id: cid}).then((rs)=>{
         const collData = $collectionList.find((d)=>d.id==cid);
-        if (rs&&Array.isArray(rs)&&rs[0]&&rs[0].slides&&collData&&collData.slides) {
+        if (rs&&Array.isArray(rs)&&rs[0]&&rs[0].slides&&collData) {
           collData.slides = rs[0].slides;
         }
       });
@@ -280,7 +280,7 @@ function toggleAllSlides(e) {
       // reload collection info
       store.getCollection({id: cid}).then((rs)=>{
         const collData = $collectionList.find((d)=>d.id==cid);
-        if (rs&&Array.isArray(rs)&&rs[0]&&rs[0].slides&&collData&&collData.slides) {
+        if (rs&&Array.isArray(rs)&&rs[0]&&rs[0].slides&&collData) {
           collData.slides = rs[0].slides;
         }
       });
@@ -304,7 +304,7 @@ function toggleAUser(e) {
       // reload collection info
       store.getCollection({id: cid}).then((rs)=>{
         const collData = $collectionList.find((d)=>d.id==cid);
-        if (rs&&Array.isArray(rs)&&rs[0]&&rs[0].users&&collData&&collData.users) {
+        if (rs&&Array.isArray(rs)&&rs[0]&&rs[0].users&&collData) {
           collData.users = rs[0].users;
         }
       });
@@ -319,7 +319,7 @@ function toggleAUser(e) {
       // reload collection info
       store.getCollection({id: cid}).then((rs)=>{
         const collData = $collectionList.find((d)=>d.id==cid);
-        if (rs&&Array.isArray(rs)&&rs[0]&&rs[0].users&&collData&&collData.users) {
+        if (rs&&Array.isArray(rs)&&rs[0]&&rs[0].users&&collData) {
           collData.users = rs[0].users;
         }
       });
@@ -342,7 +342,7 @@ function toggleASlide(e) {
       // reload collection info
       store.getCollection({id: cid}).then((rs)=>{
         const collData = $collectionList.find((d)=>d.id==cid);
-        if (rs&&Array.isArray(rs)&&rs[0]&&rs[0].slides&&collData&&collData.slides) {
+        if (rs&&Array.isArray(rs)&&rs[0]&&rs[0].slides&&collData) {
           collData.slides = rs[0].slides;
         }
       });
@@ -357,7 +357,7 @@ function toggleASlide(e) {
       // reload collection info
       store.getCollection({id: cid}).then((rs)=>{
         const collData = $collectionList.find((d)=>d.id==cid);
-        if (rs&&Array.isArray(rs)&&rs[0]&&rs[0].slides&&collData&&collData.slides) {
+        if (rs&&Array.isArray(rs)&&rs[0]&&rs[0].slides&&collData) {
           collData.slides = rs[0].slides;
         }
       });
