@@ -11,6 +11,7 @@ function PathDbMods() {
               console.log(x)
               if (x.hasOwnProperty('token') && x.token) {
                 document.cookie = "token=" + x.token + ";"
+                console.log("set cookie, is now:" , document.cookie)
               }
            })
       } else {
