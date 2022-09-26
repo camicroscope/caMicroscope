@@ -21,10 +21,12 @@ async function populateList() {
       // get associated result types
       r = [];
       for (let a of await store.findMarkTypes(slide['_id']['$oid'], 'computer')) {
-        r.push({'id': a['_id']['analysis']['execution_id'], 'name': a['_id']['analysis']['name'], 'type': 'computer mark'});
+        console.log(a);
+        r.push({'id': a['execution_id'], 'name': a['name'], 'type': 'computer mark'});
       }
       for (let a of await store.findMarkTypes(slide['_id']['$oid'], 'human')) {
-        r.push({'id': a['_id']['analysis']['execution_id'], 'name': a['_id']['analysis']['name'], 'type': 'human mark'});
+        console.log(a);
+        r.push({'id': a['execution_id'], 'name': a['name'], 'type': 'human mark'});
       }
       // todo -- is this right for heatmapType results?
       for (let a of await store.findHeatmapType(slide['_id']['$oid'])) {
