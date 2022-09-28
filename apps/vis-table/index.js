@@ -182,6 +182,24 @@ async function loadSlideInfo(node) {
 
       // search on evaluations
       slide.evaluation = evaluations.find((eval)=>eval.slide_id==sid);
+
+      // slide sort
+      slide.order = 2;
+      // 1. draft is true
+      if (slide.evaluation&&slide.evaluation.is_draft==true) {
+        slide.order = 1;
+      }
+      // 2. no evauation
+      // 3. draft is false informativeness == '1'
+      if (slide.evaluation&&slide.evaluation.is_draft==false) {
+        if (slide.evaluation.informativeness = '1') {
+          slide.order = 3;
+        } else {
+          slide.order = 4;
+        }
+      }
+      // 4.
+
       // search on humanAnnotationCounts
       slide.annotationCount = humanAnnotationCounts.find((d)=>d._id==sid);
     });
@@ -330,7 +348,7 @@ async function createGridCards() {
   //
   const parentNames = getParentNames($D.selectedNode);
   const crumbList = [...parentNames.reverse(), $D.selectedNode.original.name];
-  slides.forEach((slide) => {
+  slides.sort((a, b) => a.order - b.order).forEach((slide) => {
     $UI.gridViewContainer.append(createGridCard(slide, crumbList));
   });
 }
@@ -383,14 +401,13 @@ function createGridCard(d, crumbList) {
   cardContent.appendChild(title);
 
 
-  // DOE customized TODO
+  // DOE customized
   // informativeness indicator
   const [indicator, score] = getInformativenessInfos(d);
   card.appendChild(indicator);
   if (score) card.appendChild(score);
-  //
 
-  // TODO
+
   const indicatorIcon = indicator.querySelector('i');
   if ($D.isRankEnable && indicatorIcon && indicatorIcon.classList.contains('fa-check') ) {
     const informativenessSlides = $D.currentSlideData.filter((slide)=>{
@@ -514,8 +531,8 @@ function getInformativenessInfos(slide) {
   informativenessIndicator.classList.add('indicator');
   const icon = document.createElement('i');
   icon.classList.add('fas');
-  //
-  if (slide.evaluation) {
+
+  if (slide.evaluation&&slide.evaluation.is_draft==false) {
     const evalData = slide.evaluation.evaluation;
     if (evalData.informativeness == '1') {
       icon.classList.add('fa-check');
@@ -533,6 +550,10 @@ function getInformativenessInfos(slide) {
       icon.classList.add('text-danger');
       icon.title = 'Uninformative';
     }
+  } else if (slide.evaluation&&slide.evaluation.is_draft==true) {
+    icon.classList.add('fa-pen');
+    icon.classList.add('text-primary');
+    icon.title = 'Pending';
   } else {
     icon.classList.add('fa-question');
     icon.classList.add('text-muted');
