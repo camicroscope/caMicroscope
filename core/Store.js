@@ -72,8 +72,7 @@ class Store {
     }
   }
   getCurrentUserId() {
-    const suffix = 'User/getCurrentUserId';
-    const url = `${this.base}${suffix}`;
+    const url = "../../user.json";
     return fetch(url, {
       credentials: 'include',
       mode: 'cors',
@@ -86,7 +85,7 @@ class Store {
     return fetch(url, {
       credentials: 'include',
       mode: 'cors',
-    }).then(this.errorHandler);
+    }).then(this.errorHandler).then(x=>x["user_id"]);
   }
   /**
    * update a collection info
