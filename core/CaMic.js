@@ -168,6 +168,7 @@ class CaMic {
           }
           const data = x[0];
           // check the slide on service side
+          console.log("about to req, cookie is ", document.cookie);
           OpenSeadragon.makeAjaxRequest( {
             url: '../../img/IIP/raw/?DeepZoom='+ data['location'] + '.dzi',
             xhrFields: { withCredentials:true },
