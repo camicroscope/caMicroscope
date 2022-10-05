@@ -197,7 +197,7 @@ class CaMic {
     this.slideId = data['_id']['$oid'];
 
     this.slideName = data['name'];
-
+    console.log("here, the cookie is: ", document.cookie);
     this.viewer.open('../../img/IIP/raw/?DeepZoom='+ data['location'] + '.dzi');
     // set mpp
     this.mpp_x = +data['mpp-x'];
