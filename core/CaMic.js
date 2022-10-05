@@ -168,8 +168,8 @@ class CaMic {
           }
           const data = x[0];
           // check the slide on service side
-          console.log("about to req, cookie is ", document.cookie);
-          fetch('../../img/IIP/raw/?DeepZoom='+ data['location'] + '.dzi',{credentials: "same-origin"}).then(z=>{
+          fetch('../../img/IIP/raw/?DeepZoom='+ data['location'] + '.dzi',{credentials: "include"}).then(z=>{
+            console.log("about to req, cookie is ", document.cookie);
             if (z.status<400){
               this.openSlide(data, func);
             } else {
