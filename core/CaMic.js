@@ -168,7 +168,7 @@ class CaMic {
           }
           const data = x[0];
           // check the slide on service side
-          fetch('../../img/IIP/raw/?DeepZoom='+ data['location'] + '.dzi',{credentials: "include"}).then(z=>{
+          fetch('../../img/IIP/raw/?token=' + getCookie("token") + '&DeepZoom='+ data['location'] + '.dzi',{credentials: "include"}).then(z=>{
             console.log("about to req, cookie is ", document.cookie);
             if (true){
               this.openSlide(data, func);
@@ -194,7 +194,7 @@ class CaMic {
 
     this.slideName = data['name'];
     console.log("here, the cookie is: ", document.cookie);
-    this.viewer.open('../../img/IIP/raw/?DeepZoom='+ data['location'] + '.dzi');
+    this.viewer.open('../../img/IIP/raw/?token=' + getCookie("token") + '&DeepZoom='+ data['location'] + '.dzi');
     // set mpp
     this.mpp_x = +data['mpp-x'];
     this.mpp_y = +data['mpp-y'];
