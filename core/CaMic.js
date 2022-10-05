@@ -170,6 +170,7 @@ class CaMic {
           // check the slide on service side
           OpenSeadragon.makeAjaxRequest( {
             url: '../../img/IIP/raw/?DeepZoom='+ data['location'] + '.dzi',
+            xhrFields: { withCredentials:true },
             success: function( xhr ) {
               this.openSlide(data, func);
             }.bind(this),
