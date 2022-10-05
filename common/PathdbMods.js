@@ -1,7 +1,7 @@
-function PathDbMods() {
+async function PathDbMods() {
   console.log("PathDbMods()...");
   // determine if user is authenicated
-  fetch("/user/login_status?_format=json", {credentials: 'include'})
+  await fetch("/user/login_status?_format=json", {credentials: 'include'})
     .then(response => response.json())
     .then(function(data) {
       if (data!=0) {

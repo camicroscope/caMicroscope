@@ -6,7 +6,7 @@ const params = getUrlVars();
 let file;
 if (params.mode && params.mode==="pathdb"){
     ImgloaderMode = 'iip';
-    PathDbMods()
+    await PathDbMods()
 }
 else if(params.slideId&&params.id&&params.slideId==="local"&&params.id.includes('http://localhost:8888')){
     ImgloaderMode = 'imgbox';
