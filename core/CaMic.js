@@ -171,7 +171,7 @@ class CaMic {
           console.log("about to req, cookie is ", document.cookie);
           OpenSeadragon.makeAjaxRequest( {
             url: '../../img/IIP/raw/?DeepZoom='+ data['location'] + '.dzi',
-            xhrFields: { withCredentials:true },
+            withCredentials: true,
             success: function( xhr ) {
               this.openSlide(data, func);
             }.bind(this),
