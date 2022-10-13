@@ -297,8 +297,11 @@ function savePatches() {
     return;
   }
 
-  countungLabelNums();
-  createLabelList();
+  // control ROIs workflow
+  // countungLabelNums();
+  // createLabelList();
+
+  saveLabelings();
 }
 function countungLabelNums() {
   selection.forEach((elt) => (elt.num = 0));
