@@ -1,7 +1,7 @@
-function PathDbMods() {
+async function PathDbMods() {
   console.log("PathDbMods()...");
   // determine if user is authenicated
-  fetch("/user/login_status?_format=json", {credentials: 'include'})
+  await fetch("/user/login_status?_format=json", {credentials: 'include'})
     .then(response => response.json())
     .then(function(data) {
       if (data!=0) {
@@ -11,6 +11,7 @@ function PathDbMods() {
               console.log(x)
               if (x.hasOwnProperty('token') && x.token) {
                 document.cookie = "token=" + x.token + ";"
+                console.log("set cookie, is now:" , document.cookie)
               }
            })
       } else {
@@ -49,9 +50,9 @@ function PathDbMods() {
       x.mpp = x.mpp_x
     }
     if (data.field_iip_path && data.field_iip_path.length >= 1) {
-      x.location = data.field_iip_path[0].value;
-      //x.location = "pathdb*" + pathdbid;
-      x.url = "../../img/IIP/raw/?DeepZoom=" + x.location + ".dzi";
+      //x.location = data.field_iip_path[0].value;
+      x.location = "pathdb*" + pathdbid;
+      x.url = "../../img/IIP/raw/?DeepZoom=pathdb*" + pathdbid + ".dzi";
     } else {
       throw "no iip path in pathdb data"
     }
