@@ -168,13 +168,12 @@ class CaMic {
           }
           const data = x[0];
           // check the slide on service side
-          let check_slide_url = '../../img/IIP/raw/&DeepZoom='+ data['location'] + '.dzi';
-          if (getCookie("token")){
-            check_slide_url = '../../img/IIP/raw/?token=' + getCookie("token") + '&DeepZoom='+ data['location'] + '.dzi';
+          let checkSlideUrl = '../../img/IIP/raw/&DeepZoom='+ data['location'] + '.dzi';
+          if (getCookie('token')) {
+            checkSlideUrl = '../../img/IIP/raw/?token=' + getCookie('token') + '&DeepZoom='+ data['location'] + '.dzi';
           }
-          fetch(check_slide_url,{credentials: "include"}).then(z=>{
-            console.log("about to req, cookie is ", document.cookie);
-            if (true){
+          fetch(checkSlideUrl, {credentials: 'include'}).then((z)=>{
+            if (true) {
               this.openSlide(data, func);
             } else {
               Loading.text.textContent = 'Slide Source Returned Status Code: ' + z.status;
@@ -183,7 +182,7 @@ class CaMic {
                     isServiceError: true,
                     message: 'Slide Source Returned Status Code: ' + z.status});
             }
-          })
+          });
         })
         .catch((e)=>{
           console.error(e);
@@ -198,11 +197,11 @@ class CaMic {
 
     this.slideName = data['name'];
     // insert token if present
-    let open_slide_url = '../../img/IIP/raw/&DeepZoom='+ data['location'] + '.dzi';
-    if (getCookie("token")){
-      open_slide_url = '../../img/IIP/raw/?token=' + getCookie("token") + '&DeepZoom='+ data['location'] + '.dzi';
+    let openSlideUrl = '../../img/IIP/raw/&DeepZoom='+ data['location'] + '.dzi';
+    if (getCookie('token')) {
+      openSlideUrl = '../../img/IIP/raw/?token=' + getCookie('token') + '&DeepZoom='+ data['location'] + '.dzi';
     }
-    this.viewer.open(open_slide_url);
+    this.viewer.open(openSlideUrl);
     // set mpp
     this.mpp_x = +data['mpp-x'];
     this.mpp_y = +data['mpp-y'];
