@@ -168,7 +168,7 @@ class CaMic {
           }
           const data = x[0];
           // check the slide on service side
-          let checkSlideUrl = '../../img/IIP/raw/&DeepZoom='+ data['location'] + '.dzi';
+          let checkSlideUrl = '../../img/IIP/raw/?DeepZoom='+ data['location'] + '.dzi';
           if (getCookie('token')) {
             checkSlideUrl = '../../img/IIP/raw/?token=' + getCookie('token') + '&DeepZoom='+ data['location'] + '.dzi';
           }
@@ -197,7 +197,7 @@ class CaMic {
 
     this.slideName = data['name'];
     // insert token if present
-    let openSlideUrl = '../../img/IIP/raw/&DeepZoom='+ data['location'] + '.dzi';
+    let openSlideUrl = '../../img/IIP/raw/?DeepZoom='+ data['location'] + '.dzi';
     if (getCookie('token')) {
       openSlideUrl = '../../img/IIP/raw/?token=' + getCookie('token') + '&DeepZoom='+ data['location'] + '.dzi';
     }
