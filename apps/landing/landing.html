@@ -15,7 +15,7 @@
     <script src='../../common/util.js'></script>
     <script src='../../common/authChecker.js'></script>
     <script type="text/javascript">
-        window.location.href = './crowd.html';
+        // window.location.href = './crowd.html';
         (async function () {
             await __auth_check(2);
             // await checkRegistrationStatus(2);
@@ -73,8 +73,8 @@
                 <div class="content">
                     <h3>ROI Creation - Organizers</h3>
                     <p>Organizers select a slide and create ROIs.</p>
-                    <a href="../htt-table.html" class="button">Create</a>
-                    <a href="../labeling/statistics.html" class="button">Result</a>
+                    <a href="../htt-table.html" class="button">Create & View All</a>
+                    <!-- <a href="../labeling/statistics.html" class="button">Result</a> -->
                 </div>
             </section>
 
@@ -136,14 +136,17 @@
 <script type='text/javascript' src='../../common/util.js'></script>
 <script type='text/javascript'>
     const store = new Store('../../data/');
-    store.getCurrentUserId().then((data) => {
-    if (data) {
-        // user exist
-        $USER = data;
-        const screenName = document.getElementById("screenName");
-        screenName.innerText = `hi, ${$USER}`;
-        screenName.style.display = "";
-    }
+    store.getCurrentUser().then((data) => {
+        if (data&&data.hasOwnProperty('user_id')&&data.hasOwnProperty('is_admin')&&data.is_admin==true) {
+            // user exist
+            $USER = data.user_id;
+            $ISADMIN = data.is_admin;
+            const screenName = document.getElementById("screenName");
+            screenName.innerText = `hi, ${$USER}`;
+            screenName.style.display = "";
+        } else {
+            window.location.href = './crowd.html'
+        }
     });    
 // var checkUserInfo = setInterval(function() {
 //     if ($USER) {

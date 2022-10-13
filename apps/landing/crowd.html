@@ -212,10 +212,12 @@
 <script src="./util.js"></script>
 <script type="text/javascript">
     const store = new Store('../../data/');
-    store.getCurrentUserId().then((data) => {
-    if (data) {
+    store.getCurrentUser().then((data) => {
+    if (data&&data.hasOwnProperty('user_id')&&data.hasOwnProperty('is_admin')) {
+        if(data.is_admin==true) window.location.href = './landing.html'
         // user exist
-        $USER = data;
+        $USER = data.user_id;
+        $ISADMIN = data.is_admin;
         const screenName = document.getElementById("screenName");
         screenName.innerText = `hi, ${$USER}`;
         screenName.style.display = "";

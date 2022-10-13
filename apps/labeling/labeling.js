@@ -93,6 +93,14 @@ function initialize() {
       });
       // create a viewer and set up
       initCore();
+      $CAMIC.store.getCurrentUser().then((data)=>{
+        if (data&&data.hasOwnProperty('user_id')&&data.hasOwnProperty('is_admin')&&data.is_admin == true) {
+          $USER = data.user_id;
+          $ISADMIN = data.is_admin;
+        } else {
+          window.location.href = '../landing/crowd.html';
+        }
+      });
     }
   }, 100);
 }
@@ -157,7 +165,7 @@ function initCore() {
     }
 
     // tracker
-    const creator = sessionStorage.getItem('userName') || getUserId();
+    const creator = $USER;
     tracker = new Tracker($CAMIC, $D.params.data._id.$oid, creator);
     tracker.start();
   });
@@ -618,7 +626,7 @@ function createLabelList() {
   const table = `<div style='display: table;width: 100%; color: #365F9C; text-align: center;'>${header}${rows}</div>`;
   $UI.modalbox.body.innerHTML = table;
 
-  const isPassed = true; // checkSelection();
+  const isPassed = checkSelection();
   const footer = $UI.modalbox.elt.querySelector('.modalbox-footer');
   footer.innerHTML = `
   <div style='display:flex;wdith:100%;justify-content: flex-end;'>
@@ -641,6 +649,7 @@ function createLabelList() {
   );
   continueBtn.addEventListener('click', () => {
     $UI.modalbox.close();
+    // window.location.href = '../htt-table.html';
   });
   saveBtn.addEventListener('click', saveLabelings);
 }
@@ -695,9 +704,8 @@ async function saveLabelings(e) {
     Loading.close();
     $UI.modalbox.close();
   }
-  console.log('finished');
   // return to home
-  // redirect($D.pages.table, 'Redirecting To Table....', 0);
+  redirect($D.pages.table, 'Redirecting To Table....', 0);
 }
 
 async function saves(ROI, subROIs) {
@@ -726,7 +734,7 @@ function generateROIandSubROI(patch) {
   const slideName = $D.params.data.name;
 
   // user info and create date
-  const creator = sessionStorage.getItem('userName') || getUserId();
+  const creator = $USER;
 
   const subROIs = [];
 

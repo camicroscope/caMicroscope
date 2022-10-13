@@ -209,11 +209,12 @@ function initialize() {
   const params = getUrlVars();
   const store = new Store('../data/');
 
-  store.getCurrentUserId().then((data) => {
-    console.log(data);
-    if (data) {
+  store.getCurrentUser().then((data) => {
+    if (data&&data.hasOwnProperty('user_id')) {
       // user exist
-      $USER = data;
+      $USER = data.user_id;
+      // if (data.is_admin==false) window.location.href = './landing/crowd.html';
+      $ISADMIN = data.is_admin;
       const screenName = document.getElementById('screenName');
       screenName.innerText = `hi, ${$USER}`;
       screenName.style.display = '';

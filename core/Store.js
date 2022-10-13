@@ -72,11 +72,18 @@ class Store {
     }
   }
   getCurrentUserId() {
-    const url = "../../user.json";
+    const url = '../../user.json';
     return fetch(url, {
       credentials: 'include',
       mode: 'cors',
-    }).then(this.errorHandler).then(x=>x["user_id"]);
+    }).then(this.errorHandler).then((x)=>x['user_id']);
+  }
+  getCurrentUser() {
+    const url = '../../user.json';
+    return fetch(url, {
+      credentials: 'include',
+      mode: 'cors',
+    }).then(this.errorHandler);
   }
 
   getUsers(email) {

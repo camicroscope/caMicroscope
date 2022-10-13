@@ -31,7 +31,13 @@ async function initialize() {
       $UI.message = new MessageQueue();
       // create a viewer and set up
       initCore();
-      $USER = await $CAMIC.store.getCurrentUserId();
+      const data = await $CAMIC.store.getCurrentUser();
+      if (data&&data.hasOwnProperty('user_id')&&data.hasOwnProperty('is_admin')&&data.is_admin == true) {
+        $USER = data.user_id;
+        $ISADMIN = data.is_admin;
+      } else {
+        window.location.href = '../landing/landing.html';
+      }
       // loading label and sub label
       try {
         Loading.open(document.body, 'Loading Labels Data...');

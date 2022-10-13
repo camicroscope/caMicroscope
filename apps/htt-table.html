@@ -310,15 +310,7 @@
   </body>
   <script>
     // -- authentication check -- //
-    if (!hasLoginAsGoogle()) window.location = "../login.html";
-
-    const type = getUserType();
-
-    // const idx = roles.findIndex((e) => e == "write" || e == "admin");
-    if (type !== "Admin") {
-      // crowd
-      window.location = "./landing/crowd.html";
-    }
+    // if (!hasLoginAsGoogle()) window.location = "../login.html";
 
     const HeadMapping = [
       {
@@ -347,8 +339,8 @@
       },
     ];
 
-    const findROICountByName = (name, array) => {
-      const index = array.findIndex((d) => d["_id"]["name"] == name);
+    const findROICountById = (id, array) => {
+      const index = array.findIndex((d) => d["_id"]["slide"] == id);
       return index == -1 ? 0 : array[index].count;
     };
 
@@ -356,13 +348,16 @@
     function initialize() {
       const params = getUrlVars();
       const store = new Store("../data/");
-      store.getUsers(getUserId()).then((data) => {
-        if (Array.isArray(data) && data.length > 0) {
+      store.getCurrentUser().then((data) => {
+        if (data&&data.hasOwnProperty('user_id')&&data.hasOwnProperty('is_admin')&&data.is_admin==true) {
           // user exist
-          $USER = data[0];
+          $USER = data.user_id;
+          $ISADMIN = data.is_admin;
           const screenName = document.getElementById("screenName");
-          screenName.innerText = `hi, ${$USER.registration.screenName}`;
+          screenName.innerText = `hi, ${$USER}`;
           screenName.style.display = "";
+        } else {
+          window.location.href = './landing/crowd.html'
         }
       });
       store
@@ -373,7 +368,6 @@
           });
           // get ROI counts for each slide
           const roi_counts = await store.countLabelingBySlide();
-
           // filter
           if (
             !(Object.keys(params).length === 0 && params.constructor === Object)
@@ -396,13 +390,13 @@
                   if (i == 0) rs.push(d["_id"]["$oid"]);
                   // add rois #
                   else if (key == "rois")
-                    rs.push(findROICountByName(d.name, roi_counts));
+                    rs.push(findROICountById(d._id.$oid, roi_counts));
                   else if (!d[key]) rs.push("");
                   else rs.push(d[key]);
                 });
                 // <button class="btn disabled" data-id='${rs[0]}' onclick='openCreate(this)' disabled>Create</button>
                 const btn = `
-					<button class="btn disabled" data-id='${rs[0]}' onclick='openCreate(this)' disabled>Create</button>
+					<button class="btn" data-id='${rs[0]}' onclick='openCreate(this)'>Create</button>
 					<button class="btn" data-id='${rs[0]}' onclick='openView(this)'>View All</button>`;
 
                 rs.push(btn);
