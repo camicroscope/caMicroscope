@@ -168,7 +168,11 @@ class CaMic {
           }
           const data = x[0];
           // check the slide on service side
-          fetch('../../img/IIP/raw/?token=' + getCookie("token") + '&DeepZoom='+ data['location'] + '.dzi',{credentials: "include"}).then(z=>{
+          let check_slide_url = '../../img/IIP/raw/&DeepZoom='+ data['location'] + '.dzi';
+          if (getCookie("token")){
+            check_slide_url = '../../img/IIP/raw/?token=' + getCookie("token") + '&DeepZoom='+ data['location'] + '.dzi';
+          }
+          fetch(check_slide_url,{credentials: "include"}).then(z=>{
             console.log("about to req, cookie is ", document.cookie);
             if (true){
               this.openSlide(data, func);
@@ -193,8 +197,12 @@ class CaMic {
     this.slideId = data['_id']['$oid'];
 
     this.slideName = data['name'];
-    console.log("here, the cookie is: ", document.cookie);
-    this.viewer.open('../../img/IIP/raw/?token=' + getCookie("token") + '&DeepZoom='+ data['location'] + '.dzi');
+    // insert token if present
+    let open_slide_url = '../../img/IIP/raw/&DeepZoom='+ data['location'] + '.dzi';
+    if (getCookie("token")){
+      open_slide_url = '../../img/IIP/raw/?token=' + getCookie("token") + '&DeepZoom='+ data['location'] + '.dzi';
+    }
+    this.viewer.open(open_slide_url);
     // set mpp
     this.mpp_x = +data['mpp-x'];
     this.mpp_y = +data['mpp-y'];
