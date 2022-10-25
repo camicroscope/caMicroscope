@@ -168,21 +168,20 @@ class CaMic {
           }
           const data = x[0];
           // check the slide on service side
-          OpenSeadragon.makeAjaxRequest( {
-            url: '../../img/IIP/raw/?DeepZoom='+ data['location'] + '.dzi',
-            success: function( xhr ) {
+          let checkSlideUrl = '../../img/IIP/raw/?DeepZoom='+ data['location'] + '.dzi';
+          if (getCookie('token')) {
+            checkSlideUrl = '../../img/IIP/raw/?token=' + getCookie('token') + '&DeepZoom='+ data['location'] + '.dzi';
+          }
+          fetch(checkSlideUrl, {credentials: 'include'}).then((z)=>{
+            if (true) {
               this.openSlide(data, func);
-            }.bind(this),
-            error: function( xhr, exc ) {
-              console.log(xhr, exc);
-              Loading.text.textContent = 'Something Wrong With This Slide... X_X';
-              if (func && typeof func === 'function') {
-                func.call(null,
-                    {hasError: true,
-                      isServiceError: true,
-                      message: 'Something Wrong With This Slide... X_X'});
-              }
-            },
+            } else {
+              Loading.text.textContent = 'Slide Source Returned Status Code: ' + z.status;
+              func.call(null,
+                  {hasError: true,
+                    isServiceError: true,
+                    message: 'Slide Source Returned Status Code: ' + z.status});
+            }
           });
         })
         .catch((e)=>{
@@ -197,8 +196,12 @@ class CaMic {
     this.slideId = data['_id']['$oid'];
 
     this.slideName = data['name'];
-
-    this.viewer.open('../../img/IIP/raw/?DeepZoom='+ data['location'] + '.dzi');
+    // insert token if present
+    let openSlideUrl = '../../img/IIP/raw/?DeepZoom='+ data['location'] + '.dzi';
+    if (getCookie('token')) {
+      openSlideUrl = '../../img/IIP/raw/?token=' + getCookie('token') + '&DeepZoom='+ data['location'] + '.dzi';
+    }
+    this.viewer.open(openSlideUrl);
     // set mpp
     this.mpp_x = +data['mpp-x'];
     this.mpp_y = +data['mpp-y'];
