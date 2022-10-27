@@ -343,9 +343,8 @@ async function createGridCards() {
   $UI.gridViewContainer.empty();
   // limit: $D.recordPerPage,
   const start = $D.recordPerPage * ($D.currentPage - 1);
-  const slides = $D.currentSlideData.slice(start, start + $D.recordPerPage);
+  let slides = $D.currentSlideData.slice(start, start + $D.recordPerPage);
 
-  //
   const parentNames = getParentNames($D.selectedNode);
   const crumbList = [...parentNames.reverse(), $D.selectedNode.original.name];
   slides.sort((a, b) => a.order - b.order).forEach((slide) => {
@@ -641,7 +640,18 @@ async function selectNode(event, _data) {
     // TODO
     // loading slide data
     // $D.s = await
-    loadSlideInfo(node);
+    try {
+      loadSlideInfo(node);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      const loader = $UI.gridViewContainer.find('div.loader');
+      loader.remove();
+      if ($UI.gridViewContainer.children().length < 1) {
+
+      }
+    }
+
 
     // let slides checked if the slides in the collection
     // const collData = $D.collectionData.find((d)=>d.id==node.id);
@@ -699,7 +709,7 @@ window.addEventListener('load', async ()=> {
 
     $D.collectionData.forEach((d)=>{
       d.id = d._id.$oid;
-      if (d.users&&d.users.some((u)=>u.user = $D.user.key)&&d.users.find((u)=>u.user = $D.user.key).task_status) {
+      if (d.users&&d.users.some((u)=>u.user = $D.user.key)&&d.users.find((u)=>u.user == $D.user.key).task_status) {
         d.icon = './check-folder.png';
         d.li_attr = {'class': 'text-success'};
       } else {
