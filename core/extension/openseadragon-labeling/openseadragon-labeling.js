@@ -546,6 +546,11 @@
     this.subROIs.forEach(sROI => {
       moving.call(sROI, e);
     });
+    // has coordiate info
+    if (this.manager.isShowCoordinate) {
+      const coordinate = this.element.querySelector(".coordinate");
+      coordinate.textContent = `${top_left.x.toFixed()}, ${top_left.y.toFixed()}`;
+    }    
   }
 
   function resizing(e) {
@@ -649,7 +654,8 @@
     if (this.manager.selection) {
       this.element.querySelector(".note_panel select").focus();
     } else {
-      this.element.querySelector(".note_panel textarea").focus();
+      this.element.querySelector(".note_panel input").focus();
+      // this.element.querySelector(".note_panel textarea").focus();
     }
   };
 
@@ -701,7 +707,8 @@
       options.selIdx = +this.element.querySelector(".note_panel select")
         .selectedIndex;
     } else {
-      options.data = this.element.querySelector(".note_panel textarea").value;
+      options.data = this.element.querySelector(".note_panel input").value;
+      // options.data = this.element.querySelector(".note_panel textarea").value;
     }
     return options;
   };
@@ -709,7 +716,7 @@
   $.Patch.prototype.toJSON = function(coordinates = "normalize") {
     // l/image
     return {
-      note: this.element.querySelector(".note_panel textarea").value,
+      note: this.element.querySelector(".note_panel input").value, // this.element.querySelector(".note_panel textarea").value,
       color: this.element.querySelector(".color input").value,
       isPoint: this.isPoint,
       size: this.getRect(coordinates),
@@ -800,10 +807,8 @@
     elt.style.borderColor = options.color;
     const info = document.createElement("div");
     info.classList.add("info_block");
-
     elt.appendChild(info);
     // controls
-
 
     // til density
     if (options.data != "sROI") {
@@ -877,9 +882,16 @@
       const selector = createSelector(options.manager.selection);
       note_panel.appendChild(selector);
     } else {
-      const textarea = document.createElement("textarea");
-      textarea.textContent = options.data;
-      note_panel.appendChild(textarea);
+
+      // const textarea = document.createElement("textarea");
+      // textarea.textContent = options.data;
+      // note_panel.appendChild(textarea);
+      const input = document.createElement("input");
+      input.setAttribute("type", "number");
+      input.setAttribute("min", 0);
+      input.setAttribute("step", 1);
+      input.value = options.data?options.data:1;
+      note_panel.appendChild(input);
     }
 
     elt.appendChild(note_panel);
@@ -906,6 +918,12 @@
   function createPointElement(elt, options) {
     elt.classList.add("patch");
     elt.classList.add("dot");
+    // coordinate
+    
+    // const coordinate = document.createElement("div");
+    // coordinate.classList.add("coordinate");
+    // coordinate.textContent = '(x,y)';
+    // elt.appendChild(coordinate);
 
     //color
     // color
@@ -950,9 +968,15 @@
       const selector = createSelector(options.manager.selection);
       note_panel.appendChild(selector);
     } else {
-      const textarea = document.createElement("textarea");
-      textarea.textContent = options.data;
-      note_panel.appendChild(textarea);
+      // const textarea = document.createElement("textarea");
+      // textarea.textContent = options.data;
+      // note_panel.appendChild(textarea);
+      const input = document.createElement("input");
+      input.setAttribute("type", "number");
+      input.setAttribute("min", 0);
+      input.setAttribute("step", 1);
+      input.value = options.data?options.data:1;
+      note_panel.appendChild(input);
     }
     controls.appendChild(note_panel);
   }

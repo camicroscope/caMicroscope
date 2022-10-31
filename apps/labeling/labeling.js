@@ -159,7 +159,8 @@ function initCore() {
         $CAMIC.viewer.viewport.getCenter(),
         true,
     );
-    $CAMIC.viewer.pmanager.selection = selection;
+    // $CAMIC.viewer.pmanager.selection = selection;
+    $CAMIC.viewer.pmanager.isShowCoordinate = true;
     if (!$CAMIC.viewer.measureInstance) {
       $UI.toolbar.getSubTool('measure').style.display = 'none';
     }
@@ -750,11 +751,11 @@ function generateROIandSubROI(patch) {
   const location = $D.params.data.location.split('/');
   const fileName = location[location.length-1];
   const alias = `${fileName}_x${x}.${width}_y${y}.${height}`;
-
   const ROI = {
     _id: roiId.toString(),
     alias: alias,
     creator: creator,
+
     provenance: {
       image: {
         slide: slideId,
@@ -768,7 +769,7 @@ function generateROIandSubROI(patch) {
       },
     },
     properties: {
-      type: patch.data, // for label, there are 6 types
+      type: patch.element.querySelector('.note_panel input').value, // patch.data, // for label, there are 6 types
       til_density: patch.getTilDensity(),
       x: x,
       y: y,
