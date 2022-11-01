@@ -38,17 +38,21 @@
     this.isPoint = false;
     this.isCreatePatch = true;
     this.viewer = options.viewer;
+
+    const mpp = +this.viewer.mpp;
+    const heightInPixel = +(500/mpp).toFixed();
+    const widthInPixel = +(500/mpp).toFixed();
     const {
       x,
       y,
       width,
       height
     } = this.viewer.viewport.imageToViewportRectangle(
-      new OpenSeadragon.Rect(0, 0, 1024, 1024)
+      new OpenSeadragon.Rect(0, 0, widthInPixel, widthInPixel)
     );
+
     this.width = width;
     this.height = height;
-
     //this.status
     this.patches = [];
 
@@ -125,6 +129,7 @@
 
   function _press(e) {
     this.isCreatePatch = true;
+    
     this.initPathStates();
   }
   function _drag_end(e) {
@@ -159,7 +164,6 @@
       return;
 
     this.viewer.innerTracker.keyHandler = this.keyHandler;
-
     // create new one
     let options = {
       data: "",
@@ -310,11 +314,14 @@
       checkResize: false
     });
 
+
+
+
+
     // get overlay object
     this.overlay = this.viewer.currentOverlays[
       this.viewer.currentOverlays.length - 1
     ];
-
     // record the zoom level
     this.zoom = this.viewer.viewport.getZoom();
 
@@ -476,6 +483,14 @@
         dragHandler: resizing.bind(this)
       });
     }
+    // coordinate
+    if (options.manager.isShowCoordinate) {
+      const coordinate = document.createElement("div");
+      coordinate.classList.add("coordinate");
+      const {x, y, width, height} = this.getRect('image')
+      coordinate.textContent = `${x.toFixed()}, ${y.toFixed()}`;
+      this.element.appendChild(coordinate);
+    }
 
     //this.active();
   };
@@ -513,6 +528,7 @@
     const top_left = this.viewer.viewport.viewportToImageCoordinates(
       new $.Point(left, top)
     );
+    
     const bottom_right = this.viewer.viewport.viewportToImageCoordinates(
       new $.Point(right, bottom)
     );
@@ -536,6 +552,7 @@
       bottom_right.y > imgHeight
     )
       return;
+
 
     this.overlay.location.x += delta.x;
     this.overlay.location.y += delta.y;
@@ -603,6 +620,7 @@
       const view_point = this.viewer.viewport.windowToViewportCoordinates(
         new $.Point(e.originalEvent.clientX, e.originalEvent.clientY)
       );
+      
       createSubROI(this, view_point);
     }
   }
