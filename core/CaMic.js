@@ -171,7 +171,6 @@ class CaMic {
           let checkSlideUrl = '../../img/IIP/raw/?DeepZoom='+ data['location'] + '.dzi';
           if (getCookie('token')) {
             checkSlideUrl = '../../img/IIP/raw/?token=' + getCookie('token') + '&DeepZoom='+ data['location'] + '.dzi';
-            data.url = checkSlideUrl;
           }
           fetch(checkSlideUrl, {credentials: 'include'}).then((z)=>{
             if (true) {
@@ -223,7 +222,7 @@ class CaMic {
     });
 
     imagingHelper.setMaxZoom(1);
-    data.url = '../../img/IIP/raw/?DeepZoom='+ data['location'] + '.dzi';
+    data.url = openSlideUrl;
     data.slide = this.slideId;
     if (func && typeof func === 'function') func.call(null, data);
     Loading.text.textContent = `Loading Slide's Tiles...`;
