@@ -171,6 +171,7 @@ class CaMic {
           let checkSlideUrl = '../../img/IIP/raw/?DeepZoom='+ data['location'] + '.dzi';
           if (getCookie('token')) {
             checkSlideUrl = '../../img/IIP/raw/?token=' + getCookie('token') + '&DeepZoom='+ data['location'] + '.dzi';
+            data.url = checkSlideUrl;
           }
           fetch(checkSlideUrl, {credentials: 'include'}).then((z)=>{
             if (true) {
