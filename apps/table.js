@@ -239,6 +239,7 @@ function initialize() {
 
         Promises.push(store.getAllCollection());
         Promises.push(store.findSlide());
+        Promises.push(store.getCurrentUser());
 
 
         Promise.all(Promises);
@@ -300,8 +301,10 @@ function initialize() {
                   });
                   if (slideDeleteRequests['counter']) {
                   }
-                  const multiCheck = `<input type="checkbox" name='multiDownload' data-id='${sanitize(rs[0])}' data-location='${sanitize(d.location)}' />`;
-                  rs.push(multiCheck);
+                  if (resps[2] && resps[2]['is_admin'] == 'true') {
+                    const multiCheck = `<input type="checkbox" name='multiDownload' data-id='${sanitize(rs[0])}' data-location='${sanitize(d.location)}' />`;
+                    rs.push(multiCheck);
+                  }
                   return rs;
                 });
               } else {
@@ -343,10 +346,12 @@ function initialize() {
 
               const thead = HeadMapping.map((d, i) => `<th>${sanitize(d.title)} <span class="sort-btn fa fa-sort" data-order=${1}
               data-index=${i}>  </span> </th>`);
-              thead.push(`<th style="text-align: center; vertical-align: middle;" >
-                <button type='button' class='btn btn-primary btn-sm'onclick='downloadSlides(this)'><i class='fas fa-download' ></i></button>
-                <button type='button' class='btn btn-danger btn-sm'onclick='deselectedDownloadCheckbox()'><i class='fas fa-window-close'></i></button>
-              </th>`);
+              if (resps[2] && resps[2]['is_admin'] == 'true') {
+                thead.push(`<th style="text-align: center; vertical-align: middle;" >
+                  <button type='button' class='btn btn-primary btn-sm'onclick='downloadSlides(this)'><i class='fas fa-download' ></i></button>
+                  <button type='button' class='btn btn-danger btn-sm'onclick='deselectedDownloadCheckbox()'><i class='fas fa-window-close'></i></button>
+                </th>`);
+              }
               tbody = data.map((d) => `<tr> ${d.map((a, idx) => idx < 5 ? `<td> ${a} </td>`:`<td style="text-align: center; vertical-align: middle;"> ${a} </td>`).reduce((a, b) => a + b)} </tr>`);
               let entriesPerPage;
               if ($('#entries').val() === undefined) {
