@@ -102,23 +102,36 @@
   };
 
   $.PatchManager.prototype.initPathStates = function() {
-    this.patches.forEach(patch => {
+    this.patches.forEach((patch) => {
       patch.closeNotePanel();
       patch.closeColorPicker();
     });
   };
 
-  $.PatchManager.prototype.addPatch = function(center, noteType) {
-    const _patch = document.createElement("div");
+  $.PatchManager.prototype.addPatch = function(options) {
+    let {x, y, width, height, data, isPoint} = options;
 
-    const rect = getRect(
-      img_point,
-      noteType.model.width,
-      noteType.height,
-      this.imgWidth,
-      this.imgHeight,
-      this.viewer
+    const center_x_img = x + width/2;
+    const center_y_img = y + height/2;
+    const view_point = this.viewer.viewport.imageToViewportCoordinates(
+      new $.Point(center_x_img, center_y_img)
     );
+    const size = this.viewer.viewport.imageToViewportRectangle(
+      new OpenSeadragon.Rect(0, 0, width, height)
+    );
+
+
+    // patch option
+    let patchOptions = {
+      data: data,
+      size: new $.Point(size.width, size.height),
+      center: view_point,
+      viewer: this.viewer,
+      color: '#7cfc00',
+      manager: this,
+      isPoint,
+    };
+    this.patches.push(new $.Patch(patchOptions));
   };
 
   $.PatchManager.prototype.exportPatchesAsJSON = function(
@@ -487,8 +500,24 @@
     if (options.manager.isShowCoordinate) {
       const coordinate = document.createElement("div");
       coordinate.classList.add("coordinate");
-      const {x, y, width, height} = this.getRect('image')
-      coordinate.textContent = `${x.toFixed()}, ${y.toFixed()}`;
+      // copy icon
+      const copy = document.createElement("div");
+      copy.classList.add("material-icons");
+      copy.classList.add("copy");
+      copy.textContent = "content_copy";
+
+      // index indicator
+      const idx = document.createElement("div");
+      idx.classList.add("idx");
+      const {x, y, width, height} = this.getRect('image');
+      idx.textContent = `${x.toFixed()}, ${y.toFixed()}`;
+      // add listener
+      copy.addEventListener("click", (e) => {
+        navigator.clipboard.writeText(idx.textContent);
+      });
+
+      coordinate.appendChild(idx);
+      coordinate.appendChild(copy);
       this.element.appendChild(coordinate);
     }
 
@@ -565,8 +594,8 @@
     });
     // has coordiate info
     if (this.manager.isShowCoordinate) {
-      const coordinate = this.element.querySelector(".coordinate");
-      coordinate.textContent = `${top_left.x.toFixed()}, ${top_left.y.toFixed()}`;
+      const idx = this.element.querySelector(".coordinate .idx");
+      idx.textContent = `${top_left.x.toFixed()}, ${top_left.y.toFixed()}`;
     }    
   }
 
@@ -862,6 +891,15 @@
       til_range.min = 0;
       til_range.max = 100;
       til_range.step = 1;
+      
+      if (options.data&&options.data.til_density&&(options.data.til_density!='None' || Number.isInteger(options.data.til_density))) {
+        til_ctrl.classList.add("checked");
+        til_check.checked = true;
+        // til_chk.checked = !til_chk.checked;
+        til_icon.textContent = "TILs";
+        til_range.value = options.data.til_density;
+        til_scale.textContent = options.data.til_density;
+      }
 
       til_ctrl.appendChild(til_check);
       til_ctrl.appendChild(til_icon);
@@ -908,7 +946,7 @@
       input.setAttribute("type", "number");
       input.setAttribute("min", 0);
       input.setAttribute("step", 1);
-      input.value = options.data?options.data:1;
+      input.value = options.data&&options.data.type?options.data.type:1;
       note_panel.appendChild(input);
     }
 

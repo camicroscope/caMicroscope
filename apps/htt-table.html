@@ -395,9 +395,8 @@
                   else rs.push(d[key]);
                 });
                 // <button class="btn disabled" data-id='${rs[0]}' onclick='openCreate(this)' disabled>Create</button>
-                const btn = `
-					<button class="btn" data-id='${rs[0]}' onclick='openCreate(this)'>Create</button>
-					<button class="btn" data-id='${rs[0]}' onclick='openView(this)'>View All</button>`;
+                const btn = `<button class="btn" data-id='${rs[0]}' onclick='openCreate(this)'>Create&View</button>`
+					      // <button class="btn" data-id='${rs[0]}' onclick='openView(this)'>View All</button>`;
 
                 rs.push(btn);
                 return rs;

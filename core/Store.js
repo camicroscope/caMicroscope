@@ -136,6 +136,7 @@ class Store {
     }).then(this.errorHandler);
   }
 
+
   /**
    * delete user
    * @param {object} id - the user object id
@@ -722,6 +723,20 @@ class Store {
     }
     return fetch(url, {
       method: 'GET',
+      credentials: 'include',
+      mode: 'cors',
+    }).then(this.errorHandler);
+  }
+  /**
+   * delete labeling
+   * @param {object} query - the user object id
+   * @return {promise} - promise which resolves with response
+  **/
+  deleteLabeling(query) {
+    const suffix = 'Labeling/delete';
+    const url = this.base + suffix;
+    return fetch(url + '?' + objToParamStr(query), {
+      method: 'DELETE',
       credentials: 'include',
       mode: 'cors',
     }).then(this.errorHandler);

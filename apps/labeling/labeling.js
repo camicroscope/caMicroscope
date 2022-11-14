@@ -101,8 +101,47 @@ function initialize() {
           window.location.href = '../landing/crowd.html';
         }
       });
+      // load ROIs
+      // loading label and sub label
+      $CAMIC.store.findLabeling({
+        'provenance.image.slide': $D.params.slideId,
+        'provenance.analysis.computation': 'label',
+      }).then((rois) =>{
+        if (Array.isArray(rois)) {
+          $D.ROIs = rois;
+          var checkPatchManagerIsReady = setInterval(function() {
+            if ($CAMIC.viewer.pmanager) {
+              clearInterval(checkPatchManagerIsReady);
+              loadingLabels($D.ROIs);
+            }
+          }, 500);
+        }
+      });
     }
   }, 100);
+}
+
+function loadingLabels(rois) {
+  rois.forEach((roi)=> {
+    const {
+      _id: {
+        $oid,
+      },
+      properties: {
+        x,
+        y,
+        width,
+        height,
+        type,
+      },
+    } = roi;
+    const tilDensity = roi.properties.til_density;
+    options = {
+      x, y, width, height, isPoint: false,
+      data: {til_density: tilDensity, type, id: $oid, existed: true},
+    };
+    $CAMIC.viewer.pmanager.addPatch(options);
+  });
 }
 
 // setting core functionalities
@@ -695,8 +734,12 @@ async function saveLabelings(e) {
   // start saving preduce
   Loading.open(document.body, 'Labels Saving...');
   const ROIS = $CAMIC.viewer.pmanager.patches;
-  // get all labels
+
   try {
+    // remove all labels
+    await $CAMIC.store.deleteLabeling({'provenance.image.slide': $D.params.slideId});
+
+    // add all labels
     await asyncForEach(ROIS, async (roi) => {
       const {ROI, subROIs} = generateROIandSubROI(roi);
       await saves(ROI, subROIs);
@@ -736,12 +779,10 @@ function generateROIandSubROI(patch) {
   // slide Info
   const slideId = $D.params.slideId;
   const slideName = $D.params.data.name;
-
   // user info and create date
   const creator = $USER;
 
   const subROIs = [];
-
   // get ROI
   const execId = randomId();
   const roiId = new ObjectId();
@@ -751,6 +792,7 @@ function generateROIandSubROI(patch) {
   const location = $D.params.data.location.split('/');
   const fileName = location[location.length-1];
   const alias = `${fileName}_x${x}.${width}_y${y}.${height}`;
+
   const ROI = {
     _id: roiId.toString(),
     alias: alias,
@@ -780,8 +822,8 @@ function generateROIandSubROI(patch) {
     subrois: [],
     parent: null,
     viewer_size: {
-      width: viewerSize.width,
-      height: viewerSize.height,
+      width: viewerSize.x,
+      height: viewerSize.y,
     },
     geometries: {
       type: 'FeatureCollection',

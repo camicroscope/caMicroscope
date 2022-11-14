@@ -17,8 +17,11 @@
   background: rgba(255,255,255,.25);
 }
 
+.patch:hover .coordinate {
+  display:flex;
+}
 /* .patch:hover .color, */
-.patch:hover .coordinate,
+/* .patch:hover .coordinate */
 .patch:hover .note,
 .patch:hover .remove,
 .patch:hover .til,
@@ -297,6 +300,21 @@
   border-width:1px;
 }
 
+
+.patch .coordinate .idx {
+  position: relative;
+  border-right: #000 1px solid;
+}
+
+.patch .coordinate .copy {
+  position: relative;
+  font-size: 18px;
+  border-left: #000 1px solid;
+}
+.patch .coordinate .copy:active {
+  color: #fff;
+  background: #000;
+}
 
 
 
