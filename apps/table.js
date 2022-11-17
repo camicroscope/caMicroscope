@@ -239,7 +239,6 @@ function initialize() {
 
         Promises.push(store.getAllCollection());
         Promises.push(store.findSlide());
-        Promises.push(store.getCurrentUser());
 
 
         Promise.all(Promises);
@@ -301,7 +300,7 @@ function initialize() {
                   });
                   if (slideDeleteRequests['counter']) {
                   }
-                  if (resps[2] && resps[2]['is_admin'] == 'true') {
+                  if (resps[1] && !resps[1]['prevent_download']) {
                     const multiCheck = `<input type="checkbox" name='multiDownload' data-id='${sanitize(rs[0])}' data-location='${sanitize(d.location)}' />`;
                     rs.push(multiCheck);
                   }
@@ -346,7 +345,9 @@ function initialize() {
 
               const thead = HeadMapping.map((d, i) => `<th>${sanitize(d.title)} <span class="sort-btn fa fa-sort" data-order=${1}
               data-index=${i}>  </span> </th>`);
-              if (resps[2] && resps[2]['is_admin'] == 'true') {
+              if (resps[1] && resps[1]['prevent_download']) {
+                thead.push(`<th style="text-align: center; vertical-align: middle;" ></th>`);
+              } else {
                 thead.push(`<th style="text-align: center; vertical-align: middle;" >
                   <button type='button' class='btn btn-primary btn-sm'onclick='downloadSlides(this)'><i class='fas fa-download' ></i></button>
                   <button type='button' class='btn btn-danger btn-sm'onclick='deselectedDownloadCheckbox()'><i class='fas fa-window-close'></i></button>
