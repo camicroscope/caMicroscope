@@ -222,7 +222,7 @@ class CaMic {
     });
 
     imagingHelper.setMaxZoom(1);
-    data.url = '../../img/IIP/raw/?DeepZoom='+ data['location'] + '.dzi';
+    data.url = openSlideUrl;
     data.slide = this.slideId;
     if (func && typeof func === 'function') func.call(null, data);
     Loading.text.textContent = `Loading Slide's Tiles...`;
