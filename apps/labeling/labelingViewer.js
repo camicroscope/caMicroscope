@@ -301,6 +301,9 @@ async function saveAnnotation(annotation) {
   Loading.open(document.body, 'Saving Annotations...');
   // user and date time
   const creator = $USER;
+  if ($CAMIC.slideData.collections) {
+    annotation.batch = $CAMIC.store.getCollection($CAMIC.slideData.collections[0]).name;
+  }
 
 
   // add annotations
@@ -636,5 +639,3 @@ function getAnnotationDataFrom(data) {
   };
   return annotation;
 }
-
-

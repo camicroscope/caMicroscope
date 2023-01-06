@@ -194,6 +194,7 @@ class CaMic {
   }
 
   openSlide(data, func) {
+    this.slideData = data;
     this.slideId = data['_id']['$oid'];
 
     this.slideName = data['name'];

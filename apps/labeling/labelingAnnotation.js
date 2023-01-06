@@ -417,11 +417,17 @@ async function saveAnnotations() {
   // user and date time
   // const creator = sessionStorage.getItem('userName') || getUserId();
   const creator = $USER;
-
+  var collection;
+  if ($CAMIC.slideData.collections) {
+    collection = $CAMIC.store.getCollection(id).name;
+  }
 
   // add annotations
   await asyncForEach($D.annotations, async (annotation)=>{
     annotation.creator = creator;
+    if (collection) {
+      annotation.batch = collection;
+    }
     await $CAMIC.store.addLabel(annotation).then( (d) => d.count );
   });
   // update parent
@@ -819,4 +825,3 @@ function getAnnotationDataFrom(data) {
   };
   return annotation;
 }
-
