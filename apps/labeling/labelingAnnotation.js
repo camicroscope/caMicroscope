@@ -417,9 +417,11 @@ async function saveAnnotations() {
   // user and date time
   // const creator = sessionStorage.getItem('userName') || getUserId();
   const creator = $USER;
-  var collection;
-  if ($CAMIC.slideData.collections) {
-    collection = $CAMIC.store.getCollection($CAMIC.slideData.collections[0]).name;
+  var collection = false; // uninitialied
+  try {
+    collection = $CAMIC.store.getCollection($CAMIC.slideData.collections[0])[0].name;
+  } catch (err) {
+    console.error(err);
   }
 
   // add annotations
