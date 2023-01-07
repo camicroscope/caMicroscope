@@ -419,7 +419,7 @@ async function saveAnnotations() {
   const creator = $USER;
   var collection = false; // uninitialied
   try {
-    collection = $CAMIC.store.getCollection($CAMIC.slideData.collections[0])[0].name;
+    collection = (await $CAMIC.store.getCollection($CAMIC.slideData.collections[0]))[0].name;
   } catch (err) {
     console.error(err);
   }

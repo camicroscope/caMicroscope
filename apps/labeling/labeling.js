@@ -647,8 +647,8 @@ function createLabelList() {
   <div style='display:table-row; font-weight:bold;'>
       <div style='text-align: initial; display: table-cell; padding: 5px;'>Label Type</div>
       <div style='display: table-cell; padding: 5px;'>Suggested Label#</div>
-      <div style='display: table-cell; padding: 5px;'>Current Label#</div> 
-      <div style='display: table-cell; padding: 5px;'></div>    
+      <div style='display: table-cell; padding: 5px;'>Current Label#</div>
+      <div style='display: table-cell; padding: 5px;'></div>
   </div>`;
   const rows = selection
       .map(
@@ -775,7 +775,7 @@ async function saves(ROI, subROIs) {
   }
 }
 
-function generateROIandSubROI(patch) {
+async function generateROIandSubROI(patch) {
   // slide Info
   const slideId = $D.params.slideId;
   const slideName = $D.params.data.name;
@@ -792,11 +792,13 @@ function generateROIandSubROI(patch) {
   const location = $D.params.data.location.split('/');
   const fileName = location[location.length-1];
   const alias = `${fileName}_x${x}.${width}_y${y}.${height}`;
+  const batch = (await $CAMIC.store.getCollection($CAMIC.slideData.collections[0]))[0].name;
 
   const ROI = {
     _id: roiId.toString(),
     alias: alias,
     creator: creator,
+    batch: batch,
 
     provenance: {
       image: {
