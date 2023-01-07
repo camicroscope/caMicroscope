@@ -419,7 +419,7 @@ async function saveAnnotations() {
   const creator = $USER;
   var collection;
   if ($CAMIC.slideData.collections) {
-    collection = $CAMIC.store.getCollection(id).name;
+    collection = $CAMIC.store.getCollection($CAMIC.slideData.collections[0]).name;
   }
 
   // add annotations

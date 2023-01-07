@@ -437,9 +437,8 @@ async function saveAnnotation(annotation) {
   // user and date time
   // const creator = getUserId();
   const creator = $USER;
-  var collection;
   if ($CAMIC.slideData.collections) {
-    annotation.batch = $CAMIC.store.getCollection(id).name;
+    annotation.batch = $CAMIC.store.getCollection($CAMIC.slideData.collections[0]).name;
   }
 
 
