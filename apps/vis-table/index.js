@@ -192,13 +192,16 @@ async function loadSlideInfo(node) {
       // 2. no evauation
       // 3. draft is false informativeness == '1'
       if (slide.evaluation&&slide.evaluation.is_draft==false) {
-        if (slide.evaluation.informativeness = '1') {
+        const eval = slide.evaluation;
+        if (eval.evaluation.informativeness == '1') {
           slide.order = 3;
         } else {
           slide.order = 4;
         }
+        if (eval.evaluation.slide_quality == '2') {
+          slide.order = 5;
+        }
       }
-      // 4.
 
       // search on humanAnnotationCounts
       slide.annotationCount = humanAnnotationCounts.find((d)=>d._id==sid);
@@ -366,7 +369,6 @@ function createGridCard(d, crumbList) {
   });
   card.appendChild(cardContent);
 
-
   const loader = document.createElement('div');
   loader.classList.add('loader');
   cardContent.append(loader);
@@ -397,15 +399,23 @@ function createGridCard(d, crumbList) {
   title.classList.add('bg-dark');
   title.title = `${d.name}`;
   title.textContent = `${d.name}`;
-  cardContent.appendChild(title);
-
 
   // DOE customized
+
   // informativeness indicator
   const [indicator, score] = getInformativenessInfos(d);
   card.appendChild(indicator);
   if (score) card.appendChild(score);
 
+  if (d.evaluation&&d.evaluation.is_draft==false&&d.evaluation.evaluation.slide_quality == 2) {
+    cardContent.classList.add('grayscale');
+    const indicatorIcon = indicator.querySelector('i');
+    indicatorIcon.className = '';
+    indicatorIcon.classList.add('fas');
+    indicatorIcon.classList.add('fa-trash');
+    indicatorIcon.classList.add('text-dark');
+  }
+  cardContent.appendChild(title);
 
   const indicatorIcon = indicator.querySelector('i');
   if ($D.isRankEnable && indicatorIcon && indicatorIcon.classList.contains('fa-check') ) {

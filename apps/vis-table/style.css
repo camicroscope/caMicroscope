@@ -105,6 +105,16 @@ nav li:not(.active):hover a{
     
 
 }
+
+.grid-card-content.grayscale{
+  background-color: #909090;
+}
+
+.grid-card-content.grayscale img {
+  -webkit-filter: grayscale(100%);
+  filter: grayscale(100%);
+  
+}
 .grid-card-content {
   overflow: hidden;
   position: relative;
@@ -117,6 +127,7 @@ nav li:not(.active):hover a{
   justify-content: center;  
 }
 .grid-card-title {
+    z-index: 10;
     vertical-align: middle;
     position: absolute;
     bottom: 0;

@@ -507,9 +507,81 @@ async function initUIcomponents() {
             optionLabels: [
               'Unsatisfactory',
               'Satisfactory',
+              'Not H&E Stained Slide',
             ],
             events: {
               change: function() {
+                // get slide quality value
+                const val = this.getValue();
+                console.log(val);
+                // get Tumor Present, Tumor Histology,Informativeness, Absolute Informativeness, comments object
+                var tumorPresent = this.getParent().childrenByPropertyId['tumor_present'];
+                var tumorHistology = this.getParent().childrenByPropertyId['tumor_histology'];
+                var informativeness = this.getParent().childrenByPropertyId['informativeness'];
+                var absoluteInformativeness = this.getParent().childrenByPropertyId['absolute_informativeness'];
+                var comments = this.getParent().childrenByPropertyId['comments'];
+                // disable Tumor Histology,Informativeness, Absolute Informativeness, comments
+                if (val == '2') {
+                  // disable Tumor Present
+                  tumorPresent.disable();
+                  tumorPresent.setValue(null);
+                  tumorPresent.field.addClass('disabled');
+                  tumorPresent.field.addClass('alpaca-disabled');
+                  tumorPresent.control.addClass('disabled');
+                  tumorPresent.control.find('input').prop('disabled', true);
+                  // disable Tumor Histology
+                  tumorHistology.disable();
+                  tumorHistology.setValue(null);
+                  tumorHistology.field.addClass('disabled');
+                  tumorHistology.field.addClass('alpaca-disabled');
+                  tumorHistology.control.addClass('disabled');
+                  tumorHistology.control.find('input').prop('disabled', true);
+                  // disable  Informativeness
+                  informativeness.disable();
+                  informativeness.setValue(null);
+                  informativeness.field.addClass('disabled');
+                  informativeness.field.addClass('alpaca-disabled');
+                  informativeness.control.addClass('disabled');
+                  informativeness.control.find('input').prop('disabled', true);
+
+                  // disable Absolute Informativeness
+                  absoluteInformativeness.disable();
+                  absoluteInformativeness.setValue(null);
+                  absoluteInformativeness.field.addClass('disabled');
+                  absoluteInformativeness.field.addClass('alpaca-disabled');
+                  absoluteInformativeness.control.addClass('disabled');
+                  absoluteInformativeness.control.find('input').prop('disabled', true);
+
+                  // disable comments
+                  comments.setValue(null);
+                  comments.disable();
+                } else { // Tumor Histology,Informativeness, Absolute Informativeness, comments
+                  // enable Tumor Present
+                  tumorPresent.enable();
+                  tumorPresent.field.removeClass('disabled');
+                  tumorPresent.field.removeClass('alpaca-disabled');
+                  tumorPresent.control.removeClass('disabled');
+                  tumorPresent.control.find('input').prop('disabled', false);
+                  // enable Tumor Histology
+                  tumorHistology.enable();
+                  tumorHistology.field.removeClass('disabled');
+                  tumorHistology.field.removeClass('alpaca-disabled');
+                  tumorHistology.control.removeClass('disabled');
+                  tumorHistology.control.find('input').prop('disabled', false);
+
+                  // enable  Informativeness
+                  informativeness.enable();
+                  informativeness.setValue(null);
+                  informativeness.field.removeClass('disabled');
+                  informativeness.field.removeClass('alpaca-disabled');
+                  informativeness.control.removeClass('disabled');
+                  informativeness.control.find('input').prop('disabled', false);
+                }
+                tumorPresent.refreshValidationState(true);
+                tumorHistology.refreshValidationState(true);
+                informativeness.refreshValidationState(true);
+                absoluteInformativeness.refreshValidationState(true);
+                comments.refreshValidationState(true);
                 saveDraft(this.getParent().getValue());
               },
             },
@@ -524,14 +596,13 @@ async function initUIcomponents() {
             events: {
               change: function() {
                 const val = this.getValue();
-                console.log('val:' + val);
                 // get Histology,Informativeness, Absolute Informativeness, comments object
                 var tumorHistology = this.getParent().childrenByPropertyId['tumor_histology'];
                 var informativeness = this.getParent().childrenByPropertyId['informativeness'];
                 var absoluteInformativeness = this.getParent().childrenByPropertyId['absolute_informativeness'];
                 var comments = this.getParent().childrenByPropertyId['comments'];
                 // disable Tumor Histology,Informativeness, Absolute Informativeness, comments
-                if (val=='0') {
+                if (val == '0') {
                   // disable Tumor Histology
                   tumorHistology.disable();
                   tumorHistology.setValue(null);
@@ -582,8 +653,20 @@ async function initUIcomponents() {
               },
             },
             validator: function(callback) {
+              var slideQuality = this.getParent().childrenByPropertyId['slide_quality'].getValue();
+              if (slideQuality == '2') {
+                callback({
+                  status: true,
+                });
+                return;
+              }
               const tumorPresent = this.getValue();
-              if (tumorPresent === '1') {
+              if (tumorPresent == '') {
+                callback({
+                  status: false,
+                  message: 'This field is not optional',
+                });
+              } else if (tumorPresent === '1') {
                 $CAMIC.store.countMark({
                   'creator': $D.user.key,
                   'provenance.image.slide': $D.params.slideId,
@@ -633,11 +716,19 @@ async function initUIcomponents() {
               },
             },
             validator: function(callback) {
+              var slideQuality = this.getParent().childrenByPropertyId['slide_quality'].getValue();
+              if (slideQuality == '2') {
+                callback({
+                  status: true,
+                });
+                return;
+              }
+
               var tumorPresent = this.getParent().childrenByPropertyId['tumor_present'].getValue();
               if (tumorPresent === '1'&&!this.getValue()) {
                 callback({
                   status: false,
-                  message: '',
+                  message: 'This field is not optional',
                 });
               } else {
                 callback({
@@ -677,6 +768,14 @@ async function initUIcomponents() {
 
             },
             validator: function(callback) {
+              var slideQuality = this.getParent().childrenByPropertyId['slide_quality'].getValue();
+              if (slideQuality == '2') {
+                callback({
+                  status: true,
+                });
+                return;
+              }
+
               var tumorPresent = this.getParent().childrenByPropertyId['tumor_present'].getValue();
               if (tumorPresent === '1'&&!this.getValue()) {
                 callback({
@@ -708,6 +807,14 @@ async function initUIcomponents() {
               },
             },
             validator: function(callback) {
+              var slideQuality = this.getParent().childrenByPropertyId['slide_quality'].getValue();
+              if (slideQuality == '2') {
+                callback({
+                  status: true,
+                });
+                return;
+              }
+
               var informativeness = this.getParent().childrenByPropertyId['informativeness'].getValue();
               if (informativeness === '1' && !this.getValue()) {
                 callback({
@@ -734,6 +841,14 @@ async function initUIcomponents() {
               },
             },
             validator: function(callback) {
+              var slideQuality = this.getParent().childrenByPropertyId['slide_quality'].getValue();
+              if (slideQuality == '2') {
+                callback({
+                  status: true,
+                });
+                return;
+              }
+
               var tumorHistology = this.getParent().childrenByPropertyId['tumor_histology'].getValue();
               var comments = this.getValue();
               if (tumorHistology === '0' && !comments) {
@@ -755,10 +870,10 @@ async function initUIcomponents() {
         properties: {
           slide_quality: {
             required: true,
-            enum: ['0', '1'],
+            enum: ['0', '1', '2'],
           },
           tumor_present: {
-            required: true,
+            // required: true,
             enum: ['0', '1'],
           },
           tumor_histology: {
@@ -819,6 +934,16 @@ async function initUIcomponents() {
             absoluteInformativeness.setValue(null);
           }
 
+          if (eval.slide_quality == 2) {
+            // disable Tumor Present
+            tumorPresent.disable();
+            tumorPresent.setValue(null);
+            tumorPresent.field.addClass('disabled');
+            tumorPresent.field.addClass('alpaca-disabled');
+            tumorPresent.control.addClass('disabled');
+            tumorPresent.control.find('input').prop('disabled', true);
+          }
+
           if (eval.tumor_present != 1 ) {
             // disable Tumor Histology
             tumorHistology.disable();
@@ -835,6 +960,7 @@ async function initUIcomponents() {
             informativeness.control.addClass('disabled');
             informativeness.control.find('input').prop('disabled', true);
           }
+
           if (eval.informativeness == 1) {
             absoluteInformativeness.enable();
             absoluteInformativeness.field.removeClass('disabled');
