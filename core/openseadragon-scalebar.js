@@ -523,6 +523,7 @@
     return x * Math.pow(10, Math.ceil(-log10(x)));
   }
 
+  // this will round of a digit 
   function roundSignificand(x, decimalPlaces) {
     const exponent = -Math.ceil(-log10(x));
     const power = decimalPlaces - exponent;
@@ -534,10 +535,11 @@
     return Math.round(significand) / Math.pow(10, power);
   }
 
+  // this function will return the natural log of x divided by natural log of 10
   function log10(x) {
     return Math.log(x) / Math.log(10);
   }
-
+  // this function will return the value of given value in different scales like nano , micro and all 
   function getWithUnit(value, unitSuffix) {
     if (value < 0.000001) {
       return value * 1000000000 + ' n' + unitSuffix;
@@ -553,7 +555,7 @@
     }
     return value + ' ' + unitSuffix;
   }
-
+  // this function will return the type of a varible unless it is not equal to undefined
   function isDefined(variable) {
     return typeof (variable) !== 'undefined';
   }
