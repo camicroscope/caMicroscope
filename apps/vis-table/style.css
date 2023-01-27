@@ -238,12 +238,28 @@ nav li:not(.active):hover a{
 
   .grid-view .inner-grid-view .grid-card .score {
     font-weight: bold;
-    /* font-size: 1rem; */
     position:absolute;
     bottom:32px;
     left:0;
     display: flex;
   }
+
+  .grid-view .inner-grid-view .grid-card .level {
+    font-weight: bold;
+    position:absolute;
+    bottom:32px;
+    right:0;
+    display: flex;
+  }
+  .grid-view .inner-grid-view .grid-card .level label {
+    
+    font-size: 1.125rem;
+  }
+  .grid-view .inner-grid-view .grid-card .level input[type=checkbox] {
+    margin-left: .25rem;
+    width: 1.125rem;
+    height: 1.125rem;
+  }   
 
   .bullet {
     font-size: 1rem;

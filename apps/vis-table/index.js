@@ -31,6 +31,9 @@ closeCaseBtn.addEventListener('click', async ()=>{
       const domNode = colTree.get_node($D.selectedNode, true);
       domNode.addClass('text-success');
       $UI.message.add(`The Collection <span class='text-blue'>${fullPathName($D.selectedNode)}</span> Case Closed!`);
+
+      // disable level based on leve flag TODO
+      toggleLevelFlag(false);
     } else {
       // db update error
       console.error(`setCollectionTaskStatusByCollectionId update failed`);
@@ -307,8 +310,11 @@ function getSlideRankStatus() {
   for (let index = 0; index < $D.currentSlideData.length; index++) {
     const slide = $D.currentSlideData[index];
     if (!slide.evaluation) return false;
-    const eval = slide.evaluation.evaluation;
-    if (eval.tumor_present == '1'&&!slide.annotationCount) return false;
+    // const eval = slide.evaluation.evaluation;
+    if (slide.evaluation&&
+      slide.evaluation.evaluation&&
+      slide.evaluation.evaluation.tumor_present == '1'&&
+      !slide.annotationCount) return false;
   }
   return true;
 }
@@ -353,6 +359,12 @@ async function createGridCards() {
   slides.sort((a, b) => a.order - b.order).forEach((slide) => {
     $UI.gridViewContainer.append(createGridCard(slide, crumbList));
   });
+  // level flage control
+  if (closeCaseBtn.disabled) {
+    toggleLevelFlag(true);
+  } else {
+    toggleLevelFlag(false);
+  }
 }
 
 function createGridCard(d, crumbList) {
@@ -403,17 +415,27 @@ function createGridCard(d, crumbList) {
   // DOE customized
 
   // informativeness indicator
-  const [indicator, score] = getInformativenessInfos(d);
+  const [indicator, score, levels] = getInformativenessInfos(d);
   card.appendChild(indicator);
+  card.appendChild(levels);
   if (score) card.appendChild(score);
 
-  if (d.evaluation&&d.evaluation.is_draft==false&&d.evaluation.evaluation.slide_quality == 2) {
+  if (d.evaluation&&
+    d.evaluation.is_draft==false&&
+    (d.evaluation.evaluation.slide_quality == 2 || d.evaluation.evaluation.slide_quality == 3)) {
     cardContent.classList.add('grayscale');
     const indicatorIcon = indicator.querySelector('i');
     indicatorIcon.className = '';
     indicatorIcon.classList.add('fas');
-    indicatorIcon.classList.add('fa-trash');
-    indicatorIcon.classList.add('text-dark');
+    if (d.evaluation.evaluation.slide_quality == 2) {
+      indicatorIcon.title = d.evaluation.evaluation.slide_quality = 'Not H&E Stained Slide';
+      indicatorIcon.classList.add('fa-trash');
+      indicatorIcon.classList.add('text-black');
+    } else {
+      indicatorIcon.title = d.evaluation.evaluation.slide_quality = 'Cytology: Not cell block';
+      indicatorIcon.classList.add('fa-eye-slash');
+      indicatorIcon.classList.add('text-gray');
+    }
   }
   cardContent.appendChild(title);
 
@@ -479,6 +501,9 @@ function generateDropdownMenu(elt, data, informativenessSlides) {
               const domNode = colTree.get_node($D.selectedNode, true);
               domNode.removeClass('text-success');
               $UI.message.add(`The Collection <span class='text-blue'>${fullPathName($D.selectedNode)}</span> Case Reopened!`);
+
+              // enable level flag based on level value TODO
+              toggleLevelFlag(true);
             } else {
               // db update error
               console.error(`setCollectionTaskStatusByCollectionId update failed`);
@@ -568,24 +593,52 @@ function getInformativenessInfos(slide) {
     icon.classList.add('text-muted');
     icon.title = 'Not Evaluated';
   }
-  // for (let index = 0; index < $D.SlidesEvaluations.length; index++) {
-  //   const slideEvals = $D.SlidesEvaluations[index];
-  //   if (slideEvals.sid == sid && slideEvals.eval&&Array.isArray(slideEvals.eval)) {
-  //     const evaluations = slideEvals.eval;
-  //     for (let idx = 0; idx < evaluations.length; idx++) {
-  //       const eval = evaluations[idx];
-  //       if (eval.creator == getUserId()&&eval.evaluation&&eval.evaluation.informativeness) {
-  //         informativenessIndicator.appendChild(icon);
-  //         return [informativenessIndicator, informativenessScore];
-  //       }
-  //     }
-  //   }
-  // }
-  // //
-
   informativenessIndicator.appendChild(icon);
-  return [informativenessIndicator, informativenessScore];
+
+  // levels
+  const levels = document.createElement('div');
+  levels.classList.add('level');// badge bg-success
+  levels.classList.add('badge');
+  // levels.classList.add('rounded-pill');
+  levels.classList.add('bg-primary');
+  levels.title = 'Level';
+  const levelsLabel = document.createElement('label');
+  levelsLabel.textContent = 'L';
+  // levels.appendChild(levelsLabel);
+  const levelsChk = document.createElement('input');
+  levelsChk.type = 'checkbox';
+  if (slide.evaluation&&slide.evaluation.level==true) levelsChk.checked = true;
+
+  levelsChk.addEventListener('change', async (e)=> {
+    saveEvaluation(slide, e.target.checked);
+  });
+  levels.appendChild(levelsLabel);
+  levels.appendChild(levelsChk);
+
+  return [informativenessIndicator, informativenessScore, levels];
 }
+
+async function saveEvaluation(slide, level) {
+  const evalData = {
+    'slide_id': slide._id.$oid,
+    'level': level,
+    'creator': $D.user.key,
+  };
+  var rs;
+  if (slide.evaluation) { // update evaluation
+    evalData.update_date = new Date();
+    rs = await store.updateEvaluation( {'slide_id': slide._id.$oid, 'creator': $D.user.key}, evalData);
+  } else { // add evaluation
+    evalData.create_date = new Date();
+    rs = await store.addEvaluation(evalData);
+  }
+  const newEvaluation = await store.findEvaluation({'slide_id': slide._id.$oid, 'creator': $D.user.key});
+  if (Array.isArray(newEvaluation)&&newEvaluation.length>0) {
+    slide.evaluation = newEvaluation[0];
+  }
+}
+
+
 function createCollectionTree() {
   $UI.colTree.jstree({
     'core': {
@@ -646,10 +699,7 @@ async function selectNode(event, _data) {
     } else {
 
     }
-    // set the rank slide status
-    // TODO
-    // loading slide data
-    // $D.s = await
+
     try {
       loadSlideInfo(node);
     } catch (error) {
@@ -758,6 +808,19 @@ window.addEventListener('load', async ()=> {
     return;
   }
 });
+function toggleLevelFlag(enable = true) {
+  document.querySelectorAll('.level').forEach((level)=>{
+    level.style.display='';
+    const chkbox = level.querySelector('input[type=checkbox]');
+    chkbox.style.display = '';
+    if (!enable) {
+      chkbox.style.display = 'none';
+      if (!chkbox.checked) level.style.display = 'none';
+    }
+  });
+}
+// function disableLevelFlag(){
+// }
 
 function getAllParents(node, data) {
   if (node&&node.pid) {

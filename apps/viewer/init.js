@@ -311,7 +311,7 @@ function initCore() {
     initUIcomponents();
     // action tracker start
     tracker = new Tracker($CAMIC, $D.params.data._id.$oid, getUserId());
-    tracker.start();
+    // tracker.start();
   });
 }
 
@@ -502,18 +502,19 @@ async function initUIcomponents() {
         fields: {
           slide_quality: {
             label: 'Slide Quality',
+            type: 'radio',
             hideNone: true,
             required: true,
             optionLabels: [
               'Unsatisfactory',
               'Satisfactory',
               'Not H&E Stained Slide',
+              'Cytology: Not cell block',
             ],
             events: {
               change: function() {
                 // get slide quality value
                 const val = this.getValue();
-                console.log(val);
                 // get Tumor Present, Tumor Histology,Informativeness, Absolute Informativeness, comments object
                 var tumorPresent = this.getParent().childrenByPropertyId['tumor_present'];
                 var tumorHistology = this.getParent().childrenByPropertyId['tumor_histology'];
@@ -521,7 +522,7 @@ async function initUIcomponents() {
                 var absoluteInformativeness = this.getParent().childrenByPropertyId['absolute_informativeness'];
                 var comments = this.getParent().childrenByPropertyId['comments'];
                 // disable Tumor Histology,Informativeness, Absolute Informativeness, comments
-                if (val == '2') {
+                if (val == '2' || val == '3') {
                   // disable Tumor Present
                   tumorPresent.disable();
                   tumorPresent.setValue(null);
@@ -654,7 +655,7 @@ async function initUIcomponents() {
             },
             validator: function(callback) {
               var slideQuality = this.getParent().childrenByPropertyId['slide_quality'].getValue();
-              if (slideQuality == '2') {
+              if (slideQuality == '2' || slideQuality == '3') {
                 callback({
                   status: true,
                 });
@@ -685,6 +686,8 @@ async function initUIcomponents() {
                     });
                   }
                 });
+              // } else if (tumorPresent === '') {
+              //   console.log()
               } else {
                 callback({
                   status: true,
@@ -717,7 +720,7 @@ async function initUIcomponents() {
             },
             validator: function(callback) {
               var slideQuality = this.getParent().childrenByPropertyId['slide_quality'].getValue();
-              if (slideQuality == '2') {
+              if (slideQuality == '2' || slideQuality == '3') {
                 callback({
                   status: true,
                 });
@@ -769,7 +772,7 @@ async function initUIcomponents() {
             },
             validator: function(callback) {
               var slideQuality = this.getParent().childrenByPropertyId['slide_quality'].getValue();
-              if (slideQuality == '2') {
+              if (slideQuality == '2' || slideQuality == '3') {
                 callback({
                   status: true,
                 });
@@ -808,7 +811,7 @@ async function initUIcomponents() {
             },
             validator: function(callback) {
               var slideQuality = this.getParent().childrenByPropertyId['slide_quality'].getValue();
-              if (slideQuality == '2') {
+              if (slideQuality == '2' || slideQuality == '3') {
                 callback({
                   status: true,
                 });
@@ -842,7 +845,7 @@ async function initUIcomponents() {
             },
             validator: function(callback) {
               var slideQuality = this.getParent().childrenByPropertyId['slide_quality'].getValue();
-              if (slideQuality == '2') {
+              if (slideQuality == '2' || slideQuality == '3') {
                 callback({
                   status: true,
                 });
@@ -870,7 +873,7 @@ async function initUIcomponents() {
         properties: {
           slide_quality: {
             required: true,
-            enum: ['0', '1', '2'],
+            enum: ['0', '1', '2', '3'],
           },
           tumor_present: {
             // required: true,
@@ -934,7 +937,7 @@ async function initUIcomponents() {
             absoluteInformativeness.setValue(null);
           }
 
-          if (eval.slide_quality == 2) {
+          if (eval.slide_quality == 2 || eval.slide_quality == 3) {
             // disable Tumor Present
             tumorPresent.disable();
             tumorPresent.setValue(null);

@@ -1226,11 +1226,12 @@ class Store {
    * @param {string} id - the mongo doc's id
    * @return {promise} - promise which resolves with data
    **/
-  getEvaluation(id) {
+  getEvaluation(sid, uid) {
     const suffix = 'Evaluation/find';
     const url = this.base + suffix;
     const query = {
-      '_id': id,
+      'slide_id': sid,
+      'creator': uid,
     };
     return fetch(url + '?' + objToParamStr(query), {
       credentials: 'include',
