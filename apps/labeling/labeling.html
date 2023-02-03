@@ -11,6 +11,7 @@
 
     <!-- Thank you -->
     <script src="../../common/authChecker.js"></script>
+    <script src="../../common/util.js"></script>
     <script>
       __auth_check(2);
     </script>
@@ -143,7 +144,6 @@
 
     <!-- util.js -->
     <script type="text/javascript" src="../../common/SHA256.js"></script>
-    <script type="text/javascript" src="../../common/util.js"></script>
     <script type="text/javascript" src="../../common/Objectid.js"></script>
     <!-- core (package/ext) libs -->
     <script type="text/javascript" src="../../common/DrawHelper.js"></script>
@@ -217,11 +217,11 @@
   <script type="text/javascript">
     // -- authentication check -- //
     // if (!hasLoginAsGoogle()) window.location = "../../login.html";
-    // const type = getUserType();
-    // if (type !== "Admin") {
-    //   // crowd
-    //   window.location = "./landing/crowd.html";
-    // }
+    const type = getUserType();
+    if (type !== "Admin") {
+      // crowd
+      window.location = "../landing/crowd.html";
+    }
     // --  -- //
     if (detectIE()) {
       createWarningText(

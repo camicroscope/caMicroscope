@@ -209,14 +209,13 @@ function initialize() {
   const params = getUrlVars();
   const store = new Store('../data/');
 
-  store.getCurrentUser().then((data) => {
-    if (data&&data.hasOwnProperty('user_id')) {
+  store.getUsers(getUserId()).then((data) => {
+    if (Array.isArray(data) && data.length > 0) {
       // user exist
-      $USER = data.user_id;
+      $USER = data[0];
       // if (data.is_admin==false) window.location.href = './landing/crowd.html';
       $ISADMIN = data.is_admin;
-      const screenName = document.getElementById('screenName');
-      screenName.innerText = `hi, ${$USER}`;
+      screenName.innerText = `hi, ${$USER.registration.screenName}`;
       screenName.style.display = '';
     }
   });
@@ -300,10 +299,8 @@ function initialize() {
                   });
                   if (slideDeleteRequests['counter']) {
                   }
-                  if (resps[1] && !resps[1]['prevent_download']) {
-                    const multiCheck = `<input type="checkbox" name='multiDownload' data-id='${sanitize(rs[0])}' data-location='${sanitize(d.location)}' />`;
-                    rs.push(multiCheck);
-                  }
+                  const multiCheck = `<input type="checkbox" name='multiDownload' data-id='${sanitize(rs[0])}' data-location='${sanitize(d.location)}' />`;
+                  rs.push(multiCheck);
                   return rs;
                 });
               } else {

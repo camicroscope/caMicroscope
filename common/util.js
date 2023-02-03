@@ -22,25 +22,25 @@ if (!Array.prototype.flat) {
   };
 }
 
-const AnalyticsPanelContent = // 'test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>'
-  '<div class=\'separator\'></div>' +
-  '<div ><input class=\'search\' type=\'search\'/><button class=\'search\'><i class=\'material-icons md-24\'>find_in_page</i></button></div>' +
-  '<div class=\'table_wrap\'>' +
-  '<table class=\'data_table\'>' +
-  '<tr><th>Job ID</th><th>Type</th><th>Status</th></tr>' +
-  '<tr><td>11-08-00001</td><td>Algo-x1-x2-y1</td><td>Done</td></tr>' +
-  '<tr><td>11-08-00002</td><td>Algo-x5-x3-y1</td><td>Done</td></tr>' +
-  '<tr><td>11-08-00003</td><td>Algo-x2-x1-y1</td><td>Done</td></tr>' +
-  '<tr><td>11-08-00004</td><td>Algo-x1-x1-y1</td><td>Done</td></tr>' +
-  '<tr><td>11-08-00005</td><td>Algo-x6-x2-y1</td><td>Done</td></tr>' +
-  '<tr><td>11-08-00006</td><td>Algo-x1-x1-y1</td><td>Done</td></tr>' +
-  '<tr><td>11-08-00007</td><td>Algo-61-x2-y1</td><td>Done</td></tr>' +
-  '<tr><td>11-08-00001</td><td>Algo-x1-x2-y1</td><td>Done</td></tr>' +
-  '<tr><td>11-08-00002</td><td>Algo-x5-x3-y1</td><td>Done</td></tr>' +
-  '<tr><td>11-08-00003</td><td>Algo-x2-x1-y1</td><td>Done</td></tr>' +
-  '<tr><td>11-08-00004</td><td>Algo-x1-x1-y1</td><td>Done</td></tr>' +
-  '</table>' +
-  '</div>';
+// const AnalyticsPanelContent = // 'test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>test<br>'
+//   '<div class=\'separator\'></div>' +
+//   '<div ><input class=\'search\' type=\'search\'/><button class=\'search\'><i class=\'material-icons md-24\'>find_in_page</i></button></div>' +
+//   '<div class=\'table_wrap\'>' +
+//   '<table class=\'data_table\'>' +
+//   '<tr><th>Job ID</th><th>Type</th><th>Status</th></tr>' +
+//   '<tr><td>11-08-00001</td><td>Algo-x1-x2-y1</td><td>Done</td></tr>' +
+//   '<tr><td>11-08-00002</td><td>Algo-x5-x3-y1</td><td>Done</td></tr>' +
+//   '<tr><td>11-08-00003</td><td>Algo-x2-x1-y1</td><td>Done</td></tr>' +
+//   '<tr><td>11-08-00004</td><td>Algo-x1-x1-y1</td><td>Done</td></tr>' +
+//   '<tr><td>11-08-00005</td><td>Algo-x6-x2-y1</td><td>Done</td></tr>' +
+//   '<tr><td>11-08-00006</td><td>Algo-x1-x1-y1</td><td>Done</td></tr>' +
+//   '<tr><td>11-08-00007</td><td>Algo-61-x2-y1</td><td>Done</td></tr>' +
+//   '<tr><td>11-08-00001</td><td>Algo-x1-x2-y1</td><td>Done</td></tr>' +
+//   '<tr><td>11-08-00002</td><td>Algo-x5-x3-y1</td><td>Done</td></tr>' +
+//   '<tr><td>11-08-00003</td><td>Algo-x2-x1-y1</td><td>Done</td></tr>' +
+//   '<tr><td>11-08-00004</td><td>Algo-x1-x1-y1</td><td>Done</td></tr>' +
+//   '</table>' +
+//   '</div>';
 const __ = {};
 function loadScript(src, callback) {
   var script = document.createElement('script');
@@ -835,8 +835,9 @@ EventHandle.prototype = {
 };
 
 function hasLoginAsGoogle() {
+  
   let token_info = parseJwt(getCookie('token'));
-  if (token_info&&token_info.sub) {
+  if (token_info&&token_info.userType!="Null") {
     return true;
   } else if (token_info&&token_info.name=='None') {
     return false;

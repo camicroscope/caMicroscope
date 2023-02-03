@@ -13,15 +13,14 @@
     <link href="../common/datatables/vanilla-dataTables.css" rel="stylesheet" />
     <!-- Check If we're logged in ok, otherwise, log in for us -->
     <script src="../common/authChecker.js"></script>
-    <script>
-      __auth_check(1);
-    </script>
-
     <script src="../core/Store.js"></script>
     <script src="../common/util.js"></script>
     <script src="../common/ajv.js"></script>
     <script src="../common/datatables/vanilla-dataTables.js"></script>
     <script src="../components/loading/loading.js"></script>
+    <script>
+      __auth_check(1);
+    </script>    
     <title>CaMicroscope Data Table</title>
     <style type="text/css">
       html,
@@ -348,16 +347,13 @@
     function initialize() {
       const params = getUrlVars();
       const store = new Store("../data/");
-      store.getCurrentUser().then((data) => {
-        if (data&&data.hasOwnProperty('user_id')&&data.hasOwnProperty('is_admin')&&data.is_admin==true) {
+      store.getUsers(getUserId()).then((data) => {
+        if (Array.isArray(data) && data.length > 0) {
           // user exist
-          $USER = data.user_id;
-          $ISADMIN = data.is_admin;
+          $USER = data[0];
           const screenName = document.getElementById("screenName");
-          screenName.innerText = `hi, ${$USER}`;
+          screenName.innerText = `hi, ${$USER.registration.screenName}`;
           screenName.style.display = "";
-        } else {
-          window.location.href = './landing/crowd.html'
         }
       });
       store

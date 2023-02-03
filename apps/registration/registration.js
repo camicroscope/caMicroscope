@@ -306,7 +306,27 @@ async function saveRegistration() {
     userInfo.isAgreed = isConsent.checked;
     try {
       const rs = await store.addUser(userInfo);
-      if (rs.ok&&rs.nModified) {
+      if (rs.insertedCount&&rs.insertedIds) {
+        // get token
+        const token = getCookie('token');
+        fetch('../../auth/Token/renew', {
+          headers: {
+            Authorization: 'Bearer ' + token,
+          },
+        })
+            .then((x) => x.json())
+            .then((x) => {
+              console.log('../auth/Token/renew');
+              console.log(x);
+              if (x.hasOwnProperty('token')) {
+                document.cookie
+                document.cookie = 'token=' + x.token;
+                let tokenData = parseJwt(x.token);
+                console.log(tokenData);
+
+                window.location.href = '../landing/landing.html';
+              }
+            });
       } else {
         message.addError('Core Initialization Failed');
       }
@@ -316,20 +336,8 @@ async function saveRegistration() {
     }
   }
   console.log(userInfo);
-  alert('Your registration has been successfully completed');
-  window.location.href = "../landing/landing.html";
-//   const rs = await store.sendRegistrationEmail(userInfo.registration.screenName, `${userInfo.email}, ${userInfo.registration.contactEmail}`).then((res)=>res.json());
-//   console.log(rs);
-//   if (rs.error) {
-//     openEmailModal(`<p class='text-danger'>
-//     <label>Somthing Wrong... Please Contact Administration.</label>
-//     <label style='margin:0;'>Error Message:</label>
-//     ${rs.error.response}</p>`, false);
-//   } else {
-//     openEmailModal(`<p class='text-primary'>
-//     <label>Your registration has been successfully completed.</label>
-//     An email has been sent to your registration email.<p>`);
-//   }
+
+  // window.location.href = "../landing/landing.html";
 }
 
 function openEmailModal(message, isSucceed=true) {

@@ -59,14 +59,14 @@
   </body>
   <script type="text/javascript">
     // -- authentication check -- //
-    // if (!hasLoginAsGoogle()) window.location = "../../login.html";
+    if (!hasLoginAsGoogle()) window.location = "../../login.html";
 
     const params = getUrlVars();
     const slideId = params.slideId;
     const cid = params.collectionId;
     async function initialize() {
       const store = new Store("../../data/");
-      const creator = await store.getCurrentUserId();
+      const creator = getUserId();
       const rois = await store.findLabeling({
         "provenance.image.slide": slideId,
         "provenance.analysis.computation": "label",

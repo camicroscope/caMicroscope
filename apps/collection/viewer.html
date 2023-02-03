@@ -16,12 +16,11 @@
     />
     <!-- Check If we're logged in ok, otherwise, log in for us -->
     <script src="../../common/authChecker.js"></script>
-    <script>
-      __auth_check(2);
-    </script>
-
     <script src="../../core/Store.js"></script>
     <script src="../../common/util.js"></script>
+    <script>
+      __auth_check(2);
+    </script>    
     <script src="../../common/ajv.js"></script>
     <script src="../../common/datatables/vanilla-dataTables.js"></script>
     <script src="../../components/loading/loading.js"></script>
@@ -174,7 +173,6 @@
                 letter-spacing: 0.05em;
                 text-transform: uppercase;
                 font-size: 0.9em;
-                display: none;
               "
               href="#"
               onclick='googleSignOut("../../login.html?logout=true")'
@@ -200,17 +198,17 @@
     <div id="card-container" class="card-grid"></div>
     <script>
       // -- authentication check -- //
-      // if (!hasLoginAsGoogle()) window.location = "../../login.html";
+      if (!hasLoginAsGoogle()) window.location = "../../login.html";
       // --  -- //
       const store = new Store("../../data/");
       const container = document.getElementById("card-container");
 
-      store.getCurrentUserId().then((data) => {
-        if (data) {
+      store.getUsers(getUserId()).then((data) => {
+        if (Array.isArray(data) && data.length > 0) {
           // user exist
-          $USER = data;
+          $USER = data[0];
           const screenName = document.getElementById("screenName");
-          screenName.innerText = `hi, ${$USER}`;
+          screenName.innerText = `hi, ${$USER.registration.screenName}`;
           screenName.style.display = "";
         }
       });

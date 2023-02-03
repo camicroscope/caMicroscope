@@ -31,7 +31,6 @@ async function initialize() {
       $UI.message = new MessageQueue();
       // create a viewer and set up
       initCore();
-      const data = await $CAMIC.store.getCurrentUser();
       if (data&&data.hasOwnProperty('user_id')&&data.hasOwnProperty('is_admin')&&data.is_admin == true) {
         $USER = data.user_id;
         $ISADMIN = data.is_admin;
@@ -300,12 +299,7 @@ function clickSavebtnHandler() {
 async function saveAnnotation(annotation) {
   Loading.open(document.body, 'Saving Annotations...');
   // user and date time
-  const creator = $USER;
-  try {
-    annotation.batch = (await $CAMIC.store.getCollection($CAMIC.slideData.collections[0]))[0].name;
-  } catch (err) {
-    console.error(err);
-  }
+  const creator = getUserId();
 
 
   // add annotations
@@ -641,3 +635,5 @@ function getAnnotationDataFrom(data) {
   };
   return annotation;
 }
+
+

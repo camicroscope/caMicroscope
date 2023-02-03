@@ -1,8 +1,16 @@
 const __auth_check = async function(levels) {
+  // check token
+  if (!getCookie('token')) {
+    console.log('login');
+    // window.location = '../'.repeat(levels) + 'login.html?state=' + encodeURIComponent(window.location);
+  }
   const resp = await fetch('../'.repeat(levels) + 'data/Template/find');
+  console.log('__auth_check');
+  console.log(resp);
   if (resp.status == 401) {
+    console.log('login1');
     // send them to login
-    window.location = '../'.repeat(levels) + 'login.html?state=' + encodeURIComponent(window.location);
+    // window.location = '../'.repeat(levels) + 'login.html?state=' + encodeURIComponent(window.location);
   }
 };
 
@@ -11,25 +19,37 @@ const checkRegistrationStatus = async function(levels) {
   const dbStore = new Store(base);
   try {
     var user = await dbStore.getUsers(getUserId());
-
+    console.log(user);
     if (Array.isArray(user)&&user.length>0) { // user exist
       $USER = user = user[0];
       if (user.registration&&user.isAgreed) { //
         const userType = getUserType();
-        if (userType == 'Admin') {
-          if (-1 === window.location.href.indexOf('landing/landing.html')) {
-            window.location = '../'.repeat(levels) + 'apps/landing/landing.html';
-          }
-        } else {
-          if (-1 === window.location.href.indexOf('landing/crowd.html')) {
-            window.location = '../'.repeat(levels) + 'apps/landing/crowd.html';
-          }
+        switch (userType) {
+          case 'Admin':
+            if (-1 === window.location.href.indexOf('landing/landing.html')) {
+              window.location = '../'.repeat(levels) + 'apps/landing/landing.html';
+            }
+            break;
+          case 'Editor':
+            if (-1 === window.location.href.indexOf('landing/crowd.html')) {
+              window.location = '../'.repeat(levels) + 'apps/landing/crowd.html';
+            }
+            break;
+          case 'Null':
+            console.log(userType);
+            window.location = '../'.repeat(levels) + 'login.html?state=' + encodeURIComponent(window.location);
+            break;
+          default:
+            console.warn('something wrong');
+            break;
         }
       } else { // no registration info and disagree consent form
+        console.log('no registration');
         window.location = '../'.repeat(levels) + 'apps/registration/registration.html';
       }
     } else {
-      window.location = '../'.repeat(levels) + 'apps/registration/registration.html';
+      console.log('need login');
+      window.location = '../'.repeat(levels) + 'login.html?state=' + encodeURIComponent(window.location);
     }
   } catch (error) {
     console.error('checkRegistrationStatus: service error'+ error.toString());
