@@ -319,8 +319,7 @@ async function saveRegistration() {
               console.log('../auth/Token/renew');
               console.log(x);
               if (x.hasOwnProperty('token')) {
-                document.cookie
-                document.cookie = 'token=' + x.token;
+                document.cookie = `token=${x.token}; path=/`;
                 let tokenData = parseJwt(x.token);
                 console.log(tokenData);
 

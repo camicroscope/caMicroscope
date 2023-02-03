@@ -1,16 +1,12 @@
 const __auth_check = async function(levels) {
   // check token
   if (!getCookie('token')) {
-    console.log('login');
-    // window.location = '../'.repeat(levels) + 'login.html?state=' + encodeURIComponent(window.location);
+    window.location = '../'.repeat(levels) + 'login.html?state=' + encodeURIComponent(window.location);
   }
   const resp = await fetch('../'.repeat(levels) + 'data/Template/find');
-  console.log('__auth_check');
-  console.log(resp);
   if (resp.status == 401) {
-    console.log('login1');
     // send them to login
-    // window.location = '../'.repeat(levels) + 'login.html?state=' + encodeURIComponent(window.location);
+    window.location = '../'.repeat(levels) + 'login.html?state=' + encodeURIComponent(window.location);
   }
 };
 
@@ -19,7 +15,6 @@ const checkRegistrationStatus = async function(levels) {
   const dbStore = new Store(base);
   try {
     var user = await dbStore.getUsers(getUserId());
-    console.log(user);
     if (Array.isArray(user)&&user.length>0) { // user exist
       $USER = user = user[0];
       if (user.registration&&user.isAgreed) { //
@@ -36,7 +31,6 @@ const checkRegistrationStatus = async function(levels) {
             }
             break;
           case 'Null':
-            console.log(userType);
             window.location = '../'.repeat(levels) + 'login.html?state=' + encodeURIComponent(window.location);
             break;
           default:
@@ -44,11 +38,9 @@ const checkRegistrationStatus = async function(levels) {
             break;
         }
       } else { // no registration info and disagree consent form
-        console.log('no registration');
         window.location = '../'.repeat(levels) + 'apps/registration/registration.html';
       }
     } else {
-      console.log('need login');
       window.location = '../'.repeat(levels) + 'login.html?state=' + encodeURIComponent(window.location);
     }
   } catch (error) {

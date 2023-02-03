@@ -893,25 +893,27 @@ function getUserId() {
     token_info.drupal.hasOwnProperty('uid')
   ) {
     uid = token_info.drupal.uid;
+    return uid;
   }
   // need email first
-  else if (token_info.email) {
+  if (token_info.email) {
     uid = token_info.email;
+    return uid;
   }
   // non-pathdb w login
-  else if (token_info.sub) {
+  if (token_info.sub) {
     uid = token_info.sub;
+    return uid;
   }
   // no login, random id
-  else {
-    let rid = getCookie('randomId');
-    // random id
-    if (rid) {
-      uid = rid;
-    } else {
-      uid = randomId();
-      document.cookie = 'randomId=' + uid + ';';
-    }
+
+  let rid = getCookie('randomId');
+  // random id
+  if (rid) {
+    uid = rid;
+  } else {
+    uid = randomId();
+    document.cookie = 'randomId=' + uid + '; path=/';
   }
   return uid;
 }
