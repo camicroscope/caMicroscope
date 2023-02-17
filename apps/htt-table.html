@@ -20,7 +20,7 @@
     <script src="../components/loading/loading.js"></script>
     <script>
       __auth_check(1);
-    </script>    
+    </script>
     <title>CaMicroscope Data Table</title>
     <style type="text/css">
       html,
@@ -311,6 +311,11 @@
     // -- authentication check -- //
     // if (!hasLoginAsGoogle()) window.location = "../login.html";
 
+    // helper function for collection union
+    function hasIntersect(arr1, arr2) {
+        return arr1.some(item => arr2.includes(item))
+    }
+
     const HeadMapping = [
       {
         title: "ID",
@@ -356,8 +361,16 @@
           screenName.style.display = "";
         }
       });
+      let userCollections = getUserInfo()['data']['collections'] || []
       store
         .findSlide()
+        // remove slides not in user collection list
+        .then(x=>{
+          return x.filter(y=>{
+            let slideCollections = y['collections'] || [];
+            return hasIntersect(userCollections, slideCollections);
+          })
+        })
         .then(async function (data) {
           data.sort((a, b) => {
             a.name - b.name;

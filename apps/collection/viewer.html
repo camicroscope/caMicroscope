@@ -19,8 +19,8 @@
     <script src="../../core/Store.js"></script>
     <script src="../../common/util.js"></script>
     <script>
-      __auth_check(2);
-    </script>    
+      //__auth_check(2);
+    </script>
     <script src="../../common/ajv.js"></script>
     <script src="../../common/datatables/vanilla-dataTables.js"></script>
     <script src="../../components/loading/loading.js"></script>
@@ -198,7 +198,6 @@
     <div id="card-container" class="card-grid"></div>
     <script>
       // -- authentication check -- //
-      if (!hasLoginAsGoogle()) window.location = "../../login.html";
       // --  -- //
       const store = new Store("../../data/");
       const container = document.getElementById("card-container");
@@ -244,9 +243,10 @@
         });
         return card;
       }
-
+      let userCollections = getUserInfo()['data']['collections'] || [];
       async function initialize() {
         var data = await store.getAllCollection();
+        data = data.filter(x=>userCollections.indexOf(x._id["$oid"])>=0)
 
         const main_container = document.querySelector(".container");
         // const div = document.createElement('div');

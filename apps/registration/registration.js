@@ -103,6 +103,20 @@ const decline = ()=>{
   window.location = '../../login.html';
 };
 
+function addKcUser(user){
+  return fetch('../../kcAddUser', {
+    method: 'POST',
+    body: JSON.stringify(user)
+  }).then(x=>x.json())
+};
+
+function addPublicUser(user){
+  return fetch('../../addPublicUser',{
+    method: 'post',
+    body: JSON.stringify(user)
+  }).then(x=>x.json())
+}
+
 // -- basic information form config --//
 $('#basic').alpaca({
   'schema': {
@@ -128,6 +142,18 @@ $('#basic').alpaca({
         'type': 'string',
         'title': 'Contact Email',
         'format': 'email',
+        'required': true,
+      },
+      'password': {
+        'type': 'string',
+        'title': 'Password',
+        'format': 'password',
+        'required': true,
+      },
+      'confirmPassword': {
+        'type': 'string',
+        'title': 'Confirm Password',
+        'format': 'password',
         'required': true,
       },
       'phoneNumber': {
@@ -241,14 +267,14 @@ $('#certifications').alpaca({
         'type': 'integer',
         'title':
           `If you are a board-certified anatomic pathologist or the equivalent for your country,
-           enter the number of years since your certification. 
+           enter the number of years since your certification.
            (If you are not a board certified anatomic pathologist or equivalent, enter -1)`,
         'required': true,
       },
       'yearsOfResidency': {
         'type': 'integer',
-        'title': `If you are an anatomic pathology resident, 
-          how many years of residency have you had? 
+        'title': `If you are an anatomic pathology resident,
+          how many years of residency have you had?
           (If you are not a anatomic pathology resident, enter -1)`,
         'required': true,
       },
@@ -280,60 +306,42 @@ async function saveRegistration() {
   $.extend(registrationForm, basic);
   $.extend(registrationForm, professional);
   $.extend(registrationForm, certifications);
-  if (userInfo) {
-    const id = userInfo._id.$oid;
-    delete userInfo._id;
-    userInfo.updater = userId;
-    userInfo.registration = registrationForm;
-    userInfo.isAgreed = isConsent.checked;
-    try {
-      const rs = await store.updateUser(id, userInfo);
-      if (rs.ok&&rs.nModified) {
-      } else {
-        message.addError('Core Initialization Failed');
+  let userInfo = {}
+  userInfo.email = registrationForm.contactEmail;
+  userInfo.userType = "[]"
+  userInfo.creator = userInfo.contactEmail;
+  userInfo.registration = registrationForm;
+  userInfo.isAgreed = isConsent.checked;
+  try {
+    const rs = await addPublicUser(userInfo);
+    if (rs.insertedCount&&rs.insertedIds) {
+      // create keycloak user
+      let kcUserInfo = {
+        "firstName": registrationForm.firstName,
+        "lastName": registrationForm.lastName,
+        "email": registrationForm.contactEmail,
+        "username": registrationForm.screenName,
+        "password": registrationForm.password,
+        "enabled": "true",
       }
-    } catch (error) {
-      console.error(error);
-      message.addError('Core Initialization Failed');
-    }
-  } else {
-    const {email, name, userFilter, userType} = getUserInfo();
-
-    userInfo = {email, name, userFilter};
-    userInfo.userType = userType =='Null'?'Editor':userType;
-    userInfo.creator = userInfo.email;
-    userInfo.registration = registrationForm;
-    userInfo.isAgreed = isConsent.checked;
-    try {
-      const rs = await store.addUser(userInfo);
-      if (rs.insertedCount&&rs.insertedIds) {
-        // get token
-        const token = getCookie('token');
-        fetch('../../auth/Token/renew', {
-          headers: {
-            Authorization: 'Bearer ' + token,
-          },
-        })
-            .then((x) => x.json())
-            .then((x) => {
-              console.log('../auth/Token/renew');
-              console.log(x);
-              if (x.hasOwnProperty('token')) {
-                document.cookie = `token=${x.token}; path=/`;
-                let tokenData = parseJwt(x.token);
-                console.log(tokenData);
-
-                window.location.href = '../landing/landing.html';
-              }
-            });
+      let kcRes = await addKcUser(kcUserInfo);
+      if (kcRes.username){
+        console.log("successful user add")
+        alert("User added, please log in.")
+        window.location = "../../login.html";
       } else {
-        message.addError('Core Initialization Failed');
+        message.addError('Failed to add user to keycloak');
+        console.lor(kcRes);
       }
-    } catch (error) {
-      console.error(error);
-      message.addError('Core Initialization Failed');
+    } else {
+      message.addError('Failed to add this new user');
+      console.log(rs);
     }
+  } catch (error) {
+    console.error(error);
+    message.addError('Error in user creation.');
   }
+
   console.log(userInfo);
 
   // window.location.href = "../landing/landing.html";
@@ -361,4 +369,3 @@ function openEmailModal(message, isSucceed=true) {
       .html(message);
   $('#emailModal').modal('show');
 }
-
