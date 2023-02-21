@@ -31,7 +31,9 @@ const checkRegistrationStatus = async function(levels) {
             }
             break;
           case 'Null':
-            window.location = '../'.repeat(levels) + 'login.html?state=' + encodeURIComponent(window.location);
+            if (-1 === window.location.href.indexOf('landing/crowd.html')) {
+              window.location = '../'.repeat(levels) + 'apps/landing/crowd.html';
+            }
             break;
           default:
             console.warn('something wrong');
