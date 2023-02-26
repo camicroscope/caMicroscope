@@ -8,7 +8,7 @@
  *
  */
 (function(root, factory) {
-    var plugin = "DataTable";
+    let plugin = "DataTable";
 
     if (typeof exports === "object") {
         module.exports = factory(plugin);
@@ -19,7 +19,7 @@
     }
 })(typeof global !== 'undefined' ? global : this.window || this.global, function(plugin) {
     "use strict";
-    var win = window,
+    let win = window,
         doc = document,
         body = doc.body;
 
@@ -27,7 +27,7 @@
      * Default configuration
      * @typ {Object}
      */
-    var defaultConfig = {
+    let defaultConfig = {
         perPage: 25,
         perPageSelect: [10, 25, 50, 100],
 
@@ -72,7 +72,7 @@
      * Check is item is object
      * @return {Boolean}
      */
-    var isObject = function (val) {
+    let isObject = function (val) {
         return Object.prototype.toString.call(val) === "[object Object]";
     };
 
@@ -80,7 +80,7 @@
      * Check is item is array
      * @return {Boolean}
      */
-    var isArray = function (val) {
+    let isArray = function (val) {
         return Array.isArray(val);
     };
 
@@ -89,8 +89,8 @@
      * @param  {String}   str
      * @return {Boolean|Array|Object}
      */
-    var isJson = function (str) {
-        var t = !1;
+    let isJson = function (str) {
+        let t = !1;
         try {
             t = JSON.parse(str);
         } catch (e) {
@@ -105,10 +105,10 @@
      * @param  {Object} t
      * @return {Object}
      */
-    var extend = function (src, props) {
-        for (var prop in props) {
+    let extend = function (src, props) {
+        for (let prop in props) {
             if (props.hasOwnProperty(prop)) {
-                var val = props[prop];
+                let val = props[prop];
                 if (val && isObject(val)) {
                     src[prop] = src[prop] || {};
                     extend(src[prop], val);
@@ -127,8 +127,8 @@
      * @param  {Object}           scope   Change the value of this
      * @return {Void}
      */
-    var each = function (arr, fn, scope) {
-        var n;
+    let each = function (arr, fn, scope) {
+        let n;
         if (isObject(arr)) {
             for (n in arr) {
                 if (Object.prototype.hasOwnProperty.call(arr, n)) {
@@ -148,7 +148,7 @@
      * @param  {String} e
      * @param  {Function} fn
      */
-    var on = function (el, e, fn) {
+    let on = function (el, e, fn) {
         el.addEventListener(e, fn, false);
     };
 
@@ -158,10 +158,10 @@
      * @param  {Object}   b properties and attributes
      * @return {Object}
      */
-    var createElement = function (a, b) {
-        var d = doc.createElement(a);
+    let createElement = function (a, b) {
+        let d = doc.createElement(a);
         if (b && "object" == typeof b) {
-            var e;
+            let e;
             for (e in b) {
                 if ("html" === e) {
                     d.innerHTML = b[e];
@@ -173,7 +173,7 @@
         return d;
     };
 
-    var flush = function (el, ie) {
+    let flush = function (el, ie) {
         if (el instanceof NodeList) {
             each(el, function (e) {
                 flush(e, ie);
@@ -196,7 +196,7 @@
      * @param  {String}   t
      * @return {Object}
      */
-    var button = function (c, p, t) {
+    let button = function (c, p, t) {
         return createElement("li", {
             class: c,
             html: '<a href="#" data-page="' + p + '">' + t + "</a>"
@@ -207,7 +207,7 @@
      * classList shim
      * @type {Object}
      */
-    var classList = {
+    let classList = {
         add: function (s, a) {
             if (s.classList) {
                 s.classList.add(a);
@@ -241,9 +241,9 @@
     /**
      * Pager truncation algorithm
      */
-    var truncate = function (a, b, c, d, ellipsis) {
+    let truncate = function (a, b, c, d, ellipsis) {
         d = d || 2;
-        var j,
+        let j,
             e = 2 * d,
             f = b - d,
             g = b + d,
@@ -254,20 +254,20 @@
         } else if (b > c - (3 - d + e)) {
             f = c - (2 + e);
         }
-        for (var k = 1; k <= c; k++) {
+        for (let k = 1; k <= c; k++) {
             if (1 == k || k == c || (k >= f && k <= g)) {
-                var l = a[k - 1];
+                let l = a[k - 1];
                 classList.remove(l, "active");
                 h.push(l);
             }
         }
         each(h, function (c) {
-            var d = c.children[0].getAttribute("data-page");
+            let d = c.children[0].getAttribute("data-page");
             if (j) {
-                var e = j.children[0].getAttribute("data-page");
+                let e = j.children[0].getAttribute("data-page");
                 if (d - e == 2) i.push(a[e]);
                 else if (d - e != 1) {
-                    var f = createElement("li", {
+                    let f = createElement("li", {
                         class: "ellipsis",
                         html: '<a href="#">' + ellipsis + "</a>"
                     });
@@ -284,17 +284,17 @@
     /**
      * Parse data to HTML table
      */
-    var dataToTable = function (data) {
-        var thead = false,
+    let dataToTable = function (data) {
+        let thead = false,
             tbody = false;
 
         data = data || this.options.data;
 
         if (data.headings) {
             thead = createElement("thead");
-            var tr = createElement("tr");
+            let tr = createElement("tr");
             each(data.headings, function (col) {
-                var td = createElement("th", {
+                let td = createElement("th", {
                     html: col
                 });
                 tr.appendChild(td);
@@ -313,9 +313,9 @@
                         );
                     }
                 }
-                var tr = createElement("tr");
+                let tr = createElement("tr");
                 each(rows, function (value) {
-                    var td = createElement("td", {
+                    let td = createElement("td", {
                         html: value
                     });
                     tr.appendChild(td);
@@ -345,8 +345,8 @@
      * @param  {String} format      The format for moment to use
      * @return {String|Boolean}     Datatime string or false
      */
-    var parseDate = function (content, format) {
-        var date = false;
+    let parseDate = function (content, format) {
+        let date = false;
 
         // moment() throws a fit if the string isn't a valid datetime string
         // so we need to supply the format to the constructor (https://momentjs.com/docs/#/parsing/string-format/)
@@ -382,7 +382,7 @@
      * @param {Object} instance DataTable instance
      * @param {Mixed} columns  Column index or array of column indexes
      */
-    var Columns = function (dt) {
+    let Columns = function (dt) {
         this.dt = dt;
         return this;
     };
@@ -393,16 +393,16 @@
      */
     Columns.prototype.swap = function (columns) {
         if (columns.length && columns.length === 2) {
-            var cols = [];
+            let cols = [];
 
             // Get the current column indexes
             each(this.dt.headings, function (h, i) {
                 cols.push(i);
             });
 
-            var x = columns[0];
-            var y = columns[1];
-            var b = cols[y];
+            let x = columns[0];
+            let y = columns[1];
+            let b = cols[y];
             cols[y] = cols[x];
             cols[x] = b;
 
@@ -416,7 +416,7 @@
      */
     Columns.prototype.order = function (columns) {
 
-        var a, b, c, d, h, s, cell,
+        let a, b, c, d, h, s, cell,
             temp = [
                 [],
                 [],
@@ -488,7 +488,7 @@
      */
     Columns.prototype.hide = function (columns) {
         if (columns.length) {
-            var dt = this.dt;
+            let dt = this.dt;
 
             each(columns, function (column) {
                 if (dt.hiddenColumns.indexOf(column) < 0) {
@@ -506,7 +506,7 @@
      */
     Columns.prototype.show = function (columns) {
         if (columns.length) {
-            var index, dt = this.dt;
+            let index, dt = this.dt;
 
             each(columns, function (column) {
                 index = dt.hiddenColumns.indexOf(column);
@@ -524,7 +524,7 @@
      * @return {Boolean}
      */
     Columns.prototype.visible = function (columns) {
-        var cols, dt = this.dt;
+        let cols, dt = this.dt;
 
         columns = columns || dt.headings.map(function (th) {
             return th.originalCellIndex;
@@ -547,7 +547,7 @@
      * @param {Object} data
      */
     Columns.prototype.add = function (data) {
-        var that = this,
+        let that = this,
             td, th = document.createElement("th");
 
         if (!this.dt.headings.length) {
@@ -643,7 +643,7 @@
      * @return {void}
      */
     Columns.prototype.sort = function (column, direction, init) {
-        var dt = this.dt;
+        let dt = this.dt;
 
         // Check column is present
         if (dt.hasHeadings && (column < 1 || column > dt.activeHeadings.length)) {
@@ -655,7 +655,7 @@
         // Convert to zero-indexed
         column = column - 1;
 
-        var dir,
+        let dir,
             rows = dt.data,
             alpha = [],
             numeric = [],
@@ -666,13 +666,13 @@
         column = th.originalCellIndex;
 
         each(rows, function (tr) {
-            var cell = tr.cells[column];
-            var content = cell.hasAttribute('data-content') ? cell.getAttribute('data-content') : cell.data;
-            var num = content.replace(/(\$|\,|\s|%)/g, "");
+            let cell = tr.cells[column];
+            let content = cell.hasAttribute('data-content') ? cell.getAttribute('data-content') : cell.data;
+            let num = content.replace(/(\$|\,|\s|%)/g, "");
 
             // Check for date format and moment.js
             if (th.getAttribute("data-type") === "date" && win.moment) {
-                var format = false,
+                let format = false,
                     formatted = th.hasAttribute("data-format");
 
                 if (formatted) {
@@ -696,7 +696,7 @@
         });
 
         /* Sort according to direction (ascending or descending) */
-        var top, btm;
+        let top, btm;
         if (classList.contains(th, "asc") || direction == "asc") {
             top = alpha.sort(function(v1, v2){
                 return v1.value < v2.value
@@ -731,7 +731,7 @@
         rows = top.concat(btm);
 
         dt.data = [];
-        var indexes = [];
+        let indexes = [];
 
         each(rows, function (v, i) {
             dt.data.push(v.row);
@@ -757,7 +757,7 @@
      * @return {Void}
      */
     Columns.prototype.rebuild = function () {
-        var a, b, c, d, dt = this.dt,
+        let a, b, c, d, dt = this.dt,
             temp = [];
 
         dt.activeRows = [];
@@ -810,7 +810,7 @@
      * @param {Object} instance DataTable instance
      * @param {Array} rows
      */
-    var Rows = function (dt, rows) {
+    let Rows = function (dt, rows) {
         this.dt = dt;
         this.rows = rows;
 
@@ -823,9 +823,9 @@
      * @return {HTMLElement}
      */
     Rows.prototype.build = function (row) {
-        var td, tr = createElement("tr");
+        let td, tr = createElement("tr");
 
-        var headings = this.dt.headings;
+        let headings = this.dt.headings;
 
         if (!headings.length) {
             headings = row.map(function () {
@@ -862,7 +862,7 @@
     Rows.prototype.add = function (data) {
 
         if (isArray(data)) {
-            var dt = this.dt;
+            let dt = this.dt;
             // Check for multiple rows
             if (isArray(data[0])) {
                 each(data, function (row, i) {
@@ -891,7 +891,7 @@
      */
     Rows.prototype.remove = function (select) {
 
-        var dt = this.dt;
+        let dt = this.dt;
 
         if (isArray(select)) {
             // Remove in reverse otherwise the indexes will be incorrect
@@ -924,7 +924,7 @@
     //    MAIN LIB    //
     ////////////////////
 
-    var DataTable = function (table, options) {
+    let DataTable = function (table, options) {
         this.initialized = false;
 
         // user options
@@ -979,7 +979,7 @@
         }
     };
 
-    var proto = DataTable.prototype;
+    let proto = DataTable.prototype;
 
     /**
      * Initialize the instance
@@ -991,7 +991,7 @@
             return false;
         }
 
-        var that = this;
+        let that = this;
 
         this.options = extend(this.options, options || {});
 
@@ -1053,7 +1053,7 @@
             return false;
         }
 
-        var that = this,
+        let that = this,
             o = that.options,
             template = "";
 
@@ -1063,19 +1063,19 @@
         }
 
         if (o.ajax) {
-            var ajax = o.ajax;
-            var xhr = new XMLHttpRequest();
+            let ajax = o.ajax;
+            let xhr = new XMLHttpRequest();
 
-            var xhrProgress = function (e) {
+            let xhrProgress = function (e) {
                 that.emit("datatable.ajax.progress", e, xhr);
             };
 
-            var xhrLoad = function (e) {
+            let xhrLoad = function (e) {
                 if (xhr.readyState === 4) {
                     that.emit("datatable.ajax.loaded", e, xhr);
 
                     if (xhr.status === 200) {
-                        var obj = {};
+                        let obj = {};
                         obj.data = ajax.load ? ajax.load.call(that, xhr) : xhr.responseText;
 
                         obj.type = "json";
@@ -1097,11 +1097,11 @@
                 }
             };
 
-            var xhrFailed = function (e) {
+            let xhrFailed = function (e) {
                 that.emit("datatable.ajax.error", e, xhr);
             };
 
-            var xhrCancelled = function (e) {
+            let xhrCancelled = function (e) {
                 that.emit("datatable.ajax.abort", e, xhr);
             };
 
@@ -1131,8 +1131,8 @@
 
         // Make a tHead if there isn't one (fixes #8)
         if (!that.head) {
-            var h = createElement("thead");
-            var t = createElement("tr");
+            let h = createElement("thead");
+            let t = createElement("tr");
 
             if (that.hasRows) {
                 each(that.body.rows[0].cells, function () {
@@ -1197,19 +1197,19 @@
 
         // Per Page Select
         if (o.perPageSelect) {
-            var wrap = "<div class='dataTable-dropdown'><label>";
+            let wrap = "<div class='dataTable-dropdown'><label>";
             wrap += o.labels.perPage;
             wrap += "</label></div>";
 
             // Create the select
-            var select = createElement("select", {
+            let select = createElement("select", {
                 class: "dataTable-selector"
             });
 
             // Create the options
             each(o.perPageSelect, function (val) {
-                var selected = val === o.perPage;
-                var option = new Option(val, val, selected, selected);
+                let selected = val === o.perPage;
+                let option = new Option(val, val, selected, selected);
                 select.add(option);
             });
 
@@ -1224,7 +1224,7 @@
 
         // Searchable
         if (o.searchable) {
-            var form =
+            let form =
                 "<div class='dataTable-search'><input class='dataTable-input' placeholder='" +
                 o.labels.placeholder +
                 "' type='text'></div>";
@@ -1244,10 +1244,10 @@
         classList.add(that.table, "dataTable-table");
 
         // Paginator
-        var w = createElement("div", {
+        let w = createElement("div", {
             class: "dataTable-pagination"
         });
-        var paginator = createElement("ul");
+        let paginator = createElement("ul");
         w.appendChild(paginator);
 
         // Pager(s) placement
@@ -1325,7 +1325,7 @@
             }
 
             // Use a fragment to limit touching the DOM
-            var index = this.currentPage - 1,
+            let index = this.currentPage - 1,
                 frag = doc.createDocumentFragment();
 
             if (this.hasHeadings) {
@@ -1349,7 +1349,7 @@
         }
 
         // Update the info
-        var current = 0,
+        let current = 0,
             f = 0,
             t = 0,
             items;
@@ -1364,7 +1364,7 @@
 
         if (this.label && this.options.labels.info.length) {
             // CUSTOM LABELS
-            var string = this.options.labels.info
+            let string = this.options.labels.info
                 .replace("{start}", f)
                 .replace("{end}", t)
                 .replace("{page}", this.currentPage)
@@ -1387,7 +1387,7 @@
         flush(this.pagers, this.isIE);
 
         if (this.totalPages > 1) {
-            var c = "pager",
+            let c = "pager",
                 frag = doc.createDocumentFragment(),
                 prev = this.onFirstPage ? 1 : this.currentPage - 1,
                 next = this.onlastPage ? this.totalPages : this.currentPage + 1;
@@ -1402,7 +1402,7 @@
                 frag.appendChild(button(c, prev, this.options.prevText));
             }
 
-            var pager = this.links;
+            let pager = this.links;
 
             // truncate the links
             if (this.options.truncatePager) {
@@ -1448,7 +1448,7 @@
      * @return {Void}
      */
     proto.renderHeader = function () {
-        var that = this;
+        let that = this;
 
         that.labels = [];
 
@@ -1465,7 +1465,7 @@
 
                 th.originalCellIndex = i;
                 if (that.options.sortable && th.sortable) {
-                    var link = createElement("a", {
+                    let link = createElement("a", {
                         href: "#",
                         class: "dataTable-sorter",
                         html: th.innerHTML
@@ -1486,12 +1486,12 @@
      * @return {[type]} [description]
      */
     proto.bindEvents = function () {
-        var that = this,
+        let that = this,
             o = that.options;
 
         // Per page selector
         if (o.perPageSelect) {
-            var selector = that.wrapper.querySelector(".dataTable-selector");
+            let selector = that.wrapper.querySelector(".dataTable-selector");
             if (selector) {
                 // Change per page
                 on(selector, "change", function (e) {
@@ -1517,7 +1517,7 @@
 
         // Pager(s) / sorting
         on(that.wrapper, "click", function (e) {
-            var t = e.target;
+            let t = e.target;
             if (t.nodeName.toLowerCase() === "a") {
                 if (t.hasAttribute("data-page")) {
                     that.page(t.getAttribute("data-page"));
@@ -1540,7 +1540,7 @@
      */
     proto.setColumns = function (ajax) {
 
-        var that = this;
+        let that = this;
 
         if (!ajax) {
             each(that.data, function (row) {
@@ -1571,7 +1571,7 @@
 
                 // Add the data attributes to the th elements
                 each(data.select, function (column) {
-                    var th = that.headings[column];
+                    let th = that.headings[column];
                     if (data.type) {
                         th.setAttribute("data-type", data.type);
                     }
@@ -1651,9 +1651,9 @@
 
         this.links = [];
 
-        var i = this.pages.length;
+        let i = this.pages.length;
         while (i--) {
-            var num = i + 1;
+            let num = i + 1;
             this.links[i] = button(i === 0 ? "active" : "", num, num);
         }
 
@@ -1671,7 +1671,7 @@
      * @return {Number}
      */
     proto.paginate = function () {
-        var perPage = this.options.perPage,
+        let perPage = this.options.perPage,
             rows = this.activeRows;
 
         if (this.searching) {
@@ -1704,7 +1704,7 @@
 
         if (this.options.fixedColumns && this.activeHeadings && this.activeHeadings.length) {
 
-            var cells,
+            let cells,
                 hd = false;
 
             this.columnWidths = [];
@@ -1718,8 +1718,8 @@
                 }, this);
 
                 each(this.activeHeadings, function (cell, i) {
-                    var ow = cell.offsetWidth;
-                    var w = ow / this.rect.width * 100;
+                    let ow = cell.offsetWidth;
+                    let w = ow / this.rect.width * 100;
                     cell.style.width = w + "%";
                     this.columnWidths[i] = ow;
                 }, this);
@@ -1728,10 +1728,10 @@
 
                 // Make temporary headings
                 hd = createElement("thead");
-                var r = createElement("tr");
-                var c = this.table.tBodies[0].rows[0].cells;
+                let r = createElement("tr");
+                let c = this.table.tBodies[0].rows[0].cells;
                 each(c, function () {
-                    var th = createElement("th");
+                    let th = createElement("th");
                     r.appendChild(th);
                     cells.push(th);
                 });
@@ -1739,10 +1739,10 @@
                 hd.appendChild(r);
                 this.table.insertBefore(hd, this.body);
 
-                var widths = [];
+                let widths = [];
                 each(cells, function (cell, i) {
-                    var ow = cell.offsetWidth;
-                    var w = ow / this.rect.width * 100;
+                    let ow = cell.offsetWidth;
+                    let w = ow / this.rect.width * 100;
                     widths.push(w);
                     this.columnWidths[i] = ow;
                 }, this);
@@ -1780,7 +1780,7 @@
     proto.search = function (query) {
         if (!this.hasRows) return false;
 
-        var that = this;
+        let that = this;
 
         query = query.toLowerCase();
 
@@ -1799,15 +1799,15 @@
         this.clear();
 
         each(this.data, function (row, idx) {
-            var inArray = this.searchData.indexOf(row) > -1;
+            let inArray = this.searchData.indexOf(row) > -1;
 
             // https://github.com/Mobius1/Vanilla-DataTables/issues/12
-            var doesQueryMatch = query.split(" ").reduce(function (bool, word) {
-                var includes = false,
+            let doesQueryMatch = query.split(" ").reduce(function (bool, word) {
+                let includes = false,
                     cell = null,
                     content = null;
 
-                for (var x = 0; x < row.cells.length; x++) {
+                for (let x = 0; x < row.cells.length; x++) {
                     cell = row.cells[x];
                     content = cell.hasAttribute('data-content') ? cell.getAttribute('data-content') : cell.textContent;
 
@@ -1886,12 +1886,12 @@
      */
     proto.insert = function (data) {
 
-        var that = this,
+        let that = this,
             rows = [];
         if (isObject(data)) {
             if (data.headings) {
                 if (!that.hasHeadings && !that.hasRows) {
-                    var tr = createElement("tr"),
+                    let tr = createElement("tr"),
                         th;
                     each(data.headings, function (heading) {
                         th = createElement("th", {
@@ -1920,10 +1920,10 @@
             }
         } else if (isArray(data)) {
             each(data, function (row) {
-                var r = [];
+                let r = [];
                 each(row, function (cell, heading) {
 
-                    var index = that.labels.indexOf(heading);
+                    let index = that.labels.indexOf(heading);
 
                     if (index > -1) {
                         r[index] = cell;
@@ -1970,14 +1970,14 @@
             flush(this.body, this.isIE);
         }
 
-        var parent = this.body;
+        let parent = this.body;
         if (!this.body) {
             parent = this.table;
         }
 
         if (html) {
             if (typeof html === "string") {
-                var frag = doc.createDocumentFragment();
+                let frag = doc.createDocumentFragment();
                 frag.innerHTML = html;
             }
 
@@ -1993,7 +1993,7 @@
     proto.export = function (options) {
         if (!this.hasHeadings && !this.hasRows) return false;
 
-        var headers = this.activeHeadings,
+        let headers = this.activeHeadings,
             rows = [],
             arr = [],
             i,
@@ -2001,7 +2001,7 @@
             str,
             link;
 
-        var defaults = {
+        let defaults = {
             download: true,
             skipColumn: [],
 
@@ -2022,7 +2022,7 @@
             return false;
         }
 
-        var o = extend(defaults, options);
+        let o = extend(defaults, options);
 
         if (o.type) {
             if (o.type === "txt" || o.type === "csv") {
@@ -2057,7 +2057,7 @@
                                 o.skipColumn.indexOf(headers[x].originalCellIndex) < 0 &&
                                 this.columns(headers[x].originalCellIndex).visible()
                             ) {
-                                var text = rows[i].cells[x].textContent;
+                                let text = rows[i].cells[x].textContent;
                                 text = text.trim();
                                 text = text.replace(/\s{2,}/g, ' ');
                                 text = text.replace(/\n/g, '  ');
@@ -2193,8 +2193,8 @@
      * @return {Boolean}
      */
     proto.import = function (options) {
-        var obj = false;
-        var defaults = {
+        let obj = false;
+        let defaults = {
             // csv
             lineDelimiter: "\n",
             columnDelimiter: ","
@@ -2215,7 +2215,7 @@
                 };
 
                 // Split the string into rows
-                var rows = options.data.split(options.lineDelimiter);
+                let rows = options.data.split(options.lineDelimiter);
 
                 if (rows.length) {
 
@@ -2229,7 +2229,7 @@
                         obj.data[i] = [];
 
                         // Split the rows into values
-                        var values = row.split(options.columnDelimiter);
+                        let values = row.split(options.columnDelimiter);
 
                         if (values.length) {
                             each(values, function (value) {
@@ -2239,7 +2239,7 @@
                     });
                 }
             } else if (options.type === "json") {
-                var json = isJson(options.data);
+                let json = isJson(options.data);
 
                 // Valid JSON string
                 if (json) {
@@ -2280,13 +2280,13 @@
      * @return {void}
      */
     proto.print = function () {
-        var headings = this.activeHeadings;
-        var rows = this.activeRows;
-        var table = createElement("table");
-        var thead = createElement("thead");
-        var tbody = createElement("tbody");
+        let headings = this.activeHeadings;
+        let rows = this.activeRows;
+        let table = createElement("table");
+        let thead = createElement("thead");
+        let tbody = createElement("tbody");
 
-        var tr = createElement("tr");
+        let tr = createElement("tr");
         each(headings, function (th) {
             tr.appendChild(
                 createElement("th", {
@@ -2298,7 +2298,7 @@
         thead.appendChild(tr);
 
         each(rows, function (row) {
-            var tr = createElement("tr");
+            let tr = createElement("tr");
             each(row.cells, function (cell) {
                 tr.appendChild(
                     createElement("td", {
@@ -2313,7 +2313,7 @@
         table.appendChild(tbody);
 
         // Open new window
-        var w = win.open();
+        let w = win.open();
 
         // Append the table to the body
         w.document.body.appendChild(table);
@@ -2327,7 +2327,7 @@
      * @param {string} message
      */
     proto.setMessage = function (message) {
-        var colspan = 1;
+        let colspan = 1;
 
         if (this.hasRows) {
             colspan = this.data[0].cells.length;
@@ -2394,7 +2394,7 @@
     proto.emit = function (event) {
         this.events = this.events || {};
         if (event in this.events === false) return;
-        for (var i = 0; i < this.events[event].length; i++) {
+        for (let i = 0; i < this.events[event].length; i++) {
             this.events[event][i].apply(this, Array.prototype.slice.call(arguments, 1));
         }
     };

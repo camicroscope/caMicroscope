@@ -1,4 +1,4 @@
-#camicroscope's file/directory structure
+# camicroscope's file/directory structure
 
     .
     ├── iconfont                                    # Google Material icons

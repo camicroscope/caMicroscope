@@ -1,25 +1,25 @@
 function makeTreeTable(id) {
-  var
+  let
     $table = $('#' + id);
-  var rows = $table.find('tr');
+  let rows = $table.find('tr');
 
   rows.each(function(index, row) {
-    var
+    let
       $row = $(row);
-    var level = $row.data('level');
-    var id = $row.data('id');
-    var $columnName = $row.find('td[data-column="name"]');
-    var children = $table.find('tr[data-parent="' + id + '"]');
+    let level = $row.data('level');
+    let id = $row.data('id');
+    let $columnName = $row.find('td[data-column="name"]');
+    let children = $table.find('tr[data-parent="' + id + '"]');
 
     if (children.length) {
-      var expander = $columnName.prepend('' +
+      let expander = $columnName.prepend('' +
                 '<span class="treegrid-expander glyphicon glyphicon-chevron-right">&#9660;</span>' +
                 '');
 
       children.hide();
 
       expander.on('click', function(e) {
-        var $target = $(e.target);
+        let $target = $(e.target);
         if ($target.hasClass('glyphicon-chevron-right')) {
           $target
               .removeClass('glyphicon-chevron-right')
@@ -43,10 +43,10 @@ function makeTreeTable(id) {
 
   // Reverse hide all elements
   reverseHide = function(table, element) {
-    var
+    let
       $element = $(element);
-    var id = $element.data('id');
-    var children = table.find('tr[data-parent="' + id + '"]');
+    let id = $element.data('id');
+    let children = table.find('tr[data-parent="' + id + '"]');
 
     if (children.length) {
       children.each(function(i, e) {

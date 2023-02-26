@@ -1,4 +1,4 @@
-var tour = new Tour({
+let tour = new Tour({
   name: 'Tour',
   steps: [{
     element: 'label[title=\'Applications\']',

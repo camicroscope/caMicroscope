@@ -1,22 +1,22 @@
 // expects changeStatus to be defined from loader.js
 
-var startUrl = '../loader/upload/start';
-var continueUrl = '../loader/upload/continue/';
-var finishUrl = '../loader/upload/finish/';
-var startGoogleDriveUrl = '../loader/googleDriveUpload/getFile';
-var continueGoogleDriveUrl = '../loader/googleDriveUpload/checkStatus';
-var finishUploadSuccess = false;
-var checkSuccess = false;
-var chunkSize = 5*1024*1024;
-var tokenChange = true;
-var filenameChange = true;
-var oldToken = '';
-var oldFilename='';
+let startUrl = '../loader/upload/start';
+let continueUrl = '../loader/upload/continue/';
+let finishUrl = '../loader/upload/finish/';
+let startGoogleDriveUrl = '../loader/googleDriveUpload/getFile';
+let continueGoogleDriveUrl = '../loader/googleDriveUpload/checkStatus';
+let finishUploadSuccess = false;
+let checkSuccess = false;
+let chunkSize = 5*1024*1024;
+let tokenChange = true;
+let filenameChange = true;
+let oldToken = '';
+let oldFilename='';
 
 // read a chunk of the file
 function promiseChunkFileReader(file, part) {
   return new Promise((resolve, reject)=>{
-    var fr = new FileReader();
+    let fr = new FileReader();
     fr.onload = (evt)=>{
       if (evt.target.error == null) {
         const d = evt.target.result.split(',')[1];
@@ -29,15 +29,15 @@ function promiseChunkFileReader(file, part) {
         reject(evt.target.error);
       }
     };
-    var blob = file.slice(part*chunkSize, (part+1)*chunkSize);
+    let blob = file.slice(part*chunkSize, (part+1)*chunkSize);
     fr.readAsDataURL(blob);
   });
 }
 
 async function readFileChunks(file, token) {
-  var part = 0;
+  let part = 0;
   $('#upload-progress-div').css('display', 'flex');
-  var complete = false;
+  let complete = false;
   while (!complete) {
     try {
       const data = await promiseChunkFileReader(file, part);
@@ -97,7 +97,7 @@ function continueUpload(token) {
 }
 
 function finishUpload() {
-  var reset = true;
+  let reset = true;
   const token = document.getElementById('token'+0).value;
   const filename = document.getElementById('filename'+0).value;
   if (token === oldToken) {
@@ -168,15 +168,15 @@ async function handleUrlUpload(url) {
 }
 
 function updateFormOnUpload(fileName, token) {
-  var fnametr = document.getElementById('filenameRow');
-  var tokentr = document.getElementById('tokenRow');
-  var slidetr = document.getElementById('slidenameRow');
-  var filtertr = document.getElementById('filterRow');
+  let fnametr = document.getElementById('filenameRow');
+  let tokentr = document.getElementById('tokenRow');
+  let slidetr = document.getElementById('slidenameRow');
+  let filtertr = document.getElementById('filterRow');
 
   // Clear existing
   document.getElementById('json_table').innerHTML = '';
-  var n = tokentr.cells.length;
-  for (var i=0; i<n-1; i++) {
+  let n = tokentr.cells.length;
+  for (let i=0; i<n-1; i++) {
     fnametr.deleteCell(1);
     tokentr.deleteCell(1);
     slidetr.deleteCell(1);
@@ -196,12 +196,12 @@ function updateFormOnUpload(fileName, token) {
 
 function afterUrlUpload(token, url) {
   $('#uploadLoading').css('display', 'none');
-  var fileName= url.substring(url.lastIndexOf('/')+1, url.length);
+  let fileName= url.substring(url.lastIndexOf('/')+1, url.length);
   updateFormOnUpload(fileName, token);
 }
 
 async function continueUrlUpload(token, url) {
-  var enurl = encodeURIComponent(url);
+  let enurl = encodeURIComponent(url);
   const body = {'url': enurl};
   changeStatus('UPLOAD', 'Uploading URL content ');
   await $.ajax({
@@ -218,8 +218,8 @@ async function continueUrlUpload(token, url) {
     }
   }).catch((error) => {
     if (error.status == 0) {
-      var i=0;
-      var inter=setInterval(function() {
+      let i=0;
+      let inter=setInterval(function() {
         i++;
         if (i>=180) { // 180*5000 = 900000 = 15min max time for running this
           clearInterval(inter);
@@ -258,20 +258,20 @@ async function continueUrlUpload(token, url) {
 function googlePickerStart() {
   // The Browser API key obtained from the Google API Console.
   // Replace with your own Browser API key, or your own key.
-  var developerKey = 'xxxxxx';
+  let developerKey = 'xxxxxx';
 
   // The Client ID obtained from the Google API Console. Replace with your own Client ID.
-  var clientId = 'xxxxxx';
+  let clientId = 'xxxxxx';
 
   // Replace with your own project number from console.developers.google.com.
   // See "Project number" under "IAM & Admin" > "Settings"
-  var appId = 'xxxxxx';
+  let appId = 'xxxxxx';
 
   // Scope to use to access user's Drive items.
-  var scope = ['https://www.googleapis.com/auth/drive.file'];
+  let scope = ['https://www.googleapis.com/auth/drive.file'];
 
-  var pickerApiLoaded = false;
-  var oauthToken;
+  let pickerApiLoaded = false;
+  let oauthToken;
 
   // Use the Google API Loader script to load the google.picker script.
   function loadPicker() {

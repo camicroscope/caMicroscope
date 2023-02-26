@@ -96,7 +96,7 @@ describe('Operation Panel Component',function(){
         it(`click On Save`,function(){
             const btn1 = singleElt.querySelector('.action');
             global.eventFire(btn1,'click',dom);
-            var form =dom.window.changedData;
+            let form =dom.window.changedData;
             assert.equal(form.id,'algorithm01');
             assert.equal(btn1.textContent,'Save');
             const arg1 = singleElt.querySelector('#arg1');
@@ -137,7 +137,7 @@ describe('Operation Panel Component',function(){
             arg3.value = 'test3';
             const btn1 = multipleElt.querySelector('.action');
             global.eventFire(btn1,'click',dom);
-            var form =dom.window.changedData;
+            let form =dom.window.changedData;
             assert.equal(form.id,'algorithm03');
             assert.equal(arg1.value,form.data.arg1);
             assert.equal(arg2.value,form.data.arg2);

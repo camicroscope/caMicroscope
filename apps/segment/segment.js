@@ -4,10 +4,10 @@ const IDB_URL = 'indexeddb://';
 // INITIALIZE DB
 window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
 // id(autoinc), name, location(name+id), classes
-var request; var db;
-var modelName;
-var flag = -1;
-var choices1;
+let request; let db;
+let modelName;
+let flag = -1;
+let choices1;
 
 // tensorflowjs creates its own IndexedDB on saving a model.
 async function dbInit() {
@@ -49,7 +49,7 @@ const timeOutMs = 10;
 let anno = {};
 
 function initialize() {
-  var checkPackageIsReady = setInterval(async function() {
+  let checkPackageIsReady = setInterval(async function() {
     if (IsPackageLoading) {
       clearInterval(checkPackageIsReady);
       await dbInit().then((e) => dbOpen());
@@ -493,7 +493,7 @@ function drawRectangle(e) {
   canvas.style.cursor = e.checked ? 'crosshair' : 'default';
 
   const canvasDraw = $CAMIC.viewer.canvasDrawInstance;
-  var args;
+  let args;
   if (e.state == 'roi') {
     args = {status: ''};
     args.status = e.model;
@@ -587,10 +587,10 @@ function saveAnnotation() {
   const vpy = $UI.segmentPanel.__top_left[1];
   $UI.segmentPanel.close();
   // let te = {data:Array.from(image.data),width:image.width,height:image.height,x:vpx,y:vpy};
-  for (var i=0; i<data.length; i++) {
-    var d = data[i].data32S;
-    var arr=[];
-    for (var j = 0; j<d.length-1; j+=2) {
+  for (let i=0; i<data.length; i++) {
+    let d = data[i].data32S;
+    let arr=[];
+    for (let j = 0; j<d.length-1; j+=2) {
       arr.push([d[j] + vpx, d[j+1] + vpy]);
     }
     canvasDraw._redraw(arr, 'Polygon');
@@ -666,16 +666,16 @@ function checkSize(imgColl, imagingHelper) {
  * @return {none}
  */
 function uploadModel() {
-  var _name = document.querySelector('#name');
-  var _imageSize = document.querySelector('#imageSize');
-  var mag = document.querySelector('#magnification');
-  var topology = document.querySelector('#modelupload');
-  var weights = document.querySelector('#weightsupload');
-  var status = document.querySelector('#status');
-  var toggle = document.querySelector('#togBtn');
-  var url = document.querySelector('#url');
-  var refresh = document.querySelector('#refresh');
-  var submit = document.querySelector('#submit');
+  let _name = document.querySelector('#name');
+  let _imageSize = document.querySelector('#imageSize');
+  let mag = document.querySelector('#magnification');
+  let topology = document.querySelector('#modelupload');
+  let weights = document.querySelector('#weightsupload');
+  let status = document.querySelector('#status');
+  let toggle = document.querySelector('#togBtn');
+  let url = document.querySelector('#url');
+  let refresh = document.querySelector('#refresh');
+  let submit = document.querySelector('#submit');
 
   // Reset previous input
   _name.value = topology.value = weights.value = status.innerText = _imageSize.value = url.value = '';
@@ -706,9 +706,9 @@ function uploadModel() {
       status.classList.add('blink');
 
       if (toggle.checked) {
-        var modelInput = url.value;
+        let modelInput = url.value;
       } else {
-        var modelInput = tf.io.browserFiles([topology.files[0], ...weights.files]);
+        let modelInput = tf.io.browserFiles([topology.files[0], ...weights.files]);
       }
 
       // Check if model with same name is previously defined
@@ -957,7 +957,7 @@ function segmentROI(box) {
   // let div = document.createElement('div');
   // document.body.appendChild(div);
 
-  // var mybr = document.createElement('br');
+  // let mybr = document.createElement('br');
 
   // // TRACKBAR WEIGHT VALUE
   // let weightValue = document.createElement("label");
@@ -1034,7 +1034,7 @@ function segmentROI(box) {
 
   /*
   let dataURL = loadImageToCanvas(imgData, 'canvasInput', false);
-  var img = document.createElement("img");
+  let img = document.createElement("img");
   img.src = dataURL;
   document.body.appendChild(img);
   */
@@ -1299,11 +1299,11 @@ async function deleteModel(name) {
 
 // Shows the uploaded models' details
 async function showInfo() {
-  var data = await tf.io.listModels();
-  var table = document.querySelector('#mdata');
-  var tx = db.transaction('models_store', 'readonly');
-  var store = tx.objectStore('models_store');
-  var modelCount = 0;
+  let data = await tf.io.listModels();
+  let table = document.querySelector('#mdata');
+  let tx = db.transaction('models_store', 'readonly');
+  let store = tx.objectStore('models_store');
+  let modelCount = 0;
   empty(table);
   // Update table data
   (function(callback) {
@@ -1352,12 +1352,12 @@ async function showInfo() {
  * @return {Array} [width, height] of the element
  */
 function _size(element) {
-  var bounds = element.getBoundingClientRect();
-  var styles = getComputedStyle(element);
-  var height = (bounds.height|0) +
+  let bounds = element.getBoundingClientRect();
+  let styles = getComputedStyle(element);
+  let height = (bounds.height|0) +
     (parseFloat(styles.getPropertyValue('margin-top')) || 0) +
     (parseFloat(styles.getPropertyValue('margin-bottom')) || 0);
-  var width = (bounds.width|0) +
+  let width = (bounds.width|0) +
     (parseFloat(styles.getPropertyValue('margin-left')) || 0) +
     (parseFloat(styles.getPropertyValue('margin-right')) || 0);
 
@@ -1413,8 +1413,8 @@ function convertCoordinates(imagingHelper, bound) {
 // Save the canvas to filename.  Uses local save dialog.
 function download(canvas, filename) {
   // / create an "off-screen" anchor tag
-  var lnk = document.createElement('a');
-  var e;
+  let lnk = document.createElement('a');
+  let e;
 
   // / the key here is to set the download attribute of the a tag
   lnk.download = filename;
@@ -1505,11 +1505,11 @@ function downloadCSV(data, filename) {
  */
 
 async function selectModel() {
-  var data = await tf.io.listModels();
-  var table = document.querySelector('#roidata');
-  var tx = db.transaction('models_store', 'readonly');
-  var store = tx.objectStore('models_store');
-  var modelCount = 0;
+  let data = await tf.io.listModels();
+  let table = document.querySelector('#roidata');
+  let tx = db.transaction('models_store', 'readonly');
+  let store = tx.objectStore('models_store');
+  let modelCount = 0;
   empty(table);
 
   //  Update table data
@@ -1561,7 +1561,7 @@ async function selectChoices(name) {
   $UI.roiModal.close();
   (function(callback) {
     selectedmodelName = name.split('/').pop().split('_').splice(2).join('_').slice(0, -3);
-    var i;
+    let i;
     $('#choicedata').html('');
     $('#choicedata').append(' <h4> Download options  :</h4>');
     $('#choicedata').append('<input type= "radio"  name = "choice" checked="checked" id= "both">'+
@@ -1579,7 +1579,7 @@ async function selectChoices(name) {
 
 
     $('#submit1').click(async function() {
-      var choices = {model: '', dow: '', scale: 'norm'};
+      let choices = {model: '', dow: '', scale: 'norm'};
 
       choices.dow = $('input[name="choice"]:checked').val();
       choices.model = name;
@@ -1589,7 +1589,7 @@ async function selectChoices(name) {
     });
 
     $('#submit2').click(async function() {
-      var choices = {model: '', dow: '', scale: 'norm'};
+      let choices = {model: '', dow: '', scale: 'norm'};
 
       choices.dow = $('input[name="choice"]:checked').val();
       choices.model = name;
@@ -1616,8 +1616,8 @@ async function extractRoi(choices, flag1) {
   $('#snackbar').html('<h3>Model Loading ...</h3>');
   document.getElementById('snackbar').className = 'show';
   const self = $UI.segmentPanel;
-  var X = self.__spImgX;
-  var Y = self.__spImgY;
+  let X = self.__spImgX;
+  let Y = self.__spImgY;
   const totalSize = self.__spImgWidth;
 
   self.showProgress('Processing ..');
@@ -1646,8 +1646,8 @@ async function extractRoi(choices, flag1) {
     });
 
     const fullResCvs = self.__fullsrc;
-    var height = Y + totalSize;
-    var width = X + totalSize;
+    let height = Y + totalSize;
+    let width = X + totalSize;
 
 
     fullResCvs.height = step;
@@ -1664,7 +1664,7 @@ async function extractRoi(choices, flag1) {
         img.src = src;
       });
     }
-    var regionData = [];
+    let regionData = [];
 
 
     if ( flag1 != 0 ) {
@@ -1673,7 +1673,7 @@ async function extractRoi(choices, flag1) {
       height = $D.params.data.height;
       width = $D.params.data.width;
     }
-    var c = 0;
+    let c = 0;
     const totalPatches = (width / step) * (height / step);
     document.getElementById('snackbar').className = '';
     $('#snackbar').html('');
@@ -1744,8 +1744,8 @@ async function extractRoi(choices, flag1) {
 
     self.hideProgress();
     model.dispose();
-    var regionMask = [];
-    for (var i = 0; i < regionData.length; i++) {
+    let regionMask = [];
+    for (let i = 0; i < regionData.length; i++) {
       const temp = document.querySelector('#dummy');
       temp.height = step;
       temp.width = step;
@@ -1755,14 +1755,14 @@ async function extractRoi(choices, flag1) {
       regionMask.push(temp.toDataURL().replace(/^data:image\/(png|jpg);base64,/, ''));
     }
 
-    var zip = new JSZip(); // zip file to download patches
+    let zip = new JSZip(); // zip file to download patches
     zip.folder('masks');
-    var img = zip.folder('masks');
+    let img = zip.folder('masks');
     document.getElementById('snackbar').className = '';
     $('#snackbar').html('');
     $('#snackbar').html('<h3> Downloading  Masks...</h3>' + '<span id = "etadm"></span>');
     document.getElementById('snackbar').className = 'show';
-    for (var i = 0; i < regionMask.length; i++) {
+    for (let i = 0; i < regionMask.length; i++) {
       img.file( i+ 'Mask' + '.png', regionMask[i], {base64: true});
 
       $('#etadm').html('');
@@ -1773,7 +1773,7 @@ async function extractRoi(choices, flag1) {
     if ($('#both').is(':checked')) {
       c = 0;
       zip.folder('patches');
-      var img2 = zip.folder('patches');
+      let img2 = zip.folder('patches');
 
       document.getElementById('snackbar').className = '';
 
@@ -1788,7 +1788,7 @@ async function extractRoi(choices, flag1) {
           const lImg = await addImageProcess(src);
           fullResCvs.height = lImg.height;
           fullResCvs.width = lImg.width;
-          var t;
+          let t;
           fullResCvs.getContext('2d').drawImage(lImg, 0, 0);
           t = fullResCvs.toDataURL().replace(/^data:image\/(png|jpg);base64,/, '');
 

@@ -1,8 +1,8 @@
-(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.Ajv = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
+(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{let g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.Ajv = f()}})(function(){let define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){let c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);let a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}let p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){let n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(let u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 'use strict';
 
 
-var Cache = module.exports = function Cache() {
+let Cache = module.exports = function Cache() {
   this._cache = {};
 };
 
@@ -29,7 +29,7 @@ Cache.prototype.clear = function Cache_clear() {
 },{}],2:[function(require,module,exports){
 'use strict';
 
-var MissingRefError = require('./error_classes').MissingRef;
+let MissingRefError = require('./error_classes').MissingRef;
 
 module.exports = compileAsync;
 
@@ -47,7 +47,7 @@ function compileAsync(schema, meta, callback) {
   /* eslint no-shadow: 0 */
   /* global Promise */
   /* jshint validthis: true */
-  var self = this;
+  let self = this;
   if (typeof this._opts.loadSchema != 'function')
     throw new Error('options.loadSchema should be a function');
 
@@ -56,8 +56,8 @@ function compileAsync(schema, meta, callback) {
     meta = undefined;
   }
 
-  var p = loadMetaSchemaOf(schema).then(function () {
-    var schemaObj = self._addSchema(schema, undefined, meta);
+  let p = loadMetaSchemaOf(schema).then(function () {
+    let schemaObj = self._addSchema(schema, undefined, meta);
     return schemaObj.validate || _compileAsync(schemaObj);
   });
 
@@ -72,7 +72,7 @@ function compileAsync(schema, meta, callback) {
 
 
   function loadMetaSchemaOf(sch) {
-    var $schema = sch.$schema;
+    let $schema = sch.$schema;
     return $schema && !self.getSchema($schema)
             ? compileAsync.call(self, { $ref: $schema }, true)
             : Promise.resolve();
@@ -88,10 +88,10 @@ function compileAsync(schema, meta, callback) {
 
 
     function loadMissingSchema(e) {
-      var ref = e.missingSchema;
+      let ref = e.missingSchema;
       if (added(ref)) throw new Error('Schema ' + ref + ' is loaded but ' + e.missingRef + ' cannot be resolved');
 
-      var schemaPromise = self._loadingSchemas[ref];
+      let schemaPromise = self._loadingSchemas[ref];
       if (!schemaPromise) {
         schemaPromise = self._loadingSchemas[ref] = self._opts.loadSchema(ref);
         schemaPromise.then(removePromise, removePromise);
@@ -121,7 +121,7 @@ function compileAsync(schema, meta, callback) {
 },{"./error_classes":3}],3:[function(require,module,exports){
 'use strict';
 
-var resolve = require('./resolve');
+let resolve = require('./resolve');
 
 module.exports = {
   Validation: errorSubclass(ValidationError),
@@ -157,25 +157,25 @@ function errorSubclass(Subclass) {
 },{"./resolve":6}],4:[function(require,module,exports){
 'use strict';
 
-var util = require('./util');
+let util = require('./util');
 
-var DATE = /^(\d\d\d\d)-(\d\d)-(\d\d)$/;
-var DAYS = [0,31,28,31,30,31,30,31,31,30,31,30,31];
-var TIME = /^(\d\d):(\d\d):(\d\d)(\.\d+)?(z|[+-]\d\d:\d\d)?$/i;
-var HOSTNAME = /^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?(?:\.[a-z0-9](?:[-0-9a-z]{0,61}[0-9a-z])?)*$/i;
-var URI = /^(?:[a-z][a-z0-9+\-.]*:)(?:\/?\/(?:(?:[a-z0-9\-._~!$&'()*+,;=:]|%[0-9a-f]{2})*@)?(?:\[(?:(?:(?:(?:[0-9a-f]{1,4}:){6}|::(?:[0-9a-f]{1,4}:){5}|(?:[0-9a-f]{1,4})?::(?:[0-9a-f]{1,4}:){4}|(?:(?:[0-9a-f]{1,4}:){0,1}[0-9a-f]{1,4})?::(?:[0-9a-f]{1,4}:){3}|(?:(?:[0-9a-f]{1,4}:){0,2}[0-9a-f]{1,4})?::(?:[0-9a-f]{1,4}:){2}|(?:(?:[0-9a-f]{1,4}:){0,3}[0-9a-f]{1,4})?::[0-9a-f]{1,4}:|(?:(?:[0-9a-f]{1,4}:){0,4}[0-9a-f]{1,4})?::)(?:[0-9a-f]{1,4}:[0-9a-f]{1,4}|(?:(?:25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d\d?))|(?:(?:[0-9a-f]{1,4}:){0,5}[0-9a-f]{1,4})?::[0-9a-f]{1,4}|(?:(?:[0-9a-f]{1,4}:){0,6}[0-9a-f]{1,4})?::)|[Vv][0-9a-f]+\.[a-z0-9\-._~!$&'()*+,;=:]+)\]|(?:(?:25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d\d?)|(?:[a-z0-9\-._~!$&'()*+,;=]|%[0-9a-f]{2})*)(?::\d*)?(?:\/(?:[a-z0-9\-._~!$&'()*+,;=:@]|%[0-9a-f]{2})*)*|\/(?:(?:[a-z0-9\-._~!$&'()*+,;=:@]|%[0-9a-f]{2})+(?:\/(?:[a-z0-9\-._~!$&'()*+,;=:@]|%[0-9a-f]{2})*)*)?|(?:[a-z0-9\-._~!$&'()*+,;=:@]|%[0-9a-f]{2})+(?:\/(?:[a-z0-9\-._~!$&'()*+,;=:@]|%[0-9a-f]{2})*)*)(?:\?(?:[a-z0-9\-._~!$&'()*+,;=:@/?]|%[0-9a-f]{2})*)?(?:#(?:[a-z0-9\-._~!$&'()*+,;=:@/?]|%[0-9a-f]{2})*)?$/i;
-var URIREF = /^(?:[a-z][a-z0-9+\-.]*:)?(?:\/?\/(?:(?:[a-z0-9\-._~!$&'()*+,;=:]|%[0-9a-f]{2})*@)?(?:\[(?:(?:(?:(?:[0-9a-f]{1,4}:){6}|::(?:[0-9a-f]{1,4}:){5}|(?:[0-9a-f]{1,4})?::(?:[0-9a-f]{1,4}:){4}|(?:(?:[0-9a-f]{1,4}:){0,1}[0-9a-f]{1,4})?::(?:[0-9a-f]{1,4}:){3}|(?:(?:[0-9a-f]{1,4}:){0,2}[0-9a-f]{1,4})?::(?:[0-9a-f]{1,4}:){2}|(?:(?:[0-9a-f]{1,4}:){0,3}[0-9a-f]{1,4})?::[0-9a-f]{1,4}:|(?:(?:[0-9a-f]{1,4}:){0,4}[0-9a-f]{1,4})?::)(?:[0-9a-f]{1,4}:[0-9a-f]{1,4}|(?:(?:25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d\d?))|(?:(?:[0-9a-f]{1,4}:){0,5}[0-9a-f]{1,4})?::[0-9a-f]{1,4}|(?:(?:[0-9a-f]{1,4}:){0,6}[0-9a-f]{1,4})?::)|[Vv][0-9a-f]+\.[a-z0-9\-._~!$&'()*+,;=:]+)\]|(?:(?:25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d\d?)|(?:[a-z0-9\-._~!$&'"()*+,;=]|%[0-9a-f]{2})*)(?::\d*)?(?:\/(?:[a-z0-9\-._~!$&'"()*+,;=:@]|%[0-9a-f]{2})*)*|\/(?:(?:[a-z0-9\-._~!$&'"()*+,;=:@]|%[0-9a-f]{2})+(?:\/(?:[a-z0-9\-._~!$&'"()*+,;=:@]|%[0-9a-f]{2})*)*)?|(?:[a-z0-9\-._~!$&'"()*+,;=:@]|%[0-9a-f]{2})+(?:\/(?:[a-z0-9\-._~!$&'"()*+,;=:@]|%[0-9a-f]{2})*)*)?(?:\?(?:[a-z0-9\-._~!$&'"()*+,;=:@/?]|%[0-9a-f]{2})*)?(?:#(?:[a-z0-9\-._~!$&'"()*+,;=:@/?]|%[0-9a-f]{2})*)?$/i;
+let DATE = /^(\d\d\d\d)-(\d\d)-(\d\d)$/;
+let DAYS = [0,31,28,31,30,31,30,31,31,30,31,30,31];
+let TIME = /^(\d\d):(\d\d):(\d\d)(\.\d+)?(z|[+-]\d\d:\d\d)?$/i;
+let HOSTNAME = /^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?(?:\.[a-z0-9](?:[-0-9a-z]{0,61}[0-9a-z])?)*$/i;
+let URI = /^(?:[a-z][a-z0-9+\-.]*:)(?:\/?\/(?:(?:[a-z0-9\-._~!$&'()*+,;=:]|%[0-9a-f]{2})*@)?(?:\[(?:(?:(?:(?:[0-9a-f]{1,4}:){6}|::(?:[0-9a-f]{1,4}:){5}|(?:[0-9a-f]{1,4})?::(?:[0-9a-f]{1,4}:){4}|(?:(?:[0-9a-f]{1,4}:){0,1}[0-9a-f]{1,4})?::(?:[0-9a-f]{1,4}:){3}|(?:(?:[0-9a-f]{1,4}:){0,2}[0-9a-f]{1,4})?::(?:[0-9a-f]{1,4}:){2}|(?:(?:[0-9a-f]{1,4}:){0,3}[0-9a-f]{1,4})?::[0-9a-f]{1,4}:|(?:(?:[0-9a-f]{1,4}:){0,4}[0-9a-f]{1,4})?::)(?:[0-9a-f]{1,4}:[0-9a-f]{1,4}|(?:(?:25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d\d?))|(?:(?:[0-9a-f]{1,4}:){0,5}[0-9a-f]{1,4})?::[0-9a-f]{1,4}|(?:(?:[0-9a-f]{1,4}:){0,6}[0-9a-f]{1,4})?::)|[Vv][0-9a-f]+\.[a-z0-9\-._~!$&'()*+,;=:]+)\]|(?:(?:25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d\d?)|(?:[a-z0-9\-._~!$&'()*+,;=]|%[0-9a-f]{2})*)(?::\d*)?(?:\/(?:[a-z0-9\-._~!$&'()*+,;=:@]|%[0-9a-f]{2})*)*|\/(?:(?:[a-z0-9\-._~!$&'()*+,;=:@]|%[0-9a-f]{2})+(?:\/(?:[a-z0-9\-._~!$&'()*+,;=:@]|%[0-9a-f]{2})*)*)?|(?:[a-z0-9\-._~!$&'()*+,;=:@]|%[0-9a-f]{2})+(?:\/(?:[a-z0-9\-._~!$&'()*+,;=:@]|%[0-9a-f]{2})*)*)(?:\?(?:[a-z0-9\-._~!$&'()*+,;=:@/?]|%[0-9a-f]{2})*)?(?:#(?:[a-z0-9\-._~!$&'()*+,;=:@/?]|%[0-9a-f]{2})*)?$/i;
+let URIREF = /^(?:[a-z][a-z0-9+\-.]*:)?(?:\/?\/(?:(?:[a-z0-9\-._~!$&'()*+,;=:]|%[0-9a-f]{2})*@)?(?:\[(?:(?:(?:(?:[0-9a-f]{1,4}:){6}|::(?:[0-9a-f]{1,4}:){5}|(?:[0-9a-f]{1,4})?::(?:[0-9a-f]{1,4}:){4}|(?:(?:[0-9a-f]{1,4}:){0,1}[0-9a-f]{1,4})?::(?:[0-9a-f]{1,4}:){3}|(?:(?:[0-9a-f]{1,4}:){0,2}[0-9a-f]{1,4})?::(?:[0-9a-f]{1,4}:){2}|(?:(?:[0-9a-f]{1,4}:){0,3}[0-9a-f]{1,4})?::[0-9a-f]{1,4}:|(?:(?:[0-9a-f]{1,4}:){0,4}[0-9a-f]{1,4})?::)(?:[0-9a-f]{1,4}:[0-9a-f]{1,4}|(?:(?:25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d\d?))|(?:(?:[0-9a-f]{1,4}:){0,5}[0-9a-f]{1,4})?::[0-9a-f]{1,4}|(?:(?:[0-9a-f]{1,4}:){0,6}[0-9a-f]{1,4})?::)|[Vv][0-9a-f]+\.[a-z0-9\-._~!$&'()*+,;=:]+)\]|(?:(?:25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d\d?)|(?:[a-z0-9\-._~!$&'"()*+,;=]|%[0-9a-f]{2})*)(?::\d*)?(?:\/(?:[a-z0-9\-._~!$&'"()*+,;=:@]|%[0-9a-f]{2})*)*|\/(?:(?:[a-z0-9\-._~!$&'"()*+,;=:@]|%[0-9a-f]{2})+(?:\/(?:[a-z0-9\-._~!$&'"()*+,;=:@]|%[0-9a-f]{2})*)*)?|(?:[a-z0-9\-._~!$&'"()*+,;=:@]|%[0-9a-f]{2})+(?:\/(?:[a-z0-9\-._~!$&'"()*+,;=:@]|%[0-9a-f]{2})*)*)?(?:\?(?:[a-z0-9\-._~!$&'"()*+,;=:@/?]|%[0-9a-f]{2})*)?(?:#(?:[a-z0-9\-._~!$&'"()*+,;=:@/?]|%[0-9a-f]{2})*)?$/i;
 // uri-template: https://tools.ietf.org/html/rfc6570
-var URITEMPLATE = /^(?:(?:[^\x00-\x20"'<>%\\^`{|}]|%[0-9a-f]{2})|\{[+#./;?&=,!@|]?(?:[a-z0-9_]|%[0-9a-f]{2})+(?::[1-9][0-9]{0,3}|\*)?(?:,(?:[a-z0-9_]|%[0-9a-f]{2})+(?::[1-9][0-9]{0,3}|\*)?)*\})*$/i;
+let URITEMPLATE = /^(?:(?:[^\x00-\x20"'<>%\\^`{|}]|%[0-9a-f]{2})|\{[+#./;?&=,!@|]?(?:[a-z0-9_]|%[0-9a-f]{2})+(?::[1-9][0-9]{0,3}|\*)?(?:,(?:[a-z0-9_]|%[0-9a-f]{2})+(?::[1-9][0-9]{0,3}|\*)?)*\})*$/i;
 // For the source: https://gist.github.com/dperini/729294
 // For test cases: https://mathiasbynens.be/demo/url-regex
 // @todo Delete current URL in favour of the commented out URL rule when this issue is fixed https://github.com/eslint/eslint/issues/7983.
-// var URL = /^(?:(?:https?|ftp):\/\/)(?:\S+(?::\S*)?@)?(?:(?!10(?:\.\d{1,3}){3})(?!127(?:\.\d{1,3}){3})(?!169\.254(?:\.\d{1,3}){2})(?!192\.168(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u{00a1}-\u{ffff}0-9]+-?)*[a-z\u{00a1}-\u{ffff}0-9]+)(?:\.(?:[a-z\u{00a1}-\u{ffff}0-9]+-?)*[a-z\u{00a1}-\u{ffff}0-9]+)*(?:\.(?:[a-z\u{00a1}-\u{ffff}]{2,})))(?::\d{2,5})?(?:\/[^\s]*)?$/iu;
-var URL = /^(?:(?:http[s\u017F]?|ftp):\/\/)(?:(?:[\0-\x08\x0E-\x1F!-\x9F\xA1-\u167F\u1681-\u1FFF\u200B-\u2027\u202A-\u202E\u2030-\u205E\u2060-\u2FFF\u3001-\uD7FF\uE000-\uFEFE\uFF00-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])+(?::(?:[\0-\x08\x0E-\x1F!-\x9F\xA1-\u167F\u1681-\u1FFF\u200B-\u2027\u202A-\u202E\u2030-\u205E\u2060-\u2FFF\u3001-\uD7FF\uE000-\uFEFE\uFF00-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])*)?@)?(?:(?!10(?:\.[0-9]{1,3}){3})(?!127(?:\.[0-9]{1,3}){3})(?!169\.254(?:\.[0-9]{1,3}){2})(?!192\.168(?:\.[0-9]{1,3}){2})(?!172\.(?:1[6-9]|2[0-9]|3[01])(?:\.[0-9]{1,3}){2})(?:[1-9][0-9]?|1[0-9][0-9]|2[01][0-9]|22[0-3])(?:\.(?:1?[0-9]{1,2}|2[0-4][0-9]|25[0-5])){2}(?:\.(?:[1-9][0-9]?|1[0-9][0-9]|2[0-4][0-9]|25[0-4]))|(?:(?:(?:[0-9KSa-z\xA1-\uD7FF\uE000-\uFFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])+-?)*(?:[0-9KSa-z\xA1-\uD7FF\uE000-\uFFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])+)(?:\.(?:(?:[0-9KSa-z\xA1-\uD7FF\uE000-\uFFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])+-?)*(?:[0-9KSa-z\xA1-\uD7FF\uE000-\uFFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])+)*(?:\.(?:(?:[KSa-z\xA1-\uD7FF\uE000-\uFFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF]){2,})))(?::[0-9]{2,5})?(?:\/(?:[\0-\x08\x0E-\x1F!-\x9F\xA1-\u167F\u1681-\u1FFF\u200B-\u2027\u202A-\u202E\u2030-\u205E\u2060-\u2FFF\u3001-\uD7FF\uE000-\uFEFE\uFF00-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])*)?$/i;
-var UUID = /^(?:urn:uuid:)?[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/i;
-var JSON_POINTER = /^(?:\/(?:[^~/]|~0|~1)*)*$/;
-var JSON_POINTER_URI_FRAGMENT = /^#(?:\/(?:[a-z0-9_\-.!$&'()*+,;:=@]|%[0-9a-f]{2}|~0|~1)*)*$/i;
-var RELATIVE_JSON_POINTER = /^(?:0|[1-9][0-9]*)(?:#|(?:\/(?:[^~/]|~0|~1)*)*)$/;
+// let URL = /^(?:(?:https?|ftp):\/\/)(?:\S+(?::\S*)?@)?(?:(?!10(?:\.\d{1,3}){3})(?!127(?:\.\d{1,3}){3})(?!169\.254(?:\.\d{1,3}){2})(?!192\.168(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u{00a1}-\u{ffff}0-9]+-?)*[a-z\u{00a1}-\u{ffff}0-9]+)(?:\.(?:[a-z\u{00a1}-\u{ffff}0-9]+-?)*[a-z\u{00a1}-\u{ffff}0-9]+)*(?:\.(?:[a-z\u{00a1}-\u{ffff}]{2,})))(?::\d{2,5})?(?:\/[^\s]*)?$/iu;
+let URL = /^(?:(?:http[s\u017F]?|ftp):\/\/)(?:(?:[\0-\x08\x0E-\x1F!-\x9F\xA1-\u167F\u1681-\u1FFF\u200B-\u2027\u202A-\u202E\u2030-\u205E\u2060-\u2FFF\u3001-\uD7FF\uE000-\uFEFE\uFF00-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])+(?::(?:[\0-\x08\x0E-\x1F!-\x9F\xA1-\u167F\u1681-\u1FFF\u200B-\u2027\u202A-\u202E\u2030-\u205E\u2060-\u2FFF\u3001-\uD7FF\uE000-\uFEFE\uFF00-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])*)?@)?(?:(?!10(?:\.[0-9]{1,3}){3})(?!127(?:\.[0-9]{1,3}){3})(?!169\.254(?:\.[0-9]{1,3}){2})(?!192\.168(?:\.[0-9]{1,3}){2})(?!172\.(?:1[6-9]|2[0-9]|3[01])(?:\.[0-9]{1,3}){2})(?:[1-9][0-9]?|1[0-9][0-9]|2[01][0-9]|22[0-3])(?:\.(?:1?[0-9]{1,2}|2[0-4][0-9]|25[0-5])){2}(?:\.(?:[1-9][0-9]?|1[0-9][0-9]|2[0-4][0-9]|25[0-4]))|(?:(?:(?:[0-9KSa-z\xA1-\uD7FF\uE000-\uFFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])+-?)*(?:[0-9KSa-z\xA1-\uD7FF\uE000-\uFFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])+)(?:\.(?:(?:[0-9KSa-z\xA1-\uD7FF\uE000-\uFFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])+-?)*(?:[0-9KSa-z\xA1-\uD7FF\uE000-\uFFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])+)*(?:\.(?:(?:[KSa-z\xA1-\uD7FF\uE000-\uFFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF]){2,})))(?::[0-9]{2,5})?(?:\/(?:[\0-\x08\x0E-\x1F!-\x9F\xA1-\u167F\u1681-\u1FFF\u200B-\u2027\u202A-\u202E\u2030-\u205E\u2060-\u2FFF\u3001-\uD7FF\uE000-\uFEFE\uFF00-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])*)?$/i;
+let UUID = /^(?:urn:uuid:)?[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/i;
+let JSON_POINTER = /^(?:\/(?:[^~/]|~0|~1)*)*$/;
+let JSON_POINTER_URI_FRAGMENT = /^#(?:\/(?:[a-z0-9_\-.!$&'()*+,;:=@]|%[0-9a-f]{2}|~0|~1)*)*$/i;
+let RELATIVE_JSON_POINTER = /^(?:0|[1-9][0-9]*)(?:#|(?:\/(?:[^~/]|~0|~1)*)*)$/;
 
 
 module.exports = formats;
@@ -246,12 +246,12 @@ function isLeapYear(year) {
 
 function date(str) {
   // full-date from http://tools.ietf.org/html/rfc3339#section-5.6
-  var matches = str.match(DATE);
+  let matches = str.match(DATE);
   if (!matches) return false;
 
-  var year = +matches[1];
-  var month = +matches[2];
-  var day = +matches[3];
+  let year = +matches[1];
+  let month = +matches[2];
+  let day = +matches[3];
 
   return month >= 1 && month <= 12 && day >= 1 &&
           day <= (month == 2 && isLeapYear(year) ? 29 : DAYS[month]);
@@ -259,23 +259,23 @@ function date(str) {
 
 
 function time(str, full) {
-  var matches = str.match(TIME);
+  let matches = str.match(TIME);
   if (!matches) return false;
 
-  var hour = matches[1];
-  var minute = matches[2];
-  var second = matches[3];
-  var timeZone = matches[5];
+  let hour = matches[1];
+  let minute = matches[2];
+  let second = matches[3];
+  let timeZone = matches[5];
   return ((hour <= 23 && minute <= 59 && second <= 59) ||
           (hour == 23 && minute == 59 && second == 60)) &&
          (!full || timeZone);
 }
 
 
-var DATE_TIME_SEPARATOR = /t|\s/i;
+let DATE_TIME_SEPARATOR = /t|\s/i;
 function date_time(str) {
   // http://tools.ietf.org/html/rfc3339#section-5.6
-  var dateTime = str.split(DATE_TIME_SEPARATOR);
+  let dateTime = str.split(DATE_TIME_SEPARATOR);
   return dateTime.length == 2 && date(dateTime[0]) && time(dateTime[1], true);
 }
 
@@ -287,14 +287,14 @@ function hostname(str) {
 }
 
 
-var NOT_URI_FRAGMENT = /\/|:/;
+let NOT_URI_FRAGMENT = /\/|:/;
 function uri(str) {
   // http://jmrware.com/articles/2009/uri_regexp/URI_regex.html + optional protocol + required "."
   return NOT_URI_FRAGMENT.test(str) && URI.test(str);
 }
 
 
-var Z_ANCHOR = /[^\\]\\Z/;
+let Z_ANCHOR = /[^\\]\\Z/;
 function regex(str) {
   if (Z_ANCHOR.test(str)) return false;
   try {
@@ -308,22 +308,22 @@ function regex(str) {
 },{"./util":10}],5:[function(require,module,exports){
 'use strict';
 
-var resolve = require('./resolve')
+let resolve = require('./resolve')
   , util = require('./util')
   , errorClasses = require('./error_classes')
   , stableStringify = require('fast-json-stable-stringify');
 
-var validateGenerator = require('../dotjs/validate');
+let validateGenerator = require('../dotjs/validate');
 
 /**
  * Functions below are used inside compiled validations function
  */
 
-var ucs2length = util.ucs2length;
-var equal = require('fast-deep-equal');
+let ucs2length = util.ucs2length;
+let equal = require('fast-deep-equal');
 
 // this error is thrown by async schemas to return validation errors via exception
-var ValidationError = errorClasses.Validation;
+let ValidationError = errorClasses.Validation;
 
 module.exports = compile;
 
@@ -340,7 +340,7 @@ module.exports = compile;
 function compile(schema, root, localRefs, baseId) {
   /* jshint validthis: true, evil: true */
   /* eslint no-shadow: 0 */
-  var self = this
+  let self = this
     , opts = this._opts
     , refVal = [ undefined ]
     , refs = {}
@@ -352,17 +352,17 @@ function compile(schema, root, localRefs, baseId) {
 
   root = root || { schema: schema, refVal: refVal, refs: refs };
 
-  var c = checkCompiling.call(this, schema, root, baseId);
-  var compilation = this._compilations[c.index];
+  let c = checkCompiling.call(this, schema, root, baseId);
+  let compilation = this._compilations[c.index];
   if (c.compiling) return (compilation.callValidate = callValidate);
 
-  var formats = this._formats;
-  var RULES = this.RULES;
+  let formats = this._formats;
+  let RULES = this.RULES;
 
   try {
-    var v = localCompile(schema, root, localRefs, baseId);
+    let v = localCompile(schema, root, localRefs, baseId);
     compilation.validate = v;
-    var cv = compilation.callValidate;
+    let cv = compilation.callValidate;
     if (cv) {
       cv.schema = v.schema;
       cv.errors = null;
@@ -380,20 +380,20 @@ function compile(schema, root, localRefs, baseId) {
   /* @this   {*} - custom context, see passContext option */
   function callValidate() {
     /* jshint validthis: true */
-    var validate = compilation.validate;
-    var result = validate.apply(this, arguments);
+    let validate = compilation.validate;
+    let result = validate.apply(this, arguments);
     callValidate.errors = validate.errors;
     return result;
   }
 
   function localCompile(_schema, _root, localRefs, baseId) {
-    var isRoot = !_root || (_root && _root.schema == _schema);
+    let isRoot = !_root || (_root && _root.schema == _schema);
     if (_root.schema != root.schema)
       return compile.call(self, _schema, _root, localRefs, baseId);
 
-    var $async = _schema.$async === true;
+    let $async = _schema.$async === true;
 
-    var sourceCode = validateGenerator({
+    let sourceCode = validateGenerator({
       isTop: true,
       schema: _schema,
       isRoot: isRoot,
@@ -417,15 +417,15 @@ function compile(schema, root, localRefs, baseId) {
       self: self
     });
 
-    sourceCode = vars(refVal, refValCode) + vars(patterns, patternCode)
-                   + vars(defaults, defaultCode) + vars(customRules, customRuleCode)
+    sourceCode = lets(refVal, refValCode) + lets(patterns, patternCode)
+                   + lets(defaults, defaultCode) + lets(customRules, customRuleCode)
                    + sourceCode;
 
     if (opts.processCode) sourceCode = opts.processCode(sourceCode);
     // console.log('\n\n\n *** \n', JSON.stringify(sourceCode));
-    var validate;
+    let validate;
     try {
-      var makeValidate = new Function(
+      let makeValidate = new Function(
         'self',
         'RULES',
         'formats',
@@ -477,15 +477,15 @@ function compile(schema, root, localRefs, baseId) {
 
   function resolveRef(baseId, ref, isRoot) {
     ref = resolve.url(baseId, ref);
-    var refIndex = refs[ref];
-    var _refVal, refCode;
+    let refIndex = refs[ref];
+    let _refVal, refCode;
     if (refIndex !== undefined) {
       _refVal = refVal[refIndex];
       refCode = 'refVal[' + refIndex + ']';
       return resolvedRef(_refVal, refCode);
     }
     if (!isRoot && root.refs) {
-      var rootRefId = root.refs[ref];
+      let rootRefId = root.refs[ref];
       if (rootRefId !== undefined) {
         _refVal = root.refVal[rootRefId];
         refCode = addLocalRef(ref, _refVal);
@@ -494,9 +494,9 @@ function compile(schema, root, localRefs, baseId) {
     }
 
     refCode = addLocalRef(ref);
-    var v = resolve.call(self, localCompile, root, ref);
+    let v = resolve.call(self, localCompile, root, ref);
     if (v === undefined) {
-      var localSchema = localRefs && localRefs[ref];
+      let localSchema = localRefs && localRefs[ref];
       if (localSchema) {
         v = resolve.inlineRef(localSchema, opts.inlineRefs)
             ? localSchema
@@ -513,7 +513,7 @@ function compile(schema, root, localRefs, baseId) {
   }
 
   function addLocalRef(ref, v) {
-    var refId = refVal.length;
+    let refId = refVal.length;
     refVal[refId] = v;
     refs[ref] = refId;
     return 'refVal' + refId;
@@ -524,7 +524,7 @@ function compile(schema, root, localRefs, baseId) {
   }
 
   function replaceLocalRef(ref, v) {
-    var refId = refs[ref];
+    let refId = refs[ref];
     refVal[refId] = v;
   }
 
@@ -535,7 +535,7 @@ function compile(schema, root, localRefs, baseId) {
   }
 
   function usePattern(regexStr) {
-    var index = patternsHash[regexStr];
+    let index = patternsHash[regexStr];
     if (index === undefined) {
       index = patternsHash[regexStr] = patterns.length;
       patterns[index] = regexStr;
@@ -552,8 +552,8 @@ function compile(schema, root, localRefs, baseId) {
         return util.toQuotedString(value);
       case 'object':
         if (value === null) return 'null';
-        var valueStr = stableStringify(value);
-        var index = defaultsHash[valueStr];
+        let valueStr = stableStringify(value);
+        let index = defaultsHash[valueStr];
         if (index === undefined) {
           index = defaultsHash[valueStr] = defaults.length;
           defaults[index] = value;
@@ -563,21 +563,21 @@ function compile(schema, root, localRefs, baseId) {
   }
 
   function useCustomRule(rule, schema, parentSchema, it) {
-    var validateSchema = rule.definition.validateSchema;
+    let validateSchema = rule.definition.validateSchema;
     if (validateSchema && self._opts.validateSchema !== false) {
-      var valid = validateSchema(schema);
+      let valid = validateSchema(schema);
       if (!valid) {
-        var message = 'keyword schema is invalid: ' + self.errorsText(validateSchema.errors);
+        let message = 'keyword schema is invalid: ' + self.errorsText(validateSchema.errors);
         if (self._opts.validateSchema == 'log') self.logger.error(message);
         else throw new Error(message);
       }
     }
 
-    var compile = rule.definition.compile
+    let compile = rule.definition.compile
       , inline = rule.definition.inline
       , macro = rule.definition.macro;
 
-    var validate;
+    let validate;
     if (compile) {
       validate = compile.call(self, schema, parentSchema, it);
     } else if (macro) {
@@ -593,7 +593,7 @@ function compile(schema, root, localRefs, baseId) {
     if (validate === undefined)
       throw new Error('custom keyword "' + rule.keyword + '"failed to compile');
 
-    var index = customRules.length;
+    let index = customRules.length;
     customRules[index] = validate;
 
     return {
@@ -614,7 +614,7 @@ function compile(schema, root, localRefs, baseId) {
  */
 function checkCompiling(schema, root, baseId) {
   /* jshint validthis: true */
-  var index = compIndex.call(this, schema, root, baseId);
+  let index = compIndex.call(this, schema, root, baseId);
   if (index >= 0) return { index: index, compiling: true };
   index = this._compilations.length;
   this._compilations[index] = {
@@ -635,7 +635,7 @@ function checkCompiling(schema, root, baseId) {
  */
 function endCompiling(schema, root, baseId) {
   /* jshint validthis: true */
-  var i = compIndex.call(this, schema, root, baseId);
+  let i = compIndex.call(this, schema, root, baseId);
   if (i >= 0) this._compilations.splice(i, 1);
 }
 
@@ -650,8 +650,8 @@ function endCompiling(schema, root, baseId) {
  */
 function compIndex(schema, root, baseId) {
   /* jshint validthis: true */
-  for (var i=0; i<this._compilations.length; i++) {
-    var c = this._compilations[i];
+  for (let i=0; i<this._compilations.length; i++) {
+    let c = this._compilations[i];
     if (c.schema == schema && c.root == root && c.baseId == baseId) return i;
   }
   return -1;
@@ -659,29 +659,29 @@ function compIndex(schema, root, baseId) {
 
 
 function patternCode(i, patterns) {
-  return 'var pattern' + i + ' = new RegExp(' + util.toQuotedString(patterns[i]) + ');';
+  return 'let pattern' + i + ' = new RegExp(' + util.toQuotedString(patterns[i]) + ');';
 }
 
 
 function defaultCode(i) {
-  return 'var default' + i + ' = defaults[' + i + '];';
+  return 'let default' + i + ' = defaults[' + i + '];';
 }
 
 
 function refValCode(i, refVal) {
-  return refVal[i] === undefined ? '' : 'var refVal' + i + ' = refVal[' + i + '];';
+  return refVal[i] === undefined ? '' : 'let refVal' + i + ' = refVal[' + i + '];';
 }
 
 
 function customRuleCode(i) {
-  return 'var customRule' + i + ' = customRules[' + i + '];';
+  return 'let customRule' + i + ' = customRules[' + i + '];';
 }
 
 
-function vars(arr, statement) {
+function lets(arr, statement) {
   if (!arr.length) return '';
-  var code = '';
-  for (var i=0; i<arr.length; i++)
+  let code = '';
+  for (let i=0; i<arr.length; i++)
     code += statement(i, arr);
   return code;
 }
@@ -689,7 +689,7 @@ function vars(arr, statement) {
 },{"../dotjs/validate":37,"./error_classes":3,"./resolve":6,"./util":10,"fast-deep-equal":41,"fast-json-stable-stringify":42}],6:[function(require,module,exports){
 'use strict';
 
-var URI = require('uri-js')
+let URI = require('uri-js')
   , equal = require('fast-deep-equal')
   , util = require('./util')
   , SchemaObject = require('./schema_obj')
@@ -714,7 +714,7 @@ resolve.schema = resolveSchema;
  */
 function resolve(compile, root, ref) {
   /* jshint validthis: true */
-  var refVal = this._refs[ref];
+  let refVal = this._refs[ref];
   if (typeof refVal == 'string') {
     if (this._refs[refVal]) refVal = this._refs[refVal];
     else return resolve.call(this, compile, root, refVal);
@@ -727,8 +727,8 @@ function resolve(compile, root, ref) {
             : refVal.validate || this._compile(refVal);
   }
 
-  var res = resolveSchema.call(this, root, ref);
-  var schema, v, baseId;
+  let res = resolveSchema.call(this, root, ref);
+  let schema, v, baseId;
   if (res) {
     schema = res.schema;
     root = res.root;
@@ -756,12 +756,12 @@ function resolve(compile, root, ref) {
  */
 function resolveSchema(root, ref) {
   /* jshint validthis: true */
-  var p = URI.parse(ref)
+  let p = URI.parse(ref)
     , refPath = _getFullPath(p)
     , baseId = getFullPath(this._getId(root.schema));
   if (Object.keys(root.schema).length === 0 || refPath !== baseId) {
-    var id = normalizeId(refPath);
-    var refVal = this._refs[id];
+    let id = normalizeId(refPath);
+    let refVal = this._refs[id];
     if (typeof refVal == 'string') {
       return resolveRecursive.call(this, root, refVal, p);
     } else if (refVal instanceof SchemaObject) {
@@ -788,39 +788,39 @@ function resolveSchema(root, ref) {
 /* @this Ajv */
 function resolveRecursive(root, ref, parsedRef) {
   /* jshint validthis: true */
-  var res = resolveSchema.call(this, root, ref);
+  let res = resolveSchema.call(this, root, ref);
   if (res) {
-    var schema = res.schema;
-    var baseId = res.baseId;
+    let schema = res.schema;
+    let baseId = res.baseId;
     root = res.root;
-    var id = this._getId(schema);
+    let id = this._getId(schema);
     if (id) baseId = resolveUrl(baseId, id);
     return getJsonPointer.call(this, parsedRef, baseId, schema, root);
   }
 }
 
 
-var PREVENT_SCOPE_CHANGE = util.toHash(['properties', 'patternProperties', 'enum', 'dependencies', 'definitions']);
+let PREVENT_SCOPE_CHANGE = util.toHash(['properties', 'patternProperties', 'enum', 'dependencies', 'definitions']);
 /* @this Ajv */
 function getJsonPointer(parsedRef, baseId, schema, root) {
   /* jshint validthis: true */
   parsedRef.fragment = parsedRef.fragment || '';
   if (parsedRef.fragment.slice(0,1) != '/') return;
-  var parts = parsedRef.fragment.split('/');
+  let parts = parsedRef.fragment.split('/');
 
-  for (var i = 1; i < parts.length; i++) {
-    var part = parts[i];
+  for (let i = 1; i < parts.length; i++) {
+    let part = parts[i];
     if (part) {
       part = util.unescapeFragment(part);
       schema = schema[part];
       if (schema === undefined) break;
-      var id;
+      let id;
       if (!PREVENT_SCOPE_CHANGE[part]) {
         id = this._getId(schema);
         if (id) baseId = resolveUrl(baseId, id);
         if (schema.$ref) {
-          var $ref = resolveUrl(baseId, schema.$ref);
-          var res = resolveSchema.call(this, root, $ref);
+          let $ref = resolveUrl(baseId, schema.$ref);
+          let res = resolveSchema.call(this, root, $ref);
           if (res) {
             schema = res.schema;
             root = res.root;
@@ -835,7 +835,7 @@ function getJsonPointer(parsedRef, baseId, schema, root) {
 }
 
 
-var SIMPLE_INLINED = util.toHash([
+let SIMPLE_INLINED = util.toHash([
   'type', 'format', 'pattern',
   'maxLength', 'minLength',
   'maxProperties', 'minProperties',
@@ -852,14 +852,14 @@ function inlineRef(schema, limit) {
 
 
 function checkNoRef(schema) {
-  var item;
+  let item;
   if (Array.isArray(schema)) {
-    for (var i=0; i<schema.length; i++) {
+    for (let i=0; i<schema.length; i++) {
       item = schema[i];
       if (typeof item == 'object' && !checkNoRef(item)) return false;
     }
   } else {
-    for (var key in schema) {
+    for (let key in schema) {
       if (key == '$ref') return false;
       item = schema[key];
       if (typeof item == 'object' && !checkNoRef(item)) return false;
@@ -870,15 +870,15 @@ function checkNoRef(schema) {
 
 
 function countKeys(schema) {
-  var count = 0, item;
+  let count = 0, item;
   if (Array.isArray(schema)) {
-    for (var i=0; i<schema.length; i++) {
+    for (let i=0; i<schema.length; i++) {
       item = schema[i];
       if (typeof item == 'object') count += countKeys(item);
       if (count == Infinity) return Infinity;
     }
   } else {
-    for (var key in schema) {
+    for (let key in schema) {
       if (key == '$ref') return Infinity;
       if (SIMPLE_INLINED[key]) {
         count++;
@@ -895,7 +895,7 @@ function countKeys(schema) {
 
 function getFullPath(id, normalize) {
   if (normalize !== false) id = normalizeId(id);
-  var p = URI.parse(id);
+  let p = URI.parse(id);
   return _getFullPath(p);
 }
 
@@ -905,7 +905,7 @@ function _getFullPath(p) {
 }
 
 
-var TRAILING_SLASH_HASH = /#\/?$/;
+let TRAILING_SLASH_HASH = /#\/?$/;
 function normalizeId(id) {
   return id ? id.replace(TRAILING_SLASH_HASH, '') : '';
 }
@@ -919,24 +919,24 @@ function resolveUrl(baseId, id) {
 
 /* @this Ajv */
 function resolveIds(schema) {
-  var schemaId = normalizeId(this._getId(schema));
-  var baseIds = {'': schemaId};
-  var fullPaths = {'': getFullPath(schemaId, false)};
-  var localRefs = {};
-  var self = this;
+  let schemaId = normalizeId(this._getId(schema));
+  let baseIds = {'': schemaId};
+  let fullPaths = {'': getFullPath(schemaId, false)};
+  let localRefs = {};
+  let self = this;
 
   traverse(schema, {allKeys: true}, function(sch, jsonPtr, rootSchema, parentJsonPtr, parentKeyword, parentSchema, keyIndex) {
     if (jsonPtr === '') return;
-    var id = self._getId(sch);
-    var baseId = baseIds[parentJsonPtr];
-    var fullPath = fullPaths[parentJsonPtr] + '/' + parentKeyword;
+    let id = self._getId(sch);
+    let baseId = baseIds[parentJsonPtr];
+    let fullPath = fullPaths[parentJsonPtr] + '/' + parentKeyword;
     if (keyIndex !== undefined)
       fullPath += '/' + (typeof keyIndex == 'number' ? keyIndex : util.escapeFragment(keyIndex));
 
     if (typeof id == 'string') {
       id = baseId = normalizeId(baseId ? URI.resolve(baseId, id) : id);
 
-      var refVal = self._refs[id];
+      let refVal = self._refs[id];
       if (typeof refVal == 'string') refVal = self._refs[refVal];
       if (refVal && refVal.schema) {
         if (!equal(sch, refVal.schema))
@@ -961,11 +961,11 @@ function resolveIds(schema) {
 },{"./schema_obj":8,"./util":10,"fast-deep-equal":41,"json-schema-traverse":43,"uri-js":44}],7:[function(require,module,exports){
 'use strict';
 
-var ruleModules = require('../dotjs')
+let ruleModules = require('../dotjs')
   , toHash = require('./util').toHash;
 
 module.exports = function rules() {
-  var RULES = [
+  let RULES = [
     { type: 'number',
       rules: [ { 'maximum': ['exclusiveMaximum'] },
                { 'minimum': ['exclusiveMinimum'] }, 'multipleOf', 'format'] },
@@ -979,23 +979,23 @@ module.exports = function rules() {
     { rules: [ '$ref', 'const', 'enum', 'not', 'anyOf', 'oneOf', 'allOf', 'if' ] }
   ];
 
-  var ALL = [ 'type', '$comment' ];
-  var KEYWORDS = [
+  let ALL = [ 'type', '$comment' ];
+  let KEYWORDS = [
     '$schema', '$id', 'id', '$data', 'title',
     'description', 'default', 'definitions',
     'examples', 'readOnly', 'writeOnly',
     'contentMediaType', 'contentEncoding',
     'additionalItems', 'then', 'else'
   ];
-  var TYPES = [ 'number', 'integer', 'string', 'array', 'object', 'boolean', 'null' ];
+  let TYPES = [ 'number', 'integer', 'string', 'array', 'object', 'boolean', 'null' ];
   RULES.all = toHash(ALL);
   RULES.types = toHash(TYPES);
 
   RULES.forEach(function (group) {
     group.rules = group.rules.map(function (keyword) {
-      var implKeywords;
+      let implKeywords;
       if (typeof keyword == 'object') {
-        var key = Object.keys(keyword)[0];
+        let key = Object.keys(keyword)[0];
         implKeywords = keyword[key];
         keyword = key;
         implKeywords.forEach(function (k) {
@@ -1004,7 +1004,7 @@ module.exports = function rules() {
         });
       }
       ALL.push(keyword);
-      var rule = RULES.all[keyword] = {
+      let rule = RULES.all[keyword] = {
         keyword: keyword,
         code: ruleModules[keyword],
         implements: implKeywords
@@ -1029,7 +1029,7 @@ module.exports = function rules() {
 },{"../dotjs":26,"./util":10}],8:[function(require,module,exports){
 'use strict';
 
-var util = require('./util');
+let util = require('./util');
 
 module.exports = SchemaObject;
 
@@ -1043,7 +1043,7 @@ function SchemaObject(obj) {
 // https://mathiasbynens.be/notes/javascript-encoding
 // https://github.com/bestiejs/punycode.js - punycode.ucs2.decode
 module.exports = function ucs2length(str) {
-  var length = 0
+  let length = 0
     , len = str.length
     , pos = 0
     , value;
@@ -1073,8 +1073,8 @@ module.exports = {
   escapeQuotes: escapeQuotes,
   equal: require('fast-deep-equal'),
   ucs2length: require('./ucs2length'),
-  varOccurences: varOccurences,
-  varReplace: varReplace,
+  letOccurences: letOccurences,
+  letReplace: letReplace,
   cleanUpCode: cleanUpCode,
   finalCleanUpCode: finalCleanUpCode,
   schemaHasRules: schemaHasRules,
@@ -1092,13 +1092,13 @@ module.exports = {
 
 function copy(o, to) {
   to = to || {};
-  for (var key in o) to[key] = o[key];
+  for (let key in o) to[key] = o[key];
   return to;
 }
 
 
 function checkDataType(dataType, data, negate) {
-  var EQUAL = negate ? ' !== ' : ' === '
+  let EQUAL = negate ? ' !== ' : ' === '
     , AND = negate ? ' || ' : ' && '
     , OK = negate ? '!' : ''
     , NOT = negate ? '' : '!';
@@ -1120,8 +1120,8 @@ function checkDataTypes(dataTypes, data) {
   switch (dataTypes.length) {
     case 1: return checkDataType(dataTypes[0], data, true);
     default:
-      var code = '';
-      var types = toHash(dataTypes);
+      let code = '';
+      let types = toHash(dataTypes);
       if (types.array && types.object) {
         code = types.null ? '(': '(!' + data + ' || ';
         code += 'typeof ' + data + ' !== "object")';
@@ -1130,7 +1130,7 @@ function checkDataTypes(dataTypes, data) {
         delete types.object;
       }
       if (types.number) delete types.integer;
-      for (var t in types)
+      for (let t in types)
         code += (code ? ' && ' : '' ) + checkDataType(t, data, true);
 
       return code;
@@ -1138,12 +1138,12 @@ function checkDataTypes(dataTypes, data) {
 }
 
 
-var COERCE_TO_TYPES = toHash([ 'string', 'number', 'integer', 'boolean', 'null' ]);
+let COERCE_TO_TYPES = toHash([ 'string', 'number', 'integer', 'boolean', 'null' ]);
 function coerceToTypes(optionCoerceTypes, dataTypes) {
   if (Array.isArray(dataTypes)) {
-    var types = [];
-    for (var i=0; i<dataTypes.length; i++) {
-      var t = dataTypes[i];
+    let types = [];
+    for (let i=0; i<dataTypes.length; i++) {
+      let t = dataTypes[i];
       if (COERCE_TO_TYPES[t]) types[types.length] = t;
       else if (optionCoerceTypes === 'array' && t === 'array') types[types.length] = t;
     }
@@ -1157,14 +1157,14 @@ function coerceToTypes(optionCoerceTypes, dataTypes) {
 
 
 function toHash(arr) {
-  var hash = {};
-  for (var i=0; i<arr.length; i++) hash[arr[i]] = true;
+  let hash = {};
+  for (let i=0; i<arr.length; i++) hash[arr[i]] = true;
   return hash;
 }
 
 
-var IDENTIFIER = /^[a-z$_][a-z$_0-9]*$/i;
-var SINGLE_QUOTE = /'|\\/g;
+let IDENTIFIER = /^[a-z$_][a-z$_0-9]*$/i;
+let SINGLE_QUOTE = /'|\\/g;
 function getProperty(key) {
   return typeof key == 'number'
           ? '[' + key + ']'
@@ -1183,21 +1183,21 @@ function escapeQuotes(str) {
 }
 
 
-function varOccurences(str, dataVar) {
-  dataVar += '[^0-9]';
-  var matches = str.match(new RegExp(dataVar, 'g'));
+function letOccurences(str, datalet) {
+  datalet += '[^0-9]';
+  let matches = str.match(new RegExp(datalet, 'g'));
   return matches ? matches.length : 0;
 }
 
 
-function varReplace(str, dataVar, expr) {
-  dataVar += '([^0-9])';
+function letReplace(str, datalet, expr) {
+  datalet += '([^0-9])';
   expr = expr.replace(/\$/g, '$$$$');
-  return str.replace(new RegExp(dataVar, 'g'), expr + '$1');
+  return str.replace(new RegExp(datalet, 'g'), expr + '$1');
 }
 
 
-var EMPTY_ELSE = /else\s*{\s*}/g
+let EMPTY_ELSE = /else\s*{\s*}/g
   , EMPTY_IF_NO_ELSE = /if\s*\([^)]+\)\s*\{\s*\}(?!\s*else)/g
   , EMPTY_IF_WITH_ELSE = /if\s*\(([^)]+)\)\s*\{\s*\}\s*else(?!\s*if)/g;
 function cleanUpCode(out) {
@@ -1207,9 +1207,9 @@ function cleanUpCode(out) {
 }
 
 
-var ERRORS_REGEXP = /[^v.]errors/g
-  , REMOVE_ERRORS = /var errors = 0;|var vErrors = null;|validate.errors = vErrors;/g
-  , REMOVE_ERRORS_ASYNC = /var errors = 0;|var vErrors = null;/g
+let ERRORS_REGEXP = /[^v.]errors/g
+  , REMOVE_ERRORS = /let errors = 0;|let vErrors = null;|validate.errors = vErrors;/g
+  , REMOVE_ERRORS_ASYNC = /let errors = 0;|let vErrors = null;/g
   , RETURN_VALID = 'return errors === 0;'
   , RETURN_TRUE = 'validate.errors = null; return true;'
   , RETURN_ASYNC = /if \(errors === 0\) return data;\s*else throw new ValidationError\(vErrors\);/
@@ -1218,7 +1218,7 @@ var ERRORS_REGEXP = /[^v.]errors/g
   , REMOVE_ROOTDATA = /if \(rootData === undefined\) rootData = data;/;
 
 function finalCleanUpCode(out, async) {
-  var matches = out.match(ERRORS_REGEXP);
+  let matches = out.match(ERRORS_REGEXP);
   if (matches && matches.length == 2) {
     out = async
           ? out.replace(REMOVE_ERRORS_ASYNC, '')
@@ -1235,13 +1235,13 @@ function finalCleanUpCode(out, async) {
 
 function schemaHasRules(schema, rules) {
   if (typeof schema == 'boolean') return !schema;
-  for (var key in schema) if (rules[key]) return true;
+  for (let key in schema) if (rules[key]) return true;
 }
 
 
 function schemaHasRulesExcept(schema, rules, exceptKeyword) {
   if (typeof schema == 'boolean') return !schema && exceptKeyword != 'not';
-  for (var key in schema) if (key != exceptKeyword && rules[key]) return true;
+  for (let key in schema) if (key != exceptKeyword && rules[key]) return true;
 }
 
 
@@ -1251,7 +1251,7 @@ function toQuotedString(str) {
 
 
 function getPathExpr(currentPath, expr, jsonPointers, isNumber) {
-  var path = jsonPointers // false by default
+  let path = jsonPointers // false by default
               ? '\'/\' + ' + expr + (isNumber ? '' : '.replace(/~/g, \'~0\').replace(/\\//g, \'~1\')')
               : (isNumber ? '\'[\' + ' + expr + ' + \']\'' : '\'[\\\'\' + ' + expr + ' + \'\\\']\'');
   return joinPaths(currentPath, path);
@@ -1259,17 +1259,17 @@ function getPathExpr(currentPath, expr, jsonPointers, isNumber) {
 
 
 function getPath(currentPath, prop, jsonPointers) {
-  var path = jsonPointers // false by default
+  let path = jsonPointers // false by default
               ? toQuotedString('/' + escapeJsonPointer(prop))
               : toQuotedString(getProperty(prop));
   return joinPaths(currentPath, path);
 }
 
 
-var JSON_POINTER = /^\/(?:[^~]|~0|~1)*$/;
-var RELATIVE_JSON_POINTER = /^([0-9]+)(#|\/(?:[^~]|~0|~1)*)?$/;
+let JSON_POINTER = /^\/(?:[^~]|~0|~1)*$/;
+let RELATIVE_JSON_POINTER = /^([0-9]+)(#|\/(?:[^~]|~0|~1)*)?$/;
 function getData($data, lvl, paths) {
-  var up, jsonPointer, data, matches;
+  let up, jsonPointer, data, matches;
   if ($data === '') return 'rootData';
   if ($data[0] == '/') {
     if (!JSON_POINTER.test($data)) throw new Error('Invalid JSON-pointer: ' + $data);
@@ -1290,10 +1290,10 @@ function getData($data, lvl, paths) {
     if (!jsonPointer) return data;
   }
 
-  var expr = data;
-  var segments = jsonPointer.split('/');
-  for (var i=0; i<segments.length; i++) {
-    var segment = segments[i];
+  let expr = data;
+  let segments = jsonPointer.split('/');
+  for (let i=0; i<segments.length; i++) {
+    let segment = segments[i];
     if (segment) {
       data += getProperty(unescapeJsonPointer(segment));
       expr += ' && ' + data;
@@ -1331,7 +1331,7 @@ function unescapeJsonPointer(str) {
 },{"./ucs2length":9,"fast-deep-equal":41}],11:[function(require,module,exports){
 'use strict';
 
-var KEYWORDS = [
+let KEYWORDS = [
   'multipleOf',
   'maximum',
   'exclusiveMaximum',
@@ -1354,17 +1354,17 @@ var KEYWORDS = [
 ];
 
 module.exports = function (metaSchema, keywordsJsonPointers) {
-  for (var i=0; i<keywordsJsonPointers.length; i++) {
+  for (let i=0; i<keywordsJsonPointers.length; i++) {
     metaSchema = JSON.parse(JSON.stringify(metaSchema));
-    var segments = keywordsJsonPointers[i].split('/');
-    var keywords = metaSchema;
-    var j;
+    let segments = keywordsJsonPointers[i].split('/');
+    let keywords = metaSchema;
+    let j;
     for (j=1; j<segments.length; j++)
       keywords = keywords[segments[j]];
 
     for (j=0; j<KEYWORDS.length; j++) {
-      var key = KEYWORDS[j];
-      var schema = keywords[key];
+      let key = KEYWORDS[j];
+      let schema = keywords[key];
       if (schema) {
         keywords[key] = {
           anyOf: [
@@ -1382,24 +1382,24 @@ module.exports = function (metaSchema, keywordsJsonPointers) {
 },{}],12:[function(require,module,exports){
 'use strict';
 module.exports = function generate__limit(it, $keyword, $ruleType) {
-  var out = ' ';
-  var $lvl = it.level;
-  var $dataLvl = it.dataLevel;
-  var $schema = it.schema[$keyword];
-  var $schemaPath = it.schemaPath + it.util.getProperty($keyword);
-  var $errSchemaPath = it.errSchemaPath + '/' + $keyword;
-  var $breakOnError = !it.opts.allErrors;
+  let out = ' ';
+  let $lvl = it.level;
+  let $dataLvl = it.dataLevel;
+  let $schema = it.schema[$keyword];
+  let $schemaPath = it.schemaPath + it.util.getProperty($keyword);
+  let $errSchemaPath = it.errSchemaPath + '/' + $keyword;
+  let $breakOnError = !it.opts.allErrors;
   var $errorKeyword;
-  var $data = 'data' + ($dataLvl || '');
-  var $isData = it.opts.$data && $schema && $schema.$data,
+  let $data = 'data' + ($dataLvl || '');
+  let $isData = it.opts.$data && $schema && $schema.$data,
     $schemaValue;
   if ($isData) {
-    out += ' var schema' + ($lvl) + ' = ' + (it.util.getData($schema.$data, $dataLvl, it.dataPathArr)) + '; ';
+    out += ' let schema' + ($lvl) + ' = ' + (it.util.getData($schema.$data, $dataLvl, it.dataPathArr)) + '; ';
     $schemaValue = 'schema' + $lvl;
   } else {
     $schemaValue = $schema;
   }
-  var $isMax = $keyword == 'maximum',
+  let $isMax = $keyword == 'maximum',
     $exclusiveKeyword = $isMax ? 'exclusiveMaximum' : 'exclusiveMinimum',
     $schemaExcl = it.schema[$exclusiveKeyword],
     $isDataExcl = it.opts.$data && $schemaExcl && $schemaExcl.$data,
@@ -1407,17 +1407,17 @@ module.exports = function generate__limit(it, $keyword, $ruleType) {
     $notOp = $isMax ? '>' : '<',
     $errorKeyword = undefined;
   if ($isDataExcl) {
-    var $schemaValueExcl = it.util.getData($schemaExcl.$data, $dataLvl, it.dataPathArr),
+    let $schemaValueExcl = it.util.getData($schemaExcl.$data, $dataLvl, it.dataPathArr),
       $exclusive = 'exclusive' + $lvl,
       $exclType = 'exclType' + $lvl,
       $exclIsNumber = 'exclIsNumber' + $lvl,
       $opExpr = 'op' + $lvl,
       $opStr = '\' + ' + $opExpr + ' + \'';
-    out += ' var schemaExcl' + ($lvl) + ' = ' + ($schemaValueExcl) + '; ';
+    out += ' let schemaExcl' + ($lvl) + ' = ' + ($schemaValueExcl) + '; ';
     $schemaValueExcl = 'schemaExcl' + $lvl;
-    out += ' var ' + ($exclusive) + '; var ' + ($exclType) + ' = typeof ' + ($schemaValueExcl) + '; if (' + ($exclType) + ' != \'boolean\' && ' + ($exclType) + ' != \'undefined\' && ' + ($exclType) + ' != \'number\') { ';
-    var $errorKeyword = $exclusiveKeyword;
-    var $$outStack = $$outStack || [];
+    out += ' let ' + ($exclusive) + '; let ' + ($exclType) + ' = typeof ' + ($schemaValueExcl) + '; if (' + ($exclType) + ' != \'boolean\' && ' + ($exclType) + ' != \'undefined\' && ' + ($exclType) + ' != \'number\') { ';
+    let $errorKeyword = $exclusiveKeyword;
+    let $$outStack = $$outStack || [];
     $$outStack.push(out);
     out = ''; /* istanbul ignore else */
     if (it.createErrors !== false) {
@@ -1432,7 +1432,7 @@ module.exports = function generate__limit(it, $keyword, $ruleType) {
     } else {
       out += ' {} ';
     }
-    var __err = out;
+    let __err = out;
     out = $$outStack.pop();
     if (!it.compositeRule && $breakOnError) {
       /* istanbul ignore if */
@@ -1442,13 +1442,13 @@ module.exports = function generate__limit(it, $keyword, $ruleType) {
         out += ' validate.errors = [' + (__err) + ']; return false; ';
       }
     } else {
-      out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+      out += ' let err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
     }
     out += ' } else if ( ';
     if ($isData) {
       out += ' (' + ($schemaValue) + ' !== undefined && typeof ' + ($schemaValue) + ' != \'number\') || ';
     }
-    out += ' ' + ($exclType) + ' == \'number\' ? ( (' + ($exclusive) + ' = ' + ($schemaValue) + ' === undefined || ' + ($schemaValueExcl) + ' ' + ($op) + '= ' + ($schemaValue) + ') ? ' + ($data) + ' ' + ($notOp) + '= ' + ($schemaValueExcl) + ' : ' + ($data) + ' ' + ($notOp) + ' ' + ($schemaValue) + ' ) : ( (' + ($exclusive) + ' = ' + ($schemaValueExcl) + ' === true) ? ' + ($data) + ' ' + ($notOp) + '= ' + ($schemaValue) + ' : ' + ($data) + ' ' + ($notOp) + ' ' + ($schemaValue) + ' ) || ' + ($data) + ' !== ' + ($data) + ') { var op' + ($lvl) + ' = ' + ($exclusive) + ' ? \'' + ($op) + '\' : \'' + ($op) + '=\'; ';
+    out += ' ' + ($exclType) + ' == \'number\' ? ( (' + ($exclusive) + ' = ' + ($schemaValue) + ' === undefined || ' + ($schemaValueExcl) + ' ' + ($op) + '= ' + ($schemaValue) + ') ? ' + ($data) + ' ' + ($notOp) + '= ' + ($schemaValueExcl) + ' : ' + ($data) + ' ' + ($notOp) + ' ' + ($schemaValue) + ' ) : ( (' + ($exclusive) + ' = ' + ($schemaValueExcl) + ' === true) ? ' + ($data) + ' ' + ($notOp) + '= ' + ($schemaValue) + ' : ' + ($data) + ' ' + ($notOp) + ' ' + ($schemaValue) + ' ) || ' + ($data) + ' !== ' + ($data) + ') { let op' + ($lvl) + ' = ' + ($exclusive) + ' ? \'' + ($op) + '\' : \'' + ($op) + '=\'; ';
     if ($schema === undefined) {
       $errorKeyword = $exclusiveKeyword;
       $errSchemaPath = it.errSchemaPath + '/' + $exclusiveKeyword;
@@ -1456,10 +1456,10 @@ module.exports = function generate__limit(it, $keyword, $ruleType) {
       $isData = $isDataExcl;
     }
   } else {
-    var $exclIsNumber = typeof $schemaExcl == 'number',
+    let $exclIsNumber = typeof $schemaExcl == 'number',
       $opStr = $op;
     if ($exclIsNumber && $isData) {
-      var $opExpr = '\'' + $opStr + '\'';
+      let $opExpr = '\'' + $opStr + '\'';
       out += ' if ( ';
       if ($isData) {
         out += ' (' + ($schemaValue) + ' !== undefined && typeof ' + ($schemaValue) + ' != \'number\') || ';
@@ -1484,7 +1484,7 @@ module.exports = function generate__limit(it, $keyword, $ruleType) {
           $opStr += '=';
         }
       }
-      var $opExpr = '\'' + $opStr + '\'';
+      let $opExpr = '\'' + $opStr + '\'';
       out += ' if ( ';
       if ($isData) {
         out += ' (' + ($schemaValue) + ' !== undefined && typeof ' + ($schemaValue) + ' != \'number\') || ';
@@ -1493,7 +1493,7 @@ module.exports = function generate__limit(it, $keyword, $ruleType) {
     }
   }
   $errorKeyword = $errorKeyword || $keyword;
-  var $$outStack = $$outStack || [];
+  let $$outStack = $$outStack || [];
   $$outStack.push(out);
   out = ''; /* istanbul ignore else */
   if (it.createErrors !== false) {
@@ -1519,7 +1519,7 @@ module.exports = function generate__limit(it, $keyword, $ruleType) {
   } else {
     out += ' {} ';
   }
-  var __err = out;
+  let __err = out;
   out = $$outStack.pop();
   if (!it.compositeRule && $breakOnError) {
     /* istanbul ignore if */
@@ -1529,7 +1529,7 @@ module.exports = function generate__limit(it, $keyword, $ruleType) {
       out += ' validate.errors = [' + (__err) + ']; return false; ';
     }
   } else {
-    out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+    out += ' let err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
   }
   out += ' } ';
   if ($breakOnError) {
@@ -1541,31 +1541,31 @@ module.exports = function generate__limit(it, $keyword, $ruleType) {
 },{}],13:[function(require,module,exports){
 'use strict';
 module.exports = function generate__limitItems(it, $keyword, $ruleType) {
-  var out = ' ';
-  var $lvl = it.level;
-  var $dataLvl = it.dataLevel;
-  var $schema = it.schema[$keyword];
-  var $schemaPath = it.schemaPath + it.util.getProperty($keyword);
-  var $errSchemaPath = it.errSchemaPath + '/' + $keyword;
-  var $breakOnError = !it.opts.allErrors;
+  let out = ' ';
+  let $lvl = it.level;
+  let $dataLvl = it.dataLevel;
+  let $schema = it.schema[$keyword];
+  let $schemaPath = it.schemaPath + it.util.getProperty($keyword);
+  let $errSchemaPath = it.errSchemaPath + '/' + $keyword;
+  let $breakOnError = !it.opts.allErrors;
   var $errorKeyword;
-  var $data = 'data' + ($dataLvl || '');
-  var $isData = it.opts.$data && $schema && $schema.$data,
+  let $data = 'data' + ($dataLvl || '');
+  let $isData = it.opts.$data && $schema && $schema.$data,
     $schemaValue;
   if ($isData) {
-    out += ' var schema' + ($lvl) + ' = ' + (it.util.getData($schema.$data, $dataLvl, it.dataPathArr)) + '; ';
+    out += ' let schema' + ($lvl) + ' = ' + (it.util.getData($schema.$data, $dataLvl, it.dataPathArr)) + '; ';
     $schemaValue = 'schema' + $lvl;
   } else {
     $schemaValue = $schema;
   }
-  var $op = $keyword == 'maxItems' ? '>' : '<';
+  let $op = $keyword == 'maxItems' ? '>' : '<';
   out += 'if ( ';
   if ($isData) {
     out += ' (' + ($schemaValue) + ' !== undefined && typeof ' + ($schemaValue) + ' != \'number\') || ';
   }
   out += ' ' + ($data) + '.length ' + ($op) + ' ' + ($schemaValue) + ') { ';
   var $errorKeyword = $keyword;
-  var $$outStack = $$outStack || [];
+  let $$outStack = $$outStack || [];
   $$outStack.push(out);
   out = ''; /* istanbul ignore else */
   if (it.createErrors !== false) {
@@ -1598,7 +1598,7 @@ module.exports = function generate__limitItems(it, $keyword, $ruleType) {
   } else {
     out += ' {} ';
   }
-  var __err = out;
+  let __err = out;
   out = $$outStack.pop();
   if (!it.compositeRule && $breakOnError) {
     /* istanbul ignore if */
@@ -1608,7 +1608,7 @@ module.exports = function generate__limitItems(it, $keyword, $ruleType) {
       out += ' validate.errors = [' + (__err) + ']; return false; ';
     }
   } else {
-    out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+    out += ' let err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
   }
   out += '} ';
   if ($breakOnError) {
@@ -1620,24 +1620,24 @@ module.exports = function generate__limitItems(it, $keyword, $ruleType) {
 },{}],14:[function(require,module,exports){
 'use strict';
 module.exports = function generate__limitLength(it, $keyword, $ruleType) {
-  var out = ' ';
-  var $lvl = it.level;
-  var $dataLvl = it.dataLevel;
-  var $schema = it.schema[$keyword];
-  var $schemaPath = it.schemaPath + it.util.getProperty($keyword);
-  var $errSchemaPath = it.errSchemaPath + '/' + $keyword;
-  var $breakOnError = !it.opts.allErrors;
+  let out = ' ';
+  let $lvl = it.level;
+  let $dataLvl = it.dataLevel;
+  let $schema = it.schema[$keyword];
+  let $schemaPath = it.schemaPath + it.util.getProperty($keyword);
+  let $errSchemaPath = it.errSchemaPath + '/' + $keyword;
+  let $breakOnError = !it.opts.allErrors;
   var $errorKeyword;
-  var $data = 'data' + ($dataLvl || '');
-  var $isData = it.opts.$data && $schema && $schema.$data,
+  let $data = 'data' + ($dataLvl || '');
+  let $isData = it.opts.$data && $schema && $schema.$data,
     $schemaValue;
   if ($isData) {
-    out += ' var schema' + ($lvl) + ' = ' + (it.util.getData($schema.$data, $dataLvl, it.dataPathArr)) + '; ';
+    out += ' let schema' + ($lvl) + ' = ' + (it.util.getData($schema.$data, $dataLvl, it.dataPathArr)) + '; ';
     $schemaValue = 'schema' + $lvl;
   } else {
     $schemaValue = $schema;
   }
-  var $op = $keyword == 'maxLength' ? '>' : '<';
+  let $op = $keyword == 'maxLength' ? '>' : '<';
   out += 'if ( ';
   if ($isData) {
     out += ' (' + ($schemaValue) + ' !== undefined && typeof ' + ($schemaValue) + ' != \'number\') || ';
@@ -1648,8 +1648,8 @@ module.exports = function generate__limitLength(it, $keyword, $ruleType) {
     out += ' ucs2length(' + ($data) + ') ';
   }
   out += ' ' + ($op) + ' ' + ($schemaValue) + ') { ';
-  var $errorKeyword = $keyword;
-  var $$outStack = $$outStack || [];
+  let $errorKeyword = $keyword;
+  let $$outStack = $$outStack || [];
   $$outStack.push(out);
   out = ''; /* istanbul ignore else */
   if (it.createErrors !== false) {
@@ -1682,7 +1682,7 @@ module.exports = function generate__limitLength(it, $keyword, $ruleType) {
   } else {
     out += ' {} ';
   }
-  var __err = out;
+  let __err = out;
   out = $$outStack.pop();
   if (!it.compositeRule && $breakOnError) {
     /* istanbul ignore if */
@@ -1692,7 +1692,7 @@ module.exports = function generate__limitLength(it, $keyword, $ruleType) {
       out += ' validate.errors = [' + (__err) + ']; return false; ';
     }
   } else {
-    out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+    out += ' let err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
   }
   out += '} ';
   if ($breakOnError) {
@@ -1704,31 +1704,31 @@ module.exports = function generate__limitLength(it, $keyword, $ruleType) {
 },{}],15:[function(require,module,exports){
 'use strict';
 module.exports = function generate__limitProperties(it, $keyword, $ruleType) {
-  var out = ' ';
-  var $lvl = it.level;
-  var $dataLvl = it.dataLevel;
-  var $schema = it.schema[$keyword];
-  var $schemaPath = it.schemaPath + it.util.getProperty($keyword);
-  var $errSchemaPath = it.errSchemaPath + '/' + $keyword;
-  var $breakOnError = !it.opts.allErrors;
+  let out = ' ';
+  let $lvl = it.level;
+  let $dataLvl = it.dataLevel;
+  let $schema = it.schema[$keyword];
+  let $schemaPath = it.schemaPath + it.util.getProperty($keyword);
+  let $errSchemaPath = it.errSchemaPath + '/' + $keyword;
+  let $breakOnError = !it.opts.allErrors;
   var $errorKeyword;
-  var $data = 'data' + ($dataLvl || '');
-  var $isData = it.opts.$data && $schema && $schema.$data,
+  let $data = 'data' + ($dataLvl || '');
+  let $isData = it.opts.$data && $schema && $schema.$data,
     $schemaValue;
   if ($isData) {
-    out += ' var schema' + ($lvl) + ' = ' + (it.util.getData($schema.$data, $dataLvl, it.dataPathArr)) + '; ';
+    out += ' let schema' + ($lvl) + ' = ' + (it.util.getData($schema.$data, $dataLvl, it.dataPathArr)) + '; ';
     $schemaValue = 'schema' + $lvl;
   } else {
     $schemaValue = $schema;
   }
-  var $op = $keyword == 'maxProperties' ? '>' : '<';
+  let $op = $keyword == 'maxProperties' ? '>' : '<';
   out += 'if ( ';
   if ($isData) {
     out += ' (' + ($schemaValue) + ' !== undefined && typeof ' + ($schemaValue) + ' != \'number\') || ';
   }
   out += ' Object.keys(' + ($data) + ').length ' + ($op) + ' ' + ($schemaValue) + ') { ';
   var $errorKeyword = $keyword;
-  var $$outStack = $$outStack || [];
+  let $$outStack = $$outStack || [];
   $$outStack.push(out);
   out = ''; /* istanbul ignore else */
   if (it.createErrors !== false) {
@@ -1761,7 +1761,7 @@ module.exports = function generate__limitProperties(it, $keyword, $ruleType) {
   } else {
     out += ' {} ';
   }
-  var __err = out;
+  let __err = out;
   out = $$outStack.pop();
   if (!it.compositeRule && $breakOnError) {
     /* istanbul ignore if */
@@ -1771,7 +1771,7 @@ module.exports = function generate__limitProperties(it, $keyword, $ruleType) {
       out += ' validate.errors = [' + (__err) + ']; return false; ';
     }
   } else {
-    out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+    out += ' let err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
   }
   out += '} ';
   if ($breakOnError) {
@@ -1783,20 +1783,20 @@ module.exports = function generate__limitProperties(it, $keyword, $ruleType) {
 },{}],16:[function(require,module,exports){
 'use strict';
 module.exports = function generate_allOf(it, $keyword, $ruleType) {
-  var out = ' ';
-  var $schema = it.schema[$keyword];
-  var $schemaPath = it.schemaPath + it.util.getProperty($keyword);
-  var $errSchemaPath = it.errSchemaPath + '/' + $keyword;
-  var $breakOnError = !it.opts.allErrors;
-  var $it = it.util.copy(it);
-  var $closingBraces = '';
+  let out = ' ';
+  let $schema = it.schema[$keyword];
+  let $schemaPath = it.schemaPath + it.util.getProperty($keyword);
+  let $errSchemaPath = it.errSchemaPath + '/' + $keyword;
+  let $breakOnError = !it.opts.allErrors;
+  let $it = it.util.copy(it);
+  let $closingBraces = '';
   $it.level++;
-  var $nextValid = 'valid' + $it.level;
-  var $currentBaseId = $it.baseId,
+  let $nextValid = 'valid' + $it.level;
+  let $currentBaseId = $it.baseId,
     $allSchemasEmpty = true;
-  var arr1 = $schema;
+  let arr1 = $schema;
   if (arr1) {
-    var $sch, $i = -1,
+    let $sch, $i = -1,
       l1 = arr1.length - 1;
     while ($i < l1) {
       $sch = arr1[$i += 1];
@@ -1828,31 +1828,31 @@ module.exports = function generate_allOf(it, $keyword, $ruleType) {
 },{}],17:[function(require,module,exports){
 'use strict';
 module.exports = function generate_anyOf(it, $keyword, $ruleType) {
-  var out = ' ';
-  var $lvl = it.level;
-  var $dataLvl = it.dataLevel;
-  var $schema = it.schema[$keyword];
-  var $schemaPath = it.schemaPath + it.util.getProperty($keyword);
-  var $errSchemaPath = it.errSchemaPath + '/' + $keyword;
-  var $breakOnError = !it.opts.allErrors;
-  var $data = 'data' + ($dataLvl || '');
-  var $valid = 'valid' + $lvl;
-  var $errs = 'errs__' + $lvl;
-  var $it = it.util.copy(it);
-  var $closingBraces = '';
+  let out = ' ';
+  let $lvl = it.level;
+  let $dataLvl = it.dataLevel;
+  let $schema = it.schema[$keyword];
+  let $schemaPath = it.schemaPath + it.util.getProperty($keyword);
+  let $errSchemaPath = it.errSchemaPath + '/' + $keyword;
+  let $breakOnError = !it.opts.allErrors;
+  let $data = 'data' + ($dataLvl || '');
+  let $valid = 'valid' + $lvl;
+  let $errs = 'errs__' + $lvl;
+  let $it = it.util.copy(it);
+  let $closingBraces = '';
   $it.level++;
-  var $nextValid = 'valid' + $it.level;
-  var $noEmptySchema = $schema.every(function($sch) {
+  let $nextValid = 'valid' + $it.level;
+  let $noEmptySchema = $schema.every(function($sch) {
     return it.util.schemaHasRules($sch, it.RULES.all);
   });
   if ($noEmptySchema) {
-    var $currentBaseId = $it.baseId;
-    out += ' var ' + ($errs) + ' = errors; var ' + ($valid) + ' = false;  ';
-    var $wasComposite = it.compositeRule;
+    let $currentBaseId = $it.baseId;
+    out += ' let ' + ($errs) + ' = errors; let ' + ($valid) + ' = false;  ';
+    let $wasComposite = it.compositeRule;
     it.compositeRule = $it.compositeRule = true;
-    var arr1 = $schema;
+    let arr1 = $schema;
     if (arr1) {
-      var $sch, $i = -1,
+      let $sch, $i = -1,
         l1 = arr1.length - 1;
       while ($i < l1) {
         $sch = arr1[$i += 1];
@@ -1866,7 +1866,7 @@ module.exports = function generate_anyOf(it, $keyword, $ruleType) {
       }
     }
     it.compositeRule = $it.compositeRule = $wasComposite;
-    out += ' ' + ($closingBraces) + ' if (!' + ($valid) + ') {   var err =   '; /* istanbul ignore else */
+    out += ' ' + ($closingBraces) + ' if (!' + ($valid) + ') {   let err =   '; /* istanbul ignore else */
     if (it.createErrors !== false) {
       out += ' { keyword: \'' + ('anyOf') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: {} ';
       if (it.opts.messages !== false) {
@@ -1904,11 +1904,11 @@ module.exports = function generate_anyOf(it, $keyword, $ruleType) {
 },{}],18:[function(require,module,exports){
 'use strict';
 module.exports = function generate_comment(it, $keyword, $ruleType) {
-  var out = ' ';
-  var $schema = it.schema[$keyword];
-  var $errSchemaPath = it.errSchemaPath + '/' + $keyword;
-  var $breakOnError = !it.opts.allErrors;
-  var $comment = it.util.toQuotedString($schema);
+  let out = ' ';
+  let $schema = it.schema[$keyword];
+  let $errSchemaPath = it.errSchemaPath + '/' + $keyword;
+  let $breakOnError = !it.opts.allErrors;
+  let $comment = it.util.toQuotedString($schema);
   if (it.opts.$comment === true) {
     out += ' console.log(' + ($comment) + ');';
   } else if (typeof it.opts.$comment == 'function') {
@@ -1920,28 +1920,28 @@ module.exports = function generate_comment(it, $keyword, $ruleType) {
 },{}],19:[function(require,module,exports){
 'use strict';
 module.exports = function generate_const(it, $keyword, $ruleType) {
-  var out = ' ';
-  var $lvl = it.level;
-  var $dataLvl = it.dataLevel;
-  var $schema = it.schema[$keyword];
-  var $schemaPath = it.schemaPath + it.util.getProperty($keyword);
-  var $errSchemaPath = it.errSchemaPath + '/' + $keyword;
-  var $breakOnError = !it.opts.allErrors;
-  var $data = 'data' + ($dataLvl || '');
-  var $valid = 'valid' + $lvl;
-  var $isData = it.opts.$data && $schema && $schema.$data,
+  let out = ' ';
+  let $lvl = it.level;
+  let $dataLvl = it.dataLevel;
+  let $schema = it.schema[$keyword];
+  let $schemaPath = it.schemaPath + it.util.getProperty($keyword);
+  let $errSchemaPath = it.errSchemaPath + '/' + $keyword;
+  let $breakOnError = !it.opts.allErrors;
+  let $data = 'data' + ($dataLvl || '');
+  let $valid = 'valid' + $lvl;
+  let $isData = it.opts.$data && $schema && $schema.$data,
     $schemaValue;
   if ($isData) {
-    out += ' var schema' + ($lvl) + ' = ' + (it.util.getData($schema.$data, $dataLvl, it.dataPathArr)) + '; ';
+    out += ' let schema' + ($lvl) + ' = ' + (it.util.getData($schema.$data, $dataLvl, it.dataPathArr)) + '; ';
     $schemaValue = 'schema' + $lvl;
   } else {
     $schemaValue = $schema;
   }
   if (!$isData) {
-    out += ' var schema' + ($lvl) + ' = validate.schema' + ($schemaPath) + ';';
+    out += ' let schema' + ($lvl) + ' = validate.schema' + ($schemaPath) + ';';
   }
-  out += 'var ' + ($valid) + ' = equal(' + ($data) + ', schema' + ($lvl) + '); if (!' + ($valid) + ') {   ';
-  var $$outStack = $$outStack || [];
+  out += 'let ' + ($valid) + ' = equal(' + ($data) + ', schema' + ($lvl) + '); if (!' + ($valid) + ') {   ';
+  let $$outStack = $$outStack || [];
   $$outStack.push(out);
   out = ''; /* istanbul ignore else */
   if (it.createErrors !== false) {
@@ -1956,7 +1956,7 @@ module.exports = function generate_const(it, $keyword, $ruleType) {
   } else {
     out += ' {} ';
   }
-  var __err = out;
+  let __err = out;
   out = $$outStack.pop();
   if (!it.compositeRule && $breakOnError) {
     /* istanbul ignore if */
@@ -1966,7 +1966,7 @@ module.exports = function generate_const(it, $keyword, $ruleType) {
       out += ' validate.errors = [' + (__err) + ']; return false; ';
     }
   } else {
-    out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+    out += ' let err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
   }
   out += ' }';
   if ($breakOnError) {
@@ -1978,42 +1978,42 @@ module.exports = function generate_const(it, $keyword, $ruleType) {
 },{}],20:[function(require,module,exports){
 'use strict';
 module.exports = function generate_contains(it, $keyword, $ruleType) {
-  var out = ' ';
-  var $lvl = it.level;
-  var $dataLvl = it.dataLevel;
-  var $schema = it.schema[$keyword];
-  var $schemaPath = it.schemaPath + it.util.getProperty($keyword);
-  var $errSchemaPath = it.errSchemaPath + '/' + $keyword;
-  var $breakOnError = !it.opts.allErrors;
-  var $data = 'data' + ($dataLvl || '');
-  var $valid = 'valid' + $lvl;
-  var $errs = 'errs__' + $lvl;
-  var $it = it.util.copy(it);
-  var $closingBraces = '';
+  let out = ' ';
+  let $lvl = it.level;
+  let $dataLvl = it.dataLevel;
+  let $schema = it.schema[$keyword];
+  let $schemaPath = it.schemaPath + it.util.getProperty($keyword);
+  let $errSchemaPath = it.errSchemaPath + '/' + $keyword;
+  let $breakOnError = !it.opts.allErrors;
+  let $data = 'data' + ($dataLvl || '');
+  let $valid = 'valid' + $lvl;
+  let $errs = 'errs__' + $lvl;
+  let $it = it.util.copy(it);
+  let $closingBraces = '';
   $it.level++;
-  var $nextValid = 'valid' + $it.level;
-  var $idx = 'i' + $lvl,
+  let $nextValid = 'valid' + $it.level;
+  let $idx = 'i' + $lvl,
     $dataNxt = $it.dataLevel = it.dataLevel + 1,
     $nextData = 'data' + $dataNxt,
     $currentBaseId = it.baseId,
     $nonEmptySchema = it.util.schemaHasRules($schema, it.RULES.all);
-  out += 'var ' + ($errs) + ' = errors;var ' + ($valid) + ';';
+  out += 'let ' + ($errs) + ' = errors;let ' + ($valid) + ';';
   if ($nonEmptySchema) {
-    var $wasComposite = it.compositeRule;
+    let $wasComposite = it.compositeRule;
     it.compositeRule = $it.compositeRule = true;
     $it.schema = $schema;
     $it.schemaPath = $schemaPath;
     $it.errSchemaPath = $errSchemaPath;
-    out += ' var ' + ($nextValid) + ' = false; for (var ' + ($idx) + ' = 0; ' + ($idx) + ' < ' + ($data) + '.length; ' + ($idx) + '++) { ';
+    out += ' let ' + ($nextValid) + ' = false; for (let ' + ($idx) + ' = 0; ' + ($idx) + ' < ' + ($data) + '.length; ' + ($idx) + '++) { ';
     $it.errorPath = it.util.getPathExpr(it.errorPath, $idx, it.opts.jsonPointers, true);
-    var $passData = $data + '[' + $idx + ']';
+    let $passData = $data + '[' + $idx + ']';
     $it.dataPathArr[$dataNxt] = $idx;
-    var $code = it.validate($it);
+    let $code = it.validate($it);
     $it.baseId = $currentBaseId;
-    if (it.util.varOccurences($code, $nextData) < 2) {
-      out += ' ' + (it.util.varReplace($code, $nextData, $passData)) + ' ';
+    if (it.util.letOccurences($code, $nextData) < 2) {
+      out += ' ' + (it.util.letReplace($code, $nextData, $passData)) + ' ';
     } else {
-      out += ' var ' + ($nextData) + ' = ' + ($passData) + '; ' + ($code) + ' ';
+      out += ' let ' + ($nextData) + ' = ' + ($passData) + '; ' + ($code) + ' ';
     }
     out += ' if (' + ($nextValid) + ') break; }  ';
     it.compositeRule = $it.compositeRule = $wasComposite;
@@ -2021,7 +2021,7 @@ module.exports = function generate_contains(it, $keyword, $ruleType) {
   } else {
     out += ' if (' + ($data) + '.length == 0) {';
   }
-  var $$outStack = $$outStack || [];
+  let $$outStack = $$outStack || [];
   $$outStack.push(out);
   out = ''; /* istanbul ignore else */
   if (it.createErrors !== false) {
@@ -2036,7 +2036,7 @@ module.exports = function generate_contains(it, $keyword, $ruleType) {
   } else {
     out += ' {} ';
   }
-  var __err = out;
+  let __err = out;
   out = $$outStack.pop();
   if (!it.compositeRule && $breakOnError) {
     /* istanbul ignore if */
@@ -2046,7 +2046,7 @@ module.exports = function generate_contains(it, $keyword, $ruleType) {
       out += ' validate.errors = [' + (__err) + ']; return false; ';
     }
   } else {
-    out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+    out += ' let err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
   }
   out += ' } else { ';
   if ($nonEmptySchema) {
@@ -2062,34 +2062,34 @@ module.exports = function generate_contains(it, $keyword, $ruleType) {
 },{}],21:[function(require,module,exports){
 'use strict';
 module.exports = function generate_custom(it, $keyword, $ruleType) {
-  var out = ' ';
-  var $lvl = it.level;
-  var $dataLvl = it.dataLevel;
-  var $schema = it.schema[$keyword];
-  var $schemaPath = it.schemaPath + it.util.getProperty($keyword);
-  var $errSchemaPath = it.errSchemaPath + '/' + $keyword;
-  var $breakOnError = !it.opts.allErrors;
-  var $errorKeyword;
-  var $data = 'data' + ($dataLvl || '');
-  var $valid = 'valid' + $lvl;
-  var $errs = 'errs__' + $lvl;
-  var $isData = it.opts.$data && $schema && $schema.$data,
+  let out = ' ';
+  let $lvl = it.level;
+  let $dataLvl = it.dataLevel;
+  let $schema = it.schema[$keyword];
+  let $schemaPath = it.schemaPath + it.util.getProperty($keyword);
+  let $errSchemaPath = it.errSchemaPath + '/' + $keyword;
+  let $breakOnError = !it.opts.allErrors;
+  let $errorKeyword;
+  let $data = 'data' + ($dataLvl || '');
+  let $valid = 'valid' + $lvl;
+  let $errs = 'errs__' + $lvl;
+  let $isData = it.opts.$data && $schema && $schema.$data,
     $schemaValue;
   if ($isData) {
-    out += ' var schema' + ($lvl) + ' = ' + (it.util.getData($schema.$data, $dataLvl, it.dataPathArr)) + '; ';
+    out += ' let schema' + ($lvl) + ' = ' + (it.util.getData($schema.$data, $dataLvl, it.dataPathArr)) + '; ';
     $schemaValue = 'schema' + $lvl;
   } else {
     $schemaValue = $schema;
   }
-  var $rule = this,
+  let $rule = this,
     $definition = 'definition' + $lvl,
     $rDef = $rule.definition,
     $closingBraces = '';
-  var $compile, $inline, $macro, $ruleValidate, $validateCode;
+  let $compile, $inline, $macro, $ruleValidate, $validateCode;
   if ($isData && $rDef.$data) {
     $validateCode = 'keywordValidate' + $lvl;
-    var $validateSchema = $rDef.validateSchema;
-    out += ' var ' + ($definition) + ' = RULES.custom[\'' + ($keyword) + '\'].definition; var ' + ($validateCode) + ' = ' + ($definition) + '.validate;';
+    let $validateSchema = $rDef.validateSchema;
+    out += ' let ' + ($definition) + ' = RULES.custom[\'' + ($keyword) + '\'].definition; let ' + ($validateCode) + ' = ' + ($definition) + '.validate;';
   } else {
     $ruleValidate = it.useCustomRule($rule, $schema, it.schema, it);
     if (!$ruleValidate) return;
@@ -2099,7 +2099,7 @@ module.exports = function generate_custom(it, $keyword, $ruleType) {
     $inline = $rDef.inline;
     $macro = $rDef.macro;
   }
-  var $ruleErrs = $validateCode + '.errors',
+  let $ruleErrs = $validateCode + '.errors',
     $i = 'i' + $lvl,
     $ruleErr = 'ruleErr' + $lvl,
     $asyncKeyword = $rDef.async;
@@ -2107,7 +2107,7 @@ module.exports = function generate_custom(it, $keyword, $ruleType) {
   if (!($inline || $macro)) {
     out += '' + ($ruleErrs) + ' = null;';
   }
-  out += 'var ' + ($errs) + ' = errors;var ' + ($valid) + ';';
+  out += 'let ' + ($errs) + ' = errors;let ' + ($valid) + ';';
   if ($isData && $rDef.$data) {
     $closingBraces += '}';
     out += ' if (' + ($schemaValue) + ' === undefined) { ' + ($valid) + ' = true; } else { ';
@@ -2123,19 +2123,19 @@ module.exports = function generate_custom(it, $keyword, $ruleType) {
       out += ' ' + ($valid) + ' = ' + ($ruleValidate.validate) + '; ';
     }
   } else if ($macro) {
-    var $it = it.util.copy(it);
-    var $closingBraces = '';
+    let $it = it.util.copy(it);
+    let $closingBraces = '';
     $it.level++;
-    var $nextValid = 'valid' + $it.level;
+    let $nextValid = 'valid' + $it.level;
     $it.schema = $ruleValidate.validate;
     $it.schemaPath = '';
-    var $wasComposite = it.compositeRule;
+    let $wasComposite = it.compositeRule;
     it.compositeRule = $it.compositeRule = true;
-    var $code = it.validate($it).replace(/validate\.schema/g, $validateCode);
+    let $code = it.validate($it).replace(/validate\.schema/g, $validateCode);
     it.compositeRule = $it.compositeRule = $wasComposite;
     out += ' ' + ($code);
   } else {
-    var $$outStack = $$outStack || [];
+    let $$outStack = $$outStack || [];
     $$outStack.push(out);
     out = '';
     out += '  ' + ($validateCode) + '.call( ';
@@ -2153,10 +2153,10 @@ module.exports = function generate_custom(it, $keyword, $ruleType) {
     if (it.errorPath != '""') {
       out += ' + ' + (it.errorPath);
     }
-    var $parentData = $dataLvl ? 'data' + (($dataLvl - 1) || '') : 'parentData',
+    let $parentData = $dataLvl ? 'data' + (($dataLvl - 1) || '') : 'parentData',
       $parentDataProperty = $dataLvl ? it.dataPathArr[$dataLvl] : 'parentDataProperty';
     out += ' , ' + ($parentData) + ' , ' + ($parentDataProperty) + ' , rootData )  ';
-    var def_callRuleValidate = out;
+    let def_callRuleValidate = out;
     out = $$outStack.pop();
     if ($rDef.errors === false) {
       out += ' ' + ($valid) + ' = ';
@@ -2167,7 +2167,7 @@ module.exports = function generate_custom(it, $keyword, $ruleType) {
     } else {
       if ($asyncKeyword) {
         $ruleErrs = 'customErrors' + $lvl;
-        out += ' var ' + ($ruleErrs) + ' = null; try { ' + ($valid) + ' = await ' + (def_callRuleValidate) + '; } catch (e) { ' + ($valid) + ' = false; if (e instanceof ValidationError) ' + ($ruleErrs) + ' = e.errors; else throw e; } ';
+        out += ' let ' + ($ruleErrs) + ' = null; try { ' + ($valid) + ' = await ' + (def_callRuleValidate) + '; } catch (e) { ' + ($valid) + ' = false; if (e instanceof ValidationError) ' + ($ruleErrs) + ' = e.errors; else throw e; } ';
       } else {
         out += ' ' + ($ruleErrs) + ' = null; ' + ($valid) + ' = ' + (def_callRuleValidate) + '; ';
       }
@@ -2213,7 +2213,7 @@ module.exports = function generate_custom(it, $keyword, $ruleType) {
     } else {
       out += ' {} ';
     }
-    var __err = out;
+    let __err = out;
     out = $$outStack.pop();
     if (!it.compositeRule && $breakOnError) {
       /* istanbul ignore if */
@@ -2223,14 +2223,14 @@ module.exports = function generate_custom(it, $keyword, $ruleType) {
         out += ' validate.errors = [' + (__err) + ']; return false; ';
       }
     } else {
-      out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+      out += ' let err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
     }
-    var def_customError = out;
+    let def_customError = out;
     out = $$outStack.pop();
     if ($inline) {
       if ($rDef.errors) {
         if ($rDef.errors != 'full') {
-          out += '  for (var ' + ($i) + '=' + ($errs) + '; ' + ($i) + '<errors; ' + ($i) + '++) { var ' + ($ruleErr) + ' = vErrors[' + ($i) + ']; if (' + ($ruleErr) + '.dataPath === undefined) ' + ($ruleErr) + '.dataPath = (dataPath || \'\') + ' + (it.errorPath) + '; if (' + ($ruleErr) + '.schemaPath === undefined) { ' + ($ruleErr) + '.schemaPath = "' + ($errSchemaPath) + '"; } ';
+          out += '  for (let ' + ($i) + '=' + ($errs) + '; ' + ($i) + '<errors; ' + ($i) + '++) { let ' + ($ruleErr) + ' = vErrors[' + ($i) + ']; if (' + ($ruleErr) + '.dataPath === undefined) ' + ($ruleErr) + '.dataPath = (dataPath || \'\') + ' + (it.errorPath) + '; if (' + ($ruleErr) + '.schemaPath === undefined) { ' + ($ruleErr) + '.schemaPath = "' + ($errSchemaPath) + '"; } ';
           if (it.opts.verbose) {
             out += ' ' + ($ruleErr) + '.schema = ' + ($schemaValue) + '; ' + ($ruleErr) + '.data = ' + ($data) + '; ';
           }
@@ -2240,7 +2240,7 @@ module.exports = function generate_custom(it, $keyword, $ruleType) {
         if ($rDef.errors === false) {
           out += ' ' + (def_customError) + ' ';
         } else {
-          out += ' if (' + ($errs) + ' == errors) { ' + (def_customError) + ' } else {  for (var ' + ($i) + '=' + ($errs) + '; ' + ($i) + '<errors; ' + ($i) + '++) { var ' + ($ruleErr) + ' = vErrors[' + ($i) + ']; if (' + ($ruleErr) + '.dataPath === undefined) ' + ($ruleErr) + '.dataPath = (dataPath || \'\') + ' + (it.errorPath) + '; if (' + ($ruleErr) + '.schemaPath === undefined) { ' + ($ruleErr) + '.schemaPath = "' + ($errSchemaPath) + '"; } ';
+          out += ' if (' + ($errs) + ' == errors) { ' + (def_customError) + ' } else {  for (let ' + ($i) + '=' + ($errs) + '; ' + ($i) + '<errors; ' + ($i) + '++) { let ' + ($ruleErr) + ' = vErrors[' + ($i) + ']; if (' + ($ruleErr) + '.dataPath === undefined) ' + ($ruleErr) + '.dataPath = (dataPath || \'\') + ' + (it.errorPath) + '; if (' + ($ruleErr) + '.schemaPath === undefined) { ' + ($ruleErr) + '.schemaPath = "' + ($errSchemaPath) + '"; } ';
           if (it.opts.verbose) {
             out += ' ' + ($ruleErr) + '.schema = ' + ($schemaValue) + '; ' + ($ruleErr) + '.data = ' + ($data) + '; ';
           }
@@ -2248,7 +2248,7 @@ module.exports = function generate_custom(it, $keyword, $ruleType) {
         }
       }
     } else if ($macro) {
-      out += '   var err =   '; /* istanbul ignore else */
+      out += '   let err =   '; /* istanbul ignore else */
       if (it.createErrors !== false) {
         out += ' { keyword: \'' + ($errorKeyword || 'custom') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { keyword: \'' + ($rule.keyword) + '\' } ';
         if (it.opts.messages !== false) {
@@ -2274,7 +2274,7 @@ module.exports = function generate_custom(it, $keyword, $ruleType) {
       if ($rDef.errors === false) {
         out += ' ' + (def_customError) + ' ';
       } else {
-        out += ' if (Array.isArray(' + ($ruleErrs) + ')) { if (vErrors === null) vErrors = ' + ($ruleErrs) + '; else vErrors = vErrors.concat(' + ($ruleErrs) + '); errors = vErrors.length;  for (var ' + ($i) + '=' + ($errs) + '; ' + ($i) + '<errors; ' + ($i) + '++) { var ' + ($ruleErr) + ' = vErrors[' + ($i) + ']; if (' + ($ruleErr) + '.dataPath === undefined) ' + ($ruleErr) + '.dataPath = (dataPath || \'\') + ' + (it.errorPath) + ';  ' + ($ruleErr) + '.schemaPath = "' + ($errSchemaPath) + '";  ';
+        out += ' if (Array.isArray(' + ($ruleErrs) + ')) { if (vErrors === null) vErrors = ' + ($ruleErrs) + '; else vErrors = vErrors.concat(' + ($ruleErrs) + '); errors = vErrors.length;  for (let ' + ($i) + '=' + ($errs) + '; ' + ($i) + '<errors; ' + ($i) + '++) { let ' + ($ruleErr) + ' = vErrors[' + ($i) + ']; if (' + ($ruleErr) + '.dataPath === undefined) ' + ($ruleErr) + '.dataPath = (dataPath || \'\') + ' + (it.errorPath) + ';  ' + ($ruleErr) + '.schemaPath = "' + ($errSchemaPath) + '";  ';
         if (it.opts.verbose) {
           out += ' ' + ($ruleErr) + '.schema = ' + ($schemaValue) + '; ' + ($ruleErr) + '.data = ' + ($data) + '; ';
         }
@@ -2292,31 +2292,31 @@ module.exports = function generate_custom(it, $keyword, $ruleType) {
 },{}],22:[function(require,module,exports){
 'use strict';
 module.exports = function generate_dependencies(it, $keyword, $ruleType) {
-  var out = ' ';
-  var $lvl = it.level;
-  var $dataLvl = it.dataLevel;
-  var $schema = it.schema[$keyword];
-  var $schemaPath = it.schemaPath + it.util.getProperty($keyword);
-  var $errSchemaPath = it.errSchemaPath + '/' + $keyword;
-  var $breakOnError = !it.opts.allErrors;
-  var $data = 'data' + ($dataLvl || '');
-  var $errs = 'errs__' + $lvl;
-  var $it = it.util.copy(it);
-  var $closingBraces = '';
+  let out = ' ';
+  let $lvl = it.level;
+  let $dataLvl = it.dataLevel;
+  let $schema = it.schema[$keyword];
+  let $schemaPath = it.schemaPath + it.util.getProperty($keyword);
+  let $errSchemaPath = it.errSchemaPath + '/' + $keyword;
+  let $breakOnError = !it.opts.allErrors;
+  let $data = 'data' + ($dataLvl || '');
+  let $errs = 'errs__' + $lvl;
+  let $it = it.util.copy(it);
+  let $closingBraces = '';
   $it.level++;
-  var $nextValid = 'valid' + $it.level;
-  var $schemaDeps = {},
+  let $nextValid = 'valid' + $it.level;
+  let $schemaDeps = {},
     $propertyDeps = {},
     $ownProperties = it.opts.ownProperties;
   for ($property in $schema) {
-    var $sch = $schema[$property];
-    var $deps = Array.isArray($sch) ? $propertyDeps : $schemaDeps;
+    let $sch = $schema[$property];
+    let $deps = Array.isArray($sch) ? $propertyDeps : $schemaDeps;
     $deps[$property] = $sch;
   }
-  out += 'var ' + ($errs) + ' = errors;';
-  var $currentErrorPath = it.errorPath;
-  out += 'var missing' + ($lvl) + ';';
-  for (var $property in $propertyDeps) {
+  out += 'let ' + ($errs) + ' = errors;';
+  let $currentErrorPath = it.errorPath;
+  out += 'let missing' + ($lvl) + ';';
+  for (let $property in $propertyDeps) {
     $deps = $propertyDeps[$property];
     if ($deps.length) {
       out += ' if ( ' + ($data) + (it.util.getProperty($property)) + ' !== undefined ';
@@ -2325,16 +2325,16 @@ module.exports = function generate_dependencies(it, $keyword, $ruleType) {
       }
       if ($breakOnError) {
         out += ' && ( ';
-        var arr1 = $deps;
+        let arr1 = $deps;
         if (arr1) {
-          var $propertyKey, $i = -1,
+          let $propertyKey, $i = -1,
             l1 = arr1.length - 1;
           while ($i < l1) {
             $propertyKey = arr1[$i += 1];
             if ($i) {
               out += ' || ';
             }
-            var $prop = it.util.getProperty($propertyKey),
+            let $prop = it.util.getProperty($propertyKey),
               $useData = $data + $prop;
             out += ' ( ( ' + ($useData) + ' === undefined ';
             if ($ownProperties) {
@@ -2344,12 +2344,12 @@ module.exports = function generate_dependencies(it, $keyword, $ruleType) {
           }
         }
         out += ')) {  ';
-        var $propertyPath = 'missing' + $lvl,
+        let $propertyPath = 'missing' + $lvl,
           $missingProperty = '\' + ' + $propertyPath + ' + \'';
         if (it.opts._errorDataPathProperty) {
           it.errorPath = it.opts.jsonPointers ? it.util.getPathExpr($currentErrorPath, $propertyPath, true) : $currentErrorPath + ' + ' + $propertyPath;
         }
-        var $$outStack = $$outStack || [];
+        let $$outStack = $$outStack || [];
         $$outStack.push(out);
         out = ''; /* istanbul ignore else */
         if (it.createErrors !== false) {
@@ -2370,7 +2370,7 @@ module.exports = function generate_dependencies(it, $keyword, $ruleType) {
         } else {
           out += ' {} ';
         }
-        var __err = out;
+        let __err = out;
         out = $$outStack.pop();
         if (!it.compositeRule && $breakOnError) {
           /* istanbul ignore if */
@@ -2380,17 +2380,17 @@ module.exports = function generate_dependencies(it, $keyword, $ruleType) {
             out += ' validate.errors = [' + (__err) + ']; return false; ';
           }
         } else {
-          out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+          out += ' let err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
         }
       } else {
         out += ' ) { ';
-        var arr2 = $deps;
+        let arr2 = $deps;
         if (arr2) {
-          var $propertyKey, i2 = -1,
+          let $propertyKey, i2 = -1,
             l2 = arr2.length - 1;
           while (i2 < l2) {
             $propertyKey = arr2[i2 += 1];
-            var $prop = it.util.getProperty($propertyKey),
+            let $prop = it.util.getProperty($propertyKey),
               $missingProperty = it.util.escapeQuotes($propertyKey),
               $useData = $data + $prop;
             if (it.opts._errorDataPathProperty) {
@@ -2400,7 +2400,7 @@ module.exports = function generate_dependencies(it, $keyword, $ruleType) {
             if ($ownProperties) {
               out += ' || ! Object.prototype.hasOwnProperty.call(' + ($data) + ', \'' + (it.util.escapeQuotes($propertyKey)) + '\') ';
             }
-            out += ') {  var err =   '; /* istanbul ignore else */
+            out += ') {  let err =   '; /* istanbul ignore else */
             if (it.createErrors !== false) {
               out += ' { keyword: \'' + ('dependencies') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { property: \'' + (it.util.escapeQuotes($property)) + '\', missingProperty: \'' + ($missingProperty) + '\', depsCount: ' + ($deps.length) + ', deps: \'' + (it.util.escapeQuotes($deps.length == 1 ? $deps[0] : $deps.join(", "))) + '\' } ';
               if (it.opts.messages !== false) {
@@ -2431,9 +2431,9 @@ module.exports = function generate_dependencies(it, $keyword, $ruleType) {
     }
   }
   it.errorPath = $currentErrorPath;
-  var $currentBaseId = $it.baseId;
-  for (var $property in $schemaDeps) {
-    var $sch = $schemaDeps[$property];
+  let $currentBaseId = $it.baseId;
+  for (let $property in $schemaDeps) {
+    let $sch = $schemaDeps[$property];
     if (it.util.schemaHasRules($sch, it.RULES.all)) {
       out += ' ' + ($nextValid) + ' = true; if ( ' + ($data) + (it.util.getProperty($property)) + ' !== undefined ';
       if ($ownProperties) {
@@ -2462,38 +2462,38 @@ module.exports = function generate_dependencies(it, $keyword, $ruleType) {
 },{}],23:[function(require,module,exports){
 'use strict';
 module.exports = function generate_enum(it, $keyword, $ruleType) {
-  var out = ' ';
-  var $lvl = it.level;
-  var $dataLvl = it.dataLevel;
-  var $schema = it.schema[$keyword];
-  var $schemaPath = it.schemaPath + it.util.getProperty($keyword);
-  var $errSchemaPath = it.errSchemaPath + '/' + $keyword;
-  var $breakOnError = !it.opts.allErrors;
-  var $data = 'data' + ($dataLvl || '');
-  var $valid = 'valid' + $lvl;
-  var $isData = it.opts.$data && $schema && $schema.$data,
+  let out = ' ';
+  let $lvl = it.level;
+  let $dataLvl = it.dataLevel;
+  let $schema = it.schema[$keyword];
+  let $schemaPath = it.schemaPath + it.util.getProperty($keyword);
+  let $errSchemaPath = it.errSchemaPath + '/' + $keyword;
+  let $breakOnError = !it.opts.allErrors;
+  let $data = 'data' + ($dataLvl || '');
+  let $valid = 'valid' + $lvl;
+  let $isData = it.opts.$data && $schema && $schema.$data,
     $schemaValue;
   if ($isData) {
-    out += ' var schema' + ($lvl) + ' = ' + (it.util.getData($schema.$data, $dataLvl, it.dataPathArr)) + '; ';
+    out += ' let schema' + ($lvl) + ' = ' + (it.util.getData($schema.$data, $dataLvl, it.dataPathArr)) + '; ';
     $schemaValue = 'schema' + $lvl;
   } else {
     $schemaValue = $schema;
   }
-  var $i = 'i' + $lvl,
+  let $i = 'i' + $lvl,
     $vSchema = 'schema' + $lvl;
   if (!$isData) {
-    out += ' var ' + ($vSchema) + ' = validate.schema' + ($schemaPath) + ';';
+    out += ' let ' + ($vSchema) + ' = validate.schema' + ($schemaPath) + ';';
   }
-  out += 'var ' + ($valid) + ';';
+  out += 'let ' + ($valid) + ';';
   if ($isData) {
     out += ' if (schema' + ($lvl) + ' === undefined) ' + ($valid) + ' = true; else if (!Array.isArray(schema' + ($lvl) + ')) ' + ($valid) + ' = false; else {';
   }
-  out += '' + ($valid) + ' = false;for (var ' + ($i) + '=0; ' + ($i) + '<' + ($vSchema) + '.length; ' + ($i) + '++) if (equal(' + ($data) + ', ' + ($vSchema) + '[' + ($i) + '])) { ' + ($valid) + ' = true; break; }';
+  out += '' + ($valid) + ' = false;for (let ' + ($i) + '=0; ' + ($i) + '<' + ($vSchema) + '.length; ' + ($i) + '++) if (equal(' + ($data) + ', ' + ($vSchema) + '[' + ($i) + '])) { ' + ($valid) + ' = true; break; }';
   if ($isData) {
     out += '  }  ';
   }
   out += ' if (!' + ($valid) + ') {   ';
-  var $$outStack = $$outStack || [];
+  let $$outStack = $$outStack || [];
   $$outStack.push(out);
   out = ''; /* istanbul ignore else */
   if (it.createErrors !== false) {
@@ -2508,7 +2508,7 @@ module.exports = function generate_enum(it, $keyword, $ruleType) {
   } else {
     out += ' {} ';
   }
-  var __err = out;
+  let __err = out;
   out = $$outStack.pop();
   if (!it.compositeRule && $breakOnError) {
     /* istanbul ignore if */
@@ -2518,7 +2518,7 @@ module.exports = function generate_enum(it, $keyword, $ruleType) {
       out += ' validate.errors = [' + (__err) + ']; return false; ';
     }
   } else {
-    out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+    out += ' let err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
   }
   out += ' }';
   if ($breakOnError) {
@@ -2530,37 +2530,37 @@ module.exports = function generate_enum(it, $keyword, $ruleType) {
 },{}],24:[function(require,module,exports){
 'use strict';
 module.exports = function generate_format(it, $keyword, $ruleType) {
-  var out = ' ';
-  var $lvl = it.level;
-  var $dataLvl = it.dataLevel;
-  var $schema = it.schema[$keyword];
-  var $schemaPath = it.schemaPath + it.util.getProperty($keyword);
-  var $errSchemaPath = it.errSchemaPath + '/' + $keyword;
-  var $breakOnError = !it.opts.allErrors;
-  var $data = 'data' + ($dataLvl || '');
+  let out = ' ';
+  let $lvl = it.level;
+  let $dataLvl = it.dataLevel;
+  let $schema = it.schema[$keyword];
+  let $schemaPath = it.schemaPath + it.util.getProperty($keyword);
+  let $errSchemaPath = it.errSchemaPath + '/' + $keyword;
+  let $breakOnError = !it.opts.allErrors;
+  let $data = 'data' + ($dataLvl || '');
   if (it.opts.format === false) {
     if ($breakOnError) {
       out += ' if (true) { ';
     }
     return out;
   }
-  var $isData = it.opts.$data && $schema && $schema.$data,
+  let $isData = it.opts.$data && $schema && $schema.$data,
     $schemaValue;
   if ($isData) {
-    out += ' var schema' + ($lvl) + ' = ' + (it.util.getData($schema.$data, $dataLvl, it.dataPathArr)) + '; ';
+    out += ' let schema' + ($lvl) + ' = ' + (it.util.getData($schema.$data, $dataLvl, it.dataPathArr)) + '; ';
     $schemaValue = 'schema' + $lvl;
   } else {
     $schemaValue = $schema;
   }
-  var $unknownFormats = it.opts.unknownFormats,
+  let $unknownFormats = it.opts.unknownFormats,
     $allowUnknown = Array.isArray($unknownFormats);
   if ($isData) {
-    var $format = 'format' + $lvl,
+    let $format = 'format' + $lvl,
       $isObject = 'isObject' + $lvl,
       $formatType = 'formatType' + $lvl;
-    out += ' var ' + ($format) + ' = formats[' + ($schemaValue) + ']; var ' + ($isObject) + ' = typeof ' + ($format) + ' == \'object\' && !(' + ($format) + ' instanceof RegExp) && ' + ($format) + '.validate; var ' + ($formatType) + ' = ' + ($isObject) + ' && ' + ($format) + '.type || \'string\'; if (' + ($isObject) + ') { ';
+    out += ' let ' + ($format) + ' = formats[' + ($schemaValue) + ']; let ' + ($isObject) + ' = typeof ' + ($format) + ' == \'object\' && !(' + ($format) + ' instanceof RegExp) && ' + ($format) + '.validate; let ' + ($formatType) + ' = ' + ($isObject) + ' && ' + ($format) + '.type || \'string\'; if (' + ($isObject) + ') { ';
     if (it.async) {
-      out += ' var async' + ($lvl) + ' = ' + ($format) + '.async; ';
+      out += ' let async' + ($lvl) + ' = ' + ($format) + '.async; ';
     }
     out += ' ' + ($format) + ' = ' + ($format) + '.validate; } if (  ';
     if ($isData) {
@@ -2582,7 +2582,7 @@ module.exports = function generate_format(it, $keyword, $ruleType) {
     }
     out += ' : ' + ($format) + '.test(' + ($data) + '))))) {';
   } else {
-    var $format = it.formats[$schema];
+    let $format = it.formats[$schema];
     if (!$format) {
       if ($unknownFormats == 'ignore') {
         it.logger.warn('unknown format "' + $schema + '" ignored in schema at path "' + it.errSchemaPath + '"');
@@ -2599,10 +2599,10 @@ module.exports = function generate_format(it, $keyword, $ruleType) {
         throw new Error('unknown format "' + $schema + '" is used in schema at path "' + it.errSchemaPath + '"');
       }
     }
-    var $isObject = typeof $format == 'object' && !($format instanceof RegExp) && $format.validate;
-    var $formatType = $isObject && $format.type || 'string';
+    let $isObject = typeof $format == 'object' && !($format instanceof RegExp) && $format.validate;
+    let $formatType = $isObject && $format.type || 'string';
     if ($isObject) {
-      var $async = $format.async === true;
+      let $async = $format.async === true;
       $format = $format.validate;
     }
     if ($formatType != $ruleType) {
@@ -2613,11 +2613,11 @@ module.exports = function generate_format(it, $keyword, $ruleType) {
     }
     if ($async) {
       if (!it.async) throw new Error('async format in sync schema');
-      var $formatRef = 'formats' + it.util.getProperty($schema) + '.validate';
+      let $formatRef = 'formats' + it.util.getProperty($schema) + '.validate';
       out += ' if (!(await ' + ($formatRef) + '(' + ($data) + '))) { ';
     } else {
       out += ' if (! ';
-      var $formatRef = 'formats' + it.util.getProperty($schema);
+      let $formatRef = 'formats' + it.util.getProperty($schema);
       if ($isObject) $formatRef += '.validate';
       if (typeof $format == 'function') {
         out += ' ' + ($formatRef) + '(' + ($data) + ') ';
@@ -2627,7 +2627,7 @@ module.exports = function generate_format(it, $keyword, $ruleType) {
       out += ') { ';
     }
   }
-  var $$outStack = $$outStack || [];
+  let $$outStack = $$outStack || [];
   $$outStack.push(out);
   out = ''; /* istanbul ignore else */
   if (it.createErrors !== false) {
@@ -2660,7 +2660,7 @@ module.exports = function generate_format(it, $keyword, $ruleType) {
   } else {
     out += ' {} ';
   }
-  var __err = out;
+  let __err = out;
   out = $$outStack.pop();
   if (!it.compositeRule && $breakOnError) {
     /* istanbul ignore if */
@@ -2670,7 +2670,7 @@ module.exports = function generate_format(it, $keyword, $ruleType) {
       out += ' validate.errors = [' + (__err) + ']; return false; ';
     }
   } else {
-    out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+    out += ' let err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
   }
   out += ' } ';
   if ($breakOnError) {
@@ -2682,32 +2682,32 @@ module.exports = function generate_format(it, $keyword, $ruleType) {
 },{}],25:[function(require,module,exports){
 'use strict';
 module.exports = function generate_if(it, $keyword, $ruleType) {
-  var out = ' ';
-  var $lvl = it.level;
-  var $dataLvl = it.dataLevel;
-  var $schema = it.schema[$keyword];
-  var $schemaPath = it.schemaPath + it.util.getProperty($keyword);
-  var $errSchemaPath = it.errSchemaPath + '/' + $keyword;
-  var $breakOnError = !it.opts.allErrors;
-  var $data = 'data' + ($dataLvl || '');
-  var $valid = 'valid' + $lvl;
-  var $errs = 'errs__' + $lvl;
-  var $it = it.util.copy(it);
+  let out = ' ';
+  let $lvl = it.level;
+  let $dataLvl = it.dataLevel;
+  let $schema = it.schema[$keyword];
+  let $schemaPath = it.schemaPath + it.util.getProperty($keyword);
+  let $errSchemaPath = it.errSchemaPath + '/' + $keyword;
+  let $breakOnError = !it.opts.allErrors;
+  let $data = 'data' + ($dataLvl || '');
+  let $valid = 'valid' + $lvl;
+  let $errs = 'errs__' + $lvl;
+  let $it = it.util.copy(it);
   $it.level++;
-  var $nextValid = 'valid' + $it.level;
-  var $thenSch = it.schema['then'],
+  let $nextValid = 'valid' + $it.level;
+  let $thenSch = it.schema['then'],
     $elseSch = it.schema['else'],
     $thenPresent = $thenSch !== undefined && it.util.schemaHasRules($thenSch, it.RULES.all),
     $elsePresent = $elseSch !== undefined && it.util.schemaHasRules($elseSch, it.RULES.all),
     $currentBaseId = $it.baseId;
   if ($thenPresent || $elsePresent) {
-    var $ifClause;
+    let $ifClause;
     $it.createErrors = false;
     $it.schema = $schema;
     $it.schemaPath = $schemaPath;
     $it.errSchemaPath = $errSchemaPath;
-    out += ' var ' + ($errs) + ' = errors; var ' + ($valid) + ' = true;  ';
-    var $wasComposite = it.compositeRule;
+    out += ' let ' + ($errs) + ' = errors; let ' + ($valid) + ' = true;  ';
+    let $wasComposite = it.compositeRule;
     it.compositeRule = $it.compositeRule = true;
     out += '  ' + (it.validate($it)) + ' ';
     $it.baseId = $currentBaseId;
@@ -2724,7 +2724,7 @@ module.exports = function generate_if(it, $keyword, $ruleType) {
       out += ' ' + ($valid) + ' = ' + ($nextValid) + '; ';
       if ($thenPresent && $elsePresent) {
         $ifClause = 'ifClause' + $lvl;
-        out += ' var ' + ($ifClause) + ' = \'then\'; ';
+        out += ' let ' + ($ifClause) + ' = \'then\'; ';
       } else {
         $ifClause = '\'then\'';
       }
@@ -2744,13 +2744,13 @@ module.exports = function generate_if(it, $keyword, $ruleType) {
       out += ' ' + ($valid) + ' = ' + ($nextValid) + '; ';
       if ($thenPresent && $elsePresent) {
         $ifClause = 'ifClause' + $lvl;
-        out += ' var ' + ($ifClause) + ' = \'else\'; ';
+        out += ' let ' + ($ifClause) + ' = \'else\'; ';
       } else {
         $ifClause = '\'else\'';
       }
       out += ' } ';
     }
-    out += ' if (!' + ($valid) + ') {   var err =   '; /* istanbul ignore else */
+    out += ' if (!' + ($valid) + ') {   let err =   '; /* istanbul ignore else */
     if (it.createErrors !== false) {
       out += ' { keyword: \'' + ('if') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { failingKeyword: ' + ($ifClause) + ' } ';
       if (it.opts.messages !== false) {
@@ -2823,33 +2823,33 @@ module.exports = {
 },{"./_limit":12,"./_limitItems":13,"./_limitLength":14,"./_limitProperties":15,"./allOf":16,"./anyOf":17,"./comment":18,"./const":19,"./contains":20,"./dependencies":22,"./enum":23,"./format":24,"./if":25,"./items":27,"./multipleOf":28,"./not":29,"./oneOf":30,"./pattern":31,"./properties":32,"./propertyNames":33,"./ref":34,"./required":35,"./uniqueItems":36,"./validate":37}],27:[function(require,module,exports){
 'use strict';
 module.exports = function generate_items(it, $keyword, $ruleType) {
-  var out = ' ';
-  var $lvl = it.level;
-  var $dataLvl = it.dataLevel;
-  var $schema = it.schema[$keyword];
-  var $schemaPath = it.schemaPath + it.util.getProperty($keyword);
-  var $errSchemaPath = it.errSchemaPath + '/' + $keyword;
-  var $breakOnError = !it.opts.allErrors;
-  var $data = 'data' + ($dataLvl || '');
-  var $valid = 'valid' + $lvl;
-  var $errs = 'errs__' + $lvl;
-  var $it = it.util.copy(it);
-  var $closingBraces = '';
+  let out = ' ';
+  let $lvl = it.level;
+  let $dataLvl = it.dataLevel;
+  let $schema = it.schema[$keyword];
+  let $schemaPath = it.schemaPath + it.util.getProperty($keyword);
+  let $errSchemaPath = it.errSchemaPath + '/' + $keyword;
+  let $breakOnError = !it.opts.allErrors;
+  let $data = 'data' + ($dataLvl || '');
+  let $valid = 'valid' + $lvl;
+  let $errs = 'errs__' + $lvl;
+  let $it = it.util.copy(it);
+  let $closingBraces = '';
   $it.level++;
-  var $nextValid = 'valid' + $it.level;
-  var $idx = 'i' + $lvl,
+  let $nextValid = 'valid' + $it.level;
+  let $idx = 'i' + $lvl,
     $dataNxt = $it.dataLevel = it.dataLevel + 1,
     $nextData = 'data' + $dataNxt,
     $currentBaseId = it.baseId;
-  out += 'var ' + ($errs) + ' = errors;var ' + ($valid) + ';';
+  out += 'let ' + ($errs) + ' = errors;let ' + ($valid) + ';';
   if (Array.isArray($schema)) {
-    var $additionalItems = it.schema.additionalItems;
+    let $additionalItems = it.schema.additionalItems;
     if ($additionalItems === false) {
       out += ' ' + ($valid) + ' = ' + ($data) + '.length <= ' + ($schema.length) + '; ';
-      var $currErrSchemaPath = $errSchemaPath;
+      let $currErrSchemaPath = $errSchemaPath;
       $errSchemaPath = it.errSchemaPath + '/additionalItems';
       out += '  if (!' + ($valid) + ') {   ';
-      var $$outStack = $$outStack || [];
+      let $$outStack = $$outStack || [];
       $$outStack.push(out);
       out = ''; /* istanbul ignore else */
       if (it.createErrors !== false) {
@@ -2864,7 +2864,7 @@ module.exports = function generate_items(it, $keyword, $ruleType) {
       } else {
         out += ' {} ';
       }
-      var __err = out;
+      let __err = out;
       out = $$outStack.pop();
       if (!it.compositeRule && $breakOnError) {
         /* istanbul ignore if */
@@ -2874,7 +2874,7 @@ module.exports = function generate_items(it, $keyword, $ruleType) {
           out += ' validate.errors = [' + (__err) + ']; return false; ';
         }
       } else {
-        out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+        out += ' let err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
       }
       out += ' } ';
       $errSchemaPath = $currErrSchemaPath;
@@ -2883,26 +2883,26 @@ module.exports = function generate_items(it, $keyword, $ruleType) {
         out += ' else { ';
       }
     }
-    var arr1 = $schema;
+    let arr1 = $schema;
     if (arr1) {
-      var $sch, $i = -1,
+      let $sch, $i = -1,
         l1 = arr1.length - 1;
       while ($i < l1) {
         $sch = arr1[$i += 1];
         if (it.util.schemaHasRules($sch, it.RULES.all)) {
           out += ' ' + ($nextValid) + ' = true; if (' + ($data) + '.length > ' + ($i) + ') { ';
-          var $passData = $data + '[' + $i + ']';
+          let $passData = $data + '[' + $i + ']';
           $it.schema = $sch;
           $it.schemaPath = $schemaPath + '[' + $i + ']';
           $it.errSchemaPath = $errSchemaPath + '/' + $i;
           $it.errorPath = it.util.getPathExpr(it.errorPath, $i, it.opts.jsonPointers, true);
           $it.dataPathArr[$dataNxt] = $i;
-          var $code = it.validate($it);
+          let $code = it.validate($it);
           $it.baseId = $currentBaseId;
-          if (it.util.varOccurences($code, $nextData) < 2) {
-            out += ' ' + (it.util.varReplace($code, $nextData, $passData)) + ' ';
+          if (it.util.letOccurences($code, $nextData) < 2) {
+            out += ' ' + (it.util.letReplace($code, $nextData, $passData)) + ' ';
           } else {
-            out += ' var ' + ($nextData) + ' = ' + ($passData) + '; ' + ($code) + ' ';
+            out += ' let ' + ($nextData) + ' = ' + ($passData) + '; ' + ($code) + ' ';
           }
           out += ' }  ';
           if ($breakOnError) {
@@ -2916,16 +2916,16 @@ module.exports = function generate_items(it, $keyword, $ruleType) {
       $it.schema = $additionalItems;
       $it.schemaPath = it.schemaPath + '.additionalItems';
       $it.errSchemaPath = it.errSchemaPath + '/additionalItems';
-      out += ' ' + ($nextValid) + ' = true; if (' + ($data) + '.length > ' + ($schema.length) + ') {  for (var ' + ($idx) + ' = ' + ($schema.length) + '; ' + ($idx) + ' < ' + ($data) + '.length; ' + ($idx) + '++) { ';
+      out += ' ' + ($nextValid) + ' = true; if (' + ($data) + '.length > ' + ($schema.length) + ') {  for (let ' + ($idx) + ' = ' + ($schema.length) + '; ' + ($idx) + ' < ' + ($data) + '.length; ' + ($idx) + '++) { ';
       $it.errorPath = it.util.getPathExpr(it.errorPath, $idx, it.opts.jsonPointers, true);
-      var $passData = $data + '[' + $idx + ']';
+      let $passData = $data + '[' + $idx + ']';
       $it.dataPathArr[$dataNxt] = $idx;
-      var $code = it.validate($it);
+      let $code = it.validate($it);
       $it.baseId = $currentBaseId;
-      if (it.util.varOccurences($code, $nextData) < 2) {
-        out += ' ' + (it.util.varReplace($code, $nextData, $passData)) + ' ';
+      if (it.util.letOccurences($code, $nextData) < 2) {
+        out += ' ' + (it.util.letReplace($code, $nextData, $passData)) + ' ';
       } else {
-        out += ' var ' + ($nextData) + ' = ' + ($passData) + '; ' + ($code) + ' ';
+        out += ' let ' + ($nextData) + ' = ' + ($passData) + '; ' + ($code) + ' ';
       }
       if ($breakOnError) {
         out += ' if (!' + ($nextValid) + ') break; ';
@@ -2940,16 +2940,16 @@ module.exports = function generate_items(it, $keyword, $ruleType) {
     $it.schema = $schema;
     $it.schemaPath = $schemaPath;
     $it.errSchemaPath = $errSchemaPath;
-    out += '  for (var ' + ($idx) + ' = ' + (0) + '; ' + ($idx) + ' < ' + ($data) + '.length; ' + ($idx) + '++) { ';
+    out += '  for (let ' + ($idx) + ' = ' + (0) + '; ' + ($idx) + ' < ' + ($data) + '.length; ' + ($idx) + '++) { ';
     $it.errorPath = it.util.getPathExpr(it.errorPath, $idx, it.opts.jsonPointers, true);
-    var $passData = $data + '[' + $idx + ']';
+    let $passData = $data + '[' + $idx + ']';
     $it.dataPathArr[$dataNxt] = $idx;
-    var $code = it.validate($it);
+    let $code = it.validate($it);
     $it.baseId = $currentBaseId;
-    if (it.util.varOccurences($code, $nextData) < 2) {
-      out += ' ' + (it.util.varReplace($code, $nextData, $passData)) + ' ';
+    if (it.util.letOccurences($code, $nextData) < 2) {
+      out += ' ' + (it.util.letReplace($code, $nextData, $passData)) + ' ';
     } else {
-      out += ' var ' + ($nextData) + ' = ' + ($passData) + '; ' + ($code) + ' ';
+      out += ' let ' + ($nextData) + ' = ' + ($passData) + '; ' + ($code) + ' ';
     }
     if ($breakOnError) {
       out += ' if (!' + ($nextValid) + ') break; ';
@@ -2966,23 +2966,23 @@ module.exports = function generate_items(it, $keyword, $ruleType) {
 },{}],28:[function(require,module,exports){
 'use strict';
 module.exports = function generate_multipleOf(it, $keyword, $ruleType) {
-  var out = ' ';
-  var $lvl = it.level;
-  var $dataLvl = it.dataLevel;
-  var $schema = it.schema[$keyword];
-  var $schemaPath = it.schemaPath + it.util.getProperty($keyword);
-  var $errSchemaPath = it.errSchemaPath + '/' + $keyword;
-  var $breakOnError = !it.opts.allErrors;
-  var $data = 'data' + ($dataLvl || '');
-  var $isData = it.opts.$data && $schema && $schema.$data,
+  let out = ' ';
+  let $lvl = it.level;
+  let $dataLvl = it.dataLevel;
+  let $schema = it.schema[$keyword];
+  let $schemaPath = it.schemaPath + it.util.getProperty($keyword);
+  let $errSchemaPath = it.errSchemaPath + '/' + $keyword;
+  let $breakOnError = !it.opts.allErrors;
+  let $data = 'data' + ($dataLvl || '');
+  let $isData = it.opts.$data && $schema && $schema.$data,
     $schemaValue;
   if ($isData) {
-    out += ' var schema' + ($lvl) + ' = ' + (it.util.getData($schema.$data, $dataLvl, it.dataPathArr)) + '; ';
+    out += ' let schema' + ($lvl) + ' = ' + (it.util.getData($schema.$data, $dataLvl, it.dataPathArr)) + '; ';
     $schemaValue = 'schema' + $lvl;
   } else {
     $schemaValue = $schema;
   }
-  out += 'var division' + ($lvl) + ';if (';
+  out += 'let division' + ($lvl) + ';if (';
   if ($isData) {
     out += ' ' + ($schemaValue) + ' !== undefined && ( typeof ' + ($schemaValue) + ' != \'number\' || ';
   }
@@ -2997,7 +2997,7 @@ module.exports = function generate_multipleOf(it, $keyword, $ruleType) {
     out += '  )  ';
   }
   out += ' ) {   ';
-  var $$outStack = $$outStack || [];
+  let $$outStack = $$outStack || [];
   $$outStack.push(out);
   out = ''; /* istanbul ignore else */
   if (it.createErrors !== false) {
@@ -3023,7 +3023,7 @@ module.exports = function generate_multipleOf(it, $keyword, $ruleType) {
   } else {
     out += ' {} ';
   }
-  var __err = out;
+  let __err = out;
   out = $$outStack.pop();
   if (!it.compositeRule && $breakOnError) {
     /* istanbul ignore if */
@@ -3033,7 +3033,7 @@ module.exports = function generate_multipleOf(it, $keyword, $ruleType) {
       out += ' validate.errors = [' + (__err) + ']; return false; ';
     }
   } else {
-    out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+    out += ' let err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
   }
   out += '} ';
   if ($breakOnError) {
@@ -3045,27 +3045,27 @@ module.exports = function generate_multipleOf(it, $keyword, $ruleType) {
 },{}],29:[function(require,module,exports){
 'use strict';
 module.exports = function generate_not(it, $keyword, $ruleType) {
-  var out = ' ';
-  var $lvl = it.level;
-  var $dataLvl = it.dataLevel;
-  var $schema = it.schema[$keyword];
-  var $schemaPath = it.schemaPath + it.util.getProperty($keyword);
-  var $errSchemaPath = it.errSchemaPath + '/' + $keyword;
-  var $breakOnError = !it.opts.allErrors;
-  var $data = 'data' + ($dataLvl || '');
-  var $errs = 'errs__' + $lvl;
-  var $it = it.util.copy(it);
+  let out = ' ';
+  let $lvl = it.level;
+  let $dataLvl = it.dataLevel;
+  let $schema = it.schema[$keyword];
+  let $schemaPath = it.schemaPath + it.util.getProperty($keyword);
+  let $errSchemaPath = it.errSchemaPath + '/' + $keyword;
+  let $breakOnError = !it.opts.allErrors;
+  let $data = 'data' + ($dataLvl || '');
+  let $errs = 'errs__' + $lvl;
+  let $it = it.util.copy(it);
   $it.level++;
-  var $nextValid = 'valid' + $it.level;
+  let $nextValid = 'valid' + $it.level;
   if (it.util.schemaHasRules($schema, it.RULES.all)) {
     $it.schema = $schema;
     $it.schemaPath = $schemaPath;
     $it.errSchemaPath = $errSchemaPath;
-    out += ' var ' + ($errs) + ' = errors;  ';
-    var $wasComposite = it.compositeRule;
+    out += ' let ' + ($errs) + ' = errors;  ';
+    let $wasComposite = it.compositeRule;
     it.compositeRule = $it.compositeRule = true;
     $it.createErrors = false;
-    var $allErrorsOption;
+    let $allErrorsOption;
     if ($it.opts.allErrors) {
       $allErrorsOption = $it.opts.allErrors;
       $it.opts.allErrors = false;
@@ -3075,7 +3075,7 @@ module.exports = function generate_not(it, $keyword, $ruleType) {
     if ($allErrorsOption) $it.opts.allErrors = $allErrorsOption;
     it.compositeRule = $it.compositeRule = $wasComposite;
     out += ' if (' + ($nextValid) + ') {   ';
-    var $$outStack = $$outStack || [];
+    let $$outStack = $$outStack || [];
     $$outStack.push(out);
     out = ''; /* istanbul ignore else */
     if (it.createErrors !== false) {
@@ -3090,7 +3090,7 @@ module.exports = function generate_not(it, $keyword, $ruleType) {
     } else {
       out += ' {} ';
     }
-    var __err = out;
+    let __err = out;
     out = $$outStack.pop();
     if (!it.compositeRule && $breakOnError) {
       /* istanbul ignore if */
@@ -3100,14 +3100,14 @@ module.exports = function generate_not(it, $keyword, $ruleType) {
         out += ' validate.errors = [' + (__err) + ']; return false; ';
       }
     } else {
-      out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+      out += ' let err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
     }
     out += ' } else {  errors = ' + ($errs) + '; if (vErrors !== null) { if (' + ($errs) + ') vErrors.length = ' + ($errs) + '; else vErrors = null; } ';
     if (it.opts.allErrors) {
       out += ' } ';
     }
   } else {
-    out += '  var err =   '; /* istanbul ignore else */
+    out += '  let err =   '; /* istanbul ignore else */
     if (it.createErrors !== false) {
       out += ' { keyword: \'' + ('not') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: {} ';
       if (it.opts.messages !== false) {
@@ -3131,29 +3131,29 @@ module.exports = function generate_not(it, $keyword, $ruleType) {
 },{}],30:[function(require,module,exports){
 'use strict';
 module.exports = function generate_oneOf(it, $keyword, $ruleType) {
-  var out = ' ';
-  var $lvl = it.level;
-  var $dataLvl = it.dataLevel;
-  var $schema = it.schema[$keyword];
-  var $schemaPath = it.schemaPath + it.util.getProperty($keyword);
-  var $errSchemaPath = it.errSchemaPath + '/' + $keyword;
-  var $breakOnError = !it.opts.allErrors;
-  var $data = 'data' + ($dataLvl || '');
-  var $valid = 'valid' + $lvl;
-  var $errs = 'errs__' + $lvl;
-  var $it = it.util.copy(it);
-  var $closingBraces = '';
+  let out = ' ';
+  let $lvl = it.level;
+  let $dataLvl = it.dataLevel;
+  let $schema = it.schema[$keyword];
+  let $schemaPath = it.schemaPath + it.util.getProperty($keyword);
+  let $errSchemaPath = it.errSchemaPath + '/' + $keyword;
+  let $breakOnError = !it.opts.allErrors;
+  let $data = 'data' + ($dataLvl || '');
+  let $valid = 'valid' + $lvl;
+  let $errs = 'errs__' + $lvl;
+  let $it = it.util.copy(it);
+  let $closingBraces = '';
   $it.level++;
-  var $nextValid = 'valid' + $it.level;
-  var $currentBaseId = $it.baseId,
+  let $nextValid = 'valid' + $it.level;
+  let $currentBaseId = $it.baseId,
     $prevValid = 'prevValid' + $lvl,
     $passingSchemas = 'passingSchemas' + $lvl;
-  out += 'var ' + ($errs) + ' = errors , ' + ($prevValid) + ' = false , ' + ($valid) + ' = false , ' + ($passingSchemas) + ' = null; ';
-  var $wasComposite = it.compositeRule;
+  out += 'let ' + ($errs) + ' = errors , ' + ($prevValid) + ' = false , ' + ($valid) + ' = false , ' + ($passingSchemas) + ' = null; ';
+  let $wasComposite = it.compositeRule;
   it.compositeRule = $it.compositeRule = true;
-  var arr1 = $schema;
+  let arr1 = $schema;
   if (arr1) {
-    var $sch, $i = -1,
+    let $sch, $i = -1,
       l1 = arr1.length - 1;
     while ($i < l1) {
       $sch = arr1[$i += 1];
@@ -3164,7 +3164,7 @@ module.exports = function generate_oneOf(it, $keyword, $ruleType) {
         out += '  ' + (it.validate($it)) + ' ';
         $it.baseId = $currentBaseId;
       } else {
-        out += ' var ' + ($nextValid) + ' = true; ';
+        out += ' let ' + ($nextValid) + ' = true; ';
       }
       if ($i) {
         out += ' if (' + ($nextValid) + ' && ' + ($prevValid) + ') { ' + ($valid) + ' = false; ' + ($passingSchemas) + ' = [' + ($passingSchemas) + ', ' + ($i) + ']; } else { ';
@@ -3174,7 +3174,7 @@ module.exports = function generate_oneOf(it, $keyword, $ruleType) {
     }
   }
   it.compositeRule = $it.compositeRule = $wasComposite;
-  out += '' + ($closingBraces) + 'if (!' + ($valid) + ') {   var err =   '; /* istanbul ignore else */
+  out += '' + ($closingBraces) + 'if (!' + ($valid) + ') {   let err =   '; /* istanbul ignore else */
   if (it.createErrors !== false) {
     out += ' { keyword: \'' + ('oneOf') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { passingSchemas: ' + ($passingSchemas) + ' } ';
     if (it.opts.messages !== false) {
@@ -3206,29 +3206,29 @@ module.exports = function generate_oneOf(it, $keyword, $ruleType) {
 },{}],31:[function(require,module,exports){
 'use strict';
 module.exports = function generate_pattern(it, $keyword, $ruleType) {
-  var out = ' ';
-  var $lvl = it.level;
-  var $dataLvl = it.dataLevel;
-  var $schema = it.schema[$keyword];
-  var $schemaPath = it.schemaPath + it.util.getProperty($keyword);
-  var $errSchemaPath = it.errSchemaPath + '/' + $keyword;
-  var $breakOnError = !it.opts.allErrors;
-  var $data = 'data' + ($dataLvl || '');
-  var $isData = it.opts.$data && $schema && $schema.$data,
+  let out = ' ';
+  let $lvl = it.level;
+  let $dataLvl = it.dataLevel;
+  let $schema = it.schema[$keyword];
+  let $schemaPath = it.schemaPath + it.util.getProperty($keyword);
+  let $errSchemaPath = it.errSchemaPath + '/' + $keyword;
+  let $breakOnError = !it.opts.allErrors;
+  let $data = 'data' + ($dataLvl || '');
+  let $isData = it.opts.$data && $schema && $schema.$data,
     $schemaValue;
   if ($isData) {
-    out += ' var schema' + ($lvl) + ' = ' + (it.util.getData($schema.$data, $dataLvl, it.dataPathArr)) + '; ';
+    out += ' let schema' + ($lvl) + ' = ' + (it.util.getData($schema.$data, $dataLvl, it.dataPathArr)) + '; ';
     $schemaValue = 'schema' + $lvl;
   } else {
     $schemaValue = $schema;
   }
-  var $regexp = $isData ? '(new RegExp(' + $schemaValue + '))' : it.usePattern($schema);
+  let $regexp = $isData ? '(new RegExp(' + $schemaValue + '))' : it.usePattern($schema);
   out += 'if ( ';
   if ($isData) {
     out += ' (' + ($schemaValue) + ' !== undefined && typeof ' + ($schemaValue) + ' != \'string\') || ';
   }
   out += ' !' + ($regexp) + '.test(' + ($data) + ') ) {   ';
-  var $$outStack = $$outStack || [];
+  let $$outStack = $$outStack || [];
   $$outStack.push(out);
   out = ''; /* istanbul ignore else */
   if (it.createErrors !== false) {
@@ -3261,7 +3261,7 @@ module.exports = function generate_pattern(it, $keyword, $ruleType) {
   } else {
     out += ' {} ';
   }
-  var __err = out;
+  let __err = out;
   out = $$outStack.pop();
   if (!it.compositeRule && $breakOnError) {
     /* istanbul ignore if */
@@ -3271,7 +3271,7 @@ module.exports = function generate_pattern(it, $keyword, $ruleType) {
       out += ' validate.errors = [' + (__err) + ']; return false; ';
     }
   } else {
-    out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+    out += ' let err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
   }
   out += '} ';
   if ($breakOnError) {
@@ -3283,25 +3283,25 @@ module.exports = function generate_pattern(it, $keyword, $ruleType) {
 },{}],32:[function(require,module,exports){
 'use strict';
 module.exports = function generate_properties(it, $keyword, $ruleType) {
-  var out = ' ';
-  var $lvl = it.level;
-  var $dataLvl = it.dataLevel;
-  var $schema = it.schema[$keyword];
-  var $schemaPath = it.schemaPath + it.util.getProperty($keyword);
-  var $errSchemaPath = it.errSchemaPath + '/' + $keyword;
-  var $breakOnError = !it.opts.allErrors;
-  var $data = 'data' + ($dataLvl || '');
-  var $errs = 'errs__' + $lvl;
-  var $it = it.util.copy(it);
-  var $closingBraces = '';
+  let out = ' ';
+  let $lvl = it.level;
+  let $dataLvl = it.dataLevel;
+  let $schema = it.schema[$keyword];
+  let $schemaPath = it.schemaPath + it.util.getProperty($keyword);
+  let $errSchemaPath = it.errSchemaPath + '/' + $keyword;
+  let $breakOnError = !it.opts.allErrors;
+  let $data = 'data' + ($dataLvl || '');
+  let $errs = 'errs__' + $lvl;
+  let $it = it.util.copy(it);
+  let $closingBraces = '';
   $it.level++;
-  var $nextValid = 'valid' + $it.level;
-  var $key = 'key' + $lvl,
+  let $nextValid = 'valid' + $it.level;
+  let $key = 'key' + $lvl,
     $idx = 'idx' + $lvl,
     $dataNxt = $it.dataLevel = it.dataLevel + 1,
     $nextData = 'data' + $dataNxt,
     $dataProperties = 'dataProperties' + $lvl;
-  var $schemaKeys = Object.keys($schema || {}),
+  let $schemaKeys = Object.keys($schema || {}),
     $pProperties = it.schema.patternProperties || {},
     $pPropertyKeys = Object.keys($pProperties),
     $aProperties = it.schema.additionalProperties,
@@ -3312,27 +3312,27 @@ module.exports = function generate_properties(it, $keyword, $ruleType) {
     $checkAdditional = $noAdditional || $additionalIsSchema || $removeAdditional,
     $ownProperties = it.opts.ownProperties,
     $currentBaseId = it.baseId;
-  var $required = it.schema.required;
+  let $required = it.schema.required;
   if ($required && !(it.opts.$data && $required.$data) && $required.length < it.opts.loopRequired) var $requiredHash = it.util.toHash($required);
-  out += 'var ' + ($errs) + ' = errors;var ' + ($nextValid) + ' = true;';
+  out += 'let ' + ($errs) + ' = errors;let ' + ($nextValid) + ' = true;';
   if ($ownProperties) {
-    out += ' var ' + ($dataProperties) + ' = undefined;';
+    out += ' let ' + ($dataProperties) + ' = undefined;';
   }
   if ($checkAdditional) {
     if ($ownProperties) {
-      out += ' ' + ($dataProperties) + ' = ' + ($dataProperties) + ' || Object.keys(' + ($data) + '); for (var ' + ($idx) + '=0; ' + ($idx) + '<' + ($dataProperties) + '.length; ' + ($idx) + '++) { var ' + ($key) + ' = ' + ($dataProperties) + '[' + ($idx) + ']; ';
+      out += ' ' + ($dataProperties) + ' = ' + ($dataProperties) + ' || Object.keys(' + ($data) + '); for (let ' + ($idx) + '=0; ' + ($idx) + '<' + ($dataProperties) + '.length; ' + ($idx) + '++) { let ' + ($key) + ' = ' + ($dataProperties) + '[' + ($idx) + ']; ';
     } else {
-      out += ' for (var ' + ($key) + ' in ' + ($data) + ') { ';
+      out += ' for (let ' + ($key) + ' in ' + ($data) + ') { ';
     }
     if ($someProperties) {
-      out += ' var isAdditional' + ($lvl) + ' = !(false ';
+      out += ' let isAdditional' + ($lvl) + ' = !(false ';
       if ($schemaKeys.length) {
         if ($schemaKeys.length > 8) {
           out += ' || validate.schema' + ($schemaPath) + '.hasOwnProperty(' + ($key) + ') ';
         } else {
-          var arr1 = $schemaKeys;
+          let arr1 = $schemaKeys;
           if (arr1) {
-            var $propertyKey, i1 = -1,
+            let $propertyKey, i1 = -1,
               l1 = arr1.length - 1;
             while (i1 < l1) {
               $propertyKey = arr1[i1 += 1];
@@ -3342,9 +3342,9 @@ module.exports = function generate_properties(it, $keyword, $ruleType) {
         }
       }
       if ($pPropertyKeys.length) {
-        var arr2 = $pPropertyKeys;
+        let arr2 = $pPropertyKeys;
         if (arr2) {
-          var $pProperty, $i = -1,
+          let $pProperty, $i = -1,
             l2 = arr2.length - 1;
           while ($i < l2) {
             $pProperty = arr2[$i += 1];
@@ -3357,8 +3357,8 @@ module.exports = function generate_properties(it, $keyword, $ruleType) {
     if ($removeAdditional == 'all') {
       out += ' delete ' + ($data) + '[' + ($key) + ']; ';
     } else {
-      var $currentErrorPath = it.errorPath;
-      var $additionalProperty = '\' + ' + $key + ' + \'';
+      let $currentErrorPath = it.errorPath;
+      let $additionalProperty = '\' + ' + $key + ' + \'';
       if (it.opts._errorDataPathProperty) {
         it.errorPath = it.util.getPathExpr(it.errorPath, $key, it.opts.jsonPointers);
       }
@@ -3367,9 +3367,9 @@ module.exports = function generate_properties(it, $keyword, $ruleType) {
           out += ' delete ' + ($data) + '[' + ($key) + ']; ';
         } else {
           out += ' ' + ($nextValid) + ' = false; ';
-          var $currErrSchemaPath = $errSchemaPath;
+          let $currErrSchemaPath = $errSchemaPath;
           $errSchemaPath = it.errSchemaPath + '/additionalProperties';
-          var $$outStack = $$outStack || [];
+          let $$outStack = $$outStack || [];
           $$outStack.push(out);
           out = ''; /* istanbul ignore else */
           if (it.createErrors !== false) {
@@ -3390,7 +3390,7 @@ module.exports = function generate_properties(it, $keyword, $ruleType) {
           } else {
             out += ' {} ';
           }
-          var __err = out;
+          let __err = out;
           out = $$outStack.pop();
           if (!it.compositeRule && $breakOnError) {
             /* istanbul ignore if */
@@ -3400,7 +3400,7 @@ module.exports = function generate_properties(it, $keyword, $ruleType) {
               out += ' validate.errors = [' + (__err) + ']; return false; ';
             }
           } else {
-            out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+            out += ' let err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
           }
           $errSchemaPath = $currErrSchemaPath;
           if ($breakOnError) {
@@ -3409,21 +3409,21 @@ module.exports = function generate_properties(it, $keyword, $ruleType) {
         }
       } else if ($additionalIsSchema) {
         if ($removeAdditional == 'failing') {
-          out += ' var ' + ($errs) + ' = errors;  ';
-          var $wasComposite = it.compositeRule;
+          out += ' let ' + ($errs) + ' = errors;  ';
+          let $wasComposite = it.compositeRule;
           it.compositeRule = $it.compositeRule = true;
           $it.schema = $aProperties;
           $it.schemaPath = it.schemaPath + '.additionalProperties';
           $it.errSchemaPath = it.errSchemaPath + '/additionalProperties';
           $it.errorPath = it.opts._errorDataPathProperty ? it.errorPath : it.util.getPathExpr(it.errorPath, $key, it.opts.jsonPointers);
-          var $passData = $data + '[' + $key + ']';
+          let $passData = $data + '[' + $key + ']';
           $it.dataPathArr[$dataNxt] = $key;
-          var $code = it.validate($it);
+          let $code = it.validate($it);
           $it.baseId = $currentBaseId;
-          if (it.util.varOccurences($code, $nextData) < 2) {
-            out += ' ' + (it.util.varReplace($code, $nextData, $passData)) + ' ';
+          if (it.util.letOccurences($code, $nextData) < 2) {
+            out += ' ' + (it.util.letReplace($code, $nextData, $passData)) + ' ';
           } else {
-            out += ' var ' + ($nextData) + ' = ' + ($passData) + '; ' + ($code) + ' ';
+            out += ' let ' + ($nextData) + ' = ' + ($passData) + '; ' + ($code) + ' ';
           }
           out += ' if (!' + ($nextValid) + ') { errors = ' + ($errs) + '; if (validate.errors !== null) { if (errors) validate.errors.length = errors; else validate.errors = null; } delete ' + ($data) + '[' + ($key) + ']; }  ';
           it.compositeRule = $it.compositeRule = $wasComposite;
@@ -3432,14 +3432,14 @@ module.exports = function generate_properties(it, $keyword, $ruleType) {
           $it.schemaPath = it.schemaPath + '.additionalProperties';
           $it.errSchemaPath = it.errSchemaPath + '/additionalProperties';
           $it.errorPath = it.opts._errorDataPathProperty ? it.errorPath : it.util.getPathExpr(it.errorPath, $key, it.opts.jsonPointers);
-          var $passData = $data + '[' + $key + ']';
+          let $passData = $data + '[' + $key + ']';
           $it.dataPathArr[$dataNxt] = $key;
-          var $code = it.validate($it);
+          let $code = it.validate($it);
           $it.baseId = $currentBaseId;
-          if (it.util.varOccurences($code, $nextData) < 2) {
-            out += ' ' + (it.util.varReplace($code, $nextData, $passData)) + ' ';
+          if (it.util.letOccurences($code, $nextData) < 2) {
+            out += ' ' + (it.util.letReplace($code, $nextData, $passData)) + ' ';
           } else {
-            out += ' var ' + ($nextData) + ' = ' + ($passData) + '; ' + ($code) + ' ';
+            out += ' let ' + ($nextData) + ' = ' + ($passData) + '; ' + ($code) + ' ';
           }
           if ($breakOnError) {
             out += ' if (!' + ($nextValid) + ') break; ';
@@ -3457,17 +3457,17 @@ module.exports = function generate_properties(it, $keyword, $ruleType) {
       $closingBraces += '}';
     }
   }
-  var $useDefaults = it.opts.useDefaults && !it.compositeRule;
+  let $useDefaults = it.opts.useDefaults && !it.compositeRule;
   if ($schemaKeys.length) {
-    var arr3 = $schemaKeys;
+    let arr3 = $schemaKeys;
     if (arr3) {
-      var $propertyKey, i3 = -1,
+      let $propertyKey, i3 = -1,
         l3 = arr3.length - 1;
       while (i3 < l3) {
         $propertyKey = arr3[i3 += 1];
-        var $sch = $schema[$propertyKey];
+        let $sch = $schema[$propertyKey];
         if (it.util.schemaHasRules($sch, it.RULES.all)) {
-          var $prop = it.util.getProperty($propertyKey),
+          let $prop = it.util.getProperty($propertyKey),
             $passData = $data + $prop,
             $hasDefault = $useDefaults && $sch.default !== undefined;
           $it.schema = $sch;
@@ -3475,14 +3475,14 @@ module.exports = function generate_properties(it, $keyword, $ruleType) {
           $it.errSchemaPath = $errSchemaPath + '/' + it.util.escapeFragment($propertyKey);
           $it.errorPath = it.util.getPath(it.errorPath, $propertyKey, it.opts.jsonPointers);
           $it.dataPathArr[$dataNxt] = it.util.toQuotedString($propertyKey);
-          var $code = it.validate($it);
+          let $code = it.validate($it);
           $it.baseId = $currentBaseId;
-          if (it.util.varOccurences($code, $nextData) < 2) {
-            $code = it.util.varReplace($code, $nextData, $passData);
-            var $useData = $passData;
+          if (it.util.letOccurences($code, $nextData) < 2) {
+            $code = it.util.letReplace($code, $nextData, $passData);
+            let $useData = $passData;
           } else {
-            var $useData = $nextData;
-            out += ' var ' + ($nextData) + ' = ' + ($passData) + '; ';
+            let $useData = $nextData;
+            out += ' let ' + ($nextData) + ' = ' + ($passData) + '; ';
           }
           if ($hasDefault) {
             out += ' ' + ($code) + ' ';
@@ -3493,14 +3493,14 @@ module.exports = function generate_properties(it, $keyword, $ruleType) {
                 out += ' || ! Object.prototype.hasOwnProperty.call(' + ($data) + ', \'' + (it.util.escapeQuotes($propertyKey)) + '\') ';
               }
               out += ') { ' + ($nextValid) + ' = false; ';
-              var $currentErrorPath = it.errorPath,
+              let $currentErrorPath = it.errorPath,
                 $currErrSchemaPath = $errSchemaPath,
                 $missingProperty = it.util.escapeQuotes($propertyKey);
               if (it.opts._errorDataPathProperty) {
                 it.errorPath = it.util.getPath($currentErrorPath, $propertyKey, it.opts.jsonPointers);
               }
               $errSchemaPath = it.errSchemaPath + '/required';
-              var $$outStack = $$outStack || [];
+              let $$outStack = $$outStack || [];
               $$outStack.push(out);
               out = ''; /* istanbul ignore else */
               if (it.createErrors !== false) {
@@ -3521,7 +3521,7 @@ module.exports = function generate_properties(it, $keyword, $ruleType) {
               } else {
                 out += ' {} ';
               }
-              var __err = out;
+              let __err = out;
               out = $$outStack.pop();
               if (!it.compositeRule && $breakOnError) {
                 /* istanbul ignore if */
@@ -3531,7 +3531,7 @@ module.exports = function generate_properties(it, $keyword, $ruleType) {
                   out += ' validate.errors = [' + (__err) + ']; return false; ';
                 }
               } else {
-                out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+                out += ' let err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
               }
               $errSchemaPath = $currErrSchemaPath;
               it.errorPath = $currentErrorPath;
@@ -3562,32 +3562,32 @@ module.exports = function generate_properties(it, $keyword, $ruleType) {
     }
   }
   if ($pPropertyKeys.length) {
-    var arr4 = $pPropertyKeys;
+    let arr4 = $pPropertyKeys;
     if (arr4) {
-      var $pProperty, i4 = -1,
+      let $pProperty, i4 = -1,
         l4 = arr4.length - 1;
       while (i4 < l4) {
         $pProperty = arr4[i4 += 1];
-        var $sch = $pProperties[$pProperty];
+        let $sch = $pProperties[$pProperty];
         if (it.util.schemaHasRules($sch, it.RULES.all)) {
           $it.schema = $sch;
           $it.schemaPath = it.schemaPath + '.patternProperties' + it.util.getProperty($pProperty);
           $it.errSchemaPath = it.errSchemaPath + '/patternProperties/' + it.util.escapeFragment($pProperty);
           if ($ownProperties) {
-            out += ' ' + ($dataProperties) + ' = ' + ($dataProperties) + ' || Object.keys(' + ($data) + '); for (var ' + ($idx) + '=0; ' + ($idx) + '<' + ($dataProperties) + '.length; ' + ($idx) + '++) { var ' + ($key) + ' = ' + ($dataProperties) + '[' + ($idx) + ']; ';
+            out += ' ' + ($dataProperties) + ' = ' + ($dataProperties) + ' || Object.keys(' + ($data) + '); for (let ' + ($idx) + '=0; ' + ($idx) + '<' + ($dataProperties) + '.length; ' + ($idx) + '++) { let ' + ($key) + ' = ' + ($dataProperties) + '[' + ($idx) + ']; ';
           } else {
-            out += ' for (var ' + ($key) + ' in ' + ($data) + ') { ';
+            out += ' for (let ' + ($key) + ' in ' + ($data) + ') { ';
           }
           out += ' if (' + (it.usePattern($pProperty)) + '.test(' + ($key) + ')) { ';
           $it.errorPath = it.util.getPathExpr(it.errorPath, $key, it.opts.jsonPointers);
-          var $passData = $data + '[' + $key + ']';
+          let $passData = $data + '[' + $key + ']';
           $it.dataPathArr[$dataNxt] = $key;
-          var $code = it.validate($it);
+          let $code = it.validate($it);
           $it.baseId = $currentBaseId;
-          if (it.util.varOccurences($code, $nextData) < 2) {
-            out += ' ' + (it.util.varReplace($code, $nextData, $passData)) + ' ';
+          if (it.util.letOccurences($code, $nextData) < 2) {
+            out += ' ' + (it.util.letReplace($code, $nextData, $passData)) + ' ';
           } else {
-            out += ' var ' + ($nextData) + ' = ' + ($passData) + '; ' + ($code) + ' ';
+            out += ' let ' + ($nextData) + ' = ' + ($passData) + '; ' + ($code) + ' ';
           }
           if ($breakOnError) {
             out += ' if (!' + ($nextValid) + ') break; ';
@@ -3615,25 +3615,25 @@ module.exports = function generate_properties(it, $keyword, $ruleType) {
 },{}],33:[function(require,module,exports){
 'use strict';
 module.exports = function generate_propertyNames(it, $keyword, $ruleType) {
-  var out = ' ';
-  var $lvl = it.level;
-  var $dataLvl = it.dataLevel;
-  var $schema = it.schema[$keyword];
-  var $schemaPath = it.schemaPath + it.util.getProperty($keyword);
-  var $errSchemaPath = it.errSchemaPath + '/' + $keyword;
-  var $breakOnError = !it.opts.allErrors;
-  var $data = 'data' + ($dataLvl || '');
-  var $errs = 'errs__' + $lvl;
-  var $it = it.util.copy(it);
-  var $closingBraces = '';
+  let out = ' ';
+  let $lvl = it.level;
+  let $dataLvl = it.dataLevel;
+  let $schema = it.schema[$keyword];
+  let $schemaPath = it.schemaPath + it.util.getProperty($keyword);
+  let $errSchemaPath = it.errSchemaPath + '/' + $keyword;
+  let $breakOnError = !it.opts.allErrors;
+  let $data = 'data' + ($dataLvl || '');
+  let $errs = 'errs__' + $lvl;
+  let $it = it.util.copy(it);
+  let $closingBraces = '';
   $it.level++;
-  var $nextValid = 'valid' + $it.level;
-  out += 'var ' + ($errs) + ' = errors;';
+  let $nextValid = 'valid' + $it.level;
+  out += 'let ' + ($errs) + ' = errors;';
   if (it.util.schemaHasRules($schema, it.RULES.all)) {
     $it.schema = $schema;
     $it.schemaPath = $schemaPath;
     $it.errSchemaPath = $errSchemaPath;
-    var $key = 'key' + $lvl,
+    let $key = 'key' + $lvl,
       $idx = 'idx' + $lvl,
       $i = 'i' + $lvl,
       $invalidName = '\' + ' + $key + ' + \'',
@@ -3643,26 +3643,26 @@ module.exports = function generate_propertyNames(it, $keyword, $ruleType) {
       $ownProperties = it.opts.ownProperties,
       $currentBaseId = it.baseId;
     if ($ownProperties) {
-      out += ' var ' + ($dataProperties) + ' = undefined; ';
+      out += ' let ' + ($dataProperties) + ' = undefined; ';
     }
     if ($ownProperties) {
-      out += ' ' + ($dataProperties) + ' = ' + ($dataProperties) + ' || Object.keys(' + ($data) + '); for (var ' + ($idx) + '=0; ' + ($idx) + '<' + ($dataProperties) + '.length; ' + ($idx) + '++) { var ' + ($key) + ' = ' + ($dataProperties) + '[' + ($idx) + ']; ';
+      out += ' ' + ($dataProperties) + ' = ' + ($dataProperties) + ' || Object.keys(' + ($data) + '); for (let ' + ($idx) + '=0; ' + ($idx) + '<' + ($dataProperties) + '.length; ' + ($idx) + '++) { let ' + ($key) + ' = ' + ($dataProperties) + '[' + ($idx) + ']; ';
     } else {
-      out += ' for (var ' + ($key) + ' in ' + ($data) + ') { ';
+      out += ' for (let ' + ($key) + ' in ' + ($data) + ') { ';
     }
-    out += ' var startErrs' + ($lvl) + ' = errors; ';
-    var $passData = $key;
-    var $wasComposite = it.compositeRule;
+    out += ' let startErrs' + ($lvl) + ' = errors; ';
+    let $passData = $key;
+    let $wasComposite = it.compositeRule;
     it.compositeRule = $it.compositeRule = true;
-    var $code = it.validate($it);
+    let $code = it.validate($it);
     $it.baseId = $currentBaseId;
-    if (it.util.varOccurences($code, $nextData) < 2) {
-      out += ' ' + (it.util.varReplace($code, $nextData, $passData)) + ' ';
+    if (it.util.letOccurences($code, $nextData) < 2) {
+      out += ' ' + (it.util.letReplace($code, $nextData, $passData)) + ' ';
     } else {
-      out += ' var ' + ($nextData) + ' = ' + ($passData) + '; ' + ($code) + ' ';
+      out += ' let ' + ($nextData) + ' = ' + ($passData) + '; ' + ($code) + ' ';
     }
     it.compositeRule = $it.compositeRule = $wasComposite;
-    out += ' if (!' + ($nextValid) + ') { for (var ' + ($i) + '=startErrs' + ($lvl) + '; ' + ($i) + '<errors; ' + ($i) + '++) { vErrors[' + ($i) + '].propertyName = ' + ($key) + '; }   var err =   '; /* istanbul ignore else */
+    out += ' if (!' + ($nextValid) + ') { for (let ' + ($i) + '=startErrs' + ($lvl) + '; ' + ($i) + '<errors; ' + ($i) + '++) { vErrors[' + ($i) + '].propertyName = ' + ($key) + '; }   let err =   '; /* istanbul ignore else */
     if (it.createErrors !== false) {
       out += ' { keyword: \'' + ('propertyNames') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { propertyName: \'' + ($invalidName) + '\' } ';
       if (it.opts.messages !== false) {
@@ -3699,15 +3699,15 @@ module.exports = function generate_propertyNames(it, $keyword, $ruleType) {
 },{}],34:[function(require,module,exports){
 'use strict';
 module.exports = function generate_ref(it, $keyword, $ruleType) {
-  var out = ' ';
-  var $lvl = it.level;
-  var $dataLvl = it.dataLevel;
-  var $schema = it.schema[$keyword];
-  var $errSchemaPath = it.errSchemaPath + '/' + $keyword;
-  var $breakOnError = !it.opts.allErrors;
-  var $data = 'data' + ($dataLvl || '');
-  var $valid = 'valid' + $lvl;
-  var $async, $refCode;
+  let out = ' ';
+  let $lvl = it.level;
+  let $dataLvl = it.dataLevel;
+  let $schema = it.schema[$keyword];
+  let $errSchemaPath = it.errSchemaPath + '/' + $keyword;
+  let $breakOnError = !it.opts.allErrors;
+  let $data = 'data' + ($dataLvl || '');
+  let $valid = 'valid' + $lvl;
+  let $async, $refCode;
   if ($schema == '#' || $schema == '#/') {
     if (it.isRoot) {
       $async = it.async;
@@ -3717,12 +3717,12 @@ module.exports = function generate_ref(it, $keyword, $ruleType) {
       $refCode = 'root.refVal[0]';
     }
   } else {
-    var $refVal = it.resolveRef(it.baseId, $schema, it.isRoot);
+    let $refVal = it.resolveRef(it.baseId, $schema, it.isRoot);
     if ($refVal === undefined) {
-      var $message = it.MissingRefError.message(it.baseId, $schema);
+      let $message = it.MissingRefError.message(it.baseId, $schema);
       if (it.opts.missingRefs == 'fail') {
         it.logger.error($message);
-        var $$outStack = $$outStack || [];
+        let $$outStack = $$outStack || [];
         $$outStack.push(out);
         out = ''; /* istanbul ignore else */
         if (it.createErrors !== false) {
@@ -3737,7 +3737,7 @@ module.exports = function generate_ref(it, $keyword, $ruleType) {
         } else {
           out += ' {} ';
         }
-        var __err = out;
+        let __err = out;
         out = $$outStack.pop();
         if (!it.compositeRule && $breakOnError) {
           /* istanbul ignore if */
@@ -3747,7 +3747,7 @@ module.exports = function generate_ref(it, $keyword, $ruleType) {
             out += ' validate.errors = [' + (__err) + ']; return false; ';
           }
         } else {
-          out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+          out += ' let err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
         }
         if ($breakOnError) {
           out += ' if (false) { ';
@@ -3761,13 +3761,13 @@ module.exports = function generate_ref(it, $keyword, $ruleType) {
         throw new it.MissingRefError(it.baseId, $schema, $message);
       }
     } else if ($refVal.inline) {
-      var $it = it.util.copy(it);
+      let $it = it.util.copy(it);
       $it.level++;
-      var $nextValid = 'valid' + $it.level;
+      let $nextValid = 'valid' + $it.level;
       $it.schema = $refVal.schema;
       $it.schemaPath = '';
       $it.errSchemaPath = $schema;
-      var $code = it.validate($it).replace(/validate\.schema/g, $refVal.code);
+      let $code = it.validate($it).replace(/validate\.schema/g, $refVal.code);
       out += ' ' + ($code) + ' ';
       if ($breakOnError) {
         out += ' if (' + ($nextValid) + ') { ';
@@ -3778,7 +3778,7 @@ module.exports = function generate_ref(it, $keyword, $ruleType) {
     }
   }
   if ($refCode) {
-    var $$outStack = $$outStack || [];
+    let $$outStack = $$outStack || [];
     $$outStack.push(out);
     out = '';
     if (it.opts.passContext) {
@@ -3790,15 +3790,15 @@ module.exports = function generate_ref(it, $keyword, $ruleType) {
     if (it.errorPath != '""') {
       out += ' + ' + (it.errorPath);
     }
-    var $parentData = $dataLvl ? 'data' + (($dataLvl - 1) || '') : 'parentData',
+    let $parentData = $dataLvl ? 'data' + (($dataLvl - 1) || '') : 'parentData',
       $parentDataProperty = $dataLvl ? it.dataPathArr[$dataLvl] : 'parentDataProperty';
     out += ' , ' + ($parentData) + ' , ' + ($parentDataProperty) + ', rootData)  ';
-    var __callValidate = out;
+    let __callValidate = out;
     out = $$outStack.pop();
     if ($async) {
       if (!it.async) throw new Error('async schema referenced by sync schema');
       if ($breakOnError) {
-        out += ' var ' + ($valid) + '; ';
+        out += ' let ' + ($valid) + '; ';
       }
       out += ' try { await ' + (__callValidate) + '; ';
       if ($breakOnError) {
@@ -3825,64 +3825,64 @@ module.exports = function generate_ref(it, $keyword, $ruleType) {
 },{}],35:[function(require,module,exports){
 'use strict';
 module.exports = function generate_required(it, $keyword, $ruleType) {
-  var out = ' ';
-  var $lvl = it.level;
-  var $dataLvl = it.dataLevel;
-  var $schema = it.schema[$keyword];
-  var $schemaPath = it.schemaPath + it.util.getProperty($keyword);
-  var $errSchemaPath = it.errSchemaPath + '/' + $keyword;
-  var $breakOnError = !it.opts.allErrors;
-  var $data = 'data' + ($dataLvl || '');
-  var $valid = 'valid' + $lvl;
-  var $isData = it.opts.$data && $schema && $schema.$data,
+  let out = ' ';
+  let $lvl = it.level;
+  let $dataLvl = it.dataLevel;
+  let $schema = it.schema[$keyword];
+  let $schemaPath = it.schemaPath + it.util.getProperty($keyword);
+  let $errSchemaPath = it.errSchemaPath + '/' + $keyword;
+  let $breakOnError = !it.opts.allErrors;
+  let $data = 'data' + ($dataLvl || '');
+  let $valid = 'valid' + $lvl;
+  let $isData = it.opts.$data && $schema && $schema.$data,
     $schemaValue;
   if ($isData) {
-    out += ' var schema' + ($lvl) + ' = ' + (it.util.getData($schema.$data, $dataLvl, it.dataPathArr)) + '; ';
+    out += ' let schema' + ($lvl) + ' = ' + (it.util.getData($schema.$data, $dataLvl, it.dataPathArr)) + '; ';
     $schemaValue = 'schema' + $lvl;
   } else {
     $schemaValue = $schema;
   }
-  var $vSchema = 'schema' + $lvl;
+  let $vSchema = 'schema' + $lvl;
   if (!$isData) {
     if ($schema.length < it.opts.loopRequired && it.schema.properties && Object.keys(it.schema.properties).length) {
-      var $required = [];
-      var arr1 = $schema;
+      let $required = [];
+      let arr1 = $schema;
       if (arr1) {
-        var $property, i1 = -1,
+        let $property, i1 = -1,
           l1 = arr1.length - 1;
         while (i1 < l1) {
           $property = arr1[i1 += 1];
-          var $propertySch = it.schema.properties[$property];
+          let $propertySch = it.schema.properties[$property];
           if (!($propertySch && it.util.schemaHasRules($propertySch, it.RULES.all))) {
             $required[$required.length] = $property;
           }
         }
       }
     } else {
-      var $required = $schema;
+      let $required = $schema;
     }
   }
   if ($isData || $required.length) {
-    var $currentErrorPath = it.errorPath,
+    let $currentErrorPath = it.errorPath,
       $loopRequired = $isData || $required.length >= it.opts.loopRequired,
       $ownProperties = it.opts.ownProperties;
     if ($breakOnError) {
-      out += ' var missing' + ($lvl) + '; ';
+      out += ' let missing' + ($lvl) + '; ';
       if ($loopRequired) {
         if (!$isData) {
-          out += ' var ' + ($vSchema) + ' = validate.schema' + ($schemaPath) + '; ';
+          out += ' let ' + ($vSchema) + ' = validate.schema' + ($schemaPath) + '; ';
         }
-        var $i = 'i' + $lvl,
+        let $i = 'i' + $lvl,
           $propertyPath = 'schema' + $lvl + '[' + $i + ']',
           $missingProperty = '\' + ' + $propertyPath + ' + \'';
         if (it.opts._errorDataPathProperty) {
           it.errorPath = it.util.getPathExpr($currentErrorPath, $propertyPath, it.opts.jsonPointers);
         }
-        out += ' var ' + ($valid) + ' = true; ';
+        out += ' let ' + ($valid) + ' = true; ';
         if ($isData) {
           out += ' if (schema' + ($lvl) + ' === undefined) ' + ($valid) + ' = true; else if (!Array.isArray(schema' + ($lvl) + ')) ' + ($valid) + ' = false; else {';
         }
-        out += ' for (var ' + ($i) + ' = 0; ' + ($i) + ' < ' + ($vSchema) + '.length; ' + ($i) + '++) { ' + ($valid) + ' = ' + ($data) + '[' + ($vSchema) + '[' + ($i) + ']] !== undefined ';
+        out += ' for (let ' + ($i) + ' = 0; ' + ($i) + ' < ' + ($vSchema) + '.length; ' + ($i) + '++) { ' + ($valid) + ' = ' + ($data) + '[' + ($vSchema) + '[' + ($i) + ']] !== undefined ';
         if ($ownProperties) {
           out += ' &&   Object.prototype.hasOwnProperty.call(' + ($data) + ', ' + ($vSchema) + '[' + ($i) + ']) ';
         }
@@ -3891,7 +3891,7 @@ module.exports = function generate_required(it, $keyword, $ruleType) {
           out += '  }  ';
         }
         out += '  if (!' + ($valid) + ') {   ';
-        var $$outStack = $$outStack || [];
+        let $$outStack = $$outStack || [];
         $$outStack.push(out);
         out = ''; /* istanbul ignore else */
         if (it.createErrors !== false) {
@@ -3912,7 +3912,7 @@ module.exports = function generate_required(it, $keyword, $ruleType) {
         } else {
           out += ' {} ';
         }
-        var __err = out;
+        let __err = out;
         out = $$outStack.pop();
         if (!it.compositeRule && $breakOnError) {
           /* istanbul ignore if */
@@ -3922,21 +3922,21 @@ module.exports = function generate_required(it, $keyword, $ruleType) {
             out += ' validate.errors = [' + (__err) + ']; return false; ';
           }
         } else {
-          out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+          out += ' let err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
         }
         out += ' } else { ';
       } else {
         out += ' if ( ';
-        var arr2 = $required;
+        let arr2 = $required;
         if (arr2) {
-          var $propertyKey, $i = -1,
+          let $propertyKey, $i = -1,
             l2 = arr2.length - 1;
           while ($i < l2) {
             $propertyKey = arr2[$i += 1];
             if ($i) {
               out += ' || ';
             }
-            var $prop = it.util.getProperty($propertyKey),
+            let $prop = it.util.getProperty($propertyKey),
               $useData = $data + $prop;
             out += ' ( ( ' + ($useData) + ' === undefined ';
             if ($ownProperties) {
@@ -3946,12 +3946,12 @@ module.exports = function generate_required(it, $keyword, $ruleType) {
           }
         }
         out += ') {  ';
-        var $propertyPath = 'missing' + $lvl,
+        let $propertyPath = 'missing' + $lvl,
           $missingProperty = '\' + ' + $propertyPath + ' + \'';
         if (it.opts._errorDataPathProperty) {
           it.errorPath = it.opts.jsonPointers ? it.util.getPathExpr($currentErrorPath, $propertyPath, true) : $currentErrorPath + ' + ' + $propertyPath;
         }
-        var $$outStack = $$outStack || [];
+        let $$outStack = $$outStack || [];
         $$outStack.push(out);
         out = ''; /* istanbul ignore else */
         if (it.createErrors !== false) {
@@ -3972,7 +3972,7 @@ module.exports = function generate_required(it, $keyword, $ruleType) {
         } else {
           out += ' {} ';
         }
-        var __err = out;
+        let __err = out;
         out = $$outStack.pop();
         if (!it.compositeRule && $breakOnError) {
           /* istanbul ignore if */
@@ -3982,23 +3982,23 @@ module.exports = function generate_required(it, $keyword, $ruleType) {
             out += ' validate.errors = [' + (__err) + ']; return false; ';
           }
         } else {
-          out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+          out += ' let err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
         }
         out += ' } else { ';
       }
     } else {
       if ($loopRequired) {
         if (!$isData) {
-          out += ' var ' + ($vSchema) + ' = validate.schema' + ($schemaPath) + '; ';
+          out += ' let ' + ($vSchema) + ' = validate.schema' + ($schemaPath) + '; ';
         }
-        var $i = 'i' + $lvl,
+        let $i = 'i' + $lvl,
           $propertyPath = 'schema' + $lvl + '[' + $i + ']',
           $missingProperty = '\' + ' + $propertyPath + ' + \'';
         if (it.opts._errorDataPathProperty) {
           it.errorPath = it.util.getPathExpr($currentErrorPath, $propertyPath, it.opts.jsonPointers);
         }
         if ($isData) {
-          out += ' if (' + ($vSchema) + ' && !Array.isArray(' + ($vSchema) + ')) {  var err =   '; /* istanbul ignore else */
+          out += ' if (' + ($vSchema) + ' && !Array.isArray(' + ($vSchema) + ')) {  let err =   '; /* istanbul ignore else */
           if (it.createErrors !== false) {
             out += ' { keyword: \'' + ('required') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { missingProperty: \'' + ($missingProperty) + '\' } ';
             if (it.opts.messages !== false) {
@@ -4019,11 +4019,11 @@ module.exports = function generate_required(it, $keyword, $ruleType) {
           }
           out += ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; } else if (' + ($vSchema) + ' !== undefined) { ';
         }
-        out += ' for (var ' + ($i) + ' = 0; ' + ($i) + ' < ' + ($vSchema) + '.length; ' + ($i) + '++) { if (' + ($data) + '[' + ($vSchema) + '[' + ($i) + ']] === undefined ';
+        out += ' for (let ' + ($i) + ' = 0; ' + ($i) + ' < ' + ($vSchema) + '.length; ' + ($i) + '++) { if (' + ($data) + '[' + ($vSchema) + '[' + ($i) + ']] === undefined ';
         if ($ownProperties) {
           out += ' || ! Object.prototype.hasOwnProperty.call(' + ($data) + ', ' + ($vSchema) + '[' + ($i) + ']) ';
         }
-        out += ') {  var err =   '; /* istanbul ignore else */
+        out += ') {  let err =   '; /* istanbul ignore else */
         if (it.createErrors !== false) {
           out += ' { keyword: \'' + ('required') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { missingProperty: \'' + ($missingProperty) + '\' } ';
           if (it.opts.messages !== false) {
@@ -4047,13 +4047,13 @@ module.exports = function generate_required(it, $keyword, $ruleType) {
           out += '  }  ';
         }
       } else {
-        var arr3 = $required;
+        let arr3 = $required;
         if (arr3) {
-          var $propertyKey, i3 = -1,
+          let $propertyKey, i3 = -1,
             l3 = arr3.length - 1;
           while (i3 < l3) {
             $propertyKey = arr3[i3 += 1];
-            var $prop = it.util.getProperty($propertyKey),
+            let $prop = it.util.getProperty($propertyKey),
               $missingProperty = it.util.escapeQuotes($propertyKey),
               $useData = $data + $prop;
             if (it.opts._errorDataPathProperty) {
@@ -4063,7 +4063,7 @@ module.exports = function generate_required(it, $keyword, $ruleType) {
             if ($ownProperties) {
               out += ' || ! Object.prototype.hasOwnProperty.call(' + ($data) + ', \'' + (it.util.escapeQuotes($propertyKey)) + '\') ';
             }
-            out += ') {  var err =   '; /* istanbul ignore else */
+            out += ') {  let err =   '; /* istanbul ignore else */
             if (it.createErrors !== false) {
               out += ' { keyword: \'' + ('required') + '\' , dataPath: (dataPath || \'\') + ' + (it.errorPath) + ' , schemaPath: ' + (it.util.toQuotedString($errSchemaPath)) + ' , params: { missingProperty: \'' + ($missingProperty) + '\' } ';
               if (it.opts.messages !== false) {
@@ -4097,35 +4097,35 @@ module.exports = function generate_required(it, $keyword, $ruleType) {
 },{}],36:[function(require,module,exports){
 'use strict';
 module.exports = function generate_uniqueItems(it, $keyword, $ruleType) {
-  var out = ' ';
-  var $lvl = it.level;
-  var $dataLvl = it.dataLevel;
-  var $schema = it.schema[$keyword];
-  var $schemaPath = it.schemaPath + it.util.getProperty($keyword);
-  var $errSchemaPath = it.errSchemaPath + '/' + $keyword;
-  var $breakOnError = !it.opts.allErrors;
-  var $data = 'data' + ($dataLvl || '');
-  var $valid = 'valid' + $lvl;
-  var $isData = it.opts.$data && $schema && $schema.$data,
+  let out = ' ';
+  let $lvl = it.level;
+  let $dataLvl = it.dataLevel;
+  let $schema = it.schema[$keyword];
+  let $schemaPath = it.schemaPath + it.util.getProperty($keyword);
+  let $errSchemaPath = it.errSchemaPath + '/' + $keyword;
+  let $breakOnError = !it.opts.allErrors;
+  let $data = 'data' + ($dataLvl || '');
+  let $valid = 'valid' + $lvl;
+  let $isData = it.opts.$data && $schema && $schema.$data,
     $schemaValue;
   if ($isData) {
-    out += ' var schema' + ($lvl) + ' = ' + (it.util.getData($schema.$data, $dataLvl, it.dataPathArr)) + '; ';
+    out += ' let schema' + ($lvl) + ' = ' + (it.util.getData($schema.$data, $dataLvl, it.dataPathArr)) + '; ';
     $schemaValue = 'schema' + $lvl;
   } else {
     $schemaValue = $schema;
   }
   if (($schema || $isData) && it.opts.uniqueItems !== false) {
     if ($isData) {
-      out += ' var ' + ($valid) + '; if (' + ($schemaValue) + ' === false || ' + ($schemaValue) + ' === undefined) ' + ($valid) + ' = true; else if (typeof ' + ($schemaValue) + ' != \'boolean\') ' + ($valid) + ' = false; else { ';
+      out += ' let ' + ($valid) + '; if (' + ($schemaValue) + ' === false || ' + ($schemaValue) + ' === undefined) ' + ($valid) + ' = true; else if (typeof ' + ($schemaValue) + ' != \'boolean\') ' + ($valid) + ' = false; else { ';
     }
-    out += ' var i = ' + ($data) + '.length , ' + ($valid) + ' = true , j; if (i > 1) { ';
-    var $itemType = it.schema.items && it.schema.items.type,
+    out += ' let i = ' + ($data) + '.length , ' + ($valid) + ' = true , j; if (i > 1) { ';
+    let $itemType = it.schema.items && it.schema.items.type,
       $typeIsArray = Array.isArray($itemType);
     if (!$itemType || $itemType == 'object' || $itemType == 'array' || ($typeIsArray && ($itemType.indexOf('object') >= 0 || $itemType.indexOf('array') >= 0))) {
       out += ' outer: for (;i--;) { for (j = i; j--;) { if (equal(' + ($data) + '[i], ' + ($data) + '[j])) { ' + ($valid) + ' = false; break outer; } } } ';
     } else {
-      out += ' var itemIndices = {}, item; for (;i--;) { var item = ' + ($data) + '[i]; ';
-      var $method = 'checkDataType' + ($typeIsArray ? 's' : '');
+      out += ' let itemIndices = {}, item; for (;i--;) { let item = ' + ($data) + '[i]; ';
+      let $method = 'checkDataType' + ($typeIsArray ? 's' : '');
       out += ' if (' + (it.util[$method]($itemType, 'item', true)) + ') continue; ';
       if ($typeIsArray) {
         out += ' if (typeof item == \'string\') item = \'"\' + item; ';
@@ -4137,7 +4137,7 @@ module.exports = function generate_uniqueItems(it, $keyword, $ruleType) {
       out += '  }  ';
     }
     out += ' if (!' + ($valid) + ') {   ';
-    var $$outStack = $$outStack || [];
+    let $$outStack = $$outStack || [];
     $$outStack.push(out);
     out = ''; /* istanbul ignore else */
     if (it.createErrors !== false) {
@@ -4158,7 +4158,7 @@ module.exports = function generate_uniqueItems(it, $keyword, $ruleType) {
     } else {
       out += ' {} ';
     }
-    var __err = out;
+    let __err = out;
     out = $$outStack.pop();
     if (!it.compositeRule && $breakOnError) {
       /* istanbul ignore if */
@@ -4168,7 +4168,7 @@ module.exports = function generate_uniqueItems(it, $keyword, $ruleType) {
         out += ' validate.errors = [' + (__err) + ']; return false; ';
       }
     } else {
-      out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+      out += ' let err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
     }
     out += ' } ';
     if ($breakOnError) {
@@ -4185,12 +4185,12 @@ module.exports = function generate_uniqueItems(it, $keyword, $ruleType) {
 },{}],37:[function(require,module,exports){
 'use strict';
 module.exports = function generate_validate(it, $keyword, $ruleType) {
-  var out = '';
-  var $async = it.schema.$async === true,
+  let out = '';
+  let $async = it.schema.$async === true,
     $refKeywords = it.util.schemaHasRulesExcept(it.schema, it.RULES.all, '$ref'),
     $id = it.self._getId(it.schema);
   if (it.isTop) {
-    out += ' var validate = ';
+    out += ' let validate = ';
     if ($async) {
       it.async = true;
       out += 'async ';
@@ -4201,23 +4201,23 @@ module.exports = function generate_validate(it, $keyword, $ruleType) {
     }
   }
   if (typeof it.schema == 'boolean' || !($refKeywords || it.schema.$ref)) {
-    var $keyword = 'false schema';
-    var $lvl = it.level;
-    var $dataLvl = it.dataLevel;
-    var $schema = it.schema[$keyword];
-    var $schemaPath = it.schemaPath + it.util.getProperty($keyword);
-    var $errSchemaPath = it.errSchemaPath + '/' + $keyword;
-    var $breakOnError = !it.opts.allErrors;
-    var $errorKeyword;
-    var $data = 'data' + ($dataLvl || '');
-    var $valid = 'valid' + $lvl;
+    let $keyword = 'false schema';
+    let $lvl = it.level;
+    let $dataLvl = it.dataLevel;
+    let $schema = it.schema[$keyword];
+    let $schemaPath = it.schemaPath + it.util.getProperty($keyword);
+    let $errSchemaPath = it.errSchemaPath + '/' + $keyword;
+    let $breakOnError = !it.opts.allErrors;
+    let $errorKeyword;
+    let $data = 'data' + ($dataLvl || '');
+    let $valid = 'valid' + $lvl;
     if (it.schema === false) {
       if (it.isTop) {
         $breakOnError = true;
       } else {
-        out += ' var ' + ($valid) + ' = false; ';
+        out += ' let ' + ($valid) + ' = false; ';
       }
-      var $$outStack = $$outStack || [];
+      let $$outStack = $$outStack || [];
       $$outStack.push(out);
       out = ''; /* istanbul ignore else */
       if (it.createErrors !== false) {
@@ -4232,7 +4232,7 @@ module.exports = function generate_validate(it, $keyword, $ruleType) {
       } else {
         out += ' {} ';
       }
-      var __err = out;
+      let __err = out;
       out = $$outStack.pop();
       if (!it.compositeRule && $breakOnError) {
         /* istanbul ignore if */
@@ -4242,7 +4242,7 @@ module.exports = function generate_validate(it, $keyword, $ruleType) {
           out += ' validate.errors = [' + (__err) + ']; return false; ';
         }
       } else {
-        out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+        out += ' let err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
       }
     } else {
       if (it.isTop) {
@@ -4252,7 +4252,7 @@ module.exports = function generate_validate(it, $keyword, $ruleType) {
           out += ' validate.errors = null; return true; ';
         }
       } else {
-        out += ' var ' + ($valid) + ' = true; ';
+        out += ' let ' + ($valid) + ' = true; ';
       }
     }
     if (it.isTop) {
@@ -4261,7 +4261,7 @@ module.exports = function generate_validate(it, $keyword, $ruleType) {
     return out;
   }
   if (it.isTop) {
-    var $top = it.isTop,
+    let $top = it.isTop,
       $lvl = it.level = 0,
       $dataLvl = it.dataLevel = 0,
       $data = 'data';
@@ -4269,23 +4269,23 @@ module.exports = function generate_validate(it, $keyword, $ruleType) {
     it.baseId = it.baseId || it.rootId;
     delete it.isTop;
     it.dataPathArr = [undefined];
-    out += ' var vErrors = null; ';
-    out += ' var errors = 0;     ';
+    out += ' let vErrors = null; ';
+    out += ' let errors = 0;     ';
     out += ' if (rootData === undefined) rootData = data; ';
   } else {
-    var $lvl = it.level,
+    let $lvl = it.level,
       $dataLvl = it.dataLevel,
       $data = 'data' + ($dataLvl || '');
     if ($id) it.baseId = it.resolve.url(it.baseId, $id);
     if ($async && !it.async) throw new Error('async schema in sync schema');
-    out += ' var errs_' + ($lvl) + ' = errors;';
+    out += ' let errs_' + ($lvl) + ' = errors;';
   }
-  var $valid = 'valid' + $lvl,
+  let $valid = 'valid' + $lvl,
     $breakOnError = !it.opts.allErrors,
     $closingBraces1 = '',
     $closingBraces2 = '';
-  var $errorKeyword;
-  var $typeSchema = it.schema.type,
+  let $errorKeyword;
+  let $typeSchema = it.schema.type,
     $typeIsArray = Array.isArray($typeSchema);
   if ($typeSchema && it.opts.nullable && it.schema.nullable === true) {
     if ($typeIsArray) {
@@ -4312,9 +4312,9 @@ module.exports = function generate_validate(it, $keyword, $ruleType) {
   }
   if ($typeSchema) {
     if (it.opts.coerceTypes) {
-      var $coerceToTypes = it.util.coerceToTypes(it.opts.coerceTypes, $typeSchema);
+      let $coerceToTypes = it.util.coerceToTypes(it.opts.coerceTypes, $typeSchema);
     }
-    var $rulesGroup = it.RULES.types[$typeSchema];
+    let $rulesGroup = it.RULES.types[$typeSchema];
     if ($coerceToTypes || $typeIsArray || $rulesGroup === true || ($rulesGroup && !$shouldUseGroup($rulesGroup))) {
       var $schemaPath = it.schemaPath + '.type',
         $errSchemaPath = it.errSchemaPath + '/type';
@@ -4323,17 +4323,17 @@ module.exports = function generate_validate(it, $keyword, $ruleType) {
         $method = $typeIsArray ? 'checkDataTypes' : 'checkDataType';
       out += ' if (' + (it.util[$method]($typeSchema, $data, true)) + ') { ';
       if ($coerceToTypes) {
-        var $dataType = 'dataType' + $lvl,
+        let $dataType = 'dataType' + $lvl,
           $coerced = 'coerced' + $lvl;
-        out += ' var ' + ($dataType) + ' = typeof ' + ($data) + '; ';
+        out += ' let ' + ($dataType) + ' = typeof ' + ($data) + '; ';
         if (it.opts.coerceTypes == 'array') {
           out += ' if (' + ($dataType) + ' == \'object\' && Array.isArray(' + ($data) + ')) ' + ($dataType) + ' = \'array\'; ';
         }
-        out += ' var ' + ($coerced) + ' = undefined; ';
-        var $bracesCoercion = '';
-        var arr1 = $coerceToTypes;
+        out += ' let ' + ($coerced) + ' = undefined; ';
+        let $bracesCoercion = '';
+        let arr1 = $coerceToTypes;
         if (arr1) {
-          var $type, $i = -1,
+          let $type, $i = -1,
             l1 = arr1.length - 1;
           while ($i < l1) {
             $type = arr1[$i += 1];
@@ -4362,7 +4362,7 @@ module.exports = function generate_validate(it, $keyword, $ruleType) {
           }
         }
         out += ' ' + ($bracesCoercion) + ' if (' + ($coerced) + ' === undefined) {   ';
-        var $$outStack = $$outStack || [];
+        let $$outStack = $$outStack || [];
         $$outStack.push(out);
         out = ''; /* istanbul ignore else */
         if (it.createErrors !== false) {
@@ -4389,7 +4389,7 @@ module.exports = function generate_validate(it, $keyword, $ruleType) {
         } else {
           out += ' {} ';
         }
-        var __err = out;
+        let __err = out;
         out = $$outStack.pop();
         if (!it.compositeRule && $breakOnError) {
           /* istanbul ignore if */
@@ -4399,10 +4399,10 @@ module.exports = function generate_validate(it, $keyword, $ruleType) {
             out += ' validate.errors = [' + (__err) + ']; return false; ';
           }
         } else {
-          out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+          out += ' let err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
         }
         out += ' } else {  ';
-        var $parentData = $dataLvl ? 'data' + (($dataLvl - 1) || '') : 'parentData',
+        let $parentData = $dataLvl ? 'data' + (($dataLvl - 1) || '') : 'parentData',
           $parentDataProperty = $dataLvl ? it.dataPathArr[$dataLvl] : 'parentDataProperty';
         out += ' ' + ($data) + ' = ' + ($coerced) + '; ';
         if (!$dataLvl) {
@@ -4410,7 +4410,7 @@ module.exports = function generate_validate(it, $keyword, $ruleType) {
         }
         out += ' ' + ($parentData) + '[' + ($parentDataProperty) + '] = ' + ($coerced) + '; } ';
       } else {
-        var $$outStack = $$outStack || [];
+        let $$outStack = $$outStack || [];
         $$outStack.push(out);
         out = ''; /* istanbul ignore else */
         if (it.createErrors !== false) {
@@ -4437,7 +4437,7 @@ module.exports = function generate_validate(it, $keyword, $ruleType) {
         } else {
           out += ' {} ';
         }
-        var __err = out;
+        let __err = out;
         out = $$outStack.pop();
         if (!it.compositeRule && $breakOnError) {
           /* istanbul ignore if */
@@ -4447,7 +4447,7 @@ module.exports = function generate_validate(it, $keyword, $ruleType) {
             out += ' validate.errors = [' + (__err) + ']; return false; ';
           }
         } else {
-          out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+          out += ' let err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
         }
       }
       out += ' } ';
@@ -4466,9 +4466,9 @@ module.exports = function generate_validate(it, $keyword, $ruleType) {
       $closingBraces2 += '}';
     }
   } else {
-    var arr2 = it.RULES;
+    let arr2 = it.RULES;
     if (arr2) {
-      var $rulesGroup, i2 = -1,
+      let $rulesGroup, i2 = -1,
         l2 = arr2.length - 1;
       while (i2 < l2) {
         $rulesGroup = arr2[i2 += 1];
@@ -4478,17 +4478,17 @@ module.exports = function generate_validate(it, $keyword, $ruleType) {
           }
           if (it.opts.useDefaults && !it.compositeRule) {
             if ($rulesGroup.type == 'object' && it.schema.properties) {
-              var $schema = it.schema.properties,
+              let $schema = it.schema.properties,
                 $schemaKeys = Object.keys($schema);
-              var arr3 = $schemaKeys;
+              let arr3 = $schemaKeys;
               if (arr3) {
-                var $propertyKey, i3 = -1,
+                let $propertyKey, i3 = -1,
                   l3 = arr3.length - 1;
                 while (i3 < l3) {
                   $propertyKey = arr3[i3 += 1];
-                  var $sch = $schema[$propertyKey];
+                  let $sch = $schema[$propertyKey];
                   if ($sch.default !== undefined) {
-                    var $passData = $data + it.util.getProperty($propertyKey);
+                    let $passData = $data + it.util.getProperty($propertyKey);
                     out += '  if (' + ($passData) + ' === undefined ';
                     if (it.opts.useDefaults == 'empty') {
                       out += ' || ' + ($passData) + ' === null || ' + ($passData) + ' === \'\' ';
@@ -4504,14 +4504,14 @@ module.exports = function generate_validate(it, $keyword, $ruleType) {
                 }
               }
             } else if ($rulesGroup.type == 'array' && Array.isArray(it.schema.items)) {
-              var arr4 = it.schema.items;
+              let arr4 = it.schema.items;
               if (arr4) {
-                var $sch, $i = -1,
+                let $sch, $i = -1,
                   l4 = arr4.length - 1;
                 while ($i < l4) {
                   $sch = arr4[$i += 1];
                   if ($sch.default !== undefined) {
-                    var $passData = $data + '[' + $i + ']';
+                    let $passData = $data + '[' + $i + ']';
                     out += '  if (' + ($passData) + ' === undefined ';
                     if (it.opts.useDefaults == 'empty') {
                       out += ' || ' + ($passData) + ' === null || ' + ($passData) + ' === \'\' ';
@@ -4528,14 +4528,14 @@ module.exports = function generate_validate(it, $keyword, $ruleType) {
               }
             }
           }
-          var arr5 = $rulesGroup.rules;
+          let arr5 = $rulesGroup.rules;
           if (arr5) {
-            var $rule, i5 = -1,
+            let $rule, i5 = -1,
               l5 = arr5.length - 1;
             while (i5 < l5) {
               $rule = arr5[i5 += 1];
               if ($shouldUseRule($rule)) {
-                var $code = $rule.code(it, $rule.keyword, $rulesGroup.type);
+                let $code = $rule.code(it, $rule.keyword, $rulesGroup.type);
                 if ($code) {
                   out += ' ' + ($code) + ' ';
                   if ($breakOnError) {
@@ -4553,9 +4553,9 @@ module.exports = function generate_validate(it, $keyword, $ruleType) {
             out += ' } ';
             if ($typeSchema && $typeSchema === $rulesGroup.type && !$coerceToTypes) {
               out += ' else { ';
-              var $schemaPath = it.schemaPath + '.type',
+              let $schemaPath = it.schemaPath + '.type',
                 $errSchemaPath = it.errSchemaPath + '/type';
-              var $$outStack = $$outStack || [];
+              let $$outStack = $$outStack || [];
               $$outStack.push(out);
               out = ''; /* istanbul ignore else */
               if (it.createErrors !== false) {
@@ -4582,7 +4582,7 @@ module.exports = function generate_validate(it, $keyword, $ruleType) {
               } else {
                 out += ' {} ';
               }
-              var __err = out;
+              let __err = out;
               out = $$outStack.pop();
               if (!it.compositeRule && $breakOnError) {
                 /* istanbul ignore if */
@@ -4592,7 +4592,7 @@ module.exports = function generate_validate(it, $keyword, $ruleType) {
                   out += ' validate.errors = [' + (__err) + ']; return false; ';
                 }
               } else {
-                out += ' var err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
+                out += ' let err = ' + (__err) + ';  if (vErrors === null) vErrors = [err]; else vErrors.push(err); errors++; ';
               }
               out += ' } ';
             }
@@ -4624,7 +4624,7 @@ module.exports = function generate_validate(it, $keyword, $ruleType) {
     }
     out += ' }; return validate;';
   } else {
-    out += ' var ' + ($valid) + ' = errors === errs_' + ($lvl) + ';';
+    out += ' let ' + ($valid) + ' = errors === errs_' + ($lvl) + ';';
   }
   out = it.util.cleanUpCode(out);
   if ($top) {
@@ -4632,8 +4632,8 @@ module.exports = function generate_validate(it, $keyword, $ruleType) {
   }
 
   function $shouldUseGroup($rulesGroup) {
-    var rules = $rulesGroup.rules;
-    for (var i = 0; i < rules.length; i++)
+    let rules = $rulesGroup.rules;
+    for (let i = 0; i < rules.length; i++)
       if ($shouldUseRule(rules[i])) return true;
   }
 
@@ -4642,8 +4642,8 @@ module.exports = function generate_validate(it, $keyword, $ruleType) {
   }
 
   function $ruleImplementsSomeKeyword($rule) {
-    var impl = $rule.implements;
-    for (var i = 0; i < impl.length; i++)
+    let impl = $rule.implements;
+    for (let i = 0; i < impl.length; i++)
       if (it.schema[impl[i]] !== undefined) return true;
   }
   return out;
@@ -4652,8 +4652,8 @@ module.exports = function generate_validate(it, $keyword, $ruleType) {
 },{}],38:[function(require,module,exports){
 'use strict';
 
-var IDENTIFIER = /^[a-z_$][a-z0-9_$-]*$/i;
-var customRuleCode = require('./dotjs/custom');
+let IDENTIFIER = /^[a-z_$][a-z0-9_$-]*$/i;
+let customRuleCode = require('./dotjs/custom');
 
 module.exports = {
   add: addKeyword,
@@ -4671,7 +4671,7 @@ module.exports = {
 function addKeyword(keyword, definition) {
   /* jshint validthis: true */
   /* eslint no-shadow: 0 */
-  var RULES = this.RULES;
+  let RULES = this.RULES;
 
   if (RULES.keywords[keyword])
     throw new Error('Keyword ' + keyword + ' is already defined');
@@ -4683,9 +4683,9 @@ function addKeyword(keyword, definition) {
     if (definition.macro && definition.valid !== undefined)
       throw new Error('"valid" option cannot be used with macro keywords');
 
-    var dataType = definition.type;
+    let dataType = definition.type;
     if (Array.isArray(dataType)) {
-      var i, len = dataType.length;
+      let i, len = dataType.length;
       for (i=0; i<len; i++) checkDataType(dataType[i]);
       for (i=0; i<len; i++) _addRule(keyword, dataType[i], definition);
     } else {
@@ -4693,11 +4693,11 @@ function addKeyword(keyword, definition) {
       _addRule(keyword, dataType, definition);
     }
 
-    var $data = definition.$data === true && this._opts.$data;
+    let $data = definition.$data === true && this._opts.$data;
     if ($data && !definition.validate)
       throw new Error('$data support: "validate" function is not defined');
 
-    var metaSchema = definition.metaSchema;
+    let metaSchema = definition.metaSchema;
     if (metaSchema) {
       if ($data) {
         metaSchema = {
@@ -4715,9 +4715,9 @@ function addKeyword(keyword, definition) {
 
 
   function _addRule(keyword, dataType, definition) {
-    var ruleGroup;
-    for (var i=0; i<RULES.length; i++) {
-      var rg = RULES[i];
+    let ruleGroup;
+    for (let i=0; i<RULES.length; i++) {
+      let rg = RULES[i];
       if (rg.type == dataType) {
         ruleGroup = rg;
         break;
@@ -4729,7 +4729,7 @@ function addKeyword(keyword, definition) {
       RULES.push(ruleGroup);
     }
 
-    var rule = {
+    let rule = {
       keyword: keyword,
       definition: definition,
       custom: true,
@@ -4757,7 +4757,7 @@ function addKeyword(keyword, definition) {
  */
 function getKeyword(keyword) {
   /* jshint validthis: true */
-  var rule = this.RULES.custom[keyword];
+  let rule = this.RULES.custom[keyword];
   return rule ? rule.definition : this.RULES.keywords[keyword] || false;
 }
 
@@ -4770,13 +4770,13 @@ function getKeyword(keyword) {
  */
 function removeKeyword(keyword) {
   /* jshint validthis: true */
-  var RULES = this.RULES;
+  let RULES = this.RULES;
   delete RULES.keywords[keyword];
   delete RULES.all[keyword];
   delete RULES.custom[keyword];
-  for (var i=0; i<RULES.length; i++) {
-    var rules = RULES[i].rules;
-    for (var j=0; j<rules.length; j++) {
+  for (let i=0; i<RULES.length; i++) {
+    let rules = RULES[i].rules;
+    for (let j=0; j<rules.length; j++) {
       if (rules[j].keyword == keyword) {
         rules.splice(j, 1);
         break;
@@ -4978,15 +4978,15 @@ module.exports={
 },{}],41:[function(require,module,exports){
 'use strict';
 
-var isArray = Array.isArray;
-var keyList = Object.keys;
-var hasProp = Object.prototype.hasOwnProperty;
+let isArray = Array.isArray;
+let keyList = Object.keys;
+let hasProp = Object.prototype.hasOwnProperty;
 
 module.exports = function equal(a, b) {
   if (a === b) return true;
 
   if (a && b && typeof a == 'object' && typeof b == 'object') {
-    var arrA = isArray(a)
+    let arrA = isArray(a)
       , arrB = isArray(b)
       , i
       , length
@@ -5002,17 +5002,17 @@ module.exports = function equal(a, b) {
 
     if (arrA != arrB) return false;
 
-    var dateA = a instanceof Date
+    let dateA = a instanceof Date
       , dateB = b instanceof Date;
     if (dateA != dateB) return false;
     if (dateA && dateB) return a.getTime() == b.getTime();
 
-    var regexpA = a instanceof RegExp
+    let regexpA = a instanceof RegExp
       , regexpB = b instanceof RegExp;
     if (regexpA != regexpB) return false;
     if (regexpA && regexpB) return a.toString() == b.toString();
 
-    var keys = keyList(a);
+    let keys = keyList(a);
     length = keys.length;
 
     if (length !== keyList(b).length)
@@ -5038,19 +5038,19 @@ module.exports = function equal(a, b) {
 module.exports = function (data, opts) {
     if (!opts) opts = {};
     if (typeof opts === 'function') opts = { cmp: opts };
-    var cycles = (typeof opts.cycles === 'boolean') ? opts.cycles : false;
+    let cycles = (typeof opts.cycles === 'boolean') ? opts.cycles : false;
 
-    var cmp = opts.cmp && (function (f) {
+    let cmp = opts.cmp && (function (f) {
         return function (node) {
             return function (a, b) {
-                var aobj = { key: a, value: node[a] };
-                var bobj = { key: b, value: node[b] };
+                let aobj = { key: a, value: node[a] };
+                let bobj = { key: b, value: node[b] };
                 return f(aobj, bobj);
             };
         };
     })(opts.cmp);
 
-    var seen = [];
+    let seen = [];
     return (function stringify (node) {
         if (node && node.toJSON && typeof node.toJSON === 'function') {
             node = node.toJSON();
@@ -5060,7 +5060,7 @@ module.exports = function (data, opts) {
         if (typeof node == 'number') return isFinite(node) ? '' + node : 'null';
         if (typeof node !== 'object') return JSON.stringify(node);
 
-        var i, out;
+        let i, out;
         if (Array.isArray(node)) {
             out = '[';
             for (i = 0; i < node.length; i++) {
@@ -5077,12 +5077,12 @@ module.exports = function (data, opts) {
             throw new TypeError('Converting circular structure to JSON');
         }
 
-        var seenIndex = seen.push(node) - 1;
-        var keys = Object.keys(node).sort(cmp && cmp(node));
+        let seenIndex = seen.push(node) - 1;
+        let keys = Object.keys(node).sort(cmp && cmp(node));
         out = '';
         for (i = 0; i < keys.length; i++) {
-            var key = keys[i];
-            var value = stringify(node[key]);
+            let key = keys[i];
+            let value = stringify(node[key]);
 
             if (!value) continue;
             if (out) out += ',';
@@ -5096,7 +5096,7 @@ module.exports = function (data, opts) {
 },{}],43:[function(require,module,exports){
 'use strict';
 
-var traverse = module.exports = function (schema, opts, cb) {
+let traverse = module.exports = function (schema, opts, cb) {
   // Legacy support for v0.3.1 and earlier.
   if (typeof opts == 'function') {
     cb = opts;
@@ -5104,8 +5104,8 @@ var traverse = module.exports = function (schema, opts, cb) {
   }
 
   cb = opts.cb || cb;
-  var pre = (typeof cb == 'function') ? cb : cb.pre || function() {};
-  var post = cb.post || function() {};
+  let pre = (typeof cb == 'function') ? cb : cb.pre || function() {};
+  let post = cb.post || function() {};
 
   _traverse(opts, pre, post, schema, '', schema);
 };
@@ -5159,16 +5159,16 @@ traverse.skipKeywords = {
 function _traverse(opts, pre, post, schema, jsonPtr, rootSchema, parentJsonPtr, parentKeyword, parentSchema, keyIndex) {
   if (schema && typeof schema == 'object' && !Array.isArray(schema)) {
     pre(schema, jsonPtr, rootSchema, parentJsonPtr, parentKeyword, parentSchema, keyIndex);
-    for (var key in schema) {
-      var sch = schema[key];
+    for (let key in schema) {
+      let sch = schema[key];
       if (Array.isArray(sch)) {
         if (key in traverse.arrayKeywords) {
-          for (var i=0; i<sch.length; i++)
+          for (let i=0; i<sch.length; i++)
             _traverse(opts, pre, post, sch[i], jsonPtr + '/' + key + '/' + i, rootSchema, jsonPtr, key, schema, i);
         }
       } else if (key in traverse.propsKeywords) {
         if (sch && typeof sch == 'object') {
-          for (var prop in sch)
+          for (let prop in sch)
             _traverse(opts, pre, post, sch[prop], jsonPtr + '/' + key + '/' + escapeJsonPtr(prop), rootSchema, jsonPtr, key, schema, prop);
         }
       } else if (key in traverse.keywords || (opts.allKeys && !(key in traverse.skipKeywords))) {
@@ -5193,14 +5193,14 @@ function escapeJsonPtr(str) {
 }(this, (function (exports) { 'use strict';
 
 function merge() {
-    for (var _len = arguments.length, sets = Array(_len), _key = 0; _key < _len; _key++) {
+    for (let _len = arguments.length, sets = Array(_len), _key = 0; _key < _len; _key++) {
         sets[_key] = arguments[_key];
     }
 
     if (sets.length > 1) {
         sets[0] = sets[0].slice(0, -1);
-        var xl = sets.length - 1;
-        for (var x = 1; x < xl; ++x) {
+        let xl = sets.length - 1;
+        for (let x = 1; x < xl; ++x) {
             sets[x] = sets[x].slice(1, -1);
         }
         sets[xl] = sets[xl].slice(1);
@@ -5222,9 +5222,9 @@ function toArray(obj) {
     return obj !== undefined && obj !== null ? obj instanceof Array ? obj : typeof obj.length !== "number" || obj.split || obj.setInterval || obj.call ? [obj] : Array.prototype.slice.call(obj) : [];
 }
 function assign(target, source) {
-    var obj = target;
+    let obj = target;
     if (source) {
-        for (var key in source) {
+        for (let key in source) {
             obj[key] = source[key];
         }
     }
@@ -5232,7 +5232,7 @@ function assign(target, source) {
 }
 
 function buildExps(isIRI) {
-    var ALPHA$$ = "[A-Za-z]",
+    let ALPHA$$ = "[A-Za-z]",
         CR$ = "[\\x0D]",
         DIGIT$$ = "[0-9]",
         DQUOTE$$ = "[\\x22]",
@@ -5332,19 +5332,19 @@ function buildExps(isIRI) {
         IPV6ADDRESS: new RegExp("^\\[?(" + IPV6ADDRESS$ + ")" + subexp(subexp("\\%25|\\%(?!" + HEXDIG$$ + "{2})") + "(" + ZONEID$ + ")") + "?\\]?$") //RFC 6874, with relaxed parsing rules
     };
 }
-var URI_PROTOCOL = buildExps(false);
+let URI_PROTOCOL = buildExps(false);
 
-var IRI_PROTOCOL = buildExps(true);
+let IRI_PROTOCOL = buildExps(true);
 
-var slicedToArray = function () {
+let slicedToArray = function () {
   function sliceIterator(arr, i) {
-    var _arr = [];
-    var _n = true;
-    var _d = false;
-    var _e = undefined;
+    let _arr = [];
+    let _n = true;
+    let _d = false;
+    let _e = undefined;
 
     try {
-      for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
+      for (let _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
         _arr.push(_s.value);
 
         if (i && _arr.length === i) break;
@@ -5386,9 +5386,9 @@ var slicedToArray = function () {
 
 
 
-var toConsumableArray = function (arr) {
+let toConsumableArray = function (arr) {
   if (Array.isArray(arr)) {
-    for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];
+    for (let i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];
 
     return arr2;
   } else {
@@ -5398,34 +5398,34 @@ var toConsumableArray = function (arr) {
 
 /** Highest positive signed 32-bit float value */
 
-var maxInt = 2147483647; // aka. 0x7FFFFFFF or 2^31-1
+let maxInt = 2147483647; // aka. 0x7FFFFFFF or 2^31-1
 
 /** Bootstring parameters */
-var base = 36;
-var tMin = 1;
-var tMax = 26;
-var skew = 38;
-var damp = 700;
-var initialBias = 72;
-var initialN = 128; // 0x80
-var delimiter = '-'; // '\x2D'
+let base = 36;
+let tMin = 1;
+let tMax = 26;
+let skew = 38;
+let damp = 700;
+let initialBias = 72;
+let initialN = 128; // 0x80
+let delimiter = '-'; // '\x2D'
 
 /** Regular expressions */
-var regexPunycode = /^xn--/;
-var regexNonASCII = /[^\0-\x7E]/; // non-ASCII chars
-var regexSeparators = /[\x2E\u3002\uFF0E\uFF61]/g; // RFC 3490 separators
+let regexPunycode = /^xn--/;
+let regexNonASCII = /[^\0-\x7E]/; // non-ASCII chars
+let regexSeparators = /[\x2E\u3002\uFF0E\uFF61]/g; // RFC 3490 separators
 
 /** Error messages */
-var errors = {
+let errors = {
     'overflow': 'Overflow: input needs wider integers to process',
     'not-basic': 'Illegal input >= 0x80 (not a basic code point)',
     'invalid-input': 'Invalid input'
 };
 
 /** Convenience shortcuts */
-var baseMinusTMin = base - tMin;
-var floor = Math.floor;
-var stringFromCharCode = String.fromCharCode;
+let baseMinusTMin = base - tMin;
+let floor = Math.floor;
+let stringFromCharCode = String.fromCharCode;
 
 /*--------------------------------------------------------------------------*/
 
@@ -5448,8 +5448,8 @@ function error$1(type) {
  * @returns {Array} A new array of values returned by the callback function.
  */
 function map(array, fn) {
-    var result = [];
-    var length = array.length;
+    let result = [];
+    let length = array.length;
     while (length--) {
         result[length] = fn(array[length]);
     }
@@ -5467,8 +5467,8 @@ function map(array, fn) {
  * function.
  */
 function mapDomain(string, fn) {
-    var parts = string.split('@');
-    var result = '';
+    let parts = string.split('@');
+    let result = '';
     if (parts.length > 1) {
         // In email addresses, only the domain name should be punycoded. Leave
         // the local part (i.e. everything up to `@`) intact.
@@ -5477,8 +5477,8 @@ function mapDomain(string, fn) {
     }
     // Avoid `split(regex)` for IE8 compatibility. See #17.
     string = string.replace(regexSeparators, '\x2E');
-    var labels = string.split('.');
-    var encoded = map(labels, fn).join('.');
+    let labels = string.split('.');
+    let encoded = map(labels, fn).join('.');
     return result + encoded;
 }
 
@@ -5496,14 +5496,14 @@ function mapDomain(string, fn) {
  * @returns {Array} The new array of code points.
  */
 function ucs2decode(string) {
-    var output = [];
-    var counter = 0;
-    var length = string.length;
+    let output = [];
+    let counter = 0;
+    let length = string.length;
     while (counter < length) {
-        var value = string.charCodeAt(counter++);
+        let value = string.charCodeAt(counter++);
         if (value >= 0xD800 && value <= 0xDBFF && counter < length) {
             // It's a high surrogate, and there is a next character.
-            var extra = string.charCodeAt(counter++);
+            let extra = string.charCodeAt(counter++);
             if ((extra & 0xFC00) == 0xDC00) {
                 // Low surrogate.
                 output.push(((value & 0x3FF) << 10) + (extra & 0x3FF) + 0x10000);
@@ -5528,7 +5528,7 @@ function ucs2decode(string) {
  * @param {Array} codePoints The array of numeric code points.
  * @returns {String} The new Unicode string (UCS-2).
  */
-var ucs2encode = function ucs2encode(array) {
+let ucs2encode = function ucs2encode(array) {
     return String.fromCodePoint.apply(String, toConsumableArray(array));
 };
 
@@ -5541,7 +5541,7 @@ var ucs2encode = function ucs2encode(array) {
  * representing integers) in the range `0` to `base - 1`, or `base` if
  * the code point does not represent a value.
  */
-var basicToDigit = function basicToDigit(codePoint) {
+let basicToDigit = function basicToDigit(codePoint) {
     if (codePoint - 0x30 < 0x0A) {
         return codePoint - 0x16;
     }
@@ -5565,7 +5565,7 @@ var basicToDigit = function basicToDigit(codePoint) {
  * used; else, the lowercase form is used. The behavior is undefined
  * if `flag` is non-zero and `digit` has no uppercase form.
  */
-var digitToBasic = function digitToBasic(digit, flag) {
+let digitToBasic = function digitToBasic(digit, flag) {
     //  0..25 map to ASCII a..z or A..Z
     // 26..35 map to ASCII 0..9
     return digit + 22 + 75 * (digit < 26) - ((flag != 0) << 5);
@@ -5576,8 +5576,8 @@ var digitToBasic = function digitToBasic(digit, flag) {
  * https://tools.ietf.org/html/rfc3492#section-3.4
  * @private
  */
-var adapt = function adapt(delta, numPoints, firstTime) {
-    var k = 0;
+let adapt = function adapt(delta, numPoints, firstTime) {
+    let k = 0;
     delta = firstTime ? floor(delta / damp) : delta >> 1;
     delta += floor(delta / numPoints);
     for (; /* no initialization */delta > baseMinusTMin * tMax >> 1; k += base) {
@@ -5593,24 +5593,24 @@ var adapt = function adapt(delta, numPoints, firstTime) {
  * @param {String} input The Punycode string of ASCII-only symbols.
  * @returns {String} The resulting string of Unicode symbols.
  */
-var decode = function decode(input) {
+let decode = function decode(input) {
     // Don't use UCS-2.
-    var output = [];
-    var inputLength = input.length;
-    var i = 0;
-    var n = initialN;
-    var bias = initialBias;
+    let output = [];
+    let inputLength = input.length;
+    let i = 0;
+    let n = initialN;
+    let bias = initialBias;
 
     // Handle the basic code points: let `basic` be the number of input code
     // points before the last delimiter, or `0` if there is none, then copy
     // the first basic code points to the output.
 
-    var basic = input.lastIndexOf(delimiter);
+    let basic = input.lastIndexOf(delimiter);
     if (basic < 0) {
         basic = 0;
     }
 
-    for (var j = 0; j < basic; ++j) {
+    for (let j = 0; j < basic; ++j) {
         // if it's not a basic code point
         if (input.charCodeAt(j) >= 0x80) {
             error$1('not-basic');
@@ -5621,34 +5621,34 @@ var decode = function decode(input) {
     // Main decoding loop: start just after the last delimiter if any basic code
     // points were copied; start at the beginning otherwise.
 
-    for (var index = basic > 0 ? basic + 1 : 0; index < inputLength;) /* no final expression */{
+    for (let index = basic > 0 ? basic + 1 : 0; index < inputLength;) /* no final expression */{
 
         // `index` is the index of the next character to be consumed.
-        // Decode a generalized variable-length integer into `delta`,
+        // Decode a generalized letiable-length integer into `delta`,
         // which gets added to `i`. The overflow checking is easier
         // if we increase `i` as we go, then subtract off its starting
         // value at the end to obtain `delta`.
-        var oldi = i;
-        for (var w = 1, k = base;; /* no condition */k += base) {
+        let oldi = i;
+        for (let w = 1, k = base;; /* no condition */k += base) {
 
             if (index >= inputLength) {
                 error$1('invalid-input');
             }
 
-            var digit = basicToDigit(input.charCodeAt(index++));
+            let digit = basicToDigit(input.charCodeAt(index++));
 
             if (digit >= base || digit > floor((maxInt - i) / w)) {
                 error$1('overflow');
             }
 
             i += digit * w;
-            var t = k <= bias ? tMin : k >= bias + tMax ? tMax : k - bias;
+            let t = k <= bias ? tMin : k >= bias + tMax ? tMax : k - bias;
 
             if (digit < t) {
                 break;
             }
 
-            var baseMinusT = base - t;
+            let baseMinusT = base - t;
             if (w > floor(maxInt / baseMinusT)) {
                 error$1('overflow');
             }
@@ -5656,7 +5656,7 @@ var decode = function decode(input) {
             w *= baseMinusT;
         }
 
-        var out = output.length + 1;
+        let out = output.length + 1;
         bias = adapt(i - oldi, out, oldi == 0);
 
         // `i` was supposed to wrap around from `out` to `0`,
@@ -5682,28 +5682,28 @@ var decode = function decode(input) {
  * @param {String} input The string of Unicode symbols.
  * @returns {String} The resulting Punycode string of ASCII-only symbols.
  */
-var encode = function encode(input) {
-    var output = [];
+let encode = function encode(input) {
+    let output = [];
 
     // Convert the input in UCS-2 to an array of Unicode code points.
     input = ucs2decode(input);
 
     // Cache the length.
-    var inputLength = input.length;
+    let inputLength = input.length;
 
     // Initialize the state.
-    var n = initialN;
-    var delta = 0;
-    var bias = initialBias;
+    let n = initialN;
+    let delta = 0;
+    let bias = initialBias;
 
     // Handle the basic code points.
-    var _iteratorNormalCompletion = true;
-    var _didIteratorError = false;
-    var _iteratorError = undefined;
+    let _iteratorNormalCompletion = true;
+    let _didIteratorError = false;
+    let _iteratorError = undefined;
 
     try {
-        for (var _iterator = input[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-            var _currentValue2 = _step.value;
+        for (let _iterator = input[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+            let _currentValue2 = _step.value;
 
             if (_currentValue2 < 0x80) {
                 output.push(stringFromCharCode(_currentValue2));
@@ -5724,8 +5724,8 @@ var encode = function encode(input) {
         }
     }
 
-    var basicLength = output.length;
-    var handledCPCount = basicLength;
+    let basicLength = output.length;
+    let handledCPCount = basicLength;
 
     // `handledCPCount` is the number of code points that have been handled;
     // `basicLength` is the number of basic code points.
@@ -5740,14 +5740,14 @@ var encode = function encode(input) {
 
         // All non-basic code points < n have been handled already. Find the next
         // larger one:
-        var m = maxInt;
-        var _iteratorNormalCompletion2 = true;
-        var _didIteratorError2 = false;
-        var _iteratorError2 = undefined;
+        let m = maxInt;
+        let _iteratorNormalCompletion2 = true;
+        let _didIteratorError2 = false;
+        let _iteratorError2 = undefined;
 
         try {
-            for (var _iterator2 = input[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-                var currentValue = _step2.value;
+            for (let _iterator2 = input[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                let currentValue = _step2.value;
 
                 if (currentValue >= n && currentValue < m) {
                     m = currentValue;
@@ -5771,7 +5771,7 @@ var encode = function encode(input) {
             }
         }
 
-        var handledCPCountPlusOne = handledCPCount + 1;
+        let handledCPCountPlusOne = handledCPCount + 1;
         if (m - n > floor((maxInt - delta) / handledCPCountPlusOne)) {
             error$1('overflow');
         }
@@ -5779,27 +5779,27 @@ var encode = function encode(input) {
         delta += (m - n) * handledCPCountPlusOne;
         n = m;
 
-        var _iteratorNormalCompletion3 = true;
-        var _didIteratorError3 = false;
-        var _iteratorError3 = undefined;
+        let _iteratorNormalCompletion3 = true;
+        let _didIteratorError3 = false;
+        let _iteratorError3 = undefined;
 
         try {
-            for (var _iterator3 = input[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-                var _currentValue = _step3.value;
+            for (let _iterator3 = input[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+                let _currentValue = _step3.value;
 
                 if (_currentValue < n && ++delta > maxInt) {
                     error$1('overflow');
                 }
                 if (_currentValue == n) {
-                    // Represent delta as a generalized variable-length integer.
-                    var q = delta;
-                    for (var k = base;; /* no condition */k += base) {
-                        var t = k <= bias ? tMin : k >= bias + tMax ? tMax : k - bias;
+                    // Represent delta as a generalized letiable-length integer.
+                    let q = delta;
+                    for (let k = base;; /* no condition */k += base) {
+                        let t = k <= bias ? tMin : k >= bias + tMax ? tMax : k - bias;
                         if (q < t) {
                             break;
                         }
-                        var qMinusT = q - t;
-                        var baseMinusT = base - t;
+                        let qMinusT = q - t;
+                        let baseMinusT = base - t;
                         output.push(stringFromCharCode(digitToBasic(t + qMinusT % baseMinusT, 0)));
                         q = floor(qMinusT / baseMinusT);
                     }
@@ -5842,7 +5842,7 @@ var encode = function encode(input) {
  * @returns {String} The Unicode representation of the given Punycode
  * string.
  */
-var toUnicode = function toUnicode(input) {
+let toUnicode = function toUnicode(input) {
     return mapDomain(input, function (string) {
         return regexPunycode.test(string) ? decode(string.slice(4).toLowerCase()) : string;
     });
@@ -5859,7 +5859,7 @@ var toUnicode = function toUnicode(input) {
  * @returns {String} The Punycode representation of the given domain name or
  * email address.
  */
-var toASCII = function toASCII(input) {
+let toASCII = function toASCII(input) {
     return mapDomain(input, function (string) {
         return regexNonASCII.test(string) ? 'xn--' + encode(string) : string;
     });
@@ -5868,7 +5868,7 @@ var toASCII = function toASCII(input) {
 /*--------------------------------------------------------------------------*/
 
 /** Define the public API */
-var punycode = {
+let punycode = {
     /**
   * A string representing the current Punycode.js version number.
   * @memberOf punycode
@@ -5926,25 +5926,25 @@ var punycode = {
  * authors and should not be interpreted as representing official policies, either expressed
  * or implied, of Gary Court.
  */
-var SCHEMES = {};
+let SCHEMES = {};
 function pctEncChar(chr) {
-    var c = chr.charCodeAt(0);
-    var e = void 0;
+    let c = chr.charCodeAt(0);
+    let e = void 0;
     if (c < 16) e = "%0" + c.toString(16).toUpperCase();else if (c < 128) e = "%" + c.toString(16).toUpperCase();else if (c < 2048) e = "%" + (c >> 6 | 192).toString(16).toUpperCase() + "%" + (c & 63 | 128).toString(16).toUpperCase();else e = "%" + (c >> 12 | 224).toString(16).toUpperCase() + "%" + (c >> 6 & 63 | 128).toString(16).toUpperCase() + "%" + (c & 63 | 128).toString(16).toUpperCase();
     return e;
 }
 function pctDecChars(str) {
-    var newStr = "";
-    var i = 0;
-    var il = str.length;
+    let newStr = "";
+    let i = 0;
+    let il = str.length;
     while (i < il) {
-        var c = parseInt(str.substr(i + 1, 2), 16);
+        let c = parseInt(str.substr(i + 1, 2), 16);
         if (c < 128) {
             newStr += String.fromCharCode(c);
             i += 3;
         } else if (c >= 194 && c < 224) {
             if (il - i >= 6) {
-                var c2 = parseInt(str.substr(i + 4, 2), 16);
+                let c2 = parseInt(str.substr(i + 4, 2), 16);
                 newStr += String.fromCharCode((c & 31) << 6 | c2 & 63);
             } else {
                 newStr += str.substr(i, 6);
@@ -5952,8 +5952,8 @@ function pctDecChars(str) {
             i += 6;
         } else if (c >= 224) {
             if (il - i >= 9) {
-                var _c = parseInt(str.substr(i + 4, 2), 16);
-                var c3 = parseInt(str.substr(i + 7, 2), 16);
+                let _c = parseInt(str.substr(i + 4, 2), 16);
+                let c3 = parseInt(str.substr(i + 7, 2), 16);
                 newStr += String.fromCharCode((c & 15) << 12 | (_c & 63) << 6 | c3 & 63);
             } else {
                 newStr += str.substr(i, 9);
@@ -5968,7 +5968,7 @@ function pctDecChars(str) {
 }
 function _normalizeComponentEncoding(components, protocol) {
     function decodeUnreserved(str) {
-        var decStr = pctDecChars(str);
+        let decStr = pctDecChars(str);
         return !decStr.match(protocol.UNRESERVED) ? str : decStr;
     }
     if (components.scheme) components.scheme = String(components.scheme).replace(protocol.PCT_ENCODED, decodeUnreserved).toLowerCase().replace(protocol.NOT_SCHEME, "");
@@ -5984,9 +5984,9 @@ function _stripLeadingZeros(str) {
     return str.replace(/^0*(.*)/, "$1") || "0";
 }
 function _normalizeIPv4(host, protocol) {
-    var matches = host.match(protocol.IPV4ADDRESS) || [];
+    let matches = host.match(protocol.IPV4ADDRESS) || [];
 
-    var _matches = slicedToArray(matches, 2),
+    let _matches = slicedToArray(matches, 2),
         address = _matches[1];
 
     if (address) {
@@ -5996,33 +5996,33 @@ function _normalizeIPv4(host, protocol) {
     }
 }
 function _normalizeIPv6(host, protocol) {
-    var matches = host.match(protocol.IPV6ADDRESS) || [];
+    let matches = host.match(protocol.IPV6ADDRESS) || [];
 
-    var _matches2 = slicedToArray(matches, 3),
+    let _matches2 = slicedToArray(matches, 3),
         address = _matches2[1],
         zone = _matches2[2];
 
     if (address) {
-        var _address$toLowerCase$ = address.toLowerCase().split('::').reverse(),
+        let _address$toLowerCase$ = address.toLowerCase().split('::').reverse(),
             _address$toLowerCase$2 = slicedToArray(_address$toLowerCase$, 2),
             last = _address$toLowerCase$2[0],
             first = _address$toLowerCase$2[1];
 
-        var firstFields = first ? first.split(":").map(_stripLeadingZeros) : [];
-        var lastFields = last.split(":").map(_stripLeadingZeros);
-        var isLastFieldIPv4Address = protocol.IPV4ADDRESS.test(lastFields[lastFields.length - 1]);
-        var fieldCount = isLastFieldIPv4Address ? 7 : 8;
-        var lastFieldsStart = lastFields.length - fieldCount;
-        var fields = Array(fieldCount);
-        for (var x = 0; x < fieldCount; ++x) {
+        let firstFields = first ? first.split(":").map(_stripLeadingZeros) : [];
+        let lastFields = last.split(":").map(_stripLeadingZeros);
+        let isLastFieldIPv4Address = protocol.IPV4ADDRESS.test(lastFields[lastFields.length - 1]);
+        let fieldCount = isLastFieldIPv4Address ? 7 : 8;
+        let lastFieldsStart = lastFields.length - fieldCount;
+        let fields = Array(fieldCount);
+        for (let x = 0; x < fieldCount; ++x) {
             fields[x] = firstFields[x] || lastFields[lastFieldsStart + x] || '';
         }
         if (isLastFieldIPv4Address) {
             fields[fieldCount - 1] = _normalizeIPv4(fields[fieldCount - 1], protocol);
         }
-        var allZeroFields = fields.reduce(function (acc, field, index) {
+        let allZeroFields = fields.reduce(function (acc, field, index) {
             if (!field || field === "0") {
-                var lastLongest = acc[acc.length - 1];
+                let lastLongest = acc[acc.length - 1];
                 if (lastLongest && lastLongest.index + lastLongest.length === index) {
                     lastLongest.length++;
                 } else {
@@ -6031,13 +6031,13 @@ function _normalizeIPv6(host, protocol) {
             }
             return acc;
         }, []);
-        var longestZeroFields = allZeroFields.sort(function (a, b) {
+        let longestZeroFields = allZeroFields.sort(function (a, b) {
             return b.length - a.length;
         })[0];
-        var newHost = void 0;
+        let newHost = void 0;
         if (longestZeroFields && longestZeroFields.length > 1) {
-            var newFirst = fields.slice(0, longestZeroFields.index);
-            var newLast = fields.slice(longestZeroFields.index + longestZeroFields.length);
+            let newFirst = fields.slice(0, longestZeroFields.index);
+            let newLast = fields.slice(longestZeroFields.index + longestZeroFields.length);
             newHost = newFirst.join(":") + "::" + newLast.join(":");
         } else {
             newHost = fields.join(":");
@@ -6050,15 +6050,15 @@ function _normalizeIPv6(host, protocol) {
         return host;
     }
 }
-var URI_PARSE = /^(?:([^:\/?#]+):)?(?:\/\/((?:([^\/?#@]*)@)?(\[[^\/?#\]]+\]|[^\/?#:]*)(?:\:(\d*))?))?([^?#]*)(?:\?([^#]*))?(?:#((?:.|\n|\r)*))?/i;
-var NO_MATCH_IS_UNDEFINED = "".match(/(){0}/)[1] === undefined;
+let URI_PARSE = /^(?:([^:\/?#]+):)?(?:\/\/((?:([^\/?#@]*)@)?(\[[^\/?#\]]+\]|[^\/?#:]*)(?:\:(\d*))?))?([^?#]*)(?:\?([^#]*))?(?:#((?:.|\n|\r)*))?/i;
+let NO_MATCH_IS_UNDEFINED = "".match(/(){0}/)[1] === undefined;
 function parse(uriString) {
-    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+    let options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
-    var components = {};
-    var protocol = options.iri !== false ? IRI_PROTOCOL : URI_PROTOCOL;
+    let components = {};
+    let protocol = options.iri !== false ? IRI_PROTOCOL : URI_PROTOCOL;
     if (options.reference === "suffix") uriString = (options.scheme ? options.scheme + ":" : "") + "//" + uriString;
-    var matches = uriString.match(URI_PARSE);
+    let matches = uriString.match(URI_PARSE);
     if (matches) {
         if (NO_MATCH_IS_UNDEFINED) {
             //store each component
@@ -6107,7 +6107,7 @@ function parse(uriString) {
             components.error = components.error || "URI is not a " + options.reference + " reference.";
         }
         //find scheme handler
-        var schemeHandler = SCHEMES[(options.scheme || components.scheme || "").toLowerCase()];
+        let schemeHandler = SCHEMES[(options.scheme || components.scheme || "").toLowerCase()];
         //check if scheme can't handle IRIs
         if (!options.unicodeSupport && (!schemeHandler || !schemeHandler.unicodeSupport)) {
             //if host component is a domain name
@@ -6136,8 +6136,8 @@ function parse(uriString) {
 }
 
 function _recomposeAuthority(components, options) {
-    var protocol = options.iri !== false ? IRI_PROTOCOL : URI_PROTOCOL;
-    var uriTokens = [];
+    let protocol = options.iri !== false ? IRI_PROTOCOL : URI_PROTOCOL;
+    let uriTokens = [];
     if (components.userinfo !== undefined) {
         uriTokens.push(components.userinfo);
         uriTokens.push("@");
@@ -6155,12 +6155,12 @@ function _recomposeAuthority(components, options) {
     return uriTokens.length ? uriTokens.join("") : undefined;
 }
 
-var RDS1 = /^\.\.?\//;
-var RDS2 = /^\/\.(\/|$)/;
-var RDS3 = /^\/\.\.(\/|$)/;
-var RDS5 = /^\/?(?:.|\n)*?(?=\/|$)/;
+let RDS1 = /^\.\.?\//;
+let RDS2 = /^\/\.(\/|$)/;
+let RDS3 = /^\/\.\.(\/|$)/;
+let RDS5 = /^\/?(?:.|\n)*?(?=\/|$)/;
 function removeDotSegments(input) {
-    var output = [];
+    let output = [];
     while (input.length) {
         if (input.match(RDS1)) {
             input = input.replace(RDS1, "");
@@ -6172,9 +6172,9 @@ function removeDotSegments(input) {
         } else if (input === "." || input === "..") {
             input = "";
         } else {
-            var im = input.match(RDS5);
+            let im = input.match(RDS5);
             if (im) {
-                var s = im[0];
+                let s = im[0];
                 input = input.slice(s.length);
                 output.push(s);
             } else {
@@ -6186,12 +6186,12 @@ function removeDotSegments(input) {
 }
 
 function serialize(components) {
-    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+    let options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
-    var protocol = options.iri ? IRI_PROTOCOL : URI_PROTOCOL;
-    var uriTokens = [];
+    let protocol = options.iri ? IRI_PROTOCOL : URI_PROTOCOL;
+    let uriTokens = [];
     //find scheme handler
-    var schemeHandler = SCHEMES[(options.scheme || components.scheme || "").toLowerCase()];
+    let schemeHandler = SCHEMES[(options.scheme || components.scheme || "").toLowerCase()];
     //perform scheme specific serialization
     if (schemeHandler && schemeHandler.serialize) schemeHandler.serialize(components, options);
     if (components.host) {
@@ -6215,7 +6215,7 @@ function serialize(components) {
         uriTokens.push(components.scheme);
         uriTokens.push(":");
     }
-    var authority = _recomposeAuthority(components, options);
+    let authority = _recomposeAuthority(components, options);
     if (authority !== undefined) {
         if (options.reference !== "suffix") {
             uriTokens.push("//");
@@ -6226,7 +6226,7 @@ function serialize(components) {
         }
     }
     if (components.path !== undefined) {
-        var s = components.path;
+        let s = components.path;
         if (!options.absolutePath && (!schemeHandler || !schemeHandler.absolutePath)) {
             s = removeDotSegments(s);
         }
@@ -6247,10 +6247,10 @@ function serialize(components) {
 }
 
 function resolveComponents(base, relative) {
-    var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
-    var skipNormalization = arguments[3];
+    let options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+    let skipNormalization = arguments[3];
 
-    var target = {};
+    let target = {};
     if (!skipNormalization) {
         base = parse(serialize(base, options), options); //normalize base components
         relative = parse(serialize(relative, options), options); //normalize relative components
@@ -6307,7 +6307,7 @@ function resolveComponents(base, relative) {
 }
 
 function resolve(baseURI, relativeURI, options) {
-    var schemelessOptions = assign({ scheme: 'null' }, options);
+    let schemelessOptions = assign({ scheme: 'null' }, options);
     return serialize(resolveComponents(parse(baseURI, schemelessOptions), parse(relativeURI, schemelessOptions), schemelessOptions, true), schemelessOptions);
 }
 
@@ -6342,7 +6342,7 @@ function unescapeComponent(str, options) {
     return str && str.toString().replace(!options || !options.iri ? URI_PROTOCOL.PCT_ENCODED : IRI_PROTOCOL.PCT_ENCODED, pctDecChars);
 }
 
-var handler = {
+let handler = {
     scheme: "http",
     domainHost: true,
     parse: function parse(components, options) {
@@ -6368,19 +6368,19 @@ var handler = {
     }
 };
 
-var handler$1 = {
+let handler$1 = {
     scheme: "https",
     domainHost: handler.domainHost,
     parse: handler.parse,
     serialize: handler.serialize
 };
 
-var O = {};
-var isIRI = true;
+let O = {};
+let isIRI = true;
 //RFC 3986
-var UNRESERVED$$ = "[A-Za-z0-9\\-\\.\\_\\~" + (isIRI ? "\\xA0-\\u200D\\u2010-\\u2029\\u202F-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFEF" : "") + "]";
-var HEXDIG$$ = "[0-9A-Fa-f]"; //case-insensitive
-var PCT_ENCODED$ = subexp(subexp("%[EFef]" + HEXDIG$$ + "%" + HEXDIG$$ + HEXDIG$$ + "%" + HEXDIG$$ + HEXDIG$$) + "|" + subexp("%[89A-Fa-f]" + HEXDIG$$ + "%" + HEXDIG$$ + HEXDIG$$) + "|" + subexp("%" + HEXDIG$$ + HEXDIG$$)); //expanded
+let UNRESERVED$$ = "[A-Za-z0-9\\-\\.\\_\\~" + (isIRI ? "\\xA0-\\u200D\\u2010-\\u2029\\u202F-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFEF" : "") + "]";
+let HEXDIG$$ = "[0-9A-Fa-f]"; //case-insensitive
+let PCT_ENCODED$ = subexp(subexp("%[EFef]" + HEXDIG$$ + "%" + HEXDIG$$ + HEXDIG$$ + "%" + HEXDIG$$ + HEXDIG$$) + "|" + subexp("%[89A-Fa-f]" + HEXDIG$$ + "%" + HEXDIG$$ + HEXDIG$$) + "|" + subexp("%" + HEXDIG$$ + HEXDIG$$)); //expanded
 //RFC 5322, except these symbols as per RFC 6068: @ : / ? # [ ] & ; =
 //const ATEXT$$ = "[A-Za-z0-9\\!\\#\\$\\%\\&\\'\\*\\+\\-\\/\\=\\?\\^\\_\\`\\{\\|\\}\\~]";
 //const WSP$$ = "[\\x20\\x09]";
@@ -6392,35 +6392,35 @@ var PCT_ENCODED$ = subexp(subexp("%[EFef]" + HEXDIG$$ + "%" + HEXDIG$$ + HEXDIG$
 //const FWS$ = subexp(subexp(WSP$$ + "*" + "\\x0D\\x0A") + "?" + WSP$$ + "+");
 //const QUOTED_PAIR$ = subexp(subexp("\\\\" + subexp(VCHAR$$ + "|" + WSP$$)) + "|" + OBS_QP$);
 //const QUOTED_STRING$ = subexp('\\"' + subexp(FWS$ + "?" + QCONTENT$) + "*" + FWS$ + "?" + '\\"');
-var ATEXT$$ = "[A-Za-z0-9\\!\\$\\%\\'\\*\\+\\-\\^\\_\\`\\{\\|\\}\\~]";
-var QTEXT$$ = "[\\!\\$\\%\\'\\(\\)\\*\\+\\,\\-\\.0-9\\<\\>A-Z\\x5E-\\x7E]";
-var VCHAR$$ = merge(QTEXT$$, "[\\\"\\\\]");
-var SOME_DELIMS$$ = "[\\!\\$\\'\\(\\)\\*\\+\\,\\;\\:\\@]";
-var UNRESERVED = new RegExp(UNRESERVED$$, "g");
-var PCT_ENCODED = new RegExp(PCT_ENCODED$, "g");
-var NOT_LOCAL_PART = new RegExp(merge("[^]", ATEXT$$, "[\\.]", '[\\"]', VCHAR$$), "g");
-var NOT_HFNAME = new RegExp(merge("[^]", UNRESERVED$$, SOME_DELIMS$$), "g");
-var NOT_HFVALUE = NOT_HFNAME;
+let ATEXT$$ = "[A-Za-z0-9\\!\\$\\%\\'\\*\\+\\-\\^\\_\\`\\{\\|\\}\\~]";
+let QTEXT$$ = "[\\!\\$\\%\\'\\(\\)\\*\\+\\,\\-\\.0-9\\<\\>A-Z\\x5E-\\x7E]";
+let VCHAR$$ = merge(QTEXT$$, "[\\\"\\\\]");
+let SOME_DELIMS$$ = "[\\!\\$\\'\\(\\)\\*\\+\\,\\;\\:\\@]";
+let UNRESERVED = new RegExp(UNRESERVED$$, "g");
+let PCT_ENCODED = new RegExp(PCT_ENCODED$, "g");
+let NOT_LOCAL_PART = new RegExp(merge("[^]", ATEXT$$, "[\\.]", '[\\"]', VCHAR$$), "g");
+let NOT_HFNAME = new RegExp(merge("[^]", UNRESERVED$$, SOME_DELIMS$$), "g");
+let NOT_HFVALUE = NOT_HFNAME;
 function decodeUnreserved(str) {
-    var decStr = pctDecChars(str);
+    let decStr = pctDecChars(str);
     return !decStr.match(UNRESERVED) ? str : decStr;
 }
-var handler$2 = {
+let handler$2 = {
     scheme: "mailto",
     parse: function parse$$1(components, options) {
-        var mailtoComponents = components;
-        var to = mailtoComponents.to = mailtoComponents.path ? mailtoComponents.path.split(",") : [];
+        let mailtoComponents = components;
+        let to = mailtoComponents.to = mailtoComponents.path ? mailtoComponents.path.split(",") : [];
         mailtoComponents.path = undefined;
         if (mailtoComponents.query) {
-            var unknownHeaders = false;
-            var headers = {};
-            var hfields = mailtoComponents.query.split("&");
-            for (var x = 0, xl = hfields.length; x < xl; ++x) {
-                var hfield = hfields[x].split("=");
+            let unknownHeaders = false;
+            let headers = {};
+            let hfields = mailtoComponents.query.split("&");
+            for (let x = 0, xl = hfields.length; x < xl; ++x) {
+                let hfield = hfields[x].split("=");
                 switch (hfield[0]) {
                     case "to":
-                        var toAddrs = hfield[1].split(",");
-                        for (var _x = 0, _xl = toAddrs.length; _x < _xl; ++_x) {
+                        let toAddrs = hfield[1].split(",");
+                        for (let _x = 0, _xl = toAddrs.length; _x < _xl; ++_x) {
                             to.push(toAddrs[_x]);
                         }
                         break;
@@ -6439,8 +6439,8 @@ var handler$2 = {
             if (unknownHeaders) mailtoComponents.headers = headers;
         }
         mailtoComponents.query = undefined;
-        for (var _x2 = 0, _xl2 = to.length; _x2 < _xl2; ++_x2) {
-            var addr = to[_x2].split("@");
+        for (let _x2 = 0, _xl2 = to.length; _x2 < _xl2; ++_x2) {
+            let addr = to[_x2].split("@");
             addr[0] = unescapeComponent(addr[0]);
             if (!options.unicodeSupport) {
                 //convert Unicode IDN -> ASCII IDN
@@ -6457,14 +6457,14 @@ var handler$2 = {
         return mailtoComponents;
     },
     serialize: function serialize$$1(mailtoComponents, options) {
-        var components = mailtoComponents;
-        var to = toArray(mailtoComponents.to);
+        let components = mailtoComponents;
+        let to = toArray(mailtoComponents.to);
         if (to) {
-            for (var x = 0, xl = to.length; x < xl; ++x) {
-                var toAddr = String(to[x]);
-                var atIdx = toAddr.lastIndexOf("@");
-                var localPart = toAddr.slice(0, atIdx).replace(PCT_ENCODED, decodeUnreserved).replace(PCT_ENCODED, toUpperCase).replace(NOT_LOCAL_PART, pctEncChar);
-                var domain = toAddr.slice(atIdx + 1);
+            for (let x = 0, xl = to.length; x < xl; ++x) {
+                let toAddr = String(to[x]);
+                let atIdx = toAddr.lastIndexOf("@");
+                let localPart = toAddr.slice(0, atIdx).replace(PCT_ENCODED, decodeUnreserved).replace(PCT_ENCODED, toUpperCase).replace(NOT_LOCAL_PART, pctEncChar);
+                let domain = toAddr.slice(atIdx + 1);
                 //convert IDN via punycode
                 try {
                     domain = !options.iri ? punycode.toASCII(unescapeComponent(domain, options).toLowerCase()) : punycode.toUnicode(domain);
@@ -6475,11 +6475,11 @@ var handler$2 = {
             }
             components.path = to.join(",");
         }
-        var headers = mailtoComponents.headers = mailtoComponents.headers || {};
+        let headers = mailtoComponents.headers = mailtoComponents.headers || {};
         if (mailtoComponents.subject) headers["subject"] = mailtoComponents.subject;
         if (mailtoComponents.body) headers["body"] = mailtoComponents.body;
-        var fields = [];
-        for (var name in headers) {
+        let fields = [];
+        for (let name in headers) {
             if (headers[name] !== O[name]) {
                 fields.push(name.replace(PCT_ENCODED, decodeUnreserved).replace(PCT_ENCODED, toUpperCase).replace(NOT_HFNAME, pctEncChar) + "=" + headers[name].replace(PCT_ENCODED, decodeUnreserved).replace(PCT_ENCODED, toUpperCase).replace(NOT_HFVALUE, pctEncChar));
             }
@@ -6491,19 +6491,19 @@ var handler$2 = {
     }
 };
 
-var URN_PARSE = /^([^\:]+)\:(.*)/;
+let URN_PARSE = /^([^\:]+)\:(.*)/;
 //RFC 2141
-var handler$3 = {
+let handler$3 = {
     scheme: "urn",
     parse: function parse$$1(components, options) {
-        var matches = components.path && components.path.match(URN_PARSE);
-        var urnComponents = components;
+        let matches = components.path && components.path.match(URN_PARSE);
+        let urnComponents = components;
         if (matches) {
-            var scheme = options.scheme || urnComponents.scheme || "urn";
-            var nid = matches[1].toLowerCase();
-            var nss = matches[2];
-            var urnScheme = scheme + ":" + (options.nid || nid);
-            var schemeHandler = SCHEMES[urnScheme];
+            let scheme = options.scheme || urnComponents.scheme || "urn";
+            let nid = matches[1].toLowerCase();
+            let nss = matches[2];
+            let urnScheme = scheme + ":" + (options.nid || nid);
+            let schemeHandler = SCHEMES[urnScheme];
             urnComponents.nid = nid;
             urnComponents.nss = nss;
             urnComponents.path = undefined;
@@ -6516,26 +6516,26 @@ var handler$3 = {
         return urnComponents;
     },
     serialize: function serialize$$1(urnComponents, options) {
-        var scheme = options.scheme || urnComponents.scheme || "urn";
-        var nid = urnComponents.nid;
-        var urnScheme = scheme + ":" + (options.nid || nid);
-        var schemeHandler = SCHEMES[urnScheme];
+        let scheme = options.scheme || urnComponents.scheme || "urn";
+        let nid = urnComponents.nid;
+        let urnScheme = scheme + ":" + (options.nid || nid);
+        let schemeHandler = SCHEMES[urnScheme];
         if (schemeHandler) {
             urnComponents = schemeHandler.serialize(urnComponents, options);
         }
-        var uriComponents = urnComponents;
-        var nss = urnComponents.nss;
+        let uriComponents = urnComponents;
+        let nss = urnComponents.nss;
         uriComponents.path = (nid || options.nid) + ":" + nss;
         return uriComponents;
     }
 };
 
-var UUID = /^[0-9A-Fa-f]{8}(?:\-[0-9A-Fa-f]{4}){3}\-[0-9A-Fa-f]{12}$/;
+let UUID = /^[0-9A-Fa-f]{8}(?:\-[0-9A-Fa-f]{4}){3}\-[0-9A-Fa-f]{12}$/;
 //RFC 4122
-var handler$4 = {
+let handler$4 = {
     scheme: "urn:uuid",
     parse: function parse(urnComponents, options) {
-        var uuidComponents = urnComponents;
+        let uuidComponents = urnComponents;
         uuidComponents.uuid = uuidComponents.nss;
         uuidComponents.nss = undefined;
         if (!options.tolerant && (!uuidComponents.uuid || !uuidComponents.uuid.match(UUID))) {
@@ -6544,7 +6544,7 @@ var handler$4 = {
         return uuidComponents;
     },
     serialize: function serialize(uuidComponents, options) {
-        var urnComponents = uuidComponents;
+        let urnComponents = uuidComponents;
         //normalize UUID
         urnComponents.nss = (uuidComponents.uuid || "").toLowerCase();
         return urnComponents;
@@ -6578,7 +6578,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 },{}],"ajv":[function(require,module,exports){
 'use strict';
 
-var compileSchema = require('./compile')
+let compileSchema = require('./compile')
   , resolve = require('./compile/resolve')
   , Cache = require('./cache')
   , SchemaObject = require('./compile/schema_obj')
@@ -6604,20 +6604,20 @@ Ajv.prototype._addSchema = _addSchema;
 Ajv.prototype._compile = _compile;
 
 Ajv.prototype.compileAsync = require('./compile/async');
-var customKeyword = require('./keyword');
+let customKeyword = require('./keyword');
 Ajv.prototype.addKeyword = customKeyword.add;
 Ajv.prototype.getKeyword = customKeyword.get;
 Ajv.prototype.removeKeyword = customKeyword.remove;
 
-var errorClasses = require('./compile/error_classes');
+let errorClasses = require('./compile/error_classes');
 Ajv.ValidationError = errorClasses.Validation;
 Ajv.MissingRefError = errorClasses.MissingRef;
 Ajv.$dataMetaSchema = $dataMetaSchema;
 
-var META_SCHEMA_ID = 'http://json-schema.org/draft-07/schema';
+let META_SCHEMA_ID = 'http://json-schema.org/draft-07/schema';
 
-var META_IGNORE_OPTIONS = [ 'removeAdditional', 'useDefaults', 'coerceTypes' ];
-var META_SUPPORT_DATA = ['/properties'];
+let META_IGNORE_OPTIONS = [ 'removeAdditional', 'useDefaults', 'coerceTypes' ];
+let META_SUPPORT_DATA = ['/properties'];
 
 /**
  * Creates validator instance.
@@ -6663,16 +6663,16 @@ function Ajv(opts) {
  * @return {Boolean} validation result. Errors from the last validation will be available in `ajv.errors` (and also in compiled schema: `schema.errors`).
  */
 function validate(schemaKeyRef, data) {
-  var v;
+  let v;
   if (typeof schemaKeyRef == 'string') {
     v = this.getSchema(schemaKeyRef);
     if (!v) throw new Error('no schema with key or ref "' + schemaKeyRef + '"');
   } else {
-    var schemaObj = this._addSchema(schemaKeyRef);
+    let schemaObj = this._addSchema(schemaKeyRef);
     v = schemaObj.validate || this._compile(schemaObj);
   }
 
-  var valid = v(data);
+  let valid = v(data);
   if (v.$async !== true) this.errors = v.errors;
   return valid;
 }
@@ -6686,7 +6686,7 @@ function validate(schemaKeyRef, data) {
  * @return {Function} validating function
  */
 function compile(schema, _meta) {
-  var schemaObj = this._addSchema(schema, undefined, _meta);
+  let schemaObj = this._addSchema(schema, undefined, _meta);
   return schemaObj.validate || this._compile(schemaObj);
 }
 
@@ -6702,10 +6702,10 @@ function compile(schema, _meta) {
  */
 function addSchema(schema, key, _skipValidation, _meta) {
   if (Array.isArray(schema)){
-    for (var i=0; i<schema.length; i++) this.addSchema(schema[i], undefined, _skipValidation, _meta);
+    for (let i=0; i<schema.length; i++) this.addSchema(schema[i], undefined, _skipValidation, _meta);
     return this;
   }
-  var id = this._getId(schema);
+  let id = this._getId(schema);
   if (id !== undefined && typeof id != 'string')
     throw new Error('schema id must be string');
   key = resolve.normalizeId(key || id);
@@ -6738,7 +6738,7 @@ function addMetaSchema(schema, key, skipValidation) {
  * @return {Boolean} true if schema is valid
  */
 function validateSchema(schema, throwOrLogError) {
-  var $schema = schema.$schema;
+  let $schema = schema.$schema;
   if ($schema !== undefined && typeof $schema != 'string')
     throw new Error('$schema must be a string');
   $schema = $schema || this._opts.defaultMeta || defaultMeta(this);
@@ -6747,9 +6747,9 @@ function validateSchema(schema, throwOrLogError) {
     this.errors = null;
     return true;
   }
-  var valid = this.validate($schema, schema);
+  let valid = this.validate($schema, schema);
   if (!valid && throwOrLogError) {
-    var message = 'schema is invalid: ' + this.errorsText();
+    let message = 'schema is invalid: ' + this.errorsText();
     if (this._opts.validateSchema == 'log') this.logger.error(message);
     else throw new Error(message);
   }
@@ -6758,7 +6758,7 @@ function validateSchema(schema, throwOrLogError) {
 
 
 function defaultMeta(self) {
-  var meta = self._opts.meta;
+  let meta = self._opts.meta;
   self._opts.defaultMeta = typeof meta == 'object'
                             ? self._getId(meta) || meta
                             : self.getSchema(META_SCHEMA_ID)
@@ -6775,7 +6775,7 @@ function defaultMeta(self) {
  * @return {Function} schema validating function (with property `schema`).
  */
 function getSchema(keyRef) {
-  var schemaObj = _getSchemaObj(this, keyRef);
+  let schemaObj = _getSchemaObj(this, keyRef);
   switch (typeof schemaObj) {
     case 'object': return schemaObj.validate || this._compile(schemaObj);
     case 'string': return this.getSchema(schemaObj);
@@ -6785,12 +6785,12 @@ function getSchema(keyRef) {
 
 
 function _getSchemaFragment(self, ref) {
-  var res = resolve.schema.call(self, { schema: {} }, ref);
+  let res = resolve.schema.call(self, { schema: {} }, ref);
   if (res) {
-    var schema = res.schema
+    let schema = res.schema
       , root = res.root
       , baseId = res.baseId;
-    var v = compileSchema.call(self, schema, root, undefined, baseId);
+    let v = compileSchema.call(self, schema, root, undefined, baseId);
     self._fragments[ref] = new SchemaObject({
       ref: ref,
       fragment: true,
@@ -6832,16 +6832,16 @@ function removeSchema(schemaKeyRef) {
       this._cache.clear();
       return this;
     case 'string':
-      var schemaObj = _getSchemaObj(this, schemaKeyRef);
+      let schemaObj = _getSchemaObj(this, schemaKeyRef);
       if (schemaObj) this._cache.del(schemaObj.cacheKey);
       delete this._schemas[schemaKeyRef];
       delete this._refs[schemaKeyRef];
       return this;
     case 'object':
-      var serialize = this._opts.serialize;
-      var cacheKey = serialize ? serialize(schemaKeyRef) : schemaKeyRef;
+      let serialize = this._opts.serialize;
+      let cacheKey = serialize ? serialize(schemaKeyRef) : schemaKeyRef;
       this._cache.del(cacheKey);
-      var id = this._getId(schemaKeyRef);
+      let id = this._getId(schemaKeyRef);
       if (id) {
         id = resolve.normalizeId(id);
         delete this._schemas[id];
@@ -6853,8 +6853,8 @@ function removeSchema(schemaKeyRef) {
 
 
 function _removeAllSchemas(self, schemas, regex) {
-  for (var keyRef in schemas) {
-    var schemaObj = schemas[keyRef];
+  for (let keyRef in schemas) {
+    let schemaObj = schemas[keyRef];
     if (!schemaObj.meta && (!regex || regex.test(keyRef))) {
       self._cache.del(schemaObj.cacheKey);
       delete schemas[keyRef];
@@ -6867,24 +6867,24 @@ function _removeAllSchemas(self, schemas, regex) {
 function _addSchema(schema, skipValidation, meta, shouldAddSchema) {
   if (typeof schema != 'object' && typeof schema != 'boolean')
     throw new Error('schema should be object or boolean');
-  var serialize = this._opts.serialize;
-  var cacheKey = serialize ? serialize(schema) : schema;
-  var cached = this._cache.get(cacheKey);
+  let serialize = this._opts.serialize;
+  let cacheKey = serialize ? serialize(schema) : schema;
+  let cached = this._cache.get(cacheKey);
   if (cached) return cached;
 
   shouldAddSchema = shouldAddSchema || this._opts.addUsedSchema !== false;
 
-  var id = resolve.normalizeId(this._getId(schema));
+  let id = resolve.normalizeId(this._getId(schema));
   if (id && shouldAddSchema) checkUnique(this, id);
 
-  var willValidate = this._opts.validateSchema !== false && !skipValidation;
-  var recursiveMeta;
+  let willValidate = this._opts.validateSchema !== false && !skipValidation;
+  let recursiveMeta;
   if (willValidate && !(recursiveMeta = id && id == resolve.normalizeId(schema.$schema)))
     this.validateSchema(schema, true);
 
-  var localRefs = resolve.ids.call(this, schema);
+  let localRefs = resolve.ids.call(this, schema);
 
-  var schemaObj = new SchemaObject({
+  let schemaObj = new SchemaObject({
     id: id,
     schema: schema,
     localRefs: localRefs,
@@ -6914,13 +6914,13 @@ function _compile(schemaObj, root) {
   }
   schemaObj.compiling = true;
 
-  var currentOpts;
+  let currentOpts;
   if (schemaObj.meta) {
     currentOpts = this._opts;
     this._opts = this._metaOpts;
   }
 
-  var v;
+  let v;
   try { v = compileSchema.call(this, schemaObj.schema, root, schemaObj.localRefs); }
   catch(e) {
     delete schemaObj.validate;
@@ -6941,8 +6941,8 @@ function _compile(schemaObj, root) {
   /* @this   {*} - custom context, see passContext option */
   function callValidate() {
     /* jshint validthis: true */
-    var _validate = schemaObj.validate;
-    var result = _validate.apply(this, arguments);
+    let _validate = schemaObj.validate;
+    let result = _validate.apply(this, arguments);
     callValidate.errors = _validate.errors;
     return result;
   }
@@ -6981,20 +6981,20 @@ function _get$IdOrId(schema) {
  * Convert array of error message objects to string
  * @this   Ajv
  * @param  {Array<Object>} errors optional array of validation errors, if not passed errors from the instance are used.
- * @param  {Object} options optional options with properties `separator` and `dataVar`.
+ * @param  {Object} options optional options with properties `separator` and `datalet`.
  * @return {String} human readable string with all errors descriptions
  */
 function errorsText(errors, options) {
   errors = errors || this.errors;
   if (!errors) return 'No errors';
   options = options || {};
-  var separator = options.separator === undefined ? ', ' : options.separator;
-  var dataVar = options.dataVar === undefined ? 'data' : options.dataVar;
+  let separator = options.separator === undefined ? ', ' : options.separator;
+  let datalet = options.datalet === undefined ? 'data' : options.datalet;
 
-  var text = '';
-  for (var i=0; i<errors.length; i++) {
-    var e = errors[i];
-    if (e) text += dataVar + e.dataPath + ' ' + e.message + separator;
+  let text = '';
+  for (let i=0; i<errors.length; i++) {
+    let e = errors[i];
+    if (e) text += datalet + e.dataPath + ' ' + e.message + separator;
   }
   return text.slice(0, -separator.length);
 }
@@ -7015,13 +7015,13 @@ function addFormat(name, format) {
 
 
 function addDefaultMetaSchema(self) {
-  var $dataSchema;
+  let $dataSchema;
   if (self._opts.$data) {
     $dataSchema = require('./refs/data.json');
     self.addMetaSchema($dataSchema, $dataSchema.$id, true);
   }
   if (self._opts.meta === false) return;
-  var metaSchema = require('./refs/json-schema-draft-07.json');
+  let metaSchema = require('./refs/json-schema-draft-07.json');
   if (self._opts.$data) metaSchema = $dataMetaSchema(metaSchema, META_SUPPORT_DATA);
   self.addMetaSchema(metaSchema, META_SCHEMA_ID, true);
   self._refs['http://json-schema.org/schema'] = META_SCHEMA_ID;
@@ -7029,16 +7029,16 @@ function addDefaultMetaSchema(self) {
 
 
 function addInitialSchemas(self) {
-  var optsSchemas = self._opts.schemas;
+  let optsSchemas = self._opts.schemas;
   if (!optsSchemas) return;
   if (Array.isArray(optsSchemas)) self.addSchema(optsSchemas);
-  else for (var key in optsSchemas) self.addSchema(optsSchemas[key], key);
+  else for (let key in optsSchemas) self.addSchema(optsSchemas[key], key);
 }
 
 
 function addInitialFormats(self) {
-  for (var name in self._opts.formats) {
-    var format = self._opts.formats[name];
+  for (let name in self._opts.formats) {
+    let format = self._opts.formats[name];
     self.addFormat(name, format);
   }
 }
@@ -7051,15 +7051,15 @@ function checkUnique(self, id) {
 
 
 function getMetaSchemaOptions(self) {
-  var metaOpts = util.copy(self._opts);
-  for (var i=0; i<META_IGNORE_OPTIONS.length; i++)
+  let metaOpts = util.copy(self._opts);
+  for (let i=0; i<META_IGNORE_OPTIONS.length; i++)
     delete metaOpts[META_IGNORE_OPTIONS[i]];
   return metaOpts;
 }
 
 
 function setLogger(self) {
-  var logger = self._opts.logger;
+  let logger = self._opts.logger;
   if (logger === false) {
     self.logger = {log: noop, warn: noop, error: noop};
   } else {

@@ -114,9 +114,9 @@ function multSelectorAction(size) {
   }
 }
 
-var active1 = false;
-var active2 = false;
-var isLock = true;
+let active1 = false;
+let active2 = false;
+let isLock = true;
 function synchornicView1(data) {
   if (active2) return;
   active1 = true;
@@ -282,7 +282,7 @@ function draw(e) {
       return;
     }
     toolsOff();
-    var checkAllToolsOff = setInterval(
+    let checkAllToolsOff = setInterval(
         function() {
           if ($CAMIC && $CAMIC.status == null) {
           // all tool has turn off
@@ -443,7 +443,7 @@ function toggleMeasurement(data) {
     }
     // turn off annotation
     toolsOff();
-    var checkAllToolsOff = setInterval(function() {
+    let checkAllToolsOff = setInterval(function() {
       if ($CAMIC && $CAMIC.status == null) {
         // all tool has turn off
         clearInterval(checkAllToolsOff);
@@ -504,7 +504,7 @@ function toggleMagnifier(data) {
     }
     // annotation off
     toolsOff();
-    var checkAllToolsOff = setInterval(
+    let checkAllToolsOff = setInterval(
         function() {
           if ($CAMIC && $CAMIC.status == null) {
           // all tool has turn off
@@ -549,10 +549,10 @@ function magnifierOff() {
 
 // image download
 function imageDownload() {
-  var downloadURL = '../../loader/getSlide/';
-  var store = new Store('../../data/');
-  var id=$D.params.slideId;
-  var fileName = '';
+  let downloadURL = '../../loader/getSlide/';
+  let store = new Store('../../data/');
+  let id=$D.params.slideId;
+  let fileName = '';
   store
       .getSlide(id)
       .then((response) => {
@@ -582,8 +582,8 @@ function imageDownload() {
               }
             })
             .then((blob) => {
-              var url = window.URL.createObjectURL(blob);
-              var a = document.createElement('a');
+              let url = window.URL.createObjectURL(blob);
+              let a = document.createElement('a');
               a.href = url;
               a.download = fileName;
               document.body.appendChild(a);
@@ -848,7 +848,7 @@ function annoCallback(data) {
   // Add new lines to notes to prevent overflow
 
   let str = noteData.notes || '';
-  var resultString = '';
+  let resultString = '';
   while (typeof str==='string' && str.length > 0) {
     resultString += str.substring(0, 36) + '\n';
     str = str.substring(36);
@@ -1286,9 +1286,9 @@ function loadAnnotationById(camic, layerData, parentType, callback) {
         // for support quip 2.0 data model
         if (data[0].geometry) {
         // twist them
-          var image = camic.viewer.world.getItemAt(0);
-          var imgWidth = image.source.dimensions.x;
-          var imgHeight = image.source.dimensions.y;
+          let image = camic.viewer.world.getItemAt(0);
+          let imgWidth = image.source.dimensions.x;
+          let imgHeight = image.source.dimensions.y;
           item.data = data.map((d) => {
             d.geometry.coordinates[0] = d.geometry.coordinates[0].map((point) => {
               return [
@@ -1624,20 +1624,20 @@ function imgboxHeatmap() {
   let slide = $D.params.id;
   slide = decodeURIComponent(slide);
   // create file input
-  var element = document.createElement('input');
+  let element = document.createElement('input');
   element.setAttribute('type', 'file');
   element.style.display = 'none';
   document.body.appendChild(element);
 
   element.onchange = function(event) {
-    var input = event.target;
-    var reader = new FileReader();
+    let input = event.target;
+    let reader = new FileReader();
     reader.onload = function() {
-      var text = reader.result;
+      let text = reader.result;
       try {
         const data = JSON.parse(text);
 
-        var valid = $VALIDATION.heatmap(data);
+        let valid = $VALIDATION.heatmap(data);
         if (!valid) {
           alert($VALIDATION.heatmap.errors);
           return;
@@ -1776,7 +1776,7 @@ function drawLabel(e) {
     // turn off annotation
     toolsOff();
 
-    var checkAllToolsOff = setInterval(
+    let checkAllToolsOff = setInterval(
         function() {
           if ($CAMIC && $CAMIC.status == null) {
           // all tool has turn off
@@ -2259,7 +2259,7 @@ async function rootCallback({root, parent, parentName, items}) {
 
   parent = parent=='other'?null:parent;
   // human other
-  var data;
+  let data;
   // const ids = items.filter(d => d.item.id);
   const ids = items.reduce(function(rs, d) {
     if (!d.item.data) rs.push(d.item.id);
@@ -2297,9 +2297,9 @@ async function rootCallback({root, parent, parentName, items}) {
         data.forEach((d)=>{
           // for support quip 2.0 data model
           if (d.geometry) {
-            var image = camic.viewer.world.getItemAt(0);
-            var imgWidth = image.source.dimensions.x;
-            var imgHeight = image.source.dimensions.y;
+            let image = camic.viewer.world.getItemAt(0);
+            let imgWidth = image.source.dimensions.x;
+            let imgHeight = image.source.dimensions.y;
 
             // convert coordinates
             d.geometry.coordinates[0] = d.geometry.coordinates[0].map((point) => {
@@ -2417,30 +2417,30 @@ function enhance(e) {
   const canvas = $CAMIC.viewer.canvas.firstChild;
   const context = canvas.getContext('2d');
   let width = canvas.width; let height = canvas.height;
-  var img = context.getImageData(0, 0, width, height);
-  var data = img.data;
+  let img = context.getImageData(0, 0, width, height);
+  let data = img.data;
 
   if (e.status == 'Histogram Eq') {
     context.putImageData(clahe(img, 64, 0.015), 0, 0);
   } else if (e.status == 'Edge') {
     context.putImageData(edgedetect_sobel(img, 80), 0, 0);
   } else if (e.status == 'Sharpen') {
-    var filter = [[-1, -1, -1], [-1, 14, -1], [-1, -1, -1]];
+    let filter = [[-1, -1, -1], [-1, 14, -1], [-1, -1, -1]];
     context.putImageData(applyfilter(img, filter), 0, 0);
   } else if (e.status == 'Custom') {
-    var input = prompt('Enter the 2D Kernel: Eg : [[1, 0], [0, 1]]'); var f=0;
+    let input = prompt('Enter the 2D Kernel: Eg : [[1, 0], [0, 1]]'); let f=0;
     // JSON Parse test
     try {
-      var filter = JSON.parse(input); var sz = filter[0].length;
+      let filter = JSON.parse(input); let sz = filter[0].length;
     } catch (e) {
       alert('Invalid Kernel : ' + input);
       return;
     }
     // 2D array check
-    for (var r=0; r<filter.length; r++) {
+    for (let r=0; r<filter.length; r++) {
       if (!Array.isArray(filter[r]) || filter[r].length!=sz || sz==0) f=1;
       else {
-        for (var c = 0; c<filter[r].length; c++) {
+        for (let c = 0; c<filter[r].length; c++) {
           if (Array.isArray(filter[r][c]))f=1;
         }
       }
@@ -2453,7 +2453,7 @@ function enhance(e) {
     context.putImageData(applyfilter(img, filter), 0, 0);
   }
 }
-var setEnhance = false;
+let setEnhance = false;
 function unenhance() {
   setEnhance = false;
   $CAMIC.viewer.removeHandler('zoom', unenhance);
@@ -2474,7 +2474,7 @@ async function captureSlide() {
 function downloadSlideCapture(combiningCanvas) {
   const imageData = combiningCanvas.toDataURL('image/jpeg');
   const downloadLink = document.createElement('a');
-  var imgFileName = prompt('Enter filename', 'slideCaptureShot');
+  let imgFileName = prompt('Enter filename', 'slideCaptureShot');
   if (imgFileName == null) {
     ;
   } else {

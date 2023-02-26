@@ -1,21 +1,21 @@
-var userSignupUrl = "../../data/User/post";
-var protoTokenUrl = "../../auth/Token/proto";
-var permissions;
+let userSignupUrl = "../../data/User/post";
+let protoTokenUrl = "../../auth/Token/proto";
+let permissions;
 const store = new Store('../../data/');
 
 function addUser(){
-  var email = document.getElementById("mail").value
-  var filters = document.getElementById("filters").value
-  // var attr = document.querySelector('input[name="attr"]:checked').value
-  var attrEle = document.getElementById("attr");
-  var attr = attrEle.options[attrEle.selectedIndex].value;
+  let email = document.getElementById("mail").value
+  let filters = document.getElementById("filters").value
+  // let attr = document.querySelector('input[name="attr"]:checked').value
+  let attrEle = document.getElementById("attr");
+  let attr = attrEle.options[attrEle.selectedIndex].value;
 
   if (!(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(email))) {
     window.alert("Please enter a valid email");
     return;
   }
 
-  var userType = "Null"
+  let userType = "Null"
   if (attr == "3"){
     userType = "Admin"
   }
@@ -46,7 +46,7 @@ function addUser(){
   })
   .then((x) => {
     if (x) {
-      var doc = {email: email, userType: userType, userFilter:filters}
+      let doc = {email: email, userType: userType, userFilter:filters}
       fetch(userSignupUrl, {
           method: 'POST',
           mode: 'cors', // no-cors, cors, *same-origin
@@ -69,7 +69,7 @@ function addUser(){
       });
     } else {
       if (permissions.user && permissions.user.post == true) {
-        var doc = {email: email, userType: userType, userFilter:filters}
+        let doc = {email: email, userType: userType, userFilter:filters}
         fetch(userSignupUrl, {
             method: 'POST',
             mode: 'cors', // no-cors, cors, *same-origin

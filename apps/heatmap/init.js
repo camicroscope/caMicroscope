@@ -17,7 +17,7 @@ const $D = {
 
 // initialize viewer page
 function initialize() {
-  var checkPackageIsReady = setInterval(function() {
+  let checkPackageIsReady = setInterval(function() {
     if (IsPackageLoading) {
       clearInterval(checkPackageIsReady);
       // init UI -- some of them need to wait data loader to load data
@@ -107,7 +107,7 @@ function initCore() {
     Loading.open(document.body, `Loading Data ...`);
     // load the heatmap data
 
-    var checkImagingHelperIsReady = setInterval(function() {
+    let checkImagingHelperIsReady = setInterval(function() {
       if ($CAMIC.viewer.imagingHelper &&
         $CAMIC.viewer.imagingHelper._haveImage &&
         $D.heatMapData &&
@@ -375,7 +375,7 @@ function initUIcomponents() {
   $UI.settingsSideMenu.addContent(title);
 
 
-  var checkIsReady = setInterval(function() {
+  let checkIsReady = setInterval(function() {
     if ($CAMIC &&
       $CAMIC.viewer &&
       $CAMIC.viewer.imagingHelper &&

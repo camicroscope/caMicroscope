@@ -8,9 +8,9 @@ function init_LocalStore(){
   Object.byString = function(o, s) {
       s = s.replace(/\[(\w+)\]/g, '.$1'); // convert indexes to properties
       s = s.replace(/^\./, '');           // strip a leading dot
-      var a = s.split('.');
-      for (var i = 0, n = a.length; i < n; ++i) {
-          var k = a[i];
+      let a = s.split('.');
+      for (let i = 0, n = a.length; i < n; ++i) {
+          let k = a[i];
           if (k in o) {
               o = o[k];
           } else {
@@ -23,11 +23,11 @@ function init_LocalStore(){
   function findInIDB(type, query){
     return new Promise((res,rej)=>{
       Store.prototype.db.then(x=>{
-        var data = x.transaction(type).objectStore(type, 'readonly').getAll()
+        let data = x.transaction(type).objectStore(type, 'readonly').getAll()
         data.then(data=>{
           res(data.filter(x=>{
             let matching = true;
-            for (var i in query){
+            for (let i in query){
               matching = matching && Object.byString(x, i) == query[i]
             }
             return matching
@@ -41,7 +41,7 @@ function init_LocalStore(){
   function putInIDB(type, newData){
     Store.prototype.db.then(x=>{
           let tx = x.transaction(type, 'readwrite')
-          var store = tx.objectStore(type)
+          let store = tx.objectStore(type)
           store.add(newData)
     })
     return newData
@@ -50,7 +50,7 @@ function init_LocalStore(){
     console.warn("Some issues with Deleting a Single Heatmap in LocalStore")
     Store.prototype.db.then(x=>{
           let tx = x.transaction(type, 'readwrite')
-          var store = tx.objectStore(type)
+          let store = tx.objectStore(type)
           store.delete(id)
     })
     return ""
@@ -58,7 +58,7 @@ function init_LocalStore(){
   function clearDBFromIDB(type){
     Store.prototype.db.then(x=>{
           let tx = x.transaction(type, 'readwrite')
-          var store = tx.objectStore(type)
+          let store = tx.objectStore(type)
           store.clear(type)
     })
     return ""
@@ -69,7 +69,7 @@ function init_LocalStore(){
     if (data){
       return data.filter(x=>{
         let matching = true;
-        for (var i in query){
+        for (let i in query){
           matching = matching && Object.byString(x, i) == query[i]
         }
         return matching
@@ -104,7 +104,7 @@ function init_LocalStore(){
     data = data || []
     let newData = data.filter(x=>x['_id']['$oid'] !== id)
     window.localStorage.setItem(type, JSON.stringify(newData))
-    var diff = data.length - newData.length
+    let diff = data.length - newData.length
     return {'deletedCount': diff , 'rowsAffected': diff}
   }
 
@@ -153,7 +153,7 @@ function init_LocalStore(){
   Store.prototype.getMarkByIds = function(ids, slide, source, footprint, x0, x1, y0, y1){
     return new Promise(function(res, rej){
       let data = []
-      for (var i in ids){
+      for (let i in ids){
         data.push(...findInLocalStorage('mark', {'provenance.analysis.execution_id': ids[i], 'provenance.image.slide': slide}))
       }
       res(data)
@@ -295,15 +295,15 @@ function init_LocalStore(){
       if (data) {
         text = JSON.stringify(data.filter(x => {
           let matching = true;
-          for (var i in query) {
+          for (let i in query) {
             matching = matching && Object.byString(x, i) == query[i]
           }
           return matching
         }))
       }
-      var element = document.createElement('a');
-      var blob = new Blob([text], {type: "application/json"});
-      var uri = URL.createObjectURL(blob);
+      let element = document.createElement('a');
+      let blob = new Blob([text], {type: "application/json"});
+      let uri = URL.createObjectURL(blob);
       element.setAttribute('href', uri);
       element.setAttribute('download', "markups.json");
       element.style.display = 'none';
@@ -316,15 +316,15 @@ function init_LocalStore(){
     // open a file selector
     let slide = $D.params.id
     slide = decodeURIComponent(slide)
-    var element = document.createElement('input');
+    let element = document.createElement('input');
     document.body.appendChild(element);
     element.setAttribute('type', "file")
     element.style.display = 'position: fixed; top: -100em';
     element.onchange = function(event) {
-      var input = event.target;
-      var reader = new FileReader();
+      let input = event.target;
+      let reader = new FileReader();
       reader.onload = function() {
-        var text = reader.result;
+        let text = reader.result;
         try {
           let data = JSON.parse(text)
           console.log(data)
@@ -357,14 +357,14 @@ function init_LocalStore(){
     document.body.removeChild(element);
   }
   Store.prototype.updateHeatmapFields = function(slide, name, fields, setting){
-    var query = {}
+    let query = {}
     if(name){
       query['provenance.analysis.execution_id']= name
     }
     console.log(setting, fields)
     return new Promise(function(res, rej){
       findInIDB('heatmap', query).then(x=>{
-        var hm = x[0]
+        let hm = x[0]
         removeFromIDB('heatmap', hm['_id']).then(y=>{
           hm.data = data
           res(putInIDB('heatmap', hm))
@@ -385,13 +385,13 @@ function init_LocalStore(){
   }
 
   Store.prototype.updateHeatmapEdit = function(user, slide, name, data){
-    var query = {}
+    let query = {}
     if(name){
       query['provenance.analysis.execution_id']= name
     }
     return new Promise(function(res, rej){
       findInIDB('heatmapEdit', query).then(x=>{
-        var hm = x[0]
+        let hm = x[0]
         removeFromIDB('heatmapEdit', hm['id']).then(y=>{
           hm.data = data
           res(putInIDB('heatmapEdit', hm))
@@ -401,7 +401,7 @@ function init_LocalStore(){
   }
 
   Store.prototype.deleteHeatmapEdit = function(user,slide,name){
-    var query = {}
+    let query = {}
     query.user = user
     if(name){
       query['provenance.analysis.execution_id']= name

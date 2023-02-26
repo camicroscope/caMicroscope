@@ -1,10 +1,10 @@
-var uploadUrl = '../loader/upload/start/';
-var checkUrl = '../loader/data/one/';
-var thumbUrl = '../loader/data/thumbnail/';
-var deleteSlideUrl = '../loader/slide/delete';
-var downloadURL = '../loader/getSlide/';
+let uploadUrl = '../loader/upload/start/';
+let checkUrl = '../loader/data/one/';
+let thumbUrl = '../loader/data/thumbnail/';
+let deleteSlideUrl = '../loader/slide/delete';
+let downloadURL = '../loader/getSlide/';
 
-var store = new Store('../data/');
+let store = new Store('../data/');
 
 function changeStatus(step, text, reset=true) {
   // Reset the status bar
@@ -12,15 +12,15 @@ function changeStatus(step, text, reset=true) {
   document.getElementById('load_status').innerHTML='';
   // Display JSON as table:
   if (typeof text === 'object') { // If the text arg is a JSON
-    var col = []; // List of column headers
-    for (var key in text) {
+    let col = []; // List of column headers
+    for (let key in text) {
       if (col.indexOf(key) === -1) {
         col.push(key);
       }
     }
 
-    var table;
-    var responsiveContainer;
+    let table;
+    let responsiveContainer;
     if (reset) {
       responsiveContainer = document.createElement('div');
       responsiveContainer.classList = 'table-responsive';
@@ -29,9 +29,9 @@ function changeStatus(step, text, reset=true) {
       table.classList = 'table';
 
       // Add table headers:
-      var tr = table.insertRow(-1);
-      for (var i = 0; i < col.length; i++) {
-        var th = document.createElement('th');
+      let tr = table.insertRow(-1);
+      for (let i = 0; i < col.length; i++) {
+        let th = document.createElement('th');
         th.innerHTML = col[i];
         tr.appendChild(th);
       }
@@ -41,15 +41,15 @@ function changeStatus(step, text, reset=true) {
 
     if (step == 'POST' && !reset) {
       tr = table.rows[table.rows.length-1];
-      for (var j = 0; j < col.length; j++) {
-        var tabCell = tr.cells[tr.cells.length-1];
+      for (let j = 0; j < col.length; j++) {
+        let tabCell = tr.cells[tr.cells.length-1];
         tabCell.innerHTML = Number(Number(tabCell.innerHTML) + 1);
       }
     } else {
       // Add JSON data to the table as rows:
       tr = table.insertRow(-1);
-      for (var j = 0; j < col.length; j++) {
-        var tabCell = tr.insertCell(-1);
+      for (let j = 0; j < col.length; j++) {
+        let tabCell = tr.insertCell(-1);
         if (text[col[j]] && text[col[j]].length>65&&step == 'CHECK') {
           tabCell.innerHTML= `${text[col[j]].substr(0, 65)}<span class="collapse" id="more-${j}">
              ${text[col[j]].substr(65)}    </span>
@@ -64,7 +64,7 @@ function changeStatus(step, text, reset=true) {
         fetch(thumbUrl + text[col[col.length - 1]], {credentials: 'same-origin'}).then(
             (response) => response.json(), // if the response is a JSON object
         ).then((x)=>{
-          var tabCell = tr.cells[tr.cells.length-1];
+          let tabCell = tr.cells[tr.cells.length-1];
           tabCell.innerHTML = '';
           const img = new Image();
           img.src = x.slide;
@@ -85,7 +85,7 @@ function changeStatus(step, text, reset=true) {
       }
     }
 
-    var divContainer = document.getElementById('json_table');
+    let divContainer = document.getElementById('json_table');
     divContainer.innerHTML = '';
     responsiveContainer.appendChild(table);
     divContainer.appendChild(responsiveContainer);
@@ -99,7 +99,7 @@ function changeStatus(step, text, reset=true) {
 }
 
 function handleUpload(file, filename) {
-  var data = new FormData();
+  let data = new FormData();
   data.append('file', file);
   data.append('filename', filename);
   changeStatus('UPLOAD', 'Begun upload');
@@ -117,7 +117,7 @@ function handleUpload(file, filename) {
 }
 
 function handleDownload(id) {
-  var fileName='';
+  let fileName='';
   store.getSlide(id)
       .then((response) => {
         if (response[0]) {
@@ -141,8 +141,8 @@ function handleDownload(id) {
           }
         })
             .then((blob) => {
-              var url = window.URL.createObjectURL(blob);
-              var a = document.createElement('a');
+              let url = window.URL.createObjectURL(blob);
+              let a = document.createElement('a');
               a.href = url;
               a.download = fileName;
               document.body.appendChild(a);
@@ -230,25 +230,25 @@ function handlePost(filename, slidename, filter, reset) {
 // register events for file upload
 function UploadBtn() {
   const fileInput = document.getElementById('fileinput');
-  var filename = document.getElementById('filename').value;
+  let filename = document.getElementById('filename').value;
   handleUpload(fileInput.files[0], filename);
 }
 
 function CheckBtn() {
-  var filename = document.getElementById('filename'+0).value;
+  let filename = document.getElementById('filename'+0).value;
   handleCheck(filename, true, 1);
 }
 
 function PostBtn() {
   document.getElementById('load_status').innerHTML='';
-  var filename = document.getElementById('filename'+0).value;
-  var slidename = document.getElementById('slidename'+0).value;
-  var filter = document.getElementById('filter'+0).value;
+  let filename = document.getElementById('filename'+0).value;
+  let slidename = document.getElementById('slidename'+0).value;
+  let filter = document.getElementById('filter'+0).value;
   handlePost(filename, slidename, filter, true);
 }
 
 function deleteSlideFromSystem(id, filename, reqId=null) {
-  // var data = new FormData();
+  // let data = new FormData();
   // data.append('filename', filename);
   data = {
     'filename': filename,

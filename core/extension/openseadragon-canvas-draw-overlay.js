@@ -228,13 +228,13 @@
      * @return {[type]}         [description]
      */
     drawOnCanvas: function(ctx, drawFuc) {
-      var viewportZoom = this._viewer.viewport.getZoom(true);
-      var zoom = this._viewer.viewport.viewportToImageZoom(viewportZoom);
-      var x =
+      let viewportZoom = this._viewer.viewport.getZoom(true);
+      let zoom = this._viewer.viewport.viewportToImageZoom(viewportZoom);
+      let x =
         ((this._viewportOrigin.x / this.imgWidth - this._viewportOrigin.x) /
           this._viewportWidth) *
         this._containerWidth;
-      var y =
+      let y =
         ((this._viewportOrigin.y / this.imgHeight - this._viewportOrigin.y) /
           this._viewportHeight) *
         this._containerHeight;
@@ -282,20 +282,20 @@
         this._display_.setAttribute('height', this._containerHeight);
       }
       this._viewportOrigin = new $.Point(0, 0);
-      var boundsRect = this._viewer.viewport.getBounds(true);
+      let boundsRect = this._viewer.viewport.getBounds(true);
       this._viewportOrigin.x = boundsRect.x;
       this._viewportOrigin.y = boundsRect.y * this.imgAspectRatio;
 
       this._viewportWidth = boundsRect.width;
       this._viewportHeight = boundsRect.height * this.imgAspectRatio;
 
-      var image1 = this._viewer.world.getItemAt(0);
+      let image1 = this._viewer.world.getItemAt(0);
 
       this.imgWidth = image1.source.dimensions.x;
       this.imgHeight = image1.source.dimensions.y;
       this.imgAspectRatio = this.imgWidth / this.imgHeight;
 
-      // var iamgeBounds = this._viewer.viewport.viewportToImageRectangle(boundsRect);
+      // let iamgeBounds = this._viewer.viewport.viewportToImageRectangle(boundsRect);
       const imagingHelper = this._viewer.imagingHelper;
       this.style.lineWidth =
         (imagingHelper.physicalToDataX(2) - imagingHelper.physicalToDataX(0)) >>
@@ -314,15 +314,15 @@
      * _updateCanvas transform and scale the canvas bases on the movement of the view
      */
     _updateCanvas: function() {
-      var viewportZoom = this._viewer.viewport.getZoom(true);
-      var image1 = this._viewer.world.getItemAt(0);
-      var zoom = image1.viewportToImageZoom(viewportZoom);
+      let viewportZoom = this._viewer.viewport.getZoom(true);
+      let image1 = this._viewer.world.getItemAt(0);
+      let zoom = image1.viewportToImageZoom(viewportZoom);
 
-      var x =
+      let x =
         ((this._viewportOrigin.x / this.imgWidth - this._viewportOrigin.x) /
           this._viewportWidth) *
         this._containerWidth;
-      var y =
+      let y =
         ((this._viewportOrigin.y / this.imgHeight - this._viewportOrigin.y) /
           this._viewportHeight) *
         this._containerHeight;
@@ -460,11 +460,11 @@
       // start moving
       if (this.moveOn) {
         this._init_hash_data();
-        var pt = this._close_anno(img_point, ~~this.scaleWindowtoImage(5));
+        let pt = this._close_anno(img_point, ~~this.scaleWindowtoImage(5));
         this._moveset = [this._hash_data[mtool.hash(pt, this.imgWidth*10)], pt];
         if (this._moveset[0] != undefined) {
           this.isMoving = true;
-          var st = this._moveset[0][0], ind = this._moveset[0][1];
+          let st = this._moveset[0][0], ind = this._moveset[0][1];
           // throw the moving stroke to current path
           this._current_path_ = this._draws_data_[st];
           this._current_path_.geometry.coordinates[0] = mtool.populate(this._current_path_.geometry.coordinates[0], ~~this.scaleWindowtoImage(5), ~~this.scaleWindowtoImage(1), 150);
@@ -697,8 +697,8 @@
             break;
         }
       } else if (this.isMoving) {
-        var ind = this._moveset[0][1];
-        var disp = this._current_path_.geometry.coordinates[0]; var mx = Math.min(disp.length, 500);
+        let ind = this._moveset[0][1];
+        let disp = this._current_path_.geometry.coordinates[0]; let mx = Math.min(disp.length, 500);
         disp = mtool.gaussianInterpolate(disp, ind, img_point, 40*mx/500, mx/disp.length);
         this._current_path_.geometry.coordinates[0] = disp.slice();
         disp.push(disp[0]);
@@ -750,7 +750,7 @@
         type: 'FeatureCollection',
         features: [],
       };
-      // for (var i = 0; i < this._path_index; i++) {
+      // for (let i = 0; i < this._path_index; i++) {
       //     const featrue = this._draws_data_[i].feature;
       rs.features = this._draws_data_.slice(0, this._path_index);
       // }
@@ -1057,7 +1057,7 @@
      * Function to destroy the instance of CanvasDraw and clean up everything created by CanvasDraw.
      *
      * Example:
-     * var draw = CanvasDraw({
+     * let draw = CanvasDraw({
      *   [...]
      * });
      *
@@ -1082,8 +1082,8 @@
         return points;
       }
       this._align_data = points.slice();
-      var dist = new Array();
-      var ol = points;
+      let dist = new Array();
+      let ol = points;
       for (i = 0; i < ol.length; i++) {
         dist.push(new OpenSeadragon.Point(ol[i][0], ol[i][1]));
         dist[i] = this._viewer.viewport.imageToWindowCoordinates(dist[i]);
@@ -1104,7 +1104,7 @@
       if (spen.mode == 0) {
         return pix;
       }
-      var pt = pix;
+      let pt = pix;
       pt = this._viewer.viewport.imageToWindowCoordinates(pt);
       pt.x = Math.floor(pt.x * this.align_fx);
       pt.y = Math.floor(pt.y * this.align_fy);
@@ -1120,8 +1120,8 @@
     },
     __align_undo() {
       if (this._path_index > 0 && this._align_data.length) {
-        var tm = spen.mode; spen.mode = 3;
-        var type = this._draws_data_[--this._path_index].geometry.type;
+        let tm = spen.mode; spen.mode = 3;
+        let type = this._draws_data_[--this._path_index].geometry.type;
         this._draws_data_ = this._draws_data_.slice(0, this._path_index);
         this._redraw(this._align_data,type);
         this.refresh_data();
@@ -1134,10 +1134,10 @@
      */
     _init_hash_data() {
       this._hash_data = new Map();
-      for (var i = 0; i < this._path_index; i++) {
-      	var cur = this._draws_data_[i].geometry.coordinates[0];
+      for (let i = 0; i < this._path_index; i++) {
+      	let cur = this._draws_data_[i].geometry.coordinates[0];
         cur = mtool.populate(cur, ~~this.scaleWindowtoImage(5), ~~this.scaleWindowtoImage(1), 150);
-      	for (var j = 0; j < cur.length; j++) {
+      	for (let j = 0; j < cur.length; j++) {
       		this._hash_data[mtool.hash({
       			x: cur[j][0],
       			y: cur[j][1],
@@ -1146,12 +1146,12 @@
       }
     },
     _close_anno(pt, cl = 50) {
-      var d = 100000; d*=d, opt = pt;
-      for (var i = -cl; i < cl; i++)
-        for (var j = -cl; j < cl; j++) {
-          var nt = {x: pt.x + i, y: pt.y + j};
+      let d = 100000; d*=d, opt = pt;
+      for (let i = -cl; i < cl; i++)
+        for (let j = -cl; j < cl; j++) {
+          let nt = {x: pt.x + i, y: pt.y + j};
           if (this._hash_data[mtool.hash(nt, this.imgWidth*10)] != undefined) {
-            var dd = mtool.distance(pt, nt);
+            let dd = mtool.distance(pt, nt);
             if (d > dd) {
               d = dd; opt = nt;
             }
@@ -1161,7 +1161,7 @@
     },
     // function to convert array of points to array of pair or vice-versa
     _convert_arr(arr, topoint = true) {
-      var dist = [];
+      let dist = [];
       if (topoint) {
       	arr.forEach((e) => dist.push(new OpenSeadragon.Point(e[0], e[1])));
       } else {
@@ -1171,7 +1171,7 @@
     },
     // convert float arr to integer
     _convert_integer(arr) {
-      var dist = [];
+      let dist = [];
       arr.forEach((e) => dist.push([~~e[0], ~~e[1]]));
       return dist;
     },
@@ -1182,7 +1182,7 @@
       return dx;
     },
     _redraw(data, type){
-      var t = this.drawMode
+      let t = this.drawMode
       this.drawMode = type;
       this.__newFeature(data[0]);
       this._current_path_.geometry.coordinates[0] = data;

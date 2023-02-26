@@ -43,9 +43,9 @@
         this.base = 40;
         this.zoomIndex;
         this._viewer = options.viewer;
-        var viewer = this._viewer;
-        var    viewerSize;
-        var   navigatorSize;
+        let viewer = this._viewer;
+        let    viewerSize;
+        let   navigatorSize;
 
         //We may need to create a new element and id if they did not
         //provide the id for the existing element
@@ -223,7 +223,7 @@
      * Function to destroy the instance of CaZoomControl and clean up everything created by CaZoomControl.
      *
      * Example:
-     * var zoomctrl = CaZoomControl({
+     * let zoomctrl = CaZoomControl({
      *   [...]
      * });
      *

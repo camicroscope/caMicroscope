@@ -13,7 +13,7 @@ const $D = {
 };
 // initialize viewer page
 function initialize() {
-  var checkPackageIsReady = setInterval(function() {
+  let checkPackageIsReady = setInterval(function() {
     if (IsPackageLoading) {
       clearInterval(checkPackageIsReady);
       // init UI -- some of them need to wait data loader to load data
@@ -170,7 +170,7 @@ function downloadLabel() {
   // let text =`{"slideId":"${$D.params.data['_id']['$oid']}",
   // "name":"${$D.params.data['name']}",
   // "patches":${JSON.stringify($CAMIC.viewer.pmanager.exportPatchesAsJSON())}}`;
-  // var element = document.createElement('a');
+  // let element = document.createElement('a');
   // element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
   // element.setAttribute('download', `${$D.params.data['name']}-Patches-${new Date().toISOString()}.json`);
   // element.style.display = 'none';
@@ -213,7 +213,7 @@ function getPatchsZip(data) {
     return true;
   }
 
-  var checkImageIsReady = setInterval(function() {
+  let checkImageIsReady = setInterval(function() {
     if (check(data.patches)) {
       clearInterval(checkImageIsReady);
       $UI.modalbox.body.innerHTML+=`<div style='color:#365f9c;font-size:20px'> Compressing...</div>`;

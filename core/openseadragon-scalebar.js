@@ -280,10 +280,10 @@
          */
     getScalebarLocation: function() {
       if (this.location === $.ScalebarLocation.TOP_LEFT) {
-        var x = 0;
-        var y = 0;
+        let x = 0;
+        let y = 0;
         if (this.stayInsideImage) {
-          var pixel = this.viewer.viewport.pixelFromPoint(
+          let pixel = this.viewer.viewport.pixelFromPoint(
               new $.Point(0, 0), true);
           if (!this.viewer.wrapHorizontal) {
             x = Math.max(pixel.x, 0);
@@ -295,12 +295,12 @@
         return new $.Point(x + this.xOffset, y + this.yOffset);
       }
       if (this.location === $.ScalebarLocation.TOP_RIGHT) {
-        var barWidth = this.divElt.offsetWidth;
-        var container = this.viewer.container;
-        var x = container.offsetWidth - barWidth;
-        var y = 0;
+        let barWidth = this.divElt.offsetWidth;
+        let container = this.viewer.container;
+        let x = container.offsetWidth - barWidth;
+        let y = 0;
         if (this.stayInsideImage) {
-          var pixel = this.viewer.viewport.pixelFromPoint(
+          let pixel = this.viewer.viewport.pixelFromPoint(
               new $.Point(1, 0), true);
           if (!this.viewer.wrapHorizontal) {
             x = Math.min(x, pixel.x - barWidth);
@@ -312,13 +312,13 @@
         return new $.Point(x - this.xOffset, y + this.yOffset);
       }
       if (this.location === $.ScalebarLocation.BOTTOM_RIGHT) {
-        var barWidth = this.divElt.offsetWidth;
-        var barHeight = this.divElt.offsetHeight;
-        var container = this.viewer.container;
-        var x = container.offsetWidth - barWidth;
-        var y = container.offsetHeight - barHeight;
+        let barWidth = this.divElt.offsetWidth;
+        let barHeight = this.divElt.offsetHeight;
+        let container = this.viewer.container;
+        let x = container.offsetWidth - barWidth;
+        let y = container.offsetHeight - barHeight;
         if (this.stayInsideImage) {
-          var pixel = this.viewer.viewport.pixelFromPoint(
+          let pixel = this.viewer.viewport.pixelFromPoint(
               new $.Point(1, 1 / this.viewer.source.aspectRatio),
               true);
           if (!this.viewer.wrapHorizontal) {
@@ -331,12 +331,12 @@
         return new $.Point(x - this.xOffset, y - this.yOffset);
       }
       if (this.location === $.ScalebarLocation.BOTTOM_LEFT) {
-        var barHeight = this.divElt.offsetHeight;
-        var container = this.viewer.container;
-        var x = 0;
-        var y = container.offsetHeight - barHeight;
+        let barHeight = this.divElt.offsetHeight;
+        let container = this.viewer.container;
+        let x = 0;
+        let y = container.offsetHeight - barHeight;
         if (this.stayInsideImage) {
-          var pixel = this.viewer.viewport.pixelFromPoint(
+          let pixel = this.viewer.viewport.pixelFromPoint(
               new $.Point(0, 1 / this.viewer.source.aspectRatio),
               true);
           if (!this.viewer.wrapHorizontal) {

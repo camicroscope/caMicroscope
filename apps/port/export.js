@@ -134,7 +134,7 @@ async function downloadResults() {
   }
   console.log(marks, heatmaps);
   if (marks.length) {
-    var element = document.createElement('a');
+    let element = document.createElement('a');
     element.setAttribute('href', 'data:application/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(marks)));
     element.setAttribute('download', 'camic_export_marks.json');
     element.style.display = 'none';
@@ -143,7 +143,7 @@ async function downloadResults() {
     document.body.removeChild(element);
   }
   if (heatmaps.length) {
-    var element = document.createElement('a');
+    let element = document.createElement('a');
     element.setAttribute('href', 'data:application/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(heatmaps)));
     element.setAttribute('download', 'camic_export_heatmaps.json');
     element.style.display = 'none';

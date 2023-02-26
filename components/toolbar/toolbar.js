@@ -580,7 +580,7 @@ CaToolbar.prototype.__refresh = function() {
     // main tools
 
     const mainTools = this.setting.mainTools;
-    for (var i = 0; i < mainTools.length; i++) {
+    for (let i = 0; i < mainTools.length; i++) {
       const options = mainTools[i];
       options.name = '_mainTools';
       const tool = this.__create(options);
@@ -614,7 +614,7 @@ CaToolbar.prototype.__refresh = function() {
 
   // sub tools
   const subTools = this.setting.subTools;
-  for (var i = 0; i < subTools.length; i++) {
+  for (let i = 0; i < subTools.length; i++) {
     const options = subTools[i];
     const tool = this.__create(options);
     if (!tool) continue;

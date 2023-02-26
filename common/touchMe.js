@@ -1,9 +1,9 @@
 function touchHandler(event) {
   console.info(event.type)
-  var touches = event.touches;
+  let touches = event.touches;
   console.log(touches)
   if (touches.length == 0|| !(touches[0])){
-    var simulatedEvent = document.createEvent("MouseEvent");
+    let simulatedEvent = document.createEvent("MouseEvent");
     simulatedEvent.initMouseEvent("mouseup", true, true, window, 1,
       0, 0,
       0, 0, false,
@@ -12,8 +12,8 @@ function touchHandler(event) {
     event.target.dispatchEvent(simulatedEvent);
   } else {
     for (let i = 0; i < touches.length; i++) {
-      var first = touches[i];
-      var type = "";
+      let first = touches[i];
+      let type = "";
       switch (event.type) {
         case "touchstart":
           type = "mousedown";
@@ -35,7 +35,7 @@ function touchHandler(event) {
       // initMouseEvent(type, canBubble, cancelable, view, clickCount, 
       //                screenX, screenY, clientX, clientY, ctrlKey, 
       //                altKey, shiftKey, metaKey, button, relatedTarget);
-      var simulatedEvent = document.createEvent("MouseEvent");
+      let simulatedEvent = document.createEvent("MouseEvent");
       simulatedEvent.initMouseEvent(type, true, true, window, 1,
         first.screenX, first.screenY,
         first.clientX, first.clientY, false,

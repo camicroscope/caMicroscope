@@ -11,8 +11,8 @@ function sanitize(string) {
   const reg = /[&<>"'/]/ig;
   return string.replace(reg, (match) => (map[match]));
 }
-var existingSlideNames = [];
-var permissions;
+let existingSlideNames = [];
+let permissions;
 const allowedExtensions = ['svs', 'tif', 'tiff', 'vms', 'vmu', 'ndpi', 'scn', 'mrxs', 'bif', 'svslide', 'jpg', 'png'];
 function validateForm(callback) {
   let slide = document.getElementById('slidename0');
@@ -44,7 +44,7 @@ function validateForm(callback) {
   }
   // Checking for extension
   let filename = document.getElementById('filename0').value;
-  var fileExtension = filename.toLowerCase().split('.').reverse()[0];
+  let fileExtension = filename.toLowerCase().split('.').reverse()[0];
   if (!allowedExtensions.includes(fileExtension)) {
     finishUploadSuccess = false;
     $('#check_btn').hide();
@@ -101,13 +101,13 @@ const HeadMapping = [{
   title: 'Review',
   field: 'review',
 }];
-var totaltablepages;
-var selectedpage;
-var allSlides;
+let totaltablepages;
+let selectedpage;
+let allSlides;
 
 if (getUserType() === 'Admin') {
-  var slideDeleteRequests = [];
-  var userCreateRequests = [];
+  let slideDeleteRequests = [];
+  let userCreateRequests = [];
 }
 
 function showTablePage() {
@@ -115,7 +115,7 @@ function showTablePage() {
     $(this).hide();
   });
 
-  var trs = '#datatables tbody tr';
+  let trs = '#datatables tbody tr';
   $(trs).slice($('#entries').val() * selectedpage, $('#entries').val() * (selectedpage + 1)).filter(function() {
     $(this).show();
   });
@@ -209,7 +209,7 @@ function initialize() {
   }
   slideDeleteRequests = [];
   userCreateRequests = [];
-  const params = getUrlVars();
+  const params = getUrllets();
   const store = new Store('../data/');
 
   store.findRequest()
@@ -236,7 +236,7 @@ function initialize() {
         Promise.all(Promises);
 
         // create collection panel
-        var collection;
+        let collection;
         // store.getAllCollection().then(data => {
 
         // })
@@ -253,7 +253,7 @@ function initialize() {
 
               }
               // slide table
-              var data = resps[1];
+              let data = resps[1];
               if (CID) {
                 delete params['cid'];
                 data = data.filter((d) => collection&&collection.slides.includes(d._id['$oid']));
@@ -349,13 +349,13 @@ function initialize() {
             })
             .then(function(data) {
               if (CID == null && data.length == 0) {
-                var dataTable = document.getElementById('datatables');
+                let dataTable = document.getElementById('datatables');
                 dataTable.textContent = `Please Select A Collection`;
                 dataTable.classList = `container text-center p-4`;
                 return;
               }
               if (data.length == 0) {
-                var dataTable = document.getElementById('datatables');
+                let dataTable = document.getElementById('datatables');
                 dataTable.textContent = `No Data Found ... x _ x`;
                 dataTable.classList = `container text-center p-4`;
                 return;
@@ -438,8 +438,8 @@ function initialize() {
               $('#search-table').on('keyup', filterSlides);
 
               $('.sort-btn').on('click', function(e) {
-                var index = e.currentTarget.dataset.index;
-                var order = parseInt(e.currentTarget.dataset.order);
+                let index = e.currentTarget.dataset.index;
+                let order = parseInt(e.currentTarget.dataset.order);
                 const sortedSlideRows = allSlides.sort(function(a, b) {
                   let at = a[index];
                   let bt = b[index];
@@ -558,7 +558,7 @@ $(document).ready(function() {
     initialize();
   });
   $('#input').on('change', function() {
-    var fileName = $(this).val().split('\\').pop();
+    let fileName = $(this).val().split('\\').pop();
     $(this).next('.custom-file-label').html(fileName);
   });
   // Hide notification nav-link
@@ -585,11 +585,11 @@ function checkUserPermissions() {
         }
         if (permissions.slide.update == true) {
           $('#datatables').find('tr').each(function() {
-            var currentId = $('td:nth-child(1)', this).html();
+            let currentId = $('td:nth-child(1)', this).html();
             $('td:nth-child(2)', this).css('cursor', 'default');
             $('td:nth-child(2)', this).unbind('mouseenter mouseleave');
             $('td:nth-child(2)', this).hover(function() {
-              var content = $(this).html();
+              let content = $(this).html();
               $(this).html(content + `<i style='font-size: small; margin-left:1em; cursor: pointer' onclick="changeSlideName('` + content + `', '` + currentId + `')" class="fas fa-pen" data-bs-toggle="modal" data-bs-target="#slideNameChangeModal"></i>`);
             }, function() {
               $(this).find('i').last().remove();
@@ -617,8 +617,8 @@ function changeSlideName(oldname, id) {
   const store = new Store('../data/');
   $('#confirmUpdateSlide').unbind('click');
   $('#confirmUpdateSlide').click(function() {
-    var newSlideName = $('#newSlideName');
-    var newName = newSlideName.val();
+    let newSlideName = $('#newSlideName');
+    let newName = newSlideName.val();
     if (newName != '') {
       if (existingSlideNames.includes(newName)) {
         newSlideName.addClass('is-invalid');
@@ -654,7 +654,7 @@ function pageIndicatorVisible(tableLength) {
 }
 
 function urlUpload() {
-  var url = document.getElementById('urlInput').value;
+  let url = document.getElementById('urlInput').value;
   handleUrlUpload(url);
 }
 function downloadSlide(e) {
@@ -961,7 +961,7 @@ function filterSlides() {
   let filteredSlides;
   if (filters.length > 1 || (filters.length === 1 && filters[0] !== 'Public')) {
     filteredSlides = allSlides.filter(function(slide) {
-      var slideFilters = slide.filterList;
+      let slideFilters = slide.filterList;
       let found = false;
       for (let i = 0; i < selectedFilters.length; i++) {
         if (slideFilters.indexOf(selectedFilters[i]) > -1) {
@@ -978,7 +978,7 @@ function filterSlides() {
     filteredSlides = allSlides;
   }
   const searchedSlides = filteredSlides.filter(function(slide) {
-    var ind = slide.slice(0, 5).reduce(function(a, b) {
+    let ind = slide.slice(0, 5).reduce(function(a, b) {
       return a + ' ' + b;
     }, ' ').toLowerCase().indexOf(value);
     if (ind > -1) {

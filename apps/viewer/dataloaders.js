@@ -25,7 +25,7 @@ function FormTempaltesLoader() {
         });
   }
 
-  var checkCoreIsReady = setInterval(function() {
+  let checkCoreIsReady = setInterval(function() {
     if ($CAMIC) {
       clearInterval(checkCoreIsReady);
       // load data
@@ -97,7 +97,7 @@ function layersLoader() {
       console.error(error);
     });
   }
-  var checkCoreIsReady = setInterval(function() {
+  let checkCoreIsReady = setInterval(function() {
     if ($UI.layersViewer && $UI.layersViewerMinor) {
       clearInterval(checkCoreIsReady);
       loadingHumanOverlayers();

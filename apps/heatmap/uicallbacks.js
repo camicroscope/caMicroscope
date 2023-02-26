@@ -91,8 +91,8 @@ function coordinatedViewZoom(data) {
 function coordinatedViewPan(data) {
   $minorCAMIC.viewer.viewport.panTo($CAMIC.viewer.viewport.getCenter());
 }
-var active1 = false;
-var active2 = false;
+let active1 = false;
+let active2 = false;
 function synchornicView1(data) {
   if (!$minorCAMIC || !$CAMIC) return;
   if (active2) {
@@ -411,7 +411,7 @@ async function onExportEditData() {
   // if (data) {
   // text = JSON.stringify(data.filter(x => {
   //   let matching = true;
-  //   for (var i in query) {
+  //   for (let i in query) {
   //     matching = matching && Object.byString(x, i) == query[i]
   //   }
   //   return matching

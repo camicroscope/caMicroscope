@@ -1,16 +1,16 @@
 // polyfill for Array.flat()
 if (!Array.prototype.flat) {
   Array.prototype.flat = function() {
-    var depth = arguments[0];
+    let depth = arguments[0];
     depth = depth === undefined ? 1 : Math.floor(depth);
     if (depth < 1) return Array.prototype.slice.call(this);
     return (function flat(arr, depth) {
-      var len = arr.length >>> 0;
-      var flattened = [];
-      var i = 0;
+      let len = arr.length >>> 0;
+      let flattened = [];
+      let i = 0;
       while (i < len) {
         if (i in arr) {
-          var el = arr[i];
+          let el = arr[i];
           if (Array.isArray(el) && depth > 0) {
             flattened = flattened.concat(flat(el, depth - 1));
           } else flattened.push(el);
@@ -43,7 +43,7 @@ const AnalyticsPanelContent = // 'test<br>test<br>test<br>test<br>test<br>test<b
   '</div>';
 const __ = {};
 function loadScript(src, callback) {
-  var script = document.createElement('script');
+  let script = document.createElement('script');
   script.src = src;
   script.type = 'text/javascript';
   script.async = true;
@@ -68,8 +68,8 @@ function loadScript(src, callback) {
 }
 // the robust solution that mimics jQuery's functionality
 function extend() {
-  for (var i = 1; i < arguments.length; i++) {
-    for (var key in arguments[i]) {
+  for (let i = 1; i < arguments.length; i++) {
+    for (let key in arguments[i]) {
       if (arguments[i].hasOwnProperty(key)) {
         arguments[0][key] = arguments[i][key];
       }
@@ -98,15 +98,15 @@ function randomId() {
 }
 
 function Debounce(func, wait = 16, immediate = true) {
-  var timeout;
+  let timeout;
   return function() {
-    var context = this;
-    var args = arguments;
-    var later = function() {
+    let context = this;
+    let args = arguments;
+    let later = function() {
       timeout = null;
       if (!immediate) func.apply(context, args);
     };
-    var callNow = immediate && !timeout;
+    let callNow = immediate && !timeout;
     clearTimeout(timeout);
     timeout = setTimeout(later, wait);
     if (callNow) func.apply(context, args);
@@ -114,7 +114,7 @@ function Debounce(func, wait = 16, immediate = true) {
 }
 
 function hexToRgbA(hex, opacity = 1) {
-  var c;
+  let c;
   if (/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)) {
     c = hex.substring(1).split('');
     if (c.length == 3) {
@@ -178,8 +178,8 @@ function polygonArea(points) {
 }
 
 function titleCase(str) {
-  var splitStr = str.toLowerCase().split(' ');
-  for (var i = 0; i < splitStr.length; i++) {
+  let splitStr = str.toLowerCase().split(' ');
+  for (let i = 0; i < splitStr.length; i++) {
     // You do not need to check if i is larger than splitStr length, as your for does that for you
     // Assign it back to the array
     splitStr[i] =
@@ -204,7 +204,7 @@ function titleCase(str) {
 // r = l2[1][0];
 // s = l2[1][1];
 function isTwoLinesIntersect(l1, l2) {
-  var det; var gamma; var lambda;
+  let det; let gamma; let lambda;
   det =
     (l1[1][0] - l1[0][0]) * (l2[1][1] - l2[0][1]) -
     (l2[1][0] - l2[0][0]) * (l1[1][1] - l1[0][1]);
@@ -244,7 +244,7 @@ function isSelfIntersect(points) {
 }
 
 function hexToRgb(hex) {
-  var c;
+  let c;
   if (/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)) {
     c = hex.substring(1).split('');
     if (c.length == 3) {
@@ -278,8 +278,8 @@ function interpolateColor(color1, color2, factor) {
   if (arguments.length < 3) {
     factor = 0.5;
   }
-  var result = color1.slice();
-  for (var i = 0; i < 3; i++) {
+  let result = color1.slice();
+  for (let i = 0; i < 3; i++) {
     result[i] = Math.round(result[i] + factor * (color2[i] - color1[i]));
   }
   return result;
@@ -293,13 +293,13 @@ function interpolateColor(color1, color2, factor) {
  * @return {Array}        the gradient colors
  */
 function interpolateColors(color1, color2, steps) {
-  var stepFactor = 1 / (steps - 1);
-  var interpolatedColorArray = [];
+  let stepFactor = 1 / (steps - 1);
+  let interpolatedColorArray = [];
 
   color1 = color1.match(/\d+/g).map(Number);
   color2 = color2.match(/\d+/g).map(Number);
 
-  for (var i = 0; i < steps; i++) {
+  for (let i = 0; i < steps; i++) {
     const rgbArray = interpolateColor(color1, color2, stepFactor * i);
     interpolatedColorArray.push(
         `rgb(${rgbArray[0]},${rgbArray[1]},${rgbArray[2]})`,
@@ -328,7 +328,7 @@ function interpolateNums(num1, num2, steps = 3) {
 }
 
 function clickInsideElement(e, className) {
-  var el = e.srcElement || e.target || e.eventSource.canvas;
+  let el = e.srcElement || e.target || e.eventSource.canvas;
 
   if (el.classList.contains(className)) {
     return el;
@@ -344,8 +344,8 @@ function clickInsideElement(e, className) {
 }
 
 function getUrlVars() {
-  var vars = {};
-  var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(
+  let vars = {};
+  let parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(
       m,
       key,
       value,
@@ -360,7 +360,7 @@ function ImageFeaturesToVieweportFeatures(viewer, geometries) {
     type: 'FeatureCollection',
     features: [],
   };
-  var image = viewer.world.getItemAt(0);
+  let image = viewer.world.getItemAt(0);
   this.imgWidth = image.source.dimensions.x;
   this.imgHeight = image.source.dimensions.y;
   for (let i = 0; i < geometries.features.length; i++) {
@@ -371,7 +371,7 @@ function ImageFeaturesToVieweportFeatures(viewer, geometries) {
 }
 
 function VieweportFeaturesToImageFeatures(viewer, geometries) {
-  var image = viewer.world.getItemAt(0);
+  let image = viewer.world.getItemAt(0);
   this.imgWidth = image.source.dimensions.x;
   this.imgHeight = image.source.dimensions.y;
 
@@ -414,7 +414,7 @@ function VieweportFeaturesToImageFeatures(viewer, geometries) {
 }
 
 function VieweportFeaturesToImageFeaturesOLDMODEL(viewer, geometry) {
-  var image = viewer.world.getItemAt(0);
+  let image = viewer.world.getItemAt(0);
   this.imgWidth = image.source.dimensions.x;
   this.imgHeight = image.source.dimensions.y;
 
@@ -547,7 +547,7 @@ function eventFire(el, etype) {
   if (el.fireEvent) {
     el.fireEvent('on' + etype);
   } else {
-    var evObj = document.createEvent('Events');
+    let evObj = document.createEvent('Events');
     evObj.initEvent(etype, true, false);
     el.dispatchEvent(evObj);
   }
@@ -603,8 +603,8 @@ function parseJwt(token) {
   if (!token) {
     return {name: 'None'};
   } else {
-    var base64Url = token.split('.')[1];
-    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    let base64Url = token.split('.')[1];
+    let base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
     return JSON.parse(window.atob(base64));
   }
 }
@@ -614,7 +614,7 @@ function parseJwt(token) {
  * @return {Boolean} true if the browser is IE/Edge
  */
 function detectIE() {
-  var ua = window.navigator.userAgent;
+  let ua = window.navigator.userAgent;
   // Test values; Uncomment to check result …
 
   // IE 10
@@ -629,20 +629,20 @@ function detectIE() {
   // Edge 13
   // ua = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2486.0 Safari/537.36 Edge/13.10586';
 
-  var msie = ua.indexOf('MSIE ');
+  let msie = ua.indexOf('MSIE ');
   if (msie > 0) {
     // IE 10 or older => return version number
     return parseInt(ua.substring(msie + 5, ua.indexOf('.', msie)), 10);
   }
 
-  var trident = ua.indexOf('Trident/');
+  let trident = ua.indexOf('Trident/');
   if (trident > 0) {
     // IE 11 => return version number
-    var rv = ua.indexOf('rv:');
+    let rv = ua.indexOf('rv:');
     return parseInt(ua.substring(rv + 3, ua.indexOf('.', rv)), 10);
   }
 
-  var edge = ua.indexOf('Edge/');
+  let edge = ua.indexOf('Edge/');
   if (edge > 0) {
     // Edge (IE 12+) => return version number
     return parseInt(ua.substring(edge + 5, ua.indexOf('.', edge)), 10);
@@ -663,8 +663,8 @@ function createWarningText(text) {
 }
 
 function getCookie(name) {
-  var value = '; ' + document.cookie;
-  var parts = value.split('; ' + name + '=');
+  let value = '; ' + document.cookie;
+  let parts = value.split('; ' + name + '=');
   if (parts.length == 2) {
     return parts
         .pop()
@@ -715,10 +715,10 @@ EventHandle.prototype = {
    * before removing it.
    */
   addOnceHandler: function(eventName, handler, userData, times) {
-    var self = this;
+    let self = this;
     times = times || 1;
-    var count = 0;
-    var onceHandler = function(event) {
+    let count = 0;
+    let onceHandler = function(event) {
       count++;
       if (count === times) {
         self.removeHandler(eventName, onceHandler);
@@ -736,7 +736,7 @@ EventHandle.prototype = {
    * @param {Object} [userData=null] - Arbitrary object to be passed unchanged to the handler.
    */
   addHandler: function(eventName, handler, userData) {
-    var events = this.events[eventName];
+    let events = this.events[eventName];
     if (!events) {
       this.events[eventName] = events = [];
     }
@@ -752,9 +752,9 @@ EventHandle.prototype = {
    * @param {OpenSeadragon.EventHandler} handler - Function to be removed.
    */
   removeHandler: function(eventName, handler) {
-    var events = this.events[eventName];
-    var handlers = [];
-    var i;
+    let events = this.events[eventName];
+    let handlers = [];
+    let i;
     if (!events) {
       return;
     }
@@ -778,7 +778,7 @@ EventHandle.prototype = {
     if (eventName) {
       this.events[eventName] = [];
     } else {
-      for (var eventType in this.events) {
+      for (let eventType in this.events) {
         this.events[eventType] = [];
       }
     }
@@ -790,14 +790,14 @@ EventHandle.prototype = {
    * @param {String} eventName - Name of event to get handlers for.
    */
   getHandler: function(eventName) {
-    var events = this.events[eventName];
+    let events = this.events[eventName];
     if (!events || !events.length) {
       return null;
     }
     events = events.length === 1 ? [events[0]] : Array.apply(null, events);
     return function(source, args) {
-      var i;
-      var length = events.length;
+      let i;
+      let length = events.length;
       for (i = 0; i < length; i++) {
         if (events[i]) {
           args.eventSource = source;
@@ -816,7 +816,7 @@ EventHandle.prototype = {
   raiseEvent: function(eventName, eventArgs) {
     // uncomment if you want to get a log of all events
     // $.console.log( eventName );
-    var handler = this.getHandler(eventName);
+    let handler = this.getHandler(eventName);
 
     if (handler) {
       if (!eventArgs) {

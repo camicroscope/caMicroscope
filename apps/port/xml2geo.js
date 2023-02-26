@@ -1,6 +1,6 @@
 parser = new DOMParser();
 
-var template = {
+let template = {
   'provenance': {
     'image': {
       'slide': 'ID',

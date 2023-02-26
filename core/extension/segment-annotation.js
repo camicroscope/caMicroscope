@@ -45,7 +45,7 @@ class segmentationanno{
            this.camic.viewer, data);
     // Add new lines to notes to prevent overflow
     let str = notes.notes || '';
-    var resultString = '';
+    let resultString = '';
     while (typeof str==='string' && str.length > 0) {
       resultString += str.substring(0, 36) + '\n';
       str = str.substring(36);}

@@ -14,7 +14,7 @@
 // square distance between 2 points
 function getSqDist(p1, p2) {
 
-    var dx = p1[0] - p2[0],
+    let dx = p1[0] - p2[0],
         dy = p1[1] - p2[1];
 
     return dx * dx + dy * dy;
@@ -23,14 +23,14 @@ function getSqDist(p1, p2) {
 // square distance from a point to a segment
 function getSqSegDist(p, p1, p2) {
 
-    var x = p1[0],
+    let x = p1[0],
         y = p1[1],
         dx = p2[0] - x,
         dy = p2[1] - y;
 
     if (dx !== 0 || dy !== 0) {
 
-        var t = ((p[0] - x) * dx + (p[1] - y) * dy) / (dx * dx + dy * dy);
+        let t = ((p[0] - x) * dx + (p[1] - y) * dy) / (dx * dx + dy * dy);
 
         if (t > 1) {
             x = p2[0];
@@ -52,11 +52,11 @@ function getSqSegDist(p, p1, p2) {
 // basic distance-based simplification
 function simplifyRadialDist(points, sqTolerance) {
 
-    var prevPoint = points[0],
+    let prevPoint = points[0],
         newPoints = [prevPoint],
         point;
 
-    for (var i = 1, len = points.length; i < len; i++) {
+    for (let i = 1, len = points.length; i < len; i++) {
         point = points[i];
 
         if (getSqDist(point, prevPoint) > sqTolerance) {
@@ -71,11 +71,11 @@ function simplifyRadialDist(points, sqTolerance) {
 }
 
 function simplifyDPStep(points, first, last, sqTolerance, simplified) {
-    var maxSqDist = sqTolerance,
+    let maxSqDist = sqTolerance,
         index;
 
-    for (var i = first + 1; i < last; i++) {
-        var sqDist = getSqSegDist(points[i], points[first], points[last]);
+    for (let i = first + 1; i < last; i++) {
+        let sqDist = getSqSegDist(points[i], points[first], points[last]);
 
         if (sqDist > maxSqDist) {
             index = i;
@@ -92,9 +92,9 @@ function simplifyDPStep(points, first, last, sqTolerance, simplified) {
 
 // simplification using Ramer-Douglas-Peucker algorithm
 function simplifyDouglasPeucker(points, sqTolerance) {
-    var last = points.length - 1;
+    let last = points.length - 1;
 
-    var simplified = [points[0]];
+    let simplified = [points[0]];
     simplifyDPStep(points, 0, last, sqTolerance, simplified);
     simplified.push(points[last]);
 
@@ -106,7 +106,7 @@ function simplify(points, tolerance = 1, highestQuality = true) {
 
     if (points.length <= 2) return points;
 
-    var sqTolerance = tolerance !== undefined ? tolerance * tolerance : 1;
+    let sqTolerance = tolerance !== undefined ? tolerance * tolerance : 1;
 
     points = highestQuality ? points : simplifyRadialDist(points, sqTolerance);
     points = simplifyDouglasPeucker(points, sqTolerance);

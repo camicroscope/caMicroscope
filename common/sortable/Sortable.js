@@ -26,7 +26,7 @@
         };
     }
 
-    var dragEl,
+    let dragEl,
         parentEl,
         ghostEl,
         cloneEl,
@@ -98,7 +98,7 @@
         _autoScroll = _throttle(function (/**Event*/evt, /**Object*/options, /**HTMLElement*/rootEl) {
             // Bug: https://bugzilla.mozilla.org/show_bug.cgi?id=505521
             if (rootEl && options.scroll) {
-                var _this = rootEl[expando],
+                let _this = rootEl[expando],
                     el,
                     rect,
                     sens = options.scrollSensitivity,
@@ -197,7 +197,7 @@
                     return value;
                 } else {
                     return function (to, from) {
-                        var fromGroup = from.options.group.name;
+                        let fromGroup = from.options.group.name;
 
                         return pull
                             ? value
@@ -209,8 +209,8 @@
                 }
             }
 
-            var group = {};
-            var originalGroup = options.group;
+            let group = {};
+            let originalGroup = options.group;
 
             if (!originalGroup || typeof originalGroup != 'object') {
                 originalGroup = {name: originalGroup};
@@ -258,7 +258,7 @@
         el[expando] = this;
 
         // Default options
-        var defaults = {
+        let defaults = {
             group: null,
             sort: true,
             disabled: false,
@@ -293,14 +293,14 @@
 
 
         // Set default options
-        for (var name in defaults) {
+        for (let name in defaults) {
             !(name in options) && (options[name] = defaults[name]);
         }
 
         _prepareGroup(options);
 
         // Bind all private methods
-        for (var fn in this) {
+        for (let fn in this) {
             if (fn.charAt(0) === '_' && typeof this[fn] === 'function') {
                 this[fn] = this[fn].bind(this);
             }
@@ -330,7 +330,7 @@
         constructor: Sortable,
 
         _onTapStart: function (/** Event|TouchEvent */evt) {
-            var _this = this,
+            let _this = this,
                 el = this.el,
                 options = this.options,
                 preventOnFilter = options.preventOnFilter,
@@ -405,7 +405,7 @@
         },
 
         _prepareDragStart: function (/** Event */evt, /** Touch */touch, /** HTMLElement */target, /** Number */startIndex) {
-            var _this = this,
+            let _this = this,
                 el = _this.el,
                 options = _this.options,
                 ownerDocument = el.ownerDocument,
@@ -483,7 +483,7 @@
         },
 
         _disableDelayedDrag: function () {
-            var ownerDocument = this.el.ownerDocument;
+            let ownerDocument = this.el.ownerDocument;
 
             clearTimeout(this._dragStartTimer);
             _off(ownerDocument, 'mouseup', this._disableDelayedDrag);
@@ -530,7 +530,7 @@
 
         _dragStarted: function () {
             if (rootEl && dragEl) {
-                var options = this.options;
+                let options = this.options;
 
                 // Apply effect
                 _toggleClass(dragEl, options.ghostClass, true);
@@ -558,9 +558,9 @@
                     _css(ghostEl, 'display', 'none');
                 }
 
-                var target = document.elementFromPoint(touchEvt.clientX, touchEvt.clientY);
-                var parent = target;
-                var i = touchDragOverListeners.length;
+                let target = document.elementFromPoint(touchEvt.clientX, touchEvt.clientY);
+                let parent = target;
+                let i = touchDragOverListeners.length;
 
                 while (target && target.shadowRoot) {
                     target = target.shadowRoot.elementFromPoint(touchEvt.clientX, touchEvt.clientY);
@@ -597,7 +597,7 @@
 
         _onTouchMove: function (/**TouchEvent*/evt) {
             if (tapEvt) {
-                var options = this.options,
+                let options = this.options,
                     fallbackTolerance = options.fallbackTolerance,
                     fallbackOffset = options.fallbackOffset,
                     touch = evt.touches ? evt.touches[0] : evt,
@@ -633,7 +633,7 @@
 
         _appendGhost: function () {
             if (!ghostEl) {
-                var rect = dragEl.getBoundingClientRect(),
+                let rect = dragEl.getBoundingClientRect(),
                     css = _css(dragEl),
                     options = this.options,
                     ghostRect;
@@ -663,9 +663,9 @@
         },
 
         _onDragStart: function (/**Event*/evt, /**boolean*/useFallback) {
-            var _this = this;
-            var dataTransfer = evt.dataTransfer;
-            var options = _this.options;
+            let _this = this;
+            let dataTransfer = evt.dataTransfer;
+            let options = _this.options;
 
             _this._offUpEvents();
 
@@ -724,7 +724,7 @@
         },
 
         _onDragOver: function (/**Event*/evt) {
-            var el = this.el,
+            let el = this.el,
                 target,
                 dragRect,
                 targetRect,
@@ -827,7 +827,7 @@
 
                     targetRect = target.getBoundingClientRect();
 
-                    var width = targetRect.right - targetRect.left,
+                    let width = targetRect.right - targetRect.left,
                         height = targetRect.bottom - targetRect.top,
                         floating = R_FLOAT.test(lastCSS.cssFloat + lastCSS.display)
                             || (lastParentCSS.display == 'flex' && lastParentCSS['flex-direction'].indexOf('row') === 0),
@@ -839,7 +839,7 @@
                     ;
 
                     if (floating) {
-                        var elTop = dragEl.offsetTop,
+                        let elTop = dragEl.offsetTop,
                             tgTop = target.offsetTop;
 
                         if (elTop === tgTop) {
@@ -854,7 +854,7 @@
                         after = (nextSibling !== dragEl) && !isLong || halfway && isLong;
                     }
 
-                    var moveVector = _onMove(rootEl, el, dragEl, dragRect, target, targetRect, evt, after);
+                    let moveVector = _onMove(rootEl, el, dragEl, dragRect, target, targetRect, evt, after);
 
                     if (moveVector !== false) {
                         if (moveVector === 1 || moveVector === -1) {
@@ -884,10 +884,10 @@
         },
 
         _animate: function (prevRect, target) {
-            var ms = this.options.animation;
+            let ms = this.options.animation;
 
             if (ms) {
-                var currentRect = target.getBoundingClientRect();
+                let currentRect = target.getBoundingClientRect();
 
                 if (prevRect.nodeType === 1) {
                     prevRect = prevRect.getBoundingClientRect();
@@ -914,7 +914,7 @@
         },
 
         _offUpEvents: function () {
-            var ownerDocument = this.el.ownerDocument;
+            let ownerDocument = this.el.ownerDocument;
 
             _off(document, 'touchmove', this._onTouchMove);
             _off(document, 'pointermove', this._onTouchMove);
@@ -927,7 +927,7 @@
         },
 
         _onDrop: function (/**Event*/evt) {
-            var el = this.el,
+            let el = this.el,
                 options = this.options;
 
             clearInterval(this._loopId);
@@ -1084,7 +1084,7 @@
          * @returns {String[]}
          */
         toArray: function () {
-            var order = [],
+            let order = [],
                 el,
                 children = this.el.children,
                 i = 0,
@@ -1107,10 +1107,10 @@
          * @param  {String[]}  order  order of the items
          */
         sort: function (order) {
-            var items = {}, rootEl = this.el;
+            let items = {}, rootEl = this.el;
 
             this.toArray().forEach(function (id, i) {
-                var el = rootEl.children[i];
+                let el = rootEl.children[i];
 
                 if (_closest(el, this.options.draggable, rootEl)) {
                     items[id] = el;
@@ -1130,7 +1130,7 @@
          * Save the current sorting
          */
         save: function () {
-            var store = this.options.store;
+            let store = this.options.store;
             store && store.set(this);
         },
 
@@ -1153,7 +1153,7 @@
          * @returns {*}
          */
         option: function (name, value) {
-            var options = this.options;
+            let options = this.options;
 
             if (value === void 0) {
                 return options[name];
@@ -1171,7 +1171,7 @@
          * Destroy
          */
         destroy: function () {
-            var el = this.el;
+            let el = this.el;
 
             el[expando] = null;
 
@@ -1239,7 +1239,7 @@
 
 
     function _getParentOrHost(el) {
-        var parent = el.host;
+        let parent = el.host;
 
         return (parent && parent.nodeType) ? parent : el.parentNode;
     }
@@ -1269,7 +1269,7 @@
                 el.classList[state ? 'add' : 'remove'](name);
             }
             else {
-                var className = (' ' + el.className + ' ').replace(R_SPACE, ' ').replace(' ' + name + ' ', ' ');
+                let className = (' ' + el.className + ' ').replace(R_SPACE, ' ').replace(' ' + name + ' ', ' ');
                 el.className = (className + (state ? ' ' + name : '')).replace(R_SPACE, ' ');
             }
         }
@@ -1277,7 +1277,7 @@
 
 
     function _css(el, prop, val) {
-        var style = el && el.style;
+        let style = el && el.style;
 
         if (style) {
             if (val === void 0) {
@@ -1303,7 +1303,7 @@
 
     function _find(ctx, tagName, iterator) {
         if (ctx) {
-            var list = ctx.getElementsByTagName(tagName), i = 0, n = list.length;
+            let list = ctx.getElementsByTagName(tagName), i = 0, n = list.length;
 
             if (iterator) {
                 for (; i < n; i++) {
@@ -1322,7 +1322,7 @@
     function _dispatchEvent(sortable, rootEl, name, targetEl, toEl, fromEl, startIndex, newIndex, originalEvt) {
         sortable = (sortable || rootEl[expando]);
 
-        var evt = document.createEvent('Event'),
+        let evt = document.createEvent('Event'),
             options = sortable.options,
             onName = 'on' + name.charAt(0).toUpperCase() + name.substr(1);
 
@@ -1347,7 +1347,7 @@
 
 
     function _onMove(fromEl, toEl, dragEl, dragRect, targetEl, targetRect, originalEvt, willInsertAfter) {
-        var evt,
+        let evt,
             sortable = fromEl[expando],
             onMoveFn = sortable.options.onMove,
             retVal;
@@ -1387,7 +1387,7 @@
 
     /** @returns {HTMLElement|false} */
     function _ghostIsLast(el, evt) {
-        var lastEl = el.lastElementChild,
+        let lastEl = el.lastElementChild,
             rect = lastEl.getBoundingClientRect();
 
         // 5 — min delta
@@ -1404,7 +1404,7 @@
      * @private
      */
     function _generateId(el) {
-        var str = el.tagName + el.className + el.src + el.href + el.textContent,
+        let str = el.tagName + el.className + el.src + el.href + el.textContent,
             i = str.length,
             sum = 0;
 
@@ -1423,7 +1423,7 @@
      * @return {number}
      */
     function _index(el, selector) {
-        var index = 0;
+        let index = 0;
 
         if (!el || !el.parentNode) {
             return -1;
@@ -1455,7 +1455,7 @@
     }
 
     function _throttle(callback, ms) {
-        var args, _this;
+        let args, _this;
 
         return function () {
             if (args === void 0) {
@@ -1477,7 +1477,7 @@
 
     function _extend(dst, src) {
         if (dst && src) {
-            for (var key in src) {
+            for (let key in src) {
                 if (src.hasOwnProperty(key)) {
                     dst[key] = src[key];
                 }
@@ -1502,11 +1502,11 @@
     function _saveInputCheckedState(root) {
         savedInputChecked.length = 0;
 
-        var inputs = root.getElementsByTagName('input');
-        var idx = inputs.length;
+        let inputs = root.getElementsByTagName('input');
+        let idx = inputs.length;
 
         while (idx--) {
-            var el = inputs[idx];
+            let el = inputs[idx];
             el.checked && savedInputChecked.push(el);
         }
     }

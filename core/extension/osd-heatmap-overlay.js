@@ -515,11 +515,11 @@
         e.refPoint
       );
       // get current zoom value.
-      var viewportZoom = this._viewer.viewport.getZoom();
-      var zoom = this._viewer.viewport.viewportToImageZoom(e.zoom);
+      let viewportZoom = this._viewer.viewport.getZoom();
+      let zoom = this._viewer.viewport.viewportToImageZoom(e.zoom);
 
       // calculate the scaling value
-      var scale = viewportZoom / this._zoom;
+      let scale = viewportZoom / this._zoom;
       // ignore scaling if the value to small
       if (scale == 1 || Math.abs(1 - scale) < 0.01) return;
       // scaling view
@@ -727,7 +727,7 @@
             this
           ) + 2;
         let finalDatas = finalData.reduce((rs, d) => {
-          for (var i = 0; i < rs.length; i++) {
+          for (let i = 0; i < rs.length; i++) {
             if (rs[i].range[0] <= d[index] && d[index] < rs[i].range[1]) {
               rs[i].data.push(d);
               //break;
@@ -876,7 +876,7 @@
     }
     return true;
   }
-  var TESTER = {
+  let TESTER = {
     AND: function(p, t, func) {
       return p.reduce((acc, v, i) => {
         return acc && func.call(this, v, t[i]);

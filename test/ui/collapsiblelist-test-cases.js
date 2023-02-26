@@ -365,7 +365,7 @@ describe('Collapsible List Component',function(){
         if (el.fireEvent) {
             el.fireEvent('on' + etype);
         } else {
-            var evObj = dom.window.document.createEvent('Events');
+            let evObj = dom.window.document.createEvent('Events');
             evObj.initEvent(etype, true, false);
             el.dispatchEvent(evObj);
         }

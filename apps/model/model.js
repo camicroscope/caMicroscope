@@ -1,16 +1,16 @@
 const PDR = OpenSeadragon.pixelDensityRatio;
 const IDB_URL = 'indexeddb://';
-var csvContent;
-var mem;
-var flag = -1;
-var choices1;
-var jsondata;
-var fileName = '';
+let csvContent;
+let mem;
+let flag = -1;
+let choices1;
+let jsondata;
+let fileName = '';
 // INITIALIZE DB
 window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
 // id(autoinc), name, location(name+id), classes
-var request; var db;
-var modelName;
+let request; let db;
+let modelName;
 
 // tensorflowjs creates its own IndexedDB on saving a model.
 (async function(callback) {
@@ -74,7 +74,7 @@ function sanitize(string) {
 
 
 function initialize() {
-  var checkPackageIsReady = setInterval(function() {
+  let checkPackageIsReady = setInterval(function() {
     if (IsPackageLoading) {
       clearInterval(checkPackageIsReady);
       initUIcomponents();
@@ -459,7 +459,7 @@ function drawRectangle(e) {
   const canvas = $CAMIC.viewer.drawer.canvas; // Original Canvas
   canvas.style.cursor = e.checked ? 'crosshair' : 'default';
 
-  var args;
+  let args;
   const canvasDraw = $CAMIC.viewer.canvasDrawInstance;
   if (e.state == 'roi') {
     args = {status: ''};
@@ -736,17 +736,17 @@ function runPredict(key) {
 
 // TO-DO: Allow uploading and using tensorflow graph models. Can't save graph models. Need to use right away.
 function uploadModel() {
-  var _name = document.querySelector('#name');
-  var _classes = document.querySelector('#classes');
-  var mag = document.querySelector('#magnification');
-  var _imageSize = document.querySelector('#imageSize');
-  var topology = document.querySelector('#modelupload');
-  var weights = document.querySelector('#weightsupload');
-  var status = document.querySelector('#status');
-  var toggle = document.querySelector('#togBtn');
-  var url = document.querySelector('#url');
-  var refresh = document.querySelector('#refresh');
-  var submit = document.querySelector('#submit');
+  let _name = document.querySelector('#name');
+  let _classes = document.querySelector('#classes');
+  let mag = document.querySelector('#magnification');
+  let _imageSize = document.querySelector('#imageSize');
+  let topology = document.querySelector('#modelupload');
+  let weights = document.querySelector('#weightsupload');
+  let status = document.querySelector('#status');
+  let toggle = document.querySelector('#togBtn');
+  let url = document.querySelector('#url');
+  let refresh = document.querySelector('#refresh');
+  let submit = document.querySelector('#submit');
 
   // Reset previous input
   _name.value = _classes.value = topology.value = weights.value = status.innerText = _imageSize.value = url.value = '';
@@ -784,9 +784,9 @@ function uploadModel() {
       const classes = _classes.value.split(/\s*,\s*/);
 
       if (toggle.checked) {
-        var modelInput = url.value;
+        let modelInput = url.value;
       } else {
-        var modelInput = tf.io.browserFiles([topology.files[0], ...weights.files]);
+        let modelInput = tf.io.browserFiles([topology.files[0], ...weights.files]);
       }
 
       // Check if model with same name is previously defined
@@ -912,11 +912,11 @@ async function deleteModel(name) {
 
 // Shows the uploaded models' details
 async function showInfo() {
-  var data = await tf.io.listModels();
-  var table = document.querySelector('#mdata');
-  var tx = db.transaction('models_store', 'readonly');
-  var store = tx.objectStore('models_store');
-  var modelCount = 0;
+  let data = await tf.io.listModels();
+  let table = document.querySelector('#mdata');
+  let tx = db.transaction('models_store', 'readonly');
+  let store = tx.objectStore('models_store');
+  let modelCount = 0;
   empty(table);
   // Update table data
   (function(callback) {
@@ -978,7 +978,7 @@ function showNewClassInput(name, classes) {
   $UI.chngClassLst.open(); // Open the box to take input from user
   document.getElementById('chngbtn').addEventListener('click', () => {
     // $UI.chngClassLst.close();
-    var newList = document.querySelector('#new_classList').value; // Get the list inputed by user
+    let newList = document.querySelector('#new_classList').value; // Get the list inputed by user
     $UI.infoModal.close();
     $UI.chngClassLst.close();
     changeClassList(newList, name); // Call to a function to change class list
@@ -986,9 +986,9 @@ function showNewClassInput(name, classes) {
 }
 
 async function changeClassList(newList, name) {
-  var data = await tf.io.listModels();
-  var tx = db.transaction('models_store', 'readwrite');
-  var store = tx.objectStore('models_store');
+  let data = await tf.io.listModels();
+  let tx = db.transaction('models_store', 'readwrite');
+  let store = tx.objectStore('models_store');
   for (const key in data) {
     if (name === key.split('/').pop()) {
       store.get(name).onsuccess = function(e) {
@@ -1081,8 +1081,8 @@ function convertCoordinates(imagingHelper, bound) {
 // Save the canvas to filename.  Uses local save dialog.
 function download(canvas, filename) {
   // / create an "off-screen" anchor tag
-  var lnk = document.createElement('a');
-  var e;
+  let lnk = document.createElement('a');
+  let e;
 
   // / the key here is to set the download attribute of the a tag
   lnk.download = filename;
@@ -1113,8 +1113,8 @@ function downloadCSV(filename) {
     filename = filename || 'export.csv';
     const data = encodeURI(csvContent);
 
-    var lnk = document.createElement('a');
-    var e;
+    let lnk = document.createElement('a');
+    let e;
     lnk.href = data;
     lnk.download = filename;
     // / create a "fake" click-event to trigger the download
@@ -1138,11 +1138,11 @@ function downloadCSV(filename) {
  */
 
 async function selectModel() {
-  var data = await tf.io.listModels();
-  var table = document.querySelector('#roidata');
-  var tx = db.transaction('models_store', 'readonly');
-  var store = tx.objectStore('models_store');
-  var modelCount = 0;
+  let data = await tf.io.listModels();
+  let table = document.querySelector('#roidata');
+  let tx = db.transaction('models_store', 'readonly');
+  let store = tx.objectStore('models_store');
+  let modelCount = 0;
 
   empty(table);
 
@@ -1198,12 +1198,12 @@ async function selectChoices(name, classes) {
   $UI.roiModal.close();
   (function(callback) {
     selectedmodelName = sanitize(name.split('/').pop().split('_').splice(2).join('_').slice(0, -3));
-    var classNames = classes.split(',');
-    for ( var i = 0; i < classNames.length; i++) {
+    let classNames = classes.split(',');
+    for ( let i = 0; i < classNames.length; i++) {
       classNames[i] = sanitize(classNames[i]);
     }
 
-    var i;
+    let i;
     $('#choicedata').html('');
     $('#choicedata').html(' <h4> Classes :</h4> ');
     for ( i = 0; i < classNames.length; i++) {
@@ -1230,11 +1230,11 @@ async function selectChoices(name, classes) {
 
 
     $('#submit1').click(async function() {
-      var boxes = $('input[name=choice]:checked');
+      let boxes = $('input[name=choice]:checked');
       if (boxes.length == 0) {
         alert('Please select altleast one class.');
       } else {
-        var choices = {model: '', accuracy: '80', classes: [], scale: 'norm'};
+        let choices = {model: '', accuracy: '80', classes: [], scale: 'norm'};
         for (let i = 0; i<boxes.length; i++) {
           choices.classes.push(boxes[i].id);
         }
@@ -1250,11 +1250,11 @@ async function selectChoices(name, classes) {
     });
 
     $('#submit2').click(async function() {
-      var boxes = $('input[name=choice]:checked');
+      let boxes = $('input[name=choice]:checked');
       if (boxes.length == 0) {
         alert('Please select altleast one class.');
       } else {
-        var choices = {model: '', accuracy: '80', classes: [], scale: 'norm', backend: false};
+        let choices = {model: '', accuracy: '80', classes: [], scale: 'norm', backend: false};
         for (let i = 0; i<boxes.length; i++) {
           choices.classes.push(boxes[i].id);
         }
@@ -1287,8 +1287,8 @@ async function extractRoi(choices, flag1) {
   document.getElementById('snackbar').className = 'show';
 
   const self = $UI.modelPanel;
-  var X = self.__spImgX;
-  var Y = self.__spImgY;
+  let X = self.__spImgX;
+  let Y = self.__spImgY;
   const totalSize = self.__spImgWidth;
   self.showResults('');
 
@@ -1298,8 +1298,8 @@ async function extractRoi(choices, flag1) {
   const prefixUrl = ImgloaderMode == 'iip'?`../../img/IIP/raw/?IIIF=${$D.params.data.location}`:$CAMIC.slideId;
 
   const fullResCvs = self.__fullsrc;
-  var height = Y + totalSize;
-  var width = X + totalSize;
+  let height = Y + totalSize;
+  let width = X + totalSize;
 
   // Starting the transaction and opening the model store
   const tx = db.transaction('models_store', 'readonly');
@@ -1353,7 +1353,7 @@ async function extractRoi(choices, flag1) {
       width = $D.params.data.width;
     }
     const totalPatches = (width / step) * (height / step);
-    var c = 0;
+    let c = 0;
 
     for (let y = Y, dy = 0, i = 0; y <= (height-step); y += (step)) {
       let dx = 0;
@@ -1404,10 +1404,10 @@ async function extractRoi(choices, flag1) {
           results.push(values);
 
 
-          var max = -1.0;
-          var ind = -1; ;
+          let max = -1.0;
+          let ind = -1; ;
 
-          for (var i = 0; i < classes.length; i++) {
+          for (let i = 0; i < classes.length; i++) {
             if (choices.classes.includes(classes[i]) && ((values[i]*100) > choices.accuracy)) {
               if ( values[i] > max) {
                 ind = i;
@@ -1429,15 +1429,15 @@ async function extractRoi(choices, flag1) {
       dy += step;
     }
 
-    var fixurl = '../../loader/roiExtract'; // route to extract the patches
-    var downurl = '../../loader/roiextract'; // route to download the extracted patches
+    let fixurl = '../../loader/roiExtract'; // route to extract the patches
+    let downurl = '../../loader/roiextract'; // route to download the extracted patches
     mem = sizeof(regions);
     model.dispose();
     if (regions.length != 0) {
       // Use backend for extracting the patches
 
       if (choices.backend == true) {
-        var roiData = {predictions: '', slideid: '', filename: '', patchsize: ''};
+        let roiData = {predictions: '', slideid: '', filename: '', patchsize: ''};
         roiData.predictions = regions;
         roiData.slideid = $D.params.slideId;
         roiData.filename = fileName;
@@ -1469,8 +1469,8 @@ async function extractRoi(choices, flag1) {
                 return response.blob();
               }
             }).then((blob)=>{
-              var url = window.URL.createObjectURL(blob);
-              var a = document.createElement('a'); // dummy link to download the zip file
+              let url = window.URL.createObjectURL(blob);
+              let a = document.createElement('a'); // dummy link to download the zip file
               a.href = url;
               a.download = 'roi_download.zip';
               document.body.appendChild(a);
@@ -1506,11 +1506,11 @@ async function extractRoi(choices, flag1) {
           regionData.push(fullResCvs.toDataURL().replace(/^data:image\/(png|jpg);base64,/, ''));
         }
 
-        var zip = new JSZip(); // zip file to download the patches
+        let zip = new JSZip(); // zip file to download the patches
 
 
-        for (var i = 0; i < regionData.length; i++) {
-          var img = zip.folder(regions[i].cls);
+        for (let i = 0; i < regionData.length; i++) {
+          let img = zip.folder(regions[i].cls);
           img.file( regions[i].cls + (regions[i].acc * 100).toFixed(3) + '.png', regionData[i], {base64: true});
 
           $('#etad').html('');
@@ -1524,12 +1524,12 @@ async function extractRoi(choices, flag1) {
     }
     console.log('finished');
     document.getElementById('snackbar').className = '';
-    var counts = {};
+    let counts = {};
     $('#detailsdata').html('');
     $('#detailsdata').append('<li><h3>Total number of patches extracted :'+ regionData.length +'</h3></li>' );
 
     for (let k = 0; k < regions.length; k++) {
-      var i = regions[k].cls;
+      let i = regions[k].cls;
       counts[i] = counts[i] ? counts[i] + 1 : 1;
     }
     for (let j = 0; j < choices.classes.length; j++) {

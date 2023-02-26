@@ -4,15 +4,15 @@
      * @return {jQuery} jQuery object.
      */
   $.fn.navList = function() {
-    var $this = $(this);
+    let $this = $(this);
     $a = $this.find('a'),
     b = [];
 
     $a.each(function() {
-      var   $this = $(this);
-      var indent = Math.max(0, $this.parents('li').length - 1);
-      var href = $this.attr('href');
-      var target = $this.attr('target');
+      let   $this = $(this);
+      let indent = Math.max(0, $this.parents('li').length - 1);
+      let href = $this.attr('href');
+      let target = $this.attr('target');
 
       b.push(
           '<a ' +
@@ -42,19 +42,19 @@
 
     // Multiple elements?
     if (this.length > 1) {
-      for (var i=0; i < this.length; i++) {
+      for (let i=0; i < this.length; i++) {
         $(this[i]).panel(userConfig);
       }
 
       return $this;
     }
 
-    // Vars.
-    var $this = $(this);
-    var $body = $('body');
-    var $window = $(window);
-    var id = $this.attr('id');
-    var config;
+    // lets.
+    let $this = $(this);
+    let $body = $('body');
+    let $window = $(window);
+    let id = $this.attr('id');
+    let config;
 
     // Config.
     config = $.extend({
@@ -139,9 +139,9 @@
 
       $this
           .on('click', 'a', function(event) {
-            var $a = $(this);
-            var href = $a.attr('href');
-            var target = $a.attr('target');
+            let $a = $(this);
+            let href = $a.attr('href');
+            let target = $a.attr('target');
 
             if (!href || href == '#' || href == '' || href == '#' + id) {
               return;
@@ -177,16 +177,16 @@
         return;
       }
 
-      var   diffX = $this.touchPosX - event.originalEvent.touches[0].pageX;
-      var diffY = $this.touchPosY - event.originalEvent.touches[0].pageY;
-      var th = $this.outerHeight();
-      var ts = ($this.get(0).scrollHeight - $this.scrollTop());
+      let   diffX = $this.touchPosX - event.originalEvent.touches[0].pageX;
+      let diffY = $this.touchPosY - event.originalEvent.touches[0].pageY;
+      let th = $this.outerHeight();
+      let ts = ($this.get(0).scrollHeight - $this.scrollTop());
 
       // Hide on swipe?
       if (config.hideOnSwipe) {
-        var result = false;
-        var boundary = 20;
-        var delta = 50;
+        let result = false;
+        let boundary = 20;
+        let delta = 50;
 
         switch (config.side) {
           case 'left':
@@ -285,20 +285,20 @@
 
     // Multiple elements?
     if (this.length > 1) {
-      for (var i=0; i < this.length; i++) {
+      for (let i=0; i < this.length; i++) {
         $(this[i]).placeholder();
       }
 
       return $this;
     }
 
-    // Vars.
-    var $this = $(this);
+    // lets.
+    let $this = $(this);
 
     // Text, TextArea.
     $this.find('input[type=text],textarea')
         .each(function() {
-          var i = $(this);
+          let i = $(this);
 
           if (i.val() == '' ||
                     i.val() == i.attr('placeholder')) {
@@ -308,7 +308,7 @@
           }
         })
         .on('blur', function() {
-          var i = $(this);
+          let i = $(this);
 
           if (i.attr('name').match(/-polyfill-field$/)) {
             return;
@@ -321,7 +321,7 @@
           }
         })
         .on('focus', function() {
-          var i = $(this);
+          let i = $(this);
 
           if (i.attr('name').match(/-polyfill-field$/)) {
             return;
@@ -337,8 +337,8 @@
     // Password.
     $this.find('input[type=password]')
         .each(function() {
-          var i = $(this);
-          var x = $(
+          let i = $(this);
+          let x = $(
               $('<div>')
                   .append(i.clone())
                   .remove()
@@ -368,7 +368,7 @@
               .on('blur', function(event) {
                 event.preventDefault();
 
-                var x = i.parent().find('input[name=' + i.attr('name') + '-polyfill-field]');
+                let x = i.parent().find('input[name=' + i.attr('name') + '-polyfill-field]');
 
                 if (i.val() == '') {
                   i.hide();
@@ -380,7 +380,7 @@
               .on('focus', function(event) {
                 event.preventDefault();
 
-                var i = x.parent().find('input[name=' + x.attr('name').replace('-polyfill-field', '') + ']');
+                let i = x.parent().find('input[name=' + x.attr('name').replace('-polyfill-field', '') + ']');
 
                 x.hide();
 
@@ -399,7 +399,7 @@
         .on('submit', function() {
           $this.find('input[type=text],input[type=password],textarea')
               .each(function(event) {
-                var i = $(this);
+                let i = $(this);
 
                 if (i.attr('name').match(/-polyfill-field$/)) {
                   i.attr('name', '');
@@ -419,8 +419,8 @@
 
           $this.find('input,textarea')
               .each(function() {
-                var i = $(this);
-                var x;
+                let i = $(this);
+                let x;
 
                 i.removeClass('polyfill-placeholder');
 
@@ -476,7 +476,7 @@
      * @param {bool} condition If true, moves elements to the top. Otherwise, moves elements back to their original locations.
      */
   $.prioritize = function($elements, condition) {
-    var key = '__prioritize';
+    let key = '__prioritize';
 
     // Expand $elements if it's not already a jQuery object.
     if (typeof $elements != 'jQuery') {
@@ -485,8 +485,8 @@
 
     // Step through elements.
     $elements.each(function() {
-      var   $e = $(this); var $p;
-      var $parent = $e.parent();
+      let   $e = $(this); let $p;
+      let $parent = $e.parent();
 
       // No parent? Bail.
       if ($parent.length == 0) {

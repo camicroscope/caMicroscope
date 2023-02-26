@@ -72,7 +72,7 @@
       // get pos on screen
       const height = target.offsetHeight;
       // const width = target.offsetWidth;
-      for (var left=0, top=0; target != null;
+      for (let left=0, top=0; target != null;
         left += target.offsetLeft, top += target.offsetTop, target = target.offsetParent);
       top += height;
       left += 2;// width;
@@ -237,7 +237,7 @@
     }
   };
   function selectStyle(e) {
-    // var e = event;
+    // let e = event;
     const theTool = e.target.parentNode;
     const toolbarItems = this.elt.querySelectorAll('ul.style li');
     for (let i = 0; i < toolbarItems.length; ++i) {

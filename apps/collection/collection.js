@@ -276,7 +276,7 @@ function getDataFromEditor() {
   };
 }
 function validateEditor() {
-  var isValid = true;
+  let isValid = true;
   if (!$('#edit-modal').find('#col-name').val()) {
     $('#edit-modal').find('#col-name').addClass('is-invalid');
     isValid = false;

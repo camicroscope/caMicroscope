@@ -9,7 +9,7 @@
 
 (function(win, doc, NS) {
 
-    var instance = '__instance__',
+    let instance = '__instance__',
         first = 'firstChild',
         delay = setTimeout;
 
@@ -45,7 +45,7 @@
 
     // [h, s, v] ... 0 <= h, s, v <= 1
     function HSV2RGB(a) {
-        var h = +a[0],
+        let h = +a[0],
             s = +a[1],
             v = +a[2],
             r, g, b, i, f, p, q, t;
@@ -86,7 +86,7 @@
 
     // [r, g, b] ... 0 <= r, g, b <= 255
     function RGB2HSV(a) {
-        var r = +a[0],
+        let r = +a[0],
             g = +a[1],
             b = +a[2],
             max = Math.max(r, g, b),
@@ -115,7 +115,7 @@
     }
 
     function RGB2HEX(a) {
-        var s = +a[2] | (+a[1] << 8) | (+a[0] << 16);
+        let s = +a[2] | (+a[1] << 8) | (+a[0] << 16);
         s = '000000' + s.toString(16);
         return s.slice(-6);
     }
@@ -150,7 +150,7 @@
     // *
     function parse(x) {
         if (is_object(x)) return x;
-        var rgb = /\s*rgb\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)\s*$/i.exec(x),
+        let rgb = /\s*rgb\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)\s*$/i.exec(x),
             hsv = /\s*hsv\s*\(\s*(\d+)\s*,\s*(\d+)%\s*,\s*(\d+)%\s*\)\s*$/i.exec(x),
             hex = x[0] === '#' && x.match(/^#([\da-f]{3}|[\da-f]{6})$/i);
         if (hex) {
@@ -174,7 +174,7 @@
         // plug to all instance(s)
         $.each = function(fn, t) {
             return delay(function() {
-                var ins = $[instance], i;
+                let ins = $[instance], i;
                 for (i in ins) {
                     fn(ins[i], i, ins);
                 }
@@ -207,7 +207,7 @@
 
     })(win[NS] = function(target, events, parent) {
 
-        var b = doc.body,
+        let b = doc.body,
             h = doc.documentElement,
             $ = this,
             $$ = win[NS],
@@ -235,7 +235,7 @@
         // add event
         function on(ev, el, fn) {
             ev = ev.split(/\s+/);
-            for (var i = 0, ien = ev.length; i < ien; ++i) {
+            for (let i = 0, ien = ev.length; i < ien; ++i) {
                 el.addEventListener(ev[i], fn, false);
             }
         }
@@ -243,14 +243,14 @@
         // remove event
         function off(ev, el, fn) {
             ev = ev.split(/\s+/);
-            for (var i = 0, ien = ev.length; i < ien; ++i) {
+            for (let i = 0, ien = ev.length; i < ien; ++i) {
                 el.removeEventListener(ev[i], fn);
             }
         }
 
         // get mouse/finger coordinate
         function point(el, e) {
-            var T = 'touches',
+            let T = 'touches',
                 X = 'clientX',
                 Y = 'clientY',
                 x = !!e[T] ? e[T][0][X] : e[X],
@@ -264,7 +264,7 @@
 
         // get position
         function offset(el) {
-            var left, top, rect;
+            let left, top, rect;
             if (el === win) {
                 left = win.pageXOffset || h.scrollLeft;
                 top = win.pageYOffset || h.scrollTop;
@@ -331,7 +331,7 @@
         function trigger(ev, a, id) {
             if (!is_set(hooks[ev])) return $;
             if (!is_set(id)) {
-                for (var i in hooks[ev]) {
+                for (let i in hooks[ev]) {
                     hooks[ev][i].apply($, a);
                 }
             } else {
@@ -348,7 +348,7 @@
         // generate color picker pane ...
         picker.className = 'color-picker';
         picker.innerHTML = '<div class="color-picker-container"><span class="color-picker-h"><i></i></span><span class="color-picker-sv"><i></i></span></div>';
-        var c = picker[first].children,
+        let c = picker[first].children,
             HSV = get_data([0, 1, 1]), // default is red
             H = c[0],
             SV = c[1],
@@ -388,7 +388,7 @@
             }
             P_W = size(picker).w;
             P_H = size(picker).h;
-            var SV_size = size(SV),
+            let SV_size = size(SV),
                 SV_point_size = size(SV_point),
                 H_H = size(H).h,
                 SV_W = SV_size.w,
@@ -399,7 +399,7 @@
             if (first) {
                 picker.style.left = picker.style.top = '-9999px';
                 function click(e) {
-                    var t = e.target,
+                    let t = e.target,
                         is_target = t === target || closest(t, target) === target;
                     if (is_target) {
                         create();
@@ -443,7 +443,7 @@
                 return $;
             };
             function color(e) {
-                var a = HSV2RGB(HSV),
+                let a = HSV2RGB(HSV),
                     b = HSV2RGB([HSV[0], 1, 1]);
                 SV.style.backgroundColor = 'rgb(' + b.join(',') + ')';
                 set_data(HSV);
@@ -451,13 +451,13 @@
             };
             set();
             function do_H(e) {
-                var y = edge(point(H, e).y, 0, H_H);
+                let y = edge(point(H, e).y, 0, H_H);
                 HSV[0] = (H_H - y) / H_H;
                 H_point.style.top = (y - (H_point_H / 2)) + 'px';
                 color(e);
             }
             function do_SV(e) {
-                var o = point(SV, e),
+                let o = point(SV, e),
                     x = edge(o.x, 0, SV_W),
                     y = edge(o.y, 0, SV_H);
                 HSV[1] = 1 - ((SV_W - x) / SV_W);
@@ -487,7 +487,7 @@
                 start_SV = 0;
             }
             function stop(e) {
-                var t = e.target,
+                let t = e.target,
                     k = drag_H ? "h" : "sv",
                     a = [HSV2HEX(HSV), $],
                     is_target = t === target || closest(t, target) === target,
@@ -531,14 +531,14 @@
         } create(1);
 
         delay(function() {
-            var a = [HSV2HEX(HSV), $];
+            let a = [HSV2HEX(HSV), $];
             trigger("create", a);
             trigger_(0, a);
         }, 0);
 
         // fit to window
         $.fit = function(o) {
-            var w = size(win),
+            let w = size(win),
                 y = size(h),
                 screen_w = w.w - y.w, // vertical scroll bar
                 screen_h = w.h - h.clientHeight, // horizontal scroll bar
@@ -550,7 +550,7 @@
                 is_set(o[0]) && (left = o[0]);
                 is_set(o[1]) && (top = o[1]);
             } else {
-                var min_x = ww.l,
+                let min_x = ww.l,
                     min_y = ww.t,
                     max_x = ww.l + w.w - P_W - screen_w,
                     max_y = ww.t + w.h - P_H - screen_h;

@@ -108,9 +108,9 @@
                 e.refPoint = this._viewer.viewport.getCenter(true);
             }
             const viewportPoint = this._viewer.viewport.viewportToViewerElementCoordinates(e.refPoint);
-            var viewportZoom = this._viewer.viewport.getZoom();
-            var zoom = this._viewer.viewport.viewportToImageZoom(e.zoom);
-            var scale = viewportZoom/this._zoom;
+            let viewportZoom = this._viewer.viewport.getZoom();
+            let zoom = this._viewer.viewport.viewportToImageZoom(e.zoom);
+            let scale = viewportZoom/this._zoom;
             if(scale == 1 || Math.abs(1 - scale) < 0.01) return; 
             this._div.style.transformOrigin = `${viewportPoint.x}px ${viewportPoint.y}px`;
             this._div.style.transform = `scale(${scale},${scale})`;
@@ -250,7 +250,7 @@
             this._center = this._viewer.viewport.getCenter(true);
             this._zoom = this._viewer.viewport.getZoom(true);
 
-            // get global variable for renderer
+            // get global letiable for renderer
             const imagingHelper = this._viewer.imagingHelper;
             this._display_ctx_._lw = (imagingHelper.physicalToDataX(1) - imagingHelper.physicalToDataX(0)) >> 0;
             this._display_ctx_.radius = (imagingHelper.physicalToDataX(3) - imagingHelper.physicalToDataX(0)) >> 0;
@@ -272,13 +272,13 @@
                 this._display_.setAttribute('height', this._containerHeight);
             }
             this._viewportOrigin = new $.Point(0, 0);
-            var boundsRect = this._viewer.viewport.getBounds(true);
+            let boundsRect = this._viewer.viewport.getBounds(true);
             this._viewportOrigin.x = boundsRect.x;
             this._viewportOrigin.y = boundsRect.y * this.imgAspectRatio;
             
             this._viewportWidth = boundsRect.width;
             this._viewportHeight = boundsRect.height * this.imgAspectRatio;
-            var image1 = this._viewer.world.getItemAt(0);
+            let image1 = this._viewer.world.getItemAt(0);
             this.imgWidth = image1.source.dimensions.x;
             this.imgHeight = image1.source.dimensions.y;
             this.imgAspectRatio = this.imgWidth / this.imgHeight;
@@ -292,12 +292,12 @@
          * @return {[type]}         [description]
          */
         drawOnCanvas:function(drawFuc,args){
-            var viewportZoom = this._viewer.viewport.getZoom(true);
-            var image1 = this._viewer.world.getItemAt(0);
-            var zoom = image1.viewportToImageZoom(viewportZoom);
+            let viewportZoom = this._viewer.viewport.getZoom(true);
+            let image1 = this._viewer.world.getItemAt(0);
+            let zoom = image1.viewportToImageZoom(viewportZoom);
 
-            var x=((this._viewportOrigin.x/this.imgWidth-this._viewportOrigin.x )/this._viewportWidth)*this._containerWidth;
-            var y=((this._viewportOrigin.y/this.imgHeight-this._viewportOrigin.y )/this._viewportHeight)*this._containerHeight;
+            let x=((this._viewportOrigin.x/this.imgWidth-this._viewportOrigin.x )/this._viewportWidth)*this._containerWidth;
+            let y=((this._viewportOrigin.y/this.imgHeight-this._viewportOrigin.y )/this._viewportHeight)*this._containerHeight;
 
             DrawHelper.clearCanvas(args[0].canvas);
             args[0].translate(x,y);
@@ -321,7 +321,7 @@
          * @param  {Canvas} ctx  a canvas' 2d context that the marks draw on
          */
         drawOnDisplay:function(ctx){
-            for (var i = 0; i < this.overlays.length; i++) {
+            for (let i = 0; i < this.overlays.length; i++) {
                 const layer = this.overlays[i];
                 if(layer.isShow) layer.onDraw(ctx);
             }
@@ -443,7 +443,7 @@
 
 
         sort:function(){
-            // for (var i = data.length - 1; i >= 0; i--) {
+            // for (let i = data.length - 1; i >= 0; i--) {
             //     const id = data[i];
             //     const layer = this.getOverlayer(id);
             //     const index = data.length - i;
@@ -468,7 +468,7 @@
          * Function to destroy the instance of OverlayManager and clean up everything created by OverlayManager.
          *
          * Example:
-         * var omanger = OverlayManager({
+         * let omanger = OverlayManager({
          *   [...]
          * });
          *
@@ -500,7 +500,7 @@
      * @param {Object} options.render
      *        the render that is used to render the overlay
      */
-    var Overlay = function(options){
+    let Overlay = function(options){
         this.className = 'Overlay'
         if(!options){
             console.error(`${this.className}: No Options.`);

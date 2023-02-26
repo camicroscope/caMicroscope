@@ -24,18 +24,18 @@ class smartpen {
   }
   // call edge detection
   detect(x1, y1, x, y, ch=1) {
-    var newdata = this.context.getImageData(x1, y1, x, y);
-    var dst = edgedetect_canny(newdata, ~~(this.t/2), this.t, 7, 2, ch);
+    let newdata = this.context.getImageData(x1, y1, x, y);
+    let dst = edgedetect_canny(newdata, ~~(this.t/2), this.t, 7, 2, ch);
     return dst;
   }
   // collects edges
   edge(x1, y1, x, y) {
-    var dist = [];
-    var temp = this.detect(x1, y1, x, y, 1);
-    var l = temp.data;
-    for (var i = x1; i<x1+x; i++) {
-      for (var j = y1; j<y1+y; j++) {
-        var e = l[(j-y1)*x+i-x1];
+    let dist = [];
+    let temp = this.detect(x1, y1, x, y, 1);
+    let l = temp.data;
+    for (let i = x1; i<x1+x; i++) {
+      for (let j = y1; j<y1+y; j++) {
+        let e = l[(j-y1)*x+i-x1];
         if (e>200) {
           dist.push({x: i, y: j});
         }
@@ -45,12 +45,12 @@ class smartpen {
   }
   // get optimum pts for a stroke
   apply(arr) {
-    var n = 3; var th = this.smoothness; var lambda=1.5;
-    var pop = []; var clean=[]; var mod1=[]; var mod2=[]; var final=[]; var nearest = []; var pts = [];
-    var f = arr.length-1; var f1=0; var f2=0; var prev; var c;
+    let n = 3; let th = this.smoothness; let lambda=1.5;
+    let pop = []; let clean=[]; let mod1=[]; let mod2=[]; let final=[]; let nearest = []; let pts = [];
+    let f = arr.length-1; let f1=0; let f2=0; let prev; let c;
     clean = arr;
     // -----Nearest-----
-    for (var i = 0; i<=f; i++) {
+    for (let i = 0; i<=f; i++) {
       if (this.data[mtool.hash(clean[i])]!=undefined) {
         c = this.data[mtool.hash(clean[i])];
       } else {
@@ -62,11 +62,11 @@ class smartpen {
     // console.log("reduced: ", f1);
     this.data = new Map(); f1=0;
     // ----- Continuity Heuristic 1 -----
-    for (var i = 0; i<=f; i++) {
-      var mean = mtool.average(nearest, i, n);
-      var dist = pts[i]; var mind = 10e10; var point = clean[i]; var near=clean[i];
-      for (var j =0; j<dist.length; j++) {
-        var d = lambda*mtool.distance(point, dist[j])+mtool.distance(mean, dist[j]);
+    for (let i = 0; i<=f; i++) {
+      let mean = mtool.average(nearest, i, n);
+      let dist = pts[i]; let mind = 10e10; let point = clean[i]; let near=clean[i];
+      for (let j =0; j<dist.length; j++) {
+        let d = lambda*mtool.distance(point, dist[j])+mtool.distance(mean, dist[j]);
         if (d<mind) {
           mind = d;
           near = dist[j];
@@ -78,8 +78,8 @@ class smartpen {
     // console.log("heuristic 1: ", f1/(f2-f1));
     f1=0; f2=0;
     // -----Continuity Heuristic 2-----
-    for (var i = 0; i<=f; i++) {
-      var mean = mtool.average(mod1, i, n);
+    for (let i = 0; i<=f; i++) {
+      let mean = mtool.average(mod1, i, n);
       if (mtool.distance(mean, mod1[i])>th) {
         mod2.push(mean); f1++;
       } else {
@@ -91,21 +91,21 @@ class smartpen {
   }
   // get optimum pt for a pt
   nearest(point, all = false) {
-    var r = this.radius;
-    var x1 = Math.max(point.x-Math.floor(r/2), 0);
-    var y1 = Math.max(point.y-Math.floor(r/2), 0);
-    var x = Math.min(r, this.canvas.width-x1);
-    var y = Math.min(r, this.canvas.height-y1);
+    let r = this.radius;
+    let x1 = Math.max(point.x-Math.floor(r/2), 0);
+    let y1 = Math.max(point.y-Math.floor(r/2), 0);
+    let x = Math.min(r, this.canvas.width-x1);
+    let y = Math.min(r, this.canvas.height-y1);
 
-    var dist = []; var trials=3; this.t=this.threshold;
+    let dist = []; let trials=3; this.t=this.threshold;
     while (!dist.length && --trials) {
       dist = this.edge(x1, y1, x, y);
       this.t/=2; this.t=~~this.t;
     }
-    var near = point;
-    var d; var mind = 900000*100000;
-    for (var i =0; i<dist.length; i++) {
-      var d = mtool.distance(point, dist[i]);
+    let near = point;
+    let d; let mind = 900000*100000;
+    for (let i =0; i<dist.length; i++) {
+      let d = mtool.distance(point, dist[i]);
       if (d<mind) {
         mind = d; near = dist[i];
       }
@@ -130,7 +130,7 @@ class smartpen {
     if (this.menuon) return;
     this.init();
     this.menuon = true;
-    var temp = `
+    let temp = `
         <input type="checkbox" id="align_flag1" style="display:none;">
         <input type="checkbox" id="align_flag2" style="display:none;">
         <button id="align_openbtn" style="z-index:602; width:200px; font-size:17px;">Smart-Pen</button>
@@ -145,7 +145,7 @@ class smartpen {
           <pre>Roughness</pre><input type="range" id="align_smooth" max=10 min=1 value=4><span id="align_s">4</span>&nbsp;
         </div>`;
 
-    var dv = document.createElement('div');
+    let dv = document.createElement('div');
     dv.style.textAlign = 'center';
     dv.style.position = 'absolute';
     dv.style.left = x+'%'; dv.style.top = y+'%';
@@ -154,24 +154,24 @@ class smartpen {
     dv.innerHTML = temp;
     document.getElementsByTagName('BODY')[0].appendChild(dv);
     this.menubar = dv;
-    var children = dv.children;
-    for (var i = 0; i<children.length; i++) {
+    let children = dv.children;
+    for (let i = 0; i<children.length; i++) {
       children[i].style.left = x+'%'; children[i].style.top = y+'%'; children[i].style.position = 'fixed';
     }
 
-    var openbtn = document.getElementById('align_openbtn');
-    var mode = document.getElementById('align_mode');
+    let openbtn = document.getElementById('align_openbtn');
+    let mode = document.getElementById('align_mode');
     this.undo = document.getElementById('align_undoalign');
-    var setting = document.getElementById('align_setting');
-    var radius = document.getElementById('align_radius');
-    var threshold = document.getElementById('align_threshold');
-    var smoothness = document.getElementById('align_smooth');
-    var check1 = document.getElementById('align_flag1');
-    var check2 = document.getElementById('align_flag2');
-    var r = document.getElementById('align_r');
-    var s = document.getElementById('align_s');
-    var t = document.getElementById('align_t');
-    var blink;
+    let setting = document.getElementById('align_setting');
+    let radius = document.getElementById('align_radius');
+    let threshold = document.getElementById('align_threshold');
+    let smoothness = document.getElementById('align_smooth');
+    let check1 = document.getElementById('align_flag1');
+    let check2 = document.getElementById('align_flag2');
+    let r = document.getElementById('align_r');
+    let s = document.getElementById('align_s');
+    let t = document.getElementById('align_t');
+    let blink;
     // logo change, blink and width, text
     openbtn.onclick = function() {
       check1.checked=!check1.checked;
@@ -225,27 +225,27 @@ class smartpen {
 class mathtoolSmartpen {
 // interpolation id: id of pt, p: final pt, b: const, fc: neighbour limit
   gaussianInterpolate(arr, id, p, b=15, fc=1) {
-    var f = arr.length;
-    var ln = ~~(f*fc);
-    var l = id+ln;
-    var r = id-ln;
-    var dx = p.x-arr[id][0]; var dy = p.y-arr[id][1];
-    for (var i=l; i>=r; i--) {
-      var y = Math.exp(-(((id-i)/b)**2));
+    let f = arr.length;
+    let ln = ~~(f*fc);
+    let l = id+ln;
+    let r = id-ln;
+    let dx = p.x-arr[id][0]; let dy = p.y-arr[id][1];
+    for (let i=l; i>=r; i--) {
+      let y = Math.exp(-(((id-i)/b)**2));
       arr[(i+f)%f][0] += (y*dx); arr[(i+f)%f][1]+= (y*dy);
     }
     return arr;
   }
   // intepolates in between points with max distance c, min distance low, and max points m
   populate(points, c=4, low=2, m=150) {
-    var ln = points.length; var dist=[points[0]]; var prev = points[0];
-    for (var i = 1; i<ln; i++) {
-      var a=prev; var b=points[i];
-      var d = this.distance({x: a[0], y: a[1]}, {x: b[0], y: b[1]});
+    let ln = points.length; let dist=[points[0]]; let prev = points[0];
+    for (let i = 1; i<ln; i++) {
+      let a=prev; let b=points[i];
+      let d = this.distance({x: a[0], y: a[1]}, {x: b[0], y: b[1]});
       if (d>=c*c*4) {
-        var n = Math.min(~~(Math.sqrt(d)/c), m);
-        for (var j=1; j<=n; j++) {
-          var x = a[0] + j*(b[0]-a[0])/n; var y = a[1] + j*(b[1]-a[1])/n;
+        let n = Math.min(~~(Math.sqrt(d)/c), m);
+        for (let j=1; j<=n; j++) {
+          let x = a[0] + j*(b[0]-a[0])/n; let y = a[1] + j*(b[1]-a[1])/n;
           dist.push([~~x, ~~y]);
         }
         prev = b;
@@ -261,8 +261,8 @@ class mathtoolSmartpen {
   }
   // average function
   average(mod1, i, n) {
-    var c=0; var mean={x: 0, y: 0};
-    for (var j=-n; j<=n; j++) {
+    let c=0; let mean={x: 0, y: 0};
+    for (let j=-n; j<=n; j++) {
       if (i+j>=mod1.length||j==0||(i+j)<0) continue;
       mean.x+=mod1[(i+j)].x;
       mean.y+=mod1[(i+j)].y;
@@ -281,5 +281,5 @@ class mathtoolSmartpen {
   }
 };
 
-var spen = new smartpen();
-var mtool = new mathtoolSmartpen();
+let spen = new smartpen();
+let mtool = new mathtoolSmartpen();

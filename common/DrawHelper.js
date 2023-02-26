@@ -78,7 +78,7 @@ caDrawHelper.prototype.drawRectangle = function(ctx, start, end, isSquare = fals
  *         an array of points
  */
 caDrawHelper.prototype.drawMultiline = function(ctx,array){
-    for (var i = 1; i < array.length; i++) {
+    for (let i = 1; i < array.length; i++) {
         this.drawLine(ctx,array[i-1],array[i]);
     }
 }
@@ -158,7 +158,7 @@ caDrawHelper.prototype.drawPolygon = function(ctx, paths){
 
     // starting draw drawPolygon
     path.moveTo(paths[0][0], paths[0][1]);
-    for (var i = 1; i < paths.length-1; i++) {
+    for (let i = 1; i < paths.length-1; i++) {
         path.lineTo(paths[i][0],paths[i][1]);
     }
 
@@ -324,5 +324,5 @@ caDrawHelper.prototype.clearCanvas = function(canvas){
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
 
-var DrawHelper = new caDrawHelper();
+let DrawHelper = new caDrawHelper();
 //OpenSeadragon.DrawHelper = DrawHelper;

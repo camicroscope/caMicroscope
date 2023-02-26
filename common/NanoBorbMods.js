@@ -2,8 +2,8 @@ function NanoBorbMods() {
   console.warn("{imgbox mods enabled}")
   CaMic.prototype.default_loadImg = CaMic.prototype.loadImg
   CaMic.prototype.loadImg = function(func) {
-    var urlParams = new URLSearchParams(window.location.search);
-    var img_id = urlParams.get('id');
+    let urlParams = new URLSearchParams(window.location.search);
+    let img_id = urlParams.get('id');
     let slideId = img_id
     this.slideId = slideId
     this.slideName = slideId
@@ -46,7 +46,7 @@ function NanoBorbMods() {
       //set scalebar
       let mpp = this.mpp_x || this.mpp;
       if(mpp&&mpp!=1e9) this.createScalebar(this.mpp)
-      var imagingHelper = new OpenSeadragonImaging.ImagingHelper({
+      let imagingHelper = new OpenSeadragonImaging.ImagingHelper({
         viewer: this.viewer
       });
       imagingHelper.setMaxZoom(1);

@@ -7,7 +7,7 @@
 
 // 'function' in modern browsers, 'object' in safari < 10
 if (typeof Path2D == 'function' || typeof Path2D == 'object') {
-    var Path = Path2D
+    let Path = Path2D
     Path.prototype.contains = function(x, y, fillRule='nonzero') {
         return this.__ghostContext.isPointInPath(this, x, y, fillRule)
     }
@@ -23,7 +23,7 @@ if (typeof Path2D == 'function' || typeof Path2D == 'object') {
     }
     Path.prototype.__ghostContext = document.createElement('canvas').getContext('2d')
 } else {
-    var Path = function() {
+    let Path = function() {
         this.components = [{
             fn: 'beginPath'
         }]
@@ -103,7 +103,7 @@ if (typeof Path2D == 'function' || typeof Path2D == 'object') {
             context.fill(fillRule)
         },
         __assemble: function(context) {
-            var ctx = context || this.__ghostContext
+            let ctx = context || this.__ghostContext
             this.components.forEach(function(c) {
                 ctx[c.fn].apply(ctx, c.args)
             })

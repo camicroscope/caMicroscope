@@ -57,9 +57,9 @@ async function PathDbMods() {
       throw "no iip path in pathdb data"
     }
     // identifier fields for display name
-    var subject_id = ""
-    var image_id = ""
-    var study_id = ""
+    let subject_id = ""
+    let image_id = ""
+    let study_id = ""
     if(data.field_subject_id && data.field_subject_id.length >= 1){
       subject_id = data.field_subject_id[0].value
     }
@@ -90,13 +90,13 @@ async function PathDbMods() {
   * @param {string} key - the key to get from the cookie
   **/
   function getCookie(key) {
-    var cookiestring = RegExp("" + key + "[^;]+").exec(document.cookie);
+    let cookiestring = RegExp("" + key + "[^;]+").exec(document.cookie);
     return decodeURIComponent(!!cookiestring ? cookiestring.toString().replace(/^[^=]+./, "") : "");
   }
   console.warn("{PathDB mods enabled}")
   Store.prototype.default_findSlide = Store.prototype.findSlide;
   Store.prototype.findSlide = function(slide, specimen, study, location, q, collection) {
-    var url = `/idlookup/${collection}/${study}/${specimen}/${slide}?_format=json`
+    let url = `/idlookup/${collection}/${study}/${specimen}/${slide}?_format=json`
     return fetch(url, {
       mode: "cors",
       headers: new Headers({
@@ -113,7 +113,7 @@ async function PathDbMods() {
   }
   Store.prototype.default_getSlide = Store.prototype.getSlide
   Store.prototype.getSlide = function(id) {
-    var url = "/node/" + id + "?_format=json"
+    let url = "/node/" + id + "?_format=json"
     return fetch(url, {
       mode: "cors",
       headers: new Headers({

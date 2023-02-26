@@ -200,11 +200,11 @@
             // the referent point on the screen.
             const viewerElement = this._viewer.viewport.viewportToViewerElementCoordinates(e.refPoint);
             // get current zoom value.
-            var viewportZoom = this._viewer.viewport.getZoom();
-            var zoom = this._viewer.viewport.viewportToImageZoom(e.zoom);
+            let viewportZoom = this._viewer.viewport.getZoom();
+            let zoom = this._viewer.viewport.viewportToImageZoom(e.zoom);
 
             // calculate the scaling value
-            var scale = viewportZoom/this._zoom;
+            let scale = viewportZoom/this._zoom;
             // ignore scaling if the value to small
             if(scale == 1 || Math.abs(1 - scale) < 0.01) return;
             // scaling view
@@ -398,7 +398,7 @@
                             convertY(points[0][1]) + this._offset[1],
                         );
 
-                        for (var i = 1; i < points.length-1; i++) {
+                        for (let i = 1; i < points.length-1; i++) {
                              const x = convertX(points[i][0]);
                              const y = convertY(points[i][1]);
                             this._display_ctx_.lineTo(x+this._offset[0],y+this._offset[1]);

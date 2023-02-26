@@ -101,7 +101,7 @@
         this._div.style.zIndex =  options.zIndex || 101;
         this._viewer.canvas.appendChild(this._div);
 
-        var image1 = this._viewer.world.getItemAt(0);
+        let image1 = this._viewer.world.getItemAt(0);
         this.imgWidth = image1.source.dimensions.x;
         this.imgHeight = image1.source.dimensions.y;
 
@@ -446,7 +446,7 @@
                     const heightInUnit = this.__getScaleUnit(this.mpp.y, height);
 
                     // 
-                    var rect = this._viewer.viewport.imageToViewportRectangle(new $.Rect(
+                    let rect = this._viewer.viewport.imageToViewportRectangle(new $.Rect(
                         x,y,width,height
                     ));
 
@@ -533,7 +533,7 @@
          * Function to destroy the instance of MeasurementTool and clean up everything created by MeasurementTool.
          *
          * Example:
-         * var measure = MeasurementTool({
+         * let measure = MeasurementTool({
          *   [...]
          * });
          *

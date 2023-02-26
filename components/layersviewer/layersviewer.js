@@ -108,7 +108,7 @@ LayersViewer.prototype.addHumanItem = function(
     return;
   }
 
-  var cate = this.setting.categoricalData[type].items[parent];
+  let cate = this.setting.categoricalData[type].items[parent];
   if (!cate) {
     // no parent node
     const newCate = {};
@@ -172,7 +172,7 @@ LayersViewer.prototype.addHumanItem = function(
   cate.elt.style.display = 'flex';
 
   // total human anotation nums
-  var humanNum = 0;
+  let humanNum = 0;
   const obj = this.setting.categoricalData[type].items;
   for (const key in obj) {
     if (Object.prototype.hasOwnProperty.call(obj, key)) {
@@ -237,7 +237,7 @@ LayersViewer.prototype.removeItemById = function(
   cate.num.textContent = items.length;
   if (type == 'human') {
     if (cate.items.length == 0) cate.elt.style.display = 'none';
-    var humanNum = 0;
+    let humanNum = 0;
     const obj = this.setting.categoricalData[type].items;
     for (const key in obj) {
       if (Object.prototype.hasOwnProperty.call(obj, key)) {
@@ -506,7 +506,7 @@ LayersViewer.prototype.addHumanItems = function(data) {
   // human.items = data;
 
   const ul = document.createElement('ul');
-  var num = 0;
+  let num = 0;
   for (const [id, cate] of Object.entries(data)) {
     human.items[id] = cate;
     const name = cate.item.name;
@@ -1010,8 +1010,8 @@ LayersViewer.prototype.__change = function(e) {
 
   switch (type) {
     case 'root':
-      var items;
-      var root;
+      let items;
+      let root;
       if (dataset.root == 'human') {
         root = dataset.root;
         items = this.setting.categoricalData['human'].items[dataset.id].items;
@@ -1038,7 +1038,7 @@ LayersViewer.prototype.__change = function(e) {
       });
       break;
     case 'leaf':
-      var data;
+      let data;
       if (dataset.parent && dataset.root == 'human') {
         // human annotation
         data = this.setting.categoricalData['human'].items[

@@ -51,7 +51,7 @@
         // save key handler
         this.keyHandler = this.viewer.innerTracker.keyHandler;
 
-        var image1 = this.viewer.world.getItemAt(0);
+        let image1 = this.viewer.world.getItemAt(0);
         this.imgWidth = image1.source.dimensions.x;
         this.imgHeight = image1.source.dimensions.y;
 

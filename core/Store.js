@@ -1,9 +1,9 @@
 // METHODS HERE RETURN PROMISES
 // for test server
 try {
-  var fetch = require('node-fetch');
+  let fetch = require('node-fetch');
 } catch (e) {
-  var b;
+  let b;
 }
 
 /**
@@ -492,7 +492,7 @@ class Store {
       query['provenance.analysis.execution_id'] = name;
     }
 
-    var data = {
+    let data = {
       'provenance.analysis.fields': JSON.parse(fields),
       'provenance.analysis.setting': JSON.parse(setting),
     };
@@ -763,7 +763,7 @@ class Store {
    * @return {promise} - promise which resolves with data
    **/
   post(type, data) {
-    var postUrl = this.base + type + '/post';
+    let postUrl = this.base + type + '/post';
 
     return fetch(postUrl, {
       method: 'POST',
@@ -859,14 +859,14 @@ class Store {
     const suffix = 'Request/find';
     const url = this.base + suffix;
     if (userType === 'Admin') {
-      var query = {};
+      let query = {};
 
       return fetch(url + '?' + objToParamStr(query), {
         credentials: 'include',
         mode: 'cors',
       }).then(this.errorHandler);
     } else {
-      var query = {
+      let query = {
         'requestedBy': getUserId(),
       };
 
@@ -1233,5 +1233,5 @@ class Store {
 try {
   module.exports = Store;
 } catch (e) {
-  var a;
+  let a;
 }

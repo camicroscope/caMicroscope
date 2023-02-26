@@ -36,12 +36,12 @@ function createDataTable(data) {
   // edit
   $('#table tbody').on('click', 'button.edit', function() {
     updateRow = table.row( $(this).parents('tr') );
-    var data = updateRow.data();
+    let data = updateRow.data();
     openEditor(data);
   });
   // remove
   $('#table tbody').on('click', 'button.remove', function() {
-    var row = table.row( $(this).parents('tr') );
+    let row = table.row( $(this).parents('tr') );
     openDelConfirm(row);
   });
 }
@@ -131,7 +131,7 @@ function delUser(row) {
 
 
 function validateEditor() {
-  var isValid = true;
+  let isValid = true;
   // email validate
   const email = $('#edit-modal').find('#col-email').val();
   if (email && (/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(email))) {

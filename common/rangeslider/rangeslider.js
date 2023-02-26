@@ -1,7 +1,7 @@
 (function () {
     'use strict';
 
-    var RS = function (conf) {
+    let RS = function (conf) {
         this.input          = null;
         this.inputDisplay   = null;
         this.slider         = null;
@@ -47,7 +47,7 @@
             tip:        'rs-tooltip'
         };
 
-        for (var i in this.conf) { if (conf.hasOwnProperty(i)) this.conf[i] = conf[i]; }
+        for (let i in this.conf) { if (conf.hasOwnProperty(i)) this.conf[i] = conf[i]; }
 
         this.init();
     };
@@ -115,7 +115,7 @@
 
 
         if (this.conf.set && this.conf.set.length && checkInitial(this.conf)) {
-            var vals = this.conf.set;
+            let vals = this.conf.set;
 
             if (this.conf.range) {
                 this.values.start = this.conf.values.indexOf(vals[0]);
@@ -129,8 +129,8 @@
     RS.prototype.createScale = function (resize) {
         this.step = this.sliderWidth / (this.conf.values.length - 1);
 
-        //for (var i = 0, iLen = this.conf.values.length; i < iLen; i++) {
-            //var span = createElement('span')
+        //for (let i = 0, iLen = this.conf.values.length; i < iLen; i++) {
+            //let span = createElement('span')
                 //ins = createElement('ins');
 
             //span.appendChild(ins);
@@ -151,25 +151,25 @@
     RS.prototype.updateScale = function () {
         this.step = this.sliderWidth / (this.conf.values.length - 1);
 
-        var pieces = this.slider.querySelectorAll('span');
+        let pieces = this.slider.querySelectorAll('span');
 
-        for (var i = 0, iLen = pieces.length; i < iLen; i++)
+        for (let i = 0, iLen = pieces.length; i < iLen; i++)
             pieces[i].style.width = this.step + 'px';
 
         return this.setValues();
     };
 
     RS.prototype.addEvents = function () {
-        var pointers = this.slider.querySelectorAll('.' + this.cls.pointer),
+        let pointers = this.slider.querySelectorAll('.' + this.cls.pointer),
             pieces = this.slider.querySelectorAll('span');
 
         createEvents(document, 'mousemove touchmove', this.move.bind(this));
         createEvents(document, 'mouseup touchend touchcancel', this.drop.bind(this));
 
-        for (var i = 0, iLen = pointers.length; i < iLen; i++)
+        for (let i = 0, iLen = pointers.length; i < iLen; i++)
             createEvents(pointers[i], 'mousedown touchstart', this.drag.bind(this));
 
-        for (var i = 0, iLen = pieces.length; i < iLen; i++)
+        for (let i = 0, iLen = pieces.length; i < iLen; i++)
             createEvents(pieces[i], 'click', this.onClickPiece.bind(this));
 
         window.addEventListener('resize', this.onResize.bind(this));
@@ -182,7 +182,7 @@
 
         if (this.conf.disabled) return;
 
-        var dir = e.target.getAttribute('data-dir');
+        let dir = e.target.getAttribute('data-dir');
         if (dir === 'left') this.activePointer = this.pointerL;
         if (dir === 'right') this.activePointer = this.pointerR;
 
@@ -191,7 +191,7 @@
 
     RS.prototype.move = function (e) {
         if (this.activePointer && !this.conf.disabled) {
-            var coordX = e.type === 'touchmove' ? e.touches[0].clientX : e.pageX,
+            let coordX = e.type === 'touchmove' ? e.touches[0].clientX : e.pageX,
                 index = coordX - this.sliderLeft - (this.pointerWidth / 2);
 
             index = Math.round(index / this.step);
@@ -214,7 +214,7 @@
     };
 
     RS.prototype.setValues = function (start, end) {
-        var activePointer = this.conf.range ? 'start' : 'end';
+        let activePointer = this.conf.range ? 'start' : 'end';
 
         if (start && this.conf.values.indexOf(start) > -1)
             this.values[activePointer] = this.conf.values.indexOf(start);
@@ -263,7 +263,7 @@
 
         if (this.conf.disabled) return;
 
-        var idx = Math.round((e.clientX - this.sliderLeft) / this.step);
+        let idx = Math.round((e.clientX - this.sliderLeft) / this.step);
 
         if (idx > this.conf.values.length - 1) idx = this.conf.values.length - 1;
         if (idx < 0) idx = 0;
@@ -286,7 +286,7 @@
     }
     
     RS.prototype.onChange = function () {
-        var _this = this;
+        let _this = this;
 
         if (this.timeout) clearTimeout(this.timeout);
 
@@ -319,8 +319,8 @@
         this.slider.remove();
     };
 
-    var createElement = function (el, cls, dataAttr) {
-        var element = document.createElement(el);
+    let createElement = function (el, cls, dataAttr) {
+        let element = document.createElement(el);
         if (cls) element.className = cls;
         if (dataAttr && dataAttr.length === 2)
             element.setAttribute('data-' + dataAttr[0], dataAttr[1]);
@@ -329,14 +329,14 @@
     },
 
     createEvents = function (el, ev, callback) {
-        var events = ev.split(' ');
+        let events = ev.split(' ');
 
-        for (var i = 0, iLen = events.length; i < iLen; i++)
+        for (let i = 0, iLen = events.length; i < iLen; i++)
             el.addEventListener(events[i], callback);
     },
 
     prepareArrayValues = function (conf) {
-        var values = [],
+        let values = [],
             range = conf.values.max - conf.values.min;
 
         if (!conf.step) {
@@ -344,7 +344,7 @@
             return [conf.values.min, conf.values.max];
         }
 
-        for (var i = 0, iLen = (range / conf.step); i < iLen; i++)
+        for (let i = 0, iLen = (range / conf.step); i < iLen; i++)
             values.push(conf.values.min + i * conf.step);
 
         if (values.indexOf(conf.values.max) < 0) values.push(conf.values.max);

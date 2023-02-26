@@ -89,7 +89,7 @@ window.addEventListener('keydown', (e) => {
 
 // initialize viewer page
 function initialize() {
-  var checkPackageIsReady = setInterval(function() {
+  let checkPackageIsReady = setInterval(function() {
     if (IsPackageLoading) {
       clearInterval(checkPackageIsReady);
       // create a viewer and set up
@@ -255,7 +255,7 @@ function initCore() {
         };
         const getCateName = () => {
           const items = $UI.layersViewer.setting.categoricalData.human.items;
-          var dataType = null;
+          let dataType = null;
           for (const key in items) {
             if ({}.hasOwnProperty.call(items, key)) {
               dataType = key;
@@ -563,13 +563,13 @@ async function initUIcomponents() {
       window.location.href = url;
     }
   }
-  var additionalLinksConfig = await $CAMIC.store.getConfigByName('additional_links')
+  let additionalLinksConfig = await $CAMIC.store.getConfigByName('additional_links')
       .then((list)=>list.length==0?null:list[0]);
   if (additionalLinksConfig&&additionalLinksConfig.configuration&&Array.isArray(additionalLinksConfig.configuration)) {
     additionalLinksConfig.configuration.forEach((link)=>{
-      var openInNewTab = link.openInNewTab === false ? false : true;
-      var appendSlide = link.appendSlide === true ? true : false;
-      var url = link.url;
+      let openInNewTab = link.openInNewTab === false ? false : true;
+      let appendSlide = link.appendSlide === true ? true : false;
+      let url = link.url;
       subToolsOpt.push({
         name: link.displayName,
         icon: link.icon ? link.icon : 'link',
@@ -638,7 +638,7 @@ async function initUIcomponents() {
     width: 180,
     contentPadding: 5,
   });
-  var labelsTitle = document.createElement('div');
+  let labelsTitle = document.createElement('div');
   labelsTitle.classList.add('item_head');
   labelsTitle.textContent = 'Label Manager';
 
@@ -665,7 +665,7 @@ async function initUIcomponents() {
 
   // == end -- //
 
-  var checkOverlaysDataReady = setInterval(function() {
+  let checkOverlaysDataReady = setInterval(function() {
     if (
       $D.params.data &&
       $CAMIC &&
@@ -791,7 +791,7 @@ async function initUIcomponents() {
     }
   }, 300);
 
-  var checkTemplateSchemasDataReady = setInterval(function() {
+  let checkTemplateSchemasDataReady = setInterval(function() {
     if ($D.templates) {
       clearInterval(checkTemplateSchemasDataReady);
       const annotRegex = new RegExp('annotation', 'gi');

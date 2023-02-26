@@ -287,13 +287,13 @@ PopupPanel.createBodyContent = function(opt) {
 PopupPanel.createTable = function(data) {
   const table = document.createElement('div');
   table.classList.add('table');
-  for (var i = 0; i < data.length; i++) {
+  for (let i = 0; i < data.length; i++) {
     const row = data[i];
     // create row div and add into table div
     const tr = document.createElement('div');
     tr.classList.add('row');
     table.appendChild(tr);
-    for (var i = 0; i < row.length; i++) {
+    for (let i = 0; i < row.length; i++) {
       const cell = row[i];
       // create cell div and add into row div
       const td = document.createElement('div');

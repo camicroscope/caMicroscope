@@ -10,20 +10,20 @@
     'use strict';
 
     // check if we're using a touch screen
-    var isTouch = (('ontouchstart' in window) || (navigator.MaxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0));
+    let isTouch = (('ontouchstart' in window) || (navigator.MaxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0));
 
     // switch to touch events if using a touch screen
-    var mouseClick = isTouch ? 'touchend' : 'click';
+    let mouseClick = isTouch ? 'touchend' : 'click';
 
     // regex validation patterns
-    var patterns = {
+    let patterns = {
         email: /^[a-zA-Z0-9-_.]{1,}@[a-zA-Z0-9.-]{2,}[.]{1}[a-zA-Z]{2,}$/,
         // matches custom URC used to create custom elements, example = custom:tag:attributeKey1=attributeValue1,attributeKey2=attributeValue2
         customURC: /^custom:([a-z0-9-]*)(?:;|)([a-z0-9-=/*,.()\[\]]+|)$/i
     };
 
     // Create a new instance of the base object with these additional items
-    var pureForm = Object.create(base, {
+    let pureForm = Object.create(base, {
         action: {
             get: function () {
                 return this.getAttribute('action') || '';
@@ -284,14 +284,14 @@
         httpHeaders: {
             get: function() {
 
-                var value = this.getAttribute('http-headers') || '';
+                let value = this.getAttribute('http-headers') || '';
 
                 if (value !== '') {
 
-                    var res = {};
+                    let res = {};
 
                     value.split(';').forEach(function(item) {
-                        var items = item.split('=');
+                        let items = item.split('=');
                         res[items[0]] = items[1];
                     });
 
@@ -304,7 +304,7 @@
 
                 if (typeof value !== 'object') throw new Error('httpHeaders must be a key/value object');
 
-                var values = [];
+                let values = [];
 
                 // convert JSON key/value object to 'key=value;key=value'
                 Object.keys(value).forEach(function(key) {
@@ -327,8 +327,8 @@
      */
     pureForm.createdCallback = function () {
 
-        var self = this;
-        var attributes = Array.prototype.slice.call(self.attributes);
+        let self = this;
+        let attributes = Array.prototype.slice.call(self.attributes);
 
         // ensure current attributes are set
         attributes.forEach(function(item) {
@@ -338,7 +338,7 @@
         // when a button is clicked, check if we have a link object for it and if so, execute the request
         self.addEventListener('pure-form-button-clicked', function(e) {
 
-            var link = e.detail.link;
+            let link = e.detail.link;
 
             if (link) {
 
@@ -349,7 +349,7 @@
                 else if (self.isValid()) {
 
                     // fire the submit event, allowing listeners to cancel the submission
-                    var allowSubmit = self.dispatchEvent(new CustomEvent('pure-form-submit', { detail: { link: link }, bubbles: true, cancelable: true }));
+                    let allowSubmit = self.dispatchEvent(new CustomEvent('pure-form-submit', { detail: { link: link }, bubbles: true, cancelable: true }));
 
                     if (allowSubmit) {
 
@@ -366,12 +366,12 @@
 
             self.dispatchEvent(new CustomEvent('pure-form-value-changed', { detail: { srcElement: e.target }, bubbles: true, cancelable: true }));
 
-            var webStorage = window[self.storage];
+            let webStorage = window[self.storage];
 
             // update stored form data
             if (self.persist && webStorage) {
 
-                var rawData = getRawData.call(self);
+                let rawData = getRawData.call(self);
 
                 if (rawData) setStorageItem(webStorage, self.src, JSON.stringify(rawData));
             }
@@ -380,20 +380,20 @@
         // update stored content when form values are changed externally
         self.addEventListener('pure-form-value-set-complete', function(e) {
 
-            var webStorage = window[self.storage];
+            let webStorage = window[self.storage];
 
             // update stored form data
             if (self.persist && webStorage) {
 
-                var rawData = getRawData.call(self);
+                let rawData = getRawData.call(self);
 
                 if (rawData) setStorageItem(webStorage, self.src, JSON.stringify(rawData));
             }
         });
 
         // get iframe CSS if we have any
-        var iframeStyles = getStylesBySelector('pure-form .pure-form-html ', true);
-        var iframeCSS = Object.keys(iframeStyles || {}).map(function(selector) {
+        let iframeStyles = getStylesBySelector('pure-form .pure-form-html ', true);
+        let iframeCSS = Object.keys(iframeStyles || {}).map(function(selector) {
             return selector.replace('pure-form .pure-form-html ', '') + '{' + iframeStyles[selector] + '}';
         }).join('\n');
 
@@ -492,7 +492,7 @@
             case 'enforce-maxlength': {
 
                 // we dont want to wipe out the values when a property changes, so save it's value
-                var value = this.value;
+                let value = this.value;
 
                 // re-render the form
                 renderForm.call(this);
@@ -513,7 +513,7 @@
      */
     pureForm.clearError = function (fieldName) {
 
-        var el = this.querySelector('[name="' + fieldName + '"]');
+        let el = this.querySelector('[name="' + fieldName + '"]');
 
         if (el) {
             el.setAttribute('data-valid', 'true');
@@ -549,7 +549,7 @@
      */
     pureForm.setError = function (fieldName, errorMessage) {
 
-        var el = this.querySelector('[name="' + fieldName + '"]');
+        let el = this.querySelector('[name="' + fieldName + '"]');
 
         if (el) {
             // mark field as invalid
@@ -574,17 +574,17 @@
         // if a data object is not passed, get the current values
         data = data || getData.call(this);
 
-        var self = this;
-        var schema = this.schema;
-        var valid = true;
+        let self = this;
+        let schema = this.schema;
+        let valid = true;
 
         Object.keys(data).forEach(function(key) {
 
             // if the item has a regex pattern, grab the raw string - we do this because parseInt strips zero's
-            var inputEl = self.querySelector('[name="' + key + '"]');
-            var schemaItem = schema.properties[key];
-            var pattern = (schemaItem) ? schemaItem.pattern : null;
-            var value = '';
+            let inputEl = self.querySelector('[name="' + key + '"]');
+            let schemaItem = schema.properties[key];
+            let pattern = (schemaItem) ? schemaItem.pattern : null;
+            let value = '';
 
             if (pattern) {
                 value = (inputEl) ? inputEl.value : data[key];
@@ -593,7 +593,7 @@
                 value = data[key];
             }
 
-            var error = validateAgainstSchema(schema, key, value, ignoreRequired);
+            let error = validateAgainstSchema(schema, key, value, ignoreRequired);
 
             if (!silent) {
                 if (error) {
@@ -610,7 +610,7 @@
         });
 
         if (!silent && this.autofocusError) {
-            var firstErrorEl = this.querySelector('form [data-valid="false"]');
+            let firstErrorEl = this.querySelector('form [data-valid="false"]');
             if (firstErrorEl) {
                 firstErrorEl.focus();
             }
@@ -644,8 +644,8 @@
      */
     pureForm.reset = function() {
 
-        var formData = {};
-        var schemaProperties = (this.schema || {}).properties || {};
+        let formData = {};
+        let schemaProperties = (this.schema || {}).properties || {};
 
         Object.keys(schemaProperties).filter(function(key) {
             // skip schema .links or schema properties
@@ -667,12 +667,12 @@
 
         if (!this.disableValidation && !this.isValid()) return;
 
-        var allowSubmit = false;
+        let allowSubmit = false;
 
         if (rel) {
 
             // attempt to find the link object matching this rel
-            var link = (this.schema && Array.isArray(this.schema.links)) ? arrayWhere(this.schema.links, 'rel', rel, true) : null;
+            let link = (this.schema && Array.isArray(this.schema.links)) ? arrayWhere(this.schema.links, 'rel', rel, true) : null;
 
             if (link) {
 
@@ -710,7 +710,7 @@
     function validateField(key, value) {
 
         // create fake data object
-        var dataItem = {};
+        let dataItem = {};
 
         // populate key
         dataItem[key] = value;
@@ -726,8 +726,8 @@
      */
     function loadSchema() {
 
-        var self = this;
-        var schemaUrl = this.src;
+        let self = this;
+        let schemaUrl = this.src;
 
         // fire schema loading event just before requesting the schema
         self.dispatchEvent(new CustomEvent('pure-form-schema-loading', { detail: schemaUrl, bubbles: true, cancelable: true }));
@@ -745,7 +745,7 @@
             self.dispatchEvent(new CustomEvent('pure-form-schema-loaded', { detail: data, bubbles: true, cancelable: true }));
 
             // if the schema has an 'original' link, load it as it's the original data
-            var dataLink = arrayWhere((self.schema || {}).links || [], 'rel', 'original', true);
+            let dataLink = arrayWhere((self.schema || {}).links || [], 'rel', 'original', true);
 
             if (dataLink && dataLink.href !== '') {
                 loadData.call(self, dataLink.href);
@@ -756,7 +756,7 @@
                 self._originalValue = getData.call(self);
 
                 // get the storage object if it exists
-                var webStorage = window[self.storage];
+                let webStorage = window[self.storage];
 
                 // apply session stored form data if it exists
                 if (self.persist && webStorage) {
@@ -775,7 +775,7 @@
 
     function loadData(dataUrl) {
 
-        var self = this;
+        let self = this;
 
         // fire schema loading event just before requesting the schema
         self.dispatchEvent(new CustomEvent('pure-form-data-loading', { detail: dataUrl, bubbles: true, cancelable: true }));
@@ -806,10 +806,10 @@
 
         if (this.schema && typeof this.schema === 'object') {
 
-            var self = this;
-            var properties = this.schema.properties;
-            var orderedKeys = getSortedSchemaKeys(this.schema);
-            var lbl = null;
+            let self = this;
+            let properties = this.schema.properties;
+            let orderedKeys = getSortedSchemaKeys(this.schema);
+            let lbl = null;
 
             // always create a new form tag, therefore remove the old one
             if (this.form && this.form.parentElement) {
@@ -829,7 +829,7 @@
                 // hook form submit event
                 this.form.onsubmit = function (e) {
 
-                    var allowSubmit = self.dispatchEvent(new CustomEvent('pure-form-submit', { bubbles: true, cancelable: true }));
+                    let allowSubmit = self.dispatchEvent(new CustomEvent('pure-form-submit', { bubbles: true, cancelable: true }));
 
                     if (!allowSubmit || !self.disableValidation || !self.isValid()) {
                         e.preventDefault();
@@ -843,11 +843,11 @@
             // add validate on blur handler
             this.form.addEventListener('focusout', function(e) {
 
-                var el = e.target;
+                let el = e.target;
 
                 if (self.validateOnBlur && el.type !== 'submit' && el.type !== 'button' && el.type !== 'checkbox') {
 
-                    var value = el.value;
+                    let value = el.value;
 
                     // iframe body onblur event is redirected here, so treat that differently
                     if (el.tagName === 'IFRAME' && el.contentDocument && el.contentDocument.body) {
@@ -864,7 +864,7 @@
                 this.form.addEventListener('keydown', function(e) {
 
                     // number keys || letter keys || numpad keys
-                    var isCharacter = (e.keyCode > 47 && e.keyCode < 58) || (e.keyCode > 64 && e.keyCode < 91) || (e.keyCode > 95 && e.keyCode < 112);
+                    let isCharacter = (e.keyCode > 47 && e.keyCode < 58) || (e.keyCode > 64 && e.keyCode < 91) || (e.keyCode > 95 && e.keyCode < 112);
 
                     if (isCharacter && e.target.value.length === e.target.maxLength) {
                         e.preventDefault();
@@ -875,7 +875,7 @@
             // listen for keyboard events in case tabOnEnter is later enabled
             this.form.addEventListener('keyup', function(e) {
 
-                var el = e.target;
+                let el = e.target;
 
                 // only intercept keyup for enter key on inputs
                 if (e.keyCode === 13 && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT')) {
@@ -885,7 +885,7 @@
                         e.preventDefault();
 
                         // get all form items, convert to array to make it easier to search
-                        var items = Array.prototype.slice.call(self.form.querySelectorAll('.pure-form-item'));
+                        let items = Array.prototype.slice.call(self.form.querySelectorAll('.pure-form-item'));
 
                         // find the input that fired the keyup, grab its index and then move focus to the next input
                         items.forEach(function(item, index) {
@@ -904,7 +904,7 @@
                         e.preventDefault();
 
                         // find the first button and click it
-                        var button = (self.querySelectorAll('.pure-form-button') || [])[0];
+                        let button = (self.querySelectorAll('.pure-form-button') || [])[0];
 
                         if (button) {
                             fireEvent(button, isTouch ? 'touchend' : 'click');
@@ -921,7 +921,7 @@
 
             this.form.addEventListener('change', function(e) {
 
-                var el = e.target;
+                let el = e.target;
 
                 // listen for file change events and add base64 file data as .data item
                 if (el && el.tagName === 'INPUT' && el.type === 'file' && !el.data) {
@@ -931,7 +931,7 @@
                     e.stopPropagation();
 
                     // convert files into array object
-                    var files = Array.prototype.slice.call(e.target.files);
+                    let files = Array.prototype.slice.call(e.target.files);
 
                     // add .data collection to store base64 data
                     el.data = el.data || [];
@@ -958,10 +958,10 @@
             });
 
             // go through the array of ordered keys and create an element for each item
-            for (var i = 0; i < orderedKeys.length; i++) {
+            for (let i = 0; i < orderedKeys.length; i++) {
 
-                var key = orderedKeys[i];
-                var item = properties[key];
+                let key = orderedKeys[i];
+                let item = properties[key];
 
                 // create a form label container (acts as a row)
                 lbl = createEl(null, 'label', { for: key, class: 'pure-form-label' });
@@ -982,11 +982,11 @@
                 createEl(lbl, 'span', { class: 'pure-form-label-text' }, item.title || key);
 
                 // convert schema item to html input item
-                var inputEl = schemaItemToHtmlElement.call(this, key, item);
+                let inputEl = schemaItemToHtmlElement.call(this, key, item);
 
                 if (inputEl) {
 
-                    var isHidden = (inputEl.type === 'hidden');
+                    let isHidden = (inputEl.type === 'hidden');
 
                     // if pure-form is readonly, apply same to elements and dont enable validation
                     if (this.readonly) {
@@ -1047,7 +1047,7 @@
         if (this.title !== '') {
 
             // either get existing title tag or create a new one
-            var el = this.querySelector('.pure-form-title') || createEl(null, 'div', { class: 'pure-form-title' });
+            let el = this.querySelector('.pure-form-title') || createEl(null, 'div', { class: 'pure-form-title' });
 
             el.textContent = this.title;
 
@@ -1072,7 +1072,7 @@
         if (this.description !== '') {
 
             // either get existing title tag or create a new one
-            var el = this.querySelector('.pure-form-description') || createEl(null, 'div', { class: 'pure-form-description' });
+            let el = this.querySelector('.pure-form-description') || createEl(null, 'div', { class: 'pure-form-description' });
 
             el.textContent = this.description;
 
@@ -1094,9 +1094,9 @@
      */
     function renderButtons() {
 
-        var self = this;
+        let self = this;
 
-        var schemaButtons = (this.showSchemaButtons && this.schema && Array.isArray(this.schema.links)) ? this.schema.links : [];
+        let schemaButtons = (this.showSchemaButtons && this.schema && Array.isArray(this.schema.links)) ? this.schema.links : [];
 
         // remove original 'data' link if present
         schemaButtons = schemaButtons.filter(function(link) {
@@ -1107,10 +1107,10 @@
         if (this.form && (this.buttons !== '' || schemaButtons.length > 0)) {
 
             // convert buttons string into array for processing (removing empty items)
-            var buttons = this.buttons.split(',').filter(Boolean);
+            let buttons = this.buttons.split(',').filter(Boolean);
 
             // get existing button container if it exists
-            var buttonContainer = this.form.querySelector('.pure-form-buttons');
+            let buttonContainer = this.form.querySelector('.pure-form-buttons');
 
             // it does not exist, create one
             if (!buttonContainer) {
@@ -1121,11 +1121,11 @@
                 // add button click event listener
                 buttonContainer.addEventListener(mouseClick, function(e) {
 
-                    var el = e.target;
+                    let el = e.target;
 
                     if (el.tagName === 'INPUT' && !self.__dragging) {
 
-                        var eventData = {
+                        let eventData = {
                             value: el.value,
                             link: null
                         };
@@ -1139,7 +1139,7 @@
                             case 'button': {
 
                                 // get rel from button
-                                var rel = el.getAttribute('data-rel');
+                                let rel = el.getAttribute('data-rel');
 
                                 // get the schema link item matching this button
                                 eventData.link = (self.schema && Array.isArray(self.schema.links)) ? arrayWhere(self.schema.links, 'rel', rel, true) : null;
@@ -1173,7 +1173,7 @@
             schemaButtons.forEach(function(link) {
 
                 // use link title if it exists, otherwise use rel
-                var label = (link.title || link.rel).trim();
+                let label = (link.title || link.rel).trim();
 
                 // add data-rel so we can map clicks back to schema link items
                 createEl(buttonContainer, 'input', { type: 'button', 'data-rel': link.rel, value: label, class: 'pure-form-button' });
@@ -1191,12 +1191,12 @@
      */
     function setCharactersRemaining(input) {
 
-        var maxLen = parseInt(input.getAttribute('maxlength') || input.getAttribute('data-maxlength') || '0', 10);
-        var label = getParentByAttributeValue(input, 'tagName', 'LABEL');
+        let maxLen = parseInt(input.getAttribute('maxlength') || input.getAttribute('data-maxlength') || '0', 10);
+        let label = getParentByAttributeValue(input, 'tagName', 'LABEL');
 
         if (input.tagName === 'TEXTAREA' && label && maxLen > 0) {
 
-            var valLen = input.value.length;
+            let valLen = input.value.length;
 
             // ensure label has a copy of the value so css can render a tip
             label.setAttribute('data-max-length', maxLen);
@@ -1221,9 +1221,9 @@
      */
     function getData() {
 
-        var self = this;
-        var schema = (this.schema || {}).properties || {};
-        var formData = {};
+        let self = this;
+        let schema = (this.schema || {}).properties || {};
+        let formData = {};
 
         // go through the schema and get the form values
         Object.keys(schema).forEach(function(key) {
@@ -1232,10 +1232,10 @@
             if (key === 'links' && key.indexOf('$') > -1) return;
 
             // this is the schema item not the element itself
-            var schemaItem = schema[key];
+            let schemaItem = schema[key];
 
             // get the value from the element
-            var element = self.querySelector('[name="' + key + '"]');
+            let element = self.querySelector('[name="' + key + '"]');
 
             if (element) {
 
@@ -1272,7 +1272,7 @@
 
                     default: {
 
-                        var format = schemaItem.format || '';
+                        let format = schemaItem.format || '';
 
                         if (format === 'html') {
                             formData[key] = (element.contentDocument) ? (element.contentDocument.body.innerHTML || '').trim() : '';
@@ -1310,20 +1310,20 @@
         // we need a schema in order to retrieve values in correct types etc
         if (!this.schema) return null;
 
-        var self = this;
-        var schema = self.schema.properties;
-        var formData = {};
+        let self = this;
+        let schema = self.schema.properties;
+        let formData = {};
 
         // get a list of keys we're interested in
-        var keys = Object.keys(schema).filter(function(key) {
+        let keys = Object.keys(schema).filter(function(key) {
             return (key !== 'links' && key.indexOf('$') === -1 && !schema[key].readonly);
         });
 
         // go through the schema and get the form values for each key
         keys.forEach(function(key) {
 
-            var item = schema[key];
-            var element = self.querySelector('[name="' + key + '"]');
+            let item = schema[key];
+            let element = self.querySelector('[name="' + key + '"]');
 
             if (element && element.type !== 'file') {
 
@@ -1374,11 +1374,11 @@
 
         if (!linkDescObject) return;
 
-        var self = this;
-        var formData = getData.call(this);
-        var url = (linkDescObject.href || document.location.href);
-        var method = (linkDescObject.method || 'POST').toLowerCase();
-        var contentType = (linkDescObject.enctype || 'application/json');
+        let self = this;
+        let formData = getData.call(this);
+        let url = (linkDescObject.href || document.location.href);
+        let method = (linkDescObject.method || 'POST').toLowerCase();
+        let contentType = (linkDescObject.enctype || 'application/json');
 
         self.clearErrors();
 
@@ -1389,9 +1389,9 @@
         function(data) {
 
             // get the next schema as a link if it exists
-            var nextSchemaLink = arrayWhere((data.body || {}).links || [], 'rel', 'describedby:next', true) || {};
-            var nextSchemaMethod = nextSchemaLink.method || 'GET';
-            var nextSchemaUrl = nextSchemaLink.href || '';
+            let nextSchemaLink = arrayWhere((data.body || {}).links || [], 'rel', 'describedby:next', true) || {};
+            let nextSchemaMethod = nextSchemaLink.method || 'GET';
+            let nextSchemaUrl = nextSchemaLink.href || '';
 
             // 1. if the response has a link to the next schema, auto load that schema
             if (nextSchemaMethod === 'GET' && nextSchemaUrl !== '') {
@@ -1417,17 +1417,17 @@
      */
     function populateForm(data) {
 
-        var self = this;
-        var newData = data;
-        var oldData = this.value;
+        let self = this;
+        let newData = data;
+        let oldData = this.value;
 
-        var eventData = {
+        let eventData = {
             oldValue: oldData,
             newValue: newData
         };
 
         // fire onload event
-        var allow = self.dispatchEvent(new CustomEvent('pure-form-value-set', { detail: eventData, bubbles: true, cancelable: true }));
+        let allow = self.dispatchEvent(new CustomEvent('pure-form-value-set', { detail: eventData, bubbles: true, cancelable: true }));
 
         // user did not cancel, update form
         if (allow) {
@@ -1435,8 +1435,8 @@
             // go through all keys in data object, if we have an element and a value, set it
             Object.keys(newData).forEach(function(key) {
 
-                var el = self.querySelector('[name="' + key + '"]');
-                var value = (typeof newData[key] !== 'undefined') ? newData[key] : '';
+                let el = self.querySelector('[name="' + key + '"]');
+                let value = (typeof newData[key] !== 'undefined') ? newData[key] : '';
 
                 if (el) {
                     setElementValue.call(self, el, value);
@@ -1465,10 +1465,10 @@
      */
     function schemaItemToHtmlElement(id, item) {
 
-        var self = this;
-        var el = null;
-        var type = item.items && item.items.type || item.type;
-        var format = (item.items && item.items.format || item.format || '').toLowerCase();
+        let self = this;
+        let el = null;
+        let type = item.items && item.items.type || item.type;
+        let format = (item.items && item.items.format || item.format || '').toLowerCase();
 
         // if we have a custom format, skip the type restriction (still enforced in validation)
         if (regExMatches(format, patterns.customURC)) type = '';
@@ -1483,7 +1483,7 @@
                     el = createEl(null, 'select', { name: id, id: id });
                     //createEl(el, 'option', { value: '' });
 
-                    for (var i = item.minimum; i <= item.maximum; i++) {
+                    for (let i = item.minimum; i <= item.maximum; i++) {
                         createEl(el, 'option', { value: i }, i);
                     }
                 }
@@ -1546,21 +1546,21 @@
                             // support custom types in URC format (custom:tag;attr1=val1,attr2=val2)
                             if (regExMatches(format, patterns.customURC)) {
 
-                                var captures = patterns.customURC.exec(format);
+                                let captures = patterns.customURC.exec(format);
 
                                 if (captures && captures.length === 3) {
 
-                                    var tag = captures[1];
-                                    var attrs = (captures[2] || '').split(',').filter(Boolean);
+                                    let tag = captures[1];
+                                    let attrs = (captures[2] || '').split(',').filter(Boolean);
 
                                     // create custom element
                                     el = createEl(null, tag, { name: id, id: id });
 
                                     // add attributes
                                     attrs.forEach(function(attr) {
-                                        var parts = attr.split('=');
-                                        var key = parts[0];
-                                        var val = parts[1];
+                                        let parts = attr.split('=');
+                                        let key = parts[0];
+                                        let val = parts[1];
                                         el.setAttribute(key, val);
                                     });
                                 }
@@ -1628,7 +1628,7 @@
 
         if (typeof callback !== 'function') throw new Error('Invalid callback handler');
 
-        var result = storage.getItem(key);
+        let result = storage.getItem(key);
 
         if (result instanceof window.Promise) {
             result.then(callback);
@@ -1648,7 +1648,7 @@
      */
     function setStorageItem(storage, key, value, callback) {
 
-        var result = storage.setItem(key, value);
+        let result = storage.setItem(key, value);
 
         if (result instanceof window.Promise && callback) {
             result.then(callback);
@@ -1669,7 +1669,7 @@
         eventName = eventName.replace(/on/, '');
 
         if (document.createEvent) {
-            var e = document.createEvent('Event');
+            let e = document.createEvent('Event');
             e.initEvent(eventName, true, true);
             el.dispatchEvent(e);
         }
@@ -1689,7 +1689,7 @@
 
         Array.prototype.slice.call(this.querySelectorAll('iframe')).forEach(function (item) {
 
-            var iframeBody = item.contentDocument.body;
+            let iframeBody = item.contentDocument.body;
 
             // resize iframe to show all iframe content
             if (iframeBody.scrollHeight > iframeBody.clientHeight) {
@@ -1718,7 +1718,7 @@
 
         attName = (attName === 'class') ? 'className' : attName;
         attValue = (attName === 'className') ? '(^|\\s)' + attValue + '(\\s|$)' : attValue;
-        var tmp = el.parentNode;
+        let tmp = el.parentNode;
 
         while (tmp !== null && tmp.tagName && tmp.tagName.toLowerCase() !== 'html') {
             if (tmp[attName] === attValue || tmp.getAttribute(attName) === attValue || (attName === 'className' && tmp[attName].matches(attValue))) {
@@ -1741,8 +1741,8 @@
     */
     function createEl(parent, tagName, attrs, text, html) {
 
-        var el = document.createElement(tagName);
-        var customEl = tagName.indexOf('-') > 0;
+        let el = document.createElement(tagName);
+        let customEl = tagName.indexOf('-') > 0;
 
         // convert selector into parent element if present
         parent = (typeof parent === 'string' && parent !== '') ? document.querySelector(parent) : parent;
@@ -1801,15 +1801,15 @@
 
         parent = parent || document.createDocumentFragment();
 
-        var el = null;
-        var tmp = document.createElement('div');
+        let el = null;
+        let tmp = document.createElement('div');
 
         // inject content into none live element
         tmp.innerHTML = src;
 
         // remove script tags
-        var scripts = tmp.getElementsByTagName('script');
-        for (var i = scripts.length - 1; i >= 0; i--) {
+        let scripts = tmp.getElementsByTagName('script');
+        for (let i = scripts.length - 1; i >= 0; i--) {
             scripts[i].parentElement.removeChild(scripts[i]);
         }
 
@@ -1832,8 +1832,8 @@
      */
     function validateAgainstSchema(schema, prop, value, ignoreRequired) {
 
-        var schemaItem = getPropertyByPath(schema, prop, true);
-        var valLen = (value + '').length;
+        let schemaItem = getPropertyByPath(schema, prop, true);
+        let valLen = (value + '').length;
 
         if (schemaItem) {
 
@@ -1917,7 +1917,7 @@
         }
 
         // check if we have any children properties
-        var index = prop.indexOf('.');
+        let index = prop.indexOf('.');
 
         if (index > -1) {
 
@@ -1941,12 +1941,12 @@
         schema = schema.properties || schema;
 
         // get the keys
-        var keys = Object.keys(schema);
+        let keys = Object.keys(schema);
 
         keys.sort(function (a, b) {
 
-            var aId = parseFloat((schema[a].id || '0').replace(/[^0-9.]+/gi, ''));
-            var bId = parseFloat((schema[b].id || '0').replace(/[^0-9.]+/gi, ''));
+            let aId = parseFloat((schema[a].id || '0').replace(/[^0-9.]+/gi, ''));
+            let bId = parseFloat((schema[b].id || '0').replace(/[^0-9.]+/gi, ''));
 
             return (aId - bId);
         });
@@ -1963,8 +1963,8 @@
      */
     function setElementValue(el, value) {
 
-        var tag = (el) ? el.tagName.toLowerCase() : '';
-        var type = el.type || '';
+        let tag = (el) ? el.tagName.toLowerCase() : '';
+        let type = el.type || '';
 
         switch (tag) {
 
@@ -1997,7 +1997,7 @@
 
                 if (el.contentDocument) {
 
-                    var iframeBody = el.contentDocument.body;
+                    let iframeBody = el.contentDocument.body;
 
                     // clear the iframe
                     iframeBody.innerHTML = '';
@@ -2023,9 +2023,9 @@
      * @returns {array|object} returns an array of matches, or single item if @firstOnly param set
      */
     function arrayWhere(src, property, value, firstOnly) {
-        var res = [];
+        let res = [];
         src = src || [];
-        for (var i = 0, l = src.length; i < l; i++) {
+        for (let i = 0, l = src.length; i < l; i++) {
             if (src[i][property] === value) {
                 if (firstOnly) {
                     return src[i];
@@ -2046,7 +2046,7 @@
     function removeElementBySelector(parent, selector) {
 
         // remove container
-        var el = (parent || document).querySelector(selector);
+        let el = (parent || document).querySelector(selector);
 
         if (el) {
             el.parentElement.removeChild(el);
@@ -2071,7 +2071,7 @@
      * @returns {void}
      */
     function getBase64(file, callback) {
-        var reader = new FileReader();
+        let reader = new FileReader();
         reader.onload = function () {
             callback(reader.result.split(',').pop());
         };
@@ -2085,7 +2085,7 @@
 
             params = params || { bubbles: false, cancelable: false, detail: undefined };
 
-            var evt = document.createEvent('CustomEvent');
+            let evt = document.createEvent('CustomEvent');
             evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
             return evt;
         };
@@ -2096,7 +2096,7 @@
     /**
      * AJAX request(s) helper
      */
-    var http = (function() {
+    let http = (function() {
 
         /**
          * Checks if a string is a serialized JSON object
@@ -2139,7 +2139,7 @@
          */
         function exec(method, url, contentType, data, authToken, httpHeaders, error, callback) {
 
-            var xhr = ('withCredentials' in new XMLHttpRequest()) ? new XMLHttpRequest() : new XDomainRequest();
+            let xhr = ('withCredentials' in new XMLHttpRequest()) ? new XMLHttpRequest() : new XDomainRequest();
 
             if (xhr) {
 
@@ -2169,8 +2169,8 @@
                 xhr.onreadystatechange = function() {
                     if (xhr.readyState === 4) {
 
-                        var responseData = isJson(xhr.responseText) ? JSON.parse(xhr.responseText) : xhr.responseText;
-                        var success = (xhr.status >= 200 && xhr.status <= 300);
+                        let responseData = isJson(xhr.responseText) ? JSON.parse(xhr.responseText) : xhr.responseText;
+                        let success = (xhr.status >= 200 && xhr.status <= 300);
 
                         if (success || (xhr.status === 0 && xhr.responseText !== '')) {
                             callback({
@@ -2238,22 +2238,22 @@
 
         if (!className || className === '') throw new Error('Please provide a css class name');
 
-        var styleSheets = window.document.styleSheets;
-        var result = {};
+        let styleSheets = window.document.styleSheets;
+        let result = {};
 
         // NOTES: this must be in a try catch in case it attempts to access CSS rules from another domain!
         try {
 
             // go through all stylesheets in the DOM
-            for (var i = 0, l = styleSheets.length; i < l; i++) {
+            for (let i = 0, l = styleSheets.length; i < l; i++) {
 
-                var classes = styleSheets[i].rules || styleSheets[i].cssRules || [];
+                let classes = styleSheets[i].rules || styleSheets[i].cssRules || [];
 
                 // go through all classes in each document
-                for (var x = 0, ll = classes.length; x < ll; x++) {
+                for (let x = 0, ll = classes.length; x < ll; x++) {
 
-                    var selector = classes[x].selectorText || '';
-                    var content = classes[x].cssText || classes[x].style.cssText || '';
+                    let selector = classes[x].selectorText || '';
+                    let content = classes[x].cssText || classes[x].style.cssText || '';
 
                     // if the selector matches
                     if ((startingWith && selector.indexOf(className) === 0) || selector === className) {

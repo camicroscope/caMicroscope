@@ -247,11 +247,11 @@ LabelsViewer.prototype.__refreshUI = function() {
   this.keyZone.text.addEventListener('blur', (e)=>this.__validEditor());
 
 
-  var __key='';
-  var __preKey='';
+  let __key='';
+  let __preKey='';
   this.keyZone.text.addEventListener('keydown', (e)=>__key = e.key);
   this.keyZone.text.addEventListener('keyup', (e)=>{
-    var regex = new RegExp('^[A-Za-z0-9]$');
+    let regex = new RegExp('^[A-Za-z0-9]$');
     if (__key == e.key && regex.test(e.key)) {
       this.keyZone.text.value = e.key.toLocaleLowerCase();
       __preKey = e.key;
@@ -534,7 +534,7 @@ LabelsViewer.prototype.removeLabel = function(id) {
 };
 
 LabelsViewer.prototype.__nameValid = function() {
-  // var regex = new RegExp('^\\d+$');
+  // let regex = new RegExp('^\\d+$');
   if (this.nameZone.text.value!=='') {
     // this.nameZone.text.value = null;
     this.nameZone.error.textContent = '';
@@ -545,7 +545,7 @@ LabelsViewer.prototype.__nameValid = function() {
   }
 };
 LabelsViewer.prototype.__sizeValid = function() {
-  var regex = new RegExp('^\\d+$');
+  let regex = new RegExp('^\\d+$');
   if (regex.test(this.sizeZone.text.value)) {
     this.sizeZone.error.textContent = '';
     return true;
@@ -556,7 +556,7 @@ LabelsViewer.prototype.__sizeValid = function() {
   }
 };
 LabelsViewer.prototype.__keyValid = function() {
-  var regex = new RegExp('^[A-z0-9]$');
+  let regex = new RegExp('^[A-z0-9]$');
   if (this.keyZone.text.value=='') {
     this.keyZone.error.textContent = '';
     return true;
@@ -581,7 +581,7 @@ LabelsViewer.prototype.__keyValid = function() {
 };
 
 LabelsViewer.prototype.__validEditor = function() {
-  var isValid = true;
+  let isValid = true;
   if (!this.__nameValid()) {
     // error
     isValid = false;
@@ -611,7 +611,7 @@ LabelsViewer.prototype.getSelectedLabels = function() {
   }
 };
 LabelsViewer.prototype.__createElementFromHTML= function(htmlString) {
-  var div = document.createElement('div');
+  let div = document.createElement('div');
   div.innerHTML = htmlString.trim();
   // Change this to div.childNodes to support multiple top-level nodes
   return div.firstChild;
