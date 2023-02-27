@@ -52,6 +52,10 @@ body {
   height: 100%;
 }
 
+.modalbox .modalbox-footer.footer {
+  display: flex;
+  justify-content: space-between;
+}
 /*#minor_viewer.display {
     height: 100%;
     width: 100%;
