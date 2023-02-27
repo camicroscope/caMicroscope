@@ -37,9 +37,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Result Export Page [caMicroscope/566](https://github.com/camicroscope/caMicroscope/pull/566)
 * Slide Token injection [caMicroscope/567](https://github.com/camicroscope/caMicroscope/pull/567)
 
+
 ### caMicroscope [3.9.11](https://github.com/camicroscope/camicroscope/compare/v3.9.10...camicroscope:v3.9.11)
-###### 2021-08-15
-* Add Redir App/Page
+###### 2021-01-20
+* add redir page/app
+
+### caMicroscope [3.9.10](https://github.com/camicroscope/camicroscope/compare/v3.9.9...camicroscope:v3.9.10)
+###### 2021-01-20
+
+
+### caMicroscope [3.9.9](https://github.com/camicroscope/camicroscope/compare/v3.9.8...camicroscope:v3.9.9)
+###### 2021-11-08
+* Fix and enhance Human Readable URL support
 
 ### caMicroscope [3.9.10](https://github.com/camicroscope/camicroscope/compare/v3.9.9...camicroscope:v3.9.10)
 ###### 2021-01-20
