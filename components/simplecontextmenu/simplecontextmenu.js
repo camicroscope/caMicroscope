@@ -344,7 +344,7 @@
     const stylePointToPoint = document.createElement('a');
     stylePointToPoint.classList.add('material-icons');
     stylePointToPoint.textContent = 'timeline';
-    pointToPoint.appendChild(stylePointToPoint);    
+    pointToPoint.appendChild(stylePointToPoint);
 
     style.appendChild(free);
     style.appendChild(rect);

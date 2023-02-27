@@ -316,9 +316,9 @@ async function initUIcomponents() {
     headerText: 'Download Selection',
     hasFooter: true,
   });
-  const header = $UI.downloadSelectionModal.elt.querySelector('.modalbox-header')
+  const header = $UI.downloadSelectionModal.elt.querySelector('.modalbox-header');
   header.querySelector('span.close').style.display = 'None';
-  const footer = $UI.downloadSelectionModal.elt.querySelector('.modalbox-footer')
+  const footer = $UI.downloadSelectionModal.elt.querySelector('.modalbox-footer');
   const cancelBtn = document.createElement('button');
   cancelBtn.classList.add('btn');
   cancelBtn.classList.add('btn-sm');
@@ -327,7 +327,7 @@ async function initUIcomponents() {
   const downloadBtn = document.createElement('button');
   downloadBtn.classList.add('btn');
   downloadBtn.classList.add('btn-sm');
-  downloadBtn.classList.add('btn-info');  
+  downloadBtn.classList.add('btn-info');
   downloadBtn.textContent = 'Download';
   footer.innerHTML = '';
   footer.classList.add('footer');
@@ -431,7 +431,7 @@ async function initUIcomponents() {
     type: 'check',
     value: 'download',
     callback: toggleDownloadSelection,
-  });  
+  });
   // enhance
   subToolsOpt.push({
     name: 'Enhance',

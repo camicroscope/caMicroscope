@@ -218,7 +218,7 @@ class Store {
     return fetch(url + '?' + objToParamStr(query), {
       credentials: 'include',
       mode: 'cors',
-    }).then(this.errorHandler)
+    }).then(this.errorHandler);
   }
   getMarkByIds(ids, slide, notes, source, footprint, x0, x1, y0, y1) {
     if (!slide) {
