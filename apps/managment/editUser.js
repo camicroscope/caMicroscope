@@ -42,7 +42,8 @@ async function populateUserEdit(){
     input.type = "checkbox"
     input.classList.add("checkbox", "form-check-input" ,"collection_input")
     // set checked to true if present
-    if (user.collections.indexOf(i['_id']['$oid'])>=0){
+    let user_collections = user.collections || []
+    if (user_collections.indexOf(i['_id']['$oid'])>=0){
       input.checked = true;
     }
     // make label
