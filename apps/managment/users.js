@@ -142,7 +142,7 @@ async function uploadUsers(data){
     for (let j of user_collections){
       edit.collections.push(revCollectionMap[j])
     }
-    //let res = await store.updateUser(i['id'], edit)
+    let res = await store.updateUser(i['id'], edit)
     console.log(edit)
   }
   alert("updated " + editUsers.length + " users")
