@@ -62,7 +62,8 @@ async function populateUserTable(){
 
     document.getElementById("user_table_body").appendChild(tr);
   }
-
+  // initialize user table
+  $('#user_table').DataTable();
 }
 
 async function downloadUsers(){
@@ -85,28 +86,47 @@ async function downloadUsers(){
     u['institution'] = i.registration.institutionOfEmployment
     u['userType'] = i.userType
     u['collections'] = []
-    for(j of i.collections){
+    let user_collections = i.collections || []
+    for(j of user_collections){
       u['collections'].push(collectionMap[j])
     }
-    // remove last comma and space
-    u['Collections'] = u['Collections'].slice(0,-2)
     usersClean.push(u)
   }
-  // TODO download instead of log
+  // download the file
   console.log(usersClean)
-  alert("wip")
+  const blob = new Blob([JSON.stringify(usersClean, undefined, 2)], { type: "text/json" });
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.style.display = 'none';
+  a.href = url;
+  a.download = 'htt-users.json';
+  a.click();
+  window.URL.revokeObjectURL(url);
 }
 
-async function uploadUsers(){
+function handleUpload(){
+  function onReaderLoad(event){
+      console.log(event.target.result);
+      var obj = JSON.parse(event.target.result);
+      uploadUsers(obj);
+  }
+  var reader = new FileReader();
+  reader.onload = onReaderLoad;
+  if (document.getElementById("manifest_in").files.length){
+    reader.readAsText(document.getElementById("manifest_in").files[0]);
+  } else {
+    alert("include a user manifest file for upload")
+  }
+}
+
+async function uploadUsers(data){
   let collections = await store.getAllCollection()
   // map between collection id and name
   let revCollectionMap = {}
   for (let i of collections){
     revCollectionMap[i['name']] = i['_id']['$oid']
   }
-  alert("wip")
-  // TODO get the file and read as json
-  let editUsers = [];
+  let editUsers = data || [];
   for (let i of editUsers){
     let edit = {}
     edit.registration = {}
@@ -118,9 +138,14 @@ async function uploadUsers(){
     edit.userType = i['userType']
     // collections
     edit.collections = []
-    for (let j of i['collections']){
+    let user_collections = i['collections'] || [];
+    for (let j of user_collections){
       edit.collections.push(revCollectionMap[j])
     }
-    let res = await store.updateUser(i['id'], edit)
+    //let res = await store.updateUser(i['id'], edit)
+    console.log(edit)
   }
 }
+
+document.getElementById("downloadUsers").onclick = downloadUsers;
+document.getElementById("uploadUsers").onclick = handleUpload;
