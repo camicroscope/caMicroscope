@@ -144,8 +144,11 @@ async function uploadUsers(data){
     }
     let res = await store.updateUser(i['id'], edit)
     console.log(edit)
+
   }
   alert("updated " + editUsers.length + " users")
+  // refresh
+  location.reload()
 }
 
 document.getElementById("downloadUsers").onclick = downloadUsers;
