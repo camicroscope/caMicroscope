@@ -21,7 +21,8 @@ async function populateUserTable(){
     u['Institution'] = i.registration.institutionOfEmployment
     u['Type'] = i.userType
     u['Collections'] = ""
-    for(j of i.collections){
+    let user_collections = i.collections || []
+    for(j of user_collections){
       u['Collections'] += collectionMap[j] || j
       u['Collections'] += ", "
     }
@@ -77,7 +78,7 @@ async function downloadUsers(){
   let usersClean = []
   for (let i of users){
     let u = {};
-    u['id'] = i.['_id']['$oid']
+    u['id'] = i['_id']['$oid']
     u['firstName'] = i.registration.firstName
     u['lastName'] = i.registration.lastName
     u['email'] = i.email

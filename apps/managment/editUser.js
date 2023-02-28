@@ -3,7 +3,7 @@ const store = new Store('../../data/');
 async function populateUserEdit(){
   let collections = await store.getAllCollection()
   let searchparam = new URLSearchParams(window.location.search)
-  let users = await store.getUsers(searchparam.email[0]);
+  let users = await store.getUsers(searchparam.get("email"));
   let user = users[0];
 
   // populate regular fields
@@ -73,8 +73,7 @@ async function updateUser(e){
     edits.userType = "Expert"
   } else if (document.getElementById('admin-select').checked){
     edits.userType = "Admin"
-  } else if (document.getElem  // todo take in url param for which user to edit (and edit users.html to match)
-  // TODO replace above with async await storeentById('editor-select').checked){
+  } else if (document.getElementById('editor-select').checked){
     edits.userType = "Editor"
   } else {
     edits.userType = "Null"
