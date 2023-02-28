@@ -12,7 +12,6 @@ async function populateUserTable(){
     collectionMap[i['_id']['$oid']] = i['name']
   }
 
-
   // cleaned user data for the table
   let usersClean = []
   for (let i of users){
@@ -56,7 +55,7 @@ async function populateUserTable(){
     edit_btn.innerText = "Edit"
     edit_btn.type = "button"
     edit_btn.classList.add("btn", "btn-primary")
-    // TODO go to appropriate edit url
+    edit_btn.onclick = () => {window.location = "./editUser.html?email=" + user['Email']}
     edit_td.appendChild(edit_btn)
     tr.appendChild(edit_td);
 
