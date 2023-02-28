@@ -90,7 +90,8 @@ async function updateUser(e){
   // update the user
   let res = await store.updateUser(user_id, edits)
   console.log(edits)
-  return edits;
+  window.location = "./users.html"
+
 }
 
 document.getElementById("updateBtn").addEventListener("click", updateUser);
