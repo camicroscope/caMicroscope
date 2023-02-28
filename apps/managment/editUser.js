@@ -66,13 +66,15 @@ async function updateUser(e){
   edits.registration.lastName = document.getElementById('last_name').value;
   edits.registration.institutionOfEmployment = document.getElementById('institution').value;
   edits.email = document.getElementById('email').value;
+  edits.registration.email = edits.email;
   userTypeBoxes = document.getElementById("user_type").children;
   // user type
   if (document.getElementById('expert-select').checked){
     edits.userType = "Expert"
   } else if (document.getElementById('admin-select').checked){
     edits.userType = "Admin"
-  } else if (document.getElementById('editor-select').checked){
+  } else if (document.getElem  // todo take in url param for which user to edit (and edit users.html to match)
+  // TODO replace above with async await storeentById('editor-select').checked){
     edits.userType = "Editor"
   } else {
     edits.userType = "Null"
