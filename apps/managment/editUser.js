@@ -74,7 +74,7 @@ async function updateUser(e){
     edits.userType = "Expert"
   } else if (document.getElementById('admin-select').checked){
     edits.userType = "Admin"
-  } else if (document.getElementById('editor-select').checked){
+  } else if (document.getElementById('participant-select').checked){
     edits.userType = "Editor"
   } else {
     edits.userType = "Null"
