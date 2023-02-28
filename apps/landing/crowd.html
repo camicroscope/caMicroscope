@@ -212,7 +212,7 @@
 <script src="./util.js"></script>
 <script type="text/javascript">
     const store = new Store('../../data/');
-    let screenName = getUserInfo().data.registration.screenName;
+    let screenName = getUserInfo().data.registration.firstName;
     const screenNameElem = document.getElementById('screenName');
     screenNameElem.innerText = `hi, ${screenName}`;
     screenNameElem.style.display = '';

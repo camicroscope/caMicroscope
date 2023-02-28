@@ -94,8 +94,9 @@ class Store {
       mode: 'cors',
     }).then(this.errorHandler);
   }
+
   /**
-   * update a collection info
+   * update a user's info
    * @param {string} id - the collection id
    * @param {object} json - the data
    * @return {promise} - promise which resolves with data

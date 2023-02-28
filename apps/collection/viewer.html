@@ -202,7 +202,7 @@
       const store = new Store("../../data/");
       const container = document.getElementById("card-container");
       const screenName = document.getElementById("screenName");
-      screenName.innerText = `hi, ${getUserInfo().data.registration.screenName}`;
+      screenName.innerText = `hi, ${getUserInfo().data.registration.firstName}`;
       screenName.style.display = "";
 
       function createAllCards(data, container) {
