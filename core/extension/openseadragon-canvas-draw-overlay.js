@@ -110,6 +110,8 @@
       start: this.startDrawing.bind(this),
       stop: this.stopDrawing.bind(this),
       drawing: this.drawing.bind(this),
+      pointMove: this.pointMove.bind(this),
+      pointClick: this.pointClick.bind(this),
       updateView: this.updateView.bind(this),
     };
 
@@ -184,7 +186,7 @@
       this.isMoving = false;
 
       // creat supplies free, square, rectangle, line
-      this.drawMode = options.drawMode || 'rect'; // 'free', 'square', 'rect', 'line', 'grid'
+      this.drawMode = options.drawMode || 'rect'; // 'free', 'square', 'rect', 'line', 'grid', clickable
       this.size = options.size || null;
       // ctx styles opt
       this.style = {
@@ -368,9 +370,14 @@
 
       // add Event listeners
       this._div.addEventListener('mousemove', this._event.drawing);
+      
       this._div.addEventListener('mouseout', this._event.stop);
       this._div.addEventListener('mouseup', this._event.stop);
       this._div.addEventListener('mousedown', this._event.start);
+      
+      // point to point
+      this._div.addEventListener('mousemove', this._event.pointMove);
+      this._div.addEventListener('click', this._event.pointClick);
 
       this._viewer.addHandler('update-viewport', this._event.updateView);
       this._viewer.addHandler('open', this._event.updateView);
@@ -415,6 +422,9 @@
      * as the mouse steps in
      */
     startDrawing: function(e) {
+      if(this.drawMode == 'pointToPoint') {
+        return;
+      }      
       // prevent to open context menu when click on drawing mode
 
       let isRight;
@@ -509,13 +519,203 @@
         this.__newFeature(this._last.slice());
       }
     },
+    pointMove: function(e) {
+      if(this.isOn && this.drawMode == 'pointToPoint') {
+        let point = new OpenSeadragon.Point(e.clientX, e.clientY);
+        let img_point = this._viewer.viewport.windowToImageCoordinates(point);
+        if (
+          0 > img_point.x ||
+          this.imgWidth < img_point.x ||
+          0 > img_point.y ||
+          this.imgHeight < img_point.y
+        ) {
+          return;
+        }
+        img_point.x = Math.round(img_point.x);
+        img_point.y = Math.round(img_point.y);
 
+        // drawing anchor and lines
+        var line = $.isEmptyObject(this._current_path_)?
+        []:
+        [].concat(this._current_path_.geometry.coordinates[0]);
+        line = line.concat([[img_point.x,img_point.y]]);        
+        if(line.length == 1) return;
+        this.drawOnCanvas(
+          this._draw_ctx_,
+          function() {
+            // case 1: only one point
+            // if(line.length > 1) {
+            //   // end point
+            //   this._draw_ctx_.strokeStyle = 'red';
+            //   DrawHelper.drawCircle(
+            //     this._draw_ctx_,
+            //     img_point.x,
+            //     img_point.y,
+            //     this.style.lineWidth * 3,
+            //   );
+            // } else {
+              // draw line
+              DrawHelper.setStyle(this._draw_ctx_, this.style);              
+              DrawHelper.drawMultiline(
+                  this._draw_ctx_,
+                  line,
+              )
+              
+              // draw circle
+              // get start point (x, y)
+              const sx = line[0][0];
+              const sy = line[0][1];
+              // get end point (x, y)         
+              const ex = line[line.length - 1][0];
+              const ey = line[line.length - 1][1];              
+              if(line.length == 2) { // case 2: has two points   
+                this._draw_ctx_.strokeStyle = 'red';
+              } else { // case 3: more than 2 points
+                // calculate distance between start and end points                
+                const distance  = getDistance(
+                  this._viewer,
+                  new OpenSeadragon.Point(sx, sy),
+                  new OpenSeadragon.Point(ex, ey)
+                )
+                
+                this._draw_ctx_.strokeStyle = distance > 14 ? 'red' : 'blue';
+              }
+              // start point
+              DrawHelper.drawCircle(
+                  this._draw_ctx_,
+                  sx,
+                  sy,
+                  this.style.lineWidth * 3,
+              );              
+              // end point
+              DrawHelper.drawCircle(
+                  this._draw_ctx_,
+                  img_point.x,
+                  img_point.y,
+                  this.style.lineWidth * 3,
+              ); 
+            // }
+                               
+          }.bind(this))
+      }
+      
+    },
+    pointClick: function(e) {
+      
+      this.raiseEvent('start-drawing', {originalEvent: e});
+      if (this.stop) {
+        this.stop = false;
+        return;
+      }
+
+      if(this.isOn && this.drawMode == 'pointToPoint') {
+        let point = new OpenSeadragon.Point(e.clientX, e.clientY);
+        let img_point = this._viewer.viewport.windowToImageCoordinates(point);
+        if (
+          0 > img_point.x ||
+          this.imgWidth < img_point.x ||
+          0 > img_point.y ||
+          this.imgHeight < img_point.y
+        ) {
+          return;
+        }
+        img_point.x = Math.round(img_point.x);
+        img_point.y = Math.round(img_point.y);
+        this._last = [img_point.x, img_point.y];
+
+        if($.isEmptyObject(this._current_path_)) { 
+          this.__newFeature(this._last.slice());
+        } else {
+          this._current_path_.geometry.coordinates[0].push(this._last.slice());
+        }
+        // get current lines
+        var line = this._current_path_.geometry.coordinates[0];
+        // save point to point if the
+        if(line.length > 2 && getDistance(
+          this._viewer,
+          new OpenSeadragon.Point(line[0][0], line[0][1]),
+          new OpenSeadragon.Point(line[line.length - 1][0], line[line.length - 1][1])
+        ) <= 14) { // save annotations
+          this.__endNewFeature();
+          try {
+            // custom event on stop
+            this.raiseEvent('stop-drawing', {originalEvent: e});
+          } catch (e) {
+            // statements
+            console.error('draw-overlay:stop-drawing error:');
+            console.error(e);
+          }
+          return;
+        } 
+
+        // drawing anchor and lines
+        if(line.length == 1) return;
+        this.drawOnCanvas(
+          this._draw_ctx_,
+          function() {
+            // case 1: only one point
+            // if(line.length == 1) {
+            //   // end point
+            //   this._draw_ctx_.strokeStyle = 'red';
+            //   DrawHelper.drawCircle(
+            //     this._draw_ctx_,
+            //     img_point.x,
+            //     img_point.y,
+            //     this.style.lineWidth * 3,
+            //   );
+            // } else {
+              // draw line
+              DrawHelper.setStyle(this._draw_ctx_, this.style);              
+              DrawHelper.drawMultiline(
+                  this._draw_ctx_,
+                  line,
+              )
+              // draw circle
+              // get start point (x, y)
+              const sx = line[0][0];
+              const sy = line[0][1];
+              // get end point (x, y)         
+              const ex = line[line.length - 1][0];
+              const ey = line[line.length - 1][1];              
+              if(line.length == 2) { // case 2: has two points   
+                this._draw_ctx_.strokeStyle = 'red';
+              } else { // case 3: more than 2 points
+                // calculate distance between start and end points
+                const distance  = getDistance(
+                  this._viewer,
+                  new OpenSeadragon.Point(sx, sy),
+                  new OpenSeadragon.Point(ex, ey)
+                )
+                this._draw_ctx_.strokeStyle = distance > 14 ? 'red' : 'blue';
+              }
+              // start point
+              DrawHelper.drawCircle(
+                  this._draw_ctx_,
+                  sx,
+                  sy,
+                  this.style.lineWidth * 3,
+              );              
+              // end point
+              DrawHelper.drawCircle(
+                  this._draw_ctx_,
+                  img_point.x,
+                  img_point.y,
+                  this.style.lineWidth * 3,
+              ); 
+            //}        
+          }.bind(this)) 
+      }
+    },
     /**
      * @private
      * each drawing and collects the path data as point, as the mouse moves
      * @param  {Event} e the event
      */
     drawing: function(e) {
+      // stop if the draw mode is pointToPoint
+      if(this.drawMode == 'pointToPoint') {
+        return;
+      }
       // anything happening?
       if (!(this.isDrawing) && !(this.isMoving)) return;
 
@@ -719,6 +919,10 @@
      * stop drawing on the drawing canvas, when the mouse is up
      */
     stopDrawing: function(e) {
+      // stop if the draw mode is pointToPoint
+      if(this.drawMode == 'pointToPoint') {
+        return;
+      }      
       // if any movement or drawing
       if ((this.isDrawing) || (this.isMoving)) {
         // add style and data to data collection
@@ -1193,7 +1397,15 @@
 
 
   $.extend($.CanvasDraw.prototype, $.EventSource.prototype);
+  function getDistance(viewer, start, end) {
+    start = viewer.viewport.imageToWindowCoordinates(start);
+    end = viewer.viewport.imageToWindowCoordinates(end);
 
+    const dx = Math.round(Math.abs(start.x - end.x));
+    const dy = Math.round(Math.abs(start.y - end.y));
+    
+    return Math.sqrt(dx * dx + dy * dy);
+  }
   function getBounds(points) {
     let max; let min;
     points.forEach((point) => {
