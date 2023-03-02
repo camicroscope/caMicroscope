@@ -47,6 +47,11 @@ nav li:not(.active):hover a{
   overflow: hidden;
 } */
 
+#main-tree-view {
+  height: calc(100vh - 56px);
+  overflow-y: auto;
+}
+
 .h-fit { 
   height: calc(100vh - 56px);
   overflow: hidden;

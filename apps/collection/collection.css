@@ -43,6 +43,10 @@ nav li:not(.active):hover a{
 	color: black !important;
 }
 
+#main-tree-view {
+  height: calc(100vh - 145px);
+  overflow-y: auto;
+}
 
 /* custom tips  */
  .bs-tooltip-top .tooltip-arrow::before {
