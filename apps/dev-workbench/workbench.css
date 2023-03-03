@@ -35,3 +35,23 @@
 #toastPlaceholder {
   display: none;
 }
+
+
+#goBack{
+  display: flex;
+  padding :20px;
+}
+@media only screen and (max-width: 551px) {
+  nav {
+    flex-direction: column;
+  }
+  
+  nav ul {
+    flex-direction: column;
+  }
+  
+  nav ul li {
+    margin: 10px 0;
+  }
+}
+
