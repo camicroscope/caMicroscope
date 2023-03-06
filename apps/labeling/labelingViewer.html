@@ -332,9 +332,8 @@
   </body>
   <script type="text/javascript">
     // -- authentication check -- //
-    if (!hasLoginAsGoogle()) window.location = "../../login.html";
     // const type = getUserType();
-    if (type !== "Admin") {
+    if (getUserInfo().userType !== "Admin") {
       // crowd
       window.location = "../landing/crowd.html";
     }

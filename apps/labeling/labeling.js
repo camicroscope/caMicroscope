@@ -93,14 +93,10 @@ function initialize() {
       });
       // create a viewer and set up
       initCore();
-      $CAMIC.store.getCurrentUser().then((data)=>{
-        if (data&&data.hasOwnProperty('user_id')&&data.hasOwnProperty('is_admin')&&data.is_admin == true) {
-          $USER = data.user_id;
-          $ISADMIN = data.is_admin;
-        } else {
-          window.location.href = '../landing/crowd.html';
-        }
-      });
+      $USER = getUserInfo().sub;
+      if (getUserInfo().userType != "Admin"){
+        window.location.href = '../landing/crowd.html';
+      }
       // load ROIs
       // loading label and sub label
       $CAMIC.store.findLabeling({

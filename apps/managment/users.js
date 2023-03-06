@@ -83,8 +83,16 @@ async function downloadUsers(){
     u['firstName'] = i.registration.firstName
     u['lastName'] = i.registration.lastName
     u['email'] = i.email
-    u['institution'] = i.registration.institutionOfEmployment
     u['userType'] = i.userType
+    u['institution'] = i.registration.institutionOfEmployment
+    u['roleAtInstitution'] = i.registration.roleAtInstitution
+    if (u['roleAtInstitution'] == "Other"){
+      u['roleAtInstitution'] == i.registration.other
+    }
+    u['phoneNumber'] = i.registration.phoneNumber
+    u['specialties'] = i.registration.specialties
+    u['yearsOfResidency'] = i.registration.yearsOfResidency
+    u['certYear'] = i.registration.certYear
     u['collections'] = []
     let user_collections = i.collections || []
     for(j of user_collections){
@@ -135,6 +143,14 @@ async function uploadUsers(data){
     edit.registration.email = i['email']
     edit.email = i['email']
     edit.registration.institutionOfEmployment = i['institution']
+    // rather than repopulating other, change roleAtInstitution to match edit
+    edit.registration.roleAtInstitution = i['roleAtInstitution']
+    // clear other to avoid confusion.
+    edit.registration.other = ""
+    edit.registration.phoneNumber'] = i['phoneNumber']
+    edit.registration.specialties'] = i['specialties']
+    edit.registration.yearsOfResidency'] = i['yearsOfResidency']
+    edit.registration.certYear'] = i['certYear']
     edit.userType = i['userType']
     // collections
     edit.collections = []

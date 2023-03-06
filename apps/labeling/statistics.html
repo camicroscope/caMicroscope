@@ -20,7 +20,7 @@
     <script src="../../common/util.js"></script>
     <script>
       __auth_check(2);
-    </script>    
+    </script>
     <script src="../../common/ajv.js"></script>
     <script src="../../common/datatables/vanilla-dataTables.js"></script>
     <script src="../../components/loading/loading.js"></script>
@@ -438,16 +438,12 @@
     </div>
   </body>
   <script>
-    // -- authentication check -- //
-    if (!hasLoginAsGoogle()) window.location = "../../login.html";
 
-    const roles = getUserRole();
-    const idx = roles.findIndex((e) => e == "write" || e == "admin");
+    const roles = getUserInfo().userType
+    const idx = [roles].findIndex((e) => e == "Write" || e == "Admin" || e == "Editor" );
     if (idx < 0) {
       // crowd
       window.location = "../landing/crowd.html";
-    } else {
-      //window.location = './crowd.html';
     }
 
     let creators;
