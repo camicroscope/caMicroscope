@@ -67,12 +67,16 @@
       class="navbar navbar-expand-lg navbar-dark"
       style="background: rgb(33, 37, 41);"
     >
-      <div style="cursor: pointer;" id="goBack">
+      <div style="cursor: pointer; height: 100%;" id="goBack">
         <i data-feather="arrow-left" class="text-white"></i>
       </div>
       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
       <!-- Navbar brand -->
-      <span style="cursor: default;" class="navbar-brand"> Workbench</span>
+      <div style="left:4em;position: absolute;">
+        <span style="cursor: default;" class="navbar-brand"> Workbench</span>
+      </div>
+      
+    <div> 
       <ul class="navbar-nav mr-auto">
         <!-- Dropdown -->
         <li
@@ -115,6 +119,7 @@
           </div>
         </li>
       </ul>
+    </div>
     </nav>
     <!--/.Navbar-->
 
@@ -219,11 +224,15 @@
         style="
           align-content: center;
           display: flex;
+          /* justify-content: space-around; */
           flex-wrap: wrap;
           padding: 1em;
         "
       >
         <!-- Cards -->
+     
+
+      
         <div class="card" style="max-width: 20em; margin: 0 auto;">
           <!-- Card content -->
           <div class="card-body">
@@ -289,8 +298,10 @@
             </div>
           </div>
         </div>
+
+
         <!-- Cards -->
-      </div>
+   
     </div>
 
     <!-- Labels/customData Upload Modal -->
