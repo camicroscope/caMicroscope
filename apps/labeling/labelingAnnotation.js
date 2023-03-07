@@ -157,7 +157,7 @@ async function initialize() {
       initCore();
       // get user id;
       $USER = getUserInfo().sub;
-      //$USER = await $CAMIC.store.getCurrentUserId();
+      // $USER = await $CAMIC.store.getCurrentUserId();
       // loading label and sub label
       try {
         Loading.open(document.body, 'Loading Labels Data...');

@@ -94,7 +94,7 @@ function initialize() {
       // create a viewer and set up
       initCore();
       $USER = getUserInfo().sub;
-      if (getUserInfo().userType != "Admin"){
+      if (getUserInfo().userType != 'Admin') {
         window.location.href = '../landing/crowd.html';
       }
       // load ROIs
