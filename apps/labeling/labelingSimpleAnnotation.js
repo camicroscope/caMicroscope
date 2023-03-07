@@ -631,7 +631,7 @@ async function loadingData() {
   const labelId = $D.params.labelId;
   const slideId = $D.params.slideId;
   //
-  const labelData = await $CAMIC.store.findLabeling({id: labelId}).then((d)=>d[0]);
+  const labelData = await $CAMIC.store.findLabeling({_id: labelId}).then((d)=>d[0]);
 
 
   let sublabels = null;
