@@ -737,7 +737,7 @@ async function saveLabelings(e) {
 
     // add all labels
     await asyncForEach(ROIS, async (roi) => {
-      const {ROI, subROIs} = generateROIandSubROI(roi);
+      const {ROI, subROIs} = await generateROIandSubROI(roi);
       await saves(ROI, subROIs);
     });
   } catch (error) {
@@ -790,7 +790,7 @@ async function generateROIandSubROI(patch) {
   const alias = `${fileName}_x${x}.${width}_y${y}.${height}`;
   const batch = (await $CAMIC.store.getCollection($CAMIC.slideData.collections[0]))[0].name;
 
-  const ROI = {
+  var ROI = {
     _id: roiId.toString(),
     alias: alias,
     creator: creator,
