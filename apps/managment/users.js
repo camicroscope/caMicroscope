@@ -147,10 +147,10 @@ async function uploadUsers(data){
     edit.registration.roleAtInstitution = i['roleAtInstitution']
     // clear other to avoid confusion.
     edit.registration.other = ""
-    edit.registration.phoneNumber'] = i['phoneNumber']
-    edit.registration.specialties'] = i['specialties']
-    edit.registration.yearsOfResidency'] = i['yearsOfResidency']
-    edit.registration.certYear'] = i['certYear']
+    edit.registration.phoneNumber = i['phoneNumber']
+    edit.registration.specialties = i['specialties']
+    edit.registration.yearsOfResidency = i['yearsOfResidency']
+    edit.registration.certYear = i['certYear']
     edit.userType = i['userType']
     // collections
     edit.collections = []
