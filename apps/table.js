@@ -551,7 +551,8 @@ $('[data-dismiss=modal]').on('click', resetUploadForm);
 
 // window.addEventListener('resize', ()=>{$('#datatables').stacktable()});
 $(document).ready(function() {
-  $('#slideUploadButton').hide();
+  // Commented to show the upload button
+  // $('#slideUploadButton').hide();
   checkUserPermissions();
   initialize();
   $('#deleteModal').on('hidden.bs.modal', function(e) {
