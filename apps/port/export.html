@@ -7,6 +7,7 @@
   <style>
     body{
       padding:20px;
+      text-align: center;
     }
     #output{
       padding: 20px;
@@ -17,16 +18,19 @@
     .form-check-input{
       padding:5px !important;
     }
+    .element {
+      margin: 5px;
+    }
     </style>
 </head>
 <body>
 
   <h1>Export Results</h1>
-  <div class="form">
-  <label for="slide_id">Slide Ids (exact matches, comma delimited):</label>
-  <input type="text" id="slide_id" name="slide_id"><br>
+  <div class="form element">
+  <label for="slide_id" class="element">Slide Ids (exact matches, comma delimited):</label><br>
+  <input type="text" id="slide_id" name="slide_id" class="element"><br>
 
-  <button id="populate_btn" onclick="populateList()" type="button">Get List of Results</button>
+  <button id="populate_btn" class="element" onclick="populateList()" type="button">Get List of Results</button>
 
   </div>
   <br><br>
