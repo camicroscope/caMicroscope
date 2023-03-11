@@ -123,6 +123,27 @@ iframe {
 .nav-link {
   cursor: pointer;
 }
-.nav-link:hover{
+/* .nav-link:hover{
  background-color: #dfdfdf;
+} */
+
+.nav-link:after {
+  content: '🔒';
+  position: absolute;
+  opacity: 0;  
+  transition: 0.4s;
+}
+
+.nav-link:hover{
+  background-color: transparent;
+  border: 1px solid #fff;
+  width: calc(100% + 10px);
+  padding-right: 18px;
+  padding-left:8px;
+  opacity: 1;
+}
+
+.nav-link:hover:after {
+  opacity: 1;
+  right: 10px;
 }
