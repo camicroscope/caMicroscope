@@ -1670,7 +1670,6 @@
 		display: inline-block;
 		font-size: 0.8em;
 		font-weight: 700;
-		height: 3.25em;
 		line-height: 3.35em;
 		padding: 0 2em;
 		text-align: center;
@@ -4741,9 +4740,7 @@
 			transition: background 0.5s; 
 			border-radius: 3px;
 		}
-		nav li:not(:first-child){
-			margin-left: 0.3em !important;
-		}
+		
 		nav li:not(.active):hover{
 			background: white;
 		}
