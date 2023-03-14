@@ -355,15 +355,11 @@
     async function initialize() {
       const store = new Store("../../data/");
       try {
-        store.getUsers(getUserId()).then((data) => {
-          if (Array.isArray(data) && data.length > 0) {
-            // user exist
-            $USER = data[0];
-            const screenName = document.getElementById("screenName");
-            screenName.innerText = `hi, ${$USER.registration.screenName}`;
-            screenName.style.display = "";
-          }
-        });
+        let screenName = getUserInfo().data.registration.firstName;
+        const screenNameDiv = document.getElementById("screenName");
+        screenNameDiv.innerText = `hi, ${screenName}`;
+        screenNameDiv.style.display = "";
+
         const slides = await store.findSlideLabelingStat(cid, getUserId());
         if (slides && Array.isArray(slides)) {
           if (slides.length == 0) {
