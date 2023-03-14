@@ -209,17 +209,10 @@ function initialize() {
   const params = getUrlVars();
   const store = new Store('../data/');
 
-  store.getUsers(getUserId()).then((data) => {
-    if (Array.isArray(data) && data.length > 0) {
-      // user exist
-      $USER = data[0];
-      // if (data.is_admin==false) window.location.href = './landing/crowd.html';
-      $ISADMIN = data.is_admin;
-      screenName.innerText = `hi, ${$USER.registration.screenName}`;
-      screenName.style.display = '';
-    }
-  });
-
+  let screenName = getUserInfo().data.registration.firstName;
+  const screenNameDiv = document.getElementById("screenName");
+  screenNameDiv.innerText = `hi, ${screenName}`;
+  screenNameDiv.style.display = "";
   store.findRequest()
       .then(function(requests) {
         if (requests && !requests.error) {
