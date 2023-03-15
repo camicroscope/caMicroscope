@@ -18,8 +18,9 @@
 .btn {
   text-transform: unset !important;
 }
-.navbar {
-  padding-left: 20px;
+.nabvar {
+  display: flex;
+  flex-direction: row;
 }
 /* All display none */
 #importFile,
@@ -39,7 +40,7 @@
 
 #goBack{
   display: flex;
-  padding :20px;
+  margin: 0 1rem;
 }
 @media only screen and (max-width: 551px) {
   nav {
