@@ -16,7 +16,7 @@
       display:inline-block;
     }
     .form-check-input{
-      padding:5px !important;
+      padding:5px !important; 
     }
     .btn{
       color: #fff;
@@ -28,13 +28,13 @@
 <body>
 
   <h1 class="text-center py-5" id="exportTitle">Export Results</h1>
-  <div class="form text-center my-5 container-fluid">
+  <div class="form text-center my-5">
   <label for="slide_id">Slide Ids (exact matches, comma delimited):</label>
-  <input type="text" id="slide_id" name="slide_id">
+  <input type="text" class="mx-1" id="slide_id" name="slide_id">
   <button id="populate_btn" onclick="populateList()" type="button" class="btn btn-primary mx-3">Get List of Results</button>
 
   </div>
-  <div class="result container-fluid text-center">
+  <div class="result text-center">
     <h3>Select Results</h3>
     <div id="output"></div>
     <button id="convert_btn" onclick="downloadResults()" type="button" class="btn btn-primary my-3">Download Selected Results</button>
