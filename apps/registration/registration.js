@@ -133,27 +133,10 @@ $('#basic').alpaca({
         'title': 'Last Name',
         'required': true,
       },
-      'screenName': {
-        'type': 'string',
-        'title': 'Please provide a screen name for your data collection',
-        'required': true,
-      },
       'contactEmail': {
         'type': 'string',
         'title': 'Contact Email',
         'format': 'email',
-        'required': true,
-      },
-      'password': {
-        'type': 'string',
-        'title': 'Password',
-        'format': 'password',
-        'required': true,
-      },
-      'confirmPassword': {
-        'type': 'string',
-        'title': 'Confirm Password',
-        'format': 'password',
         'required': true,
       },
       'phoneNumber': {
