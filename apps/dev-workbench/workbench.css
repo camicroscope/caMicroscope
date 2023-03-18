@@ -21,6 +21,9 @@
 .navbar {
   padding-left: 20px;
 }
+.navbar-brand{
+  margin-right: 10rem !important;
+}
 /* All display none */
 #importFile,
 #headContent,
