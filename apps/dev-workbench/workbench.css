@@ -35,3 +35,7 @@
 #toastPlaceholder {
   display: none;
 }
+.navbar-brand{
+  margin-left: 3rem;
+  position: absolute;
+}
