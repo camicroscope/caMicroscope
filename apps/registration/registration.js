@@ -303,18 +303,17 @@ async function saveRegistration() {
         "firstName": registrationForm.firstName,
         "lastName": registrationForm.lastName,
         "email": registrationForm.contactEmail,
-        "username": registrationForm.screenName,
-        "password": registrationForm.password,
+        "username": registrationForm.contactEmail,
         "enabled": "true",
       }
       let kcRes = await addKcUser(kcUserInfo);
       if (kcRes.username){
         console.log("successful user add")
-        alert("User added, please log in.")
+        alert("User added, please check your email to set your password.")
         window.location = "../../login.html";
       } else {
         message.addError('Failed to add user to keycloak');
-        console.lor(kcRes);
+        console.log(kcRes);
       }
     } else {
       message.addError('Failed to add this new user');
