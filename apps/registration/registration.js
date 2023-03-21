@@ -279,6 +279,18 @@ $('#certifications').alpaca({
   },
 });
 
+async function requestResetPassword(email){
+  user_req = {"email": email}
+  return await fetch("../../requestResetPassword", {
+    method: 'POST',
+    body: JSON.stringify(user_req)
+  }).then(x=>x.json()).then(x=>{
+    console.info(x)
+  }).catch(e=>{
+    console.error(e);
+  });
+}
+
 
 async function saveRegistration() {
   // registration
@@ -309,6 +321,7 @@ async function saveRegistration() {
       let kcRes = await addKcUser(kcUserInfo);
       if (kcRes.username){
         console.log("successful user add")
+        await requestResetPassword(registrationForm.contactEmail)
         alert("User added, please check your email to set your password.")
         window.location = "../../login.html";
       } else {
