@@ -13,7 +13,7 @@ function requestResetPassword(){
     document.getElementById("error").style = "display:none;";
     document.getElementById("resetPassword").style = "display:none;";
     document.getElementById("sendRequest").style = "display:none;";
-  }).catch(e=>
+  }).catch(e=>{
     console.error(e);
     document.getElementById("error").style = "";
     document.getElementById("success").style = "display:none;";
@@ -39,7 +39,7 @@ function resetPassword(){
     document.getElementById("error").style = "display:none;";
     document.getElementById("resetPassword").style = "display:none;";
     document.getElementById("sendRequest").style = "display:none;";
-  }).catch(e=>
+  }).catch(e=>{
     console.error(e);
     document.getElementById("error").style = "";
     document.getElementById("success").style = "display:none;";

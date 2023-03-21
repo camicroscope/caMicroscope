@@ -210,9 +210,9 @@ function initialize() {
   const store = new Store('../data/');
 
   let screenName = getUserInfo().data.registration.firstName;
-  const screenNameDiv = document.getElementById("screenName");
+  const screenNameDiv = document.getElementById('screenName');
   screenNameDiv.innerText = `hi, ${screenName}`;
-  screenNameDiv.style.display = "";
+  screenNameDiv.style.display = '';
   store.findRequest()
       .then(function(requests) {
         if (requests && !requests.error) {
