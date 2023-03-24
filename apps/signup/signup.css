@@ -64,6 +64,7 @@ body {
 	border: none;
 	min-width: 140px;
 	outline: none !important;
+	margin-left: 6rem;
 }
 .signup-form .btn:hover, .signup-form .btn:focus {
 	background: #179b81;
