@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Index
 * **Version 3**
+    * [3.10.x](#camicroscope-3100)
     * [3.9.x](#camicroscope-390)
     * [3.8.x](#camicroscope-380)
     * [3.7.x](#camicroscope-377)
@@ -24,8 +25,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * **Version 1**
     * [1.0.x](#camicroscope-10)
 
-### caMicroscope [Unreleased](https://github.com/camicroscope/camicroscope/compare/v3.9.10...camicroscope:develop)
+### caMicroscope [Unreleased](https://github.com/camicroscope/camicroscope/compare/v3.10.1...camicroscope:develop)
 ###### TBD
+
+### caMicroscope [3.10.1](https://github.com/camicroscope/camicroscope/compare/v3.10.0...camicroscope:v3.10.1)
+###### 2022-11-18
+* Bugfix for Magnifying glass with slide token auth
+
+### caMicroscope [3.10.0](https://github.com/camicroscope/camicroscope/compare/v3.9.11...camicroscope:v3.10.0)
+###### 2022-10-25
+* Result Export Page [caMicroscope/566](https://github.com/camicroscope/caMicroscope/pull/566)
+* Slide Token injection [caMicroscope/567](https://github.com/camicroscope/caMicroscope/pull/567)
+
 
 ### caMicroscope [3.9.11](https://github.com/camicroscope/camicroscope/compare/v3.9.10...camicroscope:v3.9.11)
 ###### 2021-01-20
@@ -39,9 +50,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ###### 2021-11-08
 * Fix and enhance Human Readable URL support
 
-### caMicroscope [3.9.10](https://github.com/camicroscope/camicroscope/compare/v3.9.8...camicroscope:v3.9.10)
+### caMicroscope [3.9.10](https://github.com/camicroscope/camicroscope/compare/v3.9.9...camicroscope:v3.9.10)
 ###### 2021-01-20
 * Human Readable Urls for pathdb
+
+### caMicroscope [3.9.9](https://github.com/camicroscope/camicroscope/compare/v3.9.8...camicroscope:v3.9.9)
+###### 2021-11-08
+* Fix and enhance Human Readable URL support
 
 ### caMicroscope [3.9.8](https://github.com/camicroscope/camicroscope/compare/v3.9.6...camicroscope:v3.9.8)
 ###### 2021-10-21

@@ -83,12 +83,18 @@ nav li:not(.active):hover a {
 .active {
   background: white;
 }
+
 .active a {
   color: black !important;
 }
 
 .overall {
   display: flex;
+
+		
+nav li:not(.active):hover{
+	background: white;
+
 }
 
 .reload {
