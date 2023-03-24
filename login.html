@@ -1,8 +1,41 @@
 <html>
 <meta name="google-signin-client_id" content="XXX.apps.googleusercontent.com">
+<head>
+    <meta name="keywords" content="camicroscope, quip" />
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no'>
+    <title>CaMicroscope - User Signup</title>
+
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+    <!-- Bootstrap core CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet" 
+    integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0"
+    crossorigin="anonymous">
+
+    <link rel='stylesheet' type='text/css' media='all' href='../../css/normalize.css'/>
+   
+    <link rel='stylesheet' type='text/css' media='all' href='../../css/popup.css'/>
+  <link rel="stylesheet" href="login.css">
+    <!-- JQuery -->
+    <script
+    src="https://code.jquery.com/jquery-3.4.1.min.js"
+    integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+    crossorigin="anonymous"></script>
+    
+
+
+
+  </head>
+  <script src="../../core/Store.js"></script>
+  <script src="./signup.js"></script>
+  
 <script src="https://apis.google.com/js/platform.js" async defer></script>
-<div class="g-signin2" data-onsuccess="onSignIn"></div>
-<a href="#" onclick="signOut();">Sign out</a>
+<script src="login.js"></script>
+
+
 <script>
   function signOut() {
     var auth2 = gapi.auth2.getAuthInstance();
@@ -20,22 +53,22 @@ function randomString(length) {
     var charset = '0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._~'
     random.forEach(function (c) {
         result.push(charset[c % charset.length]);
-    });
-    return result.join('');
-}
-
+      });
+      return result.join('');
+    }
+    
 function getUrlParam(name, url) {
-    if (!url) url = window.location.href;
-    name = name.replace(/[\[\]]/g, '\\$&');
-    var regex = new RegExp('[?&#]' + name + '(=([^&#]*)|&|#|$)'),
-        results = regex.exec(url);
-    if (!results) return null;
+  if (!url) url = window.location.href;
+  name = name.replace(/[\[\]]/g, '\\$&');
+  var regex = new RegExp('[?&#]' + name + '(=([^&#]*)|&|#|$)'),
+  results = regex.exec(url);
+  if (!results) return null;
     if (!results[2]) return '';
     return decodeURIComponent(results[2].replace(/\+/g, ' '));
-}
-
-function onSignIn(googleUser) {
-  var id_token = googleUser.getAuthResponse().id_token;
+  }
+  
+  function onSignIn(googleUser) {
+    var id_token = googleUser.getAuthResponse().id_token;
   console.info(id_token)
   // trade for camic token
   var cookie_name = "token" // "token" is expected by elevate router
@@ -56,10 +89,10 @@ function onSignIn(googleUser) {
     fetch("./auth/Token/check",
     {headers: {
         'Authorization': "Bearer " + id_token
-     }}
-    ).then(x=>x.json()).then(x=>{
-      console.log("{id provider", id_token)
-      console.log("{auth service}", x)
+      }}
+      ).then(x=>x.json()).then(x=>{
+        console.log("{id provider", id_token)
+        console.log("{auth service}", x)
       if (x.hasOwnProperty('token')){
         document.cookie = cookie_name + "=" + x.token;
         window.location = state
@@ -74,4 +107,102 @@ function onSignIn(googleUser) {
 
 
 </script>
+
+
+
+
+<body>
+  
+  <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark" style="position: sticky; margin-top: -4em;">
+    <div class="container-fluid">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent" >
+        <ul class="navbar-nav mr-auto">
+                    <li class="nav-item link" style="font-family: sans-serif;">
+                      <a class="nav-link" href="../apps/landing/landing.html"> <i class="fas fa-home"></i> Home</a>
+                    </li>
+                    <li class="nav-item  link" style="font-family: sans-serif;">
+                      <a class="nav-link" href="../apps/table.html"> <i class="fas fa-list-ul"></i>  Slides</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav ms-auto">
+                  <li class="nav-item link active" style="font-family: sans-serif;">
+                        <a class="nav-link" href="../apps/signup/signup.html"> <i class="fas fa-user-plus"></i> Signup</a>
+                    </li>
+                    <li class="nav-item link" style="font-family: sans-serif;">
+                      <a class="nav-link" target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLScL91LxrpAZjU88GBZP9gmcdgdf8__uNUwhws2lzU6Lr4qNwA/viewform"> <i class="fas fa-comment"></i> Feedback</a>
+                    </li>
+                </ul>
+              </div>
+    </div>
+  </nav>
+
+  <div class="signup-form">
+    <div
+      style="text-align:center; background: #17a2b8; font-size: xx-large; color: white; padding: 4px; border-radius: 5px 5px 0px 0px;">
+      caMicroscope
+    </div>
+    <!-- <hr style="width: 24.25em;  height: 0.01em; background-color: black; margin-top: 0em; margin-bottom: 0;"> -->
+    
+    <form id="userForm" onsubmit="return false;">
+      <h2 style="margin-top: -.5em;">Sign In</h2>
+      <hr
+        style="width: 24.25em; margin-left: -1.9em; height: 0.01em; background-color: rgb(172, 172, 172); margin-bottom: 2em;">
+        
+        <div class="form-group">
+          <div class="g-signin2" data-onsuccess="onSignIn"></div>
+        </div>
+        <h6 style="margin-top: -.5em;">OR </h6>
+        <hr
+        style="width: 24.25em; margin-left: -1.9em; height: 0.01em; background-color: rgb(172, 172, 172); margin-bottom: 2em;">
+        <div class="form-group">
+          <div class="input-group">
+          <span class="input-group-addon"><i class="fa fa-envelope" style="margin-top: 0.5em;"></i></span>
+          <input id="mail" type="email" class="form-control" name="email" placeholder="Email" required="required">
+        </div>
+      </div>
+      <br>
+      <div class="form-group">
+        <div class="input-group">
+          <span class="input-group-addon"><i class="fa fa-th-list" style="margin-top: 0.5em;"></i></span>
+          <input type="text" id="filters" class="form-control" placeholder="Username"
+            required="required">
+        </div>
+      </div> <br>
+      <div class="form-group">
+        <div class="input-group">
+          <span class="input-group-addon"><i class="fa fa-th-list" style="margin-top: 0.5em;"></i></span>
+          <input type="text" id="filters" class="form-control" placeholder="Password"
+            required="required">
+        </div>
+      </div>
+      <!-- User Type selection -->
+      
+
+      <br>
+      <div class="form-group">
+        <button type="submit" id="sub" class="btn btn-primary btn-block btn-lg sub-btn" onclick="addUser()" disabled>
+          Please wait ...
+        </button>
+      </div>
+      <!-- <p class="small text-center">This form is only useful to Admin users. If you reach this page, it's likely that you tried to log into this instance but lack
+        access. Email the administrator if you want to be added.</p> -->
+      <p class="small text-center">
+        Non-admin users have to submit a request ticket to admins to get their approval to signup new users.
+        If you are an Admin, you can directly signup users.
+      </p>
+    </form>
+    <div class="text-center" onclick="loginPage()">Already have an account? </div>
+  </div>
+  <!-- popup -->
+  <div id="popup-container"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js" 
+          integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8" 
+          crossorigin="anonymous"></script>
+  <script src="../../common/util.js"></script>
+
+</body>
 <html>
