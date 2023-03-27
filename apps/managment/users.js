@@ -1,5 +1,9 @@
 const store = new Store('../../data/');
 
+function setUserBtn(btn, email){
+  btn.onclick = () => {window.location = "./editUser.html?email=" + email}
+}
+
 async function populateUserTable(){
   // todo use await store instead
   let collections = await store.getAllCollection()
@@ -56,7 +60,7 @@ async function populateUserTable(){
     edit_btn.innerText = "Edit"
     edit_btn.type = "button"
     edit_btn.classList.add("btn", "btn-primary")
-    edit_btn.onclick = () => {window.location = "./editUser.html?email=" + user['Email']}
+    setUserBtn(edit_btn, user['Email'])
     edit_td.appendChild(edit_btn)
     tr.appendChild(edit_td);
 
