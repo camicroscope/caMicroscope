@@ -1,123 +1,130 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
-  <head>
-    <meta name="keywords" content="camicroscope, quip" />
-    <meta charset='utf-8'>
-    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
-    <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no'>
-    <title>CaMicroscope - User Signup</title>
-
-    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700" rel="stylesheet">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
-    <!-- Bootstrap core CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet" 
-    integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0"
-    crossorigin="anonymous">
-
-    <link rel='stylesheet' type='text/css' media='all' href='../../css/normalize.css'/>
-    <link rel='stylesheet' type='text/css' media='all' href='signup.css'/>
-    <link rel='stylesheet' type='text/css' media='all' href='../../css/popup.css'/>
-
-    <!-- JQuery -->
-    <script
-    src="https://code.jquery.com/jquery-3.4.1.min.js"
-    integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
-    crossorigin="anonymous"></script>
-    
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSS Login Form</title>
+  <link rel="stylesheet" href="11.css">
 
 
 
-  </head>
-  <script src="../../core/Store.js"></script>
-  <script src="./signup.js"></script>
+  <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+</head>
 
-  <body>
-
-    <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark" style="position: sticky; margin-top: -4em;">
-      <div class="container-fluid">
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-              <span class="navbar-toggler-icon"></span>
-              </button>
-              <div class="collapse navbar-collapse" id="navbarSupportedContent" >
-                  <ul class="navbar-nav mr-auto">
-                      <li class="nav-item link" style="font-family: sans-serif;">
-                         <a class="nav-link" href="../landing/landing.html"> <i class="fas fa-home"></i> Home</a>
-                      </li>
-                      <li class="nav-item  link" style="font-family: sans-serif;">
-                          <a class="nav-link" href="../table.html"> <i class="fas fa-list-ul"></i>  Slides</a>
-                      </li>
-                  </ul>
-                  <ul class="navbar-nav ms-auto">
-                      <li class="nav-item link active" style="font-family: sans-serif;">
-                          <a class="nav-link" href="./signup.html"> <i class="fas fa-user-plus"></i> Signup</a>
-                      </li>
-                      <li class="nav-item link" style="font-family: sans-serif;">
-                          <a class="nav-link" target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLScL91LxrpAZjU88GBZP9gmcdgdf8__uNUwhws2lzU6Lr4qNwA/viewform"> <i class="fas fa-comment"></i> Feedback</a>
-                      </li>
-                  </ul>
-              </div>
+<body>
+  <section id="Amazing-Login-Page">
+    <div class="container">
+      <div class="forms-container">
+        <div class="signin-signup">
+          <form action="#" class="sign-in-form">
+            <h2 class="title">Sign in</h2>
+            <div class="input-field">
+              <i class="fas fa-user"></i>
+              <input type="text" placeholder="Username" />
+            </div>
+            <div class="input-field">
+              <i class="fas fa-lock"></i>
+              <input type="password" placeholder="Password" />
+            </div>
+            <input type="submit" value="Login" class="btn solid" />
+            <p class="social-text">Or Sign in with social platforms</p>
+            <div class="social-media">
+              <a href="#" class="social-icon">
+                <i class="fab fa-facebook-f"></i>
+              </a>
+              <a href="#" class="social-icon">
+                <i class="fab fa-twitter"></i>
+              </a>
+              <a href="#" class="social-icon">
+                <i class="fab fa-google"></i>
+              </a>
+              <a href="#" class="social-icon">
+                <i class="fab fa-linkedin-in"></i>
+              </a>
+            </div>
+          </form>
+          <form action="#" class="sign-up-form">
+            <h2 class="title">Sign up</h2>
+            <div class="input-field">
+              <i class="fas fa-user"></i>
+              <input type="text" placeholder="Username" />
+            </div>
+            <div class="input-field">
+              <i class="fas fa-envelope"></i>
+              <input type="email" placeholder="Email" />
+            </div>
+            <div class="input-field">
+              <i class="fas fa-lock"></i>
+              <input type="password" placeholder="Password" />
+            </div>
+            <input type="submit" class="btn" value="Sign up" />
+            <p class="social-text">Or Sign up with social platforms</p>
+            <div class="social-media">
+              <a href="#" class="social-icon">
+                <i class="fab fa-facebook-f"></i>
+              </a>
+              <a href="#" class="social-icon">
+                <i class="fab fa-twitter"></i>
+              </a>
+              <a href="#" class="social-icon">
+                <i class="fab fa-google"></i>
+              </a>
+              <a href="#" class="social-icon">
+                <i class="fab fa-linkedin-in"></i>
+              </a>
+            </div>
+          </form>
+        </div>
       </div>
-  </nav>
 
-    <div class="signup-form">
-      <div
-        style="text-align:center; background: #17a2b8; font-size: xx-large; color: white; padding: 4px; border-radius: 5px 5px 0px 0px;">
-        caMicroscope
+      <div class="panels-container">
+        <div class="panel left-panel">
+          <div class="content">
+            <h3>New here ?</h3>
+            <p>
+              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Debitis,
+              ex ratione. Aliquid!
+            </p>
+            <button class="btn transparent" id="sign-up-btn">
+              Sign up
+            </button>
+          </div>
+          <img src="img/log.svg" class="image" alt="" />
+        </div>
+        <div class="panel right-panel">
+          <div class="content">
+            <h3>One of us ?</h3>
+            <p>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Nostrum
+              laboriosam ad deleniti.
+            </p>
+            <button class="btn transparent" id="sign-in-btn">
+              Sign in
+            </button>
+          </div>
+          <img src="img/register.svg" class="image" alt="" />
+        </div>
       </div>
-      <!-- <hr style="width: 24.25em;  height: 0.01em; background-color: black; margin-top: 0em; margin-bottom: 0;"> -->
-
-      <form id="userForm" onsubmit="return false;">
-        <h2 style="margin-top: -.5em;">User Signup</h2>
-        <hr
-          style="width: 24.25em; margin-left: -1.9em; height: 0.01em; background-color: rgb(172, 172, 172); margin-bottom: 2em;">
-        <div class="form-group">
-        </div>
-        <div class="form-group">
-          <div class="input-group">
-            <span class="input-group-addon"><i class="fa fa-envelope" style="margin-top: 0.5em;"></i></span>
-            <input id="mail" type="email" class="form-control" name="email" placeholder="Email" required="required">
-          </div>
-        </div>
-        <br>
-        <div class="form-group">
-          <div class="input-group">
-            <span class="input-group-addon"><i class="fa fa-th-list" style="margin-top: 0.5em;"></i></span>
-            <input type="text" id="filters" class="form-control" placeholder="['list','of','filters']"
-              required="required">
-          </div>
-        </div> <br>
-
-        <!-- User Type selection -->
-        <select id="attr" class="form-select" aria-label="Default select example">
-          <option selected value="1">Viewer</option>
-          <option value="2">Editor</option>
-          <option value="3">Admin</option>
-        </select>
-
-        <br> <br>
-        <div class="form-group">
-          <button type="submit" id="sub" class="btn btn-primary btn-block btn-lg sub-btn" onclick="addUser()" disabled>
-            Please wait ...
-          </button>
-        </div>
-        <!-- <p class="small text-center">This form is only useful to Admin users. If you reach this page, it's likely that you tried to log into this instance but lack
-          access. Email the administrator if you want to be added.</p> -->
-        <p class="small text-center">
-          Non-admin users have to submit a request ticket to admins to get their approval to signup new users.
-          If you are an Admin, you can directly signup users.
-        </p>
-      </form>
-      <div class="text-center" onclick="loginPage()">Already have an account? </div>
     </div>
-    <!-- popup -->
-    <div id="popup-container"></div>
+  </section>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js" 
-            integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8" 
-            crossorigin="anonymous"></script>
-    <script src="../../common/util.js"></script>
 
-  </body>
+
+  <script>
+    const sign_in_btn = document.querySelector("#sign-in-btn");
+    const sign_up_btn = document.querySelector("#sign-up-btn");
+    const Container = document.querySelector(".container");
+
+    sign_up_btn.addEventListener("click", () => {
+      Container.classList.add("sign-up-mode");
+    });
+
+    sign_in_btn.addEventListener("click", () => {
+      Container.classList.remove("sign-up-mode");
+    });
+
+  </script>
+</body>
+
 </html>
