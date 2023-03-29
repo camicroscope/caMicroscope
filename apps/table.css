@@ -14,6 +14,9 @@ footer {
 .header {
   margin-top: 60px;
 }
+#slideUploadButton{
+  margin-left: 10px;
+}
 
 .page-container {
   height: 100vh;
