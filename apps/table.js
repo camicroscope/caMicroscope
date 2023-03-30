@@ -21,7 +21,7 @@ function validateForm(callback) {
     finishUploadSuccess = false;
     $('#check_btn').hide();
     $('#post_btn').hide();
-    changeStatus('UPLOAD', 'Please chose a file first');
+    changeStatus('UPLOAD', 'Please choose a file first');
     return false;
   }
   // Check if slide name is empty
