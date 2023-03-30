@@ -4767,7 +4767,7 @@
 		/* Custom Scrollbar */
 
 		::-webkit-scrollbar {
-			width: 15px;
+			width: 12px;
 		  }
 
 		::-webkit-scrollbar-track {
