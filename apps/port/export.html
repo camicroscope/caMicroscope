@@ -5,8 +5,9 @@
   <title>Export Results [caMicroscope]</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
   <style>
-    body{
-      padding:20px;
+    #exportTitle{
+      background-color: #17a2b8 !important;
+      color: white;
     }
     #output{
       padding: 20px;
@@ -15,24 +16,29 @@
       display:inline-block;
     }
     .form-check-input{
-      padding:5px !important;
+      padding:5px !important; 
+    }
+    .btn{
+      color: #fff;
+      background-color: #0d6efd;
+      border-color: #0d6efd;
     }
     </style>
 </head>
 <body>
 
-  <h1>Export Results</h1>
-  <div class="form">
+  <h1 class="text-center py-5" id="exportTitle">Export Results</h1>
+  <div class="form text-center my-5">
   <label for="slide_id">Slide Ids (exact matches, comma delimited):</label>
-  <input type="text" id="slide_id" name="slide_id"><br>
-
-  <button id="populate_btn" onclick="populateList()" type="button">Get List of Results</button>
+  <input type="text" class="mx-1" id="slide_id" name="slide_id">
+  <button id="populate_btn" onclick="populateList()" type="button" class="btn btn-primary mx-3">Get List of Results</button>
 
   </div>
-  <br><br>
-  <h3>Select Results</h3>
-  <div id="output"></div>
-  <button id="convert_btn" onclick="downloadResults()" type="button">Download Selected Results</button>
+  <div class="result text-center">
+    <h3>Select Results</h3>
+    <div id="output"></div>
+    <button id="convert_btn" onclick="downloadResults()" type="button" class="btn btn-primary my-3">Download Selected Results</button>
+  </div>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8" crossorigin="anonymous"></script>
   <script src="//code.jquery.com/jquery.min.js"></script>
   <script src="./tree_table.js"></script>

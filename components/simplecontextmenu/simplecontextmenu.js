@@ -225,7 +225,6 @@
  */
   $.SimpleContextMenu.prototype.raiseEvent = function( eventName, eventArgs ) {
     // uncomment if you want to get a log of all events
-    // $.console.log( eventName );
     const handler = this.getHandler( eventName );
 
     if ( handler ) {
@@ -311,6 +310,7 @@
     style.classList.add('item');
     style.title = 'Style';
     const free = document.createElement('li');
+    free.title = 'Free';
     free.classList.add('active');
     free.dataset.model = 'free';
     const styleFree = document.createElement('a');
@@ -321,6 +321,7 @@
 
     const rect = document.createElement('li');
     rect.dataset.model = 'rect';
+    free.title = 'Rectangle';
     // free.classList.add('active');
     const styleRect = document.createElement('a');
     styleRect.classList.add('material-icons');
@@ -329,16 +330,26 @@
 
     const point = document.createElement('li');
     point.dataset.model = 'point';
+    point.title = 'Point';
     // free.classList.add('active');
     const stylePoint = document.createElement('a');
     stylePoint.classList.add('material-icons');
     stylePoint.textContent = 'fiber_manual_record';
     point.appendChild(stylePoint);
 
+    const pointToPoint = document.createElement('li');
+    pointToPoint.title = 'Point To Point';
+    pointToPoint.dataset.model = 'pointToPoint';
+    // free.classList.add('active');
+    const stylePointToPoint = document.createElement('a');
+    stylePointToPoint.classList.add('material-icons');
+    stylePointToPoint.textContent = 'timeline';
+    pointToPoint.appendChild(stylePointToPoint);
 
     style.appendChild(free);
     style.appendChild(rect);
     style.appendChild(point);
+    style.appendChild(pointToPoint);
     elt.appendChild(style);
 
     return elt;

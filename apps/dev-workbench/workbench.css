@@ -18,8 +18,9 @@
 .btn {
   text-transform: unset !important;
 }
-.navbar {
-  padding-left: 20px;
+.nabvar {
+  display: flex;
+  flex-direction: row;
 }
 .navbar-brand{
   margin-right: 10rem !important;
@@ -38,3 +39,23 @@
 #toastPlaceholder {
   display: none;
 }
+
+
+#goBack{
+  display: flex;
+  margin: 0 1rem;
+}
+@media only screen and (max-width: 551px) {
+  nav {
+    flex-direction: column;
+  }
+  
+  nav ul {
+    flex-direction: column;
+  }
+  
+  nav ul li {
+    margin: 10px 0;
+  }
+}
+
