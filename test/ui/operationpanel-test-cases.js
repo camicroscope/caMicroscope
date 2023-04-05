@@ -30,6 +30,7 @@ describe('Operation Panel Component',function(){
                 clearInterval(checkLoaded);
                 singleElt = jsdom.window.document.getElementById('single');
                 multipleElt = jsdom.window.document.getElementById('multiple');
+                multipleElt = jsdom.window.document.getElementById('multiple');
                 done();
             }
         },100);
