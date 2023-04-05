@@ -2559,7 +2559,7 @@
 			display: block;
 			height: 2px;
 			width: 4em;
-            margin:auto
+			margin:auto
 		}
 
 	@media screen and (max-width: 736px) {
@@ -4782,7 +4782,8 @@
 		background: grey;
 		}
 
-        .main {
+		/* Cards*/
+		.main {
             max-width: 1200px;
             margin: 0 auto;
         }
