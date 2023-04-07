@@ -59,6 +59,15 @@
   </body>
   <script type="text/javascript">
 
+    function shuffleArray(array) {
+        for (var i = array.length - 1; i > 0; i--) {
+            var j = Math.floor(Math.random() * (i + 1));
+            var temp = array[i];
+            array[i] = array[j];
+            array[j] = temp;
+        }
+    }
+
     const params = getUrlVars();
     const slideId = params.slideId;
     const cid = params.collectionId;
@@ -75,36 +84,29 @@
         "provenance.analysis.type": "simple",
         creator,
       });
-      vtas = vtas.map((d) => d._id.$oid);
+      done_rois = vtas.map(x => x.parent);
+      all_rois = rois.map(x=>x._id.$oid);
+      todo_rois = all_rois.filter(x=>done_rois.indexOf(x)==-1 )
+      console.log(done_rois, all_rois, todo_rois)
 
-      for (let i = 0; i < rois.length; i++) {
-        const roi = rois[i];
-        if (!hasDone(roi, vtas)) {
-          console.log(`label ID :${roi._id.$oid}`);
-          window.location.href = `./labelingSimpleAnnotation.html?labelId=${roi._id.$oid}&slideId=${slideId}&collectionId=${cid}`;
-          return;
-        }
+      if (todo_rois.length == 0){
+        // All Done
+        redirect(
+          `./labelingSimpleAnnotationViewer.html?collectionId=${cid}`,
+          "You Are Done With This Silde, Please Pick New One!",
+          3
+        );
+      } else {
+        shuffleArray(todo_rois)
+        console.log(todo_rois)
+        r = todo_rois[0]
+        console.log(`label ID :${r}`);
+        window.location.href = `./labelingSimpleAnnotation.html?labelId=${r}&slideId=${slideId}&collectionId=${cid}`;
+        return;
       }
 
-      // All Done
-      redirect(
-        `./labelingSimpleAnnotationViewer.html?collectionId=${cid}`,
-        "You Are Done With This Silde, Please Pick New One!",
-        3
-      );
+
       //window.location.href = `../collection/viewer.html?collectionId=${cid}`;
-    }
-
-    function hasDone(roi, vtas) {
-      while (roi.annotations.length > 0) {
-        if (-1 == vtas.indexOf(roi.annotations[0])) {
-          roi.annotations.shift();
-        } else {
-          // find it.
-          return true;
-        }
-      }
-      return false;
     }
     document.addEventListener("DOMContentLoaded", initialize);
   </script>
