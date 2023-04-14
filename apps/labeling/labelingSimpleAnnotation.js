@@ -391,14 +391,14 @@ function initCore() {
         createTILSample();
       },
     },
-    {
-      id: 'slide_download',
-      icon: 'file_download',
-      title: 'Download Slide',
-      type: 'btn',
-      value: 'slide_download',
-      callback: downloadSlide,
-    },
+    // {
+    //   id: 'slide_download',
+    //   icon: 'file_download',
+    //   title: 'Download Slide',
+    //   type: 'btn',
+    //   value: 'slide_download',
+    //   callback: downloadSlide,
+    //  },
     {
       id: 'tutorial',
       icon: 'help',

@@ -272,29 +272,32 @@ function initialize() {
               const keys = HeadMapping.map((d) => d.field);
               if (data.map) {
                 return data.map((d, counter) => {
-                  const rs = [];
-                  if (d['filter']) {
-                    rs.filterList = JSON.parse(d['filter'].replace(/'/g, '"'));
-                    if (!rs.filterList.some((filter) => (filters.indexOf(filter) > -1))) {
-                      rs.filterList = ['Others'];
+                  // skip ones without explicit allow download
+                  if (d['allow_download'] == 'true') {
+                    const rs = [];
+                    if (d['filter']) {
+                      rs.filterList = JSON.parse(d['filter'].replace(/'/g, '"'));
+                      if (!rs.filterList.some((filter) => (filters.indexOf(filter) > -1))) {
+                        rs.filterList = ['Others'];
+                      }
+                    } else {
+                      rs.filterList = ['Public'];
                     }
-                  } else {
-                    rs.filterList = ['Public'];
+                    rs.displayed = true;
+                    const filename = d.location.split('/')[d.location.split('/').length - 1];
+                    keys.forEach((key, i) => {
+                      if (i == 0) rs.push(d['_id']['$oid']);
+                      else if (key == 'review') {
+                        rs.push(d[key] == 'true' ? `<label style="color:green;">✓</label>` : ``);
+                      } else if (!d[key]) rs.push('');
+                      else rs.push(d[key]);
+                    });
+                    if (slideDeleteRequests['counter']) {
+                    }
+                    const multiCheck = `<input type="checkbox" name='multiDownload' data-id='${sanitize(rs[0])}' data-location='${sanitize(d.location)}' />`;
+                    rs.push(multiCheck);
+                    return rs;
                   }
-                  rs.displayed = true;
-                  const filename = d.location.split('/')[d.location.split('/').length - 1];
-                  keys.forEach((key, i) => {
-                    if (i == 0) rs.push(d['_id']['$oid']);
-                    else if (key == 'review') {
-                      rs.push(d[key] == 'true' ? `<label style="color:green;">✓</label>` : ``);
-                    } else if (!d[key]) rs.push('');
-                    else rs.push(d[key]);
-                  });
-                  if (slideDeleteRequests['counter']) {
-                  }
-                  const multiCheck = `<input type="checkbox" name='multiDownload' data-id='${sanitize(rs[0])}' data-location='${sanitize(d.location)}' />`;
-                  rs.push(multiCheck);
-                  return rs;
                 });
               } else {
                 // we have no data to render! Let's add a default button
