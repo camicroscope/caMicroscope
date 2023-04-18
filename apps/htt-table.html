@@ -349,7 +349,7 @@
     };
 
     const reverse_threshold = 5;
-    function initialize() {
+    async function initialize() {
       const params = getUrlVars();
       const store = new Store("../data/");
       let screenName = getUserInfo().data.registration.firstName;
@@ -357,13 +357,17 @@
       screenNameDiv.innerText = `hi, ${screenName}`;
       screenNameDiv.style.display = "";
       let userCollections = getUserInfo()['data']['collections'] || []
+      // remove collections where we're past roi creation
+      let collectionInfo = store.getAllCollection()
+      let activeCollections = collectionInfo.filter(x=>x['preventRoiCreate']!='true')
+      let activeUserCollections = userCollections.filter(x=>activeCollections.includes(x))
       store
         .findSlide()
         // remove slides not in user collection list
         .then(x=>{
           return x.filter(y=>{
             let slideCollections = y['collections'] || [];
-            return hasIntersect(userCollections, slideCollections);
+            return hasIntersect(activeUserCollections, slideCollections);
           })
         })
         .then(async function (data) {
