@@ -220,6 +220,10 @@
       alert("copied user authentication token to clipboard");
     }
     document.getElementById("screenName").onclick = copyToken;
+    // send admin back to admin landing
+    if (getUserInfo().userType == "Admin"){
+      window.location = "./landing.html"
+    }
 </script>
 
 
