@@ -141,6 +141,12 @@
     const screenNameElem = document.getElementById('screenName');
     screenNameElem.innerText = `hi, ${screenName}`;
     screenNameElem.style.display = '';
+    function copyToken(){
+      navigator.clipboard.writeText(getCookie("token"));
+      alert("copied user authentication token to clipboard");
+    }
+    document.getElementById("screenName").onclick = copyToken;
+
 </script>
 </body>
 </html>
