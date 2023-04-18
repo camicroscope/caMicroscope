@@ -358,7 +358,7 @@
       screenNameDiv.style.display = "";
       let userCollections = getUserInfo()['data']['collections'] || []
       // remove collections where we're past roi creation
-      let collectionInfo = store.getAllCollection()
+      let collectionInfo = await store.getAllCollection()
       let activeCollections = collectionInfo.filter(x=>x['preventRoiCreate']!='true')
       let activeUserCollections = userCollections.filter(x=>activeCollections.includes(x))
       store
