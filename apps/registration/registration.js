@@ -307,6 +307,8 @@ async function saveRegistration() {
   userRegInfo.creator = userRegInfo.contactEmail;
   userRegInfo.registration = registrationForm;
   userRegInfo.isAgreed = isConsent.checked;
+  let now_time = new Date;
+  userRegInfo.create_date = now_time.toISOString();
   try {
     const rs = await addPublicUser(userRegInfo);
     if (rs.insertedCount&&rs.insertedIds) {
