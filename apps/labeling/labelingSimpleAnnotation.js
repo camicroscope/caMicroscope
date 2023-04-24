@@ -449,7 +449,9 @@ async function saveAnnotation(annotation) {
   annotation.creator = creator;
   const {x, y} = $CAMIC.viewer.viewport.getContainerSize();
   annotation.viewer_size = {width: x, height: y};
-  annotation.viewer_mag = $CAMIC.viewer.viewport.viewportToImageZoom($CAMIC.viewer.viewport.getZoom())*
+  annotation.viewer_mag = $CAMIC.viewer.viewport.viewportToImageZoom($CAMIC.viewer.viewport.getZoom());
+  let now_time = new Date;
+  annotation.create_date = now_time.toISOString();
   $CAMIC.viewer.cazoomctrlInstance.base;
   const rs = await $CAMIC.store.addLabelingAnnotation(annotation).then( (d) => d );
   if (rs.insertedCount >= 1) {
