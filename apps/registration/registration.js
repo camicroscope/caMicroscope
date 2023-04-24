@@ -294,21 +294,21 @@ async function requestResetPassword(email){
 
 async function saveRegistration() {
   // registration
-  const registrationForm = {};
-  const basic = $('#basic').alpaca().getValue();
-  const professional = $('#professional').alpaca().getValue();
-  const certifications = $('#certifications').alpaca().getValue();
+  let registrationForm = {};
+  let basic = $('#basic').alpaca().getValue();
+  let professional = $('#professional').alpaca().getValue();
+  let certifications = $('#certifications').alpaca().getValue();
   $.extend(registrationForm, basic);
   $.extend(registrationForm, professional);
   $.extend(registrationForm, certifications);
-  let userInfo = {}
-  userInfo.email = registrationForm.contactEmail;
-  userInfo.userType = "[]"
-  userInfo.creator = userInfo.contactEmail;
-  userInfo.registration = registrationForm;
-  userInfo.isAgreed = isConsent.checked;
+  let userRegInfo = {}
+  userRegInfo.email = registrationForm.contactEmail;
+  userRegInfo.userType = "[]"
+  userRegInfo.creator = userRegInfo.contactEmail;
+  userRegInfo.registration = registrationForm;
+  userRegInfo.isAgreed = isConsent.checked;
   try {
-    const rs = await addPublicUser(userInfo);
+    const rs = await addPublicUser(userRegInfo);
     if (rs.insertedCount&&rs.insertedIds) {
       // create keycloak user
       let kcUserInfo = {
