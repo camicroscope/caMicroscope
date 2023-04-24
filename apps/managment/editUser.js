@@ -49,7 +49,7 @@ async function populateUserEdit(){
     // make label
     let label = document.createElement("label")
     label.classList.add("form-check-label")
-    label.for = "check-collection-" + i['name']
+    label.htmlFor = "check-collection-" + i['name']
     label.innerText = i['name']
     // append to document
     outer_div.appendChild(input);
