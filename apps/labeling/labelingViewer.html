@@ -333,7 +333,8 @@
   <script type="text/javascript">
     // -- authentication check -- //
     // const type = getUserType();
-    if (getUserInfo().userType !== "Admin") {
+    let userType = getUserInfo().userType;
+    if (userType !== "Admin" && userType !== "Expert") {
       // crowd
       window.location = "../landing/crowd.html";
     }

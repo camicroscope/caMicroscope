@@ -31,6 +31,11 @@ const checkRegistrationStatus = function(levels) {
           window.location = '../'.repeat(levels) + 'apps/landing/landing.html';
         }
         break;
+      case 'Expert':
+          if (-1 === window.location.href.indexOf('landing/landing.html')) {
+            window.location = '../'.repeat(levels) + 'apps/landing/landing.html';
+          }
+          break;
       case 'Editor':
         if (-1 === window.location.href.indexOf('landing/crowd.html')) {
           window.location = '../'.repeat(levels) + 'apps/landing/crowd.html';
