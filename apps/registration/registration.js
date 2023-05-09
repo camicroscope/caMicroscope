@@ -294,14 +294,13 @@ async function requestResetPassword(email){
 
 async function saveRegistration() {
   // registration
-  let registrationForm = {};
+  let registrationForm = {}
   let basic = $('#basic').alpaca().getValue();
   let professional = $('#professional').alpaca().getValue();
   let certifications = $('#certifications').alpaca().getValue();
-  $.extend(registrationForm, basic);
-  $.extend(registrationForm, professional);
-  $.extend(registrationForm, certifications);
+  Object.assign(registrationForm, basic, professional, certifications)
   let userRegInfo = {}
+
   userRegInfo.email = registrationForm.contactEmail;
   userRegInfo.userType = "[]"
   userRegInfo.creator = userRegInfo.contactEmail;
