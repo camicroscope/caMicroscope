@@ -249,16 +249,12 @@ $('#certifications').alpaca({
       'certYear': {
         'type': 'integer',
         'title':
-          `If you are a board-certified anatomic pathologist or the equivalent for your country,
-           enter the number of years since your certification.
-           (If you are not a board certified anatomic pathologist or equivalent, enter -1)`,
+          'If you are a board-certified anatomic pathologist or the equivalent for your country, enter the number of years since your certification. (If you are not a board certified anatomic pathologist or equivalent, enter -1)',
         'required': true,
       },
       'yearsOfResidency': {
         'type': 'integer',
-        'title': `If you are an anatomic pathology resident,
-          how many years of residency have you had?
-          (If you are not a anatomic pathology resident, enter -1)`,
+        'title': 'If you are an anatomic pathology resident, how many years of residency have you had? (If you are not a anatomic pathology resident, enter -1)',
         'required': true,
       },
     },
@@ -298,7 +294,7 @@ async function saveRegistration() {
   let basic = $('#basic').alpaca().getValue();
   let professional = $('#professional').alpaca().getValue();
   let certifications = $('#certifications').alpaca().getValue();
-  Object.assign(registrationForm, basic, professional, certifications)
+  Object.assign(registrationForm, basic, professional, certifications);
   let userRegInfo = {}
 
   userRegInfo.email = registrationForm.contactEmail;
