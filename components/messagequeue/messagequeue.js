@@ -62,7 +62,7 @@ class MessageQueue {
         this.elt.style.bottom = 0;
         this.elt.style.right = 0;
         break;
-      default:
+      default: // for css definition
         // statements_def
         break;
     }
