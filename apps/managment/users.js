@@ -72,6 +72,7 @@ async function populateUserTable(){
 
 async function downloadUsers(){
   let users = await store.getUsers();
+  console.log()
   let collections = await store.getAllCollection()
   // map between collection id and name
   let collectionMap = {}
@@ -90,13 +91,15 @@ async function downloadUsers(){
     u['userType'] = i.userType
     u['institution'] = i.registration.institutionOfEmployment
     u['roleAtInstitution'] = i.registration.roleAtInstitution
-    u['otherRoleAtInstitution'] = i.registration.other
+    if (u['roleAtInstitution'] == "Other"){
+      u['roleAtInstitution'] == i.registration.other
+    }
     u['phoneNumber'] = i.registration.phoneNumber
     u['specialties'] = i.registration.specialties
     u['yearsOfResidency'] = i.registration.yearsOfResidency
     u['certYear'] = i.registration.certYear
-    u['organizationCountry'] = i.registration.organizationCountry
     u['collections'] = []
+    u['create_date'] = i.create_date
     let user_collections = i.collections || []
     for(j of user_collections){
       u['collections'].push(collectionMap[j])
@@ -148,13 +151,14 @@ async function uploadUsers(data){
     edit.registration.institutionOfEmployment = i['institution']
     // rather than repopulating other, change roleAtInstitution to match edit
     edit.registration.roleAtInstitution = i['roleAtInstitution']
-    edit.registration.other = i['otherRoleAtInstitution']
+    // clear other to avoid confusion.
+    edit.registration.other = ""
     edit.registration.phoneNumber = i['phoneNumber']
     edit.registration.specialties = i['specialties']
     edit.registration.yearsOfResidency = i['yearsOfResidency']
     edit.registration.certYear = i['certYear']
-    edit.organizationCountry = i['organizationCountry']
     edit.userType = i['userType']
+    edit.create_date = i['create_date']
     // collections
     edit.collections = []
     let user_collections = i['collections'] || [];
