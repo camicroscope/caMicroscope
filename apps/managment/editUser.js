@@ -59,37 +59,41 @@ async function populateUserEdit(){
 }
 
 async function updateUser(e){
+  let collections = await store.getAllCollection()
+  let searchparam = new URLSearchParams(window.location.search)
+  let users = await store.getUsers(searchparam.get("email"));
+  let user = users[0];
+
   console.log(e)
   let user_id = document.getElementById("user_id").value
-  let edits = {};
-  edits.registration = {};
-  edits.registration.firstName = document.getElementById('first_name').value;
-  edits.registration.lastName = document.getElementById('last_name').value;
-  edits.registration.institutionOfEmployment = document.getElementById('institution').value;
-  edits.email = document.getElementById('email').value;
-  edits.registration.email = edits.email;
+  user.registration = {};
+  user.registration.firstName = document.getElementById('first_name').value;
+  user.registration.lastName = document.getElementById('last_name').value;
+  user.registration.institutionOfEmployment = document.getElementById('institution').value;
+  user.email = document.getElementById('email').value;
+  user.registration.email = user.email;
   userTypeBoxes = document.getElementById("user_type").children;
   // user type
   if (document.getElementById('expert-select').checked){
-    edits.userType = "Expert"
+    user.userType = "Expert"
   } else if (document.getElementById('admin-select').checked){
-    edits.userType = "Admin"
+    user.userType = "Admin"
   } else if (document.getElementById('participant-select').checked){
-    edits.userType = "Editor"
+    user.userType = "Editor"
   } else {
-    edits.userType = "Null"
+    user.userType = "Null"
   }
   // collections
-  edits.collections = [];
+  user.collections = [];
   let collectionBoxes = document.getElementsByClassName("collection_input");
   for (let i of collectionBoxes){
     if (i.checked){
-      edits.collections.push(i.value)
+      user.collections.push(i.value)
     }
   }
   // update the user
-  let res = await store.updateUser(user_id, edits)
-  console.log(edits)
+  let res = await store.updateUser(user_id, user)
+  console.log(user)
   window.location = "./users.html"
 
 }
