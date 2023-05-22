@@ -65,8 +65,8 @@ async function updateUser(e){
   let user = users[0];
 
   console.log(e)
-  let user_id = document.getElementById("user_id").value
-  user.registration = {};
+  let user_id = document.getElementById("user_id").value;
+  delete user['_id']
   user.registration.firstName = document.getElementById('first_name').value;
   user.registration.lastName = document.getElementById('last_name').value;
   user.registration.institutionOfEmployment = document.getElementById('institution').value;
