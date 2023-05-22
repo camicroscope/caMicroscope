@@ -1,6 +1,6 @@
 const store = new Store('../../data/');
 // create the message queue
-const message = new MessageQueue();
+const message = new MessageQueue({position:"custom"});
 const modal = document.getElementById('emailModal');
 
 var userId = getUserId();
@@ -322,16 +322,19 @@ async function saveRegistration() {
         alert("User added, please check your email to set your password.")
         window.location = "../../login.html";
       } else {
-        message.addError('Failed to add user to keycloak');
+        message.addError('Failed to add user to keycloak', 10000);
+        alert('Unable to add this user.')
         console.log(kcRes);
       }
     } else {
-      message.addError('Failed to add this new user');
+      message.addError('Failed to add this new user', 10000);
+      alert('Unable to add this user.')
       console.log(rs);
     }
   } catch (error) {
     console.error(error);
-    message.addError('Error in user creation.');
+    message.addError('Error in user creation.', 10000);
+    alert('Unable to add this user.')
   }
 
   console.log(userInfo);
