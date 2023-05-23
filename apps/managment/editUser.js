@@ -17,7 +17,7 @@ async function populateUserEdit(){
   if (user.userType == "Admin"){
     document.getElementById('admin-select').checked=true;
   }
-  else if (user.userType == "Editor"){
+  else if (user.userType == "Participant"){
     document.getElementById('participant-select').checked=true;
   }
   else if (user.userType == "Expert"){
@@ -79,7 +79,7 @@ async function updateUser(e){
   } else if (document.getElementById('admin-select').checked){
     user.userType = "Admin"
   } else if (document.getElementById('participant-select').checked){
-    user.userType = "Editor"
+    user.userType = "Participant"
   } else {
     user.userType = "Null"
   }
