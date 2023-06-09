@@ -1008,7 +1008,7 @@ function addROIFormEvent() {
       itsChangeText();
     } else {
       // give error tip
-      itsTxt.dataset.error = `% Stroma Range (Ineger): -1 ~ 100`;
+      itsTxt.dataset.error = `% Stroma Range (Integer): -1 ~ 100`;
       itsTxtIp.focus();
     }
   });
@@ -1046,7 +1046,7 @@ function addROIFormEvent() {
       vtaChangeText();
     } else {
       // give error tip
-      vtaTxt.dataset.error = `TILs Range (Ineger): -1 ~ 100`;
+      vtaTxt.dataset.error = `TILs Range (Integer): -1 ~ 100`;
       vtaTxtIp.focus();
     }
   });
