@@ -253,6 +253,9 @@ $('#certifications').alpaca({
         'required': true,
       },
       'yearsOfResidency': {
+        'minimum': -1,
+        'maximum': 50,
+        'slider': true,
         'type': 'integer',
         'title': 'If you are an anatomic pathology resident, how many years of residency have you had? (If you are not a anatomic pathology resident, enter -1)',
         'required': true,
@@ -260,6 +263,12 @@ $('#certifications').alpaca({
     },
   },
   'options': {
+    'fields': {
+      'yearsOfResidency': {
+        'slider': true,
+        'default': -1,
+      },
+    },
     'form': {
       'buttons': {
         'prev': {
