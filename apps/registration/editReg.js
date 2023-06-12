@@ -90,35 +90,44 @@ const updateProgressbar = () => {
         ((progressActive.length - 1) / (progressSteps.length - 1)) * 90 + '%';
 };
 
-//
-const consentChange = () =>{
-  if (isConsent.checked) {
-    agreeBtn.disabled = false;
-  } else {
-    agreeBtn.disabled = true;
-  }
-};
 
-const decline = ()=>{
-  window.location = '../../login.html';
-};
 
-function addKcUser(user){
-  return fetch('../../kcAddUser', {
-    method: 'POST',
-    body: JSON.stringify(user)
-  }).then(x=>x.json())
-};
-
-function addPublicUser(user){
-  return fetch('../../addPublicUser',{
-    method: 'post',
-    body: JSON.stringify(user)
-  }).then(x=>x.json())
+function getOwnUser(){
+    return fetch('../../data/myself/get').then(x=>x.json());
 }
+
+function editOwnUser(data){
+  return fetch('../../data/myself/update', {
+    method: 'POST',
+    body: JSON.stringify(data)
+  }).then(x=>x.json())
+};
+
+// autopopulate fields
+let prevUserData = await getOwnUser();
+let prevBasic = {};
+prevBasic.firstName = prevUserData.registration.firstName;
+prevBasic.lastName = prevUserData.registration.lastName;
+prevBasic.contactEmail = prevUserData.registration.contactEmail;
+if (prevUserData.registration.phoneNumber){
+  prevBasic.phoneNumber = prevUserData.registration.phoneNumber;
+}
+let prevProfessional = {};
+prevProfessional.institutionOfEmployment = prevUserData.registration.institutionOfEmployment;
+prevProfessional.roleAtInstitution = prevUserData.registration.roleAtInstitution;
+if (prevUserData.registration.other){
+  prevProfessional.other = prevUserData.registration.other;
+}
+let prevCert = {};
+prevCert.specialties = prevUserData.registration.specialties
+prevCert.organizationCountry = prevUserData.registration.organizationCountry
+prevCert.certYear = prevUserData.registration.certYear
+prevCert.yearsOfResidency = prevUserData.registration.yearsOfResidency
+
 
 // -- basic information form config --//
 $('#basic').alpaca({
+  'data': prevBasic,
   'schema': {
     'title': 'Basic Information',
     'type': 'object',
@@ -135,9 +144,9 @@ $('#basic').alpaca({
       },
       'contactEmail': {
         'type': 'string',
+        'readonly': true,
         'title': 'Contact Email',
         'format': 'email',
-        'required': true,
       },
       'phoneNumber': {
         'type': 'string',
@@ -149,10 +158,6 @@ $('#basic').alpaca({
   'options': {
     'form': {
       'buttons': {
-        'prev': {
-          'label': 'Previous',
-          'click': prev,
-        },
         'submit': {
           'label': 'Next',
           'click': next,
@@ -173,6 +178,7 @@ $('#basic').alpaca({
 });
 // -- professional form config --//
 $('#professional').alpaca({
+  'data': prevProfessional,
   'schema': {
     'title': 'Professional',
     'type': 'object',
@@ -232,6 +238,7 @@ $('#professional').alpaca({
 });
 
 $('#certifications').alpaca({
+  'data': prevCert,
   'schema': {
     'title': 'Certifications',
     'type': 'object',
@@ -253,21 +260,15 @@ $('#certifications').alpaca({
         'required': true,
       },
       'yearsOfResidency': {
+        'type': 'integer',
         'minimum': -1,
         'maximum': 100,
-        'type': 'integer',
         'title': 'If you are an anatomic pathology resident, how many years of residency have you had? (If you are not a anatomic pathology resident, enter -1)',
         'required': true,
       },
     },
   },
   'options': {
-    'fields': {
-      'yearsOfResidency': {
-        'slider': true,
-        'default': -1,
-      },
-    },
     'form': {
       'buttons': {
         'prev': {
@@ -275,79 +276,37 @@ $('#certifications').alpaca({
           'click': prev,
         },
         'submit': {
-          'label': 'Submit',
-          'click': saveRegistration,
+          'label': 'Submit Edits',
+          'click': updateRegistration,
         },
       },
     },
   },
 });
 
-async function requestResetPassword(email){
-  user_req = {"email": email}
-  return await fetch("../../requestResetPassword", {
-    method: 'POST',
-    body: JSON.stringify(user_req)
-  }).then(x=>x.json()).then(x=>{
-    console.info(x)
-  }).catch(e=>{
-    console.error(e);
-  });
-}
-
-
-async function saveRegistration() {
+async function updateRegistration() {
   // registration
   let registrationForm = {}
   let basic = $('#basic').alpaca().getValue();
   let professional = $('#professional').alpaca().getValue();
   let certifications = $('#certifications').alpaca().getValue();
   Object.assign(registrationForm, basic, professional, certifications);
-  let userRegInfo = {}
-
-  userRegInfo.email = registrationForm.contactEmail;
-  userRegInfo.userType = "[]"
-  userRegInfo.creator = userRegInfo.contactEmail;
+  delete registrationForm.contactEmail;
+  let userRegInfo = {};
   userRegInfo.registration = registrationForm;
-  userRegInfo.isAgreed = isConsent.checked;
   let now_time = new Date;
-  userRegInfo.create_date = now_time.toISOString();
+  userRegInfo.last_edited = now_time.toISOString();
   try {
-    const rs = await addPublicUser(userRegInfo);
-    if (rs.insertedCount&&rs.insertedIds) {
-      // create keycloak user
-      let kcUserInfo = {
-        "firstName": registrationForm.firstName,
-        "lastName": registrationForm.lastName,
-        "email": registrationForm.contactEmail,
-        "username": registrationForm.contactEmail,
-        "enabled": "true",
-      }
-      let kcRes = await addKcUser(kcUserInfo);
-      if (kcRes.username){
-        console.log("successful user add")
-        await requestResetPassword(registrationForm.contactEmail)
-        alert("User added, please check your email to set your password.")
-        window.location = "../../login.html";
-      } else {
-        message.addError('Failed to add user to keycloak', 10000);
-        alert('Unable to add this user.')
-        console.log(kcRes);
-      }
-    } else {
-      message.addError('Failed to add this new user', 10000);
-      alert('Unable to add this user.')
-      console.log(rs);
-    }
+    const rs = await editOwnUser(userRegInfo);
+    console.log(rs);
+    alert("Update successful")
+    window.location.href = "../landing/landing.html";
   } catch (error) {
     console.error(error);
-    message.addError('Error in user creation.', 10000);
-    alert('Unable to add this user.')
+    message.addError('Error in user Edit.', 10000);
+    alert('Unable to edit this user.')
   }
 
-  console.log(userInfo);
-
-  // window.location.href = "../landing/landing.html";
 }
 
 function openEmailModal(message, isSucceed=true) {
@@ -355,7 +314,7 @@ function openEmailModal(message, isSucceed=true) {
     //
     $('#emailModal').find('.modal-header').removeClass('bg-danger');
     $('#emailModal').find('.modal-header').addClass('bg-primary');
-    $('#emailModal').find('.modal-title').html(`<label style='margin:0;'>Registration Successful</label>`);
+    $('#emailModal').find('.modal-title').html(`<label style='margin:0;'>Update Successful</label>`);
     $('#emailModal').find('.modal-footer .btn').removeClass('btn-danger');
     $('#emailModal').find('.modal-footer .btn').addClass('btn-primary');
     $('#emailModal').find('.modal-footer .btn').text('Contiune');
@@ -363,7 +322,7 @@ function openEmailModal(message, isSucceed=true) {
     //
     $('#emailModal').find('.modal-header').removeClass('bg-primary');
     $('#emailModal').find('.modal-header').addClass('bg-danger');
-    $('#emailModal').find('.modal-title').html(`<label class='text-danger' style='margin:0;'>Registration Failed!</label>`);
+    $('#emailModal').find('.modal-title').html(`<label class='text-danger' style='margin:0;'>Update Failed!</label>`);
     $('#emailModal').find('.modal-footer .btn').addClass('btn-danger');
     $('#emailModal').find('.modal-footer .btn').removeClass('btn-primary');
     $('#emailModal').find('.modal-footer .btn').text('Ok');

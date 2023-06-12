@@ -81,7 +81,7 @@ async function updateUser(e){
   } else if (document.getElementById('participant-select').checked){
     user.userType = "Participant"
   } else {
-    user.userType = "Null"
+    user.userType = "Public"
   }
   // collections
   user.collections = [];
