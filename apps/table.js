@@ -270,7 +270,7 @@ function initialize() {
 
               // mapping data
               const keys = HeadMapping.map((d) => d.field);
-              data = data.filter(x=>x['allow_download'] == 'true');
+              data = data.filter((x)=>x['allow_download'] == 'true');
               if (data.map) {
                 return data.map((d, counter) => {
                   const rs = [];
