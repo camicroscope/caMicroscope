@@ -248,6 +248,7 @@ $('#certifications').alpaca({
       },
       'certYear': {
         'type': 'integer',
+        'minimum': -1,
         'title':
           'If you are a board-certified anatomic pathologist or the equivalent for your country, enter the number of years since your certification. (If you are not a board certified anatomic pathologist or equivalent, enter -1)',
         'required': true,
