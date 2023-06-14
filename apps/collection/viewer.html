@@ -230,9 +230,10 @@
           d.hasFeedback ? `<label style='color:red;'>*</label>` : ""
         } ${d.name}</div>
             <div class='card-description'>${d.description}</div>
-            <button class='card-actions btn action'>
+            <div class="card-actions">
+            <button class='btn action'>
               ROIs Evaluation
-            </button>`;
+            </button></div>`;
         const btns = card.querySelectorAll("button");
         btns[0].addEventListener("click", (e) => {
           window.location.href = `../labeling/labelingSimpleAnnotationViewer.html?collectionId=${d._id.$oid}`;
