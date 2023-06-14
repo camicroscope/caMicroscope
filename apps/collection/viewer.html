@@ -91,6 +91,9 @@
       .card-actions {
         height: 30px;
         padding-top: 5px;
+        position:absolute;
+        bottom: 10px;
+        right: 10px;
       }
 
       .card-actions .btn {
@@ -227,12 +230,9 @@
           d.hasFeedback ? `<label style='color:red;'>*</label>` : ""
         } ${d.name}</div>
             <div class='card-description'>${d.description}</div>
-            <div class='card-actions'>
-                <button class='btn action' style='float: left;display:none;'>ROIs Collection</button>
-                <button class='btn action' style='float: right;'>
-                  ROIs Evaluation
-                </button>
-            </div>`;
+            <button class='card-actions btn action'>
+              ROIs Evaluation
+            </button>`;
         const btns = card.querySelectorAll("button");
         btns[0].addEventListener("click", (e) => {
           window.location.href = `../table.html`;
