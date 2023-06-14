@@ -235,10 +235,6 @@
             </button>`;
         const btns = card.querySelectorAll("button");
         btns[0].addEventListener("click", (e) => {
-          window.location.href = `../table.html`;
-          // redirect('../table.html', e.message, 0);
-        });
-        btns[1].addEventListener("click", (e) => {
           window.location.href = `../labeling/labelingSimpleAnnotationViewer.html?collectionId=${d._id.$oid}`;
           // redirect('../labeling/labelingSimpleAnnotationViewer.html?', e.message, 0);
         });
