@@ -221,9 +221,16 @@ async function loadSlideInfo(node) {
         $D.slidesRank = slidesRank.length==0?null:slidesRank[0];
         if ($D.slidesRank) {
           isCaseClosed();
+        } else {
+          // check if all evaluations are not uninformativeness
+          const test = $D.currentSlideData.filter((slide)=>{
+            return slide.evaluation&&slide.evaluation.evaluation&&slide.evaluation.evaluation.informativeness !=='1'&&
+            slide.evaluation.evaluation.slide_quality!==1;
+          }).map((d)=>d._id.$oid);
+          if (test.length == $D.currentSlideData.length) closeCaseBtn.disabled = false;
         }
       } else { // error TODO
-
+        console.error('error');
       }
     }
 
