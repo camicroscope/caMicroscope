@@ -195,7 +195,31 @@ class Store {
       mode: 'cors',
     }).then(this.errorHandler).then((x) => this.filterBroken(x, 'mark'));
   }
-
+  markSegmentationCount(slide, x0, x1, y0, y1) {
+    const suffix = 'Mark/segmentationCount';
+    const url = this.base + suffix;
+    const query = {};
+    if (slide) {
+      query['provenance.image.slide'] = slide;
+    }
+    query['provenance.analysis.source'] = 'computer';
+    if (x0) {
+      query.x0 = x0;
+    }
+    if (x1) {
+      query.x1 = x1;
+    }
+    if (y0) {
+      query.y0 = y0;
+    }
+    if (y1) {
+      query.y1 = y1;
+    }
+    return fetch(url + '?' + objToParamStr(query), {
+      credentials: 'include',
+      mode: 'cors',
+    }).then(this.errorHandler);
+  }
   getMarkByIds(ids, slide, notes, source, footprint, x0, x1, y0, y1) {
     if (!slide) {
       return {
@@ -237,7 +261,6 @@ class Store {
     if (y1) {
       query.y1 = y1;
     }
-
     return fetch(url, {
       method: 'POST',
       credentials: 'include',
@@ -882,7 +905,6 @@ class Store {
   updateSlideName(id, newName) {
     const suffix = 'Slide/update';
     const url = this.base + suffix;
-    console.log(id + '   ' + newName);
     const query = {
       '_id': id,
     };
@@ -1108,7 +1130,6 @@ class Store {
   updateSlideReview(id, newStatus) {
     const suffix = 'Slide/update';
     const url = this.base + suffix;
-    console.log(id + '   ' + newStatus);
     const query = {
       '_id': id,
     };

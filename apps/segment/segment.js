@@ -488,7 +488,6 @@ function setFilter(filter) {
  * @param e
  */
 function drawRectangle(e) {
-  console.log(e);
   const canvas = $CAMIC.viewer.drawer.canvas; // Original Canvas
   canvas.style.cursor = e.checked ? 'crosshair' : 'default';
 

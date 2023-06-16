@@ -312,9 +312,11 @@ function toolsOff() {
     case 'normal':
       annotationOff();
       break;
-
     case 'label':
       presetLabelOff();
+      break;
+    case 'download_selection':
+      downloadSelectionOff();
       break;
   }
 }
@@ -456,6 +458,33 @@ function toggleMeasurement(data) {
   } else {
     measurementOff();
   }
+}
+
+/**
+ * switches download Selection tool on, called from toggleMeasurement
+ */
+function downloadSelectionOn() {
+  if (!$CAMIC.viewer.canvasDrawInstance) return;
+  $CAMIC.viewer.canvasDrawInstance.drawOn();
+  getDrawOption();
+  $CAMIC.viewer.canvasDrawInstance.drawMode = 'rect';
+  $CAMIC.viewer.canvasDrawInstance.style.color = '#000';
+  const li = $UI.toolbar.getSubTool('download_selection');
+  li.querySelector('input[type=checkbox]').checked = true;
+  $CAMIC.status = 'download_selection';
+}
+
+/**
+ * switches downloadSelection tool off, called from toggleMeasurement
+ */
+function downloadSelectionOff() {
+  if (!$CAMIC.viewer.canvasDrawInstance) return;
+  $CAMIC.viewer.canvasDrawInstance.drawOff();
+  $CAMIC.viewer.canvasDrawInstance.clear();
+  setDrawOption();
+  const li = $UI.toolbar.getSubTool('download_selection');
+  li.querySelector('input[type=checkbox]').checked = false;
+  $CAMIC.status = null;
 }
 
 /**
@@ -975,6 +1004,53 @@ function algoCallback(data) {
  * @param {Object} data
  */
 const heatmapDefaultColor = '#1034a6';
+
+const drawOptionRecord = {};
+function getDrawOption() {
+  drawOptionRecord.drawMode = $CAMIC.viewer.canvasDrawInstance.drawMode;
+  drawOptionRecord.color = $CAMIC.viewer.canvasDrawInstance.style.color;
+}
+function setDrawOption() {
+  $CAMIC.viewer.canvasDrawInstance.drawMode = drawOptionRecord.drawMode || 'free';
+  $CAMIC.viewer.canvasDrawInstance.style.color = drawOptionRecord.color || '#7cfc00';
+}
+
+function toggleDownloadSelection(data) {
+  // const canvasDraw = $CAMIC.viewer.canvasDrawInstance;
+
+  // if(e.checked) {
+  //   downloadSelectionOn();
+  // } else {
+  //   downloadSelectionOff();
+  // }
+  if (!$CAMIC.viewer.canvasDrawInstance) {
+    console.warn('No Draw Tool');
+    return;
+  }
+  if (data.checked) {
+    // trun off the main menu
+    $UI.layersSideMenu.close();
+    if ($CAMIC.status == 'download_selection') {
+      downloadSelectionOn();
+      return;
+    }
+    // turn off download SelectionOn
+    toolsOff();
+    var checkAllToolsOff = setInterval(function() {
+      if ($CAMIC && $CAMIC.status == null) {
+        // all tool has turn off
+        clearInterval(checkAllToolsOff);
+        downloadSelectionOn();
+      }
+    }, 100);
+    // turn off magnifier
+    // magnifierOff();
+  } else {
+    downloadSelectionOff();
+  }
+}
+
+
 async function callback(data) {
   const viewerName = this.toString();
   let camic = null;
@@ -988,7 +1064,6 @@ async function callback(data) {
     default:
       break;
   }
-  // console.log(data)
 
   // return;
   data.forEach(function(d) {
@@ -1531,6 +1606,16 @@ function saveAnalytics() {
   console.log('saveAnalytics');
 }
 function startDrawing(e) {
+  //
+  if (
+    $UI.toolbar.getSubTool('download_selection') &&
+    $UI.toolbar.getSubTool('download_selection').querySelector('input[type=checkbox]')
+        .checked
+  ) {
+    console.log('start download_selection');
+    return;
+  }
+
   if (
     $UI.toolbar.getSubTool('preset_label') &&
     $UI.toolbar.getSubTool('preset_label').querySelector('input[type=checkbox]')
@@ -1551,7 +1636,94 @@ function startDrawing(e) {
   //     : !$UI.annotOptPanel._form_.isValid();
   return;
 }
+function downloadSelection() {
+  const chks = $UI.downloadSelectionModal.body.querySelectorAll('input[type=checkbox][name=downloadSelection]:checked');
+  if (!chks.length) {
+    alert('Please Check Annotation to Download.');
+    return;
+  }
+  //
+  const execIds = [];
+  chks.forEach((chk)=>execIds.push(chk.dataset.id));
+  // get annotation by
+  const bbox = $CAMIC.viewer.canvasDrawInstance._draws_data_[0].bound.coordinates[0];
+  const height = $CAMIC.viewer.imagingHelper.imgHeight;
+  const width = $CAMIC.viewer.imagingHelper.imgWidth;
+  const x0 = bbox[0][0]/width;
+  const y0 = bbox[0][1]/height;
+  const x1 = bbox[2][0]/width;
+  const y1 = bbox[2][1]/height;
+  //
+  $CAMIC.store.getMarkByIds(execIds, $D.params.slideId, null, 'computer', null, x0, x1, y0, y1).then((data)=>{
+    const element = document.createElement('a');
+    const blob = new Blob([JSON.stringify(data)], {type: 'application/json'});
+    const uri = URL.createObjectURL(blob);
+    element.setAttribute('href', uri);
+    element.setAttribute('download', `${$D.params.data.name}_${new Date().toISOString()}.json`);
+    element.style.display = 'none';
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+    hideDownloadSelection();
+  });
+}
+
+function showDownloadSelection() {
+  // get selection area
+  const height = $CAMIC.viewer.imagingHelper.imgHeight;
+  const width = $CAMIC.viewer.imagingHelper.imgWidth;
+  // get annotation by
+  const bbox = $CAMIC.viewer.canvasDrawInstance._draws_data_[0].bound.coordinates[0];
+  const x0 = bbox[0][0]/width;
+  const y0 = bbox[0][1]/height;
+  const x1 = bbox[2][0]/width;
+  const y1 = bbox[2][1]/height;
+  // show up loading
+  $UI.downloadSelectionModal.body.innerHTML = 'Loading ...';
+  $CAMIC.store.markSegmentationCount($D.params.slideId, x0, x1, y0, y1).then((data)=>{
+    if (data&&Array.isArray(data)&&data.length) {
+      createSegmentTable(data);
+    } else {
+      $UI.downloadSelectionModal.body.innerHTML = 'No Data loaded ...';
+    }
+  });
+  $UI.downloadSelectionModal.open();
+}
+function createSegmentTable(data) {
+  $UI.downloadSelectionModal.body.innerHTML = '';
+  $UI.downloadSelectionModal.body.innerHTML = `<table style="width:100%;color:#154081;">
+<thead>
+  <tr>
+    <th>Name</th>
+    <th>Count</th>
+    <th>Download</th>
+  </tr>
+</thead>
+<tbody>
+  ${data.sort((a, b)=> b._id - a._id).map((d)=>`<tr>
+    <td style="text-align:center;">Segmentation / ${d._id}</td>
+    <td style="text-align:center;">${d.count}</td>
+    <td style="text-align:center;"><input data-id=${d._id} name='downloadSelection' type='checkbox' checked></td>
+  </tr>`).join('')}
+</tbody>
+</table>`;
+}
+function hideDownloadSelection() {
+  downloadSelectionOff();
+  $UI.downloadSelectionModal.close();
+}
+
 function stopDrawing(e) {
+  if (
+    $UI.toolbar.getSubTool('download_selection') &&
+    $UI.toolbar.getSubTool('download_selection').querySelector('input[type=checkbox]')
+        .checked
+  ) {
+    //
+    showDownloadSelection();
+    return;
+  }
+
   // preset label annotation
   if (
     $UI.toolbar.getSubTool('preset_label') &&
@@ -2036,7 +2208,6 @@ function deleteRulerHandler(execId) {
   $CAMIC.store
       .deleteMarkByExecId(execId, $D.params.data.slide)
       .then((datas) => {
-        console.log(datas);
         // server error
         if (datas.error) {
           const errorMessage = `${datas.text}: ${datas.url}`;
@@ -2240,7 +2411,6 @@ function onAddRuler(ruler) {
 }
 
 async function rootCallback({root, parent, parentName, items}) {
-  console.log({root, parent, items});
   // start a message
   openLoadStatus(`${root==parent?root:`${root} - ${parentName}`}`);
   //

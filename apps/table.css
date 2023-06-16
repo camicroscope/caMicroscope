@@ -87,6 +87,10 @@ nav li:not(.active):hover a {
   color: black !important;
 }
 
+nav li:not(.active):hover{
+	background: white;
+}
+
 .overall {
   display: flex;
 }
