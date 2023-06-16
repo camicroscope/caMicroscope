@@ -310,6 +310,33 @@ function initCore() {
 // initialize all UI components
 async function initUIcomponents() {
   /* create UI components */
+  $UI.downloadSelectionModal = new ModalBox({
+    id: 'downloadSelectionModal',
+    hasHeader: true,
+    headerText: 'Download Selection',
+    hasFooter: true,
+  });
+  const header = $UI.downloadSelectionModal.elt.querySelector('.modalbox-header');
+  header.querySelector('span.close').style.display = 'None';
+  const footer = $UI.downloadSelectionModal.elt.querySelector('.modalbox-footer');
+  const cancelBtn = document.createElement('button');
+  cancelBtn.classList.add('btn');
+  cancelBtn.classList.add('btn-sm');
+  cancelBtn.classList.add('btn-secondary');
+  cancelBtn.textContent = 'Cancel';
+  const downloadBtn = document.createElement('button');
+  downloadBtn.classList.add('btn');
+  downloadBtn.classList.add('btn-sm');
+  downloadBtn.classList.add('btn-info');
+  downloadBtn.textContent = 'Download';
+  footer.innerHTML = '';
+  footer.classList.add('footer');
+  footer.appendChild(cancelBtn);
+  footer.appendChild(downloadBtn);
+
+  cancelBtn.addEventListener('click', hideDownloadSelection);
+  downloadBtn.addEventListener('click', downloadSelection);
+
 
   $UI.modalbox = new ModalBox({
     id: 'modalbox',
@@ -396,6 +423,15 @@ async function initUIcomponents() {
       callback: toggleMeasurement,
     });
   }
+  // donwload selection
+  subToolsOpt.push({
+    name: 'download_selection',
+    icon: 'get_app', // material icons' name
+    title: 'Download Selection',
+    type: 'check',
+    value: 'download',
+    callback: toggleDownloadSelection,
+  });
   // enhance
   subToolsOpt.push({
     name: 'Enhance',

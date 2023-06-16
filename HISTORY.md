@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Index
 * **Version 3**
+    * [3.10.x](#camicroscope-3100)
     * [3.9.x](#camicroscope-390)
     * [3.8.x](#camicroscope-380)
     * [3.7.x](#camicroscope-377)
@@ -24,8 +25,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * **Version 1**
     * [1.0.x](#camicroscope-10)
 
-### caMicroscope [Unreleased](https://github.com/camicroscope/camicroscope/compare/v3.9.10...camicroscope:develop)
+### caMicroscope [Unreleased](https://github.com/camicroscope/camicroscope/compare/v3.10.2...camicroscope:develop)
 ###### TBD
+
+### caMicroscope [3.10.2](https://github.com/camicroscope/camicroscope/compare/v3.10.1...camicroscope:v3.10.2)
+###### 2023-06-16
+* point to point
+* Fixed Workbench Navbar Overlapping  #580
+* The Reload button is not Responsive for small size devices #579
+* style: art Fixed fat hamburger icon & alignment issues of dropdown issue#596 #597
+* Styled export.html  #601
+* fix: bug Responsiveness issues of workbench section #605 #605
+* Slight spelling mistake caught while browsing code #630
+* Adding Footer to Sign Up Page #635
+* Fixed the UI of admin page: Solved issue #621 #620
+* Fixed spelling mistake #614
+* FIXED Overlapping / Not properly styled on class=card in the workbench.html #616
+* Fixed import.html interface #613
+
+### caMicroscope [3.10.1](https://github.com/camicroscope/camicroscope/compare/v3.10.0...camicroscope:v3.10.1)
+###### 2022-11-18
+* Bugfix for Magnifying glass with slide token auth
+
+### caMicroscope [3.10.0](https://github.com/camicroscope/camicroscope/compare/v3.9.11...camicroscope:v3.10.0)
+###### 2022-10-25
+* Result Export Page [caMicroscope/566](https://github.com/camicroscope/caMicroscope/pull/566)
+* Slide Token injection [caMicroscope/567](https://github.com/camicroscope/caMicroscope/pull/567)
+
 
 ### caMicroscope [3.9.11](https://github.com/camicroscope/camicroscope/compare/v3.9.10...camicroscope:v3.9.11)
 ###### 2021-01-20
@@ -33,15 +59,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### caMicroscope [3.9.10](https://github.com/camicroscope/camicroscope/compare/v3.9.9...camicroscope:v3.9.10)
 ###### 2021-01-20
-
+* pathdb mode improvements
 
 ### caMicroscope [3.9.9](https://github.com/camicroscope/camicroscope/compare/v3.9.8...camicroscope:v3.9.9)
 ###### 2021-11-08
 * Fix and enhance Human Readable URL support
 
-### caMicroscope [3.9.10](https://github.com/camicroscope/camicroscope/compare/v3.9.8...camicroscope:v3.9.10)
+### caMicroscope [3.9.10](https://github.com/camicroscope/camicroscope/compare/v3.9.9...camicroscope:v3.9.10)
 ###### 2021-01-20
 * Human Readable Urls for pathdb
+
+### caMicroscope [3.9.9](https://github.com/camicroscope/camicroscope/compare/v3.9.8...camicroscope:v3.9.9)
+###### 2021-11-08
+* Fix and enhance Human Readable URL support
 
 ### caMicroscope [3.9.8](https://github.com/camicroscope/camicroscope/compare/v3.9.6...camicroscope:v3.9.8)
 ###### 2021-10-21

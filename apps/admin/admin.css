@@ -49,6 +49,8 @@ iframe {
 .sidebar .nav-link {
   font-weight: 500;
   color: #5c5c5c;
+  font-size: 15px;
+  margin-bottom:5px
 }
 .sidebar .nav-link.active {
   font-weight: bold;
@@ -86,6 +88,9 @@ iframe {
   font-size: 1rem;
   background-color: rgba(0, 0, 0, 0.25);
   box-shadow: inset -1px 0 0 rgba(0, 0, 0, 0.25);
+  height: 60px;
+  background-color: #007bff;
+
 }
 
 .navbar .navbar-toggler {
@@ -111,18 +116,55 @@ iframe {
 }
 
 .title-icon {
-  background-image: url("../../favicon.ico");
+  background-image: url("./favicon_without_bg.png");
   background-repeat: no-repeat;
-  background-size: 3rem 3rem;
+  background-size: 4rem 3.8rem;
+  padding-bottom: 2px;
 }
 
 .title-txt {
   font-weight: bold;
   margin-left: 3rem;
+  font-size: 1.5rem;
+  padding-left: 12px;
 }
 .nav-link {
   cursor: pointer;
 }
+
 .nav-link:hover{
- background-color: #dfdfdf;
+  background-color: transparent;
+  border:2px solid #fff;
+  width: 100%;
+  opacity: 1;
+  padding: 10px;
+  border-radius: 5px;
+  font-weight: bold;
+}
+
+@media (max-width: 767.98px) {
+  .sidebar {
+    top: 2rem;
+  }
+  .sign{
+    text-align: center;
+    margin: auto;
+    padding: auto;
+  }
+  .nav-link:hover{
+    padding: 5px;
+    margin-top: 3px;
+    margin-bottom: 3px;
+    border:2px solid #fff;
+
+  }
+}
+
+.sign-text{
+  color: #fff !important;
+  font-weight: 500px;
+}
+.sign-text:hover{
+  color: #000 !important;
+  background-color: #fff
 }
