@@ -25,8 +25,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * **Version 1**
     * [1.0.x](#camicroscope-10)
 
-### caMicroscope [Unreleased](https://github.com/camicroscope/camicroscope/compare/v3.10.1...camicroscope:develop)
+### caMicroscope [Unreleased](https://github.com/camicroscope/camicroscope/compare/v3.10.2...camicroscope:develop)
 ###### TBD
+
+### caMicroscope [3.10.2](https://github.com/camicroscope/camicroscope/compare/v3.10.1...camicroscope:v3.10.2)
+###### 2023-06-16
+* point to point
+* Fixed Workbench Navbar Overlapping  #580
+* The Reload button is not Responsive for small size devices #579
+* style: art Fixed fat hamburger icon & alignment issues of dropdown issue#596 #597
+* Styled export.html  #601
+* fix: bug Responsiveness issues of workbench section #605 #605
+* Slight spelling mistake caught while browsing code #630
+* Adding Footer to Sign Up Page #635
+* Fixed the UI of admin page: Solved issue #621 #620
+* Fixed spelling mistake #614
+* FIXED Overlapping / Not properly styled on class=card in the workbench.html #616
+* Fixed import.html interface #613
 
 ### caMicroscope [3.10.1](https://github.com/camicroscope/camicroscope/compare/v3.10.0...camicroscope:v3.10.1)
 ###### 2022-11-18
@@ -44,7 +59,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### caMicroscope [3.9.10](https://github.com/camicroscope/camicroscope/compare/v3.9.9...camicroscope:v3.9.10)
 ###### 2021-01-20
-
+* pathdb mode improvements
 
 ### caMicroscope [3.9.9](https://github.com/camicroscope/camicroscope/compare/v3.9.8...camicroscope:v3.9.9)
 ###### 2021-11-08
