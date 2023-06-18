@@ -280,6 +280,30 @@ function initCore() {
         $UI.annotPopup.open(e.position);
       });
 
+      $CAMIC.viewer.addHandler('annot-edit-save', function (e) {
+        if (!e.data) {
+          return;
+        }
+        const {id, slide, data} = e;
+        const dataCopy = deepCopy(data);
+        delete dataCopy.selected;
+        delete dataCopy._id;
+        if (dataCopy.geometries.features[0].properties.size) {
+          const dataPoints = dataCopy.geometries.features[0].geometry.coordinates[0];
+          const dataSize = dataCopy.geometries.features[0].properties.size;
+          const {points, bound, size} = convertToNormalized(dataPoints, dataSize, $CAMIC.viewer);
+          dataCopy.geometries.features[0].properties.size = size;
+          dataCopy.geometries.features[0].geometry.coordinates = [points]
+          dataCopy.geometries.features[0].bound.coordinates = [bound]
+        } else {
+          dataCopy.geometries = ImageFeaturesToVieweportFeatures(
+            $CAMIC.viewer,
+            dataCopy.geometries
+          )
+        }
+        editAnnoCallback(id, slide, dataCopy);
+      })
+
       // create the message bar TODO for reading slide Info TODO
       $UI.slideInfos = new CaMessage({
         /* opts that need to think of*/
@@ -305,6 +329,21 @@ function initCore() {
     tracker = new Tracker($CAMIC, $D.params.data._id.$oid, getUserId());
     tracker.start();
   });
+}
+
+function deepCopy(obj) {
+  if (typeof obj !== 'object' || obj === null) {
+    return obj;
+  }
+
+  const copy = Array.isArray(obj) ? [] : {};
+  for (let key in obj) {
+    if (Object.prototype.hasOwnProperty.call(obj, key)) {
+      copy[key] = deepCopy(obj[key]);
+    }
+  }
+
+  return copy;
 }
 
 // initialize all UI components

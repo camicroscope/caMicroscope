@@ -47,7 +47,7 @@
             updateView:this.updateView.bind(this),
             zooming:this._zooming.bind(this),
             panning:this._panning.bind(this),
-            drawing:this._drawing.bind(this)
+            drawing:this._drawing.bind(this),
         }
         // -- create container div, and hover, display canvas -- // 
         this._containerWidth = 0;
@@ -81,6 +81,20 @@
         this._hover_.style.left = 0;
         this._hover_ctx_ = this._hover_.getContext('2d');
         this._div.appendChild(this._hover_);
+        // create edit_tool_canvas
+        this._edit_tool_ = document.createElement('canvas');
+        this._edit_tool_.style.position = 'absolute';
+        this._edit_tool_.style.top = 0;
+        this._edit_tool_.style.left = 0;
+        this._edit_tool_ctx_ = this._edit_tool_.getContext('2d');
+        this._div.appendChild(this._edit_tool_);
+        // create edit_tool_hover_canvas
+        this._edit_tool_hover_ = document.createElement('canvas');
+        this._edit_tool_hover_.style.position = 'absolute';
+        this._edit_tool_hover_.style.top = 0;
+        this._edit_tool_hover_.style.left = 0;
+        this._edit_tool_hover_ctx_ = this._edit_tool_hover_.getContext('2d');
+        this._div.appendChild(this._edit_tool_hover_);
 
         this._center = this._viewer.viewport.getCenter(true);
         this._interval = null;
@@ -150,7 +164,12 @@
          * @param  {Event} e the event
          */
         highlight:function(e){
-            this._div.style.cursor = 'default';
+            this.highlightEditPoint(e);
+            if (this.onEditPoint) {
+                this._div.style.cursor = 'pointer';
+            } else {
+                this._div.style.cursor = 'default';
+            }
             DrawHelper.clearCanvas(this._hover_);
             const point = new OpenSeadragon.Point(e.clientX, e.clientY);
             const img_point = this._viewer.viewport.windowToImageCoordinates(point);
@@ -162,21 +181,28 @@
                     for(let j = 0;j < layer.data.length;j++){
                         const path = layer.data[j].geometry.path;
                         const style = layer.data[j].properties.style;
+                        const pathData = layer.data[j];
                         if(layer.hoverable&&path.contains(img_point.x,img_point.y)){
                             this.resize();
                             this.highlightPath = path;
+                            this.highlightPathData = pathData;
                             this.highlightStyle = style;
                             this.highlightLayer = layer;
                             this.highlightLayer.data.selected = j;
-                            this.drawOnCanvas(this.drawOnHover,[this._hover_ctx_,this._div,path,style]);
+                            this.currentHighlightIndex = i;
+                            if (this.currentEditIndex !== this.currentHighlightIndex) {
+                                this.drawOnCanvas(this.drawOnHover,[this._hover_ctx_,this._div,path,style]);
+                            }
                             return;
                         }else{
                             this.highlightPath = null;
                             this.highlightStyle = null;
+                            this.highlightPathData = null;
                             if(this.highlightLayer) {
                                 this.highlightLayer.data.selected = null;
                                 this.highlightLayer = null;
                             }
+                            this.currentHighlightIndex = null;
                         }
                     }
                 }
@@ -185,23 +211,29 @@
                 for(let j = 0;j < features.length;j++){
                     const path = features[j].geometry.path;
                     const style = features[j].properties.style;
+                    const pathData = features[j];
                     this.subIndex = null;
                     if(layer.hoverable&&path&&path.contains(img_point.x,img_point.y)){
                         this.resize();
                         this.highlightPath = path;
+                        this.highlightPathData = pathData;
                         this.highlightStyle = style;
                         this.highlightLayer = layer;
                         this.highlightLayer.data.selected = j;
-                        this.drawOnCanvas(this.drawOnHover,[this._hover_ctx_,this._div,path,style]);
+                        this.currentHighlightIndex = i;
+                        if (this.currentEditIndex !== this.currentHighlightIndex) {
+                            this.drawOnCanvas(this.drawOnHover,[this._hover_ctx_,this._div,path,style]);
+                        }
                         return;
                     }else{
                         this.highlightPath = null;
                         this.highlightStyle = null;
                         this.highlightLayer = null;
+                        this.highlightPathData = null;
+                        this.currentHighlightIndex = null;
                     }
                 }
             }
-
         },
         /**
          * @private
@@ -209,8 +241,228 @@
          * @param  {Event} e the event
          */
         pathClick:function(e){
-            if(this.highlightLayer&&this.highlightLayer.clickable) 
-                this._viewer.raiseEvent('canvas-lay-click',{position:{x:e.clientX, y:e.clientY},data:this.highlightLayer?this.highlightLayer.data:null});
+            if(this.highlightLayer&&this.highlightLayer.clickable) {
+                if (this.currentEditIndex !== this.currentHighlightIndex) {
+                    this._viewer.raiseEvent('canvas-lay-click',{position:{x:e.clientX, y:e.clientY}, data:this.highlightLayer?this.highlightLayer.data:null});
+                    if (this.currentEditIndex) {
+                        this._viewer.raiseEvent('annot-edit-save',{id: this.overlays[this.currentEditIndex].data._id.$oid, slide: this.overlays[this.currentEditIndex].data.provenance.image.slide ,data:this.overlays[this.currentEditIndex].data});
+                    }
+                    this.currentEditIndex = this.currentHighlightIndex;
+                }
+                this._viewer.setMouseNavEnabled(false);
+                this._div.addEventListener('mousemove', this.onEditPointMouseMove.bind(this));
+                this._div.addEventListener('mouseout', this.onEditPointMouseUp.bind(this));
+                this._div.addEventListener('mouseup', this.onEditPointMouseUp.bind(this));
+                this._div.addEventListener('mousedown', this.onEditPointMouseDown.bind(this));
+            } else {
+                try {
+                    this._viewer.raiseEvent('annot-edit-save',{id: this.overlays[this.currentEditIndex].data._id.$oid, slide: this.overlays[this.currentEditIndex].data.provenance.image.slide ,data:this.overlays[this.currentEditIndex].data});
+                } catch (error) {}
+                this.currentEditIndex = this.currentHighlightIndex;
+                this._viewer.setMouseNavEnabled(true);
+                this._div.removeEventListener('mousemove', this.onEditPointMouseMove.bind(this));
+                this._div.removeEventListener('mouseout', this.onEditPointMouseUp.bind(this));
+                this._div.removeEventListener('mouseup', this.onEditPointMouseUp.bind(this));
+                this._div.removeEventListener('mousedown', this.onEditPointMouseDown.bind(this));
+            }
+            this.editPathData = this.highlightPathData;
+            this.editPath = this.highlightPath;
+            this.editStyle = this.highlightStyle;
+            const editPointStyle = {
+                color: "#000000",
+                isFill: true,
+                lineCap: "round",
+                lineJoin: "round"
+            };
+            this.drawOnCanvas(this.drawEditPoints, [this._edit_tool_ctx_, this._div, this.editPathData, this.editPath, editPointStyle]);
+            this.updateView();
+        },
+
+        drawEditPoints: function(ctx, div, pathData, path, style) {
+            if (!pathData) return;                  
+            if(style.isFill ==undefined || style.isFill){
+                const imagingHelper = this._viewer.imagingHelper;
+                const lineWidth = (imagingHelper.physicalToDataX(1) - imagingHelper.physicalToDataX(0))>> 0;
+                ctx.lineWidth = lineWidth;
+                ctx.fillStyle = hexToRgbA(this.editStyle.color, 0.4);
+                ctx.strokeStyle = style.color;
+                path.stroke(ctx);
+                path.fill(ctx);
+            }else{
+                const imagingHelper = this._viewer.imagingHelper;
+                const lineWidth = (imagingHelper.physicalToDataX(1) - imagingHelper.physicalToDataX(0))>> 0;
+                ctx.lineWidth = lineWidth;
+                ctx.fillStyle = hexToRgbA(this.editStyle.color, 0.4);
+                ctx.strokeStyle = style.color;
+                path.stroke(ctx);
+            }
+
+            this.editPointPathList = [];
+            pathData = pathData.geometry.coordinates;
+            ctx.lineJoin = 'round';
+            ctx.lineCap = 'round';
+            ctx.fillStyle = hexToRgbA(style.color, 1);
+            ctx.strokeStyle = style.color;
+            ctx.lineWidth = style.lineWidth;
+
+            if (this.editPathData.geometry.type === 'Point') {
+                const pointPath = new Path();
+                pointPath.arc(
+                    pathData[0],
+                    pathData[1], 
+                    ctx.radius * 2, 0, 2 * Math.PI
+                );
+                pointPath.closePath();
+                pointPath.strokeAndFill(ctx);
+                this.editPointPathList.push(pointPath);
+            } else {
+                pathData[0].map((point) => {
+                    const pointPath = new Path();
+                    pointPath.arc(
+                        point[0],
+                        point[1], 
+                        ctx.radius * 2, 0, 2 * Math.PI
+                    );
+                    pointPath.closePath();
+                    pointPath.strokeAndFill(ctx);
+                    this.editPointPathList.push(pointPath);
+                })
+            }
+        },
+
+        highlightEditPoint: function(e) {
+            DrawHelper.clearCanvas(this._edit_tool_hover_);
+            if (!this.editPathData) return;
+            if (!this.editPointPathList) return;
+            const editPointStyle = {
+                color: "#000000",
+                isFill: true,
+                lineCap: "round",
+                lineJoin: "round"
+            };
+            const point = new OpenSeadragon.Point(e.clientX, e.clientY);
+            const img_point = this._viewer.viewport.windowToImageCoordinates(point);
+            for(let i = 0;i<this.editPointPathList.length;i++){
+                const pointPath = this.editPointPathList[i];
+                if (pointPath.contains(img_point.x, img_point.y)) {
+                    this.resize();
+                    this.drawOnCanvas(this.drawOnEditHover, [this._edit_tool_hover_ctx_, this._div, pointPath, editPointStyle]);
+                    this.onEditPoint = true;
+                    return;
+                } else {
+                    this.onEditPoint = false;
+                }
+            }
+        },
+
+        drawOnEditHover:function(ctx,div,path,style){
+            if (!style) return;
+            div.style.cursor = 'pointer';
+            ctx.lineJoin = 'round';
+            ctx.lineCap = 'round';
+            ctx.fillStyle = hexToRgbA(style.color, 1);
+            ctx.strokeStyle = style.color;
+            
+            const imagingHelper = this._viewer.imagingHelper;
+            const lineWidth = (imagingHelper.physicalToDataX(4) - imagingHelper.physicalToDataX(0))>> 0;
+            ctx.lineWidth = lineWidth;
+            path.stroke(ctx);
+            path.fill(ctx);
+        },
+
+        onEditPointMouseDown: function(e) {
+            const point = new OpenSeadragon.Point(e.clientX, e.clientY);
+            const img_point = this._viewer.viewport.windowToImageCoordinates(point);
+            for (let i = 0; i < this.editPointPathList.length; i++) {
+                if (this.editPointPathList[i].contains(img_point.x, img_point.y)) {
+                    this.onEdit = true;
+                    this.onEditIndex = i;
+                    return;
+                }
+            }
+            this.onEdit = false;
+            this.onEditIndex = null;
+        },
+
+        onEditPointMouseMove: function(e) {
+            if (!this.onEdit) return;
+            DrawHelper.clearCanvas(this._edit_tool_);
+            const point = new OpenSeadragon.Point(e.clientX, e.clientY);
+            const img_point = this._viewer.viewport.windowToImageCoordinates(point);
+            // create new edit path data
+            this.editPointPathList = [];
+            if (this.editPathData.geometry.type === 'Polygon') {
+                // handle last point data
+                if (this.onEditIndex === 0 || this.onEditIndex === this.editPathData.geometry.coordinates[0].length - 1) {
+                    this.editPathData.geometry.coordinates[0][0] = [img_point.x, img_point.y];
+                    this.editPathData.geometry.coordinates[0][this.editPathData.geometry.coordinates[0].length - 1] = [img_point.x, img_point.y];
+                } else {
+                    this.editPathData.geometry.coordinates[0][this.onEditIndex] = [img_point.x, img_point.y];
+                }
+                this.editPathData.geometry.coordinates[0].map((point) => {
+                    const pointPath = new Path();
+                    pointPath.arc(
+                        point[0],
+                        point[1], 
+                        this._edit_tool_ctx_.radius * 2, 0, 2 * Math.PI
+                    );
+                    pointPath.closePath();
+                    pointPath.strokeAndFill(this._edit_tool_ctx_);
+                    this.editPointPathList.push(pointPath);
+                })
+            } else if (this.editPathData.geometry.type === 'Point') {
+                this.editPathData.geometry.coordinates[0] = img_point.x;
+                this.editPathData.geometry.coordinates[1] = img_point.y;
+                const pointPath = new Path();
+                pointPath.arc(
+                    this.editPathData.geometry.coordinates[0],
+                    this.editPathData.geometry.coordinates[1], 
+                    this._edit_tool_ctx_.radius * 2, 0, 2 * Math.PI
+                );
+                pointPath.closePath();
+                pointPath.strokeAndFill(this._edit_tool_ctx_);
+                this.editPointPathList.push(pointPath);
+            } else {
+                // brush
+                this.editPathData.geometry.coordinates[0][this.onEditIndex] = [img_point.x, img_point.y];
+                this.editPathData.geometry.coordinates[0].map((point) => {
+                    const pointPath = new Path();
+                    pointPath.arc(
+                        point[0],
+                        point[1], 
+                        this._edit_tool_ctx_.radius * 2, 0, 2 * Math.PI
+                    );
+                    pointPath.closePath();
+                    pointPath.strokeAndFill(this._edit_tool_ctx_);
+                    this.editPointPathList.push(pointPath);
+                })
+            }
+
+            DrawHelper.draw(this._edit_tool_ctx_, [this.editPathData]);
+        },
+
+        onEditPointMouseUp: function(e) {
+            if (this.editPathData?.geometry.type === 'LineString') {
+                if (!this.onEdit) return;
+                DrawHelper.clearCanvas(this._edit_tool_);
+                const point = new OpenSeadragon.Point(e.clientX, e.clientY);
+                const img_point = this._viewer.viewport.windowToImageCoordinates(point);
+                const size = this.editPathData.properties.size;
+                const topleft = [Math.floor(img_point.x/size[0])*size[0], Math.floor(img_point.y/size[1])*size[1]];
+                this.editPathData.geometry.coordinates[0][this.onEditIndex] = topleft;
+                this.editPathData.geometry.coordinates[0].map((point) => {
+                    const pointPath = new Path();
+                    pointPath.arc(
+                        point[0],
+                        point[1], 
+                        this._edit_tool_ctx_.radius * 2, 0, 2 * Math.PI
+                    );
+                    pointPath.closePath();
+                    pointPath.strokeAndFill(this._edit_tool_ctx_);
+                    this.editPointPathList.push(pointPath);
+                })
+            }
+            this.onEdit = false;
         },
 
         /**
@@ -257,12 +509,15 @@
             this._display_ctx_.lineWidth = (imagingHelper.physicalToDataX(1) - imagingHelper.physicalToDataX(0)) >> 0;;       
             this._display_ctx_.viewBoundBoxInData = this.getViewBoundBoxInData()
             this._display_ctx_.imagingHelper = imagingHelper;
+            this._edit_tool_ctx_.radius = (imagingHelper.physicalToDataX(3) - imagingHelper.physicalToDataX(0)) >> 0;
             // 
             if (this._containerWidth !== this._viewer.container.clientWidth) {
                 this._containerWidth = this._viewer.container.clientWidth;
                 this._div.setAttribute('width', this._containerWidth);
                 this._hover_.setAttribute('width', this._containerWidth);
                 this._display_.setAttribute('width', this._containerWidth);
+                this._edit_tool_.setAttribute('width', this._containerWidth);
+                this._edit_tool_hover_.setAttribute('width', this._containerWidth);
             }
 
             if (this._containerHeight !== this._viewer.container.clientHeight) {
@@ -270,6 +525,8 @@
                 this._div.setAttribute('height', this._containerHeight);
                 this._hover_.setAttribute('height', this._containerHeight);
                 this._display_.setAttribute('height', this._containerHeight);
+                this._edit_tool_.setAttribute('height', this._containerHeight);
+                this._edit_tool_hover_.setAttribute('height', this._containerHeight);
             }
             this._viewportOrigin = new $.Point(0, 0);
             var boundsRect = this._viewer.viewport.getBounds(true);
@@ -384,7 +641,7 @@
             };
             this.drawOnCanvas(this.drawOnDisplay,[this._display_ctx_]);
             if(this.highlightPath&& this.highlightLayer&& this.highlightLayer.hoverable)this.drawOnCanvas(this.drawOnHover,[this._hover_ctx_,this._div,this.highlightPath,this.highlightStyle]);
-
+            // if(this.editPath&& this.highlightLayer&& this.editPathData)this.drawOnCanvas(this.drawEditPoints, [this._edit_tool_ctx_, this._div, this.editPathData, this.editPath, this.editStyle]);
         },
 
         /**
@@ -429,7 +686,7 @@
               return true;
             }
             
-            return false;            
+            return false;
         },
         /**
          * get Overlay by id
@@ -458,6 +715,8 @@
         clearCanvas:function(){
             DrawHelper.clearCanvas(this._display_);
             DrawHelper.clearCanvas(this._hover_);
+            DrawHelper.clearCanvas(this._edit_tool_);
+            DrawHelper.clearCanvas(this._edit_tool_hover_);
         },
 
         clear:function(){
