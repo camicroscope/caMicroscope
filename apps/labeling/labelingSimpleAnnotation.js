@@ -503,7 +503,7 @@ function setFeedbackForm(feedback) {
 
   // set densityTILs
   const txtDensityTILsAvg = document.getElementById('densityTILsAvg');
-  if (feedback&&feedback.densitysTILsAvg) txtDensityTILsAvg.innerHTML =`<strong>Mean sTIL Density: </strong>${feedback.densitysTILsAvg}`;
+  if (feedback&&feedback.densitysTILsAvg) txtDensityTILsAvg.innerHTML =`<strong>Mean sTILs Density: </strong>${feedback.densitysTILsAvg}`;
 
   // set comments
   const txtComments = document.getElementById('comments');
@@ -1046,7 +1046,7 @@ function addROIFormEvent() {
       vtaChangeText();
     } else {
       // give error tip
-      vtaTxt.dataset.error = `TILs Range (Integer): -1 ~ 100`;
+      vtaTxt.dataset.error = `sTILs Range (Integer): -1 ~ 100`;
       vtaTxtIp.focus();
     }
   });
