@@ -147,6 +147,7 @@ function finishUpload() {
         $('#check_btn').show();
         $('#post_btn').hide();
       }
+      validateForm(CheckBtn);
     }
   });
   regReq.then((e)=> {
@@ -157,8 +158,6 @@ function finishUpload() {
       changeStatus('UPLOAD | ERROR;', e);
       reset = true;
       console.log(e);
-    } else {
-      validateForm(CheckBtn);
     }
   },
   );
