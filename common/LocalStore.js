@@ -174,6 +174,16 @@ function init_LocalStore(){
       res(putInLocalStorage('mark', json))
     })
   }
+  Store.prototype.updateMaskEdit = function(maskId, slide, data) {
+    if (!this.validation.mark(data)){
+      console.warn(this.validation.mark.errors)
+    }
+    return new Promise(function(res, rej){
+      removeFromLocalStorage('mark', maskId).then(x => {
+        res(putInLocalStorage('mark', data))
+      })
+    })
+  }
   Store.prototype.deleteMark = function(id, slide){
     return new Promise((res, rej)=>{
       res(removeFromLocalStorage('mark', id))

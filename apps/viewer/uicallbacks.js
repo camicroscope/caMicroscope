@@ -971,6 +971,32 @@ function annoCallback(data) {
       .finally(() => {});
 }
 
+function editAnnoCallback(id, slide, annotJson) {
+    // save edit annotation
+    $CAMIC.store
+      .updateMaskEdit(id, slide, annotJson)
+      .then((data) => {
+        // server error
+        if (data.error) {
+          $UI.message.addError(`${data.text}:${data.url}`);
+          Loading.close();
+          return;
+        }
+
+        // no data added
+        if (data.count < 1) {
+          Loading.close();
+          $UI.message.addWarning(`Edit Annotation Failed`);
+          return;
+        }
+      })
+      .catch((e) => {
+        Loading.close();
+        console.log('save failed', e);
+      })
+      .finally(() => {});
+}
+
 function saveAnnotCallback() {
   /* reset as default */
   // clear draw data and UI
@@ -1862,6 +1888,7 @@ function createHeatMapList(list) {
 
 
 async function addPresetLabelsHandler(label) {
+  console.log('label: ', label);
   const rs = await $CAMIC.store.addPresetLabels(label).then((d)=>d.result);
 
   if (rs.ok&&rs.nModified > 0) {
@@ -1935,6 +1962,7 @@ function selectedPresetLabelsHandler(label) {
 }
 
 function drawLabel(e) {
+  console.log('run drawLabel');
   if (!$CAMIC.viewer.canvasDrawInstance) {
     alert('Draw Doesn\'t Initialize');
     return;
@@ -2015,6 +2043,7 @@ function presetLabelOff() {
 }
 
 function savePresetLabel() {
+  console.log('savePresetLabel');
   if ($CAMIC.viewer.canvasDrawInstance._path_index === 0) {
     // toast
     $UI.message.addWarning('<i class="small material-icons">info</i>'+
