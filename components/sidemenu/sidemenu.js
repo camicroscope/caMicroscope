@@ -84,7 +84,24 @@ SideMenu.prototype.__refresh = function() {
   empty(this.elt);
 
   this.elt.style.width = 0;
-  this.elt.style.left = `-10px`;
+
+  if (this.setting.height) {
+    this.elt.style.height = this.setting.height;
+  } else {
+    this.elt.style.height = '100vh';
+  }
+
+  if (this.setting.top) {
+    this.elt.style.top = this.setting.top;
+  } else {
+    this.elt.style.top = '0';
+  }
+
+  if (this.setting.position === 'right') {
+    this.elt.style.right = `-10px`;
+  } else {
+    this.elt.style.left = `-10px`;
+  }
   this.elt.classList.add('side_menu');
   this.elt.classList.add('flex-container');
 
@@ -92,16 +109,31 @@ SideMenu.prototype.__refresh = function() {
   this._close_handler = document.createElement('div');
   this._close_handler.classList.add('close');
 
-  const icon1 = document.createElement('i');
-  icon1.classList.add('material-icons');
-  icon1.classList.add('md-24');
-  icon1.textContent = 'chevron_left';
+  if (this.setting.position === 'right') {
+    const icon1 = document.createElement('i');
+    icon1.classList.add('material-icons');
+    icon1.classList.add('md-24');
+    icon1.classList.add('right');
+    icon1.textContent = 'chevron_right';
+  
+    const icon2 = icon1.cloneNode(true);
+    
+    icon1.classList.add('fir');
+    this._close_handler.appendChild(icon1);
+    this._close_handler.appendChild(icon2);
+  } else {
+    const icon1 = document.createElement('i');
+    icon1.classList.add('material-icons');
+    icon1.classList.add('md-24');
+    icon1.textContent = 'chevron_left';
+  
+    const icon2 = icon1.cloneNode(true);
+    icon2.classList.add('sec');
 
-  const icon2 = icon1.cloneNode(true);
-  icon2.classList.add('sec');
+    this._close_handler.appendChild(icon1);
+    this._close_handler.appendChild(icon2);
+  }
 
-  this._close_handler.appendChild(icon1);
-  this._close_handler.appendChild(icon2);
   this.elt.appendChild(this._close_handler);
 
   // create side panel content panel
@@ -115,8 +147,13 @@ SideMenu.prototype.__refresh = function() {
  * open the side menu
  */
 SideMenu.prototype.open = function() {
-  this.elt.style.left = 0;
   this.elt.style.width = this.setting.width+'px';
+  if (this.setting.position === 'right') {
+    this.elt.style.left = 'unset';
+    this.elt.style.right = 0;
+  } else {
+    this.elt.style.left = 0;
+  }
 
   if (this.setting.callback) {
     this.setting.callback.call(this, {
@@ -129,7 +166,11 @@ SideMenu.prototype.open = function() {
  * close the side menu
  */
 SideMenu.prototype.close = function() {
-  this.elt.style.left = `-10px`;
+  if (this.setting.position === 'right') {
+    this.elt.style.right = `-10px`;
+  } else {
+    this.elt.style.left = `-10px`;
+  }
   this.elt.style.width = 0;
   if (this.setting.callback) {
     this.setting.callback.call(this, {

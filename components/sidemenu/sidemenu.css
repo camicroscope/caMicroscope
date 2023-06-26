@@ -1,6 +1,6 @@
 
 .side_menu {
-    height: 100vh;
+    /* height: 100vh; */
     width: 0;
     position: fixed;
     z-index: 1;
@@ -9,7 +9,6 @@
     border:#cbcbcb 1px solid;
     box-shadow: 1px 2px 3px #aaa;
     background-color: rgba(245,245,245,1);
-    border-right:;
     overflow-x: hidden;
     transition: 0.5s;
 }
@@ -37,8 +36,17 @@
     float: right;
     color:#365f9c;
 }
+
+.side_menu > div.close > i.right {
+  float: left;
+}
+
 .side_menu > div.close > i.sec {
     margin-right:-1.9rem;
+}
+
+.side_menu > div.close > i.fir {
+  margin-right:-1.9rem;
 }
 
 
