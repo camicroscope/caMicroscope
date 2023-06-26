@@ -314,6 +314,7 @@ function toolsOff() {
       break;
     case 'label':
       presetLabelOff();
+      mlAssistantOff();
       break;
     case 'download_selection':
       downloadSelectionOff();
@@ -658,8 +659,10 @@ function mainMenuChange(data) {
 
   if (data.labels) {
     $UI.labelsSideMenu.open();
+    $UI.AssistantSideMenu.open();
   } else {
     presetLabelOff();
+    mlAsisstantOff();
   }
 }
 
@@ -1989,6 +1992,7 @@ function drawLabel(e) {
   } else {
     // off preset label
     presetLabelOff();
+    mlAsisstantOff();
   }
 }
 
@@ -2040,6 +2044,10 @@ function presetLabelOff() {
     $UI.labelsSideMenu.close();
     $CAMIC.status = null;
   }
+}
+
+function mlAsisstantOff() {
+  $UI.AssistantSideMenu.close();
 }
 
 function savePresetLabel() {
