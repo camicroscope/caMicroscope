@@ -457,8 +457,8 @@ async function saveAnnotation(annotation) {
   if (rs.insertedCount >= 1) {
     // update parent
 
-    const count = await $CAMIC.store.pushAnnotationFromLabeling( $D.params.labelId, rs.insertedIds[0])
-        .then((d)=>d);
+    //const count = await $CAMIC.store.pushAnnotationFromLabeling( $D.params.labelId, rs.insertedIds[0])
+    //    .then((d)=>d);
     // remove listener
     window.removeEventListener('beforeunload', beforeUnloadHandler);
 
