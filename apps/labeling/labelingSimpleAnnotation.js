@@ -989,6 +989,7 @@ function addROIFormEvent() {
     // hide txt
     itsTxtContent.classList.add('hide');
     itsTxtIp.focus();
+    itsTxtIp.select();
   });
 
   itsTxt.addEventListener('keydown', function(e) {
@@ -1027,6 +1028,7 @@ function addROIFormEvent() {
     // hide txt
     vtaTxtContent.classList.add('hide');
     vtaTxtIp.focus();
+    vtaTxtIp.select();
   });
 
   vtaTxt.addEventListener('keydown', function(e) {
