@@ -30,4 +30,4 @@ document.addEventListener('DOMContentLoaded', async function() {
     console.error('no slide passed?');
     alert('ERROR!');
   }
-}
+})
