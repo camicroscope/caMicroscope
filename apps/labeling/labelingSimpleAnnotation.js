@@ -199,7 +199,7 @@ function initCore() {
     hasDrawLayer: true,
     hasLayerManager: true,
     hasScalebar: true,
-    hasMeasurementTool: true,
+    hasMeasurementTool: false,
     // minImageZoom:0.25
   };
   // set states if exist

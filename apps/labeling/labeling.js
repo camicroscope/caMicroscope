@@ -150,7 +150,7 @@ function initCore() {
     hasDrawLayer: true,
     hasLayerManager: true,
     hasScalebar: true,
-    hasMeasurementTool: true,
+    hasMeasurementTool: false,
     hasPatchManager: true,
   };
   // set states if exist
@@ -283,16 +283,6 @@ function initCore() {
         type: 'btn', // btn/check/dropdown
         value: 'save',
         callback: savePatches,
-      },
-      // measurment tool
-      {
-        id: 'labeling_mode',
-        icon: 'space_bar',
-        title: 'Measurement',
-        type: 'radio',
-        value: 'measure',
-        name: 'measure',
-        callback: toggleMode,
       },
       //
       {
@@ -484,7 +474,7 @@ function toggleMode(data) {
       break;
     default:
       $CAMIC.viewer.pmanager.off();
-      $CAMIC.viewer.measureInstance.on();
+      $CAMIC.viewer.measureInstance.off();
       // statements_def
       break;
   }
