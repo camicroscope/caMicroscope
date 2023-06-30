@@ -328,22 +328,22 @@ async function saveRegistration() {
       if (kcRes.username){
         console.log("successful user add")
         await requestResetPassword(registrationForm.contactEmail)
-        alert("User added, please check your email to set your password.")
-        window.location = "../../login.html";
+        window.location = "./registration_success.html";
       } else {
         message.addError('Failed to add user to keycloak', 10000);
-        alert('Unable to add this user.')
         console.log(kcRes);
+        window.location = "./registration_error.html?msg=Keycloak with " + JSON.stringify(kcRes);
+
       }
     } else {
       message.addError('Failed to add this new user', 10000);
-      alert('Unable to add this user.')
+      window.location = "./registration_error.html?msg=" + JSON.stringify(rs);
       console.log(rs);
     }
   } catch (error) {
     console.error(error);
     message.addError('Error in user creation.', 10000);
-    alert('Unable to add this user.')
+    window.location = "./registration_error.html?msg=" + JSON.stringify(error);
   }
 
   console.log(userInfo);
