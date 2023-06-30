@@ -83,7 +83,7 @@
 <script>
     let urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get("msg")){
-        document.getElementById("errorText").innerHTML = urlParams.get("msg");
+        document.getElementById("errorText").innerHTML = decodeURIComponent(urlParams.get("msg"));
     }
 </script>
 

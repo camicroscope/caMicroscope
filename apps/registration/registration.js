@@ -332,18 +332,17 @@ async function saveRegistration() {
       } else {
         message.addError('Failed to add user to keycloak', 10000);
         console.log(kcRes);
-        window.location = "./registration_error.html?msg=Keycloak with " + JSON.stringify(kcRes);
+        window.location = "./registration_error.html?msg=Keycloak with " + encodeURIComponent(JSON.stringify(kcRes));
 
       }
     } else {
       message.addError('Failed to add this new user', 10000);
-      window.location = "./registration_error.html?msg=" + JSON.stringify(rs);
-      console.log(rs);
+      window.location = "./registration_error.html?msg= DB with " + encodeURIComponent(JSON.stringify(rs));
     }
   } catch (error) {
     console.error(error);
     message.addError('Error in user creation.', 10000);
-    window.location = "./registration_error.html?msg=" + JSON.stringify(error);
+    window.location = "./registration_error.html?msg= Other Err with " + encodeURIComponent(JSON.stringify(error));
   }
 
   console.log(userInfo);
