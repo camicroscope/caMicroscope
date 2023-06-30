@@ -284,7 +284,16 @@ function initCore() {
         value: 'save',
         callback: savePatches,
       },
-      //
+      // measurment tool
+      {
+        id: 'labeling_mode',
+        icon: 'space_bar',
+        title: 'Measurement',
+        type: 'radio',
+        value: 'measure',
+        name: 'measure',
+        callback: toggleMode,
+      },
       {
         id: 'tutorial',
         icon: 'help',
