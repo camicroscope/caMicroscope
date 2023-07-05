@@ -842,7 +842,7 @@ function hasLoginAsGoogle() {
 }
 
 function tokenSignOut(url) {
-  document.cookie = 'token=logout;';
+  document.cookie = 'token=logout;path=//camic_htt';
   if (url){
     window.location = url;
   } else {
