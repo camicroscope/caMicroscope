@@ -1,25 +1,21 @@
 function getCookie(name) {
-  var value = '; ' + document.cookie;
-  var parts = value.split('; ' + name + '=');
-  if (parts.length == 2) {
-    return parts
-        .pop()
-        .split(';')
-        .shift();
+  var match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+  if (match){
+    return match[2];
   }
 }
 
 const __auth_check = async function(levels) {
   // check token
   if (!getCookie('token')) {
-    console.log("I would've navigated due to lack of token")
-    //window.location = '../'.repeat(levels) + 'login.html?state=' + encodeURIComponent(window.location);
+    console.log("Redir due to lack of token")
+    window.location = '../'.repeat(levels) + 'login.html?state=' + encodeURIComponent(window.location);
   }
   const resp = await fetch('../'.repeat(levels) + 'data/Template/find');
   if (resp.status == 401) {
     // send them to login
-    console.log("I would've navigated due to getting a 401 on template")
-    //window.location = '../'.repeat(levels) + 'login.html?state=' + encodeURIComponent(window.location);
+    console.log("Redir due to getting a 401 on template")
+    window.location = '../'.repeat(levels) + 'login.html?state=' + encodeURIComponent(window.location);
   }
 };
 
