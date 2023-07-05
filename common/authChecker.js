@@ -12,12 +12,14 @@ function getCookie(name) {
 const __auth_check = async function(levels) {
   // check token
   if (!getCookie('token')) {
-    window.location = '../'.repeat(levels) + 'login.html?state=' + encodeURIComponent(window.location);
+    console.log("I would've navigated due to lack of token")
+    //window.location = '../'.repeat(levels) + 'login.html?state=' + encodeURIComponent(window.location);
   }
   const resp = await fetch('../'.repeat(levels) + 'data/Template/find');
   if (resp.status == 401) {
     // send them to login
-    window.location = '../'.repeat(levels) + 'login.html?state=' + encodeURIComponent(window.location);
+    console.log("I would've navigated due to getting a 401 on template")
+    //window.location = '../'.repeat(levels) + 'login.html?state=' + encodeURIComponent(window.location);
   }
 };
 

@@ -835,7 +835,7 @@ EventHandle.prototype = {
 };
 
 function hasLoginAsGoogle() {
-  
+
   let token_info = parseJwt(getCookie('token'));
   if (token_info&&token_info.userType!="Null") {
     return true;
@@ -845,9 +845,19 @@ function hasLoginAsGoogle() {
   return false;
 }
 
-function googleSignOut(url) {
-  removeUserConsentAcceptance(getUserId());
-  window.location = url;
+function tokenSignOut(url) {
+  document.cookie = 'token=logout;';
+  if (url){
+    window.location = url;
+  } else {
+    window.location.reload();
+  }
+}
+
+// alias in case I missed any
+function googleSignOut(url){
+  console.log("calling google signout, now alias to token signout");
+  tokenSignOut(url);
 }
 
 function getUserType() {
