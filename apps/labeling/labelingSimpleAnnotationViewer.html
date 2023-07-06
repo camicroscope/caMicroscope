@@ -316,7 +316,10 @@
             ></div>
           </div>
         </div>
-        <div id="collectionInfo" style="width: 100%; height: 20px; background-color: #b9bbcf; padding: 8px;"></div>
+        <div id="collectionInfo" style="width: 100%; height: 40px; background-color: #b9bbcf; padding: 8px;">
+          <b>Collection: </b> <span id="collectionName">(Unknown)</span><br/>
+          <b>Description: </b> <span id="collectionDesc" style="white-space: nowrap;">(Unknown)</span>
+        </div>
         <table id="datatables"></table>
       </div>
     </div>
@@ -364,12 +367,8 @@
         let collectionInfoPanel = document.getElementById("collectionInfo");
         let collectionInfo = await store.getCollection(cid)
         if (collectionInfo){
-          let colTitle = document.createElement("b");
-          colTitle.innerText = collectionInfo[0].name + " "
-          collectionInfoPanel.appendChild(colTitle)
-          let colDesc = document.createElement("span")
-          colDesc.innerText = collectionInfo[0].description || ""
-          collectionInfoPanel.appendChild(colDesc)
+          document.getElementById("collectionName").innerText = collectionInfo[0].name
+          document.getElementById("collectionDesc").innerText = collectionInfo[0].description
         }
         // set slides
         const slides = await store.findSlideLabelingStat(cid, getUserId());
