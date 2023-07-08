@@ -58,6 +58,7 @@ window.addEventListener('keydown', (e) => {
     measurementOff();
     annotationOff();
     presetLabelOff();
+    mlAsisstantOff();
   }
 
   // open annotation (ctrl + a)

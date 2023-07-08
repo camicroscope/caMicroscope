@@ -457,6 +457,8 @@
       this.align_fy = this._viewer.drawer.canvas.width/this._display_.width;
       this.align_fx = this._viewer.drawer.canvas.height/this._display_.height;
 
+      // ml tools
+      mltools.initcanvas(this._viewer.drawer.canvas);
       if (
         0 > img_point.x ||
         this.imgWidth < img_point.x ||
@@ -1035,7 +1037,7 @@
      * @private
      * __endNewFeature create a new feature data.
      */
-    __endNewFeature: function() {
+    __endNewFeature: async function() {
       if (this.drawMode == 'point') {
         this._current_path_.properties.style.color = this.style.color;
         this._current_path_.properties.style.lineJoin = this.style.lineJoin;
@@ -1097,6 +1099,9 @@
 
       // align
       points = this.__align(points);
+
+      const mlPoints = await this.__mlDraw(points);
+      points = mlPoints;
 
       // simplify and postprocess
       if(this.isMoving) spen.smoothness = spen.s;
@@ -1392,6 +1397,30 @@
       this._current_path_.geometry.coordinates[0] = data;
       this.__endNewFeature();
       this.drawMode = t;
+    },
+
+    /**
+    * Align functions
+    *@param {points}
+    *@return {points}
+    */
+    __mlDraw: async function(points) {
+      var dist = new Array();
+      var ol = points;
+      for (i = 0; i < ol.length; i++) {
+        dist.push(new OpenSeadragon.Point(ol[i][0], ol[i][1]));
+        dist[i] = this._viewer.viewport.imageToWindowCoordinates(dist[i]);
+        dist[i] = [Math.floor(dist[i].x * this.align_fx), Math.floor(dist[i].y * this.align_fy)];
+      }
+      dist = await mltools.applyDraw(dist, 70, 30);
+      for (i = 0; i < dist.length; i++) {
+        dist[i] = new OpenSeadragon.Point(dist[i][0] / this.align_fx, dist[i][1] / this.align_fy);
+        dist[i] = this._viewer.viewport.windowToImageCoordinates(dist[i]);
+        dist[i].x = Math.floor(dist[i].x);
+        dist[i].y = Math.floor(dist[i].y);
+        points[i] = [dist[i].x, dist[i].y];
+      }
+      return points;
     }
   };
 

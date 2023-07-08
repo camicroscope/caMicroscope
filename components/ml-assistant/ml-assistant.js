@@ -177,6 +177,9 @@ Assistant.prototype.__assignEventListener = function() {
                 iElt.checked = false;
             });
             event.target.checked = true;
+            const modelKey = this.modelList.querySelector(`#${elt.getAttribute('for')}`).value;
+            console.log('model key: ', modelKey);
+            this.__selectModel(modelKey);
         })
     })
 
@@ -297,7 +300,7 @@ Assistant.prototype.__enableAssistant = function() {
 // Handle model selection
 Assistant.prototype.__selectModel = function(modelValue) {
     // Change UI
-    this._viewer.raiseEvent('select-model', {model: modelValue});
+    mltools.loadModel(modelValue);
 }
 
 // Handle open model info modal

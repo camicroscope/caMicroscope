@@ -279,6 +279,7 @@ function draw(e) {
     }
     if ($CAMIC.status == 'normal') {
       annotationOn.call(this, state, target);
+      mlAsisstantOn();
       return;
     }
     toolsOff();
@@ -288,6 +289,7 @@ function draw(e) {
           // all tool has turn off
             clearInterval(checkAllToolsOff);
             annotationOn.call(this, state, target);
+            mlAsisstantOn();
           }
         }.bind(this),
         100,
@@ -295,6 +297,7 @@ function draw(e) {
   } else {
     // off
     annotationOff();
+    mlAsisstantOff();
   }
 }
 
@@ -311,10 +314,10 @@ function toolsOff() {
       break;
     case 'normal':
       annotationOff();
+      mlAsisstantOff();
       break;
     case 'label':
       presetLabelOff();
-      mlAssistantOff();
       break;
     case 'download_selection':
       downloadSelectionOff();
@@ -659,10 +662,8 @@ function mainMenuChange(data) {
 
   if (data.labels) {
     $UI.labelsSideMenu.open();
-    $UI.AssistantSideMenu.open();
   } else {
     presetLabelOff();
-    mlAsisstantOff();
   }
 }
 
@@ -1992,7 +1993,6 @@ function drawLabel(e) {
   } else {
     // off preset label
     presetLabelOff();
-    mlAsisstantOff();
   }
 }
 
@@ -2048,6 +2048,10 @@ function presetLabelOff() {
 
 function mlAsisstantOff() {
   $UI.AssistantSideMenu.close();
+}
+
+function mlAsisstantOn() {
+  $UI.AssistantSideMenu.open();
 }
 
 function savePresetLabel() {
