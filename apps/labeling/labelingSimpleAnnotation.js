@@ -1017,7 +1017,11 @@ function addROIFormEvent() {
 
 
   itsRange.addEventListener('change', itsChangeText);
-  itsRange.addEventListener('mousemove', itsChangeText);
+  itsRange.addEventListener('mousemove', function(e) {
+    if (e.buttons > 0) {
+      itsChangeText(e);
+    }
+  });
 
 
   vtaTxt.addEventListener('click', function(e) {
@@ -1056,7 +1060,11 @@ function addROIFormEvent() {
 
 
   vtaRange.addEventListener('change', vtaChangeText);
-  vtaRange.addEventListener('mousemove', vtaChangeText);
+  vtaRange.addEventListener('mousemove', function(e) {
+    if (e.buttons > 0) {
+      vtaChangeText(e);
+    }
+  });
 
   const actionBtn = document.querySelector('#left_menu .foot .action');
 
