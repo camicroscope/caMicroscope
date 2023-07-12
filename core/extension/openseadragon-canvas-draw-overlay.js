@@ -1077,7 +1077,6 @@
       } else {
         this._current_path_ = JSON.parse(JSON.stringify(this.currentOriginPath));
       }
-      console.log('this._current_path_: ', this._current_path_);
       if (
         !this._current_path_ ||
         this._current_path_.geometry.coordinates[0].length < 2 ||
