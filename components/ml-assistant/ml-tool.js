@@ -36,7 +36,7 @@ class mlTools {
      * @param {*} th 
      * @returns 
      */
-    detectContours(x1, y1, w, h, th, context = this.context, invert = true) {
+    detectContours(x1, y1, w, h, th, size, iter, context = this.context, invert = true) {
         const imgCanvasData = context.getImageData(x1, y1, w, h);
         let img = cv.matFromImageData(imgCanvasData);
 
@@ -46,21 +46,38 @@ class mlTools {
 
         let thresholdImg1 = new cv.Mat();
         cv.threshold(gray, thresholdImg1, th, 255, cv.THRESH_BINARY)
-        this.showmatImg(thresholdImg1, document.querySelector('#edge-img'));
+        const sureFgImg1 = this.thresholdImgToForegroundImg(thresholdImg1, size, iter, 2);
+        this.showmatImg(sureFgImg1, document.querySelector('.processed-image-container'));
         let contours1 = new cv.MatVector();
         let hierarchy1 = new cv.Mat();
-        cv.findContours(thresholdImg1, contours1, hierarchy1, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE);
+        cv.findContours(sureFgImg1, contours1, hierarchy1, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE);
 
         if (invert) {
             let thresholdImg2 = new cv.Mat();
             cv.threshold(gray, thresholdImg2, th, 255, cv.THRESH_BINARY_INV)
+            const sureFgImg2 = this.thresholdImgToForegroundImg(thresholdImg2, size, iter, 2);
             let contours2 = new cv.MatVector();
             let hierarchy2 = new cv.Mat();
-            cv.findContours(thresholdImg2, contours2, hierarchy2, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE);
+            cv.findContours(sureFgImg2, contours2, hierarchy2, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE);
             return [contours1, contours2]
         }
 
         return [contours1];
+    }
+
+    thresholdImgToForegroundImg(thresholdImg, erode_size = 2, iteration = 1, kernel_size = 3) {
+        // Perform morphological operations to enhance separation
+        const kernel = new cv.Mat();
+        cv.Mat.ones(kernel_size, kernel_size, cv.CV_8U).copyTo(kernel);
+        const opening = new cv.Mat();
+        cv.morphologyEx(thresholdImg, opening, cv.MORPH_OPEN, kernel);
+        const morph = new cv.Mat();
+        cv.morphologyEx(opening, morph, cv.MORPH_CLOSE, kernel);
+        const erode = new cv.Mat();
+        const erode_kernel = new cv.Mat();
+        cv.Mat.ones(erode_size, erode_size, cv.CV_8U).copyTo(erode_kernel);
+        cv.erode(morph, erode, erode_kernel, new cv.Point(-1,-1), iteration)
+        return erode;
     }
 
     /**
@@ -107,21 +124,22 @@ class mlTools {
      * @param h {number} height of orignal image
      * @return {number[][]} the most fit contour data array
      */
-    mostFitContour(contours, polygon, expansionBound) {
+    mostFitContour(contours, polygon, expansionBound, erode_size = 2, iteration = 1) {
         let maxArea = 0;
         let area;
         let fitContour;
+        let expandedContour;
         for (let j = 0; j < contours.length; j++) {
             for (let i = 0; i < contours[j].size(); i++) {
                 let contour = contours[j].get(i);
                 if (cv.contourArea(contour, false) < 1) {
                     continue;
                 }
-                contour = this.convertToArray(contour);
-                if (this.closeBoundary(contour, expansionBound, 3)) {
+                const contourArray = this.convertToArray(contour);
+                if (this.closeBoundary(contourArray, expansionBound, 3)) {
                     continue;
                 }
-                area = this.overlapArea(contour, polygon);
+                area = this.overlapArea(contourArray, polygon);
                 if (area > maxArea) {
                     maxArea = area;
                     fitContour = contour;
@@ -129,7 +147,41 @@ class mlTools {
             }
         }
 
-        return fitContour;
+        if (fitContour) {
+            expandedContour = this.expandContour(fitContour, expansionBound.w, expansionBound.h, erode_size, iteration);
+        }
+        if (!expandedContour) {
+            return [];
+        }
+        const fit_contour = this.convertToArray(expandedContour);
+        return fit_contour;
+    }
+
+    expandContour(contour, width, height, size, iter) {
+        const mask = new cv.Mat.zeros(height, width, cv.CV_8UC1);
+        for (let i = 0; i < width; i++) {
+            for (let j = 0; j < height; j++) {
+                const point = new cv.Point(i, j);
+                if (cv.pointPolygonTest(contour, point, false) >= 0) {
+                    mask.data[(point.y * mask.cols + point.x)] = 255;
+                }
+            }
+        }
+
+        const erode_kernel = new cv.Mat();
+        cv.Mat.ones(size, size, cv.CV_8U).copyTo(erode_kernel);
+
+        const dilate = new cv.Mat();
+        cv.dilate(mask, dilate, erode_kernel, new cv.Point(-1,-1), iter);
+        this.showmatImg(dilate, document.querySelector('.processed-image-container'));
+
+        let contours = new cv.MatVector();
+        let hierarchy = new cv.Mat();
+        cv.findContours(dilate, contours, hierarchy, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE);
+        if (contours.size() === 1) {
+            return contours.get(0);
+        }
+        return null;
     }
 
     /**
@@ -225,7 +277,7 @@ class mlTools {
      * @param expansion {number} expansion percentage from existing data
      * @return {number[][]} processed polygon
      */
-    applyDrawNoModel(polygon, threshold, expansion) {
+    applyDrawNoModel(polygon, threshold, expansion, kernel_size, iteration) {
         // remove last point from the polygon
         polygon.pop();
 
@@ -236,14 +288,13 @@ class mlTools {
         const expansionBound = this.getExpansionCoordicate(polygonBound, expansion);
 
         // get contours from detect edges image
-        const contours = this.detectContours(expansionBound.x, expansionBound.y, expansionBound.w, expansionBound.h, threshold);
+        const contours = this.detectContours(expansionBound.x, expansionBound.y, expansionBound.w, expansionBound.h, threshold, kernel_size, iteration);
 
         // re-align polygon origin
         polygon = this.reAlign(polygon, expansionBound.x, expansionBound.y);
 
         // get most fit contour
-        let fitContour = this.mostFitContour(contours, polygon, expansionBound);
-        console.log('fitContour: ', fitContour);
+        let fitContour = this.mostFitContour(contours, polygon, expansionBound, kernel_size, iteration);
 
         // re-align the most fit contour
         fitContour = this.reAlign(fitContour, -expansionBound.x, -expansionBound.y);
@@ -263,6 +314,10 @@ class mlTools {
      * @return {Promise<boolean>}
      */
     loadModel(key) {
+        if (key === 'watershed') {
+            this.model = 'watershed';
+            return Promise.resolve(true);
+        }
         return new Promise((resolve, reject) => {
             try {
                 if (this.model) {
@@ -393,8 +448,7 @@ class mlTools {
      * @param {number} threshold - upper threshold value for canny detection
      * @param {number} expansion - expansion percentage
      */
-    async applyDrawModel(model, size, ch, scaleMethod, polygon, threshold, expansion) {
-        console.log('applyDrawModel');
+    async applyDrawModel(model, size, ch, scaleMethod, polygon, threshold, expansion, kernel_size, iteration) {
         // remove last point from the polygon
         polygon.pop();
 
@@ -406,7 +460,6 @@ class mlTools {
 
         // get grid coordinate with grid size is model size
         const gridBounds = this.getGridCoordinate(size, expansionBound);
-        console.log('gridBounds: ', gridBounds);
 
         // loop over all pieces of image and run the model
         this.fullPredict.getContext('2d').clearRect(0, 0, this.fullPredict.width, this.fullPredict.height);
@@ -415,31 +468,38 @@ class mlTools {
         for (let i = 0; i < gridBounds.length; i++) {
             // get image data
             const imgCanvasData = this.context.getImageData(gridBounds[i].x, gridBounds[i].y, size, size);
-            console.log('imgCanvasData: ', imgCanvasData);
             let val;
             tf.tidy(() => {
                 const img = tf.browser.fromPixels(imgCanvasData).toFloat();
-                console.log('img: ', img);
-                // const channedProcessedImg = this.channelProcessing(img, ch);
-                // console.log('channedProcessedImg: ', channedProcessedImg);
-                // const pixelScaledImg = this.pixelScaling(channedProcessedImg, scaleMethod);
-                // console.log('pixelScaledImg: ', pixelScaledImg);
                 let img2;
                 if (ch == 1) {
                     img2 = tf.image.resizeBilinear(img, [size, size]).mean(2);
                 } else {
                     img2 = tf.image.resizeBilinear(img, [size, size]);
                 }
-                console.log('img2: ', img2);
-                const batched = img2.reshape([1, size, size, ch]);
-                console.log('batched: ', batched);
+                let normalized;
+                if (scaleMethod == 'norm') {
+                    const scale = tf.scalar(255);
+                    normalized = img2.div(scale);
+                } else if (scaleMethod == 'center') {
+                    const mean = img2.mean();
+                    normalized = img2.sub(mean);
+                } else if (scaleMethod == 'std') {
+                    const mean = img2.mean();
+                    const std = (img2.squaredDifference(mean).sum()).div(img2.flatten().shape).sqrt();
+                    normalized = img2.sub(mean).div(std);
+                } else {
+                    normalized = img2;
+                }
+                const batched = normalized.reshape([1, size, size, ch]);
                 let values = model.predict(batched).dataSync();
-                console.log('values: ', values);
                 values = Array.from(values);
                 // scale values
                 values = values.map((x) => x * 255);
                 val = [];
                 while (values.length > 0) val.push(values.splice(0, size));
+                const padding = 2;
+                val = this.fillBoundary(val, padding);
             })
             tf.engine().startScope();
             await tf.browser.toPixels(val, this.temp);
@@ -447,18 +507,18 @@ class mlTools {
             tf.engine().endScope();
         }
 
-        this.showCanvas(this.fullPredict, document.querySelector('#edge-img'));
-
         const fullPredictCanvas = this.fullPredict.getContext('2d');
 
         // get contours from detect edges image
-        const contours = this.detectContours(0, 0, this.fullPredict.width, this.fullPredict.height, threshold, fullPredictCanvas, false);
+        const contours = this.detectContours(0, 0, this.fullPredict.width, this.fullPredict.height, threshold, kernel_size, iteration, fullPredictCanvas, false);
+
+        this.showCanvas(this.fullPredict, document.querySelector('.model-predict-image-container'));
 
         // re-align polygon origin
         polygon = this.reAlign(polygon, expansionBound.x, expansionBound.y);
 
         // get most fit contour
-        let fitContour = this.mostFitContour(contours, polygon, expansionBound);
+        let fitContour = this.mostFitContour(contours, polygon, expansionBound, kernel_size, iteration);
 
         // re-align the most fit contour
         fitContour = this.reAlign(fitContour, -expansionBound.x, -expansionBound.y);
@@ -472,16 +532,36 @@ class mlTools {
         return fitContour;
     }
 
-    async applyDraw(polygon, threshold, expansion, scaleMethod = 'no_scale') {
-        console.log('model: ', this.model);
+    async applyDraw(polygon, threshold, expansion, kernel_size, iteration, scaleMethod = 'no_scale') {
         if (this.model && this.model !== 'watershed') {
-            return await this.applyDrawModel(this.model, this.size, this.ch, scaleMethod, polygon, threshold, expansion);
+            return await this.applyDrawModel(this.model, this.size, this.ch, scaleMethod, polygon, threshold, expansion, kernel_size, iteration);
         } else {
-            return this.applyDrawNoModel(polygon, threshold, expansion)
+            return this.applyDrawNoModel(polygon, threshold, expansion, kernel_size, iteration)
         }
     }
 
-    showmatImg(edges, elt) {
+    fillBoundary(imageArray, padding) {
+        const size = imageArray.length;
+        for (let i = 0; i < padding; i++) {
+            for (let j = padding; j<size-padding; j++) {
+                imageArray[i][j] = imageArray[padding][j];
+                imageArray[size-i-1][j] = imageArray[size-padding-1][j];
+                imageArray[j][i] = imageArray[j][padding];
+                imageArray[j][size-i-1] = imageArray[j][size-padding-1];
+            }
+        }
+        for (let i = 0; i < padding; i++) {
+            for (let j = 0; j < padding; j++) {
+                imageArray[i][j] = imageArray[padding][padding];
+                imageArray[size-i-1][j] = imageArray[size-padding-1][padding];
+                imageArray[i][size-j-1] = imageArray[padding][size-padding-1];
+                imageArray[size-i-1][size-j-1] = imageArray[size-padding-1][size-padding-1];
+            }
+        }
+        return imageArray;
+    }
+
+    showmatImg(edges, elt, convertCh = true) {
         // Create a new canvas for displaying the edges
         empty(elt)
         var edgesCanvas = document.createElement('canvas');
@@ -489,11 +569,13 @@ class mlTools {
         edgesCanvas.height = edges.rows;
         var edgesCtx = edgesCanvas.getContext('2d');
         let data = []
-        for (let i = 0; i < edges.data.length; i++) {
-            data.push(edges.data[i]);
-            data.push(edges.data[i]);
-            data.push(edges.data[i]);
-            data.push(225);
+        if (convertCh) {
+            for (let i = 0; i < edges.data.length; i++) {
+                data.push(edges.data[i]);
+                data.push(edges.data[i]);
+                data.push(edges.data[i]);
+                data.push(255);
+            }
         }
 
         // Convert the edges data to an image
@@ -505,13 +587,26 @@ class mlTools {
 
         // Draw the edges on the canvas
         edgesCtx.putImageData(edgesData, 0, 0);
-
+        if ((edgesCanvas.height/edgesCanvas.width) > (elt.offsetHeight/elt.offsetWidth)) {
+            edgesCanvas.style.height = '100%';
+            edgesCanvas.style.width = '';
+        } else {
+            edgesCanvas.style.width = '100%';
+            edgesCanvas.style.height = '';
+        }
         // Append the canvas to the document body or any other container
         elt.appendChild(edgesCanvas);
     }
 
     showCanvas(canvas, elt) {
         empty(elt);
+        if ((canvas.height/canvas.width) > (elt.offsetHeight/elt.offsetWidth)) {
+            canvas.style.height = '100%';
+            canvas.style.width = '';
+        } else {
+            canvas.style.width = '100%';
+            canvas.style.height = '';
+        }
         elt.appendChild(canvas);
     }
 }

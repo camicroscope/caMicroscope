@@ -56,6 +56,8 @@ Assistant.prototype.__clearUI = function() {
 
     this.annotateModeZone = null;
     this.settingZone = null;
+    this.processedImgContainer = null;
+    this.modelPredictImgContainer = null;
 };
 
 Assistant.prototype.__refreshUI = async function() {
@@ -79,7 +81,7 @@ Assistant.prototype.__refreshUI = async function() {
     <button class='btn btn-info add-model'>Add Model</button>
     <ul class="model-tools">
         <li>
-            <input type="checkbox" id="${modelEnableId}" value="rect">
+            <input type="checkbox" id="${modelEnableId}">
             <label class="material-icons md-20" for="${modelEnableId}" title="Model Enable">timeline</label>
         </li>
         <li>
@@ -115,26 +117,44 @@ Assistant.prototype.__refreshUI = async function() {
         </li>
     </ul>
     <div class='annotate-checklist'>
-        <label><input type='checkbox' value='AnnotateByDraw' checked/>  Draw</label>
+        <label><input type='checkbox' value='annotateByDraw' checked/>  Draw</label>
         <label><input type='checkbox' value='annotateByClick' />  Click</label>
         <label><input type='checkbox' value='annotateByROI' />  ROI</label>
     </div>
     <div class='annotate-setting'>
         <div class='radius-setting'>
             <pre>Radius</pre>
-            <input type="range" id="model-radius" max="70" min="7" value="30">
+            <input type="range" id="model-radius" max="100" min="10" value="30">
             <span id="model-r">30</span>
         </div>
         <div class='threshold-setting'>
             <pre>Threshold</pre>
-            <input type="range" id="model-threshold" max="300" min="20" value="90">
+            <input type="range" id="model-threshold" max="255" min="10" value="100">
             <span id="model-t">90</span>
         </div>
         <div class='roughness-setting'>
             <pre>Roughness</pre>
-            <input type="range" id="model-smooth" max="10" min="1" value="4">
+            <input type="range" id="model-roughness" max="10" min="1" value="4">
             <span id="model-s">4</span>
         </div>
+        <div class='separation-kernel-size-setting'>
+            <pre>Kernel Size</pre>
+            <input type="range" id="model-separation" max="10" min="0" value="0">
+            <span id="model-se">0</span>
+        </div>
+        <div class='separation-iteration-setting'>
+            <pre>Iteration</pre>
+            <input type="range" id="model-separation" max="5" min="1" value="1">
+            <span id="model-se">1</span>
+        </div>
+    </div>
+    <div class="processed-image">
+        <label class="img-label">Processed Image</label>
+        <div class="processed-image-container"></div>
+    </div>
+    <div class="model-predict-image">
+        <label class="img-label">Model Predict Image</label>
+        <div class="model-predict-image-container"></div>
     </div>
     `;
 
@@ -153,7 +173,11 @@ Assistant.prototype.__refreshUI = async function() {
         radius: this.view.querySelector('.radius-setting'),
         threshold: this.view.querySelector('.threshold-setting'),
         roughness: this.view.querySelector('.roughness-setting'),
+        kernel_size: this.view.querySelector('.separation-kernel-size-setting'),
+        iteration: this.view.querySelector('.separation-iteration-setting'),
     }
+    this.processedImgContainer = this.view.querySelector('.processed-image-container'),
+    this.modelPredictImgContainer = this.view.querySelector('.model-predict-image-container'),
 
     await this.__createModelList();
 
@@ -178,7 +202,6 @@ Assistant.prototype.__assignEventListener = function() {
             });
             event.target.checked = true;
             const modelKey = this.modelList.querySelector(`#${elt.getAttribute('for')}`).value;
-            console.log('model key: ', modelKey);
             this.__selectModel(modelKey);
         })
     })
@@ -214,18 +237,45 @@ Assistant.prototype.__assignEventListener = function() {
     this.settingZone.radius.querySelector('input').addEventListener('change', (event) => {
         this.settingZone.radius.querySelector('span').textContent = event.target.value;
         // TODO process ROI processing
+        if (this.__isEnableAssistant() && this.__getAssistantMode() === 'annotateByDraw') {
+            this._viewer.raiseEvent('ml-draw-setting-change', {});
+        }
     })
 
     // Change threshold event
     this.settingZone.threshold.querySelector('input').addEventListener('change', (event) => {
         this.settingZone.threshold.querySelector('span').textContent = event.target.value;
         // TODO process ROI processing
+        if (this.__isEnableAssistant() && this.__getAssistantMode() === 'annotateByDraw') {
+            this._viewer.raiseEvent('ml-draw-setting-change', {});
+        }
     })
 
     // Change roughness event
     this.settingZone.roughness.querySelector('input').addEventListener('change', (event) => {
         this.settingZone.roughness.querySelector('span').textContent = event.target.value;
         // TODO process ROI processing
+        if (this.__isEnableAssistant() && this.__getAssistantMode() === 'annotateByDraw') {
+            this._viewer.raiseEvent('ml-draw-setting-change', {});
+        }
+    })
+
+    // Change separation kernel size event
+    this.settingZone.kernel_size.querySelector('input').addEventListener('change', (event) => {
+        this.settingZone.kernel_size.querySelector('span').textContent = event.target.value;
+        // TODO process ROI processing
+        if (this.__isEnableAssistant() && this.__getAssistantMode() === 'annotateByDraw') {
+            this._viewer.raiseEvent('ml-draw-setting-change', {});
+        }
+    })
+
+    // Change separation iteration event
+    this.settingZone.iteration.querySelector('input').addEventListener('change', (event) => {
+        this.settingZone.iteration.querySelector('span').textContent = event.target.value;
+        // TODO process ROI processing
+        if (this.__isEnableAssistant() && this.__getAssistantMode() === 'annotateByDraw') {
+            this._viewer.raiseEvent('ml-draw-setting-change', {});
+        }
     })
 }
 
@@ -249,8 +299,6 @@ Assistant.prototype.__createModelList = async function() {
             dict.title = title;
             dict.value = value;
             dict.checked = false;
-            // Saving to previously defined model names
-            // modelName.push(dict['title']);
             dropDownList.push(dict);
         }
     });
@@ -291,15 +339,12 @@ Assistant.prototype.__updateModelList= function() {
     this.__createModelList();
 }
 
-// Handle enable machine learning assistant
-Assistant.prototype.__enableAssistant = function() {
-    // Change UI
-    this._viewer.raiseEvent('enable-assistant', {});
+Assistant.prototype.__isEnableAssistant = function() {
+    return this.enableBtn.checked;
 }
 
 // Handle model selection
 Assistant.prototype.__selectModel = function(modelValue) {
-    // Change UI
     mltools.loadModel(modelValue);
 }
 
@@ -308,38 +353,32 @@ Assistant.prototype.__openModelInfo = function() {
     this._viewer.raiseEvent('open-model-info', {});
 }
 
+// TODO
 // Handle model delete
 Assistant.prototype.__deleteModel = function(modelValue) {
-    // Delete model from resource
-
     // Remove UI
     this.__updateModelList();
 }
 
-// Handle select mode
-Assistant.prototype.__selectMode = function(mode) {
-    // Change UI
-}
-
 // Get mode
 Assistant.prototype.__getAssistantMode = function() {
-    const mode = {};
-    return mode;
-}
-
-// Handle setting mode change
-Assistant.prototype.__settingModeChangeHandler = function() {
-    // Change UI
+    return this.annotateModeZone.querySelector('input[checked]').value;
 }
 
 // Get setting mode value
 Assistant.prototype.__getSettingModes = function() {
     const settingMode = {
-        radius: this.settingZone.radius.value,
-        threshold: this.settingZone.threshold.value,
-        roughness: this.settingZone.threshold.value,
+        radius: parseFloat(this.settingZone.radius.querySelector('input').value),
+        threshold: parseFloat(this.settingZone.threshold.querySelector('input').value),
+        roughness: parseFloat(this.settingZone.roughness.querySelector('input').value),
+        kernel_size: parseFloat(this.settingZone.kernel_size.querySelector('input').value),
+        iteration: parseFloat(this.settingZone.iteration.querySelector('input').value),
     }
     return settingMode;
+}
+
+Assistant.prototype.__getScaleMethod = function() {
+    return this.pixelScaleList.querySelector('input[checked]').value;
 }
 
 Assistant.prototype.__createElementFromHTML= function(htmlString) {

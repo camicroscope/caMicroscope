@@ -1037,7 +1037,7 @@
      * @private
      * __endNewFeature create a new feature data.
      */
-    __endNewFeature: async function() {
+    __endNewFeature: async function(modifying = false) {
       if (this.drawMode == 'point') {
         this._current_path_.properties.style.color = this.style.color;
         this._current_path_.properties.style.lineJoin = this.style.lineJoin;
@@ -1072,6 +1072,12 @@
         );
         return;
       }
+      if (!modifying) {
+        this.currentOriginPath = JSON.parse(JSON.stringify(this._current_path_));
+      } else {
+        this._current_path_ = JSON.parse(JSON.stringify(this.currentOriginPath));
+      }
+      console.log('this._current_path_: ', this._current_path_);
       if (
         !this._current_path_ ||
         this._current_path_.geometry.coordinates[0].length < 2 ||
@@ -1080,10 +1086,12 @@
         return;
       } // click on canvas
       // set style and drawing model
-      this._current_path_.properties.style.color = this.style.color;
-      this._current_path_.properties.style.lineJoin = this.style.lineJoin;
-      this._current_path_.properties.style.lineCap = this.style.lineCap;
-      this._current_path_.properties.style.isFill = this.style.isFill;
+      try {
+        this._current_path_.properties.style.color = this.style.color;
+        this._current_path_.properties.style.lineJoin = this.style.lineJoin;
+        this._current_path_.properties.style.lineCap = this.style.lineCap;
+        this._current_path_.properties.style.isFill = this.style.isFill;
+      } catch (error) {}
       let points = this._current_path_.geometry.coordinates[0];
       /* Modifications */
 
@@ -1100,16 +1108,23 @@
       // align
       points = this.__align(points);
 
-      const mlPoints = await this.__mlDraw(points);
-      points = mlPoints;
+      if ($UI.AssistantViewer.__isEnableAssistant()) {
+        const mlPoints = await this.__mlDraw(points);
+        points = mlPoints;
+      }
 
       // simplify and postprocess
       if(this.isMoving) spen.smoothness = spen.s;
       if (!(this.drawMode === 'grid') && this._simplify)
         if(spen.mode != 0)
           points = mtool.populate(points, 500000, ~~this.scaleWindowtoImage(2), 150);
-        else
-          points = simplify(points, 3.5);
+        else {
+          if ($UI.AssistantViewer.__isEnableAssistant()) {
+            points = simplify(points, $UI.AssistantViewer.__getSettingModes.roughness);
+          } else {
+            points = simplify(points, 3.5);
+          }
+        }
 
       // float to integer
       points = this._convert_integer(points);
@@ -1165,6 +1180,9 @@
           this._current_path_.geometry.coordinates[0],
       );
 
+      if (modifying) {
+        this._path_index--;
+      }
       if (this._path_index < this._draws_data_.length) {
         this._draws_data_ = this._draws_data_.slice(0, this._path_index);
       }
@@ -1400,11 +1418,13 @@
     },
 
     /**
-    * Align functions
+    * Machine learning draw functions
     *@param {points}
     *@return {points}
     */
     __mlDraw: async function(points) {
+      const {radius, threshold, kernel_size, iteration} = $UI.AssistantViewer.__getSettingModes();
+      const scaleMethod = $UI.AssistantViewer.__getScaleMethod();
       var dist = new Array();
       var ol = points;
       for (i = 0; i < ol.length; i++) {
@@ -1412,7 +1432,7 @@
         dist[i] = this._viewer.viewport.imageToWindowCoordinates(dist[i]);
         dist[i] = [Math.floor(dist[i].x * this.align_fx), Math.floor(dist[i].y * this.align_fy)];
       }
-      dist = await mltools.applyDraw(dist, 70, 30);
+      dist = await mltools.applyDraw(dist, threshold, radius, kernel_size, iteration, scaleMethod);
       for (i = 0; i < dist.length; i++) {
         dist[i] = new OpenSeadragon.Point(dist[i][0] / this.align_fx, dist[i][1] / this.align_fy);
         dist[i] = this._viewer.viewport.windowToImageCoordinates(dist[i]);

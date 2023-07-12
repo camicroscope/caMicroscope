@@ -855,7 +855,7 @@ async function initUIcomponents() {
     width: 240,
     contentPadding: 5,
     position: 'right',
-    height: '30vh',
+    height: '71vh',
     top: '30px'
   });
 
@@ -1036,6 +1036,14 @@ async function initUIcomponents() {
     showInfo();
   })
 
+  $CAMIC.viewer.addHandler('ml-draw-setting-change', () => {
+    if (!$CAMIC.viewer.canvasDrawInstance) return;
+    const canvasDraw = $CAMIC.viewer.canvasDrawInstance;
+
+    if (canvasDraw._draws_data_.length) {
+      canvasDraw.__endNewFeature(true);
+    }
+  })
 }
 
 // Shows the uploaded models' details
