@@ -120,9 +120,14 @@ async function downloadUsers(){
 
 function handleUpload(){
   function onReaderLoad(event){
-      console.log(event.target.result);
-      var obj = JSON.parse(event.target.result);
-      uploadUsers(obj);
+      try {
+        console.log(event.target.result);
+        var obj = JSON.parse(event.target.result);
+        uploadUsers(obj);
+      } catch(err){
+        console.error(err);
+        alert(err);
+      }
   }
   var reader = new FileReader();
   reader.onload = onReaderLoad;
