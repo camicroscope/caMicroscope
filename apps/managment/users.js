@@ -96,8 +96,8 @@ async function downloadUsers(){
     }
     u['phoneNumber'] = i.registration.phoneNumber
     u['specialties'] = i.registration.specialties
-    u['yearsOfResidency'] = i.registration.yearsOfResidency
-    u['certYear'] = i.registration.certYear
+    u['experienceResident'] = i.registration.experienceResident
+    u['experience'] = i.registration.experience
     u['collections'] = []
     u['create_date'] = i.create_date
     let user_collections = i.collections || []
@@ -160,8 +160,8 @@ async function uploadUsers(data){
     edit.registration.other = ""
     edit.registration.phoneNumber = i['phoneNumber']
     edit.registration.specialties = i['specialties']
-    edit.registration.yearsOfResidency = i['yearsOfResidency']
-    edit.registration.certYear = i['certYear']
+    edit.registration.experienceResident = i['experienceResident']
+    edit.registration.experience = i['experience']
     edit.userType = i['userType']
     edit.create_date = i['create_date']
     // collections

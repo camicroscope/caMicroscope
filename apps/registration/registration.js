@@ -246,7 +246,7 @@ $('#certifications').alpaca({
         'title': 'Board certification or residency organization and country (or enter NA)',
         'required': true,
       },
-      'certYear': {
+      'experience': {
         'type': 'integer',
         'minimum': -1,
         'title':
@@ -264,7 +264,7 @@ $('#certifications').alpaca({
   },
   'options': {
     'fields': {
-      'yearsOfResidency': {
+      'experienceResident': {
         'slider': true,
         'default': -1,
       },
