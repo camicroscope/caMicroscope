@@ -1106,88 +1106,88 @@
 
       // align
       points = this.__align(points);
-
+      let pointsList;
       if ($UI.AssistantViewer.__isEnableAssistant()) {
         const mlPoints = await this.__mlDraw(points);
-        points = mlPoints;
+        pointsList = mlPoints;
+      } else {
+        pointsList = [points];
       }
-
-      // simplify and postprocess
-      if(this.isMoving) spen.smoothness = spen.s;
-      if (!(this.drawMode === 'grid') && this._simplify)
-        if(spen.mode != 0)
-          points = mtool.populate(points, 500000, ~~this.scaleWindowtoImage(2), 150);
-        else {
-          if ($UI.AssistantViewer.__isEnableAssistant()) {
-            points = simplify(points, $UI.AssistantViewer.__getSettingModes.roughness);
-          } else {
-            points = simplify(points, 3.5);
-          }
-        }
-
-      // float to integer
-      points = this._convert_integer(points);
-
-      if (!(this.drawMode === 'line' || this.drawMode == 'grid')) {
-        let isIntersect = false;
-        if (isSelfIntersect(points)) {
-          isIntersect = true;
-          console.info('The polygon just drawn has an intersection.');
-          if (! window.localStorage.getItem('_intersect_warn')) {
-            alert(
-                'A Self-Intersecting Polygon Will Cause Inaccurate Area and Circumference.',
-            );
-            console.info('Firing Intersect user Alert just this once.');
-            window.localStorage.setItem('_intersect_warn', 'true');
-          }
-        }
-        let sqmpsqp = null; // square microns per square pixels
-        if (
-          this._viewer.mpp_x &&
-          this._viewer.mpp_y &&
-          this._viewer.mpp_x != 1e9 &&
-          this._viewer.mpp_y != 1e9
-        ) {
-          sqmpsqp = this._viewer.mpp_x * this._viewer.mpp_y;
-          // calculate the are of polygon
-          this._current_path_.properties.area =
-            sqmpsqp * polygonArea(points);
-          this._current_path_.properties.circumference = getCircumference(
-              points,
-              this._viewer.mpp_x,
-              this._viewer.mpp_y,
-          );
-          this._current_path_.properties.isIntersect = isIntersect;
-        } else if (this._viewer.mpp && this._viewer.mpp != 1e9) {
-          sqmpsqp = this._viewer.mpp * this._viewer.mpp;
-          // calculate the are of polygon
-          this._current_path_.properties.area =
-            sqmpsqp * polygonArea(points);
-          this._current_path_.properties.circumference = getCircumference(
-              points,
-              this._viewer.mpp_x,
-              this._viewer.mpp_y,
-          );
-          this._current_path_.properties.isIntersect = isIntersect;
-        } else {
-          this._current_path_.properties.nommp = true;
-        }
-      }
-      this._current_path_.geometry.coordinates[0] = points;
-      // create bounds
-      this._current_path_.bound.coordinates[0] = getBounds(
-          this._current_path_.geometry.coordinates[0],
-      );
-
       if (modifying) {
-        this._path_index--;
+        this._path_index -= this.lastPointsListLength;
       }
-      if (this._path_index < this._draws_data_.length) {
-        this._draws_data_ = this._draws_data_.slice(0, this._path_index);
-      }
+      this.lastPointsListLength = pointsList.length;
+      for (let i = 0; i < pointsList.length; i++) {
+        // simplify and postprocess
+        drawPoints = pointsList[i];
+        if(this.isMoving) spen.smoothness = spen.s;
+        if (!(this.drawMode === 'grid') && this._simplify)
+          if(spen.mode != 0)
+            drawPoints = mtool.populate(drawPoints, 500000, ~~this.scaleWindowtoImage(2), 150);
+          else {
+              drawPoints = simplify(drawPoints, 3.5);
+          }
+  
+        // float to integer
+        drawPoints = this._convert_integer(drawPoints);
+  
+        if (!(this.drawMode === 'line' || this.drawMode == 'grid')) {
+          let isIntersect = false;
+          if (isSelfIntersect(drawPoints)) {
+            isIntersect = true;
+            console.info('The polygon just drawn has an intersection.');
+            if (! window.localStorage.getItem('_intersect_warn')) {
+              alert(
+                  'A Self-Intersecting Polygon Will Cause Inaccurate Area and Circumference.',
+              );
+              console.info('Firing Intersect user Alert just this once.');
+              window.localStorage.setItem('_intersect_warn', 'true');
+            }
+          }
+          let sqmpsqp = null; // square microns per square pixels
+          if (
+            this._viewer.mpp_x &&
+            this._viewer.mpp_y &&
+            this._viewer.mpp_x != 1e9 &&
+            this._viewer.mpp_y != 1e9
+          ) {
+            sqmpsqp = this._viewer.mpp_x * this._viewer.mpp_y;
+            // calculate the are of polygon
+            this._current_path_.properties.area =
+              sqmpsqp * polygonArea(drawPoints);
+            this._current_path_.properties.circumference = getCircumference(
+                drawPoints,
+                this._viewer.mpp_x,
+                this._viewer.mpp_y,
+            );
+            this._current_path_.properties.isIntersect = isIntersect;
+          } else if (this._viewer.mpp && this._viewer.mpp != 1e9) {
+            sqmpsqp = this._viewer.mpp * this._viewer.mpp;
+            // calculate the are of polygon
+            this._current_path_.properties.area =
+              sqmpsqp * polygonArea(drawPoints);
+            this._current_path_.properties.circumference = getCircumference(
+                drawPoints,
+                this._viewer.mpp_x,
+                this._viewer.mpp_y,
+            );
+            this._current_path_.properties.isIntersect = isIntersect;
+          } else {
+            this._current_path_.properties.nommp = true;
+          }
+        }
+        this._current_path_.geometry.coordinates[0] = drawPoints;
+        // create bounds
+        this._current_path_.bound.coordinates[0] = getBounds(
+            this._current_path_.geometry.coordinates[0],
+        );
 
-      this._draws_data_.push(Object.assign({}, this._current_path_));
-      this._path_index++;
+        if (this._path_index < this._draws_data_.length) {
+          this._draws_data_ = this._draws_data_.slice(0, this._path_index);
+        }
+        this._draws_data_.push(Object.assign({}, JSON.parse(JSON.stringify(this._current_path_))));
+        this._path_index++;
+      }
       this._current_path_ = null;
       DrawHelper.clearCanvas(this._draw_);
       this._display_ctx_.lineWidth = this.style.lineWidth;
@@ -1422,24 +1422,35 @@
     *@return {points}
     */
     __mlDraw: async function(points) {
-      const {radius, threshold, kernel_size, iteration} = $UI.AssistantViewer.__getSettingModes();
+      const {radius, threshold, overlap} = $UI.AssistantViewer.__getSettingModes();
       const scaleMethod = $UI.AssistantViewer.__getScaleMethod();
-      var dist = new Array();
+      var dist = [];
+      var dists;
       var ol = points;
       for (i = 0; i < ol.length; i++) {
         dist.push(new OpenSeadragon.Point(ol[i][0], ol[i][1]));
         dist[i] = this._viewer.viewport.imageToWindowCoordinates(dist[i]);
         dist[i] = [Math.floor(dist[i].x * this.align_fx), Math.floor(dist[i].y * this.align_fy)];
       }
-      dist = await mltools.applyDraw(dist, threshold, radius, kernel_size, iteration, scaleMethod);
-      for (i = 0; i < dist.length; i++) {
-        dist[i] = new OpenSeadragon.Point(dist[i][0] / this.align_fx, dist[i][1] / this.align_fy);
-        dist[i] = this._viewer.viewport.windowToImageCoordinates(dist[i]);
-        dist[i].x = Math.floor(dist[i].x);
-        dist[i].y = Math.floor(dist[i].y);
-        points[i] = [dist[i].x, dist[i].y];
+      let drawMany;
+      console.log('mode: ',$UI.AssistantViewer.__getAssistantMode());
+      if ($UI.AssistantViewer.__getAssistantMode() === 'annotateOneByDraw') {
+        drawMany = false;
+      } else if ($UI.AssistantViewer.__getAssistantMode() === 'annotateManyByDraw') {
+        drawMany = true;
       }
-      return points;
+      dists = await mltools.applyDraw(dist, threshold, radius, overlap, scaleMethod, drawMany);
+      return dists.map((dist) => {
+        const distAlign = [];
+        for (i = 0; i < dist.length; i++) {
+          dist[i] = new OpenSeadragon.Point(dist[i][0] / this.align_fx, dist[i][1] / this.align_fy);
+          dist[i] = this._viewer.viewport.windowToImageCoordinates(dist[i]);
+          dist[i].x = Math.floor(dist[i].x);
+          dist[i].y = Math.floor(dist[i].y);
+          distAlign.push([dist[i].x, dist[i].y]);
+        }
+        return distAlign;
+      });
     }
   };
 

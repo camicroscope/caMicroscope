@@ -335,6 +335,7 @@ function annotationOn(state, target) {
   canvasDraw.style.color = style.color;
 
   li.appendChild(label);
+  $UI.AssistantViewer.undoBtn.onclick=()=>canvasDraw.__align_undo();
   switch (state) {
     case 1:
       spen.menu(65, 0.2);

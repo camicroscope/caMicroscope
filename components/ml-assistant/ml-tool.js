@@ -20,6 +20,8 @@ class mlTools {
         this.undo;
         this.temp = document.createElement('canvas');
         this.fullPredict = document.createElement('canvas');
+        this.sureFgImg1 = null;
+        this.sureFgImg2 = null;
     }
 
     initcanvas(canvas) {
@@ -47,7 +49,7 @@ class mlTools {
         let thresholdImg1 = new cv.Mat();
         cv.threshold(gray, thresholdImg1, th, 255, cv.THRESH_BINARY)
         const sureFgImg1 = this.thresholdImgToForegroundImg(thresholdImg1, size, iter, 2);
-        this.showmatImg(sureFgImg1, document.querySelector('.processed-image-container'));
+
         let contours1 = new cv.MatVector();
         let hierarchy1 = new cv.Mat();
         cv.findContours(sureFgImg1, contours1, hierarchy1, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE);
@@ -59,8 +61,23 @@ class mlTools {
             let contours2 = new cv.MatVector();
             let hierarchy2 = new cv.Mat();
             cv.findContours(sureFgImg2, contours2, hierarchy2, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE);
+            thresholdImg2.delete();
+            hierarchy2.delete();
+            sureFgImg2.delete();
+            thresholdImg1.delete();
+            hierarchy1.delete();
+            sureFgImg1.delete();
+            img.delete();
+            gray.delete();
+
             return [contours1, contours2]
         }
+
+        thresholdImg1.delete();
+        hierarchy1.delete();
+        sureFgImg1.delete();
+        img.delete();
+        gray.delete();
 
         return [contours1];
     }
@@ -76,7 +93,11 @@ class mlTools {
         const erode = new cv.Mat();
         const erode_kernel = new cv.Mat();
         cv.Mat.ones(erode_size, erode_size, cv.CV_8U).copyTo(erode_kernel);
-        cv.erode(morph, erode, erode_kernel, new cv.Point(-1,-1), iteration)
+        cv.erode(morph, erode, erode_kernel, new cv.Point(-1,-1), iteration);
+        kernel.delete();
+        opening.delete();
+        morph.delete();
+        erode_kernel.delete();
         return erode;
     }
 
@@ -86,7 +107,7 @@ class mlTools {
      * @param polygon {number[][]} polygon data
      * @return {number} overlap area
      */
-    overlapArea(contour, polygon) {
+    overlapAreaAndCircumference(contour, polygon) {
         const contour2 = contour.slice();
         const polygon2 = polygon.slice();
         contour2.push(contour2[0]);
@@ -94,12 +115,22 @@ class mlTools {
         const contourTurf = turf.polygon([contour2]);
         const polygonTurf = turf.polygon([polygon2]);
         const intersection = turf.intersect(contourTurf, polygonTurf);
-      
         if (!intersection) {
             return 0.0;
         }
-        
-        return turf.area(intersection);
+        const intersectionPolygon = intersection.geometry.coordinates[0];
+        return {
+            area: this.polygonArea(intersectionPolygon),
+            circumference: this.getCircumference(intersectionPolygon),
+        };
+    }
+
+    getCircumference(polygon) {
+        let length = 0;
+        for (let i = 0; i < polygon.length - 1; i++) {
+          length += Math.sqrt((polygon[i][0] - polygon[i+1][0])**2 + (polygon[i][1] - polygon[i+1][1])**2)
+        }
+        return length;
     }
 
     /**
@@ -117,51 +148,121 @@ class mlTools {
     }
 
     /**
-     * Find the most fit contour with polygon data
-     * @param contours {any} openCV contours data
-     * @param polygon {number[][]} polygon data
-     * @param w {number} width of original image
-     * @param h {number} height of orignal image
-     * @return {number[][]} the most fit contour data array
+     * find the most fit contours with user draw polygon
+     * @param {*} contours 
+     * @param {*} polygon 
+     * @param {*} expansionBound 
+     * @param {*} erode_size 
+     * @param {*} iteration 
+     * @param {*} overlap 
+     * @returns {number[][]} contour Array
      */
-    mostFitContour(contours, polygon, expansionBound, erode_size = 2, iteration = 1) {
+    mostFitContour(contours, polygon, expansionBound, erode_size = 2, iteration = 1, overlap = 30) {
         let maxArea = 0;
-        let area;
         let fitContour;
         let expandedContour;
+        const polygonArea = this.polygonArea(polygon);
         for (let j = 0; j < contours.length; j++) {
             for (let i = 0; i < contours[j].size(); i++) {
                 let contour = contours[j].get(i);
-                if (cv.contourArea(contour, false) < 1) {
+                if (cv.contourArea(contour, false) < 50) {
                     continue;
                 }
                 const contourArray = this.convertToArray(contour);
                 if (this.closeBoundary(contourArray, expansionBound, 3)) {
                     continue;
                 }
-                area = this.overlapArea(contourArray, polygon);
+                const { area } = this.overlapAreaAndCircumference(contourArray, polygon);
+                if (area < 50) {
+                    continue;
+                }
                 if (area > maxArea) {
                     maxArea = area;
-                    fitContour = contour;
+                    if (fitContour) {
+                        fitContour.delete();
+                    }
+                    fitContour = contour.clone();
                 }
+                contour.delete(); 
             }
+            contours[j].delete();
         }
 
         if (fitContour) {
             expandedContour = this.expandContour(fitContour, expansionBound.w, expansionBound.h, erode_size, iteration);
-        }
-        if (!expandedContour) {
+            const fitContourArray = this.convertToArray(expandedContour);
+            expandedContour.delete();
+            const expaned = this.overlapAreaAndCircumference(fitContourArray, polygon);
+            if (expaned.area/polygonArea < overlap/100) {
+                return [];
+            }
+            return [fitContourArray];
+        } else {
             return [];
         }
-        const fit_contour = this.convertToArray(expandedContour);
-        return fit_contour;
+    }
+
+    manyFitContour(contours, polygon, expansionBound, erode_size = 2, iteration = 1, overlap = 30) {
+        let fitContours = [];
+        let expandedContours = [];
+        let expandedContourArrays = [];
+        let totalOverlapArea = 0;
+        const polygonArea = this.polygonArea(polygon);
+        for (let j = 0; j < contours.length; j++) {
+            for (let i = 0; i < contours[j].size(); i++) {
+                let contour = contours[j].get(i);
+                if (cv.contourArea(contour, false) < 50) {
+                    continue;
+                }
+                const contourArray = this.convertToArray(contour);
+                if (this.closeBoundary(contourArray, expansionBound, 3)) {
+                    continue;
+                }
+                const {area, circumference} = this.overlapAreaAndCircumference(contourArray, polygon);
+                if (!area || area < 15) {
+                    continue;
+                }
+                const expanedArea = area + circumference*erode_size*iteration/2;
+                totalOverlapArea += expanedArea;
+                fitContours.push(contour.clone());
+                contour.delete();
+            }
+            contours[j].delete();
+        }
+        if (!fitContours.length || totalOverlapArea/polygonArea < overlap/100) {
+            return [];
+        }
+
+        expandedContours = fitContours.map((contour) => {
+            return this.expandContour(contour, expansionBound.w, expansionBound.h, erode_size, iteration);
+        })
+
+        expandedContourArrays = expandedContours.map((expanedContour) => {
+            const expandedContourArray = this.convertToArray(expanedContour);
+            expanedContour.delete();
+            return expandedContourArray;
+        })
+
+        return expandedContourArrays;
+    }
+
+    polygonArea(points) {
+        let area = 0;
+        let j = points.length - 2;
+        for (let i = 0; i < points.length - 1; i++) {
+          area += (points[j][0] + points[i][0]) * (points[j][1] - points[i][1]);
+          j = i;
+        }
+        return Math.abs(area / 2);
     }
 
     expandContour(contour, width, height, size, iter) {
         const mask = new cv.Mat.zeros(height, width, cv.CV_8UC1);
+        const point = new cv.Point(0, 0);
         for (let i = 0; i < width; i++) {
             for (let j = 0; j < height; j++) {
-                const point = new cv.Point(i, j);
+                point.x = i;
+                point.y = j;
                 if (cv.pointPolygonTest(contour, point, false) >= 0) {
                     mask.data[(point.y * mask.cols + point.x)] = 255;
                 }
@@ -173,14 +274,22 @@ class mlTools {
 
         const dilate = new cv.Mat();
         cv.dilate(mask, dilate, erode_kernel, new cv.Point(-1,-1), iter);
-        this.showmatImg(dilate, document.querySelector('.processed-image-container'));
+        // const processImage = document.querySelector('.processed-image-container');
+        // this.showmatImg(dilate, processImage);
 
         let contours = new cv.MatVector();
         let hierarchy = new cv.Mat();
         cv.findContours(dilate, contours, hierarchy, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE);
+        mask.delete();
+        erode_kernel.delete();
+        dilate.delete();
+        hierarchy.delete();
         if (contours.size() === 1) {
-            return contours.get(0);
+            const resultContour = contours.get(0).clone();
+            contours.delete();
+            return resultContour;
         }
+        contours.delete();
         return null;
     }
 
@@ -277,7 +386,7 @@ class mlTools {
      * @param expansion {number} expansion percentage from existing data
      * @return {number[][]} processed polygon
      */
-    applyDrawNoModel(polygon, threshold, expansion, kernel_size, iteration) {
+    applyDrawNoModel(polygon, threshold, expansion, overlap, drawMany = false) {
         // remove last point from the polygon
         polygon.pop();
 
@@ -286,26 +395,50 @@ class mlTools {
 
         // get expansion coordinate (left, top, width, height)
         const expansionBound = this.getExpansionCoordicate(polygonBound, expansion);
-
-        // get contours from detect edges image
-        const contours = this.detectContours(expansionBound.x, expansionBound.y, expansionBound.w, expansionBound.h, threshold, kernel_size, iteration);
-
+        
         // re-align polygon origin
         polygon = this.reAlign(polygon, expansionBound.x, expansionBound.y);
 
-        // get most fit contour
-        let fitContour = this.mostFitContour(contours, polygon, expansionBound, kernel_size, iteration);
+        let fitContours;
+        for (let size = 0; size < 20; size+=6) {
+            for (let iter = 1; iter < 10; iter+=4) {
+                for (let dth = 1; dth < 100; dth+=10) {
+                    const th = (dth % 2 === 1) ? threshold - ~~(dth/2) : threshold - ~~(dth/2);
+                    if (th <= 0 || th >= 255) {
+                        continue;
+                    }
+                    // get contours from detect edges image
+                    const contours = this.detectContours(expansionBound.x, expansionBound.y, expansionBound.w, expansionBound.h, th, size, iter);
+                    // get most fit contour
+                    if (!drawMany) {
+                        fitContours = this.mostFitContour(contours, polygon, expansionBound, size, iter, overlap);
+                    } else {
+                        fitContours = this.manyFitContour(contours, polygon, expansionBound, size, iter, overlap);
+                    }
+                    if (fitContours.length) {
+                        break;
+                    }
+                }
+                if (fitContours.length) {
+                    break;
+                }
+            }
+            if (fitContours.length) {
+                break;
+            }
+        }
 
-        // re-align the most fit contour
-        fitContour = this.reAlign(fitContour, -expansionBound.x, -expansionBound.y);
-
-        if (fitContour.length === 0) {
+        if (fitContours.length === 0) {
             return [];
         }
-        // add last point into the most fit contour
-        fitContour.push(fitContour[0]);
-        
-        return fitContour;
+        // re-align the most fit contour
+        fitContours = fitContours.map((fitContour) => {
+            fitContour = this.reAlign(fitContour, -expansionBound.x, -expansionBound.y);
+            fitContour.push(fitContour[0]);
+            return fitContour;
+        })
+
+        return fitContours;
     }
 
     /**
@@ -314,14 +447,19 @@ class mlTools {
      * @return {Promise<boolean>}
      */
     loadModel(key) {
-        if (key === 'watershed') {
-            this.model = 'watershed';
+        if (key === 'default') {
+            try {
+                this.model.dispose();
+            } catch (error) { }
+            this.model = 'default';
             return Promise.resolve(true);
         }
         return new Promise((resolve, reject) => {
             try {
-                if (this.model) {
-                    this.model.dispose();
+                if (this.model && this.model !== 'default') {
+                    try {
+                        this.model.dispose();
+                    } catch (error) { }
                 }
                 const tx = db.transaction('models_store', 'readonly');
                 const store = tx.objectStore('models_store');
@@ -356,45 +494,6 @@ class mlTools {
                 reject(false);
             }
         })
-    }
-
-    /**
-     * Make 
-     * @param {any} img tensorflow data
-     * @param {number} ch - number of channel process by model (gray: 1, rgb: 4)
-     * @return {any} - process image data
-     */
-    channelProcessing(img, ch=1) {
-        if (ch == 1) {
-            return tf.image.resizeBilinear(img, [imageSize, imageSize]).mean(2);
-        } else {
-            return tf.image.resizeBilinear(img, [imageSize, imageSize]);
-        }
-    }
-
-    /**
-     * Scaling processing for model input images
-     * @param {any} img - image tensorflow data
-     * @param {string} scaleMethod - model scaling method
-     * @return {any} - scaled image data
-     */
-    pixelScaling(img, scaleMethod) {
-        if (scaleMethod == 'no_scale') {
-            return img
-        } else if (scaleMethod == 'norm') {
-        // Pixel Normalization: scale pixel values to the range 0-1.
-            const scale = tf.scalar(255);
-            return img.div(scale);
-        } else if (scaleMethod == 'center') {
-        // Pixel Centering: scale pixel values to have a zero mean.
-            const mean = img.mean();
-            return img.sub(mean);
-        } else {
-        // Pixel Standardization: scale pixel values to have a zero mean and unit variance.
-            const mean = img.mean();
-            const std = (img.squaredDifference(mean).sum()).div(img.flatten().shape).sqrt();
-            return img.sub(mean).div(std);
-        }
     }
 
     /**
@@ -448,7 +547,7 @@ class mlTools {
      * @param {number} threshold - upper threshold value for canny detection
      * @param {number} expansion - expansion percentage
      */
-    async applyDrawModel(model, size, ch, scaleMethod, polygon, threshold, expansion, kernel_size, iteration) {
+    async applyDrawModel(model, size, ch, scaleMethod, polygon, threshold, expansion, overlap, drawMany = false) {
         // remove last point from the polygon
         polygon.pop();
 
@@ -481,25 +580,33 @@ class mlTools {
                 if (scaleMethod == 'norm') {
                     const scale = tf.scalar(255);
                     normalized = img2.div(scale);
+                    scale.dispose();
                 } else if (scaleMethod == 'center') {
                     const mean = img2.mean();
                     normalized = img2.sub(mean);
+                    mean.dispose();
                 } else if (scaleMethod == 'std') {
                     const mean = img2.mean();
                     const std = (img2.squaredDifference(mean).sum()).div(img2.flatten().shape).sqrt();
                     normalized = img2.sub(mean).div(std);
+                    mean.dispose();
+                    std.dispose();
                 } else {
                     normalized = img2;
                 }
                 const batched = normalized.reshape([1, size, size, ch]);
                 let values = model.predict(batched).dataSync();
-                values = Array.from(values);
+                let valuesArray = Array.from(values);
                 // scale values
-                values = values.map((x) => x * 255);
+                valuesArray = valuesArray.map((x) => x * 255);
                 val = [];
-                while (values.length > 0) val.push(values.splice(0, size));
+                while (valuesArray.length > 0) val.push(valuesArray.splice(0, size));
                 const padding = 2;
                 val = this.fillBoundary(val, padding);
+                img.dispose();
+                img2.dispose();
+                normalized.dispose();
+                batched.dispose();
             })
             tf.engine().startScope();
             await tf.browser.toPixels(val, this.temp);
@@ -507,36 +614,61 @@ class mlTools {
             tf.engine().endScope();
         }
 
-        const fullPredictCanvas = this.fullPredict.getContext('2d');
-
-        // get contours from detect edges image
-        const contours = this.detectContours(0, 0, this.fullPredict.width, this.fullPredict.height, threshold, kernel_size, iteration, fullPredictCanvas, false);
-
         this.showCanvas(this.fullPredict, document.querySelector('.model-predict-image-container'));
+        const fullPredictCanvas = this.fullPredict.getContext('2d');
 
         // re-align polygon origin
         polygon = this.reAlign(polygon, expansionBound.x, expansionBound.y);
 
-        // get most fit contour
-        let fitContour = this.mostFitContour(contours, polygon, expansionBound, kernel_size, iteration);
+        let fitContours = [];
 
-        // re-align the most fit contour
-        fitContour = this.reAlign(fitContour, -expansionBound.x, -expansionBound.y);
+        for (let size = 0; size < 20; size+=6) {
+            for (let iter = 1; iter < 10; iter+=4) {
+                for (let dth = 0; dth < 200; dth+=10) {
+                    const th = (dth % 2 === 1) ? threshold - ~~(dth/2) : threshold + ~~(dth/2);
+                    if (th <= 0 || th >= 255) {
+                        continue;
+                    }
+                    // get contours from detect edges image
+                    const contours = this.detectContours(0, 0, this.fullPredict.width, this.fullPredict.height, th, size, iter, fullPredictCanvas, false);
+                    // get most fit contour
+                    if (!drawMany) {
+                        fitContours = this.mostFitContour(contours, polygon, expansionBound, size, iter, overlap);
+                    } else {
+                        fitContours = this.manyFitContour(contours, polygon, expansionBound, size, iter, overlap);
+                    }
+                    if (fitContours.length) {
+                        break;
+                    }
+                }
+                if (fitContours.length) {
+                    break;
+                }
+            }
+            if (fitContours.length) {
+                break;
+            }
+        }
 
-        if (fitContour.length === 0) {
+        if (fitContours.length === 0) {
             return [];
         }
-        // add last point into the most fit contour
-        fitContour.push(fitContour[0]);
 
-        return fitContour;
+        // re-align the most fit contour
+        fitContours = fitContours.map((fitContour) => {
+            fitContour =  this.reAlign(fitContour, -expansionBound.x, -expansionBound.y);
+            fitContour.push(fitContour[0]);
+            return fitContour;
+        });
+
+        return fitContours;
     }
 
-    async applyDraw(polygon, threshold, expansion, kernel_size, iteration, scaleMethod = 'no_scale') {
-        if (this.model && this.model !== 'watershed') {
-            return await this.applyDrawModel(this.model, this.size, this.ch, scaleMethod, polygon, threshold, expansion, kernel_size, iteration);
+    async applyDraw(polygon, threshold, expansion, overlap, scaleMethod = 'no_scale', drawMany = false) {
+        if (this.model && this.model !== 'default') {
+            return await this.applyDrawModel(this.model, this.size, this.ch, scaleMethod, polygon, threshold, expansion, overlap, drawMany);
         } else {
-            return this.applyDrawNoModel(polygon, threshold, expansion, kernel_size, iteration)
+            return this.applyDrawNoModel(polygon, threshold, expansion, overlap, drawMany);
         }
     }
 

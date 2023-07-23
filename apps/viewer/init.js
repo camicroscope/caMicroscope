@@ -855,7 +855,7 @@ async function initUIcomponents() {
     width: 240,
     contentPadding: 5,
     position: 'right',
-    height: '71vh',
+    height: '50vh',
     top: '30px'
   });
 

@@ -1,22 +1,3 @@
-// Proposal: Control panel for machine learning assistant
-// Include:
-// + Add model -> Open add model modal
-// + Model enable
-// + Model selection (Options: watershed, smartpen, ...)
-// + Pixel scaling selection (4 options: No Scaling, Normalization, Centerization, Standardization)
-// + Model info -> Open model info modal
-
-// + Annotate Mode zone (checkbox)
-// - Draw
-// - Click
-// - ROI
-
-// + Setting Zone (input range)
-// - Radius
-// - Threshold
-// - Roughness
-
-
 function Assistant(options) {
     this.className = 'Assistant';
     this.setting = {
@@ -70,6 +51,7 @@ Assistant.prototype.__refreshUI = async function() {
     const modelSelectionId = randomId();
     const pixelScalingId = randomId();
     const modelInfoId = randomId();
+    const undoInfoId = randomId();
 
     // Pixel Scaling ID
     const noScaleId = randomId();
@@ -115,11 +97,13 @@ Assistant.prototype.__refreshUI = async function() {
         <li>
             <i class="material-icons md-20" id="${modelInfoId}" title="Model Information">info</i>
         </li>
+        <li>
+            <i class="material-icons md-20" id="${undoInfoId}" title="Undo">undo</i>
+        </li>
     </ul>
     <div class='annotate-checklist'>
-        <label><input type='checkbox' value='annotateByDraw' checked/>  Draw</label>
-        <label><input type='checkbox' value='annotateByClick' />  Click</label>
-        <label><input type='checkbox' value='annotateByROI' />  ROI</label>
+        <label><input type='checkbox' value='annotateOneByDraw' checked/> Annotate One</label>
+        <label><input type='checkbox' value='annotateManyByDraw'/> Annotate Many</label>
     </div>
     <div class='annotate-setting'>
         <div class='radius-setting'>
@@ -129,31 +113,17 @@ Assistant.prototype.__refreshUI = async function() {
         </div>
         <div class='threshold-setting'>
             <pre>Threshold</pre>
-            <input type="range" id="model-threshold" max="255" min="10" value="100">
-            <span id="model-t">90</span>
+            <input type="range" id="model-threshold" max="255" min="10" value="70">
+            <span id="model-t">70</span>
         </div>
-        <div class='roughness-setting'>
-            <pre>Roughness</pre>
-            <input type="range" id="model-roughness" max="10" min="1" value="4">
-            <span id="model-s">4</span>
+        <div class='min-overlap-setting'>
+            <pre>Min Overlap</pre>
+            <input type="range" id="model-overlap" max="70" min="1" value="10">
+            <span id="model-o">10</span>
         </div>
-        <div class='separation-kernel-size-setting'>
-            <pre>Kernel Size</pre>
-            <input type="range" id="model-separation" max="10" min="0" value="0">
-            <span id="model-se">0</span>
-        </div>
-        <div class='separation-iteration-setting'>
-            <pre>Iteration</pre>
-            <input type="range" id="model-separation" max="5" min="1" value="1">
-            <span id="model-se">1</span>
-        </div>
-    </div>
-    <div class="processed-image">
-        <label class="img-label">Processed Image</label>
-        <div class="processed-image-container"></div>
     </div>
     <div class="model-predict-image">
-        <label class="img-label">Model Predict Image</label>
+        <label class="img-label">Model Predicted Image</label>
         <div class="model-predict-image-container"></div>
     </div>
     `;
@@ -165,6 +135,7 @@ Assistant.prototype.__refreshUI = async function() {
     this.enableBtn = this.view.querySelector(`#${modelEnableId}`);
     this.modelSelectionBtn = this.view.querySelector(`#${modelSelectionId}`);
     this.infoBtn = this.view.querySelector(`#${modelInfoId}`);
+    this.undoBtn = this.view.querySelector(`#${undoInfoId}`);
     this.modelList = this.view.querySelector('.model-list');
     this.pixelScaleList = this.view.querySelector('.pixel-scale-list')
 
@@ -172,11 +143,32 @@ Assistant.prototype.__refreshUI = async function() {
     this.settingZone = {
         radius: this.view.querySelector('.radius-setting'),
         threshold: this.view.querySelector('.threshold-setting'),
-        roughness: this.view.querySelector('.roughness-setting'),
-        kernel_size: this.view.querySelector('.separation-kernel-size-setting'),
-        iteration: this.view.querySelector('.separation-iteration-setting'),
+        overlap: this.view.querySelector('.min-overlap-setting'),
     }
-    this.processedImgContainer = this.view.querySelector('.processed-image-container'),
+
+    const radiusLabel = this.settingZone.radius.querySelector('pre');
+    tippy(radiusLabel, {
+        content: 'Enhance the coordinate percentage relative to the polygon drawn by the user. These expanded image will be used as input for image processing.',
+        placement: 'left',
+        delay: 300,
+        theme: 'translucent',
+    });
+
+    const thresholdLabel = this.settingZone.threshold.querySelector('pre');
+    tippy(thresholdLabel, {
+        content: 'The separation threshold value represents the distinction between the object (foreground) and the surrounding area (background).',
+        placement: 'left',
+        delay: 300,
+        theme: 'translucent',
+    });
+
+    const overlapLabel = this.settingZone.overlap.querySelector('pre');
+    tippy(overlapLabel, {
+        content: 'The minimum overlap refers to the required intersection between the user-selected polygon and the predicted polygons.',
+        placement: 'left',
+        delay: 300,
+        theme: 'translucent',
+    });
     this.modelPredictImgContainer = this.view.querySelector('.model-predict-image-container'),
 
     await this.__createModelList();
@@ -228,16 +220,17 @@ Assistant.prototype.__assignEventListener = function() {
         elt.addEventListener('click', (event) => {
             this.annotateModeZone.querySelectorAll('input').forEach((iElt) => {
                 iElt.checked = false;
+                iElt.removeAttribute('checked');
             })
             event.target.checked = true;
+            event.target.setAttribute('checked', 'true');
         })
     })
 
     // Change radius event
     this.settingZone.radius.querySelector('input').addEventListener('change', (event) => {
         this.settingZone.radius.querySelector('span').textContent = event.target.value;
-        // TODO process ROI processing
-        if (this.__isEnableAssistant() && this.__getAssistantMode() === 'annotateByDraw') {
+        if (this.__isEnableAssistant()) {
             this._viewer.raiseEvent('ml-draw-setting-change', {});
         }
     })
@@ -245,35 +238,15 @@ Assistant.prototype.__assignEventListener = function() {
     // Change threshold event
     this.settingZone.threshold.querySelector('input').addEventListener('change', (event) => {
         this.settingZone.threshold.querySelector('span').textContent = event.target.value;
-        // TODO process ROI processing
-        if (this.__isEnableAssistant() && this.__getAssistantMode() === 'annotateByDraw') {
+        if (this.__isEnableAssistant()) {
             this._viewer.raiseEvent('ml-draw-setting-change', {});
         }
     })
 
-    // Change roughness event
-    this.settingZone.roughness.querySelector('input').addEventListener('change', (event) => {
-        this.settingZone.roughness.querySelector('span').textContent = event.target.value;
-        // TODO process ROI processing
-        if (this.__isEnableAssistant() && this.__getAssistantMode() === 'annotateByDraw') {
-            this._viewer.raiseEvent('ml-draw-setting-change', {});
-        }
-    })
-
-    // Change separation kernel size event
-    this.settingZone.kernel_size.querySelector('input').addEventListener('change', (event) => {
-        this.settingZone.kernel_size.querySelector('span').textContent = event.target.value;
-        // TODO process ROI processing
-        if (this.__isEnableAssistant() && this.__getAssistantMode() === 'annotateByDraw') {
-            this._viewer.raiseEvent('ml-draw-setting-change', {});
-        }
-    })
-
-    // Change separation iteration event
-    this.settingZone.iteration.querySelector('input').addEventListener('change', (event) => {
-        this.settingZone.iteration.querySelector('span').textContent = event.target.value;
-        // TODO process ROI processing
-        if (this.__isEnableAssistant() && this.__getAssistantMode() === 'annotateByDraw') {
+    // Change overlap event
+    this.settingZone.overlap.querySelector('input').addEventListener('change', (event) => {
+        this.settingZone.overlap.querySelector('span').textContent = event.target.value;
+        if (this.__isEnableAssistant()) {
             this._viewer.raiseEvent('ml-draw-setting-change', {});
         }
     })
@@ -284,8 +257,8 @@ Assistant.prototype.__createModelList = async function() {
     const dropDownList = [
         {
         icon: 'timeline',
-        title: 'Watershed',
-        value: 'watershed',
+        title: 'Default',
+        value: 'default',
         checked: true,
         }];
     
@@ -370,9 +343,7 @@ Assistant.prototype.__getSettingModes = function() {
     const settingMode = {
         radius: parseFloat(this.settingZone.radius.querySelector('input').value),
         threshold: parseFloat(this.settingZone.threshold.querySelector('input').value),
-        roughness: parseFloat(this.settingZone.roughness.querySelector('input').value),
-        kernel_size: parseFloat(this.settingZone.kernel_size.querySelector('input').value),
-        iteration: parseFloat(this.settingZone.iteration.querySelector('input').value),
+        overlap: parseFloat(this.settingZone.overlap.querySelector('input').value),
     }
     return settingMode;
 }
@@ -384,6 +355,5 @@ Assistant.prototype.__getScaleMethod = function() {
 Assistant.prototype.__createElementFromHTML= function(htmlString) {
     var div = document.createElement('div');
     div.innerHTML = htmlString.trim();
-    // Change this to div.childNodes to support multiple top-level nodes
     return div.firstChild;
 };
