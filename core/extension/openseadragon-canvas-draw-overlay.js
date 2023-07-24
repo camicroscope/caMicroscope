@@ -1368,7 +1368,9 @@
       this._hash_data = new Map();
       for (var i = 0; i < this._path_index; i++) {
       	var cur = this._draws_data_[i].geometry.coordinates[0];
-        cur = mtool.populate(cur, ~~this.scaleWindowtoImage(5), ~~this.scaleWindowtoImage(1), 150);
+        if (this._draws_data_[i].geometry.type !== 'Point') {
+          cur = mtool.populate(cur, ~~this.scaleWindowtoImage(5), ~~this.scaleWindowtoImage(1), 150);
+        }
       	for (var j = 0; j < cur.length; j++) {
       		this._hash_data[mtool.hash({
       			x: cur[j][0],
