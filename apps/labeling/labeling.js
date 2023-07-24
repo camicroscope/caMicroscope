@@ -732,13 +732,14 @@ async function saveLabelings(e) {
   const ROIS = $CAMIC.viewer.pmanager.patches;
 
   try {
-    // remove all labels
-    await $CAMIC.store.deleteLabeling({'provenance.image.slide': $D.params.slideId});
-
-    // add all labels
+    // add new labels
     await asyncForEach(ROIS, async (roi) => {
-      const {ROI, subROIs} = await generateROIandSubROI(roi);
-      await saves(ROI, subROIs);
+      if (roi.data.existed){
+        console.log("not touching this existing roi", roi);
+      } else {
+        const {ROI, subROIs} = await generateROIandSubROI(roi);
+        await saves(ROI, subROIs);
+      }
     });
   } catch (error) {
     $UI.message.addError('Saving Labels Failed');
@@ -781,7 +782,6 @@ async function generateROIandSubROI(patch) {
   const subROIs = [];
   // get ROI
   const execId = randomId();
-  const roiId = new ObjectId();
   const coordinates = getCoordinates(patch);
   const {x, y, width, height} = patch.getRect('image');
   const viewerSize = $CAMIC.viewer.viewport.getContainerSize();
@@ -791,7 +791,6 @@ async function generateROIandSubROI(patch) {
   const batch = (await $CAMIC.store.getCollection($CAMIC.slideData.collections[0]))[0].name;
 
   var ROI = {
-    _id: roiId.toString(),
     alias: alias,
     creator: creator,
     batch: batch,
