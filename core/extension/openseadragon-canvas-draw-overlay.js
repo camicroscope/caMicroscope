@@ -458,7 +458,9 @@
       this.align_fx = this._viewer.drawer.canvas.height/this._display_.height;
 
       // ml tools
-      mltools.initcanvas(this._viewer.drawer.canvas);
+      try {
+        mltools.initcanvas(this._viewer.drawer.canvas);
+      } catch (error) {}
       if (
         0 > img_point.x ||
         this.imgWidth < img_point.x ||
@@ -602,7 +604,7 @@
       }
       
     },
-    pointClick: function(e) {
+    pointClick: async function(e) {
       
       this.raiseEvent('start-drawing', {originalEvent: e});
       if (this.stop) {
@@ -638,7 +640,7 @@
           new OpenSeadragon.Point(line[0][0], line[0][1]),
           new OpenSeadragon.Point(line[line.length - 1][0], line[line.length - 1][1])
         ) <= 14) { // save annotations
-          this.__endNewFeature();
+          await this.__endNewFeature();
           try {
             // custom event on stop
             this.raiseEvent('stop-drawing', {originalEvent: e});
@@ -720,7 +722,6 @@
       }
       // anything happening?
       if (!(this.isDrawing) && !(this.isMoving)) return;
-
       let point = new OpenSeadragon.Point(e.clientX, e.clientY);
       let img_point = this._viewer.viewport.windowToImageCoordinates(point);
       if (
@@ -920,7 +921,7 @@
      * @private
      * stop drawing on the drawing canvas, when the mouse is up
      */
-    stopDrawing: function(e) {
+    stopDrawing: async function(e) {
       // stop if the draw mode is pointToPoint
       if(this.drawMode == 'pointToPoint') {
         return;
@@ -929,7 +930,7 @@
       if ((this.isDrawing) || (this.isMoving)) {
         // add style and data to data collection
         // saving the stroke to all data
-        this.__endNewFeature();
+        await this.__endNewFeature();
         try {
           // custom event on stop
           this.raiseEvent('stop-drawing', {originalEvent: e});
@@ -1107,7 +1108,7 @@
       // align
       points = this.__align(points);
       let pointsList;
-      if ($UI.AssistantViewer.__isEnableAssistant()) {
+      if ($UI.AssistantViewer?.__isEnableAssistant()) {
         const mlPoints = await this.__mlDraw(points);
         pointsList = mlPoints;
       } else {
@@ -1433,7 +1434,6 @@
         dist[i] = [Math.floor(dist[i].x * this.align_fx), Math.floor(dist[i].y * this.align_fy)];
       }
       let drawMany;
-      console.log('mode: ',$UI.AssistantViewer.__getAssistantMode());
       if ($UI.AssistantViewer.__getAssistantMode() === 'annotateOneByDraw') {
         drawMany = false;
       } else if ($UI.AssistantViewer.__getAssistantMode() === 'annotateManyByDraw') {
