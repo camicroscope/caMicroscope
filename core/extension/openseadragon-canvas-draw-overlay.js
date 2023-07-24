@@ -1213,21 +1213,26 @@
      * redraw the previous mark if it exist.
      */
     undo: function() {
-      if (this._path_index > 0)
+      if (this._path_index > this.lastPointsListLength - 1)
       // redraw path
       {
         this.drawOnCanvas(
             this._display_ctx_,
             function() {
-            this.drawMode !== 'grid' ?
-              DrawHelper.draw(
-                  this._display_ctx_,
-                  this._draws_data_.slice(0, --this._path_index),
-              ) :
-              DrawHelper.drawGrids(
-                  this._display_ctx_,
-                  this._draws_data_.slice(0, --this._path_index),
-              );
+              this._path_index -= this.lastPointsListLength;
+              this.drawMode !== 'grid' ?
+                DrawHelper.draw(
+                    this._display_ctx_,
+                    this._draws_data_.slice(0, this._path_index),
+                ) :
+                DrawHelper.drawGrids(
+                    this._display_ctx_,
+                    this._draws_data_.slice(0, this._path_index),
+                );
+              this.lastPointsListLength = 1;
+              try {
+                this.currentOriginPath = JSON.parse(JSON.stringify(this._draws_data_[this._path_index-1]));
+              } catch (error) {}
             }.bind(this),
         );
       }
