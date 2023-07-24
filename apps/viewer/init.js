@@ -741,80 +741,7 @@ async function initUIcomponents() {
     ],
   });
 
-  // Create uploadModal for model uploads.
-  $UI.uploadModal = new ModalBox({
-    id: 'upload_panel',
-    hasHeader: true,
-    headerText: 'Upload Model',
-    hasFooter: false,
-    provideContent: true,
-    content: `
-      <form class="form-style" action="#">
-        <ul>
-          <li>
-            <label align="left"> Name:  </label>
-            <input name="name" id="name" type="text" required />
-            <span> Name of the model </span>
-          </li>
-          <li>
-            <label align="left"> Input patch size: </label>
-            <input name="imageSize" id="imageSize" type="number" required />
-            <span> The image size on which the model is trained (y x y)</span>
-          </li>
-            <label>Input image format:</label> <br>
-            <input type="radio" id="gray" name="channels" value=1 checked>
-            <label for="gray">Gray</label> <br>
-            <input type="radio" id="rgb" name="channels" value=3>
-            <label for="rgb" padding="10px">RGB</label>
-          <li id="mg">
-            <label for="magnification">Magnification:</label>
-            <select id="magnification">
-              <option value=10>10x</option>
-              <option value=20>20x</option>
-              <option value=40>40x</option>
-            </select>
-            <span> Magnification of input images </span>
-          </li>
-          <hr>
-
-          <label class="switch"><input type="checkbox" id="togBtn"><div class="slider"></div></label> <br> <br>
-          <div class="checkfalse"><div>Select model.json first followed by the weight binaries.</div> <br>
-          <input name="filesupload" id="modelupload" type="file" required/><br><br>
-          <input name="filesupload" id="weightsupload" type="file" multiple="" required/> <br> <br> </div>
-          <div class="checktrue" > URL to the ModelAndWeightsConfig JSON describing the model. <br> <br>
-          <label align-"left"> Enter the URL: </label> <input type="url" name="url" id="url" required> <br><br></div>
-          <button id="submit">Upload</button> <span id="status"></span>
-        </ul>
-
-      </form>
-      <button id="refresh" class='material-icons'>cached</button>
-
-    `,
-  });
-
-  // Create infoModal to show information about models uploaded.
-  $UI.infoModal = new ModalBox({
-    id: 'model_info',
-    hasHeader: true,
-    headerText: 'Available Models',
-    hasFooter: false,
-    provideContent: true,
-    content: `
-      <table id='mtable'>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Input Size</th>
-            <th>Size (MB)</th>
-            <th>Date Saved</th>
-            <th>Remove Model</th>
-          </tr>
-          <tbody id="mdata">
-          </tbody>
-        </thead>
-      </table>
-    `,
-  });
+  initModelModals();
 
   // TODO -- labels //
   $UI.labelsSideMenu = new SideMenu({
@@ -1046,6 +973,83 @@ async function initUIcomponents() {
   })
 }
 
+function initModelModals() {
+  // Create uploadModal for model uploads.
+  $UI.uploadModal = new ModalBox({
+    id: 'upload_panel',
+    hasHeader: true,
+    headerText: 'Upload Model',
+    hasFooter: false,
+    provideContent: true,
+    content: `
+      <form class="form-style" action="#">
+        <ul>
+          <li>
+            <label align="left"> Name:  </label>
+            <input name="name" id="name" type="text" required />
+            <span> Name of the model </span>
+          </li>
+          <li>
+            <label align="left"> Input patch size: </label>
+            <input name="imageSize" id="imageSize" type="number" required />
+            <span> The image size on which the model is trained (y x y)</span>
+          </li>
+            <label>Input image format:</label> <br>
+            <input type="radio" id="gray" name="channels" value=1 checked>
+            <label for="gray">Gray</label> <br>
+            <input type="radio" id="rgb" name="channels" value=3>
+            <label for="rgb" padding="10px">RGB</label>
+          <li id="mg">
+            <label for="magnification">Magnification:</label>
+            <select id="magnification">
+              <option value=10>10x</option>
+              <option value=20>20x</option>
+              <option value=40>40x</option>
+            </select>
+            <span> Magnification of input images </span>
+          </li>
+          <hr>
+
+          <label class="switch"><input type="checkbox" id="togBtn"><div class="slider"></div></label> <br> <br>
+          <div class="checkfalse"><div>Select model.json first followed by the weight binaries.</div> <br>
+          <input name="filesupload" id="modelupload" type="file" required/><br><br>
+          <input name="filesupload" id="weightsupload" type="file" multiple="" required/> <br> <br> </div>
+          <div class="checktrue" > URL to the ModelAndWeightsConfig JSON describing the model. <br> <br>
+          <label align-"left"> Enter the URL: </label> <input type="url" name="url" id="url" required> <br><br></div>
+          <button id="submit">Upload</button> <span id="status"></span>
+        </ul>
+
+      </form>
+      <button id="refresh" class='material-icons'>cached</button>
+
+    `,
+  });
+
+  // Create infoModal to show information about models uploaded.
+  $UI.infoModal = new ModalBox({
+    id: 'model_info',
+    hasHeader: true,
+    headerText: 'Available Models',
+    hasFooter: false,
+    provideContent: true,
+    content: `
+      <table id='mtable'>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Input Size</th>
+            <th>Size (MB)</th>
+            <th>Date Saved</th>
+            <th>Remove Model</th>
+          </tr>
+          <tbody id="mdata">
+          </tbody>
+        </thead>
+      </table>
+    `,
+  });
+}
+
 // Shows the uploaded models' details
 async function showInfo() {
   var data = await tf.io.listModels();
@@ -1067,7 +1071,9 @@ async function showInfo() {
 
         if (name.slice(0, 3) == 'seg') {
           store.get(name).onsuccess = function(e) {
-            inputShape = e.target.result.input_shape.slice(1, 3).join('x');
+            try {
+              inputShape = e.target.result.input_shape.slice(1, 3).join('x');
+            } catch (error) {}
             td = row.insertCell();
             td.innerText = name.split('_').splice(1).join('_').slice(0, -3);
             td = row.insertCell();
@@ -1119,7 +1125,7 @@ async function deleteModel(name) {
           }, 3000);
         }
         $UI.infoModal.close();
-        initUIcomponents();
+        initModelModals();
       }
     }
   } else {
@@ -1127,7 +1133,16 @@ async function deleteModel(name) {
   }
 }
 
-function uploadModel() {
+async function uploadModel() {
+  modelName = [];
+  Object.keys(await tf.io.listModels()).forEach(function(element) {
+    const value = element.split('/').pop();
+    if (value.slice(0, 3) == 'seg') {
+      const title = element.split('/').pop().split('_')[1].slice(0, -3);
+      console.log()
+      modelName.push(title);
+    }
+  });
   var _name = document.querySelector('#name');
   var _imageSize = document.querySelector('#imageSize');
   var mag = document.querySelector('#magnification');
@@ -1155,7 +1170,7 @@ function uploadModel() {
   });
 
   refresh.addEventListener('click', () => {
-    initUIcomponents();
+    initModelModals();
   });
 
   submit.addEventListener('click', async function(e) {
@@ -1228,7 +1243,7 @@ function uploadModel() {
               }, 3000);
             }
             $UI.uploadModal.close();
-            initUIcomponents();
+            initModelModals();
           };
           req.onerror = function(e) {
             status.innerText = 'Some error this way!';
