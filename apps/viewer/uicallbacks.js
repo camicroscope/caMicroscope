@@ -2048,6 +2048,7 @@ function presetLabelOff() {
 }
 
 function mlAsisstantOff() {
+  $UI.AssistantViewer.enableBtn.checked = false;
   $UI.AssistantSideMenu.close();
 }
 
