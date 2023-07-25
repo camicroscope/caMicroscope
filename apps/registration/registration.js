@@ -89,9 +89,6 @@ const updateProgressbar = () => {
   progress.style.width =
         ((progressActive.length - 1) / (progressSteps.length - 1)) * 90 + '%';
 };
-
-agreeBtn.addEventListener( "change", (e)=> { e.target.disabled = !e.target.checked});
-
 const decline = ()=>{
   window.location = '../../login.html';
 };
@@ -366,3 +363,9 @@ function openEmailModal(message, isSucceed=true) {
       .html(message);
   $('#emailModal').modal('show');
 }
+
+
+window.addEventListener('load',function(){
+  document.getElementById('isConsent').addEventListener( "change", (e)=> { e.target.disabled = !e.target.checked});
+  });
+  
