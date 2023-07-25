@@ -734,8 +734,8 @@ async function saveLabelings(e) {
   try {
     // add new labels
     await asyncForEach(ROIS, async (roi) => {
-      if (roi.data.existed){
-        console.log("not touching this existing roi", roi);
+      if (roi.data.existed) {
+        console.log('not touching this existing roi', roi);
       } else {
         const {ROI, subROIs} = await generateROIandSubROI(roi);
         await saves(ROI, subROIs);
