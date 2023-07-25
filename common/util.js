@@ -606,14 +606,20 @@ function getTopLeft(point, size) {
 }
 
 function parseJwt(token) {
-  if (!token || token == 'logout') {
+  try{
+    if (!token || token == 'logout') {
+      return {name: 'None'};
+    }
+    else {
+      var base64Url = token.split('.')[1];
+      var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      return JSON.parse(window.atob(base64));
+    }
+  } catch (e){
+    console.error(e);
     return {name: 'None'};
   }
-  else {
-    var base64Url = token.split('.')[1];
-    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    return JSON.parse(window.atob(base64));
-  }
+
 }
 /**
  * detect IE/Edge
