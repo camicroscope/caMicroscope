@@ -606,9 +606,10 @@ function getTopLeft(point, size) {
 }
 
 function parseJwt(token) {
-  if (!token) {
+  if (!token || token == 'logout') {
     return {name: 'None'};
-  } else {
+  }
+  else {
     var base64Url = token.split('.')[1];
     var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
     return JSON.parse(window.atob(base64));
