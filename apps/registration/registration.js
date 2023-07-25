@@ -366,6 +366,6 @@ function openEmailModal(message, isSucceed=true) {
 
 
 window.addEventListener('load',function(){
-  document.getElementById('isConsent').addEventListener( "change", (e)=> { e.target.disabled = !e.target.checked});
+  document.getElementById('isConsent').addEventListener( "change", (e)=> { document.querySelector('.consent-footer button.agree').disabled = !e.target.checked});
   });
   
