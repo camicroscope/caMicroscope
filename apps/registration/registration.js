@@ -90,14 +90,7 @@ const updateProgressbar = () => {
         ((progressActive.length - 1) / (progressSteps.length - 1)) * 90 + '%';
 };
 
-//
-const consentChange = () =>{
-  if (isConsent.checked) {
-    agreeBtn.disabled = false;
-  } else {
-    agreeBtn.disabled = true;
-  }
-};
+agreeBtn.addEventListener( "change", (e)=> { e.target.disabled = !e.target.checked});
 
 const decline = ()=>{
   window.location = '../../login.html';
