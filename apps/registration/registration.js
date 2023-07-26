@@ -244,7 +244,7 @@ $('#certifications').alpaca({
           'If you are a board-certified anatomic pathologist or the equivalent for your country, enter the number of years since your certification. (If you are not a board certified anatomic pathologist or equivalent, enter -1)',
         'required': true,
       },
-      'yearsOfResidency': {
+      'experienceResident': {
         'minimum': -1,
         'maximum': 100,
         'type': 'integer',
