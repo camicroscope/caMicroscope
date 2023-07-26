@@ -11,7 +11,7 @@ let finishUrl = '../../loader/upload/finish/';
 let checkUrl = '../../loader/data/one/';
 let chunkSize = 5*1024*1024;
 let finishUploadSuccess = false;
-const allowedExtensions = ['svs', 'tif', 'tiff', 'vms', 'vmu', 'ndpi', 'scn', 'mrxs', 'bif', 'svslide'];
+const allowedExtensions = ['svs', 'tif', 'tiff', 'vms', 'vmu', 'ndpi', 'scn', 'mrxs', 'bif', 'svslide', 'dcm'];
 
 // call on document ready
 $(document).ready(function() {
