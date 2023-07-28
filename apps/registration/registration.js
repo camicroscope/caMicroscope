@@ -256,8 +256,16 @@ $('#certifications').alpaca({
   'options': {
     'fields': {
       'experienceResident': {
-        'slider': true,
         'default': -1,
+      },
+      'experience': {
+        'default': -1,
+      },
+      'organizationCountry': {
+        'default': "NA",
+      },
+      'specialties': {
+        'default': "NA",
       },
     },
     'form': {
