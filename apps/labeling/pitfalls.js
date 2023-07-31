@@ -178,8 +178,6 @@ async function initialize() {
       var checkCoreAndDataIsReady = setInterval(function() {
         if ($D.ROI&&$CAMIC&&$CAMIC.viewer&&$CAMIC.viewer.omanager) {
           clearInterval(checkCoreAndDataIsReady);
-          // show ROI and subROIs
-          showLabelData();
           Loading.close();
         }
       }, 500);
@@ -479,7 +477,7 @@ async function saveAnnotation(annotation) {
       }
       console.log(feeback);
     } else {
-      window.location.href = `./roi_pick.html?slideId=${$D.params.slideId}&collectionId=${$D.params.collectionId}`;
+      window.location.href = `./labelingSimpleAnnotationViewer.html?collectionId=${$D.params.collectionId}`
     }
     Loading.close();
   } else {
@@ -1113,7 +1111,7 @@ function addROIFormEvent() {
         'type': document.querySelector('#left_menu input[type=radio][name=roi_type]:checked').value,
         'percent_stroma': itsRange.value,
         'til_density': vtaRange.value,
-        'tissuetype': tissueType,
+        'tissue_type': tissueType,
         'pitfalls': pitfalls,
       },
       'parent': parent,

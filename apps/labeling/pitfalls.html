@@ -443,7 +443,6 @@
                     type="radio"
                     name="roi_type"
                     value="Evaluable for sTILs"
-                    onchange="changeROITypeValue(this)"
                   />
                   Evaluable for sTILs</label
                 >
@@ -454,7 +453,6 @@
                     type="radio"
                     name="roi_type"
                     value="Not Evaluable for sTILs"
-                    onchange="changeROITypeValue(this)"
                   />
                   Not Evaluable for sTILs</label
                 >
@@ -464,7 +462,7 @@
               <div
                 id="its"
                 style="
-                  border: none;
+                  border: flex;
                   margin: 0.3rem 0;
                   padding-left: 1rem;
                   position: relative;
@@ -522,7 +520,7 @@
                   padding: 0 0 0.5rem 0.3rem;
                   text-align: right;
                   color: red;
-                  display: none;
+                  display: block;
                 "
               >
                 % Tumor-Associated Stroma
@@ -536,7 +534,7 @@
                   padding-left: 1rem;
                   position: relative;
                   touch-action: none;
-                  display: none;
+                  display: flex;
                 "
               >
                 <input
@@ -588,7 +586,7 @@
                   padding: 0 0 0.5rem 0.3rem;
                   text-align: right;
                   color: red;
-                  display: none;
+                  display: block;
                 "
               >
                 sTILs Density
