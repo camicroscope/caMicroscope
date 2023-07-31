@@ -609,7 +609,7 @@ function annotOn(e) {
   canvasDraw.drawMode = mode;
   canvasDraw.style.color = color;
   // $UI.toolbar.getSubTool('annotation').querySelector('input[type=checkbox]').checked = true;
-  // $UI.toolbar.getSubTool('annotation').querySelector('label').style.color = color;
+  // $UI.toolbar.getSubTool('annotation').querySelector('labe<hl').style.color = color;
   canvasDraw.style.isFill = true;
   canvasDraw.isSimplify = false;
 
@@ -921,7 +921,7 @@ function itsChangeText(e) {
   if (itsRange.value > 0) {
     enableTIL();
   } else {
-    disableTIL();
+    //disableTIL();
   }
   itsTxtContent.textContent = `${itsRange.value}%`;
   itsTxtIp.value = itsRange.value;
