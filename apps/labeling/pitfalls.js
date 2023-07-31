@@ -1082,6 +1082,16 @@ function addROIFormEvent() {
     const fileName1 = location[location.length-1];
     const alias = `${fileName1}_x${x}.${width}_y${y}.${height}`;
 
+    let tissueType = document.querySelector('#left_menu input[type=radio][name=tissue_type]:checked').value;
+
+    let pitfalls = [];
+    const pitfallSelections = document.getElementsByClassName("pitfalls_check");
+    for (let pf_btn of pitfallSelections){
+      if (pf_btn.checked){
+        pitfalls.push(pf_btn.value);
+      }
+    }
+
     const annotation = {
       '_id': id.toString(),
       'task': 'doVTA_caMicro_v1.4',
@@ -1103,6 +1113,8 @@ function addROIFormEvent() {
         'type': document.querySelector('#left_menu input[type=radio][name=roi_type]:checked').value,
         'percent_stroma': itsRange.value,
         'til_density': vtaRange.value,
+        'tissuetype': tissueType,
+        'pitfalls': pitfalls,
       },
       'parent': parent,
     };

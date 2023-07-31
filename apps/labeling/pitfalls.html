@@ -600,6 +600,7 @@
                   ><input
                     type="radio"
                     name="tissue_type"
+                    class="tissue_check"
                     value="Tumor with Stroma"
                     onchange="console.log(this)"
                   />
@@ -612,6 +613,7 @@
                   ><input
                     type="radio"
                     name="tissue_type"
+                    class="tissue_check"
                     value="Invasive Margin"
                     onchange="console.log(this)"
                   />
@@ -623,6 +625,7 @@
                   ><input
                     type="radio"
                     name="tissue_type"
+                    class="tissue_check"
                     value="Inside tumor/margin with low/without stroma"
                     onchange="console.log(this)"
                   />
@@ -634,6 +637,7 @@
                   ><input
                     type="radio"
                     name="tissue_type"
+                    class="tissue_check"
                     value="No proximal tumor"
                     onchange="console.log(this)"
                   />
@@ -643,12 +647,14 @@
             </div>
             <hr />
             <div id="pitfall_checkboxes" style="padding: 0 0 0.5rem 0.3rem">
-              <input type="checkbox" id="pitfall-1" name="pitfall-1" value="Benign glandular elements">
+              <input type="checkbox" class="pitfalls_check" id="pitfall-1" name="pitfall-1" value="Benign glandular elements">
               <label for="pitfall-1">Benign Glandular Elements</label><br>
-              <input type="checkbox" id="pitfall-2" name="pitfall-2" value="Adipocytes">
+              <input type="checkbox" class="pitfalls_check" id="pitfall-2" name="pitfall-2" value="Adipocytes">
               <label for="pitfall-2">Adipocytes</label><br>
-              <input type="checkbox" id="pitfall-3" name="pitfall-3" value="Carcinoma in situ">
+              <input type="checkbox" class="pitfalls_check" id="pitfall-3" name="pitfall-3" value="Carcinoma in situ">
               <label for="pitfall-3">Carcinoma in situ</label><br>
+              <input type="checkbox" class="pitfalls_check" id="pitfall-4" name="pitfall-4" value="No proximal tumor">
+              <label for="pitfall-4">No proximal tumor</label><br>
             </div>
             </div>
           </div>
