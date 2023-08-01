@@ -375,14 +375,14 @@ function initCore() {
       value: 'roi_location',
       callback: ()=>{
         // go to "active" ROI
-        if ($D.activeROI){
+        if ($D.activeROI) {
           const {x, y, width, height} = $D.activeROI.properties;
           const cx = x + width/2;
           const cy = y + height/2;
           const refPoint = $CAMIC.viewer.viewport.imageToViewportCoordinates(cx, cy);
           $CAMIC.viewer.viewport.panTo(refPoint, true);
         } else {
-          alert("no active roi to zoom into.")
+          alert('no active roi to zoom into.');
         }
       },
     },
@@ -484,7 +484,7 @@ async function saveAnnotation(annotation) {
       }
       console.log(feeback);
     } else {
-      window.location.href = `./labelingSimpleAnnotationViewer.html?collectionId=${$D.params.collectionId}`
+      window.location.href = `./labelingSimpleAnnotationViewer.html?collectionId=${$D.params.collectionId}`;
     }
     Loading.close();
   } else {
@@ -638,7 +638,7 @@ function annotOff() {
 async function loadingData() {
   const slideId = $D.params.slideId;
   //
-  const labelData = await $CAMIC.store.findLabeling({"provenance.image.slide":slideId});
+  const labelData = await $CAMIC.store.findLabeling({'provenance.image.slide': slideId});
 
 
   let sublabels = null;
@@ -918,7 +918,7 @@ function itsChangeText(e) {
   if (itsRange.value > 0) {
     enableTIL();
   } else {
-    //disableTIL();
+    // disableTIL();
   }
   itsTxtContent.textContent = `${itsRange.value}%`;
   itsTxtIp.value = itsRange.value;
@@ -1080,10 +1080,10 @@ function addROIFormEvent() {
     let tissueType = document.querySelector('#left_menu input[type=radio][name=tissue_type]:checked').value;
 
     let pitfalls = [];
-    const pitfallSelections = document.getElementsByClassName("pitfalls_check");
-    for (let pf_btn of pitfallSelections){
-      if (pf_btn.checked){
-        pitfalls.push(pf_btn.value);
+    const pitfallSelections = document.getElementsByClassName('pitfalls_check');
+    for (let pfBtn of pitfallSelections) {
+      if (pfBtn.checked) {
+        pitfalls.push(pfBtn.value);
       }
     }
 
@@ -1196,31 +1196,31 @@ function setDownloadModalProgress(num) {
   $('#downloadModal').find('.progress-bar').css('width', `${num}%`).attr('aria-valuenow', num).text(`${num}%`);
 }
 
-function resetForm(){
+function resetForm() {
   console.log('reset form');
 
   // reset tissu and roi radio buttons
-  let radios = document.querySelectorAll('#left_menu input[type=radio]:checked')
-  for (let r of radios){
+  let radios = document.querySelectorAll('#left_menu input[type=radio]:checked');
+  for (let r of radios) {
     r.checked = false;
   }
 
   // reset sliders
-  document.getElementById("its_range").value = -1
-  document.getElementById("vta_range").value = -1
+  document.getElementById('its_range').value = -1;
+  document.getElementById('vta_range').value = -1;
   // reset text input (usually invisible)
-  let slider_inputs = document.getElementsByClassName("slider-input");
-  for (let si of slider_inputs){
+  let sliderInputs = document.getElementsByClassName('slider-input');
+  for (let si of sliderInputs) {
     si.value = -1;
   }
-  let slider_input_displays = document.getElementsByClassName("slider_input_display");
-  for (let sid of slider_input_displays){
-    sid.innerText = "-1";
+  let sliderInputDisplays = document.getElementsByClassName('slider_input_display');
+  for (let sid of sliderInputDisplays) {
+    sid.innerText = '-1%';
   }
 
   // reset pitfalls
   let checkboxes = document.querySelectorAll('#left_menu input[type=checkbox]');
-  for (let check of checkboxes){
+  for (let check of checkboxes) {
     check.checked = false;
   }
 }
