@@ -59,17 +59,8 @@ function changeStatus(step, text, reset=true) {
         }
       }
       if (step == 'CHECK') {
-        // During check, thumbnail needs to be fetched & added to the table
-        // In this case, text[col[col.length - 1]] is the filename
-        fetch(thumbUrl + text[col[col.length - 1]], {credentials: 'same-origin'}).then(
-            (response) => response.json(), // if the response is a JSON object
-        ).then((x)=>{
-          var tabCell = tr.cells[tr.cells.length-1];
-          tabCell.innerHTML = '';
-          const img = new Image();
-          img.src = x.slide;
-          tabCell.appendChild(img);
-          if (text['location']) {
+        // show post button
+        if (text['location']) {
             // indicating successful check
             checkSuccess = true;
             if (finishUploadSuccess === true) {
@@ -81,8 +72,18 @@ function changeStatus(step, text, reset=true) {
             checkSuccess = false;
             $('#post_btn').hide();
           }
-        });
-      }
+          // fetch thumbnail and add to table as we can
+          // In this case, text[col[col.length - 1]] is the filename
+          fetch(thumbUrl + text[col[col.length - 1]], {credentials: 'same-origin'}).then(
+              (response) => response.json(), // if the response is a JSON object
+          ).then((x)=>{
+            var tabCell = tr.cells[tr.cells.length-1];
+            tabCell.innerHTML = '';
+            const img = new Image();
+            img.src = x.slide;
+            tabCell.appendChild(img);
+          });
+        }
     }
 
     var divContainer = document.getElementById('json_table');
