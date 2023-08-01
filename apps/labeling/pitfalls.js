@@ -180,6 +180,7 @@ async function initialize() {
           clearInterval(checkCoreAndDataIsReady);
           Loading.close();
           resetForm();
+          disableROIForm()
         }
       }, 500);
     }
@@ -1203,8 +1204,11 @@ function setDownloadModalProgress(num) {
 function resetForm(){
   console.log('reset form');
 
-  // reset ROI type
-  document.querySelector('#left_menu input[type=radio][name=roi_type]:checked').checked = false 
+  // reset tissu and roi radio buttons
+  let radios = document.querySelectorAll('#left_menu input[type=radio]:checked')
+  for (let r of radios){
+    r.checked = false;
+  }
 
   // reset sliders
   document.getElementById("its_range").value = -1
@@ -1218,9 +1222,6 @@ function resetForm(){
   for (let sid of slider_input_displays){
     sid.innerText = "-1";
   }
-
-  // reset tissue type
-  document.querySelector('#left_menu input[type=radio][name=tissue_type]:checked').checked = false 
 
   // reset pitfalls
   let checkboxes = document.querySelectorAll('#left_menu input[type=checkbox]');
