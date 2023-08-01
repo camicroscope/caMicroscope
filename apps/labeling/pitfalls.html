@@ -352,8 +352,8 @@
                       left: 50%;
                       transform: translate(-50%, -50%);
                     ">
-                    <div class="txt">-1%</div>
-                    <input type="text" class="ip" />
+                    <div class="txt slider_input_display">-1%</div>
+                    <input type="text" class="ip slider_input" />
                   </div>
                 </div>
               </div>
@@ -397,8 +397,8 @@
                       left: 50%;
                       transform: translate(-50%, -50%);
                     ">
-                    <div class="txt">-1%</div>
-                    <input type="text" class="ip" />
+                    <div class="txt slider_input_display">-1%</div>
+                    <input type="text" class="ip slider_input" />
                   </div>
                 </div>
               </div>
@@ -409,6 +409,7 @@
                   display: block;
                 "> sTILs Density </div>
               <hr />
+              <div style="font-weight: bold; padding-bottom: 0.5rem"> Tissue Type: </div>
               <div id="tumor_types">
                 <div style="padding: 0 0 0.5rem 0.3rem">
                   <label>
@@ -428,53 +429,54 @@
                 </div>
               </div>
               <hr />
+              <div style="font-weight: bold; padding-bottom: 0.5rem"> Pitfalls: </div>
               <div id="pitfall_checkboxes" style="padding: 0 0 0.5rem 0.3rem">
-                <input type="checkbox" class="pitfalls_check" id="pitfall-1" name="pitfall-1" value="Benign glandular elements">
+                <input type="checkbox" class="pitfalls_check" id="pitfall-1" name="pitfalls" value="Benign glandular elements">
                 <label for="pitfall-1">Benign Glandular Elements</label>
                 <br>
-                <input type="checkbox" class="pitfalls_check" id="pitfall-2" name="pitfall-2" value="Adipocytes">
+                <input type="checkbox" class="pitfalls_check" id="pitfall-2" name="pitfalls" value="Adipocytes">
                 <label for="pitfall-2">Adipocytes</label>
                 <br>
-                <input type="checkbox" class="pitfalls_check" id="pitfall-3" name="pitfall-3" value="Carcinoma in situ">
+                <input type="checkbox" class="pitfalls_check" id="pitfall-3" name="pitfalls" value="Carcinoma in situ">
                 <label for="pitfall-3">Carcinoma in situ</label>
                 <br>
-                <input type="checkbox" class="pitfalls_check" id="pitfall-4" name="pitfall-4" value="Necrosis and fibrin">
+                <input type="checkbox" class="pitfalls_check" id="pitfall-4" name="pitfalls" value="Necrosis and fibrin">
                 <label for="pitfall-4">Necrosis and fibrin</label>
                 <br>
-                <input type="checkbox" class="pitfalls_check" id="pitfall-5" name="pitfall-5" value="Nerves and/or larget-caliper blood vessels">
-                <label for="pitfall-5">Nerves and/or larget-caliper blood vessels</label>
+                <input type="checkbox" class="pitfalls_check" id="pitfall-5" name="pitfalls" value="Nerves and/or larger-caliper blood vessels">
+                <label for="pitfall-5">Nerves and/or larger-caliper blood vessels</label>
                 <br>
-                <input type="checkbox" class="pitfalls_check" id="pitfall-6" name="pitfall-6" value="Eosinophilia">
+                <input type="checkbox" class="pitfalls_check" id="pitfall-6" name="pitfalls" value="Eosinophilia">
                 <label for="pitfall-6">Eosinophilia</label>
                 <br>
-                <input type="checkbox" class="pitfalls_check" id="pitfall-7" name="pitfall-7" value="Small/pyknotic nuclei">
+                <input type="checkbox" class="pitfalls_check" id="pitfall-7" name="pitfalls" value="Small/pyknotic nuclei">
                 <label for="pitfall-7">Small/pyknotic nuclei</label>
                 <br>
-                <input type="checkbox" class="pitfalls_check" id="pitfall-8" name="pitfall-8" value="Perinuclear clearing">
+                <input type="checkbox" class="pitfalls_check" id="pitfall-8" name="pitfalls" value="Perinuclear clearing">
                 <label for="pitfall-8">Perinuclear clearing</label>
                 <br>
-                <input type="checkbox" class="pitfalls_check" id="pitfall-9" name="pitfall-9" value="Cross-sectionally cut fibroblasts">
-                <label for="pitfall-9">Cross-sectionally cut fibroblasts vessels</label>
+                <input type="checkbox" class="pitfalls_check" id="pitfall-9" name="pitfalls" value="Cross-sectionally cut fibroblasts">
+                <label for="pitfalls">Cross-sectionally cut fibroblasts vessels</label>
                 <br>
-                <input type="checkbox" class="pitfalls_check" id="pitfall-10" name="pitfall-10" value="Low grade and/or degenerated ischemic tumor cells">
+                <input type="checkbox" class="pitfalls_check" id="pitfall-10" name="pitfalls" value="Low grade and/or degenerated ischemic tumor cells">
                 <label for="pitfall-10">Low grade and/or degenerated ischemic tumor cells</label>
                 <br>
-                <input type="checkbox" class="pitfalls_check" id="pitfall-11" name="pitfall-11" value="Crushed Cells">
+                <input type="checkbox" class="pitfalls_check" id="pitfall-11" name="pitfalls" value="Crushed Cells">
                 <label for="pitfall-11">Crushed cells</label>
                 <br>
-                <input type="checkbox" class="pitfalls_check" id="pitfall-12" name="pitfall-12" value="Sparsely Distributed tumor cells">
+                <input type="checkbox" class="pitfalls_check" id="pitfall-12" name="pitfalls" value="Sparsely Distributed tumor cells">
                 <label for="pitfall-12">Sparsely Distributed tumor cells</label>
                 <br>
-                <input type="checkbox" class="pitfalls_check" id="pitfall-13" name="pitfall-13" value="Fibers">
+                <input type="checkbox" class="pitfalls_check" id="pitfall-13" name="pitfalls" value="Fibers">
                 <label for="pitfall-13">Fibers</label>
                 <br>
-                <input type="checkbox" class="pitfalls_check" id="pitfall-14" name="pitfall-14" value="Folds">
+                <input type="checkbox" class="pitfalls_check" id="pitfall-14" name="pitfalls" value="Folds">
                 <label for="pitfall-14">Folds</label>
                 <br>
-                <input type="checkbox" class="pitfalls_check" id="pitfall-15" name="pitfall-15" value="Over-staining">
+                <input type="checkbox" class="pitfalls_check" id="pitfall-15" name="pitfalls" value="Over-staining">
                 <label for="pitfall-15">Over-staining</label>
                 <br>
-                <input type="checkbox" class="pitfalls_check" id="pitfall-16" name="pitfall-16" value="Under-staining">
+                <input type="checkbox" class="pitfalls_check" id="pitfall-16" name="pitfalls" value="Under-staining">
                 <label for="pitfall-16">Under-staining</label>
                 <br>
               </div>

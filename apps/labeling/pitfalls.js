@@ -179,6 +179,7 @@ async function initialize() {
         if ($D.ROI&&$CAMIC&&$CAMIC.viewer&&$CAMIC.viewer.omanager) {
           clearInterval(checkCoreAndDataIsReady);
           Loading.close();
+          resetForm();
         }
       }, 500);
     }
@@ -1197,4 +1198,33 @@ function setDownloadModalTitle(title) {
 }
 function setDownloadModalProgress(num) {
   $('#downloadModal').find('.progress-bar').css('width', `${num}%`).attr('aria-valuenow', num).text(`${num}%`);
+}
+
+function resetForm(){
+  console.log('reset form');
+
+  // reset ROI type
+  document.querySelector('#left_menu input[type=radio][name=roi_type]:checked').checked = false 
+
+  // reset sliders
+  document.getElementById("its_range").value = -1
+  document.getElementById("vta_range").value = -1
+  // reset text input (usually invisible)
+  let slider_inputs = document.getElementsByClassName("slider-input");
+  for (let si of slider_inputs){
+    si.value = -1;
+  }
+  let slider_input_displays = document.getElementsByClassName("slider_input_display");
+  for (let sid of slider_input_displays){
+    sid.innerText = "-1";
+  }
+
+  // reset tissue type
+  document.querySelector('#left_menu input[type=radio][name=tissue_type]:checked').checked = false 
+
+  // reset pitfalls
+  let checkboxes = document.querySelectorAll('#left_menu input[type=checkbox]');
+  for (let check of checkboxes){
+    check.checked = false;
+  }
 }
