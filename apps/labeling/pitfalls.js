@@ -163,7 +163,7 @@ async function initialize() {
       try {
         Loading.open(document.body, 'Loading Labels Data...');
         const ROIdata = await loadingData();
-        $D.ROI = ROIdata.ROI;
+        $D.ROIs = ROIdata.ROIs;
         $D.subROIs = ROIdata.subROIs;
       } catch (e) {
         // statements
@@ -176,11 +176,11 @@ async function initialize() {
       // if (!$D.ROI) redirect($D.pages.table, 'There Is No Label Data, Return Home Page.', 0);
       Loading.open(document.body, 'Loading Labels Data...');
       var checkCoreAndDataIsReady = setInterval(function() {
-        if ($D.ROI&&$CAMIC&&$CAMIC.viewer&&$CAMIC.viewer.omanager) {
+        if ($CAMIC&&$CAMIC.viewer&&$CAMIC.viewer.omanager) {
           clearInterval(checkCoreAndDataIsReady);
           Loading.close();
+          showLabelData();
           resetForm();
-          disableROIForm()
         }
       }, 500);
     }
@@ -374,12 +374,16 @@ function initCore() {
       type: 'btn',
       value: 'roi_location',
       callback: ()=>{
-        const {x, y, width, height} = $D.ROI.properties;
+        // go to "active" ROI
+        if ($D.activeROI){
+        const {x, y, width, height} = $D.activeROI.properties;
         const cx = x + width/2;
         const cy = y + height/2;
         const refPoint = $CAMIC.viewer.viewport.imageToViewportCoordinates(cx, cy);
         $CAMIC.viewer.viewport.panTo(refPoint, true);
-      },
+      } else {
+        alert("no active roi to zoom into.")
+      }
     },
     {
       id: 'til_sample',
@@ -631,10 +635,9 @@ function annotOff() {
 
 
 async function loadingData() {
-  const labelId = $D.params.labelId;
   const slideId = $D.params.slideId;
   //
-  const labelData = await $CAMIC.store.findLabeling({_id: labelId}).then((d)=>d[0]);
+  const labelData = await $CAMIC.store.findLabeling({"provenance.image.slide":slideId});
 
 
   let sublabels = null;
@@ -642,22 +645,13 @@ async function loadingData() {
     sublabels =[]; // await $CAMIC.store.findLabelByIds(labelData.subrois).then((d)=>d);
   }
 
-  return {ROI: labelData, subROIs: sublabels};
+  return {ROIs: labelData, subROIs: sublabels};
 }
 
 
 function showLabelData() {
-  // set zoom and ref point
-  const {x, y, width, height} = $D.ROI.properties;
-  const cx = x + width/2;
-  const cy = y + height/2;
-
-  const refPoint = $CAMIC.viewer.viewport.imageToViewportCoordinates(cx, cy);
-  $CAMIC.viewer.viewport.panTo(refPoint, true);
-  $CAMIC.viewer.viewport.zoomTo($CAMIC.viewer.viewport.imageToViewportZoom(.25), refPoint, true);
-
-  // draw label
-  const labels = [...$D.subROIs, $D.ROI];
+  // draw labels
+  const labels = [...$D.ROIs];
   labels.forEach((label)=>{
     const item = {};
     item.id = label._id;
@@ -1076,7 +1070,7 @@ function addROIFormEvent() {
     const parent = $D.params.labelId;
     const execId = randomId();
 
-    const {x, y, width, height} = $D.ROI.properties;
+    const {x, y, width, height} = $D.activeROI.properties;
 
     const location = $D.params.data.location.split('/');
     const fileName1 = location[location.length-1];
