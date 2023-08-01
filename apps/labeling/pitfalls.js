@@ -376,14 +376,15 @@ function initCore() {
       callback: ()=>{
         // go to "active" ROI
         if ($D.activeROI){
-        const {x, y, width, height} = $D.activeROI.properties;
-        const cx = x + width/2;
-        const cy = y + height/2;
-        const refPoint = $CAMIC.viewer.viewport.imageToViewportCoordinates(cx, cy);
-        $CAMIC.viewer.viewport.panTo(refPoint, true);
-      } else {
-        alert("no active roi to zoom into.")
-      }
+          const {x, y, width, height} = $D.activeROI.properties;
+          const cx = x + width/2;
+          const cy = y + height/2;
+          const refPoint = $CAMIC.viewer.viewport.imageToViewportCoordinates(cx, cy);
+          $CAMIC.viewer.viewport.panTo(refPoint, true);
+        } else {
+          alert("no active roi to zoom into.")
+        }
+      },
     },
     {
       id: 'til_sample',
