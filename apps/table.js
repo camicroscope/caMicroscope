@@ -13,7 +13,7 @@ function sanitize(string) {
 }
 var existingSlideNames = [];
 var permissions;
-const allowedExtensions = ['svs', 'tif', 'tiff', 'vms', 'vmu', 'ndpi', 'scn', 'mrxs', 'bif', 'svslide', 'jpg', 'png'];
+const allowedExtensions = ['svs', 'tif', 'tiff', 'vms', 'vmu', 'ndpi', 'scn', 'mrxs', 'bif', 'svslide', 'jpg', 'png', 'dcm'];
 function validateForm(callback) {
   let slide = document.getElementById('slidename0');
   // Check if input element is rendered or not
