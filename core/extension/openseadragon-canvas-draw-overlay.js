@@ -807,26 +807,76 @@
             );
             break;
           case 'grid':
-          // draw line
-            this._last = [img_point.x, img_point.y];
-            // store current point
-            this._current_path_.geometry.coordinates[0].push(this._last.slice());
-            const grids = getGrids(
-                this._current_path_.geometry.coordinates[0],
-                this._current_path_.properties.size,
-            );
-            this._draw_ctx_.fillStyle = hexToRgbA(this.style.color, 0.5);
-            this.drawOnCanvas(
-                this._draw_ctx_,
-                function() {
-                  DrawHelper.drawMultiGrid(
-                      this._draw_ctx_,
-                      grids,
-                      this._current_path_.properties.size,
-                  );
-                // DrawHelper.drawGrid(this._draw_ctx_,this._current_path_.geometry.coordinates[0]);
-                }.bind(this),
-            );
+            // draw line
+            if ($UI.AssistantViewer?.__isEnableAssistant()) {
+              // draw line
+              this._last = [img_point.x, img_point.y];
+              // store current point
+              this._current_path_.geometry.coordinates[0].push(this._last.slice());
+              this.drawOnCanvas(
+                  this._draw_ctx_,
+                  function() {
+                  // draw circle
+                    const sx = this._current_path_.geometry.coordinates[0][0][0];
+                    const sy = this._current_path_.geometry.coordinates[0][0][1];
+                    let start = new OpenSeadragon.Point(sx, sy);
+                    start = this._viewer.viewport.imageToWindowCoordinates(start);
+                    const ex = this._current_path_.geometry.coordinates[0][
+                        this._current_path_.geometry.coordinates[0].length - 1
+                    ][0];
+                    const ey = this._current_path_.geometry.coordinates[0][
+                        this._current_path_.geometry.coordinates[0].length - 1
+                    ][1];
+                    let end = new OpenSeadragon.Point(ex, ey);
+                    end = this._viewer.viewport.imageToWindowCoordinates(end);
+                    const dx = Math.round(Math.abs(start.x - end.x));
+                    const dy = Math.round(Math.abs(start.y - end.y));
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    this._draw_ctx_.strokeStyle = distance > 14 ? 'red' : 'blue';
+                    // start point
+                    DrawHelper.drawCircle(
+                        this._draw_ctx_,
+                        sx,
+                        sy,
+                        this.style.lineWidth * 3,
+                    );
+                    // end point
+                    DrawHelper.drawCircle(
+                        this._draw_ctx_,
+                        ex,
+                        ey,
+                        this.style.lineWidth * 3,
+                    );
+
+                    DrawHelper.setStyle(this._draw_ctx_, this.style);
+                    // draw circle
+                    DrawHelper.drawMultiline(
+                        this._draw_ctx_,
+                        this._current_path_.geometry.coordinates[0],
+                    );
+                  }.bind(this),
+              );
+            } else {
+              this._last = [img_point.x, img_point.y];
+              // store current point
+              this._current_path_.geometry.coordinates[0].push(this._last.slice());
+              const grids = getGrids(
+                  this._current_path_.geometry.coordinates[0],
+                  this._current_path_.properties.size,
+              );
+              this._draw_ctx_.fillStyle = hexToRgbA(this.style.color, 0.5);
+              this.drawOnCanvas(
+                  this._draw_ctx_,
+                  function() {
+                    DrawHelper.drawMultiGrid(
+                        this._draw_ctx_,
+                        grids,
+                        this._current_path_.properties.size,
+                    );
+                  // DrawHelper.drawGrid(this._draw_ctx_,this._current_path_.geometry.coordinates[0]);
+                  }.bind(this),
+              );
+            }
             // this.drawOnCanvas(this._draw_ctx_,function(){
             //     DrawHelper.drawMultiline(this._draw_ctx_,this._current_path_.geometry.coordinates[0]);
             // }.bind(this));
@@ -1180,7 +1230,7 @@
         this._current_path_.geometry.coordinates[0] = drawPoints;
         // create bounds
         this._current_path_.bound.coordinates[0] = getBounds(
-            this._current_path_.geometry.coordinates[0],
+            this._current_path_.geometry.coordinates[0]
         );
 
         if (this._path_index < this._draws_data_.length) {
@@ -1195,16 +1245,16 @@
       this.drawOnCanvas(
           this._display_ctx_,
           function() {
-          // this.drawMode !== "grid"
-          //   ?
-            DrawHelper.draw(
-                this._display_ctx_,
-                this._draws_data_.slice(0, this._path_index),
-            );
-            // : DrawHelper.drawGrids(
-            //     this._display_ctx_,
-            //     this._draws_data_.slice(0, this._path_index)
-            //   );
+            this.drawMode !== "grid"
+                ?
+                DrawHelper.draw(
+                    this._display_ctx_,
+                    this._draws_data_.slice(0, this._path_index),
+                )
+              : DrawHelper.drawGrids(
+                  this._display_ctx_,
+                  this._draws_data_.slice(0, this._path_index)
+                );
           }.bind(this),
       );
     },
@@ -1447,7 +1497,7 @@
         drawMany = true;
       }
       dists = await mltools.applyDraw(dist, threshold, radius, overlap, scaleMethod, drawMany);
-      return dists.map((dist) => {
+      var distAligns = dists.map((dist) => {
         const distAlign = [];
         for (i = 0; i < dist.length; i++) {
           dist[i] = new OpenSeadragon.Point(dist[i][0] / this.align_fx, dist[i][1] / this.align_fy);
@@ -1458,6 +1508,19 @@
         }
         return distAlign;
       });
+
+      // Process for each type of annotation mode
+      switch (this.drawMode) {
+        case 'grid':
+          distAligns = distAligns.map((dist) => {
+            const gridPoints =  areaCircumferenceToGrids(dist, this._current_path_.properties.size);
+            return gridPoints;
+          });
+          break;
+        default:
+          break;
+      }
+      return distAligns;
     }
   };
 

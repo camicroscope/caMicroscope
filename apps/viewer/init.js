@@ -842,6 +842,7 @@ async function initUIcomponents() {
         if ($UI.AssistantViewer.elt.style.display === 'none') {
           $UI.AssistantViewer.elt.style.display = '';
         } else {
+          // $UI.AssistantViewer.enableBtn.checked = false;
           $UI.AssistantViewer.elt.style.display = 'none';
         }
       })
