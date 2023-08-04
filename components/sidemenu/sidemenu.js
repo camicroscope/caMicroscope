@@ -91,6 +91,10 @@ SideMenu.prototype.__refresh = function() {
     this.elt.style.height = '100vh';
   }
 
+  if (this.setting.borderRadius) {
+    this.elt.style.borderRadius = this.setting.borderRadius;
+  }
+
   if (this.setting.top) {
     this.elt.style.top = this.setting.top;
   } else {
@@ -109,19 +113,7 @@ SideMenu.prototype.__refresh = function() {
   this._close_handler = document.createElement('div');
   this._close_handler.classList.add('close');
 
-  if (this.setting.position === 'right') {
-    const icon1 = document.createElement('i');
-    icon1.classList.add('material-icons');
-    icon1.classList.add('md-24');
-    icon1.classList.add('right');
-    icon1.textContent = 'chevron_right';
-  
-    const icon2 = icon1.cloneNode(true);
-    
-    icon1.classList.add('fir');
-    this._close_handler.appendChild(icon1);
-    this._close_handler.appendChild(icon2);
-  } else {
+  if (this.setting.position === 'left') {
     const icon1 = document.createElement('i');
     icon1.classList.add('material-icons');
     icon1.classList.add('md-24');
@@ -147,7 +139,11 @@ SideMenu.prototype.__refresh = function() {
  * open the side menu
  */
 SideMenu.prototype.open = function() {
-  this.elt.style.width = this.setting.width+'px';
+  if (this.setting.width === 'unset') {
+    this.elt.style.width = 'unset';
+  } else {
+    this.elt.style.width = this.setting.width+'px';
+  }
   if (this.setting.position === 'right') {
     this.elt.style.left = 'unset';
     this.elt.style.right = 0;

@@ -779,15 +779,17 @@ async function initUIcomponents() {
   /* --- machine learning Assistant --- */
   $UI.AssistantSideMenu = new SideMenu({
     id: 'ml_assistant_layers',
-    width: 240,
+    width: 'unset',
     contentPadding: 5,
     position: 'right',
-    height: '50vh',
-    top: '30px'
+    height: 'unset',
+    top: '40px',
+    borderRadius: '10px',
   });
 
   var AssistantTitle = document.createElement('div');
   AssistantTitle.classList.add('item_head');
+  AssistantTitle.style.margin = 0;
   AssistantTitle.textContent = 'Annotation Assistant';
   $UI.AssistantSideMenu.addContent(AssistantTitle);
 
@@ -835,6 +837,14 @@ async function initUIcomponents() {
       });
       $UI.AssistantViewer.elt.parentNode.removeChild($UI.AssistantViewer.elt);
       $UI.AssistantSideMenu.addContent($UI.AssistantViewer.elt);
+      $UI.AssistantViewer.elt.style.display = 'none';
+      AssistantTitle.addEventListener('click', () => {
+        if ($UI.AssistantViewer.elt.style.display === 'none') {
+          $UI.AssistantViewer.elt.style.display = '';
+        } else {
+          $UI.AssistantViewer.elt.style.display = 'none';
+        }
+      })
 
       // create UI and set data
       $UI.layersViewer = createLayerViewer(
