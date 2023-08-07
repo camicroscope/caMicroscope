@@ -1196,6 +1196,73 @@ function setDownloadModalProgress(num) {
   $('#downloadModal').find('.progress-bar').css('width', `${num}%`).attr('aria-valuenow', num).text(`${num}%`);
 }
 
+function makeFormReactive(){
+  let roi_type_radios = document.querySelectorAll('[name="roi_type"]');
+  let tissue_type_radios = document.querySelectorAll('[name="tissue_type"]');
+  for (let rt of roi_type_radios){
+    rt.addEventListener('change', function(e){
+      if(e.target.checked){
+        // reset the slider in either case
+        // reset sliders
+        document.getElementById('its_range').value = -1;
+        document.getElementById('vta_range').value = -1;
+        // reset text input (usually invisible)
+        let sliderInputs = document.getElementsByClassName('slider-input');
+        for (let si of sliderInputs) {
+          si.value = -1;
+        }
+        let sliderInputDisplays = document.getElementsByClassName('slider_input_display');
+        for (let sid of sliderInputDisplays) {
+          sid.innerText = '-1%';
+        }
+
+        // reset pitfalls
+        let checkboxes = document.querySelectorAll('#left_menu input[type=checkbox]');
+        for (let check of checkboxes) {
+          check.checked = false;
+        }
+        document.getElementById("tt_radio_1").checked = false
+        document.getElementById("tt_radio_2").checked = false
+        document.getElementById("tt_radio_3").checked = false
+        document.getElementById("tt_radio_4").checked = false
+        // hide save button
+        document.getElementById("save").style.display = 'none'
+        if (e.target.value == 'Evaluable for sTILs'){
+          // show sliders when evaluable
+          document.getElementById("sliders").style.display = "block";
+          // tissue types 1 and 2 enable, 3 and 4 disable
+          document.getElementById("tt_radio_1").disabled = false
+          document.getElementById("tt_radio_2").disabled = false
+          document.getElementById("tt_radio_3").disabled = true
+          document.getElementById("tt_radio_4").disabled = true
+        } else {
+          // hide sliders when not evaluable
+          document.getElementById("sliders").style.display = "none";
+          // tissue types 1 and 2 disable, 3 and 4 enaable
+          document.getElementById("tt_radio_1").disabled = true
+          document.getElementById("tt_radio_2").disabled = true
+          document.getElementById("tt_radio_3").disabled = false
+          document.getElementById("tt_radio_4").disabled = false
+
+        }
+      }
+    });
+  }
+  for (let tt of tissue_type_radios){
+    tt.addEventListener('change', function(e){
+      // show pitfalls
+      document.getElementById("pitfall_checkboxes").style.display = "block";
+      // show save button
+      document.getElementById("save").style.display = 'block';
+      // reset pitfalls
+      let checkboxes = document.querySelectorAll('#left_menu input[type=checkbox]');
+      for (let check of checkboxes) {
+        check.checked = false;
+      }
+    })
+  }
+}
+
 function resetForm() {
   console.log('reset form');
 
