@@ -1225,6 +1225,8 @@ function makeFormReactive(){
         document.getElementById("tt_radio_2").checked = false
         document.getElementById("tt_radio_3").checked = false
         document.getElementById("tt_radio_4").checked = false
+        document.getElementById("tissue_type_area").style.display = "block";
+        document.getElementById("pitfalls_area").style.display = "none";
         // hide save button
         document.getElementById("save").style.display = 'none'
         if (e.target.value == 'Evaluable for sTILs'){
@@ -1251,7 +1253,7 @@ function makeFormReactive(){
   for (let tt of tissue_type_radios){
     tt.addEventListener('change', function(e){
       // show pitfalls
-      document.getElementById("pitfall_checkboxes").style.display = "block";
+      document.getElementById("pitfalls_area").style.display = "block";
       // show save button
       document.getElementById("save").style.display = 'block';
       // reset pitfalls
@@ -1262,6 +1264,8 @@ function makeFormReactive(){
     })
   }
 }
+
+makeFormReactive()
 
 function resetForm() {
   console.log('reset form');

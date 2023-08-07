@@ -411,28 +411,31 @@
                   "> sTILs Density </div>
                 <hr />
               </div>
-              <div style="font-weight: bold; padding-bottom: 0.5rem"> Tissue Type: </div>
-              <div id="tumor_types">
-                <div style="padding: 0 0 0.5rem 0.3rem">
-                  <label>
-                    <input type="radio" id="tt_radio_1" name="tissue_type" class="tissue_check" value="Tumor with Stroma" onchange="console.log(this)" /> Tumor with Stroma </label>
-                </div>
-                <div style="padding: 0 0 0.5rem 0.3rem">
-                  <label>
-                    <input type="radio" id="tt_radio_2" name="tissue_type" class="tissue_check" value="Invasive Margin" onchange="console.log(this)" /> Invasive Margin </label>
-                </div>
-                <div style="padding: 0 0 0.5rem 0.3rem">
-                  <label>
-                    <input type="radio" id="tt_radio_3" name="tissue_type" class="tissue_check" value="Inside tumor/margin with low/without stroma" onchange="console.log(this)" /> Inside tumor/margin with low/without stroma </label>
-                </div>
-                <div style="padding: 0 0 0.5rem 0.3rem">
-                  <label>
-                    <input type="radio" id="tt_radio_4" name="tissue_type" class="tissue_check" value="No proximal tumor" onchange="console.log(this)" /> No Proximal Tumor </label>
+              <div id='tissue_type_area' style="display:none;">
+                <div style="font-weight: bold; padding-bottom: 0.5rem"> Tissue Type: </div>
+                <div id="tumor_types">
+                  <div style="padding: 0 0 0.5rem 0.3rem">
+                    <label>
+                      <input type="radio" id="tt_radio_1" name="tissue_type" class="tissue_check" value="Tumor with Stroma" onchange="console.log(this)" /> Tumor with Stroma </label>
+                  </div>
+                  <div style="padding: 0 0 0.5rem 0.3rem">
+                    <label>
+                      <input type="radio" id="tt_radio_2" name="tissue_type" class="tissue_check" value="Invasive Margin" onchange="console.log(this)" /> Invasive Margin </label>
+                  </div>
+                  <div style="padding: 0 0 0.5rem 0.3rem">
+                    <label>
+                      <input type="radio" id="tt_radio_3" name="tissue_type" class="tissue_check" value="Inside tumor/margin with low/without stroma" onchange="console.log(this)" /> Inside tumor/margin with low/without stroma </label>
+                  </div>
+                  <div style="padding: 0 0 0.5rem 0.3rem">
+                    <label>
+                      <input type="radio" id="tt_radio_4" name="tissue_type" class="tissue_check" value="No proximal tumor" onchange="console.log(this)" /> No Proximal Tumor </label>
+                  </div>
                 </div>
               </div>
               <hr />
+              <div id="pitfalls_area" style="display: none;">
               <div style="font-weight: bold; padding-bottom: 0.5rem"> Pitfalls: </div>
-              <div id="pitfall_checkboxes" style="display: none; padding: 0 0 0.5rem 0.3rem">
+              <div id="pitfall_checkboxes" style="padding: 0 0 0.5rem 0.3rem">
                 <label for="pitfall-1">
                   <input type="checkbox" class="pitfalls_check" id="pitfall-1" name="pitfalls" value="Benign glandular elements"> Benign Glandular Elements </label>
                 <br>
@@ -482,6 +485,7 @@
                   <input type="checkbox" class="pitfalls_check" id="pitfall-16" name="pitfalls" value="Under-staining"> Under-staining </label>
                 <br>
               </div>
+            </div>
             </div>
           </div>
           <div class="foot" style="margin: 0.5rem">
