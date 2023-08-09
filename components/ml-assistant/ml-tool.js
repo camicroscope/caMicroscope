@@ -259,8 +259,9 @@ class mlTools {
     expandContour(contour, width, height, size, iter) {
         const mask = new cv.Mat.zeros(height, width, cv.CV_8UC1);
         const point = new cv.Point(0, 0);
-        for (let i = 0; i < width; i++) {
-            for (let j = 0; j < height; j++) {
+        const bound = cv.boundingRect(contour);
+        for (let i = bound.x; i < bound.x + bound.width; i++) {
+            for (let j = bound.y; j < bound.y + bound.height; j++) {
                 point.x = i;
                 point.y = j;
                 if (cv.pointPolygonTest(contour, point, false) >= 0) {
