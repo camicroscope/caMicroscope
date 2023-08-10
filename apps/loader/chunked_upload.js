@@ -59,12 +59,13 @@ async function readFileChunks(file, token) {
 async function handleUpload(selectedFiles) {
   selectedFile = selectedFiles[0];
   const filename = selectedFiles[0]['name'];
-  const token = await startUpload(filename);
+  const uploadMetadata = await startUpload(filename);
+  const token = uploadMetadata.upload_token;
   $('#tokenRow').show(300);
   const callback = continueUpload(token);
   readFileChunks(selectedFile, token);
   // parseFile(selectedFile, callback, 0, x=>(changeStatus("UPLOAD", "Finished Reading File")))
-  updateFormOnUpload(selectedFiles[0]['name'], token);
+  updateFormOnUpload(uploadMetadata.filename, token);
 
   document.getElementById('fileUploadInput').colSpan = selectedFiles.length;
   document.getElementById('controlButtons').colSpan = selectedFiles.length+1;
@@ -78,7 +79,7 @@ async function startUpload(filename) {
   try {
     const a = await token;
     changeStatus('UPLOAD', 'Begun upload - Token:' + a['upload_token']);
-    return a['upload_token'];
+    return { upload_token: a['upload_token'], filename: a['filename'] };;
   } catch (e) {
     changeStatus('UPLOAD | ERROR;', e);
   }
@@ -130,6 +131,9 @@ function finishUpload() {
   regReq.then((x)=>x.json()).then((a)=>{
     changeStatus('UPLOAD | Finished', a, reset); reset = false;
     console.log(a);
+    if (a.filepath) {
+      document.getElementById('filename'+0).value = a.filepath.slice(a.filepath.lastIndexOf('/')+1);
+    }
     if (typeof a === 'object' && a.error) {
       finishUploadSuccess = false;
       $('#check_btn').hide();
@@ -143,6 +147,7 @@ function finishUpload() {
         $('#check_btn').show();
         $('#post_btn').hide();
       }
+      validateForm(CheckBtn);
     }
   });
   regReq.then((e)=> {
@@ -153,8 +158,6 @@ function finishUpload() {
       changeStatus('UPLOAD | ERROR;', e);
       reset = true;
       console.log(e);
-    } else {
-      validateForm(CheckBtn);
     }
   },
   );
@@ -163,7 +166,7 @@ function finishUpload() {
 
 async function handleUrlUpload(url) {
   $('#uploadLoading').css('display', 'block');
-  const token = await startUpload(url);
+  const token = (await startUpload(url)).upload_token;
   await continueUrlUpload(token, url);
 }
 

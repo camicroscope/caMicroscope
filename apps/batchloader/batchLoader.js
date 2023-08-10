@@ -198,7 +198,7 @@ function checkNames() {
       }
       numErrors++;
     } else if (!allowedExtensions.includes(fileNames[i].substring(fileNames[i].lastIndexOf('.')+1,
-        fileNames[i].length))) {
+        fileNames[i].length).toLowerCase())) {
       let errorIcon = `<i id='fileNameError' class="fas fa-exclamation-circle text-danger" title='File extension not allowed'></i> &nbsp;&nbsp;`;
       if ($('.fileNameEdit:eq('+i+')').prev().prev('#fileNameError').length == 0) {
         $('.fileNameEdit:eq('+i+')').parent().prepend(errorIcon);
@@ -346,8 +346,11 @@ function finishBatch() {
 }
 
 async function handleUpload(selectedFile, filename, i) {
-  const token = await startUpload(filename);
+  const uploadMetadata = await startUpload(filename);
+  const token = uploadMetadata.upload_token;
   tokens.push(token);
+  fileNames[i] = uploadMetadata.filename;
+  $('tr:eq('+(i+1)+') td:nth-child(2) span')[0].innerText = uploadMetadata.filename;
   let j = 0;
   $('.token').each(function() {
     $(this).html(tokens[j++]);
@@ -371,7 +374,7 @@ async function startUpload(filename) {
   }}).then((x)=>x.json());
   try {
     const a = await token;
-    return a['upload_token'];
+    return { upload_token: a['upload_token'], filename: a['filename'] };
   } catch (e) {
     console.log(e);
   }
@@ -395,6 +398,11 @@ function finishUpload(token, filename, i) {
   }});
   regReq.then((x)=>x.json()).then((a)=>{
     // changeStatus('UPLOAD | Finished', a, reset); reset = false;
+    if (a.filepath) {
+      const newName = a.filepath.slice(a.filepath.lastIndexOf('/')+1);
+      fileNames[i] = newName;
+      $('tr:eq('+(i+1)+') td:nth-child(2) span')[0].innerText = newName;
+    }
     if (typeof a === 'object' && a.error) {
       finishUploadSuccess = false;
     //   $('#check_btn').hide();
