@@ -1515,6 +1515,8 @@
           distAligns = distAligns.map((dist) => {
             const gridPoints =  areaCircumferenceToGrids(dist, this._current_path_.properties.size);
             return gridPoints;
+          }).filter((dist) => {
+            return dist.length > 0;
           });
           break;
         default:

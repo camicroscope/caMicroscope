@@ -613,7 +613,9 @@ function areaCircumferenceToGrids(points, size) {
 }
 
 function isPointInsidePolygon(point, polygon) {
-  const [x, y] = point;
+  let [x, y] = point;
+  x += 0.01;
+  y += 0.01;
   const n = polygon.length;
   let inside = false;
 
