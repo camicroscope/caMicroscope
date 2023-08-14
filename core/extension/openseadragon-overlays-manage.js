@@ -241,7 +241,14 @@
          * @param  {Event} e the event
          */
         pathClick:function(e){
-            if(this.highlightLayer&&this.highlightLayer.clickable) {
+            if (this.onEdit) {
+                this.onEditPointMouseUp(e);
+                this.editPointStyle = this.highlightStyle || this.editPointStyle;
+                this.drawOnCanvas(this.drawEditPoints, [this._edit_tool_ctx_, this.editPathData, this.editPointStyle]);
+                this.updateView();
+                return;
+            }
+            else if(this.highlightLayer&&this.highlightLayer.clickable) {
                 if (this.currentEditIndex !== this.currentHighlightIndex) {
                     this._viewer.raiseEvent('canvas-lay-click',{position:{x:e.clientX, y:e.clientY}, data:this.highlightLayer?this.highlightLayer.data:null});
                     if (this.currentEditIndex) {
@@ -252,7 +259,6 @@
                 this._viewer.setMouseNavEnabled(false);
                 this._div.addEventListener('mousemove', this.onEditPointMouseMove.bind(this));
                 this._div.addEventListener('mouseout', this.onEditPointMouseUp.bind(this));
-                this._div.addEventListener('mouseup', this.onEditPointMouseUp.bind(this));
                 this._div.addEventListener('mousedown', this.onEditPointMouseDown.bind(this));
             } else {
                 try {
@@ -262,46 +268,23 @@
                 this._viewer.setMouseNavEnabled(true);
                 this._div.removeEventListener('mousemove', this.onEditPointMouseMove.bind(this));
                 this._div.removeEventListener('mouseout', this.onEditPointMouseUp.bind(this));
-                this._div.removeEventListener('mouseup', this.onEditPointMouseUp.bind(this));
                 this._div.removeEventListener('mousedown', this.onEditPointMouseDown.bind(this));
             }
             this.editPathData = this.highlightPathData;
-            this.editPath = this.highlightPath;
             this.editStyle = this.highlightStyle;
-            const editPointStyle = {
-                color: "#000000",
-                isFill: true,
-                lineCap: "round",
-                lineJoin: "round"
-            };
-            this.drawOnCanvas(this.drawEditPoints, [this._edit_tool_ctx_, this._div, this.editPathData, this.editPath, editPointStyle]);
+            this.editPointStyle = this.highlightStyle || this.editPointStyle;
+            this.drawOnCanvas(this.drawEditPoints, [this._edit_tool_ctx_, this.editPathData, this.editPointStyle]);
             this.updateView();
         },
 
-        drawEditPoints: function(ctx, div, pathData, path, style) {
-            if (!pathData) return;                  
-            if(style.isFill ==undefined || style.isFill){
-                const imagingHelper = this._viewer.imagingHelper;
-                const lineWidth = (imagingHelper.physicalToDataX(1) - imagingHelper.physicalToDataX(0))>> 0;
-                ctx.lineWidth = lineWidth;
-                ctx.fillStyle = hexToRgbA(this.editStyle.color, 0.4);
-                ctx.strokeStyle = style.color;
-                path.stroke(ctx);
-                path.fill(ctx);
-            }else{
-                const imagingHelper = this._viewer.imagingHelper;
-                const lineWidth = (imagingHelper.physicalToDataX(1) - imagingHelper.physicalToDataX(0))>> 0;
-                ctx.lineWidth = lineWidth;
-                ctx.fillStyle = hexToRgbA(this.editStyle.color, 0.4);
-                ctx.strokeStyle = style.color;
-                path.stroke(ctx);
-            }
+        drawEditPoints: function(ctx, pathData, style) {
+            if (!pathData) return;
 
             this.editPointPathList = [];
             pathData = pathData.geometry.coordinates;
             ctx.lineJoin = 'round';
             ctx.lineCap = 'round';
-            ctx.fillStyle = hexToRgbA(style.color, 1);
+            ctx.fillStyle = hexToRgbA(style.color, 0.7);
             ctx.strokeStyle = style.color;
             ctx.lineWidth = style.lineWidth;
 
@@ -321,7 +304,7 @@
                     pointPath.arc(
                         point[0],
                         point[1], 
-                        ctx.radius * 2, 0, 2 * Math.PI
+                        ctx.radius * 1.5, 0, 2 * Math.PI
                     );
                     pointPath.closePath();
                     pointPath.strokeAndFill(ctx);
@@ -334,19 +317,20 @@
             DrawHelper.clearCanvas(this._edit_tool_hover_);
             if (!this.editPathData) return;
             if (!this.editPointPathList) return;
-            const editPointStyle = {
-                color: "#000000",
-                isFill: true,
-                lineCap: "round",
-                lineJoin: "round"
-            };
+            // const editPointStyle = {
+            //     color: "#000000",
+            //     isFill: true,
+            //     lineCap: "round",
+            //     lineJoin: "round"
+            // };
+            this.editPointStyle = this.highlightStyle || this.editPointStyle;
             const point = new OpenSeadragon.Point(e.clientX, e.clientY);
             const img_point = this._viewer.viewport.windowToImageCoordinates(point);
             for(let i = 0;i<this.editPointPathList.length;i++){
                 const pointPath = this.editPointPathList[i];
                 if (pointPath.contains(img_point.x, img_point.y)) {
                     this.resize();
-                    this.drawOnCanvas(this.drawOnEditHover, [this._edit_tool_hover_ctx_, this._div, pointPath, editPointStyle]);
+                    this.drawOnCanvas(this.drawOnEditHover, [this._edit_tool_hover_ctx_, this._div, pointPath, this.editPointStyle]);
                     this.onEditPoint = true;
                     return;
                 } else {
@@ -357,7 +341,7 @@
 
         drawOnEditHover:function(ctx,div,path,style){
             if (!style) return;
-            div.style.cursor = 'pointer';
+            div.style.cursor = 'move';
             ctx.lineJoin = 'round';
             ctx.lineCap = 'round';
             ctx.fillStyle = hexToRgbA(style.color, 1);
