@@ -612,6 +612,57 @@ function areaCircumferenceToGrids(points, size) {
   return grids;
 }
 
+function distance(x1, y1, x2, y2) {
+  const dx = x2 - x1;
+  const dy = y2 - y1;
+  return Math.sqrt(dx * dx + dy * dy);
+}
+
+// Find the closest point on a line segment to a given point
+function closestPointOnLineSegment(px, py, x1, y1, x2, y2) {
+  const dx = x2 - x1;
+  const dy = y2 - y1;
+  const t = ((px - x1) * dx + (py - y1) * dy) / (dx * dx + dy * dy);
+  
+  if (t < 0) {
+    return { x: x1, y: y1 };
+  } else if (t > 1) {
+    return { x: x2, y: y2 };
+  } else {
+    return { x: x1 + t * dx, y: y1 + t * dy };
+  }
+}
+
+function closestPointOnPolygon(polygon, px, py) {
+  let closestDistance = Infinity;
+  let closestIndex = null;
+  
+  // Find the closest point on each edge
+  for (let i = 0; i < polygon.length; i++) {
+    const nextIndex = (i + 1) % polygon.length;
+    const edgeStart = polygon[i];
+    const edgeEnd = polygon[nextIndex];
+    const closest = closestPointOnLineSegment(px, py, edgeStart[0], edgeStart[1], edgeEnd[0], edgeEnd[1]);
+    const d = distance(px, py, closest.x, closest.y);
+    
+    if (d < closestDistance) {
+      closestDistance = d;
+      closestIndex = i;
+    }
+  }
+  
+  return closestIndex;
+}
+
+function pointInPolygonVertex(polygon, point) {
+  for (let i = 0; i < polygon.length; i++) {
+    if (polygon[i][0] === point[0] && polygon[i][1] === point[1]) {
+      return i;
+    }
+  }
+  return false;
+}
+
 function isPointInsidePolygon(point, polygon) {
   let [x, y] = point;
   x += 0.01;

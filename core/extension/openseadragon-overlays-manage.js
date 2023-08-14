@@ -48,6 +48,7 @@
             zooming:this._zooming.bind(this),
             panning:this._panning.bind(this),
             drawing:this._drawing.bind(this),
+            contextmenu: this.rightClick.bind(this),
         }
         // -- create container div, and hover, display canvas -- // 
         this._containerWidth = 0;
@@ -109,7 +110,7 @@
 
         this._div.addEventListener('mousemove', this.events.highlight);
         this._div.addEventListener('click', this.events.click);
-        
+        this._div.addEventListener('contextmenu', this.events.contextmenu);
     }
 
 
@@ -157,6 +158,90 @@
                 return;
             }
             this.updateView();
+        },
+
+        rightClick: function(e) {
+            e.preventDefault();
+            if (!this.editPathData) {
+                return;
+            }
+            DrawHelper.clearCanvas(this._edit_tool_);
+            const point = new OpenSeadragon.Point(e.clientX, e.clientY);
+            const img_point = this._viewer.viewport.windowToImageCoordinates(point);
+            // if hover on an edit point then remove the point
+            for (let i = 0; i < this.editPointPathList.length; i++) {
+                if (this.editPointPathList[i].contains(img_point.x, img_point.y)) {
+                    this.editPointPathList = [];
+                    if (this.editPathData.geometry.type === 'Polygon') {
+                        // handle last point data
+                        if (i === 0 || i === this.editPathData.geometry.coordinates[0].length - 1) {
+                            this.editPathData.geometry.coordinates[0].splice(0,1);
+                            this.editPathData.geometry.coordinates[0][this.editPathData.geometry.coordinates[0].length - 1] = this.editPathData.geometry.coordinates[0][0];
+                        } else {
+                            this.editPathData.geometry.coordinates[0].splice(i,1);
+                        }
+                        this.editPathData.geometry.coordinates[0].map((point) => {
+                            const pointPath = new Path();
+                            pointPath.arc(
+                                point[0],
+                                point[1], 
+                                this._edit_tool_ctx_.radius * 2, 0, 2 * Math.PI
+                            );
+                            pointPath.closePath();
+                            pointPath.strokeAndFill(this._edit_tool_ctx_);
+                            this.editPointPathList.push(pointPath);
+                        })
+                    } else if (this.editPathData.geometry.type === 'LineString') {
+                        // brush
+                        this.editPathData.geometry.coordinates[0].splice(i,1);
+                        this.editPathData.geometry.coordinates[0].map((point) => {
+                            const pointPath = new Path();
+                            pointPath.arc(
+                                point[0],
+                                point[1], 
+                                this._edit_tool_ctx_.radius * 2, 0, 2 * Math.PI
+                            );
+                            pointPath.closePath();
+                            pointPath.strokeAndFill(this._edit_tool_ctx_);
+                            this.editPointPathList.push(pointPath);
+                        })
+                    }
+
+                    // DrawHelper.draw(this._edit_tool_ctx_, [this.editPathData]);
+                    this.drawOnCanvas(this.drawEditPoints, [this._edit_tool_ctx_, this.editPathData, this.editPointStyle]);
+                    this.updateView();
+                    this._viewer.raiseEvent('annot-edit-save',{id: this.overlays[this.currentEditIndex].data._id.$oid, slide: this.overlays[this.currentEditIndex].data.provenance.image.slide ,data:this.overlays[this.currentEditIndex].data});
+                    return;
+                }
+            }
+            if (this.editPathData.geometry.type === 'LineString') {
+                const size = this.editPathData.properties.size;
+                const topleft = [Math.floor(img_point.x/size[0])*size[0], Math.floor(img_point.y/size[1])*size[1]];
+                const index = pointInPolygonVertex(this.editPathData.geometry.coordinates[0], topleft);
+                if (index === false) {
+                    this.editPathData.geometry.coordinates[0].push(topleft);
+                } else {
+                    this.editPathData.geometry.coordinates[0].splice(index, 1);
+                }
+            } else if (this.editPathData.geometry.type === 'Polygon') {
+                const index = closestPointOnPolygon(this.editPathData.geometry.coordinates[0], img_point.x, img_point.y);
+                this.editPathData.geometry.coordinates[0].splice(index + 1,0,[img_point.x, img_point.y]);
+                this.editPathData.geometry.coordinates[0].map((point) => {
+                    const pointPath = new Path();
+                    pointPath.arc(
+                        point[0],
+                        point[1], 
+                        this._edit_tool_ctx_.radius * 2, 0, 2 * Math.PI
+                    );
+                    pointPath.closePath();
+                    pointPath.strokeAndFill(this._edit_tool_ctx_);
+                    this.editPointPathList.push(pointPath);
+                })
+            }
+            this.drawOnCanvas(this.drawEditPoints, [this._edit_tool_ctx_, this.editPathData, this.editPointStyle]);
+            this.updateView();
+            this._viewer.raiseEvent('annot-edit-save',{id: this.overlays[this.currentEditIndex].data._id.$oid, slide: this.overlays[this.currentEditIndex].data.provenance.image.slide ,data:this.overlays[this.currentEditIndex].data});
+            // Get position
         },
         /**
          * @private
@@ -317,12 +402,6 @@
             DrawHelper.clearCanvas(this._edit_tool_hover_);
             if (!this.editPathData) return;
             if (!this.editPointPathList) return;
-            // const editPointStyle = {
-            //     color: "#000000",
-            //     isFill: true,
-            //     lineCap: "round",
-            //     lineJoin: "round"
-            // };
             this.editPointStyle = this.highlightStyle || this.editPointStyle;
             const point = new OpenSeadragon.Point(e.clientX, e.clientY);
             const img_point = this._viewer.viewport.windowToImageCoordinates(point);
@@ -355,6 +434,18 @@
         },
 
         onEditPointMouseDown: function(e) {
+            let isRight;
+            e = e || window.event;
+            if ('which' in e)
+            // Gecko (Firefox), WebKit (Safari/Chrome) & Opera
+            {
+                isRight = e.which == 3;
+            } else if ('button' in e)
+            // IE, Opera
+            {
+                isRight = e.button == 2;
+            }
+            if (e.ctrlKey || isRight) return;
             const point = new OpenSeadragon.Point(e.clientX, e.clientY);
             const img_point = this._viewer.viewport.windowToImageCoordinates(point);
             for (let i = 0; i < this.editPointPathList.length; i++) {
