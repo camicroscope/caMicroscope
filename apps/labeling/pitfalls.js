@@ -432,7 +432,7 @@ function initCore() {
 
 function clickSavebtnHandler() {
   if ($D.annotations.length < 1) {
-    alert('There Is No Annotaiton. Please Add Some Annotations...');
+    alert('There Is No Label. Please Add Some Labels...');
     return;
   }
 
@@ -440,8 +440,8 @@ function clickSavebtnHandler() {
   createAnnotationsList();
 }
 
-async function saveAnnotation(annotation) {
-  Loading.open(document.body, 'Saving Annotations...');
+async function saveLabel(annotation) {
+  Loading.open(document.body, 'Saving Label...');
   // user and date time
   // const creator = getUserId();
   const creator = $USER;
@@ -461,7 +461,7 @@ async function saveAnnotation(annotation) {
   let nowTime = new Date;
   annotation.create_date = nowTime.toISOString();
   $CAMIC.viewer.cazoomctrlInstance.base;
-  const rs = await $CAMIC.store.addLabelingAnnotation(annotation).then( (d) => d );
+  const rs = await $CAMIC.store.addLabel(annotation).then( (d) => d );
   if (rs.insertedCount >= 1) {
     // update parent
 
@@ -486,7 +486,7 @@ async function saveAnnotation(annotation) {
       }
       console.log(feeback);
     } else {
-      window.location.href = `./labelingSimpleAnnotationViewer.html?collectionId=${$D.params.collectionId}`;
+      window.location.reload();
     }
     Loading.close();
   } else {
@@ -781,7 +781,7 @@ function createAnnotationsList() {
   </div>`;
   $UI.modalbox.open();
   const btn = $UI.modalbox.elt.querySelector('.modalbox-footer button');
-  btn.addEventListener('click', saveAnnotations);
+  btn.addEventListener('click', saveLabels);
 }
 
 function locatedAnnotation(data) {
@@ -1104,13 +1104,6 @@ function addROIFormEvent() {
   const actionBtn = document.querySelector('#left_menu .foot .action');
 
   actionBtn.addEventListener('click', (e) => {
-    const id = new ObjectId();
-    const slide = $D.params.slideId;
-    const slideName = $D.params.data.name;
-
-    const parent = $D.params.labelId;
-    const execId = randomId();
-
     const {x, y, width, height} = $D.activeROI.properties;
 
     const location = $D.params.data.location.split('/');
@@ -1126,34 +1119,19 @@ function addROIFormEvent() {
         pitfalls.push(pfBtn.value);
       }
     }
-
-    const annotation = {
-      '_id': id.toString(),
-      'task': 'doVTA_caMicro_v1.4',
-      'alias': alias,
-      'provenance': {
-        'image': {
-          'slide': slide,
-          'name': slideName,
-        },
-        'analysis': {
-          'source': 'human',
-          'execution_id': execId,
-          'computation': 'annotation',
-          'type': 'simple',
-          'name': execId,
-        },
-      },
-      'properties': {
-        'type': document.querySelector('#left_menu input[type=radio][name=roi_type]:checked').value,
-        'percent_stroma': itsRange.value,
-        'til_density': vtaRange.value,
-        'tissue_type': tissueType,
-        'pitfalls': pitfalls,
-      },
-      'parent': parent,
-    };
-    saveAnnotation(annotation);
+    let label = $D.activeROI;
+    const {x, y, width, height} = label.properties;
+    label.properties.type = document.querySelector('#left_menu input[type=radio][name=roi_type]:checked').value;
+    label.properties.percent_stroma = itsRange.value;
+    label.properties.til_density = vtaRange.value;
+    label.properties.pitfalls = pitfalls;
+    delete label.properties.style; // don't save highlight color
+    label.task = "pitfalls";
+    const flileloc = $D.params.data.location.split('/');
+    const fileName1 = flileloc[flileloc.length-1];
+    label.alias = `${fileName1}_x${x}.${width}_y${y}.${height}`;
+    console.log("saving", label);
+    saveLabel(label);
   });
 }
 
@@ -1340,57 +1318,72 @@ function resetForm() {
 // adding annotation
 // TODO the form should start inactive until a roi is created.
 function addAnnot(e){
-  let half_width = 1996/2;
-  let half_height = 1996/2;
-  let ctr = $CAMIC.viewer.viewport.viewportToImageCoordinates($CAMIC.viewer.viewport.pointFromPixel(e.position, true));
-  let x_ctr = Math.round(ctr.x);
-  let y_ctr = Math.round(ctr.y);
-  console.log(x_ctr, y_ctr)
-  let annot = {};
-  annot.creator = getUserId();
-  annot.batch = "?"
-  annot.alias = "?"
-  // geometry
-  annot.geometries = {}
-  annot.geometries.type = "FeatureCollection";
-  let coords = [[
-    [x_ctr-half_width, y_ctr-half_height],
-    [x_ctr+half_width, y_ctr-half_height],
-    [x_ctr+half_width, y_ctr+half_height],
-    [x_ctr-half_width, y_ctr+half_height],
-    [x_ctr-half_width, y_ctr-half_height]
-  ]]
-  let feature = {}
-  feature.geometry = {};
-  feature.geometry.coordinates = coords;
-  feature.geometry.type =  "Polygon";
-  feature.type = "Feature";
-  feature.bound = {};
-  feature.bound.coordinates = {};
-  feature.properties = {style: {color: "#fcb000"}}
-  feature.bound.type = "Polygon";
-  feature.bound.coordinates = coords;
-  annot.geometries.features = [feature]
-  annot.provenance = {}
-  console.log(annot)
-  // todo populate provenance
-  annot.properties = {style: {color: "#fcb000"}}
-  // todo, saving an roi should change its color before writing.
-  label = annot;
-  $D.activeROI = annot;
-  const item = {};
-  item.id = "WIP";
-  item.data = label;
-  item.render = labelRender;
-  item.clickable = false;
-  item.hoverable = false;
-  $CAMIC.viewer.omanager.addOverlay(item);
-  $CAMIC.viewer.omanager.updateView();
-  // hide new_roi_warn
-  document.getElementById("new_roi_warn").style = "display: none;";
-  // reenable roi type radios
-  resetForm();
-  document.querySelectorAll('input[name="roi_type"]').forEach((input)=>{
-    input.disabled = false;
-  });
+  if (!$D.activeROI){
+    let half_width = 1996/2;
+    let half_height = 1996/2;
+    let ctr = $CAMIC.viewer.viewport.viewportToImageCoordinates($CAMIC.viewer.viewport.pointFromPixel(e.position, true));
+    let x_ctr = Math.round(ctr.x);
+    let y_ctr = Math.round(ctr.y);
+    console.log(x_ctr, y_ctr)
+    let annot = {};
+    // creator is populated on save
+    // collectionName and collectionId are populated on save
+    // geometry
+    annot.geometries = {}
+    annot.geometries.type = "FeatureCollection";
+    let coords = [[
+      [x_ctr-half_width, y_ctr-half_height],
+      [x_ctr+half_width, y_ctr-half_height],
+      [x_ctr+half_width, y_ctr+half_height],
+      [x_ctr-half_width, y_ctr+half_height],
+      [x_ctr-half_width, y_ctr-half_height]
+    ]]
+    let feature = {}
+    feature.geometry = {};
+    feature.geometry.coordinates = coords;
+    feature.geometry.type =  "Polygon";
+    feature.type = "Feature";
+    feature.bound = {};
+    feature.bound.coordinates = {};
+    feature.properties = {style: {color: "#fcb000"}}
+    feature.bound.type = "Polygon";
+    feature.bound.coordinates = coords;
+    annot.geometries.features = [feature]
+    annot.provenance = {}
+    annot.provenance.image = {}
+    annot.provenance.image.slide = $D.params.slideId;
+    annot.provenance.image.name = $CAMIC.slideData.name;
+    annot.provenance.analysis = {};
+    annot.provenance.analysis.source = "human";
+    annot.provenance.analysis.computation = "label";
+    annot.provenance.analysis.execution_id = randomId();
+    annot.provenance.analysis.name = annot.provenance.analysis.execution_id;
+    annot.properties = {
+      x: x_ctr-half_width,
+      y: y_ctr-half_height,
+      width: 2*half_width,
+      height: 2*half_height,
+      style: {color: "#fcb000"}
+    }
+    // todo, saving an roi should change its color before writing.
+    label = annot;
+    $D.activeROI = annot;
+    const item = {};
+    item.id = "WIP";
+    item.data = label;
+    item.render = labelRender;
+    item.clickable = false;
+    item.hoverable = false;
+    $CAMIC.viewer.omanager.addOverlay(item);
+    $CAMIC.viewer.omanager.updateView();
+    // hide new_roi_warn
+    document.getElementById("new_roi_warn").style = "display: none;";
+    // reenable roi type radios
+    resetForm();
+    document.querySelectorAll('input[name="roi_type"]').forEach((input)=>{
+      input.disabled = false;
+    });
+  } else {
+    alert("Finish saving the orange ROI before moving on.")
+  }
 }
