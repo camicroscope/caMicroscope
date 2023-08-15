@@ -181,7 +181,11 @@ async function initialize() {
           Loading.close();
           showLabelData();
           resetForm();
-          disableROIForm();
+          //force make roi first
+          document.querySelectorAll('input[name="roi_type"]').forEach((input)=>{
+            input.disabled = true;
+          });
+          // add dbl click handler
           $CAMIC.viewer.addHandler("canvas-double-click", addAnnot)
         }
       }, 500);
