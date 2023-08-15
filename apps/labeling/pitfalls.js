@@ -1123,12 +1123,12 @@ function addROIFormEvent() {
     label.properties.percent_stroma = itsRange.value;
     label.properties.til_density = vtaRange.value;
     label.properties.pitfalls = pitfalls;
-    delete label.properties.style; // don't save highlight color
+    delete label.properties.style.color; // don't save highlight color
     label.task = "pitfalls";
     const flileloc = $D.params.data.location.split('/');
     const fileName1 = flileloc[flileloc.length-1];
     label.alias = `${fileName1}_x${x}.${width}_y${y}.${height}`;
-    console.log("saving", label);
+    console.log(label);
     saveLabel(label);
   });
 }
