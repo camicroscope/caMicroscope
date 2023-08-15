@@ -321,116 +321,121 @@
               <p id="new_roi_warn">Create a new ROI first</p>
               <hr />
               <!-- % Intra-Tumoral Stroma -->
-              <div id="its" style="
-                  border: none;
-                  margin: 0.3rem 0;
-                  padding-left: 1rem;
-                  position: relative;
-                  touch-action: none;
-                  display: flex;
-                ">
-                <input id="its_range" list="its_tick" type="range" min="-1" max="100" step="0" value="-1" style="
-                    flex: 1;
-                    background: none transparent;
+              <div id="sliders" style="display:none;">
+                <div id="its" style="
                     border: none;
-                    margin: 0;
-                    padding: 0px;
-                    position: static;
-                  " />
-                <datalist id="its_tick">
-                  <option>-1</option>
-                  <option>0</option>
-                  <option>25</option>
-                  <option>50</option>
-                  <option>75</option>
-                  <option>100</option>
-                </datalist>
-                <div style="min-width: 3.6rem; height: 2.4rem">
-                  <div id="its_txt" style="
-                      font-weight: bold;
-                      position: relative;
-                      float: left;
-                      top: 50%;
-                      left: 50%;
-                      transform: translate(-50%, -50%);
-                    ">
-                    <div class="txt slider_input_display">-1%</div>
-                    <input type="text" class="ip slider_input" />
+                    margin: 0.3rem 0;
+                    padding-left: 1rem;
+                    position: relative;
+                    touch-action: none;
+                    display: flex;
+                  ">
+                  <input id="its_range" list="its_tick" type="range" min="-1" max="100" step="0" value="-1" style="
+                      flex: 1;
+                      background: none transparent;
+                      border: none;
+                      margin: 0;
+                      padding: 0px;
+                      position: static;
+                    " />
+                  <datalist id="its_tick">
+                    <option>-1</option>
+                    <option>0</option>
+                    <option>25</option>
+                    <option>50</option>
+                    <option>75</option>
+                    <option>100</option>
+                  </datalist>
+                  <div style="min-width: 3.6rem; height: 2.4rem">
+                    <div id="its_txt" style="
+                        font-weight: bold;
+                        position: relative;
+                        float: left;
+                        top: 50%;
+                        left: 50%;
+                        transform: translate(-50%, -50%);
+                      ">
+                      <div class="txt slider_input_display">-1%</div>
+                      <input type="text" class="ip slider_input" />
+                    </div>
+                  </div>
+                </div>
+                <div id="its_message" style="
+                    padding: 0 0 0.5rem 0.3rem;
+                    text-align: right;
+                    color: red;
+                    display: block;
+                  "> % Tumor-Associated Stroma </div>
+                <!-- TIL density-->
+                <div id="vta" style="
+                    border: none;
+                    margin: 0.3rem 0;
+                    padding-left: 1rem;
+                    position: relative;
+                    touch-action: none;
+                    display: flex;
+                  ">
+                  <input id="vta_range" list="vta_tick" type="range" min="-1" value="-1" max="100" step="0" value="0" style="
+                      flex: 1;
+                      background: none transparent;
+                      border: none;
+                      margin: 0;
+                      padding: 0px;
+                      position: static;
+                    " />
+                  <datalist id="vta_tick">
+                    <option>-1</option>
+                    <option>0</option>
+                    <option>25</option>
+                    <option>50</option>
+                    <option>75</option>
+                    <option>100</option>
+                  </datalist>
+                  <div style="min-width: 3.6rem; height: 2.4rem">
+                    <div id="vta_txt" style="
+                        font-weight: bold;
+                        position: relative;
+                        float: left;
+                        top: 50%;
+                        left: 50%;
+                        transform: translate(-50%, -50%);
+                      ">
+                      <div class="txt slider_input_display">-1%</div>
+                      <input type="text" class="ip slider_input" />
+                    </div>
+                  </div>
+                </div>
+                <div id="til_message" style="
+                    padding: 0 0 0.5rem 0.3rem;
+                    text-align: right;
+                    color: red;
+                    display: block;
+                  "> sTILs Density </div>
+                <hr />
+              </div>
+              <div id='tissue_type_area' style="display:none;">
+                <div style="font-weight: bold; padding-bottom: 0.5rem"> Tissue Type: </div>
+                <div id="tumor_types">
+                  <div style="padding: 0 0 0.5rem 0.3rem">
+                    <label>
+                      <input type="radio" id="tt_radio_1" name="tissue_type" class="tissue_check" value="Tumor with Stroma" onchange="console.log(this)" /> Tumor with Stroma </label>
+                  </div>
+                  <div style="padding: 0 0 0.5rem 0.3rem">
+                    <label>
+                      <input type="radio" id="tt_radio_2" name="tissue_type" class="tissue_check" value="Invasive Margin" onchange="console.log(this)" /> Invasive Margin </label>
+                  </div>
+                  <div style="padding: 0 0 0.5rem 0.3rem">
+                    <label>
+                      <input type="radio" id="tt_radio_3" name="tissue_type" class="tissue_check" value="Inside tumor/margin with low/without stroma" onchange="console.log(this)" /> Inside tumor/margin with low/without stroma </label>
+                  </div>
+                  <div style="padding: 0 0 0.5rem 0.3rem">
+                    <label>
+                      <input type="radio" id="tt_radio_4" name="tissue_type" class="tissue_check" value="No proximal tumor" onchange="console.log(this)" /> No Proximal Tumor </label>
                   </div>
                 </div>
               </div>
-              <div id="its_message" style="
-                  padding: 0 0 0.5rem 0.3rem;
-                  text-align: right;
-                  color: red;
-                  display: block;
-                "> % Tumor-Associated Stroma </div>
-              <!-- TIL density-->
-              <div id="vta" style="
-                  border: none;
-                  margin: 0.3rem 0;
-                  padding-left: 1rem;
-                  position: relative;
-                  touch-action: none;
-                  display: flex;
-                ">
-                <input id="vta_range" list="vta_tick" type="range" min="-1" value="-1" max="100" step="0" value="0" style="
-                    flex: 1;
-                    background: none transparent;
-                    border: none;
-                    margin: 0;
-                    padding: 0px;
-                    position: static;
-                  " />
-                <datalist id="vta_tick">
-                  <option>-1</option>
-                  <option>0</option>
-                  <option>25</option>
-                  <option>50</option>
-                  <option>75</option>
-                  <option>100</option>
-                </datalist>
-                <div style="min-width: 3.6rem; height: 2.4rem">
-                  <div id="vta_txt" style="
-                      font-weight: bold;
-                      position: relative;
-                      float: left;
-                      top: 50%;
-                      left: 50%;
-                      transform: translate(-50%, -50%);
-                    ">
-                    <div class="txt slider_input_display">-1%</div>
-                    <input type="text" class="ip slider_input" />
-                  </div>
-                </div>
-              </div>
-              <div id="til_message" style="
-                  padding: 0 0 0.5rem 0.3rem;
-                  text-align: right;
-                  color: red;
-                  display: block;
-                "> sTILs Density </div>
               <hr />
-              <div style="font-weight: bold; padding-bottom: 0.5rem"> Tissue Type: </div>
-              <div id="tumor_types">
-                <div style="padding: 0 0 0.5rem 0.3rem">
-                  <label>
-                    <input type="radio" name="tissue_type" class="tissue_check" value="Tumor with Stroma" onchange="console.log(this)" /> Tumor with Stroma </label>
-                </div>
-                <div style="padding: 0 0 0.5rem 0.3rem">
-                  <label>
-                    <input type="radio" name="tissue_type" class="tissue_check" value="Invasive Margin" onchange="console.log(this)" /> Invasive Margin </label>
-                </div>
-                <div style="padding: 0 0 0.5rem 0.3rem">
-                  <label>
-                    <input type="radio" name="tissue_type" class="tissue_check" value="Inside tumor/margin with low/without stroma" onchange="console.log(this)" /> Inside tumor/margin with low/without stroma </label>
-                </div>
-                <div style="padding: 0 0 0.5rem 0.3rem">
-                  <label>
-                    <input type="radio" name="tissue_type" class="tissue_check" value="No proximal tumor" onchange="console.log(this)" /> No Proximal Tumor </label>
-                </div>
-              </div>
-              <hr />
+              <div id="pitfalls_area" style="display: none;">
               <div style="font-weight: bold; padding-bottom: 0.5rem"> Pitfalls: </div>
               <div id="pitfall_checkboxes" style="padding: 0 0 0.5rem 0.3rem">
                 <label for="pitfall-1">
@@ -483,9 +488,10 @@
                 <br>
               </div>
             </div>
+            </div>
           </div>
           <div class="foot" style="margin: 0.5rem">
-            <button id="save" class="action" style="float: right; font-weight: bold; font-size: 1.2rem"> Save & Next </button>
+            <button id="save" class="action" style="display: none; float: right; font-weight: bold; font-size: 1.2rem"> Save & Next </button>
           </div>
         </div>
         <div id="feedback" class="side_content flex-container" style="display: none">
