@@ -1123,7 +1123,7 @@ function addROIFormEvent() {
     label.properties.percent_stroma = itsRange.value;
     label.properties.til_density = vtaRange.value;
     label.properties.pitfalls = pitfalls;
-    delete label.properties.style.color; // don't save highlight color
+    label.geometries.features[0].properties.style.color = "#7cfc00" // overwrite highlight color
     label.task = "pitfalls";
     const flileloc = $D.params.data.location.split('/');
     const fileName1 = flileloc[flileloc.length-1];
