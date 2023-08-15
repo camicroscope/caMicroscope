@@ -747,7 +747,7 @@ function labelRender(ctx, data) {
 
   ctx.isFill = false;
   ctx.strokeStyle = '#00ff00'; // default
-  if (polygon && polygon.properties && polygon.style && polygon.properties.style.color){
+  if (polygon && polygon.properties && polygon.properties.style && polygon.properties.style.color){
     ctx.strokeStyle = polygon.properties.style.color;
   }
     polygon.geometry.path = DrawHelper.drawPolygon(ctx, points);
