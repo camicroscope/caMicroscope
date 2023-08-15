@@ -172,11 +172,12 @@ async function initialize() {
       } finally {
         // Loading.close();
       }
-
+      
       // if (!$D.ROI) redirect($D.pages.table, 'There Is No Label Data, Return Home Page.', 0);
       Loading.open(document.body, 'Loading Labels Data...');
       var checkCoreAndDataIsReady = setInterval(function() {
         if ($CAMIC&&$CAMIC.viewer&&$CAMIC.viewer.omanager) {
+          $CAMIC.viewer.addHandler("canvas-double-click", addAnnot)
           clearInterval(checkCoreAndDataIsReady);
           Loading.close();
           showLabelData();
@@ -1357,4 +1358,3 @@ function addAnnot(e){
     input.disabled = false;
   });
 }
-$CAMIC.viewer.addHandler("canvas-double-click", addAnnot)
