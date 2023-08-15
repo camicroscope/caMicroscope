@@ -71,6 +71,7 @@
     <script type="text/javascript" src="../../core/extension/openseadragon-overlays-manage.js"></script>
     <script type="text/javascript" src="../../core/extension/openseadragon-measurement-tool/openseadragon-measurement-tool.js"></script>
     <script type="text/javascript" src="../../core/extension/openseadragon-zoom-control/openseadragon-zoom-control.js"></script>
+    
     <!-- init data -->
     <!-- Popper & tippy -->
     <script src="../../common/popper.js"></script>
@@ -311,12 +312,13 @@
               -->
               <div style="padding: 0 0 0.5rem 0.3rem">
                 <label>
-                  <input type="radio" name="roi_type" value="Evaluable for sTILs" /> Evaluable for sTILs </label>
+                  <input type="radio" name="roi_type" value="Evaluable for sTILs" disabled/> Evaluable for sTILs </label>
               </div>
               <div style="padding: 0 0 0.5rem 0.3rem">
                 <label>
-                  <input type="radio" name="roi_type" value="Not Evaluable for sTILs" /> Not Evaluable for sTILs </label>
+                  <input type="radio" name="roi_type" value="Not Evaluable for sTILs" disabled/> Not Evaluable for sTILs </label>
               </div>
+              <p id="new_roi_warn">Create a new ROI first</p>
               <hr />
               <!-- % Intra-Tumoral Stroma -->
               <div id="its" style="

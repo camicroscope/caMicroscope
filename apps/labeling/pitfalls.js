@@ -745,8 +745,11 @@ function labelRender(ctx, data) {
   ctx.lineWidth = lineWidth<2?2:lineWidth;
 
   ctx.isFill = false;
-  ctx.strokeStyle = '#00ff00'; // polygon.properties.style.color;
-  polygon.geometry.path = DrawHelper.drawPolygon(ctx, points);
+  ctx.strokeStyle = '#00ff00'; // default
+  if (polygon && polygon.properties && polygon.style && polygon.properties.style.color){
+    ctx.strokeStyle = polygon.properties.style.color;
+  }
+    polygon.geometry.path = DrawHelper.drawPolygon(ctx, points);
 }
 
 function createAnnotationsList() {
@@ -1224,3 +1227,63 @@ function resetForm() {
     check.checked = false;
   }
 }
+
+
+// adding annotation
+// TODO the form should start inactive until a roi is created.
+function addAnnot(e){
+  let half_width = 1996/2;
+  let half_height = 1996/2;
+  let ctr = $CAMIC.viewer.viewport.viewportToImageCoordinates($CAMIC.viewer.viewport.pointFromPixel(e.position, true));
+  let x_ctr = Math.round(ctr.x);
+  let y_ctr = Math.round(ctr.y);
+  console.log(x_ctr, y_ctr)
+  let annot = {};
+  annot.creator = getUserId();
+  annot.batch = "?"
+  annot.alias = "?"
+  // geometry
+  annot.geometries = {}
+  annot.geometries.type = "FeatureCollection";
+  let coords = [[
+    [x_ctr-half_width, y_ctr-half_height],
+    [x_ctr+half_width, y_ctr-half_height],
+    [x_ctr+half_width, y_ctr+half_height],
+    [x_ctr-half_width, y_ctr+half_height],
+    [x_ctr-half_width, y_ctr-half_height]
+  ]]
+  let feature = {}
+  feature.geometry = {};
+  feature.geometry.coordinates = coords;
+  feature.geometry.type =  "Polygon";
+  feature.type = "Feature";
+  feature.bound = {};
+  feature.bound.coordinates = {};
+  feature.properties = {style: {color: "#fcb000"}}
+  feature.bound.type = "Polygon";
+  feature.bound.coordinates = coords;
+  annot.geometries.features = [feature]
+  annot.provenance = {}
+  console.log(annot)
+  // todo populate provenance
+  annot.properties = {style: {color: "#fcb000"}}
+  // todo, saving an roi should change its color before writing.
+  label = annot;
+  $D.activeROI = annot;
+  const item = {};
+  item.id = "WIP";
+  item.data = label;
+  item.render = labelRender;
+  item.clickable = false;
+  item.hoverable = false;
+  $CAMIC.viewer.omanager.addOverlay(item);
+  $CAMIC.viewer.omanager.updateView();
+  // hide new_roi_warn
+  document.getElementById("new_roi_warn").style = "display: none;";
+  // reenable roi type radios
+  resetForm();
+  document.querySelectorAll('input[name="roi_type"]').forEach((input)=>{
+    input.disabled = false;
+  });
+}
+$CAMIC.viewer.addHandler("canvas-double-click", addAnnot)
