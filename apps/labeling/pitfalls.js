@@ -1104,12 +1104,6 @@ function addROIFormEvent() {
   const actionBtn = document.querySelector('#left_menu .foot .action');
 
   actionBtn.addEventListener('click', (e) => {
-    const {x, y, width, height} = $D.activeROI.properties;
-
-    const location = $D.params.data.location.split('/');
-    const fileName1 = location[location.length-1];
-    const alias = `${fileName1}_x${x}.${width}_y${y}.${height}`;
-
     let tissueType = document.querySelector('#left_menu input[type=radio][name=tissue_type]:checked').value;
 
     let pitfalls = [];
@@ -1121,7 +1115,7 @@ function addROIFormEvent() {
     }
     let label = $D.activeROI;
     const {x, y, width, height} = label.properties;
-    label.properties.type = document.querySelector('#left_menu input[type=radio][name=roi_type]:checked').value;
+    label.properties.type = tissueType;
     label.properties.percent_stroma = itsRange.value;
     label.properties.til_density = vtaRange.value;
     label.properties.pitfalls = pitfalls;
