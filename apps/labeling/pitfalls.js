@@ -177,11 +177,12 @@ async function initialize() {
       Loading.open(document.body, 'Loading Labels Data...');
       var checkCoreAndDataIsReady = setInterval(function() {
         if ($CAMIC&&$CAMIC.viewer&&$CAMIC.viewer.omanager) {
-          $CAMIC.viewer.addHandler("canvas-double-click", addAnnot)
           clearInterval(checkCoreAndDataIsReady);
           Loading.close();
           showLabelData();
           resetForm();
+          disableROIForm();
+          $CAMIC.viewer.addHandler("canvas-double-click", addAnnot)
         }
       }, 500);
     }
