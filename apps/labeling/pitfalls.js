@@ -649,8 +649,8 @@ function showLabelData() {
     item.id = label._id;
     item.data = label;
     item.render = labelRender;
-    item.clickable = false;
-    item.hoverable = false;
+    item.clickable = true;
+    item.hoverable = true;
     $CAMIC.viewer.omanager.addOverlay(item);
   });
 
@@ -674,8 +674,8 @@ function addAnnotaiton(e) {
   item.id = annotation._id;
   item.data = annotation;
   item.render = annotationRender;
-  item.clickable = false;
-  item.hoverable = false;
+  item.clickable = true;
+  item.hoverable = true;
   $CAMIC.viewer.omanager.addOverlay(item);
   $CAMIC.viewer.omanager.updateView();
 
@@ -1355,8 +1355,8 @@ function addAnnot(e){
     item.id = "WIP";
     item.data = label;
     item.render = labelRender;
-    item.clickable = false;
-    item.hoverable = false;
+    item.clickable = true;
+    item.hoverable = true;
     $CAMIC.viewer.omanager.addOverlay(item);
     $CAMIC.viewer.omanager.updateView();
     // hide new_roi_warn
