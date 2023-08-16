@@ -161,7 +161,7 @@ async function initialize() {
       $USER = getUserInfo().sub;
       // loading label and sub label
       try {
-        Loading.open(document.body, 'Loading Labels Data...');
+        Loading.open(document.body, 'Loading Data...');
         const ROIdata = await loadingData();
         $D.ROIs = ROIdata.ROIs;
         $D.subROIs = ROIdata.subROIs;
@@ -174,7 +174,7 @@ async function initialize() {
       }
       
       // if (!$D.ROI) redirect($D.pages.table, 'There Is No Label Data, Return Home Page.', 0);
-      Loading.open(document.body, 'Loading Labels Data...');
+      Loading.open(document.body, 'Loading Data...');
       var checkCoreAndDataIsReady = setInterval(function() {
         if ($CAMIC&&$CAMIC.viewer&&$CAMIC.viewer.omanager) {
           clearInterval(checkCoreAndDataIsReady);
@@ -476,22 +476,7 @@ async function saveLabel(annotation) {
 
     // TODO
     const collData = await $CAMIC.store.getCollection($D.params.collectionId);
-
-    //
-    if (Array.isArray(collData)&& collData.length >= 1 && collData[0].hasFeedback) {
-      console.log('yes');
-      const feeback = await $CAMIC.store.getFeedback({parent: $D.params.labelId});
-      if (Array.isArray(feeback)&& feeback.length >= 1) {
-        disableROIForm();
-        setFeedbackForm(feeback[0]);
-        enableFeedbackForm();
-      } else {
-
-      }
-      console.log(feeback);
-    } else {
-      window.location.reload();
-    }
+    window.location.reload();
     Loading.close();
   } else {
     alert(JSON.stringify(rs));

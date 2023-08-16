@@ -550,11 +550,9 @@
     $D.pages.home = `./labelingSimpleAnnotationViewer.html?collectionId=${$D.params.collectionId}`;
     $D.pages.table = `./labelingSimpleAnnotationViewer.html?collectionId=${$D.params.collectionId}`;
     // no slide Id error
-    if ($D.params && $D.params.slideId && $D.params.labelId) {
+    if ($D.params && $D.params.slideId) {
       // normal initialization starts
       document.addEventListener("DOMContentLoaded", initialize);
-    } else if (!$D.params.labelId) {
-      redirect($D.pages.table, "labelId Is Undefined. Redirecting To Table.");
     } else if ($D.params && ($D.params.slide || $D.params.specimen || $D.params.study || $D.params.location)) {
       let STORE = new Store();
       STORE.findSlide($D.params.slide, $D.params.study, $D.params.specimen, $D.params.location).then((x) => {
