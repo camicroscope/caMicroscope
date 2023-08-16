@@ -223,6 +223,13 @@
         });
       }
       function createCard(d) {
+        let workflow_title = "ROIs Evaluation";
+        let workflow_url = `../labeling/labelingSimpleAnnotationViewer.html?collectionId=${d._id.$oid}`
+        // pitfalls override
+        if (d.workflow == "pitfall"){
+          let workflow_title = "Pitfalls";
+        let workflow_url = `../labeling/pitfallsTable.html?collectionId=${d._id.$oid}`
+        }
         const card = document.createElement("div");
         card.classList.add("card");
         if (d.hasFeedback) card.classList.add("feedback");
@@ -232,12 +239,11 @@
             <div class='card-description'>${d.description}</div>
             <div class="card-actions">
             <button class='btn action'>
-              ROIs Evaluation
+              ${workflow_title}
             </button></div>`;
         const btns = card.querySelectorAll("button");
-        btns[0].addEventListener("click", (e) => {
-          window.location.href = `../labeling/labelingSimpleAnnotationViewer.html?collectionId=${d._id.$oid}`;
-          // redirect('../labeling/labelingSimpleAnnotationViewer.html?', e.message, 0);
+          btns[0].addEventListener("click", (e) => {
+          window.location.href = workflow_url;
         });
         return card;
       }
