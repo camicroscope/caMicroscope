@@ -1370,3 +1370,7 @@ function addAnnot(e){
     alert("Finish saving the orange ROI before moving on.")
   }
 }
+
+document.getElementById("quit").addEventListener('click', x=>{
+  window.location = `./pitfallsTable.html?collectionId=${$D.params.collectionId}`
+});
