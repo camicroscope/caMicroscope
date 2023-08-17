@@ -999,7 +999,6 @@ function editAnnoCallback(id, slide, annotJson) {
       })
       .catch((e) => {
         Loading.close();
-        console.log('save failed', e);
       })
       .finally(() => {});
 }
@@ -1895,7 +1894,6 @@ function createHeatMapList(list) {
 
 
 async function addPresetLabelsHandler(label) {
-  console.log('label: ', label);
   const rs = await $CAMIC.store.addPresetLabels(label).then((d)=>d.result);
 
   if (rs.ok&&rs.nModified > 0) {
@@ -1969,7 +1967,6 @@ function selectedPresetLabelsHandler(label) {
 }
 
 function drawLabel(e) {
-  console.log('run drawLabel');
   if (!$CAMIC.viewer.canvasDrawInstance) {
     alert('Draw Doesn\'t Initialize');
     return;
@@ -2079,137 +2076,171 @@ function savePresetLabel() {
     $UI.message.addWarning('No Label Selected. Please select One.', 4000);
     return;
   }
-  const features = $CAMIC.viewer.canvasDrawInstance.getImageFeatureCollection().features
-  for (let feature of features) {
-    const execId = randomId();
-    const labelId = data.id;
-    const labelName = data.type;
-    // const parent = data.type;
-    const noteData = {
-      id: execId,
-      labelId: labelId,
-      name: labelName,
-      notes: data.type,
+  const features = $CAMIC.viewer.canvasDrawInstance.getImageFeatureCollection().features;
+  const execId = randomId();
+  const labelId = data.id;
+  const labelName = data.type;
+  // const parent = data.type;
+  const noteData = {
+    id: execId,
+    labelId: labelId,
+    name: labelName,
+    notes: data.type,
+  };
+  let annotJson;
+  if (Array.isArray(features) && features[0].properties.size) {
+    // many brush
+    const values = features.reduce((p, f) => {
+      return p.concat(getGrids(
+        f.geometry.coordinates[0],
+        f.properties.size,
+      ));
+    },[]);
+    const set = new Set();
+    values.map((i) => i.toString()).forEach((v) => set.add(v));
+    const points = Array.from(set).map((d) => d.split(','));
+    annotJson = {
+      creator: getUserId(),
+      created_date: new Date(),
+      provenance: {
+        image: {
+          slide: $D.params.slideId,
+        },
+        analysis: {
+          source: 'human',
+          execution_id: execId, // randomId
+          name: labelName, // labelName
+          labelId: labelId,
+          type: 'label',
+          isGrid: true,
+        },
+      },
+      properties: {
+        annotations: noteData,
+      },
+      geometries: convertGeometries(points, {
+        note: data.type,
+        size: features[0].properties.size,
+        color: features[0].properties.style.color,
+      }),
     };
-    let annotJson;
-    if (feature.properties.size) {
-      // brush
-      const values = getGrids(
-          feature.geometry.coordinates[0],
-          feature.properties.size,
-      );
-      const set = new Set();
-      values.map((i) => i.toString()).forEach((v) => set.add(v));
-      const points = Array.from(set).map((d) => d.split(','));
-      annotJson = {
-        creator: getUserId(),
-        created_date: new Date(),
-        provenance: {
-          image: {
-            slide: $D.params.slideId,
-          },
-          analysis: {
-            source: 'human',
-            execution_id: execId, // randomId
-            name: labelName, // labelName
-            labelId: labelId,
-            type: 'label',
-            isGrid: true,
-          },
+  } else if (!Array.isArray(features) && features.properties.size) {
+    // brush
+    const values = getGrids(
+        features.geometry.coordinates[0],
+        features.properties.size,
+    );
+    const set = new Set();
+    values.map((i) => i.toString()).forEach((v) => set.add(v));
+    const points = Array.from(set).map((d) => d.split(','));
+    annotJson = {
+      creator: getUserId(),
+      created_date: new Date(),
+      provenance: {
+        image: {
+          slide: $D.params.slideId,
         },
-        properties: {
-          annotations: noteData,
+        analysis: {
+          source: 'human',
+          execution_id: execId, // randomId
+          name: labelName, // labelName
+          labelId: labelId,
+          type: 'label',
+          isGrid: true,
         },
-        geometries: convertGeometries(points, {
-          note: data.type,
-          size: feature.properties.size,
-          color: feature.properties.style.color,
-        }),
-      };
-    } else {
-      // point / polygon / stringLine
-      annotJson = {
-        creator: getUserId(),
-        created_date: new Date(),
-        provenance: {
-          image: {
-            slide: $D.params.slideId,
-          },
-          analysis: {
-            source: 'human',
-            execution_id: execId, // randomId
-            name: labelName, // labelName
-            labelId: labelId,
-            type: 'label',
-          },
+      },
+      properties: {
+        annotations: noteData,
+      },
+      geometries: convertGeometries(points, {
+        note: data.type,
+        size: features.properties.size,
+        color: features.properties.style.color,
+      }),
+    };
+  } else {
+    // point / polygon / stringLine
+    annotJson = {
+      creator: getUserId(),
+      created_date: new Date(),
+      provenance: {
+        image: {
+          slide: $D.params.slideId,
         },
-        properties: {
-          annotations: noteData,
+        analysis: {
+          source: 'human',
+          execution_id: execId, // randomId
+          name: labelName, // labelName
+          labelId: labelId,
+          type: 'label',
         },
-        geometries: ImageFeaturesToVieweportFeatures(
-            $CAMIC.viewer,
-            $CAMIC.viewer.canvasDrawInstance.getImageFeatureCollection(),
-        ),
-      };
-    }
-  
-    $CAMIC.store
-        .addMark(annotJson)
-        .then((data) => {
-        // server error
-          if (data.error) {
-            $UI.message.addError(`${data.text}:${data.url}`);
-            Loading.close();
-            return;
-          }
-  
-          // no data added
-          if (data.count < 1) {
-            Loading.close();
-            $UI.message.addWarning(`Annotation Save Failed`);
-            return;
-          }
-          const __data = data.ops[0];
-          // create layer data
-          const newItem = {
-            id: execId,
-            name: noteData.name,
-            typeId: 'human',
-            typeName: 'human',
-            creator: getUserId(),
-            shape: annotJson.geometries.features[0].geometry.type,
-            isGrid: annotJson.provenance.analysis.isGrid? true: false,
-            label: {
-              id: annotJson.provenance.analysis.labelId,
-              name: annotJson.provenance.analysis.name,
-            },
-            data: null,
-          };
-          $D.humanlayers.push(newItem);
-          $UI.layersViewer.addHumanItem(newItem, 'human', labelId);
-          $UI.layersViewerMinor.addHumanItem(
-              newItem,
-              'human',
-              labelId,
-              $minorCAMIC && $minorCAMIC.viewer ? true : false,
-          );
-  
-          __data._id = {$oid: __data._id};
-          addAnnotation(
-              execId,
-              __data,
-              'human',
-              labelId,
-          );
-        })
-        .catch((e) => {
-          Loading.close();
-          console.log('save failed', e);
-        })
-        .finally(() => {
-          $UI.message.addSmall(`Added The '${noteData.name}' Annotation.`);
-        });
+      },
+      properties: {
+        annotations: noteData,
+      },
+      geometries: ImageFeaturesToVieweportFeatures(
+          $CAMIC.viewer,
+          $CAMIC.viewer.canvasDrawInstance.getImageFeatureCollection(),
+      ),
+    };
   }
+
+  $CAMIC.store
+      .addMark(annotJson)
+      .then((data) => {
+      // server error
+        if (data.error) {
+          $UI.message.addError(`${data.text}:${data.url}`);
+          Loading.close();
+          return;
+        }
+
+        // no data added
+        if (data.count < 1) {
+          Loading.close();
+          $UI.message.addWarning(`Annotation Save Failed`);
+          return;
+        }
+        const __data = data.ops[0];
+        // create layer data
+        const newItem = {
+          id: execId,
+          name: noteData.name,
+          typeId: 'human',
+          typeName: 'human',
+          creator: getUserId(),
+          shape: annotJson.geometries.features[0].geometry.type,
+          isGrid: annotJson.provenance.analysis.isGrid? true: false,
+          label: {
+            id: annotJson.provenance.analysis.labelId,
+            name: annotJson.provenance.analysis.name,
+          },
+          data: null,
+        };
+        $D.humanlayers.push(newItem);
+        $UI.layersViewer.addHumanItem(newItem, 'human', labelId);
+        $UI.layersViewerMinor.addHumanItem(
+            newItem,
+            'human',
+            labelId,
+            $minorCAMIC && $minorCAMIC.viewer ? true : false,
+        );
+
+        __data._id = {$oid: __data._id};
+        addAnnotation(
+            execId,
+            __data,
+            'human',
+            labelId,
+        );
+      })
+      .catch((e) => {
+        Loading.close();
+        console.log('save failed', e);
+      })
+      .finally(() => {
+        $UI.message.addSmall(`Added The '${noteData.name}' Annotation.`);
+      });
 }
 
 function addAnnotation(id, data, type, parent) {
