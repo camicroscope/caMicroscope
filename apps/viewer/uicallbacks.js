@@ -1978,7 +1978,7 @@ function drawLabel(e) {
   if (e.checked) {
     if ($CAMIC.status == 'label') {
       presetLabelOn.call(this, labels);
-      mlAsisstantOn();
+      mlAsisstantOn(false);
       return;
     }
     // turn off annotation
@@ -1990,7 +1990,7 @@ function drawLabel(e) {
           // all tool has turn off
             clearInterval(checkAllToolsOff);
             presetLabelOn.call(this, labels);
-            mlAsisstantOn();
+            mlAsisstantOn(false);
           }
         }.bind(this),
         100,
@@ -2058,7 +2058,12 @@ function mlAsisstantOff() {
   $UI.AssistantSideMenu.close();
 }
 
-function mlAsisstantOn() {
+function mlAsisstantOn(enableUndo = true) {
+  if (!enableUndo) {
+    $UI.AssistantViewer.disableUndo();
+  } else {
+    $UI.AssistantViewer.enableUndo();
+  }
   $UI.AssistantSideMenu.open();
 }
 

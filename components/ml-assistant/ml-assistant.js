@@ -176,6 +176,16 @@ Assistant.prototype.__refreshUI = async function() {
     this.__assignEventListener();
 }
 
+Assistant.prototype.disableUndo = function() {
+    this.undoBtn.style.backgroundColor = '#9c9c9cb0';
+    this.undoBtn.style.color = '#0088ff';
+}
+
+Assistant.prototype.enableUndo = function() {
+    this.undoBtn.style.backgroundColor = '#ffffff';
+    this.undoBtn.style.color = '#365f9c';
+}
+
 Assistant.prototype.__assignEventListener = function() {
     // Open add model modal event
     this.addBtn.addEventListener('click', (event) => {
