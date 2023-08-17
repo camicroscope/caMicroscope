@@ -883,11 +883,9 @@ async function segmentModel(key) {
 
           // dummy.getContext('2d').drawImage(img, dx, dy);b
           const imgData = fullResCvs.getContext('2d').getImageData(0, 0, fullResCvs.width, fullResCvs.height);
-          console.log('imgData: ', imgData);
           let val;
           tf.tidy(()=>{
             const img = tf.browser.fromPixels(imgData).toFloat();
-            console.log('img: ', img);
             let img2;
             if (inputChannels == 1) {
               img2 = tf.image.resizeBilinear(img, [imageSize, imageSize]).mean(2);
@@ -920,7 +918,6 @@ async function segmentModel(key) {
               normalized = img2.sub(mean).div(std);
             }
             const batched = normalized.reshape([1, imageSize, imageSize, inputChannels]);
-            console.log('batched: ', batched);
             let values = model.predict(batched).dataSync();
             values = Array.from(values);
             // scale values
