@@ -407,6 +407,7 @@
             perPageSelect: [25, 50, 100],
             data: { headings, data },
             initComplete: function(settings){
+              console.log("running titling I guess?")
               // add a tooltip
               document.querySelectorAll("#datatables > thead > tr > th").forEach(x=>{
                 if (tooltips[x.innerText]){

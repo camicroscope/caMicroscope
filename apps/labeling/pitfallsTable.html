@@ -405,7 +405,9 @@
             data: { headings, data },
             initComplete: function(settings){
               // add a tooltip
+              console.log("running titling I guess?")
               document.querySelectorAll("#datatables > thead > tr > th").forEach(x=>{
+                console.lo
                 if (tooltips[x.innerText]){
                   x.setAttribute('title', tooltips[x.innerText]);
                 }
