@@ -786,6 +786,7 @@ window.addEventListener('load', async ()=> {
         d.icon = './folder.png';
       }
       d.name = d.text;
+      d.id = d['_id']['$oid'];
       delete d._id;
       // set tree state if treeStates exist
       var treeStates = sessionStorage.getItem('treeStates');
