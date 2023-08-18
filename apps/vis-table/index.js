@@ -778,7 +778,8 @@ window.addEventListener('load', async ()=> {
 
     $D.collectionData.forEach((d)=>{
       //d.id = d._id.$oid;
-      if (d.users&&d.users.some((u)=>(u.user==$D.user.key && u.task_status))) {
+      // show case closed if ANYONE closed the case
+      if (d.users&&d.users.some((u)=>(u.task_status))) {
         d.icon = './check-folder.png';
         d.li_attr = {'class': 'text-success'};
       } else {
