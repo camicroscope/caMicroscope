@@ -336,14 +336,6 @@
         field: "name",
       },
       {
-        title: "Study",
-        field: "study",
-      },
-      {
-        title: "Specimen",
-        field: "specimen",
-      },
-      {
         title: "MPP",
         field: "mpp",
       },
@@ -407,6 +399,16 @@
             perPage: 50,
             perPageSelect: [25, 50, 100],
             data: { headings, data },
+            initComplete: function(settings){
+              let td = $(this);
+              if (td.text() == "MPP"){
+                td.attr("title", "Microns Per Pixel")
+                $('#example thead th[title]').tooltip(
+                  {
+                    "container": 'body'
+                  }); 
+              }
+            },
           });
         } else {
           console.log(slides);
