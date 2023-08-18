@@ -345,6 +345,13 @@
       },
     ];
 
+    let tooltips = {
+      'ID': "Internal Identifier",
+      'Name': "Human Readable Name",
+      'MPP': "Physical Resolution, Microns Per Pixel",
+      'ROIs': 'Number of ROIs labeled/total'
+    }
+
     // const reverse_threshold = 5;
     const params = getUrlVars();
     const cid = params.collectionId;
@@ -400,14 +407,12 @@
             perPageSelect: [25, 50, 100],
             data: { headings, data },
             initComplete: function(settings){
-              let td = $(this);
-              if (td.text() == "MPP"){
-                td.attr("title", "Microns Per Pixel")
-                $('#example thead th[title]').tooltip(
-                  {
-                    "container": 'body'
-                  }); 
-              }
+              // add a tooltip
+              document.querySelectorAll(a).forEach(x=>{
+                if (tooltips[x.innerText]){
+                  x.setAttribute('title', tooltips[x.innerText]);
+                }
+              })
             },
           });
         } else {

@@ -336,7 +336,7 @@
         field: "name",
       },
       {
-        title: "Microns Per Pixel (MPP)",
+        title: "MPP",
         field: "mpp",
       },
       {
@@ -344,6 +344,13 @@
         field: "stat",
       },
     ];
+
+    let tooltips = {
+      'ID': "Internal Identifier",
+      'Name': "Human Readable Name",
+      'MPP': "Physical Resolution, Microns Per Pixel",
+      'ROIs': 'Number of ROIs created'
+    }
 
     // const reverse_threshold = 5;
     const params = getUrlVars();
@@ -396,6 +403,14 @@
             perPage: 50,
             perPageSelect: [25, 50, 100],
             data: { headings, data },
+            initComplete: function(settings){
+              // add a tooltip
+              document.querySelectorAll(a).forEach(x=>{
+                if (tooltips[x.innerText]){
+                  x.setAttribute('title', tooltips[x.innerText]);
+                }
+              })
+            },
           });
         } else {
           console.log(slides);
