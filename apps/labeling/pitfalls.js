@@ -830,7 +830,7 @@ function createTutorial() {
   
   $UI.modalbox.body.innerHTML = `
   
-  <ol style="list-style-type: lower-alpha;">
+  <ol>
   <li>
       <h1 style='margin-top:12.0pt;margin-right:0in;margin-bottom:0in;margin-left:0in;text-indent:0in;font-size:21px;font-family:"Calibri Light",sans-serif;color:#2F5496;font-weight:normal;'><span style='font-family:"Calibri",sans-serif;color:black;color:black;'><span data-usefontface="true" data-contrast="none">Select ROIs: Target diverse morphology and&nbsp;</span></span><span style='font-family:"Calibri",sans-serif;color:black;color:black;'><span data-usefontface="true" data-contrast="none">sTILs</span></span><span style='font-family:"Calibri",sans-serif;color:black;color:black;'><span data-usefontface="true" data-contrast="none">&nbsp;density (especially high&nbsp;</span></span><span style='font-family:"Calibri",sans-serif;color:black;color:black;'><span data-usefontface="true" data-contrast="none">sTILs</span></span><span style='font-family:"Calibri",sans-serif;color:black;color:black;'><span data-usefontface="true" data-contrast="none">&nbsp;density) while distributing ROIs across entire&nbsp;</span><span data-usefontface="true" data-contrast="none">tissue. Each ROI can satisfy multiple targets. Not all targets can be satisfied in each WSI. The number of ROIs per slide for&nbsp;</span><span data-usefontface="true" data-contrast="none">each target are provided as guides, not requirements.</span></span></h1>
       <ol style="list-style-type: lower-alpha;">
