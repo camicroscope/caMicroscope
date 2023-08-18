@@ -775,8 +775,8 @@ window.addEventListener('load', async ()=> {
     cases.forEach((c) => getAllParents(c, data));
 
     $D.collectionData.forEach((d)=>{
-      d.id = d._id.$oid;
-      if (d.users&&d.users.some((u)=>u.user = $D.user.key)&&d.users.find((u)=>u.user == $D.user.key).task_status) {
+      //d.id = d._id.$oid;
+      if (d.users&&d.users.some((u)=>(u.user==$D.user.key && u.task_status))) {
         d.icon = './check-folder.png';
         d.li_attr = {'class': 'text-success'};
       } else {
