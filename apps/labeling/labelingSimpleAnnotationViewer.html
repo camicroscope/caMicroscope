@@ -406,9 +406,9 @@
             perPage: 50,
             perPageSelect: [25, 50, 100],
             data: { headings, data },
-            fnInitComplete: function(settings){
+            initComplete: function(settings){
               // add a tooltip
-              document.querySelectorAll(a).forEach(x=>{
+              document.querySelectorAll("#datatables > thead > tr > th").forEach(x=>{
                 if (tooltips[x.innerText]){
                   x.setAttribute('title', tooltips[x.innerText]);
                 }
