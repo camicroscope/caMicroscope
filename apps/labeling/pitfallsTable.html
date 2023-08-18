@@ -403,17 +403,13 @@
             perPage: 50,
             perPageSelect: [25, 50, 100],
             data: { headings, data },
-            initComplete: function(){
-              // add a tooltip
-              console.log("running titling I guess?")
-              document.querySelectorAll("#datatables > thead > tr > th").forEach(x=>{
-                console.lo
+          });
+          // add tooltips
+          document.querySelectorAll("#datatables > thead > tr > th").forEach(x=>{
                 if (tooltips[x.innerText]){
                   x.setAttribute('title', tooltips[x.innerText]);
                 }
               })
-            },
-          });
         } else {
           console.log(slides);
           // error

@@ -1006,9 +1006,6 @@
         this.selectedColumns = [];
 
         this.render();
-        if (options.initComplete){
-            options.initComplete()
-        }
 
         setTimeout(function () {
             that.emit("datatable.init");
