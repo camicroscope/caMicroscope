@@ -403,7 +403,7 @@
             perPage: 50,
             perPageSelect: [25, 50, 100],
             data: { headings, data },
-            initComplete: function(settings){
+            initComplete: function(){
               // add a tooltip
               console.log("running titling I guess?")
               document.querySelectorAll("#datatables > thead > tr > th").forEach(x=>{
