@@ -1274,7 +1274,7 @@ function makeFormReactive() {
         document.getElementById('tt_radio_2').checked = false;
         document.getElementById('tt_radio_3').checked = false;
         document.getElementById('tt_radio_4').checked = false;
-        document.getElementById('tissue_type_area').style.display = 'block';
+        //document.getElementById('tissue_type_area').style.display = 'block';
         document.getElementById('pitfalls_area').style.display = 'none';
         // hide save button
         document.getElementById('save').style.display = 'none';
@@ -1317,16 +1317,18 @@ makeFormReactive();
 
 function resetForm() {
   console.log('reset form');
-
-  // reset tissu and roi radio buttons
+  
+  // reset tissue and roi radio buttons
   let radios = document.querySelectorAll('#left_menu input[type=radio]:checked');
   for (let r of radios) {
     r.checked = false;
   }
 
-  // reset sliders
+  // reset and hide sliders
   document.getElementById('its_range').value = -1;
   document.getElementById('vta_range').value = -1;
+  document.getElementById('sliders').style.display = "none";
+  document.getElementById('tissue_type_area').style.display = "none";
   // reset text input (usually invisible)
   let sliderInputs = document.getElementsByClassName('slider-input');
   for (let si of sliderInputs) {
