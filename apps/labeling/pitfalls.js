@@ -1224,12 +1224,16 @@ function makeFormReactive() {
       for (let check of checkboxes) {
         check.checked = false;
       }
+      // hide save button
+      document.getElementById('save').style.display = 'none';
     }
   }
   function vtaChangeHandler(x) {
     if (x.target.value >=0) {
       document.getElementById('tissue_type_area').style.display = 'block';
     } else {
+      // hide save button, tissue type, and pitfalls
+      document.getElementById('save').style.display = 'none';
       document.getElementById('tt_radio_1').checked = false;
       document.getElementById('tt_radio_2').checked = false;
       document.getElementById('tt_radio_3').checked = false;
