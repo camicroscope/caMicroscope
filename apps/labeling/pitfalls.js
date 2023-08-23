@@ -1367,7 +1367,10 @@ function addAnnot(e){
       input.disabled = false;
     });
   } else {
-    alert("Finish saving the orange ROI before moving on.")
+    console.log("trying to reposition roi");
+    $CAMIC.viewer.omanager.removeOverlay("WIP");
+    $D.activeROI = false;
+    addAnnot(e);
   }
 }
 
