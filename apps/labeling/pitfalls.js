@@ -1278,6 +1278,7 @@ function makeFormReactive() {
         document.getElementById('pitfalls_area').style.display = 'none';
         // hide save button
         document.getElementById('save').style.display = 'none';
+        document.getElementById('tissue_type_area').style.display = 'none';
         if (e.target.value == 'Evaluable for sTILs') {
           // show sliders when evaluable
           document.getElementById('sliders').style.display = 'block';
@@ -1328,7 +1329,7 @@ function resetForm() {
   document.getElementById('its_range').value = -1;
   document.getElementById('vta_range').value = -1;
   document.getElementById('sliders').style.display = "none";
-  document.getElementById('tissue_type_area').style.display = "none";
+
   // reset text input (usually invisible)
   let sliderInputs = document.getElementsByClassName('slider-input');
   for (let si of sliderInputs) {
@@ -1344,6 +1345,9 @@ function resetForm() {
   for (let check of checkboxes) {
     check.checked = false;
   }
+  document.getElementById('tissue_type_area').style.display = "none";
+  document.getElementById('pitfalls_area').style.display = "none";
+  document.getElementById('save').style.display = "none";
 }
 
 
@@ -1416,6 +1420,7 @@ function addAnnot(e) {
       input.disabled = false;
     });
   } else {
+    resetForm();
     console.log('trying to reposition roi');
     $CAMIC.viewer.omanager.removeOverlay('WIP');
     $D.activeROI = false;
