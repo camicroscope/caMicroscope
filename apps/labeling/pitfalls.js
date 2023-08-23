@@ -172,7 +172,7 @@ async function initialize() {
       } finally {
         // Loading.close();
       }
-      
+
       // if (!$D.ROI) redirect($D.pages.table, 'There Is No Label Data, Return Home Page.', 0);
       Loading.open(document.body, 'Loading Data...');
       var checkCoreAndDataIsReady = setInterval(function() {
@@ -181,12 +181,12 @@ async function initialize() {
           Loading.close();
           showLabelData();
           resetForm();
-          //force make roi first
+          // force make roi first
           document.querySelectorAll('input[name="roi_type"]').forEach((input)=>{
             input.disabled = true;
           });
           // add dbl click handler
-          $CAMIC.viewer.addHandler("canvas-double-click", addAnnot)
+          $CAMIC.viewer.addHandler('canvas-double-click', addAnnot);
         }
       }, 500);
     }
@@ -737,10 +737,10 @@ function labelRender(ctx, data) {
 
   ctx.isFill = false;
   ctx.strokeStyle = '#00ff00'; // default
-  if (polygon && polygon.properties && polygon.properties.style && polygon.properties.style.color){
+  if (polygon && polygon.properties && polygon.properties.style && polygon.properties.style.color) {
     ctx.strokeStyle = polygon.properties.style.color;
   }
-    polygon.geometry.path = DrawHelper.drawPolygon(ctx, points);
+  polygon.geometry.path = DrawHelper.drawPolygon(ctx, points);
 }
 
 function createAnnotationsList() {
@@ -827,7 +827,7 @@ function createTutorial() {
   $UI.modalbox.elt.style.paddingTop='60px';
   $UI.modalbox.body.style.padding = 0;
   $UI.modalbox.body.style.display = 'block';
-  
+
   $UI.modalbox.body.innerHTML = `
   
   <ol>
@@ -1108,8 +1108,8 @@ function addROIFormEvent() {
     label.properties.percent_stroma = itsRange.value;
     label.properties.til_density = vtaRange.value;
     label.properties.pitfalls = pitfalls;
-    label.geometries.features[0].properties.style.color = "#7cfc00" // overwrite highlight color
-    label.task = "pitfalls";
+    label.geometries.features[0].properties.style.color = '#7cfc00'; // overwrite highlight color
+    label.task = 'pitfalls';
     const flileloc = $D.params.data.location.split('/');
     const fileName1 = flileloc[flileloc.length-1];
     label.alias = `${fileName1}_x${x}.${width}_y${y}.${height}`;
@@ -1197,12 +1197,54 @@ function setDownloadModalProgress(num) {
   $('#downloadModal').find('.progress-bar').css('width', `${num}%`).attr('aria-valuenow', num).text(`${num}%`);
 }
 
-function makeFormReactive(){
-  let roi_type_radios = document.querySelectorAll('[name="roi_type"]');
-  let tissue_type_radios = document.querySelectorAll('[name="tissue_type"]');
-  for (let rt of roi_type_radios){
-    rt.addEventListener('change', function(e){
-      if(e.target.checked){
+function makeFormReactive() {
+  let roiTypeRadios = document.querySelectorAll('[name="roi_type"]');
+  let tissueTypeRadios = document.querySelectorAll('[name="tissue_type"]');
+  function itsChangeHandler(x) {
+    if (x.target.value >0) {
+      // display next slider
+      document.getElementById('vta_range').value = -1;
+      document.getElementById('vta_txt').value = -1;
+      document.getElementById('vta_txt_display').innerText = '-1%';
+      document.getElementById('vta').style.display = 'block';
+    } else {
+      // hide and reset next slider, tissue type, and pitfalls
+      document.getElementById('tissue_type_area').style.display = 'none';
+      document.getElementById('pitfalls_area').style.display = 'none';
+      document.getElementById('vta').style.display = 'none';
+      document.getElementById('vta_range').value = -1;
+      document.getElementById('tt_radio_1').checked = false;
+      document.getElementById('tt_radio_2').checked = false;
+      document.getElementById('tt_radio_3').checked = false;
+      document.getElementById('tt_radio_4').checked = false;
+      document.getElementById('vta_txt').value = -1;
+      document.getElementById('vta_txt_display').innerText = '-1%';
+      // reset pitfalls
+      let checkboxes = document.querySelectorAll('#left_menu input[type=checkbox]');
+      for (let check of checkboxes) {
+        check.checked = false;
+      }
+    }
+  }
+  function vtaChangeHandler(x) {
+    if (x.target.value >=0) {
+      document.getElementById('tissue_type_area').style.display = 'block';
+    } else {
+      document.getElementById('tt_radio_1').checked = false;
+      document.getElementById('tt_radio_2').checked = false;
+      document.getElementById('tt_radio_3').checked = false;
+      document.getElementById('tt_radio_4').checked = false;
+      document.getElementById('tissue_type_area').style.display = 'none';
+      document.getElementById('pitfalls_area').style.display = 'none';
+    }
+  }
+  itsRange.addEventListener('change', itsChangeHandler);
+  itsTxt.addEventListener('change', itsChangeHandler);
+  vtaRange.addEventListener('change', vtaChangeHandler);
+  vtaTxt.addEventListener('change', vtaChangeHandler);
+  for (let rt of roiTypeRadios) {
+    rt.addEventListener('change', function(e) {
+      if (e.target.checked) {
         // reset the slider in either case
         // reset sliders
         document.getElementById('its_range').value = -1;
@@ -1222,51 +1264,50 @@ function makeFormReactive(){
         for (let check of checkboxes) {
           check.checked = false;
         }
-        document.getElementById("tt_radio_1").checked = false
-        document.getElementById("tt_radio_2").checked = false
-        document.getElementById("tt_radio_3").checked = false
-        document.getElementById("tt_radio_4").checked = false
-        document.getElementById("tissue_type_area").style.display = "block";
-        document.getElementById("pitfalls_area").style.display = "none";
+        document.getElementById('tt_radio_1').checked = false;
+        document.getElementById('tt_radio_2').checked = false;
+        document.getElementById('tt_radio_3').checked = false;
+        document.getElementById('tt_radio_4').checked = false;
+        document.getElementById('tissue_type_area').style.display = 'block';
+        document.getElementById('pitfalls_area').style.display = 'none';
         // hide save button
-        document.getElementById("save").style.display = 'none'
-        if (e.target.value == 'Evaluable for sTILs'){
+        document.getElementById('save').style.display = 'none';
+        if (e.target.value == 'Evaluable for sTILs') {
           // show sliders when evaluable
-          document.getElementById("sliders").style.display = "block";
+          document.getElementById('sliders').style.display = 'block';
           // tissue types 1 and 2 enable, 3 and 4 disable
-          document.getElementById("tt_radio_1").disabled = false
-          document.getElementById("tt_radio_2").disabled = false
-          document.getElementById("tt_radio_3").disabled = true
-          document.getElementById("tt_radio_4").disabled = true
+          document.getElementById('tt_radio_1').disabled = false;
+          document.getElementById('tt_radio_2').disabled = false;
+          document.getElementById('tt_radio_3').disabled = true;
+          document.getElementById('tt_radio_4').disabled = true;
         } else {
           // hide sliders when not evaluable
-          document.getElementById("sliders").style.display = "none";
+          document.getElementById('sliders').style.display = 'none';
           // tissue types 1 and 2 disable, 3 and 4 enaable
-          document.getElementById("tt_radio_1").disabled = true
-          document.getElementById("tt_radio_2").disabled = true
-          document.getElementById("tt_radio_3").disabled = false
-          document.getElementById("tt_radio_4").disabled = false
-
+          document.getElementById('tt_radio_1').disabled = true;
+          document.getElementById('tt_radio_2').disabled = true;
+          document.getElementById('tt_radio_3').disabled = false;
+          document.getElementById('tt_radio_4').disabled = false;
         }
       }
     });
   }
-  for (let tt of tissue_type_radios){
-    tt.addEventListener('change', function(e){
+  for (let tt of tissueTypeRadios) {
+    tt.addEventListener('change', function(e) {
       // show pitfalls
-      document.getElementById("pitfalls_area").style.display = "block";
+      document.getElementById('pitfalls_area').style.display = 'block';
       // show save button
-      document.getElementById("save").style.display = 'block';
+      document.getElementById('save').style.display = 'block';
       // reset pitfalls
       let checkboxes = document.querySelectorAll('#left_menu input[type=checkbox]');
       for (let check of checkboxes) {
         check.checked = false;
       }
-    })
+    });
   }
 }
 
-makeFormReactive()
+makeFormReactive();
 
 function resetForm() {
   console.log('reset form');
@@ -1300,59 +1341,59 @@ function resetForm() {
 
 // adding annotation
 // TODO the form should start inactive until a roi is created.
-function addAnnot(e){
-  if (!$D.activeROI){
-    let half_width = 1996/2;
-    let half_height = 1996/2;
+function addAnnot(e) {
+  if (!$D.activeROI) {
+    let halfWidth = 1996/2;
+    let halfHeight = 1996/2;
     let ctr = $CAMIC.viewer.viewport.viewportToImageCoordinates($CAMIC.viewer.viewport.pointFromPixel(e.position, true));
-    let x_ctr = Math.round(ctr.x);
-    let y_ctr = Math.round(ctr.y);
-    console.log(x_ctr, y_ctr)
+    let xCtr = Math.round(ctr.x);
+    let yCtr = Math.round(ctr.y);
+    console.log(xCtr, yCtr);
     let annot = {};
     // creator is populated on save
     // collectionName and collectionId are populated on save
     // geometry
-    annot.geometries = {}
-    annot.geometries.type = "FeatureCollection";
+    annot.geometries = {};
+    annot.geometries.type = 'FeatureCollection';
     let coords = [[
-      [x_ctr-half_width, y_ctr-half_height],
-      [x_ctr+half_width, y_ctr-half_height],
-      [x_ctr+half_width, y_ctr+half_height],
-      [x_ctr-half_width, y_ctr+half_height],
-      [x_ctr-half_width, y_ctr-half_height]
-    ]]
-    let feature = {}
+      [xCtr-halfWidth, yCtr-halfHeight],
+      [xCtr+halfWidth, yCtr-halfHeight],
+      [xCtr+halfWidth, yCtr+halfHeight],
+      [xCtr-halfWidth, yCtr+halfHeight],
+      [xCtr-halfWidth, yCtr-halfHeight],
+    ]];
+    let feature = {};
     feature.geometry = {};
     feature.geometry.coordinates = coords;
-    feature.geometry.type =  "Polygon";
-    feature.type = "Feature";
+    feature.geometry.type = 'Polygon';
+    feature.type = 'Feature';
     feature.bound = {};
     feature.bound.coordinates = {};
-    feature.properties = {style: {color: "#fcb000"}}
-    feature.bound.type = "Polygon";
+    feature.properties = {style: {color: '#fcb000'}};
+    feature.bound.type = 'Polygon';
     feature.bound.coordinates = coords;
-    annot.geometries.features = [feature]
-    annot.provenance = {}
-    annot.provenance.image = {}
+    annot.geometries.features = [feature];
+    annot.provenance = {};
+    annot.provenance.image = {};
     annot.provenance.image.slide = $D.params.slideId;
     annot.provenance.image.name = $CAMIC.slideData.name;
     annot.provenance.analysis = {};
-    annot.provenance.analysis.source = "human";
-    annot.provenance.analysis.computation = "label";
+    annot.provenance.analysis.source = 'human';
+    annot.provenance.analysis.computation = 'label';
     annot.provenance.analysis.execution_id = randomId();
     annot.provenance.analysis.name = annot.provenance.analysis.execution_id;
     annot.properties = {
-      x: x_ctr-half_width,
-      y: y_ctr-half_height,
-      width: 2*half_width,
-      height: 2*half_height,
-      style: {color: "#fcb000"}
-    }
+      x: xCtr-halfWidth,
+      y: yCtr-halfHeight,
+      width: 2*halfWidth,
+      height: 2*halfHeight,
+      style: {color: '#fcb000'},
+    };
     // todo, saving an roi should change its color before writing.
     label = annot;
     $D.activeROI = annot;
     const item = {};
-    item.id = "WIP";
+    item.id = 'WIP';
     item.data = label;
     item.render = labelRender;
     item.clickable = true;
@@ -1360,20 +1401,20 @@ function addAnnot(e){
     $CAMIC.viewer.omanager.addOverlay(item);
     $CAMIC.viewer.omanager.updateView();
     // hide new_roi_warn
-    document.getElementById("new_roi_warn").style = "display: none;";
+    document.getElementById('new_roi_warn').style = 'display: none;';
     // reenable roi type radios
     resetForm();
     document.querySelectorAll('input[name="roi_type"]').forEach((input)=>{
       input.disabled = false;
     });
   } else {
-    console.log("trying to reposition roi");
-    $CAMIC.viewer.omanager.removeOverlay("WIP");
+    console.log('trying to reposition roi');
+    $CAMIC.viewer.omanager.removeOverlay('WIP');
     $D.activeROI = false;
     addAnnot(e);
   }
 }
 
-document.getElementById("quit").addEventListener('click', x=>{
-  window.location = `./pitfallsTable.html?collectionId=${$D.params.collectionId}`
+document.getElementById('quit').addEventListener('click', (x)=>{
+  window.location = `./pitfallsTable.html?collectionId=${$D.params.collectionId}`;
 });
