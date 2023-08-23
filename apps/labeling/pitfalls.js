@@ -1207,11 +1207,13 @@ function makeFormReactive() {
       document.getElementById('vta_txt').value = -1;
       document.getElementById('vta_txt_display').innerText = '-1%';
       document.getElementById('vta').style.display = 'block';
+      document.getElementById('til_message').style.display = 'block';
     } else {
       // hide and reset next slider, tissue type, and pitfalls
       document.getElementById('tissue_type_area').style.display = 'none';
       document.getElementById('pitfalls_area').style.display = 'none';
       document.getElementById('vta').style.display = 'none';
+      document.getElementById('til_message').style.display = 'none';
       document.getElementById('vta_range').value = -1;
       document.getElementById('tt_radio_1').checked = false;
       document.getElementById('tt_radio_2').checked = false;
