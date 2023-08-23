@@ -1197,53 +1197,55 @@ function setDownloadModalProgress(num) {
   $('#downloadModal').find('.progress-bar').css('width', `${num}%`).attr('aria-valuenow', num).text(`${num}%`);
 }
 
+function itsChangeHandler(x) {
+  if (x.target.value >0) {
+    // display next slider
+    document.getElementById('vta_range').value = -1;
+    document.getElementById('vta_txt').value = -1;
+    document.getElementById('vta_txt_display').innerText = '-1%';
+    document.getElementById('vta').style.display = 'block';
+    document.getElementById('til_message').style.display = 'block';
+  } else {
+    // hide and reset next slider, tissue type, and pitfalls
+    document.getElementById('tissue_type_area').style.display = 'none';
+    document.getElementById('pitfalls_area').style.display = 'none';
+    document.getElementById('vta').style.display = 'none';
+    document.getElementById('til_message').style.display = 'none';
+    document.getElementById('vta_range').value = -1;
+    document.getElementById('tt_radio_1').checked = false;
+    document.getElementById('tt_radio_2').checked = false;
+    document.getElementById('tt_radio_3').checked = false;
+    document.getElementById('tt_radio_4').checked = false;
+    document.getElementById('vta_txt').value = -1;
+    document.getElementById('vta_txt_display').innerText = '-1%';
+    // reset pitfalls
+    let checkboxes = document.querySelectorAll('#left_menu input[type=checkbox]');
+    for (let check of checkboxes) {
+      check.checked = false;
+    }
+    // hide save button
+    document.getElementById('save').style.display = 'none';
+  }
+}
+function vtaChangeHandler(x) {
+  if (x.target.value >=0) {
+    document.getElementById('tissue_type_area').style.display = 'block';
+  } else {
+    // hide save button, tissue type, and pitfalls
+    document.getElementById('save').style.display = 'none';
+    document.getElementById('tt_radio_1').checked = false;
+    document.getElementById('tt_radio_2').checked = false;
+    document.getElementById('tt_radio_3').checked = false;
+    document.getElementById('tt_radio_4').checked = false;
+    document.getElementById('tissue_type_area').style.display = 'none';
+    document.getElementById('pitfalls_area').style.display = 'none';
+  }
+}
+
 function makeFormReactive() {
   let roiTypeRadios = document.querySelectorAll('[name="roi_type"]');
   let tissueTypeRadios = document.querySelectorAll('[name="tissue_type"]');
-  function itsChangeHandler(x) {
-    if (x.target.value >0) {
-      // display next slider
-      document.getElementById('vta_range').value = -1;
-      document.getElementById('vta_txt').value = -1;
-      document.getElementById('vta_txt_display').innerText = '-1%';
-      document.getElementById('vta').style.display = 'block';
-      document.getElementById('til_message').style.display = 'block';
-    } else {
-      // hide and reset next slider, tissue type, and pitfalls
-      document.getElementById('tissue_type_area').style.display = 'none';
-      document.getElementById('pitfalls_area').style.display = 'none';
-      document.getElementById('vta').style.display = 'none';
-      document.getElementById('til_message').style.display = 'none';
-      document.getElementById('vta_range').value = -1;
-      document.getElementById('tt_radio_1').checked = false;
-      document.getElementById('tt_radio_2').checked = false;
-      document.getElementById('tt_radio_3').checked = false;
-      document.getElementById('tt_radio_4').checked = false;
-      document.getElementById('vta_txt').value = -1;
-      document.getElementById('vta_txt_display').innerText = '-1%';
-      // reset pitfalls
-      let checkboxes = document.querySelectorAll('#left_menu input[type=checkbox]');
-      for (let check of checkboxes) {
-        check.checked = false;
-      }
-      // hide save button
-      document.getElementById('save').style.display = 'none';
-    }
-  }
-  function vtaChangeHandler(x) {
-    if (x.target.value >=0) {
-      document.getElementById('tissue_type_area').style.display = 'block';
-    } else {
-      // hide save button, tissue type, and pitfalls
-      document.getElementById('save').style.display = 'none';
-      document.getElementById('tt_radio_1').checked = false;
-      document.getElementById('tt_radio_2').checked = false;
-      document.getElementById('tt_radio_3').checked = false;
-      document.getElementById('tt_radio_4').checked = false;
-      document.getElementById('tissue_type_area').style.display = 'none';
-      document.getElementById('pitfalls_area').style.display = 'none';
-    }
-  }
+
   itsRange.addEventListener('change', itsChangeHandler);
   itsTxt.addEventListener('change', itsChangeHandler);
   vtaRange.addEventListener('change', vtaChangeHandler);
@@ -1278,10 +1280,12 @@ function makeFormReactive() {
         document.getElementById('pitfalls_area').style.display = 'none';
         // hide save button
         document.getElementById('save').style.display = 'none';
-        document.getElementById('tissue_type_area').style.display = 'none';
         if (e.target.value == 'Evaluable for sTILs') {
           // show sliders when evaluable
+          document.getElementById('tissue_type_area').style.display = 'none';
           document.getElementById('sliders').style.display = 'block';
+          document.getElementById('vta').style.display = 'none';
+          document.getElementById('til_message').style.display = 'none';
           // tissue types 1 and 2 enable, 3 and 4 disable
           document.getElementById('tt_radio_1').disabled = false;
           document.getElementById('tt_radio_2').disabled = false;
@@ -1290,6 +1294,7 @@ function makeFormReactive() {
         } else {
           // hide sliders when not evaluable
           document.getElementById('sliders').style.display = 'none';
+          document.getElementById('tissue_type_area').style.display = 'block';
           // tissue types 1 and 2 disable, 3 and 4 enaable
           document.getElementById('tt_radio_1').disabled = true;
           document.getElementById('tt_radio_2').disabled = true;
