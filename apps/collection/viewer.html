@@ -227,8 +227,8 @@
         let workflow_title = "ROIs Evaluation";
         let workflow_url = `../labeling/labelingSimpleAnnotationViewer.html?collectionId=${d._id.$oid}`
         // pitfalls override
-        if (d.workflow == "pitfall"){
-          workflow_title = "Pitfalls";
+        if (d.task == "roiSelection"){
+          workflow_title = "ROIs Selection";
           workflow_url = `../labeling/pitfallsTable.html?collectionId=${d._id.$oid}`
         }
         const card = document.createElement("div");
