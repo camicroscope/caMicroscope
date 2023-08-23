@@ -26,8 +26,10 @@ const $D = {
   params: null, // parameter from url - slide Id and status in it (object).
 };
 const beforeUnloadHandler = (e) =>{
-  e.preventDefault();
-  e.returnValue = 'leave';
+  if ($D && $D.activeROI){
+    e.preventDefault();
+    e.returnValue = 'You have an unsaved active ROI. Are you sure you want to leave?';
+  }
 };
 window.addEventListener('beforeunload', beforeUnloadHandler);
 
