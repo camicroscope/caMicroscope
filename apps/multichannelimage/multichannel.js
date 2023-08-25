@@ -1,4 +1,5 @@
 try {
+    console.log("hello");
     const response = await fetch("../../multichannel/", {
       method: "GET",
     });
