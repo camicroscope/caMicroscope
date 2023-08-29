@@ -25,11 +25,6 @@ const $D = {
   // },
   params: null, // parameter from url - slide Id and status in it (object).
 };
-const beforeUnloadHandler = (e) =>{
-  e.preventDefault();
-  e.returnValue = 'leave';
-};
-window.addEventListener('beforeunload', beforeUnloadHandler);
 
 // window.onbeforeunload = function (e) {
 //     e = e || window.event;
@@ -486,6 +481,8 @@ function setRoiForm(annot){
     document.getElementById("eval-false").checked = false;
     document.getElementById("its").style.display = "block";
     document.getElementById("vta").style.display = "block";
+    document.getElementById('til_message').style.display = "block";
+    document.getElementById('its_message').style.display = "block";
     // sliders and text
     document.getElementById("its_range").value = annot.properties.percent_stroma;
     document.getElementById("its_txt").querySelector('.txt').textContent = annot.properties.percent_stroma + "%";
@@ -496,6 +493,8 @@ function setRoiForm(annot){
     document.getElementById("eval-false").checked = true;
     document.getElementById("its").style.display = "none";
     document.getElementById("vta").style.display = "none";
+    document.getElementById('til_message').style.display = "none";
+    document.getElementById('its_message').style.display = "none";
   }
 }
 
