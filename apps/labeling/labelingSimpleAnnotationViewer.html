@@ -370,7 +370,7 @@
           document.getElementById("collectionName").innerText = collectionInfo[0].name
           document.getElementById("collectionDesc").innerText = collectionInfo[0].description
           collectionHasFeedback = collectionInfo[0].hasFeedback;
-          console.log(collectionInfo)
+          console.log(collectionInfo, collectionHasFeedback)
         }
         // set slides
         const slides = await store.findSlideLabelingStat(cid, getUserId());
@@ -396,6 +396,7 @@
               });
               // display the open button normally.
               let btn = `<button class="btn" data-id='${rs[0]}' onclick='openView(this)'>Open</button>`;
+              console.log(collectionHasFeedback, labelingAnnotationCount, labelingCount, rs[0])
               if (labelingAnnotationCount == labelingCount){
                 // if there's feedback, show a review button.
                 if (collectionHasFeedback){
