@@ -364,10 +364,12 @@
         screenNameDiv.style.display = "";
         // set collection info panel
         let collectionInfoPanel = document.getElementById("collectionInfo");
+        let collectionHasFeedback = false;
         let collectionInfo = await store.getCollection(cid)
         if (collectionInfo){
           document.getElementById("collectionName").innerText = collectionInfo[0].name
           document.getElementById("collectionDesc").innerText = collectionInfo[0].description
+          collectionHasFeedback = collectionInfo[0].hasFeedback;
         }
         // set slides
         const slides = await store.findSlideLabelingStat(cid, getUserId());
@@ -391,10 +393,16 @@
                   rs.push(slide[key]);
                 }
               });
-              const btn =
-                labelingAnnotationCount == labelingCount
-                  ? `<div class='material-icons' style='width:48px;color:#008000;' title='Done'>check_circle</div>`
-                  : `<button class="btn" data-id='${rs[0]}' onclick='openView(this)'>Open</button>`;
+              // display the open button normally.
+              let btn = `<button class="btn" data-id='${rs[0]}' onclick='openView(this)'>Open</button>`;
+              if (labelingAnnotationCount == labelingCount){
+                // if there's feedback, show a review button.
+                if (collectionHasFeedback){
+                  btn = `<button class="btn" style="background-color:#008000" data-id='${rs[0]}' onclick='openReview(this)'>Review</button>`
+                }
+                // otherwise, just a check.
+                btn = `<div class='material-icons' style='width:48px;color:#008000;' title='Done'>check_circle</div>`;
+              }
               rs.push(btn);
               return rs;
             })
@@ -447,6 +455,14 @@
       const oid = e.dataset.id;
       if (oid) {
         window.location.href = `./roi_pick.html?slideId=${oid}&collectionId=${cid}`;
+      } else {
+        alert("No Data Id");
+      }
+    }
+    function openReview(e) {
+      const oid = e.dataset.id;
+      if (oid) {
+        window.location.href = `./roi_orderly_pick.html?slideId=${oid}&collectionId=${cid}`;
       } else {
         alert("No Data Id");
       }
