@@ -482,18 +482,18 @@ async function saveAnnotation(annotation) {
 // set the state of the form to match the already-saved annotation
 function setRoiForm(annot){
   if (annot.properties.type == "Evaluable for sTILs"){
-    document.getElementById("eval-true").value = true;
-    document.getElementById("eval-false").value = false;
+    document.getElementById("eval-true").checked = true;
+    document.getElementById("eval-false").checked = false;
     document.getElementById("its").style.display = "block";
     document.getElementById("vta").style.display = "block";
     // sliders and text
-    document.getElementById("its_range").value = annot.percent_stroma;
-    document.getElementById("its_txt").innerText = annot.percent_stroma + "%";
-    document.getElementById("vta_range").value = annot.til_density;
-    document.getElementById("vta_txt").innerText = annot.til_density + "%";
+    document.getElementById("its_range").value = annot.properties.percent_stroma;
+    document.getElementById("its_txt").querySelector('.txt').textContent = annot.properties.percent_stroma + "%";
+    document.getElementById("vta_range").value = annot.properties.til_density;
+    document.getElementById("vta_txt").querySelector('.txt').textContent = annot.properties.til_density + "%";
   } else {
-    document.getElementById("eval-true").value = false;
-    document.getElementById("eval-false").value = true;
+    document.getElementById("eval-true").checked = false;
+    document.getElementById("eval-false").checked = true;
     document.getElementById("its").style.display = "none";
     document.getElementById("vta").style.display = "none";
   }
