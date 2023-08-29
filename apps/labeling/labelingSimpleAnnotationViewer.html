@@ -355,6 +355,7 @@
     // const reverse_threshold = 5;
     const params = getUrlVars();
     const cid = params.collectionId;
+    let collectionHasFeedback = false;
     async function initialize() {
       const store = new Store("../../data/");
       try {
@@ -364,7 +365,6 @@
         screenNameDiv.style.display = "";
         // set collection info panel
         let collectionInfoPanel = document.getElementById("collectionInfo");
-        let collectionHasFeedback = false;
         let collectionInfo = await store.getCollection(cid)
         if (collectionInfo){
           document.getElementById("collectionName").innerText = collectionInfo[0].name
