@@ -479,8 +479,8 @@ function setRoiForm(annot){
   if (annot.properties.type == "Evaluable for sTILs"){
     document.getElementById("eval-true").checked = true;
     document.getElementById("eval-false").checked = false;
-    document.getElementById("its").style.display = "block";
-    document.getElementById("vta").style.display = "block";
+    document.getElementById("its").style.display = "flex";
+    document.getElementById("vta").style.display = "flex";
     document.getElementById('til_message').style.display = "block";
     document.getElementById('its_message').style.display = "block";
     // sliders and text
