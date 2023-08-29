@@ -101,7 +101,6 @@
       } else {
         r = applicable_rois[offset % applicable_rois.length]
         console.log(`label ID :${r}`);
-        alert("not implemented")
         window.location.href = `./reviewFeedback.html?labelId=${r}&slideId=${slideId}&collectionId=${cid}&nextoffset=${offset+1}`;
         return;
       }

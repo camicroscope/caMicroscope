@@ -488,9 +488,9 @@ function setRoiForm(annot){
     document.getElementById("vta").style.display = "block";
     // sliders and text
     document.getElementById("its_range").value = annot.percent_stroma;
-    document.getElementById("its_txt") = annot.percent_stroma + "%";
+    document.getElementById("its_txt").innerText = annot.percent_stroma + "%";
     document.getElementById("vta_range").value = annot.til_density;
-    document.getElementById("vta_txt") = annot.til_density + "%";
+    document.getElementById("vta_txt").innerText = annot.til_density + "%";
   } else {
     document.getElementById("eval-true").value = false;
     document.getElementById("eval-false").value = true;
