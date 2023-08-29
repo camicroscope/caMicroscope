@@ -396,7 +396,7 @@
               });
               // display the open button normally.
               let btn = `<button class="btn" data-id='${rs[0]}' onclick='openView(this)'>Open</button>`;
-              if (labelingAnnotationCount == labelingCount){
+              if (labelingAnnotationCount >= labelingCount){
                 if (collectionHasFeedback){
                   // if there's feedback, show a review button.
                   btn = `<button class="btn" style="background-color:#008000" data-id='${rs[0]}' onclick='openReview(this)'>Review</button>`
