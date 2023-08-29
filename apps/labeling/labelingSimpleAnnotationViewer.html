@@ -370,6 +370,7 @@
           document.getElementById("collectionName").innerText = collectionInfo[0].name
           document.getElementById("collectionDesc").innerText = collectionInfo[0].description
           collectionHasFeedback = collectionInfo[0].hasFeedback;
+          console.log(collectionInfo)
         }
         // set slides
         const slides = await store.findSlideLabelingStat(cid, getUserId());
