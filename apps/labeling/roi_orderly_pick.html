@@ -91,15 +91,15 @@
       applicable_rois = all_rois.filter(x=>done_rois.indexOf(x) != -1 )
       console.log(done_rois, all_rois, applicable_rois)
 
-      if (applicable_rois.length == 0){
-        // No Data
+      if (offset >= applicable_rois.length){
+        // No More Data
         redirect(
           `./labelingSimpleAnnotationViewer.html?collectionId=${cid}`,
           "Redirecting...",
           0
         );
       } else {
-        r = applicable_rois[offset % applicable_rois.length]
+        r = applicable_rois[offset]
         console.log(`label ID :${r}`);
         window.location.href = `./reviewFeedback.html?labelId=${r}&slideId=${slideId}&collectionId=${cid}&nextoffset=${offset+1}`;
         return;
