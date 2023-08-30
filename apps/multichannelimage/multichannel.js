@@ -20,7 +20,7 @@ async function imageData() {
   try {
     console.log("hello image");
     
-    const response = await fetch("../../multichannel/", {
+    const response = await fetch("../../multichannel/44153.tif", {
       method: "GET",
     });
     const data = await response.json();
@@ -36,3 +36,4 @@ async function imageData() {
 }
 
 fetchData();
+imageData();
