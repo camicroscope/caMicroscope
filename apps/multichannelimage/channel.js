@@ -39,10 +39,8 @@ document.addEventListener("DOMContentLoaded", function () {
             const response = await fetch(`$../../multichannel/${filename}`, {
                 method: "GET",
             });
-
             if (response.ok) {
-                // Assuming you want to redirect to channel.html
-                window.location.href = `/channel.html?filename=${filename}&channel_order=${channelValue}`;
+                window.location.href = "../../multichannel/viewer/44153.tif?channel_order=0&channel_order=1&channel_order=2";
             } else {
                 alert("Error fetching data from the Docker service.");
             }
