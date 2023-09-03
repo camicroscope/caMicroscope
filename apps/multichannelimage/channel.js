@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
+    console.log("User channel....")
     const channelData = [
         "Channel-0:",
         "Channel-1:",
