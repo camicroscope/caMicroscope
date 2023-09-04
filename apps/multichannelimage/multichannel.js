@@ -1,20 +1,22 @@
 // https://developer.mozilla.org/en-US/docs/Web/API/Response/ok - to check the valid response
 
-async function fetchData() {
-  try {
-    console.log("hello");
-    const response = await fetch("../../multichannel/", {
-      method: "GET",
-    });
-    if(response.ok){
-      const data = await response.json();
-      console.log("Working...inside:");
-      console.log(data);
+document.getElementById('chooseButton').addEventListener('click', fetchData);
+
+    async function fetchData() {
+        try {
+            console.log("hello");
+            const response = await fetch("../../multichannel/", {
+                method: "GET",
+            });
+            if (response.ok) {
+                const data = await response.json();
+                console.log("Route, direct Working...");
+                console.log(data);
+            }
+        } catch (error) {
+            console.log("Error:", error);
+        }
     }
-  } catch (error) {
-    console.log("Error:", error);
-  }
-}
 
 async function imageData() {
   try {
@@ -34,5 +36,4 @@ async function imageData() {
   }
 }
 
-fetchData();
 imageData();
