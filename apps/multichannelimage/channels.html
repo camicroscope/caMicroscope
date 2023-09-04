@@ -7,10 +7,12 @@
 <body>
     <h1>Choose RGB Channels</h1>
     <form id="channelForm">
-        <input type="text" id="filename" style="display: none;">
+        <input type="hidden" id="filename" value="../../multichannel/hsi_1.tif">
         <div id="channelOptions"></div>
         <button type="submit">View Image</button>
     </form>
+
+    <div id="imagePreview"></div>
 
     <script src="channel.js"></script>
 </body>

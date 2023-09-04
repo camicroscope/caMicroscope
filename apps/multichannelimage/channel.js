@@ -1,52 +1,44 @@
-document.addEventListener("DOMContentLoaded", function () {
-    console.log("User channel....")
-    const channelData = [
-        "Channel-0:",
-        "Channel-1:",
-        "Channel-2:"
-    ];
+const channels = [
+    { label: "Channel-0:", value: 0 },
+    { label: "Channel-1:", value: 1 },
+    { label: "Channel-2:", value: 2 }
+];
 
-    const channelForm = document.getElementById("channelForm");
-    const filenameInput = document.getElementById("filename");
-    const channelOptions = document.getElementById("channelOptions");
+function generateChannelOptions() {
+    const channelOptionsDiv = document.getElementById("channelOptions");
 
-    channelData.forEach((channelLabel, index) => {
-        const channelRadio = document.createElement("input");
-        channelRadio.type = "radio";
-        channelRadio.name = "channel";
-        channelRadio.value = index;
+    channels.forEach((channel, index) => {
+        const channelDiv = document.createElement("div");
+        const labelElement = document.createElement("p");
+        labelElement.textContent = channel.label;
+        channelDiv.appendChild(labelElement);
 
-        const channelLabelElement = document.createElement("label");
-        channelLabelElement.innerText = channelLabel;
+        ["Red", "Green", "Blue"].forEach(color => {
+            const radioLabel = document.createElement("label");
+            radioLabel.textContent = color;
 
-        channelLabelElement.appendChild(channelRadio);
-        channelOptions.appendChild(channelLabelElement);
+            const radioInput = document.createElement("input");
+            radioInput.type = "radio";
+            radioInput.name = `channel_${index}`;
+            radioInput.value = color;
+            
+            radioLabel.appendChild(radioInput);
+            channelDiv.appendChild(radioLabel);
+        });
+
+        channelOptionsDiv.appendChild(channelDiv);
     });
+}
 
-    channelForm.addEventListener("submit", async function (e) {
-        e.preventDefault();
-        const selectedChannel = document.querySelector('input[name="channel"]:checked');
-        if (!selectedChannel) {
-            alert("Please select a channel.");
-            return;
-        }
+document.getElementById("channelForm").addEventListener("submit", function (event) {
+    event.preventDefault();
 
-        const filename = "44153.tif";
+    const selectedChannels = channels.map((channel, index) => {
+        const selectedColor = document.querySelector(`input[name="channel_${index}"]:checked`);
+        return selectedColor ? `${channel.label} ${selectedColor.value}` : null;
+    }).filter(Boolean);
 
-        const channelValue = selectedChannel.value;
-        
-        try {
-            const response = await fetch(`$../../multichannel/${filename}`, {
-                method: "GET",
-            });
-            if (response.ok) {
-                window.location.href = "../../multichannel/viewer/44153.tif?channel_order=0&channel_order=1&channel_order=2";
-            } else {
-                alert("Error fetching data from the Docker service.");
-            }
-        } catch (error) {
-            console.error("Error:", error);
-            alert("An error occurred while fetching data.");
-        }
-    });
+    const imagePreviewDiv = document.getElementById("imagePreview");
+    imagePreviewDiv.innerHTML = selectedChannels.join("<br>");
 });
+generateChannelOptions();

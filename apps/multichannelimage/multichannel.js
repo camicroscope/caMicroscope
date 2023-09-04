@@ -26,7 +26,7 @@ async function imageData() {
     });
     const data = await response.json();
     console.log("Multi channel Image support")
-    if (data.success) {
+    if (data.ok) {
       console.log(data);
     } else {
       alert(data.message);
