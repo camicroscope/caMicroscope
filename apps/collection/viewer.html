@@ -227,12 +227,14 @@
         let workflow_title = "ROIs Evaluation";
         let workflow_url = `../labeling/labelingSimpleAnnotationViewer.html?collectionId=${d._id.$oid}`
         // pitfalls override
+        const card = document.createElement("div");
+        card.classList.add("card");
         if (d.task == "roiSelection"){
           workflow_title = "ROIs Selection";
           workflow_url = `../labeling/pitfallsTable.html?collectionId=${d._id.$oid}`
+          card.classList.add("pitfalls");
         }
-        const card = document.createElement("div");
-        card.classList.add("card");
+
         if (d.hasFeedback) card.classList.add("feedback");
         card.innerHTML = `<div class='card-title'>${
           d.hasFeedback ? `<label style='color:red;'>*</label>` : ""

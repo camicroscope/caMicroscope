@@ -119,3 +119,7 @@ div.card.col-card:hover {
 #selected-slide li i.fas:hover, #unselected-slide li i.fas:hover {
   opacity: 1;
 }
+
+.pitfalls{
+  background-color: #FCD299 !important;
+}
