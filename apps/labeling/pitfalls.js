@@ -413,11 +413,11 @@ function initCore() {
     //   callback: downloadSlide,
     //  },
     {
-      id: 'tutorial',
+      id: 'protocol',
       icon: 'help',
-      title: 'Tutorial',
+      title: 'ROI Selection Protocol',
       type: 'btn',
-      value: 'tutorial',
+      value: 'protocol',
       callback: ()=>{
         createTutorial();
       },
@@ -825,7 +825,7 @@ function createTILSample() {
 
 function createTutorial() {
   empty($UI.modalbox.body);
-  $UI.modalbox.setHeaderText('Tutorial');
+  $UI.modalbox.setHeaderText('ROI Selection Protocol');
   $UI.modalbox.elt.style.paddingTop='60px';
   $UI.modalbox.body.style.padding = 0;
   $UI.modalbox.body.style.display = 'block';
