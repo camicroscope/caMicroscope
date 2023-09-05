@@ -175,6 +175,12 @@ async function initialize() {
         // Loading.close();
       }
 
+      // direct user away if they don't have access
+      if (getUserInfo().userType == "Participant"){
+        alert("Error: Your user account type, 'Participant', does not have permission to contribute to ROI selection. If you were assigned an ROI selection task and need to change your account type, please contact Brandon.Gallas@fda.hhs.gov.");
+        window.location = `./pitfallsTable.html?collectionId=${$D.params.collectionId}`;
+      }
+
       // if (!$D.ROI) redirect($D.pages.table, 'There Is No Label Data, Return Home Page.', 0);
       Loading.open(document.body, 'Loading Data...');
       var checkCoreAndDataIsReady = setInterval(function() {
