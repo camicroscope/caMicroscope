@@ -21,8 +21,12 @@ $(document).ready(function() {
   store.findSlide().then((response) => {
     for (i=0; i<response.length; i++) {
       existingSlides.push(response[i].name);
-      existingFiles.push((response[i].location).substring((response[i].location).lastIndexOf('/')+1,
+      if (response[i].filepath) {
+        existingFiles.push(response[i].filepath);
+      } else {
+        existingFiles.push((response[i].location).substring((response[i].location).lastIndexOf('/')+1,
           (response[i].location).length));
+      }
     }
   }).catch((error) => {
     console.log(error);
@@ -402,6 +406,9 @@ function finishUpload(token, filename, i) {
       const newName = a.filepath.slice(a.filepath.lastIndexOf('/')+1);
       fileNames[i] = newName;
       $('tr:eq('+(i+1)+') td:nth-child(2) span')[0].innerText = newName;
+    }
+    if (a.relpath) {
+      fileNames[i] = a.relpath;
     }
     if (typeof a === 'object' && a.error) {
       finishUploadSuccess = false;
