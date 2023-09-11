@@ -9,7 +9,9 @@ function getParameterByName(name, url) {
 }
 
 const dziPath = getParameterByName("dziPath");
+console.log(dziPath);
 const channelOrder = getParameterByName("channel_order");
+console.log(channelOrder);
 
 const viewer = OpenSeadragon({
     id: "openseadragon-viewer",
