@@ -1,4 +1,6 @@
 function getParameterByName(name, url) {
+    console.log(name);
+    console.log(url);
     if (!url) url = window.location.href;
     name = name.replace(/[\[\]]/g, "\\$&");
     var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
@@ -16,7 +18,7 @@ console.log(channelOrder);
 const viewer = OpenSeadragon({
     id: "openseadragon-viewer",
     prefixUrl: "../../core/openseadragon/images/",
-    tileSources: "../static/" + dziPath,
+    tileSources: dziPath,
     preserveViewport: true,
     visibilityRatio: 1,
     defaultZoomLevel: 0,
