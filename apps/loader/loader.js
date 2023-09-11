@@ -122,12 +122,15 @@ function handleDownload(id) {
   store.getSlide(id)
       .then((response) => {
         if (response[0]) {
-          return response[0]['location'];
+          if (response[0]['filepath']) {
+            return response[0]['filepath'];
+          }
+          let location = response[0]['location'];
+          return location.substring(location.lastIndexOf('/')+1, location.length);
         } else {
           throw new Error('Slide not found');
         }
-      }).then((location) => {
-        fileName = location.substring(location.lastIndexOf('/')+1, location.length);
+      }).then((fileName) => {
         console.log(fileName);
         return fileName;
       }).then((fileName) =>{
