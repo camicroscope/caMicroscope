@@ -1,4 +1,4 @@
-function getParameterByName(name, url) {
+/*function getParameterByName(name, url) {
     console.log(name);
     console.log(url);
     if (!url) url = window.location.href;
@@ -9,10 +9,10 @@ function getParameterByName(name, url) {
     if (!results[2]) return '';
     return decodeURIComponent(results[2].replace(/\+/g, " "));
 }
-
-const dziPath = getParameterByName("dziPath");
+*/
+const dziPath = "44153.tif";
 console.log(dziPath);
-const channelOrder = getParameterByName("channel_order");
+const channelOrder = [0,1,2];
 console.log(channelOrder);
 
 const viewer = OpenSeadragon({
