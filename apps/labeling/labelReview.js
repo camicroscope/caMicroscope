@@ -25,12 +25,6 @@ const $D = {
   // },
   params: null, // parameter from url - slide Id and status in it (object).
 };
-const beforeUnloadHandler = (e) =>{
-  if ($D && $D.activeROI){
-    e.preventDefault();
-    e.returnValue = 'You have an unsaved active ROI. Are you sure you want to leave?';
-  }
-};
 window.addEventListener('beforeunload', beforeUnloadHandler);
 
 // window.onbeforeunload = function (e) {
@@ -379,25 +373,6 @@ function initCore() {
     //   }
     // },
     {
-      id: 'locate',
-      icon: 'my_location',
-      title: 'ROI Location',
-      type: 'btn',
-      value: 'roi_location',
-      callback: ()=>{
-        // go to "active" ROI
-        if ($D.activeROI) {
-          const {x, y, width, height} = $D.activeROI.properties;
-          const cx = x + width/2;
-          const cy = y + height/2;
-          const refPoint = $CAMIC.viewer.viewport.imageToViewportCoordinates(cx, cy);
-          $CAMIC.viewer.viewport.panTo(refPoint, true);
-        } else {
-          alert('no active roi to zoom into.');
-        }
-      },
-    },
-    {
       id: 'til_sample',
       icon: 'assessment',
       title: 'TIL Sample',
@@ -415,16 +390,6 @@ function initCore() {
     //   value: 'slide_download',
     //   callback: downloadSlide,
     //  },
-    {
-      id: 'protocol',
-      icon: 'help',
-      title: 'ROI Selection Protocol',
-      type: 'btn',
-      value: 'protocol',
-      callback: ()=>{
-        createTutorial();
-      },
-    },
 
       // bug report
       // {
@@ -711,55 +676,6 @@ function createTILSample() {
 }
 
 
-function createTutorial() {
-  empty($UI.modalbox.body);
-  $UI.modalbox.setHeaderText('ROI Selection Protocol');
-  $UI.modalbox.elt.style.paddingTop='60px';
-  $UI.modalbox.body.style.padding = 0;
-  $UI.modalbox.body.style.display = 'block';
-
-  $UI.modalbox.body.innerHTML = `
-  
-  <ol>
-  <li>
-  <h1 style='margin-top:12.0pt;margin-right:0in;margin-bottom:0in;margin-left:0in;text-indent:0in;font-size:21px;font-family:"Calibri Light",sans-serif;color:black;font-weight:normal;'>Double click a location to create or reposition an ROI</h1>
-  </li>
-  <li>
-      <h1 style='margin-top:12.0pt;margin-right:0in;margin-bottom:0in;margin-left:0in;text-indent:0in;font-size:21px;font-family:"Calibri Light",sans-serif;color:#2F5496;font-weight:normal;'><span style='font-family:"Calibri",sans-serif;color:black;color:black;'><span data-usefontface="true" data-contrast="none">Select 10 ROIs: Target diverse morphology and&nbsp;</span></span><span style='font-family:"Calibri",sans-serif;color:black;color:black;'><span data-usefontface="true" data-contrast="none">sTILs</span></span><span style='font-family:"Calibri",sans-serif;color:black;color:black;'><span data-usefontface="true" data-contrast="none">&nbsp;density (especially high&nbsp;</span></span><span style='font-family:"Calibri",sans-serif;color:black;color:black;'><span data-usefontface="true" data-contrast="none">sTILs</span></span><span style='font-family:"Calibri",sans-serif;color:black;color:black;'><span data-usefontface="true" data-contrast="none">&nbsp;density) while distributing ROIs across entire&nbsp;</span><span data-usefontface="true" data-contrast="none">tissue. Each ROI can satisfy multiple targets. Not all targets can be satisfied in each WSI. The number of ROIs per slide for&nbsp;</span><span data-usefontface="true" data-contrast="none">each target are provided as guides, not requirements.</span></span></h1>
-      <ol style="list-style-type: lower-alpha;">
-          <li>
-              <h2 style='margin-top:2.0pt;margin-right:0in;margin-bottom:0in;margin-left:.5in;text-indent:0in;font-size:17px;font-family:"Calibri Light",sans-serif;color:#2F5496;font-weight:normal;'><span style='font-family:"Calibri",sans-serif;color:black;color:black;'><span data-usefontface="true" data-contrast="none">Select 3 ROIs inside tumor with stroma</span></span><br><em><span style='font-family:"Calibri",sans-serif;color:black;'><span data-usefontface="true" data-contrast="none">(1 ROI should be at least 25% void of tissue)</span></span></em></h2>
-          </li>
-          <li>
-              <h2 style='margin-top:2.0pt;margin-right:0in;margin-bottom:0in;margin-left:.5in;text-indent:0in;font-size:17px;font-family:"Calibri Light",sans-serif;color:#2F5496;font-weight:normal;'><span style='font-family:"Calibri",sans-serif;color:black;color:black;'><span data-usefontface="true" data-contrast="none">Select 2 ROIs at invasive margin if discernable with stroma</span></span><br><em><span style='font-family:"Calibri",sans-serif;color:black;'><span data-usefontface="true" data-contrast="none">(1 ROI should be at least 25% void of tissue)</span></span></em></h2>
-          </li>
-          <li>
-              <h2 style='margin-top:2.0pt;margin-right:0in;margin-bottom:0in;margin-left:.5in;text-indent:0in;font-size:17px;font-family:"Calibri Light",sans-serif;color:#2F5496;font-weight:normal;'><span style='font-family:"Calibri",sans-serif;color:black;color:black;'><span data-usefontface="true" data-contrast="none">Select 2 ROIs inside tumor or at margin&nbsp;</span><strong><span data-usefontface="true" data-contrast="none">without stroma</span></strong></span><br><em><span style='font-family:"Calibri",sans-serif;color:black;'><span data-usefontface="true" data-contrast="none">(there&nbsp;</span></span></em><em><span style='font-family:"Calibri",sans-serif;color:black;color:black;'>may</span></em><em><span style='font-family:"Calibri",sans-serif;color:black;color:black;'>&nbsp;not be many of these)</span></em></h2>
-          </li>
-          <li>
-              <h2 style='margin-top:2.0pt;margin-right:0in;margin-bottom:0in;margin-left:.5in;text-indent:0in;font-size:17px;font-family:"Calibri Light",sans-serif;color:#2F5496;font-weight:normal;'><span style='font-family:"Calibri",sans-serif;color:black;color:black;'><span data-usefontface="true" data-contrast="none">Select 2 ROIs where there is no proximal tumor</span></span><br><em><span style='font-family:"Calibri",sans-serif;color:black;'><span data-usefontface="true" data-contrast="none">(normal tissue: outside 500 um tumor margin)</span></span></em></h2>
-          </li>
-          <li>
-              <h2 style='margin-top:2.0pt;margin-right:0in;margin-bottom:0in;margin-left:.5in;text-indent:0in;font-size:17px;font-family:"Calibri Light",sans-serif;color:#2F5496;font-weight:normal;'><span style='font-family:"Calibri",sans-serif;color:black;color:black;'><span data-usefontface="true" data-contrast="none">Select 2 ROIs for each of these target types (pitfalls, 16 listed): benign glandular elements, adipocytes, carcinoma in&nbsp;</span><span data-usefontface="true" data-contrast="none">situ, necrosis and fibrin, nerves and/or larger caliber blood vessels, eosinophilia, small/pyknotic nuclei, perinuclear&nbsp;</span><span data-usefontface="true" data-contrast="none">clearing, cross-sectionally cut fibroblasts, low grade and/or degenerate ischemic tumor cells, crushed cells, sparsely&nbsp;</span><span data-usefontface="true" data-contrast="none">distributed tumor cells, fibers, folds, over-staining, under-staining&nbsp;</span></span></h2>
-          </li>
-      </ol>
-  </li>
-  <li>
-      <h1 style='margin-top:12.0pt;margin-right:0in;margin-bottom:0in;margin-left:0in;text-indent:0in;font-size:21px;font-family:"Calibri Light",sans-serif;color:#2F5496;font-weight:normal;'><span style='font-family:"Calibri",sans-serif;color:black;color:black;'><span data-usefontface="true" data-contrast="none">Provide Annotations on selected ROIs</span></span></h1>
-      <ol style="list-style-type: lower-alpha;">
-          <li>
-              <h2 style='margin-top:2.0pt;margin-right:0in;margin-bottom:0in;margin-left:.5in;text-indent:0in;font-size:17px;font-family:"Calibri Light",sans-serif;color:#2F5496;font-weight:normal;'><span style='font-family:"Calibri",sans-serif;color:black;color:black;'><span data-usefontface="true" data-contrast="none">Study Annotations: Evaluable/Not Evaluable; % Tumor-Associated Stroma; %&nbsp;</span></span><span style='font-family:"Calibri",sans-serif;color:black;color:black;'><span data-usefontface="true" data-contrast="none">sTILs</span></span><span style='font-family:"Calibri",sans-serif;color:black;color:black;'><span data-usefontface="true" data-contrast="none">&nbsp;</span></span></h2>
-          </li>
-          <li>
-              <h2 style='margin-top:2.0pt;margin-right:0in;margin-bottom:0in;margin-left:.5in;text-indent:0in;font-size:17px;font-family:"Calibri Light",sans-serif;color:#2F5496;font-weight:normal;'><span style='font-family:"Calibri",sans-serif;color:black;color:black;'><span data-usefontface="true" data-contrast="none">Pitfalls in each ROI: Record which pitfalls above are present in each ROI.</span></span></h2>
-          </li>
-      </ol>
-  </li>
-</ol>`;
-  $UI.modalbox.open();
-}
-
-
 function downloadSlide(e) {
   const location = $D.params.data.location;
   var fileName =``;
@@ -889,7 +805,6 @@ function labelInfoToHtml(label){
 
 // only works for square labels
 function getLabelInfo(e){
-  console.log(e)
   const img_point = $CAMIC.viewer.viewport.viewportToImageCoordinates($CAMIC.viewer.viewport.pointFromPixel(e.position, true));
   let matched_labels = $D.ROIs.filter(label=>{
     if (label.properties.x < img_point.x && label.properties.y < img_point.y){
