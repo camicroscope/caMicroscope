@@ -768,7 +768,8 @@ function labelInfoToHtml(label){
     text += label.provenance.image.name
     text += "<br/>"
   }
-  if (label.creator){
+  // NOTE -- I've specifically avoided rendering creator email for now, as we usually care about email privacy to some degree, right?
+  if (false && label.creator){
     text += "<b>Creator:</b> "
     text += label.creator
     text += "<br/>"
