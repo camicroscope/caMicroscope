@@ -26,7 +26,7 @@ const $D = {
   params: null, // parameter from url - slide Id and status in it (object).
 };
 const beforeUnloadHandler = (e) =>{
-  if ($D && $D.activeROI){
+  if ($D && $D.activeROI) {
     e.preventDefault();
     e.returnValue = 'You have an unsaved active ROI. Are you sure you want to leave?';
   }
@@ -176,9 +176,9 @@ async function initialize() {
       }
 
       // direct user away if they don't have access
-      if (getUserInfo().userType == "Participant"){
-        alert("Error: Your user account type, 'Participant', does not have permission to contribute to ROI selection. If you were assigned an ROI selection task and need to change your account type, please contact Brandon.Gallas@fda.hhs.gov.");
-        window.location = "../collection/viewer.html";
+      if (getUserInfo().userType == 'Participant') {
+        alert('Error: Your user account type, \'Participant\', does not have permission to contribute to ROI selection. If you were assigned an ROI selection task and need to change your account type, please contact Brandon.Gallas@fda.hhs.gov.');
+        window.location = '../collection/viewer.html';
       }
 
       // if (!$D.ROI) redirect($D.pages.table, 'There Is No Label Data, Return Home Page.', 0);
@@ -1120,7 +1120,7 @@ function addROIFormEvent() {
     label.properties.til_density = vtaRange.value;
     label.properties.pitfalls = pitfalls;
     label.geometries.features[0].properties.style.color = '#7cfc00'; // overwrite highlight color
-    label.task = 'pitfalls';
+    label.task = 'roiSelection';
     const flileloc = $D.params.data.location.split('/');
     const fileName1 = flileloc[flileloc.length-1];
     label.alias = `${fileName1}_x${x}.${width}_y${y}.${height}`;
@@ -1287,7 +1287,7 @@ function makeFormReactive() {
         document.getElementById('tt_radio_2').checked = false;
         document.getElementById('tt_radio_3').checked = false;
         document.getElementById('tt_radio_4').checked = false;
-        //document.getElementById('tissue_type_area').style.display = 'block';
+        // document.getElementById('tissue_type_area').style.display = 'block';
         document.getElementById('pitfalls_area').style.display = 'none';
         // hide save button
         document.getElementById('save').style.display = 'none';
@@ -1334,7 +1334,7 @@ makeFormReactive();
 
 function resetForm() {
   console.log('reset form');
-  
+
   // reset tissue and roi radio buttons
   let radios = document.querySelectorAll('#left_menu input[type=radio]:checked');
   for (let r of radios) {
@@ -1344,7 +1344,7 @@ function resetForm() {
   // reset and hide sliders
   document.getElementById('its_range').value = -1;
   document.getElementById('vta_range').value = -1;
-  document.getElementById('sliders').style.display = "none";
+  document.getElementById('sliders').style.display = 'none';
 
   // reset text input (usually invisible)
   let sliderInputs = document.getElementsByClassName('slider-input');
@@ -1361,9 +1361,9 @@ function resetForm() {
   for (let check of checkboxes) {
     check.checked = false;
   }
-  document.getElementById('tissue_type_area').style.display = "none";
-  document.getElementById('pitfalls_area').style.display = "none";
-  document.getElementById('save').style.display = "none";
+  document.getElementById('tissue_type_area').style.display = 'none';
+  document.getElementById('pitfalls_area').style.display = 'none';
+  document.getElementById('save').style.display = 'none';
 }
 
 

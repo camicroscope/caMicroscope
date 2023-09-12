@@ -170,9 +170,9 @@ async function initialize() {
       }
 
       // direct user away if they don't have access
-      if (getUserInfo().userType == "Participant"){
-        alert("Error: Your user account type, 'Participant', does not have permission to contribute to ROI selection. If you were assigned an ROI selection task and need to change your account type, please contact Brandon.Gallas@fda.hhs.gov.");
-        window.location = "../collection/viewer.html";
+      if (getUserInfo().userType == 'Participant') {
+        alert('Error: Your user account type, \'Participant\', does not have permission to contribute to ROI selection. If you were assigned an ROI selection task and need to change your account type, please contact Brandon.Gallas@fda.hhs.gov.');
+        window.location = '../collection/viewer.html';
       }
 
       // if (!$D.ROI) redirect($D.pages.table, 'There Is No Label Data, Return Home Page.', 0);
@@ -186,7 +186,7 @@ async function initialize() {
           document.querySelectorAll('input[name="roi_type"]').forEach((input)=>{
             input.disabled = true;
           });
-          // add dbl click handler 
+          // add dbl click handler
           // TODO -- change to new method for adding to left panel
           $CAMIC.viewer.addHandler('canvas-double-click', getLabelInfo);
         }
@@ -382,14 +382,14 @@ function initCore() {
         createTILSample();
       },
     },
-    // {
-    //   id: 'slide_download',
-    //   icon: 'file_download',
-    //   title: 'Download Slide',
-    //   type: 'btn',
-    //   value: 'slide_download',
-    //   callback: downloadSlide,
-    //  },
+      // {
+      //   id: 'slide_download',
+      //   icon: 'file_download',
+      //   title: 'Download Slide',
+      //   type: 'btn',
+      //   value: 'slide_download',
+      //   callback: downloadSlide,
+      //  },
 
       // bug report
       // {
@@ -403,8 +403,6 @@ function initCore() {
   });
   // create TIL and annotaiton types
 }
-
-
 
 
 function toggleMeasurement(data) {
@@ -755,61 +753,62 @@ function setDownloadModalProgress(num) {
   $('#downloadModal').find('.progress-bar').css('width', `${num}%`).attr('aria-valuenow', num).text(`${num}%`);
 }
 
-function labelInfoToHtml(label){
-  let text = ""
+function labelInfoToHtml(label) {
+  let text = '';
   // top level fields
-  if (false && label.alias){
-    text += "<b>Alias:</b> "
-    text += label.alias
-    text += "<br/>"
-  } else if(label.provenance.image.name){
-     // if no alias, we need at least slide name
-    text += "<b>Slide:</b> "
-    text += label.provenance.image.name
-    text += "<br/>"
+
+  if (false && label.alias) {
+    text += '<b>Alias:</b> ';
+    text += label.alias;
+    text += '<br/>';
+  } else if (label.provenance.image.name) {
+    // if no alias, we need at least slide name
+    text += '<b>Slide:</b> ';
+    text += label.provenance.image.name;
+    text += '<br/>';
   }
   // NOTE -- I've specifically avoided rendering creator email for now, as we usually care about email privacy to some degree, right?
-  if (false && label.creator){
-    text += "<b>Creator:</b> "
-    text += label.creator
-    text += "<br/>"
+  if (false && label.creator) {
+    text += '<b>Creator:</b> ';
+    text += label.creator;
+    text += '<br/>';
   }
-  if (label.create_date){
-    text += "<b>Create Date/Time:</b> "
-    text += label.create_date
-    text += "<br/>"
+  if (label.create_date) {
+    text += '<b>Create Date/Time:</b> ';
+    text += label.create_date;
+    text += '<br/>';
   }
-  if (label.task){
-    text += "<b>Task:</b> "
-    text += label.task
-    text += "<br/>"
+  if (label.task) {
+    text += '<b>Task:</b> ';
+    text += label.task;
+    text += '<br/>';
   }
   let skip_props = ['style']
   // now go through properties
-  for (let propkey in label.properties){
-    if (skip_props.indexOf(propkey) == -1){
-      text += "<b>" + propkey.replaceAll("_", " ") + ":</b> "
-      let propdata = label.properties[propkey]
-      if (Array.isArray(propdata)){
-        text += propdata.join(", ");
-      } else if (typeof(propdata) == "object") {
-        text += "An object with:"
-        text +=JSON.stringify(propdata).replaceAll("{", "").replaceAll("}", "")
+  for (let propkey in label.properties) {
+    if (skip_props.indexOf(propkey) == -1) {
+      text += '<b>' + propkey.replaceAll('_', ' ') + ':</b> ';
+      let propdata = label.properties[propkey];
+      if (Array.isArray(propdata)) {
+        text += propdata.join(', ');
+      } else if (typeof(propdata) == 'object') {
+        text += 'An object with:';
+        text +=JSON.stringify(propdata).replaceAll('{', '').replaceAll('}', '');
       } else {
-        text += propdata
+        text += propdata;
       }
-      text += "<br/>";
+      text += '<br/>';
     }
   }
-  return text
+  return text;
 }
 
 // only works for square labels
-function getLabelInfo(e){
+function getLabelInfo(e) {
   const img_point = $CAMIC.viewer.viewport.viewportToImageCoordinates($CAMIC.viewer.viewport.pointFromPixel(e.position, true));
-  let matched_labels = $D.ROIs.filter(label=>{
-    if (label.properties.x < img_point.x && label.properties.y < img_point.y){
-      if (label.properties.x + label.properties.width > img_point.x && label.properties.y + label.properties.width > img_point.y){
+  let matched_labels = $D.ROIs.filter((label)=>{
+    if (label.properties.x < img_point.x && label.properties.y < img_point.y) {
+      if (label.properties.x + label.properties.width > img_point.x && label.properties.y + label.properties.width > img_point.y) {
         return true;
       } else {
         return false;
@@ -818,6 +817,6 @@ function getLabelInfo(e){
       return false;
     }
   });
-  let texts = matched_labels.map(labelInfoToHtml)
-  document.getElementById('label_review').innerHTML = texts.join("<br/><hr/><br/>")
+  let texts = matched_labels.map(labelInfoToHtml);
+  document.getElementById('label_review').innerHTML = texts.join('<br/><hr/><br/>');
 }

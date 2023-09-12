@@ -475,43 +475,43 @@ async function saveAnnotation(annotation) {
 }
 
 // set the state of the form to match the already-saved annotation
-function setRoiForm(annot){
-  if (annot.properties.type == "Evaluable for sTILs"){
-    document.getElementById("eval-true").checked = true;
-    document.getElementById("eval-false").checked = false;
-    document.getElementById("its").style.display = "flex";
-    document.getElementById("vta").style.display = "flex";
-    document.getElementById('til_message').style.display = "block";
-    document.getElementById('its_message').style.display = "block";
+function setRoiForm(annot) {
+  if (annot.properties.type == 'Evaluable for sTILs') {
+    document.getElementById('eval-true').checked = true;
+    document.getElementById('eval-false').checked = false;
+    document.getElementById('its').style.display = 'flex';
+    document.getElementById('vta').style.display = 'flex';
+    document.getElementById('til_message').style.display = 'block';
+    document.getElementById('its_message').style.display = 'block';
     // sliders and text
-    document.getElementById("its_range").value = annot.properties.percent_stroma;
-    document.getElementById("its_txt").querySelector('.txt').textContent = annot.properties.percent_stroma + "%";
-    document.getElementById("vta_range").value = annot.properties.til_density;
-    document.getElementById("vta_txt").querySelector('.txt').textContent = annot.properties.til_density + "%";
+    document.getElementById('its_range').value = annot.properties.percent_stroma;
+    document.getElementById('its_txt').querySelector('.txt').textContent = annot.properties.percent_stroma + '%';
+    document.getElementById('vta_range').value = annot.properties.til_density;
+    document.getElementById('vta_txt').querySelector('.txt').textContent = annot.properties.til_density + '%';
   } else {
-    document.getElementById("eval-true").checked = false;
-    document.getElementById("eval-false").checked = true;
-    document.getElementById("its").style.display = "none";
-    document.getElementById("vta").style.display = "none";
-    document.getElementById('til_message').style.display = "none";
-    document.getElementById('its_message').style.display = "none";
+    document.getElementById('eval-true').checked = false;
+    document.getElementById('eval-false').checked = true;
+    document.getElementById('its').style.display = 'none';
+    document.getElementById('vta').style.display = 'none';
+    document.getElementById('til_message').style.display = 'none';
+    document.getElementById('its_message').style.display = 'none';
   }
 }
 
-async function renderFeedback(){
+async function renderFeedback() {
   disableROIForm();
   let annotationQuery = {
     'creator': getUserId(),
     'parent': $D.params.labelId,
   };
   const labelData = await $CAMIC.store.findLabelingAnnotation(annotationQuery);
-  setRoiForm(labelData[0])
+  setRoiForm(labelData[0]);
   const feeback = await $CAMIC.store.getFeedback({parent: $D.params.labelId});
   if (Array.isArray(feeback)&& feeback.length >= 1) {
     setFeedbackForm(feeback[0]);
     enableFeedbackForm();
   } else {
-    alert("did not find feedback")
+    alert('did not find feedback');
   }
   console.log(feeback);
 }
@@ -1135,7 +1135,7 @@ function addROIFormEvent() {
       },
       'parent': parent,
     };
-    //saveAnnotation(annotation);
+    // saveAnnotation(annotation);
   });
 }
 
