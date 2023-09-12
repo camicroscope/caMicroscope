@@ -232,7 +232,7 @@
     fetch('../../auth/token/renew').then(x=>x.json()).then(x=>{
         if (x.hasOwnProperty("token")) {
             console.log("renewing token", x.token)
-            functionTokenRenew(x.token)
+            TokenRenew(x.token)
         }
 
     }).catch(e=>console.error);
