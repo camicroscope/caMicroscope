@@ -188,7 +188,6 @@ async function initialize() {
           clearInterval(checkCoreAndDataIsReady);
           Loading.close();
           showLabelData();
-          resetForm();
           // force make roi first
           document.querySelectorAll('input[name="roi_type"]').forEach((input)=>{
             input.disabled = true;
