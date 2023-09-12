@@ -141,6 +141,14 @@
     if (userType !== "Admin"){
       document.getElementById("userManage").style = "display:none;";
     }
+    // renew token
+    fetch('../../auth/token/renew').then(x=>x.json()).then(x=>{
+        if (x.hasOwnProperty("token")) {
+            console.log("renewing token", x.token)
+            functionTokenRenew(x.token)
+        }
+
+    }).catch(e=>console.error);
 
 </script>
 </body>

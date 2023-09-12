@@ -860,6 +860,13 @@ function tokenSignOut(url) {
   }
 }
 
+function TokenRenew(value){
+  document.cookie = 'token='+value+';path=/camic_htt';
+  document.cookie = 'token='+value+';path=/camic/htt';
+  document.cookie = 'token='+value+';path=//camic_htt';
+  document.cookie = 'token='+value+';path=//camic/htt';
+}
+
 // alias in case I missed any
 function googleSignOut(url){
   console.log("calling google signout, now alias to token signout");
