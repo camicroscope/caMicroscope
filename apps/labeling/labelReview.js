@@ -776,7 +776,7 @@ function labelInfoToHtml(label){
   }
   if (label.create_date){
     text += "<b>Create Date/Time:</b> "
-    text += label.creator
+    text += label.create_date
     text += "<br/>"
   }
   if (label.task){
