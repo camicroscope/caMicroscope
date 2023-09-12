@@ -758,7 +758,7 @@ function setDownloadModalProgress(num) {
 function labelInfoToHtml(label){
   let text = ""
   // top level fields
-  if (label.alias){
+  if (false && label.alias){
     text += "<b>Alias:</b> "
     text += label.alias
     text += "<br/>"
@@ -784,7 +784,7 @@ function labelInfoToHtml(label){
     text += label.task
     text += "<br/>"
   }
-  let skip_props = ['style', 'x', 'y', 'width', 'height']
+  let skip_props = ['style']
   // now go through properties
   for (let propkey in label.properties){
     if (skip_props.indexOf(propkey) == -1){
