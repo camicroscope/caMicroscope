@@ -391,7 +391,7 @@
                   rs.push(slide[key]);
                 }
               });
-              const btn = `<button class="btn" data-id='${rs[0]}' onclick='openView(this)'>Open</button>`;
+              const btn = `<button class="btn" data-id='${rs[0]}' onclick='openView(this)'>Open</button> &nbsp; <button style="background-color:#008000" class="btn" data-id='${rs[0]}' onclick='openGenericReview(this)'>Review</button>`;
               rs.push(btn);
               return rs;
             })
@@ -445,6 +445,15 @@
       const oid = e.dataset.id;
       if (oid) {
         window.location.href = `./pitfalls.html?slideId=${oid}&collectionId=${cid}`;
+      } else {
+        alert("No Data Id");
+      }
+    }
+
+    function openGenericReview(e){
+      const oid = e.dataset.id;
+      if (oid) {
+        window.location.href = `./labelReview.html?slideId=${oid}&collectionId=${cid}`;
       } else {
         alert("No Data Id");
       }

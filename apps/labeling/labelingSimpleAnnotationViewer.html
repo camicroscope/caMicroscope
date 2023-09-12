@@ -395,14 +395,14 @@
                 }
               });
               // display the open button normally.
-              let btn = `<button class="btn" data-id='${rs[0]}' onclick='openView(this)'>Open</button>`;
+              let btn = `<button class="btn" data-id='${rs[0]}' onclick='openView(this)'>Open</button> &nbsp; <button class="btn" style="background-color:#008000" data-id='${rs[0]}' onclick='openGenericReview(this)'>Review</button>`;
               if (labelingAnnotationCount >= labelingCount){
                 if (collectionHasFeedback){
                   // if there's feedback, show a review button.
                   btn = `<button class="btn" style="background-color:#008000" data-id='${rs[0]}' onclick='openReview(this)'>Review</button>`
                 } else {
                   // otherwise, just a check.
-                  btn = `<div class='material-icons' style='width:48px;color:#008000;' title='Done'>check_circle</div>`;
+                  btn = `<div class='material-icons' style='width:48px;color:#008000;' title='Done'>check_circle</div> <button class="btn" style="background-color:#008000" data-id='${rs[0]}' onclick='openGenericReview(this)'>Review</button>`;
                 }
               }
               rs.push(btn);
@@ -465,6 +465,14 @@
       const oid = e.dataset.id;
       if (oid) {
         window.location.href = `./roi_orderly_pick.html?slideId=${oid}&collectionId=${cid}`;
+      } else {
+        alert("No Data Id");
+      }
+    }
+    function openGenericReview(e) {
+      const oid = e.dataset.id;
+      if (oid) {
+        window.location.href = `./labelReview.html?slideId=${oid}&collectionId=${cid}`;
       } else {
         alert("No Data Id");
       }
