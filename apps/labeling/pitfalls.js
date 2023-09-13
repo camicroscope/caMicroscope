@@ -1371,8 +1371,14 @@ function resetForm() {
 // TODO the form should start inactive until a roi is created.
 function addAnnot(e) {
   if (!$D.activeROI) {
-    let halfWidth = 1996/2;
-    let halfHeight = 1996/2;
+    // defaults in case no mpp
+    let halfWidth = 1000;
+    let halfHeight = 1000;
+    // should be 500 microns; so half is 250 divided by microns per pixel, get width and height in pixels
+    if ($CAMIC.slideData.mpp){
+      halfWidth = 250/$CAMIC.slideData.mpp;
+      halfHeight = 250/$CAMIC.slideData.mpp;
+    }
     let ctr = $CAMIC.viewer.viewport.viewportToImageCoordinates($CAMIC.viewer.viewport.pointFromPixel(e.position, true));
     let xCtr = Math.round(ctr.x);
     let yCtr = Math.round(ctr.y);
