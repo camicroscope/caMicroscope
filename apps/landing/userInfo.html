@@ -164,39 +164,43 @@
 
 <script src="../landing/util.js"></script>
 <script type="text/javascript">
-    let screenName = getUserInfo().data.registration.firstName;
-    const screenNameElem = document.getElementById('screenName');
-    screenNameElem.innerText = `hi, ${screenName}`;
-    screenNameElem.style.display = '';
+    async function setupUserInfo(){
+        let screenName = getUserInfo().data.registration.firstName;
+        const screenNameElem = document.getElementById('screenName');
+        screenNameElem.innerText = `hi, ${screenName}`;
+        screenNameElem.style.display = '';
 
-    // populate userInfo
-    let userData = getUserInfo().data.registration
-    let userInfoDiv = document.getElementById('userInfo');
-    let userDataHtml = '<h2>User Data</h2>';
-    userDataHtml += '<b>Role:</b> ';
-    userDataHtml += getUserInfo().userType;
-    userDataHtml += '<br/>';
-    for (let field in userData){
-        userDataHtml += '<b>' + field + ':</b> '
-        userDataHtml += userData[field];
+        // populate userInfo
+        let userData = getUserInfo().data.registration
+        let userInfoDiv = document.getElementById('userInfo');
+        let userDataHtml = '<h2>User Data</h2>';
+        userDataHtml += '<b>Role:</b> ';
+        userDataHtml += getUserInfo().userType;
         userDataHtml += '<br/>';
-    }
-    userDataHtml += '<br/><hr/><br/>'
-    userDataHtml += '<h2>Collections</h2>';
-    let allCollections = await store.getAllCollection();
-    let myCollections = getUserInfo().data.collections;
-    let myCollectionList = allCollections.filter(x=>{
-        if (myCollections.indexOf(x['_id']['$oid']) < 0){
-            return false;
-        } else {
-            return true;
+        for (let field in userData){
+            userDataHtml += '<b>' + field + ':</b> '
+            userDataHtml += userData[field];
+            userDataHtml += '<br/>';
         }
-    }).map(x=>{
-        return '<li>' + x.name + '</li>';
-    })
-    userDataHtml += '<ul>';
-    userDataHtml += myCollectionList.join("")
-    userDataHtml += '</ul>';
+        userDataHtml += '<br/><hr/><br/>'
+        userDataHtml += '<h2>Collections</h2>';
+        let allCollections = await store.getAllCollection();
+        let myCollections = getUserInfo().data.collections;
+        let myCollectionList = allCollections.filter(x=>{
+            if (myCollections.indexOf(x['_id']['$oid']) < 0){
+                return false;
+            } else {
+                return true;
+            }
+        }).map(x=>{
+            return '<li>' + x.name + '</li>';
+        })
+        userDataHtml += '<ul>';
+        userDataHtml += myCollectionList.join("")
+        userDataHtml += '</ul>';
+        userInfoDiv.innerHTML = userDataHtml;
+    }
+    setupUserInfo()
 
 
 </script>
