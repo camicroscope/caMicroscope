@@ -164,6 +164,7 @@
 
 <script src="../landing/util.js"></script>
 <script type="text/javascript">
+    const store = new Store('../../data/');
     async function setupUserInfo(){
         let screenName = getUserInfo().data.registration.firstName;
         const screenNameElem = document.getElementById('screenName');
