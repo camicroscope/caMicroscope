@@ -358,9 +358,9 @@
     async function initialize() {
       const store = new Store("../../data/");
       try {
-        let screenName = getUserInfo().data.registration.firstName;
+        let screenName = getUserInfo().email;
         const screenNameDiv = document.getElementById("screenName");
-        screenNameDiv.innerText = `hi, ${screenName}`;
+        screenNameDiv.innerText = `Hi, ${screenName}`;
         screenNameDiv.style.display = "";
         // set collection info panel
         let collectionInfoPanel = document.getElementById("collectionInfo");

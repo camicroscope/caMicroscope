@@ -128,9 +128,9 @@
 <!-- <script type='text/javascript' src='../../common/util.js'></script> -->
 <script type='text/javascript'>
     const store = new Store('../../data/');
-    let screenName = getUserInfo().data.registration.firstName;
+    let screenName = getUserInfo().email;
     const screenNameElem = document.getElementById('screenName');
-    screenNameElem.innerText = `hi, ${screenName}`;
+    screenNameElem.innerText = `Hi, ${screenName}`;
     screenNameElem.style.display = '';
     function copyToken(){
       navigator.clipboard.writeText(getCookie("token"));

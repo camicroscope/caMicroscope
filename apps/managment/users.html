@@ -190,9 +190,9 @@
 
 <script src="../landing/util.js"></script>
 <script type="text/javascript">
-    let screenName = getUserInfo().data.registration.firstName;
+    let screenName = getUserInfo().email;
     const screenNameElem = document.getElementById('screenName');
-    screenNameElem.innerText = `hi, ${screenName}`;
+    screenNameElem.innerText = `Hi, ${screenName}`;
     screenNameElem.style.display = '';
 </script>
 <script src="https://code.jquery.com/jquery-3.6.3.min.js"></script>
