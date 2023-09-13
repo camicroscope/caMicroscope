@@ -1119,6 +1119,7 @@ function addROIFormEvent() {
     label.properties.percent_stroma = itsRange.value;
     label.properties.til_density = vtaRange.value;
     label.properties.pitfalls = pitfalls;
+    label.properties.evaluable = document.querySelector(`input[type=radio][name=roi_type]:checked`).value;
     label.geometries.features[0].properties.style.color = '#7cfc00'; // overwrite highlight color
     label.task = 'roiSelection';
     const flileloc = $D.params.data.location.split('/');
@@ -1376,8 +1377,8 @@ function addAnnot(e) {
     let halfHeight = 1000;
     // should be 500 microns; so half is 250 divided by microns per pixel, get width and height in pixels
     if ($CAMIC.slideData.mpp){
-      halfWidth = 250/$CAMIC.slideData.mpp;
-      halfHeight = 250/$CAMIC.slideData.mpp;
+      halfWidth = Math.floor(250/$CAMIC.slideData.mpp);
+      halfHeight = Math.floor(250/$CAMIC.slideData.mpp);
     }
     let ctr = $CAMIC.viewer.viewport.viewportToImageCoordinates($CAMIC.viewer.viewport.pointFromPixel(e.position, true));
     let xCtr = Math.round(ctr.x);
