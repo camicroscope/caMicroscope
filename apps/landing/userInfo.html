@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <meta charset="utf-8">
+    <title>My User Info</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <script src="../../common/authChecker.js"></script>
+    <!-- camic -->
+    <script src="../../core/Store.js"></script>
+    <script>
+      __auth_check(2);
+    </script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="./main.css" />
+
+    <!-- add modalbox css -->
+    <link rel='stylesheet' type='text/css' media='all' href='../../components/modalbox/modalbox.css'/>
+    <link rel='stylesheet' type='text/css' media='all' href='../../components/loading/loading.css'/>
+    <script type='text/javascript' src='../../components/loading/loading.js' ></script>
+    <script type='text/javascript' src='../../common/ajv.js'></script>
+    <script type='text/javascript' src='../../common/util.js'></script>
+    <script type='text/javascript' src='../../core/Validation.js'></script>
+    <script type='text/javascript' src='../../components/modalbox/modalbox.js'></script>
+    <style>
+        .modalbox-header {
+            text-align: center;
+            font-weight: bold;
+        }
+        .btn {
+            font-size: .8rem;
+            height: 1.5rem;
+            text-decoration: none;
+            border-radius: 5px;
+            cursor: pointer;
+            appearance: none;
+            -moz-appearance: none;
+            -webkit-appearance: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            background-color: transparent;
+            /* color: #4d5968 !important; */
+            letter-spacing: 0.05em;
+            /* text-transform: uppercase; */
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: middle;
+            line-height:0;
+            padding: 0 1rem;
+        }
+        .btn.reset{
+            color: #fff;
+            background-color: #28a745;
+            border-color: #28a745;
+        }
+
+        .btn.reset:hover {
+            color: #fff;
+            background-color: #218838;
+            border-color: #1e7e34;
+        }
+
+        .btn.action{
+            color: #fff;
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+
+        .btn.action:hover {
+            color: #fff;
+            background-color: #0069d9;
+            border-color: #0062cc;
+        }
+
+        .btn.action:disabled {
+            background-color: #dddddd;
+            border-color: #dddddd;
+        }
+
+        #email_div[data-error]:after {
+            position: absolute;
+            content: attr(data-error) !important;
+            color: #800;
+            font-size: .8rem;
+            font-weight: bold;
+            left: 83px;
+            bottom: 80px;
+            border: 1px #800 solid;
+            background: white;
+            overflow: hidden;
+            white-space: nowrap;
+            padding: 0 2px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+
+
+
+<body>
+
+
+
+<!-- Header -->
+<div id='modalbox' ></div>
+<header id="header">
+    <label style="color:white;padding:0 15px;font-size:20px;">CaMicroscope</label>
+    <nav id="nav">
+        <ul>
+            <li id="screenName" style="display:none;"></li>
+            <li><a href="mailto:Emma.Gardecki@fda.hhs.gov;brandon.gallas@fda.hhs.gov;ryan.birmingham@fda.hhs.gov?subject=HTT Feedback">Email Admin</a></li>
+            <!-- <li><a href="../../login.html?logout=true">Sign Out</a></li> -->
+        </ul>
+    </nav>
+</header>
+
+<!-- Main -->
+
+<section id="main" class="wrapper" style="padding: 1em 3em 3em 3em;">
+    <div id="userInfo">
+
+    </div>
+</section>
+
+
+<!-- Footer -->
+
+<footer id="footer">
+
+    <div class="content">
+
+        <div class="inner">
+
+
+
+            <section class="about">
+
+                <!-- U24 CA18092401A1, <b>Tools to Analyze Morphology and Spatially Mapped Molecular Data</b> -->
+            </section>
+
+
+        </div>
+
+    </div>
+
+</footer>
+
+
+
+
+
+<!-- Scripts -->
+
+<script src="../landing/jquery.min.js"></script>
+
+<script src="../landing/jquery.dropotron.min.js"></script>
+
+<script src="../landing/jquery.scrollex.min.js"></script>
+
+<script src="../landing/skel.min.js"></script>
+
+<script src="../landing/util.js"></script>
+<script type="text/javascript">
+    let screenName = getUserInfo().data.registration.firstName;
+    const screenNameElem = document.getElementById('screenName');
+    screenNameElem.innerText = `hi, ${screenName}`;
+    screenNameElem.style.display = '';
+
+    // populate userInfo
+    let userData = getUserInfo().data.registration
+    let userInfoDiv = document.getElementById('userInfo');
+    let userDataHtml = '<h2>User Data</h2>';
+    userDataHtml += '<b>Role:</b> ';
+    userDataHtml += getUserInfo().userType;
+    userDataHtml += '<br/>';
+    for (let field in userData){
+        userDataHtml += '<b>' + field + ':</b> '
+        userDataHtml += userData[field];
+        userDataHtml += '<br/>';
+    }
+    userDataHtml += '<br/><hr/><br/>'
+    userDataHtml += '<h2>Collections</h2>';
+    let allCollections = await store.getAllCollection();
+    let myCollections = getUserInfo().data.collections;
+    let myCollectionList = allCollections.filter(x=>{
+        if (myCollections.indexOf(x['_id']['$oid']) < 0){
+            return false;
+        } else {
+            return true;
+        }
+    }).map(x=>{
+        return '<li>' + x.name + '</li>';
+    })
+    userDataHtml += '<ul>';
+    userDataHtml += myCollectionList.join("")
+    userDataHtml += '</ul>';
+
+
+</script>
+<script src="https://code.jquery.com/jquery-3.6.3.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+
+</body>
+
+
+
+</html>
