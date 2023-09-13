@@ -1115,11 +1115,11 @@ function addROIFormEvent() {
     }
     let label = $D.activeROI;
     const {x, y, width, height} = label.properties;
+    label.properties.evaluable = document.querySelector(`input[type=radio][name=roi_type]:checked`).value;
     label.properties.type = tissueType;
     label.properties.percent_stroma = itsRange.value;
     label.properties.til_density = vtaRange.value;
     label.properties.pitfalls = pitfalls;
-    label.properties.evaluable = document.querySelector(`input[type=radio][name=roi_type]:checked`).value;
     label.geometries.features[0].properties.style.color = '#7cfc00'; // overwrite highlight color
     label.task = 'roiSelection';
     const flileloc = $D.params.data.location.split('/');
