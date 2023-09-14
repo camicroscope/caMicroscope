@@ -195,6 +195,11 @@ async function initialize() {
           });
           // add dbl click handler
           $CAMIC.viewer.addHandler('canvas-double-click', addAnnot);
+          // alert and return if no mpp
+          if (!$CAMIC.slideData.mpp){
+            alert("This image doesn't have the microns per pixel (mpp) defined. Please resolve this issue before working with this image.");
+            window.location = `./pitfallsTable.html?collectionId=${$D.params.collectionId}`;
+          }
         }
       }, 500);
     }
@@ -1379,10 +1384,6 @@ function addAnnot(e) {
     if ($CAMIC.slideData.mpp){
       halfWidth = Math.floor(250/$CAMIC.slideData.mpp);
       halfHeight = Math.floor(250/$CAMIC.slideData.mpp);
-    } else {
-      // alert and return
-      alert("This image doesn't have the microns per pixel (mpp) defined. Please resolve this issue before working with this image.");
-      window.location = `./pitfallsTable.html?collectionId=${$D.params.collectionId}`;
     }
     let ctr = $CAMIC.viewer.viewport.viewportToImageCoordinates($CAMIC.viewer.viewport.pointFromPixel(e.position, true));
     let xCtr = Math.round(ctr.x);
