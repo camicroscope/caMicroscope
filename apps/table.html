@@ -133,7 +133,13 @@
             </div>
             </div>
 
-            <div class="d-md-inline-flex" style="width:18%;">
+            <div class="d-md-inline-flex" style="width:20%;">
+                <div class="pl-md-2 pt-2">
+                    <button type="button" data-bs-toggle="modal" data-bs-target="#dicom"
+                        class="btn btn2 btn-success float-right w-md-100" style="background-color: cadetblue; padding: 7px;" onclick="setDicomParams();"> <i
+                            class="fas fa-server"></i>
+                        <span class="">DICOM</span> </button>
+                </div>
                 <div class="pl-md-2 pt-2">
                     <button type="button" class="btn btn2 btn-success float-right w-md-100" style="padding: 7px;"
                         onclick="(()=>{location.reload();return false;})()"> <i class="fas fa-sync-alt"></i>
@@ -159,6 +165,38 @@
 	</div>
 
 
+        <div class="modal fade" id="dicom" tabindex="-1" role="dialog" aria-labelledby="title-of-dialog-dicom"
+            aria-hidden="true" data-backdrop="static" data-keyboard="false">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="title-of-dialog-dicom">DICOM Server</h5>
+                        <button type="button" class="close" onclick="initialize();" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <table class="table table-borderless" cellpadding="5" style="margin-top: 1em" cellspacing="0">
+                            <tbody>
+                                <tr id="dicomServerRow">
+                                    <td align="right"><b>Server</b></td>
+                                    <td><input type="text" class="form-control" disabled=""
+                                            name="token" id="dicomServer"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="text-center">
+                        <a id="dicomExplorerBtn" style="margin-top: 1em; margin-bottom: 4em" class="btn btn-info">DICOM
+                            Explorer</a>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" onclick="initialize();"
+                            data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <div class="modal fade" id="upload-dialog" tabindex="-1" role="dialog"
         aria-labelledby="title-of-dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
