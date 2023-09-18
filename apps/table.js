@@ -283,7 +283,7 @@ function initialize() {
                     rs.filterList = ['Public'];
                   }
                   rs.displayed = true;
-                  const filename = d.location.split('/')[d.location.split('/').length - 1];
+                  const filename = d.hasOwnProperty("filepath") ? d.filepath : d.location.split('/')[d.location.split('/').length - 1];
                   keys.forEach((key, i) => {
                     if (i == 0) rs.push(d['_id']['$oid']);
                     else if (key == 'review') {
@@ -996,4 +996,38 @@ function filterSlides() {
   totaltablepages = Math.ceil(newSlideRows.length / $('#entries').val());
   resetTable();
   pageIndicatorVisible(newSlideRows.length);
+}
+
+// sets #dicomServer.value and #dicomExplorerBtn.href
+async function setDicomParams() {
+  if (!$("#dicomExplorerBtn").attr("href")) {
+    let res = await fetch("/loader/dicomsrv/location");
+    let data = await res.json();
+    if (!res.ok) {
+      console.error(window.location.origin + "/loader/dicomsrv/location failed to retrieve port and ui_port. Got: " + JSON.stringify(data));
+      $("#dicomServer").attr("value", "UNCONFIGURED");
+      return;
+    }
+    let port = data.port;
+    let ui_port = data.ui_port;
+    let hostname = data.hostname;
+    let ui_hostname = data.ui_hostname;
+
+    if (!hostname) {
+      hostname = window.location.hostname
+    }
+    hostname = hostname.toLowerCase()
+
+    if (!ui_hostname) {
+      // Preserve http/https but not the port
+      ui_hostname = window.location.origin.split(":").slice(0, 2).join(":")
+    }
+    ui_hostname = ui_hostname.toLowerCase()
+    if (!ui_hostname.startsWith("http")) {
+      ui_hostname = "http://" + ui_hostname
+    }
+
+    $("#dicomExplorerBtn").attr("href", ui_hostname + ":" + ui_port);
+    $("#dicomServer").attr("value", hostname + ":" + port);
+  }
 }
