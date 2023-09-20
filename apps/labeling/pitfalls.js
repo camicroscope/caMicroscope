@@ -1431,7 +1431,6 @@ function addAnnot(e) {
       height: 2*halfHeight,
       style: {color: '#fcb000'},
     };
-    // todo, saving an roi should change its color before writing.
     label = annot;
     $D.activeROI = annot;
     const item = {};
