@@ -391,3 +391,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Other Details
 Refer to the [release log](https://github.com/camicroscope/caMicroscope/releases).
+
+
+### fix
+the reload and upload buttons are now apart from each other
