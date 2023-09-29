@@ -163,7 +163,7 @@ async function initialize() {
         Loading.open(document.body, 'Loading Labels Data...');
         const ROIdata = await loadingData();
         $D.ROI = ROIdata.ROI;
-        $D.subROIs = ROIdata.subROIs;
+        $D.subROIs = ROIdata.subROIs || [];
       } catch (e) {
         // statements
         redirect($D.pages.table, e, 0);
