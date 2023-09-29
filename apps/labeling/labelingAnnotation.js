@@ -562,7 +562,7 @@ async function loadingData() {
   const labelData = await $CAMIC.store.getLabel(labelId).then((d)=>d[0]);
 
 
-  let sublabels = null;
+  let sublabels = [];
   if (labelData.subrois&&Array.isArray(labelData.subrois)) {
     sublabels = await $CAMIC.store.findLabelByIds(labelData.subrois).then((d)=>d);
   }
