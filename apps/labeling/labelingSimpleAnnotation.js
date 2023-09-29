@@ -164,7 +164,7 @@ async function initialize() {
         Loading.open(document.body, 'Loading Labels Data...');
         const ROIdata = await loadingData();
         $D.ROI = ROIdata.ROI;
-        $D.subROIs = ROIdata.subROIs;
+        $D.subROIs = ROIdata.subROIs || [];
       } catch (e) {
         // statements
         // redirect($D.pages.table, e, 0);
@@ -637,7 +637,7 @@ async function loadingData() {
   const labelData = await $CAMIC.store.findLabeling({_id: labelId}).then((d)=>d[0]);
 
 
-  let sublabels = null;
+  let sublabels = [];
   if (labelData.subrois&&Array.isArray(labelData.subrois)) {
     sublabels =[]; // await $CAMIC.store.findLabelByIds(labelData.subrois).then((d)=>d);
   }
