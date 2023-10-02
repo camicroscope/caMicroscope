@@ -834,7 +834,7 @@ function labelAnnotToHtml(annot){
 }
 
 // only works for square labels
-async function getLabelInfo(e) {
+function getLabelInfo(e) {
   const img_point = $CAMIC.viewer.viewport.viewportToImageCoordinates($CAMIC.viewer.viewport.pointFromPixel(e.position, true));
   let matched_labels = $D.ROIs.filter((label)=>{
     if (label.properties.x < img_point.x && label.properties.y < img_point.y) {
@@ -852,7 +852,8 @@ async function getLabelInfo(e) {
   // render relevant annotations
   let annots = [];
   for (let label of matched_labels){
-    annots = await $CAMIC.store.findLabeling({'creator': $USER, 'parent': label._id.$oid});
+    $CAMIC.store.findLabeling({'creator': $USER, 'parent': label._id.$oid}).then(x=>{
+      document.getElementById('annot_review').innerHTML += x.join('<br/><hr/><br/>');
+    });
   }
-  document.getElementById('annot_review').innerHTML = annots.join('<br/><hr/><br/>');
 }
