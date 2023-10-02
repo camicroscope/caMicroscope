@@ -25,7 +25,6 @@ const $D = {
   // },
   params: null, // parameter from url - slide Id and status in it (object).
 };
-window.addEventListener('beforeunload', beforeUnloadHandler);
 
 // window.onbeforeunload = function (e) {
 //     e = e || window.event;
