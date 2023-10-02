@@ -852,7 +852,7 @@ function getLabelInfo(e) {
   // render relevant annotations
   let annots = [];
   for (let label of matched_labels){
-    $CAMIC.store.findLabeling({'creator': $USER, 'parent': label._id.$oid}).then(x=>{
+    $CAMIC.store.findLabelingAnnotation({'creator': $USER, 'parent': label._id.$oid}).then(x=>{
       document.getElementById('annot_review').innerHTML += x.join('<br/><hr/><br/>');
     });
   }
