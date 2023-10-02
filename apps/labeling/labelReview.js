@@ -850,10 +850,9 @@ function getLabelInfo(e) {
   let texts = matched_labels.map(labelInfoToHtml);
   document.getElementById('label_review').innerHTML = texts.join('<br/><hr/><br/>');
   // render relevant annotations
-  let annots = [];
   for (let label of matched_labels){
     $CAMIC.store.findLabelingAnnotation({'creator': $USER, 'parent': label._id.$oid}).then(x=>{
-      document.getElementById('annot_review').innerHTML += x.join('<br/><hr/><br/>');
+      document.getElementById('annot_review').innerHTML += x.map(labelAnnotToHtml).join('<br/><hr/><br/>');
     });
   }
 }
