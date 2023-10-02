@@ -754,7 +754,7 @@ function setDownloadModalProgress(num) {
 }
 
 function labelInfoToHtml(label) {
-  let text = '';
+  let text = "<div class='labelHtml'>";
   // top level fields
 
   if (false && label.alias) {
@@ -800,11 +800,42 @@ function labelInfoToHtml(label) {
       text += '<br/>';
     }
   }
+  text += "</div>"
+  return text;
+}
+
+function labelAnnotToHtml(annot){
+  let text = "<div class='annotHtml'>";
+  // top level fields
+
+  if (annot.create_date) {
+    text += '<b>Create Date/Time:</b> ';
+    text += annot.create_date;
+    text += '<br/>';
+  }
+  let skip_props = ['style']
+  // now go through properties
+  for (let propkey in annot.properties) {
+    if (skip_props.indexOf(propkey) == -1) {
+      text += '<b>' + propkey.replaceAll('_', ' ') + ':</b> ';
+      let propdata = annot.properties[propkey];
+      if (Array.isArray(propdata)) {
+        text += propdata.join(', ');
+      } else if (typeof(propdata) == 'object') {
+        text += 'An object with:';
+        text +=JSON.stringify(propdata).replaceAll('{', '').replaceAll('}', '');
+      } else {
+        text += propdata;
+      }
+      text += '<br/>';
+    }
+  }
+  text += "</div>"
   return text;
 }
 
 // only works for square labels
-function getLabelInfo(e) {
+async function getLabelInfo(e) {
   const img_point = $CAMIC.viewer.viewport.viewportToImageCoordinates($CAMIC.viewer.viewport.pointFromPixel(e.position, true));
   let matched_labels = $D.ROIs.filter((label)=>{
     if (label.properties.x < img_point.x && label.properties.y < img_point.y) {
@@ -819,4 +850,10 @@ function getLabelInfo(e) {
   });
   let texts = matched_labels.map(labelInfoToHtml);
   document.getElementById('label_review').innerHTML = texts.join('<br/><hr/><br/>');
+  // render relevant annotations
+  let annots = [];
+  for (let label of matched_labels){
+    annots = await $CAMIC.store.findLabeling({'creator': $USER, 'parent': label._id.$oid});
+  }
+  document.getElementById('annot_review').innerHTML = annots.join('<br/><hr/><br/>');
 }
