@@ -31,8 +31,7 @@ closeCaseBtn.addEventListener('click', async ()=>{
       const domNode = colTree.get_node($D.selectedNode, true);
       domNode.addClass('text-success');
       $UI.message.add(`The Collection <span class='text-blue'>${fullPathName($D.selectedNode)}</span> Case Closed!`);
-
-      // disable level based on leve flag TODO
+      // disable level based on leve flag
       toggleLevelFlag(false);
     } else {
       // db update error
@@ -368,12 +367,13 @@ async function createGridCards() {
   slides.sort((a, b) => a.order - b.order).forEach((slide) => {
     $UI.gridViewContainer.append(createGridCard(slide, crumbList));
   });
+
   // level flage control
-  if (closeCaseBtn.disabled) {
-    toggleLevelFlag(true);
-  } else {
-    toggleLevelFlag(false);
-  }
+  // if (closeCaseBtn.disabled) {
+  //   toggleLevelFlag(true);
+  // } else {
+  //   toggleLevelFlag(false);
+  // }
 }
 
 function createGridCard(d, crumbList) {
@@ -510,8 +510,8 @@ function generateDropdownMenu(elt, data, informativenessSlides) {
               const domNode = colTree.get_node($D.selectedNode, true);
               domNode.removeClass('text-success');
               $UI.message.add(`The Collection <span class='text-blue'>${fullPathName($D.selectedNode)}</span> Case Reopened!`);
-
-              // enable level flag based on level value TODO
+              closeCaseBtn.disabled = false;
+              // enable level flag based on level value
               toggleLevelFlag(true);
             } else {
               // db update error
@@ -777,16 +777,19 @@ window.addEventListener('load', async ()=> {
     cases.forEach((c) => getAllParents(c, data));
 
     $D.collectionData.forEach((d)=>{
-      //d.id = d._id.$oid;
-      // show case closed if ANYONE closed the case
-      if (d.users&&d.users.some((u)=>(u.task_status))) {
+      d.id = d._id.$oid;
+
+      // show case closed if current user closed the case
+      if (d.users&&d.users.some((u)=>(u.user==$D.user.key && u.task_status))) {
         d.icon = './check-folder.png';
         d.li_attr = {'class': 'text-success'};
+        toggleLevelFlag(false);
       } else {
         d.icon = './folder.png';
+        toggleLevelFlag(true);
+
       }
       d.name = d.text;
-      d.id = d['_id']['$oid'];
       delete d._id;
       // set tree state if treeStates exist
       var treeStates = sessionStorage.getItem('treeStates');
