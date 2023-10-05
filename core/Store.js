@@ -1492,6 +1492,26 @@ class Store {
     }).then(this.errorHandler);
   }
 
+  /**
+   * delete slidesInformativeness
+   * @param {object} cid - the collection id object id
+   * @param {object} creator - the creator id
+   * @return {promise} - promise which resolves with response
+   **/
+  deleteSlidesInformativeness(cid, creator) {
+    const suffix = 'SlideInformativeness/delete';
+    const url = this.base + suffix;
+    const query = {
+      'cid': cid,
+      'creator': creator
+    };
+    return fetch(url + '?' + objToParamStr(query), {
+      method: 'DELETE',
+      credentials: 'include',
+      mode: 'cors',
+    }).then(this.errorHandler);
+  }
+
   removeRankSlidesInformativeness(cid, creator=null, sid) {
     //
     if (!cid || !sid) {

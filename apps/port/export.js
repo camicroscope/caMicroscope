@@ -146,7 +146,6 @@ window.addEventListener('load', async ()=> {
 
 function dataExport() {
   const nodes = $DTable.rows({search: 'applied'}).nodes().to$();
-  console.log(nodes);
   const cids = [...nodes].reduce((rs, node)=>{
     if (node.querySelector('input[type=checkbox]:checked')) {
       const data = $D.collectionData.find((c)=>c.id==node.id);

@@ -1886,8 +1886,9 @@ async function saveEvaluation(e) {
         $D.isDraftEvalData = false;
         const evalMessage = document.getElementById('eval_message');
         evalMessage.textContent = null;
-        // change collection status
+        
         try {
+          // change collection status
           const rs = await $CAMIC.store.setCollectionTaskStatusBySlideId($D.user.key, $D.params.slideId, false);
           if (rs&&rs.ok) {
             console.log(`Eval setCollectionTaskStatusBySlideId(${$D.user.key}, ${$D.params.slideId},false) succeeded`);
@@ -1895,20 +1896,17 @@ async function saveEvaluation(e) {
             // db update error
             console.error(`Eval setCollectionTaskStatusBySlideId update failed`);
           }
+          // // clean the relative informativeness
+          if ($D.colData&&$D.colData._id&&$D.colData._id.$oid) {
+            console.log($D.colData._id.$oid)
+            const data = await $CAMIC.store.deleteSlidesInformativeness(
+                $D.colData._id.$oid,
+                $D.user.key
+            );
+          }        
         } catch (error) {
           // server error
           console.error(`Eval setCollectionTaskStatusBySlideId error`);
-        }
-        // change
-        if (evaluation.informativeness==0) {
-          const collection = $D.collections.find((c)=>c.text==$D.params.crumb.split('/')[1]);
-          if (collection&&collection._id&&collection._id.$oid) {
-            const data = await $CAMIC.store.removeRankSlidesInformativeness(
-                collection._id.$oid,
-                $D.user.key,
-                $D.params.slideId,
-            );
-          }
         }
       } else {
         $UI.message.addWarning(`Something Happened When Saving Evaluation!`);

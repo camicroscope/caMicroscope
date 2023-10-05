@@ -107,7 +107,6 @@ function initialize() {
 // setting core functionalities
 function initCore() {
   // start initial
-
   // create the message queue
   $UI.message = new MessageQueue({position: 'bottom-left'});
 
@@ -357,6 +356,11 @@ async function initUIcomponents() {
     $D.user = user[0];
   }
 
+  // get current collection id
+  if($D.params.data&&$D.params.data.token_id) {
+    const colData = await $CAMIC.store.getCollection({text: $D.params.data.token_id});
+    if(Array.isArray(colData)&&colData.length > 0) $D.colData = colData[0]
+  }
   /* loading configurations */
   $D.configurations = await $CAMIC.store.getConfigByName();
   /* create UI components */
@@ -377,6 +381,7 @@ async function initUIcomponents() {
 
   // get collection list
   $D.collections = await $CAMIC.store.getAllCollection();
+
 
   // get senior pathologist list
   $D.seniors = await $CAMIC.store.getSeniorUsers();
@@ -476,7 +481,7 @@ async function initUIcomponents() {
           'updater': $D.user.key,
         };
         try {
-          const rs = await $CAMIC.store.updateEvaluation(query, evalData);
+          const rs = await $CAMIC.store.updateEvaluation(query, evalData);  
           if (rs.error) {
             $UI.message.addError(rs.text);
           } else if (rs && rs.result && rs.result.ok ) {
@@ -490,7 +495,6 @@ async function initUIcomponents() {
         }
       }
     }
-    // const formOpt = evaluationConfig.configuration;
     const formOpt = {
       data: {
         slide_quality: null,
