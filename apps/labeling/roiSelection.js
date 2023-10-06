@@ -198,7 +198,7 @@ async function initialize() {
           // alert and return if no mpp
           if (!$CAMIC.slideData.mpp){
             alert("This image doesn't have the microns per pixel (mpp) defined. Please resolve this issue before working with this image.");
-            window.location = `./pitfallsTable.html?collectionId=${$D.params.collectionId}`;
+            window.location = `./roiSelectTable.html?collectionId=${$D.params.collectionId}`;
           }
         }
       }, 500);
@@ -1442,5 +1442,5 @@ function addAnnot(e) {
 }
 
 document.getElementById('quit').addEventListener('click', (x)=>{
-  window.location = `./pitfallsTable.html?collectionId=${$D.params.collectionId}`;
+  window.location = `./roiSelectTable.html?collectionId=${$D.params.collectionId}`;
 });

@@ -332,7 +332,7 @@
               </div>
               <div style="padding: 0 0 0.5rem 2.5rem">
                 <label>
-                  <input disabled type="radio" id="tt_radio_4" name="tissue_type" class="tissue_check" data-show-pitfalls="1" value="No proximal tumor" onchange="console.log(this)" /> No Proximal Tumor </label>
+                  <input disabled type="radio" id="tt_radio_4" name="tissue_type" class="tissue_check" data-show-pitfalls="1" value="No proximal tumor" onchange="console.log(this)" /> No Proximal Tumor (Within 500 μm) </label>
               </div>
               <p id="new_roi_warn">
                 <b>Double click a location to create or reposition an ROI</b>
@@ -547,8 +547,8 @@
     const url = new URL(window.location.href);
     $D.params = getUrlVars();
     $D.pages = {};
-    $D.pages.home = `./pitfallsTable.html?collectionId=${$D.params.collectionId}`;
-    $D.pages.table = `./pitfallsTable.html?collectionId=${$D.params.collectionId}`;
+    $D.pages.home = `./roiSelectTable.html?collectionId=${$D.params.collectionId}`;
+    $D.pages.table = `./roiSelectTable.html?collectionId=${$D.params.collectionId}`;
     // no slide Id error
     if ($D.params && $D.params.slideId) {
       // normal initialization starts
