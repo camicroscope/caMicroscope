@@ -935,20 +935,7 @@ function getAnnotationDataFrom(data) {
   };
   return annotation;
 }
-// the ROI Form Event
-function changeROITypeValue(radio) {
-  // group 1: Evaluable for sTILs
-  if (radio.value=='Evaluable for sTILs') {
-    enableITS();
-    disableSaveBtn();
-  }
-  // group 2: Not Evaluable for sTILs
-  if (radio.value=='Not Evaluable for sTILs') {
-    disableITS();
-    disableTIL();
-    enableSaveBtn();
-  }
-}
+
 function disableSaveBtn() {
   const btn = document.getElementById('save');
   btn.classList.add('disabled');
@@ -1292,7 +1279,7 @@ function makeFormReactive() {
         document.getElementById('save').style.display = 'none';
         if (e.target.value == 'Evaluable for sTILs') {
           // show sliders when evaluable
-          document.getElementById('sliders').style.display = 'block';
+          document.getElementById('sliders').style.display = 'none';
           document.getElementById('vta').style.display = 'none';
           document.getElementById('til_message').style.display = 'none';
           // tissue types 1 and 2 enable, 3 and 4 disable
@@ -1314,7 +1301,10 @@ function makeFormReactive() {
   }
   for (let tt of tissueTypeRadios) {
     tt.addEventListener('change', function(e) {
-      if (tt.dataset.ShowPitfalls){
+      disableITS();
+      disableTIL();
+      disableSaveBtn();
+      if (tt.dataset.showPitfalls){
         // show pitfalls
         document.getElementById('pitfalls_area').style.display = 'block';
         // show save button
@@ -1325,6 +1315,7 @@ function makeFormReactive() {
           check.checked = false;
       }
     } else {
+      enableITS();
       document.getElementById('pitfalls_area').style.display = 'none';
     }
     });
@@ -1336,6 +1327,10 @@ makeFormReactive();
 function resetForm() {
   console.log('reset form');
 
+  document.getElementById('tt_radio_1').disabled = true;
+  document.getElementById('tt_radio_2').disabled = true;
+  document.getElementById('tt_radio_3').disabled = true;
+  document.getElementById('tt_radio_4').disabled = true;
   // reset tissue and roi radio buttons
   let radios = document.querySelectorAll('#left_menu input[type=radio]:checked');
   for (let r of radios) {
