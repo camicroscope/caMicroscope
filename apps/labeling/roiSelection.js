@@ -1226,8 +1226,6 @@ function itsChangeHandler(x) {
     for (let check of checkboxes) {
       check.checked = false;
     }
-    // hide save button
-    document.getElementById('save').style.display = 'none';
   }
 }
 function vtaChangeHandler(x) {
