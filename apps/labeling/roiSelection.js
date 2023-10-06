@@ -1274,7 +1274,6 @@ function makeFormReactive() {
         document.getElementById('tt_radio_4').checked = false;
         document.getElementById('pitfalls_area').style.display = 'none';
         // hide save button
-        document.getElementById('save').style.display = 'none';
         if (e.target.value == 'Evaluable for sTILs') {
           // tissue types 1 and 2 enable, 3 and 4 disable
           document.getElementById('tt_radio_1').disabled = false;
