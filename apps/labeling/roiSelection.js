@@ -1269,6 +1269,7 @@ function makeFormReactive() {
         for (let check of checkboxes) {
           check.checked = false;
         }
+        disableSaveBtn();
         document.getElementById('tt_radio_1').checked = false;
         document.getElementById('tt_radio_2').checked = false;
         document.getElementById('tt_radio_3').checked = false;
