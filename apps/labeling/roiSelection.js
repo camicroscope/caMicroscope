@@ -1279,9 +1279,9 @@ function makeFormReactive() {
         document.getElementById('save').style.display = 'none';
         if (e.target.value == 'Evaluable for sTILs') {
           // show sliders when evaluable
-          document.getElementById('sliders').style.display = 'none';
-          document.getElementById('vta').style.display = 'none';
-          document.getElementById('til_message').style.display = 'none';
+          //document.getElementById('sliders').style.display = 'none';
+          //document.getElementById('vta').style.display = 'none';
+          //document.getElementById('til_message').style.display = 'none';
           // tissue types 1 and 2 enable, 3 and 4 disable
           document.getElementById('tt_radio_1').disabled = false;
           document.getElementById('tt_radio_2').disabled = false;
@@ -1289,7 +1289,7 @@ function makeFormReactive() {
           document.getElementById('tt_radio_4').disabled = true;
         } else {
           // hide sliders when not evaluable
-          document.getElementById('sliders').style.display = 'none';
+          // document.getElementById('sliders').style.display = 'none';
           // tissue types 1 and 2 disable, 3 and 4 enaable
           document.getElementById('tt_radio_1').disabled = true;
           document.getElementById('tt_radio_2').disabled = true;
