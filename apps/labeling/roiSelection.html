@@ -316,11 +316,11 @@
               </div>
               <div style="padding: 0 0 0.5rem 2.5rem">
                 <label>
-                  <input type="radio" id="tt_radio_1" name="tissue_type" class="tissue_check" value="Tumor with Stroma" onchange="console.log(this)" /> Tumor with Stroma </label>
+                  <input disabled type="radio" id="tt_radio_1" name="tissue_type" class="tissue_check" value="Tumor with Stroma" onchange="console.log(this)" /> Tumor with Stroma </label>
               </div>
               <div style="padding: 0 0 0.5rem 2.5rem">
                 <label>
-                  <input type="radio" id="tt_radio_2" name="tissue_type" class="tissue_check" value="Invasive Margin" onchange="console.log(this)" /> Invasive Margin </label>
+                  <input disabled type="radio" id="tt_radio_2" name="tissue_type" class="tissue_check" value="Invasive Margin" onchange="console.log(this)" /> Invasive Margin </label>
               </div>
               <div style="padding: 0 0 0.5rem 0.3rem">
                 <label>
@@ -328,11 +328,11 @@
               </div>
               <div style="padding: 0 0 0.5rem 2.5rem">
                 <label>
-                  <input type="radio" id="tt_radio_3" name="tissue_type" class="tissue_check" value="Inside tumor/margin with low/without stroma" onchange="console.log(this)" /> Inside tumor/margin with low/without stroma </label>
+                  <input disabled type="radio" id="tt_radio_3" name="tissue_type" class="tissue_check" data-show-pitfalls="1" value="Inside tumor/margin with low/without stroma" onchange="console.log(this)" /> Inside tumor/margin with low/without stroma </label>
               </div>
               <div style="padding: 0 0 0.5rem 2.5rem">
                 <label>
-                  <input type="radio" id="tt_radio_4" name="tissue_type" class="tissue_check" value="No proximal tumor" onchange="console.log(this)" /> No Proximal Tumor </label>
+                  <input disabled type="radio" id="tt_radio_4" name="tissue_type" class="tissue_check" data-show-pitfalls="1" value="No proximal tumor" onchange="console.log(this)" /> No Proximal Tumor </label>
               </div>
               <p id="new_roi_warn">
                 <b>Double click a location to create or reposition an ROI</b>
@@ -431,11 +431,6 @@
                     display: none;
                   "> sTILs Density </div>
                 <hr />
-              </div>
-              <div id='tissue_type_area' style="display:none;">
-                <div style="font-weight: bold; padding-bottom: 0.5rem"> Tissue Type: </div>
-                <div id="tumor_types">
-                </div>
               </div>
               <hr />
               <div id="pitfalls_area" style="display: none;">

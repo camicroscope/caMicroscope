@@ -1224,9 +1224,7 @@ function itsChangeHandler(x) {
     document.getElementById('vta').style.display = 'block';
     document.getElementById('til_message').style.display = 'block';
   } else {
-    // hide and reset next slider, tissue type, and pitfalls
-    document.getElementById('tissue_type_area').style.display = 'none';
-    document.getElementById('pitfalls_area').style.display = 'none';
+    // hide and reset next slider, and pitfalls
     document.getElementById('vta').style.display = 'none';
     document.getElementById('til_message').style.display = 'none';
     document.getElementById('vta_range').value = -1;
@@ -1247,15 +1245,10 @@ function itsChangeHandler(x) {
 }
 function vtaChangeHandler(x) {
   if (x.target.value >=0) {
-    document.getElementById('tissue_type_area').style.display = 'block';
+    document.getElementById('pitfalls_area').style.display = 'block';
   } else {
     // hide save button, tissue type, and pitfalls
     document.getElementById('save').style.display = 'none';
-    document.getElementById('tt_radio_1').checked = false;
-    document.getElementById('tt_radio_2').checked = false;
-    document.getElementById('tt_radio_3').checked = false;
-    document.getElementById('tt_radio_4').checked = false;
-    document.getElementById('tissue_type_area').style.display = 'none';
     document.getElementById('pitfalls_area').style.display = 'none';
   }
 }
@@ -1294,13 +1287,11 @@ function makeFormReactive() {
         document.getElementById('tt_radio_2').checked = false;
         document.getElementById('tt_radio_3').checked = false;
         document.getElementById('tt_radio_4').checked = false;
-        // document.getElementById('tissue_type_area').style.display = 'block';
         document.getElementById('pitfalls_area').style.display = 'none';
         // hide save button
         document.getElementById('save').style.display = 'none';
         if (e.target.value == 'Evaluable for sTILs') {
           // show sliders when evaluable
-          document.getElementById('tissue_type_area').style.display = 'none';
           document.getElementById('sliders').style.display = 'block';
           document.getElementById('vta').style.display = 'none';
           document.getElementById('til_message').style.display = 'none';
@@ -1312,7 +1303,6 @@ function makeFormReactive() {
         } else {
           // hide sliders when not evaluable
           document.getElementById('sliders').style.display = 'none';
-          document.getElementById('tissue_type_area').style.display = 'block';
           // tissue types 1 and 2 disable, 3 and 4 enaable
           document.getElementById('tt_radio_1').disabled = true;
           document.getElementById('tt_radio_2').disabled = true;
@@ -1324,15 +1314,19 @@ function makeFormReactive() {
   }
   for (let tt of tissueTypeRadios) {
     tt.addEventListener('change', function(e) {
-      // show pitfalls
-      document.getElementById('pitfalls_area').style.display = 'block';
-      // show save button
-      document.getElementById('save').style.display = 'block';
-      // reset pitfalls
-      let checkboxes = document.querySelectorAll('#left_menu input[type=checkbox]');
-      for (let check of checkboxes) {
-        check.checked = false;
+      if (tt.dataset.ShowPitfalls){
+        // show pitfalls
+        document.getElementById('pitfalls_area').style.display = 'block';
+        // show save button
+        document.getElementById('save').style.display = 'block';
+        // reset pitfalls
+        let checkboxes = document.querySelectorAll('#left_menu input[type=checkbox]');
+        for (let check of checkboxes) {
+          check.checked = false;
       }
+    } else {
+      document.getElementById('pitfalls_area').style.display = 'none';
+    }
     });
   }
 }
@@ -1368,7 +1362,6 @@ function resetForm() {
   for (let check of checkboxes) {
     check.checked = false;
   }
-  document.getElementById('tissue_type_area').style.display = 'none';
   document.getElementById('pitfalls_area').style.display = 'none';
   document.getElementById('save').style.display = 'none';
   document.getElementById('comments').value = "";
