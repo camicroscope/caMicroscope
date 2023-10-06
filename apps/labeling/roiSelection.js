@@ -1231,6 +1231,7 @@ function itsChangeHandler(x) {
 function vtaChangeHandler(x) {
   if (x.target.value >=0) {
     document.getElementById('pitfalls_area').style.display = 'block';
+    document.getElementById('save').style.display = 'block';
   } else {
     // hide save button, tissue type, and pitfalls
     document.getElementById('save').style.display = 'none';
