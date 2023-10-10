@@ -174,7 +174,7 @@ class CaMic {
           }
           fetch(checkSlideUrl, {credentials: 'include'}).then((z)=>{
             if (true) {
-              this.openSlide(data, func);
+              this.iipSrv(data, func);
             } else {
               Loading.text.textContent = 'Slide Source Returned Status Code: ' + z.status;
               func.call(null,
@@ -192,16 +192,16 @@ class CaMic {
         });
   }
 
-  openSlide(data, func) {
+  iipSrv(data, func) {
     this.slideId = data['_id']['$oid'];
 
     this.slideName = data['name'];
     // insert token if present
-    let openSlideUrl = '../../img/IIP/raw/?DeepZoom='+ data['location'] + '.dzi';
+    let iipSrvUrl = '../../img/IIP/raw/?DeepZoom='+ data['location'] + '.dzi';
     if (getCookie('token')) {
-      openSlideUrl = '../../img/IIP/raw/?token=' + getCookie('token') + '&DeepZoom='+ data['location'] + '.dzi';
+      iipSrvUrl = '../../img/IIP/raw/?token=' + getCookie('token') + '&DeepZoom='+ data['location'] + '.dzi';
     }
-    this.viewer.open(openSlideUrl);
+    this.viewer.open(iipSrvUrl);
     // set mpp
     this.mpp_x = +data['mpp-x'];
     this.mpp_y = +data['mpp-y'];
@@ -222,7 +222,7 @@ class CaMic {
     });
 
     imagingHelper.setMaxZoom(1);
-    data.url = openSlideUrl;
+    data.url = iipSrvUrl;
     data.slide = this.slideId;
     if (func && typeof func === 'function') func.call(null, data);
     Loading.text.textContent = `Loading Slide's Tiles...`;

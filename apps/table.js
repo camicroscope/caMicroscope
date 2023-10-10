@@ -13,7 +13,22 @@ function sanitize(string) {
 }
 var existingSlideNames = [];
 var permissions;
-const allowedExtensions = ['svs', 'tif', 'tiff', 'vms', 'vmu', 'ndpi', 'scn', 'mrxs', 'bif', 'svslide', 'jpg', 'png'];
+const allowedExtensions = ['svs', 'tif', 'tiff', 'vms', 'vmu', 'ndpi', 'scn', 'mrxs', 'bif', 'svslide', 'jpg', 'png', 'dcm',
+  'v3draw', 'ano', 'cfg', 'csv', 'htm', 'rec', 'tim', 'zpo', 'dic', 'dicom', 'jp2', 'j2ki', 'j2kr',
+  'raw', 'ima', 'cr2', 'crw', 'thm', 'wav', 'dv', 'r3d', 'r3d_d3d', 'log', 'mvd2', 'aisf', 'aiix',
+  'dat', 'atsf', 'tf2', 'tf8', 'btf', 'pbm', 'pgm', 'ppm', 'xdce', 'xml', 'xlog', 'apl', 'tnb',
+  'mtb', 'im', 'mea', 'res', 'aim', 'arf', 'psd', 'al3d', 'gel', 'am', 'amiramesh', 'grey', 'hx',
+  'labels', 'img', 'hdr', 'sif', 'afi', 'exp', 'h5', '1sc', 'pic', 'ims', 'ch5', 'vsi', 'ets',
+  'pnl', 'htd', 'c01', 'dib', 'cxd', 'v', 'eps', 'epsi', 'ps', 'flex', 'xlef', 'fits', 'fts',
+  'dm2', 'dm3', 'dm4', 'naf', 'his', 'ndpis', 'txt', 'i2i', 'hed', 'mod', 'inr', 'ipl', 'ipm',
+  'fff', 'ics', 'ids', 'seq', 'ips', 'ipw', 'frm', 'par', 'j2k', 'jpf', 'jpk', 'jpx', 'klb', 'xv',
+  'bip', 'sxm', 'fli', 'lim', 'msr', 'lif', 'lof', 'lei', 'l2d', 'mnc', 'stk', 'nd', 'scan', 'vff',
+  'mrw', 'stp', 'mng', 'nii', 'nrrd', 'nhdr', 'nd2', 'nef', 'obf', 'omp2info', 'oib', 'oif', 'pty',
+  'lut', 'oir', 'sld', 'spl', 'liff', 'top', 'pcoraw', 'pcx', 'pict', 'pct', 'df3', 'im3',
+  'qptiff', 'bin', 'env', 'spe', 'afm', 'sm2', 'sm3', 'spc', 'set', 'sdt', 'spi', 'xqd', 'xqf',
+  'db', 'vws', 'pst', 'inf', 'tfr', 'ffr', 'zfr', 'zfp', '2fl', 'tga', 'pr3', 'dti', 'fdf', 'hdf',
+  'xys', 'html', 'acff', 'wat', 'bmp', 'wpi', 'czi', 'lms', 'lsm', 'mdb', 'zvi', 'mrc', 'st',
+  'ali', 'map', 'mrcs', 'jpeg', 'gif', 'ptif'];
 function validateForm(callback) {
   let slide = document.getElementById('slidename0');
   // Check if input element is rendered or not
@@ -283,7 +298,8 @@ function initialize() {
                     rs.filterList = ['Public'];
                   }
                   rs.displayed = true;
-                  const filename = d.location.split('/')[d.location.split('/').length - 1];
+                  const filename = d.hasOwnProperty('filepath') ?
+                                      d.filepath : d.location.split('/')[d.location.split('/').length - 1];
                   keys.forEach((key, i) => {
                     if (i == 0) rs.push(d['_id']['$oid']);
                     else if (key == 'review') {
@@ -996,4 +1012,39 @@ function filterSlides() {
   totaltablepages = Math.ceil(newSlideRows.length / $('#entries').val());
   resetTable();
   pageIndicatorVisible(newSlideRows.length);
+}
+
+// sets #dicomServer.value and #dicomExplorerBtn.href
+async function setDicomParams() {
+  if (!$('#dicomExplorerBtn').attr('href')) {
+    let res = await fetch('/loader/dicomsrv/location');
+    let data = await res.json();
+    if (!res.ok) {
+      let errTxt = '/loader/dicomsrv/location failed to retrieve port and ui_port. Got: ';
+      console.error(window.location.origin + errTxt + JSON.stringify(data));
+      $('#dicomServer').attr('value', 'UNCONFIGURED');
+      return;
+    }
+    let port = data.port;
+    let uiPort = data.ui_port;
+    let hostname = data.hostname;
+    let uiHostname = data.ui_hostname;
+
+    if (!hostname) {
+      hostname = window.location.hostname;
+    }
+    hostname = hostname.toLowerCase();
+
+    if (!uiHostname) {
+      // Preserve http/https but not the port
+      uiHostname = window.location.origin.split(':').slice(0, 2).join(':');
+    }
+    uiHostname = uiHostname.toLowerCase();
+    if (!uiHostname.startsWith('http')) {
+      uiHostname = 'http://' + uiHostname;
+    }
+
+    $('#dicomExplorerBtn').attr('href', uiHostname + ':' + uiPort);
+    $('#dicomServer').attr('value', hostname + ':' + port);
+  }
 }
