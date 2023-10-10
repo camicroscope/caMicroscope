@@ -587,12 +587,12 @@ function imageDownload() {
       .then((response) => {
         if (response[0]) {
           if (response[0]['filepath']) {
-            return response[0]['filepath']
+            return response[0]['filepath'];
           }
           let location = response[0]['location'];
           return location.substring(
-            location.lastIndexOf('/') + 1,
-            location.length,
+              location.lastIndexOf('/') + 1,
+              location.length,
           );
         } else {
           throw new Error('Slide not found');

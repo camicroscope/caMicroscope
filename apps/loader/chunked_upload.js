@@ -79,7 +79,7 @@ async function startUpload(filename) {
   try {
     const a = await token;
     changeStatus('UPLOAD', 'Begun upload - Token:' + a['upload_token']);
-    return { upload_token: a['upload_token'], filename: a['filename'] };;
+    return {upload_token: a['upload_token'], filename: a['filename']}; ;
   } catch (e) {
     changeStatus('UPLOAD | ERROR;', e);
   }

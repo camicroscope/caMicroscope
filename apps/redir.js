@@ -1,14 +1,14 @@
 document.addEventListener('DOMContentLoaded', async function() {
   let params = getUrlVars();
   let isPathdb = false;
-  
+
   if (params.hasOwnProperty('mode') && params.mode == 'pathdb') {
     await PathDbMods();
     isPathdb = true;
   }
-  
+
   const store = new Store('../data/');
-  
+
   if (params.hasOwnProperty('slide')) {
     store.findSlide(params.slide, params.specimen, params.study, 0, 0, params.collection).then((x)=>{
       console.info(x);
@@ -30,4 +30,4 @@ document.addEventListener('DOMContentLoaded', async function() {
     console.error('no slide passed?');
     alert('ERROR!');
   }
-})
+});

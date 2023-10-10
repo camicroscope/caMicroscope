@@ -408,12 +408,12 @@ function initCore() {
 
   $CAMIC.store.getSlide($D.params.slideId).then((response) => {
     if (response[0]) {
-      if (response[0]["filepath"]) {
-        return response[0]["filepath"];
+      if (response[0]['filepath']) {
+        return response[0]['filepath'];
       }
       return location.substring(
-        location.lastIndexOf('/') + 1,
-        location.length,
+          location.lastIndexOf('/') + 1,
+          location.length,
       );
     } else {
       throw new Error('Slide not found');
