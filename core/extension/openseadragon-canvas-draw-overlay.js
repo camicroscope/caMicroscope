@@ -457,6 +457,10 @@
       this.align_fy = this._viewer.drawer.canvas.width/this._display_.width;
       this.align_fx = this._viewer.drawer.canvas.height/this._display_.height;
 
+      // ml tools
+      try {
+        mltools.initcanvas(this._viewer.drawer.canvas);
+      } catch (error) {}
       if (
         0 > img_point.x ||
         this.imgWidth < img_point.x ||
@@ -600,7 +604,7 @@
       }
       
     },
-    pointClick: function(e) {
+    pointClick: async function(e) {
       
       this.raiseEvent('start-drawing', {originalEvent: e});
       if (this.stop) {
@@ -636,7 +640,7 @@
           new OpenSeadragon.Point(line[0][0], line[0][1]),
           new OpenSeadragon.Point(line[line.length - 1][0], line[line.length - 1][1])
         ) <= 14) { // save annotations
-          this.__endNewFeature();
+          await this.__endNewFeature();
           try {
             // custom event on stop
             this.raiseEvent('stop-drawing', {originalEvent: e});
@@ -718,7 +722,6 @@
       }
       // anything happening?
       if (!(this.isDrawing) && !(this.isMoving)) return;
-
       let point = new OpenSeadragon.Point(e.clientX, e.clientY);
       let img_point = this._viewer.viewport.windowToImageCoordinates(point);
       if (
@@ -804,26 +807,76 @@
             );
             break;
           case 'grid':
-          // draw line
-            this._last = [img_point.x, img_point.y];
-            // store current point
-            this._current_path_.geometry.coordinates[0].push(this._last.slice());
-            const grids = getGrids(
-                this._current_path_.geometry.coordinates[0],
-                this._current_path_.properties.size,
-            );
-            this._draw_ctx_.fillStyle = hexToRgbA(this.style.color, 0.5);
-            this.drawOnCanvas(
-                this._draw_ctx_,
-                function() {
-                  DrawHelper.drawMultiGrid(
-                      this._draw_ctx_,
-                      grids,
-                      this._current_path_.properties.size,
-                  );
-                // DrawHelper.drawGrid(this._draw_ctx_,this._current_path_.geometry.coordinates[0]);
-                }.bind(this),
-            );
+            // draw line
+            if ($UI.AssistantViewer?.__isEnableAssistant()) {
+              // draw line
+              this._last = [img_point.x, img_point.y];
+              // store current point
+              this._current_path_.geometry.coordinates[0].push(this._last.slice());
+              this.drawOnCanvas(
+                  this._draw_ctx_,
+                  function() {
+                  // draw circle
+                    const sx = this._current_path_.geometry.coordinates[0][0][0];
+                    const sy = this._current_path_.geometry.coordinates[0][0][1];
+                    let start = new OpenSeadragon.Point(sx, sy);
+                    start = this._viewer.viewport.imageToWindowCoordinates(start);
+                    const ex = this._current_path_.geometry.coordinates[0][
+                        this._current_path_.geometry.coordinates[0].length - 1
+                    ][0];
+                    const ey = this._current_path_.geometry.coordinates[0][
+                        this._current_path_.geometry.coordinates[0].length - 1
+                    ][1];
+                    let end = new OpenSeadragon.Point(ex, ey);
+                    end = this._viewer.viewport.imageToWindowCoordinates(end);
+                    const dx = Math.round(Math.abs(start.x - end.x));
+                    const dy = Math.round(Math.abs(start.y - end.y));
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    this._draw_ctx_.strokeStyle = distance > 14 ? 'red' : 'blue';
+                    // start point
+                    DrawHelper.drawCircle(
+                        this._draw_ctx_,
+                        sx,
+                        sy,
+                        this.style.lineWidth * 3,
+                    );
+                    // end point
+                    DrawHelper.drawCircle(
+                        this._draw_ctx_,
+                        ex,
+                        ey,
+                        this.style.lineWidth * 3,
+                    );
+
+                    DrawHelper.setStyle(this._draw_ctx_, this.style);
+                    // draw circle
+                    DrawHelper.drawMultiline(
+                        this._draw_ctx_,
+                        this._current_path_.geometry.coordinates[0],
+                    );
+                  }.bind(this),
+              );
+            } else {
+              this._last = [img_point.x, img_point.y];
+              // store current point
+              this._current_path_.geometry.coordinates[0].push(this._last.slice());
+              const grids = getGrids(
+                  this._current_path_.geometry.coordinates[0],
+                  this._current_path_.properties.size,
+              );
+              this._draw_ctx_.fillStyle = hexToRgbA(this.style.color, 0.5);
+              this.drawOnCanvas(
+                  this._draw_ctx_,
+                  function() {
+                    DrawHelper.drawMultiGrid(
+                        this._draw_ctx_,
+                        grids,
+                        this._current_path_.properties.size,
+                    );
+                  // DrawHelper.drawGrid(this._draw_ctx_,this._current_path_.geometry.coordinates[0]);
+                  }.bind(this),
+              );
+            }
             // this.drawOnCanvas(this._draw_ctx_,function(){
             //     DrawHelper.drawMultiline(this._draw_ctx_,this._current_path_.geometry.coordinates[0]);
             // }.bind(this));
@@ -918,7 +971,7 @@
      * @private
      * stop drawing on the drawing canvas, when the mouse is up
      */
-    stopDrawing: function(e) {
+    stopDrawing: async function(e) {
       // stop if the draw mode is pointToPoint
       if(this.drawMode == 'pointToPoint') {
         return;
@@ -927,7 +980,7 @@
       if ((this.isDrawing) || (this.isMoving)) {
         // add style and data to data collection
         // saving the stroke to all data
-        this.__endNewFeature();
+        await this.__endNewFeature();
         try {
           // custom event on stop
           this.raiseEvent('stop-drawing', {originalEvent: e});
@@ -1035,7 +1088,7 @@
      * @private
      * __endNewFeature create a new feature data.
      */
-    __endNewFeature: function() {
+    __endNewFeature: async function(modifying = false) {
       if (this.drawMode == 'point') {
         this._current_path_.properties.style.color = this.style.color;
         this._current_path_.properties.style.lineJoin = this.style.lineJoin;
@@ -1070,6 +1123,11 @@
         );
         return;
       }
+      if (!modifying) {
+        this.currentOriginPath = JSON.parse(JSON.stringify(this._current_path_));
+      } else {
+        this._current_path_ = JSON.parse(JSON.stringify(this.currentOriginPath));
+      }
       if (
         !this._current_path_ ||
         this._current_path_.geometry.coordinates[0].length < 2 ||
@@ -1078,10 +1136,12 @@
         return;
       } // click on canvas
       // set style and drawing model
-      this._current_path_.properties.style.color = this.style.color;
-      this._current_path_.properties.style.lineJoin = this.style.lineJoin;
-      this._current_path_.properties.style.lineCap = this.style.lineCap;
-      this._current_path_.properties.style.isFill = this.style.isFill;
+      try {
+        this._current_path_.properties.style.color = this.style.color;
+        this._current_path_.properties.style.lineJoin = this.style.lineJoin;
+        this._current_path_.properties.style.lineCap = this.style.lineCap;
+        this._current_path_.properties.style.isFill = this.style.isFill;
+      } catch (error) {}
       let points = this._current_path_.geometry.coordinates[0];
       /* Modifications */
 
@@ -1097,91 +1157,104 @@
 
       // align
       points = this.__align(points);
-
-      // simplify and postprocess
-      if(this.isMoving) spen.smoothness = spen.s;
-      if (!(this.drawMode === 'grid') && this._simplify)
-        if(spen.mode != 0)
-          points = mtool.populate(points, 500000, ~~this.scaleWindowtoImage(2), 150);
-        else
-          points = simplify(points, 3.5);
-
-      // float to integer
-      points = this._convert_integer(points);
-
-      if (!(this.drawMode === 'line' || this.drawMode == 'grid')) {
-        let isIntersect = false;
-        if (isSelfIntersect(points)) {
-          isIntersect = true;
-          console.info('The polygon just drawn has an intersection.');
-          if (! window.localStorage.getItem('_intersect_warn')) {
-            alert(
-                'A Self-Intersecting Polygon Will Cause Inaccurate Area and Circumference.',
+      let pointsList;
+      if ($UI.AssistantViewer?.__isEnableAssistant()) {
+        const mlPoints = await this.__mlDraw(points);
+        pointsList = mlPoints;
+      } else {
+        pointsList = [points];
+      }
+      if (modifying) {
+        this._path_index -= this.lastPointsListLength;
+      }
+      this.lastPointsListLength = pointsList.length;
+      for (let i = 0; i < pointsList.length; i++) {
+        // simplify and postprocess
+        drawPoints = pointsList[i];
+        if(this.isMoving) spen.smoothness = spen.s;
+        if (!(this.drawMode === 'grid') && this._simplify)
+          if(spen.mode != 0)
+            drawPoints = mtool.populate(drawPoints, 500000, ~~this.scaleWindowtoImage(2), 150);
+          else {
+              drawPoints = simplify(drawPoints, 3.5);
+          }
+  
+        // float to integer
+        drawPoints = this._convert_integer(drawPoints);
+  
+        if (!(this.drawMode === 'line' || this.drawMode == 'grid')) {
+          let isIntersect = false;
+          if (isSelfIntersect(drawPoints)) {
+            isIntersect = true;
+            console.info('The polygon just drawn has an intersection.');
+            if (! window.localStorage.getItem('_intersect_warn')) {
+              alert(
+                  'A Self-Intersecting Polygon Will Cause Inaccurate Area and Circumference.',
+              );
+              console.info('Firing Intersect user Alert just this once.');
+              window.localStorage.setItem('_intersect_warn', 'true');
+            }
+          }
+          let sqmpsqp = null; // square microns per square pixels
+          if (
+            this._viewer.mpp_x &&
+            this._viewer.mpp_y &&
+            this._viewer.mpp_x != 1e9 &&
+            this._viewer.mpp_y != 1e9
+          ) {
+            sqmpsqp = this._viewer.mpp_x * this._viewer.mpp_y;
+            // calculate the are of polygon
+            this._current_path_.properties.area =
+              sqmpsqp * polygonArea(drawPoints);
+            this._current_path_.properties.circumference = getCircumference(
+                drawPoints,
+                this._viewer.mpp_x,
+                this._viewer.mpp_y,
             );
-            console.info('Firing Intersect user Alert just this once.');
-            window.localStorage.setItem('_intersect_warn', 'true');
+            this._current_path_.properties.isIntersect = isIntersect;
+          } else if (this._viewer.mpp && this._viewer.mpp != 1e9) {
+            sqmpsqp = this._viewer.mpp * this._viewer.mpp;
+            // calculate the are of polygon
+            this._current_path_.properties.area =
+              sqmpsqp * polygonArea(drawPoints);
+            this._current_path_.properties.circumference = getCircumference(
+                drawPoints,
+                this._viewer.mpp_x,
+                this._viewer.mpp_y,
+            );
+            this._current_path_.properties.isIntersect = isIntersect;
+          } else {
+            this._current_path_.properties.nommp = true;
           }
         }
-        let sqmpsqp = null; // square microns per square pixels
-        if (
-          this._viewer.mpp_x &&
-          this._viewer.mpp_y &&
-          this._viewer.mpp_x != 1e9 &&
-          this._viewer.mpp_y != 1e9
-        ) {
-          sqmpsqp = this._viewer.mpp_x * this._viewer.mpp_y;
-          // calculate the are of polygon
-          this._current_path_.properties.area =
-            sqmpsqp * polygonArea(points);
-          this._current_path_.properties.circumference = getCircumference(
-              points,
-              this._viewer.mpp_x,
-              this._viewer.mpp_y,
-          );
-          this._current_path_.properties.isIntersect = isIntersect;
-        } else if (this._viewer.mpp && this._viewer.mpp != 1e9) {
-          sqmpsqp = this._viewer.mpp * this._viewer.mpp;
-          // calculate the are of polygon
-          this._current_path_.properties.area =
-            sqmpsqp * polygonArea(points);
-          this._current_path_.properties.circumference = getCircumference(
-              points,
-              this._viewer.mpp_x,
-              this._viewer.mpp_y,
-          );
-          this._current_path_.properties.isIntersect = isIntersect;
-        } else {
-          this._current_path_.properties.nommp = true;
+        this._current_path_.geometry.coordinates[0] = drawPoints;
+        // create bounds
+        this._current_path_.bound.coordinates[0] = getBounds(
+            this._current_path_.geometry.coordinates[0]
+        );
+
+        if (this._path_index < this._draws_data_.length) {
+          this._draws_data_ = this._draws_data_.slice(0, this._path_index);
         }
+        this._draws_data_.push(Object.assign({}, JSON.parse(JSON.stringify(this._current_path_))));
+        this._path_index++;
       }
-      this._current_path_.geometry.coordinates[0] = points;
-      // create bounds
-      this._current_path_.bound.coordinates[0] = getBounds(
-          this._current_path_.geometry.coordinates[0],
-      );
-
-      if (this._path_index < this._draws_data_.length) {
-        this._draws_data_ = this._draws_data_.slice(0, this._path_index);
-      }
-
-      this._draws_data_.push(Object.assign({}, this._current_path_));
-      this._path_index++;
       this._current_path_ = null;
       DrawHelper.clearCanvas(this._draw_);
       this._display_ctx_.lineWidth = this.style.lineWidth;
       this.drawOnCanvas(
           this._display_ctx_,
           function() {
-          // this.drawMode !== "grid"
-          //   ?
-            DrawHelper.draw(
-                this._display_ctx_,
-                this._draws_data_.slice(0, this._path_index),
-            );
-            // : DrawHelper.drawGrids(
-            //     this._display_ctx_,
-            //     this._draws_data_.slice(0, this._path_index)
-            //   );
+            this.drawMode !== "grid"
+                ?
+                DrawHelper.draw(
+                    this._display_ctx_,
+                    this._draws_data_.slice(0, this._path_index),
+                )
+              : DrawHelper.drawGrids(
+                  this._display_ctx_,
+                  this._draws_data_.slice(0, this._path_index)
+                );
           }.bind(this),
       );
     },
@@ -1190,21 +1263,26 @@
      * redraw the previous mark if it exist.
      */
     undo: function() {
-      if (this._path_index > 0)
+      if (this._path_index > this.lastPointsListLength - 1)
       // redraw path
       {
         this.drawOnCanvas(
             this._display_ctx_,
             function() {
-            this.drawMode !== 'grid' ?
-              DrawHelper.draw(
-                  this._display_ctx_,
-                  this._draws_data_.slice(0, --this._path_index),
-              ) :
-              DrawHelper.drawGrids(
-                  this._display_ctx_,
-                  this._draws_data_.slice(0, --this._path_index),
-              );
+              this._path_index -= this.lastPointsListLength;
+              this.drawMode !== 'grid' ?
+                DrawHelper.draw(
+                    this._display_ctx_,
+                    this._draws_data_.slice(0, this._path_index),
+                ) :
+                DrawHelper.drawGrids(
+                    this._display_ctx_,
+                    this._draws_data_.slice(0, this._path_index),
+                );
+              this.lastPointsListLength = 1;
+              try {
+                this.currentOriginPath = JSON.parse(JSON.stringify(this._draws_data_[this._path_index-1]));
+              } catch (error) {}
             }.bind(this),
         );
       }
@@ -1340,7 +1418,9 @@
       this._hash_data = new Map();
       for (var i = 0; i < this._path_index; i++) {
       	var cur = this._draws_data_[i].geometry.coordinates[0];
-        cur = mtool.populate(cur, ~~this.scaleWindowtoImage(5), ~~this.scaleWindowtoImage(1), 150);
+        if (this._draws_data_[i].geometry.type !== 'Point') {
+          cur = mtool.populate(cur, ~~this.scaleWindowtoImage(5), ~~this.scaleWindowtoImage(1), 150);
+        }
       	for (var j = 0; j < cur.length; j++) {
       		this._hash_data[mtool.hash({
       			x: cur[j][0],
@@ -1392,6 +1472,57 @@
       this._current_path_.geometry.coordinates[0] = data;
       this.__endNewFeature();
       this.drawMode = t;
+    },
+
+    /**
+    * Machine learning draw functions
+    *@param {points}
+    *@return {points}
+    */
+    __mlDraw: async function(points) {
+      const {radius, threshold, overlap} = $UI.AssistantViewer.__getSettingModes();
+      const scaleMethod = $UI.AssistantViewer.__getScaleMethod();
+      var dist = [];
+      var dists;
+      var ol = points;
+      for (i = 0; i < ol.length; i++) {
+        dist.push(new OpenSeadragon.Point(ol[i][0], ol[i][1]));
+        dist[i] = this._viewer.viewport.imageToWindowCoordinates(dist[i]);
+        dist[i] = [Math.floor(dist[i].x * this.align_fx), Math.floor(dist[i].y * this.align_fy)];
+      }
+      let drawMany;
+      if ($UI.AssistantViewer.__getAssistantMode() === 'annotateOneByDraw') {
+        drawMany = false;
+      } else if ($UI.AssistantViewer.__getAssistantMode() === 'annotateManyByDraw') {
+        drawMany = true;
+      }
+      dists = await mltools.applyDraw(dist, threshold, radius, overlap, scaleMethod, drawMany);
+      var distAligns = dists.map((dist) => {
+        const distAlign = [];
+        for (i = 0; i < dist.length; i++) {
+          dist[i] = new OpenSeadragon.Point(dist[i][0] / this.align_fx, dist[i][1] / this.align_fy);
+          dist[i] = this._viewer.viewport.windowToImageCoordinates(dist[i]);
+          dist[i].x = Math.floor(dist[i].x);
+          dist[i].y = Math.floor(dist[i].y);
+          distAlign.push([dist[i].x, dist[i].y]);
+        }
+        return distAlign;
+      });
+
+      // Process for each type of annotation mode
+      switch (this.drawMode) {
+        case 'grid':
+          distAligns = distAligns.map((dist) => {
+            const gridPoints =  areaCircumferenceToGrids(dist, this._current_path_.properties.size);
+            return gridPoints;
+          }).filter((dist) => {
+            return dist.length > 0;
+          });
+          break;
+        default:
+          break;
+      }
+      return distAligns;
     }
   };
 
