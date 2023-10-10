@@ -989,10 +989,15 @@ function initModelModals() {
   $UI.uploadModal = new ModalBox({
     id: 'upload_panel',
     hasHeader: true,
-    headerText: 'Upload Model',
+    headerText: 'Upload Segmentation Model',
     hasFooter: false,
     provideContent: true,
     content: `
+      <span>Add a segmentation model in
+        <a target="_blank" href="https://www.tensorflow.org/js/tutorials/conversion/import_keras">TFJS format</a>.
+         Some examples can be found <a target="_blank" href="https://github.com/camicroscope/tfjs-models/tree/master/Segmentation%20Sample%20Models">here</a>.
+      </span>
+      <br><hr>
       <form class="form-style" action="#">
         <ul>
           <li>

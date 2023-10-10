@@ -60,7 +60,7 @@ Assistant.prototype.__refreshUI = async function() {
   const stdId = randomId();
 
   const viewHtml = `
-    <button class='btn btn-info add-model'>Add Model</button>
+    <button class='btn btn-info add-model'>Add Segmentation Model</button>
     <ul class="model-tools">
         <li>
             <input type="checkbox" id="${modelEnableId}">
