@@ -118,7 +118,7 @@ SideMenu.prototype.__refresh = function() {
     icon1.classList.add('material-icons');
     icon1.classList.add('md-24');
     icon1.textContent = 'chevron_left';
-  
+
     const icon2 = icon1.cloneNode(true);
     icon2.classList.add('sec');
 

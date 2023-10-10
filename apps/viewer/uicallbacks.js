@@ -979,8 +979,8 @@ function annoCallback(data) {
 }
 
 function editAnnoCallback(id, slide, annotJson) {
-    // save edit annotation
-    $CAMIC.store
+  // save edit annotation
+  $CAMIC.store
       .updateMaskEdit(id, slide, annotJson)
       .then((data) => {
         // server error
@@ -2092,10 +2092,10 @@ function savePresetLabel() {
     // many brush
     const values = features.reduce((p, f) => {
       return p.concat(getGrids(
-        f.geometry.coordinates[0],
-        f.properties.size,
+          f.geometry.coordinates[0],
+          f.properties.size,
       ));
-    },[]);
+    }, []);
     const set = new Set();
     values.map((i) => i.toString()).forEach((v) => set.add(v));
     const points = Array.from(set).map((d) => d.split(','));

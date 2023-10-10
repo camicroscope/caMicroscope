@@ -314,7 +314,7 @@ function initCore() {
         $UI.annotPopup.open(e.position);
       });
 
-      $CAMIC.viewer.addHandler('annot-edit-save', function (e) {
+      $CAMIC.viewer.addHandler('annot-edit-save', function(e) {
         if (!e.data) {
           return;
         }
@@ -327,16 +327,16 @@ function initCore() {
           const dataSize = dataCopy.geometries.features[0].properties.size;
           const {points, bound, size} = convertToNormalized(dataPoints, dataSize, $CAMIC.viewer);
           dataCopy.geometries.features[0].properties.size = size;
-          dataCopy.geometries.features[0].geometry.coordinates = [points]
-          dataCopy.geometries.features[0].bound.coordinates = [bound]
+          dataCopy.geometries.features[0].geometry.coordinates = [points];
+          dataCopy.geometries.features[0].bound.coordinates = [bound];
         } else {
           dataCopy.geometries = ImageFeaturesToVieweportFeatures(
-            $CAMIC.viewer,
-            dataCopy.geometries
-          )
+              $CAMIC.viewer,
+              dataCopy.geometries,
+          );
         }
         editAnnoCallback(id, slide, dataCopy);
-      })
+      });
 
       // create the message bar TODO for reading slide Info TODO
       $UI.slideInfos = new CaMessage({
@@ -845,7 +845,7 @@ async function initUIcomponents() {
           // $UI.AssistantViewer.enableBtn.checked = false;
           $UI.AssistantViewer.elt.style.display = 'none';
         }
-      })
+      });
 
       // create UI and set data
       $UI.layersViewer = createLayerViewer(
@@ -968,11 +968,11 @@ async function initUIcomponents() {
   // Handle event
   $CAMIC.viewer.addHandler('open-add-model', () => {
     uploadModel();
-  })
+  });
 
   $CAMIC.viewer.addHandler('open-model-info', () => {
     showInfo();
-  })
+  });
 
   $CAMIC.viewer.addHandler('ml-draw-setting-change', () => {
     if (!$CAMIC.viewer.canvasDrawInstance) return;
@@ -981,7 +981,7 @@ async function initUIcomponents() {
     if (canvasDraw._draws_data_.length) {
       canvasDraw.__endNewFeature(true);
     }
-  })
+  });
 }
 
 function initModelModals() {
@@ -1150,7 +1150,7 @@ async function uploadModel() {
     const value = element.split('/').pop();
     if (value.slice(0, 3) == 'seg') {
       const title = element.split('/').pop().split('_')[1].slice(0, -3);
-      console.log()
+      console.log();
       modelName.push(title);
     }
   });

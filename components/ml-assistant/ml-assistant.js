@@ -1,65 +1,65 @@
 function Assistant(options) {
-    this.className = 'Assistant';
-    this.setting = {
-      // id: doc element
-      // data: labels dataset
-    };
-    this.view;
-    this.addBtn;
-    this.enableBtn;
-    this.modelSelectionBtn;
-    this.infoBtn;
+  this.className = 'Assistant';
+  this.setting = {
+    // id: doc element
+    // data: labels dataset
+  };
+  this.view;
+  this.addBtn;
+  this.enableBtn;
+  this.modelSelectionBtn;
+  this.infoBtn;
 
-    this.annotateModeZone;
-    this.settingZone;
+  this.annotateModeZone;
+  this.settingZone;
 
-    extend(this.setting, options);
-    this.elt = document.getElementById(this.setting.id);
-    if (!this.elt) {
-      console.error(`${this.className}: No Main Elements...`);
-      return;
-    }
+  extend(this.setting, options);
+  this.elt = document.getElementById(this.setting.id);
+  if (!this.elt) {
+    console.error(`${this.className}: No Main Elements...`);
+    return;
+  }
 
-    this.elt.classList.add('ml-assistant-container');
-  
-    this.__refreshUI();
+  this.elt.classList.add('ml-assistant-container');
+
+  this.__refreshUI();
 }
 Assistant.prototype.__clearUI = function() {
-    empty(this.elt);
+  empty(this.elt);
 
-    this.view = null;
-    this.addBtn = null;
-    this.enableBtn = null;
-    this.modelSelectionBtn = null;
-    this.infoBtn = null;
-    this.modelList = null;
-    this.pixelScaleList = null;
+  this.view = null;
+  this.addBtn = null;
+  this.enableBtn = null;
+  this.modelSelectionBtn = null;
+  this.infoBtn = null;
+  this.modelList = null;
+  this.pixelScaleList = null;
 
-    this.annotateModeZone = null;
-    this.settingZone = null;
-    this.processedImgContainer = null;
-    this.modelPredictImgContainer = null;
+  this.annotateModeZone = null;
+  this.settingZone = null;
+  this.processedImgContainer = null;
+  this.modelPredictImgContainer = null;
 };
 
 Assistant.prototype.__refreshUI = async function() {
-    this.__clearUI();
-    //
-    this._viewer = this.setting.viewer;
-    this.view = document.createElement('div');
-    this.view.classList.add('ml-assistant');
-    const modelEnableId = randomId();
-    const modelSelectionId = randomId();
-    const pixelScalingId = randomId();
-    const modelInfoId = randomId();
-    const undoInfoId = randomId();
+  this.__clearUI();
+  //
+  this._viewer = this.setting.viewer;
+  this.view = document.createElement('div');
+  this.view.classList.add('ml-assistant');
+  const modelEnableId = randomId();
+  const modelSelectionId = randomId();
+  const pixelScalingId = randomId();
+  const modelInfoId = randomId();
+  const undoInfoId = randomId();
 
-    // Pixel Scaling ID
-    const noScaleId = randomId();
-    const normId = randomId();
-    const centerId = randomId();
-    const stdId = randomId();
+  // Pixel Scaling ID
+  const noScaleId = randomId();
+  const normId = randomId();
+  const centerId = randomId();
+  const stdId = randomId();
 
-    const viewHtml = `
+  const viewHtml = `
     <button class='btn btn-info add-model'>Add Model</button>
     <ul class="model-tools">
         <li>
@@ -128,242 +128,245 @@ Assistant.prototype.__refreshUI = async function() {
     </div>
     `;
 
-    this.view.innerHTML = viewHtml;
-    this.elt.append(this.view);
+  this.view.innerHTML = viewHtml;
+  this.elt.append(this.view);
 
-    this.addBtn = this.view.querySelector('.add-model');
-    this.enableBtn = this.view.querySelector(`#${modelEnableId}`);
-    this.modelSelectionBtn = this.view.querySelector(`#${modelSelectionId}`);
-    this.infoBtn = this.view.querySelector(`#${modelInfoId}`);
-    this.undoBtn = this.view.querySelector(`#${undoInfoId}`);
-    this.modelList = this.view.querySelector('.model-list');
-    this.pixelScaleList = this.view.querySelector('.pixel-scale-list')
+  this.addBtn = this.view.querySelector('.add-model');
+  this.enableBtn = this.view.querySelector(`#${modelEnableId}`);
+  this.modelSelectionBtn = this.view.querySelector(`#${modelSelectionId}`);
+  this.infoBtn = this.view.querySelector(`#${modelInfoId}`);
+  this.undoBtn = this.view.querySelector(`#${undoInfoId}`);
+  this.modelList = this.view.querySelector('.model-list');
+  this.pixelScaleList = this.view.querySelector('.pixel-scale-list');
 
-    this.annotateModeZone = this.view.querySelector('.annotate-checklist');
-    this.settingZone = {
-        radius: this.view.querySelector('.radius-setting'),
-        threshold: this.view.querySelector('.threshold-setting'),
-        overlap: this.view.querySelector('.min-overlap-setting'),
-    }
+  this.annotateModeZone = this.view.querySelector('.annotate-checklist');
+  this.settingZone = {
+    radius: this.view.querySelector('.radius-setting'),
+    threshold: this.view.querySelector('.threshold-setting'),
+    overlap: this.view.querySelector('.min-overlap-setting'),
+  };
 
-    const radiusLabel = this.settingZone.radius.querySelector('pre');
-    tippy(radiusLabel, {
-        content: 'Enhance the coordinate percentage relative to the polygon drawn by the user. These expanded image will be used as input for image processing.',
-        placement: 'left',
-        delay: 300,
-        theme: 'translucent',
-    });
+  const radiusLabel = this.settingZone.radius.querySelector('pre');
+  tippy(radiusLabel, {
+    content: 'Enhance the coordinate percentage relative to the polygon drawn by the user. ' +
+             'These expanded image will be used as input for image processing.',
+    placement: 'left',
+    delay: 300,
+    theme: 'translucent',
+  });
 
-    const thresholdLabel = this.settingZone.threshold.querySelector('pre');
-    tippy(thresholdLabel, {
-        content: 'The separation threshold value represents the distinction between the object (foreground) and the surrounding area (background).',
-        placement: 'left',
-        delay: 300,
-        theme: 'translucent',
-    });
+  const thresholdLabel = this.settingZone.threshold.querySelector('pre');
+  tippy(thresholdLabel, {
+    content: 'The separation threshold value represents the distinction between the object (foreground) ' +
+             'and the surrounding area (background).',
+    placement: 'left',
+    delay: 300,
+    theme: 'translucent',
+  });
 
-    const overlapLabel = this.settingZone.overlap.querySelector('pre');
-    tippy(overlapLabel, {
-        content: 'The minimum overlap refers to the required intersection between the user-selected polygon and the predicted polygons.',
-        placement: 'left',
-        delay: 300,
-        theme: 'translucent',
-    });
-    this.modelPredictImgContainer = this.view.querySelector('.model-predict-image-container'),
+  const overlapLabel = this.settingZone.overlap.querySelector('pre');
+  tippy(overlapLabel, {
+    content: 'The minimum overlap refers to the required intersection between ' +
+             'the user-selected polygon and the predicted polygons.',
+    placement: 'left',
+    delay: 300,
+    theme: 'translucent',
+  });
+  this.modelPredictImgContainer = this.view.querySelector('.model-predict-image-container'),
 
-    await this.__createModelList();
+  await this.__createModelList();
 
-    this.__assignEventListener();
-}
+  this.__assignEventListener();
+};
 
 Assistant.prototype.disableUndo = function() {
-    this.undoBtn.style.backgroundColor = '#9c9c9cb0';
-    this.undoBtn.style.color = '#0088ff';
-}
+  this.undoBtn.style.backgroundColor = '#9c9c9cb0';
+  this.undoBtn.style.color = '#0088ff';
+};
 
 Assistant.prototype.enableUndo = function() {
-    this.undoBtn.style.backgroundColor = '#ffffff';
-    this.undoBtn.style.color = '#365f9c';
-}
+  this.undoBtn.style.backgroundColor = '#ffffff';
+  this.undoBtn.style.color = '#365f9c';
+};
 
 Assistant.prototype.__assignEventListener = function() {
-    // Open add model modal event
-    this.addBtn.addEventListener('click', (event) => {
-        // event.preventDefault();
-        this.__openAddModel();
-    })
+  // Open add model modal event
+  this.addBtn.addEventListener('click', (event) => {
+    // event.preventDefault();
+    this.__openAddModel();
+  });
 
-    // Enable Annotation Event
-    // TODO
+  // Enable Annotation Event
+  // TODO
 
-    // Switch Current Model Event
-    this.modelList.querySelectorAll('label').forEach((elt) => {
-        elt.addEventListener('click', (event) => {
-            this.modelList.querySelectorAll('input').forEach((iElt) => {
-                iElt.checked = false;
-            });
-            event.target.checked = true;
-            const modelKey = this.modelList.querySelector(`#${elt.getAttribute('for')}`).value;
-            this.__selectModel(modelKey);
-        })
-    })
+  // Switch Current Model Event
+  this.modelList.querySelectorAll('label').forEach((elt) => {
+    elt.addEventListener('click', (event) => {
+      this.modelList.querySelectorAll('input').forEach((iElt) => {
+        iElt.checked = false;
+      });
+      event.target.checked = true;
+      const modelKey = this.modelList.querySelector(`#${elt.getAttribute('for')}`).value;
+      this.__selectModel(modelKey);
+    });
+  });
 
-    // Switch Pixel Scaling Event
-    this.pixelScaleList.querySelectorAll('label').forEach((elt) => {
-        elt.addEventListener('click', (event) => {
-            this.pixelScaleList.querySelectorAll('input').forEach((iElt) => {
-                iElt.checked = false;
-            });
-            event.target.checked = true;
-        })
-    })
+  // Switch Pixel Scaling Event
+  this.pixelScaleList.querySelectorAll('label').forEach((elt) => {
+    elt.addEventListener('click', (event) => {
+      this.pixelScaleList.querySelectorAll('input').forEach((iElt) => {
+        iElt.checked = false;
+      });
+      event.target.checked = true;
+    });
+  });
 
 
-    // Open Model Info Event
-    this.infoBtn.addEventListener('click', (event) => {
-        // event.preventDefault();
-        this.__openModelInfo();
-    })
+  // Open Model Info Event
+  this.infoBtn.addEventListener('click', (event) => {
+    // event.preventDefault();
+    this.__openModelInfo();
+  });
 
-    // Switch Model Mode Event
-    this.annotateModeZone.querySelectorAll('input').forEach((elt) => {
-        elt.addEventListener('click', (event) => {
-            this.annotateModeZone.querySelectorAll('input').forEach((iElt) => {
-                iElt.checked = false;
-                iElt.removeAttribute('checked');
-            })
-            event.target.checked = true;
-            event.target.setAttribute('checked', 'true');
-        })
-    })
+  // Switch Model Mode Event
+  this.annotateModeZone.querySelectorAll('input').forEach((elt) => {
+    elt.addEventListener('click', (event) => {
+      this.annotateModeZone.querySelectorAll('input').forEach((iElt) => {
+        iElt.checked = false;
+        iElt.removeAttribute('checked');
+      });
+      event.target.checked = true;
+      event.target.setAttribute('checked', 'true');
+    });
+  });
 
-    // Change radius event
-    this.settingZone.radius.querySelector('input').addEventListener('change', (event) => {
-        this.settingZone.radius.querySelector('span').textContent = event.target.value;
-        if (this.__isEnableAssistant()) {
-            this._viewer.raiseEvent('ml-draw-setting-change', {});
-        }
-    })
+  // Change radius event
+  this.settingZone.radius.querySelector('input').addEventListener('change', (event) => {
+    this.settingZone.radius.querySelector('span').textContent = event.target.value;
+    if (this.__isEnableAssistant()) {
+      this._viewer.raiseEvent('ml-draw-setting-change', {});
+    }
+  });
 
-    // Change threshold event
-    this.settingZone.threshold.querySelector('input').addEventListener('change', (event) => {
-        this.settingZone.threshold.querySelector('span').textContent = event.target.value;
-        if (this.__isEnableAssistant()) {
-            this._viewer.raiseEvent('ml-draw-setting-change', {});
-        }
-    })
+  // Change threshold event
+  this.settingZone.threshold.querySelector('input').addEventListener('change', (event) => {
+    this.settingZone.threshold.querySelector('span').textContent = event.target.value;
+    if (this.__isEnableAssistant()) {
+      this._viewer.raiseEvent('ml-draw-setting-change', {});
+    }
+  });
 
-    // Change overlap event
-    this.settingZone.overlap.querySelector('input').addEventListener('change', (event) => {
-        this.settingZone.overlap.querySelector('span').textContent = event.target.value;
-        if (this.__isEnableAssistant()) {
-            this._viewer.raiseEvent('ml-draw-setting-change', {});
-        }
-    })
-}
+  // Change overlap event
+  this.settingZone.overlap.querySelector('input').addEventListener('change', (event) => {
+    this.settingZone.overlap.querySelector('span').textContent = event.target.value;
+    if (this.__isEnableAssistant()) {
+      this._viewer.raiseEvent('ml-draw-setting-change', {});
+    }
+  });
+};
 
 // Add model list
 Assistant.prototype.__createModelList = async function() {
-    const dropDownList = [
-        {
-        icon: 'timeline',
-        title: 'Default',
-        value: 'default',
-        checked: true,
-        }];
-    
-    // modelName = [];
-    Object.keys(await tf.io.listModels()).forEach(function(element) {
-        const dict = {};
-        const value = element.split('/').pop();
-        if (value.slice(0, 3) == 'seg') {
-            const title = element.split('/').pop().split('_')[1].slice(0, -3);
-            dict.icon = 'flip_to_back';
-            dict.title = title;
-            dict.value = value;
-            dict.checked = false;
-            dropDownList.push(dict);
-        }
-    });
+  const dropDownList = [
+    {
+      icon: 'timeline',
+      title: 'Default',
+      value: 'default',
+      checked: true,
+    }];
 
-    dropDownList.map((modelData) => {
-        this.__createModelLabel(modelData);
-    })
-}
+  // modelName = [];
+  Object.keys(await tf.io.listModels()).forEach(function(element) {
+    const dict = {};
+    const value = element.split('/').pop();
+    if (value.slice(0, 3) == 'seg') {
+      const title = element.split('/').pop().split('_')[1].slice(0, -3);
+      dict.icon = 'flip_to_back';
+      dict.title = title;
+      dict.value = value;
+      dict.checked = false;
+      dropDownList.push(dict);
+    }
+  });
+
+  dropDownList.map((modelData) => {
+    this.__createModelLabel(modelData);
+  });
+};
 
 // Create model label
 Assistant.prototype.__createModelLabel = function(modelData) {
-    const modelId = randomId();
-    const value = modelData.value;
-    const title = modelData.title;
-    const checked = modelData.checked;
-    const icon = modelData.icon;
-    const modelCardHtml = `
+  const modelId = randomId();
+  const value = modelData.value;
+  const title = modelData.title;
+  const checked = modelData.checked;
+  const icon = modelData.icon;
+  const modelCardHtml = `
         <input id="${modelId}" type="radio" value="${value}">
         <label class="material-icons md-20" for="${modelId}" title="${title}">${icon}</label>
-    `
-    const modelCard = document.createElement('li');
-    modelCard.innerHTML = modelCardHtml;
-    if (checked) {
-        modelCard.querySelector('input').checked = true;
-    }
-    this.modelList.appendChild(modelCard);
-}
+    `;
+  const modelCard = document.createElement('li');
+  modelCard.innerHTML = modelCardHtml;
+  if (checked) {
+    modelCard.querySelector('input').checked = true;
+  }
+  this.modelList.appendChild(modelCard);
+};
 
 // Handle open model info modal
 Assistant.prototype.__openAddModel = function() {
-    //Raise open add model modal into view
-    this._viewer.raiseEvent('open-add-model', {});
-}
+  // Raise open add model modal into view
+  this._viewer.raiseEvent('open-add-model', {});
+};
 
 // Add model
 Assistant.prototype.__updateModelList= function() {
-    empty(this.modelList);
-    this.__createModelList();
-}
+  empty(this.modelList);
+  this.__createModelList();
+};
 
 Assistant.prototype.__isEnableAssistant = function() {
-    return this.enableBtn.checked;
-}
+  return this.enableBtn.checked;
+};
 
 // Handle model selection
 Assistant.prototype.__selectModel = function(modelValue) {
-    mltools.loadModel(modelValue);
-}
+  mltools.loadModel(modelValue);
+};
 
 // Handle open model info modal
 Assistant.prototype.__openModelInfo = function() {
-    this._viewer.raiseEvent('open-model-info', {});
-}
+  this._viewer.raiseEvent('open-model-info', {});
+};
 
 // TODO
 // Handle model delete
 Assistant.prototype.__deleteModel = function(modelValue) {
-    // Remove UI
-    this.__updateModelList();
-}
+  // Remove UI
+  this.__updateModelList();
+};
 
 // Get mode
 Assistant.prototype.__getAssistantMode = function() {
-    return this.annotateModeZone.querySelector('input[checked]').value;
-}
+  return this.annotateModeZone.querySelector('input[checked]').value;
+};
 
 // Get setting mode value
 Assistant.prototype.__getSettingModes = function() {
-    const settingMode = {
-        radius: parseFloat(this.settingZone.radius.querySelector('input').value),
-        threshold: parseFloat(this.settingZone.threshold.querySelector('input').value),
-        overlap: parseFloat(this.settingZone.overlap.querySelector('input').value),
-    }
-    return settingMode;
-}
+  const settingMode = {
+    radius: parseFloat(this.settingZone.radius.querySelector('input').value),
+    threshold: parseFloat(this.settingZone.threshold.querySelector('input').value),
+    overlap: parseFloat(this.settingZone.overlap.querySelector('input').value),
+  };
+  return settingMode;
+};
 
 Assistant.prototype.__getScaleMethod = function() {
-    return this.pixelScaleList.querySelector('input[checked]').value;
-}
+  return this.pixelScaleList.querySelector('input[checked]').value;
+};
 
 Assistant.prototype.__createElementFromHTML= function(htmlString) {
-    var div = document.createElement('div');
-    div.innerHTML = htmlString.trim();
-    return div.firstChild;
+  var div = document.createElement('div');
+  div.innerHTML = htmlString.trim();
+  return div.firstChild;
 };
