@@ -92,7 +92,7 @@ async function downloadUsers(){
     u['institution'] = i.registration.institutionOfEmployment
     u['roleAtInstitution'] = i.registration.roleAtInstitution
     if (u['roleAtInstitution'] == "Other"){
-      u['roleAtInstitution'] == i.registration.other
+      u['roleAtInstitution'] = i.registration.other
     }
     u['phoneNumber'] = i.registration.phoneNumber
     u['specialties'] = i.registration.specialties
