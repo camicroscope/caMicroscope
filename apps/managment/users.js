@@ -91,9 +91,7 @@ async function downloadUsers(){
     u['userType'] = i.userType
     u['institution'] = i.registration.institutionOfEmployment
     u['roleAtInstitution'] = i.registration.roleAtInstitution
-    if (u['roleAtInstitution'] == "Other"){
-      u['roleAtInstitution'] == i.registration.other
-    }
+    u['otherRoleAtInstitution'] = i.registration.other
     u['phoneNumber'] = i.registration.phoneNumber
     u['specialties'] = i.registration.specialties
     u['experienceResident'] = i.registration.experienceResident
@@ -155,10 +153,8 @@ async function uploadUsers(data){
     edit.registration.email = i['email']
     edit.email = i['email']
     edit.registration.institutionOfEmployment = i['institution']
-    // rather than repopulating other, change roleAtInstitution to match edit
     edit.registration.roleAtInstitution = i['roleAtInstitution']
-    // clear other to avoid confusion.
-    edit.registration.other = ""
+    edit.registration.other = i['otherRoleAtInstitution']
     edit.registration.phoneNumber = i['phoneNumber']
     edit.registration.specialties = i['specialties']
     edit.registration.experienceResident = i['experienceResident']
