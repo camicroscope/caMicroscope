@@ -357,23 +357,6 @@ async function initUIcomponents() {
       callback: goHome,
     });
   }
-  // pen
-  subToolsOpt.push({
-    name: 'annotation',
-    icon: 'create', // material icons' name
-    title: 'Draw',
-    type: 'multistates',
-    callback: draw,
-  });
-
-  subToolsOpt.push({
-    name: 'preset_label',
-    icon: 'colorize', // material icons' name
-    title: 'Preset Labels',
-    type: 'check',
-    value: 'prelabels',
-    callback: drawLabel,
-  });
 
   // magnifier
   subToolsOpt.push({
@@ -423,15 +406,6 @@ async function initUIcomponents() {
       callback: toggleMeasurement,
     });
   }
-  // donwload selection
-  subToolsOpt.push({
-    name: 'download_selection',
-    icon: 'get_app', // material icons' name
-    title: 'Download Selection',
-    type: 'check',
-    value: 'download',
-    callback: toggleDownloadSelection,
-  });
   // enhance
   subToolsOpt.push({
     name: 'Enhance',
@@ -465,112 +439,21 @@ async function initUIcomponents() {
     callback: enhance,
   });
   // share
-  if (ImgloaderMode == 'iip') {
-    subToolsOpt.push({
-      name: 'share',
-      icon: 'share',
-      title: 'Share View',
-      type: 'btn',
-      value: 'share',
-      callback: shareURL,
-    });
-  }
-  // side-by-side
+
   subToolsOpt.push({
-    name: 'sbsviewer',
-    icon: 'view_carousel',
-    title: 'Side By Side Viewer',
-    value: 'dbviewers',
-    type: 'check',
-    callback: toggleViewerMode,
-  });
-  // heatmap
-  subToolsOpt.push({
-    name: 'heatmap',
-    icon: 'satellite',
-    title: 'Heat Map',
-    value: 'heatmap',
+    name: 'share',
+    icon: 'share',
+    title: 'Share View',
     type: 'btn',
-    callback: openHeatmap,
-  });
-  subToolsOpt.push({
-    name: 'labeling',
-    icon: 'label',
-    title: 'Labeling',
-    value: 'labeling',
-    type: 'btn',
-    callback: function() {
-      window.location.href = `../labeling/labeling.html${window.location.search}`;
-    },
-  });
-  subToolsOpt.push({
-    name: 'segment',
-    icon: 'timeline',
-    type: 'btn',
-    value: 'rect',
-    title: 'Segment',
-    callback: function() {
-      if (window.location.search.length > 0) {
-        window.location.href =
-          '../segment/segment.html' + window.location.search;
-      } else {
-        window.location.href = '../segment/segment.html';
-      }
-    },
-  });
-  subToolsOpt.push({
-    name: 'model',
-    icon: 'aspect_ratio',
-    type: 'btn',
-    value: 'rect',
-    title: 'Predict',
-    callback: function() {
-      if (window.location.search.length > 0) {
-        window.location.href = '../model/model.html' + window.location.search;
-      } else {
-        window.location.href = '../model/model.html';
-      }
-    },
+    value: 'share',
+    callback: shareURL,
   });
 
-  // -- For Nano borb Start -- //
-  if (ImgloaderMode == 'imgbox') {
-    // download
-    subToolsOpt.push({
-      name: 'downloadmarks',
-      icon: 'cloud_download',
-      title: 'Download Marks',
-      type: 'btn',
-      value: 'download',
-      callback: Store.prototype.DownloadMarksToFile,
-    });
-    subToolsOpt.push({
-      name: 'uploadmarks',
-      icon: 'cloud_upload',
-      title: 'Load Marks',
-      type: 'btn',
-      value: 'upload',
-      callback: Store.prototype.LoadMarksFromFile,
-    });
-  }
-  // -- For Nano borb End -- //
-
-  // -- view btn START -- //
-  if (!($D.params.data.hasOwnProperty('review') && $D.params.data['review']=='true')) {
-    subToolsOpt.push({
-      name: 'review',
-      icon: 'playlist_add_check',
-      title: 'has reviewed',
-      type: 'btn',
-      value: 'review',
-      callback: updateSlideView,
-    });
-  }
   // screenshot
   subToolsOpt.push({
     name: 'slideCapture',
     icon: 'camera_enhance',
-    title: 'Slide Capture',
+    title: 'Download View as Image',
     type: 'btn',
     value: 'slCap',
     callback: captureSlide,
@@ -658,13 +541,6 @@ async function initUIcomponents() {
       //   text:'notes',
       //   callback:annoEdit
       // },
-      {
-        // delete
-        title: 'Delete',
-        class: 'material-icons',
-        text: 'delete_forever',
-        callback: annoDelete,
-      },
     ],
   });
 
