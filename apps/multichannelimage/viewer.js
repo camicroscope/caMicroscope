@@ -18,7 +18,9 @@ console.log(channelOrder);
 const viewer = OpenSeadragon({
     id: "openseadragon-viewer",
     prefixUrl: "../../core/openseadragon/images/",
-    tileSources: dziPath,
+    tileSources: dziPath,// try to create an API and avoid saving it in local disk
+    // resource: https://openseadragon.github.io/examples/tilesource-dzi/
+    // resource: https://openseadragon.github.io/examples/tilesource-custom/
     preserveViewport: true,
     visibilityRatio: 1,
     defaultZoomLevel: 0,

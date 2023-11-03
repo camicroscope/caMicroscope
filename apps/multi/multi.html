@@ -1,16 +1,29 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <script type="text/javascript" src="../../core/openseadragon/openseadragon.js"></script>
-  <script src="../../core/Store.js"></script>
-  <script src="../../common/PathdbMods.js"></script>
-  <link rel="stylesheet" href="./style.css">
-  <title>Select an Image</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sample Images</title>
 </head>
 <body>
-  <h1> Images </h1>
-  <div id="pages"></div>
-  <div id="workspace" class="flex-grid"></div>
+<h1>Sample HSI Images</h1>
+<div id="imageList"></div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    fetch('/sample_images')
+        .then(response => response.json())
+        .then(data => {
+            const imageList = document.getElementById('imageList');
+            data.sample_files.forEach(file => {
+                const imgElement = document.createElement('img');
+                imgElement.src = `static/mat_files/${file}.jpg`; // Assuming you have JPEG versions for preview
+                imgElement.alt = `Sample Image ${file}`;
+                imageList.appendChild(imgElement);
+            });
+        })
+        .catch(error => console.error('Error:', error));
+});
+</script>
 </body>
-<script src="./multi.js"></script>
 </html>
