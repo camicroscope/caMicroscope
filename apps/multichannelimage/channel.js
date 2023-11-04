@@ -1,44 +1,38 @@
-const channels = [
-    { label: "Channel-0:", value: 0 },
-    { label: "Channel-1:", value: 1 },
-    { label: "Channel-2:", value: 2 }
-];
+const fileName = 'hsi1'; // This should be dynamically set based on the file chosen
+document.getElementById('fileName').textContent = fileName;
 
-function generateChannelOptions() {
-    const channelOptionsDiv = document.getElementById("channelOptions");
+fetch(`/bands/${fileName}`)
+    .then(response => response.json())
+    .then(data => {
+        const form = document.getElementById('bandSelectionForm');
+        for(let i = 0; i < data.num_bands; i++) {
+            const label = document.createElement('label');
+            label.textContent = `Band ${i}: `;
+            const select = document.createElement('select');
+            select.name = `band_${i}`;
+            ['None', 'R', 'G', 'B'].forEach(color => {
+                const option = document.createElement('option');
+                option.value = color;
+                option.textContent = color;
+                select.appendChild(option);
+            });
+            label.appendChild(select);
+            form.appendChild(label);
+            form.appendChild(document.createElement('br'));
+        }
+    })
+    .catch(error => console.error('Error:', error));
 
-    channels.forEach((channel, index) => {
-        const channelDiv = document.createElement("div");
-        const labelElement = document.createElement("p");
-        labelElement.textContent = channel.label;
-        channelDiv.appendChild(labelElement);
-
-        ["Red", "Green", "Blue"].forEach(color => {
-            const radioLabel = document.createElement("label");
-            radioLabel.textContent = color;
-
-            const radioInput = document.createElement("input");
-            radioInput.type = "radio";
-            radioInput.name = `channel_${index}`;
-            radioInput.value = color;
-            
-            radioLabel.appendChild(radioInput);
-            channelDiv.appendChild(radioLabel);
-        });
-
-        channelOptionsDiv.appendChild(channelDiv);
-    });
-}
-
-document.getElementById("channelForm").addEventListener("submit", function (event) {
-    event.preventDefault();
-
-    const selectedChannels = channels.map((channel, index) => {
-        const selectedColor = document.querySelector(`input[name="channel_${index}"]:checked`);
-        return selectedColor ? `${channel.label} ${selectedColor.value}` : null;
-    }).filter(Boolean);
-
-    const imagePreviewDiv = document.getElementById("imagePreview");
-    imagePreviewDiv.innerHTML = selectedChannels.join("<br>");
+document.getElementById('viewImageButton').addEventListener('click', function() {
+    const form = document.getElementById('bandSelectionForm');
+    const formData = new FormData(form);
+    fetch(`../../multichannel/select_bands/${fileName}`, {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => {
+        if(response.ok) return response.json();
+        throw new Error('Network response was not ok.');
+    })
+    .catch(error => console.error('Error:', error));
 });
-generateChannelOptions();

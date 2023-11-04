@@ -1,19 +1,19 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Multi-channel Support</title>
-    <link rel="icon" type="image/png" href="../static/img/icon.jpeg">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Select Bands</title>
 </head>
 <body>
-    <h1>Choose RGB Channels</h1>
-    <form id="channelForm">
-        <input type="hidden" id="filename" value="../../multichannel/hsi_1.tif">
-        <div id="channelOptions"></div>
-        <button type="submit">View Image</button>
-    </form>
+<h1>Select Bands for <span id="fileName"></span></h1>
+<form id="bandSelectionForm">
+    <!-- Band selection checkboxes will be inserted here -->
+</form>
 
-    <div id="imagePreview"></div>
+<button id="viewImageButton">View Image</button>
 
-    <script src="channel.js"></script>
+<script src="channel.js">
+</script>
 </body>
 </html>
