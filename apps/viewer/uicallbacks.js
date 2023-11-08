@@ -279,6 +279,7 @@ function draw(e) {
     }
     if ($CAMIC.status == 'normal') {
       annotationOn.call(this, state, target);
+      mlAsisstantOn();
       return;
     }
     toolsOff();
@@ -288,6 +289,7 @@ function draw(e) {
           // all tool has turn off
             clearInterval(checkAllToolsOff);
             annotationOn.call(this, state, target);
+            mlAsisstantOn();
           }
         }.bind(this),
         100,
@@ -295,6 +297,7 @@ function draw(e) {
   } else {
     // off
     annotationOff();
+    mlAsisstantOff();
   }
 }
 
@@ -311,9 +314,11 @@ function toolsOff() {
       break;
     case 'normal':
       annotationOff();
+      mlAsisstantOff();
       break;
     case 'label':
       presetLabelOff();
+      mlAsisstantOff();
       break;
     case 'download_selection':
       downloadSelectionOff();
@@ -331,6 +336,7 @@ function annotationOn(state, target) {
   canvasDraw.style.color = style.color;
 
   li.appendChild(label);
+  $UI.AssistantViewer.undoBtn.onclick=()=>canvasDraw.__align_undo();
   switch (state) {
     case 1:
       spen.menu(65, 0.2);
@@ -660,6 +666,7 @@ function mainMenuChange(data) {
     $UI.labelsSideMenu.open();
   } else {
     presetLabelOff();
+    mlAsisstantOff();
   }
 }
 
@@ -967,6 +974,31 @@ function annoCallback(data) {
       .catch((e) => {
         Loading.close();
         console.log('save failed', e);
+      })
+      .finally(() => {});
+}
+
+function editAnnoCallback(id, slide, annotJson) {
+  // save edit annotation
+  $CAMIC.store
+      .updateMaskEdit(id, slide, annotJson)
+      .then((data) => {
+        // server error
+        if (data.error) {
+          $UI.message.addError(`${data.text}:${data.url}`);
+          Loading.close();
+          return;
+        }
+
+        // no data added
+        if (data.count < 1) {
+          Loading.close();
+          $UI.message.addWarning(`Edit Annotation Failed`);
+          return;
+        }
+      })
+      .catch((e) => {
+        Loading.close();
       })
       .finally(() => {});
 }
@@ -1943,6 +1975,7 @@ function drawLabel(e) {
   if (e.checked) {
     if ($CAMIC.status == 'label') {
       presetLabelOn.call(this, labels);
+      mlAsisstantOn(false);
       return;
     }
     // turn off annotation
@@ -1954,6 +1987,7 @@ function drawLabel(e) {
           // all tool has turn off
             clearInterval(checkAllToolsOff);
             presetLabelOn.call(this, labels);
+            mlAsisstantOn(false);
           }
         }.bind(this),
         100,
@@ -1961,6 +1995,7 @@ function drawLabel(e) {
   } else {
     // off preset label
     presetLabelOff();
+    mlAsisstantOff();
   }
 }
 
@@ -2014,6 +2049,21 @@ function presetLabelOff() {
   }
 }
 
+function mlAsisstantOff() {
+  $UI.AssistantViewer.enableBtn.checked = false;
+  $UI.AssistantViewer.elt.style.display = 'none';
+  $UI.AssistantSideMenu.close();
+}
+
+function mlAsisstantOn(enableUndo = true) {
+  if (!enableUndo) {
+    $UI.AssistantViewer.disableUndo();
+  } else {
+    $UI.AssistantViewer.enableUndo();
+  }
+  $UI.AssistantSideMenu.open();
+}
+
 function savePresetLabel() {
   if ($CAMIC.viewer.canvasDrawInstance._path_index === 0) {
     // toast
@@ -2026,6 +2076,7 @@ function savePresetLabel() {
     $UI.message.addWarning('No Label Selected. Please select One.', 4000);
     return;
   }
+  const features = $CAMIC.viewer.canvasDrawInstance.getImageFeatureCollection().features;
   const execId = randomId();
   const labelId = data.id;
   const labelName = data.type;
@@ -2036,14 +2087,48 @@ function savePresetLabel() {
     name: labelName,
     notes: data.type,
   };
-  const feature = $CAMIC.viewer.canvasDrawInstance.getImageFeatureCollection()
-      .features[0];
   let annotJson;
-  if (feature.properties.size) {
+  if (Array.isArray(features) && features[0].properties.size) {
+    // many brush
+    const values = features.reduce((p, f) => {
+      return p.concat(getGrids(
+          f.geometry.coordinates[0],
+          f.properties.size,
+      ));
+    }, []);
+    const set = new Set();
+    values.map((i) => i.toString()).forEach((v) => set.add(v));
+    const points = Array.from(set).map((d) => d.split(','));
+    annotJson = {
+      creator: getUserId(),
+      created_date: new Date(),
+      provenance: {
+        image: {
+          slide: $D.params.slideId,
+        },
+        analysis: {
+          source: 'human',
+          execution_id: execId, // randomId
+          name: labelName, // labelName
+          labelId: labelId,
+          type: 'label',
+          isGrid: true,
+        },
+      },
+      properties: {
+        annotations: noteData,
+      },
+      geometries: convertGeometries(points, {
+        note: data.type,
+        size: features[0].properties.size,
+        color: features[0].properties.style.color,
+      }),
+    };
+  } else if (!Array.isArray(features) && features.properties.size) {
     // brush
     const values = getGrids(
-        feature.geometry.coordinates[0],
-        feature.properties.size,
+        features.geometry.coordinates[0],
+        features.properties.size,
     );
     const set = new Set();
     values.map((i) => i.toString()).forEach((v) => set.add(v));
@@ -2069,8 +2154,8 @@ function savePresetLabel() {
       },
       geometries: convertGeometries(points, {
         note: data.type,
-        size: feature.properties.size,
-        color: feature.properties.style.color,
+        size: features.properties.size,
+        color: features.properties.style.color,
       }),
     };
   } else {

@@ -592,6 +592,103 @@ function getGrids(points, size) {
   return grids;
 }
 
+function areaCircumferenceToGrids(points, size) {
+  const grids = [];
+  // get boundary box of the points
+  const bound = getBounds(points);
+  const minX = bound[0][0];
+  const maxX = bound[2][0];
+  const minY = bound[0][1];
+  const maxY = bound[2][1];
+  // get all centers inside the boundary box
+  const topLeftCenter = [Math.ceil((minX - size[0] / 2) / size[0]) * size[0] + size[0] / 2, Math.ceil((minY - size[1] / 2) / size[1]) * size[1] + size[1] / 2];
+  for (let centerX = topLeftCenter[0]; centerX < maxX; centerX += size[0]) {
+    for (let centerY = topLeftCenter[1]; centerY < maxY; centerY += size[1]) {
+      if (isPointInsidePolygon([centerX, centerY], points)) {
+        grids.push(getTopLeft([centerX, centerY], size))
+      }
+    }
+  }
+  return grids;
+}
+
+function distance(x1, y1, x2, y2) {
+  const dx = x2 - x1;
+  const dy = y2 - y1;
+  return Math.sqrt(dx * dx + dy * dy);
+}
+
+// Find the closest point on a line segment to a given point
+function closestPointOnLineSegment(px, py, x1, y1, x2, y2) {
+  const dx = x2 - x1;
+  const dy = y2 - y1;
+  const t = ((px - x1) * dx + (py - y1) * dy) / (dx * dx + dy * dy);
+  
+  if (t < 0) {
+    return { x: x1, y: y1 };
+  } else if (t > 1) {
+    return { x: x2, y: y2 };
+  } else {
+    return { x: x1 + t * dx, y: y1 + t * dy };
+  }
+}
+
+function closestPointOnPolygon(polygon, px, py) {
+  let closestDistance = Infinity;
+  let closestIndex = null;
+  
+  // Find the closest point on each edge
+  for (let i = 0; i < polygon.length; i++) {
+    const nextIndex = (i + 1) % polygon.length;
+    const edgeStart = polygon[i];
+    const edgeEnd = polygon[nextIndex];
+    const closest = closestPointOnLineSegment(px, py, edgeStart[0], edgeStart[1], edgeEnd[0], edgeEnd[1]);
+    const d = distance(px, py, closest.x, closest.y);
+    
+    if (d < closestDistance) {
+      closestDistance = d;
+      closestIndex = i;
+    }
+  }
+  
+  return closestIndex;
+}
+
+function pointInPolygonVertex(polygon, point) {
+  for (let i = 0; i < polygon.length; i++) {
+    if (polygon[i][0] === point[0] && polygon[i][1] === point[1]) {
+      return i;
+    }
+  }
+  return false;
+}
+
+function isPointInsidePolygon(point, polygon) {
+  let [x, y] = point;
+  x += 0.01;
+  y += 0.01;
+  const n = polygon.length;
+  let inside = false;
+
+  for (let i = 0; i < n; i++) {
+      const [x1, y1] = polygon[i];
+      const [x2, y2] = polygon[(i + 1) % n];
+
+      if (y === y1 && y1 === y2 && (x1 <= x && x <= x2 || x2 <= x && x <= x1)) {
+          return true;
+      }
+
+      if ((y1 < y && y < y2 || y2 < y && y < y1) && x < Math.max(x1, x2)) {
+          const intersectionX = (y - y1) * (x2 - x1) / (y2 - y1) + x1;
+          if (x < intersectionX) {
+              inside = !inside;
+          }
+      }
+  }
+
+  return inside;
+}
+
 function getTopLeft(point, size) {
   return [
     Math.floor(point[0] / size[0]) * size[0],

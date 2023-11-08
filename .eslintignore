@@ -12,3 +12,4 @@ apps/landing/jquery.min.js
 apps/landing/jquery.scrollex.min.js
 apps/segment/opencv.js
 common/bootstrap-tour-standalone/bootstrap-tour-standalone.min.js
+apps/viewer/turf.min.js
