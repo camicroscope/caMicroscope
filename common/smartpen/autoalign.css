@@ -1,4 +1,7 @@
 /*upper blocks*/
+#align_menu {
+   display: none;
+}
 #align_menu *{
  font-size:24px;
  color:#0000be;/**/
