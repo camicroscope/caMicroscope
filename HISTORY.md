@@ -25,8 +25,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * **Version 1**
     * [1.0.x](#camicroscope-10)
 
-### caMicroscope [Unreleased](https://github.com/camicroscope/camicroscope/compare/v3.10.2...camicroscope:develop)
+### caMicroscope [Unreleased](https://github.com/camicroscope/camicroscope/compare/v3.11.0...camicroscope:develop)
 ###### TBD
+
+### caMicroscope [3.11.0](https://github.com/camicroscope/camicroscope/compare/v3.10.2...camicroscope:v3.11.0)
+###### 2023-11-17
+* Dicom and Bioformats Intergration (#647, #653, #655)
+* Improved Machine Learning Toolkit (#658)
 
 ### caMicroscope [3.10.2](https://github.com/camicroscope/camicroscope/compare/v3.10.1...camicroscope:v3.10.2)
 ###### 2023-06-16
