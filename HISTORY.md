@@ -5,26 +5,6 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-
-## Index
-* **Version 3**
-    * [3.10.x](#camicroscope-3100)
-    * [3.9.x](#camicroscope-390)
-    * [3.8.x](#camicroscope-380)
-    * [3.7.x](#camicroscope-377)
-    * [3.7.x](#camicroscope-375)
-    * [3.6.x](#camicroscope-362)
-    * [3.5.x](#camicroscope-3510)
-    * [3.4.x](#camicroscope-343)
-    * [3.3.x](#camicroscope-334)
-    * [3.2.x](#camicroscope-322)
-    * [3.1.x](#camicroscope-311)
-    * [3.0.x](#camicroscope-300)
-* **Version 2**
-    * [2.0.x](#camicroscope-201)
-* **Version 1**
-    * [1.0.x](#camicroscope-10)
-
 ### caMicroscope [Unreleased](https://github.com/camicroscope/camicroscope/compare/v3.11.0...camicroscope:develop)
 ###### TBD
 
