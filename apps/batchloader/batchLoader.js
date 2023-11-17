@@ -11,7 +11,7 @@ let finishUrl = '../../loader/upload/finish/';
 let checkUrl = '../../loader/data/one/';
 let chunkSize = 5*1024*1024;
 let finishUploadSuccess = false;
-const allowedExtensions = ['svs', 'tif', 'tiff', 'vms', 'vmu', 'ndpi', 'scn', 'mrxs', 'bif', 'svslide'];
+const allowedExtensions = ["svs", "tif", "tiff", "vms", "vmu", "ndpi", "scn", "mrxs", "bif", "svslide", "jpg", "png", "dcm", "v3draw", "ano", "cfg", "csv", "htm", "rec", "tim", "zpo", "dic", "dicom", "jp2", "j2ki", "j2kr", "raw", "ima", "cr2", "crw", "thm", "wav", "dv", "r3d", "r3d_d3d", "log", "mvd2", "aisf", "aiix", "dat", "atsf", "tf2", "tf8", "btf", "pbm", "pgm", "ppm", "xdce", "xml", "xlog", "apl", "tnb", "mtb", "im", "mea", "res", "aim", "arf", "psd", "al3d", "gel", "am", "amiramesh", "grey", "hx", "labels", "img", "hdr", "sif", "afi", "exp", "h5", "1sc", "pic", "ims", "ch5", "vsi", "ets", "pnl", "htd", "c01", "dib", "cxd", "v", "eps", "epsi", "ps", "flex", "xlef", "fits", "fts", "dm2", "dm3", "dm4", "naf", "his", "ndpis", "txt", "i2i", "hed", "mod", "inr", "ipl", "ipm", "fff", "ics", "ids", "seq", "ips", "ipw", "frm", "par", "j2k", "jpf", "jpk", "jpx", "klb", "xv", "bip", "sxm", "fli", "lim", "msr", "lif", "lof", "lei", "l2d", "mnc", "stk", "nd", "scan", "vff", "mrw", "stp", "mng", "nii", "nrrd", "nhdr", "nd2", "nef", "obf", "omp2info", "oib", "oif", "pty", "lut", "oir", "sld", "spl", "liff", "top", "pcoraw", "pcx", "pict", "pct", "df3", "im3", "qptiff", "bin", "env", "spe", "afm", "sm2", "sm3", "spc", "set", "sdt", "spi", "xqd", "xqf", "db", "vws", "pst", "inf", "tfr", "ffr", "zfr", "zfp", "2fl", "tga", "pr3", "dti", "fdf", "hdf", "xys", "html", "acff", "wat", "bmp", "wpi", "czi", "lms", "lsm", "mdb", "zvi", "mrc", "st", "ali", "map", "mrcs", "jpeg", "gif", "ptif"];
 
 // call on document ready
 $(document).ready(function() {
@@ -21,8 +21,12 @@ $(document).ready(function() {
   store.findSlide().then((response) => {
     for (i=0; i<response.length; i++) {
       existingSlides.push(response[i].name);
-      existingFiles.push((response[i].location).substring((response[i].location).lastIndexOf('/')+1,
+      if (response[i].filepath) {
+        existingFiles.push(response[i].filepath);
+      } else {
+        existingFiles.push((response[i].location).substring((response[i].location).lastIndexOf('/')+1,
           (response[i].location).length));
+      }
     }
   }).catch((error) => {
     console.log(error);
@@ -198,7 +202,7 @@ function checkNames() {
       }
       numErrors++;
     } else if (!allowedExtensions.includes(fileNames[i].substring(fileNames[i].lastIndexOf('.')+1,
-        fileNames[i].length))) {
+        fileNames[i].length).toLowerCase())) {
       let errorIcon = `<i id='fileNameError' class="fas fa-exclamation-circle text-danger" title='File extension not allowed'></i> &nbsp;&nbsp;`;
       if ($('.fileNameEdit:eq('+i+')').prev().prev('#fileNameError').length == 0) {
         $('.fileNameEdit:eq('+i+')').parent().prepend(errorIcon);
@@ -346,8 +350,11 @@ function finishBatch() {
 }
 
 async function handleUpload(selectedFile, filename, i) {
-  const token = await startUpload(filename);
+  const uploadMetadata = await startUpload(filename);
+  const token = uploadMetadata.upload_token;
   tokens.push(token);
+  fileNames[i] = uploadMetadata.filename;
+  $('tr:eq('+(i+1)+') td:nth-child(2) span')[0].innerText = uploadMetadata.filename;
   let j = 0;
   $('.token').each(function() {
     $(this).html(tokens[j++]);
@@ -371,7 +378,7 @@ async function startUpload(filename) {
   }}).then((x)=>x.json());
   try {
     const a = await token;
-    return a['upload_token'];
+    return { upload_token: a['upload_token'], filename: a['filename'] };
   } catch (e) {
     console.log(e);
   }
@@ -395,6 +402,14 @@ function finishUpload(token, filename, i) {
   }});
   regReq.then((x)=>x.json()).then((a)=>{
     // changeStatus('UPLOAD | Finished', a, reset); reset = false;
+    if (a.filepath) {
+      const newName = a.filepath.slice(a.filepath.lastIndexOf('/')+1);
+      fileNames[i] = newName;
+      $('tr:eq('+(i+1)+') td:nth-child(2) span')[0].innerText = newName;
+    }
+    if (a.relpath) {
+      fileNames[i] = a.relpath;
+    }
     if (typeof a === 'object' && a.error) {
       finishUploadSuccess = false;
     //   $('#check_btn').hide();

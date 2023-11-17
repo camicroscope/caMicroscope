@@ -322,6 +322,33 @@ class Store {
       body: JSON.stringify(json),
     }).then(this.errorHandler);
   }
+
+  /**
+   * update mark
+   * @param {maskId} the id of the mark
+   * @return {promise} - promise which resolves with response
+   **/
+  updateMaskEdit(maskId, slide, data) {
+    const suffix = 'Mark/update';
+    const url = this.base + suffix;
+
+    if (this.validation.mark && !this.validation.mark(data)) {
+      console.warn(this.validation.mark.errors);
+    }
+
+    const query = {
+      '_id': maskId,
+      'provenance.image.slide': slide,
+    };
+
+    return fetch(url + '?' + objToParamStr(query), {
+      method: 'POST',
+      body: JSON.stringify(data),
+      credentials: 'include',
+      mode: 'cors',
+    }).then(this.errorHandler);
+  }
+
   /**
    * delete mark
    * @param {object} id - the mark object id

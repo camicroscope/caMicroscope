@@ -59,7 +59,20 @@ function changeStatus(step, text, reset=true) {
         }
       }
       if (step == 'CHECK') {
-        // During check, thumbnail needs to be fetched & added to the table
+        // show post button
+        if (text['location']) {
+          // indicating successful check
+          checkSuccess = true;
+          if (finishUploadSuccess === true) {
+            $('#post_btn').show();
+          } else {
+            $('#post_btn').hide();
+          }
+        } else {
+          checkSuccess = false;
+          $('#post_btn').hide();
+        }
+        // fetch thumbnail and add to table as we can
         // In this case, text[col[col.length - 1]] is the filename
         fetch(thumbUrl + text[col[col.length - 1]], {credentials: 'same-origin'}).then(
             (response) => response.json(), // if the response is a JSON object
@@ -69,18 +82,6 @@ function changeStatus(step, text, reset=true) {
           const img = new Image();
           img.src = x.slide;
           tabCell.appendChild(img);
-          if (text['location']) {
-            // indicating successful check
-            checkSuccess = true;
-            if (finishUploadSuccess === true) {
-              $('#post_btn').show();
-            } else {
-              $('#post_btn').hide();
-            }
-          } else {
-            checkSuccess = false;
-            $('#post_btn').hide();
-          }
         });
       }
     }
@@ -121,12 +122,15 @@ function handleDownload(id) {
   store.getSlide(id)
       .then((response) => {
         if (response[0]) {
-          return response[0]['location'];
+          if (response[0]['filepath']) {
+            return response[0]['filepath'];
+          }
+          let location = response[0]['location'];
+          return location.substring(location.lastIndexOf('/')+1, location.length);
         } else {
           throw new Error('Slide not found');
         }
-      }).then((location) => {
-        fileName = location.substring(location.lastIndexOf('/')+1, location.length);
+      }).then((fileName) => {
         console.log(fileName);
         return fileName;
       }).then((fileName) =>{

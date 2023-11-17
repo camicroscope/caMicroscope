@@ -1,5 +1,0 @@
-{
-    "source": {
-        "include": [ "core/CaMic.js", "core/DrawAnnots.js", "core/Layer.js", "core/RenderAnnots.js", "core/Store.js" ]
-    }
-}
