@@ -245,8 +245,17 @@ function toggleSideMenu(opt) {
  * Home callback for redirecting to table page
  * @param {Object} data
  */
-function goHome(data) {
-  redirect($D.pages.home, `GO Home Page`, 0);
+async function goHome(data) {
+  let homeLinks = await $CAMIC.store.getConfigByName("custom_home");
+  if (homeLinks){
+    if($D.params.data.study in homeLinks){
+      redirect(homeLinks[$D.params.data.study], `Study Home Page`, 0);
+    } else {
+      redirect($D.pages.home, `Default Home Page`, 0);
+    }
+  } else {
+    redirect($D.pages.home, `Home Page`, 0);
+  }
 }
 
 // --- Annotation Tool ---//
