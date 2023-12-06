@@ -458,17 +458,6 @@ async function initUIcomponents() {
     value: 'slCap',
     callback: captureSlide,
   });
-  subToolsOpt.push({
-    name: 'tutorial',
-    icon: 'help',
-    title: 'Tutorial',
-    value: 'tutorial',
-    type: 'btn',
-    callback: function() {
-      tour.init();
-      tour.start(true);
-    },
-  });
 
   // Additional Links handler
   function additionalLinksHandler(url, openInNewTab, appendSlide) {
