@@ -248,7 +248,7 @@ function toggleSideMenu(opt) {
 async function goHome(data) {
   let homeLinksConfig = await $CAMIC.store.getConfigByName("custom_home");
   if (homeLinksConfig){
-    homeLinks = homeLinksConfig[0].configuration
+    homeLinks = homeLinksConfig[0].configuration[0]
     if($D.params.data.study in homeLinks){
       redirect(homeLinks[$D.params.data.study], `Study Home Page`, 0);
     } else {
