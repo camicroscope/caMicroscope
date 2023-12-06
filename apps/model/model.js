@@ -353,7 +353,7 @@ async function initUIcomponents() {
         value: 'bugs',
         type: 'btn',
         callback: () => {
-          window.open('https://goo.gl/forms/mgyhx4ADH0UuEQJ53', '_blank').focus();
+          window.open('https://github.com/camicroscope/caMicroscope/issues', '_blank').focus();
         },
       },
       {
