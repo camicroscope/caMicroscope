@@ -840,9 +840,9 @@ function createTutorial() {
   $UI.modalbox.elt.style.paddingTop='60px';
   $UI.modalbox.body.style.padding = 0;
   $UI.modalbox.body.style.display = 'block';
-
+  window.open('./RoiSelectTutorial.pdf', '_blank').focus()
   $UI.modalbox.body.innerHTML = `<embed src="./RoiSelectTutorial.pdf" width="100%" height="550" />`;
-  $UI.modalbox.open();
+  //$UI.modalbox.open();
 }
 
 function getAnnotationDataFrom(data) {
