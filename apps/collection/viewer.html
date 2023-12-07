@@ -238,6 +238,11 @@
           workflow_url = `../labeling/roiSelectTable.html?collectionId=${d._id.$oid}`
           card.classList.add("pitfalls");
         }
+        card.classList.add("card");
+        if (d.task == "proficiency"){
+          workflow_title = "Proficency";
+          workflow_url = `../labeling/profTable.html?collectionId=${d._id.$oid}`
+        }
 
         if (d.hasFeedback) card.classList.add("feedback");
         card.innerHTML = `<div class='card-title'>${
