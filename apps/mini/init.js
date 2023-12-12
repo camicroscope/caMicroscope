@@ -498,6 +498,14 @@ async function initUIcomponents() {
     zIndex: 601,
     mainToolsCallback: mainMenuChange,
     subTools: subToolsOpt,
+    mainTools: [
+      {
+        icon: 'apps',
+        title: 'Applications',
+        type: 'check',
+        value: 'apps',
+      }
+    ]
   });
 
   // create two side menus for tools
