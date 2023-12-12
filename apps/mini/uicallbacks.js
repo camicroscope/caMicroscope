@@ -250,12 +250,12 @@ async function goHome(data) {
   if (homeLinksConfig){
     homeLinks = homeLinksConfig[0].configuration[0]
     if($D.params.data.study in homeLinks){
-      redirect(homeLinks[$D.params.data.study], `Study Home Page`, 0);
+      window.location = homeLinks[$D.params.data.study]
     } else {
-      redirect($D.pages.home, `Default Home Page`, 0);
+      window.location = $D.pages.home;
     }
   } else {
-    redirect($D.pages.home, `Home Page`, 0);
+    window.location = $D.pages.home;
   }
 }
 
