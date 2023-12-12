@@ -500,10 +500,10 @@ async function initUIcomponents() {
     subTools: subToolsOpt,
     mainTools: [
       {
-        icon: 'apps',
-        title: 'Applications',
+        icon: 'view_list',
+        title: 'Layers',
         type: 'check',
-        value: 'apps',
+        value: 'layers',
       }
     ]
   });
