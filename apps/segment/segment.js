@@ -371,10 +371,10 @@ function initCore() {
     } else {
       $D.params.data = e;
     }
-    $CAMIC.viewer.addHandler('open-failed', function(e){
-      console.error(e.message, e)
+    $CAMIC.viewer.addHandler('open-failed', function(e) {
+      console.error(e.message, e);
       redirect($D.pages.table, e.message, 5);
-    })
+    });
   });
 
   $CAMIC.viewer.addOnceHandler('open', function(e) {

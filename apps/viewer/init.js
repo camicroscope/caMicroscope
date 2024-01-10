@@ -195,10 +195,10 @@ function initCore() {
   }
 
   $CAMIC.loadImg(function(e) {
-    $CAMIC.viewer.addHandler('open-failed', function(e){
-      console.error(e.message, e)
+    $CAMIC.viewer.addHandler('open-failed', function(e) {
+      console.error(e.message, e);
       redirect($D.pages.table, e.message, 5);
-    })
+    });
     // image loaded
     if (e.hasError) {
       // if this is a retry, assume normal behavior (one retry per slide)

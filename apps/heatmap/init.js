@@ -60,10 +60,10 @@ function initCore() {
 
   $CAMIC.loadImg(async function(e) {
     Loading.open(document.body, `Loading Data ...`);
-    $CAMIC.viewer.addHandler('open-failed', function(e){
-      console.error(e.message, e)
+    $CAMIC.viewer.addHandler('open-failed', function(e) {
+      console.error(e.message, e);
       redirect($D.pages.table, e.message, 5);
-    })
+    });
     // image loaded
     if (e.hasError) {
       $UI.message.addError(e.message);
