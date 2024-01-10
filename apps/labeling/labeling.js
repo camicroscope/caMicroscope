@@ -77,6 +77,10 @@ function initCore() {
         defaultText: `Slide: ${$D.params.data.name}`,
       });
     }
+    $CAMIC.viewer.addHandler('open-failed', function(e){
+      console.error(e.message, e)
+      redirect($D.pages.table, e.message, 5);
+    })
   });
 
   $CAMIC.viewer.addHandler('open', function() {
