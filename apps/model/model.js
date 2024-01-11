@@ -404,6 +404,10 @@ function initCore() {
     } else {
       $D.params.data = e;
     }
+    $CAMIC.viewer.addHandler('open-failed', function(e) {
+      console.error(e.message, e);
+      redirect($D.pages.table, e.message, 5);
+    });
   });
 
   $CAMIC.store.getSlide($D.params.slideId).then((response) => {
