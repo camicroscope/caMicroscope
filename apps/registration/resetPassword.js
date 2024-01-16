@@ -2,7 +2,7 @@
 // and hide "send password reset link" div
 
 function requestResetPassword(){
-  email = document.getElementById("email").value
+  email = document.getElementById("email").value.toLowerCase();
   user_req = {"email": email}
   fetch("../../requestResetPassword", {
     method: 'POST',
