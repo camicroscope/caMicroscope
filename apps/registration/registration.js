@@ -284,6 +284,7 @@ $('#certifications').alpaca({
 });
 
 async function requestResetPassword(email){
+  email = email.toLowerCase();
   user_req = {"email": email}
   return await fetch("../../requestResetPassword", {
     method: 'POST',
@@ -304,10 +305,11 @@ async function saveRegistration() {
   let certifications = $('#certifications').alpaca().getValue();
   Object.assign(registrationForm, basic, professional, certifications);
   let userRegInfo = {}
+  let emailAddress = registrationForm.email.toLowerCase();
 
-  userRegInfo.email = registrationForm.email.toLowerCase();
+  userRegInfo.email = emailAddress;
   userRegInfo.userType = "[]"
-  userRegInfo.creator = userRegInfo.email;
+  userRegInfo.creator = emailAddress;
   userRegInfo.registration = registrationForm;
   userRegInfo.isAgreed = isConsent.checked;
   let now_time = new Date;
@@ -319,14 +321,14 @@ async function saveRegistration() {
       let kcUserInfo = {
         "firstName": registrationForm.firstName,
         "lastName": registrationForm.lastName,
-        "email": registrationForm.email,
-        "username": registrationForm.email,
+        "email": emailAddress,
+        "username": emailAddress,
         "enabled": "true",
       }
       let kcRes = await addKcUser(kcUserInfo);
       if (kcRes.username){
         console.log("successful user add")
-        await requestResetPassword(registrationForm.email)
+        await requestResetPassword(emailAddress)
         window.location = "./registration_success.html";
       } else {
         message.addError('Failed to add user to keycloak', 10000);
