@@ -305,7 +305,7 @@ async function saveRegistration() {
   Object.assign(registrationForm, basic, professional, certifications);
   let userRegInfo = {}
 
-  userRegInfo.email = registrationForm.email;
+  userRegInfo.email = registrationForm.email.toLowerCase();
   userRegInfo.userType = "[]"
   userRegInfo.creator = userRegInfo.email;
   userRegInfo.registration = registrationForm;
@@ -319,7 +319,7 @@ async function saveRegistration() {
       let kcUserInfo = {
         "firstName": registrationForm.firstName,
         "lastName": registrationForm.lastName,
-        "email": registrationForm.email,
+        "email": registrationForm.email.toLowerCase(),
         "username": registrationForm.email,
         "enabled": "true",
       }
