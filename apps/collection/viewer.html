@@ -262,7 +262,8 @@
       let userCollections = getUserInfo()['data']['collections'] || [];
       async function initialize() {
         var data = await store.getAllCollection();
-        data = data.filter(x=>userCollections.indexOf(x._id["$oid"])>=0)
+        // in this branch, we have all collections.
+        //data = data.filter(x=>userCollections.indexOf(x._id["$oid"])>=0)
         data = data.sort((a, b) => {
           let nameA = a.name.toUpperCase();
           let nameB = b.name.toUpperCase();
