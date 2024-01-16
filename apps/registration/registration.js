@@ -319,7 +319,7 @@ async function saveRegistration() {
       let kcUserInfo = {
         "firstName": registrationForm.firstName,
         "lastName": registrationForm.lastName,
-        "email": registrationForm.email.toLowerCase(),
+        "email": registrationForm.email,
         "username": registrationForm.email,
         "enabled": "true",
       }
