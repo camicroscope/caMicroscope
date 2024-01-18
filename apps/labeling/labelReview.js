@@ -753,7 +753,7 @@ function setDownloadModalProgress(num) {
 }
 
 function labelInfoToHtml(label) {
-  let text = "<div class='labelHtml'>";
+  let text = '<div class=\'labelHtml\'>';
   // top level fields
 
   if (false && label.alias) {
@@ -782,7 +782,7 @@ function labelInfoToHtml(label) {
     text += label.task;
     text += '<br/>';
   }
-  let skip_props = ['style']
+  let skip_props = ['style'];
   // now go through properties
   for (let propkey in label.properties) {
     if (skip_props.indexOf(propkey) == -1) {
@@ -799,12 +799,12 @@ function labelInfoToHtml(label) {
       text += '<br/>';
     }
   }
-  text += "</div>"
+  text += '</div>';
   return text;
 }
 
-function labelAnnotToHtml(annot){
-  let text = "<div class='annotHtml'>";
+function labelAnnotToHtml(annot) {
+  let text = '<div class=\'annotHtml\'>';
   // top level fields
 
   if (annot.create_date) {
@@ -812,7 +812,7 @@ function labelAnnotToHtml(annot){
     text += annot.create_date;
     text += '<br/>';
   }
-  let skip_props = ['style']
+  let skip_props = ['style'];
   // now go through properties
   for (let propkey in annot.properties) {
     if (skip_props.indexOf(propkey) == -1) {
@@ -829,7 +829,7 @@ function labelAnnotToHtml(annot){
       text += '<br/>';
     }
   }
-  text += "</div>"
+  text += '</div>';
   return text;
 }
 
@@ -850,9 +850,9 @@ function getLabelInfo(e) {
   let texts = matched_labels.map(labelInfoToHtml);
   document.getElementById('label_review').innerHTML = texts.join('<br/><hr/><br/>');
   // render relevant annotations
-  document.getElementById('annot_review').innerHTML = "";
-  for (let label of matched_labels){
-    $CAMIC.store.findLabelingAnnotation({'creator': $USER, 'parent': label._id.$oid}).then(x=>{
+  document.getElementById('annot_review').innerHTML = '';
+  for (let label of matched_labels) {
+    $CAMIC.store.findLabelingAnnotation({'creator': $USER, 'parent': label._id.$oid}).then((x)=>{
       document.getElementById('annot_review').innerHTML += x.map(labelAnnotToHtml).join('<br/><hr><br/>');
     });
   }

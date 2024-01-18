@@ -196,8 +196,8 @@ async function initialize() {
           // add dbl click handler
           $CAMIC.viewer.addHandler('canvas-double-click', addAnnot);
           // alert and return if no mpp
-          if (!$CAMIC.slideData.mpp){
-            alert("This image doesn't have the microns per pixel (mpp) defined. Please resolve this issue before working with this image.");
+          if (!$CAMIC.slideData.mpp) {
+            alert('This image doesn\'t have the microns per pixel (mpp) defined. Please resolve this issue before working with this image.');
             window.location = `./roiSelectTable.html?collectionId=${$D.params.collectionId}`;
           }
         }
@@ -840,9 +840,9 @@ function createTutorial() {
   $UI.modalbox.elt.style.paddingTop='60px';
   $UI.modalbox.body.style.padding = 0;
   $UI.modalbox.body.style.display = 'block';
-  window.open('./RoiSelectTutorial.pdf', '_blank').focus()
+  window.open('./RoiSelectTutorial.pdf', '_blank').focus();
   $UI.modalbox.body.innerHTML = `<embed src="./RoiSelectTutorial.pdf" width="100%" height="550" />`;
-  //$UI.modalbox.open();
+  // $UI.modalbox.open();
 }
 
 function getAnnotationDataFrom(data) {
@@ -1261,7 +1261,7 @@ function makeFormReactive() {
     tt.addEventListener('change', function(e) {
       disableITS();
       disableTIL();
-      if (tt.dataset.showPitfalls){
+      if (tt.dataset.showPitfalls) {
         enableSaveBtn();
         // show pitfalls
         document.getElementById('pitfalls_area').style.display = 'block';
@@ -1271,13 +1271,13 @@ function makeFormReactive() {
         let checkboxes = document.querySelectorAll('#left_menu input[type=checkbox]');
         for (let check of checkboxes) {
           check.checked = false;
+        }
+      } else {
+        enableITS();
+        disableSaveBtn();
+        document.getElementById('sliders').style.display = 'block';
+        document.getElementById('pitfalls_area').style.display = 'none';
       }
-    } else {
-      enableITS();
-      disableSaveBtn();
-      document.getElementById('sliders').style.display = 'block';
-      document.getElementById('pitfalls_area').style.display = 'none';
-    }
     });
   }
 }
@@ -1319,7 +1319,7 @@ function resetForm() {
   }
   document.getElementById('pitfalls_area').style.display = 'none';
   document.getElementById('save').style.display = 'none';
-  document.getElementById('comments').value = "";
+  document.getElementById('comments').value = '';
 }
 
 
@@ -1331,7 +1331,7 @@ function addAnnot(e) {
     let halfWidth = 1000;
     let halfHeight = 1000;
     // should be 500 microns; so half is 250 divided by microns per pixel, get width and height in pixels
-    if ($CAMIC.slideData.mpp){
+    if ($CAMIC.slideData.mpp) {
       halfWidth = Math.floor(250/$CAMIC.slideData.mpp);
       halfHeight = Math.floor(250/$CAMIC.slideData.mpp);
     }

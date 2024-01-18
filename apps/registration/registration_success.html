@@ -19,7 +19,7 @@
     <section id="main" class="wrapper" style="padding: 1em 3em 3em 3em;">
       <h1>Welcome</h1>
       <div>
-        <p> Welcome to the HTT project! You should receive an email at the address used in registration with instructions on how to set your password. <br /> Initially, this account will have limited "public" access. Then, an HTT administrator will assign you to an updated role and email you about next steps. <br />
+        <p> Welcome to the HTT project! Your login is your email<span id="email_address"></span>. You should receive an email at the address used in registration with instructions on how to set your password. <br /> Initially, this account will have limited "public" access. Then, an HTT administrator will assign you to an updated role and email you about next steps. <br />
           <br /> Please <a href="mailto:Emma.Gardecki@fda.hhs.gov;brandon.gallas@fda.hhs.gov;ryan.birmingham@fda.hhs.gov?subject=HTT Registration Question">contact the administrative team</a> with any questions. <br />
           <br /> Thank you for registering.
         </p>
@@ -43,5 +43,11 @@
     <script src="../landing/util.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.3.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+    <script>
+      let urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get("email")) {
+        document.getElementById("email_address").innerHTML = " " + decodeURIComponent(urlParams.get("email"));
+      }
+    </script>
   </body>
 </html>

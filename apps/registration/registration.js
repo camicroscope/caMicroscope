@@ -329,7 +329,7 @@ async function saveRegistration() {
       if (kcRes.username){
         console.log("successful user add")
         await requestResetPassword(emailAddress)
-        window.location = "./registration_success.html";
+        window.location = "./registration_success.html?email=" + encodeURIComponent(emailAddress);
       } else {
         message.addError('Failed to add user to keycloak', 10000);
         console.log(kcRes);
