@@ -125,7 +125,7 @@ $('#basic').alpaca({
       },
       'email': {
         'type': 'string',
-        'title': 'Contact Email',
+        'title': 'Contact Email (and Username)',
         'format': 'email',
         'required': true,
       },
