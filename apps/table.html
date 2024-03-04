@@ -132,23 +132,23 @@
                 </div>
             </div>
             </div>
-
-            <div class="d-md-inline-flex" style="width:20%;">
+            
+            <div class="d-md-inline-flex" style="width:20%; margin-right: 30px;">
                 <div class="pl-md-2 pt-2">
                     <button type="button" data-bs-toggle="modal" data-bs-target="#dicom"
-                        class="btn btn2 btn-success float-right w-md-100" style="background-color: cadetblue; padding: 7px;" onclick="setDicomParams();"> <i
+                        class="btn btn2 btn-success float-right w-md-100" style="background-color: cadetblue; padding: 7px; margin-right: 5px;" onclick="setDicomParams();"> <i
                             class="fas fa-server"></i>
-                        <span class="">DICOM</span> </button>
+                        <span class="ml-2">&nbsp;DICOM</span> </button>
                 </div>
                 <div class="pl-md-2 pt-2">
-                    <button type="button" class="btn btn2 btn-success float-right w-md-100" style="padding: 7px;"
+                    <button type="button" class="btn btn2 btn-success float-right w-md-100" style="padding: 7px; margin-right: 5px;"
                         onclick="(()=>{location.reload();return false;})()"> <i class="fas fa-sync-alt"></i>
                         <span class="reload">Reload</span> </button>
                 </div>
                 <div>
 			    <div id="slideUploadButton" class="btn-group float-right pl-md-2 pt-2">
-				    <button type="button" class="btn btn-primary " data-bs-toggle="modal"
-			data-bs-target="#upload-dialog" onclick="hidePostButton(); hideCheckButton(); resetUploadForm();" > <i class="fas fa-upload"></i> Upload</button>
+				    <button type="button" class="btn btn-primary d-flex align-items-center" data-bs-toggle="modal"
+			data-bs-target="#upload-dialog" onclick="hidePostButton(); hideCheckButton(); resetUploadForm();" > <i class="fas fa-upload"></i> <span class="">&nbsp;Upload</span></button>
 				    <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 				    <span class="sr-only">Toggle Dropdown</span>
 				    </button>
