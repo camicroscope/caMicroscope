@@ -116,6 +116,9 @@ body {
   line-height: 1.5;
 }
 
+nav{
+  background-color: red;
+}
 ol,
 ul {
   list-style: none;
@@ -142,14 +145,24 @@ table {
 body {
   -webkit-text-size-adjust: none;
 }
-
-#toggle-icon{
- position: fixed;
-  right: 2%;	
-  top:2.4%;
+.bg-dark {
+  background-color: #343a40  !important;
+  
+  
 }
 
+
 /* This codes styles the dark mode the light/mode icon */
+.darkmovenav{
+ background-color: black !important ;
+}
+
+#toggle-icon{
+  position: fixed;
+   right: 2%;	
+   top:2.4%;
+ }
+ 
 #toggle-icon.fa-moon {
   color: #808080;
   cursor: pointer;
@@ -160,7 +173,7 @@ body {
 }
 
 #toggle-icon.fa-sun {
-  color: #ffff00;
+  color: rgb(190, 190, 44);
   cursor: pointer;
   background-color: #742b78;
   border-radius: 50%;
@@ -168,7 +181,7 @@ body {
 }
 
 .dark-mode {
-  background-color: black;
+  background-color:  #212529;;
   color: white;
 }
 
@@ -5053,9 +5066,7 @@ nav li:not(.active):hover a {
 .active a {
   color: black !important;
 }
-.bg-dark {
-  background-color: #343a40 !important;
-}
+
 .fas {
   /* color: rgba(255,255,255,.5);; */
   color: inherit;
