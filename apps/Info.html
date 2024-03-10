@@ -1,462 +1,628 @@
 <!DOCTYPE html>
 <html>
+  <head>
+    <meta name="keywords" content="camicroscope, quip" />
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <!-- common -->
+    <!-- <link rel='stylesheet' type='text/css' media='all' href='../css/style.css'/> -->
+    <!-- Check If we're logged in ok, otherwise, log in for us -->
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.8.2/css/all.css"
+    />
 
-<head>
-	<meta name="keywords" content="camicroscope, quip" />
-	<meta charset='utf-8'>
-	<meta http-equiv='X-UA-Compatible' content='IE=edge'>
-	<meta name='viewport'
-		content='width=device-width, initial-scale=1, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no'>
-	<!-- common -->
-	<!-- <link rel='stylesheet' type='text/css' media='all' href='../css/style.css'/> -->
-	<!-- Check If we're logged in ok, otherwise, log in for us -->
-	<!-- Font Awesome -->
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+    <script src="../common/authChecker.js"></script>
+    <script>
+      __auth_check(1);
+    </script>
 
-	<script src='../common/authChecker.js'></script>
+    <script src="../core/Store.js"></script>
+    <script src="../common/util.js"></script>
+    <script src="../common/ajv.js"></script>
+    <script src="../components/loading/loading.js"></script>
+    <script src="./loader/loader.js"></script>
+    <script src="./loader/chunked_upload.js"></script>
+    <title>CaMicroscope Data Table</title>
+
+    <script
+      src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+      integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+      crossorigin="anonymous"
+    ></script>
+
 	<script>
-		__auth_check(1)
+		// Dark mode functionality
+        
+		function toggleTheme() {
+        // Get the icon element
+        const icon = document.getElementById('toggle-icon');
+        const contentsButton = document.querySelectorAll('.button');
+        const paragraphs = document.querySelectorAll('p');
+        const heading2 = document.querySelectorAll('h2');
+        const heading3 = document.querySelectorAll('h3');
+        const navdarkmode = document.querySelectorAll('.bg-dark');
+        const slideMode = document.querySelectorAll('.bg-white');
+        const collection = document.querySelector('.p-2');
+
+        
+
+        
+
+    
+        // Toggle dark mode class on body
+        document.body.classList.toggle("dark-mode");
+       
+    
+        // Toggle custom color class on  elements
+        paragraphs.forEach(p => p.classList.toggle("p-color"));
+        heading2.forEach(h2 => h2.classList.toggle("h2-color"));
+        heading3.forEach(h3 => h3.classList.toggle("h3-color"));
+        contentsButton.forEach(button => button.classList.toggle("content-buttoncolor"));
+        navdarkmode.forEach(item => item.classList.toggle("darkmovenav"));
+        slideMode.forEach(item => item.classList.toggle("bg-whiteslide"));
+        collection.classList.toggle("collectionsSection")
+      
+        
+        
+    
+         // Toggle dark class on the icon
+    if (icon.classList.contains("fa-sun")) {
+        icon.classList.remove("fa-sun");
+        icon.classList.add("fa-moon");
+    } else {
+        icon.classList.remove("fa-moon");
+        icon.classList.add("fa-sun");
+    }
+
+    }
+
+    function dicom () {
+
+        if (document.body.classList.contains("dark-mode")) {
+            document.querySelector(".modal-content").style.backgroundColor = "#212529";
+            document.querySelector(".modal-content").style.color = "white";
+            document.querySelector(".serverText").style.color = " white";
+        } else{
+            document.querySelector(".modal-content").style.backgroundColor = "white";
+            // document.querySelector(".modal-content").style.color = "black";
+            // document.querySelector(".servertext").style.color = " black ";
+
+        }
+     
+    }
+    
+    
 	</script>
 
-	<script src='../core/Store.js'></script>
-	<script src='../common/util.js'></script>
-	<script src='../common/ajv.js'></script>
-	<script src='../components/loading/loading.js'></script>
-	<script src="./loader/loader.js"></script>
-	<script src="./loader/chunked_upload.js"></script>
-	<title>CaMicroscope Data Table</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="../common/stacktable.css" />
+    <style>
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+      }
+    </style>
+    <script src="../common/stacktable.js"></script>
+    <link rel="stylesheet" href="./table.css" />
+    <link rel="stylesheet" href="./info.css" />
+    <link
+      rel="shortcut icon"
+      type="image/x-icon"
+      href="/apps/landing/favicon.png"
+    />
+  </head>
 
-	<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
-		integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
-		crossorigin="anonymous"></script>
-		
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" 
-		rel="stylesheet" 
-		integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0" 
-		crossorigin="anonymous">
-	<link rel="stylesheet" href="../common/stacktable.css">
-	<style>
-		html,
-		body {
-			width: 100%;
-			height: 100%;
-			display: flex;
-			flex-direction: column;
-		}
-	</style>
-		<script src='../common/stacktable.js'></script>
-	<link rel="stylesheet" href="./table.css" />
-  <link rel="stylesheet" href="./info.css" />
-	<link rel="shortcut icon" type="image/x-icon" href="/apps/landing/favicon.png">
-</head>
+  <body>
+    <div class="page-container">
+      <div>
+        <nav
+          class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark"
+          style="position: sticky; margin-top: -4em"
+        >
+          <div class="container-fluid">
+            <button
+              class="navbar-toggler"
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#navbarSupportedContent"
+              aria-controls="navbarSupportedContent"
+              aria-expanded="false"
+              aria-label="Toggle navigation"
+            >
+              <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+              <ul class="navbar-nav mr-auto gap-1">
+                <li class="nav-item link" style="font-family: sans-serif">
+                  <a class="nav-link" href="landing/landing.html">
+                    <i class="fas fa-home"></i> Home</a
+                  >
+                </li>
+                <li class="nav-item link" style="font-family: sans-serif">
+                  <a class="nav-link" href="table.html">
+                    <i class="fas fa-list-ul"></i> Slides</a
+                  >
+                </li>
+                <li class="nav-item active link">
+                  <a class="nav-link" href="Info.html">
+                    <i class="fas fa-info-circle"></i> Info</a
+                  >
+                </li>
+                <li class="nav-item link">
+                  <a class="nav-link" href="./dev-workbench/workbench.html">
+                    <i class="fas fa-pencil-ruler"></i> Workbench</a
+                  >
+                </li>
+                <li class="nav-item link" style="font-family: sans-serif">
+                  <a class="nav-link" href="./signup/signup.html">
+                    <i class="fas fa-user-plus"></i> Signup</a
+                  >
+                </li>
+                <li class="nav-item link" style="font-family: sans-serif">
+                  <a
+                    class="nav-link"
+                    target="_blank"
+                    href="https://docs.google.com/forms/d/e/1FAIpQLScL91LxrpAZjU88GBZP9gmcdgdf8__uNUwhws2lzU6Lr4qNwA/viewform"
+                  >
+                    <i class="fas fa-comment"></i> Feedback</a
+                  >
+                </li>
+              </ul>
+            </div>
+          </div>
+          <i id="toggle-icon" class="fas fa-sun" onclick="toggleTheme()"></i>
+        </nav>
 
-<body>
-	<div class="page-container">
-	<div>
-		<nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark" style="position: sticky; margin-top: -4em;">
-			<div class="container-fluid">
-				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-					<span class="navbar-toggler-icon"></span>
-					</button>
-					<div class="collapse navbar-collapse" id="navbarSupportedContent" >
-						<ul class="navbar-nav mr-auto gap-1">
-							<li class="nav-item link" style="font-family: sans-serif;">
-							   <a class="nav-link" href="landing/landing.html"> <i class="fas fa-home"></i> Home</a>
-							</li>
-							<li class="nav-item link" style="font-family: sans-serif;">
-								<a class="nav-link" href="table.html"> <i class="fas fa-list-ul"></i>  Slides</a>
-							</li>
-							<li class="nav-item active link">
-								<a class="nav-link" href="Info.html"> <i class="fas fa-info-circle"></i> Info</a>
-							</li>
-							<li class="nav-item link">
-								<a class="nav-link" href="./dev-workbench/workbench.html"> <i class="fas fa-pencil-ruler"></i> Workbench</a>
-							</li>
-							<li class="nav-item link" style="font-family: sans-serif;">
-								<a class="nav-link" href="./signup/signup.html"> <i class="fas fa-user-plus"></i> Signup</a>
-							</li>
-							<li class="nav-item link" style="font-family: sans-serif;">
-								<a class="nav-link" target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLScL91LxrpAZjU88GBZP9gmcdgdf8__uNUwhws2lzU6Lr4qNwA/viewform"> <i class="fas fa-comment"></i> Feedback</a>
-							</li>
-						</ul>
-					</div>
-			</div>
-		</nav>
+        <div class="header text-center text-white bg-info p-4">
+          <h1 class="h1">caMicroscope</h1>
+          <p>
+            Digital pathology image viewer with support for human/machine
+            generated annotations and markups.
+          </p>
+          <div style="align-content: center">
+            <div class="btn-group" role="group">
+              <a href="./table.html">
+                <button
+                  style="border-color: white; border-radius: 5px 0 0 5px"
+                  type="button"
+                  class="btn btn-secondary bg-info text-light"
+                  title="Slides Table"
+                >
+                  <i class="fas fa-list-alt"></i> Slides
+                </button>
+              </a>
+              <button
+                type="button"
+                style="border-color: white"
+                class="btn btn-secondary bg-white text-dark"
+                title="Information Dashboard"
+              >
+                <i class="fas fa-info-circle"></i> Info
+              </button>
+            </div>
+          </div>
+        </div>
 
-	<div class="header text-center text-white bg-info p-4">
-		<h1 class="h1">caMicroscope</h1>
-		<p>Digital pathology image viewer with support for human/machine generated annotations and markups.</p>
-		<div style="align-content: center;">
-			<div class="btn-group" role="group">
-			<a href="./table.html">	<button style="border-color: white; border-radius: 5px 0 0 5px;" type="button" class="btn btn-secondary bg-info text-light" title="Slides Table"><i class="fas fa-list-alt"></i>  Slides</button> </a>
-			<button type="button" style="border-color: white;" class="btn btn-secondary bg-white text-dark" title="Information Dashboard"> <i class="fas fa-info-circle"></i> Info</button>
-			</div>
-		</div>
-	</div>
+        <div
+          class="modal fade"
+          id="detail-dialog"
+          tabindex="-1"
+          role="dialog"
+          aria-labelledby="title-of-dialog"
+          aria-hidden="true"
+          data-backdrop="static"
+          data-keyboard="false"
+        >
+          <div
+            class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg"
+            role="document"
+            style="margin-top: 8vh"
+          >
+            <div class="modal-content">
+              <div class="modal-header">
+                <h4 class="modal-title" id="title-of-dialog">
+                  Slide Information Details
+                </h4>
+                <button
+                  type="button"
+                  class="close"
+                  onclick="closedetails();"
+                  data-dismiss="modal"
+                  aria-label="Close"
+                >
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <div>
+                  <div id="content">
+                    <div class="alert alert-info" role="alert">
+                      <h4 style="text-align: center">Synopsis</h4>
+                      <hr style="margin-top: 0px" />
+                      <table id="detailtable"></table>
+                    </div>
+                    <div class="alert alert-info" role="alert">
+                      <h4 style="text-align: center">Annotations</h4>
+                      <hr style="margin-top: 0px" />
+                      <table id="annotationtable"></table>
+                    </div>
+                    <div class="alert alert-info" role="alert">
+                      <h4 style="text-align: center">Heatmaps</h4>
+                      <hr style="margin-top: 0px" />
+                      <table id="heatmaptable"></table>
+                    </div>
+                    <div class="text-center p-2">
+                      <div id="load_status" class="p-1"></div>
+                      <div id="json_table"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  onclick="closedetails();"
+                  data-dismiss="modal"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
 
-	<div class="modal fade" id="detail-dialog" tabindex="-1" role="dialog"
-	aria-labelledby="title-of-dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false" >
-	<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document" style="margin-top:8vh;">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h4 class="modal-title" id="title-of-dialog">Slide Information Details</h4>
-				<button type="button" class="close" onclick="closedetails();" data-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
-			</div>
-			<div class="modal-body">
-				<div>
-					<div id="content">
-						<div class="alert alert-info" role="alert">
+        <div class="container">
+          <h3
+            class="text-center h3 mb-2"
+            style="margin-top: 8px; margin-bottom: 10px"
+          >
+            Information Dashboard
+          </h3>
+          <div class="row mt-2" id="filters-heading"></div>
+          <div class="row mb-2 ml-1" id="filters-check"></div>
+          <div class="form-group has-search">
+            <span class="fa fa-search form-control-feedback"></span>
+            <input
+              id="search-table"
+              type="text"
+              class="form-control"
+              placeholder="Search"
+            />
+          </div>
 
-							<h4 style="text-align:center">Synopsis</h4><hr style="margin-top:0px;">
-							<table id="detailtable">
-							</table>
-						</div>
-						<div class="alert alert-info" role="alert">
+          <div class="table-responsive" id="summary">
+            <table class="table table-striped">
+              <thead id="infothead"></thead>
+              <tbody id="infotbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
 
-							<h4 style="text-align:center">Annotations</h4><hr style="margin-top:0px;">
-							<table id="annotationtable">
-							</table>
-						</div>
-						<div class="alert alert-info" role="alert">
+      <footer class="text-center text-white bg-dark p-3 mt-2">
+        <p class="p">Copyright © 2021 caMicroscope</p>
+      </footer>
+    </div>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+  <script>
+    var allSlides;
 
-							<h4 style="text-align:center">Heatmaps</h4><hr style="margin-top:0px;">
-							<table id="heatmaptable">
-							</table>
-						</div>
-						<div class="text-center p-2">
-							<div id="load_status" class="p-1"></div>
-							<div id="json_table"></div>
-						</div>
-					</div>
-				</div>
-
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-secondary" onclick="closedetails();" data-dismiss="modal">Close</button>
-			</div>
-		</div>
-	</div>
-	</div>
-
-
-	<div class="container">
-	<h3 class="text-center h3 mb-2" style="margin-top:8px;margin-bottom:10px;">Information Dashboard</h3>
-	<div class="row mt-2" id="filters-heading">
-	</div>
-	<div class="row mb-2 ml-1" id="filters-check">
-	</div>
-	<div class="form-group has-search">
-
-		<span class="fa fa-search form-control-feedback"></span>
-		<input id="search-table" type="text" class="form-control" placeholder="Search">
-	</div>
-
-
-
-
-
-  <div class="table-responsive" id="summary">
-    <table class="table table-striped">
-			<thead id="infothead"></thead>
-			<tbody id="infotbody"></tbody>
-    </table>
-	</div>
-</div>
-</div>
-
-<footer class="text-center text-white bg-dark p-3 mt-2">
-	<p class="p">Copyright © 2021 caMicroscope</p>
-</footer>
-</div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8" crossorigin="anonymous"></script>
-</body>
-<script>
-
-var allSlides;
-
-function addhead(){
-	var table = $('#infothead');
-	let headingList=['ID','Name','Annotations','Heatmaps'];
-	let propList=['id','name','annotations','heatmap'];
-	const headingMarkup = headingList.map((title,i) => `<th>${title}
+    function addhead() {
+      var table = $("#infothead");
+      let headingList = ["ID", "Name", "Annotations", "Heatmaps"];
+      let propList = ["id", "name", "annotations", "heatmap"];
+      const headingMarkup = headingList.map(
+        (title, i) => `<th>${title}
 		<span class="sort-btn" data-order=${2} data-prop=${propList[i]}>
 		<i class="fa fa-sort"/> </span>
-		</th>`);
-		headingMarkup.push("<th></th>")
-	table.append(`<tr>${headingMarkup}</tr>`);
-}
+		</th>`
+      );
+      headingMarkup.push("<th></th>");
+      table.append(`<tr>${headingMarkup}</tr>`);
+    }
 
-function addbody(JSONdata){
-	var table = $('#infotbody');
-	// console.log(JSONdata.annotations);
-	var annodisp=null;
-	var heatdisp=null;
-	if(JSONdata.annotations.length===0){
-		annodisp="<i class='fas fa-times' style='color:red;'></i>"
-	}
-	else{
-		annodisp="<i class='fas fa-check'  style='color:green;'></i>"
-	}
-	if(JSONdata.heatmap.length===0){
-		heatdisp="<i class='fas fa-times' style='color:red;'></i>"
-	}
-	else{
-		heatdisp="<i class='fas fa-check'  style='color:green;'></i>"
-	}
-	var button = `<td>	<button class=\"btn btn-primary\" data-id='${allSlides.length}' onclick='openDetails(this)'>Details</button></td>`
-	var markup = "<tr><td>"+JSONdata.id+"</td><td>"+JSONdata.name+"</td><td>"+annodisp+"</td><td>"+heatdisp+"</td>"+button+"</tr>"
-	table.append(markup);
-}
+    function addbody(JSONdata) {
+      var table = $("#infotbody");
+      // console.log(JSONdata.annotations);
+      var annodisp = null;
+      var heatdisp = null;
+      if (JSONdata.annotations.length === 0) {
+        annodisp = "<i class='fas fa-times' style='color:red;'></i>";
+      } else {
+        annodisp = "<i class='fas fa-check'  style='color:green;'></i>";
+      }
+      if (JSONdata.heatmap.length === 0) {
+        heatdisp = "<i class='fas fa-times' style='color:red;'></i>";
+      } else {
+        heatdisp = "<i class='fas fa-check'  style='color:green;'></i>";
+      }
+      var button = `<td>	<button class=\"btn btn-primary\" data-id='${allSlides.length}' onclick='openDetails(this)'>Details</button></td>`;
+      var markup =
+        "<tr><td>" +
+        JSONdata.id +
+        "</td><td>" +
+        JSONdata.name +
+        "</td><td>" +
+        annodisp +
+        "</td><td>" +
+        heatdisp +
+        "</td>" +
+        button +
+        "</tr>";
+      table.append(markup);
+    }
 
-function openDetails(tag){
-	document.getElementById('detail-dialog').style.display = 'block';
-	document.getElementById('detail-dialog').style.opacity = '1';
-	document.getElementById('detail-dialog').style.background = 'rgba(0,0,0,0.5)';
-	var count = (parseInt(tag.dataset.id))-1;
-	var table = $('#detailtable');
-	var json = {
-		id:allSlides[count].id,
-		name:allSlides[count].name,
-		annotations:allSlides[count].annotations.length,
-		heatmaps:allSlides[count].heatmap.length
-	}
-	var table = $('#detailtable');
-	var content = `<tr><th>Slide ID</th><td>${json.id}</td></tr><tr><th>Slide Name</th><td>${json.name}</td></tr><tr><th>Number of Annotations</th><td>${json.annotations} annotations</td></tr><tr><th>Number of Heatmaps</th><td>${json.heatmaps} heatmaps</td></tr>`
-	table.append(content);
-	addAnnotations(allSlides[count].annotations);
-	addHeatmaps(allSlides[count].heatmap);
-	console.log(allSlides[count]);
-}
+    function openDetails(tag) {
+      document.getElementById("detail-dialog").style.display = "block";
+      document.getElementById("detail-dialog").style.opacity = "1";
+      document.getElementById("detail-dialog").style.background =
+        "rgba(0,0,0,0.5)";
+      var count = parseInt(tag.dataset.id) - 1;
+      var table = $("#detailtable");
+      var json = {
+        id: allSlides[count].id,
+        name: allSlides[count].name,
+        annotations: allSlides[count].annotations.length,
+        heatmaps: allSlides[count].heatmap.length,
+      };
+      var table = $("#detailtable");
+      var content = `<tr><th>Slide ID</th><td>${json.id}</td></tr><tr><th>Slide Name</th><td>${json.name}</td></tr><tr><th>Number of Annotations</th><td>${json.annotations} annotations</td></tr><tr><th>Number of Heatmaps</th><td>${json.heatmaps} heatmaps</td></tr>`;
+      table.append(content);
+      addAnnotations(allSlides[count].annotations);
+      addHeatmaps(allSlides[count].heatmap);
+      console.log(allSlides[count]);
+    }
 
-function addAnnotations(content){
-	if(content.length===0){
-		return;
-	}
-	else{
-		var table = $('#annotationtable');
-		var heading = `<tr><th>S.No</th><th>Name</th><th>Notes</th></tr>`;
-		table.append(heading);
-		for (var i = 0; i < content.length; i++) {
-			var name = content[i].properties.annotations.name;
-			var notes = content[i].properties.annotations.notes;
-			if(typeof(notes)=="undefined"){
-				notes = "";
-			}
-			var Content = "<tr><td>"+(i+1).toString()+".</td><td>"+name+"</td><td>"+notes+"</td></tr>";
-			table.append(Content);
-		}
-	}
-}
+    function addAnnotations(content) {
+      if (content.length === 0) {
+        return;
+      } else {
+        var table = $("#annotationtable");
+        var heading = `<tr><th>S.No</th><th>Name</th><th>Notes</th></tr>`;
+        table.append(heading);
+        for (var i = 0; i < content.length; i++) {
+          var name = content[i].properties.annotations.name;
+          var notes = content[i].properties.annotations.notes;
+          if (typeof notes == "undefined") {
+            notes = "";
+          }
+          var Content =
+            "<tr><td>" +
+            (i + 1).toString() +
+            ".</td><td>" +
+            name +
+            "</td><td>" +
+            notes +
+            "</td></tr>";
+          table.append(Content);
+        }
+      }
+    }
 
-function addHeatmaps(content){
-	if(content.length===0){
-		return;
-	}
-	else{
-		var table = $('#heatmaptable');
-		console.log(content);
-		var heading = `<tr><th>S.No</th><th>Study ID</th><th>Coordinate System</th><th>Fields</th></tr>`;
-		table.append(heading);
-		for (var i = 0; i < content.length; i++) {
-			var study_id = content[i].provenance.analysis.study_id;
-			var coordinateSystem = content[i].provenance.analysis.coordinateSystem;
-			var fields = content[i].provenance.analysis.fields.length;
-			var Content = "<tr><td>"+(i+1).toString()+".</td><td>"+study_id+"</td><td>"+coordinateSystem+"</td><td>"+fields+"</td></tr>";
-			table.append(Content);
-		}
-	}
-}
+    function addHeatmaps(content) {
+      if (content.length === 0) {
+        return;
+      } else {
+        var table = $("#heatmaptable");
+        console.log(content);
+        var heading = `<tr><th>S.No</th><th>Study ID</th><th>Coordinate System</th><th>Fields</th></tr>`;
+        table.append(heading);
+        for (var i = 0; i < content.length; i++) {
+          var study_id = content[i].provenance.analysis.study_id;
+          var coordinateSystem =
+            content[i].provenance.analysis.coordinateSystem;
+          var fields = content[i].provenance.analysis.fields.length;
+          var Content =
+            "<tr><td>" +
+            (i + 1).toString() +
+            ".</td><td>" +
+            study_id +
+            "</td><td>" +
+            coordinateSystem +
+            "</td><td>" +
+            fields +
+            "</td></tr>";
+          table.append(Content);
+        }
+      }
+    }
 
-function closedetails(tag){
-	var table = $('#detailtable');
-	console.log(table);
-	for (var i = 0; i < 4; i++) {
-		table[0].deleteRow(0);
-	}
-	table = $('#annotationtable');
-	var length = table[0].rows.length;
-	for (var i = 0; i < length; i++) {
-		table[0].deleteRow(0);
-	}
-	table = $('#heatmaptable');
-	var length = table[0].rows.length;
-	for (var i = 0; i < length; i++) {
-		table[0].deleteRow(0);
-	}
-	document.getElementById('detail-dialog').style.display = 'none';
-	document.getElementById('detail-dialog').style.opacity = '0';
-}
+    function closedetails(tag) {
+      var table = $("#detailtable");
+      console.log(table);
+      for (var i = 0; i < 4; i++) {
+        table[0].deleteRow(0);
+      }
+      table = $("#annotationtable");
+      var length = table[0].rows.length;
+      for (var i = 0; i < length; i++) {
+        table[0].deleteRow(0);
+      }
+      table = $("#heatmaptable");
+      var length = table[0].rows.length;
+      for (var i = 0; i < length; i++) {
+        table[0].deleteRow(0);
+      }
+      document.getElementById("detail-dialog").style.display = "none";
+      document.getElementById("detail-dialog").style.opacity = "0";
+    }
 
-function filterSummaryTable() {
-	$('table tbody').html('');
-	let value = String($("#search-table").val()).toLowerCase();
-	let filters = getUserFilter();
-	let filteredSlides;
-	if (filters.length > 1 || (filters.length === 1 && filters[0] !== "Public")) {
-		filteredSlides = allSlides.filter(function (slide) {
-			var slideFilters = slide.filterList;
-			let found = false;
-			for (let i = 0; i < selectedFilters.length; i++) {
-				if (slideFilters.indexOf(selectedFilters[i]) > -1) {
-					found = true;
-					break;
-				}
-			}
-			if (!found)
-				slide.displayed = false;
-			return found;
-		});
-	}
-	else
-		filteredSlides = allSlides;
-	const searchedSlides = filteredSlides.filter(function (slide) {
-		var ind = (slide.id+" "+slide.name).toLowerCase().indexOf(value);
-		if (ind > -1) {
-			slide.displayed = true;
-			return true;
-		}
-		else {
-			slide.displayed = false;
-			return false;
-		}
-	});
-	searchedSlides.forEach(slide=>addbody(slide));
-}
+    function filterSummaryTable() {
+      $("table tbody").html("");
+      let value = String($("#search-table").val()).toLowerCase();
+      let filters = getUserFilter();
+      let filteredSlides;
+      if (
+        filters.length > 1 ||
+        (filters.length === 1 && filters[0] !== "Public")
+      ) {
+        filteredSlides = allSlides.filter(function (slide) {
+          var slideFilters = slide.filterList;
+          let found = false;
+          for (let i = 0; i < selectedFilters.length; i++) {
+            if (slideFilters.indexOf(selectedFilters[i]) > -1) {
+              found = true;
+              break;
+            }
+          }
+          if (!found) slide.displayed = false;
+          return found;
+        });
+      } else filteredSlides = allSlides;
+      const searchedSlides = filteredSlides.filter(function (slide) {
+        var ind = (slide.id + " " + slide.name).toLowerCase().indexOf(value);
+        if (ind > -1) {
+          slide.displayed = true;
+          return true;
+        } else {
+          slide.displayed = false;
+          return false;
+        }
+      });
+      searchedSlides.forEach((slide) => addbody(slide));
+    }
 
-function sortSummaryTable(e) {
-	$('table tbody').html('');
-	var prop = e.currentTarget.dataset.prop;
-	var order = parseInt(e.currentTarget.dataset.order);
-	allSlides.sort(function (a, b) {
+    function sortSummaryTable(e) {
+      $("table tbody").html("");
+      var prop = e.currentTarget.dataset.prop;
+      var order = parseInt(e.currentTarget.dataset.order);
+      allSlides
+        .sort(function (a, b) {
+          let at = a[prop];
+          let bt = b[prop];
+          if (Array.isArray(at) && Array.isArray(bt)) {
+            at = at.length;
+            bt = bt.length;
+          } else {
+            at = at.toLowerCase();
+            bt = bt.toLowerCase();
+          }
+          if (order === 1) {
+            e.currentTarget.dataset.order = 2;
+            if (at > bt) return 1;
+            else if (at < bt) return -1;
+            else return 0;
+          } else {
+            e.currentTarget.dataset.order = 1;
+            if (at < bt) return 1;
+            else if (at > bt) return -1;
+            else return 0;
+          }
+        })
+        .filter((slide) => slide.displayed)
+        .forEach((slide) => addbody(slide));
+    }
 
-		let at = a[prop];
-		let bt = b[prop];
-		if(Array.isArray(at)&&Array.isArray(bt))
-		{
-			at=at.length;
-			bt=bt.length;
-		}
-		else
-		{
-			at = at.toLowerCase();
-			bt = bt.toLowerCase();
-		}
-		if (order === 1) {
-			e.currentTarget.dataset.order=2;
-			if (at > bt)
-				return 1;
-			else if (at < bt)
-				return -1;
-			else
-				return 0;
-		}
-		else {
-			e.currentTarget.dataset.order = 1;
-			if (at < bt)
-				return 1;
-			else if (at > bt)
-				return -1;
-			else
-				return 0;
-		}
-	})
-	.filter(slide=>slide.displayed)
-	.forEach(slide=> addbody(slide));
-}
-
-function createCheckbox(val)
-{
-$("#filters-check").append(`<div class="col-6 col-md-3">
+    function createCheckbox(val) {
+      $("#filters-check").append(`<div class="col-6 col-md-3">
 			<input name="filter-val" type="checkbox"
 				class="form-check-input" onchange="handleFilterChange(this)" name=${val} id=${val} value=${val} checked="true">
 		<label for=${val} class="form-check-label">
 				${val}
 				</label>
 			</div>`);
-}
+    }
 
-function initialize() {
-	allSlides=[];
-	let filters = getUserFilter();
-	let isWildcard = false;
-	if (filters.length > 1 || (filters.length === 1 && filters[0] !== "Public")) {
-		selectedFilters = [];
-		$("#filters-heading").html('<div class="col-sm-6 col-md-2"> <h5>Filters</h5> </div >')
-		$("#filters-check").html('');
-		let val = "Public";
-		createCheckbox(val);
-		selectedFilters.push(val);
-		for (let i = 0; i < filters.length; i++) {
-			let val;
-			if (filters[i] == '**') {
-				isWildcard = true;
-				continue;
-			}
-			else
-				val = filters[i];
-			selectedFilters.push(val);
-			createCheckbox(val);
-		}
-		if(isWildcard)
-		{
-						val = 'Others';
-						createCheckbox(val);
-						selectedFilters.push(val);
-		}
-	}
-	const params = getUrlVars();
-	const store = new Store('../data/');
-	store.findSlide()
-		.then(function (data) {
-			if (data.length == 0) {
-				var div = document.querySelector('.container');
-				div.textContent = `No Data Found ... x _ x`;
-				div.classList = `text-center p-4`;
-				return;
-			}
-			addhead();
-			$("#search-table").on("keyup",filterSummaryTable);
-			$(".sort-btn").on("click", sortSummaryTable);
-			for (var i = 0; i < data.length; i++) {
-				const JSONdata={};
-				JSONdata.id=data[i]._id.$oid;
-				JSONdata.name=data[i].name;
-				JSONdata.displayed=true;
-				if (data[i].filter) {
-					JSONdata.filterList = JSON.parse(data[i].filter.replace(/'/g, '"'));
-					if (!JSONdata.filterList.some((filter) => (filters.indexOf(filter) > - 1)))
-						JSONdata.filterList = ['Others'];
-				}
-				else
-					JSONdata.filterList = ["Public"];
-				store.fetchMark(JSONdata.id).then(function(dataq){
-					JSONdata.annotations=dataq;
-					store.fetchHeatMap(JSONdata.id).then(function(dataqt){
-						JSONdata.heatmap=dataqt;
-						allSlides.push(JSONdata);
-						addbody(JSONdata);
-					});
-				});
-						// console.log(JSONdata);
-			}
-	});
-}
+    function initialize() {
+      allSlides = [];
+      let filters = getUserFilter();
+      let isWildcard = false;
+      if (
+        filters.length > 1 ||
+        (filters.length === 1 && filters[0] !== "Public")
+      ) {
+        selectedFilters = [];
+        $("#filters-heading").html(
+          '<div class="col-sm-6 col-md-2"> <h5>Filters</h5> </div >'
+        );
+        $("#filters-check").html("");
+        let val = "Public";
+        createCheckbox(val);
+        selectedFilters.push(val);
+        for (let i = 0; i < filters.length; i++) {
+          let val;
+          if (filters[i] == "**") {
+            isWildcard = true;
+            continue;
+          } else val = filters[i];
+          selectedFilters.push(val);
+          createCheckbox(val);
+        }
+        if (isWildcard) {
+          val = "Others";
+          createCheckbox(val);
+          selectedFilters.push(val);
+        }
+      }
+      const params = getUrlVars();
+      const store = new Store("../data/");
+      store.findSlide().then(function (data) {
+        if (data.length == 0) {
+          var div = document.querySelector(".container");
+          div.textContent = `No Data Found ... x _ x`;
+          div.classList = `text-center p-4`;
+          return;
+        }
+        addhead();
+        $("#search-table").on("keyup", filterSummaryTable);
+        $(".sort-btn").on("click", sortSummaryTable);
+        for (var i = 0; i < data.length; i++) {
+          const JSONdata = {};
+          JSONdata.id = data[i]._id.$oid;
+          JSONdata.name = data[i].name;
+          JSONdata.displayed = true;
+          if (data[i].filter) {
+            JSONdata.filterList = JSON.parse(data[i].filter.replace(/'/g, '"'));
+            if (
+              !JSONdata.filterList.some(
+                (filter) => filters.indexOf(filter) > -1
+              )
+            )
+              JSONdata.filterList = ["Others"];
+          } else JSONdata.filterList = ["Public"];
+          store.fetchMark(JSONdata.id).then(function (dataq) {
+            JSONdata.annotations = dataq;
+            store.fetchHeatMap(JSONdata.id).then(function (dataqt) {
+              JSONdata.heatmap = dataqt;
+              allSlides.push(JSONdata);
+              addbody(JSONdata);
+            });
+          });
+          // console.log(JSONdata);
+        }
+      });
+    }
 
-		function handleFilterChange(target) {
-			let index = selectedFilters.indexOf(target.value);
-			if (target.checked && index < 0) {
-				selectedFilters.push(target.value);
-				filterSummaryTable();
-			}
-			else
-				if (!target.checked && index >= 0) {
-					selectedFilters.splice(index, 1);
-					filterSummaryTable();
-			}
-		}
-  	document.addEventListener('DOMContentLoaded', initialize);
-</script>
-
+    function handleFilterChange(target) {
+      let index = selectedFilters.indexOf(target.value);
+      if (target.checked && index < 0) {
+        selectedFilters.push(target.value);
+        filterSummaryTable();
+      } else if (!target.checked && index >= 0) {
+        selectedFilters.splice(index, 1);
+        filterSummaryTable();
+      }
+    }
+    document.addEventListener("DOMContentLoaded", initialize);
+  </script>
 </html>
