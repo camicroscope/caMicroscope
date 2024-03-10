@@ -1,115 +1,239 @@
 <!DOCTYPE html>
 <html>
-
   <head>
     <meta name="keywords" content="camicroscope, quip" />
-    <meta charset='utf-8'>
-    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
-    <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no'>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
     <title>CaMicroscope - User Signup</title>
 
-    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700" rel="stylesheet">
+    <link
+      href="https://fonts.googleapis.com/css?family=Roboto:400,700"
+      rel="stylesheet"
+    />
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.8.2/css/all.css"
+    />
     <!-- Bootstrap core CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet" 
-    integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0"
-    crossorigin="anonymous">
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0"
+      crossorigin="anonymous"
+    />
 
-    <link rel='stylesheet' type='text/css' media='all' href='../../css/normalize.css'/>
-    <link rel='stylesheet' type='text/css' media='all' href='signup.css'/>
-    <link rel='stylesheet' type='text/css' media='all' href='../../css/popup.css'/>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      media="all"
+      href="../../css/normalize.css"
+    />
+    <link rel="stylesheet" type="text/css" media="all" href="signup.css" />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      media="all"
+      href="../../css/popup.css"
+    />
 
     <!-- JQuery -->
     <script
-    src="https://code.jquery.com/jquery-3.4.1.min.js"
-    integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
-    crossorigin="anonymous"></script>
-    
-
-
-
+      src="https://code.jquery.com/jquery-3.4.1.min.js"
+      integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+      crossorigin="anonymous"
+    ></script>
   </head>
   <script src="../../core/Store.js"></script>
   <script src="./signup.js"></script>
+  <script>
+    // Dark mode functionality
+
+    function toggleTheme() {
+      // Get the icon element
+      const icon = document.getElementById("toggle-icon");
+      const contentsButton = document.querySelectorAll(".button");
+      const paragraphs = document.querySelectorAll("p");
+      const heading2 = document.querySelectorAll("h2");
+      const heading3 = document.querySelectorAll("h3");
+      const navdarkmode = document.querySelectorAll(".bg-dark");
+      
+      const signupForm = document.querySelector('#userForm');
+
+      // Toggle dark mode class on body
+      document.body.classList.toggle("dark-mode");
+
+      // Toggle custom color class on  elements
+      paragraphs.forEach((p) => p.classList.toggle("p-color"));
+      heading2.forEach((h2) => h2.classList.toggle("h2-color"));
+      heading3.forEach((h3) => h3.classList.toggle("h3-color"));
+      contentsButton.forEach((button) =>
+        button.classList.toggle("content-buttoncolor")
+      );
+      navdarkmode.forEach((item) => item.classList.toggle("darkmovenav"));
+    
+      signupForm.classList.toggle("signup-form-dark")
+
+      // Toggle dark class on the icon
+      if (icon.classList.contains("fa-sun")) {
+        icon.classList.remove("fa-sun");
+        icon.classList.add("fa-moon");
+      } else {
+        icon.classList.remove("fa-moon");
+        icon.classList.add("fa-sun");
+      }
+    }
+  </script>
 
   <body>
-
-    <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark" style="position: sticky; margin-top: -4em;">
+    <nav
+      class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark"
+      style="position: sticky; margin-top: -4em"
+    >
       <div class="container-fluid">
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-              <span class="navbar-toggler-icon"></span>
-              </button>
-              <div class="collapse navbar-collapse" id="navbarSupportedContent" >
-                  <ul class="navbar-nav mr-auto gap-1">
-                      <li class="nav-item link" style="font-family: sans-serif;">
-                         <a class="nav-link" href="../landing/landing.html"> <i class="fas fa-home"></i> Home</a>
-                      </li>
-                      <li class="nav-item  link" style="font-family: sans-serif;">
-                          <a class="nav-link" href="../table.html"> <i class="fas fa-list-ul"></i>  Slides</a>
-                      </li>
-                  </ul>
-                  <ul class="navbar-nav ms-auto">
-                      <li class="nav-item link active" style="font-family: sans-serif;">
-                          <a class="nav-link" href="./signup.html"> <i class="fas fa-user-plus"></i> Signup</a>
-                      </li>
-                      <li class="nav-item link" style="font-family: sans-serif;">
-                          <a class="nav-link" target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLScL91LxrpAZjU88GBZP9gmcdgdf8__uNUwhws2lzU6Lr4qNwA/viewform"> <i class="fas fa-comment"></i> Feedback</a>
-                      </li>
-                  </ul>
-              </div>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav mr-auto gap-1">
+            <li class="nav-item link" style="font-family: sans-serif">
+              <a class="nav-link" href="../landing/landing.html">
+                <i class="fas fa-home"></i> Home</a
+              >
+            </li>
+            <li class="nav-item link" style="font-family: sans-serif">
+              <a class="nav-link" href="../table.html">
+                <i class="fas fa-list-ul"></i> Slides</a
+              >
+            </li>
+          </ul>
+          <ul class="navbar-nav ms-auto" style="margin-right: 3.6em">
+            <li class="nav-item link active" style="font-family: sans-serif">
+              <a class="nav-link" href="./signup.html">
+                <i class="fas fa-user-plus"></i> Signup</a
+              >
+            </li>
+            <li class="nav-item link" style="font-family: sans-serif">
+              <a
+                class="nav-link"
+                target="_blank"
+                href="https://docs.google.com/forms/d/e/1FAIpQLScL91LxrpAZjU88GBZP9gmcdgdf8__uNUwhws2lzU6Lr4qNwA/viewform"
+              >
+                <i class="fas fa-comment"></i> Feedback</a
+              >
+            </li>
+          </ul>
+        </div>
       </div>
-  </nav>
+      <i id="toggle-icon" class="fas fa-sun" onclick="toggleTheme()"></i>
+    </nav>
 
     <div class="signup-form">
       <div
-        style="text-align:center; background: #17a2b8; font-size: xx-large; color: white; padding: 4px; border-radius: 5px 5px 0px 0px;">
+        style="
+          text-align: center;
+          background: #17a2b8;
+          font-size: xx-large;
+          color: white;
+          padding: 4px;
+          border-radius: 5px 5px 0px 0px;
+        "
+      >
         caMicroscope
       </div>
       <!-- <hr style="width: 24.25em;  height: 0.01em; background-color: black; margin-top: 0em; margin-bottom: 0;"> -->
 
       <form id="userForm" onsubmit="return false;">
-        <h2 style="margin-top: -.5em;">User Signup</h2>
+        <h2 style="margin-top: -0.5em">User Signup</h2>
         <hr
-          style="width: 24.25em; margin-left: -1.9em; height: 0.01em; background-color: rgb(172, 172, 172); margin-bottom: 2em;">
-        <div class="form-group">
-        </div>
+          style="
+            width: 24.25em;
+            margin-left: -1.9em;
+            height: 0.01em;
+            background-color: rgb(172, 172, 172);
+            margin-bottom: 2em;
+          "
+        />
+        <div class="form-group"></div>
         <div class="form-group">
           <div class="input-group">
-            <span class="input-group-addon"><i class="fa fa-envelope" style="margin-top: 0.5em;"></i></span>
-            <input id="mail" type="email" class="form-control" name="email" placeholder="Email" required="required">
+            <span class="input-group-addon"
+              ><i class="fa fa-envelope" style="margin-top: 0.5em; margin-right: 1em;"></i
+            ></span>
+            <input
+              id="mail"
+              type="email"
+              class="form-control"
+              name="email"
+              placeholder="Email"
+              required="required"
+            />
           </div>
         </div>
-        <br>
+        <br />
         <div class="form-group">
           <div class="input-group">
-            <span class="input-group-addon"><i class="fa fa-th-list" style="margin-top: 0.5em;"></i></span>
-            <input type="text" id="filters" class="form-control" placeholder="['list','of','filters']"
-              required="required">
+            <span class="input-group-addon"
+              ><i class="fa fa-th-list" style="margin-top: 0.5em ; margin-right: 1em"></i
+            ></span>
+            <input
+              type="text"
+              id="filters"
+              class="form-control"
+              placeholder="['list','of','filters']"
+              required="required"
+            />
           </div>
-        </div> <br>
+        </div>
+        <br />
 
         <!-- User Type selection -->
-        <select id="attr" class="form-select" aria-label="Default select example">
+        <select
+          id="attr"
+          class="form-select"
+          aria-label="Default select example"
+        >
           <option selected value="1">Viewer</option>
           <option value="2">Editor</option>
           <option value="3">Admin</option>
         </select>
 
-        <br> <br>
+        <br />
+        <br />
         <div class="form-group">
-          <button type="submit" id="sub" class="btn btn-primary btn-block btn-lg sub-btn" onclick="addUser()" disabled>
+          <button
+            type="submit"
+            id="sub"
+            class="btn btn-primary btn-block btn-lg sub-btn"
+            onclick="addUser()"
+            disabled
+          >
             Please wait ...
           </button>
         </div>
         <!-- <p class="small text-center">This form is only useful to Admin users. If you reach this page, it's likely that you tried to log into this instance but lack
           access. Email the administrator if you want to be added.</p> -->
         <p class="small text-center">
-          Non-admin users have to submit a request ticket to admins to get their approval to signup new users.
-          If you are an Admin, you can directly signup users.
+          Non-admin users have to submit a request ticket to admins to get their
+          approval to signup new users. If you are an Admin, you can directly
+          signup users.
         </p>
       </form>
-      <div class="text-center" onclick="loginPage()">Already have an account? </div>
+      <div class="text-center" onclick="loginPage()">
+        Already have an account?
+      </div>
     </div>
     <footer class="text-center text-white bg-dark p-3">
       <p class="p">Copyright © 2021 caMicroscope</p>
@@ -117,10 +241,11 @@
     <!-- popup -->
     <div id="popup-container"></div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js" 
-            integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8" 
-            crossorigin="anonymous"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8"
+      crossorigin="anonymous"
+    ></script>
     <script src="../../common/util.js"></script>
-
   </body>
 </html>

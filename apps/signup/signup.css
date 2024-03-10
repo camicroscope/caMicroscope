@@ -88,7 +88,7 @@ body {
 	text-decoration:none;
 	padding-right: 0.7rem;
 	padding-left: 0.7rem;
-	margin-top: 0.2rem;
+	margin: 0.2rem;
 	font-family: "Open Sans", Helvetica, sans-serif;
 	line-height: 1.8;
 }
@@ -118,6 +118,8 @@ nav li:not(.active):hover a{
 	cursor: pointer;
 }
 
+
+
 @media screen and (max-width:736px) {
 	.signup-form {
 		margin: 20% auto;
@@ -128,3 +130,70 @@ nav li:not(.active):hover a{
 		width: 300px;
 	}
 }
+
+/* This codes styles the dark mode the light/mode icon */
+
+
+#toggle-icon{
+	position: fixed;
+	 right: 2%;	
+	 top:2.4%;
+   }
+   
+  #toggle-icon.fa-moon {
+	color: #808080;
+	cursor: pointer;
+	background-color: #4a719b;
+	border-radius: 50%;
+	padding: 0.4rem;
+	
+  }
+  
+  #toggle-icon.fa-sun {
+	color: rgb(190, 190, 44);
+	cursor: pointer;
+	background-color: #4a719b;
+	border-radius: 50%;
+	padding: 0.4rem;
+  }
+  
+  .dark-mode {
+	background-color:  #212529;
+	color: white;
+  }
+  
+  .darkmovenav{
+	background-color: black !important ;
+   }
+  
+  .p-color {
+	color: white;
+  }
+  
+  .h2-color,
+  .h3-color {
+	color: rgb(173, 191, 214);
+  }
+  
+  a.button.content-buttoncolor {
+	color: white;
+	border:0.4px solid white;
+   
+  }
+  
+  .bg-whiteslide{
+  background-color: black !important;
+  border-color: black !important;
+  color: white !important;
+  }
+  
+  .modal-content-dark{
+	background-color:  #212529 !important;
+  }
+
+  #userForm.signup-form-dark{
+	background-color:  #212529 !important;
+	border-top: none;
+  }
+  
+  
