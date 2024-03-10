@@ -204,9 +204,13 @@ nav li:not(.active):hover{
   content: "";
   position: absolute;
   top: -20px;
-  left: 12px;
+  left: 45%;
   border: 10px solid #343a40;
   border-color: transparent transparent #343a40 transparent;
+}
+
+.dropdown-item {
+  text-align: center;
 }
 
 .has-search .form-control {
