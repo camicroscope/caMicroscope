@@ -1,0 +1,37 @@
+
+
+#exportTitle {
+  background-color: #17a2b8 !important;
+  color: white;
+}
+#output {
+  padding: 20px;
+}
+span {
+  display: inline-block;
+}
+.form-check-input {
+  padding: 5px !important;
+}
+.btn {
+  color: #fff;
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+}
+
+.forme{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1em;
+  margin: 2.4em 6em ;
+
+
+
+}
+
+
+
+
+
