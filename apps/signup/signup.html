@@ -111,8 +111,14 @@
       </form>
       <div class="text-center" onclick="loginPage()">Already have an account? </div>
     </div>
-    <footer class="text-center text-white bg-dark p-3">
-      <p class="p">Copyright © 2021 caMicroscope</p>
+    <footer class="text-center text-white bg-dark">
+      <div class="row" style="background: #022837;">
+        <div class="col-12 text-center mb-2">
+            <p class="text-light mt-3">&copy; <span class="text-light" id="copyright">
+                <script>document.getElementById('copyright').appendChild(document.createTextNode(new Date().getFullYear()))</script>
+            </span> caMicroscope</p>
+        </div>
+    </div>
     </footer>
     <!-- popup -->
     <div id="popup-container"></div>
