@@ -335,8 +335,14 @@
 </div>
 
 
-<footer class="text-center text-white bg-dark p-3">
-	<p class="p">Copyright © 2021 caMicroscope</p>
+<footer class="text-center text-white bg-dark">
+	<div class="row" style="background: #022837;">
+        <div class="col-12 text-center mb-2">
+            <p class="text-light mt-3">&copy; <span class="text-light" id="copyright">
+                <script>document.getElementById('copyright').appendChild(document.createTextNode(new Date().getFullYear()))</script>
+            </span> caMicroscope</p>
+        </div>
+    </div>
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8" crossorigin="anonymous"></script>
