@@ -53,7 +53,7 @@
 				<div class="collapse navbar-collapse" id="navbarSupportedContent" >
 					<ul class="navbar-nav mr-auto gap-1">
 						<li class="nav-item link" style="font-family: sans-serif;">
-						   <a class="nav-link" href="landing/landing.html"> <i class="fas fa-home"></i> Home</a>
+						<a class="nav-link" href="landing/landing.html"> <i class="fas fa-home"></i> Home</a>
 						</li>
 						<li class="nav-item active link" style="font-family: sans-serif;">
 							<a class="nav-link" href="table.html"> <i class="fas fa-list-ul"></i>  Slides</a>
@@ -133,31 +133,40 @@
             </div>
             </div>
 
-            <div class="d-md-inline-flex" style="width:20%;">
-                <div class="pl-md-2 pt-2">
+            <div class="buttons-container d-flex justify-content-end">
+                <div class="pl-md-2 pt-1">
                     <button type="button" data-bs-toggle="modal" data-bs-target="#dicom"
-                        class="btn btn2 btn-success float-right w-md-100" style="background-color: cadetblue; padding: 7px;" onclick="setDicomParams();"> <i
-                            class="fas fa-server"></i>
-                        <span class="">DICOM</span> </button>
+                        class="btn btn-success mr-2" style="background-color: cadetblue; padding: 7px; width: 120px;" onclick="setDicomParams();">
+                        <i class="fas fa-server"></i>
+                        <span class="">DICOM</span>
+                    </button>
                 </div>
-                <div class="pl-md-2 pt-2">
-                    <button type="button" class="btn btn2 btn-success float-right w-md-100" style="padding: 7px;"
-                        onclick="(()=>{location.reload();return false;})()"> <i class="fas fa-sync-alt"></i>
-                        <span class="reload">Reload</span> </button>
+                <div class="pl-md-2 pt-1">
+                    <button type="button" class="btn btn-success mr-2" style="padding: 7px; width: 120px;"
+                        onclick="(()=>{location.reload();return false;})()">
+                        <i class="fas fa-sync-alt"></i>
+                        <span class="reload">Reload</span>
+                    </button>
                 </div>
-                <div>
-			    <div id="slideUploadButton" class="btn-group float-right pl-md-2 pt-2">
-				    <button type="button" class="btn btn-primary " data-bs-toggle="modal"
-			data-bs-target="#upload-dialog" onclick="hidePostButton(); hideCheckButton(); resetUploadForm();" > <i class="fas fa-upload"></i> Upload</button>
-				    <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-				    <span class="sr-only">Toggle Dropdown</span>
-				    </button>
-				<div class="dropdown-menu" >
-				  <a class="dropdown-item" href="../apps/batchloader/batchloader.html">Upload Batch</a>
-				</div>
+                <div class="pl-md-2 pt-1">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#upload-dialog"
+                            onclick="hidePostButton(); hideCheckButton(); resetUploadForm();">
+                            <i class="fas fa-upload"></i> Upload
+                        </button>
+                        <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false">
+                            <span class="sr-only">Toggle Dropdown</span>
+                        </button>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="../apps/batchloader/batchloader.html">Upload Batch</a>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
+            
+            
+            
 
 
 		</div>

@@ -87,8 +87,8 @@ nav li:not(.active):hover a {
   color: black !important;
 }
 
-nav li:not(.active):hover{
-	background: white;
+nav li:not(.active):hover {
+  background: white;
 }
 
 .overall {
@@ -100,13 +100,57 @@ nav li:not(.active):hover{
   padding: 0 4px;
 }
 
-.btn2{
-	display: flex;
-	align-items: center;
+.btn2 {
+  display: flex;
+  align-items: center;
 }
-@media screen and (min-width: 480px){
+.buttons-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.buttons-container > * {
+  flex: 0 0 auto;
+  margin-left: 10px; /* Add spacing between buttons */
+}
+
+@media (max-width: 767px) {
+  .buttons-container {
+    justify-content: center; /* Center buttons for mobile screens */
+  }
+
+  .buttons-container > * {
+    margin-left: 0; /* Remove left margin for buttons on smaller screens */
+  }
+}
+@media (min-width: 768px) {
+  .buttons-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 0; /* Resetting the top margin for larger screens */
+  }
+
+  .buttons-container > div {
+    margin-left: 10px; /* Adding some space between buttons */
+  }
+}
+
+@media screen and (min-width: 480px) {
   .reload {
     display: block;
+  }
+  overall {
+    flex-direction: column;
+    flex-wrap: wrap;
+  }
+  .btn2 {
+    display: flex;
+  }
+
+  .btn2 .btn {
+    flex: 1;
+    margin-right: 5px;
   }
 }
 
