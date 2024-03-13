@@ -4,27 +4,30 @@
   text-align: center;
   color: white;
 }
+
 .step-content {
   border-radius: 10px;
 }
+
 #stepper {
   align-content: center;
   display: flex;
   flex-wrap: wrap;
 }
-/* .done a.circle{
-  background-color: green !important;
-} */
+
 .btn {
   text-transform: unset !important;
 }
-.nabvar {
+
+.navbar {
   display: flex;
   flex-direction: row;
 }
-.navbar-brand{
+
+.navbar-brand {
   margin-right: 10rem !important;
 }
+
 /* All display none */
 #importFile,
 #headContent,
@@ -40,22 +43,32 @@
   display: none;
 }
 
-
-#goBack{
+#goBack {
   display: flex;
   margin: 0 1rem;
 }
+.dropdown-menu {
+  overflow-y: auto;
+  max-height: 300px; /* Adjust max height as needed */
+}
+
+@media only screen and (min-width: 992px) {
+  .navbar .navbar-nav .nav-item.dropdown .dropdown-menu {
+    right: 0; /* Position the dropdown menu at the right edge of its container */
+    left: auto; /* Reset the left property */
+  }
+}
+
 @media only screen and (max-width: 551px) {
   nav {
     flex-direction: column;
   }
-  
+
   nav ul {
     flex-direction: column;
   }
-  
+
   nav ul li {
     margin: 10px 0;
   }
 }
-
