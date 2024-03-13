@@ -115,42 +115,21 @@ nav li:not(.active):hover {
   margin-left: 10px; /* Add spacing between buttons */
 }
 
-@media (max-width: 767px) {
-  .buttons-container {
-    justify-content: center; /* Center buttons for mobile screens */
-  }
-
-  .buttons-container > * {
-    margin-left: 0; /* Remove left margin for buttons on smaller screens */
-  }
-}
 @media (min-width: 768px) {
   .buttons-container {
     display: flex;
     justify-content: flex-end;
-    margin-top: 0; /* Resetting the top margin for larger screens */
+    flex-wrap: nowrap;
   }
 
   .buttons-container > div {
-    margin-left: 10px; /* Adding some space between buttons */
-  }
-}
-
-@media screen and (min-width: 480px) {
-  .reload {
-    display: block;
-  }
-  overall {
-    flex-direction: column;
-    flex-wrap: wrap;
-  }
-  .btn2 {
-    display: flex;
+    margin-left: 10px;
+    margin-top: 10px;
   }
 
-  .btn2 .btn {
-    flex: 1;
-    margin-right: 5px;
+  /* Ensure buttons don't shrink */
+  .buttons-container button {
+    flex-shrink: 0;
   }
 }
 
