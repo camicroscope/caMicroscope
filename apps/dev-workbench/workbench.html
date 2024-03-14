@@ -88,47 +88,43 @@
       <ul class="navbar-nav mr-auto">
 >>>>>>> master
         <!-- Dropdown -->
-        <li
-          
-          class="nav-item dropdown"
-        >
-          <a
-            class="nav-link dropdown-toggle"
-            id="navbarDropdownMenuLink"
-            data-toggle="dropdown"
-            aria-haspopup="true"
-            aria-expanded="false"
-            >Options</a
-          >
-          <div
-            style="margin-left: -5em;"
-            class="dropdown-menu dropdown-primary"
-            aria-labelledby="navbarDropdownMenuLink"
-          >
-            <a
-              id="exportOption"
-              class="dropdown-item"
-              href="#"
-              style="display: none;"
-              ><i class="fas fa-file-export"></i>&nbsp;&nbsp;Export</a
-            >
-            <a class="dropdown-item" href="#" onclick="importWork()"
-              ><i class="fas fa-file-import"></i>&nbsp;&nbsp;Import</a
-            >
-            <input type="file" id="importFile" />
-            <a
-              class="dropdown-item helpButton"
-              href="#"
-              data-toggle="modal"
-              data-target="#helpModal"
-            >
-              <i class="fas fa-question-circle"></i>
-              &nbsp;&nbsp;Help/User Guide</a
-            >
-            </div>
+        <!-- Dropdown -->
+<li class="nav-item dropdown">
+  <a
+    class="nav-link dropdown-toggle"
+    id="navbarDropdownMenuLink"
+    data-toggle="dropdown"
+    aria-haspopup="true"
+    aria-expanded="false"
+    >Options</a
+  >
+  <div
+    class="dropdown-menu dropdown-primary"
+    aria-labelledby="navbarDropdownMenuLink"
+  >
+    <a
+      id="exportOption"
+      class="dropdown-item"
+      href="#"
+      style="display: none;"
+      ><i class="fas fa-file-export"></i>&nbsp;&nbsp;Export</a
+    >
+    <a class="dropdown-item" href="#" onclick="importWork()"
+      ><i class="fas fa-file-import"></i>&nbsp;&nbsp;Import</a
+    >
+    <input type="file" id="importFile" />
+    <a
+      class="dropdown-item helpButton"
+      href="#"
+      data-toggle="modal"
+      data-target="#helpModal"
+    >
+      <i class="fas fa-question-circle"></i>
+      &nbsp;&nbsp;Help/User Guide
+    </a>
+  </div>
+</li>
 
-          </div>
-        </li>
       </ul>
     </nav>
     <!--/.Navbar-->
@@ -463,14 +459,6 @@
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="helpModalTitle">Help - User Guide</h5>
-            <button
-              type="button"
-              class="close"
-              data-dismiss="modal"
-              aria-label="Close"
-            >
-              <span aria-hidden="true">&times;</span>
-            </button>
           </div>
           <div class="modal-body" style="align-content: center;"></div>
           <div class="modal-footer">
