@@ -40,6 +40,72 @@
 <script src='../common/stacktable.js'></script>
 	<link rel="stylesheet" href="./table.css" />
 	<link rel="shortcut icon" type="image/x-icon" href="/apps/landing/favicon.png">
+    <script>
+
+        // Dark mode functionality
+        
+          function toggleTheme() {
+        // Get the icon element
+        const icon = document.getElementById('toggle-icon');
+        const contentsButton = document.querySelectorAll('.button');
+        const paragraphs = document.querySelectorAll('p');
+        const heading2 = document.querySelectorAll('h2');
+        const heading3 = document.querySelectorAll('h3');
+        const navdarkmode = document.querySelectorAll('.bg-dark');
+        const slideMode = document.querySelectorAll('.bg-white');
+        const collection = document.querySelector('.p-2');
+
+        
+
+        
+
+    
+        // Toggle dark mode class on body
+        document.body.classList.toggle("dark-mode");
+       
+    
+        // Toggle custom color class on  elements
+        paragraphs.forEach(p => p.classList.toggle("p-color"));
+        heading2.forEach(h2 => h2.classList.toggle("h2-color"));
+        heading3.forEach(h3 => h3.classList.toggle("h3-color"));
+        contentsButton.forEach(button => button.classList.toggle("content-buttoncolor"));
+        navdarkmode.forEach(item => item.classList.toggle("darkmovenav"));
+        slideMode.forEach(item => item.classList.toggle("bg-whiteslide"));
+        collection.classList.toggle("collectionsSection")
+      
+        
+        
+    
+         // Toggle dark class on the icon
+    if (icon.classList.contains("fa-sun")) {
+        icon.classList.remove("fa-sun");
+        icon.classList.add("fa-moon");
+    } else {
+        icon.classList.remove("fa-moon");
+        icon.classList.add("fa-sun");
+    }
+
+    }
+
+    function dicom () {
+
+        if (document.body.classList.contains("dark-mode")) {
+            document.querySelector(".modal-content").style.backgroundColor = "#212529";
+            document.querySelector(".modal-content").style.color = "white";
+            document.querySelector(".serverText").style.color = " white";
+        } else{
+            document.querySelector(".modal-content").style.backgroundColor = "white";
+            // document.querySelector(".modal-content").style.color = "black";
+            // document.querySelector(".servertext").style.color = " black ";
+
+        }
+     
+    }
+    
+    
+    
+    
+        </script>
 </head>
 
 <body>
@@ -76,6 +142,7 @@
 					</ul>
 				</div>
 		</div>
+        <i id="toggle-icon" class="fas fa-sun" onclick="toggleTheme()"></i>
 	</nav>
 
 	<div class="header text-center text-white bg-info p-4">
@@ -84,7 +151,7 @@
 		<div style="align-content: center;">
 			<div style="align-content: center;">
 				<div class="btn-group" role="group">
-				<button type="button" style="border-color: white;" class="btn btn-secondary bg-white text-dark" title="Slides Table"><i class="fas fa-list-alt"></i>  Slides</button>
+				<button type="button"  class="btn btn-secondary bg-white text-dark" title="Slides Table"><i class="fas fa-list-alt"></i>  Slides</button>
 				<a href="./Info.html">	<button style="border-color: white; border-radius: 0 5px 5px 0;" type="button" class="btn btn-secondary bg-info text-light" title="Information Dashboard"><i class="fas fa-info-circle"></i>  Info</button> </a></div>
 			</div>
 		</div>
@@ -136,7 +203,7 @@
             <div class="d-md-inline-flex" style="width:20%;">
                 <div class="pl-md-2 pt-2">
                     <button type="button" data-bs-toggle="modal" data-bs-target="#dicom"
-                        class="btn btn2 btn-success float-right w-md-100" style="background-color: cadetblue; padding: 7px;" onclick="setDicomParams();"> <i
+                        class="btn btn2 btn-success float-right w-md-100" style="background-color: cadetblue; padding: 7px;" onclick="setDicomParams();dicom();"> <i
                             class="fas fa-server"></i>
                         <span class="">DICOM</span> </button>
                 </div>
@@ -179,7 +246,7 @@
                         <table class="table table-borderless" cellpadding="5" style="margin-top: 1em" cellspacing="0">
                             <tbody>
                                 <tr id="dicomServerRow">
-                                    <td align="right"><b>Server</b></td>
+                                    <td align="right"class="serverText"><b >Server</b></td>
                                     <td><input type="text" class="form-control" disabled=""
                                             name="token" id="dicomServer"></td>
                                 </tr>
@@ -334,8 +401,15 @@
 
 
 <footer class="text-center text-white bg-dark p-3">
-	<p class="p">Copyright © 2021 caMicroscope</p>
+	<p class="p">Copyright © <span id = "current-year"></span> caMicroscope</p>
 </footer>
+<script>
+    // Update footer date automatically
+    const currentYear = new Date().getFullYear();
+    document.getElementById("current-year").textContent = currentYear;
+
+    
+</script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8" crossorigin="anonymous"></script>
 <script src="./table.js"></script>
