@@ -99,6 +99,7 @@ function changeStatus(step, text, reset=true) {
   }
 }
 
+//refactored the handleupload function
 function handleUpload(file, filename) {
   var data = new FormData();
   data.append('file', file);
@@ -111,9 +112,16 @@ function handleUpload(file, filename) {
   }).then(
       (response) => response.json(), // if the response is a JSON object
   ).then(
-      (success) => changeStatus('UPLOAD', success), // Handle the success response object
+      (success) =>{ changeStatus('UPLOAD', success)
+       return success
+       //return success data for chaining
+       // Handle the success response object
+  }
   ).catch(
-      (error) => changeStatus('UPLOAD', error), // Handle the error response object
+      (error) => {changeStatus('UPLOAD', error);
+      throw error;
+  }
+      // Handle the error response object
   );
 }
 

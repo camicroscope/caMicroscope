@@ -110,3 +110,4 @@ HeatmapEditorPanel.prototype.__refresh = function() {
     if (isFunction(this.setting.onSave)) this.setting.onSave.call(this);
   }.bind(this));
 };
+module.exports = HeatMapEditorPanel;

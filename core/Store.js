@@ -1283,3 +1283,5 @@ try {
 } catch (e) {
   var a;
 }
+
+module.exports = Store
