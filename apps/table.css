@@ -235,3 +235,8 @@ nav li:not(.active):hover{
 .p {
   margin-bottom: 0;
 }
+
+.d-md-inline-flex{
+  display: flex;
+  justify-content: space-between;
+}
