@@ -17,7 +17,7 @@
     crossorigin="anonymous">
 
     <link rel='stylesheet' type='text/css' media='all' href='../../css/normalize.css'/>
-    <link rel='stylesheet' type='text/css' media='all' href='signup.css'/>
+    <link rel='stylesheet' type='text/css' media='all' href='login.css'/>
     <link rel='stylesheet' type='text/css' media='all' href='../../css/popup.css'/>
 
     <!-- JQuery -->
@@ -69,7 +69,7 @@
       <!-- <hr style="width: 24.25em;  height: 0.01em; background-color: black; margin-top: 0em; margin-bottom: 0;"> -->
 
       <form id="userForm" onsubmit="return false;">
-        <h2 style="margin-top: -.5em;">User Signup</h2>
+        <h2 style="margin-top: -.5em;">User Login</h2>
         <hr
           style="width: 24.25em; margin-left: -1.9em; height: 0.01em; background-color: rgb(172, 172, 172); margin-bottom: 2em;">
         <div class="form-group">
@@ -84,17 +84,12 @@
         <div class="form-group">
           <div class="input-group">
             <span class="input-group-addon"><i class="fa fa-th-list" style="margin-top: 0.5em;"></i></span>
-            <input type="text" id="filters" class="form-control" placeholder="['list','of','filters']"
+            <input type="password" id="filters" class="form-control" placeholder="password"
               required="required">
           </div>
         </div> <br>
 
-        <!-- User Type selection -->
-        <select id="attr" class="form-select" aria-label="Default select example">
-          <option selected value="1">Viewer</option>
-          <option value="2">Editor</option>
-          <option value="3">Admin</option>
-        </select>
+        
 
         <br> <br>
         <div class="form-group">
@@ -104,12 +99,9 @@
         </div>
         <!-- <p class="small text-center">This form is only useful to Admin users. If you reach this page, it's likely that you tried to log into this instance but lack
           access. Email the administrator if you want to be added.</p> -->
-        <p class="small text-center">
-          Non-admin users have to submit a request ticket to admins to get their approval to signup new users.
-          If you are an Admin, you can directly signup users.
-        </p>
+       
       </form>
-      <a   href="../login/login.html" class="text-center" >Already have an account? </a>
+     
     </div>
     <footer class="text-center text-white bg-dark p-3">
       <p class="p">Copyright © 2021 caMicroscope</p>
