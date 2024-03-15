@@ -25,6 +25,43 @@
     src="https://code.jquery.com/jquery-3.4.1.min.js"
     integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
     crossorigin="anonymous"></script>
+
+    <script>
+      function toggleTheme() {
+      // Get the icon element
+      const icon = document.getElementById("toggle-icon");
+      const contentsButton = document.querySelectorAll(".button");
+      const paragraphs = document.querySelectorAll("p");
+      const heading2 = document.querySelectorAll("h2");
+      const heading3 = document.querySelectorAll("h3");
+      const navdarkmode = document.querySelectorAll(".bg-dark");
+      
+      const signupForm = document.querySelector('#userForm');
+
+      // Toggle dark mode class on body
+      document.body.classList.toggle("dark-mode");
+
+      // Toggle custom color class on  elements
+      paragraphs.forEach((p) => p.classList.toggle("p-color"));
+      heading2.forEach((h2) => h2.classList.toggle("h2-color"));
+      heading3.forEach((h3) => h3.classList.toggle("h3-color"));
+      contentsButton.forEach((button) =>
+        button.classList.toggle("content-buttoncolor")
+      );
+      navdarkmode.forEach((item) => item.classList.toggle("darkmovenav"));
+    
+      signupForm.classList.toggle("signup-form-dark")
+
+      // Toggle dark class on the icon
+      if (icon.classList.contains("fa-sun")) {
+        icon.classList.remove("fa-sun");
+        icon.classList.add("fa-moon");
+      } else {
+        icon.classList.remove("fa-moon");
+        icon.classList.add("fa-sun");
+      }
+    }
+    </script>
     
 
 
@@ -49,7 +86,7 @@
                           <a class="nav-link" href="../table.html"> <i class="fas fa-list-ul"></i>  Slides</a>
                       </li>
                   </ul>
-                  <ul class="navbar-nav ms-auto">
+                  <ul class="navbar-nav ms-auto" style="margin-right: 3em;">
                       <li class="nav-item link active" style="font-family: sans-serif;">
                           <a class="nav-link" href="./signup.html"> <i class="fas fa-user-plus"></i> Signup</a>
                       </li>
@@ -59,6 +96,7 @@
                   </ul>
               </div>
       </div>
+      <i id="toggle-icon" class="fas fa-sun" onclick="toggleTheme()"></i>
   </nav>
 
     <div class="signup-form">
@@ -77,7 +115,7 @@
         <div class="form-group">
           <div class="input-group">
             <span class="input-group-addon"><i class="fa fa-envelope" style="margin-top: 0.5em;"></i></span>
-            <input id="mail" type="email" class="form-control" name="email" placeholder="Email" required="required">
+            <input id="mail" type="email" class="form-control" name="email" placeholder="Email" required="required" style="margin-left: 1em;">
           </div>
         </div>
         <br>
@@ -85,7 +123,7 @@
           <div class="input-group">
             <span class="input-group-addon"><i class="fa fa-th-list" style="margin-top: 0.5em;"></i></span>
             <input type="password" id="filters" class="form-control" placeholder="password"
-              required="required">
+              required="required" style="margin-left: 1em;" >
           </div>
         </div> <br>
 
