@@ -1,0 +1,22 @@
+name: Test for Functions
+
+on:
+push:
+branches:
+-'master'
+
+jobs:
+test:
+runs-on: windows-latest
+steps:
+    - uses: actions/checkout@v4
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+    - run: npm install
+    - run: npm install jsdom
+     - run: npm install --save-dev jest
+    - run: npm test
+
+
