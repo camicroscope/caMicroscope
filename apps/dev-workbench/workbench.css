@@ -59,3 +59,15 @@
   }
 }
 
+.dropdown-menu{
+  margin-left: -5em !important;
+
+}
+
+
+
+@media (max-width: 700px ){
+  .dropdown-menu{
+    margin-left: 0 !important;
+  }
+}
