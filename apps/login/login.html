@@ -17,7 +17,7 @@
     crossorigin="anonymous">
 
     <link rel='stylesheet' type='text/css' media='all' href='../../css/normalize.css'/>
-    <link rel='stylesheet' type='text/css' media='all' href='signup.css'/>
+    <link rel='stylesheet' type='text/css' media='all' href='login.css'/>
     <link rel='stylesheet' type='text/css' media='all' href='../../css/popup.css'/>
 
     <!-- JQuery -->
@@ -25,6 +25,43 @@
     src="https://code.jquery.com/jquery-3.4.1.min.js"
     integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
     crossorigin="anonymous"></script>
+
+    <script>
+      function toggleTheme() {
+      // Get the icon element
+      const icon = document.getElementById("toggle-icon");
+      const contentsButton = document.querySelectorAll(".button");
+      const paragraphs = document.querySelectorAll("p");
+      const heading2 = document.querySelectorAll("h2");
+      const heading3 = document.querySelectorAll("h3");
+      const navdarkmode = document.querySelectorAll(".bg-dark");
+      
+      const signupForm = document.querySelector('#userForm');
+
+      // Toggle dark mode class on body
+      document.body.classList.toggle("dark-mode");
+
+      // Toggle custom color class on  elements
+      paragraphs.forEach((p) => p.classList.toggle("p-color"));
+      heading2.forEach((h2) => h2.classList.toggle("h2-color"));
+      heading3.forEach((h3) => h3.classList.toggle("h3-color"));
+      contentsButton.forEach((button) =>
+        button.classList.toggle("content-buttoncolor")
+      );
+      navdarkmode.forEach((item) => item.classList.toggle("darkmovenav"));
+    
+      signupForm.classList.toggle("signup-form-dark")
+
+      // Toggle dark class on the icon
+      if (icon.classList.contains("fa-sun")) {
+        icon.classList.remove("fa-sun");
+        icon.classList.add("fa-moon");
+      } else {
+        icon.classList.remove("fa-moon");
+        icon.classList.add("fa-sun");
+      }
+    }
+    </script>
     
 
 
@@ -49,7 +86,7 @@
                           <a class="nav-link" href="../table.html"> <i class="fas fa-list-ul"></i>  Slides</a>
                       </li>
                   </ul>
-                  <ul class="navbar-nav ms-auto">
+                  <ul class="navbar-nav ms-auto" style="margin-right: 3em;">
                       <li class="nav-item link active" style="font-family: sans-serif;">
                           <a class="nav-link" href="./signup.html"> <i class="fas fa-user-plus"></i> Signup</a>
                       </li>
@@ -59,6 +96,7 @@
                   </ul>
               </div>
       </div>
+      <i id="toggle-icon" class="fas fa-sun" onclick="toggleTheme()"></i>
   </nav>
 
     <div class="signup-form">
@@ -69,7 +107,7 @@
       <!-- <hr style="width: 24.25em;  height: 0.01em; background-color: black; margin-top: 0em; margin-bottom: 0;"> -->
 
       <form id="userForm" onsubmit="return false;">
-        <h2 style="margin-top: -.5em;">User Signup</h2>
+        <h2 style="margin-top: -.5em;">User Login</h2>
         <hr
           style="width: 24.25em; margin-left: -1.9em; height: 0.01em; background-color: rgb(172, 172, 172); margin-bottom: 2em;">
         <div class="form-group">
@@ -77,24 +115,19 @@
         <div class="form-group">
           <div class="input-group">
             <span class="input-group-addon"><i class="fa fa-envelope" style="margin-top: 0.5em;"></i></span>
-            <input id="mail" type="email" class="form-control" name="email" placeholder="Email" required="required">
+            <input id="mail" type="email" class="form-control" name="email" placeholder="Email" required="required" style="margin-left: 1em;">
           </div>
         </div>
         <br>
         <div class="form-group">
           <div class="input-group">
             <span class="input-group-addon"><i class="fa fa-th-list" style="margin-top: 0.5em;"></i></span>
-            <input type="text" id="filters" class="form-control" placeholder="['list','of','filters']"
-              required="required">
+            <input type="password" id="filters" class="form-control" placeholder="password"
+              required="required" style="margin-left: 1em;" >
           </div>
         </div> <br>
 
-        <!-- User Type selection -->
-        <select id="attr" class="form-select" aria-label="Default select example">
-          <option selected value="1">Viewer</option>
-          <option value="2">Editor</option>
-          <option value="3">Admin</option>
-        </select>
+        
 
         <br> <br>
         <div class="form-group">
@@ -104,16 +137,20 @@
         </div>
         <!-- <p class="small text-center">This form is only useful to Admin users. If you reach this page, it's likely that you tried to log into this instance but lack
           access. Email the administrator if you want to be added.</p> -->
-        <p class="small text-center">
-          Non-admin users have to submit a request ticket to admins to get their approval to signup new users.
-          If you are an Admin, you can directly signup users.
-        </p>
+       
       </form>
-      <a   href="../login/login.html" class="text-center" >Already have an account? </a>
+     
     </div>
     <footer class="text-center text-white bg-dark p-3">
-      <p class="p">Copyright © 2021 caMicroscope</p>
+      <p class="p">Copyright © <span id = "current-year"></span> caMicroscope</p>
     </footer>
+    <script>
+        // Update footer date automatically
+        const currentYear = new Date().getFullYear();
+        document.getElementById("current-year").textContent = currentYear;
+    
+        
+    </script>
     <!-- popup -->
     <div id="popup-container"></div>
 
