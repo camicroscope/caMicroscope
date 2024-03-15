@@ -1,0 +1,230 @@
+<head>
+
+    <title>caMicroscope</title>
+    <meta charset="utf-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet" 
+        integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0"
+        crossorigin="anonymous">
+    <!-- <script src="https://cdn.tailwindcss.com"></script> -->
+    <link rel="stylesheet" href="../landing/main.css" />
+    <link rel="stylesheet" href="./feedback.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.png">
+
+</head>
+<body>
+
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark" style="position: sticky; margin-top: -4em;">
+    <div class="container-fluid">
+        <button class="navbar-toggler m-1" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent" >
+                <ul class="navbar-nav mr-auto gap-1">
+                    <li class="nav-item active link" style="font-family: sans-serif;">
+                       <a class="nav-link" href="landing.html"> <i class="fas fa-home"></i> Home</a>
+                    </li>
+                    <li class="nav-item  link" style="font-family: sans-serif;">
+                        <a class="nav-link" href="../table.html"> <i class="fas fa-list-ul"></i>  Slides</a>
+                    </li>
+                    <li class="nav-item link">
+                        <a class="nav-link" href="../Info.html"> <i class="fas fa-info-circle"></i> Info</a>
+                    </li>
+                    <li class="nav-item link">
+                        <a class="nav-link" href="../dev-workbench/workbench.html"> <i class="fas fa-pencil-ruler"></i> Workbench</a>
+                    </li>
+                    <li class="nav-item link" style="font-family: sans-serif;">
+                        <a class="nav-link" href="../signup/signup.html"> <i class="fas fa-user-plus"></i> Signup</a>
+                    </li>
+                    <li class="nav-item link" style="font-family: sans-serif;">
+                        <a class="nav-link" target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLScL91LxrpAZjU88GBZP9gmcdgdf8__uNUwhws2lzU6Lr4qNwA/viewform"> <i class="fas fa-comment"></i> Feedback</a>
+                    </li>
+                </ul>
+            </div>
+    </div>
+</nav>
+
+
+<!-- Main -->
+<div class="form">
+      
+    <ul class="tab-group">
+      <li class="tab active"><a href="#signup">General Feedback</a></li>
+      <li class="tab"><a href="#login">Bug Report</a></li>
+    </ul>
+    
+    <div class="tab-content">
+      <div id="signup">   
+        <h1>General Feedback</h1>
+        
+        <form action="/" method="post">
+        
+        <div class="top-row">
+          <div class="field-wrap">
+            <label>
+              First Name<span class="req">*</span>
+            </label>
+            <input type="text" required autocomplete="off" />
+          </div>
+      
+          <div class="field-wrap">
+            <label>
+              Last Name<span class="req">*</span>
+            </label>
+            <input type="text"required autocomplete="off"/>
+          </div>
+        </div>
+
+        <div class="field-wrap">
+          <label>
+            Email Address<span class="req">*</span>
+          </label>
+          <input type="email"required autocomplete="off"/>
+        </div>
+        
+        <div class="field-wrap">
+          <label>
+            How do you use caMicroscope?<span class="req">*</span>
+          </label>
+          <textarea name="" id="" cols="10" rows="5">
+
+          </textarea>
+        </div>
+        <div class="field-wrap">
+          <label>
+            Insert Feedback Here <span class="req">*</span>
+          </label>
+          <textarea name="" id="" cols="10" rows="5">
+
+          </textarea>
+        </div>
+        
+        <button type="submit" class="button button-block">Submit Feedback</button>
+        
+        </form>
+
+      </div>
+      
+      <div id="login">   
+        <h1>Bug Report</h1>
+        
+        <form action="/" method="post">
+        
+          <div class="top-row">
+            <div class="field-wrap">
+              <label>
+                First Name<span class="req">*</span>
+              </label>
+              <input type="text" required autocomplete="off" />
+            </div>
+        
+            <div class="field-wrap">
+              <label>
+                Last Name<span class="req">*</span>
+              </label>
+              <input type="text"required autocomplete="off"/>
+            </div>
+          </div>
+  
+          <div class="field-wrap">
+            <label>
+              Email Address<span class="req">*</span>
+            </label>
+            <input type="email"required autocomplete="off"/>
+          </div>
+          <div class="mt-3 flex justify-between space-x-1">
+            <div class="flex h-12 w-16 cursor-pointer items-center justify-center rounded-md bg-sky-200 font-bold text-blue-900 hover:bg-blue-300">1</div>
+            <div class="flex h-12 w-16 cursor-pointer items-center justify-center rounded-md bg-sky-200 font-bold text-blue-900 hover:bg-blue-300">2</div>
+            <div class="flex h-12 w-16 cursor-pointer items-center justify-center rounded-md bg-sky-200 font-bold text-blue-900 hover:bg-blue-300">3</div>
+            <div class="flex h-12 w-16 cursor-pointer items-center justify-center rounded-md bg-sky-200 font-bold text-blue-900 hover:bg-blue-300">4</div>
+            <div class="flex h-12 w-16 cursor-pointer items-center justify-center rounded-md bg-sky-200 font-bold text-blue-900 hover:bg-blue-300">5</div>
+          </div>
+          <div class="mt-2 flex justify-between text-sm text-gray-400">
+            <p>Not satisfied</p>
+            <p>Very satisfied</p>
+          </div>
+        </div>
+        
+        <div class="form-check">
+          <div>
+            <input class="form-check-input" type="radio" name="radioNoLabel" id="radioNoLabel1" value="" aria-label="...">
+            <input class="form-check-input" type="radio" name="radioNoLabel" id="radioNoLabel1" value="" aria-label="...">
+            <input class="form-check-input" type="radio" name="radioNoLabel" id="radioNoLabel1" value="" aria-label="...">
+            <input class="form-check-input" type="radio" name="radioNoLabel" id="radioNoLabel1" value="" aria-label="...">
+            <input class="form-check-input" type="radio" name="radioNoLabel" id="radioNoLabel1" value="" aria-label="...">
+          </div>
+          
+            <input class="text-white" type="radio" name="" >
+            <input class="" type="radio" name="" >
+            <input class="" type="radio" name="" >
+            <input class="" type="radio" name="" >
+            <input class="" type="radio" name="" >
+          
+          
+          
+        </div>
+        
+        
+        <button class="button button-block">Log In</button>
+        
+        </form>
+
+      </div>
+      
+    </div><!-- tab-content -->
+    
+</div> <!-- /form -->
+
+
+
+
+
+
+<!-- Footer -->
+<footer id="footer">
+
+    <div class="content">
+
+        <div class="inner">
+
+
+
+            <section class="about" style="margin-left:0cm">
+
+                U24 CA18092401A1, <b>Tools to Analyze Morphology and Spatially Mapped Molecular Data</b>
+            </section>
+
+
+        </div>
+
+    </div>
+
+</footer>
+
+
+
+
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8" crossorigin="anonymous"></script>
+<script src="../landing/jquery.min.js"></script>
+
+<script src="../landing/jquery.dropotron.min.js"></script>
+
+<script src="../landing/jquery.scrollex.min.js"></script>
+
+<script src="../landing/skel.min.js"></script>
+
+<script src="../landing/util.js"></script>
+<script src="./feedback.js"></script>
+
+
+
+</body>
+
+
+
+</html>
