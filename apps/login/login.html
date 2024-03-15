@@ -142,8 +142,15 @@
      
     </div>
     <footer class="text-center text-white bg-dark p-3">
-      <p class="p">Copyright © 2021 caMicroscope</p>
+      <p class="p">Copyright © <span id = "current-year"></span> caMicroscope</p>
     </footer>
+    <script>
+        // Update footer date automatically
+        const currentYear = new Date().getFullYear();
+        document.getElementById("current-year").textContent = currentYear;
+    
+        
+    </script>
     <!-- popup -->
     <div id="popup-container"></div>
 
