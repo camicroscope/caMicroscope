@@ -1,0 +1,47 @@
+
+
+.pipe {
+	width: 120px;
+	height: 60px;
+	background: gray;
+	border-radius: 60px;
+    transform: scale(0.5);
+	display: flex;
+	align-items: center;
+}
+
+.pipe:hover {
+	cursor: pointer;
+}
+
+.container-pipe {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transform: translateX(-50%);
+	height: 80px;
+	width: 80px;
+	background: lightcoral;
+	border: 5px solid white;
+	border-radius: 50%;
+	box-shadow: 2px 2px 10px 0 rgba(0, 0, 0, 0.2);
+	font-size: 50px;
+	color: white;
+	transition: all 1.5s;
+}
+
+.move {
+	transform: translateX(60px) rotate(1turn);
+	background: navy;
+}
+
+.change-bg  {
+	background: #253069;
+    color: white;
+    
+}
+
+.change-bg h1, .change-bg h2, .change-bg h3, .change-bg h4, .change-bg h5, .change-bg h6, .change-bg p, .change-bg span, .change-bg a span,  .change-bg th {
+
+    color: white;
+}

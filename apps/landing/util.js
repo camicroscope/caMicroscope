@@ -1,3 +1,10 @@
+
+
+
+
+
+
+
 (function($) {
   /**
      * Generate an indented list of links from a nav. Meant for use with panel().
@@ -533,3 +540,10 @@
     });
   };
 })(jQuery);
+
+
+
+// const checkbox = document.getElementById("checkbox")
+// checkbox.addEventListener("change", () => {
+//   document.body.classList.toggle("dark")
+// })
