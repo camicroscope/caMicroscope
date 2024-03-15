@@ -21,7 +21,9 @@ footer {
   flex-direction: column;
   justify-content: space-between;
 }
-
+.slide-error-message {
+  color: #cc3948;
+}
 .link {
   letter-spacing: 0.02em;
   text-transform: uppercase;

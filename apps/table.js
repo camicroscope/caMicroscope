@@ -44,7 +44,17 @@ function validateForm(callback) {
     finishUploadSuccess = false;
     $('#check_btn').hide();
     $('#post_btn').hide();
-    changeStatus('UPLOAD', 'Please enter slide name');
+    // changeStatus('UPLOAD', 'Please enter slide name');
+    let slideNameEmpty = slide.parentNode.querySelector('.slide-error-message');
+
+    if(!slideNameEmpty){
+      slideNameEmpty = document.createElement('span')
+      slideNameEmpty.className = 'slide-error-message';
+      slide.parentNode.insertBefore(slideNameEmpty,slide.nextSibling);
+    }
+
+    slideNameEmpty.textContent = 'Please enter slide   name'
+    
     return false;
   }
   // Sanitizing input

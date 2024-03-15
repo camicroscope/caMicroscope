@@ -52,7 +52,7 @@ function changeStatus(step, text, reset=true) {
         var tabCell = tr.insertCell(-1);
         if (text[col[j]] && text[col[j]].length>65&&step == 'CHECK') {
           tabCell.innerHTML= `${text[col[j]].substr(0, 65)}<span class="collapse" id="more-${j}">
-             ${text[col[j]].substr(65)}    </span>
+            ${text[col[j]].substr(65)}    </span>
     <span><a href="#more-${j}" data-toggle="collapse">... <i class="fa fa-caret-down"></i></span>`;
         } else {
           tabCell.innerHTML = text[col[j]];
