@@ -12,7 +12,7 @@
 	<!-- Check If we're logged in ok, otherwise, log in for us -->
 	<!-- Font Awesome -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
-
+	<link href="/apps/darkmode.css" rel="stylesheet">
 	<script src='../common/authChecker.js'></script>
 	<script>
 		__auth_check(1)
@@ -77,6 +77,13 @@
 							</li>
 							<li class="nav-item link" style="font-family: sans-serif;">
 								<a class="nav-link" target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLScL91LxrpAZjU88GBZP9gmcdgdf8__uNUwhws2lzU6Lr4qNwA/viewform"> <i class="fas fa-comment"></i> Feedback</a>
+							</li>
+							<li>
+								<div class="pipe">
+									<div class="container-pipe">
+										<i class="fas fa-sun"></i>
+									</div>
+									</div>
 							</li>
 						</ul>
 					</div>
@@ -458,5 +465,5 @@ function initialize() {
 		}
   	document.addEventListener('DOMContentLoaded', initialize);
 </script>
-
+<script src="/apps/darkmode.js"></script> 
 </html>

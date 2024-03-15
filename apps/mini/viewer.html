@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="keywords" content="camicroscope, quip" />
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, user-scalable=no"
+    />
+    <!-- Check If we're logged in ok, otherwise, log in for us -->
+    <!-- REMOVE JQUERY AND AJAX AFTER MODERNIZING DICOM PACKAGE-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <!-- Thank you -->
+    <script src="../../common/authChecker.js"></script>
+    <script>
+      __auth_check(2);
+    </script>
+    <title>caMicroscope</title>
+    <!-- google material icons css sheet -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Icons"
+      rel="stylesheet">
+    <!-- common css START -->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      media="all"
+      href="../../css/style.css"
+    />
+    <!-- color picker css -->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      media="all"
+      href="../../common/colorpicker/color-picker.css"
+    />
+    <!-- add pure-form css -->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      media="all"
+      href="../../common/pureform/pure-form.css"
+    />
+    <!-- common css END -->
+
+    <!-- UI components css START -->
+    <!-- message display bar css -->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      media="all"
+      href="../../components/camessage/camessage.css"
+    />
+    <!-- toolbar css -->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      media="all"
+      href="../../components/toolbar/toolbar.css"
+    />
+    <!-- side menu css -->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      media="all"
+      href="../../components/sidemenu/sidemenu.css"
+    />
+    <!-- layers controller css -->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      media="all"
+      href="../../components/layersviewer/layersviewer.css"
+    />
+    <!-- labels controller css -->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      media="all"
+      href="../../components/labelsviewer/labelsviewer.css"
+    />
+    <!-- collapsible list css -->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      media="all"
+      href="../../components/collapsiblelist/collapsiblelist.css"
+    />
+    <!-- operation panel css -->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      media="all"
+      href="../../components/operationpanel/operationpanel.css"
+    />
+    <!-- mult selector css -->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      media="all"
+      href="../../components/multselector/multselector.css"
+    />
+    <!-- stylecontextmenu css -->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      media="all"
+      href="../../components/simplecontextmenu/simplecontextmenu.css"
+    />
+    <!-- message queue css -->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      media="all"
+      href="../../components/messagequeue/messagequeue.css"
+    />
+    <!-- loading cover css -->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      media="all"
+      href="../../components/loading/loading.css"
+    />
+    <!-- popup panel css -->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      media="all"
+      href="../../components/popuppanel/popuppanel.css"
+    />
+    <!-- add spyglass css -->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      media="all"
+      href="../../components/spyglass/spyglass.css"
+    />
+    <!-- add modalbox css -->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      media="all"
+      href="../../components/modalbox/modalbox.css"
+    />
+    <!-- UI components css END -->
+
+    <!-- osd & core css START -->
+    <!-- zoom control css -->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      media="all"
+      href="../../core/extension/openseadragon-zoom-control/openseadragon-zoom-control.css"
+    />
+    <!-- mesurement tool css -->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      media="all"
+      href="../../core/extension/openseadragon-measurement-tool/openseadragon-measurement-tool.css"
+    />
+    <!-- osd & core css END -->
+
+    <!-- popup css -->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      media="all"
+      href="../../css/popup.css"
+    />
+    <link href="../../common/bootstrap-tour-standalone/bootstrap-tour-standalone.min.css" rel="stylesheet">
+    <!-- tippy theme -->
+    <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/themes/light-border.css" />
+
+    <!--  common js START -->
+    <!-- Smartpen -->
+    <script type="text/javascript" src="../../common/enhance.js"></script>
+    <script type="text/javascript" src="../../common/smartpen/autoalign.js"></script>
+    <link rel="stylesheet" type="text/css" media="all" href="../../common/smartpen/autoalign.css"/>
+    <!-- Smartpen end -->
+
+    <!-- util.js -->
+    <script type="text/javascript" src="../../common/util.js"></script>
+    <script type="text/javascript" src="../../common/DrawHelper.js"></script>
+    <script type="text/javascript" src="../../common/simplify.js"></script>
+    <script type="text/javascript" src="../../common/paths.js"></script>
+    <script type="text/javascript" src="../../common/touchMe.js"></script>
+
+    <!-- add pure-form script -->
+    <script
+      type="text/javascript"
+      src="../../common/pureform/document-register-element.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="../../common/pureform/pure-form.js"
+    ></script>
+    <!-- color picker js -->
+    <script
+      type="text/javascript"
+      src="../../common/colorpicker/color-picker.js"
+    ></script>
+    <!-- sortable js -->
+    <script
+      type="text/javascript"
+      src="../../common/sortable/Sortable.js"
+    ></script>
+    <!-- AJV json validator engine -->
+    <script type="text/javascript" src="../../common/ajv.js"></script>
+    <!-- IDB helper -->
+    <script type="text/javascript" src="../../common/idb.js"></script>
+
+    <!--  common js END -->
+
+    <!--  components js START -->
+    <!-- message display js -->
+    <script
+      type="text/javascript"
+      src="../../components/camessage/camessage.js"
+    ></script>
+    <!-- toolbar js -->
+    <script
+      type="text/javascript"
+      src="../../components/toolbar/toolbar.js"
+    ></script>
+    <!-- sidemenu js -->
+    <script
+      type="text/javascript"
+      src="../../components/sidemenu/sidemenu.js"
+    ></script>
+    <!-- collapsible list js -->
+    <script
+      type="text/javascript"
+      src="../../components/collapsiblelist/collapsiblelist.js"
+    ></script>
+    <!-- layers controller js, custom for mini viewer -->
+    <script
+      type="text/javascript"
+      src="./layersViewer.js"
+    ></script>
+    <!-- labels controller js -->
+    <script
+      type="text/javascript"
+      src="../../components/labelsviewer/labelsviewer.js"
+    ></script>
+    <!-- operation panel js -->
+    <script
+      type="text/javascript"
+      src="../../components/operationpanel/operationpanel.js"
+    ></script>
+    <!-- loading cover js -->
+    <script
+      type="text/javascript"
+      src="../../components/loading/loading.js"
+    ></script>
+    <!-- stylecontextmenu js -->
+    <script
+      type="text/javascript"
+      src="../../components/simplecontextmenu/simplecontextmenu.js"
+    ></script>
+    <!-- popup panel js -->
+    <script
+      type="text/javascript"
+      src="../../components/popuppanel/popuppanel.js"
+    ></script>
+    <!-- message queue js -->
+    <script
+      type="text/javascript"
+      src="../../components/messagequeue/messagequeue.js"
+    ></script>
+    <!-- mult selector js -->
+    <script
+      type="text/javascript"
+      src="../../components/multselector/multselector.js"
+    ></script>
+    <!-- spyglass -->
+    <script
+      type="text/javascript"
+      src="../../components/spyglass/spyglass.js"
+    ></script>
+    <!-- modalbox -->
+    <script
+      type="text/javascript"
+      src="../../components/modalbox/modalbox.js"
+    ></script>
+    <!--  components js END -->
+
+    <!-- osd & core js START -->
+    <script
+      type="text/javascript"
+      src="../../core/openseadragon/openseadragon.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="../../core/openseadragon-imaginghelper.min.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="../../core/openseadragon-scalebar.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="../../core/openseadragonzoomlevels.js"
+    ></script>
+
+    <!-- core (package/ext) libs -->
+    <script type="text/javascript" src="../../core/StatesHelper.js"></script>
+
+    <script type="text/javascript" src="../../core/Validation.js"></script>
+    <script type="text/javascript" src="../../core/Store.js"></script>
+    <script type="text/javascript" src="../../core/CaMic.js"></script>
+
+    <script
+      type="text/javascript"
+      src="../../core/extension/openseadragon-canvas-draw-overlay.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="../../core/extension/openseadragon-overlays-manage.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="../../core/extension/openseadragon-measurement-tool/openseadragon-measurement-tool.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="../../core/extension/openseadragon-zoom-control/openseadragon-zoom-control.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="../../core/extension/osd-heatmap-overlay.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="../../core/extension/osd-segment-overlay.js"
+    ></script>
+
+    <!-- business js -->
+    <!-- <script src="../../dist/packages.js"></script> -->
+    <script type='text/javascript' src='../../common/PathdbMods.js'></script>
+    <script type='text/javascript' src='../../common/LocalStore.js'></script>
+    <script type='text/javascript' src='../../common/NanoBorbMods.js'></script>
+    <script
+      type="text/javascript"
+      src="../../common/dynamicLoadScript.js"
+    ></script>
+    <script src="./uicallbacks.js"></script>
+    <script src="./dataloaders.js"></script>
+    <script src="./init.js"></script>
+    <script src="../../common/bootstrap-tour-standalone/bootstrap-tour-standalone.min.js"></script>
+    <script src="./tut.js"></script>
+    <script src="../../common/html2canvas.min.js"></script>
+  </head>
+  <body>
+    <!-- message-->
+    <div id="cames" style="z-index:600"></div>
+
+    <!-- toolbar -->
+    <div id="ca_tools"></div>
+    <div id="modalbox"></div>
+    <div id="downloadSelectionModal"></div>
+    <!-- main viewer -->
+    <div id="main_viewer" class="main"></div>
+    <div id="minor_viewer" class="none"></div>
+
+    <!-- zoom control -->
+    <div id="zctrl"></div>
+
+    <!-- <div id="bctrl" style="z-index:600;">
+      <button class="reset" style="float: left;">Clear</button
+      ><button class="action" style="float: right;">Save</button>
+    </div> -->
+    <!-- side menu for apps-->
+    <div id="side_apps" style="z-index:600"></div>
+
+    <!-- side menu for layers -->
+    <div id="side_layers" style="z-index:600"></div>
+
+    <!-- side menu for labels -->
+    <div id="labels_layers" style="z-index:600"></div>
+
+    <!-- collapsible list - annotation and analytics -->
+    <div id="collapsiblelist" style="z-index:600"></div>
+    <!-- collapsible list - main/minor (right/left) layers -->
+    <div id="layerslist" style="z-index:600"></div>
+    <!-- overlayer manager -->
+    <div id="overlayers" style="z-index:600"></div>
+
+    <div id="overlayersMinor" style="z-index:600"></div>
+
+    <!-- labels manager -->
+    <div id="labelmanager" style="z-index:600"></div>
+    <!-- Popper & tippy -->
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="https://unpkg.com/tippy.js@6"></script>
+
+  </body>
+
+  <script type="text/javascript">
+    if (detectIE()) {
+      createWarningText(
+        'You are using an <strong>IE/Edge</strong> browser that may be lead to erratic behavior on caMicroscope. Please switch to <a href="https://www.google.com/chrome/">Chrome</a>, <a href="https://www.mozilla.org/en-US/firefox/new/">Firefox</a> or <a href="https://www.apple.com/safari/">Safari</a> browser to improve your experience.'
+      );
+    }
+    //Loading.open(document.body, 'CaMicroscope is initializing...');
+    // get slide id from url
+    $D.params = getUrlVars();
+
+    if ($D.params.mode == 'pathdb') {
+      $D.pages.home = '../../../';
+      $D.pages.table = '../../../';
+    }
+
+    // load if we have at least one slide query element
+    if ($D.params && $D.params.slideId) {
+      // normal initialization starts
+      document.addEventListener("DOMContentLoaded", initialize);
+    } else if (
+      $D.params &&
+      ($D.params.slide ||
+        $D.params.specimen ||
+        $D.params.study ||
+        $D.params.location ||
+        $D.params.collection
+      )
+    ) {
+      let STORE = new Store('../../data/');
+      STORE.findSlide(
+        $D.params.slide,
+        $D.params.specimen,
+        $D.params.study,
+        $D.params.location,
+        null,
+        $D.params.collection
+      )
+        .then(x => {
+          let offset = parseInt($D.params.offset, 10) || 0;
+          if (x.length == 0 || offset >= x.length) {
+            redirect($D.pages.table, "No Slide Found. Redirecting To Table.");
+          } else {
+            newParams = $D.params;
+            delete newParams.data;
+            delete newParams.slide;
+            delete newParams.location;
+            delete newParams.offset;
+            newParams.slideId = x[offset]["_id"]["$oid"];
+            newUrl =
+              window.location.href.split("?")[0] +
+              "?" +
+              objToParamStr(newParams);
+            window.location.href = newUrl;
+          }
+        })
+        .catch(e => {
+          console.warn(e);
+          redirect($D.pages.table, "Redirecting to Table.");
+        });
+      // find the associated slideID
+      // open viewer with that slideID
+    } else {
+      redirect($D.pages.table, "Slide is undefined. Redirecting to Table.");
+    }
+
+    // get states parameters
+    if ($D.params.states) {
+      $D.params.states = StatesHelper.decodeStates($D.params.states);
+    }
+
+  </script>
+</html>

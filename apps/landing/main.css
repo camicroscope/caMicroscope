@@ -1,6 +1,14 @@
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css');
 @import url("https://fonts.googleapis.com/css?family=Open+Sans:300italic,700italic,700,300");
+:root,:root.light {
+    --color-bg: #ffffff;
+    --color-fg: #000000;
+}
 
+:root.dark {
+    --color-bg: #343434;
+    --color-fg: #ffffff;
+}
 /*
 	Archetype by Pixelarity
 	pixelarity.com | hello@pixelarity.com
@@ -11,12 +19,11 @@
 
 
 	html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
-		margin: 0;
+		margin: 0;	
 		padding: 0;
 		border: 0;
 		font-size: 100%;
 		font: inherit;
-		color:#212529;
 		vertical-align: baseline;
 		font-family: Arial, Helvetica, sans-serif;
 	}
@@ -27,6 +34,8 @@
 
 	body {
 		line-height: 1.5;
+	
+
 	}
 
 	ol, ul {
@@ -1482,6 +1491,7 @@
 		text-transform: uppercase;
 		letter-spacing: 0.05em;
 		font: inherit;
+		color: black;
 	}
 
 		h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
@@ -1607,8 +1617,12 @@
 		color: #4d5968;
 	}
 
-	h1, h2, h3, h4, h5, h6 {
-		color: #4d5968;
+	
+
+	body.light h1, 	body.light h2, 	body.light h3, 	body.light h4, 	body.light h5, 	body.light h6, 	body.light p {
+		 
+			color: #4d5968;
+		
 	}
 
 	blockquote {
@@ -4780,3 +4794,12 @@
 		::-webkit-scrollbar-thumb:hover {
 		background: grey;
 		}
+
+
+
+
+
+
+
+
+

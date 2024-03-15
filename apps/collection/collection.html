@@ -9,6 +9,7 @@
       rel="stylesheet"
       href="https://use.fontawesome.com/releases/v5.8.2/css/all.css"
     />
+    <link href="/apps/darkmode.css" rel="stylesheet">
     <link
       rel="stylesheet"
       href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"
@@ -26,6 +27,7 @@
   </head>
 
   <body>
+    
     <div class="search-box bg-light p-4 clearfix">
       <div class="has-search float-left">
         <span class="fa fa-search form-control-feedback"></span>
@@ -36,7 +38,13 @@
           class="form-control"
           placeholder="Search"
         />
+        <div class="pipe">
+          <div class="container-pipe">
+              <i class="fas fa-sun"></i>
+          </div>
+          </div>
       </div>
+     
       <div
         class="btn btn-primary font-weight-bold float-right"
         data-toggle="tooltip"
@@ -281,6 +289,7 @@
       integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
       crossorigin="anonymous"
     ></script>
+    <script src="/apps/darkmode.js"></script>
     <script src="./collection.js"></script>
   </body>
 </html>
