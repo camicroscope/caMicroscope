@@ -1,6 +1,8 @@
 // Get all forms with class 'form'
 const forms = document.querySelectorAll('.form');
 
+
+
 // Loop through each form
 forms.forEach(form => {
     // Get all input and textarea elements within the form
