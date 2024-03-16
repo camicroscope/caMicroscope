@@ -14,58 +14,6 @@
 	 background: #c1bdba;
 	 font-family: 'Titillium Web', sans-serif;
 }
- /* a {
-	 text-decoration: none;
-	 color: #1ab188;
-	 transition: 0.5s ease;
-}
- a:hover {
-	 color: #179b77;
-}
- .form {
-	 background: rgba(19, 35, 47, .9);
-	 padding: 40px;
-	 max-width: 600px;
-	 margin: 40px auto;
-	 border-radius: 4px;
-	 box-shadow: 0 4px 10px 4px rgba(19, 35, 47, .3);
-}
- .tab-group {
-	 list-style: none;
-	 padding: 0;
-	 margin: 0 0 40px 0;
-}
- .tab-group:after {
-	 content: "";
-	 display: table;
-	 clear: both;
-}
- .tab-group li a {
-	 display: block;
-	 text-decoration: none;
-	 padding: 15px;
-	 background: rgba(160, 179, 176, .25);
-	 color: #a0b3b0;
-	 font-size: 20px;
-	 float: left;
-	 width: 50%;
-	 text-align: center;
-	 cursor: pointer;
-	 transition: 0.5s ease;
-}
- .tab-group li a:hover {
-	 background: #179b77;
-	 color: #fff;
-}
- .tab-group .active a {
-	 background: #1ab188;
-	 color: #fff;
-}
- .tab-content > div:last-child {
-	 display: none;
-} */
-
-
 
  .forgot {
 	 margin-top: -20px;
@@ -75,7 +23,7 @@
 
 
 .cont{
-	background-color: rgb(54, 5, 54);
+	background-color: #fff;
 	padding: 40px;
 	max-width: 600px;
 	margin: 40px auto;
@@ -110,7 +58,7 @@
 
 ul li .general_header{
 	color: #fff;
-	background-color: rgb(204, 139, 204);
+	background-color: #343a40;
 	text-decoration: solid;
 }
 
@@ -122,13 +70,13 @@ ul li .bug_header{
 
 ul li .bug_header:hover{
 	color: #fff;
-	background-color: rgb(204, 139, 204);
+	background-color: #343a40;
 	
 }
 
 h1 {
 	text-align: center;
-	color: #fff;
+	color: black;
 	font-weight: 300;
 	margin: 0 0 40px;
 }
@@ -155,7 +103,7 @@ label {
 	position: absolute;
 	transform: translateY(6px);
 	left: 13px;
-	color: #fff;
+	color: black;
 	transition: all 0.25s ease;
 	-webkit-backface-visibility: hidden;
 	pointer-events: none;
@@ -178,7 +126,7 @@ label.active .req {
 }
 
 label.highlight {
-	color: #fff;
+	color: black;
 }
 
 input {
@@ -190,7 +138,7 @@ input {
 	background: none;
 	background-image: none;
 	border: 1px solid #a0b3b0;
-	color: #fff;
+	color: black;
 	border-radius: 0;
 	transition: border-color 0.25s ease, box-shadow 0.25s ease;
 }
@@ -202,14 +150,14 @@ textarea{
 	background: none;
 	background-image: none;
 	border: 1px solid #a0b3b0;
-	color: #fff;
+	color: black;
 	border-radius: 0;
 	transition: border-color 0.25s ease, box-shadow 0.25s ease;
 }
 
 input:focus, textarea:focus {
 	outline: 0;
-	border-color: rgb(204, 139, 204);
+	border-color: #343a40;
 }
 
 textarea {
@@ -231,13 +179,13 @@ textarea {
 	font-weight: 600;
 	text-transform: uppercase;
 	letter-spacing: 0.1em;
-	background: rgb(204, 139, 204);
+	background: #343a40;
 	color: #fff;
 	transition: all 0.5s ease;
 	-webkit-appearance: none;
 }
 .button:hover, .button:focus {
-	background: rgb(163, 98, 163);
+	background: #60666c;
 }
 .button-block {
 	display: block;
@@ -245,10 +193,16 @@ textarea {
 }
 
 .rate{
-	color: white;
+	color: black;
 }
 
 
-
-
+@media only screen and (max-width: 768px) {
+	.headers li a {
+		padding: 15px;
+		font-size: 12px;
+		float: left;
+		width: 50%;
+	}
+  }
  
