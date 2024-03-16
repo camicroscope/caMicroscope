@@ -116,11 +116,99 @@
 
         <div class="inner">
 
+            <section class="about footer-container"> 
+
+                <div class="footer_column_1">
+                            <h1 class='w-100 text-xl text-left font-weight-bold'>
+                                CaMicroscope
+                            </h1>
+                            <p class='pt-3 pb-0 text-left' style="width:80%">
+                               An Open-Source Platform for Biomedical Image and Data Analysis
+                            </p>
+                           
 
 
-            <section class="about" style="margin-left:0cm">
+                                <div class=' footer_image_wrapper'>
+                                     <a href="https://github.com/camicroscope/" class="footer_image"><img src="./github.svg" alt="Github"/></a>
+                                      <a href="" class="footer_image"><img src="./linkedin.svg" alt="Linkedin"/></a>
+                                       <a href="https://gautammishra.medium.com/camicroscope-development-environment-2c0d9bb1b64b" class="footer_image"><img src="./medium.svg" alt="Medium"/></a>
+                                      
+                            </div>
 
-                U24 CA18092401A1, <b>Tools to Analyze Morphology and Spatially Mapped Molecular Data</b>
+                             <p class='text-left footer_copyright' >
+                                © <span id="copyright-year" style="color: rgb(156 163 175);">2023</span> CaMicroscope, Inc. All rights reserved.
+                            </p>
+                </div>
+			
+			<div class='footer_column_2 d-flex justify-content-between'>
+				<div class='footer_solutions'>
+					<h6 class='font-weight-medium mb-2 text-xl'>Solutions</h6>
+					<ul >
+						<li><a href="#">Slides</a>
+							
+						</li>
+						<li><a href="#">Workbench</a>
+							
+						</li>
+                        <li> <a href="#">insights</a>
+                          
+                        </li>
+						<li><a href="#">Contact</a>
+							
+						</li>
+					</ul>
+				</div>
+				<div class="footer_support">
+					<h6 class='font-weight-medium text-gray-400 mb-2 text-xl'>Support</h6>
+					<ul>
+						<li>
+							<a href="https://youtu.be/prPtb89jFig">Demo</a>
+						</li>
+						<li>
+							<a href="https://github.com/camicroscope">Documentation</a>
+						</li>
+						<li>
+							<a href="https://camicroscope.github.io/community.html">Guides</a>
+						</li>
+						<li>
+							<a 
+                            href="https://docs.google.com/forms/u/0/d/e/1FAIpQLScL91LxrpAZjU88GBZP9gmcdgdf8__uNUwhws2lzU6Lr4qNwA/viewform?pli=1">
+                            Feedback</a>
+						</li>
+					</ul>
+				</div>
+				<div class="footer_company">
+					<h6 class='font-weight-medium text-gray-400 mb-2 text-xl'>Company</h6>
+					<ul>
+						<li>
+							<a href="#">Research</a>
+						</li>
+						<li>
+							<a href="#">About</a>
+						</li>
+						<li>
+							<a href="#">Careers</a>
+						</li>
+						<li>
+							<a href="#">Press</a>
+						</li>
+					</ul>
+				</div>
+				<div class="footer_legals">
+					<h6 class='font-weight-medium text-gray-400 mb-2 text-xl'>Legal</h6>
+					<ul>
+						<li>
+							<a href="#">Privacy Policy</a>
+						</li>
+						
+						<li>
+							<a href="#">Terms & Conditions</a>
+						</li>
+                        
+					</ul>
+				</div>
+			</div>
+
             </section>
 
 
@@ -147,6 +235,16 @@
 <script src="./util.js"></script>
 
 
+<script>
+    function updateCopyrightYear() {
+const currentYear = new Date().getFullYear();
+document.getElementById('copyright-year').textContent = currentYear;
+}
+
+ window.addEventListener('load', function() {
+        updateCopyrightYear();
+    });
+</script>
 
 </body>
 
