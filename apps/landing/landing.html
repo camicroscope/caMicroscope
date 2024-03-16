@@ -37,32 +37,37 @@
 <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark" style="position: sticky; margin-top: -4em;">
     <div class="container-fluid">
         <button class="navbar-toggler m-1" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        
             <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent" >
-                <ul class="navbar-nav mr-auto gap-1">
-                    <li class="nav-item active link" style="font-family: sans-serif;">
-                       <a class="nav-link" href="landing.html"> <i class="fas fa-home"></i> Home</a>
-                    </li>
-                    <li class="nav-item  link" style="font-family: sans-serif;">
-                        <a class="nav-link" href="../table.html"> <i class="fas fa-list-ul"></i>  Slides</a>
-                    </li>
-                    <li class="nav-item link">
-                        <a class="nav-link" href="../Info.html"> <i class="fas fa-info-circle"></i> Info</a>
-                    </li>
-                    <li class="nav-item link">
-                        <a class="nav-link" href="../dev-workbench/workbench.html"> <i class="fas fa-pencil-ruler"></i> Workbench</a>
-                    </li>
-                    <li class="nav-item link" style="font-family: sans-serif;">
-                        <a class="nav-link" href="../signup/signup.html"> <i class="fas fa-user-plus"></i> Signup</a>
-                    </li>
-                    <li class="nav-item link" style="font-family: sans-serif;">
-                        <a class="nav-link" target="_blank" href="https://github.com/camicroscope/caMicroscope/issues"> <i class="fas fa-comment"></i> Feedback</a>
-                    </li>
-                </ul>
-            </div>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent" >
+            <ul class="navbar-nav mr-auto gap-1">
+                <li class="nav-item active link" style="font-family: sans-serif;">
+                    <a class="nav-link" href="landing.html"> <i class="fas fa-home"></i> Home</a>
+                </li>
+                <li class="nav-item  link" style="font-family: sans-serif;">
+                    <a class="nav-link" href="../table.html"> <i class="fas fa-list-ul"></i>  Slides</a>
+                </li>
+                <li class="nav-item link">
+                    <a class="nav-link" href="../Info.html"> <i class="fas fa-info-circle"></i> Info</a>
+                </li>
+                <li class="nav-item link">
+                    <a class="nav-link" href="../dev-workbench/workbench.html"> <i class="fas fa-pencil-ruler"></i> Workbench</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item link" style="font-family: sans-serif;">
+                    <a class="nav-link" href="../signup/signup.html"> <i class="fas fa-user-plus"></i> Signup</a>
+                </li>
+                <li class="nav-item link" style="font-family: sans-serif;">
+                    <a class="nav-link" target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLScL91LxrpAZjU88GBZP9gmcdgdf8__uNUwhws2lzU6Lr4qNwA/viewform"> <i class="fas fa-comment"></i> Feedback</a>
+                </li>
+            </ul>
+        </div>
     </div>
+    
 </nav>
+
 
 
 <!-- Main -->
@@ -110,22 +115,46 @@
 
 <!-- Footer -->
 
-<footer id="footer">
-
+<footer class="bg-dark" id="footer">
     <div class="content">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5>Community</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="https://github.com/orgs/camicroscope/discussions" target="_blank" class="text-light">Discussion</a></li>
+                        <li><a href="https://github.com/caMicroscope" target="_blank" class="text-light">Github</a></li>
+                        <li><a href="https://github.com/camicroscope/docs/issues/new/choose" target="_blank" class="text-light">Feedback</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5>Resources</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="http://camicroscope.org/docs/#links-to-other-resources" target="_blank" class="text-light">Documentation</a></li>
+                        <li><a href=" https://camicroscope.github.io/" target="_blank" class="text-light">Open Source Support</a></li>
+                        <li><a href="https://camicroscope.github.io/conduct.html" target="_blank" class="text-light">Code of Conduct</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="container mt-3">
+            <div class="row mt-3">
+                <div class="inner">
+                    <section class="about text-center" style="margin-left:0cm">
 
-        <div class="inner">
-
-
-
-            <section class="about" style="margin-left:0cm">
-
-                U24 CA18092401A1, <b>Tools to Analyze Morphology and Spatially Mapped Molecular Data</b>
-            </section>
-
-
+                        U24 CA18092401A1, <b>Tools to Analyze Morphology and Spatially Mapped Molecular Data</b>
+                    </section>
+                </div>
+            </div>
         </div>
 
+    </div>
+    <div class="row" style="background: #022837;">
+        <div class="col-12 text-center mb-2">
+            <p class="text-light mt-3">&copy; <span class="text-light" id="copyright">
+                <script>document.getElementById('copyright').appendChild(document.createTextNode(new Date().getFullYear()))</script>
+            </span> caMicroscope</p>
+        </div>
     </div>
 
 </footer>
