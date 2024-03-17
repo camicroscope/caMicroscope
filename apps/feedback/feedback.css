@@ -208,4 +208,92 @@ textarea {
 		width: 50%;
 	}
   }
- 
+
+  :not(.text-center.mb-3) input[type="checkbox"],
+:not(.text-center.mb-3) input[type="radio"] {
+    /* background-color: blue; */
+}
+
+:not(.text-center.mb-3) input[type="checkbox"] + label,
+:not(.text-center.mb-3) input[type="radio"] + label {
+    /* Your existing styles here */
+	/* background-color: blue; */
+}
+
+:not(.text-center.mb-3) input[type="checkbox"] + label:before,
+:not(.text-center.mb-3) input[type="radio"] + label:before {
+    /* Your existing styles here */
+	/* background-color: blue; */
+}
+
+:not(.text-center.mb-3) input[type="checkbox"]:checked + label:before,
+:not(.text-center.mb-3) input[type="radio"]:checked + label:before {
+    /* Your existing styles here */
+	/* background-color: blue; */
+}
+
+:not(.text-center.mb-3) input[type="checkbox"]:focus + label:before,
+:not(.text-center.mb-3) input[type="radio"]:focus + label:before {
+    /* Your existing styles here */
+	/* background-color: blue; */
+}
+
+/* Resetting custom styles for checkboxes and radio buttons */
+
+:not(.text-center.mb-3) input[type="radio"] {
+    -moz-appearance: initial;
+    -webkit-appearance: initial;
+    -ms-appearance: initial;
+    appearance: initial;
+    display: initial;
+    float: initial;
+    margin-right: 2px;
+    opacity: initial;
+    width: initial;
+    z-index: initial;
+}
+
+/* Resetting label styles for checkboxes and radio buttons */
+
+:not(.text-center.mb-3) input[type="radio"] + label {
+    text-decoration: initial;
+    cursor: initial;
+    display: initial;
+    font-size: initial;
+    font-weight: initial;
+    padding-left: initial;
+    padding-right: initial;
+    position: initial;
+}
+
+/* Resetting label pseudo-element styles for checkboxes and radio buttons */
+
+:not(.text-center.mb-3) input[type="radio"] + label:before {
+    -moz-osx-font-smoothing: initial;
+    -webkit-font-smoothing: initial;
+    font-family: initial;
+    font-style: initial;
+    font-weight: initial;
+    text-transform: initial;
+}
+
+/* Resetting label pseudo-element styles for checkboxes */
+:not(.text-center.mb-3) input[type="checkbox"] + label:before {
+    border-radius: initial;
+    border: initial;
+    content: initial;
+    display: initial;
+    height: initial;
+    left: initial;
+    line-height: initial;
+    position: initial;
+    text-align: initial;
+    top: initial;
+    width: initial;
+}
+
+/* Resetting label pseudo-element styles for checked checkboxes and radio buttons */
+
+:not(.text-center.mb-3) input[type="radio"]:checked + label:before {
+    content: initial;
+}
