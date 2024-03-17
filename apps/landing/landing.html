@@ -110,25 +110,37 @@
 
 <!-- Footer -->
 
-<footer id="footer">
-
-    <div class="content">
-
-        <div class="inner">
-
-
-
-            <section class="about" style="margin-left:0cm">
-
-                U24 CA18092401A1, <b>Tools to Analyze Morphology and Spatially Mapped Molecular Data</b>
-            </section>
-
-
-        </div>
-
-    </div>
-
+<footer>
+    <script src="../footer.html"></script>
 </footer>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Check if user's preference for mode is saved in local storage
+        const isDarkMode = localStorage.getItem('darkMode') === 'true';
+
+        // Apply initial mode based on user's preference
+        toggleDarkMode(isDarkMode);
+
+        // Add event listener to the mode switch
+        document.getElementById('modeSwitch').addEventListener('change', function() {
+            // Toggle dark mode
+            toggleDarkMode(this.checked);
+        });
+
+        // Function to toggle dark mode
+        function toggleDarkMode(enableDarkMode) {
+            // Update local storage
+            localStorage.setItem('darkMode', enableDarkMode);
+
+            // Apply dark mode styles if enabled
+            if (enableDarkMode) {
+                document.body.classList.add('dark-mode');
+            } else {
+                document.body.classList.remove('dark-mode');
+            }
+        }
+    });
+</script>
 
 
 
