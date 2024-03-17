@@ -209,34 +209,6 @@ textarea {
 	}
   }
 
-  :not(.text-center.mb-3) input[type="checkbox"],
-:not(.text-center.mb-3) input[type="radio"] {
-    /* background-color: blue; */
-}
-
-:not(.text-center.mb-3) input[type="checkbox"] + label,
-:not(.text-center.mb-3) input[type="radio"] + label {
-    /* Your existing styles here */
-	/* background-color: blue; */
-}
-
-:not(.text-center.mb-3) input[type="checkbox"] + label:before,
-:not(.text-center.mb-3) input[type="radio"] + label:before {
-    /* Your existing styles here */
-	/* background-color: blue; */
-}
-
-:not(.text-center.mb-3) input[type="checkbox"]:checked + label:before,
-:not(.text-center.mb-3) input[type="radio"]:checked + label:before {
-    /* Your existing styles here */
-	/* background-color: blue; */
-}
-
-:not(.text-center.mb-3) input[type="checkbox"]:focus + label:before,
-:not(.text-center.mb-3) input[type="radio"]:focus + label:before {
-    /* Your existing styles here */
-	/* background-color: blue; */
-}
 
 /* Resetting custom styles for checkboxes and radio buttons */
 
@@ -247,10 +219,10 @@ textarea {
     appearance: initial;
     display: initial;
     float: initial;
-    margin-right: 2px;
+    margin-right: 5px;
     opacity: initial;
     width: initial;
-    z-index: initial;
+    z-index: initial;  
 }
 
 /* Resetting label styles for checkboxes and radio buttons */
