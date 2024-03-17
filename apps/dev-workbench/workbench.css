@@ -59,3 +59,24 @@
   }
 }
 
+
+.cards-div{
+ 
+  /* align-content: center; */
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex-wrap: wrap;
+ 
+  
+
+}
+
+@media (max-width: 768px) {
+  .cards-div {
+    flex-direction: column;
+    row-gap: 2rem;
+    
+
+  }
+}
