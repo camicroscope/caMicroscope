@@ -354,11 +354,11 @@ function getUrlVars() {
     vars[key.toLowerCase()] = value;
   });
 
-  return {
-    get: function(paramName) {
-      return vars[paramName.toLowerCase()];
+  return new Proxy({}, {
+    get: function(target, prop) {
+      return vars[prop.toLowerCase()];
     }
-  };
+  });
 }
 /**
 function getUrlVars() {
@@ -373,6 +373,7 @@ function getUrlVars() {
   return vars;
 }
 */
+
 function ImageFeaturesToVieweportFeatures(viewer, geometries) {
   const rs = {
     type: 'FeatureCollection',
