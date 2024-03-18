@@ -364,7 +364,7 @@ function initialize() {
               return data;
             })
             .then(function(data) {
-              if (CID == null && data.length == 0) {
+              if (false && CID == null && data.length == 0) {
                 var dataTable = document.getElementById('datatables');
                 dataTable.textContent = `Please Select A Collection`;
                 dataTable.classList = `container text-center p-4`;
