@@ -60,45 +60,69 @@
     <script src="../../common/jszip.min.js"></script>
     <script src="../../common/FileSaver.min.js"></script>
     <script src="../../common/localforage.min.js"></script>
+    <script>
+
+      // Dark mode functionality
+  
+        function toggleTheme() {
+      // Get the icon element
+      const icon = document.getElementById('toggle-icon');
+      const contentsButton = document.querySelectorAll('.button');
+      const paragraphs = document.querySelectorAll('p');
+      const heading2 = document.querySelectorAll('h2');
+      const heading3 = document.querySelectorAll('h3');
+      const  header = document.querySelector(".header")
+      const labeldark = document.querySelectorAll('.label-color')
+  
+      // Toggle dark mode class on body
+      document.body.classList.toggle("dark-mode");
+  
+      // Toggle custom color class on  elements
+      paragraphs.forEach(p => p.classList.toggle("p-color"));
+      heading2.forEach(h2 => h2.classList.toggle("h2-color"));
+      heading3.forEach(h3 => h3.classList.toggle("h3-color"));
+      contentsButton.forEach(button => button.classList.toggle("content-buttoncolor"));
+      header.classList.toggle("dark")
+      labeldark.forEach(colorr=> colorr.classList.toggle("dark-label"))
+  
+      // Toggle dark class on the icon
+      if (icon.classList.contains("fa-moon")) {
+          icon.classList.remove("fa-moon");
+          icon.classList.add("fa-sun");
+      } else {
+          icon.classList.remove("fa-sun");
+          icon.classList.add("fa-moon");
+      }
+  }  
+  
+      </script>
+  
   </head>
   <body>
     <!--Navbar-->
-    <nav
-      class="navbar navbar-expand-lg navbar-dark flex-row px-2"
-      style="background: rgb(33, 37, 41);"
-    >
+    <nav class="header " > 
+
       <div style="cursor: pointer;" id="goBack">
         <i data-feather="arrow-left" class="text-white"></i>
       </div>
-      
-<<<<<<< HEAD
+
       <!-- Navbar brand --> 
      
-      <div class="navbar-brand-div flex-grow-1">
-        <span style="cursor: default" class="navbar-brand " > Workbench</span>
-        
-      </div>
+      <div class="" >
+        <span style="cursor: default" class="navbar-brand " > Workbench</span></div>
       <div>
-
-      
-      <ul class="navbar-nav mr-auto px-2">
-=======
-      <!-- Navbar brand -->
-      <span style="cursor: default;" class="navbar-brand"> Workbench</span>
-      <ul class="navbar-nav mr-auto">
->>>>>>> master
-        <!-- Dropdown -->
-        <li
-          
-          class="nav-item dropdown"
-        >
+     <!-- Dropdown -->
+     <ul>
+        <li class="nav-item dropdown">
           <a
             class="nav-link dropdown-toggle"
             id="navbarDropdownMenuLink"
             data-toggle="dropdown"
             aria-haspopup="true"
             aria-expanded="false"
+            style="margin-top: 1em;"
             >Options</a
+            
           >
           <div
             style="margin-left: -5em;"
@@ -130,6 +154,7 @@
           </div>
         </li>
       </ul>
+      <i id="toggle-icon" class="fas fa-sun toggle-icon" onclick="toggleTheme()"></i>
     </nav>
     <!--/.Navbar-->
 
@@ -154,10 +179,10 @@
             <li class="active firstStepHead">
               <a id="step1Link" href="#">
                 <span class="circle">1</span>
-                <span class="label">Select/Create Training Data</span>
+                <span class="label label-color">Select/Create Training Data</span>
               </a>
               <div class="step-content grey lighten-3">
-                <p style="font-size: 1em;">
+                <p style="font-size: 1em;" >
                   Select your own dataset (spritesheet) or create a new one from
                   caMicroscope labels or own custom data. <br />
                   <button
@@ -182,7 +207,7 @@
               <!--Section Title -->
               <a href="#!">
                 <span class="circle">2</span>
-                <span class="label">Algorithm Creation and Training</span>
+                <span class="label label-color">Algorithm Creation and Training</span>
               </a>
 
               <!-- Section Description -->
@@ -213,7 +238,7 @@
             <li class="thirdStepHead">
               <a href="#!">
                 <span class="circle">3</span>
-                <span class="label"> Save your work </span>
+                <span class="label label-color"> Save your work </span>
               </a>
               <!-- Section Description -->
               <div class="step-content grey lighten-3">
@@ -230,22 +255,15 @@
     <!-- /.Vertical Steppers -->
     <div id="cards">
       <br /><br />
-      <div
-        style="
-          align-content: center;
-          display: flex;
-          flex-wrap: wrap;
-          padding: 1em;
-        "
-      >
+      <div class="cards-div"      >
         <!-- Cards -->
-        <div class="card" style="max-width: 20em; margin-left:2cm; auto;">
+        <div class="card" style="max-width: 20em; height: 16em; ">
           <!-- Card content -->
           <div class="card-body">
             <!-- Title -->
             <h4 class="card-title">Select your dataset</h4>
             <!-- Text -->
-            <p style="text-align: justify;" class="card-text">
+            <p style="padding: 0.2em;word-wrap: break-word;" class="card-text">
               Select the dataset (.zip) having three files; spritesheet
               (data.jpg), a binary labels (labels.bin) and the classes
               (labelnames.csv) from your local storage.
@@ -268,10 +286,10 @@
             </div>
           </div>
         </div>
-        <div style="height: 1em; margin-left:5cm; padding: 2em 0; font-size: large;">
+        <div style="height: 1em;  font-size: large;">
           <b> OR</b>
         </div>
-        <div class="card" style="max-width: 20em; margin-left:2cm; auto;">
+        <div class="card" style="max-width: 20em;height: 16em ">
           <!-- Card content -->
           <div class="card-body">
             <!-- Title -->

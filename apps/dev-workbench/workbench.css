@@ -18,13 +18,7 @@
 .btn {
   text-transform: unset !important;
 }
-.nabvar {
-  display: flex;
-  flex-direction: row;
-}
-.navbar-brand{
-  margin-right: 10rem !important;
-}
+
 /* All display none */
 #importFile,
 #headContent,
@@ -45,6 +39,8 @@
   display: flex;
   margin: 0 1rem;
 }
+
+
 @media only screen and (max-width: 551px) {
   nav {
     flex-direction: column;
@@ -58,4 +54,102 @@
     margin: 10px 0;
   }
 }
+
+.cards-div{
+
+  /* align-content: center; */
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+li{
+  text-decoration: none;
+  list-style-type: none;
+}
+
+@media (max-width: 768px) {
+  .cards-div {
+    flex-direction: column;
+    row-gap: 2rem;
+
+
+  }
+ 
+}
+
+@media (max-width: 400px) {
+  .cards {
+    width: fit-content;
+    font-size: smaller;
+  }
+  
+}
+
+#toggle-icon{
+  position: fixed;
+   right: 2%;	
+   top:2.4%;
+ }
+ 
+ /* This codes styles the dark mode the light/mode icon */
+ #toggle-icon.fa-moon {
+   color: #808080;
+   cursor: pointer;
+   background-color: rgb(45, 108, 117);
+   border-radius: 50%;
+   padding: 0.4rem;
+ 
+ }
+ 
+ #toggle-icon.fa-sun {
+   color: #ffff00;
+   cursor: pointer;
+   background-color: rgb(45, 108, 117);
+   border-radius: 50%;
+   padding: 0.4rem;
+ }
+ 
+ .dark-mode {
+   background-color: rgb(33, 37, 41);
+   color: white;
+ }
+ 
+ .p-color {
+  color: rgb(33, 37, 41) !important;
+ }
+ 
+ .h2-color,
+ .h3-color {
+   color: rgb(173, 191, 214);
+ }
+ 
+ a.button.content-buttoncolor {
+   color: white;
+   border:0.4px solid white;
+ 
+ }
+
+ .header{
+  background-color: rgb(33, 37, 41);
+  color: white;
+  display: flex;
+  align-items: center;
+  text-align: center;
+ }
+
+ .dark{
+  background-color: black;
+ }
+ 
+
+ .label-color{
+  color: black !important;
+ }
+
+ .dark-label{
+  color: whitesmoke !important;
+ }
+ 
 
