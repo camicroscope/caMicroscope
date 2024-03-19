@@ -12,6 +12,8 @@
 	<!-- Check If we're logged in ok, otherwise, log in for us -->
 	<!-- Font Awesome -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+	 <!-- Darkmode css -->
+	<link rel="stylesheet" href="darkmode/darkmode.css">
 
 	<script src='../common/authChecker.js'></script>
 	<script>
@@ -168,17 +170,15 @@
 
 <footer class="text-center text-white bg-dark p-3 mt-2">
 	<p class="p">Copyright © 2021 caMicroscope</p>
+	 <!-- Dark mode switch -->
+	 <input type="checkbox" id="dark-mode-toggle">
+	 <label for="dark-mode-toggle" style="color: #ffffff">Dark Mode</label>
 </footer>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8" crossorigin="anonymous"></script>
-<!-- Footer -->
-<footer>
-	<script src="footer/footer.html" ></script>
-</footer>
-<!-- Dark/Light mode script -->
-<script src="scripts/script.js"></script>
-
 </body>
+<!-- Dark mode Script -->
+<script src="darkmode/darkmode.js"></script>
 <script>
 
 var allSlides;
