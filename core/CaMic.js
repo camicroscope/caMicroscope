@@ -196,10 +196,14 @@ class CaMic {
     this.slideId = data['_id']['$oid'];
 
     this.slideName = data['name'];
+    // encode special characters but not dir slashes
+    let loc = data['location'];
+    loc = encodeURIComponent(loc);
+    loc = loc.replaceAll('%2F', '/');
     // insert token if present
-    let iipSrvUrl = '../../img/IIP/raw/?DeepZoom='+ data['location'] + '.dzi';
+    let iipSrvUrl = '../../img/IIP/raw/?DeepZoom='+ loc + '.dzi';
     if (getCookie('token')) {
-      iipSrvUrl = '../../img/IIP/raw/?token=' + getCookie('token') + '&DeepZoom='+ data['location'] + '.dzi';
+      iipSrvUrl = '../../img/IIP/raw/?token=' + getCookie('token') + '&DeepZoom='+ loc + '.dzi';
     }
     this.viewer.open(iipSrvUrl);
     // set mpp

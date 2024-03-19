@@ -343,6 +343,24 @@ function clickInsideElement(e, className) {
   return false;
 }
 
+
+function getUrlVars() {
+  var vars = {};
+  window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(
+      m,
+      key,
+      value,
+  ) {
+    vars[key.toLowerCase()] = value;
+  });
+
+  return new Proxy({}, {
+    get: function(target, prop) {
+      return vars[prop.toLowerCase()];
+    }
+  });
+}
+/**
 function getUrlVars() {
   var vars = {};
   var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(
@@ -354,6 +372,7 @@ function getUrlVars() {
   });
   return vars;
 }
+*/
 
 function ImageFeaturesToVieweportFeatures(viewer, geometries) {
   const rs = {
