@@ -1013,6 +1013,11 @@ class Tracker {
     this.__period = period;
     this.__userId = userId;
     this.__slide = slide;
+    this.__viewId = this.generateViewId();
+  }
+
+  generateViewId() {
+    return crypto.randomUUID();
   }
   start() {
     if (!this.__time) {
@@ -1035,6 +1040,7 @@ class Tracker {
     );
 
     this.__camic.store.addLog({
+      viewId: this.__viewId,
       slide: this.__slide,
       user: this.__userId,
       x: Math.round(x),
