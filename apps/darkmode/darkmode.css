@@ -1,0 +1,22 @@
+body.dark-mode,  body.dark-mode div.signup-form,  body.dark-mode form,  body.dark-mode input {
+   background-color: #747474;
+
+}
+body.dark-mode p,
+ body.dark-mode h1,
+ body.dark-mode h2,
+ body.dark-mode h3,
+ body.dark-mode h4,
+ body.dark-mode h5,
+ body.dark-mode input,
+ body.dark-mode input:focus,
+ body.dark-mode div.text-center {
+     color: white;
+ }
+ body.dark-mode a.button, body.dark-mode select {
+    background-color: #EBE0DD;
+ }
+
+ body.dark-mode input:focus{
+  background: grey
+ }

@@ -19,6 +19,8 @@
     <link rel='stylesheet' type='text/css' media='all' href='../../css/normalize.css'/>
     <link rel='stylesheet' type='text/css' media='all' href='signup.css'/>
     <link rel='stylesheet' type='text/css' media='all' href='../../css/popup.css'/>
+    <!-- Darkmode Css -->
+    <link rel="stylesheet" href="../darkmode/darkmode.css">
 
     <!-- JQuery -->
     <script
@@ -111,8 +113,11 @@
       </form>
       <div class="text-center" onclick="loginPage()">Already have an account? </div>
     </div>
-    <footer class="text-center text-white bg-dark p-3">
-      <p class="p">Copyright © 2021 caMicroscope</p>
+    <footer class="text-center text-white bg-dark p-3 mt-2">
+      <p class="p"  style="color: #ffffff">Copyright © 2021 caMicroscope</p>
+     <!-- Dark mode switch -->
+     <input type="checkbox" id="dark-mode-toggle">
+     <label for="dark-mode-toggle" style="color: #ffffff">Dark Mode</label>
     </footer>
     <!-- popup -->
     <div id="popup-container"></div>
@@ -123,4 +128,6 @@
     <script src="../../common/util.js"></script>
 
   </body>
+  <!-- Darkmode Script -->
+  <script src="../darkmode/darkmode.js"></script>
 </html>

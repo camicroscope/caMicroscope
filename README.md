@@ -94,3 +94,14 @@ RUN git clone https://github.com/${fork:-camicroscope}/camicroscope.git --branch
 docker-compose -f develop.yml build
 docker-compose -f develop.yml up
 ```
+
+
+3. **Build and Run Distro Repository with Docker**:
+   - Navigate to the directory where you cloned the Distro repository.
+   - Build the Docker images and start the containers using the following commands:
+     ```
+     docker-compose -f caMicroscope.yml build
+     docker-compose -f caMicroscope.yml up
+     ```
+   - Access the application by visiting [http://localhost:4010/](http://localhost:4010/) in your web browser.
+
