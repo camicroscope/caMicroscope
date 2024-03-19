@@ -334,13 +334,18 @@
 
 
 <footer class="text-center text-white bg-dark p-3">
-    <p class="p" id="currentYear"></p>
+    <p class="p" id="copyrightNotice"></p>
 </footer>
 
 <script>
-    // Get the current year and set it in the footer
-    document.getElementById("currentYear").innerHTML = new Date().getFullYear();
+    // Get the current year
+    var currentYear = new Date().getFullYear();
+
+    // Set the copyright notice dynamically
+    var copyrightNotice = document.getElementById("copyrightNotice");
+    copyrightNotice.innerHTML = "Copyright © " + currentYear + " caMicroscope";
 </script>
+
 
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8" crossorigin="anonymous"></script>
