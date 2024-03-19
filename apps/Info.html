@@ -48,6 +48,53 @@
 	<link rel="stylesheet" href="./table.css" />
   <link rel="stylesheet" href="./info.css" />
 	<link rel="shortcut icon" type="image/x-icon" href="/apps/landing/favicon.png">
+	<script>
+		
+		// Dark mode functionality
+
+		function toggleTheme() {
+        // Get the icon element
+        const icon = document.getElementById('toggle-icon');
+        const contentsButton = document.querySelectorAll('.button');
+        const paragraphs = document.querySelectorAll('p');
+        const heading2 = document.querySelectorAll('h2');
+        const heading3 = document.querySelectorAll('h3');
+        const navdarkmode = document.querySelectorAll('.bg-dark');
+        const slideMode = document.querySelectorAll('.bg-white');
+        const collection = document.querySelector('.p-2');
+
+
+
+        // Toggle dark mode class on body
+        document.body.classList.toggle("dark-mode");
+
+
+        // Toggle custom color class on  elements
+        paragraphs.forEach(p => p.classList.toggle("p-color"));
+        heading2.forEach(h2 => h2.classList.toggle("h2-color"));
+        heading3.forEach(h3 => h3.classList.toggle("h3-color"));
+        contentsButton.forEach(button => button.classList.toggle("content-buttoncolor"));
+        navdarkmode.forEach(item => item.classList.toggle("darkmovenav"));
+        slideMode.forEach(item => item.classList.toggle("bg-whiteslide"));
+        collection.classList.toggle("collectionsSection")
+
+
+
+
+         // Toggle dark class on the icon
+    if (icon.classList.contains("fa-sun")) {
+        icon.classList.remove("fa-sun");
+        icon.classList.add("fa-moon");
+    } else {
+        icon.classList.remove("fa-moon");
+        icon.classList.add("fa-sun");
+    }
+
+    }
+
+
+
+	</script>
 </head>
 
 <body>
@@ -81,6 +128,7 @@
 						</ul>
 					</div>
 			</div>
+			<i id="toggle-icon" class="fas fa-sun" style="margin-right: 1em;" onclick="toggleTheme()"></i>
 		</nav>
 
 	<div class="header text-center text-white bg-info p-4">
