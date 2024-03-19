@@ -58,4 +58,16 @@
     margin: 10px 0;
   }
 }
+.dropdown-menu{
+  margin-left: -5em !important;
+
+}
+
+
+
+@media (max-width: 400px ){
+  .dropdown-menu{
+    margin-left: 0 !important;
+  }
+}
 
