@@ -95,37 +95,4 @@ docker-compose -f develop.yml build
 docker-compose -f develop.yml up
 ```
 
-# Guide for Outreachy/GSoC applicants
-
-These instructions will guide you through the process of setting up the caMicroscope project on your local machine and making contributions.
-
-## Cloning Repositories
-
-1. **Clone the Repositories**:
-   - Fork the following repositories under the [camicroscope organization](https://github.com/camicroscope):
-     - [Distro](https://github.com/camicroscope/Distro)
-     - [viewer](https://github.com/camicroscope/viewer)
-     - [Caracal](https://github.com/camicroscope/Caracal)
-   - Clone each forked repository to your local machine using Git:
-     ```
-     git clone https://github.com/YourGitHubUsername/Distro.git
-     git clone https://github.com/YourGitHubUsername/viewer.git
-     git clone https://github.com/YourGitHubUsername/Caracal.git
-     ```
-   - Replace `YourGitHubUsername` with your actual GitHub username.
-
-## Setting Up Development Environment
-
-2. **Install Docker**:
-   - Follow the installation instructions provided at [https://docs.docker.com/engine/install/](https://docs.docker.com/engine/install/) to install Docker on your machine.
-   - Start Docker to ensure it's running.
-
-3. **Build and Run Distro Repository with Docker**:
-   - Navigate to the directory where you cloned the Distro repository.
-   - Build the Docker images and start the containers using the following commands:
-     ```
-     docker-compose -f caMicroscope.yml build
-     docker-compose -f caMicroscope.yml up
-     ```
-   - Access the application by visiting [http://localhost:4010/](http://localhost:4010/) in your web browser.
 

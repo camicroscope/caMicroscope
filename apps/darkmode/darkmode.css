@@ -20,3 +20,6 @@ body.dark-mode p,
  body.dark-mode input:focus{
   background: grey
  }
+ #switch {
+  margin-left: 90%;
+ }
