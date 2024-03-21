@@ -1,0 +1,12 @@
+
+name:Run Tests
+on:
+push:
+branches:[TestforFunctions]
+jobs:
+test:
+runs-on:windows-latest
+steps:
+-uses:actions/checkout@v2
+- name:Test for existing caMicroscope  functions
+  run:npx jest

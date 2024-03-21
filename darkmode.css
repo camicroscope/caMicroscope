@@ -1,0 +1,33 @@
+body {
+    background-color: #fff;
+    color: #FEFBF6
+        /*light background by default*/
+
+
+
+}
+
+
+/*dark mode styles*/
+
+.dark {
+    background-color: #000;
+    color: #fff
+}
+
+#black {
+    color: #000;
+    background-color: transparent;
+}
+
+/*color of sun icon and has a visibility of hidden when in darkmode*/
+#white {
+    color: #FEFBF6;
+    visibility: hidden;
+}
+
+/*butoon hovers with a pink color and increases scale of 1.1 on hover*/
+.button:hover {
+    background-color: #E178C5;
+    transform: scale(1.1);
+}

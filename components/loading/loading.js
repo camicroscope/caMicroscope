@@ -55,3 +55,6 @@ Loading.close = function() {
   Loading.instance.parentNode.style.position = Loading.pp;
   Loading.instance.parentNode.removeChild(Loading.instance);
 };
+
+
+module.exports = Loading

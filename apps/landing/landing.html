@@ -4,20 +4,23 @@
     <meta charset="utf-8" />
 
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet" 
-        integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0"
-        crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0" crossorigin="anonymous">
     <link rel="stylesheet" href="./main.css" />
+    <link rel="stylesheet" href="./darkmode.css" />
     <link rel="shortcut icon" type="image/x-icon" href="favicon.png">
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
+
 <body>
 
 
 
-<!-- Header -->
+    <!-- Header -->
 
-<!-- <header id="header" >
+    <!-- <header id="header" >
     <nav id= "nav" class="navbar navbar-expand-md navbar-dark fixed-top bg-dark" style="position: sticky;">
         <button style="display:none;" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
 			<span class="navbar-toggler-icon"></span>
@@ -34,122 +37,187 @@
 
 </header> -->
 
-<nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark" style="position: sticky; margin-top: -4em;">
-    <div class="container-fluid">
-        <button class="navbar-toggler m-1" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark" style="position: sticky; margin-top: -4em;">
+        <div class="container-fluid">
+            <button class="navbar-toggler m-1" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent" >
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav mr-auto gap-1">
                     <li class="nav-item active link" style="font-family: sans-serif;">
-                       <a class="nav-link" href="landing.html"> <i class="fas fa-home"></i> Home</a>
+                        <a class="nav-link" href="landing.html"> <i class="fas fa-home"></i> Home</a>
                     </li>
                     <li class="nav-item  link" style="font-family: sans-serif;">
-                        <a class="nav-link" href="../table.html"> <i class="fas fa-list-ul"></i>  Slides</a>
+                        <a class="nav-link" href="../table.html"> <i class="fas fa-list-ul"></i> Slides</a>
                     </li>
                     <li class="nav-item link">
                         <a class="nav-link" href="../Info.html"> <i class="fas fa-info-circle"></i> Info</a>
                     </li>
                     <li class="nav-item link">
-                        <a class="nav-link" href="../dev-workbench/workbench.html"> <i class="fas fa-pencil-ruler"></i> Workbench</a>
+                        <a class="nav-link" href="../dev-workbench/workbench.html"> <i class="fas fa-pencil-ruler"></i>
+                            Workbench</a>
                     </li>
                     <li class="nav-item link" style="font-family: sans-serif;">
                         <a class="nav-link" href="../signup/signup.html"> <i class="fas fa-user-plus"></i> Signup</a>
                     </li>
+
                     <li class="nav-item link" style="font-family: sans-serif;">
-                        <a class="nav-link" target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLScL91LxrpAZjU88GBZP9gmcdgdf8__uNUwhws2lzU6Lr4qNwA/viewform"> <i class="fas fa-comment"></i> Feedback</a>
+                        <a class="nav-link" target="_blank"
+                            href="https://docs.google.com/forms/d/e/1FAIpQLScL91LxrpAZjU88GBZP9gmcdgdf8__uNUwhws2lzU6Lr4qNwA/viewform">
+                            <i class="fas fa-comment"></i> Feedback</a>
+                    </li>
+                    <li id="darkIcon" class="nav-item link" style="font-family: sans-serif;">
+                        <div class="icons">
+                            <i title="darkmode" id="black" class="fa-solid fa-moon dark" onclick="toggleDarkmode()"></i>
+                            <i title="lightmode" id="white" class="fa-regular fa-sun light " onclick="toggleDarkmode()"></i>
+
+                        </div>
+
                     </li>
                 </ul>
             </div>
-    </div>
-</nav>
-
-
-<!-- Main -->
-
-<section id="main" class="wrapper">
-
-    <div class="inner">
-
-        <header class="major">
-
-            <h2>caMicroscope</h2>
-
-        </header>
-
-        <!-- Content -->
-
-        <div class="content">
-            <p>caMicroscope is a tool to view, annotate, and analyze biomedical images.</p>
-            <a href="#" class="image fit"><img src="./banner1.jpg" alt="" /></a>
-
         </div>
-
-        <div class="posts" style="margin-top: 5em;">
-            <section class="post">
-                <a href="../table.html" class="image"><img src="./camic.jpg" alt=""/></a>
-                <div class="content">
-                    <h3>caMicroscope</h3>
-                    <p>Use camicroscope to explore and mark slides uploaded. If this is a restricted access deployment, you will be prompted to log in here.</p>
-                    <a href="../table.html" class="button">More</a>
-                </div>
-            </section>
-            <section class="post">
-                <a target="_blank" href="https://camicroscope.github.io/docs/" class="image"><img src="./code.jpg" alt=""/></a>
-                <div class="content">
-                    <h3>Documentation</h3>
-                    <p>Read documentation for using and developing caMicroscope.</p>
-                    <a target="_blank" href="https://camicroscope.github.io/docs/" class="button">More</a>
-                </div>
-            </section>
-        </div>
-<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/prPtb89jFig" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-</section>
+    </nav>
 
 
+    <!-- Main -->
 
-<!-- Footer -->
-
-<footer id="footer">
-
-    <div class="content">
+    <section id="main" class="wrapper">
 
         <div class="inner">
 
+            <header class="major">
+
+                <h2>caMicroscope </h2>
+
+            </header>
+
+            <!-- Content -->
+
+            <div class="content">
+                <p id="firstp">caMicroscope is a tool to view, annotate, and analyze biomedical images.</p>
+                <a href="#" class="image fit"><img src="./banner1.jpg" alt="" /></a>
+
+            </div>
+
+            <div class="posts" style="margin-top: 5em;">
+                <section class="post">
+                    <a href="../table.html" class="image"><img src="./camic.jpg" alt="" /></a>
+                    <div class="content">
+                        <h3>caMicroscope</h3>
+                        <p id="secondp">Use camicroscope to explore and mark slides uploaded. If this is a restricted
+                            access deployment, you will be prompted to log in here.</p>
+                        <a href="../table.html" class="button">More</a>
+                    </div>
+                </section>
+                <section class="post">
+                    <a target="_blank" href="https://camicroscope.github.io/docs/" class="image"><img src="./code.jpg"
+                            alt="" /></a>
+                    <div class="content">
+                        <h3>Documentation</h3>
+                        <p id=thirdp>Read documentation for using and developing caMicroscope.</p>
+                        <a target="_blank" href="https://camicroscope.github.io/docs/" class="button">More</a>
+                    </div>
+                </section>
+            </div>
+            <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/prPtb89jFig"
+                title="YouTube video player" frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen></iframe>
+    </section>
 
 
-            <section class="about" style="margin-left:0cm">
 
-                U24 CA18092401A1, <b>Tools to Analyze Morphology and Spatially Mapped Molecular Data</b>
-            </section>
+    <!-- Footer -->
 
+    <footer id="footer">
+
+        <div class="content">
+
+            <div class="inner">
+
+
+
+                <section class="about" style="margin-left:0cm">
+
+                    U24 CA18092401A1, <b>Tools to Analyze Morphology and Spatially Mapped Molecular Data</b>
+                </section>
+
+
+            </div>
 
         </div>
 
-    </div>
-
-</footer>
+    </footer>
 
 
 
 
 
-<!-- Scripts -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8" crossorigin="anonymous"></script>
-<script src="./jquery.min.js"></script>
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8"
+        crossorigin="anonymous"></script>
+    <script src="./jquery.min.js"></script>
 
-<script src="./jquery.dropotron.min.js"></script>
+    <script src="./jquery.dropotron.min.js"></script>
 
-<script src="./jquery.scrollex.min.js"></script>
+    <script src="./jquery.scrollex.min.js"></script>
 
-<script src="./skel.min.js"></script>
+    <script src="./skel.min.js"></script>
 
-<script src="./util.js"></script>
+    <script src="./util.js"></script>
 
 
 
 </body>
+<script>
 
+    function toggleDarkmode() {
+        const p = document.getElementById('firstp')
+        const p2 = document.getElementById('secondp')
+        const p3 = document.getElementById('thirdp')
+        const body = document.body;
+        const currentTheme = body.classList.contains('dark') ? 'dark' : 'light';
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+        //Toggle classes for background and test colors
+
+        body.classList.toggle('dark');
+        body.classList.toggle('light');
+
+        //Updating Icon based on theme
+
+        const sunIcon = document.getElementById('white');
+        const moonIcon = document.getElementById('black')
+
+        if (newTheme === 'light') {
+            sunIcon.style.visibility = 'hidden'
+            moonIcon.style.visibility = 'visible'
+            p.style.color = "#212529";
+            p2.style.color = "#212529";
+            p3.style.color = "#212529";
+
+        } else {
+            sunIcon.style.visibility = 'visible';
+            moonIcon.style.visibility = 'hidden';
+            p.style.color = "#EEEEEE";
+            p2.style.color = "#EEEEEE";
+            p3.style.color = "#EEEEEE";
+        }
+        //Storing userpreference in local storage
+        localStorage.setItem('theme', newTheme)
+    }
+
+
+module.exports = toggleDarkmode
+
+
+
+
+</script>
 
 
 </html>

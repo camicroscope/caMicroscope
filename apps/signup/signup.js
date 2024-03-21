@@ -1,6 +1,7 @@
 var userSignupUrl = "../../data/User/post";
 var protoTokenUrl = "../../auth/Token/proto";
 var permissions;
+const Store = require('../../core/Store')
 const store = new Store('../../data/');
 
 function addUser(){
@@ -117,3 +118,6 @@ function loginPage(){
   const url = "/login.html";
   window.location.href = url;
 }
+
+
+module.exports = addUser
