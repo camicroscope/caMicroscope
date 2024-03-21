@@ -12,7 +12,9 @@
 	<!-- Check If we're logged in ok, otherwise, log in for us -->
 	<!-- Font Awesome -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
 	<script src='../common/authChecker.js'></script>
 	<script>
 		__auth_check(1)
@@ -73,6 +75,12 @@
 						<li class="nav-item link" style="font-family: sans-serif;">
 							<a class="nav-link" target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLScL91LxrpAZjU88GBZP9gmcdgdf8__uNUwhws2lzU6Lr4qNwA/viewform"> <i class="fas fa-comment"></i> Feedback</a>
 						</li>
+                        <div class="icons">
+                            <i title="darkmode" id="black" class="fa-solid fa-moon dark" onclick="toggleDarkmode()"></i>
+                            <i title="lightmode" id="white" class="fa-regular fa-sun light " onclick="toggleDarkmode()"></i>
+
+                        </div>
+
 					</ul>
 				</div>
 		</div>
@@ -90,7 +98,7 @@
 		</div>
 	</div>
 
-	<div class="bg-light">
+	<div class=" whiteSection">
 		<div class="p-2">
         <div class="d-flex justify-content-between">
             <div class="d-md-inline-flex m-2 w-100">
@@ -128,7 +136,7 @@
                     </div>
                 </div>
                 <div class="table-responsive ">
-                    <table id='datatables' class="table table-striped"></table>
+                    <table id='datatables' class="container text-center "> </table>
                 </div>
             </div>
             </div>
@@ -139,12 +147,16 @@
                         class="btn btn2 btn-success float-right w-md-100" style="background-color: cadetblue; padding: 7px;" onclick="setDicomParams();"> <i
                             class="fas fa-server"></i>
                         <span class="">DICOM</span> </button>
+                        
                 </div>
+                &nbsp&nbsp
                 <div class="pl-md-2 pt-2">
                     <button type="button" class="btn btn2 btn-success float-right w-md-100" style="padding: 7px;"
                         onclick="(()=>{location.reload();return false;})()"> <i class="fas fa-sync-alt"></i>
                         <span class="reload">Reload</span> </button>
                 </div>
+
+                &nbsp&nbsp
                 <div>
 			    <div id="slideUploadButton" class="btn-group float-right pl-md-2 pt-2">
 				    <button type="button" class="btn btn-primary " data-bs-toggle="modal"
@@ -340,5 +352,50 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8" crossorigin="anonymous"></script>
 <script src="./table.js"></script>
 </body>
+<script>
 
+/*Darkmode functionality*/
+
+
+
+function toggleDarkmode(){
+        const body = document.body;
+        const currentTheme = body.classList.contains('dark') ? 'dark' : 'light';
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+        //Toggle classes for background and test colors
+
+        body.classList.toggle('dark');
+        body.classList.toggle('light');
+
+        //Updating Icon based on theme
+
+        const sunIcon = document.getElementById('white');
+        const moonIcon = document.getElementById('black')
+        const pwhite = document.getElementById('datatables')
+        if (newTheme === 'light') {
+            sunIcon.style.visibility = 'hidden'
+            moonIcon.style.visibility = 'visible'
+             pwhite.style.color = 'black';
+            p.style.color = "#212529";
+            p2.style.color = "#212529";
+            p3.style.color = "#212529";
+
+        } else {
+            sunIcon.style.visibility = 'visible';
+            moonIcon.style.visibility = 'hidden';
+            p.style.color = "#EEEEEE";
+            p2.style.color = "#EEEEEE";
+            p3.style.color = "#EEEEEE";
+            pwhite.style.color = "white"
+            
+        }
+        //Storing userpreference in local storage
+        localStorage.setItem('theme', newTheme)
+}
+
+
+
+
+</script>
 </html>
