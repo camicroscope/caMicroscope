@@ -354,9 +354,19 @@ function getUrlVars() {
     vars[key.toLowerCase()] = value;
   });
 
+  var state = Object.assign({}, vars); // Copy the initial state from vars
+
   return new Proxy({}, {
     get: function(target, prop) {
-      return vars[prop.toLowerCase()];
+      return state[prop.toLowerCase()];
+    },
+    set: function(target, prop, value) {
+      state[prop.toLowerCase()] = value;
+      return true;
+    },
+    deleteProperty: function(target, prop) {
+      delete state[prop.toLowerCase()];
+      return true;
     }
   });
 }
