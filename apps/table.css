@@ -87,8 +87,8 @@ nav li:not(.active):hover a {
   color: black !important;
 }
 
-nav li:not(.active):hover{
-	background: white;
+nav li:not(.active):hover {
+  background: white;
 }
 
 .overall {
@@ -100,11 +100,11 @@ nav li:not(.active):hover{
   padding: 0 4px;
 }
 
-.btn2{
-	display: flex;
-	align-items: center;
+.btn2 {
+  display: flex;
+  align-items: center;
 }
-@media screen and (min-width: 480px){
+@media screen and (min-width: 480px) {
   .reload {
     display: block;
   }
@@ -236,7 +236,18 @@ nav li:not(.active):hover{
   margin-bottom: 0;
 }
 
+
 .d-md-inline-flex{
   display: flex;
   justify-content: space-between;
+}
+
+.close {
+  background-color: transparent;
+  border: none;
+}
+
+.close > span {
+  line-height: 1;
+  font-size: 24px;
 }
