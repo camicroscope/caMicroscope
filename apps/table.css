@@ -11,6 +11,7 @@ footer {
   bottom: 0;
   width: 100%;
 }
+
 .header {
   margin-top: 60px;
 }
@@ -35,21 +36,27 @@ footer {
   font-family: "Open Sans", Helvetica, sans-serif;
   /* line-height: 1.8; */
 }
+
 .bg-dark {
   background-color: #343a40 !important;
 }
+
 .bg-info {
   background-color: #17a2b8 !important;
 }
+
 #collection-list li.item {
   cursor: pointer;
 }
+
 #collection-list li.item:hover {
   background-color: #deeeff;
 }
+
 #entries {
   cursor: pointer;
 }
+
 .page-item {
   cursor: pointer;
 }
@@ -63,6 +70,7 @@ footer {
   color: #007bff;
   padding: 0.5rem;
 }
+
 #collection-list .item i {
   padding: 0.25rem;
 }
@@ -71,24 +79,29 @@ nav li {
   transition: background 0.5s;
   border-radius: 3px;
 }
+
 nav li:not(:first-child) {
   margin-left: 0.3em !important;
 }
+
 nav li:not(.active):hover {
   background: white;
 }
+
 nav li:not(.active):hover a {
   color: black !important;
 }
+
 .active {
   background: white;
 }
+
 .active a {
   color: black !important;
 }
 
-nav li:not(.active):hover{
-	background: white;
+nav li:not(.active):hover {
+  background: white;
 }
 
 .overall {
@@ -100,11 +113,12 @@ nav li:not(.active):hover{
   padding: 0 4px;
 }
 
-.btn2{
-	display: flex;
-	align-items: center;
+.btn2 {
+  display: flex;
+  align-items: center;
 }
-@media screen and (min-width: 480px){
+
+@media screen and (min-width: 480px) {
   .reload {
     display: block;
   }
@@ -114,12 +128,15 @@ nav li:not(.active):hover{
 #downloadBtn {
   margin-left: 0.6em;
 }
+
 #deleteBtn i {
   color: white;
 }
+
 #open-delete {
   display: inline-flex;
 }
+
 .custom-file-input,
 .sort-btn {
   cursor: pointer;
@@ -152,7 +169,8 @@ nav li:not(.active):hover{
   width: 200px;
   bottom: 100%;
   left: 50%;
-  margin-left: -100px; /* Use half of the width (120/2 = 60), to center the tooltip */
+  margin-left: -100px;
+  /* Use half of the width (120/2 = 60), to center the tooltip */
 }
 
 /* Show the tooltip text when you mouse over the tooltip container */
@@ -174,23 +192,28 @@ nav li:not(.active):hover{
 .bg-gray {
   background-color: #eee;
 }
+
 @media (max-width: 640px) {
   #dropNot {
     top: 50px;
     left: -16px;
     width: 290px;
   }
+
   .nav {
     display: block;
   }
+
   .nav .nav-item,
   .nav .nav-item a {
     padding-left: 0px;
   }
+
   .message {
     font-size: 13px;
   }
 }
+
 #dropNot {
   top: 60px;
   left: 0px;
@@ -200,6 +223,7 @@ nav li:not(.active):hover{
   padding-bottom: 0px;
   padding: 0px;
 }
+
 .dropdown-menu:before {
   content: "";
   position: absolute;
@@ -232,23 +256,24 @@ nav li:not(.active):hover{
 .collapse.in {
   display: inline !important;
 }
+
 .p {
   margin-bottom: 0;
 }
 
-.icons{
-  margin-left:500px;
+.icons {
+  margin-left: 500px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 20px;
-  cursor:pointer;
+  cursor: pointer;
 }
 
 body {
-  
+
   color: #FEFBF6
-      /*light background by default*/
+    /*light background by default*/
 
 
 
@@ -273,3 +298,103 @@ body {
   visibility: hidden;
 }
 
+.dropdownbuttons {
+  display: none;
+}
+
+
+
+
+@media screen and (max-width: 600px) {
+  #dark {
+    margin-left: -100px;
+  }
+
+  .ellipse {
+    font-size: 1.5rem;
+    color: black;
+    cursor: pointer;
+  }
+
+  .dropdownbuttons {
+    position: relative;
+    display: inline-block;
+  }
+
+  .icons {
+    margin-left: -360px;
+    visibility: visible;
+  }
+
+  .dropdown {
+    display: inline-block;
+  }
+
+
+  .list-group {
+    margin-top: 220px;
+  }
+
+  .uploadres {
+    color: #007bff;
+    margin-left: -20px;
+  }
+
+  #uploadbatch {
+    margin-top: -40px;
+    margin-left: 72px;
+    background-color: white;
+    color: #007bff;
+
+  }
+
+  .Dicom1 {
+    background-color: white;
+    color: #007bff;
+  }
+
+  #button1 {
+    visibility: visible;
+    cursor: pointer;
+  }
+
+  .reload {
+    margin-left: -10px;
+    background-color: white;
+    color: #007bff;
+  }
+
+  #button {
+    visibility: hidden;
+  }
+
+  .dropdownMenu {
+    display: none;
+    position: absolute;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    /* Add a slight shadow */
+    list-style: none;
+    /* Remove default list styling */
+    padding: 0;
+    /* Remove default padding */
+  }
+
+  .dropdownMenu li {
+    padding: 10px 15px;
+    /* Set padding for menu items */
+  }
+
+  .dropdownMenu a {
+    text-decoration: none;
+
+  }
+
+  .dropdownbuttons:hover .dropdownMenu {
+    display: block;
+  }
+
+  #dropdown {
+    visibility: hidden;
+  }
+
+}
