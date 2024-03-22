@@ -128,3 +128,13 @@ nav li:not(.active):hover a{
 		width: 300px;
 	}
 }
+/* Add styling for the error container and error message */
+.error-container {
+	margin-top: 10px;
+  }
+  
+  .error-container p {
+	color: red;
+	font-size: 14px;
+  }
+  
