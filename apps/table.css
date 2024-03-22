@@ -236,6 +236,12 @@ nav li:not(.active):hover {
   margin-bottom: 0;
 }
 
+
+.d-md-inline-flex{
+  display: flex;
+  justify-content: space-between;
+}
+
 .close {
   background-color: transparent;
   border: none;
