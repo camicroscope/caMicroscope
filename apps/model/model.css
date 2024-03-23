@@ -31,6 +31,7 @@ input:focus:invalid {
     table-layout: fixed;
     width: 100%;
     border-collapse: collapse;
+    
 }
 #mtable thead th:nth-child(1) {
     width: 15%;
@@ -577,3 +578,39 @@ input:checked + .slider1:after
     content:'YES';
     left: 35%;
 }
+
+
+@media screen and (max-width: 500px) {
+
+   #mtable {
+        table-layout: auto;
+        display: flex;
+       
+       
+       
+      }
+
+      #mtable thead tr th {
+        display: inline-block;  /* Display headers inline */
+        width: auto;           /* Allow natural width for each header */
+        text-align: center;    /* Center text within each header */
+        margin: 3px;
+        gap:5px;           /* Add optional margin for spacing */
+      }
+thead tr th {
+    height:100px;
+}
+
+}
+
+
+@media  screen and (max-width: 1200px) {
+    
+        #mtable {
+            table-layout: auto;
+            display: block;
+          }
+
+
+    
+  }
