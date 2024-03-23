@@ -114,6 +114,5 @@ $(window).on('load', function() {
 });
 
 function loginPage(){
-  const url = "/login.html";
-  window.location.href = url;
+  window.location.href = "/login.html";
 }
