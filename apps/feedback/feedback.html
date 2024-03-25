@@ -58,44 +58,44 @@
     <div class="tab_cont">
         <div class="general_class">
           <h1 >General Feedback</h1>
-          <form>
+          <form id="generalForm">
             <div class="top-row">
               <div class="field-wrap">
-                <label>
+                <label for="firstName">
                   First Name<span class="req">*</span>
                 </label>
-                <input type="text" required autocomplete="off" />
+                <input type="text" id="firstName" name="firstName" required/>
               </div>
           
               <div class="field-wrap">
-                <label>
+                <label for="lastName">
                   Last Name<span class="req">*</span>
                 </label>
-                <input type="text"required autocomplete="off"/>
+                <input type="text" id="lastName" name="lastName" required/>
               </div>
             </div>
 
             <div class="field-wrap">
-              <label>
+              <label for="email">
                 Email Address<span class="req">*</span>
               </label>
-              <input type="email"required autocomplete="off"/>
+              <input type="email" id="email" name="email" required/>
             </div>
 
 
             <div class="field-wrap">
-              <label>
+              <label for="use">
                 How do you use caMicroscope?<span class="req">*</span>
               </label>
-              <textarea name="" id="" cols="10" rows="5">
+              <textarea id="use" name="use" cols="10" rows="5" required>
     
               </textarea>
             </div>
             <div class="field-wrap">
-              <label>
+              <label for="feedback">
                 Insert Feedback Here <span class="req">*</span>
               </label>
-              <textarea name="" id="" cols="10" rows="5">
+              <textarea id="feedback" name="feedback"  cols="10" rows="5" required>
     
               </textarea>
             </div>
@@ -107,28 +107,29 @@
         
         <div class="bug_class hidden">
           <h1 class="bug_h1">Bug Report</h1>
-          <form>
+          <form id="bugForm">
             <div class="top-row">
+
               <div class="field-wrap">
-                <label>
+                <label for="firstName">
                   First Name<span class="req">*</span>
                 </label>
-                <input type="text" required autocomplete="off" />
+                <input type="text" id="firstName" name="firstName" required/>
               </div>
           
               <div class="field-wrap">
-                <label>
+                <label for="lastName">
                   Last Name<span class="req">*</span>
                 </label>
-                <input type="text"required autocomplete="off"/>
+                <input type="text" id="lastName" name="lastName" required/>
               </div>
             </div>
 
             <div class="field-wrap">
-              <label>
+              <label for="email">
                 Email Address<span class="req">*</span>
               </label>
-              <input type="email"required autocomplete="off"/>
+              <input type="email" id="email" name="email" required/>
             </div>
             
             
@@ -183,26 +184,26 @@
 
               
                 <div class="field-wrap">
-                  <label>
+                  <label for="bugDescription">
                     Bug Description<span class="req">*</span>
                   </label>
-                  <textarea name="" id="" cols="10" rows="5">
+                  <textarea id="bugDescription" name="bugDescription" cols="10" rows="5" required>
         
                   </textarea>
                 </div>
                 <div class="field-wrap">
-                  <label>
+                  <label for="steps">
                     Steps to Reproduce <span class="req">*</span>
                   </label>
-                  <textarea name="" id="" cols="10" rows="5">
+                  <textarea name="steps" id="steps" cols="10" rows="5" required>
         
                   </textarea>
                 </div>
                 <div class="field-wrap">
-                  <label>
+                  <label for="additional">
                     Additional Details/Info <span class="req">*</span>
                   </label>
-                  <textarea name="" id="" cols="10" rows="5">
+                  <textarea name="additional" id="additional" cols="10" rows="5">
         
                   </textarea>
                 </div>
