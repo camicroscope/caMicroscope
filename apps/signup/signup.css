@@ -116,7 +116,19 @@ nav li:not(.active):hover a{
 }
 
 .text-center{
+	font-weight: bold;
+	font-size: 14pt;
+	color: black;
 	cursor: pointer;
+}
+#info{
+	color: black;
+}
+#sub{
+	font-weight:bold;
+	font-size: 14pt;
+	background-color: #17a2b8;
+
 }
 
 @media screen and (max-width:736px) {
