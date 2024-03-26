@@ -1,0 +1,281 @@
+<head>
+
+    <title>caMicroscope</title>
+    <meta charset="utf-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet" 
+        integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0"
+        crossorigin="anonymous">
+    <link rel="stylesheet" href="../landing/main.css" />
+    <link rel="stylesheet" href="./feedback.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.png">
+
+</head>
+<body>
+
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark" style="position: sticky; margin-top: -4em;">
+    <div class="container-fluid">
+        <button class="navbar-toggler m-1" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent" >
+                <ul class="navbar-nav mr-auto gap-1">
+                    <li class="nav-item active link" style="font-family: sans-serif;">
+                       <a class="nav-link" href="landing.html"> <i class="fas fa-home"></i> Home</a>
+                    </li>
+                    <li class="nav-item  link" style="font-family: sans-serif;">
+                        <a class="nav-link" href="../table.html"> <i class="fas fa-list-ul"></i>  Slides</a>
+                    </li>
+                    <li class="nav-item link">
+                        <a class="nav-link" href="../Info.html"> <i class="fas fa-info-circle"></i> Info</a>
+                    </li>
+                    <li class="nav-item link">
+                        <a class="nav-link" href="../dev-workbench/workbench.html"> <i class="fas fa-pencil-ruler"></i> Workbench</a>
+                    </li>
+                    <li class="nav-item link" style="font-family: sans-serif;">
+                        <a class="nav-link" href="../signup/signup.html"> <i class="fas fa-user-plus"></i> Signup</a>
+                    </li>
+                    <li class="nav-item link" style="font-family: sans-serif;">
+                        <a class="nav-link" target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLScL91LxrpAZjU88GBZP9gmcdgdf8__uNUwhws2lzU6Lr4qNwA/viewform"> <i class="fas fa-comment"></i> Feedback</a>
+                    </li>
+                </ul>
+            </div>
+    </div>
+</nav>
+
+
+<!-- Main -->
+<section class="form">
+  <div class="cont">
+    <ul class="headers">
+      <li class=""><a href="#general" class="general_header">General Feedback</a> </li>
+      <li class=""><a href="#bug" class="bug_header">Bug Report</a></li>
+    </ul>
+
+    <div class="tab_cont">
+        <div class="general_class">
+          <h1 >General Feedback</h1>
+          <form id="generalForm" >
+            <div class="top-row">
+              <div class="field-wrap">
+                <label for="firstName">
+                  First Name<span class="req">*</span>
+                </label>
+                <input type="text" id="firstName" name="firstName" />
+                <div id="firstNameError" class="error-message"></div>
+              </div>
+          
+              <div class="field-wrap">
+                <label for="lastName">
+                  Last Name<span class="req">*</span>
+                </label>
+                <input type="text" id="lastName" name="lastName" />
+                <div id="lastNameError" class="error-message"></div>
+              </div>
+            </div>
+
+            <div class="field-wrap">
+              <label for="email">
+                Email Address<span class="req">*</span>
+              </label>
+              <input type="email" id="email" name="email" />
+              <div id="emailError" class="error-message"></div>
+            </div>
+
+
+            <div class="field-wrap">
+              <label for="use">
+                How do you use caMicroscope?<span class="req">*</span>
+              </label>
+              <textarea id="use" name="use" cols="10" rows="5" >
+    
+              </textarea>
+              <div id="useError" class="error-message"></div>
+            </div>
+            <div class="field-wrap">
+              <label for="feedback">
+                Insert Feedback Here <span class="req">*</span>
+              </label>
+              <textarea id="feedback" name="feedback"  cols="10" rows="5" >
+    
+              </textarea>
+              <div id="feedbackError" class="error-message"></div>
+            </div>
+
+            <button type="submit" class="button button-block rate">Submit Feedback</button>
+          </form>
+        </div>
+     
+
+        
+        <div class="bug_class hidden">
+          <h1 class="bug_h1">Bug Report</h1>
+          <form id="bugForm" >
+            <div class="top-row">
+              <div class="field-wrap">
+                <label for="fName">
+                  First Name<span class="req">*</span>
+                </label>
+                <input type="text" id="fName" name="fName" />
+                <div id="fNameError" class="error-message"></div>
+              </div>
+          
+              <div class="field-wrap">
+                <label for="lastName">
+                  Last Name<span class="req">*</span>
+                </label>
+                <input type="text" id="lName" name="lastName" />
+                <div id="lNameError" class="error-message"></div>
+              </div>
+            </div>
+
+            <div class="field-wrap">
+              <label for="emails">
+                Email Address<span class="req">*</span>
+              </label>
+              <input type="email" id="emails" name="emails" />
+              <div id="emailErrors" class="error-message"></div>
+            </div>
+            
+            
+              <div class="mx-0 mx-sm-auto rate ">
+                <div class="text-center">
+                  <p>
+                    <strong class="rate">What is the Severity of the bug?
+                      </strong>
+                  </p>
+                </div>
+
+
+                <div class="text-center mb-3 ml-2">
+                  <div class="d-inline mx-1 rate ">
+                      Cosmetic (Lowest Severity)
+                  </div>
+          
+                  <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1" />
+                      <label class="form-check-label" for="inlineRadio1">1</label>
+                  </div>
+          
+                  <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2" />
+                      <label class="form-check-label" for="inlineRadio2">2</label>
+                  </div>
+          
+                  <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3" />
+                      <label class="form-check-label" for="inlineRadio3">3</label>
+                  </div>
+          
+                  <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio4" value="option4" />
+                      <label class="form-check-label" for="inlineRadio4">4</label>
+                  </div>
+          
+                  <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio5" value="option5" />
+                      <label class="form-check-label" for="inlineRadio5">5</label>
+                  </div>
+          
+                  <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio6" value="option6" />
+                      <label class="form-check-label" for="inlineRadio6">6</label>
+                  </div>
+          
+                  <div class="d-inline me-4 rate">
+                      Halts All Usage (Highest Severity)
+                  </div>
+                  <div id="severityError" class="error-message"></div>
+              </div>
+
+              
+                <div class="field-wrap">
+                  <label for="bugDescription">
+                    Bug Description<span class="req">*</span>
+                  </label>
+                  <textarea id="bugDescription" name="bugDescription" cols="10" rows="5" >
+        
+                  </textarea>
+                  <div id="bugDescriptionError" class="error-message"></div>
+                </div>
+                <div class="field-wrap">
+                  <label for="steps">
+                    Steps to Reproduce <span class="req">*</span>
+                  </label>
+                  <textarea name="steps" id="steps" cols="10" rows="5" >
+        
+                  </textarea>
+                  <div id="stepsError" class="error-message"></div>
+                </div>
+                <div class="field-wrap">
+                  <label for="additional">
+                    Additional Details/Info <span class="req">*</span>
+                  </label>
+                  <textarea name="additional" id="additional" cols="10" rows="5">
+        
+                  </textarea>
+                  <div id="additionalError" class="error-message"></div>
+                </div>
+            </div>
+
+            <button type="submit" class="button button-block">Submit Feedback</button>
+          </form>
+        </div>
+    </div>
+  </div>
+</section>
+
+
+
+
+
+
+<!-- Footer -->
+<footer id="footer">
+
+    <div class="content">
+
+        <div class="inner">
+
+
+
+            <section class="about" style="margin-left:0cm">
+
+                U24 CA18092401A1, <b>Tools to Analyze Morphology and Spatially Mapped Molecular Data</b>
+            </section>
+
+
+        </div>
+
+    </div>
+
+</footer>
+
+
+
+
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8" crossorigin="anonymous"></script>
+<script src="../landing/jquery.min.js"></script>
+
+<script src="../landing/jquery.dropotron.min.js"></script>
+
+<script src="../landing/jquery.scrollex.min.js"></script>
+
+<script src="../landing/skel.min.js"></script>
+
+<script src="../landing/util.js"></script>
+
+  
+
+<script src="./feedback.js"></script> 
+
+</body>
+
+
+
+</html>
