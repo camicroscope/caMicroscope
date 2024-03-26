@@ -35,9 +35,7 @@ footer {
   font-family: "Open Sans", Helvetica, sans-serif;
   /* line-height: 1.8; */
 }
-.bg-dark {
-  background-color: #343a40 !important;
-}
+
 .bg-info {
   background-color: #17a2b8 !important;
 }
@@ -66,6 +64,10 @@ footer {
 #collection-list .item i {
   padding: 0.25rem;
 }
+.collectionsSection{
+  background-color: rgb(148, 140, 140) !important;
+}
+
 
 nav li {
   transition: background 0.5s;
@@ -235,3 +237,68 @@ nav li:not(.active):hover{
 .p {
   margin-bottom: 0;
 }
+
+
+/* This codes styles the dark mode the light/mode icon */
+
+
+#toggle-icon{
+  position: fixed;
+   right: 2%;	
+   top:2.4%;
+ }
+
+#toggle-icon.fa-moon {
+  color: #808080;
+  cursor: pointer;
+  background-color: #4a719b;
+  border-radius: 50%;
+  padding: 0.4rem;
+
+}
+
+#toggle-icon.fa-sun {
+  color: rgb(190, 190, 44);
+  cursor: pointer;
+  background-color: #4a719b;
+  border-radius: 50%;
+  padding: 0.4rem;
+}
+
+.dark-mode {
+  background-color:  #212529;
+  color: white;
+}
+
+.darkmovenav{
+  background-color: black !important ;
+ }
+
+.p-color {
+  color: white;
+}
+
+.h2-color,
+.h3-color {
+  color: rgb(173, 191, 214);
+}
+
+a.button.content-buttoncolor {
+  color: white;
+  border:0.4px solid white;
+
+}
+
+.bg-whiteslide{
+background-color: black !important;
+border-color: black !important;
+color: white !important;
+}
+
+.modal-content-dark{
+  background-color:  #212529 !important;
+}
+
+
+
+
