@@ -16,6 +16,9 @@
     integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0"
     crossorigin="anonymous">
 
+  <!-- common stylings-->
+	<link rel='stylesheet' type='text/css' media='all' href='../common.css'/>
+
     <link rel='stylesheet' type='text/css' media='all' href='../../css/normalize.css'/>
     <link rel='stylesheet' type='text/css' media='all' href='signup.css'/>
     <link rel='stylesheet' type='text/css' media='all' href='../../css/popup.css'/>
@@ -49,7 +52,7 @@
                           <a class="nav-link" href="../table.html"> <i class="fas fa-list-ul"></i>  Slides</a>
                       </li>
                   </ul>
-                  <ul class="navbar-nav ms-auto">
+                  <ul class="navbar-nav ms-auto gap-1">
                       <li class="nav-item link active" style="font-family: sans-serif;">
                           <a class="nav-link" href="./signup.html"> <i class="fas fa-user-plus"></i> Signup</a>
                       </li>
@@ -104,16 +107,15 @@
         </div>
         <!-- <p class="small text-center">This form is only useful to Admin users. If you reach this page, it's likely that you tried to log into this instance but lack
           access. Email the administrator if you want to be added.</p> -->
-        <p class="small text-center">
+        <p id="info" class="small text-center;">
           Non-admin users have to submit a request ticket to admins to get their approval to signup new users.
           If you are an Admin, you can directly signup users.
         </p>
       </form>
       <div class="text-center" onclick="loginPage()">Already have an account? </div>
     </div>
-    <footer class="text-center text-white bg-dark p-3">
-      <p class="p">Copyright © 2021 caMicroscope</p>
-    </footer>
+   
+    <footer id="footer-layout"></footer>
     <!-- popup -->
     <div id="popup-container"></div>
 
@@ -121,6 +123,11 @@
             integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8" 
             crossorigin="anonymous"></script>
     <script src="../../common/util.js"></script>
+    <script src="../../common/footer.js"></script>
+
+
+    <!-- script to call a footer(layout footer in the common > utils folder) function -->
+  <script> insertFooterLayout();</script>
 
   </body>
 </html>
