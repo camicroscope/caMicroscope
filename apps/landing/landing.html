@@ -8,32 +8,14 @@
         integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0"
         crossorigin="anonymous">
     <link rel="stylesheet" href="./main.css" />
+    <!-- common styling -->
+	<link rel='stylesheet' type='text/css' media='all' href='../common.css'/>
     <link rel="shortcut icon" type="image/x-icon" href="favicon.png">
 
 </head>
 <body>
 
-
-
-<!-- Header -->
-
-<!-- <header id="header" >
-    <nav id= "nav" class="navbar navbar-expand-md navbar-dark fixed-top bg-dark" style="position: sticky;">
-        <button style="display:none;" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-			<span class="navbar-toggler-icon"></span>
-		</button>
-       <ul>
-            <li><a href="landing.html" class="link" style="color: white;">Home</a></li>
-            <li><a href="../table.html"  class="link">Slides</a></li>
-            <li style="float: right;"><a href="/apps/signup/signup.html"  class="link">Signup</a></li>
-            <li style="float: right;"><a target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLScL91LxrpAZjU88GBZP9gmcdgdf8__uNUwhws2lzU6Lr4qNwA/viewform"  class="link">Feedback</a></li>
-
-        </ul>
-
-    </nav>
-
-</header> -->
-
+    <!-- Header -->
 <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark" style="position: sticky; margin-top: -4em;">
     <div class="container-fluid">
         <button class="navbar-toggler m-1" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -57,7 +39,7 @@
                         <a class="nav-link" href="../signup/signup.html"> <i class="fas fa-user-plus"></i> Signup</a>
                     </li>
                     <li class="nav-item link" style="font-family: sans-serif;">
-                        <a class="nav-link" target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLScL91LxrpAZjU88GBZP9gmcdgdf8__uNUwhws2lzU6Lr4qNwA/viewform"> <i class="fas fa-comment"></i> Feedback</a>
+                        <a class="nav-link" target="_blank" href="https://github.com/camicroscope/caMicroscope/issues"> <i class="fas fa-comment"></i> Feedback</a>
                     </li>
                 </ul>
             </div>
@@ -109,26 +91,7 @@
 
 
 <!-- Footer -->
-
-<footer id="footer">
-
-    <div class="content">
-
-        <div class="inner">
-
-
-
-            <section class="about" style="margin-left:0cm">
-
-                U24 CA18092401A1, <b>Tools to Analyze Morphology and Spatially Mapped Molecular Data</b>
-            </section>
-
-
-        </div>
-
-    </div>
-
-</footer>
+<footer id="footer-layout"></footer>
 
 
 
@@ -145,9 +108,10 @@
 <script src="./skel.min.js"></script>
 
 <script src="./util.js"></script>
+<script src="../../common/util.js"></script>
 
-
-
+    <!-- script to call a footer(layout footer in the common > utils folder) function -->
+<script> insertFooterLayout(); </script>
 </body>
 
 
