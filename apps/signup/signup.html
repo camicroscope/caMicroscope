@@ -80,10 +80,13 @@
         <div class="form-group">
           <div class="input-group">
             <span class="input-group-addon"><i class="fa fa-envelope" style="margin-top: 0.5em;"></i></span>
-            <input id="mail" type="email" class="form-control" name="email" placeholder="Email" required="required">
+            <input id="mail" title="" type="text" class="form-control" name="email" placeholder="Email" required="required">
           </div>
+      
+          <div id="emailMsg" style="color: red;"></div>
+ 
         </div>
-        <br>
+        
         <div class="form-group">
           <div class="input-group">
             <span class="input-group-addon"><i class="fa fa-th-list" style="margin-top: 0.5em;"></i></span>
@@ -104,6 +107,9 @@
           <button type="submit" id="sub" class="btn btn-primary btn-block btn-lg sub-btn" onclick="addUser()" disabled>
             Please wait ...
           </button>
+        </div>
+        <div id="msg-last">
+
         </div>
         <!-- <p class="small text-center">This form is only useful to Admin users. If you reach this page, it's likely that you tried to log into this instance but lack
           access. Email the administrator if you want to be added.</p> -->
