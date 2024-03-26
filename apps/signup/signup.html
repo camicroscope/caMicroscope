@@ -77,7 +77,8 @@
         <div class="form-group">
           <div class="input-group">
             <span class="input-group-addon"><i class="fa fa-envelope" style="margin-top: 0.5em;"></i></span>
-            <input id="mail" type="email" class="form-control" name="email" placeholder="Email" required="required">
+            <input id="mail" type="email" class="form-control" name="email" placeholder="Email" >
+            <div id="emailError" class="error-message"></div>
           </div>
         </div>
         <br>
@@ -86,6 +87,7 @@
             <span class="input-group-addon"><i class="fa fa-th-list" style="margin-top: 0.5em;"></i></span>
             <input type="text" id="filters" class="form-control" placeholder="['list','of','filters']"
               required="required">
+              <div id="filterError" class="error-message"></div>
           </div>
         </div> <br>
 
@@ -95,7 +97,7 @@
           <option value="2">Editor</option>
           <option value="3">Admin</option>
         </select>
-
+        <div id="attrError" class="error-message"></div>
         <br> <br>
         <div class="form-group">
           <button type="submit" id="sub" class="btn btn-primary btn-block btn-lg sub-btn" onclick="addUser()" disabled>
