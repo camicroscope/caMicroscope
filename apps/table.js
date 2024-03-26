@@ -256,7 +256,7 @@ function initialize() {
 
         // })
 
-
+        $('#datatables tbody').empty();
         Promise.all(Promises)
             .then(function(resps) {
               // collection list
@@ -522,7 +522,13 @@ function initialize() {
               });
               pageIndicatorVisible($('#datatables tbody tr').length);
               resetTable();
-              $('#datatables').stacktable();
+              // Check if the table is already stacked
+              if (!$('#datatables').hasClass('stacktable')) {
+                // Clear any previous stacktable
+                $('#datatables').nextAll('.stacktable').remove();
+                // Initialize stacktable on the original table
+                $('#datatables').stacktable();
+              }
               checkUserPermissions();
             });
       });
