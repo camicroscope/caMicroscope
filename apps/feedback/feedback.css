@@ -273,4 +273,5 @@ textarea {
 .error-message {
 	color: red;
 	font-size: 0.8em;
+	padding-top: 9px;
 }
