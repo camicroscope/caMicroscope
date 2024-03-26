@@ -35,6 +35,8 @@
 		integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0" 
 		crossorigin="anonymous">
 	<link rel="stylesheet" href="../common/stacktable.css">
+	<!-- common styling -->
+	<link rel="stylesheet" href="./common.css">
 	<style>
 		html,
 		body {
@@ -166,11 +168,13 @@
 </div>
 </div>
 
-<footer class="text-center text-white bg-dark p-3 mt-2">
-	<p class="p" id="copy-right-text"></p>
-</footer>
+
+<!-- footer -->
+<footer id="footer-layout"></footer>
 </div>
-<script src="../common/footer.js"></script>
+
+    <!-- script to call a footer(layout footer in the common > utils folder) function -->
+<script> insertFooterLayout(); </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8" crossorigin="anonymous"></script>
 </body>
 <script>

@@ -1376,3 +1376,17 @@ async function captureScreen(camic, {
 
   return canvas;
 }
+
+// footer content layout
+const currentYear = new Date().getFullYear();
+
+const footerContent = `
+  <p>U24 CA18092401A1, <b>Tools to Analyze Morphology and Spatially Mapped Molecular Data</b></p>
+  <p id='contact'>Spot a Bug? <a href='https://docs.google.com/forms/d/e/1FAIpQLScL91LxrpAZjU88GBZP9gmcdgdf8__uNUwhws2lzU6Lr4qNwA/viewform' target='_blank'>Send us the feedback!</a></p>
+  <hr />
+  <p class='copyright'>Copyright &copy; ${currentYear} <span class='company-name'><a href="https://camicroscope.org/" target='_blank'>caMicroscope</a></span></p>
+`;
+
+function insertFooterLayout() {
+  document.getElementById('footer-layout').innerHTML = footerContent;
+}
