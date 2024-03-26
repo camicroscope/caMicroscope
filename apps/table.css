@@ -21,9 +21,7 @@ footer {
   flex-direction: column;
   justify-content: space-between;
 }
-.slide-error-message {
-  color: #cc3948;
-}
+
 .link {
   letter-spacing: 0.02em;
   text-transform: uppercase;
@@ -106,32 +104,9 @@ nav li:not(.active):hover {
   display: flex;
   align-items: center;
 }
-.buttons-container {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-}
-
-.buttons-container > * {
-  flex: 0 0 auto;
-  margin-left: 10px; /* Add spacing between buttons */
-}
-
-@media (min-width: 768px) {
-  .buttons-container {
-    display: flex;
-    justify-content: flex-end;
-    flex-wrap: nowrap;
-  }
-
-  .buttons-container > div {
-    margin-left: 10px;
-    margin-top: 10px;
-  }
-
-  /* Ensure buttons don't shrink */
-  .buttons-container button {
-    flex-shrink: 0;
+@media screen and (min-width: 480px) {
+  .reload {
+    display: block;
   }
 }
 
