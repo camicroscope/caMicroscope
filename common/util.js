@@ -343,6 +343,34 @@ function clickInsideElement(e, className) {
   return false;
 }
 
+
+function getUrlVars() {
+  var vars = {};
+  window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(
+      m,
+      key,
+      value,
+  ) {
+    vars[key.toLowerCase()] = value;
+  });
+
+  var state = Object.assign({}, vars); // Copy the initial state from vars
+
+  return new Proxy({}, {
+    get: function(target, prop) {
+      return state[prop.toLowerCase()];
+    },
+    set: function(target, prop, value) {
+      state[prop.toLowerCase()] = value;
+      return true;
+    },
+    deleteProperty: function(target, prop) {
+      delete state[prop.toLowerCase()];
+      return true;
+    }
+  });
+}
+/**
 function getUrlVars() {
   var vars = {};
   var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(
@@ -354,6 +382,7 @@ function getUrlVars() {
   });
   return vars;
 }
+*/
 
 function ImageFeaturesToVieweportFeatures(viewer, geometries) {
   const rs = {
