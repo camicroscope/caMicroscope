@@ -13,9 +13,11 @@ function addUser() {
   var filterError = document.getElementById('filterError');
   var attrError = document.getElementById('attrError');
 
-  if (!(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(email))) {
-    emailError.textContent = 'Please enter a valid email'
+  if (email.length == '') {
+    emailError.textContent = 'Please enter your email';
     return;
+  } else if (!(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(email))) {
+    emailError.textContent = 'Please enter a valid email';
   }
 
   var userType = "Null"
