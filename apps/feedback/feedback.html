@@ -58,20 +58,22 @@
     <div class="tab_cont">
         <div class="general_class">
           <h1 >General Feedback</h1>
-          <form id="generalForm">
+          <form id="generalForm" onsubmit="return validateGeneralForm(event)">
             <div class="top-row">
               <div class="field-wrap">
                 <label for="firstName">
                   First Name<span class="req">*</span>
                 </label>
-                <input type="text" id="firstName" name="firstName" required/>
+                <input type="text" id="firstName" name="firstName" />
+                <div id="firstNameError" class="error-message"></div>
               </div>
           
               <div class="field-wrap">
                 <label for="lastName">
                   Last Name<span class="req">*</span>
                 </label>
-                <input type="text" id="lastName" name="lastName" required/>
+                <input type="text" id="lastName" name="lastName" />
+                <div id="lastNameError" class="error-message"></div>
               </div>
             </div>
 
@@ -79,7 +81,8 @@
               <label for="email">
                 Email Address<span class="req">*</span>
               </label>
-              <input type="email" id="email" name="email" required/>
+              <input type="email" id="email" name="email" />
+              <div id="emailError" class="error-message"></div>
             </div>
 
 
@@ -87,41 +90,43 @@
               <label for="use">
                 How do you use caMicroscope?<span class="req">*</span>
               </label>
-              <textarea id="use" name="use" cols="10" rows="5" required>
+              <textarea id="use" name="use" cols="10" rows="5" >
     
               </textarea>
+              <div id="useError" class="error-message"></div>
             </div>
             <div class="field-wrap">
               <label for="feedback">
                 Insert Feedback Here <span class="req">*</span>
               </label>
-              <textarea id="feedback" name="feedback"  cols="10" rows="5" required>
+              <textarea id="feedback" name="feedback"  cols="10" rows="5" >
     
               </textarea>
+              <div id="feedbackError" class="error-message"></div>
             </div>
 
             <button type="submit" class="button button-block rate">Submit Feedback</button>
-          </form>
         </div>
 
         
         <div class="bug_class hidden">
           <h1 class="bug_h1">Bug Report</h1>
-          <form id="bugForm">
+          <form id="bugForm" onsubmit='return validateBugForm(event)' method='post'>
             <div class="top-row">
-
               <div class="field-wrap">
                 <label for="firstName">
                   First Name<span class="req">*</span>
                 </label>
-                <input type="text" id="firstName" name="firstName" required/>
+                <input type="text" id="firstName" name="firstName" />
+                <div id="firstNameError" class="error-message"></div>
               </div>
           
               <div class="field-wrap">
                 <label for="lastName">
                   Last Name<span class="req">*</span>
                 </label>
-                <input type="text" id="lastName" name="lastName" required/>
+                <input type="text" id="lastName" name="lastName" />
+                <div id="lastNameError" class="error-message"></div>
               </div>
             </div>
 
@@ -129,7 +134,8 @@
               <label for="email">
                 Email Address<span class="req">*</span>
               </label>
-              <input type="email" id="email" name="email" required/>
+              <input type="email" id="email" name="email" />
+              <div id="emailError" class="error-message"></div>
             </div>
             
             
@@ -180,6 +186,7 @@
                   <div class="d-inline me-4 rate">
                       Halts All Usage (Highest Severity)
                   </div>
+                  <div id="severityError" class="error-message"></div>
               </div>
 
               
@@ -187,17 +194,19 @@
                   <label for="bugDescription">
                     Bug Description<span class="req">*</span>
                   </label>
-                  <textarea id="bugDescription" name="bugDescription" cols="10" rows="5" required>
+                  <textarea id="bugDescription" name="bugDescription" cols="10" rows="5" >
         
                   </textarea>
+                  <div id="bugDescriptionError" class="error-message"></div>
                 </div>
                 <div class="field-wrap">
                   <label for="steps">
                     Steps to Reproduce <span class="req">*</span>
                   </label>
-                  <textarea name="steps" id="steps" cols="10" rows="5" required>
+                  <textarea name="steps" id="steps" cols="10" rows="5" >
         
                   </textarea>
+                  <div id="stepsError" class="error-message"></div>
                 </div>
                 <div class="field-wrap">
                   <label for="additional">
@@ -206,6 +215,7 @@
                   <textarea name="additional" id="additional" cols="10" rows="5">
         
                   </textarea>
+                  <div id="additionalError" class="error-message"></div>
                 </div>
             </div>
 
@@ -257,9 +267,10 @@
 <script src="../landing/skel.min.js"></script>
 
 <script src="../landing/util.js"></script>
-<script src="./feedback.js"></script>
 
+  
 
+<script src="./feedback.js"></script> 
 
 </body>
 

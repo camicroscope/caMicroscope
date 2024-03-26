@@ -269,3 +269,8 @@ textarea {
 :not(.text-center.mb-3) input[type="radio"]:checked + label:before {
     content: initial;
 }
+
+.error-message {
+	color: red;
+	font-size: 0.8em;
+}
