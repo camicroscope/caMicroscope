@@ -9,6 +9,42 @@
         crossorigin="anonymous">
     <link rel="stylesheet" href="./main.css" />
     <link rel="shortcut icon" type="image/x-icon" href="favicon.png">
+    <script>
+
+        // Dark mode functionality
+    
+          function toggleTheme() {
+        // Get the icon element
+        const icon = document.getElementById('toggle-icon');
+        const contentsButton = document.querySelectorAll('.button');
+        const paragraphs = document.querySelectorAll('p');
+        const heading2 = document.querySelectorAll('h2');
+        const heading3 = document.querySelectorAll('h3');
+        const navdarkmode = document.querySelector('.bg-dark');
+    
+        // Toggle dark mode class on body
+        document.body.classList.toggle("dark-mode");
+    
+    
+    
+        // Toggle custom color class on  elements
+        paragraphs.forEach(p => p.classList.toggle("p-color"));
+        heading2.forEach(h2 => h2.classList.toggle("h2-color"));
+        heading3.forEach(h3 => h3.classList.toggle("h3-color"));
+        contentsButton.forEach(button => button.classList.toggle("content-buttoncolor"));
+         navdarkmode.classList.toggle("darkmovenav");
+    
+        // Toggle dark class on the icon
+        if (icon.classList.contains("fa-sun")) {
+            icon.classList.remove("fa-sun");
+            icon.classList.add("fa-moon");
+        } else {
+            icon.classList.remove("fa-moon");
+            icon.classList.add("fa-sun");
+        }
+    }
+
+        </script>
 
 </head>
 <body>
@@ -33,7 +69,6 @@
     </nav>
 
 </header> -->
-
 <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark" style="position: sticky; margin-top: -4em;">
     <div class="container-fluid">
         <button class="navbar-toggler m-1" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -62,6 +97,7 @@
                 </ul>
             </div>
     </div>
+    <i id="toggle-icon" class="fas fa-sun" onclick="toggleTheme()"></i>
 </nav>
 
 
