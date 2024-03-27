@@ -223,6 +223,7 @@ function initCore() {
         // for support QUIP 2.0
         const data = Array.isArray(e.data) ? e.data[e.data.selected] : e.data;
 
+        console.log("data", Array.isArray(e.data),data, e.data, e.data[e.data.selected]);
         const type = data.provenance.analysis.source;
         let body;
         let attributes;
@@ -257,6 +258,13 @@ function initCore() {
             attributes = data.properties.annotations;
             if (area) attributes.area = area;
             if (circumference) attributes.circumference = circumference;
+
+            const states = StatesHelper.getCurrentStates(isImageCoordinate = false);
+            if (!states) return;
+            attributes.X = states.x
+            attributes.Y = states.y
+            attributes.zoom = states.z
+            
             body = convertHumanAnnotationToPopupBody(attributes);
             if (
               data.geometries &&
@@ -339,6 +347,7 @@ function initCore() {
               dataCopy.geometries,
           );
         }
+        console.log("abc",$CAMIC.viewer);
         editAnnoCallback(id, slide, dataCopy);
       });
 
