@@ -1665,7 +1665,7 @@
 		-ms-transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
 		transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
 		border-radius: 5px;
-		border: 0;
+		border: none;
 		cursor: pointer;
 		display: inline-block;
 		font-size: 0.8em;

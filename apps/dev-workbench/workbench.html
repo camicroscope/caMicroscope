@@ -47,6 +47,8 @@
       src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.0/js/mdb.min.js"
     ></script>
     <script src="https://unpkg.com/feather-icons"></script>
+    <!-- DarkMode Css -->
+    <link rel="stylesheet" href="../darkmode/darkmode.css">
     <link
       href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css"
       rel="stylesheet"
@@ -88,6 +90,7 @@
       <ul class="navbar-nav mr-auto">
 >>>>>>> master
         <!-- Dropdown -->
+        
         <li
           
           class="nav-item dropdown"
@@ -157,7 +160,7 @@
                 <span class="label">Select/Create Training Data</span>
               </a>
               <div class="step-content grey lighten-3">
-                <p style="font-size: 1em;">
+                <p style="font-size: 1em;" class="Dset">
                   Select your own dataset (spritesheet) or create a new one from
                   caMicroscope labels or own custom data. <br />
                   <button
@@ -187,7 +190,7 @@
 
               <!-- Section Description -->
               <div class="step-content grey lighten-3">
-                <p style="font-size: 1em;">
+                <p style="font-size: 1em;" class="Dset">
                   Create your own customized CNN algorithm and train your model
                   accordingly. <br />
                   <a id="secondStepButton" href="./createAlgo/bench.html">
@@ -217,7 +220,7 @@
               </a>
               <!-- Section Description -->
               <div class="step-content grey lighten-3">
-                <p style="font-size: 1em;">
+                <p style="font-size: 1em;" class="Dset">
                   Save your model (JSON/binaries) to disk for later use<br />
                 </p>
               </div>
@@ -516,4 +519,5 @@
       feather.replace(); // for feather Icons
     </script>
   </body>
+  <script src="../darkmode/darkmode.js"></script>
 </html>

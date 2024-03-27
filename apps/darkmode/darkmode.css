@@ -3,6 +3,8 @@ body.dark-mode,  body.dark-mode div.signup-form,  body.dark-mode form,  body.dar
 
 }
 body.dark-mode p,
+body.dark-mode .label,
+body.dark-mode span,
  body.dark-mode h1,
  body.dark-mode h2,
  body.dark-mode h3,
@@ -21,5 +23,15 @@ body.dark-mode p,
   background: grey
  }
  #switch {
-  margin-left: 90%;
+   height : 40px;
+   width : 0px;
+   margin-top: 20px;
+   border: none; 
+ }
+ body.dark-mode .Dset,
+ body.dark-mode #headSub,
+ body.dark-mode .card-title,
+ body.dark-mode .card-title{
+   text-weight: bold;
+   color:black;
  }

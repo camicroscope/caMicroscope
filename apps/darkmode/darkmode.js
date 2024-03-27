@@ -1,28 +1,42 @@
-const darkModeToggle = document.getElementById('dark-mode-toggle');
+const darkModeToggle = document.getElementById('switch');
 
-// Function to enable dark mode
-const enableDarkMode = () => {
-    document.body.classList.add('dark-mode');
-    localStorage.setItem('darkMode', 'enabled');
+const modeStatusD = document.createElement('i');
+modeStatusD.setAttribute('class', 'fas fa-sun');
+modeStatusD.style.color = 'yellow';
+
+const modeStatusN = document.createElement('i');
+modeStatusN.setAttribute('class', 'fas fa-moon');
+modeStatusN.style.color = 'yellow';
+
+var element = document.body;
+
+// Check localStorage for saved mode
+const savedMode = localStorage.getItem('mode');
+
+if (savedMode === 'dark') {
+    element.classList.add("dark-mode");
+    darkModeToggle.appendChild(modeStatusN);
+} else {
+    element.classList.remove("dark-mode");
+    darkModeToggle.appendChild(modeStatusD);
 }
 
-// Function to disable dark mode
-const disableDarkMode = () => {
-    document.body.classList.remove('dark-mode');
-    localStorage.setItem('darkMode', null);
-}
+function modeChange() {
+    element.classList.toggle("dark-mode");
 
-// Check if dark mode preference is stored in local storage
-if (localStorage.getItem('darkMode') === 'enabled') {
-    darkModeToggle.checked = true;
-    enableDarkMode();
-}
-
-// Listen for changes to the dark mode toggle
-darkModeToggle.addEventListener('change', () => {
-    if (darkModeToggle.checked) {
-        enableDarkMode();
+    // Update localStorage with current mode
+    if (element.classList.contains("dark-mode")) {
+        localStorage.setItem('mode', 'dark');
+        darkModeToggle.innerHTML = ""; // Clear existing content
+        darkModeToggle.appendChild(modeStatusN);
     } else {
-        disableDarkMode();
+        localStorage.setItem('mode', 'light');
+        darkModeToggle.innerHTML = ""; // Clear existing content
+        darkModeToggle.appendChild(modeStatusD);
     }
+}
+
+// Add event listener to handle clicks on the switch
+darkModeToggle.addEventListener('click', function(event) {
+    modeChange();
 });
