@@ -15,10 +15,13 @@ body {
 	border-radius: 0;
 }
 .signup-form {
-	width: 390px;
-	margin: 5% auto;
-	padding: 30px 0;
+    width: 390px;
+    margin: auto;
+    margin-top: 50%;
+    transform: translateY(-50%);
+    padding: 30px 0;
 }
+
 .signup-form h2 {
 	color: #636363;
 	margin: 0 0 15px;
