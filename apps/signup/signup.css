@@ -10,6 +10,15 @@ body {
 .bg-dark {
     background-color: #343a40!important;
 }
+#signDev{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	
+}
+#sub{
+
+}
 .form-control, .form-control:focus, .input-group-addon {
 	border-color: #e1e1e1;
 	border-radius: 0;
