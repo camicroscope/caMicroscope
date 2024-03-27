@@ -118,6 +118,12 @@ nav li:not(.active):hover a{
 	cursor: pointer;
 }
 
+.error-message {
+	color: red;
+	font-size: 0.8em;
+	padding-top: 9px;
+}
+
 @media screen and (max-width:736px) {
 	.signup-form {
 		margin: 20% auto;
