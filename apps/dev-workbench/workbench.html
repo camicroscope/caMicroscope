@@ -16,11 +16,12 @@
       href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
     />
     <!-- Bootstrap core CSS -->
-    <link 
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" 
-      rel="stylesheet" integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0" 
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0"
       crossorigin="anonymous"
-    >
+    />
     <!-- Material Design Bootstrap -->
     <link
       href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.0/css/mdb.min.css"
@@ -60,48 +61,71 @@
     <script src="../../common/jszip.min.js"></script>
     <script src="../../common/FileSaver.min.js"></script>
     <script src="../../common/localforage.min.js"></script>
+    <script>
+      // Dark mode functionality
+
+      function toggleTheme() {
+        // Get the icon element
+        const icon = document.getElementById("toggle-icon");
+        const contentsButton = document.querySelectorAll(".button");
+        const paragraphs = document.querySelectorAll("p");
+        const heading2 = document.querySelectorAll("h2");
+        const heading3 = document.querySelectorAll("h3");
+        const header = document.querySelector(".header");
+        const labeldark = document.querySelectorAll(".label-color");
+
+        // Toggle dark mode class on body
+        document.body.classList.toggle("dark-mode");
+
+        // Toggle custom color class on  elements
+        paragraphs.forEach((p) => p.classList.toggle("p-color"));
+        heading2.forEach((h2) => h2.classList.toggle("h2-color"));
+        heading3.forEach((h3) => h3.classList.toggle("h3-color"));
+        contentsButton.forEach((button) =>
+          button.classList.toggle("content-buttoncolor")
+        );
+        header.classList.toggle("dark");
+        labeldark.forEach((colorr) => colorr.classList.toggle("dark-label"));
+
+        // Toggle dark class on the icon
+        if (icon.classList.contains("fa-moon")) {
+          icon.classList.remove("fa-moon");
+          icon.classList.add("fa-sun");
+        } else {
+          icon.classList.remove("fa-sun");
+          icon.classList.add("fa-moon");
+        }
+      }
+    </script>
   </head>
   <body>
     <!--Navbar-->
-    <nav
-      class="navbar navbar-expand-lg navbar-dark flex-row px-2"
-      style="background: rgb(33, 37, 41);"
-    >
-      <div style="cursor: pointer;" id="goBack">
+    <nav class="header">
+     <div class="subheader">
+      <div style="cursor: pointer" id="goBack">
         <i data-feather="arrow-left" class="text-white"></i>
       </div>
-      
-<<<<<<< HEAD
-      <!-- Navbar brand --> 
-     
-      <div class="navbar-brand-div flex-grow-1">
-        <span style="cursor: default" class="navbar-brand " > Workbench</span>
-        
-      </div>
-      <div>
 
-      
-      <ul class="navbar-nav mr-auto px-2">
-=======
       <!-- Navbar brand -->
-      <span style="cursor: default;" class="navbar-brand"> Workbench</span>
+      <div>
+        <span style="cursor: default" class="navbar-brand"> Workbench</span>
+      </div>
+
+      <!-- Navbar brand -->
+
       <ul class="navbar-nav mr-auto">
->>>>>>> master
         <!-- Dropdown -->
-        <li
-          
-          class="nav-item dropdown"
-        >
+        <li class="nav-item dropdown">
           <a
             class="nav-link dropdown-toggle"
             id="navbarDropdownMenuLink"
             data-toggle="dropdown"
             aria-haspopup="true"
             aria-expanded="false"
-            >Options</a
-          >
+            >Options</a>
+
           <div
-            style="margin-left: -5em;"
+            style="margin-left: -5em"
             class="dropdown-menu dropdown-primary"
             aria-labelledby="navbarDropdownMenuLink"
           >
@@ -109,7 +133,7 @@
               id="exportOption"
               class="dropdown-item"
               href="#"
-              style="display: none;"
+              style="display: none"
               ><i class="fas fa-file-export"></i>&nbsp;&nbsp;Export</a
             >
             <a class="dropdown-item" href="#" onclick="importWork()"
@@ -125,20 +149,24 @@
               <i class="fas fa-question-circle"></i>
               &nbsp;&nbsp;Help/User Guide</a
             >
-            </div>
-
           </div>
         </li>
       </ul>
+     </div>
+      <i
+        id="toggle-icon"
+        class="fas fa-sun toggle-icon"
+        onclick="toggleTheme()"
+      ></i>
     </nav>
     <!--/.Navbar-->
 
     <div id="headbar">
       <br />
-      <div id="headContent" style="font-size: xx-large;">
+      <div id="headContent" style="font-size: xx-large">
         Welcome to <b>Development Workbench</b>
       </div>
-      <div id="headSub" style="font-size: large;">
+      <div id="headSub" style="font-size: large">
         Create your own ML models in 3 simple steps
       </div>
       <br />
@@ -146,7 +174,7 @@
 
     <!-- Vertical Steppers -->
     <div id="stepper">
-      <div class="row mt-1" style="max-width: 90%; margin: 0 auto;">
+      <div class="row mt-1" style="max-width: 90%; margin: 0 auto">
         <div class="col-md-12">
           <!-- Steppers Wrapper -->
           <ul class="stepper stepper-vertical">
@@ -154,10 +182,12 @@
             <li class="active firstStepHead">
               <a id="step1Link" href="#">
                 <span class="circle">1</span>
-                <span class="label">Select/Create Training Data</span>
+                <span class="label label-color"
+                  >Select/Create Training Data</span
+                >
               </a>
               <div class="step-content grey lighten-3">
-                <p style="font-size: 1em;">
+                <p style="font-size: 1em">
                   Select your own dataset (spritesheet) or create a new one from
                   caMicroscope labels or own custom data. <br />
                   <button
@@ -182,12 +212,12 @@
               <!--Section Title -->
               <a href="#!">
                 <span class="circle">2</span>
-                <span class="label">Algorithm Creation and Training</span>
+                <span class="label label-color ">Algorithm Creation and Training</span>
               </a>
 
               <!-- Section Description -->
               <div class="step-content grey lighten-3">
-                <p style="font-size: 1em;">
+                <p style="font-size: 1em">
                   Create your own customized CNN algorithm and train your model
                   accordingly. <br />
                   <a id="secondStepButton" href="./createAlgo/bench.html">
@@ -213,11 +243,11 @@
             <li class="thirdStepHead">
               <a href="#!">
                 <span class="circle">3</span>
-                <span class="label"> Save your work </span>
+                <span class="label label-color "> Save your work </span>
               </a>
               <!-- Section Description -->
               <div class="step-content grey lighten-3">
-                <p style="font-size: 1em;">
+                <p style="font-size: 1em">
                   Save your model (JSON/binaries) to disk for later use<br />
                 </p>
               </div>
@@ -245,7 +275,7 @@
             <!-- Title -->
             <h4 class="card-title">Select your dataset</h4>
             <!-- Text -->
-            <p style="text-align: justify;" class="card-text">
+            <p style="text-align: justify" class="card-text">
               Select the dataset (.zip) having three files; spritesheet
               (data.jpg), a binary labels (labels.bin) and the classes
               (labelnames.csv) from your local storage.
@@ -256,10 +286,10 @@
                   type="file"
                   id="spriteInput"
                   accept=".zip"
-                  style="max-width: 98%;"
+                  style="max-width: 98%"
                 />
                 <label
-                  style="overflow: hidden;"
+                  style="overflow: hidden"
                   class="custom-file-label spriteInputLabel"
                   for="spriteInput"
                   >Choose file
@@ -268,7 +298,14 @@
             </div>
           </div>
         </div>
-        <div style="height: 1em; margin-left:5cm; padding: 2em 0; font-size: large;">
+        <div
+          style="
+            height: 1em;
+            margin-left: 5cm;
+            padding: 2em 0;
+            font-size: large;
+          "
+        >
           <b> OR</b>
         </div>
         <div class="card" style="max-width: 20em; margin-left:2cm; auto;">
@@ -277,23 +314,23 @@
             <!-- Title -->
             <h4 class="card-title">Create your own</h4>
             <!-- Text -->
-            <p class="card-text" style="text-align: justify;">
+            <p class="card-text" style="text-align: justify">
               Build your own spritesheet using labeling from the caMicroscope
               instance or browsing your own dataset.
             </p>
             <!-- Buttons -->
-            <div style="text-align: center;">
+            <div style="text-align: center">
               <button
                 data-toggle="modal"
                 data-target="#labelsUploadModal"
-                style="border-radius: 5px; font-size: 0.9em;"
+                style="border-radius: 5px; font-size: 0.9em"
                 class="btn btn-primary px-2"
                 onclick="resetLabelsModal()"
               >
                 caM Labels
               </button>
               <button
-                style="border-radius: 5px; font-size: 0.9em;"
+                style="border-radius: 5px; font-size: 0.9em"
                 class="btn btn-primary px-2"
                 data-toggle="modal"
                 data-target="#labelsUploadModal"
@@ -350,7 +387,7 @@
                     <label
                       class="custom-file-label labelsInputLabel"
                       for="labelsInput"
-                      style="overflow: hidden;"
+                      style="overflow: hidden"
                     >
                       Choose
                     </label>
@@ -362,11 +399,11 @@
                 <br />
                 <ul
                   id="labelsFilterList"
-                  style="max-height: 25em; overflow: auto;"
+                  style="max-height: 25em; overflow: auto"
                   class="list-group"
                 ></ul>
               </div>
-              <div id="labelsDatasetZip" style="margin-bottom: -2.8em;">
+              <div id="labelsDatasetZip" style="margin-bottom: -2.8em">
                 The spritesheet (.jpg) and labels (binary) files have been
                 created according to your customized data. Download the .zip
                 file and select it in the "Select your dataset" section on this
@@ -391,30 +428,30 @@
                 <br />
                 <br />
               </div>
-              <div id="selectResolution" style="margin-bottom: -2em;">
+              <div id="selectResolution" style="margin-bottom: -2em">
                 Select normalized image resolution (in px) for the dataset
                 images. Please <b><u>Note</u></b> that more resolution images
                 will take more time to create spritesheet and training and
                 testing may affect accordingly.
                 <br />
-                <div style="display: flex; flex-wrap: wrap;">
-                  <div style="display: flex; margin: 0 auto;">
+                <div style="display: flex; flex-wrap: wrap">
+                  <div style="display: flex; margin: 0 auto">
                     <input
                       id="datasetNormalWidth"
                       class="form-control form-control-sm"
                       type="number"
                       value="60"
                       min="20"
-                      style="width: 7em; margin: 1em;"
+                      style="width: 7em; margin: 1em"
                     />
-                    <span style="margin: 1em;">x</span>
+                    <span style="margin: 1em">x</span>
                     <input
                       id="datasetNormalHeight"
                       class="form-control form-control-sm"
                       type="number"
                       value="60"
                       min="20"
-                      style="width: 7em; margin: 1em;"
+                      style="width: 7em; margin: 1em"
                     />
                   </div>
                 </div>
@@ -426,7 +463,7 @@
                 id="labelsSubmitButton"
                 type="submit"
                 class="btn btn-success"
-                style="padding: 0.6em; font-size: 1em; border-radius: 5px;"
+                style="padding: 0.6em; font-size: 1em; border-radius: 5px"
               >
                 <div id="labelsSubmitText">
                   Next <i data-feather="chevron-right" class="text-white"></i>
@@ -472,13 +509,13 @@
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-          <div class="modal-body" style="align-content: center;"></div>
+          <div class="modal-body" style="align-content: center"></div>
           <div class="modal-footer">
             <button
               type="button"
               class="btn btn-secondary px-3"
               data-dismiss="modal"
-              style="border-radius: 5px; font-size: 1em; padding: 0.65em;"
+              style="border-radius: 5px; font-size: 1em; padding: 0.65em"
             >
               Close
             </button>
@@ -490,11 +527,11 @@
     <!-- Toast Alert -->
     <div
       id="toastPlaceholder"
-      style="position: fixed; top: 1em; width: 100%; align-content: center;"
+      style="position: fixed; top: 1em; width: 100%; align-content: center"
     >
       <div
         id="toastAlert"
-        style="max-width: 40em; min-width: 10em; margin: 0 auto;"
+        style="max-width: 40em; min-width: 10em; margin: 0 auto"
         class="alert alert-dismissible fade"
         role="alert"
       >
@@ -508,9 +545,11 @@
         </button>
       </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js" 
-      integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8" 
-      crossorigin="anonymous"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8"
+      crossorigin="anonymous"
+    ></script>
     <script src="./workbench.js"></script>
     <script>
       feather.replace(); // for feather Icons
