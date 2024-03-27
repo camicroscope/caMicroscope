@@ -4780,3 +4780,9 @@
 		::-webkit-scrollbar-thumb:hover {
 		background: grey;
 		}
+/* Landing Page Buttons  */
+.button:hover{
+	background-color: grey;
+	color: white;
+
+			}
