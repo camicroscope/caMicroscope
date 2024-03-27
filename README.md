@@ -94,3 +94,5 @@ RUN git clone https://github.com/${fork:-camicroscope}/camicroscope.git --branch
 docker-compose -f develop.yml build
 docker-compose -f develop.yml up
 ```
+
+
