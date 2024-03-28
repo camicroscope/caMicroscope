@@ -276,6 +276,14 @@ ul.disabled {
 }
 #upload_panel .modalbox-content{
     width: 30%;
+
+    @media only screen and ( max-width: 1100px ) {
+        width: 50%;
+    }
+
+    @media only screen and ( max-width: 600px ) {
+        width: 85%;
+    }
 }
 
 #roi_panel .modalbox-content{
