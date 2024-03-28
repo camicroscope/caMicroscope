@@ -28,7 +28,7 @@ input:focus:invalid {
 }
 
 .error{
-    color: yellow;
+    color: red;
 }
 
 .switch {

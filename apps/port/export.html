@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html>
+<html  lang="en">
 <head>
   <script src="../../core/Store.js"></script>
   <title>Export Results [caMicroscope]</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
   <style>
-    #exportTitle{
+    .export--header{
       background-color: #17a2b8 !important;
       color: white;
     }
@@ -27,13 +28,23 @@
 </head>
 <body>
 
-  <h1 class="text-center py-5" id="exportTitle">Export Results</h1>
+  <!-- header -->
+  <div class="text-center export--header">
+    <div>
+      <h1 class="text-center py-2 m-0">Export Results</h1>
+      <p class="text-sm">Uncertain about the slide to export? Obtain its ID.</p>
+    </div>
+    <div>
+      <a href="javascript:history.back()" class="btn btn-primary mx-3 btn-sm my-2">Go Back</a>
+    </div>
+  </div>
+
   <div class="form text-center my-5">
   <label for="slide_id">Slide Ids (exact matches, comma delimited):</label>
-  <input type="text" class="mx-1" id="slide_id" name="slide_id">
-  <button id="populate_btn" onclick="populateList()" type="button" class="btn btn-primary mx-3">Get List of Results</button>
-
+  <input type="text" class="mx-1 mt-2" id="slide_id" name="slide_id">
+  <button id="populate_btn" onclick="populateList()" type="button" class="btn btn-primary mx-3 mt-2">Get List of Results</button>
   </div>
+
   <div class="result text-center">
     <h3>Select Results</h3>
     <div id="output"></div>

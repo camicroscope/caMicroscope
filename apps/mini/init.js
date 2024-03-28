@@ -6,38 +6,6 @@ let $minorCAMIC = null;
 // for all instances of UI components
 const $UI = new Map();
 
-// INITIALIZE DB
-window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
-// id(autoinc), name, location(name+id), classes
-var request; var db;
-var modelName;
-var flag = -1;
-var choices1;
-
-// tensorflowjs creates its own IndexedDB on saving a model.
-async function dbInit() {
-  const model = tf.sequential();
-  await model.save('indexeddb://dummy');
-  await tf.io.removeModel('indexeddb://dummy');
-  console.log('DB initialised');
-}
-
-// Opening the db created by tensorflowjs
-function dbOpen() {
-  request = window.indexedDB.open('tensorflowjs', 1);
-
-  request.onupgradeneeded = function(e) {
-    console.log('nasty!');
-  };
-  request.onerror = function(e) {
-    console.log('ERROR', e);
-  };
-  request.onsuccess = function(e) {
-    db = request.result;
-    console.log('tfjs db opened and ready');
-  };
-}
-
 const $D = {
   pages: {
     home: '../table.html',
@@ -58,7 +26,6 @@ window.addEventListener('keydown', (e) => {
     measurementOff();
     annotationOff();
     presetLabelOff();
-    mlAsisstantOff();
   }
 
   // open annotation (ctrl + a)
@@ -122,11 +89,10 @@ window.addEventListener('keydown', (e) => {
 
 // initialize viewer page
 function initialize() {
-  var checkPackageIsReady = setInterval(async function() {
+  var checkPackageIsReady = setInterval(function() {
     if (IsPackageLoading) {
       clearInterval(checkPackageIsReady);
       // create a viewer and set up
-      await dbInit().then((e) => dbOpen());
       initCore();
 
       // loading the form template data
@@ -195,10 +161,10 @@ function initCore() {
   }
 
   $CAMIC.loadImg(function(e) {
-    $CAMIC.viewer.addHandler('open-failed', function(e) {
-      console.error(e.message, e);
+    $CAMIC.viewer.addHandler('open-failed', function(e){
+      console.error(e.message, e)
       redirect($D.pages.table, e.message, 5);
-    });
+    })
     // image loaded
     if (e.hasError) {
       // if this is a retry, assume normal behavior (one retry per slide)
@@ -257,13 +223,6 @@ function initCore() {
             attributes = data.properties.annotations;
             if (area) attributes.area = area;
             if (circumference) attributes.circumference = circumference;
-
-            const states = StatesHelper.getCurrentStates(isImageCoordinate = true);
-            if (!states) return;
-            attributes.X = states.x;
-            attributes.Y = states.y;
-            attributes.zoom = states.z;
-
             body = convertHumanAnnotationToPopupBody(attributes);
             if (
               data.geometries &&
@@ -325,30 +284,6 @@ function initCore() {
         $UI.annotPopup.open(e.position);
       });
 
-      $CAMIC.viewer.addHandler('annot-edit-save', function(e) {
-        if (!e.data) {
-          return;
-        }
-        const {id, slide, data} = e;
-        const dataCopy = deepCopy(data);
-        delete dataCopy.selected;
-        delete dataCopy._id;
-        if (dataCopy.geometries.features[0].properties.size) {
-          const dataPoints = dataCopy.geometries.features[0].geometry.coordinates[0];
-          const dataSize = dataCopy.geometries.features[0].properties.size;
-          const {points, bound, size} = convertToNormalized(dataPoints, dataSize, $CAMIC.viewer);
-          dataCopy.geometries.features[0].properties.size = size;
-          dataCopy.geometries.features[0].geometry.coordinates = [points];
-          dataCopy.geometries.features[0].bound.coordinates = [bound];
-        } else {
-          dataCopy.geometries = ImageFeaturesToVieweportFeatures(
-              $CAMIC.viewer,
-              dataCopy.geometries,
-          );
-        }
-        editAnnoCallback(id, slide, dataCopy);
-      });
-
       // create the message bar TODO for reading slide Info TODO
       $UI.slideInfos = new CaMessage({
         /* opts that need to think of*/
@@ -374,21 +309,6 @@ function initCore() {
     tracker = new Tracker($CAMIC, $D.params.data._id.$oid, getUserId());
     tracker.start();
   });
-}
-
-function deepCopy(obj) {
-  if (typeof obj !== 'object' || obj === null) {
-    return obj;
-  }
-
-  const copy = Array.isArray(obj) ? [] : {};
-  for (let key in obj) {
-    if (Object.prototype.hasOwnProperty.call(obj, key)) {
-      copy[key] = deepCopy(obj[key]);
-    }
-  }
-
-  return copy;
 }
 
 // initialize all UI components
@@ -441,23 +361,6 @@ async function initUIcomponents() {
       callback: goHome,
     });
   }
-  // pen
-  subToolsOpt.push({
-    name: 'annotation',
-    icon: 'create', // material icons' name
-    title: 'Draw',
-    type: 'multistates',
-    callback: draw,
-  });
-
-  subToolsOpt.push({
-    name: 'preset_label',
-    icon: 'colorize', // material icons' name
-    title: 'Preset Labels',
-    type: 'check',
-    value: 'prelabels',
-    callback: drawLabel,
-  });
 
   // magnifier
   subToolsOpt.push({
@@ -507,15 +410,6 @@ async function initUIcomponents() {
       callback: toggleMeasurement,
     });
   }
-  // donwload selection
-  subToolsOpt.push({
-    name: 'download_selection',
-    icon: 'get_app', // material icons' name
-    title: 'Download Selection',
-    type: 'check',
-    value: 'download',
-    callback: toggleDownloadSelection,
-  });
   // enhance
   subToolsOpt.push({
     name: 'Enhance',
@@ -549,126 +443,24 @@ async function initUIcomponents() {
     callback: enhance,
   });
   // share
-  if (ImgloaderMode == 'iip') {
-    subToolsOpt.push({
-      name: 'share',
-      icon: 'share',
-      title: 'Share View',
-      type: 'btn',
-      value: 'share',
-      callback: shareURL,
-    });
-  }
-  // side-by-side
+
   subToolsOpt.push({
-    name: 'sbsviewer',
-    icon: 'view_carousel',
-    title: 'Side By Side Viewer',
-    value: 'dbviewers',
-    type: 'check',
-    callback: toggleViewerMode,
-  });
-  // heatmap
-  subToolsOpt.push({
-    name: 'heatmap',
-    icon: 'satellite',
-    title: 'Heat Map',
-    value: 'heatmap',
+    name: 'share',
+    icon: 'share',
+    title: 'Share View',
     type: 'btn',
-    callback: openHeatmap,
-  });
-  subToolsOpt.push({
-    name: 'labeling',
-    icon: 'label',
-    title: 'Labeling',
-    value: 'labeling',
-    type: 'btn',
-    callback: function() {
-      window.location.href = `../labeling/labeling.html${window.location.search}`;
-    },
-  });
-  subToolsOpt.push({
-    name: 'segment',
-    icon: 'timeline',
-    type: 'btn',
-    value: 'rect',
-    title: 'Segment',
-    callback: function() {
-      if (window.location.search.length > 0) {
-        window.location.href =
-          '../segment/segment.html' + window.location.search;
-      } else {
-        window.location.href = '../segment/segment.html';
-      }
-    },
-  });
-  subToolsOpt.push({
-    name: 'model',
-    icon: 'aspect_ratio',
-    type: 'btn',
-    value: 'rect',
-    title: 'Predict',
-    callback: function() {
-      if (window.location.search.length > 0) {
-        window.location.href = '../model/model.html' + window.location.search;
-      } else {
-        window.location.href = '../model/model.html';
-      }
-    },
+    value: 'share',
+    callback: shareURL,
   });
 
-  // -- For Nano borb Start -- //
-  if (ImgloaderMode == 'imgbox') {
-    // download
-    subToolsOpt.push({
-      name: 'downloadmarks',
-      icon: 'cloud_download',
-      title: 'Download Marks',
-      type: 'btn',
-      value: 'download',
-      callback: Store.prototype.DownloadMarksToFile,
-    });
-    subToolsOpt.push({
-      name: 'uploadmarks',
-      icon: 'cloud_upload',
-      title: 'Load Marks',
-      type: 'btn',
-      value: 'upload',
-      callback: Store.prototype.LoadMarksFromFile,
-    });
-  }
-  // -- For Nano borb End -- //
-
-  // -- view btn START -- //
-  if (!($D.params.data.hasOwnProperty('review') && $D.params.data['review']=='true')) {
-    subToolsOpt.push({
-      name: 'review',
-      icon: 'playlist_add_check',
-      title: 'has reviewed',
-      type: 'btn',
-      value: 'review',
-      callback: updateSlideView,
-    });
-  }
   // screenshot
   subToolsOpt.push({
     name: 'slideCapture',
     icon: 'camera_enhance',
-    title: 'Slide Capture',
+    title: 'Download View as Image',
     type: 'btn',
     value: 'slCap',
     callback: captureSlide,
-  });
-  subToolsOpt.push({
-    name: 'tutorial',
-    icon: 'help',
-    title: 'Tutorial',
-    value: 'tutorial',
-    type: 'btn',
-    callback: function() {
-      tour.init();
-      tour.start(true);
-    },
   });
 
   // Additional Links handler
@@ -742,17 +534,8 @@ async function initUIcomponents() {
       //   text:'notes',
       //   callback:annoEdit
       // },
-      {
-        // delete
-        title: 'Delete',
-        class: 'material-icons',
-        text: 'delete_forever',
-        callback: annoDelete,
-      },
     ],
   });
-
-  initModelModals();
 
   // TODO -- labels //
   $UI.labelsSideMenu = new SideMenu({
@@ -786,25 +569,6 @@ async function initUIcomponents() {
   $UI.labelsSideMenu.addContent($UI.labelsViewer.elt);
 
   // == end -- //
-
-  /* --- machine learning Assistant --- */
-  $UI.AssistantSideMenu = new SideMenu({
-    id: 'ml_assistant_layers',
-    width: 'unset',
-    contentPadding: 5,
-    position: 'right',
-    height: 'unset',
-    top: '40px',
-    borderRadius: '10px',
-  });
-
-  var AssistantTitle = document.createElement('div');
-  AssistantTitle.classList.add('item_head');
-  AssistantTitle.style.margin = 0;
-  AssistantTitle.textContent = 'Annotation Assistant';
-  $UI.AssistantSideMenu.addContent(AssistantTitle);
-
-  // == end == //
 
   var checkOverlaysDataReady = setInterval(function() {
     if (
@@ -841,22 +605,6 @@ async function initUIcomponents() {
       // const minorViewerData = $D.overlayers.map((d) => {
       //   return {item: d, isShow: false};
       // });
-
-      $UI.AssistantViewer = new Assistant({
-        id: 'ml_assistant',
-        viewer: $CAMIC.viewer,
-      });
-      $UI.AssistantViewer.elt.parentNode.removeChild($UI.AssistantViewer.elt);
-      $UI.AssistantSideMenu.addContent($UI.AssistantViewer.elt);
-      $UI.AssistantViewer.elt.style.display = 'none';
-      AssistantTitle.addEventListener('click', () => {
-        if ($UI.AssistantViewer.elt.style.display === 'none') {
-          $UI.AssistantViewer.elt.style.display = '';
-        } else {
-          // $UI.AssistantViewer.enableBtn.checked = false;
-          $UI.AssistantViewer.elt.style.display = 'none';
-        }
-      });
 
       // create UI and set data
       $UI.layersViewer = createLayerViewer(
@@ -975,328 +723,7 @@ async function initUIcomponents() {
       $UI.appsSideMenu.addContent($UI.annotOptPanel.elt);
     }
   }, 300);
-
-  // Handle event
-  $CAMIC.viewer.addHandler('open-add-model', () => {
-    uploadModel();
-  });
-
-  $CAMIC.viewer.addHandler('open-model-info', () => {
-    showInfo();
-  });
-
-  $CAMIC.viewer.addHandler('ml-draw-setting-change', () => {
-    if (!$CAMIC.viewer.canvasDrawInstance) return;
-    const canvasDraw = $CAMIC.viewer.canvasDrawInstance;
-
-    if (canvasDraw._draws_data_.length) {
-      canvasDraw.__endNewFeature(true);
-    }
-  });
 }
-
-function initModelModals() {
-  // Create uploadModal for model uploads.
-  $UI.uploadModal = new ModalBox({
-    id: 'upload_panel',
-    hasHeader: true,
-    headerText: 'Upload Segmentation Model',
-    hasFooter: false,
-    provideContent: true,
-    content: `
-      <span>Add a segmentation model in
-        <a target="_blank" href="https://www.tensorflow.org/js/tutorials/conversion/import_keras">TFJS format</a>.
-         Some examples can be found <a target="_blank" href="https://github.com/camicroscope/tfjs-models/tree/master/Segmentation%20Sample%20Models">here</a>.
-      </span>
-      <br><hr>
-      <form class="form-style" action="#">
-        <ul>
-          <li>
-            <label align="left"> Name:  </label>
-            <input name="name" id="name" type="text" required />
-            <span> Name of the model </span>
-          </li>
-          <li>
-            <label align="left"> Input patch size: </label>
-            <input name="imageSize" id="imageSize" type="number" required />
-            <span> The image size on which the model is trained (y x y)</span>
-          </li>
-            <label>Input image format:</label> <br>
-            <input type="radio" id="gray" name="channels" value=1 checked>
-            <label for="gray">Gray</label> <br>
-            <input type="radio" id="rgb" name="channels" value=3>
-            <label for="rgb" padding="10px">RGB</label>
-          <li id="mg">
-            <label for="magnification">Magnification:</label>
-            <select id="magnification">
-              <option value=10>10x</option>
-              <option value=20>20x</option>
-              <option value=40>40x</option>
-            </select>
-            <span> Magnification of input images </span>
-          </li>
-          <hr>
-
-          <label class="switch"><input type="checkbox" id="togBtn"><div class="slider"></div></label> <br> <br>
-          <div class="checkfalse"><div>Select model.json first followed by the weight binaries.</div> <br>
-          <input name="filesupload" id="modelupload" type="file" required/><br><br>
-          <input name="filesupload" id="weightsupload" type="file" multiple="" required/> <br> <br> </div>
-          <div class="checktrue" > URL to the ModelAndWeightsConfig JSON describing the model. <br> <br>
-          <label align-"left"> Enter the URL: </label> <input type="url" name="url" id="url" required> <br><br></div>
-          <button id="submit">Upload</button> <span id="status"></span>
-        </ul>
-
-      </form>
-      <button id="refresh" class='material-icons'>cached</button>
-
-    `,
-  });
-
-  // Create infoModal to show information about models uploaded.
-  $UI.infoModal = new ModalBox({
-    id: 'model_info',
-    hasHeader: true,
-    headerText: 'Available Models',
-    hasFooter: false,
-    provideContent: true,
-    content: `
-      <table id='mtable'>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Input Size</th>
-            <th>Size (MB)</th>
-            <th>Date Saved</th>
-            <th>Remove Model</th>
-          </tr>
-          <tbody id="mdata">
-          </tbody>
-        </thead>
-      </table>
-    `,
-  });
-}
-
-// Shows the uploaded models' details
-async function showInfo() {
-  var data = await tf.io.listModels();
-  var table = document.querySelector('#mdata');
-  var tx = db.transaction('models_store', 'readonly');
-  var store = tx.objectStore('models_store');
-  var modelCount = 0;
-  empty(table);
-  // Update table data
-  (function(callback) {
-    for (const key in data) {
-      if (data.hasOwnProperty(key)) {
-        const name = key.split('/').pop();
-        const date = data[key].dateSaved.toString().slice(0, 15);
-        const size = (data[key].modelTopologyBytes + data[key].weightDataBytes +
-          data[key].weightSpecsBytes) / (1024*1024);
-        const row = table.insertRow();
-        let classes; let inputShape; let td;
-
-        if (name.slice(0, 3) == 'seg') {
-          store.get(name).onsuccess = function(e) {
-            try {
-              inputShape = e.target.result.input_shape.slice(1, 3).join('x');
-            } catch (error) {}
-            td = row.insertCell();
-            td.innerText = name.split('_').splice(1).join('_').slice(0, -3);
-            td = row.insertCell();
-            td.innerText = inputShape;
-            td = row.insertCell();
-            td.innerText = +size.toFixed(2);
-            td = row.insertCell();
-            td.innerText = date;
-            td = row.insertCell();
-            td.innerHTML = '<button class="btn-del" '+
-            'id=removeModel'+modelCount+' type="button"><i class="material-icons"'+
-            'style="font-size:16px;">delete_forever</i>Remove Model</button>';
-            document.getElementById('removeModel'+modelCount).addEventListener('click', () => {
-              deleteModel(name);
-            });
-            modelCount += 1;
-          };
-        }
-      }
-    }
-    callback;
-  })($UI.infoModal.open());
-}
-
-
-async function deleteModel(name) {
-  deletedmodelName = name.split('/').pop().split('_').splice(2).join('_').slice(0, -3);
-  if (confirm('Are you sure you want to delete ' + deletedmodelName + ' model?')) {
-    const res = await tf.io.removeModel(IDB_URL + name);
-    console.log(res);
-    const tx = db.transaction('models_store', 'readwrite');
-    const store = tx.objectStore('models_store');
-    let status = false;
-    try {
-      store.delete(name);
-      status = true;
-    } catch (err) {
-      alert(err);
-    } finally {
-      if (status) {
-        let popups = document.getElementById('popup-container');
-        if (popups.childElementCount < 2) {
-          let popupBox = document.createElement('div');
-          popupBox.classList.add('popup-msg', 'slide-in');
-          popupBox.innerHTML = `<i class="small material-icons">info</i>` + deletedmodelName + ` model deleted successfully`;
-          popups.insertBefore(popupBox, popups.childNodes[0]);
-          setTimeout(function() {
-            popups.removeChild(popups.lastChild);
-          }, 3000);
-        }
-        $UI.infoModal.close();
-        initModelModals();
-      }
-    }
-  } else {
-    return;
-  }
-}
-
-async function uploadModel() {
-  modelName = [];
-  Object.keys(await tf.io.listModels()).forEach(function(element) {
-    const value = element.split('/').pop();
-    if (value.slice(0, 3) == 'seg') {
-      const title = element.split('/').pop().split('_')[1].slice(0, -3);
-      console.log();
-      modelName.push(title);
-    }
-  });
-  var _name = document.querySelector('#name');
-  var _imageSize = document.querySelector('#imageSize');
-  var mag = document.querySelector('#magnification');
-  var topology = document.querySelector('#modelupload');
-  var weights = document.querySelector('#weightsupload');
-  var status = document.querySelector('#status');
-  var toggle = document.querySelector('#togBtn');
-  var url = document.querySelector('#url');
-  var refresh = document.querySelector('#refresh');
-  var submit = document.querySelector('#submit');
-
-  // Reset previous input
-  _name.value = topology.value = weights.value = status.innerText = _imageSize.value = url.value = '';
-
-  $UI.uploadModal.open();
-
-  toggle.addEventListener('change', function(e) {
-    if (this.checked) {
-      document.querySelector('.checktrue').style.display = 'block';
-      document.querySelector('.checkfalse').style.display = 'none';
-    } else {
-      document.querySelector('.checktrue').style.display = 'none';
-      document.querySelector('.checkfalse').style.display = 'block';
-    }
-  });
-
-  refresh.addEventListener('click', () => {
-    initModelModals();
-  });
-
-  submit.addEventListener('click', async function(e) {
-    e.preventDefault();
-
-    if ( _name.value && _imageSize.value &&
-      ((!toggle.checked && topology.files[0].name.split('.').pop() == 'json') || (toggle.checked && url))) {
-      status.innerText = 'Uploading';
-      status.classList.remove('error');
-      status.classList.add('blink');
-
-      if (toggle.checked) {
-        var modelInput = url.value;
-      } else {
-        var modelInput = tf.io.browserFiles([topology.files[0], ...weights.files]);
-      }
-
-      // Check if model with same name is previously defined
-      try {
-        if (modelName.indexOf(_name.value)!=-1) {
-          throw new Error('Model name repeated');
-        }
-      } catch (e) {
-        status.innerText = 'Model with the same name already exists. Please choose a new name';
-        status.classList.remove('blink');
-        console.log(e);
-        return;
-      }
-
-      try {
-        // This also ensures that valid model is uploaded.
-        // Adding some extra digits in the end to maintain uniqueness
-        const _channels = parseInt(document.querySelector('input[name="channels"]:checked').value);
-        const size = parseInt(_imageSize.value);
-        const name = 'seg-' + size.toString() +
-        '-' + mag.value.toString() +
-        '_' + _name.value +
-        (new Date().getTime().toString()).slice(-4, -1);
-        const model = await tf.loadLayersModel(modelInput);
-        const result = model.predict(tf.ones([1, size, size, _channels]));
-        const shape = result.shape;
-        result.dispose();
-        if (shape[1] != size || shape[2] != size) {
-          console.info('Shape:', shape[1], shape[2]);
-          throw new Error('The application only supports 1:1 image Masks. Import a valid model.');
-        }
-
-        await model.save(IDB_URL + name);
-
-        // Update the model store db entry to have the classes array
-        tx = db.transaction('models_store', 'readwrite');
-        store = tx.objectStore('models_store');
-
-        store.get(name).onsuccess = function(e) {
-          const data = e.target.result;
-          data['input_shape'] = [1, size, size, _channels];
-
-          const req = store.put(data);
-          req.onsuccess = function(e) {
-            console.log('SUCCESS, ID:', e.target.result);
-            modelName.push(_name.value);
-            let popups = document.getElementById('popup-container');
-            if (popups.childElementCount < 2) {
-              let popupBox = document.createElement('div');
-              popupBox.classList.add('popup-msg', 'slide-in');
-              popupBox.innerHTML = `<i class="small material-icons">info</i>` + _name.value + ` model uploaded sucessfully`;
-              popups.insertBefore(popupBox, popups.childNodes[0]);
-              setTimeout(function() {
-                popups.removeChild(popups.lastChild);
-              }, 3000);
-            }
-            $UI.uploadModal.close();
-            initModelModals();
-          };
-          req.onerror = function(e) {
-            status.innerText = 'Some error this way!';
-            console.log(e);
-            status.classList.remove('blink');
-          };
-        };
-      } catch (e) {
-        status.classList.add('error');
-        status.classList.remove('blink');
-        if (toggle.checked) {
-          status.innerText = 'Please enter a valid URL.';
-        } else {
-          status.innerText = 'Please enter a valid model. ' +
-         'Input model.json in first input and all weight binaries in second one without renaming.';
-        }
-        console.error(e);
-      }
-    } else {
-      status.innerText = 'Please fill out all the fields with valid values.';
-      status.classList.add('error');
-      console.error(e);
-    }
-  });
-}
-
 function createLayerViewer(id, viewerData, callback, rootCallback) {
   const layersViewer = new LayersViewer({
     id: id,
