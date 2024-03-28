@@ -223,7 +223,6 @@ function initCore() {
         // for support QUIP 2.0
         const data = Array.isArray(e.data) ? e.data[e.data.selected] : e.data;
 
-        console.log("data", Array.isArray(e.data),data, e.data, e.data[e.data.selected]);
         const type = data.provenance.analysis.source;
         let body;
         let attributes;
@@ -347,7 +346,6 @@ function initCore() {
               dataCopy.geometries,
           );
         }
-        console.log("abc",$CAMIC.viewer);
         editAnnoCallback(id, slide, dataCopy);
       });
 
