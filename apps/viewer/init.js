@@ -246,7 +246,7 @@ function initCore() {
                 data.geometries.features[data.selected] &&
                 data.geometries.features[data.selected].properties.circumference
               ) {
-                circumference = `${Math. round(
+                circumference = `${Math.round(
                     data.geometries.features[data.selected].properties
                         .circumference,
                 )} μm`;
