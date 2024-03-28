@@ -57,6 +57,8 @@
       href="https://fonts.googleapis.com/icon?family=Material+Icons"
     />
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axe-core/4.2.2/axe.min.js"></script>
+
     <script src="../../common/jszip.min.js"></script>
     <script src="../../common/FileSaver.min.js"></script>
     <script src="../../common/localforage.min.js"></script>
@@ -157,21 +159,22 @@
                 <span class="label">Select/Create Training Data</span>
               </a>
               <div class="step-content grey lighten-3">
-                <p style="font-size: 1em;">
+                <p style="font-size: 1em; color:#000000">
                   Select your own dataset (spritesheet) or create a new one from
                   caMicroscope labels or own custom data. <br />
                   <button
                     id="firstStepButton"
                     onclick="dataSelect();"
                     style="
-                      border-radius: 50%;
+                    font-size: 1em;
+                      color:#000000;
                       padding: 1em;
                       margin-bottom: -1em;
                     "
                     type="button"
                     class="btn btn-primary"
-                  >
-                    <i data-feather="chevron-right" class="text-white"></i>
+                  > Select Dataset
+                    <i  style = 'color:#000000; margin-top:-2px;'data-feather="chevron-right" class=></i>
                   </button>
                 </p>
               </div>
@@ -182,7 +185,7 @@
               <!--Section Title -->
               <a href="#!">
                 <span class="circle">2</span>
-                <span class="label">Algorithm Creation and Training</span>
+                <span style = color:#000000; class="label">Algorithm Creation and Training</span>
               </a>
 
               <!-- Section Description -->
@@ -193,16 +196,18 @@
                   <a id="secondStepButton" href="./createAlgo/bench.html">
                     <button
                       style="
-                        border-radius: 50%;
+                       color:#000000;
                         padding: 1em;
                         margin: 1em 0em -1em -1em;
+                        font-size: 1em;
                       "
                       type="button"
                       class="btn btn-primary"
-                    >
+                    > Build & Create Models
                       <i
+                      style = "margin-top: -2px;"
                         data-feather="chevron-right"
-                        class="text-white"
+                        class=""
                       ></i></button
                   ></a>
                 </p>
@@ -213,7 +218,7 @@
             <li class="thirdStepHead">
               <a href="#!">
                 <span class="circle">3</span>
-                <span class="label"> Save your work </span>
+                <span style = color:#000000; class="label"> Save your work </span>
               </a>
               <!-- Section Description -->
               <div class="step-content grey lighten-3">
@@ -239,7 +244,7 @@
         "
       >
         <!-- Cards -->
-        <div class="card" style="max-width: 20em; margin-left:2cm; auto;">
+        <div class="card" style="max-width: 20em; margin-left:2cm auto;">
           <!-- Card content -->
           <div class="card-body">
             <!-- Title -->
@@ -271,7 +276,7 @@
         <div style="height: 1em; margin-left:5cm; padding: 2em 0; font-size: large;">
           <b> OR</b>
         </div>
-        <div class="card" style="max-width: 20em; margin-left:2cm; auto;">
+        <div class="card" style="max-width: 20em; margin-left:2cm auto;">
           <!-- Card content -->
           <div class="card-body">
             <!-- Title -->
@@ -514,6 +519,21 @@
     <script src="./workbench.js"></script>
     <script>
       feather.replace(); // for feather Icons
+axe.run(['#stepper','.firstStepHead', '.secondStepHead','.thirdStepHead'], (err, results) => {
+  ruleOnly: {
+    // Enforcing   minimum WCAG 2.1 Level A rules
+    values: 'wcag21';
+  }
+ if (err) {
+        console.error('Accessibility test failed:', err);
+        return;
+    }
+    console.log('Accessibility test results:', results);
+    // Output individual violations
+    results.violations.forEach(violation => {
+        console.log(violation);
+    });
+});
     </script>
   </body>
 </html>
