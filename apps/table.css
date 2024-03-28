@@ -87,8 +87,8 @@ nav li:not(.active):hover a {
   color: black !important;
 }
 
-nav li:not(.active):hover{
-	background: white;
+nav li:not(.active):hover {
+  background: white;
 }
 
 .overall {
@@ -100,13 +100,63 @@ nav li:not(.active):hover{
   padding: 0 4px;
 }
 
-.btn2{
-	display: flex;
-	align-items: center;
+.btn2 {
+  display: flex;
+  align-items: center;
+  margin-left: 10px;
 }
-@media screen and (min-width: 480px){
-  .reload {
+.btn-group {
+  margin-left: 5px;
+}
+
+/* For mobile devices */
+@media (max-width: 767px) {
+  .btn-container {
+    width: 50%;
     display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .reload {
+    display: inline-block;
+    width: 100%;
+  }
+  .btn2 {
+    width: 100%;
+    margin-left: 5px;
+  }
+  .btn-group {
+    width: 100%;
+  }
+  .upload-btn {
+    width: 100%;
+    margin-top: 8px;
+  }
+  .dicom-text {
+    margin-left: 15px;
+  }
+}
+
+/* For tablets and larger devices */
+@media (min-width: 768px) {
+  .btn-container {
+    width: 30%;
+    display: inline-flex;
+    margin-left: 0;
+    margin-right: auto;
+  }
+  .reload {
+    display: inline-block;
+    width: 100px;
+  }
+  .btn2 {
+    width: 100px;
+    margin-left: 5px;
+  }
+  .upload-btn {
+    width: 130px;
+    height: 44px;
+    margin-top: 5px;
   }
 }
 
