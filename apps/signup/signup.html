@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
   <head>
     <meta name="keywords" content="camicroscope, quip" />
     <meta charset='utf-8'>
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
-    <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=2.0'>
     <title>CaMicroscope - User Signup</title>
 
     <link href="https://fonts.googleapis.com/css?family=Roboto:400,700" rel="stylesheet">
@@ -15,6 +15,9 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet" 
     integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0"
     crossorigin="anonymous">
+
+  <!-- common stylings-->
+	<link rel='stylesheet' type='text/css' media='all' href='../common.css'/>
 
     <link rel='stylesheet' type='text/css' media='all' href='../../css/normalize.css'/>
     <link rel='stylesheet' type='text/css' media='all' href='signup.css'/>
@@ -30,39 +33,33 @@
 
 
   </head>
-  <script src="../../core/Store.js"></script>
-  <script src="./signup.js"></script>
 
   <body>
 
-  <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark" style="position: sticky; margin-top: -4em;">
-    <div class="container-fluid">
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent" >
-          <ul class="navbar-nav mr-auto gap-1">
-            <li class="nav-item link" style="font-family: sans-serif;">
-               <a class="nav-link" href="../landing/landing.html"> <i class="fas fa-home"></i> Home</a>
-            </li>
-            <li class="nav-item link" style="font-family: sans-serif;">
-              <a class="nav-link" href="../table.html"> <i class="fas fa-list-ul"></i>  Slides</a>
-            </li>
-            <li class="nav-item link">
-              <a class="nav-link" href="../Info.html"> <i class="fas fa-info-circle"></i> Info</a>
-            </li>
-            <li class="nav-item link">
-              <a class="nav-link" href="../dev-workbench/workbench.html"> <i class="fas fa-pencil-ruler"></i> Workbench</a>
-            </li>
-            <li class="nav-item active link" style="font-family: sans-serif;">
-              <a class="nav-link" href="signup.html"> <i class="fas fa-user-plus"></i> Signup</a>
-            </li>
-            <li class="nav-item link" style="font-family: sans-serif;">
-              <a class="nav-link" target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLScL91LxrpAZjU88GBZP9gmcdgdf8__uNUwhws2lzU6Lr4qNwA/viewform"> <i class="fas fa-comment"></i> Feedback</a>
-            </li>
-          </ul>
-        </div>
-    </div>
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark" style="position: sticky; margin-top: -4em;">
+      <div class="container-fluid">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+              </button>
+              <div class="collapse navbar-collapse" id="navbarSupportedContent" >
+                  <ul class="navbar-nav mr-auto gap-1">
+                      <li class="nav-item link" style="font-family: sans-serif;">
+                         <a class="nav-link" href="../landing/landing.html"> <i class="fas fa-home"></i> Home</a>
+                      </li>
+                      <li class="nav-item  link" style="font-family: sans-serif;">
+                          <a class="nav-link" href="../table.html"> <i class="fas fa-list-ul"></i>  Slides</a>
+                      </li>
+                  </ul>
+                  <ul class="navbar-nav ms-auto gap-1">
+                      <li class="nav-item link active" style="font-family: sans-serif;">
+                          <a class="nav-link" href="./signup.html"> <i class="fas fa-user-plus"></i> Signup</a>
+                      </li>
+                      <li class="nav-item link" style="font-family: sans-serif;">
+                          <a class="nav-link" target="_blank" href="https://github.com/camicroscope/caMicroscope/issues"> <i class="fas fa-comment"></i> Feedback</a>
+                      </li>
+                  </ul>
+              </div>
+      </div>
   </nav>
 
     <div class="signup-form">
@@ -101,24 +98,25 @@
         </select>
 
         <br> <br>
+
         <div class="form-group text-center">
           <button type="submit" id="sub" class="btn btn-primary btn-block btn-lg sub-btn" onclick="addUser()" disabled>
             Please wait ...
           </button>
           <div class="text-center" onclick="loginPage()" style="margin-top: 0.5em;">Already have an account? </div>
-
         </div>
         <!-- <p class="small text-center">This form is only useful to Admin users. If you reach this page, it's likely that you tried to log into this instance but lack
           access. Email the administrator if you want to be added.</p> -->
-        <p class="small text-center">
+        <p id="info" class="small text-center;">
           Non-admin users have to submit a request ticket to admins to get their approval to signup new users.
           If you are an Admin, you can directly signup users.
         </p>
       </form>
+      <div class="text-center text-primary" onclick="loginPage()">Already have an account? </div>
+
     </div>
-    <footer class="text-center text-white bg-dark p-3">
-      <p class="p">Copyright © 2021 caMicroscope</p>
-    </footer>
+   
+    <footer id="footer-layout"></footer>
     <!-- popup -->
     <div id="popup-container"></div>
 
@@ -126,6 +124,13 @@
             integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8" 
             crossorigin="anonymous"></script>
     <script src="../../common/util.js"></script>
+    <script src="../../common/footer.js"></script>
+
+  <script src="../../core/Store.js"></script>
+  <script src="./signup.js"></script>
+
+    <!-- script to call a footer(layout footer in the common > utils folder) function -->
+  <script> insertFooterLayout();</script>
 
   </body>
 </html>
