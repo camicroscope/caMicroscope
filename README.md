@@ -81,32 +81,17 @@ It is highly recommended to make any changes off of the develop branch of a repo
 
 Source code organization ie the file structure of caMicroscope can be found in [file structure](https://github.com/camicroscope/caMicroscope/blob/master/docs/file_structure.md)
 
-## Fast Local Changes
-When using the hosted setup, you can have the distribution host the changes from your local. Follow these steps :
-- Clone this repository, the [Caracal repository](https://github.com/camicroscope/Caracal/) and [the distribution](https://github.com/camicroscope/Distro/) in the same parent directory
-- Set the build to build your local changes instead of the hosted git versions by editing the ca-back container section of your develop.yml. Replace the build context section with the path to your caracal checkout ("../Caracal"), and add `- ../caMicroscope:/src/camicroscope` to the volumes.
-- Remove this line from 'Dockerfile' in Caracal repository :
-```
-RUN git clone https://github.com/${fork:-camicroscope}/camicroscope.git --branch=${viewer:-master}
-```
-- In Distro repository, enter the following commands :
-```
-docker-compose -f develop.yml build
-docker-compose -f develop.yml up
-```
+## Setting Up Development Environment
 
-# Guide for Outreachy/GSoC applicants
+These instructions will guide you through the process of setting up the caMicroscope project on your local machine for development and making contributions.
 
-These instructions will guide you through the process of setting up the caMicroscope project on your local machine and making contributions.
-
-## Cloning Repositories
+### Cloning Repositories
 
 1. **Clone the Repositories**:
-   - Fork the following repositories under the [camicroscope organization](https://github.com/camicroscope):
+   - Fork and clone the following repositories under the [camicroscope organization](https://github.com/camicroscope):
      - [Distro](https://github.com/camicroscope/Distro)
      - [viewer](https://github.com/camicroscope/viewer)
      - [Caracal](https://github.com/camicroscope/Caracal)
-   - Clone each forked repository to your local machine using Git:
      ```
      git clone https://github.com/YourGitHubUsername/Distro.git
      git clone https://github.com/YourGitHubUsername/viewer.git
@@ -114,18 +99,26 @@ These instructions will guide you through the process of setting up the caMicros
      ```
    - Replace `YourGitHubUsername` with your actual GitHub username.
 
-## Setting Up Development Environment
+### Setting Up Docker and Building the Application
 
 2. **Install Docker**:
    - Follow the installation instructions provided at [https://docs.docker.com/engine/install/](https://docs.docker.com/engine/install/) to install Docker on your machine.
    - Start Docker to ensure it's running.
 
-3. **Build and Run Distro Repository with Docker**:
+3. **Build and Run the Application**:
    - Navigate to the directory where you cloned the Distro repository.
-   - Build the Docker images and start the containers using the following commands:
+   - Modify the `develop.yml` file to build your local changes instead of the hosted git versions:
+     - Replace the build context section with the path to your Caracal checkout ("../Caracal").
+     - Add `- ../caMicroscope:/src/camicroscope` to the volumes.
+   - Remove the following line from 'Dockerfile' in the Caracal repository:
      ```
-     docker-compose -f caMicroscope.yml build
-     docker-compose -f caMicroscope.yml up
+     RUN git clone https://github.com/${fork:-camicroscope}/camicroscope.git --branch=${viewer:-master}
+     ```
+   - In the Distro repository directory, run the following commands:
+     ```
+     docker-compose -f develop.yml build
+     docker-compose -f develop.yml up
      ```
    - Access the application by visiting [http://localhost:4010/](http://localhost:4010/) in your web browser.
+
 
