@@ -57,14 +57,12 @@ async function PathDbMods() {
       throw "no iip path in pathdb data"
     }
     // identifier fields for display name
-    var subject_id = ""
     var image_id = ""
-    var study_id = ""
     if(data.field_subject_id && data.field_subject_id.length >= 1){
-      subject_id = data.field_subject_id[0].value
+      x.specimen = data.field_subject_id[0].value
     }
     if(data.clinicaltrialsubjectid && data.clinicaltrialsubjectid.length >= 1){
-      subject_id = data.clinicaltrialsubjectid[0].value
+      x.specimen = data.clinicaltrialsubjectid[0].value
     }
     if(data.field_image_id && data.field_image_id.length >=1){
       image_id = data.field_image_id[0].value
@@ -73,14 +71,14 @@ async function PathDbMods() {
       image_id = data.imageid[0].value
     }
     if(data.field_study_id && data.field_study_id.length >=1){
-      study_id = data.field_study_id[0].value
+      x.study = data.field_study_id[0].value
     }
     if(data.studyid && data.studyid.length >=1){
-      study_id = data.studyid[0].value
+      x.study = data.studyid[0].value
     }
     // if we have the triple, add it
-    if (subject_id && image_id && study_id){
-      x.name = study_id + ' | ' + subject_id + ' | ' + image_id;
+    if (x.specimen && image_id && x.study){
+      x.name = x.study + ' | ' + x.specimen + ' | ' + image_id;
     }
     return x
   }

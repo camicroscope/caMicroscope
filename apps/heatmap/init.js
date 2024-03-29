@@ -60,6 +60,10 @@ function initCore() {
 
   $CAMIC.loadImg(async function(e) {
     Loading.open(document.body, `Loading Data ...`);
+    $CAMIC.viewer.addHandler('open-failed', function(e) {
+      console.error(e.message, e);
+      redirect($D.pages.table, e.message, 5);
+    });
     // image loaded
     if (e.hasError) {
       $UI.message.addError(e.message);
@@ -355,7 +359,7 @@ function initUIcomponents() {
         value: 'bugs',
         type: 'btn',
         callback: ()=>{
-          window.open('https://goo.gl/forms/mgyhx4ADH0UuEQJ53', '_blank').focus();
+          window.open('https://github.com/camicroscope/caMicroscope/issues', '_blank').focus();
         },
       },
 
