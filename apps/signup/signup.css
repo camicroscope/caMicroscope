@@ -134,6 +134,12 @@ nav li:not(.active):hover a {
 .text-center {
     cursor: pointer;
 }
+.btn{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+}
 
 @media screen and (max-width: 736px) {
     .signup-form {
