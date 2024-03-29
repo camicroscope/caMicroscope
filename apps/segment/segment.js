@@ -313,7 +313,7 @@ async function initUIcomponents() {
         value: 'bugs',
         type: 'btn',
         callback: () => {
-          window.open('https://goo.gl/forms/mgyhx4ADH0UuEQJ53', '_blank').focus();
+          window.open('https://github.com/camicroscope/caMicroscope/issues', '_blank').focus();
         },
       },
       {
@@ -371,6 +371,10 @@ function initCore() {
     } else {
       $D.params.data = e;
     }
+    $CAMIC.viewer.addHandler('open-failed', function(e) {
+      console.error(e.message, e);
+      redirect($D.pages.table, e.message, 5);
+    });
   });
 
   $CAMIC.viewer.addOnceHandler('open', function(e) {

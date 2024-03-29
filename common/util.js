@@ -343,6 +343,34 @@ function clickInsideElement(e, className) {
   return false;
 }
 
+
+function getUrlVars() {
+  var vars = {};
+  window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(
+      m,
+      key,
+      value,
+  ) {
+    vars[key.toLowerCase()] = value;
+  });
+
+  var state = Object.assign({}, vars); // Copy the initial state from vars
+
+  return new Proxy({}, {
+    get: function(target, prop) {
+      return state[prop.toLowerCase()];
+    },
+    set: function(target, prop, value) {
+      state[prop.toLowerCase()] = value;
+      return true;
+    },
+    deleteProperty: function(target, prop) {
+      delete state[prop.toLowerCase()];
+      return true;
+    }
+  });
+}
+/**
 function getUrlVars() {
   var vars = {};
   var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(
@@ -354,6 +382,7 @@ function getUrlVars() {
   });
   return vars;
 }
+*/
 
 function ImageFeaturesToVieweportFeatures(viewer, geometries) {
   const rs = {
@@ -1013,6 +1042,11 @@ class Tracker {
     this.__period = period;
     this.__userId = userId;
     this.__slide = slide;
+    this.__viewId = this.generateViewId();
+  }
+
+  generateViewId() {
+    return crypto.randomUUID();
   }
   start() {
     if (!this.__time) {
@@ -1035,6 +1069,7 @@ class Tracker {
     );
 
     this.__camic.store.addLog({
+      viewId: this.__viewId,
       slide: this.__slide,
       user: this.__userId,
       x: Math.round(x),
@@ -1346,4 +1381,18 @@ async function captureScreen(camic, {
   }
 
   return canvas;
+}
+
+// footer content layout
+const currentYear = new Date().getFullYear();
+
+const footerContent = `
+  <p>U24 CA18092401A1, <b>Tools to Analyze Morphology and Spatially Mapped Molecular Data</b></p>
+  <p id='contact'>Spot a Bug? <a href='https://docs.google.com/forms/d/e/1FAIpQLScL91LxrpAZjU88GBZP9gmcdgdf8__uNUwhws2lzU6Lr4qNwA/viewform' target='_blank'>Send us the feedback!</a></p>
+  <hr />
+  <p class='copyright'>Copyright &copy; ${currentYear} <span class='company-name'><a href="https://camicroscope.org/" target='_blank'>caMicroscope</a></span></p>
+`;
+
+function insertFooterLayout() {
+  document.getElementById('footer-layout').innerHTML = footerContent;
 }

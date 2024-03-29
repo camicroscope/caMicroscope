@@ -2429,6 +2429,12 @@
 			display: -webkit-flex;
 			display: -ms-flex;
 			display: flex;
+			transition: background-color 0.3s ease, transform 0.3s ease;
+		}
+
+		.posts .post:hover {
+			background-color: #f0f0f0; 
+			transform: translateY(-10px); 
 		}
 
 			.posts .post .image {

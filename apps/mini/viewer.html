@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html  lang="en">
+<html>
   <head>
     <meta name="keywords" content="camicroscope, quip" />
     <meta charset="utf-8" />
@@ -71,13 +71,6 @@
       type="text/css"
       media="all"
       href="../../components/layersviewer/layersviewer.css"
-    />
-    <!-- machine learning assistant css -->
-    <link
-      rel="stylesheet"
-      type="text/css"
-      media="all"
-      href="../../components/ml-assistant/ml-assistant.css"
     />
     <!-- labels controller css -->
     <link
@@ -178,7 +171,6 @@
     <link href="../../common/bootstrap-tour-standalone/bootstrap-tour-standalone.min.css" rel="stylesheet">
     <!-- tippy theme -->
     <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/themes/light-border.css" />
-    <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/themes/translucent.css" />
 
     <!--  common js START -->
     <!-- Smartpen -->
@@ -186,10 +178,6 @@
     <script type="text/javascript" src="../../common/smartpen/autoalign.js"></script>
     <link rel="stylesheet" type="text/css" media="all" href="../../common/smartpen/autoalign.css"/>
     <!-- Smartpen end -->
-
-    <!-- machine learning tool start -->
-    <script type="text/javascript" src="../../components/ml-assistant/ml-tool.js"></script>
-    <!-- machine learning tool end -->
 
     <!-- util.js -->
     <script type="text/javascript" src="../../common/util.js"></script>
@@ -245,10 +233,10 @@
       type="text/javascript"
       src="../../components/collapsiblelist/collapsiblelist.js"
     ></script>
-    <!-- layers controller js -->
+    <!-- layers controller js, custom for mini viewer -->
     <script
       type="text/javascript"
-      src="../../components/layersviewer/layersviewer.js"
+      src="./layersViewer.js"
     ></script>
     <!-- labels controller js -->
     <script
@@ -295,11 +283,6 @@
       type="text/javascript"
       src="../../components/modalbox/modalbox.js"
     ></script>
-    <!-- ml-assistant -->
-    <script
-      type="text/javascript"
-      src="../../components/ml-assistant/ml-assistant.js"
-    ></script>
     <!--  components js END -->
 
     <!-- osd & core js START -->
@@ -326,15 +309,6 @@
     <script type="text/javascript" src="../../core/Validation.js"></script>
     <script type="text/javascript" src="../../core/Store.js"></script>
     <script type="text/javascript" src="../../core/CaMic.js"></script>
-
-    <!-- opencv.js -->
-    <script type='text/javascript' src='../segment/opencv.js'></script>
-    <!-- turf.js -->
-    <script type='text/javascript' src='turf.min.js'></script>
-    <!-- tensorflow.js -->
-    <script type='text/javascript' src='../../common/tf.min.js'></script>
-    <!-- tfjs visulisation -->
-    <script type='text/javascript' src='../../common/tfjs-vis.min.js'></script>
 
     <script
       type="text/javascript"
@@ -396,9 +370,6 @@
       <button class="reset" style="float: left;">Clear</button
       ><button class="action" style="float: right;">Save</button>
     </div> -->
-    <!-- modalbox -->
-    <div id="model_info"></div>
-    <div id="upload_panel"></div>
     <!-- side menu for apps-->
     <div id="side_apps" style="z-index:600"></div>
 
@@ -407,8 +378,6 @@
 
     <!-- side menu for labels -->
     <div id="labels_layers" style="z-index:600"></div>
-    <!-- side menu for labels -->
-    <div id="ml_assistant_layers" style="z-index:600"></div>
 
     <!-- collapsible list - annotation and analytics -->
     <div id="collapsiblelist" style="z-index:600"></div>
@@ -421,9 +390,6 @@
 
     <!-- labels manager -->
     <div id="labelmanager" style="z-index:600"></div>
-    <!-- machine learning assistant -->
-    <div id="ml_assistant" style="z-index:600"></div>
-    <div id="popup-container"></div>
     <!-- Popper & tippy -->
     <script src="https://unpkg.com/@popperjs/core@2"></script>
     <script src="https://unpkg.com/tippy.js@6"></script>
