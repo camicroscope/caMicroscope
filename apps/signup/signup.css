@@ -1,164 +1,36 @@
-/* signup.css
-
-
-body {
-	color: #999;
-	background: #f5f5f5;
-	font-family: 'Roboto', sans-serif;
-	overflow-x: hidden;
-}
-.bg-dark {
-    background-color: #343a40!important;
-}
-.form-control, .form-control:focus, .input-group-addon {
-	border-color: #e1e1e1;
-	border-radius: 0;
-}
-.signup-form {
-	width: 390px;
-	margin: 5% auto;
-	padding: 30px 0;
-}
-.signup-form h2 {
-	color: #636363;
-	margin: 0 0 15px;
-	text-align: center;
-}
-.signup-form .lead {
-	font-size: 14px;
-	margin-bottom: 30px;
-	text-align: center;
-}
-.signup-form form {		
-	border-radius: 1px;
-	margin-bottom: 15px;
-	background: #fff;
-	border: 1px solid #f3f3f3;
-	box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
-	padding: 30px;
-}
-.signup-form .form-group {
-	margin-bottom: 20px;
-}
-.signup-form label {
-	font-weight: normal;
-	font-size: 13px;
-}
-.signup-form .form-control {
-	min-height: 38px;
-	box-shadow: none !important;
-	border-width: 0 0 1px 0;
-}	
-.signup-form .input-group-addon {
-	max-width: 42px;
-	text-align: center;
-	background: none;
-	border-width: 0 0 1px 0;
-	padding-left: 5px;
-}
-.signup-form .btn {        
-	font-size: 16px;
-	font-weight: bold;
-	background: #19aa8d;
-	border-radius: 3px;
-	border: none;
-	min-width: 140px;
-	outline: none !important;
-}
-.signup-form .btn:hover, .signup-form .btn:focus {
-	background: #179b81;
-}
-.signup-form a {
-	color: #19aa8d;
-	text-decoration: none;
-}	
-.signup-form a:hover {
-	text-decoration: underline;
-}
-.signup-form .fa {
-	font-size: 21px;
-}
-
-.link{
-	letter-spacing: 0.02em;
-	text-transform: uppercase;
-	font-size: 0.99em;
-	font-weight: bold;
-	color: #5e6875;
-	text-decoration:none;
-	padding-right: 0.7rem;
-	padding-left: 0.7rem;
-	margin-top: 0.2rem;
-	font-family: "Open Sans", Helvetica, sans-serif;
-	line-height: 1.8;
-}
-
-
-
-nav li{
-	transition: background 0.5s; 
-	border-radius: 3px;
-}
-
-
-nav li:not(.active):hover{
-	background: white;
-}
-nav li:not(.active):hover a{
-	color: black !important;
-}
-.active{
-	background: white;
-}
-.active a{
-	color: black !important;
-}
-
-.text-center{
-	cursor: pointer;
-}
-
-@media screen and (max-width:736px) {
-	.signup-form {
-		margin: 20% auto;
-	}
-}
-@media screen and (max-width: 480px) {
-	.signup-form {
-		width: 300px;
-	}
-} */
-
-
-body {
-    color: #ccc;
-    background: #222; /* Dark background color */
+/* Light mode styles */
+body.light-mode {
+    color: #999;
+    background: #f5f5f5;
     font-family: 'Roboto', sans-serif;
     overflow-x: hidden;
 }
 
 .bg-dark {
-    background-color: #333!important; /* Dark navbar background color */
+    background-color: #343a40!important;
+}
+
+.form-control,
+.form-control:focus,
+.input-group-addon {
+    border-color: #e1e1e1;
+    border-radius: 0;
 }
 
 .signup-form {
     width: 390px;
-    margin: 3% auto;
+    margin: 5% auto;
     padding: 30px 0;
-    background: #444; /* Dark form background color */
-    border: 1px solid #333;
-    box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
-	margin-bottom: 30px;
 	
 }
 
 .signup-form h2 {
-    color: #ddd; /* Lighter text color */
+    color: #636363;
+    margin: 0 0 15px;
     text-align: center;
 }
 
 .signup-form .lead {
-    color: #ccc; /* Lighter text color */
     font-size: 14px;
     margin-bottom: 30px;
     text-align: center;
@@ -167,79 +39,177 @@ body {
 .signup-form form {
     border-radius: 1px;
     margin-bottom: 15px;
-    background: #555; /* Dark form background color */
+    background: #fff;
+    border: 1px solid #f3f3f3;
+    box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
     padding: 30px;
 }
 
+.signup-form .form-group {
+    margin-bottom: 20px;
+}
+
 .signup-form label {
-    color: #ccc; /* Lighter text color */
     font-weight: normal;
     font-size: 13px;
 }
 
 .signup-form .form-control {
-    color: #ddd; /* Lighter text color */
     min-height: 38px;
-    border-color: #444; /* Darker border color */
+    box-shadow: none !important;
+    border-width: 0 0 1px 0;
 }
 
 .signup-form .input-group-addon {
+    max-width: 42px;
+    text-align: center;
+    background: none;
+    border-width: 0 0 1px 0;
+    padding-left: 5px;
+}
+
+.signup-form .btn {
+    font-size: 16px;
+    font-weight: bold;
+    background: #19aa8d;
+    border-radius: 3px;
+    border: none;
+    min-width: 140px;
+    outline: none !important;
+}
+
+.signup-form .btn:hover,
+.signup-form .btn:focus {
+    background: #179b81;
+}
+
+.signup-form a {
+    color: #19aa8d;
+    text-decoration: none;
+}
+
+.signup-form a:hover {
+    text-decoration: underline;
+}
+
+.signup-form .fa {
+    font-size: 21px;
+}
+
+.link {
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    font-size: 0.99em;
+    font-weight: bold;
+    color: #5e6875;
+    text-decoration: none;
+    padding-right: 0.7rem;
+    padding-left: 0.7rem;
+    margin-top: 0.2rem;
+    font-family: "Open Sans", Helvetica, sans-serif;
+    line-height: 1.8;
+}
+
+nav li {
+    transition: background 0.5s;
+    border-radius: 3px;
+}
+
+nav li:not(.active):hover {
+    background: white;
+}
+
+nav li:not(.active):hover a {
+    color: black !important;
+}
+
+.active {
+    background: white;
+}
+
+.active a {
+    color: black !important;
+}
+
+.text-center {
+    cursor: pointer;
+}
+
+@media screen and (max-width: 736px) {
+    .signup-form {
+        margin: 20% auto;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .signup-form {
+        width: 300px;
+    }
+}
+
+/* Dark mode styles */
+body.dark-mode {
+    font-family: Arial, sans-serif;
+    transition: background-color 0.3s ease;
+    background-color: #333333; /* Dark mode background color */
+    color: #ffffff; /* Dark mode text color */
+}
+
+.signup-form.dark-mode {
+    background: #444 !important; /* Dark form background color */
+    border: 1px solid #333;
+    box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+    margin-bottom: 30px;
+}
+
+.signup-form.dark-mode h2 {
+    color: #ddd; /* Lighter text color */
+}
+
+.signup-form.dark-mode .lead {
+    color: #ccc; /* Lighter text color */
+}
+
+.signup-form.dark-mode form {
+    background-color: #555!important; /* Dark form background color */
+}
+
+.signup-form.dark-mode label {
+    color: #ccc; /* Lighter text color */
+}
+
+.signup-form.dark-mode .form-control {
     color: #ddd; /* Lighter text color */
     border-color: #444; /* Darker border color */
 }
 
-.signup-form .btn {
+.signup-form.dark-mode .input-group-addon {
+    color: #ddd; /* Lighter text color */
+    border-color: #444; /* Darker border color */
+}
+
+.signup-form.dark-mode .btn {
     color: #fff; /* Light text color */
     background: #19aa8d; /* Button background color */
 }
 
-.signup-form .btn:hover, .signup-form .btn:focus {
+.signup-form.dark-mode .btn:hover,
+.signup-form.dark-mode .btn:focus {
     background: #179b81; /* Darker button background color on hover/focus */
 }
 
-.signup-form a {
+.signup-form.dark-mode a {
     color: #19aa8d; /* Link color */
 }
 
-.signup-form a:hover {
+.signup-form.dark-mode a:hover {
     color: #179b81; /* Darker link color on hover */
 }
 
-.link {
+.link.dark-mode {
     color: #ccc; /* Lighter link color */
 }
 
-.link:hover {
+.link.dark-mode:hover {
     color: #ddd; /* Lighter link color on hover */
-}
-
-/* Navbar Styles */
-.navbar {
-    border-bottom: 1px solid #444; /* Darker border color */
-}
-
-.navbar-nav .nav-link {
-    color: #ccc; /* Lighter text color */
-}
-
-.navbar-nav .nav-link:hover {
-    color: #ddd; /* Lighter text color on hover */
-}
-
-.navbar-toggler {
-    border-color: #ccc; /* Lighter border color */
-}
-
-.navbar-toggler-icon {
-    background-color: #ccc; /* Lighter background color for the toggler icon */
-}
-
-/* Footer Styles */
-.footer {
-    color: #ccc; /* Lighter text color */
-    background-color: #333; /* Dark footer background color */
-}
-
-.footer p {
-    margin-bottom: 0; /* Remove bottom margin from paragraph */
 }
