@@ -117,3 +117,14 @@ function loginPage(){
   const url = "/login.html";
   window.location.href = url;
 }
+
+function toggleDarkMode() {
+  document.body.classList.toggle('dark-mode');
+}
+
+// Add event listener to the toggle button
+document.addEventListener("DOMContentLoaded", function() {
+  document.getElementById('flexSwitchCheckDefault').addEventListener('change', function() {
+      toggleDarkMode();
+  });
+});
