@@ -155,46 +155,46 @@ body.dark-mode {
     color: #ffffff; /* Dark mode text color */
 }
 
-.signup-form.dark-mode {
-    background: #444 !important; /* Dark form background color */
+body.dark-mode .signup-form {
+   
     border: 1px solid #333;
     box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
     margin-bottom: 30px;
 }
 
-.signup-form.dark-mode h2 {
+body.dark-mode .signup-form h2 {
     color: #ddd; /* Lighter text color */
 }
 
-.signup-form.dark-mode .lead {
+body.dark-mode .signup-form .lead {
     color: #ccc; /* Lighter text color */
 }
 
-.signup-form.dark-mode form {
+body.dark-mode .signup-form form {
     background-color: #555!important; /* Dark form background color */
 }
 
-.signup-form.dark-mode label {
+body.dark-mode .signup-form label {
     color: #ccc; /* Lighter text color */
 }
 
-.signup-form.dark-mode .form-control {
+body.dark-mode .signup-form .form-control {
     color: #ddd; /* Lighter text color */
     border-color: #444; /* Darker border color */
 }
 
-.signup-form.dark-mode .input-group-addon {
+body.dark-mode .signup-form .input-group-addon {
     color: #ddd; /* Lighter text color */
     border-color: #444; /* Darker border color */
 }
 
-.signup-form.dark-mode .btn {
+body.dark-mode .signup-form .btn {
     color: #fff; /* Light text color */
     background: #19aa8d; /* Button background color */
 }
 
-.signup-form.dark-mode .btn:hover,
-.signup-form.dark-mode .btn:focus {
+body.dark-mode .signup-form .btn:hover,
+body.dark-mode .signup-form .btn:focus {
     background: #179b81; /* Darker button background color on hover/focus */
 }
 
