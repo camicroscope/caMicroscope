@@ -400,15 +400,44 @@ function sendSplitFile(file, data) {
 }
 
 function showToast(type, message, dismissible = true) {
-  $('#toastPlaceholder').css('display', 'flex');
-  $('#toastAlert').removeClass('alert-success alert-danger alert-info');
-  $('#toastContent').html(message);
-  $('#toastAlert').addClass(type + ' show');
+  const errorMElement = document.getElementById('errorM');
+
+  // Create the toast element
+  const toastElement = document.createElement('div');
+  toastElement.classList.add('toast', 'show', type);
+  toastElement.style.position = 'fixed';
+  toastElement.style.left = '50%';
+  toastElement.style.transform = 'translate(-50%, -50%)';
+
+  // Set the content and styles of the toast body
+  const toastBody = document.createElement('div');
+  toastBody.classList.add('toast-body');
+  toastBody.style.fontSize = '18pt';
+  toastBody.style.color = 'red';
+  toastBody.style.width = 'auto';
+  toastBody.style.textAlign = 'center';
+  toastBody.textContent = message;
+
+  // Append the toast body to the toast element
+  toastElement.appendChild(toastBody);
+
+  // Add close button if dismissible
   if (dismissible) {
-    setTimeout(function() {
-      $('#toastAlert').removeClass('show');
-      $('#toastPlaceholder').hide();
-    }, 5000);
+    const closeButton = document.createElement('button');
+    closeButton.classList.add('btn-close');
+    closeButton.setAttribute('type', 'button');
+    closeButton.setAttribute('aria-label', 'Close');
+    toastBody.appendChild(closeButton);
+  }
+
+  // Append the toast element to the errorM element
+  errorMElement.appendChild(toastElement);
+
+  // Remove the toast after 3 seconds if dismissible
+  if (dismissible) {
+    setTimeout(() => {
+      toastElement.remove();
+    }, 3000);
   }
 }
 
