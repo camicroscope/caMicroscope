@@ -1,9 +1,13 @@
 name: axe
 on:
   push:
-    branches: [master]
+    branches: 
+      - master
+      - develop
   pull_request:
-    branches: [master]
+    branches: 
+      - master
+      - develop
 jobs:
   axe:
     runs-on: ubuntu-latest
