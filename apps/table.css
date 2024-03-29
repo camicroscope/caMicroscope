@@ -235,3 +235,13 @@ nav li:not(.active):hover{
 .p {
   margin-bottom: 0;
 }
+
+.table {
+  border-collapse: separate;
+  border-spacing: 0; /* Adjust the value to control the spacing between cells */
+}
+
+td {
+  text-align: center; /* or left, right, justify, etc. */
+}
+
