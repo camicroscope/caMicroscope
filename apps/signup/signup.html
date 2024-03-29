@@ -98,12 +98,12 @@
         </select>
 
         <br> <br>
-        <div class="form-group">
-          <div class="col">
-            <button type="submit" id="sub" class="btn btn-primary btn-lg sub-btn w-100" onclick="addUser()" disabled>
-                Please wait ...
-            </button>
-        </div>
+
+        <div class="form-group text-center">
+          <button type="submit" id="sub" class="btn btn-primary btn-block btn-lg sub-btn" onclick="addUser()" disabled>
+            Please wait ...
+          </button>
+          <div class="text-center" onclick="loginPage()" style="margin-top: 0.5em;">Already have an account? </div>
         </div>
         <!-- <p class="small text-center">This form is only useful to Admin users. If you reach this page, it's likely that you tried to log into this instance but lack
           access. Email the administrator if you want to be added.</p> -->
@@ -113,6 +113,7 @@
         </p>
       </form>
       <div class="text-center text-primary" onclick="loginPage()">Already have an account? </div>
+
     </div>
    
     <footer id="footer-layout"></footer>
