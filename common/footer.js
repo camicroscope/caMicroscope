@@ -1,0 +1,1 @@
+$('#copy-right-text').html(`Copyright © ${new Date().getFullYear()} caMicroscope`)
