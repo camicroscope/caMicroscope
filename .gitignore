@@ -2,7 +2,7 @@
 *.swp
 *.swo
 .cache
-test.yml
+
 
 # IntelliJ Idea
 .idea
