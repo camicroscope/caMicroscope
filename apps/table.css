@@ -236,6 +236,14 @@ nav li:not(.active):hover {
   margin-bottom: 0;
 }
 
+.table {
+  border-collapse: separate;
+  border-spacing: 0; /* Adjust the value to control the spacing between cells */
+}
+
+td {
+  text-align: center; /* or left, right, justify, etc. */
+=======
 
 .d-md-inline-flex{
   display: flex;
@@ -250,5 +258,6 @@ nav li:not(.active):hover {
 .close > span {
   line-height: 1;
   font-size: 24px;
+
 }
 

@@ -24,7 +24,7 @@
 	<script src='../components/loading/loading.js'></script>
 	<script src="./loader/loader.js"></script>
 	<script src="./loader/chunked_upload.js"></script>
-	<script type="text/javascript" src="https://apis.google.com/js/api.js"></script>
+	<script src="https://apis.google.com/js/api.js"></script>
 	<title>CaMicroscope Data Table</title>
 
 	<script src="https://code.jquery.com/jquery-3.4.1.min.js"
@@ -173,10 +173,10 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <table class="table table-borderless" cellpadding="5" style="margin-top: 1em" cellspacing="0">
+                        <table class="table table-borderless"  style="margin-top: 1em; padding: 5px;">
                             <tbody>
                                 <tr id="dicomServerRow">
-                                    <td align="right"><b>Server</b></td>
+                                    <td ><b>Server</b></td>
                                     <td><input type="text" class="form-control" disabled=""
                                             name="token" id="dicomServer"></td>
                                 </tr>
@@ -244,16 +244,16 @@
                                             </td>
                                         </tr>
                                         <tr id="filenameRow">
-                                            <td align="right"><b>Filename</b></td>
+                                            <td><b>Filename</b></td>
                                         </tr>
                                         <tr id="tokenRow">
-                                            <td align="right"><b>Token</b></td>
+                                            <td ><b>Token</b></td>
                                         </tr>
                                         <tr id="slidenameRow">
-                                            <td align="right"><b>Slidename</b></td>
+                                            <td ><b>Slidename</b></td>
                                         </tr>
                                         <tr id="filterRow">
-                                            <td align="right"><b>Filter (leave blank for public)</b></td>
+                                            <td><b>Filter (leave blank for public)</b></td>
                                         </tr>
                                     </table>
                                     <div id="upload-progress-div" style="display: none; align-content: center;">
