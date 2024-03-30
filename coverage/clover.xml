@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="1711820589098" clover="3.2.0">
+  <project timestamp="1711820589098" name="All files">
+    <metrics statements="5" coveredstatements="5" conditionals="0" coveredconditionals="0" methods="3" coveredmethods="3" elements="8" coveredelements="8" complexity="0" loc="5" ncloc="5" packages="1" files="1" classes="1"/>
+    <file name="itemManager.js" path="C:\Users\Gbenga\Desktop\caMicroscope\itemManager.js">
+      <metrics statements="5" coveredstatements="5" conditionals="0" coveredconditionals="0" methods="3" coveredmethods="3"/>
+      <line num="1" count="1" type="stmt"/>
+      <line num="4" count="10" type="stmt"/>
+      <line num="8" count="4" type="stmt"/>
+      <line num="12" count="3" type="stmt"/>
+      <line num="15" count="1" type="stmt"/>
+    </file>
+  </project>
+</coverage>

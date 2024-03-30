@@ -243,8 +243,7 @@ nav li:not(.active):hover {
 
 td {
   text-align: center; /* or left, right, justify, etc. */
-=======
-
+}
 .d-md-inline-flex{
   display: flex;
   justify-content: space-between;
