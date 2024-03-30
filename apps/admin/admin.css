@@ -168,3 +168,7 @@ iframe {
   color: #000 !important;
   background-color: #fff
 }
+
+iframe {
+  border: none;
+}
