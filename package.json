@@ -4,7 +4,7 @@
   "description": "",
   "scripts": {
     "test-mocha": "mocha test --recursive",
-    "test": "jest --coverage",
+    "test": "jest",
     "lint": "eslint ./core/*.js  ./components/**/*.js ./common/smartpen/*.js ./apps/*.js ./apps/port/*.js ./apps/heatmap/*.js ./apps/multi/*.js ./apps/labeling/*.js  ./apps/loader/*.js  ./apps/model/*.js  ./apps/segment/*.js  ./apps/model/**/*.js  ./apps/segment/**/*.js  ./apps/viewer/*.js --quiet",
     "lint-fix": "eslint ./core/*.js  ./components/**/*.js ./common/smartpen/*.js ./apps/*.js  ./apps/port/*.js ./apps/heatmap/*.js ./apps/multi/*.js ./apps/labeling/*.js  ./apps/loader/*.js  ./apps/model/*.js  ./apps/segment/*.js  ./apps/model/**/*.js  ./apps/segment/**/*.js  ./apps/viewer/*.js --quiet --fix"
   },
@@ -22,6 +22,7 @@
     "tippy": "0.0.0"
   },
   "devDependencies": {
-    "jest": "^29.7.0"
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0"
   }
 }
