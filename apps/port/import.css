@@ -7,9 +7,10 @@ body{
 }
 .form{
     margin: auto;
-    margin-top: 0.4%;
     width: 50%;
+    height: 100%;
     background-color:#f2f2f2;
+    box-sizing: border-box;
 
 }
 input {
@@ -23,13 +24,15 @@ input {
     transition: background-color 0.3s ease;
   }
 textarea{
+    margin-left: 5%;
     font-family: Roboto, Arial, sans-serif;
-    font-size: 16
-    width: 60%;
-    margin-left: 20%;
+    font-size: 16px;
+    width: 90%; 
+    max-width: 100%; 
     height: 150px;
     border: 3px solid grey;
     transition: background-color 0.3s ease;
+    box-sizing: border-box;
   }
 input:hover{
     background-color: #F9F7F1;
@@ -128,4 +131,22 @@ textarea:focus{
 label{
     font-size:15pt;
 
+}
+@media only screen and (max-width: 600px) {
+    .form {
+        width: 100%;
+        margin-left: 0px;
+    }
+    
+    .buttons {
+        width: calc(50% - 5px); 
+        display: block; 
+        margin-right: 5px; /* Add margin between buttons */
+        margin-bottom: 10px; /* Add margin below buttons */
+    }
+
+    textarea {
+        width: 90%; /* Adjust textarea width to 90% for better fit */
+        margin-left: 5%; /* Center textarea */
+    }
 }
