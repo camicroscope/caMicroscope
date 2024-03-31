@@ -141,12 +141,12 @@ label{
     .buttons {
         width: calc(50% - 5px); 
         display: block; 
-        margin-right: 5px; /* Add margin between buttons */
-        margin-bottom: 10px; /* Add margin below buttons */
+        margin-right: 5px; 
+        margin-bottom: 10px; 
     }
 
     textarea {
-        width: 90%; /* Adjust textarea width to 90% for better fit */
-        margin-left: 5%; /* Center textarea */
+        width: 90%; 
+        margin-left: 5%; 
     }
 }
