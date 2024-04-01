@@ -27,3 +27,8 @@ table.dataTable.order-column.stripe tbody tr.even.selected > .sorting_1 {
   background-color: #007bff;
   opacity: 0.5; 
 }*/
+
+
+#table {
+  width: 100%;
+}
