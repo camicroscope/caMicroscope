@@ -3,16 +3,23 @@ var protoTokenUrl = "../../auth/Token/proto";
 var permissions;
 const store = new Store('../../data/');
 
-function addUser(){
+function addUser() {
   var email = document.getElementById("mail").value
   var filters = document.getElementById("filters").value
   // var attr = document.querySelector('input[name="attr"]:checked').value
   var attrEle = document.getElementById("attr");
   var attr = attrEle.options[attrEle.selectedIndex].value;
-
+  var emailMsg = document.getElementById('emailMsg');
+  var message = document.getElementById('msg-last');
+  var messageElement = document.createElement("p");
+  messageElement.textContent = "Please Enter Correct Email.";
   if (!(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(email))) {
-    window.alert("Please enter a valid email");
-    return;
+    return(
+        emailMsg.appendChild(messageElement)
+    )
+  } else{
+     emailMsg.textContent = "";
+
   }
 
   var userType = "Null"
