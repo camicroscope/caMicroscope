@@ -5,6 +5,7 @@
 	<meta name="keywords" content="camicroscope, quip" />
 	<meta charset='utf-8'>
 	<meta http-equiv='X-UA-Compatible' content='IE=edge'>
+
 	<meta name='viewport'
 		content='width=device-width, initial-scale=1, minimum-scale=1.0, maximum-scale=2.0'>
 	<!-- common -->
@@ -13,22 +14,9 @@
 	<!-- Font Awesome -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
 
-	<script src='../common/authChecker.js'></script>
-	<script>
-		__auth_check(1)
-	</script>
-
-	<script src='../core/Store.js'></script>
-	<script src='../common/util.js'></script>
-	<script src='../common/ajv.js'></script>
-	<script src='../components/loading/loading.js'></script>
-	<script src="./loader/loader.js"></script>
-	<script src="./loader/chunked_upload.js"></script>
 	<title>CaMicroscope Data Table</title>
 
-	<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
-		integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
-		crossorigin="anonymous"></script>
+	<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"	integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"	crossorigin="anonymous"></script>
 		
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" 
 		rel="stylesheet" 
@@ -106,21 +94,24 @@
 			<div class="modal-body">
 				<div>
 					<div id="content">
-						<div class="alert alert-info" role="alert">
-
-							<h4 style="text-align:center">Synopsis</h4><hr style="margin-top:0px;">
-							<table id="detailtable">
-							</table>
+						<div class="card alert alert-info" role="alert">
+						 <div class="card-body">
+							<h4 class="card-title text-center">Synopsis</h4><hr class="mt-0">
+							<div class="table-responsive">
+								<table id="detailtable">
+								</table>
+							</div>
+						 </div>
 						</div>
 						<div class="alert alert-info" role="alert">
 
-							<h4 style="text-align:center">Annotations</h4><hr style="margin-top:0px;">
+							<h4 style="text-align:center">Annotations</h4><hr class="mt-0">
 							<table id="annotationtable">
 							</table>
 						</div>
 						<div class="alert alert-info" role="alert">
 
-							<h4 style="text-align:center">Heatmaps</h4><hr style="margin-top:0px;">
+							<h4 style="text-align:center">Heatmaps</h4><hr class="mt-0">
 							<table id="heatmaptable">
 							</table>
 						</div>
@@ -152,10 +143,6 @@
 		<input id="search-table" type="text" class="form-control" placeholder="Search">
 	</div>
 
-
-
-
-
   <div class="table-responsive" id="summary">
     <table class="table table-striped">
 			<thead id="infothead"></thead>
@@ -170,9 +157,24 @@
 <footer id="footer-layout"></footer>
 </div>
 
+
     <!-- script to call a footer(layout footer in the common > utils folder) function -->
 <script> insertFooterLayout(); </script>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8" crossorigin="anonymous"></script>
+
+<script src='../common/authChecker.js'></script>
+
+<script>
+		__auth_check(1)
+</script>
+
+<script src='../core/Store.js'></script>
+<script src='../common/util.js'></script>
+<script src='../common/ajv.js'></script>
+<script src='../components/loading/loading.js'></script>
+<script src="./loader/loader.js"></script>
+<script src="./loader/chunked_upload.js"></script>
 </body>
 <script>
 
