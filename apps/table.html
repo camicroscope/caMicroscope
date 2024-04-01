@@ -24,7 +24,7 @@
 	<script src='../components/loading/loading.js'></script>
 	<script src="./loader/loader.js"></script>
 	<script src="./loader/chunked_upload.js"></script>
-	<script type="text/javascript" src="https://apis.google.com/js/api.js"></script>
+	<script src="https://apis.google.com/js/api.js"></script>
 	<title>CaMicroscope Data Table</title>
 
 	<script src="https://code.jquery.com/jquery-3.4.1.min.js"
@@ -70,14 +70,10 @@
 						<li class="nav-item link" style="font-family: sans-serif;">
 							<a class="nav-link" href="./signup/signup.html"> <i class="fas fa-user-plus"></i> Signup</a>
 						</li>
-						<li class="nav-item link" style="font-family: sans-serif;">
-							<a class="nav-link" target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLScL91LxrpAZjU88GBZP9gmcdgdf8__uNUwhws2lzU6Lr4qNwA/viewform"> <i class="fas fa-comment"></i> Feedback</a>
-						</li>
 					</ul>
 				</div>
 		</div>
 	</nav>
-
 	<div class="header text-center text-white bg-info p-4">
 		<h1 class="h1">caMicroscope</h1>
 		<p style="font-weight: bold; font-size: 14pt;">Digital pathology image viewer with support for human/machine generated annotations and markups. View, Edit, and Manage Your Slides Here.</p>
@@ -176,10 +172,10 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <table class="table table-borderless" cellpadding="5" style="margin-top: 1em" cellspacing="0">
+                        <table class="table table-borderless"  style="margin-top: 1em; padding: 5px;">
                             <tbody>
                                 <tr id="dicomServerRow">
-                                    <td align="right"><b>Server</b></td>
+                                    <td ><b>Server</b></td>
                                     <td><input type="text" class="form-control" disabled=""
                                             name="token" id="dicomServer"></td>
                                 </tr>
@@ -247,16 +243,16 @@
                                             </td>
                                         </tr>
                                         <tr id="filenameRow">
-                                            <td align="right"><b>Filename</b></td>
+                                            <td><b>Filename</b></td>
                                         </tr>
                                         <tr id="tokenRow">
-                                            <td align="right"><b>Token</b></td>
+                                            <td ><b>Token</b></td>
                                         </tr>
                                         <tr id="slidenameRow">
-                                            <td align="right"><b>Slidename</b></td>
+                                            <td ><b>Slidename</b></td>
                                         </tr>
                                         <tr id="filterRow">
-                                            <td align="right"><b>Filter (leave blank for public)</b></td>
+                                            <td><b>Filter (leave blank for public)</b></td>
                                         </tr>
                                     </table>
                                     <div id="upload-progress-div" style="display: none; align-content: center;">

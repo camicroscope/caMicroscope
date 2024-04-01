@@ -14,11 +14,18 @@
 
 </head>
 <body>
+  
+<!-- loading animation -->
+<div class="main-site">
+    <!-- adding css -->
+    <div class="main-content" role="main" id="mainContent">
+        <div class="loader loader-black loader-5"></div>
+    </div>
+</div>
 
-    <!-- Header -->
 <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark" style="position: sticky; margin-top: -4em;">
     <div class="container-fluid">
-        <button class="navbar-toggler m-1" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler m-1" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation" style="width: 100%;">
             <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent" >
@@ -45,6 +52,7 @@
             </div>
     </div>
 </nav>
+
 
 
 <!-- Main -->
@@ -98,6 +106,14 @@
 
 
 <!-- Scripts -->
+<!-- loading animation script -->
+<script>
+    var loader= document.querySelector('.loader');
+    window.addEventListener('load', function() {
+        loader.style.display = 'none';
+    });
+</script>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8" crossorigin="anonymous"></script>
 <script src="./jquery.min.js"></script>
 

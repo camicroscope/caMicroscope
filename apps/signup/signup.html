@@ -35,10 +35,9 @@
   </head>
 
   <body>
-
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark" style="position: sticky; margin-top: -4em;">
       <div class="container-fluid">
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation" style="width: 100%;">
               <span class="navbar-toggler-icon"></span>
               </button>
               <div class="collapse navbar-collapse" id="navbarSupportedContent" >
@@ -80,6 +79,7 @@
             <input id="mail" type="email" class="form-control" name="email" placeholder="Email">
           </div>
           <div id="emailError" class="error-message text-danger"></div> 
+
         </div>
         <br>
         <div class="form-group">
@@ -98,12 +98,12 @@
         </select>
 
         <br> <br>
-        <div class="form-group">
-          <div class="col">
-            <button type="submit" id="sub" class="btn btn-primary btn-lg sub-btn w-100" onclick="addUser()" disabled>
-                Please wait ...
-            </button>
-        </div>
+
+        <div class="form-group text-center">
+          <button type="submit" id="sub" class="btn btn-primary btn-block btn-lg sub-btn" onclick="addUser()" disabled>
+            Please wait ...
+          </button>
+          <div class="text-center" onclick="loginPage()" style="margin-top: 0.5em;">Already have an account? </div>
         </div>
 
         <!-- <p class="small text-center">This form is only useful to Admin users. If you reach this page, it's likely that you tried to log into this instance but lack
@@ -115,6 +115,7 @@
         </p>
       </form>
       <div class="text-center text-primary" onclick="loginPage()">Already have an account? </div>
+
     </div>
    
     <footer id="footer-layout"></footer>
@@ -135,5 +136,5 @@
     <!-- script to call a footer(layout footer in the common > utils folder) function -->
   <script> insertFooterLayout();</script>
 
-  </body>
+  </body>
 </html>

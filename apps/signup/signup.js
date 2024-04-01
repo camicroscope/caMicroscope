@@ -21,6 +21,7 @@ function addUser(){
   // var attr = document.querySelector('input[name="attr"]:checked').value
   var attrEle = document.getElementById("attr");
   var attr = attrEle.options[attrEle.selectedIndex].value;
+  var emailErr = document.getElementById('emailerror');
 
   // Clear previous error messages
   emailError.style.display = "none";
@@ -36,7 +37,9 @@ function addUser(){
     filtersError.style.display = "block";
     filtersError.innerHTML = "Please enter atleast one filter.";
     return;
+
   }
+
 
   var userType = "Null"
   if (attr == "3"){
