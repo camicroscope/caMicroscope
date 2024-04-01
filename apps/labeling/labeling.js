@@ -77,6 +77,10 @@ function initCore() {
         defaultText: `Slide: ${$D.params.data.name}`,
       });
     }
+    $CAMIC.viewer.addHandler('open-failed', function(e) {
+      console.error(e.message, e);
+      redirect($D.pages.table, e.message, 5);
+    });
   });
 
   $CAMIC.viewer.addHandler('open', function() {
@@ -146,7 +150,7 @@ function initCore() {
       value: 'bugs',
       type: 'btn',
       callback: ()=>{
-        window.open('https://goo.gl/forms/mgyhx4ADH0UuEQJ53', '_blank').focus();
+        window.open('https://github.com/camicroscope/caMicroscope/issues', '_blank').focus();
       },
     },
     ],

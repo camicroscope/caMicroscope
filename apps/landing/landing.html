@@ -8,59 +8,48 @@
         integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0"
         crossorigin="anonymous">
     <link rel="stylesheet" href="./main.css" />
+    <!-- common styling -->
+	<link rel='stylesheet' type='text/css' media='all' href='../common.css'/>
     <link rel="shortcut icon" type="image/x-icon" href="favicon.png">
 
 </head>
 <body>
-
-
-
-<!-- Header -->
-
-<!-- <header id="header" >
-    <nav id= "nav" class="navbar navbar-expand-md navbar-dark fixed-top bg-dark" style="position: sticky;">
-        <button style="display:none;" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-			<span class="navbar-toggler-icon"></span>
-		</button>
-       <ul>
-            <li><a href="landing.html" class="link" style="color: white;">Home</a></li>
-            <li><a href="../table.html"  class="link">Slides</a></li>
-            <li style="float: right;"><a href="/apps/signup/signup.html"  class="link">Signup</a></li>
-            <li style="float: right;"><a target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLScL91LxrpAZjU88GBZP9gmcdgdf8__uNUwhws2lzU6Lr4qNwA/viewform"  class="link">Feedback</a></li>
-
-        </ul>
-
-    </nav>
-
-</header> -->
+  
+<!-- loading animation -->
+<div class="main-site">
+    <!-- adding css -->
+    <div class="main-content" role="main" id="mainContent">
+        <div class="loader loader-black loader-5"></div>
+    </div>
+</div>
 
 <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark" style="position: sticky; margin-top: -4em;">
     <div class="container-fluid">
         <button class="navbar-toggler m-1" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation" style="width: 100%;">
             <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent" >
-            <ul class="navbar-nav mr-auto gap-1">
-                <li class="nav-item active link" style="font-family: sans-serif;">
-                   <a class="nav-link" href="landing.html"> <i class="fas fa-home"></i> Home</a>
-                </li>
-                <li class="nav-item  link" style="font-family: sans-serif;">
-                    <a class="nav-link" href="../table.html"> <i class="fas fa-list-ul"></i>  Slides</a>
-                </li>
-                <li class="nav-item link">
-                    <a class="nav-link" href="../Info.html"> <i class="fas fa-info-circle"></i> Info</a>
-                </li>
-                <li class="nav-item link">
-                    <a class="nav-link" href="../dev-workbench/workbench.html"> <i class="fas fa-pencil-ruler"></i> Workbench</a>
-                </li>
-                <li class="nav-item link" style="font-family: sans-serif;">
-                    <a class="nav-link" href="../signup/signup.html"> <i class="fas fa-user-plus"></i> Signup</a>
-                </li>
-                <li class="nav-item link" style="font-family: sans-serif;">
-                    <a class="nav-link" target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLScL91LxrpAZjU88GBZP9gmcdgdf8__uNUwhws2lzU6Lr4qNwA/viewform"> <i class="fas fa-comment"></i> Feedback</a>
-                </li>
-            </ul>
-        </div>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent" >
+                <ul class="navbar-nav mr-auto gap-1">
+                    <li class="nav-item active link" style="font-family: sans-serif;">
+                       <a class="nav-link" href="landing.html"> <i class="fas fa-home"></i> Home</a>
+                    </li>
+                    <li class="nav-item  link" style="font-family: sans-serif;">
+                        <a class="nav-link" href="../table.html"> <i class="fas fa-list-ul"></i>  Slides</a>
+                    </li>
+                    <li class="nav-item link">
+                        <a class="nav-link" href="../Info.html"> <i class="fas fa-info-circle"></i> Info</a>
+                    </li>
+                    <li class="nav-item link">
+                        <a class="nav-link" href="../dev-workbench/workbench.html"> <i class="fas fa-pencil-ruler"></i> Workbench</a>
+                    </li>
+                    <li class="nav-item link" style="font-family: sans-serif;">
+                        <a class="nav-link" href="../signup/signup.html"> <i class="fas fa-user-plus"></i> Signup</a>
+                    </li>
+                    <li class="nav-item link" style="font-family: sans-serif;">
+                        <a class="nav-link" target="_blank" href="https://github.com/camicroscope/caMicroscope/issues"> <i class="fas fa-comment"></i> Feedback</a>
+                    </li>
+                </ul>
+            </div>
     </div>
 </nav>
 
@@ -82,13 +71,13 @@
 
         <div class="content">
             <p>caMicroscope is a tool to view, annotate, and analyze biomedical images.</p>
-            <a href="#" class="image fit"><img src="./banner1.jpg" alt="" /></a>
+            <a href="#" class="image fit" aria-label="Reload Home Page"><img src="./banner1.jpg" alt="" /></a>
 
         </div>
 
         <div class="posts" style="margin-top: 5em;">
             <section class="post">
-                <a href="../table.html" class="image"><img src="./camic.jpg" alt=""/></a>
+                <a href="../table.html" class="image" aria-label="Visit Slides Page"><img src="./camic.jpg" alt=""/></a>
                 <div class="content">
                     <h3>caMicroscope</h3>
                     <p>Use camicroscope to explore and mark slides uploaded. If this is a restricted access deployment, you will be prompted to log in here.</p>
@@ -96,7 +85,7 @@
                 </div>
             </section>
             <section class="post">
-                <a target="_blank" href="https://camicroscope.github.io/docs/" class="image"><img src="./code.jpg" alt=""/></a>
+                <a target="_blank" href="https://camicroscope.github.io/docs/" class="image" aria-label="Visit Documentation Page"><img src="./code.jpg" alt=""/></a>
                 <div class="content">
                     <h3>Documentation</h3>
                     <p>Read documentation for using and developing caMicroscope.</p>
@@ -110,32 +99,21 @@
 
 
 <!-- Footer -->
-
-<footer id="footer">
-
-    <div class="content">
-
-        <div class="inner">
-
-
-
-            <section class="about" style="margin-left:0cm">
-
-                U24 CA18092401A1, <b>Tools to Analyze Morphology and Spatially Mapped Molecular Data</b>
-            </section>
-
-
-        </div>
-
-    </div>
-
-</footer>
+<footer id="footer-layout"></footer>
 
 
 
 
 
 <!-- Scripts -->
+<!-- loading animation script -->
+<script>
+    var loader= document.querySelector('.loader');
+    window.addEventListener('load', function() {
+        loader.style.display = 'none';
+    });
+</script>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8" crossorigin="anonymous"></script>
 <script src="./jquery.min.js"></script>
 
@@ -146,9 +124,10 @@
 <script src="./skel.min.js"></script>
 
 <script src="./util.js"></script>
+<script src="../../common/util.js"></script>
 
-
-
+    <!-- script to call a footer(layout footer in the common > utils folder) function -->
+<script> insertFooterLayout(); </script>
 </body>
 
 
