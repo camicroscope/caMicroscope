@@ -991,16 +991,16 @@ LayersViewer.prototype.__search = function(e) {
 LayersViewer.prototype.__switch = function(e) {
   const nextElt = e.target.parentNode.nextElementSibling;
   // Toggle the expanded class and adjusting maxHeight for animation
-  if (nextElt.classList.contains("expanded")) {
+  if (nextElt.classList.contains('expanded')) {
     // Collapse the element
     nextElt.style.maxHeight = null; // Here we revert it to the css default
-    nextElt.classList.remove("expanded");
+    nextElt.classList.remove('expanded');
     e.target.innerHTML = 'keyboard_arrow_right'; // Set icon to indicate collapsed state
   } else {
     // Expand the element
-    nextElt.style.maxHeight = nextElt.scrollHeight + "px"; // Expand to its natural height
-    nextElt.classList.add("expanded");
-    e.target.innerHTML = 'keyboard_arrow_down' // Set icon to indicate expanded state
+    nextElt.style.maxHeight = nextElt.scrollHeight + 'px'; // Expand to its natural height
+    nextElt.classList.add('expanded');
+    e.target.innerHTML = 'keyboard_arrow_down'; // Set icon to indicate expanded state
   }
 };
 
