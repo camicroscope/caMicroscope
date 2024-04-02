@@ -4825,3 +4825,8 @@
 		::-webkit-scrollbar-thumb:hover {
 		background: grey;
 		}
+
+		iframe {
+			border: none;
+		}
+		
