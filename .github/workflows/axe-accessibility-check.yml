@@ -23,8 +23,12 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - run: npm ci
       - run: npm run build --if-present
-      - run: npm start & npx wait-on http://localhost:4010
+      - name: Start Docker Container
+        run: |
+          docker run -d -p 80:80 my-apache-server
+          sleep 5 # Wait for container to start
+          docker ps # Display running containers for debugging
       - name: Run axe
         run: |
           npm install -g @axe-core/cli
-          axe http://localhost:4010 --exit
+          axe http://localhost:80 --exit
