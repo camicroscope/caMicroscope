@@ -405,13 +405,22 @@ function VieweportFeaturesToImageFeatures(viewer, geometries) {
   this.imgHeight = image.source.dimensions.y;
 
   geometries.features = geometries.features.map((feature) => {
-    if (feature.geometry.type=='Point') {
+    if (feature.geometry.type=='Point'||feature.geometry.type=='Circle'||feature.geometry.type=='Ellipse') {
       feature.geometry.coordinates = [
         Math.round(feature.geometry.coordinates[0] * imgWidth),
         Math.round(feature.geometry.coordinates[1] * imgHeight)];
       feature.bound.coordinates =[
         Math.round(feature.bound.coordinates[0] * imgWidth),
         Math.round(feature.bound.coordinates[1] * imgHeight)];
+      
+      
+      
+      if (feature.geometry.type=='Circle') {
+        feature.geometry.radius = Math.round(feature.geometry.radius * imgWidth)
+      }
+      if (feature.geometry.type=='Ellipse') {
+        feature.geometry.radius = [Math.round(feature.geometry.radius[0] * imgWidth), Math.round(feature.geometry.radius[1] * imgHeight)];
+      }
       return feature;
     }
     feature.geometry.coordinates[0] = feature.geometry.coordinates[0].map(
