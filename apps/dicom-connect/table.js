@@ -136,7 +136,7 @@ function initialize() {
         // mapping and merge
         data.forEach(elt=>elt.source=src.name)
         page_states[page_states.status].data = data 
-
+        console.log(data)
         // ${baseUrl}/studies/${studyId}/series
         function generateLink (data, type, row) {
           const studyId = row['0020000D']['Value'][0]
@@ -174,7 +174,7 @@ function initialize() {
           elt.status='loading' // 'loading', 'unsync', 'syncing', 'done'
         })
         
-        
+        console.log(data)
         page_states[page_states.status].data = data
         function generateLink (data, type, row) {
           const seriesId = row['0020000E']['Value'][0]
@@ -189,7 +189,7 @@ function initialize() {
             case 'unsync':
               // return btn
               const seriesId = row['0020000E']['Value'][0]
-              return `<div class="icon-center"><button onClick="syncSeries('${row.source}', '${row.studyId}', '${seriesId}')" class="btn btn-sm btn-primary" title="Sync Series"><i class="fas fa-sync"></i></button></div>`;
+              return `<div class="icon-center"><button onClick="syncSeries('${row.source}', '${row.studyId}', '${seriesId}')" class="btn btn-sm btn-primary" title="Sync Series"><i class="fas fa-cloud-download-alt"></i></button></div>`; //<i class="fas fa-cloud-download-alt"></i>
             case 'syncing':
               // return downloading
               // return '<div class="icon-center"><i class="fas fa-pen"></i></div>';
