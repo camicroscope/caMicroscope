@@ -135,8 +135,7 @@ function initialize() {
       getStudies(src.url).then(function(data) {
         // mapping and merge
         data.forEach(elt=>elt.source=src.name)
-        page_states[page_states.status].data = data 
-        console.log(data)
+        page_states[page_states.status].data = data
         // ${baseUrl}/studies/${studyId}/series
         function generateLink (data, type, row) {
           const studyId = row['0020000D']['Value'][0]
@@ -173,8 +172,6 @@ function initialize() {
           elt.studyId=params.studyId
           elt.status='loading' // 'loading', 'unsync', 'syncing', 'done'
         })
-        
-        console.log(data)
         page_states[page_states.status].data = data
         function generateLink (data, type, row) {
           const seriesId = row['0020000E']['Value'][0]
@@ -270,7 +267,6 @@ function initialize() {
           elt.seriesId=params.seriesId
           
         })
-        console.log(data)
         page_states[page_states.status].data = data
         function generateLink (data, type, row) {
           const {studyId, seriesId, status}= row
