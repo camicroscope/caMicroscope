@@ -231,6 +231,8 @@ function initialize() {
             const idx = slides.findIndex(slide=>d['0020000E']['Value'][0]==slide.series)
             if (idx!=-1) {
               d.status = slides[idx].dicomSync
+            } else {
+              d.status = 'unsync'
             }
           });
 
