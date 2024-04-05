@@ -1359,7 +1359,7 @@ function locationCallback(layerData) {
     return;
   }
   //  locate annotation 3.0
-  const geoType = item.data.geometries.features[0].geometry.type
+  const geoType = item.data.geometries.features[0].geometry.type;
   if (geoType == 'Point'||geoType == 'Circle'||geoType == 'Ellipse') {
     const bound = item.data.geometries.features[0].bound.coordinates;
     const center = $CAMIC.viewer.viewport.imageToViewportCoordinates(
