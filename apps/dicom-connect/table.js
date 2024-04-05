@@ -2,16 +2,21 @@
  * static variables
  */
 
-const sources = {
-  'j4care': 'https://development.j4care.com:11443/dcm4chee-arc/aets/DCM4CHEE/rs',
-  'dicomweb': 'https://dicomwebproxy-bqmq3usc3a-uc.a.run.app/dicomWeb'
-}
+const sources = [{
+  'name':'j4care',
+  'url':'https://development.j4care.com:11443/dcm4chee-arc/aets/DCM4CHEE/rs'
+  
+},{
+  'name': 'google',
+  'url': 'https://dicomwebproxy-bqmq3usc3a-uc.a.run.app/dicomWeb'
+}]
 // const j4careStudiesUrl = 'https://development.j4care.com:11443/dcm4chee-arc/aets/DCM4CHEE/rs'
 // const dicomWebStudiesUrl = 'https://dicomwebproxy-bqmq3usc3a-uc.a.run.app/dicomWeb'
 
 /**
  * global variables
  */
+isAllSeriesSynced = false;
 
 const datatableConfig = {
   scrollX: true,
@@ -23,6 +28,16 @@ const datatableConfig = {
 
 
 const page_states = {
+  sources: {
+    data: [{
+      'name':'j4care',
+      'url':'https://development.j4care.com:11443/dcm4chee-arc/aets/DCM4CHEE/rs'
+      
+    },{
+      'name': 'google',
+      'url': 'https://dicomwebproxy-bqmq3usc3a-uc.a.run.app/dicomWeb'
+    }],
+  },
   studies: {
     data: null,
   },
@@ -32,7 +47,7 @@ const page_states = {
   instances: {
     data: null,
   },
-  status: 'studies', // 'studies, series, instsances'
+  status: 'sources', // 'sources, studies, series, instsances'
 }
 var studies = []
 
@@ -72,17 +87,17 @@ function sanitize(string) {
 }
 
 
-
 function initialize() {
   const params = getUrlVars();
   console.log('params')
   console.log(params)
-  
-  if(params.status=='series'&&params.studyId) { // series table
+  // store
+  const store = new Store('../../../data/');
+  if(params.status=='studies'&&params.source){
     page_states.status = params.status;
-
-
-  } else if(params.status=='instances'&&params.studyId&&params.seriesId) { // isntasnces table
+  }else if(params.status=='series'&&params.source&&params.studyId) { // series table
+    page_states.status = params.status;
+  } else if(params.status=='instances'&&params.source&&params.studyId&&params.seriesId) { // isntasnces table
     page_states.status = params.status;
   }
 
@@ -92,28 +107,40 @@ function initialize() {
   // <li class="breadcrumb-item"><a href="#">Series</a></li>
   // <li class="breadcrumb-item active" aria-current="page">Instances</li>
   switch (page_states.status) {
+    case 'sources':
+      $('#breadcrumb').append(`<li class="breadcrumb-item active" aria-current="page"><Strong>Sources</Strong></li>`);
+      function generateLink (data, type, row) {
+        return `<a href="../dicom-connect/table.html?source=${row.name}&status=studies">${row.name}</a>`;
+      }
+      datatable = $('#datatable').DataTable({
+        ... datatableConfig,
+        'data': page_states[page_states.status].data,
+        'columns': [
+          {data: 'name', title: 'Name', render:generateLink}
+        ]
+      });
+
+      break;
     case 'studies':
+
+      //get source info
+      var idx = sources.findIndex(elt=>elt.name==params.source)
+      var src = sources[idx]
+
       // create breadcrumb for studies
-      $('#breadcrumb').append(`<li class="breadcrumb-item active" aria-current="page"><Strong>Studies</Strong></li>`);
+      $('#breadcrumb').append(`<li class="breadcrumb-item" aria-current="page"><a href="../dicom-connect/table.html"><Strong>Sources</Strong><a></li>`);
+      $('#breadcrumb').append(`<li class="breadcrumb-item active" aria-current="page"><Strong>${src.name}</Strong></li>`);
       // get all studies
-      const Promises = [];
-      Promises.push(getStudies(sources.j4care));
-      Promises.push(getStudies(sources.dicomweb));
-      Promise.all(Promises)
-      .then(function(data) {
-        // get studies from j4care and dicomweb
-        const j4careStudies = data[0];
-        const dicomWebStudies = data[1];
-        
+      
+      getStudies(src.url).then(function(data) {
         // mapping and merge
-        j4careStudies.forEach(elt=>elt.source='j4care')
-        dicomWebStudies.forEach(elt=>elt.source='dicomweb')
-        page_states[page_states.status].data = [...j4careStudies, ...dicomWebStudies]//studiesTransformer([...j4careStudies, ...dicomWebStudies]) 
+        data.forEach(elt=>elt.source=src.name)
+        page_states[page_states.status].data = data 
 
         // ${baseUrl}/studies/${studyId}/series
         function generateLink (data, type, row) {
           const studyId = row['0020000D']['Value'][0]
-          return `<a href="../dicom-connect/table.html?source=${row.source}&status=series&studyId=${studyId}">${studyId}</a>`;
+          return `<a href="../dicom-connect/table.html?status=series&source=${row.source}&studyId=${studyId}">${studyId}</a>`;
         }
         datatable = $('#datatable').DataTable({
           ... datatableConfig,
@@ -128,66 +155,137 @@ function initialize() {
 
       break;
     case 'series':
+      //get source info
+      var idx = sources.findIndex(elt=>elt.name==params.source)
+      var src = sources[idx]
+
       // create breadcrumb for series
-      $('#breadcrumb').append(`<li class="breadcrumb-item"><a href="../dicom-connect/table.html"><strong>Studies</strong></a></li>`);
+      $('#breadcrumb').append(`<li class="breadcrumb-item" aria-current="page"><a href="../dicom-connect/table.html"><Strong>Sources</Strong><a></li>`);
+      $('#breadcrumb').append(`<li class="breadcrumb-item" aria-current="page"><a href="../dicom-connect/table.html?source=${src.name}&status=studies&studyId=${params.studyId}"><Strong>${src.name}</Strong><a></li>`);
       $('#breadcrumb').append(`<li class="breadcrumb-item active" aria-current="page"><strong>${params.studyId}</strong></li>`);
       // get all series
-      getSeries(sources[params.source], params.studyId).then(function(data) {
+
+
+      getSeries(src.url, params.studyId).then(function(data) {
         // add source and study id
         data.forEach(elt=>{
-          elt.source=params.source
+          elt.source=src.name
           elt.studyId=params.studyId
-          
+          elt.status='loading' // 'loading', 'unsync', 'syncing', 'done'
         })
         
         
         page_states[page_states.status].data = data
         function generateLink (data, type, row) {
           const seriesId = row['0020000E']['Value'][0]
-          return `<a href="../dicom-connect/table.html?source=${row.source}&status=instances&studyId=${params.studyId}&seriesId=${seriesId}">${seriesId}</a>`;
+          if (row.status !='done') return seriesId
+          return `<a href="../dicom-connect/table.html?status=instances&source=${row.source}&studyId=${params.studyId}&seriesId=${seriesId}">${seriesId}</a>`;
         }
-        console.log(data)
+        function generateStatus (data, type, row) {
+          switch (row.status) {
+            case 'loading':
+              // return spin
+              return '<div class="icon-center" title="Loading..."><i class="fas fa-spinner fa-spin"></i></div>';   
+            case 'unsync':
+              // return btn
+              const seriesId = row['0020000E']['Value'][0]
+              return `<div class="icon-center"><button onClick="syncSeries('${row.source}', '${row.studyId}', '${seriesId}')" class="btn btn-sm btn-primary" title="Sync Series"><i class="fas fa-sync"></i></button></div>`;
+            case 'syncing':
+              // return downloading
+              // return '<div class="icon-center"><i class="fas fa-pen"></i></div>';
+                  return  `<div title="Syncing..." class="progress"><div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div></div>`
+              case 'done':
+              // return url
+
+              return '<div class="icon-center text-success" title="View"><i class="fas fa-check"></i></div>';
+                                    
+            default:
+
+              return '<div class="icon-center text-danger" title="Error"><i class="fas fa-times"></i></div>';
+          }
+        }  
         datatable = $('#datatable').DataTable({
           ... datatableConfig,
           'data': page_states[page_states.status].data,
           'columns': [
-            {data: '0020000E.Value.0', title: 'Series Id', render: generateLink},
+            {data: 'status', title: 'Status', render: generateStatus},
+            {data: '0020000E.Value.0', title: 'Series Id',render:generateLink },
             {data: '00080060.Value.0', title: 'Modality'},
             {data: 'source', title: 'Source'},
             {data: 'studyId', title: 'study Id'}
 
           ]
-        });        
+        });
+
+        // set interval to check series status
+        var updateSeriesStatus = setInterval(async function() {
+          // get slides status
+          const query = {
+            'dicomSource': params.source,
+          }
+          // ('dicomSource', 'study', 'series', 'instance'
+          const slides = await store.findSlide(null, null, params.studyId, null, query)
+          // update series data
+          datatable.data().each(function (d) {
+            d['0020000E']['Value'][0]
+            const idx = slides.findIndex(slide=>d['0020000E']['Value'][0]==slide.series)
+            if (idx!=-1) {
+              d.status = slides[idx].dicomSync
+            }
+          });
+
+          // invalidate all rows and redraw
+          datatable.rows().invalidate().draw();
+          const series =  page_states[page_states.status].data       
+          if (series.map(s=>s.status).every(status=>status!='unsync'&&status!='syncing')) { // clear interval if all synced
+            console.log('clear');
+            clearInterval(updateSeriesStatus);
+          }
+          console.log('running')
+        }, 1000);
       })
       break;
     case 'instances':
+      //get source info
+      var idx = sources.findIndex(elt=>elt.name==params.source)
+      var src = sources[idx]      
       // create breadcrumb for instances
       const backSeriesUrl = `../dicom-connect/table.html?source=${params.source}&status=series&studyId=${params.studyId}`
-      $('#breadcrumb').append(`<li class="breadcrumb-item"><a href="../dicom-connect/table.html"><strong>Studies</strong></a></li>`);
+      $('#breadcrumb').append(`<li class="breadcrumb-item" aria-current="page"><a href="../dicom-connect/table.html"><Strong>Sources</Strong><a></li>`);
+      $('#breadcrumb').append(`<li class="breadcrumb-item" aria-current="page"><a href="../dicom-connect/table.html?source=${src.name}&status=studies&studyId=${params.studyId}"><Strong>${src.name}</Strong><a></li>`);
       $('#breadcrumb').append(`<li class="breadcrumb-item"><a href="${backSeriesUrl}"><strong>${params.studyId}</strong></a></li>`);
       $('#breadcrumb').append(`<li class="breadcrumb-item active" aria-current="page"><strong>${params.seriesId}</strong></li>`);
 
-      getInstances(sources[params.source], params.studyId, params.seriesId).then(function(data) {
-        console.log(data)
+
+
+
+
+      getInstances(src.url, params.studyId, params.seriesId).then(function(data) {
+        // add status
         data.forEach(elt=>{
           elt.source=params.source
           elt.studyId=params.studyId
           elt.seriesId=params.seriesId
+          
         })
+        console.log(data)
         page_states[page_states.status].data = data
         function generateLink (data, type, row) {
-          const {studyId, seriesId, source}= row
+          const {studyId, seriesId, status}= row
           const instanceId = row['00080018']['Value'][0]
-          return `<a href="${sources[source]}/studies/${studyId}/series/${seriesId}/instances/${instanceId}/rendered?viewport=1024,1024&accept=image/png" target="_blank">${instanceId}</a>`;
+          if (status=='done') return instanceId
+          return `<a href="${src.url}/studies/${studyId}/series/${seriesId}/instances/${instanceId}/rendered?viewport=1024,1024&accept=image/png" target="_blank">${instanceId}</a>`;
         }
+
         datatable = $('#datatable').DataTable({
           ... datatableConfig,
           'data': page_states[page_states.status].data,
           'columns': [
-            {data: '0020000D.Value.0', title: 'Instance Id', render: generateLink},
+            {data: '00080018.Value.0', title: 'Instance Id', render: generateLink},
             {data: 'source', title: 'Source'},
             {data: 'seriesId', title: 'Series Id'},
-            {data: 'studyId', title: 'study Id'}
+            {data: 'studyId', title: 'Study Id'},
+            
           ]
         });
       })      
@@ -202,3 +300,16 @@ function initialize() {
 $(document).ready(function() {
   initialize();
 });
+
+
+function syncSeries(source, studyId, seriesId) {
+  console.log(`syncSeries: ${source}, ${studyId}, ${seriesId}`)
+}
+
+function checkSeriesStatus() {
+  const series = page_states[page_states.status].data
+  series.map()
+
+}
+// table.rows.add( dataset ).draw().
+
