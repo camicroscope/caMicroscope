@@ -36,6 +36,7 @@ function objToParamStr(obj) {
 class Store {
   constructor(base, validation, config) {
     this.base = base || './data/';
+    
     this.validation = validation || {};
     this.config = config;
   }
@@ -945,7 +946,34 @@ class Store {
       body: JSON.stringify(update),
     });
   }
+  /***
+   * dicom api start
+   * 
+   */
+  async syncSeries(baseUrl, data = {}) {
+    // the data structure:
+    // const {source_url, study, series, modality} = data
 
+    const suffix = 'loader/dicomWeb/importSeries';
+    const url = baseUrl + suffix;    
+    // Default options are marked with *
+    const response = await fetch(url, {
+      method: "POST", 
+      mode: "cors", 
+      cache: "no-cache", 
+      headers: {
+        "Content-Type": "application/json",
+      },
+      redirect: "follow",
+      referrerPolicy: "no-referrer",
+      body: JSON.stringify(data),
+    });
+    return response.json();
+  }
+  /***
+   * dicom api end
+   * 
+   */
   addPresetLabels(labels) {
     const suffix = 'Presetlabels/add';
     const url = this.base + suffix;

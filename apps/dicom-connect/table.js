@@ -185,8 +185,9 @@ function initialize() {
               return '<div class="icon-center" title="Loading..."><i class="fas fa-spinner fa-spin"></i></div>';   
             case 'unsync':
               // return btn
-              const seriesId = row['0020000E']['Value'][0]
-              return `<div class="icon-center"><button onClick="syncSeries('${row.source}', '${row.studyId}', '${seriesId}')" class="btn btn-sm btn-primary" title="Sync Series"><i class="fas fa-cloud-download-alt"></i></button></div>`; //<i class="fas fa-cloud-download-alt"></i>
+              const seriesId = row['0020000E']['Value'][0];
+              const modality = row['00080060']['Value'][0];
+              return `<div class="icon-center"><button onClick="syncSeries('${row.source}', '${row.studyId}', '${seriesId}', '${modality}')" class="btn btn-sm btn-primary" title="Sync Series"><i class="fas fa-cloud-download-alt"></i></button></div>`; //<i class="fas fa-cloud-download-alt"></i>
             case 'syncing':
               // return downloading
               // return '<div class="icon-center"><i class="fas fa-pen"></i></div>';
@@ -300,8 +301,11 @@ $(document).ready(function() {
 });
 
 
-function syncSeries(source, studyId, seriesId) {
-  console.log(`syncSeries: ${source}, ${studyId}, ${seriesId}`)
+async function syncSeries(source_url, study, series, modality) {
+  console.log(source_url, study, series, modality);
+  const result = await store.syncSeries('../../../', {source_url, study, series, modality})
+  console.log('syncSeries:');
+  console.log(result);
 }
 
 function checkSeriesStatus() {
