@@ -77,3 +77,4 @@ class EditDataCluster{
     }
 }
 
+module.exports = {EditDataCollection, EditDataCluster};
