@@ -283,3 +283,5 @@ class mathtoolSmartpen {
 
 var spen = new smartpen();
 var mtool = new mathtoolSmartpen();
+
+module.exports = {smartpen, mathtoolSmartpen};
