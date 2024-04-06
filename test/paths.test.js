@@ -13,8 +13,6 @@ if (typeof Path2D === 'function' || typeof Path2D === 'object') {
   Path.prototype.strokeAndFill = jest.fn();
 }
 
-
-
 describe('Path', () => {
   it('should contain a contains method', () => {
     const path = new Path();
