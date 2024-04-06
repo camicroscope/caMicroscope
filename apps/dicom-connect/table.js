@@ -169,6 +169,7 @@ function initialize() {
         // add source and study id
         data.forEach(elt=>{
           elt.source=src.name
+          elt.url=src.url
           elt.studyId=params.studyId
           elt.status='loading' // 'loading', 'unsync', 'syncing', 'done'
         })
@@ -187,7 +188,7 @@ function initialize() {
               // return btn
               const seriesId = row['0020000E']['Value'][0];
               const modality = row['00080060']['Value'][0];
-              return `<div class="icon-center"><button onClick="syncSeries('${row.source}', '${row.studyId}', '${seriesId}', '${modality}')" class="btn btn-sm btn-primary" title="Sync Series"><i class="fas fa-cloud-download-alt"></i></button></div>`; //<i class="fas fa-cloud-download-alt"></i>
+              return `<div class="icon-center"><button onClick="syncSeries('${row.url}', '${row.studyId}', '${seriesId}', '${modality}')" class="btn btn-sm btn-primary" title="Sync Series"><i class="fas fa-cloud-download-alt"></i></button></div>`; //<i class="fas fa-cloud-download-alt"></i>
             case 'syncing':
               // return downloading
               // return '<div class="icon-center"><i class="fas fa-pen"></i></div>';
