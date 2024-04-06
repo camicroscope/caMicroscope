@@ -171,7 +171,7 @@ function initialize() {
           elt.source=src.name
           elt.url=src.url
           elt.studyId=params.studyId
-          elt.status='loading' // 'loading', 'unsync', 'syncing', 'done'
+          elt.status='searching' // 'searching', 'unsync', 'loading', 'done'
         })
         page_states[page_states.status].data = data
         function generateLink (data, type, row) {
@@ -181,7 +181,7 @@ function initialize() {
         }
         function generateStatus (data, type, row) {
           switch (row.status) {
-            case 'loading':
+            case 'searching':
               // return spin
               return '<div class="icon-center" title="Loading..."><i class="fas fa-spinner fa-spin"></i></div>';   
             case 'unsync':
@@ -189,7 +189,7 @@ function initialize() {
               const seriesId = row['0020000E']['Value'][0];
               const modality = row['00080060']['Value'][0];
               return `<div class="icon-center"><button onClick="syncSeries('${row.url}', '${row.studyId}', '${seriesId}', '${modality}')" class="btn btn-sm btn-primary" title="Sync Series"><i class="fas fa-cloud-download-alt"></i></button></div>`; //<i class="fas fa-cloud-download-alt"></i>
-            case 'syncing':
+            case 'loading':
               // return downloading
               // return '<div class="icon-center"><i class="fas fa-pen"></i></div>';
                   return  `<div title="Syncing..." class="progress"><div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div></div>`
@@ -220,7 +220,7 @@ function initialize() {
         var updateSeriesStatus = setInterval(async function() {
           // get slides status
           const query = {
-            'dicomSource': params.source,
+            'dicom-source-url': src.url,
           }
           // ('dicomSource', 'study', 'series', 'instance'
           const slides = await store.findSlide(null, null, params.studyId, null, query)
@@ -229,7 +229,7 @@ function initialize() {
             d['0020000E']['Value'][0]
             const idx = slides.findIndex(slide=>d['0020000E']['Value'][0]==slide.series)
             if (idx!=-1) {
-              d.status = slides[idx].dicomSync
+              d.status = slides[idx].status
             } else {
               d.status = 'unsync'
             }
