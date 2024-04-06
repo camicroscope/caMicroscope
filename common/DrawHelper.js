@@ -100,6 +100,8 @@ caDrawHelper.prototype.circle = function(ctx, point, radius, isPoint=true){
     // return points and path
     return path;
 }
+
+// rotation in radians
 caDrawHelper.prototype.ellipse = function(ctx, point, radius, rotation){
     const path = new Path();
     path.ellipse(
@@ -107,7 +109,7 @@ caDrawHelper.prototype.ellipse = function(ctx, point, radius, rotation){
         point[1],
         radius[0],
         radius[1], 
-        rotation * Math.PI,
+        rotation,
         0,
         2 * Math.PI
     );
