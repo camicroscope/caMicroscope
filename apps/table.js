@@ -36,7 +36,7 @@ function validateForm(callback) {
     finishUploadSuccess = false;
     $('#check_btn').hide();
     $('#post_btn').hide();
-    changeStatus('UPLOAD', 'Please choose a file first');
+    $('#alertContainer').html('<div class="alert alert-danger" role="alert">Please enter slide name</div>');
     return false;
   }
   // Check if slide name is empty
@@ -44,14 +44,14 @@ function validateForm(callback) {
     finishUploadSuccess = false;
     $('#check_btn').hide();
     $('#post_btn').hide();
-    changeStatus('UPLOAD', 'Please enter slide name');
+    $('#alertContainer').html('<div class="alert alert-danger" role="alert">Please enter slide name</div>');
     return false;
   }
   // Sanitizing input
   slide.value = sanitize(slide.value);
   // Checking if silde with given name already exists
   if (existingSlideNames.includes(slide.value)) {
-    changeStatus('UPLOAD', 'Slide with given name already exists');
+    $('#alertContainer').html('<div class="alert alert-danger" role="alert">Slide with given name already exists</div>');
     finishUploadSuccess = false;
     $('#check_btn').hide();
     $('#post_btn').hide();

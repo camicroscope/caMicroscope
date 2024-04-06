@@ -222,41 +222,59 @@
                                 </ul>
                             </div>
                             <div>
+                                <!-- upload new slide -->
                                 <form id="upload-form">
                                     <table class="table table-borderless" cellpadding="5" cellspacing="0">
                                         <tr>
-                                            <td align="right"><b>File</b></td>
+                                            <td align="right"><b class="form-label m-0">File</b></td>
                                             <td id="fileUploadInput">
                                                 <span class="input-group mb-3" >
                                                     <span class="custom-file fileInputClass">
-                                                        <input type="file" class="custom-file-input" id="input" onchange="handleUpload(this.files)">
-                                                        <label class="custom-file-label" for="input" style="overflow: hidden;">Choose file</label>
+                                                        <input type="file" class="custom-file-input form-control" id="input" onchange="handleUpload(this.files)" required>
+                                                        <label class="custom-file-label form-label" for="input" style="overflow: hidden;">Choose file</label>
                                                     </span>
                                                     <div class="form-group urlUploadClass" style="display:none; flex-wrap:wrap">
                                                         <input type="url" placeholder="Enter file URL" class="form-control" id="urlInput" style="width: 20em;" required>
-                                                        <button type="button" class="btn btn-info" onclick="urlInputChange();" style="margin-left: 0.6em; margin-right:-5em" >Upload</button>
+                                                        <button type="button" class="btn btn-primary" onclick="urlInputChange();" style="margin-left: 0.6em; margin-right:-5em" >Upload</button>
                                                     </div>
                                                 </span> <div id="uploadLoading" style="display: none;"><span>Uploading...</span> <br>
                                                 <div class="spinner-grow text-primary" role="status" style="margin-left: 1.2em;">
                                                     <span class="sr-only"></span>
                                                 </div> </div>
-                                                <a title="Upload from google drive" href="#" id='gdriveUpload' onclick="googlePickerStart()"><i style="font-size: 1.2em;" class="fab fa-google-drive"></i></a>
-                                                <a href="#" id='urlswitch' onclick="$('#urlInput').val(''); switchToUrl();" > <span style="position: absolute; right:2em;" > <i class="fas fa-link"></i> Upload from URL</span></a>
-                                                <a href="#" style="display: none;" id="fileswitch" onclick=" switchToFile();" > <span style="position: absolute; right:2em;" > <i class="fas fa-folder"></i> Upload from local</span></a>
-
+                                                <div class="container" id="buttonContainer">
+                                                    <div class="row">
+                                                        <div class="col-md-4">
+                                                            <a title="Upload from google drive" href="#" id='gdriveUpload' onclick="googlePickerStart()" class="btn btn-primary ">
+                                                                <i style="font-size: 1.5em;" class="fab fa-google-drive mr-2"></i> Upload from Google Drive
+                                                            </a>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <a href="#" id='urlswitch' onclick="$('#urlInput').val(''); switchToUrl();" class="btn btn-primary ">
+                                                                <i class="fas fa-link mr-2" style="font-size: 1.5em;"></i> Upload from URL
+                                                            </a>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <a href="#" style="display: none;" id="fileswitch" onclick="switchToFile();" class="btn btn-primary ">
+                                                                <i class="fas fa-folder mr-2" style="font-size: 1.5em;"></i> Upload from Local
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
                                             </td>
                                         </tr>
                                         <tr id="filenameRow">
-                                            <td align="right"><b>Filename</b></td>
+                                            <td align="right" class="form-control"><b>Filename</b></td>
                                         </tr>
                                         <tr id="tokenRow">
-                                            <td align="right"><b>Token</b></td>
+                                            <td align="right" class="form-control"><b>Token</b></td>
                                         </tr>
                                         <tr id="slidenameRow">
-                                            <td align="right"><b>Slidename</b></td>
+                                            <td align="right" class="form-control"><b>Slidename</b></td>
+                                            <div id="alertContainer"></div>
                                         </tr>
                                         <tr id="filterRow">
-                                            <td align="right"><b>Filter (leave blank for public)</b></td>
+                                            <td align="right" class="form-control"><b>Filter (leave blank for public)</b></td>
                                         </tr>
                                     </table>
                                     <div id="upload-progress-div" style="display: none; align-content: center;">
@@ -266,7 +284,7 @@
                                     </div>
                                     <div class="text-center" id="controlButtons">
                                         <button class="btn btn-primary" type="button" id="finish_btn" style="display: none;"
-                                            value="Finish Upload" onclick="validateForm(finishUpload)"><i class="fas fa-arrow-right"></i></button>
+                                            value="Finish Upload" onclick="validateForm(finishUpload)"><i class="fas fa-arrow-right"></i> <span>UPLOAD</span> </button>
                                         <button class="btn btn-success" type="button" id="post_btn" value="Post"
                                             onclick="validateForm(PostBtn)">Finish Upload</button>
                                     </div>
@@ -281,7 +299,7 @@
 
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" onclick="initialize();" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger" onclick="initialize();" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
