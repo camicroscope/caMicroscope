@@ -73,3 +73,6 @@ function NanoBorbMods() {
 
   }
 }
+
+
+module.exports = NanoBorbMods;
