@@ -176,7 +176,12 @@ function initialize() {
         page_states[page_states.status].data = data
         function generateLink (data, type, row) {
           const seriesId = row['0020000E']['Value'][0]
-          if (row.status !='done') return seriesId
+          const modality = row['00080060']['Value'][0]
+          if (row.status !='done') return seriesId;
+          const slideId = row.slideId;
+          if (modality=='SM') return `<a href="../viewer/viewer.html?slideId=${slideId}">${seriesId}</a>`
+
+
           return `<a href="../dicom-connect/table.html?status=instances&source=${row.source}&studyId=${params.studyId}&seriesId=${seriesId}">${seriesId}</a>`;
         }
         function generateStatus (data, type, row) {
@@ -228,8 +233,10 @@ function initialize() {
           datatable.data().each(function (d) {
             d['0020000E']['Value'][0]
             const idx = slides.findIndex(slide=>d['0020000E']['Value'][0]==slide.series)
+           
             if (idx!=-1) {
               d.status = slides[idx].status
+              d.slideId = slides[idx]._id.$oid
             } else {
               d.status = 'unsync'
             }
