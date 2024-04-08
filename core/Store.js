@@ -155,6 +155,44 @@ class Store {
       mode: 'cors',
     });
   }
+  findMarks(q) {
+    const suffix = 'Mark/find';
+    const url = this.base + suffix;
+    var query = {};
+    if (q) {
+      query = q;
+    }
+    return fetch(url + '?' + objToParamStr(query), {
+      credentials: 'include',
+      mode: 'cors',
+    }).then(this.errorHandler).then((x) => this.filterBroken(x, 'mark'));
+  }
+
+  findSlide(name, specimen, study, location, q) {
+    let query = {};
+    const suffix = 'Slide/find';
+    const url = this.base + suffix;
+    if (q) {
+      query = q;
+    } else {
+      if (name) {
+        query.name = name;
+      }
+      if (study) {
+        query.study = study;
+      }
+      if (specimen) {
+        query.specimen = specimen;
+      }
+      if (location) {
+        query.location = location;
+      }
+    }
+    return fetch(url + '?' + objToParamStr(query), {
+      credentials: 'include',
+      mode: 'cors',
+    }).then(this.errorHandler);
+  }  
   /**
    * find marks matching slide and/or marktype
    * will search by slide field as exactly given and by the oid slide of that name

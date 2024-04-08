@@ -179,10 +179,11 @@ function initialize() {
           const modality = row['00080060']['Value'][0]
           if (row.status !='done') return seriesId;
           const slideId = row.slideId;
-          if (modality=='SM') return `<a href="../viewer/viewer.html?slideId=${slideId}">${seriesId}</a>`
+          //if (modality=='SM') 
+          return `<a href="../viewer/viewer.html?slideId=${slideId}">${seriesId}</a>`
 
 
-          return `<a href="../dicom-connect/table.html?status=instances&source=${row.source}&studyId=${params.studyId}&seriesId=${seriesId}">${seriesId}</a>`;
+          // return `<a href="../dicom-connect/table.html?status=instances&source=${row.source}&studyId=${params.studyId}&seriesId=${seriesId}">${seriesId}</a>`;
         }
         function generateStatus (data, type, row) {
           switch (row.status) {
@@ -229,17 +230,39 @@ function initialize() {
           }
           // ('dicomSource', 'study', 'series', 'instance'
           const slides = await store.findSlide(null, null, params.studyId, null, query)
+          const annotationQuery = {
+            'provenance.image.dicom-source-url':src.url,
+            'provenance.image.dicom-study': params.studyId // study
+            
+          }
+          const annotations = await store.findMarks(annotationQuery)
           // update series data
           datatable.data().each(function (d) {
-            d['0020000E']['Value'][0]
-            const idx = slides.findIndex(slide=>d['0020000E']['Value'][0]==slide.series)
-           
-            if (idx!=-1) {
-              d.status = slides[idx].status
-              d.slideId = slides[idx]._id.$oid
-            } else {
-              d.status = 'unsync'
+            const modality = d['00080060']['Value'][0]
+            const series = d['0020000E']['Value'][0]
+            
+            if (modality == 'SM'){
+              // match slide
+              const idx = slides.findIndex(slide=>series==slide.series)
+            
+              if (idx!=-1) {
+                d.status = slides[idx].status
+                d.slideId = slides[idx]._id.$oid
+              } else {
+                d.status = 'unsync'
+              }
             }
+            if (modality == 'ANN'){
+              // match annotations
+              const idx_annot = annotations.findIndex(annot=>annot.provenance.image['dicom-series']&&series==annot.provenance.image['dicom-series'])
+              if (idx_annot!=-1) {
+                d.status = 'done';
+                d.slideId = annotations[idx_annot].provenance.image.slide;
+              } else {
+                d.status = 'unsync';
+              }
+            }       
+
           });
 
           // invalidate all rows and redraw
