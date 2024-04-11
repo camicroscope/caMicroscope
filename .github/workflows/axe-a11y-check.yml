@@ -17,6 +17,9 @@ jobs:
         
     steps:
       - uses: actions/checkout@v2
+      - name: Fetch caracal.js
+        run: |
+          curl -o caracal.js https://github.com/camicroscope/Caracal/blob/master/caracal.js
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
