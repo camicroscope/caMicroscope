@@ -28,10 +28,7 @@ jobs:
         uses: jakejarvis/wait-action@master
         with:
           time: '30s'
-          interval: '3s'
-          condition: 'reachable'
-          host: 'localhost'
-          port: 4010
+          entryPoint: 'http://localhost:4010'
       - name: Run axe
         run: |
           npm install -g @axe-core/cli
