@@ -4,6 +4,7 @@
   "description": "",
   "scripts": {
     "test": "mocha test --recursive",
+    "start": "http-server -p 4010",
     "lint": "eslint ./core/*.js  ./components/**/*.js ./common/smartpen/*.js ./apps/*.js ./apps/port/*.js ./apps/heatmap/*.js ./apps/multi/*.js ./apps/labeling/*.js  ./apps/loader/*.js  ./apps/model/*.js  ./apps/segment/*.js  ./apps/model/**/*.js  ./apps/segment/**/*.js  ./apps/viewer/*.js --quiet",
     "lint-fix": "eslint ./core/*.js  ./components/**/*.js ./common/smartpen/*.js ./apps/*.js  ./apps/port/*.js ./apps/heatmap/*.js ./apps/multi/*.js ./apps/labeling/*.js  ./apps/loader/*.js  ./apps/model/*.js  ./apps/segment/*.js  ./apps/model/**/*.js  ./apps/segment/**/*.js  ./apps/viewer/*.js --quiet --fix"
   },
