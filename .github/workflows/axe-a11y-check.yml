@@ -17,9 +17,6 @@ jobs:
         
     steps:
       - uses: actions/checkout@v2
-      - name: Fetch caracal.js
-        run: |
-          curl -o caracal.js https://github.com/camicroscope/Caracal/blob/master/caracal.js
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
@@ -29,6 +26,6 @@ jobs:
       - run: npm start & npx wait-on http://localhost:4010
       - name: Run axe
         run: |
-          console.log("Debug message: Running axe-core accessibility checks...");
+          echo "Running axe-core accessibility checks..."
           npm install -g @axe-core/cli
           axe http://localhost:4010 --exit
