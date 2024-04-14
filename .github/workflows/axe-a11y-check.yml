@@ -20,15 +20,14 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - run: npm ci
+      - run: npm install
+      - run: npm install jsdom
+      - run: npm install -g http-server
+      - run: npm install -g mocha
+      - run: npm install eslint
+      - run: npm install eslint-config-google
+      - run: http-server -s &
       - run: npm run build --if-present
-      - name: Start Application
-        run: npm start &
-      - name: Wait for Application to Start
-        uses: jakejarvis/wait-action@master
-        with:
-          time: '30s'
-          entryPoint: 'http://localhost:4010'
       - name: Run axe
         run: |
           npm install -g @axe-core/cli
