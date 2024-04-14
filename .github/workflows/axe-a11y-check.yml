@@ -26,9 +26,8 @@ jobs:
       - run: npm install -g mocha
       - run: npm install eslint
       - run: npm install eslint-config-google
-      - run: http-server -s &
-      - run: npm ci
       - run: npm run build --if-present
+      - run: http-server -s &
       - name: Run axe
         run: |
           npm install -g @axe-core/cli
