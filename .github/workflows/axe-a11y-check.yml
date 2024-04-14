@@ -26,6 +26,11 @@ jobs:
       - run: npm install -g mocha
       - run: npm install eslint
       - run: npm install eslint-config-google
+      - run: |
+          until curl -sSf http://localhost:4010 >/dev/null; do
+            echo "Waiting for server to start..."
+            sleep 5
+          done
       - run: http-server -s &
       - run: npm run build --if-present
       - name: Run axe
