@@ -22,11 +22,10 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - run: npm install
       - run: npm install -g http-server
-      - run: npm install selenium-webdriver
-      - run: npm install @axe-core/webdriverjs
       - run: npm run build --if-present
       - run: http-server -s &
       - name: Run axe
         run: |
-          npm install -g @axe-core/cli 
+          npm install -g @axe-core/cli
+          sleep 90
           axe http://localhost:4010 --exit
