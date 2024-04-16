@@ -28,4 +28,4 @@ jobs:
         run: |
           npm install -g @axe-core/cli
           sleep 90
-          axe http://localhost:4010 --exit
+          axe http://127.0.0.1:8080 --exit
