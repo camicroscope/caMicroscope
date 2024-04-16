@@ -23,12 +23,9 @@ jobs:
       - run: npm install
       - run: npm install jsdom
       - run: npm install -g http-server
-      - run: npm install -g mocha
-      - run: npm install eslint
-      - run: npm install eslint-config-google
       - run: npm run build --if-present
       - run: http-server -s &
       - name: Run axe
         run: |
           npm install -g @axe-core/cli
-          axe http://localhost:4010 --exit
+          axe http://localhost:8000 --exit
