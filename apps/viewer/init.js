@@ -257,6 +257,13 @@ function initCore() {
             attributes = data.properties.annotations;
             if (area) attributes.area = area;
             if (circumference) attributes.circumference = circumference;
+
+            const states = StatesHelper.getCurrentStates(isImageCoordinate = true);
+            if (!states) return;
+            attributes.X = states.x;
+            attributes.Y = states.y;
+            attributes.zoom = states.z;
+
             body = convertHumanAnnotationToPopupBody(attributes);
             if (
               data.geometries &&
