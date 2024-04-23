@@ -168,6 +168,19 @@ class Store {
     }).then(this.errorHandler).then((x) => this.filterBroken(x, 'mark'));
   }
 
+  countMarks(q) {
+    const suffix = 'Mark/count';
+    const url = this.base + suffix;
+    var query = {};
+    if (q) {
+      query = q;
+    }
+    return fetch(url + '?' + objToParamStr(query), {
+      credentials: 'include',
+      mode: 'cors',
+    }).then(this.errorHandler).then((x) => this.filterBroken(x, 'mark'));
+  }
+
   findSlide(name, specimen, study, location, q) {
     let query = {};
     const suffix = 'Slide/find';

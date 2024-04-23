@@ -234,7 +234,7 @@ function initialize() {
             'provenance.image.dicom-study': params.studyId // study
             
           }
-          const annotations = await store.findMarks(annotationQuery)
+          const annotationCount = await store.countMarks(annotationQuery)
           // update series data
           datatable.data().each(function (d) {
             const modality = d['00080060']['Value'][0]
@@ -252,11 +252,13 @@ function initialize() {
               }
             }
             if (modality == 'ANN'){
-              // match annotations
-              const idx_annot = annotations.findIndex(annot=>annot.provenance.image['dicom-series']&&series==annot.provenance.image['dicom-series'])
-              if (idx_annot!=-1) {
+              // if we see a count, note this
+
+              if (annotationCount[0].count > 0) {
                 d.status = 'done';
-                d.slideId = annotations[idx_annot].provenance.image.slide;
+                const idx = slides.findIndex(slide=>series==slide.series)
+                d.slideId = slides[idx]._id.$oid
+                //d.slideId = annotations[idx_annot].provenance.image.slide;
               } else {
                 d.status = 'unsync';
               }
@@ -276,8 +278,8 @@ function initialize() {
 
         // initialize
         checkInterval()
-        // update every 30 seconds
-        var updateSeriesStatus = setInterval(checkInterval, 30000);
+        // update every 10 seconds
+        var updateSeriesStatus = setInterval(checkInterval, 10000);
       })
       break;
     case 'instances':
