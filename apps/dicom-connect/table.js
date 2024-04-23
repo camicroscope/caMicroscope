@@ -222,8 +222,7 @@ function initialize() {
           ]
         });
 
-        // set interval to check series status
-        var updateSeriesStatus = setInterval(async function() {
+        async function checkInterval() {
           // get slides status
           const query = {
             'dicom-source-url': src.url,
@@ -273,7 +272,12 @@ function initialize() {
             clearInterval(updateSeriesStatus);
           }
           console.log('running')
-        }, 60000);
+        }
+
+        // initialize
+        checkInterval()
+        // update every 30 seconds
+        var updateSeriesStatus = setInterval(checkInterval, 30000);
       })
       break;
     case 'instances':
