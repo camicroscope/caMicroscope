@@ -273,7 +273,7 @@ function initialize() {
             clearInterval(updateSeriesStatus);
           }
           console.log('running')
-        }, 1000);
+        }, 60000);
       })
       break;
     case 'instances':
