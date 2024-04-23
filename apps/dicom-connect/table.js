@@ -256,8 +256,8 @@ function initialize() {
 
               if (annotationCount[0].count > 0) {
                 d.status = 'done';
-                const idx = slides.findIndex(slide=>series==slide.series)
-                d.slideId = slides[idx]._id.$oid
+                console.log(slides)
+                d.slideId = slides[0]._id.$oid
                 //d.slideId = annotations[idx_annot].provenance.image.slide;
               } else {
                 d.status = 'unsync';
