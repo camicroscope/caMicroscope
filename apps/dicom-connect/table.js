@@ -343,7 +343,7 @@ $(document).ready(function() {
 
 async function syncSeries(source_url, study, series, modality) {
   console.log(source_url, study, series, modality);
-  const result = await store.syncSeries('../../../', {source_url, study, series, modality})
+  const result = await store.syncSeries('../../', {source_url, study, series, modality})
   console.log('syncSeries:');
   console.log(result);
 }
