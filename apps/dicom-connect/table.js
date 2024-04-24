@@ -229,17 +229,11 @@ function initialize() {
           }
           // ('dicomSource', 'study', 'series', 'instance'
           const slides = await store.findSlide(null, null, params.studyId, null, query)
-          const annotationQuery = {
-            'provenance.image.dicom-source-url':src.url,
-            'provenance.image.dicom-study': params.studyId // study
-            
-          }
-          const annotationCount = await store.countMarks(annotationQuery)
+
           // update series data
-          datatable.data().each(function (d) {
+          datatable.data().each(async function (d) {
             const modality = d['00080060']['Value'][0]
             const series = d['0020000E']['Value'][0]
-            
             if (modality == 'SM'){
               // match slide
               const idx = slides.findIndex(slide=>series==slide.series)
@@ -252,11 +246,16 @@ function initialize() {
               }
             }
             if (modality == 'ANN'){
-              // if we see a count, note this
+              let annotationQuery = {
+                'provenance.image.dicom-source-url':src.url,
+                'provenance.image.dicom-study': params.studyId, // study
+                'provenance.image.dicom-series': series
+              }
+              let annotationCount = await store.countMarks(annotationQuery)
+              console.info("Counted " + annotationCount[0].count + " mark objects for " + series)
 
               if (annotationCount[0].count > 0) {
                 d.status = 'done';
-                console.log(slides)
                 d.slideId = slides[0]._id.$oid
                 //d.slideId = annotations[idx_annot].provenance.image.slide;
               } else {
