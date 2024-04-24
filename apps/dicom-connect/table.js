@@ -225,9 +225,11 @@ function initialize() {
         async function checkInterval() {
           const query = {
               'dicom-source-url': src.url,
+              'study': params.studyId,
           };
       
           const slides = await store.findSlide(null, null, params.studyId, null, query);
+          console.log(slides)
       
           const data = datatable.data();
       
