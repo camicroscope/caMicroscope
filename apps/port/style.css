@@ -1,7 +1,8 @@
 html, body {
       min-height: 100%;
       }
-      body, div, form, input, select, p {
+
+      body, div, input, select, p {
       padding: 0;
       margin: 0;
       outline: none;
@@ -25,7 +26,6 @@ html, body {
       }
       form {
       width: 100%;
-      padding: 20px;
       }
       fieldset {
       border: none;
@@ -46,6 +46,7 @@ html, body {
       }
       label {
       padding: 0 5px;
+      font-size: 14pt;
       text-align: right;
       vertical-align: middle;
       }

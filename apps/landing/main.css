@@ -9,6 +9,45 @@
 
 /* Reset */
 
+/* addind loader animation */
+.loader {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+.loader,
+.loader:before,
+.loader:after {
+    animation: 1s infinite ease-in-out;
+}
+.loader:before,
+.loader:after {
+    width: 100%; 
+    height: 100%;
+    border-radius: 50%;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.loader-black { background-color: #9b3c8b; }
+
+/* Loader 5 */
+
+.loader-5 {
+    animation: loader5 1s infinite linear;
+}
+
+    @keyframes loader5 {
+        0% {   transform: rotate(0deg); border-radius: 50%; }
+        50% {  transform: rotate(90deg); border-radius: 0%; }
+        100% { transform: rotate(180deg); border-radius: 50%; }
+    }
+
 
 	html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
 		margin: 0;
@@ -2429,6 +2468,12 @@
 			display: -webkit-flex;
 			display: -ms-flex;
 			display: flex;
+			transition: background-color 0.3s ease, transform 0.3s ease;
+		}
+
+		.posts .post:hover {
+			background-color: #f0f0f0; 
+			transform: translateY(-10px); 
 		}
 
 			.posts .post .image {
