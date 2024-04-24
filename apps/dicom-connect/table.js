@@ -92,7 +92,7 @@ function initialize() {
   console.log('params')
   console.log(params)
   // store
-  const store = new Store('../../../data/');
+  const store = new Store('../../data/');
   if(params.status=='studies'&&params.source){
     page_states.status = params.status;
   }else if(params.status=='series'&&params.source&&params.studyId) { // series table
