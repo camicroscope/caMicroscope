@@ -223,57 +223,59 @@ function initialize() {
         });
 
         async function checkInterval() {
-          // get slides status
           const query = {
-            'dicom-source-url': src.url,
+              'dicom-source-url': src.url,
+          };
+      
+          const slides = await store.findSlide(null, null, params.studyId, null, query);
+      
+          const data = datatable.data();
+      
+          for (let i = 0; i < data.length; i++) {
+              const d = data[i];
+              const modality = d['00080060']['Value'][0];
+              const series = d['0020000E']['Value'][0];
+      
+              if (modality === 'SM') {
+                  const idx = slides.findIndex(slide => series === slide.series);
+                  if (idx !== -1) {
+                      d.status = slides[idx].status;
+                      d.slideId = slides[idx]._id.$oid;
+                  } else {
+                      d.status = 'unsync';
+                  }
+              }
+      
+              if (modality === 'ANN') {
+                  let annotationQuery = {
+                      'provenance.image.dicom-source-url': src.url,
+                      'provenance.image.dicom-study': params.studyId,
+                      'provenance.image.dicom-series': series
+                  };
+      
+                  let annotationCount = await store.countMarks(annotationQuery);
+                  console.info("Counted " + annotationCount[0].count + " mark objects for " + series);
+      
+                  if (annotationCount[0].count > 0) {
+                      d.status = 'done';
+                      d.slideId = slides[0]._id.$oid;
+                  } else {
+                      d.status = 'unsync';
+                  }
+              }
           }
-          // ('dicomSource', 'study', 'series', 'instance'
-          const slides = await store.findSlide(null, null, params.studyId, null, query)
-
-          // update series data
-          datatable.data().each(async function (d) {
-            const modality = d['00080060']['Value'][0]
-            const series = d['0020000E']['Value'][0]
-            if (modality == 'SM'){
-              // match slide
-              const idx = slides.findIndex(slide=>series==slide.series)
-            
-              if (idx!=-1) {
-                d.status = slides[idx].status
-                d.slideId = slides[idx]._id.$oid
-              } else {
-                d.status = 'unsync'
-              }
-            }
-            if (modality == 'ANN'){
-              let annotationQuery = {
-                'provenance.image.dicom-source-url':src.url,
-                'provenance.image.dicom-study': params.studyId, // study
-                'provenance.image.dicom-series': series
-              }
-              let annotationCount = await store.countMarks(annotationQuery)
-              console.info("Counted " + annotationCount[0].count + " mark objects for " + series)
-
-              if (annotationCount[0].count > 0) {
-                d.status = 'done';
-                d.slideId = slides[0]._id.$oid
-                //d.slideId = annotations[idx_annot].provenance.image.slide;
-              } else {
-                d.status = 'unsync';
-              }
-            }       
-
-          });
-
-          // invalidate all rows and redraw
+      
           datatable.rows().invalidate().draw();
-          const series =  page_states[page_states.status].data       
-          if (series.map(s=>s.status).every(status=>status!='unsync'&&status!='syncing')) { // clear interval if all synced
-            console.log('clear');
-            clearInterval(updateSeriesStatus);
+      
+          const series = page_states[page_states.status].data;
+      
+          if (series.every(s => s.status !== 'unsync' && s.status !== 'syncing')) {
+              console.log('clear');
+              clearInterval(updateSeriesStatus);
           }
-          console.log('running')
-        }
+      
+          console.log('running');
+      }
 
         // initialize
         checkInterval()
