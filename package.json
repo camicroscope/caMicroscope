@@ -19,5 +19,9 @@
     "mocha": "^10.2.0",
     "node-fetch": "^2.6.7",
     "tippy": "0.0.0"
+  },
+  "devDependencies": {
+    "fetch-mock": "^9.11.0",
+    "jest": "^29.7.0"
   }
 }
