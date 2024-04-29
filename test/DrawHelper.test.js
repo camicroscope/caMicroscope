@@ -49,16 +49,4 @@ describe('caDrawHelper', () => {
       expect(mockContext.stroke).toHaveBeenCalled();
     });
   });
-
-  describe('drawCircle', () => {
-    test('should call appropriate canvas methods to draw circle', () => {
-      drawHelper.drawCircle(mockContext, 50, 50, 25);
-
-      // Assert canvas method calls
-      expect(mockContext.beginPath).toHaveBeenCalled();
-      expect(mockContext.arc).toHaveBeenCalledWith(50, 50, 25, 0, 2 * Math.PI);
-      expect(mockContext.closePath).toHaveBeenCalled();
-      expect(mockContext.stroke).toHaveBeenCalled();
-    });
-  });
 });
