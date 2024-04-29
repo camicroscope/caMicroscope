@@ -62,3 +62,6 @@ function makeTreeTable(id) {
     }
   };
 }
+
+
+module.exports = makeTreeTable; 
