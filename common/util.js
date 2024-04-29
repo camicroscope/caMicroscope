@@ -367,6 +367,12 @@ function getUrlVars() {
     deleteProperty: function(target, prop) {
       delete state[prop.toLowerCase()];
       return true;
+    },
+    getOwnPropertyDescriptor(target, prop) {
+      return { configurable: true, enumerable: true };
+    },
+    ownKeys: function(target) {
+      return Reflect.ownKeys(state)
     }
   });
 }
