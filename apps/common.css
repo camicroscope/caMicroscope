@@ -30,17 +30,15 @@
 }
 
 .company-name {
-  color: #24a9f6;
+  color: #e5c1ea;
 }
 
 .company-name a {
-  color: #24a9f6;
-  text-decoration: none;
+  color: #e5c1ea;
 }
 
 .company-name:hover {
-  color: #4f5e66;
-  text-decoration: underline;
+  color: #d5c1ea;
 }
 #footer-layout strong,
 #footer-layout b {
