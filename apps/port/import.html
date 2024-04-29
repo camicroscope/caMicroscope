@@ -5,107 +5,41 @@
   <script src="../../core/Store.js"></script>
   <script src="./import.js"></script>
   <script src="./xml2geo.js"></script>
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css">
-  <link rel="stylesheet" href="../../common/stacktable.css">
-  <link rel="stylesheet" href="./style.css">
-  <link rel="stylesheet" href="../table.css" />
-  <link rel="stylesheet" href="../info.css" />
+  <!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css"> -->
+  <!-- <link rel="stylesheet" href="../../common/stacktable.css"> -->
+  <link rel="stylesheet" href="./import.css">
+  <!-- <link rel="stylesheet" href="../table.css" />
+  <link rel="stylesheet" href="../info.css" /> -->
   <title>Import and Export caMicroscope</title>
 </head>
-<style>
-  #exportTitle {
-    background-color: #17a2b8 !important;
-    color: white;
-    font-size: 18px;
-  }
-
-  .buttons {
-    width: 20%;
-    padding: 10px 0;
-    margin: 10px 40px;
-    border-radius: 5px;
-    border: none;
-    background: #17a2b8;
-    font-size: 14px;
-    font-weight: 600;
-    color: #fff;
-  }
-
-  .buttons:hover {
-    border: 1px solid #17a2b8;
-    color: #17a2b8;
-    background: #fff;
-  }
-
-  .h1 {
-    height: 120px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .h3 {
-    margin: 20px 0 0 25%;
-    font-size: 18px;
-  }
-
-  .h {
-    margin: 5px;
-  }
-
-  input {
-    margin: 5px;
-  }
-  
-  .form-check-input {
-    padding: 5px !important;
-  }
-
-  .btns {
-    display: flex;
-    margin: 0 20px;
-  }
-  .btnn{
-    margin: 10px 180px;
-  }
-  .file {
-    margin-top: 20px;
-  }
-  .slide {
-    margin:5px;
-  }
-</style>
 
 <body>
   <div class="" id="exportTitle">
     <h1 class="h1">Import Annotations</h1>
   </div>
-  <div class="h3">
+  <div class="form">
     <h3 class="h">Info</h3>
-    <div class="form">
-      <div class="slide">
-        <label for="slide_id" class="slide">Slide Id:</label>
-        <br>
-        <input type="text" id="slide_id" name="slide_id"><br>
-      </div>
-      <div class="slide">
-        <label for="annot_name" class="slide">Annotation Name:</label><br>
-        <input type="text" id="annot_name" name="annot_name"><br>
-      </div>
-      <h3 class="h h3 file">File Contents</h3>
-      <div class="slide">
-        <label for="annot_name" class="slide">Input:</label><br>
-        <textarea id="input" name="input" class="slide" rows="5" cols="75"></textarea><br>
-      </div>
-      <div class="btns">
-        <button id="convert_btn btn1" class="buttons" onclick="xml2geo()" type="button">Convert from XML</button>
-        <button id="prepare_btn btn2" class="buttons" onclick="prepareAnnot()" type="button">Prepare JSON</button>
-      </div>
-      <label for="annot_name" class="slide">Output:</label><br>
-      <textarea id="input" name="input" class="slide" rows="5" cols="75"></textarea><br>
-      <button id="post_btn" class="buttons btnn" onclick="saveAnnot()" type="button">Post</button>
+  <br>
+    <div class="slide" >
+      <input type="text"  name="slide_id" placeholder="Slide Id:"><br>
     </div>
+    <br>
+    <div class="slide">
+      <input type="text" name="annot_name" placeholder="Annotation Name:"><br>
+    </div>
+    <h3 class="h2">File Contents</h3>
+    <div class="slide">
+      <textarea name="input" class="slide" rows="5" cols="75" placeholder="Input Here"></textarea><br>
+    </div>
+    <br>
+    <div class="btns">
+      <button id="convert_btn btn1" class="buttons" onclick="xml2geo()" type="button">Convert from XML</button>
+      <button id="prepare_btn btn2" class="buttons" onclick="prepareAnnot()" type="button">Prepare JSON</button>
+    </div>
+    <br>
+      <textarea name="input" class="slide" rows="5" cols="75" placeholder="Output:"></textarea><br>
+      <button id="post_btn" class="buttons btnn" onclick="saveAnnot()" type="button">Post</button>
   </div>
 </body>
 
