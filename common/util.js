@@ -343,6 +343,40 @@ function clickInsideElement(e, className) {
   return false;
 }
 
+
+function getUrlVars() {
+  var vars = {};
+  window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(
+      m,
+      key,
+      value,
+  ) {
+    vars[key.toLowerCase()] = value;
+  });
+
+  var state = Object.assign({}, vars); // Copy the initial state from vars
+
+  return new Proxy({}, {
+    get: function(target, prop) {
+      return state[prop.toLowerCase()];
+    },
+    set: function(target, prop, value) {
+      state[prop.toLowerCase()] = value;
+      return true;
+    },
+    deleteProperty: function(target, prop) {
+      delete state[prop.toLowerCase()];
+      return true;
+    },
+    getOwnPropertyDescriptor(target, prop) {
+      return { configurable: true, enumerable: true };
+    },
+    ownKeys: function(target) {
+      return Reflect.ownKeys(state)
+    }
+  });
+}
+/**
 function getUrlVars() {
   var vars = {};
   var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(
@@ -354,6 +388,7 @@ function getUrlVars() {
   });
   return vars;
 }
+*/
 
 function ImageFeaturesToVieweportFeatures(viewer, geometries) {
   const rs = {
@@ -376,13 +411,22 @@ function VieweportFeaturesToImageFeatures(viewer, geometries) {
   this.imgHeight = image.source.dimensions.y;
 
   geometries.features = geometries.features.map((feature) => {
-    if (feature.geometry.type=='Point') {
+    if (feature.geometry.type=='Point'||feature.geometry.type=='Circle'||feature.geometry.type=='Ellipse') {
       feature.geometry.coordinates = [
         Math.round(feature.geometry.coordinates[0] * imgWidth),
         Math.round(feature.geometry.coordinates[1] * imgHeight)];
       feature.bound.coordinates =[
         Math.round(feature.bound.coordinates[0] * imgWidth),
         Math.round(feature.bound.coordinates[1] * imgHeight)];
+      
+      
+      
+      if (feature.geometry.type=='Circle') {
+        feature.geometry.radius = Math.round(feature.geometry.radius * imgWidth)
+      }
+      if (feature.geometry.type=='Ellipse') {
+        feature.geometry.radius = [Math.round(feature.geometry.radius[0] * imgWidth), Math.round(feature.geometry.radius[1] * imgHeight)];
+      }
       return feature;
     }
     feature.geometry.coordinates[0] = feature.geometry.coordinates[0].map(
@@ -1013,6 +1057,11 @@ class Tracker {
     this.__period = period;
     this.__userId = userId;
     this.__slide = slide;
+    this.__viewId = this.generateViewId();
+  }
+
+  generateViewId() {
+    return crypto.randomUUID();
   }
   start() {
     if (!this.__time) {
@@ -1035,6 +1084,7 @@ class Tracker {
     );
 
     this.__camic.store.addLog({
+      viewId: this.__viewId,
       slide: this.__slide,
       user: this.__userId,
       x: Math.round(x),
@@ -1346,4 +1396,18 @@ async function captureScreen(camic, {
   }
 
   return canvas;
+}
+
+// footer content layout
+const currentYear = new Date().getFullYear();
+
+const footerContent = `
+  <p>U24 CA18092401A1, <b>Tools to Analyze Morphology and Spatially Mapped Molecular Data</b></p>
+  <p id='contact'>Spot a Bug? <a href='https://github.com/camicroscope/caMicroscope/issues' target='_blank'>Report it!</a></p>
+  <hr />
+  <p class='copyright'>Copyright &copy; ${currentYear} <span class='company-name'><a href="https://camicroscope.org/" target='_blank'>caMicroscope</a></span></p>
+`;
+
+function insertFooterLayout() {
+  document.getElementById('footer-layout').innerHTML = footerContent;
 }
