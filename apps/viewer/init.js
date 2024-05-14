@@ -372,7 +372,7 @@ function initCore() {
     initUIcomponents();
     // action tracker start
     tracker = new Tracker($CAMIC, $D.params.data._id.$oid, getUserId());
-    tracker.start();
+    // tracker.start();
   });
 }
 
