@@ -191,7 +191,7 @@
                             pointPath.strokeAndFill(this._edit_tool_ctx_);
                             this.editPointPathList.push(pointPath);
                         })
-                    } else if (this.editPathData.geometry.type === 'LineString') {
+                    } else if (this.editPathData.geometry.type === 'Polyline') {
                         // brush
                         this.editPathData.geometry.coordinates[0].splice(i,1);
                         this.editPathData.geometry.coordinates[0].map((point) => {
@@ -214,7 +214,7 @@
                     return;
                 }
             }
-            if (this.editPathData.geometry.type === 'LineString') {
+            if (this.editPathData.geometry.type === 'Polyline') {
                 const size = this.editPathData.properties.size;
                 const topleft = [Math.floor(img_point.x/size[0])*size[0], Math.floor(img_point.y/size[1])*size[1]];
                 const index = pointInPolygonVertex(this.editPathData.geometry.coordinates[0], topleft);
@@ -529,7 +529,7 @@
         },
 
         onEditPointMouseUp: function(e) {
-            if (this.editPathData?.geometry.type === 'LineString') {
+            if (this.editPathData?.geometry.type === 'Polyline') {
                 if (!this.onEdit) return;
                 DrawHelper.clearCanvas(this._edit_tool_);
                 const point = new OpenSeadragon.Point(e.clientX, e.clientY);

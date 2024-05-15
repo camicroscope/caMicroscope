@@ -167,6 +167,7 @@ function initialize() {
 
       getSeries(src.url, params.studyId).then(function(data) {
         // add source and study id
+        data = data.filter(d=>d['00080060']['Value'][0] == 'ANN' || d['00080060']['Value'][0] == 'SM')
         data.forEach(elt=>{
           elt.source=src.name
           elt.url=src.url
@@ -256,9 +257,10 @@ function initialize() {
                   };
       
                   let annotationCount = await store.countMarks(annotationQuery);
-                  console.info("Counted " + annotationCount[0].count + " mark objects for " + series);
+                  
       
-                  if (annotationCount[0].count > 0) {
+                  if (annotationCount&&annotationCount[0].count > 0) {
+                      console.info("Counted " + annotationCount[0].count + " mark objects for " + series);
                       d.status = 'done';
                       d.slideId = slides[0]._id.$oid;
                   } else {

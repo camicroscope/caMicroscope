@@ -1046,7 +1046,7 @@
         geometry: {
           type:
             this.drawMode === 'line' || this.drawMode === 'grid' ?
-              'LineString' :
+              'Polyline' :
               'Polygon',
           coordinates: [[point]],
           path: null,
@@ -1054,7 +1054,7 @@
         bound: {
           type:
             this.drawMode === 'line' || this.drawMode === 'grid' ?
-              'LineString' :
+              'Polyline' :
               'Polygon',
           coordinates: [[point]],
         },

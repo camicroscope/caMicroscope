@@ -114,8 +114,12 @@ caDrawHelper.prototype.ellipse = function(ctx, point, radius, rotation){
         2 * Math.PI
     );
     path.closePath();
-    // path.strokeAndFill(ctx);
-    path.stroke(ctx);
+    if(ctx.isFill ==undefined || ctx.isFill){
+        path.fill(ctx);
+        //path.stroke(ctx);
+    }else{
+        path.stroke(ctx);
+    }
     // return points and path
     return path;
 }
@@ -205,7 +209,7 @@ caDrawHelper.prototype.draw = function(ctx, image_data){
         
         // if no data 
         const points = polygon.geometry.coordinates[0];
-        if(polygon.geometry.type=='LineString'){
+        if(polygon.geometry.type=='Polyline'){
             // determine drawing or not
             if(ctx.viewBoundBoxInData 
                 && polygon.bound
@@ -242,7 +246,7 @@ caDrawHelper.prototype.draw = function(ctx, image_data){
             if(ctx.viewBoundBoxInData
                 && !this.isPointInBBox(ctx.viewBoundBoxInData, {x:point[0],y:point[1]})) continue;
             
-            ctx.fillStyle = (ctx.isFill ==undefined || ctx.isFill)?hexToRgbA(style.color,1):style.color;
+            ctx.fillStyle = (ctx.isFill ==undefined || ctx.isFill)?hexToRgbA(style.color,0.5):style.color;
             polygon.geometry.path = this.ellipse(ctx, polygon.geometry.coordinates, polygon.geometry.radius, polygon.geometry.rotation);
         }
         else if(false){

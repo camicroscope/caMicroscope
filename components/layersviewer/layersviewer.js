@@ -345,7 +345,7 @@ LayersViewer.prototype.__initUI = function() {
   checkDiv.classList.add('checklist');
   checkDiv.style.display = 'none';
   checkDiv.innerHTML = `<label><input type='checkbox' value='Point' checked/>  Point</label>
-  <label><input type='checkbox' value='LineString' checked/>  Brush</label>
+  <label><input type='checkbox' value='Polyline' checked/>  Brush</label>
   <label><input type='checkbox' value='Polygon' checked/>  Polygon</label>`;
   this.elt.appendChild(checkDiv);
   this.searchList = checkDiv;

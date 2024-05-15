@@ -793,7 +793,7 @@ function convertGeometries(features, data) {
           size: size,
         },
         geometry: {
-          type: 'LineString',
+          type: 'Polyline',
           coordinates: [points],
         },
         bound: {

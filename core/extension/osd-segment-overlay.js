@@ -367,6 +367,8 @@
             const ctx = this._display_ctx_;
                 this._data.forEach(d=>{
                     d.data.forEach(segment=>{
+
+
                         const polygon = segment.geometries.features[0];
                         const points = polygon.geometry.coordinates[0];
                         const style = polygon.properties.style;
@@ -392,20 +394,56 @@
                             this._display_ctx_.strokeStyle = style.color;
                         }
                         this._display_ctx_.beginPath()
-                        // starting draw drawPolygon
-                        this._display_ctx_.moveTo(
-                            convertX(points[0][0]) + this._offset[0],
-                            convertY(points[0][1]) + this._offset[1],
-                        );
 
-                        for (var i = 1; i < points.length-1; i++) {
-                             const x = convertX(points[i][0]);
-                             const y = convertY(points[i][1]);
-                            this._display_ctx_.lineTo(x+this._offset[0],y+this._offset[1]);
+                        // 
+                        if(polygon.geometry.type == 'Point') {
+                            this._display_ctx_.arc(
+                                convertX(points[0]) + this._offset[0],
+                                convertY(points[1]) + this._offset[1],
+                                this._display_ctx_.radius * 2, 0, 2 * Math.PI
+                            );
+
+                        } else if (polygon.geometry.type == 'Ellipse') {
+                            this._display_ctx_.ellipse(
+                                convertX(points[0]) + this._offset[0],
+                                convertY(points[1]) + this._offset[1],
+                                convertX(radius[0]),
+                                convertX(radius[1]), 
+                                polygon.geometry.rotation,
+                                0,
+                                2 * Math.PI
+                            )
+                        } else if (polygon.geometry.type == 'Polyline') {
+                            // starting draw line
+                            this._display_ctx_.moveTo(
+                                convertX(points[0][0]) + this._offset[0],
+                                convertY(points[0][1]) + this._offset[1],
+                            );
+                            for (var i = 1; i < points.length-1; i++) {
+                                const x = convertX(points[i][0]);
+                                const y = convertY(points[i][1]);
+                                this._display_ctx_.lineTo(x+this._offset[0],y+this._offset[1]);
+                            }
+
+                        } else {
+                            // starting draw drawPolygon
+                            this._display_ctx_.moveTo(
+                                convertX(points[0][0]) + this._offset[0],
+                                convertY(points[0][1]) + this._offset[1],
+                            );
+
+                            for (var i = 1; i < points.length-1; i++) {
+                                const x = convertX(points[i][0]);
+                                const y = convertY(points[i][1]);
+                                this._display_ctx_.lineTo(x+this._offset[0],y+this._offset[1]);
+                            }
+                            this._display_ctx_.lineTo(
+                                convertX(points[0][0]) + this._offset[0],
+                                convertY(points[0][1]) + this._offset[1]);                            
                         }
-                        this._display_ctx_.lineTo(
-                            convertX(points[0][0]) + this._offset[0],
-                            convertY(points[0][1]) + this._offset[1]);
+
+                        
+                        
                         if(this.mode === 'fill'){
                             this._display_ctx_.fill();
                         }else if(this.mode === 'stroke'){
