@@ -382,7 +382,7 @@
                             segment.provenance.analysis.coordinate &&
                             segment.provenance.analysis.coordinate == 'image'){
                                 convertX = this._viewer.imagingHelper.dataToPhysicalX.bind(this._viewer.imagingHelper);
-                                convertY = this._viewer.imagingHelper.dataToPhysicalY.bind(this._viewer.imagingHelper);                          
+                                convertY = this._viewer.imagingHelper.dataToPhysicalY.bind(this._viewer.imagingHelper);                        
                         }
                         this._display_ctx_.lineJoin = style.lineJoin;
                         this._display_ctx_.lineCap = style.lineCap;
@@ -398,17 +398,22 @@
                         // 
                         if(polygon.geometry.type == 'Point') {
                             this._display_ctx_.arc(
-                                convertX(points[0]) + this._offset[0],
-                                convertY(points[1]) + this._offset[1],
-                                this._display_ctx_.radius * 2, 0, 2 * Math.PI
+                                convertX(polygon.geometry.coordinates[0]) + this._offset[0],
+                                convertY(polygon.geometry.coordinates[1]) + this._offset[1],
+                                1
+                                //this._display_ctx_.radius * 2
+                                , 0, 2 * Math.PI
                             );
 
                         } else if (polygon.geometry.type == 'Ellipse') {
+                            //
+                            
+                            let convertDistance = this._viewer.imagingHelper.logicalToPhysicalDistance.bind(this._viewer.imagingHelper);
                             this._display_ctx_.ellipse(
-                                convertX(points[0]) + this._offset[0],
-                                convertY(points[1]) + this._offset[1],
-                                convertX(radius[0]),
-                                convertX(radius[1]), 
+                                convertX(polygon.geometry.coordinates[0]) + this._offset[0],
+                                convertY(polygon.geometry.coordinates[1]) + this._offset[1],
+                                convertDistance(polygon.geometry.radius[0]),
+                                convertDistance(polygon.geometry.radius[1]), 
                                 polygon.geometry.rotation,
                                 0,
                                 2 * Math.PI
