@@ -24,6 +24,7 @@
 }
 .navbar-brand {
   margin-right: 10rem !important;
+  position: relative;
 }
 /* All display none */
 #importFile,
@@ -47,23 +48,35 @@
 @media only screen and (max-width: 551px) {
   nav {
     flex-direction: column;
+    flex-wrap: wrap;
   }
 
   nav ul {
     flex-direction: column;
+    flex-wrap: wrap;
+    
   }
 
   nav ul li {
     margin: 10px 0;
+    position: relative;
   }
 }
 
 .dropdown-menu {
   margin-left: -5em !important;
+  top: 100%;
+  position: absolute;
+  left: 0;
+  margin-top: 0.5rem;
 }
 
 @media (max-width: 425px) {
   .dropdown-menu {
     margin-left: 0 !important;
+    left: 50%;
+    transform: translateX(-35%);
+    display: flex;
+    flex-wrap: wrap;
   }
 }
