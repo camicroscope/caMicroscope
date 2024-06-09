@@ -1069,7 +1069,6 @@ class Tracker {
       x: Math.round(x),
       y: Math.round(y),
       z: image_zoom,
-      test: 'テストなのだ!!',
       time: new Date(),
     });
 

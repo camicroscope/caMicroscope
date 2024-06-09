@@ -1383,7 +1383,7 @@ function loadAnnotationById(camic, layerData, parentType, callback) {
           $UI.layersViewerMinor.removeItemById(item.id, 'human', parentType);
           return;
         }
-        console.log('camic, layerData, parentType, callback data', camic, layerData, parentType, callback, data);
+
         // no data found
         // if(data.length < 1){
         if (!data[0]) {
@@ -2197,7 +2197,6 @@ function savePresetLabel() {
   $CAMIC.store
       .addMark(annotJson)
       .then((data) => {
-        console.log('ususui 2', data);
         // server error
         if (data.error) {
           $UI.message.addError(`${data.text}:${data.url}`);
@@ -2437,7 +2436,6 @@ function onAddRuler(ruler) {
       .addMark(rulerJson)
       .then((data) => {
       // server error
-        console.log('ususui store', data);
         if (data.error) {
           $UI.message.addError(`${data.text}:${data.url}`);
           return;

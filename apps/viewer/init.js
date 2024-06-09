@@ -222,6 +222,7 @@ function initCore() {
         }
         // for support QUIP 2.0
         const data = Array.isArray(e.data) ? e.data[e.data.selected] : e.data;
+        
         const type = data.provenance.analysis.source;
         let body;
         let attributes;
