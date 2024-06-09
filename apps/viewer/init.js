@@ -257,6 +257,10 @@ function initCore() {
             attributes = data.properties.annotations;
             if (area) attributes.area = area;
             if (circumference) attributes.circumference = circumference;
+
+            attributes.X = 'x';
+            attributes.Y = 'y';
+            attributes.zoom = 'z';
             body = convertHumanAnnotationToPopupBody(attributes);
             if (
               data.geometries &&
