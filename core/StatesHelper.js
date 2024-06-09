@@ -47,6 +47,7 @@ class StatesHelper {
     }
     return states;
   }
+  
   static getCurrentStatesURL(isImageCoordinate=false) {
     let states = StatesHelper.getCurrentStates(isImageCoordinate);
     if (!states) return;
