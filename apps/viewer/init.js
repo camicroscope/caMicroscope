@@ -222,7 +222,6 @@ function initCore() {
         }
         // for support QUIP 2.0
         const data = Array.isArray(e.data) ? e.data[e.data.selected] : e.data;
-
         const type = data.provenance.analysis.source;
         let body;
         let attributes;
@@ -258,9 +257,13 @@ function initCore() {
             if (area) attributes.area = area;
             if (circumference) attributes.circumference = circumference;
 
-            attributes.X = 'x';
-            attributes.Y = 'y';
-            attributes.zoom = 'z';
+            // add center position and zoom
+            if (data.states != undefined) {
+              attributes.X = data.states.x;
+              attributes.Y = data.states.y;
+              attributes.zoom = data.states.zoom;
+            }
+
             body = convertHumanAnnotationToPopupBody(attributes);
             if (
               data.geometries &&

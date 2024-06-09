@@ -75,7 +75,7 @@ class segmentationanno{
     this.camic.store
         .addMark(annotJson)
         .then((data) => {
-          console.log(data)
+          console.log('segment',data)
           this.loadsegmentation({id:execId}, true);
         })
         .catch((e) => {

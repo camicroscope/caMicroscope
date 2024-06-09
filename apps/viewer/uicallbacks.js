@@ -1383,7 +1383,7 @@ function loadAnnotationById(camic, layerData, parentType, callback) {
           $UI.layersViewerMinor.removeItemById(item.id, 'human', parentType);
           return;
         }
-        console.log('data', data);
+        console.log('camic, layerData, parentType, callback data', camic, layerData, parentType, callback, data);
         // no data found
         // if(data.length < 1){
         if (!data[0]) {
@@ -1482,6 +1482,7 @@ function loadAnnotationById(camic, layerData, parentType, callback) {
         }
 
         if (callback) callback.call(layerData);
+        return data;
       })
       .catch((e) => {
         console.error(e);
