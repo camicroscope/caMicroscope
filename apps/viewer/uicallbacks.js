@@ -892,7 +892,7 @@ function annoCallback(data) {
   noteData.notes = resultString;
 
   // get center position and zoom
-  let states = StatesHelper.getCurrentStates(false);
+  let states = StatesHelper.getCurrentStates(true);
 
   // save
   // provenance

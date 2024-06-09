@@ -222,7 +222,6 @@ function initCore() {
         }
         // for support QUIP 2.0
         const data = Array.isArray(e.data) ? e.data[e.data.selected] : e.data;
-        
         const type = data.provenance.analysis.source;
         let body;
         let attributes;
@@ -260,9 +259,15 @@ function initCore() {
 
             // add center position and zoom
             if (data.states != undefined) {
-              attributes.X = data.states.x;
-              attributes.Y = data.states.y;
-              attributes.zoom = data.states.zoom;
+              // Rounds a number to the specified number of decimal places.
+              function roundTo(num, decimalPlaces) {
+                const factor = 10 ** decimalPlaces;
+                return Math.round(num * factor) / factor;
+              }
+              const decimalPlaces = 3;
+              attributes.X = data.states.x,
+              attributes.Y = data.states.y,
+              attributes.zoom = roundTo(data.states.zoom, decimalPlaces);
             }
 
             body = convertHumanAnnotationToPopupBody(attributes);
