@@ -891,6 +891,9 @@ function annoCallback(data) {
   }
   noteData.notes = resultString;
 
+  // get center position and zoom
+  let states = StatesHelper.getCurrentStates(false);
+
   // save
   // provenance
   Loading.open($UI.annotOptPanel.elt, 'Saving Annotation...');
@@ -916,13 +919,18 @@ function annoCallback(data) {
         $CAMIC.viewer,
         $CAMIC.viewer.canvasDrawInstance.getImageFeatureCollection(),
     ),
+    states: {
+      x: states.x,
+      y: states.y,
+      zoom: states.z,
+    },
   };
 
   // save annotation
   $CAMIC.store
       .addMark(annotJson)
       .then((data) => {
-      // server error
+        // server error
         if (data.error) {
           $UI.message.addError(`${data.text}:${data.url}`);
           Loading.close();
@@ -1375,7 +1383,7 @@ function loadAnnotationById(camic, layerData, parentType, callback) {
           $UI.layersViewerMinor.removeItemById(item.id, 'human', parentType);
           return;
         }
-
+        console.log('data', data);
         // no data found
         // if(data.length < 1){
         if (!data[0]) {
@@ -2188,7 +2196,8 @@ function savePresetLabel() {
   $CAMIC.store
       .addMark(annotJson)
       .then((data) => {
-      // server error
+        console.log('ususui 2', data);
+        // server error
         if (data.error) {
           $UI.message.addError(`${data.text}:${data.url}`);
           Loading.close();
@@ -2427,6 +2436,7 @@ function onAddRuler(ruler) {
       .addMark(rulerJson)
       .then((data) => {
       // server error
+        console.log('ususui store', data);
         if (data.error) {
           $UI.message.addError(`${data.text}:${data.url}`);
           return;
