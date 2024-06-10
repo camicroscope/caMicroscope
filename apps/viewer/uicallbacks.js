@@ -2198,7 +2198,7 @@ function savePresetLabel() {
   $CAMIC.store
       .addMark(annotJson)
       .then((data) => {
-        // server error
+      // server error
         if (data.error) {
           $UI.message.addError(`${data.text}:${data.url}`);
           Loading.close();
