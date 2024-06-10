@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta name="keywords" content="camicroscope, quip" />
+	<meta charset='utf-8'>
+	<meta http-equiv='X-UA-Compatible' content='IE=edge'>
+	<meta name='viewport'
+		content='width=device-width, initial-scale=1, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no'>
+	<!-- common -->
+	<link rel='stylesheet' type='text/css' media='all' href='../common.css'/>
+	<!-- Check If we're logged in ok, otherwise, log in for us -->
+	<!-- Font Awesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+
+	<script src='../../../common/authChecker.js'></script>
+	<script>
+		// __auth_check(1)
+	</script>
+
+	<script src='../../core/Store.js'></script>
+	<script src='../../common/util.js'></script>
+	<script src='../../common/ajv.js'></script>
+	<script src='../../components/loading/loading.js'></script>
+	<script src="../loader/loader.js"></script>
+	<script src="../loader/chunked_upload.js"></script>
+	<script type="text/javascript" src="https://apis.google.com/js/api.js"></script>
+	<title>CaMicroscope Data Table</title>
+
+	<script src="https://code.jquery.com/jquery-3.4.1.min.js"
+		></script>
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css"
+		rel="stylesheet"
+		integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0"
+		crossorigin="anonymous">
+	<link rel="stylesheet" href="../../common/stacktable.css">
+
+	<!-- popup css -->
+	<link rel="stylesheet" type="text/css" media="all" href="../../css/popup.css" />
+<script src='../../common/stacktable.js'></script>
+	<link rel="stylesheet" href="./table.css" />
+	<link rel="shortcut icon" type="image/x-icon" href="/apps/landing/favicon.png">
+
+    <!-- datatables -->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.datatables.net/2.0.3/css/dataTables.dataTables.css"
+    />
+    <script
+        type="text/javascript"
+        charset="utf8"
+        src="https://cdn.datatables.net/2.0.3/js/dataTables.js"
+    ></script>
+</head>
+
+<body>
+	<div class="page-container">
+        <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark" style="position: sticky; margin-top: -4em;">
+            <div class="container-fluid">
+                <button class="navbar-toggler m-1" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent" >
+                    <ul class="navbar-nav mr-auto gap-1">
+                        <li class="nav-item link" style="font-family: sans-serif;">
+                            <a class="nav-link" href="landing/landing.html"> <i class="fas fa-home"></i> Home</a>
+                        </li>
+                        <li class="nav-item active link" style="font-family: sans-serif;">
+                            <a class="nav-link" href="table.html"> <i class="fas fa-list-ul"></i>  Slides</a>
+                        </li>
+                        <li class="nav-item link">
+                            <a class="nav-link" href="Info.html"> <i class="fas fa-info-circle"></i> Info</a>
+                        </li>
+                        <li class="nav-item link">
+                            <a class="nav-link" href="./dev-workbench/workbench.html"> <i class="fas fa-pencil-ruler"></i> Workbench</a>
+                        </li>
+                        <li class="nav-item link">
+                            <a class="nav-link" href="./port/export.html"> <i class="fas fa-solid fa-file-export"></i> Export</a>
+                        </li>
+                        <li class="nav-item link" style="font-family: sans-serif;">
+                            <a class="nav-link" href="./signup/signup.html"> <i class="fas fa-user-plus"></i> Signup</a>
+                        </li>
+                        <li class="nav-item link" style="font-family: sans-serif;">
+                            <a class="nav-link" target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLScL91LxrpAZjU88GBZP9gmcdgdf8__uNUwhws2lzU6Lr4qNwA/viewform"> <i class="fas fa-comment"></i> Feedback</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <div class="header text-center text-white bg-info p-4">
+            <h1 class="h1">caMicroscope</h1>
+            <p>Digital pathology image viewer with support for human/machine generated annotations and markups.</p>
+        </div>
+    
+        <div class="container-fluid p-4 main-container">
+            <div class="row mx-5">
+                <div class="col">
+                    <!-- breadcrumb for tracking -->
+                    <nav aria-label="breadcrumb"><ol id="breadcrumb" class="breadcrumb"></ol></nav>
+                    <!-- datatables -->
+                    <table id="datatable" class="display" width="100%"></table>
+                </div>
+            </div>        
+        </div>
+    </div>
+
+
+    <!-- <footer class="text-center text-white bg-dark p-3">
+        <p class="p">Copyright © 2021 caMicroscope</p>
+    </footer> -->
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8" crossorigin="anonymous"></script>
+    <script src="./table.js"></script>
+</body>
+
+</html>

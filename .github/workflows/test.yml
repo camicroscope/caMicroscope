@@ -1,0 +1,31 @@
+
+
+name: Run Tests
+
+on:
+  pull_request:
+    branches:
+      - master
+      - develop
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16.x'  
+
+      - name: Install dependencies and ESLint
+        run: |
+          npm install
+          npm install eslint eslint-config-google
+
+      - name: Run Jest tests and linting
+        run: |
+          npm run lint && npm test

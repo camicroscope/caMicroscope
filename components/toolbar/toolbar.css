@@ -71,7 +71,7 @@ ul.drop_down {
 }
 
 ul.tools > li:hover ul.drop_down {
-  flex-direction: column;
+  flex-direction: row; /* Consumes less space */
   display: flex;
   width: fit-content;
   width: -moz-fit-content;

@@ -383,6 +383,12 @@
                 pointPath.closePath();
                 pointPath.strokeAndFill(ctx);
                 this.editPointPathList.push(pointPath);
+            } else if (this.editPathData.geometry.type === 'Circle') {
+                // TODO editor
+                console.log('drawEditPoints Circle');
+            } else if (this.editPathData.geometry.type === 'Ellipse') {
+                // TODO editor
+                console.log('drawEditPoints Ellipse');
             } else {
                 pathData[0].map((point) => {
                     const pointPath = new Path();
@@ -497,6 +503,12 @@
                 pointPath.closePath();
                 pointPath.strokeAndFill(this._edit_tool_ctx_);
                 this.editPointPathList.push(pointPath);
+            } else if (this.editPathData.geometry.type === 'Circle') {
+                // TODO editor
+                console.log('onEditPointMouseMove Circle');
+            } else if (this.editPathData.geometry.type === 'Ellipse') {
+                // TODO editor
+                console.log('onEditPointMouseMove Ellipse');
             } else {
                 // brush
                 this.editPathData.geometry.coordinates[0][this.onEditIndex] = [img_point.x, img_point.y];

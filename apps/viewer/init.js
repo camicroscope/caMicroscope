@@ -257,6 +257,7 @@ function initCore() {
             if (area) attributes.area = area;
             if (circumference) attributes.circumference = circumference;
 
+
             // add center position and zoom
             if (data.states != undefined) {
               // Rounds a number to the specified number of decimal places.
@@ -269,6 +270,7 @@ function initCore() {
               attributes.Y = data.states.y,
               attributes.zoom = roundTo(data.states.zoom, decimalPlaces);
             }
+
 
             body = convertHumanAnnotationToPopupBody(attributes);
             if (
