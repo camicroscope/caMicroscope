@@ -891,6 +891,9 @@ function annoCallback(data) {
   }
   noteData.notes = resultString;
 
+  // get center position and zoom
+  let states = StatesHelper.getCurrentStates(true);
+
   // save
   // provenance
   Loading.open($UI.annotOptPanel.elt, 'Saving Annotation...');
@@ -916,13 +919,18 @@ function annoCallback(data) {
         $CAMIC.viewer,
         $CAMIC.viewer.canvasDrawInstance.getImageFeatureCollection(),
     ),
+    states: {
+      x: states.x,
+      y: states.y,
+      zoom: states.z,
+    },
   };
 
   // save annotation
   $CAMIC.store
       .addMark(annotJson)
       .then((data) => {
-      // server error
+        // server error
         if (data.error) {
           $UI.message.addError(`${data.text}:${data.url}`);
           Loading.close();
@@ -1474,6 +1482,7 @@ function loadAnnotationById(camic, layerData, parentType, callback) {
         }
 
         if (callback) callback.call(layerData);
+        return data;
       })
       .catch((e) => {
         console.error(e);

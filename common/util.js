@@ -1092,7 +1092,13 @@ class Tracker {
       z: image_zoom,
       time: new Date(),
     });
-  }
+
+    return {
+      x: Math.round(x),
+      y: Math.round(y),
+      z: image_zoom,
+    };
+  };
 }
 
 
