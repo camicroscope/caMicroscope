@@ -25,7 +25,7 @@ jobs:
       - run: npm run build --if-present
       - run: http-server -s &
       - name: Install specific version of ChromeDriver
-        run: npm install -g chromedriver@126
+        run: npm install -g chromedriver@125
       - name: Run axe
         run: |
           npm install -g @axe-core/cli
