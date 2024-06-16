@@ -2736,6 +2736,11 @@ async function captureSlide() {
   $UI.layersSideMenu.close();
 }
 
+/* Log annotaiton */
+function logAnnotaiton() {
+  alert('OK');
+}
+
 function downloadSlideCapture(combiningCanvas) {
   const imageData = combiningCanvas.toDataURL('image/jpeg');
   const downloadLink = document.createElement('a');

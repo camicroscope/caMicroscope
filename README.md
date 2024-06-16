@@ -46,7 +46,8 @@ The toolbar is in the top-left of the main content window. Use the toolbar butto
 | ![](https://fonts.gstatic.com/s/i/materialicons/bug_report/v4/24px.svg)      | Bug Report      | Report a bug or give feedback. |
 | ![](https://fonts.gstatic.com/s/i/materialicons/camera_enhance/v4/24px.svg)      | Slide Capture      | Click to take a screenshot of the slide and annotations on it. |
 | ![](https://fonts.gstatic.com/s/i/materialicons/help/v4/24px.svg)      | Tutorial      | Click to view a guided tour of the viewer tools. |
-
+// TODO add Log icon
+| ![](https://fonts.gstatic.com/s/i/materialicons/help/v4/24px.svg)      | Log     | Click to view a list of annotation. |
 
 ## Toolbar Shortcuts
 

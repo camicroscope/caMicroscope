@@ -224,7 +224,6 @@ function initCore() {
         const data = Array.isArray(e.data) ? e.data[e.data.selected] : e.data;
 
         const type = data.provenance.analysis.source;
-
         let body;
         let attributes;
         let warning = null;
@@ -669,6 +668,16 @@ async function initUIcomponents() {
     value: 'slCap',
     callback: captureSlide,
   });
+
+  // log
+  subToolsOpt.push({
+    name: 'log',
+    icon: 'log', // material icons' name
+    title: 'LogAnnotaition',
+    type: 'btn',
+    callback: logAnnotaiton,
+  });
+
   subToolsOpt.push({
     name: 'tutorial',
     icon: 'help',
