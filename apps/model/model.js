@@ -155,7 +155,7 @@ async function initUIcomponents() {
             <th>Size (MB)</th>
             <th>Date Saved</th>
             <th>Remove Model</th>
-            <th>Edit Class List</th>
+            <th id = editclass>Edit Class List</th>
           </tr>
           <tbody id="mdata">
           </tbody>

@@ -1,5 +1,5 @@
 input {
-/* required to properly style form
+    /* required to properly style form
     elements on WebKit based browsers */
     -webkit-appearance: none;
 
@@ -16,22 +16,27 @@ input {
 input:focus:invalid {
     box-shadow: none;
 }
+
 @-webkit-keyframes blinker {
     50% {
-    opacity: 0;
+        opacity: 0;
     }
 }
-.blink{
+
+.blink {
     animation: blinker 1s linear infinite;
 }
-.error{
+
+.error {
     color: yellow;
 }
+
 #mtable {
     table-layout: fixed;
     width: 100%;
     border-collapse: collapse;
 }
+
 #mtable thead th:nth-child(1) {
     width: 15%;
 }
@@ -51,6 +56,7 @@ input:focus:invalid {
 #mtable thead th:nth-child(5) {
     width: 15%;
 }
+
 #mtable thead th:nth-child(6) {
     width: 15%;
 }
@@ -64,7 +70,8 @@ td {
     text-align: center;
 }
 
-thead, tfoot {
+thead,
+tfoot {
     background: #d5dbe5;
 }
 
@@ -76,7 +83,9 @@ thead, tfoot {
     border: 1px solid black;
 }
 
-.switch input {display:none;}
+.switch input {
+    display: none;
+}
 
 .slider {
     position: absolute;
@@ -101,30 +110,28 @@ thead, tfoot {
     transition: .4s;
 }
 
-input:focus + .slider {
+input:focus+.slider {
     box-shadow: 0 0 1px #2196F3;
 }
 
-input:checked + .slider:before {
+input:checked+.slider:before {
     -webkit-transform: translateX(106px);
     -ms-transform: translateX(26px);
     transform: translateX(106px);
 }
 
-.slider:after
-{
-    content:'Upload';
+.slider:after {
+    content: 'Upload';
     position: absolute;
-    transform: translate(-50%,-50%);
+    transform: translate(-50%, -50%);
     top: 50%;
     left: 54%;
     font-size: 10px;
     font-family: Verdana, sans-serif;
 }
 
-input:checked + .slider:after
-{
-    content:'Link';
+input:checked+.slider:after {
+    content: 'Link';
     left: 35%;
 }
 
@@ -138,7 +145,8 @@ input[type="radio"] {
     border-radius: 50%;
 }
 
-input[type='radio']:checked, input[type='checkbox']:checked {
+input[type='radio']:checked,
+input[type='checkbox']:checked {
     background: #365F9C;
 }
 
@@ -168,8 +176,9 @@ input[type="radio"] {
     /*height: 25px;*/
     line-height: 25px;
     font-size: 16px;
-    padding: 5px ;
+    padding: 5px;
 }
+
 input[type='radio']:checked {
     background: #365F9C;
 }
@@ -183,38 +192,43 @@ ul.disabled {
     background: #CCC;
 }
 
-.form-style{
+.form-style {
     color: #464544;
     font-size: 14px;
-    max-width:400px;
-    margin:10px auto;
-    background:#fff;
-    border-radius:2px;
-    padding:10px;
+    max-width: 400px;
+    margin: 10px auto;
+    background: #fff;
+    border-radius: 2px;
+    padding: 10px;
     /*font-family: Georgia, "Times New Roman", Times, serif;*/
 }
-.form-style #mg{
+
+.form-style #mg {
     margin-top: 20px;
     text-align: center;
 }
-.form-style ul{
-    list-style:none;
-    padding:0;
-    margin:0;
+
+.form-style ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
 }
-.form-style li{
+
+.form-style li {
     display: block;
     padding: 5px;
-    border:1px solid #DDDDDD;
+    border: 1px solid #DDDDDD;
     margin-bottom: 20px;
     border-radius: 3px;
 }
-.form-style li:last-child{
-    border:none;
+
+.form-style li:last-child {
+    border: none;
     margin-bottom: 0px;
     text-align: center;
 }
-.form-style li > label{
+
+.form-style li>label {
     display: block;
     float: left;
     margin-top: -19px;
@@ -226,28 +240,30 @@ ul.disabled {
     overflow: hidden;
     /*font-family: Arial, Helvetica, sans-serif;*/
 }
+
 .form-style input[type="text"],
 .form-style input[type="date"],
 .form-style input[type="datetime"],
 .form-style input[type="number"],
 .form-style input[type="url"],
 .form-style textarea,
-.form-style select
-{
+.form-style select {
     box-sizing: border-box;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     width: 100%;
     display: block;
     outline: none;
-    border: 1px solid black;;
+    border: 1px solid black;
+    ;
     height: 25px;
     line-height: 25px;
     font-size: 16px;
     padding: 0;
     /*font-family: Georgia, "Times New Roman", Times, serif;*/
 }
-.form-style li > span{
+
+.form-style li>span {
     background: #F3F3F3;
     display: block;
     padding: 3px;
@@ -257,11 +273,13 @@ ul.disabled {
     /*font-family: Arial, Helvetica, sans-serif;*/
     font-size: 11px;
 }
-.form-style textarea{
-    resize:none;
+
+.form-style textarea {
+    resize: none;
 }
+
 .form-style input[type="submit"],
-.form-style input[type="button"]{
+.form-style input[type="button"] {
     background: #2147FF;
     border: none;
     padding: 10px 20px 10px 20px;
@@ -269,12 +287,14 @@ ul.disabled {
     border-radius: 3px;
     color: #D2E2FF;
 }
+
 .form-style input[type="submit"]:hover,
-.form-style input[type="button"]:hover{
+.form-style input[type="button"]:hover {
     background: #6B9FFF;
-    color:#fff;
+    color: #fff;
 }
-#upload_panel .modalbox-content{
+
+#upload_panel .modalbox-content {
     width: 30%;
 
     @media only screen and ( max-width: 1100px ) {
@@ -286,75 +306,82 @@ ul.disabled {
     }
 }
 
-#roi_panel .modalbox-content{
+#roi_panel .modalbox-content {
     width: 45%;
     border-collapse: collapse;
 
 }
-#choice_panel .modalbox-content{
+
+#choice_panel .modalbox-content {
     width: 25%;
 
-   
+
 }
-#details_panel .modalbox-content{
+
+#details_panel .modalbox-content {
     width: 25%;
 
 }
+
 .form-style [type=url]:focus,
 .form-style input[type=text]:focus,
-.form-style input[type=number]:focus
-{
+.form-style input[type=number]:focus {
     background-color: #ddd;
     outline: none;
-    border:2px;
+    border: 2px;
     border-style: solid;
 }
+
 .form-style #modelupload,
-.form-style #weightsupload{
+.form-style #weightsupload {
     cursor: pointer;
 }
 
-#roitable{
-  border-collapse: collapse;
-  position: relative;
+#roitable {
+    border-collapse: collapse;
+    position: relative;
 }
-.btn-del{
-      background-color: red;
-      border: none; 
-      color: white; 
-      padding: 12px 16px; 
-      font-size: 14px; 
-      cursor: pointer; 
+
+.btn-del {
+    background-color: red;
+    border: none;
+    color: white;
+    padding: 12px 16px;
+    font-size: 14px;
+    cursor: pointer;
 }
-.btn-change{
-      background-color: rgb(133, 53, 199);
-      border: none; 
-      color: white; 
-      padding: 12px 16px; 
-      font-size: 14px; 
-      cursor: pointer; 
+
+.btn-change {
+    background-color: rgb(133, 53, 199);
+    border: none;
+    color: white;
+    padding: 12px 16px;
+    font-size: 14px;
+    cursor: pointer;
 }
-.btn-final-change{
+
+.btn-final-change {
     background-color: rgb(138, 175, 35);
-    border: none; 
-    color: white; 
-    padding: 12px 16px; 
-    font-size: 14px; 
-    cursor: pointer; 
+    border: none;
+    color: white;
+    padding: 12px 16px;
+    font-size: 14px;
+    cursor: pointer;
 }
 
 .btn-sel {
-  
-  border: 10px ;
-  border-color: black;
-  padding: 10px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  margin: 4px 2px;
-  border-radius: 100%
+
+    border: 10px;
+    border-color: black;
+    padding: 10px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    border-radius: 100%
 }
+
 .btn-sel:hover {
     background-color: #3e8e41;
     transform: scale(1.3);
@@ -363,9 +390,10 @@ ul.disabled {
 
 }
 
-body{
+body {
     color: black;
 }
+
 .message {
     color: #0c5460;
     background-color: #d1ecf1;
@@ -378,101 +406,103 @@ body{
 }
 
 .check {
-  display: block;
-  position: relative;
-  padding-left: 35px;
-  cursor: pointer;
-  font-size: 14px;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
+    display: block;
+    position: relative;
+    padding-left: 35px;
+    cursor: pointer;
+    font-size: 14px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 /* Hide the browser's default checkbox */
 .check input {
-  position: absolute;
-  opacity: 0;
-  cursor: pointer;
-  height: 0;
-  width: 0;
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
 }
 
 /* Create a custom checkbox */
 .checkmark {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 25px;
-  width: 25px;
-  background-color: #eee;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 25px;
+    width: 25px;
+    background-color: #eee;
 }
 
 /* On mouse-over, add a grey background color */
-.check:hover input ~ .checkmark {
-  background-color: #ccc;
+.check:hover input~.checkmark {
+    background-color: #ccc;
 }
 
 /* When the checkbox is checked, add a blue background */
-.check input:checked ~ .checkmark {
-  background-color: #2196F3;
+.check input:checked~.checkmark {
+    background-color: #2196F3;
 }
 
 /* Create the checkmark/indicator (hidden when not checked) */
 .checkmark:after {
-  content: "";
-  position: absolute;
-  display: none;
+    content: "";
+    position: absolute;
+    display: none;
 }
 
 /* Show the checkmark when checked */
-.check input:checked ~ .checkmark:after {
-  display: block;
+.check input:checked~.checkmark:after {
+    display: block;
 }
 
 /* Style the checkmark/indicator */
 .check .checkmark:after {
-  left: 9px;
-  top: 5px;
-  width: 5px;
-  height: 10px;
-  border: solid white;
-  border-width: 0 3px 3px 0;
-  -webkit-transform: rotate(45deg);
-  -ms-transform: rotate(45deg);
-  transform: rotate(45deg);
+    left: 9px;
+    top: 5px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 3px 3px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
 }
 
 
-#textInput{
+#textInput {
     width: 10%;
     float: right;
 }
 
-#ext1{
-   
-  text-align: center;
-  font-size: 16px;
+#ext1 {
+
+    text-align: center;
+    font-size: 16px;
 
 
 }
-#ext2{
-   
-  text-align: center;
-  font-size: 16px;
+
+#ext2 {
+
+    text-align: center;
+    font-size: 16px;
 
 }
-.extract{
-  padding : 3% 6% 3% 6%;
-  
-  color: white;
-  background-color:#46a049 !important;
-  border-radius: 7%;
-  width: 70%;
+
+.extract {
+    padding: 3% 6% 3% 6%;
+
+    color: white;
+    background-color: #46a049 !important;
+    border-radius: 7%;
+    width: 70%;
 }
 
 .extract:hover {
-    
+
     transform: scale(1.2);
     cursor: pointer;
 
@@ -480,50 +510,91 @@ body{
 }
 
 #snackbar {
-  visibility: hidden; /* Hidden by default. Visible on click */
-  min-width: 250px; /* Set a default minimum width */
-  margin-left: -125px; /* Divide value of min-width by 2 */
-  background-color: #333; /* Black background color */
-  color: #fff; /* White text color */
-  text-align: center; /* Centered text */
-  border-radius: 2px; /* Rounded borders */
-  padding: 16px; /* Padding */
-  position: fixed; /* Sit on top of the screen */
-  z-index: 1; /* Add a z-index if needed */
-  left: 50%; /* Center the snackbar */
-  bottom: 30px; /* 30px from the bottom */
-  border-radius: 10px;
+    visibility: hidden;
+    /* Hidden by default. Visible on click */
+    min-width: 250px;
+    /* Set a default minimum width */
+    margin-left: -125px;
+    /* Divide value of min-width by 2 */
+    background-color: #333;
+    /* Black background color */
+    color: #fff;
+    /* White text color */
+    text-align: center;
+    /* Centered text */
+    border-radius: 2px;
+    /* Rounded borders */
+    padding: 16px;
+    /* Padding */
+    position: fixed;
+    /* Sit on top of the screen */
+    z-index: 1;
+    /* Add a z-index if needed */
+    left: 50%;
+    /* Center the snackbar */
+    bottom: 30px;
+    /* 30px from the bottom */
+    border-radius: 10px;
 }
 
 
 /* Show the snackbar when clicking on a button (class added with JavaScript) */
 #snackbar.show {
-  visibility: visible; /* Show the snackbar */
-  /* Add animation: Take 0.5 seconds to fade in and out the snackbar.
+    visibility: visible;
+    /* Show the snackbar */
+    /* Add animation: Take 0.5 seconds to fade in and out the snackbar.
   However, delay the fade out process for 2.5 seconds */
-  -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
-  animation: fadein 0.5s, fadeout 0.5s 2.5s;
+    -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+    animation: fadein 0.5s, fadeout 0.5s 2.5s;
 }
 
 /* Animations to fade the snackbar in and out */
 @-webkit-keyframes fadein {
-  from {bottom: 0; opacity: 0;}
-  to {bottom: 30px; opacity: 1;}
+    from {
+        bottom: 0;
+        opacity: 0;
+    }
+
+    to {
+        bottom: 30px;
+        opacity: 1;
+    }
 }
 
 @keyframes fadein {
-  from {bottom: 0; opacity: 0;}
-  to {bottom: 30px; opacity: 1;}
+    from {
+        bottom: 0;
+        opacity: 0;
+    }
+
+    to {
+        bottom: 30px;
+        opacity: 1;
+    }
 }
 
 @-webkit-keyframes fadeout {
-  from {bottom: 30px; opacity: 1;}
-  to {bottom: 0; opacity: 0;}
+    from {
+        bottom: 30px;
+        opacity: 1;
+    }
+
+    to {
+        bottom: 0;
+        opacity: 0;
+    }
 }
 
 @keyframes fadeout {
-  from {bottom: 30px; opacity: 1;}
-  to {bottom: 0; opacity: 0;}
+    from {
+        bottom: 30px;
+        opacity: 1;
+    }
+
+    to {
+        bottom: 0;
+        opacity: 0;
+    }
 }
 
 .switch1 {
@@ -534,7 +605,9 @@ body{
     border: 1px solid black;
 }
 
-.switch1 input {display:none;}
+.switch1 input {
+    display: none;
+}
 
 .slider1 {
     position: absolute;
@@ -559,29 +632,82 @@ body{
     transition: .4s;
 }
 
-input:focus + .slider1 {
+input:focus+.slider1 {
     box-shadow: 0 0 1px #2196F3;
 }
 
-input:checked + .slider1:before {
+input:checked+.slider1:before {
     -webkit-transform: translateX(68px);
     -ms-transform: translateX(26px);
     transform: translateX(68px);
 }
 
-.slider1:after
-{
-    content:'NO';
+.slider1:after {
+    content: 'NO';
     position: absolute;
-    transform: translate(-50%,-50%);
+    transform: translate(-50%, -50%);
     top: 50%;
     left: 54%;
     font-size: 10px;
     font-family: Verdana, sans-serif;
 }
 
-input:checked + .slider1:after
-{
-    content:'YES';
+input:checked+.slider1:after {
+    content: 'YES';
     left: 35%;
+}
+
+@media screen and (max-width: 200px) {
+
+    thead tr th {
+        table-layout: auto;
+        display: flex;
+        flex-direction: column;
+        padding-bottom: 10px;
+
+
+    }
+
+    #editclass {
+        margin-left: -6px;/*positioned it to the center for extreme cases for mobile devices*/
+    }
+
+    #mtable {
+        flex-direction: column;
+    }
+
+
+
+}
+
+@media screen and (min-width: 200px) and (max-width : 500px) {
+
+
+    #mtable {
+        table-layout: auto;
+        display: block;
+        overflow-x: scroll;
+    }
+
+    thead tr th {
+        /* Allow natural width for each header */
+        text-align: center;
+        /* Center text within each header */
+        margin: 3px;
+
+        /* Add optional margin for spacing */
+    }
+}
+
+
+
+@media screen and (max-width: 1200px) {
+
+    #mtable {
+        table-layout: auto;
+        display: block;
+    }
+
+
+
 }
