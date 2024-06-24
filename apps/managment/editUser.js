@@ -99,3 +99,20 @@ async function updateUser(e){
 }
 
 document.getElementById("updateBtn").addEventListener("click", updateUser);
+
+
+function impUser(){
+  const urlParams = new URLSearchParams(window.location.search);
+  const emailAddr = urlParams.get('email');
+  fetch("../../data/User/impersonate", {"method":"post","body":JSON.stringify({"email":emailAddr})}).then(x=>x.json()).then(x=>{
+    console.log(x.token)
+    document.cookie = "token=" + x.token + "; path=/camic/htt";
+    document.cookie = "token=" + x.token + "; path=/camic_htt";
+    document.cookie = "token=" + x.token + "; path=//camic/htt";
+    document.cookie = "token=" + x.token + "; path=//camic_htt";
+    window.location = "../../";
+})
+
+}
+
+document.getElementById("imp_btn").addEventListener("click", impUser);
