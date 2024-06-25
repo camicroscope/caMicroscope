@@ -15,9 +15,9 @@ jobs:
       matrix:
         node-version: [20.x]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
       - run: npm install
@@ -26,6 +26,5 @@ jobs:
       - run: http-server -s &
       - name: Run Lighthouse
         run: |
-          npm install -g lhci/cli@0.7.x
-          sleep 90
+          npm install -g @lhci/cli@0.13.x
           lhci autorun
