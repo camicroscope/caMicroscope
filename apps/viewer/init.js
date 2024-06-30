@@ -136,6 +136,8 @@ function initialize() {
       layersLoader();
     }
   }, 100);
+  console.log('$UI', $UI);
+  console.log('$D', $D);
 }
 
 // setting core functionalities
@@ -674,7 +676,7 @@ async function initUIcomponents() {
     name: 'log',
     icon: 'log', // material icons' name
     title: 'LogAnnotaition',
-    type: 'btn',
+    type: 'multistates',
     callback: logAnnotaiton,
   });
 
@@ -747,11 +749,29 @@ async function initUIcomponents() {
     callback: toggleSideMenu,
   });
 
-  const loading = `<div class="cover" style="z-index: 500;"><div class="block"><span>loading layers...</span><div class="bar"></div></div></div>`;
-  $UI.layersSideMenu.addContent(loading);
-  // TODO add layer viewer
+  $UI.logSideMenu = new SideMenu({
+    id: 'log_panel',
+    width: 250,
+    contentPadding: 5,
+    // , isOpen:true
+    callback: toggleSideMenu,
+  });
+  $UI.logSideMenu.addContent(labelsTitle);
+  // $D.labels = await $CAMIC.store.getConfigByName('preset_label').then((list)=>list.length==0?null:list[0]);
+  $UI.logViewer = new LabelsViewer({
+    id: 'logmanager',
+    data: $D.labels?$D.labels.configuration:[],
+    onAdd: addPresetLabelsHandler,
+    onEdit: editPresetLabelsHandler,
+    onRemove: removePresetLabelsHandler,
+    onSelected: selectedPresetLabelsHandler,
+  },
+  );
+  // $UI.logViewer.elt.parentNode.removeChild($UI.logViewer.elt);
+  // $UI.logSideMenu.addContent($UI.logViewer.elt);
 
-
+  // const loading = `<div class="cover" style="z-index: 500;"><div class="block"><span> slideId ${$D.params.slideId} </span><div class="bar"></div></div></div>`;
+  // $UI.logSideMenu.addContent(loading);
   /* annotation popup */
   $UI.annotPopup = new PopupPanel({
     footer: [
