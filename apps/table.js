@@ -328,7 +328,7 @@ function initialize() {
                         </button>
                       ` :
                     `
-                        <button aria-label="Download"  disabled type='button' class='btn btn-danger btn-sm tooltipCustom' id='deleteBtn'>
+                        <button aria-label="Delete"  disabled type='button' class='btn btn-danger btn-sm tooltipCustom' id='deleteBtn'>
                           <span class="tooltiptextCustom p-1">Delete requested by ${slideDeleteRequests.find((o) => o.slideDetails.slideId === rs[0]) ? slideDeleteRequests.find((o) => o.slideDetails.slideId === rs[0]).requestedBy : ''}</span>
                           Delete Requested <i class='fas fa-trash-alt' ></i>
                         </button>
