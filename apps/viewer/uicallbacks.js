@@ -2737,9 +2737,15 @@ async function captureSlide() {
 }
 
 /* Log annotaiton */
+let isSidemenuOpen = true;
 function logAnnotaiton() {
-  alert('OK!!!');
-  $UI.logSideMenu.open();
+  if (isSidemenuOpen == true) {
+    $UI.logsSideMenu.open();
+    isSidemenuOpen = false;
+  } else {
+    $UI.logsSideMenu.close();
+    isSidemenuOpen = true;
+  };
   let log = $CAMIC.store.fetchMark($D.params.slideId);
   console.log('$CAMIC.fetchMark', log);
   console.log('kotae', log);

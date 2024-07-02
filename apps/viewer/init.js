@@ -676,7 +676,7 @@ async function initUIcomponents() {
     name: 'log',
     icon: 'log', // material icons' name
     title: 'LogAnnotaition',
-    type: 'multistates',
+    type: 'btn',
     callback: logAnnotaiton,
   });
 
@@ -749,29 +749,14 @@ async function initUIcomponents() {
     callback: toggleSideMenu,
   });
 
-  $UI.logSideMenu = new SideMenu({
+  $UI.logsSideMenu = new SideMenu({
     id: 'log_panel',
     width: 250,
     contentPadding: 5,
     // , isOpen:true
     callback: toggleSideMenu,
   });
-  $UI.logSideMenu.addContent(labelsTitle);
-  // $D.labels = await $CAMIC.store.getConfigByName('preset_label').then((list)=>list.length==0?null:list[0]);
-  $UI.logViewer = new LabelsViewer({
-    id: 'logmanager',
-    data: $D.labels?$D.labels.configuration:[],
-    onAdd: addPresetLabelsHandler,
-    onEdit: editPresetLabelsHandler,
-    onRemove: removePresetLabelsHandler,
-    onSelected: selectedPresetLabelsHandler,
-  },
-  );
-  // $UI.logViewer.elt.parentNode.removeChild($UI.logViewer.elt);
-  // $UI.logSideMenu.addContent($UI.logViewer.elt);
 
-  // const loading = `<div class="cover" style="z-index: 500;"><div class="block"><span> slideId ${$D.params.slideId} </span><div class="bar"></div></div></div>`;
-  // $UI.logSideMenu.addContent(loading);
   /* annotation popup */
   $UI.annotPopup = new PopupPanel({
     footer: [
@@ -860,27 +845,6 @@ async function initUIcomponents() {
         data: [],
       });
 
-      // create control
-
-      // TODO move to add layers
-      // create main layer viewer items with states
-      // const mainViewerData = $D.overlayers.map((d) => {
-      //   const isShow =
-      //     $D.params.states &&
-      //     $D.params.states.l &&
-      //     $D.params.states.l.includes(d.id) ?
-      //       true :
-      //       false;
-      //   return {item: d, isShow: isShow};
-      // });
-
-
-      // TODO move to add layers
-      // create monir layer viewer items
-      // const minorViewerData = $D.overlayers.map((d) => {
-      //   return {item: d, isShow: false};
-      // });
-
       $UI.AssistantViewer = new Assistant({
         id: 'ml_assistant',
         viewer: $CAMIC.viewer,
@@ -911,7 +875,6 @@ async function initUIcomponents() {
           callback.bind('minor'),
           rootCallback.bind('minor'),
       );
-
       // TODO move to add layers
       // if ($D.params.states && $D.params.states.l) {
       //   $D.params.states.l.forEach((id) =>
@@ -944,7 +907,12 @@ async function initUIcomponents() {
       title.classList.add('item_head');
       title.textContent = 'Layers Manager';
 
-      $UI.layersSideMenu.addContent(title);
+      // add to layers side menu
+      const titleLog = document.createElement('div');
+      titleLog.classList.add('item_head');
+      titleLog.textContent = 'Log Annotations';
+
+      $UI.logsSideMenu.addContent(titleLog);
 
       // loading status
       $UI.loadStatus = document.createElement('div');
@@ -952,7 +920,7 @@ async function initUIcomponents() {
       $UI.loadStatus.classList.add('load-status');
       $UI.loadStatus.innerHTML = `<div class="material-icons loading">cached</div><div class="text">Loading</div>`;
       $UI.layersSideMenu.addContent($UI.loadStatus);
-
+      // TODO logs
       // zoom locker control
       $UI.lockerPanel = document.createElement('div');
       $UI.lockerPanel.classList.add('lock_panel');
