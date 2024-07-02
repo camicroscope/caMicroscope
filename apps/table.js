@@ -315,7 +315,7 @@ function initialize() {
 
                   const btn = `<div id='open-delete'>
                 <button class="btn btn-primary btn-sm" data-id='${sanitize(rs[0])}' onclick='openView(this)'>Open</button>
-                <button type='button' class='btn btn-primary btn-sm DownloadButton' id='downloadBtn' data-id='${sanitize(rs[0])}' onclick='downloadSlide(this)'>
+                <button  aria-label="Download" type='button' class='btn btn-primary btn-sm DownloadButton' id='downloadBtn' data-id='${sanitize(rs[0])}' onclick='downloadSlide(this)'>
                 <i class='fas fa-download' ></i>
                 </button>
                 ${slideDeleteRequests[counter] && slideDeleteRequests[counter].slideDetails &&
@@ -323,12 +323,12 @@ function initialize() {
                   `
                     ${slideDeleteRequests.find((o) => o.requestedBy === sanitize(getUserId())) ?
                     `
-                        <button type='button' class='btn btn-danger btn-sm DelButton' id='deleteBtn' data-id='${sanitize(rs[0])}' data-name='${sanitize(rs[1])}' onclick='deleteSld(this)' data-reqid='${slideDeleteRequests.find((o) => o.slideDetails.slideId === rs[0]) ? slideDeleteRequests.find((o) => o.slideDetails.slideId === rs[0])._id.$oid : ''}' data-filename='${sanitize(filename)}' data-toggle='modal'>
+                        <button aria-label="Delete"  type='button' class='btn btn-danger btn-sm DelButton' id='deleteBtn' data-id='${sanitize(rs[0])}' data-name='${sanitize(rs[1])}' onclick='deleteSld(this)' data-reqid='${slideDeleteRequests.find((o) => o.slideDetails.slideId === rs[0]) ? slideDeleteRequests.find((o) => o.slideDetails.slideId === rs[0])._id.$oid : ''}' data-filename='${sanitize(filename)}' data-toggle='modal'>
                           Cancel Delete Request <i class='fas fa-trash-alt' ></i>
                         </button>
                       ` :
                     `
-                        <button disabled type='button' class='btn btn-danger btn-sm tooltipCustom' id='deleteBtn'>
+                        <button aria-label="Download"  disabled type='button' class='btn btn-danger btn-sm tooltipCustom' id='deleteBtn'>
                           <span class="tooltiptextCustom p-1">Delete requested by ${slideDeleteRequests.find((o) => o.slideDetails.slideId === rs[0]) ? slideDeleteRequests.find((o) => o.slideDetails.slideId === rs[0]).requestedBy : ''}</span>
                           Delete Requested <i class='fas fa-trash-alt' ></i>
                         </button>
@@ -336,7 +336,7 @@ function initialize() {
                   }
                   ` :
                   `
-                    <button type='button' class='btn btn-danger btn-sm DelButton' id='deleteBtn' data-id='${sanitize(rs[0])}' data-name='${sanitize(rs[1])}' onclick='deleteSld(this)' data-filename='${sanitize(filename)}' data-toggle='modal'>
+                    <button arial-label="Delete" type='button' class='btn btn-danger btn-sm DelButton' id='deleteBtn' data-id='${sanitize(rs[0])}' data-name='${sanitize(rs[1])}' onclick='deleteSld(this)' data-filename='${sanitize(filename)}' data-toggle='modal'>
                       ${permissions.slide.delete == true ? '' : 'Request Deletion'} <i class='fas fa-trash-alt' ></i>
                     </button>
                   `
