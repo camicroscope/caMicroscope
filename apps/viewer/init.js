@@ -674,8 +674,9 @@ async function initUIcomponents() {
   // log
   subToolsOpt.push({
     name: 'log',
-    icon: 'log', // material icons' name
+    icon: 'summarize', // material icons' name
     title: 'LogAnnotaition',
+    value: 'log',
     type: 'btn',
     callback: logAnnotaiton,
   });
