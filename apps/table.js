@@ -336,7 +336,7 @@ function initialize() {
                   }
                   ` :
                   `
-                    <button arial-label="Delete" type='button' class='btn btn-danger btn-sm DelButton' id='deleteBtn' data-id='${sanitize(rs[0])}' data-name='${sanitize(rs[1])}' onclick='deleteSld(this)' data-filename='${sanitize(filename)}' data-toggle='modal'>
+                    <button aria-label="Delete" type='button' class='btn btn-danger btn-sm DelButton' id='deleteBtn' data-id='${sanitize(rs[0])}' data-name='${sanitize(rs[1])}' onclick='deleteSld(this)' data-filename='${sanitize(filename)}' data-toggle='modal'>
                       ${permissions.slide.delete == true ? '' : 'Request Deletion'} <i class='fas fa-trash-alt' ></i>
                     </button>
                   `
