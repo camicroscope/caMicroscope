@@ -26,6 +26,5 @@ jobs:
       - run: http-server -s &
       - name: Run Lighthouse
         run: |
-          npm install -g lhci/cli@0.13.x
-          sleep 90
+          npm install && npm install -g @lhci/cli@0.14.x
           lhci autorun
