@@ -4,6 +4,20 @@ body {
 	font-family: 'Roboto', sans-serif;
 	overflow-x: hidden;
 }
+.popup {
+	position: fixed;
+	top: 10%;
+	right: 5%;
+	max-width: 300px;
+	height: 50px;
+	padding: 10px;
+	background-color: #28a745;
+	color: #fff;
+	text-align: center;
+	border-radius: 5px;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+	z-index:9999;
+}
 .bg-dark {
     background-color: #343a40!important;
 }
