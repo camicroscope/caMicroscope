@@ -138,7 +138,6 @@ function initialize() {
   }, 100);
   console.log('$UI', $UI);
   console.log('$D', $D);
-}
 
 // setting core functionalities
 function initCore() {
@@ -904,16 +903,40 @@ async function initUIcomponents() {
           // console.log(e);
         },
       });
+
+      $UI.logsList = new CollapsibleList({
+        id: 'logslist',
+        list: [
+          {
+            id: 'logsAnnotation',
+            title: 'Annotation',
+            content: 'No Template Loaded', // $UI.annotOptPanel.elt
+            // isExpand:true
+          },
+          // {
+          //   id: 'heatMap',
+          //   title: 'HeatMap',
+          //   content: 'No Template Loaded', // $UI.algOptPanel.elt,
+          // },
+        ],
+        changeCallBack: function(e) {
+          // console.log(e);
+        },
+      });
       $UI.layersSideMenu.clearContent();
       // add to layers side menu
       const title = document.createElement('div');
       title.classList.add('item_head');
       title.textContent = 'Layers Manager';
 
-      // add to layers side menu
+      // add to log side menu
       const titleLog = document.createElement('div');
       titleLog.classList.add('item_head');
-      titleLog.textContent = 'Log Annotations';
+      titleLog.textContent = 'Log Panel';
+      // add CSS
+      titleLog.style.color = '#365f9c';
+      titleLog.style.fontSize = '20px';
+      titleLog.style.backgroundColor = 'rgba(220, 220, 220, 1)';
 
       $UI.logsSideMenu.addContent(titleLog);
 
@@ -955,6 +978,16 @@ async function initUIcomponents() {
       $UI.layersList.elt.parentNode.removeChild($UI.layersList.elt);
       closeMinorControlPanel();
       $UI.layersSideMenu.addContent($UI.layersList.elt);
+
+    // logs
+      $UI.logsList.clearContent('logsAnnotation');
+      $UI.logsList.addContent('logsAnnotation', $UI.layersViewer.elt);
+      $UI.logsList.clearContent('heatMap');
+      $UI.logsList.addContent('heatMap', $UI.layersViewerMinor.elt);
+
+      $UI.logsList.elt.parentNode.removeChild($UI.logsList.elt);
+      closeMinorControlPanel();
+      $UI.logsSideMenu.addContent($UI.logsList.elt);
     }
   }, 300);
 
