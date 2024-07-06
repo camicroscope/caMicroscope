@@ -754,6 +754,8 @@ async function initUIcomponents() {
     id: 'log_panel',
     width: 250,
     contentPadding: 5,
+    position: 'right',
+    height: '75vh',
     // , isOpen:true
     callback: toggleSideMenu,
   });
