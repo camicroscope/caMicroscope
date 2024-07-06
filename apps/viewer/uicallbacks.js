@@ -2738,6 +2738,7 @@ async function captureSlide() {
 
 /* Log annotaiton */
 let isSidemenuOpen = true;
+// 他のものを全て閉じる処理を追加
 function logAnnotaiton() {
   if (isSidemenuOpen == true) {
     $UI.logsSideMenu.open();
