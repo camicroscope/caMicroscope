@@ -323,6 +323,9 @@ function toolsOff() {
     case 'download_selection':
       downloadSelectionOff();
       break;
+    case 'log':
+      $UI.logsSideMenu.close();
+      break;
   }
 }
 
