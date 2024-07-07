@@ -138,7 +138,7 @@ function initialize() {
   }, 100);
   console.log('$UI', $UI);
   console.log('$D', $D);
-
+}
 // setting core functionalities
 function initCore() {
   // start initial
