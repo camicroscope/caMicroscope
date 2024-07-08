@@ -75,6 +75,11 @@
   
 }
 
+.layers_list ul, .expanded {
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+}
+
 .layers_list li, .sort_list li {
 	margin-top:.5rem;
 	border-radius: .5rem;
@@ -239,9 +244,6 @@
     100% { transform: rotate(360deg); }
   }
 /* sort list css */
-
-
-
 
 
 
