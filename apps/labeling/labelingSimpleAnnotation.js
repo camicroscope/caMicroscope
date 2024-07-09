@@ -633,6 +633,14 @@ function annotOff() {
 async function loadingData() {
   const labelId = $D.params.labelId;
   const slideId = $D.params.slideId;
+
+  // redir user out if they've already done this
+  $CAMIC.store.findLabelingAnnotation({"parent": labelId, "provenance.image.slide":slideId, "creator": getUserId() } ).then(x=>{
+    if (x.len>0){
+      alert("You've already done this label.")
+      window.location.href = `./roi_pick.html?slideId=${$D.params.slideId}&collectionId=${$D.params.collectionId}`;
+    } 
+  });
   //
   const labelData = await $CAMIC.store.findLabeling({_id: labelId}).then((d)=>d[0]);
 
