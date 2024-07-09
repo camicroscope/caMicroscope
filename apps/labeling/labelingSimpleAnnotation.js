@@ -636,6 +636,7 @@ async function loadingData() {
 
   // redir user out if they've already done this
   $CAMIC.store.findLabelingAnnotation({"parent": labelId, "provenance.image.slide":slideId, "creator": getUserId() } ).then(x=>{
+    console.log(x)
     if (x.len>0){
       alert("You've already done this label.")
       window.location.href = `./roi_pick.html?slideId=${$D.params.slideId}&collectionId=${$D.params.collectionId}`;
