@@ -878,18 +878,24 @@ async function initUIcomponents() {
           rootCallback.bind('minor'),
       );
       // create UI and set data
+      // $UI.logsViewer = createLogsViewer(
+      //     'overlogs',
+      //     null,
+      //     callback.bind('main'),
+      //     rootCallback.bind('main'),
+      // );
+      // // create UI and set data - minor
+      // $UI.logsViewerMinor = createLogsViewer(
+      //     'overlogsMinor',
+      //     null,
+      //     callback.bind('minor'),
+      //     rootCallback.bind('minor'),
+      // );
       $UI.logsViewer = createLogsViewer(
           'overlogs',
           null,
           callback.bind('main'),
           rootCallback.bind('main'),
-      );
-      // create UI and set data - minor
-      $UI.logsViewerMinor = createLogsViewer(
-          'overlogsMinor',
-          null,
-          callback.bind('minor'),
-          rootCallback.bind('minor'),
       );
       // TODO move to add layers
       // if ($D.params.states && $D.params.states.l) {
@@ -1368,15 +1374,27 @@ function createLayerViewer(id, viewerData, callback, rootCallback) {
   return layersViewer;
 }
 
+// function createLogsViewer(id, viewerData, callback, rootCallback) {
+//   const logsViewer = new LayersViewer({
+//     id: id,
+//     data: viewerData,
+//     removeCallback: removeCallback,
+//     locationCallback: locationCallback,
+//     callback: callback,
+//     rootCallback: rootCallback,
+
+//   });
+//   logsViewer.elt.parentNode.removeChild(logsViewer.elt);
+//   return logsViewer;
+// }
 function createLogsViewer(id, viewerData, callback, rootCallback) {
-  const logsViewer = new LayersViewer({
+  const logsViewer = new LogsViewer({
     id: id,
     data: viewerData,
     removeCallback: removeCallback,
     locationCallback: locationCallback,
     callback: callback,
     rootCallback: rootCallback,
-
   });
   logsViewer.elt.parentNode.removeChild(logsViewer.elt);
   return logsViewer;
@@ -1498,8 +1516,8 @@ function addHumanLayerItems() {
     return items;
   }, mainViewerItems);
 
-  $UI.layersViewer.addHumanItems(mainViewerItems);
-  $UI.logsViewer.addHumanItems(mainViewerItems);
+  // $UI.layersViewer.addHumanItems(mainViewerItems);
+  // $UI.logsViewer.addHumanItems(mainViewerItems);
 
   // minor viewer minorViewer
   const minorViewerItems = {
@@ -1539,8 +1557,8 @@ function addHumanLayerItems() {
     return items;
   }, minorViewerItems);
 
-  $UI.layersViewerMinor.addHumanItems(minorViewerItems);
-  $UI.logsViewerMinor.addHumanItems(minorViewerItems);
+  // $UI.layersViewerMinor.addHumanItems(minorViewerItems);
+  // $UI.logsViewerMinor.addHumanItems(minorViewerItems);
 }
 function openLoadStatus(text) {
   const txt = $UI.loadStatus.querySelector('.text');
@@ -1560,8 +1578,8 @@ function addRulerLayerItems(data) {
   });
   $UI.layersViewer.addItems(mainViewerData, 'ruler');
   $UI.layersViewerMinor.addItems(minorViewerData, 'ruler');
-  $UI.logsViewer.addItems(mainViewerData, 'ruler');
-  $UI.logsViewerMinor.addItems(minorViewerData, 'ruler');
+  // $UI.logsViewer.addItems(mainViewerData, 'ruler');
+  // $UI.logsViewerMinor.addItems(minorViewerData, 'ruler');
 }
 
 function addComputerLayerItems(data) {
@@ -1574,8 +1592,8 @@ function addComputerLayerItems(data) {
   });
   $UI.layersViewer.addItems(mainViewerData, 'segmentation');
   $UI.layersViewerMinor.addItems(minorViewerData, 'segmentation');
-  $UI.logsViewer.addItems(mainViewerData, 'segmentation');
-  $UI.logsViewerMinor.addItems(minorViewerData, 'segmentation');
+  // $UI.logsViewer.addItems(mainViewerData, 'segmentation');
+  // $UI.logsViewerMinor.addItems(minorViewerData, 'segmentation');
 }
 
 function addHeatmapLayerItems(data) {
@@ -1588,8 +1606,8 @@ function addHeatmapLayerItems(data) {
   });
   $UI.layersViewer.addItems(mainViewerData, 'heatmap');
   $UI.layersViewerMinor.addItems(minorViewerData, 'heatmap');
-  $UI.logsViewer.addItems(mainViewerData, 'heatmap');
-  $UI.logsViewerMinor.addItems(minorViewerData, 'heatmap');
+  // $UI.logsViewer.addItems(mainViewerData, 'heatmap');
+  // $UI.logsViewerMinor.addItems(minorViewerData, 'heatmap');
 }
 
 // const mainViewerData = $D.overlayers.map((d) => {
