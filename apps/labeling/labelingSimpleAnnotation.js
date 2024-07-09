@@ -639,6 +639,7 @@ async function loadingData() {
     console.log(x)
     if (x.len>0){
       alert("You've already done this label.")
+      window.removeEventListener('beforeunload', beforeUnloadHandler);
       window.location.href = `./roi_pick.html?slideId=${$D.params.slideId}&collectionId=${$D.params.collectionId}`;
     } 
   });
