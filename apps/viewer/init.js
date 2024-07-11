@@ -438,6 +438,7 @@ async function initUIcomponents() {
       title: 'Home',
       type: 'btn', // btn/check/dropdown
       value: 'home',
+      ariaLabel: 'Home',
       callback: goHome,
     });
   }
@@ -447,6 +448,7 @@ async function initUIcomponents() {
     icon: 'create', // material icons' name
     title: 'Draw',
     type: 'multistates',
+    ariaLabel: 'Draw',
     callback: draw,
   });
 
@@ -456,6 +458,7 @@ async function initUIcomponents() {
     title: 'Preset Labels',
     type: 'check',
     value: 'prelabels',
+    ariaLabel: 'Preset labels',
     callback: drawLabel,
   });
 
@@ -466,6 +469,7 @@ async function initUIcomponents() {
     title: 'Magnifier',
     type: 'dropdown',
     value: 'magn',
+    ariaLabel: 'Magnifier',
     dropdownList: [
       {
         value: 0.5,
@@ -491,17 +495,20 @@ async function initUIcomponents() {
       title: 'Measurement',
       type: 'dropdown',
       value: 'measure',
+      ariaLabel: 'Measurement',
       dropdownList: [
         {
           value: 'straight',
           title: 'straight',
           icon: 'straighten',
+          ariaLabel: 'straight',
           checked: true,
         },
         {
           value: 'coordinate',
           title: 'coordinate',
           icon: 'square_foot',
+          ariaLabel: 'coordinate',
         },
       ],
       callback: toggleMeasurement,
@@ -514,6 +521,7 @@ async function initUIcomponents() {
     title: 'Download Selection',
     type: 'check',
     value: 'download',
+    ariaLabel: 'Download selection',
     callback: toggleDownloadSelection,
   });
   // enhance
@@ -523,27 +531,32 @@ async function initUIcomponents() {
     title: 'Enhance',
     type: 'dropdown',
     value: 'Enhance',
+    ariaLabel: 'Enhance',
     dropdownList: [
       {
         value: 'Histogram Eq',
         title: 'Histogram Equalization',
         icon: 'leaderboard',
+        ariaLabel: 'Histogram equalization',
         checked: true,
       },
       {
         value: 'Edge',
         title: 'Edge',
         icon: 'show_chart',
+        ariaLabel: 'Edge',
       },
       {
         value: 'Sharpen',
         title: 'Sharpen',
         icon: 'change_history',
+        ariaLabel: 'Sharpen',
       },
       {
         value: 'Custom',
         title: 'Custom',
         icon: 'api',
+        ariaLabel: 'Custom',
       },
     ],
     callback: enhance,
@@ -556,6 +569,7 @@ async function initUIcomponents() {
       title: 'Share View',
       type: 'btn',
       value: 'share',
+      ariaLabel: 'Share',
       callback: shareURL,
     });
   }
@@ -566,6 +580,7 @@ async function initUIcomponents() {
     title: 'Side By Side Viewer',
     value: 'dbviewers',
     type: 'check',
+    ariaLabel: 'Side by side viewer',
     callback: toggleViewerMode,
   });
   // heatmap
@@ -575,6 +590,7 @@ async function initUIcomponents() {
     title: 'Heat Map',
     value: 'heatmap',
     type: 'btn',
+    ariaLabel: 'Heat map',
     callback: openHeatmap,
   });
   subToolsOpt.push({
@@ -583,6 +599,7 @@ async function initUIcomponents() {
     title: 'Labeling',
     value: 'labeling',
     type: 'btn',
+    ariaLabel: 'Labeling',
     callback: function() {
       window.location.href = `../labeling/labeling.html${window.location.search}`;
     },
@@ -593,6 +610,7 @@ async function initUIcomponents() {
     type: 'btn',
     value: 'rect',
     title: 'Segment',
+    ariaLabel: 'Segment',
     callback: function() {
       if (window.location.search.length > 0) {
         window.location.href =
@@ -608,6 +626,7 @@ async function initUIcomponents() {
     type: 'btn',
     value: 'rect',
     title: 'Predict',
+    ariaLabel: 'Predict',
     callback: function() {
       if (window.location.search.length > 0) {
         window.location.href = '../model/model.html' + window.location.search;
@@ -626,6 +645,7 @@ async function initUIcomponents() {
       title: 'Download Marks',
       type: 'btn',
       value: 'download',
+      ariaLabel: 'Download marks',
       callback: Store.prototype.DownloadMarksToFile,
     });
     subToolsOpt.push({
@@ -634,6 +654,7 @@ async function initUIcomponents() {
       title: 'Load Marks',
       type: 'btn',
       value: 'upload',
+      ariaLabel: 'Load marks',
       callback: Store.prototype.LoadMarksFromFile,
     });
   }
@@ -647,6 +668,7 @@ async function initUIcomponents() {
       title: 'has reviewed',
       type: 'btn',
       value: 'review',
+      ariaLabel: 'Has reviewed',
       callback: updateSlideView,
     });
   }
@@ -657,6 +679,7 @@ async function initUIcomponents() {
     title: 'Slide Capture',
     type: 'btn',
     value: 'slCap',
+    ariaLabel: 'Slide capture',
     callback: captureSlide,
   });
   subToolsOpt.push({
@@ -665,6 +688,7 @@ async function initUIcomponents() {
     title: 'Tutorial',
     value: 'tutorial',
     type: 'btn',
+    ariaLabel: 'Tutorial',
     callback: function() {
       tour.init();
       tour.start(true);
