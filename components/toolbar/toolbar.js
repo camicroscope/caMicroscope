@@ -84,12 +84,14 @@ function CaToolbar(options) {
         title: 'Applications',
         type: 'check',
         value: 'apps',
+        ariaLabel: 'Applications',
       },
       {
         icon: 'view_list',
         title: 'Layers',
         type: 'check',
         value: 'layers',
+        ariaLabel: 'Layers',
       },
     ],
   };
