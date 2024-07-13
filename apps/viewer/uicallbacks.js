@@ -2750,8 +2750,10 @@ function logAnnotaiton() {
     $UI.logsSideMenu.close();
     isSidemenuOpen = true;
   };
-  // let log = $CAMIC.store.fetchMark($D.params.slideId);
-  // console.log('$CAMIC.fetchMark', log);
+  let log = $CAMIC.store.getLog($D.params.slideId).then((annotations) => {
+    console.log('テスト', annotations);
+  });
+
   // console.log('kotae', log);
   // let aa = [];
   // fetchAndSortAnnotations();
