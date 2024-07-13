@@ -592,6 +592,46 @@ function covertToCumputerLayer(data) {
   };
 }
 
+
+function covertToVisualization(data) {
+  const typeName = data.provenance.analysis.source;
+  const id = data.provenance.analysis.execution_id;
+  const name = data.provenance.analysis.name || data.provenance.analysis.execution_id;
+  const states = data.states || null;
+  const shape = data.geometries.features[0].geometry.type || null;
+  const isGrid = data.provenance.analysis.isGrid || false;
+
+  if (!shape) shape = ["Polygon"];
+  if (data.provenance.analysis.type&&data.provenance.analysis.type=='label') { // preset label
+    return {
+      id: id,
+      name: name,
+      typeId: typeName,
+      typeName: typeName,
+      creator: data.creator,
+      shape: shape,
+      isGrid: isGrid,
+      label: {
+        id: data.provenance.analysis.labelled,
+        name: data.provenance.analysis.name,
+      },
+      states: states,
+      data: null,
+    };
+  } else {
+    return {
+      id: id,
+      name: name,
+      typeId: typeName,
+      typeName: typeName,
+      creator: data.creator,
+      shape: shape,
+      isGrid: isGrid,
+      states: states,
+      data: null,
+    };
+  }
+}
 function eventFire(el, etype) {
   if (el.fireEvent) {
     el.fireEvent('on' + etype);
