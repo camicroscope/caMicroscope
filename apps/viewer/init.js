@@ -1560,6 +1560,9 @@ function addHumanLayerItems() {
   // $UI.layersViewerMinor.addHumanItems(minorViewerItems);
   // $UI.logsViewerMinor.addHumanItems(minorViewerItems);
 }
+// function addLogItems(){
+
+// }
 function openLoadStatus(text) {
   const txt = $UI.loadStatus.querySelector('.text');
   txt.textContent = `Loading ${text}`;
@@ -1609,6 +1612,11 @@ function addHeatmapLayerItems(data) {
   // $UI.logsViewer.addItems(mainViewerData, 'heatmap');
   // $UI.logsViewerMinor.addItems(minorViewerData, 'heatmap');
 }
+
+function visualizationLayerItems(data) {
+  console.log('hello!!', data);
+}
+
 
 // const mainViewerData = $D.overlayers.map((d) => {
 //   const isShow =
