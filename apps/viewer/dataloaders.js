@@ -106,6 +106,7 @@ function layersLoader() {
 
       // // add data and create ui item
       // addHumanLayerItems();
+      visualizationLayerItems($D.logs);
     }).catch(function(error) {
       // overlayers schema
       $UI.message.addError('Loading Logs is Error');
