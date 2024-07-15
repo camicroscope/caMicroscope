@@ -878,20 +878,20 @@ async function initUIcomponents() {
           rootCallback.bind('minor'),
       );
       // create UI and set data
-      // $UI.logsViewer = createLogsViewer(
+      // $UI.logsViewer = createVisualizationViewer(
       //     'overlogs',
       //     null,
       //     callback.bind('main'),
       //     rootCallback.bind('main'),
       // );
       // // create UI and set data - minor
-      // $UI.logsViewerMinor = createLogsViewer(
+      // $UI.logsViewerMinor = createVisualizationViewer(
       //     'overlogsMinor',
       //     null,
       //     callback.bind('minor'),
       //     rootCallback.bind('minor'),
       // );
-      $UI.logsViewer = createLogsViewer(
+      $UI.logsViewer = createVisualizationViewer(
           'overlogs',
           null,
           callback.bind('main'),
@@ -1375,7 +1375,7 @@ function createLayerViewer(id, viewerData, callback, rootCallback) {
   return layersViewer;
 }
 
-// function createLogsViewer(id, viewerData, callback, rootCallback) {
+// function createVisualizationViewer(id, viewerData, callback, rootCallback) {
 //   const logsViewer = new LayersViewer({
 //     id: id,
 //     data: viewerData,
@@ -1388,7 +1388,7 @@ function createLayerViewer(id, viewerData, callback, rootCallback) {
 //   logsViewer.elt.parentNode.removeChild(logsViewer.elt);
 //   return logsViewer;
 // }
-function createLogsViewer(id, viewerData, callback, rootCallback) {
+function createVisualizationViewer(id, viewerData, callback, rootCallback) {
   const logsViewer = new LogsViewer({
     id: id,
     data: viewerData,
