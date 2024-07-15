@@ -56,18 +56,18 @@ function VisualizationViewer(options) {
   };
 
   empty(this.elt);
-  const usuDiv = document.createElement('div');
-  usuDiv.classList.add('usulist');
-  usuDiv.style.display = 'block';
-  usuDiv.innerHTML = `<canvas height="300px" id="myChart"></canvas>`;
-  this.elt.appendChild(usuDiv);
+  const chartDiv = document.createElement('div');
+  chartDiv.classList.add('chartlist');
+  chartDiv.style.display = 'block';
+  chartDiv.innerHTML = `<canvas height="300px" id="myChart"></canvas>`;
+  this.elt.appendChild(chartDiv);
 }
 
 
 VisualizationViewer.prototype.visualization = function(id, result) {
   const ctx = document.getElementById(id);
   const aa = result;
-  // データの定義
+  // define data
   var data = {
     datasets: [{
       label: 'Human:Draw Annotation ',
@@ -77,10 +77,10 @@ VisualizationViewer.prototype.visualization = function(id, result) {
     }],
   };
 
-  // データセットの最大値を取得し、最大値に1を加算する
+  // Get the maximum value of the data set and add 1 to the maximum value
   var maxYValue = Math.max(...data.datasets[0].data.map((d)=> d.y)) + 1;
 
-  // オプションの設定
+  // setting option
   var options = {
     plugins: {
       title: {
@@ -107,20 +107,20 @@ VisualizationViewer.prototype.visualization = function(id, result) {
         },
       },
       y: {
-        beginAtZero: true, // 縦軸が0から始まるように設定
+        beginAtZero: true, //  Set vertical axis to start from 0
         title: {
           display: true,
           text: 'Draw Annotation Count',
         },
         ticks: {
-          stepSize: 1, // 縦軸に表示するステップサイズを1に設定
+          stepSize: 1, // Set the step size displayed on the vertical axis to 1
           callback: function(value) {
             if (value % 1 === 0) {
-              return value; // 整数値のみを表示
+              return value;
             }
           },
         },
-        max: maxYValue, // 縦軸の最大値を設定
+        max: maxYValue,
       },
     },
   };
