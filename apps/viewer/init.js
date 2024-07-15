@@ -749,7 +749,7 @@ async function initUIcomponents() {
     callback: toggleSideMenu,
   });
 
-  $UI.logsSideMenu = new SideMenu({
+  $UI.visualizationSideMenu = new SideMenu({
     id: 'visualization_panel',
     width: 250,
     contentPadding: 5,
@@ -958,7 +958,7 @@ async function initUIcomponents() {
       titleLog.style.fontSize = '20px';
       titleLog.style.backgroundColor = 'rgba(220, 220, 220, 1)';
 
-      $UI.logsSideMenu.addContent(titleLog);
+      $UI.visualizationSideMenu.addContent(titleLog);
 
       // loading status
       $UI.loadStatus = document.createElement('div');
@@ -1007,7 +1007,7 @@ async function initUIcomponents() {
 
       $UI.logsList.elt.parentNode.removeChild($UI.logsList.elt);
       closeMinorControlPanel();
-      $UI.logsSideMenu.addContent($UI.logsList.elt);
+      $UI.visualizationSideMenu.addContent($UI.logsList.elt);
     }
   }, 300);
 
