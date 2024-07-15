@@ -1616,7 +1616,7 @@ function visualizationLayerItems(data) {
   var initialZommingData = [];
 
   // Get initial data
-  $D.logs.map((d) => {
+  $D.visualizations.map((d) => {
     if (d.states) {
       for (let i = 0; i < d.geometries.features.length; i++) {
         initialZommingData.push(roundToSecondDecimalPlace(d.states.zoom));
