@@ -102,11 +102,7 @@ function layersLoader() {
   function loadingLogs() {
     $CAMIC.store.findMark($D.params.slideId).then(function(layers) {
       console.log('original data', layers);
-      // convert part not nesscary
       $D.logs = [...layers.map(covertToVisualization)];
-
-      // // add data and create ui item
-      // addHumanLayerItems();
       visualizationLayerItems($D.logs);
     }).catch(function(error) {
       // overlayers schema
@@ -116,7 +112,7 @@ function layersLoader() {
   }
 
   var checkCoreIsReady = setInterval(function() {
-    if ($UI.layersViewer && $UI.layersViewerMinor) {
+    if ($UI.layersViewer && $UI.layersViewerMinor && $UI.logsViewer) {
       clearInterval(checkCoreIsReady);
       loadingHumanOverlayers();
       loadingRulerOverlayers();

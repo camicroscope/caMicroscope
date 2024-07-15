@@ -1008,9 +1008,6 @@ async function initUIcomponents() {
       $UI.logsList.elt.parentNode.removeChild($UI.logsList.elt);
       closeMinorControlPanel();
       $UI.logsSideMenu.addContent($UI.logsList.elt);
-      const ctx = document.getElementById('myChart');
-      console.log('ctx', ctx);
-      $UI.logsViewer.visualization(ctx);
     }
   }, 300);
 
@@ -1620,7 +1617,7 @@ function visualizationLayerItems(data) {
   var initialZommingData = [];
 
   // Get initial data
-  data.map((d) => {
+  $D.logs.map((d) => {
     if (d.states) {
       for (let i = 0; i < d.geometries.features.length; i++) {
         initialZommingData.push(roundToSecondDecimalPlace(d.states.zoom));
@@ -1629,8 +1626,8 @@ function visualizationLayerItems(data) {
     }
   });
   let result = countOccurrences(initialZommingData);
-  // 結果を出力
-  console.log('result', result);
+
+  $UI.logsViewer.visualization('myChart', result);
 }
 
 // Function to round to decimal places
